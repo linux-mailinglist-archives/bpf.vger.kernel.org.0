@@ -2,188 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07A3B598853
-	for <lists+bpf@lfdr.de>; Thu, 18 Aug 2022 18:06:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2343C598866
+	for <lists+bpf@lfdr.de>; Thu, 18 Aug 2022 18:13:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245191AbiHRQGT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Aug 2022 12:06:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47790 "EHLO
+        id S1343624AbiHRQM4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Aug 2022 12:12:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239750AbiHRQGS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Aug 2022 12:06:18 -0400
-Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66B4DBC801;
-        Thu, 18 Aug 2022 09:06:16 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.229])
-        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4M7pcP6cZ2z9v7YZ;
-        Thu, 18 Aug 2022 23:25:41 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.204.63.22])
-        by APP1 (Coremail) with SMTP id LxC2BwAX5hHpWv5iycQwAA--.23244S4;
-        Thu, 18 Aug 2022 16:30:26 +0100 (CET)
-From:   roberto.sassu@huaweicloud.com
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
-        corbet@lwn.net, dhowells@redhat.com, jarkko@kernel.org,
-        rostedt@goodmis.org, mingo@redhat.com, paul@paul-moore.com,
-        jmorris@namei.org, serge@hallyn.com, shuah@kernel.org
-Cc:     bpf@vger.kernel.org, linux-doc@vger.kernel.org,
-        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        deso@posteo.net, Roberto Sassu <roberto.sassu@huawei.com>,
-        Joanne Koong <joannelkoong@gmail.com>
-Subject: [PATCH v12 02/10] btf: Handle dynamic pointer parameter in kfuncs
-Date:   Thu, 18 Aug 2022 17:29:21 +0200
-Message-Id: <20220818152929.402605-3-roberto.sassu@huaweicloud.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220818152929.402605-1-roberto.sassu@huaweicloud.com>
-References: <20220818152929.402605-1-roberto.sassu@huaweicloud.com>
+        with ESMTP id S245254AbiHRQMz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Aug 2022 12:12:55 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A723BCCC3
+        for <bpf@vger.kernel.org>; Thu, 18 Aug 2022 09:12:55 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id 202so1638283pgc.8
+        for <bpf@vger.kernel.org>; Thu, 18 Aug 2022 09:12:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=np3X6YADmGhWsKEmorFSnN3Tli7/JF2t3bjJf59x8Yk=;
+        b=iRpmSdMztktVZTUVM9JO1LeQ7OTKN+Ntu+FfSKUiQY0GsFRt4SwAy/K7BFag5P0gJa
+         y83E6sdvj3+FbjWtdguzHab/gxdqmU6xp9AULCGswgKz4k3HVtLXB2nQTRjIT2CyDOb0
+         fJ1bFr3JYaHThYKhkQY5O7zBbG0Vk+fhEElLITwHajtF6AzNz8GCfZHdzg/IdpwP/gfC
+         PRIHrBTWU3mpYtXZZWBMQjfOeOjGXbYtIKtgxODWPrH8h5j5g7xo+D8zaTq1CyYSq7Lk
+         VdoV+xT6FeG8jWolQzuiYu0px8l1iSS8oQ67NmLu07dlcxmxrJMu1ObPFjO3Yi4x4yBP
+         EYWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=np3X6YADmGhWsKEmorFSnN3Tli7/JF2t3bjJf59x8Yk=;
+        b=r+0uWAck2+9CbtygIYLoWuYwE1g9B3xGUv4X00Z+EigUHkHtmmrjal2IXyvCIFRY4H
+         XlMsZQdAgUNz1wbFYuTUjwsYtvyZK3Q39tKaoRX3R0fcdUc1NujhyNYCqg7JtV0vWDL0
+         +mFLun9hHKjtPyKHwGdJZnwLYfGz+Nl1j+TnlP6w8o+VUg9XYKw7NASXD/X1gYf+Y9sm
+         bAslXDQ3H1ptMjSPCsziYNh6hgDl2Cb0N/Y9G2f0hSfzfqIOTO50lrMb7YhmZBfKTkO2
+         aTkDqlBADmOX4Yry4W3j/eKgRo07zvyYTkkJhVjBwDCZPiuag0lJ9lXEk7o6m2piPb/m
+         nTdg==
+X-Gm-Message-State: ACgBeo21uyEgtvxpqZm4c/l9vUvhsaw5bbRRQ92cuEDA96vaqXoay534
+        ZrnE1SzsqcH+B0kxeO9tR5hzyidzIcmxPP0xRFO3WQ==
+X-Google-Smtp-Source: AA6agR4VcXcHyAjycETpZB+i3YYfGKjZ3CMVod6NpaxneXrE+7QQHCDngqScdaGBOAYN9YcmQLHTCNlh6P2IYa3O9Fw=
+X-Received: by 2002:a63:1043:0:b0:429:fd41:b7cb with SMTP id
+ 3-20020a631043000000b00429fd41b7cbmr2768310pgq.442.1660839174289; Thu, 18 Aug
+ 2022 09:12:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LxC2BwAX5hHpWv5iycQwAA--.23244S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxWryfCFW5Kr48Wr17Jw4fXwb_yoWrCFWxpF
-        n3Cas7Zr4vyr4xuw17AF4UArW5K3W0qw12kFWrC34FkF17Xr1DXF1DKryrA3sYkrWkCw1x
-        Ar1jgrW5ua48CrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUP0b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6r1j6r18M7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
-        A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVWUJVWUCwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        WxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-        Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ew
-        Av7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY
-        6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7M4kE6xkIj40Ew7
-        xC0wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v2
-        6r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2
-        Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_
-        Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJw
-        CI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7IU85ku7UU
-        UUU==
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAIBF1jj34W2AAJsG
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20220818062405.947643-1-shmulik.ladkani@gmail.com> <20220818062405.947643-3-shmulik.ladkani@gmail.com>
+In-Reply-To: <20220818062405.947643-3-shmulik.ladkani@gmail.com>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Thu, 18 Aug 2022 09:12:43 -0700
+Message-ID: <CAKH8qBsrUL2eV4YcxVYqp+3Fqx+Gx667othK8O-5Lp8r9yM_8w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] bpf/flow_dissector: Introduce
+ BPF_FLOW_DISSECTOR_CONTINUE retcode for flow-dissector bpf progs
+To:     Shmulik Ladkani <shmulik@metanetworks.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Petar Penkov <ppenkov@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Roberto Sassu <roberto.sassu@huawei.com>
+On Wed, Aug 17, 2022 at 11:24 PM Shmulik Ladkani
+<shmulik@metanetworks.com> wrote:
+>
+> Currently, attaching BPF_PROG_TYPE_FLOW_DISSECTOR programs completely
+> replaces the flow-dissector logic with custom dissection logic.
+> This forces implementors to write programs that handle dissection for
+> any flows expected in the namespace.
+>
+> It makes sense for flow-dissector bpf programs to just augment the
+> dissector with custom logic (e.g. dissecting certain flows or custom
+> protocols), while enjoying the broad capabilities of the standard
+> dissector for any other traffic.
+>
+> Introduce BPF_FLOW_DISSECTOR_CONTINUE retcode. Flow-dissector bpf
+> programs may return this to indicate no dissection was made, and
+> fallback to the standard dissector is requested.
 
-Allow the bpf_dynptr_kern parameter to be specified in kfuncs. Also, ensure
-that the dynamic pointer is valid and initialized.
+Some historic perspective: the original goal was to explicitly not
+fallback to the c code.
+It seems like it should be fine with this extra return code.
+But let's also extend tools/testing/selftests/bpf/progs/bpf_flow.c
+with a case that exercises this new return code?
 
-To properly detect whether a parameter is of the desired type, introduce
-the stringify_struct() macro to compare the returned structure name with
-the desired name. In addition, protect against structure renames, by
-halting the build with BUILD_BUG_ON(), so that developers have to revisit
-the code.
+> Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+> ---
+>  include/uapi/linux/bpf.h  | 5 +++++
+>  net/core/flow_dissector.c | 3 +++
+>  2 files changed, 8 insertions(+)
+>
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 7bf9ba1329be..6d6654da7cef 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -5836,6 +5836,11 @@ enum bpf_ret_code {
+>          *    represented by BPF_REDIRECT above).
+>          */
+>         BPF_LWT_REROUTE = 128,
+> +       /* BPF_FLOW_DISSECTOR_CONTINUE: used by BPF_PROG_TYPE_FLOW_DISSECTOR
+> +        *   to indicate that no custom dissection was performed, and
+> +        *   fallback to standard dissector is requested.
+> +        */
+> +       BPF_FLOW_DISSECTOR_CONTINUE = 129,
+>  };
 
-Cc: Joanne Koong <joannelkoong@gmail.com>
-Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
----
- include/linux/bpf_verifier.h |  3 +++
- include/linux/btf.h          |  9 +++++++++
- kernel/bpf/btf.c             | 18 ++++++++++++++++++
- kernel/bpf/verifier.c        |  4 ++--
- 4 files changed, 32 insertions(+), 2 deletions(-)
+Is it too late to also amend verifier's check_return_code to allow
+only a small subset of return types for flow-disccestor program type?
 
-diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index 2e3bad8640dc..55876fbdbae2 100644
---- a/include/linux/bpf_verifier.h
-+++ b/include/linux/bpf_verifier.h
-@@ -560,6 +560,9 @@ int check_kfunc_mem_size_reg(struct bpf_verifier_env *env, struct bpf_reg_state
- 			     u32 regno);
- int check_mem_reg(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
- 		   u32 regno, u32 mem_size);
-+bool is_dynptr_reg_valid_init(struct bpf_verifier_env *env,
-+			      struct bpf_reg_state *reg,
-+			      enum bpf_arg_type arg_type);
- 
- /* this lives here instead of in bpf.h because it needs to dereference tgt_prog */
- static inline u64 bpf_trampoline_compute_key(const struct bpf_prog *tgt_prog,
-diff --git a/include/linux/btf.h b/include/linux/btf.h
-index ad93c2d9cc1c..f546d368ac5d 100644
---- a/include/linux/btf.h
-+++ b/include/linux/btf.h
-@@ -52,6 +52,15 @@
- #define KF_SLEEPABLE    (1 << 5) /* kfunc may sleep */
- #define KF_DESTRUCTIVE  (1 << 6) /* kfunc performs destructive actions */
- 
-+/*
-+ * Return the name of the passed struct, if exists, or halt the build if for
-+ * example the structure gets renamed. In this way, developers have to revisit
-+ * the code using that structure name, and update it accordingly.
-+ */
-+#define stringify_struct(x)			\
-+	({ BUILD_BUG_ON(sizeof(struct x) < 0);	\
-+	   __stringify(x); })
-+
- struct btf;
- struct btf_member;
- struct btf_type;
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index e49b3b6d48ad..26cb548420af 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -6362,15 +6362,20 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
- 
- 			if (is_kfunc) {
- 				bool arg_mem_size = i + 1 < nargs && is_kfunc_arg_mem_size(btf, &args[i + 1], &regs[regno + 1]);
-+				bool arg_dynptr = btf_type_is_struct(ref_t) &&
-+						  !strcmp(ref_tname,
-+							  stringify_struct(bpf_dynptr_kern));
- 
- 				/* Permit pointer to mem, but only when argument
- 				 * type is pointer to scalar, or struct composed
- 				 * (recursively) of scalars.
- 				 * When arg_mem_size is true, the pointer can be
- 				 * void *.
-+				 * Also permit initialized dynamic pointers.
- 				 */
- 				if (!btf_type_is_scalar(ref_t) &&
- 				    !__btf_type_is_scalar_struct(log, btf, ref_t, 0) &&
-+				    !arg_dynptr &&
- 				    (arg_mem_size ? !btf_type_is_void(ref_t) : 1)) {
- 					bpf_log(log,
- 						"arg#%d pointer type %s %s must point to %sscalar, or struct with scalar\n",
-@@ -6378,6 +6383,19 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
- 					return -EINVAL;
- 				}
- 
-+				if (arg_dynptr) {
-+					if (!is_dynptr_reg_valid_init(env, reg,
-+							ARG_PTR_TO_DYNPTR)) {
-+						bpf_log(log,
-+							"arg#%d pointer type %s %s must be initialized\n",
-+							i, btf_type_str(ref_t),
-+							ref_tname);
-+						return -EINVAL;
-+					}
-+
-+					continue;
-+				}
-+
- 				/* Check for mem, len pair */
- 				if (arg_mem_size) {
- 					if (check_kfunc_mem_size_reg(env, &regs[regno + 1], regno + 1)) {
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 2c1f8069f7b7..aa834e7bb296 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -779,8 +779,8 @@ static bool is_dynptr_reg_valid_uninit(struct bpf_verifier_env *env, struct bpf_
- 	return true;
- }
- 
--static bool is_dynptr_reg_valid_init(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
--				     enum bpf_arg_type arg_type)
-+bool is_dynptr_reg_valid_init(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
-+			      enum bpf_arg_type arg_type)
- {
- 	struct bpf_func_state *state = func(env, reg);
- 	int spi = get_spi(reg->off);
--- 
-2.25.1
-
+>  struct bpf_sock {
+> diff --git a/net/core/flow_dissector.c b/net/core/flow_dissector.c
+> index a01817fb4ef4..990429c69ccd 100644
+> --- a/net/core/flow_dissector.c
+> +++ b/net/core/flow_dissector.c
+> @@ -1022,11 +1022,14 @@ bool __skb_flow_dissect(const struct net *net,
+>                         prog = READ_ONCE(run_array->items[0].prog);
+>                         result = bpf_flow_dissect(prog, &ctx, n_proto, nhoff,
+>                                                   hlen, flags);
+> +                       if (result == BPF_FLOW_DISSECTOR_CONTINUE)
+> +                               goto dissect_continue;
+>                         __skb_flow_bpf_to_target(&flow_keys, flow_dissector,
+>                                                  target_container);
+>                         rcu_read_unlock();
+>                         return result == BPF_OK;
+>                 }
+> +dissect_continue:
+>                 rcu_read_unlock();
+>         }
+>
+> --
+> 2.37.1
+>
