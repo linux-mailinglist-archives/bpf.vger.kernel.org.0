@@ -2,120 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64AAE598FB5
-	for <lists+bpf@lfdr.de>; Thu, 18 Aug 2022 23:40:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A63C59903F
+	for <lists+bpf@lfdr.de>; Fri, 19 Aug 2022 00:11:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240680AbiHRVkS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Aug 2022 17:40:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59274 "EHLO
+        id S239696AbiHRWKp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Aug 2022 18:10:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344400AbiHRVkR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Aug 2022 17:40:17 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18632BD296;
-        Thu, 18 Aug 2022 14:40:16 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A97BC61651;
-        Thu, 18 Aug 2022 21:40:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 0BC8EC433D6;
-        Thu, 18 Aug 2022 21:40:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660858815;
-        bh=o2e7CPTj7J+nXPLNymiXrYmrdkMuZznovk3LLLNOUrU=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=oO9gi9XlnRUBfIVXqMasLZAGq8RgMfkrP23Xzr6o1PoTgubH64zXB1pI0f60eXvL1
-         bl23n0cPXVrT1akUA8DyLiP2gc1fCKTGj3z9iQX/XKBOWPZjU26UfEdI/i6Ga+djTd
-         e27u2wlrxWHt3GPVWcPoZanfLg7UN0sbmg9yBnZ+e5dL4uejIGEUL3D8XnKgM57VRD
-         ymo3lbkjuUR8t4Qe/Qq6JoHqeADdWCwPnTZyttVl307hhjhgVK8H3u4FQ1zSr8h0D3
-         BGQsq2lHLOAvtLCCpqiRLosCQEWVPotq7lPbKyTGEp+OJ2UPgSHYXVHJJGs9VbgI9F
-         7YiS9kXE/Fm2g==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E4689E2A051;
-        Thu, 18 Aug 2022 21:40:14 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S1346119AbiHRWKl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Aug 2022 18:10:41 -0400
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C612D25FF;
+        Thu, 18 Aug 2022 15:10:39 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 5C0313200900;
+        Thu, 18 Aug 2022 18:10:35 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Thu, 18 Aug 2022 18:10:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+        :cc:content-transfer-encoding:content-type:date:date:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to; s=fm3; t=1660860634; x=
+        1660947034; bh=bqimtuRDECWOfamqyR5FSsot1AL5746ILjJxrzbyYOY=; b=Q
+        tZNFrMEXwo0B/LI90hb4Vym5HO+fB2OVHlsZMXzn0/O8oJtRrNKyNi1ZZbg1WyVm
+        araWUv9Qy7Yuw8OW+YqLca5pwRHzLmItXKyzwwzdFlJumA/bTfrjbaCgijKvWLIK
+        5ifR+qZa27xAHiQFhKPH5KmEdR/0HUYQcT6nZkTDs3rTI3Y3vBmSBrzFhO+l7lLB
+        QXqe0kE0l3mE8q0JgfqtIeU3ewC1tKcyurtI3Xc/Nvhhtkhqfayg5ge4DjUB48Wi
+        qeEi1HlMXy7fzARInCGAyQwNRaNtcQCH4XS0D1KftDk9hQYMcUxZ+fJT+ntYAieA
+        VULTmDq+MoU4THN2faB8Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1660860634; x=
+        1660947034; bh=bqimtuRDECWOfamqyR5FSsot1AL5746ILjJxrzbyYOY=; b=1
+        2+QZkWF9inCmGBBPYFj60fys2jhoL/3SnCrhktpZphBqWhTcqUj59eUGgOKxQgEJ
+        HerW6z/V36bbAnZa5z3tLpafPSDPXPt1u4kzZQxxglUBHMaoiDSGfPHu7pH0b9MV
+        VW/U2u5k3xrKeImFqhIxNMsMIg+6uwCTtMfUDzPv4IP2I3xFNySUCSOkgS/nYEqI
+        ZBXX5OYBD53szxY781XN/i97bXvvy/vuO660DcARFLbpg7k0S89t82Kit+g5JM1m
+        ePP+qx5OAR7zFScALBVoHDJIz48BeFzqBbBTAxdIA1rJeWOe4T/Rxvrm3KceNMfk
+        Zvr8Kl79bfjJqEUH7TH0A==
+X-ME-Sender: <xms:2rj-YqlSCFiFZGwtTi1iUFeeXfZJOIUeSTtdm42Zvln3Uz08FSrXxg>
+    <xme:2rj-Yh0kkf_3W6Fdz4BdUpe9uPmhpfFnejHWvH47F3mTu2Za0DoM3qDmdDgK8dX32
+    vUiP513TGoUYm1ZaA>
+X-ME-Received: <xmr:2rj-YorGWp8ATbOrmOjxKA-Iy2MUS9uFkHsM0PKxoJ7w2Igxhe6hOxuhUbtYiM7kSnq5rRy7ccYzeOHzgqdTMBz815ulREZ8lNIC>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrvdeitddgtdeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    gfrhhlucfvnfffucdljedtmdenucfjughrpeffhffvvefukfhfgggtugfgjgesthekredt
+    tddtudenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihusegugihuuhhurdighiiiqe
+    enucggtffrrghtthgvrhhnpeegvdejveeuvdeigfejjeeufefhffetfeekuddtuddvuedt
+    ueffvdejleehgeetffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpegugihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:2rj-YunwIWChXgRMS44dcdI6nJCXA2VmImGp9L8GBJBZIiCgARf7gg>
+    <xmx:2rj-Yo2t9M2iHf492Xd8c4qtZ0pEWYskuKHCCenOEqRtJTe3emEXtg>
+    <xmx:2rj-Ylsv_UmfO_P-N9XhMU-rbWUcG_bebhw7S3jIljAgUF5D8NqHAw>
+    <xmx:2rj-YuwdKVOYeqcFjtpM5iF1aavXvOlD40cpMhzTCN1RXm1pqkiDSg>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 18 Aug 2022 18:10:33 -0400 (EDT)
+Date:   Thu, 18 Aug 2022 16:10:32 -0600
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, memxor@gmail.com, pablo@netfilter.org,
+        fw@strlen.de, netfilter-devel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v2 3/4] bpf: Add support for writing to
+ nf_conn:mark
+Message-ID: <20220818221032.7b4lcpa7i4gchdvl@kashmir.localdomain>
+References: <cover.1660761470.git.dxu@dxuuu.xyz>
+ <edbca42217a73161903a50ba07ec63c5fa5fde00.1660761470.git.dxu@dxuuu.xyz>
+ <87pmgxuy6v.fsf@toke.dk>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf] bpf: Fix kernel BUG in purge_effective_progs
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <166085881493.3032.8925945016556357236.git-patchwork-notify@kernel.org>
-Date:   Thu, 18 Aug 2022 21:40:14 +0000
-References: <20220813134030.1972696-1-pulehui@huawei.com>
-In-Reply-To: <20220813134030.1972696-1-pulehui@huawei.com>
-To:     Pu Lehui <pulehui@huawei.com>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        tadeusz.struk@linaro.org, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        jean-philippe@linaro.org, haoluo@google.com, jolsa@kernel.org
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <87pmgxuy6v.fsf@toke.dk>
+X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_SUSPICIOUS_NTLD,
+        PDS_OTHER_BAD_TLD,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+Hi Toke,
 
-This patch was applied to bpf/bpf.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
-
-On Sat, 13 Aug 2022 21:40:30 +0800 you wrote:
-> Syzkaller reported kernel BUG as follows:
+On Thu, Aug 18, 2022 at 09:52:08PM +0200, Toke Høiland-Jørgensen wrote:
+> Daniel Xu <dxu@dxuuu.xyz> writes:
 > 
-> ------------[ cut here ]------------
-> kernel BUG at kernel/bpf/cgroup.c:925!
-> invalid opcode: 0000 [#1] PREEMPT SMP NOPTI
-> CPU: 1 PID: 194 Comm: detach Not tainted 5.19.0-14184-g69dac8e431af #8
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-> rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
-> RIP: 0010:__cgroup_bpf_detach+0x1f2/0x2a0
-> Code: 00 e8 92 60 30 00 84 c0 75 d8 4c 89 e0 31 f6 85 f6 74 19 42 f6 84
-> 28 48 05 00 00 02 75 0e 48 8b 80 c0 00 00 00 48 85 c0 75 e5 <0f> 0b 48
-> 8b 0c5
-> RSP: 0018:ffffc9000055bdb0 EFLAGS: 00000246
-> RAX: 0000000000000000 RBX: ffff888100ec0800 RCX: ffffc900000f1000
-> RDX: 0000000000000000 RSI: 0000000000000001 RDI: ffff888100ec4578
-> RBP: 0000000000000000 R08: ffff888100ec0800 R09: 0000000000000040
-> R10: 0000000000000000 R11: 0000000000000000 R12: ffff888100ec4000
-> R13: 000000000000000d R14: ffffc90000199000 R15: ffff888100effb00
-> FS:  00007f68213d2b80(0000) GS:ffff88813bc80000(0000)
-> knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 000055f74a0e5850 CR3: 0000000102836000 CR4: 00000000000006e0
-> Call Trace:
->  <TASK>
->  cgroup_bpf_prog_detach+0xcc/0x100
->  __sys_bpf+0x2273/0x2a00
->  __x64_sys_bpf+0x17/0x20
->  do_syscall_64+0x3b/0x90
->  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> RIP: 0033:0x7f68214dbcb9
-> Code: 08 44 89 e0 5b 41 5c c3 66 0f 1f 84 00 00 00 00 00 48 89 f8 48 89
-> f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01
-> f0 ff8
-> RSP: 002b:00007ffeb487db68 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-> RAX: ffffffffffffffda RBX: 000000000000000b RCX: 00007f68214dbcb9
-> RDX: 0000000000000090 RSI: 00007ffeb487db70 RDI: 0000000000000009
-> RBP: 0000000000000003 R08: 0000000000000012 R09: 0000000b00000003
-> R10: 00007ffeb487db70 R11: 0000000000000246 R12: 00007ffeb487dc20
-> R13: 0000000000000004 R14: 0000000000000001 R15: 000055f74a1011b0
->  </TASK>
-> Modules linked in:
+> > Support direct writes to nf_conn:mark from TC and XDP prog types. This
+> > is useful when applications want to store per-connection metadata. This
+> > is also particularly useful for applications that run both bpf and
+> > iptables/nftables because the latter can trivially access this
+> > metadata.
 > 
-> [...]
+> Looking closer at the nf_conn definition, the mark field (and possibly
+> secmark) seems to be the only field that is likely to be feasible to
+> support direct writes to, as everything else either requires special
+> handling (like status and timeout), or they are composite field that
+> will require helpers anyway to use correctly.
+> 
+> Which means we're in the process of creating an API where users have to
+> call helpers to fill in all fields *except* this one field that happens
+> to be directly writable. That seems like a really confusing and
+> inconsistent API, so IMO it strengthens the case for just making a
+> helper for this field as well, even though it adds a bit of overhead
+> (and then solving the overhead issue in a more generic way such as by
+> supporting clever inlining).
+> 
+> -Toke
 
-Here is the summary with links:
-  - [bpf] bpf: Fix kernel BUG in purge_effective_progs
-    https://git.kernel.org/bpf/bpf/c/7d6620f107ba
+I don't particularly have a strong opinion here. But to play devil's
+advocate:
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+* It may be confusing now, but over time I expect to see more direct
+  write support via BTF, especially b/c there is support for unstable
+  helpers now. So perhaps in the future it will seem more sensible.
 
+* The unstable helpers do not have external documentation. Nor should
+  they in my opinion as their unstableness + stale docs may lead to
+  undesirable outcomes. So users of the unstable API already have to
+  splunk through kernel code and/or selftests to figure out how to wield
+  the APIs. All this to say there may not be an argument for
+  discoverability.
 
+* Direct writes are slightly more ergnomic than using a helper.
+
+Thanks,
+Daniel
