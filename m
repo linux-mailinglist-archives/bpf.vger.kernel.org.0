@@ -2,93 +2,175 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA2835986F3
-	for <lists+bpf@lfdr.de>; Thu, 18 Aug 2022 17:09:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 162DE598709
+	for <lists+bpf@lfdr.de>; Thu, 18 Aug 2022 17:12:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344042AbiHRPIR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Aug 2022 11:08:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40184 "EHLO
+        id S245369AbiHRPL0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Aug 2022 11:11:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344008AbiHRPIP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Aug 2022 11:08:15 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46E57A9;
-        Thu, 18 Aug 2022 08:08:10 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id E7196B821DF;
-        Thu, 18 Aug 2022 15:08:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29975C433C1;
-        Thu, 18 Aug 2022 15:08:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1660835287;
-        bh=Z0E77J+gWISuARNQ99PusSJ/HYf0+M8/ij/rvEJLC3I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KI9Hs6XvNK3xMtSeuWpYgExJJFOh9oBS8J5/YJhtndNCUGqklFiD8UiIqxRTHTJQL
-         DdOBBdv2ltu2/mlNEajfZaMK4sbEMdtQYXSePZjbX6rEBWNt/fKWguloPRO4jHg8Om
-         EnSoc3iWtIX2AHVkAiWKydmZwZNNhQQ9cU+8Zrrk=
-Date:   Thu, 18 Aug 2022 17:08:04 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Bastien Nocera <hadess@hadess.net>
-Cc:     linux-usb@vger.kernel.org, bpf@vger.kernel.org,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Peter Hutterer <peter.hutterer@who-t.net>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH 2/2] usb: Implement usb_revoke() BPF function
-Message-ID: <Yv5V1KWOQa5mnktE@kroah.com>
-References: <20220809094300.83116-1-hadess@hadess.net>
- <20220809094300.83116-3-hadess@hadess.net>
- <YvI5DJnOjhJbNnNO@kroah.com>
- <2cde406b4d59ddfe71a7cdc11a76913a0a168595.camel@hadess.net>
- <YvKMVjl6x38Hud6I@kroah.com>
- <fae7e35a920239fe2a35b6b967bd17e04af1e1b7.camel@hadess.net>
+        with ESMTP id S245562AbiHRPLX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Aug 2022 11:11:23 -0400
+Received: from mail-oa1-x2b.google.com (mail-oa1-x2b.google.com [IPv6:2001:4860:4864:20::2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 548F1BD4F9
+        for <bpf@vger.kernel.org>; Thu, 18 Aug 2022 08:11:18 -0700 (PDT)
+Received: by mail-oa1-x2b.google.com with SMTP id 586e51a60fabf-f2a4c51c45so2089303fac.9
+        for <bpf@vger.kernel.org>; Thu, 18 Aug 2022 08:11:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=GANP9vLRwQ2YLUROnRwlZNpTwcMjsaJ3VgtSa/PtcQA=;
+        b=0qFr3gX8grFcH8xmET6oC1qTaE9YXfJGFQ2GhO7NEnI8UJe/rml2OLbEr4Jw1nQKgR
+         d12kPSjSQe3qNmXickEgFu68t4SIk6+fn1KvnQautrJRDdPKcPRfC9kt1hvPEgu+ijXD
+         7iHrt1dL8Pek8n+C/DBvnSz5bNp5udDpG9vzcJ4mjVl2uLAsjvPjxzZNC3uc1Sn9d8BN
+         jgZh1sTFXRnSeYNTo+wlZfynZ0xcbCj8IKq0w2RsVpncFi6U9vN4TxyRRKmoNsvJJQvH
+         8z5x3IrwifZWro1HnNJlG0tBICYV2T1LywfHD7Dw228ev4nd3JbJBYgF/S7hFYBg6Rd0
+         xVCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=GANP9vLRwQ2YLUROnRwlZNpTwcMjsaJ3VgtSa/PtcQA=;
+        b=Cm17ACPXS7mVlg4JG90SSdJEfBrLeAhUulEONRwefcm9c61RKFFyrznvUhmqe9tH3+
+         zr72jB+Ge7TZuO74EFWXL7kk7wEvpbz3bmrWMn0C0c4fMzuJY9WBcDKCWHznwEQRB4VI
+         5fbtQ59fki3n90rsAcOrL9pe/WD3u5ajhHg20rjbgNevvn8RdQm6aSng1lCMYjo6wj2K
+         tbnJUvYyVPQFQe3SWH1uqdyuUlgG+TplhPKr30v1MWub/GFC0RiLnE/Prc4rfYpUYpsT
+         /2OU0o/9L5kVr4OEqsXUkZeokx566BpZNZf4WthGiEx6zydF7+evYowD9PISAtMnrY1A
+         ZQ7w==
+X-Gm-Message-State: ACgBeo1eMYZoqJlCrjusCXavlJte+9GsvS9YG244RGbHeUcVF7u0Q4a6
+        63evS1jHRvMBgFoB30ZV6zg5DtoKBrW6JLEX0+EG
+X-Google-Smtp-Source: AA6agR66YXOH5oppw7egFiDoyCC8ej5Sf5Kmv975mn8bSRsO6rpaEhSZQdqJw2zGnbq9Y7af7ZLG1mLeF4J63BZuPNo=
+X-Received: by 2002:a05:6870:a78d:b0:11c:437b:ec70 with SMTP id
+ x13-20020a056870a78d00b0011c437bec70mr1643477oao.136.1660835477277; Thu, 18
+ Aug 2022 08:11:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <fae7e35a920239fe2a35b6b967bd17e04af1e1b7.camel@hadess.net>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20220815162028.926858-1-fred@cloudflare.com> <CAHC9VhTuxxRfJg=Ax5z87Jz6tq1oVRcppB444dHM2gP-FZrkTQ@mail.gmail.com>
+ <8735dux60p.fsf@email.froward.int.ebiederm.org> <CAHC9VhSHJNLS-KJ-Rz1R12PQbqACSksLYLbymF78d5hMkSGc-g@mail.gmail.com>
+ <871qte8wy3.fsf@email.froward.int.ebiederm.org> <CAHC9VhSU_sqMQwdoh0nAFdURqs_cVFbva8=otjcZUo8s+xyC9A@mail.gmail.com>
+ <8735du7fnp.fsf@email.froward.int.ebiederm.org> <CAHC9VhQuRNxzgVeNhDy=p5+RHz5+bTH6zFdU=UvvEhyH1e962A@mail.gmail.com>
+ <87tu6a4l83.fsf@email.froward.int.ebiederm.org> <20220818140521.GA1000@mail.hallyn.com>
+In-Reply-To: <20220818140521.GA1000@mail.hallyn.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Thu, 18 Aug 2022 11:11:06 -0400
+Message-ID: <CAHC9VhRqBxtV04ARQFPWpMf1aFZo0HP_HiJ+8VpXAT-zXF6UXw@mail.gmail.com>
+Subject: Re: [PATCH v5 0/4] Introduce security_create_user_ns()
+To:     "Serge E. Hallyn" <serge@hallyn.com>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Frederick Lawler <fred@cloudflare.com>, kpsingh@kernel.org,
+        revest@chromium.org, jackmanb@chromium.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        jmorris@namei.org, stephen.smalley.work@gmail.com,
+        eparis@parisplace.org, shuah@kernel.org, brauner@kernel.org,
+        casey@schaufler-ca.com, bpf@vger.kernel.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, kernel-team@cloudflare.com,
+        cgzones@googlemail.com, karl@bigbadwolfsecurity.com,
+        tixxdz@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 09, 2022 at 07:27:11PM +0200, Bastien Nocera wrote:
-> On Tue, 2022-08-09 at 18:33 +0200, Greg Kroah-Hartman wrote:
-> > On Tue, Aug 09, 2022 at 04:31:04PM +0200, Bastien Nocera wrote:
-> > > On Tue, 2022-08-09 at 12:38 +0200, Greg Kroah-Hartman wrote:
-> > > > Now if you really really want to disable a device from under a
-> > > > user,
-> > > > without the file handle present, you can do that today, as root,
-> > > > by
-> > > > doing the 'unbind' hack through userspace and sysfs.  It's so
-> > > > common
-> > > > that this seems to be how virtual device managers handle virtual
-> > > > machines, so it should be well tested by now.
-> > > 
-> > > The only thing I know that works that way is usbip, and it requires
-> > > unbinding each of the interfaces:
-> > > 
-> > > https://sourceforge.net/p/usbip/git-windows/ci/master/tree/trunk/userspace/src/bind-driver.c#l157
-> > 
-> > virtio devices also use the api from what I recall.
-> 
-> I can't find any code that would reference
-> /sys/bus/usb/drivers/usbfs/unbind or /sys/bus/usb/drivers/usbfs wrt
-> virtio. Where's the host side code for that?
+On Thu, Aug 18, 2022 at 10:05 AM Serge E. Hallyn <serge@hallyn.com> wrote:
+> On Wed, Aug 17, 2022 at 04:24:28PM -0500, Eric W. Biederman wrote:
+> > Paul Moore <paul@paul-moore.com> writes:
+> > > On Wed, Aug 17, 2022 at 4:56 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
+> > >> Paul Moore <paul@paul-moore.com> writes:
+> > >> > On Wed, Aug 17, 2022 at 3:58 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
+> > >> >> Paul Moore <paul@paul-moore.com> writes:
+> > >> >>
+> > >> >> > At the end of the v4 patchset I suggested merging this into lsm/next
+> > >> >> > so it could get a full -rc cycle in linux-next, assuming no issues
+> > >> >> > were uncovered during testing
+> > >> >>
+> > >> >> What in the world can be uncovered in linux-next for code that has no in
+> > >> >> tree users.
+> > >> >
+> > >> > The patchset provides both BPF LSM and SELinux implementations of the
+> > >> > hooks along with a BPF LSM test under tools/testing/selftests/bpf/.
+> > >> > If no one beats me to it, I plan to work on adding a test to the
+> > >> > selinux-testsuite as soon as I'm done dealing with other urgent
+> > >> > LSM/SELinux issues (io_uring CMD passthrough, SCTP problems, etc.); I
+> > >> > run these tests multiple times a week (multiple times a day sometimes)
+> > >> > against the -rcX kernels with the lsm/next, selinux/next, and
+> > >> > audit/next branches applied on top.  I know others do similar things.
+> > >>
+> > >> A layer of hooks that leaves all of the logic to userspace is not an
+> > >> in-tree user for purposes of understanding the logic of the code.
+> > >
+> > > The BPF LSM selftests which are part of this patchset live in-tree.
+> > > The SELinux hook implementation is completely in-tree with the
+> > > subject/verb/object relationship clearly described by the code itself.
+> > > After all, the selinux_userns_create() function consists of only two
+> > > lines, one of which is an assignment.  Yes, it is true that the
+> > > SELinux policy lives outside the kernel, but that is because there is
+> > > no singular SELinux policy for everyone.  From a practical
+> > > perspective, the SELinux policy is really just a configuration file
+> > > used to setup the kernel at runtime; it is not significantly different
+> > > than an iptables script, /etc/sysctl.conf, or any of the other myriad
+> > > of configuration files used to configure the kernel during boot.
+> >
+> > I object to adding the new system configuration knob.
+>
+> I do strongly sympathize with Eric's points.  It will be very easy, once
+> user namespace creation has been further restricted in some distros, to
+> say "well see this stuff is silly" and go back to simply requiring root
+> to create all containers and namespaces, which is generally quite a bit
+> easier anywway.  And then, of course, give everyone root so they can
+> start containers.
 
-I mean the virtio code uses bind/unbind for it's devices, nothing to do
-with USB other than the userspace interface involved.
+That's assuming a lot.  Many years have passed since namespaces were
+first introduced, and awareness of good security practices has
+improved, perhaps not as much as any of us would like, but to say that
+distros, system builders, and even users are the same as they were so
+many years ago is a bit of a stretch in my opinion.
 
-thanks,
+However, even ignoring that for a moment, do we really want to go to a
+place where we dictate how users compose and secure their systems?
+Linux "took over the world" because it offered a level of flexibility
+that wasn't really possible before, and it has flourished because it
+has kept that mentality.  The Linux Kernel can be shoehorned onto most
+hardware that you can get your hands on these days, with driver
+support for most anything you can think to plug into the system.  Do
+you want a single-user environment with no per-user separation?  We
+can do that.  Do you want a traditional DAC based system that leans
+heavy on ACLs and capabilities?  We can do that.  Do you want a
+container host that allows you to carve up the system with a high
+degree of granularity thanks to the different namespaces?  We can do
+that.  How about a system that leverages the LSM to enforce a least
+privilege ideal, even on the most privileged root user?  We can do
+that too.  This patchset is about giving distro, system builders, and
+users another choice in how they build their system.  We've seen both
+in this patchset and in previously failed attempts that there is a
+definite want from a user perspective for functionality such as this,
+and I think it's time we deliver it in the upstream kernel so they
+don't have to keep patching their own systems with out-of-tree
+patches.
 
-greg k-h
+> Eric and Paul, I wonder, will you - or some people you'd like to represent
+> you - be at plumbers in September?  Should there be a BOF session there?  (I
+> won't be there, but could join over video)  I think a brainstorming session
+> for solutions to the above problems would be good.
+
+Regardless of if Eric or I will be at LPC, it is doubtful that all of
+the people who have participated in this discussion will be able to
+attend, and I think it's important that the users who are asking for
+this patchset have a chance to be heard in each forum where this is
+discussed.  While conferences are definitely nice - I definitely
+missed them over the past couple of years - we can't use them as a
+crutch to help us reach a conclusion on this issue; we've debated much
+more difficult things over the mailing lists, I see no reason why this
+would be any different.
+
+-- 
+paul-moore.com
