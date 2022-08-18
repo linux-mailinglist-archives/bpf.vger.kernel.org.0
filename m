@@ -2,175 +2,201 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D8B459853E
-	for <lists+bpf@lfdr.de>; Thu, 18 Aug 2022 16:06:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19C3B5985D3
+	for <lists+bpf@lfdr.de>; Thu, 18 Aug 2022 16:33:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245751AbiHROFz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Aug 2022 10:05:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49514 "EHLO
+        id S244585AbiHRObi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Aug 2022 10:31:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245133AbiHROF0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Aug 2022 10:05:26 -0400
-Received: from mail.hallyn.com (mail.hallyn.com [178.63.66.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A6236F542;
-        Thu, 18 Aug 2022 07:05:23 -0700 (PDT)
-Received: by mail.hallyn.com (Postfix, from userid 1001)
-        id BBD2A77A; Thu, 18 Aug 2022 09:05:21 -0500 (CDT)
-Date:   Thu, 18 Aug 2022 09:05:21 -0500
-From:   "Serge E. Hallyn" <serge@hallyn.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Paul Moore <paul@paul-moore.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Frederick Lawler <fred@cloudflare.com>, kpsingh@kernel.org,
-        revest@chromium.org, jackmanb@chromium.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        jmorris@namei.org, serge@hallyn.com,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        shuah@kernel.org, brauner@kernel.org, casey@schaufler-ca.com,
-        bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
-        selinux@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        kernel-team@cloudflare.com, cgzones@googlemail.com,
-        karl@bigbadwolfsecurity.com, tixxdz@gmail.com
-Subject: Re: [PATCH v5 0/4] Introduce security_create_user_ns()
-Message-ID: <20220818140521.GA1000@mail.hallyn.com>
-References: <20220815162028.926858-1-fred@cloudflare.com>
- <CAHC9VhTuxxRfJg=Ax5z87Jz6tq1oVRcppB444dHM2gP-FZrkTQ@mail.gmail.com>
- <8735dux60p.fsf@email.froward.int.ebiederm.org>
- <CAHC9VhSHJNLS-KJ-Rz1R12PQbqACSksLYLbymF78d5hMkSGc-g@mail.gmail.com>
- <871qte8wy3.fsf@email.froward.int.ebiederm.org>
- <CAHC9VhSU_sqMQwdoh0nAFdURqs_cVFbva8=otjcZUo8s+xyC9A@mail.gmail.com>
- <8735du7fnp.fsf@email.froward.int.ebiederm.org>
- <CAHC9VhQuRNxzgVeNhDy=p5+RHz5+bTH6zFdU=UvvEhyH1e962A@mail.gmail.com>
- <87tu6a4l83.fsf@email.froward.int.ebiederm.org>
+        with ESMTP id S241464AbiHRObh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Aug 2022 10:31:37 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94192B9F89;
+        Thu, 18 Aug 2022 07:31:36 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id o7so1689706pfb.9;
+        Thu, 18 Aug 2022 07:31:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc;
+        bh=c1WEf4wfw+eYI3/NLfmAkL0HVsaKNZD3LYmt0L7ELIY=;
+        b=PiwtgzyiX5ngjtC3a8Zd0FUpTS0q1msVkEh/kNMiegKDzMOSRgih9AVLnLkUxsdk8s
+         ypVnUKUkH4t9MsBKkKgGwUTSpDTrNduj+CYwl3GhE77yU1zV97UAG0O5H+WZeVZmXVQz
+         WhwBH/8Uz0mm5A1TXwEdmwyG7AaNdmWs4M2ZhqmgyFAtZm0TokzEJjVay6hS6ubjSlOr
+         x4eRaudFx/PsVwWvT+LS9gQ4uZ8cantjsfeC/VqQnb2LPFS5PM5qBi1YKIeBTAkvjKO6
+         /IK2hEysvwIwSHKJa6ZljuwEOGEwOk/0nzAjgxEl0mg7MY0tFmHWlxTjnQ3Hi6o3DcPV
+         br1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc;
+        bh=c1WEf4wfw+eYI3/NLfmAkL0HVsaKNZD3LYmt0L7ELIY=;
+        b=hV79vNo+DPM0e4XnIl7kUVVC67AVURJ4L8bOW033Ut3gkRbstNLQFlNqouZMlSm1gC
+         X+bDCKUNIyAyznLg8562iTQ6N/3MXJ1SPeY6jiXZD2kAq9ujaOzFfe2iR+V5ySbQMHN3
+         LInwNUscghUYu8tumXadd/kHvdfXNv2j94QA8tG+L1yQce7kCThqpVzeI2CPAS1TaFOe
+         P+ZYeUq1/Sk83AU9GOkt63AZP+rIKJ9yZVuUOoZUIyCMOqA+q3l6jqvoZVOHw0Kg59LW
+         oKls0oUAJn9eH8RlcDK5meHjsrvy+FZf/HIqh/cTnOEcps89J+fZxXBUrQ8PWtgrpnwb
+         sfDg==
+X-Gm-Message-State: ACgBeo1WxcWWHXZpWdC4g9JqjPHsjeqK4dU7t3axXgiD/BIlZ9ayHOyJ
+        vNp0PYv13VEls4Rlub5xUFE=
+X-Google-Smtp-Source: AA6agR55qQaYHunQduDgChtOyJQufjqvk2bE1/QTRF2sahBJ2zgBN/xCUw8e8QUTpLr0ZFhi0dJFvw==
+X-Received: by 2002:a63:2d46:0:b0:41d:858b:52ff with SMTP id t67-20020a632d46000000b0041d858b52ffmr2620410pgt.516.1660833095935;
+        Thu, 18 Aug 2022 07:31:35 -0700 (PDT)
+Received: from vultr.guest ([45.32.72.237])
+        by smtp.gmail.com with ESMTPSA id h5-20020a63f905000000b003fdc16f5de2sm1379124pgi.15.2022.08.18.07.31.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Aug 2022 07:31:35 -0700 (PDT)
+From:   Yafang Shao <laoar.shao@gmail.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, hannes@cmpxchg.org,
+        mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
+        songmuchun@bytedance.com, akpm@linux-foundation.org, tj@kernel.org,
+        lizefan.x@bytedance.com
+Cc:     cgroups@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-mm@kvack.org,
+        Yafang Shao <laoar.shao@gmail.com>
+Subject: [PATCH bpf-next v2 00/12] bpf: Introduce selectable memcg for bpf map 
+Date:   Thu, 18 Aug 2022 14:31:06 +0000
+Message-Id: <20220818143118.17733-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87tu6a4l83.fsf@email.froward.int.ebiederm.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 17, 2022 at 04:24:28PM -0500, Eric W. Biederman wrote:
-> Paul Moore <paul@paul-moore.com> writes:
-> 
-> > On Wed, Aug 17, 2022 at 4:56 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
-> >> Paul Moore <paul@paul-moore.com> writes:
-> >> > On Wed, Aug 17, 2022 at 3:58 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
-> >> >> Paul Moore <paul@paul-moore.com> writes:
-> >> >>
-> >> >> > At the end of the v4 patchset I suggested merging this into lsm/next
-> >> >> > so it could get a full -rc cycle in linux-next, assuming no issues
-> >> >> > were uncovered during testing
-> >> >>
-> >> >> What in the world can be uncovered in linux-next for code that has no in
-> >> >> tree users.
-> >> >
-> >> > The patchset provides both BPF LSM and SELinux implementations of the
-> >> > hooks along with a BPF LSM test under tools/testing/selftests/bpf/.
-> >> > If no one beats me to it, I plan to work on adding a test to the
-> >> > selinux-testsuite as soon as I'm done dealing with other urgent
-> >> > LSM/SELinux issues (io_uring CMD passthrough, SCTP problems, etc.); I
-> >> > run these tests multiple times a week (multiple times a day sometimes)
-> >> > against the -rcX kernels with the lsm/next, selinux/next, and
-> >> > audit/next branches applied on top.  I know others do similar things.
-> >>
-> >> A layer of hooks that leaves all of the logic to userspace is not an
-> >> in-tree user for purposes of understanding the logic of the code.
-> >
-> > The BPF LSM selftests which are part of this patchset live in-tree.
-> > The SELinux hook implementation is completely in-tree with the
-> > subject/verb/object relationship clearly described by the code itself.
-> > After all, the selinux_userns_create() function consists of only two
-> > lines, one of which is an assignment.  Yes, it is true that the
-> > SELinux policy lives outside the kernel, but that is because there is
-> > no singular SELinux policy for everyone.  From a practical
-> > perspective, the SELinux policy is really just a configuration file
-> > used to setup the kernel at runtime; it is not significantly different
-> > than an iptables script, /etc/sysctl.conf, or any of the other myriad
-> > of configuration files used to configure the kernel during boot.
-> 
-> I object to adding the new system configuration knob.
+On our production environment, we may load, run and pin bpf programs and
+maps in containers. For example, some of our networking bpf programs and
+maps are loaded and pinned by a process running in a container on our
+k8s environment. In this container, there're also running some other
+user applications which watch the networking configurations from remote
+servers and update them on this local host, log the error events, monitor
+the traffic, and do some other stuffs. Sometimes we may need to update 
+these user applications to a new release, and in this update process we
+will destroy the old container and then start a new genration. In order not
+to interrupt the bpf programs in the update process, we will pin the bpf
+programs and maps in bpffs. That is the background and use case on our
+production environment. 
 
-I do strongly sympathize with Eric's points.  It will be very easy, once
-user namespace creation has been further restricted in some distros, to
-say "well see this stuff is silly" and go back to simply requiring root
-to create all containers and namespaces, which is generally quite a bit
-easier anywway.  And then, of course, give everyone root so they can
-start containers.
+After switching to memcg-based bpf memory accounting to limit the bpf
+memory, some unexpected issues jumped out at us.
+1. The memory usage is not consistent between the first generation and
+new generations.
+2. After the first generation is destroyed, the bpf memory can't be
+limited if the bpf maps are not preallocated, because they will be
+reparented.
 
-As Eric said,
+This patchset tries to resolve these issues by introducing an
+independent memcg to limit the bpf memory.
 
- | Further adding a random failure mode to user namespace creation if it is
- | used at all will just encourage userspace to use a setuid application to
- | perform the namespace creation instead.  Creating a less secure system
- | overall.
+In the bpf map creation, we can assign a specific memcg instead of using
+the current memcg.  That makes it flexible in containized environment.
+For example, if we want to limit the pinned bpf maps, we can use below
+hierarchy,
 
-However, I'm also looking at e.g. CVE-2022-2588 and CVE-2022-2586, and
-yes there are two issues which do require discussion (three if you
-count reportability, which is mainly a tool in guarding against the others).
+    Shared resources              Private resources 
+                                    
+     bpf-memcg                      k8s-memcg
+     /        \                     /             
+bpf-bar-memcg bpf-foo-memcg   srv-foo-memcg        
+                  |               /        \
+               (charged)     (not charged) (charged)                 
+                  |           /              \
+                  |          /                \
+          bpf-foo-{progs,maps}              srv-foo
 
-The first is, indeed, configuration knobs.  There are tools, including
-chrome, which use user namespaces to make things better.  The hope is
-that more and more tools will do so.
+srv-foo loads and pins bpf-foo-{progs, maps}, but they are charged to an
+independent memcg (bpf-foo-memcg) instead of srv-foo's memcg
+(srv-foo-memcg).
 
-The second is damage control.  When an 0day has been announced, things
-change.  You can say "well the bug was there all along", but it is
-different when every lazy ne'erdowell can pick an exploit off a mailing
-list and use it against a product for which spinning a new version with
-a new kernel and getting customers to update is probably a months-long
-endeavor.  Some of these products do in fact require namespaces (user
-and otherwise) as part of their function.  And - to my chagrin - I suspect
-most of them create usernamespace as the root user, before possibly processing
-untrusted user input, so unprivileged_userns_clone isn't a good fit.
+Pls. note that there may be no process in bpf-foo-memcg, that means it
+can be rmdir-ed by root user currently. Meanwhile we don't forcefully
+destroy a memcg if it doesn't have any residents. So this hierarchy is
+acceptible. 
 
-SELinux (and LSMs in generaly) do in fact seem like a useful place to
-add some configuration, because they tend to assign different domains
-to tasks with different purposes and trust levels.  But another such
-place is the init system / service manager.  And in most cases these
-days, this will use cgroups to collect tasks of certain types.  So I
-wonder (this is ALMOST ENTIRELY thinking out loud, not thought through
-sufficiently) whether we should be setting a cgroup.nslock or
-somesuch.
+In order to make the memcg of bpf maps seletectable, this patchset
+introduces some memory allocation wrappers to allocate map related
+memory. In these wrappers, it will get the memcg from the map and then
+charge the allocated pages or objs.  
 
-Of course, kernel livepatch is another potentially useful mitigation.
-Currently that's not possible for everyone.
+Currenly it only supports for bpf map, and we can extend it to bpf prog
+as well.
 
-Maybe there is a more fundamental way we can approach this.  Part of me
-still likes the idea of splitting the id mapping and capability-in-userns
-parts, but that's not sufficient.  Maybe looking over all the relevant
-CVEs would give a better hint.
+The observebility can also be supported in the next step, for example,
+showing the bpf map's memcg by 'bpftool map show' or even showing which
+maps are charged to a specific memcg by 'bpftool cgroup show'.
+Furthermore, we may also show an accurate memory size of a bpf map
+instead of an estimated memory size in 'bpftool map show' in the future. 
 
-Eric, you said
+v1->v2:
+- cgroup1 is also supported after
+  commit f3a2aebdd6fb ("cgroup: enable cgroup_get_from_file() on cgroup1")
+  So update the commit log.
+- remove incorrect fix to mem_cgroup_put  (Shakeel,Roman,Muchun) 
+- use cgroup_put() in bpf_map_save_memcg() (Shakeel)
+- add detailed commit log for get_obj_cgroup_from_cgroup (Shakeel) 
 
- | If the concern is to reduce the attack surface everything this
- | proposed hook can do is already possible with the security_capable
- | security hook.
+RFC->v1:
+- get rid of bpf_map container wrapper (Alexei)
+- add the new field into the end of struct (Alexei)
+- get rid of BPF_F_SELECTABLE_MEMCG (Alexei)
+- save memcg in bpf_map_init_from_attr
+- introduce bpf_ringbuf_pages_{alloc,free} and keep them inside
+  kernel/bpf/ringbuf.c  (Andrii)
 
-I suppose I could envision an LSM which gets activated when we find
-out there was a net-ns-exacerbated 0-day, which refuses CAP_NET_ADMIN
-for a task not in init_user_ns?  Ideally it would be more flexible
-than that.
+Yafang Shao (12):
+  cgroup: Update the comment on cgroup_get_from_fd
+  bpf: Introduce new helper bpf_map_put_memcg()
+  bpf: Define bpf_map_{get,put}_memcg for !CONFIG_MEMCG_KMEM
+  bpf: Call bpf_map_init_from_attr() immediately after map creation
+  bpf: Save memcg in bpf_map_init_from_attr()
+  bpf: Use scoped-based charge in bpf_map_area_alloc
+  bpf: Introduce new helpers bpf_ringbuf_pages_{alloc,free}
+  bpf: Use bpf_map_kzalloc in arraymap
+  bpf: Use bpf_map_kvcalloc in bpf_local_storage
+  mm, memcg: Add new helper get_obj_cgroup_from_cgroup
+  bpf: Add return value for bpf_map_init_from_attr
+  bpf: Introduce selectable memcg for bpf map
 
-> idea.  What is userspace going to do with this new feature that makes it
-> worth maintaining in the kernel?
-> 
-> That is always the conversation we have when adding new features, and
-> that is exactly the conversation that has not happened here.
+ include/linux/bpf.h            |  40 +++++++++++-
+ include/linux/memcontrol.h     |  11 ++++
+ include/uapi/linux/bpf.h       |   1 +
+ kernel/bpf/arraymap.c          |  34 ++++++-----
+ kernel/bpf/bloom_filter.c      |  11 +++-
+ kernel/bpf/bpf_local_storage.c |  17 ++++--
+ kernel/bpf/bpf_struct_ops.c    |  19 +++---
+ kernel/bpf/cpumap.c            |  17 ++++--
+ kernel/bpf/devmap.c            |  30 +++++----
+ kernel/bpf/hashtab.c           |  26 +++++---
+ kernel/bpf/local_storage.c     |  11 +++-
+ kernel/bpf/lpm_trie.c          |  12 +++-
+ kernel/bpf/offload.c           |  12 ++--
+ kernel/bpf/queue_stack_maps.c  |  11 +++-
+ kernel/bpf/reuseport_array.c   |  11 +++-
+ kernel/bpf/ringbuf.c           | 104 +++++++++++++++++++++----------
+ kernel/bpf/stackmap.c          |  13 ++--
+ kernel/bpf/syscall.c           | 136 ++++++++++++++++++++++++++++-------------
+ kernel/cgroup/cgroup.c         |   2 +-
+ mm/memcontrol.c                |  47 ++++++++++++++
+ net/core/sock_map.c            |  30 +++++----
+ net/xdp/xskmap.c               |  12 +++-
+ tools/include/uapi/linux/bpf.h |   1 +
+ tools/lib/bpf/bpf.c            |   3 +-
+ tools/lib/bpf/bpf.h            |   3 +-
+ tools/lib/bpf/gen_loader.c     |   2 +-
+ tools/lib/bpf/libbpf.c         |   2 +
+ tools/lib/bpf/skel_internal.h  |   2 +-
+ 28 files changed, 443 insertions(+), 177 deletions(-)
 
-Eric and Paul, I wonder, will you - or some people you'd like to represent
-you - be at plumbers in September?  Should there be a BOF session there?  (I
-won't be there, but could join over video)  I think a brainstorming session 
-for solutions to the above problems would be good.
+-- 
+1.8.3.1
 
-> Adding a layer of indirection should not exempt a new feature from
-> needing to justify itself.
-> 
-> Eric
