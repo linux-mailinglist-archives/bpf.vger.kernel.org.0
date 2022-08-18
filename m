@@ -2,167 +2,177 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FD85597AB3
-	for <lists+bpf@lfdr.de>; Thu, 18 Aug 2022 02:40:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A93AF597BA7
+	for <lists+bpf@lfdr.de>; Thu, 18 Aug 2022 04:49:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233620AbiHRAkE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Aug 2022 20:40:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58146 "EHLO
+        id S240053AbiHRCqi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Aug 2022 22:46:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231888AbiHRAkD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Aug 2022 20:40:03 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9848B7B1E0
-        for <bpf@vger.kernel.org>; Wed, 17 Aug 2022 17:40:01 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id 12so73215pga.1
-        for <bpf@vger.kernel.org>; Wed, 17 Aug 2022 17:40:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc;
-        bh=b0WeULDIUoaSdEwpJ/ka61J17NOg91ZQ9Yyb6cQ0jPA=;
-        b=gaQBRYXbabCHDL6BwAnOiQZmJzMtJdbXc5dtk0VqwmZjryXubXT0CvgOnCrenmAomM
-         MzCT+Mmqrv1rjZz70JMyEgDgkYZ+5AE4ws02d6MTKEZvI2VeDsV6BCcwQ3mzRee8XLwA
-         rxrvisAtQxvTA5YxWqKac0CM+JoEUJDQBVhBwD2UCac8KuKHnamtHxs5UDoK6q3psxgy
-         pwCSTUCDznYM2R5G9Fu9dBJxC6VaLSIQ5f4jZE2ovIFsx3toSJwhCNUCvwm2NCvkWBnP
-         Z50TqXNwJynhaWT2z2rKyoyfQMoDzD2ftKaXfqy9w9pabOLk81JNeFqMeW9OrodP9+rp
-         O6iA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc;
-        bh=b0WeULDIUoaSdEwpJ/ka61J17NOg91ZQ9Yyb6cQ0jPA=;
-        b=2nWgZe73SO9OlAFZfjzSQJ5eHZGQphgklf2MGQiaCoVkBWrb7McpF7lDaJZfTyydk7
-         LHSxWlYDp9WpAekJf8gNGAhn6KjCUrYUs3AQBzpxkvt1FAOePoL02J6LnxCwWuFtVzJ9
-         sew5zST0TPcFiPCCCBw17JPuj0QCG9YSr0YVmTJ2WAB84eMUtW0tzJ0zKR1DnGuR9Ro1
-         wxmrWlssg/Rg0HbU/kU1ET3Fb/3amyokmKvogLBsg9kkxZ5pcp6xlZ2UCAO6NhGtNOEp
-         5FLp/z6/MVhOHeWjWDZbmckeZFyuOmEXWkmiLCsaM7JQZu3IUWHcjgWixdZbcgh+FqGP
-         /F3Q==
-X-Gm-Message-State: ACgBeo1sMZ8AfK+GScrovJeCsygAbgft2vcEfylA4ehSm0sv5OfS5ydl
-        tKAzf6s1dGEZmS3lHzngPJ/Fdy4FWko=
-X-Google-Smtp-Source: AA6agR6O6XoKrrOEFPfj2S1FJ8BXLTWawfQEtsOoZskNoApy+Lcl1KX6VQtna5FEnn/mp9zoo45EHQ==
-X-Received: by 2002:a63:f34b:0:b0:429:f039:ccfc with SMTP id t11-20020a63f34b000000b00429f039ccfcmr602990pgj.95.1660783201054;
-        Wed, 17 Aug 2022 17:40:01 -0700 (PDT)
-Received: from MacBook-Pro-3.local ([2620:10d:c090:500::1:ccd6])
-        by smtp.gmail.com with ESMTPSA id t3-20020a628103000000b0052aaf7fe731sm136033pfd.45.2022.08.17.17.39.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Aug 2022 17:40:00 -0700 (PDT)
-Date:   Wed, 17 Aug 2022 17:39:57 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     davem@davemloft.net, daniel@iogearbox.net, andrii@kernel.org,
-        tj@kernel.org, delyank@fb.com, linux-mm@kvack.org,
-        bpf@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v2 bpf-next 01/12] bpf: Introduce any context BPF
- specific memory allocator.
-Message-ID: <20220818003957.t5lcp636n7we37hk@MacBook-Pro-3.local>
-References: <20220817210419.95560-1-alexei.starovoitov@gmail.com>
- <20220817210419.95560-2-alexei.starovoitov@gmail.com>
- <CAP01T77L6e=B6OtLcM4bToM5n4+j3S6+p+ieTPtDGUgQUZ3o1Q@mail.gmail.com>
+        with ESMTP id S238821AbiHRCqh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Aug 2022 22:46:37 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56180A284A;
+        Wed, 17 Aug 2022 19:46:35 -0700 (PDT)
+Received: from dggpemm500024.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4M7Thb34zNzZflN;
+        Thu, 18 Aug 2022 10:43:11 +0800 (CST)
+Received: from dggpemm500019.china.huawei.com (7.185.36.180) by
+ dggpemm500024.china.huawei.com (7.185.36.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Thu, 18 Aug 2022 10:46:33 +0800
+Received: from [10.67.109.184] (10.67.109.184) by
+ dggpemm500019.china.huawei.com (7.185.36.180) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Thu, 18 Aug 2022 10:46:33 +0800
+Subject: Re: [PATCH bpf] bpf: Fix kernel BUG in purge_effective_progs
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, <bpf@vger.kernel.org>,
+        <stable@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        "Tadeusz Struk" <tadeusz.struk@linaro.org>,
+        Song Liu <songliubraving@fb.com>, "Yonghong Song" <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Hao Luo" <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
+References: <20220813134030.1972696-1-pulehui@huawei.com>
+ <CAEf4BzaciJNVP1YsuJTiS9v7wBvTpShj+kMtwkzk8ijnpL_yzw@mail.gmail.com>
+From:   Pu Lehui <pulehui@huawei.com>
+Message-ID: <7cbb4aa6-c576-8671-ea5e-d845a8310394@huawei.com>
+Date:   Thu, 18 Aug 2022 10:46:33 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAP01T77L6e=B6OtLcM4bToM5n4+j3S6+p+ieTPtDGUgQUZ3o1Q@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAEf4BzaciJNVP1YsuJTiS9v7wBvTpShj+kMtwkzk8ijnpL_yzw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.109.184]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500019.china.huawei.com (7.185.36.180)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Aug 18, 2022 at 01:51:39AM +0200, Kumar Kartikeya Dwivedi wrote:
-> > +
-> > +/* notrace is necessary here and in other functions to make sure
-> > + * bpf programs cannot attach to them and cause llist corruptions.
-> > + */
-> > +static void notrace *unit_alloc(struct bpf_mem_cache *c)
-> > +{
-> > +       bool in_nmi = bpf_in_nmi();
-> > +       struct llist_node *llnode;
-> > +       unsigned long flags;
-> > +       int cnt = 0;
-> > +
-> > +       if (unlikely(in_nmi)) {
-> > +               llnode = llist_del_first(&c->free_llist_nmi);
-> > +               if (llnode)
-> > +                       cnt = atomic_dec_return(&c->free_cnt_nmi);
+
+
+On 2022/8/17 4:39, Andrii Nakryiko wrote:
+> On Sat, Aug 13, 2022 at 6:11 AM Pu Lehui <pulehui@huawei.com> wrote:
+>>
+>> Syzkaller reported kernel BUG as follows:
+>>
+>> ------------[ cut here ]------------
+>> kernel BUG at kernel/bpf/cgroup.c:925!
+>> invalid opcode: 0000 [#1] PREEMPT SMP NOPTI
+>> CPU: 1 PID: 194 Comm: detach Not tainted 5.19.0-14184-g69dac8e431af #8
+>> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+>> rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
+>> RIP: 0010:__cgroup_bpf_detach+0x1f2/0x2a0
+>> Code: 00 e8 92 60 30 00 84 c0 75 d8 4c 89 e0 31 f6 85 f6 74 19 42 f6 84
+>> 28 48 05 00 00 02 75 0e 48 8b 80 c0 00 00 00 48 85 c0 75 e5 <0f> 0b 48
+>> 8b 0c5
+>> RSP: 0018:ffffc9000055bdb0 EFLAGS: 00000246
+>> RAX: 0000000000000000 RBX: ffff888100ec0800 RCX: ffffc900000f1000
+>> RDX: 0000000000000000 RSI: 0000000000000001 RDI: ffff888100ec4578
+>> RBP: 0000000000000000 R08: ffff888100ec0800 R09: 0000000000000040
+>> R10: 0000000000000000 R11: 0000000000000000 R12: ffff888100ec4000
+>> R13: 000000000000000d R14: ffffc90000199000 R15: ffff888100effb00
+>> FS:  00007f68213d2b80(0000) GS:ffff88813bc80000(0000)
+>> knlGS:0000000000000000
+>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> CR2: 000055f74a0e5850 CR3: 0000000102836000 CR4: 00000000000006e0
+>> Call Trace:
+>>   <TASK>
+>>   cgroup_bpf_prog_detach+0xcc/0x100
+>>   __sys_bpf+0x2273/0x2a00
+>>   __x64_sys_bpf+0x17/0x20
+>>   do_syscall_64+0x3b/0x90
+>>   entry_SYSCALL_64_after_hwframe+0x63/0xcd
+>> RIP: 0033:0x7f68214dbcb9
+>> Code: 08 44 89 e0 5b 41 5c c3 66 0f 1f 84 00 00 00 00 00 48 89 f8 48 89
+>> f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01
+>> f0 ff8
+>> RSP: 002b:00007ffeb487db68 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+>> RAX: ffffffffffffffda RBX: 000000000000000b RCX: 00007f68214dbcb9
+>> RDX: 0000000000000090 RSI: 00007ffeb487db70 RDI: 0000000000000009
+>> RBP: 0000000000000003 R08: 0000000000000012 R09: 0000000b00000003
+>> R10: 00007ffeb487db70 R11: 0000000000000246 R12: 00007ffeb487dc20
+>> R13: 0000000000000004 R14: 0000000000000001 R15: 000055f74a1011b0
+>>   </TASK>
+>> Modules linked in:
+>> ---[ end trace 0000000000000000 ]---
+>>
+>> Repetition steps:
+>> For the following cgroup tree,
+>>
+>> root
+>>   |
+>> cg1
+>>   |
+>> cg2
+>>
+>> 1. attach prog2 to cg2, and then attach prog1 to cg1, both bpf progs
+>> attach type is NONE or OVERRIDE.
+>> 2. write 1 to /proc/thread-self/fail-nth for failslab.
+>> 3. detach prog1 for cg1, and then kernel BUG occur.
+>>
+>> Failslab injection will cause kmalloc fail and fall back to
+>> purge_effective_progs. The problem is that cg2 have attached another prog,
+>> so when go through cg2 layer, iteration will add pos to 1, and subsequent
+>> operations will be skipped by the following condition, and cg will meet
+>> NULL in the end.
+>>
+>> `if (pos && !(cg->bpf.flags[atype] & BPF_F_ALLOW_MULTI))`
+>>
+>> The NULL cg means no link or prog match, this is as expected, and it's not
+>> a bug. So here just skip the no match situation.
+>>
+>> Fixes: 4c46091ee985 ("bpf: Fix KASAN use-after-free Read in compute_effective_progs")
+>> Signed-off-by: Pu Lehui <pulehui@huawei.com>
+>> ---
+>>   kernel/bpf/cgroup.c | 4 +++-
+>>   1 file changed, 3 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+>> index 59b7eb60d5b4..4a400cd63731 100644
+>> --- a/kernel/bpf/cgroup.c
+>> +++ b/kernel/bpf/cgroup.c
+>> @@ -921,8 +921,10 @@ static void purge_effective_progs(struct cgroup *cgrp, struct bpf_prog *prog,
+>>                                  pos++;
+>>                          }
+>>                  }
+>> +
+>> +               /* no link or prog match, skip the cgroup of this layer */
+>> +               continue;
+>>   found:
+>> -               BUG_ON(!cg);
 > 
-> I am trying to understand which case this
-> atomic_dec_return/atomic_inc_return protects against in the
-> unit_alloc/unit_free for in_nmi branch. Is it protecting nested NMI
-> BPF prog interrupting NMI prog?
+> I don't think it's necessary to remove this BUG_ON(), but it also
+> feels unnecessary for purge_effective_progs, so I don't mind it.
 > 
-> In case of perf it seems we use bpf_prog_active, 
-
-yes, but bpf_prog_active has plenty of downsides and hopefully
-will be replaced eventually with cleaner mechanism.
-Separate topic.
-
-> so nested NMI prog
-> won't be invoked while we are interrupted inside a BPF program in NMI
-> context. Which are the other cases that might cause reentrancy in this
-> branch such that we need atomics instead of c->free_cnt_nmi--? Or are
-> you anticipating you might allow this in the future even if it is
-> disallowed for now?
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
 > 
-> If programs are allowed to stack like this, and we try to reason about
-> the safety of llist_del_first operation, the code is:
+
+Hi,
+
+Will this patch be accepted? I think we should CC stable.
+
+Thanks,
+Lehui
+
+>>                  progs = rcu_dereference_protected(
+>>                                  desc->bpf.effective[atype],
+>>                                  lockdep_is_held(&cgroup_mutex));
+>> --
+>> 2.25.1
+>>
+> .
 > 
-> struct llist_node *llist_del_first(struct llist_head *head)
-> {
->      struct llist_node *entry, *old_entry, *next;
-> 
->      entry = smp_load_acquire(&head->first);
->      for (;;) {
->          if (entry == NULL)
->              return NULL;
->          old_entry = entry;
->          next = READ_ONCE(entry->next);
-> >>>>>>>> Suppose nested NMI comes at this point and BPF prog is invoked.
-
-llist_del_first is notrace.
-unit_alloc() above is also notrace. See comment before it.
-perf event overflow NMI can happen here, but for some other llist.
-Hence we're talking about NMI issues only here. fentry progs do not apply here.
-
-> Assume the current nmi free llist is HEAD -> A -> B -> C -> D -> ...
-> For our cmpxchg, parameters are going to be cmpxchg(&head->first, A, B);
-> 
-> Now, nested NMI prog does unit_alloc thrice. this does llist_del_first thrice
-
-Even double llist_del_first on the same llist is bad. That's a known fact.
-
-> This makes nmi free llist HEAD -> D -> ...
-> A, B, C are allocated in prog.
-> Now it does unit_free of all three, but in order of B, C, A.
-> unit_free does llist_add, nmi free llist becomes HEAD -> A -> C -> B -> D -> ...
-> 
-> Nested NMI prog exits.
-> We continue with our cmpxchg(&head->first, A, B); It succeeds, A is
-> returned, but C will be leaked.
-
-This exact scenario cannot happen for bpf_mem_cache's freelist.
-unit_alloc is doing llist_del_first on per-cpu freelist.
-We can have two perf_event bpf progs. Both progs would
-share the same hash map and use the same struct bpf_mem_alloc,
-and both call unit_alloc() on the same cpu freelist,
-but as you noticed bpf_prog_active covers that case.
-bpf_prog_active is too coarse as we discussed in the other thread a
-month or so ago. It prevents valid and safe execution of bpf progs, lost
-events, etc. We will surely come up with a better mechanism.
-
-Going back to your earlier question:
-
-> Which are the other cases that might cause reentrancy in this
-> branch such that we need atomics instead of c->free_cnt_nmi--?
-
-It's the case where perf_event bpf prog happened inside bpf_mem_refill in irq_work.
-bpf_mem_refill manipulates free_cnt_nmi and nmi bpf prog too through unit_alloc.
-Which got me thinking that there is indeed a missing check here.
-We need to protect free_bulk_nmi's llist_del_first from unit_alloc's llist_del_first.
-bpf_prog_active could be used for that, but let's come up with a cleaner way.
-Probably going to add atomic_t flag to bpf_mem_cache and cmpxchg it,
-or lock and spin_trylock it. tbd.
