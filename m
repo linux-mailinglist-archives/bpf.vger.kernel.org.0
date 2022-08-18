@@ -2,127 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A7D6598D79
-	for <lists+bpf@lfdr.de>; Thu, 18 Aug 2022 22:12:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E463598DFE
+	for <lists+bpf@lfdr.de>; Thu, 18 Aug 2022 22:27:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345459AbiHRUIs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Aug 2022 16:08:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43424 "EHLO
+        id S1345954AbiHRU1O (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Aug 2022 16:27:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345529AbiHRUIY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Aug 2022 16:08:24 -0400
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 134D13AE59;
-        Thu, 18 Aug 2022 13:03:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1660853006; x=1692389006;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=hK4joLjW67roEfSg9L3o4RSW3LVg032fexmMiJB4qHE=;
-  b=GkDAWOARvETiowcvSZ4tteFXcJrlxFrfCe5AHfrbu16u9Wj7WV70WEcQ
-   gLSanioLOadt4kCSOC7NVO8RbgzaH1sTlxCtU3ZWYbnEjV5naMPe6UQeB
-   UJrTaZYuLGUGOy4c4pK0KrWQUSNXRT9AA8n8Hh3Fv7ajHVuFXNrFik7+E
-   KKpbtj7eD1QIiXUXcM8bDQ3o+bNXO4DjPxb3wKz/W/+jlcu3R9h5INmob
-   AS6rtmtsMpaq0lBAGqlN0eOdPG11JV8GsmuuEpVitS314RaKQ+niuPkGP
-   qDaEB1GDUWDeafAt46lfPqXdZ5Hu0v/pvJdyB37nvehljvKIiwmG6KSjY
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10443"; a="293648497"
-X-IronPort-AV: E=Sophos;i="5.93,247,1654585200"; 
-   d="scan'208";a="293648497"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2022 13:02:11 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,247,1654585200"; 
-   d="scan'208";a="734179034"
-Received: from lkp-server01.sh.intel.com (HELO 44b6dac04a33) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 18 Aug 2022 13:02:07 -0700
-Received: from kbuild by 44b6dac04a33 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1oOliR-0000WH-01;
-        Thu, 18 Aug 2022 20:02:07 +0000
-Date:   Fri, 19 Aug 2022 04:01:31 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Daniel Xu <dxu@dxuuu.xyz>, bpf@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, memxor@gmail.com
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        Daniel Xu <dxu@dxuuu.xyz>, pablo@netfilter.org, fw@strlen.de,
-        netfilter-devel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next 2/3] bpf: Add support for writing to nf_conn:mark
-Message-ID: <202208190318.HygywK17-lkp@intel.com>
-References: <f850bb7e20950736d9175c61d7e0691098e06182.1660592020.git.dxu@dxuuu.xyz>
+        with ESMTP id S234198AbiHRU1N (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Aug 2022 16:27:13 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9F592DEE;
+        Thu, 18 Aug 2022 13:27:11 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id o22so3262270edc.10;
+        Thu, 18 Aug 2022 13:27:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc;
+        bh=I/1x6/iHbBuNqucpvMeT3iP7IohY0BCErMO71CeWc6A=;
+        b=lLyif36eNB+DAogNmA5rnBXdV/1pETqV7lgGpvKAhSEYYdb1pAZfd2RwZEc2T7x9OE
+         NCxLOysq7OH6CwI5g6fTQUhus7zn4IbH8C/77i2svSh1GokhKe6yn8lEPq8UTB98F5G7
+         aIYtXX9tKlBmqRSk0AZKVNd355lHaYvzlxKzYN1lqC0axaPMAmlUBfOXwLV6QJrkMj9G
+         tLTOKQNoAnwmIBs2V6yZKyUHbNMbQfP/5SjX4/x3iNj3N7sZC6tWxUK/q4VjFdipZhD7
+         2Gqh+8xNmZtSTRIpg6trp4Y5kBXUzYU71HeKWmGgjmbpBSgAssjNcMXhbDDguo8Zqqqz
+         JXwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc;
+        bh=I/1x6/iHbBuNqucpvMeT3iP7IohY0BCErMO71CeWc6A=;
+        b=qu1jGvtXl/g1M1FQ3iuTkVHLszrFt7RhWfThZMZvdLqv6A1sLNExnBzRwuDC2619Ef
+         0e4iqzFx/jDXMXQ4OB6lj+i3SvfkyKej4bEa7s2HniIoSoBdDrR3kDcU0gcvCd4M30yz
+         b7qbLpMzq+HPw2g0HiovFdysjgTxtMyHwbqL4zanhra8bKb3x6j/dCw8AzJWvqSQgODe
+         sJWsmJBC91+jSjvkTOon/vVRROTzEh8HnkOOFmtfkUlx0nnHbu5qPO54FTfBsqzzfVu4
+         YcpTjT283oFKo1WMcyHLHBgHuLb0v8PWxI3lJ6TWjyN6LSxMCSbuyBph1i/Ou+l2I8/F
+         qFtw==
+X-Gm-Message-State: ACgBeo1Nk1QiZj2Z0GgHDPpTgNPjv2Ac3DewYnyXn0Pynlfyip3QN9Mq
+        boo8lT0G4/RkXQVFVt1uCdk=
+X-Google-Smtp-Source: AA6agR7M243Vcesn4ldSGw0kbmEGw+WsqdE1ru718eTLRausIEArDnC9nXlkVqfieFHIbDx40Pw0Tg==
+X-Received: by 2002:a05:6402:28ca:b0:43b:5235:f325 with SMTP id ef10-20020a05640228ca00b0043b5235f325mr3481566edb.320.1660854430167;
+        Thu, 18 Aug 2022 13:27:10 -0700 (PDT)
+Received: from krava ([83.240.63.36])
+        by smtp.gmail.com with ESMTPSA id h17-20020a056402095100b0044629b54b00sm633182edz.46.2022.08.18.13.27.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Aug 2022 13:27:09 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Thu, 18 Aug 2022 22:27:07 +0200
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Jiri Olsa <olsajiri@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [RFC] ftrace: Add support to keep some functions out of ftrace
+Message-ID: <Yv6gm09CMdZ/HMr5@krava>
+References: <Yvn9xR7qhXW7FnFL@worktop.programming.kicks-ass.net>
+ <YvoVgMzMuQbAEayk@krava>
+ <Yvo+EpO9dN30G0XE@worktop.programming.kicks-ass.net>
+ <CAADnVQJfvn2RYydqgO-nS_K+C8WJL7BdCnR44MiMF4rnAwWM5A@mail.gmail.com>
+ <YvpZJQGQdVaa2Oh4@worktop.programming.kicks-ass.net>
+ <CAADnVQKyfrFTZOM9F77i0NbaXLZZ7KbvKBvu7p6kgdnRgG+2=Q@mail.gmail.com>
+ <Yvpf67eCerqaDmlE@worktop.programming.kicks-ass.net>
+ <CAADnVQKX5xJz5N_mVyf7wg4BT8Q2cNh8ze-SxTRfk6KtcFQ0=Q@mail.gmail.com>
+ <YvpmAnFldR0iwAFC@worktop.programming.kicks-ass.net>
+ <YvppJ7TjMXD3cSdZ@worktop.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f850bb7e20950736d9175c61d7e0691098e06182.1660592020.git.dxu@dxuuu.xyz>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <YvppJ7TjMXD3cSdZ@worktop.programming.kicks-ass.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Daniel,
+On Mon, Aug 15, 2022 at 05:41:27PM +0200, Peter Zijlstra wrote:
+> On Mon, Aug 15, 2022 at 05:28:02PM +0200, Peter Zijlstra wrote:
+> > On Mon, Aug 15, 2022 at 08:17:42AM -0700, Alexei Starovoitov wrote:
+> > > It's hiding a fake function from ftrace, since it's not a function
+> > > and ftrace infra shouldn't show it tracing logs.
+> > > In other words it's a _notrace_ function with nop5.
+> > 
+> > Then make it a notrace function with a nop5 in it. That isn't hard.
+> > 
+> > The whole problem is that it isn't a notrace function and you're abusing
+> > a __fentry__ site.
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git/commit/?h=x86/fineibt&id=8d075bdf11193f1d276bf19fa56b4b8dfe24df9e
+> 
+> foo.c:
+> 
+> __attribute__((__no_instrument_function__))
+> __attribute__((patchable_function_entry(5)))
+> void my_func(void)
+> {
+> }
+> 
+> void my_foo(void)
+> {
+> }
+> 
+> gcc -c foo.c -pg -mfentry -mcmodel=kernel -fno-PIE -O2
+> 
+> foo.o:     file format elf64-x86-64
+> 
+> 
+> Disassembly of section .text:
+> 
+> 0000000000000000 <my_func>:
+>    0:   f3 0f 1e fa             endbr64 
+>    4:   90                      nop
+>    5:   90                      nop
+>    6:   90                      nop
+>    7:   90                      nop
+>    8:   90                      nop
+>    9:   c3                      ret    
+>    a:   66 0f 1f 44 00 00       nopw   0x0(%rax,%rax,1)
+> 
+> 0000000000000010 <my_foo>:
+>   10:   f3 0f 1e fa             endbr64 
+>   14:   e8 00 00 00 00          call   19 <my_foo+0x9>  15: R_X86_64_PLT32      __fentry__-0x4
+>   19:   c3                      ret    
+> 
 
-Thank you for the patch! Yet something to improve:
+ok, so the problem with __attribute__((patchable_function_entry(5))) is that
+it puts function address into __patchable_function_entries section, which is
+one of ftrace locations source:
 
-[auto build test ERROR on bpf-next/master]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Daniel-Xu/Support-direct-writes-to-nf_conn-mark/20220816-060429
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-config: arm-versatile_defconfig (https://download.01.org/0day-ci/archive/20220819/202208190318.HygywK17-lkp@intel.com/config)
-compiler: clang version 16.0.0 (https://github.com/llvm/llvm-project aed5e3bea138ce581d682158eb61c27b3cfdd6ec)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # install arm cross compiling tool for clang build
-        # apt-get install binutils-arm-linux-gnueabi
-        # https://github.com/intel-lab-lkp/linux/commit/c7b21d163eb9c61514dd86baf4281deb4d4387bb
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Daniel-Xu/Support-direct-writes-to-nf_conn-mark/20220816-060429
-        git checkout c7b21d163eb9c61514dd86baf4281deb4d4387bb
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=arm SHELL=/bin/bash
-
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp@intel.com>
-
-All errors (new ones prefixed by >>):
-
->> net/core/filter.c:8723:10: error: call to undeclared function 'btf_struct_access'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-                   return btf_struct_access(log, btf, t, off, size, atype, next_btf_id,
-                          ^
-   net/core/filter.c:8797:10: error: call to undeclared function 'btf_struct_access'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-                   return btf_struct_access(log, btf, t, off, size, atype, next_btf_id,
-                          ^
-   2 errors generated.
+  #define MCOUNT_REC()    . = ALIGN(8);     \
+    __start_mcount_loc = .;                 \
+    KEEP(*(__mcount_loc))                   \
+    KEEP(*(__patchable_function_entries))   \
+    __stop_mcount_loc = .;                  \
+   ...
 
 
-vim +/btf_struct_access +8723 net/core/filter.c
+it looks like __patchable_function_entries is used for other than x86 archs,
+so we perhaps we could have x86 specific MCOUNT_REC macro just with
+__mcount_loc section?
 
-  8714	
-  8715	static int tc_cls_act_btf_struct_access(struct bpf_verifier_log *log,
-  8716						const struct btf *btf,
-  8717						const struct btf_type *t, int off,
-  8718						int size, enum bpf_access_type atype,
-  8719						u32 *next_btf_id,
-  8720						enum bpf_type_flag *flag)
-  8721	{
-  8722		if (atype == BPF_READ)
-> 8723			return btf_struct_access(log, btf, t, off, size, atype, next_btf_id,
-  8724						 flag);
-  8725	
-  8726		return nf_conntrack_btf_struct_access(log, btf, t, off, size, atype,
-  8727						      next_btf_id, flag);
-  8728	}
-  8729	
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+jirka
