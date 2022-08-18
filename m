@@ -2,57 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2F5559912C
-	for <lists+bpf@lfdr.de>; Fri, 19 Aug 2022 01:29:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0197C599127
+	for <lists+bpf@lfdr.de>; Fri, 19 Aug 2022 01:29:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242423AbiHRX1f (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Aug 2022 19:27:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37228 "EHLO
+        id S242561AbiHRX1h (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Aug 2022 19:27:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241562AbiHRX1e (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Aug 2022 19:27:34 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF274D7590
-        for <bpf@vger.kernel.org>; Thu, 18 Aug 2022 16:27:32 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id h12-20020a170902f54c00b0016f8858ce9bso1713933plf.9
-        for <bpf@vger.kernel.org>; Thu, 18 Aug 2022 16:27:32 -0700 (PDT)
+        with ESMTP id S242509AbiHRX1g (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Aug 2022 19:27:36 -0400
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0B47D7593
+        for <bpf@vger.kernel.org>; Thu, 18 Aug 2022 16:27:34 -0700 (PDT)
+Received: by mail-pg1-x54a.google.com with SMTP id d1-20020a636801000000b0042225d15472so1375171pgc.13
+        for <bpf@vger.kernel.org>; Thu, 18 Aug 2022 16:27:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
          :date:from:to:cc;
-        bh=UCX10EefKjqAMd+MFpU7w3LWdEjJzDIv3P7ocwN0aNE=;
-        b=rGEps9J6GENsQgheyNe1nkp50nVuZ8Jy+rpMtuYSEc+y16qPRRXPdI9q8xTh4Dg33X
-         pMLJOTw3JINIMlZoxQPACnCpd3M0iRniiea9hbXaopwRkXx2afkbA+IGGUNZMNHOfr+T
-         iLROYsid6xgtEA22t+LWG4jfbZ6dlMXt4q8vo+V2Qv0EVFImA3fW1VfG/Ry5/LEoy+V2
-         7i4QSqB4JYzx1UxNKg9frsvS8vz3iTU7X0XIV0kGEiWWZM4dCXSXf27zJAEDgz1ps6v5
-         BvpZfEQe8uKPHyDZ/S9aCTafCKKxLvcB8dEo4hj3ra6+dofwg+KWLo09qmIIP7kohXJC
-         0e8A==
+        bh=aQVoez2rWjSYKMtzsRg05bqxy5FMiaOI2cxfv74RJG8=;
+        b=Z8DvwDJXUnPyy4Nz18o+sO4GRaOgX3YFw2AISd2uWIppu8cuHcVCJmlItZnpioAxjh
+         KjFT7BazS6fZca0KYIkZ+L3IF2Kfu3DqUEi6A94aWmBbKSxvm/1+sVm1c7yePJJRmQ3o
+         jDB6wTtxcNK7KLfARVHFmPPmdoZnS8HynMNg4Rlp1QksAHrjlM6/LJSZIa92B8Uksgz7
+         d0yu7XKYtMdAMVl0I6nGhLzbQ559GOGkFLFB8FUg4mkwGgwBVJu6DNK5kQO+qMreLD8A
+         eMPwGH+CHLiYlO5/vAukkuPMsknY0B0QSf1GVBONcCCo1rtMpKjErPh8ekTG4ZjDhQIC
+         WMcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
          :date:x-gm-message-state:from:to:cc;
-        bh=UCX10EefKjqAMd+MFpU7w3LWdEjJzDIv3P7ocwN0aNE=;
-        b=Fg1HvLkzeFoKxbqyPZrx8xBLysoGeBbSEwvGsiZL4MgVGCqh4IyQ0rCQ6hiHLNtDMG
-         1UdIxIm+HTz2IkoGwQXAxSXaH9bnik7EXLGatMd+Av734QEU0Isr87Ex4OXRiISewrkH
-         EDnGfSFzpTQ6Yb/AgK01jRxQd4sg6xMr9xHciSOTo98SvyUbNotZJotuPnzh1WH1CGtI
-         hue2WQRXCNzP4AWRQYnwOGSXtsu7XMeCVNtyUYYb0lsovQC/nKi90FQ6a/3qYKHjj3z8
-         LKqiqwToaUwVUxYKy3caVg6xOKi/fk/E5JaAzzgKDXTCHmTdctUR2rq+PJDuOmvDuAfH
-         qxYA==
-X-Gm-Message-State: ACgBeo3TsWu7K9LD/9iRGxMkdQS3phjWp8CCGeQlg3/iTMshZ3dYlOkN
-        K8Yuv3kUzHnnJdZVOkt3Pn9d0oox5B/buQe1SiksJ40GHcrx1MlBhhFrODopaGDqezwjsqfHRY9
-        2x5PnrQVSEcjM8DFJjit3s9EtVRYQVY6lsN2zG1gqKJPplZDMCA==
-X-Google-Smtp-Source: AA6agR5aqceZXd53/0g99rCzwh02Q2Qj3tC/CMsJ2S0w44xkxONA3MKOIVbxA2R/3Qm9X0gxQ04Xorc=
+        bh=aQVoez2rWjSYKMtzsRg05bqxy5FMiaOI2cxfv74RJG8=;
+        b=mkSncijr/xnPZfVaeFW3vbG4Pa6nGxhlnsbjVpionDz28FDfhefHJVA0lv9UGzKbDK
+         QRpCXO/CmVAYaI/tJsHTtnrfE5I6I/RVQv2HkmVYXhXPHiVFffn4JEDJSiuyzdB1v1Ei
+         3qvFTXszec4sYD6RUPllQNR18Y+Om81lEivx7NJtFn7pa1Ho929EZmRhEO7eP27OFI5n
+         oJlYEhWlk79I86QleEkR5F/M0Ptu6NHbbbleF3hD6mmj4cW8ineeecXEYoRBGGMrExUL
+         6ByMvI497/y/nBeqyaL4H5JrCMnWfzk+FOLYp644VSSru19Z6uUepJaZzQd1rPH+764w
+         GMkQ==
+X-Gm-Message-State: ACgBeo1p1plsPnnViL/4g/nvgioun4giGx9mDC2NS2FT4fTMsADvrxRS
+        xQ0Bz7b28zEWfsVdFjG5BweyeilSgD21YdWNp424b452JkUyqnJ/qs83l8fuSiQtqbkzPh6Ed+q
+        Cz0KZmMdogCA5ubyZhghJMELsk58JMUrWl4JpKuDIr8qfPOfEPA==
+X-Google-Smtp-Source: AA6agR7n9aXk60W34hJk72RIUjEJXiSoFwSmAMpiozKUxJFxN8J8YxFwbht++NrbxHI8JHnWsPGzrOk=
 X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a05:6a00:1a88:b0:52f:52df:ce1d with SMTP id
- e8-20020a056a001a8800b0052f52dfce1dmr5106510pfv.13.1660865252233; Thu, 18 Aug
- 2022 16:27:32 -0700 (PDT)
-Date:   Thu, 18 Aug 2022 16:27:25 -0700
+ (user=sdf job=sendgmr) by 2002:a17:90a:249:b0:1e0:a8a3:3c6c with SMTP id
+ t9-20020a17090a024900b001e0a8a33c6cmr145635pje.0.1660865253822; Thu, 18 Aug
+ 2022 16:27:33 -0700 (PDT)
+Date:   Thu, 18 Aug 2022 16:27:26 -0700
 In-Reply-To: <20220818232729.2479330-1-sdf@google.com>
-Message-Id: <20220818232729.2479330-2-sdf@google.com>
+Message-Id: <20220818232729.2479330-3-sdf@google.com>
 Mime-Version: 1.0
 References: <20220818232729.2479330-1-sdf@google.com>
 X-Mailer: git-send-email 2.37.1.595.g718a3a8f04-goog
-Subject: [PATCH bpf-next v3 1/5] bpf: Introduce cgroup_{common,current}_func_proto
+Subject: [PATCH bpf-next v3 2/5] bpf: Use cgroup_{common,current}_func_proto
+ in more hooks
 From:   Stanislav Fomichev <sdf@google.com>
 To:     bpf@vger.kernel.org
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
@@ -70,169 +71,149 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Split cgroup_base_func_proto into the following:
+The following hooks are per-cgroup hooks but they are not
+using cgroup_{common,current}_func_proto, fix it:
 
-* cgroup_common_func_proto - common helpers for all cgroup hooks
-* cgroup_current_func_proto - common helpers for all cgroup hooks
-  running in the process context (== have meaningful 'current').
+* BPF_PROG_TYPE_CGROUP_SKB (cg_skb)
+* BPF_PROG_TYPE_CGROUP_SOCK_ADDR (cg_sock_addr)
+* BPF_PROG_TYPE_CGROUP_SOCK (cg_sock)
+* BPF_PROG_TYPE_LSM+BPF_LSM_CGROUP
 
-Move bpf_{g,s}et_retval and other cgroup-related helpers into
-kernel/bpf/cgroup.c so they closer to where they are being used.
+Also:
+
+* move common func_proto's into cgroup func_proto handlers
+* make sure bpf_{g,s}et_retval are not accessible from recvmsg,
+  getpeername and getsockname (return/errno is ignored in these
+  places)
+* as a side effect, expose get_current_pid_tgid, get_current_comm_proto,
+  get_current_ancestor_cgroup_id, get_cgroup_classid to more cgroup
+  hooks
 
 Signed-off-by: Stanislav Fomichev <sdf@google.com>
 ---
- include/linux/bpf-cgroup.h |  17 ++++
- kernel/bpf/cgroup.c        | 172 +++++++++++++++++++++++++++++++++----
- kernel/bpf/helpers.c       |  77 -----------------
- net/core/filter.c          |  14 +--
- 4 files changed, 173 insertions(+), 107 deletions(-)
+ kernel/bpf/bpf_lsm.c | 19 ++++++-----
+ kernel/bpf/cgroup.c  | 40 +++++++++++++++++++++--
+ kernel/bpf/helpers.c |  1 +
+ net/core/filter.c    | 78 ++++++++++++++++++--------------------------
+ 4 files changed, 81 insertions(+), 57 deletions(-)
 
-diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
-index 2bd1b5f8de9b..57e9e109257e 100644
---- a/include/linux/bpf-cgroup.h
-+++ b/include/linux/bpf-cgroup.h
-@@ -414,6 +414,11 @@ int cgroup_bpf_prog_detach(const union bpf_attr *attr,
- int cgroup_bpf_link_attach(const union bpf_attr *attr, struct bpf_prog *prog);
- int cgroup_bpf_prog_query(const union bpf_attr *attr,
- 			  union bpf_attr __user *uattr);
-+
-+const struct bpf_func_proto *
-+cgroup_common_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog);
-+const struct bpf_func_proto *
-+cgroup_current_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog);
- #else
- 
- static inline int cgroup_bpf_inherit(struct cgroup *cgrp) { return 0; }
-@@ -444,6 +449,18 @@ static inline int cgroup_bpf_prog_query(const union bpf_attr *attr,
- 	return -EINVAL;
- }
- 
-+static inline const struct bpf_func_proto *
-+cgroup_common_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
-+{
-+	return NULL;
-+}
-+
-+static inline const struct bpf_func_proto *
-+cgroup_current_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
-+{
-+	return NULL;
-+}
-+
- static inline int bpf_cgroup_storage_assign(struct bpf_prog_aux *aux,
- 					    struct bpf_map *map) { return 0; }
- static inline struct bpf_cgroup_storage *bpf_cgroup_storage_alloc(
-diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-index 59b7eb60d5b4..74b5cc692a36 100644
---- a/kernel/bpf/cgroup.c
-+++ b/kernel/bpf/cgroup.c
-@@ -18,6 +18,7 @@
- #include <linux/bpf_verifier.h>
- #include <net/sock.h>
- #include <net/bpf_sk_storage.h>
-+#include <net/cls_cgroup.h>
- 
- #include "../cgroup/cgroup-internal.h"
- 
-@@ -1527,6 +1528,78 @@ int __cgroup_bpf_check_dev_permission(short dev_type, u32 major, u32 minor,
- 	return ret;
- }
- 
-+BPF_CALL_0(bpf_get_current_cgroup_id)
-+{
-+	struct cgroup *cgrp;
-+	u64 cgrp_id;
-+
-+	rcu_read_lock();
-+	cgrp = task_dfl_cgroup(current);
-+	cgrp_id = cgroup_id(cgrp);
-+	rcu_read_unlock();
-+
-+	return cgrp_id;
-+}
-+
-+const struct bpf_func_proto bpf_get_current_cgroup_id_proto = {
-+	.func		= bpf_get_current_cgroup_id,
-+	.gpl_only	= false,
-+	.ret_type	= RET_INTEGER,
-+};
-+
-+BPF_CALL_1(bpf_get_current_ancestor_cgroup_id, int, ancestor_level)
-+{
-+	struct cgroup *cgrp;
-+	struct cgroup *ancestor;
-+	u64 cgrp_id;
-+
-+	rcu_read_lock();
-+	cgrp = task_dfl_cgroup(current);
-+	ancestor = cgroup_ancestor(cgrp, ancestor_level);
-+	cgrp_id = ancestor ? cgroup_id(ancestor) : 0;
-+	rcu_read_unlock();
-+
-+	return cgrp_id;
-+}
-+
-+const struct bpf_func_proto bpf_get_current_ancestor_cgroup_id_proto = {
-+	.func		= bpf_get_current_ancestor_cgroup_id,
-+	.gpl_only	= false,
-+	.ret_type	= RET_INTEGER,
-+	.arg1_type	= ARG_ANYTHING,
-+};
-+
-+BPF_CALL_2(bpf_get_local_storage, struct bpf_map *, map, u64, flags)
-+{
-+	/* flags argument is not used now,
-+	 * but provides an ability to extend the API.
-+	 * verifier checks that its value is correct.
-+	 */
-+	enum bpf_cgroup_storage_type stype = cgroup_storage_type(map);
-+	struct bpf_cgroup_storage *storage;
-+	struct bpf_cg_run_ctx *ctx;
-+	void *ptr;
-+
-+	/* get current cgroup storage from BPF run context */
-+	ctx = container_of(current->bpf_ctx, struct bpf_cg_run_ctx, run_ctx);
-+	storage = ctx->prog_item->cgroup_storage[stype];
-+
-+	if (stype == BPF_CGROUP_STORAGE_SHARED)
-+		ptr = &READ_ONCE(storage->buf)->data[0];
-+	else
-+		ptr = this_cpu_ptr(storage->percpu_buf);
-+
-+	return (unsigned long)ptr;
-+}
-+
-+const struct bpf_func_proto bpf_get_local_storage_proto = {
-+	.func		= bpf_get_local_storage,
-+	.gpl_only	= false,
-+	.ret_type	= RET_PTR_TO_MAP_VALUE,
-+	.arg1_type	= ARG_CONST_MAP_PTR,
-+	.arg2_type	= ARG_ANYTHING,
-+};
-+
- BPF_CALL_0(bpf_get_retval)
+diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
+index fa71d58b7ded..6eba60248e20 100644
+--- a/kernel/bpf/bpf_lsm.c
++++ b/kernel/bpf/bpf_lsm.c
+@@ -189,6 +189,16 @@ static const struct bpf_func_proto bpf_get_attach_cookie_proto = {
+ static const struct bpf_func_proto *
+ bpf_lsm_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
  {
- 	struct bpf_cg_run_ctx *ctx =
-@@ -1557,33 +1630,40 @@ const struct bpf_func_proto bpf_set_retval_proto = {
- 	.arg1_type	= ARG_ANYTHING,
- };
- 
-+#ifdef CONFIG_CGROUP_NET_CLASSID
-+BPF_CALL_0(bpf_get_cgroup_classid_curr)
-+{
-+	return __task_get_classid(current);
-+}
++#ifdef CONFIG_CGROUP_BPF
++	const struct bpf_func_proto *func_proto;
 +
-+const struct bpf_func_proto bpf_get_cgroup_classid_curr_proto = {
-+	.func		= bpf_get_cgroup_classid_curr,
-+	.gpl_only	= false,
-+	.ret_type	= RET_INTEGER,
-+};
++	if (prog->expected_attach_type == BPF_LSM_CGROUP) {
++		func_proto = cgroup_common_func_proto(func_id, prog);
++		if (func_proto)
++			return func_proto;
++	}
 +#endif
 +
+ 	switch (func_id) {
+ 	case BPF_FUNC_inode_storage_get:
+ 		return &bpf_inode_storage_get_proto;
+@@ -212,15 +222,6 @@ bpf_lsm_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return prog->aux->sleepable ? &bpf_ima_file_hash_proto : NULL;
+ 	case BPF_FUNC_get_attach_cookie:
+ 		return bpf_prog_has_trampoline(prog) ? &bpf_get_attach_cookie_proto : NULL;
+-	case BPF_FUNC_get_local_storage:
+-		return prog->expected_attach_type == BPF_LSM_CGROUP ?
+-			&bpf_get_local_storage_proto : NULL;
+-	case BPF_FUNC_set_retval:
+-		return prog->expected_attach_type == BPF_LSM_CGROUP ?
+-			&bpf_set_retval_proto : NULL;
+-	case BPF_FUNC_get_retval:
+-		return prog->expected_attach_type == BPF_LSM_CGROUP ?
+-			&bpf_get_retval_proto : NULL;
+ #ifdef CONFIG_NET
+ 	case BPF_FUNC_setsockopt:
+ 		if (prog->expected_attach_type != BPF_LSM_CGROUP)
+diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+index 74b5cc692a36..00988312279f 100644
+--- a/kernel/bpf/cgroup.c
++++ b/kernel/bpf/cgroup.c
+@@ -2533,9 +2533,35 @@ cgroup_common_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 	case BPF_FUNC_get_local_storage:
+ 		return &bpf_get_local_storage_proto;
+ 	case BPF_FUNC_get_retval:
+-		return &bpf_get_retval_proto;
++		switch (prog->expected_attach_type) {
++		case BPF_CGROUP_INET_INGRESS:
++		case BPF_CGROUP_INET_EGRESS:
++		case BPF_CGROUP_SOCK_OPS:
++		case BPF_CGROUP_UDP4_RECVMSG:
++		case BPF_CGROUP_UDP6_RECVMSG:
++		case BPF_CGROUP_INET4_GETPEERNAME:
++		case BPF_CGROUP_INET6_GETPEERNAME:
++		case BPF_CGROUP_INET4_GETSOCKNAME:
++		case BPF_CGROUP_INET6_GETSOCKNAME:
++			return NULL;
++		default:
++			return &bpf_get_retval_proto;
++		}
+ 	case BPF_FUNC_set_retval:
+-		return &bpf_set_retval_proto;
++		switch (prog->expected_attach_type) {
++		case BPF_CGROUP_INET_INGRESS:
++		case BPF_CGROUP_INET_EGRESS:
++		case BPF_CGROUP_SOCK_OPS:
++		case BPF_CGROUP_UDP4_RECVMSG:
++		case BPF_CGROUP_UDP6_RECVMSG:
++		case BPF_CGROUP_INET4_GETPEERNAME:
++		case BPF_CGROUP_INET6_GETPEERNAME:
++		case BPF_CGROUP_INET4_GETSOCKNAME:
++		case BPF_CGROUP_INET6_GETSOCKNAME:
++			return NULL;
++		default:
++			return &bpf_set_retval_proto;
++		}
+ 	default:
+ 		return NULL;
+ 	}
+@@ -2548,8 +2574,18 @@ cgroup_current_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 	switch (func_id) {
+ 	case BPF_FUNC_get_current_uid_gid:
+ 		return &bpf_get_current_uid_gid_proto;
++	case BPF_FUNC_get_current_pid_tgid:
++		return &bpf_get_current_pid_tgid_proto;
++	case BPF_FUNC_get_current_comm:
++		return &bpf_get_current_comm_proto;
+ 	case BPF_FUNC_get_current_cgroup_id:
+ 		return &bpf_get_current_cgroup_id_proto;
++	case BPF_FUNC_get_current_ancestor_cgroup_id:
++		return &bpf_get_current_ancestor_cgroup_id_proto;
++#ifdef CONFIG_CGROUP_NET_CLASSID
++	case BPF_FUNC_get_cgroup_classid:
++		return &bpf_get_cgroup_classid_curr_proto;
++#endif
+ 	default:
+ 		return NULL;
+ 	}
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index 71979d870646..53451ea6721c 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -1521,6 +1521,7 @@ const struct bpf_func_proto bpf_probe_read_user_str_proto __weak;
+ const struct bpf_func_proto bpf_probe_read_kernel_proto __weak;
+ const struct bpf_func_proto bpf_probe_read_kernel_str_proto __weak;
+ const struct bpf_func_proto bpf_task_pt_regs_proto __weak;
++const struct bpf_func_proto bpf_get_cgroup_classid_curr_proto __weak;
+ 
+ const struct bpf_func_proto *
+ bpf_base_func_proto(enum bpf_func_id func_id)
+diff --git a/net/core/filter.c b/net/core/filter.c
+index df6bae0f98a7..eb8560a7c674 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -7655,34 +7655,23 @@ const struct bpf_func_proto bpf_sk_storage_get_cg_sock_proto __weak;
  static const struct bpf_func_proto *
--cgroup_base_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
-+cgroup_dev_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ sock_filter_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
  {
 +	const struct bpf_func_proto *func_proto;
 +
@@ -245,251 +226,122 @@ index 59b7eb60d5b4..74b5cc692a36 100644
 +		return func_proto;
 +
  	switch (func_id) {
+-	/* inet and inet6 sockets are created in a process
+-	 * context so there is always a valid uid/gid
+-	 */
 -	case BPF_FUNC_get_current_uid_gid:
 -		return &bpf_get_current_uid_gid_proto;
 -	case BPF_FUNC_get_local_storage:
 -		return &bpf_get_local_storage_proto;
--	case BPF_FUNC_get_current_cgroup_id:
--		return &bpf_get_current_cgroup_id_proto;
+ 	case BPF_FUNC_get_socket_cookie:
+ 		return &bpf_get_socket_cookie_sock_proto;
+ 	case BPF_FUNC_get_netns_cookie:
+ 		return &bpf_get_netns_cookie_sock_proto;
  	case BPF_FUNC_perf_event_output:
  		return &bpf_event_output_data_proto;
--	case BPF_FUNC_get_retval:
--		return &bpf_get_retval_proto;
--	case BPF_FUNC_set_retval:
--		return &bpf_set_retval_proto;
- 	default:
- 		return bpf_base_func_proto(func_id);
- 	}
- }
- 
--static const struct bpf_func_proto *
--cgroup_dev_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
--{
--	return cgroup_base_func_proto(func_id, prog);
--}
--
- static bool cgroup_dev_is_valid_access(int off, int size,
- 				       enum bpf_access_type type,
- 				       const struct bpf_prog *prog,
-@@ -2096,6 +2176,16 @@ static const struct bpf_func_proto bpf_sysctl_set_new_value_proto = {
- static const struct bpf_func_proto *
- sysctl_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- {
-+	const struct bpf_func_proto *func_proto;
-+
-+	func_proto = cgroup_common_func_proto(func_id, prog);
-+	if (func_proto)
-+		return func_proto;
-+
-+	func_proto = cgroup_current_func_proto(func_id, prog);
-+	if (func_proto)
-+		return func_proto;
-+
- 	switch (func_id) {
- 	case BPF_FUNC_strtol:
- 		return &bpf_strtol_proto;
-@@ -2111,8 +2201,10 @@ sysctl_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		return &bpf_sysctl_set_new_value_proto;
- 	case BPF_FUNC_ktime_get_coarse_ns:
- 		return &bpf_ktime_get_coarse_ns_proto;
-+	case BPF_FUNC_perf_event_output:
-+		return &bpf_event_output_data_proto;
- 	default:
--		return cgroup_base_func_proto(func_id, prog);
-+		return bpf_base_func_proto(func_id);
- 	}
- }
- 
-@@ -2233,6 +2325,16 @@ static const struct bpf_func_proto bpf_get_netns_cookie_sockopt_proto = {
- static const struct bpf_func_proto *
- cg_sockopt_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- {
-+	const struct bpf_func_proto *func_proto;
-+
-+	func_proto = cgroup_common_func_proto(func_id, prog);
-+	if (func_proto)
-+		return func_proto;
-+
-+	func_proto = cgroup_current_func_proto(func_id, prog);
-+	if (func_proto)
-+		return func_proto;
-+
- 	switch (func_id) {
- #ifdef CONFIG_NET
- 	case BPF_FUNC_get_netns_cookie:
-@@ -2254,8 +2356,10 @@ cg_sockopt_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 	case BPF_FUNC_tcp_sock:
- 		return &bpf_tcp_sock_proto;
- #endif
-+	case BPF_FUNC_perf_event_output:
-+		return &bpf_event_output_data_proto;
- 	default:
--		return cgroup_base_func_proto(func_id, prog);
-+		return bpf_base_func_proto(func_id);
- 	}
- }
- 
-@@ -2420,3 +2524,33 @@ const struct bpf_verifier_ops cg_sockopt_verifier_ops = {
- 
- const struct bpf_prog_ops cg_sockopt_prog_ops = {
- };
-+
-+/* Common helpers for cgroup hooks. */
-+const struct bpf_func_proto *
-+cgroup_common_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
-+{
-+	switch (func_id) {
-+	case BPF_FUNC_get_local_storage:
-+		return &bpf_get_local_storage_proto;
-+	case BPF_FUNC_get_retval:
-+		return &bpf_get_retval_proto;
-+	case BPF_FUNC_set_retval:
-+		return &bpf_set_retval_proto;
-+	default:
-+		return NULL;
-+	}
-+}
-+
-+/* Common helpers for cgroup hooks with valid process context. */
-+const struct bpf_func_proto *
-+cgroup_current_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
-+{
-+	switch (func_id) {
-+	case BPF_FUNC_get_current_uid_gid:
-+		return &bpf_get_current_uid_gid_proto;
-+	case BPF_FUNC_get_current_cgroup_id:
-+		return &bpf_get_current_cgroup_id_proto;
-+	default:
-+		return NULL;
-+	}
-+}
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 3c1b9bbcf971..71979d870646 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -386,82 +386,6 @@ const struct bpf_func_proto bpf_jiffies64_proto = {
- 	.ret_type	= RET_INTEGER,
- };
- 
+-	case BPF_FUNC_get_current_pid_tgid:
+-		return &bpf_get_current_pid_tgid_proto;
+-	case BPF_FUNC_get_current_comm:
+-		return &bpf_get_current_comm_proto;
 -#ifdef CONFIG_CGROUPS
--BPF_CALL_0(bpf_get_current_cgroup_id)
--{
--	struct cgroup *cgrp;
--	u64 cgrp_id;
--
--	rcu_read_lock();
--	cgrp = task_dfl_cgroup(current);
--	cgrp_id = cgroup_id(cgrp);
--	rcu_read_unlock();
--
--	return cgrp_id;
--}
--
--const struct bpf_func_proto bpf_get_current_cgroup_id_proto = {
--	.func		= bpf_get_current_cgroup_id,
--	.gpl_only	= false,
--	.ret_type	= RET_INTEGER,
--};
--
--BPF_CALL_1(bpf_get_current_ancestor_cgroup_id, int, ancestor_level)
--{
--	struct cgroup *cgrp;
--	struct cgroup *ancestor;
--	u64 cgrp_id;
--
--	rcu_read_lock();
--	cgrp = task_dfl_cgroup(current);
--	ancestor = cgroup_ancestor(cgrp, ancestor_level);
--	cgrp_id = ancestor ? cgroup_id(ancestor) : 0;
--	rcu_read_unlock();
--
--	return cgrp_id;
--}
--
--const struct bpf_func_proto bpf_get_current_ancestor_cgroup_id_proto = {
--	.func		= bpf_get_current_ancestor_cgroup_id,
--	.gpl_only	= false,
--	.ret_type	= RET_INTEGER,
--	.arg1_type	= ARG_ANYTHING,
--};
--
--#ifdef CONFIG_CGROUP_BPF
--
--BPF_CALL_2(bpf_get_local_storage, struct bpf_map *, map, u64, flags)
--{
--	/* flags argument is not used now,
--	 * but provides an ability to extend the API.
--	 * verifier checks that its value is correct.
--	 */
--	enum bpf_cgroup_storage_type stype = cgroup_storage_type(map);
--	struct bpf_cgroup_storage *storage;
--	struct bpf_cg_run_ctx *ctx;
--	void *ptr;
--
--	/* get current cgroup storage from BPF run context */
--	ctx = container_of(current->bpf_ctx, struct bpf_cg_run_ctx, run_ctx);
--	storage = ctx->prog_item->cgroup_storage[stype];
--
--	if (stype == BPF_CGROUP_STORAGE_SHARED)
--		ptr = &READ_ONCE(storage->buf)->data[0];
--	else
--		ptr = this_cpu_ptr(storage->percpu_buf);
--
--	return (unsigned long)ptr;
--}
--
--const struct bpf_func_proto bpf_get_local_storage_proto = {
--	.func		= bpf_get_local_storage,
--	.gpl_only	= false,
--	.ret_type	= RET_PTR_TO_MAP_VALUE,
--	.arg1_type	= ARG_CONST_MAP_PTR,
--	.arg2_type	= ARG_ANYTHING,
--};
+-	case BPF_FUNC_get_current_cgroup_id:
+-		return &bpf_get_current_cgroup_id_proto;
+-	case BPF_FUNC_get_current_ancestor_cgroup_id:
+-		return &bpf_get_current_ancestor_cgroup_id_proto;
 -#endif
--
- #define BPF_STRTOX_BASE_MASK 0x1F
- 
- static int __bpf_strtoull(const char *buf, size_t buf_len, u64 flags,
-@@ -589,7 +513,6 @@ const struct bpf_func_proto bpf_strtoul_proto = {
- 	.arg3_type	= ARG_ANYTHING,
- 	.arg4_type	= ARG_PTR_TO_LONG,
- };
+-#ifdef CONFIG_CGROUP_NET_CLASSID
+-	case BPF_FUNC_get_cgroup_classid:
+-		return &bpf_get_cgroup_classid_curr_proto;
 -#endif
- 
- BPF_CALL_3(bpf_strncmp, const char *, s1, u32, s1_sz, const char *, s2)
- {
-diff --git a/net/core/filter.c b/net/core/filter.c
-index e8508aaafd27..df6bae0f98a7 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -3004,17 +3004,6 @@ static const struct bpf_func_proto bpf_msg_pop_data_proto = {
- };
- 
- #ifdef CONFIG_CGROUP_NET_CLASSID
--BPF_CALL_0(bpf_get_cgroup_classid_curr)
--{
--	return __task_get_classid(current);
--}
--
--static const struct bpf_func_proto bpf_get_cgroup_classid_curr_proto = {
--	.func		= bpf_get_cgroup_classid_curr,
--	.gpl_only	= false,
--	.ret_type	= RET_INTEGER,
--};
--
- BPF_CALL_1(bpf_skb_cgroup_classid, const struct sk_buff *, skb)
- {
- 	struct sock *sk = skb_to_full_sk(skb);
-@@ -8104,6 +8093,9 @@ sock_ops_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 
- const struct bpf_func_proto bpf_msg_redirect_map_proto __weak;
- const struct bpf_func_proto bpf_msg_redirect_hash_proto __weak;
-+const struct bpf_func_proto bpf_get_cgroup_classid_curr_proto __weak;
-+const struct bpf_func_proto bpf_get_current_cgroup_id_proto __weak;
-+const struct bpf_func_proto bpf_get_current_ancestor_cgroup_id_proto __weak;
- 
+ 	case BPF_FUNC_sk_storage_get:
+ 		return &bpf_sk_storage_get_cg_sock_proto;
+ 	case BPF_FUNC_ktime_get_coarse_ns:
+@@ -7695,12 +7684,17 @@ sock_filter_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
  static const struct bpf_func_proto *
- sk_msg_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ sock_addr_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ {
++	const struct bpf_func_proto *func_proto;
++
++	func_proto = cgroup_common_func_proto(func_id, prog);
++	if (func_proto)
++		return func_proto;
++
++	func_proto = cgroup_current_func_proto(func_id, prog);
++	if (func_proto)
++		return func_proto;
++
+ 	switch (func_id) {
+-	/* inet and inet6 sockets are created in a process
+-	 * context so there is always a valid uid/gid
+-	 */
+-	case BPF_FUNC_get_current_uid_gid:
+-		return &bpf_get_current_uid_gid_proto;
+ 	case BPF_FUNC_bind:
+ 		switch (prog->expected_attach_type) {
+ 		case BPF_CGROUP_INET4_CONNECT:
+@@ -7713,24 +7707,8 @@ sock_addr_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return &bpf_get_socket_cookie_sock_addr_proto;
+ 	case BPF_FUNC_get_netns_cookie:
+ 		return &bpf_get_netns_cookie_sock_addr_proto;
+-	case BPF_FUNC_get_local_storage:
+-		return &bpf_get_local_storage_proto;
+ 	case BPF_FUNC_perf_event_output:
+ 		return &bpf_event_output_data_proto;
+-	case BPF_FUNC_get_current_pid_tgid:
+-		return &bpf_get_current_pid_tgid_proto;
+-	case BPF_FUNC_get_current_comm:
+-		return &bpf_get_current_comm_proto;
+-#ifdef CONFIG_CGROUPS
+-	case BPF_FUNC_get_current_cgroup_id:
+-		return &bpf_get_current_cgroup_id_proto;
+-	case BPF_FUNC_get_current_ancestor_cgroup_id:
+-		return &bpf_get_current_ancestor_cgroup_id_proto;
+-#endif
+-#ifdef CONFIG_CGROUP_NET_CLASSID
+-	case BPF_FUNC_get_cgroup_classid:
+-		return &bpf_get_cgroup_classid_curr_proto;
+-#endif
+ #ifdef CONFIG_INET
+ 	case BPF_FUNC_sk_lookup_tcp:
+ 		return &bpf_sock_addr_sk_lookup_tcp_proto;
+@@ -7811,9 +7789,13 @@ const struct bpf_func_proto bpf_sk_storage_delete_proto __weak;
+ static const struct bpf_func_proto *
+ cg_skb_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ {
++	const struct bpf_func_proto *func_proto;
++
++	func_proto = cgroup_common_func_proto(func_id, prog);
++	if (func_proto)
++		return func_proto;
++
+ 	switch (func_id) {
+-	case BPF_FUNC_get_local_storage:
+-		return &bpf_get_local_storage_proto;
+ 	case BPF_FUNC_sk_fullsock:
+ 		return &bpf_sk_fullsock_proto;
+ 	case BPF_FUNC_sk_storage_get:
+@@ -8053,6 +8035,12 @@ const struct bpf_func_proto bpf_sock_hash_update_proto __weak;
+ static const struct bpf_func_proto *
+ sock_ops_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ {
++	const struct bpf_func_proto *func_proto;
++
++	func_proto = cgroup_common_func_proto(func_id, prog);
++	if (func_proto)
++		return func_proto;
++
+ 	switch (func_id) {
+ 	case BPF_FUNC_setsockopt:
+ 		return &bpf_sock_ops_setsockopt_proto;
+@@ -8066,8 +8054,6 @@ sock_ops_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return &bpf_sock_hash_update_proto;
+ 	case BPF_FUNC_get_socket_cookie:
+ 		return &bpf_get_socket_cookie_sock_ops_proto;
+-	case BPF_FUNC_get_local_storage:
+-		return &bpf_get_local_storage_proto;
+ 	case BPF_FUNC_perf_event_output:
+ 		return &bpf_event_output_data_proto;
+ 	case BPF_FUNC_sk_storage_get:
 -- 
 2.37.1.595.g718a3a8f04-goog
 
