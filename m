@@ -2,98 +2,175 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB40359843A
-	for <lists+bpf@lfdr.de>; Thu, 18 Aug 2022 15:34:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D8B459853E
+	for <lists+bpf@lfdr.de>; Thu, 18 Aug 2022 16:06:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244117AbiHRNcQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Aug 2022 09:32:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35616 "EHLO
+        id S245751AbiHROFz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Aug 2022 10:05:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243613AbiHRNcP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Aug 2022 09:32:15 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C340B90807
-        for <bpf@vger.kernel.org>; Thu, 18 Aug 2022 06:32:14 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id x10so1737677ljq.4
-        for <bpf@vger.kernel.org>; Thu, 18 Aug 2022 06:32:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc;
-        bh=mm+CIi+eTqS+IJJSFN2zOluKJ3THx8ghvQL/UiT4BIA=;
-        b=hycS8Bgar8HWXzk0HRu5TgUPzOSn584mePOMu7IxMkWasKtRbqVuh/LS+bjcY7iQF5
-         08BM90sVj27zPXCHC6dMe73ami+RZnm1892KFLWbao/LaCG0OQuWH3OH6Hk2qKPKJAga
-         sOSnxI1OGDxFUJpeQX8uKn/6g+BvFL2Redq0sLP0PdMGHfb/VDcD+pyNbDWHo6cedrFL
-         ax01skNXYlUVJa6WrriXTvUKkkWQxDtXkVIAPWerpmqpZ1HcPM/z4f0Hljkk/Uw55qIq
-         sOUR+88I4P6e0LrZuGtF0Qa/czejFs0USVk4FWXK7QEl+qzOMiGSFSX3C0PcNKIMYaia
-         pVRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc;
-        bh=mm+CIi+eTqS+IJJSFN2zOluKJ3THx8ghvQL/UiT4BIA=;
-        b=c9f3YawUhhpvntCAEA5QLuA85JQUuLWi+RNc/H9sbzxgrvxnRFizS8GG2zbIHuxTMk
-         Zawbu7CfuD9rARz3kYVJdYHhITQUzBm72UXi7kT9t4NtvU54IpD00sWCIX+boyoFRBYj
-         D/x0w2ZSDu7qTspbF4/eTjsasLZcIAd6CnIm5uw/60bSMKc8MPeF+HpqQnuh/V9twIkB
-         ClDYF3aIKuoD9TnTQDcnSCnLmcxsXDTkfNKxUajaBx/g5AqYX8fjpA3e75KUS2w7+tKj
-         wkNRbgvTv9DP2EuyaFeTEmWZMQ5dH18TDcgF5FhOQBDfPLedUex+6gvGv/90Le+n0E7U
-         qOYg==
-X-Gm-Message-State: ACgBeo3OfJ5BhCsOX+3j8l/byd7idRqZaHu8+u4+pE1CCksY9E9rDcJS
-        2nNZ6g71Qz2C3yXNbuL83xE/sTKek9pAhwc=
-X-Google-Smtp-Source: AA6agR5UaQ2TuK+k7OQHLit1V5LGJEn1wYG32ouP39jCWRH0Zc62Y7v9UqOpETmF8sLSIQ3l+5dFDQ==
-X-Received: by 2002:a2e:a551:0:b0:25f:eb63:2588 with SMTP id e17-20020a2ea551000000b0025feb632588mr898325ljn.9.1660829533017;
-        Thu, 18 Aug 2022 06:32:13 -0700 (PDT)
-Received: from Mem (2a01cb0890e29600d12d396dd3345aed.ipv6.abo.wanadoo.fr. [2a01:cb08:90e2:9600:d12d:396d:d334:5aed])
-        by smtp.gmail.com with ESMTPSA id b12-20020a05651c032c00b0025e040510e7sm231087ljp.74.2022.08.18.06.32.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Aug 2022 06:32:12 -0700 (PDT)
-Date:   Thu, 18 Aug 2022 15:32:09 +0200
-From:   Paul Chaignon <paul@isovalent.com>
-To:     Eyal Birger <eyal.birger@gmail.com>, idosch@nvidia.com,
-        petrm@nvidia.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, yoshfuji@linux-ipv6.org,
-        dsahern@kernel.org, razor@blackwall.org, daniel@iogearbox.net,
-        kafai@fb.com
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH bpf] ip_tunnel: respect tunnel key's "flow_flags" in IP
- tunnels
-Message-ID: <20220818133209.GA80579@Mem>
-References: <20220818074118.726639-1-eyal.birger@gmail.com>
+        with ESMTP id S245133AbiHROF0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Aug 2022 10:05:26 -0400
+Received: from mail.hallyn.com (mail.hallyn.com [178.63.66.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A6236F542;
+        Thu, 18 Aug 2022 07:05:23 -0700 (PDT)
+Received: by mail.hallyn.com (Postfix, from userid 1001)
+        id BBD2A77A; Thu, 18 Aug 2022 09:05:21 -0500 (CDT)
+Date:   Thu, 18 Aug 2022 09:05:21 -0500
+From:   "Serge E. Hallyn" <serge@hallyn.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Paul Moore <paul@paul-moore.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Frederick Lawler <fred@cloudflare.com>, kpsingh@kernel.org,
+        revest@chromium.org, jackmanb@chromium.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        jmorris@namei.org, serge@hallyn.com,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        shuah@kernel.org, brauner@kernel.org, casey@schaufler-ca.com,
+        bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
+        selinux@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        kernel-team@cloudflare.com, cgzones@googlemail.com,
+        karl@bigbadwolfsecurity.com, tixxdz@gmail.com
+Subject: Re: [PATCH v5 0/4] Introduce security_create_user_ns()
+Message-ID: <20220818140521.GA1000@mail.hallyn.com>
+References: <20220815162028.926858-1-fred@cloudflare.com>
+ <CAHC9VhTuxxRfJg=Ax5z87Jz6tq1oVRcppB444dHM2gP-FZrkTQ@mail.gmail.com>
+ <8735dux60p.fsf@email.froward.int.ebiederm.org>
+ <CAHC9VhSHJNLS-KJ-Rz1R12PQbqACSksLYLbymF78d5hMkSGc-g@mail.gmail.com>
+ <871qte8wy3.fsf@email.froward.int.ebiederm.org>
+ <CAHC9VhSU_sqMQwdoh0nAFdURqs_cVFbva8=otjcZUo8s+xyC9A@mail.gmail.com>
+ <8735du7fnp.fsf@email.froward.int.ebiederm.org>
+ <CAHC9VhQuRNxzgVeNhDy=p5+RHz5+bTH6zFdU=UvvEhyH1e962A@mail.gmail.com>
+ <87tu6a4l83.fsf@email.froward.int.ebiederm.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220818074118.726639-1-eyal.birger@gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <87tu6a4l83.fsf@email.froward.int.ebiederm.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Aug 18, 2022 at 10:41:18AM +0300, Eyal Birger wrote:
-> Commit 451ef36bd229 ("ip_tunnels: Add new flow flags field to ip_tunnel_key")
-> added a "flow_flags" member to struct ip_tunnel_key which was later used by
-> the commit in the fixes tag to avoid dropping packets with sources that
-> aren't locally configured when set in bpf_set_tunnel_key().
+On Wed, Aug 17, 2022 at 04:24:28PM -0500, Eric W. Biederman wrote:
+> Paul Moore <paul@paul-moore.com> writes:
 > 
-> VXLAN and GENEVE were made to respect this flag, ip tunnels like IPIP and GRE
-> were not.
+> > On Wed, Aug 17, 2022 at 4:56 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
+> >> Paul Moore <paul@paul-moore.com> writes:
+> >> > On Wed, Aug 17, 2022 at 3:58 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
+> >> >> Paul Moore <paul@paul-moore.com> writes:
+> >> >>
+> >> >> > At the end of the v4 patchset I suggested merging this into lsm/next
+> >> >> > so it could get a full -rc cycle in linux-next, assuming no issues
+> >> >> > were uncovered during testing
+> >> >>
+> >> >> What in the world can be uncovered in linux-next for code that has no in
+> >> >> tree users.
+> >> >
+> >> > The patchset provides both BPF LSM and SELinux implementations of the
+> >> > hooks along with a BPF LSM test under tools/testing/selftests/bpf/.
+> >> > If no one beats me to it, I plan to work on adding a test to the
+> >> > selinux-testsuite as soon as I'm done dealing with other urgent
+> >> > LSM/SELinux issues (io_uring CMD passthrough, SCTP problems, etc.); I
+> >> > run these tests multiple times a week (multiple times a day sometimes)
+> >> > against the -rcX kernels with the lsm/next, selinux/next, and
+> >> > audit/next branches applied on top.  I know others do similar things.
+> >>
+> >> A layer of hooks that leaves all of the logic to userspace is not an
+> >> in-tree user for purposes of understanding the logic of the code.
+> >
+> > The BPF LSM selftests which are part of this patchset live in-tree.
+> > The SELinux hook implementation is completely in-tree with the
+> > subject/verb/object relationship clearly described by the code itself.
+> > After all, the selinux_userns_create() function consists of only two
+> > lines, one of which is an assignment.  Yes, it is true that the
+> > SELinux policy lives outside the kernel, but that is because there is
+> > no singular SELinux policy for everyone.  From a practical
+> > perspective, the SELinux policy is really just a configuration file
+> > used to setup the kernel at runtime; it is not significantly different
+> > than an iptables script, /etc/sysctl.conf, or any of the other myriad
+> > of configuration files used to configure the kernel during boot.
 > 
-> This commit fixes this omission by making ip_tunnel_init_flow() receive
-> the flow flags from the tunnel key in the relevant collect_md paths.
+> I object to adding the new system configuration knob.
+
+I do strongly sympathize with Eric's points.  It will be very easy, once
+user namespace creation has been further restricted in some distros, to
+say "well see this stuff is silly" and go back to simply requiring root
+to create all containers and namespaces, which is generally quite a bit
+easier anywway.  And then, of course, give everyone root so they can
+start containers.
+
+As Eric said,
+
+ | Further adding a random failure mode to user namespace creation if it is
+ | used at all will just encourage userspace to use a setuid application to
+ | perform the namespace creation instead.  Creating a less secure system
+ | overall.
+
+However, I'm also looking at e.g. CVE-2022-2588 and CVE-2022-2586, and
+yes there are two issues which do require discussion (three if you
+count reportability, which is mainly a tool in guarding against the others).
+
+The first is, indeed, configuration knobs.  There are tools, including
+chrome, which use user namespaces to make things better.  The hope is
+that more and more tools will do so.
+
+The second is damage control.  When an 0day has been announced, things
+change.  You can say "well the bug was there all along", but it is
+different when every lazy ne'erdowell can pick an exploit off a mailing
+list and use it against a product for which spinning a new version with
+a new kernel and getting customers to update is probably a months-long
+endeavor.  Some of these products do in fact require namespaces (user
+and otherwise) as part of their function.  And - to my chagrin - I suspect
+most of them create usernamespace as the root user, before possibly processing
+untrusted user input, so unprivileged_userns_clone isn't a good fit.
+
+SELinux (and LSMs in generaly) do in fact seem like a useful place to
+add some configuration, because they tend to assign different domains
+to tasks with different purposes and trust levels.  But another such
+place is the init system / service manager.  And in most cases these
+days, this will use cgroups to collect tasks of certain types.  So I
+wonder (this is ALMOST ENTIRELY thinking out loud, not thought through
+sufficiently) whether we should be setting a cgroup.nslock or
+somesuch.
+
+Of course, kernel livepatch is another potentially useful mitigation.
+Currently that's not possible for everyone.
+
+Maybe there is a more fundamental way we can approach this.  Part of me
+still likes the idea of splitting the id mapping and capability-in-userns
+parts, but that's not sufficient.  Maybe looking over all the relevant
+CVEs would give a better hint.
+
+Eric, you said
+
+ | If the concern is to reduce the attack surface everything this
+ | proposed hook can do is already possible with the security_capable
+ | security hook.
+
+I suppose I could envision an LSM which gets activated when we find
+out there was a net-ns-exacerbated 0-day, which refuses CAP_NET_ADMIN
+for a task not in init_user_ns?  Ideally it would be more flexible
+than that.
+
+> idea.  What is userspace going to do with this new feature that makes it
+> worth maintaining in the kernel?
 > 
-> Fixes: b8fff748521c ("bpf: Set flow flag to allow any source IP in bpf_tunnel_key")
-> Signed-off-by: Eyal Birger <eyal.birger@gmail.com>
-> ---
->  drivers/net/ethernet/mellanox/mlxsw/spectrum_span.c | 3 ++-
->  include/net/ip_tunnels.h                            | 4 +++-
->  net/ipv4/ip_gre.c                                   | 2 +-
->  net/ipv4/ip_tunnel.c                                | 7 ++++---
->  4 files changed, 10 insertions(+), 6 deletions(-)
+> That is always the conversation we have when adding new features, and
+> that is exactly the conversation that has not happened here.
 
-Thanks for the fix!
+Eric and Paul, I wonder, will you - or some people you'd like to represent
+you - be at plumbers in September?  Should there be a BOF session there?  (I
+won't be there, but could join over video)  I think a brainstorming session 
+for solutions to the above problems would be good.
 
-Reviewed-by: Paul Chaignon <paul@isovalent.com>
-
+> Adding a layer of indirection should not exempt a new feature from
+> needing to justify itself.
+> 
+> Eric
