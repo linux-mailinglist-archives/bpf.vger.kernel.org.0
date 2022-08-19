@@ -2,176 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23C9B59A454
-	for <lists+bpf@lfdr.de>; Fri, 19 Aug 2022 20:05:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E90D559A535
+	for <lists+bpf@lfdr.de>; Fri, 19 Aug 2022 20:07:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351955AbiHSRpG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Aug 2022 13:45:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50812 "EHLO
+        id S1349475AbiHSSFx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Aug 2022 14:05:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351245AbiHSRoj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Aug 2022 13:44:39 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E364E42C1;
-        Fri, 19 Aug 2022 10:06:55 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id y4so4656418plb.2;
-        Fri, 19 Aug 2022 10:06:55 -0700 (PDT)
+        with ESMTP id S1350063AbiHSSFO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 19 Aug 2022 14:05:14 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF756FDF
+        for <bpf@vger.kernel.org>; Fri, 19 Aug 2022 10:51:58 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id e19so4105837pju.1
+        for <bpf@vger.kernel.org>; Fri, 19 Aug 2022 10:51:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc;
-        bh=UZnrLccuewBeUTHa7he/1pdbfRtAri2WoHO63fUtNRc=;
-        b=XAW0y0n14GbbI93QKgU2Mko3gRIRMRbjNK8yh6f00kxV2u+FwfJBFOdIFc4ubGtXnZ
-         96Q7W+i5mtTv/AvpxsVclO3S1wahAB9QAbiT33xETdG3I+uCk/1gLZGnE5/tLTsGvFFo
-         0I1/8QoikeezFphqIzolui9+0fafgFMClIoRK29EKwdtKR/ArQz1f/PwmdqHMOlsUEsG
-         dqop2MHzljQjY7dyyBDVAy6aQF6pfzlwuE2uTIsOz0RjIQnTjgUncRBAtxpzCdihOVK4
-         J5eGefsDHsvQ+K+HppyuUs/yFRkhgEdyNd4tDdrkcRyyCjtSWG74pKB6qGa2PWRznqxB
-         5AvQ==
+         :subject:cc:to:from:date:from:to:cc;
+        bh=otYHjdyLGePy1LBSwR9uatiwpWnd5ib8hRhTZupav48=;
+        b=AYs8t7/R7/dAhhvd+GzU+Kon0SLCXYyudpMyF7JpCNtlF3PuHgV9B0uBrP76517EOr
+         P23xLRfyMrXO9B4a2f214pKFKc7BAtXB7h4XTtu5h2uCbe42879Qq7eiKCb8H7Du1xVx
+         MdR+gWtQixDl9VRZCZDjzvmwZiAzJxjRq8pUvTrpuHyav4pnCj4qNN8U66gHv/a575kI
+         /a9QvUVTaeOXrrNVNXbnA+C+V5uk5GuuNBZ7FRLj1vptF1iP/WVW8l6zU68sDaf3sYzf
+         QgSYxEqajhP0ra4fyCTKL+4415AVMGu+Uurq5BtK8BD9lt5W4gzdDeaVPKFHs7T6huC6
+         jEIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc;
-        bh=UZnrLccuewBeUTHa7he/1pdbfRtAri2WoHO63fUtNRc=;
-        b=D4e9lJfff+YGMKF8kwDx3gTP0JsrDLmf3N23eSr+k1OwtMLYHrDha2CB1Vo/PHmk03
-         drKMZd3cKKEOSV8DZCGSXgcJyaJAsyrQcthxLMgYgXHdW8KeKR+U8C1U7tXrMi5hMdrn
-         6n+0HR/IHZQrKh8N8+ivE/SS8HhpKsC/g+B7KTGUelqtebHvtEjTE5i3PXGiGletk3cI
-         Bz1wW/RqVJ74Ce5gVzsy9b/E0jix1al3YtrUlhrVzCjKR1RiaHuVDf94BZwf4cH7fkhw
-         DU4IZFhopIi1qUI+lKF5/iLHB3cqt6o2NzdzfFQx+tgCqFUxcMR2A8UHAwln9qOEZ99J
-         Yq8w==
-X-Gm-Message-State: ACgBeo0ZEVgu5O7pMhs3OYm93CF6Q/ZrkOhKLZk0EkVOw+SQyV4RxNcE
-        F91/2DUxBP8H8bQtrePA3tfP+MkzQcE=
-X-Google-Smtp-Source: AA6agR520zkVb1ab+1IFrWSRolYaFHIavEFl2N7Y7Y3JZORzp6bFg/A0aCnrdfpBhO9U8UXqp9Af9g==
-X-Received: by 2002:a17:902:d4c7:b0:16e:d1fd:f212 with SMTP id o7-20020a170902d4c700b0016ed1fdf212mr8198729plg.79.1660928814306;
-        Fri, 19 Aug 2022 10:06:54 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:db7d])
-        by smtp.gmail.com with ESMTPSA id 201-20020a6214d2000000b0052dbad1ea2esm3657782pfu.6.2022.08.19.10.06.52
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc;
+        bh=otYHjdyLGePy1LBSwR9uatiwpWnd5ib8hRhTZupav48=;
+        b=8QkMpIUHhX+u7/2v1xgCMZzDwDq9LSLYUauLkGbTHKAbnY9z0lXmpaMRtp9ssNdIz9
+         IOiFgBuX8NXw2bgPDEsu3guFyQ62YvUQrIxnmkVMgMYHUbYN18gAj1sqjIBsLY3h1qjW
+         jvPEYo0fdSVlcBLqYiBRDjcrOFXPaqztBhRB0lyLpwjFTG/MYYOXlz/fKZvh1ciqx28N
+         ZHkn8XE2cA09OmPXCGW21dbstzpjZ9O/cK3S7AKw2Z5tp3KycUGjRpw8rs0NZfRU+BEU
+         pKQ4MILiOc1mslHd0KXkLmwwvNWH3A39m+EHYi83i+PD760muGRJYZyQKrDHsvZ/Pb6G
+         J1Jg==
+X-Gm-Message-State: ACgBeo3QthW6nxMPivZ+5M0QEAjmEQiQmcGoqhZGzTAg/IxFnhl+CF0M
+        X4PuF4ToW/Yp385KnMzM6f8=
+X-Google-Smtp-Source: AA6agR7iKXkA2VMG3EddXBSHxfaNNU1TvL5TgtuZ7Q1VKvv8zel1NaeVlcwF+z7QnDIvGvhuoeh+vQ==
+X-Received: by 2002:a17:90b:1194:b0:1fa:c41a:59c0 with SMTP id gk20-20020a17090b119400b001fac41a59c0mr11360126pjb.165.1660931518296;
+        Fri, 19 Aug 2022 10:51:58 -0700 (PDT)
+Received: from MacBook-Pro-3.local ([2620:10d:c090:500::1:c4b1])
+        by smtp.gmail.com with ESMTPSA id x24-20020aa79418000000b0052d50e14f1dsm3715137pfo.78.2022.08.19.10.51.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Aug 2022 10:06:53 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 19 Aug 2022 07:06:51 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, jolsa@kernel.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        lizefan.x@bytedance.com, Cgroups <cgroups@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
-Subject: Re: [PATCH bpf-next v2 00/12] bpf: Introduce selectable memcg for
- bpf map
-Message-ID: <Yv/DK+AGlMeBGkF1@slm.duckdns.org>
-References: <20220818143118.17733-1-laoar.shao@gmail.com>
- <Yv67MRQLPreR9GU5@slm.duckdns.org>
- <Yv6+HlEzpNy8y5kT@slm.duckdns.org>
- <CALOAHbDcrj1ifFsNMHBEih5-SXY2rWViig4rQHi9N07JY6CjXA@mail.gmail.com>
+        Fri, 19 Aug 2022 10:51:57 -0700 (PDT)
+Date:   Fri, 19 Aug 2022 10:51:55 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     davem@davemloft.net, daniel@iogearbox.net, andrii@kernel.org,
+        tj@kernel.org, delyank@fb.com, linux-mm@kvack.org,
+        bpf@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v2 bpf-next 01/12] bpf: Introduce any context BPF
+ specific memory allocator.
+Message-ID: <20220819175155.deyd62m6tscv63td@MacBook-Pro-3.local>
+References: <20220817210419.95560-1-alexei.starovoitov@gmail.com>
+ <20220817210419.95560-2-alexei.starovoitov@gmail.com>
+ <CAP01T77L6e=B6OtLcM4bToM5n4+j3S6+p+ieTPtDGUgQUZ3o1Q@mail.gmail.com>
+ <20220818003957.t5lcp636n7we37hk@MacBook-Pro-3.local>
+ <CAP01T74gcYpXXoafBAEaL5a_7FaDdfAwzmoE86pOctzmeeVhmw@mail.gmail.com>
+ <20220818223051.ti3gt7po72c5bqjh@MacBook-Pro-3.local.dhcp.thefacebook.com>
+ <CAP01T76rn=FrSC9VA=mbEK7QKMu-88uZiiekpn6TqQ_Ea0-u5Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALOAHbDcrj1ifFsNMHBEih5-SXY2rWViig4rQHi9N07JY6CjXA@mail.gmail.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+In-Reply-To: <CAP01T76rn=FrSC9VA=mbEK7QKMu-88uZiiekpn6TqQ_Ea0-u5Q@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
-
-On Fri, Aug 19, 2022 at 09:09:25AM +0800, Yafang Shao wrote:
-> On Fri, Aug 19, 2022 at 6:33 AM Tejun Heo <tj@kernel.org> wrote:
+On Fri, Aug 19, 2022 at 04:31:11PM +0200, Kumar Kartikeya Dwivedi wrote:
+> On Fri, 19 Aug 2022 at 00:30, Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
 > >
-> > On Thu, Aug 18, 2022 at 12:20:33PM -1000, Tejun Heo wrote:
-> > > We have the exact same problem for any resources which span multiple
-> > > instances of a service including page cache, tmpfs instances and any other
-> > > thing which can persist longer than procss life time. My current opinion is
+> > Right. We cannot fail in unit_free().
+> > With per-cpu counter both unit_alloc() and free_bulk_nmi() would
+> > potentially fail in such unlikely scenario.
+> > Not a big deal for free_bulk_nmi(). It would pick the element later.
+> > For unit_alloc() return NULL is normal.
+> > Especially since it's so unlikely for nmi to hit right in the middle
+> > of llist_del_first().
 > >
-> > To expand a bit more on this point, once we start including page cache and
-> > tmpfs, we now get entangled with memory reclaim which then brings in IO and
-> > not-yet-but-eventually CPU usage.
+> > Since we'll add this per-cpu counter to solve interrupted llist_del_first()
+> > it feels that the same counter can be used to protect unit_alloc/free/irq_work.
+> > Then we don't need free_llist_nmi. Single free_llist would be fine,
+> > but unit_free() should not fail. If free_list cannot be accessed
+> > due to per-cpu counter being busy we have to push somewhere.
+> > So it seems two lists are necessary. Maybe it's still better ?
+> > Roughly I'm thinking of the following:
+> > unit_alloc()
+> > {
+> >   llnode = NULL;
+> >   local_irq_save();
+> >   if (__this_cpu_inc_return(c->alloc_active) != 1))
+> >      goto out;
+> >   llnode = __llist_del_first(&c->free_llist);
+> >   if (llnode)
+> >       cnt = --c->free_cnt;
+> > out:
+> >   __this_cpu_dec(c->alloc_active);
+> >   local_irq_restore();
+> >   return ret;
+> > }
+> > unit_free()
+> > {
+> >   local_irq_save();
+> >   if (__this_cpu_inc_return(c->alloc_active) != 1)) {
+> >      llist_add(llnode, &c->free_llist_nmi);
+> >      goto out;
+> >   }
+> >   __llist_add(llnode, &c->free_llist);
+> >   cnt = ++c->free_cnt;
+> > out:
+> >   __this_cpu_dec(c->alloc_active);
+> >   local_irq_restore();
+> >   return ret;
+> > }
+> > alloc_bulk, free_bulk would be protected by alloc_active as well.
+> > alloc_bulk_nmi is gone.
+> > free_bulk_nmi is still there to drain unlucky unit_free,
+> > but it's now alone to do llist_del_first() and it just frees anything
+> > that is in the free_llist_nmi.
+> > The main advantage is that free_llist_nmi doesn't need to prefilled.
+> > It will be empty most of the time.
+> > wdyt?
 > 
-> Introduce-a-new-layer vs introduce-a-new-cgroup, which one is more overhead?
+> Looks great! The other option would be to not have the overflow
+> free_llist_nmi list and just allowing llist_add to free_llist from the
+> NMI case even if we interrupt llist_del_first, but then the non-NMI
+> user needs to use the atomic llist_add version as well (since we may
+> interrupt it), 
 
-Introducing a new layer in cgroup2 doesn't mean that any specific resource
-controller is enabled, so there is no runtime overhead difference. In terms
-of logical complexity, introducing a localized layer seems a lot more
-straightforward than building a whole separate tree.
+not only llist_add, but unit_alloc would have to use atomic llist_del_first too.
+So any operation on the list would have to be with cmpxchg.
 
-Note that the same applies to cgroup1 where collapsed controller tree is
-represented by simply not creating those layers in that particular
-controller tree.
+> which won't be great for performance.
 
-No matter how we cut the problem here, if we want to track these persistent
-resources, we have to create a cgroup to host them somewhere. The discussion
-we're having is mostly around where to put them. With your proposal, it can
-be anywhere and you draw out an example where the persistent cgroups form
-their own separate tree. What I'm saying is that the logical place to put it
-is where the current resource consumption is and we just need to put the
-persistent entity as the parent of the instances.
+exactly.
 
-Flexibility, just like anything else, isn't free. Here, if we extrapolate
-this approach, the cost is evidently hefty in that it doesn't generically
-work with the basic resource control structure.
+> So having the
+> extra list is much better.
 
-> > Once you start splitting the tree like
-> > you're suggesting here, all those will break down and now we have to worry
-> > about how to split resource accounting and control for the same entities
-> > across two split branches of the tree, which doesn't really make any sense.
-> 
-> The k8s has already been broken thanks to the memcg accounting on  bpf memory.
-> If you ignored it, I paste it below.
-> [0]"1. The memory usage is not consistent between the first generation and
-> new generations."
-> 
-> This issue will persist even if you introduce a new layer.
-
-Please watch your tone.
-
-Again, this isn't a problem specific to k8s. We have the same problem with
-e.g. persistent tmpfs. One idea which I'm not against is allowing specific
-resources to be charged to an ancestor. We gotta think carefully about how
-such charges should be granted / denied but an approach like that jives well
-with the existing hierarchical control structure and because introducing a
-persistent layer does too, the combination of the two works well.
-
-> > So, we *really* don't wanna paint ourselves into that kind of a corner. This
-> > is a dead-end. Please ditch it.
-> 
-> It makes non-sensen to ditch it.
-> Because, the hierarchy I described in the commit log is *one* use case
-> of the selectable memcg, but not *the only one* use case of it. If you
-> dislike that hierarchy, I will remove it to avoid misleading you.
-
-But if you drop that, what'd be the rationale for adding what you're
-proposing? Why would we want bpf memory charges to be attached any part of
-the hierarchy?
-
-> Even if you introduce a new layer, you still need the selectable memcg.
-> For example, to avoid the issue I described in [0],  you still need to
-> charge to the parent cgroup instead of the current cgroup.
-
-As I wrote above, we've been discussing the above. Again, I'd be a lot more
-amenable to such approach because it fits with how everything is structured.
-
-> That's why I described in the commit log that the selectable memcg is flexible.
-
-Hopefully, my point on this is clear by now.
-
-Thanks.
-
--- 
-tejun
+yep. same thinking.
+I'll refactor the patches and send v3 with this approach.
