@@ -2,45 +2,45 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D954659A824
-	for <lists+bpf@lfdr.de>; Sat, 20 Aug 2022 00:16:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38F7159A81F
+	for <lists+bpf@lfdr.de>; Sat, 20 Aug 2022 00:16:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231430AbiHSWJp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Aug 2022 18:09:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55490 "EHLO
+        id S231393AbiHSWJs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Aug 2022 18:09:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231393AbiHSWJp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Aug 2022 18:09:45 -0400
+        with ESMTP id S231530AbiHSWJq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 19 Aug 2022 18:09:46 -0400
 Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49C7EB441F
-        for <bpf@vger.kernel.org>; Fri, 19 Aug 2022 15:09:43 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C28A1B8F00
+        for <bpf@vger.kernel.org>; Fri, 19 Aug 2022 15:09:44 -0700 (PDT)
 Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27JKHqsq017681
-        for <bpf@vger.kernel.org>; Fri, 19 Aug 2022 15:09:42 -0700
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27JKHqsu017681
+        for <bpf@vger.kernel.org>; Fri, 19 Aug 2022 15:09:44 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=WMUUJ+dI46gWEiL8GDnVyxkP1iPNjmZj8z81e5zaTbM=;
- b=oDCZRoprGULZQha092TeuPIhhKQkw/NvWAQQ6ecZibP0yvBsiX52P+nBIfFMO9b2Y71E
- nbJIuC7DbeORP+TKSqqZrFCOtb0uE0pzRBnP4qw6XtblHLSBoXGhVswClvXReXHqGKsi
- y4V7DkS9Fnl3+/lvd6a0MhtpYqqPt3xV1MY= 
+ bh=+066DE1li1Q4qLJznN1HXOLqrYVPkSC7oSIWrFnIRG8=;
+ b=jdG4bO2lE8xZ9BX2YQP+BQQ1lWHzd1DaRFW1N6mWrCvrHDDUw3/qjmxT0mP+dmxwpwSa
+ fof/DYCPrcgwdr8eU4ldkcDQLg1P3RWaCLZcOp7IaxhBYUltJ0YGdIcfRnv+zM67LUIS
+ s5MyfpgROtzUFbVYhCG7Pwwn1buLy6pLAkk= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3j1sdw2u94-4
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3j1sdw2u94-8
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 19 Aug 2022 15:09:42 -0700
+        for <bpf@vger.kernel.org>; Fri, 19 Aug 2022 15:09:43 -0700
 Received: from twshared32421.14.frc2.facebook.com (2620:10d:c0a8:1b::d) by
  mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Fri, 19 Aug 2022 15:09:40 -0700
+ 15.1.2375.31; Fri, 19 Aug 2022 15:09:41 -0700
 Received: by devbig931.frc1.facebook.com (Postfix, from userid 460691)
-        id D54406DDB81C; Fri, 19 Aug 2022 15:09:31 -0700 (PDT)
+        id BA30D6DDB850; Fri, 19 Aug 2022 15:09:32 -0700 (PDT)
 From:   Kui-Feng Lee <kuifeng@fb.com>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
         <andrii@kernel.org>, <kernel-team@fb.com>, <yhs@fb.com>
 CC:     Kui-Feng Lee <kuifeng@fb.com>
-Subject: [PATCH bpf-next v6 3/4] bpf: Handle show_fdinfo for the parameterized task BPF iterators
-Date:   Fri, 19 Aug 2022 15:09:26 -0700
-Message-ID: <20220819220927.3409575-4-kuifeng@fb.com>
+Subject: [PATCH bpf-next v6 4/4] selftests/bpf: Test parameterized task BPF iterators.
+Date:   Fri, 19 Aug 2022 15:09:27 -0700
+Message-ID: <20220819220927.3409575-5-kuifeng@fb.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220819220927.3409575-1-kuifeng@fb.com>
 References: <20220819220927.3409575-1-kuifeng@fb.com>
@@ -48,8 +48,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: C8aQMKQ3n81bBDmsDdgWovltz7YzhLlu
-X-Proofpoint-GUID: C8aQMKQ3n81bBDmsDdgWovltz7YzhLlu
+X-Proofpoint-ORIG-GUID: rOovVt1S6wShWeTTgc-qHYAZuv6de7YF
+X-Proofpoint-GUID: rOovVt1S6wShWeTTgc-qHYAZuv6de7YF
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.517,FMLib:17.11.122.1
  definitions=2022-08-19_12,2022-08-18_01,2022-06-22_01
@@ -63,57 +63,603 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Show information of iterators in the respective files under
-/proc/<pid>/fdinfo/.
+Test iterators of vma, files, and tasks of tasks.
+
+Ensure the API works appropriately to visit all tasks,
+tasks in a process, or a particular task.
 
 Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
 ---
- kernel/bpf/task_iter.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ .../selftests/bpf/prog_tests/bpf_iter.c       | 284 +++++++++++++++++-
+ .../selftests/bpf/prog_tests/btf_dump.c       |   2 +-
+ .../selftests/bpf/progs/bpf_iter_task.c       |   9 +
+ .../selftests/bpf/progs/bpf_iter_task_file.c  |   9 +-
+ .../selftests/bpf/progs/bpf_iter_task_vma.c   |   6 +-
+ .../bpf/progs/bpf_iter_uprobe_offset.c        |  35 +++
+ 6 files changed, 326 insertions(+), 19 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_uprobe_off=
+set.c
 
-diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
-index 927b3a1cf354..5303eddb264b 100644
---- a/kernel/bpf/task_iter.c
-+++ b/kernel/bpf/task_iter.c
-@@ -611,6 +611,11 @@ static int bpf_iter_fill_link_info(const struct bpf_=
-iter_aux_info *aux, struct b
- 	return 0;
+diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/te=
+sting/selftests/bpf/prog_tests/bpf_iter.c
+index e89685bd587c..c1ef7ffa6a43 100644
+--- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
++++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /* Copyright (c) 2020 Facebook */
+ #include <test_progs.h>
++#include <sys/syscall.h>
+ #include "bpf_iter_ipv6_route.skel.h"
+ #include "bpf_iter_netlink.skel.h"
+ #include "bpf_iter_bpf_map.skel.h"
+@@ -14,6 +15,7 @@
+ #include "bpf_iter_udp4.skel.h"
+ #include "bpf_iter_udp6.skel.h"
+ #include "bpf_iter_unix.skel.h"
++#include "bpf_iter_uprobe_offset.skel.h"
+ #include "bpf_iter_test_kern1.skel.h"
+ #include "bpf_iter_test_kern2.skel.h"
+ #include "bpf_iter_test_kern3.skel.h"
+@@ -43,13 +45,13 @@ static void test_btf_id_or_null(void)
+ 	}
  }
 =20
-+static void bpf_iter_task_show_fdinfo(const struct bpf_iter_aux_info *au=
-x, struct seq_file *seq)
+-static void do_dummy_read(struct bpf_program *prog)
++static void do_dummy_read_opts(struct bpf_program *prog, struct bpf_iter=
+_attach_opts *opts)
+ {
+ 	struct bpf_link *link;
+ 	char buf[16] =3D {};
+ 	int iter_fd, len;
+=20
+-	link =3D bpf_program__attach_iter(prog, NULL);
++	link =3D bpf_program__attach_iter(prog, opts);
+ 	if (!ASSERT_OK_PTR(link, "attach_iter"))
+ 		return;
+=20
+@@ -68,6 +70,11 @@ static void do_dummy_read(struct bpf_program *prog)
+ 	bpf_link__destroy(link);
+ }
+=20
++static void do_dummy_read(struct bpf_program *prog)
 +{
-+	seq_printf(seq, "task_type:\t%d\npid:\t%d\n", aux->task.type, aux->task=
-.pid);
++	do_dummy_read_opts(prog, NULL);
 +}
 +
- static struct bpf_iter_reg task_reg_info =3D {
- 	.target			=3D "task",
- 	.attach_target		=3D bpf_iter_attach_task,
-@@ -622,6 +627,7 @@ static struct bpf_iter_reg task_reg_info =3D {
- 	},
- 	.seq_info		=3D &task_seq_info,
- 	.fill_link_info		=3D bpf_iter_fill_link_info,
-+	.show_fdinfo		=3D bpf_iter_task_show_fdinfo,
- };
+ static void do_read_map_iter_fd(struct bpf_object_skeleton **skel, struc=
+t bpf_program *prog,
+ 				struct bpf_map *map)
+ {
+@@ -167,19 +174,149 @@ static void test_bpf_map(void)
+ 	bpf_iter_bpf_map__destroy(skel);
+ }
 =20
- static const struct bpf_iter_seq_info task_file_seq_info =3D {
-@@ -644,6 +650,7 @@ static struct bpf_iter_reg task_file_reg_info =3D {
- 	},
- 	.seq_info		=3D &task_file_seq_info,
- 	.fill_link_info		=3D bpf_iter_fill_link_info,
-+	.show_fdinfo		=3D bpf_iter_task_show_fdinfo,
- };
+-static void test_task(void)
++static int pidfd_open(pid_t pid, unsigned int flags)
++{
++	return syscall(SYS_pidfd_open, pid, flags);
++}
++
++static void check_bpf_link_info(const struct bpf_program *prog)
++{
++	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
++	union bpf_iter_link_info linfo;
++	struct bpf_link_info info =3D {};
++	struct bpf_link *link;
++	__u32 info_len;
++	int err;
++
++	memset(&linfo, 0, sizeof(linfo));
++	linfo.task.tid =3D getpid();
++	opts.link_info =3D &linfo;
++	opts.link_info_len =3D sizeof(linfo);
++
++	link =3D bpf_program__attach_iter(prog, &opts);
++	if (!ASSERT_OK_PTR(link, "attach_iter"))
++		return;
++
++	info_len =3D sizeof(info);
++	err =3D bpf_obj_get_info_by_fd(bpf_link__fd(link), &info, &info_len);
++	ASSERT_OK(err, "bpf_obj_get_info_by_fd");
++	ASSERT_EQ(info.iter.task.tid, getpid(), "check_task_tid");
++
++	bpf_link__destroy(link);
++}
++
++static pthread_mutex_t do_nothing_mutex;
++
++static void *do_nothing_wait(void *arg)
++{
++	pthread_mutex_lock(&do_nothing_mutex);
++	pthread_mutex_unlock(&do_nothing_mutex);
++
++	pthread_exit(arg);
++}
++
++static void test_task_common_nocheck(struct bpf_iter_attach_opts *opts,
++				     int *num_unknown, int *num_known)
+ {
+ 	struct bpf_iter_task *skel;
++	pthread_t thread_id;
++	bool locked =3D false;
++	void *ret;
 =20
- static const struct bpf_iter_seq_info task_vma_seq_info =3D {
-@@ -666,6 +673,7 @@ static struct bpf_iter_reg task_vma_reg_info =3D {
- 	},
- 	.seq_info		=3D &task_vma_seq_info,
- 	.fill_link_info		=3D bpf_iter_fill_link_info,
-+	.show_fdinfo		=3D bpf_iter_task_show_fdinfo,
- };
+ 	skel =3D bpf_iter_task__open_and_load();
+ 	if (!ASSERT_OK_PTR(skel, "bpf_iter_task__open_and_load"))
+ 		return;
 =20
- BPF_CALL_5(bpf_find_vma, struct task_struct *, task, u64, start,
+-	do_dummy_read(skel->progs.dump_task);
++	if (!ASSERT_OK(pthread_mutex_lock(&do_nothing_mutex), "pthread_mutex_lo=
+ck"))
++		goto done;
++	locked =3D true;
++
++	if (!ASSERT_OK(pthread_create(&thread_id, NULL, &do_nothing_wait, NULL)=
+,
++		  "pthread_create"))
++		goto done;
++
++
++	skel->bss->tid =3D getpid();
++
++	do_dummy_read_opts(skel->progs.dump_task, opts);
++
++	*num_unknown =3D skel->bss->num_unknown_tid;
++	*num_known =3D skel->bss->num_known_tid;
++
++	ASSERT_OK(pthread_mutex_unlock(&do_nothing_mutex), "pthread_mutex_unloc=
+k");
++	locked =3D false;
++	ASSERT_FALSE(pthread_join(thread_id, &ret) || ret !=3D NULL,
++		     "pthread_join");
+=20
++done:
++	if (locked)
++		ASSERT_OK(pthread_mutex_unlock(&do_nothing_mutex), "pthread_mutex_unlo=
+ck");
+ 	bpf_iter_task__destroy(skel);
+ }
+=20
++static void test_task_common(struct bpf_iter_attach_opts *opts, int num_=
+unknown, int num_known)
++{
++	int num_unknown_tid, num_known_tid;
++
++	test_task_common_nocheck(opts, &num_unknown_tid, &num_known_tid);
++	ASSERT_EQ(num_unknown_tid, num_unknown, "check_num_unknown_tid");
++	ASSERT_EQ(num_known_tid, num_known, "check_num_known_tid");
++}
++
++static void test_task(void)
++{
++	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
++	union bpf_iter_link_info linfo;
++	int num_unknown_tid, num_known_tid;
++
++	memset(&linfo, 0, sizeof(linfo));
++	linfo.task.tid =3D getpid();
++	opts.link_info =3D &linfo;
++	opts.link_info_len =3D sizeof(linfo);
++	test_task_common(&opts, 0, 1);
++
++	linfo.task.tid =3D 0;
++	linfo.task.pid =3D getpid();
++	test_task_common(&opts, 1, 1);
++
++	test_task_common_nocheck(NULL, &num_unknown_tid, &num_known_tid);
++	ASSERT_GT(num_unknown_tid, 1, "check_num_unknown_tid");
++	ASSERT_EQ(num_known_tid, 1, "check_num_known_tid");
++}
++
++static void test_task_tgid(void)
++{
++	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
++	union bpf_iter_link_info linfo;
++
++	memset(&linfo, 0, sizeof(linfo));
++	linfo.task.pid =3D getpid();
++	opts.link_info =3D &linfo;
++	opts.link_info_len =3D sizeof(linfo);
++
++	test_task_common(&opts, 1, 1);
++}
++
++static void test_task_pidfd(void)
++{
++	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
++	union bpf_iter_link_info linfo;
++	int pidfd;
++
++	pidfd =3D pidfd_open(getpid(), 0);
++	if (!ASSERT_GT(pidfd, 0, "pidfd_open"))
++		return;
++
++	memset(&linfo, 0, sizeof(linfo));
++	linfo.task.pid_fd =3D pidfd;
++	opts.link_info =3D &linfo;
++	opts.link_info_len =3D sizeof(linfo);
++
++	test_task_common(&opts, 1, 1);
++
++	close(pidfd);
++}
++
+ static void test_task_sleepable(void)
+ {
+ 	struct bpf_iter_task *skel;
+@@ -212,15 +349,13 @@ static void test_task_stack(void)
+ 	bpf_iter_task_stack__destroy(skel);
+ }
+=20
+-static void *do_nothing(void *arg)
+-{
+-	pthread_exit(arg);
+-}
+-
+ static void test_task_file(void)
+ {
++	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
+ 	struct bpf_iter_task_file *skel;
++	union bpf_iter_link_info linfo;
+ 	pthread_t thread_id;
++	bool locked =3D false;
+ 	void *ret;
+=20
+ 	skel =3D bpf_iter_task_file__open_and_load();
+@@ -229,19 +364,43 @@ static void test_task_file(void)
+=20
+ 	skel->bss->tgid =3D getpid();
+=20
+-	if (!ASSERT_OK(pthread_create(&thread_id, NULL, &do_nothing, NULL),
++	if (!ASSERT_OK(pthread_mutex_lock(&do_nothing_mutex), "pthread_mutex_lo=
+ck"))
++		goto done;
++	locked =3D true;
++
++	if (!ASSERT_OK(pthread_create(&thread_id, NULL, &do_nothing_wait, NULL)=
+,
+ 		  "pthread_create"))
+ 		goto done;
+=20
+-	do_dummy_read(skel->progs.dump_task_file);
++	memset(&linfo, 0, sizeof(linfo));
++	linfo.task.tid =3D getpid();
++	opts.link_info =3D &linfo;
++	opts.link_info_len =3D sizeof(linfo);
+=20
+-	if (!ASSERT_FALSE(pthread_join(thread_id, &ret) || ret !=3D NULL,
+-		  "pthread_join"))
+-		goto done;
++	do_dummy_read_opts(skel->progs.dump_task_file, &opts);
++
++	ASSERT_EQ(skel->bss->count, 0, "check_count");
++	ASSERT_EQ(skel->bss->unique_tgid_count, 1, "check_unique_tgid_count");
++
++	skel->bss->last_tgid =3D 0;
++	skel->bss->count =3D 0;
++	skel->bss->unique_tgid_count =3D 0;
++
++	do_dummy_read(skel->progs.dump_task_file);
+=20
+ 	ASSERT_EQ(skel->bss->count, 0, "check_count");
++	ASSERT_GT(skel->bss->unique_tgid_count, 1, "check_unique_tgid_count");
++
++	check_bpf_link_info(skel->progs.dump_task_file);
++
++	ASSERT_OK(pthread_mutex_unlock(&do_nothing_mutex), "pthread_mutex_unloc=
+k");
++	locked =3D false;
++	ASSERT_OK(pthread_join(thread_id, &ret), "pthread_join");
++	ASSERT_NULL(ret, "phtread_join");
+=20
+ done:
++	if (locked)
++		ASSERT_OK(pthread_mutex_unlock(&do_nothing_mutex), "pthread_mutex_unlo=
+ck");
+ 	bpf_iter_task_file__destroy(skel);
+ }
+=20
+@@ -1249,7 +1408,7 @@ static void str_strip_first_line(char *str)
+ 	*dst =3D '\0';
+ }
+=20
+-static void test_task_vma(void)
++static void test_task_vma_common(struct bpf_iter_attach_opts *opts)
+ {
+ 	int err, iter_fd =3D -1, proc_maps_fd =3D -1;
+ 	struct bpf_iter_task_vma *skel;
+@@ -1261,13 +1420,14 @@ static void test_task_vma(void)
+ 		return;
+=20
+ 	skel->bss->pid =3D getpid();
++	skel->bss->one_task =3D opts ? 1 : 0;
+=20
+ 	err =3D bpf_iter_task_vma__load(skel);
+ 	if (!ASSERT_OK(err, "bpf_iter_task_vma__load"))
+ 		goto out;
+=20
+ 	skel->links.proc_maps =3D bpf_program__attach_iter(
+-		skel->progs.proc_maps, NULL);
++		skel->progs.proc_maps, opts);
+=20
+ 	if (!ASSERT_OK_PTR(skel->links.proc_maps, "bpf_program__attach_iter")) =
+{
+ 		skel->links.proc_maps =3D NULL;
+@@ -1306,6 +1466,9 @@ static void test_task_vma(void)
+ 	str_strip_first_line(proc_maps_output);
+=20
+ 	ASSERT_STREQ(task_vma_output, proc_maps_output, "compare_output");
++
++	check_bpf_link_info(skel->progs.proc_maps);
++
+ out:
+ 	close(proc_maps_fd);
+ 	close(iter_fd);
+@@ -1325,8 +1488,91 @@ void test_bpf_sockmap_map_iter_fd(void)
+ 	bpf_iter_sockmap__destroy(skel);
+ }
+=20
++static void test_task_vma(void)
++{
++	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
++	union bpf_iter_link_info linfo;
++
++	memset(&linfo, 0, sizeof(linfo));
++	linfo.task.tid =3D getpid();
++	opts.link_info =3D &linfo;
++	opts.link_info_len =3D sizeof(linfo);
++
++	test_task_vma_common(&opts);
++	test_task_vma_common(NULL);
++}
++
++/* uprobe attach point */
++static noinline int trigger_func(int arg)
++{
++	asm volatile ("");
++	return arg + 1;
++}
++
++static void test_task_uprobe_offset_common(struct bpf_iter_attach_opts *=
+opts, bool one_proc)
++{
++	struct bpf_iter_uprobe_offset *skel;
++	struct bpf_link *link;
++	char buf[16] =3D {};
++	int iter_fd, len;
++
++	skel =3D bpf_iter_uprobe_offset__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "bpf_iter_uprobe_offset__open_and_load"))
++		return;
++
++	skel->bss->pid =3D getpid();
++	skel->bss->address =3D (uintptr_t)trigger_func;
++
++	link =3D bpf_program__attach_iter(skel->progs.get_uprobe_offset, opts);
++	if (!ASSERT_OK_PTR(link, "attach_iter"))
++		return;
++
++	iter_fd =3D bpf_iter_create(bpf_link__fd(link));
++	if (!ASSERT_GT(iter_fd, 0, "create_iter"))
++		goto exit;
++
++	while ((len =3D read(iter_fd, buf, sizeof(buf))) > 0)
++		;
++	CHECK(len < 0, "read", "read failed: %s\n", strerror(errno));
++	buf[15] =3D 0;
++	ASSERT_EQ(strcmp(buf, "OK\n"), 0, "strcmp");
++
++	ASSERT_EQ(skel->bss->offset, get_uprobe_offset(trigger_func), "offset")=
+;
++	if (one_proc)
++		ASSERT_EQ(skel->bss->unique_tgid_cnt, 1, "unique_tgid_count");
++	else
++		ASSERT_GT(skel->bss->unique_tgid_cnt, 1, "unique_tgid_count");
++
++	close(iter_fd);
++
++exit:
++	bpf_link__destroy(link);
++}
++
++static void test_task_uprobe_offset(void)
++{
++	LIBBPF_OPTS(bpf_iter_attach_opts, opts);
++	union bpf_iter_link_info linfo;
++
++	memset(&linfo, 0, sizeof(linfo));
++	linfo.task.pid =3D getpid();
++	opts.link_info =3D &linfo;
++	opts.link_info_len =3D sizeof(linfo);
++
++	test_task_uprobe_offset_common(&opts, true);
++
++	linfo.task.pid =3D 0;
++	linfo.task.tid =3D getpid();
++	test_task_uprobe_offset_common(&opts, true);
++
++	test_task_uprobe_offset_common(NULL, false);
++}
++
+ void test_bpf_iter(void)
+ {
++	if (!ASSERT_OK(pthread_mutex_init(&do_nothing_mutex, NULL), "pthread_mu=
+tex_init"))
++		return;
++
+ 	if (test__start_subtest("btf_id_or_null"))
+ 		test_btf_id_or_null();
+ 	if (test__start_subtest("ipv6_route"))
+@@ -1337,6 +1583,10 @@ void test_bpf_iter(void)
+ 		test_bpf_map();
+ 	if (test__start_subtest("task"))
+ 		test_task();
++	if (test__start_subtest("task_tgid"))
++		test_task_tgid();
++	if (test__start_subtest("task_pidfd"))
++		test_task_pidfd();
+ 	if (test__start_subtest("task_sleepable"))
+ 		test_task_sleepable();
+ 	if (test__start_subtest("task_stack"))
+@@ -1397,4 +1647,6 @@ void test_bpf_iter(void)
+ 		test_ksym_iter();
+ 	if (test__start_subtest("bpf_sockmap_map_iter_fd"))
+ 		test_bpf_sockmap_map_iter_fd();
++	if (test__start_subtest("uprobe_offset"))
++		test_task_uprobe_offset();
+ }
+diff --git a/tools/testing/selftests/bpf/prog_tests/btf_dump.c b/tools/te=
+sting/selftests/bpf/prog_tests/btf_dump.c
+index 5fce7008d1ff..32c34ce9cbeb 100644
+--- a/tools/testing/selftests/bpf/prog_tests/btf_dump.c
++++ b/tools/testing/selftests/bpf/prog_tests/btf_dump.c
+@@ -764,7 +764,7 @@ static void test_btf_dump_struct_data(struct btf *btf=
+, struct btf_dump *d,
+=20
+ 	/* union with nested struct */
+ 	TEST_BTF_DUMP_DATA(btf, d, "union", str, union bpf_iter_link_info, BTF_=
+F_COMPACT,
+-			   "(union bpf_iter_link_info){.map =3D (struct){.map_fd =3D (__u32)1=
+,},}",
++			   "(union bpf_iter_link_info){.map =3D (struct){.map_fd =3D (__u32)1=
+,},.task =3D (struct){.tid =3D (__u32)1,},}",
+ 			   { .map =3D { .map_fd =3D 1 }});
+=20
+ 	/* struct skb with nested structs/unions; because type output is so
+diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_task.c b/tools/te=
+sting/selftests/bpf/progs/bpf_iter_task.c
+index d22741272692..96131b9a1caa 100644
+--- a/tools/testing/selftests/bpf/progs/bpf_iter_task.c
++++ b/tools/testing/selftests/bpf/progs/bpf_iter_task.c
+@@ -6,6 +6,10 @@
+=20
+ char _license[] SEC("license") =3D "GPL";
+=20
++uint32_t tid =3D 0;
++int num_unknown_tid =3D 0;
++int num_known_tid =3D 0;
++
+ SEC("iter/task")
+ int dump_task(struct bpf_iter__task *ctx)
+ {
+@@ -18,6 +22,11 @@ int dump_task(struct bpf_iter__task *ctx)
+ 		return 0;
+ 	}
+=20
++	if (task->pid !=3D tid)
++		num_unknown_tid++;
++	else
++		num_known_tid++;
++
+ 	if (ctx->meta->seq_num =3D=3D 0)
+ 		BPF_SEQ_PRINTF(seq, "    tgid      gid\n");
+=20
+diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_task_file.c b/too=
+ls/testing/selftests/bpf/progs/bpf_iter_task_file.c
+index 6e7b400888fe..b0255080662d 100644
+--- a/tools/testing/selftests/bpf/progs/bpf_iter_task_file.c
++++ b/tools/testing/selftests/bpf/progs/bpf_iter_task_file.c
+@@ -7,14 +7,16 @@ char _license[] SEC("license") =3D "GPL";
+=20
+ int count =3D 0;
+ int tgid =3D 0;
++int last_tgid =3D 0;
++int unique_tgid_count =3D 0;
+=20
+ SEC("iter/task_file")
+ int dump_task_file(struct bpf_iter__task_file *ctx)
+ {
+ 	struct seq_file *seq =3D ctx->meta->seq;
+ 	struct task_struct *task =3D ctx->task;
+-	__u32 fd =3D ctx->fd;
+ 	struct file *file =3D ctx->file;
++	__u32 fd =3D ctx->fd;
+=20
+ 	if (task =3D=3D (void *)0 || file =3D=3D (void *)0)
+ 		return 0;
+@@ -27,6 +29,11 @@ int dump_task_file(struct bpf_iter__task_file *ctx)
+ 	if (tgid =3D=3D task->tgid && task->tgid !=3D task->pid)
+ 		count++;
+=20
++	if (last_tgid !=3D task->tgid) {
++		last_tgid =3D task->tgid;
++		unique_tgid_count++;
++	}
++
+ 	BPF_SEQ_PRINTF(seq, "%8d %8d %8d %lx\n", task->tgid, task->pid, fd,
+ 		       (long)file->f_op);
+ 	return 0;
+diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_task_vma.c b/tool=
+s/testing/selftests/bpf/progs/bpf_iter_task_vma.c
+index 4ea6a37d1345..44f4a31c2ddd 100644
+--- a/tools/testing/selftests/bpf/progs/bpf_iter_task_vma.c
++++ b/tools/testing/selftests/bpf/progs/bpf_iter_task_vma.c
+@@ -20,6 +20,7 @@ char _license[] SEC("license") =3D "GPL";
+ #define D_PATH_BUF_SIZE 1024
+ char d_path_buf[D_PATH_BUF_SIZE] =3D {};
+ __u32 pid =3D 0;
++__u32 one_task =3D 0;
+=20
+ SEC("iter/task_vma") int proc_maps(struct bpf_iter__task_vma *ctx)
+ {
+@@ -33,8 +34,11 @@ SEC("iter/task_vma") int proc_maps(struct bpf_iter__ta=
+sk_vma *ctx)
+ 		return 0;
+=20
+ 	file =3D vma->vm_file;
+-	if (task->tgid !=3D pid)
++	if (task->tgid !=3D pid) {
++		if (one_task)
++			BPF_SEQ_PRINTF(seq, "unexpected task (%d !=3D %d)", task->tgid, pid);
+ 		return 0;
++	}
+ 	perm_str[0] =3D (vma->vm_flags & VM_READ) ? 'r' : '-';
+ 	perm_str[1] =3D (vma->vm_flags & VM_WRITE) ? 'w' : '-';
+ 	perm_str[2] =3D (vma->vm_flags & VM_EXEC) ? 'x' : '-';
+diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_uprobe_offset.c b=
+/tools/testing/selftests/bpf/progs/bpf_iter_uprobe_offset.c
+new file mode 100644
+index 000000000000..825ca86678bd
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/bpf_iter_uprobe_offset.c
+@@ -0,0 +1,35 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
++#include "bpf_iter.h"
++#include <bpf/bpf_helpers.h>
++
++char _license[] SEC("license") =3D "GPL";
++
++__u32 unique_tgid_cnt =3D 0;
++uintptr_t address =3D 0;
++uintptr_t offset =3D 0;
++__u32 last_tgid =3D 0;
++__u32 pid =3D 0;
++
++SEC("iter/task_vma") int get_uprobe_offset(struct bpf_iter__task_vma *ct=
+x)
++{
++	struct vm_area_struct *vma =3D ctx->vma;
++	struct seq_file *seq =3D ctx->meta->seq;
++	struct task_struct *task =3D ctx->task;
++
++	if (task =3D=3D NULL || vma =3D=3D NULL)
++		return 0;
++
++	if (last_tgid !=3D task->tgid)
++		unique_tgid_cnt++;
++	last_tgid =3D task->tgid;
++
++	if (task->tgid !=3D pid)
++		return 0;
++
++	if (vma->vm_start <=3D address && vma->vm_end > address) {
++		offset =3D address - vma->vm_start + (vma->vm_pgoff << 12);
++		BPF_SEQ_PRINTF(seq, "OK\n");
++	}
++	return 0;
++}
 --=20
 2.30.2
 
