@@ -2,123 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3AAA599CA0
-	for <lists+bpf@lfdr.de>; Fri, 19 Aug 2022 15:09:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 080BC599DA2
+	for <lists+bpf@lfdr.de>; Fri, 19 Aug 2022 16:39:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349263AbiHSNF5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Aug 2022 09:05:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33030 "EHLO
+        id S1349528AbiHSObt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Aug 2022 10:31:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348922AbiHSNF4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Aug 2022 09:05:56 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AA0F5D0D4;
-        Fri, 19 Aug 2022 06:05:55 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E1A9761866;
-        Fri, 19 Aug 2022 13:05:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29269C433C1;
-        Fri, 19 Aug 2022 13:05:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660914354;
-        bh=miZ6oqPG1q3ZNV0ucgXlV6pfatEjWryNvNqVONznrCA=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=CCXDNBjVcl95t6o0lHxLOUfzo1yO6QdoJydJrp09z2yCzvBjISWJcQIpE2hdtiufJ
-         ZwMn5mcHZZgsKc4bfkDBhK3PjjqLMV/zbXb9ndNaLrhCjZ3yhHnuHbkgYYSI8Je9Ws
-         dq8Zl+IEeYb79+Q6OvEa6g/jLh1R7Ml4t+pYPWdePMuwbj21jd1bNTXW3ST90AUysc
-         rE4ZBeDOZoRMV5v7kR1N1+Sivr8qbOs0ut33tdsODWsEdGQgf8fRRkwPl1ORSVNJ/t
-         deGb/TJvNd1M3fCYbWY1bi29aaivz2bLudfse00eGpETuWYJhQVT7+LxO2ylWHB8Ol
-         g2FI/f21zSgwg==
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 118D955FC1B; Fri, 19 Aug 2022 15:05:51 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, memxor@gmail.com, pablo@netfilter.org,
-        fw@strlen.de, netfilter-devel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 3/4] bpf: Add support for writing to
- nf_conn:mark
-In-Reply-To: <20220818221032.7b4lcpa7i4gchdvl@kashmir.localdomain>
-References: <cover.1660761470.git.dxu@dxuuu.xyz>
- <edbca42217a73161903a50ba07ec63c5fa5fde00.1660761470.git.dxu@dxuuu.xyz>
- <87pmgxuy6v.fsf@toke.dk>
- <20220818221032.7b4lcpa7i4gchdvl@kashmir.localdomain>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 19 Aug 2022 15:05:51 +0200
-Message-ID: <87wnb4tmc0.fsf@toke.dk>
+        with ESMTP id S231433AbiHSObs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 19 Aug 2022 10:31:48 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2638EA337
+        for <bpf@vger.kernel.org>; Fri, 19 Aug 2022 07:31:47 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id p184so3412039iod.6
+        for <bpf@vger.kernel.org>; Fri, 19 Aug 2022 07:31:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=AjbWubpcUa9YQyhG2E/jmsWbUQjRwTtqNUg4iIKtN+8=;
+        b=C6anqngy5zaJtJIkFBWXsltajPoLTr1rr1XPNtqI2RSKz6tGxTwn9hv98osC5GAcrY
+         zpGwuCHoPTq2zMpxLs28lV+xuWvyk8qajrh/JQPe7p5uT3W4rkRZHAditnhqdrUwfS38
+         IfjbgFXacBkCtHtP2TrHUut2KKtO8Y88MshVC+e7vMgmvnpJBSUPRPsQhh/ja5P1xoDQ
+         Dpkt52pVBkQzJMomL/X48MXR9g0U7bL7QMQLPmjbNpNtG7CcKpNEXB5Qt8h+oqFTJLRt
+         7SEvcA+anHsZdPxQhSEbB9RGorXmK8gLECE7+eu7xGf44hWiq9MRLS4m9QOEi6BYBWJA
+         RNqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=AjbWubpcUa9YQyhG2E/jmsWbUQjRwTtqNUg4iIKtN+8=;
+        b=mzhHSVwKGjsHjpkaquh72WeFZJGNgmCFTByCZm5uyp3p6bweVPZWXMTZE5KSeSRxxm
+         +jDOfyAVqj6yV0ySLJTGTN+55yzTHOSvtfHtzRpMRaJwHnzeY31U0nNjZriwtvAop3Mc
+         LJsrZag+Sv4H/qPVSlYgheYmBssL0ztlwWvM9Hbt/bQM6g7/h5s3tUhtAWgY5U+BFBpn
+         n0EqHiqsV3BZX1p7078DU1KRi4nufbGxzx9ySdVR+dLnjI/CrhpnSj8/uM7osy0zihOm
+         BeDnO/67uj6APsFl0bRWDlPHWX9IaC7Cy8ymB0lPavdWL3+M7jMNPB4IelpDAnc2ypl6
+         ezmA==
+X-Gm-Message-State: ACgBeo207s0wTdOobLEtyYD97MMqIDgJwieCpEMNAh7egF8qRbiyQT5t
+        uHbYqlr09FcPqXOz/GMmEhfybzeM5FkjCoenQKhKLN1J
+X-Google-Smtp-Source: AA6agR6tC4Ut7gTSRB4ZYvcO8nQhbPvmaX07V2qlN6w9X0wA5ZRqEus3zAEtUGqOriIh/asA/sxCAc8EUx9gHr8KZwE=
+X-Received: by 2002:a05:6638:1394:b0:343:6ce7:2849 with SMTP id
+ w20-20020a056638139400b003436ce72849mr3712899jad.231.1660919506896; Fri, 19
+ Aug 2022 07:31:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220817210419.95560-1-alexei.starovoitov@gmail.com>
+ <20220817210419.95560-2-alexei.starovoitov@gmail.com> <CAP01T77L6e=B6OtLcM4bToM5n4+j3S6+p+ieTPtDGUgQUZ3o1Q@mail.gmail.com>
+ <20220818003957.t5lcp636n7we37hk@MacBook-Pro-3.local> <CAP01T74gcYpXXoafBAEaL5a_7FaDdfAwzmoE86pOctzmeeVhmw@mail.gmail.com>
+ <20220818223051.ti3gt7po72c5bqjh@MacBook-Pro-3.local.dhcp.thefacebook.com>
+In-Reply-To: <20220818223051.ti3gt7po72c5bqjh@MacBook-Pro-3.local.dhcp.thefacebook.com>
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date:   Fri, 19 Aug 2022 16:31:11 +0200
+Message-ID: <CAP01T76rn=FrSC9VA=mbEK7QKMu-88uZiiekpn6TqQ_Ea0-u5Q@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 01/12] bpf: Introduce any context BPF specific
+ memory allocator.
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     davem@davemloft.net, daniel@iogearbox.net, andrii@kernel.org,
+        tj@kernel.org, delyank@fb.com, linux-mm@kvack.org,
+        bpf@vger.kernel.org, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Daniel Xu <dxu@dxuuu.xyz> writes:
-
-> Hi Toke,
+On Fri, 19 Aug 2022 at 00:30, Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> On Thu, Aug 18, 2022 at 09:52:08PM +0200, Toke H=C3=B8iland-J=C3=B8rgense=
-n wrote:
->> Daniel Xu <dxu@dxuuu.xyz> writes:
->>=20
->> > Support direct writes to nf_conn:mark from TC and XDP prog types. This
->> > is useful when applications want to store per-connection metadata. This
->> > is also particularly useful for applications that run both bpf and
->> > iptables/nftables because the latter can trivially access this
->> > metadata.
->>=20
->> Looking closer at the nf_conn definition, the mark field (and possibly
->> secmark) seems to be the only field that is likely to be feasible to
->> support direct writes to, as everything else either requires special
->> handling (like status and timeout), or they are composite field that
->> will require helpers anyway to use correctly.
->>=20
->> Which means we're in the process of creating an API where users have to
->> call helpers to fill in all fields *except* this one field that happens
->> to be directly writable. That seems like a really confusing and
->> inconsistent API, so IMO it strengthens the case for just making a
->> helper for this field as well, even though it adds a bit of overhead
->> (and then solving the overhead issue in a more generic way such as by
->> supporting clever inlining).
->>=20
->> -Toke
+> Right. We cannot fail in unit_free().
+> With per-cpu counter both unit_alloc() and free_bulk_nmi() would
+> potentially fail in such unlikely scenario.
+> Not a big deal for free_bulk_nmi(). It would pick the element later.
+> For unit_alloc() return NULL is normal.
+> Especially since it's so unlikely for nmi to hit right in the middle
+> of llist_del_first().
 >
-> I don't particularly have a strong opinion here. But to play devil's
-> advocate:
->
-> * It may be confusing now, but over time I expect to see more direct
->   write support via BTF, especially b/c there is support for unstable
->   helpers now. So perhaps in the future it will seem more sensible.
+> Since we'll add this per-cpu counter to solve interrupted llist_del_first()
+> it feels that the same counter can be used to protect unit_alloc/free/irq_work.
+> Then we don't need free_llist_nmi. Single free_llist would be fine,
+> but unit_free() should not fail. If free_list cannot be accessed
+> due to per-cpu counter being busy we have to push somewhere.
+> So it seems two lists are necessary. Maybe it's still better ?
+> Roughly I'm thinking of the following:
+> unit_alloc()
+> {
+>   llnode = NULL;
+>   local_irq_save();
+>   if (__this_cpu_inc_return(c->alloc_active) != 1))
+>      goto out;
+>   llnode = __llist_del_first(&c->free_llist);
+>   if (llnode)
+>       cnt = --c->free_cnt;
+> out:
+>   __this_cpu_dec(c->alloc_active);
+>   local_irq_restore();
+>   return ret;
+> }
+> unit_free()
+> {
+>   local_irq_save();
+>   if (__this_cpu_inc_return(c->alloc_active) != 1)) {
+>      llist_add(llnode, &c->free_llist_nmi);
+>      goto out;
+>   }
+>   __llist_add(llnode, &c->free_llist);
+>   cnt = ++c->free_cnt;
+> out:
+>   __this_cpu_dec(c->alloc_active);
+>   local_irq_restore();
+>   return ret;
+> }
+> alloc_bulk, free_bulk would be protected by alloc_active as well.
+> alloc_bulk_nmi is gone.
+> free_bulk_nmi is still there to drain unlucky unit_free,
+> but it's now alone to do llist_del_first() and it just frees anything
+> that is in the free_llist_nmi.
+> The main advantage is that free_llist_nmi doesn't need to prefilled.
+> It will be empty most of the time.
+> wdyt?
 
-Right, sure, for other structs. My point was that it doesn't look like
-this particular one (nf_conn) is likely to grow any other members we can
-access directly, so it'll be a weird one-off for that single field...
-
-> * The unstable helpers do not have external documentation. Nor should
->   they in my opinion as their unstableness + stale docs may lead to
->   undesirable outcomes. So users of the unstable API already have to
->   splunk through kernel code and/or selftests to figure out how to wield
->   the APIs. All this to say there may not be an argument for
->   discoverability.
-
-This I don't buy at all. Just because it's (supposedly) "unstable" is no
-excuse to design a bad API, or make it actively user-hostile by hiding
-things so users have to go browse kernel code to know how to use it. So
-in any case, we should definitely document everything.
-
-> * Direct writes are slightly more ergnomic than using a helper.
-
-This is true, and that's the main argument for doing it this way. The
-point of my previous email was that since it's only a single field,
-consistency weighs heavier than ergonomics :)
-
--Toke
+Looks great! The other option would be to not have the overflow
+free_llist_nmi list and just allowing llist_add to free_llist from the
+NMI case even if we interrupt llist_del_first, but then the non-NMI
+user needs to use the atomic llist_add version as well (since we may
+interrupt it), which won't be great for performance. So having the
+extra list is much better.
