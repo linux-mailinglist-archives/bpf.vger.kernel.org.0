@@ -2,155 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A29FC5991A0
-	for <lists+bpf@lfdr.de>; Fri, 19 Aug 2022 02:13:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 567A25991AC
+	for <lists+bpf@lfdr.de>; Fri, 19 Aug 2022 02:21:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237583AbiHSANn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Aug 2022 20:13:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60206 "EHLO
+        id S234164AbiHSAUX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Aug 2022 20:20:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233314AbiHSANk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Aug 2022 20:13:40 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37E3932055;
-        Thu, 18 Aug 2022 17:13:38 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id t5so3797907edc.11;
-        Thu, 18 Aug 2022 17:13:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=zuugaCe8bJg0rqCGIdwkGWMnPVnSYXDZaVtIRZe5O70=;
-        b=IxuYFPA2kPuu5AKOEsyk3Mba0J8ky8pZxI7SD5DX7y6x62RA4TI/Bl5DaeMBi0++J1
-         rkW7Rj+nPbEQRtCYZ6iZehOkd4J+dr/uGAXiE32SXwdfmY+KvSxXPywKegLKGqFrIZ0+
-         mOrRJpP9jxtiHgFIItvSSMg+fNTAz1mCfzGipD8BJ3vlpf5z+qELnkC8vTmVfXO/kebC
-         hVqpIoO1znh0jHmslB6+heyb8jiwHrLxijjac9nxAd5RINKM2ncF14k/a67C7qm2cfLD
-         Y00YqD9r6XwLxieUhlz1GsMkz0W9PuguQ5+2N3DqGQnRYzZl9OiFQu4XEwFrFH41h3vP
-         dDug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=zuugaCe8bJg0rqCGIdwkGWMnPVnSYXDZaVtIRZe5O70=;
-        b=li+kCRfkHg52MD8jOeqDAumD19v+XwJuUifvVQE0TiLGyKLi6S9aHWTOdTvcwMgYPC
-         XS4kp7iz/ynyR3EJ7Jeu5k0OeqQ/XnbwXze0hNQoCZ2rMm22Qe/cG8X+wMoGK34doY3x
-         syzztwrzggS/AWJlAJsvs+igkNGYDaPDc2pGnCLfNEdSG/Evtv8Pz6KQ6c74hUIvzdAJ
-         SbyZnc2f6W/dBPJ/YUiIoo+VC30dCKu1et+bE3VMNl15muguDkh+qT7oAgpe/2uyTt+j
-         qv5iWUtW7xrqXwg/wZQIU/k6V657GuWjoJ2SuhvfuGnG0c67e7AZGmvGQbunpPSVBoW4
-         SgWA==
-X-Gm-Message-State: ACgBeo0xlB7z+3SFuxY/AFy7pl4m/09q6/FfpueXWncfIeUJCbxlbBde
-        1IIFzV1JNmjfCEFULHKB4PZaWoXTtGbm76x+zAw=
-X-Google-Smtp-Source: AA6agR6KwU/18HtaBCplc7jJcPI5CQPQ6IiOEDiRKCacJER1FS4lRHfi9Q90BaVvHOiWKUmnOMt01eOejB20LboFv7E=
-X-Received: by 2002:a05:6402:28cb:b0:43b:c6d7:ef92 with SMTP id
- ef11-20020a05640228cb00b0043bc6d7ef92mr4061786edb.333.1660868016674; Thu, 18
- Aug 2022 17:13:36 -0700 (PDT)
+        with ESMTP id S229899AbiHSAUW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Aug 2022 20:20:22 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78E32CD50A;
+        Thu, 18 Aug 2022 17:20:21 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 383ECB824C5;
+        Fri, 19 Aug 2022 00:20:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id C18F1C433B5;
+        Fri, 19 Aug 2022 00:20:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1660868418;
+        bh=yx70KrwfnfCMvE+PDHRy6VHB/MeiZV40kvte15rPUAg=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=fAALv8eB67EUqcNOjbvie7p126L+9FtJWOslpdbMmE0LG9hvisG2PTVWp8Z6RPxdy
+         r6/xfSkoqBqUv+UGswRMdVmRB5fFaPvcNsnsW/Ggjisz2yHzhqTqfBLgwBcn48m7bO
+         Ve2/tdQejWHt6J7CS8Nb7Hzt9X3fT5MjuwkgMK3i/PACzptbQmgqS/GzJKiD7YyziS
+         9+Kv5ekGyK206r1DIgWjYLfV9YXSuId7zijVip/0O58bR5S6wGahl72JOm3BRjjKxz
+         Zluv6hHcSXzW7/gXx4zyittAOyCZURV6h6VOHT6wZn/HONGTn/CwMAgnLxMKO8Q3r7
+         2UfX4yHLsgORQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A442CE2A05E;
+        Fri, 19 Aug 2022 00:20:18 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <CAADnVQ+H2n5-Gwgq-OZu-WZKRsg=kq7FtOGXJu6YNHoCEBap6w@mail.gmail.com>
- <20220819000645.55413-1-kuniyu@amazon.com>
-In-Reply-To: <20220819000645.55413-1-kuniyu@amazon.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 18 Aug 2022 17:13:25 -0700
-Message-ID: <CAADnVQ+wKkiKo0L5HXiCeqxX+oqegiXBqc7fH+Yj2CG6_ymDKg@mail.gmail.com>
-Subject: Re: [PATCH v1 bpf 1/4] bpf: Fix data-races around bpf_jit_enable.
-To:     Kuniyuki Iwashima <kuniyu@amazon.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kuniyuki Iwashima <kuni1840@gmail.com>,
-        Network Development <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v4 bpf-next 00/15] bpf: net: Remove duplicated code from
+ bpf_setsockopt()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166086841866.5147.15942725423319277338.git-patchwork-notify@kernel.org>
+Date:   Fri, 19 Aug 2022 00:20:18 +0000
+References: <20220817061704.4174272-1-kafai@fb.com>
+In-Reply-To: <20220817061704.4174272-1-kafai@fb.com>
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
+        andrii@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, kernel-team@fb.com,
+        pabeni@redhat.com, sdf@google.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Aug 18, 2022 at 5:07 PM Kuniyuki Iwashima <kuniyu@amazon.com> wrote:
->
-> From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-> Date:   Thu, 18 Aug 2022 15:49:46 -0700
-> > On Wed, Aug 17, 2022 at 9:24 PM Kuniyuki Iwashima <kuniyu@amazon.com> wrote:
-> > >
-> > > A sysctl variable bpf_jit_enable is accessed concurrently, and there is
-> > > always a chance of data-race.  So, all readers and a writer need some
-> > > basic protection to avoid load/store-tearing.
-> > >
-> > > Fixes: 0a14842f5a3c ("net: filter: Just In Time compiler for x86-64")
-> > > Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.com>
-> > > ---
-> > >  arch/arm/net/bpf_jit_32.c        | 2 +-
-> > >  arch/arm64/net/bpf_jit_comp.c    | 2 +-
-> > >  arch/mips/net/bpf_jit_comp.c     | 2 +-
-> > >  arch/powerpc/net/bpf_jit_comp.c  | 5 +++--
-> > >  arch/riscv/net/bpf_jit_core.c    | 2 +-
-> > >  arch/s390/net/bpf_jit_comp.c     | 2 +-
-> > >  arch/sparc/net/bpf_jit_comp_32.c | 5 +++--
-> > >  arch/sparc/net/bpf_jit_comp_64.c | 5 +++--
-> > >  arch/x86/net/bpf_jit_comp.c      | 2 +-
-> > >  arch/x86/net/bpf_jit_comp32.c    | 2 +-
-> > >  include/linux/filter.h           | 2 +-
-> > >  net/core/sysctl_net_core.c       | 4 ++--
-> > >  12 files changed, 19 insertions(+), 16 deletions(-)
-> > >
-> > > diff --git a/arch/arm/net/bpf_jit_32.c b/arch/arm/net/bpf_jit_32.c
-> > > index 6a1c9fca5260..4b6b62a6fdd4 100644
-> > > --- a/arch/arm/net/bpf_jit_32.c
-> > > +++ b/arch/arm/net/bpf_jit_32.c
-> > > @@ -1999,7 +1999,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
-> > >         }
-> > >         flush_icache_range((u32)header, (u32)(ctx.target + ctx.idx));
-> > >
-> > > -       if (bpf_jit_enable > 1)
-> > > +       if (READ_ONCE(bpf_jit_enable) > 1)
-> >
-> > Nack.
-> > Even if the compiler decides to use single byte loads for some
-> > odd reason there is no issue here.
->
-> I see, and same for 2nd/3rd patches, right?
->
-> Then how about this part?
-> It's not data-race nor problematic in practice, but should the value be
-> consistent in the same function?
-> The 2nd/3rd patches also have this kind of part.
+Hello:
 
-The bof_jit_enable > 1 is unsupported and buggy.
-It will be removed eventually.
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-Why are you doing these changes if they're not fixing any bugs ?
-Just to shut up some race sanitizer?
+On Tue, 16 Aug 2022 23:17:04 -0700 you wrote:
+> The code in bpf_setsockopt() is mostly a copy-and-paste from
+> the sock_setsockopt(), do_tcp_setsockopt(), do_ipv6_setsockopt(),
+> and do_ip_setsockopt().  As the allowed optnames in bpf_setsockopt()
+> grows, so are the duplicated code.  The code between the copies
+> also slowly drifted.
+> 
+> This set is an effort to clean this up and reuse the existing
+> {sock,do_tcp,do_ipv6,do_ip}_setsockopt() as much as possible.
+> 
+> [...]
 
-> ---8<---
-> diff --git a/arch/powerpc/net/bpf_jit_comp.c b/arch/powerpc/net/bpf_jit_comp.c
-> index 43e634126514..c71d1e94ee7e 100644
-> --- a/arch/powerpc/net/bpf_jit_comp.c
-> +++ b/arch/powerpc/net/bpf_jit_comp.c
-> @@ -122,6 +122,7 @@ bool bpf_jit_needs_zext(void)
->
->  struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
->  {
-> +       int jit_enable = READ_ONCE(bpf_jit_enable);
->         u32 proglen;
->         u32 alloclen;
->         u8 *image = NULL;
-> @@ -263,13 +264,13 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
->                 }
->                 bpf_jit_build_epilogue(code_base, &cgctx);
->
-> -               if (bpf_jit_enable > 1)
-> +               if (jit_enable > 1)
->                         pr_info("Pass %d: shrink = %d, seen = 0x%x\n", pass,
->                                 proglen - (cgctx.idx * 4), cgctx.seen);
->         }
->
->  skip_codegen_passes:
-> -       if (bpf_jit_enable > 1)
-> +       if (jit_enable > 1)
->                 /*
->                  * Note that we output the base address of the code_base
->                  * rather than image, since opcodes are in code_base.
-> ---8<---
+Here is the summary with links:
+  - [v4,bpf-next,01/15] net: Add sk_setsockopt() to take the sk ptr instead of the sock ptr
+    https://git.kernel.org/bpf/bpf-next/c/4d748f991607
+  - [v4,bpf-next,02/15] bpf: net: Avoid sk_setsockopt() taking sk lock when called from bpf
+    https://git.kernel.org/bpf/bpf-next/c/24426654ed3a
+  - [v4,bpf-next,03/15] bpf: net: Consider has_current_bpf_ctx() when testing capable() in sk_setsockopt()
+    https://git.kernel.org/bpf/bpf-next/c/e42c7beee71d
+  - [v4,bpf-next,04/15] bpf: net: Change do_tcp_setsockopt() to use the sockopt's lock_sock() and capable()
+    https://git.kernel.org/bpf/bpf-next/c/cb388e7ee3a8
+  - [v4,bpf-next,05/15] bpf: net: Change do_ip_setsockopt() to use the sockopt's lock_sock() and capable()
+    https://git.kernel.org/bpf/bpf-next/c/1df055d3c7d9
+  - [v4,bpf-next,06/15] bpf: net: Change do_ipv6_setsockopt() to use the sockopt's lock_sock() and capable()
+    https://git.kernel.org/bpf/bpf-next/c/40cd308ea57c
+  - [v4,bpf-next,07/15] bpf: Initialize the bpf_run_ctx in bpf_iter_run_prog()
+    https://git.kernel.org/bpf/bpf-next/c/2b5a2ecbfdc5
+  - [v4,bpf-next,08/15] bpf: Embed kernel CONFIG check into the if statement in bpf_setsockopt
+    https://git.kernel.org/bpf/bpf-next/c/ebf9e8e65366
+  - [v4,bpf-next,09/15] bpf: Change bpf_setsockopt(SOL_SOCKET) to reuse sk_setsockopt()
+    https://git.kernel.org/bpf/bpf-next/c/29003875bd5b
+  - [v4,bpf-next,10/15] bpf: Refactor bpf specific tcp optnames to a new function
+    https://git.kernel.org/bpf/bpf-next/c/57db31a1a3ad
+  - [v4,bpf-next,11/15] bpf: Change bpf_setsockopt(SOL_TCP) to reuse do_tcp_setsockopt()
+    https://git.kernel.org/bpf/bpf-next/c/0c751f7071ef
+  - [v4,bpf-next,12/15] bpf: Change bpf_setsockopt(SOL_IP) to reuse do_ip_setsockopt()
+    https://git.kernel.org/bpf/bpf-next/c/ee7f1e1302f5
+  - [v4,bpf-next,13/15] bpf: Change bpf_setsockopt(SOL_IPV6) to reuse do_ipv6_setsockopt()
+    https://git.kernel.org/bpf/bpf-next/c/75b64b68ee3f
+  - [v4,bpf-next,14/15] bpf: Add a few optnames to bpf_setsockopt
+    https://git.kernel.org/bpf/bpf-next/c/7e41df5dbba2
+  - [v4,bpf-next,15/15] selftests/bpf: bpf_setsockopt tests
+    https://git.kernel.org/bpf/bpf-next/c/31123c0360e0
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
