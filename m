@@ -2,233 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6699D5997C2
-	for <lists+bpf@lfdr.de>; Fri, 19 Aug 2022 10:50:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09A41599805
+	for <lists+bpf@lfdr.de>; Fri, 19 Aug 2022 11:06:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347221AbiHSIhn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Aug 2022 04:37:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56288 "EHLO
+        id S1347665AbiHSJCM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Aug 2022 05:02:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347181AbiHSIhG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Aug 2022 04:37:06 -0400
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13E2D5FA6;
-        Fri, 19 Aug 2022 01:35:30 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Y1vUvFLA10W1np5XcIkWv/stTdGSx9v9Z+qP+aAtivpwksmyzQFl2M8qxeyLEFJcNa4fscs/tkHTs9yHrTSH9ave2Ew58F8JjPSgDXEZo8yfAdbC9x6NpOw1i0xWTHh+fGZZUgKwwDzty/LQrLfY2VfblcjW9MpbSuSxVxouAoP3dXdC7QFkr3rZc/vCUY6o1na4hc5fsxBKZwwpMhm6bPG59BEVvyntQ/m6BxIr/9TyunlkAp+74VTPDf0bKa+nKJ3GW6Ho9+Vrdp1zvWZmNjZoptUewduhAcKR/uAouT/IGt11HS4KkaywjP45D/YLBKOlHCwLdfm/dwA7wzUJaw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=XZqmRHrBxfcL4TlU5UIwNAlzmikWH7UTvbJuk3jZfas=;
- b=E8Qe82gfaVY93lc+S2qGGD4yvAUZCjZXjEl8OLQGZAiN+UgmHlEhqLvBCVtLh7+OpSEhao4WkXYGi8pUW/cjdO1bVRO4JsTJo8eKycMO174RjbkuYpihhJAna8DtjuMcdAUpLv6zn0KJgdhfHp/QcQYy7l0Txgre5bWv9KBSnVJaot7UBN8R+xBTa6rEnly5gyqQAJaePKj4x3PJbYZ+X732dR9nYceSCMb+ovBIkqFi8iyarRYUSvkLsFQcSu+1YvrdUB7proq3Tp21kpQ3BdAyPLY6WXqonQ1XS0QqM/+eUcyHRC5694wVoAk4gW7LHuc5gpR/IX3tmD8OlFpOLA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XZqmRHrBxfcL4TlU5UIwNAlzmikWH7UTvbJuk3jZfas=;
- b=ru25hWLugn5hYFkQyZRH73WJTpP8daxvBT5FGliLc+vP7gfOZWC7JIK60UX8oDm+4IDYrKHkAg5jSc1Ltujz/JzTM7Lnihfy2RJxTB7bthe2F1hQ9U+Xb8b9QnHItoYgCIOCc7bcqvqvGGBrO3jxpUos3sKoQF8g8H61+gvQpZ31Hon3pqVN0MqZvo/5v2ImTUG9lrhm2IyfGcN20zQ3f5NmmRgSe3iZcIOctwAZuo6yudlb1VVXP36XxC7/yIp7X5lmB8NZfTqXy9oh7phx1kVdbFYvuWKOUuZIvz81q5+eaHzAFR2wYnPvrSYM9tafhgFt8fwTs0kjR9vnljjC/A==
-Received: from DM4PR12MB5150.namprd12.prod.outlook.com (2603:10b6:5:391::23)
- by DM4PR12MB5793.namprd12.prod.outlook.com (2603:10b6:8:60::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5546.18; Fri, 19 Aug
- 2022 08:35:29 +0000
-Received: from DM4PR12MB5150.namprd12.prod.outlook.com
- ([fe80::205d:65ed:1439:d135]) by DM4PR12MB5150.namprd12.prod.outlook.com
- ([fe80::205d:65ed:1439:d135%9]) with mapi id 15.20.5525.019; Fri, 19 Aug 2022
- 08:35:29 +0000
-From:   Maxim Mikityanskiy <maximmi@nvidia.com>
-To:     "bjorn@kernel.org" <bjorn@kernel.org>,
-        "maciej.fijalkowski@intel.com" <maciej.fijalkowski@intel.com>,
-        "magnus.karlsson@intel.com" <magnus.karlsson@intel.com>
-CC:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        "alexandr.lobakin@intel.com" <alexandr.lobakin@intel.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Re: [PATCH v2 bpf-next 00/14] xsk: stop NAPI Rx processing on full
- XSK RQ
-Thread-Topic: [PATCH v2 bpf-next 00/14] xsk: stop NAPI Rx processing on full
- XSK RQ
-Thread-Index: AQHYT0tpbpOS7hf0yU2uZi+ifIWmea22rq2A
-Date:   Fri, 19 Aug 2022 08:35:29 +0000
-Message-ID: <24044113385d101cc2c3833a01d0ca93482214d1.camel@nvidia.com>
-References: <20220413153015.453864-1-maciej.fijalkowski@intel.com>
-In-Reply-To: <20220413153015.453864-1-maciej.fijalkowski@intel.com>
-Accept-Language: en-US, ru-RU
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.44.1-0ubuntu1 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: ec4c8001-acdb-4fc6-d4c8-08da81bdc5c1
-x-ms-traffictypediagnostic: DM4PR12MB5793:EE_
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: K1ayKps+Ly5O7+1woUsn0yCpoqumXcWfx58uzAIYjXBe64HyCEfCAr7s2MPGOji3GalnLAvgILqLmkvIdQZmsiMMnpo6PA8tQ5+If7aZx3Ar6RkprvjqjAdQIiw4JVnXMnKvIDK2MfcRkcDyORwGx/9jauDo+gicwbqfxiX/8NR62QRId4jJPmqhEfFtk3Zn297f97IVsILagQ+0+2BsgSFij548nGuXElRm5g000V4U9Luqh4UbrJC4CBGaKNtCIFRzAd9Rah4bffkNaTp437V5zXB1hBN8xy05vv9hr5n0uxJSfKO9yp1s3km9uz2g+cInYp48gWjJxcXRrV1JvPhAWFELNcBIO4UzY+cCOdcjSbzM6NCyqRTCasXqY7+pqSk9qf5YYmN88FkwXNysk/1ViLrgRqy/3BZQMaXj2+yOuO6cSN+C2gmKhVZQmgJMEHq+JCrwBujhov2jFQoEiSsknd40EPssSg2Q+iEysoyURWfUhl1U4q0cMTGZ/DKJbgz0CWI/70dEAo68EOY7o+smHb2829CZZcUncu9Eb4vn3s0/crjqpiUxgBj0RpUk/EofyZeK4zGIbOvgrkaHjeRsKw5C64dwB4Ri0b8DxDeu0ZQHTvrpn/Yp/VgwargdGaq2QfS1Q67xwKO4qWHl9yDe6PCug7dff2zNEzFgpfR03RKwnnpnStSo8EyLnBVIHz8ZdMVMhNmhU2TdhYYA0+40HwlUA/K3FOMl39GdnsqTozMkV97cFdULnR44zEw1798733TLGg9e879PGgyPeHU1iQGdDiacSFWOmEDGqG+XAxgrlBbMIBtNQVaDrSTkO2ICugePZpgaXTsJW8zNuGPTh783m8nF8P6w1cUYt6ngtFGc5p6msYZJzUMvBkYiPoVE+OXcq4PX/7UOW1mhXw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5150.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(346002)(396003)(136003)(366004)(376002)(39860400002)(478600001)(966005)(6486002)(4326008)(110136005)(54906003)(316002)(76116006)(91956017)(8676002)(66946007)(64756008)(66556008)(66476007)(66446008)(38100700002)(38070700005)(5660300002)(8936002)(86362001)(2906002)(122000001)(66574015)(83380400001)(41300700001)(186003)(71200400001)(36756003)(6506007)(6512007)(2616005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?eVJKOVdTWDUrQkZaZlR5TElXcWtXbzgvS3hURk5OTVZEUGkzTFcrYTAxbUNQ?=
- =?utf-8?B?MTJQSmdZdVM0SmRGT0t4TkJ0Z1hVVS9GeGtIbXN0WDY0bUkvL0tqK1k4Rk91?=
- =?utf-8?B?SzArcGRzRWNBdUtLUUZjYVhIK3QzelNxcHczQ01xZ3NwRVAzYStwWkQvVW9r?=
- =?utf-8?B?RXhCckhFektSaVdMZllqVmRCd2tPNlUvUHdzbnllb2JVTVUxWTNtOVgxNThR?=
- =?utf-8?B?dk5OVHh2WDYwOW1DaHVoSFNpU1F4OVVJK2lydUluNWdRMElzbzFOYVo5VDJx?=
- =?utf-8?B?VHFENzdNNUZlU1NoeVBOaDBiWURYYmYzcGVEckI3eTlDMk5LNktTTHRVWEx5?=
- =?utf-8?B?R3BWdjB0R1dSTFJhcG5md1Z0cmRKeFFjTm1WODhqaDRHeXc3ZmlhdXkzb3V3?=
- =?utf-8?B?WkJKTGMvV1lTM3BybEhuWXJ6K3JPTFZTcDFra3BKS0N4d0tBa1Z4TUNtL2FH?=
- =?utf-8?B?TVdFY0lENDR1ZWc1THIwcTc0V2FjWGFTeklpUkVIc281UG5ZK0gwT1F3bzlT?=
- =?utf-8?B?TGFkd094eXc1WGpvNHZpY1V4NEsva1NiUlZkaTdVcHNYL1VVSDBnTXdhWWFM?=
- =?utf-8?B?c0xMZFVkQ0RpNFMzeDNsUGp5cjFmS2hveXU5cDlmSE9hT2pVdlM2VWdKVlpL?=
- =?utf-8?B?RUs1UGl5aCtzWnlKQVdMZDlVM0dEd1ZhYmU5Skt3QXptZk9XMTdORnlnb0sw?=
- =?utf-8?B?SHAzeVB2T1hjc1gvWllORUdVaVhlUWVqTWVYeDNkRkdZNEhEaEVxNW5pMnRl?=
- =?utf-8?B?U0Qxdmw3OG1CcXY1MWRuZ0Zsd1Z1N2ZoS01SaTJPN1hWVU1BRjhUWEE3VkFW?=
- =?utf-8?B?TUZtUlp4WDI5QnYya0l0OHRmZWhRb1U0VlYyVUV3b3VieitVTWd3Qnkwb25G?=
- =?utf-8?B?MDJjV3crZnpoOFF0SjhCb2YwWHdOVy8rb0FERlBzcVdybVlMRitEcUNoZG1L?=
- =?utf-8?B?N0V1YUVWYjloTEF2b0lpeTF2SjAxZVVuaG5oQldDUGNLM1EyWmV3eXpxdkFX?=
- =?utf-8?B?UVZsR29oWnNKV2RYVUU4MStEMmN2QTBtaXBxMmRLczZhQ0hVVzZkS1phSWJ0?=
- =?utf-8?B?eFA4Z3JGbUVodnp2Q1NJZ054RjdtR0VENVhpK1M0U0c1c3JXZ0NDcldxbERM?=
- =?utf-8?B?Z0E0Q2VpL2VwbFgxY085UWJKYTMyNU05Zy83bDA5Wmt1UVk4Wjh5SmRHNnRB?=
- =?utf-8?B?VVZBM0ZodjlBSUIvbjZaNm1DNjVGUWpqUGdNejNSL3VPYTdLNnRJMnV5MFBo?=
- =?utf-8?B?RHJwTThXN2tDTlhadXdhU1BoLzdLMURjOUtETnJzREpBWTV4RTVMUGhtL0lL?=
- =?utf-8?B?dm1sbEYzNEd6QmxvQW5mLzRQZlNlcURXTTdvd1luOUJGZzRLZmdFQW5GWncw?=
- =?utf-8?B?OVc3dEQ4MEVGOWtScUY1Nm1IZjQwUW5pN1VkeDBIaitUbkZhTWl0cG9aTGVx?=
- =?utf-8?B?Q1RoN3JwbXJnd2Ivdktic00zQThUMHA3VCtOSnkyTXhzVVBVdTRLTG1sQmVn?=
- =?utf-8?B?TThLU0pHTWtUUVQzd05uRTUzQ1JFTTFOUmhMY0pLWGpPL0FXQ3NqOVQvYVQy?=
- =?utf-8?B?Zk5YNnJzUEh3c1Jib041NGlKMEo5Q2hKU1YzVGdPYXNzT2gvTEl2M25yRWZz?=
- =?utf-8?B?ckFuY3QvaDFRdHhMNk13dGdqUUxQYndoZUFPUEJNRWM3ZG0rWG1XY1B0Q0Yv?=
- =?utf-8?B?V2ZKWG96M0FSSmlJVUplUUpld1QrZmJLRnFrdk9sNFlicTV3SElZRHlOcFpG?=
- =?utf-8?B?b3RjbFgzL0FQbk1YMkZGZVE5eUVrbHErbVdrMlJ1TnU1SEV1aE0yWHVRdFov?=
- =?utf-8?B?ZEROYjdNeDZWTTRVZ3I3QjRhT05ManJ3YzN3SDlqWTNPWEZBVjkvMTg0MUhi?=
- =?utf-8?B?azNIZ0g4cXZkVzBNZk0xZ01qdlBFZll6eG4vWnVDWDExdEJNK2JuZG1SK25n?=
- =?utf-8?B?c0txQkpOUEp1WjNhREcyRE5kZDdCd3RNR3ZEbjl6Y2Fya0d4UWdxUUxwTVhP?=
- =?utf-8?B?V3RmbEplYXExMi8vWks2SFloNjJCV1B5eElFbG9YcjF3bXBEM2JCOFp5M2tV?=
- =?utf-8?B?cWgyUGwxQVJwQVVhNGVQNldMRk0wUUJLeFQ3ZjI1OGdsRXVqa2JGeVBqRU9p?=
- =?utf-8?B?Vi96Znd4UFNzbnZmZVZNQlg3cjVkWGNFWW1BajRycC8zVzdlWVlMV0UzZk5I?=
- =?utf-8?B?d2czYjhrckhHcHBWTGFkR08yVm8vYWhXYW5rd2crajVqTHczYmhTS2ZIZTVk?=
- =?utf-8?B?YTNRdmd1VjJXTW5pcjlRTnp1eUFnPT0=?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <77EA8B52C8609348A90E8EA8073B9EC2@namprd12.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        with ESMTP id S1347025AbiHSJCK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 19 Aug 2022 05:02:10 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C686F23C1
+        for <bpf@vger.kernel.org>; Fri, 19 Aug 2022 02:02:08 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id qn6so7592569ejc.11
+        for <bpf@vger.kernel.org>; Fri, 19 Aug 2022 02:02:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc;
+        bh=FnOgTS6P6pkWF5l/Qts2hE9FfSfpoGbi274HGSdbW7o=;
+        b=OC8t7wut7ZnT38rvXfRAL725WAKWB283zuSuHMRJ6w8hCkHqFuXNvfRRlNhsHfaFz6
+         53C1FTjX3PhJg0JP9Y28vTV51MIfdhSvXWmEhcYeUwX/fjFEfMF886wHk4aKWR9Z0r/p
+         ia8DqP5V2oMuTgikVhH69F68VgiaIucnvr6KA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc;
+        bh=FnOgTS6P6pkWF5l/Qts2hE9FfSfpoGbi274HGSdbW7o=;
+        b=cybe8wRHaxB3lXPYa1jjV61GtwkDaLtjsK5AN0jul71EkFxaqF0R9xlHK0k+zCNIgN
+         kXS78NcijgqYiLoUbsyipd5qYcD4VkYKKMuHa4A9SkVv87TVfDsCsYe9iAgv+LX8BTNH
+         q926HUvJIfjq+viwxObEbYMIYwyMiWbdC5DOkFs0w2kgH7jIiHUNs0khpU1I4s6bRwAF
+         LjeqbboQDArD1zMh53Ho/HB5/dkQ7Ffodc9Bhx0dyMOuv/I1F6afYMbgwiXWAijf0Mxh
+         1rauaLM89sJoDh++JM8+kd0cKP2kDLOEebfOhtwphBTWTFps9JmAac/znmCjaTFQSvpK
+         yURA==
+X-Gm-Message-State: ACgBeo38vNacJO5j/X3IyElXRB/x2m6zXb2X4J3BZMSycqXL93Os/MKS
+        b88SAu+Fl5mgQDuc2oTuKXLsUQ==
+X-Google-Smtp-Source: AA6agR5RsAcNC/Oy7xOLVP3CV0POALsMhEjvmgOX8bKKzv6dyB9ehVItD0yIV2593F1df10T/1HzmQ==
+X-Received: by 2002:a17:907:1688:b0:730:b3ae:347 with SMTP id hc8-20020a170907168800b00730b3ae0347mr4230354ejc.756.1660899726913;
+        Fri, 19 Aug 2022 02:02:06 -0700 (PDT)
+Received: from cloudflare.com (79.184.200.53.ipv4.supernova.orange.pl. [79.184.200.53])
+        by smtp.gmail.com with ESMTPSA id u18-20020a1709061db200b00726c0e63b94sm2020308ejh.27.2022.08.19.02.02.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Aug 2022 02:02:06 -0700 (PDT)
+References: <20220815023343.295094-1-liujian56@huawei.com>
+ <20220815023343.295094-2-liujian56@huawei.com>
+User-agent: mu4e 1.6.10; emacs 27.2
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Liu Jian <liujian56@huawei.com>, john.fastabend@gmail.com,
+        edumazet@google.com
+Cc:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        kuba@kernel.org, pabeni@redhat.com, andrii@kernel.org,
+        mykolal@fb.com, ast@kernel.org, daniel@iogearbox.net,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, shuah@kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next 1/2] sk_msg: Keep reference on socket file
+ while wait_memory
+Date:   Fri, 19 Aug 2022 10:39:07 +0200
+In-reply-to: <20220815023343.295094-2-liujian56@huawei.com>
+Message-ID: <871qtc1u9e.fsf@cloudflare.com>
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5150.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ec4c8001-acdb-4fc6-d4c8-08da81bdc5c1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Aug 2022 08:35:29.2650
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 5IxGTFpigJ1H3s+2bZWNUB7HalpqnvQqAHDwLkzpyDdG6UkGln+qc8Z1yOBRXahr4BGRAtIDXIiftwcSS1nE/w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5793
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-SGkgTWFjaWVqLA0KDQpPbiBXZWQsIDIwMjItMDQtMTMgYXQgMTc6MzAgKzAyMDAsIE1hY2llaiBG
-aWphbGtvd3NraSB3cm90ZToNCj4gdjI6DQo+IC0gYWRkIGxpa2VseSBmb3IgaW50ZXJuYWwgcmVk
-aXJlY3QgcmV0dXJuIGNvZGVzIGluIGljZSBhbmQgaXhnYmUNCj4gICAoSmVzcGVyKQ0KPiAtIGRv
-IG5vdCBkcm9wIHRoZSBidWZmZXIgdGhhdCBoZWFkIHBvaW50ZWQgdG8gYXQgZnVsbCBYU0sgUlEg
-KE1heGltKQ0KDQpJIGZvdW5kIGFuIGlzc3VlIHdpdGggdGhpcyBhcHByb2FjaC4gSWYgeW91IGRv
-bid0IGRyb3AgdGhhdCBwYWNrZXQsDQp5b3UnbGwgbmVlZCB0byBydW4gdGhlIFhEUCBwcm9ncmFt
-IGZvciB0aGUgc2FtZSBwYWNrZXQgYWdhaW4uIElmIHRoZQ0KWERQIHByb2dyYW0gaXMgYW55dGhp
-bmcgbW9yZSBjb21wbGV4IHRoYW4gInJlZGlyZWN0LWV2ZXJ5dGhpbmctdG8tWFNLIiwNCml0IHdp
-bGwgZ2V0IGNvbmZ1c2VkLCBmb3IgZXhhbXBsZSwgaWYgaXQgdHJhY2tzIGFueSBzdGF0ZSBvciBj
-b3VudHMNCmFueXRoaW5nLg0KDQpXZSBjYW4ndCBjaGVjayB3aGV0aGVyIHRoZXJlIGlzIGVub3Vn
-aCBzcGFjZSBpbiB0aGUgWFNLIFJYIHJpbmcgYmVmb3JlDQpydW5uaW5nIHRoZSBYRFAgcHJvZ3Jh
-bSwgYXMgd2UgZG9uJ3Qga25vdyBpbiBhZHZhbmNlIHdoaWNoIFhTSyBzb2NrZXQNCndpbGwgYmUg
-c2VsZWN0ZWQuDQoNCldlIGNhbid0IHN0b3JlIGJwZl9yZWRpcmVjdF9pbmZvIGFjcm9zcyBOQVBJ
-IGNhbGxzIHRvIGF2b2lkIHJ1bm5pbmcgdGhlDQpYRFAgcHJvZ3JhbSBzZWNvbmQgdGltZSwgYXMg
-YnBmX3JlZGlyZWN0X2luZm8gaXMgcHJvdGVjdGVkIGJ5IFJDVSBhbmQNCnRoZSBhc3N1bXB0aW9u
-IHRoYXQgdGhlIHdob2xlIFhEUF9SRURJUkVDVCBvcGVyYXRpb24gaGFwcGVucyB3aXRoaW4gb25l
-DQpOQVBJIGN5Y2xlLg0KDQpJIHNlZSB0aGUgZm9sbG93aW5nIG9wdGlvbnM6DQoNCjEuIERyb3Ag
-dGhlIHBhY2tldCB3aGVuIGFuIG92ZXJmbG93IGhhcHBlbnMuIFRoZSBwcm9ibGVtIGlzIHRoYXQg
-aXQNCndpbGwgaGFwcGVuIHN5c3RlbWF0aWNhbGx5LCBidXQgaXQncyBzdGlsbCBiZXR0ZXIgdGhh
-biB0aGUgb2xkIGJlaGF2aW9yDQooZHJvcCBtdWxpdHBsZSBwYWNrZXRzIHdoZW4gYW4gb3ZlcmZs
-b3cgaGFwcGVucyBhbmQgaG9nIHRoZSBDUFUpLg0KDQoyLiBNYWtlIHRoaXMgZmVhdHVyZSBvcHQt
-aW4uIElmIHRoZSBhcHBsaWNhdGlvbiBvcHRzIGluLCBpdCBndWFyYW50ZWVzDQp0byB0YWtlIG1l
-YXN1cmVzIHRvIGhhbmRsZSBkdXBsaWNhdGUgcGFja2V0cyBpbiBYRFAgcHJvcGVybHkuDQoNCjMu
-IFJlcXVpcmUgdGhlIFhEUCBwcm9ncmFtIHRvIGluZGljYXRlIGl0IHN1cHBvcnRzIGJlaW5nIGNh
-bGxlZA0KbXVsdGlwbGUgdGltZXMgZm9yIHRoZSBzYW1lIHBhY2tldCBhbmQgcGFzcyBhIGZsYWcg
-dG8gaXQgaWYgaXQncyBhDQpyZXBlYXRlZCBydW4uIERyb3AgdGhlIHBhY2tldCBpbiB0aGUgZHJp
-dmVyIGlmIHRoZSBYRFAgcHJvZ3JhbSBkb2Vzbid0DQppbmRpY2F0ZSB0aGlzIHN1cHBvcnQuIFRo
-ZSBpbmRpY2F0aW9uIGNhbiBiZSBkb25lIHNpbWlsYXIgdG8gaG93IGl0J3MNCmltcGxlbWVudGVk
-IGZvciBYRFAgbXVsdGkgYnVmZmVyLg0KDQpUaG91Z2h0cz8gT3RoZXIgb3B0aW9ucz8NCg0KVGhh
-bmtzLA0KTWF4DQoNCj4gLSB0ZXJtaW5hdGUgUnggbG9vcCBvbmx5IHdoZW4gbmVlZF93YWtldXAg
-ZmVhdHVyZSBpcyBlbmFibGVkIChNYXhpbSkNCj4gLSByZXdvcmQgZnJvbSAnc3RvcCBzb2Z0aXJx
-IHByb2Nlc3NpbmcnIHRvICdzdG9wIE5BUEkgUnggcHJvY2Vzc2luZycNCj4gLSBzL0VOWElPL0VJ
-TlZBTCBpbiBtbHg1IGFuZCBzdG1tYWMncyBuZG9feHNrX3dha2V1cCB0byBrZWVwIGl0DQo+ICAg
-Y29uc2l0ZW50IHdpdGggSW50ZWwncyBkcml2ZXJzIChNYXhpbSkNCj4gLSBpbmNsdWRlIEplc3Bl
-cidzIEFja3MNCj4gDQo+IEhpIQ0KPiANCj4gVGhpcyBpcyBhIHJldml2YWwgb2YgQmpvcm4ncyBp
-ZGVhIFswXSB0byBicmVhayBOQVBJIGxvb3Agd2hlbiBYU0sgUngNCj4gcXVldWUgZ2V0cyBmdWxs
-IHdoaWNoIGluIHR1cm4gbWFrZXMgaXQgaW1wb3NzaWJsZSB0byBrZWVwIG9uDQo+IHN1Y2Nlc3Nm
-dWxseSBwcm9kdWNpbmcgZGVzY3JpcHRvcnMgdG8gWFNLIFJ4IHJpbmcuIEJ5IGJyZWFraW5nIG91
-dCBvZg0KPiB0aGUgZHJpdmVyIHNpZGUgaW1tZWRpYXRlbHkgd2Ugd2lsbCBnaXZlIHRoZSB1c2Vy
-IHNwYWNlIG9wcG9ydHVuaXR5IGZvcg0KPiBjb25zdW1pbmcgZGVzY3JpcHRvcnMgZnJvbSBYU0sg
-UnggcmluZyBhbmQgdGhlcmVmb3JlIHByb3ZpZGUgcm9vbSBpbiB0aGUNCj4gcmluZyBzbyB0aGF0
-IEhXIFJ4IC0+IFhTSyBSeCByZWRpcmVjdGlvbiBjYW4gYmUgZG9uZS4NCj4gDQo+IE1heGltIGFz
-a2VkIGFuZCBKZXNwZXIgYWdyZWVkIG9uIHNpbXBsaWZ5aW5nIEJqb3JuJ3Mgb3JpZ2luYWwgQVBJ
-IHVzZWQNCj4gZm9yIGRldGVjdGluZyB0aGUgZXZlbnQgb2YgaW50ZXJlc3QsIHNvIGxldCdzIGp1
-c3Qgc2ltcGx5IGNoZWNrIGZvcg0KPiAtRU5PQlVGUyB3aXRoaW4gSW50ZWwncyBaQyBkcml2ZXJz
-IGFmdGVyIGFuIGF0dGVtcHQgdG8gcmVkaXJlY3QgYSBidWZmZXINCj4gdG8gWFNLIFJ4LiBObyBy
-ZWFsIG5lZWQgZm9yIHJlZGlyZWN0IEFQSSBleHRlbnNpb24uDQo+IA0KPiBPbmUgbWlnaHQgYXNr
-IHdoeSBpdCBpcyBzdGlsbCByZWxldmFudCBldmVuIGFmdGVyIGhhdmluZyBwcm9wZXIgYnVzeQ0K
-PiBwb2xsIHN1cHBvcnQgaW4gcGxhY2UgLSBoZXJlIGlzIHRoZSBqdXN0aWZpY2F0aW9uLg0KPiAN
-Cj4gRm9yIHhkcHNvY2sgdGhhdCB3YXM6DQo+IC0gcnVuIGZvciBsMmZ3ZCBzY2VuYXJpbywNCj4g
-LSBhcHAvZHJpdmVyIHByb2Nlc3NpbmcgdG9vayBwbGFjZSBvbiB0aGUgc2FtZSBjb3JlIGluIGJ1
-c3kgcG9sbA0KPiAgIHdpdGggMjA0OCBidWRnZXQsDQo+IC0gSFcgcmluZyBzaXplcyBUeCAyNTYs
-IFJ4IDIwNDgsDQo+IA0KPiB0aGlzIHdvcmsgaW1wcm92ZWQgdGhyb3VnaHB1dCBieSA3OCUgYW5k
-IHJlZHVjZWQgUnggcXVldWUgZnVsbCBzdGF0aXN0aWMNCj4gYnVtcCBieSA5OSUuDQo+IA0KPiBG
-b3IgdGVzdGluZyBpY2UsIG1ha2Ugc3VyZSB0aGF0IHlvdSBoYXZlIFsxXSBwcmVzZW50IG9uIHlv
-dXIgc2lkZS4NCj4gDQo+IFRoaXMgc2V0LCBiZXNpZGVzIHRoZSB3b3JrIGRlc2NyaWJlZCBhYm92
-ZSwgY2FycmllcyBhbHNvIGltcHJvdmVtZW50cw0KPiBhcm91bmQgcmV0dXJuIGNvZGVzIGluIHZh
-cmlvdXMgWFNLIHBhdGhzIGFuZCBsYXN0bHkgYSBtaW5vciBvcHRpbWl6YXRpb24NCj4gZm9yIHhz
-a3FfY29uc19oYXNfZW50cmllcygpLCBhIGhlbHBlciB0aGF0IG1pZ2h0IGJlIHVzZWQgd2hlbiBY
-U0sgUngNCj4gYmF0Y2hpbmcgd291bGQgbWFrZSBpdCB0byB0aGUga2VybmVsLg0KPiANCj4gTGlu
-ayB0byB2MSBhbmQgZGlzY3Vzc2lvbiBhcm91bmQgaXQgaXMgYXQgWzJdLg0KPiANCj4gVGhhbmtz
-IQ0KPiBNRg0KPiANCj4gWzBdOiBodHRwczovL2xvcmUua2VybmVsLm9yZy9icGYvMjAyMDA5MDQx
-MzUzMzIuNjAyNTktMS1iam9ybi50b3BlbEBnbWFpbC5jb20vDQo+IFsxXTogaHR0cHM6Ly9sb3Jl
-Lmtlcm5lbC5vcmcvbmV0ZGV2LzIwMjIwMzE3MTc1NzI3LjM0MDI1MS0xLW1hY2llai5maWphbGtv
-d3NraUBpbnRlbC5jb20vDQo+IFsyXTogaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvYnBmLzU4NjQx
-NzFiLTFlMDgtMWI1MS0wMjZlLTVmMDliODk0NTA3NkBudmlkaWEuY29tL1QvDQo+IA0KPiBCasO2
-cm4gVMO2cGVsICgxKToNCj4gICB4c2s6IGltcHJvdmUgeGRwX2RvX3JlZGlyZWN0KCkgZXJyb3Ig
-Y29kZXMNCj4gDQo+IE1hY2llaiBGaWphbGtvd3NraSAoMTMpOg0KPiAgIHhzazogZGl2ZXJzaWZ5
-IHJldHVybiBjb2RlcyBpbiB4c2tfcmN2X2NoZWNrKCkNCj4gICBpY2U6IHhzazogZGVjb3JhdGUg
-SUNFX1hEUF9SRURJUiB3aXRoIGxpa2VseSgpDQo+ICAgaXhnYmU6IHhzazogZGVjb3JhdGUgSVhH
-QkVfWERQX1JFRElSIHdpdGggbGlrZWx5KCkNCj4gICBpY2U6IHhzazogdGVybWluYXRlIFJ4IHNp
-ZGUgb2YgTkFQSSB3aGVuIFhTSyBSeCBxdWV1ZSBnZXRzIGZ1bGwNCj4gICBpNDBlOiB4c2s6IHRl
-cm1pbmF0ZSBSeCBzaWRlIG9mIE5BUEkgd2hlbiBYU0sgUnggcXVldWUgZ2V0cyBmdWxsDQo+ICAg
-aXhnYmU6IHhzazogdGVybWluYXRlIFJ4IHNpZGUgb2YgTkFQSSB3aGVuIFhTSyBSeCBxdWV1ZSBn
-ZXRzIGZ1bGwNCj4gICBpY2U6IHhzazogZGl2ZXJzaWZ5IHJldHVybiB2YWx1ZXMgZnJvbSB4c2tf
-d2FrZXVwIGNhbGwgcGF0aHMNCj4gICBpNDBlOiB4c2s6IGRpdmVyc2lmeSByZXR1cm4gdmFsdWVz
-IGZyb20geHNrX3dha2V1cCBjYWxsIHBhdGhzDQo+ICAgaXhnYmU6IHhzazogZGl2ZXJzaWZ5IHJl
-dHVybiB2YWx1ZXMgZnJvbSB4c2tfd2FrZXVwIGNhbGwgcGF0aHMNCj4gICBtbHg1OiB4c2s6IGRp
-dmVyc2lmeSByZXR1cm4gdmFsdWVzIGZyb20geHNrX3dha2V1cCBjYWxsIHBhdGhzDQo+ICAgc3Rt
-bWFjOiB4c2s6IGRpdmVyc2lmeSByZXR1cm4gdmFsdWVzIGZyb20geHNrX3dha2V1cCBjYWxsIHBh
-dGhzDQo+ICAgaWNlOiB4c2s6IGF2b2lkIHJlZmlsbGluZyBzaW5nbGUgUnggZGVzY3JpcHRvcnMN
-Cj4gICB4c2s6IGRyb3AgdGVybmFyeSBvcGVyYXRvciBmcm9tIHhza3FfY29uc19oYXNfZW50cmll
-cw0KPiANCj4gIC4uLi9ldGhlcm5ldC9pbnRlbC9pNDBlL2k0MGVfdHhyeF9jb21tb24uaCAgICB8
-ICAxICsNCj4gIGRyaXZlcnMvbmV0L2V0aGVybmV0L2ludGVsL2k0MGUvaTQwZV94c2suYyAgICB8
-IDM4ICsrKysrKysrLS0tLS0NCj4gIGRyaXZlcnMvbmV0L2V0aGVybmV0L2ludGVsL2ljZS9pY2Vf
-dHhyeC5oICAgICB8ICAxICsNCj4gIGRyaXZlcnMvbmV0L2V0aGVybmV0L2ludGVsL2ljZS9pY2Vf
-eHNrLmMgICAgICB8IDUzICsrKysrKysrKysrKy0tLS0tLS0NCj4gIC4uLi9ldGhlcm5ldC9pbnRl
-bC9peGdiZS9peGdiZV90eHJ4X2NvbW1vbi5oICB8ICAxICsNCj4gIGRyaXZlcnMvbmV0L2V0aGVy
-bmV0L2ludGVsL2l4Z2JlL2l4Z2JlX3hzay5jICB8IDUyICsrKysrKysrKystLS0tLS0tLQ0KPiAg
-Li4uL2V0aGVybmV0L21lbGxhbm94L21seDUvY29yZS9lbi94c2svdHguYyAgIHwgIDIgKy0NCj4g
-IC4uLi9uZXQvZXRoZXJuZXQvc3RtaWNyby9zdG1tYWMvc3RtbWFjX21haW4uYyB8ICA0ICstDQo+
-ICBuZXQveGRwL3hzay5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgNCArLQ0K
-PiAgbmV0L3hkcC94c2tfcXVldWUuaCAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDQgKy0N
-Cj4gIDEwIGZpbGVzIGNoYW5nZWQsIDk5IGluc2VydGlvbnMoKyksIDYxIGRlbGV0aW9ucygtKQ0K
-PiANCg0KDQo=
+On Mon, Aug 15, 2022 at 10:33 AM +08, Liu Jian wrote:
+> Fix the below NULL pointer dereference:
+>
+> [   14.471200] Call Trace:
+> [   14.471562]  <TASK>
+> [   14.471882]  lock_acquire+0x245/0x2e0
+> [   14.472416]  ? remove_wait_queue+0x12/0x50
+> [   14.473014]  ? _raw_spin_lock_irqsave+0x17/0x50
+> [   14.473681]  _raw_spin_lock_irqsave+0x3d/0x50
+> [   14.474318]  ? remove_wait_queue+0x12/0x50
+> [   14.474907]  remove_wait_queue+0x12/0x50
+> [   14.475480]  sk_stream_wait_memory+0x20d/0x340
+> [   14.476127]  ? do_wait_intr_irq+0x80/0x80
+> [   14.476704]  do_tcp_sendpages+0x287/0x600
+> [   14.477283]  tcp_bpf_push+0xab/0x260
+> [   14.477817]  tcp_bpf_sendmsg_redir+0x297/0x500
+> [   14.478461]  ? __local_bh_enable_ip+0x77/0xe0
+> [   14.479096]  tcp_bpf_send_verdict+0x105/0x470
+> [   14.479729]  tcp_bpf_sendmsg+0x318/0x4f0
+> [   14.480311]  sock_sendmsg+0x2d/0x40
+> [   14.480822]  ____sys_sendmsg+0x1b4/0x1c0
+> [   14.481390]  ? copy_msghdr_from_user+0x62/0x80
+> [   14.482048]  ___sys_sendmsg+0x78/0xb0
+> [   14.482580]  ? vmf_insert_pfn_prot+0x91/0x150
+> [   14.483215]  ? __do_fault+0x2a/0x1a0
+> [   14.483738]  ? do_fault+0x15e/0x5d0
+> [   14.484246]  ? __handle_mm_fault+0x56b/0x1040
+> [   14.484874]  ? lock_is_held_type+0xdf/0x130
+> [   14.485474]  ? find_held_lock+0x2d/0x90
+> [   14.486046]  ? __sys_sendmsg+0x41/0x70
+> [   14.486587]  __sys_sendmsg+0x41/0x70
+> [   14.487105]  ? intel_pmu_drain_pebs_core+0x350/0x350
+> [   14.487822]  do_syscall_64+0x34/0x80
+> [   14.488345]  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+>
+> The test scene as following flow:
+> thread1                               thread2
+> -----------                           ---------------
+>  tcp_bpf_sendmsg
+>   tcp_bpf_send_verdict
+>    tcp_bpf_sendmsg_redir              sock_close
+>     tcp_bpf_push_locked                 __sock_release
+>      tcp_bpf_push                         //inet_release
+>       do_tcp_sendpages                    sock->ops->release
+>        sk_stream_wait_memory          	   // tcp_close
+>           sk_wait_event                      sk->sk_prot->close
+>            release_sock(__sk);
+>             ***
+>
+>                                                 lock_sock(sk);
+>                                                   __tcp_close
+>                                                     sock_orphan(sk)
+>                                                       sk->sk_wq  = NULL
+>                                                 release_sock
+>             ****
+>            lock_sock(__sk);
+>           remove_wait_queue(sk_sleep(sk), &wait);
+>              sk_sleep(sk)
+>              //NULL pointer dereference
+>              &rcu_dereference_raw(sk->sk_wq)->wait
+>
+> While waiting for memory in thread1, the socket is released with its wait
+> queue because thread2 has closed it. This caused by tcp_bpf_send_verdict
+> didn't increase the f_count of psock->sk_redir->sk_socket->file in thread1.
+
+I'm not sure about this approach. Keeping a closed sock file alive, just
+so we can wakeup from sleep, seems like wasted effort.
+
+__tcp_close sets sk->sk_shutdown = RCV_SHUTDOWN | SEND_SHUTDOWN. So we
+will return from sk_stream_wait_memory via the do_error path.
+
+SEND_SHUTDOWN might be set because socket got closed and orphaned - dead
+and detached from its file, like in this case.
+
+So, IMHO, we should check if SOCK_DEAD flag is set on wakeup due to
+SEND_SHUTDOWN in sk_stream_wait_memory, before accessing the wait queue.
+
+[...]
