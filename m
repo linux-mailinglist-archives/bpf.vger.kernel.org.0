@@ -2,157 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B56D359A482
-	for <lists+bpf@lfdr.de>; Fri, 19 Aug 2022 20:05:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FFDE59A406
+	for <lists+bpf@lfdr.de>; Fri, 19 Aug 2022 20:04:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351144AbiHSRVQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Aug 2022 13:21:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44338 "EHLO
+        id S1354564AbiHSR2B (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Aug 2022 13:28:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352751AbiHSRVB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Aug 2022 13:21:01 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89F4314D065;
-        Fri, 19 Aug 2022 09:40:16 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id c39so6341086edf.0;
-        Fri, 19 Aug 2022 09:40:16 -0700 (PDT)
+        with ESMTP id S1354565AbiHSR1l (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 19 Aug 2022 13:27:41 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71CC0153E35;
+        Fri, 19 Aug 2022 09:46:03 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id x23so4596347pll.7;
+        Fri, 19 Aug 2022 09:46:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc;
-        bh=Fya4fZM01wtpV6jSWWXM/JoqlH2BGCdszj83hyqTE9Q=;
-        b=a/OpAIk/kN1DVTd5wBYF+F7EgMXvFSvBuTaOGIBJxkeaU8wKI4dpl3ipvq1YyIb3A9
-         nrqBZAIr8x029+uxX0c19j1Bu7RPlwwbp0N+N9FYHNbYVjaULrG/wI91keaVSZs8dLeP
-         UZJJBqZRaTln9uAFaklc0MmXBdPK254cAHipMS9AzpffDHST92WPwjkXWoV3t9GaHVhz
-         U/U9RBBOJu+dEmuba0S/fliA3OQ00hZZtvsMWKreQ/WjRjjWBxJFWND5CvsmxkazTBdo
-         oYg8NWCpRNn8Pe3SebfAYINWGdfJ66+PexCUqNYQl99Zk44ZdjhTgAalyi5mviVVcZ4H
-         +Gfg==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc;
+        bh=43IB1l85zFZx2xfIvsACnvdd0hD/Sqi80j0FvnZgz+w=;
+        b=JQy2QfMvU993ELBmz2m2IaJHojQluWlc2EN1XG0ztr6V8OaUTHOJN6euMR6ZmYAlbl
+         v0gDSEyBQCndO31qlao27Cg9HJjzj49/CDBem77UVSFkGSlC71Kw1brKSCMjzxi5Hfnj
+         st8s2amoKpXOB2XplmnOm2Sony8Fk5a8Q21/jD4R+Vl1Ku3mG0/4G4ifVq6qmy0a8fuj
+         apyv5fnK9IzqKogBCTmEjTQ3i6v3yXfFFJztAVKLeoGNEaP1vWx4w+k0o9AK2gZNiN+S
+         kxlNRXmxImlpHp1cYsPdNZW3sHdtC2KjL+HkwJgEXQ7oaY97sWNrcStYnF/hITQJBwUo
+         B13Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc;
-        bh=Fya4fZM01wtpV6jSWWXM/JoqlH2BGCdszj83hyqTE9Q=;
-        b=Uh3HyiW7BAU/wRVGlAYNEsGOxdAisHoSV3tSgthCPq2gp00tqzNMtffgzxC/UYI2FN
-         Ws5Z2oxaIyuvcXAR3vrTvYbKBpojTRWhzENJ4vFpuDOrPJ5bSb0D6cAauQJ7k3zbH+Cf
-         IeuymnOYAAzp1iGZ0FTqVGO2wW4iQ8WmRGi4MURYvLYFRTDk0KrXOYQi+Njkoh6RxcmX
-         nXWm8Ger54AesXmWkCy8GVW2plH2p/oG0ETC1IAhaLdeRQI6bevUo4Po7PxMMYAwUnrx
-         j+IpOhasNbQC/WVYzageMPWkn2es3hzByuqrMcBuGPFfXq1l6h4yJBMpl9aWZoVAhJMH
-         +/6w==
-X-Gm-Message-State: ACgBeo37iW80cHRU8oKkCvfhgfudfI0RmxS7VcDW2aS/yHe0ryzKKWUa
-        BsyFHKEeKiI0u8Oa7vWzaaRGM82GaefX+5dhyH4=
-X-Google-Smtp-Source: AA6agR5lfMOKEBoDzHA6/bVtt1G+RY9+YHXqTlh41y4Yzsem3FQcp824i65YTAGU77Xssxh3e5ilE2fVkRoq6psxDq8=
-X-Received: by 2002:a05:6402:298c:b0:446:a97:1800 with SMTP id
- eq12-20020a056402298c00b004460a971800mr6829163edb.421.1660927211176; Fri, 19
- Aug 2022 09:40:11 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1660761470.git.dxu@dxuuu.xyz> <edbca42217a73161903a50ba07ec63c5fa5fde00.1660761470.git.dxu@dxuuu.xyz>
- <87pmgxuy6v.fsf@toke.dk> <20220818221032.7b4lcpa7i4gchdvl@kashmir.localdomain>
- <87wnb4tmc0.fsf@toke.dk>
-In-Reply-To: <87wnb4tmc0.fsf@toke.dk>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 19 Aug 2022 09:39:59 -0700
-Message-ID: <CAADnVQ+YtLQPa3fifFn5vazydP1fZtE2RmjOBY4F5tF2t8MmSQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 3/4] bpf: Add support for writing to nf_conn:mark
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>
-Cc:     Daniel Xu <dxu@dxuuu.xyz>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc;
+        bh=43IB1l85zFZx2xfIvsACnvdd0hD/Sqi80j0FvnZgz+w=;
+        b=WkghK2aTx8hWDzwW+lm6fwI16rVLYO0+q9WtbknRV9905ZPgGt0dTfhS/C5rfTNQHp
+         PfMHoz43vpC2zBZ8zhxIxkxqgS1sZXIllitsr9phLXDUj3I01ayn/j/+tHX2eZqvwxa5
+         5yApVu6GRBxjryYWUxpWKn4dihj2Bw6kZesquMTFVUTMhAvTi/f+IwR/22VMYd1g6Og6
+         SEvn3YS07nvkZNLQbyGSJEAsQVvdLpaQqHhpW5FTvOmpEqhD5eTd7Ky+uYEcrxuSXmaT
+         r0Aj9Y6nwXau2o7wVHnDvsdPDHS8Ih9Xxc49RZMocYBfdokDF8iYXKcn3zElZ3DE6Vg3
+         SmPA==
+X-Gm-Message-State: ACgBeo2yJn4ufS8OFf2NGMcrXfUHjtZ2BXEGzlb7agbDihTyPc5R/GP2
+        yv/4YnfMttrOHvgpOzhwhw0=
+X-Google-Smtp-Source: AA6agR7/XdV145+Mma974ZWG9OzesPe18qlL2A2CqA2hmJsnMTcginuIa1kkrjcH2PeZz70ips7QyA==
+X-Received: by 2002:a17:90b:1bce:b0:1fa:ecc3:9068 with SMTP id oa14-20020a17090b1bce00b001faecc39068mr2850604pjb.116.1660927546012;
+        Fri, 19 Aug 2022 09:45:46 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:db7d])
+        by smtp.gmail.com with ESMTPSA id k1-20020a170902c40100b00172a670607asm3442468plk.300.2022.08.19.09.45.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Aug 2022 09:45:45 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Fri, 19 Aug 2022 06:45:43 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        netfilter-devel <netfilter-devel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, jolsa@kernel.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        lizefan.x@bytedance.com, Cgroups <cgroups@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
+Subject: Re: [PATCH bpf-next v2 00/12] bpf: Introduce selectable memcg for
+ bpf map
+Message-ID: <Yv++N6OFEe6I9uEQ@slm.duckdns.org>
+References: <20220818143118.17733-1-laoar.shao@gmail.com>
+ <Yv67MRQLPreR9GU5@slm.duckdns.org>
+ <CALOAHbDt9NUv9qK_J1_9CU0tmW9kiJ+nig_0NfzGJgJmrSk2fw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALOAHbDt9NUv9qK_J1_9CU0tmW9kiJ+nig_0NfzGJgJmrSk2fw@mail.gmail.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Aug 19, 2022 at 6:05 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@kern=
-el.org> wrote:
->
-> Daniel Xu <dxu@dxuuu.xyz> writes:
->
-> > Hi Toke,
-> >
-> > On Thu, Aug 18, 2022 at 09:52:08PM +0200, Toke H=C3=B8iland-J=C3=B8rgen=
-sen wrote:
-> >> Daniel Xu <dxu@dxuuu.xyz> writes:
-> >>
-> >> > Support direct writes to nf_conn:mark from TC and XDP prog types. Th=
-is
-> >> > is useful when applications want to store per-connection metadata. T=
-his
-> >> > is also particularly useful for applications that run both bpf and
-> >> > iptables/nftables because the latter can trivially access this
-> >> > metadata.
-> >>
-> >> Looking closer at the nf_conn definition, the mark field (and possibly
-> >> secmark) seems to be the only field that is likely to be feasible to
-> >> support direct writes to, as everything else either requires special
-> >> handling (like status and timeout), or they are composite field that
-> >> will require helpers anyway to use correctly.
-> >>
-> >> Which means we're in the process of creating an API where users have t=
-o
-> >> call helpers to fill in all fields *except* this one field that happen=
-s
-> >> to be directly writable. That seems like a really confusing and
-> >> inconsistent API, so IMO it strengthens the case for just making a
-> >> helper for this field as well, even though it adds a bit of overhead
-> >> (and then solving the overhead issue in a more generic way such as by
-> >> supporting clever inlining).
-> >>
-> >> -Toke
-> >
-> > I don't particularly have a strong opinion here. But to play devil's
-> > advocate:
-> >
-> > * It may be confusing now, but over time I expect to see more direct
-> >   write support via BTF, especially b/c there is support for unstable
-> >   helpers now. So perhaps in the future it will seem more sensible.
->
-> Right, sure, for other structs. My point was that it doesn't look like
-> this particular one (nf_conn) is likely to grow any other members we can
-> access directly, so it'll be a weird one-off for that single field...
->
-> > * The unstable helpers do not have external documentation. Nor should
-> >   they in my opinion as their unstableness + stale docs may lead to
-> >   undesirable outcomes. So users of the unstable API already have to
-> >   splunk through kernel code and/or selftests to figure out how to wiel=
-d
-> >   the APIs. All this to say there may not be an argument for
-> >   discoverability.
->
-> This I don't buy at all. Just because it's (supposedly) "unstable" is no
+Hello,
 
-They're unstable. Please don't start this 'but can we actually remove
-them' doubts. You're only confusing yourself and others.
-We tweaked kfuncs already. We removed tracepoints too after they
-were in a full kernel release.
+On Fri, Aug 19, 2022 at 08:59:20AM +0800, Yafang Shao wrote:
+> On Fri, Aug 19, 2022 at 6:20 AM Tejun Heo <tj@kernel.org> wrote:
+> > memcg folks would have better informed opinions but from generic cgroup pov
+> > I don't think this is a good direction to take. This isn't a problem limited
+> > to bpf progs and it doesn't make whole lot of sense to solve this for bpf.
+> 
+> This change is bpf specific. It doesn't refactor a whole lot of things.
 
-> excuse to design a bad API, or make it actively user-hostile by hiding
+I'm not sure what point the above sentence is making. It may not change a
+lot of code but it does introduce significantly new mode of operation which
+affects memcg and cgroup in general.
 
-'bad API'? what? It's a direct field write.
-We do allow it in other data structures.
+> > We have the exact same problem for any resources which span multiple
+> > instances of a service including page cache, tmpfs instances and any other
+> > thing which can persist longer than procss life time. My current opinion is
+> > that this is best solved by introducing an extra cgroup layer to represent
+> > the persistent entity and put the per-instance cgroup under it.
+> 
+> It is not practical on k8s.
+> Because, before the persistent entity, the cgroup dir is stateless.
+> After, it is stateful.
+> Pls, don't continue keeping blind eyes on k8s.
 
-> things so users have to go browse kernel code to know how to use it. So
-> in any case, we should definitely document everything.
->
-> > * Direct writes are slightly more ergnomic than using a helper.
->
-> This is true, and that's the main argument for doing it this way. The
-> point of my previous email was that since it's only a single field,
-> consistency weighs heavier than ergonomics :)
+Can you please elaborate why it isn't practical for k8s? I don't know the
+details of k8s and what you wrote above is not a detailed enough technical
+argument.
 
-I don't think the 'consistency' argument applies here.
-We already allow direct read of all fields.
-Also the field access is easier to handle with CO-RE.
+> > It does require reorganizing how things are organized from userspace POV but
+> > the end result is really desirable. We get entities accurately representing
+> > what needs to be tracked and control over the granularity of accounting and
+> > control (e.g. folks who don't care about telling apart the current
+> > instance's usage can simply not enable controllers at the persistent entity
+> > level).
+> 
+> Pls.s also think about why k8s refuse to use cgroup2.
+
+This attitude really bothers me. You aren't spelling it out fully but
+instead of engaging in the technical argument at the hand, you're putting
+forth conforming upstream to the current k8s's assumptions and behaviors as
+a requirement and then insisting that it's upstream's fault that k8s is
+staying with cgroup1.
+
+This is not an acceptable form of argument and it would be irresponsible to
+grant any kind weight to this line of reasoning. k8s may seem like the world
+to you but it is one of many use cases of the upstream kernel. We all should
+pay attention to the use cases and technical arguments to determine how we
+chart our way forward, but being k8s or whoever else clearly isn't a waiver
+to claim this kind of unilateral demand.
+
+It's okay to emphasize the gravity of the specific use case at hand but
+please realize that it's one of the many factors that should be considered
+and sometimes one which can and should get trumped by others.
+
+Thanks.
+
+-- 
+tejun
