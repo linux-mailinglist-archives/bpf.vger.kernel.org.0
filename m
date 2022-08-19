@@ -2,56 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9E6459919C
-	for <lists+bpf@lfdr.de>; Fri, 19 Aug 2022 02:11:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A29FC5991A0
+	for <lists+bpf@lfdr.de>; Fri, 19 Aug 2022 02:13:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235023AbiHSALC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Aug 2022 20:11:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57240 "EHLO
+        id S237583AbiHSANn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Aug 2022 20:13:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233314AbiHSALB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Aug 2022 20:11:01 -0400
+        with ESMTP id S233314AbiHSANk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Aug 2022 20:13:40 -0400
 Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D93A0C9924;
-        Thu, 18 Aug 2022 17:11:00 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id e13so3772973edj.12;
-        Thu, 18 Aug 2022 17:11:00 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37E3932055;
+        Thu, 18 Aug 2022 17:13:38 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id t5so3797907edc.11;
+        Thu, 18 Aug 2022 17:13:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc;
-        bh=um1PvOysNX8tcJMPy/29j9o1fvcMRvnPg0HmnyNEt08=;
-        b=d/sduwEWJVEdgVClVtAbd5LLwHkHRKPn4YfCY39Y7iwygwa8OdU6SJmZtUVjwYvn2k
-         X+wHJ88/oOQIXPJnwov2yxENi3kV89xHff7yYCMiAGFHrBQ994RmOXG2p1b5vW3WJCL2
-         XG63h4396vGtSG7o8QWB4/MJLhsQwtCnueDwB4hqX3ZyOyDp1BlHRPMCJfwx4s3CnjL+
-         HjgJrNyUoXnLPPHjE3L/E5BLKqeEjFK56brRlieU949e6clXNrHZVeMl2iOyxnsb6PNA
-         6GW17cgGDXvvSDT7zgSoxLiLPOiMTvdrA6Zj08WvwV5oR0PwN854qJgWPdVvnOzvf71/
-         D5OQ==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=zuugaCe8bJg0rqCGIdwkGWMnPVnSYXDZaVtIRZe5O70=;
+        b=IxuYFPA2kPuu5AKOEsyk3Mba0J8ky8pZxI7SD5DX7y6x62RA4TI/Bl5DaeMBi0++J1
+         rkW7Rj+nPbEQRtCYZ6iZehOkd4J+dr/uGAXiE32SXwdfmY+KvSxXPywKegLKGqFrIZ0+
+         mOrRJpP9jxtiHgFIItvSSMg+fNTAz1mCfzGipD8BJ3vlpf5z+qELnkC8vTmVfXO/kebC
+         hVqpIoO1znh0jHmslB6+heyb8jiwHrLxijjac9nxAd5RINKM2ncF14k/a67C7qm2cfLD
+         Y00YqD9r6XwLxieUhlz1GsMkz0W9PuguQ5+2N3DqGQnRYzZl9OiFQu4XEwFrFH41h3vP
+         dDug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc;
-        bh=um1PvOysNX8tcJMPy/29j9o1fvcMRvnPg0HmnyNEt08=;
-        b=vZ5m5wwQVP8dcjtJJ/7N521m0gQ9JlMXeG4KZwfS12XN2Cbflp8KJ8hSuCASvIgxIc
-         iEn2vD0HxjRaXh3kABEiRWBuJCqTIVMaFba5L2CzNCQW8fGorfrNpq56QiqCs1P09/jU
-         tOeVt6KyJpmqpWPCmFk5tI07nUnJZTRBrU8AH6wpNiFGPpsfHjnQkv0Al3jlWyK8B9YT
-         1TCJY1r2t7Y1FGrfIXyXacWloBx54r80YmvKVmAG1Fpz6E7bPnMwPN8+i5avHQqZZxYA
-         PXkGakbil1kYB/RUx3l+0xdFQnbKTBtXTLtLdvZhdR5hQeuy4bLjamhbHTQHpVMHSAcq
-         ltMQ==
-X-Gm-Message-State: ACgBeo2OxGKhnDQ1Ok6vB+PyQafjuer8ktyzwyM+FRjF45wyGaoji9Ii
-        aKquo2JWJDCgA/HjCEEnzBMcTU2nKPIARFAmyiwCkH1m4Ns=
-X-Google-Smtp-Source: AA6agR4nYBvozo08BTzceXgiePHekxcjKDCBh6hnceNsUMrhf7EySMj++rLUb0UJdtu0yuvb2cn7XViB3kTAEQMnU1o=
-X-Received: by 2002:a05:6402:27ca:b0:43e:ce64:ca07 with SMTP id
- c10-20020a05640227ca00b0043ece64ca07mr4120556ede.66.1660867859182; Thu, 18
- Aug 2022 17:10:59 -0700 (PDT)
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=zuugaCe8bJg0rqCGIdwkGWMnPVnSYXDZaVtIRZe5O70=;
+        b=li+kCRfkHg52MD8jOeqDAumD19v+XwJuUifvVQE0TiLGyKLi6S9aHWTOdTvcwMgYPC
+         XS4kp7iz/ynyR3EJ7Jeu5k0OeqQ/XnbwXze0hNQoCZ2rMm22Qe/cG8X+wMoGK34doY3x
+         syzztwrzggS/AWJlAJsvs+igkNGYDaPDc2pGnCLfNEdSG/Evtv8Pz6KQ6c74hUIvzdAJ
+         SbyZnc2f6W/dBPJ/YUiIoo+VC30dCKu1et+bE3VMNl15muguDkh+qT7oAgpe/2uyTt+j
+         qv5iWUtW7xrqXwg/wZQIU/k6V657GuWjoJ2SuhvfuGnG0c67e7AZGmvGQbunpPSVBoW4
+         SgWA==
+X-Gm-Message-State: ACgBeo0xlB7z+3SFuxY/AFy7pl4m/09q6/FfpueXWncfIeUJCbxlbBde
+        1IIFzV1JNmjfCEFULHKB4PZaWoXTtGbm76x+zAw=
+X-Google-Smtp-Source: AA6agR6KwU/18HtaBCplc7jJcPI5CQPQ6IiOEDiRKCacJER1FS4lRHfi9Q90BaVvHOiWKUmnOMt01eOejB20LboFv7E=
+X-Received: by 2002:a05:6402:28cb:b0:43b:c6d7:ef92 with SMTP id
+ ef11-20020a05640228cb00b0043bc6d7ef92mr4061786edb.333.1660868016674; Thu, 18
+ Aug 2022 17:13:36 -0700 (PDT)
 MIME-Version: 1.0
+References: <CAADnVQ+H2n5-Gwgq-OZu-WZKRsg=kq7FtOGXJu6YNHoCEBap6w@mail.gmail.com>
+ <20220819000645.55413-1-kuniyu@amazon.com>
+In-Reply-To: <20220819000645.55413-1-kuniyu@amazon.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 18 Aug 2022 17:10:47 -0700
-Message-ID: <CAADnVQKdqYM-Kyy9vez04n1HQkiDs7Y-9rx2V7qNtwkDjrJ=SA@mail.gmail.com>
-Subject: kernel splat during boot
-To:     bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kernel Team <Kernel-team@fb.com>, rcu@vger.kernel.org
+Date:   Thu, 18 Aug 2022 17:13:25 -0700
+Message-ID: <CAADnVQ+wKkiKo0L5HXiCeqxX+oqegiXBqc7fH+Yj2CG6_ymDKg@mail.gmail.com>
+Subject: Re: [PATCH v1 bpf 1/4] bpf: Fix data-races around bpf_jit_enable.
+To:     Kuniyuki Iwashima <kuniyu@amazon.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kuniyuki Iwashima <kuni1840@gmail.com>,
+        Network Development <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -63,76 +69,88 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Paul,
+On Thu, Aug 18, 2022 at 5:07 PM Kuniyuki Iwashima <kuniyu@amazon.com> wrote:
+>
+> From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+> Date:   Thu, 18 Aug 2022 15:49:46 -0700
+> > On Wed, Aug 17, 2022 at 9:24 PM Kuniyuki Iwashima <kuniyu@amazon.com> wrote:
+> > >
+> > > A sysctl variable bpf_jit_enable is accessed concurrently, and there is
+> > > always a chance of data-race.  So, all readers and a writer need some
+> > > basic protection to avoid load/store-tearing.
+> > >
+> > > Fixes: 0a14842f5a3c ("net: filter: Just In Time compiler for x86-64")
+> > > Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.com>
+> > > ---
+> > >  arch/arm/net/bpf_jit_32.c        | 2 +-
+> > >  arch/arm64/net/bpf_jit_comp.c    | 2 +-
+> > >  arch/mips/net/bpf_jit_comp.c     | 2 +-
+> > >  arch/powerpc/net/bpf_jit_comp.c  | 5 +++--
+> > >  arch/riscv/net/bpf_jit_core.c    | 2 +-
+> > >  arch/s390/net/bpf_jit_comp.c     | 2 +-
+> > >  arch/sparc/net/bpf_jit_comp_32.c | 5 +++--
+> > >  arch/sparc/net/bpf_jit_comp_64.c | 5 +++--
+> > >  arch/x86/net/bpf_jit_comp.c      | 2 +-
+> > >  arch/x86/net/bpf_jit_comp32.c    | 2 +-
+> > >  include/linux/filter.h           | 2 +-
+> > >  net/core/sysctl_net_core.c       | 4 ++--
+> > >  12 files changed, 19 insertions(+), 16 deletions(-)
+> > >
+> > > diff --git a/arch/arm/net/bpf_jit_32.c b/arch/arm/net/bpf_jit_32.c
+> > > index 6a1c9fca5260..4b6b62a6fdd4 100644
+> > > --- a/arch/arm/net/bpf_jit_32.c
+> > > +++ b/arch/arm/net/bpf_jit_32.c
+> > > @@ -1999,7 +1999,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+> > >         }
+> > >         flush_icache_range((u32)header, (u32)(ctx.target + ctx.idx));
+> > >
+> > > -       if (bpf_jit_enable > 1)
+> > > +       if (READ_ONCE(bpf_jit_enable) > 1)
+> >
+> > Nack.
+> > Even if the compiler decides to use single byte loads for some
+> > odd reason there is no issue here.
+>
+> I see, and same for 2nd/3rd patches, right?
+>
+> Then how about this part?
+> It's not data-race nor problematic in practice, but should the value be
+> consistent in the same function?
+> The 2nd/3rd patches also have this kind of part.
 
-I see the following splat just booting net-next or bpf-next trees.
-I have lockdep and kasan on (if that matters).
-Is this a known issue?
+The bof_jit_enable > 1 is unsupported and buggy.
+It will be removed eventually.
 
-[    3.011826] cblist_init_generic: Setting adjustable number of
-callback queues.
-[    3.011880]
-[    3.011883] =============================
-[    3.011885] [ BUG: Invalid wait context ]
-[    3.011889] 5.19.0-14019-g75179e2b7f9a #4201 Not tainted
-[    3.011893] -----------------------------
-[    3.011896] swapper/0/1 is trying to lock:
-[    3.011899] ffffffff85be94b8 (&port_lock_key){....}-{3:3}, at:
-serial8250_console_write+0x5fc/0x640
-[    3.011929] other info that might help us debug this:
-[    3.011931] context-{5:5}
-[    3.011934] 3 locks held by swapper/0/1:
-[    3.011938]  #0: ffffffff8404dae0
-(rcu_tasks_rude.cbs_gbl_lock){....}-{2:2}, at:
-cblist_init_generic+0x27/0x340
-[    3.011964]  #1: ffffffff84041d80 (console_lock){+.+.}-{0:0}, at:
-vprintk_emit+0xda/0x2e0
-[    3.011984]  #2: ffffffff839416e0 (console_owner){....}-{0:0}, at:
-console_emit_next_record.constprop.37+0x1c9/0x4d0
-[    3.012004] stack backtrace:
-[    3.012007] CPU: 0 PID: 1 Comm: swapper/0 Not tainted
-5.19.0-14019-g75179e2b7f9a #4201
-[    3.012011] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
-BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-[    3.012011] Call Trace:
-[    3.012011]  <TASK>
-[    3.012011]  dump_stack_lvl+0x44/0x57
-[    3.012011]  __lock_acquire.cold.73+0xc7/0x31b
-[    3.012011]  ? lockdep_hardirqs_on_prepare+0x1f0/0x1f0
-[    3.012011]  ? rcu_read_lock_sched_held+0x91/0xc0
-[    3.012011]  ? rcu_read_lock_bh_held+0xa0/0xa0
-[    3.012011]  lock_acquire+0x133/0x380
-[    3.012011]  ? serial8250_console_write+0x5fc/0x640
-[    3.012011]  ? lock_release+0x3b0/0x3b0
-[    3.012011]  _raw_spin_lock_irqsave+0x35/0x50
-[    3.012011]  ? serial8250_console_write+0x5fc/0x640
-[    3.012011]  serial8250_console_write+0x5fc/0x640
-[    3.012011]  ? rcu_read_lock_bh_held+0xa0/0xa0
-[    3.012011]  ? serial8250_default_handle_irq+0x80/0x80
-[    3.012011]  ? lock_release+0x3b0/0x3b0
-[    3.012011]  ? do_raw_spin_lock+0x107/0x1c0
-[    3.012011]  ? rwlock_bug.part.2+0x60/0x60
-[    3.012011]  ? prb_final_commit+0x50/0x50
-[    3.012011]  console_emit_next_record.constprop.37+0x271/0x4d0
-[    3.012011]  ? info_print_ext_header.constprop.38+0x110/0x110
-[    3.012011]  ? rcu_read_lock_sched_held+0x91/0xc0
-[    3.012011]  console_unlock+0x1d8/0x2c0
-[    3.012011]  ? devkmsg_open+0x170/0x170
-[    3.012011]  ? vprintk_emit+0xda/0x2e0
-[    3.012011]  vprintk_emit+0xe3/0x2e0
-[    3.012011]  _printk+0x96/0xb0
-[    3.012011]  ? pm_suspend.cold.6+0x2e3/0x2e3
-[    3.012011]  ? _raw_write_unlock+0x1f/0x30
-[    3.012011]  ? do_raw_spin_lock+0x107/0x1c0
-[    3.012011]  cblist_init_generic.cold.36+0x24/0x32
-[    3.012011]  rcu_init_tasks_generic+0x23/0xf0
-[    3.012011]  kernel_init_freeable+0x1d3/0x38a
-[    3.012011]  ? _raw_spin_unlock_irq+0x24/0x30
-[    3.012011]  ? rest_init+0x1d0/0x1d0
-[    3.012011]  kernel_init+0x18/0x130
-[    3.012011]  ? rest_init+0x1d0/0x1d0
-[    3.012011]  ret_from_fork+0x1f/0x30
-[    3.012011]  </TASK>
-[    3.012029] cblist_init_generic: Setting shift to 3 and lim to 1.
-[    3.013301] cblist_init_generic: Setting shift to 3 and lim to 1.
-[    3.014203] Running RCU-tasks wait API self tests
+Why are you doing these changes if they're not fixing any bugs ?
+Just to shut up some race sanitizer?
+
+> ---8<---
+> diff --git a/arch/powerpc/net/bpf_jit_comp.c b/arch/powerpc/net/bpf_jit_comp.c
+> index 43e634126514..c71d1e94ee7e 100644
+> --- a/arch/powerpc/net/bpf_jit_comp.c
+> +++ b/arch/powerpc/net/bpf_jit_comp.c
+> @@ -122,6 +122,7 @@ bool bpf_jit_needs_zext(void)
+>
+>  struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
+>  {
+> +       int jit_enable = READ_ONCE(bpf_jit_enable);
+>         u32 proglen;
+>         u32 alloclen;
+>         u8 *image = NULL;
+> @@ -263,13 +264,13 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
+>                 }
+>                 bpf_jit_build_epilogue(code_base, &cgctx);
+>
+> -               if (bpf_jit_enable > 1)
+> +               if (jit_enable > 1)
+>                         pr_info("Pass %d: shrink = %d, seen = 0x%x\n", pass,
+>                                 proglen - (cgctx.idx * 4), cgctx.seen);
+>         }
+>
+>  skip_codegen_passes:
+> -       if (bpf_jit_enable > 1)
+> +       if (jit_enable > 1)
+>                 /*
+>                  * Note that we output the base address of the code_base
+>                  * rather than image, since opcodes are in code_base.
+> ---8<---
