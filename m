@@ -2,59 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4D6259A7F3
-	for <lists+bpf@lfdr.de>; Fri, 19 Aug 2022 23:49:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC7B059A7DD
+	for <lists+bpf@lfdr.de>; Fri, 19 Aug 2022 23:49:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234827AbiHSVnU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Aug 2022 17:43:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48350 "EHLO
+        id S238752AbiHSVnX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Aug 2022 17:43:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234960AbiHSVnS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Aug 2022 17:43:18 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2E672DCE
-        for <bpf@vger.kernel.org>; Fri, 19 Aug 2022 14:43:15 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id w138so2772156pfc.10
-        for <bpf@vger.kernel.org>; Fri, 19 Aug 2022 14:43:15 -0700 (PDT)
+        with ESMTP id S237784AbiHSVnW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 19 Aug 2022 17:43:22 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C72BDBE3C
+        for <bpf@vger.kernel.org>; Fri, 19 Aug 2022 14:43:19 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id f4so2807928pgc.12
+        for <bpf@vger.kernel.org>; Fri, 19 Aug 2022 14:43:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc;
-        bh=W43Nyf7DOecFDBnlT5N/MtBJxTqydKGvqtvjlb9SmvI=;
-        b=Xt7Q5IfeDwF0iF0l5X2gYqx3a7MU/52LJ3FXuy8D7md2G+9wc401eu9P9mNfbcHcfH
-         eEkai+QrPtyJfFlD7J+9cZrc1b16Bgyxm4TMp4f+kEzGLmQJD3jKMGGhYXEA+LbwVUD1
-         2JltVfG0aXMWUHJGyu9Rxsl60crrTrEhjZ+watrDfzxBoPVamMIO56jvuuhuNqNfQFeR
-         kOh+cVRmQQG8h32yrtUUGah3S9UU0UWwhwpCNn7XpGzRBJ9ynDdO+vdSGkRQPORGeKp2
-         YZeHw4PZ0WJnxfAGXNvuO67mVWBqNCGsB7n5SxI2QdI6TlX2BQvEwWQGo0V1LKZgjgg5
-         4Rcw==
+        bh=ZBI+fwy76bkYY8LVV14e2AjKMWsYkt0VzLIv3m+2oj8=;
+        b=ZrGKkLUP6ZJKXIZPS65dM/dVlcFh5D42Kebha2HBWqrRjunPYa8phJu/LZ6s2Eykhe
+         zMVvKesptbxuK4TjFFxmkfk39Q2PAMttuQLmkIVyZVwXdOsttmDcjpWQ/W51LhcXGeQw
+         eWs5kWF1ymCJ0Pm7jev0AjfgeRp6CncHmEKS6M36J9/jO6HKHg3xJJGwd1ncmyQLvLn4
+         fWLQPjDGvrHHErxTsPTpIcX5Jbq9U+zBwl0Ebr4ekzakyu8KQKfXOe6Y2KKbZBhp+WD7
+         XpW6c339wN77gce7pVAqWQ6pOHHYwl15UbBmJpsFeHJxQPYe6SuRGBoJhs8Wv7uQfgzv
+         3JiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc;
-        bh=W43Nyf7DOecFDBnlT5N/MtBJxTqydKGvqtvjlb9SmvI=;
-        b=0x5KubsxYwyxtaZ6GcrWtavEAB9vAMvGiIRfnTCnMGOc0i+G8K15JOhBE8LfSXeNm8
-         /CHaBFT1Ao2VmSWSg2021b9cVodV2l9hSld2syoP3F2SMYjvog7ChzA9h1pd1l2u0Mrt
-         27fJL4AlBi2AzuQGnIro9MG7Xq3WnMw4f6eiZBRPAVwMui7KI3S27Tazrt3p8DnNKHR7
-         jvxVKvG16LFP0GkH/bjpdN4fcKshtEk4qzENVEdH6KF6zbknagFySCzR471BPduQWT8A
-         TWs3pJGuU95D0tX5avITVZ34v6JVOshJ4UKqH5r4oiPScsSFmYD1B1bmbuQZOQSk/s3z
-         BYfQ==
-X-Gm-Message-State: ACgBeo3pUITCBxmrXrLAYmFj2v3aaa5fwgCg4tdxU3tEjzasC4Vwx4J6
-        U2JuOzwydyMpwTREi5K5oeI=
-X-Google-Smtp-Source: AA6agR7I1Wxd+o9NTQ/+nSz8ZI/dZ7eFMEtjoRW2LrBgT9NV57WIdWDB6Ouz5GrJ2m+cY0OdANJT/w==
-X-Received: by 2002:a65:6216:0:b0:41d:8248:3d05 with SMTP id d22-20020a656216000000b0041d82483d05mr8149260pgv.36.1660945395427;
-        Fri, 19 Aug 2022 14:43:15 -0700 (PDT)
+        bh=ZBI+fwy76bkYY8LVV14e2AjKMWsYkt0VzLIv3m+2oj8=;
+        b=IZMOO0TPryJ+nftxhrRyUveMd5vT92Cqlg5s5C7BJfKp5Ev4q7MwNwasd7qBRq0Wyx
+         kZrFR7JgM6A1MsCXcBWRjaZXg/+j5tp1vEBR49AcgWec+9dKuUAAy4EX2HTEqAaRh8tY
+         PdmZtllC31l7OyHGpf0f/g1wilixOkchidxmQNMY3uEBSxtWRhDKC9ubdBzSakhDXztB
+         T5gZDcSCiT9DQzQ6JZurqh1fpQr6qeNsgqapFXFp64IhTpLPqzDzD4KMkxusYKL/q3vt
+         AWOnlPJcCPiJo9w2dWYuKbl2pdIjQRxPVORCLws0KeLDoUn1pUiJ20ZklPAZgJaWASZC
+         V26Q==
+X-Gm-Message-State: ACgBeo3dI/nRip8UZSaCriaTn+/DPsSojN7ev9TKO6f6e1hTsAikL+JI
+        OfDlKMG2YsUqZPR3axtJ75Q=
+X-Google-Smtp-Source: AA6agR7oDkmuQzOgW9F0m5UMAkfxkclSWKTAKhyoF1nqkS99BcY1GM7gcN1QX1nxGpw4wZpR9y4iiA==
+X-Received: by 2002:a05:6a00:1588:b0:52f:a5bb:b992 with SMTP id u8-20020a056a00158800b0052fa5bbb992mr9616631pfk.38.1660945399062;
+        Fri, 19 Aug 2022 14:43:19 -0700 (PDT)
 Received: from localhost.localdomain ([2620:10d:c090:500::1:c4b1])
-        by smtp.gmail.com with ESMTPSA id e11-20020a170902784b00b0016dd6929af5sm3618454pln.206.2022.08.19.14.43.14
+        by smtp.gmail.com with ESMTPSA id n14-20020a170903110e00b0016d6963cb12sm3562742plh.304.2022.08.19.14.43.17
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Fri, 19 Aug 2022 14:43:14 -0700 (PDT)
+        Fri, 19 Aug 2022 14:43:18 -0700 (PDT)
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     davem@davemloft.net
 Cc:     daniel@iogearbox.net, andrii@kernel.org, tj@kernel.org,
         memxor@gmail.com, delyank@fb.com, linux-mm@kvack.org,
         bpf@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v3 bpf-next 11/15] bpf: Convert percpu hash map to per-cpu bpf_mem_alloc.
-Date:   Fri, 19 Aug 2022 14:42:28 -0700
-Message-Id: <20220819214232.18784-12-alexei.starovoitov@gmail.com>
+Subject: [PATCH v3 bpf-next 12/15] bpf: Remove tracing program restriction on map types
+Date:   Fri, 19 Aug 2022 14:42:29 -0700
+Message-Id: <20220819214232.18784-13-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <20220819214232.18784-1-alexei.starovoitov@gmail.com>
 References: <20220819214232.18784-1-alexei.starovoitov@gmail.com>
@@ -72,159 +72,69 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Alexei Starovoitov <ast@kernel.org>
 
-Convert dynamic allocations in percpu hash map from alloc_percpu() to
-bpf_mem_cache_alloc() from per-cpu bpf_mem_alloc. Since bpf_mem_alloc frees
-objects after RCU gp the call_rcu() is removed. pcpu_init_value() now needs to
-zero-fill per-cpu allocations, since dynamically allocated map elements are now
-similar to full prealloc, since alloc_percpu() is not called inline and the
-elements are reused in the freelist.
+The hash map is now fully converted to bpf_mem_alloc. Its implementation is not
+allocating synchronously and not calling call_rcu() directly. It's now safe to
+use non-preallocated hash maps in all types of tracing programs including
+BPF_PROG_TYPE_PERF_EVENT that runs out of NMI context.
 
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 ---
- kernel/bpf/hashtab.c | 45 +++++++++++++++++++-------------------------
- 1 file changed, 19 insertions(+), 26 deletions(-)
+ kernel/bpf/verifier.c | 42 ------------------------------------------
+ 1 file changed, 42 deletions(-)
 
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index 8daa1132d43c..89f26cbddef5 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -94,6 +94,7 @@ struct bucket {
- struct bpf_htab {
- 	struct bpf_map map;
- 	struct bpf_mem_alloc ma;
-+	struct bpf_mem_alloc pcpu_ma;
- 	struct bucket *buckets;
- 	void *elems;
- 	union {
-@@ -121,14 +122,14 @@ struct htab_elem {
- 		struct {
- 			void *padding;
- 			union {
--				struct bpf_htab *htab;
- 				struct pcpu_freelist_node fnode;
- 				struct htab_elem *batch_flink;
- 			};
- 		};
- 	};
- 	union {
--		struct rcu_head rcu;
-+		/* pointer to per-cpu pointer */
-+		void *ptr_to_pptr;
- 		struct bpf_lru_node lru_node;
- 	};
- 	u32 hash;
-@@ -435,8 +436,6 @@ static int htab_map_alloc_check(union bpf_attr *attr)
- 	bool zero_seed = (attr->map_flags & BPF_F_ZERO_SEED);
- 	int numa_node = bpf_map_attr_numa_node(attr);
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index d785f29047d7..a1ada707c57c 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -12599,48 +12599,6 @@ static int check_map_prog_compatibility(struct bpf_verifier_env *env,
  
--	BUILD_BUG_ON(offsetof(struct htab_elem, htab) !=
--		     offsetof(struct htab_elem, hash_node.pprev));
- 	BUILD_BUG_ON(offsetof(struct htab_elem, fnode.next) !=
- 		     offsetof(struct htab_elem, hash_node.pprev));
- 
-@@ -597,6 +596,12 @@ static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
- 		err = bpf_mem_alloc_init(&htab->ma, htab->elem_size, false);
- 		if (err)
- 			goto free_map_locked;
-+		if (percpu) {
-+			err = bpf_mem_alloc_init(&htab->pcpu_ma,
-+						 round_up(htab->map.value_size, 8), true);
-+			if (err)
-+				goto free_map_locked;
-+		}
- 	}
- 
- 	return &htab->map;
-@@ -607,6 +612,7 @@ static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
- 	for (i = 0; i < HASHTAB_MAP_LOCK_COUNT; i++)
- 		free_percpu(htab->map_locked[i]);
- 	bpf_map_area_free(htab->buckets);
-+	bpf_mem_alloc_destroy(&htab->pcpu_ma);
- 	bpf_mem_alloc_destroy(&htab->ma);
- free_htab:
- 	lockdep_unregister_key(&htab->lockdep_key);
-@@ -882,19 +888,11 @@ static int htab_map_get_next_key(struct bpf_map *map, void *key, void *next_key)
- static void htab_elem_free(struct bpf_htab *htab, struct htab_elem *l)
  {
- 	if (htab->map.map_type == BPF_MAP_TYPE_PERCPU_HASH)
--		free_percpu(htab_elem_get_ptr(l, htab->map.key_size));
-+		bpf_mem_cache_free(&htab->pcpu_ma, l->ptr_to_pptr);
- 	check_and_free_fields(htab, l);
- 	bpf_mem_cache_free(&htab->ma, l);
- }
- 
--static void htab_elem_free_rcu(struct rcu_head *head)
--{
--	struct htab_elem *l = container_of(head, struct htab_elem, rcu);
--	struct bpf_htab *htab = l->htab;
--
--	htab_elem_free(htab, l);
--}
--
- static void htab_put_fd_value(struct bpf_htab *htab, struct htab_elem *l)
- {
- 	struct bpf_map *map = &htab->map;
-@@ -940,12 +938,7 @@ static void free_htab_elem(struct bpf_htab *htab, struct htab_elem *l)
- 		__pcpu_freelist_push(&htab->freelist, &l->fnode);
- 	} else {
- 		dec_elem_count(htab);
--		if (htab->map.map_type == BPF_MAP_TYPE_PERCPU_HASH) {
--			l->htab = htab;
--			call_rcu(&l->rcu, htab_elem_free_rcu);
--		} else {
--			htab_elem_free(htab, l);
+ 	enum bpf_prog_type prog_type = resolve_prog_type(prog);
+-	/*
+-	 * Validate that trace type programs use preallocated hash maps.
+-	 *
+-	 * For programs attached to PERF events this is mandatory as the
+-	 * perf NMI can hit any arbitrary code sequence.
+-	 *
+-	 * All other trace types using non-preallocated per-cpu hash maps are
+-	 * unsafe as well because tracepoint or kprobes can be inside locked
+-	 * regions of the per-cpu memory allocator or at a place where a
+-	 * recursion into the per-cpu memory allocator would see inconsistent
+-	 * state. Non per-cpu hash maps are using bpf_mem_alloc-tor which is
+-	 * safe to use from kprobe/fentry and in RT.
+-	 *
+-	 * On RT enabled kernels run-time allocation of all trace type
+-	 * programs is strictly prohibited due to lock type constraints. On
+-	 * !RT kernels it is allowed for backwards compatibility reasons for
+-	 * now, but warnings are emitted so developers are made aware of
+-	 * the unsafety and can fix their programs before this is enforced.
+-	 */
+-	if (is_tracing_prog_type(prog_type) && !is_preallocated_map(map)) {
+-		if (prog_type == BPF_PROG_TYPE_PERF_EVENT) {
+-			/* perf_event bpf progs have to use preallocated hash maps
+-			 * because non-prealloc is still relying on call_rcu to free
+-			 * elements.
+-			 */
+-			verbose(env, "perf_event programs can only use preallocated hash map\n");
+-			return -EINVAL;
 -		}
-+		htab_elem_free(htab, l);
- 	}
- }
+-		if (map->map_type == BPF_MAP_TYPE_PERCPU_HASH ||
+-		    (map->inner_map_meta &&
+-		     map->inner_map_meta->map_type == BPF_MAP_TYPE_PERCPU_HASH)) {
+-			if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
+-				verbose(env,
+-					"trace type programs can only use preallocated per-cpu hash map\n");
+-				return -EINVAL;
+-			}
+-			WARN_ONCE(1, "trace type BPF program uses run-time allocation\n");
+-			verbose(env,
+-				"trace type programs with run-time allocated per-cpu hash maps are unsafe."
+-				" Switch to preallocated hash maps.\n");
+-		}
+-	}
  
-@@ -970,13 +963,12 @@ static void pcpu_copy_value(struct bpf_htab *htab, void __percpu *pptr,
- static void pcpu_init_value(struct bpf_htab *htab, void __percpu *pptr,
- 			    void *value, bool onallcpus)
- {
--	/* When using prealloc and not setting the initial value on all cpus,
--	 * zero-fill element values for other cpus (just as what happens when
--	 * not using prealloc). Otherwise, bpf program has no way to ensure
-+	/* When not setting the initial value on all cpus, zero-fill element
-+	 * values for other cpus. Otherwise, bpf program has no way to ensure
- 	 * known initial values for cpus other than current one
- 	 * (onallcpus=false always when coming from bpf prog).
- 	 */
--	if (htab_is_prealloc(htab) && !onallcpus) {
-+	if (!onallcpus) {
- 		u32 size = round_up(htab->map.value_size, 8);
- 		int current_cpu = raw_smp_processor_id();
- 		int cpu;
-@@ -1047,18 +1039,18 @@ static struct htab_elem *alloc_htab_elem(struct bpf_htab *htab, void *key,
- 
- 	memcpy(l_new->key, key, key_size);
- 	if (percpu) {
--		size = round_up(size, 8);
- 		if (prealloc) {
- 			pptr = htab_elem_get_ptr(l_new, key_size);
- 		} else {
- 			/* alloc_percpu zero-fills */
--			pptr = bpf_map_alloc_percpu(&htab->map, size, 8,
--						    GFP_NOWAIT | __GFP_NOWARN);
-+			pptr = bpf_mem_cache_alloc(&htab->pcpu_ma);
- 			if (!pptr) {
- 				bpf_mem_cache_free(&htab->ma, l_new);
- 				l_new = ERR_PTR(-ENOMEM);
- 				goto dec_count;
- 			}
-+			l_new->ptr_to_pptr = pptr;
-+			pptr = *(void **)pptr;
- 		}
- 
- 		pcpu_init_value(htab, pptr, value, onallcpus);
-@@ -1550,6 +1542,7 @@ static void htab_map_free(struct bpf_map *map)
- 	bpf_map_free_kptr_off_tab(map);
- 	free_percpu(htab->extra_elems);
- 	bpf_map_area_free(htab->buckets);
-+	bpf_mem_alloc_destroy(&htab->pcpu_ma);
- 	bpf_mem_alloc_destroy(&htab->ma);
- 	if (htab->use_percpu_counter)
- 		percpu_counter_destroy(&htab->pcount);
+ 	if (map_value_has_spin_lock(map)) {
+ 		if (prog_type == BPF_PROG_TYPE_SOCKET_FILTER) {
 -- 
 2.30.2
 
