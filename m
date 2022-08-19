@@ -2,143 +2,267 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59C2159A59C
-	for <lists+bpf@lfdr.de>; Fri, 19 Aug 2022 20:39:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5928659A54D
+	for <lists+bpf@lfdr.de>; Fri, 19 Aug 2022 20:39:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349790AbiHSSeB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Aug 2022 14:34:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54568 "EHLO
+        id S1349937AbiHSSjD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Aug 2022 14:39:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350829AbiHSSdx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Aug 2022 14:33:53 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAA245AA1B
-        for <bpf@vger.kernel.org>; Fri, 19 Aug 2022 11:33:51 -0700 (PDT)
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27JHbTph032478;
-        Fri, 19 Aug 2022 11:33:35 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=e8Qp+TP/QJUMTOrFO5rLvvTuM0F3enJtSU09DmPQKY0=;
- b=gb8Q0GeTZ78iOtc5StSx84YJT4JIzAh4HK8X8Vf2vGrU35vmZhFgZ+s6QM1V5vsFI5xN
- g3mE9V2qdgM7XPrJ7mxD1Kc58/wk+l8vOu5PChjHX+OLvi7G2PXJACk15KGebCW6/QGe
- 0FrPlfVTgSPBkZ3Lz6WoUI+BoQTtaWu5YVI= 
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2046.outbound.protection.outlook.com [104.47.66.46])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3j2b9rjsq3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 19 Aug 2022 11:33:35 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aEl11+LYQdQM57y5NiNqHjCeAbCeNdml9/7A7DG4bUnFCGD1mfVSD7uJfp1WlAQ005C4PBcwke5sxjDLvhQhTxat2/HTdsLMIb7oDlw8il3ctCbsovBf6KECbkWwoJOGoicKYG4Qperj3jntW2K/rYEpa+tFlnjdEq3mAYJzJyFUyo1N0Lrc3q5SNYA6a2NVzk7pK9UaIqlbuTD1GuMIBvx5EIQkYs2vuF4/4haNzj/21X+UMftFAQICdfteQvhJG6eQQZeCk7hie5e4f0VMGDVnDsm8C7vBlkHqXQSkCRL+7baI4KL27SU9gFs3aoAEENrlNUcBLLGE2ENBobBzKQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=e8Qp+TP/QJUMTOrFO5rLvvTuM0F3enJtSU09DmPQKY0=;
- b=AYOS577TBxWKrjuh+cD0Au3D21yYFw3jvcaXCGJTkPv+wx5w649/LC9wsmtYliJBU+W+zf9MqqBeh6uWgYT93bQ6z7PTZpkQXtwJ3/vuFVHNgyMBGKp2WjkJ8DoFZw5HNlXjaCOesoWkp2NXMmSxfHBwqhYu9BrxTRx3l0DCHwnsjrEiRFpxXIWuBjy2IbVNYIjN5yOhysbiNi+O0qSpM9CXt6IfkC3fa5f+31nhY81hO5EltZIjfqfmc4WJhLZDVgy9A5PqaYv7OeFJ35E4MgzC8zpuqQdslux2ckJKuuAlAv0DAovYAgpjzO9VExUXnjMMJgHdgH+9uFjpZ5juGA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from MW4PR15MB4475.namprd15.prod.outlook.com (2603:10b6:303:104::16)
- by CH2PR15MB3720.namprd15.prod.outlook.com (2603:10b6:610:d::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5546.19; Fri, 19 Aug
- 2022 18:33:33 +0000
-Received: from MW4PR15MB4475.namprd15.prod.outlook.com
- ([fe80::5455:4e3f:a5a2:6a9e]) by MW4PR15MB4475.namprd15.prod.outlook.com
- ([fe80::5455:4e3f:a5a2:6a9e%5]) with mapi id 15.20.5546.018; Fri, 19 Aug 2022
- 18:33:33 +0000
-Date:   Fri, 19 Aug 2022 11:33:31 -0700
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        haoluo@google.com, jolsa@kernel.org
-Subject: Re: [PATCH bpf-next v3 5/5] selftests/bpf: Make sure
- bpf_{g,s}et_retval is exposed everywhere
-Message-ID: <20220819183331.vomzsfinylljrcmm@kafai-mbp>
-References: <20220818232729.2479330-1-sdf@google.com>
- <20220818232729.2479330-6-sdf@google.com>
+        with ESMTP id S1350236AbiHSSjD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 19 Aug 2022 14:39:03 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B365666A66
+        for <bpf@vger.kernel.org>; Fri, 19 Aug 2022 11:39:01 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id r14-20020a17090a4dce00b001faa76931beso8327682pjl.1
+        for <bpf@vger.kernel.org>; Fri, 19 Aug 2022 11:39:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc;
+        bh=CUnIJocWHBIi2XPaPZqqRa7FWUxWCJElZXzxHYjxZ4I=;
+        b=na+bSCEtiARwPW43llEneLYlBtHNy0hQOPkh/JzdhWEF6etz/uJebJws/16L5uIE4j
+         yVJkWr997EmPIxPCfWbucpFmYoOCTMLqiS6fbfBKnRI0b9Gl4cAB3VUSfuj+qPdqNM/r
+         pUndTv3WN3udfAUe1e+kFhGy4fwX2+0H1J731vUTm4M2OvD3ot8aMvC1B0JBcKSfCtIT
+         HB0AjhBW3SawjJipiRAS9WqcagpHLNPjm9QVGzivcYX7/iiVwbvP8UZQbwyQxDJfKVK4
+         mlHSI1IOOMk08khGiTNYZFhHUM1PhnCb0cadrcm7k3jF6JrYxy3gSUF7/tONrWq4KPPB
+         inWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc;
+        bh=CUnIJocWHBIi2XPaPZqqRa7FWUxWCJElZXzxHYjxZ4I=;
+        b=xpbA0EWExGreeRzpbMm5aoEiFHagbzROEP/e6/iEf+C7NdKM3dvIbncYKLYAG9s97s
+         QSXAeOXKFE1504kNLJby2Ue+wCEjF2//UlLg7YM6IYL30EiimUjKK0enHHX9V8CjCPAy
+         fLI2Z2a/hA0JDTfp+zbUIRXT83LmcE4gXiJIHolu7cnUbNceMBHVWtSxREQrxHwtwgOM
+         aUybjy2Q/cCIzk/DvSrb8CBMTmECb4z0rT0M2m26SVSQBK/IsLX+d3Hc65cz1KVfk5A4
+         tPJJ92IHzVu7SG+Hr5J6/A4w0HnxwW3REnp/6nVDtgdldqL9w/J/V2fzFUMsRnjsWFFD
+         9/3w==
+X-Gm-Message-State: ACgBeo3b6l5uTrvxO5DWwGeONWFRT3FcPeoGwOsD/4/DpVfQZu1TxK0q
+        2oUKgVUjtrR5WvWID3HQznE=
+X-Google-Smtp-Source: AA6agR7Uj6clBRAISTurE/OQFBJQN0d6FV0TGpfY4ENIDy2wwuyVnbBv9nYt2BfWAsWPh9yv4p/rVw==
+X-Received: by 2002:a17:902:7602:b0:172:a064:4a2f with SMTP id k2-20020a170902760200b00172a0644a2fmr8636698pll.56.1660934341128;
+        Fri, 19 Aug 2022 11:39:01 -0700 (PDT)
+Received: from MacBook-Pro-3.local.dhcp.thefacebook.com ([2620:10d:c090:500::1:c4b1])
+        by smtp.gmail.com with ESMTPSA id q1-20020a170902a3c100b00172913c0e3dsm3503968plb.157.2022.08.19.11.38.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Aug 2022 11:39:00 -0700 (PDT)
+Date:   Fri, 19 Aug 2022 11:38:58 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: Re: [PATCH RFC bpf v1 2/3] bpf: Fix reference state management for
+ synchronous callbacks
+Message-ID: <20220819183858.sxgdg2ymlmqvios2@MacBook-Pro-3.local.dhcp.thefacebook.com>
+References: <20220815051540.18791-1-memxor@gmail.com>
+ <20220815051540.18791-3-memxor@gmail.com>
+ <CAADnVQ+Y161JHT2sN-r-g3CHevtwiS2WLW=VW+mx5bekaewGGQ@mail.gmail.com>
+ <CAP01T74hq946TnsPbLiQ1==BDH=i8Mze5Sz5ar+iH6sS=2V4Gw@mail.gmail.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220818232729.2479330-6-sdf@google.com>
-X-ClientProxiedBy: BY5PR20CA0013.namprd20.prod.outlook.com
- (2603:10b6:a03:1f4::26) To MW4PR15MB4475.namprd15.prod.outlook.com
- (2603:10b6:303:104::16)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 846f0d82-5ec5-4b0a-4daf-08da82115204
-X-MS-TrafficTypeDiagnostic: CH2PR15MB3720:EE_
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ujKAEYIYkcoIJiwxlrBLusGGb697Y4mYyIzIF1bAXpLoKZVsiZGBBq4aVaIEeutwIkMl3YvM/G1FVOyCxK7oBYIny2wk0kxrbf7gHHPvHRq9PEYEtUnP31HWvJxcgvsE3E4Ut/rWy3YLLu2UH2kwdw8XjbUBjFGb/0PIv6MmyfaC2/Yn5Bz7U15/y4VcGd8EU6S2OGZCLQIsAr4+yrZzRU+PlpuO+pR8JZ8u0phZiRR6QwL6rl1BXncl9Bv9x2bghwqObvf8LoBemonUUYgFDpu3sr38JcU1JwKeVETTAkNyaXPWPeCsi6fxhEqylXFy+KD65jy0Y9bEB4XPBO+4TmcfvcUKwbPBlqN20zwSRDifiUIIILmi/HgnTNGz4PLhtWIYZCzuuqQyNI5D9+VBmU8xBi1WA9MkNMvjb778q3zqLzM6Np0vxQf75I2k8HENAdJzFe7+UoopaIdPrrwfFUXYGSzJ+MlbBXCL2eZtTpbVi4uk2M77opdt1HYVQCLLENdk7Zg27JuLbzQV9cBMqzKWea6q6W0K9nPTF4RgSL3s+N37OxiZpCmH8ST6c+DLsyOZMPkAdXPblRala6H9S5YqiLiTd3/1mUOQU9R3Q/M1sTODNF9HdqHp5dtP5rhwPjYMds4C3WH2+VQmn3v2VEIOAuaYZ2Klnv22jHa829kW/FIcoQTH3N54A8YFeo5PMppZ0tquNkEtEXLgoyfB7gyVpw/2o9r2h9yCh0Fp50IoCiK6Rzlfep0sWoUeXJLrLbDCw37SovDe1q8EQift5w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR15MB4475.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(7916004)(366004)(39860400002)(376002)(136003)(346002)(396003)(6486002)(41300700001)(478600001)(33716001)(2906002)(3716004)(6916009)(86362001)(316002)(186003)(1076003)(6506007)(52116002)(6512007)(9686003)(5660300002)(66476007)(4744005)(8936002)(66946007)(4326008)(8676002)(7416002)(66556008)(38100700002)(31153001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?+Ak8K22sEportsiUUS9wKA1n3pIDO/wckvbAcFYcvcpOydlI3muE5HywoWUe?=
- =?us-ascii?Q?dXfYPbvvpsRo5qBNnaw3tfjfhR8VSOW2rLRAcD5KdQtApmC+WPxP6E4HdUjz?=
- =?us-ascii?Q?iDig74EgxMirJ6G9gSDEfWflmY9iivwl9N7+2TPoaV3ndArI3bcoOE3tlCJI?=
- =?us-ascii?Q?9tP8Nb1N98sGn/onn7gy78lyPBlPFtTT9QvV1KzYvEFVLkqT/u7Wp8VSsj0K?=
- =?us-ascii?Q?XdJSB1wIwHToSGWMeC+DCrkd4lBZ4qMa9Z3ePCqXwBAlVJdIciVCUyl35lxJ?=
- =?us-ascii?Q?Q8UHlxax95ebS8Er21VrM05BZHjxGrtTYkloojmYfDKw+thX/3AUKCmWCl3k?=
- =?us-ascii?Q?TziygaDfeMtWuIK8l6IeTWXN/MSwjpfuSPqEaBySQPPBvuMVavwqP4fEwJ2q?=
- =?us-ascii?Q?CMlJ4Y7dCFxs5AsBjnfRYp98tiOjk5edVs/yjiIsaCMK6CMgBkFM+rG1ROuh?=
- =?us-ascii?Q?saZM0KTgJtMlsHm8/JQCvBuRlbqKF2baLAHctYrewnxMCk0ulMfQis8DECbF?=
- =?us-ascii?Q?Y7VCjQVbQz/R50C1K9e3YlAOhltGfYTc8JNTPA7fdimg2FBR2Em7tigWs9Lb?=
- =?us-ascii?Q?cC0kApjcKYy33IVXUh6DK/i8jgoz+HzZw+hiWyiCIk1NTzUAnVEMvAKQcV7b?=
- =?us-ascii?Q?ulR7iSEMimO9bXClvr6BoXJB4LFtd1gbhT/nRvzf5hX1Ldz+gH4KUhZZGbiz?=
- =?us-ascii?Q?S8T1I5qjZTU54K3AonVzsbgdkuFd02SRJ/95z0dyPbTNyBqG//k47x5OwcUr?=
- =?us-ascii?Q?PvldVYd/zCxaqjsIphQpUJwzo/kdATCVu6jEL2/4YmvpQLhAotmo8fFcPx3q?=
- =?us-ascii?Q?BnCoULe4i645a8ihPfwy8g3j2uo3d/BnBYBXppKOiAcMxy2rf42aR1TOVmFa?=
- =?us-ascii?Q?m3Hej/Nnypi7GWMQiREIFtiOQC2kPUj9ttVheReXYXUwPfJbA8aEafiQ1F3E?=
- =?us-ascii?Q?4SxCKcw0/+aHf/NkrKFOE/TI5K60MggB/o36scxm3u3jn/YTUsIK422frVf6?=
- =?us-ascii?Q?ZtjOPgVdOs4pceSHS2irWTRw7hw8T5A8JGphRLJ0xVi4C1r75tcQ82poo+lZ?=
- =?us-ascii?Q?EZEh1vhQ0ao2CwcuqLTlJqvoL4wXKicJHSW6R/lTOh0ewYHtGX2ord7ij5u+?=
- =?us-ascii?Q?rLWg+xL+I/1GFEYQC5OMNsCaA3y7q18LaHAvWphG3GnkiqYRDf2Z4jE95l/F?=
- =?us-ascii?Q?lm8HtA/GnxUG4lAbwua4qJmIg4pA0jJX1UsBjUfemgqkwBLfSjJxRuMgmIVB?=
- =?us-ascii?Q?CKpJnmjVgGpAZSVse/TM8voPVEIUKEdQkUCrPCVT2YNWZvgWRbCXcsBEOw6d?=
- =?us-ascii?Q?LiasHYMrBi0hgdYh686Z5B5zLf/Ux4II/Brds7CsQt1+jg4nMYc1yw4HTc9l?=
- =?us-ascii?Q?YPmxDiTrCCJmAwc8twP3tFV7+DdqFzJseV4yNTn5pLcTWWjb1mwhhmwVbTPS?=
- =?us-ascii?Q?WfmJ/f3x6W1E2QZ0QXsTjUiYoJkhgzk3nDnQFgeC2piaSd3UsgUPrhya0UmS?=
- =?us-ascii?Q?JS2t1PZlGwN/lBsFN3cLhGkK//2oGdQUNwF4pMyzUbZo5kzDWDn1z7VETHLK?=
- =?us-ascii?Q?5Z/ePj9Skcbh8bi0t6MQfUFL2/7q/YJ6eY39ubCz1uhBAssU6qV6L3PHgCtu?=
- =?us-ascii?Q?6A=3D=3D?=
-X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 846f0d82-5ec5-4b0a-4daf-08da82115204
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR15MB4475.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Aug 2022 18:33:32.9677
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: GiLxu7rnHIVPTRqXB0PPUmuQh/rVo0DEPQQ5E+vGp9JhctCcwvE3XyiDxx8a+HZ7
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR15MB3720
-X-Proofpoint-GUID: FfT3OVxrU2QrAqhOSNd8GDwqm-H9h8jg
-X-Proofpoint-ORIG-GUID: FfT3OVxrU2QrAqhOSNd8GDwqm-H9h8jg
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-08-19_10,2022-08-18_01,2022-06-22_01
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAP01T74hq946TnsPbLiQ1==BDH=i8Mze5Sz5ar+iH6sS=2V4Gw@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Aug 18, 2022 at 04:27:29PM -0700, Stanislav Fomichev wrote:
-> For each hook, have a simple bpf_set_retval(bpf_get_retval) program
-> and make sure it loads for the hooks we want. The exceptions are
-> the hooks which don't propagate the error to the callers:
+On Fri, Aug 19, 2022 at 07:31:24AM +0200, Kumar Kartikeya Dwivedi wrote:
+> On Fri, 19 Aug 2022 at 02:51, Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Sun, Aug 14, 2022 at 10:15 PM Kumar Kartikeya Dwivedi
+> > <memxor@gmail.com> wrote:
+> > >
+> > > Currently, verifier verifies callback functions (sync and async) as if
+> > > they will be executed once, (i.e. it explores execution state as if the
+> > > function was being called once). The next insn to explore is set to
+> > > start of subprog and the exit from nested frame is handled using
+> > > curframe > 0 and prepare_func_exit. In case of async callback it uses a
+> > > customized variant of push_stack simulating a kind of branch to set up
+> > > custom state and execution context for the async callback.
+> > >
+> > > While this approach is simple and works when callback really will be
+> > > executed only once, it is unsafe for all of our current helpers which
+> > > are for_each style, i.e. they execute the callback multiple times.
+> > >
+> > > A callback releasing acquired references of the caller may do so
+> > > multiple times, but currently verifier sees it as one call inside the
+> > > frame, which then returns to caller. Hence, it thinks it released some
+> > > reference that the cb e.g. got access through callback_ctx (register
+> > > filled inside cb from spilled typed register on stack).
+> > >
+> > > Similarly, it may see that an acquire call is unpaired inside the
+> > > callback, so the caller will copy the reference state of callback and
+> > > then will have to release the register with new ref_obj_ids. But again,
+> > > the callback may execute multiple times, but the verifier will only
+> > > account for acquired references for a single symbolic execution of the
+> > > callback.
+> > >
+> > > Note that for async callback case, things are different. While currently
+> > > we have bpf_timer_set_callback which only executes it once, even for
+> > > multiple executions it would be safe, as reference state is NULL and
+> > > check_reference_leak would force program to release state before
+> > > BPF_EXIT. The state is also unaffected by analysis for the caller frame.
+> > > Hence async callback is safe.
+> > >
+> > > To fix this, we disallow callbacks to transfer acquired references back
+> > > to caller. They must be released before callback hits BPF_EXIT, since
+> > > the number of times callback is invoked is not known to the verifier, it
+> > > cannot reliably track how many references will be created. Likewise, it
+> > > is not allowed to release caller reference state, since we don't know
+> > > how many times the callback will be invoked.
+> > >
+> > > Lastly, now that callback function cannot change reference state it
+> > > copied from its parent, there is no need to copy reference state back to
+> > > the parent, since it won't change. It may be changed for the callee
+> > > frame but that state must match parent reference state by the time
+> > > callee exits, and it is going to be discarded anyway. So skip this copy
+> > > too. To be clear, it won't be incorrect if the copy was done, but it
+> > > would be inefficient and may be confusing to people reading the code.
+> > >
+> > > Fixes: 69c87ba6225 ("bpf: Add bpf_for_each_map_elem() helper")
+> > > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > > ---
+> > >  include/linux/bpf_verifier.h | 11 ++++++++++
+> > >  kernel/bpf/verifier.c        | 42 ++++++++++++++++++++++++++++--------
+> > >  2 files changed, 44 insertions(+), 9 deletions(-)
+> > >
+> > > diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+> > > index 2e3bad8640dc..1fdddbf3546b 100644
+> > > --- a/include/linux/bpf_verifier.h
+> > > +++ b/include/linux/bpf_verifier.h
+> > > @@ -212,6 +212,17 @@ struct bpf_reference_state {
+> > >          * is used purely to inform the user of a reference leak.
+> > >          */
+> > >         int insn_idx;
+> > > +       /* There can be a case like:
+> > > +        * main (frame 0)
+> > > +        *  cb (frame 1)
+> > > +        *   func (frame 3)
+> > > +        *    cb (frame 4)
+> > > +        * Hence for frame 4, if callback_ref just stored boolean, it would be
+> > > +        * impossible to distinguish nested callback refs. Hence store the
+> > > +        * frameno and compare that to callback_ref in check_reference_leak when
+> > > +        * exiting a callback function.
+> > > +        */
+> > > +       int callback_ref;
+> > >  };
+> > >
+> > >  /* state of the program:
+> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > > index 096fdac70165..3e885ba88b02 100644
+> > > --- a/kernel/bpf/verifier.c
+> > > +++ b/kernel/bpf/verifier.c
+> > > @@ -1086,6 +1086,7 @@ static int acquire_reference_state(struct bpf_verifier_env *env, int insn_idx)
+> > >         id = ++env->id_gen;
+> > >         state->refs[new_ofs].id = id;
+> > >         state->refs[new_ofs].insn_idx = insn_idx;
+> > > +       state->refs[new_ofs].callback_ref = state->in_callback_fn ? state->frameno : 0;
+> > >
+> > >         return id;
+> > >  }
+> > > @@ -1098,6 +1099,9 @@ static int release_reference_state(struct bpf_func_state *state, int ptr_id)
+> > >         last_idx = state->acquired_refs - 1;
+> > >         for (i = 0; i < state->acquired_refs; i++) {
+> > >                 if (state->refs[i].id == ptr_id) {
+> > > +                       /* Cannot release caller references in callbacks */
+> > > +                       if (state->in_callback_fn && state->refs[i].callback_ref != state->frameno)
+> > > +                               return -EINVAL;
+> > >                         if (last_idx && i != last_idx)
+> > >                                 memcpy(&state->refs[i], &state->refs[last_idx],
+> > >                                        sizeof(*state->refs));
+> > > @@ -6938,10 +6942,17 @@ static int prepare_func_exit(struct bpf_verifier_env *env, int *insn_idx)
+> > >                 caller->regs[BPF_REG_0] = *r0;
+> > >         }
+> > >
+> > > -       /* Transfer references to the caller */
+> > > -       err = copy_reference_state(caller, callee);
+> > > -       if (err)
+> > > -               return err;
+> > > +       /* callback_fn frame should have released its own additions to parent's
+> > > +        * reference state at this point, or check_reference_leak would
+> > > +        * complain, hence it must be the same as the caller. There is no need
+> > > +        * to copy it back.
+> > > +        */
+> > > +       if (!callee->in_callback_fn) {
+> > > +               /* Transfer references to the caller */
+> > > +               err = copy_reference_state(caller, callee);
+> > > +               if (err)
+> > > +                       return err;
+> > > +       }
+> >
+> > This part makes sense.
+> >
+> > >
+> > >         *insn_idx = callee->callsite + 1;
+> > >         if (env->log.level & BPF_LOG_LEVEL) {
+> > > @@ -7065,13 +7076,20 @@ record_func_key(struct bpf_verifier_env *env, struct bpf_call_arg_meta *meta,
+> > >  static int check_reference_leak(struct bpf_verifier_env *env)
+> > >  {
+> > >         struct bpf_func_state *state = cur_func(env);
+> > > +       bool refs_lingering = false;
+> > >         int i;
+> > >
+> > > +       if (state->frameno && !state->in_callback_fn)
+> > > +               return 0;
+> > > +
+> > >         for (i = 0; i < state->acquired_refs; i++) {
+> > > +               if (state->in_callback_fn && state->refs[i].callback_ref != state->frameno)
+> > > +                       continue;
+> >
+> > This part I don't understand.
+> > Why remember callback_ref at all?
+> > if (state->in_callback_fn)
+> > and there is something in acquired_refs it means
+> > that callback acquired refs and since we're not transferring
+> > them then we can error right away.
+> >
 > 
-> - sockops
-> - recvmsg
-> - getpeername
-> - getsockname
-and also
-  - cg_skb ingress and egress
+> Consider that a prog has 3 acquired_refs, with ids 1, 2, 3.
+> 
+> When you invoke the callback, you still want it to be able to load
+> pointers spilled to the stack with a ref_obj_id and pass them to
+> helpers. Hence, we do copy acquired_refs to the callback after
+> initializing bpf_func_state.
 
-Acked-by: Martin KaFai Lau <kafai@fb.com>
+Ahh. I see. We do copy_reference_state() and the verifier state in the caller's
+frame is indeed accessible through callback_ctx pointer passed into the callee.
+
+> However, since we don't know how many
+> times it will be invoked, it is unsafe to allow it to acquire refs it
+> doesn't release before its bpf_exit, or release the callers ref. The
+> former can lead to leaks (since if we only copy refs acquired in one
+> iteration, and if we release we only release refs released in one
+> iteration).
+
+Right.
+
+> 
+> Hence, this patch completely disallows callback from mutating the
+> state of refs it copied from its parent. It can however acquire its
+> own refs and release them before bpf_exit. Hence, check_reference_leak
+> now errors if it sees we are in callback_fn and we have not released
+> callback_ref refs. Since there can be multiple nested callbacks, like
+> frame 0 -> cb1 -> cb2  etc. we need to also distinguish between
+> whether this particular ref belongs to this callback frame or parent,
+> and only error for our own, so we store state->frameno (which is
+> always non-zero for callbacks).
+
+Right.
+
+> TLDR; callbacks can read parent reference_state, but cannot mutate it,
+> to be able to use pointers acquired by the caller. They must only undo
+> their changes (by releasing their own acquired_refs before bpf_exit)
+> on top of caller reference_state before returning (at which point the
+> caller and callback state will match anyway, so no need to copy back).
+
+Please add all these details to the commit log.
