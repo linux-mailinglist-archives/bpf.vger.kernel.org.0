@@ -2,78 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8059359A7BA
-	for <lists+bpf@lfdr.de>; Fri, 19 Aug 2022 23:32:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C2F559A7DB
+	for <lists+bpf@lfdr.de>; Fri, 19 Aug 2022 23:49:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352417AbiHSVYJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Aug 2022 17:24:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46018 "EHLO
+        id S229847AbiHSVmh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Aug 2022 17:42:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352413AbiHSVYH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Aug 2022 17:24:07 -0400
-Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D0265B7B6
-        for <bpf@vger.kernel.org>; Fri, 19 Aug 2022 14:24:05 -0700 (PDT)
-Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-3375488624aso124840297b3.3
-        for <bpf@vger.kernel.org>; Fri, 19 Aug 2022 14:24:05 -0700 (PDT)
+        with ESMTP id S229802AbiHSVmh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 19 Aug 2022 17:42:37 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 388BE10DCD5
+        for <bpf@vger.kernel.org>; Fri, 19 Aug 2022 14:42:36 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id pm17so5773046pjb.3
+        for <bpf@vger.kernel.org>; Fri, 19 Aug 2022 14:42:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc;
-        bh=Y6QwoVZVicOlVCtE7c/suMyZbLEm/X8sYTuoOY17aP8=;
-        b=Pg6j74ClZ4u3ciAjGeVATapbOuX7TryyaYQhY/ONqHud/ndF5+OBkmoao+GTRgjkEN
-         w4Bn+WmZekdAloy2kiGt7POrpDThYcNFxXHRPi9aQotlEIMazh8t0NSHOtgEkDo2TZcY
-         sgMUGgY6TjgcgUeiMPC8iQh/owopnqH4V3LbleKUCf72AInbFB8lb0T2bLHhHbKyF5fh
-         nR5lBEx1pEiFQ9UNjzvD8pyAfbqp0HLnrBTnwNIYIYyHtEAQk5p+GZzXvlHYNqb9cAuV
-         r8JCEUj5coumykLCFHVQrevpEdZjlkenLd4I8CkTghl46gbE9a0NfkZbB6r7JP0A1Ft/
-         n79w==
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc;
+        bh=7jTncCP3gpKHpe57rhmgpXAMVQKK9cKnka9R7CTzW2g=;
+        b=QHPjB8vDaUiTYmuDa8xTiCrnplv95FKWpcW6k3WiVSmilGkLZMb3wEb58UfpBCf66E
+         0aWDxosl7WO0QGu7dsBU4dyoOX8OOo7BFMQlxEHHpNk6W4oTCj9K0gMRtXL5TT/Wpibf
+         eITb8JGOQsV5q7hj/H3LSa3nDgQBNtQtUdiBRrDoRywR8uXouXybbd/jCgc18smBYeQr
+         13PnXK37i7EJgsiY857PSosrvSsuaiip4dAOhGTRlMAiAR3oB0+Ny+1KN5KPRSoSgphO
+         r5gicpBhVigX+F/kKTUHLjIDiacSaFHOtE7/OOtGkktP/3MuBuD38JokyfzeBdrRNhb4
+         uSaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc;
-        bh=Y6QwoVZVicOlVCtE7c/suMyZbLEm/X8sYTuoOY17aP8=;
-        b=qIlje0uU9qYi3ftQRGs4EF3UhdelEalm4MBnqxTnb9jybu/HAhrlqRY5gAwZUfEB7R
-         OEh0GKpgWjXuM/xzaxZngT8wjfOXbBl/tgi/hLsb67b6CQ9SBaFXtTtJYwEr6cjvFp4B
-         MqoTa4y9ymcVAbLuz9heXyJrX5R8yKWTZMpPjcBOWdZezuH55AJWr/pSLFn1JkdjGbRf
-         lLUl9YfgNCSLaivROGZ4QWBPudCGbTJIRFnKuB4pFZw6YqSYYvgFKTANe1/PQj79nToE
-         c27PJkVIBGYQxhh5/3dtYvZjAlGsC6xyK/ERz9fVUHD1lNkjAkgBW2vA8mISDwsmUIKd
-         zFUQ==
-X-Gm-Message-State: ACgBeo0Zex6MFzfsPshKGqe2D8CeJofgsTrfNzlmB2dmsgToVy3UFRtI
-        5xDCyqEN2OvFsupdQqJiB8O/GgoBydj+2/Pi4Zcxvg==
-X-Google-Smtp-Source: AA6agR5I8T82dnw4LDMcR1q4iQM0q8naijH15mGEpwPD55IdJJk39uM9aPMuAoD3pMU6shQEiCHYzyqOflBTs2s7gvk=
-X-Received: by 2002:a0d:fd06:0:b0:324:e4fe:9e6c with SMTP id
- n6-20020a0dfd06000000b00324e4fe9e6cmr9286130ywf.332.1660944244044; Fri, 19
- Aug 2022 14:24:04 -0700 (PDT)
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc;
+        bh=7jTncCP3gpKHpe57rhmgpXAMVQKK9cKnka9R7CTzW2g=;
+        b=bh8VK9fqPah3xZnwIRrSGdKKEt9L0mkMcs+K2oco6xBCeewLlTrDs4RwQBCgtFrNVl
+         Ii2aIW/y6sVB60hiWObjn5Dc81iQvEfLC31Jo7bNZO0FBdTLirlJf+6TrQnWI6BZdJe+
+         z+MBeydd+zXVlM9ko6bOC3NmjzWFvPiMVPFdugG9CX0K0QZYy7HbLPdqh9F7hDExAUnf
+         4KMxAOB6cUKnV2WNSBc5GXMhc2dWMwYsXU315R0IoGJeH91JwOTgHXtjg0BiSmzWaSRb
+         uhOPZVYWmEfk4xYFDCDwU5QX9NYQp3nVzYqEDNxrhhpx6hXgFYTYK7WDZUBe/KzyHqNr
+         Hdmw==
+X-Gm-Message-State: ACgBeo0NnfJLu3gK24oKJWVSQtandsXAgWNUxmdEaM845jyASf+867IO
+        Lg0nFQhLsnW/14wf9+yjeR1tQpeGt6E=
+X-Google-Smtp-Source: AA6agR6UdhvPRirGbZJ6jl4RZSLcjjAZ3qP2kz39Lpe5AKQUtOVK57dDRLoRK7mvMZP0V+Jq9T+LpA==
+X-Received: by 2002:a17:903:4ce:b0:171:2cbb:ba27 with SMTP id jm14-20020a17090304ce00b001712cbbba27mr9308071plb.72.1660945355566;
+        Fri, 19 Aug 2022 14:42:35 -0700 (PDT)
+Received: from localhost.localdomain ([2620:10d:c090:500::1:c4b1])
+        by smtp.gmail.com with ESMTPSA id g29-20020aa796bd000000b00535e46171c1sm3227303pfk.117.2022.08.19.14.42.34
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Fri, 19 Aug 2022 14:42:35 -0700 (PDT)
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     davem@davemloft.net
+Cc:     daniel@iogearbox.net, andrii@kernel.org, tj@kernel.org,
+        memxor@gmail.com, delyank@fb.com, linux-mm@kvack.org,
+        bpf@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH v3 bpf-next 00/15] bpf: BPF specific memory allocator.
+Date:   Fri, 19 Aug 2022 14:42:17 -0700
+Message-Id: <20220819214232.18784-1-alexei.starovoitov@gmail.com>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-References: <CAEHB24_nMMdHw1tQ0Jb0rhOLXgi6X=_Ou6r8BcbV3r-6HeueEA@mail.gmail.com>
-In-Reply-To: <CAEHB24_nMMdHw1tQ0Jb0rhOLXgi6X=_Ou6r8BcbV3r-6HeueEA@mail.gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Fri, 19 Aug 2022 14:23:53 -0700
-Message-ID: <CANn89iK2O_-m3KUooE8TUOupYZwXAjfrV64bhS0UAn8hFZVdgw@mail.gmail.com>
-Subject: Re: data-race in __tcp_alloc_md5sig_pool / tcp_alloc_md5sig_pool
-To:     abhishek.shah@columbia.edu
-Cc:     David Miller <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, llvm@lists.linux.dev,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        netdev <netdev@vger.kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>, trix@redhat.com,
-        Yonghong Song <yhs@fb.com>, Gabriel Ryan <gabe@cs.columbia.edu>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,88 +68,85 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Aug 19, 2022 at 8:40 AM Abhishek Shah
-<abhishek.shah@columbia.edu> wrote:
->
-> Hi all,
->
+From: Alexei Starovoitov <ast@kernel.org>
 
-Not sure why you included so many people in this report ?
+Introduce any context BPF specific memory allocator.
 
-You have not exactly said what could be the issue (other than the raw
-kcsan report)
+Tracing BPF programs can attach to kprobe and fentry. Hence they
+run in unknown context where calling plain kmalloc() might not be safe.
+Front-end kmalloc() with per-cpu cache of free elements.
+Refill this cache asynchronously from irq_work.
 
-> We found a race involving the tcp_md5sig_pool_populated variable. Upon fu=
-rther investigation, we think that __tcp_alloc_md5sig_pool can be run multi=
-ple times before tcp_md5sig_pool_populated is set to true here. However, we=
- are not sure. Please let us know what you think.
+Major achievements enabled by bpf_mem_alloc:
+- Dynamically allocated hash maps used to be 10 times slower than fully preallocated.
+  With bpf_mem_alloc and subsequent optimizations the speed of dynamic maps is equal to full prealloc.
+- Tracing bpf programs can use dynamically allocated hash maps.
+  Potentially saving lots of memory. Typical hash map is sparsely populated.
+- Sleepable bpf programs can used dynamically allocated hash maps.
 
-I think this is a false positive, because the data race is properly handled
-with the help of tcp_md5sig_mutex.
+v2->v3:
+- Rewrote the free_list algorithm based on discussions with Kumar. Patch 1.
+- Allowed sleepable bpf progs use dynamically allocated maps. Patches 13 and 14.
+- Added sysctl to force bpf_mem_alloc in hash map even if pre-alloc is
+  requested to reduce memory consumption. Patch 15.
+- Fix: zero-fill percpu allocation
+- Single rcu_barrier at the end instead of each cpu during bpf_mem_alloc destruction
 
-We might silence it, of course, like many other existing data races.
+v2 thread:
+https://lore.kernel.org/bpf/20220817210419.95560-1-alexei.starovoitov@gmail.com/
 
+v1->v2:
+- Moved unsafe direct call_rcu() from hash map into safe place inside bpf_mem_alloc. Patches 7 and 9.
+- Optimized atomic_inc/dec in hash map with percpu_counter. Patch 6.
+- Tuned watermarks per allocation size. Patch 8
+- Adopted this approach to per-cpu allocation. Patch 10.
+- Fully converted hash map to bpf_mem_alloc. Patch 11.
+- Removed tracing prog restriction on map types. Combination of all patches and final patch 12.
 
+v1 thread:
+https://lore.kernel.org/bpf/20220623003230.37497-1-alexei.starovoitov@gmail.com/
 
->
-> Thanks!
->
->
-> --------------------Report--------------
->
-> write to 0xffffffff883a2438 of 1 bytes by task 6542 on cpu 0:
->  __tcp_alloc_md5sig_pool+0x239/0x260 net/ipv4/tcp.c:4343
->  tcp_alloc_md5sig_pool+0x58/0xb0 net/ipv4/tcp.c:4352
->  tcp_md5_do_add+0x2c4/0x470 net/ipv4/tcp_ipv4.c:1199
->  tcp_v6_parse_md5_keys+0x473/0x490
->  do_tcp_setsockopt net/ipv4/tcp.c:3614 [inline]
->  tcp_setsockopt+0xda6/0x1be0 net/ipv4/tcp.c:3698
->  sock_common_setsockopt+0x62/0x80 net/core/sock.c:3505
->  __sys_setsockopt+0x2d1/0x450 net/socket.c:2180
->  __do_sys_setsockopt net/socket.c:2191 [inline]
->  __se_sys_setsockopt net/socket.c:2188 [inline]
->  __x64_sys_setsockopt+0x67/0x80 net/socket.c:2188
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x3d/0x90 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
->
-> read to 0xffffffff883a2438 of 1 bytes by task 6541 on cpu 1:
->  tcp_alloc_md5sig_pool+0x15/0xb0 net/ipv4/tcp.c:4348
->  tcp_md5_do_add+0x2c4/0x470 net/ipv4/tcp_ipv4.c:1199
->  tcp_v4_parse_md5_keys+0x42f/0x500 net/ipv4/tcp_ipv4.c:1303
->  do_tcp_setsockopt net/ipv4/tcp.c:3614 [inline]
->  tcp_setsockopt+0xda6/0x1be0 net/ipv4/tcp.c:3698
->  sock_common_setsockopt+0x62/0x80 net/core/sock.c:3505
->  __sys_setsockopt+0x2d1/0x450 net/socket.c:2180
->  __do_sys_setsockopt net/socket.c:2191 [inline]
->  __se_sys_setsockopt net/socket.c:2188 [inline]
->  __x64_sys_setsockopt+0x67/0x80 net/socket.c:2188
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x3d/0x90 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
->
-> Reported by Kernel Concurrency Sanitizer on:
-> CPU: 1 PID: 6541 Comm: syz-executor2-n Not tainted 5.18.0-rc5+ #107
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/0=
-1/2014
->
->
-> Reproducing Inputs
->
-> Input CPU 0:
-> r0 =3D socket(0xa, 0x1, 0x0)
-> setsockopt$inet_tcp_TCP_MD5SIG(r0, 0x6, 0xe, &(0x7f0000000000)=3D{@in6=3D=
-{{0xa, 0x0, 0x0, @private0}}, 0x0, 0x0, 0x10, 0x0, "a04979dcb0f6e3666c36f59=
-053376c1d2e245fbad5b4749a8c55dda1bd819ec87afb7f5ac2483f179675d3c23fdba661af=
-cca7cca5661a7b52ac11cc8085800c2c0d8e7de309eb57b89292880a563154"}, 0xd8)
-> setsockopt$inet_tcp_TCP_MD5SIG(r0, 0x6, 0xe, &(0x7f0000000100)=3D{@in6=3D=
-{{0xa, 0x0, 0x0, @loopback}}, 0x0, 0x0, 0x28, 0x0, "f386ea32b026420a2c65ea3=
-75667090000000000000000a300001e81f9c22181fe9cef51a4070736c7a33d08c1dd5c35eb=
-9b0e6c6aa490d4f1b18f7b09103bf18619b49a9ce10f4bd98e0b00"}, 0xd8)
->
-> Input CPU 1:
-> r0 =3D socket$inet_tcp(0x2, 0x1, 0x0)
-> setsockopt$inet_tcp_TCP_MD5SIG(r0, 0x6, 0xe, &(0x7f0000000080)=3D{@in=3D{=
-{0x2, 0x0, @remote}}, 0x0, 0x0, 0x47, 0x0, "2a34e559cc66f8b453edeb61450c389=
-9cc1d1304f0e5f1758293ddd3597b84447d3056ed871ae397b0fd27a54e4ff8ba83f0cf3e5f=
-323acb74f974c0b87333e0570e9019d8fdcf0bc1044a5e96d68296"}, 0xd8)
+LWN article:
+https://lwn.net/Articles/899274/
+
+Future work:
+- expose bpf_mem_alloc as uapi FD to be used in dynptr_alloc, kptr_alloc
+- convert lru map to bpf_mem_alloc
+
+Alexei Starovoitov (15):
+  bpf: Introduce any context BPF specific memory allocator.
+  bpf: Convert hash map to bpf_mem_alloc.
+  selftests/bpf: Improve test coverage of test_maps
+  samples/bpf: Reduce syscall overhead in map_perf_test.
+  bpf: Relax the requirement to use preallocated hash maps in tracing
+    progs.
+  bpf: Optimize element count in non-preallocated hash map.
+  bpf: Optimize call_rcu in non-preallocated hash map.
+  bpf: Adjust low/high watermarks in bpf_mem_cache
+  bpf: Batch call_rcu callbacks instead of SLAB_TYPESAFE_BY_RCU.
+  bpf: Add percpu allocation support to bpf_mem_alloc.
+  bpf: Convert percpu hash map to per-cpu bpf_mem_alloc.
+  bpf: Remove tracing program restriction on map types
+  bpf: Prepare bpf_mem_alloc to be used by sleepable bpf programs.
+  bpf: Remove prealloc-only restriction for sleepable bpf programs.
+  bpf: Introduce sysctl kernel.bpf_force_dyn_alloc.
+
+ include/linux/bpf_mem_alloc.h             |  26 +
+ include/linux/filter.h                    |   2 +
+ kernel/bpf/Makefile                       |   2 +-
+ kernel/bpf/core.c                         |   2 +
+ kernel/bpf/hashtab.c                      | 132 +++--
+ kernel/bpf/memalloc.c                     | 601 ++++++++++++++++++++++
+ kernel/bpf/syscall.c                      |  14 +-
+ kernel/bpf/verifier.c                     |  52 --
+ samples/bpf/map_perf_test_kern.c          |  44 +-
+ samples/bpf/map_perf_test_user.c          |   2 +-
+ tools/testing/selftests/bpf/progs/timer.c |  11 -
+ tools/testing/selftests/bpf/test_maps.c   |  38 +-
+ 12 files changed, 795 insertions(+), 131 deletions(-)
+ create mode 100644 include/linux/bpf_mem_alloc.h
+ create mode 100644 kernel/bpf/memalloc.c
+
+-- 
+2.30.2
+
