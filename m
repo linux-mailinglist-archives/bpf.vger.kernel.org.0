@@ -2,59 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FFDB59A7EE
-	for <lists+bpf@lfdr.de>; Fri, 19 Aug 2022 23:49:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D22B59A7E3
+	for <lists+bpf@lfdr.de>; Fri, 19 Aug 2022 23:49:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236015AbiHSVna (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Aug 2022 17:43:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48820 "EHLO
+        id S234960AbiHSVnd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Aug 2022 17:43:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238644AbiHSVn1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Aug 2022 17:43:27 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CFA5DF32
-        for <bpf@vger.kernel.org>; Fri, 19 Aug 2022 14:43:26 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id c2so5166418plo.3
-        for <bpf@vger.kernel.org>; Fri, 19 Aug 2022 14:43:26 -0700 (PDT)
+        with ESMTP id S237986AbiHSVnb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 19 Aug 2022 17:43:31 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D57B13F42
+        for <bpf@vger.kernel.org>; Fri, 19 Aug 2022 14:43:30 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id t2-20020a17090a4e4200b001f21572f3a4so6054658pjl.0
+        for <bpf@vger.kernel.org>; Fri, 19 Aug 2022 14:43:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc;
-        bh=bW5ocW6PzISfaCgKiPdCkbtq/RA2U8OKQTKMdTGnVOA=;
-        b=QL0G/EHoJfksQ4p6mh6jETpl0vwiWZswZj/MQI0CXx3GQ3XVocxIglIesp1mjt6wig
-         liFF8jPt0KXoJ+PurPcIH41o7V+QkbIadjk4Okh9eyYvPwKeN2XF0bHWtiHpL1MKxE7P
-         C+ePoBtSmYEBPgR/F159rvLFaFgWqmrHo47CKrrYjAlH+WEPNOb3DdMvOn6m4kjqltc7
-         iD9zOt6GSKu1/Bu2Ld5wdUAS/2exFqYpqD3DLVdb4K9K446n4ZPAdmO8B4ZYdubYD6C5
-         NUVTtVRkpKRUm8k1SelZZIDYmuadXTy+z0Bk3bHXaqzkOhAZg8nc0nglkMGRxm6bub6P
-         JJxA==
+        bh=hlhfOcaAISwN7vZVN/qowrmOmS21KIl/i8kYcPwYBWw=;
+        b=Bo7ngEGAgqshf64Hk3UhRCye2nuSJtKiFuIEWtkcQrpI3Bp5Rc0Ivs8kuR2tm/Uqd4
+         Gq9K4X9mkcd9GoK8DhXBxcwPbDrVnU/IZgkLWZ2ZY3VX3/XqDtPo0PSDXQME6kYZZgy9
+         SOWxP+QrgzwqNI0KD36PGnUNtRaDAz+5fGRCUvwek0erbNqC9c75KYwk5SUtf55Y6nrV
+         h2qnCbxyWH48zBO8tEMoguAl2Fmh8iIzmNFTTLBxXxBzr4SfhxDkx9DTTdX6FBUw2cbv
+         Q6bcs+bT8f5dNRU4Tjt2soXAl/EaPj6paYfRtmM/zBqPNzW2oYcCQptEQzA3Y0IclSiv
+         u8lQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc;
-        bh=bW5ocW6PzISfaCgKiPdCkbtq/RA2U8OKQTKMdTGnVOA=;
-        b=O4fSaCvGR4GnhX9egA+kNgivyAyxfdQ+e7NDZMg7C5ziKONCJM4VPWlr91pAaIlGjb
-         dHHWZsDAe0sZuF48t6DB0auRuGjRVGl554GFQi4/kRXsdAmuRoyRvmGNuQaZHetQdHWE
-         JVPlZJ+RI+MGU342sUzHVyE0AsbnjiVl+ES3QfzUVcq4QK3iIlI8dXCvhLXuqc5KBv8q
-         cX3WgH6mqluTWWEuxh/NVBtqjYoxvfJgYF/tFp2i2Ik4mHk/nFNX/JR2f2mLRvRCck5y
-         HUTMDcicyrodv4NRxRrPUNVSWIWYLBLy60bo2Jg//498lcjrf8UJ+aokQWaj+NJzFsho
-         hbjA==
-X-Gm-Message-State: ACgBeo3sggdB1kfUIrqrU1udBQJEsk1znU6Fnht1uc6BCC3ckKDVsmXV
-        RX8KpXO3t9pXuWjGVOiI1DI=
-X-Google-Smtp-Source: AA6agR56faXSMcH0PAhNAx9r0g5F4js3qHybSTN70KIu5Hh8X5AOPg7E/K1Wj532E/7UrKfXAIftFw==
-X-Received: by 2002:a17:90b:4a4d:b0:1f5:431c:54fa with SMTP id lb13-20020a17090b4a4d00b001f5431c54famr10378826pjb.199.1660945406270;
-        Fri, 19 Aug 2022 14:43:26 -0700 (PDT)
+        bh=hlhfOcaAISwN7vZVN/qowrmOmS21KIl/i8kYcPwYBWw=;
+        b=0h1ElDtlUX2UNl0MCOy1v8O4spxDyL70t21dcjY1OTnLz0KiVFDTA681ipvd6q6PcV
+         xMaQ35gEQ/8CTuGLyY8doLQRlXpi4pIiQe5vH8DiTSxB+MbBGAR4dUVpTMQl2Q4/7jQa
+         MOj6vMlnZTVyCS2IKgHhv3Sfw1zCIs4TrqMS+c4UuxTqb3n0ZJO63uIo0zsLKbIAvu1Q
+         GZKVzVYnvavSQZ3Ri+/OeJQepUtyd7J8uDJjJZ3JcPg5Pk9tH2ajEpg9LW0R6YtR79OQ
+         S4RpTMaojShEBtz1LLoq1nll7mK7ylDxd1sPBs07KNwz5bcdqjJhlGKXmkH+gQWAkuGb
+         hQPg==
+X-Gm-Message-State: ACgBeo1/oc5s55F9mCjX1MP8/DMj5JyTqhNxXogpwwFxLy9ekl+V49xf
+        zs9QIVY8xpynC67aRpkyeHg=
+X-Google-Smtp-Source: AA6agR7dFh/IrUInZSWKnwoEMLFomgZNUtWGBrCJIt/X6KdkfB0oFBN+QytwAbcGDFIfY/yhtxOZVQ==
+X-Received: by 2002:a17:90a:9f96:b0:1fa:b4fb:6297 with SMTP id o22-20020a17090a9f9600b001fab4fb6297mr10349716pjp.80.1660945409961;
+        Fri, 19 Aug 2022 14:43:29 -0700 (PDT)
 Received: from localhost.localdomain ([2620:10d:c090:500::1:c4b1])
-        by smtp.gmail.com with ESMTPSA id y23-20020a17090264d700b0016b81679c1fsm3587099pli.216.2022.08.19.14.43.24
+        by smtp.gmail.com with ESMTPSA id d135-20020a621d8d000000b0052d4b0d0c74sm3893099pfd.70.2022.08.19.14.43.28
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Fri, 19 Aug 2022 14:43:25 -0700 (PDT)
+        Fri, 19 Aug 2022 14:43:29 -0700 (PDT)
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     davem@davemloft.net
 Cc:     daniel@iogearbox.net, andrii@kernel.org, tj@kernel.org,
         memxor@gmail.com, delyank@fb.com, linux-mm@kvack.org,
         bpf@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v3 bpf-next 14/15] bpf: Remove prealloc-only restriction for sleepable bpf programs.
-Date:   Fri, 19 Aug 2022 14:42:31 -0700
-Message-Id: <20220819214232.18784-15-alexei.starovoitov@gmail.com>
+Subject: [PATCH v3 bpf-next 15/15] bpf: Introduce sysctl kernel.bpf_force_dyn_alloc.
+Date:   Fri, 19 Aug 2022 14:42:32 -0700
+Message-Id: <20220819214232.18784-16-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <20220819214232.18784-1-alexei.starovoitov@gmail.com>
 References: <20220819214232.18784-1-alexei.starovoitov@gmail.com>
@@ -72,63 +72,81 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Alexei Starovoitov <ast@kernel.org>
 
-Since hash map is now converted to bpf_mem_alloc and it's waiting for rcu and
-rcu_tasks_trace GPs before freeing elements into global memory slabs it's safe
-to use dynamically allocated hash maps in sleepable bpf programs.
+Introduce sysctl kernel.bpf_force_dyn_alloc to force dynamic allocation in bpf
+hash map. All selftests/bpf should pass with bpf_force_dyn_alloc 0 or 1 and all
+bpf programs (both sleepable and not) should not see any functional difference.
+The sysctl's observable behavior should only be improved memory usage.
 
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 ---
- kernel/bpf/verifier.c | 23 -----------------------
- 1 file changed, 23 deletions(-)
+ include/linux/filter.h | 2 ++
+ kernel/bpf/core.c      | 2 ++
+ kernel/bpf/hashtab.c   | 5 +++++
+ kernel/bpf/syscall.c   | 9 +++++++++
+ 4 files changed, 18 insertions(+)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index a1ada707c57c..dcbcf876b886 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -12562,14 +12562,6 @@ static int check_pseudo_btf_id(struct bpf_verifier_env *env,
- 	return err;
+diff --git a/include/linux/filter.h b/include/linux/filter.h
+index a5f21dc3c432..eb4d4a0c0bde 100644
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -1009,6 +1009,8 @@ bpf_run_sk_reuseport(struct sock_reuseport *reuse, struct sock *sk,
+ }
+ #endif
+ 
++extern int bpf_force_dyn_alloc;
++
+ #ifdef CONFIG_BPF_JIT
+ extern int bpf_jit_enable;
+ extern int bpf_jit_harden;
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 639437f36928..a13e78ea4b90 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -533,6 +533,8 @@ void bpf_prog_kallsyms_del_all(struct bpf_prog *fp)
+ 	bpf_prog_kallsyms_del(fp);
  }
  
--static int check_map_prealloc(struct bpf_map *map)
--{
--	return (map->map_type != BPF_MAP_TYPE_HASH &&
--		map->map_type != BPF_MAP_TYPE_PERCPU_HASH &&
--		map->map_type != BPF_MAP_TYPE_HASH_OF_MAPS) ||
--		!(map->map_flags & BPF_F_NO_PREALLOC);
--}
--
- static bool is_tracing_prog_type(enum bpf_prog_type type)
- {
- 	switch (type) {
-@@ -12584,15 +12576,6 @@ static bool is_tracing_prog_type(enum bpf_prog_type type)
- 	}
- }
++int bpf_force_dyn_alloc __read_mostly;
++
+ #ifdef CONFIG_BPF_JIT
+ /* All BPF JIT sysctl knobs here. */
+ int bpf_jit_enable   __read_mostly = IS_BUILTIN(CONFIG_BPF_JIT_DEFAULT_ON);
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index 89f26cbddef5..f68a3400939e 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -505,6 +505,11 @@ static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
  
--static bool is_preallocated_map(struct bpf_map *map)
--{
--	if (!check_map_prealloc(map))
--		return false;
--	if (map->inner_map_meta && !check_map_prealloc(map->inner_map_meta))
--		return false;
--	return true;
--}
--
- static int check_map_prog_compatibility(struct bpf_verifier_env *env,
- 					struct bpf_map *map,
- 					struct bpf_prog *prog)
-@@ -12645,12 +12628,6 @@ static int check_map_prog_compatibility(struct bpf_verifier_env *env,
- 		case BPF_MAP_TYPE_LRU_PERCPU_HASH:
- 		case BPF_MAP_TYPE_ARRAY_OF_MAPS:
- 		case BPF_MAP_TYPE_HASH_OF_MAPS:
--			if (!is_preallocated_map(map)) {
--				verbose(env,
--					"Sleepable programs can only use preallocated maps\n");
--				return -EINVAL;
--			}
--			break;
- 		case BPF_MAP_TYPE_RINGBUF:
- 		case BPF_MAP_TYPE_INODE_STORAGE:
- 		case BPF_MAP_TYPE_SK_STORAGE:
+ 	bpf_map_init_from_attr(&htab->map, attr);
+ 
++	if (!lru && bpf_force_dyn_alloc) {
++		prealloc = false;
++		htab->map.map_flags |= BPF_F_NO_PREALLOC;
++	}
++
+ 	if (percpu_lru) {
+ 		/* ensure each CPU's lru list has >=1 elements.
+ 		 * since we are at it, make each lru list has the same
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 850270a72350..c201796f4997 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -5297,6 +5297,15 @@ static struct ctl_table bpf_syscall_table[] = {
+ 		.mode		= 0644,
+ 		.proc_handler	= bpf_stats_handler,
+ 	},
++	{
++		.procname	= "bpf_force_dyn_alloc",
++		.data		= &bpf_force_dyn_alloc,
++		.maxlen		= sizeof(int),
++		.mode		= 0600,
++		.proc_handler	= proc_dointvec_minmax,
++		.extra1		= SYSCTL_ZERO,
++		.extra2		= SYSCTL_ONE,
++	},
+ 	{ }
+ };
+ 
 -- 
 2.30.2
 
