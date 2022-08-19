@@ -2,78 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 116D559946C
-	for <lists+bpf@lfdr.de>; Fri, 19 Aug 2022 07:32:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A87A359948D
+	for <lists+bpf@lfdr.de>; Fri, 19 Aug 2022 07:32:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346072AbiHSFYs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Aug 2022 01:24:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40552 "EHLO
+        id S242300AbiHSFcG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Aug 2022 01:32:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346032AbiHSFYn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Aug 2022 01:24:43 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AF61D598A;
-        Thu, 18 Aug 2022 22:24:42 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id q74so2594274iod.9;
-        Thu, 18 Aug 2022 22:24:42 -0700 (PDT)
+        with ESMTP id S245231AbiHSFcE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 19 Aug 2022 01:32:04 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 715CCE0FC4
+        for <bpf@vger.kernel.org>; Thu, 18 Aug 2022 22:32:01 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id z13so1841520ilq.9
+        for <bpf@vger.kernel.org>; Thu, 18 Aug 2022 22:32:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc;
-        bh=fSjWEqS+nzaDnc5WYuCrEYkIrPzGz/UPSsWeAxzHMno=;
-        b=Vg7kzCyU4V2Zh2vbfVjatiWUhBCqKnLn+l1sd0bxdhUFjhdqBz/E40nfa48VPO8btm
-         r6JUhnsHWJgg6uNPvRFH7fxlUHohFLuNMJ5fHFdAJLWdd9GWfBHG0wRI9dVMEzUXRdty
-         w811GOf+JOaMpa9OOPumyH7L4Jay7HW3shBIgQWsXk046fNoqw/uKYlgRfkidLlHiCGW
-         1jed6vpp4ckJwj4sTB8qO94f64jOTXPDli1T/9/qMZhSInhYTeCj1meQ0gOTYPUatOPD
-         FqBkJ/9/YBZucKSlM7a6Swbgso+WC+aUah5ayiz8H/tIvrIfqj0yfxfs1e6loMZ9wZwj
-         XOWQ==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=l7VK7oGiipwMw6fWcPIWf6sQUHRsvaeQYT01DercdtY=;
+        b=gChXkwxidpiAokUCMZ8XbwyxgEIoEDYwPjtS/f6VWyZVUVNagNid1Lt9fs9ebpGyRt
+         TO6SZ7jCBczrlRzEqotWgVFlTdUHxP173gEzSIx9172OnE+I7zjlf5ZO/5YQD00R2KN6
+         AD8Rix3igVH7Z0i2fm/N8iOEATbfA+CiQXAbkl3r9QfjjpVU2Gb0P4k4WGaEW9W6AxMu
+         BNp2y6epEYdeQtaj4n+RWE3TZTKCfi/Y3ET+2UBYsvi7rihHVBmX7k/3XAdk5u656nV2
+         qU6H0i7MASOVcw2Iyaf97pYi8WcXnYIbYpKXbK5UfDi/+n9WpJ/FB+3S0sQB1ixHsKkD
+         ersQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc;
-        bh=fSjWEqS+nzaDnc5WYuCrEYkIrPzGz/UPSsWeAxzHMno=;
-        b=nSMYQnCrrx6VVR2YGLIUjXizG5pnHb4u7r8+bq7MxLxwMvIBU+olAO2WyDnVOJoPZ4
-         s0ivqY42aR/eBmUk5CmA8HUq9DU6igq94UAv64kzrrZxKbSlrEX16+PE3qpWkZdReepI
-         MT0xT9cM3hkSCPTyTblR89KjhHRAmOFTxybre0Hkt6n3++HGbqQxnPLr00wrHjKCaX0s
-         OlpjwmWc3gHW5AVmQvXj0Gg5KRjJiKFgcRxwRPmLec98UV17sD0VTCzdbtQd7Zgp8yT+
-         ghFVsrQA0TpXYxM/foX6wzxlTDZXYSbrNlZmh89ewg2NLvVtxNzz+yalOB7Gb0WtAI/W
-         Zn7Q==
-X-Gm-Message-State: ACgBeo1ceMSZJ1KDzSlJT3lJn33wn+xALxK12Vsf9tfnzwdsPu+hRWXa
-        /W3HX3lBgTImL7pwuBO6NPg+nbJtOLWG5XmHM30=
-X-Google-Smtp-Source: AA6agR5GkEF2VS/TVRe7RgWcdbul3ujPU9FHutffAdiUQr4H+JrKdIH2s1A+PgaPtffJZVN4+hDW1Q2FbdAERppX73c=
-X-Received: by 2002:a05:6602:2d8b:b0:688:ece0:e1da with SMTP id
- k11-20020a0566022d8b00b00688ece0e1damr2718327iow.18.1660886681832; Thu, 18
- Aug 2022 22:24:41 -0700 (PDT)
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=l7VK7oGiipwMw6fWcPIWf6sQUHRsvaeQYT01DercdtY=;
+        b=hOvF2NAYDWcz/Up5GBR6kk9lEh7Z1G2gsMHSj0dZGidRAn4MV3poqQovD16b9kMzDF
+         0eLGuPYA1AZ3ZAjKj4BOBhnNp9wQB/FuZODySaFrpQRX+bAyelE/9GttzeNeMZxDasSs
+         7j/BflvtkIlIbCEGsb774W+XXSMfkMY/ZIEhm7vXzwRIqQPt2cc+scUDrRwuYjX9MPst
+         PjmdReeZ3NO/bTKDAgYwVrF9ITdYrYTlXAvRlC/81nz0h5IxKGn9oexeCM0f6BPUOhMY
+         clHF/WrwTNOdCxgBxnm7JL26x8g8gGiNyEzAQ6d1ehrXNcL0uhiDLX2zhyEUtsCMRUSk
+         cfXg==
+X-Gm-Message-State: ACgBeo3Hb09X/zrlfAWlxkWMbbrXUkonO4jmnI0D+tEW39umQAbxDLAK
+        6v+NLbkFKgr4hJHLP/9M/BpMiR3lWQdOCOtbjE2+KtbO
+X-Google-Smtp-Source: AA6agR41QYo8ZMbzsYx7Toh3Be/gd5nOVGfxLVw2X1pv7ADN2wtiW80R2tHEaHgbLE12L3PlZY56h6K+DqQc4vXnnM0=
+X-Received: by 2002:a05:6e02:1d16:b0:2e5:813b:d172 with SMTP id
+ i22-20020a056e021d1600b002e5813bd172mr2985976ila.164.1660887120678; Thu, 18
+ Aug 2022 22:32:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220818165906.64450-1-toke@redhat.com> <Yv68pgkL++uD0a6e@google.com>
-In-Reply-To: <Yv68pgkL++uD0a6e@google.com>
+References: <20220815051540.18791-1-memxor@gmail.com> <20220815051540.18791-3-memxor@gmail.com>
+ <CAADnVQ+Y161JHT2sN-r-g3CHevtwiS2WLW=VW+mx5bekaewGGQ@mail.gmail.com>
+In-Reply-To: <CAADnVQ+Y161JHT2sN-r-g3CHevtwiS2WLW=VW+mx5bekaewGGQ@mail.gmail.com>
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date:   Fri, 19 Aug 2022 07:24:06 +0200
-Message-ID: <CAP01T75Q8JhX-EQVp_3C9YAxybptUBmuwALsxAaDZObYuQ8KCw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/3] A couple of small refactorings of BPF
- program call sites
-To:     sdf@google.com
-Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+Date:   Fri, 19 Aug 2022 07:31:24 +0200
+Message-ID: <CAP01T74hq946TnsPbLiQ1==BDH=i8Mze5Sz5ar+iH6sS=2V4Gw@mail.gmail.com>
+Subject: Re: [PATCH RFC bpf v1 2/3] bpf: Fix reference state management for
+ synchronous callbacks
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
+        Daniel Borkmann <daniel@iogearbox.net>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -84,71 +69,181 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 19 Aug 2022 at 00:29, <sdf@google.com> wrote:
+On Fri, 19 Aug 2022 at 02:51, Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> On 08/18, Toke H=EF=BF=BDiland-J=EF=BF=BDrgensen wrote:
-> > Stanislav suggested[0] that these small refactorings could be split out
-> > from the
-> > XDP queueing RFC series and merged separately. The first change is a sm=
-all
-> > repacking of struct softnet_data, the others change the BPF call sites =
-to
-> > support full 64-bit values as arguments to bpf_redirect_map() and as th=
-e
-> > return
-> > value of a BPF program, relying on the fact that BPF registers are alwa=
-ys
-> > 64-bit
-> > wide to maintain backwards compatibility.
+> On Sun, Aug 14, 2022 at 10:15 PM Kumar Kartikeya Dwivedi
+> <memxor@gmail.com> wrote:
+> >
+> > Currently, verifier verifies callback functions (sync and async) as if
+> > they will be executed once, (i.e. it explores execution state as if the
+> > function was being called once). The next insn to explore is set to
+> > start of subprog and the exit from nested frame is handled using
+> > curframe > 0 and prepare_func_exit. In case of async callback it uses a
+> > customized variant of push_stack simulating a kind of branch to set up
+> > custom state and execution context for the async callback.
+> >
+> > While this approach is simple and works when callback really will be
+> > executed only once, it is unsafe for all of our current helpers which
+> > are for_each style, i.e. they execute the callback multiple times.
+> >
+> > A callback releasing acquired references of the caller may do so
+> > multiple times, but currently verifier sees it as one call inside the
+> > frame, which then returns to caller. Hence, it thinks it released some
+> > reference that the cb e.g. got access through callback_ctx (register
+> > filled inside cb from spilled typed register on stack).
+> >
+> > Similarly, it may see that an acquire call is unpaired inside the
+> > callback, so the caller will copy the reference state of callback and
+> > then will have to release the register with new ref_obj_ids. But again,
+> > the callback may execute multiple times, but the verifier will only
+> > account for acquired references for a single symbolic execution of the
+> > callback.
+> >
+> > Note that for async callback case, things are different. While currently
+> > we have bpf_timer_set_callback which only executes it once, even for
+> > multiple executions it would be safe, as reference state is NULL and
+> > check_reference_leak would force program to release state before
+> > BPF_EXIT. The state is also unaffected by analysis for the caller frame.
+> > Hence async callback is safe.
+> >
+> > To fix this, we disallow callbacks to transfer acquired references back
+> > to caller. They must be released before callback hits BPF_EXIT, since
+> > the number of times callback is invoked is not known to the verifier, it
+> > cannot reliably track how many references will be created. Likewise, it
+> > is not allowed to release caller reference state, since we don't know
+> > how many times the callback will be invoked.
+> >
+> > Lastly, now that callback function cannot change reference state it
+> > copied from its parent, there is no need to copy reference state back to
+> > the parent, since it won't change. It may be changed for the callee
+> > frame but that state must match parent reference state by the time
+> > callee exits, and it is going to be discarded anyway. So skip this copy
+> > too. To be clear, it won't be incorrect if the copy was done, but it
+> > would be inefficient and may be confusing to people reading the code.
+> >
+> > Fixes: 69c87ba6225 ("bpf: Add bpf_for_each_map_elem() helper")
+> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > ---
+> >  include/linux/bpf_verifier.h | 11 ++++++++++
+> >  kernel/bpf/verifier.c        | 42 ++++++++++++++++++++++++++++--------
+> >  2 files changed, 44 insertions(+), 9 deletions(-)
+> >
+> > diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+> > index 2e3bad8640dc..1fdddbf3546b 100644
+> > --- a/include/linux/bpf_verifier.h
+> > +++ b/include/linux/bpf_verifier.h
+> > @@ -212,6 +212,17 @@ struct bpf_reference_state {
+> >          * is used purely to inform the user of a reference leak.
+> >          */
+> >         int insn_idx;
+> > +       /* There can be a case like:
+> > +        * main (frame 0)
+> > +        *  cb (frame 1)
+> > +        *   func (frame 3)
+> > +        *    cb (frame 4)
+> > +        * Hence for frame 4, if callback_ref just stored boolean, it would be
+> > +        * impossible to distinguish nested callback refs. Hence store the
+> > +        * frameno and compare that to callback_ref in check_reference_leak when
+> > +        * exiting a callback function.
+> > +        */
+> > +       int callback_ref;
+> >  };
+> >
+> >  /* state of the program:
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 096fdac70165..3e885ba88b02 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -1086,6 +1086,7 @@ static int acquire_reference_state(struct bpf_verifier_env *env, int insn_idx)
+> >         id = ++env->id_gen;
+> >         state->refs[new_ofs].id = id;
+> >         state->refs[new_ofs].insn_idx = insn_idx;
+> > +       state->refs[new_ofs].callback_ref = state->in_callback_fn ? state->frameno : 0;
+> >
+> >         return id;
+> >  }
+> > @@ -1098,6 +1099,9 @@ static int release_reference_state(struct bpf_func_state *state, int ptr_id)
+> >         last_idx = state->acquired_refs - 1;
+> >         for (i = 0; i < state->acquired_refs; i++) {
+> >                 if (state->refs[i].id == ptr_id) {
+> > +                       /* Cannot release caller references in callbacks */
+> > +                       if (state->in_callback_fn && state->refs[i].callback_ref != state->frameno)
+> > +                               return -EINVAL;
+> >                         if (last_idx && i != last_idx)
+> >                                 memcpy(&state->refs[i], &state->refs[last_idx],
+> >                                        sizeof(*state->refs));
+> > @@ -6938,10 +6942,17 @@ static int prepare_func_exit(struct bpf_verifier_env *env, int *insn_idx)
+> >                 caller->regs[BPF_REG_0] = *r0;
+> >         }
+> >
+> > -       /* Transfer references to the caller */
+> > -       err = copy_reference_state(caller, callee);
+> > -       if (err)
+> > -               return err;
+> > +       /* callback_fn frame should have released its own additions to parent's
+> > +        * reference state at this point, or check_reference_leak would
+> > +        * complain, hence it must be the same as the caller. There is no need
+> > +        * to copy it back.
+> > +        */
+> > +       if (!callee->in_callback_fn) {
+> > +               /* Transfer references to the caller */
+> > +               err = copy_reference_state(caller, callee);
+> > +               if (err)
+> > +                       return err;
+> > +       }
 >
-> > Please see the individual patches for details.
+> This part makes sense.
 >
-> > [0]
-> > https://lore.kernel.org/r/CAKH8qBtdnku7StcQ-SamadvAF=3D=3DDRuLLZO94yOR1=
-WJ9Bg=3DuX1w@mail.gmail.com
+> >
+> >         *insn_idx = callee->callsite + 1;
+> >         if (env->log.level & BPF_LOG_LEVEL) {
+> > @@ -7065,13 +7076,20 @@ record_func_key(struct bpf_verifier_env *env, struct bpf_call_arg_meta *meta,
+> >  static int check_reference_leak(struct bpf_verifier_env *env)
+> >  {
+> >         struct bpf_func_state *state = cur_func(env);
+> > +       bool refs_lingering = false;
+> >         int i;
+> >
+> > +       if (state->frameno && !state->in_callback_fn)
+> > +               return 0;
+> > +
+> >         for (i = 0; i < state->acquired_refs; i++) {
+> > +               if (state->in_callback_fn && state->refs[i].callback_ref != state->frameno)
+> > +                       continue;
 >
-> Looks like a nice cleanup to me:
-> Reviewed-by: Stanislav Fomichev <sdf@google.com>
+> This part I don't understand.
+> Why remember callback_ref at all?
+> if (state->in_callback_fn)
+> and there is something in acquired_refs it means
+> that callback acquired refs and since we're not transferring
+> them then we can error right away.
 >
-> Can you share more on this comment?
->
-> /* For some architectures, we need to do modulus in 32-bit width */
->
-> Some - which ones? And why do they need it to be 32-bit?
 
-It was a fix for i386, I saw a kernel test robot error when it was
-sitting in Toke's tree.
-See https://lore.kernel.org/all/202203140800.8pr81INh-lkp@intel.com.
+Consider that a prog has 3 acquired_refs, with ids 1, 2, 3.
 
-Once bpf_prog_run_clear_cb starts returning a 64-bit value, we now
-need to save it in 32-bit before doing the modulus.
+When you invoke the callback, you still want it to be able to load
+pointers spilled to the stack with a ref_obj_id and pass them to
+helpers. Hence, we do copy acquired_refs to the callback after
+initializing bpf_func_state. However, since we don't know how many
+times it will be invoked, it is unsafe to allow it to acquire refs it
+doesn't release before its bpf_exit, or release the callers ref. The
+former can lead to leaks (since if we only copy refs acquired in one
+iteration, and if we release we only release refs released in one
+iteration).
 
->
-> > Kumar Kartikeya Dwivedi (1):
-> >    bpf: Use 64-bit return value for bpf_prog_run
->
-> > Toke H=EF=BF=BDiland-J=EF=BF=BDrgensen (2):
-> >    dev: Move received_rps counter next to RPS members in softnet data
-> >    bpf: Expand map key argument of bpf_redirect_map to u64
->
-> >   include/linux/bpf-cgroup.h | 12 +++++-----
-> >   include/linux/bpf.h        | 16 ++++++-------
-> >   include/linux/filter.h     | 46 +++++++++++++++++++------------------=
--
-> >   include/linux/netdevice.h  |  2 +-
-> >   include/uapi/linux/bpf.h   |  2 +-
-> >   kernel/bpf/cgroup.c        | 12 +++++-----
-> >   kernel/bpf/core.c          | 14 ++++++------
-> >   kernel/bpf/cpumap.c        |  4 ++--
-> >   kernel/bpf/devmap.c        |  4 ++--
-> >   kernel/bpf/offload.c       |  4 ++--
-> >   kernel/bpf/verifier.c      |  2 +-
-> >   net/bpf/test_run.c         | 21 +++++++++--------
-> >   net/core/filter.c          |  4 ++--
-> >   net/packet/af_packet.c     |  7 ++++--
-> >   net/xdp/xskmap.c           |  4 ++--
-> >   15 files changed, 80 insertions(+), 74 deletions(-)
->
-> > --
-> > 2.37.2
->
+Hence, this patch completely disallows callback from mutating the
+state of refs it copied from its parent. It can however acquire its
+own refs and release them before bpf_exit. Hence, check_reference_leak
+now errors if it sees we are in callback_fn and we have not released
+callback_ref refs. Since there can be multiple nested callbacks, like
+frame 0 -> cb1 -> cb2  etc. we need to also distinguish between
+whether this particular ref belongs to this callback frame or parent,
+and only error for our own, so we store state->frameno (which is
+always non-zero for callbacks).
+
+TLDR; callbacks can read parent reference_state, but cannot mutate it,
+to be able to use pointers acquired by the caller. They must only undo
+their changes (by releasing their own acquired_refs before bpf_exit)
+on top of caller reference_state before returning (at which point the
+caller and callback state will match anyway, so no need to copy back).
