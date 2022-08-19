@@ -2,80 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C19E599BB8
-	for <lists+bpf@lfdr.de>; Fri, 19 Aug 2022 14:17:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50A03599C20
+	for <lists+bpf@lfdr.de>; Fri, 19 Aug 2022 14:45:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348084AbiHSMFl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Aug 2022 08:05:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57906 "EHLO
+        id S1349008AbiHSMi3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Aug 2022 08:38:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348530AbiHSMFh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Aug 2022 08:05:37 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B26D3EE4A5
-        for <bpf@vger.kernel.org>; Fri, 19 Aug 2022 05:05:36 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id o5-20020a17090a3d4500b001ef76490983so4668729pjf.2
-        for <bpf@vger.kernel.org>; Fri, 19 Aug 2022 05:05:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc;
-        bh=nLF30amAk6vL579WqQVIBktWPPH4Um2+WcN9QKXX5zk=;
-        b=hODOYdOY15vPYwZzoOow1TUmucyiWqLh87p/zVtdtDz9SDOKZED6uu/bDPi1fDlQvU
-         o7qNyD8dlG4QwTsnmxhlh2QN6WzUwmjSuQkKpeMdB9xYMTJYQUzpQBju1pV5wsjsddCn
-         IZ0AQB1Xk+DA9qX6dzWB2DCsil6vMkui9oplY=
+        with ESMTP id S1348833AbiHSMiW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 19 Aug 2022 08:38:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B01C93ED58
+        for <bpf@vger.kernel.org>; Fri, 19 Aug 2022 05:38:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1660912699;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LnnHIdU9DhmzWk8QeMkO+lqibVxsY1+S011HcqEI9i8=;
+        b=H6No3tuQ+9O1SIbD1iycnOBX5Btw8wHJ1k3wKWgGkPPv2628miuPL2rxZ3iTTvVpOaPH7m
+        hsoxe4PzHw5b/GfFBq6oz3kqFBFrTM5ctCAJ04pFPNRuL7rRWD9h56mCssBjGByPFAUPVF
+        /7RPLH+jdQ5paueLYG0SDUANSBFo048=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-635-VOnL0H_bPYSpuZFX9P78IQ-1; Fri, 19 Aug 2022 08:38:18 -0400
+X-MC-Unique: VOnL0H_bPYSpuZFX9P78IQ-1
+Received: by mail-ed1-f70.google.com with SMTP id c14-20020a05640227ce00b0043e5df12e2cso2760712ede.15
+        for <bpf@vger.kernel.org>; Fri, 19 Aug 2022 05:38:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc;
-        bh=nLF30amAk6vL579WqQVIBktWPPH4Um2+WcN9QKXX5zk=;
-        b=wXViKktylr1Y8wPP1t//rlqx3gnIzW/14oarbreEvQKpjHMeFCc/zNKpK2h2bBRGw1
-         vrvEp9vDrx+LSIw2EH07/5qlSqKnpwS0fc1bqR8E6Dmgtffq51J0rDkWx71spDc1BNOZ
-         LzgjZSLldPLozTQRU/aHIoD8Kbi63cOH6B42N+7+WS6DU2264b5CIGZwqfFxHaZ1CML2
-         wJO5+wZES5YPBT5ZC7xNktqLBGLiU7bwNiQOBdrzQfqvc7XZeCkMXyNAeTD75KRkgytT
-         inIIcI0ENl660jrH4LJB1EkvBPjqSeHgiD3XPOViuPrv4477xBRiva17VPNKRKaiALsO
-         WGhA==
-X-Gm-Message-State: ACgBeo2LCqBmKlCVusvyBQk+au9GQuSVFfAb7vz+uJEVueK1dwkhx02b
-        I+m6FBO7pHBKuIZk1nZe6dZvzl4KVHMkdA==
-X-Google-Smtp-Source: AA6agR4f7UYNK6rcXVoNBbb3KrKkDAbFm2B6jYhKcmmuZX87wJaBp6EK2y8EH0FRIrl9d1MriX5v7w==
-X-Received: by 2002:a17:90a:d90c:b0:1fa:c99f:757d with SMTP id c12-20020a17090ad90c00b001fac99f757dmr8202541pjv.240.1660910736266;
-        Fri, 19 Aug 2022 05:05:36 -0700 (PDT)
-Received: from google.com ([240f:75:7537:3187:7527:6400:5770:d67d])
-        by smtp.gmail.com with ESMTPSA id y187-20020a6232c4000000b0052b9351737fsm3409378pfy.92.2022.08.19.05.05.33
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc;
+        bh=LnnHIdU9DhmzWk8QeMkO+lqibVxsY1+S011HcqEI9i8=;
+        b=rQ1BHnShmczIjYKpcSqiqSCm9iIWE7Vv+5l8bObX3zvqi27aop4kEbD1rYvm2H4bSX
+         yV154yAVCdjWSoLa5LypeJlcM0R8BNeeAgg/tex5OoNIi4dlTEB1xVOTV1umJRPLg8UZ
+         PG4VhRanM3TqsXJfoInF331NMn11+8A0uSaeiTaNsKdRecoirAWBRKvv6EyfN6EWrc5Q
+         w3YMVVyr0EIdctiUQhOAIM+2aVp2Ze1e2fyTQJfAQmz0uLukyYINDmUj76eJ52I0JVz4
+         d5v5nuNtUaQxHLenNTT8zMtSYbO1hRAkdxth6SwcB2xHIHuWsMdHEo4654tKuH7GW8Wh
+         f6QQ==
+X-Gm-Message-State: ACgBeo1qtsh/lYBo6KS3sJ3If84nHHqJqgp6aAZ6GdJqFQTXv7Wv/rrF
+        fa1nEWx8FKvwuM7sWCQHKKtpzrBDcOLMfuuxHC+hKT60Lh/IBUBvrvH5+nQmQCy1FC+vr1srXjU
+        8g8kZ7GjMYbuD
+X-Received: by 2002:a05:6402:2755:b0:43d:7568:c78e with SMTP id z21-20020a056402275500b0043d7568c78emr6056000edd.104.1660912696564;
+        Fri, 19 Aug 2022 05:38:16 -0700 (PDT)
+X-Google-Smtp-Source: AA6agR5KeeNxqlZu+lhdGWImyOSstrSOYLHE6QBFFPEMo2WU91SqJCO2hfRq6xjWHfUJ3Cs7Wa9Tag==
+X-Received: by 2002:a05:6402:2755:b0:43d:7568:c78e with SMTP id z21-20020a056402275500b0043d7568c78emr6055961edd.104.1660912695840;
+        Fri, 19 Aug 2022 05:38:15 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id v6-20020a056402174600b0043cab10f702sm3022072edx.90.2022.08.19.05.38.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Aug 2022 05:05:35 -0700 (PDT)
-Date:   Fri, 19 Aug 2022 21:05:30 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Guangbin Huang <huangguangbin2@huawei.com>
-Cc:     pmladek@suse.com, rostedt@goodmis.org, senozhatsky@chromium.org,
-        andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        lipeng321@huawei.com, shenjian15@huawei.com
-Subject: Re: [PATCH] lib/vnsprintf: add const modifier for param 'bitmap'
-Message-ID: <Yv98imNv6BDTU0Bd@google.com>
-References: <20220816144557.30779-1-huangguangbin2@huawei.com>
+        Fri, 19 Aug 2022 05:38:15 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 7F83955FC0B; Fri, 19 Aug 2022 14:38:14 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next 1/3] dev: Move received_rps counter next to RPS
+ members in softnet data
+In-Reply-To: <20220818200143.7d534a41@kernel.org>
+References: <20220818165906.64450-1-toke@redhat.com>
+ <20220818165906.64450-2-toke@redhat.com>
+ <20220818200143.7d534a41@kernel.org>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Fri, 19 Aug 2022 14:38:14 +0200
+Message-ID: <87bksgv26h.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220816144557.30779-1-huangguangbin2@huawei.com>
-X-Spam-Status: No, score=1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FSL_HELO_FAKE,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On (22/08/16 22:45), Guangbin Huang wrote:
-> There is no modification for param bitmap in function
-> bitmap_string() and bitmap_list_string(), so add const
-> modifier for it.
-> 
-> Signed-off-by: Jian Shen <shenjian15@huawei.com>
-> Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
+Jakub Kicinski <kuba@kernel.org> writes:
 
-FWIW
-Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+> On Thu, 18 Aug 2022 18:59:03 +0200 Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>> Move the received_rps counter value next to the other RPS-related members
+>> in softnet_data. This closes two four-byte holes in the structure, making
+>> room for another pointer in the first two cache lines without bumping the
+>> xmit struct to its own line.
+>
+> What's the pointer you're making space for (which I hope will explain
+> why this patch is part of this otherwise bpf series)?
+
+The XDP queueing series adds a pointer to keep track of which interfaces
+were scheduled for transmission using the XDP dequeue hook (similar to
+how the qdisc wake code works):
+
+https://lore.kernel.org/r/20220713111430.134810-12-toke@redhat.com
+
+Note that it's still up in the air if this ends up being the way this
+will be implemented, so I'm OK with dropping this patch for now if you'd
+rather wait until it's really needed. OTOH it also seemed like a benign
+change on its own, so I figured I might as well include this patch when
+sending these out. WDYT?
+
+-Toke
+
