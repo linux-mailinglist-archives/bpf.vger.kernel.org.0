@@ -2,155 +2,199 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 300BD599867
-	for <lists+bpf@lfdr.de>; Fri, 19 Aug 2022 11:22:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7212599972
+	for <lists+bpf@lfdr.de>; Fri, 19 Aug 2022 12:10:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348000AbiHSJNN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Aug 2022 05:13:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43658 "EHLO
+        id S1345291AbiHSKCF convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 19 Aug 2022 06:02:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242959AbiHSJNM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Aug 2022 05:13:12 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 917DC2181
-        for <bpf@vger.kernel.org>; Fri, 19 Aug 2022 02:13:10 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id u14so4443309wrq.9
-        for <bpf@vger.kernel.org>; Fri, 19 Aug 2022 02:13:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc;
-        bh=ypeZ8t5+lS1GPmgig0Z7RCJC1wV2T8VE04TuEFrbnvE=;
-        b=RZUt/43HuxfC6vElzCIKYrAaxxCOdwyXhSRcDcabt37jpWZ5KAgZhAEfKywnWEfvR7
-         9n1Jh5stUI5TnnUt2FKA8ri6ZsgjRn17W8wF+/fv/yCqC+UASrZoAdckn/Fr6kxgqKK6
-         gM8jUcfso+ZH1im/WMoHOaoaHUAjz3h3WMXQclmf7l/UsF1QNy08r3D8FghmLJaOa9mf
-         e4TPXZ6kp9cLD46Wi1EzEjEL/v44Ctf92tGLo/B03WBFqxaCNTNbTEKiaKR2N30L0F9a
-         cNA/j80zuwQP+6leOT4A0jjha4W2jqmsI6PlpzAJY9PMKKmZROLWmnVvnfh+CUo6+pu5
-         s/Dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc;
-        bh=ypeZ8t5+lS1GPmgig0Z7RCJC1wV2T8VE04TuEFrbnvE=;
-        b=xXU7RYYJna6BV3UIFBKxLdhBkihfk/iYAGwNcZ57zWnIn+jkOo1Nf+en6yYtQ9Odft
-         JPxSxFh4vLzZWJ49vaazRibsiInqoIX6kNEhUYh+oSF6lup2+EjF586hwXSLNVVamR/P
-         ZRRUDFyOF3eIb8ymeNb1wQeCDmTiTzL6Fa41d8Liv6MwDM9E1qDOVlNG+S6dsexu9+27
-         4Vd7RV4fT39pj8DFvA0WOOQGDJ3lGlMl0xeJ5a+MjnsLZTF7aFraq+9qRP2Ffp2YQEGE
-         IWiWStGa/UuKYNqorxi1/g2lb5sjYTJxHYdaxM8aM3McEBYwigfJSPhYAN+89Dsc+sPC
-         pf8w==
-X-Gm-Message-State: ACgBeo209UabAqf38V0hTFjxoqq2dFvYQK8JVeIzAWEVojZFc8BxIhjP
-        4SOyljtN1p9bIhrb0jpFXfM=
-X-Google-Smtp-Source: AA6agR7PcRHB2Qrmirw4N1aGlJktV3DlvEJ4Ux+CkT7nBmsF10ETsP6eLZ8KEC1NNAVGUnUFXkHJYA==
-X-Received: by 2002:a5d:654e:0:b0:225:2ee3:6c2c with SMTP id z14-20020a5d654e000000b002252ee36c2cmr3554168wrv.93.1660900388642;
-        Fri, 19 Aug 2022 02:13:08 -0700 (PDT)
-Received: from jimi.localdomain ([213.57.189.88])
-        by smtp.gmail.com with ESMTPSA id z6-20020a1cf406000000b003a2f2bb72d5sm9360175wma.45.2022.08.19.02.13.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Aug 2022 02:13:08 -0700 (PDT)
-From:   Eyal Birger <eyal.birger@gmail.com>
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org
-Cc:     bpf@vger.kernel.org, Eyal Birger <eyal.birger@gmail.com>
-Subject: [PATCH bpf-next] bpf/scripts: use helper enum value instead of relying on comment order
-Date:   Fri, 19 Aug 2022 12:12:44 +0300
-Message-Id: <20220819091244.1001962-1-eyal.birger@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        with ESMTP id S1347540AbiHSKCD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 19 Aug 2022 06:02:03 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01724F4CBA
+        for <bpf@vger.kernel.org>; Fri, 19 Aug 2022 03:02:00 -0700 (PDT)
+Received: from canpemm100009.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4M8HHX1tVfzXdh2;
+        Fri, 19 Aug 2022 17:57:44 +0800 (CST)
+Received: from canpemm500010.china.huawei.com (7.192.105.118) by
+ canpemm100009.china.huawei.com (7.192.105.213) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Fri, 19 Aug 2022 18:01:57 +0800
+Received: from canpemm500010.china.huawei.com ([7.192.105.118]) by
+ canpemm500010.china.huawei.com ([7.192.105.118]) with mapi id 15.01.2375.024;
+ Fri, 19 Aug 2022 18:01:57 +0800
+From:   "liujian (CE)" <liujian56@huawei.com>
+To:     Jakub Sitnicki <jakub@cloudflare.com>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "edumazet@google.com" <edumazet@google.com>
+CC:     "davem@davemloft.net" <davem@davemloft.net>,
+        "yoshfuji@linux-ipv6.org" <yoshfuji@linux-ipv6.org>,
+        "dsahern@kernel.org" <dsahern@kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "mykolal@fb.com" <mykolal@fb.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "martin.lau@linux.dev" <martin.lau@linux.dev>,
+        "song@kernel.org" <song@kernel.org>, "yhs@fb.com" <yhs@fb.com>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>,
+        "sdf@google.com" <sdf@google.com>,
+        "haoluo@google.com" <haoluo@google.com>,
+        "jolsa@kernel.org" <jolsa@kernel.org>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: RE: [PATCH bpf-next 1/2] sk_msg: Keep reference on socket file while
+ wait_memory
+Thread-Topic: [PATCH bpf-next 1/2] sk_msg: Keep reference on socket file while
+ wait_memory
+Thread-Index: AQHYsE7+4RUC8e6Zo0eIlwcbIAxeX621Z4+AgACYe1A=
+Date:   Fri, 19 Aug 2022 10:01:57 +0000
+Message-ID: <2ad6173f254f4842b1abaeaf9a7a1e7d@huawei.com>
+References: <20220815023343.295094-1-liujian56@huawei.com>
+        <20220815023343.295094-2-liujian56@huawei.com>
+ <871qtc1u9e.fsf@cloudflare.com>
+In-Reply-To: <871qtc1u9e.fsf@cloudflare.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.176.93]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The helper value is ABI as defined by enum bpf_func_id.
-As bpf_helper_defs.h is used for the userpace part, it must be consistent
-with this enum.
 
-Before this change, the enumerated value was derived from the comment
-order, which assumes comments are always appended, however, there doesn't
-seem to be an enforcement anywhere for maintaining a strict order.
 
-When adding new helpers it is very puzzling when the userspace application
-breaks in weird places if the comment is inserted instead of appended -
-because the generated helper ABI is incorrect and shifted.
+> -----Original Message-----
+> From: Jakub Sitnicki [mailto:jakub@cloudflare.com]
+> Sent: Friday, August 19, 2022 4:39 PM
+> To: liujian (CE) <liujian56@huawei.com>; john.fastabend@gmail.com;
+> edumazet@google.com
+> Cc: davem@davemloft.net; yoshfuji@linux-ipv6.org; dsahern@kernel.org;
+> kuba@kernel.org; pabeni@redhat.com; andrii@kernel.org; mykolal@fb.com;
+> ast@kernel.org; daniel@iogearbox.net; martin.lau@linux.dev;
+> song@kernel.org; yhs@fb.com; kpsingh@kernel.org; sdf@google.com;
+> haoluo@google.com; jolsa@kernel.org; shuah@kernel.org;
+> bpf@vger.kernel.org
+> Subject: Re: [PATCH bpf-next 1/2] sk_msg: Keep reference on socket file
+> while wait_memory
+> 
+> On Mon, Aug 15, 2022 at 10:33 AM +08, Liu Jian wrote:
+> > Fix the below NULL pointer dereference:
+> >
+> > [   14.471200] Call Trace:
+> > [   14.471562]  <TASK>
+> > [   14.471882]  lock_acquire+0x245/0x2e0
+> > [   14.472416]  ? remove_wait_queue+0x12/0x50
+> > [   14.473014]  ? _raw_spin_lock_irqsave+0x17/0x50
+> > [   14.473681]  _raw_spin_lock_irqsave+0x3d/0x50
+> > [   14.474318]  ? remove_wait_queue+0x12/0x50
+> > [   14.474907]  remove_wait_queue+0x12/0x50
+> > [   14.475480]  sk_stream_wait_memory+0x20d/0x340
+> > [   14.476127]  ? do_wait_intr_irq+0x80/0x80
+> > [   14.476704]  do_tcp_sendpages+0x287/0x600
+> > [   14.477283]  tcp_bpf_push+0xab/0x260
+> > [   14.477817]  tcp_bpf_sendmsg_redir+0x297/0x500
+> > [   14.478461]  ? __local_bh_enable_ip+0x77/0xe0
+> > [   14.479096]  tcp_bpf_send_verdict+0x105/0x470
+> > [   14.479729]  tcp_bpf_sendmsg+0x318/0x4f0
+> > [   14.480311]  sock_sendmsg+0x2d/0x40
+> > [   14.480822]  ____sys_sendmsg+0x1b4/0x1c0
+> > [   14.481390]  ? copy_msghdr_from_user+0x62/0x80
+> > [   14.482048]  ___sys_sendmsg+0x78/0xb0
+> > [   14.482580]  ? vmf_insert_pfn_prot+0x91/0x150
+> > [   14.483215]  ? __do_fault+0x2a/0x1a0
+> > [   14.483738]  ? do_fault+0x15e/0x5d0
+> > [   14.484246]  ? __handle_mm_fault+0x56b/0x1040
+> > [   14.484874]  ? lock_is_held_type+0xdf/0x130
+> > [   14.485474]  ? find_held_lock+0x2d/0x90
+> > [   14.486046]  ? __sys_sendmsg+0x41/0x70
+> > [   14.486587]  __sys_sendmsg+0x41/0x70
+> > [   14.487105]  ? intel_pmu_drain_pebs_core+0x350/0x350
+> > [   14.487822]  do_syscall_64+0x34/0x80
+> > [   14.488345]  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> >
+> > The test scene as following flow:
+> > thread1                               thread2
+> > -----------                           ---------------
+> >  tcp_bpf_sendmsg
+> >   tcp_bpf_send_verdict
+> >    tcp_bpf_sendmsg_redir              sock_close
+> >     tcp_bpf_push_locked                 __sock_release
+> >      tcp_bpf_push                         //inet_release
+> >       do_tcp_sendpages                    sock->ops->release
+> >        sk_stream_wait_memory          	   // tcp_close
+> >           sk_wait_event                      sk->sk_prot->close
+> >            release_sock(__sk);
+> >             ***
+> >
+> >                                                 lock_sock(sk);
+> >                                                   __tcp_close
+> >                                                     sock_orphan(sk)
+> >                                                       sk->sk_wq  = NULL
+> >                                                 release_sock
+> >             ****
+> >            lock_sock(__sk);
+> >           remove_wait_queue(sk_sleep(sk), &wait);
+> >              sk_sleep(sk)
+> >              //NULL pointer dereference
+> >              &rcu_dereference_raw(sk->sk_wq)->wait
+> >
+> > While waiting for memory in thread1, the socket is released with its
+> > wait queue because thread2 has closed it. This caused by
+> > tcp_bpf_send_verdict didn't increase the f_count of psock->sk_redir-
+> >sk_socket->file in thread1.
+> 
+> I'm not sure about this approach. Keeping a closed sock file alive, just so we
+> can wakeup from sleep, seems like wasted effort.
+> 
+> __tcp_close sets sk->sk_shutdown = RCV_SHUTDOWN | SEND_SHUTDOWN.
+> So we will return from sk_stream_wait_memory via the do_error path.
+> 
+> SEND_SHUTDOWN might be set because socket got closed and orphaned -
+> dead and detached from its file, like in this case.
+> 
+> So, IMHO, we should check if SOCK_DEAD flag is set on wakeup due to
+> SEND_SHUTDOWN in sk_stream_wait_memory, before accessing the wait
+> queue.
+> 
+> [...]
+As jakub's approach, this problem can be solved.
 
-This commit attempts to ease this by always using bpf_func_id order as
-the helper value.
-
-Signed-off-by: Eyal Birger <eyal.birger@gmail.com>
----
- scripts/bpf_doc.py | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
-
-diff --git a/scripts/bpf_doc.py b/scripts/bpf_doc.py
-index dfb260de17a8..7797aa032eca 100755
---- a/scripts/bpf_doc.py
-+++ b/scripts/bpf_doc.py
-@@ -88,7 +88,7 @@ class HeaderParser(object):
-         self.helpers = []
-         self.commands = []
-         self.desc_unique_helpers = set()
--        self.define_unique_helpers = []
-+        self.define_unique_helpers = {}
-         self.desc_syscalls = []
-         self.enum_syscalls = []
+diff --git a/include/net/sock.h b/include/net/sock.h
+index a7273b289188..a3dab7140f1e 100644
+--- a/include/net/sock.h
++++ b/include/net/sock.h
+@@ -1998,6 +1998,8 @@ static inline void sk_set_socket(struct sock *sk, struct socket *sock)
+ static inline wait_queue_head_t *sk_sleep(struct sock *sk)
+ {
+        BUILD_BUG_ON(offsetof(struct socket_wq, wait) != 0);
++       if (sock_flag(sk, SOCK_DEAD))
++               return NULL;
+        return &rcu_dereference_raw(sk->sk_wq)->wait;
+ }
+ /* Detach socket from process context.
+diff --git a/kernel/sched/wait.c b/kernel/sched/wait.c
+index 9860bb9a847c..da1be17d0b19 100644
+--- a/kernel/sched/wait.c
++++ b/kernel/sched/wait.c
+@@ -51,6 +51,8 @@ void remove_wait_queue(struct wait_queue_head *wq_head, struct wait_queue_entry
+ {
+        unsigned long flags;
  
-@@ -245,24 +245,24 @@ class HeaderParser(object):
-                 break
- 
-     def parse_define_helpers(self):
--        # Parse the number of FN(...) in #define __BPF_FUNC_MAPPER to compare
--        # later with the number of unique function names present in description.
-+        # Parse FN(...) in #define __BPF_FUNC_MAPPER to compare later with the
-+        # number of unique function names present in description and use the
-+        # correct enumeration value.
-         # Note: seek_to(..) discards the first line below the target search text,
-         # resulting in FN(unspec) being skipped and not added to self.define_unique_helpers.
-         self.seek_to('#define __BPF_FUNC_MAPPER(FN)',
-                      'Could not find start of eBPF helper definition list')
-         # Searches for either one or more FN(\w+) defines or a backslash for newline
--        p = re.compile('\s*(FN\(\w+\))+|\\\\')
--        fn_defines_str = ''
-+        p = re.compile('\s*FN\((\w+)\)+|\\\\')
-+        i = 1  # 'unspec' is skipped as mentioned above
-         while True:
-             capture = p.match(self.line)
-             if capture:
--                fn_defines_str += self.line
-+                self.define_unique_helpers[capture.expand(r'bpf_\1')] = i
-+                i += 1
-             else:
-                 break
-             self.line = self.reader.readline()
--        # Find the number of occurences of FN(\w+)
--        self.define_unique_helpers = re.findall('FN\(\w+\)', fn_defines_str)
- 
-     def run(self):
-         self.parse_desc_syscall()
-@@ -573,6 +573,7 @@ class PrinterHelpers(Printer):
-     def __init__(self, parser):
-         self.elements = parser.helpers
-         self.elem_number_check(parser.desc_unique_helpers, parser.define_unique_helpers, 'helper', '__BPF_FUNC_MAPPER')
-+        self.define_unique_helpers = parser.define_unique_helpers
- 
-     type_fwds = [
-             'struct bpf_fib_lookup',
-@@ -761,7 +762,7 @@ class PrinterHelpers(Printer):
-             comma = ', '
-             print(one_arg, end='')
- 
--        print(') = (void *) %d;' % len(self.seen_helpers))
-+        print(') = (void *) %d;' % self.define_unique_helpers[proto['name']])
-         print('')
- 
- ###############################################################################
--- 
-2.34.1
-
++       if (wq_head == NULL)
++               return;
+        spin_lock_irqsave(&wq_head->lock, flags);
+        __remove_wait_queue(wq_head, wq_entry);
+        spin_unlock_irqrestore(&wq_head->lock, flags);
