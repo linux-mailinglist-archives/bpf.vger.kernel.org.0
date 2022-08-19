@@ -2,232 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9777659912F
-	for <lists+bpf@lfdr.de>; Fri, 19 Aug 2022 01:29:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9CBC599190
+	for <lists+bpf@lfdr.de>; Fri, 19 Aug 2022 02:07:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242965AbiHRX1l (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Aug 2022 19:27:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37260 "EHLO
+        id S239037AbiHSAHT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Aug 2022 20:07:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243317AbiHRX1k (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Aug 2022 19:27:40 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 786B9D7597
-        for <bpf@vger.kernel.org>; Thu, 18 Aug 2022 16:27:39 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id b9-20020a170902d50900b0016f0342a417so1729015plg.21
-        for <bpf@vger.kernel.org>; Thu, 18 Aug 2022 16:27:39 -0700 (PDT)
+        with ESMTP id S234482AbiHSAHR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Aug 2022 20:07:17 -0400
+Received: from smtp-fw-9102.amazon.com (smtp-fw-9102.amazon.com [207.171.184.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49D4EC7FBC;
+        Thu, 18 Aug 2022 17:07:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
-         :date:from:to:cc;
-        bh=4fYCMH3h9GIgA9HDER0gRzGl1DRXrE27W2NNEn6BnuQ=;
-        b=kgI9v7sLswwecr68S5TZ5dRkjHVC8wJiNXIbxPHOPSkRjEECmygramvIGOmo0X3Ivu
-         cStJYSVCLqaSEKP7SGM3W6Mue9sIfjF3Po+SHPSWn56z4TosluM2GWLSnoPJDZD7K9Lb
-         Z40LHecf962ig/M4aG9IatnYXtnvKrBAi32MkReSoZaExs2GBX8gmLlDiVwi5UKrsEpg
-         Q1cMEordAGZPmMZJkF1UBxAvEV1SM44MRnl5qTsvWaOoF0d1EFE7y8Nxlau2yR1C5NK0
-         bsucLkUzqS3OxZkbpgG4ywa2V5GbDhhbGVtpYSa1Um3U+AJkAwRB8NIMbWRgle+Imd6G
-         3Ewg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
-         :date:x-gm-message-state:from:to:cc;
-        bh=4fYCMH3h9GIgA9HDER0gRzGl1DRXrE27W2NNEn6BnuQ=;
-        b=1mHIF98Rywzve8TR3yCOI60MwSGcub159gRnlr87dJVgnqLzlszeQMwanSWebNwdb5
-         X2G67CluhnSzKhSO9DWEYQ4HvWmG1Jui0S+C7yspcy4rMBpXXE/cadrIS8wkZBReboVs
-         4Izi2geHgJqDm5FReEoVgk6oSaMmYCpIiI8HVPg1DtIeGHCM+ELFLcvgjzGFrwPmZFUL
-         klfmKoIl7ug3PVsZYsqlNAljSv1uSdTU2DZvy0bEXKUQTNef0XQNw8ZPXD18F3rZj8sT
-         HOHHcIE+sSQCDoTO/eS4roz0kLRQfi96+g1bLbvG29aznhCqQN44iNuhgD+8Qy1xfUYz
-         f4zg==
-X-Gm-Message-State: ACgBeo3Gvd49sPAkeRB0oTI88ygYeQH2UTfMTAdZ6cx5qzUWHZJLwsMM
-        4/pMvowmaUqPNDe1lwFwu8J61GEN+6AltwfVomMuCbDxPwnatRDq4QwmoKB8xH5fZvBcbHNYJ96
-        HXZClrhCD1JFwSXp3kdNMisP/OCtPkoeB5nDK52XiYKNWrkUTLA==
-X-Google-Smtp-Source: AA6agR7o8xyUTHL/Ir3FbdEWnGHeHFn9K20S0O56DFFMkr39MjAosfWRHNXTYlx8Squ2/DFOzMrEGKA=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a17:90a:b794:b0:1f4:feec:2910 with SMTP id
- m20-20020a17090ab79400b001f4feec2910mr10851023pjr.214.1660865258969; Thu, 18
- Aug 2022 16:27:38 -0700 (PDT)
-Date:   Thu, 18 Aug 2022 16:27:29 -0700
-In-Reply-To: <20220818232729.2479330-1-sdf@google.com>
-Message-Id: <20220818232729.2479330-6-sdf@google.com>
-Mime-Version: 1.0
-References: <20220818232729.2479330-1-sdf@google.com>
-X-Mailer: git-send-email 2.37.1.595.g718a3a8f04-goog
-Subject: [PATCH bpf-next v3 5/5] selftests/bpf: Make sure bpf_{g,s}et_retval
- is exposed everywhere
-From:   Stanislav Fomichev <sdf@google.com>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1660867637; x=1692403637;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=SaRfa3u26PjTQ23fCghirKypq5/HaGgCZmKXwPI3ZTs=;
+  b=U1vxZMT5A9XD3/jgm7SUwGJ14bsWZvRLQHGePIjYqWrkZz73D3r7tU0f
+   dmlZmp4gDybaoSlihXkWcJKV8pFaoNmI5anl17Whz2E2tCydSst4Xjcig
+   tvTDzPq+nxQxLFykrJei1fZHB/hTGdtX3q25RqZTItOmri/mcM0Z6UZ8m
+   k=;
+X-IronPort-AV: E=Sophos;i="5.93,247,1654560000"; 
+   d="scan'208";a="250466127"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-iad-1e-8be8ed69.us-east-1.amazon.com) ([10.25.36.210])
+  by smtp-border-fw-9102.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2022 00:07:01 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-iad-1e-8be8ed69.us-east-1.amazon.com (Postfix) with ESMTPS id 79894C0AB4;
+        Fri, 19 Aug 2022 00:06:59 +0000 (UTC)
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.38; Fri, 19 Aug 2022 00:06:56 +0000
+Received: from 88665a182662.ant.amazon.com.com (10.43.162.85) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1118.12;
+ Fri, 19 Aug 2022 00:06:54 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.com>
+To:     <alexei.starovoitov@gmail.com>
+CC:     <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
+        <daniel@iogearbox.net>, <kuni1840@gmail.com>, <kuniyu@amazon.com>,
+        <netdev@vger.kernel.org>
+Subject: Re: [PATCH v1 bpf 1/4] bpf: Fix data-races around bpf_jit_enable.
+Date:   Thu, 18 Aug 2022 17:06:45 -0700
+Message-ID: <20220819000645.55413-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <CAADnVQ+H2n5-Gwgq-OZu-WZKRsg=kq7FtOGXJu6YNHoCEBap6w@mail.gmail.com>
+References: <CAADnVQ+H2n5-Gwgq-OZu-WZKRsg=kq7FtOGXJu6YNHoCEBap6w@mail.gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.43.162.85]
+X-ClientProxiedBy: EX13D30UWB001.ant.amazon.com (10.43.161.80) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_HI,RCVD_IN_MSPIKE_H2,SORTED_RECIPS,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-For each hook, have a simple bpf_set_retval(bpf_get_retval) program
-and make sure it loads for the hooks we want. The exceptions are
-the hooks which don't propagate the error to the callers:
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 18 Aug 2022 15:49:46 -0700
+> On Wed, Aug 17, 2022 at 9:24 PM Kuniyuki Iwashima <kuniyu@amazon.com> wrote:
+> >
+> > A sysctl variable bpf_jit_enable is accessed concurrently, and there is
+> > always a chance of data-race.  So, all readers and a writer need some
+> > basic protection to avoid load/store-tearing.
+> >
+> > Fixes: 0a14842f5a3c ("net: filter: Just In Time compiler for x86-64")
+> > Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.com>
+> > ---
+> >  arch/arm/net/bpf_jit_32.c        | 2 +-
+> >  arch/arm64/net/bpf_jit_comp.c    | 2 +-
+> >  arch/mips/net/bpf_jit_comp.c     | 2 +-
+> >  arch/powerpc/net/bpf_jit_comp.c  | 5 +++--
+> >  arch/riscv/net/bpf_jit_core.c    | 2 +-
+> >  arch/s390/net/bpf_jit_comp.c     | 2 +-
+> >  arch/sparc/net/bpf_jit_comp_32.c | 5 +++--
+> >  arch/sparc/net/bpf_jit_comp_64.c | 5 +++--
+> >  arch/x86/net/bpf_jit_comp.c      | 2 +-
+> >  arch/x86/net/bpf_jit_comp32.c    | 2 +-
+> >  include/linux/filter.h           | 2 +-
+> >  net/core/sysctl_net_core.c       | 4 ++--
+> >  12 files changed, 19 insertions(+), 16 deletions(-)
+> >
+> > diff --git a/arch/arm/net/bpf_jit_32.c b/arch/arm/net/bpf_jit_32.c
+> > index 6a1c9fca5260..4b6b62a6fdd4 100644
+> > --- a/arch/arm/net/bpf_jit_32.c
+> > +++ b/arch/arm/net/bpf_jit_32.c
+> > @@ -1999,7 +1999,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+> >         }
+> >         flush_icache_range((u32)header, (u32)(ctx.target + ctx.idx));
+> >
+> > -       if (bpf_jit_enable > 1)
+> > +       if (READ_ONCE(bpf_jit_enable) > 1)
+> 
+> Nack.
+> Even if the compiler decides to use single byte loads for some
+> odd reason there is no issue here.
 
-- sockops
-- recvmsg
-- getpeername
-- getsockname
+I see, and same for 2nd/3rd patches, right?
 
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- tools/testing/selftests/bpf/Makefile          |  1 +
- .../bpf/cgroup_getset_retval_hooks.h          | 25 ++++++++++
- .../bpf/prog_tests/cgroup_getset_retval.c     | 48 +++++++++++++++++++
- .../bpf/progs/cgroup_getset_retval_hooks.c    | 16 +++++++
- 4 files changed, 90 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/cgroup_getset_retval_hooks.h
- create mode 100644 tools/testing/selftests/bpf/progs/cgroup_getset_retval_hooks.c
+Then how about this part?
+It's not data-race nor problematic in practice, but should the value be
+consistent in the same function?
+The 2nd/3rd patches also have this kind of part.
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 8d59ec7f4c2d..eecad99f1735 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -323,6 +323,7 @@ $(OUTPUT)/test_l4lb_noinline.o: BPF_CFLAGS += -fno-inline
- $(OUTPUT)/test_xdp_noinline.o: BPF_CFLAGS += -fno-inline
+---8<---
+diff --git a/arch/powerpc/net/bpf_jit_comp.c b/arch/powerpc/net/bpf_jit_comp.c
+index 43e634126514..c71d1e94ee7e 100644
+--- a/arch/powerpc/net/bpf_jit_comp.c
++++ b/arch/powerpc/net/bpf_jit_comp.c
+@@ -122,6 +122,7 @@ bool bpf_jit_needs_zext(void)
  
- $(OUTPUT)/flow_dissector_load.o: flow_dissector_load.h
-+$(OUTPUT)/cgroup_getset_retval_hooks.o: cgroup_getset_retval_hooks.h
- 
- # Build BPF object using Clang
- # $1 - input .c file
-diff --git a/tools/testing/selftests/bpf/cgroup_getset_retval_hooks.h b/tools/testing/selftests/bpf/cgroup_getset_retval_hooks.h
-new file mode 100644
-index 000000000000..a525d3544fd7
---- /dev/null
-+++ b/tools/testing/selftests/bpf/cgroup_getset_retval_hooks.h
-@@ -0,0 +1,25 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+BPF_RETVAL_HOOK(ingress, "cgroup_skb/ingress", __sk_buff, -EINVAL)
-+BPF_RETVAL_HOOK(egress, "cgroup_skb/egress", __sk_buff, -EINVAL)
-+BPF_RETVAL_HOOK(sock_create, "cgroup/sock_create", bpf_sock, 0)
-+BPF_RETVAL_HOOK(sock_ops, "sockops", bpf_sock_ops, -EINVAL)
-+BPF_RETVAL_HOOK(dev, "cgroup/dev", bpf_cgroup_dev_ctx, 0)
-+BPF_RETVAL_HOOK(bind4, "cgroup/bind4", bpf_sock_addr, 0)
-+BPF_RETVAL_HOOK(bind6, "cgroup/bind6", bpf_sock_addr, 0)
-+BPF_RETVAL_HOOK(connect4, "cgroup/connect4", bpf_sock_addr, 0)
-+BPF_RETVAL_HOOK(connect6, "cgroup/connect6", bpf_sock_addr, 0)
-+BPF_RETVAL_HOOK(post_bind4, "cgroup/post_bind4", bpf_sock_addr, 0)
-+BPF_RETVAL_HOOK(post_bind6, "cgroup/post_bind6", bpf_sock_addr, 0)
-+BPF_RETVAL_HOOK(sendmsg4, "cgroup/sendmsg4", bpf_sock_addr, 0)
-+BPF_RETVAL_HOOK(sendmsg6, "cgroup/sendmsg6", bpf_sock_addr, 0)
-+BPF_RETVAL_HOOK(sysctl, "cgroup/sysctl", bpf_sysctl, 0)
-+BPF_RETVAL_HOOK(recvmsg4, "cgroup/recvmsg4", bpf_sock_addr, -EINVAL)
-+BPF_RETVAL_HOOK(recvmsg6, "cgroup/recvmsg6", bpf_sock_addr, -EINVAL)
-+BPF_RETVAL_HOOK(getsockopt, "cgroup/getsockopt", bpf_sockopt, 0)
-+BPF_RETVAL_HOOK(setsockopt, "cgroup/setsockopt", bpf_sockopt, 0)
-+BPF_RETVAL_HOOK(getpeername4, "cgroup/getpeername4", bpf_sock_addr, -EINVAL)
-+BPF_RETVAL_HOOK(getpeername6, "cgroup/getpeername6", bpf_sock_addr, -EINVAL)
-+BPF_RETVAL_HOOK(getsockname4, "cgroup/getsockname4", bpf_sock_addr, -EINVAL)
-+BPF_RETVAL_HOOK(getsockname6, "cgroup/getsockname6", bpf_sock_addr, -EINVAL)
-+BPF_RETVAL_HOOK(sock_release, "cgroup/sock_release", bpf_sock, 0)
-diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_getset_retval.c b/tools/testing/selftests/bpf/prog_tests/cgroup_getset_retval.c
-index 0b47c3c000c7..4d2fa99273d8 100644
---- a/tools/testing/selftests/bpf/prog_tests/cgroup_getset_retval.c
-+++ b/tools/testing/selftests/bpf/prog_tests/cgroup_getset_retval.c
-@@ -10,6 +10,7 @@
- 
- #include "cgroup_getset_retval_setsockopt.skel.h"
- #include "cgroup_getset_retval_getsockopt.skel.h"
-+#include "cgroup_getset_retval_hooks.skel.h"
- 
- #define SOL_CUSTOM	0xdeadbeef
- 
-@@ -433,6 +434,50 @@ static void test_getsockopt_retval_sync(int cgroup_fd, int sock_fd)
- 	cgroup_getset_retval_getsockopt__destroy(obj);
- }
- 
-+struct exposed_hook {
-+	const char *name;
-+	int expected_err;
-+} exposed_hooks[] = {
-+
-+#define BPF_RETVAL_HOOK(NAME, SECTION, CTX, EXPECTED_ERR) \
-+	{ \
-+		.name = #NAME, \
-+		.expected_err = EXPECTED_ERR, \
-+	},
-+
-+#include "cgroup_getset_retval_hooks.h"
-+
-+#undef BPF_RETVAL_HOOK
-+};
-+
-+static void test_exposed_hooks(int cgroup_fd, int sock_fd)
-+{
-+	struct cgroup_getset_retval_hooks *skel;
-+	struct bpf_program *prog;
-+	int err;
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(exposed_hooks); i++) {
-+		skel = cgroup_getset_retval_hooks__open();
-+		if (!ASSERT_OK_PTR(skel, "cgroup_getset_retval_hooks__open"))
-+			continue;
-+
-+		prog = bpf_object__find_program_by_name(skel->obj, exposed_hooks[i].name);
-+		if (!ASSERT_NEQ(prog, NULL, "bpf_object__find_program_by_name"))
-+			goto close_skel;
-+
-+		err = bpf_program__set_autoload(prog, true);
-+		if (!ASSERT_OK(err, "bpf_program__set_autoload"))
-+			goto close_skel;
-+
-+		err = cgroup_getset_retval_hooks__load(skel);
-+		ASSERT_EQ(err, exposed_hooks[i].expected_err, "expected_err");
-+
-+close_skel:
-+		cgroup_getset_retval_hooks__destroy(skel);
-+	}
-+}
-+
- void test_cgroup_getset_retval(void)
+ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
  {
- 	int cgroup_fd = -1;
-@@ -476,6 +521,9 @@ void test_cgroup_getset_retval(void)
- 	if (test__start_subtest("getsockopt-retval_sync"))
- 		test_getsockopt_retval_sync(cgroup_fd, sock_fd);
++	int jit_enable = READ_ONCE(bpf_jit_enable);
+ 	u32 proglen;
+ 	u32 alloclen;
+ 	u8 *image = NULL;
+@@ -263,13 +264,13 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
+ 		}
+ 		bpf_jit_build_epilogue(code_base, &cgctx);
  
-+	if (test__start_subtest("exposed_hooks"))
-+		test_exposed_hooks(cgroup_fd, sock_fd);
-+
- close_fd:
- 	close(cgroup_fd);
- }
-diff --git a/tools/testing/selftests/bpf/progs/cgroup_getset_retval_hooks.c b/tools/testing/selftests/bpf/progs/cgroup_getset_retval_hooks.c
-new file mode 100644
-index 000000000000..13dfb4bbfd28
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/cgroup_getset_retval_hooks.c
-@@ -0,0 +1,16 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+
-+#define BPF_RETVAL_HOOK(name, section, ctx, expected_err) \
-+	__attribute__((__section__("?" section))) \
-+	int name(struct ctx *_ctx) \
-+	{ \
-+		bpf_set_retval(bpf_get_retval()); \
-+		return 1; \
-+	}
-+
-+#include "cgroup_getset_retval_hooks.h"
-+
-+#undef BPF_RETVAL_HOOK
--- 
-2.37.1.595.g718a3a8f04-goog
-
+-		if (bpf_jit_enable > 1)
++		if (jit_enable > 1)
+ 			pr_info("Pass %d: shrink = %d, seen = 0x%x\n", pass,
+ 				proglen - (cgctx.idx * 4), cgctx.seen);
+ 	}
+ 
+ skip_codegen_passes:
+-	if (bpf_jit_enable > 1)
++	if (jit_enable > 1)
+ 		/*
+ 		 * Note that we output the base address of the code_base
+ 		 * rather than image, since opcodes are in code_base.
+---8<---
