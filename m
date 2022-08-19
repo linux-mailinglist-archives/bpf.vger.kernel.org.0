@@ -2,62 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75C9859A8FB
-	for <lists+bpf@lfdr.de>; Sat, 20 Aug 2022 00:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D944A59A8F9
+	for <lists+bpf@lfdr.de>; Sat, 20 Aug 2022 00:59:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229986AbiHSW4v (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Aug 2022 18:56:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45476 "EHLO
+        id S234545AbiHSW4t (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Aug 2022 18:56:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241068AbiHSW4u (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Aug 2022 18:56:50 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 981CC10E789
-        for <bpf@vger.kernel.org>; Fri, 19 Aug 2022 15:56:49 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id r141so4361575iod.4
-        for <bpf@vger.kernel.org>; Fri, 19 Aug 2022 15:56:49 -0700 (PDT)
+        with ESMTP id S229986AbiHSW4s (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 19 Aug 2022 18:56:48 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FF8810E789;
+        Fri, 19 Aug 2022 15:56:47 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id qn6so11317906ejc.11;
+        Fri, 19 Aug 2022 15:56:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc;
-        bh=DLOUyCCY0hq75QhLqDKmn7t1fk6HIbRSoz8cQOqRdjU=;
-        b=WllZ1MyUYHokH1yJZE09n63r/dBEstNHftlfD0HAp1KhpKMqF1/Z8XvMuaekNj6D2E
-         yiaAcDBfUp0Yw2oo6Jrb5Frpz35VRZ/eux1BikHDsMjZj1vJB0Jfa2GBq/bBiEc8V7Ro
-         uxvaskCOrN0VdjHKDLnxHduDFDG2N1wNW4UsguZjx11yzAsk2gdVaBEXD6gOrQ3p8fby
-         /b16skGWxU/jPFChheAS3mVmTpOz8JEkyH3wEjopxe/4JFHxiXEzxZSvhivGgjyjTHnf
-         sfBNDs4203lfXqSfiznvIOV9m6Gyez1/cRDsoPcxapDh4ovwegds3i5PBHPS8b09g0DU
-         D0pw==
+        bh=y1Ot7JwaLFB8mJjqEqwwfJmEFFcwQibYT37fHJJrIBU=;
+        b=fbq5yFNeLeJLs1YOLPSMK67DddVFloUIVSYKmxRG3dXhzFEMuopLmHg898JNwR0hzo
+         GdTK6T21zdS1nqxsg1JKWSSPNWp/hLkYx6MIK1sH+B1uXWkomOPL048Gpm9uISkGe49F
+         QZ5eMrPMl+rmegLOxiVhoA1p68QG1yGv3b9GPUkT/Gs8pNdTacd7J8bxlkovMigQFOyQ
+         evc5M08/sO4NMs72mb7bJuXLskKGpV6xa79QxpNn/4fLfP+nKcS4qBJ97FcOM5ksPIpc
+         rE19CL0ZwbBAfV3rZfkSnPIyQNrzsN5i+bJ/F+mf+eiSHULewlENKXp9YvE2cBm6wolv
+         3HBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc;
-        bh=DLOUyCCY0hq75QhLqDKmn7t1fk6HIbRSoz8cQOqRdjU=;
-        b=V87dC+rvcV+1ChfmNuRx9DVWB7Hl5V6k1UjHlV2WS7mvbmjnYXBZnx9KzS2DfDHV4i
-         I1YEUDcB+j7M63KQ2N3rswd/epvuhbjIzGj450tr2QOZL/2idmv7QCiauagMlNipjCTE
-         yvfk1+jwk57zULEF4kNsUsQuK0a0XumNY94hplUuE4stGRH+tMSERdhhE7xxvsdZ/oaO
-         PV5MMyCYpokH2lb6B4EmjPoH15+I7UEXWivc+OfVkcvnXDUIdfWkOd8O0J53QL2OEAVV
-         Qi2ducLN8awwSIUfeensxQnK9jeGZQuko5v69KOKvRq1qdC0QTslGmDNAE3nlbSWDNaJ
-         xZjA==
-X-Gm-Message-State: ACgBeo0zemV0iU6iomojO258xeFc+zq2432BO6xe1oYkbRtG7idbqlfI
-        PnBOC96tzkgkVd6yF7noDmqQbXsV/0V1Ap8mP53HrwVz
-X-Google-Smtp-Source: AA6agR6GPCNEdJAZnj9Er+xf1cG/9xaEXyLAtHplHeKYSLQ6x1oJrO/7bZ/1cr8ThdGT3GBdrweoQ+xhMYkKBtIWDy4=
-X-Received: by 2002:a5e:dc46:0:b0:689:94f6:fa3e with SMTP id
- s6-20020a5edc46000000b0068994f6fa3emr840750iop.110.1660949808896; Fri, 19 Aug
- 2022 15:56:48 -0700 (PDT)
+        bh=y1Ot7JwaLFB8mJjqEqwwfJmEFFcwQibYT37fHJJrIBU=;
+        b=T8VOoY26Z5Lq6k/UUvKRMzgP8Y2O1eYhx/tBx0sx93MtJiXu+28dRN13F6vHHpaQNw
+         cnnOJg9WElIzA7T69UgbPwMpKWp3xqmq5MVRqTDDjeak7ZmDb2Cqch/+geY6O2+9AE5q
+         nq8ESV9CJTwglUjwsI4Kdc1OWSdl1Iu1W4mCSGm/0A4DYatTTzA3o0+TbkTtxdIB3Du9
+         dbM0K01slj3gnz7X88+En6cjTc10biEEoe8xBqpxVnUgEao8ojSbP46aGPxZTMR844/v
+         ugK1QCXDTkhhZ6WvXvNXuDYiqUNWrt7n4oQroOikQyUCNuTF4bN/iFyLHCE7D3mQhnjr
+         6CAA==
+X-Gm-Message-State: ACgBeo3hUe1e4iulZliVsklahjzcs0/Xp3Yu6R8gBO/Aj3ikGFc0570j
+        xVDJFAXrKswOLO0j26pxaMVccjOOhV0tgiwNC4U=
+X-Google-Smtp-Source: AA6agR6HHiYxIPLPzpcske/8DgoDwHZfyDzJREkUkXfgCQXVEQR93qdyFvX1BEYAKci2B5qlG/G4VyvI9CIiUuedghc=
+X-Received: by 2002:a17:907:e8d:b0:730:a4e8:27ed with SMTP id
+ ho13-20020a1709070e8d00b00730a4e827edmr5977071ejc.58.1660949805843; Fri, 19
+ Aug 2022 15:56:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220819214232.18784-1-alexei.starovoitov@gmail.com>
- <20220819214232.18784-14-alexei.starovoitov@gmail.com> <CAP01T75MUMKzacdE+AcKqgXy1jA5FyMwKXxiibD0ML3OFSqvsw@mail.gmail.com>
- <20220819224317.i3mwmr5atdztudtt@MacBook-Pro-3.local.dhcp.thefacebook.com>
-In-Reply-To: <20220819224317.i3mwmr5atdztudtt@MacBook-Pro-3.local.dhcp.thefacebook.com>
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date:   Sat, 20 Aug 2022 00:56:12 +0200
-Message-ID: <CAP01T77A1pqYQKeECDSCoxH1pQ1Vxcm84B8_D_r0xoZv_bbq_A@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 13/15] bpf: Prepare bpf_mem_alloc to be used
- by sleepable bpf programs.
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     davem@davemloft.net, daniel@iogearbox.net, andrii@kernel.org,
-        tj@kernel.org, delyank@fb.com, linux-mm@kvack.org,
-        bpf@vger.kernel.org, kernel-team@fb.com
+References: <CAADnVQJHdxu43rPgpfQ-ezR-Vt3xW2YP7SXUayfoEg+3BCps5w@mail.gmail.com>
+ <20220819034635.67875-1-kuniyu@amazon.com>
+In-Reply-To: <20220819034635.67875-1-kuniyu@amazon.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 19 Aug 2022 15:56:34 -0700
+Message-ID: <CAADnVQLjUn75aj1ZJbjX9ZPCQDJZ1J4Xan5w7u3qRiDybnW9WA@mail.gmail.com>
+Subject: Re: [PATCH v1 bpf 1/4] bpf: Fix data-races around bpf_jit_enable.
+To:     Kuniyuki Iwashima <kuniyu@amazon.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kuniyuki Iwashima <kuni1840@gmail.com>,
+        Network Development <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -69,74 +69,100 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 20 Aug 2022 at 00:43, Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Thu, Aug 18, 2022 at 8:46 PM Kuniyuki Iwashima <kuniyu@amazon.com> wrote:
 >
-> On Sat, Aug 20, 2022 at 12:21:46AM +0200, Kumar Kartikeya Dwivedi wrote:
-> > On Fri, 19 Aug 2022 at 23:43, Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
+> From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+> Date:   Thu, 18 Aug 2022 20:27:49 -0700
+> > On Thu, Aug 18, 2022 at 6:15 PM Kuniyuki Iwashima <kuniyu@amazon.com> wrote:
 > > >
-> > > From: Alexei Starovoitov <ast@kernel.org>
+> > > From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+> > > Date:   Thu, 18 Aug 2022 18:05:44 -0700
+> > > > On Thu, Aug 18, 2022 at 5:56 PM Kuniyuki Iwashima <kuniyu@amazon.com> wrote:
+> > > > >
+> > > > > From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+> > > > > Date:   Thu, 18 Aug 2022 17:13:25 -0700
+> > > > > > On Thu, Aug 18, 2022 at 5:07 PM Kuniyuki Iwashima <kuniyu@amazon.com> wrote:
+> > > > > > >
+> > > > > > > From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+> > > > > > > Date:   Thu, 18 Aug 2022 15:49:46 -0700
+> > > > > > > > On Wed, Aug 17, 2022 at 9:24 PM Kuniyuki Iwashima <kuniyu@amazon.com> wrote:
+> > > > > > > > >
+> > > > > > > > > A sysctl variable bpf_jit_enable is accessed concurrently, and there is
+> > > > > > > > > always a chance of data-race.  So, all readers and a writer need some
+> > > > > > > > > basic protection to avoid load/store-tearing.
+> > > > > > > > >
+> > > > > > > > > Fixes: 0a14842f5a3c ("net: filter: Just In Time compiler for x86-64")
+> > > > > > > > > Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.com>
+> > > > > > > > > ---
+> > > > > > > > >  arch/arm/net/bpf_jit_32.c        | 2 +-
+> > > > > > > > >  arch/arm64/net/bpf_jit_comp.c    | 2 +-
+> > > > > > > > >  arch/mips/net/bpf_jit_comp.c     | 2 +-
+> > > > > > > > >  arch/powerpc/net/bpf_jit_comp.c  | 5 +++--
+> > > > > > > > >  arch/riscv/net/bpf_jit_core.c    | 2 +-
+> > > > > > > > >  arch/s390/net/bpf_jit_comp.c     | 2 +-
+> > > > > > > > >  arch/sparc/net/bpf_jit_comp_32.c | 5 +++--
+> > > > > > > > >  arch/sparc/net/bpf_jit_comp_64.c | 5 +++--
+> > > > > > > > >  arch/x86/net/bpf_jit_comp.c      | 2 +-
+> > > > > > > > >  arch/x86/net/bpf_jit_comp32.c    | 2 +-
+> > > > > > > > >  include/linux/filter.h           | 2 +-
+> > > > > > > > >  net/core/sysctl_net_core.c       | 4 ++--
+> > > > > > > > >  12 files changed, 19 insertions(+), 16 deletions(-)
+> > > > > > > > >
+> > > > > > > > > diff --git a/arch/arm/net/bpf_jit_32.c b/arch/arm/net/bpf_jit_32.c
+> > > > > > > > > index 6a1c9fca5260..4b6b62a6fdd4 100644
+> > > > > > > > > --- a/arch/arm/net/bpf_jit_32.c
+> > > > > > > > > +++ b/arch/arm/net/bpf_jit_32.c
+> > > > > > > > > @@ -1999,7 +1999,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+> > > > > > > > >         }
+> > > > > > > > >         flush_icache_range((u32)header, (u32)(ctx.target + ctx.idx));
+> > > > > > > > >
+> > > > > > > > > -       if (bpf_jit_enable > 1)
+> > > > > > > > > +       if (READ_ONCE(bpf_jit_enable) > 1)
+> > > > > > > >
+> > > > > > > > Nack.
+> > > > > > > > Even if the compiler decides to use single byte loads for some
+> > > > > > > > odd reason there is no issue here.
+> > > > > > >
+> > > > > > > I see, and same for 2nd/3rd patches, right?
+> > > > > > >
+> > > > > > > Then how about this part?
+> > > > > > > It's not data-race nor problematic in practice, but should the value be
+> > > > > > > consistent in the same function?
+> > > > > > > The 2nd/3rd patches also have this kind of part.
+> > > > > >
+> > > > > > The bof_jit_enable > 1 is unsupported and buggy.
+> > > > > > It will be removed eventually.
+> > > > >
+> > > > > Ok, then I'm fine with no change.
+> > > > >
+> > > > > >
+> > > > > > Why are you doing these changes if they're not fixing any bugs ?
+> > > > > > Just to shut up some race sanitizer?
+> > > > >
+> > > > > For data-race, it's one of reason.  I should have made sure the change fixes
+> > > > > an actual bug, my apologies.
+> > > > >
+> > > > > For two reads, I feel buggy that there's an inconsitent snapshot.
+> > > > > e.g.) in the 2nd patch, bpf_jit_harden == 0 in bpf_jit_blinding_enabled()
+> > > > > could return true.  Thinking the previous value was 1, it seems to be timing
+> > > > > issue, but not intuitive.
+> > > >
+> > > > it's also used in bpf_jit_kallsyms_enabled.
+> > > > So the patch 2 doesn't make anything 'intuitive'.
 > > >
-> > > Use call_rcu_tasks_trace() to wait for sleepable progs to finish.
-> > > Then use call_rcu() to wait for normal progs to finish
-> > > and finally do free_one() on each element when freeing objects
-> > > into global memory pool.
+> > > Exactly...
 > > >
-> > > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> > > ---
+> > > So finally, should I repost 4th patch or drop it?
 > >
-> > I fear this can make OOM issues very easy to run into, because one
-> > sleepable prog that sleeps for a long period of time can hold the
-> > freeing of elements from another sleepable prog which either does not
-> > sleep often or sleeps for a very short period of time, and has a high
-> > update frequency. I'm mostly worried that unrelated sleepable programs
-> > not even using the same map will begin to affect each other.
+> > This?
+> > -       if (atomic_long_add_return(size, &bpf_jit_current) > bpf_jit_limit) {
+> > +       if (atomic_long_add_return(size, &bpf_jit_current) >
+> > READ_ONCE(bpf_jit_limit)) {
+> >
+> > same question. What does it fix?
 >
-> 'sleep for long time'? sleepable bpf prog doesn't mean that they can sleep.
-> sleepable progs can copy_from_user, but they're not allowed to waste time.
+> Its size is long, and load tearing [0] could occur by compiler
+> optimisation.  So, concurrent writes & a teared-read could get
+> a bigger limit than intended.
 
-It is certainly possible to waste time, but indirectly, not through
-the BPF program itself.
-
-If you have userfaultfd enabled (for unpriv users), an unprivileged
-user can trap a sleepable BPF prog (say LSM) using bpf_copy_from_user
-for as long as it wants. A similar case can be done using FUSE, IIRC.
-
-You can then say it's a problem about unprivileged users being able to
-use userfaultfd or FUSE, or we could think about fixing
-bpf_copy_from_user to return -EFAULT for this case, but it is totally
-possible right now for malicious userspace to extend the tasks trace
-gp like this for minutes (or even longer) on a system where sleepable
-BPF programs are using e.g. bpf_copy_from_user.
-
-> I don't share OOM concerns at all.
-> max_entries and memcg limits are still there and enforced.
-> dynamic map is strictly better and memory efficient than full prealloc.
->
-> > Have you considered other options? E.g. we could directly expose
-> > bpf_rcu_read_lock/bpf_rcu_read_unlock to the program and enforce that
-> > access to RCU protected map lookups only happens in such read
-> > sections, and unlock invalidates all RCU protected pointers? Sleepable
-> > helpers can then not be invoked inside the BPF RCU read section. The
-> > program uses RCU read section while accessing such maps, and sleeps
-> > after doing bpf_rcu_read_unlock. They can be kfuncs.
->
-> Yes. We can add explicit bpf_rcu_read_lock and teach verifier about RCU CS,
-> but I don't see the value specifically for sleepable progs.
-> Current sleepable progs can do map lookup without extra kfuncs.
-> Explicit CS would force progs to be rewritten which is not great.
->
-> > It might also be useful in general, to access RCU protected data from
-> > sleepable programs (i.e. make some sections of the program RCU
-> > protected and non-sleepable at runtime). It will allow use of elements
->
-> For other cases, sure. We can introduce RCU protected objects and
-> explicit bpf_rcu_read_lock.
->
-> > from dynamically allocated maps with bpf_mem_alloc while not having to
-> > wait for RCU tasks trace grace period, which can extend into minutes
-> > (or even longer if unlucky).
->
-> sleepable bpf prog that lasts minutes? In what kind of situation?
-> We don't have bpf_sleep() helper and not going to add one any time soon.
+'long' indeed. Still improbable, but sure. let's read_once it.
