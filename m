@@ -2,191 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50CA459AB68
-	for <lists+bpf@lfdr.de>; Sat, 20 Aug 2022 06:36:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B75B759ADA6
+	for <lists+bpf@lfdr.de>; Sat, 20 Aug 2022 13:56:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241767AbiHTEf6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 20 Aug 2022 00:35:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43382 "EHLO
+        id S1345738AbiHTLvK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 20 Aug 2022 07:51:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbiHTEf6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 20 Aug 2022 00:35:58 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0915DA3C2;
-        Fri, 19 Aug 2022 21:35:55 -0700 (PDT)
-Received: from dggpemm500021.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4M8m364hr8znTbf;
-        Sat, 20 Aug 2022 12:33:38 +0800 (CST)
-Received: from dggpemm500019.china.huawei.com (7.185.36.180) by
- dggpemm500021.china.huawei.com (7.185.36.109) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Sat, 20 Aug 2022 12:35:53 +0800
-Received: from k04.huawei.com (10.67.174.115) by
- dggpemm500019.china.huawei.com (7.185.36.180) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Sat, 20 Aug 2022 12:35:53 +0800
-From:   Pu Lehui <pulehui@huawei.com>
-To:     <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <stable@vger.kernel.org>,
-        <syzbot+f264bffdfbd5614f3bb2@syzkaller.appspotmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Tadeusz Struk <tadeusz.struk@linaro.org>,
-        Pu Lehui <pulehui@huawei.com>
-Subject: [PATCH 5.10] bpf: Fix KASAN use-after-free Read in compute_effective_progs
-Date:   Sat, 20 Aug 2022 13:05:18 +0800
-Message-ID: <20220820050518.2118130-1-pulehui@huawei.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.174.115]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500019.china.huawei.com (7.185.36.180)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S1345729AbiHTLvI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 20 Aug 2022 07:51:08 -0400
+Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AB4139D648
+        for <bpf@vger.kernel.org>; Sat, 20 Aug 2022 04:51:06 -0700 (PDT)
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxnmulygBjkwgGAA--.14449S2;
+        Sat, 20 Aug 2022 19:51:01 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Huacai Chen <chenhuacai@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, loongarch@lists.linux.dev
+Subject: [PATCH bpf-next v1 0/4] Add BPF JIT support for LoongArch
+Date:   Sat, 20 Aug 2022 19:50:56 +0800
+Message-Id: <1660996260-11337-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf8BxnmulygBjkwgGAA--.14449S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxJrW7Zw4rur1kuw1DJrW7CFg_yoW8Zr4kpa
+        y3urn8KrWDGr1fXr1ft3yUuryrtF4fGry7Wa1ay348ArZ8ZF1jgFyxtw1DZFn5twsYgFy0
+        qr1rKw12gF4DJa7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUk2b7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
+        C2z280aVCY1x0267AKxVWxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_Gw4l42xK
+        82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGw
+        C20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48J
+        MIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMI
+        IF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
+        87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUgBcEUUUUU
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Tadeusz Struk <tadeusz.struk@linaro.org>
+The basic support for LoongArch has been merged into the upstream Linux
+kernel since 5.19-rc1 on June 5, 2022, this patch series adds BPF JIT
+support for LoongArch.
 
-commit 4c46091ee985ae84c60c5e95055d779fcd291d87 upstream.
+Here is the LoongArch documention:
+https://www.kernel.org/doc/html/latest/loongarch/index.html
 
-Syzbot found a Use After Free bug in compute_effective_progs().
-The reproducer creates a number of BPF links, and causes a fault
-injected alloc to fail, while calling bpf_link_detach on them.
-Link detach triggers the link to be freed by bpf_link_free(),
-which calls __cgroup_bpf_detach() and update_effective_progs().
-If the memory allocation in this function fails, the function restores
-the pointer to the bpf_cgroup_link on the cgroup list, but the memory
-gets freed just after it returns. After this, every subsequent call to
-update_effective_progs() causes this already deallocated pointer to be
-dereferenced in prog_list_length(), and triggers KASAN UAF error.
+With this patch series, the test cases in lib/test_bpf.ko have passed
+on LoongArch.
 
-To fix this issue don't preserve the pointer to the prog or link in the
-list, but remove it and replace it with a dummy prog without shrinking
-the table. The subsequent call to __cgroup_bpf_detach() or
-__cgroup_bpf_detach() will correct it.
+  # echo 1 > /proc/sys/net/core/bpf_jit_enable
+  # modprobe test_bpf
+  # dmesg | grep Summary
+  test_bpf: Summary: 1026 PASSED, 0 FAILED, [1014/1014 JIT'ed]
+  test_bpf: test_tail_calls: Summary: 10 PASSED, 0 FAILED, [10/10 JIT'ed]
+  test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
 
-Fixes: af6eea57437a ("bpf: Implement bpf_link-based cgroup BPF program attachment")
-Reported-by: <syzbot+f264bffdfbd5614f3bb2@syzkaller.appspotmail.com>
-Signed-off-by: Tadeusz Struk <tadeusz.struk@linaro.org>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Cc: <stable@vger.kernel.org>
-Link: https://syzkaller.appspot.com/bug?id=8ebf179a95c2a2670f7cf1ba62429ec044369db4
-Link: https://lore.kernel.org/bpf/20220517180420.87954-1-tadeusz.struk@linaro.org
-Signed-off-by: Pu Lehui <pulehui@huawei.com>
----
- kernel/bpf/cgroup.c | 70 ++++++++++++++++++++++++++++++++++++++-------
- 1 file changed, 60 insertions(+), 10 deletions(-)
+It seems that this patch series can not be applied cleanly to bpf-next
+which is not synced to v6.0-rc1.
 
-diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-index 6aa9e10c6335..d154e52dd7ae 100644
---- a/kernel/bpf/cgroup.c
-+++ b/kernel/bpf/cgroup.c
-@@ -653,6 +653,60 @@ static struct bpf_prog_list *find_detach_entry(struct list_head *progs,
- 	return ERR_PTR(-ENOENT);
- }
- 
-+/**
-+ * purge_effective_progs() - After compute_effective_progs fails to alloc new
-+ *			     cgrp->bpf.inactive table we can recover by
-+ *			     recomputing the array in place.
-+ *
-+ * @cgrp: The cgroup which descendants to travers
-+ * @prog: A program to detach or NULL
-+ * @link: A link to detach or NULL
-+ * @type: Type of detach operation
-+ */
-+static void purge_effective_progs(struct cgroup *cgrp, struct bpf_prog *prog,
-+				  struct bpf_cgroup_link *link,
-+				  enum bpf_attach_type type)
-+{
-+	struct cgroup_subsys_state *css;
-+	struct bpf_prog_array *progs;
-+	struct bpf_prog_list *pl;
-+	struct list_head *head;
-+	struct cgroup *cg;
-+	int pos;
-+
-+	/* recompute effective prog array in place */
-+	css_for_each_descendant_pre(css, &cgrp->self) {
-+		struct cgroup *desc = container_of(css, struct cgroup, self);
-+
-+		if (percpu_ref_is_zero(&desc->bpf.refcnt))
-+			continue;
-+
-+		/* find position of link or prog in effective progs array */
-+		for (pos = 0, cg = desc; cg; cg = cgroup_parent(cg)) {
-+			if (pos && !(cg->bpf.flags[type] & BPF_F_ALLOW_MULTI))
-+				continue;
-+
-+			head = &cg->bpf.progs[type];
-+			list_for_each_entry(pl, head, node) {
-+				if (!prog_list_prog(pl))
-+					continue;
-+				if (pl->prog == prog && pl->link == link)
-+					goto found;
-+				pos++;
-+			}
-+		}
-+found:
-+		BUG_ON(!cg);
-+		progs = rcu_dereference_protected(
-+				desc->bpf.effective[type],
-+				lockdep_is_held(&cgroup_mutex));
-+
-+		/* Remove the program from the array */
-+		WARN_ONCE(bpf_prog_array_delete_safe_at(progs, pos),
-+			  "Failed to purge a prog from array at index %d", pos);
-+	}
-+}
-+
- /**
-  * __cgroup_bpf_detach() - Detach the program or link from a cgroup, and
-  *                         propagate the change to descendants
-@@ -671,7 +725,6 @@ int __cgroup_bpf_detach(struct cgroup *cgrp, struct bpf_prog *prog,
- 	u32 flags = cgrp->bpf.flags[type];
- 	struct bpf_prog_list *pl;
- 	struct bpf_prog *old_prog;
--	int err;
- 
- 	if (prog && link)
- 		/* only one of prog or link can be specified */
-@@ -686,9 +739,12 @@ int __cgroup_bpf_detach(struct cgroup *cgrp, struct bpf_prog *prog,
- 	pl->prog = NULL;
- 	pl->link = NULL;
- 
--	err = update_effective_progs(cgrp, type);
--	if (err)
--		goto cleanup;
-+	if (update_effective_progs(cgrp, type)) {
-+		/* if update effective array failed replace the prog with a dummy prog*/
-+		pl->prog = old_prog;
-+		pl->link = link;
-+		purge_effective_progs(cgrp, old_prog, link, type);
-+	}
- 
- 	/* now can actually delete it from this cgroup list */
- 	list_del(&pl->node);
-@@ -700,12 +756,6 @@ int __cgroup_bpf_detach(struct cgroup *cgrp, struct bpf_prog *prog,
- 		bpf_prog_put(old_prog);
- 	static_branch_dec(&cgroup_bpf_enabled_key);
- 	return 0;
--
--cleanup:
--	/* restore back prog or link */
--	pl->prog = old_prog;
--	pl->link = link;
--	return err;
- }
- 
- /* Must be called with cgroup_mutex held to avoid races. */
+v1:
+  -- Rebased series on v6.0-rc1
+  -- Move {signed,unsigned}_imm_check() to inst.h
+  -- Define the imm field as "unsigned int" in the instruction format
+  -- Use DEF_EMIT_*_FORMAT to define the same kind of instructions
+  -- Use "stack_adjust += sizeof(long) * 8" in build_prologue()
+
+RFC:
+  https://lore.kernel.org/bpf/1660013580-19053-1-git-send-email-yangtiezhu@loongson.cn/
+
+Tiezhu Yang (4):
+  LoongArch: Move {signed,unsigned}_imm_check() to inst.h
+  LoongArch: Add some instruction opcodes and formats
+  LoongArch: Add BPF JIT support
+  LoongArch: Enable BPF_JIT and TEST_BPF in default config
+
+ arch/loongarch/Kbuild                      |    1 +
+ arch/loongarch/Kconfig                     |    1 +
+ arch/loongarch/configs/loongson3_defconfig |    2 +
+ arch/loongarch/include/asm/inst.h          |  317 +++++++-
+ arch/loongarch/kernel/module.c             |   10 -
+ arch/loongarch/net/Makefile                |    7 +
+ arch/loongarch/net/bpf_jit.c               | 1113 ++++++++++++++++++++++++++++
+ arch/loongarch/net/bpf_jit.h               |  308 ++++++++
+ 8 files changed, 1744 insertions(+), 15 deletions(-)
+ create mode 100644 arch/loongarch/net/Makefile
+ create mode 100644 arch/loongarch/net/bpf_jit.c
+ create mode 100644 arch/loongarch/net/bpf_jit.h
+
 -- 
-2.25.1
+2.1.0
 
