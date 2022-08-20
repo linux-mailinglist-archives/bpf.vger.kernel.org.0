@@ -2,196 +2,248 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AA4E59AAAE
-	for <lists+bpf@lfdr.de>; Sat, 20 Aug 2022 04:28:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F98B59AACE
+	for <lists+bpf@lfdr.de>; Sat, 20 Aug 2022 05:04:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237811AbiHTC0l (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Aug 2022 22:26:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37074 "EHLO
+        id S240939AbiHTDBH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 19 Aug 2022 23:01:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235135AbiHTC0k (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Aug 2022 22:26:40 -0400
-Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 795507A536;
-        Fri, 19 Aug 2022 19:26:39 -0700 (PDT)
-Received: by mail-vs1-xe34.google.com with SMTP id k10so1074714vsr.4;
-        Fri, 19 Aug 2022 19:26:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=oh6Q6X5fu9r3g+mvH4/jQjUaJWygBx3MJ5JQBin8ub0=;
-        b=jkvhqkc8tm4M+RR6BZs50gF7P3/UCtOxjjx1ig7yZY1X4PkwGTSnuAo7KN3DA+G38H
-         h0rP55Py5h3qCfvw8j6f+I0Q/WmKn9l2aykoaPbu1Dsqyee4DhW5DbTggZMfyvg0kxTe
-         Ovu8yHalWDXiCibV/VFmJxadK5g7LkbBFBz+mIFo+oQd9sqtEysjAxfz6X6OD3dDTM7B
-         EDi7cORUHb1k0m3eesFCAxJI2MJt7dh63Ou0KXEifgnc9q/6FsJ4iCLA9B/QBPPpExn/
-         pQxuxMUGOXKM3feKbSQrVbnLWoyn7rqWLfmtUwNuD367CtqkW/x6xQc/f5hoKXHd4ibf
-         DxIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=oh6Q6X5fu9r3g+mvH4/jQjUaJWygBx3MJ5JQBin8ub0=;
-        b=WHU3UOQyhMOdIqbcU8673lgTuDfYBtsTGERqMNxL/5GRq9axcaVPEeURXNtJeyL4IX
-         abqGQxKEqoNaZO/Q95u3mhtE75P+83wzOQzbwaX4nKVk38Hb+uRQ+nH3i8tS0gE/f1Zt
-         P1QZJe1cRPSWS0gd4s/uF1yg/Cx0SD1Qd741qJDdRB6Ki+xz5Ba4wj4EElv6Q6DEdONr
-         U+7hUbeOd8HAXQBtQ3ZL1gc0wHUaV0+R24gSNxGTLA1DZSnO1ZFbYkmhMiI1ekqtc1RU
-         P+xClJfxcZer09/ODnCUVIZdRfXC/wKIayG+IzEftnNhArYUjuhmRCZ6fODuw3QpvnFV
-         dkVA==
-X-Gm-Message-State: ACgBeo15pfSCEWtSg7gWBUsAZeYaRwa+AQKBd2b6rrhzH/bmakSNI085
-        I2ShEkCqIFglm+5Ku+VbV/jBw3FtdbvFDKvcPAU=
-X-Google-Smtp-Source: AA6agR77IBY+CPyDUhh5l/7XAT66exhQPCgU+XVLGCjmos38SCThQYSEex67Z26AjehATEySAdHIYv3wTX+fe1wwZHA=
-X-Received: by 2002:a05:6102:570a:b0:38f:6031:412c with SMTP id
- dg10-20020a056102570a00b0038f6031412cmr3517866vsb.35.1660962398582; Fri, 19
- Aug 2022 19:26:38 -0700 (PDT)
+        with ESMTP id S232439AbiHTDBF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 19 Aug 2022 23:01:05 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83805CD534
+        for <bpf@vger.kernel.org>; Fri, 19 Aug 2022 20:01:02 -0700 (PDT)
+Received: from canpemm500009.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4M8jwJ1dMzz1N7Hj;
+        Sat, 20 Aug 2022 10:57:36 +0800 (CST)
+Received: from canpemm500010.china.huawei.com (7.192.105.118) by
+ canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Sat, 20 Aug 2022 11:01:00 +0800
+Received: from canpemm500010.china.huawei.com ([7.192.105.118]) by
+ canpemm500010.china.huawei.com ([7.192.105.118]) with mapi id 15.01.2375.024;
+ Sat, 20 Aug 2022 11:01:00 +0800
+From:   "liujian (CE)" <liujian56@huawei.com>
+To:     Jakub Sitnicki <jakub@cloudflare.com>
+CC:     "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "yoshfuji@linux-ipv6.org" <yoshfuji@linux-ipv6.org>,
+        "dsahern@kernel.org" <dsahern@kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "mykolal@fb.com" <mykolal@fb.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "martin.lau@linux.dev" <martin.lau@linux.dev>,
+        "song@kernel.org" <song@kernel.org>, "yhs@fb.com" <yhs@fb.com>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>,
+        "sdf@google.com" <sdf@google.com>,
+        "haoluo@google.com" <haoluo@google.com>,
+        "jolsa@kernel.org" <jolsa@kernel.org>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: RE: [PATCH bpf-next 1/2] sk_msg: Keep reference on socket file while
+ wait_memory
+Thread-Topic: [PATCH bpf-next 1/2] sk_msg: Keep reference on socket file while
+ wait_memory
+Thread-Index: AQHYsE7+4RUC8e6Zo0eIlwcbIAxeX621Z4+AgACYe1D//4fRAIABkvmQ
+Date:   Sat, 20 Aug 2022 03:01:00 +0000
+Message-ID: <4efb45d55cb743eb9a1a35b598b5601f@huawei.com>
+References: <20220815023343.295094-1-liujian56@huawei.com>
+ <20220815023343.295094-2-liujian56@huawei.com>
+ <871qtc1u9e.fsf@cloudflare.com> <2ad6173f254f4842b1abaeaf9a7a1e7d@huawei.com>
+ <87wnb4zfhn.fsf@cloudflare.com>
+In-Reply-To: <87wnb4zfhn.fsf@cloudflare.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.176.93]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-References: <20220818143118.17733-1-laoar.shao@gmail.com> <Yv67MRQLPreR9GU5@slm.duckdns.org>
- <Yv6+HlEzpNy8y5kT@slm.duckdns.org> <CALOAHbDcrj1ifFsNMHBEih5-SXY2rWViig4rQHi9N07JY6CjXA@mail.gmail.com>
- <Yv/DK+AGlMeBGkF1@slm.duckdns.org>
-In-Reply-To: <Yv/DK+AGlMeBGkF1@slm.duckdns.org>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Sat, 20 Aug 2022 10:25:59 +0800
-Message-ID: <CALOAHbCvUxQn5Zkp2FJ+eL1VgjeRSq1xQhzdiY87C1Cbib-nig@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 00/12] bpf: Introduce selectable memcg for bpf map
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, jolsa@kernel.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Cgroups <cgroups@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Aug 20, 2022 at 1:06 AM Tejun Heo <tj@kernel.org> wrote:
->
-> Hello,
->
-> On Fri, Aug 19, 2022 at 09:09:25AM +0800, Yafang Shao wrote:
-> > On Fri, Aug 19, 2022 at 6:33 AM Tejun Heo <tj@kernel.org> wrote:
-> > >
-> > > On Thu, Aug 18, 2022 at 12:20:33PM -1000, Tejun Heo wrote:
-> > > > We have the exact same problem for any resources which span multiple
-> > > > instances of a service including page cache, tmpfs instances and any other
-> > > > thing which can persist longer than procss life time. My current opinion is
-> > >
-> > > To expand a bit more on this point, once we start including page cache and
-> > > tmpfs, we now get entangled with memory reclaim which then brings in IO and
-> > > not-yet-but-eventually CPU usage.
+
+
+> -----Original Message-----
+> From: Jakub Sitnicki [mailto:jakub@cloudflare.com]
+> Sent: Friday, August 19, 2022 6:35 PM
+> To: liujian (CE) <liujian56@huawei.com>
+> Cc: john.fastabend@gmail.com; edumazet@google.com;
+> davem@davemloft.net; yoshfuji@linux-ipv6.org; dsahern@kernel.org;
+> kuba@kernel.org; pabeni@redhat.com; andrii@kernel.org; mykolal@fb.com;
+> ast@kernel.org; daniel@iogearbox.net; martin.lau@linux.dev;
+> song@kernel.org; yhs@fb.com; kpsingh@kernel.org; sdf@google.com;
+> haoluo@google.com; jolsa@kernel.org; shuah@kernel.org;
+> bpf@vger.kernel.org
+> Subject: Re: [PATCH bpf-next 1/2] sk_msg: Keep reference on socket file
+> while wait_memory
+> 
+> 
+> On Fri, Aug 19, 2022 at 10:01 AM GMT, liujian (CE) wrote:
+> >> -----Original Message-----
+> >> From: Jakub Sitnicki [mailto:jakub@cloudflare.com]
+> >> Sent: Friday, August 19, 2022 4:39 PM
+> >> To: liujian (CE) <liujian56@huawei.com>; john.fastabend@gmail.com;
+> >> edumazet@google.com
+> >> Cc: davem@davemloft.net; yoshfuji@linux-ipv6.org; dsahern@kernel.org;
+> >> kuba@kernel.org; pabeni@redhat.com; andrii@kernel.org;
+> >> mykolal@fb.com; ast@kernel.org; daniel@iogearbox.net;
+> >> martin.lau@linux.dev; song@kernel.org; yhs@fb.com;
+> >> kpsingh@kernel.org; sdf@google.com; haoluo@google.com;
+> >> jolsa@kernel.org; shuah@kernel.org; bpf@vger.kernel.org
+> >> Subject: Re: [PATCH bpf-next 1/2] sk_msg: Keep reference on socket
+> >> file while wait_memory
+> >>
+> >> On Mon, Aug 15, 2022 at 10:33 AM +08, Liu Jian wrote:
+> >> > Fix the below NULL pointer dereference:
+> >> >
+> >> > [   14.471200] Call Trace:
+> >> > [   14.471562]  <TASK>
+> >> > [   14.471882]  lock_acquire+0x245/0x2e0
+> >> > [   14.472416]  ? remove_wait_queue+0x12/0x50
+> >> > [   14.473014]  ? _raw_spin_lock_irqsave+0x17/0x50
+> >> > [   14.473681]  _raw_spin_lock_irqsave+0x3d/0x50
+> >> > [   14.474318]  ? remove_wait_queue+0x12/0x50
+> >> > [   14.474907]  remove_wait_queue+0x12/0x50
+> >> > [   14.475480]  sk_stream_wait_memory+0x20d/0x340
+> >> > [   14.476127]  ? do_wait_intr_irq+0x80/0x80
+> >> > [   14.476704]  do_tcp_sendpages+0x287/0x600
+> >> > [   14.477283]  tcp_bpf_push+0xab/0x260
+> >> > [   14.477817]  tcp_bpf_sendmsg_redir+0x297/0x500
+> >> > [   14.478461]  ? __local_bh_enable_ip+0x77/0xe0
+> >> > [   14.479096]  tcp_bpf_send_verdict+0x105/0x470
+> >> > [   14.479729]  tcp_bpf_sendmsg+0x318/0x4f0
+> >> > [   14.480311]  sock_sendmsg+0x2d/0x40
+> >> > [   14.480822]  ____sys_sendmsg+0x1b4/0x1c0
+> >> > [   14.481390]  ? copy_msghdr_from_user+0x62/0x80
+> >> > [   14.482048]  ___sys_sendmsg+0x78/0xb0
+> >> > [   14.482580]  ? vmf_insert_pfn_prot+0x91/0x150
+> >> > [   14.483215]  ? __do_fault+0x2a/0x1a0
+> >> > [   14.483738]  ? do_fault+0x15e/0x5d0
+> >> > [   14.484246]  ? __handle_mm_fault+0x56b/0x1040
+> >> > [   14.484874]  ? lock_is_held_type+0xdf/0x130
+> >> > [   14.485474]  ? find_held_lock+0x2d/0x90
+> >> > [   14.486046]  ? __sys_sendmsg+0x41/0x70
+> >> > [   14.486587]  __sys_sendmsg+0x41/0x70
+> >> > [   14.487105]  ? intel_pmu_drain_pebs_core+0x350/0x350
+> >> > [   14.487822]  do_syscall_64+0x34/0x80
+> >> > [   14.488345]  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> >> >
+> >> > The test scene as following flow:
+> >> > thread1                               thread2
+> >> > -----------                           ---------------
+> >> >  tcp_bpf_sendmsg
+> >> >   tcp_bpf_send_verdict
+> >> >    tcp_bpf_sendmsg_redir              sock_close
+> >> >     tcp_bpf_push_locked                 __sock_release
+> >> >      tcp_bpf_push                         //inet_release
+> >> >       do_tcp_sendpages                    sock->ops->release
+> >> >        sk_stream_wait_memory          	   // tcp_close
+> >> >           sk_wait_event                      sk->sk_prot->close
+> >> >            release_sock(__sk);
+> >> >             ***
+> >> >
+> >> >                                                 lock_sock(sk);
+> >> >                                                   __tcp_close
+> >> >                                                     sock_orphan(sk)
+> >> >                                                       sk->sk_wq  = NULL
+> >> >                                                 release_sock
+> >> >             ****
+> >> >            lock_sock(__sk);
+> >> >           remove_wait_queue(sk_sleep(sk), &wait);
+> >> >              sk_sleep(sk)
+> >> >              //NULL pointer dereference
+> >> >              &rcu_dereference_raw(sk->sk_wq)->wait
+> >> >
+> >> > While waiting for memory in thread1, the socket is released with
+> >> >its  wait queue because thread2 has closed it. This caused by
+> >> >tcp_bpf_send_verdict didn't increase the f_count of psock->sk_redir-
+> >> >sk_socket->file in thread1.
+> >>
+> >> I'm not sure about this approach. Keeping a closed sock file alive,
+> >> just so we can wakeup from sleep, seems like wasted effort.
+> >>
+> >> __tcp_close sets sk->sk_shutdown = RCV_SHUTDOWN |
+> SEND_SHUTDOWN.
+> >> So we will return from sk_stream_wait_memory via the do_error path.
+> >>
+> >> SEND_SHUTDOWN might be set because socket got closed and orphaned
+> -
+> >> dead and detached from its file, like in this case.
+> >>
+> >> So, IMHO, we should check if SOCK_DEAD flag is set on wakeup due to
+> >> SEND_SHUTDOWN in sk_stream_wait_memory, before accessing the
+> wait
+> >> queue.
+> >>
+> >> [...]
+> > As jakub's approach, this problem can be solved.
 > >
-> > Introduce-a-new-layer vs introduce-a-new-cgroup, which one is more overhead?
->
-> Introducing a new layer in cgroup2 doesn't mean that any specific resource
-> controller is enabled, so there is no runtime overhead difference. In terms
-> of logical complexity, introducing a localized layer seems a lot more
-> straightforward than building a whole separate tree.
->
-> Note that the same applies to cgroup1 where collapsed controller tree is
-> represented by simply not creating those layers in that particular
-> controller tree.
->
-
-No, we have observed on our product env that multiple-layers cpuacct
-would cause obvious performance hit due to cache miss.
-
-> No matter how we cut the problem here, if we want to track these persistent
-> resources, we have to create a cgroup to host them somewhere. The discussion
-> we're having is mostly around where to put them. With your proposal, it can
-> be anywhere and you draw out an example where the persistent cgroups form
-> their own separate tree. What I'm saying is that the logical place to put it
-> is where the current resource consumption is and we just need to put the
-> persistent entity as the parent of the instances.
->
-> Flexibility, just like anything else, isn't free. Here, if we extrapolate
-> this approach, the cost is evidently hefty in that it doesn't generically
-> work with the basic resource control structure.
->
-> > > Once you start splitting the tree like
-> > > you're suggesting here, all those will break down and now we have to worry
-> > > about how to split resource accounting and control for the same entities
-> > > across two split branches of the tree, which doesn't really make any sense.
+> > diff --git a/include/net/sock.h b/include/net/sock.h index
+> > a7273b289188..a3dab7140f1e 100644
+> > --- a/include/net/sock.h
+> > +++ b/include/net/sock.h
+> > @@ -1998,6 +1998,8 @@ static inline void sk_set_socket(struct sock
+> > *sk, struct socket *sock)  static inline wait_queue_head_t
+> > *sk_sleep(struct sock *sk)  {
+> >         BUILD_BUG_ON(offsetof(struct socket_wq, wait) != 0);
+> > +       if (sock_flag(sk, SOCK_DEAD))
+> > +               return NULL;
+> >         return &rcu_dereference_raw(sk->sk_wq)->wait;
+> >  }
+> >  /* Detach socket from process context.
+> > diff --git a/kernel/sched/wait.c b/kernel/sched/wait.c index
+> > 9860bb9a847c..da1be17d0b19 100644
+> > --- a/kernel/sched/wait.c
+> > +++ b/kernel/sched/wait.c
+> > @@ -51,6 +51,8 @@ void remove_wait_queue(struct wait_queue_head
+> > *wq_head, struct wait_queue_entry  {
+> >         unsigned long flags;
 > >
-> > The k8s has already been broken thanks to the memcg accounting on  bpf memory.
-> > If you ignored it, I paste it below.
-> > [0]"1. The memory usage is not consistent between the first generation and
-> > new generations."
-> >
-> > This issue will persist even if you introduce a new layer.
->
-> Please watch your tone.
->
+> > +       if (wq_head == NULL)
+> > +               return;
+> >         spin_lock_irqsave(&wq_head->lock, flags);
+> >         __remove_wait_queue(wq_head, wq_entry);
+> >         spin_unlock_irqrestore(&wq_head->lock, flags);
+> 
+> I don't know if we want to change the contract for sk_sleep()
+> remove_wait_queue() so that they accept dead sockets or nulls.
+> 
+> How about just:
 
-Hm? I apologize if my words offend you.
-But, could you pls take a serious look at the patchset  before giving a NACK?
-You didn't even want to know the background before you sent your NACK.
+It is all ok to me, thank you. Cloud you provide a format patch?
 
-> Again, this isn't a problem specific to k8s. We have the same problem with
-> e.g. persistent tmpfs. One idea which I'm not against is allowing specific
-> resources to be charged to an ancestor. We gotta think carefully about how
-> such charges should be granted / denied but an approach like that jives well
-> with the existing hierarchical control structure and because introducing a
-> persistent layer does too, the combination of the two works well.
->
-> > > So, we *really* don't wanna paint ourselves into that kind of a corner. This
-> > > is a dead-end. Please ditch it.
-> >
-> > It makes non-sensen to ditch it.
-> > Because, the hierarchy I described in the commit log is *one* use case
-> > of the selectable memcg, but not *the only one* use case of it. If you
-> > dislike that hierarchy, I will remove it to avoid misleading you.
->
-> But if you drop that, what'd be the rationale for adding what you're
-> proposing? Why would we want bpf memory charges to be attached any part of
-> the hierarchy?
->
+Tested-by: Liu Jian <liujian56@huawei.com>
+> 
+> diff --git a/net/core/stream.c b/net/core/stream.c index
+> ccc083cdef23..1105057ce00a 100644
+> --- a/net/core/stream.c
+> +++ b/net/core/stream.c
+> @@ -159,7 +159,8 @@ int sk_stream_wait_memory(struct sock *sk, long
+> *timeo_p)
+>                 *timeo_p = current_timeo;
+>         }
+>  out:
+> -       remove_wait_queue(sk_sleep(sk), &wait);
+> +       if (!sock_flag(sk, SOCK_DEAD))
+> +               remove_wait_queue(sk_sleep(sk), &wait);
+>         return err;
+> 
+>  do_error:
+> 
+> 
+> 
 
-I have explained it to you.
-But unfortunately you ignored it again.
-But I don't mind explaining to you again.
-
-                 Parent-memcg
-                     \
-                   Child-memcg (k8s pod)
-
-The user can charge the memory to the parent directly without charging
-into the k8s pod.
-Then the memory.stat is consistent between different generations.
-
-> > Even if you introduce a new layer, you still need the selectable memcg.
-> > For example, to avoid the issue I described in [0],  you still need to
-> > charge to the parent cgroup instead of the current cgroup.
->
-> As I wrote above, we've been discussing the above. Again, I'd be a lot more
-> amenable to such approach because it fits with how everything is structured.
->
-> > That's why I described in the commit log that the selectable memcg is flexible.
->
-> Hopefully, my point on this is clear by now.
->
-
-Unfortunately, you didn't want to get my point.
-
-
--- 
-Regards
-Yafang
