@@ -2,145 +2,196 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60BA259A9F4
-	for <lists+bpf@lfdr.de>; Sat, 20 Aug 2022 02:21:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AA4E59AAAE
+	for <lists+bpf@lfdr.de>; Sat, 20 Aug 2022 04:28:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243439AbiHTAVa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Aug 2022 20:21:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53004 "EHLO
+        id S237811AbiHTC0l (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Aug 2022 22:26:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231538AbiHTAV3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Aug 2022 20:21:29 -0400
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59511115991;
-        Fri, 19 Aug 2022 17:21:28 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id C2E4732003D3;
-        Fri, 19 Aug 2022 20:21:26 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Fri, 19 Aug 2022 20:21:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-        :cc:content-type:date:date:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to; s=fm3; t=1660954886; x=1661041286; bh=ODX32u60O9
-        mjzEl0Wc2d+XWmaBYDOGVb4HYRgD4/OlI=; b=ZqNbtr1c6Br/SYW/qVqjdVWygN
-        aCmbUB36ZDc/vU5c5WRsJFRvYXw+VqGaT6nxWu9NizdbTsRao445lCsJaP6VKk/v
-        4yoD1LwZsHXXwcLRcwA1gUn/XHiD7SZOwmZ/yIU2UitY9CwZ9FeQMJOs2iCSSdSn
-        QQGwkv86K9G07Uao4izkuGRiINHK5GOktuWCkqKc1YI1wjbfYgfBu6wBJI6aR1iQ
-        6kWqr93Ti4VmgMBlWFAvGFS1ni2CfqyRpjuSnavyMLCRl1KLWOY+ZgViMUZrWobX
-        zSf8DJ/bCh4wCD4lThtq6fsiA/AF0GHFH3XA9Jyg9p2wsUbzuZaPu+Gu6vBg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; t=1660954886; x=1661041286; bh=ODX32u60O9mjzEl0Wc2d+XWmaBYD
-        OGVb4HYRgD4/OlI=; b=Rq/fr1zZ824tnOMOPbfLj9iUS7VlW7cf6Thp3ukFWjDF
-        lBkQSsJsfwUJ1wgFfhNAmhBKykSkqRkJuKvGFhndgS9zvpLG32TFxy9QWHig9gD8
-        yqlf5ceIi2fMGC5FAM4A7ac6Fp7LxNykVL0KEwQP7q/aqp4+jkYp49F4n/fUN0/V
-        JMoknZ8sXHGiAsyM7NLBsuD7gz3rDsxroj5861ezfyi77V2ysxVn8XW91aiCjoLG
-        cyLfiFjN6BqQmF5O3MqGt/tWl/iTuhJg8AinthItYQ1RNrJlTgbXms0NkUmOAcQ6
-        EeCa2LJTMjEBVX9ke+I4SeTpCiCm/6YKVtb5i0+cCQ==
-X-ME-Sender: <xms:BikAY8EDbNcAyMV3rqhVgXhcy-l7H3jhT01JOlzNiPFSOk9fE9Y2bQ>
-    <xme:BikAY1UbP-BzAQMk3UMehBp-N26UZDnuwwPEjOnjCkEi2dfb1KwsaUDEq7B4Yno1p
-    DfX2BP-O_SjSHvScQ>
-X-ME-Received: <xmr:BikAY2JZKQ0exEsoSKa1junqgSY3WkPJCJiRdbXGmGAO2QOEy59adviqUO33LRosmH9wHWzXSWhodmQuubG2N-DpUkPbQuZcsJOM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrvdeivddgfeefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdljedtmdenucfjughrpeffhf
-    fvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeffrghnihgvlhcuighuuceo
-    ugiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepveduudegiefhtdffhe
-    fggfdugeeggeehtefgvefhkeekieelueeijeelkeeivdfgnecuvehluhhsthgvrhfuihii
-    vgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
-X-ME-Proxy: <xmx:BikAY-GGJGggK9lRoifJZ04bBxMEsPNwXzu7VOoqHYpK-6zV6sgCzA>
-    <xmx:BikAYyVYa9oBeWiHsfGpS2npgY369SJnLcPtwUuiZfkQ3T6T0dN22w>
-    <xmx:BikAYxNi6EnNqrqR2WTEr0lbGC8qe78feK2jldE_-z6QDwYe1YGfIw>
-    <xmx:BikAY7M9HK2vgUSzU26ioYde99cpQXwzd4f7DWZ4V1CckIlAN-XBzQ>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 19 Aug 2022 20:21:25 -0400 (EDT)
-Date:   Fri, 19 Aug 2022 18:21:24 -0600
-From:   Daniel Xu <dxu@dxuuu.xyz>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, pablo@netfilter.org, fw@strlen.de,
-        toke@kernel.org, martin.lau@linux.dev,
-        netfilter-devel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v3 4/5] bpf: Add support for writing to
- nf_conn:mark
-Message-ID: <20220820002124.g3d5fud5klvrkjil@kashmir.localdomain>
-References: <cover.1660951028.git.dxu@dxuuu.xyz>
- <f44b2eebe48f0653949f59c5bcf23af029490692.1660951028.git.dxu@dxuuu.xyz>
- <CAP01T74fSh6Z=54O+ORKJD7i_izb7rUe3-mHKLgRdrckcisvkw@mail.gmail.com>
+        with ESMTP id S235135AbiHTC0k (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 19 Aug 2022 22:26:40 -0400
+Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 795507A536;
+        Fri, 19 Aug 2022 19:26:39 -0700 (PDT)
+Received: by mail-vs1-xe34.google.com with SMTP id k10so1074714vsr.4;
+        Fri, 19 Aug 2022 19:26:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=oh6Q6X5fu9r3g+mvH4/jQjUaJWygBx3MJ5JQBin8ub0=;
+        b=jkvhqkc8tm4M+RR6BZs50gF7P3/UCtOxjjx1ig7yZY1X4PkwGTSnuAo7KN3DA+G38H
+         h0rP55Py5h3qCfvw8j6f+I0Q/WmKn9l2aykoaPbu1Dsqyee4DhW5DbTggZMfyvg0kxTe
+         Ovu8yHalWDXiCibV/VFmJxadK5g7LkbBFBz+mIFo+oQd9sqtEysjAxfz6X6OD3dDTM7B
+         EDi7cORUHb1k0m3eesFCAxJI2MJt7dh63Ou0KXEifgnc9q/6FsJ4iCLA9B/QBPPpExn/
+         pQxuxMUGOXKM3feKbSQrVbnLWoyn7rqWLfmtUwNuD367CtqkW/x6xQc/f5hoKXHd4ibf
+         DxIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=oh6Q6X5fu9r3g+mvH4/jQjUaJWygBx3MJ5JQBin8ub0=;
+        b=WHU3UOQyhMOdIqbcU8673lgTuDfYBtsTGERqMNxL/5GRq9axcaVPEeURXNtJeyL4IX
+         abqGQxKEqoNaZO/Q95u3mhtE75P+83wzOQzbwaX4nKVk38Hb+uRQ+nH3i8tS0gE/f1Zt
+         P1QZJe1cRPSWS0gd4s/uF1yg/Cx0SD1Qd741qJDdRB6Ki+xz5Ba4wj4EElv6Q6DEdONr
+         U+7hUbeOd8HAXQBtQ3ZL1gc0wHUaV0+R24gSNxGTLA1DZSnO1ZFbYkmhMiI1ekqtc1RU
+         P+xClJfxcZer09/ODnCUVIZdRfXC/wKIayG+IzEftnNhArYUjuhmRCZ6fODuw3QpvnFV
+         dkVA==
+X-Gm-Message-State: ACgBeo15pfSCEWtSg7gWBUsAZeYaRwa+AQKBd2b6rrhzH/bmakSNI085
+        I2ShEkCqIFglm+5Ku+VbV/jBw3FtdbvFDKvcPAU=
+X-Google-Smtp-Source: AA6agR77IBY+CPyDUhh5l/7XAT66exhQPCgU+XVLGCjmos38SCThQYSEex67Z26AjehATEySAdHIYv3wTX+fe1wwZHA=
+X-Received: by 2002:a05:6102:570a:b0:38f:6031:412c with SMTP id
+ dg10-20020a056102570a00b0038f6031412cmr3517866vsb.35.1660962398582; Fri, 19
+ Aug 2022 19:26:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAP01T74fSh6Z=54O+ORKJD7i_izb7rUe3-mHKLgRdrckcisvkw@mail.gmail.com>
-X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_SUSPICIOUS_NTLD,
-        PDS_OTHER_BAD_TLD,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+References: <20220818143118.17733-1-laoar.shao@gmail.com> <Yv67MRQLPreR9GU5@slm.duckdns.org>
+ <Yv6+HlEzpNy8y5kT@slm.duckdns.org> <CALOAHbDcrj1ifFsNMHBEih5-SXY2rWViig4rQHi9N07JY6CjXA@mail.gmail.com>
+ <Yv/DK+AGlMeBGkF1@slm.duckdns.org>
+In-Reply-To: <Yv/DK+AGlMeBGkF1@slm.duckdns.org>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Sat, 20 Aug 2022 10:25:59 +0800
+Message-ID: <CALOAHbCvUxQn5Zkp2FJ+eL1VgjeRSq1xQhzdiY87C1Cbib-nig@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 00/12] bpf: Introduce selectable memcg for bpf map
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, jolsa@kernel.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Cgroups <cgroups@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Kumar,
+On Sat, Aug 20, 2022 at 1:06 AM Tejun Heo <tj@kernel.org> wrote:
+>
+> Hello,
+>
+> On Fri, Aug 19, 2022 at 09:09:25AM +0800, Yafang Shao wrote:
+> > On Fri, Aug 19, 2022 at 6:33 AM Tejun Heo <tj@kernel.org> wrote:
+> > >
+> > > On Thu, Aug 18, 2022 at 12:20:33PM -1000, Tejun Heo wrote:
+> > > > We have the exact same problem for any resources which span multiple
+> > > > instances of a service including page cache, tmpfs instances and any other
+> > > > thing which can persist longer than procss life time. My current opinion is
+> > >
+> > > To expand a bit more on this point, once we start including page cache and
+> > > tmpfs, we now get entangled with memory reclaim which then brings in IO and
+> > > not-yet-but-eventually CPU usage.
+> >
+> > Introduce-a-new-layer vs introduce-a-new-cgroup, which one is more overhead?
+>
+> Introducing a new layer in cgroup2 doesn't mean that any specific resource
+> controller is enabled, so there is no runtime overhead difference. In terms
+> of logical complexity, introducing a localized layer seems a lot more
+> straightforward than building a whole separate tree.
+>
+> Note that the same applies to cgroup1 where collapsed controller tree is
+> represented by simply not creating those layers in that particular
+> controller tree.
+>
 
-On Sat, Aug 20, 2022 at 01:46:04AM +0200, Kumar Kartikeya Dwivedi wrote:
-> On Sat, 20 Aug 2022 at 01:23, Daniel Xu <dxu@dxuuu.xyz> wrote:
-[...]
-> > +static int tc_cls_act_btf_struct_access(struct bpf_verifier_log *log,
-> > +                                       const struct btf *btf,
-> > +                                       const struct btf_type *t, int off,
-> > +                                       int size, enum bpf_access_type atype,
-> > +                                       u32 *next_btf_id,
-> > +                                       enum bpf_type_flag *flag)
-> > +{
-> > +       btf_struct_access_t sa;
-> > +
-> > +       if (atype == BPF_READ)
-> > +               return btf_struct_access(log, btf, t, off, size, atype, next_btf_id,
-> > +                                        flag);
-> > +
-> > +       sa = READ_ONCE(nf_conntrack_btf_struct_access);
-> 
-> This looks unsafe. How do you prevent this race?
-> 
-> CPU 0                                              CPU 1
-> sa = READ_ONCE(nf_ct_bsa);
-> 
-> delete_module("nf_conntrack", ..);
-> 
-> WRITE_ONCE(nf_ct_bsa, NULL);
->                                                          // finishes
-> successfully
-> if (sa)
->     return sa(...); // oops
-> 
-> i.e. what keeps the module alive while we execute its callback?
-> 
-> Using a mutex is one way (as I suggested previously), either you
-> acquire it before unload, or after. If after, you see cb as NULL,
-> otherwise if unload is triggered concurrently it waits to acquire the
-> mutex held by us. Unsetting the cb would be the first thing the module
-> would do.
-> 
-> You can also hold a module reference, but then you must verify it is
-> nf_conntrack's BTF before using btf_try_get_module.
-> But _something_ needs to be done to prevent the module from going away
-> while we execute its code.
+No, we have observed on our product env that multiple-layers cpuacct
+would cause obvious performance hit due to cache miss.
 
-I think I somehow convinced myself that nf_conntrack_core.o is always
-compiled in. Due to some of the garbage collection semantics I saw in
-the code.
+> No matter how we cut the problem here, if we want to track these persistent
+> resources, we have to create a cgroup to host them somewhere. The discussion
+> we're having is mostly around where to put them. With your proposal, it can
+> be anywhere and you draw out an example where the persistent cgroups form
+> their own separate tree. What I'm saying is that the logical place to put it
+> is where the current resource consumption is and we just need to put the
+> persistent entity as the parent of the instances.
+>
+> Flexibility, just like anything else, isn't free. Here, if we extrapolate
+> this approach, the cost is evidently hefty in that it doesn't generically
+> work with the basic resource control structure.
+>
+> > > Once you start splitting the tree like
+> > > you're suggesting here, all those will break down and now we have to worry
+> > > about how to split resource accounting and control for the same entities
+> > > across two split branches of the tree, which doesn't really make any sense.
+> >
+> > The k8s has already been broken thanks to the memcg accounting on  bpf memory.
+> > If you ignored it, I paste it below.
+> > [0]"1. The memory usage is not consistent between the first generation and
+> > new generations."
+> >
+> > This issue will persist even if you introduce a new layer.
+>
+> Please watch your tone.
+>
 
-Lemme take a closer look (for learning I guess). Mutex is probably
-safest bet.
+Hm? I apologize if my words offend you.
+But, could you pls take a serious look at the patchset  before giving a NACK?
+You didn't even want to know the background before you sent your NACK.
 
-[...]
+> Again, this isn't a problem specific to k8s. We have the same problem with
+> e.g. persistent tmpfs. One idea which I'm not against is allowing specific
+> resources to be charged to an ancestor. We gotta think carefully about how
+> such charges should be granted / denied but an approach like that jives well
+> with the existing hierarchical control structure and because introducing a
+> persistent layer does too, the combination of the two works well.
+>
+> > > So, we *really* don't wanna paint ourselves into that kind of a corner. This
+> > > is a dead-end. Please ditch it.
+> >
+> > It makes non-sensen to ditch it.
+> > Because, the hierarchy I described in the commit log is *one* use case
+> > of the selectable memcg, but not *the only one* use case of it. If you
+> > dislike that hierarchy, I will remove it to avoid misleading you.
+>
+> But if you drop that, what'd be the rationale for adding what you're
+> proposing? Why would we want bpf memory charges to be attached any part of
+> the hierarchy?
+>
 
-Thanks,
-Daniel
+I have explained it to you.
+But unfortunately you ignored it again.
+But I don't mind explaining to you again.
+
+                 Parent-memcg
+                     \
+                   Child-memcg (k8s pod)
+
+The user can charge the memory to the parent directly without charging
+into the k8s pod.
+Then the memory.stat is consistent between different generations.
+
+> > Even if you introduce a new layer, you still need the selectable memcg.
+> > For example, to avoid the issue I described in [0],  you still need to
+> > charge to the parent cgroup instead of the current cgroup.
+>
+> As I wrote above, we've been discussing the above. Again, I'd be a lot more
+> amenable to such approach because it fits with how everything is structured.
+>
+> > That's why I described in the commit log that the selectable memcg is flexible.
+>
+> Hopefully, my point on this is clear by now.
+>
+
+Unfortunately, you didn't want to get my point.
+
+
+-- 
+Regards
+Yafang
