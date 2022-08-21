@@ -2,112 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CD6559B162
-	for <lists+bpf@lfdr.de>; Sun, 21 Aug 2022 05:14:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ACEB59B219
+	for <lists+bpf@lfdr.de>; Sun, 21 Aug 2022 07:34:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231214AbiHUDOa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 20 Aug 2022 23:14:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50548 "EHLO
+        id S229896AbiHUFea (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 21 Aug 2022 01:34:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233430AbiHUDOW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 20 Aug 2022 23:14:22 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A46711822
-        for <bpf@vger.kernel.org>; Sat, 20 Aug 2022 20:14:21 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4M9LCc5Rbfzll2D
-        for <bpf@vger.kernel.org>; Sun, 21 Aug 2022 11:13:00 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP2 (Coremail) with SMTP id Syh0CgAH8r0DowFjsgGLAg--.45130S7;
-        Sun, 21 Aug 2022 11:14:19 +0800 (CST)
-From:   Hou Tao <houtao@huaweicloud.com>
-To:     bpf@vger.kernel.org, Song Liu <songliubraving@fb.com>
-Cc:     Hao Sun <sunhao.th@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Lorenz Bauer <oss@lmb.io>, houtao1@huawei.com
-Subject: [PATCH 3/3] bpf: Propagate error from htab_lock_bucket() to userspace
-Date:   Sun, 21 Aug 2022 11:32:23 +0800
-Message-Id: <20220821033223.2598791-4-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20220821033223.2598791-1-houtao@huaweicloud.com>
-References: <20220821033223.2598791-1-houtao@huaweicloud.com>
+        with ESMTP id S229558AbiHUFe3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 21 Aug 2022 01:34:29 -0400
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72EBA13E89
+        for <bpf@vger.kernel.org>; Sat, 20 Aug 2022 22:34:28 -0700 (PDT)
+Received: by mail-il1-f199.google.com with SMTP id i4-20020a056e0212c400b002e5c72b3bd7so6089049ilm.6
+        for <bpf@vger.kernel.org>; Sat, 20 Aug 2022 22:34:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc;
+        bh=SLinpRF80PqnXFMCOcLvqp4Pl9d+bNqtJ3TSPEcxUxE=;
+        b=toeKWlvqpUS5CA3C7ozbgrFl10V2Yhkp57L8XKJvkiRWqhoiHL5CNtfW5WjJoG/KnC
+         1Mv9+/EvG8QCbkSC3PEnJMRjKwiN3rByIlo7AuwSF4HA++CBFBGcfKU2S5JxkeCRufI7
+         A3PNtG3oPGFTjGntHIvFe4aK/1i9B6MeqFYx5ldfINUkvUNZfqTT1wnELyk2XTHwaNws
+         2lUyD3rqzOqxBsICmSYamXvjFbJhTTSwd/qSvHh49G2902QSHpV3mMvN9FDJpHEoYPVu
+         b+UC+bY7wLSv3NS5oJ5D3JDDf/9jXaQ1uZKskPmgpoF9nXq27ykmfx/cBo+HG4/x3QxO
+         L+yQ==
+X-Gm-Message-State: ACgBeo1YeKUxPc+1Z4MVNIOLUZh4L9oiblgR9DtKi3K5DZvclnla7ZU7
+        jh6laEdT1weOh5gwtAKwVS1NxElNBbSOw/8c/PPfccWrNB8o
+X-Google-Smtp-Source: AA6agR5J93whK1w5u2ICPb5aH+ztLDAichtMjLLgbuc9JCKTBb/iBRYUyO46BgZt4/5duMeXtvn4X1H4UO3dwrrR8wyfs+HMCBF4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgAH8r0DowFjsgGLAg--.45130S7
-X-Coremail-Antispam: 1UD129KBjvJXoWruFWfZw48Gry7WFWrtr4Dtwb_yoW8Jryrpa
-        yIk347Kw40vrZFyas3JFs7K3y5Zwn5Wr4UGFZ8J34Fvr1qqr9agw18t3sIqFyFqry3tr4Y
-        vr42vFyFg345AFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBYb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWw
-        A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-        Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
-        Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64
-        vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
-        jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2I
-        x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY6xAI
-        w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
-        0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1c4S7UUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Received: by 2002:a05:6638:438d:b0:344:cb31:89d3 with SMTP id
+ bo13-20020a056638438d00b00344cb3189d3mr6848132jab.6.1661060067845; Sat, 20
+ Aug 2022 22:34:27 -0700 (PDT)
+Date:   Sat, 20 Aug 2022 22:34:27 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004b6dfe05e6b9af89@google.com>
+Subject: [syzbot] WARNING in vmap_pages_range_noflush (2)
+From:   syzbot <syzbot+616ff0452fec30f4dcfd@syzkaller.appspotmail.com>
+To:     ast@kernel.org, bjorn@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com,
+        hawk@kernel.org, john.fastabend@gmail.com,
+        jonathan.lemon@gmail.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, maciej.fijalkowski@intel.com,
+        magnus.karlsson@intel.com, netdev@vger.kernel.org,
+        pabeni@redhat.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Hou Tao <houtao1@huawei.com>
+Hello,
 
-In __htab_map_lookup_and_delete_batch() if htab_lock_bucket() returns
--EBUSY, it will go to next bucket. Going to next bucket may not only
-skip the elements in current bucket silently, but also incur
-out-of-bound memory access or expose kernel memory to userspace if
-current bucket_cnt is greater than bucket_size or zero.
+syzbot found the following issue on:
 
-Fixing it by stopping batch operation and returning -EBUSY when
-htab_lock_bucket() fails, and the application can retry or skip the busy
-batch as needed.
+HEAD commit:    95d10484d66e Add linux-next specific files for 20220817
+git tree:       linux-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=14bf9423080000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2f5fa747986be53a
+dashboard link: https://syzkaller.appspot.com/bug?extid=616ff0452fec30f4dcfd
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1409d63d080000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=169a9fc3080000
 
-Reported-by: Hao Sun <sunhao.th@gmail.com>
-Signed-off-by: Hou Tao <houtao1@huawei.com>
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+616ff0452fec30f4dcfd@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 3614 at mm/vmalloc.c:476 vmap_pages_pte_range mm/vmalloc.c:476 [inline]
+WARNING: CPU: 1 PID: 3614 at mm/vmalloc.c:476 vmap_pages_pmd_range mm/vmalloc.c:500 [inline]
+WARNING: CPU: 1 PID: 3614 at mm/vmalloc.c:476 vmap_pages_pud_range mm/vmalloc.c:518 [inline]
+WARNING: CPU: 1 PID: 3614 at mm/vmalloc.c:476 vmap_pages_p4d_range mm/vmalloc.c:536 [inline]
+WARNING: CPU: 1 PID: 3614 at mm/vmalloc.c:476 vmap_small_pages_range_noflush mm/vmalloc.c:558 [inline]
+WARNING: CPU: 1 PID: 3614 at mm/vmalloc.c:476 vmap_pages_range_noflush+0x992/0xb90 mm/vmalloc.c:587
+Modules linked in:
+CPU: 1 PID: 3614 Comm: syz-executor206 Not tainted 6.0.0-rc1-next-20220817-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/22/2022
+RIP: 0010:vmap_pages_pte_range mm/vmalloc.c:476 [inline]
+RIP: 0010:vmap_pages_pmd_range mm/vmalloc.c:500 [inline]
+RIP: 0010:vmap_pages_pud_range mm/vmalloc.c:518 [inline]
+RIP: 0010:vmap_pages_p4d_range mm/vmalloc.c:536 [inline]
+RIP: 0010:vmap_small_pages_range_noflush mm/vmalloc.c:558 [inline]
+RIP: 0010:vmap_pages_range_noflush+0x992/0xb90 mm/vmalloc.c:587
+Code: c7 c7 e0 fa f8 89 c6 05 aa 6c 0d 0c 01 e8 c7 10 7e 07 0f 0b e9 48 fe ff ff e8 ba d7 bf ff 0f 0b e9 1d ff ff ff e8 ae d7 bf ff <0f> 0b e9 11 ff ff ff e8 a2 d7 bf ff 4c 8b 7c 24 20 4c 89 ff e8 45
+RSP: 0018:ffffc9000398faa8 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff88806fbbad48 RCX: 0000000000000000
+RDX: ffff88801f1f0000 RSI: ffffffff81bc3da2 RDI: 0000000000000007
+RBP: 0000000000000000 R08: 0000000000000007 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 8000000000000163 R14: dffffc0000000000 R15: ffffc9000d9a9000
+FS:  0000555555c6f300(0000) GS:ffff8880b9b00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000040 CR3: 000000002111f000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ vmap_pages_range mm/vmalloc.c:621 [inline]
+ vmap+0x1b4/0x330 mm/vmalloc.c:2837
+ xdp_umem_addr_map net/xdp/xdp_umem.c:51 [inline]
+ xdp_umem_reg net/xdp/xdp_umem.c:223 [inline]
+ xdp_umem_create+0xcf7/0x1180 net/xdp/xdp_umem.c:252
+ xsk_setsockopt+0x73e/0x9e0 net/xdp/xsk.c:1100
+ __sys_setsockopt+0x2d6/0x690 net/socket.c:2252
+ __do_sys_setsockopt net/socket.c:2263 [inline]
+ __se_sys_setsockopt net/socket.c:2260 [inline]
+ __x64_sys_setsockopt+0xba/0x150 net/socket.c:2260
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f848f588b29
+Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffdd237dcc8 EFLAGS: 00000246 ORIG_RAX: 0000000000000036
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f848f588b29
+RDX: 0000000000000004 RSI: 000000000000011b RDI: 0000000000000003
+RBP: 00007f848f54ccd0 R08: 0000000000000020 R09: 0000000000000000
+R10: 0000000020000040 R11: 0000000000000246 R12: 00007f848f54cd60
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
+
+
 ---
- kernel/bpf/hashtab.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index 3ef7a853c737..ffd39048e6da 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -1711,8 +1711,11 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
- 	/* do not grab the lock unless need it (bucket_cnt > 0). */
- 	if (locked) {
- 		ret = htab_lock_bucket(htab, b, batch, &flags);
--		if (ret)
--			goto next_batch;
-+		if (ret) {
-+			rcu_read_unlock();
-+			bpf_enable_instrumentation();
-+			goto after_loop;
-+		}
- 	}
- 
- 	bucket_cnt = 0;
--- 
-2.29.2
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
