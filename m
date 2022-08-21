@@ -2,50 +2,50 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3160959B157
+	by mail.lfdr.de (Postfix) with ESMTP id 7F9B859B158
 	for <lists+bpf@lfdr.de>; Sun, 21 Aug 2022 05:06:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236530AbiHUDEg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 20 Aug 2022 23:04:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42824 "EHLO
+        id S236687AbiHUDEe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 20 Aug 2022 23:04:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236444AbiHUDEd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 20 Aug 2022 23:04:33 -0400
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A56629CBB
-        for <bpf@vger.kernel.org>; Sat, 20 Aug 2022 20:04:29 -0700 (PDT)
-Received: by mail-io1-f70.google.com with SMTP id l15-20020a0566022dcf00b00688e70a26deso4220116iow.12
-        for <bpf@vger.kernel.org>; Sat, 20 Aug 2022 20:04:29 -0700 (PDT)
+        with ESMTP id S233676AbiHUDEc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 20 Aug 2022 23:04:32 -0400
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5CBE29CB0
+        for <bpf@vger.kernel.org>; Sat, 20 Aug 2022 20:04:28 -0700 (PDT)
+Received: by mail-il1-f199.google.com with SMTP id d6-20020a056e020be600b002dcc7977592so5906549ilu.17
+        for <bpf@vger.kernel.org>; Sat, 20 Aug 2022 20:04:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc;
-        bh=jRBWuLdM1EBsh9fGJskfn3SdJVJbiNRBKCYhxTrPs90=;
-        b=KzU4gUZeTOkbfzuEaAT4/HhcgWT5PdsKXT6mF8ND7IBWnSMvvt0rg/JPqPQm5nX14h
-         cVdVxEhasdMW4eHjXfVc2q6jA4SKLkr8JZTfKDbsG1+kdquVblm2h/3gzfG6bmlKx3oy
-         jdfdPinCNk8o8CeoeSAq0itFx3JeqZCG6yRyP9PBhyfYViFWNdBQDaMRZQKuKJ3mTA0m
-         2C39ZAXq/o+czovg1pSihyut60gahJsc7jvA2cFG9e2nRDUbmTeVBEt0YPYWqZahpF5L
-         3YA3Ts2wPLGE+T15fVMx02/u077nu70f+kyv//e56/JNpWV+pSCZLeRPcxdWZWWemXmk
-         lwRg==
-X-Gm-Message-State: ACgBeo3sbyiuMdBoxURPUeYk6OQXxV9wqk+uqtcQ8QAb0ELZidtEFDVX
-        75KCLNeLyOk3uf0WgRkSFCpEABttiZAo+/8lFNiJY4tgowCi
-X-Google-Smtp-Source: AA6agR7kKuxsfgVKNd2pa8UruiSSQNnhTiIjFIutfOPUJZNZecbBr2VPcYKvMWYXO/ee8ib6NHyP4+3boRjuDh1YRn0jFvEneLyj
+        bh=/nXPIQGJRkolknwhdIPdZn9RGrbvOH9/zz0b+a2VlR4=;
+        b=qqDOBsMO5/7UWGgHL5uk+RGmAJrlcJbdQkhebObmLBpkyhimdI6L19Mf6+kHWXyzuA
+         bgbFhjAZlObFj14/hSIOMnMlWZ/aSxQ2vZi8V+b3py5GbfE4deRr6gocMft3YYmIh5h9
+         nHOe2peqDNYjNYdZHCnIQE8Nq4Y38Ez3BNVXw03HQX23uWG/T7zaIMvepLETmj6AlJdv
+         gd5vwXderX6SHvDe8GESeC5NAuUIHvhpg0Z/F4F5Z2HpZF40w4CwKqfjHd366lR1yyc1
+         ojuYdaD80eD0N2NX+zrkqg4AKxrimrMHmwte+TcNlsZ1Iyi+6ooafBfCbGSwh2d4+zAi
+         X2fg==
+X-Gm-Message-State: ACgBeo2srKKG8bWSxH+rMECX3cQNCSEQlQAjGK0ky62NQOyRCu080X89
+        VIHSZk1QAEFL4Mlxl1c9LvnogC+yUxjUEYpVDxcrnWXyHYv/
+X-Google-Smtp-Source: AA6agR6aHHKzmsTVUTBZOFb87IDrhURrI7ZbxiVzpjFu5AdO8UzrQIq1z29F3AkEiYh/3in1Z830/lGKF00bUOhEL2e3Zl5GuYPf
 MIME-Version: 1.0
-X-Received: by 2002:a02:860d:0:b0:345:b478:a611 with SMTP id
- e13-20020a02860d000000b00345b478a611mr6578685jai.95.1661051068556; Sat, 20
+X-Received: by 2002:a92:6007:0:b0:2e4:464f:6e57 with SMTP id
+ u7-20020a926007000000b002e4464f6e57mr6974607ilb.181.1661051068273; Sat, 20
  Aug 2022 20:04:28 -0700 (PDT)
 Date:   Sat, 20 Aug 2022 20:04:28 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e52b0905e6b796d3@google.com>
+Message-ID: <000000000000e0dc1505e6b796c7@google.com>
 Subject: [syzbot] linux-next boot error: BUG: unable to handle kernel paging
- request in insert_header
-From:   syzbot <syzbot+3dfa69b62d31d2321e39@syzkaller.appspotmail.com>
-To:     bpf@vger.kernel.org, keescook@chromium.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-next@vger.kernel.org, mcgrof@kernel.org,
-        sfr@canb.auug.org.au, syzkaller-bugs@googlegroups.com,
-        yzaikin@google.com
+ request in enqueue_entity
+From:   syzbot <syzbot+e8d2360e9962d57f8072@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, bigeasy@linutronix.de,
+        bpf@vger.kernel.org, brauner@kernel.org, david@redhat.com,
+        ebiederm@xmission.com, linux-kernel@vger.kernel.org,
+        linux-next@vger.kernel.org, luto@kernel.org, sfr@canb.auug.org.au,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
@@ -63,157 +63,137 @@ syzbot found the following issue on:
 
 HEAD commit:    e1084bacab44 Add linux-next specific files for 20220816
 git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1128e50d080000
+console output: https://syzkaller.appspot.com/x/log.txt?x=14c686a5080000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=2f5fa747986be53a
-dashboard link: https://syzkaller.appspot.com/bug?extid=3dfa69b62d31d2321e39
+dashboard link: https://syzkaller.appspot.com/bug?extid=e8d2360e9962d57f8072
 compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+3dfa69b62d31d2321e39@syzkaller.appspotmail.com
+Reported-by: syzbot+e8d2360e9962d57f8072@syzkaller.appspotmail.com
 
-input: Sleep Button as /devices/LNXSYSTM:00/LNXSLPBN:00/input/input1
-ACPI: button: Sleep Button [SLPF]
-ACPI: \_SB_.LNKC: Enabled at IRQ 11
-virtio-pci 0000:00:03.0: virtio_pci: leaving for legacy driver
-ACPI: \_SB_.LNKD: Enabled at IRQ 10
-virtio-pci 0000:00:04.0: virtio_pci: leaving for legacy driver
-ACPI: \_SB_.LNKB: Enabled at IRQ 10
-virtio-pci 0000:00:06.0: virtio_pci: leaving for legacy driver
-virtio-pci 0000:00:07.0: virtio_pci: leaving for legacy driver
-N_HDLC line discipline registered with maxframe=4096
-Serial: 8250/16550 driver, 4 ports, IRQ sharing enabled
-00:03: ttyS0 at I/O 0x3f8 (irq = 4, base_baud = 115200) is a 16550A
-00:04: ttyS1 at I/O 0x2f8 (irq = 3, base_baud = 115200) is a 16550A
-00:05: ttyS2 at I/O 0x3e8 (irq = 6, base_baud = 115200) is a 16550A
-00:06: ttyS3 at I/O 0x2e8 (irq = 7, base_baud = 115200) is a 16550A
-Non-volatile memory driver v1.3
-Linux agpgart interface v0.103
-ACPI: bus type drm_connector registered
-[drm] Initialized vgem 1.0.0 20120112 for vgem on minor 0
-[drm] Initialized vkms 1.0.0 20180514 for vkms on minor 1
-Console: switching to colour frame buffer device 128x48
-platform vkms: [drm] fb0: vkmsdrmfb frame buffer device
-usbcore: registered new interface driver udl
-brd: module loaded
-loop: module loaded
-zram: Added device: zram0
-null_blk: disk nullb0 created
-null_blk: module loaded
-Guest personality initialized and is inactive
-VMCI host device registered (name=vmci, major=10, minor=119)
-Initialized host personality
-usbcore: registered new interface driver rtsx_usb
-usbcore: registered new interface driver viperboard
-usbcore: registered new interface driver dln2
-usbcore: registered new interface driver pn533_usb
-nfcsim 0.2 initialized
-usbcore: registered new interface driver port100
-usbcore: registered new interface driver nfcmrvl
-Loading iSCSI transport class v2.0-870.
-scsi host0: Virtio SCSI HBA
-st: Version 20160209, fixed bufsize 32768, s/g segs 256
-Rounding down aligned max_sectors from 4294967295 to 4294967288
-db_root: cannot open: /etc/target
-slram: not enough parameters.
-ftl_cs: FTL header not found.
-wireguard: WireGuard 1.0.0 loaded. See www.wireguard.com for information.
-wireguard: Copyright (C) 2015-2019 Jason A. Donenfeld <Jason@zx2c4.com>. All Rights Reserved.
-eql: Equalizer2002: Simon Janes (simon@ncm.com) and David S. Miller (davem@redhat.com)
-MACsec IEEE 802.1AE
-tun: Universal TUN/TAP device driver, 1.6
-BUG: unable to handle page fault for address: ffffdc00116021f8
+BUG: unable to handle page fault for address: ffffdc0000000008
 #PF: supervisor read access in kernel mode
 #PF: error_code(0x0000) - not-present page
 PGD 11826067 P4D 11826067 PUD 0 
 Oops: 0000 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.0.0-rc1-next-20220816-syzkaller #0
+CPU: 1 PID: 8 Comm: kworker/u4:0 Not tainted 6.0.0-rc1-next-20220816-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/22/2022
-RIP: 0010:strlen+0x1a/0x90 lib/string.c:487
-Code: e8 0b e9 a5 fd 48 8b 74 24 08 48 8b 3c 24 eb c0 48 b8 00 00 00 00 00 fc ff df 48 89 fa 55 48 89 fd 48 c1 ea 03 53 48 83 ec 08 <0f> b6 04 02 48 89 fa 83 e2 07 38 d0 7f 04 84 c0 75 48 80 7d 00 00
-RSP: 0000:ffffc90000067588 EFLAGS: 00010296
-RAX: dffffc0000000000 RBX: ffff888020740008 RCX: 0000000000000000
-RDX: 1fffe000116021f8 RSI: ffff888147656000 RDI: ffff00008b010fc0
-RBP: ffff00008b010fc0 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000000 R12: ffff88814018d600
-R13: ffff8881476560b0 R14: 0000000000000013 R15: ffff00008b010fc0
-FS:  0000000000000000(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
+Workqueue: events_unbound async_run_entry_fn
+RIP: 0010:entity_before kernel/sched/fair.c:585 [inline]
+RIP: 0010:__entity_less kernel/sched/fair.c:621 [inline]
+RIP: 0010:rb_add_cached include/linux/rbtree.h:174 [inline]
+RIP: 0010:__enqueue_entity kernel/sched/fair.c:629 [inline]
+RIP: 0010:enqueue_entity+0x389/0x1520 kernel/sched/fair.c:4618
+Code: 00 0f 85 57 0e 00 00 48 8b 53 50 be 01 00 00 00 49 bd 00 00 00 00 00 fc ff df eb 03 48 89 c5 48 8d 7d 40 48 89 f8 48 c1 e8 03 <42> 80 3c 28 00 0f 85 77 0c 00 00 48 3b 55 40 4c 8d 65 10 78 06 4c
+RSP: 0000:ffffc900001e0b00 EFLAGS: 00010802
+RAX: 1fffe00000000008 RBX: ffff88801b1a5900 RCX: 0000000000000100
+RDX: 00000000f90154e3 RSI: 0000000000000000 RDI: ffff000000000040
+RBP: ffff000000000000 R08: ffff88801b1a5910 R09: ffff8880b9b3a080
+R10: fffffbfff1bbd5ba R11: 0000000000000001 R12: ffff88801fc28098
+R13: dffffc0000000000 R14: ffff8880b9b3a040 R15: ffff8880b9b3a050
+FS:  0000000000000000(0000) GS:ffff8880b9b00000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffdc00116021f8 CR3: 000000000bc8e000 CR4: 00000000003506f0
+CR2: ffffdc0000000008 CR3: 000000000bc8e000 CR4: 00000000003506e0
 DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
 DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
+ <IRQ>
+ enqueue_task_fair+0x1ba/0xce0 kernel/sched/fair.c:5921
+ enqueue_task+0xad/0x3a0 kernel/sched/core.c:2066
+ activate_task kernel/sched/core.c:2091 [inline]
+ ttwu_do_activate+0x157/0x330 kernel/sched/core.c:3670
+ ttwu_queue kernel/sched/core.c:3875 [inline]
+ try_to_wake_up+0xcc0/0x1e60 kernel/sched/core.c:4198
+ wake_up_worker kernel/workqueue.c:865 [inline]
+ insert_work+0x27e/0x350 kernel/workqueue.c:1376
+ __queue_work+0x625/0x1210 kernel/workqueue.c:1527
+ queue_work_on+0x143/0x170 kernel/workqueue.c:1562
+ queue_work include/linux/workqueue.h:508 [inline]
+ schedule_work include/linux/workqueue.h:569 [inline]
+ __vfree_deferred mm/vmalloc.c:2718 [inline]
+ __vfree+0xb0/0xd0 mm/vmalloc.c:2742
+ vfree+0x5a/0x90 mm/vmalloc.c:2775
+ thread_stack_free_rcu+0x88/0xa0 kernel/fork.c:221
+ rcu_do_batch kernel/rcu/tree.c:2245 [inline]
+ rcu_core+0x7b5/0x1890 kernel/rcu/tree.c:2505
+ __do_softirq+0x1d3/0x9c6 kernel/softirq.c:571
+ invoke_softirq kernel/softirq.c:445 [inline]
+ __irq_exit_rcu+0x123/0x180 kernel/softirq.c:650
+ irq_exit_rcu+0x5/0x20 kernel/softirq.c:662
+ sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1106
+ </IRQ>
  <TASK>
- __fortify_strlen include/linux/fortify-string.h:141 [inline]
- insert_entry fs/proc/proc_sysctl.c:164 [inline]
- insert_header+0x2c0/0xf90 fs/proc/proc_sysctl.c:259
- __register_sysctl_table+0x6fb/0x10a0 fs/proc/proc_sysctl.c:1379
- __devinet_sysctl_register+0x156/0x280 net/ipv4/devinet.c:2586
- devinet_sysctl_register net/ipv4/devinet.c:2626 [inline]
- devinet_sysctl_register+0x160/0x230 net/ipv4/devinet.c:2616
- inetdev_init+0x286/0x580 net/ipv4/devinet.c:279
- inetdev_event+0xa85/0x1610 net/ipv4/devinet.c:1534
- notifier_call_chain+0xb5/0x200 kernel/notifier.c:87
- call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:1945
- call_netdevice_notifiers_extack net/core/dev.c:1983 [inline]
- call_netdevice_notifiers net/core/dev.c:1997 [inline]
- register_netdevice+0x1127/0x1680 net/core/dev.c:10103
- virtnet_probe+0x1378/0x2f30 drivers/net/virtio_net.c:3929
- virtio_dev_probe+0x577/0x870 drivers/virtio/virtio.c:305
- call_driver_probe drivers/base/dd.c:530 [inline]
- really_probe+0x249/0xb90 drivers/base/dd.c:609
- __driver_probe_device+0x1df/0x4d0 drivers/base/dd.c:748
- driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:778
- __driver_attach+0x223/0x550 drivers/base/dd.c:1150
- bus_for_each_dev+0x147/0x1d0 drivers/base/bus.c:301
- bus_add_driver+0x4c9/0x640 drivers/base/bus.c:618
- driver_register+0x220/0x3a0 drivers/base/driver.c:240
- virtio_net_driver_init+0x93/0xd2 drivers/net/virtio_net.c:4108
- do_one_initcall+0xfe/0x650 init/main.c:1299
- do_initcall_level init/main.c:1374 [inline]
- do_initcalls init/main.c:1390 [inline]
- do_basic_setup init/main.c:1409 [inline]
- kernel_init_freeable+0x6b1/0x73a init/main.c:1616
- kernel_init+0x1a/0x1d0 init/main.c:1505
+ asm_sysvec_apic_timer_interrupt+0x16/0x20 arch/x86/include/asm/idtentry.h:649
+RIP: 0010:lock_acquire+0x1ef/0x570 kernel/locking/lockdep.c:5634
+Code: eb a2 7e 83 f8 01 0f 85 e8 02 00 00 9c 58 f6 c4 02 0f 85 fb 02 00 00 48 83 7c 24 08 00 74 01 fb 48 b8 00 00 00 00 00 fc ff df <48> 01 c3 48 c7 03 00 00 00 00 48 c7 43 08 00 00 00 00 48 8b 84 24
+RSP: 0000:ffffc900000d7660 EFLAGS: 00000206
+RAX: dffffc0000000000 RBX: 1ffff9200001aece RCX: 6ba147c65e712bc2
+RDX: 1ffff11027fccc5e RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: ffffffff908de947
+R10: fffffbfff211bd28 R11: 0000000000000000 R12: 0000000000000002
+R13: 0000000000000000 R14: ffffffff8bf89a80 R15: 0000000000000000
+ rcu_lock_acquire include/linux/rcupdate.h:280 [inline]
+ rcu_read_lock include/linux/rcupdate.h:706 [inline]
+ blk_mq_run_hw_queue+0xbf/0x490 block/blk-mq.c:2138
+ blk_mq_sched_restart block/blk-mq-sched.h:35 [inline]
+ __blk_mq_free_request+0x26c/0x3f0 block/blk-mq.c:624
+ blk_mq_free_request+0x35b/0x500 block/blk-mq.c:647
+ __scsi_execute+0x452/0x5d0 drivers/scsi/scsi_lib.c:261
+ scsi_execute_req include/scsi/scsi_device.h:479 [inline]
+ scsi_probe_lun drivers/scsi/scsi_scan.c:685 [inline]
+ scsi_probe_and_add_lun+0x521/0x3660 drivers/scsi/scsi_scan.c:1199
+ __scsi_scan_target+0x21f/0xdb0 drivers/scsi/scsi_scan.c:1673
+ scsi_scan_channel drivers/scsi/scsi_scan.c:1761 [inline]
+ scsi_scan_channel+0x148/0x1e0 drivers/scsi/scsi_scan.c:1737
+ scsi_scan_host_selected+0x2df/0x3b0 drivers/scsi/scsi_scan.c:1790
+ do_scsi_scan_host+0x1e8/0x260 drivers/scsi/scsi_scan.c:1929
+ do_scan_async+0x3e/0x500 drivers/scsi/scsi_scan.c:1939
+ async_run_entry_fn+0x98/0x530 kernel/async.c:127
+ process_one_work+0x991/0x1610 kernel/workqueue.c:2312
+ worker_thread+0x665/0x1080 kernel/workqueue.c:2459
+ kthread+0x2e4/0x3a0 kernel/kthread.c:376
  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:306
  </TASK>
 Modules linked in:
-CR2: ffffdc00116021f8
+CR2: ffffdc0000000008
 ---[ end trace 0000000000000000 ]---
-RIP: 0010:strlen+0x1a/0x90 lib/string.c:487
-Code: e8 0b e9 a5 fd 48 8b 74 24 08 48 8b 3c 24 eb c0 48 b8 00 00 00 00 00 fc ff df 48 89 fa 55 48 89 fd 48 c1 ea 03 53 48 83 ec 08 <0f> b6 04 02 48 89 fa 83 e2 07 38 d0 7f 04 84 c0 75 48 80 7d 00 00
-RSP: 0000:ffffc90000067588 EFLAGS: 00010296
-RAX: dffffc0000000000 RBX: ffff888020740008 RCX: 0000000000000000
-RDX: 1fffe000116021f8 RSI: ffff888147656000 RDI: ffff00008b010fc0
-RBP: ffff00008b010fc0 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000000 R12: ffff88814018d600
-R13: ffff8881476560b0 R14: 0000000000000013 R15: ffff00008b010fc0
-FS:  0000000000000000(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
+RIP: 0010:entity_before kernel/sched/fair.c:585 [inline]
+RIP: 0010:__entity_less kernel/sched/fair.c:621 [inline]
+RIP: 0010:rb_add_cached include/linux/rbtree.h:174 [inline]
+RIP: 0010:__enqueue_entity kernel/sched/fair.c:629 [inline]
+RIP: 0010:enqueue_entity+0x389/0x1520 kernel/sched/fair.c:4618
+Code: 00 0f 85 57 0e 00 00 48 8b 53 50 be 01 00 00 00 49 bd 00 00 00 00 00 fc ff df eb 03 48 89 c5 48 8d 7d 40 48 89 f8 48 c1 e8 03 <42> 80 3c 28 00 0f 85 77 0c 00 00 48 3b 55 40 4c 8d 65 10 78 06 4c
+RSP: 0000:ffffc900001e0b00 EFLAGS: 00010802
+RAX: 1fffe00000000008 RBX: ffff88801b1a5900 RCX: 0000000000000100
+RDX: 00000000f90154e3 RSI: 0000000000000000 RDI: ffff000000000040
+RBP: ffff000000000000 R08: ffff88801b1a5910 R09: ffff8880b9b3a080
+R10: fffffbfff1bbd5ba R11: 0000000000000001 R12: ffff88801fc28098
+R13: dffffc0000000000 R14: ffff8880b9b3a040 R15: ffff8880b9b3a050
+FS:  0000000000000000(0000) GS:ffff8880b9b00000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffdc00116021f8 CR3: 000000000bc8e000 CR4: 00000000003506f0
+CR2: ffffdc0000000008 CR3: 000000000bc8e000 CR4: 00000000003506e0
 DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
 DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 ----------------
 Code disassembly (best guess):
-   0:	e8 0b e9 a5 fd       	callq  0xfda5e910
-   5:	48 8b 74 24 08       	mov    0x8(%rsp),%rsi
-   a:	48 8b 3c 24          	mov    (%rsp),%rdi
-   e:	eb c0                	jmp    0xffffffd0
-  10:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+   0:	00 0f                	add    %cl,(%rdi)
+   2:	85 57 0e             	test   %edx,0xe(%rdi)
+   5:	00 00                	add    %al,(%rax)
+   7:	48 8b 53 50          	mov    0x50(%rbx),%rdx
+   b:	be 01 00 00 00       	mov    $0x1,%esi
+  10:	49 bd 00 00 00 00 00 	movabs $0xdffffc0000000000,%r13
   17:	fc ff df
-  1a:	48 89 fa             	mov    %rdi,%rdx
-  1d:	55                   	push   %rbp
-  1e:	48 89 fd             	mov    %rdi,%rbp
-  21:	48 c1 ea 03          	shr    $0x3,%rdx
-  25:	53                   	push   %rbx
-  26:	48 83 ec 08          	sub    $0x8,%rsp
-* 2a:	0f b6 04 02          	movzbl (%rdx,%rax,1),%eax <-- trapping instruction
-  2e:	48 89 fa             	mov    %rdi,%rdx
-  31:	83 e2 07             	and    $0x7,%edx
-  34:	38 d0                	cmp    %dl,%al
-  36:	7f 04                	jg     0x3c
-  38:	84 c0                	test   %al,%al
-  3a:	75 48                	jne    0x84
-  3c:	80 7d 00 00          	cmpb   $0x0,0x0(%rbp)
+  1a:	eb 03                	jmp    0x1f
+  1c:	48 89 c5             	mov    %rax,%rbp
+  1f:	48 8d 7d 40          	lea    0x40(%rbp),%rdi
+  23:	48 89 f8             	mov    %rdi,%rax
+  26:	48 c1 e8 03          	shr    $0x3,%rax
+* 2a:	42 80 3c 28 00       	cmpb   $0x0,(%rax,%r13,1) <-- trapping instruction
+  2f:	0f 85 77 0c 00 00    	jne    0xcac
+  35:	48 3b 55 40          	cmp    0x40(%rbp),%rdx
+  39:	4c 8d 65 10          	lea    0x10(%rbp),%r12
+  3d:	78 06                	js     0x45
+  3f:	4c                   	rex.WR
 
 
 ---
