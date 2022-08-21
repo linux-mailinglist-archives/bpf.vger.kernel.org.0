@@ -2,64 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AAC259AE7B
-	for <lists+bpf@lfdr.de>; Sat, 20 Aug 2022 15:42:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3160959B157
+	for <lists+bpf@lfdr.de>; Sun, 21 Aug 2022 05:06:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242181AbiHTNme (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 20 Aug 2022 09:42:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33956 "EHLO
+        id S236530AbiHUDEg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 20 Aug 2022 23:04:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231754AbiHTNmd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 20 Aug 2022 09:42:33 -0400
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C11E3659A
-        for <bpf@vger.kernel.org>; Sat, 20 Aug 2022 06:42:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1661002952; x=1692538952;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=iexoknRdZO8MIYIKYXuEtw0U6bQsXW3zlgVWn9jTCco=;
-  b=cRKCbaO6YYSgL/aBaHhrtV2lWeZjzNo2l2uTPCvHjT86jkBFgtJ4wOuK
-   7VHbSBskhz7xT5OpcY8q5tz2RgV0u+F7r2+UDHT6qtgnkdITQk7L1HKDh
-   RpiZcHguFT0WpsgN91FNRuPhjRNoE5reMByZrYm/YjJs/7qaGjHm0s9ev
-   nBmQd0dAVJslqoZTVbbwuVcIWsLOSPr094yF3j2K8rod74TE+n86blQVf
-   HRe+aKmRJMQ3G3A7IMYYp/6r+wFS5AWvXU8Vy9HoYuav08if2RZG4wAt9
-   cTsDQfMJeSMcRjXH8NCD1wtkv8UQtl9VRddwiTWxI6F8jDIhuLIPRLUyV
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10445"; a="291921205"
-X-IronPort-AV: E=Sophos;i="5.93,251,1654585200"; 
-   d="scan'208";a="291921205"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2022 06:42:32 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,251,1654585200"; 
-   d="scan'208";a="676731705"
-Received: from lkp-server01.sh.intel.com (HELO 44b6dac04a33) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 20 Aug 2022 06:42:30 -0700
-Received: from kbuild by 44b6dac04a33 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1oPOk9-0002jR-1o;
-        Sat, 20 Aug 2022 13:42:29 +0000
-Date:   Sat, 20 Aug 2022 21:41:43 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     kbuild-all@lists.01.org, bpf@vger.kernel.org,
-        loongarch@lists.linux.dev
-Subject: Re: [PATCH bpf-next v1 3/4] LoongArch: Add BPF JIT support
-Message-ID: <202208202131.KsF0Aoos-lkp@intel.com>
-References: <1660996260-11337-4-git-send-email-yangtiezhu@loongson.cn>
+        with ESMTP id S236444AbiHUDEd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 20 Aug 2022 23:04:33 -0400
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A56629CBB
+        for <bpf@vger.kernel.org>; Sat, 20 Aug 2022 20:04:29 -0700 (PDT)
+Received: by mail-io1-f70.google.com with SMTP id l15-20020a0566022dcf00b00688e70a26deso4220116iow.12
+        for <bpf@vger.kernel.org>; Sat, 20 Aug 2022 20:04:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc;
+        bh=jRBWuLdM1EBsh9fGJskfn3SdJVJbiNRBKCYhxTrPs90=;
+        b=KzU4gUZeTOkbfzuEaAT4/HhcgWT5PdsKXT6mF8ND7IBWnSMvvt0rg/JPqPQm5nX14h
+         cVdVxEhasdMW4eHjXfVc2q6jA4SKLkr8JZTfKDbsG1+kdquVblm2h/3gzfG6bmlKx3oy
+         jdfdPinCNk8o8CeoeSAq0itFx3JeqZCG6yRyP9PBhyfYViFWNdBQDaMRZQKuKJ3mTA0m
+         2C39ZAXq/o+czovg1pSihyut60gahJsc7jvA2cFG9e2nRDUbmTeVBEt0YPYWqZahpF5L
+         3YA3Ts2wPLGE+T15fVMx02/u077nu70f+kyv//e56/JNpWV+pSCZLeRPcxdWZWWemXmk
+         lwRg==
+X-Gm-Message-State: ACgBeo3sbyiuMdBoxURPUeYk6OQXxV9wqk+uqtcQ8QAb0ELZidtEFDVX
+        75KCLNeLyOk3uf0WgRkSFCpEABttiZAo+/8lFNiJY4tgowCi
+X-Google-Smtp-Source: AA6agR7kKuxsfgVKNd2pa8UruiSSQNnhTiIjFIutfOPUJZNZecbBr2VPcYKvMWYXO/ee8ib6NHyP4+3boRjuDh1YRn0jFvEneLyj
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1660996260-11337-4-git-send-email-yangtiezhu@loongson.cn>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Received: by 2002:a02:860d:0:b0:345:b478:a611 with SMTP id
+ e13-20020a02860d000000b00345b478a611mr6578685jai.95.1661051068556; Sat, 20
+ Aug 2022 20:04:28 -0700 (PDT)
+Date:   Sat, 20 Aug 2022 20:04:28 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e52b0905e6b796d3@google.com>
+Subject: [syzbot] linux-next boot error: BUG: unable to handle kernel paging
+ request in insert_header
+From:   syzbot <syzbot+3dfa69b62d31d2321e39@syzkaller.appspotmail.com>
+To:     bpf@vger.kernel.org, keescook@chromium.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-next@vger.kernel.org, mcgrof@kernel.org,
+        sfr@canb.auug.org.au, syzkaller-bugs@googlegroups.com,
+        yzaikin@google.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,51 +57,169 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Tiezhu,
+Hello,
 
-Thank you for the patch! Perhaps something to improve:
+syzbot found the following issue on:
 
-[auto build test WARNING on linus/master]
-[also build test WARNING on v6.0-rc1 next-20220819]
-[cannot apply to bpf-next/master bpf/master]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+HEAD commit:    e1084bacab44 Add linux-next specific files for 20220816
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1128e50d080000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2f5fa747986be53a
+dashboard link: https://syzkaller.appspot.com/bug?extid=3dfa69b62d31d2321e39
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Tiezhu-Yang/Add-BPF-JIT-support-for-LoongArch/20220820-195351
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 50cd95ac46548429e5bba7ca75cc97d11a697947
-config: loongarch-allyesconfig (https://download.01.org/0day-ci/archive/20220820/202208202131.KsF0Aoos-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 12.1.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/ebe9a0ace4f1fb110c43c347808c81cb07dfeb9b
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Tiezhu-Yang/Add-BPF-JIT-support-for-LoongArch/20220820-195351
-        git checkout ebe9a0ace4f1fb110c43c347808c81cb07dfeb9b
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=loongarch SHELL=/bin/bash arch/loongarch/net/
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+3dfa69b62d31d2321e39@syzkaller.appspotmail.com
 
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp@intel.com>
+input: Sleep Button as /devices/LNXSYSTM:00/LNXSLPBN:00/input/input1
+ACPI: button: Sleep Button [SLPF]
+ACPI: \_SB_.LNKC: Enabled at IRQ 11
+virtio-pci 0000:00:03.0: virtio_pci: leaving for legacy driver
+ACPI: \_SB_.LNKD: Enabled at IRQ 10
+virtio-pci 0000:00:04.0: virtio_pci: leaving for legacy driver
+ACPI: \_SB_.LNKB: Enabled at IRQ 10
+virtio-pci 0000:00:06.0: virtio_pci: leaving for legacy driver
+virtio-pci 0000:00:07.0: virtio_pci: leaving for legacy driver
+N_HDLC line discipline registered with maxframe=4096
+Serial: 8250/16550 driver, 4 ports, IRQ sharing enabled
+00:03: ttyS0 at I/O 0x3f8 (irq = 4, base_baud = 115200) is a 16550A
+00:04: ttyS1 at I/O 0x2f8 (irq = 3, base_baud = 115200) is a 16550A
+00:05: ttyS2 at I/O 0x3e8 (irq = 6, base_baud = 115200) is a 16550A
+00:06: ttyS3 at I/O 0x2e8 (irq = 7, base_baud = 115200) is a 16550A
+Non-volatile memory driver v1.3
+Linux agpgart interface v0.103
+ACPI: bus type drm_connector registered
+[drm] Initialized vgem 1.0.0 20120112 for vgem on minor 0
+[drm] Initialized vkms 1.0.0 20180514 for vkms on minor 1
+Console: switching to colour frame buffer device 128x48
+platform vkms: [drm] fb0: vkmsdrmfb frame buffer device
+usbcore: registered new interface driver udl
+brd: module loaded
+loop: module loaded
+zram: Added device: zram0
+null_blk: disk nullb0 created
+null_blk: module loaded
+Guest personality initialized and is inactive
+VMCI host device registered (name=vmci, major=10, minor=119)
+Initialized host personality
+usbcore: registered new interface driver rtsx_usb
+usbcore: registered new interface driver viperboard
+usbcore: registered new interface driver dln2
+usbcore: registered new interface driver pn533_usb
+nfcsim 0.2 initialized
+usbcore: registered new interface driver port100
+usbcore: registered new interface driver nfcmrvl
+Loading iSCSI transport class v2.0-870.
+scsi host0: Virtio SCSI HBA
+st: Version 20160209, fixed bufsize 32768, s/g segs 256
+Rounding down aligned max_sectors from 4294967295 to 4294967288
+db_root: cannot open: /etc/target
+slram: not enough parameters.
+ftl_cs: FTL header not found.
+wireguard: WireGuard 1.0.0 loaded. See www.wireguard.com for information.
+wireguard: Copyright (C) 2015-2019 Jason A. Donenfeld <Jason@zx2c4.com>. All Rights Reserved.
+eql: Equalizer2002: Simon Janes (simon@ncm.com) and David S. Miller (davem@redhat.com)
+MACsec IEEE 802.1AE
+tun: Universal TUN/TAP device driver, 1.6
+BUG: unable to handle page fault for address: ffffdc00116021f8
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD 11826067 P4D 11826067 PUD 0 
+Oops: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.0.0-rc1-next-20220816-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/22/2022
+RIP: 0010:strlen+0x1a/0x90 lib/string.c:487
+Code: e8 0b e9 a5 fd 48 8b 74 24 08 48 8b 3c 24 eb c0 48 b8 00 00 00 00 00 fc ff df 48 89 fa 55 48 89 fd 48 c1 ea 03 53 48 83 ec 08 <0f> b6 04 02 48 89 fa 83 e2 07 38 d0 7f 04 84 c0 75 48 80 7d 00 00
+RSP: 0000:ffffc90000067588 EFLAGS: 00010296
+RAX: dffffc0000000000 RBX: ffff888020740008 RCX: 0000000000000000
+RDX: 1fffe000116021f8 RSI: ffff888147656000 RDI: ffff00008b010fc0
+RBP: ffff00008b010fc0 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000000 R12: ffff88814018d600
+R13: ffff8881476560b0 R14: 0000000000000013 R15: ffff00008b010fc0
+FS:  0000000000000000(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffdc00116021f8 CR3: 000000000bc8e000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ __fortify_strlen include/linux/fortify-string.h:141 [inline]
+ insert_entry fs/proc/proc_sysctl.c:164 [inline]
+ insert_header+0x2c0/0xf90 fs/proc/proc_sysctl.c:259
+ __register_sysctl_table+0x6fb/0x10a0 fs/proc/proc_sysctl.c:1379
+ __devinet_sysctl_register+0x156/0x280 net/ipv4/devinet.c:2586
+ devinet_sysctl_register net/ipv4/devinet.c:2626 [inline]
+ devinet_sysctl_register+0x160/0x230 net/ipv4/devinet.c:2616
+ inetdev_init+0x286/0x580 net/ipv4/devinet.c:279
+ inetdev_event+0xa85/0x1610 net/ipv4/devinet.c:1534
+ notifier_call_chain+0xb5/0x200 kernel/notifier.c:87
+ call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:1945
+ call_netdevice_notifiers_extack net/core/dev.c:1983 [inline]
+ call_netdevice_notifiers net/core/dev.c:1997 [inline]
+ register_netdevice+0x1127/0x1680 net/core/dev.c:10103
+ virtnet_probe+0x1378/0x2f30 drivers/net/virtio_net.c:3929
+ virtio_dev_probe+0x577/0x870 drivers/virtio/virtio.c:305
+ call_driver_probe drivers/base/dd.c:530 [inline]
+ really_probe+0x249/0xb90 drivers/base/dd.c:609
+ __driver_probe_device+0x1df/0x4d0 drivers/base/dd.c:748
+ driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:778
+ __driver_attach+0x223/0x550 drivers/base/dd.c:1150
+ bus_for_each_dev+0x147/0x1d0 drivers/base/bus.c:301
+ bus_add_driver+0x4c9/0x640 drivers/base/bus.c:618
+ driver_register+0x220/0x3a0 drivers/base/driver.c:240
+ virtio_net_driver_init+0x93/0xd2 drivers/net/virtio_net.c:4108
+ do_one_initcall+0xfe/0x650 init/main.c:1299
+ do_initcall_level init/main.c:1374 [inline]
+ do_initcalls init/main.c:1390 [inline]
+ do_basic_setup init/main.c:1409 [inline]
+ kernel_init_freeable+0x6b1/0x73a init/main.c:1616
+ kernel_init+0x1a/0x1d0 init/main.c:1505
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:306
+ </TASK>
+Modules linked in:
+CR2: ffffdc00116021f8
+---[ end trace 0000000000000000 ]---
+RIP: 0010:strlen+0x1a/0x90 lib/string.c:487
+Code: e8 0b e9 a5 fd 48 8b 74 24 08 48 8b 3c 24 eb c0 48 b8 00 00 00 00 00 fc ff df 48 89 fa 55 48 89 fd 48 c1 ea 03 53 48 83 ec 08 <0f> b6 04 02 48 89 fa 83 e2 07 38 d0 7f 04 84 c0 75 48 80 7d 00 00
+RSP: 0000:ffffc90000067588 EFLAGS: 00010296
+RAX: dffffc0000000000 RBX: ffff888020740008 RCX: 0000000000000000
+RDX: 1fffe000116021f8 RSI: ffff888147656000 RDI: ffff00008b010fc0
+RBP: ffff00008b010fc0 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000000 R12: ffff88814018d600
+R13: ffff8881476560b0 R14: 0000000000000013 R15: ffff00008b010fc0
+FS:  0000000000000000(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffdc00116021f8 CR3: 000000000bc8e000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	e8 0b e9 a5 fd       	callq  0xfda5e910
+   5:	48 8b 74 24 08       	mov    0x8(%rsp),%rsi
+   a:	48 8b 3c 24          	mov    (%rsp),%rdi
+   e:	eb c0                	jmp    0xffffffd0
+  10:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  17:	fc ff df
+  1a:	48 89 fa             	mov    %rdi,%rdx
+  1d:	55                   	push   %rbp
+  1e:	48 89 fd             	mov    %rdi,%rbp
+  21:	48 c1 ea 03          	shr    $0x3,%rdx
+  25:	53                   	push   %rbx
+  26:	48 83 ec 08          	sub    $0x8,%rsp
+* 2a:	0f b6 04 02          	movzbl (%rdx,%rax,1),%eax <-- trapping instruction
+  2e:	48 89 fa             	mov    %rdi,%rdx
+  31:	83 e2 07             	and    $0x7,%edx
+  34:	38 d0                	cmp    %dl,%al
+  36:	7f 04                	jg     0x3c
+  38:	84 c0                	test   %al,%al
+  3a:	75 48                	jne    0x84
+  3c:	80 7d 00 00          	cmpb   $0x0,0x0(%rbp)
 
-All warnings (new ones prefixed by >>):
 
->> arch/loongarch/net/bpf_jit.c:194:6: warning: no previous prototype for 'build_epilogue' [-Wmissing-prototypes]
-     194 | void build_epilogue(struct jit_ctx *ctx)
-         |      ^~~~~~~~~~~~~~
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-
-vim +/build_epilogue +194 arch/loongarch/net/bpf_jit.c
-
-   193	
- > 194	void build_epilogue(struct jit_ctx *ctx)
-   195	{
-   196		__build_epilogue(ctx, false);
-   197	}
-   198	
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
