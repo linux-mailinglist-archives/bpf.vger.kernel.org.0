@@ -2,54 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4896A59B31A
-	for <lists+bpf@lfdr.de>; Sun, 21 Aug 2022 12:18:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77DF959B357
+	for <lists+bpf@lfdr.de>; Sun, 21 Aug 2022 13:35:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229507AbiHUKRd convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Sun, 21 Aug 2022 06:17:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56052 "EHLO
+        id S229472AbiHULfi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 21 Aug 2022 07:35:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229717AbiHUKRc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 21 Aug 2022 06:17:32 -0400
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9EC61274C
-        for <bpf@vger.kernel.org>; Sun, 21 Aug 2022 03:17:30 -0700 (PDT)
-Received: by mail-il1-f199.google.com with SMTP id x7-20020a056e021ca700b002ded2e6331aso6507734ill.20
-        for <bpf@vger.kernel.org>; Sun, 21 Aug 2022 03:17:30 -0700 (PDT)
+        with ESMTP id S229445AbiHULfh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 21 Aug 2022 07:35:37 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1947418349
+        for <bpf@vger.kernel.org>; Sun, 21 Aug 2022 04:35:36 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id bs25so10068620wrb.2
+        for <bpf@vger.kernel.org>; Sun, 21 Aug 2022 04:35:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=metanetworks.com; s=google;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc;
+        bh=tYznORPkQKLxNTFRVqFfVnAr2bpdNMByP5uRzFSaye4=;
+        b=O6Nfd/B607fm4qSm/7cZ4VAqkcrLT8oHhe6+Xx8KAQskKiWcrB6BHcUaINYOdj/UNr
+         yCZfGl8JnEDOVXz2yEWPFPydytraRjbsOqHF3xRXd3vG5JPQ3TIclP/i076Ll0jMONCz
+         xhYaWnHvKGReu2q+TRRV1BNABmtsatMmZontU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:to:from:subject:message-id:date
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=LE1LCU4tNiknKVyA+WMm6zjkYRDeBGfWddeOl3Lef4w=;
-        b=1MmQG71IUB4qTKimJlJOtTs9mQbflBonhuL12KZFQyx3//tF/z84jCr8zfb0xib22G
-         Yw70699GCvDQrcyE9JDsjIMips02KH4SBh6oxPM7XaJuvA5dmg+4cyRq/ZKKZeMQPbgj
-         VLZydpTnLD84V5DDVEW2+pSjuSQ4F+3vI/K0GL3+i2yvgDWC1pm+V0bJsxQOPSdVM7T+
-         aN1McatCEm0hN7SX6Xq4sCepUUAEWNrxskFz3dtHFelCYK3cBYKJx5JWPPgXz2gDE06N
-         RgN/nmTuLwairVrYUYC1CndWgU5DgvzRPEy/48zqzrtI9YckVA2cLof0/PyNE6xv9KFn
-         LFVg==
-X-Gm-Message-State: ACgBeo0KcB1x9/tesllKVggYUJAjDFAcAXdiez6Bm1XzmH1MlVbgsYuN
-        z3fQ/+PErcn3XCpfFskE0sh0YLq6w1yj+WBtTmCwi9PGkelx
-X-Google-Smtp-Source: AA6agR6cTFTJE4DTxNRzC1mvv5FLi6A5SVpBpl+52m93EucjUlON1aYB3xVYz2TAlHJtIIi6zDetKSO2AIi9YnIZGGKmPPp6hWrQ
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc;
+        bh=tYznORPkQKLxNTFRVqFfVnAr2bpdNMByP5uRzFSaye4=;
+        b=xdY7FUyUu3xnyAOiQqkkK1UUFVWsr18kZjChryJUPGFnMAn83T7Z5V6CoQopdUichv
+         rZA2meNh1tVCHKyIUBx/qIBwEKO6IcGCcyqi15yt/vybllAxDovSxZmmVyAXZsCT1pT1
+         VSHIwVcOujlm6ANNi/dEk+V0trOWs5YK2SzOFoc8BnG9iBeqmM/pB1MhFGRveIwrkdJm
+         0Cf8PlnQTYvcArNjY9vhXI8tSKr7uHSiUYwUfsffamxnJs+hkU/y4VPNd1Z+DuQzfchD
+         EHL2ChRFA7fa5pY2M/YMJgKuny2QJrYHRhzldwGeJZ5/5BG1MrhPM5/22iv5buMO/elx
+         b7AQ==
+X-Gm-Message-State: ACgBeo1dw3b8AKvwi9kf+UJh0JWdyqbifJFuWx/Uxcx4uCR9EiOZrK+E
+        3riYv+tvCuDVePNneftU6SXKdLEUj3e4O81GzjsEBtPtrKJGJ3BJdW1A/4VMgmxj9zxmewGOANX
+        QL/AtW/uTe0wHbsi+Dn+3Aq7f02VKAVVnJx1t54qaptvRa2a7xInDHNeqzbHzPtpVdw9Uisax
+X-Google-Smtp-Source: AA6agR66l5bTWGK4hNsN/vrGTDJWkgnv2qjRlTOHCfg+I1u3JU+CyMVm162kkcxUMI2sQn69ldhIMA==
+X-Received: by 2002:a05:6000:547:b0:218:5f6a:f5db with SMTP id b7-20020a056000054700b002185f6af5dbmr8560996wrf.480.1661081734245;
+        Sun, 21 Aug 2022 04:35:34 -0700 (PDT)
+Received: from blondie.home ([94.230.83.151])
+        by smtp.gmail.com with ESMTPSA id l8-20020a05600c2cc800b003a6632fe925sm1067178wmc.13.2022.08.21.04.35.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Aug 2022 04:35:33 -0700 (PDT)
+From:   Shmulik Ladkani <shmulik@metanetworks.com>
+X-Google-Original-From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+To:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>
+Cc:     Jakub Sitnicki <jakub@cloudflare.com>,
+        Petar Penkov <ppenkov@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Subject: [PATCH v2 bpf-next 0/4] flow_dissector: Allow bpf flow-dissector progs to request fallback to normal dissection
+Date:   Sun, 21 Aug 2022 14:35:15 +0300
+Message-Id: <20220821113519.116765-1-shmulik.ladkani@gmail.com>
+X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
-X-Received: by 2002:a5d:879a:0:b0:689:da06:93c6 with SMTP id
- f26-20020a5d879a000000b00689da0693c6mr1036946ion.202.1661077050248; Sun, 21
- Aug 2022 03:17:30 -0700 (PDT)
-Date:   Sun, 21 Aug 2022 03:17:30 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000086582105e6bda31b@google.com>
-Subject: [syzbot] possible deadlock in strp_work
-From:   syzbot <syzbot+9fc084a4348493ef65d2@syzkaller.appspotmail.com>
-To:     bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        edumazet@google.com, jakub@cloudflare.com,
-        john.fastabend@gmail.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        pabeni@redhat.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,124 +69,37 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+Currently, attaching BPF_PROG_TYPE_FLOW_DISSECTOR programs completely
+replaces the flow-dissector logic with custom dissection logic.
+This forces implementors to write programs that handle dissection for
+any flows expected in the namespace.
 
-syzbot found the following issue on:
+It makes sense for flow-dissector bpf programs to just augment the
+dissector with custom logic (e.g. dissecting certain flows or custom
+protocols), while enjoying the broad capabilities of the standard
+dissector for any other traffic.
 
-HEAD commit:    8755ae45a9e8 Add linux-next specific files for 20220819
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=10d3e2d3080000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ead6107a3bbe3c62
-dashboard link: https://syzkaller.appspot.com/bug?extid=9fc084a4348493ef65d2
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1136b1a5080000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10bb167b080000
+v2:
+- Extend selftests/bpf/progs/bpf_flow.c to exercise new ret code
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+9fc084a4348493ef65d2@syzkaller.appspotmail.com
+Shmulik Ladkani (4):
+  flow_dissector: Make 'bpf_flow_dissect' return the bpf program retcode
+  bpf/flow_dissector: Introduce BPF_FLOW_DISSECTOR_CONTINUE retcode for
+    flow-dissector bpf progs
+  bpf: test_run: Propagate bpf_flow_dissect's retval to user's
+    bpf_attr.test.retval
+  selftests/bpf: test BPF_FLOW_DISSECTOR_CONTINUE
 
-======================================================
-WARNING: possible circular locking dependency detected
-6.0.0-rc1-next-20220819-syzkaller #0 Not tainted
-------------------------------------------------------
-kworker/u4:2/38 is trying to acquire lock:
-ffff888026598d30 (sk_lock-AF_INET){+.+.}-{0:0}, at: do_strp_work net/strparser/strparser.c:398 [inline]
-ffff888026598d30 (sk_lock-AF_INET){+.+.}-{0:0}, at: strp_work+0x40/0x130 net/strparser/strparser.c:415
+ include/linux/skbuff.h                        |  4 +-
+ include/uapi/linux/bpf.h                      |  5 +++
+ net/core/flow_dissector.c                     | 16 ++++---
+ tools/include/uapi/linux/bpf.h                |  5 +++
+ .../selftests/bpf/prog_tests/flow_dissector.c | 44 ++++++++++++++++++-
+ .../prog_tests/flow_dissector_load_bytes.c    |  2 +-
+ tools/testing/selftests/bpf/progs/bpf_flow.c  | 15 +++++++
+ .../selftests/bpf/test_flow_dissector.sh      |  8 ++++
+ 8 files changed, 89 insertions(+), 10 deletions(-)
 
-but task is already holding lock:
-ffffc90000af7da8 ((work_completion)(&strp->work)){+.+.}-{0:0}, at: process_one_work+0x8ae/0x1610 kernel/workqueue.c:2264
+-- 
+2.37.2
 
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #1 ((work_completion)(&strp->work)){+.+.}-{0:0}:
-       __flush_work+0x105/0xae0 kernel/workqueue.c:3069
-       __cancel_work_timer+0x3f9/0x570 kernel/workqueue.c:3160
-       strp_done+0x64/0xf0 net/strparser/strparser.c:513
-       kcm_attach net/kcm/kcmsock.c:1429 [inline]
-       kcm_attach_ioctl net/kcm/kcmsock.c:1490 [inline]
-       kcm_ioctl+0x913/0x1180 net/kcm/kcmsock.c:1696
-       sock_do_ioctl+0xcc/0x230 net/socket.c:1169
-       sock_ioctl+0x2f1/0x640 net/socket.c:1286
-       vfs_ioctl fs/ioctl.c:51 [inline]
-       __do_sys_ioctl fs/ioctl.c:870 [inline]
-       __se_sys_ioctl fs/ioctl.c:856 [inline]
-       __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:856
-       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-       do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-       entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
--> #0 (sk_lock-AF_INET){+.+.}-{0:0}:
-       check_prev_add kernel/locking/lockdep.c:3095 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3214 [inline]
-       validate_chain kernel/locking/lockdep.c:3829 [inline]
-       __lock_acquire+0x2a43/0x56d0 kernel/locking/lockdep.c:5053
-       lock_acquire kernel/locking/lockdep.c:5666 [inline]
-       lock_acquire+0x1ab/0x570 kernel/locking/lockdep.c:5631
-       lock_sock_nested+0x36/0xf0 net/core/sock.c:3391
-       do_strp_work net/strparser/strparser.c:398 [inline]
-       strp_work+0x40/0x130 net/strparser/strparser.c:415
-       process_one_work+0x991/0x1610 kernel/workqueue.c:2289
-       worker_thread+0x665/0x1080 kernel/workqueue.c:2436
-       kthread+0x2e4/0x3a0 kernel/kthread.c:376
-       ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:306
-
-other info that might help us debug this:
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock((work_completion)(&strp->work));
-                               lock(sk_lock-AF_INET);
-                               lock((work_completion)(&strp->work));
-  lock(sk_lock-AF_INET);
-
- *** DEADLOCK ***
-
-2 locks held by kworker/u4:2/38:
- #0: ffff88802642d138 ((wq_completion)kstrp){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff88802642d138 ((wq_completion)kstrp){+.+.}-{0:0}, at: arch_atomic_long_set include/linux/atomic/atomic-long.h:41 [inline]
- #0: ffff88802642d138 ((wq_completion)kstrp){+.+.}-{0:0}, at: atomic_long_set include/linux/atomic/atomic-instrumented.h:1280 [inline]
- #0: ffff88802642d138 ((wq_completion)kstrp){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:636 [inline]
- #0: ffff88802642d138 ((wq_completion)kstrp){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:663 [inline]
- #0: ffff88802642d138 ((wq_completion)kstrp){+.+.}-{0:0}, at: process_one_work+0x87a/0x1610 kernel/workqueue.c:2260
- #1: ffffc90000af7da8 ((work_completion)(&strp->work)){+.+.}-{0:0}, at: process_one_work+0x8ae/0x1610 kernel/workqueue.c:2264
-
-stack backtrace:
-CPU: 1 PID: 38 Comm: kworker/u4:2 Not tainted 6.0.0-rc1-next-20220819-syzkaller #0
-kworker/u4:2[38] cmdline: ��a�����
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/22/2022
-Workqueue: kstrp strp_work
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:122 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:140
- check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2175
- check_prev_add kernel/locking/lockdep.c:3095 [inline]
- check_prevs_add kernel/locking/lockdep.c:3214 [inline]
- validate_chain kernel/locking/lockdep.c:3829 [inline]
- __lock_acquire+0x2a43/0x56d0 kernel/locking/lockdep.c:5053
- lock_acquire kernel/locking/lockdep.c:5666 [inline]
- lock_acquire+0x1ab/0x570 kernel/locking/lockdep.c:5631
- lock_sock_nested+0x36/0xf0 net/core/sock.c:3391
- do_strp_work net/strparser/strparser.c:398 [inline]
- strp_work+0x40/0x130 net/strparser/strparser.c:415
- process_one_work+0x991/0x1610 kernel/workqueue.c:2289
- worker_thread+0x665/0x1080 kernel/workqueue.c:2436
- kthread+0x2e4/0x3a0 kernel/kthread.c:376
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:306
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
