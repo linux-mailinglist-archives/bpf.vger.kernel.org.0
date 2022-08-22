@@ -2,249 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C99EF59C1B1
-	for <lists+bpf@lfdr.de>; Mon, 22 Aug 2022 16:35:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18EE359C2D3
+	for <lists+bpf@lfdr.de>; Mon, 22 Aug 2022 17:31:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235369AbiHVOfX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Aug 2022 10:35:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53492 "EHLO
+        id S232621AbiHVPbJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Aug 2022 11:31:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229627AbiHVOfW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 22 Aug 2022 10:35:22 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1DD627CE3
-        for <bpf@vger.kernel.org>; Mon, 22 Aug 2022 07:35:20 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id a22so14185772edj.5
-        for <bpf@vger.kernel.org>; Mon, 22 Aug 2022 07:35:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc;
-        bh=3atHvjULAtw4zGcKv2AF/yXibI0Y3vXUG2I64TjnR8s=;
-        b=a9D1j5enZHhCPMrqM1smJ0CupR5OpvM4O8UwfkZkD750Kjii5AfmOniSb8TMJbfETh
-         kj57YbBxrLcm5SxvH/+HMSWUVpankrO6JPmau0P8CEKxUNnzjVWLUX5iZ2VzixlRGsda
-         VZVyq69Y/T7d9M80Mm/f0Ub38mGoYWFMOQyGU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc;
-        bh=3atHvjULAtw4zGcKv2AF/yXibI0Y3vXUG2I64TjnR8s=;
-        b=k4ICV/NvBpbY7+3WQAnhA1RNZ8MU5X2V48dSGlDyMFQcW0lz3yKAd+NGsz5RFDbXn0
-         76fqYFI4OKdJiT0LLv/8DdXHp67HClq//ex3mQLgijQXMLXFUBLuoXOey3hl0PdECVtH
-         xV18OIi1D3zW+Lod0V7DmGy1ZMGiMC2QAFw9t9uuhJEvjefd9K4gO7QtlZftg2XZZSLf
-         Gl6tQ7ueFeUdYMk7SBuUGLb3NhqgNrkXZex+NQegkEHza6YuINg6U7G2WjavqiOKKNrk
-         iw5Gj53vQxZuGtABeCkN1krU3278tZ7p8ATMzmyf62kDvHdgX3gf8GY0kTJv1s3rpXcv
-         +ePA==
-X-Gm-Message-State: ACgBeo0iRCxyzIW7jF/4HHbyYKwkEMZF24QIMeI2Bi+kgFqdQq6ezfUA
-        RJWVsffPdy+TlXR5ti+Q9mGicQ==
-X-Google-Smtp-Source: AA6agR4JoP2kXMX0+f51sKAYqdRDfJ5tjqrMizTOl3Q/TBkkdDm85c1Hb6nR3AFDzYY3Cd7SiUxcGQ==
-X-Received: by 2002:a05:6402:348f:b0:446:c0ce:86ab with SMTP id v15-20020a056402348f00b00446c0ce86abmr4558644edc.386.1661178919416;
-        Mon, 22 Aug 2022 07:35:19 -0700 (PDT)
-Received: from cloudflare.com (79.191.57.8.ipv4.supernova.orange.pl. [79.191.57.8])
-        by smtp.gmail.com with ESMTPSA id a9-20020a170906684900b0073d638a7a89sm3682407ejs.99.2022.08.22.07.35.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Aug 2022 07:35:18 -0700 (PDT)
-References: <20220815023343.295094-1-liujian56@huawei.com>
- <20220815023343.295094-2-liujian56@huawei.com>
- <871qtc1u9e.fsf@cloudflare.com>
- <2ad6173f254f4842b1abaeaf9a7a1e7d@huawei.com>
- <87wnb4zfhn.fsf@cloudflare.com>
- <4efb45d55cb743eb9a1a35b598b5601f@huawei.com>
-User-agent: mu4e 1.6.10; emacs 27.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     "liujian (CE)" <liujian56@huawei.com>
-Cc:     "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "yoshfuji@linux-ipv6.org" <yoshfuji@linux-ipv6.org>,
-        "dsahern@kernel.org" <dsahern@kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "mykolal@fb.com" <mykolal@fb.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "martin.lau@linux.dev" <martin.lau@linux.dev>,
-        "song@kernel.org" <song@kernel.org>, "yhs@fb.com" <yhs@fb.com>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>,
-        "sdf@google.com" <sdf@google.com>,
-        "haoluo@google.com" <haoluo@google.com>,
-        "jolsa@kernel.org" <jolsa@kernel.org>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 1/2] sk_msg: Keep reference on socket file
- while wait_memory
-Date:   Mon, 22 Aug 2022 16:32:48 +0200
-In-reply-to: <4efb45d55cb743eb9a1a35b598b5601f@huawei.com>
-Message-ID: <87zgfw9wii.fsf@cloudflare.com>
+        with ESMTP id S236725AbiHVPaa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 22 Aug 2022 11:30:30 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5859B1ADBB
+        for <bpf@vger.kernel.org>; Mon, 22 Aug 2022 08:30:21 -0700 (PDT)
+Date:   Mon, 22 Aug 2022 17:30:18 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1661182219;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pyqnkzshOYjT/SN0T0H1ey9h7WSnLWq3P15e48ayVMM=;
+        b=zlqnHYTHA1g9RpBtRfGtYr18CtAUCAGc0WG3zupRpzkuW5ht/XtQL6saesSr0w7+gB4PkA
+        zCKbYHOHw8n4qPk6R2a+r/prnZY80B/djy2ABpcXDdu6lat89NPIdFF9AkqGv7djHotHi4
+        JmAxIh+IjwPnmBX18U72z7ym3CrFXT0tMrwrJkJ7WFKaYr2CzPraI6+5X9IySa0z4I+cB5
+        PP0RJO+e7F7qn3Z1celF8pirFBCGLoVK+H9RsVkAk8GcGcTHRIQQS8aLm/pXiZC2U0fDKZ
+        go1Dsg1Jdp5HamARIlKM3rhK3nxgJ3iFXIUbQzJ7TroFaa8AnXUU4qC+QHDJAQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1661182219;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pyqnkzshOYjT/SN0T0H1ey9h7WSnLWq3P15e48ayVMM=;
+        b=AGuph7QhlFILWshZh/v6T5Aco/pbYxjPFGEugj8jY3TIO3ytsQJA+XWdQCr8ezOFWrCwep
+        nFm5GXYkdbrEpADA==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Hou Tao <houtao@huaweicloud.com>
+Cc:     bpf@vger.kernel.org, Song Liu <songliubraving@fb.com>,
+        Hao Sun <sunhao.th@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Lorenz Bauer <oss@lmb.io>, houtao1@huawei.com
+Subject: Re: [PATCH 1/3] bpf: Disable preemption when increasing per-cpu
+ map_locked
+Message-ID: <YwOhCnLfpJLj0JH3@linutronix.de>
+References: <20220821033223.2598791-1-houtao@huaweicloud.com>
+ <20220821033223.2598791-2-houtao@huaweicloud.com>
+ <YwM6l7MxTe47fzFZ@linutronix.de>
+ <28f33042-2c86-87e9-bfdb-5bc312f06f71@huaweicloud.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <28f33042-2c86-87e9-bfdb-5bc312f06f71@huaweicloud.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On 2022-08-22 20:09:47 [+0800], Hou Tao wrote:
+> Hi,
+Hi,
 
-On Sat, Aug 20, 2022 at 03:01 AM GMT, liujian (CE) wrote:
->> -----Original Message-----
->> From: Jakub Sitnicki [mailto:jakub@cloudflare.com]
->> Sent: Friday, August 19, 2022 6:35 PM
->> To: liujian (CE) <liujian56@huawei.com>
->> Cc: john.fastabend@gmail.com; edumazet@google.com;
->> davem@davemloft.net; yoshfuji@linux-ipv6.org; dsahern@kernel.org;
->> kuba@kernel.org; pabeni@redhat.com; andrii@kernel.org; mykolal@fb.com;
->> ast@kernel.org; daniel@iogearbox.net; martin.lau@linux.dev;
->> song@kernel.org; yhs@fb.com; kpsingh@kernel.org; sdf@google.com;
->> haoluo@google.com; jolsa@kernel.org; shuah@kernel.org;
->> bpf@vger.kernel.org
->> Subject: Re: [PATCH bpf-next 1/2] sk_msg: Keep reference on socket file
->> while wait_memory
->> 
->> 
->> On Fri, Aug 19, 2022 at 10:01 AM GMT, liujian (CE) wrote:
->> >> -----Original Message-----
->> >> From: Jakub Sitnicki [mailto:jakub@cloudflare.com]
->> >> Sent: Friday, August 19, 2022 4:39 PM
->> >> To: liujian (CE) <liujian56@huawei.com>; john.fastabend@gmail.com;
->> >> edumazet@google.com
->> >> Cc: davem@davemloft.net; yoshfuji@linux-ipv6.org; dsahern@kernel.org;
->> >> kuba@kernel.org; pabeni@redhat.com; andrii@kernel.org;
->> >> mykolal@fb.com; ast@kernel.org; daniel@iogearbox.net;
->> >> martin.lau@linux.dev; song@kernel.org; yhs@fb.com;
->> >> kpsingh@kernel.org; sdf@google.com; haoluo@google.com;
->> >> jolsa@kernel.org; shuah@kernel.org; bpf@vger.kernel.org
->> >> Subject: Re: [PATCH bpf-next 1/2] sk_msg: Keep reference on socket
->> >> file while wait_memory
->> >>
->> >> On Mon, Aug 15, 2022 at 10:33 AM +08, Liu Jian wrote:
->> >> > Fix the below NULL pointer dereference:
->> >> >
->> >> > [   14.471200] Call Trace:
->> >> > [   14.471562]  <TASK>
->> >> > [   14.471882]  lock_acquire+0x245/0x2e0
->> >> > [   14.472416]  ? remove_wait_queue+0x12/0x50
->> >> > [   14.473014]  ? _raw_spin_lock_irqsave+0x17/0x50
->> >> > [   14.473681]  _raw_spin_lock_irqsave+0x3d/0x50
->> >> > [   14.474318]  ? remove_wait_queue+0x12/0x50
->> >> > [   14.474907]  remove_wait_queue+0x12/0x50
->> >> > [   14.475480]  sk_stream_wait_memory+0x20d/0x340
->> >> > [   14.476127]  ? do_wait_intr_irq+0x80/0x80
->> >> > [   14.476704]  do_tcp_sendpages+0x287/0x600
->> >> > [   14.477283]  tcp_bpf_push+0xab/0x260
->> >> > [   14.477817]  tcp_bpf_sendmsg_redir+0x297/0x500
->> >> > [   14.478461]  ? __local_bh_enable_ip+0x77/0xe0
->> >> > [   14.479096]  tcp_bpf_send_verdict+0x105/0x470
->> >> > [   14.479729]  tcp_bpf_sendmsg+0x318/0x4f0
->> >> > [   14.480311]  sock_sendmsg+0x2d/0x40
->> >> > [   14.480822]  ____sys_sendmsg+0x1b4/0x1c0
->> >> > [   14.481390]  ? copy_msghdr_from_user+0x62/0x80
->> >> > [   14.482048]  ___sys_sendmsg+0x78/0xb0
->> >> > [   14.482580]  ? vmf_insert_pfn_prot+0x91/0x150
->> >> > [   14.483215]  ? __do_fault+0x2a/0x1a0
->> >> > [   14.483738]  ? do_fault+0x15e/0x5d0
->> >> > [   14.484246]  ? __handle_mm_fault+0x56b/0x1040
->> >> > [   14.484874]  ? lock_is_held_type+0xdf/0x130
->> >> > [   14.485474]  ? find_held_lock+0x2d/0x90
->> >> > [   14.486046]  ? __sys_sendmsg+0x41/0x70
->> >> > [   14.486587]  __sys_sendmsg+0x41/0x70
->> >> > [   14.487105]  ? intel_pmu_drain_pebs_core+0x350/0x350
->> >> > [   14.487822]  do_syscall_64+0x34/0x80
->> >> > [   14.488345]  entry_SYSCALL_64_after_hwframe+0x63/0xcd
->> >> >
->> >> > The test scene as following flow:
->> >> > thread1                               thread2
->> >> > -----------                           ---------------
->> >> >  tcp_bpf_sendmsg
->> >> >   tcp_bpf_send_verdict
->> >> >    tcp_bpf_sendmsg_redir              sock_close
->> >> >     tcp_bpf_push_locked                 __sock_release
->> >> >      tcp_bpf_push                         //inet_release
->> >> >       do_tcp_sendpages                    sock->ops->release
->> >> >        sk_stream_wait_memory          	   // tcp_close
->> >> >           sk_wait_event                      sk->sk_prot->close
->> >> >            release_sock(__sk);
->> >> >             ***
->> >> >
->> >> >                                                 lock_sock(sk);
->> >> >                                                   __tcp_close
->> >> >                                                     sock_orphan(sk)
->> >> >                                                       sk->sk_wq  = NULL
->> >> >                                                 release_sock
->> >> >             ****
->> >> >            lock_sock(__sk);
->> >> >           remove_wait_queue(sk_sleep(sk), &wait);
->> >> >              sk_sleep(sk)
->> >> >              //NULL pointer dereference
->> >> >              &rcu_dereference_raw(sk->sk_wq)->wait
->> >> >
->> >> > While waiting for memory in thread1, the socket is released with
->> >> >its  wait queue because thread2 has closed it. This caused by
->> >> >tcp_bpf_send_verdict didn't increase the f_count of psock->sk_redir-
->> >> >sk_socket->file in thread1.
->> >>
->> >> I'm not sure about this approach. Keeping a closed sock file alive,
->> >> just so we can wakeup from sleep, seems like wasted effort.
->> >>
->> >> __tcp_close sets sk->sk_shutdown = RCV_SHUTDOWN |
->> SEND_SHUTDOWN.
->> >> So we will return from sk_stream_wait_memory via the do_error path.
->> >>
->> >> SEND_SHUTDOWN might be set because socket got closed and orphaned
->> -
->> >> dead and detached from its file, like in this case.
->> >>
->> >> So, IMHO, we should check if SOCK_DEAD flag is set on wakeup due to
->> >> SEND_SHUTDOWN in sk_stream_wait_memory, before accessing the
->> wait
->> >> queue.
->> >>
->> >> [...]
->> > As jakub's approach, this problem can be solved.
->> >
->> > diff --git a/include/net/sock.h b/include/net/sock.h index
->> > a7273b289188..a3dab7140f1e 100644
->> > --- a/include/net/sock.h
->> > +++ b/include/net/sock.h
->> > @@ -1998,6 +1998,8 @@ static inline void sk_set_socket(struct sock
->> > *sk, struct socket *sock)  static inline wait_queue_head_t
->> > *sk_sleep(struct sock *sk)  {
->> >         BUILD_BUG_ON(offsetof(struct socket_wq, wait) != 0);
->> > +       if (sock_flag(sk, SOCK_DEAD))
->> > +               return NULL;
->> >         return &rcu_dereference_raw(sk->sk_wq)->wait;
->> >  }
->> >  /* Detach socket from process context.
->> > diff --git a/kernel/sched/wait.c b/kernel/sched/wait.c index
->> > 9860bb9a847c..da1be17d0b19 100644
->> > --- a/kernel/sched/wait.c
->> > +++ b/kernel/sched/wait.c
->> > @@ -51,6 +51,8 @@ void remove_wait_queue(struct wait_queue_head
->> > *wq_head, struct wait_queue_entry  {
->> >         unsigned long flags;
->> >
->> > +       if (wq_head == NULL)
->> > +               return;
->> >         spin_lock_irqsave(&wq_head->lock, flags);
->> >         __remove_wait_queue(wq_head, wq_entry);
->> >         spin_unlock_irqrestore(&wq_head->lock, flags);
->> 
->> I don't know if we want to change the contract for sk_sleep()
->> remove_wait_queue() so that they accept dead sockets or nulls.
->> 
->> How about just:
->
-> It is all ok to me, thank you. Cloud you provide a format patch?
->
-> Tested-by: Liu Jian <liujian56@huawei.com>
+> > But isn't the RT case still affected by the very same problem?
+> As said in patch 0, the CONFIG_PREEMPT_RT && non-preallocated case is fixed in
+> patch 2.
 
-Feel free to pull it into your patch set. I'm a bit backlogged
-ATM. Besides, we also want the selftest that you have added.
+ups, sorry.
 
-You can add Suggested-by if you want.
-
-[...]
+Sebastian
