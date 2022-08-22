@@ -2,119 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA9AF59CC32
-	for <lists+bpf@lfdr.de>; Tue, 23 Aug 2022 01:28:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4BAF59CC97
+	for <lists+bpf@lfdr.de>; Tue, 23 Aug 2022 01:57:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232371AbiHVX2w (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Aug 2022 19:28:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36594 "EHLO
+        id S235699AbiHVX5Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Aug 2022 19:57:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232335AbiHVX2v (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 22 Aug 2022 19:28:51 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2479C491E1;
-        Mon, 22 Aug 2022 16:28:49 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 7D902CE17B5;
-        Mon, 22 Aug 2022 23:28:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6C12C433D6;
-        Mon, 22 Aug 2022 23:28:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661210925;
-        bh=C/y0LdNNtXlAXGOZEQmwPtIqwbi52QXUTWsRN7pX07A=;
-        h=Date:From:To:Cc:Subject:From;
-        b=jICwVmT6DYQqVa5Cj5HHJgCacwtl+0ar9ft25BxUIwCF55sAC35ZbjmfOXs1R99+p
-         RjH5UPUx45+EtsWZeNbw9lMyuFZ8ZqtJx5avzag/Qrdw19ZDQ1RHZEuuyddbxoqhqy
-         Z25ysyItBCCKtEE+KlNb3qwVpscA+9VUSQYI1xtmsGfH3qUv+y+lvnzGUyw4a6O0cc
-         6kMmHONGf+s2CYIt78nZbc0A+U0JyN/WT9Qc7f01G/4+sahwkLuVlRxIUqhzzhkqzR
-         /rJ0UbuYZ1EISXySNv6JJvbXe/3VJTpnq9KADty3JzvUyYFB40lyHRqA+OTVBOZBFk
-         oqp0uN16zHdcw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 0AF7B404A1; Mon, 22 Aug 2022 20:28:43 -0300 (-03)
-Date:   Mon, 22 Aug 2022 20:28:42 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     dwarves@vger.kernel.org
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alibek Omarov <a1ba.omarov@gmail.com>,
-        Kornilios Kourtis <kornilios@isovalent.com>,
-        Kui-Feng Lee <kuifeng@fb.com>, Yonghong Song <yhs@fb.com>,
-        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>
-Subject: ANNOUNCE: pahole v1.24 (Faster BTF encoding, 64-bit BTF enum entries)
-Message-ID: <YwQRKkmWqsf/Du6A@kernel.org>
+        with ESMTP id S232547AbiHVX5X (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 22 Aug 2022 19:57:23 -0400
+Received: from 66-220-155-178.mail-mxout.facebook.com (66-220-155-178.mail-mxout.facebook.com [66.220.155.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22576543CD
+        for <bpf@vger.kernel.org>; Mon, 22 Aug 2022 16:57:23 -0700 (PDT)
+Received: by devbig010.atn6.facebook.com (Postfix, from userid 115148)
+        id 0DE8210CFE9EF; Mon, 22 Aug 2022 16:57:09 -0700 (PDT)
+From:   Joanne Koong <joannelkoong@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     andrii@kernel.org, daniel@iogearbox.net, ast@kernel.org,
+        kafai@fb.com, kuba@kernel.org, netdev@vger.kernel.org,
+        Joanne Koong <joannelkoong@gmail.com>
+Subject: [PATCH bpf-next v4 0/3] Add skb + xdp dynptrs
+Date:   Mon, 22 Aug 2022 16:56:46 -0700
+Message-Id: <20220822235649.2218031-1-joannelkoong@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=3.3 required=5.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+        FORGED_GMAIL_RCVD,FREEMAIL_FROM,NML_ADSP_CUSTOM_MED,RDNS_DYNAMIC,
+        SPF_HELO_PASS,SPF_SOFTFAIL,SPOOFED_FREEMAIL,SPOOF_GMAIL_MID,
+        TVD_RCVD_IP,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
-  
-	The v1.24 release of pahole and its friends is out, with faster
-BTF generation by parallelizing the encoding part in addition to the
-previoulsy parallelized DWARF loading, support for 64-bit BTF enumeration
-entries, signed BTF encoding of 'char', exclude/select DWARF loading
-based on the language that generated the objects, etc.
+This patchset is the 2nd in the dynptr series. The 1st can be found here =
+[0].
 
-Main git repo:
+This patchset adds skb and xdp type dynptrs, which have two main benefits=
+ for
+packet parsing:
+    * allowing operations on sizes that are not statically known at
+      compile-time (eg variable-sized accesses).
+    * more ergonomic and less brittle iteration through data (eg does not=
+ need
+      manual if checking for being within bounds of data_end)
 
-   git://git.kernel.org/pub/scm/devel/pahole/pahole.git
+When comparing the differences in runtime for packet parsing without dynp=
+trs
+vs. with dynptrs for the more simple cases, there is no noticeable differ=
+ence.
+For the more complex cases where lengths are non-statically known at comp=
+ile
+time, there can be a significant speed-up when using dynptrs (eg a 2x spe=
+ed up
+for cls redirection). Patch 3 contains more details as well as examples o=
+f how
+to use skb and xdp dynptrs.
 
-Mirror git repo:
+[0] https://lore.kernel.org/bpf/20220523210712.3641569-1-joannelkoong@gma=
+il.com/
 
-   https://github.com/acmel/dwarves.git
+--
+Changelog:
 
-tarball + gpg signature:
+v3 =3D https://lore.kernel.org/bpf/20220822193442.657638-1-joannelkoong@g=
+mail.com/
+v3 -> v4
+    * Forgot to commit --amend the kernel test robot error fixups
 
-   https://fedorapeople.org/~acme/dwarves/dwarves-1.24.tar.xz
-   https://fedorapeople.org/~acme/dwarves/dwarves-1.24.tar.bz2
-   https://fedorapeople.org/~acme/dwarves/dwarves-1.24.tar.sign
+v2 =3D https://lore.kernel.org/bpf/20220811230501.2632393-1-joannelkoong@=
+gmail.com/
+v2 -> v3
+    * Fix kernel test robot build test errors
 
-	Thanks a lot to all the contributors and distro packagers, you're on the
-CC list, I appreciate a lot the work you put into these tools,
+v1 =3D https://lore.kernel.org/bpf/20220726184706.954822-1-joannelkoong@g=
+mail.com/
+v1 -> v2
+  * Return data slices to rd-only skb dynptrs (Martin)
+  * bpf_dynptr_write allows writes to frags for skb dynptrs, but always
+    invalidates associated data slices (Martin)
+  * Use switch casing instead of ifs (Andrii)
+  * Use 0xFD for experimental kind number in the selftest (Zvi)
+  * Put selftest conversions w/ dynptrs into new files (Alexei)
+  * Add new selftest "test_cls_redirect_dynptr.c"=20
 
-Best Regards,
+Joanne Koong (3):
+  bpf: Add skb dynptrs
+  bpf: Add xdp dynptrs
+  selftests/bpf: tests for using dynptrs to parse skb and xdp buffers
 
-BTF encoder:
+ include/linux/bpf.h                           |  87 +-
+ include/linux/filter.h                        |   7 +
+ include/uapi/linux/bpf.h                      |  59 +-
+ kernel/bpf/helpers.c                          |  93 +-
+ kernel/bpf/verifier.c                         | 105 +-
+ net/core/filter.c                             |  99 +-
+ tools/include/uapi/linux/bpf.h                |  59 +-
+ .../selftests/bpf/prog_tests/cls_redirect.c   |  25 +
+ .../testing/selftests/bpf/prog_tests/dynptr.c | 132 ++-
+ .../selftests/bpf/prog_tests/l4lb_all.c       |   2 +
+ .../bpf/prog_tests/parse_tcp_hdr_opt.c        |  85 ++
+ .../selftests/bpf/prog_tests/xdp_attach.c     |   9 +-
+ .../testing/selftests/bpf/progs/dynptr_fail.c | 111 ++
+ .../selftests/bpf/progs/dynptr_success.c      |  29 +
+ .../bpf/progs/test_cls_redirect_dynptr.c      | 968 ++++++++++++++++++
+ .../bpf/progs/test_l4lb_noinline_dynptr.c     | 468 +++++++++
+ .../bpf/progs/test_parse_tcp_hdr_opt.c        | 119 +++
+ .../bpf/progs/test_parse_tcp_hdr_opt_dynptr.c | 110 ++
+ .../selftests/bpf/progs/test_xdp_dynptr.c     | 240 +++++
+ .../selftests/bpf/test_tcp_hdr_options.h      |   1 +
+ 20 files changed, 2693 insertions(+), 115 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/parse_tcp_hdr_=
+opt.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_cls_redirect_d=
+ynptr.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_l4lb_noinline_=
+dynptr.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_parse_tcp_hdr_=
+opt.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_parse_tcp_hdr_=
+opt_dynptr.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_dynptr.c
 
-- Add support to BTF_KIND_ENUM64 to represent enumeration entries with
-  more than 32 bits.
+--=20
+2.30.2
 
-- Support multithreaded encoding, in addition to DWARF multithreaded
-  loading, speeding up the process.
-
-  Selected just like DWARF multithreaded loading, using the 'pahole -j'
-  option.
-
-- Encode 'char' type as signed.
-
-BTF Loader:
-
-- Add support to BTF_KIND_ENUM64.
-
-pahole:
-
-- Introduce --lang and --lang_exclude to specify the language the
-  DWARF compile units were originated from to use or filter.
-
-  Use case is to exclude Rust compile units while aspects of the
-  DWARF generated for it get sorted out in a way that the kernel
-  BPF verifier don't refuse loading the BTF generated from them.
-
-- Introduce --compile to generate compilable code in a similar fashion to:
-
-   bpftool btf dump file vmlinux format c > vmlinux.h
-
-  As with 'bpftool', this will notice type shadowing, i.e. multiple types
-  with the same name and will disambiguate by adding a suffix.
-
-- Don't segfault when processing bogus files.
