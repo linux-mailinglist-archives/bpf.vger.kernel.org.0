@@ -2,179 +2,319 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68AA959C494
-	for <lists+bpf@lfdr.de>; Mon, 22 Aug 2022 19:05:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68E9159C5A2
+	for <lists+bpf@lfdr.de>; Mon, 22 Aug 2022 20:01:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235552AbiHVRFP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Aug 2022 13:05:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54158 "EHLO
+        id S229524AbiHVSB2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Aug 2022 14:01:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236208AbiHVRFK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 22 Aug 2022 13:05:10 -0400
-Received: from mx0b-00364e01.pphosted.com (mx0b-00364e01.pphosted.com [148.163.139.74])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C0C941D0F
-        for <bpf@vger.kernel.org>; Mon, 22 Aug 2022 10:05:07 -0700 (PDT)
-Received: from pps.filterd (m0167073.ppops.net [127.0.0.1])
-        by mx0b-00364e01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27MGvqAa011246
-        for <bpf@vger.kernel.org>; Mon, 22 Aug 2022 13:05:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=columbia.edu; h=mime-version :
- references : in-reply-to : from : date : message-id : subject : to : cc :
- content-type : content-transfer-encoding; s=pps01;
- bh=KCj0FjEs6uK4eYbvPTyi5BPv9COVt9zzyk1syStqmCs=;
- b=eW6EC4v92GOJMN5FH/DJOZIdw52yNRNjSYe0hi/goVuUP3vI/cnLd9kHPrilJCYUEsD/
- k3Ym+hcyfl3Gpn4BRHxZUIYoKXzKfA1ApHjE2PB1i0/QQTNIDaqPdKn2xtrQnEpLQ0ue
- hRXuAI2Nx4MsYklE3uy/R/plKWJ6jdWZMvxcBpbCpdULWeuemFxQxI0CU3yXg22T/yvJ
- Qnryt3obcVzoLlXbAzAvtQ2N4YfQTbRVsIZtFRSJLFyjlkKKYxSsNEP1cw0FHrOKuDIJ
- nHMaWiRbtnWTD72Jtk2Mp9SEBcgK+ajkOAQA+ar8LLibIe5s14FIMDnGVlZ2HQfygcVL xA== 
-Received: from sendprdmail21.cc.columbia.edu (sendprdmail21.cc.columbia.edu [128.59.72.23])
-        by mx0b-00364e01.pphosted.com (PPS) with ESMTPS id 3j2wj7m014-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 22 Aug 2022 13:05:07 -0400
-Received: from mail-vk1-f199.google.com (mail-vk1-f199.google.com [209.85.221.199])
-        by sendprdmail21.cc.columbia.edu (8.14.7/8.14.4) with ESMTP id 27MH56v5123540
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 22 Aug 2022 13:05:06 -0400
-Received: by mail-vk1-f199.google.com with SMTP id h198-20020a1f21cf000000b0038707e9084cso1241972vkh.8
-        for <bpf@vger.kernel.org>; Mon, 22 Aug 2022 10:05:06 -0700 (PDT)
+        with ESMTP id S229627AbiHVSB1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 22 Aug 2022 14:01:27 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25F0A46215
+        for <bpf@vger.kernel.org>; Mon, 22 Aug 2022 11:01:26 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id j6so8462919qkl.10
+        for <bpf@vger.kernel.org>; Mon, 22 Aug 2022 11:01:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=am9pD6CNSevo8D+qtdEggmgrqbQFzv4YPXA0nQP6/+E=;
+        b=TYcyiGAFhXDd4zg4novwEo1zPEpmgZD68OxXlpSKJmFO1KQLfbVgmvza8bNZ8nrnuo
+         DDUr7YygZWdGpgYfaj7gKRSLL1mRhwXcL8g82LRgUP4+DX40/duXWaN/HOWut6I8xDA+
+         w/772gn+NgbOPfreOAPmof5Bo+Dxozx5c0QQU8PRtZlaU7tf2c+iaNx25Nty4qoiFOhE
+         wDgfbA1xkqzH6EfLNWSHCEa35BCofdMR6czL6U8PMyjjct7ZDBWfWdslpUfjWrykzTnw
+         sWGKinvo/kWrMuhdcLDxVmjprA4GVNJ1cjUrsvLnof5j7lA8CGhWBJqWwk8a+44vbAl/
+         Ognw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc;
-        bh=KCj0FjEs6uK4eYbvPTyi5BPv9COVt9zzyk1syStqmCs=;
-        b=okjBNTcXZOjG78Bb83weYPVXgzbzXL5zmnsLZx2p6CUv+Z/G0iFq0YdgZD1g4pLXC/
-         p02tjlPch2cd6LxV+hmvZ7llNRqZmCcRJw42YhwuXT/rkfhnOQ3fs2843ZDXNME8Ok1j
-         4KOAsF1gVwIh/c/qKpfqyEVt6fzcFeya4K1KXbXkF7xB9UQ8j3Cm6WL341x8ZZJafzFZ
-         YYl9OFkrMswT7YFoIJJPsytWIm8A1WGVXPxv5huopmSx2YujXrr7r+s9PmsWOLv0kjqs
-         tZlhHlmJusVhEhwjuqK8Vy2T1aZCSOzgOkHPrWUnTB8tHryo2vTtc4h5/rm0Hgordmbu
-         J1rg==
-X-Gm-Message-State: ACgBeo18eWBX6VqdKut8mvP/66qeqkNXodSIWaxzgDpshjXU+AiDj1dZ
-        ZCEkB3l0M7JFXQ39tzWNlmvj/7MRMaTRV6OMHWnUDQ6y/vqB9gSeAJNkjIWzZUbh+rkcbmYwnRb
-        mPXjEoZlZp12r+c/Jep7wgZTmQNgZj/4bmaMB
-X-Received: by 2002:a1f:3f49:0:b0:38a:d56f:b713 with SMTP id m70-20020a1f3f49000000b0038ad56fb713mr4529563vka.26.1661187905929;
-        Mon, 22 Aug 2022 10:05:05 -0700 (PDT)
-X-Google-Smtp-Source: AA6agR4R9FfLgGQO4Zvs7UjDbs52NCEx+MD/bBCI9qMmTviGJ3OqXM+XfAWbumMUhCDbXdaQjIUO1toLWQ8vEBZvVM4=
-X-Received: by 2002:a1f:3f49:0:b0:38a:d56f:b713 with SMTP id
- m70-20020a1f3f49000000b0038ad56fb713mr4529505vka.26.1661187905342; Mon, 22
- Aug 2022 10:05:05 -0700 (PDT)
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=am9pD6CNSevo8D+qtdEggmgrqbQFzv4YPXA0nQP6/+E=;
+        b=rt2qvLaPTkQtXvCSrklA2xkVqmjccV9t2TuQRPmpLnBhAcMpZ46x1IfcVKTDXNcCXq
+         K6PERkrPiqaW78GJmMzZftk0dIRhDOkPSap9fU9TKBokdPwjM02WsuZPGNv3OUXdNsuB
+         WAoUfM1841OqQlLdsQf6KhCbNA/RmKkCmjWA2oPUmuWieSdKzbi7QqtrOKCsk7RD9Zd0
+         Z1nKeQlfwRWSxAuGuJgV0jrRBiA2aQFvRLEVQJjQTqbty9xkAP8ffIb3Z3QNXHMP6jZD
+         zUmOK8GF2+VL+kIJXpwgGIljnTa/NqsUBIJ/atXCZIYO+WavMGiuDmwb8XsrH50kTJQF
+         F9aA==
+X-Gm-Message-State: ACgBeo2bEsRjYzl8TwVfCB3WbP72sAAw/k31vVEiVynyWcHF6xpT6++3
+        mDnVRmpyF/KMPMG6KLOpleFzoGW6bcCS7o8q50elGw==
+X-Google-Smtp-Source: AA6agR5AKTBKQdgOgFJA+rAxAamy0rFPVCK+8FjEwLklRl0LSaXcp+4yH7dTWJHIRuqicrQMcj1W8NeuSpS37AtOPSU=
+X-Received: by 2002:a37:4d7:0:b0:6ba:c29a:c08f with SMTP id
+ 206-20020a3704d7000000b006bac29ac08fmr13275131qke.669.1661191284463; Mon, 22
+ Aug 2022 11:01:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAEHB249jcoG=sMGLUgqw3Yf+SjZ7ZkUfF_M+WcyQGCAe77o2kA@mail.gmail.com>
- <20220819072256.fn7ctciefy4fc4cu@wittgenstein>
-In-Reply-To: <20220819072256.fn7ctciefy4fc4cu@wittgenstein>
-From:   Gabriel Ryan <gabe@cs.columbia.edu>
-Date:   Mon, 22 Aug 2022 13:04:58 -0400
-Message-ID: <CALbthtdFY+GHTzGH9OujzqpOtWZAqsU3MAsjv5OpwZUW6gVa7A@mail.gmail.com>
-Subject: Re: data-race in cgroup_get_tree / proc_cgroup_show
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Abhishek Shah <abhishek.shah@columbia.edu>,
-        linux-kernel@vger.kernel.org, andrii@kernel.org, ast@kernel.org,
-        bpf@vger.kernel.org, cgroups@vger.kernel.org, daniel@iogearbox.net,
-        hannes@cmpxchg.org, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@kernel.org, lizefan.x@bytedance.com,
-        netdev@vger.kernel.org, songliubraving@fb.com, tj@kernel.org,
-        yhs@fb.com
+References: <20220821033223.2598791-1-houtao@huaweicloud.com>
+ <20220821033223.2598791-2-houtao@huaweicloud.com> <CA+khW7jv6J9FSqNvaHNzYNpEBoQX6wPEEdoD4OwkPQt844Wwmw@mail.gmail.com>
+ <3287b95c-30e1-5647-fe2c-1feff673291d@huaweicloud.com> <CA+khW7h1OK2oqGyCipGfySV_kcHW4=SHo6123nk2WTTXMOMUxQ@mail.gmail.com>
+ <387c851f-03ae-9b34-4ec0-9667fb26ec18@huaweicloud.com>
+In-Reply-To: <387c851f-03ae-9b34-4ec0-9667fb26ec18@huaweicloud.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Mon, 22 Aug 2022 11:01:13 -0700
+Message-ID: <CA+khW7jgvZR8azSE3gEJvhT_psgEeHCdU3uWAQUkkKFLgh0a4Q@mail.gmail.com>
+Subject: Re: [PATCH 1/3] bpf: Disable preemption when increasing per-cpu map_locked
+To:     Hou Tao <houtao@huaweicloud.com>
+Cc:     bpf@vger.kernel.org, Song Liu <songliubraving@fb.com>,
+        Hao Sun <sunhao.th@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Lorenz Bauer <oss@lmb.io>, houtao1@huawei.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-GUID: U4Hzv7CEaVeLqkTgm8eNHiBkhMm0Dbt3
-X-Proofpoint-ORIG-GUID: U4Hzv7CEaVeLqkTgm8eNHiBkhMm0Dbt3
-X-CU-OB: Yes
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-08-22_10,2022-08-22_02,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 adultscore=0
- suspectscore=0 spamscore=0 phishscore=0 mlxscore=0 bulkscore=10
- malwarescore=0 lowpriorityscore=10 mlxlogscore=999 impostorscore=10
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2207270000 definitions=main-2208220071
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Christian,
-
-We ran a quick test and confirm your suggestion would eliminate the
-data race alert we observed. If the data race is benign (and it
-appears to be), using WRITE_ONCE(cgrp_dfl_visible, true) instead of
-cmpxchg in cgroup_get_tree() would probably also be ok.
-
-Best,
-
-Gabe
-
-On Fri, Aug 19, 2022 at 3:23 AM Christian Brauner <brauner@kernel.org> wrot=
-e:
+On Mon, Aug 22, 2022 at 5:08 AM Hou Tao <houtao@huaweicloud.com> wrote:
 >
-> On Thu, Aug 18, 2022 at 07:24:00PM -0400, Abhishek Shah wrote:
-> > Hi all,
-> >
-> > We found the following data race involving the *cgrp_dfl_visible *varia=
-ble.
-> > We think it has security implications as the racing variable controls t=
-he
-> > contents used in /proc/<pid>/cgroup which has been used in prior work
-> > <https://urldefense.proofpoint.com/v2/url?u=3Dhttps-3A__www.cyberark.co=
-m_resources_threat-2Dresearch-2Dblog_the-2Dstrange-2Dcase-2Dof-2Dhow-2Dwe-2=
-Descaped-2Dthe-2Ddocker-2Ddefault-2Dcontainer&d=3DDwIBaQ&c=3D009klHSCxuh5AI=
-1vNQzSO0KGjl4nbi2Q0M1QLJX9BeE&r=3DEyAJYRJu01oaAhhVVY3o8zKgZvacDAXd_PNRtaqAC=
-Co&m=3DoB43wXi5itVN6tAAOVg5q3rzeXp6QVvxICYqYL6p0wnMMhRB_HrHCwwt0dYa5x44&s=
-=3D78sLv2vexAVEQwQPx_CuCJ90is9f3iixNbmbCp0Agpo&e=3D  >
-> > in container escapes. Please let us know what you think. Thanks!
+> Hi,
 >
-> One straightforward fix might be to use
-> cmpxchg(&cgrp_dfl_visible, false, true) in cgroup_get_tree()
-> and READ_ONCE(cgrp_dfl_visible) in proc_cgroup_show() or sm like that.
-> I'm not sure this is an issue though but might still be nice to fix it.
+> On 8/22/2022 11:21 AM, Hao Luo wrote:
+> > Hi, Hou Tao
+> >
+> > On Sun, Aug 21, 2022 at 6:28 PM Hou Tao <houtao@huaweicloud.com> wrote:
+> >> Hi,
+> >>
+> >> On 8/22/2022 12:42 AM, Hao Luo wrote:
+> >>> Hi Hou Tao,
+> >>>
+> >>> On Sat, Aug 20, 2022 at 8:14 PM Hou Tao <houtao@huaweicloud.com> wrote:
+> >>>> From: Hou Tao <houtao1@huawei.com>
+> >>>>
+> >>>> Per-cpu htab->map_locked is used to prohibit the concurrent accesses
+> >>>> from both NMI and non-NMI contexts. But since 74d862b682f51 ("sched:
+> >>>> Make migrate_disable/enable() independent of RT"), migrations_disable()
+> >>>> is also preemptible under !PREEMPT_RT case, so now map_locked also
+> >>>> disallows concurrent updates from normal contexts (e.g. userspace
+> >>>> processes) unexpectedly as shown below:
+> >>>>
+> >>>> process A                      process B
+> >>>>
+> >>>> htab_map_update_elem()
+> >>>>   htab_lock_bucket()
+> >>>>     migrate_disable()
+> >>>>     /* return 1 */
+> >>>>     __this_cpu_inc_return()
+> >>>>     /* preempted by B */
+> >>>>
+> >>>>                                htab_map_update_elem()
+> >>>>                                  /* the same bucket as A */
+> >>>>                                  htab_lock_bucket()
+> >>>>                                    migrate_disable()
+> >>>>                                    /* return 2, so lock fails */
+> >>>>                                    __this_cpu_inc_return()
+> >>>>                                    return -EBUSY
+> >>>>
+> >>>> A fix that seems feasible is using in_nmi() in htab_lock_bucket() and
+> >>>> only checking the value of map_locked for nmi context. But it will
+> >>>> re-introduce dead-lock on bucket lock if htab_lock_bucket() is re-entered
+> >>>> through non-tracing program (e.g. fentry program).
+> >>>>
+> >>>> So fixing it by using disable_preempt() instead of migrate_disable() when
+> >>>> increasing htab->map_locked. However when htab_use_raw_lock() is false,
+> >>>> bucket lock will be a sleepable spin-lock and it breaks disable_preempt(),
+> >>>> so still use migrate_disable() for spin-lock case.
+> >>>>
+> >>>> Signed-off-by: Hou Tao <houtao1@huawei.com>
+> >>>> ---
+> >>> IIUC, this patch enlarges the scope of preemption disable to cover inc
+> >>> map_locked. But I don't think the change is meaningful.
+> >> Before 74d862b682f51 ("sched: Make migrate_disable/enable() independent of
+> >> RT"),  the preemption is disabled before increasing map_locked for !PREEMPT_RT
+> >> case, so I don't think that the change is meaningless.
+> >>> This patch only affects the case when raw lock is used. In the case of
+> >>> raw lock, irq is disabled for b->raw_lock protected critical section.
+> >>> A raw spin lock itself doesn't block in both RT and non-RT. So, my
+> >>> understanding about this patch is, it just makes sure preemption
+> >>> doesn't happen on the exact __this_cpu_inc_return. But the window is
+> >>> so small that it should be really unlikely to happen.
+> >> No, it can be easily reproduced by running multiple htab update processes in the
+> >> same CPU. Will add selftest to demonstrate that.
+> > Can you clarify what you demonstrate?
+> First please enable CONFIG_PREEMPT for the running kernel and then run the
+> following test program as shown below.
 >
-> >
-> > *-----------------------------Report-----------------------------------=
----*
-> > *write* to 0xffffffff881d0344 of 1 bytes by task 6542 on cpu 0:
-> >  cgroup_get_tree+0x30/0x1c0 kernel/cgroup/cgroup.c:2153
-> >  vfs_get_tree+0x53/0x1b0 fs/super.c:1497
-> >  do_new_mount+0x208/0x6a0 fs/namespace.c:3040
-> >  path_mount+0x4a0/0xbd0 fs/namespace.c:3370
-> >  do_mount fs/namespace.c:3383 [inline]
-> >  __do_sys_mount fs/namespace.c:3591 [inline]
-> >  __se_sys_mount+0x215/0x2d0 fs/namespace.c:3568
-> >  __x64_sys_mount+0x67/0x80 fs/namespace.c:3568
-> >  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-> >  do_syscall_64+0x3d/0x90 arch/x86/entry/common.c:80
-> >  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> >
-> > *read* to 0xffffffff881d0344 of 1 bytes by task 6541 on cpu 1:
-> >  proc_cgroup_show+0x1ec/0x4e0 kernel/cgroup/cgroup.c:6017
-> >  proc_single_show+0x96/0x120 fs/proc/base.c:777
-> >  seq_read_iter+0x2d2/0x8e0 fs/seq_file.c:230
-> >  seq_read+0x1c9/0x210 fs/seq_file.c:162
-> >  vfs_read+0x1b5/0x6e0 fs/read_write.c:480
-> >  ksys_read+0xde/0x190 fs/read_write.c:620
-> >  __do_sys_read fs/read_write.c:630 [inline]
-> >  __se_sys_read fs/read_write.c:628 [inline]
-> >  __x64_sys_read+0x43/0x50 fs/read_write.c:628
-> >  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-> >  do_syscall_64+0x3d/0x90 arch/x86/entry/common.c:80
-> >  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> >
-> > Reported by Kernel Concurrency Sanitizer on:
-> > CPU: 1 PID: 6541 Comm: syz-executor2-n Not tainted 5.18.0-rc5+ #107
-> > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1
-> > 04/01/2014
-> >
-> >
-> > *Reproducing Inputs*
-> > Input CPU 0:
-> > r0 =3D fsopen(&(0x7f0000000000)=3D'cgroup2\x00', 0x0)
-> > fsconfig$FSCONFIG_CMD_CREATE(r0, 0x6, 0x0, 0x0, 0x0)
-> > fsmount(r0, 0x0, 0x83)
-> >
-> > Input CPU 1:
-> > r0 =3D syz_open_procfs(0x0, &(0x7f0000000040)=3D'cgroup\x00')
-> > read$eventfd(r0, &(0x7f0000000080), 0x8)
 
---=20
-Gabriel Ryan
-PhD Candidate at Columbia University
+Ah, fully preemptive kernel. It's worth mentioning that in the commit
+message. Then it seems promoting migrate_disable to preempt_disable
+may be the best way to solve the problem you described.
+
+> # sudo taskset -c 2 ./update.bin
+> thread nr 2
+> wait for error
+> update error -16
+> all threads exit
+>
+> If there is no "update error -16", you can try to create more map update
+> threads. For example running 16 update threads:
+>
+> # sudo taskset -c 2 ./update.bin 16
+> thread nr 16
+> wait for error
+> update error -16
+> update error -16
+> update error -16
+> update error -16
+> update error -16
+> update error -16
+> update error -16
+> update error -16
+> all threads exit
+>
+> The following is the source code for update.bin:
+>
+> #define _GNU_SOURCE
+> #include <stdio.h>
+> #include <stdbool.h>
+> #include <stdlib.h>
+> #include <unistd.h>
+> #include <string.h>
+> #include <errno.h>
+> #include <pthread.h>
+>
+> #include "bpf.h"
+> #include "libbpf.h"
+>
+> static bool stop;
+> static int fd;
+>
+> static void *update_fn(void *arg)
+> {
+>         while (!stop) {
+>                 unsigned int key = 0, value = 1;
+>                 int err;
+>
+>                 err = bpf_map_update_elem(fd, &key, &value, 0);
+>                 if (err) {
+>                         printf("update error %d\n", err);
+>                         stop = true;
+>                         break;
+>                 }
+>         }
+>
+>         return NULL;
+> }
+>
+> int main(int argc, char **argv)
+> {
+>         LIBBPF_OPTS(bpf_map_create_opts, opts);
+>         unsigned int i, nr;
+>         pthread_t *tids;
+>
+>         nr = 2;
+>         if (argc > 1)
+>                 nr = atoi(argv[1]);
+>         printf("thread nr %u\n", nr);
+>
+>         libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
+>         fd = bpf_map_create(BPF_MAP_TYPE_HASH, "batch", 4, 4, 1, &opts);
+>         if (fd < 0) {
+>                 printf("create map error %d\n", fd);
+>                 return 1;
+>         }
+>
+>         tids = malloc(nr * sizeof(*tids));
+>         for (i = 0; i < nr; i++)
+>                 pthread_create(&tids[i], NULL, update_fn, NULL);
+>
+>         printf("wait for error\n");
+>         for (i = 0; i < nr; i++)
+>                 pthread_join(tids[i], NULL);
+>
+>         printf("all threads exit\n");
+>
+>         free(tids);
+>         close(fd);
+>
+>         return 0;
+> }
+>
+> >
+> > Here is my theory, but please correct me if I'm wrong, I haven't
+> > tested yet. In non-RT, I doubt preemptions are likely to happen after
+> > migrate_disable. That is because very soon after migrate_disable, we
+> > enter the critical section of b->raw_lock with irq disabled. In RT,
+> > preemptions can happen on acquiring b->lock, that is certainly
+> > possible, but this is the !use_raw_lock path, which isn't side-stepped
+> > by this patch.
+> >
+> >>>>  kernel/bpf/hashtab.c | 23 ++++++++++++++++++-----
+> >>>>  1 file changed, 18 insertions(+), 5 deletions(-)
+> >>>>
+> >>>> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+> >>>> index 6c530a5e560a..ad09da139589 100644
+> >>>> --- a/kernel/bpf/hashtab.c
+> >>>> +++ b/kernel/bpf/hashtab.c
+> >>>> @@ -162,17 +162,25 @@ static inline int htab_lock_bucket(const struct bpf_htab *htab,
+> >>>>                                    unsigned long *pflags)
+> >>>>  {
+> >>>>         unsigned long flags;
+> >>>> +       bool use_raw_lock;
+> >>>>
+> >>>>         hash = hash & HASHTAB_MAP_LOCK_MASK;
+> >>>>
+> >>>> -       migrate_disable();
+> >>>> +       use_raw_lock = htab_use_raw_lock(htab);
+> >>>> +       if (use_raw_lock)
+> >>>> +               preempt_disable();
+> >>>> +       else
+> >>>> +               migrate_disable();
+> >>>>         if (unlikely(__this_cpu_inc_return(*(htab->map_locked[hash])) != 1)) {
+> >>>>                 __this_cpu_dec(*(htab->map_locked[hash]));
+> >>>> -               migrate_enable();
+> >>>> +               if (use_raw_lock)
+> >>>> +                       preempt_enable();
+> >>>> +               else
+> >>>> +                       migrate_enable();
+> >>>>                 return -EBUSY;
+> >>>>         }
+> >>>>
+> >>>> -       if (htab_use_raw_lock(htab))
+> >>>> +       if (use_raw_lock)
+> >>>>                 raw_spin_lock_irqsave(&b->raw_lock, flags);
+> >>>>         else
+> >>>>                 spin_lock_irqsave(&b->lock, flags);
+> >>>> @@ -185,13 +193,18 @@ static inline void htab_unlock_bucket(const struct bpf_htab *htab,
+> >>>>                                       struct bucket *b, u32 hash,
+> >>>>                                       unsigned long flags)
+> >>>>  {
+> >>>> +       bool use_raw_lock = htab_use_raw_lock(htab);
+> >>>> +
+> >>>>         hash = hash & HASHTAB_MAP_LOCK_MASK;
+> >>>> -       if (htab_use_raw_lock(htab))
+> >>>> +       if (use_raw_lock)
+> >>>>                 raw_spin_unlock_irqrestore(&b->raw_lock, flags);
+> >>>>         else
+> >>>>                 spin_unlock_irqrestore(&b->lock, flags);
+> >>>>         __this_cpu_dec(*(htab->map_locked[hash]));
+> >>>> -       migrate_enable();
+> >>>> +       if (use_raw_lock)
+> >>>> +               preempt_enable();
+> >>>> +       else
+> >>>> +               migrate_enable();
+> >>>>  }
+> >>>>
+> >>>>  static bool htab_lru_map_delete_node(void *arg, struct bpf_lru_node *node);
+> >>>> --
+> >>>> 2.29.2
+> >>>>
+> >>> .
+> > .
+>
