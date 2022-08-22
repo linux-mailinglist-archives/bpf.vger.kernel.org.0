@@ -2,362 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF3E159B5E0
-	for <lists+bpf@lfdr.de>; Sun, 21 Aug 2022 20:14:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D97D59B723
+	for <lists+bpf@lfdr.de>; Mon, 22 Aug 2022 03:01:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231644AbiHUSOU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 21 Aug 2022 14:14:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57662 "EHLO
+        id S231322AbiHVBBy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 21 Aug 2022 21:01:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231664AbiHUSOR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 21 Aug 2022 14:14:17 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DC46205DF
-        for <bpf@vger.kernel.org>; Sun, 21 Aug 2022 11:14:14 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id e20so10236376wri.13
-        for <bpf@vger.kernel.org>; Sun, 21 Aug 2022 11:14:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=metanetworks.com; s=google;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc;
-        bh=DyEulj2iG+KHemhu/L5YtT3DCdlueM9rr2hEIi1eYJ8=;
-        b=O52UfMgCZPBGcEJPYLSVLceKH5Qd/Cb/e5fpCsSeqyYX4REv+vY0Z8qrr4yc0VyuV7
-         NN+vrP112WtYfdUkldXlErmOh/c156TE4CQfvTrb+jNLCQRpI9YYpEvznabXiopMqApy
-         5bJt0qXDyLZMqqsdAcARjh3jHGLqzyKMDqmmI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc;
-        bh=DyEulj2iG+KHemhu/L5YtT3DCdlueM9rr2hEIi1eYJ8=;
-        b=rwy7Y+y5MZw/vs/uFVZQTEV73fJWUlO7/c0exI/QWRz3fHskzWU3tgkUzNyzSE2xV8
-         Nmz1kxIKHGNPzLJ95zZXeYeXbVPNZNVU9e7O7EMy5Igf74Jc+gBgRVxMX2xY8LcvljyV
-         +2oun5uOox6P9llE67pznoSrXuZhYdwBG4oI5RJyZDfLGrPZD0aSg2W1+A9+/f/2RErU
-         tnuiIzv8K2TErztuloFn3b4DwJi1kaO+pPz15aMY7IzMnhyZ/XAa4BqdNM4DIRLo6ZsL
-         n1fz/87l8VCni8RIxxpjuknbZrrHh4WdE2JtihNL3yHTwFb2sZqo3Yog+qVvIlDHlAVV
-         6ALg==
-X-Gm-Message-State: ACgBeo23lTGuzl4wEQ99pnE8uUuYB/39kEOmbZXJKQVUgJpRY9mUR3gR
-        PfvIYDQvW8ymDj4IMG1IGY0PORZjaSKeHK0LDh0B+da+3g+KkSaYPeTejkMDfGrY/CqxwRHUgwl
-        V6Fgk5UVKIUmF/NaknVO881zmLXW/LRuUM0UfKzOe32c4kwnRd29UIGqCF1aoHsJ8IR4smGDl
-X-Google-Smtp-Source: AA6agR5KEu3jbNIQIONPf+HiLuOrfdoMPdRy0OKLuZTMJGhcfbiGF5H4OWQBGgC+Cm60CnV0iQsgAg==
-X-Received: by 2002:adf:d1ea:0:b0:225:474b:1061 with SMTP id g10-20020adfd1ea000000b00225474b1061mr3754726wrd.343.1661105652353;
-        Sun, 21 Aug 2022 11:14:12 -0700 (PDT)
-Received: from blondie.home ([94.230.83.151])
-        by smtp.gmail.com with ESMTPSA id n17-20020a5d4851000000b0021eff2ecb31sm9509303wrs.95.2022.08.21.11.14.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Aug 2022 11:14:11 -0700 (PDT)
-From:   Shmulik Ladkani <shmulik@metanetworks.com>
-X-Google-Original-From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-To:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Paul Chaignon <paul@isovalent.com>,
-        Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Subject: [PATCH v2 bpf-next 3/3] selftests/bpf: Add geneve with bpf_skb_set_var_tunnel_opt test-case to test_progs
-Date:   Sun, 21 Aug 2022 21:13:45 +0300
-Message-Id: <20220821181345.337014-4-shmulik.ladkani@gmail.com>
-X-Mailer: git-send-email 2.37.2
-In-Reply-To: <20220821181345.337014-1-shmulik.ladkani@gmail.com>
-References: <20220821181345.337014-1-shmulik.ladkani@gmail.com>
+        with ESMTP id S229948AbiHVBBw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 21 Aug 2022 21:01:52 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15ABE201A8;
+        Sun, 21 Aug 2022 18:01:51 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4M9vFj6wXxz4x1N;
+        Mon, 22 Aug 2022 11:01:45 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1661130106;
+        bh=6l9j7X22BBA4N65+/fw8NpRm9wwmtmsASnaDP6DcOUQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=bXna29IRdNDjYgbgweAkj+3drBgKC84AYZtQcJvHH/Fl2Uz9gFjWoMuQ7yLk+h/WW
+         EEIwu+SOYK7bcKQ43iemROLVuUyxtylobUTXUBxlzZvctplP4n/ipFJmAFZ/URXtYd
+         0G3iVyb7SmUnQ9VxGFZRBZC9YA0uYsRhDMOs4oYTRECDMk6p5wvuFX/po8DVbytfLA
+         3wkcRqyAk6pUqQEYT/9SF5OqP9dbiHwD+WpgqZIo3GGYoOfZbphtWSTpQjVjMfOqcB
+         YCZPw5oiBk+E4wH+EYZvHgjSBbROhYoxnbVKFvCjplssPGZMpyNomOc1Xqk2yP/0Ou
+         acfClBBLHYmzg==
+Date:   Mon, 22 Aug 2022 11:01:44 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Daniel =?UTF-8?B?TcO8bGxlcg==?= <deso@posteo.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>
+Subject: linux-next: manual merge of the bpf-next tree with the bpf tree
+Message-ID: <20220822110144.199455d6@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/np7iLFcswnasyimVYWlLVVK";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add geneve test to test_tunnel. The test setup and scheme resembles the
-existing vxlan test.
+--Sig_/np7iLFcswnasyimVYWlLVVK
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-The test also checks variable length tunnel option assignment using
-bpf_skb_set_var_tunnel_opt.
+Hi all,
 
-Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
----
- .../selftests/bpf/prog_tests/test_tunnel.c    | 108 ++++++++++++++++
- .../selftests/bpf/progs/test_tunnel_kern.c    | 118 ++++++++++++++++++
- 2 files changed, 226 insertions(+)
+Today's linux-next merge of the bpf-next tree got a conflict in:
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c b/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-index 852da04ff281..9aae03c720e9 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-@@ -87,6 +87,8 @@
- #define VXLAN_TUNL_DEV1 "vxlan11"
- #define IP6VXLAN_TUNL_DEV0 "ip6vxlan00"
- #define IP6VXLAN_TUNL_DEV1 "ip6vxlan11"
-+#define GENEVE_TUNL_DEV0 "geneve00"
-+#define GENEVE_TUNL_DEV1 "geneve11"
- 
- #define PING_ARGS "-i 0.01 -c 3 -w 10 -q"
- 
-@@ -133,6 +135,38 @@ static void cleanup(void)
- 	SYS_NOFAIL("ip rule del to %s table 20 2> /dev/null", IP4_ADDR2_VETH1);
- 	SYS_NOFAIL("ip link del %s 2> /dev/null", VXLAN_TUNL_DEV1);
- 	SYS_NOFAIL("ip link del %s 2> /dev/null", IP6VXLAN_TUNL_DEV1);
-+	SYS_NOFAIL("ip link del %s 2> /dev/null", GENEVE_TUNL_DEV1);
-+}
-+
-+static int add_geneve_tunnel(void)
-+{
-+	/* at_ns0 namespace */
-+	SYS("ip netns exec at_ns0 ip link add dev %s type geneve external",
-+	    GENEVE_TUNL_DEV0);
-+	SYS("ip netns exec at_ns0 ip link set dev %s address %s up",
-+	    GENEVE_TUNL_DEV0, MAC_TUNL_DEV0);
-+	SYS("ip netns exec at_ns0 ip addr add dev %s %s/24",
-+	    GENEVE_TUNL_DEV0, IP4_ADDR_TUNL_DEV0);
-+	SYS("ip netns exec at_ns0 ip neigh add %s lladdr %s dev %s",
-+	    IP4_ADDR_TUNL_DEV1, MAC_TUNL_DEV1, GENEVE_TUNL_DEV0);
-+
-+	/* root namespace */
-+	SYS("ip link add dev %s type geneve external", GENEVE_TUNL_DEV1);
-+	SYS("ip link set dev %s address %s up", GENEVE_TUNL_DEV1, MAC_TUNL_DEV1);
-+	SYS("ip addr add dev %s %s/24", GENEVE_TUNL_DEV1, IP4_ADDR_TUNL_DEV1);
-+	SYS("ip neigh add %s lladdr %s dev %s",
-+	    IP4_ADDR_TUNL_DEV0, MAC_TUNL_DEV0, GENEVE_TUNL_DEV1);
-+
-+	return 0;
-+fail:
-+	return -1;
-+}
-+
-+static void delete_geneve_tunnel(void)
-+{
-+	SYS_NOFAIL("ip netns exec at_ns0 ip link delete dev %s",
-+		   GENEVE_TUNL_DEV0);
-+	SYS_NOFAIL("ip link delete dev %s", GENEVE_TUNL_DEV1);
- }
- 
- static int add_vxlan_tunnel(void)
-@@ -248,6 +282,79 @@ static int attach_tc_prog(struct bpf_tc_hook *hook, int igr_fd, int egr_fd)
- 	return 0;
- }
- 
-+static void test_geneve_tunnel(void)
-+{
-+	struct test_tunnel_kern *skel = NULL;
-+	struct nstoken *nstoken;
-+	int local_ip_map_fd = -1;
-+	int set_src_prog_fd, get_src_prog_fd;
-+	int set_dst_prog_fd;
-+	int key = 0, ifindex = -1;
-+	uint local_ip;
-+	int err;
-+	DECLARE_LIBBPF_OPTS(bpf_tc_hook, tc_hook,
-+			    .attach_point = BPF_TC_INGRESS);
-+
-+	/* add genve tunnel */
-+	err = add_geneve_tunnel();
-+	if (!ASSERT_OK(err, "add geneve tunnel"))
-+		goto done;
-+
-+	/* load and attach bpf prog to tunnel dev tc hook point */
-+	skel = test_tunnel_kern__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "test_tunnel_kern__open_and_load"))
-+		goto done;
-+	ifindex = if_nametoindex(GENEVE_TUNL_DEV1);
-+	if (!ASSERT_NEQ(ifindex, 0, "geneve11 ifindex"))
-+		goto done;
-+	tc_hook.ifindex = ifindex;
-+	get_src_prog_fd = bpf_program__fd(skel->progs.geneve_get_tunnel_src);
-+	set_src_prog_fd = bpf_program__fd(skel->progs.geneve_set_tunnel_src);
-+	if (!ASSERT_GE(get_src_prog_fd, 0, "bpf_program__fd"))
-+		goto done;
-+	if (!ASSERT_GE(set_src_prog_fd, 0, "bpf_program__fd"))
-+		goto done;
-+	if (attach_tc_prog(&tc_hook, get_src_prog_fd, set_src_prog_fd))
-+		goto done;
-+
-+	/* load and attach prog set_md to tunnel dev tc hook point at_ns0 */
-+	nstoken = open_netns("at_ns0");
-+	if (!ASSERT_OK_PTR(nstoken, "setns src"))
-+		goto done;
-+	ifindex = if_nametoindex(GENEVE_TUNL_DEV0);
-+	if (!ASSERT_NEQ(ifindex, 0, "geneve00 ifindex"))
-+		goto done;
-+	tc_hook.ifindex = ifindex;
-+	set_dst_prog_fd = bpf_program__fd(skel->progs.geneve_set_tunnel_dst);
-+	if (!ASSERT_GE(set_dst_prog_fd, 0, "bpf_program__fd"))
-+		goto done;
-+	if (attach_tc_prog(&tc_hook, -1, set_dst_prog_fd))
-+		goto done;
-+	close_netns(nstoken);
-+
-+	/* use veth1 ip 1 as tunnel source ip */
-+	local_ip_map_fd = bpf_map__fd(skel->maps.local_ip_map);
-+	if (!ASSERT_GE(local_ip_map_fd, 0, "bpf_map__fd"))
-+		goto done;
-+	local_ip = IP4_ADDR1_HEX_VETH1;
-+	err = bpf_map_update_elem(local_ip_map_fd, &key, &local_ip, BPF_ANY);
-+	if (!ASSERT_OK(err, "update bpf local_ip_map"))
-+		goto done;
-+
-+	/* ping test */
-+	err = test_ping(AF_INET, IP4_ADDR_TUNL_DEV0);
-+	if (!ASSERT_OK(err, "test_ping"))
-+		goto done;
-+
-+done:
-+	/* delete geneve tunnel */
-+	delete_geneve_tunnel();
-+	if (local_ip_map_fd >= 0)
-+		close(local_ip_map_fd);
-+	if (skel)
-+		test_tunnel_kern__destroy(skel);
-+}
-+
- static void test_vxlan_tunnel(void)
- {
- 	struct test_tunnel_kern *skel = NULL;
-@@ -408,6 +515,7 @@ static void *test_tunnel_run_tests(void *arg)
- 
- 	RUN_TEST(vxlan_tunnel);
- 	RUN_TEST(ip6vxlan_tunnel);
-+	RUN_TEST(geneve_tunnel);
- 
- 	cleanup();
- 
-diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-index 17f2f325b3f3..f724b1ce48d8 100644
---- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-+++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-@@ -23,6 +23,8 @@
- 
- #define log_err(__ret) bpf_printk("ERROR line:%d ret:%d\n", __LINE__, __ret)
- 
-+#define GENEVE_DYN_OPTS_SIZE 64
-+
- struct geneve_opt {
- 	__be16	opt_class;
- 	__u8	type;
-@@ -285,6 +287,122 @@ int ip4ip6erspan_get_tunnel(struct __sk_buff *skb)
- 	return TC_ACT_OK;
- }
- 
-+SEC("tc")
-+int geneve_set_tunnel_dst(struct __sk_buff *skb)
-+{
-+	int ret;
-+	struct bpf_tunnel_key key;
-+	__u8 opts[GENEVE_DYN_OPTS_SIZE];
-+	__u32 index = 0;
-+	__u32 *local_ip = NULL;
-+	int opts_len;
-+
-+	local_ip = bpf_map_lookup_elem(&local_ip_map, &index);
-+	if (!local_ip) {
-+		log_err(ret);
-+		return TC_ACT_SHOT;
-+	}
-+
-+	__builtin_memset(&key, 0x0, sizeof(key));
-+	key.local_ipv4 = 0xac100164; /* 172.16.1.100 */
-+	key.remote_ipv4 = *local_ip;
-+	key.tunnel_id = 2;
-+	key.tunnel_tos = 0;
-+	key.tunnel_ttl = 64;
-+
-+	ret = bpf_skb_set_tunnel_key(skb, &key, sizeof(key),
-+				     BPF_F_ZERO_CSUM_TX);
-+	if (ret < 0) {
-+		log_err(ret);
-+		return TC_ACT_SHOT;
-+	}
-+
-+	__builtin_memset(opts, 0x0, sizeof(opts));
-+	/* dynamic number of empty geneve options (4 bytes each).
-+	 * total len capped at sizeof(opts) and is multiple of 4
-+	 */
-+	opts_len = (skb->len % sizeof(opts)) & ~(sizeof(__u32) - 1);
-+	ret = bpf_skb_set_var_tunnel_opt(skb, opts, sizeof(opts), opts_len);
-+	if (ret < 0) {
-+		log_err(ret);
-+		return TC_ACT_SHOT;
-+	}
-+
-+	return TC_ACT_OK;
-+}
-+
-+SEC("tc")
-+int geneve_set_tunnel_src(struct __sk_buff *skb)
-+{
-+	int ret;
-+	struct bpf_tunnel_key key;
-+	__u32 index = 0;
-+	__u32 *local_ip = NULL;
-+
-+	local_ip = bpf_map_lookup_elem(&local_ip_map, &index);
-+	if (!local_ip) {
-+		log_err(ret);
-+		return TC_ACT_SHOT;
-+	}
-+
-+	__builtin_memset(&key, 0x0, sizeof(key));
-+	key.local_ipv4 = *local_ip;
-+	key.remote_ipv4 = 0xac100164; /* 172.16.1.100 */
-+	key.tunnel_id = 2;
-+	key.tunnel_tos = 0;
-+	key.tunnel_ttl = 64;
-+
-+	ret = bpf_skb_set_tunnel_key(skb, &key, sizeof(key),
-+				     BPF_F_ZERO_CSUM_TX);
-+	if (ret < 0) {
-+		log_err(ret);
-+		return TC_ACT_SHOT;
-+	}
-+
-+	return TC_ACT_OK;
-+}
-+
-+SEC("tc")
-+int geneve_get_tunnel_src(struct __sk_buff *skb)
-+{
-+	int ret;
-+	struct bpf_tunnel_key key;
-+	__u8 opts[GENEVE_DYN_OPTS_SIZE];
-+	int expected_opts_len;
-+	__u32 index = 0;
-+	__u32 *local_ip = NULL;
-+
-+	local_ip = bpf_map_lookup_elem(&local_ip_map, &index);
-+	if (!local_ip) {
-+		log_err(ret);
-+		return TC_ACT_SHOT;
-+	}
-+
-+	ret = bpf_skb_get_tunnel_key(skb, &key, sizeof(key), 0);
-+	if (ret < 0) {
-+		log_err(ret);
-+		return TC_ACT_SHOT;
-+	}
-+
-+	ret = bpf_skb_get_tunnel_opt(skb, &opts, sizeof(opts));
-+	if (ret < 0) {
-+		log_err(ret);
-+		return TC_ACT_SHOT;
-+	}
-+
-+	expected_opts_len = (skb->len % sizeof(opts)) & ~(sizeof(__u32) - 1);
-+	if (key.local_ipv4 != *local_ip || ret != expected_opts_len) {
-+		bpf_printk("geneve key %d local ip 0x%x remote ip 0x%x opts_len %d\n",
-+			   key.tunnel_id, key.local_ipv4,
-+			   key.remote_ipv4, ret);
-+		bpf_printk("local_ip 0x%x\n", *local_ip);
-+		log_err(ret);
-+		return TC_ACT_SHOT;
-+	}
-+
-+	return TC_ACT_OK;
-+}
-+
- SEC("tc")
- int vxlan_set_tunnel_dst(struct __sk_buff *skb)
- {
--- 
-2.37.2
+  tools/testing/selftests/bpf/DENYLIST.s390x
 
+between commit:
+
+  27e23836ce22 ("selftests/bpf: Add lru_bug to s390x deny list")
+
+from the bpf tree and commit:
+
+  b979f005d9b1 ("selftest/bpf: Add setget_sockopt to DENYLIST.s390x")
+
+from the bpf-next tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc tools/testing/selftests/bpf/DENYLIST.s390x
+index 5cadfbdadf36,a708c3dcc154..000000000000
+--- a/tools/testing/selftests/bpf/DENYLIST.s390x
++++ b/tools/testing/selftests/bpf/DENYLIST.s390x
+@@@ -65,4 -65,4 +65,5 @@@ send_signa
+  select_reuseport                         # intermittently fails on new s3=
+90x setup
+  xdp_synproxy                             # JIT does not support calling k=
+ernel function                                (kfunc)
+  unpriv_bpf_disabled                      # fentry
+ +lru_bug                                  # prog 'printk': failed to auto-=
+attach: -524
++ setget_sockopt                           # attach unexpected error: -524 =
+                                              (trampoline)
+
+--Sig_/np7iLFcswnasyimVYWlLVVK
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmMC1XgACgkQAVBC80lX
+0GxfMAf/RpVbYOcDE3iGxTsojuJZ4d8t7OgQZu7trQZwAc2EtWXxtP09bwURSe2D
+s9Ah3TD2guoOHKEeQ4mDCMMryITDJ/E1qY2H/shn1XbGerBThC+hJwQ1Lx19OkDr
+57Yp4/wDnQ5oSnXb4Pb6z5LAtF5KkleQ5yl5vnxa/6xsYKRF+fn6ufpBCrPPdkWP
+b+g8embFhny5mEfvjYwQ9QPcceCH9QfDJSUSYwK9HxHbdV5zMzJX4nwCXSxuAJgs
+vXd/Of9ZE3Gf5ocoglptg2xJ21hx0nkE6USg1Y9u55OxOIsaq7cyqc6P57cd1gAu
+lhuHI8jgKce4U4NgqIf3tM51zNmwoQ==
+=hvXH
+-----END PGP SIGNATURE-----
+
+--Sig_/np7iLFcswnasyimVYWlLVVK--
