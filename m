@@ -2,262 +2,311 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7447959BE75
-	for <lists+bpf@lfdr.de>; Mon, 22 Aug 2022 13:29:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70F3559BF3D
+	for <lists+bpf@lfdr.de>; Mon, 22 Aug 2022 14:08:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234156AbiHVL3a (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Aug 2022 07:29:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56484 "EHLO
+        id S234931AbiHVMHz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Aug 2022 08:07:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234170AbiHVL33 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 22 Aug 2022 07:29:29 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A99432EFD;
-        Mon, 22 Aug 2022 04:29:28 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id o5-20020a17090a3d4500b001ef76490983so10916057pjf.2;
-        Mon, 22 Aug 2022 04:29:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc;
-        bh=OvbrjWH0ZIokBhPMUv+n85WJlYuSvCgvMb6EiRBkQkk=;
-        b=aE+aeUMWK6ZS53keSjCPtcn0SIjQcjrmfsuB2oEtCB9l2eh4sOcUyLeAJlRCKpjxvb
-         3PZIJvtvfmxXK9HLeZKC6LlbMduzhJ1VVYDgooECOmPln0+fKQLcWhFPipYfCF4GAJN5
-         ArQvepWkn89m8vqmL9UJd/ds0TthMSLn/b8twxg35rrqtOWXx4aUaRM+4IrK2ToTG3Q7
-         bjOVp4d4VPynQc+G0ox1s3b86CjnNXgCBQyNSZrIPXmOYXk2oApd87lBhW1MlXflZKlI
-         bJ/7Eoq6qMYEnfjdKTf0JkSHhOOOvURqO1NhY/VOxqR/W9z8K4zR/HE1iu0eSulZhgM5
-         OMGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc;
-        bh=OvbrjWH0ZIokBhPMUv+n85WJlYuSvCgvMb6EiRBkQkk=;
-        b=XTGE6aTgCqCm8Q9vjhjc/9dayqXnIkvdD+nbdHg3SbDXYBP/Har4PKF+6vyvRfE/x9
-         5tCpRhHCzSepyELBnb7MqXaj6TJqL0VB/J2dTk2Uh3gUWHlUPD7ZRwNz32IpWRr4cjF3
-         p31aYydXlq6zqYwnE6+wC7ctpwIq1ea0l4y4DZKJhdcGb65ZR/M4tsWEXKYQTyDjKJzI
-         MJ094NWU50rFW2hd+Nw2hVe/F6TZQKzmnv2aK5fkdV4MpeprBWQnfZvuBoyQwFx9lIpB
-         laQ1NE1iFsy9Z6iqVuqzaJ/Z8OpZf39GWccMkYo+UQ2B5eR7zQ1jP23zeaXpzggoBEPg
-         rJgg==
-X-Gm-Message-State: ACgBeo2RagDXL9fSkdeOzgkmuXZj0LItPMFN/xw6bxPERb8spX2C0hfW
-        g1+yKTOKF0W8DD0nYBtazLU=
-X-Google-Smtp-Source: AA6agR5cOJEwIZjpViZ1mkB4Qq0gpVryKYuBn8GXa1aHP7S1MkfAa4ez3plmHcSQrh1pIoiou9H2Iw==
-X-Received: by 2002:a17:903:11c7:b0:170:cde7:d24a with SMTP id q7-20020a17090311c700b00170cde7d24amr19883486plh.91.1661167767455;
-        Mon, 22 Aug 2022 04:29:27 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id ay24-20020a17090b031800b001ef8ab65052sm4727620pjb.11.2022.08.22.04.29.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Aug 2022 04:29:27 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 22 Aug 2022 01:29:25 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S231327AbiHVMHy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 22 Aug 2022 08:07:54 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 889EA3A481
+        for <bpf@vger.kernel.org>; Mon, 22 Aug 2022 05:07:49 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4MBB0g5gFnzmVN8
+        for <bpf@vger.kernel.org>; Mon, 22 Aug 2022 20:06:27 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+        by APP3 (Coremail) with SMTP id _Ch0CgAXozuPcQNjR3iAAg--.48086S2;
+        Mon, 22 Aug 2022 20:07:47 +0800 (CST)
+Subject: Re: [PATCH 1/3] bpf: Disable preemption when increasing per-cpu
+ map_locked
+To:     Hao Luo <haoluo@google.com>
+Cc:     bpf@vger.kernel.org, Song Liu <songliubraving@fb.com>,
+        Hao Sun <sunhao.th@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
         KP Singh <kpsingh@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, jolsa@kernel.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Cgroups <cgroups@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Dan Schatzberg <schatzberg.dan@gmail.com>,
-        Lennart Poettering <lennart@poettering.net>
-Subject: [RFD RESEND] cgroup: Persistent memory usage tracking
-Message-ID: <YwNold0GMOappUxc@slm.duckdns.org>
-References: <20220818143118.17733-1-laoar.shao@gmail.com>
- <Yv67MRQLPreR9GU5@slm.duckdns.org>
- <Yv6+HlEzpNy8y5kT@slm.duckdns.org>
- <CALOAHbDcrj1ifFsNMHBEih5-SXY2rWViig4rQHi9N07JY6CjXA@mail.gmail.com>
- <Yv/DK+AGlMeBGkF1@slm.duckdns.org>
- <CALOAHbCvUxQn5Zkp2FJ+eL1VgjeRSq1xQhzdiY87C1Cbib-nig@mail.gmail.com>
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Lorenz Bauer <oss@lmb.io>, houtao1@huawei.com
+References: <20220821033223.2598791-1-houtao@huaweicloud.com>
+ <20220821033223.2598791-2-houtao@huaweicloud.com>
+ <CA+khW7jv6J9FSqNvaHNzYNpEBoQX6wPEEdoD4OwkPQt844Wwmw@mail.gmail.com>
+ <3287b95c-30e1-5647-fe2c-1feff673291d@huaweicloud.com>
+ <CA+khW7h1OK2oqGyCipGfySV_kcHW4=SHo6123nk2WTTXMOMUxQ@mail.gmail.com>
+From:   Hou Tao <houtao@huaweicloud.com>
+Message-ID: <387c851f-03ae-9b34-4ec0-9667fb26ec18@huaweicloud.com>
+Date:   Mon, 22 Aug 2022 20:07:43 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALOAHbCvUxQn5Zkp2FJ+eL1VgjeRSq1xQhzdiY87C1Cbib-nig@mail.gmail.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+In-Reply-To: <CA+khW7h1OK2oqGyCipGfySV_kcHW4=SHo6123nk2WTTXMOMUxQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID: _Ch0CgAXozuPcQNjR3iAAg--.48086S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3WrWxCF43tFWktFWDKr45Jrb_yoW3Ww4rpr
+        W8GFyjyrWUXr10gr42qr1Ivry5tw1UK347Xr1DGa4UAryDtwnFqr18XF1j9F10vr4xJr1I
+        qr4UtrW3ZryUAFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
+        07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_
+        WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+        CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
+        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+        7IU13rcDUUUUU==
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-(Sorry, this is a resend. I messed up the header in the first posting.)
+Hi,
 
-Hello,
+On 8/22/2022 11:21 AM, Hao Luo wrote:
+> Hi, Hou Tao
+>
+> On Sun, Aug 21, 2022 at 6:28 PM Hou Tao <houtao@huaweicloud.com> wrote:
+>> Hi,
+>>
+>> On 8/22/2022 12:42 AM, Hao Luo wrote:
+>>> Hi Hou Tao,
+>>>
+>>> On Sat, Aug 20, 2022 at 8:14 PM Hou Tao <houtao@huaweicloud.com> wrote:
+>>>> From: Hou Tao <houtao1@huawei.com>
+>>>>
+>>>> Per-cpu htab->map_locked is used to prohibit the concurrent accesses
+>>>> from both NMI and non-NMI contexts. But since 74d862b682f51 ("sched:
+>>>> Make migrate_disable/enable() independent of RT"), migrations_disable()
+>>>> is also preemptible under !PREEMPT_RT case, so now map_locked also
+>>>> disallows concurrent updates from normal contexts (e.g. userspace
+>>>> processes) unexpectedly as shown below:
+>>>>
+>>>> process A                      process B
+>>>>
+>>>> htab_map_update_elem()
+>>>>   htab_lock_bucket()
+>>>>     migrate_disable()
+>>>>     /* return 1 */
+>>>>     __this_cpu_inc_return()
+>>>>     /* preempted by B */
+>>>>
+>>>>                                htab_map_update_elem()
+>>>>                                  /* the same bucket as A */
+>>>>                                  htab_lock_bucket()
+>>>>                                    migrate_disable()
+>>>>                                    /* return 2, so lock fails */
+>>>>                                    __this_cpu_inc_return()
+>>>>                                    return -EBUSY
+>>>>
+>>>> A fix that seems feasible is using in_nmi() in htab_lock_bucket() and
+>>>> only checking the value of map_locked for nmi context. But it will
+>>>> re-introduce dead-lock on bucket lock if htab_lock_bucket() is re-entered
+>>>> through non-tracing program (e.g. fentry program).
+>>>>
+>>>> So fixing it by using disable_preempt() instead of migrate_disable() when
+>>>> increasing htab->map_locked. However when htab_use_raw_lock() is false,
+>>>> bucket lock will be a sleepable spin-lock and it breaks disable_preempt(),
+>>>> so still use migrate_disable() for spin-lock case.
+>>>>
+>>>> Signed-off-by: Hou Tao <houtao1@huawei.com>
+>>>> ---
+>>> IIUC, this patch enlarges the scope of preemption disable to cover inc
+>>> map_locked. But I don't think the change is meaningful.
+>> Before 74d862b682f51 ("sched: Make migrate_disable/enable() independent of
+>> RT"),  the preemption is disabled before increasing map_locked for !PREEMPT_RT
+>> case, so I don't think that the change is meaningless.
+>>> This patch only affects the case when raw lock is used. In the case of
+>>> raw lock, irq is disabled for b->raw_lock protected critical section.
+>>> A raw spin lock itself doesn't block in both RT and non-RT. So, my
+>>> understanding about this patch is, it just makes sure preemption
+>>> doesn't happen on the exact __this_cpu_inc_return. But the window is
+>>> so small that it should be really unlikely to happen.
+>> No, it can be easily reproduced by running multiple htab update processes in the
+>> same CPU. Will add selftest to demonstrate that.
+> Can you clarify what you demonstrate?
+First please enable CONFIG_PREEMPT for the running kernel and then run the
+following test program as shown below.
 
-This thread started on a bpf-specific memory tracking change proposal and
-went south, but a lot of people who would be interested are already cc'd, so
-I'm hijacking it to discuss what to do w/ persistent memory usage tracking.
+# sudo taskset -c 2 ./update.bin
+thread nr 2
+wait for error
+update error -16
+all threads exit
 
-Cc'ing Mina and Yosry who were involved in the discussions on the similar
-problem re. tmpfs, Dan Schatzberg who has a lot more prod knowledge and
-experience than me, and Lennart for his thoughts from systemd side.
+If there is no "update error -16", you can try to create more map update
+threads. For example running 16 update threads:
 
-The root problem is that there are resources (almost solely memory
-currently) that outlive a given instance of a, to use systemd-lingo,
-service. Page cache is the most common case.
+# sudo taskset -c 2 ./update.bin 16
+thread nr 16
+wait for error
+update error -16
+update error -16
+update error -16
+update error -16
+update error -16
+update error -16
+update error -16
+update error -16
+all threads exit
 
-Let's say there's system.slice/hello.service. When it runs for the first
-time, page cache backing its binary will be charged to hello.service.
-However, when it restarts after e.g. a config change, when the initial
-hello.service cgroup gets destroyed, we reparent the page cache charges to
-the parent system.slice and when the second instance starts, its binary will
-stay charged to system.slice. Over time, some may get reclaimed and
-refaulted into the new hello.service but that's not guaranteed and most hot
-pages likely won't.
+The following is the source code for update.bin:
 
-The same problem exists for any memory which is not freed synchronously when
-the current instance exits. While this isn't a problem for many cases, it's
-not difficult to imagine situations where the amount of memory which ends up
-getting pushed to the parent is significant, even clear majority, with big
-page cache footprint, persistent tmpfs instances and so on, creating issues
-with accounting accuracy and thus control.
+#define _GNU_SOURCE
+#include <stdio.h>
+#include <stdbool.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <errno.h>
+#include <pthread.h>
 
-I think there are two broad issues to discuss here:
+#include "bpf.h"
+#include "libbpf.h"
 
-[1] Can this be solved by layering the instance cgroups under persistent
-    entity cgroup?
+static bool stop;
+static int fd;
 
-So, instead of systemd.slice/hello.service, the application runs inside
-something like systemd.slice/hello.service/hello.service.instance and the
-service-level cgroup hello.service is not destroyed as long as it is
-something worth tracking on the system.
+static void *update_fn(void *arg)
+{
+        while (!stop) {
+                unsigned int key = 0, value = 1;
+                int err;
 
-The benefits are
+                err = bpf_map_update_elem(fd, &key, &value, 0);
+                if (err) {
+                        printf("update error %d\n", err);
+                        stop = true;
+                        break;
+                }
+        }
 
-a. While requiring changing how userland organizes cgroup hiearchy, it is a
-   straight-forward extension of the current architecture and doesn't
-   require any conceptual or structural changes. All the accounting and
-   control schemes work exactly the same as before. The only difference is
-   that we now have a persistent entity representing each service as we want
-   to track their persistent resource usages.
+        return NULL;
+}
 
-b. Per-instance tracking and control is optional. To me, it seems that the
-   persistent resource usages would be more meaningful than per-instance and
-   tracking down to the persistent usages shouldn't add noticeable runtime
-   overheads while keeping per-instance process management niceties and
-   allowing use cases to opt-in for per-instance resource tracking and
-   control as needed.
+int main(int argc, char **argv)
+{
+        LIBBPF_OPTS(bpf_map_create_opts, opts);
+        unsigned int i, nr;
+        pthread_t *tids;
 
-The complications are:
+        nr = 2;
+        if (argc > 1)
+                nr = atoi(argv[1]);
+        printf("thread nr %u\n", nr);
 
-a. It requires changing cgroup hierarchy in a very visible way.
+        libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
+        fd = bpf_map_create(BPF_MAP_TYPE_HASH, "batch", 4, 4, 1, &opts);
+        if (fd < 0) {
+                printf("create map error %d\n", fd);
+                return 1;
+        }
 
-b. What should be the lifetime rules for persistent cgroups? Do we keep them
-   around forever or maybe they can be created on the first use and kept
-   around until the service is removed from the system? When the persistent
-   cgroup is removed, do we need to make sure that the remaining resource
-   usages are low enough? Note that this problem exists for any approach
-   that tries to track persistent usages no matter how it's done.
+        tids = malloc(nr * sizeof(*tids));
+        for (i = 0; i < nr; i++)
+                pthread_create(&tids[i], NULL, update_fn, NULL);
 
-c. Do we need to worry about nesting overhead? Given that there's no reason
-   to enable controllers w/o persisten states for the instance level and the
-   nesting overhead is pretty low for memcg, this doesn't seem like a
-   problem to me. If this becomes a problem, we just need to fix it.
+        printf("wait for error\n");
+        for (i = 0; i < nr; i++)
+                pthread_join(tids[i], NULL);
 
-A couple alternatives discussed are:
+        printf("all threads exit\n");
 
-a. Userspace keeps reusing the same cgroup for different instances of the
-   same service. This simplifies some aspects while making others more
-   complicated. e.g. Determining the current instance's CPU or IO usages now
-   require the monitoring software remembering what they were when this
-   instance started and calculating the deltas. Also, if some use cases want
-   to distinguish persistent vs. instance usages (more on this later), this
-   isn't gonna work. That said, this definitely is attractive in that it
-   miminizes overt user visible changes.
+        free(tids);
+        close(fd);
 
-b. Memory is disassociated rather than just reparented on cgroup destruction
-   and get re-charged to the next first user. This is attractive in that it
-   doesn't require any userspace changes; however, I'm not sure how this
-   would work for non-pageable memory usages such as bpf maps. How would we
-   detect the next first usage?
+        return 0;
+}
 
+>
+> Here is my theory, but please correct me if I'm wrong, I haven't
+> tested yet. In non-RT, I doubt preemptions are likely to happen after
+> migrate_disable. That is because very soon after migrate_disable, we
+> enter the critical section of b->raw_lock with irq disabled. In RT,
+> preemptions can happen on acquiring b->lock, that is certainly
+> possible, but this is the !use_raw_lock path, which isn't side-stepped
+> by this patch.
+>
+>>>>  kernel/bpf/hashtab.c | 23 ++++++++++++++++++-----
+>>>>  1 file changed, 18 insertions(+), 5 deletions(-)
+>>>>
+>>>> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+>>>> index 6c530a5e560a..ad09da139589 100644
+>>>> --- a/kernel/bpf/hashtab.c
+>>>> +++ b/kernel/bpf/hashtab.c
+>>>> @@ -162,17 +162,25 @@ static inline int htab_lock_bucket(const struct bpf_htab *htab,
+>>>>                                    unsigned long *pflags)
+>>>>  {
+>>>>         unsigned long flags;
+>>>> +       bool use_raw_lock;
+>>>>
+>>>>         hash = hash & HASHTAB_MAP_LOCK_MASK;
+>>>>
+>>>> -       migrate_disable();
+>>>> +       use_raw_lock = htab_use_raw_lock(htab);
+>>>> +       if (use_raw_lock)
+>>>> +               preempt_disable();
+>>>> +       else
+>>>> +               migrate_disable();
+>>>>         if (unlikely(__this_cpu_inc_return(*(htab->map_locked[hash])) != 1)) {
+>>>>                 __this_cpu_dec(*(htab->map_locked[hash]));
+>>>> -               migrate_enable();
+>>>> +               if (use_raw_lock)
+>>>> +                       preempt_enable();
+>>>> +               else
+>>>> +                       migrate_enable();
+>>>>                 return -EBUSY;
+>>>>         }
+>>>>
+>>>> -       if (htab_use_raw_lock(htab))
+>>>> +       if (use_raw_lock)
+>>>>                 raw_spin_lock_irqsave(&b->raw_lock, flags);
+>>>>         else
+>>>>                 spin_lock_irqsave(&b->lock, flags);
+>>>> @@ -185,13 +193,18 @@ static inline void htab_unlock_bucket(const struct bpf_htab *htab,
+>>>>                                       struct bucket *b, u32 hash,
+>>>>                                       unsigned long flags)
+>>>>  {
+>>>> +       bool use_raw_lock = htab_use_raw_lock(htab);
+>>>> +
+>>>>         hash = hash & HASHTAB_MAP_LOCK_MASK;
+>>>> -       if (htab_use_raw_lock(htab))
+>>>> +       if (use_raw_lock)
+>>>>                 raw_spin_unlock_irqrestore(&b->raw_lock, flags);
+>>>>         else
+>>>>                 spin_unlock_irqrestore(&b->lock, flags);
+>>>>         __this_cpu_dec(*(htab->map_locked[hash]));
+>>>> -       migrate_enable();
+>>>> +       if (use_raw_lock)
+>>>> +               preempt_enable();
+>>>> +       else
+>>>> +               migrate_enable();
+>>>>  }
+>>>>
+>>>>  static bool htab_lru_map_delete_node(void *arg, struct bpf_lru_node *node);
+>>>> --
+>>>> 2.29.2
+>>>>
+>>> .
+> .
 
-[2] Whether and how to solve first and second+ instance charge differences.
-
-If we take the layering approach, the first instance will get charged for
-all memory that it uses while the second+ instances likely won't get charged
-for a lot of persistent usages. I don't think there is a consensus on
-whether this needs to be solved and I don't have enough context to form a
-strong opinion. memcg folks are a lot better equipped to make this decision.
-
-Assuming this needs to be solved, here's a braindump to be taken with a big
-pinch of salt:
-
-I have a bit of difficult time imagining a perfect solution given that
-whether a given page cache page is persistent or not would be really
-difficult to know (or maybe all page cache is persistent by default while
-anon is not). However, the problem still seems worthwhile to consider for
-big ticket items such as persistent tmpfs mounts and huge bpf maps as they
-can easily make the differences really big.
-
-If we want to solve this problem, here are options that I can think of:
-
-a. Let userspace put the charges where they belong using the current
-   mechanisms. ie. Create persistent entities in the persistent parent
-   cgroup while there's no current instance.
-
-   Pro: It won't require any major kernel or interface changes. There still
-   need to be some tweaking such as allowing tmpfs pages to be always
-   charged to the cgroup which created the instance (maybe as long as it's
-   an ancestor of the faulting cgroup?) but nothing too invasive.
-
-   Con: It may not be flexible enough.
-
-b. Let userspace specify which cgroup to charge for some of constructs like
-   tmpfs and bpf maps. The key problems with this approach are
-
-   1. How to grant/deny what can be charged where. We must ensure that a
-      descendant can't move charges up or across the tree without the
-      ancestors allowing it.
-
-   2. How to specify the cgroup to charge. While specifying the target
-      cgroup directly might seem like an obvious solution, it has a couple
-      rather serious problems. First, if the descendant is inside a cgroup
-      namespace, it might be able to see the target cgroup at all. Second,
-      it's an interface which is likely to cause misunderstandings on how it
-      can be used. It's too broad an interface.
-
-   One solution that I can think of is leveraging the resource domain
-   concept which is currently only used for threaded cgroups. All memory
-   usages of threaded cgroups are charged to their resource domain cgroup
-   which hosts the processes for those threads. The persistent usages have a
-   similar pattern, so maybe the service level cgroup can declare that it's
-   the encompassing resource domain and the instance cgroup can say whether
-   it's gonna charge e.g. the tmpfs instance to its own or the encompassing
-   resource domain.
-
-   This has the benefit that the user only needs to indicate its intention
-   without worrying about how cgroups are composed and what their IDs are.
-   It just indicates whether the given resource is persistent and if the
-   cgroup hierarchy is set up for that, it gets charged that way and if not
-   it can be just charged to itself.
-
-   This is a shower thought but, if we allow nesting such domains (and maybe
-   name them), we can use it for shared resources too so that co-services
-   are put inside a shared slice and shared resources are pushed to the
-   slice level.
-
-This became pretty long. I obviously have a pretty strong bias towards
-solving this within the current basic architecture but other than that most
-of these decisions are best made by memcg folks. We can hopefully build some
-consensus on the issue.
-
-Thanks.
-
--- 
-tejun
