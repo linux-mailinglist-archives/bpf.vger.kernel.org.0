@@ -2,295 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C125959C7CD
-	for <lists+bpf@lfdr.de>; Mon, 22 Aug 2022 21:03:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9194259C901
+	for <lists+bpf@lfdr.de>; Mon, 22 Aug 2022 21:36:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236522AbiHVTDJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Aug 2022 15:03:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54860 "EHLO
+        id S238411AbiHVTfq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Aug 2022 15:35:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237682AbiHVTDH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 22 Aug 2022 15:03:07 -0400
-Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4A4425E8
-        for <bpf@vger.kernel.org>; Mon, 22 Aug 2022 12:03:01 -0700 (PDT)
-Received: by mail-vs1-xe2a.google.com with SMTP id c3so12199871vsc.6
-        for <bpf@vger.kernel.org>; Mon, 22 Aug 2022 12:03:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=jv+84JyfncJ9PWKscAyePDT4xWJE+JsigBsGVay/has=;
-        b=Dbh+nJE/9yYILFKAZ2eV/+FIT6aPqZOp0Ds/8iUgYR9lGja15u+/YB5JRVGd5Q6zGy
-         9upRxXjpV2tgND6xZCFY1/wrcNoO+tV4uuxJShYhRaEBwKevYgVijioxu+Xjh8RgBy6r
-         /PEj/7gV32v+SeL7QUkO1AHknV3dYmapUJQZm/krWJDia4gxD3gQGZOA1KYCRitFKeeB
-         5efHoZfxSVL3WTr3xbdYPQSPDbz2jmP04b76n7eSGZ+V1Eo/P88fz25zpeDLypaMFcsH
-         X2KbnMZYOHLLKtaPteqeZ7wlH4U7M8eLqdihz+ZH0U0/MgLsg2szjHni6dVB31Of1jEJ
-         6BxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=jv+84JyfncJ9PWKscAyePDT4xWJE+JsigBsGVay/has=;
-        b=bDRpb0zMZUbZL5oKfTIHIDVvUxWm4CtL+eSiq6LOly1jWT2de/o4KI1XvUjOGSRFGY
-         vLXizemhej4J6e5u4I0OxnkJEQmRc+w6E5jqbHlpxP8+pQyixnjj087+Dv25/nrL65Fx
-         CLdVv9llBSFYUAw4pX7v+rU3I5tCMoA49Wff3He3uXn/xX7xLFW1We8DKweTpiYlUIkW
-         fF5lV2oXqPRAYEwT8v4UsMdCh5M6c1a905HyMwsj+Ft2N2AVKLhPVeOtiNuu4U+d2RVu
-         dOdLeIDFCa9jLGQmbizfZVSRlPRKRVKGefEQKlgHXN1auSdx0HZVB0ckNrfH9MKTxI8n
-         937w==
-X-Gm-Message-State: ACgBeo3Olx7EielpiqgcL+y4YENmZSMmmXBF1nbKuPm+MjaezVyDyusy
-        2m0HyEhpk80Jmq7+PyvwpbTrGkRjuBSpVJ3Uc/vpGQ==
-X-Google-Smtp-Source: AA6agR7E9USo3A7W363RTfEtsuKc9Ih/fB2kLQbYUh5dN8ffgVHAAe2WXv05PgXnEXXyCtTVgo+IYdgg0sL3IKHTc0c=
-X-Received: by 2002:a67:d483:0:b0:38f:4981:c4f3 with SMTP id
- g3-20020a67d483000000b0038f4981c4f3mr7388765vsj.59.1661194979729; Mon, 22 Aug
- 2022 12:02:59 -0700 (PDT)
+        with ESMTP id S238349AbiHVTfp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 22 Aug 2022 15:35:45 -0400
+Received: from 69-171-232-181.mail-mxout.facebook.com (69-171-232-181.mail-mxout.facebook.com [69.171.232.181])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 845D4B87
+        for <bpf@vger.kernel.org>; Mon, 22 Aug 2022 12:35:44 -0700 (PDT)
+Received: by devbig010.atn6.facebook.com (Postfix, from userid 115148)
+        id AC1DE10CDA500; Mon, 22 Aug 2022 12:35:29 -0700 (PDT)
+From:   Joanne Koong <joannelkoong@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     andrii@kernel.org, daniel@iogearbox.net, ast@kernel.org,
+        kafai@fb.com, kuba@kernel.org, netdev@vger.kernel.org,
+        Joanne Koong <joannelkoong@gmail.com>
+Subject: [PATCH bpf-next v3 0/3] Add skb + xdp dynptrs
+Date:   Mon, 22 Aug 2022 12:34:39 -0700
+Message-Id: <20220822193442.657638-1-joannelkoong@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20220818143118.17733-1-laoar.shao@gmail.com> <Yv67MRQLPreR9GU5@slm.duckdns.org>
- <Yv6+HlEzpNy8y5kT@slm.duckdns.org> <CALOAHbDcrj1ifFsNMHBEih5-SXY2rWViig4rQHi9N07JY6CjXA@mail.gmail.com>
- <Yv/DK+AGlMeBGkF1@slm.duckdns.org> <CALOAHbCvUxQn5Zkp2FJ+eL1VgjeRSq1xQhzdiY87C1Cbib-nig@mail.gmail.com>
- <YwNold0GMOappUxc@slm.duckdns.org>
-In-Reply-To: <YwNold0GMOappUxc@slm.duckdns.org>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Mon, 22 Aug 2022 12:02:48 -0700
-Message-ID: <CAHS8izNvEpX3Lv7eFn-vu=4ZT96Djk2dU-VU+zOueZaZZbnWNw@mail.gmail.com>
-Subject: Re: [RFD RESEND] cgroup: Persistent memory usage tracking
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Yafang Shao <laoar.shao@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, jolsa@kernel.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Cgroups <cgroups@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Dan Schatzberg <schatzberg.dan@gmail.com>,
-        Lennart Poettering <lennart@poettering.net>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=3.3 required=5.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+        FORGED_GMAIL_RCVD,FREEMAIL_FROM,NML_ADSP_CUSTOM_MED,RDNS_DYNAMIC,
+        SPF_HELO_PASS,SPF_SOFTFAIL,SPOOFED_FREEMAIL,SPOOF_GMAIL_MID,
+        TVD_RCVD_IP,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 22, 2022 at 4:29 AM Tejun Heo <tj@kernel.org> wrote:
->
-> (Sorry, this is a resend. I messed up the header in the first posting.)
->
-> Hello,
->
-> This thread started on a bpf-specific memory tracking change proposal and
-> went south, but a lot of people who would be interested are already cc'd, so
-> I'm hijacking it to discuss what to do w/ persistent memory usage tracking.
->
-> Cc'ing Mina and Yosry who were involved in the discussions on the similar
-> problem re. tmpfs, Dan Schatzberg who has a lot more prod knowledge and
-> experience than me, and Lennart for his thoughts from systemd side.
->
-> The root problem is that there are resources (almost solely memory
-> currently) that outlive a given instance of a, to use systemd-lingo,
-> service. Page cache is the most common case.
->
-> Let's say there's system.slice/hello.service. When it runs for the first
-> time, page cache backing its binary will be charged to hello.service.
-> However, when it restarts after e.g. a config change, when the initial
-> hello.service cgroup gets destroyed, we reparent the page cache charges to
-> the parent system.slice and when the second instance starts, its binary will
-> stay charged to system.slice. Over time, some may get reclaimed and
-> refaulted into the new hello.service but that's not guaranteed and most hot
-> pages likely won't.
->
-> The same problem exists for any memory which is not freed synchronously when
-> the current instance exits. While this isn't a problem for many cases, it's
-> not difficult to imagine situations where the amount of memory which ends up
-> getting pushed to the parent is significant, even clear majority, with big
-> page cache footprint, persistent tmpfs instances and so on, creating issues
-> with accounting accuracy and thus control.
->
-> I think there are two broad issues to discuss here:
->
-> [1] Can this be solved by layering the instance cgroups under persistent
->     entity cgroup?
->
-> So, instead of systemd.slice/hello.service, the application runs inside
-> something like systemd.slice/hello.service/hello.service.instance and the
-> service-level cgroup hello.service is not destroyed as long as it is
-> something worth tracking on the system.
->
-> The benefits are
->
-> a. While requiring changing how userland organizes cgroup hiearchy, it is a
->    straight-forward extension of the current architecture and doesn't
->    require any conceptual or structural changes. All the accounting and
->    control schemes work exactly the same as before. The only difference is
->    that we now have a persistent entity representing each service as we want
->    to track their persistent resource usages.
->
-> b. Per-instance tracking and control is optional. To me, it seems that the
->    persistent resource usages would be more meaningful than per-instance and
->    tracking down to the persistent usages shouldn't add noticeable runtime
->    overheads while keeping per-instance process management niceties and
->    allowing use cases to opt-in for per-instance resource tracking and
->    control as needed.
->
-> The complications are:
->
-> a. It requires changing cgroup hierarchy in a very visible way.
->
-> b. What should be the lifetime rules for persistent cgroups? Do we keep them
->    around forever or maybe they can be created on the first use and kept
->    around until the service is removed from the system? When the persistent
->    cgroup is removed, do we need to make sure that the remaining resource
->    usages are low enough? Note that this problem exists for any approach
->    that tries to track persistent usages no matter how it's done.
->
-> c. Do we need to worry about nesting overhead? Given that there's no reason
->    to enable controllers w/o persisten states for the instance level and the
->    nesting overhead is pretty low for memcg, this doesn't seem like a
->    problem to me. If this becomes a problem, we just need to fix it.
->
-> A couple alternatives discussed are:
->
-> a. Userspace keeps reusing the same cgroup for different instances of the
->    same service. This simplifies some aspects while making others more
->    complicated. e.g. Determining the current instance's CPU or IO usages now
->    require the monitoring software remembering what they were when this
->    instance started and calculating the deltas. Also, if some use cases want
->    to distinguish persistent vs. instance usages (more on this later), this
->    isn't gonna work. That said, this definitely is attractive in that it
->    miminizes overt user visible changes.
->
-> b. Memory is disassociated rather than just reparented on cgroup destruction
->    and get re-charged to the next first user. This is attractive in that it
->    doesn't require any userspace changes; however, I'm not sure how this
->    would work for non-pageable memory usages such as bpf maps. How would we
->    detect the next first usage?
->
->
-> [2] Whether and how to solve first and second+ instance charge differences.
->
-> If we take the layering approach, the first instance will get charged for
-> all memory that it uses while the second+ instances likely won't get charged
-> for a lot of persistent usages. I don't think there is a consensus on
-> whether this needs to be solved and I don't have enough context to form a
-> strong opinion. memcg folks are a lot better equipped to make this decision.
->
+This patchset is the 2nd in the dynptr series. The 1st can be found here =
+[0].
 
-The problem of first and second+ instance charges is something I've
-ran into when dealing with tmpfs charges, and something I believe
-Yosry ran into with regards to bpf as well, so AFAIU we think it's
-something worth addressing, but I'd also like to hear from other memcg
-folks if this is something that needs to be solved for them as well.
-For us this is something we want to fix because the memory usage of
-these services is hard to predict and limit since the memory usage of
-the first charger may be much greater than second+.
+This patchset adds skb and xdp type dynptrs, which have two main benefits=
+ for
+packet parsing:
+    * allowing operations on sizes that are not statically known at
+      compile-time (eg variable-sized accesses).
+    * more ergonomic and less brittle iteration through data (eg does not=
+ need
+      manual if checking for being within bounds of data_end)
 
-> Assuming this needs to be solved, here's a braindump to be taken with a big
-> pinch of salt:
->
-> I have a bit of difficult time imagining a perfect solution given that
-> whether a given page cache page is persistent or not would be really
-> difficult to know (or maybe all page cache is persistent by default while
-> anon is not). However, the problem still seems worthwhile to consider for
-> big ticket items such as persistent tmpfs mounts and huge bpf maps as they
-> can easily make the differences really big.
->
-> If we want to solve this problem, here are options that I can think of:
->
-> a. Let userspace put the charges where they belong using the current
->    mechanisms. ie. Create persistent entities in the persistent parent
->    cgroup while there's no current instance.
->
->    Pro: It won't require any major kernel or interface changes. There still
->    need to be some tweaking such as allowing tmpfs pages to be always
->    charged to the cgroup which created the instance (maybe as long as it's
->    an ancestor of the faulting cgroup?) but nothing too invasive.
->
->    Con: It may not be flexible enough.
->
+When comparing the differences in runtime for packet parsing without dynp=
+trs
+vs. with dynptrs for the more simple cases, there is no noticeable differ=
+ence.
+For the more complex cases where lengths are non-statically known at comp=
+ile
+time, there can be a significant speed-up when using dynptrs (eg a 2x spe=
+ed up
+for cls redirection). Patch 3 contains more details as well as examples o=
+f how
+to use skb and xdp dynptrs.
 
-I believe this works for us, provided memory is charged to the
-persistent parent entity directly and is not charged to the child
-instance. If memory is charged to the child instance first and then
-reparented, I think we still have the same problem. Because the first
-instance is charged for this memory but the second+ instances are not,
-making predicting the memory usage of such use cases difficult.
+[0] https://lore.kernel.org/bpf/20220523210712.3641569-1-joannelkoong@gma=
+il.com/
 
-> b. Let userspace specify which cgroup to charge for some of constructs like
->    tmpfs and bpf maps. The key problems with this approach are
->
->    1. How to grant/deny what can be charged where. We must ensure that a
->       descendant can't move charges up or across the tree without the
->       ancestors allowing it.
->
->    2. How to specify the cgroup to charge. While specifying the target
->       cgroup directly might seem like an obvious solution, it has a couple
->       rather serious problems. First, if the descendant is inside a cgroup
->       namespace, it might be able to see the target cgroup at all. Second,
->       it's an interface which is likely to cause misunderstandings on how it
->       can be used. It's too broad an interface.
->
+--
+Changelog:
 
-This is pretty much the solution I sent out for review about a year
-ago and yes, it suffers from the issues you've brought up:
-https://lore.kernel.org/linux-mm/20211120045011.3074840-1-almasrymina@google.com/
+v2 =3D https://lore.kernel.org/bpf/20220811230501.2632393-1-joannelkoong@=
+gmail.com/
+v2 -> v3
+    * Fix kernel test robot build test errors
 
+v1 =3D https://lore.kernel.org/bpf/20220726184706.954822-1-joannelkoong@g=
+mail.com/
+v1 -> v2
+  * Return data slices to rd-only skb dynptrs (Martin)
+  * bpf_dynptr_write allows writes to frags for skb dynptrs, but always
+    invalidates associated data slices (Martin)
+  * Use switch casing instead of ifs (Andrii)
+  * Use 0xFD for experimental kind number in the selftest (Zvi)
+  * Put selftest conversions w/ dynptrs into new files (Alexei)
+  * Add new selftest "test_cls_redirect_dynptr.c"=20
 
->    One solution that I can think of is leveraging the resource domain
->    concept which is currently only used for threaded cgroups. All memory
->    usages of threaded cgroups are charged to their resource domain cgroup
->    which hosts the processes for those threads. The persistent usages have a
->    similar pattern, so maybe the service level cgroup can declare that it's
->    the encompassing resource domain and the instance cgroup can say whether
->    it's gonna charge e.g. the tmpfs instance to its own or the encompassing
->    resource domain.
->
+Joanne Koong (3):
+  bpf: Add skb dynptrs
+  bpf: Add xdp dynptrs
+  selftests/bpf: tests for using dynptrs to parse skb and xdp buffers
 
-I think this sounds excellent and addresses our use cases. Basically
-the tmpfs/bpf memory would get charged to the encompassing resource
-domain cgroup rather than the instance cgroup, making the memory usage
-of the first and second+ instances consistent and predictable.
+ include/linux/bpf.h                           |  14 +-
+ include/linux/filter.h                        |   7 +
+ include/uapi/linux/bpf.h                      |  59 +-
+ kernel/bpf/helpers.c                          |  93 +-
+ kernel/bpf/verifier.c                         | 105 +-
+ net/core/filter.c                             |  99 +-
+ tools/include/uapi/linux/bpf.h                |  59 +-
+ .../selftests/bpf/prog_tests/cls_redirect.c   |  25 +
+ .../testing/selftests/bpf/prog_tests/dynptr.c | 132 ++-
+ .../selftests/bpf/prog_tests/l4lb_all.c       |   2 +
+ .../bpf/prog_tests/parse_tcp_hdr_opt.c        |  85 ++
+ .../selftests/bpf/prog_tests/xdp_attach.c     |   9 +-
+ .../testing/selftests/bpf/progs/dynptr_fail.c | 111 ++
+ .../selftests/bpf/progs/dynptr_success.c      |  29 +
+ .../bpf/progs/test_cls_redirect_dynptr.c      | 968 ++++++++++++++++++
+ .../bpf/progs/test_l4lb_noinline_dynptr.c     | 468 +++++++++
+ .../bpf/progs/test_parse_tcp_hdr_opt.c        | 119 +++
+ .../bpf/progs/test_parse_tcp_hdr_opt_dynptr.c | 110 ++
+ .../selftests/bpf/progs/test_xdp_dynptr.c     | 240 +++++
+ .../selftests/bpf/test_tcp_hdr_options.h      |   1 +
+ 20 files changed, 2649 insertions(+), 86 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/parse_tcp_hdr_=
+opt.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_cls_redirect_d=
+ynptr.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_l4lb_noinline_=
+dynptr.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_parse_tcp_hdr_=
+opt.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_parse_tcp_hdr_=
+opt_dynptr.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_dynptr.c
 
-Would love to hear from other memcg folks what they would think of
-such an approach. I would also love to hear what kind of interface you
-have in mind. Perhaps a cgroup tunable that says whether it's going to
-charge the tmpfs/bpf instance to itself or to the encompassing
-resource domain?
+--=20
+2.30.2
 
->    This has the benefit that the user only needs to indicate its intention
->    without worrying about how cgroups are composed and what their IDs are.
->    It just indicates whether the given resource is persistent and if the
->    cgroup hierarchy is set up for that, it gets charged that way and if not
->    it can be just charged to itself.
->
->    This is a shower thought but, if we allow nesting such domains (and maybe
->    name them), we can use it for shared resources too so that co-services
->    are put inside a shared slice and shared resources are pushed to the
->    slice level.
->
-> This became pretty long. I obviously have a pretty strong bias towards
-> solving this within the current basic architecture but other than that most
-> of these decisions are best made by memcg folks. We can hopefully build some
-> consensus on the issue.
->
-> Thanks.
->
-> --
-> tejun
->
