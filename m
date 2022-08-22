@@ -2,145 +2,157 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B53D259CA69
-	for <lists+bpf@lfdr.de>; Mon, 22 Aug 2022 22:55:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8C8F59CAB3
+	for <lists+bpf@lfdr.de>; Mon, 22 Aug 2022 23:20:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231945AbiHVUzA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Aug 2022 16:55:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51836 "EHLO
+        id S230397AbiHVVT6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Aug 2022 17:19:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235998AbiHVUy6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 22 Aug 2022 16:54:58 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7447848CA7
-        for <bpf@vger.kernel.org>; Mon, 22 Aug 2022 13:54:57 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id u15so14954389ejt.6
-        for <bpf@vger.kernel.org>; Mon, 22 Aug 2022 13:54:57 -0700 (PDT)
+        with ESMTP id S232145AbiHVVTz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 22 Aug 2022 17:19:55 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D4C950719
+        for <bpf@vger.kernel.org>; Mon, 22 Aug 2022 14:19:53 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id d16so9437478wrr.3
+        for <bpf@vger.kernel.org>; Mon, 22 Aug 2022 14:19:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc;
-        bh=owOZBLZRnQrlshVjhoPSQgWVG/Di/LOhS2qR4oiE4G8=;
-        b=MSshdC9rG+m80wd/a2nInR5kLsj5p5O8SioHpu6cYAMde8tj65NhIyrsn4x6TSLNM8
-         iklzC0oTNYG9DgKDPgOxPD1MQOuMFUMRGJYe5ZvCuwyBKyPHbBOqa/I9H9YhR/SbVq9F
-         ePkk36rKKSe6JwA7p5dnj4KqslFbu6HbxynGtqdO0EqqH0ZkVyWEhBNGgWG+Y8Iz1XSM
-         kyQGsXsSL13GbZxvKKcQv/gcEZao5hMQ8yF3JnczhQBjeqpjtxkdeQfPnmJtqTP2GhQK
-         3b+Uyr+bPiKqGMRrPe86RogqqdzaVfTv1EbuZRTtwpn2GzMqwUmK39e/Au6xTfNyowXi
-         yBPQ==
+        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc;
+        bh=FxIK9S2wTvBehSQmWm4iua73649GO/cf0KFcF96zw1A=;
+        b=WnSB6qB0/v5bDg0UBCH8XvyxgD+Go42M4ZW04QIoDlf1WY4R6dUzsRq/FJxljUgvzR
+         P8qFnCxXLOwjhK7ac/biGzbje7m4mVABX+7q40/X8QQmMMdbA6H5JXrBHCxVySNiyAPs
+         r0/0smN1EzbeaFhpHFykf4O6d1mRCTGlBWWv2uELOaSU/MgujmUXcl5XklPFCiFSh1Pt
+         ALTePm2DGoPtixANbDQWxpnEW/X1Jjl9+nVLJQBMSTG0rKcXD4R7LsUwqlw/cXODDTXk
+         CfNRxjJ+zttWupmRR1E9wx5X+sZwOtAvDfXvbyKPLJVhlUkJz74jPbl8/iGSz4N4tBc0
+         3zPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc;
-        bh=owOZBLZRnQrlshVjhoPSQgWVG/Di/LOhS2qR4oiE4G8=;
-        b=EpBxjnZaPc0HEXmWnCzcTtg/HcQT0LUqzzJ249OO12Ccjp0WGp8nVMXl3HFlsKFBzV
-         lGU7HRJuLTYPAWUwHSyv6rFFBNQQgO1fEYRB1FGwjAYjIAj7CX73hJMC0j3A3/jdJ/h9
-         zStXGNW0U9FEvTtjeDv4xPX9NcMGzCVLuA4+xLlE8j0NU7j2WSkWo54ZE/XJyesBylYC
-         aYJi4vWeUleYW1mn41WtOESan01KpwMkmaZnaQB/7vgDCHLqrAVbnup4NwW7d48GHF+s
-         RejMVjZRcEVbwBZFYZtO2rsX8R+kRprMfpLQiUvWjv5LEXmSooQLcmc51v0CcxzyRFWs
-         tBCw==
-X-Gm-Message-State: ACgBeo1WUYOO0hO1GPl8C/LUHgfp6ELk1F2vbz5ck+RtW2ny1CteHc0J
-        LxkGDszAGGi4MJyMRYpbtNEnEgrLjRCaCL7gYOLm0A8P/bY=
-X-Google-Smtp-Source: AA6agR6yPmmeZsKix8LQkSw+ynuP+J/k60z8mkttBkhT+dCnwunzjz985HrGLQRxOWlA8YeUp3qbGPMOgdTS0B+wKn8=
-X-Received: by 2002:a17:907:2d12:b0:731:6a4e:ceb0 with SMTP id
- gs18-20020a1709072d1200b007316a4eceb0mr14073980ejc.115.1661201695769; Mon, 22
- Aug 2022 13:54:55 -0700 (PDT)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc;
+        bh=FxIK9S2wTvBehSQmWm4iua73649GO/cf0KFcF96zw1A=;
+        b=LVORiowP2jU6pkTh9thQRlx1+5INny7GbL0K9WhtqvhyYe2m8wHCg0xSzcEbWD0Vuk
+         3D9iOCGVIShKA8XpJJMyRTk/aoBRtB7/01M5rmK15LFNXOs7CTXnnM93eZ20vDoeHkaW
+         cTrPMNDYCAsN2p0AR89O/cWymwjlSraFIQFcftO5r0Vi4zE1SdeXILq5kTrQIcSorugs
+         z/YbdUYUodd5IrsO90xddk964ro9G9uXP5u6k3Jmgqxxkv3umu8LdZQefKsW5HCYJ3wX
+         vlJT4ISZ+erbsDC6Vn3Ty5Cp4i/MQmrVNzaOI4ft0IQ8whYNioORTnTEg4oyQF9r6ZB+
+         x+yQ==
+X-Gm-Message-State: ACgBeo1xPkUBVc/9WKAH3kMCimft9Tj3ZD0yIOXWu2cmw4UmA+5fTg+x
+        W32FylNUWjqDtXoJvk32YLmzdw==
+X-Google-Smtp-Source: AA6agR4WU200zopccA4rrsFBPH8Sb9d69Jkv0/J3olW29m0bbzj5YvGRv3feSz9ga0iywhlx9awj4A==
+X-Received: by 2002:a5d:5a9b:0:b0:225:3fa0:f9ca with SMTP id bp27-20020a5d5a9b000000b002253fa0f9camr8045558wrb.204.1661203191880;
+        Mon, 22 Aug 2022 14:19:51 -0700 (PDT)
+Received: from localhost ([2620:10d:c092:400::5:4e25])
+        by smtp.gmail.com with ESMTPSA id s9-20020a05600c384900b003a35ec4bf4fsm15911202wmr.20.2022.08.22.14.19.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Aug 2022 14:19:51 -0700 (PDT)
+Date:   Mon, 22 Aug 2022 17:19:50 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Mina Almasry <almasrymina@google.com>
+Cc:     Tejun Heo <tj@kernel.org>, Yafang Shao <laoar.shao@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, jolsa@kernel.org,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Cgroups <cgroups@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        Dan Schatzberg <schatzberg.dan@gmail.com>,
+        Lennart Poettering <lennart@poettering.net>
+Subject: Re: [RFD RESEND] cgroup: Persistent memory usage tracking
+Message-ID: <YwPy9hervVxfuuYE@cmpxchg.org>
+References: <20220818143118.17733-1-laoar.shao@gmail.com>
+ <Yv67MRQLPreR9GU5@slm.duckdns.org>
+ <Yv6+HlEzpNy8y5kT@slm.duckdns.org>
+ <CALOAHbDcrj1ifFsNMHBEih5-SXY2rWViig4rQHi9N07JY6CjXA@mail.gmail.com>
+ <Yv/DK+AGlMeBGkF1@slm.duckdns.org>
+ <CALOAHbCvUxQn5Zkp2FJ+eL1VgjeRSq1xQhzdiY87C1Cbib-nig@mail.gmail.com>
+ <YwNold0GMOappUxc@slm.duckdns.org>
+ <CAHS8izNvEpX3Lv7eFn-vu=4ZT96Djk2dU-VU+zOueZaZZbnWNw@mail.gmail.com>
 MIME-Version: 1.0
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 22 Aug 2022 13:54:44 -0700
-Message-ID: <CAEf4BzbK2zBVwNhgxmVC27RHuyqLke+m69M0iz=2XwWjJehKBQ@mail.gmail.com>
-Subject: [ANNOUNCEMENT] libbpf v1.0 release
-To:     bpf <bpf@vger.kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHS8izNvEpX3Lv7eFn-vu=4ZT96Djk2dU-VU+zOueZaZZbnWNw@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Libbpf v1.0 ([0]) is here!
+On Mon, Aug 22, 2022 at 12:02:48PM -0700, Mina Almasry wrote:
+> On Mon, Aug 22, 2022 at 4:29 AM Tejun Heo <tj@kernel.org> wrote:
+> > b. Let userspace specify which cgroup to charge for some of constructs like
+> >    tmpfs and bpf maps. The key problems with this approach are
+> >
+> >    1. How to grant/deny what can be charged where. We must ensure that a
+> >       descendant can't move charges up or across the tree without the
+> >       ancestors allowing it.
+> >
+> >    2. How to specify the cgroup to charge. While specifying the target
+> >       cgroup directly might seem like an obvious solution, it has a couple
+> >       rather serious problems. First, if the descendant is inside a cgroup
+> >       namespace, it might be able to see the target cgroup at all. Second,
+> >       it's an interface which is likely to cause misunderstandings on how it
+> >       can be used. It's too broad an interface.
+> >
+> 
+> This is pretty much the solution I sent out for review about a year
+> ago and yes, it suffers from the issues you've brought up:
+> https://lore.kernel.org/linux-mm/20211120045011.3074840-1-almasrymina@google.com/
+> 
+> 
+> >    One solution that I can think of is leveraging the resource domain
+> >    concept which is currently only used for threaded cgroups. All memory
+> >    usages of threaded cgroups are charged to their resource domain cgroup
+> >    which hosts the processes for those threads. The persistent usages have a
+> >    similar pattern, so maybe the service level cgroup can declare that it's
+> >    the encompassing resource domain and the instance cgroup can say whether
+> >    it's gonna charge e.g. the tmpfs instance to its own or the encompassing
+> >    resource domain.
+> >
+> 
+> I think this sounds excellent and addresses our use cases. Basically
+> the tmpfs/bpf memory would get charged to the encompassing resource
+> domain cgroup rather than the instance cgroup, making the memory usage
+> of the first and second+ instances consistent and predictable.
+> 
+> Would love to hear from other memcg folks what they would think of
+> such an approach. I would also love to hear what kind of interface you
+> have in mind. Perhaps a cgroup tunable that says whether it's going to
+> charge the tmpfs/bpf instance to itself or to the encompassing
+> resource domain?
 
-It's been a long journey for libbpf to get to 1.0, but it was worth
-it. By taking time to get here, with community help and involvement,
-we got a more well thought out, user friendly, and full-featured
-library. libbpf 1.0 now provides a battle-tested foundation for
-building any kind of BPF application. It also sets a good base for
-future libbpf releases with more exciting functionality while
-backwards compatibility across minor version releases, all while
-keeping maintainability in focus.
+I like this too. It makes shared charging predictable, with a coherent
+resource hierarchy (congruent OOM, CPU, IO domains), and without the
+need for cgroup paths in tmpfs mounts or similar.
 
-A big "Thank you!" goes to hundreds of contributors and bug reporters
-across the entire libbpf family of projects for all your work and
-support!
+As far as who is declaring what goes, though: if the instance groups
+can declare arbitrary files/objects persistent or shared, they'd be
+able to abuse this and sneak private memory past local limits and
+burden the wider persistent/shared domain with it.
 
-**Congratulations on the long-awaited v1.0!**
+I'm thinking it might make more sense for the service level to declare
+which objects are persistent and shared across instances.
 
-To celebrate this event, I wrote a blog post ([1]) describing the
-journey to libbpf 1.0 and also highlighting main breaking changes and
-new functionality added on the way to libbpf 1.0. Please take a look
-if you are a libbpf user.
+If that's the case, we may not need a two-component interface. Just
+the ability for an intermediate cgroup to say: "This object's future
+memory is to be charged to me, not the instantiating cgroup."
 
-See detailed change log for v1.0 below.
-
-## User-space-side features and APIs:
-- **All deprecated APIs and features removed!**
-- support for syscall-specific kprobe/kretprobe
-(`SEC("ksyscall/<syscall_name>")` and
-`SEC("kretsyscall/<syscall_name>")`);
-- support for sleepable uprobe BPF programs (`SEC("uprobe.s")`);
-- support for per-cgroup LSM BPF programs (`SEC("lsm_cgroup")`);
-- support for new BPF CO-RE relocation `TYPE_MATCHES`;
-- `bpf_prog_load()` and `bpf_map_create()` are now smarter about
-handling program and map name on old kernels (it will be ignored if
-kernel doesn't support names);
-- `BTF_KIND_ENUM64` support;
-- increase tracing attachment (kprobe/uprobe/tracepoint) robustness by
-using tracefs or debugfs, whichever is mounted;
-- new APIs for converting BPF enums to their string representation:
-  - `libbpf_bpf_prog_type_str()`;
-  - `libbpf_bpf_map_type_str()`;
-  - `libbpf_bpf_link_type_str()`;
-  - `libbpf_bpf_attach_type_str()`;
-- `bpf_program__set_autoattach()` and `bpf_program__autoattach()` to
-allow opting out from auto-attaching of BPF program by BPF skeleton;
-- `perf_buffer__buffer()` API to give access to underlying per-CPU
-buffer for BPF ringbuf;
-- `bpf_obj_get_opts()` API for more flexible fetching of BPF kernel
-objects' information.
-
-## BPF-side features and APIs;
-- `bpf_core_type_matches()` helper macro to emit `TYPE_MATCHES` CO-RE
-relocations;
-- USDT support now doesn't rely on BPF CO-RE;
-- new and improved `BPF_KSYSCALL()` macro for tracing syscalls, which
-abstracts away a lot of kernel- and architecture-specific differences;
-- new BPF helpers:
-  - `bpf_skc_to_mptcp_sock()`;
-  - `bpf_dynptr_from_mem()`;
-  - `bpf_ringbuf_reserve_dynptr()`, `bpf_ringbuf_submit_dynptr()`,
-`bpf_ringbuf_discard_dynptr()`;
-  - `bpf_dynptr_read()`, `bpf_dynptr_write()`;
-  - `bpf_dynptr_data()`;
-  - `bpf_tcp_raw_gen_syncookie_ipv4()`,
-`bpf_tcp_raw_gen_syncookie_ipv6()`,
-`bpf_tcp_raw_check_syncookie_ipv4()`,
-`bpf_tcp_raw_check_syncookie_ipv6()`;
-  - `bpf_ktime_get_tai_ns()`.
-
-## Bug fixes
-- fix power-of-2 check when adjusting BPF ringbuf map size;
-- improve robustness of pointer size determination in BTF processing;
-- symbol offset calculation logic fixes for uprobes and USDTs;
-- fixes for clean up of legacy kprobe/uprobe attachments on partial failures;
-- fix register definition for riscv architecture;
-- improve robustness of reused map name handling.
-
-  [0] https://github.com/libbpf/libbpf/releases/tag/v1.0.0
-  [1] https://nakryiko.com/posts/libbpf-v1/
-  [2] Full Changelog: https://github.com/libbpf/libbpf/compare/v0.8.0...v1.0.0
-
--- Andrii
+Can we require a process in the intermediate cgroup to set up the file
+or object, and use madvise/fadvise to say "charge me", before any
+instances are launched?
