@@ -2,235 +2,259 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1085B59C372
-	for <lists+bpf@lfdr.de>; Mon, 22 Aug 2022 17:54:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 511F659C3C7
+	for <lists+bpf@lfdr.de>; Mon, 22 Aug 2022 18:13:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236874AbiHVPwg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Aug 2022 11:52:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33838 "EHLO
+        id S235807AbiHVQMl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Aug 2022 12:12:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236826AbiHVPwf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 22 Aug 2022 11:52:35 -0400
-Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72C072C12A
-        for <bpf@vger.kernel.org>; Mon, 22 Aug 2022 08:52:34 -0700 (PDT)
-Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-3378303138bso265385537b3.9
-        for <bpf@vger.kernel.org>; Mon, 22 Aug 2022 08:52:34 -0700 (PDT)
+        with ESMTP id S235849AbiHVQMj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 22 Aug 2022 12:12:39 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AFBB3AE53
+        for <bpf@vger.kernel.org>; Mon, 22 Aug 2022 09:12:37 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id r69so9803239pgr.2
+        for <bpf@vger.kernel.org>; Mon, 22 Aug 2022 09:12:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc;
-        bh=SV/3XTnA1B+b9u9DiRDfjj8ulOtTS/Sr5qrNrmd/ti4=;
-        b=ZRF+02j0WM0QGoEk+lD43Tw3Rs0t+qoj1jK2wobaOZgNB+1aAs08O2f8TuyTLn16F9
-         EG0K8D8ck1dfEpiR0uxY7KlNDa+8Sra0qb3mLFiIgbZ/GAXu4uz38sg7JppQ3B7wh39s
-         dGRQgiziLhYhadpC2An1jcccGeV/Tv2+7ym03FykPZHlPjTmqdRLI0I5MglykLxXdquD
-         oRiWcAlEL5V6cLJ/KeSElWXQdkBL7EZemHy08noxl1+pGY9AobaqelNTD6aBJziqd4Z1
-         kAFlRzVwXTk0YzDWEnHoN4jW4OibDu6CVADrZYYIH9T6EwbvCwlqcH3frrElbl7fzelg
-         Z1QQ==
+        bh=7BuvMVyleR3Hw8mkAELF9i7HfPKnfLamJfP4eJKjBTI=;
+        b=ZtGfm781LiOy0zfGugOT2dFYFP8nCYjMngUuJ7i43OurHzkaxNOOp48ZZ5Ic7V9ea7
+         96CJQmAYiGjoSdQ/OW7s6NZVSvpFZkwG8ooJftJJQUudaffxgCUJmDVVyMWSj0GHdtAz
+         0xdv5P8CWQ+8cnaRjWZIPKPAGoXwsKu8I7vz8/rQcsDEtiifrBvJp87PfaAOa0ByiFNI
+         /HoUTLj0gUoD/xrKelAJev5/wgXe+l8rCYLAJGS7XdvJ4n5ENREjWDMqEcmbFla824ds
+         oyqdZt7x4ZxO7+9MkkiPRbX2va9gqg4hR/e5RHohZSmOcYkglmAcXjzSUAagTWYCGm/Y
+         12Jg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc;
-        bh=SV/3XTnA1B+b9u9DiRDfjj8ulOtTS/Sr5qrNrmd/ti4=;
-        b=QGBIfweTWkpcoDz7lc2d1Knf8z5jDrMwkAbWTdFG7leQHoNvKbVX0Qtjravhz7rCA9
-         Du2Pfx9TMYHHNvqscE+BA+0sXQmDI/brTHGt5dQ4H05ujfiGzpPIVJ+ny7uqlgZPN/hJ
-         0G8A4rClnnT7OhAePoi8ePi+OqCAJfGl7aUuzwn+flFXXNtYUwRZekPwLLwPTC45h5Lp
-         uEHVqrPfX6jYFwYf1M37LtBYhunaCFj2HyMXAyfx9ZUWbGA7+5tTuKBzk+GbM7Qe4PEj
-         gPSwn4BPih8ui+KB7ZjMnAtZcSwLk+N8AvoYLawg0im54j8uMEaWVaDwuovlMBlbWpar
-         eb7Q==
-X-Gm-Message-State: ACgBeo057dnTfc+lQV4mXb15N2A1VY+MzM/Qw6pvEJ2+VWfaixdIW/Ad
-        GfwGG8Ac8vDRNdN3bPWLm5s8uLrKJoJrFIQ3T6JuOQ==
-X-Google-Smtp-Source: AA6agR54jUDV70ncP2DhClmTlRb8VdAGBS68FHgvG2FW1yTNuaZd6ZshV2tkrZ03ThEcyaFDhCYHCMJD3p8O6MR9vuo=
-X-Received: by 2002:a05:690c:82e:b0:338:f953:5e6b with SMTP id
- by14-20020a05690c082e00b00338f9535e6bmr13899453ywb.55.1661183553402; Mon, 22
- Aug 2022 08:52:33 -0700 (PDT)
+        bh=7BuvMVyleR3Hw8mkAELF9i7HfPKnfLamJfP4eJKjBTI=;
+        b=RoUdk4prmIyvJN9YwxOrj91x86rdNI+xrpjOsO++zIs0B2EgryIt8ktOthYZBZE6Kh
+         +LEwyeG5oUdQ07vKH+kwT73+uGyfmmOGREX6LDkd7TnKFkuNUaqNsL9Wcg24Hj6frQ63
+         KnoyvO3KM+D7DYnOGCCYXQMxVpehHXUfbz6XAXbqHYnef1qRoJ/eyqFXkA8DNUzyBNFD
+         yIDyUTPXHJ3ChrPG7U5RjChx0icfCKlK7dA7GcgApzbgOFdr1hrBl1XWy6So+y8R6MMM
+         LktvxFKdBVEk0uvV7DX4tg8NcUBszG/KHk+gxKRV0x7QEuCMGLowb1CwhmMHcnPa+MZ/
+         1c6Q==
+X-Gm-Message-State: ACgBeo07b8allU2w7vEQvfn6afbsey+UcpjCOLEXQ6RXugfWpPdCMFuR
+        Mvfx+ZzJFWR60zQU9sD6y2O1bRWuQYcB0avy41gXIA==
+X-Google-Smtp-Source: AA6agR5S9hFZUry+hlyQRfRO4ySXHQzaQtQaXSyPXOPlH8Vcmh2GSOHNGAYWBhzwTjcJ5JM90zrpdU1qmSiVtTolLgg=
+X-Received: by 2002:a65:494b:0:b0:428:d68c:35bf with SMTP id
+ q11-20020a65494b000000b00428d68c35bfmr16904973pgs.509.1661184756390; Mon, 22
+ Aug 2022 09:12:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220815023343.295094-1-liujian56@huawei.com> <20220815023343.295094-2-liujian56@huawei.com>
- <871qtc1u9e.fsf@cloudflare.com> <2ad6173f254f4842b1abaeaf9a7a1e7d@huawei.com> <87wnb4zfhn.fsf@cloudflare.com>
-In-Reply-To: <87wnb4zfhn.fsf@cloudflare.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Mon, 22 Aug 2022 08:52:22 -0700
-Message-ID: <CANn89i+LX=fUhcjdzppm7u2bqgwApRSPDscuwhN6828ua=LumA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] sk_msg: Keep reference on socket file while wait_memory
-To:     Jakub Sitnicki <jakub@cloudflare.com>
-Cc:     "liujian (CE)" <liujian56@huawei.com>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "yoshfuji@linux-ipv6.org" <yoshfuji@linux-ipv6.org>,
-        "dsahern@kernel.org" <dsahern@kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "mykolal@fb.com" <mykolal@fb.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "martin.lau@linux.dev" <martin.lau@linux.dev>,
-        "song@kernel.org" <song@kernel.org>, "yhs@fb.com" <yhs@fb.com>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>,
-        "sdf@google.com" <sdf@google.com>,
-        "haoluo@google.com" <haoluo@google.com>,
-        "jolsa@kernel.org" <jolsa@kernel.org>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+References: <20220818143118.17733-1-laoar.shao@gmail.com> <Yv67MRQLPreR9GU5@slm.duckdns.org>
+ <Yv6+HlEzpNy8y5kT@slm.duckdns.org> <CALOAHbDcrj1ifFsNMHBEih5-SXY2rWViig4rQHi9N07JY6CjXA@mail.gmail.com>
+ <Yv/DK+AGlMeBGkF1@slm.duckdns.org> <CALOAHbCvUxQn5Zkp2FJ+eL1VgjeRSq1xQhzdiY87C1Cbib-nig@mail.gmail.com>
+ <YwNold0GMOappUxc@slm.duckdns.org>
+In-Reply-To: <YwNold0GMOappUxc@slm.duckdns.org>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Mon, 22 Aug 2022 09:12:25 -0700
+Message-ID: <CALvZod6EHB74L2kJz7=gv3ev3+UTbBX3a1AsRgF2rgesjXCx3w@mail.gmail.com>
+Subject: Re: [RFD RESEND] cgroup: Persistent memory usage tracking
+To:     Tejun Heo <tj@kernel.org>, Mina Almasry <almasrymina@google.com>
+Cc:     Yafang Shao <laoar.shao@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, jolsa@kernel.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Cgroups <cgroups@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        Dan Schatzberg <schatzberg.dan@gmail.com>,
+        Lennart Poettering <lennart@poettering.net>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Aug 19, 2022 at 3:37 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
->
->
-> On Fri, Aug 19, 2022 at 10:01 AM GMT, liujian (CE) wrote:
-> >> -----Original Message-----
-> >> From: Jakub Sitnicki [mailto:jakub@cloudflare.com]
-> >> Sent: Friday, August 19, 2022 4:39 PM
-> >> To: liujian (CE) <liujian56@huawei.com>; john.fastabend@gmail.com;
-> >> edumazet@google.com
-> >> Cc: davem@davemloft.net; yoshfuji@linux-ipv6.org; dsahern@kernel.org;
-> >> kuba@kernel.org; pabeni@redhat.com; andrii@kernel.org; mykolal@fb.com;
-> >> ast@kernel.org; daniel@iogearbox.net; martin.lau@linux.dev;
-> >> song@kernel.org; yhs@fb.com; kpsingh@kernel.org; sdf@google.com;
-> >> haoluo@google.com; jolsa@kernel.org; shuah@kernel.org;
-> >> bpf@vger.kernel.org
-> >> Subject: Re: [PATCH bpf-next 1/2] sk_msg: Keep reference on socket file
-> >> while wait_memory
-> >>
-> >> On Mon, Aug 15, 2022 at 10:33 AM +08, Liu Jian wrote:
-> >> > Fix the below NULL pointer dereference:
-> >> >
-> >> > [   14.471200] Call Trace:
-> >> > [   14.471562]  <TASK>
-> >> > [   14.471882]  lock_acquire+0x245/0x2e0
-> >> > [   14.472416]  ? remove_wait_queue+0x12/0x50
-> >> > [   14.473014]  ? _raw_spin_lock_irqsave+0x17/0x50
-> >> > [   14.473681]  _raw_spin_lock_irqsave+0x3d/0x50
-> >> > [   14.474318]  ? remove_wait_queue+0x12/0x50
-> >> > [   14.474907]  remove_wait_queue+0x12/0x50
-> >> > [   14.475480]  sk_stream_wait_memory+0x20d/0x340
-> >> > [   14.476127]  ? do_wait_intr_irq+0x80/0x80
-> >> > [   14.476704]  do_tcp_sendpages+0x287/0x600
-> >> > [   14.477283]  tcp_bpf_push+0xab/0x260
-> >> > [   14.477817]  tcp_bpf_sendmsg_redir+0x297/0x500
-> >> > [   14.478461]  ? __local_bh_enable_ip+0x77/0xe0
-> >> > [   14.479096]  tcp_bpf_send_verdict+0x105/0x470
-> >> > [   14.479729]  tcp_bpf_sendmsg+0x318/0x4f0
-> >> > [   14.480311]  sock_sendmsg+0x2d/0x40
-> >> > [   14.480822]  ____sys_sendmsg+0x1b4/0x1c0
-> >> > [   14.481390]  ? copy_msghdr_from_user+0x62/0x80
-> >> > [   14.482048]  ___sys_sendmsg+0x78/0xb0
-> >> > [   14.482580]  ? vmf_insert_pfn_prot+0x91/0x150
-> >> > [   14.483215]  ? __do_fault+0x2a/0x1a0
-> >> > [   14.483738]  ? do_fault+0x15e/0x5d0
-> >> > [   14.484246]  ? __handle_mm_fault+0x56b/0x1040
-> >> > [   14.484874]  ? lock_is_held_type+0xdf/0x130
-> >> > [   14.485474]  ? find_held_lock+0x2d/0x90
-> >> > [   14.486046]  ? __sys_sendmsg+0x41/0x70
-> >> > [   14.486587]  __sys_sendmsg+0x41/0x70
-> >> > [   14.487105]  ? intel_pmu_drain_pebs_core+0x350/0x350
-> >> > [   14.487822]  do_syscall_64+0x34/0x80
-> >> > [   14.488345]  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> >> >
-> >> > The test scene as following flow:
-> >> > thread1                               thread2
-> >> > -----------                           ---------------
-> >> >  tcp_bpf_sendmsg
-> >> >   tcp_bpf_send_verdict
-> >> >    tcp_bpf_sendmsg_redir              sock_close
-> >> >     tcp_bpf_push_locked                 __sock_release
-> >> >      tcp_bpf_push                         //inet_release
-> >> >       do_tcp_sendpages                    sock->ops->release
-> >> >        sk_stream_wait_memory                  // tcp_close
-> >> >           sk_wait_event                      sk->sk_prot->close
-> >> >            release_sock(__sk);
-> >> >             ***
-> >> >
-> >> >                                                 lock_sock(sk);
-> >> >                                                   __tcp_close
-> >> >                                                     sock_orphan(sk)
-> >> >                                                       sk->sk_wq  = NULL
-> >> >                                                 release_sock
-> >> >             ****
-> >> >            lock_sock(__sk);
-> >> >           remove_wait_queue(sk_sleep(sk), &wait);
-> >> >              sk_sleep(sk)
-> >> >              //NULL pointer dereference
-> >> >              &rcu_dereference_raw(sk->sk_wq)->wait
-> >> >
-> >> > While waiting for memory in thread1, the socket is released with its
-> >> > wait queue because thread2 has closed it. This caused by
-> >> > tcp_bpf_send_verdict didn't increase the f_count of psock->sk_redir-
-> >> >sk_socket->file in thread1.
-> >>
-> >> I'm not sure about this approach. Keeping a closed sock file alive, just so we
-> >> can wakeup from sleep, seems like wasted effort.
-> >>
-> >> __tcp_close sets sk->sk_shutdown = RCV_SHUTDOWN | SEND_SHUTDOWN.
-> >> So we will return from sk_stream_wait_memory via the do_error path.
-> >>
-> >> SEND_SHUTDOWN might be set because socket got closed and orphaned -
-> >> dead and detached from its file, like in this case.
-> >>
-> >> So, IMHO, we should check if SOCK_DEAD flag is set on wakeup due to
-> >> SEND_SHUTDOWN in sk_stream_wait_memory, before accessing the wait
-> >> queue.
-> >>
-> >> [...]
-> > As jakub's approach, this problem can be solved.
-> >
-> > diff --git a/include/net/sock.h b/include/net/sock.h
-> > index a7273b289188..a3dab7140f1e 100644
-> > --- a/include/net/sock.h
-> > +++ b/include/net/sock.h
-> > @@ -1998,6 +1998,8 @@ static inline void sk_set_socket(struct sock *sk, struct socket *sock)
-> >  static inline wait_queue_head_t *sk_sleep(struct sock *sk)
-> >  {
-> >         BUILD_BUG_ON(offsetof(struct socket_wq, wait) != 0);
-> > +       if (sock_flag(sk, SOCK_DEAD))
-> > +               return NULL;
-> >         return &rcu_dereference_raw(sk->sk_wq)->wait;
-> >  }
-> >  /* Detach socket from process context.
-> > diff --git a/kernel/sched/wait.c b/kernel/sched/wait.c
-> > index 9860bb9a847c..da1be17d0b19 100644
-> > --- a/kernel/sched/wait.c
-> > +++ b/kernel/sched/wait.c
-> > @@ -51,6 +51,8 @@ void remove_wait_queue(struct wait_queue_head *wq_head, struct wait_queue_entry
-> >  {
-> >         unsigned long flags;
-> >
-> > +       if (wq_head == NULL)
-> > +               return;
-> >         spin_lock_irqsave(&wq_head->lock, flags);
-> >         __remove_wait_queue(wq_head, wq_entry);
-> >         spin_unlock_irqrestore(&wq_head->lock, flags);
->
-> I don't know if we want to change the contract for sk_sleep()
-> remove_wait_queue() so that they accept dead sockets or nulls.
->
-> How about just:
->
-> diff --git a/net/core/stream.c b/net/core/stream.c
-> index ccc083cdef23..1105057ce00a 100644
-> --- a/net/core/stream.c
-> +++ b/net/core/stream.c
-> @@ -159,7 +159,8 @@ int sk_stream_wait_memory(struct sock *sk, long *timeo_p)
->                 *timeo_p = current_timeo;
->         }
->  out:
-> -       remove_wait_queue(sk_sleep(sk), &wait);
-> +       if (!sock_flag(sk, SOCK_DEAD))
-> +               remove_wait_queue(sk_sleep(sk), &wait);
->         return err;
->
->  do_error:
->
+Ccing Mina.
 
-OK, but what about tcp_msg_wait_data() and udp_msg_wait_data () ?
-It seems they could be vulnerable as well..
+On Mon, Aug 22, 2022 at 4:29 AM Tejun Heo <tj@kernel.org> wrote:
+>
+> (Sorry, this is a resend. I messed up the header in the first posting.)
+>
+> Hello,
+>
+> This thread started on a bpf-specific memory tracking change proposal and
+> went south, but a lot of people who would be interested are already cc'd, so
+> I'm hijacking it to discuss what to do w/ persistent memory usage tracking.
+>
+> Cc'ing Mina and Yosry who were involved in the discussions on the similar
+> problem re. tmpfs, Dan Schatzberg who has a lot more prod knowledge and
+> experience than me, and Lennart for his thoughts from systemd side.
+>
+> The root problem is that there are resources (almost solely memory
+> currently) that outlive a given instance of a, to use systemd-lingo,
+> service. Page cache is the most common case.
+>
+> Let's say there's system.slice/hello.service. When it runs for the first
+> time, page cache backing its binary will be charged to hello.service.
+> However, when it restarts after e.g. a config change, when the initial
+> hello.service cgroup gets destroyed, we reparent the page cache charges to
+> the parent system.slice and when the second instance starts, its binary will
+> stay charged to system.slice. Over time, some may get reclaimed and
+> refaulted into the new hello.service but that's not guaranteed and most hot
+> pages likely won't.
+>
+> The same problem exists for any memory which is not freed synchronously when
+> the current instance exits. While this isn't a problem for many cases, it's
+> not difficult to imagine situations where the amount of memory which ends up
+> getting pushed to the parent is significant, even clear majority, with big
+> page cache footprint, persistent tmpfs instances and so on, creating issues
+> with accounting accuracy and thus control.
+>
+> I think there are two broad issues to discuss here:
+>
+> [1] Can this be solved by layering the instance cgroups under persistent
+>     entity cgroup?
+>
+> So, instead of systemd.slice/hello.service, the application runs inside
+> something like systemd.slice/hello.service/hello.service.instance and the
+> service-level cgroup hello.service is not destroyed as long as it is
+> something worth tracking on the system.
+>
+> The benefits are
+>
+> a. While requiring changing how userland organizes cgroup hiearchy, it is a
+>    straight-forward extension of the current architecture and doesn't
+>    require any conceptual or structural changes. All the accounting and
+>    control schemes work exactly the same as before. The only difference is
+>    that we now have a persistent entity representing each service as we want
+>    to track their persistent resource usages.
+>
+> b. Per-instance tracking and control is optional. To me, it seems that the
+>    persistent resource usages would be more meaningful than per-instance and
+>    tracking down to the persistent usages shouldn't add noticeable runtime
+>    overheads while keeping per-instance process management niceties and
+>    allowing use cases to opt-in for per-instance resource tracking and
+>    control as needed.
+>
+> The complications are:
+>
+> a. It requires changing cgroup hierarchy in a very visible way.
+>
+> b. What should be the lifetime rules for persistent cgroups? Do we keep them
+>    around forever or maybe they can be created on the first use and kept
+>    around until the service is removed from the system? When the persistent
+>    cgroup is removed, do we need to make sure that the remaining resource
+>    usages are low enough? Note that this problem exists for any approach
+>    that tries to track persistent usages no matter how it's done.
+>
+> c. Do we need to worry about nesting overhead? Given that there's no reason
+>    to enable controllers w/o persisten states for the instance level and the
+>    nesting overhead is pretty low for memcg, this doesn't seem like a
+>    problem to me. If this becomes a problem, we just need to fix it.
+>
+> A couple alternatives discussed are:
+>
+> a. Userspace keeps reusing the same cgroup for different instances of the
+>    same service. This simplifies some aspects while making others more
+>    complicated. e.g. Determining the current instance's CPU or IO usages now
+>    require the monitoring software remembering what they were when this
+>    instance started and calculating the deltas. Also, if some use cases want
+>    to distinguish persistent vs. instance usages (more on this later), this
+>    isn't gonna work. That said, this definitely is attractive in that it
+>    miminizes overt user visible changes.
+>
+> b. Memory is disassociated rather than just reparented on cgroup destruction
+>    and get re-charged to the next first user. This is attractive in that it
+>    doesn't require any userspace changes; however, I'm not sure how this
+>    would work for non-pageable memory usages such as bpf maps. How would we
+>    detect the next first usage?
+>
+>
+> [2] Whether and how to solve first and second+ instance charge differences.
+>
+> If we take the layering approach, the first instance will get charged for
+> all memory that it uses while the second+ instances likely won't get charged
+> for a lot of persistent usages. I don't think there is a consensus on
+> whether this needs to be solved and I don't have enough context to form a
+> strong opinion. memcg folks are a lot better equipped to make this decision.
+>
+> Assuming this needs to be solved, here's a braindump to be taken with a big
+> pinch of salt:
+>
+> I have a bit of difficult time imagining a perfect solution given that
+> whether a given page cache page is persistent or not would be really
+> difficult to know (or maybe all page cache is persistent by default while
+> anon is not). However, the problem still seems worthwhile to consider for
+> big ticket items such as persistent tmpfs mounts and huge bpf maps as they
+> can easily make the differences really big.
+>
+> If we want to solve this problem, here are options that I can think of:
+>
+> a. Let userspace put the charges where they belong using the current
+>    mechanisms. ie. Create persistent entities in the persistent parent
+>    cgroup while there's no current instance.
+>
+>    Pro: It won't require any major kernel or interface changes. There still
+>    need to be some tweaking such as allowing tmpfs pages to be always
+>    charged to the cgroup which created the instance (maybe as long as it's
+>    an ancestor of the faulting cgroup?) but nothing too invasive.
+>
+>    Con: It may not be flexible enough.
+>
+> b. Let userspace specify which cgroup to charge for some of constructs like
+>    tmpfs and bpf maps. The key problems with this approach are
+>
+>    1. How to grant/deny what can be charged where. We must ensure that a
+>       descendant can't move charges up or across the tree without the
+>       ancestors allowing it.
+>
+>    2. How to specify the cgroup to charge. While specifying the target
+>       cgroup directly might seem like an obvious solution, it has a couple
+>       rather serious problems. First, if the descendant is inside a cgroup
+>       namespace, it might be able to see the target cgroup at all. Second,
+>       it's an interface which is likely to cause misunderstandings on how it
+>       can be used. It's too broad an interface.
+>
+>    One solution that I can think of is leveraging the resource domain
+>    concept which is currently only used for threaded cgroups. All memory
+>    usages of threaded cgroups are charged to their resource domain cgroup
+>    which hosts the processes for those threads. The persistent usages have a
+>    similar pattern, so maybe the service level cgroup can declare that it's
+>    the encompassing resource domain and the instance cgroup can say whether
+>    it's gonna charge e.g. the tmpfs instance to its own or the encompassing
+>    resource domain.
+>
+>    This has the benefit that the user only needs to indicate its intention
+>    without worrying about how cgroups are composed and what their IDs are.
+>    It just indicates whether the given resource is persistent and if the
+>    cgroup hierarchy is set up for that, it gets charged that way and if not
+>    it can be just charged to itself.
+>
+>    This is a shower thought but, if we allow nesting such domains (and maybe
+>    name them), we can use it for shared resources too so that co-services
+>    are put inside a shared slice and shared resources are pushed to the
+>    slice level.
+>
+> This became pretty long. I obviously have a pretty strong bias towards
+> solving this within the current basic architecture but other than that most
+> of these decisions are best made by memcg folks. We can hopefully build some
+> consensus on the issue.
+>
+> Thanks.
+>
+> --
+> tejun
