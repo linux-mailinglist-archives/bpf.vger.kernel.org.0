@@ -2,339 +2,321 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C334E59E4E0
-	for <lists+bpf@lfdr.de>; Tue, 23 Aug 2022 16:05:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 103E559E527
+	for <lists+bpf@lfdr.de>; Tue, 23 Aug 2022 16:35:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240349AbiHWOFs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Aug 2022 10:05:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47830 "EHLO
+        id S242104AbiHWOfD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Aug 2022 10:35:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242455AbiHWOE7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Aug 2022 10:04:59 -0400
-Received: from mail-ua1-f41.google.com (mail-ua1-f41.google.com [209.85.222.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6002B6B15D;
-        Tue, 23 Aug 2022 04:15:04 -0700 (PDT)
-Received: by mail-ua1-f41.google.com with SMTP id j10so3065145uaq.12;
-        Tue, 23 Aug 2022 04:15:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=0V83ClKygRI6RPQNXMACz/OH2BKvkSJzRaFhLN3Zp+A=;
-        b=peGiddtL48LY1uQt2ecwvHiprqWMUaD4L8suqoWa8a6HtZmbPAqvb4ox8YEaUkx41q
-         H1VxiEdfjriVTGf6OFjgdUqKouBBF1REtOLDrSsSx1wsT27H1Lb/RUVSWPfpcsue4eEz
-         g/wYn4DjL/JSmFu07YRSH20X6uH5aALHY4mErT5bC0dEvrxEyZ/9evIrHpMOHnQA1E6O
-         7WcefxGPNey6/bEFJqmHDlKXCU9AxzMzmr0hBbZGr/ke/IG+ivT6bVaLHikorttDobeI
-         IuAtTIw7lXjy3N0dFUfp27j1/VSojTUDlSEiwymN4p+dEL/YAv2f6k8UOIBaTBCgFLTy
-         Ss3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=0V83ClKygRI6RPQNXMACz/OH2BKvkSJzRaFhLN3Zp+A=;
-        b=768XeyHdQV02BbyFfv9sqaoQOCEiJNBky3HS3LJyoZbMXk1/ZgqSvM2Xjyu6n1PmHc
-         gcuuM+fShNggsn9oUusSUPx17Eu+CwRI1bVyTISWW8uq143dEsAT/z9t3Ro/0Z1aDnvG
-         qCwGrg8aUPrk1S7wHlcOorPlbW9J/Okw1b42g9ol4BUN3/vNHPNkAEKa7QKSQymWpqnQ
-         pRf5pqbNcl36A05fwBF5X3EZdD98DNt055qOZPe9vhntFRKTXBS+VrdhpBjNMA8aB9Ww
-         5r1k9eNr8lm7g/l4Aj/WSrIgG4Ub6lysS0ZrDOGhinnMY8Wy2Opkr9WfznRvwhXKpw0u
-         1MoA==
-X-Gm-Message-State: ACgBeo2N/KVmnleUd6+kecNcgHigrkzu1FcD4ZwjQxvbw4XQ64aQ4l1G
-        FBR8F4TXxbNcvFjRgvFBtyNatzBThkbLEUIGfao=
-X-Google-Smtp-Source: AA6agR7d/QtNBlmB412v0jegTrKGCDK/ETenFjZIYdAnF+ESjm77V6zKf6XqHP0cxNGbxp+ICTwy2bP6eJdmEmIxs/A=
-X-Received: by 2002:ab0:7706:0:b0:399:17f3:fef1 with SMTP id
- z6-20020ab07706000000b0039917f3fef1mr8770289uaq.72.1661252934272; Tue, 23 Aug
- 2022 04:08:54 -0700 (PDT)
+        with ESMTP id S241956AbiHWOeo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Aug 2022 10:34:44 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A0042B5BFD;
+        Tue, 23 Aug 2022 04:50:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1661255437; x=1692791437;
+  h=date:from:to:cc:subject:message-id:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=9JYJ+PSeoG2Lkq000kBr5VhoGA3Ig7whoeyTVi9EkyY=;
+  b=FxgAVa+UBmH/ZDlkrhoH9QVe8svOrL5jsMvwBGRJVVamSER9eLuSFpsT
+   Z29YkZXYLwoFEqnno5vPb7BZbl/F+FHpDcM5L77dn0+3MsKeXnD1KHJUN
+   1OtufK70pQJr0eq/35kDxxWqopr4kLcZm4D6SrQR9dGVWC0Z6dBhk+4kO
+   P++uDApQD4LlVop878oHk40u7qxnGoCqOgaY/XV4NgOJo6LeHgmnYjdzD
+   VnS4d6qsaNKSfwKtkAsnOyYL/ibZUIeqAM9hLmaHdNglTulpi26sTyXd/
+   BZP7vk70aiOzhr9BZaFOAV521PRKlPXRxB70ou6rZJdAFpsmk1EysWjOg
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10447"; a="274049959"
+X-IronPort-AV: E=Sophos;i="5.93,257,1654585200"; 
+   d="scan'208";a="274049959"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2022 04:24:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,257,1654585200"; 
+   d="scan'208";a="609311210"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orsmga002.jf.intel.com with ESMTP; 23 Aug 2022 04:24:35 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Tue, 23 Aug 2022 04:24:35 -0700
+Received: from orsmsx609.amr.corp.intel.com (10.22.229.22) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Tue, 23 Aug 2022 04:24:34 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx609.amr.corp.intel.com (10.22.229.22) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31 via Frontend Transport; Tue, 23 Aug 2022 04:24:34 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.104)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2375.31; Tue, 23 Aug 2022 04:24:33 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=G/P9BpWSlZcaZVdfIhyGlkvC/ttPsslZARahtezajb//w/fcg7GKWp6XP1R/AhUU2eLO5Q13bV25km3fte5wlH22ILVblKivhkP06T6otGk3npPjWxTuB7B1El1AnB1BipJCrwOnugiqmJBZmMce2R18wGB4hno8AhOvo93jzDGnDAnW+svPqdBNV8kCEpRMLGPRBaOeQ+uKy/27B3Vt3eYyM6S2cp7XGBYoq692eSzA9fNbPnY6iMlXWbBfaBcXYzLiqQf1gCuYtmiT6HoySzmBUGSLSfvs5TAPfAQNFhTRjqgFP1Kh/faE+kOt5fnudxpXQZfz0EfzuSi4CpfMkw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=GIMgftrfPajGJ9OeFPzPzOlcThdi6s7TmD4a+R0mOMY=;
+ b=nUY9Zx5fiz2yG4UrSwFdFeOtW8cCWHIY6FIAcSmT47lcSc0wsyi/OYnmI4Wc8RazQS+9v7yk2MJ2yGujkWHULC0E09at/oveyyG3CEEjFv6gg86QzaJ1bw5KoV84U2pGKGorcn5PGLMSDKcxWSEdZq29xBZJamAtY9/ewSjqODJJ/gwq1gFIw5XItNxl2hpCGeOvWN8uLTXnkkaWMMWwgTq2l4nIsSdBcEoJk9+SoC7+ffWCrij0rF9MxkUdiUO/YbelaPXZgcmDVjHqFQdVE5U8JeEva7KIiM47QLBAuHZEIiPuPN4RIciIvyfS0Yg44TmLdUk2OmJkpVNWB4QKWw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
+ BN7PR11MB2770.namprd11.prod.outlook.com (2603:10b6:406:b4::20) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.5546.18; Tue, 23 Aug 2022 11:24:31 +0000
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::5876:103b:22ca:39b7]) by DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::5876:103b:22ca:39b7%4]) with mapi id 15.20.5525.011; Tue, 23 Aug 2022
+ 11:24:31 +0000
+Date:   Tue, 23 Aug 2022 13:24:06 +0200
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     Maxim Mikityanskiy <maximmi@nvidia.com>
+CC:     "bjorn@kernel.org" <bjorn@kernel.org>,
+        "magnus.karlsson@intel.com" <magnus.karlsson@intel.com>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        "alexandr.lobakin@intel.com" <alexandr.lobakin@intel.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: Re: [PATCH v2 bpf-next 00/14] xsk: stop NAPI Rx processing on full
+ XSK RQ
+Message-ID: <YwS41lA+mz0uUZVP@boxer>
+References: <20220413153015.453864-1-maciej.fijalkowski@intel.com>
+ <f1eea2e9ca337e0c4e072bdd94a89859a4539c09.camel@nvidia.com>
+ <93b8740b39267bc550a8f6e0077fb4772535c65e.camel@nvidia.com>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <93b8740b39267bc550a8f6e0077fb4772535c65e.camel@nvidia.com>
+X-ClientProxiedBy: YQXPR0101CA0029.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:c00:15::42) To DM4PR11MB6117.namprd11.prod.outlook.com
+ (2603:10b6:8:b3::19)
 MIME-Version: 1.0
-References: <20220818143118.17733-1-laoar.shao@gmail.com> <Yv67MRQLPreR9GU5@slm.duckdns.org>
- <Yv6+HlEzpNy8y5kT@slm.duckdns.org> <CALOAHbDcrj1ifFsNMHBEih5-SXY2rWViig4rQHi9N07JY6CjXA@mail.gmail.com>
- <Yv/DK+AGlMeBGkF1@slm.duckdns.org> <CALOAHbCvUxQn5Zkp2FJ+eL1VgjeRSq1xQhzdiY87C1Cbib-nig@mail.gmail.com>
- <YwNold0GMOappUxc@slm.duckdns.org>
-In-Reply-To: <YwNold0GMOappUxc@slm.duckdns.org>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Tue, 23 Aug 2022 19:08:17 +0800
-Message-ID: <CALOAHbBTR-07La=-KPehFab0WDY4V6LovXbrhLXOqKDurHD-9g@mail.gmail.com>
-Subject: Re: [RFD RESEND] cgroup: Persistent memory usage tracking
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, jolsa@kernel.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Cgroups <cgroups@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Dan Schatzberg <schatzberg.dan@gmail.com>,
-        Lennart Poettering <lennart@poettering.net>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b4081a1e-8239-4896-5c74-08da84fa0c95
+X-MS-TrafficTypeDiagnostic: BN7PR11MB2770:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: zOiduu3Stbo4uqu4i0ugfYRLd1UVtASMWtBwPJOhtHcsSWRapMf3SSqcuXQx2zUs8d3KGM/n/e6rUoHTR3T0sGfPCWVjcr9NAFzJCkwU1mv0RzEd6MU1wsq/AkJ0XlHbM8Bi7ds0zSK3Zw09G8o9Jq4L+GpD6DiiQtoN/iPmV5X5+gx5EclVs5k4nsU++kbJZuTbTa9ralAjGgtljH6Vb5mfsVkk094hHHWYKFucRZLP8jgxf0V2mwbSIWr5WVBHsfwLXmloottB4NYXMykOSN7h0UcOPkOgVEm/xPpauUhFlGeIGwtEbnP/ZgNmCYaWOIzqdTj0yKeqPNBKKbUHpuEDGKPzdF8C2y8nMxCdLItU3IeJLG8lhL+UHT6/5ijec1sReb/t/2ZOWxCTsd5ubLK5p7nMTTB6+hu7rmFdOpIovPn/S4EQSVz/lLoZJ2c2Dyawv34Ia4qi2ic/WzdE4uFOH63A40KAfiOrY2wzUSaJNUjfdAF1KvTegUYwsM9mZik+EkmfJ5f5WL8UFZ0WNNyBkeB8porCyIjdUyLPZ9zNUKLoTVcT60+CbR/qwHS0JJss0h8uU2C8/+n3MLVxm9jmsw4Bjl7/Hzka1MF6emx5/jOBfbYf7X3TsV5a0YsqL578TLJz8bG19eoF/Cg73lJswWViPiTz+gVHhrrsPOfwElAmOlI4xOt5N/rPJJgiObqfp37gyW0Lsj2CWdBrQN9vE8x4Ge9KZvMK82RyBrFpoKKqAL2QhZdtQJ9YJUYc3XwB1gb+H+2zP4boSSqvcJ32s+lOi0gF+r9c1PU5Ri76boDKQoH4YYOCfG5d7kIwxBPGNHe4uUybotfPf3JP+A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(7916004)(39860400002)(376002)(346002)(366004)(396003)(136003)(478600001)(966005)(82960400001)(6486002)(6916009)(54906003)(316002)(186003)(83380400001)(66574015)(38100700002)(6666004)(6506007)(41300700001)(26005)(6512007)(9686003)(44832011)(2906002)(86362001)(8936002)(8676002)(66476007)(66556008)(33716001)(66946007)(5660300002)(4326008)(67856001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?Z8MXQpTKZAsVxQ0RK5CSeitiUerVHRtrAHKkz480Mg8ewjjKzE00mfdSte?=
+ =?iso-8859-1?Q?nZJ3hNuqF2zUpV6rExO7qhp2McCiPPP/KNDO+77fMGt4l5CTXSeREFpub6?=
+ =?iso-8859-1?Q?Qacf+o4LDxhzfz7jQ1KtSKTgLs4AYHiXvp9dm/S8LkinrpdwNYhYEmE4es?=
+ =?iso-8859-1?Q?0cgpGaplAVnt0yU4aJ8YWU6lBNjOg+1k4LwvWZmbq/DbE/sWL7FXO4PQDM?=
+ =?iso-8859-1?Q?toI3bux2L7a4pryc59+p2ZltaakZZduq9Kyhzy2Jod/pKHe1GKWdAM/uHe?=
+ =?iso-8859-1?Q?PT711fiE/xIKB/ckgg1X6oUEOsCFy2ewtg8gKF/RaMBU4XavVuaeowwR96?=
+ =?iso-8859-1?Q?i6d2IjOrIhLUgGWW7adhFgSsCPLjYMEvAg8wr65PxEW84UasXCNzpcWpVh?=
+ =?iso-8859-1?Q?nh/8DpgABMEROB8bymAmS/w//ou22yDYfthkTV+XAphid8qKJdc16Cb7Q/?=
+ =?iso-8859-1?Q?wxi0ofH37Iq4bC9oWilbtgJzg8Hu3rdu6CEKCWAJ7+RCoS6cVvJ57oggfF?=
+ =?iso-8859-1?Q?IccePLD+Y7h0xQlmchK2+91JTf43oO+SYirB/muWUzQ2hBM2dS7QbztSy4?=
+ =?iso-8859-1?Q?yvDPF2oALJz2APO9rDRUKeF5jDGovMMLTjj/q7UDpCip//D5HwbRn0viW1?=
+ =?iso-8859-1?Q?UctQ88hvw3FzCNH4eQ4f+UNMn4CgnKhHGkHNxYBtbI7VzUFOlkxOaOc8vy?=
+ =?iso-8859-1?Q?79PA/xBt5YQAZ79SnBuWNaU/kHyJIlQo36uwjFN7BggDOBYZgPTkf3qRrj?=
+ =?iso-8859-1?Q?nzEVU63tIz4KwXvaygK7/wdMcCkLoccHmpWdPEVlBe9uqltojyh6ZxXF+D?=
+ =?iso-8859-1?Q?DekLYc8t00DvdhiHC7kGqc6IcPOLyyNpCiszrg+EMFJWvLO7JdUKe5HstE?=
+ =?iso-8859-1?Q?a1Athz7TvGnplokoHIHd7uKfrvRRTsWmhjQOJbtsvko09IOqKRi34IDhC0?=
+ =?iso-8859-1?Q?w/oyOZpatAi03b9jrQ+Z92+A1x6Wol5xjrkEczLYSTT+Z9P08q0cBO3E4C?=
+ =?iso-8859-1?Q?bXv0WP7RhBhjowpyHhMgwlTzAY8ysLQphYo5asPwUhPHGH2Efrsmg3oYsD?=
+ =?iso-8859-1?Q?ZqBrjWMN2LfFxcmozf7aHCLVOtZRt87zji5Pg4hAM9pv8dVprssWfEdfRP?=
+ =?iso-8859-1?Q?+B45RLMdwfqbdyO37+0PQ4w3h3zezTf851bKRx9kMKUDHWmiMuAEr3hgvE?=
+ =?iso-8859-1?Q?Bc8CdfXF4vBmIgYxLUCqq9Lmx8c7bwsR6H1++Di0HUwCOIeuPMtgEvdrD/?=
+ =?iso-8859-1?Q?xMIC/m6SyhDPMxsVJpvApCCOyRISBL0vvK3WSjo0k0FpnGmsmdN4SnbC9u?=
+ =?iso-8859-1?Q?rCqagqASVRA9eVqyolk6nIiR+aaed9JfwNk6l3gLFSkp20CVlFY9Yt8drM?=
+ =?iso-8859-1?Q?ZXuRQ+5BNz8SqBTatK91khhH57Q4cjZ8de4AcV2Me6XhFus+BGDnT/91+z?=
+ =?iso-8859-1?Q?oJepCH8Zg2tHqRR8Vf9WH0pMgfxP3NdMxYzF0BOPeE+7XBwXYlkfY5kQB8?=
+ =?iso-8859-1?Q?oJOTKQmG2ia4Qgk8x1QnNiXnfmqPyT2PIaG3omLsZiWHSl+myqV9442HyW?=
+ =?iso-8859-1?Q?D7lURS06pbEE3bCP/YoZ4/ln4fe6E35w/xlG2tdJy3TTVxssWtLLZhQ39W?=
+ =?iso-8859-1?Q?L30l1Jby5wOVOcq9KQDiwBTh4ucOgSCbWkVlMCzYUkOyvusAH/Xu4ndg?=
+ =?iso-8859-1?Q?=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: b4081a1e-8239-4896-5c74-08da84fa0c95
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Aug 2022 11:24:31.5558
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: nosRs+A2ss+4N79Q6QQpCmegbCcUMItrtE/LFzxmORM07qqaPDpjjl1bqSTiRaLJx21CNs/UxSpfjcJt8d16eqUzoYIufJUQJ9cluNFsCSg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR11MB2770
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 22, 2022 at 7:29 PM Tejun Heo <tj@kernel.org> wrote:
->
-> (Sorry, this is a resend. I messed up the header in the first posting.)
->
-> Hello,
->
-> This thread started on a bpf-specific memory tracking change proposal and
-> went south, but a lot of people who would be interested are already cc'd, so
-> I'm hijacking it to discuss what to do w/ persistent memory usage tracking.
->
-> Cc'ing Mina and Yosry who were involved in the discussions on the similar
-> problem re. tmpfs, Dan Schatzberg who has a lot more prod knowledge and
-> experience than me, and Lennart for his thoughts from systemd side.
->
-> The root problem is that there are resources (almost solely memory
-> currently) that outlive a given instance of a, to use systemd-lingo,
-> service. Page cache is the most common case.
->
-> Let's say there's system.slice/hello.service. When it runs for the first
-> time, page cache backing its binary will be charged to hello.service.
-> However, when it restarts after e.g. a config change, when the initial
-> hello.service cgroup gets destroyed, we reparent the page cache charges to
-> the parent system.slice and when the second instance starts, its binary will
-> stay charged to system.slice. Over time, some may get reclaimed and
-> refaulted into the new hello.service but that's not guaranteed and most hot
-> pages likely won't.
->
-> The same problem exists for any memory which is not freed synchronously when
-> the current instance exits. While this isn't a problem for many cases, it's
-> not difficult to imagine situations where the amount of memory which ends up
-> getting pushed to the parent is significant, even clear majority, with big
-> page cache footprint, persistent tmpfs instances and so on, creating issues
-> with accounting accuracy and thus control.
->
-> I think there are two broad issues to discuss here:
->
-> [1] Can this be solved by layering the instance cgroups under persistent
->     entity cgroup?
->
+On Tue, Aug 23, 2022 at 09:49:43AM +0000, Maxim Mikityanskiy wrote:
+> Anyone from Intel? Maciej, Björn, Magnus?
 
-Hi,
+Hey Maxim,
 
-Below is some background of kubernetes.
-In kubernetes, a pod is organized as follows,
+how about keeping it simple and going with option 1? This behavior was
+even proposed in the v1 submission of the patch set we're talking about.
 
-               pod
-               |- Container
-               |- Container
-
-IOW, it is a two-layer unit, or a two-layer instance.
-The cgroup dir of the pod is named with a UUID assigned by kubernetes-apiserver.
-Once the old pod is destroyed (that can happen when the user wants to
-update their service), the new pod will have a different UUID.
-That said, different instances will have different cgroup dir.
-
-If we want to introduce a  persistent entity cgroup, we have to make
-it a three-layer unit.
-
-           persistent-entity
-           |- pod
-                 |- Container
-                 |- Container
-
-There will be some issues,
-1.  The kuber-apiserver must maintain the persistent-entity on each host.
-     It needs a great refactor and the compatibility is also a problem
-per my discussion with kubernetes experts.
-2.  How to do the monitor?
-     If there's only one pod under this persistent-entity, we can
-easily get the memory size of  shared resources by:
-         Sizeof(shared-resources) = Sizeof(persistent-entity) - Sizeof(pod)
-    But what if it has N pods and N is dynamically changed ?
-3.  What if it has more than one shared resource?
-     For example, pod-foo has two shared resources A and B, pod-bar
-has two shared resources A and C, and another pod has two shared
-resources B and C.
-     How to deploy them?
-     Pls, note that we can introduce multiple-layer persistent-entity,
-but which one should be the parent ?
-
-So from my perspective, it is almost impossible.
-
-> So, instead of systemd.slice/hello.service, the application runs inside
-> something like systemd.slice/hello.service/hello.service.instance and the
-> service-level cgroup hello.service is not destroyed as long as it is
-> something worth tracking on the system.
->
-> The benefits are
->
-> a. While requiring changing how userland organizes cgroup hiearchy, it is a
->    straight-forward extension of the current architecture and doesn't
->    require any conceptual or structural changes. All the accounting and
->    control schemes work exactly the same as before. The only difference is
->    that we now have a persistent entity representing each service as we want
->    to track their persistent resource usages.
->
-> b. Per-instance tracking and control is optional. To me, it seems that the
->    persistent resource usages would be more meaningful than per-instance and
->    tracking down to the persistent usages shouldn't add noticeable runtime
->    overheads while keeping per-instance process management niceties and
->    allowing use cases to opt-in for per-instance resource tracking and
->    control as needed.
->
-> The complications are:
->
-> a. It requires changing cgroup hierarchy in a very visible way.
->
-> b. What should be the lifetime rules for persistent cgroups? Do we keep them
->    around forever or maybe they can be created on the first use and kept
->    around until the service is removed from the system? When the persistent
->    cgroup is removed, do we need to make sure that the remaining resource
->    usages are low enough? Note that this problem exists for any approach
->    that tries to track persistent usages no matter how it's done.
->
-> c. Do we need to worry about nesting overhead? Given that there's no reason
->    to enable controllers w/o persisten states for the instance level and the
->    nesting overhead is pretty low for memcg, this doesn't seem like a
->    problem to me. If this becomes a problem, we just need to fix it.
->
-> A couple alternatives discussed are:
->
-> a. Userspace keeps reusing the same cgroup for different instances of the
->    same service. This simplifies some aspects while making others more
->    complicated. e.g. Determining the current instance's CPU or IO usages now
->    require the monitoring software remembering what they were when this
->    instance started and calculating the deltas. Also, if some use cases want
->    to distinguish persistent vs. instance usages (more on this later), this
->    isn't gonna work. That said, this definitely is attractive in that it
->    miminizes overt user visible changes.
->
-> b. Memory is disassociated rather than just reparented on cgroup destruction
->    and get re-charged to the next first user. This is attractive in that it
->    doesn't require any userspace changes; however, I'm not sure how this
->    would work for non-pageable memory usages such as bpf maps. How would we
->    detect the next first usage?
->
-
-JFYI, There is a reuse path for the bpf map, see my previous RFC[1].
-[1] https://lore.kernel.org/bpf/20220619155032.32515-1-laoar.shao@gmail.com/
-
->
-> [2] Whether and how to solve first and second+ instance charge differences.
->
-> If we take the layering approach, the first instance will get charged for
-> all memory that it uses while the second+ instances likely won't get charged
-> for a lot of persistent usages. I don't think there is a consensus on
-> whether this needs to be solved and I don't have enough context to form a
-> strong opinion. memcg folks are a lot better equipped to make this decision.
->
-
-Just sharing our practice.
-For many of our users, it means the memcg is unreliable (at least for
-the observability) when the memory usage is inconsistent.
-So they prefer to drop the page cache (by echoing memory.force_empty)
-when the container (pod) is destroyed, at the cost of taking time to
-reload these page caches next time.  Reliability is more important
-than performance.
-
-> Assuming this needs to be solved, here's a braindump to be taken with a big
-> pinch of salt:
->
-> I have a bit of difficult time imagining a perfect solution given that
-> whether a given page cache page is persistent or not would be really
-> difficult to know (or maybe all page cache is persistent by default while
-> anon is not). However, the problem still seems worthwhile to consider for
-> big ticket items such as persistent tmpfs mounts and huge bpf maps as they
-> can easily make the differences really big.
->
-> If we want to solve this problem, here are options that I can think of:
->
-> a. Let userspace put the charges where they belong using the current
->    mechanisms. ie. Create persistent entities in the persistent parent
->    cgroup while there's no current instance.
->
->    Pro: It won't require any major kernel or interface changes. There still
->    need to be some tweaking such as allowing tmpfs pages to be always
->    charged to the cgroup which created the instance (maybe as long as it's
->    an ancestor of the faulting cgroup?) but nothing too invasive.
->
->    Con: It may not be flexible enough.
->
-> b. Let userspace specify which cgroup to charge for some of constructs like
->    tmpfs and bpf maps. The key problems with this approach are
->
->    1. How to grant/deny what can be charged where. We must ensure that a
->       descendant can't move charges up or across the tree without the
->       ancestors allowing it.
->
-
-We can add restrictions to check which memcg can be selected
-(regarding the selectable memcg).
-But I think it may be too early to do the restrictions, as only the
-privileged user can set it.
-It is the sys admin's responsbility to select a proper memcg.
-That said, the selectable memcg is not going south.
-
->    2. How to specify the cgroup to charge. While specifying the target
->       cgroup directly might seem like an obvious solution, it has a couple
->       rather serious problems. First, if the descendant is inside a cgroup
->       namespace, it might be able to see the target cgroup at all.
-
-It is not a problem. Just sharing our practice below.
-$ docker run -tid --privileged    \
-                      --mount
-type=bind,source=/sys/fs/bpf,target=/sys/fs/bpf    \
-                      --mount
-type=bind,source=/sys/fs/cgroup/memory/bpf,target=/bpf-memcg    \
-                      docker-image
-
-The bind-mount can make it work.
-
->  Second,
->       it's an interface which is likely to cause misunderstandings on how it
->       can be used. It's too broad an interface.
->
-
-As I said above, we just need some restrictions or guidance if that is
-desired now.
-
->    One solution that I can think of is leveraging the resource domain
->    concept which is currently only used for threaded cgroups. All memory
->    usages of threaded cgroups are charged to their resource domain cgroup
->    which hosts the processes for those threads. The persistent usages have a
->    similar pattern, so maybe the service level cgroup can declare that it's
->    the encompassing resource domain and the instance cgroup can say whether
->    it's gonna charge e.g. the tmpfs instance to its own or the encompassing
->    resource domain.
->
->    This has the benefit that the user only needs to indicate its intention
->    without worrying about how cgroups are composed and what their IDs are.
->    It just indicates whether the given resource is persistent and if the
->    cgroup hierarchy is set up for that, it gets charged that way and if not
->    it can be just charged to itself.
->
->    This is a shower thought but, if we allow nesting such domains (and maybe
->    name them), we can use it for shared resources too so that co-services
->    are put inside a shared slice and shared resources are pushed to the
->    slice level.
->
-> This became pretty long. I obviously have a pretty strong bias towards
-> solving this within the current basic architecture but other than that most
-> of these decisions are best made by memcg folks. We can hopefully build some
-> consensus on the issue.
->
-
-JFYI.
-Apologize in advance if my words offend you again.
-
--- 
-Regards
-Yafang
+> 
+> Does anyone else have anything to say? IMO, calling XDP for the same
+> packet multiple times is a bug, we should agree on some sane solution.
+> 
+> On Thu, 2022-08-18 at 14:26 +0300, Maxim Mikityanskiy wrote:
+> > Hi Maciej,
+> > 
+> > On Wed, 2022-04-13 at 17:30 +0200, Maciej Fijalkowski wrote:
+> > > v2:
+> > > - add likely for internal redirect return codes in ice and ixgbe
+> > >   (Jesper)
+> > > - do not drop the buffer that head pointed to at full XSK RQ
+> > > (Maxim)
+> > 
+> > I found an issue with this approach. If you don't drop that packet,
+> > you'll need to run the XDP program for the same packet again. If the
+> > XDP program is anything more complex than "redirect-everything-to-
+> > XSK",
+> > it will get confused, for example, if it tracks any state or counts
+> > anything.
+> > 
+> > We can't check whether there is enough space in the XSK RX ring
+> > before
+> > running the XDP program, as we don't know in advance which XSK socket
+> > will be selected.
+> > 
+> > We can't store bpf_redirect_info across NAPI calls to avoid running
+> > the
+> > XDP program second time, as bpf_redirect_info is protected by RCU and
+> > the assumption that the whole XDP_REDIRECT operation happens within
+> > one
+> > NAPI cycle.
+> > 
+> > I see the following options:
+> > 
+> > 1. Drop the packet when an overflow happens. The problem is that it
+> > will happen systematically, but it's still better than the old
+> > behavior
+> > (drop mulitple packets when an overflow happens and hog the CPU).
+> > 
+> > 2. Make this feature opt-in. If the application opts in, it
+> > guarantees
+> > to take measures to handle duplicate packets in XDP properly.
+> > 
+> > 3. Require the XDP program to indicate it supports being called
+> > multiple times for the same packet and pass a flag to it if it's a
+> > repeated run. Drop the packet in the driver if the XDP program
+> > doesn't
+> > indicate this support. The indication can be done similar to how it's
+> > implemented for XDP multi buffer.
+> > 
+> > Thoughts? Other options?
+> > 
+> > Thanks,
+> > Max
+> > 
+> > > - terminate Rx loop only when need_wakeup feature is enabled
+> > > (Maxim)
+> > > - reword from 'stop softirq processing' to 'stop NAPI Rx
+> > > processing'
+> > > - s/ENXIO/EINVAL in mlx5 and stmmac's ndo_xsk_wakeup to keep it
+> > >   consitent with Intel's drivers (Maxim)
+> > > - include Jesper's Acks
+> > > 
+> > > Hi!
+> > > 
+> > > This is a revival of Bjorn's idea [0] to break NAPI loop when XSK
+> > > Rx
+> > > queue gets full which in turn makes it impossible to keep on
+> > > successfully producing descriptors to XSK Rx ring. By breaking out
+> > > of
+> > > the driver side immediately we will give the user space opportunity
+> > > for
+> > > consuming descriptors from XSK Rx ring and therefore provide room
+> > > in the
+> > > ring so that HW Rx -> XSK Rx redirection can be done.
+> > > 
+> > > Maxim asked and Jesper agreed on simplifying Bjorn's original API
+> > > used
+> > > for detecting the event of interest, so let's just simply check for
+> > > -ENOBUFS within Intel's ZC drivers after an attempt to redirect a
+> > > buffer
+> > > to XSK Rx. No real need for redirect API extension.
+> > > 
+> > > One might ask why it is still relevant even after having proper
+> > > busy
+> > > poll support in place - here is the justification.
+> > > 
+> > > For xdpsock that was:
+> > > - run for l2fwd scenario,
+> > > - app/driver processing took place on the same core in busy poll
+> > >   with 2048 budget,
+> > > - HW ring sizes Tx 256, Rx 2048,
+> > > 
+> > > this work improved throughput by 78% and reduced Rx queue full
+> > > statistic
+> > > bump by 99%.
+> > > 
+> > > For testing ice, make sure that you have [1] present on your side.
+> > > 
+> > > This set, besides the work described above, carries also
+> > > improvements
+> > > around return codes in various XSK paths and lastly a minor
+> > > optimization
+> > > for xskq_cons_has_entries(), a helper that might be used when XSK
+> > > Rx
+> > > batching would make it to the kernel.
+> > > 
+> > > Link to v1 and discussion around it is at [2].
+> > > 
+> > > Thanks!
+> > > MF
+> > > 
+> > > [0]:
+> > > https://lore.kernel.org/bpf/20200904135332.60259-1-bjorn.topel@gmail.com/
+> > > [1]:
+> > > https://lore.kernel.org/netdev/20220317175727.340251-1-maciej.fijalkowski@intel.com/
+> > > [2]:
+> > > https://lore.kernel.org/bpf/5864171b-1e08-1b51-026e-5f09b8945076@nvidia.com/T/
+> > > 
+> > > Björn Töpel (1):
+> > >   xsk: improve xdp_do_redirect() error codes
+> > > 
+> > > Maciej Fijalkowski (13):
+> > >   xsk: diversify return codes in xsk_rcv_check()
+> > >   ice: xsk: decorate ICE_XDP_REDIR with likely()
+> > >   ixgbe: xsk: decorate IXGBE_XDP_REDIR with likely()
+> > >   ice: xsk: terminate Rx side of NAPI when XSK Rx queue gets full
+> > >   i40e: xsk: terminate Rx side of NAPI when XSK Rx queue gets full
+> > >   ixgbe: xsk: terminate Rx side of NAPI when XSK Rx queue gets full
+> > >   ice: xsk: diversify return values from xsk_wakeup call paths
+> > >   i40e: xsk: diversify return values from xsk_wakeup call paths
+> > >   ixgbe: xsk: diversify return values from xsk_wakeup call paths
+> > >   mlx5: xsk: diversify return values from xsk_wakeup call paths
+> > >   stmmac: xsk: diversify return values from xsk_wakeup call paths
+> > >   ice: xsk: avoid refilling single Rx descriptors
+> > >   xsk: drop ternary operator from xskq_cons_has_entries
+> > > 
+> > >  .../ethernet/intel/i40e/i40e_txrx_common.h    |  1 +
+> > >  drivers/net/ethernet/intel/i40e/i40e_xsk.c    | 38 ++++++++-----
+> > >  drivers/net/ethernet/intel/ice/ice_txrx.h     |  1 +
+> > >  drivers/net/ethernet/intel/ice/ice_xsk.c      | 53 ++++++++++++---
+> > > ----
+> > >  .../ethernet/intel/ixgbe/ixgbe_txrx_common.h  |  1 +
+> > >  drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c  | 52 ++++++++++-----
+> > > ---
+> > >  .../ethernet/mellanox/mlx5/core/en/xsk/tx.c   |  2 +-
+> > >  .../net/ethernet/stmicro/stmmac/stmmac_main.c |  4 +-
+> > >  net/xdp/xsk.c                                 |  4 +-
+> > >  net/xdp/xsk_queue.h                           |  4 +-
+> > >  10 files changed, 99 insertions(+), 61 deletions(-)
+> > > 
+> > 
+> 
