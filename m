@@ -2,25 +2,25 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8748059E8A1
-	for <lists+bpf@lfdr.de>; Tue, 23 Aug 2022 19:07:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3834E59E89E
+	for <lists+bpf@lfdr.de>; Tue, 23 Aug 2022 19:07:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343931AbiHWRHe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Aug 2022 13:07:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48378 "EHLO
+        id S1343895AbiHWRHc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Aug 2022 13:07:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345020AbiHWRGS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S1345018AbiHWRGS (ORCPT <rfc822;bpf@vger.kernel.org>);
         Tue, 23 Aug 2022 13:06:18 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76A1212B07D
-        for <bpf@vger.kernel.org>; Tue, 23 Aug 2022 06:35:09 -0700 (PDT)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4MBqqZ01s7zXdkv;
-        Tue, 23 Aug 2022 21:30:49 +0800 (CST)
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 759DD152C64
+        for <bpf@vger.kernel.org>; Tue, 23 Aug 2022 06:35:10 -0700 (PDT)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4MBqrW2mXMz1N7MB;
+        Tue, 23 Aug 2022 21:31:39 +0800 (CST)
 Received: from huawei.com (10.175.101.6) by canpemm500010.china.huawei.com
  (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Tue, 23 Aug
- 2022 21:35:06 +0800
+ 2022 21:35:07 +0800
 From:   Liu Jian <liujian56@huawei.com>
 To:     <john.fastabend@gmail.com>, <jakub@cloudflare.com>,
         <edumazet@google.com>, <davem@davemloft.net>,
@@ -31,9 +31,9 @@ To:     <john.fastabend@gmail.com>, <jakub@cloudflare.com>,
         <sdf@google.com>, <haoluo@google.com>, <jolsa@kernel.org>,
         <shuah@kernel.org>, <bpf@vger.kernel.org>
 CC:     <liujian56@huawei.com>
-Subject: [PATCH bpf-next v2 1/2] net: If the sock is dead, do not access sock's sk_wq in sk_stream_wait_memory
-Date:   Tue, 23 Aug 2022 21:37:54 +0800
-Message-ID: <20220823133755.314697-2-liujian56@huawei.com>
+Subject: [PATCH bpf-next v2 2/2] selftests/bpf: Add wait send memory test for sockmap redirect
+Date:   Tue, 23 Aug 2022 21:37:55 +0800
+Message-ID: <20220823133755.314697-3-liujian56@huawei.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20220823133755.314697-1-liujian56@huawei.com>
 References: <20220823133755.314697-1-liujian56@huawei.com>
@@ -52,96 +52,108 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fix the below NULL pointer dereference:
+Add one test for wait redirect sock's send memory test for sockmap.
 
-[   14.471200] Call Trace:
-[   14.471562]  <TASK>
-[   14.471882]  lock_acquire+0x245/0x2e0
-[   14.472416]  ? remove_wait_queue+0x12/0x50
-[   14.473014]  ? _raw_spin_lock_irqsave+0x17/0x50
-[   14.473681]  _raw_spin_lock_irqsave+0x3d/0x50
-[   14.474318]  ? remove_wait_queue+0x12/0x50
-[   14.474907]  remove_wait_queue+0x12/0x50
-[   14.475480]  sk_stream_wait_memory+0x20d/0x340
-[   14.476127]  ? do_wait_intr_irq+0x80/0x80
-[   14.476704]  do_tcp_sendpages+0x287/0x600
-[   14.477283]  tcp_bpf_push+0xab/0x260
-[   14.477817]  tcp_bpf_sendmsg_redir+0x297/0x500
-[   14.478461]  ? __local_bh_enable_ip+0x77/0xe0
-[   14.479096]  tcp_bpf_send_verdict+0x105/0x470
-[   14.479729]  tcp_bpf_sendmsg+0x318/0x4f0
-[   14.480311]  sock_sendmsg+0x2d/0x40
-[   14.480822]  ____sys_sendmsg+0x1b4/0x1c0
-[   14.481390]  ? copy_msghdr_from_user+0x62/0x80
-[   14.482048]  ___sys_sendmsg+0x78/0xb0
-[   14.482580]  ? vmf_insert_pfn_prot+0x91/0x150
-[   14.483215]  ? __do_fault+0x2a/0x1a0
-[   14.483738]  ? do_fault+0x15e/0x5d0
-[   14.484246]  ? __handle_mm_fault+0x56b/0x1040
-[   14.484874]  ? lock_is_held_type+0xdf/0x130
-[   14.485474]  ? find_held_lock+0x2d/0x90
-[   14.486046]  ? __sys_sendmsg+0x41/0x70
-[   14.486587]  __sys_sendmsg+0x41/0x70
-[   14.487105]  ? intel_pmu_drain_pebs_core+0x350/0x350
-[   14.487822]  do_syscall_64+0x34/0x80
-[   14.488345]  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-The test scene as following flow:
-thread1                               thread2
------------                           ---------------
- tcp_bpf_sendmsg
-  tcp_bpf_send_verdict
-   tcp_bpf_sendmsg_redir              sock_close
-    tcp_bpf_push_locked                 __sock_release
-     tcp_bpf_push                         //inet_release
-      do_tcp_sendpages                    sock->ops->release
-       sk_stream_wait_memory          	   // tcp_close
-          sk_wait_event                      sk->sk_prot->close
-           release_sock(__sk);
-            ***
-
-                                                lock_sock(sk);
-                                                  __tcp_close
-                                                    sock_orphan(sk)
-                                                      sk->sk_wq  = NULL
-                                                release_sock
-            ****
-           lock_sock(__sk);
-          remove_wait_queue(sk_sleep(sk), &wait);
-             sk_sleep(sk)
-             //NULL pointer dereference
-             &rcu_dereference_raw(sk->sk_wq)->wait
-
-While waiting for memory in thread1, the socket is released with its wait
-queue because thread2 has closed it. This caused by tcp_bpf_send_verdict
-didn't increase the f_count of psock->sk_redir->sk_socket->file in thread1.
-
-We should check if SOCK_DEAD flag is set on wakeup in
-sk_stream_wait_memory, before accessing the wait queue.
-
-Suggested-by: Jakub Sitnicki <jakub@cloudflare.com>
 Signed-off-by: Liu Jian <liujian56@huawei.com>
 ---
-v1->v2:
-  As Jakub's suggested, check sock's DEAD flag before accessing
-  the wait queue.
- net/core/stream.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ tools/testing/selftests/bpf/test_sockmap.c | 42 ++++++++++++++++++++++
+ 1 file changed, 42 insertions(+)
 
-diff --git a/net/core/stream.c b/net/core/stream.c
-index ccc083cdef23..1105057ce00a 100644
---- a/net/core/stream.c
-+++ b/net/core/stream.c
-@@ -159,7 +159,8 @@ int sk_stream_wait_memory(struct sock *sk, long *timeo_p)
- 		*timeo_p = current_timeo;
- 	}
- out:
--	remove_wait_queue(sk_sleep(sk), &wait);
-+	if (!sock_flag(sk, SOCK_DEAD))
-+		remove_wait_queue(sk_sleep(sk), &wait);
- 	return err;
+diff --git a/tools/testing/selftests/bpf/test_sockmap.c b/tools/testing/selftests/bpf/test_sockmap.c
+index 0fbaccdc8861..95b9b45ad028 100644
+--- a/tools/testing/selftests/bpf/test_sockmap.c
++++ b/tools/testing/selftests/bpf/test_sockmap.c
+@@ -138,6 +138,7 @@ struct sockmap_options {
+ 	bool data_test;
+ 	bool drop_expected;
+ 	bool check_recved_len;
++	bool tx_wait_mem;
+ 	int iov_count;
+ 	int iov_length;
+ 	int rate;
+@@ -578,6 +579,10 @@ static int msg_loop(int fd, int iov_count, int iov_length, int cnt,
+ 			sent = sendmsg(fd, &msg, flags);
  
- do_error:
+ 			if (!drop && sent < 0) {
++				if (opt->tx_wait_mem && errno == EACCES) {
++					errno = 0;
++					goto out_errno;
++				}
+ 				perror("sendmsg loop error");
+ 				goto out_errno;
+ 			} else if (drop && sent >= 0) {
+@@ -644,6 +649,15 @@ static int msg_loop(int fd, int iov_count, int iov_length, int cnt,
+ 				goto out_errno;
+ 			}
+ 
++			if (opt->tx_wait_mem) {
++				FD_ZERO(&w);
++				FD_SET(fd, &w);
++				slct = select(max_fd + 1, NULL, NULL, &w, &timeout);
++				errno = 0;
++				close(fd);
++				goto out_errno;
++			}
++
+ 			errno = 0;
+ 			if (peek_flag) {
+ 				flags |= MSG_PEEK;
+@@ -752,6 +766,22 @@ static int sendmsg_test(struct sockmap_options *opt)
+ 			return err;
+ 	}
+ 
++	if (opt->tx_wait_mem) {
++		struct timeval timeout;
++		int rxtx_buf_len = 1024;
++
++		timeout.tv_sec = 3;
++		timeout.tv_usec = 0;
++
++		err = setsockopt(c2, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof(struct timeval));
++		err |= setsockopt(c2, SOL_SOCKET, SO_SNDBUFFORCE, &rxtx_buf_len, sizeof(int));
++		err |= setsockopt(p2, SOL_SOCKET, SO_RCVBUFFORCE, &rxtx_buf_len, sizeof(int));
++		if (err) {
++			perror("setsockopt failed()");
++			return errno;
++		}
++	}
++
+ 	rxpid = fork();
+ 	if (rxpid == 0) {
+ 		if (txmsg_pop || txmsg_start_pop)
+@@ -788,6 +818,9 @@ static int sendmsg_test(struct sockmap_options *opt)
+ 		return errno;
+ 	}
+ 
++	if (opt->tx_wait_mem)
++		close(c2);
++
+ 	txpid = fork();
+ 	if (txpid == 0) {
+ 		if (opt->sendpage)
+@@ -1452,6 +1485,14 @@ static void test_txmsg_redir(int cgrp, struct sockmap_options *opt)
+ 	test_send(opt, cgrp);
+ }
+ 
++static void test_txmsg_redir_wait_sndmem(int cgrp, struct sockmap_options *opt)
++{
++	txmsg_redir = 1;
++	opt->tx_wait_mem = true;
++	test_send_large(opt, cgrp);
++	opt->tx_wait_mem = false;
++}
++
+ static void test_txmsg_drop(int cgrp, struct sockmap_options *opt)
+ {
+ 	txmsg_drop = 1;
+@@ -1800,6 +1841,7 @@ static int populate_progs(char *bpf_file)
+ struct _test test[] = {
+ 	{"txmsg test passthrough", test_txmsg_pass},
+ 	{"txmsg test redirect", test_txmsg_redir},
++	{"txmsg test redirect wait send mem", test_txmsg_redir_wait_sndmem},
+ 	{"txmsg test drop", test_txmsg_drop},
+ 	{"txmsg test ingress redirect", test_txmsg_ingress_redir},
+ 	{"txmsg test skb", test_txmsg_skb},
 -- 
 2.17.1
 
