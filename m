@@ -2,132 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99CDF59D992
-	for <lists+bpf@lfdr.de>; Tue, 23 Aug 2022 12:07:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64CFC59E179
+	for <lists+bpf@lfdr.de>; Tue, 23 Aug 2022 14:39:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243705AbiHWJ6B (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Aug 2022 05:58:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57864 "EHLO
+        id S1359477AbiHWMIg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Aug 2022 08:08:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352410AbiHWJ4y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Aug 2022 05:56:54 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8894A1A60
-        for <bpf@vger.kernel.org>; Tue, 23 Aug 2022 01:47:34 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id b5so11842835wrr.5
-        for <bpf@vger.kernel.org>; Tue, 23 Aug 2022 01:47:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc;
-        bh=vbet5Ohrs21WQRpX3a/YnxTM9bbasQS+bUzE0rJqVg8=;
-        b=JbR51pRZ5gtLNykEpK1/FfA45VpjlwUsDkGl3R22/qshoz0IsltZrNvd5LDlmHgt3e
-         69GevPLqmA/vWTL9muHYcMeIztPxWxMRmLwn9PCpIe7Hyds4Fji0yUDRzB/047EcRpDW
-         7Pco43xfYJACIg7YdVdKRei/Km07dfuzlsLVMP28GG/E6Vp+HBfZ+Vhop61u753mv88L
-         wp/nPGgXdLdFP+CDohiDIzBwMGsV8qeFKQde840PjGWycds1dsHMz0xDtsdYJDD/Lv6A
-         R1HcVlZMGWQzakab2g/FLx6OkpKt72tVyL+xorMYZzPEM05MY+IPP055KcBhJqlTe682
-         ZQ3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc;
-        bh=vbet5Ohrs21WQRpX3a/YnxTM9bbasQS+bUzE0rJqVg8=;
-        b=fvQMyvLDVuosALwDZ1b/uCfDmV378yhCeBYAWl6Fx/BD4WS1IR19vDfn3A7tR4V7Zl
-         /P8iIhD6woyhXzaxOUhPh+xFKfLtvQ/obV2yvm/S77WK1HCJIz6IGhJq+AEGIWpu/bY+
-         ZjfvR0QCjgqCiOgUDiEVE6lxKIVPjq2eSEAuf0e0plUGb+jRy63bzFGiBZls+tzq/tYu
-         pWburNsrFP8SLqIY4IyFVHawZ1zBjGB2oDXHIfZGBZewjKX4YhXi4kGY5xQahJAa+e0b
-         x4StY9eIZ2cgaIUCRGexrEmGQCQbdeU+gf891aq1rJe2VmcJKXe48FJ/yRYRoYi3szzE
-         GRNA==
-X-Gm-Message-State: ACgBeo2fxfsZTTzfbejaa8gulQG65DPaMbsxMM+cKLUSaWZH9uTRuJvi
-        l6TQ4aTj1czK5JNMuGRhcZzChA==
-X-Google-Smtp-Source: AA6agR4yx07/DoJgKX0tJcbR2yB83fYuvRxV+itbsv6mvexcVeAByenjtO6/U5bgjNFtWZVDx64kyw==
-X-Received: by 2002:a5d:60c1:0:b0:225:3890:290b with SMTP id x1-20020a5d60c1000000b002253890290bmr10277766wrt.66.1661244453143;
-        Tue, 23 Aug 2022 01:47:33 -0700 (PDT)
-Received: from harfang.fritz.box ([51.155.200.13])
-        by smtp.gmail.com with ESMTPSA id j2-20020a5d4522000000b0022546ad3a77sm8783119wra.64.2022.08.23.01.47.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Aug 2022 01:47:32 -0700 (PDT)
-From:   Quentin Monnet <quentin@isovalent.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S1359252AbiHWMHW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Aug 2022 08:07:22 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E30A565E3;
+        Tue, 23 Aug 2022 02:38:21 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 864BB61467;
+        Tue, 23 Aug 2022 09:38:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57479C433C1;
+        Tue, 23 Aug 2022 09:38:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1661247500;
+        bh=69ovCRcumfGslh/oGLivZ4DIr8oJgQGwFuXGEqHGW5k=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=gsPa9kEgtLU+FR/qnzFc0olVYq3Wwx5OMjvEUyfS2fi8ntQoBSB/WUOIJjF74OSA6
+         DtQHMDmtfmu3/CEJu6COle5cF+6R5J3ZlnU5aIDwq/ML7Q54lQ4YQrfdtqQmDyxpr5
+         qwWPJY4KkJgi3R6/vNEKMHUFmbs8o8Z2MSLR/HHo=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>,
+        Ingo Molnar <mingo@redhat.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
+        KP Singh <kpsingh@kernel.org>, llvm@lists.linux.dev,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Song Liu <song@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org, Quentin Monnet <quentin@isovalent.com>,
-        Alejandro Colomar <alx.manpages@gmail.com>
-Subject: [PATCH bpf-next] scripts/bpf: Fix attributes for bpf-helpers(7) man page
-Date:   Tue, 23 Aug 2022 09:47:19 +0100
-Message-Id: <20220823084719.13613-1-quentin@isovalent.com>
-X-Mailer: git-send-email 2.25.1
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [PATCH 5.10 056/158] tools build: Switch to new openssl API for test-libcrypto
+Date:   Tue, 23 Aug 2022 10:26:28 +0200
+Message-Id: <20220823080048.357389373@linuxfoundation.org>
+X-Mailer: git-send-email 2.37.2
+In-Reply-To: <20220823080046.056825146@linuxfoundation.org>
+References: <20220823080046.056825146@linuxfoundation.org>
+User-Agent: quilt/0.67
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The bpf-helpers(7) manual page shipped in the man-pages project is
-generated from the documentation contained in the BPF UAPI header, in
-the Linux repository, parsed by script/bpf_doc.py and then fed to
-rst2man.
+From: Roberto Sassu <roberto.sassu@huawei.com>
 
-After a recent update of that page [0], Alejandro reported that the
-linter used to validate the man pages complains about the generated
-document [1]. The header for the page is supposed to contain some
-attributes that we do not set correctly with the script. This commit
-updates some of them; please refer to the previous discussion for the
-meaning of those fields and the value we use (tl;dr: setting "Version"
-to "Linux" seems acceptable).
+commit 5b245985a6de5ac18b5088c37068816d413fb8ed upstream.
 
-Before:
+Switch to new EVP API for detecting libcrypto, as Fedora 36 returns an
+error when it encounters the deprecated function MD5_Init() and the others.
 
-    $ ./scripts/bpf_doc.py helpers | rst2man | grep '\.TH'
-    .TH BPF-HELPERS 7 "" "" ""
+The error would be interpreted as missing libcrypto, while in reality it is
+not.
 
-After:
-
-    $ ./scripts/bpf_doc.py helpers | rst2man | grep '\.TH'
-    .TH BPF-HELPERS 7 "" "Linux" "Linux Programmer's Manual"
-
-Note that this commit does not update the date field. This date should
-ideally be updated when generating the page to the date of the last edit
-of the documentation (which we can maybe approximate to the last edit of
-the BPF UAPI header). There is a --date option in rst2man; it does not
-update that field, but Alejandro raised an issue about it [2] so it
-might do in the future. Anyway, we just leave the date empty for now.
-
-[0] https://git.kernel.org/pub/scm/docs/man-pages/man-pages.git/commit/man7/bpf-helpers.7?id=19c7f78393f2b038e76099f87335ddf43a87f039
-[1] https://lore.kernel.org/all/20220721110821.8240-1-alx.manpages@gmail.com/t/#m8e689a822e03f6e2530a0d6de9d128401916c5de
-[2] https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1016527
-
-Cc: Alejandro Colomar <alx.manpages@gmail.com>
-Reported-by: Alejandro Colomar <alx.manpages@gmail.com>
-Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+Fixes: 6e8ccb4f624a73c5 ("tools/bpf: properly account for libbfd variations")
+Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: KP Singh <kpsingh@kernel.org>
+Cc: llvm@lists.linux.dev
+Cc: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Nick Terrell <terrelln@fb.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Quentin Monnet <quentin@isovalent.com>
+Cc: Song Liu <song@kernel.org>
+Cc: Stanislav Fomichev <sdf@google.com>
+Link: https://lore.kernel.org/r/20220719170555.2576993-4-roberto.sassu@huawei.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- scripts/bpf_doc.py | 2 ++
- 1 file changed, 2 insertions(+)
+ tools/build/feature/test-libcrypto.c |   15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
-diff --git a/scripts/bpf_doc.py b/scripts/bpf_doc.py
-index dfb260de17a8..e66ef4f56e95 100755
---- a/scripts/bpf_doc.py
-+++ b/scripts/bpf_doc.py
-@@ -378,6 +378,8 @@ list of eBPF helper functions
- -------------------------------------------------------------------------------
+--- a/tools/build/feature/test-libcrypto.c
++++ b/tools/build/feature/test-libcrypto.c
+@@ -1,16 +1,23 @@
+ // SPDX-License-Identifier: GPL-2.0
++#include <openssl/evp.h>
+ #include <openssl/sha.h>
+ #include <openssl/md5.h>
  
- :Manual section: 7
-+:Manual group: Linux Programmer's Manual
-+:Version: Linux
+ int main(void)
+ {
+-	MD5_CTX context;
++	EVP_MD_CTX *mdctx;
+ 	unsigned char md[MD5_DIGEST_LENGTH + SHA_DIGEST_LENGTH];
+ 	unsigned char dat[] = "12345";
++	unsigned int digest_len;
  
- DESCRIPTION
- ===========
--- 
-2.25.1
+-	MD5_Init(&context);
+-	MD5_Update(&context, &dat[0], sizeof(dat));
+-	MD5_Final(&md[0], &context);
++	mdctx = EVP_MD_CTX_new();
++	if (!mdctx)
++		return 0;
++
++	EVP_DigestInit_ex(mdctx, EVP_md5(), NULL);
++	EVP_DigestUpdate(mdctx, &dat[0], sizeof(dat));
++	EVP_DigestFinal_ex(mdctx, &md[0], &digest_len);
++	EVP_MD_CTX_free(mdctx);
+ 
+ 	SHA1(&dat[0], sizeof(dat), &md[0]);
+ 
+
 
