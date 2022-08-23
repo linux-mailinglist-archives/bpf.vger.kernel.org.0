@@ -2,69 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51A5259EF36
-	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 00:27:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D4C159EF41
+	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 00:30:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234004AbiHWW0x (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Aug 2022 18:26:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53570 "EHLO
+        id S233857AbiHWW2y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Aug 2022 18:28:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233637AbiHWW0Q (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Aug 2022 18:26:16 -0400
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C71C98768F
-        for <bpf@vger.kernel.org>; Tue, 23 Aug 2022 15:26:06 -0700 (PDT)
-Received: by mail-pf1-x449.google.com with SMTP id v65-20020a626144000000b0052f89472f54so6589608pfb.11
-        for <bpf@vger.kernel.org>; Tue, 23 Aug 2022 15:26:06 -0700 (PDT)
+        with ESMTP id S233839AbiHWW2b (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Aug 2022 18:28:31 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 504278B2EF;
+        Tue, 23 Aug 2022 15:27:10 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id n7so12002749ejh.2;
+        Tue, 23 Aug 2022 15:27:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
-         :date:from:to:cc;
-        bh=jBE6VSBpJP/1/JdUAjLaekJwGZ4/sCWpsCE/p+yPAbM=;
-        b=PuCJqc9ednWNUgfRzOITi1IL/ita/kL4WWrD6INjYsjICyTaT0mli8DLMbXjyjwsT8
-         GVClDfOBXZYWS+UXtqgxmTPEPha7OTpLttuMJZd4qV/GrAPwoJYzD7oR0C+EObf4EHsx
-         Pz0/Iamk5RnEC60EFLSUF8CteL2jC8FbJ8Zb6v/mV3rCOLCxhXoFWZKK2OgI+qnw81Qj
-         l2v9BgAbWu628SqI1hM7GRZwoNNYOMz6Xq3cTRLwg7eNguV8X8B3YaIe2dw5R3pncb70
-         GUAgjg7udjT0SreLedUw2nUa93u8sJgfdMhqXeFmPdDCq9DKoIwjcqDbWZqR6AFRNsxp
-         40Aw==
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=KzjFib07S/CXi4M7EkgyNqOiZMQFeCxp1LV9Wu1btKM=;
+        b=mbuUR86lVIbGJeZavEAs+MdPlrbxVwe1zGtAeUFtBcOAEyGRGAcYcLyPtpydR/eIIw
+         b8hIyhxJnDvHNQaG75OOUh+s07W3Zhyex5epnFVEbTIMkc/pxSCA5I3zUPvJs+Zw07+M
+         nWY4ZQM/q+J7wj6pLJLO8JqsfduoSrRe/YBy0ctb5Vi+8WpDG66zu58GAxOf/NYeJD5T
+         t0jrwXIdx4FdjSnRlFtD9SjRZgRl/nf1TxT/L2cJOc2Loc22d7NajJizvT4qomRqG5hi
+         NaWb7vcuMifPvY+VcKE3acnMqEUXAs+rqtqU0hfU9CpqTa8tMfrQKQWAkfZsGjWPWfv+
+         rwSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
-         :date:x-gm-message-state:from:to:cc;
-        bh=jBE6VSBpJP/1/JdUAjLaekJwGZ4/sCWpsCE/p+yPAbM=;
-        b=cj2lAA2ZOJemReU4NbGTDLEuR/jVHTSs1SYD10or7ip6HQeL5JIP6OpUJQrUsj36II
-         v2yCykte6Ck2+kDArT/8DASrW2iQ4Perjz7ybPocEk4Fd4AAwy5HUDl3VCvTIF1G8JrR
-         4RSATOgFgDnAt4SDRCAYTQ7WGD1DK7lbu7AkHHTosLTMYXURcpHK9b/XHW215cGewOnd
-         E74FHospsNHY3N9bLxFdml3ougomxzmyH3lu8/Uni5cKaC8GipjQ1FDxlw7/Z4y+uqjA
-         ZZxo10eUCYzoMjb1/mu3D11JHUo0dtvlu8ZZvNQCDq8p9jolrUgnhP2C8Z6q5s2QlS+j
-         Ft/w==
-X-Gm-Message-State: ACgBeo0LRzWZUzDc9H4DH3AQa0At4Pu16RxPOJlsIWuWp6+aKWE1THjC
-        Be2In977RO9rKksMrPlJqJhaGJ73mgMKwsZ8MJrCdmoqaEgIxRcSV2VNP7UhD6sPajqFimTj05J
-        GRJybBz4zjYCpVFSHBn+iaCXxvxCUDXv/w0XJ6fhfogZYOxK2Dw==
-X-Google-Smtp-Source: AA6agR7BznM+Mu1KfXVsG27jct2+Kejt65cn0etiCavxI285N4wNDbekMxUJ4YzTyYzOHsW9LRsj60o=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a17:90a:e543:b0:1fa:d591:12c4 with SMTP id
- ei3-20020a17090ae54300b001fad59112c4mr5105544pjb.91.1661293566103; Tue, 23
- Aug 2022 15:26:06 -0700 (PDT)
-Date:   Tue, 23 Aug 2022 15:25:55 -0700
-In-Reply-To: <20220823222555.523590-1-sdf@google.com>
-Message-Id: <20220823222555.523590-6-sdf@google.com>
-Mime-Version: 1.0
-References: <20220823222555.523590-1-sdf@google.com>
-X-Mailer: git-send-email 2.37.1.595.g718a3a8f04-goog
-Subject: [PATCH bpf-next v5 5/5] selftests/bpf: Make sure bpf_{g,s}et_retval
- is exposed everywhere
-From:   Stanislav Fomichev <sdf@google.com>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org,
-        Martin KaFai Lau <kafai@fb.com>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=KzjFib07S/CXi4M7EkgyNqOiZMQFeCxp1LV9Wu1btKM=;
+        b=0z3a7JfzsBSR07myO3Nhy50PwbSDTwXWPW2phLyHVB7RuE0KlUEatEREMMVk6kxhhn
+         5X1NeBYMV2VW1lA4DATq8ClyWVTlsIxT8CmWBiWsFGHAuh2TlPPEBvFxZVYphepAwQuu
+         gON+VVS1AZEgJh2kQzQ4F0mXqiQmq0/21Wbpm6YshZijmIEHSu7KbQ37TaTAaeZ3wpuA
+         kq7gf+MpTR2zaHwPFLw12pZzrnUWBQXkM8y6dE0ek7C2D6efXSSy/KH5YXtxrvc+6NzY
+         V4/LSmNwyx4bx413PgPiTnQH5tI8vt8eJw51bT/q6kFUBgWK2CpSKcqUOdAdxIlTkYxb
+         8A2A==
+X-Gm-Message-State: ACgBeo1FZFIins6RrEHY+bnZP+hhZMLA2V9+gAi2Rvy3/7SXjP/HzBec
+        0yLOVXoJGrsBjO20B7UYg3fEbZAqyukCLQT5Hvdlf/Qaq90=
+X-Google-Smtp-Source: AA6agR7ANnEKZIp/fET38e9DX8hLgoBj7JvFKQxU94SR3T01bzkpJMzjVbDFqlu9dlongVnu6JrLETCVvgingjbMKAk=
+X-Received: by 2002:a17:906:84f0:b0:73d:837a:332c with SMTP id
+ zp16-20020a17090684f000b0073d837a332cmr1034536ejb.679.1661293628600; Tue, 23
+ Aug 2022 15:27:08 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220822235649.2218031-1-joannelkoong@gmail.com>
+ <20220822235649.2218031-3-joannelkoong@gmail.com> <CAP01T77h2+a9OonHuiPRFsAForWYJfQ71G6teqbcLg4KuGpK5A@mail.gmail.com>
+In-Reply-To: <CAP01T77h2+a9OonHuiPRFsAForWYJfQ71G6teqbcLg4KuGpK5A@mail.gmail.com>
+From:   Joanne Koong <joannelkoong@gmail.com>
+Date:   Tue, 23 Aug 2022 15:26:57 -0700
+Message-ID: <CAJnrk1aq3gJgz0DKo47SS0J2wTtg1C_B3eVfsh-036nmDKKVWA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 2/3] bpf: Add xdp dynptrs
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf@vger.kernel.org, andrii@kernel.org, daniel@iogearbox.net,
+        ast@kernel.org, kafai@fb.com, kuba@kernel.org,
+        netdev@vger.kernel.org, "toke@redhat.com" <toke@redhat.com>,
+        "brouer@redhat.com" <brouer@redhat.com>, lorenzo@kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,165 +68,286 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-For each hook, have a simple bpf_set_retval(bpf_get_retval) program
-and make sure it loads for the hooks we want. The exceptions are
-the hooks which don't propagate the error to the callers:
+On Mon, Aug 22, 2022 at 7:31 PM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
+>
+> +Cc XDP folks
+>
+> On Tue, 23 Aug 2022 at 02:12, Joanne Koong <joannelkoong@gmail.com> wrote:
+> >
+> > Add xdp dynptrs, which are dynptrs whose underlying pointer points
+> > to a xdp_buff. The dynptr acts on xdp data. xdp dynptrs have two main
+> > benefits. One is that they allow operations on sizes that are not
+> > statically known at compile-time (eg variable-sized accesses).
+> > Another is that parsing the packet data through dynptrs (instead of
+> > through direct access of xdp->data and xdp->data_end) can be more
+> > ergonomic and less brittle (eg does not need manual if checking for
+> > being within bounds of data_end).
+> >
+> > For reads and writes on the dynptr, this includes reading/writing
+> > from/to and across fragments. For data slices, direct access to
+>
+> It's a bit awkward to have such a difference between xdp and skb
+> dynptr's read/write. I understand why it is the way it is, but it
+> still doesn't feel right. I'm not sure if we can reconcile the
+> differences, but it makes writing common code for both xdp and tc
+> harder as it needs to be aware of the differences (and then the flags
+> for dynptr_write would differ too). So we're 90% there but not the
+> whole way...
 
-- sockops
-- recvmsg
-- getpeername
-- getsockname
-- cg_skb ingress and egress
+Yeah, it'd be great if the behavior for skb/xdp progs could be the
+same, but I'm not seeing a better solution here (unless we invalidate
+data slices on writes in xdp progs, just to make it match more :P).
 
-Acked-by: Martin KaFai Lau <kafai@fb.com>
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- tools/testing/selftests/bpf/Makefile          |  1 +
- .../bpf/cgroup_getset_retval_hooks.h          | 25 ++++++++++
- .../bpf/prog_tests/cgroup_getset_retval.c     | 48 +++++++++++++++++++
- .../bpf/progs/cgroup_getset_retval_hooks.c    | 16 +++++++
- 4 files changed, 90 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/cgroup_getset_retval_hooks.h
- create mode 100644 tools/testing/selftests/bpf/progs/cgroup_getset_retval_hooks.c
+Regarding having 2 different interfaces bpf_dynptr_from_{skb/xdp}, I'm
+not convinced this is much of a problem - xdp and skb programs already
+have different interfaces for doing things (eg
+bpf_{skb/xdp}_{store/load}_bytes).
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 8d59ec7f4c2d..eecad99f1735 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -323,6 +323,7 @@ $(OUTPUT)/test_l4lb_noinline.o: BPF_CFLAGS += -fno-inline
- $(OUTPUT)/test_xdp_noinline.o: BPF_CFLAGS += -fno-inline
- 
- $(OUTPUT)/flow_dissector_load.o: flow_dissector_load.h
-+$(OUTPUT)/cgroup_getset_retval_hooks.o: cgroup_getset_retval_hooks.h
- 
- # Build BPF object using Clang
- # $1 - input .c file
-diff --git a/tools/testing/selftests/bpf/cgroup_getset_retval_hooks.h b/tools/testing/selftests/bpf/cgroup_getset_retval_hooks.h
-new file mode 100644
-index 000000000000..a525d3544fd7
---- /dev/null
-+++ b/tools/testing/selftests/bpf/cgroup_getset_retval_hooks.h
-@@ -0,0 +1,25 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+BPF_RETVAL_HOOK(ingress, "cgroup_skb/ingress", __sk_buff, -EINVAL)
-+BPF_RETVAL_HOOK(egress, "cgroup_skb/egress", __sk_buff, -EINVAL)
-+BPF_RETVAL_HOOK(sock_create, "cgroup/sock_create", bpf_sock, 0)
-+BPF_RETVAL_HOOK(sock_ops, "sockops", bpf_sock_ops, -EINVAL)
-+BPF_RETVAL_HOOK(dev, "cgroup/dev", bpf_cgroup_dev_ctx, 0)
-+BPF_RETVAL_HOOK(bind4, "cgroup/bind4", bpf_sock_addr, 0)
-+BPF_RETVAL_HOOK(bind6, "cgroup/bind6", bpf_sock_addr, 0)
-+BPF_RETVAL_HOOK(connect4, "cgroup/connect4", bpf_sock_addr, 0)
-+BPF_RETVAL_HOOK(connect6, "cgroup/connect6", bpf_sock_addr, 0)
-+BPF_RETVAL_HOOK(post_bind4, "cgroup/post_bind4", bpf_sock_addr, 0)
-+BPF_RETVAL_HOOK(post_bind6, "cgroup/post_bind6", bpf_sock_addr, 0)
-+BPF_RETVAL_HOOK(sendmsg4, "cgroup/sendmsg4", bpf_sock_addr, 0)
-+BPF_RETVAL_HOOK(sendmsg6, "cgroup/sendmsg6", bpf_sock_addr, 0)
-+BPF_RETVAL_HOOK(sysctl, "cgroup/sysctl", bpf_sysctl, 0)
-+BPF_RETVAL_HOOK(recvmsg4, "cgroup/recvmsg4", bpf_sock_addr, -EINVAL)
-+BPF_RETVAL_HOOK(recvmsg6, "cgroup/recvmsg6", bpf_sock_addr, -EINVAL)
-+BPF_RETVAL_HOOK(getsockopt, "cgroup/getsockopt", bpf_sockopt, 0)
-+BPF_RETVAL_HOOK(setsockopt, "cgroup/setsockopt", bpf_sockopt, 0)
-+BPF_RETVAL_HOOK(getpeername4, "cgroup/getpeername4", bpf_sock_addr, -EINVAL)
-+BPF_RETVAL_HOOK(getpeername6, "cgroup/getpeername6", bpf_sock_addr, -EINVAL)
-+BPF_RETVAL_HOOK(getsockname4, "cgroup/getsockname4", bpf_sock_addr, -EINVAL)
-+BPF_RETVAL_HOOK(getsockname6, "cgroup/getsockname6", bpf_sock_addr, -EINVAL)
-+BPF_RETVAL_HOOK(sock_release, "cgroup/sock_release", bpf_sock, 0)
-diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_getset_retval.c b/tools/testing/selftests/bpf/prog_tests/cgroup_getset_retval.c
-index 0b47c3c000c7..4d2fa99273d8 100644
---- a/tools/testing/selftests/bpf/prog_tests/cgroup_getset_retval.c
-+++ b/tools/testing/selftests/bpf/prog_tests/cgroup_getset_retval.c
-@@ -10,6 +10,7 @@
- 
- #include "cgroup_getset_retval_setsockopt.skel.h"
- #include "cgroup_getset_retval_getsockopt.skel.h"
-+#include "cgroup_getset_retval_hooks.skel.h"
- 
- #define SOL_CUSTOM	0xdeadbeef
- 
-@@ -433,6 +434,50 @@ static void test_getsockopt_retval_sync(int cgroup_fd, int sock_fd)
- 	cgroup_getset_retval_getsockopt__destroy(obj);
- }
- 
-+struct exposed_hook {
-+	const char *name;
-+	int expected_err;
-+} exposed_hooks[] = {
-+
-+#define BPF_RETVAL_HOOK(NAME, SECTION, CTX, EXPECTED_ERR) \
-+	{ \
-+		.name = #NAME, \
-+		.expected_err = EXPECTED_ERR, \
-+	},
-+
-+#include "cgroup_getset_retval_hooks.h"
-+
-+#undef BPF_RETVAL_HOOK
-+};
-+
-+static void test_exposed_hooks(int cgroup_fd, int sock_fd)
-+{
-+	struct cgroup_getset_retval_hooks *skel;
-+	struct bpf_program *prog;
-+	int err;
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(exposed_hooks); i++) {
-+		skel = cgroup_getset_retval_hooks__open();
-+		if (!ASSERT_OK_PTR(skel, "cgroup_getset_retval_hooks__open"))
-+			continue;
-+
-+		prog = bpf_object__find_program_by_name(skel->obj, exposed_hooks[i].name);
-+		if (!ASSERT_NEQ(prog, NULL, "bpf_object__find_program_by_name"))
-+			goto close_skel;
-+
-+		err = bpf_program__set_autoload(prog, true);
-+		if (!ASSERT_OK(err, "bpf_program__set_autoload"))
-+			goto close_skel;
-+
-+		err = cgroup_getset_retval_hooks__load(skel);
-+		ASSERT_EQ(err, exposed_hooks[i].expected_err, "expected_err");
-+
-+close_skel:
-+		cgroup_getset_retval_hooks__destroy(skel);
-+	}
-+}
-+
- void test_cgroup_getset_retval(void)
- {
- 	int cgroup_fd = -1;
-@@ -476,6 +521,9 @@ void test_cgroup_getset_retval(void)
- 	if (test__start_subtest("getsockopt-retval_sync"))
- 		test_getsockopt_retval_sync(cgroup_fd, sock_fd);
- 
-+	if (test__start_subtest("exposed_hooks"))
-+		test_exposed_hooks(cgroup_fd, sock_fd);
-+
- close_fd:
- 	close(cgroup_fd);
- }
-diff --git a/tools/testing/selftests/bpf/progs/cgroup_getset_retval_hooks.c b/tools/testing/selftests/bpf/progs/cgroup_getset_retval_hooks.c
-new file mode 100644
-index 000000000000..13dfb4bbfd28
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/cgroup_getset_retval_hooks.c
-@@ -0,0 +1,16 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+
-+#define BPF_RETVAL_HOOK(name, section, ctx, expected_err) \
-+	__attribute__((__section__("?" section))) \
-+	int name(struct ctx *_ctx) \
-+	{ \
-+		bpf_set_retval(bpf_get_retval()); \
-+		return 1; \
-+	}
-+
-+#include "cgroup_getset_retval_hooks.h"
-+
-+#undef BPF_RETVAL_HOOK
--- 
-2.37.1.595.g718a3a8f04-goog
+>
+> > data in fragments is also permitted, but access across fragments
+> > is not. The returned data slice is reg type PTR_TO_PACKET | PTR_MAYBE_NULL.
+> >
+> > Any helper calls that change the underlying packet buffer (eg
+> > bpf_xdp_adjust_head) invalidates any data slices of the associated
+> > dynptr. Whenever such a helper call is made, the verifier marks any
+> > PTR_TO_PACKET reg type (which includes xdp dynptr slices since they are
+> > PTR_TO_PACKETs) as unknown. The stack trace for this is
+> > check_helper_call() -> clear_all_pkt_pointers() ->
+> > __clear_all_pkt_pointers() -> mark_reg_unknown()
+> >
+> > For examples of how xdp dynptrs can be used, please see the attached
+> > selftests.
+> >
+> > Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
+> > ---
+> >  include/linux/bpf.h            |  6 ++++-
+> >  include/linux/filter.h         |  3 +++
+> >  include/uapi/linux/bpf.h       | 25 +++++++++++++++---
+> >  kernel/bpf/helpers.c           | 14 ++++++++++-
+> >  kernel/bpf/verifier.c          |  8 +++++-
+> >  net/core/filter.c              | 46 +++++++++++++++++++++++++++++-----
+> >  tools/include/uapi/linux/bpf.h | 25 +++++++++++++++---
+> >  7 files changed, 112 insertions(+), 15 deletions(-)
+> >
+> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > index 30615d1a0c13..455a215b6c57 100644
+> > --- a/include/linux/bpf.h
+> > +++ b/include/linux/bpf.h
+> > @@ -410,11 +410,15 @@ enum bpf_type_flag {
+> >         /* DYNPTR points to sk_buff */
+> >         DYNPTR_TYPE_SKB         = BIT(11 + BPF_BASE_TYPE_BITS),
+> >
+> > +       /* DYNPTR points to xdp_buff */
+> > +       DYNPTR_TYPE_XDP         = BIT(12 + BPF_BASE_TYPE_BITS),
+> > +
+> >         __BPF_TYPE_FLAG_MAX,
+> >         __BPF_TYPE_LAST_FLAG    = __BPF_TYPE_FLAG_MAX - 1,
+> >  };
+> >
+> > -#define DYNPTR_TYPE_FLAG_MASK  (DYNPTR_TYPE_LOCAL | DYNPTR_TYPE_RINGBUF | DYNPTR_TYPE_SKB)
+> > +#define DYNPTR_TYPE_FLAG_MASK  (DYNPTR_TYPE_LOCAL | DYNPTR_TYPE_RINGBUF | DYNPTR_TYPE_SKB \
+> > +                                | DYNPTR_TYPE_XDP)
+> >
+> >  /* Max number of base types. */
+> >  #define BPF_BASE_TYPE_LIMIT    (1UL << BPF_BASE_TYPE_BITS)
+> > diff --git a/include/linux/filter.h b/include/linux/filter.h
+> > index 649063d9cbfd..80f030239877 100644
+> > --- a/include/linux/filter.h
+> > +++ b/include/linux/filter.h
+> > @@ -1535,5 +1535,8 @@ static __always_inline int __bpf_xdp_redirect_map(struct bpf_map *map, u32 ifind
+> >  int __bpf_skb_load_bytes(const struct sk_buff *skb, u32 offset, void *to, u32 len);
+> >  int __bpf_skb_store_bytes(struct sk_buff *skb, u32 offset, const void *from,
+> >                           u32 len, u64 flags);
+> > +int __bpf_xdp_load_bytes(struct xdp_buff *xdp, u32 offset, void *buf, u32 len);
+> > +int __bpf_xdp_store_bytes(struct xdp_buff *xdp, u32 offset, void *buf, u32 len);
+> > +void *bpf_xdp_pointer(struct xdp_buff *xdp, u32 offset, u32 len);
+> >
+> >  #endif /* __LINUX_FILTER_H__ */
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index 320e6b95d95c..9feea29eebcd 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -5283,13 +5283,18 @@ union bpf_attr {
+> >   *                   and try again.
+> >   *
+> >   *                 * The data slice is automatically invalidated anytime
+> > - *                   **bpf_dynptr_write**\ () or a helper call that changes
+> > - *                   the underlying packet buffer (eg **bpf_skb_pull_data**\ ())
+> > + *                   **bpf_dynptr_write**\ () is called.
+> > + *
+> > + *             For skb-type and xdp-type dynptrs:
+> > + *                 * The data slice is automatically invalidated anytime a
+> > + *                   helper call that changes the underlying packet buffer
+> > + *                   (eg **bpf_skb_pull_data**\ (), **bpf_xdp_adjust_head**\ ())
+> >   *                   is called.
+> >   *     Return
+> >   *             Pointer to the underlying dynptr data, NULL if the dynptr is
+> >   *             read-only, if the dynptr is invalid, or if the offset and length
+> > - *             is out of bounds or in a paged buffer for skb-type dynptrs.
+> > + *             is out of bounds or in a paged buffer for skb-type dynptrs or
+> > + *             across fragments for xdp-type dynptrs.
+> >   *
+> >   * s64 bpf_tcp_raw_gen_syncookie_ipv4(struct iphdr *iph, struct tcphdr *th, u32 th_len)
+> >   *     Description
+> > @@ -5388,6 +5393,19 @@ union bpf_attr {
+> >   *             *flags* is currently unused, it must be 0 for now.
+> >   *     Return
+> >   *             0 on success or -EINVAL if flags is not 0.
+> > + *
+> > + * long bpf_dynptr_from_xdp(struct xdp_buff *xdp_md, u64 flags, struct bpf_dynptr *ptr)
+> > + *     Description
+> > + *             Get a dynptr to the data in *xdp_md*. *xdp_md* must be the BPF program
+> > + *             context.
+> > + *
+> > + *             Calls that change the *xdp_md*'s underlying packet buffer
+> > + *             (eg **bpf_xdp_adjust_head**\ ()) do not invalidate the dynptr, but
+> > + *             they do invalidate any data slices associated with the dynptr.
+> > + *
+> > + *             *flags* is currently unused, it must be 0 for now.
+> > + *     Return
+> > + *             0 on success, -EINVAL if flags is not 0.
+> >   */
+> >  #define __BPF_FUNC_MAPPER(FN)          \
+> >         FN(unspec),                     \
+> > @@ -5600,6 +5618,7 @@ union bpf_attr {
+> >         FN(tcp_raw_check_syncookie_ipv6),       \
+> >         FN(ktime_get_tai_ns),           \
+> >         FN(dynptr_from_skb),            \
+> > +       FN(dynptr_from_xdp),            \
+> >         /* */
+> >
+> >  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> > index 471a01a9b6ae..2b9dc4c6de04 100644
+> > --- a/kernel/bpf/helpers.c
+> > +++ b/kernel/bpf/helpers.c
+> > @@ -1541,6 +1541,8 @@ BPF_CALL_5(bpf_dynptr_read, void *, dst, u32, len, struct bpf_dynptr_kern *, src
+> >                 return 0;
+> >         case BPF_DYNPTR_TYPE_SKB:
+> >                 return __bpf_skb_load_bytes(src->data, src->offset + offset, dst, len);
+> > +       case BPF_DYNPTR_TYPE_XDP:
+> > +               return __bpf_xdp_load_bytes(src->data, src->offset + offset, dst, len);
+> >         default:
+> >                 WARN(true, "bpf_dynptr_read: unknown dynptr type %d\n", type);
+> >                 return -EFAULT;
+> > @@ -1583,6 +1585,10 @@ BPF_CALL_5(bpf_dynptr_write, struct bpf_dynptr_kern *, dst, u32, offset, void *,
+> >         case BPF_DYNPTR_TYPE_SKB:
+> >                 return __bpf_skb_store_bytes(dst->data, dst->offset + offset, src, len,
+> >                                              flags);
+> > +       case BPF_DYNPTR_TYPE_XDP:
+> > +               if (flags)
+> > +                       return -EINVAL;
+> > +               return __bpf_xdp_store_bytes(dst->data, dst->offset + offset, src, len);
+> >         default:
+> >                 WARN(true, "bpf_dynptr_write: unknown dynptr type %d\n", type);
+> >                 return -EFAULT;
+> > @@ -1616,7 +1622,7 @@ BPF_CALL_3(bpf_dynptr_data, struct bpf_dynptr_kern *, ptr, u32, offset, u32, len
+> >
+> >         type = bpf_dynptr_get_type(ptr);
+> >
+> > -       /* Only skb dynptrs can get read-only data slices, because the
+> > +       /* Only skb and xdp dynptrs can get read-only data slices, because the
+> >          * verifier enforces PTR_TO_PACKET accesses
+> >          */
+> >         is_rdonly = bpf_dynptr_is_rdonly(ptr);
+> > @@ -1640,6 +1646,12 @@ BPF_CALL_3(bpf_dynptr_data, struct bpf_dynptr_kern *, ptr, u32, offset, u32, len
+> >                 data = skb->data;
+> >                 break;
+> >         }
+> > +       case BPF_DYNPTR_TYPE_XDP:
+> > +               /* if the requested data in across fragments, then it cannot
+> > +                * be accessed directly - bpf_xdp_pointer will return NULL
+> > +                */
+> > +               return (unsigned long)bpf_xdp_pointer(ptr->data,
+> > +                                                     ptr->offset + offset, len);
+> >         default:
+> >                 WARN(true, "bpf_dynptr_data: unknown dynptr type %d\n", type);
+> >                 return 0;
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 1ea295f47525..d33648eee188 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -686,6 +686,8 @@ static enum bpf_dynptr_type arg_to_dynptr_type(enum bpf_arg_type arg_type)
+> >                 return BPF_DYNPTR_TYPE_RINGBUF;
+> >         case DYNPTR_TYPE_SKB:
+> >                 return BPF_DYNPTR_TYPE_SKB;
+> > +       case DYNPTR_TYPE_XDP:
+> > +               return BPF_DYNPTR_TYPE_XDP;
+> >         default:
+> >                 return BPF_DYNPTR_TYPE_INVALID;
+> >         }
+> > @@ -6078,6 +6080,9 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+> >                         case DYNPTR_TYPE_SKB:
+> >                                 err_extra = "skb ";
+> >                                 break;
+> > +                       case DYNPTR_TYPE_XDP:
+> > +                               err_extra = "xdp ";
+> > +                               break;
+> >                         }
+> >
+> >                         verbose(env, "Expected an initialized %sdynptr as arg #%d\n",
+> > @@ -7439,7 +7444,8 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+> >                 mark_reg_known_zero(env, regs, BPF_REG_0);
+> >
+> >                 if (func_id == BPF_FUNC_dynptr_data &&
+> > -                   dynptr_type == BPF_DYNPTR_TYPE_SKB) {
+> > +                   (dynptr_type == BPF_DYNPTR_TYPE_SKB ||
+> > +                    dynptr_type == BPF_DYNPTR_TYPE_XDP)) {
+> >                         regs[BPF_REG_0].type = PTR_TO_PACKET | ret_flag;
+> >                         regs[BPF_REG_0].range = meta.mem_size;
+>
+> It doesn't seem like this is safe. Since PTR_TO_PACKET's range can be
+> modified by comparisons with packet pointers loaded from the xdp/skb
+> ctx, how do we distinguish e.g. between a pkt slice obtained from some
+> frag in a multi-buff XDP vs pkt pointer from a linear area?
+>
+> Someone can compare data_meta from ctx with PTR_TO_PACKET from
+> bpf_dynptr_data on xdp dynptr (which might be pointing to a xdp mb
+> frag). While MAX_PACKET_OFF is 0xffff, it can still be used to do OOB
+> access for the linear area. reg_is_init_pkt_pointer will return true
+> as modified range is not considered for it. Same kind of issues when
+> doing comparison with data_end from ctx (though maybe you won't be
+> able to do incorrect data access at runtime using that).
+>
+> I had a pkt_uid field in my patch [0] which disallowed comparisons
+> among bpf_packet_pointer slices. Each call assigned a fresh pkt_uid,
+> and that disabled comparisons for them. reg->id is used for var_off
+> range propagation so it cannot be reused.
+>
+> Coming back to this: What we really want here is a PTR_TO_MEM with a
+> mem_size, so maybe you should go that route instead of PTR_TO_PACKET
+> (and add a type tag to maybe pretty print it also as a packet pointer
+> in verifier log), or add some way to distinguish slice vs non-slice
+> pkt pointers like I did in my patch. You might also want to add some
+> tests for this corner case (there are some later in [0] if you want to
+> reuse them).
+>
+> So TBH, I kinda dislike my own solution in [0] :). The complexity does
+> not seem worth it. The pkt_uid distinction is more useful (and
+> actually would be needed) in Toke's xdp queueing series, where in a
+> dequeue program you have multiple xdp_mds and want scoped slice
+> invalidations (i.e. adjust_head on one xdp_md doesn't invalidate
+> slices of some other xdp_md). Here we can just get away with normal
+> PTR_TO_MEM.
+>
+> ... Or just let me know if you handle this correctly already, or if
+> this won't be an actual problem :).
 
+Ooh interesting, I hadn't previously taken a look at
+try_match_pkt_pointers(), thanks for mentioning it :)
+
+The cleanest solution to me is to add the flag "DYNPTR_TYPE_{SKB/XDP}"
+to PTR_TO_PACKET and change reg_is_init_pkt_pointer() to return false
+if the DYNPTR_TYPE_{SKB/XDP} flag is present. I prefer this over
+returning PTR_TO_MEM because it seems more robust (eg if in the future
+we reject x behavior on the packet data reg types, this will
+automatically apply to the data slices), and because it'll keep the
+logic more efficient/simpler for the case when the pkt pointer has to
+be cleared after any helper that changes pkt data is called (aka the
+case where the data slice gets invalidated).
+
+What are your thoughts?
+
+>
+>   [0]: https://lore.kernel.org/bpf/20220306234311.452206-3-memxor@gmail.com
