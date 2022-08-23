@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8F4D59EEC3
-	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 00:12:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D922159EEC5
+	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 00:12:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232815AbiHWWLr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Aug 2022 18:11:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38776 "EHLO
+        id S232997AbiHWWMC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Aug 2022 18:12:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232228AbiHWWLJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Aug 2022 18:11:09 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50D57785A2
-        for <bpf@vger.kernel.org>; Tue, 23 Aug 2022 15:10:36 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-335ff2ef600so261867867b3.18
-        for <bpf@vger.kernel.org>; Tue, 23 Aug 2022 15:10:36 -0700 (PDT)
+        with ESMTP id S232837AbiHWWLV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Aug 2022 18:11:21 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D58F786D9
+        for <bpf@vger.kernel.org>; Tue, 23 Aug 2022 15:10:41 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-33931a5c133so175257597b3.17
+        for <bpf@vger.kernel.org>; Tue, 23 Aug 2022 15:10:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
          :date:from:to:cc;
-        bh=4T63H/7ulEFz0y7iN4SapyGcMaYqwoIDMM7/trBdyIM=;
-        b=NG04TAKrMqD5yuCJUiZXkkkxUS8d8EDfmvANyx1CxoAGugcPRW6r4NL9uieW+hdrer
-         TEyjfRtOTqmKH5WoG3B1dRvOEJgNEZ9oLTqhQLVZFGugh2K4zYhk1WMMtULqw7Pw45My
-         wwRrDgOSSc0G2aalSmQbzGyz26agS4lYVgedBX7iIs9Q032UgiMNe5T49G2x5Wed58X1
-         9Auuzt6oP9N3htE+FULLeAFtcpSlCOhwOugg8yvVImkhngV570xfN4TZv56Yc4cG0rgs
-         kPLoic4tgb4tdlQLRaIeJK8GtZzR6WAfW547xvhh25gg3AfBJXkNGJc0qFSPi8RRQjXi
-         yvOw==
+        bh=CD8iIk6b6MevHATdYAYkXOpPAgu6T52eXiNNa5NTXNQ=;
+        b=Sp5e3PVhmJZPPFBxfKL1C2F0+f7Jxdr8GKQ1TOIUb1lpNlKpPffF/LF9kYQJcxziAr
+         ajXhcsI40hEecVyu5WYoMmRGLB+4LQBGE2MvIMDXRxcfVZna8l8ndUEVWrpNN1eUtIIF
+         AQKPOGGdTdUlJQIZpaVRAtVmumRevpCc1g2bgckfNPpUXqW01BiysF5rUJRFxanBplsh
+         vcAYYHQmb0jfWJQ7PvXzMhcFPIQqUjOH5v5YL7HOP7yE2qmSvuLTnUpcMC9nD0ftsLVN
+         9UJ6iFlIMXAdkhK7tODtFehZkAhvmO93zvWLm2D7jlHPR8z+qvljvHVxsLa1O6PS0Apr
+         rvdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
          :date:x-gm-message-state:from:to:cc;
-        bh=4T63H/7ulEFz0y7iN4SapyGcMaYqwoIDMM7/trBdyIM=;
-        b=4ljq0eHkmXV0EKzs+vy/BQwzPunpfi7P62CZ+McnuPh4LngeaM6BvH3xO5+vjKIxAA
-         xeWzy6NXpOBJZSuv7WumDWtA16FY+D0775C2jKu6+ycPKXznaKXd7vKOhkLrgY5QKVKI
-         VH7k7430CCLeOA575AfHoKKOiwkcrM7oxrIacj6DTe0gs4DWGiJd3CLIrUgACvoSJngd
-         5m3U9n4c5G299AoxGL1rMPjW48ZBZs1HnHFX7dFTg3M3iuA9jb47g77DwUanfwgX6bUr
-         zJMZGml8I3HP190efAE8C06rFZiXk7pmfQhoRgh100Gn2fef1/FtsarObyN3Zwu/crCF
-         nNcg==
-X-Gm-Message-State: ACgBeo10FfHn5X6rXbUGh1oDGo7jBT2QeXAG/WUX+nOYUXGGAsjcgIJa
-        m14Z6qgLy2JFERfoZxsGqDbnoqaCo1Fx
-X-Google-Smtp-Source: AA6agR5fLgUmwOPH9u5c9mealhHzc7vyBsAFZgGD99BelmVEDn8hDSG9RnnaQJ2rHTdAVQEq7MRalAMAmhjQ
+        bh=CD8iIk6b6MevHATdYAYkXOpPAgu6T52eXiNNa5NTXNQ=;
+        b=kqgjgrc6GZB9Ss92LRPJsEFLo317bSEKD6lSzMmyJtsoYMAiBAwIL4vJgC9/jeswNe
+         tNqUCCUOpkyvvC9tONvT/3Y60/dKEKZCR3iP+41/4dGa09yFXmqkD8cdHo1dk2D/RnAw
+         92UY1cdFyT7cKzZOSOZdOzqwarC096irMSfkUpiPovtqHe4r56QnpvjLY4t9Fl3IKUNY
+         soMIiJFsEYH3GxrgpI/FOIEWH2oFjDJATOJ/JtEJiYQYiGMQe2hqi5QJilGGSVTZ794D
+         OjUEvf0Wt6rbzl/2Cr31NEqcetFY0EkJbARGs/GgPjC0K+iv1veQTJ13StUCuXRHhyw0
+         K6bA==
+X-Gm-Message-State: ACgBeo1XhZCngzGgWwnfaxKcKrUheYeU4/rkvqBdpz8YI0FCxThsr553
+        aS7sik91VdflURksdPAE/KmXRdjW19vG
+X-Google-Smtp-Source: AA6agR5dYPPc3nXta6yRb4iuog0i402MQztfisaA6q2bKYPSrT32TWWe9qFlDykmDZCryWwmvhmYN3aDOOOt
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2d4:203:7dbd:c08f:de81:c2a3])
- (user=irogers job=sendgmr) by 2002:a25:6e87:0:b0:692:3f71:86c8 with SMTP id
- j129-20020a256e87000000b006923f7186c8mr27447174ybc.295.1661292635305; Tue, 23
- Aug 2022 15:10:35 -0700 (PDT)
-Date:   Tue, 23 Aug 2022 15:09:15 -0700
+ (user=irogers job=sendgmr) by 2002:a0d:f741:0:b0:332:efb3:f21b with SMTP id
+ h62-20020a0df741000000b00332efb3f21bmr29670067ywf.85.1661292641202; Tue, 23
+ Aug 2022 15:10:41 -0700 (PDT)
+Date:   Tue, 23 Aug 2022 15:09:16 -0700
 In-Reply-To: <20220823220922.256001-1-irogers@google.com>
-Message-Id: <20220823220922.256001-12-irogers@google.com>
+Message-Id: <20220823220922.256001-13-irogers@google.com>
 Mime-Version: 1.0
 References: <20220823220922.256001-1-irogers@google.com>
 X-Mailer: git-send-email 2.37.2.609.g9ff673ca1a-goog
-Subject: [PATCH v2 11/18] perf dso: Update use of pthread mutex
+Subject: [PATCH v2 12/18] perf annotate: Update use of pthread mutex
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -117,120 +117,203 @@ Switch to the use of mutex wrappers that provide better error checking.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/dso.c    | 12 ++++++------
- tools/perf/util/dso.h    |  4 ++--
- tools/perf/util/symbol.c |  4 ++--
- 3 files changed, 10 insertions(+), 10 deletions(-)
+ tools/perf/builtin-top.c          | 14 +++++++-------
+ tools/perf/ui/browsers/annotate.c | 10 +++++-----
+ tools/perf/util/annotate.c        | 13 ++++++-------
+ tools/perf/util/annotate.h        |  4 ++--
+ 4 files changed, 20 insertions(+), 21 deletions(-)
 
-diff --git a/tools/perf/util/dso.c b/tools/perf/util/dso.c
-index 5ac13958d1bd..c7a5b42d1311 100644
---- a/tools/perf/util/dso.c
-+++ b/tools/perf/util/dso.c
-@@ -795,7 +795,7 @@ dso_cache__free(struct dso *dso)
- 	struct rb_root *root = &dso->data.cache;
- 	struct rb_node *next = rb_first(root);
- 
--	pthread_mutex_lock(&dso->lock);
-+	mutex_lock(&dso->lock);
- 	while (next) {
- 		struct dso_cache *cache;
- 
-@@ -804,7 +804,7 @@ dso_cache__free(struct dso *dso)
- 		rb_erase(&cache->rb_node, root);
- 		free(cache);
- 	}
--	pthread_mutex_unlock(&dso->lock);
-+	mutex_unlock(&dso->lock);
- }
- 
- static struct dso_cache *__dso_cache__find(struct dso *dso, u64 offset)
-@@ -841,7 +841,7 @@ dso_cache__insert(struct dso *dso, struct dso_cache *new)
- 	struct dso_cache *cache;
- 	u64 offset = new->offset;
- 
--	pthread_mutex_lock(&dso->lock);
-+	mutex_lock(&dso->lock);
- 	while (*p != NULL) {
- 		u64 end;
- 
-@@ -862,7 +862,7 @@ dso_cache__insert(struct dso *dso, struct dso_cache *new)
- 
- 	cache = NULL;
- out:
--	pthread_mutex_unlock(&dso->lock);
-+	mutex_unlock(&dso->lock);
- 	return cache;
- }
- 
-@@ -1297,7 +1297,7 @@ struct dso *dso__new_id(const char *name, struct dso_id *id)
- 		dso->root = NULL;
- 		INIT_LIST_HEAD(&dso->node);
- 		INIT_LIST_HEAD(&dso->data.open_entry);
--		pthread_mutex_init(&dso->lock, NULL);
-+		mutex_init(&dso->lock, /*pshared=*/false);
- 		refcount_set(&dso->refcnt, 1);
+diff --git a/tools/perf/builtin-top.c b/tools/perf/builtin-top.c
+index 14e60f6f219c..b96bb9a23ac0 100644
+--- a/tools/perf/builtin-top.c
++++ b/tools/perf/builtin-top.c
+@@ -136,10 +136,10 @@ static int perf_top__parse_source(struct perf_top *top, struct hist_entry *he)
  	}
  
-@@ -1336,7 +1336,7 @@ void dso__delete(struct dso *dso)
- 	dso__free_a2l(dso);
- 	zfree(&dso->symsrc_filename);
- 	nsinfo__zput(dso->nsinfo);
--	pthread_mutex_destroy(&dso->lock);
-+	mutex_destroy(&dso->lock);
- 	free(dso);
+ 	notes = symbol__annotation(sym);
+-	pthread_mutex_lock(&notes->lock);
++	mutex_lock(&notes->lock);
+ 
+ 	if (!symbol__hists(sym, top->evlist->core.nr_entries)) {
+-		pthread_mutex_unlock(&notes->lock);
++		mutex_unlock(&notes->lock);
+ 		pr_err("Not enough memory for annotating '%s' symbol!\n",
+ 		       sym->name);
+ 		sleep(1);
+@@ -155,7 +155,7 @@ static int perf_top__parse_source(struct perf_top *top, struct hist_entry *he)
+ 		pr_err("Couldn't annotate %s: %s\n", sym->name, msg);
+ 	}
+ 
+-	pthread_mutex_unlock(&notes->lock);
++	mutex_unlock(&notes->lock);
+ 	return err;
  }
  
-diff --git a/tools/perf/util/dso.h b/tools/perf/util/dso.h
-index 66981c7a9a18..58d94175e714 100644
---- a/tools/perf/util/dso.h
-+++ b/tools/perf/util/dso.h
-@@ -2,7 +2,6 @@
- #ifndef __PERF_DSO
- #define __PERF_DSO
+@@ -208,12 +208,12 @@ static void perf_top__record_precise_ip(struct perf_top *top,
  
+ 	notes = symbol__annotation(sym);
+ 
+-	if (pthread_mutex_trylock(&notes->lock))
++	if (!mutex_trylock(&notes->lock))
+ 		return;
+ 
+ 	err = hist_entry__inc_addr_samples(he, sample, evsel, ip);
+ 
+-	pthread_mutex_unlock(&notes->lock);
++	mutex_unlock(&notes->lock);
+ 
+ 	if (unlikely(err)) {
+ 		/*
+@@ -250,7 +250,7 @@ static void perf_top__show_details(struct perf_top *top)
+ 	symbol = he->ms.sym;
+ 	notes = symbol__annotation(symbol);
+ 
+-	pthread_mutex_lock(&notes->lock);
++	mutex_lock(&notes->lock);
+ 
+ 	symbol__calc_percent(symbol, evsel);
+ 
+@@ -271,7 +271,7 @@ static void perf_top__show_details(struct perf_top *top)
+ 	if (more != 0)
+ 		printf("%d lines not displayed, maybe increase display entries [e]\n", more);
+ out_unlock:
+-	pthread_mutex_unlock(&notes->lock);
++	mutex_unlock(&notes->lock);
+ }
+ 
+ static void perf_top__resort_hists(struct perf_top *t)
+diff --git a/tools/perf/ui/browsers/annotate.c b/tools/perf/ui/browsers/annotate.c
+index b8747e8dd9ea..9bc1076374ff 100644
+--- a/tools/perf/ui/browsers/annotate.c
++++ b/tools/perf/ui/browsers/annotate.c
+@@ -319,7 +319,7 @@ static void annotate_browser__calc_percent(struct annotate_browser *browser,
+ 
+ 	browser->entries = RB_ROOT;
+ 
+-	pthread_mutex_lock(&notes->lock);
++	mutex_lock(&notes->lock);
+ 
+ 	symbol__calc_percent(sym, evsel);
+ 
+@@ -348,7 +348,7 @@ static void annotate_browser__calc_percent(struct annotate_browser *browser,
+ 		}
+ 		disasm_rb_tree__insert(browser, &pos->al);
+ 	}
+-	pthread_mutex_unlock(&notes->lock);
++	mutex_unlock(&notes->lock);
+ 
+ 	browser->curr_hot = rb_last(&browser->entries);
+ }
+@@ -474,10 +474,10 @@ static bool annotate_browser__callq(struct annotate_browser *browser,
+ 	}
+ 
+ 	notes = symbol__annotation(dl->ops.target.sym);
+-	pthread_mutex_lock(&notes->lock);
++	mutex_lock(&notes->lock);
+ 
+ 	if (!symbol__hists(dl->ops.target.sym, evsel->evlist->core.nr_entries)) {
+-		pthread_mutex_unlock(&notes->lock);
++		mutex_unlock(&notes->lock);
+ 		ui__warning("Not enough memory for annotating '%s' symbol!\n",
+ 			    dl->ops.target.sym->name);
+ 		return true;
+@@ -486,7 +486,7 @@ static bool annotate_browser__callq(struct annotate_browser *browser,
+ 	target_ms.maps = ms->maps;
+ 	target_ms.map = ms->map;
+ 	target_ms.sym = dl->ops.target.sym;
+-	pthread_mutex_unlock(&notes->lock);
++	mutex_unlock(&notes->lock);
+ 	symbol__tui_annotate(&target_ms, evsel, hbt, browser->opts);
+ 	sym_title(ms->sym, ms->map, title, sizeof(title), browser->opts->percent_type);
+ 	ui_browser__show_title(&browser->b, title);
+diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
+index 2c6a485c3de5..29d804d76145 100644
+--- a/tools/perf/util/annotate.c
++++ b/tools/perf/util/annotate.c
+@@ -35,7 +35,6 @@
+ #include "arch/common.h"
+ #include "namespaces.h"
+ #include <regex.h>
 -#include <pthread.h>
- #include <linux/refcount.h>
- #include <linux/types.h>
- #include <linux/rbtree.h>
-@@ -11,6 +10,7 @@
- #include <stdio.h>
  #include <linux/bitops.h>
- #include "build-id.h"
-+#include "mutex.h"
+ #include <linux/kernel.h>
+ #include <linux/string.h>
+@@ -821,7 +820,7 @@ void symbol__annotate_zero_histograms(struct symbol *sym)
+ {
+ 	struct annotation *notes = symbol__annotation(sym);
  
- struct machine;
- struct map;
-@@ -145,7 +145,7 @@ struct dso_cache {
- struct auxtrace_cache;
- 
- struct dso {
--	pthread_mutex_t	 lock;
-+	struct mutex	 lock;
- 	struct list_head node;
- 	struct rb_node	 rb_node;	/* rbtree node sorted by long name */
- 	struct rb_root	 *root;		/* root of rbtree that rb_node is in */
-diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
-index a4b22caa7c24..656d9b4dd456 100644
---- a/tools/perf/util/symbol.c
-+++ b/tools/perf/util/symbol.c
-@@ -1800,7 +1800,7 @@ int dso__load(struct dso *dso, struct map *map)
+-	pthread_mutex_lock(&notes->lock);
++	mutex_lock(&notes->lock);
+ 	if (notes->src != NULL) {
+ 		memset(notes->src->histograms, 0,
+ 		       notes->src->nr_histograms * notes->src->sizeof_sym_hist);
+@@ -829,7 +828,7 @@ void symbol__annotate_zero_histograms(struct symbol *sym)
+ 			memset(notes->src->cycles_hist, 0,
+ 				symbol__size(sym) * sizeof(struct cyc_hist));
  	}
+-	pthread_mutex_unlock(&notes->lock);
++	mutex_unlock(&notes->lock);
+ }
  
- 	nsinfo__mountns_enter(dso->nsinfo, &nsc);
--	pthread_mutex_lock(&dso->lock);
-+	mutex_lock(&dso->lock);
+ static int __symbol__account_cycles(struct cyc_hist *ch,
+@@ -1086,7 +1085,7 @@ void annotation__compute_ipc(struct annotation *notes, size_t size)
+ 	notes->hit_insn = 0;
+ 	notes->cover_insn = 0;
  
- 	/* check again under the dso->lock */
- 	if (dso__loaded(dso)) {
-@@ -1964,7 +1964,7 @@ int dso__load(struct dso *dso, struct map *map)
- 		ret = 0;
- out:
- 	dso__set_loaded(dso);
--	pthread_mutex_unlock(&dso->lock);
-+	mutex_unlock(&dso->lock);
- 	nsinfo__mountns_exit(&nsc);
+-	pthread_mutex_lock(&notes->lock);
++	mutex_lock(&notes->lock);
+ 	for (offset = size - 1; offset >= 0; --offset) {
+ 		struct cyc_hist *ch;
  
- 	return ret;
+@@ -1105,7 +1104,7 @@ void annotation__compute_ipc(struct annotation *notes, size_t size)
+ 			notes->have_cycles = true;
+ 		}
+ 	}
+-	pthread_mutex_unlock(&notes->lock);
++	mutex_unlock(&notes->lock);
+ }
+ 
+ int addr_map_symbol__inc_samples(struct addr_map_symbol *ams, struct perf_sample *sample,
+@@ -1258,13 +1257,13 @@ int disasm_line__scnprintf(struct disasm_line *dl, char *bf, size_t size, bool r
+ 
+ void annotation__init(struct annotation *notes)
+ {
+-	pthread_mutex_init(&notes->lock, NULL);
++	mutex_init(&notes->lock, /*pshared=*/false);
+ }
+ 
+ void annotation__exit(struct annotation *notes)
+ {
+ 	annotated_source__delete(notes->src);
+-	pthread_mutex_destroy(&notes->lock);
++	mutex_destroy(&notes->lock);
+ }
+ 
+ static void annotation_line__add(struct annotation_line *al, struct list_head *head)
+diff --git a/tools/perf/util/annotate.h b/tools/perf/util/annotate.h
+index 986f2bbe4870..3cbd883e4d7a 100644
+--- a/tools/perf/util/annotate.h
++++ b/tools/perf/util/annotate.h
+@@ -8,9 +8,9 @@
+ #include <linux/types.h>
+ #include <linux/list.h>
+ #include <linux/rbtree.h>
+-#include <pthread.h>
+ #include <asm/bug.h>
+ #include "symbol_conf.h"
++#include "mutex.h"
+ #include "spark.h"
+ 
+ struct hist_browser_timer;
+@@ -273,7 +273,7 @@ struct annotated_source {
+ };
+ 
+ struct annotation {
+-	pthread_mutex_t		lock;
++	struct mutex lock;
+ 	u64			max_coverage;
+ 	u64			start;
+ 	u64			hit_cycles;
 -- 
 2.37.2.609.g9ff673ca1a-goog
 
