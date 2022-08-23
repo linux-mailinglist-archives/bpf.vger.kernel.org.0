@@ -2,96 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D9E859EC53
-	for <lists+bpf@lfdr.de>; Tue, 23 Aug 2022 21:31:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DBA359ECD5
+	for <lists+bpf@lfdr.de>; Tue, 23 Aug 2022 21:51:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231209AbiHWTbU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Aug 2022 15:31:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48638 "EHLO
+        id S231892AbiHWTtw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Aug 2022 15:49:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233888AbiHWTa4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Aug 2022 15:30:56 -0400
-Received: from smtp-fw-80006.amazon.com (smtp-fw-80006.amazon.com [99.78.197.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B8F8DB7DD;
-        Tue, 23 Aug 2022 11:21:31 -0700 (PDT)
+        with ESMTP id S231926AbiHWTtb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Aug 2022 15:49:31 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24DD39D66A;
+        Tue, 23 Aug 2022 11:52:46 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id w19so29256563ejc.7;
+        Tue, 23 Aug 2022 11:52:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1661278892; x=1692814892;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=n+mG2Qf5W8rDz33cIplaqij+OZcyCF2mnob3OKVLXm0=;
-  b=KxdSraNriWDttOpNWfBEdiV8aX0/gOoaQfaAhQhSQ1EnzwH/AT69GUup
-   J5T8g5nTRD6gfJde1u3/AXQ9Qc8Ku18w8SLCGgtmNORLEmWS+uDPy6ilQ
-   1jtk5g/EGKPoemzj2wETBPyxJjXwZG/LNqc2THjQMIaO1W6ZSmikyUKck
-   E=;
-X-IronPort-AV: E=Sophos;i="5.93,258,1654560000"; 
-   d="scan'208";a="122554305"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-iad-1e-90d70b14.us-east-1.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2022 18:13:51 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-iad-1e-90d70b14.us-east-1.amazon.com (Postfix) with ESMTPS id 9AD42C08C3;
-        Tue, 23 Aug 2022 18:13:49 +0000 (UTC)
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
- id 15.0.1497.38; Tue, 23 Aug 2022 18:13:48 +0000
-Received: from 88665a182662.ant.amazon.com (10.43.162.140) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1118.12;
- Tue, 23 Aug 2022 18:13:46 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-CC:     Kuniyuki Iwashima <kuniyu@amazon.com>,
-        Kuniyuki Iwashima <kuni1840@gmail.com>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>
-Subject: [PATCH v2 bpf] bpf: Fix a data-race around bpf_jit_limit.
-Date:   Tue, 23 Aug 2022 11:12:47 -0700
-Message-ID: <20220823181247.90349-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.30.2
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=7Xx3PtHJzUXze83NrY9jK2YjqwqxuxzlYYO+dhkelAg=;
+        b=Xo73yj1yYu+eRDakNB1eagtvis4Yjtvy3D5I10u8Ykhodn7g+62b9OHcZV/p1HzHMD
+         QvU15no+Ybky+gknHW0jq8L66YTsu7yEO3xdSYhopVjeg2V0FoE5gb+kXJrJ+3lGCalv
+         3cIlpj2QD4t0USZsVP4A47boij2IagzPAvISfaJHZkV9jJZPvRlUKxu1TZITQG2BL1wc
+         KBmgnFeBjr0Hh1ej26gOe8mPlTOolqxEQwpL0h+7Y2Z8EupIqpMGox6LWsgBZkQkXXs/
+         X99JvMiqcphlCVnhStzYD2+RliMCUbV3BlcNcvni8jXIW+KLy4fJPke3TLjr+OD26OBC
+         W50A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=7Xx3PtHJzUXze83NrY9jK2YjqwqxuxzlYYO+dhkelAg=;
+        b=zh/MUlgfEp+Mat0GVEeqQCE+DUu0eBzLU/gx+huo0zmaklTjhVCR7Csrg+pjcMZjaI
+         V+8QvpNg4FlgtagnhftcHmVlPRPjiF1eHUOtr3urHMnACea6OksOO2FtSKnWemOAR0Js
+         p+KwoquWKn2S6IOflSFCKXjJGgbaL7iuJwrEwaLvzeooD8DBYA0AKoNpt1ECvN8tbFi9
+         wsarfx9/1skpuEAbee+4FSDBoAgeNreMlvRvL2C4fqBqbbTHPv46lR8kX8nfcpmZHx1w
+         fo9ZsujvYmapkbaETq0REGVa2DyBDD8BIoITVl9wjMxD7ZyvdShRDE+DHzYEGW+GR73I
+         zYJQ==
+X-Gm-Message-State: ACgBeo0hBXlkwa4EQ7vdTkZ9Jhr49TP88G/X45MnxgRj4Lv4hkqUgMcG
+        0VI8yKlNumLILYSwBeSCC8Q+f+o71m+ezyVjOlM=
+X-Google-Smtp-Source: AA6agR5aRILyEF0TniRWgfkhRpWaIx3GRqOZRayXVqWkECvXOewaoXXP5PuvOApHmdWbpXajbVDcSwUCvN1cGszQ590=
+X-Received: by 2002:a17:906:84f0:b0:73d:837a:332c with SMTP id
+ zp16-20020a17090684f000b0073d837a332cmr594314ejb.679.1661280764393; Tue, 23
+ Aug 2022 11:52:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.43.162.140]
-X-ClientProxiedBy: EX13D10UWB003.ant.amazon.com (10.43.161.106) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20220822235649.2218031-1-joannelkoong@gmail.com> <CAP01T74LUHjpnVOtwV1h7ha4Dqz0EU5zjwojz-9gWPCN6Gih0Q@mail.gmail.com>
+In-Reply-To: <CAP01T74LUHjpnVOtwV1h7ha4Dqz0EU5zjwojz-9gWPCN6Gih0Q@mail.gmail.com>
+From:   Joanne Koong <joannelkoong@gmail.com>
+Date:   Tue, 23 Aug 2022 11:52:33 -0700
+Message-ID: <CAJnrk1amsYS51deoXTOnWvMKSQNvbCK_JSPaGW=OBZZsEyNVuQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 0/3] Add skb + xdp dynptrs
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf@vger.kernel.org, andrii@kernel.org, daniel@iogearbox.net,
+        ast@kernel.org, kafai@fb.com, kuba@kernel.org,
+        netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-While reading bpf_jit_limit, it can be changed concurrently.
-Thus, we need to add READ_ONCE() to its reader.
+On Mon, Aug 22, 2022 at 7:32 PM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
+>
+> On Tue, 23 Aug 2022 at 02:06, Joanne Koong <joannelkoong@gmail.com> wrote:
+> >
+> > This patchset is the 2nd in the dynptr series. The 1st can be found here [0].
+> >
+> > This patchset adds skb and xdp type dynptrs, which have two main benefits for
+> > packet parsing:
+> >     * allowing operations on sizes that are not statically known at
+> >       compile-time (eg variable-sized accesses).
+> >     * more ergonomic and less brittle iteration through data (eg does not need
+> >       manual if checking for being within bounds of data_end)
+> >
+>
+> Just curious: so would you be adding a dynptr interface for obtaining
+> data_meta slices as well in the future? Since the same manual bounds
+> checking is needed for data_meta vs data. How would that look in the
+> generic dynptr interface of data/read/write this set is trying to fit
+> things in?
 
-Fixes: ede95a63b5e8 ("bpf: add bpf_jit_limit knob to restrict unpriv allocations")
-Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.com>
----
-v2:
-  * Drop other 3 patches (No change for this patch)
+Oh cool, I didn't realize there is also a data_meta used in packet
+parsing - thanks for bringing this up. I think there are 2 options for
+how data_meta can be incorporated into the dynptr interface:
 
-v1: https://lore.kernel.org/bpf/20220818042339.82992-1-kuniyu@amazon.com/
----
- kernel/bpf/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+1) have a separate api "bpf_dynptr_from_{skb/xdp}_meta. We'll have to
+have a function in the verifier that does something similar to
+'may_access_direct_pkt_data' but for pkt data meta, since skb progs
+can have different access restrictions for data vs. data_meta.
 
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index c1e10d088dbb..3d9eb3ae334c 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -971,7 +971,7 @@ pure_initcall(bpf_jit_charge_init);
- 
- int bpf_jit_charge_modmem(u32 size)
- {
--	if (atomic_long_add_return(size, &bpf_jit_current) > bpf_jit_limit) {
-+	if (atomic_long_add_return(size, &bpf_jit_current) > READ_ONCE(bpf_jit_limit)) {
- 		if (!bpf_capable()) {
- 			atomic_long_sub(size, &bpf_jit_current);
- 			return -EPERM;
--- 
-2.30.2
+2) ideally, the flags arg would be used to indicate whether the
+parsing should be for data_meta. To support this though, I think we'd
+need to do access type checking within the helper instead of at the
+verifier level. One idea is to pass in the env->ops ptr as a 4th arg
+(manually patching it from the verifier) to the helper,  which can be
+used to determine if data_meta access is permitted.
 
+In both options, there'll be a new BPF_DYNPTR_{SKB/XDP}_META dynptr
+type and data/read/write will be supported for it.
+
+What are your thoughts?
+
+>
+>
+>
+> > When comparing the differences in runtime for packet parsing without dynptrs
+> > vs. with dynptrs for the more simple cases, there is no noticeable difference.
+> > For the more complex cases where lengths are non-statically known at compile
+> > time, there can be a significant speed-up when using dynptrs (eg a 2x speed up
+> > for cls redirection). Patch 3 contains more details as well as examples of how
+> > to use skb and xdp dynptrs.
+> >
+> > [0] https://lore.kernel.org/bpf/20220523210712.3641569-1-joannelkoong@gmail.com/
+> >
+> > --
