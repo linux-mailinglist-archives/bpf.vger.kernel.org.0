@@ -2,32 +2,32 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A23E59E1ED
-	for <lists+bpf@lfdr.de>; Tue, 23 Aug 2022 14:41:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A68359DBF6
+	for <lists+bpf@lfdr.de>; Tue, 23 Aug 2022 14:22:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358368AbiHWLwV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Aug 2022 07:52:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52688 "EHLO
+        id S1356360AbiHWLCz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Aug 2022 07:02:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358871AbiHWLvJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Aug 2022 07:51:09 -0400
+        with ESMTP id S1356599AbiHWK74 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Aug 2022 06:59:56 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4CCFD347C;
-        Tue, 23 Aug 2022 02:31:58 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BE85AE9D6;
+        Tue, 23 Aug 2022 02:14:07 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id B4C48B81C98;
-        Tue, 23 Aug 2022 09:31:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E569BC433D6;
-        Tue, 23 Aug 2022 09:31:54 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 510F6B81C86;
+        Tue, 23 Aug 2022 09:13:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 807E4C433B5;
+        Tue, 23 Aug 2022 09:13:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1661247115;
-        bh=69ovCRcumfGslh/oGLivZ4DIr8oJgQGwFuXGEqHGW5k=;
+        s=korg; t=1661246032;
+        bh=buNJpeB5tJIUb/TRYCJmQLyE/2aGLkLTIGN2CS75dns=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NBMv1LGnpeev5Y3mrmaDaqsyMV18S60tPbN1xy2dDsZDuoroyypnJtV6i2p0PkXWN
-         XhNgAdPx1dFtyQnae66pkGRfW1K9QinJJknioaFcJV8iWrJdrMCVE3bjx1Ks7BEIBZ
-         mw66GMI1yrouvPqXRwVM2qk+YvhSkInUuh+bXeJs=
+        b=GJ4W21YfDnyIipjKC9xafQZdCG8uvA2x4a7H1QsK1F2uGaFFjnjqZVWZQjt3wLvEm
+         XP0ycd6vL2gms0fAwGx+3U5pX98H72/iU9XCPnD9PyUHKp34vYqLWKUXQtyWTOpWQ9
+         uMiFNlF063uvv/eJVrXRaY5dcaa9JcHqlsCUpqH4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -47,12 +47,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Song Liu <song@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
         Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 5.4 322/389] tools build: Switch to new openssl API for test-libcrypto
-Date:   Tue, 23 Aug 2022 10:26:40 +0200
-Message-Id: <20220823080128.985378948@linuxfoundation.org>
+Subject: [PATCH 4.19 240/287] tools build: Switch to new openssl API for test-libcrypto
+Date:   Tue, 23 Aug 2022 10:26:49 +0200
+Message-Id: <20220823080109.163592043@linuxfoundation.org>
 X-Mailer: git-send-email 2.37.2
-In-Reply-To: <20220823080115.331990024@linuxfoundation.org>
-References: <20220823080115.331990024@linuxfoundation.org>
+In-Reply-To: <20220823080100.268827165@linuxfoundation.org>
+References: <20220823080100.268827165@linuxfoundation.org>
 User-Agent: quilt/0.67
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -99,9 +99,11 @@ Link: https://lore.kernel.org/r/20220719170555.2576993-4-roberto.sassu@huawei.co
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/build/feature/test-libcrypto.c |   15 +++++++++++----
+ tools/build/feature/test-libcrypto.c | 15 +++++++++++----
  1 file changed, 11 insertions(+), 4 deletions(-)
 
+diff --git a/tools/build/feature/test-libcrypto.c b/tools/build/feature/test-libcrypto.c
+index a98174e0569c..bc34a5bbb504 100644
 --- a/tools/build/feature/test-libcrypto.c
 +++ b/tools/build/feature/test-libcrypto.c
 @@ -1,16 +1,23 @@
@@ -132,5 +134,8 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  
  	SHA1(&dat[0], sizeof(dat), &md[0]);
  
+-- 
+2.37.2
+
 
 
