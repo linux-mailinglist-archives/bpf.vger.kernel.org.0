@@ -2,108 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5C5859EF5C
-	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 00:43:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B70159EF62
+	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 00:46:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230316AbiHWWnz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Aug 2022 18:43:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41398 "EHLO
+        id S232091AbiHWWpj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Aug 2022 18:45:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231411AbiHWWnv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Aug 2022 18:43:51 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BFAE876A6
-        for <bpf@vger.kernel.org>; Tue, 23 Aug 2022 15:43:50 -0700 (PDT)
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1oQccY-0008aV-0x; Wed, 24 Aug 2022 00:43:42 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1oQccX-000SmY-Kg; Wed, 24 Aug 2022 00:43:41 +0200
-Subject: Re: [PATCH bpf-next,v2] selftests/bpf: add lwt ip encap tests to
- test_progs
-To:     Eyal Birger <eyal.birger@gmail.com>, andrii@kernel.org,
-        mykolal@fb.com, ast@kernel.org, martin.lau@linux.dev,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, shuah@kernel.org
-Cc:     bpf@vger.kernel.org
-References: <20220822130820.1252010-1-eyal.birger@gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <3d69a390-f503-e3b8-78ab-b74f5d32e84d@iogearbox.net>
-Date:   Wed, 24 Aug 2022 00:43:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S232841AbiHWWpg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Aug 2022 18:45:36 -0400
+Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com [209.85.167.176])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F40B57FFAB;
+        Tue, 23 Aug 2022 15:45:35 -0700 (PDT)
+Received: by mail-oi1-f176.google.com with SMTP id o184so17688494oif.13;
+        Tue, 23 Aug 2022 15:45:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=oHodqhGQVJUpYZFLY/dKxJcLvNCw1wll2BgbUR8IyRA=;
+        b=ur63j5doB31+aKQ7n01E5tE7nrAOum/teo2y5QRmkBIkaZaVUiI8sfPftA2VGQZf6F
+         zHlrQlU8jd7TyK6neOoN0YlsOOWsXR32tuSbmhHaCpFPNk9+0kSItUsuK/NKDqCPJvND
+         EAmyJ8rqx0ikle4TSHPW95/bDJzXWMHBSzmF92VO+8toqUk08vqNy2S/WNtVDcpemwyk
+         pXYasoEFBEvnvd16gZH3CkL5O0lv9D8YHPf/yubXmP8ZQ+E8ruVBbZHye28aSlqCDMau
+         5gtMCM/NXYdG90hagbaF0sunDOd5sXHve1idMJcM2EALMmHOCG+/UXcq9rpE6S636sdc
+         Hcgw==
+X-Gm-Message-State: ACgBeo1ysCiuXaxdRFmHpKjy65StvjUsvyy5iF8if1dGvm+DI1PS+niP
+        QK7go8jo01XYCpiR+ALQBqfcptjg6Hp0NVtuXYQ=
+X-Google-Smtp-Source: AA6agR5QGf6/wKMX1dkxJ79qzB3ojAV6RPDLxuvjeqQBBJ/Ty7vG4R/UxIh9oGZT7FjwvgGXaOFAFRvaVAbsYftkFSE=
+X-Received: by 2002:aca:ba86:0:b0:33a:c6f7:3001 with SMTP id
+ k128-20020acaba86000000b0033ac6f73001mr2215025oif.5.1661294735248; Tue, 23
+ Aug 2022 15:45:35 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20220822130820.1252010-1-eyal.birger@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.6/26636/Tue Aug 23 09:52:45 2022)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20220823210354.1407473-1-namhyung@kernel.org> <95708205-66EA-4622-A580-FD234E6CE2DA@fb.com>
+In-Reply-To: <95708205-66EA-4622-A580-FD234E6CE2DA@fb.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Tue, 23 Aug 2022 15:45:24 -0700
+Message-ID: <CAM9d7cgxP6+R2BkVZfRAVvFUaJcknu8wAvKa_b1TBnTdKKiQvw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: Add bpf_read_raw_record() helper
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 8/22/22 3:08 PM, Eyal Birger wrote:
-> Port test_lwt_ip_encap.sh tests onto test_progs.
-> 
-> In addition, this commit adds "egress_md" tests which test a similar
-> flow as egress tests only they use gre devices in collect_md mode
-> for encapsulation and set the tunnel key using bpf_set_tunnel_key().
-> 
-> This introduces minor changes to test_lwt_ip_encap.{sh,c} for consistency
-> with the new tests:
-> 
-> - GRE key must exist as bpf_set_tunnel_key() explicitly sets the
->    TUNNEL_KEY flag
-> 
-> - Source address for GRE traffic is set to IP*_5 instead of IP*_1 since
->    GRE traffic is sent via veth5 so its address is selected when using
->    bpf_set_tunnel_key()
-> 
-> Note: currently these programs use the legacy section name convention
-> as iproute2 lwt configuration does not support providing function names.
-> 
-> Signed-off-by: Eyal Birger <eyal.birger@gmail.com>
-[...]
+Hi Song,
 
-Thanks for following up. Is there now anything that test_lwt_ip_encap.c
-doesn't cover over test_lwt_ip_encap.sh? If not, I'd vote for removing
-the latter given the port is then covered in CI via test_progs.
+On Tue, Aug 23, 2022 at 3:19 PM Song Liu <songliubraving@fb.com> wrote:
+>
+>
+>
+> > On Aug 23, 2022, at 2:03 PM, Namhyung Kim <namhyung@kernel.org> wrote:
+> >
+> > The helper is for BPF programs attached to perf_event in order to read
+> > event-specific raw data.  I followed the convention of the
+> > bpf_read_branch_records() helper so that it can tell the size of
+> > record using BPF_F_GET_RAW_RECORD flag.
+> >
+> > The use case is to filter perf event samples based on the HW provided
+> > data which have more detailed information about the sample.
+> >
+> > Note that it only reads the first fragment of the raw record.  But it
+> > seems mostly ok since all the existing PMU raw data have only single
+> > fragment and the multi-fragment records are only for BPF output attached
+> > to sockets.  So unless it's used with such an extreme case, it'd work
+> > for most of tracing use cases.
+> >
+> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > ---
+> > I don't know how to test this.  As the raw data is available on some
+> > hardware PMU only (e.g. AMD IBS).  I tried a tracepoint event but it was
+> > rejected by the verifier.  Actually it needs a bpf_perf_event_data
+> > context so that's not an option IIUC.
+>
+> Can we add a software event that generates raw data for testing?
 
-> diff --git a/tools/testing/selftests/bpf/test_lwt_ip_encap.sh b/tools/testing/selftests/bpf/test_lwt_ip_encap.sh
-> index 6c69c42b1d60..a79f7840ceb1 100755
-> --- a/tools/testing/selftests/bpf/test_lwt_ip_encap.sh
-> +++ b/tools/testing/selftests/bpf/test_lwt_ip_encap.sh
-> @@ -238,7 +238,8 @@ setup()
->   	ip -netns ${NS3} -6 route add ${IPv6_6}/128 dev veth8 via ${IPv6_7}
->   
->   	# configure IPv4 GRE device in NS3, and a route to it via the "bottom" route
-> -	ip -netns ${NS3} tunnel add gre_dev mode gre remote ${IPv4_1} local ${IPv4_GRE} ttl 255
-> +	ip -netns ${NS3} tunnel add gre_dev mode gre remote ${IPv4_5} \
-> +		local ${IPv4_GRE} ttl 255 key 0
->   	ip -netns ${NS3} link set gre_dev up
->   	ip -netns ${NS3} addr add ${IPv4_GRE} dev gre_dev
->   	ip -netns ${NS1} route add ${IPv4_GRE}/32 dev veth5 via ${IPv4_6} ${VRF}
-> @@ -246,7 +247,8 @@ setup()
->   
->   
->   	# configure IPv6 GRE device in NS3, and a route to it via the "bottom" route
-> -	ip -netns ${NS3} -6 tunnel add name gre6_dev mode ip6gre remote ${IPv6_1} local ${IPv6_GRE} ttl 255
-> +	ip -netns ${NS3} -6 tunnel add name gre6_dev mode ip6gre remote ${IPv6_5} \
-> +		local ${IPv6_GRE} ttl 255 key 0
->   	ip -netns ${NS3} link set gre6_dev up
->   	ip -netns ${NS3} -6 addr add ${IPv6_GRE} nodad dev gre6_dev
->   	ip -netns ${NS1} -6 route add ${IPv6_GRE}/128 dev veth5 via ${IPv6_6} ${VRF}
-> 
+Ok, now I think that I can use a bpf-output sw event.  It would need
+another BPF program to write data to the event and the test program
+can read it from BPF using this helper. :)
 
+Thanks,
+Namhyung
