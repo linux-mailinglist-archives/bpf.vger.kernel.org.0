@@ -2,99 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF99859EF9E
-	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 01:22:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27C8559EFB1
+	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 01:28:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230520AbiHWXWP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Aug 2022 19:22:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37408 "EHLO
+        id S229602AbiHWX2K (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Aug 2022 19:28:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229600AbiHWXWO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Aug 2022 19:22:14 -0400
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA641786CB;
-        Tue, 23 Aug 2022 16:22:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1661296932; x=1692832932;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=QVG9DQadsJw7ZXxuHHoW0iJxHyDiYCRdyNJgXc5ts5A=;
-  b=FRXzIee22jiuZ7CFDQUH9IUS6kyb+d38ZixIaUL0ZabG/X8EUzjBOwx5
-   +qD3SBoceeGWDdX2XAGsMLL04l/+GkbntiIvDtJ/AcR4cQ8brszHI91r/
-   6hIRfUXCIVx4qM9HdoVs4pTVlz72wablrARFTDxsoiVfiV0JVxje5vBTI
-   dT4jLfqCBjFi7Tf1lZulkMEajSVaKzWxIWWRs0xDSGr3/TZcPmRmW2l6p
-   uoA1JbDScJLuulr1ilaWwPOSSKKPAx3grKrYGSOujhTMpbnXzjZ8Zxqnr
-   iCYbinleR2pY51WTdZrb/gswyQU7jCPR6McKxlRCQrc+hJObbBpeAX/jk
-   w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10448"; a="274205780"
-X-IronPort-AV: E=Sophos;i="5.93,259,1654585200"; 
-   d="scan'208";a="274205780"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2022 16:22:12 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,259,1654585200"; 
-   d="scan'208";a="677806950"
-Received: from lkp-server02.sh.intel.com (HELO 9bbcefcddf9f) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 23 Aug 2022 16:22:10 -0700
-Received: from kbuild by 9bbcefcddf9f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1oQdDl-0000hj-2u;
-        Tue, 23 Aug 2022 23:22:09 +0000
-Date:   Wed, 24 Aug 2022 07:22:08 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Joanne Koong <joannelkoong@gmail.com>, bpf@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, andrii@kernel.org, daniel@iogearbox.net,
-        ast@kernel.org, kafai@fb.com, kuba@kernel.org,
-        netdev@vger.kernel.org, Joanne Koong <joannelkoong@gmail.com>
-Subject: Re: [PATCH bpf-next v4 1/3] bpf: Add skb dynptrs
-Message-ID: <202208240728.59W00MTW-lkp@intel.com>
-References: <20220822235649.2218031-2-joannelkoong@gmail.com>
+        with ESMTP id S229558AbiHWX2J (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Aug 2022 19:28:09 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AB308035C
+        for <bpf@vger.kernel.org>; Tue, 23 Aug 2022 16:28:08 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id u9so1381913ejy.5
+        for <bpf@vger.kernel.org>; Tue, 23 Aug 2022 16:28:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=x1Fp+IpyDwn/4d3aB5wFR8uoRKJQYECGEKILP2rZCVw=;
+        b=higVv8uTGKmFPhm3BNJ4bT4PhUTvv8duLp2vhvQCYNSYUuxkdCSaesUS7kjxKZCcpU
+         AOT62TYhaWzo6V5SFDxiqaaJYFHvYRqtzmOLRBQrLsEjA/d4ONy5Mtm++Sp3EaK19yvi
+         1WhAk7muXJcFnTV+/qL59tOCev+tIWNyPzzCY2whKFf8SuN26f/iHopkS91rxgpbdw3L
+         824NGbsC6Qb/2TRU2P4WOi+9RB/TK1RxwlHd5mcIGWg3vuMGl7kCyf2VyuZ8+z20mCMj
+         0Z++FQESQ7U5tSYvkF1u0wPzUN2BR7TyfmYea1+4Oz+7TiexgPEM//Nr5b2lzv7UHoQY
+         d63A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=x1Fp+IpyDwn/4d3aB5wFR8uoRKJQYECGEKILP2rZCVw=;
+        b=A7iUP/nLKtXov/Bnb0gIfOHOoArqFTM2oG//RCiFSRbdIE2NzyOcc8F5Wkv4B5Fc68
+         gTM9lg4S7PbvnZE09Z3AxnF/6eJgzYT5TdZ9+AbI3r3X3EC2nG887AHx2vSGyLmOZGYX
+         jP0UvtbQy8b7XYh+J81XYPTS44LI3ImosDxoRll7/I9/U7BtvG75BRoHAZTzkGWFWBy9
+         SLo5guINr4VNt6VFuEFzqr9BxQk2nlPK9U65jP7pznsXh+SwpW9K2Dh/MN9GpBTYz6D3
+         Vi/oZSSMzdRJmsYHAqyWfd4SRNIYXFkGjzKj64odwy6rsktW5GNsEfRgnzpz+ZWRe5U/
+         yM3g==
+X-Gm-Message-State: ACgBeo2MAB7rZwX9HYtlL89L8YL/NbWiCIqhEBOmTlld0Oao4O6ABluj
+        vd2EX3wVo9PWAkBL3RCYq9WzfnkUoEH2yVmtIcfM5Qd1
+X-Google-Smtp-Source: AA6agR4bf9qxByNADNsB24OFWcrRbzoIV3BhwURnkZtgdfm+1GQLj3RfQs+UUK10rjjtEnBQ2tz7Hwx3QGeOG2tIn0s=
+X-Received: by 2002:a17:906:a089:b0:72f:826b:e084 with SMTP id
+ q9-20020a170906a08900b0072f826be084mr1213219ejy.708.1661297287198; Tue, 23
+ Aug 2022 16:28:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220822235649.2218031-2-joannelkoong@gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220822131923.21476-1-memxor@gmail.com> <20220822131923.21476-2-memxor@gmail.com>
+ <630490024ded0_2ad4d7208e3@john.notmuch> <CAP01T75DOMXk0Z6FoOT7n7tcb8f+hMQ-W1HC_VfGqe+hBh+Gcg@mail.gmail.com>
+In-Reply-To: <CAP01T75DOMXk0Z6FoOT7n7tcb8f+hMQ-W1HC_VfGqe+hBh+Gcg@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 23 Aug 2022 16:27:55 -0700
+Message-ID: <CAADnVQKjfvdqOegpmrGbt6wVkzhyUsUt8ysEEgbAKS8d_OVS9w@mail.gmail.com>
+Subject: Re: [PATCH bpf v1 1/3] bpf: Move bpf_loop and bpf_for_each_map_elem
+ under CAP_BPF
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Joanne,
+On Tue, Aug 23, 2022 at 10:36 AM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
+>
+> On Tue, 23 Aug 2022 at 10:29, John Fastabend <john.fastabend@gmail.com> wrote:
+> >
+> > Kumar Kartikeya Dwivedi wrote:
+> > > They would require func_info which needs prog BTF anyway. Loading BTF
+> > > and setting the prog btf_fd while loading the prog indirectly requires
+> > > CAP_BPF, so just to reduce confusion, move both these helpers taking
+> > > callback under bpf_capable() protection as well, since they cannot be
+> > > used without CAP_BPF.
+> > >
+> > > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > > ---
+> >
+> > This should have a fixes tag IMO. You'll get unexpected results if we
+> > don't have get it backported to the right places.
+> >
+>
+> Hm, I was unsure if this requires a Fixes tag. It's technically not a
+> fix, it's a minor reorg in my opinion (could have gone through
+> bpf-next as well) which has no real resulting change for users loading
+> programs, and makes things less confusing. The actual fix in patch 2
+> is independent of this change.
 
-Thank you for the patch! Yet something to improve:
-
-[auto build test ERROR on bpf-next/master]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Joanne-Koong/Add-skb-xdp-dynptrs/20220823-080022
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-config: arm-buildonly-randconfig-r002-20220823 (https://download.01.org/0day-ci/archive/20220824/202208240728.59W00MTW-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 12.1.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/a2c8a74d8f0b7fd0b0008dc9bc5ccf9887317f36
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Joanne-Koong/Add-skb-xdp-dynptrs/20220823-080022
-        git checkout a2c8a74d8f0b7fd0b0008dc9bc5ccf9887317f36
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=arm SHELL=/bin/bash
-
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp@intel.com>
-
-All errors (new ones prefixed by >>):
-
-   arm-linux-gnueabi-ld: kernel/bpf/helpers.o: in function `bpf_dynptr_read':
->> helpers.c:(.text+0xb1c): undefined reference to `__bpf_skb_load_bytes'
-   arm-linux-gnueabi-ld: kernel/bpf/helpers.o: in function `bpf_dynptr_write':
->> helpers.c:(.text+0xc30): undefined reference to `__bpf_skb_store_bytes'
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+Pushed to bpf-next.
+Such corner case fixes are too risky to go directly into the bpf tree.
