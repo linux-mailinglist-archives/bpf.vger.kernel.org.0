@@ -2,203 +2,257 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EBDD59EB1A
-	for <lists+bpf@lfdr.de>; Tue, 23 Aug 2022 20:34:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A12A659EB5D
+	for <lists+bpf@lfdr.de>; Tue, 23 Aug 2022 20:48:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230407AbiHWSd7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Aug 2022 14:33:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44940 "EHLO
+        id S232848AbiHWSsR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Aug 2022 14:48:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230280AbiHWSdi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Aug 2022 14:33:38 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A71A783079
-        for <bpf@vger.kernel.org>; Tue, 23 Aug 2022 09:55:27 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id bq11so11162075wrb.12
-        for <bpf@vger.kernel.org>; Tue, 23 Aug 2022 09:55:27 -0700 (PDT)
+        with ESMTP id S233799AbiHWSr6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Aug 2022 14:47:58 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08CB911987D;
+        Tue, 23 Aug 2022 10:12:08 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id w13so7742194pgq.7;
+        Tue, 23 Aug 2022 10:12:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=in-reply-to:from:references:cc:to:content-language:subject
-         :user-agent:mime-version:date:message-id:from:to:cc;
-        bh=BHHVjcMtIOwGrUJK560v1zNbcoFZ/mFC3fPSrYyoaUQ=;
-        b=bWQUvj/cHt5081k1NzWvNoxr/eF9eI+iN11/KqeOpaxDh4FkwU1FywjY1cJS7Auayt
-         Mc6msdeUORZSsweJQ8QqYyDz/BiGRRy0jv7wLMBEiqsY/VjByVxE1d9x57zdC9Iwzx6E
-         4YS6/jj8TgW57RerOF5QBVqqAJWxj+jyn8q5kjCD3aoLsjK1RjnOXfkIFPwf5msC44vX
-         MfEmgtuwoB/Uz7FZo+izbHg45s6wAAV2Hjj3jwyxWdSQgXv4nLfUQAUF4+3ZTQWHSJ9s
-         /pDjXtIXNJEvrXN/ASMhOfIu9HxcxGTl9Fz4pDRznYjCIU69mKCJS5E5CxHPEcrA0FMg
-         uRXg==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc;
+        bh=0dpf/dFnqvSQXULZAry29j8dtTwD0KWxL5BSj6ts5Eg=;
+        b=jPA0pd6oBq/PlYVNpLQ9tMeqI8Cl/RJ/N4NznoWBcbRKYwoxkVxka1Sk0FPVwrEnYI
+         /GyffhqFtgl2rq2elMxo4z7MCqh06Fg1Altta7JAOjfvoRvA7SSFCSrKDM1wGwV+g8XU
+         bgULlxeBQvY5EcitXG3qWm8yQF8lZEJ5BT9gLQyMylaZSMD4ZeBs+Xe9tix31zKKLisN
+         AqhRdPNbVN3cUBI75KK7sswjahStF79rglUYO1N6liKUCQqGNEf3oLBDGg3z+doG33+x
+         lkAtTf8jByCkCVMtUS46l3gTKafDUPsim16HzhcHYjSk74ngCm35DzpOKaGeL1MWJYWQ
+         WhyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:from:references:cc:to:content-language:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc;
-        bh=BHHVjcMtIOwGrUJK560v1zNbcoFZ/mFC3fPSrYyoaUQ=;
-        b=SVEHdOqOUhgcAOhYZak3QAUPOEjhxYu+xMhXXvloGjgkBtV7N8O5O+S5Xt1KhPiVwo
-         aihiPdSPCEubcmpzHmNvsewwL9U+3ugL5GVNT5C3F73EfjqLA1xpXC10Y7Gl3FzmtKHq
-         6Gvn0OlO8DROzdFjWknLh8N2+DMdkDuU2Uo8OH/HXQ3Pxya8WTfdf06G45dQq5nE3Ld9
-         jKQ/QE9Vzqc/dRJ/JZ6329vuR4cSzs3DTvceFH9S3QYALNrL3spK5KWPfmIPfQOgIotb
-         q1N0dzK6E70iHoAUVPjs1XRoXPBMqcdULO+qJueMyucN1h+AM5mOq8BLnaF3KQoX3CS+
-         Sr5w==
-X-Gm-Message-State: ACgBeo1E22D8qcWetiVoh7DjA73wmHv/HXlhE3Cg59VzJFl78uUspjGD
-        Zx8yFjXmg83XjeBoSa7oE+A=
-X-Google-Smtp-Source: AA6agR4I4d2kaNhbFiS+Ce/N2U8i58/FtyhuXHeq4DRqD6n5iWCHfE0u9vels7ROy76/VPvu+OaldQ==
-X-Received: by 2002:adf:f8c9:0:b0:225:50da:d43 with SMTP id f9-20020adff8c9000000b0022550da0d43mr7043616wrq.28.1661273726245;
-        Tue, 23 Aug 2022 09:55:26 -0700 (PDT)
-Received: from [192.168.0.160] ([170.253.36.171])
-        by smtp.gmail.com with ESMTPSA id d7-20020a5d5387000000b002235eb9d200sm15167544wrv.10.2022.08.23.09.55.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Aug 2022 09:55:25 -0700 (PDT)
-Message-ID: <046858e2-91b9-3703-92a3-89ddc620d445@gmail.com>
-Date:   Tue, 23 Aug 2022 18:55:24 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCH bpf-next v2 1/2] scripts/bpf: Set version attribute for
- bpf-helpers(7) man page
-Content-Language: en-US
-To:     Quentin Monnet <quentin@isovalent.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc;
+        bh=0dpf/dFnqvSQXULZAry29j8dtTwD0KWxL5BSj6ts5Eg=;
+        b=rhttXXmNKab+GkyuK0TQ+OZz5AQeTJ65fZiMcfO60m4iclYpXgO+J8HWWYEU/wpKUN
+         XCkrNjD4+2sLmqXbVORf1unYqE+OULLpXvV2nRl0LsMCq3cn2k05nuIt68GvuxbT/fx3
+         OwJtcNt3TKmkgD7aiZytPh+xUwO/o4OhW4ad2p9VxyyZpaO3G2LdISG9FrPWjBN6LeK5
+         wf5oy/RGxtj1EZbzD+FmeIFHAJoxylUVJ0XxGl52BnVUGxTgAUXqdnfRY+TLhSKZEYax
+         +hYORI1NFrj9+aM05eTMEJ4lZLxKe2YN27l/tHJ3S4oAT0SqzgAB7M4BwCsnEmLo60Jt
+         nO5g==
+X-Gm-Message-State: ACgBeo03TPtUUqdQh1PNP4pUQNR3ENG92TmYwFbap6fuVrlo5ZFuAktn
+        Q4tBXZwli9Oz7ZDQ16vvGJQ=
+X-Google-Smtp-Source: AA6agR7wA709oFtQr9hdf8uPUHazGF3ozzzdNXJhU9DXJWsUBfdMhreZ5l/XmDnWA2ec1x+YCyrhJw==
+X-Received: by 2002:a65:6949:0:b0:41c:cb9d:3d1f with SMTP id w9-20020a656949000000b0041ccb9d3d1fmr21233337pgq.334.1661274727099;
+        Tue, 23 Aug 2022 10:12:07 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
+        by smtp.gmail.com with ESMTPSA id o4-20020a63e344000000b0041d6d37deb5sm9502946pgj.81.2022.08.23.10.12.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Aug 2022 10:12:06 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 23 Aug 2022 07:12:05 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org
-References: <20220823155327.98888-1-quentin@isovalent.com>
-From:   Alejandro Colomar <alx.manpages@gmail.com>
-In-Reply-To: <20220823155327.98888-1-quentin@isovalent.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------0RIgft0zFeZJWiG8DKV5H0fk"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Hao Luo <haoluo@google.com>, jolsa@kernel.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Cgroups <cgroups@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        Dan Schatzberg <schatzberg.dan@gmail.com>,
+        Lennart Poettering <lennart@poettering.net>
+Subject: Re: [RFD RESEND] cgroup: Persistent memory usage tracking
+Message-ID: <YwUKZWXbqzfy0w4o@slm.duckdns.org>
+References: <20220818143118.17733-1-laoar.shao@gmail.com>
+ <Yv67MRQLPreR9GU5@slm.duckdns.org>
+ <Yv6+HlEzpNy8y5kT@slm.duckdns.org>
+ <CALOAHbDcrj1ifFsNMHBEih5-SXY2rWViig4rQHi9N07JY6CjXA@mail.gmail.com>
+ <Yv/DK+AGlMeBGkF1@slm.duckdns.org>
+ <CALOAHbCvUxQn5Zkp2FJ+eL1VgjeRSq1xQhzdiY87C1Cbib-nig@mail.gmail.com>
+ <YwNold0GMOappUxc@slm.duckdns.org>
+ <CALOAHbBTR-07La=-KPehFab0WDY4V6LovXbrhLXOqKDurHD-9g@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALOAHbBTR-07La=-KPehFab0WDY4V6LovXbrhLXOqKDurHD-9g@mail.gmail.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------0RIgft0zFeZJWiG8DKV5H0fk
-Content-Type: multipart/mixed; boundary="------------cJwSK1tPk71iq0z1dvJb0D1X";
- protected-headers="v1"
-From: Alejandro Colomar <alx.manpages@gmail.com>
-To: Quentin Monnet <quentin@isovalent.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>
-Cc: Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
- Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>,
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- bpf@vger.kernel.org
-Message-ID: <046858e2-91b9-3703-92a3-89ddc620d445@gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/2] scripts/bpf: Set version attribute for
- bpf-helpers(7) man page
-References: <20220823155327.98888-1-quentin@isovalent.com>
-In-Reply-To: <20220823155327.98888-1-quentin@isovalent.com>
+Hello,
 
---------------cJwSK1tPk71iq0z1dvJb0D1X
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+On Tue, Aug 23, 2022 at 07:08:17PM +0800, Yafang Shao wrote:
+> On Mon, Aug 22, 2022 at 7:29 PM Tejun Heo <tj@kernel.org> wrote:
+> > [1] Can this be solved by layering the instance cgroups under persistent
+> >     entity cgroup?
+>
+> Below is some background of kubernetes.
+> In kubernetes, a pod is organized as follows,
+> 
+>                pod
+>                |- Container
+>                |- Container
+> 
+> IOW, it is a two-layer unit, or a two-layer instance.
+> The cgroup dir of the pod is named with a UUID assigned by kubernetes-apiserver.
+> Once the old pod is destroyed (that can happen when the user wants to
+> update their service), the new pod will have a different UUID.
+> That said, different instances will have different cgroup dir.
+> 
+> If we want to introduce a  persistent entity cgroup, we have to make
+> it a three-layer unit.
+> 
+>            persistent-entity
+>            |- pod
+>                  |- Container
+>                  |- Container
+> 
+> There will be some issues,
+> 1.  The kuber-apiserver must maintain the persistent-entity on each host.
+>      It needs a great refactor and the compatibility is also a problem
+> per my discussion with kubernetes experts.
 
-T24gOC8yMy8yMiAxNzo1MywgUXVlbnRpbiBNb25uZXQgd3JvdGU6DQo+IFRoZSBicGYtaGVs
-cGVycyg3KSBtYW51YWwgcGFnZSBzaGlwcGVkIGluIHRoZSBtYW4tcGFnZXMgcHJvamVjdCBp
-cw0KPiBnZW5lcmF0ZWQgZnJvbSB0aGUgZG9jdW1lbnRhdGlvbiBjb250YWluZWQgaW4gdGhl
-IEJQRiBVQVBJIGhlYWRlciwgaW4NCj4gdGhlIExpbnV4IHJlcG9zaXRvcnksIHBhcnNlZCBi
-eSBzY3JpcHQvYnBmX2RvYy5weSBhbmQgdGhlbiBmZWQgdG8NCj4gcnN0Mm1hbi4NCj4gDQo+
-IEFmdGVyIGEgcmVjZW50IHVwZGF0ZSBvZiB0aGF0IHBhZ2UgWzBdLCBBbGVqYW5kcm8gcmVw
-b3J0ZWQgdGhhdCB0aGUNCj4gbGludGVyIHVzZWQgdG8gdmFsaWRhdGUgdGhlIG1hbiBwYWdl
-cyBjb21wbGFpbnMgYWJvdXQgdGhlIGdlbmVyYXRlZA0KPiBkb2N1bWVudCBbMV0uIFRoZSBo
-ZWFkZXIgZm9yIHRoZSBwYWdlIGlzIHN1cHBvc2VkIHRvIGNvbnRhaW4gc29tZQ0KPiBhdHRy
-aWJ1dGVzIHRoYXQgd2UgZG8gbm90IHNldCBjb3JyZWN0bHkgd2l0aCB0aGUgc2NyaXB0LiBU
-aGlzIGNvbW1pdA0KPiB1cGRhdGVzIHRoZSAicHJvamVjdCBhbmQgdmVyc2lvbiIgZmllbGQu
-IFdlIGRpc2N1c3NlZCB0aGUgZm9ybWF0IG9mDQo+IHRob3NlIGZpZWxkcyBpbiBbMV0gYW5k
-IFsyXS4NCj4gDQo+IEJlZm9yZToNCj4gDQo+ICAgICAgJCAuL3NjcmlwdHMvYnBmX2RvYy5w
-eSBoZWxwZXJzIHwgcnN0Mm1hbiB8IGdyZXAgJ1wuVEgnDQo+ICAgICAgLlRIIEJQRi1IRUxQ
-RVJTIDcgIiIgIiIgIiINCj4gDQo+IEFmdGVyOg0KPiANCj4gICAgICAkIC4vc2NyaXB0cy9i
-cGZfZG9jLnB5IGhlbHBlcnMgfCByc3QybWFuIHwgZ3JlcCAnXC5USCcNCj4gICAgICAuVEgg
-QlBGLUhFTFBFUlMgNyAiIiAiTGludXggdjUuMTktMTQwMjItZzMwZDJhNGQ3NGUxMSIgIiIN
-Cj4gDQo+IFdlIGdldCB0aGUgdmVyc2lvbiBmcm9tICJnaXQgZGVzY3JpYmUiLCBidXQgaWYg
-dW5hdmFpbGFibGUsIHdlIGZhbGwgYmFjaw0KPiBvbiAibWFrZSBrZXJuZWx2ZXJzaW9uIi4g
-SWYgbm9uZSB3b3JrcywgZm9yIGV4YW1wbGUgYmVjYXVzZSBuZWl0aGVyIGdpdA0KPiBub3Jl
-IG1ha2UgYXJlIGluc3RhbGxlZCwgd2UganVzdCBzZXQgdGhlIGZpZWxkIHRvICJMaW51eCIg
-YW5kIGtlZXANCj4gZ2VuZXJhdGluZyB0aGUgcGFnZS4NCj4gDQo+IFswXSBodHRwczovL2dp
-dC5rZXJuZWwub3JnL3B1Yi9zY20vZG9jcy9tYW4tcGFnZXMvbWFuLXBhZ2VzLmdpdC9jb21t
-aXQvbWFuNy9icGYtaGVscGVycy43P2lkPTE5YzdmNzgzOTNmMmIwMzhlNzYwOTlmODczMzVk
-ZGY0M2E4N2YwMzkNCj4gWzFdIGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2FsbC8yMDIyMDgy
-MzA4NDcxOS4xMzYxMy0xLXF1ZW50aW5AaXNvdmFsZW50LmNvbS90LyNtNThhNDE4YTMxODY0
-MmM2NDI4ZTE0Y2U5YmI4NGViYTUxODNiMDZlOA0KPiBbMl0gaHR0cHM6Ly9sb3JlLmtlcm5l
-bC5vcmcvYWxsLzIwMjIwNzIxMTEwODIxLjgyNDAtMS1hbHgubWFucGFnZXNAZ21haWwuY29t
-L3QvI204ZTY4OWE4MjJlMDNmNmUyNTMwYTBkNmRlOWQxMjg0MDE5MTZjNWRlDQo+IA0KPiBD
-YzogQWxlamFuZHJvIENvbG9tYXIgPGFseC5tYW5wYWdlc0BnbWFpbC5jb20+DQo+IFJlcG9y
-dGVkLWJ5OiBBbGVqYW5kcm8gQ29sb21hciA8YWx4Lm1hbnBhZ2VzQGdtYWlsLmNvbT4NCj4g
-U2lnbmVkLW9mZi1ieTogUXVlbnRpbiBNb25uZXQgPHF1ZW50aW5AaXNvdmFsZW50LmNvbT4N
-Cg0KUmV2aWV3ZWQtYnk6IEFsZWphbmRybyBDb2xvbWFyIDxhbHgubWFucGFnZXNAZ21haWwu
-Y29tPg0KDQo+IC0tLQ0KPiAgIHNjcmlwdHMvYnBmX2RvYy5weSB8IDIxICsrKysrKysrKysr
-KysrKysrKysrLQ0KPiAgIDEgZmlsZSBjaGFuZ2VkLCAyMCBpbnNlcnRpb25zKCspLCAxIGRl
-bGV0aW9uKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvc2NyaXB0cy9icGZfZG9jLnB5IGIvc2Ny
-aXB0cy9icGZfZG9jLnB5DQo+IGluZGV4IGRmYjI2MGRlMTdhOC4uMDYxYWQxZGMzMjEyIDEw
-MDc1NQ0KPiAtLS0gYS9zY3JpcHRzL2JwZl9kb2MucHkNCj4gKysrIGIvc2NyaXB0cy9icGZf
-ZG9jLnB5DQo+IEBAIC0xMCw2ICsxMCw4IEBAIGZyb20gX19mdXR1cmVfXyBpbXBvcnQgcHJp
-bnRfZnVuY3Rpb24NCj4gICBpbXBvcnQgYXJncGFyc2UNCj4gICBpbXBvcnQgcmUNCj4gICBp
-bXBvcnQgc3lzLCBvcw0KPiAraW1wb3J0IHN1YnByb2Nlc3MNCj4gKw0KPiAgIA0KPiAgIGNs
-YXNzIE5vSGVscGVyRm91bmQoQmFzZUV4Y2VwdGlvbik6DQo+ICAgICAgIHBhc3MNCj4gQEAg
-LTM1Nyw2ICszNTksMjAgQEAgY2xhc3MgUHJpbnRlclJTVChQcmludGVyKToNCj4gICANCj4g
-ICAgICAgICAgIHByaW50KCcnKQ0KPiAgIA0KPiArICAgIGRlZiBnZXRfa2VybmVsX3ZlcnNp
-b24oc2VsZik6DQo+ICsgICAgICAgIHRyeToNCj4gKyAgICAgICAgICAgIHZlcnNpb24gPSBz
-dWJwcm9jZXNzLnJ1bihbJ2dpdCcsICdkZXNjcmliZSddLCBjd2Q9bGludXhSb290LA0KPiAr
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNhcHR1cmVfb3V0cHV0PVRy
-dWUsIGNoZWNrPVRydWUpDQo+ICsgICAgICAgICAgICB2ZXJzaW9uID0gdmVyc2lvbi5zdGRv
-dXQuZGVjb2RlKCkucnN0cmlwKCkNCj4gKyAgICAgICAgZXhjZXB0Og0KPiArICAgICAgICAg
-ICAgdHJ5Og0KPiArICAgICAgICAgICAgICAgIHZlcnNpb24gPSBzdWJwcm9jZXNzLnJ1bihb
-J21ha2UnLCAna2VybmVsdmVyc2lvbiddLCBjd2Q9bGludXhSb290LA0KPiArICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjYXB0dXJlX291dHB1dD1UcnVlLCBj
-aGVjaz1UcnVlKQ0KPiArICAgICAgICAgICAgICAgIHZlcnNpb24gPSB2ZXJzaW9uLnN0ZG91
-dC5kZWNvZGUoKS5yc3RyaXAoKQ0KPiArICAgICAgICAgICAgZXhjZXB0Og0KPiArICAgICAg
-ICAgICAgICAgIHJldHVybiAnTGludXgnDQo+ICsgICAgICAgIHJldHVybiAnTGludXgge3Zl
-cnNpb259Jy5mb3JtYXQodmVyc2lvbj12ZXJzaW9uKQ0KPiArDQo+ICAgY2xhc3MgUHJpbnRl
-ckhlbHBlcnNSU1QoUHJpbnRlclJTVCk6DQo+ICAgICAgICIiIg0KPiAgICAgICBBIHByaW50
-ZXIgZm9yIGR1bXBpbmcgY29sbGVjdGVkIGluZm9ybWF0aW9uIGFib3V0IGhlbHBlcnMgYXMg
-YSBSZVN0cnVjdHVyZWQNCj4gQEAgLTM3OCw2ICszOTQsNyBAQCBsaXN0IG9mIGVCUEYgaGVs
-cGVyIGZ1bmN0aW9ucw0KPiAgIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCj4gICANCj4g
-ICA6TWFudWFsIHNlY3Rpb246IDcNCj4gKzpWZXJzaW9uOiB7dmVyc2lvbn0NCj4gICANCj4g
-ICBERVNDUklQVElPTg0KPiAgID09PT09PT09PT09DQo+IEBAIC00MTAsOCArNDI3LDEwIEBA
-IGtlcm5lbCBhdCB0aGUgdG9wKS4NCj4gICBIRUxQRVJTDQo+ICAgPT09PT09PQ0KPiAgICcn
-Jw0KPiArICAgICAgICBrZXJuZWxWZXJzaW9uID0gc2VsZi5nZXRfa2VybmVsX3ZlcnNpb24o
-KQ0KPiArDQo+ICAgICAgICAgICBQcmludGVyUlNULnByaW50X2xpY2Vuc2Uoc2VsZikNCj4g
-LSAgICAgICAgcHJpbnQoaGVhZGVyKQ0KPiArICAgICAgICBwcmludChoZWFkZXIuZm9ybWF0
-KHZlcnNpb249a2VybmVsVmVyc2lvbikpDQo+ICAgDQo+ICAgICAgIGRlZiBwcmludF9mb290
-ZXIoc2VsZik6DQo+ICAgICAgICAgICBmb290ZXIgPSAnJycNCg0KLS0gDQpBbGVqYW5kcm8g
-Q29sb21hcg0KPGh0dHA6Ly93d3cuYWxlamFuZHJvLWNvbG9tYXIuZXMvPg0K
+This is gonna be true for anybody. The basic strategy here should be
+defining a clear boundary between system agent and applications so that
+individual applications, even when they build their own subhierarchy
+internally, aren't affected by system level hierarchy configuration changes.
+systemd is already like that with clear delegation boundary. Our (fb)
+container management is like that too. So, while this requires some
+reorganization from the agent side, things like this don't create huge
+backward compatbility issues involving applications. I have no idea about
+k8s, so the situation may differ but in the long term at least, it'd be a
+good idea to build in similar conceptual separation even if it stays with
+cgroup1.
 
---------------cJwSK1tPk71iq0z1dvJb0D1X--
+> 2.  How to do the monitor?
+>      If there's only one pod under this persistent-entity, we can
+> easily get the memory size of  shared resources by:
+>          Sizeof(shared-resources) = Sizeof(persistent-entity) - Sizeof(pod)
+>     But what if it has N pods and N is dynamically changed ?
 
---------------0RIgft0zFeZJWiG8DKV5H0fk
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+There should only be one live pod instance inside the pod's persistent
+cgroup, so the calculation doesn't really change.
 
------BEGIN PGP SIGNATURE-----
+> 3.  What if it has more than one shared resource?
+>      For example, pod-foo has two shared resources A and B, pod-bar
+> has two shared resources A and C, and another pod has two shared
+> resources B and C.
+>      How to deploy them?
+>      Pls, note that we can introduce multiple-layer persistent-entity,
+> but which one should be the parent ?
+> 
+> So from my perspective, it is almost impossible.
 
-iQIzBAEBCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmMFBnwACgkQnowa+77/
-2zKm4g/8DPiUGSEDMo7HGX4YMN9nx4xhvNB48gtN311HIMW6CpUm5bPSptuzfO8N
-LfQQoW57SBdpPhX+414LPKuF72FPgB0V7wFJ60cA2eh8AFflD5nW6FTqaCveRh3N
-wsW3kJJPd46EQ2I8taXvy+INnfSxeuh75IyWoRv4CApu9R2ysCVWEfKw8NzdYCHC
-nV9nT0FnAeU4fmg1VkJ6X2aTC7d3vYXNXdXB4DrjfMTUIt/YazI7hmZhB+DlbRFh
-clgEdlUh9fLPWNrjxZWqvE2u4nyLErKaAEj+AEwdmjGHLN2Rk4JdlctZcBb9YvE3
-GUISmPrSqjqNIovAe1gLQgkSCbXPdEaEbR8HsO6Xwky+66Baq3cKxflHz9InEiwy
-eSV4f0nstxgFfqpFuP8yqq951XEpkWdaCiH9cksWjqsy0FxMSoArzWIXNqtU+Jfo
-ILai3jgzDbSdqGWWBIhAW/fiW07WwxLwgSTD04zIYqQu2MjVSZrFdWIpa0C3g/4J
-vsd7K7U7HlgMypFcMSWLrXQX/4+P0sKWIfe4W+duU82xzKB2pmtUApJtSCmya16D
-mgI0tOa0qwbPmYWYRqKcsmowDOnVTan/Vgthunyhk+jdPETCbL5YV+T+128o6cY2
-ODyiHtMwz7oR5esYhOwzVjmkz9542wBXd6l8SiZJGRWwSdnWOSM=
-=J1gG
------END PGP SIGNATURE-----
+Yeah, this is a different problem and cgroup has never been good at tracking
+resources shared across multiple groups. There is always tension between
+overhead, complexity and accuracy and the tradeoff re. resource sharing has
+almost always been towards the former two.
 
---------------0RIgft0zFeZJWiG8DKV5H0fk--
+Naming specific resources and designating them as being shared and
+accounting them commonly somehow does make sense as an approach as we get to
+avoid the biggest headaches (e.g. how to split a page cache page?) and maybe
+it can even be claimed that a lot of use cases which may want cross-group
+sharing can be sufficiently served by such approach.
+
+That said, it still has to be balanced against other factors. For example,
+memory pressure caused by the shared resources should affect all
+participants in the sharing group in terms of both memory and IO, which
+means that they'll have to stay within a nested subtree structure. This does
+restrict overlapping partial sharing that you described above but the goal
+is finding a reasonable tradeoff, so something has to give.
+
+> > b. Memory is disassociated rather than just reparented on cgroup destruction
+> >    and get re-charged to the next first user. This is attractive in that it
+> >    doesn't require any userspace changes; however, I'm not sure how this
+> >    would work for non-pageable memory usages such as bpf maps. How would we
+> >    detect the next first usage?
+> >
+> 
+> JFYI, There is a reuse path for the bpf map, see my previous RFC[1].
+> [1] https://lore.kernel.org/bpf/20220619155032.32515-1-laoar.shao@gmail.com/
+
+I'm not a big fan of explicit recharging. It's too hairy to use requiring
+mixing system level hierarchy configuration knoweldge with in-application
+resource handling. There should be clear isolation between the two. This is
+also what leads to namespace and visibility issues. Ideally, these should be
+handled by structuring the resource hierarchay correctly from the get-go.
+
+...
+> > b. Let userspace specify which cgroup to charge for some of constructs like
+> >    tmpfs and bpf maps. The key problems with this approach are
+> >
+> >    1. How to grant/deny what can be charged where. We must ensure that a
+> >       descendant can't move charges up or across the tree without the
+> >       ancestors allowing it.
+> >
+> 
+> We can add restrictions to check which memcg can be selected
+> (regarding the selectable memcg).
+> But I think it may be too early to do the restrictions, as only the
+> privileged user can set it.
+> It is the sys admin's responsbility to select a proper memcg.
+> That said, the selectable memcg is not going south.
+
+I generally tend towards shaping interfaces more carefully. We can of course
+add a do-whatever-you-want interface and declare that it's for root only but
+even that becomes complicated with things like userns as we're finding out
+in different areas, but again, nothing is free and approaches like that
+often bring more longterm headaches than the problems they solve.
+
+> >    2. How to specify the cgroup to charge. While specifying the target
+> >       cgroup directly might seem like an obvious solution, it has a couple
+> >       rather serious problems. First, if the descendant is inside a cgroup
+> >       namespace, it might be able to see the target cgroup at all.
+> 
+> It is not a problem. Just sharing our practice below.
+> $ docker run -tid --privileged    \
+>                       --mount
+> type=bind,source=/sys/fs/bpf,target=/sys/fs/bpf    \
+>                       --mount
+> type=bind,source=/sys/fs/cgroup/memory/bpf,target=/bpf-memcg    \
+>                       docker-image
+> 
+> The bind-mount can make it work.
+
+Not mount namespace. cgroup namespace which is used to isolate the cgroup
+subtree that's visible to each container. Please take a look at
+cgroup_namespaces(7).
+
+> >  Second,
+> >       it's an interface which is likely to cause misunderstandings on how it
+> >       can be used. It's too broad an interface.
+> >
+> 
+> As I said above, we just need some restrictions or guidance if that is
+> desired now.
+
+I'm really unlikely to go down that path because as I said before I believe
+that that's a road to long term headaches and already creates immediate
+problems in terms of how it'd interact with other resources. No matter what
+approach we may choose, it has to work with the existing resource hierarchy.
+Otherwise, we end up in a situation where we have to split accounting and
+control of other controllers too which makes little sense for non-memory
+controllers (not that it's great for memory in the first place).
+
+Thanks.
+
+-- 
+tejun
