@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6BB059EEB4
-	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 00:11:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5F8259EEC1
+	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 00:11:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232503AbiHWWKx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Aug 2022 18:10:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39600 "EHLO
+        id S230236AbiHWWLH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Aug 2022 18:11:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232373AbiHWWKX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Aug 2022 18:10:23 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D686E73332
-        for <bpf@vger.kernel.org>; Tue, 23 Aug 2022 15:10:06 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-334f49979a0so264120487b3.10
-        for <bpf@vger.kernel.org>; Tue, 23 Aug 2022 15:10:06 -0700 (PDT)
+        with ESMTP id S232878AbiHWWKc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Aug 2022 18:10:32 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BB7175FD4
+        for <bpf@vger.kernel.org>; Tue, 23 Aug 2022 15:10:12 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-33931a5c133so175242227b3.17
+        for <bpf@vger.kernel.org>; Tue, 23 Aug 2022 15:10:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
          :date:from:to:cc;
-        bh=TZmRLUQ2d7TXmU69l5rNy1CTfW+D1QluUT9t1SCPaRQ=;
-        b=XJdlmzgS/G5JBfz64SCGEvKo+qmDECH61tMA+nVEkvkjhvqErPn6we7JRZ3YTRjB9g
-         sZBj7cabo5j8BoTz70VIH1o6q4J/BmSbQiX/1GZaCFQbtR4OR6jl27Qcflg0ASIvB2pn
-         cXj5qngzepTVIfzGx+7wKUSjI+RWPVw7p6wOSURROtcw0Zz2mRmIVcYW30gyI6oDVuyA
-         rBtwoxSBeWs6jGTk64xQrPsqirJPXfAZXGzwIlb3ZDEFqKuf8SnodQ3HfgnJNV6AN+KX
-         Tpyp2Bq4TqzFSAROlx6kOHFRjKK0wTDXetElB7AzefGaOTXHAp8BURfCT5TkmiA8+IhR
-         /ikA==
+        bh=dmh/92MRm7j95zVGcUZ890xL7HIjX5BjkDj+86ZwSV4=;
+        b=BqrCSk/jfE2Eg/kfl3hCAbhvBnIz/GqHBYIYJLFqyhBi497Ll9GGI+raBBPi7M+8Ib
+         99+xF9k5162F1hpJBqyAcw/RX+5CtTsRAEwHHOB6NUTG3zVhdWd5fPjWDSjJW3Hm0Fvp
+         wQbdiz1uiBz2ncduZi2qpaSl3gV75mc+fyitmLVe680j7a8WEyipRhqLJSaSXlWZyMcy
+         W6ejqPOQwH5fWVFTIaiPfZivm1L4HDYTazwFG937PO1YN9evW4HA5ZAIZube3cBEmhgR
+         yLhvdJHy4Rh+rZbIu/zSzGtXs2aDe4hwA/RJkV583cWdSHgQ06NuAu6//viZN3vlrUV2
+         gDPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
          :date:x-gm-message-state:from:to:cc;
-        bh=TZmRLUQ2d7TXmU69l5rNy1CTfW+D1QluUT9t1SCPaRQ=;
-        b=g+iXaR4x9nH5ZOkt9M6DFujloyskaNrsZudz3SDxJ5OmkjDC36E46Mc98tS505vnM/
-         2nhtMywrHhEtqrUq4dHlnbWimNgJfGhJJQHQGcw49mtS7C2ut53SlfQ3lr9LoTm0CA/5
-         3d+YyIzaqztvOHr7KCMt9LV53oprn8kjBgcJ9iF79+ku5hstqdlDw2RLW1sIhlsJuIcO
-         wkJsTH+DzC9I3silHY2TsUniMZoQ6C2qWsiblu15OrSMZN55zfv8CT2FAztJ3l1uCays
-         w3RM+CkbRXBJBoxDEfsVFoKbbnmosXcYD3YT7oo+z89rFIm7TPe9S91SaDT6GOdOQ3bh
-         gdHw==
-X-Gm-Message-State: ACgBeo39rRp9EWcNc6+Bov5awRjWgemjU8rUHyOH5niJe5U0KHQFTGY0
-        mw6Q19mdJ5NVSjjPyp+SgJ5YVUxRW5O9
-X-Google-Smtp-Source: AA6agR7a0VTxMqTg4C3l82b1BpKQRn7OO5P4Ch8FMwflD77Z6ASQKHyZ78AkmQHPc0XrIuaejBrso+emaXu2
+        bh=dmh/92MRm7j95zVGcUZ890xL7HIjX5BjkDj+86ZwSV4=;
+        b=IKvdIHJ9vOFZeFeA5BR/GJBmg4fNylupAo8ji5FBjgKIL/aI8zqG0DjOgrruBU690s
+         +IrzcJ2/sJwU8yFv57OIlV1D7YaeQw50T0sQCyLpck/0ttBhpjM3XBSdYTf96yflqbYS
+         5b+zgK7ZcdThKiYMqsKluUvBzR2GPlW+uuzXSNZNqyS3shRjkew+eMu9pFmRdJEhvus1
+         bqhbDqM6yR0Qt3deYqJQ8w633VrrWev8oXrFMOv0QxVEhaxS9OQCCmXxEoE4CeclgY5K
+         fmPleuLS4mlBytMn4X0Frl2Y+NN/RZ9iowKMCd101NesXGpRFbGMjIUry9l/oSyjyZu1
+         rZAw==
+X-Gm-Message-State: ACgBeo3R9XM0nWYQ3o6IbXm3X1ygGDeBoS/t0ypcoWdY6f6gFY6n7Tgy
+        I10gT8O7DjSA+gNVtMAzgpAOH8yCYyC9
+X-Google-Smtp-Source: AA6agR6BxJxr/i2FE3SRx08sPUB3srSjsfLBMouB5rTu5H1ZsvNLTfL/kFPNdM7yI+a6YV4HNJOiWFHE6X2R
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2d4:203:7dbd:c08f:de81:c2a3])
- (user=irogers job=sendgmr) by 2002:a25:2493:0:b0:695:839:3a5a with SMTP id
- k141-20020a252493000000b0069508393a5amr21422493ybk.468.1661292605692; Tue, 23
- Aug 2022 15:10:05 -0700 (PDT)
-Date:   Tue, 23 Aug 2022 15:09:10 -0700
+ (user=irogers job=sendgmr) by 2002:a81:90f:0:b0:339:7fcd:6bac with SMTP id
+ 15-20020a81090f000000b003397fcd6bacmr18285803ywj.239.1661292611451; Tue, 23
+ Aug 2022 15:10:11 -0700 (PDT)
+Date:   Tue, 23 Aug 2022 15:09:11 -0700
 In-Reply-To: <20220823220922.256001-1-irogers@google.com>
-Message-Id: <20220823220922.256001-7-irogers@google.com>
+Message-Id: <20220823220922.256001-8-irogers@google.com>
 Mime-Version: 1.0
 References: <20220823220922.256001-1-irogers@google.com>
 X-Mailer: git-send-email 2.37.2.609.g9ff673ca1a-goog
-Subject: [PATCH v2 06/18] perf lock: Remove unused pthread.h include
+Subject: [PATCH v2 07/18] perf record: Update use of pthread mutex
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -113,25 +113,68 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-No pthread usage in builtin-lock.c.
+Switch to the use of mutex wrappers that provide better error checking
+for synth_lock.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/builtin-lock.c | 1 -
- 1 file changed, 1 deletion(-)
+ tools/perf/builtin-record.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
-index dd11d3471baf..70197c0593b1 100644
---- a/tools/perf/builtin-lock.c
-+++ b/tools/perf/builtin-lock.c
-@@ -28,7 +28,6 @@
- #include <sys/types.h>
- #include <sys/prctl.h>
- #include <semaphore.h>
--#include <pthread.h>
- #include <math.h>
- #include <limits.h>
+diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+index 4713f0f3a6cf..02eb85677e99 100644
+--- a/tools/perf/builtin-record.c
++++ b/tools/perf/builtin-record.c
+@@ -21,6 +21,7 @@
+ #include "util/evsel.h"
+ #include "util/debug.h"
+ #include "util/mmap.h"
++#include "util/mutex.h"
+ #include "util/target.h"
+ #include "util/session.h"
+ #include "util/tool.h"
+@@ -608,17 +609,18 @@ static int process_synthesized_event(struct perf_tool *tool,
+ 	return record__write(rec, NULL, event, event->header.size);
+ }
  
++static struct mutex synth_lock;
++
+ static int process_locked_synthesized_event(struct perf_tool *tool,
+ 				     union perf_event *event,
+ 				     struct perf_sample *sample __maybe_unused,
+ 				     struct machine *machine __maybe_unused)
+ {
+-	static pthread_mutex_t synth_lock = PTHREAD_MUTEX_INITIALIZER;
+ 	int ret;
+ 
+-	pthread_mutex_lock(&synth_lock);
++	mutex_lock(&synth_lock);
+ 	ret = process_synthesized_event(tool, event, sample, machine);
+-	pthread_mutex_unlock(&synth_lock);
++	mutex_unlock(&synth_lock);
+ 	return ret;
+ }
+ 
+@@ -1917,6 +1919,7 @@ static int record__synthesize(struct record *rec, bool tail)
+ 	}
+ 
+ 	if (rec->opts.nr_threads_synthesize > 1) {
++		mutex_init(&synth_lock, /*pshared=*/false);
+ 		perf_set_multithreaded();
+ 		f = process_locked_synthesized_event;
+ 	}
+@@ -1930,8 +1933,10 @@ static int record__synthesize(struct record *rec, bool tail)
+ 						    rec->opts.nr_threads_synthesize);
+ 	}
+ 
+-	if (rec->opts.nr_threads_synthesize > 1)
++	if (rec->opts.nr_threads_synthesize > 1) {
+ 		perf_set_singlethreaded();
++		mutex_destroy(&synth_lock);
++	}
+ 
+ out:
+ 	return err;
 -- 
 2.37.2.609.g9ff673ca1a-goog
 
