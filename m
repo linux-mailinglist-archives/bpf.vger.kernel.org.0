@@ -2,52 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93E9159EDCD
-	for <lists+bpf@lfdr.de>; Tue, 23 Aug 2022 22:52:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DCAE59EDF4
+	for <lists+bpf@lfdr.de>; Tue, 23 Aug 2022 23:05:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231636AbiHWUwv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Aug 2022 16:52:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36528 "EHLO
+        id S229511AbiHWVF3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Aug 2022 17:05:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231661AbiHWUwg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Aug 2022 16:52:36 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DB1E2F9
-        for <bpf@vger.kernel.org>; Tue, 23 Aug 2022 13:50:18 -0700 (PDT)
+        with ESMTP id S230306AbiHWVAS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Aug 2022 17:00:18 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2B5E792C0
+        for <bpf@vger.kernel.org>; Tue, 23 Aug 2022 14:00:16 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D6AEF6159A
-        for <bpf@vger.kernel.org>; Tue, 23 Aug 2022 20:50:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 3165BC433C1;
-        Tue, 23 Aug 2022 20:50:17 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3DA4C615A6
+        for <bpf@vger.kernel.org>; Tue, 23 Aug 2022 21:00:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 91508C433B5;
+        Tue, 23 Aug 2022 21:00:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661287817;
-        bh=xehIwjuJi+6KERq1JWVe/fe/2+Ypj1on/7xDwJFisJM=;
+        s=k20201202; t=1661288415;
+        bh=+wEv3CAPnRTMZ5id/A1thnseL32K3myXYo1sbvGKyec=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=iJ4aTFA1dvPmSxi2Q68JkQwSDP+AuEzFz8cg74XxZ+W9ybjctk2DKeszbSCfM7T/i
-         nCQQrHCAjW145hNCVn5hsLUCWiRIHNNFmLjKhmb42Xw04CiLWqPqNPMPHv2pZ2NpiG
-         U4nfHECuTJ9V2TgybhQnsTKfAHCrJyfpXsYsAqT2NFNhDv0GOJh7y5QlgNQQWWMJ11
-         iTgK3ro8AZUy1ALKFO/PPRgfnLea8prdNaZ0RK9bhSY1eSrF+5oXRfl0/sZgLOCe7U
-         kCgwdyj4v9aHF3TmoFO7nCcMcoiqrPLlbB41CjVTCfOrAODO3heewxQ3ab8ynQRFng
-         3VLzaL6s5JojA==
+        b=MINSfRFj09NxrJiUled/u6GI3WgQEtMQ6GzMlEHOJP7pcjCDqJYuDeaoCnGibZgB9
+         AtCujJYJLCFLt/UQnwaWB8GuMll/LvwyVhr5rS5U2XRS8CoqgukDsCDDmzkXVszEWj
+         s5aGfO9nnfiKlxqZGpA8PvRKWr2+UmDLH2v1WPcQUvkvV1k5Pxju/+1rEhiUJ14ZvV
+         KWAiVCBd22ZNDyjubHDi0lZkZC/huNHuAEgEiD4Nwf0GTsV12NRDMnPgrHZdj3386o
+         zSeFw2haFLkLlgTIQmbtvxE2917TDkcxhJdGJIFUGurvelM/kIG9dEPxKEsIrWEykA
+         z0MRF3BKoPe3A==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 069CFE2A041;
-        Tue, 23 Aug 2022 20:50:17 +0000 (UTC)
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 71A7AE2A041;
+        Tue, 23 Aug 2022 21:00:15 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 bpf-next 0/4] flow_dissector: Allow bpf flow-dissector
- progs to request fallback to normal dissection
+Subject: Re: [PATCH bpf-next v2 1/2] scripts/bpf: Set version attribute for
+ bpf-helpers(7) man page
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <166128781701.18610.15502744232104475545.git-patchwork-notify@kernel.org>
-Date:   Tue, 23 Aug 2022 20:50:17 +0000
-References: <20220821113519.116765-1-shmulik.ladkani@gmail.com>
-In-Reply-To: <20220821113519.116765-1-shmulik.ladkani@gmail.com>
-To:     Shmulik Ladkani <shmulik@metanetworks.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, sdf@google.com,
-        jakub@cloudflare.com, ppenkov@google.com, willemb@google.com,
-        shmulik.ladkani@gmail.com
+Message-Id: <166128841544.23044.1104644839520813777.git-patchwork-notify@kernel.org>
+Date:   Tue, 23 Aug 2022 21:00:15 +0000
+References: <20220823155327.98888-1-quentin@isovalent.com>
+In-Reply-To: <20220823155327.98888-1-quentin@isovalent.com>
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
+        alx.manpages@gmail.com
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -63,28 +65,26 @@ Hello:
 This series was applied to bpf/bpf-next.git (master)
 by Daniel Borkmann <daniel@iogearbox.net>:
 
-On Sun, 21 Aug 2022 14:35:15 +0300 you wrote:
-> Currently, attaching BPF_PROG_TYPE_FLOW_DISSECTOR programs completely
-> replaces the flow-dissector logic with custom dissection logic.
-> This forces implementors to write programs that handle dissection for
-> any flows expected in the namespace.
+On Tue, 23 Aug 2022 16:53:26 +0100 you wrote:
+> The bpf-helpers(7) manual page shipped in the man-pages project is
+> generated from the documentation contained in the BPF UAPI header, in
+> the Linux repository, parsed by script/bpf_doc.py and then fed to
+> rst2man.
 > 
-> It makes sense for flow-dissector bpf programs to just augment the
-> dissector with custom logic (e.g. dissecting certain flows or custom
-> protocols), while enjoying the broad capabilities of the standard
-> dissector for any other traffic.
+> After a recent update of that page [0], Alejandro reported that the
+> linter used to validate the man pages complains about the generated
+> document [1]. The header for the page is supposed to contain some
+> attributes that we do not set correctly with the script. This commit
+> updates the "project and version" field. We discussed the format of
+> those fields in [1] and [2].
 > 
 > [...]
 
 Here is the summary with links:
-  - [v2,bpf-next,1/4] flow_dissector: Make 'bpf_flow_dissect' return the bpf program retcode
-    https://git.kernel.org/bpf/bpf-next/c/0ba985024ae7
-  - [v2,bpf-next,2/4] bpf/flow_dissector: Introduce BPF_FLOW_DISSECTOR_CONTINUE retcode for flow-dissector bpf progs
-    https://git.kernel.org/bpf/bpf-next/c/91350fe15293
-  - [v2,bpf-next,3/4] bpf: test_run: Propagate bpf_flow_dissect's retval to user's bpf_attr.test.retval
-    https://git.kernel.org/bpf/bpf-next/c/5deedfbee842
-  - [v2,bpf-next,4/4] selftests/bpf: test BPF_FLOW_DISSECTOR_CONTINUE
-    https://git.kernel.org/bpf/bpf-next/c/d6513727c2af
+  - [bpf-next,v2,1/2] scripts/bpf: Set version attribute for bpf-helpers(7) man page
+    https://git.kernel.org/bpf/bpf-next/c/fd0a38f9c37d
+  - [bpf-next,v2,2/2] scripts/bpf: Set date attribute for bpf-helpers(7) man page
+    https://git.kernel.org/bpf/bpf-next/c/92ec1cc3784a
 
 You are awesome, thank you!
 -- 
