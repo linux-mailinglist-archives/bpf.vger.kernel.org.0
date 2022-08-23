@@ -2,140 +2,200 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B22A59EF87
-	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 01:00:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8587459EF8B
+	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 01:05:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229603AbiHWW7w (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Aug 2022 18:59:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55442 "EHLO
+        id S229746AbiHWXFV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Aug 2022 19:05:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230329AbiHWW7u (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Aug 2022 18:59:50 -0400
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37BF42C64C
-        for <bpf@vger.kernel.org>; Tue, 23 Aug 2022 15:59:48 -0700 (PDT)
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 27NMUMWJ018489;
-        Tue, 23 Aug 2022 15:59:31 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=zQuA0nYMTCv1je5GdnxOhfIFRG6bvPMvzsjFQFamtys=;
- b=Tl9TJinjrAqknuGJz03F6wVAkRn3SNwzn3fdPARLwUcEnmso/7PE7dwdA31pyEFq8p+M
- 7BfKEYkStxjy5CbMo+nz4QIpnNFbCaaLWMPl2JL1KJ6HTZOEsRCzxCTfJ1VfgxnhsGFR
- KkItLcRnzJ9KzR58SpX8wHWF4fDJwQVAez8= 
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2101.outbound.protection.outlook.com [104.47.55.101])
-        by m0001303.ppops.net (PPS) with ESMTPS id 3j4x6vmqv1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Aug 2022 15:59:31 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=X1aJlURdSIB0i19a3v4FqAIik+TQ/p0B87pFRqLcmOR+d+SDMVEezNQKUtz4C6FWZAH7dR/KK457TH3C/c/EHld7acVoQQqM723h59FfUBYlbzR2yeVCObVmElETGH5MA/XiDvLgGVTtbrVtzQw6+E32jlljsBdkLFKz2+2sGvB8k0U5OHVaNrAmAdiQMKiTiud9I7f61lTQlbg0Gvjij85GPJQihx2l6mJIrjUxDjySRQIHp2gK/7N1qKyQr4rBxmi6t3cPxyd7YNdwoL5Y9U1ryAk73xbzDHX6/tAVFWydW9QGUBraotVR+Kt3gIVrUdJYDLnTMFswL2oM+mjRAA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=zQuA0nYMTCv1je5GdnxOhfIFRG6bvPMvzsjFQFamtys=;
- b=e2DIc9XiAtIsogdOZmiz+SgaRgKTv37oFPctyGNffc1uWZc4MKZUoD3lk3fTiDrcY6sO3tm9Aeg4m84IGlcl37zvZb6FpGAIsqznqGPrUe+UyDnb5O7GXhIaXFGy4MNDizOMLby+eKamOPFsc3Xe7Lm+EklXrsER8iYDvXoQmUdTNstTUO65p8nRc36CiiXKIv9xp779RESq2d2tUpNiwc0B3OLo2sN7hhr4QfvgCblEgGj9KKox0P8lE7Ha4Oiyw8b1yiE2t9K0d90csgaWbFlqxzDGmzm0IgJHFKmdHvO0HnNmm0s/AlW1Jn1dRGcokh+3xt/ELDMdPbN1D7DCfg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from MW4PR15MB4475.namprd15.prod.outlook.com (2603:10b6:303:104::16)
- by DM6PR15MB4106.namprd15.prod.outlook.com (2603:10b6:5:c6::32) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5566.14; Tue, 23 Aug
- 2022 22:59:23 +0000
-Received: from MW4PR15MB4475.namprd15.prod.outlook.com
- ([fe80::1858:f420:93d2:4b5e]) by MW4PR15MB4475.namprd15.prod.outlook.com
- ([fe80::1858:f420:93d2:4b5e%3]) with mapi id 15.20.5546.023; Tue, 23 Aug 2022
- 22:59:23 +0000
-Date:   Tue, 23 Aug 2022 15:59:21 -0700
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        haoluo@google.com, jolsa@kernel.org
-Subject: Re: [PATCH bpf-next v5 1/5] bpf: Introduce
- cgroup_{common,current}_func_proto
-Message-ID: <20220823225921.upbdd5rrbel4dadn@kafai-mbp>
-References: <20220823222555.523590-1-sdf@google.com>
- <20220823222555.523590-2-sdf@google.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220823222555.523590-2-sdf@google.com>
-X-ClientProxiedBy: BYAPR05CA0101.namprd05.prod.outlook.com
- (2603:10b6:a03:e0::42) To MW4PR15MB4475.namprd15.prod.outlook.com
- (2603:10b6:303:104::16)
+        with ESMTP id S229707AbiHWXFU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Aug 2022 19:05:20 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B7367677
+        for <bpf@vger.kernel.org>; Tue, 23 Aug 2022 16:05:19 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id j6so11467725qkl.10
+        for <bpf@vger.kernel.org>; Tue, 23 Aug 2022 16:05:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=LnAdZv7r7lOsZ1cIzYaXYrepGm57cEHWd8kk0QXzNhU=;
+        b=n47AXQB5T1zL1Hx+5JaKxpRkz1wrSC8OaeuEOSLjKnCALi6GAbQ2vQ5dtyEIUWlP8d
+         AKyONmtDHv+o3mnWV7ssS2Og+6A12NjtDwGWFkJ65z2LA4fltSFo4bu1B+ohxFtVympc
+         72Ltdyml3oJ5+oQO3WB+FSTY/TBr7IVKNKdJhOXt5Uh8HxFOq2w44BPz70UvWbw0DQxG
+         5xT5yMpLrjuIgiu35A8bIswBHMGmKzMMhLAW1xmib7eFW9L6lw/td0Gqf/Fqc9yfe0N1
+         CeiMy0+dqLUoZ2X5koSJT+VR7tOfL1Pg7/qRBz7bcoIue8kqanyQRZt+ArxZSbKDeTG8
+         rolg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=LnAdZv7r7lOsZ1cIzYaXYrepGm57cEHWd8kk0QXzNhU=;
+        b=QGbqXzzupjS0gPOUR6JQddQSZzu2WlplzD6kjdTZ3dw2F/xjGMAaq+lhRQEGjm83e6
+         T18Xiqz/aXtiBrcgo+gBHBFO2I/2NIf7QhZCVCQcBJEEz/Pagg40IXXOeXSM/ah59+EX
+         vQ891FTAzbi6Z1T5dP98cQAEtFmdSYC43wq4mofn042E5Dh4IEkVL+DXlrf7pxgdDaHd
+         woKx4rQz5EqVw8qFXKG0diWWlq52eeREMepeqQizAdhLUTVHJTa5xdS3+yKtqXr7dVb/
+         +Fv85T2XdqYmb6CDRAGeb9HEUXrAl88QZ+ELwLN0mJRkjDsCnv/hdgnO28vO45KPt7t/
+         UDUw==
+X-Gm-Message-State: ACgBeo2PFS/8Cg4L8PMEdxDDnBbNf6Df4bw1SPfPY6tXC1ihsnEZVH8s
+        mAyR5BS0tPvP/PPXpOgAhnf6h640Iykp2gX2TkY=
+X-Google-Smtp-Source: AA6agR7oLbw1ulRmM26gmwoimOlV8upOJb3Dr1GFiCkqHTO3VCGyqif3xHTeLQ/c8Ma9snPluQqr70I8nSKYdghWOlg=
+X-Received: by 2002:a05:620a:c52:b0:6b5:467f:4f6d with SMTP id
+ u18-20020a05620a0c5200b006b5467f4f6dmr18527526qki.503.1661295918340; Tue, 23
+ Aug 2022 16:05:18 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: cdb7f585-329f-4466-e67c-08da855b1ece
-X-MS-TrafficTypeDiagnostic: DM6PR15MB4106:EE_
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: NLFRSp/Qekjv1oie9tLDYWVpf5mzQ+pifyAmOfs5KqFl0CQNIjW4c5cLuP1tekY0WHdqT6lxHrU6Ni8A5Zmt9ioqhpS818iZQgDhrf5D2K0nD1HArevkJUw85imb0ixdTNyBorRhkrofFzXsdaksZ6RyTotPSchXP9nxNRaI1NTN6/FUhV9rxNBcxaW7MtPildMrl6sulDB18HDwU2qxPzqIcCM8OwfKSP1sstcQdw8iSIrgx3ZY77Bejf0sTVXT0+JPIBAsFzIYUBk51spChsj5/Dz6V8rEXsH5HR0UpEDBa1D0pccu8Zj4O9Fa3VY5HS4jWorzCpHVZBRp2QOKmLXH+WH/fyqt3EnrRxZBWfMTVFhgezVOwGyMwNqpPIXB+wYnCtw+wCbwrCkao3CiNlZkoJSFG511LMSiKR9NMqjYzxBcTfEX8PKDgefucKMC+UxUElfWFwLSTAC7Z77j/M68w3KD76Zzh/wqDMel9q8xv6H2kKIdtT692bu6CbKtBqafJS22o02bsbzvCVUD873aEzS0Bkuu0pZqCOaUH3EHitYda24xa5CeDwS2wipmcetYvhwOSP3Q/WV9DlCGuHbzF82TqdG6NGvayL01M5TtEvKQieKo+EG8YBwd7ctWtmd6r7IPUBrXARhVAvsAdwN21lXA7CeTjENjN+2CV1aa+P51QzbenzShZ9KhwjNcUV/5eXnOo46ztebkmqkFAg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR15MB4475.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(7916004)(4636009)(39860400002)(346002)(366004)(136003)(376002)(396003)(4326008)(8676002)(66556008)(66946007)(66476007)(86362001)(33716001)(6916009)(316002)(83380400001)(1076003)(186003)(478600001)(38100700002)(6506007)(52116002)(6486002)(6512007)(9686003)(41300700001)(2906002)(7416002)(5660300002)(4744005)(8936002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?TkuKB7vJJK0d//SFNBe4Nx+i+KuVdUoeO+6BxY08DsDrz1J0SMCM5ZqO3qjb?=
- =?us-ascii?Q?NapuPsFg5Cihi743orEINp1TtT71StEhyA4R1RBJ8MG1G4R11P0vZujFsz3S?=
- =?us-ascii?Q?MB57On6z2N8bfTBQ/iSXRBHNzClxjU4+hRMJOeWBHOYQ9cNouPHirtlowIIZ?=
- =?us-ascii?Q?VS9V36KBiuDoTnZ2DlTfRe5Gtx8ijGsobYZaItxyL9Sf0rlGc8waD/LPoTuf?=
- =?us-ascii?Q?a+3GRYK1LjcmGjho/FuW/apn2bOkHOkAqFRChvGgb58w4f7Vvv/P1OA72Tcj?=
- =?us-ascii?Q?tEaHFzuXYW8DYYJRZ8996BtZ79z+layduvnr3QQpE8xiD8tjFryTLPoXIOyY?=
- =?us-ascii?Q?gkZftUeYExPlg19cuPh2AgXX+dVBBLQUwbsrkFshwftCDE3rkvTh7tnERKEA?=
- =?us-ascii?Q?IfReVvUQkVylhMNWkgMUVcsEPPJyj2XOItCoUDw14tyTGvY8/8t2TPY7P1lN?=
- =?us-ascii?Q?ypBUQf/E9m2IPfIsaavyoIqVxaO/9UKjJRUoIjVpuga4h96kh8W5NPIAZ4iR?=
- =?us-ascii?Q?9/BxxCFj3BhwQct4ry+RhAb+WcYCYUw8rFE1qX6PbUU6sgE49Hl42mZ/1wHP?=
- =?us-ascii?Q?lxT53D/tsfsOcmaCCfRTbTyQpeImFs/XjbUjznRI7af/1zYzEUs1P5jFUdGt?=
- =?us-ascii?Q?Dkldh7TSq01GgMAhaLFz5hhW9sbO7AaqYJEX/9werVteW71ESNoHdZ+gZp1J?=
- =?us-ascii?Q?YBx1Wpua8dA2nmViluigLDNJaAhZLqGjytFWnTNem/09MHzGgLjp6oR658NB?=
- =?us-ascii?Q?Rq4V8Yp2jirOwEppzS6j2RTEAtLEE/jrY/vszd/OysxXV7HUvifqrCaUshNy?=
- =?us-ascii?Q?hi/cau5qPPFvEvI1ny4yPtccQiu7ThXBYHhxE+SsAQ+xC/dWBy5dw/HXQNhk?=
- =?us-ascii?Q?SLwTln+9RwcBgkwAbNIB3FzEGATUfVKak3tS46pyCJCDrPx4hUWpCYdeRZ6n?=
- =?us-ascii?Q?SH6xVGii1NR6u7SgjJuemA7tXqri+sZOflMUPFT6RqG5C1c3yULUyiErC5Qp?=
- =?us-ascii?Q?BBMdXrgIYqOPtnr/YQyi/uauYGBQ04BSHqJWKziYXI+Dp+EwQnQMPd2oC4Ei?=
- =?us-ascii?Q?rf2hb9uRpp+LLqeH6yqmARNOE+8VSaNa6ThqQ6CHLufLC6+KevQHg+NL0ztz?=
- =?us-ascii?Q?UJCM9icU3rxaUgBldueZ7enePJyk7IzUj3UAcl7Px88LtSjAZi323AXBkJpM?=
- =?us-ascii?Q?yTuQQ8TqazI6PlLUiIiUJUMHkV+R8Vxkb7FM761BENqF8oj9ak+vLIPys9qL?=
- =?us-ascii?Q?Sa97fqnsYwH/NHbhIpYC3ybRUlDifa3sV276HcxkzvdC0qB1jIj2D6GDL4iB?=
- =?us-ascii?Q?F3k613AqtUoNyIYCSWTqAKUqQHH8YY4R3PpGt7HQeoC9uHt3+9lW6EBkaJAj?=
- =?us-ascii?Q?MGfmlcvYA/CmYQflpUoVqDt8BfAGiJsWiG7oGUEySbfu4t2TO0eVVYp/Wflk?=
- =?us-ascii?Q?skd7chnwwiY30Xt+i12ixpS7H9V+6Mhe2lDMQUdMJImU40uS8HQKE9r5KgXu?=
- =?us-ascii?Q?U3U64I4sJBZ83FBPj+DMjZye52oiH8lld1mn8YMVuHrL75aYn9wm1T7mpwbO?=
- =?us-ascii?Q?/n/CaecgKRk6wL3GjWF6JEnA98Z2OR9lLnqADvVyMdOay+0C65vkvaL4LfK2?=
- =?us-ascii?Q?tg=3D=3D?=
-X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cdb7f585-329f-4466-e67c-08da855b1ece
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR15MB4475.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Aug 2022 22:59:23.3927
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: h6hogHQOc1rZmrLpn5cQUJ+CA/oxjhRF0Mc2PVN1h8lgRIT8kgAoL8LZLINOG/zK
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB4106
-X-Proofpoint-ORIG-GUID: EGW2H0OLcRJQbUMxg36n2YDjw0QTvH5v
-X-Proofpoint-GUID: EGW2H0OLcRJQbUMxg36n2YDjw0QTvH5v
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-08-23_09,2022-08-22_02,2022-06-22_01
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20220819091244.1001962-1-eyal.birger@gmail.com> <CACdoK4KY6W=CrBXGTBx=su7UZ6ryna2CsjNw=zeNWc_pXzkrrg@mail.gmail.com>
+In-Reply-To: <CACdoK4KY6W=CrBXGTBx=su7UZ6ryna2CsjNw=zeNWc_pXzkrrg@mail.gmail.com>
+From:   Eyal Birger <eyal.birger@gmail.com>
+Date:   Wed, 24 Aug 2022 02:05:06 +0300
+Message-ID: <CAHsH6GsTuWKyRtira6jG7jfqh4VOwKh1oYkkGt=8w2u4rQJByA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf/scripts: use helper enum value instead of
+ relying on comment order
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 23, 2022 at 03:25:51PM -0700, Stanislav Fomichev wrote:
-> Split cgroup_base_func_proto into the following:
-> 
-> * cgroup_common_func_proto - common helpers for all cgroup hooks
-> * cgroup_current_func_proto - common helpers for all cgroup hooks
->   running in the process context (== have meaningful 'current').
-> 
-> Move bpf_{g,s}et_retval and other cgroup-related helpers into
-> kernel/bpf/cgroup.c so they closer to where they are being used.
-Acked-by: Martin KaFai Lau <kafai@fb.com>
+Hi Quentin,
+
+On Tue, Aug 23, 2022 at 11:49 PM Quentin Monnet <quentin@isovalent.com> wrote:
+>
+> On Fri, 19 Aug 2022 at 10:13, Eyal Birger <eyal.birger@gmail.com> wrote:
+> >
+> > The helper value is ABI as defined by enum bpf_func_id.
+> > As bpf_helper_defs.h is used for the userpace part, it must be consistent
+> > with this enum.
+> >
+> > Before this change, the enumerated value was derived from the comment
+> > order, which assumes comments are always appended, however, there doesn't
+> > seem to be an enforcement anywhere for maintaining a strict order.
+> >
+> > When adding new helpers it is very puzzling when the userspace application
+> > breaks in weird places if the comment is inserted instead of appended -
+> > because the generated helper ABI is incorrect and shifted.
+> >
+> > This commit attempts to ease this by always using bpf_func_id order as
+> > the helper value.
+> >
+> > Signed-off-by: Eyal Birger <eyal.birger@gmail.com>
+> > ---
+> >  scripts/bpf_doc.py | 19 ++++++++++---------
+> >  1 file changed, 10 insertions(+), 9 deletions(-)
+> >
+> > diff --git a/scripts/bpf_doc.py b/scripts/bpf_doc.py
+> > index dfb260de17a8..7797aa032eca 100755
+> > --- a/scripts/bpf_doc.py
+> > +++ b/scripts/bpf_doc.py
+> > @@ -88,7 +88,7 @@ class HeaderParser(object):
+> >          self.helpers = []
+> >          self.commands = []
+> >          self.desc_unique_helpers = set()
+> > -        self.define_unique_helpers = []
+> > +        self.define_unique_helpers = {}
+> >          self.desc_syscalls = []
+> >          self.enum_syscalls = []
+> >
+> > @@ -245,24 +245,24 @@ class HeaderParser(object):
+> >                  break
+> >
+> >      def parse_define_helpers(self):
+> > -        # Parse the number of FN(...) in #define __BPF_FUNC_MAPPER to compare
+> > -        # later with the number of unique function names present in description.
+> > +        # Parse FN(...) in #define __BPF_FUNC_MAPPER to compare later with the
+> > +        # number of unique function names present in description and use the
+> > +        # correct enumeration value.
+> >          # Note: seek_to(..) discards the first line below the target search text,
+> >          # resulting in FN(unspec) being skipped and not added to self.define_unique_helpers.
+> >          self.seek_to('#define __BPF_FUNC_MAPPER(FN)',
+> >                       'Could not find start of eBPF helper definition list')
+> >          # Searches for either one or more FN(\w+) defines or a backslash for newline
+> > -        p = re.compile('\s*(FN\(\w+\))+|\\\\')
+> > -        fn_defines_str = ''
+> > +        p = re.compile('\s*FN\((\w+)\)+|\\\\')
+>
+> Nit: I think the second '+' should be removed, I don't think you can
+> have consecutive "FN(...)" without at least a comma. But you didn't
+> add and it is harmless, so it can be a follow-up or wait until a
+> future clean-up.
+>
+
+Sure. I can remove that.
+
+> > +        i = 1  # 'unspec' is skipped as mentioned above
+> >          while True:
+> >              capture = p.match(self.line)
+> >              if capture:
+> > -                fn_defines_str += self.line
+> > +                self.define_unique_helpers[capture.expand(r'bpf_\1')] = i
+> > +                i += 1
+> >              else:
+> >                  break
+> >              self.line = self.reader.readline()
+> > -        # Find the number of occurences of FN(\w+)
+> > -        self.define_unique_helpers = re.findall('FN\(\w+\)', fn_defines_str)
+> >
+> >      def run(self):
+> >          self.parse_desc_syscall()
+> > @@ -573,6 +573,7 @@ class PrinterHelpers(Printer):
+> >      def __init__(self, parser):
+> >          self.elements = parser.helpers
+> >          self.elem_number_check(parser.desc_unique_helpers, parser.define_unique_helpers, 'helper', '__BPF_FUNC_MAPPER')
+> > +        self.define_unique_helpers = parser.define_unique_helpers
+> >
+> >      type_fwds = [
+> >              'struct bpf_fib_lookup',
+> > @@ -761,7 +762,7 @@ class PrinterHelpers(Printer):
+> >              comma = ', '
+> >              print(one_arg, end='')
+> >
+> > -        print(') = (void *) %d;' % len(self.seen_helpers))
+> > +        print(') = (void *) %d;' % self.define_unique_helpers[proto['name']])
+> >          print('')
+>
+> The code seems correct and should make the script more robust, and I
+> checked that the man page and header file are generated identically.
+>
+> Reviewed-by: Quentin Monnet <quentin@isovalent.com>
+
+Thanks for the review.
+
+>
+> However, I would recommend against inserting the description of new
+> helpers in the middle of the current documentation. Having the helpers
+> listed in order of creation is maybe not ideal, but at least they are
+> ordered, and the list remains consistent with the items of enum
+> bpf_func_id. I'm not opposed to reworking the list to have them
+> displayed in a more logical order, but in that case I think we should
+> reorganise the whole list, not just start inserting new descriptions
+> in the middle.
+>
+
+I understand. Personally I don't mind the fact that they're ordered
+relative to their enum value, only that this is implicitly enforced.
+
+Since we know both the enum value and the comment value, would it be
+acceptible to add an assertion here so that at least wrongful insertions
+break the file generation instead of skewing the values?
+
+Eyal.
+
+> Thanks,
+> Quentin
