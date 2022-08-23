@@ -2,150 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F4DF59D2D5
-	for <lists+bpf@lfdr.de>; Tue, 23 Aug 2022 09:59:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 064A659D607
+	for <lists+bpf@lfdr.de>; Tue, 23 Aug 2022 11:11:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240214AbiHWH7I (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Aug 2022 03:59:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45568 "EHLO
+        id S242096AbiHWIg6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Aug 2022 04:36:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241456AbiHWH7G (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Aug 2022 03:59:06 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1396513E05
-        for <bpf@vger.kernel.org>; Tue, 23 Aug 2022 00:59:05 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id bf22so13299130pjb.4
-        for <bpf@vger.kernel.org>; Tue, 23 Aug 2022 00:59:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc;
-        bh=6DnYQNwUW9eqRYhVnpJFuBYYSrombQjTfKedzZiWtac=;
-        b=JNB0y94pzQYvDGEHxxfMKKXpUT6eYjLmC6SINHcmfoP2kUc3EJOiqjeH9F4VAtiuuq
-         7ZEYK6psWNp0DEbXkumuQTohJV5owGmn6bQAoWFM/7yeTOgWbaktU7WEY5fWsHfqGC2K
-         jrk+ExDwagXKs8VJtYmMk81xWGTRGyeSbF5Sg0YuoKsWraC5ERBZE5jJVXBSO7+59Y9u
-         2dlzza+hLlE6ez7KroaGJIkjtxUXW9ia7/NJiFUuOw8MBxdEE/yj3WXTAnV8TWnX0/q5
-         9OvtWqfVPoYhalReQRI5Oxnc9cX0VUB92510UuhgLfVKXVdD8nUt3xkn4JHp1NcupQU1
-         QCug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc;
-        bh=6DnYQNwUW9eqRYhVnpJFuBYYSrombQjTfKedzZiWtac=;
-        b=O3C2j8JoddFueIVMtuoQOeJEODCVMR5/ReRM4O+t4XRV/4jvvlpPaGAXa7PfwlvXiC
-         F+SlS8nEg8yU+XQzUwD9mF0/jhn8elRKF7qc9ogFjAEa/r41GLh4bWOeTpcrT26RLZpX
-         ifPCNFT09VSaRGbjR9Qf5K5jEs+vCPkQ0iWxBXyPIhuwErldrkWi0RQ0u0IdrAOC35z4
-         cisD7GaZhEZPnqm4XDwKrNNk0FNXlMPjnkB59LanGTRxCccnzJGXWTJHWZuCZVc198py
-         0ikF6kGfhPKJ4B6HRGiu0zm/jTPhLNs3uLLlgBwCe/wI/xrOoYpLO2N5vJlnqEhXeYz4
-         DRng==
-X-Gm-Message-State: ACgBeo2zPQs9QeS6oEQVJP7i8NzOC8NxegdO+diQinnrWZj3ZqMv6l4W
-        dyvtZxqrwkw/do/qtSLY94c=
-X-Google-Smtp-Source: AA6agR4t1aWpb+b1ATRI67L1g+xLtixQEnCAaMKpsjajt2G3MHNBa8vSnpflvNExHA1yFb/D7c23dw==
-X-Received: by 2002:a17:902:e84c:b0:172:ebff:6107 with SMTP id t12-20020a170902e84c00b00172ebff6107mr6106540plg.40.1661241544480;
-        Tue, 23 Aug 2022 00:59:04 -0700 (PDT)
-Received: from localhost ([98.97.33.232])
-        by smtp.gmail.com with ESMTPSA id e5-20020aa79805000000b005366e592cf9sm5016234pfl.96.2022.08.23.00.59.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Aug 2022 00:59:03 -0700 (PDT)
-Date:   Tue, 23 Aug 2022 00:59:01 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Shmulik Ladkani <shmulik@metanetworks.com>, bpf@vger.kernel.org,
+        with ESMTP id S1346206AbiHWIgA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Aug 2022 04:36:00 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 395DB760EE;
+        Tue, 23 Aug 2022 01:17:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C6C4961377;
+        Tue, 23 Aug 2022 08:17:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BF52C433C1;
+        Tue, 23 Aug 2022 08:17:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1661242621;
+        bh=69ovCRcumfGslh/oGLivZ4DIr8oJgQGwFuXGEqHGW5k=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=1lmfjeY/1AZ4u1HjGhSbikYr0nxZa869OIglx555miOeaIEiXk95EbOhe0Qt+tkA6
+         Z2pv2Qy5uSVbPuj84DP3SZbAmJn9VY9b7BBux8hxotUzGuURNcQ/c9HHqfZP0D9jqy
+         j9ovD0QVIkg/o8/fb0tjth2HvNQtl0grvqjk4ucU=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Paul Chaignon <paul@isovalent.com>,
-        Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Message-ID: <630488c5d0f99_2ad4d720813@john.notmuch>
-In-Reply-To: <20220822052152.378622-2-shmulik.ladkani@gmail.com>
-References: <20220822052152.378622-1-shmulik.ladkani@gmail.com>
- <20220822052152.378622-2-shmulik.ladkani@gmail.com>
-Subject: RE: [PATCH v3 bpf-next 1/3] bpf: Support setting variable-length
- tunnel options
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, llvm@lists.linux.dev,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Song Liu <song@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [PATCH 5.19 146/365] tools build: Switch to new openssl API for test-libcrypto
+Date:   Tue, 23 Aug 2022 10:00:47 +0200
+Message-Id: <20220823080124.334423074@linuxfoundation.org>
+X-Mailer: git-send-email 2.37.2
+In-Reply-To: <20220823080118.128342613@linuxfoundation.org>
+References: <20220823080118.128342613@linuxfoundation.org>
+User-Agent: quilt/0.67
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Shmulik Ladkani wrote:
-> Existing 'bpf_skb_set_tunnel_opt' allows setting tunnel options given
-> an option buffer (ARG_PTR_TO_MEM|MEM_RDONLY) and the compile-time
-> fixed buffer size (ARG_CONST_SIZE).
-> 
-> However, in certain cases we wish to set tunnel options of dynamic
-> length.
-> 
-> For example, we have an ebpf program that gets geneve options on
-> incoming packets, stores them into a map (using a key representing
-> the incoming flow), and later needs to assign *same* options to
-> reply packets (belonging to same flow).
-> 
-> This is currently imposssibly without knowing sender's exact geneve
-> options length, which unfortunately is dymamic.
-> 
-> Introduce 'skb_set_var_tunnel_opt'. This is a variant of
-> 'bpf_skb_set_tunnel_opt' which gets an *additional* parameter 'len',
-> which is the byte length from 'opt' buffer to copy into ip_tunnnel_info.
-> 
-> The 'size' parameter is kept ARG_CONST_SIZE. This way, verifier can still
-> safe-guard buffer access. 'len' must never exceed 'size', o/w EINVAL is
-> returned.
-> 
-> Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
-> ---
-> v3: Avoid 'inline' for the __bpf_skb_set_tunopt helper function
-> ---
->  include/uapi/linux/bpf.h       | 12 ++++++++++++
->  net/core/filter.c              | 34 +++++++++++++++++++++++++++++++---
->  tools/include/uapi/linux/bpf.h | 12 ++++++++++++
->  3 files changed, 55 insertions(+), 3 deletions(-)
-> 
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 934a2a8beb87..1b965dfd0c80 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -5355,6 +5355,17 @@ union bpf_attr {
->   *	Return
->   *		Current *ktime*.
->   *
-> + * long bpf_skb_set_var_tunnel_opt(struct sk_buff *skb, void *opt, u32 size, u32 len)
-> + *	Description
-> + *		Set tunnel options metadata for the packet associated to *skb*
-> + *		to the variable length *len* bytes of option data contained in
-> + *		the raw buffer *opt* sized *size*.
-> + *
-> + *		See also the description of the **bpf_skb_get_tunnel_opt**\ ()
-> + *		helper for additional information.
-> + *	Return
-> + *		0 on success, or a negative error in case of failure.
+From: Roberto Sassu <roberto.sassu@huawei.com>
 
-This API feels akward to me. Could you collapse this by using a dynamic pointer,
-recently added? And drop the ptr_to_mem+const_size part at least? That seems
-redundant with latest kernels.
+commit 5b245985a6de5ac18b5088c37068816d413fb8ed upstream.
 
-And then is there a case where size != len? Probably I guess? Anyways having
-a signature like tunnel_otpion(skb, opt, len) looks a lot like memcpy to me
-and feels familiar.
+Switch to new EVP API for detecting libcrypto, as Fedora 36 returns an
+error when it encounters the deprecated function MD5_Init() and the others.
 
-[...]
+The error would be interpreted as missing libcrypto, while in reality it is
+not.
 
->  
-> +static const struct bpf_func_proto bpf_skb_set_var_tunnel_opt_proto = {
-> +	.func		= bpf_skb_set_var_tunnel_opt,
-> +	.gpl_only	= false,
-> +	.ret_type	= RET_INTEGER,
-> +	.arg1_type	= ARG_PTR_TO_CTX,
-> +	.arg2_type	= ARG_PTR_TO_MEM | MEM_RDONLY,
-> +	.arg3_type	= ARG_CONST_SIZE,
-> +	.arg4_type	= ARG_ANYTHING,
-> +};
-> +
+Fixes: 6e8ccb4f624a73c5 ("tools/bpf: properly account for libbfd variations")
+Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: KP Singh <kpsingh@kernel.org>
+Cc: llvm@lists.linux.dev
+Cc: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Nick Terrell <terrelln@fb.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Quentin Monnet <quentin@isovalent.com>
+Cc: Song Liu <song@kernel.org>
+Cc: Stanislav Fomichev <sdf@google.com>
+Link: https://lore.kernel.org/r/20220719170555.2576993-4-roberto.sassu@huawei.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ tools/build/feature/test-libcrypto.c |   15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
+
+--- a/tools/build/feature/test-libcrypto.c
++++ b/tools/build/feature/test-libcrypto.c
+@@ -1,16 +1,23 @@
+ // SPDX-License-Identifier: GPL-2.0
++#include <openssl/evp.h>
+ #include <openssl/sha.h>
+ #include <openssl/md5.h>
+ 
+ int main(void)
+ {
+-	MD5_CTX context;
++	EVP_MD_CTX *mdctx;
+ 	unsigned char md[MD5_DIGEST_LENGTH + SHA_DIGEST_LENGTH];
+ 	unsigned char dat[] = "12345";
++	unsigned int digest_len;
+ 
+-	MD5_Init(&context);
+-	MD5_Update(&context, &dat[0], sizeof(dat));
+-	MD5_Final(&md[0], &context);
++	mdctx = EVP_MD_CTX_new();
++	if (!mdctx)
++		return 0;
++
++	EVP_DigestInit_ex(mdctx, EVP_md5(), NULL);
++	EVP_DigestUpdate(mdctx, &dat[0], sizeof(dat));
++	EVP_DigestFinal_ex(mdctx, &md[0], &digest_len);
++	EVP_MD_CTX_free(mdctx);
+ 
+ 	SHA1(&dat[0], sizeof(dat), &md[0]);
+ 
+
+
