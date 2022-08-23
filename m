@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0BB459EECC
-	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 00:13:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EE1059EED1
+	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 00:13:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232908AbiHWWMz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Aug 2022 18:12:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36666 "EHLO
+        id S233210AbiHWWNM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Aug 2022 18:13:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232965AbiHWWMW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Aug 2022 18:12:22 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 618897C192
-        for <bpf@vger.kernel.org>; Tue, 23 Aug 2022 15:11:12 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id q7-20020a63e947000000b004297f1e1f86so6665868pgj.12
-        for <bpf@vger.kernel.org>; Tue, 23 Aug 2022 15:11:11 -0700 (PDT)
+        with ESMTP id S233202AbiHWWM2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Aug 2022 18:12:28 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F8C57C771
+        for <bpf@vger.kernel.org>; Tue, 23 Aug 2022 15:11:18 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-336c3b72da5so256065007b3.6
+        for <bpf@vger.kernel.org>; Tue, 23 Aug 2022 15:11:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
          :date:from:to:cc;
-        bh=XPuMrEmpVaX0CO7dyFJBelQFPDb3Vcz70HxeyCf+Aoo=;
-        b=SJ+8921Gu9b3/VmEZj1EADQgc2FMFPsv+iqRwwG5/DLfP5x1WL5CBnZHQEUET2dwDf
-         XCIywGXcF2XdS/+7+k9pj4eDl7frNGPb65KPPdKE101o4g6KTeZpDK6CGNKG00b0ITNl
-         zyDdmGb4gNTgLzAqH4Tjy2oJzOgCcHLXJBlNtbKjB6XEVu49IDYwo+amTX33qly9RRwv
-         rwDvxWdmjvQRM8UsDDWP5uyogTrGHTO2VgNeNSTn06gT7UylBKz+LA4jtwbG1NOPNYJo
-         dzhQ6/kVIZUwVds8WBpBKWKtDjgoVl+bezYgHud5Lxcb045ct0ESDcPS4o48YA9GuyiX
-         cz8A==
+        bh=K4oRiNn+G2rdtJsE6L2b3oylFpgb/KpBFNxvRzPUh68=;
+        b=mPAPh3cEvyWdIZIF7pmnVaWOxwkdb/agfVPZLOISUSLKAOcBm6GD0GO984MB0BbI3h
+         nLeod1OUEJerQDtGS66iqteAj4Zm/QF4FHJoo6k5jCF7oa7npVly5Z+afdgkK7DojHeE
+         K8XhJDLxpv6UuKYEhvh3OXaCnHSBd81MS4q6MwEPHtSUGiZMhjf9hc0OnS34FCadQuwz
+         1SoHhjdmqixqY3VKmSmcDFXYPCR4Nxk+7nq3/U2G43pCTfjljlWU06JiNxt6XIhCpDPk
+         pZzBl3Mm1ZUgjxzQpUOIwQluQR+T8AvcaJs7Oz2ymxKbM2XVkwRHeMA2lI1ymtHkqfVg
+         Lvog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
          :date:x-gm-message-state:from:to:cc;
-        bh=XPuMrEmpVaX0CO7dyFJBelQFPDb3Vcz70HxeyCf+Aoo=;
-        b=V/uPrBj3uz+wC205v8gYYm1j9wgoJkiHk4D9KOcw8nuXpOqrtRAjNWDeMGvqokT6e1
-         QM/F5hjb34IZ7BU4hy8TBHYxpTQpbtyLl/uFn/715Ih9Fc7cfNkTB0FKLNDjeYQ1PQjk
-         s12xq4K9DRjC33V8bW/Mwa+yVu7tH2KBl7g0QFoEU3Do7ZBBKZ/lIi7r2aqnlDoyKqY1
-         g1FZbq1/B4EIHyznBxYzXZ9JMgNZ4zBPHFUmsxoO2BqY+b5tpIO5e0FC4JONAXDDAzKI
-         AxoBel8sXu6c8O66dq1mUQ99+q0GVjtgXXuuq4QtZtDm6pGKRhFp6XB6LlwDozQpenEz
-         c6pg==
-X-Gm-Message-State: ACgBeo0ZaVZuRVKmOThMCEo8fSRimHcg04bFzDJ8Hsirs6HwhXdc8GrT
-        6OFHQ/8qS12Fl2SwinD0yUZbD3inEuyt
-X-Google-Smtp-Source: AA6agR6/lrrbVHDvzAtqYEgzKbOP+OGUUywQemY8hrKQaj9m/YTAfzeBeCgzyMm2qKvm/cIwWjLpEYwnDh/O
+        bh=K4oRiNn+G2rdtJsE6L2b3oylFpgb/KpBFNxvRzPUh68=;
+        b=I7NLvWipiUNz7GAX4U1d/9zNgfuzsUpfp/Flf6g8W3hOH+qv1Ws40NjOvPj6DxYAGQ
+         v+F16gWu/Wxdy3Aom3oEB+aqLqdWL0nkX4H5p1SJ0BX8sErUwDV2NkYf741oR7KoNhu/
+         JRsbqO/pNGDd9AiT21kI/syE9OBunOtfgE03MelMTKJV2V6CJxONdXiHq8D1Hb/idfQ9
+         BZ+1/MXBkxgGWs7Javq7R5ijIIUJTJK6DTydTTA+KRNBtmNgLiPKS7GECSAOAG1GivZK
+         92qLo+jZ7upvQxEWBfRFauU28exrGd+bWKDQB1mdTI+ku7dLyMJt+9ixXE3s783T2Y0R
+         0VmQ==
+X-Gm-Message-State: ACgBeo17epQLtqYj94+qjK49q7D3fwAm2NS/gV05hiaueg9igbSyhVRz
+        dPeBi32WiFXUBA7SGc4ZtWFDtSpi+40j
+X-Google-Smtp-Source: AA6agR7GhAN18bhNP7OEUGzMVoWqbLNjvwo0Kz5W4Z6P+DPRLh4sVcdbaQ0WjCi4/p46vI8Uk3tw7Xot0K2W
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2d4:203:7dbd:c08f:de81:c2a3])
- (user=irogers job=sendgmr) by 2002:a17:902:d505:b0:173:111a:3023 with SMTP id
- b5-20020a170902d50500b00173111a3023mr1535558plg.32.1661292670931; Tue, 23 Aug
- 2022 15:11:10 -0700 (PDT)
-Date:   Tue, 23 Aug 2022 15:09:20 -0700
+ (user=irogers job=sendgmr) by 2002:a81:124c:0:b0:334:d633:f3c9 with SMTP id
+ 73-20020a81124c000000b00334d633f3c9mr28335053yws.437.1661292677181; Tue, 23
+ Aug 2022 15:11:17 -0700 (PDT)
+Date:   Tue, 23 Aug 2022 15:09:21 -0700
 In-Reply-To: <20220823220922.256001-1-irogers@google.com>
-Message-Id: <20220823220922.256001-17-irogers@google.com>
+Message-Id: <20220823220922.256001-18-irogers@google.com>
 Mime-Version: 1.0
 References: <20220823220922.256001-1-irogers@google.com>
 X-Mailer: git-send-email 2.37.2.609.g9ff673ca1a-goog
-Subject: [PATCH v2 16/18] perf sched: Fixes for thread safety analysis
+Subject: [PATCH v2 17/18] perf top: Fixes for thread safety analysis
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -106,121 +106,48 @@ Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add annotations to describe lock behavior. Add unlocks so that mutexes
-aren't conditionally held on exit from perf_sched__replay. Add an exit
-variable so that thread_func can terminate, rather than leaving the
-threads blocked on mutexes.
+Add annotations to describe lock behavior.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/builtin-sched.c | 46 ++++++++++++++++++++++++--------------
- 1 file changed, 29 insertions(+), 17 deletions(-)
+ tools/perf/builtin-top.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/tools/perf/builtin-sched.c b/tools/perf/builtin-sched.c
-index 0f52f73be896..ce8497d39f9c 100644
---- a/tools/perf/builtin-sched.c
-+++ b/tools/perf/builtin-sched.c
-@@ -246,6 +246,7 @@ struct perf_sched {
- 	const char	*time_str;
- 	struct perf_time_interval ptime;
- 	struct perf_time_interval hist_time;
-+	volatile bool   thread_funcs_exit;
- };
- 
- /* per thread run time data */
-@@ -633,31 +634,34 @@ static void *thread_func(void *ctx)
- 	prctl(PR_SET_NAME, comm2);
- 	if (fd < 0)
- 		return NULL;
--again:
--	ret = sem_post(&this_task->ready_for_work);
--	BUG_ON(ret);
--	mutex_lock(&sched->start_work_mutex);
--	mutex_unlock(&sched->start_work_mutex);
- 
--	cpu_usage_0 = get_cpu_usage_nsec_self(fd);
-+	while (!sched->thread_funcs_exit) {
-+		ret = sem_post(&this_task->ready_for_work);
-+		BUG_ON(ret);
-+		mutex_lock(&sched->start_work_mutex);
-+		mutex_unlock(&sched->start_work_mutex);
- 
--	for (i = 0; i < this_task->nr_events; i++) {
--		this_task->curr_event = i;
--		perf_sched__process_event(sched, this_task->atoms[i]);
--	}
-+		cpu_usage_0 = get_cpu_usage_nsec_self(fd);
- 
--	cpu_usage_1 = get_cpu_usage_nsec_self(fd);
--	this_task->cpu_usage = cpu_usage_1 - cpu_usage_0;
--	ret = sem_post(&this_task->work_done_sem);
--	BUG_ON(ret);
-+		for (i = 0; i < this_task->nr_events; i++) {
-+			this_task->curr_event = i;
-+			perf_sched__process_event(sched, this_task->atoms[i]);
-+		}
- 
--	mutex_lock(&sched->work_done_wait_mutex);
--	mutex_unlock(&sched->work_done_wait_mutex);
-+		cpu_usage_1 = get_cpu_usage_nsec_self(fd);
-+		this_task->cpu_usage = cpu_usage_1 - cpu_usage_0;
-+		ret = sem_post(&this_task->work_done_sem);
-+		BUG_ON(ret);
- 
--	goto again;
-+		mutex_lock(&sched->work_done_wait_mutex);
-+		mutex_unlock(&sched->work_done_wait_mutex);
-+	}
-+	return NULL;
- }
- 
- static void create_tasks(struct perf_sched *sched)
-+	EXCLUSIVE_LOCK_FUNCTION(sched->start_work_mutex)
-+	EXCLUSIVE_LOCK_FUNCTION(sched->work_done_wait_mutex)
+diff --git a/tools/perf/builtin-top.c b/tools/perf/builtin-top.c
+index 3757292bfe86..e832f04e3076 100644
+--- a/tools/perf/builtin-top.c
++++ b/tools/perf/builtin-top.c
+@@ -196,6 +196,7 @@ static void perf_top__record_precise_ip(struct perf_top *top,
+ 					struct hist_entry *he,
+ 					struct perf_sample *sample,
+ 					struct evsel *evsel, u64 ip)
++	EXCLUSIVE_LOCKS_REQUIRED(he->hists->lock)
  {
- 	struct task_desc *task;
- 	pthread_attr_t attr;
-@@ -687,6 +691,8 @@ static void create_tasks(struct perf_sched *sched)
- }
- 
- static void wait_for_tasks(struct perf_sched *sched)
-+	EXCLUSIVE_LOCKS_REQUIRED(sched->work_done_wait_mutex)
-+	EXCLUSIVE_LOCKS_REQUIRED(sched->start_work_mutex)
+ 	struct annotation *notes;
+ 	struct symbol *sym = he->ms.sym;
+@@ -724,13 +725,13 @@ static void *display_thread(void *arg)
+ static int hist_iter__top_callback(struct hist_entry_iter *iter,
+ 				   struct addr_location *al, bool single,
+ 				   void *arg)
++	EXCLUSIVE_LOCKS_REQUIRED(iter->he->hists->lock)
  {
- 	u64 cpu_usage_0, cpu_usage_1;
- 	struct task_desc *task;
-@@ -738,6 +744,8 @@ static void wait_for_tasks(struct perf_sched *sched)
- }
+ 	struct perf_top *top = arg;
+-	struct hist_entry *he = iter->he;
+ 	struct evsel *evsel = iter->evsel;
  
- static void run_one_test(struct perf_sched *sched)
-+	EXCLUSIVE_LOCKS_REQUIRED(sched->work_done_wait_mutex)
-+	EXCLUSIVE_LOCKS_REQUIRED(sched->start_work_mutex)
- {
- 	u64 T0, T1, delta, avg_delta, fluct;
+ 	if (perf_hpp_list.sym && single)
+-		perf_top__record_precise_ip(top, he, iter->sample, evsel, al->addr);
++		perf_top__record_precise_ip(top, iter->he, iter->sample, evsel, al->addr);
  
-@@ -3309,11 +3317,15 @@ static int perf_sched__replay(struct perf_sched *sched)
- 	print_task_traces(sched);
- 	add_cross_task_wakeups(sched);
- 
-+	sched->thread_funcs_exit = false;
- 	create_tasks(sched);
- 	printf("------------------------------------------------------------\n");
- 	for (i = 0; i < sched->replay_repeat; i++)
- 		run_one_test(sched);
- 
-+	sched->thread_funcs_exit = true;
-+	mutex_unlock(&sched->start_work_mutex);
-+	mutex_unlock(&sched->work_done_wait_mutex);
- 	return 0;
- }
- 
+ 	hist__account_cycles(iter->sample->branch_stack, al, iter->sample,
+ 		     !(top->record_opts.branch_stack & PERF_SAMPLE_BRANCH_ANY),
 -- 
 2.37.2.609.g9ff673ca1a-goog
 
