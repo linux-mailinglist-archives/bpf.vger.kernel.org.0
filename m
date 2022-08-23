@@ -2,32 +2,32 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64CFC59E179
-	for <lists+bpf@lfdr.de>; Tue, 23 Aug 2022 14:39:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A23E59E1ED
+	for <lists+bpf@lfdr.de>; Tue, 23 Aug 2022 14:41:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359477AbiHWMIg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Aug 2022 08:08:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59532 "EHLO
+        id S1358368AbiHWLwV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Aug 2022 07:52:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359252AbiHWMHW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Aug 2022 08:07:22 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E30A565E3;
-        Tue, 23 Aug 2022 02:38:21 -0700 (PDT)
+        with ESMTP id S1358871AbiHWLvJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Aug 2022 07:51:09 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4CCFD347C;
+        Tue, 23 Aug 2022 02:31:58 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 864BB61467;
-        Tue, 23 Aug 2022 09:38:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57479C433C1;
-        Tue, 23 Aug 2022 09:38:20 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id B4C48B81C98;
+        Tue, 23 Aug 2022 09:31:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E569BC433D6;
+        Tue, 23 Aug 2022 09:31:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1661247500;
+        s=korg; t=1661247115;
         bh=69ovCRcumfGslh/oGLivZ4DIr8oJgQGwFuXGEqHGW5k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gsPa9kEgtLU+FR/qnzFc0olVYq3Wwx5OMjvEUyfS2fi8ntQoBSB/WUOIJjF74OSA6
-         DtQHMDmtfmu3/CEJu6COle5cF+6R5J3ZlnU5aIDwq/ML7Q54lQ4YQrfdtqQmDyxpr5
-         qwWPJY4KkJgi3R6/vNEKMHUFmbs8o8Z2MSLR/HHo=
+        b=NBMv1LGnpeev5Y3mrmaDaqsyMV18S60tPbN1xy2dDsZDuoroyypnJtV6i2p0PkXWN
+         XhNgAdPx1dFtyQnae66pkGRfW1K9QinJJknioaFcJV8iWrJdrMCVE3bjx1Ks7BEIBZ
+         mw66GMI1yrouvPqXRwVM2qk+YvhSkInUuh+bXeJs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -47,12 +47,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Song Liu <song@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
         Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 5.10 056/158] tools build: Switch to new openssl API for test-libcrypto
-Date:   Tue, 23 Aug 2022 10:26:28 +0200
-Message-Id: <20220823080048.357389373@linuxfoundation.org>
+Subject: [PATCH 5.4 322/389] tools build: Switch to new openssl API for test-libcrypto
+Date:   Tue, 23 Aug 2022 10:26:40 +0200
+Message-Id: <20220823080128.985378948@linuxfoundation.org>
 X-Mailer: git-send-email 2.37.2
-In-Reply-To: <20220823080046.056825146@linuxfoundation.org>
-References: <20220823080046.056825146@linuxfoundation.org>
+In-Reply-To: <20220823080115.331990024@linuxfoundation.org>
+References: <20220823080115.331990024@linuxfoundation.org>
 User-Agent: quilt/0.67
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
