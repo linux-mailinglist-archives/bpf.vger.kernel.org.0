@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F8B159EEA9
-	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 00:09:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E74159EEAC
+	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 00:09:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232025AbiHWWJn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Aug 2022 18:09:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36240 "EHLO
+        id S231972AbiHWWJx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Aug 2022 18:09:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231965AbiHWWJi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Aug 2022 18:09:38 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C3F172693
-        for <bpf@vger.kernel.org>; Tue, 23 Aug 2022 15:09:36 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-31f5960500bso260525937b3.14
-        for <bpf@vger.kernel.org>; Tue, 23 Aug 2022 15:09:36 -0700 (PDT)
+        with ESMTP id S232215AbiHWWJs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Aug 2022 18:09:48 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72BC072B7D
+        for <bpf@vger.kernel.org>; Tue, 23 Aug 2022 15:09:42 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-333b218f2cbso259785297b3.0
+        for <bpf@vger.kernel.org>; Tue, 23 Aug 2022 15:09:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
          :date:from:to:cc;
-        bh=HGXvwC70P4lQM2SClDMy1A450ci+Pd66+W81CaUVSbs=;
-        b=YFJ+R6mwgQ9oKPaH6psZN8+PmZ8nr2tYvLI9upGLW9XRXR1kFqWJkfj4abLrpb3Hrc
-         I968K2izzHbGreVMfH8Nre+zZcAEfu79EUU7ARSahNut/NPEWGTZ/0RJIpb9FQ4ZeExj
-         mks3mn1D+5g4txFEgf+WJpGfe8nWo0W0SuDvtP5/bBfxdEDgVId5hifdMaH8iuAU9XB4
-         GeCtI9QzJZTsCskOkuJ2Ef7gOLeI9B615teO2AZ5TMbj/c7w3o9BzFvx1u6UjyzWkrlZ
-         rF3g5v5vteJqRivGfJQ1Gpyv0cKcxn+Infe4UjnEBCp7GyYaoCfHNQM+d9iTVS4Si+CB
-         RHIg==
+        bh=2yMunCd23swtFtHtFTobwU8PN6huvkMRVNmVJbz5uDo=;
+        b=WTBvoMJt3SrG9G3TPW6YXgHaQNeI/lOPPsdQS7dGQn/th+dg26bPoDStLmDXkaSReE
+         HgMFq0QunOTwuIHjg6vRmpvvw8ZA6haI4uNOOdwsIlxvfabjRzftmXo51yntA6pZNSgF
+         4MOGesYEinvkY2xMKJ4V/YpTJokQDGL8r347kPuD1puBwmgAAuiDPTrs6VEWfhZqCk4L
+         ksyn7OYuGc9ICBjtofrUqwH9rAalIdNC/7X/lIGtt4B+Pa1qYECH9ASZNwsMuy3KnVhU
+         UWL/8bodlA03nhTAhtsV2wNLO/uRT7a6zN4htB/HLoignrB5s/hwea8L2Bz+V5CWrf+L
+         VunA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
          :date:x-gm-message-state:from:to:cc;
-        bh=HGXvwC70P4lQM2SClDMy1A450ci+Pd66+W81CaUVSbs=;
-        b=Ojxpn6XmvlcpfrFGPdDDIE3fzKiXPGlBAgPTUBTkUSiPYS2/aBRC0ybj/Tngf7hzgm
-         u2wTKTFJQoOnWNS6mSpd/XKvQpOw8L4k4uzXlDoEh0BoCaErSM3eBtceZt2v0FiHXMLu
-         /c8t34mR7YtHAKFkospSyas3F/m4kyp8UMBbjMpGbHX49wWFC4U4UGZ1P+tCTFM1Mw80
-         RY/UudhOq6purGIbI2sCrwvKhVgx+mWeRmnhPuXzABlnAEKDKao7bNqV5X390uwmo0Ep
-         TsHHGvULSLmjlNvGbSpFkj6msypza9UYnWz2OM2nc6Ikp3nZ/7VVrQvPWxDfim+j9oW8
-         xDTA==
-X-Gm-Message-State: ACgBeo1JodZGV7fnNUkZX7z011Lz+Q5geRL0bNZcxbHMZElGD7T5Ll3N
-        g8YOFUs3f7Hyhedk6GZBgN5xsUzGjJyH
-X-Google-Smtp-Source: AA6agR6wsVs9Ektezw4eqFarF6XaQ48d0ENVXVoZVMJxS1RzWjeg+uj9OG2/9mmpV9nP7+j6GnE/maf+tFs8
+        bh=2yMunCd23swtFtHtFTobwU8PN6huvkMRVNmVJbz5uDo=;
+        b=WhUK0J+JC5WrgH+mOh7CKB4KnDnQzOstE6kF2Nun4PWu5+r4Y9IDaQC5lvyC8LXLpy
+         aktAKV77A+6gPZrro915F4hsO0CEG5J59DUfobieXwQmBDKzC1reWTeFnuX6D5n993Zt
+         RW80f0jwSRoSD2YqJDCf00YXnafxR+3SxLU6DQ4pdSj3Joab6JrDpKYCqXO5Xrl5SYum
+         Myb5eJ+079Ho3s3zZj0Ob2LSMn+t0SpDnpQ47DTK8WZgIKuaxoo/c8WW+OIx8Caxri2F
+         8huvQMjOJN9fSwmWcGYOGqf/f8iBJEW0IwoR9WAjXdzHUIyM/X/H+625YqZ/b8/wWFMx
+         jZlg==
+X-Gm-Message-State: ACgBeo0v+sBHJqGZbwYYR+UGDD6VGNYOlFvkK1W2eWjOFx1G1J5E0/QC
+        8eXbldrxQA+rXPY/olcS/g3IijkxH+jH
+X-Google-Smtp-Source: AA6agR7hHXqxFQUuZeUzTJRNL63/FbZpi+j6/Z+IbWk6WyHbvFZbSlsb7BMKdZsNlo1nBgOcRVk40hqCIeMm
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2d4:203:7dbd:c08f:de81:c2a3])
- (user=irogers job=sendgmr) by 2002:a05:6902:1502:b0:695:a994:475c with SMTP
- id q2-20020a056902150200b00695a994475cmr11974185ybu.547.1661292575542; Tue,
- 23 Aug 2022 15:09:35 -0700 (PDT)
-Date:   Tue, 23 Aug 2022 15:09:05 -0700
+ (user=irogers job=sendgmr) by 2002:a05:6902:2cb:b0:684:aebe:49ab with SMTP id
+ w11-20020a05690202cb00b00684aebe49abmr26094341ybh.242.1661292581705; Tue, 23
+ Aug 2022 15:09:41 -0700 (PDT)
+Date:   Tue, 23 Aug 2022 15:09:06 -0700
 In-Reply-To: <20220823220922.256001-1-irogers@google.com>
-Message-Id: <20220823220922.256001-2-irogers@google.com>
+Message-Id: <20220823220922.256001-3-irogers@google.com>
 Mime-Version: 1.0
 References: <20220823220922.256001-1-irogers@google.com>
 X-Mailer: git-send-email 2.37.2.609.g9ff673ca1a-goog
-Subject: [PATCH v2 01/18] perf mutex: Wrapped usage of mutex and cond
+Subject: [PATCH v2 02/18] perf bench: Update use of pthread mutex/cond
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -106,193 +106,827 @@ Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Pavithra Gurushankar <gpavithrasha@gmail.com>
+Switch to the use of mutex wrappers that provide better error checking.
 
-Added a new header file mutex.h that wraps the usage of
-pthread_mutex_t and pthread_cond_t. By abstracting these it is
-possible to introduce error checking.
-
-Signed-off-by: Pavithra Gurushankar <gpavithrasha@gmail.com>
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/Build   |  1 +
- tools/perf/util/mutex.c | 97 +++++++++++++++++++++++++++++++++++++++++
- tools/perf/util/mutex.h | 43 ++++++++++++++++++
- 3 files changed, 141 insertions(+)
- create mode 100644 tools/perf/util/mutex.c
- create mode 100644 tools/perf/util/mutex.h
+ tools/perf/bench/epoll-ctl.c           | 33 ++++-----
+ tools/perf/bench/epoll-wait.c          | 33 ++++-----
+ tools/perf/bench/futex-hash.c          | 33 ++++-----
+ tools/perf/bench/futex-lock-pi.c       | 33 ++++-----
+ tools/perf/bench/futex-requeue.c       | 33 ++++-----
+ tools/perf/bench/futex-wake-parallel.c | 33 ++++-----
+ tools/perf/bench/futex-wake.c          | 33 ++++-----
+ tools/perf/bench/numa.c                | 93 ++++++++++----------------
+ 8 files changed, 153 insertions(+), 171 deletions(-)
 
-diff --git a/tools/perf/util/Build b/tools/perf/util/Build
-index 9dfae1bda9cc..8fd6dc8de521 100644
---- a/tools/perf/util/Build
-+++ b/tools/perf/util/Build
-@@ -143,6 +143,7 @@ perf-y += branch.o
- perf-y += mem2node.o
- perf-y += clockid.o
- perf-y += list_sort.o
-+perf-y += mutex.o
+diff --git a/tools/perf/bench/epoll-ctl.c b/tools/perf/bench/epoll-ctl.c
+index 4256dc5d6236..82309add47d1 100644
+--- a/tools/perf/bench/epoll-ctl.c
++++ b/tools/perf/bench/epoll-ctl.c
+@@ -23,6 +23,7 @@
+ #include <sys/eventfd.h>
+ #include <perf/cpumap.h>
  
- perf-$(CONFIG_LIBBPF) += bpf-loader.o
- perf-$(CONFIG_LIBBPF) += bpf_map.o
-diff --git a/tools/perf/util/mutex.c b/tools/perf/util/mutex.c
-new file mode 100644
-index 000000000000..d12cf0714268
---- /dev/null
-+++ b/tools/perf/util/mutex.c
-@@ -0,0 +1,97 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include "mutex.h"
-+
-+#include "debug.h"
-+#include <linux/string.h>
-+#include <errno.h>
-+
-+static void check_err(const char *fn, int err)
-+{
-+	char sbuf[STRERR_BUFSIZE];
-+
-+	if (err == 0)
-+		return;
-+
-+	pr_err("%s error: '%s'", fn, str_error_r(err, sbuf, sizeof(sbuf)));
-+}
-+
-+#define CHECK_ERR(err) check_err(__func__, err)
-+
-+void mutex_init(struct mutex *mtx, bool pshared)
-+{
-+	pthread_mutexattr_t attr;
-+
-+	CHECK_ERR(pthread_mutexattr_init(&attr));
-+
-+#ifndef NDEBUG
-+	/* In normal builds enable error checking, such as recursive usage. */
-+	CHECK_ERR(pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_ERRORCHECK));
-+#endif
-+	if (pshared)
-+		pthread_mutexattr_setpshared(&attr, PTHREAD_PROCESS_SHARED);
-+
-+	CHECK_ERR(pthread_mutex_init(&mtx->lock, &attr));
-+	CHECK_ERR(pthread_mutexattr_destroy(&attr));
-+}
-+
-+void mutex_destroy(struct mutex *mtx)
-+{
-+	CHECK_ERR(pthread_mutex_destroy(&mtx->lock));
-+}
-+
-+void mutex_lock(struct mutex *mtx)
-+{
-+	CHECK_ERR(pthread_mutex_lock(&mtx->lock));
-+}
-+
-+void mutex_unlock(struct mutex *mtx)
-+{
-+	CHECK_ERR(pthread_mutex_unlock(&mtx->lock));
-+}
-+
-+bool mutex_trylock(struct mutex *mtx)
-+{
-+	int ret = pthread_mutex_trylock(&mtx->lock);
-+
-+	if (ret == 0)
-+		return true; /* Lock acquired. */
-+
-+	if (ret == EBUSY)
-+		return false; /* Lock busy. */
-+
-+	/* Print error. */
-+	CHECK_ERR(ret);
-+	return false;
-+}
-+
-+void cond_init(struct cond *cnd, bool pshared)
-+{
-+	pthread_condattr_t attr;
-+
-+	CHECK_ERR(pthread_condattr_init(&attr));
-+	if (pshared)
-+		CHECK_ERR(pthread_condattr_setpshared(&attr, PTHREAD_PROCESS_SHARED));
-+
-+	CHECK_ERR(pthread_cond_init(&cnd->cond, &attr));
-+	CHECK_ERR(pthread_condattr_destroy(&attr));
-+}
-+
-+void cond_destroy(struct cond *cnd)
-+{
-+	CHECK_ERR(pthread_cond_destroy(&cnd->cond));
-+}
-+
-+void cond_wait(struct cond *cnd, struct mutex *mtx)
-+{
-+	CHECK_ERR(pthread_cond_wait(&cnd->cond, &mtx->lock));
-+}
-+
-+void cond_signal(struct cond *cnd)
-+{
-+	CHECK_ERR(pthread_cond_signal(&cnd->cond));
-+}
-+
-+void cond_broadcast(struct cond *cnd)
-+{
-+	CHECK_ERR(pthread_cond_broadcast(&cnd->cond));
-+}
-diff --git a/tools/perf/util/mutex.h b/tools/perf/util/mutex.h
-new file mode 100644
-index 000000000000..952276ad83bd
---- /dev/null
-+++ b/tools/perf/util/mutex.h
-@@ -0,0 +1,43 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __PERF_MUTEX_H
-+#define __PERF_MUTEX_H
-+
-+#include <pthread.h>
-+#include <stdbool.h>
-+
-+/*
-+ * A wrapper around the mutex implementation that allows perf to error check
-+ * usage, etc.
-+ */
-+struct mutex {
-+	pthread_mutex_t lock;
-+};
-+
-+/* A wrapper around the condition variable implementation. */
-+struct cond {
-+	pthread_cond_t cond;
-+};
-+
-+/*
-+ * Initialize the mtx struct, if pshared is set then specify the process-shared
-+ * rather than default process-private attribute.
-+ */
-+void mutex_init(struct mutex *mtx, bool pshared);
-+void mutex_destroy(struct mutex *mtx);
-+
-+void mutex_lock(struct mutex *mtx);
-+void mutex_unlock(struct mutex *mtx);
-+bool mutex_trylock(struct mutex *mtx);
-+
-+/*
-+ * Initialize the cond struct, if pshared is set then specify the process-shared
-+ * rather than default process-private attribute.
-+ */
-+void cond_init(struct cond *cnd, bool pshared);
-+void cond_destroy(struct cond *cnd);
-+
-+void cond_wait(struct cond *cnd, struct mutex *mtx);
-+void cond_signal(struct cond *cnd);
-+void cond_broadcast(struct cond *cnd);
-+
-+#endif /* __PERF_MUTEX_H */
++#include "../util/mutex.h"
+ #include "../util/stat.h"
+ #include <subcmd/parse-options.h>
+ #include "bench.h"
+@@ -58,10 +59,10 @@ static unsigned int nested = 0;
+ /* amount of fds to monitor, per thread */
+ static unsigned int nfds = 64;
+ 
+-static pthread_mutex_t thread_lock;
++static struct mutex thread_lock;
+ static unsigned int threads_starting;
+ static struct stats all_stats[EPOLL_NR_OPS];
+-static pthread_cond_t thread_parent, thread_worker;
++static struct cond thread_parent, thread_worker;
+ 
+ struct worker {
+ 	int tid;
+@@ -174,12 +175,12 @@ static void *workerfn(void *arg)
+ 	struct timespec ts = { .tv_sec = 0,
+ 			       .tv_nsec = 250 };
+ 
+-	pthread_mutex_lock(&thread_lock);
++	mutex_lock(&thread_lock);
+ 	threads_starting--;
+ 	if (!threads_starting)
+-		pthread_cond_signal(&thread_parent);
+-	pthread_cond_wait(&thread_worker, &thread_lock);
+-	pthread_mutex_unlock(&thread_lock);
++		cond_signal(&thread_parent);
++	cond_wait(&thread_worker, &thread_lock);
++	mutex_unlock(&thread_lock);
+ 
+ 	/* Let 'em loose */
+ 	do {
+@@ -367,9 +368,9 @@ int bench_epoll_ctl(int argc, const char **argv)
+ 	for (i = 0; i < EPOLL_NR_OPS; i++)
+ 		init_stats(&all_stats[i]);
+ 
+-	pthread_mutex_init(&thread_lock, NULL);
+-	pthread_cond_init(&thread_parent, NULL);
+-	pthread_cond_init(&thread_worker, NULL);
++	mutex_init(&thread_lock, /*pshared=*/false);
++	cond_init(&thread_parent, /*pshared=*/false);
++	cond_init(&thread_worker, /*pshared=*/false);
+ 
+ 	threads_starting = nthreads;
+ 
+@@ -377,11 +378,11 @@ int bench_epoll_ctl(int argc, const char **argv)
+ 
+ 	do_threads(worker, cpu);
+ 
+-	pthread_mutex_lock(&thread_lock);
++	mutex_lock(&thread_lock);
+ 	while (threads_starting)
+-		pthread_cond_wait(&thread_parent, &thread_lock);
+-	pthread_cond_broadcast(&thread_worker);
+-	pthread_mutex_unlock(&thread_lock);
++		cond_wait(&thread_parent, &thread_lock);
++	cond_broadcast(&thread_worker);
++	mutex_unlock(&thread_lock);
+ 
+ 	sleep(nsecs);
+ 	toggle_done(0, NULL, NULL);
+@@ -394,9 +395,9 @@ int bench_epoll_ctl(int argc, const char **argv)
+ 	}
+ 
+ 	/* cleanup & report results */
+-	pthread_cond_destroy(&thread_parent);
+-	pthread_cond_destroy(&thread_worker);
+-	pthread_mutex_destroy(&thread_lock);
++	cond_destroy(&thread_parent);
++	cond_destroy(&thread_worker);
++	mutex_destroy(&thread_lock);
+ 
+ 	for (i = 0; i < nthreads; i++) {
+ 		unsigned long t[EPOLL_NR_OPS];
+diff --git a/tools/perf/bench/epoll-wait.c b/tools/perf/bench/epoll-wait.c
+index 2728b0140853..2ed20c55105d 100644
+--- a/tools/perf/bench/epoll-wait.c
++++ b/tools/perf/bench/epoll-wait.c
+@@ -79,6 +79,7 @@
+ #include <perf/cpumap.h>
+ 
+ #include "../util/stat.h"
++#include "../util/mutex.h"
+ #include <subcmd/parse-options.h>
+ #include "bench.h"
+ 
+@@ -109,10 +110,10 @@ static bool multiq; /* use an epoll instance per thread */
+ /* amount of fds to monitor, per thread */
+ static unsigned int nfds = 64;
+ 
+-static pthread_mutex_t thread_lock;
++static struct mutex thread_lock;
+ static unsigned int threads_starting;
+ static struct stats throughput_stats;
+-static pthread_cond_t thread_parent, thread_worker;
++static struct cond thread_parent, thread_worker;
+ 
+ struct worker {
+ 	int tid;
+@@ -189,12 +190,12 @@ static void *workerfn(void *arg)
+ 	int to = nonblocking? 0 : -1;
+ 	int efd = multiq ? w->epollfd : epollfd;
+ 
+-	pthread_mutex_lock(&thread_lock);
++	mutex_lock(&thread_lock);
+ 	threads_starting--;
+ 	if (!threads_starting)
+-		pthread_cond_signal(&thread_parent);
+-	pthread_cond_wait(&thread_worker, &thread_lock);
+-	pthread_mutex_unlock(&thread_lock);
++		cond_signal(&thread_parent);
++	cond_wait(&thread_worker, &thread_lock);
++	mutex_unlock(&thread_lock);
+ 
+ 	do {
+ 		/*
+@@ -485,9 +486,9 @@ int bench_epoll_wait(int argc, const char **argv)
+ 	       getpid(), nthreads, oneshot ? " (EPOLLONESHOT semantics)": "", nfds, nsecs);
+ 
+ 	init_stats(&throughput_stats);
+-	pthread_mutex_init(&thread_lock, NULL);
+-	pthread_cond_init(&thread_parent, NULL);
+-	pthread_cond_init(&thread_worker, NULL);
++	mutex_init(&thread_lock, /*pshared=*/false);
++	cond_init(&thread_parent, /*pshared=*/false);
++	cond_init(&thread_worker, /*pshared=*/false);
+ 
+ 	threads_starting = nthreads;
+ 
+@@ -495,11 +496,11 @@ int bench_epoll_wait(int argc, const char **argv)
+ 
+ 	do_threads(worker, cpu);
+ 
+-	pthread_mutex_lock(&thread_lock);
++	mutex_lock(&thread_lock);
+ 	while (threads_starting)
+-		pthread_cond_wait(&thread_parent, &thread_lock);
+-	pthread_cond_broadcast(&thread_worker);
+-	pthread_mutex_unlock(&thread_lock);
++		cond_wait(&thread_parent, &thread_lock);
++	cond_broadcast(&thread_worker);
++	mutex_unlock(&thread_lock);
+ 
+ 	/*
+ 	 * At this point the workers should be blocked waiting for read events
+@@ -522,9 +523,9 @@ int bench_epoll_wait(int argc, const char **argv)
+ 		err(EXIT_FAILURE, "pthread_join");
+ 
+ 	/* cleanup & report results */
+-	pthread_cond_destroy(&thread_parent);
+-	pthread_cond_destroy(&thread_worker);
+-	pthread_mutex_destroy(&thread_lock);
++	cond_destroy(&thread_parent);
++	cond_destroy(&thread_worker);
++	mutex_destroy(&thread_lock);
+ 
+ 	/* sort the array back before reporting */
+ 	if (randomize)
+diff --git a/tools/perf/bench/futex-hash.c b/tools/perf/bench/futex-hash.c
+index f05db4cf983d..b564ff7ba9a0 100644
+--- a/tools/perf/bench/futex-hash.c
++++ b/tools/perf/bench/futex-hash.c
+@@ -23,6 +23,7 @@
+ #include <sys/mman.h>
+ #include <perf/cpumap.h>
+ 
++#include "../util/mutex.h"
+ #include "../util/stat.h"
+ #include <subcmd/parse-options.h>
+ #include "bench.h"
+@@ -34,10 +35,10 @@ static bool done = false;
+ static int futex_flag = 0;
+ 
+ struct timeval bench__start, bench__end, bench__runtime;
+-static pthread_mutex_t thread_lock;
++static struct mutex thread_lock;
+ static unsigned int threads_starting;
+ static struct stats throughput_stats;
+-static pthread_cond_t thread_parent, thread_worker;
++static struct cond thread_parent, thread_worker;
+ 
+ struct worker {
+ 	int tid;
+@@ -73,12 +74,12 @@ static void *workerfn(void *arg)
+ 	unsigned int i;
+ 	unsigned long ops = w->ops; /* avoid cacheline bouncing */
+ 
+-	pthread_mutex_lock(&thread_lock);
++	mutex_lock(&thread_lock);
+ 	threads_starting--;
+ 	if (!threads_starting)
+-		pthread_cond_signal(&thread_parent);
+-	pthread_cond_wait(&thread_worker, &thread_lock);
+-	pthread_mutex_unlock(&thread_lock);
++		cond_signal(&thread_parent);
++	cond_wait(&thread_worker, &thread_lock);
++	mutex_unlock(&thread_lock);
+ 
+ 	do {
+ 		for (i = 0; i < params.nfutexes; i++, ops++) {
+@@ -165,9 +166,9 @@ int bench_futex_hash(int argc, const char **argv)
+ 	       getpid(), params.nthreads, params.nfutexes, params.fshared ? "shared":"private", params.runtime);
+ 
+ 	init_stats(&throughput_stats);
+-	pthread_mutex_init(&thread_lock, NULL);
+-	pthread_cond_init(&thread_parent, NULL);
+-	pthread_cond_init(&thread_worker, NULL);
++	mutex_init(&thread_lock, /*pshared=*/false);
++	cond_init(&thread_parent, /*pshared=*/false);
++	cond_init(&thread_worker, /*pshared=*/false);
+ 
+ 	threads_starting = params.nthreads;
+ 	pthread_attr_init(&thread_attr);
+@@ -203,11 +204,11 @@ int bench_futex_hash(int argc, const char **argv)
+ 	CPU_FREE(cpuset);
+ 	pthread_attr_destroy(&thread_attr);
+ 
+-	pthread_mutex_lock(&thread_lock);
++	mutex_lock(&thread_lock);
+ 	while (threads_starting)
+-		pthread_cond_wait(&thread_parent, &thread_lock);
+-	pthread_cond_broadcast(&thread_worker);
+-	pthread_mutex_unlock(&thread_lock);
++		cond_wait(&thread_parent, &thread_lock);
++	cond_broadcast(&thread_worker);
++	mutex_unlock(&thread_lock);
+ 
+ 	sleep(params.runtime);
+ 	toggle_done(0, NULL, NULL);
+@@ -219,9 +220,9 @@ int bench_futex_hash(int argc, const char **argv)
+ 	}
+ 
+ 	/* cleanup & report results */
+-	pthread_cond_destroy(&thread_parent);
+-	pthread_cond_destroy(&thread_worker);
+-	pthread_mutex_destroy(&thread_lock);
++	cond_destroy(&thread_parent);
++	cond_destroy(&thread_worker);
++	mutex_destroy(&thread_lock);
+ 
+ 	for (i = 0; i < params.nthreads; i++) {
+ 		unsigned long t = bench__runtime.tv_sec > 0 ?
+diff --git a/tools/perf/bench/futex-lock-pi.c b/tools/perf/bench/futex-lock-pi.c
+index 0abb3f7ee24f..106b5554030f 100644
+--- a/tools/perf/bench/futex-lock-pi.c
++++ b/tools/perf/bench/futex-lock-pi.c
+@@ -8,6 +8,7 @@
+ #include <pthread.h>
+ 
+ #include <signal.h>
++#include "../util/mutex.h"
+ #include "../util/stat.h"
+ #include <subcmd/parse-options.h>
+ #include <linux/compiler.h>
+@@ -34,10 +35,10 @@ static u_int32_t global_futex = 0;
+ static struct worker *worker;
+ static bool done = false;
+ static int futex_flag = 0;
+-static pthread_mutex_t thread_lock;
++static struct mutex thread_lock;
+ static unsigned int threads_starting;
+ static struct stats throughput_stats;
+-static pthread_cond_t thread_parent, thread_worker;
++static struct cond thread_parent, thread_worker;
+ 
+ static struct bench_futex_parameters params = {
+ 	.runtime  = 10,
+@@ -83,12 +84,12 @@ static void *workerfn(void *arg)
+ 	struct worker *w = (struct worker *) arg;
+ 	unsigned long ops = w->ops;
+ 
+-	pthread_mutex_lock(&thread_lock);
++	mutex_lock(&thread_lock);
+ 	threads_starting--;
+ 	if (!threads_starting)
+-		pthread_cond_signal(&thread_parent);
+-	pthread_cond_wait(&thread_worker, &thread_lock);
+-	pthread_mutex_unlock(&thread_lock);
++		cond_signal(&thread_parent);
++	cond_wait(&thread_worker, &thread_lock);
++	mutex_unlock(&thread_lock);
+ 
+ 	do {
+ 		int ret;
+@@ -197,9 +198,9 @@ int bench_futex_lock_pi(int argc, const char **argv)
+ 	       getpid(), params.nthreads, params.runtime);
+ 
+ 	init_stats(&throughput_stats);
+-	pthread_mutex_init(&thread_lock, NULL);
+-	pthread_cond_init(&thread_parent, NULL);
+-	pthread_cond_init(&thread_worker, NULL);
++	mutex_init(&thread_lock, /*pshared=*/false);
++	cond_init(&thread_parent, /*pshared=*/false);
++	cond_init(&thread_worker, /*pshared=*/false);
+ 
+ 	threads_starting = params.nthreads;
+ 	pthread_attr_init(&thread_attr);
+@@ -208,11 +209,11 @@ int bench_futex_lock_pi(int argc, const char **argv)
+ 	create_threads(worker, thread_attr, cpu);
+ 	pthread_attr_destroy(&thread_attr);
+ 
+-	pthread_mutex_lock(&thread_lock);
++	mutex_lock(&thread_lock);
+ 	while (threads_starting)
+-		pthread_cond_wait(&thread_parent, &thread_lock);
+-	pthread_cond_broadcast(&thread_worker);
+-	pthread_mutex_unlock(&thread_lock);
++		cond_wait(&thread_parent, &thread_lock);
++	cond_broadcast(&thread_worker);
++	mutex_unlock(&thread_lock);
+ 
+ 	sleep(params.runtime);
+ 	toggle_done(0, NULL, NULL);
+@@ -224,9 +225,9 @@ int bench_futex_lock_pi(int argc, const char **argv)
+ 	}
+ 
+ 	/* cleanup & report results */
+-	pthread_cond_destroy(&thread_parent);
+-	pthread_cond_destroy(&thread_worker);
+-	pthread_mutex_destroy(&thread_lock);
++	cond_destroy(&thread_parent);
++	cond_destroy(&thread_worker);
++	mutex_destroy(&thread_lock);
+ 
+ 	for (i = 0; i < params.nthreads; i++) {
+ 		unsigned long t = bench__runtime.tv_sec > 0 ?
+diff --git a/tools/perf/bench/futex-requeue.c b/tools/perf/bench/futex-requeue.c
+index b6faabfafb8e..d09509289f1d 100644
+--- a/tools/perf/bench/futex-requeue.c
++++ b/tools/perf/bench/futex-requeue.c
+@@ -15,6 +15,7 @@
+ #include <pthread.h>
+ 
+ #include <signal.h>
++#include "../util/mutex.h"
+ #include "../util/stat.h"
+ #include <subcmd/parse-options.h>
+ #include <linux/compiler.h>
+@@ -34,8 +35,8 @@ static u_int32_t futex1 = 0, futex2 = 0;
+ 
+ static pthread_t *worker;
+ static bool done = false;
+-static pthread_mutex_t thread_lock;
+-static pthread_cond_t thread_parent, thread_worker;
++static struct mutex thread_lock;
++static struct cond thread_parent, thread_worker;
+ static struct stats requeuetime_stats, requeued_stats;
+ static unsigned int threads_starting;
+ static int futex_flag = 0;
+@@ -82,12 +83,12 @@ static void *workerfn(void *arg __maybe_unused)
+ {
+ 	int ret;
+ 
+-	pthread_mutex_lock(&thread_lock);
++	mutex_lock(&thread_lock);
+ 	threads_starting--;
+ 	if (!threads_starting)
+-		pthread_cond_signal(&thread_parent);
+-	pthread_cond_wait(&thread_worker, &thread_lock);
+-	pthread_mutex_unlock(&thread_lock);
++		cond_signal(&thread_parent);
++	cond_wait(&thread_worker, &thread_lock);
++	mutex_unlock(&thread_lock);
+ 
+ 	while (1) {
+ 		if (!params.pi) {
+@@ -209,9 +210,9 @@ int bench_futex_requeue(int argc, const char **argv)
+ 	init_stats(&requeued_stats);
+ 	init_stats(&requeuetime_stats);
+ 	pthread_attr_init(&thread_attr);
+-	pthread_mutex_init(&thread_lock, NULL);
+-	pthread_cond_init(&thread_parent, NULL);
+-	pthread_cond_init(&thread_worker, NULL);
++	mutex_init(&thread_lock, /*pshared=*/false);
++	cond_init(&thread_parent, /*pshared=*/false);
++	cond_init(&thread_worker, /*pshared=*/false);
+ 
+ 	for (j = 0; j < bench_repeat && !done; j++) {
+ 		unsigned int nrequeued = 0, wakeups = 0;
+@@ -221,11 +222,11 @@ int bench_futex_requeue(int argc, const char **argv)
+ 		block_threads(worker, thread_attr, cpu);
+ 
+ 		/* make sure all threads are already blocked */
+-		pthread_mutex_lock(&thread_lock);
++		mutex_lock(&thread_lock);
+ 		while (threads_starting)
+-			pthread_cond_wait(&thread_parent, &thread_lock);
+-		pthread_cond_broadcast(&thread_worker);
+-		pthread_mutex_unlock(&thread_lock);
++			cond_wait(&thread_parent, &thread_lock);
++		cond_broadcast(&thread_worker);
++		mutex_unlock(&thread_lock);
+ 
+ 		usleep(100000);
+ 
+@@ -297,9 +298,9 @@ int bench_futex_requeue(int argc, const char **argv)
+ 	}
+ 
+ 	/* cleanup & report results */
+-	pthread_cond_destroy(&thread_parent);
+-	pthread_cond_destroy(&thread_worker);
+-	pthread_mutex_destroy(&thread_lock);
++	cond_destroy(&thread_parent);
++	cond_destroy(&thread_worker);
++	mutex_destroy(&thread_lock);
+ 	pthread_attr_destroy(&thread_attr);
+ 
+ 	print_summary();
+diff --git a/tools/perf/bench/futex-wake-parallel.c b/tools/perf/bench/futex-wake-parallel.c
+index e47f46a3a47e..5eb2e5a2a813 100644
+--- a/tools/perf/bench/futex-wake-parallel.c
++++ b/tools/perf/bench/futex-wake-parallel.c
+@@ -10,6 +10,7 @@
+ #include "bench.h"
+ #include <linux/compiler.h>
+ #include "../util/debug.h"
++#include "../util/mutex.h"
+ 
+ #ifndef HAVE_PTHREAD_BARRIER
+ int bench_futex_wake_parallel(int argc __maybe_unused, const char **argv __maybe_unused)
+@@ -49,8 +50,8 @@ static u_int32_t futex = 0;
+ 
+ static pthread_t *blocked_worker;
+ static bool done = false;
+-static pthread_mutex_t thread_lock;
+-static pthread_cond_t thread_parent, thread_worker;
++static struct mutex thread_lock;
++static struct cond thread_parent, thread_worker;
+ static pthread_barrier_t barrier;
+ static struct stats waketime_stats, wakeup_stats;
+ static unsigned int threads_starting;
+@@ -125,12 +126,12 @@ static void wakeup_threads(struct thread_data *td, pthread_attr_t thread_attr)
+ 
+ static void *blocked_workerfn(void *arg __maybe_unused)
+ {
+-	pthread_mutex_lock(&thread_lock);
++	mutex_lock(&thread_lock);
+ 	threads_starting--;
+ 	if (!threads_starting)
+-		pthread_cond_signal(&thread_parent);
+-	pthread_cond_wait(&thread_worker, &thread_lock);
+-	pthread_mutex_unlock(&thread_lock);
++		cond_signal(&thread_parent);
++	cond_wait(&thread_worker, &thread_lock);
++	mutex_unlock(&thread_lock);
+ 
+ 	while (1) { /* handle spurious wakeups */
+ 		if (futex_wait(&futex, 0, NULL, futex_flag) != EINTR)
+@@ -294,9 +295,9 @@ int bench_futex_wake_parallel(int argc, const char **argv)
+ 	init_stats(&waketime_stats);
+ 
+ 	pthread_attr_init(&thread_attr);
+-	pthread_mutex_init(&thread_lock, NULL);
+-	pthread_cond_init(&thread_parent, NULL);
+-	pthread_cond_init(&thread_worker, NULL);
++	mutex_init(&thread_lock, /*pshared=*/false);
++	cond_init(&thread_parent, /*pshared=*/false);
++	cond_init(&thread_worker, /*pshared=*/false);
+ 
+ 	for (j = 0; j < bench_repeat && !done; j++) {
+ 		waking_worker = calloc(params.nwakes, sizeof(*waking_worker));
+@@ -307,11 +308,11 @@ int bench_futex_wake_parallel(int argc, const char **argv)
+ 		block_threads(blocked_worker, thread_attr, cpu);
+ 
+ 		/* make sure all threads are already blocked */
+-		pthread_mutex_lock(&thread_lock);
++		mutex_lock(&thread_lock);
+ 		while (threads_starting)
+-			pthread_cond_wait(&thread_parent, &thread_lock);
+-		pthread_cond_broadcast(&thread_worker);
+-		pthread_mutex_unlock(&thread_lock);
++			cond_wait(&thread_parent, &thread_lock);
++		cond_broadcast(&thread_worker);
++		mutex_unlock(&thread_lock);
+ 
+ 		usleep(100000);
+ 
+@@ -332,9 +333,9 @@ int bench_futex_wake_parallel(int argc, const char **argv)
+ 	}
+ 
+ 	/* cleanup & report results */
+-	pthread_cond_destroy(&thread_parent);
+-	pthread_cond_destroy(&thread_worker);
+-	pthread_mutex_destroy(&thread_lock);
++	cond_destroy(&thread_parent);
++	cond_destroy(&thread_worker);
++	mutex_destroy(&thread_lock);
+ 	pthread_attr_destroy(&thread_attr);
+ 
+ 	print_summary();
+diff --git a/tools/perf/bench/futex-wake.c b/tools/perf/bench/futex-wake.c
+index 201a3555f09a..eb161a755197 100644
+--- a/tools/perf/bench/futex-wake.c
++++ b/tools/perf/bench/futex-wake.c
+@@ -14,6 +14,7 @@
+ #include <pthread.h>
+ 
+ #include <signal.h>
++#include "../util/mutex.h"
+ #include "../util/stat.h"
+ #include <subcmd/parse-options.h>
+ #include <linux/compiler.h>
+@@ -34,8 +35,8 @@ static u_int32_t futex1 = 0;
+ 
+ static pthread_t *worker;
+ static bool done = false;
+-static pthread_mutex_t thread_lock;
+-static pthread_cond_t thread_parent, thread_worker;
++static struct mutex thread_lock;
++static struct cond thread_parent, thread_worker;
+ static struct stats waketime_stats, wakeup_stats;
+ static unsigned int threads_starting;
+ static int futex_flag = 0;
+@@ -65,12 +66,12 @@ static const char * const bench_futex_wake_usage[] = {
+ 
+ static void *workerfn(void *arg __maybe_unused)
+ {
+-	pthread_mutex_lock(&thread_lock);
++	mutex_lock(&thread_lock);
+ 	threads_starting--;
+ 	if (!threads_starting)
+-		pthread_cond_signal(&thread_parent);
+-	pthread_cond_wait(&thread_worker, &thread_lock);
+-	pthread_mutex_unlock(&thread_lock);
++		cond_signal(&thread_parent);
++	cond_wait(&thread_worker, &thread_lock);
++	mutex_unlock(&thread_lock);
+ 
+ 	while (1) {
+ 		if (futex_wait(&futex1, 0, NULL, futex_flag) != EINTR)
+@@ -178,9 +179,9 @@ int bench_futex_wake(int argc, const char **argv)
+ 	init_stats(&wakeup_stats);
+ 	init_stats(&waketime_stats);
+ 	pthread_attr_init(&thread_attr);
+-	pthread_mutex_init(&thread_lock, NULL);
+-	pthread_cond_init(&thread_parent, NULL);
+-	pthread_cond_init(&thread_worker, NULL);
++	mutex_init(&thread_lock, /*pshared=*/false);
++	cond_init(&thread_parent, /*pshared=*/false);
++	cond_init(&thread_worker, /*pshared=*/false);
+ 
+ 	for (j = 0; j < bench_repeat && !done; j++) {
+ 		unsigned int nwoken = 0;
+@@ -190,11 +191,11 @@ int bench_futex_wake(int argc, const char **argv)
+ 		block_threads(worker, thread_attr, cpu);
+ 
+ 		/* make sure all threads are already blocked */
+-		pthread_mutex_lock(&thread_lock);
++		mutex_lock(&thread_lock);
+ 		while (threads_starting)
+-			pthread_cond_wait(&thread_parent, &thread_lock);
+-		pthread_cond_broadcast(&thread_worker);
+-		pthread_mutex_unlock(&thread_lock);
++			cond_wait(&thread_parent, &thread_lock);
++		cond_broadcast(&thread_worker);
++		mutex_unlock(&thread_lock);
+ 
+ 		usleep(100000);
+ 
+@@ -224,9 +225,9 @@ int bench_futex_wake(int argc, const char **argv)
+ 	}
+ 
+ 	/* cleanup & report results */
+-	pthread_cond_destroy(&thread_parent);
+-	pthread_cond_destroy(&thread_worker);
+-	pthread_mutex_destroy(&thread_lock);
++	cond_destroy(&thread_parent);
++	cond_destroy(&thread_worker);
++	mutex_destroy(&thread_lock);
+ 	pthread_attr_destroy(&thread_attr);
+ 
+ 	print_summary();
+diff --git a/tools/perf/bench/numa.c b/tools/perf/bench/numa.c
+index 20eed1e53f80..934f1fb2d723 100644
+--- a/tools/perf/bench/numa.c
++++ b/tools/perf/bench/numa.c
+@@ -6,8 +6,6 @@
+  */
+ 
+ #include <inttypes.h>
+-/* For the CLR_() macros */
+-#include <pthread.h>
+ 
+ #include <subcmd/parse-options.h>
+ #include "../util/cloexec.h"
+@@ -35,6 +33,7 @@
+ #include <linux/zalloc.h>
+ 
+ #include "../util/header.h"
++#include "../util/mutex.h"
+ #include <numa.h>
+ #include <numaif.h>
+ 
+@@ -67,7 +66,7 @@ struct thread_data {
+ 	u64			system_time_ns;
+ 	u64			user_time_ns;
+ 	double			speed_gbs;
+-	pthread_mutex_t		*process_lock;
++	struct mutex		*process_lock;
+ };
+ 
+ /* Parameters set by options: */
+@@ -137,16 +136,16 @@ struct params {
+ struct global_info {
+ 	u8			*data;
+ 
+-	pthread_mutex_t		startup_mutex;
+-	pthread_cond_t		startup_cond;
++	struct mutex		startup_mutex;
++	struct cond		startup_cond;
+ 	int			nr_tasks_started;
+ 
+-	pthread_mutex_t		start_work_mutex;
+-	pthread_cond_t		start_work_cond;
++	struct mutex		start_work_mutex;
++	struct cond		start_work_cond;
+ 	int			nr_tasks_working;
+ 	bool			start_work;
+ 
+-	pthread_mutex_t		stop_work_mutex;
++	struct mutex		stop_work_mutex;
+ 	u64			bytes_done;
+ 
+ 	struct thread_data	*threads;
+@@ -524,30 +523,6 @@ static void * setup_private_data(ssize_t bytes)
+ 	return alloc_data(bytes, MAP_PRIVATE, 0, g->p.init_cpu0,  g->p.thp, g->p.init_random);
+ }
+ 
+-/*
+- * Return a process-shared (global) mutex:
+- */
+-static void init_global_mutex(pthread_mutex_t *mutex)
+-{
+-	pthread_mutexattr_t attr;
+-
+-	pthread_mutexattr_init(&attr);
+-	pthread_mutexattr_setpshared(&attr, PTHREAD_PROCESS_SHARED);
+-	pthread_mutex_init(mutex, &attr);
+-}
+-
+-/*
+- * Return a process-shared (global) condition variable:
+- */
+-static void init_global_cond(pthread_cond_t *cond)
+-{
+-	pthread_condattr_t attr;
+-
+-	pthread_condattr_init(&attr);
+-	pthread_condattr_setpshared(&attr, PTHREAD_PROCESS_SHARED);
+-	pthread_cond_init(cond, &attr);
+-}
+-
+ static int parse_cpu_list(const char *arg)
+ {
+ 	p0.cpu_list_str = strdup(arg);
+@@ -1220,22 +1195,22 @@ static void *worker_thread(void *__tdata)
+ 	}
+ 
+ 	if (g->p.serialize_startup) {
+-		pthread_mutex_lock(&g->startup_mutex);
++		mutex_lock(&g->startup_mutex);
+ 		g->nr_tasks_started++;
+ 		/* The last thread wakes the main process. */
+ 		if (g->nr_tasks_started == g->p.nr_tasks)
+-			pthread_cond_signal(&g->startup_cond);
++			cond_signal(&g->startup_cond);
+ 
+-		pthread_mutex_unlock(&g->startup_mutex);
++		mutex_unlock(&g->startup_mutex);
+ 
+ 		/* Here we will wait for the main process to start us all at once: */
+-		pthread_mutex_lock(&g->start_work_mutex);
++		mutex_lock(&g->start_work_mutex);
+ 		g->start_work = false;
+ 		g->nr_tasks_working++;
+ 		while (!g->start_work)
+-			pthread_cond_wait(&g->start_work_cond, &g->start_work_mutex);
++			cond_wait(&g->start_work_cond, &g->start_work_mutex);
+ 
+-		pthread_mutex_unlock(&g->start_work_mutex);
++		mutex_unlock(&g->start_work_mutex);
+ 	}
+ 
+ 	gettimeofday(&start0, NULL);
+@@ -1254,17 +1229,17 @@ static void *worker_thread(void *__tdata)
+ 		val += do_work(thread_data,  g->p.bytes_thread,  0,          1,		l, val);
+ 
+ 		if (g->p.sleep_usecs) {
+-			pthread_mutex_lock(td->process_lock);
++			mutex_lock(td->process_lock);
+ 			usleep(g->p.sleep_usecs);
+-			pthread_mutex_unlock(td->process_lock);
++			mutex_unlock(td->process_lock);
+ 		}
+ 		/*
+ 		 * Amount of work to be done under a process-global lock:
+ 		 */
+ 		if (g->p.bytes_process_locked) {
+-			pthread_mutex_lock(td->process_lock);
++			mutex_lock(td->process_lock);
+ 			val += do_work(process_data, g->p.bytes_process_locked, thread_nr,  g->p.nr_threads,	l, val);
+-			pthread_mutex_unlock(td->process_lock);
++			mutex_unlock(td->process_lock);
+ 		}
+ 
+ 		work_done = g->p.bytes_global + g->p.bytes_process +
+@@ -1361,9 +1336,9 @@ static void *worker_thread(void *__tdata)
+ 
+ 	free_data(thread_data, g->p.bytes_thread);
+ 
+-	pthread_mutex_lock(&g->stop_work_mutex);
++	mutex_lock(&g->stop_work_mutex);
+ 	g->bytes_done += bytes_done;
+-	pthread_mutex_unlock(&g->stop_work_mutex);
++	mutex_unlock(&g->stop_work_mutex);
+ 
+ 	return NULL;
+ }
+@@ -1373,7 +1348,7 @@ static void *worker_thread(void *__tdata)
+  */
+ static void worker_process(int process_nr)
+ {
+-	pthread_mutex_t process_lock;
++	struct mutex process_lock;
+ 	struct thread_data *td;
+ 	pthread_t *pthreads;
+ 	u8 *process_data;
+@@ -1381,7 +1356,7 @@ static void worker_process(int process_nr)
+ 	int ret;
+ 	int t;
+ 
+-	pthread_mutex_init(&process_lock, NULL);
++	mutex_init(&process_lock, /*pshared=*/false);
+ 	set_taskname("process %d", process_nr);
+ 
+ 	/*
+@@ -1540,11 +1515,11 @@ static int init(void)
+ 	g->data = setup_shared_data(g->p.bytes_global);
+ 
+ 	/* Startup serialization: */
+-	init_global_mutex(&g->start_work_mutex);
+-	init_global_cond(&g->start_work_cond);
+-	init_global_mutex(&g->startup_mutex);
+-	init_global_cond(&g->startup_cond);
+-	init_global_mutex(&g->stop_work_mutex);
++	mutex_init(&g->start_work_mutex, /*pshared=*/true);
++	cond_init(&g->start_work_cond, /*pshared=*/true);
++	mutex_init(&g->startup_mutex, /*pshared=*/true);
++	cond_init(&g->startup_cond, /*pshared=*/true);
++	mutex_init(&g->stop_work_mutex, /*pshared=*/true);
+ 
+ 	init_thread_data();
+ 
+@@ -1633,17 +1608,17 @@ static int __bench_numa(const char *name)
+ 		 * Wait for all the threads to start up. The last thread will
+ 		 * signal this process.
+ 		 */
+-		pthread_mutex_lock(&g->startup_mutex);
++		mutex_lock(&g->startup_mutex);
+ 		while (g->nr_tasks_started != g->p.nr_tasks)
+-			pthread_cond_wait(&g->startup_cond, &g->startup_mutex);
++			cond_wait(&g->startup_cond, &g->startup_mutex);
+ 
+-		pthread_mutex_unlock(&g->startup_mutex);
++		mutex_unlock(&g->startup_mutex);
+ 
+ 		/* Wait for all threads to be at the start_work_cond. */
+ 		while (!threads_ready) {
+-			pthread_mutex_lock(&g->start_work_mutex);
++			mutex_lock(&g->start_work_mutex);
+ 			threads_ready = (g->nr_tasks_working == g->p.nr_tasks);
+-			pthread_mutex_unlock(&g->start_work_mutex);
++			mutex_unlock(&g->start_work_mutex);
+ 			if (!threads_ready)
+ 				usleep(1);
+ 		}
+@@ -1661,10 +1636,10 @@ static int __bench_numa(const char *name)
+ 
+ 		start = stop;
+ 		/* Start all threads running. */
+-		pthread_mutex_lock(&g->start_work_mutex);
++		mutex_lock(&g->start_work_mutex);
+ 		g->start_work = true;
+-		pthread_mutex_unlock(&g->start_work_mutex);
+-		pthread_cond_broadcast(&g->start_work_cond);
++		mutex_unlock(&g->start_work_mutex);
++		cond_broadcast(&g->start_work_cond);
+ 	} else {
+ 		gettimeofday(&start, NULL);
+ 	}
 -- 
 2.37.2.609.g9ff673ca1a-goog
 
