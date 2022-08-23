@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DE8F59EECA
-	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 00:12:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3440659EECD
+	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 00:13:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230521AbiHWWM1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Aug 2022 18:12:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38802 "EHLO
+        id S233219AbiHWWMm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Aug 2022 18:12:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232376AbiHWWLv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Aug 2022 18:11:51 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D8BF79A65
-        for <bpf@vger.kernel.org>; Tue, 23 Aug 2022 15:10:59 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-335ff2ef600so261878237b3.18
-        for <bpf@vger.kernel.org>; Tue, 23 Aug 2022 15:10:59 -0700 (PDT)
+        with ESMTP id S233051AbiHWWMG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Aug 2022 18:12:06 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DCD77AC3C
+        for <bpf@vger.kernel.org>; Tue, 23 Aug 2022 15:11:05 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-335ff2ef600so261881307b3.18
+        for <bpf@vger.kernel.org>; Tue, 23 Aug 2022 15:11:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
          :date:from:to:cc;
-        bh=4qzUasdtAm954UzRSsL64Femn+0Nzy+IBuEBOWWP/QY=;
-        b=cHl4Z24zLShIZ9jM6xvU6PSPFlPePPNxpwU4YRFMyapYLSTyVGWe71Y7pKHCcPQl1x
-         pyTnHH4JPsyUpZ54JJZqo9/L4036WuYAsVKFAfKpuvGa7GGPGUdZfOYjjYhNeAaCecP4
-         NK01vFn/N/ddzeizyNoLb0fQ4qIksCWuO0WsVcKdX4QTtW+a2vuY9gngpBRhmu1KqcLB
-         AwjgB9xmV3lUI+pMaAUrIoCWVhGHG8dGDALsTwdsAmeAA38XT3bpcWQuEgwPVYjEcDAr
-         XtpzRoRhXRxJ3d8xW6+04dVtmdU16MhQm9t9447rT367gDkzrZJgxngzOfgV2Qx8DWbO
-         tldQ==
+        bh=oBQ8fNk49ilPWpXTVU4R9YnuRnoXvu3xuE3Ff0vlliw=;
+        b=ZtQXSc3nLMgidV0RkXHAnNfb+wLDHFqtJ2m2CLNTkr9/mk1Pb2lwWkDQDUIRWunlg+
+         JiLUE2TGYDpGiLgCmsBuVaVEg1BcTU5heky1RUQMVhyxvVDnaw00zccMmaCPs8/Ydk3o
+         RcGVndc2p39zpI5Ai5vGpaTxsKlv/L3zgINK+6jbONVRdMRxTmm28HFq9/6vHIJGzl+i
+         c52JNYUJjH7z2noWJjC8TFLzblNOHBxhyqaYt3CPSgiJNGkZvPuxbWJPYQ2tYJL2kaAq
+         uvEClhlGisibgw2+5AV1jT+xjgGe7vw33oSqWtBSsX3Rllh1pIbzBIeDCtsqXAgUpbuu
+         PKdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
          :date:x-gm-message-state:from:to:cc;
-        bh=4qzUasdtAm954UzRSsL64Femn+0Nzy+IBuEBOWWP/QY=;
-        b=VzEbCTj5iLvKTxBFw9oo2JmU/FxHWNpTr52T0q+EDGz3emzuF/m3kZ8f497ADwEMNo
-         F4UXrZr6vfSEZOSAoN6hDRIsSQ249dtVXbOs0I+fDkzPqhMud1cNROfpIjlu6SGezH0P
-         GU7rOs16MsoaFQnFgWEw+o3fQYPRmwVinHYsyVpze4KvMW8NBl/J6q6z2GG0BVlYi5yc
-         DLsSVM/qmT6PpR4bTUKvcgmT8RvMO9JnEoe5VmdzKTof9Dm79/PsL+HtR2ZNOGwof8Yz
-         Qe7wOT/0sCnSQ95CG6jmDyXmnwfvh1j/8ZoeHnLbJaaObhsE/UCUdtXu/BP9/s7+LkSz
-         3g0g==
-X-Gm-Message-State: ACgBeo0RxoszGjCga0Epf3DYeD2lYQG2pRBiI94KMHEUwSMxHKqYxXEW
-        EeEa3aN+8Fq2KWqNveDQa5d0MQcJ6TFY
-X-Google-Smtp-Source: AA6agR6KpBoAko5h2ZEqfJEZD9u2QG5oKscnWYPYDk9FpYP+FjWPMVgX+tkWTtuFytTV74u4QuCbkG8atvo9
+        bh=oBQ8fNk49ilPWpXTVU4R9YnuRnoXvu3xuE3Ff0vlliw=;
+        b=R2KFKvuU+gR2u0QlM8UpDC0RgeypKmi2tf9wIrCXCEAxsUOM6oPWZEeDXC9KUgp1Nj
+         dy6sGHm/MbgjffbJHbrLK2fpf1gBAUlO4k0s1nXKIPQA7u01uKxbex/mbH702xu7UEEI
+         Cj1N9PeoKz8qtJZi0Qz2AlOLvSV8xIxC3cXE3iuH6CrBcynhzBxyZZsW8Tgbdc+p+3YG
+         jvnwvAjL4G64KCu8jtRxhUjHMXbtA7A9iHlCrl0XBaGloxUydy9JtjXOF+nx9MebcmjH
+         z25khLVCmR4mJA6sJv5DwxQg6MwdMzzVl6qcf3Kc4E3oMh/POX7Qy6DA+zSWmsVzFdpN
+         C4/Q==
+X-Gm-Message-State: ACgBeo1wkZ4m+YIyxVXsaRohTkCRt0jx+439E2z698wJrJkIzOOfTJB7
+        qakj8c+2ybA0rZGCCDMqUg8f53L/6wQk
+X-Google-Smtp-Source: AA6agR4b/l59aAfX2CCgdljg/llF2RNbdpziMN0iJsvjeCzIe3p/c4gad5OdNLA9Z/E64+34TQ87ZO+tJ3li
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2d4:203:7dbd:c08f:de81:c2a3])
- (user=irogers job=sendgmr) by 2002:a0d:c9c3:0:b0:334:e708:7b05 with SMTP id
- l186-20020a0dc9c3000000b00334e7087b05mr28598701ywd.98.1661292658943; Tue, 23
- Aug 2022 15:10:58 -0700 (PDT)
-Date:   Tue, 23 Aug 2022 15:09:18 -0700
+ (user=irogers job=sendgmr) by 2002:a0d:dcc7:0:b0:325:314c:9a30 with SMTP id
+ f190-20020a0ddcc7000000b00325314c9a30mr28547074ywe.121.1661292664801; Tue, 23
+ Aug 2022 15:11:04 -0700 (PDT)
+Date:   Tue, 23 Aug 2022 15:09:19 -0700
 In-Reply-To: <20220823220922.256001-1-irogers@google.com>
-Message-Id: <20220823220922.256001-15-irogers@google.com>
+Message-Id: <20220823220922.256001-16-irogers@google.com>
 Mime-Version: 1.0
 References: <20220823220922.256001-1-irogers@google.com>
 X-Mailer: git-send-email 2.37.2.609.g9ff673ca1a-goog
-Subject: [PATCH v2 14/18] perf dso: Hold lock when accessing nsinfo
+Subject: [PATCH v2 15/18] perf mutex: Add thread safety annotations
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -113,202 +113,136 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-There may be threads racing to update dso->nsinfo:
-https://lore.kernel.org/linux-perf-users/CAP-5=fWZH20L4kv-BwVtGLwR=Em3AOOT+Q4QGivvQuYn5AsPRg@mail.gmail.com/
-Holding the dso->lock avoids use-after-free, memory leaks and other
-such bugs. Apply the fix in:
-https://lore.kernel.org/linux-perf-users/20211118193714.2293728-1-irogers@google.com/
-of there being a missing nsinfo__put now that the accesses are data race
-free. Fixes test "Lookup mmap thread" when compiled with address
-sanitizer.
+Add thread safety annotations to struct mutex so that when compiled with
+clang's -Wthread-safety warnings are generated for erroneous lock
+patterns. NO_THREAD_SAFETY_ANALYSIS is needed for
+mutex_lock/mutex_unlock as the analysis doesn't under pthread calls.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/builtin-inject.c   |  4 ++++
- tools/perf/util/annotate.c    |  2 ++
- tools/perf/util/build-id.c    | 12 +++++++++---
- tools/perf/util/dso.c         |  7 ++++++-
- tools/perf/util/map.c         |  3 +++
- tools/perf/util/probe-event.c |  3 +++
- tools/perf/util/symbol.c      |  2 +-
- 7 files changed, 28 insertions(+), 5 deletions(-)
+ tools/perf/util/mutex.c |  2 ++
+ tools/perf/util/mutex.h | 72 ++++++++++++++++++++++++++++++++++++++---
+ 2 files changed, 69 insertions(+), 5 deletions(-)
 
-diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
-index 2a0f992ca0be..2a914eaf6425 100644
---- a/tools/perf/builtin-inject.c
-+++ b/tools/perf/builtin-inject.c
-@@ -433,8 +433,10 @@ static struct dso *findnew_dso(int pid, int tid, const char *filename,
- 	}
- 
- 	if (dso) {
-+		mutex_lock(&dso->lock);
- 		nsinfo__put(dso->nsinfo);
- 		dso->nsinfo = nsi;
-+		mutex_unlock(&dso->lock);
- 	} else
- 		nsinfo__put(nsi);
- 
-@@ -617,6 +619,7 @@ static int dso__read_build_id(struct dso *dso)
- 	if (dso->has_build_id)
- 		return 0;
- 
-+	mutex_lock(&dso->lock);
- 	nsinfo__mountns_enter(dso->nsinfo, &nsc);
- 	if (filename__read_build_id(dso->long_name, &dso->bid) > 0)
- 		dso->has_build_id = true;
-@@ -630,6 +633,7 @@ static int dso__read_build_id(struct dso *dso)
- 		free(new_name);
- 	}
- 	nsinfo__mountns_exit(&nsc);
-+	mutex_unlock(&dso->lock);
- 
- 	return dso->has_build_id ? 0 : -1;
+diff --git a/tools/perf/util/mutex.c b/tools/perf/util/mutex.c
+index d12cf0714268..c936557d8bbb 100644
+--- a/tools/perf/util/mutex.c
++++ b/tools/perf/util/mutex.c
+@@ -40,11 +40,13 @@ void mutex_destroy(struct mutex *mtx)
  }
-diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
-index 29d804d76145..1bbfbc8e1554 100644
---- a/tools/perf/util/annotate.c
-+++ b/tools/perf/util/annotate.c
-@@ -1697,6 +1697,7 @@ static int dso__disassemble_filename(struct dso *dso, char *filename, size_t fil
- 		 */
- 		__symbol__join_symfs(filename, filename_size, dso->long_name);
  
-+		mutex_lock(&dso->lock);
- 		if (access(filename, R_OK) && errno == ENOENT && dso->nsinfo) {
- 			char *new_name = filename_with_chroot(dso->nsinfo->pid,
- 							      filename);
-@@ -1705,6 +1706,7 @@ static int dso__disassemble_filename(struct dso *dso, char *filename, size_t fil
- 				free(new_name);
- 			}
- 		}
-+		mutex_unlock(&dso->lock);
- 	}
- 
- 	free(build_id_path);
-diff --git a/tools/perf/util/build-id.c b/tools/perf/util/build-id.c
-index ec18ed5caf3e..a839b30c981b 100644
---- a/tools/perf/util/build-id.c
-+++ b/tools/perf/util/build-id.c
-@@ -898,11 +898,15 @@ static int filename__read_build_id_ns(const char *filename,
- static bool dso__build_id_mismatch(struct dso *dso, const char *name)
+ void mutex_lock(struct mutex *mtx)
++	NO_THREAD_SAFETY_ANALYSIS
  {
- 	struct build_id bid;
-+	bool ret = false;
+ 	CHECK_ERR(pthread_mutex_lock(&mtx->lock));
+ }
  
--	if (filename__read_build_id_ns(name, &bid, dso->nsinfo) < 0)
--		return false;
-+	mutex_lock(&dso->lock);
-+	if (filename__read_build_id_ns(name, &bid, dso->nsinfo) >= 0)
-+		ret = !dso__build_id_equal(dso, &bid);
+ void mutex_unlock(struct mutex *mtx)
++	NO_THREAD_SAFETY_ANALYSIS
+ {
+ 	CHECK_ERR(pthread_mutex_unlock(&mtx->lock));
+ }
+diff --git a/tools/perf/util/mutex.h b/tools/perf/util/mutex.h
+index 952276ad83bd..6c2062d41a4e 100644
+--- a/tools/perf/util/mutex.h
++++ b/tools/perf/util/mutex.h
+@@ -5,11 +5,73 @@
+ #include <pthread.h>
+ #include <stdbool.h>
  
--	return !dso__build_id_equal(dso, &bid);
-+	mutex_unlock(&dso->lock);
++/*
++ * A function-like feature checking macro that is a wrapper around
++ * `__has_attribute`, which is defined by GCC 5+ and Clang and evaluates to a
++ * nonzero constant integer if the attribute is supported or 0 if not.
++ */
++#ifdef __has_attribute
++#define HAVE_ATTRIBUTE(x) __has_attribute(x)
++#else
++#define HAVE_ATTRIBUTE(x) 0
++#endif
 +
-+	return ret;
- }
++
++#if HAVE_ATTRIBUTE(guarded_by) && HAVE_ATTRIBUTE(pt_guarded_by) && \
++	HAVE_ATTRIBUTE(lockable) && HAVE_ATTRIBUTE(exclusive_lock_function) && \
++	HAVE_ATTRIBUTE(exclusive_trylock_function) && HAVE_ATTRIBUTE(exclusive_locks_required) && \
++	HAVE_ATTRIBUTE(no_thread_safety_analysis)
++
++/* Documents if a shared field or global variable needs to be protected by a mutex. */
++#define GUARDED_BY(x) __attribute__((guarded_by(x)))
++
++/*
++ * Documents if the memory location pointed to by a pointer should be guarded by
++ * a mutex when dereferencing the pointer.
++ */
++#define PT_GUARDED_BY(x) __attribute__((pt_guarded_by(x)))
++
++/* Documents if a type is a lockable type. */
++#define LOCKABLE __attribute__((capability("lockable")))
++
++/* Documents functions that acquire a lock in the body of a function, and do not release it. */
++#define EXCLUSIVE_LOCK_FUNCTION(...)  __attribute__((exclusive_lock_function(__VA_ARGS__)))
++
++/*
++ * Documents functions that expect a lock to be held on entry to the function,
++ * and release it in the body of the function.
++ */
++#define UNLOCK_FUNCTION(...) __attribute__((unlock_function(__VA_ARGS__)))
++
++/* Documents functions that try to acquire a lock, and return success or failure. */
++#define EXCLUSIVE_TRYLOCK_FUNCTION(...) \
++	__attribute__((exclusive_trylock_function(__VA_ARGS__)))
++
++
++/* Documents a function that expects a mutex to be held prior to entry. */
++#define EXCLUSIVE_LOCKS_REQUIRED(...) __attribute__((exclusive_locks_required(__VA_ARGS__)))
++
++/* Turns off thread safety checking within the body of a particular function. */
++#define NO_THREAD_SAFETY_ANALYSIS __attribute__((no_thread_safety_analysis))
++
++#else
++
++#define GUARDED_BY(x)
++#define PT_GUARDED_BY(x)
++#define LOCKABLE
++#define EXCLUSIVE_LOCK_FUNCTION(...)
++#define UNLOCK_FUNCTION(...)
++#define EXCLUSIVE_TRYLOCK_FUNCTION(...)
++#define EXCLUSIVE_LOCKS_REQUIRED(...)
++#define NO_THREAD_SAFETY_ANALYSIS
++
++#endif
++
+ /*
+  * A wrapper around the mutex implementation that allows perf to error check
+  * usage, etc.
+  */
+-struct mutex {
++struct LOCKABLE mutex {
+ 	pthread_mutex_t lock;
+ };
  
- static int dso__cache_build_id(struct dso *dso, struct machine *machine,
-@@ -941,8 +945,10 @@ static int dso__cache_build_id(struct dso *dso, struct machine *machine,
- 	if (!is_kallsyms && dso__build_id_mismatch(dso, name))
- 		goto out_free;
+@@ -25,9 +87,9 @@ struct cond {
+ void mutex_init(struct mutex *mtx, bool pshared);
+ void mutex_destroy(struct mutex *mtx);
  
-+	mutex_lock(&dso->lock);
- 	ret = build_id_cache__add_b(&dso->bid, name, dso->nsinfo,
- 				    is_kallsyms, is_vdso, proper_name, root_dir);
-+	mutex_unlock(&dso->lock);
- out_free:
- 	free(allocated_name);
- 	return ret;
-diff --git a/tools/perf/util/dso.c b/tools/perf/util/dso.c
-index c7a5b42d1311..89e1b93cb874 100644
---- a/tools/perf/util/dso.c
-+++ b/tools/perf/util/dso.c
-@@ -501,6 +501,7 @@ static int __open_dso(struct dso *dso, struct machine *machine)
- 	if (!name)
- 		return -ENOMEM;
+-void mutex_lock(struct mutex *mtx);
+-void mutex_unlock(struct mutex *mtx);
+-bool mutex_trylock(struct mutex *mtx);
++void mutex_lock(struct mutex *mtx) EXCLUSIVE_LOCK_FUNCTION(*mtx);
++void mutex_unlock(struct mutex *mtx) UNLOCK_FUNCTION(*mtx);
++bool mutex_trylock(struct mutex *mtx) EXCLUSIVE_TRYLOCK_FUNCTION(true, *mtx);
  
-+	mutex_lock(&dso->lock);
- 	if (machine)
- 		root_dir = machine->root_dir;
+ /*
+  * Initialize the cond struct, if pshared is set then specify the process-shared
+@@ -36,7 +98,7 @@ bool mutex_trylock(struct mutex *mtx);
+ void cond_init(struct cond *cnd, bool pshared);
+ void cond_destroy(struct cond *cnd);
  
-@@ -541,6 +542,7 @@ static int __open_dso(struct dso *dso, struct machine *machine)
- 		unlink(name);
+-void cond_wait(struct cond *cnd, struct mutex *mtx);
++void cond_wait(struct cond *cnd, struct mutex *mtx) EXCLUSIVE_LOCKS_REQUIRED(mtx);
+ void cond_signal(struct cond *cnd);
+ void cond_broadcast(struct cond *cnd);
  
- out:
-+	mutex_unlock(&dso->lock);
- 	free(name);
- 	return fd;
- }
-@@ -559,8 +561,11 @@ static int open_dso(struct dso *dso, struct machine *machine)
- 	int fd;
- 	struct nscookie nsc;
- 
--	if (dso->binary_type != DSO_BINARY_TYPE__BUILD_ID_CACHE)
-+	if (dso->binary_type != DSO_BINARY_TYPE__BUILD_ID_CACHE) {
-+		mutex_lock(&dso->lock);
- 		nsinfo__mountns_enter(dso->nsinfo, &nsc);
-+		mutex_unlock(&dso->lock);
-+	}
- 	fd = __open_dso(dso, machine);
- 	if (dso->binary_type != DSO_BINARY_TYPE__BUILD_ID_CACHE)
- 		nsinfo__mountns_exit(&nsc);
-diff --git a/tools/perf/util/map.c b/tools/perf/util/map.c
-index e0aa4a254583..f3a3d9b3a40d 100644
---- a/tools/perf/util/map.c
-+++ b/tools/perf/util/map.c
-@@ -181,7 +181,10 @@ struct map *map__new(struct machine *machine, u64 start, u64 len,
- 			if (!(prot & PROT_EXEC))
- 				dso__set_loaded(dso);
- 		}
-+		mutex_lock(&dso->lock);
-+		nsinfo__put(dso->nsinfo);
- 		dso->nsinfo = nsi;
-+		mutex_unlock(&dso->lock);
- 
- 		if (build_id__is_defined(bid)) {
- 			dso__set_build_id(dso, bid);
-diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.c
-index 785246ff4179..0c24bc7afbca 100644
---- a/tools/perf/util/probe-event.c
-+++ b/tools/perf/util/probe-event.c
-@@ -29,6 +29,7 @@
- #include "color.h"
- #include "map.h"
- #include "maps.h"
-+#include "mutex.h"
- #include "symbol.h"
- #include <api/fs/fs.h>
- #include "trace-event.h"	/* For __maybe_unused */
-@@ -180,8 +181,10 @@ struct map *get_target_map(const char *target, struct nsinfo *nsi, bool user)
- 
- 		map = dso__new_map(target);
- 		if (map && map->dso) {
-+			mutex_lock(&map->dso->lock);
- 			nsinfo__put(map->dso->nsinfo);
- 			map->dso->nsinfo = nsinfo__get(nsi);
-+			mutex_unlock(&map->dso->lock);
- 		}
- 		return map;
- 	} else {
-diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
-index 656d9b4dd456..a3a165ae933a 100644
---- a/tools/perf/util/symbol.c
-+++ b/tools/perf/util/symbol.c
-@@ -1791,6 +1791,7 @@ int dso__load(struct dso *dso, struct map *map)
- 	char newmapname[PATH_MAX];
- 	const char *map_path = dso->long_name;
- 
-+	mutex_lock(&dso->lock);
- 	perfmap = strncmp(dso->name, "/tmp/perf-", 10) == 0;
- 	if (perfmap) {
- 		if (dso->nsinfo && (dso__find_perf_map(newmapname,
-@@ -1800,7 +1801,6 @@ int dso__load(struct dso *dso, struct map *map)
- 	}
- 
- 	nsinfo__mountns_enter(dso->nsinfo, &nsc);
--	mutex_lock(&dso->lock);
- 
- 	/* check again under the dso->lock */
- 	if (dso__loaded(dso)) {
 -- 
 2.37.2.609.g9ff673ca1a-goog
 
