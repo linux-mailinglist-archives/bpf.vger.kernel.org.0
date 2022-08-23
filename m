@@ -2,82 +2,50 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB05259D169
-	for <lists+bpf@lfdr.de>; Tue, 23 Aug 2022 08:43:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAC2A59D1F4
+	for <lists+bpf@lfdr.de>; Tue, 23 Aug 2022 09:25:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239968AbiHWGly (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Aug 2022 02:41:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46468 "EHLO
+        id S240039AbiHWHZj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Aug 2022 03:25:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239875AbiHWGlw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Aug 2022 02:41:52 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53C5961132
-        for <bpf@vger.kernel.org>; Mon, 22 Aug 2022 23:41:50 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4MBfjp1HPSzKxJp
-        for <bpf@vger.kernel.org>; Tue, 23 Aug 2022 14:40:14 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-        by APP1 (Coremail) with SMTP id cCh0CgCXm+iodgRjyJnEAg--.13377S2;
-        Tue, 23 Aug 2022 14:41:48 +0800 (CST)
-Subject: Re: [PATCH 1/3] bpf: Disable preemption when increasing per-cpu
- map_locked
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Hao Luo <haoluo@google.com>, bpf <bpf@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Hao Sun <sunhao.th@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        with ESMTP id S233020AbiHWHZi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Aug 2022 03:25:38 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 773FE62A93;
+        Tue, 23 Aug 2022 00:25:37 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 289A0B81BDB;
+        Tue, 23 Aug 2022 07:25:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A338C433D6;
+        Tue, 23 Aug 2022 07:25:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1661239534;
+        bh=58Xb+4i5V/oco9O7BavXUkLRRYHB+58DLbXicNZDwh4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pjTr/Z6SvB4TmFzMxTfi4ZLz2yva0Pmx+Rx4GcRvdiO3jgYYYfnFpQxYAU9ieczXX
+         uNjwd8sTRcPzn35myL47BwZ5xGyR1WQXMS9eyUrUQZVFA6/+6LmKYr4oZ50Ex+AvTd
+         RresWZXixK4Wa+E2pudBmcywk+jdu6j/UYacXUSk=
+Date:   Tue, 23 Aug 2022 09:25:31 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Pu Lehui <pulehui@huawei.com>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org,
+        syzbot+f264bffdfbd5614f3bb2@syzkaller.appspotmail.com,
         Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Lorenz Bauer <oss@lmb.io>, Hou Tao <houtao1@huawei.com>
-References: <20220821033223.2598791-1-houtao@huaweicloud.com>
- <20220821033223.2598791-2-houtao@huaweicloud.com>
- <CA+khW7jv6J9FSqNvaHNzYNpEBoQX6wPEEdoD4OwkPQt844Wwmw@mail.gmail.com>
- <3287b95c-30e1-5647-fe2c-1feff673291d@huaweicloud.com>
- <CA+khW7h1OK2oqGyCipGfySV_kcHW4=SHo6123nk2WTTXMOMUxQ@mail.gmail.com>
- <387c851f-03ae-9b34-4ec0-9667fb26ec18@huaweicloud.com>
- <CA+khW7jgvZR8azSE3gEJvhT_psgEeHCdU3uWAQUkkKFLgh0a4Q@mail.gmail.com>
- <CA+khW7iv+zX0XzC++i-F7QZju9QGufh6+SVN3JWp9WyJe2qhMg@mail.gmail.com>
- <CAADnVQ+udaAy5OZ-BXpfeQZdPRHD6F+FUD7KxJfxcjiyvh2Dsg@mail.gmail.com>
- <67c5da0b-e5af-0934-6e17-1c43d0f96165@huaweicloud.com>
- <CAADnVQ+nd3p0=nNoa4kKOXgAbscm+k0EQeSupwF2Rs3vhftTAQ@mail.gmail.com>
-From:   Hou Tao <houtao@huaweicloud.com>
-Message-ID: <c3517815-e291-0cd2-5296-971334a7ad3b@huaweicloud.com>
-Date:   Tue, 23 Aug 2022 14:41:44 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Tadeusz Struk <tadeusz.struk@linaro.org>
+Subject: Re: [PATCH 5.10] bpf: Fix KASAN use-after-free Read in
+ compute_effective_progs
+Message-ID: <YwSA65p3f8kV8TEM@kroah.com>
+References: <20220820050518.2118130-1-pulehui@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <CAADnVQ+nd3p0=nNoa4kKOXgAbscm+k0EQeSupwF2Rs3vhftTAQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID: cCh0CgCXm+iodgRjyJnEAg--.13377S2
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYI7kC6x804xWl14x267AKxVW5JVWrJwAF
-        c2x0x2IEx4CE42xK8VAvwI8IcIk0rVWUuVWrJwAFIxvE14AKwVWUJVWUGwA2ocxC64kIII
-        0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xv
-        wVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4
-        x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG
-        64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r
-        1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kI
-        c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
-        AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
-        17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
-        IF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq
-        3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
-        nIWIevJa73UjIFyTuYvjxUFDGOUUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220820050518.2118130-1-pulehui@huawei.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -86,21 +54,39 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+On Sat, Aug 20, 2022 at 01:05:18PM +0800, Pu Lehui wrote:
+> From: Tadeusz Struk <tadeusz.struk@linaro.org>
+> 
+> commit 4c46091ee985ae84c60c5e95055d779fcd291d87 upstream.
+> 
+> Syzbot found a Use After Free bug in compute_effective_progs().
+> The reproducer creates a number of BPF links, and causes a fault
+> injected alloc to fail, while calling bpf_link_detach on them.
+> Link detach triggers the link to be freed by bpf_link_free(),
+> which calls __cgroup_bpf_detach() and update_effective_progs().
+> If the memory allocation in this function fails, the function restores
+> the pointer to the bpf_cgroup_link on the cgroup list, but the memory
+> gets freed just after it returns. After this, every subsequent call to
+> update_effective_progs() causes this already deallocated pointer to be
+> dereferenced in prog_list_length(), and triggers KASAN UAF error.
+> 
+> To fix this issue don't preserve the pointer to the prog or link in the
+> list, but remove it and replace it with a dummy prog without shrinking
+> the table. The subsequent call to __cgroup_bpf_detach() or
+> __cgroup_bpf_detach() will correct it.
+> 
+> Fixes: af6eea57437a ("bpf: Implement bpf_link-based cgroup BPF program attachment")
+> Reported-by: <syzbot+f264bffdfbd5614f3bb2@syzkaller.appspotmail.com>
+> Signed-off-by: Tadeusz Struk <tadeusz.struk@linaro.org>
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> Cc: <stable@vger.kernel.org>
+> Link: https://syzkaller.appspot.com/bug?id=8ebf179a95c2a2670f7cf1ba62429ec044369db4
+> Link: https://lore.kernel.org/bpf/20220517180420.87954-1-tadeusz.struk@linaro.org
+> Signed-off-by: Pu Lehui <pulehui@huawei.com>
+> ---
+>  kernel/bpf/cgroup.c | 70 ++++++++++++++++++++++++++++++++++++++-------
+>  1 file changed, 60 insertions(+), 10 deletions(-)
 
-On 8/23/2022 12:50 PM, Alexei Starovoitov wrote:
-> On Mon, Aug 22, 2022 at 7:57 PM Hou Tao <houtao@huaweicloud.com> wrote:
->>
-SNIP
->>> So please address Hao's comments, add a test and
->>> resubmit patches 1 and 3.
->>> Also please use [PATCH bpf-next] in the subject to help BPF CI
->>> and patchwork scripts.
->> Will do. And to bpf-next instead of bpf ?
-> bpf-next is almost always prefered for fixes for corner
-> cases that have been around for some time.
-> bpf tree is for security and high pri fixes.
-> bpf-next gives time for fixes to prove themselves.
-> .
-Understand. Thanks for the explanation.
+Now queued up, thanks.
 
+greg k-h
