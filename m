@@ -2,68 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73C1759F6C4
-	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 11:49:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 589D059F6F2
+	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 11:57:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235183AbiHXJs5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Aug 2022 05:48:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60080 "EHLO
+        id S235675AbiHXJ5P (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Aug 2022 05:57:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232564AbiHXJs4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Aug 2022 05:48:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7521067464
-        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 02:48:54 -0700 (PDT)
+        with ESMTP id S234910AbiHXJ5N (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Aug 2022 05:57:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B59A079ECB
+        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 02:57:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1661334533;
+        s=mimecast20190719; t=1661335032;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=qiF7/qO+yisg9qjBhsaAka2ZWunzOCu9/3xjQqLrf9U=;
-        b=W/bo8nXPtT+PU5WnRFJIDATmKMhacIvKXHQ2QlE8c7KXZM7ev5BWeRzLafoVF3YY62WmFG
-        BV2+Jjuq8roy29BGbfkcfMz6cen2cca5OzZn9z9nUaMWVuPJ88ffyEIcdgiD04kaH567Ig
-        eRUCAUl7KVuLAiVh/tFVJcPnOgUPnFI=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=67TcKJ9jWGMiEw4kg52hWXxqV/N5/I9VlmIszyd4tqI=;
+        b=PLqlBO6FDEKna8HTCxPFm/1CcP/1erIQ1nm0N2uCQpSx1baZhVCFTBxAXq8nn3qNuNadLh
+        1/0ibnJDHOrb1EwBNvZhMwz97j3NKcZk/PrAAc/yKKbnKuir0YO6IkgJKD5rhdEIyrIe2p
+        emDjeYToNBQ0muL4mvKLn/StAyrG9s0=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-522-4haTi5DIMxSi0GiISITceA-1; Wed, 24 Aug 2022 05:48:52 -0400
-X-MC-Unique: 4haTi5DIMxSi0GiISITceA-1
-Received: by mail-wm1-f71.google.com with SMTP id c64-20020a1c3543000000b003a61987ffb3so9208251wma.6
-        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 02:48:51 -0700 (PDT)
+ us-mta-625-3U_DELMQOqSUxbwqJgUD1g-1; Wed, 24 Aug 2022 05:57:10 -0400
+X-MC-Unique: 3U_DELMQOqSUxbwqJgUD1g-1
+Received: by mail-wr1-f71.google.com with SMTP id e14-20020adf9bce000000b002254afda62aso1633729wrc.18
+        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 02:57:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc;
-        bh=qiF7/qO+yisg9qjBhsaAka2ZWunzOCu9/3xjQqLrf9U=;
-        b=nvevYfMV5d8g/1KxKtX9HHuYHXtmETTk1ETrzbwgMQFQ+D38d7SOYLQHLcFfeTtIJ5
-         Mbe64Sv9BqZCqsCikZqztm4lV65+jPD5QsVvsJpGmc+IpnR2sVXH5f9iWuI4U+aUrP2n
-         LruD+K/L+yYQ4fqSp+88BiiMhfHRaBygvCvOpccsUoRV/+XXWZlEmnrb3YfODmxRHFCB
-         Jk/e5qv7ge6mjB/4ZXm/RYptrULZMq/tYYk1HCPq6O5fz8oq3HNBa4Fu7DuHne0n10YW
-         GBlnhivsoLG+Ru99YonCbKKBHfO/1SXquTrrVN2qe8hBNjEXqS7qNC45IMwY3bcHruXP
-         jc+Q==
-X-Gm-Message-State: ACgBeo1xB8m1wwTX7zcbw8jNgm4HbI6l8ocv527O7dNnlnyQc5GoFnkv
-        WHrut1GhYMmtb9p0HlEoxurE5v/zKmVJI8PwtX8Z8oDr8yrLP7vaOe7pDB3KmZUo0pgQNSQ8OqG
-        M+5HazXGDhm4N
-X-Received: by 2002:a5d:5986:0:b0:225:6216:5a79 with SMTP id n6-20020a5d5986000000b0022562165a79mr5828982wri.594.1661334530986;
-        Wed, 24 Aug 2022 02:48:50 -0700 (PDT)
-X-Google-Smtp-Source: AA6agR5QheGVv9qlYiusEVisLJNGRUzET8ghwC3bQSFWUdMe6rMHsgYEyFps6VAi3eF+kzcPiQUQtg==
-X-Received: by 2002:a5d:5986:0:b0:225:6216:5a79 with SMTP id n6-20020a5d5986000000b0022562165a79mr5828965wri.594.1661334530719;
-        Wed, 24 Aug 2022 02:48:50 -0700 (PDT)
+        bh=67TcKJ9jWGMiEw4kg52hWXxqV/N5/I9VlmIszyd4tqI=;
+        b=zXwnxDdj4+9ot+Ud+1akgKMGnmsODv5kFFG3+8mXT9RiyKTxsctS9Wg/k463LcP83w
+         z+c74Le5L5Bn4DoNbJUiGENcQ9y3NggsKwKChGEOhwNWJ1Jn0324M10NepF+eygWzZAi
+         q5aRVRPEbabnAa9JycV1ybeqpb6PXt7bKzO8YXBx2QklJrJGGpMtUFyO/c9vGqw5b5Hh
+         5fVQGNefOfmr/uBFqBIhjZmPxlmyDtrnZYv47TME/Tw5mcE6RIuxCe5ETozKH3Ah2tMa
+         CtHTOYdhoNMcctqisKhpTYdDSgVB8eWN6Vw0zYJfaZDesJUiB5ALE2wfDWFfDY3TU3gn
+         irbA==
+X-Gm-Message-State: ACgBeo1dVTo5PPGUvrA0KhHm/O+Vc/y2pMZvTzM3XXqvzcTbNARIS1FZ
+        /hX6/CW2/IAsKPlSA1tkkQXQlKd1toHJbEsATMebSu8RyrZO9hI2WjfiVLZZVtRyKnzkF34cs7d
+        ehFOtuc6L+oYk
+X-Received: by 2002:a05:6000:606:b0:225:7264:8f06 with SMTP id bn6-20020a056000060600b0022572648f06mr985423wrb.27.1661335029399;
+        Wed, 24 Aug 2022 02:57:09 -0700 (PDT)
+X-Google-Smtp-Source: AA6agR4gyv5u3qg2yLq2zqzn2c9wgxUKEY2z8IPI+Y201XRbuYkIl5QRMnrv7NBI5d1k0Z7rQs+kWw==
+X-Received: by 2002:a05:6000:606:b0:225:7264:8f06 with SMTP id bn6-20020a056000060600b0022572648f06mr985403wrb.27.1661335029194;
+        Wed, 24 Aug 2022 02:57:09 -0700 (PDT)
 Received: from [192.168.110.200] (82-65-22-26.subs.proxad.net. [82.65.22.26])
-        by smtp.gmail.com with ESMTPSA id n5-20020a05600c4f8500b003a601a1c2f7sm1367229wmq.19.2022.08.24.02.48.49
+        by smtp.gmail.com with ESMTPSA id z13-20020a5d44cd000000b00222ed7ea203sm16236679wrr.100.2022.08.24.02.57.08
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Aug 2022 02:48:50 -0700 (PDT)
-Message-ID: <f4624a16-ee0b-8e8e-a390-349d38f229b4@redhat.com>
-Date:   Wed, 24 Aug 2022 11:48:49 +0200
+        Wed, 24 Aug 2022 02:57:08 -0700 (PDT)
+Message-ID: <5bba0f0e-544e-85ef-627b-6dd35244871a@redhat.com>
+Date:   Wed, 24 Aug 2022 11:57:07 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.9.0
-Subject: Re: [PATCH bpf-next v7 13/24] HID: initial BPF implementation
+Subject: Re: [PATCH bpf-next v8 02/24] bpf/verifier: allow kfunc to read user
+ provided context
 Content-Language: en-US
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Jiri Kosina <jikos@kernel.org>,
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Jiri Kosina <jikos@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -75,19 +78,23 @@ Cc:     Jiri Kosina <jikos@kernel.org>,
         Dave Marchevsky <davemarchevsky@fb.com>,
         Joe Stringer <joe@cilium.io>, Jonathan Corbet <corbet@lwn.net>,
         Tero Kristo <tero.kristo@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org
-References: <20220721153625.1282007-1-benjamin.tissoires@redhat.com>
- <20220721153625.1282007-14-benjamin.tissoires@redhat.com>
- <YuKbCCOAtSvUlI3z@kroah.com>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-In-Reply-To: <YuKbCCOAtSvUlI3z@kroah.com>
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+References: <20220721153625.1282007-3-benjamin.tissoires@redhat.com>
+ <20220722084556.1342406-1-benjamin.tissoires@redhat.com>
+ <CAADnVQLypx8Yd7L4GByGNEJaWgg0R6ukNV9hz0ge1+ZdW4mdgQ@mail.gmail.com>
+ <CAO-hwJK5v8An5W48x2TDH=iNb49iEbC8uGwMbdCak0Bjnmea+w@mail.gmail.com>
+In-Reply-To: <CAO-hwJK5v8An5W48x2TDH=iNb49iEbC8uGwMbdCak0Bjnmea+w@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -97,159 +104,120 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 7/28/22 16:19, Greg KH wrote:
-> On Thu, Jul 21, 2022 at 05:36:14PM +0200, Benjamin Tissoires wrote:
->> --- /dev/null
->> +++ b/include/linux/hid_bpf.h
->> @@ -0,0 +1,102 @@
->> +/* SPDX-License-Identifier: GPL-2.0+ WITH Linux-syscall-note */
+On 7/25/22 18:36, Benjamin Tissoires wrote:
+> On Fri, Jul 22, 2022 at 6:16 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+>>
+>> On Fri, Jul 22, 2022 at 1:46 AM Benjamin Tissoires
+>> <benjamin.tissoires@redhat.com> wrote:
+>>>
+>>> When a kfunc was trying to access data from context in a syscall eBPF
+>>> program, the verifier was rejecting the call.
+>>> This is because the syscall context is not known at compile time, and
+>>> so we need to check this when actually accessing it.
+>>>
+>>> Check for the valid memory access and allow such situation to happen.
+>>>
+>>> Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+>>> Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+>>>
+>>> ---
+>>>
+>>> changes in v8:
+>>> - fixup comment
+>>> - return -EACCESS instead of -EINVAL for consistency
+>>>
+>>> changes in v7:
+>>> - renamed access_t into atype
+>>> - allow zero-byte read
+>>> - check_mem_access() to the correct offset/size
+>>>
+>>> new in v6
+>>> ---
+>>>   kernel/bpf/verifier.c | 21 +++++++++++++++++++++
+>>>   1 file changed, 21 insertions(+)
+>>>
+>>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>>> index 7c1e056624f9..c807c5d7085a 100644
+>>> --- a/kernel/bpf/verifier.c
+>>> +++ b/kernel/bpf/verifier.c
+>>> @@ -248,6 +248,7 @@ struct bpf_call_arg_meta {
+>>>          struct bpf_map *map_ptr;
+>>>          bool raw_mode;
+>>>          bool pkt_access;
+>>> +       bool is_kfunc;
+>>>          u8 release_regno;
+>>>          int regno;
+>>>          int access_size;
+>>> @@ -5170,6 +5171,7 @@ static int check_helper_mem_access(struct bpf_verifier_env *env, int regno,
+>>>                                     struct bpf_call_arg_meta *meta)
+>>>   {
+>>>          struct bpf_reg_state *regs = cur_regs(env), *reg = &regs[regno];
+>>> +       enum bpf_prog_type prog_type = resolve_prog_type(env->prog);
+>>>          u32 *max_access;
+>>>
+>>>          switch (base_type(reg->type)) {
+>>> @@ -5223,6 +5225,24 @@ static int check_helper_mem_access(struct bpf_verifier_env *env, int regno,
+>>>                                  env,
+>>>                                  regno, reg->off, access_size,
+>>>                                  zero_size_allowed, ACCESS_HELPER, meta);
+>>> +       case PTR_TO_CTX:
+>>> +               /* in case of a kfunc called in a program of type SYSCALL, the context is
+>>> +                * user supplied, so not computed statically.
+>>> +                * Dynamically check it now
+>>> +                */
+>>> +               if (prog_type == BPF_PROG_TYPE_SYSCALL && meta && meta->is_kfunc) {
+>>
+>> prog_type check looks a bit odd here.
+>> Can we generalize with
+>> if (!env->ops->convert_ctx_access
 > 
-> This is not a uapi .h file, so the "WITH Linux-syscall-note" should not
-> be here, right?
+> Yep, seems to be working fine for my use case and the test cases I
+> have in this series.
+> 
+>>
+>> In other words any program type that doesn't have ctx rewrites can
+>> use helpers to access ctx fields ?
+>>
+>> Also why kfunc only?
+>> It looks safe to allow normal helpers as well.
+> 
+> Well, not sure what is happening here, but if I remove the check for
+> kfunc, the test for PTR_TO_CTX == NULL and size == 0 gives me a
+> -EINVAL.
 
-thanks, dropping this syscall note from the series.
+I finally managed to track down the issue.
 
-> 
-> 
->> +
->> +#ifndef __HID_BPF_H
->> +#define __HID_BPF_H
->> +
->> +#include <linux/spinlock.h>
->> +#include <uapi/linux/hid.h>
->> +#include <uapi/linux/hid_bpf.h>
->> +
->> +struct hid_device;
->> +
->> +/*
->> + * The following is the HID BPF API.
->> + *
->> + * It should be treated as UAPI, so extra care is required
->> + * when making change to this file.
-> 
-> So is this uapi?  If so, shouldn't it go into a uapi include directory
-> so we know this and properly track it and maintain it that way?
+The reason was that if we now call check_mem_access for every function 
+check, but also subprogs. And so we ensure that a subprog can access 
+context.
 
-IMO it's a grey area. It is not "uapi" because it doesn't export 
-anything that userspace can use. A userspace program can not include 
-that and use it in other words.
+This is all fine, but that test now tags the subprog accessing the 
+context, even if it is actually null and not accessing it in the code.
 
-So strictly speaking, it's a normal part of a kernel header file, 
-because it's a description of what other kernel users (though here, eBPF 
-programs) can use.
+So to restore the previous behavior, I am storing 
+env->prog->aux->max_ctx_offset in btf_check_subprog_arg_match() and 
+restore it after the call to check for the arguments.
 
-But I really want that part of the API to be considered as "stable" and 
-give some guarantees to the users that I won't change it at every 
-release. Thus the "uapi-like".
-
-> 
->> + */
->> +
->> +/**
->> + * struct hid_bpf_ctx - User accessible data for all HID programs
->> + *
->> + * ``data`` is not directly accessible from the context. We need to issue
->> + * a call to ``hid_bpf_get_data()`` in order to get a pointer to that field.
->> + *
->> + * All of these fields are currently read-only.
->> + *
->> + * @index: program index in the jump table. No special meaning (a smaller index
->> + *         doesn't mean the program will be executed before another program with
->> + *         a bigger index).
->> + * @hid: the ``struct hid_device`` representing the device itself
->> + * @report_type: used for ``hid_bpf_device_event()``
->> + * @size: Valid data in the data field.
->> + *
->> + *        Programs can get the available valid size in data by fetching this field.
->> + */
->> +struct hid_bpf_ctx {
->> +	__u32 index;
->> +	const struct hid_device *hid;
->> +	enum hid_report_type report_type;
->> +	__s32 size;
->> +};
->> +
->> +/* Following functions are tracepoints that BPF programs can attach to */
->> +int hid_bpf_device_event(struct hid_bpf_ctx *ctx);
->> +
->> +/* Following functions are kfunc that we export to BPF programs */
->> +/* only available in tracing */
->> +__u8 *hid_bpf_get_data(struct hid_bpf_ctx *ctx, unsigned int offset, const size_t __sz);
->> +
->> +/* only available in syscall */
->> +int hid_bpf_attach_prog(unsigned int hid_id, int prog_fd, __u32 flags);
->> +
->> +/*
->> + * Below is HID internal
->> + */
->> +
->> +/* internal function to call eBPF programs, not to be used by anybody */
->> +int __hid_bpf_tail_call(struct hid_bpf_ctx *ctx);
->> +
->> +#define HID_BPF_MAX_PROGS_PER_DEV 64
->> +#define HID_BPF_FLAG_MASK (((HID_BPF_FLAG_MAX - 1) << 1) - 1)
->> +
->> +/* types of HID programs to attach to */
->> +enum hid_bpf_prog_type {
->> +	HID_BPF_PROG_TYPE_UNDEF = -1,
->> +	HID_BPF_PROG_TYPE_DEVICE_EVENT,			/* an event is emitted from the device */
->> +	HID_BPF_PROG_TYPE_MAX,
->> +};
->> +
->> +struct hid_bpf_ops {
->> +	struct module *owner;
->> +	struct bus_type *bus_type;
->> +};
->> +
->> +extern struct hid_bpf_ops *hid_bpf_ops;
->> +
->> +struct hid_bpf_prog_list {
->> +	u16 prog_idx[HID_BPF_MAX_PROGS_PER_DEV];
->> +	u8 prog_cnt;
->> +};
->> +
->> +/* stored in each device */
->> +struct hid_bpf {
->> +	struct hid_bpf_prog_list __rcu *progs[HID_BPF_PROG_TYPE_MAX];	/* attached BPF progs */
->> +	bool destroyed;			/* prevents the assignment of any progs */
->> +
->> +	spinlock_t progs_lock;		/* protects RCU update of progs */
->> +};
->> +
->> +#ifdef CONFIG_HID_BPF
->> +int dispatch_hid_bpf_device_event(struct hid_device *hid, enum hid_report_type type, u8 *data,
->> +				  u32 size, int interrupt);
->> +void hid_bpf_destroy_device(struct hid_device *hid);
->> +void hid_bpf_device_init(struct hid_device *hid);
->> +#else /* CONFIG_HID_BPF */
->> +static inline int dispatch_hid_bpf_device_event(struct hid_device *hid, enum hid_report_type type, u8 *data,
->> +						u32 size, int interrupt) { return 0; }
->> +static inline void hid_bpf_destroy_device(struct hid_device *hid) {}
->> +static inline void hid_bpf_device_init(struct hid_device *hid) {}
->> +#endif /* CONFIG_HID_BPF */
->> +
->> +#endif /* __HID_BPF_H */
->> diff --git a/include/uapi/linux/hid_bpf.h b/include/uapi/linux/hid_bpf.h
->> new file mode 100644
->> index 000000000000..ba8caf9b60ee
->> --- /dev/null
->> +++ b/include/uapi/linux/hid_bpf.h
->> @@ -0,0 +1,25 @@
->> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> 
-> This is fine, it is in include/uapi/
-> 
-> Other than those minor comments, this all looks good to me!
-> 
-> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> 
-
-Great!
-And thanks a lot for the other reviews.
-
-I finally managed to get some time to work on it after some time off and 
-urgent sh**t happening, so I'll send a new version of the series today.
+See the v9 for the detail in the code.
 
 Cheers,
 Benjamin
+
+> 
+> The original reason for kfunc only was because I wanted to scope the
+> changes to something I can control, but now I am completely out of
+> ideas on why the NULL test fails if it enters the if branch.
+> 
+> Unfortunately I won't have a lot of time this week to tackle this (I
+> am on holiday with my family), and next will be tough too (at home but
+> doing renovations).
+> 
+> I can send the fixup to remove the prog_type check as I just made sure
+> it works with the selftests. But I won't be able to dig further why it
+> fails without the kfunc check, because not enough time and
+> concentration.
+> 
+> Cheers,
+> Benjamin
 
