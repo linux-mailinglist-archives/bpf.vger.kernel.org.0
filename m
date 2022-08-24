@@ -2,230 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 267475A00ED
-	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 20:00:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 576CD5A0104
+	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 20:03:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240559AbiHXSAD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Aug 2022 14:00:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40976 "EHLO
+        id S240619AbiHXSDL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Aug 2022 14:03:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240500AbiHXR7i (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Aug 2022 13:59:38 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADAE48277C;
-        Wed, 24 Aug 2022 10:59:08 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id x14-20020a17090a8a8e00b001fb61a71d99so2447112pjn.2;
-        Wed, 24 Aug 2022 10:59:08 -0700 (PDT)
+        with ESMTP id S240556AbiHXSCx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Aug 2022 14:02:53 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FECA4330C;
+        Wed, 24 Aug 2022 11:02:13 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id d21so15691709eje.3;
+        Wed, 24 Aug 2022 11:02:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc;
-        bh=RZtJ7WFv27iGcxpx2iAvk1B4DM+wxHBEH/r6GSdGfcg=;
-        b=Dbb8/yAXgGCJrsKLzLiips2OEaqFfOFGImmgWB0bSe1srHeYpkPAPQ99rBio9fXvDq
-         EyCbVf3pzxsT6jT5FNMs6cLu4Oqu2CLSCyjzurb+w7eBHELmm7Z96/wzb23jUYy0D418
-         gynhFZwTmew7uY0orm7Mm5mk+4KIXU1L4St35a+cuYzZxRq3pmpoAX9hf4xNfGMP3qbe
-         h2ckez8fyPRt4hIGbmFvYso72lVNP0/mEGSef6OGyTC83JC6sgDNEYJ0ctxmA9iT95MF
-         L9O6vdUoMZxCc337A8y2Hc8QvOeH6zVSjnaQA3JT6P05xl6hZQn4qT0LpqIoG3wdvxYL
-         dp2g==
+        bh=im2SBWTnvsjrSirpAj4+pT4GY9SiJsqqLVRFzSItoMo=;
+        b=FnyYPdubjA9XuFj2KtzF8NnwtlBbbWAGvHuhYJhzAPx1Nt/daQssAZEoxejdLK2AIf
+         zNOGJLZT43fnB0YZ41caIcJ1rHdH4CYCGJjMUAMqz/Z9wqoLfSy5fNLtdfYMkpzRLvcN
+         G+bTCGbAXQFvnNJYEjH+LGEKUc5kLUTlphjJRw+5M/9g+ftISNQLiJ+Uo4E2BS97+0Uh
+         Edu1ZCp4qATjuFd9newv23pcid2TWD5fO/f/6SVh5m0c78KMt/3GHfV+J42IfOKKqaTV
+         k8hFU7XDlhu33DJo9VpPt+aoIAxk4bk3o4Un/Q3URXDyPIrKLXVCIWcfWjHetOvmu6TT
+         dPUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc;
-        bh=RZtJ7WFv27iGcxpx2iAvk1B4DM+wxHBEH/r6GSdGfcg=;
-        b=LHeXZlD7QG4HeyLM2CcHrZMuA675akIH2nnJ4WXXu5YpSiWbc+O21WceMkF96f4EaX
-         ehq8Hw1tByXgv/D+k+ZEpDotEs0Fm7Lw73zjiZbtQQuHdFHbUqx7c8+Mn4DJxvwH86fT
-         LzbJLJTSLtnUXuSdGposc0Mg00gN7TU//ryc1yXHJJuh4Uf1VF0uvHqv3xLi1kic9oF1
-         TI5hbrBH58oEn+XVIcCCohWOPblwKcEbAYa6JZGcIi/4qK5LVggLhXNTM396uQXOm3xH
-         kPEvsnYzHWcwWABKlN0uYGzbqpC+8NfuD0dKLsc02ZDxFKWXm/eQmKjsqHPahlcP8vjs
-         4GeA==
-X-Gm-Message-State: ACgBeo0bXdeS0+2399tezSV3AS06Yv2lhke20SzAEmXHejSpVx7HO49J
-        gl4G0g+xMVM7VfRe4qfRNI3CeuhD5Ln6W146+K4=
-X-Google-Smtp-Source: AA6agR4qaETV2m0oQP5t4+1BAaQRYaYBghErY31KDOWChcOlRELmJZkRoAmfNfBeKaqkd+3n+P2L7HTT+qXx/SwyB1Q=
-X-Received: by 2002:a17:90b:1b0a:b0:1fb:8027:ead with SMTP id
- nu10-20020a17090b1b0a00b001fb80270eadmr291143pjb.185.1661363947908; Wed, 24
- Aug 2022 10:59:07 -0700 (PDT)
+        bh=im2SBWTnvsjrSirpAj4+pT4GY9SiJsqqLVRFzSItoMo=;
+        b=W7/KuzQniXuIhpGaqIs+PefCl0oarVGeQCD4RdxYKrsJPkrZg7zxSyVUidhNV6uAxh
+         vJPrJfBQj4+MCwHfWLcA6Lk88QK1Hqljob/rDWhH04ANt1UnGdcJXOV//VxWRuSJHo34
+         kGxuDLgXuFRdLFjSmp3dOdR7ZCQitjoQ3MXPy8CQpiGu3OX9BXevopK7e0QxD6Ipcv8G
+         71OASWIjVerhqBum0aIjpOgv1cbA1QqwjWG3QWvmnfgZFSAGMT45d/3031GyFPykQu/G
+         uwuHaptK5PnfuIeK4EzwvBIi4s0Z84eAgVvU/Rn61XuBXSTZ0aaXCx3LJxGhGbKW8lA/
+         LCXw==
+X-Gm-Message-State: ACgBeo0w8/+CuYAnOQtAPBXlsZ2wSFQtqmFI6hhHHJD8qfYX+A0znELs
+        AX/xiRGsPu4gM4KbbtXBhKAUgABoHm9uHgSsERg=
+X-Google-Smtp-Source: AA6agR4suELQokE/zEGO+9tk3wuJLVr04sWGvCaOz+GnoEGxH/MFikI4Ky2uPjwVF6Dgi2kWFigX5Eg8QAYG8hNpGcw=
+X-Received: by 2002:a17:907:6e8b:b0:73d:c094:e218 with SMTP id
+ sh11-20020a1709076e8b00b0073dc094e218mr105427ejc.226.1661364131949; Wed, 24
+ Aug 2022 11:02:11 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a05:7022:612:b0:43:c853:4cf0 with HTTP; Wed, 24 Aug 2022
- 10:59:06 -0700 (PDT)
-In-Reply-To: <YwZcuCj49wMkr18W@kernel.org>
-References: <YwQRKkmWqsf/Du6A@kernel.org> <YwZQ0UkLsoa+6VyY@dev-arch.thelio-3990X>
- <YwZcuCj49wMkr18W@kernel.org>
-From:   Luna Jernberg <droidbittin@gmail.com>
-Date:   Wed, 24 Aug 2022 19:59:06 +0200
-Message-ID: <CADo9pHi+120JrR2y0Zg5z=iaZsytDR3++P2YcuL9NmfLs1ydKw@mail.gmail.com>
-Subject: Re: ANNOUNCE: pahole v1.24 (Faster BTF encoding, 64-bit BTF enum entries)
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>, droidbittin@gmail.com
-Cc:     Nathan Chancellor <nathan@kernel.org>, dwarves@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alibek Omarov <a1ba.omarov@gmail.com>,
-        Kornilios Kourtis <kornilios@isovalent.com>,
-        Kui-Feng Lee <kuifeng@fb.com>, Yonghong Song <yhs@fb.com>,
-        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>
+References: <20220822235649.2218031-1-joannelkoong@gmail.com>
+ <CAP01T74LUHjpnVOtwV1h7ha4Dqz0EU5zjwojz-9gWPCN6Gih0Q@mail.gmail.com> <CAJnrk1amsYS51deoXTOnWvMKSQNvbCK_JSPaGW=OBZZsEyNVuQ@mail.gmail.com>
+In-Reply-To: <CAJnrk1amsYS51deoXTOnWvMKSQNvbCK_JSPaGW=OBZZsEyNVuQ@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 24 Aug 2022 11:01:59 -0700
+Message-ID: <CAEf4BzZGL--5D-ok45U5TyogG-Wqa1SvQhbQFLhkdpn=gmDXNA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 0/3] Add skb + xdp dynptrs
+To:     Joanne Koong <joannelkoong@gmail.com>
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org,
+        andrii@kernel.org, daniel@iogearbox.net, ast@kernel.org,
+        kafai@fb.com, kuba@kernel.org, netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Great :)
+On Tue, Aug 23, 2022 at 11:52 AM Joanne Koong <joannelkoong@gmail.com> wrote:
+>
+> On Mon, Aug 22, 2022 at 7:32 PM Kumar Kartikeya Dwivedi
+> <memxor@gmail.com> wrote:
+> >
+> > On Tue, 23 Aug 2022 at 02:06, Joanne Koong <joannelkoong@gmail.com> wrote:
+> > >
+> > > This patchset is the 2nd in the dynptr series. The 1st can be found here [0].
+> > >
+> > > This patchset adds skb and xdp type dynptrs, which have two main benefits for
+> > > packet parsing:
+> > >     * allowing operations on sizes that are not statically known at
+> > >       compile-time (eg variable-sized accesses).
+> > >     * more ergonomic and less brittle iteration through data (eg does not need
+> > >       manual if checking for being within bounds of data_end)
+> > >
+> >
+> > Just curious: so would you be adding a dynptr interface for obtaining
+> > data_meta slices as well in the future? Since the same manual bounds
+> > checking is needed for data_meta vs data. How would that look in the
+> > generic dynptr interface of data/read/write this set is trying to fit
+> > things in?
+>
+> Oh cool, I didn't realize there is also a data_meta used in packet
+> parsing - thanks for bringing this up. I think there are 2 options for
+> how data_meta can be incorporated into the dynptr interface:
+>
+> 1) have a separate api "bpf_dynptr_from_{skb/xdp}_meta. We'll have to
+> have a function in the verifier that does something similar to
+> 'may_access_direct_pkt_data' but for pkt data meta, since skb progs
+> can have different access restrictions for data vs. data_meta.
+>
+> 2) ideally, the flags arg would be used to indicate whether the
+> parsing should be for data_meta. To support this though, I think we'd
+> need to do access type checking within the helper instead of at the
+> verifier level. One idea is to pass in the env->ops ptr as a 4th arg
+> (manually patching it from the verifier) to the helper,  which can be
+> used to determine if data_meta access is permitted.
+>
+> In both options, there'll be a new BPF_DYNPTR_{SKB/XDP}_META dynptr
+> type and data/read/write will be supported for it.
+>
+> What are your thoughts?
 
-On 8/24/22, Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
-> Em Wed, Aug 24, 2022 at 09:24:49AM -0700, Nathan Chancellor escreveu:
->> Hi Arnaldo,
->>
->> On Mon, Aug 22, 2022 at 08:28:42PM -0300, Arnaldo Carvalho de Melo wrote:
->> > Hi,
->> >
->> > 	The v1.24 release of pahole and its friends is out, with faster
->> > BTF generation by parallelizing the encoding part in addition to the
->> > previoulsy parallelized DWARF loading, support for 64-bit BTF
->> > enumeration
->> > entries, signed BTF encoding of 'char', exclude/select DWARF loading
->> > based on the language that generated the objects, etc.
->>
->> <snip>
->>
->> > - Introduce --lang and --lang_exclude to specify the language the
->> >   DWARF compile units were originated from to use or filter.
->>
->> This appears to break building pahole with older versions of libdw (?).
->> I build container images with older versions of compilers for easy
->> matrix testing and my gcc-5 and gcc-6 images (based off Ubuntu Xenial
->> and Debian Stretch respectively) fail to build.
+I think separate bpf_dynptr_from_skb_meta() and
+bpf_dynptr_from_xdp_meta() is cleaner than a flag. Also having a
+separate helper would make it easier to disable this helper for
+program types that don't have access to ctx->data_meta, right?
+
 >
-> I do it for perf, should have done it for pahole :-\
->
-> So I'll have to come up with a patch that checks if those are defined
-> and if not, define it :-\ Ooops, its an enumeration :-\ I'll have to
-> check how to fix this, thanks for the report!
->
-> Will rebuild it with the containers I have to see if there are other
-> cases.
->
-> - Arnaldo
->
->>     $ podman run --rm -ti -v
->> $TMP_FOLDER/dwarves-1.24.tar.xz:/tmp/dwarves-1.24.tar.xz:ro
->> docker.io/ubuntu:xenial
->>     # apt update
->>     # apt install build-essential cmake libdw-dev libelf-dev xz-utils
->> zlib1g-dev
->>     # cd $(mktemp -d)
->>     # tar -xJf /tmp/dwarves-1.24.tar.xz
->>     # mkdir build
->>     # cd build
->>     # cmake -DBUILD_SHARED_LIBS=OFF -D__LIB=lib ../dwarves-1.24
->>     # make -j$(nproc)
->>     ...
->>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c: In function
->> 'lang__str2int':
->>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2093:3: error:
->> 'DW_LANG_BLISS' undeclared (first use in this function)
->>       [DW_LANG_BLISS]   = "bliss",
->>        ^
->>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2093:3: note: each
->> undeclared identifier is reported only once for each function it appears
->> in
->>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2093:3: error: array index
->> in initializer not of integer type
->>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2093:3: note: (near
->> initialization for 'languages')
->>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2100:3: error:
->> 'DW_LANG_C_plus_plus_03' undeclared (first use in this function)
->>       [DW_LANG_C_plus_plus_03] = "c++03",
->>        ^
->>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2100:3: error: array index
->> in initializer not of integer type
->>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2100:3: note: (near
->> initialization for 'languages')
->>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2105:3: error:
->> 'DW_LANG_Dylan' undeclared (first use in this function)
->>       [DW_LANG_Dylan]   = "dylan",
->>        ^
->>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2105:3: error: array index
->> in initializer not of integer type
->>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2105:3: note: (near
->> initialization for 'languages')
->>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2114:3: error:
->> 'DW_LANG_Julia' undeclared (first use in this function)
->>       [DW_LANG_Julia]   = "julia",
->>        ^
->>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2114:3: error: array index
->> in initializer not of integer type
->>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2114:3: note: (near
->> initialization for 'languages')
->>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2116:3: error:
->> 'DW_LANG_Modula3' undeclared (first use in this function)
->>       [DW_LANG_Modula3]  = "modula3",
->>        ^
->>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2116:3: error: array index
->> in initializer not of integer type
->>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2116:3: note: (near
->> initialization for 'languages')
->>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2119:3: error:
->> 'DW_LANG_OCaml' undeclared (first use in this function)
->>       [DW_LANG_OCaml]   = "ocaml",
->>        ^
->>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2119:3: error: array index
->> in initializer not of integer type
->>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2119:3: note: (near
->> initialization for 'languages')
->>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2120:3: error:
->> 'DW_LANG_OpenCL' undeclared (first use in this function)
->>       [DW_LANG_OpenCL]  = "opencl",
->>        ^
->>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2120:3: error: array index
->> in initializer not of integer type
->>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2120:3: note: (near
->> initialization for 'languages')
->>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2122:3: error:
->> 'DW_LANG_PLI' undeclared (first use in this function)
->>       [DW_LANG_PLI]   = "pli",
->>        ^
->>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2122:3: error: array index
->> in initializer not of integer type
->>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2122:3: note: (near
->> initialization for 'languages')
->>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2124:3: error:
->> 'DW_LANG_RenderScript' undeclared (first use in this function)
->>       [DW_LANG_RenderScript]  = "renderscript",
->>        ^
->>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2124:3: error: array index
->> in initializer not of integer type
->>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2124:3: note: (near
->> initialization for 'languages')
->>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2125:3: error:
->> 'DW_LANG_Rust' undeclared (first use in this function)
->>       [DW_LANG_Rust]   = "rust",
->>        ^
->>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2125:3: error: array index
->> in initializer not of integer type
->>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2125:3: note: (near
->> initialization for 'languages')
->>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2126:3: error:
->> 'DW_LANG_Swift' undeclared (first use in this function)
->>       [DW_LANG_Swift]   = "swift",
->>        ^
->>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2126:3: error: array index
->> in initializer not of integer type
->>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2126:3: note: (near
->> initialization for 'languages')
->>     CMakeFiles/dwarves.dir/build.make:62: recipe for target
->> 'CMakeFiles/dwarves.dir/dwarves.c.o' failed
->>     ...
->>
->> If there is any additional information I can provide or patches I can
->> test, please let me know!
->>
->> Cheers,
->> Nathan
->
-> --
->
-> - Arnaldo
->
+> >
+> >
+> >
+> > > When comparing the differences in runtime for packet parsing without dynptrs
+> > > vs. with dynptrs for the more simple cases, there is no noticeable difference.
+> > > For the more complex cases where lengths are non-statically known at compile
+> > > time, there can be a significant speed-up when using dynptrs (eg a 2x speed up
+> > > for cls redirection). Patch 3 contains more details as well as examples of how
+> > > to use skb and xdp dynptrs.
+> > >
+> > > [0] https://lore.kernel.org/bpf/20220523210712.3641569-1-joannelkoong@gmail.com/
+> > >
+> > > --
