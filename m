@@ -2,227 +2,156 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E206A5A0263
-	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 21:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9CC35A026E
+	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 22:03:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236708AbiHXT7a (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Aug 2022 15:59:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51712 "EHLO
+        id S240087AbiHXUDy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Aug 2022 16:03:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234790AbiHXT72 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Aug 2022 15:59:28 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39AB779EDB
-        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 12:59:27 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id p187so6815596iod.8
-        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 12:59:27 -0700 (PDT)
+        with ESMTP id S233529AbiHXUDx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Aug 2022 16:03:53 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 355707C1F9
+        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 13:03:51 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id x64so14300788iof.1
+        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 13:03:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc;
-        bh=BXUdI1Jpalg34NGFGVj8iK1ZM3Vaaf6IdCCmFUSOd1c=;
-        b=muZmJbVruwFJsDz2f+TETMiZ+kWP9hQw78ruf2XtkyLDP1m11vzKXgg5z6B+zkeP+D
-         SdGj2p6LDsN9i4DcZEhKLh9cDPNSgDARghZrpDgWwk6nutNpllVDRc2PDgeTj1koIOt2
-         uMqaJSKbnb7Fug8ey4IxNRFAuxZgz3OHoUdNeUjE3PDbImeWZQgjh+KQRUJ1kAZYoOT4
-         zPCWfAOEC4f7QUsQua8MRP8ANTfE9ehJe7b4fKuGw3FTsL+uY3dRO6+02nnHhBbrGO/O
-         8ZGXXuDHpWroNbkin+mcp2z0Ndtpj7yNX3V2ksqcR6W5vG8533JaRHjmLu0oePRfvhM5
-         5shg==
+        bh=cJOlmdLgf/zMpHi+EIYjFklQum6i8of9fryDup8SEYY=;
+        b=A7CQ2t/w1A7p0v0JnJhvkGnQLx8cbAN3MS/QHWlVtXAlLUaspgkna6uNBRO6houek1
+         zHRp+Vu1VknUMhXmrG+N9T68ubyGYpalY1lUVodDtGyk4egiEmf6+yTXsPf0dCN1TGa6
+         o3zODfWJ0EIvuBfMxgGO3ztGI/ztamkY+FZjOXs6U+vdR5kl0pCTHkQaPqKdQ3TkHxzM
+         hQwaQJA1FcF8Hx30Z0PeTK4vYk88GNE2AxkecV3/Qw7UXPae9n12Q6RUFdvY7zUFuPc7
+         UclGKXkvGQAAK2Ym090By9LYy+XOr0vI76K/hcsiCOxm56/SokqEZx+bh2tilLxRKpog
+         cTPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc;
-        bh=BXUdI1Jpalg34NGFGVj8iK1ZM3Vaaf6IdCCmFUSOd1c=;
-        b=Gmh9DX8tZFIhGwdk8lq6SKXMivFVA5qGvKARwKObtVmPvc1i22gSZYygnVza9IZAxg
-         hMn5B0x4Qa6f2dsQRxwXTUkZ7FPHKv1zN5XgJcHRY7+x4k0vZ2QmRuSXkTbT/yx0yV6g
-         VYPgTD2PoZ1A/mlC9QX1J6w/usvMoKrUs62b2jf5soXFUSpRi68W4Cc/zDrdnaLj5648
-         3DycR+VvIYuCmCTeMW0sZ9QMtSXaXb4HrhtkTONw2aU9F9Ak5wzlqlVc5W0hKRXMCsKe
-         2/Mg4OXj1CtwtwkpDwdW74C93J3pUDQlJ47uIKje9Ar2Ifhl59/Zz45Ih1tvRN6NMvos
-         oLNw==
-X-Gm-Message-State: ACgBeo3Z67+mka9PXAn39+tjxANFUK0IqHBkFv3iA2A6r2yTW25dah/i
-        6m/8WVi5J7RoYCcXYGS2+Ou1onP+pRzNfNcyzYcSdBrts14=
-X-Google-Smtp-Source: AA6agR61fZl2+zM3w8B4PiKtjpYezq7vEaugAGbr6jwhA0PjbY/w6WkVXLzrjcEUQHf/geX/5CcyDjVqOG9kWcZpST0=
-X-Received: by 2002:a05:6638:2382:b0:347:7dae:b276 with SMTP id
- q2-20020a056638238200b003477daeb276mr253066jat.124.1661371166555; Wed, 24 Aug
- 2022 12:59:26 -0700 (PDT)
+        bh=cJOlmdLgf/zMpHi+EIYjFklQum6i8of9fryDup8SEYY=;
+        b=R0q+KPS+N4xP9kaDI/s/9hOOd1Y/o/6HtHFJWsw2taMzAVIkSlzWMJex7Jk871pztD
+         IfW0YSNOBE/Amtjc3fDT0c1nRkSFO+laACoAaI9ap8NZssEQnfcG6k7Gwrzqdt66EcTs
+         cH4dJ3erkZkTfXka5M9uIky38TvCAI0SLUdVxLpGzxsf48jXfWazb9tYymjVGxEx/cJQ
+         eXxRykZYconf14DILP5erDxvLcU7cUV5Tjo3mnan3kNSHbkhnNtedGLnsMaovxJbSv+m
+         D0lq86d6M6PwQ/N5YuNXLNdzqPaaLyxw90G4ulxjH6gWYet1eMZNYJS3V6mHsI8m7cXo
+         Y3hw==
+X-Gm-Message-State: ACgBeo3Oyy/0AWKyPyvV4oE5L3o06jNbE4bm3h9FYrdut8E17CD6SCcj
+        ZC/DquOetoxjlbmnOtenPsNjlqMlvIqfyZfybQo=
+X-Google-Smtp-Source: AA6agR6rRJun93syO2w8ub3L3xA3WhXeByA+Ys1LJXWwINB4x3IUyfHBKzRAlS3MqYA20lQ/9CQKNkofX7c+KjNgx8k=
+X-Received: by 2002:a05:6638:2105:b0:34a:694:4fa4 with SMTP id
+ n5-20020a056638210500b0034a06944fa4mr286938jaj.116.1661371430570; Wed, 24 Aug
+ 2022 13:03:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220819214232.18784-1-alexei.starovoitov@gmail.com> <20220819214232.18784-10-alexei.starovoitov@gmail.com>
-In-Reply-To: <20220819214232.18784-10-alexei.starovoitov@gmail.com>
+References: <20220819214232.18784-1-alexei.starovoitov@gmail.com>
+In-Reply-To: <20220819214232.18784-1-alexei.starovoitov@gmail.com>
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date:   Wed, 24 Aug 2022 21:58:49 +0200
-Message-ID: <CAP01T74qCUsm3mO64d6mbDcjQZxO2fxjZ+JX7kkv2ACXPpZojw@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 09/15] bpf: Batch call_rcu callbacks instead
- of SLAB_TYPESAFE_BY_RCU.
+Date:   Wed, 24 Aug 2022 22:03:13 +0200
+Message-ID: <CAP01T75WHh_zCgM6uf=W5uQzJSWODnsZNy0g-Wj2Z+KOoDW_FQ@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 00/15] bpf: BPF specific memory allocator.
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     davem@davemloft.net, daniel@iogearbox.net, andrii@kernel.org,
         tj@kernel.org, delyank@fb.com, linux-mm@kvack.org,
-        bpf@vger.kernel.org, kernel-team@fb.com, joel@joelfernandes.org
+        bpf@vger.kernel.org, kernel-team@fb.com
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 19 Aug 2022 at 23:43, Alexei Starovoitov
+On Fri, 19 Aug 2022 at 23:42, Alexei Starovoitov
 <alexei.starovoitov@gmail.com> wrote:
 >
 > From: Alexei Starovoitov <ast@kernel.org>
 >
-> SLAB_TYPESAFE_BY_RCU makes kmem_caches non mergeable and slows down
-> kmem_cache_destroy. All bpf_mem_cache are safe to share across different maps
-> and programs. Convert SLAB_TYPESAFE_BY_RCU to batched call_rcu. This change
-> solves the memory consumption issue, avoids kmem_cache_destroy latency and
-> keeps bpf hash map performance the same.
+> Introduce any context BPF specific memory allocator.
 >
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> Tracing BPF programs can attach to kprobe and fentry. Hence they
+> run in unknown context where calling plain kmalloc() might not be safe.
+> Front-end kmalloc() with per-cpu cache of free elements.
+> Refill this cache asynchronously from irq_work.
+>
+> Major achievements enabled by bpf_mem_alloc:
+> - Dynamically allocated hash maps used to be 10 times slower than fully preallocated.
+>   With bpf_mem_alloc and subsequent optimizations the speed of dynamic maps is equal to full prealloc.
+> - Tracing bpf programs can use dynamically allocated hash maps.
+>   Potentially saving lots of memory. Typical hash map is sparsely populated.
+> - Sleepable bpf programs can used dynamically allocated hash maps.
+>
 
-Makes sense, there was a call_rcu_lazy work from Joel (CCed) on doing
-this batching using a timer + max batch count instead, I wonder if
-that fits our use case and could be useful in the future when it is
-merged?
+From my side, for the whole series:
+Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 
-https://lore.kernel.org/rcu/20220713213237.1596225-2-joel@joelfernandes.org
 
-wdyt?
-
-> ---
->  kernel/bpf/memalloc.c | 64 +++++++++++++++++++++++++++++++++++++++++--
->  kernel/bpf/syscall.c  |  5 +++-
->  2 files changed, 65 insertions(+), 4 deletions(-)
+> v2->v3:
+> - Rewrote the free_list algorithm based on discussions with Kumar. Patch 1.
+> - Allowed sleepable bpf progs use dynamically allocated maps. Patches 13 and 14.
+> - Added sysctl to force bpf_mem_alloc in hash map even if pre-alloc is
+>   requested to reduce memory consumption. Patch 15.
+> - Fix: zero-fill percpu allocation
+> - Single rcu_barrier at the end instead of each cpu during bpf_mem_alloc destruction
 >
-> diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
-> index 22b729914afe..d765a5cb24b4 100644
-> --- a/kernel/bpf/memalloc.c
-> +++ b/kernel/bpf/memalloc.c
-> @@ -100,6 +100,11 @@ struct bpf_mem_cache {
->         /* count of objects in free_llist */
->         int free_cnt;
->         int low_watermark, high_watermark, batch;
-> +
-> +       struct rcu_head rcu;
-> +       struct llist_head free_by_rcu;
-> +       struct llist_head waiting_for_gp;
-> +       atomic_t call_rcu_in_progress;
->  };
+> v2 thread:
+> https://lore.kernel.org/bpf/20220817210419.95560-1-alexei.starovoitov@gmail.com/
 >
->  struct bpf_mem_caches {
-> @@ -188,6 +193,45 @@ static void free_one(struct bpf_mem_cache *c, void *obj)
->                 kfree(obj);
->  }
+> v1->v2:
+> - Moved unsafe direct call_rcu() from hash map into safe place inside bpf_mem_alloc. Patches 7 and 9.
+> - Optimized atomic_inc/dec in hash map with percpu_counter. Patch 6.
+> - Tuned watermarks per allocation size. Patch 8
+> - Adopted this approach to per-cpu allocation. Patch 10.
+> - Fully converted hash map to bpf_mem_alloc. Patch 11.
+> - Removed tracing prog restriction on map types. Combination of all patches and final patch 12.
 >
-> +static void __free_rcu(struct rcu_head *head)
-> +{
-> +       struct bpf_mem_cache *c = container_of(head, struct bpf_mem_cache, rcu);
-> +       struct llist_node *llnode = llist_del_all(&c->waiting_for_gp);
-> +       struct llist_node *pos, *t;
-> +
-> +       llist_for_each_safe(pos, t, llnode)
-> +               free_one(c, pos);
-> +       atomic_set(&c->call_rcu_in_progress, 0);
-> +}
-> +
-> +static void enque_to_free(struct bpf_mem_cache *c, void *obj)
-> +{
-> +       struct llist_node *llnode = obj;
-> +
-> +       /* bpf_mem_cache is a per-cpu object. Freeing happens in irq_work.
-> +        * Nothing races to add to free_by_rcu list.
-> +        */
-> +       __llist_add(llnode, &c->free_by_rcu);
-> +}
-> +
-> +static void do_call_rcu(struct bpf_mem_cache *c)
-> +{
-> +       struct llist_node *llnode, *t;
-> +
-> +       if (atomic_xchg(&c->call_rcu_in_progress, 1))
-> +               return;
-> +
-> +       WARN_ON_ONCE(!llist_empty(&c->waiting_for_gp));
-> +       llist_for_each_safe(llnode, t, __llist_del_all(&c->free_by_rcu))
-> +               /* There is no concurrent __llist_add(waiting_for_gp) access.
-> +                * It doesn't race with llist_del_all either.
-> +                * But there could be two concurrent llist_del_all(waiting_for_gp):
-> +                * from __free_rcu() and from drain_mem_cache().
-> +                */
-> +               __llist_add(llnode, &c->waiting_for_gp);
-> +       call_rcu(&c->rcu, __free_rcu);
-> +}
-> +
->  static void free_bulk(struct bpf_mem_cache *c)
->  {
->         struct llist_node *llnode, *t;
-> @@ -207,12 +251,13 @@ static void free_bulk(struct bpf_mem_cache *c)
->                 local_dec(&c->active);
->                 if (IS_ENABLED(CONFIG_PREEMPT_RT))
->                         local_irq_restore(flags);
-> -               free_one(c, llnode);
-> +               enque_to_free(c, llnode);
->         } while (cnt > (c->high_watermark + c->low_watermark) / 2);
+> v1 thread:
+> https://lore.kernel.org/bpf/20220623003230.37497-1-alexei.starovoitov@gmail.com/
 >
->         /* and drain free_llist_extra */
->         llist_for_each_safe(llnode, t, llist_del_all(&c->free_llist_extra))
-> -               free_one(c, llnode);
-> +               enque_to_free(c, llnode);
-> +       do_call_rcu(c);
->  }
+> LWN article:
+> https://lwn.net/Articles/899274/
 >
->  static void bpf_mem_refill(struct irq_work *work)
-> @@ -298,7 +343,7 @@ int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size)
->                         return -ENOMEM;
->                 size += LLIST_NODE_SZ; /* room for llist_node */
->                 snprintf(buf, sizeof(buf), "bpf-%u", size);
-> -               kmem_cache = kmem_cache_create(buf, size, 8, SLAB_TYPESAFE_BY_RCU, NULL);
-> +               kmem_cache = kmem_cache_create(buf, size, 8, 0, NULL);
->                 if (!kmem_cache) {
->                         free_percpu(pc);
->                         return -ENOMEM;
-> @@ -340,6 +385,15 @@ static void drain_mem_cache(struct bpf_mem_cache *c)
->  {
->         struct llist_node *llnode, *t;
+> Future work:
+> - expose bpf_mem_alloc as uapi FD to be used in dynptr_alloc, kptr_alloc
+> - convert lru map to bpf_mem_alloc
 >
-> +       /* The caller has done rcu_barrier() and no progs are using this
-> +        * bpf_mem_cache, but htab_map_free() called bpf_mem_cache_free() for
-> +        * all remaining elements and they can be in free_by_rcu or in
-> +        * waiting_for_gp lists, so drain those lists now.
-> +        */
-> +       llist_for_each_safe(llnode, t, __llist_del_all(&c->free_by_rcu))
-> +               free_one(c, llnode);
-> +       llist_for_each_safe(llnode, t, llist_del_all(&c->waiting_for_gp))
-> +               free_one(c, llnode);
->         llist_for_each_safe(llnode, t, llist_del_all(&c->free_llist))
->                 free_one(c, llnode);
->         llist_for_each_safe(llnode, t, llist_del_all(&c->free_llist_extra))
-> @@ -361,6 +415,10 @@ void bpf_mem_alloc_destroy(struct bpf_mem_alloc *ma)
->                 kmem_cache_destroy(c->kmem_cache);
->                 if (c->objcg)
->                         obj_cgroup_put(c->objcg);
-> +               /* c->waiting_for_gp list was drained, but __free_rcu might
-> +                * still execute. Wait for it now before we free 'c'.
-> +                */
-> +               rcu_barrier();
->                 free_percpu(ma->cache);
->                 ma->cache = NULL;
->         }
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index a4d40d98428a..850270a72350 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -638,7 +638,10 @@ static void __bpf_map_put(struct bpf_map *map, bool do_idr_lock)
->                 bpf_map_free_id(map, do_idr_lock);
->                 btf_put(map->btf);
->                 INIT_WORK(&map->work, bpf_map_free_deferred);
-> -               schedule_work(&map->work);
-> +               /* Avoid spawning kworkers, since they all might contend
-> +                * for the same mutex like slab_mutex.
-> +                */
-> +               queue_work(system_unbound_wq, &map->work);
->         }
->  }
+> Alexei Starovoitov (15):
+>   bpf: Introduce any context BPF specific memory allocator.
+>   bpf: Convert hash map to bpf_mem_alloc.
+>   selftests/bpf: Improve test coverage of test_maps
+>   samples/bpf: Reduce syscall overhead in map_perf_test.
+>   bpf: Relax the requirement to use preallocated hash maps in tracing
+>     progs.
+>   bpf: Optimize element count in non-preallocated hash map.
+>   bpf: Optimize call_rcu in non-preallocated hash map.
+>   bpf: Adjust low/high watermarks in bpf_mem_cache
+>   bpf: Batch call_rcu callbacks instead of SLAB_TYPESAFE_BY_RCU.
+>   bpf: Add percpu allocation support to bpf_mem_alloc.
+>   bpf: Convert percpu hash map to per-cpu bpf_mem_alloc.
+>   bpf: Remove tracing program restriction on map types
+>   bpf: Prepare bpf_mem_alloc to be used by sleepable bpf programs.
+>   bpf: Remove prealloc-only restriction for sleepable bpf programs.
+>   bpf: Introduce sysctl kernel.bpf_force_dyn_alloc.
+>
+>  include/linux/bpf_mem_alloc.h             |  26 +
+>  include/linux/filter.h                    |   2 +
+>  kernel/bpf/Makefile                       |   2 +-
+>  kernel/bpf/core.c                         |   2 +
+>  kernel/bpf/hashtab.c                      | 132 +++--
+>  kernel/bpf/memalloc.c                     | 601 ++++++++++++++++++++++
+>  kernel/bpf/syscall.c                      |  14 +-
+>  kernel/bpf/verifier.c                     |  52 --
+>  samples/bpf/map_perf_test_kern.c          |  44 +-
+>  samples/bpf/map_perf_test_user.c          |   2 +-
+>  tools/testing/selftests/bpf/progs/timer.c |  11 -
+>  tools/testing/selftests/bpf/test_maps.c   |  38 +-
+>  12 files changed, 795 insertions(+), 131 deletions(-)
+>  create mode 100644 include/linux/bpf_mem_alloc.h
+>  create mode 100644 kernel/bpf/memalloc.c
 >
 > --
 > 2.30.2
