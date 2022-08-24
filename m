@@ -2,63 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52AA75A011D
+	by mail.lfdr.de (Postfix) with ESMTP id 9BEF35A011E
 	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 20:11:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236646AbiHXSLH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Aug 2022 14:11:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40292 "EHLO
+        id S234665AbiHXSLJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Aug 2022 14:11:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238457AbiHXSLG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Aug 2022 14:11:06 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F61E51A2D
-        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 11:11:02 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id k17so9141204wmr.2
-        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 11:11:02 -0700 (PDT)
+        with ESMTP id S240099AbiHXSLI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Aug 2022 14:11:08 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3EAD5073A;
+        Wed, 24 Aug 2022 11:11:06 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id ca13so23810115ejb.9;
+        Wed, 24 Aug 2022 11:11:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc;
-        bh=VDzB6M7J9Uk6gAXRwZRuMg7OWDNkP1A/vcU+QwARiDE=;
-        b=LJiSF9keLqx1fay5ON2ujZXgUrKqhvp0ncR89H+L/rNtyEncSx0l3D97oFRFzly76H
-         5XOtqh7nd9mhPgJvLsntITt5AMmDo+JLFmnsNye94fwjudjfVFmf5LKvfVJiX91cg8Ht
-         JIYvRcauJAPYfDHRNyhDJtp+MRVIBrkNn2DcRJ0I1giI27x+s1GqGouNG0lYKTeQwy/D
-         9spPRYe51bgy4ercoq0zhGaYfze+SyVfLsn3zSrWHQQGq/GvG79smyQo64KEwFUvgo3a
-         ycH5WcHAe9wDHR9Qw2ELp3eMZ88QI4pbonmtSrxCiin1IOkCg0WfIeMl2oxnZOkFA1Mb
-         HL1w==
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc;
+        bh=rWonn27X8z4bD7y6AZPySRDF0YykDyNgB3LwIkCxAPQ=;
+        b=bMCdEhNHwXRoPUd/gRiKo1pTlPZWbRhIgwV4ucpT7GFjCLcZYX8n6nFFDwejvuNTkW
+         kSPCIrR/Gm7/wGF96Ms3/mLsoJBCk9li0A4orNKu5z1L4PMfDfw2a5YSNTaRtMw1E30y
+         EiblcL7hgIcJ+Srviy+j3b117E+Jj662qd+CPGvZI0JnaQxubfJYiV6JTn8xztVCKGPq
+         37JJHVQW03P9Rn5bzku5RQghrbUriXNjY9RenM5evNRsw1U4HJwk05dgB9cFD4YCiXaC
+         eska4pBuATF9sAO3s8bQw8uYXOH6TJd8thYSwoaiklQgpA5TUlTvVxpWpqrKCHvHIt5D
+         suUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc;
-        bh=VDzB6M7J9Uk6gAXRwZRuMg7OWDNkP1A/vcU+QwARiDE=;
-        b=OGcD75Fa3xSXj3d7aup6PXf2UfnNguZSQFCqUR/JsiQ5SME5lUtJEnEjDud1rfXO6A
-         NLRNwsKIwPtSF2fgE5pi/Chm3DdQxzKES44KwIdtYsVaphnQus0P9aTQLmNJPRbO66uS
-         0H4vNT5EDDcxRLKAMSUIV0nocp+HLPkOExG5F+/BvqaowXgmDdm7K84mHCB5/M9qEQRd
-         r640w9qxebKl1jC76HCfNBtk2oPl4U6G2TdMsUpPklihhW/lO6e86WRteKUQKsXj/y8I
-         PpLTt5tdxwhMGookDHbO44GZ4ih0lD3wBA9B4oqLoEvq1Wf8cjUmzd47pRGT6CSMWPej
-         4fiA==
-X-Gm-Message-State: ACgBeo0YUC7H1ln0ModkAlvOPXhdvDIQMkZmSzubrgo7tsLwJ1lAC9gF
-        1uC3l9QSCiBaGYfjGDxM3mg=
-X-Google-Smtp-Source: AA6agR4btac3PptmJWqm4NRTvolYlwlHFPAVQ+NjyUj3LpSq7w9N6ShxbgCHrIeARlUzfcn6K3YAUQ==
-X-Received: by 2002:a05:600c:1c9a:b0:3a6:1c85:7a0c with SMTP id k26-20020a05600c1c9a00b003a61c857a0cmr52491wms.155.1661364660830;
-        Wed, 24 Aug 2022 11:11:00 -0700 (PDT)
-Received: from localhost.localdomain ([213.57.189.88])
-        by smtp.gmail.com with ESMTPSA id z3-20020adfec83000000b0021e43b4edf0sm17394210wrn.20.2022.08.24.11.10.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Aug 2022 11:11:00 -0700 (PDT)
-From:   Eyal Birger <eyal.birger@gmail.com>
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, quentin@isovalent.com
-Cc:     bpf@vger.kernel.org, Eyal Birger <eyal.birger@gmail.com>
-Subject: [PATCH bpf-next,v4] bpf/scripts: assert helper enum value is aligned with comment order
-Date:   Wed, 24 Aug 2022 21:10:43 +0300
-Message-Id: <20220824181043.1601429-1-eyal.birger@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc;
+        bh=rWonn27X8z4bD7y6AZPySRDF0YykDyNgB3LwIkCxAPQ=;
+        b=jGvkhGhjBTF/jpEfAVL4MRXTxOgM2aHGxo11suqLuaikD4tEx66er0hyksBUSpcm1e
+         jtyc7cZt1sqCGAnxH+a536HMgA4T060HINMlGTZiPuXmArbg6iLWi7/9X+vRELXGjRko
+         so7Sj2NGC1awj8J8HRmo9ZKj6Vxg1pQdNGXXvFr2Db23SDG04QluUAOpLg52xkkIs9HH
+         T7FBLnVreIAJdIHYlN0llA2lK1gQnwSy4wAJKAkuaTJTVnIN04nwt2tN2qaO+Sv3jOut
+         HiXBykVDFBmK1Yrs2E85AKP4qOZ2g4Y/RmaK57LunECdaVHhQIt9fK1NRI+1kJ/4HMbH
+         71YA==
+X-Gm-Message-State: ACgBeo0krWVbSOMbl5n7ol+Sfw+yG6/b65i8/DfNlrnih0awWmg8Cl7a
+        WWaR71MiZ8meG9Sz3EDazDZ/A8QBz0bmZpx0VyVslMuch5s=
+X-Google-Smtp-Source: AA6agR6hOPCsLEczOX5tFZt0ywqQPzsnEHEpPUf9Nc/2Ci26LSvRjw1e3uX2F2gMi400atvKfaXaVjrpYKsBnpLoDts=
+X-Received: by 2002:a17:907:a408:b0:73d:6696:50af with SMTP id
+ sg8-20020a170907a40800b0073d669650afmr97326ejc.369.1661364665342; Wed, 24 Aug
+ 2022 11:11:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20220822235649.2218031-1-joannelkoong@gmail.com>
+ <20220822235649.2218031-3-joannelkoong@gmail.com> <CAP01T77h2+a9OonHuiPRFsAForWYJfQ71G6teqbcLg4KuGpK5A@mail.gmail.com>
+ <CAJnrk1aq3gJgz0DKo47SS0J2wTtg1C_B3eVfsh-036nmDKKVWA@mail.gmail.com> <878rnehqnd.fsf@toke.dk>
+In-Reply-To: <878rnehqnd.fsf@toke.dk>
+From:   Joanne Koong <joannelkoong@gmail.com>
+Date:   Wed, 24 Aug 2022 11:10:54 -0700
+Message-ID: <CAJnrk1YYpcW2Z9XQ9sfq2U7Y6OYMc3CZk1Xgc2p1e7DVCq3kmw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 2/3] bpf: Add xdp dynptrs
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org,
+        andrii@kernel.org, daniel@iogearbox.net, ast@kernel.org,
+        kafai@fb.com, kuba@kernel.org, netdev@vger.kernel.org,
+        "brouer@redhat.com" <brouer@redhat.com>, lorenzo@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -69,135 +70,174 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The helper value is ABI as defined by enum bpf_func_id.
-As bpf_helper_defs.h is used for the userpace part, it must be consistent
-with this enum.
+On Wed, Aug 24, 2022 at 3:39 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
+>
+> Joanne Koong <joannelkoong@gmail.com> writes:
+>
+> > On Mon, Aug 22, 2022 at 7:31 PM Kumar Kartikeya Dwivedi
+> > <memxor@gmail.com> wrote:
+> >>
+> >> +Cc XDP folks
+> >>
+> >> On Tue, 23 Aug 2022 at 02:12, Joanne Koong <joannelkoong@gmail.com> wr=
+ote:
+> >> >
+> >> > Add xdp dynptrs, which are dynptrs whose underlying pointer points
+> >> > to a xdp_buff. The dynptr acts on xdp data. xdp dynptrs have two mai=
+n
+> >> > benefits. One is that they allow operations on sizes that are not
+> >> > statically known at compile-time (eg variable-sized accesses).
+> >> > Another is that parsing the packet data through dynptrs (instead of
+> >> > through direct access of xdp->data and xdp->data_end) can be more
+> >> > ergonomic and less brittle (eg does not need manual if checking for
+> >> > being within bounds of data_end).
+> >> >
+> >> > For reads and writes on the dynptr, this includes reading/writing
+> >> > from/to and across fragments. For data slices, direct access to
+> >>
+> >> It's a bit awkward to have such a difference between xdp and skb
+> >> dynptr's read/write. I understand why it is the way it is, but it
+> >> still doesn't feel right. I'm not sure if we can reconcile the
+> >> differences, but it makes writing common code for both xdp and tc
+> >> harder as it needs to be aware of the differences (and then the flags
+> >> for dynptr_write would differ too). So we're 90% there but not the
+> >> whole way...
+> >
+> > Yeah, it'd be great if the behavior for skb/xdp progs could be the
+> > same, but I'm not seeing a better solution here (unless we invalidate
+> > data slices on writes in xdp progs, just to make it match more :P).
+> >
+> > Regarding having 2 different interfaces bpf_dynptr_from_{skb/xdp}, I'm
+> > not convinced this is much of a problem - xdp and skb programs already
+> > have different interfaces for doing things (eg
+> > bpf_{skb/xdp}_{store/load}_bytes).
+>
+> This is true, but it's quite possible to paper over these differences
+> and write BPF code that works for both TC and XDP. Subtle semantic
+> differences in otherwise identical functions makes this harder.
+>
+> Today you can write a function like:
+>
+> static inline int parse_pkt(void *data, void* data_end)
+> {
+>         /* parse data */
+> }
+>
+> And call it like:
+>
+> SEC("xdp")
+> int parse_xdp(struct xdp_md *ctx)
+> {
+>         return parse_pkt(ctx->data, ctx->data_end);
+> }
+>
+> SEC("tc")
+> int parse_tc(struct __sk_buff *skb)
+> {
+>         return parse_pkt(skb->data, skb->data_end);
+> }
+>
+>
+> IMO the goal should be to be able to do the equivalent for dynptrs, like:
+>
+> static inline int parse_pkt(struct bpf_dynptr *ptr)
+> {
+>         __u64 *data;
+>
+>         data =3D bpf_dynptr_data(ptr, 0, sizeof(*data));
+>         if (!data)
+>                 return 0;
+>         /* parse data */
+> }
+>
+> SEC("xdp")
+> int parse_xdp(struct xdp_md *ctx)
+> {
+>         struct bpf_dynptr ptr;
+>
+>         bpf_dynptr_from_xdp(ctx, 0, &ptr);
+>         return parse_pkt(&ptr);
+> }
+>
+> SEC("tc")
+> int parse_tc(struct __sk_buff *skb)
+> {
+>         struct bpf_dynptr ptr;
+>
+>         bpf_dynptr_from_skb(skb, 0, &ptr);
+>         return parse_pkt(&ptr);
+> }
+>
 
-Before this change the comments order was used by the bpf_doc script in
-order to set the helper values defined in the helpers file.
+To clarify, this is already possible when using data slices, since the
+behavior for data slices is equivalent between xdp and tc programs for
+non-fragmented accesses. From looking through the selftests, I
+anticipate that data slices will be the main way programs interact
+with dynptrs. For the cases where the program may write into frags,
+then bpf_dynptr_write will be needed (which is where functionality
+between xdp and tc start differing) - today, we're not able to write
+common code that writes into the frags since tc uses
+bpf_skb_store_bytes and xdp uses bpf_xdp_store_bytes.
 
-When adding new helpers it is very puzzling when the userspace application
-breaks in weird places if the comment is inserted instead of appended -
-because the generated helper ABI is incorrect and shifted.
+I'm more and more liking the idea of limiting xdp to match the
+constraints of skb given that both you, Kumar, and Jakub have
+mentioned that portability between xdp and skb would be useful for
+users :)
 
-This commit sets the helper value to the enum value.
+What are your thoughts on this API:
 
-In addition it is currently the practice to have the comments appended
-and kept in the same order as the enum. As such, add an assertion
-validating the comment order is consistent with enum value.
+1) bpf_dynptr_data()
 
-In case a different comments ordering is desired, this assertion can
-be lifted.
+Before:
+  for skb-type progs:
+      - data slices in fragments is not supported
 
-Signed-off-by: Eyal Birger <eyal.birger@gmail.com>
+  for xdp-type progs:
+      - data slices in fragments is supported as long as it is in a
+contiguous frag (eg not across frags)
 
----
-v4: fix variable name typo
-v3: based on feedback from Quentin Monnet:
-- move assertion to parser
-- avoid using define_unique_helpers as elem_number_check() relies on
-  it being an array
-- set enum_val in helper object instead of passing as a dict to the
-  printer
+Now:
+  for skb + xdp type progs:
+      - data slices in fragments is not supported
 
-v2: based on feedback from Quentin Monnet:
-- assert the current comment ordering
-- match only one FN in each line
----
- scripts/bpf_doc.py | 39 ++++++++++++++++++++++++++++++++++-----
- 1 file changed, 34 insertions(+), 5 deletions(-)
 
-diff --git a/scripts/bpf_doc.py b/scripts/bpf_doc.py
-index f4f3e7ec6d44..d5c389df6045 100755
---- a/scripts/bpf_doc.py
-+++ b/scripts/bpf_doc.py
-@@ -50,6 +50,10 @@ class Helper(APIElement):
-     @desc: textual description of the helper function
-     @ret: description of the return value of the helper function
-     """
-+    def __init__(self, *args, **kwargs):
-+        super().__init__(*args, **kwargs)
-+        self.enum_val = None
-+
-     def proto_break_down(self):
-         """
-         Break down helper function protocol into smaller chunks: return type,
-@@ -92,6 +96,7 @@ class HeaderParser(object):
-         self.commands = []
-         self.desc_unique_helpers = set()
-         self.define_unique_helpers = []
-+        self.helper_enum_vals = {}
-         self.desc_syscalls = []
-         self.enum_syscalls = []
- 
-@@ -248,30 +253,54 @@ class HeaderParser(object):
-                 break
- 
-     def parse_define_helpers(self):
--        # Parse the number of FN(...) in #define __BPF_FUNC_MAPPER to compare
--        # later with the number of unique function names present in description.
-+        # Parse FN(...) in #define __BPF_FUNC_MAPPER to compare later with the
-+        # number of unique function names present in description and use the
-+        # correct enumeration value.
-         # Note: seek_to(..) discards the first line below the target search text,
-         # resulting in FN(unspec) being skipped and not added to self.define_unique_helpers.
-         self.seek_to('#define __BPF_FUNC_MAPPER(FN)',
-                      'Could not find start of eBPF helper definition list')
--        # Searches for either one or more FN(\w+) defines or a backslash for newline
--        p = re.compile('\s*(FN\(\w+\))+|\\\\')
-+        # Searches for one FN(\w+) define or a backslash for newline
-+        p = re.compile('\s*FN\((\w+)\)|\\\\')
-         fn_defines_str = ''
-+        i = 1  # 'unspec' is skipped as mentioned above
-         while True:
-             capture = p.match(self.line)
-             if capture:
-                 fn_defines_str += self.line
-+                self.helper_enum_vals[capture.expand(r'bpf_\1')] = i
-+                i += 1
-             else:
-                 break
-             self.line = self.reader.readline()
-         # Find the number of occurences of FN(\w+)
-         self.define_unique_helpers = re.findall('FN\(\w+\)', fn_defines_str)
- 
-+    def assign_helper_values(self):
-+        seen_helpers = set()
-+        for helper in self.helpers:
-+            proto = helper.proto_break_down()
-+            name = proto['name']
-+            try:
-+                enum_val = self.helper_enum_vals[name]
-+            except KeyError:
-+                raise Exception("Helper %s is missing from enum bpf_func_id" % name)
-+
-+            # Enforce current practice of having the descriptions ordered
-+            # by enum value.
-+            seen_helpers.add(name)
-+            desc_val = len(seen_helpers)
-+            if desc_val != enum_val:
-+                raise Exception("Helper %s comment order (#%d) must be aligned with its position (#%d) in enum bpf_func_id" % (name, desc_val, enum_val))
-+
-+            helper.enum_val = enum_val
-+
-     def run(self):
-         self.parse_desc_syscall()
-         self.parse_enum_syscall()
-         self.parse_desc_helpers()
-         self.parse_define_helpers()
-+        self.assign_helper_values()
-         self.reader.close()
- 
- ###############################################################################
-@@ -796,7 +825,7 @@ class PrinterHelpers(Printer):
-             comma = ', '
-             print(one_arg, end='')
- 
--        print(') = (void *) %d;' % len(self.seen_helpers))
-+        print(') = (void *) %d;' % helper.enum_val)
-         print('')
- 
- ###############################################################################
--- 
-2.34.1
+2)  bpf_dynptr_write()
 
+Before:
+  for skb-type progs:
+     - all data slices are invalidated after a write
+
+  for xdp-type progs:
+     - nothing
+
+Now:
+  for skb + xdp type progs:
+     - all data slices are invalidated after a write
+
+This will unite the functionality for skb and xdp programs across
+bpf_dyntpr_data, bpf_dynptr_write, and bpf_dynptr_read. As for whether
+we should unite bpf_dynptr_from_skb and bpf_dynptr_from_xdp into one
+common bpf_dynptr_from_packet as Jakub brought in [0], I'm leaning
+towards no because 1) if in the future there's some irreconcilable
+aspect between skb and xdp that gets added, that'll be hard to support
+since the expectation is that there is just one overall "packet
+dynptr" 2) the "packet dynptr" view is not completely accurate (eg
+bpf_dynptr_write accepts flags from skb progs and not xdp progs) 3)
+this adds some additional hardcoding in the verifier since there's no
+organic mapping between prog type -> prog ctx
+
+
+[0] https://lore.kernel.org/bpf/20220726184706.954822-1-joannelkoong@gmail.=
+com/T/#m1438f89152b1d0e539fe60a9376482bbc9de7b6e
+
+>
+> If the dynptr-based parse_pkt() function has to take special care to
+> figure out where the dynptr comes from, it makes it a lot more difficult
+> to write reusable packet parsing functions. So I'd be in favour of
+> restricting the dynptr interface to the lowest common denominator of the
+> skb and xdp interfaces even if that makes things slightly more awkward
+> in the specialised cases...
+>
+> -Toke
+>
