@@ -2,84 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 669145A021E
-	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 21:30:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9055D5A0225
+	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 21:34:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236881AbiHXTam (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Aug 2022 15:30:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57578 "EHLO
+        id S235966AbiHXTeO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Aug 2022 15:34:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240076AbiHXTai (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Aug 2022 15:30:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70EC52CE2A
-        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 12:30:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1661369435;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Efa2DH0jvCDyjj76mYw2uKdm230ESxvBrPcQcjsJ+Ho=;
-        b=cZxzHId3gYLr1L69Mk8D76qKNIXphBb1qw0dtSQxDb7ewaQe0hrshCDuHMhCifJagZQsn9
-        sdRivoZiprRzWrtMb1APerMhqmEpbEI+ebJODqHljF3sbpvh71p2ym1b3G2ofWYwN/JrMA
-        VtnOWWtvsE62vGDZfpbuRMY3xIumhqo=
-Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
- [209.85.210.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-199-dXACbwalNoSUPK1NznjtNA-1; Wed, 24 Aug 2022 15:30:34 -0400
-X-MC-Unique: dXACbwalNoSUPK1NznjtNA-1
-Received: by mail-pf1-f198.google.com with SMTP id o17-20020a056a0015d100b00536fc93b990so2881298pfu.14
-        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 12:30:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=Efa2DH0jvCDyjj76mYw2uKdm230ESxvBrPcQcjsJ+Ho=;
-        b=l1IeeCX2aH47uCBnM5nHntY4/dv7UfDWNGsiP5QvCu6JxegEEgSVZ0gdVnMvsShraA
-         5oVue9iPWckuBEJtwAHycd3K0xwQjGvXF3dR3rnqbdUN5jgSakNxOk7EcTHeqCJHiXP9
-         Gp0FVOFJzPnkBjrN4me6F1mb+PBQShiH5u6gZ3qb76EBhKKgDCreG54HTfd7bvhcliAF
-         vKiJuGj9bh2XHVQITeNi6BsoEn04Swkkxj68B5W9EixbPA3zDLiiDyFiSJdhd53mxxHo
-         SXorGMBg6gfp0jcl6YQ2AoUkOuGcLB3hkUasHsHCrvZvZfYog1hotVvzdQcfNzWxmkjq
-         ZPrg==
-X-Gm-Message-State: ACgBeo3XtEhBFZBXV9vRLaIA7l2mzAn0SFGI8HqnoaRoeknG6rON5RNp
-        pS/z5W+KkrLhwX+itGz78x+oxhnZzj9tmoqQKJsJYbWpCx4ZBJv3qMp4agmeljytX2iC+Tv07mt
-        B8uGE5fwiahtg9dciQdIVdRkhx4GM
-X-Received: by 2002:a63:d10b:0:b0:41d:bd7d:7759 with SMTP id k11-20020a63d10b000000b0041dbd7d7759mr371517pgg.196.1661369433237;
-        Wed, 24 Aug 2022 12:30:33 -0700 (PDT)
-X-Google-Smtp-Source: AA6agR7ET/hHZW9BaZvuEnQfrMLAFRGDMb3gimCTBs3iRsINn7jgeUtQdARxX9HN9BjmuTV436kS7vu08zwKmE/Z5zg=
-X-Received: by 2002:a63:d10b:0:b0:41d:bd7d:7759 with SMTP id
- k11-20020a63d10b000000b0041dbd7d7759mr371497pgg.196.1661369432840; Wed, 24
- Aug 2022 12:30:32 -0700 (PDT)
+        with ESMTP id S234790AbiHXTeN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Aug 2022 15:34:13 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDC886D57F
+        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 12:34:11 -0700 (PDT)
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27OIsvnA017330;
+        Wed, 24 Aug 2022 12:33:58 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
+ subject : to : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=+2klhxCarPKH5t2XOeF+qfbtwu5QXF95HCYLcLLMqNI=;
+ b=B80tzMxiG+Z405jJTG4AhsDfjT66BsB7AwuOXpK8OAPUFJSvYxkLtRuFYSgc83oeg8n/
+ hK2yMg0LX2vN5ALEXo1YFOLSMUuOH+J3auICoG4CfBXdccyoD9xZskvnEOTltn/VgVdm
+ xWIpfEGZ27aZvdn7OsGjHV1utdUXPk6i/wQ= 
+Received: from nam02-bn1-obe.outbound.protection.outlook.com (mail-bn1nam07lp2043.outbound.protection.outlook.com [104.47.51.43])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3j5bejwh86-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Aug 2022 12:33:58 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RUg+dQoOaosMCt4cJEjSjQnSqHrL1bt/93gZy71jUvFxHYdxJ0nmF4dg/3LxQeaWN+WQPwEaNf4gbcjh1VMDC8hUqfeipW+WahdIEs+ZPYbCG9m2y9u32tZtNekQ88Aj93Yi7ywbVrG/SaYOgM9eX/AFf0hGwFIn22//xcrt9M79WJZcuwmBCq+pKd2mOtKsuvcHaeBSHXCRpRaUnV4GeyiOF26H6S1ClrfhuAUvbq4HhhIOFBBxm3B5bDxt4LHSftgBHfCPktNJ6VTeqKQbL6uiddT2h8ILXz892SEeMKAqiftZln+jLbUrIWsJQdlDwg2GueVL8Nf/2PKpYlLTLA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+2klhxCarPKH5t2XOeF+qfbtwu5QXF95HCYLcLLMqNI=;
+ b=kU8+ZexJlxMIUKtac7MC0vdyauKgXBDQE2klqxwZkOYJGQBK+YlnIBGLq7fRUrwoXTn7Ufa3SYV2tvFvP1/4x5ffUmjzPhbc598MezM1hq6BZJSXBInUNtKPuAL9YO9R/+qtSzrTYII3pllGtFeTptONSCnAtsP7vpET1/GXxMhrQQl/6rs10bbgHdM7C4JtliNT4CjK3O4trrUxQwf6l7a/gl40v3B25fYIRymKa7+GIjM70EWjsi1DTu7aP3lCdCz0hUrO0+D2SVgXbd++ZhkW5UzGaf3boKwakEx+hdr1/QjKOUuYyqvyVoL1Kg7Nv1Xst5VVAvpMP84jjYZDMg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by BYAPR15MB3334.namprd15.prod.outlook.com (2603:10b6:a03:106::33) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5546.23; Wed, 24 Aug
+ 2022 19:33:54 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::dde5:25a3:a125:7bc7]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::dde5:25a3:a125:7bc7%2]) with mapi id 15.20.5566.015; Wed, 24 Aug 2022
+ 19:33:54 +0000
+Message-ID: <6cc0a303-021c-625b-12a3-47963b2e0bca@fb.com>
+Date:   Wed, 24 Aug 2022 12:33:52 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.13.0
+Subject: Re: [PATCH bpf-next v6 1/4] bpf: Parameterize task iterators.
+Content-Language: en-US
+To:     Kui-Feng Lee <kuifeng@fb.com>, bpf@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kernel-team@fb.com
+References: <20220819220927.3409575-1-kuifeng@fb.com>
+ <20220819220927.3409575-2-kuifeng@fb.com>
+From:   Yonghong Song <yhs@fb.com>
+In-Reply-To: <20220819220927.3409575-2-kuifeng@fb.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BYAPR01CA0052.prod.exchangelabs.com (2603:10b6:a03:94::29)
+ To SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
 MIME-Version: 1.0
-References: <20220824134055.1328882-1-benjamin.tissoires@redhat.com> <20220824134055.1328882-22-benjamin.tissoires@redhat.com>
-In-Reply-To: <20220824134055.1328882-22-benjamin.tissoires@redhat.com>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Wed, 24 Aug 2022 21:30:21 +0200
-Message-ID: <CAO-hwJLSHi4NQ9=PDy7GS_95v8BG+0r8A6QMfyhF7od8Umj+Mw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v9 21/23] samples/bpf: add new hid_mouse example
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Joe Stringer <joe@cilium.io>, Jonathan Corbet <corbet@lwn.net>
-Cc:     Tero Kristo <tero.kristo@linux.intel.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4b110cdf-239a-43cc-caa7-08da860794db
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3334:EE_
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 8EvAeh0m8COfLFp7ge6xGBCo3NG/xMKGgeA9cl+a8ciZTuqq4Uup9+kJ5rc7rU5C9mSRvygqlOC5/Fvq/gbVeUYUL22f3b+J328BQePCUTdxffWnu7wx8LLaSF4IEVNN7ONnCd/sRSlbesZhSTfXWO8dikhV7yUmGg88qqDCAeaQLGnrn8SZvzXSDBCMhs6qYiJH6nX/xMgP/oZuTASm8jeHAQwW3IDyWKI0B525oxxc93c32Z5OOxPyPvxW1seXGsKVunVNNnS9Erd3vOO99vba9WQvtWgJylh3oRm3L479TX1UL/8HDoQZCuFS73muFdgSP2LCoN/D0qGBRm1mNKn2TF/hpIMH8M9Xjn56Kv1y48iSynkwnRyay9FxRcPD+p3EOKcdpgvnyLidy8ot7CeS6wVlRAXGFxMhP1mnNR/IHDiJ4sru6CMxckMPGrERQGqy7YreZiaWwA3o4EkBdiDaRWFnRIe8Qa28JOU4QQIhlGNAp4VbJ81Y7/3b8clq5iXs3+UKGtQ1tD35ISDICriA5oNs8EPw345DS52ZsVBVihmBWf+l2rLAlaNFpTMGYWNX5kIxjVQDIB/Fu1JLcTgRlOxYVjL/uOfU5Cr5Vw1yOGbXIRaO1AvFy+4WLpSIMUZXliwQL8ROinDKzIRG6YgYXOH2rGlKpoSgLjVH/0YvhmYtGykDtFKYWd+3WUXJu6q4DetYiDLVaE3/lVkwjKcsNtH1GmnNsjznlhadNB66NVLhhX5wIZl9MNwTu9z3DfW5Iz5xqE+hIOXoemafW3Zz+h6//v7MJT3Hwe0MpD4=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(136003)(396003)(39860400002)(346002)(376002)(366004)(36756003)(8936002)(6636002)(38100700002)(316002)(31686004)(66476007)(6486002)(6506007)(66946007)(8676002)(6512007)(186003)(53546011)(66556008)(5660300002)(478600001)(41300700001)(4744005)(2906002)(31696002)(86362001)(2616005)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VjBWQ3hWMGhkQldTaUtSd0Z1NDZwTnJwbVQ4eWdVVmw2TUtlbHA4NXJMenlm?=
+ =?utf-8?B?UlY3VXlxcGY2OGVBZGhtV0RWYnNpT21yM1M3WGN0K3RSNXpubXB3L0RtS2hx?=
+ =?utf-8?B?Mk9QNEUyQzE3VmFUYkZBYkpwdTA4ZVBzSmdja1pmVWZMVnlscEFwMzFIUk9r?=
+ =?utf-8?B?YjFkam1BbGtZWCtWQUwwZ1lHbWkwKy9PaHUrVmY0T2tQRXRaNVJ1MXY4aGFD?=
+ =?utf-8?B?bi9sQk4wSEsrN3YwMnlQY0JrNHQzRzNCZE1yU1pXSzlKY1M3eTFOVmtWN1d4?=
+ =?utf-8?B?UFhyWTZUYWpPMXJOVEs4UldjdXVnejViMk1RQ0hlM3RVZ2gwenZVVEV1dEJO?=
+ =?utf-8?B?MnE0a0p6N2Zka0dTOEw4cVovZlYvNFA3QkJOZE1zWTFUbnAySGdYRHZwWjBv?=
+ =?utf-8?B?WUFnVGd4WHRodkI3TXcxL2FTOU9uNksrL2s0KzlqR1JPdVlZQjNleHJSemU1?=
+ =?utf-8?B?UWlWS1p1R2FGbjcrSWFOTkJTdUZmSDBOU3c0WkR4NHV1ZHhUVG9DbW1CNmJX?=
+ =?utf-8?B?dzBITzFXRFdsYW1JWUNGUGo5TDNwWE5rRzR4N2Fya0FBYkc2YldNZEtuSlg5?=
+ =?utf-8?B?V3hzbHZEaVpBK25wU3M4VXY1Wk9SUVJkMjRudkYvQmFSRC9wZndkOElSaXpm?=
+ =?utf-8?B?QUZsdHFkcnN6YkdTTGZxOUpDZnhuUkNkVk1ZZnk0OGN1TC9WWlFmWnA0OVZO?=
+ =?utf-8?B?bXd0d25iTzNjOEF2Q0F4NFNUNHlaZ0hReU1QVnprNzJGVnFxN2ZVdW1wR2ZK?=
+ =?utf-8?B?UGoyYlU2eDErTmxEMDl3RUlPd0hocTZmWFV4U2kwUGJLV3pmSFpDUjNUbzBT?=
+ =?utf-8?B?UlBST3YwaUFzblJ3UURsbjF2dFppbldpZEFKbnFNSUZoeHJackp0ckZoOVRx?=
+ =?utf-8?B?bis0YnI4aEEyMERmUFI0TnZXazYvdzljRnQvQXh6cVdNY1dmVVNVd2NFSlpx?=
+ =?utf-8?B?MU91TlZwbFRZRDU0cHFlM0ZrY3hSd3NMTStpQkZVNTZCS0h1U0E0d0k2SHhS?=
+ =?utf-8?B?ODNMTWh3ZjJ4eEFESEhveEJPM1pwUUpaSjhYSlRaRkVHNHA2Qk83ZnlOWGk1?=
+ =?utf-8?B?UWJnb3o4ODRFczFpanNSQmxBeFNJYVZoT3ltQVRRVjV0bndaaDkydXVobVZU?=
+ =?utf-8?B?Sjk5TGtibTNyYmFiVjlOdEZveVJQdnQ0NzZxbW1xbVVSb2JtM3lOUVRDT0dt?=
+ =?utf-8?B?cHVZdlpYeWdJREd6TWZXcnQ2VUQ4RkxQb3hadzJQdGhJZ1ZoVXdGMmpFUGhw?=
+ =?utf-8?B?UGxGRXpjbDNsbm1kTW9iZi9OT3g2WHhKSTJCTGxZTk1MV0xhTHF1bU5mRzNv?=
+ =?utf-8?B?d0IzVzFFZy9IUFBVNHFJbkxPV3BxMUpmNmh0YmloY08xaW1hdktpV0FIM1Rr?=
+ =?utf-8?B?ZmxHVUdZZWliRWliSmgwRmZLQmM5NVdkcEJRUTg3YzlqbXJvcWJqTFVXckZC?=
+ =?utf-8?B?NGNXdmRNRGNaanVEa3Ywd2lyQ01RNjUrSmtjT2paYWVCQm5GNWl1allrYlkr?=
+ =?utf-8?B?eVVWNUpvckpXei9wNFRFU29nTTVYQ2lYbFlUcG9qRnhYK0RzNFRlVGp4WDRD?=
+ =?utf-8?B?Q0trbEExQk03aGo5QVV5a2hmRnJkc1YvUm5yRUlsVm1SbXo3SUl4ZVp6RGh4?=
+ =?utf-8?B?djg2K0pTV1dzZnBINi9uYmNwSFdzQ1U5K09mLzF6WDE4Z2F3UW8zYTlQejBn?=
+ =?utf-8?B?NDBjVDlrRnhvdUxnR0t2bGhZbklkaVdNak54MkpldE9pVWhYeHlaU0FrSkIv?=
+ =?utf-8?B?dEhtcUVBVTg3blFWU1pLUGIwSGJaRjR3K1BQYVBmemUvbjZlM2xjbFB3VlVw?=
+ =?utf-8?B?Y0Q3Y1A2S1dscXYvb2ZRMHp6d2N5blFReGRlMGVlaU55Nkw4QllRc2JrOHVS?=
+ =?utf-8?B?UWYyTURWOEN0U3RFOGtBNDgvRkkrQ3ozWVpMcS9sYXZORTZwRlloUXdISVdE?=
+ =?utf-8?B?dy94YVJPWm5RVHMzMVVhV3ZrdXNYYlJHUjV3ZHNpdE5yeWN0VjFaS3lBNUZ2?=
+ =?utf-8?B?ZklQNDNyVEFaVDF6VFZncHMvTTdFazVxRXpuOVp0UnArdS9iL2xGUGVaREx4?=
+ =?utf-8?B?RTFycVhlU2h3V2gzbXIrQWVxaTNJZWhQT3FHOU9nWEtlRVlpWXM2OEsxVzNP?=
+ =?utf-8?B?M1lOMjNHOGdiNmMrM3dIanlvOXVMMlpnVzA4OWdtUGZSVTFQWjROanpKNHlw?=
+ =?utf-8?B?NXc9PQ==?=
+X-OriginatorOrg: fb.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4b110cdf-239a-43cc-caa7-08da860794db
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Aug 2022 19:33:54.8077
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 2Iag/+X0YcJPmCYUHotNbXBw3yVIpd8bDLbd38LKEeOVQR58yeBQ+NPIJ1qHi3aH
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3334
+X-Proofpoint-ORIG-GUID: LrTHANBAG3vdU3vK1JzTZmGQRTfpYvu0
+X-Proofpoint-GUID: LrTHANBAG3vdU3vK1JzTZmGQRTfpYvu0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-08-24_11,2022-08-22_02,2022-06-22_01
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,447 +138,20 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 24, 2022 at 3:42 PM Benjamin Tissoires
-<benjamin.tissoires@redhat.com> wrote:
->
-> Everything should be available in the selftest part of the tree, but
-> providing an example without uhid and hidraw will be more easy to
-> follow for users.
->
-> This example will probably ever only work on the Etekcity Scroll 6E
-> because we need to adapt the various raw values to the actual device.
->
-> On that device, the X and Y axis will be swapped and inverted, and on
-> any other device, chances are high that the device will not work until
-> Ctrl-C is hit.
->
-> Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
->
-> ---
 
 
-Sorry, I realized that there are two 21/23 and 22/23...
-This one should be disregarded, as there are minor improvements in the
-other 21/23 :(
+On 8/19/22 3:09 PM, Kui-Feng Lee wrote:
+> Allow creating an iterator that loops through resources of one task/thread.
 
-The good ones are the 2 starting with "samples/bpf: HID:"
+one thread/process.
 
-Cheers,
-Benjamin
+> 
+> People could only create iterators to loop through all resources of
+> files, vma, and tasks in the system, even though they were interested
+> in only the resources of a specific task or process.  Passing the
+> additional parameters, people can now create an iterator to go
+> through all resources or only the resources of a task.
+> 
+> Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
 
-
->
->
-> changes in v9:
-> - amended the usage part
->
-> no changes in v8
->
-> changes in v7:
-> - remove unnecessary __must_check definition
->
-> changes in v6:
-> - clean up code by removing old comments
->
-> changes in v5:
-> - bring back same features than v3, with the new API
->
-> changes in v4:
-> - dropped the not-yet-implemented rdesc_fixup
-> - use the new API
->
-> changes in v3:
-> - use the new hid_get_data API
-> - add a comment for the report descriptor fixup to explain what is done
->
-> changes in v2:
-> - split the series by bpf/libbpf/hid/selftests and samples
->
-> fix hid_mouse
-> ---
->  samples/bpf/.gitignore      |   1 +
->  samples/bpf/Makefile        |  23 ++++++
->  samples/bpf/hid_mouse.bpf.c | 134 ++++++++++++++++++++++++++++++
->  samples/bpf/hid_mouse.c     | 161 ++++++++++++++++++++++++++++++++++++
->  4 files changed, 319 insertions(+)
->  create mode 100644 samples/bpf/hid_mouse.bpf.c
->  create mode 100644 samples/bpf/hid_mouse.c
->
-> diff --git a/samples/bpf/.gitignore b/samples/bpf/.gitignore
-> index 0e7bfdbff80a..65440bd618b2 100644
-> --- a/samples/bpf/.gitignore
-> +++ b/samples/bpf/.gitignore
-> @@ -2,6 +2,7 @@
->  cpustat
->  fds_example
->  hbm
-> +hid_mouse
->  ibumad
->  lathist
->  lwt_len_hist
-> diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-> index 727da3c5879b..a965bbfaca47 100644
-> --- a/samples/bpf/Makefile
-> +++ b/samples/bpf/Makefile
-> @@ -57,6 +57,8 @@ tprogs-y += xdp_redirect_map
->  tprogs-y += xdp_redirect
->  tprogs-y += xdp_monitor
->
-> +tprogs-y += hid_mouse
-> +
->  # Libbpf dependencies
->  LIBBPF_SRC = $(TOOLS_PATH)/lib/bpf
->  LIBBPF_OUTPUT = $(abspath $(BPF_SAMPLES_PATH))/libbpf
-> @@ -119,6 +121,8 @@ xdp_redirect-objs := xdp_redirect_user.o $(XDP_SAMPLE)
->  xdp_monitor-objs := xdp_monitor_user.o $(XDP_SAMPLE)
->  xdp_router_ipv4-objs := xdp_router_ipv4_user.o $(XDP_SAMPLE)
->
-> +hid_mouse-objs := hid_mouse.o
-> +
->  # Tell kbuild to always build the programs
->  always-y := $(tprogs-y)
->  always-y += sockex1_kern.o
-> @@ -338,6 +342,8 @@ $(obj)/hbm_out_kern.o: $(src)/hbm.h $(src)/hbm_kern.h
->  $(obj)/hbm.o: $(src)/hbm.h
->  $(obj)/hbm_edt_kern.o: $(src)/hbm.h $(src)/hbm_kern.h
->
-> +$(obj)/hid_mouse.o: $(obj)/hid_mouse.skel.h
-> +
->  # Override includes for xdp_sample_user.o because $(srctree)/usr/include in
->  # TPROGS_CFLAGS causes conflicts
->  XDP_SAMPLE_CFLAGS += -Wall -O2 \
-> @@ -422,6 +428,23 @@ $(BPF_SKELS_LINKED): $(BPF_OBJS_LINKED) $(BPFTOOL)
->         @echo "  BPF GEN-SKEL" $(@:.skel.h=)
->         $(Q)$(BPFTOOL) gen skeleton $(@:.skel.h=.lbpf.o) name $(notdir $(@:.skel.h=)) > $@
->
-> +# Generate BPF skeletons for non XDP progs
-> +OTHER_BPF_SKELS := hid_mouse.skel.h
-> +
-> +hid_mouse.skel.h-deps := hid_mouse.bpf.o
-> +
-> +OTHER_BPF_SRCS_LINKED := $(patsubst %.skel.h,%.bpf.c, $(OTHER_BPF_SKELS))
-> +OTHER_BPF_OBJS_LINKED := $(patsubst %.bpf.c,$(obj)/%.bpf.o, $(OTHER_BPF_SRCS_LINKED))
-> +OTHER_BPF_SKELS_LINKED := $(addprefix $(obj)/,$(OTHER_BPF_SKELS))
-> +
-> +$(OTHER_BPF_SKELS_LINKED): $(OTHER_BPF_OBJS_LINKED) $(BPFTOOL)
-> +       @echo "  BPF GEN-OBJ " $(@:.skel.h=)
-> +       $(Q)$(BPFTOOL) gen object $(@:.skel.h=.lbpf.o) $(addprefix $(obj)/,$($(@F)-deps))
-> +       @echo "  BPF GEN-SKEL" $(@:.skel.h=)
-> +       $(Q)$(BPFTOOL) gen skeleton $(@:.skel.h=.lbpf.o) name $(notdir $(@:.skel.h=_lskel)) > $@
-> +#      $(call msg,GEN-SKEL,$@)
-> +#      $(Q)$(BPFTOOL) gen skeleton $< > $@
-> +
->  # asm/sysreg.h - inline assembly used by it is incompatible with llvm.
->  # But, there is no easy way to fix it, so just exclude it since it is
->  # useless for BPF samples.
-> diff --git a/samples/bpf/hid_mouse.bpf.c b/samples/bpf/hid_mouse.bpf.c
-> new file mode 100644
-> index 000000000000..0113e603f7a7
-> --- /dev/null
-> +++ b/samples/bpf/hid_mouse.bpf.c
-> @@ -0,0 +1,134 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include "vmlinux.h"
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +
-> +/* following are kfuncs exported by HID for HID-BPF */
-> +extern int hid_bpf_attach_prog(unsigned int hid_id, int prog_fd, u32 flags) __ksym;
-> +extern __u8 *hid_bpf_get_data(struct hid_bpf_ctx *ctx,
-> +                             unsigned int offset,
-> +                             const size_t __sz) __ksym;
-> +extern void hid_bpf_data_release(__u8 *data) __ksym;
-> +extern int hid_bpf_hw_request(struct hid_bpf_ctx *ctx) __ksym;
-> +
-> +struct attach_prog_args {
-> +       int prog_fd;
-> +       unsigned int hid;
-> +       int retval;
-> +};
-> +
-> +SEC("syscall")
-> +int attach_prog(struct attach_prog_args *ctx)
-> +{
-> +       ctx->retval = hid_bpf_attach_prog(ctx->hid,
-> +                                         ctx->prog_fd,
-> +                                         0);
-> +       return 0;
-> +}
-> +
-> +SEC("fmod_ret/hid_bpf_device_event")
-> +int BPF_PROG(hid_y_event, struct hid_bpf_ctx *hctx)
-> +{
-> +       s16 y;
-> +       __u8 *data = hid_bpf_get_data(hctx, 0 /* offset */, 9 /* size */);
-> +
-> +       if (!data)
-> +               return 0; /* EPERM check */
-> +
-> +       bpf_printk("event: size: %d", hctx->size);
-> +       bpf_printk("incoming event: %02x %02x %02x",
-> +                  data[0],
-> +                  data[1],
-> +                  data[2]);
-> +       bpf_printk("                %02x %02x %02x",
-> +                  data[3],
-> +                  data[4],
-> +                  data[5]);
-> +       bpf_printk("                %02x %02x %02x",
-> +                  data[6],
-> +                  data[7],
-> +                  data[8]);
-> +
-> +       y = data[3] | (data[4] << 8);
-> +
-> +       y = -y;
-> +
-> +       data[3] = y & 0xFF;
-> +       data[4] = (y >> 8) & 0xFF;
-> +
-> +       bpf_printk("modified event: %02x %02x %02x",
-> +                  data[0],
-> +                  data[1],
-> +                  data[2]);
-> +       bpf_printk("                %02x %02x %02x",
-> +                  data[3],
-> +                  data[4],
-> +                  data[5]);
-> +       bpf_printk("                %02x %02x %02x",
-> +                  data[6],
-> +                  data[7],
-> +                  data[8]);
-> +
-> +       return 0;
-> +}
-> +
-> +SEC("fmod_ret/hid_bpf_device_event")
-> +int BPF_PROG(hid_x_event, struct hid_bpf_ctx *hctx)
-> +{
-> +       s16 x;
-> +       __u8 *data = hid_bpf_get_data(hctx, 0 /* offset */, 9 /* size */);
-> +
-> +       if (!data)
-> +               return 0; /* EPERM check */
-> +
-> +       x = data[1] | (data[2] << 8);
-> +
-> +       x = -x;
-> +
-> +       data[1] = x & 0xFF;
-> +       data[2] = (x >> 8) & 0xFF;
-> +       return 0;
-> +}
-> +
-> +SEC("fmod_ret/hid_bpf_rdesc_fixup")
-> +int BPF_PROG(hid_rdesc_fixup, struct hid_bpf_ctx *hctx)
-> +{
-> +       __u8 *data = hid_bpf_get_data(hctx, 0 /* offset */, 4096 /* size */);
-> +
-> +       if (!data)
-> +               return 0; /* EPERM check */
-> +
-> +       bpf_printk("rdesc: %02x %02x %02x",
-> +                  data[0],
-> +                  data[1],
-> +                  data[2]);
-> +       bpf_printk("       %02x %02x %02x",
-> +                  data[3],
-> +                  data[4],
-> +                  data[5]);
-> +       bpf_printk("       %02x %02x %02x ...",
-> +                  data[6],
-> +                  data[7],
-> +                  data[8]);
-> +
-> +       /*
-> +        * The original report descriptor contains:
-> +        *
-> +        * 0x05, 0x01,                    //   Usage Page (Generic Desktop)      30
-> +        * 0x16, 0x01, 0x80,              //   Logical Minimum (-32767)          32
-> +        * 0x26, 0xff, 0x7f,              //   Logical Maximum (32767)           35
-> +        * 0x09, 0x30,                    //   Usage (X)                         38
-> +        * 0x09, 0x31,                    //   Usage (Y)                         40
-> +        *
-> +        * So byte 39 contains Usage X and byte 41 Usage Y.
-> +        *
-> +        * We simply swap the axes here.
-> +        */
-> +       data[39] = 0x31;
-> +       data[41] = 0x30;
-> +
-> +       return 0;
-> +}
-> +
-> +char _license[] SEC("license") = "GPL";
-> diff --git a/samples/bpf/hid_mouse.c b/samples/bpf/hid_mouse.c
-> new file mode 100644
-> index 000000000000..bea3650787c5
-> --- /dev/null
-> +++ b/samples/bpf/hid_mouse.c
-> @@ -0,0 +1,161 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/* Copyright (c) 2022 Benjamin Tissoires
-> + *
-> + * This is a pure HID-BPF example, and should be considered as such:
-> + * on the Etekcity Scroll 6E, the X and Y axes will be swapped and
-> + * inverted. On any other device... Not sure what this will do.
-> + *
-> + * This C main file is generic though. To adapt the code and test, users
-> + * must amend only the .bpf.c file, which this program will load any
-> + * eBPF program it finds.
-> + */
-> +
-> +#include <assert.h>
-> +#include <errno.h>
-> +#include <fcntl.h>
-> +#include <libgen.h>
-> +#include <signal.h>
-> +#include <stdbool.h>
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <string.h>
-> +#include <sys/resource.h>
-> +#include <unistd.h>
-> +
-> +#include <linux/bpf.h>
-> +#include <linux/errno.h>
-> +
-> +#include "bpf_util.h"
-> +#include <bpf/bpf.h>
-> +#include <bpf/libbpf.h>
-> +
-> +#include "hid_mouse.skel.h"
-> +
-> +static bool running = true;
-> +
-> +struct attach_prog_args {
-> +       int prog_fd;
-> +       unsigned int hid;
-> +       int retval;
-> +};
-> +
-> +static void int_exit(int sig)
-> +{
-> +       running = false;
-> +       exit(0);
-> +}
-> +
-> +static void usage(const char *prog)
-> +{
-> +       fprintf(stderr,
-> +               "%s: %s /sys/bus/hid/devices/0BUS:0VID:0PID:00ID\n\n",
-> +               __func__, prog);
-> +       fprintf(stderr,
-> +               "This program will upload and attach a HID-BPF program to the given device.\n"
-> +               "On the Etekcity Scroll 6E, the X and Y axis will be inverted, but on any other\n"
-> +               "device, chances are high that the device will not be working anymore\n\n"
-> +               "consider this as a demo and adapt the eBPF program to your needs\n"
-> +               "Hit Ctrl-C to unbind the program and reset the device\n");
-> +}
-> +
-> +static int get_hid_id(const char *path)
-> +{
-> +       const char *str_id, *dir;
-> +       char uevent[1024];
-> +       int fd;
-> +
-> +       memset(uevent, 0, sizeof(uevent));
-> +       snprintf(uevent, sizeof(uevent) - 1, "%s/uevent", path);
-> +
-> +       fd = open(uevent, O_RDONLY | O_NONBLOCK);
-> +       if (fd < 0)
-> +               return -ENOENT;
-> +
-> +       close(fd);
-> +
-> +       dir = basename((char *)path);
-> +
-> +       str_id = dir + sizeof("0003:0001:0A37.");
-> +       return (int)strtol(str_id, NULL, 16);
-> +}
-> +
-> +int main(int argc, char **argv)
-> +{
-> +       struct hid_mouse_lskel *skel;
-> +       struct bpf_program *prog;
-> +       int err;
-> +       const char *optstr = "";
-> +       const char *sysfs_path;
-> +       int opt, hid_id, attach_fd;
-> +       struct attach_prog_args args = {
-> +               .retval = -1,
-> +       };
-> +       DECLARE_LIBBPF_OPTS(bpf_test_run_opts, tattr,
-> +                           .ctx_in = &args,
-> +                           .ctx_size_in = sizeof(args),
-> +       );
-> +
-> +       while ((opt = getopt(argc, argv, optstr)) != -1) {
-> +               switch (opt) {
-> +               default:
-> +                       usage(basename(argv[0]));
-> +                       return 1;
-> +               }
-> +       }
-> +
-> +       if (optind == argc) {
-> +               usage(basename(argv[0]));
-> +               return 1;
-> +       }
-> +
-> +       sysfs_path = argv[optind];
-> +       if (!sysfs_path) {
-> +               perror("sysfs");
-> +               return 1;
-> +       }
-> +
-> +       skel = hid_mouse_lskel__open_and_load();
-> +       if (!skel) {
-> +               fprintf(stderr, "%s  %s:%d", __func__, __FILE__, __LINE__);
-> +               return -1;
-> +       }
-> +
-> +       hid_id = get_hid_id(sysfs_path);
-> +
-> +       if (hid_id < 0) {
-> +               fprintf(stderr, "can not open HID device: %m\n");
-> +               return 1;
-> +       }
-> +       args.hid = hid_id;
-> +
-> +       attach_fd = bpf_program__fd(skel->progs.attach_prog);
-> +       if (attach_fd < 0) {
-> +               fprintf(stderr, "can't locate attach prog: %m\n");
-> +               return 1;
-> +       }
-> +
-> +       bpf_object__for_each_program(prog, *skel->skeleton->obj) {
-> +               /* ignore syscalls */
-> +               if (bpf_program__get_type(prog) != BPF_PROG_TYPE_TRACING)
-> +                       continue;
-> +
-> +               args.retval = -1;
-> +               args.prog_fd = bpf_program__fd(prog);
-> +               err = bpf_prog_test_run_opts(attach_fd, &tattr);
-> +               if (err) {
-> +                       fprintf(stderr, "can't attach prog to hid device %d: %m (err: %d)\n",
-> +                               hid_id, err);
-> +                       return 1;
-> +               }
-> +       }
-> +
-> +       signal(SIGINT, int_exit);
-> +       signal(SIGTERM, int_exit);
-> +
-> +       while (running)
-> +               sleep(1);
-> +
-> +       hid_mouse_lskel__destroy(skel);
-> +
-> +       return 0;
-> +}
-> --
-> 2.36.1
->
-
+Acked-by: Yonghong Song <yhs@fb.com>
