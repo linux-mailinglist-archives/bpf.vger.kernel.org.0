@@ -2,112 +2,188 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C75BF59F7A6
-	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 12:27:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7556759F7EC
+	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 12:39:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236984AbiHXK1B (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Aug 2022 06:27:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38848 "EHLO
+        id S235747AbiHXKj0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Aug 2022 06:39:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236653AbiHXK0n (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Aug 2022 06:26:43 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 513AD80B75;
-        Wed, 24 Aug 2022 03:25:35 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id k9so20211435wri.0;
-        Wed, 24 Aug 2022 03:25:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:user-agent:references:message-id:date:in-reply-to
-         :subject:cc:to:from:from:to:cc;
-        bh=eKQZ/ehv1MwWOxO6OkjgFxZ52KEITsygp+TljaaBnnk=;
-        b=GSDHHAF86YGL1reVUTRrqe+R35sB4YmjMRUrm+/6Qi9YrvBJi2QNjNXD07sw00O4RH
-         83bdXmCGKoGUdIJ0/+HaM/UCQujcjDdn+H6Zz6u4qxufyOW+iNikAMDnprMYEfznr0lh
-         9sXxVtg5Cu9nXnNj0cVD9wYFmG/Pg8Ll4zRAPcljrCpjdlOmCxTnuwbRbbygs909t5+T
-         lkCmMeaTKd7fBWyZItZfTVWj1waF/XkDWaBJlWzEdQNYS4M6kDwBqB+uJwsBiktyrXS+
-         MaLpV3ZWuI2iyvltar4GtzDNJJwmWbHxVGuPLp15ghmtSi7kMuWOC7ZEK4ZyiFo2NnQ9
-         CjRQ==
+        with ESMTP id S229640AbiHXKjZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Aug 2022 06:39:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7073679629
+        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 03:39:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1661337563;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=O3xYfW0v9uJkKzARGFEY8k9gHPAe+Br9uY2PeY9ESPQ=;
+        b=BG/3/z+46Lo6NI0507I0yH1KZJE3kWc1RLzDRYHjFRdgc/W6opY0M9pzGqLmt6wK4bi031
+        nV12oXXCMcsyRxH1oJllRobjk5HGNU0yUhwvx/Uevty4aP1xLAsgLsEcuAzxbz0mL3oUxn
+        OE1C7JbjaM3/swj7IP3DpGFTILMUCqg=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-482-LOT47Z6RMg-XZAJXUJo8aw-1; Wed, 24 Aug 2022 06:39:22 -0400
+X-MC-Unique: LOT47Z6RMg-XZAJXUJo8aw-1
+Received: by mail-ed1-f69.google.com with SMTP id h17-20020a05640250d100b00446d1825c9fso5093177edb.14
+        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 03:39:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=mime-version:user-agent:references:message-id:date:in-reply-to
-         :subject:cc:to:from:x-gm-message-state:from:to:cc;
-        bh=eKQZ/ehv1MwWOxO6OkjgFxZ52KEITsygp+TljaaBnnk=;
-        b=4/YMugYbA/y6vQ0UlBENQv/zOMuYqbqRFlnZLnxjBOWhIz6JMhUhz5EDRP+W1zT4z4
-         OZbCCH8/eyCS2LLtADkJsbrmtPa5bJDaJlLSAj/gUPdeIH60rrth04hTL9AjgRj6VYE8
-         lqXSI1z0V10/cAZBBseUX/sCr6q6djto6Mj38YeV6JSETY0UnH2GfBkTTcjAvPbmy3xZ
-         U60poV4oSA0VIsG4AQAr0JJnsbR5Kr5f4IN5osbWNhqSzH56wPSLiEzzq00miDfHIzy1
-         9OKGkhzN4XNmnPmdmjhvimHGTG5r3wHS9RERHc8KX5uHQ1mv9f5IFGYouKgKcPDEMo1Q
-         gwGg==
-X-Gm-Message-State: ACgBeo3kWXKAzt6Xnm9Kx/TJlajf7urMLZoKB+3dYJqwSrajtuT8rpVq
-        7cXCyrElxJpg4YaHdAsn2zk=
-X-Google-Smtp-Source: AA6agR46/A44ZFx6NCeOYijK+sSh5+yYxjWCQL7ynSDaeXLOQ9PqUEl6pUGtpxulEz4AaRRTWgBqXA==
-X-Received: by 2002:a5d:4f82:0:b0:225:32c6:7e59 with SMTP id d2-20020a5d4f82000000b0022532c67e59mr14249968wru.366.1661336733519;
-        Wed, 24 Aug 2022 03:25:33 -0700 (PDT)
-Received: from imac ([2a02:8010:60a0:0:55a7:d3:b36c:e4f1])
-        by smtp.gmail.com with ESMTPSA id n39-20020a05600c502700b003a60bc8ae8fsm1538773wmr.21.2022.08.24.03.25.32
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc;
+        bh=O3xYfW0v9uJkKzARGFEY8k9gHPAe+Br9uY2PeY9ESPQ=;
+        b=yn79pjWV0trjLLDVvJ8JQDH67mHxbG+b/okqg/Bee3EB1+UutT1c13Q38hpX5Yz/VL
+         H7dnayL5UgCCX+zDthfbTr47Rok6ViP+f0vXuPzofpUMSqJIGqPQtkDw7lUMW4Ja4u03
+         5Rnz+p4FWNyJA9EyloerYOaI9RR1dPbCaTpadf3h+DJy6ydZFkpdwhbq4E2z/UBLZvbA
+         z9VQ4UraU6oi7iMnfFJd59s5VscyeLkz64HZqR3nLewr9WNHq4BaWwwKLgANh74xn/Tc
+         NiYypltAuicodC9W3C1HE/LTLi8Jk70KX9Q/HvFFyXXgHtwC0ni1BS9qhwj6Vizkp6Ux
+         9dBA==
+X-Gm-Message-State: ACgBeo2yWq28aBhD22XpxKDlKqdUlCd0XT2AysnWrtFKvKM15BbDjjPa
+        X8K/vDDkZpKrU24zjnlqyIoLCVUJwZcb11Kt1ez6b+9bk9gKrliYSCG0EaLo4FDtRJbKVffkcWq
+        7IIYe9YZmOOwE
+X-Received: by 2002:a17:907:960f:b0:73d:5b08:68b9 with SMTP id gb15-20020a170907960f00b0073d5b0868b9mr2486520ejc.337.1661337561142;
+        Wed, 24 Aug 2022 03:39:21 -0700 (PDT)
+X-Google-Smtp-Source: AA6agR4frG6Hu7UO0my/xwTI4Uji4WMDAPw7YPxEoZhKLbqOnHpY4ukOnnfrWUBRZ49+iEhrhZZ4Gw==
+X-Received: by 2002:a17:907:960f:b0:73d:5b08:68b9 with SMTP id gb15-20020a170907960f00b0073d5b0868b9mr2486500ejc.337.1661337560723;
+        Wed, 24 Aug 2022 03:39:20 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id p15-20020a170906604f00b0073c0b87ba34sm939345ejj.198.2022.08.24.03.39.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Aug 2022 03:25:32 -0700 (PDT)
-From:   Donald Hunter <donald.hunter@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf@vger.kernel.org, linux-doc@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        grantseltzer <grantseltzer@gmail.com>
-Subject: Re: [PATCH bpf-next] Add table of BPF program types to docs
-In-Reply-To: <CAEf4BzaujwgDXm+05MuGr_ouAseGGFg50Cxb83hHeWHX7bCk6A@mail.gmail.com>
-        (Andrii Nakryiko's message of "Tue, 23 Aug 2022 15:53:36 -0700")
-Date:   Wed, 24 Aug 2022 11:24:41 +0100
-Message-ID: <m2fshmym52.fsf@gmail.com>
-References: <20220823132236.65122-1-donald.hunter@gmail.com>
-        <CAEf4BzaujwgDXm+05MuGr_ouAseGGFg50Cxb83hHeWHX7bCk6A@mail.gmail.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.1 (darwin)
+        Wed, 24 Aug 2022 03:39:19 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 3443856052B; Wed, 24 Aug 2022 12:39:18 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Joanne Koong <joannelkoong@gmail.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf@vger.kernel.org, andrii@kernel.org, daniel@iogearbox.net,
+        ast@kernel.org, kafai@fb.com, kuba@kernel.org,
+        netdev@vger.kernel.org, "brouer@redhat.com" <brouer@redhat.com>,
+        lorenzo@kernel.org
+Subject: Re: [PATCH bpf-next v4 2/3] bpf: Add xdp dynptrs
+In-Reply-To: <CAJnrk1aq3gJgz0DKo47SS0J2wTtg1C_B3eVfsh-036nmDKKVWA@mail.gmail.com>
+References: <20220822235649.2218031-1-joannelkoong@gmail.com>
+ <20220822235649.2218031-3-joannelkoong@gmail.com>
+ <CAP01T77h2+a9OonHuiPRFsAForWYJfQ71G6teqbcLg4KuGpK5A@mail.gmail.com>
+ <CAJnrk1aq3gJgz0DKo47SS0J2wTtg1C_B3eVfsh-036nmDKKVWA@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 24 Aug 2022 12:39:18 +0200
+Message-ID: <878rnehqnd.fsf@toke.dk>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+Joanne Koong <joannelkoong@gmail.com> writes:
 
-> On Tue, Aug 23, 2022 at 9:56 AM Donald Hunter <donald.hunter@gmail.com> wrote:
+> On Mon, Aug 22, 2022 at 7:31 PM Kumar Kartikeya Dwivedi
+> <memxor@gmail.com> wrote:
 >>
->> Extend the BPF program types documentation with a table of
->> program types, attach points and ELF section names.
+>> +Cc XDP folks
 >>
->> The program_types.csv file is generated from tools/lib/bpf/libbpf.c
->> and a script is included for regenerating the .csv file.
+>> On Tue, 23 Aug 2022 at 02:12, Joanne Koong <joannelkoong@gmail.com> wrote:
+>> >
+>> > Add xdp dynptrs, which are dynptrs whose underlying pointer points
+>> > to a xdp_buff. The dynptr acts on xdp data. xdp dynptrs have two main
+>> > benefits. One is that they allow operations on sizes that are not
+>> > statically known at compile-time (eg variable-sized accesses).
+>> > Another is that parsing the packet data through dynptrs (instead of
+>> > through direct access of xdp->data and xdp->data_end) can be more
+>> > ergonomic and less brittle (eg does not need manual if checking for
+>> > being within bounds of data_end).
+>> >
+>> > For reads and writes on the dynptr, this includes reading/writing
+>> > from/to and across fragments. For data slices, direct access to
 >>
->> I have not integrated the script into the doc build but if that
->> is desirable then please suggest the preferred way to do so.
->>
->> Signed-off-by: Donald Hunter <donald.hunter@gmail.com>
->> ---
+>> It's a bit awkward to have such a difference between xdp and skb
+>> dynptr's read/write. I understand why it is the way it is, but it
+>> still doesn't feel right. I'm not sure if we can reconcile the
+>> differences, but it makes writing common code for both xdp and tc
+>> harder as it needs to be aware of the differences (and then the flags
+>> for dynptr_write would differ too). So we're 90% there but not the
+>> whole way...
 >
-> It does seem cleaner to generate this .csv during docs build, instead
-> of having to manually regenerate it all the time? Should we also put
-> it under Documentation/bpf/libbpf/ as it's libbpf-specific? Having it
-> under libbpf subdir would also make it simpler to expose it in libbpf
-> docs at libbpf.readthedocs.io/
+> Yeah, it'd be great if the behavior for skb/xdp progs could be the
+> same, but I'm not seeing a better solution here (unless we invalidate
+> data slices on writes in xdp progs, just to make it match more :P).
+>
+> Regarding having 2 different interfaces bpf_dynptr_from_{skb/xdp}, I'm
+> not convinced this is much of a problem - xdp and skb programs already
+> have different interfaces for doing things (eg
+> bpf_{skb/xdp}_{store/load}_bytes).
 
-Agreed about generating the .csv as part of the doc build. I will look
-at adding it to the docs Makefile.
+This is true, but it's quite possible to paper over these differences
+and write BPF code that works for both TC and XDP. Subtle semantic
+differences in otherwise identical functions makes this harder.
 
-I'm happy to put it in Documentation/bpf/libbpf and link to it from
-Documentation/bpf/programs.rst.
+Today you can write a function like:
 
-> We can probably also establish some special comment format next to
-> SEC_DEF() to specify the format of those "extras", I think it would be
-> useful for users. WDYT?
+static inline int parse_pkt(void *data, void* data_end)
+{
+        /* parse data */
+}
 
-Yes this would be a useful addition. Are the extras always for
-auto-attach? If so, then I can add that to the rules.
+And call it like:
 
-I'd prefer to modify the existing ELF section name column to replace '+'
-with extras since the table is already wide.
+SEC("xdp")
+int parse_xdp(struct xdp_md *ctx)
+{
+        return parse_pkt(ctx->data, ctx->data_end);
+}
 
-> CC'ing Grant as well, who worked on building libbpf docs.
+SEC("tc")
+int parse_tc(struct __sk_buff *skb)
+{
+        return parse_pkt(skb->data, skb->data_end);
+}
+
+
+IMO the goal should be to be able to do the equivalent for dynptrs, like:
+
+static inline int parse_pkt(struct bpf_dynptr *ptr)
+{
+        __u64 *data;
+        
+	data = bpf_dynptr_data(ptr, 0, sizeof(*data));
+	if (!data)
+		return 0;
+        /* parse data */
+}
+
+SEC("xdp")
+int parse_xdp(struct xdp_md *ctx)
+{
+	struct bpf_dynptr ptr;
+
+	bpf_dynptr_from_xdp(ctx, 0, &ptr);
+        return parse_pkt(&ptr);
+}
+
+SEC("tc")
+int parse_tc(struct __sk_buff *skb)
+{
+	struct bpf_dynptr ptr;
+
+	bpf_dynptr_from_skb(skb, 0, &ptr);
+        return parse_pkt(&ptr);
+}
+
+
+If the dynptr-based parse_pkt() function has to take special care to
+figure out where the dynptr comes from, it makes it a lot more difficult
+to write reusable packet parsing functions. So I'd be in favour of
+restricting the dynptr interface to the lowest common denominator of the
+skb and xdp interfaces even if that makes things slightly more awkward
+in the specialised cases...
+
+-Toke
+
