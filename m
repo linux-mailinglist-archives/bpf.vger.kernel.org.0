@@ -2,59 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D6345A03C2
-	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 00:08:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AD445A03C6
+	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 00:10:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232122AbiHXWGj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Aug 2022 18:06:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38604 "EHLO
+        id S240875AbiHXWKh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Aug 2022 18:10:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240887AbiHXWGd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Aug 2022 18:06:33 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C0B6786DF
-        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 15:06:32 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id u9so7124729ejy.5
-        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 15:06:32 -0700 (PDT)
+        with ESMTP id S240847AbiHXWKh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Aug 2022 18:10:37 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B2C677548;
+        Wed, 24 Aug 2022 15:10:36 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id h24so22384194wrb.8;
+        Wed, 24 Aug 2022 15:10:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=Xm+4Gf1xG1oK1GM+WhAAoclk6yOevjiyPxCVGkIAN8U=;
-        b=mkNYQhPfGJoBD4hLng/5/nsMlecxydbnb0E7OHoiWwPRmTR40Z7i5FpE4pV2z/2J4w
-         b0Nc9wrpMhAKeKE5pSiP2ORVwTWR53kEjx9nMDcBKazj5LX5KYrJep5+7p0dGLO3pYRi
-         apayIjMWTvmXk5fL2e1X4LL0Ui1GmbTzJPb2oPL7tmz1w9LjJWeENkRE81a2dicH/HfG
-         XYr+xyj4t0VuvDFAB48QJt9/4hsaO9MXSxzOQGmLdCKyiTHMSAcBUWDDdmUxm2s9ikhE
-         yGUYn6BN43pG4025+p3no9tR5P4nOb6n3YEF8c+w7ws2edAsgmcscfF2VO7LDDH1r6NE
-         Q1XQ==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc;
+        bh=1S7hEgYwJdq28zms1wKavkqQ3o/4Fh91ZwrbI4pxEOE=;
+        b=WN+Sr0LMUVqBPbaJobE2E4MmTVnv8ZKKAKwuafyNn1HPCSx8f+AvLD9L+Zrj5Xf25D
+         IyEuO0cuEqqrcHYHryaJoqXvGr9hgbyen8d9db8LHR3dJ8yOznsgIWKVS5pneY/gX8aB
+         hfR2UKA/QtsmQeYXxbqQ/FCmQqdXmA2X278ERmFfD6M5Q5KGbIFK7HAs4fxB6TwgmYo7
+         dY6UsvHHa6qJMRFSy9K6oSup9X81PpPzPBPmWuGWLrKnAjsyPYpTTs9PRh1gsIYoNBmL
+         F/OLuxg8/aEwuFzl73rnBuPP9dYNzLedjl2abR1LZxu8aMBXP8kzzb8DNnz1AtZvUlsZ
+         kIHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=Xm+4Gf1xG1oK1GM+WhAAoclk6yOevjiyPxCVGkIAN8U=;
-        b=iF9/56fW+C4wWNO1VMUsf4xfF3HVQjOPv+nMUDi8tZEFM+c0agtD9aDk9YbB7l8esl
-         GgcJg+Qim1V6Cige4r7nXqEnBG+4rovV7XdKiKHVkpyQqc1SdC8ofqkqpzrWjXhOyqqt
-         UpgmMU7kkCKM7nyIEFlEjwEJN84zYLC5eZyE7rz5V0uexZPtzaeZnSNp5FtWB/eFT30i
-         u76wtwXVzeibUMJs6aFdw+JTc9SwX9lGEUEu8vJJMkxGcOo/UzOybo5uZEiNdlmJl9bR
-         ELeVRlq629bsfDB48AfmUnhb3qtLb74FP5GEqiT/86TLnEHouNxInKIeXzcwxRC//25N
-         bF3w==
-X-Gm-Message-State: ACgBeo1eapBxvkkigUBDUONmkOztZOH0t+KonCClEXsIz0o/RjIHsZnx
-        88BaOazsuPXTGuvYgSKzKbusc4O28z0H6NkpKTemwbgb
-X-Google-Smtp-Source: AA6agR4P2sgxEY088hX9u1xn905kH/uIuxHDdQZkhcUHSJDh39e3W3nQgLmHLDWCRfFP/UGXt50c63WL76/jHT+P+KI=
-X-Received: by 2002:a17:906:99c5:b0:73d:70c5:1a4f with SMTP id
- s5-20020a17090699c500b0073d70c51a4fmr593124ejn.302.1661378791045; Wed, 24 Aug
- 2022 15:06:31 -0700 (PDT)
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc;
+        bh=1S7hEgYwJdq28zms1wKavkqQ3o/4Fh91ZwrbI4pxEOE=;
+        b=huilOaxf4FZ1nn5j/DMMhQ+c1IV8Mzw+7e6ha2TIH4V3UCgNYBqDsl2lcURq7eZ8pV
+         ltfJV4qZMT/RFAX4l5TRTwjD2DZe+pOGSPzjdNws2KMxbCeQbT3P3oWrrc2uw4u2fu1r
+         LT9o1BiR4IkBgy59rGmx3l7Vdf+l1YpcprjJX3+JP9WOgEDUfwXsvnlFOlh374P94v0u
+         nypN0i2lwuKlryHOAxdvZoNWCAnR/i1XfZffZso9egdjuevK/6RpzvtZZxxBGEK36vzI
+         RXP2ybWPYdRAPsJhL07p3C5ICbj86Oc0az5m44xw+6ueged2kJ85+f9oMg0Gemtho6ll
+         4IEA==
+X-Gm-Message-State: ACgBeo1lcRn7vC3hT4gLwI0++ug9+HcBa7nTTBlhm4aj3tG5IH5gGNSV
+        PSNGxEITZQeQIbTMiJRpKfOe9SHGU/WNeA==
+X-Google-Smtp-Source: AA6agR6pFgsd7g2mqgdVvEHR0helPT3Alm/6RChWf37BmZOgpvLP74wqp88nDrbaDo0SDzQWEin3+A==
+X-Received: by 2002:a05:6000:1364:b0:225:37d8:26e8 with SMTP id q4-20020a056000136400b0022537d826e8mr549002wrz.589.1661379034232;
+        Wed, 24 Aug 2022 15:10:34 -0700 (PDT)
+Received: from imac.fritz.box ([2a02:8010:60a0:0:b44b:882e:8988:f510])
+        by smtp.gmail.com with ESMTPSA id j27-20020a05600c1c1b00b003a5ce167a68sm3399930wms.7.2022.08.24.15.10.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Aug 2022 15:10:33 -0700 (PDT)
+From:   Donald Hunter <donald.hunter@gmail.com>
+To:     bpf@vger.kernel.org, linux-doc@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     Donald Hunter <donald.hunter@gmail.com>
+Subject: [PATCH bpf-next v2 0/2] Add table of BPF program types to docs
+Date:   Wed, 24 Aug 2022 23:10:16 +0100
+Message-Id: <20220824221018.24684-1-donald.hunter@gmail.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-References: <20220819220927.3409575-1-kuifeng@fb.com>
-In-Reply-To: <20220819220927.3409575-1-kuifeng@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 24 Aug 2022 15:06:19 -0700
-Message-ID: <CAEf4Bzbq-JBO4D_M591DaDXiaNYHqxhrhm_e5NhA-v4qij8GVA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 0/4] Parameterize task iterators.
-To:     Kui-Feng Lee <kuifeng@fb.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kernel-team@fb.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -65,81 +67,39 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Aug 19, 2022 at 3:09 PM Kui-Feng Lee <kuifeng@fb.com> wrote:
->
-> Allow creating an iterator that loops through resources of one task/thread.
->
-> People could only create iterators to loop through all resources of
-> files, vma, and tasks in the system, even though they were interested in only the
-> resources of a specific task or process.  Passing the addintional
-> parameters, people can now create an iterator to go through all
-> resources or only the resources of a task.
->
-> Major Changes:
->
->  - Add new parameters in bpf_iter_link_info to indicate to go through
->    all tasks or to go through a specific task.
->
->  - Change the implementations of BPF iterators of vma, files, and
->    tasks to allow going through only the resources of a specific task.
->
->  - Provide the arguments of parameterized task iterators in
->    bpf_link_info.
->
-> Differences from v5:
->
->  - Use user-speace tid/pid terminologies in bpf_iter_link_info *** BLURB HERE ***
+Extend the libbpf documentation with a table of program types, attach
+points and ELF section names. The table uses data from program_types.csv
+which is generated from tools/lib/bpf/libbpf.c during the documentation
+build.
 
-BLURB HERE :)
+Patch 1 adds subdir support to Documentation/Makefile and changes
+userspace-api/media to use this instead of being a special case.
 
->    bpf_link_info.
->
->  - Fix reference count
->
->  - Merge all variants to one 'u32 pid' in internal structs.
->    (bpf_iter_aux_info and bpf_iter_seq_task_common)
->
->  - Compare the result of get_uprobe_offset() with the implementation
->    with the vma iterators.
->
->  - Implement show_fdinfo.
->
-> Differences from v4:
->
->  - Remove 'type' from bpf_iter_link_info and bpf_link_info.
->
+Patch 2 adds the the program_types documentation with a new makefile in
+the libbpf doc directory to generate program_types.csv
 
-We normally carry over entire change history across revisions, so we
-don't have to jump through multiple links to see what happened
-earlier. Please consider preserving all the changes in one place for
-next revision.
+I plan to look at adding info about format of section "extras" as a
+follow-on.
+
+v1 -> v2:
+Automate the generation of program_types.csv as suggested by
+Andrii Nakryiko.
 
 
-> v5: https://lore.kernel.org/bpf/20220811001654.1316689-1-kuifeng@fb.com/
-> v4: https://lore.kernel.org/bpf/20220809195429.1043220-1-kuifeng@fb.com/
-> v3: https://lore.kernel.org/bpf/20220809063501.667610-1-kuifeng@fb.com/
-> v2: https://lore.kernel.org/bpf/20220801232649.2306614-1-kuifeng@fb.com/
-> v1: https://lore.kernel.org/bpf/20220726051713.840431-1-kuifeng@fb.com/
->
-> Kui-Feng Lee (4):
->   bpf: Parameterize task iterators.
->   bpf: Handle bpf_link_info for the parameterized task BPF iterators.
->   bpf: Handle show_fdinfo for the parameterized task BPF iterators
->   selftests/bpf: Test parameterized task BPF iterators.
->
->  include/linux/bpf.h                           |  25 ++
->  include/uapi/linux/bpf.h                      |  12 +
->  kernel/bpf/task_iter.c                        | 142 +++++++--
->  tools/include/uapi/linux/bpf.h                |  12 +
->  .../selftests/bpf/prog_tests/bpf_iter.c       | 284 +++++++++++++++++-
->  .../selftests/bpf/prog_tests/btf_dump.c       |   2 +-
->  .../selftests/bpf/progs/bpf_iter_task.c       |   9 +
->  .../selftests/bpf/progs/bpf_iter_task_file.c  |   9 +-
->  .../selftests/bpf/progs/bpf_iter_task_vma.c   |   6 +-
->  .../bpf/progs/bpf_iter_uprobe_offset.c        |  35 +++
->  10 files changed, 493 insertions(+), 43 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_uprobe_offset.c
->
-> --
-> 2.30.2
->
+Donald Hunter (2):
+  Add subdir support to Documentation makefile
+  Add table of BPF program types to libbpf docs
+
+ Documentation/Makefile                     | 16 ++++++++--
+ Documentation/bpf/libbpf/Makefile          | 36 ++++++++++++++++++++++
+ Documentation/bpf/libbpf/index.rst         |  3 ++
+ Documentation/bpf/libbpf/program_types.rst | 18 +++++++++++
+ Documentation/bpf/programs.rst             |  3 ++
+ Documentation/userspace-api/media/Makefile |  2 ++
+ 6 files changed, 76 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/bpf/libbpf/Makefile
+ create mode 100644 Documentation/bpf/libbpf/program_types.rst
+
+-- 
+2.35.1
+
