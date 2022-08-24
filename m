@@ -2,63 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35A5559FC8E
-	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 16:02:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EA4159FCB5
+	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 16:06:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238968AbiHXOBe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Aug 2022 10:01:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39074 "EHLO
+        id S239007AbiHXOGC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Aug 2022 10:06:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239023AbiHXOBT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Aug 2022 10:01:19 -0400
-Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F27429836D;
-        Wed, 24 Aug 2022 07:01:11 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=mqaio@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0VN7erIR_1661349666;
-Received: from localhost(mailfrom:mqaio@linux.alibaba.com fp:SMTPD_---0VN7erIR_1661349666)
+        with ESMTP id S239234AbiHXOFn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Aug 2022 10:05:43 -0400
+Received: from out30-54.freemail.mail.aliyun.com (out30-54.freemail.mail.aliyun.com [115.124.30.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A0DA7E02D;
+        Wed, 24 Aug 2022 07:05:36 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R531e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=chentao.kernel@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0VN7g--P_1661349909;
+Received: from VM20210331-5.tbsite.net(mailfrom:chentao.kernel@linux.alibaba.com fp:SMTPD_---0VN7g--P_1661349909)
           by smtp.aliyun-inc.com;
-          Wed, 24 Aug 2022 22:01:07 +0800
-From:   Qiao Ma <mqaio@linux.alibaba.com>
-To:     andrii@kernel.org, shuah@kernel.org, mykolal@fb.com,
-        linux-kernel@vger.kernel.org
-Cc:     bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf-next] selftests/bpf: fix incorrect fcntl call
-Date:   Wed, 24 Aug 2022 22:01:04 +0800
-Message-Id: <a46dffe36f2570ec91761b1d604ac52fa0a10efb.1661348961.git.mqaio@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+          Wed, 24 Aug 2022 22:05:31 +0800
+From:   "chentao.ct" <chentao.kernel@linux.alibaba.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "chentao.ct" <chentao.kernel@linux.alibaba.com>
+Subject: [PATCH] libbpf: Support raw btf placed in the default path
+Date:   Wed, 24 Aug 2022 22:05:07 +0800
+Message-Id: <1661349907-57222-1-git-send-email-chentao.kernel@linux.alibaba.com>
+X-Mailer: git-send-email 2.2.1
 X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-To set socket noblock, we need to use
-> fcntl(fd, F_SETFL, O_NONBLOCK);
-rather than:
-> fcntl(fd, O_NONBLOCK);
+Now only elf btf can be placed in the default path, raw btf should
+also can be there.
 
-Signed-off-by: Qiao Ma <mqaio@linux.alibaba.com>
+Signed-off-by: chentao.ct <chentao.kernel@linux.alibaba.com>
 ---
- tools/testing/selftests/bpf/test_sockmap.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/lib/bpf/btf.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/test_sockmap.c b/tools/testing/selftests/bpf/test_sockmap.c
-index 0fbaccdc8861..b163b7cfd957 100644
---- a/tools/testing/selftests/bpf/test_sockmap.c
-+++ b/tools/testing/selftests/bpf/test_sockmap.c
-@@ -598,7 +598,7 @@ static int msg_loop(int fd, int iov_count, int iov_length, int cnt,
- 		struct timeval timeout;
- 		fd_set w;
- 
--		fcntl(fd, fd_flags);
-+		fcntl(fd, F_SETFL, fd_flags);
- 		/* Account for pop bytes noting each iteration of apply will
- 		 * call msg_pop_data helper so we need to account for this
- 		 * by calculating the number of apply iterations. Note user
+diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+index bb1e06e..b22b5b3 100644
+--- a/tools/lib/bpf/btf.c
++++ b/tools/lib/bpf/btf.c
+@@ -4661,7 +4661,7 @@ struct btf *btf__load_vmlinux_btf(void)
+ 	} locations[] = {
+ 		/* try canonical vmlinux BTF through sysfs first */
+ 		{ "/sys/kernel/btf/vmlinux", true /* raw BTF */ },
+-		/* fall back to trying to find vmlinux ELF on disk otherwise */
++		/* fall back to trying to find vmlinux RAW/ELF on disk otherwise */
+ 		{ "/boot/vmlinux-%1$s" },
+ 		{ "/lib/modules/%1$s/vmlinux-%1$s" },
+ 		{ "/lib/modules/%1$s/build/vmlinux" },
+@@ -4686,7 +4686,7 @@ struct btf *btf__load_vmlinux_btf(void)
+ 		if (locations[i].raw_btf)
+ 			btf = btf__parse_raw(path);
+ 		else
+-			btf = btf__parse_elf(path, NULL);
++			btf = btf__parse(path, NULL);
+ 		err = libbpf_get_error(btf);
+ 		pr_debug("loading kernel BTF '%s': %d\n", path, err);
+ 		if (err)
 -- 
-1.8.3.1
+2.2.1
 
