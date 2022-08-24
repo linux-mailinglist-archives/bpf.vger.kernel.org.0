@@ -2,51 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 708495A000D
-	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 19:06:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEAB75A002E
+	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 19:15:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239874AbiHXRGx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Aug 2022 13:06:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35944 "EHLO
+        id S235867AbiHXRPt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Aug 2022 13:15:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239828AbiHXRGv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Aug 2022 13:06:51 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D56B979A6B;
-        Wed, 24 Aug 2022 10:06:47 -0700 (PDT)
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1oQtpp-000B4w-Nl; Wed, 24 Aug 2022 19:06:33 +0200
-Received: from [85.1.206.226] (helo=linux-4.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1oQtpp-000THk-CK; Wed, 24 Aug 2022 19:06:33 +0200
-Subject: Re: [PATCH ipsec-next 2/3] xfrm: interface: support collect metadata
- mode
-To:     Eyal Birger <eyal.birger@gmail.com>, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        steffen.klassert@secunet.com, herbert@gondor.apana.org.au,
-        pablo@netfilter.org, contact@proelbtn.com, dsahern@kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, devel@linux-ipsec.org
-References: <20220823154557.1400380-1-eyal.birger@gmail.com>
- <20220823154557.1400380-3-eyal.birger@gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <6477c6e6-cb01-eaa3-3e3e-b0f796fd08c2@iogearbox.net>
-Date:   Wed, 24 Aug 2022 19:06:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S240189AbiHXRPr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Aug 2022 13:15:47 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBF031DA5E;
+        Wed, 24 Aug 2022 10:15:43 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id AD5AAB82543;
+        Wed, 24 Aug 2022 17:15:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14508C433D6;
+        Wed, 24 Aug 2022 17:15:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1661361341;
+        bh=k9o2Q3E5+a/u89eGTTu8XHPHlJiTDB5A9FmQy5ppO5I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VAy+gShcDYcWO9hFSgnkNy5y3RLT6XAjxEmrWSiIPnKcyjLlGYZUUH9T0pyCXcj+w
+         k/HlDAzvheWoSms85NAW7NOJ+QzDlXsRYPARMWxRKFJZYlJetu0iIolqgLsn7wxIIj
+         EMLzbJj3+XF4471lOZ8qjbrwnZAez1UiNKlgbC4LkgbYvfZG75VqPXJt4wZR+xv32i
+         Jhi3jqy8TBZ18+ZY4QqJE2R4jUvGMZExpavr+mFdcrE/z+GfkA6S5JAbEzg6w5lYuU
+         4E0nxg8vowXYOIlrZ/BUEcbI153x6h+rTf/kJZX0UmknchVjVGa4z1QwFYRdhzDf6N
+         0Hv+8uERlxueA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 36C07404A1; Wed, 24 Aug 2022 14:15:36 -0300 (-03)
+Date:   Wed, 24 Aug 2022 14:15:36 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     dwarves@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alibek Omarov <a1ba.omarov@gmail.com>,
+        Kornilios Kourtis <kornilios@isovalent.com>,
+        Kui-Feng Lee <kuifeng@fb.com>, Yonghong Song <yhs@fb.com>,
+        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>
+Subject: Re: ANNOUNCE: pahole v1.24 (Faster BTF encoding, 64-bit BTF enum
+ entries)
+Message-ID: <YwZcuCj49wMkr18W@kernel.org>
+References: <YwQRKkmWqsf/Du6A@kernel.org>
+ <YwZQ0UkLsoa+6VyY@dev-arch.thelio-3990X>
 MIME-Version: 1.0
-In-Reply-To: <20220823154557.1400380-3-eyal.birger@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.6/26637/Wed Aug 24 09:53:01 2022)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YwZQ0UkLsoa+6VyY@dev-arch.thelio-3990X>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,40 +62,115 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Eyal,
+Em Wed, Aug 24, 2022 at 09:24:49AM -0700, Nathan Chancellor escreveu:
+> Hi Arnaldo,
+> 
+> On Mon, Aug 22, 2022 at 08:28:42PM -0300, Arnaldo Carvalho de Melo wrote:
+> > Hi,
+> >   
+> > 	The v1.24 release of pahole and its friends is out, with faster
+> > BTF generation by parallelizing the encoding part in addition to the
+> > previoulsy parallelized DWARF loading, support for 64-bit BTF enumeration
+> > entries, signed BTF encoding of 'char', exclude/select DWARF loading
+> > based on the language that generated the objects, etc.
+> 
+> <snip>
+> 
+> > - Introduce --lang and --lang_exclude to specify the language the
+> >   DWARF compile units were originated from to use or filter.
+> 
+> This appears to break building pahole with older versions of libdw (?).
+> I build container images with older versions of compilers for easy
+> matrix testing and my gcc-5 and gcc-6 images (based off Ubuntu Xenial
+> and Debian Stretch respectively) fail to build.
 
-On 8/23/22 5:45 PM, Eyal Birger wrote:
-> This commit adds support for 'collect_md' mode on xfrm interfaces.
-> 
-> Each net can have one collect_md device, created by providing the
-> IFLA_XFRM_COLLECT_METADATA flag at creation. This device cannot be
-> altered and has no if_id or link device attributes.
-> 
-> On transmit to this device, the if_id is fetched from the attached dst
-> metadata on the skb. The dst metadata type used is METADATA_XFRM
-> which holds the if_id property.
-> 
-> On the receive side, xfrmi_rcv_cb() populates a dst metadata for each
-> packet received and attaches it to the skb. The if_id used in this case is
-> fetched from the xfrm state. This can later be used by upper layers such
-> as tc, ebpf, and ip rules.
-> 
-> Because the skb is scrubed in xfrmi_rcv_cb(), the attachment of the dst
-> metadata is postponed until after scrubing. Similarly, xfrm_input() is
-> adapted to avoid dropping metadata dsts by only dropping 'valid'
-> (skb_valid_dst(skb) == true) dsts.
-> 
-> Policy matching on packets arriving from collect_md xfrmi devices is
-> done by using the xfrm state existing in the skb's sec_path.
-> The xfrm_if_cb.decode_cb() interface implemented by xfrmi_decode_session()
-> is changed to keep the details of the if_id extraction tucked away
-> in xfrm_interface.c.
-> 
-> Signed-off-by: Eyal Birger <eyal.birger@gmail.com>
+I do it for perf, should have done it for pahole :-\
 
-Can be done in follow-up (once merged back from net-next into bpf-next),
-but it would be nice to also have a BPF CI selftest for it to make sure
-the ipsec+collect_md with BPF is consistently tested for incoming patches.
+So I'll have to come up with a patch that checks if those are defined
+and if not, define it :-\ Ooops, its an enumeration :-\ I'll have to
+check how to fix this, thanks for the report!
 
-Thanks,
-Daniel
+Will rebuild it with the containers I have to see if there are other
+cases.
+
+- Arnaldo
+ 
+>     $ podman run --rm -ti -v $TMP_FOLDER/dwarves-1.24.tar.xz:/tmp/dwarves-1.24.tar.xz:ro docker.io/ubuntu:xenial
+>     # apt update
+>     # apt install build-essential cmake libdw-dev libelf-dev xz-utils zlib1g-dev
+>     # cd $(mktemp -d)
+>     # tar -xJf /tmp/dwarves-1.24.tar.xz
+>     # mkdir build
+>     # cd build
+>     # cmake -DBUILD_SHARED_LIBS=OFF -D__LIB=lib ../dwarves-1.24
+>     # make -j$(nproc)
+>     ...
+>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c: In function 'lang__str2int':
+>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2093:3: error: 'DW_LANG_BLISS' undeclared (first use in this function)
+>       [DW_LANG_BLISS]   = "bliss",
+>        ^
+>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2093:3: note: each undeclared identifier is reported only once for each function it appears in
+>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2093:3: error: array index in initializer not of integer type
+>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2093:3: note: (near initialization for 'languages')
+>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2100:3: error: 'DW_LANG_C_plus_plus_03' undeclared (first use in this function)
+>       [DW_LANG_C_plus_plus_03] = "c++03",
+>        ^
+>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2100:3: error: array index in initializer not of integer type
+>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2100:3: note: (near initialization for 'languages')
+>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2105:3: error: 'DW_LANG_Dylan' undeclared (first use in this function)
+>       [DW_LANG_Dylan]   = "dylan",
+>        ^
+>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2105:3: error: array index in initializer not of integer type
+>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2105:3: note: (near initialization for 'languages')
+>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2114:3: error: 'DW_LANG_Julia' undeclared (first use in this function)
+>       [DW_LANG_Julia]   = "julia",
+>        ^
+>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2114:3: error: array index in initializer not of integer type
+>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2114:3: note: (near initialization for 'languages')
+>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2116:3: error: 'DW_LANG_Modula3' undeclared (first use in this function)
+>       [DW_LANG_Modula3]  = "modula3",
+>        ^
+>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2116:3: error: array index in initializer not of integer type
+>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2116:3: note: (near initialization for 'languages')
+>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2119:3: error: 'DW_LANG_OCaml' undeclared (first use in this function)
+>       [DW_LANG_OCaml]   = "ocaml",
+>        ^
+>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2119:3: error: array index in initializer not of integer type
+>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2119:3: note: (near initialization for 'languages')
+>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2120:3: error: 'DW_LANG_OpenCL' undeclared (first use in this function)
+>       [DW_LANG_OpenCL]  = "opencl",
+>        ^
+>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2120:3: error: array index in initializer not of integer type
+>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2120:3: note: (near initialization for 'languages')
+>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2122:3: error: 'DW_LANG_PLI' undeclared (first use in this function)
+>       [DW_LANG_PLI]   = "pli",
+>        ^
+>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2122:3: error: array index in initializer not of integer type
+>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2122:3: note: (near initialization for 'languages')
+>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2124:3: error: 'DW_LANG_RenderScript' undeclared (first use in this function)
+>       [DW_LANG_RenderScript]  = "renderscript",
+>        ^
+>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2124:3: error: array index in initializer not of integer type
+>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2124:3: note: (near initialization for 'languages')
+>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2125:3: error: 'DW_LANG_Rust' undeclared (first use in this function)
+>       [DW_LANG_Rust]   = "rust",
+>        ^
+>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2125:3: error: array index in initializer not of integer type
+>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2125:3: note: (near initialization for 'languages')
+>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2126:3: error: 'DW_LANG_Swift' undeclared (first use in this function)
+>       [DW_LANG_Swift]   = "swift",
+>        ^
+>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2126:3: error: array index in initializer not of integer type
+>     /tmp/tmp.pQ2GsHbGAx/dwarves-1.24/dwarves.c:2126:3: note: (near initialization for 'languages')
+>     CMakeFiles/dwarves.dir/build.make:62: recipe for target 'CMakeFiles/dwarves.dir/dwarves.c.o' failed
+>     ...
+> 
+> If there is any additional information I can provide or patches I can
+> test, please let me know!
+> 
+> Cheers,
+> Nathan
+
+-- 
+
+- Arnaldo
