@@ -2,205 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7D0A5A03AC
-	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 00:04:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2ED85A03B8
+	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 00:06:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240835AbiHXWEX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Aug 2022 18:04:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33660 "EHLO
+        id S240869AbiHXWFi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Aug 2022 18:05:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240876AbiHXWEL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Aug 2022 18:04:11 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 102F477576;
-        Wed, 24 Aug 2022 15:04:07 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id n7so17922642ejh.2;
-        Wed, 24 Aug 2022 15:04:06 -0700 (PDT)
+        with ESMTP id S232122AbiHXWFh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Aug 2022 18:05:37 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AA4376965
+        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 15:05:36 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id kk26so6407310ejc.11
+        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 15:05:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=Tvo4KEWB4BfarSnzwYPGZG4zYGwhj32j+2JFcJaFoGA=;
-        b=G/ilqra0+ovuT46s5RdJ3m/DQbXsjTUKnXiiNflrpsTbr0X2WP1W5p5SPRPt4KPOOo
-         gYQnH9cHNuSvDSmPRNJTsXOMS5oSv6ea8ZUJhdMYtTlq/gSrUF5EnewoudZVltDpi/RY
-         gBDlsYV8EpIPUJJKlP4ij+hl+PxA5rjUMF3I/odN83cMUbcWK1ElpjOzLbZFWpbhmbun
-         ukTmBASCj+i0ZPsr75B6/OsTHykbnKdvgy+3YZwvdRei2PEa5tLNpKck+JsJwPllxfu5
-         qOpz8ENbnCmNLXuGWp1UTxOWOGxpdB4QW1Lu+0y05Wwrk15ydYTy3h0X6hu+kb3tfECp
-         mQbg==
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:to:from:subject:message-id:from:to:cc;
+        bh=30rjKiVeWVCu2mnV1/tF3SCou3m7ew3Kx6STFe224gQ=;
+        b=fMituNd4Hawqhoyzj/f1QRwhRu6gNr4Egv2wpZoQ78f4kQHVdhbKPJz6qkO+SgPBmH
+         E8OwA75SHIXWuLP2P1RWcq6bdfmE7vjTJ+LNZuEukwwdtpbbuvkV+VlV7HfgQBOH5xYG
+         S6gsG+zPS3OBpxbxY51bSnC0l8mJe987IQSPBO+fJfEtocM1PU2Uu9FAtbDPJ3mRvb/s
+         NrI3j57mpxIS5syggL+tiqLNNNcwSQuLnuRyyT7/L0I0fFMib2dsjECQh1EpMrHSzkyi
+         g4Awk90UDQgG/sGzWaT2frcpi0ZHCT2C08eIj5tDq2ZYLsEYRzQtBzOaWidxkWiVSc6M
+         4ZGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=Tvo4KEWB4BfarSnzwYPGZG4zYGwhj32j+2JFcJaFoGA=;
-        b=QMDwMX95HvQHFJ91YPc6sPQyH0SvZiSJYGN4vKW0YyZHXYW7jg/YGtp1/2Wi/IUkAr
-         SGfmELXFxKJJKeCCi5KXTxL5MYRUYTQjeufJi1uid8czmZdSG+/Eeqx/bztM1oxywHxZ
-         fUNxuKH57gVxX1sJPLnbEVUPnLyugLuI2BuRPXHVpZKOeN5oyHISFbzm3VWdoERI/K5+
-         M8a7fy6PqZA6PsdvYJSldAaTiqXIBi6Jguwicmx7JiuBoSzc7DytoYuKXKzAdeeeOXqt
-         oTPRUNKHzm7fWY3820h9ucEeV7N2rExCPVZRclfpC2QzDzWZmK2y/Vg5mYibhPnGM9m/
-         C4Wg==
-X-Gm-Message-State: ACgBeo3uyi4cS/jxmm5sCZty53QR7IqaqPKmXXRc0tvN37v+LJOY4RZu
-        FdZyJEqxPUAx5A1zif88Xnzdrz3SUUurCE7zHgA=
-X-Google-Smtp-Source: AA6agR5CbOOqDDFFpDZjt7mwWG0f9rU+1+4u9f8xbl3T5fQ2MTP1r/13FInffVcHgYty4rPAOzbKBUxZoYjJ1CX7obg=
-X-Received: by 2002:a17:907:7e9e:b0:73d:ae12:5f11 with SMTP id
- qb30-20020a1709077e9e00b0073dae125f11mr630572ejc.176.1661378645504; Wed, 24
- Aug 2022 15:04:05 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220818221212.464487-1-void@manifault.com> <20220818221212.464487-5-void@manifault.com>
-In-Reply-To: <20220818221212.464487-5-void@manifault.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 24 Aug 2022 15:03:54 -0700
-Message-ID: <CAEf4Bzbj0ACUmZqQLhRR5DvEX9Zphqz5UwBWdkTdXfKqxWM0mQ@mail.gmail.com>
-Subject: Re: [PATCH v3 4/4] selftests/bpf: Add selftests validating the user ringbuf
-To:     David Vernet <void@manifault.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com, martin.lau@linux.dev,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, joannelkoong@gmail.com, tj@kernel.org,
-        linux-kernel@vger.kernel.org
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
+         :to:cc;
+        bh=30rjKiVeWVCu2mnV1/tF3SCou3m7ew3Kx6STFe224gQ=;
+        b=V+WKefV0gEqbP3Pg6NPzWCIJ0H63M0bbWY6CVeOVPLpqlyNXtDt9j8EV7jSuqYX/6X
+         6exfSyUmUdXweKzHT4gPf25azp1cQT6q+VvHQRw/WjHVri9mtdpXxtpSS4GPxsPff8sD
+         RYmC79Ek1VJn2eGRXr4BSDKPHcxKOQwe0U/UNGQ5oavOikV3Ujkco0OKioZRNUa9Dqg8
+         UsnD+qU6p/2fSSEKrtymbIN04QEas6mSxcEokYe3OiEe9Ryp0cD8e5gl3o8/MeCPbxWi
+         /yf2y2JNDpPGmsOwZaQyO5xJJcHbvRyhm9781O4hIls8Y/MyvidlUxrXdyK6r7wUBn63
+         X8kQ==
+X-Gm-Message-State: ACgBeo3lwZKamkInskBicQIHM2hxn/26MfaY70p8vuX9dlPmZisHLkKW
+        z3eCiW4rG7E/mCzR3+PYguU=
+X-Google-Smtp-Source: AA6agR5v53CylgRlmKwFyaQfjvxRIfqFIlGrjHbPNryWpkRYoTuNl3eQCqvTLLloM7GLBmK197PGRA==
+X-Received: by 2002:a17:907:1c01:b0:6f4:2692:e23 with SMTP id nc1-20020a1709071c0100b006f426920e23mr585928ejc.243.1661378734649;
+        Wed, 24 Aug 2022 15:05:34 -0700 (PDT)
+Received: from [192.168.1.24] (boundsly.muster.volia.net. [93.72.16.93])
+        by smtp.gmail.com with ESMTPSA id kg5-20020a17090776e500b00730bbd81646sm1005348ejc.87.2022.08.24.15.05.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Aug 2022 15:05:33 -0700 (PDT)
+Message-ID: <f040525326088f63201d2ef76a7b759f44f38350.camel@gmail.com>
+Subject: Re: [PATCH RFC bpf-next 1/2] bpf: propagate nullness information
+ for reg to reg comparisons
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
+        ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
+        kernel-team@fb.com, yhs@fb.com
+Date:   Thu, 25 Aug 2022 01:05:31 +0300
+In-Reply-To: <63055fa5a080e_292a8208db@john.notmuch>
+References: <20220822094312.175448-1-eddyz87@gmail.com>
+         <20220822094312.175448-2-eddyz87@gmail.com>
+         <63055fa5a080e_292a8208db@john.notmuch>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4 (3.44.4-1.fc36) 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Aug 18, 2022 at 3:12 PM David Vernet <void@manifault.com> wrote:
->
-> This change includes selftests that validate the expected behavior and
-> APIs of the new BPF_MAP_TYPE_USER_RINGBUF map type.
->
-> Signed-off-by: David Vernet <void@manifault.com>
-> ---
->  .../selftests/bpf/prog_tests/user_ringbuf.c   | 755 ++++++++++++++++++
->  .../selftests/bpf/progs/user_ringbuf_fail.c   | 177 ++++
->  .../bpf/progs/user_ringbuf_success.c          | 220 +++++
->  .../testing/selftests/bpf/test_user_ringbuf.h |  35 +
->  4 files changed, 1187 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/user_ringbuf.c
->  create mode 100644 tools/testing/selftests/bpf/progs/user_ringbuf_fail.c
->  create mode 100644 tools/testing/selftests/bpf/progs/user_ringbuf_success.c
->  create mode 100644 tools/testing/selftests/bpf/test_user_ringbuf.h
->
+> On Tue, 2022-08-23 at 16:15 -0700, John Fastabend wrote:
 
-[...]
+Hi John,
 
-> +       /* Write some number of samples to the ring buffer. */
-> +       for (i = 0; i < num_samples; i++) {
-> +               struct sample *entry;
-> +               int read;
-> +
-> +               entry = user_ring_buffer__reserve(ringbuf, sizeof(*entry));
-> +               if (!entry) {
-> +                       err = -errno;
-> +                       goto done;
-> +               }
-> +
-> +               entry->pid = getpid();
-> +               entry->seq = i;
-> +               entry->value = i * i;
-> +
-> +               read = snprintf(entry->comm, sizeof(entry->comm), "%u", i);
-> +               if (read <= 0) {
-> +                       /* Only invoke CHECK on the error path to avoid spamming
-> +                        * logs with mostly success messages.
-> +                        */
-> +                       CHECK(read <= 0, "snprintf_comm",
-> +                             "Failed to write index %d to comm\n", i);
+Thank you for commenting!
 
-please, no CHECK() use in new tests, we have ASSERT_xxx() covering all
-common cases
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 2c1f8069f7b7..c48d34625bfd 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -472,6 +472,11 @@ static bool type_may_be_null(u32 type)
+> >  	return type & PTR_MAYBE_NULL;
+> >  }
+> > =20
+> > +static bool type_is_pointer(enum bpf_reg_type type)
+> > +{
+> > +	return type !=3D NOT_INIT && type !=3D SCALAR_VALUE;
+> > +}
+> > +
+>=20
+> Instead of having another helper is_pointer_value() could work here?
+> Checking if we need NOT_INIT in that helper now.
 
-> +                       err = read;
-> +                       user_ring_buffer__discard(ringbuf, entry);
-> +                       goto done;
-> +               }
-> +
-> +               user_ring_buffer__submit(ringbuf, entry);
-> +       }
-> +
+Do you mean modifying the `__is_pointer_value` by adding a check
+`reg->type !=3D NOT_INIT`?
 
-[...]
+I tried this out and tests are passing, but __is_pointer_value /
+is_pointer_value are used in a lot of places, seem to be a scary
+change, to be honest.
 
-> +static long
-> +bad_access1(struct bpf_dynptr *dynptr, void *context)
-> +{
-> +       const struct sample *sample;
-> +
-> +       sample = bpf_dynptr_data(dynptr - 1, 0, sizeof(*sample));
-> +       bpf_printk("Was able to pass bad pointer %lx\n", (__u64)dynptr - 1);
-> +
-> +       return 0;
-> +}
-> +
-> +/* A callback that accesses a dynptr in a bpf_user_ringbuf_drain callback should
-> + * not be able to read before the pointer.
-> + */
-> +SEC("?raw_tp/sys_nanosleep")
-
-there is no sys_nanosleep raw tracepoint, use SEC("?raw_tp") to
-specify type, that's enough
-
-> +int user_ringbuf_callback_bad_access1(void *ctx)
-> +{
-> +       bpf_user_ringbuf_drain(&user_ringbuf, bad_access1, NULL, 0);
-> +
-> +       return 0;
-> +}
-> +
-
-[...]
-
-> diff --git a/tools/testing/selftests/bpf/test_user_ringbuf.h b/tools/testing/selftests/bpf/test_user_ringbuf.h
-> new file mode 100644
-> index 000000000000..1643b4d59ba7
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/test_user_ringbuf.h
-
-nit: I'd probably put it under progs/test_user_ringbuf.h so it's
-closer to BPF source code. As it is right now, it's neither near
-user-space part of tests nor near BPF part.
-
-> @@ -0,0 +1,35 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
-> +
-> +#ifndef _TEST_USER_RINGBUF_H
-> +#define _TEST_USER_RINGBUF_H
-> +
-> +#define TEST_OP_64 4
-> +#define TEST_OP_32 2
-> +
-> +enum test_msg_op {
-> +       TEST_MSG_OP_INC64,
-> +       TEST_MSG_OP_INC32,
-> +       TEST_MSG_OP_MUL64,
-> +       TEST_MSG_OP_MUL32,
-> +
-> +       // Must come last.
-> +       TEST_MSG_OP_NUM_OPS,
-> +};
-> +
-> +struct test_msg {
-> +       enum test_msg_op msg_op;
-> +       union {
-> +               __s64 operand_64;
-> +               __s32 operand_32;
-> +       };
-> +};
-> +
-> +struct sample {
-> +       int pid;
-> +       int seq;
-> +       long value;
-> +       char comm[16];
-> +};
-> +
-> +#endif /* _TEST_USER_RINGBUF_H */
-> --
-> 2.37.1
->
+Thanks,
+Eduard
