@@ -2,74 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBB835A0086
-	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 19:38:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC0CB5A0091
+	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 19:40:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240218AbiHXRij (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Aug 2022 13:38:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44808 "EHLO
+        id S240248AbiHXRkU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Aug 2022 13:40:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229640AbiHXRii (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Aug 2022 13:38:38 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5674A75CFF;
-        Wed, 24 Aug 2022 10:38:37 -0700 (PDT)
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1oQuKp-0003SH-1M; Wed, 24 Aug 2022 19:38:35 +0200
-Received: from [85.1.206.226] (helo=linux-4.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1oQuKo-000WoJ-Kg; Wed, 24 Aug 2022 19:38:34 +0200
-Subject: Re: [PATCH v3 0/4] bpf: Add user-space-publisher ringbuffer map type
-To:     David Vernet <void@manifault.com>, bpf@vger.kernel.org,
-        ast@kernel.org, andrii@kernel.org
-Cc:     kernel-team@fb.com, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
-        joannelkoong@gmail.com, tj@kernel.org, linux-kernel@vger.kernel.org
-References: <20220818221212.464487-1-void@manifault.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <81eff27a-652b-4b55-7a4a-31c421b7f0bb@iogearbox.net>
-Date:   Wed, 24 Aug 2022 19:38:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S240049AbiHXRkS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Aug 2022 13:40:18 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 209837C741;
+        Wed, 24 Aug 2022 10:40:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id D8B0EB82619;
+        Wed, 24 Aug 2022 17:40:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 991CFC433D7;
+        Wed, 24 Aug 2022 17:40:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1661362815;
+        bh=6SRnsy3I79MO/6iM4jUHX42tTVHn9dq4eiC6x4O06n4=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=G2Bgg4aRQPmX0/RdgLPueS5jv1K0+GylZ2c+keEqRhjQ3Bu3+re9a0Xjda5cyp+MK
+         JtB20mGmZa+guzYmcbwOkbzdCmQZw2OjYsRvsWwieOCOESnfP7QTQIKBEva5e4jPQu
+         1ijsodkY/PAChbLNtPx0WpjXkbDCC+5XI9c1N55ue/4rod6y5Lxb1gPU74aXU8XD+U
+         5Gr8jYO4+RdoIqw6ukj4z5Fo16zYVk0OJs9UhTIKogtrHJKlc8vzjPdNU0vWC55CJh
+         K81GpG+Xt9RNVMG9kwJKd0MREPiziafmkI+WgX/BL5eGG7DjLhB74h4nXcKk5juQ/3
+         LWJBHE++yDHUw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 7ABEEC04E59;
+        Wed, 24 Aug 2022 17:40:15 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20220818221212.464487-1-void@manifault.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.6/26637/Wed Aug 24 09:53:01 2022)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH -next] selftests/bpf: fix wrong size passed to
+ bpf_setsockopt()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166136281549.32250.1908177028143691167.git-patchwork-notify@kernel.org>
+Date:   Wed, 24 Aug 2022 17:40:15 +0000
+References: <20220824013907.380448-1-yangyingliang@huawei.com>
+In-Reply-To: <20220824013907.380448-1-yangyingliang@huawei.com>
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        bpf@vger.kernel.org, sdf@google.com, kafai@fb.com, ast@kernel.org,
+        andrii@kernel.org, mykolal@fb.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hey David,
+Hello:
 
-On 8/19/22 12:12 AM, David Vernet wrote:
-> This patch set defines a new map type, BPF_MAP_TYPE_USER_RINGBUF, which
-> provides single-user-space-producer / single-kernel-consumer semantics over
-> a ringbuffer.  Along with the new map type, a helper function called
-> bpf_user_ringbuf_drain() is added which allows a BPF program to specify a
-> callback with the following signature, to which samples are posted by the
-> helper:
+This patch was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-Looks like this series fail BPF CI, ptal:
+On Wed, 24 Aug 2022 09:39:07 +0800 you wrote:
+> sizeof(new_cc) is not real memory size that new_cc point to, introduce
+> new_cc_len to store size then pass it to bpf_setsockopt().
+> 
+> Fixes: 31123c0360e0 ("selftests/bpf: bpf_setsockopt tests")
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> ---
+>  tools/testing/selftests/bpf/progs/setget_sockopt.c | 10 +++++++---
+>  1 file changed, 7 insertions(+), 3 deletions(-)
 
-https://github.com/kernel-patches/bpf/runs/7996821883?check_suite_focus=true
+Here is the summary with links:
+  - [-next] selftests/bpf: fix wrong size passed to bpf_setsockopt()
+    https://git.kernel.org/bpf/bpf-next/c/6fc2838b148f
 
-   [...]
-   bpftool_checks - Running bpftool checks...
-   Comparing /tmp/work/bpf/bpf/tools/include/uapi/linux/bpf.h (bpf_map_type) and /tmp/work/bpf/bpf/tools/bpf/bpftool/map.c (do_help() TYPE): {'user_ringbuf'}
-   Comparing /tmp/work/bpf/bpf/tools/include/uapi/linux/bpf.h (bpf_map_type) and /tmp/work/bpf/bpf/tools/bpf/bpftool/Documentation/bpftool-map.rst (TYPE): {'user_ringbuf'}
-   bpftool checks returned 1.
-   [...]
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
