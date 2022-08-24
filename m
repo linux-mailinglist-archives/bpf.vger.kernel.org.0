@@ -2,371 +2,532 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CAD75A01C7
-	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 21:06:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 669145A021E
+	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 21:30:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238124AbiHXTGJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Aug 2022 15:06:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40884 "EHLO
+        id S236881AbiHXTam (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Aug 2022 15:30:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235430AbiHXTGB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Aug 2022 15:06:01 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 118DFEE39
-        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 12:05:59 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id w19so35358050ejc.7
-        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 12:05:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=DqXBBH7vTXr9e67ZBlizfMdbKZIBi8UhWj7ZLQ6FHh8=;
-        b=EjZhxMJ51cC3EquU5kzw8knjszICA4SZoQV8X3j7TcqdPnquYHecsIRZdDj+Z3SnRT
-         iylXxvQySbW7LWdTgyAtgLTanzRk8gvmsyRLyO2GQDOUIKRLc/YgypT8j8rifHh7/LYX
-         OF+78DUhPuOLQ4oa14Kq3q2M6rP5b9U6oCs4PUzHaa1PWhHOLtDJ8GYQPjtNrvijEGW6
-         k67iSkNgoW7CwsoY0IsMGyay3vlOBII2B7KuJz2uzB/yZ3sLXvKxaoodVhSVG2UOvEYc
-         A5fpzBHECbRhg5R0Hk6A2ssKqtzh+2292Gg/RhZGel/u9K3LsnOyJLnVLBQW+eQcmhO1
-         77Ig==
+        with ESMTP id S240076AbiHXTai (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Aug 2022 15:30:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70EC52CE2A
+        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 12:30:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1661369435;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Efa2DH0jvCDyjj76mYw2uKdm230ESxvBrPcQcjsJ+Ho=;
+        b=cZxzHId3gYLr1L69Mk8D76qKNIXphBb1qw0dtSQxDb7ewaQe0hrshCDuHMhCifJagZQsn9
+        sdRivoZiprRzWrtMb1APerMhqmEpbEI+ebJODqHljF3sbpvh71p2ym1b3G2ofWYwN/JrMA
+        VtnOWWtvsE62vGDZfpbuRMY3xIumhqo=
+Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
+ [209.85.210.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-199-dXACbwalNoSUPK1NznjtNA-1; Wed, 24 Aug 2022 15:30:34 -0400
+X-MC-Unique: dXACbwalNoSUPK1NznjtNA-1
+Received: by mail-pf1-f198.google.com with SMTP id o17-20020a056a0015d100b00536fc93b990so2881298pfu.14
+        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 12:30:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc;
-        bh=DqXBBH7vTXr9e67ZBlizfMdbKZIBi8UhWj7ZLQ6FHh8=;
-        b=d18HNeZJX0LSyuQRlngB3InzzIhR/i8dnU8hrZiTrn+k5f43IiiPbNQ5WkZXEAEXO3
-         2oPYCeeCRvmflAbmsnn4ZL/0E3UanLh4rD0sZDajiL/s6rzmJuI1PjEsWIgpkzRnAoze
-         dwywehcqn7/zOdM38LFNJPBHvVHNNgOKY+8agMg3tAIAmxytFndy4129YGWn0odrSsIA
-         FLXo6L3mKZeFloZzO//LsNIgRYLjU476+CBmY5eKSdxsDBs4u2DaI5wDBJnPG9AKooPe
-         7uPS5twEJsWKQji9hmysN+1fo92jXUSZgEBOE4jV0/wr7wXJTkiTq/2MZZFHwUzzrGf2
-         7UcQ==
-X-Gm-Message-State: ACgBeo1K5t4Htc/BaMDeYMdDYQelAXvNatYHH+wHf5T1n5LhLLmaK8B1
-        4RxhNdVBxb6YLtwJqxn0HBUVpd3udbKxD0/79Wc=
-X-Google-Smtp-Source: AA6agR5zNXCdwjMAaMfpCCmOZWlGV3tXOcc/br+JpoK8R5nV53jkD4fDSBUWtaI+ZaddmvmyFFTzyynSlDsZNljXrag=
-X-Received: by 2002:a17:907:7e9e:b0:73d:ae12:5f11 with SMTP id
- qb30-20020a1709077e9e00b0073dae125f11mr254651ejc.176.1661367957509; Wed, 24
- Aug 2022 12:05:57 -0700 (PDT)
+        bh=Efa2DH0jvCDyjj76mYw2uKdm230ESxvBrPcQcjsJ+Ho=;
+        b=l1IeeCX2aH47uCBnM5nHntY4/dv7UfDWNGsiP5QvCu6JxegEEgSVZ0gdVnMvsShraA
+         5oVue9iPWckuBEJtwAHycd3K0xwQjGvXF3dR3rnqbdUN5jgSakNxOk7EcTHeqCJHiXP9
+         Gp0FVOFJzPnkBjrN4me6F1mb+PBQShiH5u6gZ3qb76EBhKKgDCreG54HTfd7bvhcliAF
+         vKiJuGj9bh2XHVQITeNi6BsoEn04Swkkxj68B5W9EixbPA3zDLiiDyFiSJdhd53mxxHo
+         SXorGMBg6gfp0jcl6YQ2AoUkOuGcLB3hkUasHsHCrvZvZfYog1hotVvzdQcfNzWxmkjq
+         ZPrg==
+X-Gm-Message-State: ACgBeo3XtEhBFZBXV9vRLaIA7l2mzAn0SFGI8HqnoaRoeknG6rON5RNp
+        pS/z5W+KkrLhwX+itGz78x+oxhnZzj9tmoqQKJsJYbWpCx4ZBJv3qMp4agmeljytX2iC+Tv07mt
+        B8uGE5fwiahtg9dciQdIVdRkhx4GM
+X-Received: by 2002:a63:d10b:0:b0:41d:bd7d:7759 with SMTP id k11-20020a63d10b000000b0041dbd7d7759mr371517pgg.196.1661369433237;
+        Wed, 24 Aug 2022 12:30:33 -0700 (PDT)
+X-Google-Smtp-Source: AA6agR7ET/hHZW9BaZvuEnQfrMLAFRGDMb3gimCTBs3iRsINn7jgeUtQdARxX9HN9BjmuTV436kS7vu08zwKmE/Z5zg=
+X-Received: by 2002:a63:d10b:0:b0:41d:bd7d:7759 with SMTP id
+ k11-20020a63d10b000000b0041dbd7d7759mr371497pgg.196.1661369432840; Wed, 24
+ Aug 2022 12:30:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220812052419.520522-1-yhs@fb.com> <20220812052435.523068-1-yhs@fb.com>
- <CAADnVQKvtxdSo3chBeGtv8KsoQ8drrpa7x=1sOem1kwYKr5iRw@mail.gmail.com>
- <bdb4feae-47c3-80f6-cc10-741f90c28eeb@fb.com> <20220818204428.whsirz2m6prikg7n@MacBook-Pro-3.local>
-In-Reply-To: <20220818204428.whsirz2m6prikg7n@MacBook-Pro-3.local>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 24 Aug 2022 12:05:46 -0700
-Message-ID: <CAEf4BzZOGWFxGOD8hMH9v4gJPGv0tf5464Aa0DivDFrRhenx0Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 3/6] bpf: x86: Support in-register struct arguments
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
+References: <20220824134055.1328882-1-benjamin.tissoires@redhat.com> <20220824134055.1328882-22-benjamin.tissoires@redhat.com>
+In-Reply-To: <20220824134055.1328882-22-benjamin.tissoires@redhat.com>
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date:   Wed, 24 Aug 2022 21:30:21 +0200
+Message-ID: <CAO-hwJLSHi4NQ9=PDy7GS_95v8BG+0r8A6QMfyhF7od8Umj+Mw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v9 21/23] samples/bpf: add new hid_mouse example
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Jiri Kosina <jikos@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Joe Stringer <joe@cilium.io>, Jonathan Corbet <corbet@lwn.net>
+Cc:     Tero Kristo <tero.kristo@linux.intel.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Aug 18, 2022 at 1:44 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Wed, Aug 24, 2022 at 3:42 PM Benjamin Tissoires
+<benjamin.tissoires@redhat.com> wrote:
 >
-> On Wed, Aug 17, 2022 at 09:56:23PM -0700, Yonghong Song wrote:
-> >
-> >
-> > On 8/15/22 3:44 PM, Alexei Starovoitov wrote:
-> > > On Thu, Aug 11, 2022 at 10:24 PM Yonghong Song <yhs@fb.com> wrote:
-> > > >
-> > > > In C, struct value can be passed as a function argument.
-> > > > For small structs, struct value may be passed in
-> > > > one or more registers. For trampoline based bpf programs,
-> > > > This would cause complication since one-to-one mapping between
-> > > > function argument and arch argument register is not valid
-> > > > any more.
-> > > >
-> > > > To support struct value argument and make bpf programs
-> > > > easy to write, the bpf program function parameter is
-> > > > changed from struct type to a pointer to struct type.
-> > > > The following is a simplified example.
-> > > >
-> > > > In one of later selftests, we have a bpf_testmod function:
-> > > >      struct bpf_testmod_struct_arg_2 {
-> > > >          long a;
-> > > >          long b;
-> > > >      };
-> > > >      noinline int
-> > > >      bpf_testmod_test_struct_arg_2(int a, struct bpf_testmod_struct_arg_2 b, int c) {
-> > > >          bpf_testmod_test_struct_arg_result = a + b.a + b.b + c;
-> > > >          return bpf_testmod_test_struct_arg_result;
-> > > >      }
-> > > >
-> > > > When a bpf program is attached to the bpf_testmod function
-> > > > bpf_testmod_test_struct_arg_2(), the bpf program may look like
-> > > >      SEC("fentry/bpf_testmod_test_struct_arg_2")
-> > > >      int BPF_PROG(test_struct_arg_3, int a, struct bpf_testmod_struct_arg_2 *b, int c)
-> > > >      {
-> > > >          t2_a = a;
-> > > >          t2_b_a = b->a;
-> > > >          t2_b_b = b->b;
-> > > >          t2_c = c;
-> > > >          return 0;
-> > > >      }
-> > > >
-> > > > Basically struct value becomes a pointer to the struct.
-> > > > The trampoline stack will be increased to store the stack values and
-> > > > the pointer to these values will be saved in the stack slot corresponding
-> > > > to that argument. For x86_64, the struct size is limited up to 16 bytes
-> > > > so the struct can fit in one or two registers. The struct size of more
-> > > > than 16 bytes is not supported now as our current use case is
-> > > > for sockptr_t in the argument. We could handle such large struct's
-> > > > in the future if we have concrete use cases.
-> > > >
-> > > > The main changes are in save_regs() and restore_regs(). The following
-> > > > illustrated the trampoline asm codes for save_regs() and restore_regs().
-> > > > save_regs():
-> > > >      /* first argument */
-> > > >      mov    DWORD PTR [rbp-0x18],edi
-> > > >      /* second argument: struct, save actual values and put the pointer to the slot */
-> > > >      lea    rax,[rbp-0x40]
-> > > >      mov    QWORD PTR [rbp-0x10],rax
-> > > >      mov    QWORD PTR [rbp-0x40],rsi
-> > > >      mov    QWORD PTR [rbp-0x38],rdx
-> > > >      /* third argument */
-> > > >      mov    DWORD PTR [rbp-0x8],esi
-> > > > restore_regs():
-> > > >      mov    edi,DWORD PTR [rbp-0x18]
-> > > >      mov    rsi,QWORD PTR [rbp-0x40]
-> > > >      mov    rdx,QWORD PTR [rbp-0x38]
-> > > >      mov    esi,DWORD PTR [rbp-0x8]
-> > >
-> > > Not sure whether it was discussed before, but
-> > > why cannot we adjust the bpf side instead?
-> > > Technically struct passing between bpf progs was never
-> > > officially supported. llvm generates something.
-> > > Probably always passes by reference, but we can adjust
-> > > that behavior without breaking any programs because
-> > > we don't have bpf libraries. Programs are fully contained
-> > > in one or few files. libbpf can do static linking, but
-> > > without any actual libraries the chance of breaking
-> > > backward compat is close to zero.
-> >
-> > Agree. At this point, we don't need to worry about
-> > compatibility between bpf program and bpf program libraries.
-> >
-> > > Can we teach llvm to pass sizeof(struct) <= 16 in
-> > > two bpf registers?
-> >
-> > Yes, we can. I just hacked llvm and was able to
-> > do that.
-> >
-> > > Then we wouldn't need to have a discrepancy between
-> > > kernel function prototype and bpf fentry prog proto.
-> > > Both will have struct by value in the same spot.
-> > > The trampoline generation will be simpler for x86 and
-> > > its runtime faster too.
-> >
-> > I tested x86 and arm64 both supports two registers
-> > for a 16 byte struct.
-> >
-> > > The other architectures that pass small structs by reference
-> > > can do a bit more work in the trampoline: copy up to 16 byte
-> > > and bpf prog side will see it as they were passed in 'registers'.
-> > > wdyt?
-> >
-> > I know systemz and Hexagon will pass by reference for any
-> > struct size >= 8 bytes. Didn't complete check others.
-> >
-> > But since x86 and arm64 supports direct value passing
-> > with two registers, we should be okay. As you mentioned,
-> > we could support systemz/hexagon style of struct passing
-> > by copying the values to the stack.
-> >
-> >
-> > But I have a problem how to define a user friendly
-> > macro like BPF_PROG for user to use.
-> >
-> > Let us say, we have a program like below:
-> > SEC("fentry/bpf_testmod_test_struct_arg_1")
-> > int BPF_PROG(test_struct_arg_1, struct bpf_testmod_struct_arg_2 *a, int b,
-> > int c) {
-> > ...
-> > }
-> >
-> > We have BPF_PROG macro definition here:
-> >
-> > #define BPF_PROG(name, args...)     \
-> > name(unsigned long long *ctx);     \
-> > static __always_inline typeof(name(0))     \
-> > ____##name(unsigned long long *ctx, ##args);     \
-> > typeof(name(0)) name(unsigned long long *ctx)     \
-> > {     \
-> >         _Pragma("GCC diagnostic push")      \
-> >         _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")      \
-> >         return ____##name(___bpf_ctx_cast(args));      \
-> >         _Pragma("GCC diagnostic pop")      \
-> > }     \
-> > static __always_inline typeof(name(0))     \
-> > ____##name(unsigned long long *ctx, ##args)
-> >
-> > Some we have static function definition
-> >
-> > int ____test_struct_arg_1(unsigned long long *ctx, struct
-> > bpf_testmod_struct_arg_2 *a, int b, int c);
-> >
-> > But the function call inside the function test_struct_arg_1()
-> > is
-> >   ____test_struct_arg_1(ctx, ctx[0], ctx[1], ctx[2]);
-> >
-> > We have two problems here:
-> >   ____test_struct_arg_1(ctx, ctx[0], ctx[1], ctx[2])
-> > does not match the static function declaration.
-> > This is not problem if everything is int/ptr type.
-> > If one of argument is structure type, we will have
-> > type conversion problem. Let us this can be resolved
-> > somehow through some hack.
-> >
-> > More importantly, because some structure may take two
-> > registers,
-> >    ____test_struct_arg_1(ctx, ctx[0], ctx[1], ctx[2])
-> > may not be correct. In my above example, if the
-> > structure size is 16 bytes,
-> > then the actual call should be
-> >    ____test_struct_arg_1(ctx, ctx[0], ctx[1], ctx[2], ctx[3])
-> > So we need to provide how many extra registers are needed
-> > beyond ##args in the macro. I have not tried how to
-> > resolve this but this extra information in the macro
-> > definite is not user friendly.
-> >
-> > Not sure what is the best way to handle this issue (##args is not precise
-> > and needs addition registers for >8 struct arguments).
+> Everything should be available in the selftest part of the tree, but
+> providing an example without uhid and hidraw will be more easy to
+> follow for users.
 >
-> The kernel is using this trick to cast 8 byte structs to u64:
-> /* cast any integer, pointer, or small struct to u64 */
-> #define UINTTYPE(size) \
->         __typeof__(__builtin_choose_expr(size == 1,  (u8)1, \
->                    __builtin_choose_expr(size == 2, (u16)2, \
->                    __builtin_choose_expr(size == 4, (u32)3, \
->                    __builtin_choose_expr(size == 8, (u64)4, \
->                                          (void)5)))))
-> #define __CAST_TO_U64(x) ({ \
->         typeof(x) __src = (x); \
->         UINTTYPE(sizeof(x)) __dst; \
->         memcpy(&__dst, &__src, sizeof(__dst)); \
->         (u64)__dst; })
+> This example will probably ever only work on the Etekcity Scroll 6E
+> because we need to adapt the various raw values to the actual device.
 >
-> casting 16 byte struct to two u64 can be similar.
-> Ideally we would declare bpf prog as:
-> SEC("fentry/bpf_testmod_test_struct_arg_1")
-> int BPF_PROG(test_struct_arg_1, struct bpf_testmod_struct_arg_2 a, int b, int c) {
-> note there is no '*'. It's struct by value.
-
-Agree. So I tried to compile this:
-
-$ git diff
-diff --git a/tools/testing/selftests/bpf/progs/test_vmlinux.c
-b/tools/testing/selftests/bpf/progs/test_vmlinux.c
-index e9dfa0313d1b..dccb9ae9801f 100644
---- a/tools/testing/selftests/bpf/progs/test_vmlinux.c
-+++ b/tools/testing/selftests/bpf/progs/test_vmlinux.c
-@@ -15,6 +15,16 @@ bool tp_btf_called = false;
- bool kprobe_called = false;
- bool fentry_called = false;
-
-+typedef struct {
-+       void *x;
-+       int t;
-+} sockptr;
-+
-+static int blah(sockptr x)
-+{
-+       return x.t;
-+}
-+
- SEC("tp/syscalls/sys_enter_nanosleep")
- int handle__tp(struct trace_event_raw_sys_enter *args)
- {
-@@ -30,7 +40,14 @@ int handle__tp(struct trace_event_raw_sys_enter *args)
-                return 0;
-
-        tp_called = true;
--       return 0;
-+
-+       return blah(({ union {
-+               struct { u64 x, y; } z;
-+               sockptr s;
-+               } tmp = {.z = {0, 1}};
-+
-+               tmp.s;
-+       }));
- }
-
- SEC("raw_tp/sys_enter")
+> On that device, the X and Y axis will be swapped and inverted, and on
+> any other device, chances are high that the device will not work until
+> Ctrl-C is hit.
+>
+> Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+>
+> ---
 
 
-And it compiled. So I think it's possible to do u64 to struct
-conversion using this approach.
-We'd have to define two variations of macro -- one for structs <= 8
-bytes, another for structs > 8 and <= 16 bytes. One will "consume"
-single ctx[] slot, another -- will consume both. And then each variant
-knows which other macro to refer to after itself.
+Sorry, I realized that there are two 21/23 and 22/23...
+This one should be disregarded, as there are minor improvements in the
+other 21/23 :(
 
-A bit of macro hackery, but it should work.
+The good ones are the 2 starting with "samples/bpf: HID:"
+
+Cheers,
+Benjamin
 
 
-> The main challenge is how to do the math in the BPF_PROG macros.
-> Currently it's doing:
-> #define ___bpf_ctx_cast1(x)           ___bpf_ctx_cast0(), (void *)ctx[0]
-> #define ___bpf_ctx_cast2(x, args...)  ___bpf_ctx_cast1(args), (void *)ctx[1]
-> #define ___bpf_ctx_cast3(x, args...)  ___bpf_ctx_cast2(args), (void *)ctx[2]
-> #define ___bpf_ctx_cast4(x, args...)  ___bpf_ctx_cast3(args), (void *)ctx[3]
 >
-> The ctx[index] is one-to-one with argument position.
-> That 'index' needs to be calculated.
-> Maybe something like UINTTYPE() that applies to previous arguments?
-> #define REG_CNT(arg) \
->         __builtin_choose_expr(sizeof(arg) == 1,  1, \
->         __builtin_choose_expr(sizeof(arg) == 2,  1, \
->         __builtin_choose_expr(sizeof(arg) == 4,  1, \
->         __builtin_choose_expr(sizeof(arg) == 8,  1, \
->         __builtin_choose_expr(sizeof(arg) == 16,  2, \
->                                          (void)0)))))
 >
-> #define ___bpf_reg_cnt0()            0
-> #define ___bpf_reg_cnt1(x)          ___bpf_reg_cnt0() + REG_CNT(x)
-> #define ___bpf_reg_cnt2(x, args...) ___bpf_reg_cnt1(args) + REG_CNT(x)
-> #define ___bpf_reg_cnt(args...)    ___bpf_apply(___bpf_reg_cnt, ___bpf_narg(args))(args)
+> changes in v9:
+> - amended the usage part
 >
-> This way the macro will calculate the index inside ctx[] array.
+> no changes in v8
 >
-> and then inside ___bpf_ctx_castN macro use ___bpf_reg_cnt.
-> Instead of:
-> ___bpf_ctx_cast3(x, args...)  ___bpf_ctx_cast2(args), (void *)ctx[2]
-> it will be
-> ___bpf_ctx_cast3(x, args...)  ___bpf_ctx_cast2(args), \
->   __builtin_choose_expr(sizeof(x) <= 8, (void *)ctx[___bpf_reg_cnt(args)],
->                         *(typeof(x) *) &ctx[___bpf_reg_cnt(args)])
+> changes in v7:
+> - remove unnecessary __must_check definition
 >
-> x - is one of the arguments.
-> args - all args before 'x'. Doing __bpf_reg_cnt on them should calculate the index.
-> *(typeof(x) *)& should type cast to struct of 16 bytes.
+> changes in v6:
+> - clean up code by removing old comments
 >
-> Rough idea, of course.
+> changes in v5:
+> - bring back same features than v3, with the new API
 >
-> Another alternative is instead of:
-> #define BPF_PROG(name, args...)
-> name(unsigned long long *ctx);
-> do:
-> #define BPF_PROG(name, args...)
-> struct XX {
->   macro inserts all 'args' here separated by ; so it becomes a proper struct
-> };
-> name(struct XX *ctx);
+> changes in v4:
+> - dropped the not-yet-implemented rdesc_fixup
+> - use the new API
 >
-> and then instead of doing ___bpf_ctx_castN for each argument
-> do single cast of all of 'u64 ctx[N]' passed from fentry into 'struct XX *'.
-> The problem with this approach that small args like char, short, int needs to
-> be declared in struct XX with __align__(8).
+> changes in v3:
+> - use the new hid_get_data API
+> - add a comment for the report descriptor fixup to explain what is done
 >
-> Both approaches may be workable?
+> changes in v2:
+> - split the series by bpf/libbpf/hid/selftests and samples
+>
+> fix hid_mouse
+> ---
+>  samples/bpf/.gitignore      |   1 +
+>  samples/bpf/Makefile        |  23 ++++++
+>  samples/bpf/hid_mouse.bpf.c | 134 ++++++++++++++++++++++++++++++
+>  samples/bpf/hid_mouse.c     | 161 ++++++++++++++++++++++++++++++++++++
+>  4 files changed, 319 insertions(+)
+>  create mode 100644 samples/bpf/hid_mouse.bpf.c
+>  create mode 100644 samples/bpf/hid_mouse.c
+>
+> diff --git a/samples/bpf/.gitignore b/samples/bpf/.gitignore
+> index 0e7bfdbff80a..65440bd618b2 100644
+> --- a/samples/bpf/.gitignore
+> +++ b/samples/bpf/.gitignore
+> @@ -2,6 +2,7 @@
+>  cpustat
+>  fds_example
+>  hbm
+> +hid_mouse
+>  ibumad
+>  lathist
+>  lwt_len_hist
+> diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+> index 727da3c5879b..a965bbfaca47 100644
+> --- a/samples/bpf/Makefile
+> +++ b/samples/bpf/Makefile
+> @@ -57,6 +57,8 @@ tprogs-y += xdp_redirect_map
+>  tprogs-y += xdp_redirect
+>  tprogs-y += xdp_monitor
+>
+> +tprogs-y += hid_mouse
+> +
+>  # Libbpf dependencies
+>  LIBBPF_SRC = $(TOOLS_PATH)/lib/bpf
+>  LIBBPF_OUTPUT = $(abspath $(BPF_SAMPLES_PATH))/libbpf
+> @@ -119,6 +121,8 @@ xdp_redirect-objs := xdp_redirect_user.o $(XDP_SAMPLE)
+>  xdp_monitor-objs := xdp_monitor_user.o $(XDP_SAMPLE)
+>  xdp_router_ipv4-objs := xdp_router_ipv4_user.o $(XDP_SAMPLE)
+>
+> +hid_mouse-objs := hid_mouse.o
+> +
+>  # Tell kbuild to always build the programs
+>  always-y := $(tprogs-y)
+>  always-y += sockex1_kern.o
+> @@ -338,6 +342,8 @@ $(obj)/hbm_out_kern.o: $(src)/hbm.h $(src)/hbm_kern.h
+>  $(obj)/hbm.o: $(src)/hbm.h
+>  $(obj)/hbm_edt_kern.o: $(src)/hbm.h $(src)/hbm_kern.h
+>
+> +$(obj)/hid_mouse.o: $(obj)/hid_mouse.skel.h
+> +
+>  # Override includes for xdp_sample_user.o because $(srctree)/usr/include in
+>  # TPROGS_CFLAGS causes conflicts
+>  XDP_SAMPLE_CFLAGS += -Wall -O2 \
+> @@ -422,6 +428,23 @@ $(BPF_SKELS_LINKED): $(BPF_OBJS_LINKED) $(BPFTOOL)
+>         @echo "  BPF GEN-SKEL" $(@:.skel.h=)
+>         $(Q)$(BPFTOOL) gen skeleton $(@:.skel.h=.lbpf.o) name $(notdir $(@:.skel.h=)) > $@
+>
+> +# Generate BPF skeletons for non XDP progs
+> +OTHER_BPF_SKELS := hid_mouse.skel.h
+> +
+> +hid_mouse.skel.h-deps := hid_mouse.bpf.o
+> +
+> +OTHER_BPF_SRCS_LINKED := $(patsubst %.skel.h,%.bpf.c, $(OTHER_BPF_SKELS))
+> +OTHER_BPF_OBJS_LINKED := $(patsubst %.bpf.c,$(obj)/%.bpf.o, $(OTHER_BPF_SRCS_LINKED))
+> +OTHER_BPF_SKELS_LINKED := $(addprefix $(obj)/,$(OTHER_BPF_SKELS))
+> +
+> +$(OTHER_BPF_SKELS_LINKED): $(OTHER_BPF_OBJS_LINKED) $(BPFTOOL)
+> +       @echo "  BPF GEN-OBJ " $(@:.skel.h=)
+> +       $(Q)$(BPFTOOL) gen object $(@:.skel.h=.lbpf.o) $(addprefix $(obj)/,$($(@F)-deps))
+> +       @echo "  BPF GEN-SKEL" $(@:.skel.h=)
+> +       $(Q)$(BPFTOOL) gen skeleton $(@:.skel.h=.lbpf.o) name $(notdir $(@:.skel.h=_lskel)) > $@
+> +#      $(call msg,GEN-SKEL,$@)
+> +#      $(Q)$(BPFTOOL) gen skeleton $< > $@
+> +
+>  # asm/sysreg.h - inline assembly used by it is incompatible with llvm.
+>  # But, there is no easy way to fix it, so just exclude it since it is
+>  # useless for BPF samples.
+> diff --git a/samples/bpf/hid_mouse.bpf.c b/samples/bpf/hid_mouse.bpf.c
+> new file mode 100644
+> index 000000000000..0113e603f7a7
+> --- /dev/null
+> +++ b/samples/bpf/hid_mouse.bpf.c
+> @@ -0,0 +1,134 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include "vmlinux.h"
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_tracing.h>
+> +
+> +/* following are kfuncs exported by HID for HID-BPF */
+> +extern int hid_bpf_attach_prog(unsigned int hid_id, int prog_fd, u32 flags) __ksym;
+> +extern __u8 *hid_bpf_get_data(struct hid_bpf_ctx *ctx,
+> +                             unsigned int offset,
+> +                             const size_t __sz) __ksym;
+> +extern void hid_bpf_data_release(__u8 *data) __ksym;
+> +extern int hid_bpf_hw_request(struct hid_bpf_ctx *ctx) __ksym;
+> +
+> +struct attach_prog_args {
+> +       int prog_fd;
+> +       unsigned int hid;
+> +       int retval;
+> +};
+> +
+> +SEC("syscall")
+> +int attach_prog(struct attach_prog_args *ctx)
+> +{
+> +       ctx->retval = hid_bpf_attach_prog(ctx->hid,
+> +                                         ctx->prog_fd,
+> +                                         0);
+> +       return 0;
+> +}
+> +
+> +SEC("fmod_ret/hid_bpf_device_event")
+> +int BPF_PROG(hid_y_event, struct hid_bpf_ctx *hctx)
+> +{
+> +       s16 y;
+> +       __u8 *data = hid_bpf_get_data(hctx, 0 /* offset */, 9 /* size */);
+> +
+> +       if (!data)
+> +               return 0; /* EPERM check */
+> +
+> +       bpf_printk("event: size: %d", hctx->size);
+> +       bpf_printk("incoming event: %02x %02x %02x",
+> +                  data[0],
+> +                  data[1],
+> +                  data[2]);
+> +       bpf_printk("                %02x %02x %02x",
+> +                  data[3],
+> +                  data[4],
+> +                  data[5]);
+> +       bpf_printk("                %02x %02x %02x",
+> +                  data[6],
+> +                  data[7],
+> +                  data[8]);
+> +
+> +       y = data[3] | (data[4] << 8);
+> +
+> +       y = -y;
+> +
+> +       data[3] = y & 0xFF;
+> +       data[4] = (y >> 8) & 0xFF;
+> +
+> +       bpf_printk("modified event: %02x %02x %02x",
+> +                  data[0],
+> +                  data[1],
+> +                  data[2]);
+> +       bpf_printk("                %02x %02x %02x",
+> +                  data[3],
+> +                  data[4],
+> +                  data[5]);
+> +       bpf_printk("                %02x %02x %02x",
+> +                  data[6],
+> +                  data[7],
+> +                  data[8]);
+> +
+> +       return 0;
+> +}
+> +
+> +SEC("fmod_ret/hid_bpf_device_event")
+> +int BPF_PROG(hid_x_event, struct hid_bpf_ctx *hctx)
+> +{
+> +       s16 x;
+> +       __u8 *data = hid_bpf_get_data(hctx, 0 /* offset */, 9 /* size */);
+> +
+> +       if (!data)
+> +               return 0; /* EPERM check */
+> +
+> +       x = data[1] | (data[2] << 8);
+> +
+> +       x = -x;
+> +
+> +       data[1] = x & 0xFF;
+> +       data[2] = (x >> 8) & 0xFF;
+> +       return 0;
+> +}
+> +
+> +SEC("fmod_ret/hid_bpf_rdesc_fixup")
+> +int BPF_PROG(hid_rdesc_fixup, struct hid_bpf_ctx *hctx)
+> +{
+> +       __u8 *data = hid_bpf_get_data(hctx, 0 /* offset */, 4096 /* size */);
+> +
+> +       if (!data)
+> +               return 0; /* EPERM check */
+> +
+> +       bpf_printk("rdesc: %02x %02x %02x",
+> +                  data[0],
+> +                  data[1],
+> +                  data[2]);
+> +       bpf_printk("       %02x %02x %02x",
+> +                  data[3],
+> +                  data[4],
+> +                  data[5]);
+> +       bpf_printk("       %02x %02x %02x ...",
+> +                  data[6],
+> +                  data[7],
+> +                  data[8]);
+> +
+> +       /*
+> +        * The original report descriptor contains:
+> +        *
+> +        * 0x05, 0x01,                    //   Usage Page (Generic Desktop)      30
+> +        * 0x16, 0x01, 0x80,              //   Logical Minimum (-32767)          32
+> +        * 0x26, 0xff, 0x7f,              //   Logical Maximum (32767)           35
+> +        * 0x09, 0x30,                    //   Usage (X)                         38
+> +        * 0x09, 0x31,                    //   Usage (Y)                         40
+> +        *
+> +        * So byte 39 contains Usage X and byte 41 Usage Y.
+> +        *
+> +        * We simply swap the axes here.
+> +        */
+> +       data[39] = 0x31;
+> +       data[41] = 0x30;
+> +
+> +       return 0;
+> +}
+> +
+> +char _license[] SEC("license") = "GPL";
+> diff --git a/samples/bpf/hid_mouse.c b/samples/bpf/hid_mouse.c
+> new file mode 100644
+> index 000000000000..bea3650787c5
+> --- /dev/null
+> +++ b/samples/bpf/hid_mouse.c
+> @@ -0,0 +1,161 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/* Copyright (c) 2022 Benjamin Tissoires
+> + *
+> + * This is a pure HID-BPF example, and should be considered as such:
+> + * on the Etekcity Scroll 6E, the X and Y axes will be swapped and
+> + * inverted. On any other device... Not sure what this will do.
+> + *
+> + * This C main file is generic though. To adapt the code and test, users
+> + * must amend only the .bpf.c file, which this program will load any
+> + * eBPF program it finds.
+> + */
+> +
+> +#include <assert.h>
+> +#include <errno.h>
+> +#include <fcntl.h>
+> +#include <libgen.h>
+> +#include <signal.h>
+> +#include <stdbool.h>
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <string.h>
+> +#include <sys/resource.h>
+> +#include <unistd.h>
+> +
+> +#include <linux/bpf.h>
+> +#include <linux/errno.h>
+> +
+> +#include "bpf_util.h"
+> +#include <bpf/bpf.h>
+> +#include <bpf/libbpf.h>
+> +
+> +#include "hid_mouse.skel.h"
+> +
+> +static bool running = true;
+> +
+> +struct attach_prog_args {
+> +       int prog_fd;
+> +       unsigned int hid;
+> +       int retval;
+> +};
+> +
+> +static void int_exit(int sig)
+> +{
+> +       running = false;
+> +       exit(0);
+> +}
+> +
+> +static void usage(const char *prog)
+> +{
+> +       fprintf(stderr,
+> +               "%s: %s /sys/bus/hid/devices/0BUS:0VID:0PID:00ID\n\n",
+> +               __func__, prog);
+> +       fprintf(stderr,
+> +               "This program will upload and attach a HID-BPF program to the given device.\n"
+> +               "On the Etekcity Scroll 6E, the X and Y axis will be inverted, but on any other\n"
+> +               "device, chances are high that the device will not be working anymore\n\n"
+> +               "consider this as a demo and adapt the eBPF program to your needs\n"
+> +               "Hit Ctrl-C to unbind the program and reset the device\n");
+> +}
+> +
+> +static int get_hid_id(const char *path)
+> +{
+> +       const char *str_id, *dir;
+> +       char uevent[1024];
+> +       int fd;
+> +
+> +       memset(uevent, 0, sizeof(uevent));
+> +       snprintf(uevent, sizeof(uevent) - 1, "%s/uevent", path);
+> +
+> +       fd = open(uevent, O_RDONLY | O_NONBLOCK);
+> +       if (fd < 0)
+> +               return -ENOENT;
+> +
+> +       close(fd);
+> +
+> +       dir = basename((char *)path);
+> +
+> +       str_id = dir + sizeof("0003:0001:0A37.");
+> +       return (int)strtol(str_id, NULL, 16);
+> +}
+> +
+> +int main(int argc, char **argv)
+> +{
+> +       struct hid_mouse_lskel *skel;
+> +       struct bpf_program *prog;
+> +       int err;
+> +       const char *optstr = "";
+> +       const char *sysfs_path;
+> +       int opt, hid_id, attach_fd;
+> +       struct attach_prog_args args = {
+> +               .retval = -1,
+> +       };
+> +       DECLARE_LIBBPF_OPTS(bpf_test_run_opts, tattr,
+> +                           .ctx_in = &args,
+> +                           .ctx_size_in = sizeof(args),
+> +       );
+> +
+> +       while ((opt = getopt(argc, argv, optstr)) != -1) {
+> +               switch (opt) {
+> +               default:
+> +                       usage(basename(argv[0]));
+> +                       return 1;
+> +               }
+> +       }
+> +
+> +       if (optind == argc) {
+> +               usage(basename(argv[0]));
+> +               return 1;
+> +       }
+> +
+> +       sysfs_path = argv[optind];
+> +       if (!sysfs_path) {
+> +               perror("sysfs");
+> +               return 1;
+> +       }
+> +
+> +       skel = hid_mouse_lskel__open_and_load();
+> +       if (!skel) {
+> +               fprintf(stderr, "%s  %s:%d", __func__, __FILE__, __LINE__);
+> +               return -1;
+> +       }
+> +
+> +       hid_id = get_hid_id(sysfs_path);
+> +
+> +       if (hid_id < 0) {
+> +               fprintf(stderr, "can not open HID device: %m\n");
+> +               return 1;
+> +       }
+> +       args.hid = hid_id;
+> +
+> +       attach_fd = bpf_program__fd(skel->progs.attach_prog);
+> +       if (attach_fd < 0) {
+> +               fprintf(stderr, "can't locate attach prog: %m\n");
+> +               return 1;
+> +       }
+> +
+> +       bpf_object__for_each_program(prog, *skel->skeleton->obj) {
+> +               /* ignore syscalls */
+> +               if (bpf_program__get_type(prog) != BPF_PROG_TYPE_TRACING)
+> +                       continue;
+> +
+> +               args.retval = -1;
+> +               args.prog_fd = bpf_program__fd(prog);
+> +               err = bpf_prog_test_run_opts(attach_fd, &tattr);
+> +               if (err) {
+> +                       fprintf(stderr, "can't attach prog to hid device %d: %m (err: %d)\n",
+> +                               hid_id, err);
+> +                       return 1;
+> +               }
+> +       }
+> +
+> +       signal(SIGINT, int_exit);
+> +       signal(SIGTERM, int_exit);
+> +
+> +       while (running)
+> +               sleep(1);
+> +
+> +       hid_mouse_lskel__destroy(skel);
+> +
+> +       return 0;
+> +}
+> --
+> 2.36.1
+>
+
