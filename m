@@ -2,140 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0D1F59FEA5
-	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 17:42:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA66259FECD
+	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 17:51:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239717AbiHXPmX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Aug 2022 11:42:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52616 "EHLO
+        id S237544AbiHXPvE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Aug 2022 11:51:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239566AbiHXPlk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Aug 2022 11:41:40 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9C7E99B7A
-        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 08:41:22 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-33580e26058so296970767b3.4
-        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 08:41:22 -0700 (PDT)
+        with ESMTP id S237106AbiHXPvD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Aug 2022 11:51:03 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21F0A56B82;
+        Wed, 24 Aug 2022 08:51:02 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id q2so20485509edb.6;
+        Wed, 24 Aug 2022 08:51:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
-         :date:from:to:cc;
-        bh=GrPou0VZKgNlblC435aJ0/uQRkx4htFwsCEj3e4SObU=;
-        b=N1o6OUXGC/iH2ijb+lNFnDPHgqw3EE+YVt/w/YNG5LZUfFDtYUy7DPSHSoCRfmQwJS
-         GEW628oNDtiSEG+TR9DYt4rWnaj3cDMsOXnilUJ370jMbMm2KfNgR9m9Ztnive72kTrg
-         OaXWIVL0131N9ESH7zWki2HFxKiH1rI35QiprRkAJ13BoDEnL+LlSMy/HEWT438XtiMf
-         WGYAyjrFhnpcRX1qI2eaj3Tz+LyLgSHEugk/D/oOKrB0J9WujNMqEsCeVjZOH7UIoT9C
-         YQYpw/2SUA7LK6rmLDDGa50cJB04mKuYyUDqd0YphGCt9YPiv0IJMleBR3DizoZje5+w
-         Sv/A==
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc;
+        bh=XSXhfnDUfbBy7Q1IY7kNQQfLX8S9OYrluEFXHaozl2U=;
+        b=auLtMCwTrnX2Us0+PsMajvVrOlaOivz3mzZZSDGc+MQmLsNIj9nmXwnYM6QLaRIipM
+         V9TV0fi7tQBLwkPWoTH2FTSTVWrtncVHdYCmlqc1JMGn2xBLcdQhKuuBtZlYNVGu8N46
+         LOGi/Jawvm8CGl1iQlCIQsMwPrkhAI8vVCf9Jq8rcQ/U+xb/4Vw/KTfGYFjpRFWDzB+E
+         I7XNOiFC1xtkkqE0FK61W4nX8SzgTn5DIw+q6tAdsNDYnn6mk8CO/NhF6zia0SdpX6rd
+         LzZ6hhzX0y2z923tJOjh81SPgcx8XVF2Lu2w4YeFje00Rm8lYD+A+m5XiiFhQNRem6AX
+         fobg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
-         :date:x-gm-message-state:from:to:cc;
-        bh=GrPou0VZKgNlblC435aJ0/uQRkx4htFwsCEj3e4SObU=;
-        b=gEBcivegeUIIqmkU0qcee3qrAseOuqK8gIleu/Yd8CamBc3K6ML09LrXTljBn5NZt3
-         5rSaNIkqC5MdReSpEJyPYzY7Qkibkh/yZ2/PUWyMIqzVq5e3N3NSab4AcfEbTcXZxNSZ
-         4U8R9Kf2b+7ULrZejz9V3EqYI7ZxbHL/mu047+Vjjbyou5flpgKcTyTMCA8rzVwLdBMl
-         WZwBiK89zrMpYxutniWDuark7qrR++ipdDUfZZM3x4vCMktm1XYLeidzmRY2DGfhcz/k
-         f98FwrziJanysOxYBKwDLoTtJaKSklbWFXsFV9C6NdqoBM4Z2xISHjmFrvfvfmwBCcaR
-         HaZA==
-X-Gm-Message-State: ACgBeo1ws2SnPwVEbkqR8njGk7xJQzjlFMPJ+/+2p7LdBLUSELVJyI62
-        I2alebiDucw97r0kBmjtAJRPyXS0Oir0
-X-Google-Smtp-Source: AA6agR50UpqAJXTKM7Aszo8uGw/kXlrIkRrRMT0M2mPuVHtgbj+KdyX05ZLo/uA1kRbmgsROvLG/mEAHf0b2
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2d4:203:ab82:a348:500d:1fc4])
- (user=irogers job=sendgmr) by 2002:a25:b3c4:0:b0:68d:d900:837e with SMTP id
- x4-20020a25b3c4000000b0068dd900837emr28057015ybf.501.1661355681725; Wed, 24
- Aug 2022 08:41:21 -0700 (PDT)
-Date:   Wed, 24 Aug 2022 08:39:01 -0700
-In-Reply-To: <20220824153901.488576-1-irogers@google.com>
-Message-Id: <20220824153901.488576-19-irogers@google.com>
-Mime-Version: 1.0
-References: <20220824153901.488576-1-irogers@google.com>
-X-Mailer: git-send-email 2.37.2.609.g9ff673ca1a-goog
-Subject: [PATCH v3 18/18] perf build: Enable -Wthread-safety with clang
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        "=?UTF-8?q?Andr=C3=A9=20Almeida?=" <andrealmeid@igalia.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Weiguo Li <liwg06@foxmail.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Dario Petrillo <dario.pk1@gmail.com>,
-        Hewenliang <hewenliang4@huawei.com>,
-        yaowenbin <yaowenbin1@huawei.com>,
-        Wenyu Liu <liuwenyu7@huawei.com>,
-        Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Pavithra Gurushankar <gpavithrasha@gmail.com>,
-        Alexandre Truong <alexandre.truong@arm.com>,
-        Quentin Monnet <quentin@isovalent.com>,
-        William Cohen <wcohen@redhat.com>,
-        Andres Freund <andres@anarazel.de>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        "=?UTF-8?q?Martin=20Li=C5=A1ka?=" <mliska@suse.cz>,
-        Colin Ian King <colin.king@intel.com>,
-        James Clark <james.clark@arm.com>,
-        Fangrui Song <maskray@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>,
-        Riccardo Mancini <rickyman7@gmail.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Zechuan Chen <chenzechuan1@huawei.com>,
-        Jason Wang <wangborong@cdjrlc.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Remi Bernon <rbernon@codeweavers.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        bpf@vger.kernel.org, llvm@lists.linux.dev
-Cc:     Ian Rogers <irogers@google.com>
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc;
+        bh=XSXhfnDUfbBy7Q1IY7kNQQfLX8S9OYrluEFXHaozl2U=;
+        b=kgKWA/XrUCBITPkgFXfi+U0OZrixpSQgietGTI1dH93zCtR++LUk4q8/IJQAKVcla+
+         pzMMpZzbb/op+MVxAjq0hnx5TVlAdgvG6c1pGRbRN2V0Ra0nOcFMee8REFkJhH6e3mZk
+         eJu/oVKg0VzNfueOJ+uUmy3R0t97pCaLxaz+M/8dMB5gUMjnG6bhqQ6K73J5QbeHH2fu
+         KVqZwNln8DyUIfP4k3QE7NJBWtsxLgXBFmsVEGO4ZenjqR9X7//puELmre2YDzEoArse
+         6mtN+/sMV6FMlT7zDd9JG7BHLXiN/W/qv0Orc16lOoKQv/D+DUBDz1dFPa7xmcvXomze
+         tjkw==
+X-Gm-Message-State: ACgBeo12jkYiDUJf8C04aMeAJSWVIeGWHkAtkeW8jtv0ksxN/GcHXqnF
+        ykmhIBrkiKXdwWOq18RZf1bVHa71mW4AHU8mVZw=
+X-Google-Smtp-Source: AA6agR6m7eS6OsAU6tFZb4s+iVDazP1DiUS4m3cG7gh3fqkQMNOOTF8pJRt6Cv1D1ju4QRmyORUba5xy6UyF0dZjWI8=
+X-Received: by 2002:a05:6402:298c:b0:446:a97:1800 with SMTP id
+ eq12-20020a056402298c00b004460a971800mr8227547edb.421.1661356260610; Wed, 24
+ Aug 2022 08:51:00 -0700 (PDT)
+MIME-Version: 1.0
+References: <a46dffe36f2570ec91761b1d604ac52fa0a10efb.1661348961.git.mqaio@linux.alibaba.com>
+ <9BE5800D-DA65-485A-8E5E-5B84F59F70BD@fb.com>
+In-Reply-To: <9BE5800D-DA65-485A-8E5E-5B84F59F70BD@fb.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 24 Aug 2022 08:50:49 -0700
+Message-ID: <CAADnVQLF6SjASpwS1i0YP2NT16Ctvn0s3jeCudKimNXQdi9Ebw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: fix incorrect fcntl call
+To:     Mykola Lysenko <mykolal@fb.com>
+Cc:     Qiao Ma <mqaio@linux.alibaba.com>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-If building with clang then enable -Wthread-safety warnings.
+On Wed, Aug 24, 2022 at 8:13 AM Mykola Lysenko <mykolal@fb.com> wrote:
+>
+> Hi Qiao,
+>
+> > On Aug 24, 2022, at 7:01 AM, Qiao Ma <mqaio@linux.alibaba.com> wrote:
+> >
+> > !-------------------------------------------------------------------|
+> >  This Message Is From an External Sender
+> >
+> > |-------------------------------------------------------------------!
+> >
+> > To set socket noblock, we need to use
+> >> fcntl(fd, F_SETFL, O_NONBLOCK);
+> > rather than:
+> >> fcntl(fd, O_NONBLOCK);
+>
+> Can you please add more description on what is it fixing?
+>
+> Additionally, add file name to the title to make it easier to identify th=
+e commit from oneline git log.
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/Makefile.config | 5 +++++
- 1 file changed, 5 insertions(+)
+file name in commit log? I think it's overkill.
+The file names can be seen with git log --stat
+Let's not put duplicate info into subjects.
 
-diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-index c41a090c0652..72dadafdbad9 100644
---- a/tools/perf/Makefile.config
-+++ b/tools/perf/Makefile.config
-@@ -19,6 +19,11 @@ detected_var = $(shell echo "$(1)=$($(1))" >> $(OUTPUT).config-detected)
- CFLAGS := $(EXTRA_CFLAGS) $(filter-out -Wnested-externs,$(EXTRA_WARNINGS))
- HOSTCFLAGS := $(filter-out -Wnested-externs,$(EXTRA_WARNINGS))
- 
-+# Enabled Wthread-safety analysis for clang builds.
-+ifeq ($(CC_NO_CLANG), 0)
-+  CFLAGS += -Wthread-safety
-+endif
-+
- include $(srctree)/tools/scripts/Makefile.arch
- 
- $(call detected_var,SRCARCH)
--- 
-2.37.2.609.g9ff673ca1a-goog
-
+> Something like =E2=80=9Cselftests/bpf: fix incorrect fcntl call (test_soc=
+kmap.c)=E2=80=9D.
