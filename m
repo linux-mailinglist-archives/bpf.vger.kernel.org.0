@@ -2,333 +2,294 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E21915A040B
+	by mail.lfdr.de (Postfix) with ESMTP id 9A9F85A040A
 	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 00:31:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230221AbiHXWbA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S229903AbiHXWbA (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Wed, 24 Aug 2022 18:31:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48610 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230260AbiHXWa6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Aug 2022 18:30:58 -0400
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EA4315A2A
-        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 15:30:53 -0700 (PDT)
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 27OMHAvI017391
-        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 15:30:53 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=/p7UHvjyxFH3JdL6RZhPofO4vMNvK2ImvtVIgs5yiMI=;
- b=aU0wd+rHYMMLQRaWUv2KEDn6JXHQNpzc/6HcU64ZW7t0XvhlVDuohhUDzSI7pxHBYhVj
- zi7bHcjMp057wn7vy68sP36BIpdC+wn2F4XGC3hmg762GBG48Z9Db1tlJti5GfbpsgjP
- r9yLu4LBsRFoyjS2zZxGquzKhilPBu/p5zg= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net (PPS) with ESMTPS id 3j4x1yvjjb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 15:30:52 -0700
-Received: from twshared32421.14.frc2.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 24 Aug 2022 15:30:51 -0700
-Received: by devbig933.frc1.facebook.com (Postfix, from userid 6611)
-        id 6E193871CA81; Wed, 24 Aug 2022 15:27:49 -0700 (PDT)
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>, <kernel-team@fb.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Stanislav Fomichev <sdf@google.com>
-Subject: [PATCH bpf-next 17/17] selftest/bpf: Add test for bpf_getsockopt()
-Date:   Wed, 24 Aug 2022 15:27:49 -0700
-Message-ID: <20220824222749.1925762-1-kafai@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220824222601.1916776-1-kafai@fb.com>
-References: <20220824222601.1916776-1-kafai@fb.com>
+        with ESMTP id S230185AbiHXWay (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Aug 2022 18:30:54 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5AB915834
+        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 15:30:51 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id a22so23837682edj.5
+        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 15:30:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=Nwgx2ynzqdPU6CdRwIbzGss6k0QzOq5J9ZUEFliV9Kk=;
+        b=oBoI/c4yR0mPHjOHZSE+kvtx+zXzozZjxyJp/fhqNZ0eqo4SwXp3LdrMy/9u4btzw/
+         Wku+aBkXvq8Y8PGtYWkr+yYrLoEkdbXaVv6tAN1hWd2xytY16MbSh+PRUi/huePpzdgC
+         v6Mh6M1ZP3CX+ml8Z6zSiO5/z1xfzoy11g3CUvdZbXsFD3ZLb0Ns2nx9gRnCqaZKVXCw
+         TKsDZQhYnKl67AjMF1H/PFQ985Zut7pKgmHelxPdgwyy4PUXPYVDNbfQtImI78UBjjhv
+         MQs31N27WBrX+4lz7zpxsCezIIHbYTt95mefFkP23PMPAjlxORPa5PimvKMQAzEZfSC+
+         LSIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=Nwgx2ynzqdPU6CdRwIbzGss6k0QzOq5J9ZUEFliV9Kk=;
+        b=y1TJy+O0IO5ebROpgSQYRjC9PfLqWips2i/YlYDDugGEERT5FTfBhKNizqjxAKUYq6
+         CTmFfJbz9dJUL8QEGRExPfbYB8zYpYtewqIUtrcpGCN5ztsekEkk0bxUgowsG2FBmrY0
+         kB/sIzIt8QXiqOR9pF7pdoAz8YCuGa+K5ZU94M3Dzcoyx+qkw5pCFtcnmy0yrU6fp+9d
+         79agvkuJoBWQHTOmrn1iIIBB0Sku1JMEeIFLN0FiNcrOFHjgWzN6VK/ZzC3OO/DuKWdb
+         HYU0F1/HvIUShqT1naGUNE0xcb9+xuWUqB6R8qpwAI1gtB+uTPH6HTQnTfKnuoOTgd2N
+         bQ9w==
+X-Gm-Message-State: ACgBeo1mj+03wm1+ngrm2NOeY8pXqTZKeyMFKgHcn+5+4ChdGnRavpX1
+        VSSoIR4Dg65xMs+aeuuctBSzkKZL9cwU64DIE5mRnxBJ
+X-Google-Smtp-Source: AA6agR5B9lovPJPUTXKytJqx5JrGtcaqTXlDNkSS29YdunWXHQiqnoY/wQH0+08htK+nuBiH9oPJHKXdgKJlQJ1XEr0=
+X-Received: by 2002:a05:6402:1704:b0:447:811f:1eef with SMTP id
+ y4-20020a056402170400b00447811f1eefmr929487edu.14.1661380250161; Wed, 24 Aug
+ 2022 15:30:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: jrvw_Rodf0QcoDYOFxibzOMTp3wkhO3I
-X-Proofpoint-ORIG-GUID: jrvw_Rodf0QcoDYOFxibzOMTp3wkhO3I
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-08-24_14,2022-08-22_02,2022-06-22_01
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20220819220927.3409575-1-kuifeng@fb.com> <20220819220927.3409575-5-kuifeng@fb.com>
+In-Reply-To: <20220819220927.3409575-5-kuifeng@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 24 Aug 2022 15:30:38 -0700
+Message-ID: <CAEf4BzYpnp3sYxWe4XWeJZPqi3+NgH4NMqa7X9kbE9y4trs5KQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6 4/4] selftests/bpf: Test parameterized task
+ BPF iterators.
+To:     Kui-Feng Lee <kuifeng@fb.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kernel-team@fb.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch removes the __bpf_getsockopt() which directly
-reads the sk by using PTR_TO_BTF_ID.  Instead, the test now directly
-uses the kernel bpf helper bpf_getsockopt() which supports all
-the required optname now.
+On Fri, Aug 19, 2022 at 3:09 PM Kui-Feng Lee <kuifeng@fb.com> wrote:
+>
+> Test iterators of vma, files, and tasks of tasks.
+>
+> Ensure the API works appropriately to visit all tasks,
+> tasks in a process, or a particular task.
+>
+> Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
+> ---
+>  .../selftests/bpf/prog_tests/bpf_iter.c       | 284 +++++++++++++++++-
+>  .../selftests/bpf/prog_tests/btf_dump.c       |   2 +-
+>  .../selftests/bpf/progs/bpf_iter_task.c       |   9 +
+>  .../selftests/bpf/progs/bpf_iter_task_file.c  |   9 +-
+>  .../selftests/bpf/progs/bpf_iter_task_vma.c   |   6 +-
+>  .../bpf/progs/bpf_iter_uprobe_offset.c        |  35 +++
+>  6 files changed, 326 insertions(+), 19 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_uprobe_offset.c
+>
 
-TCP_SAVE[D]_SYN and TCP_MAXSEG are not tested in a loop for all
-the hooks and sock_ops's cb.  TCP_SAVE[D]_SYN only works
-in passive connection.  TCP_MAXSEG only works when
-it is setsockopt before the connection is established and
-the getsockopt return value can only be tested after
-the connection is established.
+[...]
 
-Signed-off-by: Martin KaFai Lau <kafai@fb.com>
----
- .../selftests/bpf/progs/bpf_tracing_net.h     |   1 +
- .../selftests/bpf/progs/setget_sockopt.c      | 148 +++++-------------
- 2 files changed, 43 insertions(+), 106 deletions(-)
+> -       do_dummy_read(skel->progs.dump_task);
+> +       if (!ASSERT_OK(pthread_mutex_lock(&do_nothing_mutex), "pthread_mutex_lock"))
+> +               goto done;
+> +       locked = true;
+> +
+> +       if (!ASSERT_OK(pthread_create(&thread_id, NULL, &do_nothing_wait, NULL),
+> +                 "pthread_create"))
+> +               goto done;
+> +
+> +
 
-diff --git a/tools/testing/selftests/bpf/progs/bpf_tracing_net.h b/tools/=
-testing/selftests/bpf/progs/bpf_tracing_net.h
-index 5ebc6dabef84..adb087aecc9e 100644
---- a/tools/testing/selftests/bpf/progs/bpf_tracing_net.h
-+++ b/tools/testing/selftests/bpf/progs/bpf_tracing_net.h
-@@ -38,6 +38,7 @@
- #define TCP_USER_TIMEOUT	18
- #define TCP_NOTSENT_LOWAT	25
- #define TCP_SAVE_SYN		27
-+#define TCP_SAVED_SYN		28
- #define TCP_CA_NAME_MAX		16
- #define TCP_NAGLE_OFF		1
-=20
-diff --git a/tools/testing/selftests/bpf/progs/setget_sockopt.c b/tools/t=
-esting/selftests/bpf/progs/setget_sockopt.c
-index 40606ef47a38..094b4b8b8f93 100644
---- a/tools/testing/selftests/bpf/progs/setget_sockopt.c
-+++ b/tools/testing/selftests/bpf/progs/setget_sockopt.c
-@@ -51,7 +51,6 @@ static const struct sockopt_test sol_socket_tests[] =3D=
- {
-=20
- static const struct sockopt_test sol_tcp_tests[] =3D {
- 	{ .opt =3D TCP_NODELAY, .flip =3D 1, },
--	{ .opt =3D TCP_MAXSEG, .new =3D 1314, .expected =3D 1314, },
- 	{ .opt =3D TCP_KEEPIDLE, .new =3D 123, .expected =3D 123, .restore =3D =
-321, },
- 	{ .opt =3D TCP_KEEPINTVL, .new =3D 123, .expected =3D 123, .restore =3D=
- 321, },
- 	{ .opt =3D TCP_KEEPCNT, .new =3D 123, .expected =3D 123, .restore =3D 1=
-24, },
-@@ -61,7 +60,6 @@ static const struct sockopt_test sol_tcp_tests[] =3D {
- 	{ .opt =3D TCP_THIN_LINEAR_TIMEOUTS, .flip =3D 1, },
- 	{ .opt =3D TCP_USER_TIMEOUT, .new =3D 123400, .expected =3D 123400, },
- 	{ .opt =3D TCP_NOTSENT_LOWAT, .new =3D 1314, .expected =3D 1314, },
--	{ .opt =3D TCP_SAVE_SYN, .new =3D 1, .expected =3D 1, },
- 	{ .opt =3D 0, },
- };
-=20
-@@ -81,102 +79,6 @@ struct loop_ctx {
- 	struct sock *sk;
- };
-=20
--static int __bpf_getsockopt(void *ctx, struct sock *sk,
--			    int level, int opt, int *optval,
--			    int optlen)
--{
--	if (level =3D=3D SOL_SOCKET) {
--		switch (opt) {
--		case SO_REUSEADDR:
--			*optval =3D !!BPF_CORE_READ_BITFIELD(sk, sk_reuse);
--			break;
--		case SO_KEEPALIVE:
--			*optval =3D !!(sk->sk_flags & (1UL << 3));
--			break;
--		case SO_RCVLOWAT:
--			*optval =3D sk->sk_rcvlowat;
--			break;
--		case SO_MAX_PACING_RATE:
--			*optval =3D sk->sk_max_pacing_rate;
--			break;
--		default:
--			return bpf_getsockopt(ctx, level, opt, optval, optlen);
--		}
--		return 0;
--	}
--
--	if (level =3D=3D IPPROTO_TCP) {
--		struct tcp_sock *tp =3D bpf_skc_to_tcp_sock(sk);
--
--		if (!tp)
--			return -1;
--
--		switch (opt) {
--		case TCP_NODELAY:
--			*optval =3D !!(BPF_CORE_READ_BITFIELD(tp, nonagle) & TCP_NAGLE_OFF);
--			break;
--		case TCP_MAXSEG:
--			*optval =3D tp->rx_opt.user_mss;
--			break;
--		case TCP_KEEPIDLE:
--			*optval =3D tp->keepalive_time / CONFIG_HZ;
--			break;
--		case TCP_SYNCNT:
--			*optval =3D tp->inet_conn.icsk_syn_retries;
--			break;
--		case TCP_KEEPINTVL:
--			*optval =3D tp->keepalive_intvl / CONFIG_HZ;
--			break;
--		case TCP_KEEPCNT:
--			*optval =3D tp->keepalive_probes;
--			break;
--		case TCP_WINDOW_CLAMP:
--			*optval =3D tp->window_clamp;
--			break;
--		case TCP_THIN_LINEAR_TIMEOUTS:
--			*optval =3D !!BPF_CORE_READ_BITFIELD(tp, thin_lto);
--			break;
--		case TCP_USER_TIMEOUT:
--			*optval =3D tp->inet_conn.icsk_user_timeout;
--			break;
--		case TCP_NOTSENT_LOWAT:
--			*optval =3D tp->notsent_lowat;
--			break;
--		case TCP_SAVE_SYN:
--			*optval =3D BPF_CORE_READ_BITFIELD(tp, save_syn);
--			break;
--		default:
--			return bpf_getsockopt(ctx, level, opt, optval, optlen);
--		}
--		return 0;
--	}
--
--	if (level =3D=3D IPPROTO_IPV6) {
--		switch (opt) {
--		case IPV6_AUTOFLOWLABEL: {
--			__u16 proto =3D sk->sk_protocol;
--			struct inet_sock *inet_sk;
--
--			if (proto =3D=3D IPPROTO_TCP)
--				inet_sk =3D (struct inet_sock *)bpf_skc_to_tcp_sock(sk);
--			else
--				inet_sk =3D (struct inet_sock *)bpf_skc_to_udp6_sock(sk);
--
--			if (!inet_sk)
--				return -1;
--
--			*optval =3D !!inet_sk->pinet6->autoflowlabel;
--			break;
--		}
--		default:
--			return bpf_getsockopt(ctx, level, opt, optval, optlen);
--		}
--		return 0;
--	}
--
--	return bpf_getsockopt(ctx, level, opt, optval, optlen);
--}
--
- static int bpf_test_sockopt_flip(void *ctx, struct sock *sk,
- 				 const struct sockopt_test *t,
- 				 int level)
-@@ -185,7 +87,7 @@ static int bpf_test_sockopt_flip(void *ctx, struct soc=
-k *sk,
-=20
- 	opt =3D t->opt;
-=20
--	if (__bpf_getsockopt(ctx, sk, level, opt, &old, sizeof(old)))
-+	if (bpf_getsockopt(ctx, level, opt, &old, sizeof(old)))
- 		return 1;
- 	/* kernel initialized txrehash to 255 */
- 	if (level =3D=3D SOL_SOCKET && opt =3D=3D SO_TXREHASH && old !=3D 0 && =
-old !=3D 1)
-@@ -194,7 +96,7 @@ static int bpf_test_sockopt_flip(void *ctx, struct soc=
-k *sk,
- 	new =3D !old;
- 	if (bpf_setsockopt(ctx, level, opt, &new, sizeof(new)))
- 		return 1;
--	if (__bpf_getsockopt(ctx, sk, level, opt, &tmp, sizeof(tmp)) ||
-+	if (bpf_getsockopt(ctx, level, opt, &tmp, sizeof(tmp)) ||
- 	    tmp !=3D new)
- 		return 1;
-=20
-@@ -217,13 +119,13 @@ static int bpf_test_sockopt_int(void *ctx, struct s=
-ock *sk,
- 	else
- 		expected =3D t->expected;
-=20
--	if (__bpf_getsockopt(ctx, sk, level, opt, &old, sizeof(old)) ||
-+	if (bpf_getsockopt(ctx, level, opt, &old, sizeof(old)) ||
- 	    old =3D=3D new)
- 		return 1;
-=20
- 	if (bpf_setsockopt(ctx, level, opt, &new, sizeof(new)))
- 		return 1;
--	if (__bpf_getsockopt(ctx, sk, level, opt, &tmp, sizeof(tmp)) ||
-+	if (bpf_getsockopt(ctx, level, opt, &tmp, sizeof(tmp)) ||
- 	    tmp !=3D expected)
- 		return 1;
-=20
-@@ -406,6 +308,34 @@ static int binddev_test(void *ctx)
- 	return 0;
- }
-=20
-+static int test_tcp_maxseg(void *ctx, struct sock *sk)
-+{
-+	int val =3D 1314, tmp;
-+
-+	if (sk->sk_state !=3D TCP_ESTABLISHED)
-+		return bpf_setsockopt(ctx, IPPROTO_TCP, TCP_MAXSEG,
-+				      &val, sizeof(val));
-+
-+	if (bpf_getsockopt(ctx, IPPROTO_TCP, TCP_MAXSEG, &tmp, sizeof(tmp)) ||
-+	    tmp > val)
-+		return -1;
-+
-+	return 0;
-+}
-+
-+static int test_tcp_saved_syn(void *ctx, struct sock *sk)
-+{
-+	__u8 saved_syn[20];
-+	int one =3D 1;
-+
-+	if (sk->sk_state =3D=3D TCP_LISTEN)
-+		return bpf_setsockopt(ctx, IPPROTO_TCP, TCP_SAVE_SYN,
-+				      &one, sizeof(one));
-+
-+	return bpf_getsockopt(ctx, IPPROTO_TCP, TCP_SAVED_SYN,
-+			      saved_syn, sizeof(saved_syn));
-+}
-+
- SEC("lsm_cgroup/socket_post_create")
- int BPF_PROG(socket_post_create, struct socket *sock, int family,
- 	     int type, int protocol, int kern)
-@@ -436,16 +366,22 @@ int skops_sockopt(struct bpf_sock_ops *skops)
-=20
- 	switch (skops->op) {
- 	case BPF_SOCK_OPS_TCP_LISTEN_CB:
--		nr_listen +=3D !bpf_test_sockopt(skops, sk);
-+		nr_listen +=3D !(bpf_test_sockopt(skops, sk) ||
-+			       test_tcp_maxseg(skops, sk) ||
-+			       test_tcp_saved_syn(skops, sk));
- 		break;
- 	case BPF_SOCK_OPS_TCP_CONNECT_CB:
--		nr_connect +=3D !bpf_test_sockopt(skops, sk);
-+		nr_connect +=3D !(bpf_test_sockopt(skops, sk) ||
-+				test_tcp_maxseg(skops, sk));
- 		break;
- 	case BPF_SOCK_OPS_ACTIVE_ESTABLISHED_CB:
--		nr_active +=3D !bpf_test_sockopt(skops, sk);
-+		nr_active +=3D !(bpf_test_sockopt(skops, sk) ||
-+			       test_tcp_maxseg(skops, sk));
- 		break;
- 	case BPF_SOCK_OPS_PASSIVE_ESTABLISHED_CB:
--		nr_passive +=3D !bpf_test_sockopt(skops, sk);
-+		nr_passive +=3D !(bpf_test_sockopt(skops, sk) ||
-+				test_tcp_maxseg(skops, sk) ||
-+				test_tcp_saved_syn(skops, sk));
- 		break;
- 	}
-=20
---=20
-2.30.2
+extra empty line
 
+> +       skel->bss->tid = getpid();
+> +
+> +       do_dummy_read_opts(skel->progs.dump_task, opts);
+> +
+> +       *num_unknown = skel->bss->num_unknown_tid;
+> +       *num_known = skel->bss->num_known_tid;
+> +
+> +       ASSERT_OK(pthread_mutex_unlock(&do_nothing_mutex), "pthread_mutex_unlock");
+> +       locked = false;
+> +       ASSERT_FALSE(pthread_join(thread_id, &ret) || ret != NULL,
+> +                    "pthread_join");
+>
+> +done:
+> +       if (locked)
+
+it's a bit of an overkill to expect and handle that
+pthread_mutex_lock() might fail, I'd remove those asserts and locked
+flag, just assume that lock works (if it's not, it's either test bug
+and would be caught early, or something is very broken in the system
+anyway)
+
+> +               ASSERT_OK(pthread_mutex_unlock(&do_nothing_mutex), "pthread_mutex_unlock");
+>         bpf_iter_task__destroy(skel);
+>  }
+>
+
+[...]
+
+>  static void test_task_sleepable(void)
+>  {
+>         struct bpf_iter_task *skel;
+> @@ -212,15 +349,13 @@ static void test_task_stack(void)
+>         bpf_iter_task_stack__destroy(skel);
+>  }
+>
+> -static void *do_nothing(void *arg)
+> -{
+> -       pthread_exit(arg);
+> -}
+> -
+>  static void test_task_file(void)
+>  {
+> +       DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
+
+DECLARE_LIBBPF_OPTS is discouraged, best to use shorter LIBBPF_OPTS
+
+>         struct bpf_iter_task_file *skel;
+> +       union bpf_iter_link_info linfo;
+>         pthread_t thread_id;
+> +       bool locked = false;
+>         void *ret;
+>
+>         skel = bpf_iter_task_file__open_and_load();
+> @@ -229,19 +364,43 @@ static void test_task_file(void)
+>
+>         skel->bss->tgid = getpid();
+>
+> -       if (!ASSERT_OK(pthread_create(&thread_id, NULL, &do_nothing, NULL),
+> +       if (!ASSERT_OK(pthread_mutex_lock(&do_nothing_mutex), "pthread_mutex_lock"))
+> +               goto done;
+> +       locked = true;
+
+same about failing mutex_lock, it shouldn't and it's fair to expect
+that it won't
+
+> +
+> +       if (!ASSERT_OK(pthread_create(&thread_id, NULL, &do_nothing_wait, NULL),
+>                   "pthread_create"))
+>                 goto done;
+>
+> -       do_dummy_read(skel->progs.dump_task_file);
+> +       memset(&linfo, 0, sizeof(linfo));
+> +       linfo.task.tid = getpid();
+> +       opts.link_info = &linfo;
+> +       opts.link_info_len = sizeof(linfo);
+
+[...]
+
+> +       link = bpf_program__attach_iter(skel->progs.get_uprobe_offset, opts);
+> +       if (!ASSERT_OK_PTR(link, "attach_iter"))
+> +               return;
+> +
+> +       iter_fd = bpf_iter_create(bpf_link__fd(link));
+> +       if (!ASSERT_GT(iter_fd, 0, "create_iter"))
+> +               goto exit;
+> +
+> +       while ((len = read(iter_fd, buf, sizeof(buf))) > 0)
+> +               ;
+> +       CHECK(len < 0, "read", "read failed: %s\n", strerror(errno));
+
+no checks, please
+
+> +       buf[15] = 0;
+> +       ASSERT_EQ(strcmp(buf, "OK\n"), 0, "strcmp");
+> +
+> +       ASSERT_EQ(skel->bss->offset, get_uprobe_offset(trigger_func), "offset");
+> +       if (one_proc)
+> +               ASSERT_EQ(skel->bss->unique_tgid_cnt, 1, "unique_tgid_count");
+> +       else
+> +               ASSERT_GT(skel->bss->unique_tgid_cnt, 1, "unique_tgid_count");
+> +
+> +       close(iter_fd);
+> +
+> +exit:
+> +       bpf_link__destroy(link);
+> +}
+> +
+> +static void test_task_uprobe_offset(void)
+> +{
+> +       LIBBPF_OPTS(bpf_iter_attach_opts, opts);
+> +       union bpf_iter_link_info linfo;
+> +
+> +       memset(&linfo, 0, sizeof(linfo));
+> +       linfo.task.pid = getpid();
+> +       opts.link_info = &linfo;
+> +       opts.link_info_len = sizeof(linfo);
+> +
+> +       test_task_uprobe_offset_common(&opts, true);
+> +
+> +       linfo.task.pid = 0;
+> +       linfo.task.tid = getpid();
+> +       test_task_uprobe_offset_common(&opts, true);
+> +
+> +       test_task_uprobe_offset_common(NULL, false);
+> +}
+> +
+>  void test_bpf_iter(void)
+>  {
+> +       if (!ASSERT_OK(pthread_mutex_init(&do_nothing_mutex, NULL), "pthread_mutex_init"))
+> +               return;
+> +
+
+ditto, too paranoid, IMO
+
+>         if (test__start_subtest("btf_id_or_null"))
+>                 test_btf_id_or_null();
+>         if (test__start_subtest("ipv6_route"))
+
+[...]
+
+> diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_uprobe_offset.c b/tools/testing/selftests/bpf/progs/bpf_iter_uprobe_offset.c
+> new file mode 100644
+> index 000000000000..825ca86678bd
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/bpf_iter_uprobe_offset.c
+> @@ -0,0 +1,35 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
+> +#include "bpf_iter.h"
+> +#include <bpf/bpf_helpers.h>
+> +
+> +char _license[] SEC("license") = "GPL";
+> +
+> +__u32 unique_tgid_cnt = 0;
+> +uintptr_t address = 0;
+> +uintptr_t offset = 0;
+> +__u32 last_tgid = 0;
+> +__u32 pid = 0;
+> +
+> +SEC("iter/task_vma") int get_uprobe_offset(struct bpf_iter__task_vma *ctx)
+
+please keep SEC() on separate line
+
+> +{
+> +       struct vm_area_struct *vma = ctx->vma;
+> +       struct seq_file *seq = ctx->meta->seq;
+> +       struct task_struct *task = ctx->task;
+> +
+> +       if (task == NULL || vma == NULL)
+> +               return 0;
+> +
+> +       if (last_tgid != task->tgid)
+> +               unique_tgid_cnt++;
+> +       last_tgid = task->tgid;
+> +
+> +       if (task->tgid != pid)
+> +               return 0;
+> +
+> +       if (vma->vm_start <= address && vma->vm_end > address) {
+> +               offset = address - vma->vm_start + (vma->vm_pgoff << 12);
+
+it's best not to assume page_size is 4K, you can pass actual value
+through global variable from user-space (we've previously fixed a
+bunch of tests with fixed page_size assumption as they break some
+platforms, let's not regress that)
+
+> +               BPF_SEQ_PRINTF(seq, "OK\n");
+> +       }
+> +       return 0;
+> +}
+> --
+> 2.30.2
+>
