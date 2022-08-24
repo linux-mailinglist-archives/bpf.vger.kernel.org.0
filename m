@@ -2,55 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D1355A0155
-	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 20:27:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C194F5A018D
+	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 20:47:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237669AbiHXS1q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Aug 2022 14:27:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40554 "EHLO
+        id S232084AbiHXSrV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Aug 2022 14:47:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236263AbiHXS1p (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Aug 2022 14:27:45 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEEEEB1C;
-        Wed, 24 Aug 2022 11:27:43 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id 2so15130894edx.2;
-        Wed, 24 Aug 2022 11:27:43 -0700 (PDT)
+        with ESMTP id S231400AbiHXSrU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Aug 2022 14:47:20 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FD067AC3D;
+        Wed, 24 Aug 2022 11:47:19 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id gt3so22806976ejb.12;
+        Wed, 24 Aug 2022 11:47:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc;
-        bh=oNm7xGMPYZ2EjIiA/OdVG0f9hhuvnhUdCBgxr9MgWO4=;
-        b=H09P2ncBkZNnh+X6I6Tu5MtDbBf9QmBtEoNC98ikuTuNRyi8A1LQFXMr4kW9YuqRSt
-         Yae1qsdUyG2t2Lg6J/1CMx7LLuWfZ4AAWNasubUBxAHyE+EnRsk5seW+HgcJoGozYlqh
-         S+CMMFLEi90CwiQKx+N/AvsOSWQnefoemfPYW+OjUuwb3MzHsTSl+MZHn/6b7frPfdML
-         TRTwqYDbwPDeeAupdnG2Ss6HpMDawc0r5qYFafviNq7gStXqe/irI8/mazFHh+ZWT4sb
-         ZdKrtyr+wn4su7vnItC2gT9nVOGfcT6n1qcEYZx+KPoDdqDXAZ5LHak7DAIPnbuVfylN
-         0+nw==
+        bh=71zclsJgvSoxJEFegzokttijXTGmFgxYJBGMn1UIyuY=;
+        b=Bc5I89BWNncttLIzUpu/uUHMjGg2UDmX1WDjAFqKLZswTSfqIwFF5hFDbejpYm74mk
+         E2PpQZ9MbY4ZAkuImcMfVa/jqBEM55HLKCzD2F4ZI9LlrlOmFE5k8yL1xrjQgLl/u1+5
+         inuWcOzIAA1AS53uAVg0T9LHVHb3ye4EXew8v524CUmjE9HetbENGGAOqXCQfzTAM4mj
+         cdGqv74YbPUu5htbzDNpMU3TQpDZbQ+ZDEwHfmqo4+nrW/NpJPfFjVX7oq6ZmH8H8N1/
+         aYFzJrGy0zq4MRVfkkn5ygusXOAUDfIYVH2ZFYa8aqsyrMj3kpqq3ShnJoI6keiHdJuR
+         7Y/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc;
-        bh=oNm7xGMPYZ2EjIiA/OdVG0f9hhuvnhUdCBgxr9MgWO4=;
-        b=4N8zjVVrbwOd2CgbkRd5q4JllgIwkfis40dIiOZ7AQ0VX+CGWq8j2TngywXKdk+0bZ
-         ka0T3qaLJz/FDCLu3axg3pTc/omRU68RKxmVS0pivA0JE83M2POYvJu5Gg1VHjWzRjZv
-         UpL2GdlKG+bRr7gmWTN+eTdB62rartyWYQgwUBT4h9ZlpcG2/h1u95ycgjV/Z1prutpt
-         bJDorBAvJ77T12PM0XvgypjcPguAOA7SMiw/wZ3I1SZpiGvLgyofQdnzKshpnuvbmU48
-         UqKAbyCxjuRGMgjLsYUAVDxqF5kx6yL4ioty97G/46Hu1IhKFfhgcoTG9rEvGEWqb6p0
-         0nvg==
-X-Gm-Message-State: ACgBeo3Vlr4c1z9K9iL2c3SUaU9VxbtjEVoYxM2EdQolz6v+9vEEylKk
-        /sRJqWeTDleahvSqrpjakk7NhoqI9fa2g3sywk4=
-X-Google-Smtp-Source: AA6agR4hwd+YTRYxDb9GPohMTrETjJOMsOf6aV61XFzcy/poZ1Q07nkKXmp3KIxIe5VHKTNS6MuEl25Fe5iGI0M1JVs=
-X-Received: by 2002:a05:6402:10d2:b0:445:d9ee:fc19 with SMTP id
- p18-20020a05640210d200b00445d9eefc19mr242053edu.81.1661365662291; Wed, 24 Aug
- 2022 11:27:42 -0700 (PDT)
+        bh=71zclsJgvSoxJEFegzokttijXTGmFgxYJBGMn1UIyuY=;
+        b=okr7Dc3YYcOaGWDP/zcvF1z8I7uUnBLi408wbS8mp4bQe1Qad0z8WshlQi2vdZUFKw
+         NmWyuNYKmGSn9+SUlIyw7I/WUYFAJmfZRJtI70nTghjyMY7oHcYEp4tgRaDV1wg5MAsZ
+         L4c2qMsEeauFOLqAuLEnqL7Z617IrR5J/3KpIu1XIOBna3GxRGL/wLX7NUKc01knsCY+
+         quo5mC1k7MpRO1DQUPWAY6j2SdoiFN/XyPC0cF5FCHSqtRLZ0bz/ra0R3N5geKXK86a1
+         Ik0ez4ca0Y89wfnu9tR4TGfHlOCGzabZjaIxBjiM9HEjMxbdDyA2eFhr+ysVlYaVR93v
+         VFLg==
+X-Gm-Message-State: ACgBeo2eOW5/cNvVn7/lhC4ER8BTxDSsBfSdX0mH8D0C5C0/0ohyEZwE
+        d5789SXcYsTuDpe2MAiGu5TW6y89uvPzZCNVAYY=
+X-Google-Smtp-Source: AA6agR7TrqXyWrGjdKXUw5dWjoLXxaOqpHOPGPxa+rFOk6CZKCfH+JbBwPv+TMQszgLuITGrY+bqbeEeXtkrlHSn8XE=
+X-Received: by 2002:a17:907:6096:b0:73d:9d12:4b04 with SMTP id
+ ht22-20020a170907609600b0073d9d124b04mr171281ejc.745.1661366837640; Wed, 24
+ Aug 2022 11:47:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220822235649.2218031-1-joannelkoong@gmail.com> <20220822235649.2218031-2-joannelkoong@gmail.com>
-In-Reply-To: <20220822235649.2218031-2-joannelkoong@gmail.com>
+References: <20220822235649.2218031-1-joannelkoong@gmail.com> <20220822235649.2218031-4-joannelkoong@gmail.com>
+In-Reply-To: <20220822235649.2218031-4-joannelkoong@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 24 Aug 2022 11:27:30 -0700
-Message-ID: <CAEf4BzZm7eUX3w-NwP0JuWtvKbO6GxN911TraY5bA8-z+ocyCg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 1/3] bpf: Add skb dynptrs
+Date:   Wed, 24 Aug 2022 11:47:06 -0700
+Message-ID: <CAEf4BzY049DX_Y1eF-gPpS3hyc6ymSAnSvS6hOK3TKFx-kf6_Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 3/3] selftests/bpf: tests for using dynptrs to
+ parse skb and xdp buffers
 To:     Joanne Koong <joannelkoong@gmail.com>
 Cc:     bpf@vger.kernel.org, andrii@kernel.org, daniel@iogearbox.net,
         ast@kernel.org, kafai@fb.com, kuba@kernel.org,
@@ -68,320 +69,346 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Mon, Aug 22, 2022 at 4:57 PM Joanne Koong <joannelkoong@gmail.com> wrote:
 >
-> Add skb dynptrs, which are dynptrs whose underlying pointer points
-> to a skb. The dynptr acts on skb data. skb dynptrs have two main
-> benefits. One is that they allow operations on sizes that are not
-> statically known at compile-time (eg variable-sized accesses).
-> Another is that parsing the packet data through dynptrs (instead of
-> through direct access of skb->data and skb->data_end) can be more
-> ergonomic and less brittle (eg does not need manual if checking for
-> being within bounds of data_end).
+> Test skb and xdp dynptr functionality in the following ways:
 >
-> For bpf prog types that don't support writes on skb data, the dynptr is
-> read-only. For reads and writes through the bpf_dynptr_read() and
-> bpf_dynptr_write() interfaces, this supports reading and writing into
-> data in the non-linear paged buffers. For data slices (through the
-> bpf_dynptr_data() interface), if the data is in a paged buffer, the user
-> must first call bpf_skb_pull_data() to pull the data into the linear
-> portion. The returned data slice from a call to bpf_dynptr_data() is of
-> reg type PTR_TO_PACKET | PTR_MAYBE_NULL.
+> 1) progs/test_cls_redirect_dynptr.c
+>    * Rewrite "progs/test_cls_redirect.c" test to use dynptrs to parse
+>      skb data
 >
-> Any bpf_dynptr_write() automatically invalidates any prior data slices
-> to the skb dynptr. This is because a bpf_dynptr_write() may be writing
-> to data in a paged buffer, so it will need to pull the buffer first into
-> the head. The reason it needs to be pulled instead of writing directly to
-> the paged buffers is because they may be cloned (only the head of the skb
-> is by default uncloned). As such, any bpf_dynptr_write() will
-> automatically have its prior data slices invalidated, even if the write
-> is to data in the skb head (the verifier has no way of differentiating
-> whether the write is to the head or paged buffers during program load
-> time). Please note as well that any other helper calls that change the
-> underlying packet buffer (eg bpf_skb_pull_data()) invalidates any data
-> slices of the skb dynptr as well. Whenever such a helper call is made,
-> the verifier marks any PTR_TO_PACKET reg type (which includes skb dynptr
-> slices since they are PTR_TO_PACKETs) as unknown. The stack trace for
-> this is check_helper_call() -> clear_all_pkt_pointers() ->
-> __clear_all_pkt_pointers() -> mark_reg_unknown()
+>    * This is a great example of how dynptrs can be used to simplify a
+>      lot of the parsing logic for non-statically known values, and speed
+>      up execution times.
 >
-> For examples of how skb dynptrs can be used, please see the attached
-> selftests.
+>      When measuring the user + system time between the original version
+>      vs. using dynptrs, and averaging the time for 10 runs (using
+>      "time ./test_progs -t cls_redirect"), there was a 2x speed-up:
+>          original version: 0.053 sec
+>          with dynptrs: 0.025 sec
+>
+> 2) progs/test_xdp_dynptr.c
+>    * Rewrite "progs/test_xdp.c" test to use dynptrs to parse xdp data
+>
+>      There were no noticeable diferences in user + system time between
+>      the original version vs. using dynptrs. Averaging the time for 10
+>      runs (run using "time ./test_progs -t xdp_bpf2bpf"):
+>          original version: 0.0449 sec
+>          with dynptrs: 0.0429 sec
+>
+> 3) progs/test_l4lb_noinline_dynptr.c
+>    * Rewrite "progs/test_l4lb_noinline.c" test to use dynptrs to parse
+>      skb data
+>
+>      There were no noticeable diferences in user + system time between
+>      the original version vs. using dynptrs. Averaging the time for 10
+>      runs (run using "time ./test_progs -t l4lb_all"):
+>          original version: 0.0502 sec
+>          with dynptrs: 0.055 sec
+>
+>      For number of processed verifier instructions:
+>          original version: 6284 insns
+>          with dynptrs: 2538 insns
+>
+> 4) progs/test_parse_tcp_hdr_opt_dynptr.c
+>    * Add sample code for parsing tcp hdr opt lookup using dynptrs.
+>      This logic is lifted from a real-world use case of packet parsing in
+>      katran [0], a layer 4 load balancer. The original version
+>      "progs/test_parse_tcp_hdr_opt.c" (not using dynptrs) is included
+>      here as well, for comparison.
+>
+> 5) progs/dynptr_success.c
+>    * Add test case "test_skb_readonly" for testing attempts at writes /
+>      data slices on a prog type with read-only skb ctx.
+>
+> 6) progs/dynptr_fail.c
+>    * Add test cases "skb_invalid_data_slice{1,2}" and
+>      "xdp_invalid_data_slice" for testing that helpers that modify the
+>      underlying packet buffer automatically invalidate the associated
+>      data slice.
+>    * Add test cases "skb_invalid_ctx" and "xdp_invalid_ctx" for testing
+>      that prog types that do not support bpf_dynptr_from_skb/xdp don't
+>      have access to the API.
+>    * Add test case "skb_invalid_write" for testing that read-only skb
+>      dynptrs can't be written to through data slices.
+>
+> [0] https://github.com/facebookincubator/katran/blob/main/katran/lib/bpf/pckt_parsing.h
 >
 > Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
 > ---
->  include/linux/bpf.h            | 83 +++++++++++++++++-----------
->  include/linux/filter.h         |  4 ++
->  include/uapi/linux/bpf.h       | 40 ++++++++++++--
->  kernel/bpf/helpers.c           | 81 +++++++++++++++++++++++++---
->  kernel/bpf/verifier.c          | 99 ++++++++++++++++++++++++++++------
->  net/core/filter.c              | 53 ++++++++++++++++--
->  tools/include/uapi/linux/bpf.h | 40 ++++++++++++--
->  7 files changed, 335 insertions(+), 65 deletions(-)
+>  .../selftests/bpf/prog_tests/cls_redirect.c   |  25 +
+>  .../testing/selftests/bpf/prog_tests/dynptr.c | 132 ++-
+>  .../selftests/bpf/prog_tests/l4lb_all.c       |   2 +
+>  .../bpf/prog_tests/parse_tcp_hdr_opt.c        |  85 ++
+>  .../selftests/bpf/prog_tests/xdp_attach.c     |   9 +-
+>  .../testing/selftests/bpf/progs/dynptr_fail.c | 111 ++
+>  .../selftests/bpf/progs/dynptr_success.c      |  29 +
+>  .../bpf/progs/test_cls_redirect_dynptr.c      | 968 ++++++++++++++++++
+>  .../bpf/progs/test_l4lb_noinline_dynptr.c     | 468 +++++++++
+>  .../bpf/progs/test_parse_tcp_hdr_opt.c        | 119 +++
+>  .../bpf/progs/test_parse_tcp_hdr_opt_dynptr.c | 110 ++
+>  .../selftests/bpf/progs/test_xdp_dynptr.c     | 240 +++++
+>  .../selftests/bpf/test_tcp_hdr_options.h      |   1 +
+>  13 files changed, 2255 insertions(+), 44 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/parse_tcp_hdr_opt.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_cls_redirect_dynptr.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_l4lb_noinline_dynptr.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_parse_tcp_hdr_opt.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_parse_tcp_hdr_opt_dynptr.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_dynptr.c
+>
+
+Massive work on adding lots of selftests, thanks! Left few nits, but
+looks good anyways:
+
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
+
+[...]
+
+> -       /* success cases */
+> -       {"test_read_write", NULL},
+> -       {"test_data_slice", NULL},
+> -       {"test_ringbuf", NULL},
+> +               "Unsupported reg type fp for bpf_dynptr_from_mem data", SETUP_NONE},
+> +       {"skb_invalid_data_slice1", "invalid mem access 'scalar'", SETUP_NONE},
+> +       {"skb_invalid_data_slice2", "invalid mem access 'scalar'", SETUP_NONE},
+> +       {"xdp_invalid_data_slice", "invalid mem access 'scalar'", SETUP_NONE},
+> +       {"skb_invalid_ctx", "unknown func bpf_dynptr_from_skb", SETUP_NONE},
+> +       {"xdp_invalid_ctx", "unknown func bpf_dynptr_from_xdp", SETUP_NONE},
+> +       {"skb_invalid_write", "cannot write into packet", SETUP_NONE},
+
+nit: given SETUP_NONE is zero, you can just leave it out to make this
+table a bit cleaner; bit no big deal having it explicitly as well
+
+> +
+> +       /* these tests should be run and should succeed */
+> +       {"test_read_write", NULL, SETUP_SYSCALL_SLEEP},
+> +       {"test_data_slice", NULL, SETUP_SYSCALL_SLEEP},
+> +       {"test_ringbuf", NULL, SETUP_SYSCALL_SLEEP},
+> +       {"test_skb_readonly", NULL, SETUP_SKB_PROG},
+>  };
 >
 
 [...]
 
-> @@ -1521,9 +1532,19 @@ BPF_CALL_5(bpf_dynptr_read, void *, dst, u32, len, struct bpf_dynptr_kern *, src
->         if (err)
->                 return err;
->
-> -       memcpy(dst, src->data + src->offset + offset, len);
-> +       type = bpf_dynptr_get_type(src);
->
-> -       return 0;
-> +       switch (type) {
-> +       case BPF_DYNPTR_TYPE_LOCAL:
-> +       case BPF_DYNPTR_TYPE_RINGBUF:
-> +               memcpy(dst, src->data + src->offset + offset, len);
-> +               return 0;
-> +       case BPF_DYNPTR_TYPE_SKB:
-> +               return __bpf_skb_load_bytes(src->data, src->offset + offset, dst, len);
-> +       default:
-> +               WARN(true, "bpf_dynptr_read: unknown dynptr type %d\n", type);
-
-nit: probably better to WARN_ONCE?
-
-> +               return -EFAULT;
+> +static void test_parsing(bool use_dynptr)
+> +{
+> +       char buf[128];
+> +       struct bpf_program *prog;
+> +       void *skel_ptr;
+> +       int err;
+> +
+> +       LIBBPF_OPTS(bpf_test_run_opts, topts,
+> +                   .data_in = &pkt,
+> +                   .data_size_in = sizeof(pkt),
+> +                   .data_out = buf,
+> +                   .data_size_out = sizeof(buf),
+> +                   .repeat = 3,
+> +       );
+> +
+> +       if (use_dynptr) {
+> +               struct test_parse_tcp_hdr_opt_dynptr *skel;
+> +
+> +               skel = test_parse_tcp_hdr_opt_dynptr__open_and_load();
+> +               if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
+> +                       return;
+> +
+> +               pkt.options[6] = skel->rodata->tcp_hdr_opt_kind_tpr;
+> +               prog = skel->progs.xdp_ingress_v6;
+> +               skel_ptr = skel;
+> +       } else {
+> +               struct test_parse_tcp_hdr_opt *skel;
+> +
+> +               skel = test_parse_tcp_hdr_opt__open_and_load();
+> +               if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
+> +                       return;
+> +
+> +               pkt.options[6] = skel->rodata->tcp_hdr_opt_kind_tpr;
+> +               prog = skel->progs.xdp_ingress_v6;
+> +               skel_ptr = skel;
 > +       }
->  }
+> +
+> +       err = bpf_prog_test_run_opts(bpf_program__fd(prog), &topts);
+> +       ASSERT_OK(err, "ipv6 test_run");
+> +       ASSERT_EQ(topts.retval, XDP_PASS, "ipv6 test_run retval");
+> +
+> +       if (use_dynptr) {
+> +               struct test_parse_tcp_hdr_opt_dynptr *skel = skel_ptr;
+> +
+> +               ASSERT_EQ(skel->bss->server_id, 0x9000000, "server id");
+> +               test_parse_tcp_hdr_opt_dynptr__destroy(skel);
+> +       } else {
+> +               struct test_parse_tcp_hdr_opt *skel = skel_ptr;
+> +
+> +               ASSERT_EQ(skel->bss->server_id, 0x9000000, "server id");
+> +               test_parse_tcp_hdr_opt__destroy(skel);
+> +       }
+> +}
+> +
+> +void test_parse_tcp_hdr_opt(void)
+> +{
+> +       test_parsing(false);
+> +       test_parsing(true);
+
+given this false/true argument is very non-descriptive and you
+basically only share few lines of code inside test_parsing, why not
+have two dedicated test_parsing_wo_dynptr and
+test_parsing_with_dynptr? And probably makes sense to make those two
+as two subtests?
+
+> +}
+> diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_attach.c b/tools/testing/selftests/bpf/prog_tests/xdp_attach.c
+> index 62aa3edda5e6..40d0d61af9e6 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/xdp_attach.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/xdp_attach.c
+> @@ -4,11 +4,10 @@
+>  #define IFINDEX_LO 1
+>  #define XDP_FLAGS_REPLACE              (1U << 4)
 >
->  static const struct bpf_func_proto bpf_dynptr_read_proto = {
-> @@ -1540,18 +1561,32 @@ static const struct bpf_func_proto bpf_dynptr_read_proto = {
->  BPF_CALL_5(bpf_dynptr_write, struct bpf_dynptr_kern *, dst, u32, offset, void *, src,
->            u32, len, u64, flags)
+> -void serial_test_xdp_attach(void)
+> +static void serial_test_xdp_attach(const char *file)
 >  {
-> +       enum bpf_dynptr_type type;
->         int err;
->
-> -       if (!dst->data || flags || bpf_dynptr_is_rdonly(dst))
-> +       if (!dst->data || bpf_dynptr_is_rdonly(dst))
->                 return -EINVAL;
->
->         err = bpf_dynptr_check_off_len(dst, offset, len);
->         if (err)
->                 return err;
->
-> -       memcpy(dst->data + dst->offset + offset, src, len);
-> +       type = bpf_dynptr_get_type(dst);
->
-> -       return 0;
-> +       switch (type) {
-> +       case BPF_DYNPTR_TYPE_LOCAL:
-> +       case BPF_DYNPTR_TYPE_RINGBUF:
-> +               if (flags)
-> +                       return -EINVAL;
-> +               memcpy(dst->data + dst->offset + offset, src, len);
-> +               return 0;
-> +       case BPF_DYNPTR_TYPE_SKB:
-> +               return __bpf_skb_store_bytes(dst->data, dst->offset + offset, src, len,
-> +                                            flags);
-> +       default:
-> +               WARN(true, "bpf_dynptr_write: unknown dynptr type %d\n", type);
-
-ditto about WARN_ONCE
-
-> +               return -EFAULT;
-> +       }
+>         __u32 duration = 0, id1, id2, id0 = 0, len;
+>         struct bpf_object *obj1, *obj2, *obj3;
+> -       const char *file = "./test_xdp.o";
+>         struct bpf_prog_info info = {};
+>         int err, fd1, fd2, fd3;
+>         LIBBPF_OPTS(bpf_xdp_attach_opts, opts);
+> @@ -85,3 +84,9 @@ void serial_test_xdp_attach(void)
+>  out_1:
+>         bpf_object__close(obj1);
 >  }
->
->  static const struct bpf_func_proto bpf_dynptr_write_proto = {
+> +
+> +void test_xdp_attach(void)
+> +{
+> +       serial_test_xdp_attach("./test_xdp.o");
+> +       serial_test_xdp_attach("./test_xdp_dynptr.o");
+
+nit: make into subtests?
+
+> +}
 
 [...]
 
-> +static enum bpf_dynptr_type stack_slot_get_dynptr_info(struct bpf_verifier_env *env,
-> +                                                      struct bpf_reg_state *reg,
-> +                                                      int *ref_obj_id)
->  {
->         struct bpf_func_state *state = func(env, reg);
->         int spi = get_spi(reg->off);
->
-> -       return state->stack[spi].spilled_ptr.id;
-> +       if (ref_obj_id)
-> +               *ref_obj_id = state->stack[spi].spilled_ptr.id;
+> +/* The data slice is invalidated whenever a helper changes packet data */
+> +SEC("?xdp")
+> +int xdp_invalid_data_slice(struct xdp_md *xdp)
+> +{
+> +       struct bpf_dynptr ptr;
+> +       struct ethhdr *hdr;
 > +
-> +       return state->stack[spi].spilled_ptr.dynptr.type;
->  }
->
->  static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
-> @@ -6056,7 +6075,8 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
->                         case DYNPTR_TYPE_RINGBUF:
->                                 err_extra = "ringbuf ";
->                                 break;
-> -                       default:
-> +                       case DYNPTR_TYPE_SKB:
-> +                               err_extra = "skb ";
->                                 break;
->                         }
->
-> @@ -7149,6 +7169,7 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
->  {
->         enum bpf_prog_type prog_type = resolve_prog_type(env->prog);
->         const struct bpf_func_proto *fn = NULL;
-> +       enum bpf_dynptr_type dynptr_type;
+> +       bpf_dynptr_from_xdp(xdp, 0, &ptr);
+> +       hdr = bpf_dynptr_data(&ptr, 0, sizeof(*hdr));
+> +       if (!hdr)
+> +               return SK_DROP;
+> +
+> +       hdr->h_proto = 9;
+> +
+> +       if (bpf_xdp_adjust_head(xdp, 0 - (int)sizeof(*hdr)))
+> +               return XDP_DROP;
+> +
+> +       /* this should fail */
+> +       hdr->h_proto = 1;
+> +
+> +       return XDP_PASS;
+> +}
+> +
+> +/* Only supported prog type can create skb-type dynptrs */
+> +SEC("?raw_tp/sys_nanosleep")
 
-compiler technically can complain about use of uninitialized
-dynptr_type, maybe initialize it to BPF_DYNPTR_TYPE_INVALID ?
+nit: there is no sys_nanosleep raw tracepoint, is there? Just
+SEC("?raw_tp") maybe, like you did in recent refactoring?
 
->         enum bpf_return_type ret_type;
->         enum bpf_type_flag ret_flag;
->         struct bpf_reg_state *regs;
-> @@ -7320,24 +7341,43 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
->                         }
->                 }
->                 break;
-> -       case BPF_FUNC_dynptr_data:
-> -               for (i = 0; i < MAX_BPF_FUNC_REG_ARGS; i++) {
-> -                       if (arg_type_is_dynptr(fn->arg_type[i])) {
-> -                               if (meta.ref_obj_id) {
-> -                                       verbose(env, "verifier internal error: meta.ref_obj_id already set\n");
-> -                                       return -EFAULT;
-> -                               }
-> -                               /* Find the id of the dynptr we're tracking the reference of */
-> -                               meta.ref_obj_id = stack_slot_get_id(env, &regs[BPF_REG_1 + i]);
-> -                               break;
-> -                       }
-> +       case BPF_FUNC_dynptr_write:
-> +       {
-> +               struct bpf_reg_state *reg;
+> +int skb_invalid_ctx(void *ctx)
+> +{
+> +       struct bpf_dynptr ptr;
 > +
-> +               reg = get_dynptr_arg_reg(fn, regs);
-> +               if (!reg) {
-> +                       verbose(env, "verifier internal error: no dynptr in bpf_dynptr_data()\n");
-
-s/bpf_dynptr_data/bpf_dynptr_write/
-
-> +                       return -EFAULT;
->                 }
-> -               if (i == MAX_BPF_FUNC_REG_ARGS) {
+> +       /* this should fail */
+> +       bpf_dynptr_from_skb(ctx, 0, &ptr);
 > +
-> +               /* bpf_dynptr_write() for skb-type dynptrs may pull the skb, so we must
-> +                * invalidate all data slices associated with it
-> +                */
-> +               if (stack_slot_get_dynptr_info(env, reg, NULL) == BPF_DYNPTR_TYPE_SKB)
-> +                       changes_data = true;
+> +       return 0;
+> +}
 > +
-> +               break;
-> +       }
-> +       case BPF_FUNC_dynptr_data:
-> +       {
-> +               struct bpf_reg_state *reg;
+> +/* Only supported prog type can create xdp-type dynptrs */
+> +SEC("?raw_tp/sys_nanosleep")
+> +int xdp_invalid_ctx(void *ctx)
+> +{
+> +       struct bpf_dynptr ptr;
 > +
-> +               reg = get_dynptr_arg_reg(fn, regs);
-> +               if (!reg) {
->                         verbose(env, "verifier internal error: no dynptr in bpf_dynptr_data()\n");
->                         return -EFAULT;
->                 }
+> +       /* this should fail */
+> +       bpf_dynptr_from_xdp(ctx, 0, &ptr);
 > +
-> +               if (meta.ref_obj_id) {
-> +                       verbose(env, "verifier internal error: meta.ref_obj_id already set\n");
-> +                       return -EFAULT;
-> +               }
-> +
-> +               dynptr_type = stack_slot_get_dynptr_info(env, reg, &meta.ref_obj_id);
->                 break;
->         }
-> +       }
->
->         if (err)
->                 return err;
-> @@ -7397,8 +7437,15 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
->                 break;
->         case RET_PTR_TO_ALLOC_MEM:
->                 mark_reg_known_zero(env, regs, BPF_REG_0);
-> -               regs[BPF_REG_0].type = PTR_TO_MEM | ret_flag;
-> -               regs[BPF_REG_0].mem_size = meta.mem_size;
-> +
-> +               if (func_id == BPF_FUNC_dynptr_data &&
-> +                   dynptr_type == BPF_DYNPTR_TYPE_SKB) {
-> +                       regs[BPF_REG_0].type = PTR_TO_PACKET | ret_flag;
-> +                       regs[BPF_REG_0].range = meta.mem_size;
-> +               } else {
-> +                       regs[BPF_REG_0].type = PTR_TO_MEM | ret_flag;
-> +                       regs[BPF_REG_0].mem_size = meta.mem_size;
-> +               }
->                 break;
->         case RET_PTR_TO_MEM_OR_BTF_ID:
->         {
-> @@ -14141,6 +14188,24 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
->                         goto patch_call_imm;
->                 }
->
-> +               if (insn->imm == BPF_FUNC_dynptr_from_skb) {
-> +                       bool is_rdonly = !may_access_direct_pkt_data(env, NULL, BPF_WRITE);
-> +
-> +                       insn_buf[0] = BPF_MOV32_IMM(BPF_REG_4, is_rdonly);
-> +                       insn_buf[1] = *insn;
-> +                       cnt = 2;
-
-This might have been discussed before, sorry if I missed it. But why
-this special rewrite to provide read-only flag vs having two
-implementations of bpf_dynptr_from_skb() depending on program types?
-If program type allows read+write access, return
-bpf_dynptr_from_skb_rdwr(), for those that have read-only access -
-bpf_dynptr_from_skb_rdonly(), and for others return NULL proto
-(disable helper)?
-
-You can then use it very similarly for bpf_dynptr_from_skb_meta().
-
-> +
-> +                       new_prog = bpf_patch_insn_data(env, i + delta, insn_buf, cnt);
-> +                       if (!new_prog)
-> +                               return -ENOMEM;
-> +
-> +                       delta += cnt - 1;
-> +                       env->prog = new_prog;
-> +                       prog = new_prog;
-> +                       insn = new_prog->insnsi + i + delta;
-> +                       goto patch_call_imm;
-> +               }
+> +       return 0;
+> +}
 > +
 
 [...]
 
->  BPF_CALL_1(bpf_sk_fullsock, struct sock *, sk)
->  {
->         return sk_fullsock(sk) ? (unsigned long)sk : (unsigned long)NULL;
-> @@ -7726,6 +7763,8 @@ sk_filter_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
->                 return &bpf_get_socket_uid_proto;
->         case BPF_FUNC_perf_event_output:
->                 return &bpf_skb_event_output_proto;
-> +       case BPF_FUNC_dynptr_from_skb:
-> +               return &bpf_dynptr_from_skb_proto;
->         default:
->                 return bpf_sk_base_func_proto(func_id);
->         }
-> @@ -7909,6 +7948,8 @@ tc_cls_act_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
->                 return &bpf_tcp_raw_check_syncookie_ipv6_proto;
->  #endif
->  #endif
-> +       case BPF_FUNC_dynptr_from_skb:
-> +               return &bpf_dynptr_from_skb_proto;
->         default:
->                 return bpf_sk_base_func_proto(func_id);
->         }
-> @@ -8104,6 +8145,8 @@ sk_skb_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
->         case BPF_FUNC_skc_lookup_tcp:
->                 return &bpf_skc_lookup_tcp_proto;
->  #endif
-> +       case BPF_FUNC_dynptr_from_skb:
-> +               return &bpf_dynptr_from_skb_proto;
->         default:
->                 return bpf_sk_base_func_proto(func_id);
->         }
-> @@ -8142,6 +8185,8 @@ lwt_out_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
->                 return &bpf_get_smp_processor_id_proto;
->         case BPF_FUNC_skb_under_cgroup:
->                 return &bpf_skb_under_cgroup_proto;
-> +       case BPF_FUNC_dynptr_from_skb:
-> +               return &bpf_dynptr_from_skb_proto;
+> +
+> +/* Global metrics, per CPU
+> + */
+> +struct {
+> +       __uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
+> +       __uint(max_entries, 1);
+> +       __type(key, unsigned int);
+> +       __type(value, metrics_t);
+> +} metrics_map SEC(".maps");
+> +
+> +static metrics_t *get_global_metrics(void)
+> +{
+> +       uint64_t key = 0;
+> +       return bpf_map_lookup_elem(&metrics_map, &key);
+> +}
+> +
+> +static ret_t accept_locally(struct __sk_buff *skb, encap_headers_t *encap)
+> +{
+> +       const int payload_off =
+> +               sizeof(*encap) +
+> +               sizeof(struct in_addr) * encap->unigue.hop_count;
+> +       int32_t encap_overhead = payload_off - sizeof(struct ethhdr);
+> +
+> +       // Changing the ethertype if the encapsulated packet is ipv6
 
-so like here you'd return read-only prototype for dynptr_from_skb
-(seems like LWT programs have only read-only access, according to
-may_access_direct_pkt_data), but in cases where
-may_access_direct_pkt_data() allows read-write access we'd choose rdwr
-variant of dynptr_from_skb?
+nit: could be copy/paste from original, but let's not add C++ comments?
 
->         default:
->                 return bpf_sk_base_func_proto(func_id);
->         }
+> +       if (encap->gue.proto_ctype == IPPROTO_IPV6)
+> +               encap->eth.h_proto = bpf_htons(ETH_P_IPV6);
+> +
+> +       if (bpf_skb_adjust_room(skb, -encap_overhead, BPF_ADJ_ROOM_MAC,
+> +                               BPF_F_ADJ_ROOM_FIXED_GSO |
+> +                               BPF_F_ADJ_ROOM_NO_CSUM_RESET) ||
+> +           bpf_csum_level(skb, BPF_CSUM_LEVEL_DEC))
+> +               return TC_ACT_SHOT;
+> +
+> +       return bpf_redirect(skb->ifindex, BPF_F_INGRESS);
+> +}
+> +
+
+[...]
+
+> +       iph->version = 4;
+> +       iph->ihl = iphdr_sz >> 2;
+> +       iph->frag_off = 0;
+> +       iph->protocol = IPPROTO_IPIP;
+> +       iph->check = 0;
+> +       iph->tos = 0;
+> +       iph->tot_len = bpf_htons(payload_len + iphdr_sz);
+> +       iph->daddr = tnl->daddr.v4;
+> +       iph->saddr = tnl->saddr.v4;
+> +       iph->ttl = 8;
+> +
+> +       next_iph = (__u16 *)iph;
+> +#pragma clang loop unroll(full)
+
+nit: probably don't need unroll?
+
+> +       for (i = 0; i < iphdr_sz >> 1; i++)
+> +               csum += *next_iph++;
+> +
+> +       iph->check = ~((csum & 0xffff) + (csum >> 16));
+> +
+> +       count_tx(vip.protocol);
+> +
+> +       return XDP_TX;
+> +}
 
 [...]
