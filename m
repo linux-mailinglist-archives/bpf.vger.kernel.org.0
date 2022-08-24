@@ -2,183 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9688D59F739
-	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 12:15:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C75BF59F7A6
+	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 12:27:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235175AbiHXKPP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Aug 2022 06:15:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60556 "EHLO
+        id S236984AbiHXK1B (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Aug 2022 06:27:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231846AbiHXKPO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Aug 2022 06:15:14 -0400
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16BAC4454C;
-        Wed, 24 Aug 2022 03:15:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1661336114; x=1692872114;
-  h=message-id:date:mime-version:subject:to:references:from:
-   in-reply-to:content-transfer-encoding;
-  bh=F3hdBdWFw9/N+cVdceQJWxxc8Y/utx6ligUGZLp/CII=;
-  b=cQMpBQKt7Yyk96JQ6wAy8DzybVEdQTYXA0B6IyXAvlpq4E1bK/1i7Xoc
-   CJNT2xRLLCDiqCqh4/CHjPy8zwQFE0RObaZ+BJ9rSnKYwcIk/OGm7tWh9
-   bUj3rqvnNoEmTbxMTqi+fVgzmVs8biJg/PlX700eXjgHKM3xTQ8uJRP3h
-   ZJP77B5sr93tp1CL7GbobaGmJ8/ftHrG5BzrOGlyTsgk5XiN5fMGZ69bh
-   OECJR6CwMrE5aKgoPMpnCSmd8oIna3B3vZjPBjQqLUm5qoLbTKtPN6vd/
-   rcno1WJXj0nJE3laUuSZtrVgEuOjvHxt7ClOZ3RLbxbHl+4IvLTsvlB1J
-   w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10448"; a="380218898"
-X-IronPort-AV: E=Sophos;i="5.93,260,1654585200"; 
-   d="scan'208";a="380218898"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2022 03:15:13 -0700
-X-IronPort-AV: E=Sophos;i="5.93,260,1654585200"; 
-   d="scan'208";a="586375894"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.51.108])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2022 03:15:00 -0700
-Message-ID: <02152f40-1dc5-7f1b-ad88-61ecb146a3da@intel.com>
-Date:   Wed, 24 Aug 2022 13:14:55 +0300
+        with ESMTP id S236653AbiHXK0n (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Aug 2022 06:26:43 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 513AD80B75;
+        Wed, 24 Aug 2022 03:25:35 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id k9so20211435wri.0;
+        Wed, 24 Aug 2022 03:25:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:user-agent:references:message-id:date:in-reply-to
+         :subject:cc:to:from:from:to:cc;
+        bh=eKQZ/ehv1MwWOxO6OkjgFxZ52KEITsygp+TljaaBnnk=;
+        b=GSDHHAF86YGL1reVUTRrqe+R35sB4YmjMRUrm+/6Qi9YrvBJi2QNjNXD07sw00O4RH
+         83bdXmCGKoGUdIJ0/+HaM/UCQujcjDdn+H6Zz6u4qxufyOW+iNikAMDnprMYEfznr0lh
+         9sXxVtg5Cu9nXnNj0cVD9wYFmG/Pg8Ll4zRAPcljrCpjdlOmCxTnuwbRbbygs909t5+T
+         lkCmMeaTKd7fBWyZItZfTVWj1waF/XkDWaBJlWzEdQNYS4M6kDwBqB+uJwsBiktyrXS+
+         MaLpV3ZWuI2iyvltar4GtzDNJJwmWbHxVGuPLp15ghmtSi7kMuWOC7ZEK4ZyiFo2NnQ9
+         CjRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=mime-version:user-agent:references:message-id:date:in-reply-to
+         :subject:cc:to:from:x-gm-message-state:from:to:cc;
+        bh=eKQZ/ehv1MwWOxO6OkjgFxZ52KEITsygp+TljaaBnnk=;
+        b=4/YMugYbA/y6vQ0UlBENQv/zOMuYqbqRFlnZLnxjBOWhIz6JMhUhz5EDRP+W1zT4z4
+         OZbCCH8/eyCS2LLtADkJsbrmtPa5bJDaJlLSAj/gUPdeIH60rrth04hTL9AjgRj6VYE8
+         lqXSI1z0V10/cAZBBseUX/sCr6q6djto6Mj38YeV6JSETY0UnH2GfBkTTcjAvPbmy3xZ
+         U60poV4oSA0VIsG4AQAr0JJnsbR5Kr5f4IN5osbWNhqSzH56wPSLiEzzq00miDfHIzy1
+         9OKGkhzN4XNmnPmdmjhvimHGTG5r3wHS9RERHc8KX5uHQ1mv9f5IFGYouKgKcPDEMo1Q
+         gwGg==
+X-Gm-Message-State: ACgBeo3kWXKAzt6Xnm9Kx/TJlajf7urMLZoKB+3dYJqwSrajtuT8rpVq
+        7cXCyrElxJpg4YaHdAsn2zk=
+X-Google-Smtp-Source: AA6agR46/A44ZFx6NCeOYijK+sSh5+yYxjWCQL7ynSDaeXLOQ9PqUEl6pUGtpxulEz4AaRRTWgBqXA==
+X-Received: by 2002:a5d:4f82:0:b0:225:32c6:7e59 with SMTP id d2-20020a5d4f82000000b0022532c67e59mr14249968wru.366.1661336733519;
+        Wed, 24 Aug 2022 03:25:33 -0700 (PDT)
+Received: from imac ([2a02:8010:60a0:0:55a7:d3:b36c:e4f1])
+        by smtp.gmail.com with ESMTPSA id n39-20020a05600c502700b003a60bc8ae8fsm1538773wmr.21.2022.08.24.03.25.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Aug 2022 03:25:32 -0700 (PDT)
+From:   Donald Hunter <donald.hunter@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf@vger.kernel.org, linux-doc@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        grantseltzer <grantseltzer@gmail.com>
+Subject: Re: [PATCH bpf-next] Add table of BPF program types to docs
+In-Reply-To: <CAEf4BzaujwgDXm+05MuGr_ouAseGGFg50Cxb83hHeWHX7bCk6A@mail.gmail.com>
+        (Andrii Nakryiko's message of "Tue, 23 Aug 2022 15:53:36 -0700")
+Date:   Wed, 24 Aug 2022 11:24:41 +0100
+Message-ID: <m2fshmym52.fsf@gmail.com>
+References: <20220823132236.65122-1-donald.hunter@gmail.com>
+        <CAEf4BzaujwgDXm+05MuGr_ouAseGGFg50Cxb83hHeWHX7bCk6A@mail.gmail.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.1 (darwin)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.11.0
-Subject: Re: [PATCH v2 07/18] perf record: Update use of pthread mutex
-Content-Language: en-US
-To:     Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Weiguo Li <liwg06@foxmail.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Dario Petrillo <dario.pk1@gmail.com>,
-        Hewenliang <hewenliang4@huawei.com>,
-        yaowenbin <yaowenbin1@huawei.com>,
-        Wenyu Liu <liuwenyu7@huawei.com>,
-        Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Pavithra Gurushankar <gpavithrasha@gmail.com>,
-        Alexandre Truong <alexandre.truong@arm.com>,
-        Quentin Monnet <quentin@isovalent.com>,
-        William Cohen <wcohen@redhat.com>,
-        Andres Freund <andres@anarazel.de>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        =?UTF-8?Q?Martin_Li=c5=a1ka?= <mliska@suse.cz>,
-        Colin Ian King <colin.king@intel.com>,
-        James Clark <james.clark@arm.com>,
-        Fangrui Song <maskray@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>,
-        Riccardo Mancini <rickyman7@gmail.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Zechuan Chen <chenzechuan1@huawei.com>,
-        Jason Wang <wangborong@cdjrlc.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Remi Bernon <rbernon@codeweavers.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        bpf@vger.kernel.org, llvm@lists.linux.dev
-References: <20220823220922.256001-1-irogers@google.com>
- <20220823220922.256001-8-irogers@google.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <20220823220922.256001-8-irogers@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 24/08/22 01:09, Ian Rogers wrote:
-> Switch to the use of mutex wrappers that provide better error checking
-> for synth_lock.
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-It would be better to distinguish patches that make drop-in
-replacements from patches like this that change logic.
+> On Tue, Aug 23, 2022 at 9:56 AM Donald Hunter <donald.hunter@gmail.com> wrote:
+>>
+>> Extend the BPF program types documentation with a table of
+>> program types, attach points and ELF section names.
+>>
+>> The program_types.csv file is generated from tools/lib/bpf/libbpf.c
+>> and a script is included for regenerating the .csv file.
+>>
+>> I have not integrated the script into the doc build but if that
+>> is desirable then please suggest the preferred way to do so.
+>>
+>> Signed-off-by: Donald Hunter <donald.hunter@gmail.com>
+>> ---
+>
+> It does seem cleaner to generate this .csv during docs build, instead
+> of having to manually regenerate it all the time? Should we also put
+> it under Documentation/bpf/libbpf/ as it's libbpf-specific? Having it
+> under libbpf subdir would also make it simpler to expose it in libbpf
+> docs at libbpf.readthedocs.io/
 
-> 
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/builtin-record.c | 13 +++++++++----
->  1 file changed, 9 insertions(+), 4 deletions(-)
-> 
-> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-> index 4713f0f3a6cf..02eb85677e99 100644
-> --- a/tools/perf/builtin-record.c
-> +++ b/tools/perf/builtin-record.c
-> @@ -21,6 +21,7 @@
->  #include "util/evsel.h"
->  #include "util/debug.h"
->  #include "util/mmap.h"
-> +#include "util/mutex.h"
->  #include "util/target.h"
->  #include "util/session.h"
->  #include "util/tool.h"
-> @@ -608,17 +609,18 @@ static int process_synthesized_event(struct perf_tool *tool,
->  	return record__write(rec, NULL, event, event->header.size);
->  }
->  
-> +static struct mutex synth_lock;
-> +
->  static int process_locked_synthesized_event(struct perf_tool *tool,
->  				     union perf_event *event,
->  				     struct perf_sample *sample __maybe_unused,
->  				     struct machine *machine __maybe_unused)
->  {
-> -	static pthread_mutex_t synth_lock = PTHREAD_MUTEX_INITIALIZER;
->  	int ret;
->  
-> -	pthread_mutex_lock(&synth_lock);
-> +	mutex_lock(&synth_lock);
->  	ret = process_synthesized_event(tool, event, sample, machine);
-> -	pthread_mutex_unlock(&synth_lock);
-> +	mutex_unlock(&synth_lock);
->  	return ret;
->  }
->  
-> @@ -1917,6 +1919,7 @@ static int record__synthesize(struct record *rec, bool tail)
->  	}
->  
->  	if (rec->opts.nr_threads_synthesize > 1) {
-> +		mutex_init(&synth_lock, /*pshared=*/false);
+Agreed about generating the .csv as part of the doc build. I will look
+at adding it to the docs Makefile.
 
-It would be better to have mutex_init() and mutex_init_shared()
-since /*pshared=*/true is rarely used.
+I'm happy to put it in Documentation/bpf/libbpf and link to it from
+Documentation/bpf/programs.rst.
 
->  		perf_set_multithreaded();
->  		f = process_locked_synthesized_event;
->  	}
-> @@ -1930,8 +1933,10 @@ static int record__synthesize(struct record *rec, bool tail)
->  						    rec->opts.nr_threads_synthesize);
->  	}
->  
-> -	if (rec->opts.nr_threads_synthesize > 1)
-> +	if (rec->opts.nr_threads_synthesize > 1) {
->  		perf_set_singlethreaded();
-> +		mutex_destroy(&synth_lock);
-> +	}
->  
->  out:
->  	return err;
+> We can probably also establish some special comment format next to
+> SEC_DEF() to specify the format of those "extras", I think it would be
+> useful for users. WDYT?
 
+Yes this would be a useful addition. Are the extras always for
+auto-attach? If so, then I can add that to the rules.
+
+I'd prefer to modify the existing ELF section name column to replace '+'
+with extras since the table is already wide.
+
+> CC'ing Grant as well, who worked on building libbpf docs.
