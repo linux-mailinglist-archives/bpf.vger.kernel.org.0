@@ -2,65 +2,50 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4BE45A0008
-	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 19:05:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 708495A000D
+	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 19:06:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239822AbiHXRFL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Aug 2022 13:05:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58386 "EHLO
+        id S239874AbiHXRGx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Aug 2022 13:06:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239816AbiHXRFG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Aug 2022 13:05:06 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F3A63DBD4;
-        Wed, 24 Aug 2022 10:05:04 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id h8so5204785ili.11;
-        Wed, 24 Aug 2022 10:05:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=cFekw/Y+IQbIDxTfIDehvXw11BmvPAaH0UtQ+bMDK5o=;
-        b=n20p82n9cCCwOP4wLqQqlUignSFIAP2ipAFg88S/YrFpMb0oNTPBWVzte4mdu27ZzX
-         l3qBg/eFvK7ulrLKLXNuDTkFNHnFXBvMUyQyhDr+K6kpr3hio0WKyp1rlIqdjUq6ehdA
-         2/9fAUzgE9Uy6nAJ7I5vERrfub5G2BWI957e8sI2r8vxMaiUPZ/AKUM+hep5u7Nd2Egv
-         rSvmfG1XNXlPDsFZ0VCQ/1PCuDoyZiy4lOEBEWs9IHARGDy6uRQqph76gmBW95BExMQ3
-         3f3s7gHKvBo8Ku3QhIHV/hGpWC6/h1ZAnFcJx5tdBDjKwkma28X2Emy/cIqNl74LCWKi
-         2UtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=cFekw/Y+IQbIDxTfIDehvXw11BmvPAaH0UtQ+bMDK5o=;
-        b=vLlWl92lOrJF8/F+vlxVBGayt74afUsSAKSGCHGE+O8chWNeQviFPU7X465kVPoEFn
-         4gDxTbPhtv3j+IWhoOFIth7pb0LGG/BH821rAporb25KhNfAGIa7Z1MJP3qOq3Y/Khvt
-         W2SiYVLbZYfRk0Tfjrzo0EoLqfVNtjhX8bUJ9eR/P7mZXzjWoly2L4IfNmZXxsbvwLpX
-         3yYnfhDO0bEDwTc0xwXLgv4Vfz/jihXA9h742ArKu/naoExHtVxMZEnB6mswZtyAr11n
-         GBtLlWO6N6b1hu6E736cTAqraTQ5zjPrsMtHFR5MUjgm5YDkhhthUIQciCh+mwVKK5ir
-         xRJw==
-X-Gm-Message-State: ACgBeo1u4arum67Z9r6GzFygU1TqXIP5SustxXoCm76UrzJxj1qb8wo7
-        OarvV/zy3QZotGWA8fIKtVxOjcroVulw5JCEzu2vEMCv
-X-Google-Smtp-Source: AA6agR58+ewhL0I0wvERCM92p4ZRdWpiUH5HMg1PnmRSKp2ADqK61WeVh0dBKABae4U8hippyDFkiyQyM2ql/9j7SmQ=
-X-Received: by 2002:a92:ca4e:0:b0:2ea:3f77:a85 with SMTP id
- q14-20020a92ca4e000000b002ea3f770a85mr1622649ilo.219.1661360703886; Wed, 24
- Aug 2022 10:05:03 -0700 (PDT)
+        with ESMTP id S239828AbiHXRGv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Aug 2022 13:06:51 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D56B979A6B;
+        Wed, 24 Aug 2022 10:06:47 -0700 (PDT)
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1oQtpp-000B4w-Nl; Wed, 24 Aug 2022 19:06:33 +0200
+Received: from [85.1.206.226] (helo=linux-4.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1oQtpp-000THk-CK; Wed, 24 Aug 2022 19:06:33 +0200
+Subject: Re: [PATCH ipsec-next 2/3] xfrm: interface: support collect metadata
+ mode
+To:     Eyal Birger <eyal.birger@gmail.com>, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        steffen.klassert@secunet.com, herbert@gondor.apana.org.au,
+        pablo@netfilter.org, contact@proelbtn.com, dsahern@kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, devel@linux-ipsec.org
+References: <20220823154557.1400380-1-eyal.birger@gmail.com>
+ <20220823154557.1400380-3-eyal.birger@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <6477c6e6-cb01-eaa3-3e3e-b0f796fd08c2@iogearbox.net>
+Date:   Wed, 24 Aug 2022 19:06:32 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <20220824150051.54eb7748@canb.auug.org.au>
-In-Reply-To: <20220824150051.54eb7748@canb.auug.org.au>
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date:   Wed, 24 Aug 2022 19:04:26 +0200
-Message-ID: <CAP01T74GyRjXRZaDA-E5CXeaoKaf+FegQFxNP9k6kt8cvbt+EA@mail.gmail.com>
-Subject: Re: linux-next: Fixes tag needs some work in the bpf-next tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+In-Reply-To: <20220823154557.1400380-3-eyal.birger@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.6/26637/Wed Aug 24 09:53:01 2022)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -69,31 +54,40 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 24 Aug 2022 at 07:00, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> In commit
->
->   2e5e0e8ede02 ("bpf: Fix reference state management for synchronous callbacks")
->
-> Fixes tag
->
->   Fixes: 69c87ba6225 ("bpf: Add bpf_for_each_map_elem() helper")
->
-> has these problem(s):
->
->   - Target SHA1 does not exist
->
-> Maybe you meant
->
-> Fixes: 69c087ba6225 ("bpf: Add bpf_for_each_map_elem() helper")
->
+Hi Eyal,
 
-Ugh, really sorry, I must have fat fingered and pressed 'x' in vim
-while editing the commit message. I always generate these using a git
-fixes alias.
+On 8/23/22 5:45 PM, Eyal Birger wrote:
+> This commit adds support for 'collect_md' mode on xfrm interfaces.
+> 
+> Each net can have one collect_md device, created by providing the
+> IFLA_XFRM_COLLECT_METADATA flag at creation. This device cannot be
+> altered and has no if_id or link device attributes.
+> 
+> On transmit to this device, the if_id is fetched from the attached dst
+> metadata on the skb. The dst metadata type used is METADATA_XFRM
+> which holds the if_id property.
+> 
+> On the receive side, xfrmi_rcv_cb() populates a dst metadata for each
+> packet received and attaches it to the skb. The if_id used in this case is
+> fetched from the xfrm state. This can later be used by upper layers such
+> as tc, ebpf, and ip rules.
+> 
+> Because the skb is scrubed in xfrmi_rcv_cb(), the attachment of the dst
+> metadata is postponed until after scrubing. Similarly, xfrm_input() is
+> adapted to avoid dropping metadata dsts by only dropping 'valid'
+> (skb_valid_dst(skb) == true) dsts.
+> 
+> Policy matching on packets arriving from collect_md xfrmi devices is
+> done by using the xfrm state existing in the skb's sec_path.
+> The xfrm_if_cb.decode_cb() interface implemented by xfrmi_decode_session()
+> is changed to keep the details of the if_id extraction tucked away
+> in xfrm_interface.c.
+> 
+> Signed-off-by: Eyal Birger <eyal.birger@gmail.com>
 
-> --
-> Cheers,
-> Stephen Rothwell
+Can be done in follow-up (once merged back from net-next into bpf-next),
+but it would be nice to also have a BPF CI selftest for it to make sure
+the ipsec+collect_md with BPF is consistently tested for incoming patches.
+
+Thanks,
+Daniel
