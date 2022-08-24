@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 764E659FE9D
-	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 17:41:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A4E759FEA0
+	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 17:41:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239681AbiHXPlk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Aug 2022 11:41:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52578 "EHLO
+        id S239643AbiHXPln (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Aug 2022 11:41:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239788AbiHXPlP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Aug 2022 11:41:15 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C038F5A8A1
-        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 08:41:02 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-33931a5c133so211742107b3.17
-        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 08:41:02 -0700 (PDT)
+        with ESMTP id S239820AbiHXPlR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Aug 2022 11:41:17 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B490C33356
+        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 08:41:09 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-335420c7bfeso297833887b3.16
+        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 08:41:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
          :date:from:to:cc;
-        bh=LjukWJTxiUbmz3A955PSO/1CFVXOcF8enTwdO4bv+2k=;
-        b=AGSry0S7tLFAWkzxbedRzYiJ9ysP6HAmKoQ8SfJ3YEkyGo2TykPqcLB8gslpUmglD6
-         yxwQd7uIU1M2oHNuJOY5EZ0xObY5kpB3e530ycd+xsLBWoOFyEZuTLbG8jmR6os91JjH
-         D+96tYCm31TZ8CCEJBT1P6Zn4CGVjytQkAzPlfhZplSdJ5OoO0tiEjnpL0I0hCScExzJ
-         +rLkeID3K/OyKmT9cihkb+7WLd+mezzRp7wO/FLiT0/Mg1wup5UkdbLx1GdniZvEnhfX
-         l5c8Eo0GalmpR2KHbyuWUFEPDfKjc3xk+No/YYKOC7O+BofO2zcNY54PpGSL0uZ8Q39Y
-         5RpA==
+        bh=S9SBkgrIkGbpMzl2H63yon0Ve3VPPWWgZp6AvH5eWjQ=;
+        b=shC8F2iD6aTWbO75KQwKIqPWw/jXN7AXPJirEB++poaKnZlp9J4hAgpQyRieNp84BJ
+         LCgglHrWFR1jO3aiqxIEPZeD2JKkqLxVTvoyvmxCBZUUGrFy8DsKHEbaH0BEER1/ywK4
+         LdEzZqfPqAB7OgJ/oQZmfI4vVyQzBuYAh92ZSp2Dh8fVnn+rKOy6KZ4Zb29MprjfPFp7
+         4lnQh3ro/6OiKdjJSoTfiOM5qrA3zvzeE9SG8gbf5NFHWeijbast9Dbe4LkVVb9slqjt
+         BP90Ka7chN3Hy/STa1xERaSRTBIptNx8SQ/fF096kTK9vh73uGMG5RSwEHx0r2kM49qu
+         5Ogw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
          :date:x-gm-message-state:from:to:cc;
-        bh=LjukWJTxiUbmz3A955PSO/1CFVXOcF8enTwdO4bv+2k=;
-        b=Wd2Rg9OvpvyoT2+n9/dlhEDIC2oCZDZXYMA07GTqfzG+7RwED5AkclQS3HspkcQ3mr
-         Dj4378Uwpbnke5wEd4UO14lB6/SHfuF3zsn6c1ADix1BQqFvPLxuRG/B86VU1Wg/yhA2
-         66neXmXb9j9MEXrupqJRqWiIDzr47W/dVYx/xHiRlJggFgAERvnzxcpgmXESznrfzUar
-         EgjRDc1WY/9Yn9i5Femy08jI9ls1TuZFqcBtAirGeYZzib5Ed1yBcuoNEss4cj1J45Mr
-         pH+xH2AD2cp2Jdtrutg3BMQD+YoJayQgHolZYZck3izEq9nMd7FUn++bhYOZ/wEqRY6n
-         vMVA==
-X-Gm-Message-State: ACgBeo0sAc2FdEXUt+SUOBsi7q7HzL8UHbZn5pcI4IMJztLkhEuWCpmd
-        j2OozSc1/do6KdE0Qaiyy2VCVJT/6XTS
-X-Google-Smtp-Source: AA6agR737oV5Dv6Pucv6QEva05ChhkiOkZrwXPlgfZWxhjXq71+F4fdz6wLE3EkpCdimbdquZbhFaPgx4R9r
+        bh=S9SBkgrIkGbpMzl2H63yon0Ve3VPPWWgZp6AvH5eWjQ=;
+        b=cKToYzGXxOEdbFEgVTrNnQJKlW64CoEg+XYvvOgLORDo98bUKiRjxVGBNwJdInYqZf
+         4SEk03CEJensS5bKZLNuLnorwhXsS9j4P9iS3tgL1L4Xbj2O2fZj1hmnLxd8xVWnP48m
+         U4u4ue26ZW/rZjbCSHzdGiXAiIvaFc3tAMzuXZQlP5wXnOW3DYzckJ1JOY1bkqYMf2CS
+         JpCOISseX1joinflkSLm11PlHgZh63xtBN0+JiKfnLi5nxZkCmYbJs1XPYsjJMplQc5W
+         qDCOST4urOB4NEk5Ey2xhOnidUMPkaJ+s8xvu8grY8HdtP3SXJh2oF3HoSuJnRme2hco
+         XZLA==
+X-Gm-Message-State: ACgBeo0oDlAc3jb2QSuBAG5PaTjGN8F+WuD3WRySBBlKg7rZi8JLMQAy
+        ySHHQGiQ0UrGOBoNWxpaiuRzJNFIkGyg
+X-Google-Smtp-Source: AA6agR53ZTPMWhd2KG9uLjlgPH1iymVadNTgHFndkrqf1nc/LpQmxU/unMIM0AspRDGfl6CbCSe/di5Zx9Fo
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2d4:203:ab82:a348:500d:1fc4])
- (user=irogers job=sendgmr) by 2002:a25:f85:0:b0:696:144b:ebd8 with SMTP id
- 127-20020a250f85000000b00696144bebd8mr4698286ybp.123.1661355662085; Wed, 24
- Aug 2022 08:41:02 -0700 (PDT)
-Date:   Wed, 24 Aug 2022 08:38:58 -0700
+ (user=irogers job=sendgmr) by 2002:a25:ba45:0:b0:67a:6298:7bac with SMTP id
+ z5-20020a25ba45000000b0067a62987bacmr31638632ybj.194.1661355668775; Wed, 24
+ Aug 2022 08:41:08 -0700 (PDT)
+Date:   Wed, 24 Aug 2022 08:38:59 -0700
 In-Reply-To: <20220824153901.488576-1-irogers@google.com>
-Message-Id: <20220824153901.488576-16-irogers@google.com>
+Message-Id: <20220824153901.488576-17-irogers@google.com>
 Mime-Version: 1.0
 References: <20220824153901.488576-1-irogers@google.com>
 X-Mailer: git-send-email 2.37.2.609.g9ff673ca1a-goog
-Subject: [PATCH v3 15/18] perf mutex: Add thread safety annotations
+Subject: [PATCH v3 16/18] perf sched: Fixes for thread safety analysis
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -113,135 +113,113 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add thread safety annotations to struct mutex so that when compiled with
-clang's -Wthread-safety warnings are generated for erroneous lock
-patterns. NO_THREAD_SAFETY_ANALYSIS is needed for
-mutex_lock/mutex_unlock as the analysis doesn't under pthread calls.
+Add annotations to describe lock behavior. Add unlocks so that mutexes
+aren't conditionally held on exit from perf_sched__replay. Add an exit
+variable so that thread_func can terminate, rather than leaving the
+threads blocked on mutexes.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/mutex.c |  2 ++
- tools/perf/util/mutex.h | 72 ++++++++++++++++++++++++++++++++++++++---
- 2 files changed, 69 insertions(+), 5 deletions(-)
+ tools/perf/builtin-sched.c | 46 ++++++++++++++++++++++++--------------
+ 1 file changed, 29 insertions(+), 17 deletions(-)
 
-diff --git a/tools/perf/util/mutex.c b/tools/perf/util/mutex.c
-index 892294ac1769..ec813093276d 100644
---- a/tools/perf/util/mutex.c
-+++ b/tools/perf/util/mutex.c
-@@ -50,11 +50,13 @@ void mutex_destroy(struct mutex *mtx)
- }
- 
- void mutex_lock(struct mutex *mtx)
-+	NO_THREAD_SAFETY_ANALYSIS
- {
- 	CHECK_ERR(pthread_mutex_lock(&mtx->lock));
- }
- 
- void mutex_unlock(struct mutex *mtx)
-+	NO_THREAD_SAFETY_ANALYSIS
- {
- 	CHECK_ERR(pthread_mutex_unlock(&mtx->lock));
- }
-diff --git a/tools/perf/util/mutex.h b/tools/perf/util/mutex.h
-index c9e110a2b55e..48a2d87598f0 100644
---- a/tools/perf/util/mutex.h
-+++ b/tools/perf/util/mutex.h
-@@ -5,11 +5,73 @@
- #include <pthread.h>
- #include <stdbool.h>
- 
-+/*
-+ * A function-like feature checking macro that is a wrapper around
-+ * `__has_attribute`, which is defined by GCC 5+ and Clang and evaluates to a
-+ * nonzero constant integer if the attribute is supported or 0 if not.
-+ */
-+#ifdef __has_attribute
-+#define HAVE_ATTRIBUTE(x) __has_attribute(x)
-+#else
-+#define HAVE_ATTRIBUTE(x) 0
-+#endif
-+
-+
-+#if HAVE_ATTRIBUTE(guarded_by) && HAVE_ATTRIBUTE(pt_guarded_by) && \
-+	HAVE_ATTRIBUTE(lockable) && HAVE_ATTRIBUTE(exclusive_lock_function) && \
-+	HAVE_ATTRIBUTE(exclusive_trylock_function) && HAVE_ATTRIBUTE(exclusive_locks_required) && \
-+	HAVE_ATTRIBUTE(no_thread_safety_analysis)
-+
-+/* Documents if a shared field or global variable needs to be protected by a mutex. */
-+#define GUARDED_BY(x) __attribute__((guarded_by(x)))
-+
-+/*
-+ * Documents if the memory location pointed to by a pointer should be guarded by
-+ * a mutex when dereferencing the pointer.
-+ */
-+#define PT_GUARDED_BY(x) __attribute__((pt_guarded_by(x)))
-+
-+/* Documents if a type is a lockable type. */
-+#define LOCKABLE __attribute__((capability("lockable")))
-+
-+/* Documents functions that acquire a lock in the body of a function, and do not release it. */
-+#define EXCLUSIVE_LOCK_FUNCTION(...)  __attribute__((exclusive_lock_function(__VA_ARGS__)))
-+
-+/*
-+ * Documents functions that expect a lock to be held on entry to the function,
-+ * and release it in the body of the function.
-+ */
-+#define UNLOCK_FUNCTION(...) __attribute__((unlock_function(__VA_ARGS__)))
-+
-+/* Documents functions that try to acquire a lock, and return success or failure. */
-+#define EXCLUSIVE_TRYLOCK_FUNCTION(...) \
-+	__attribute__((exclusive_trylock_function(__VA_ARGS__)))
-+
-+
-+/* Documents a function that expects a mutex to be held prior to entry. */
-+#define EXCLUSIVE_LOCKS_REQUIRED(...) __attribute__((exclusive_locks_required(__VA_ARGS__)))
-+
-+/* Turns off thread safety checking within the body of a particular function. */
-+#define NO_THREAD_SAFETY_ANALYSIS __attribute__((no_thread_safety_analysis))
-+
-+#else
-+
-+#define GUARDED_BY(x)
-+#define PT_GUARDED_BY(x)
-+#define LOCKABLE
-+#define EXCLUSIVE_LOCK_FUNCTION(...)
-+#define UNLOCK_FUNCTION(...)
-+#define EXCLUSIVE_TRYLOCK_FUNCTION(...)
-+#define EXCLUSIVE_LOCKS_REQUIRED(...)
-+#define NO_THREAD_SAFETY_ANALYSIS
-+
-+#endif
-+
- /*
-  * A wrapper around the mutex implementation that allows perf to error check
-  * usage, etc.
-  */
--struct mutex {
-+struct LOCKABLE mutex {
- 	pthread_mutex_t lock;
+diff --git a/tools/perf/builtin-sched.c b/tools/perf/builtin-sched.c
+index 7e4006d6b8bc..b483ff0d432e 100644
+--- a/tools/perf/builtin-sched.c
++++ b/tools/perf/builtin-sched.c
+@@ -246,6 +246,7 @@ struct perf_sched {
+ 	const char	*time_str;
+ 	struct perf_time_interval ptime;
+ 	struct perf_time_interval hist_time;
++	volatile bool   thread_funcs_exit;
  };
  
-@@ -27,9 +89,9 @@ void mutex_init(struct mutex *mtx);
- void mutex_init_pshared(struct mutex *mtx);
- void mutex_destroy(struct mutex *mtx);
+ /* per thread run time data */
+@@ -633,31 +634,34 @@ static void *thread_func(void *ctx)
+ 	prctl(PR_SET_NAME, comm2);
+ 	if (fd < 0)
+ 		return NULL;
+-again:
+-	ret = sem_post(&this_task->ready_for_work);
+-	BUG_ON(ret);
+-	mutex_lock(&sched->start_work_mutex);
+-	mutex_unlock(&sched->start_work_mutex);
  
--void mutex_lock(struct mutex *mtx);
--void mutex_unlock(struct mutex *mtx);
--bool mutex_trylock(struct mutex *mtx);
-+void mutex_lock(struct mutex *mtx) EXCLUSIVE_LOCK_FUNCTION(*mtx);
-+void mutex_unlock(struct mutex *mtx) UNLOCK_FUNCTION(*mtx);
-+bool mutex_trylock(struct mutex *mtx) EXCLUSIVE_TRYLOCK_FUNCTION(true, *mtx);
+-	cpu_usage_0 = get_cpu_usage_nsec_self(fd);
++	while (!sched->thread_funcs_exit) {
++		ret = sem_post(&this_task->ready_for_work);
++		BUG_ON(ret);
++		mutex_lock(&sched->start_work_mutex);
++		mutex_unlock(&sched->start_work_mutex);
  
- /* Default initialize the cond struct. */
- void cond_init(struct cond *cnd);
-@@ -40,7 +102,7 @@ void cond_init(struct cond *cnd);
- void cond_init_pshared(struct cond *cnd);
- void cond_destroy(struct cond *cnd);
+-	for (i = 0; i < this_task->nr_events; i++) {
+-		this_task->curr_event = i;
+-		perf_sched__process_event(sched, this_task->atoms[i]);
+-	}
++		cpu_usage_0 = get_cpu_usage_nsec_self(fd);
  
--void cond_wait(struct cond *cnd, struct mutex *mtx);
-+void cond_wait(struct cond *cnd, struct mutex *mtx) EXCLUSIVE_LOCKS_REQUIRED(mtx);
- void cond_signal(struct cond *cnd);
- void cond_broadcast(struct cond *cnd);
+-	cpu_usage_1 = get_cpu_usage_nsec_self(fd);
+-	this_task->cpu_usage = cpu_usage_1 - cpu_usage_0;
+-	ret = sem_post(&this_task->work_done_sem);
+-	BUG_ON(ret);
++		for (i = 0; i < this_task->nr_events; i++) {
++			this_task->curr_event = i;
++			perf_sched__process_event(sched, this_task->atoms[i]);
++		}
+ 
+-	mutex_lock(&sched->work_done_wait_mutex);
+-	mutex_unlock(&sched->work_done_wait_mutex);
++		cpu_usage_1 = get_cpu_usage_nsec_self(fd);
++		this_task->cpu_usage = cpu_usage_1 - cpu_usage_0;
++		ret = sem_post(&this_task->work_done_sem);
++		BUG_ON(ret);
+ 
+-	goto again;
++		mutex_lock(&sched->work_done_wait_mutex);
++		mutex_unlock(&sched->work_done_wait_mutex);
++	}
++	return NULL;
+ }
+ 
+ static void create_tasks(struct perf_sched *sched)
++	EXCLUSIVE_LOCK_FUNCTION(sched->start_work_mutex)
++	EXCLUSIVE_LOCK_FUNCTION(sched->work_done_wait_mutex)
+ {
+ 	struct task_desc *task;
+ 	pthread_attr_t attr;
+@@ -687,6 +691,8 @@ static void create_tasks(struct perf_sched *sched)
+ }
+ 
+ static void wait_for_tasks(struct perf_sched *sched)
++	EXCLUSIVE_LOCKS_REQUIRED(sched->work_done_wait_mutex)
++	EXCLUSIVE_LOCKS_REQUIRED(sched->start_work_mutex)
+ {
+ 	u64 cpu_usage_0, cpu_usage_1;
+ 	struct task_desc *task;
+@@ -738,6 +744,8 @@ static void wait_for_tasks(struct perf_sched *sched)
+ }
+ 
+ static void run_one_test(struct perf_sched *sched)
++	EXCLUSIVE_LOCKS_REQUIRED(sched->work_done_wait_mutex)
++	EXCLUSIVE_LOCKS_REQUIRED(sched->start_work_mutex)
+ {
+ 	u64 T0, T1, delta, avg_delta, fluct;
+ 
+@@ -3309,11 +3317,15 @@ static int perf_sched__replay(struct perf_sched *sched)
+ 	print_task_traces(sched);
+ 	add_cross_task_wakeups(sched);
+ 
++	sched->thread_funcs_exit = false;
+ 	create_tasks(sched);
+ 	printf("------------------------------------------------------------\n");
+ 	for (i = 0; i < sched->replay_repeat; i++)
+ 		run_one_test(sched);
+ 
++	sched->thread_funcs_exit = true;
++	mutex_unlock(&sched->start_work_mutex);
++	mutex_unlock(&sched->work_done_wait_mutex);
+ 	return 0;
+ }
  
 -- 
 2.37.2.609.g9ff673ca1a-goog
