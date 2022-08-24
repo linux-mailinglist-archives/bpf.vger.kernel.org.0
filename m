@@ -2,305 +2,254 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 526FB59F6B1
-	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 11:46:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73C1759F6C4
+	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 11:49:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236200AbiHXJqV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Aug 2022 05:46:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43994 "EHLO
+        id S235183AbiHXJs5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Aug 2022 05:48:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236768AbiHXJpt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Aug 2022 05:45:49 -0400
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B97E1277F;
-        Wed, 24 Aug 2022 02:45:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1661334329; x=1692870329;
-  h=message-id:date:mime-version:subject:to:references:from:
-   in-reply-to:content-transfer-encoding;
-  bh=r14CxE1SBaJlMjpDav35DU25bLbY0RYb1m2G+BUYXHA=;
-  b=l4bz7RWhjllMZQDhvFv3sgzAd1U/6GdKyjzDtbURNgw+2s/Mm+Q+7LZg
-   D/VDnmEIPJI3YbW5BtST3Nn40MjgSxpv0UwjgClSEhx65gAT5X4mUHYNq
-   mGNi12Xyr4TVSf5mRJ9/9He+x76xuBjP5ZkNMwGc/1aP5DUmKN8A5mpgK
-   6mX4MrP+Li9AlAuzgLDky2eHoWBKLUPneMKbJqrj0GTswLELaTQFQjTlI
-   oqKd9KPLRwi7dlhrCsONWFbRQIJeU7YSwpNNeJOymrXO9akHbOEPSRZ7s
-   vpsqeYF2Bo8/c7LU/UYzgxj8kapt8yUpa3BjpZyOjUwl+bZmuVkexFLfl
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10448"; a="291488061"
-X-IronPort-AV: E=Sophos;i="5.93,260,1654585200"; 
-   d="scan'208";a="291488061"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2022 02:45:27 -0700
-X-IronPort-AV: E=Sophos;i="5.93,260,1654585200"; 
-   d="scan'208";a="586365611"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.51.108])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2022 02:45:15 -0700
-Message-ID: <4e68941f-1370-0c23-6f42-44f3e19e65f7@intel.com>
-Date:   Wed, 24 Aug 2022 12:45:10 +0300
+        with ESMTP id S232564AbiHXJs4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Aug 2022 05:48:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7521067464
+        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 02:48:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1661334533;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qiF7/qO+yisg9qjBhsaAka2ZWunzOCu9/3xjQqLrf9U=;
+        b=W/bo8nXPtT+PU5WnRFJIDATmKMhacIvKXHQ2QlE8c7KXZM7ev5BWeRzLafoVF3YY62WmFG
+        BV2+Jjuq8roy29BGbfkcfMz6cen2cca5OzZn9z9nUaMWVuPJ88ffyEIcdgiD04kaH567Ig
+        eRUCAUl7KVuLAiVh/tFVJcPnOgUPnFI=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-522-4haTi5DIMxSi0GiISITceA-1; Wed, 24 Aug 2022 05:48:52 -0400
+X-MC-Unique: 4haTi5DIMxSi0GiISITceA-1
+Received: by mail-wm1-f71.google.com with SMTP id c64-20020a1c3543000000b003a61987ffb3so9208251wma.6
+        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 02:48:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc;
+        bh=qiF7/qO+yisg9qjBhsaAka2ZWunzOCu9/3xjQqLrf9U=;
+        b=nvevYfMV5d8g/1KxKtX9HHuYHXtmETTk1ETrzbwgMQFQ+D38d7SOYLQHLcFfeTtIJ5
+         Mbe64Sv9BqZCqsCikZqztm4lV65+jPD5QsVvsJpGmc+IpnR2sVXH5f9iWuI4U+aUrP2n
+         LruD+K/L+yYQ4fqSp+88BiiMhfHRaBygvCvOpccsUoRV/+XXWZlEmnrb3YfODmxRHFCB
+         Jk/e5qv7ge6mjB/4ZXm/RYptrULZMq/tYYk1HCPq6O5fz8oq3HNBa4Fu7DuHne0n10YW
+         GBlnhivsoLG+Ru99YonCbKKBHfO/1SXquTrrVN2qe8hBNjEXqS7qNC45IMwY3bcHruXP
+         jc+Q==
+X-Gm-Message-State: ACgBeo1xB8m1wwTX7zcbw8jNgm4HbI6l8ocv527O7dNnlnyQc5GoFnkv
+        WHrut1GhYMmtb9p0HlEoxurE5v/zKmVJI8PwtX8Z8oDr8yrLP7vaOe7pDB3KmZUo0pgQNSQ8OqG
+        M+5HazXGDhm4N
+X-Received: by 2002:a5d:5986:0:b0:225:6216:5a79 with SMTP id n6-20020a5d5986000000b0022562165a79mr5828982wri.594.1661334530986;
+        Wed, 24 Aug 2022 02:48:50 -0700 (PDT)
+X-Google-Smtp-Source: AA6agR5QheGVv9qlYiusEVisLJNGRUzET8ghwC3bQSFWUdMe6rMHsgYEyFps6VAi3eF+kzcPiQUQtg==
+X-Received: by 2002:a5d:5986:0:b0:225:6216:5a79 with SMTP id n6-20020a5d5986000000b0022562165a79mr5828965wri.594.1661334530719;
+        Wed, 24 Aug 2022 02:48:50 -0700 (PDT)
+Received: from [192.168.110.200] (82-65-22-26.subs.proxad.net. [82.65.22.26])
+        by smtp.gmail.com with ESMTPSA id n5-20020a05600c4f8500b003a601a1c2f7sm1367229wmq.19.2022.08.24.02.48.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Aug 2022 02:48:50 -0700 (PDT)
+Message-ID: <f4624a16-ee0b-8e8e-a390-349d38f229b4@redhat.com>
+Date:   Wed, 24 Aug 2022 11:48:49 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.11.0
-Subject: Re: [PATCH v2 01/18] perf mutex: Wrapped usage of mutex and cond
+ Thunderbird/91.9.0
+Subject: Re: [PATCH bpf-next v7 13/24] HID: initial BPF implementation
 Content-Language: en-US
-To:     Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Weiguo Li <liwg06@foxmail.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Dario Petrillo <dario.pk1@gmail.com>,
-        Hewenliang <hewenliang4@huawei.com>,
-        yaowenbin <yaowenbin1@huawei.com>,
-        Wenyu Liu <liuwenyu7@huawei.com>,
-        Song Liu <songliubraving@fb.com>,
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
         Dave Marchevsky <davemarchevsky@fb.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Pavithra Gurushankar <gpavithrasha@gmail.com>,
-        Alexandre Truong <alexandre.truong@arm.com>,
-        Quentin Monnet <quentin@isovalent.com>,
-        William Cohen <wcohen@redhat.com>,
-        Andres Freund <andres@anarazel.de>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        =?UTF-8?Q?Martin_Li=c5=a1ka?= <mliska@suse.cz>,
-        Colin Ian King <colin.king@intel.com>,
-        James Clark <james.clark@arm.com>,
-        Fangrui Song <maskray@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>,
-        Riccardo Mancini <rickyman7@gmail.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Zechuan Chen <chenzechuan1@huawei.com>,
-        Jason Wang <wangborong@cdjrlc.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Remi Bernon <rbernon@codeweavers.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        bpf@vger.kernel.org, llvm@lists.linux.dev
-References: <20220823220922.256001-1-irogers@google.com>
- <20220823220922.256001-2-irogers@google.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <20220823220922.256001-2-irogers@google.com>
-Content-Type: text/plain; charset=UTF-8
+        Joe Stringer <joe@cilium.io>, Jonathan Corbet <corbet@lwn.net>,
+        Tero Kristo <tero.kristo@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org
+References: <20220721153625.1282007-1-benjamin.tissoires@redhat.com>
+ <20220721153625.1282007-14-benjamin.tissoires@redhat.com>
+ <YuKbCCOAtSvUlI3z@kroah.com>
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+In-Reply-To: <YuKbCCOAtSvUlI3z@kroah.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 24/08/22 01:09, Ian Rogers wrote:
-> From: Pavithra Gurushankar <gpavithrasha@gmail.com>
+
+
+On 7/28/22 16:19, Greg KH wrote:
+> On Thu, Jul 21, 2022 at 05:36:14PM +0200, Benjamin Tissoires wrote:
+>> --- /dev/null
+>> +++ b/include/linux/hid_bpf.h
+>> @@ -0,0 +1,102 @@
+>> +/* SPDX-License-Identifier: GPL-2.0+ WITH Linux-syscall-note */
 > 
-> Added a new header file mutex.h that wraps the usage of
-> pthread_mutex_t and pthread_cond_t. By abstracting these it is
-> possible to introduce error checking.
+> This is not a uapi .h file, so the "WITH Linux-syscall-note" should not
+> be here, right?
+
+thanks, dropping this syscall note from the series.
+
 > 
-> Signed-off-by: Pavithra Gurushankar <gpavithrasha@gmail.com>
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/util/Build   |  1 +
->  tools/perf/util/mutex.c | 97 +++++++++++++++++++++++++++++++++++++++++
->  tools/perf/util/mutex.h | 43 ++++++++++++++++++
->  3 files changed, 141 insertions(+)
->  create mode 100644 tools/perf/util/mutex.c
->  create mode 100644 tools/perf/util/mutex.h
 > 
-> diff --git a/tools/perf/util/Build b/tools/perf/util/Build
-> index 9dfae1bda9cc..8fd6dc8de521 100644
-> --- a/tools/perf/util/Build
-> +++ b/tools/perf/util/Build
-> @@ -143,6 +143,7 @@ perf-y += branch.o
->  perf-y += mem2node.o
->  perf-y += clockid.o
->  perf-y += list_sort.o
-> +perf-y += mutex.o
->  
->  perf-$(CONFIG_LIBBPF) += bpf-loader.o
->  perf-$(CONFIG_LIBBPF) += bpf_map.o
-> diff --git a/tools/perf/util/mutex.c b/tools/perf/util/mutex.c
-> new file mode 100644
-> index 000000000000..d12cf0714268
-> --- /dev/null
-> +++ b/tools/perf/util/mutex.c
-> @@ -0,0 +1,97 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include "mutex.h"
-> +
-> +#include "debug.h"
-> +#include <linux/string.h>
-> +#include <errno.h>
-> +
-> +static void check_err(const char *fn, int err)
-> +{
-> +	char sbuf[STRERR_BUFSIZE];
-> +
-> +	if (err == 0)
-> +		return;
-> +
-> +	pr_err("%s error: '%s'", fn, str_error_r(err, sbuf, sizeof(sbuf)));
+>> +
+>> +#ifndef __HID_BPF_H
+>> +#define __HID_BPF_H
+>> +
+>> +#include <linux/spinlock.h>
+>> +#include <uapi/linux/hid.h>
+>> +#include <uapi/linux/hid_bpf.h>
+>> +
+>> +struct hid_device;
+>> +
+>> +/*
+>> + * The following is the HID BPF API.
+>> + *
+>> + * It should be treated as UAPI, so extra care is required
+>> + * when making change to this file.
+> 
+> So is this uapi?  If so, shouldn't it go into a uapi include directory
+> so we know this and properly track it and maintain it that way?
 
-pr_err() does not add '\n' so it needs to be in the format string.
+IMO it's a grey area. It is not "uapi" because it doesn't export 
+anything that userspace can use. A userspace program can not include 
+that and use it in other words.
 
-> +}
-> +
-> +#define CHECK_ERR(err) check_err(__func__, err)
-> +
-> +void mutex_init(struct mutex *mtx, bool pshared)
-> +{
-> +	pthread_mutexattr_t attr;
-> +
-> +	CHECK_ERR(pthread_mutexattr_init(&attr));
-> +
-> +#ifndef NDEBUG
-> +	/* In normal builds enable error checking, such as recursive usage. */
-> +	CHECK_ERR(pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_ERRORCHECK));
-> +#endif
-> +	if (pshared)
-> +		pthread_mutexattr_setpshared(&attr, PTHREAD_PROCESS_SHARED);
-> +
-> +	CHECK_ERR(pthread_mutex_init(&mtx->lock, &attr));
-> +	CHECK_ERR(pthread_mutexattr_destroy(&attr));
-> +}
-> +
-> +void mutex_destroy(struct mutex *mtx)
-> +{
-> +	CHECK_ERR(pthread_mutex_destroy(&mtx->lock));
-> +}
-> +
-> +void mutex_lock(struct mutex *mtx)
-> +{
-> +	CHECK_ERR(pthread_mutex_lock(&mtx->lock));
-> +}
-> +
-> +void mutex_unlock(struct mutex *mtx)
-> +{
-> +	CHECK_ERR(pthread_mutex_unlock(&mtx->lock));
-> +}
-> +
-> +bool mutex_trylock(struct mutex *mtx)
-> +{
-> +	int ret = pthread_mutex_trylock(&mtx->lock);
-> +
-> +	if (ret == 0)
-> +		return true; /* Lock acquired. */
-> +
-> +	if (ret == EBUSY)
-> +		return false; /* Lock busy. */
-> +
-> +	/* Print error. */
-> +	CHECK_ERR(ret);
-> +	return false;
-> +}
-> +
-> +void cond_init(struct cond *cnd, bool pshared)
-> +{
-> +	pthread_condattr_t attr;
-> +
-> +	CHECK_ERR(pthread_condattr_init(&attr));
-> +	if (pshared)
-> +		CHECK_ERR(pthread_condattr_setpshared(&attr, PTHREAD_PROCESS_SHARED));
-> +
-> +	CHECK_ERR(pthread_cond_init(&cnd->cond, &attr));
-> +	CHECK_ERR(pthread_condattr_destroy(&attr));
-> +}
-> +
-> +void cond_destroy(struct cond *cnd)
-> +{
-> +	CHECK_ERR(pthread_cond_destroy(&cnd->cond));
-> +}
-> +
-> +void cond_wait(struct cond *cnd, struct mutex *mtx)
-> +{
-> +	CHECK_ERR(pthread_cond_wait(&cnd->cond, &mtx->lock));
-> +}
-> +
-> +void cond_signal(struct cond *cnd)
-> +{
-> +	CHECK_ERR(pthread_cond_signal(&cnd->cond));
-> +}
-> +
-> +void cond_broadcast(struct cond *cnd)
-> +{
-> +	CHECK_ERR(pthread_cond_broadcast(&cnd->cond));
-> +}
-> diff --git a/tools/perf/util/mutex.h b/tools/perf/util/mutex.h
-> new file mode 100644
-> index 000000000000..952276ad83bd
-> --- /dev/null
-> +++ b/tools/perf/util/mutex.h
-> @@ -0,0 +1,43 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef __PERF_MUTEX_H
-> +#define __PERF_MUTEX_H
-> +
-> +#include <pthread.h>
-> +#include <stdbool.h>
-> +
-> +/*
-> + * A wrapper around the mutex implementation that allows perf to error check
-> + * usage, etc.
-> + */
-> +struct mutex {
-> +	pthread_mutex_t lock;
-> +};
-> +
-> +/* A wrapper around the condition variable implementation. */
-> +struct cond {
-> +	pthread_cond_t cond;
-> +};
+So strictly speaking, it's a normal part of a kernel header file, 
+because it's a description of what other kernel users (though here, eBPF 
+programs) can use.
 
-Do these definitions need to be in the header?
-What about just:
+But I really want that part of the API to be considered as "stable" and 
+give some guarantees to the users that I won't change it at every 
+release. Thus the "uapi-like".
 
-struct mutex;
-struct cond;
+> 
+>> + */
+>> +
+>> +/**
+>> + * struct hid_bpf_ctx - User accessible data for all HID programs
+>> + *
+>> + * ``data`` is not directly accessible from the context. We need to issue
+>> + * a call to ``hid_bpf_get_data()`` in order to get a pointer to that field.
+>> + *
+>> + * All of these fields are currently read-only.
+>> + *
+>> + * @index: program index in the jump table. No special meaning (a smaller index
+>> + *         doesn't mean the program will be executed before another program with
+>> + *         a bigger index).
+>> + * @hid: the ``struct hid_device`` representing the device itself
+>> + * @report_type: used for ``hid_bpf_device_event()``
+>> + * @size: Valid data in the data field.
+>> + *
+>> + *        Programs can get the available valid size in data by fetching this field.
+>> + */
+>> +struct hid_bpf_ctx {
+>> +	__u32 index;
+>> +	const struct hid_device *hid;
+>> +	enum hid_report_type report_type;
+>> +	__s32 size;
+>> +};
+>> +
+>> +/* Following functions are tracepoints that BPF programs can attach to */
+>> +int hid_bpf_device_event(struct hid_bpf_ctx *ctx);
+>> +
+>> +/* Following functions are kfunc that we export to BPF programs */
+>> +/* only available in tracing */
+>> +__u8 *hid_bpf_get_data(struct hid_bpf_ctx *ctx, unsigned int offset, const size_t __sz);
+>> +
+>> +/* only available in syscall */
+>> +int hid_bpf_attach_prog(unsigned int hid_id, int prog_fd, __u32 flags);
+>> +
+>> +/*
+>> + * Below is HID internal
+>> + */
+>> +
+>> +/* internal function to call eBPF programs, not to be used by anybody */
+>> +int __hid_bpf_tail_call(struct hid_bpf_ctx *ctx);
+>> +
+>> +#define HID_BPF_MAX_PROGS_PER_DEV 64
+>> +#define HID_BPF_FLAG_MASK (((HID_BPF_FLAG_MAX - 1) << 1) - 1)
+>> +
+>> +/* types of HID programs to attach to */
+>> +enum hid_bpf_prog_type {
+>> +	HID_BPF_PROG_TYPE_UNDEF = -1,
+>> +	HID_BPF_PROG_TYPE_DEVICE_EVENT,			/* an event is emitted from the device */
+>> +	HID_BPF_PROG_TYPE_MAX,
+>> +};
+>> +
+>> +struct hid_bpf_ops {
+>> +	struct module *owner;
+>> +	struct bus_type *bus_type;
+>> +};
+>> +
+>> +extern struct hid_bpf_ops *hid_bpf_ops;
+>> +
+>> +struct hid_bpf_prog_list {
+>> +	u16 prog_idx[HID_BPF_MAX_PROGS_PER_DEV];
+>> +	u8 prog_cnt;
+>> +};
+>> +
+>> +/* stored in each device */
+>> +struct hid_bpf {
+>> +	struct hid_bpf_prog_list __rcu *progs[HID_BPF_PROG_TYPE_MAX];	/* attached BPF progs */
+>> +	bool destroyed;			/* prevents the assignment of any progs */
+>> +
+>> +	spinlock_t progs_lock;		/* protects RCU update of progs */
+>> +};
+>> +
+>> +#ifdef CONFIG_HID_BPF
+>> +int dispatch_hid_bpf_device_event(struct hid_device *hid, enum hid_report_type type, u8 *data,
+>> +				  u32 size, int interrupt);
+>> +void hid_bpf_destroy_device(struct hid_device *hid);
+>> +void hid_bpf_device_init(struct hid_device *hid);
+>> +#else /* CONFIG_HID_BPF */
+>> +static inline int dispatch_hid_bpf_device_event(struct hid_device *hid, enum hid_report_type type, u8 *data,
+>> +						u32 size, int interrupt) { return 0; }
+>> +static inline void hid_bpf_destroy_device(struct hid_device *hid) {}
+>> +static inline void hid_bpf_device_init(struct hid_device *hid) {}
+>> +#endif /* CONFIG_HID_BPF */
+>> +
+>> +#endif /* __HID_BPF_H */
+>> diff --git a/include/uapi/linux/hid_bpf.h b/include/uapi/linux/hid_bpf.h
+>> new file mode 100644
+>> index 000000000000..ba8caf9b60ee
+>> --- /dev/null
+>> +++ b/include/uapi/linux/hid_bpf.h
+>> @@ -0,0 +1,25 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+> 
+> This is fine, it is in include/uapi/
+> 
+> Other than those minor comments, this all looks good to me!
+> 
+> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> 
 
-and put the defintions in mutex.c.
+Great!
+And thanks a lot for the other reviews.
 
-> +
-> +/*
-> + * Initialize the mtx struct, if pshared is set then specify the process-shared
-> + * rather than default process-private attribute.
-> + */
-> +void mutex_init(struct mutex *mtx, bool pshared);
-> +void mutex_destroy(struct mutex *mtx);
-> +
-> +void mutex_lock(struct mutex *mtx);
-> +void mutex_unlock(struct mutex *mtx);
-> +bool mutex_trylock(struct mutex *mtx);
-> +
-> +/*
-> + * Initialize the cond struct, if pshared is set then specify the process-shared
-> + * rather than default process-private attribute.
-> + */
-> +void cond_init(struct cond *cnd, bool pshared);
-> +void cond_destroy(struct cond *cnd);
-> +
-> +void cond_wait(struct cond *cnd, struct mutex *mtx);
-> +void cond_signal(struct cond *cnd);
-> +void cond_broadcast(struct cond *cnd);
-> +
-> +#endif /* __PERF_MUTEX_H */
+I finally managed to get some time to work on it after some time off and 
+urgent sh**t happening, so I'll send a new version of the series today.
+
+Cheers,
+Benjamin
 
