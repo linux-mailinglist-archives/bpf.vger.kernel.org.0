@@ -2,177 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A709F59F619
-	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 11:20:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD9A059F684
+	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 11:41:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236229AbiHXJUB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Aug 2022 05:20:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42596 "EHLO
+        id S236232AbiHXJlh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Aug 2022 05:41:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236227AbiHXJUA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Aug 2022 05:20:00 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DB4569F6F
-        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 02:19:58 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id h24so19977161wrb.8
-        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 02:19:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc;
-        bh=kvkSlDre+GtwV6DDJu2lIVETMmQGjdy5PkI9pHRGkRA=;
-        b=XW2JKNxcke9K+zB193mlWjNyOhKUhUNVOAIG9fi5LLvAIQ4wSK5CyIN/+UkyxoMZWi
-         hVNB3ZlT5oR0ern/oLKvhUxtA2Fxf2JNppy6qIMXgDRmMHTpkqFIz4lQBJrPcBzNGcW3
-         RLFhwdybCUs004A+thToqJqhm+9Zs1h2XWrShywUcf8pRCNk6eYkhZQPaM8BvoLbwIza
-         iTXdERGyURISchK53ak8Rn1VeTffGcrZnPLTKbWicfUJXMsb4Bvi95aUZbEM9lKw5Bpa
-         HGk7CFapJRSD6TlmiNtI3NYAslccLMwGEFfmiMblOLu9+okkyT5niMa1rCpgk3OfrAk5
-         gq5w==
+        with ESMTP id S235620AbiHXJlf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Aug 2022 05:41:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 104BFE47
+        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 02:41:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1661334093;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rXZAbOi80OJv3uidummRV0C+m8Czemv1wTSXuU14uGc=;
+        b=N27Ewjd9B6KTvQuYFsvuwoBGrU3Dhf4T+6maws7V99qNznKp5Oi2Qy4tJUJFu+nudpWLSN
+        r/SV0s69SksVE3MN/veXkM2fyZDEZfWyih2ISvzr5NdqVEtrUS4bK4OKPQGKNq2MunqiGi
+        a65xLpVqxCHUBADCYGNBcfCyBc1dKOA=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-425-LuKXQsALPTqdGtURH-jhUQ-1; Wed, 24 Aug 2022 05:41:31 -0400
+X-MC-Unique: LuKXQsALPTqdGtURH-jhUQ-1
+Received: by mail-wm1-f71.google.com with SMTP id n7-20020a1c2707000000b003a638356355so7005218wmn.2
+        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 02:41:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc;
-        bh=kvkSlDre+GtwV6DDJu2lIVETMmQGjdy5PkI9pHRGkRA=;
-        b=hy8dKbkw73jde3u58kQlqc77Kgn14bzE3ffivU+yfeg+Rk5Hn7VgKvT5iG0eYq3ze1
-         SNczlkw4Q687ey/tIcoOPbJAbtfY7iMP0z8jJRXF2t3HZJHr7UvnONK7Dd9WJBiR0oVR
-         OUkunMunUhO3k6mhELEZX2e3anlD8gOlxpwxYKXuIp5M9yBA06/+6yzcwpNK2wnWl3rv
-         3/ViULDXJU7YKoawZFKFNjZa5zbRvCLb0g+CiIMdaxTdE2p5hMlVFZNgwAy+sbpdyd5L
-         y9PZjpzFRhu+jrQJzODnlIdgIrlai5xfAMdBLXn02xIR7esw59wYPIw+NDtMoQClVw2s
-         lvtg==
-X-Gm-Message-State: ACgBeo11/RBpWtWBTRRi1ritp0GPDTGFHFK1XUInBA1mK7sTbf8LaMsu
-        pO/s7BtWuY+Gbmc7Ycnf/A4=
-X-Google-Smtp-Source: AA6agR5u+mnqxxZ1U6GM1PKqX07dm2FsklpgHJ5RFB8+lNskUOpBQkA82JpNGm2VmSBoI2jG6wWkyA==
-X-Received: by 2002:adf:de91:0:b0:225:2609:27c5 with SMTP id w17-20020adfde91000000b00225260927c5mr16189745wrl.252.1661332796717;
-        Wed, 24 Aug 2022 02:19:56 -0700 (PDT)
-Received: from localhost.localdomain ([213.57.189.88])
-        by smtp.gmail.com with ESMTPSA id t63-20020a1c4642000000b003a673055e68sm1580253wma.0.2022.08.24.02.19.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Aug 2022 02:19:56 -0700 (PDT)
-From:   Eyal Birger <eyal.birger@gmail.com>
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, quentin@isovalent.com
-Cc:     bpf@vger.kernel.org, Eyal Birger <eyal.birger@gmail.com>
-Subject: [PATCH bpf-next,v2] bpf/scripts: assert helper enum value is aligned with comment order
-Date:   Wed, 24 Aug 2022 12:19:40 +0300
-Message-Id: <20220824091940.1578705-1-eyal.birger@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc;
+        bh=rXZAbOi80OJv3uidummRV0C+m8Czemv1wTSXuU14uGc=;
+        b=i8ewTSkoCqUznki6uEVQ1JJXgEYr9wYDRmkAKBoO67XVgRU24ljUsZy1yG8Ui1Wdii
+         zJsOUVdaWu8d1h3WbgretofmZbskNCjHY3yyfLX+EaBKyzPmlobHs6DFXskfb+uz+VDl
+         e7Knck0eMwIK4BT48CREBpUiTCrG9YO33zzv6CIBegDRrnZYT6WVAAQ36R0Iss3ur9v/
+         9gfR2paepSzMb1AqyF+y/6dNu+wIVttuefmhs2FPAYgCDck7QjcUugpCcjGUF8g9sOuf
+         +ufIjypM5a0+TPHO0txqeuJN4dynhLSEQEoLB/4GnVAim/+ZR84hFsvoR9KcLsBR4cme
+         1UuA==
+X-Gm-Message-State: ACgBeo0aRd3MVogLXncnYiQnAPcNn7dQpzihiWYzAr+IVkPv49Vs4dz6
+        3ugBviN34cVZF8iTOspmT5SCulWl7IsQWGPgqKgu023UjNBYoYWWieChRmpiscOfa31/Ue+mCOC
+        S9gv37Tb6JWQf
+X-Received: by 2002:adf:e4d0:0:b0:225:2947:3a5f with SMTP id v16-20020adfe4d0000000b0022529473a5fmr15483102wrm.387.1661334090890;
+        Wed, 24 Aug 2022 02:41:30 -0700 (PDT)
+X-Google-Smtp-Source: AA6agR6A/ocXjWVRFdjan3P7MYJXQ6e2K34PdNA3e511oLDRA0aYA/dzfItM+B5KpyFeSSw6ofRRhg==
+X-Received: by 2002:adf:e4d0:0:b0:225:2947:3a5f with SMTP id v16-20020adfe4d0000000b0022529473a5fmr15483088wrm.387.1661334090693;
+        Wed, 24 Aug 2022 02:41:30 -0700 (PDT)
+Received: from [192.168.110.200] (82-65-22-26.subs.proxad.net. [82.65.22.26])
+        by smtp.gmail.com with ESMTPSA id bh19-20020a05600c3d1300b003a2f6367049sm1335730wmb.48.2022.08.24.02.41.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Aug 2022 02:41:29 -0700 (PDT)
+Message-ID: <ecb5c967-9913-73e0-65a6-e35893eee411@redhat.com>
+Date:   Wed, 24 Aug 2022 11:41:28 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: [PATCH bpf-next v7 13/24] HID: initial BPF implementation
+Content-Language: en-US
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Joe Stringer <joe@cilium.io>, Jonathan Corbet <corbet@lwn.net>,
+        Tero Kristo <tero.kristo@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org
+References: <20220721153625.1282007-1-benjamin.tissoires@redhat.com>
+ <20220721153625.1282007-14-benjamin.tissoires@redhat.com>
+ <YuKaG18WXkkQlu8e@kroah.com>
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+In-Reply-To: <YuKaG18WXkkQlu8e@kroah.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The helper value is ABI as defined by enum bpf_func_id.
-As bpf_helper_defs.h is used for the userpace part, it must be consistent
-with this enum.
+Hi Greg,
 
-Before this change the comments order was used by the bpf_doc script in
-order to set the helper values defined in the helpers file.
+On 7/28/22 16:15, Greg KH wrote:
+> On Thu, Jul 21, 2022 at 05:36:14PM +0200, Benjamin Tissoires wrote:
+>> diff --git a/drivers/hid/bpf/Kconfig b/drivers/hid/bpf/Kconfig
+>> new file mode 100644
+>> index 000000000000..423c02e4c5db
+>> --- /dev/null
+>> +++ b/drivers/hid/bpf/Kconfig
+>> @@ -0,0 +1,18 @@
+>> +# SPDX-License-Identifier: GPL-2.0-only
+>> +menu "HID-BPF support"
+>> +	#depends on x86_64
+> 
+> Is this comment still needed?
 
-When adding new helpers it is very puzzling when the userspace application
-breaks in weird places if the comment is inserted instead of appended -
-because the generated helper ABI is incorrect and shifted.
+Nope. It was required a few months ago, but I think we now have 
+trampoline support also for aarch64, which are the 2 main architectures 
+we care right now.
 
-This commit sets the helper value to the enum value.
+Dropping this from the series.
 
-In addition it is currently the practice to have the comments appended
-and kept in the same order as the enum. As such, add an assertion
-validating the comment order is consistent with enum value.
+Cheers,
+Benjamin
 
-In case a different comments ordering is desired, this assertion can
-be lifted.
-
-Signed-off-by: Eyal Birger <eyal.birger@gmail.com>
-
----
-
-v2: based on feedback from Quentin Monnet:
-- assert the current comment ordering
-- match only one FN in each line
----
- scripts/bpf_doc.py | 31 +++++++++++++++++++++----------
- 1 file changed, 21 insertions(+), 10 deletions(-)
-
-diff --git a/scripts/bpf_doc.py b/scripts/bpf_doc.py
-index f4f3e7ec6d44..80dfb230459d 100755
---- a/scripts/bpf_doc.py
-+++ b/scripts/bpf_doc.py
-@@ -91,7 +91,7 @@ class HeaderParser(object):
-         self.helpers = []
-         self.commands = []
-         self.desc_unique_helpers = set()
--        self.define_unique_helpers = []
-+        self.define_unique_helpers = {}
-         self.desc_syscalls = []
-         self.enum_syscalls = []
- 
-@@ -248,24 +248,24 @@ class HeaderParser(object):
-                 break
- 
-     def parse_define_helpers(self):
--        # Parse the number of FN(...) in #define __BPF_FUNC_MAPPER to compare
--        # later with the number of unique function names present in description.
-+        # Parse FN(...) in #define __BPF_FUNC_MAPPER to compare later with the
-+        # number of unique function names present in description and use the
-+        # correct enumeration value.
-         # Note: seek_to(..) discards the first line below the target search text,
-         # resulting in FN(unspec) being skipped and not added to self.define_unique_helpers.
-         self.seek_to('#define __BPF_FUNC_MAPPER(FN)',
-                      'Could not find start of eBPF helper definition list')
--        # Searches for either one or more FN(\w+) defines or a backslash for newline
--        p = re.compile('\s*(FN\(\w+\))+|\\\\')
--        fn_defines_str = ''
-+        # Searches for one FN(\w+) define or a backslash for newline
-+        p = re.compile('\s*FN\((\w+)\)|\\\\')
-+        i = 1  # 'unspec' is skipped as mentioned above
-         while True:
-             capture = p.match(self.line)
-             if capture:
--                fn_defines_str += self.line
-+                self.define_unique_helpers[capture.expand(r'bpf_\1')] = i
-+                i += 1
-             else:
-                 break
-             self.line = self.reader.readline()
--        # Find the number of occurences of FN(\w+)
--        self.define_unique_helpers = re.findall('FN\(\w+\)', fn_defines_str)
- 
-     def run(self):
-         self.parse_desc_syscall()
-@@ -608,6 +608,7 @@ class PrinterHelpers(Printer):
-     def __init__(self, parser):
-         self.elements = parser.helpers
-         self.elem_number_check(parser.desc_unique_helpers, parser.define_unique_helpers, 'helper', '__BPF_FUNC_MAPPER')
-+        self.define_unique_helpers = parser.define_unique_helpers
- 
-     type_fwds = [
-             'struct bpf_fib_lookup',
-@@ -796,7 +797,17 @@ class PrinterHelpers(Printer):
-             comma = ', '
-             print(one_arg, end='')
- 
--        print(') = (void *) %d;' % len(self.seen_helpers))
-+        helper_val = self.define_unique_helpers[proto['name']]
-+
-+        # Assert helper description order is aligned with the enum value
-+        desc_val = len(self.seen_helpers)
-+        if helper_val != desc_val:
-+            print("Helper %s comment order (#%d) must be aligned with its enum "
-+                  "order (#%d)" % (proto['name'], desc_val, helper_val),
-+                  file=sys.stderr)
-+            sys.exit(1)
-+
-+        print(') = (void *) %d;' % helper_val)
-         print('')
- 
- ###############################################################################
--- 
-2.34.1
+> 
+>> +
+>> +config HID_BPF
+>> +	bool "HID-BPF support"
+>> +	default HID_SUPPORT
+>> +	depends on BPF && BPF_SYSCALL
+>> +	help
+>> +	This option allows to support eBPF programs on the HID subsystem.
+>> +	eBPF programs can fix HID devices in a lighter way than a full
+>> +	kernel patch and allow a lot more flexibility.
+>> +
+>> +	For documentation, see Documentation/hid/hid-bpf.rst
+>> +
+>> +	If unsure, say Y.
+>> +
+>> +endmenu
+> 
 
