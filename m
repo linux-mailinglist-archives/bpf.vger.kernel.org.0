@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 676A059FE97
-	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 17:41:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 289A459FE93
+	for <lists+bpf@lfdr.de>; Wed, 24 Aug 2022 17:41:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239739AbiHXPlL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Aug 2022 11:41:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50348 "EHLO
+        id S239834AbiHXPlS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Aug 2022 11:41:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239634AbiHXPku (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Aug 2022 11:40:50 -0400
+        with ESMTP id S237747AbiHXPlK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Aug 2022 11:41:10 -0400
 Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B857E4F653
-        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 08:40:42 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-336c3b72da5so292134957b3.6
-        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 08:40:42 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DA7F54C93
+        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 08:40:49 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-336c3b72da5so292139877b3.6
+        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 08:40:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
          :date:from:to:cc;
-        bh=E+v8EG42HRikeSNXbmnFQC/dENrnMCWWyvKN9u3QR5M=;
-        b=kk7GHJbl10t2LSP2yw9VaKovZEQR44FQrddt7kqK2Ys6J5SQGwWPEL95ziuQIQ8pfY
-         msoCOGNgKQw3P8by/o3IgN4F355tvlqYg64SDIzCtmbJXrbznmJmBM+FShGoc39SFXK0
-         aPMlYh5ctAS+GDcW9uQFfAyJLq1cf+ud97K0xtS/MA3S+4RbtkwiOm13ikVpmk9ieanQ
-         dpf2Kr0wCOwf3nIodSr/ULuOzOgNOwMOm5Ixk+OuwDMunBOO/ZC7fadZUmBkePH6MUM8
-         jRmZW2WN0+p56IyrkOuWtjUysotivr4ObMwuWqIWMhStgXBBZWhSkWyuJTXPsaH7Vb8K
-         JuKQ==
+        bh=OMQ501+sgDM7N3YDKsYf0P/PYHt6dhaxbTww0JcRvz8=;
+        b=Df8+yGJaS9KBtdq7S84QTpN9c3hRBXX1dS99gz5VIVOk7bpDCoXOV0MwOxeHJTKERc
+         iAdRh3GXOmICv8y4gf1D9/9oJgIKeAv5cMPm4sR6Ca0D6y9bKTxtw+urVRVInfKW6Al2
+         HrwzW3F+/obJTX4n1gX2Wgrc+J/457e5qWoqijFs/I7ZiDzNXKhZWI0hKFBrX5e5q0cz
+         MCIgalbH61OqEQt1/dmZT1TXskuAAEKtBtildgcHKxwazXLjNIOld0Kv6da39njqb8jB
+         +VlQlYSEgYMAIVuohV0u+uONaVlYOEL9bZQS/SoKCW5fxzm9jckIF++O8LNnlcy7/307
+         PYyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
          :date:x-gm-message-state:from:to:cc;
-        bh=E+v8EG42HRikeSNXbmnFQC/dENrnMCWWyvKN9u3QR5M=;
-        b=BJJ69SDiqtyDqvLbaRLbxFN7aaPa32oc5XN+ijHmwGRs2jIoDWuqwo0S7Z1fWs8MkZ
-         EfE8a4z/3KfPZTywlzu+IfHCmPav3PrdvGB5oc8B4yrRGBEihSFdxssxX+6QPWnQwiOD
-         0A/MoLZKIzQ9JqNdHCdwcrG2YYD4sNQnWeXGeWmXq3/TGxOGrbgHPI5TLkcI02/qEB6o
-         El7FL3t4hVXHa4BGQBYPGF7X9wpf1QyUBJ+baPc3wvRCWFNEh8L8Rez7fypvc6X6q2DE
-         QohIrZSP3AA5SN93bEEme5xj+wSv4al7boyFOKzpXg0Va7RcRcpFQoTvQJODAON8yExA
-         CJbw==
-X-Gm-Message-State: ACgBeo2SYrG5vI8fz+g7L8ra5eoxz9JZbg+ZycZSOuCD7D3oMWr9Xsim
-        lBcSa6ICOXnVt+gU+rO81leWz7owQWub
-X-Google-Smtp-Source: AA6agR6To5JIGWetFoXHI+NlxYSghgWpdXQVzu35CdiAL1UudXivS7x6NKkZpd5FNbHmhtRzX5R0a+c9Eo9E
+        bh=OMQ501+sgDM7N3YDKsYf0P/PYHt6dhaxbTww0JcRvz8=;
+        b=SkROMggUTh07sECcw/d1h9j+h2BsINq5LRA+1s7YlYExcIkBZHT693NI4qxcUlmW7n
+         mwz4MZWa68PzPWPL7DBc2qBwAZCRcKBqt/jGTELi/0nZnRULKSxjfv+qyQyYHBH3c+le
+         kECGgcktGkPSP/R0eLvP2VXRr5Dy0f8G5SPqus+v2BU7an95rvfa4Qzd5csiH9+xHCP/
+         6r+eN5XmSIaX1kF6I5thvK1rnObSEhClyVaX5ttuhHOwjSq6wunbD7i4JgYzctVCTcUc
+         sOt6bnRJNgassvxhgUxEe3eebaCV4aMvIGMdEkPZYSQG7EDi8Q/IGpdJLNLoKTBoqo1W
+         wemg==
+X-Gm-Message-State: ACgBeo0OXsjPqgtGiYu8Urjc+5LIhsvIwIGqoLLUSAd1AN3BqgUeczRT
+        6W7old9eMGcDkK9qs1uaPcnsTlZkZGEJ
+X-Google-Smtp-Source: AA6agR4CVwuBRiEKrKdshlTIH2sL/L8VgPW5+RUhgxX77UsCiuJ5IF9PGcTXomgl1DeEZX27uib9KYx7cq/S
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2d4:203:ab82:a348:500d:1fc4])
- (user=irogers job=sendgmr) by 2002:a25:41c5:0:b0:690:18a0:c7ee with SMTP id
- o188-20020a2541c5000000b0069018a0c7eemr30626984yba.1.1661355641946; Wed, 24
- Aug 2022 08:40:41 -0700 (PDT)
-Date:   Wed, 24 Aug 2022 08:38:55 -0700
+ (user=irogers job=sendgmr) by 2002:a25:da57:0:b0:695:818a:416d with SMTP id
+ n84-20020a25da57000000b00695818a416dmr19205487ybf.519.1661355648925; Wed, 24
+ Aug 2022 08:40:48 -0700 (PDT)
+Date:   Wed, 24 Aug 2022 08:38:56 -0700
 In-Reply-To: <20220824153901.488576-1-irogers@google.com>
-Message-Id: <20220824153901.488576-13-irogers@google.com>
+Message-Id: <20220824153901.488576-14-irogers@google.com>
 Mime-Version: 1.0
 References: <20220824153901.488576-1-irogers@google.com>
 X-Mailer: git-send-email 2.37.2.609.g9ff673ca1a-goog
-Subject: [PATCH v3 12/18] perf annotate: Update use of pthread mutex
+Subject: [PATCH v3 13/18] perf top: Update use of pthread mutex
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -105,8 +105,9 @@ Cc:     Ian Rogers <irogers@google.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -117,203 +118,85 @@ Switch to the use of mutex wrappers that provide better error checking.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/builtin-top.c          | 14 +++++++-------
- tools/perf/ui/browsers/annotate.c | 10 +++++-----
- tools/perf/util/annotate.c        | 13 ++++++-------
- tools/perf/util/annotate.h        |  4 ++--
- 4 files changed, 20 insertions(+), 21 deletions(-)
+ tools/perf/builtin-top.c | 18 +++++++++---------
+ tools/perf/util/top.h    |  5 +++--
+ 2 files changed, 12 insertions(+), 11 deletions(-)
 
 diff --git a/tools/perf/builtin-top.c b/tools/perf/builtin-top.c
-index 14e60f6f219c..b96bb9a23ac0 100644
+index b96bb9a23ac0..5af3347eedc1 100644
 --- a/tools/perf/builtin-top.c
 +++ b/tools/perf/builtin-top.c
-@@ -136,10 +136,10 @@ static int perf_top__parse_source(struct perf_top *top, struct hist_entry *he)
- 	}
+@@ -893,10 +893,10 @@ static void perf_top__mmap_read_idx(struct perf_top *top, int idx)
+ 		perf_mmap__consume(&md->core);
  
- 	notes = symbol__annotation(sym);
--	pthread_mutex_lock(&notes->lock);
-+	mutex_lock(&notes->lock);
- 
- 	if (!symbol__hists(sym, top->evlist->core.nr_entries)) {
--		pthread_mutex_unlock(&notes->lock);
-+		mutex_unlock(&notes->lock);
- 		pr_err("Not enough memory for annotating '%s' symbol!\n",
- 		       sym->name);
- 		sleep(1);
-@@ -155,7 +155,7 @@ static int perf_top__parse_source(struct perf_top *top, struct hist_entry *he)
- 		pr_err("Couldn't annotate %s: %s\n", sym->name, msg);
- 	}
- 
--	pthread_mutex_unlock(&notes->lock);
-+	mutex_unlock(&notes->lock);
- 	return err;
- }
- 
-@@ -208,12 +208,12 @@ static void perf_top__record_precise_ip(struct perf_top *top,
- 
- 	notes = symbol__annotation(sym);
- 
--	if (pthread_mutex_trylock(&notes->lock))
-+	if (!mutex_trylock(&notes->lock))
- 		return;
- 
- 	err = hist_entry__inc_addr_samples(he, sample, evsel, ip);
- 
--	pthread_mutex_unlock(&notes->lock);
-+	mutex_unlock(&notes->lock);
- 
- 	if (unlikely(err)) {
- 		/*
-@@ -250,7 +250,7 @@ static void perf_top__show_details(struct perf_top *top)
- 	symbol = he->ms.sym;
- 	notes = symbol__annotation(symbol);
- 
--	pthread_mutex_lock(&notes->lock);
-+	mutex_lock(&notes->lock);
- 
- 	symbol__calc_percent(symbol, evsel);
- 
-@@ -271,7 +271,7 @@ static void perf_top__show_details(struct perf_top *top)
- 	if (more != 0)
- 		printf("%d lines not displayed, maybe increase display entries [e]\n", more);
- out_unlock:
--	pthread_mutex_unlock(&notes->lock);
-+	mutex_unlock(&notes->lock);
- }
- 
- static void perf_top__resort_hists(struct perf_top *t)
-diff --git a/tools/perf/ui/browsers/annotate.c b/tools/perf/ui/browsers/annotate.c
-index b8747e8dd9ea..9bc1076374ff 100644
---- a/tools/perf/ui/browsers/annotate.c
-+++ b/tools/perf/ui/browsers/annotate.c
-@@ -319,7 +319,7 @@ static void annotate_browser__calc_percent(struct annotate_browser *browser,
- 
- 	browser->entries = RB_ROOT;
- 
--	pthread_mutex_lock(&notes->lock);
-+	mutex_lock(&notes->lock);
- 
- 	symbol__calc_percent(sym, evsel);
- 
-@@ -348,7 +348,7 @@ static void annotate_browser__calc_percent(struct annotate_browser *browser,
- 		}
- 		disasm_rb_tree__insert(browser, &pos->al);
- 	}
--	pthread_mutex_unlock(&notes->lock);
-+	mutex_unlock(&notes->lock);
- 
- 	browser->curr_hot = rb_last(&browser->entries);
- }
-@@ -474,10 +474,10 @@ static bool annotate_browser__callq(struct annotate_browser *browser,
- 	}
- 
- 	notes = symbol__annotation(dl->ops.target.sym);
--	pthread_mutex_lock(&notes->lock);
-+	mutex_lock(&notes->lock);
- 
- 	if (!symbol__hists(dl->ops.target.sym, evsel->evlist->core.nr_entries)) {
--		pthread_mutex_unlock(&notes->lock);
-+		mutex_unlock(&notes->lock);
- 		ui__warning("Not enough memory for annotating '%s' symbol!\n",
- 			    dl->ops.target.sym->name);
- 		return true;
-@@ -486,7 +486,7 @@ static bool annotate_browser__callq(struct annotate_browser *browser,
- 	target_ms.maps = ms->maps;
- 	target_ms.map = ms->map;
- 	target_ms.sym = dl->ops.target.sym;
--	pthread_mutex_unlock(&notes->lock);
-+	mutex_unlock(&notes->lock);
- 	symbol__tui_annotate(&target_ms, evsel, hbt, browser->opts);
- 	sym_title(ms->sym, ms->map, title, sizeof(title), browser->opts->percent_type);
- 	ui_browser__show_title(&browser->b, title);
-diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
-index 2c6a485c3de5..9d7dd6489a05 100644
---- a/tools/perf/util/annotate.c
-+++ b/tools/perf/util/annotate.c
-@@ -35,7 +35,6 @@
- #include "arch/common.h"
- #include "namespaces.h"
- #include <regex.h>
--#include <pthread.h>
- #include <linux/bitops.h>
- #include <linux/kernel.h>
- #include <linux/string.h>
-@@ -821,7 +820,7 @@ void symbol__annotate_zero_histograms(struct symbol *sym)
- {
- 	struct annotation *notes = symbol__annotation(sym);
- 
--	pthread_mutex_lock(&notes->lock);
-+	mutex_lock(&notes->lock);
- 	if (notes->src != NULL) {
- 		memset(notes->src->histograms, 0,
- 		       notes->src->nr_histograms * notes->src->sizeof_sym_hist);
-@@ -829,7 +828,7 @@ void symbol__annotate_zero_histograms(struct symbol *sym)
- 			memset(notes->src->cycles_hist, 0,
- 				symbol__size(sym) * sizeof(struct cyc_hist));
- 	}
--	pthread_mutex_unlock(&notes->lock);
-+	mutex_unlock(&notes->lock);
- }
- 
- static int __symbol__account_cycles(struct cyc_hist *ch,
-@@ -1086,7 +1085,7 @@ void annotation__compute_ipc(struct annotation *notes, size_t size)
- 	notes->hit_insn = 0;
- 	notes->cover_insn = 0;
- 
--	pthread_mutex_lock(&notes->lock);
-+	mutex_lock(&notes->lock);
- 	for (offset = size - 1; offset >= 0; --offset) {
- 		struct cyc_hist *ch;
- 
-@@ -1105,7 +1104,7 @@ void annotation__compute_ipc(struct annotation *notes, size_t size)
- 			notes->have_cycles = true;
+ 		if (top->qe.rotate) {
+-			pthread_mutex_lock(&top->qe.mutex);
++			mutex_lock(&top->qe.mutex);
+ 			top->qe.rotate = false;
+-			pthread_cond_signal(&top->qe.cond);
+-			pthread_mutex_unlock(&top->qe.mutex);
++			cond_signal(&top->qe.cond);
++			mutex_unlock(&top->qe.mutex);
  		}
  	}
--	pthread_mutex_unlock(&notes->lock);
-+	mutex_unlock(&notes->lock);
+ 
+@@ -1100,10 +1100,10 @@ static void *process_thread(void *arg)
+ 
+ 		out = rotate_queues(top);
+ 
+-		pthread_mutex_lock(&top->qe.mutex);
++		mutex_lock(&top->qe.mutex);
+ 		top->qe.rotate = true;
+-		pthread_cond_wait(&top->qe.cond, &top->qe.mutex);
+-		pthread_mutex_unlock(&top->qe.mutex);
++		cond_wait(&top->qe.cond, &top->qe.mutex);
++		mutex_unlock(&top->qe.mutex);
+ 
+ 		if (ordered_events__flush(out, OE_FLUSH__TOP))
+ 			pr_err("failed to process events\n");
+@@ -1217,8 +1217,8 @@ static void init_process_thread(struct perf_top *top)
+ 	ordered_events__set_copy_on_queue(&top->qe.data[0], true);
+ 	ordered_events__set_copy_on_queue(&top->qe.data[1], true);
+ 	top->qe.in = &top->qe.data[0];
+-	pthread_mutex_init(&top->qe.mutex, NULL);
+-	pthread_cond_init(&top->qe.cond, NULL);
++	mutex_init(&top->qe.mutex);
++	cond_init(&top->qe.cond);
  }
  
- int addr_map_symbol__inc_samples(struct addr_map_symbol *ams, struct perf_sample *sample,
-@@ -1258,13 +1257,13 @@ int disasm_line__scnprintf(struct disasm_line *dl, char *bf, size_t size, bool r
- 
- void annotation__init(struct annotation *notes)
- {
--	pthread_mutex_init(&notes->lock, NULL);
-+	mutex_init(&notes->lock);
+ static int __cmd_top(struct perf_top *top)
+@@ -1349,7 +1349,7 @@ static int __cmd_top(struct perf_top *top)
+ out_join:
+ 	pthread_join(thread, NULL);
+ out_join_thread:
+-	pthread_cond_signal(&top->qe.cond);
++	cond_signal(&top->qe.cond);
+ 	pthread_join(thread_process, NULL);
+ 	return ret;
  }
- 
- void annotation__exit(struct annotation *notes)
- {
- 	annotated_source__delete(notes->src);
--	pthread_mutex_destroy(&notes->lock);
-+	mutex_destroy(&notes->lock);
- }
- 
- static void annotation_line__add(struct annotation_line *al, struct list_head *head)
-diff --git a/tools/perf/util/annotate.h b/tools/perf/util/annotate.h
-index 986f2bbe4870..3cbd883e4d7a 100644
---- a/tools/perf/util/annotate.h
-+++ b/tools/perf/util/annotate.h
-@@ -8,9 +8,9 @@
- #include <linux/types.h>
- #include <linux/list.h>
- #include <linux/rbtree.h>
--#include <pthread.h>
- #include <asm/bug.h>
- #include "symbol_conf.h"
+diff --git a/tools/perf/util/top.h b/tools/perf/util/top.h
+index 1c2c0a838430..a8b0d79bd96c 100644
+--- a/tools/perf/util/top.h
++++ b/tools/perf/util/top.h
+@@ -5,6 +5,7 @@
+ #include "tool.h"
+ #include "evswitch.h"
+ #include "annotate.h"
 +#include "mutex.h"
- #include "spark.h"
- 
- struct hist_browser_timer;
-@@ -273,7 +273,7 @@ struct annotated_source {
+ #include "ordered-events.h"
+ #include "record.h"
+ #include <linux/types.h>
+@@ -53,8 +54,8 @@ struct perf_top {
+ 		struct ordered_events	*in;
+ 		struct ordered_events	 data[2];
+ 		bool			 rotate;
+-		pthread_mutex_t		 mutex;
+-		pthread_cond_t		 cond;
++		struct mutex mutex;
++		struct cond cond;
+ 	} qe;
  };
  
- struct annotation {
--	pthread_mutex_t		lock;
-+	struct mutex lock;
- 	u64			max_coverage;
- 	u64			start;
- 	u64			hit_cycles;
 -- 
 2.37.2.609.g9ff673ca1a-goog
 
