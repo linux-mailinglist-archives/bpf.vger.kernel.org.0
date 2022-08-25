@@ -2,65 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01B7E5A08C7
-	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 08:21:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 962495A08D6
+	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 08:29:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231615AbiHYGVk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Aug 2022 02:21:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33152 "EHLO
+        id S233144AbiHYG3k (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Aug 2022 02:29:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230127AbiHYGVk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Aug 2022 02:21:40 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F77F979F2
-        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 23:21:39 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id pm13so10410207pjb.5
-        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 23:21:39 -0700 (PDT)
+        with ESMTP id S231604AbiHYG3j (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Aug 2022 02:29:39 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 850B29F8C5
+        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 23:29:38 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id bh13so17045263pgb.4
+        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 23:29:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:to:from:date:from:to:cc;
-        bh=y2KmF1FHB2cUq19gxZvIaOf+AbwfAXViCh2dUqLapuA=;
-        b=B0liBOdPFulUBwoUBTrcea1wSEgqbELCjYc1OIr6GCaamYx6XLyUfYPxWiC04gVbap
-         uN3VzOyHxkoBT+Q8DNgbs2VXDX1vD48qdGQcIMRixS6DVrDQRrAz0iNGPxZuLCKKaOUH
-         e6fc0+SFs/ikaJzPs675tJoSHU1jWeC5a/IcJBHSB0GahsDItz+d1rFQD4/R16RQWynT
-         x5EZgxJCVzhar7jLt2DgjXcERktEunN+/wBkecyxEkiFBz9P4BW6vYy7yZfbg6YHbS9D
-         4WNYY0Yf2HPKl4Q0UW0Ff6h3Q+2Jm+ZAhMKJalJzYUrHWtevALsv5hu+Gj4b8bZMHVR+
-         hLbA==
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc;
+        bh=xN6ix5QqMvCzHdKCZRghSQjKhZolGhFYirvCfNMJwm4=;
+        b=VGFXpHAXG74OwfpnWZVMx+8MKd6qJN12XuXgtIm9TApmsIHExDaH1uCbHX0okWeeZK
+         bg5lX5V6hQdBo84TPP1pNG1itw1AWDwhCIylGsMig1g/usG7u8KH+kxwyzhF0CouIPAM
+         u4wSPeuhRoGiON1gE0uWKusEj6/Q1txPG/tzLFa5FwPrEtiDFsoCBoqNIzk35D5SwQaP
+         bkCowqMPLeJHVmwLDxmqZDikaZK+JynXIttS6Su3MSavB0yehUzroZ/q+qOpzG2B8iPJ
+         5HEoO6QrmuRiEpIakRlHBv66vE9q27DGG/Ihj13qAYfonm/dp7KOnvBDj/1KcJcjtrMb
+         Yq8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:to:from:date:x-gm-message-state:from:to:cc;
-        bh=y2KmF1FHB2cUq19gxZvIaOf+AbwfAXViCh2dUqLapuA=;
-        b=eTXBopkgo4J47TQZFi41xL6SuNGWydniTdCpPLWuOB6UraNAFvRHOeX1Lv71w65IFR
-         geIlSOD+m7LJvM631vNOflwqVwcPoq0iTWg9iyJX6lnKdl/bjZZrjMIjvQ+MSdYV/bjt
-         ImHrw1rW3kDJc/fEAatJ+VHezuYH/pgvYVWNQ3p2OsUzO419AxihRQvWeOJnMsdmvx9m
-         pH/0G84zN28wajkolSkXl7BUMIbGWW0dWHkwdwEF63mW5JwMISJBLCzGS7YmAipZymhj
-         S8ica0X3eQstSu3NaqOLu3FG7qoA4CrsiJ6hS0/UsCpVcVs8zHzsIa+o/63WLUUBAabO
-         JGqw==
-X-Gm-Message-State: ACgBeo0brNvK8TKTlPZqqefo/kUJ3SlHSdp50EWYxtyiiP9/m81zkC1S
-        k1jNNnmQZg13PjHThkjK25s=
-X-Google-Smtp-Source: AA6agR4s09ttes2H36G2Qnz1Zg2pgQ8DRcoUmExjWoI955nN8HnCnME7G9RDO+AwmDSE5DDC4Cxmhw==
-X-Received: by 2002:a17:90a:b00f:b0:1f7:67c6:5df5 with SMTP id x15-20020a17090ab00f00b001f767c65df5mr2882653pjq.59.1661408498859;
-        Wed, 24 Aug 2022 23:21:38 -0700 (PDT)
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc;
+        bh=xN6ix5QqMvCzHdKCZRghSQjKhZolGhFYirvCfNMJwm4=;
+        b=WykNqrTjOKM/ME3n56/F1fCTVW4aXwE4U+Au40C3m5iHmceDEqvmfwnEr1SNCExVdt
+         drmLypexmPL7X3kyL6i0YOXtttPxmMFzMWgDrs+EYoaPT6Rq9P2kb7NN8p0l9Bp/KNt/
+         GnhvbjaXuLPMcCqlN/2cO2OAjNH5mTwXoFyXHzBHyEiTARCScHsIaSJuqqS+pDK9NO2Y
+         CWvGje+5olBcnYGOQmiQyQ9hs43nK0JfrzblzMx4lG3AvYRIvFvNH1LWsf8sm/LX6MzU
+         nqeCWAHoTPDKVcLz9FIGncSywKXFeHXx2ojLI9A+NubHm3GE4dpu3hO1kFADOi85TjmD
+         JNbQ==
+X-Gm-Message-State: ACgBeo0yU07oQ8uUFjAea+EJ5uYScVhiv+67cgcZDyIvk2p7w2eSsDR4
+        koTYmCcB/6blUjc76jf4THY=
+X-Google-Smtp-Source: AA6agR5DyslL9y11JoCLXtcHz2ineChQwQ+EaI1nngs9k2EiNACM1jdYCAdQwFvpuahRw7aF6LABXA==
+X-Received: by 2002:a63:86c2:0:b0:42a:42d5:a4a6 with SMTP id x185-20020a6386c2000000b0042a42d5a4a6mr2021763pgd.189.1661408978050;
+        Wed, 24 Aug 2022 23:29:38 -0700 (PDT)
 Received: from localhost ([98.97.36.33])
-        by smtp.gmail.com with ESMTPSA id q18-20020a170902f35200b0016be834d54asm13528268ple.306.2022.08.24.23.21.37
+        by smtp.gmail.com with ESMTPSA id q67-20020a634346000000b004161e62a3a5sm12290260pga.78.2022.08.24.23.29.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Aug 2022 23:21:38 -0700 (PDT)
-Date:   Wed, 24 Aug 2022 23:21:37 -0700
+        Wed, 24 Aug 2022 23:29:37 -0700 (PDT)
+Date:   Wed, 24 Aug 2022 23:29:36 -0700
 From:   John Fastabend <john.fastabend@gmail.com>
-To:     Eduard Zingerman <eddyz87@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
-        ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
-        kernel-team@fb.com, yhs@fb.com
-Message-ID: <630714f155a8_e1c39208a1@john.notmuch>
-In-Reply-To: <f040525326088f63201d2ef76a7b759f44f38350.camel@gmail.com>
-References: <20220822094312.175448-1-eddyz87@gmail.com>
- <20220822094312.175448-2-eddyz87@gmail.com>
- <63055fa5a080e_292a8208db@john.notmuch>
- <f040525326088f63201d2ef76a7b759f44f38350.camel@gmail.com>
-Subject: Re: [PATCH RFC bpf-next 1/2] bpf: propagate nullness information for
- reg to reg comparisons
+To:     Lam Thai <lamthai@arista.com>, bpf@vger.kernel.org
+Cc:     Lam Thai <lamthai@arista.com>
+Message-ID: <630716d02ebbe_e1c39208c3@john.notmuch>
+In-Reply-To: <20220824225859.9038-1-lamthai@arista.com>
+References: <20220824225859.9038-1-lamthai@arista.com>
+Subject: RE: [PATCH] bpftool: fix a wrong type cast in btf_dumper_int
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
@@ -75,43 +70,41 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Eduard Zingerman wrote:
-> > On Tue, 2022-08-23 at 16:15 -0700, John Fastabend wrote:
-> 
-> Hi John,
-> 
-> Thank you for commenting!
-> 
-> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > > index 2c1f8069f7b7..c48d34625bfd 100644
-> > > --- a/kernel/bpf/verifier.c
-> > > +++ b/kernel/bpf/verifier.c
-> > > @@ -472,6 +472,11 @@ static bool type_may_be_null(u32 type)
-> > >  	return type & PTR_MAYBE_NULL;
-> > >  }
-> > >  
-> > > +static bool type_is_pointer(enum bpf_reg_type type)
-> > > +{
-> > > +	return type != NOT_INIT && type != SCALAR_VALUE;
-> > > +}
-> > > +
-> > 
-> > Instead of having another helper is_pointer_value() could work here?
-> > Checking if we need NOT_INIT in that helper now.
-> 
-> Do you mean modifying the `__is_pointer_value` by adding a check
-> `reg->type != NOT_INIT`?
-> 
-> I tried this out and tests are passing, but __is_pointer_value /
-> is_pointer_value are used in a lot of places, seem to be a scary
-> change, to be honest.
+Lam Thai wrote:
+> When `data` points to a boolean value, casting it to `int *` is problematic
+> and could lead to a wrong value being passed to `jsonw_bool`. Change the
+> cast to `bool *` instead.
 
-Agree it looks scary I wanted to play around with it more. I agree
-its not the same and off to investigate a few places we use
-__is_pointer_value now. Might add a few more tests while I'm at it.
+How is it problematic? Its from BTF_KIND_INT by my quick reading.
 
 > 
-> Thanks,
-> Eduard
+> Fixes: b12d6ec09730 ("bpf: btf: add btf print functionality")
+> Signed-off-by: Lam Thai <lamthai@arista.com>
+> ---
+
+for bpf-next looks like a nice cleanup, I don't think its needed for bpf
+tree?
+
+>  tools/bpf/bpftool/btf_dumper.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/bpf/bpftool/btf_dumper.c b/tools/bpf/bpftool/btf_dumper.c
+> index 125798b0bc5d..19924b6ce796 100644
+> --- a/tools/bpf/bpftool/btf_dumper.c
+> +++ b/tools/bpf/bpftool/btf_dumper.c
+> @@ -452,7 +452,7 @@ static int btf_dumper_int(const struct btf_type *t, __u8 bit_offset,
+>  					     *(char *)data);
+>  		break;
+>  	case BTF_INT_BOOL:
+> -		jsonw_bool(jw, *(int *)data);
+> +		jsonw_bool(jw, *(bool *)data);
+>  		break;
+>  	default:
+>  		/* shouldn't happen */
+> 
+> base-commit: 6fc2838b148f8fe6aa14fc435e666984a0505018
+> -- 
+> 2.37.0
+> 
 
 
