@@ -2,129 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26E245A0561
-	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 02:52:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3F7C5A056C
+	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 02:56:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231317AbiHYAwr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Aug 2022 20:52:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51742 "EHLO
+        id S231538AbiHYA4k (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Aug 2022 20:56:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231446AbiHYAwq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Aug 2022 20:52:46 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94FCE8F976
-        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 17:52:45 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id gb36so36593210ejc.10
-        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 17:52:45 -0700 (PDT)
+        with ESMTP id S229437AbiHYA4i (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Aug 2022 20:56:38 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C53144540;
+        Wed, 24 Aug 2022 17:56:37 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id r4so24141391edi.8;
+        Wed, 24 Aug 2022 17:56:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc;
-        bh=ot0aEvyT380VjDU6PPl13tz+5G5649T71Q1QmyiGXIo=;
-        b=YpSDVkBcxWVnnXfQXF/M7AZGWY5x+V+c24wMO5zVR8RFtXivElwnk0FLNTXke/emLT
-         oh8/MGX4jyRJc+YrZXh96+Jtsdh8UfgCE6n4YSYTOMmu4AtkTQJ7laVjSVHJm8+QclNG
-         oVzUJs4I5lvMg1LyJ9KO0CmiPyQ9FIcsSPJtg=
+        bh=Fb8xGD4kaa92dvVnQPrRFtkQAV3xtlSQACdU3g7w0Yo=;
+        b=OrYgLPE69cuXrh8bm5isYc18fYjBF2hdQdbz+PZ6qzP1YKTeUMrFrv69AgJXZM4XyC
+         7DksdJb97ITyn4r0kKmuv77uIP+h0edJeuSoVPqeZelsFQczF4TIEOrPp0geqRY0k1n5
+         5zVLxs9ck0E7hDRGNZYdvlr83XGYat+sECsSfn/du1TJ4hZi5YUajOq0z4DozqzadTzA
+         XRt5OXJpkiXgOB4zuBpZUC9GGwDMHR+JE1ImeKsOFmNp9VU3gzTPOiOf7a/4yrmVcW78
+         mnEuVc1WSggGWrmqd1oKxppmNI61xMGqt+WPCj1I58DkSF/jazpyyrH0WXubYIP0QLGv
+         nCJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc;
-        bh=ot0aEvyT380VjDU6PPl13tz+5G5649T71Q1QmyiGXIo=;
-        b=cICZeKTuYbb/wySlOLj3hFDFoV59+0xfp5ASgm97+Mg1xn6SN6mMUuOcs1MPxuXYgg
-         5uYuH32Mmcb6Fl1l0WgS0SJWMmSp/bXOwI51JKxNJvxMNmBC72SOU6PHhgUC2YpkTZ8S
-         z+3vPUTino6u34KLEwXG9qnEvlaWApXVU00IPJp2cht3eG9b0xHw7VuHXk975C53ngc3
-         ridy0oktu3uvLnEcuf5l39ynWzMtWVGATlmmmATrSNoBYHloE2DK9TXQ32cTiFMxg8Oh
-         zyXa3Tf5avAi2QupvJFovgQwElfhvtyNU+PK5IykCTpZJ1nBty4/Y4zlvGw0j5iF7A+r
-         59zA==
-X-Gm-Message-State: ACgBeo1hTul+Eyid5bxvB8BAnmZsRZsXnwt2cVyA3K3QKqaFQr5kHEPC
-        x67/MFNlMj52VNiJ7SO+6qgCIae71OHkX+ch
-X-Google-Smtp-Source: AA6agR43TRXnadJNT0oaXmHdHreCLMO0ApFlSk/OdhsdbjhFrIKUWHWuwtJlWk/GysdUHA34Xoq5jA==
-X-Received: by 2002:a17:907:97cb:b0:731:6d1:13fa with SMTP id js11-20020a17090797cb00b0073106d113famr853376ejc.375.1661388763918;
-        Wed, 24 Aug 2022 17:52:43 -0700 (PDT)
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com. [209.85.221.50])
-        by smtp.gmail.com with ESMTPSA id e4-20020a056402088400b0043cb1a83c9fsm3856586edy.71.2022.08.24.17.52.38
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Aug 2022 17:52:41 -0700 (PDT)
-Received: by mail-wr1-f50.google.com with SMTP id a4so22729011wrq.1
-        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 17:52:38 -0700 (PDT)
-X-Received: by 2002:adf:e843:0:b0:225:221f:262 with SMTP id
- d3-20020adfe843000000b00225221f0262mr764111wrn.193.1661388757863; Wed, 24 Aug
- 2022 17:52:37 -0700 (PDT)
+        bh=Fb8xGD4kaa92dvVnQPrRFtkQAV3xtlSQACdU3g7w0Yo=;
+        b=fzixKzimTo+s6AcD9s0sSwyEBi1awnuxj0X6p5Zdi77GMYdhBWtsIvAX2LfH0bAyw4
+         +b6EKqlg+Mtym7rw9beBqwUCe21UIV5kaeMxEMuWZ/sMVkSOXkT3DikzXM4XbcG3xH8n
+         8UVWvJs8TrOsUQg6DIYy1v2fsbJiE2iq5160jbDIzvatVBzD+YeYJDI/rcdKxuITtCT7
+         mgp08dxUpZWiKTmiBT+p8Al3USVYP3BYA53GoLarq6x2+TKHyWd2da8KibFZSsJywS9Q
+         3PiMmONvIY+GBtK2iXcBsSF7UiW2/Fz8h73gDrcEhcwpCUyZ+D8MIkpiSBeg4kX9EIlX
+         e7PQ==
+X-Gm-Message-State: ACgBeo1a031yF+Aup5qvuNZ2KkplusJcqmmDSBbKIg/SMEumcmQIstM4
+        SOhMsk2Rc2Ii9pGIpK+6+nEK5dL//O335hxplk8aB3z6
+X-Google-Smtp-Source: AA6agR5Vptc/+u0DKWCDlF23ms6GUEpk7kcZM3dVULL9AL7cqxrFGEiy/U1dRol/prPYEdh8P8YsN8uPAugncZRu9IY=
+X-Received: by 2002:a05:6402:28cb:b0:43b:c6d7:ef92 with SMTP id
+ ef11-20020a05640228cb00b0043bc6d7ef92mr1188312edb.333.1661388996135; Wed, 24
+ Aug 2022 17:56:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210423230609.13519-1-alx.manpages@gmail.com>
- <20220824185505.56382-1-alx.manpages@gmail.com> <CAADnVQKiEVL9zRtN4WY2+cTD2b3b3buV8BQb83yQw13pWq4OGQ@mail.gmail.com>
- <c06008bc-0c13-12f1-df85-3814b74e47f9@gmail.com>
-In-Reply-To: <c06008bc-0c13-12f1-df85-3814b74e47f9@gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 24 Aug 2022 17:52:21 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whfft=qpCiQ=mkaCz+X1MEfGK5hpUWYoM5zWK=2EQMwyw@mail.gmail.com>
-Message-ID: <CAHk-=whfft=qpCiQ=mkaCz+X1MEfGK5hpUWYoM5zWK=2EQMwyw@mail.gmail.com>
-Subject: Re: [PATCH v3] Many pages: Document fixed-width types with ISO C naming
-To:     Alejandro Colomar <alx.manpages@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Alex Colomar <alx@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        linux-man <linux-man@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+References: <20220824150051.54eb7748@canb.auug.org.au> <CAP01T74GyRjXRZaDA-E5CXeaoKaf+FegQFxNP9k6kt8cvbt+EA@mail.gmail.com>
+In-Reply-To: <CAP01T74GyRjXRZaDA-E5CXeaoKaf+FegQFxNP9k6kt8cvbt+EA@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 24 Aug 2022 17:56:24 -0700
+Message-ID: <CAADnVQJsGudS7W=GcJGQyrzwsZ26=uCDQUW7MGDZ-RVpdsOH6A@mail.gmail.com>
+Subject: Re: linux-next: Fixes tag needs some work in the bpf-next tree
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Zack Weinberg <zackw@panix.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        glibc <libc-alpha@sourceware.org>, GCC <gcc-patches@gcc.gnu.org>,
-        bpf <bpf@vger.kernel.org>, LTP List <ltp@lists.linux.it>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        Joseph Myers <joseph@codesourcery.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Cyril Hrubis <chrubis@suse.cz>,
-        David Howells <dhowells@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>, Rich Felker <dalias@libc.org>,
-        Adhemerval Zanella <adhemerval.zanella@linaro.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 24, 2022 at 4:36 PM Alejandro Colomar
-<alx.manpages@gmail.com> wrote:
+On Wed, Aug 24, 2022 at 10:05 AM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
 >
-> I'm trying to be nice, and ask for review to make sure I'm not making
-> some big mistake by accident, and I get disrespect?  No thanks.
+> On Wed, 24 Aug 2022 at 07:00, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> >
+> > Hi all,
+> >
+> > In commit
+> >
+> >   2e5e0e8ede02 ("bpf: Fix reference state management for synchronous callbacks")
+> >
+> > Fixes tag
+> >
+> >   Fixes: 69c87ba6225 ("bpf: Add bpf_for_each_map_elem() helper")
+> >
+> > has these problem(s):
+> >
+> >   - Target SHA1 does not exist
+> >
+> > Maybe you meant
+> >
+> > Fixes: 69c087ba6225 ("bpf: Add bpf_for_each_map_elem() helper")
+> >
+>
+> Ugh, really sorry, I must have fat fingered and pressed 'x' in vim
+> while editing the commit message. I always generate these using a git
+> fixes alias.
 
-You've been told multiple times that the kernel doesn't use the
-"standard" names, and *cannot* use them for namespace reasons, and you
-ignore all the feedback, and then you claim you are asking for review?
+Since that was caught quickly there weren't that many commits on top.
+Fixed and force pushed bpf-next.
 
-That's not "asking for review". That's "I think I know the answer, and
-when people tell me otherwise I ignore them".
-
-The fact is, kernel UAPI header files MUST NOT use the so-called standard names.
-
-We cannot provide said names, because they are only provided by the
-standard header files.
-
-And since kernel header files cannot provide them, then kernel UAPI
-header files cannot _use_ them.
-
-End result: any kernel UAPI header file will continue to use __u32 etc
-naming that doesn't have any namespace pollution issues.
-
-Nothing else is even remotely acceptable.
-
-Stop trying to make this something other than it is.
-
-And if you cannot accept these simple technical reasons, why do you
-expect respect?
-
-Why are you so special that you think you can change the rules for
-kernel uapi files over the *repeated* objections from maintainers who
-know better?
-
-                  Linus
+We actually have a script that checks such sha-s. Not sure how we missed it.
