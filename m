@@ -2,315 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3FD55A1857
-	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 20:07:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D303C5A189F
+	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 20:17:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242973AbiHYSHu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Aug 2022 14:07:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57072 "EHLO
+        id S240942AbiHYSRB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Aug 2022 14:17:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239513AbiHYSHt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Aug 2022 14:07:49 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCA66BD0BC
-        for <bpf@vger.kernel.org>; Thu, 25 Aug 2022 11:07:47 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id x63-20020a17090a6c4500b001fabbf8debfso5930426pjj.4
-        for <bpf@vger.kernel.org>; Thu, 25 Aug 2022 11:07:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=N/8DuNhBsJCfQQOnZPVC8hWFa5C0wn9sWbIDiP7z2E0=;
-        b=kmevD9JcgW6BWcyGTzbziOz0nYFB4K4qqTNZE2I2x9KcthoJ3hgaetJDpFJ+o+MF9F
-         0giDPpGoJMDQJjp7x7PkD2LQfbAHcGeR6qJcD0Moc4uJuA+g4yL89/7+35O2GAn33uN2
-         6s4Fawkha1Ib8c00lYdemJHajlkN+WORrM9fSZHkMVNZQKAtSgcXws+9nVpOhrNNOaZo
-         TL3RqoUZ1VVEdtErx+hTtsZIsBKP7Aeo3c72AeWlF5J6dPrcWRE98SHrnm9jHaJi3tVy
-         9+Y9oBDMnOeZBA0/NiApYK749X07/Y8kHONkm34vkjODENg7fIqOCHc80FxYVTYha/y+
-         S6xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=N/8DuNhBsJCfQQOnZPVC8hWFa5C0wn9sWbIDiP7z2E0=;
-        b=5rwC1QyPcyMdyk1Z/hC/hYaSXaN3i4aCRk5A/1Eh7PzHuENm5kvwBJaOOx6tZq2bJ/
-         OsJdLzXDrNKGm8S4WDJbrghtgBM/9jvApnh3aVuaRK8eewPsYw8P11K8keOng7qsgARU
-         Kczoj2rv3zqOgkktJLtC45gQDAJS139ootwhvvWxe6k6h+Ib+aZPk/s+z4HW3N9VlWsw
-         6wny6azqfAF4QLS26mNPUMKCouJ5IUbvQ23uoCYyyX2OMWzIDr9XC0Jj1SieZQmOOhRh
-         fjdpApIt7fPKwE0qq2NF5rSB80kl86cCIQQvjxNHfuA4C4F/nbuzV5RD1eUROrz1dO41
-         mwwA==
-X-Gm-Message-State: ACgBeo1zp2PZLfGb5MMBksugbd8c2MAJdfF78Qgek5dHLYB2ra8xg967
-        Hp6Zk7cXnIh587//mRy0xYElWleFCiITwTKpVYEj4g==
-X-Google-Smtp-Source: AA6agR6TBAVSZfbS+YQgVAvkbJ3vuUK0QLplw2Z3smcUwMHjrHxaSEVzSfkQuvxHLuYHJYeuASrhmkPeFVyFwbVpTts=
-X-Received: by 2002:a17:90b:388e:b0:1f5:40d4:828d with SMTP id
- mu14-20020a17090b388e00b001f540d4828dmr240475pjb.31.1661450867145; Thu, 25
- Aug 2022 11:07:47 -0700 (PDT)
+        with ESMTP id S243478AbiHYSQo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Aug 2022 14:16:44 -0400
+Received: from out02.mta.xmission.com (out02.mta.xmission.com [166.70.13.232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31862BD1FF;
+        Thu, 25 Aug 2022 11:16:00 -0700 (PDT)
+Received: from in02.mta.xmission.com ([166.70.13.52]:35250)
+        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1oRHOW-005Rga-9i; Thu, 25 Aug 2022 12:15:56 -0600
+Received: from ip68-110-29-46.om.om.cox.net ([68.110.29.46]:36814 helo=email.froward.int.ebiederm.org.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1oRHOU-00DcQ7-Hr; Thu, 25 Aug 2022 12:15:55 -0600
+From:   "Eric W. Biederman" <ebiederm@xmission.com>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     "Serge E. Hallyn" <serge@hallyn.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Frederick Lawler <fred@cloudflare.com>, kpsingh@kernel.org,
+        revest@chromium.org, jackmanb@chromium.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        jmorris@namei.org, stephen.smalley.work@gmail.com,
+        eparis@parisplace.org, shuah@kernel.org, brauner@kernel.org,
+        casey@schaufler-ca.com, bpf@vger.kernel.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, kernel-team@cloudflare.com,
+        cgzones@googlemail.com, karl@bigbadwolfsecurity.com,
+        tixxdz@gmail.com
+In-Reply-To: <CAHC9VhSZ0aaa3k3704j8_9DJvSNRy-0jfXpy1ncs2Jmo8H0a7g@mail.gmail.com>
+        (Paul Moore's message of "Fri, 19 Aug 2022 17:10:29 -0400")
+References: <CAHC9VhTuxxRfJg=Ax5z87Jz6tq1oVRcppB444dHM2gP-FZrkTQ@mail.gmail.com>
+        <8735dux60p.fsf@email.froward.int.ebiederm.org>
+        <CAHC9VhSHJNLS-KJ-Rz1R12PQbqACSksLYLbymF78d5hMkSGc-g@mail.gmail.com>
+        <871qte8wy3.fsf@email.froward.int.ebiederm.org>
+        <CAHC9VhSU_sqMQwdoh0nAFdURqs_cVFbva8=otjcZUo8s+xyC9A@mail.gmail.com>
+        <8735du7fnp.fsf@email.froward.int.ebiederm.org>
+        <CAHC9VhQuRNxzgVeNhDy=p5+RHz5+bTH6zFdU=UvvEhyH1e962A@mail.gmail.com>
+        <87tu6a4l83.fsf@email.froward.int.ebiederm.org>
+        <20220818140521.GA1000@mail.hallyn.com>
+        <CAHC9VhRqBxtV04ARQFPWpMf1aFZo0HP_HiJ+8VpXAT-zXF6UXw@mail.gmail.com>
+        <20220819144537.GA16552@mail.hallyn.com>
+        <CAHC9VhSZ0aaa3k3704j8_9DJvSNRy-0jfXpy1ncs2Jmo8H0a7g@mail.gmail.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+Date:   Thu, 25 Aug 2022 13:15:46 -0500
+Message-ID: <875yigp4tp.fsf@email.froward.int.ebiederm.org>
 MIME-Version: 1.0
-References: <20220824222601.1916776-1-kafai@fb.com> <20220824222614.1918332-1-kafai@fb.com>
-In-Reply-To: <20220824222614.1918332-1-kafai@fb.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Thu, 25 Aug 2022 11:07:36 -0700
-Message-ID: <CAKH8qBtT332XrJ3aEw=o_9K+g6LYHbdhPG7s8R1uuNbKBso0+Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 02/17] bpf: net: Change sk_getsockopt() to take
- the sockptr_t argument
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>, kernel-team@fb.com,
-        Paolo Abeni <pabeni@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-XM-SPF: eid=1oRHOU-00DcQ7-Hr;;;mid=<875yigp4tp.fsf@email.froward.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.110.29.46;;;frm=ebiederm@xmission.com;;;spf=softfail
+X-XM-AID: U2FsdGVkX1+SG3YsTIgmOSCWJtea0hxDJibtwIu7XJw=
+X-SA-Exim-Connect-IP: 68.110.29.46
+X-SA-Exim-Mail-From: ebiederm@xmission.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-DCC: XMission; sa04 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Paul Moore <paul@paul-moore.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 1139 ms - load_scoreonly_sql: 0.07 (0.0%),
+        signal_user_changed: 9 (0.8%), b_tie_ro: 8 (0.7%), parse: 1.08 (0.1%),
+        extract_message_metadata: 15 (1.3%), get_uri_detail_list: 1.83 (0.2%),
+        tests_pri_-1000: 9 (0.8%), tests_pri_-950: 1.31 (0.1%),
+        tests_pri_-900: 1.08 (0.1%), tests_pri_-90: 178 (15.6%), check_bayes:
+        166 (14.5%), b_tokenize: 9 (0.8%), b_tok_get_all: 10 (0.9%),
+        b_comp_prob: 3.1 (0.3%), b_tok_touch_all: 139 (12.2%), b_finish: 1.00
+        (0.1%), tests_pri_0: 912 (80.0%), check_dkim_signature: 0.67 (0.1%),
+        check_dkim_adsp: 4.0 (0.4%), poll_dns_idle: 0.44 (0.0%), tests_pri_10:
+        1.75 (0.2%), tests_pri_500: 7 (0.7%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH v5 0/4] Introduce security_create_user_ns()
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 24, 2022 at 3:29 PM Martin KaFai Lau <kafai@fb.com> wrote:
->
-> This patch changes sk_getsockopt() to take the sockptr_t argument
-> such that it can be used by bpf_getsockopt(SOL_SOCKET) in a
-> latter patch.
->
-> security_socket_getpeersec_stream() is not changed.  It stays
-> with the __user ptr (optval.user and optlen.user) to avoid changes
-> to other security hooks.  bpf_getsockopt(SOL_SOCKET) also does not
-> support SO_PEERSEC.
->
-> Signed-off-by: Martin KaFai Lau <kafai@fb.com>
-> ---
->  include/linux/filter.h  |  3 +--
->  include/linux/sockptr.h |  5 +++++
->  net/core/filter.c       |  5 ++---
->  net/core/sock.c         | 43 +++++++++++++++++++++++------------------
->  4 files changed, 32 insertions(+), 24 deletions(-)
->
-> diff --git a/include/linux/filter.h b/include/linux/filter.h
-> index a5f21dc3c432..527ae1d64e27 100644
-> --- a/include/linux/filter.h
-> +++ b/include/linux/filter.h
-> @@ -900,8 +900,7 @@ int sk_reuseport_attach_filter(struct sock_fprog *fprog, struct sock *sk);
->  int sk_reuseport_attach_bpf(u32 ufd, struct sock *sk);
->  void sk_reuseport_prog_free(struct bpf_prog *prog);
->  int sk_detach_filter(struct sock *sk);
-> -int sk_get_filter(struct sock *sk, struct sock_filter __user *filter,
-> -                 unsigned int len);
-> +int sk_get_filter(struct sock *sk, sockptr_t optval, unsigned int len);
->
->  bool sk_filter_charge(struct sock *sk, struct sk_filter *fp);
->  void sk_filter_uncharge(struct sock *sk, struct sk_filter *fp);
-> diff --git a/include/linux/sockptr.h b/include/linux/sockptr.h
-> index d45902fb4cad..bae5e2369b4f 100644
-> --- a/include/linux/sockptr.h
-> +++ b/include/linux/sockptr.h
-> @@ -64,6 +64,11 @@ static inline int copy_to_sockptr_offset(sockptr_t dst, size_t offset,
->         return 0;
->  }
->
-> +static inline int copy_to_sockptr(sockptr_t dst, const void *src, size_t size)
-> +{
-> +       return copy_to_sockptr_offset(dst, 0, src, size);
-> +}
-> +
->  static inline void *memdup_sockptr(sockptr_t src, size_t len)
->  {
->         void *p = kmalloc_track_caller(len, GFP_USER | __GFP_NOWARN);
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 63e25d8ce501..0f6f86b9e487 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -10712,8 +10712,7 @@ int sk_detach_filter(struct sock *sk)
->  }
->  EXPORT_SYMBOL_GPL(sk_detach_filter);
->
-> -int sk_get_filter(struct sock *sk, struct sock_filter __user *ubuf,
-> -                 unsigned int len)
-> +int sk_get_filter(struct sock *sk, sockptr_t optval, unsigned int len)
->  {
->         struct sock_fprog_kern *fprog;
->         struct sk_filter *filter;
-> @@ -10744,7 +10743,7 @@ int sk_get_filter(struct sock *sk, struct sock_filter __user *ubuf,
->                 goto out;
->
->         ret = -EFAULT;
-> -       if (copy_to_user(ubuf, fprog->filter, bpf_classic_proglen(fprog)))
-> +       if (copy_to_sockptr(optval, fprog->filter, bpf_classic_proglen(fprog)))
->                 goto out;
->
->         /* Instead of bytes, the API requests to return the number
-> diff --git a/net/core/sock.c b/net/core/sock.c
-> index 21bc4bf6b485..7fa30fd4b37f 100644
-> --- a/net/core/sock.c
-> +++ b/net/core/sock.c
-> @@ -712,8 +712,8 @@ static int sock_setbindtodevice(struct sock *sk, sockptr_t optval, int optlen)
->         return ret;
->  }
->
-> -static int sock_getbindtodevice(struct sock *sk, char __user *optval,
-> -                               int __user *optlen, int len)
-> +static int sock_getbindtodevice(struct sock *sk, sockptr_t optval,
-> +                               sockptr_t optlen, int len)
->  {
->         int ret = -ENOPROTOOPT;
->  #ifdef CONFIG_NETDEVICES
-> @@ -737,12 +737,12 @@ static int sock_getbindtodevice(struct sock *sk, char __user *optval,
->         len = strlen(devname) + 1;
->
->         ret = -EFAULT;
-> -       if (copy_to_user(optval, devname, len))
-> +       if (copy_to_sockptr(optval, devname, len))
->                 goto out;
->
->  zero:
->         ret = -EFAULT;
-> -       if (put_user(len, optlen))
-> +       if (copy_to_sockptr(optlen, &len, sizeof(int)))
->                 goto out;
->
->         ret = 0;
-> @@ -1568,20 +1568,23 @@ static void cred_to_ucred(struct pid *pid, const struct cred *cred,
->         }
->  }
->
-> -static int groups_to_user(gid_t __user *dst, const struct group_info *src)
-> +static int groups_to_user(sockptr_t dst, const struct group_info *src)
->  {
->         struct user_namespace *user_ns = current_user_ns();
->         int i;
->
-> -       for (i = 0; i < src->ngroups; i++)
-> -               if (put_user(from_kgid_munged(user_ns, src->gid[i]), dst + i))
-> +       for (i = 0; i < src->ngroups; i++) {
-> +               gid_t gid = from_kgid_munged(user_ns, src->gid[i]);
-> +
-> +               if (copy_to_sockptr_offset(dst, i * sizeof(gid), &gid, sizeof(gid)))
->                         return -EFAULT;
-> +       }
->
->         return 0;
->  }
->
->  static int sk_getsockopt(struct sock *sk, int level, int optname,
-> -                        char __user *optval, int __user *optlen)
-> +                        sockptr_t optval, sockptr_t optlen)
->  {
->         struct socket *sock = sk->sk_socket;
->
-> @@ -1600,7 +1603,7 @@ static int sk_getsockopt(struct sock *sk, int level, int optname,
->         int lv = sizeof(int);
->         int len;
->
-> -       if (get_user(len, optlen))
-> +       if (copy_from_sockptr(&len, optlen, sizeof(int)))
+Paul Moore <paul@paul-moore.com> writes:
 
-Do we want to be consistent wrt to sizeof?
-
-copy_from_sockptr(&len, optlen, sizeof(int))
-vs
-copy_from_sockptr(&len, optlen, sizeof(optlen))
-
-Alternatively, should we have put_sockptr/get_sockopt with a semantics
-similar to put_user/get_user to remove all this ambiguity?
-
->                 return -EFAULT;
->         if (len < 0)
->                 return -EINVAL;
-> @@ -1735,7 +1738,7 @@ static int sk_getsockopt(struct sock *sk, int level, int optname,
->                 cred_to_ucred(sk->sk_peer_pid, sk->sk_peer_cred, &peercred);
->                 spin_unlock(&sk->sk_peer_lock);
+> On Fri, Aug 19, 2022 at 10:45 AM Serge E. Hallyn <serge@hallyn.com> wrote:
+>>  I am hoping we can come up with
+>> "something better" to address people's needs, make everyone happy, and
+>> bring forth world peace.  Which would stack just fine with what's here
+>> for defense in depth.
+>>
+>> You may well not be interested in further work, and that's fine.  I need
+>> to set aside a few days to think on this.
 >
-> -               if (copy_to_user(optval, &peercred, len))
-> +               if (copy_to_sockptr(optval, &peercred, len))
->                         return -EFAULT;
->                 goto lenout;
->         }
-> @@ -1753,11 +1756,11 @@ static int sk_getsockopt(struct sock *sk, int level, int optname,
->                 if (len < n * sizeof(gid_t)) {
->                         len = n * sizeof(gid_t);
->                         put_cred(cred);
-> -                       return put_user(len, optlen) ? -EFAULT : -ERANGE;
-> +                       return copy_to_sockptr(optlen, &len, sizeof(int)) ? -EFAULT : -ERANGE;
->                 }
->                 len = n * sizeof(gid_t);
->
-> -               ret = groups_to_user((gid_t __user *)optval, cred->group_info);
-> +               ret = groups_to_user(optval, cred->group_info);
->                 put_cred(cred);
->                 if (ret)
->                         return ret;
-> @@ -1773,7 +1776,7 @@ static int sk_getsockopt(struct sock *sk, int level, int optname,
->                         return -ENOTCONN;
->                 if (lv < len)
->                         return -EINVAL;
-> -               if (copy_to_user(optval, address, len))
-> +               if (copy_to_sockptr(optval, address, len))
->                         return -EFAULT;
->                 goto lenout;
->         }
-> @@ -1790,7 +1793,7 @@ static int sk_getsockopt(struct sock *sk, int level, int optname,
->                 break;
->
->         case SO_PEERSEC:
-> -               return security_socket_getpeersec_stream(sock, optval, optlen, len);
-> +               return security_socket_getpeersec_stream(sock, optval.user, optlen.user, len);
+> I'm happy to continue the discussion as long as it's constructive; I
+> think we all are.  My gut feeling is that Frederick's approach falls
+> closest to the sweet spot of "workable without being overly offensive"
+> (*cough*), but if you've got an additional approach in mind, or an
+> alternative approach that solves the same use case problems, I think
+> we'd all love to hear about it.
 
-I'm assuming there should be something to prevent this being called
-from BPF? (haven't read all the patches yet)
-Do we want to be a bit more defensive with 'if (!optval.user) return
--EFAULT' or something similar?
+I would love to actually hear the problems people are trying to solve so
+that we can have a sensible conversation about the trade offs.
+
+As best I can tell without more information people want to use
+the creation of a user namespace as a signal that the code is
+attempting an exploit.
+
+As such let me propose instead of returning an error code which will let
+the exploit continue, have the security hook return a bool.  With true
+meaning the code can continue and on false it will trigger using SIGSYS
+to terminate the program like seccomp does.
+
+I am not super fond of that idea, but it means that userspace code is
+not expected to deal with the situation, and the only conversation a
+userspace application developer needs to enter into with a system
+administrator or security policy developer is one to prove they are not
+exploit code.  Plus it makes much more sense to kill an exploit
+immediately instead of letting it run.
 
 
->         case SO_MARK:
->                 v.val = sk->sk_mark;
-> @@ -1822,7 +1825,7 @@ static int sk_getsockopt(struct sock *sk, int level, int optname,
->                 return sock_getbindtodevice(sk, optval, optlen, len);
->
->         case SO_GET_FILTER:
-> -               len = sk_get_filter(sk, (struct sock_filter __user *)optval, len);
-> +               len = sk_get_filter(sk, optval, len);
->                 if (len < 0)
->                         return len;
->
-> @@ -1870,7 +1873,7 @@ static int sk_getsockopt(struct sock *sk, int level, int optname,
->                 sk_get_meminfo(sk, meminfo);
->
->                 len = min_t(unsigned int, len, sizeof(meminfo));
-> -               if (copy_to_user(optval, &meminfo, len))
-> +               if (copy_to_sockptr(optval, &meminfo, len))
->                         return -EFAULT;
->
->                 goto lenout;
-> @@ -1939,10 +1942,10 @@ static int sk_getsockopt(struct sock *sk, int level, int optname,
->
->         if (len > lv)
->                 len = lv;
-> -       if (copy_to_user(optval, &v, len))
-> +       if (copy_to_sockptr(optval, &v, len))
->                 return -EFAULT;
->  lenout:
-> -       if (put_user(len, optlen))
-> +       if (copy_to_sockptr(optlen, &len, sizeof(int)))
->                 return -EFAULT;
->         return 0;
->  }
-> @@ -1950,7 +1953,9 @@ static int sk_getsockopt(struct sock *sk, int level, int optname,
->  int sock_getsockopt(struct socket *sock, int level, int optname,
->                     char __user *optval, int __user *optlen)
->  {
-> -       return sk_getsockopt(sock->sk, level, optname, optval, optlen);
-> +       return sk_getsockopt(sock->sk, level, optname,
-> +                            USER_SOCKPTR(optval),
-> +                            USER_SOCKPTR(optlen));
->  }
->
->  /*
-> --
-> 2.30.2
->
+In general when addressing code coverage concerns I think it makes more
+sense to use the security hooks to implement some variety of the principle
+of least privilege and only give applications access to the kernel
+facilities they are known to use.
+
+As far as I can tell creating a user namespace does not increase the
+attack surface.  It is the creation of the other namespaces from a user
+namespace that begins to do that.  So in general I would think
+restrictions should be in places they matter.
+
+Just like the bugs that have exploits that involve the user namespace
+are not user namespace bugs, but instead they are bugs in other
+subsystems that just happen to go through the user namespace as the
+easiest path to the buggy code, not the only path to the buggy code.
+
+Eric
+
