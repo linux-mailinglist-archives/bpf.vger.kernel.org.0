@@ -2,144 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D303C5A189F
-	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 20:17:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A170F5A18B1
+	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 20:20:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240942AbiHYSRB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Aug 2022 14:17:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42350 "EHLO
+        id S242108AbiHYSUv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Aug 2022 14:20:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243478AbiHYSQo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Aug 2022 14:16:44 -0400
-Received: from out02.mta.xmission.com (out02.mta.xmission.com [166.70.13.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31862BD1FF;
-        Thu, 25 Aug 2022 11:16:00 -0700 (PDT)
-Received: from in02.mta.xmission.com ([166.70.13.52]:35250)
-        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1oRHOW-005Rga-9i; Thu, 25 Aug 2022 12:15:56 -0600
-Received: from ip68-110-29-46.om.om.cox.net ([68.110.29.46]:36814 helo=email.froward.int.ebiederm.org.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1oRHOU-00DcQ7-Hr; Thu, 25 Aug 2022 12:15:55 -0600
-From:   "Eric W. Biederman" <ebiederm@xmission.com>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     "Serge E. Hallyn" <serge@hallyn.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Frederick Lawler <fred@cloudflare.com>, kpsingh@kernel.org,
-        revest@chromium.org, jackmanb@chromium.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        jmorris@namei.org, stephen.smalley.work@gmail.com,
-        eparis@parisplace.org, shuah@kernel.org, brauner@kernel.org,
-        casey@schaufler-ca.com, bpf@vger.kernel.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, kernel-team@cloudflare.com,
-        cgzones@googlemail.com, karl@bigbadwolfsecurity.com,
-        tixxdz@gmail.com
-In-Reply-To: <CAHC9VhSZ0aaa3k3704j8_9DJvSNRy-0jfXpy1ncs2Jmo8H0a7g@mail.gmail.com>
-        (Paul Moore's message of "Fri, 19 Aug 2022 17:10:29 -0400")
-References: <CAHC9VhTuxxRfJg=Ax5z87Jz6tq1oVRcppB444dHM2gP-FZrkTQ@mail.gmail.com>
-        <8735dux60p.fsf@email.froward.int.ebiederm.org>
-        <CAHC9VhSHJNLS-KJ-Rz1R12PQbqACSksLYLbymF78d5hMkSGc-g@mail.gmail.com>
-        <871qte8wy3.fsf@email.froward.int.ebiederm.org>
-        <CAHC9VhSU_sqMQwdoh0nAFdURqs_cVFbva8=otjcZUo8s+xyC9A@mail.gmail.com>
-        <8735du7fnp.fsf@email.froward.int.ebiederm.org>
-        <CAHC9VhQuRNxzgVeNhDy=p5+RHz5+bTH6zFdU=UvvEhyH1e962A@mail.gmail.com>
-        <87tu6a4l83.fsf@email.froward.int.ebiederm.org>
-        <20220818140521.GA1000@mail.hallyn.com>
-        <CAHC9VhRqBxtV04ARQFPWpMf1aFZo0HP_HiJ+8VpXAT-zXF6UXw@mail.gmail.com>
-        <20220819144537.GA16552@mail.hallyn.com>
-        <CAHC9VhSZ0aaa3k3704j8_9DJvSNRy-0jfXpy1ncs2Jmo8H0a7g@mail.gmail.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
-Date:   Thu, 25 Aug 2022 13:15:46 -0500
-Message-ID: <875yigp4tp.fsf@email.froward.int.ebiederm.org>
+        with ESMTP id S242794AbiHYSUq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Aug 2022 14:20:46 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBC5713D47
+        for <bpf@vger.kernel.org>; Thu, 25 Aug 2022 11:20:43 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id d21so21812958eje.3
+        for <bpf@vger.kernel.org>; Thu, 25 Aug 2022 11:20:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=UUHClXdut6PUeLYHtEq5sGhrLcmtjvbUSatE5PjSGO4=;
+        b=k49/DAZZqNuuLFykdCdc9VCBkxooNiWbu96z3K7N5Zfp070UYFUDWAXqB0qfL7leNR
+         Ftnv7Hl8SQFvp6FyDvH1tzQho9YlvskNCJGVPgrawc1031c+Jmiqwrp9QBPP08+sAu+K
+         HR1nvNJBRnMGpRmoKGNrRq4CND+GvYS7AZ75Jrhd7d8ConZtmmHnOuZAw3B5mttH9X3W
+         hMZLtOBsSDAtjOn8MJ15jWb/N2jOjrn9rid3BSDNSXSD7B0xCVMAjhPh94pYQ3ONlJC7
+         AXlnVDe9epT4Zwht46oZ722LUTp1VEjcvALsmhskiNGx6C4A5fT4POq/+/dZbElrj4ga
+         2zAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=UUHClXdut6PUeLYHtEq5sGhrLcmtjvbUSatE5PjSGO4=;
+        b=Q8SGIWVrZ8nTT4A2xoWktl4MOhGMdhH9P5Vg61f/c+IK5yig3llyDSWp8DJqPgCEJN
+         /QxZNeR0VcuDDrED1/HIHsvLq1yhELJF35dIoCNFhx+GVe1L5DSR/kN0QUPqu13DEVek
+         FZJwNPbVJr2VApu7je3n0aPJMqMP62a7HypGFI5HXCvjKrBISysLRkT2eOWpMboBOPPj
+         MvMit1UIXLXu7Wt5lISdt1DO0XDrgfbTefv3DVWBK81tA/bDm/Z/3opHVKlgV21DFcU6
+         rAhhkrAy6qe682iLDv15SkZtEKnQ966KH0XuEPEFAU2Bbwsjr+ETb4McS9w/bzvOD73O
+         56Gw==
+X-Gm-Message-State: ACgBeo3D7c4nGYI4w6AZ/GXKo8mj/6PVZoyRJTei0wflgqUe7taXX7Iw
+        8YXmrbPnxUiEJL/LMA30sV8m9is+krrPuZw5/pw=
+X-Google-Smtp-Source: AA6agR5Lk0buamG+gVGzCN2OjGWvzfKB3Ys44RIRNC5WeNQPn3K86KjrNk/4G0aIriez3TTJj0EkWuRBrZyIkI2X2ME=
+X-Received: by 2002:a17:907:2bdb:b0:73d:d7af:c133 with SMTP id
+ gv27-20020a1709072bdb00b0073dd7afc133mr2013527ejc.545.1661451642344; Thu, 25
+ Aug 2022 11:20:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1oRHOU-00DcQ7-Hr;;;mid=<875yigp4tp.fsf@email.froward.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.110.29.46;;;frm=ebiederm@xmission.com;;;spf=softfail
-X-XM-AID: U2FsdGVkX1+SG3YsTIgmOSCWJtea0hxDJibtwIu7XJw=
-X-SA-Exim-Connect-IP: 68.110.29.46
-X-SA-Exim-Mail-From: ebiederm@xmission.com
+References: <20220824044117.137658-1-shmulik.ladkani@gmail.com> <20220824044117.137658-3-shmulik.ladkani@gmail.com>
+In-Reply-To: <20220824044117.137658-3-shmulik.ladkani@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 25 Aug 2022 11:20:31 -0700
+Message-ID: <CAEf4BzZKts8NckT7L-FWBRWJxAgkHEZoR=wjaKBxYpTD_jjyAg@mail.gmail.com>
+Subject: Re: [PATCH v5 bpf-next 2/4] bpf: Support setting variable-length
+ tunnel options
+To:     Shmulik Ladkani <shmulik@metanetworks.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Joanne Koong <joannelkoong@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Paul Chaignon <paul@isovalent.com>,
+        Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-DCC: XMission; sa04 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Paul Moore <paul@paul-moore.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 1139 ms - load_scoreonly_sql: 0.07 (0.0%),
-        signal_user_changed: 9 (0.8%), b_tie_ro: 8 (0.7%), parse: 1.08 (0.1%),
-        extract_message_metadata: 15 (1.3%), get_uri_detail_list: 1.83 (0.2%),
-        tests_pri_-1000: 9 (0.8%), tests_pri_-950: 1.31 (0.1%),
-        tests_pri_-900: 1.08 (0.1%), tests_pri_-90: 178 (15.6%), check_bayes:
-        166 (14.5%), b_tokenize: 9 (0.8%), b_tok_get_all: 10 (0.9%),
-        b_comp_prob: 3.1 (0.3%), b_tok_touch_all: 139 (12.2%), b_finish: 1.00
-        (0.1%), tests_pri_0: 912 (80.0%), check_dkim_signature: 0.67 (0.1%),
-        check_dkim_adsp: 4.0 (0.4%), poll_dns_idle: 0.44 (0.0%), tests_pri_10:
-        1.75 (0.2%), tests_pri_500: 7 (0.7%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH v5 0/4] Introduce security_create_user_ns()
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Paul Moore <paul@paul-moore.com> writes:
-
-> On Fri, Aug 19, 2022 at 10:45 AM Serge E. Hallyn <serge@hallyn.com> wrote:
->>  I am hoping we can come up with
->> "something better" to address people's needs, make everyone happy, and
->> bring forth world peace.  Which would stack just fine with what's here
->> for defense in depth.
->>
->> You may well not be interested in further work, and that's fine.  I need
->> to set aside a few days to think on this.
+On Tue, Aug 23, 2022 at 9:41 PM Shmulik Ladkani
+<shmulik@metanetworks.com> wrote:
 >
-> I'm happy to continue the discussion as long as it's constructive; I
-> think we all are.  My gut feeling is that Frederick's approach falls
-> closest to the sweet spot of "workable without being overly offensive"
-> (*cough*), but if you've got an additional approach in mind, or an
-> alternative approach that solves the same use case problems, I think
-> we'd all love to hear about it.
+> Existing 'bpf_skb_set_tunnel_opt' allows setting tunnel options given
+> an option buffer (ARG_PTR_TO_MEM) and the compile-time fixed buffer
+> size (ARG_CONST_SIZE).
+>
+> However, in certain cases we wish to set tunnel options of dynamic
+> length.
+>
+> For example, we have an ebpf program that gets geneve options on
+> incoming packets, stores them into a map (using a key representing
+> the incoming flow), and later needs to assign *same* options to
+> reply packets (belonging to same flow).
+>
+> This is currently imposssible without knowing sender's exact geneve
+> options length, which unfortunately is dymamic.
+>
+> Introduce 'bpf_skb_set_tunnel_opt_dynptr'.
+>
+> This is a variant of 'bpf_skb_set_tunnel_opt' which gets a bpf dynamic
+> pointer (ARG_PTR_TO_DYNPTR) parameter 'ptr' whose data points to the
+> options buffer, and 'len', the byte length of options data caller wishes
+> to copy into ip_tunnnel_info.
+> 'len' must never exceed the dynptr's internal size, o/w EINVAL is
+> returned.
+>
+> Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+> ---
+> v3: Avoid 'inline' for the __bpf_skb_set_tunopt helper function
+> v4: change API to be based on bpf_dynptr, suggested by John Fastabend <john.fastabend@gmail.com>
+> ---
+>  include/uapi/linux/bpf.h       | 12 ++++++++++++
+>  net/core/filter.c              | 36 ++++++++++++++++++++++++++++++++--
+>  tools/include/uapi/linux/bpf.h | 12 ++++++++++++
+>  3 files changed, 58 insertions(+), 2 deletions(-)
+>
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 644600dbb114..c7b313e30635 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -5367,6 +5367,17 @@ union bpf_attr {
+>   *     Return
+>   *             Current *ktime*.
+>   *
+> + * long bpf_skb_set_tunnel_opt_dynptr(struct sk_buff *skb, struct bpf_dynptr *opt, u32 len)
 
-I would love to actually hear the problems people are trying to solve so
-that we can have a sensible conversation about the trade offs.
+why can't we rely on dynptr's len instead of specifying extra one
+here? dynptr is a range of memory, so just specify that you take that
+entire range?
 
-As best I can tell without more information people want to use
-the creation of a user namespace as a signal that the code is
-attempting an exploit.
+And then we'll have (or partially already have) generic dynptr helpers
+to adjust internal dynptr offset and len.
 
-As such let me propose instead of returning an error code which will let
-the exploit continue, have the security hook return a bool.  With true
-meaning the code can continue and on false it will trigger using SIGSYS
-to terminate the program like seccomp does.
+> + *     Description
+> + *             Set tunnel options metadata for the packet associated to *skb*
+> + *             to the variable length *len* bytes of option data pointed to
+> + *             by the *opt* dynptr.
+> + *
+> + *             See also the description of the **bpf_skb_get_tunnel_opt**\ ()
+> + *             helper for additional information.
+> + *     Return
+> + *             0 on success, or a negative error in case of failure.
+> + *
+>   */
 
-I am not super fond of that idea, but it means that userspace code is
-not expected to deal with the situation, and the only conversation a
-userspace application developer needs to enter into with a system
-administrator or security policy developer is one to prove they are not
-exploit code.  Plus it makes much more sense to kill an exploit
-immediately instead of letting it run.
-
-
-In general when addressing code coverage concerns I think it makes more
-sense to use the security hooks to implement some variety of the principle
-of least privilege and only give applications access to the kernel
-facilities they are known to use.
-
-As far as I can tell creating a user namespace does not increase the
-attack surface.  It is the creation of the other namespaces from a user
-namespace that begins to do that.  So in general I would think
-restrictions should be in places they matter.
-
-Just like the bugs that have exploits that involve the user namespace
-are not user namespace bugs, but instead they are bugs in other
-subsystems that just happen to go through the user namespace as the
-easiest path to the buggy code, not the only path to the buggy code.
-
-Eric
-
+[...]
