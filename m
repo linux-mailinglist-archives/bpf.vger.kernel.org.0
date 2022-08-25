@@ -2,164 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A9245A1BB8
-	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 23:55:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AA4B5A1BC2
+	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 23:57:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244092AbiHYVzA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Aug 2022 17:55:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38994 "EHLO
+        id S244259AbiHYV5A (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Aug 2022 17:57:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244088AbiHYVy6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Aug 2022 17:54:58 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EED50658A;
-        Thu, 25 Aug 2022 14:54:57 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id az27so6188902wrb.6;
-        Thu, 25 Aug 2022 14:54:57 -0700 (PDT)
+        with ESMTP id S244249AbiHYV47 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Aug 2022 17:56:59 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67B8E5853C;
+        Thu, 25 Aug 2022 14:56:58 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id w19so42104867ejc.7;
+        Thu, 25 Aug 2022 14:56:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=in-reply-to:references:cc:to:from:content-language:subject
-         :user-agent:mime-version:date:message-id:from:to:cc;
-        bh=NRNROM2HcbpI7DotalRvGgFhY8tcTV84PnjIlea9TF8=;
-        b=IOn7sLJYHymIx83gAsDAghResn7aEZhvkrIit8wTHnq9wokP82US4SY8+W7zNt+WGe
-         9tf/kadCQC2hsbuzbS844/U2CzQ0uhH3QE/4Wuh184cOLOxEtBpZZk/j1tqcaogwLjSh
-         2syjpzjml2HYJ/Nzo/ae0WWcvIsON7Zt264ENFfYIEk27nFDHlA2rHcZEElSLJowdquJ
-         Cc/NDfSyFmTgjL07LE7AGycLTHwNvMX9jSW9M9aXaPfS/H6L3vYusTdPqJshRO8eMj3C
-         VLgRKr9m9F5ndUoHfBd4tULsUaNrJIjJBAn4rrtWY/bn4thWcdaFScmz8F/drFgNItyq
-         JS6A==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=xRUl7QGewtJmylCUM+rfOCstJR9UgslfLxf7gT5F90g=;
+        b=GZGp07GBTpTjaJoIdqES47TWEiCxFWnuOOJoosqV9QVnXUabMYfFc8hZ71MPb+8biZ
+         x7RUNVXXZMfsTxsdJbz6W1+ukzwUhuKKuuyLZ08RFBmjgyfA9rQbfN0ihT3LmGkljO7S
+         mxXGQTKhjqHnlieX76H6tVbFLHbJze/W0qXKNRy1dxUenzsdC+omk0fO5g/HJqlpa4W8
+         yzSKNq0Uoq0RzUHx+kiCPTzSKTIV8J1MDBPHpkXVCkFfjEddUxsBtVBmgWJoYFbAtXL6
+         s9KZ79sLgTwrM2nOoFXDRWdq6MqopHmMenhVfvOIFhv6RX2lwXLgLc24Q4/0EnuC+M7E
+         hG2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:references:cc:to:from:content-language:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc;
-        bh=NRNROM2HcbpI7DotalRvGgFhY8tcTV84PnjIlea9TF8=;
-        b=LZsHHYnEB9df7XqxtqblEyWW/RoN6T4WoKUUKOwqHsYIRNxcZpb/ps2C2fODAoFCeq
-         cFBLws7xmO2nzU7eRMhEHLTLMENc5y7CgmONvoCWf+/PuFn1GPx2Y/H+30nwAfz9b1Un
-         IsWTe6bZ4yUaOGDpOVcyBXc5Pj3/e2PQYAgUl1Lh5Sbdluj8PS2S/IU7WlOETT+IRu2r
-         9I7yN+/yFpxgdUvvIEjtr3rNMbSM1KbvkJsqnFQVP0cRm6IHEs/oylxnIMZiuC2wD4Av
-         FExFojuSpY0byHRzlZw82FOU9zYFQqorUaLAzGemXY1ahYYIW89JFS1PZ8ayMIe8Q3K2
-         tLCA==
-X-Gm-Message-State: ACgBeo3bSJWY/KNHDpUQf+HrUhYSJsDSTmUsMTrs7Rcgh5ediIuYDLCQ
-        b2QFGU/WmJ6182oCRTzGFjE=
-X-Google-Smtp-Source: AA6agR5D6bLitvZFpCTIAMsjDa9asrOTFDIK+qvjbMXsCE9t8Y1Y87TY/ssrEqfy4PidsB3W3Z7I/A==
-X-Received: by 2002:a5d:4649:0:b0:225:309d:1d51 with SMTP id j9-20020a5d4649000000b00225309d1d51mr3499490wrs.450.1661464496531;
-        Thu, 25 Aug 2022 14:54:56 -0700 (PDT)
-Received: from [192.168.0.160] ([170.253.36.171])
-        by smtp.gmail.com with ESMTPSA id d7-20020a5d4f87000000b002206236ab3dsm328585wru.3.2022.08.25.14.54.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Aug 2022 14:54:56 -0700 (PDT)
-Message-ID: <c4c16145-a05e-474b-f7db-a88aa311a07d@gmail.com>
-Date:   Thu, 25 Aug 2022 23:54:54 +0200
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=xRUl7QGewtJmylCUM+rfOCstJR9UgslfLxf7gT5F90g=;
+        b=jyl2o+QXpN+wQm9XWSWqfMm7OCZJndKwiRlKHqb2AyPiQIgnAJNxkQjEVO6f3ndz+Z
+         2n1S0JDREViESTzrFNgTH79bwZw4OQws7gAtllCswi/0X0mjaqv8azUok6MyqD9UDhVB
+         w6bdGmqxvDD4gEbr0ARh2tmSElsWLn5QTecA+HODTBYJ62XCEp7+oAMbtklH/AT8z/qs
+         OAF3C27fuZZmgkxDRG4MNHAtDR+DWMsCDLgOmMMCg+S5Lg3t5K6HOz72xwD1huUef3Rh
+         YaJJsPy1SaK7G3jxBdgNBARFknpZfHIMAUjppJ0J1yVvh8jR27gnTBqOfnr5HiYtM3w+
+         NxPQ==
+X-Gm-Message-State: ACgBeo0uGbvowtvZxRfl0Uo6wr8ME/WKJfDGxSvTeEi3HILySJVuV7bX
+        w3CqjiIohmVAJbIq0IRa0TOFiOfNnTj34vDMMS4=
+X-Google-Smtp-Source: AA6agR5vaRU1YhCk8Vf6GHvIFPxoYILydursm2av9IttKqB+ZJff6NNSrHOuMAYdxe+NySUrNG8xVZIvuvw3IxoonjE=
+X-Received: by 2002:a17:907:6096:b0:73d:9d12:4b04 with SMTP id
+ ht22-20020a170907609600b0073d9d124b04mr3745892ejc.745.1661464616973; Thu, 25
+ Aug 2022 14:56:56 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCH] Fit line in 80 columns
-Content-Language: en-US
-From:   Alejandro Colomar <alx.manpages@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Quentin Monnet <quentin@isovalent.com>, bpf <bpf@vger.kernel.org>,
-        linux-man <linux-man@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+References: <20220825213905.1817722-1-haoluo@google.com>
+In-Reply-To: <20220825213905.1817722-1-haoluo@google.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 25 Aug 2022 14:56:45 -0700
+Message-ID: <CAEf4BzaQOj3QqEbKKXhgUmWMF3gef-8+a-dYoe_t4=g+cM2KaQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/2] Add CGROUP prefix to cgroup_iter_order
+To:     Hao Luo <haoluo@google.com>
+Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
         KP Singh <kpsingh@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-References: <20220825175653.131125-1-alx.manpages@gmail.com>
- <CAADnVQ+yM_R4vuCLxtNJb0sp61ar=grJh9KmLWVGhXA7Lhpmvw@mail.gmail.com>
- <CAEf4BzbCgHp0MtsSm_ExPO+EGhFWzLUOiFuh1jyrhWfbsDtL3A@mail.gmail.com>
- <403a8238-12e7-1092-a28b-a52f5d63df2c@gmail.com>
-In-Reply-To: <403a8238-12e7-1092-a28b-a52f5d63df2c@gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------Wnhs4xmlrvschggQDUynsUCe"
+        Yosry Ahmed <yosryahmed@google.com>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------Wnhs4xmlrvschggQDUynsUCe
-Content-Type: multipart/mixed; boundary="------------Tpoj0lpqPVNxHZliuPfo58Yo";
- protected-headers="v1"
-From: Alejandro Colomar <alx.manpages@gmail.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Quentin Monnet <quentin@isovalent.com>, bpf <bpf@vger.kernel.org>,
- linux-man <linux-man@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
- Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>,
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <c4c16145-a05e-474b-f7db-a88aa311a07d@gmail.com>
-Subject: Re: [PATCH] Fit line in 80 columns
-References: <20220825175653.131125-1-alx.manpages@gmail.com>
- <CAADnVQ+yM_R4vuCLxtNJb0sp61ar=grJh9KmLWVGhXA7Lhpmvw@mail.gmail.com>
- <CAEf4BzbCgHp0MtsSm_ExPO+EGhFWzLUOiFuh1jyrhWfbsDtL3A@mail.gmail.com>
- <403a8238-12e7-1092-a28b-a52f5d63df2c@gmail.com>
-In-Reply-To: <403a8238-12e7-1092-a28b-a52f5d63df2c@gmail.com>
+On Thu, Aug 25, 2022 at 2:39 PM Hao Luo <haoluo@google.com> wrote:
+>
+> As suggested by Andrii, add 'CGROUP' to cgroup_iter_order. This fix is
+> divided into two patches. Patch 1/2 fixes the commit that introduced
+> cgroup_iter. Patch 2/2 fixes the selftest that uses the
+> cgroup_iter_order. This is because the selftest was introduced in a
 
---------------Tpoj0lpqPVNxHZliuPfo58Yo
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+but if you split rename into two patches, you break selftests build
+and thus potentially bisectability of selftests regressions. So I
+think you have to keep both in the same patch.
 
-T24gOC8yNS8yMiAyMzo1MSwgQWxlamFuZHJvIENvbG9tYXIgd3JvdGU6DQo+IE9uIDgvMjUv
-MjIgMjM6MzYsIEFuZHJpaSBOYWtyeWlrbyB3cm90ZToNCj4+IE9uIFRodSwgQXVnIDI1LCAy
-MDIyIGF0IDExOjA3IEFNIEFsZXhlaSBTdGFyb3ZvaXRvdg0KPj4gPGFsZXhlaS5zdGFyb3Zv
-aXRvdkBnbWFpbC5jb20+IHdyb3RlOg0KPj4+IFdlIGRvbid0IGZvbGxvdyA4MCBjaGFyIGxp
-bWl0IGFuZCBhcmUgbm90IGdvaW5nIHRvIGJlY2F1c2Ugb2YgbWFuIHBhZ2VzLg0KPj4NCj4+
-IEFuZCBpdCdzIHF1ZXN0aW9uYWJsZSBpbiBnZW5lcmFsIHRvIGVuZm9yY2UgbGluZSBsZW5n
-dGggZm9yIHZlcmJhdGltDQo+PiAoY29kZSkgYmxvY2suIEl0J3MgdmVyYmF0aW0gZm9yIGEg
-Z29vZCByZWFzb24sIGl0IGNhbid0IGJlIHdyYXBwZWQuDQo+IA0KPiBUaGF0J3Mgd2h5IGlu
-c3RlYWQgb2Ygd3JhcHBpbmcsIEkgcmVkdWNlZCB0aGUgbGVuZ3RoIG9mIHNvbWUgDQo+ICJp
-ZGVudGlmaWVyIi7CoCBJdCdzIG5vdCBlbmZvcmNlZCwgYnV0IGl0J3MgbmljZXIgaWYgaXQg
-Zml0cy7CoCBUaGVyZSBhcmUgDQo+IHNldmVyYWwgb3RoZXIgY2FzZXMsIHdoZXJlIGl0IHdh
-c24ndCBlYXN5IHRvIG1ha2UgaXQgc2hvcnRlciwgYW5kIEkgbGVmdCANCj4gaXQgZXhjZWVk
-aW5nIHRoZSBtYXJnaW4uDQo+IA0KPiBJdCdzIG5vdCBzbyBjcnVjaWFsIHRvIGZpeCBpdCwg
-YW5kIGlmIHlvdSBwcmVmZXIgaXQgbGlrZSBpdCBpcyANCj4gY3VycmVudGx5LCBpdCdzIHJl
-YXNvbmFibGUuwqAgVGhpcyBpcyBhIHN1Z2dlc3Rpb24sIHRvIG1ha2UgaXQgZWFzaWVyIHRv
-IA0KPiByZWFkLg0KDQpBcyBhbiBleGFtcGxlLCB5b3UgY2FuIHNlZSB0aGlzIGNvbW1pdCBy
-ZWNlbnRseSBhcHBsaWVkIHRvIHRoZSBtYW4tcGFnZXM6DQoNCjxodHRwczovL2dpdC5rZXJu
-ZWwub3JnL3B1Yi9zY20vZG9jcy9tYW4tcGFnZXMvbWFuLXBhZ2VzLmdpdC9jb21taXQvP2lk
-PWU1ZGExNmYxMGYyZDNkNTVkYjBiYjFlZjExNTZhZmNiMTk3ZDhmZGM+DQoNCkkgb25seSBt
-YWRlIGxpbmVzIHNob3J0ZXIgaW4gY2FzZXMgd2hlcmUgbm8gaW5mbyB3YXMgbG9zdCAoaW5j
-bHVkaW5nIA0KZm9ybWF0KS4NCg0KLS0gDQpBbGVqYW5kcm8gQ29sb21hcg0KPGh0dHA6Ly93
-d3cuYWxlamFuZHJvLWNvbG9tYXIuZXMvPg0K
+With that:
 
---------------Tpoj0lpqPVNxHZliuPfo58Yo--
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
---------------Wnhs4xmlrvschggQDUynsUCe
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmMH764ACgkQnowa+77/
-2zJF7A/+PJ7dq++1Tw5HkmqSxWpk57Vv8HYi4lFXGDhd/TddpVTwnd8lIyXi5KMz
-0C330+aP3lRsdzCgawzBL+LFaeg3RQAMvH2O7a4nEJbFy9DoI2XIl9/WhFMduuY5
-2L7APETMrlpZBMKc8JKpjTJxjUD7aOcr+NI4RHB51/jgV2RbeOcAmvmvYdQXJJfe
-fguhokSwY3YP2YlLtnpdvNd4l9YxPSxdUE6Ko3IlgyGnqzrj8Jxoaup9klBvd1d1
-cPtnfaXPUb4W0sCxP++KLYG6zOONCK6qegBH/5692QtBEPWyvf1NjT2xRiHx/qca
-2LYftachS+x9DQ89NttvanJyCBIq3yId0D6Uq/PY/XszMM9FAUa4AcNAu97HDVIU
-3ZKXAoFCZXLE5MefxZ7CPZmndk1UscrE+74Bn6GH7p+GrbhT0j/xLHtd8xwFq/LL
-CL8BZj1uTBKtsWc9NPtzj4dxkG6/qSCDTUct3+HfsdhDbfi3WP5Foidn+HGzI1bb
-AL+G8Nft7aRk1q/tH+TCFMAw+IHM/gEA02cdGeR10dm3n28u115A2xyz5rG9FI66
-CptJjg6W95fGG7WLfgp5W+NgFN/k+KDycy2/Qw31nyCbS2VuHxGT+WhEO2VpeXvm
-SYuklcqJCTchI13zTScBd0+40qa6yJzXy1fUoDnDiuwtKzxSkiw=
-=Bipr
------END PGP SIGNATURE-----
-
---------------Wnhs4xmlrvschggQDUynsUCe--
+> different commit. I tested this patchset via the following command:
+>
+>   test_progs -t cgroup,iter,btf_dump
+>
+> Hao Luo (2):
+>   bpf: Add CGROUP to cgroup_iter order
+>   selftests/bpf: Fix test that uses cgroup_iter order
+>
+>  include/uapi/linux/bpf.h                      | 10 +++---
+>  kernel/bpf/cgroup_iter.c                      | 32 +++++++++----------
+>  tools/include/uapi/linux/bpf.h                | 10 +++---
+>  .../selftests/bpf/prog_tests/btf_dump.c       |  2 +-
+>  .../prog_tests/cgroup_hierarchical_stats.c    |  2 +-
+>  .../selftests/bpf/prog_tests/cgroup_iter.c    | 10 +++---
+>  6 files changed, 33 insertions(+), 33 deletions(-)
+>
+> --
+> 2.37.2.672.g94769d06f0-goog
+>
