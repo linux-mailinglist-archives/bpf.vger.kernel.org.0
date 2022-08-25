@@ -2,69 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E9985A0890
-	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 07:57:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48DDC5A08C4
+	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 08:20:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233537AbiHYF5S (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Aug 2022 01:57:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59884 "EHLO
+        id S234909AbiHYGTo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Aug 2022 02:19:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231853AbiHYF5R (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Aug 2022 01:57:17 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B95499F197;
-        Wed, 24 Aug 2022 22:57:14 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 6DF82B826A7;
-        Thu, 25 Aug 2022 05:57:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E63CC433C1;
-        Thu, 25 Aug 2022 05:57:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1661407032;
-        bh=BzxcFbEfQ/Yeo0E0e2sHS9CwVB1n9JHMHeKD1IhcYQE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WEt6QVjfJvyXaIx6HafON24CGsg9kBIx410clN6sJBNxvMYqYT3t69Qvv8fUydCii
-         VOwmEd+zP/S8e5fTVek0cwEzoI7qPe3LRWV7/keV37Vli2wwYtB4pRJJqPwFYcThG8
-         Wop0557JL/SJdBKCbpMCKDMgvC3WMpgcPTgoiaFA=
-Date:   Thu, 25 Aug 2022 07:57:23 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Alejandro Colomar <alx.manpages@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Alex Colomar <alx@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        linux-man <linux-man@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Zack Weinberg <zackw@panix.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        glibc <libc-alpha@sourceware.org>, GCC <gcc-patches@gcc.gnu.org>,
-        bpf <bpf@vger.kernel.org>, LTP List <ltp@lists.linux.it>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        Joseph Myers <joseph@codesourcery.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Cyril Hrubis <chrubis@suse.cz>,
-        David Howells <dhowells@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>, Rich Felker <dalias@libc.org>,
-        Adhemerval Zanella <adhemerval.zanella@linaro.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH v3] Many pages: Document fixed-width types with ISO C
- naming
-Message-ID: <YwcPQ987poRYjfoL@kroah.com>
-References: <20210423230609.13519-1-alx.manpages@gmail.com>
- <20220824185505.56382-1-alx.manpages@gmail.com>
- <CAADnVQKiEVL9zRtN4WY2+cTD2b3b3buV8BQb83yQw13pWq4OGQ@mail.gmail.com>
- <c06008bc-0c13-12f1-df85-3814b74e47f9@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c06008bc-0c13-12f1-df85-3814b74e47f9@gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        with ESMTP id S232970AbiHYGTm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Aug 2022 02:19:42 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19417A0241
+        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 23:19:42 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id g189so2966714pgc.0
+        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 23:19:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:to:from:date:from:to:cc;
+        bh=fkbcSf2QvoM1v7ga7p3BoCyFgPv97LPNk8LIaDWElhw=;
+        b=I1JcOCvbPo289ue9TzwzKwcpIp/sdUMrn3Vg/zg+zOXqRJ/cC3avo5Gvz/idU4KwVU
+         lorXTjGxNqOOvLlADm7CIbXftZ+bpos5A0enGg3uJd80aW5WcHF3Tbe/s5cH2fAPcpv2
+         tQbALWmyvRqA3AWfc1zrEiuDHbVsX5AvA6NH02akud1jelm7S5CZa/S7tKSN0Uu874kw
+         op3VAT2taNi9XhKDAmFNQYBzAyCfiFT5S78sMYsnMdLrEKpXFTuwczx/yql1gkLpcvXp
+         LfMtTXCk8zEP3xGgykzzo+oZy5meyMlKZjS5UFEWyUZWyRxkqvi9lkenH1ZNMd9KOp2D
+         RYCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:to:from:date:x-gm-message-state:from:to:cc;
+        bh=fkbcSf2QvoM1v7ga7p3BoCyFgPv97LPNk8LIaDWElhw=;
+        b=NcTcna18Z8W/0eiqe7y2ogH/cJ3goCUL3dMt7zMfME9qiq2L3rrGTx/+oQCDAHEz9D
+         UkLY3xo50CAWbg3i84fVRTWgRsKb27pppn9oZqTRZoV31F3cC+wSns9AUHNTRYFK7ciI
+         lVR03LkcomW+k4oqJ6XIOmrYbVLE+M5LWKTqugnxpqoSwc5VcU5TPJ5JMbhC2z5JRqkw
+         BWHQ6f+UDfY0hrRZRGXPCiUINQiZ1WDbe13kY7jqg/yZ/IymvBKJr5/uUHnvRPo070xR
+         8JhfzSZ4CWxQGiKsV4rCk7UVOL4iU/ga8bpDuKO9FUqHhWuwE8FlhkgXvP68TSKOPIEk
+         eMOw==
+X-Gm-Message-State: ACgBeo3TO+EEWU9w4acHbWhgtHR/Ow3xkjcceNe3/WF1gNb1cEnEXGjo
+        wU2+8Qjx4+mwB93RD9AmrzGMMYt9USU=
+X-Google-Smtp-Source: AA6agR75VHZT33VfNiVGIxvOaYf2thFZuOSLgesUQJfI97z/n4nRvHcivzVLifQjXbKgCNUh7lkDrg==
+X-Received: by 2002:a63:834a:0:b0:42b:358f:640d with SMTP id h71-20020a63834a000000b0042b358f640dmr2077971pge.235.1661408381588;
+        Wed, 24 Aug 2022 23:19:41 -0700 (PDT)
+Received: from localhost ([98.97.36.33])
+        by smtp.gmail.com with ESMTPSA id n12-20020a170902e54c00b0016d773aae60sm13863766plf.19.2022.08.24.23.19.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Aug 2022 23:19:40 -0700 (PDT)
+Date:   Wed, 24 Aug 2022 23:19:39 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org,
+        ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
+        kernel-team@fb.com
+Message-ID: <6307147b5c97b_e1c39208d6@john.notmuch>
+In-Reply-To: <d9bf2adc-96e6-c6cd-8d69-e381e8568e0b@fb.com>
+References: <20220822094312.175448-1-eddyz87@gmail.com>
+ <20220822094312.175448-2-eddyz87@gmail.com>
+ <63055fa5a080e_292a8208db@john.notmuch>
+ <d9bf2adc-96e6-c6cd-8d69-e381e8568e0b@fb.com>
+Subject: Re: [PATCH RFC bpf-next 1/2] bpf: propagate nullness information for
+ reg to reg comparisons
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,31 +76,38 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Aug 25, 2022 at 01:36:10AM +0200, Alejandro Colomar wrote:
-> But from your side what do we have?  Just direct NAKs without much
-> explanation.  The only one who gave some explanation was Greg, and he
-> vaguely pointed to Linus's comments about it in the past, with no precise
-> pointer to it.  I investigated a lot before v2, and could not find anything
-> strong enough to recommend using kernel types in user space, so I pushed v2,
-> and the discussion was kept.
+Yonghong Song wrote:
+> 
+> 
+> On 8/23/22 4:15 PM, John Fastabend wrote:
+> > Eduard Zingerman wrote:
+> >> Propagate nullness information for branches of register to register
+> >> equality compare instructions. The following rules are used:
+> >> - suppose register A maybe null
+> >> - suppose register B is not null
+> >> - for JNE A, B, ... - A is not null in the false branch
+> >> - for JEQ A, B, ... - A is not null in the true branch
+> >>
+> >> E.g. for program like below:
+> >>
+> >>    r6 = skb->sk;
+> >>    r7 = sk_fullsock(r6);
+> >>    r0 = sk_fullsock(r6);
+> >>    if (r0 == 0) return 0;    (a)
+> >>    if (r0 != r7) return 0;   (b)
+> >>    *r7->type;                (c)
+> >>    return 0;
+> >>
+> >> It is safe to dereference r7 at point (c), because of (a) and (b).
+> > 
+> > I think the idea makes sense. Perhaps Yonhong can comment seeing he was active
+> > on the LLVM thread. I just scanned the LLVM side for now will take a look
+> > in more detail in a bit.
+> 
+> The issue is discovered when making some changes in llvm compiler.
+> I think it is good to add support in verifier so in the future
+> if compiler generates such code patterns, user won't get
+> surprised verification failure.
+> 
 
-So despite me saying that "this is not ok", and many other maintainers
-saying "this is not ok", you applied a patch with our objections on it?
-That is very odd and a bit rude.
-
-> I would like that if you still oppose to the patch, at least were able to
-> provide some facts to this discussion.
-
-The fact is that the kernel can not use the namespace that userspace has
-with ISO C names.  It's that simple as the ISO standard does NOT
-describe the variable types for an ABI that can cross the user/kernel
-boundry.
-
-Work with the ISO C standard if you wish to document such type usage,
-and get it approved and then we would be willing to consider such a
-change.  But until then, we have to stick to our variable name types,
-just like all other operating systems have to (we are not alone here.)
-
-Please revert your change.
-
-greg k-h
+I agree. Read the LLVM thread as well.
