@@ -2,64 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7C785A116F
-	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 15:04:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DA845A11AE
+	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 15:16:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242159AbiHYNEu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Aug 2022 09:04:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40170 "EHLO
+        id S241805AbiHYNPz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Aug 2022 09:15:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242317AbiHYNEJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Aug 2022 09:04:09 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C618B4E8B;
-        Thu, 25 Aug 2022 06:03:22 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id a15so15054398qko.4;
-        Thu, 25 Aug 2022 06:03:22 -0700 (PDT)
+        with ESMTP id S240415AbiHYNPx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Aug 2022 09:15:53 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AB1EA50F1;
+        Thu, 25 Aug 2022 06:15:49 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id r141so15917703iod.4;
+        Thu, 25 Aug 2022 06:15:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc;
-        bh=GJC7qD9d1W6eDyppasNe8HwkoqM5dpioIU4IhwDYcaQ=;
-        b=qHZrw1guA6eKGfxXcu7JwAbjiXJtCGR0zfN/sL+4Ye1Rzl8U9+iRyrunXnD+i+pnrf
-         tj+O/OIDAtfqqB+WerC2ZOA81oMUJzValr8n9winslL3AI+xVU178LswuAUeF/zIrGQ0
-         gyeakclDrYNGRaCYAEe5Yjts4wUysTzT+/lHFwrWkOlWTlEOIFYk6xJctbLVKGQYQgZv
-         gx1+TfVEf0UtDjlTgwyj2brZjp10rQwFJtf8kLriTnQlyxLTF1PpMCCRongDLHz6uGou
-         OhAV2dtOAZPV/kFbK+REnJaV9x4gdD8V6RlhTfPk18s75C80MVF8wQqZcF4J7IaN7YQI
-         7DfQ==
+        bh=+YOQ57iPUGa9ulqrxvV1JvzCGXMUqxwl0gn05L69nn4=;
+        b=E9bghTZ8kghJKn2LnSZaEcdqg1K6cXG+IuGzOkX+IcqgKP13sFhuES3Dtga0uGN3Xh
+         RX+nyUvF9WU263dz+QUz3JUXcghxtgNBe+gIQDe9KlgxoT7zi8b7sYN6KNY8ko8cLON7
+         k3aQ2jtQ4D7a6RkZ0FfQOHWjzCrQC8QN1hO7K0FiEVVAPwIg698Rco8EaIMPFEqzTl4T
+         9fn/iRak0httsfXqX0s5THruFjlhbvdyebOwPUG2n7JK/zQZ/5uFKdfXykhnqd3SCa7C
+         5tqNIwqi0QLiXoAsHVjThOdA2IwQoXL2In9a/nfQH6c0CQGV2BtsOTPvax4iPuEIHKfv
+         t+gg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc;
-        bh=GJC7qD9d1W6eDyppasNe8HwkoqM5dpioIU4IhwDYcaQ=;
-        b=j3V+/GHpIrl5xY8nFHKaT8070Y8oRA6zifnqxyLqhlV3vzIYTsrIlEaWdwDaz7HXBd
-         wYeiXWCX4AdItyjihBYvoyREzAt7+6GImDB1Ql7vDNdxKGoVeAJHE1d5E5Pu1GlhdvYp
-         BHbb0WfYzNhy7gfXmBQtm7ZRX7kcAoJ09LybS0BXJEGt6rUTybpEuXcyDcM7sqQNks9d
-         UNMpAHYZ4t2wpYa9z/xqSvr1wv/C1hHyh92+z17yz0G2GU3B08xTDfDHzwY/Qj0LHo4S
-         oyreELlXhQoAVIqYEKpGJX+8/6Yee1J87ea72/o7siy4LClBN47nSc023rKFO0cllpjC
-         Vs0g==
-X-Gm-Message-State: ACgBeo1Q17yWwmQiUC6fzweqVWHYcB2ryHmL19S9OJPSWL5BUSBI9FdR
-        xDI44Qsz7QMFVepmP+rLGlR3XyLoM1Eu6cEpH7EASkvDCNZc0A==
-X-Google-Smtp-Source: AA6agR7sBYeMOY7eBKvp2nOxyOpxuCFGUmrA1j0MJ/awVykpx7cT2eddspJ7lsEj4uv3QA+2icXMK8WQwn4OJIAldQI=
-X-Received: by 2002:a05:620a:1786:b0:6bb:38b2:b1d7 with SMTP id
- ay6-20020a05620a178600b006bb38b2b1d7mr2906183qkb.510.1661432595693; Thu, 25
- Aug 2022 06:03:15 -0700 (PDT)
+        bh=+YOQ57iPUGa9ulqrxvV1JvzCGXMUqxwl0gn05L69nn4=;
+        b=G4mTif5LcI5AEntPL3azdxRW4aashIaS6AqnxJsYQ5ZZx4LRRTdp6VjI+8dAreve7m
+         SF1fd+bpJ+ig5QG7g5fWC5UufxX6auyFtQyVYZAucWBALkEUHsvfst/VinLHVmBm6B/K
+         ZPJcNzZyB4PI9ANyOaL7Rxihoj8yHAX4Qwp3j+R2FKTN6Ai4KouKKaSHS4nIt6QFJmQb
+         tWL2idulvyKtCXQpqc07QI43gn7sbjrQ1FmyIehhKalVkO/7/5xXqSKD0fq8pC8k4VkP
+         by+e4qk26SIu4Tck9zafaY3XcPkMuHkUR6EKt7QrPRYi2je6wAtnJd85GjkzHAbqHmPC
+         WfTA==
+X-Gm-Message-State: ACgBeo1wzyjFUJr9vcBVTmae0r7xuC6miuiERmFgLAKEZ/g+iYji0N2H
+        WLxNaBupjQ/3SvQNdxzk8AyqV+SUyE4iWDdUdjE=
+X-Google-Smtp-Source: AA6agR5wEOIk+YXHWUefJitIsnVcb7Q52nRurvr6V3qFiXWWjDCQQyJ4UxdQkhb2bxZwapAAQsbK2VfTb3ogZ2s7ngQ=
+X-Received: by 2002:a05:6638:2382:b0:347:7dae:b276 with SMTP id
+ q2-20020a056638238200b003477daeb276mr1738025jat.124.1661433348558; Thu, 25
+ Aug 2022 06:15:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220823154557.1400380-1-eyal.birger@gmail.com>
- <20220823154557.1400380-4-eyal.birger@gmail.com> <565cce1e-0890-dd35-7b26-362da2cde128@6wind.com>
- <CAHsH6Gv0AaNamsumhdqVtuTCMkJCwcAam07kZZoQ0vbuZi7tHA@mail.gmail.com> <0e44ad3b-e1a0-6af4-5e8f-f808d3b28715@6wind.com>
-In-Reply-To: <0e44ad3b-e1a0-6af4-5e8f-f808d3b28715@6wind.com>
-From:   Eyal Birger <eyal.birger@gmail.com>
-Date:   Thu, 25 Aug 2022 16:03:05 +0300
-Message-ID: <CAHsH6GviZudwDHwG-JDqGapzVP95spY1=J+5xM2GX_711L+DWA@mail.gmail.com>
-Subject: Re: [PATCH ipsec-next 3/3] xfrm: lwtunnel: add lwtunnel support for
- xfrm interfaces in collect_md mode
-To:     nicolas.dichtel@6wind.com
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, steffen.klassert@secunet.com,
-        herbert@gondor.apana.org.au, pablo@netfilter.org,
-        contact@proelbtn.com, dsahern@kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, devel@linux-ipsec.org
+References: <20220818165906.64450-1-toke@redhat.com> <3201a036-f5f8-5abe-adb3-ba70eaf21e44@iogearbox.net>
+In-Reply-To: <3201a036-f5f8-5abe-adb3-ba70eaf21e44@iogearbox.net>
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date:   Thu, 25 Aug 2022 15:15:11 +0200
+Message-ID: <CAP01T74steDfP6O8QOshoto3e3RnHhKtAeTbnrPBZS3YJXjvbA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/3] A couple of small refactorings of BPF
+ program call sites
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -72,58 +84,51 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Aug 25, 2022 at 1:07 PM Nicolas Dichtel
-<nicolas.dichtel@6wind.com> wrote:
+On Wed, 24 Aug 2022 at 00:42, Daniel Borkmann <daniel@iogearbox.net> wrote:
 >
+> On 8/18/22 6:59 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> > Stanislav suggested[0] that these small refactorings could be split out=
+ from the
+> > XDP queueing RFC series and merged separately. The first change is a sm=
+all
+> > repacking of struct softnet_data, the others change the BPF call sites =
+to
+> > support full 64-bit values as arguments to bpf_redirect_map() and as th=
+e return
+> > value of a BPF program, relying on the fact that BPF registers are alwa=
+ys 64-bit
+> > wide to maintain backwards compatibility.
+> >
+> > Please see the individual patches for details.
+> >
+> > [0] https://lore.kernel.org/r/CAKH8qBtdnku7StcQ-SamadvAF=3D=3DDRuLLZO94=
+yOR1WJ9Bg=3DuX1w@mail.gmail.com
+> >
+> > Kumar Kartikeya Dwivedi (1):
+> >    bpf: Use 64-bit return value for bpf_prog_run
+> >
+> > Toke H=C3=B8iland-J=C3=B8rgensen (2):
+> >    dev: Move received_rps counter next to RPS members in softnet data
+> >    bpf: Expand map key argument of bpf_redirect_map to u64
 >
-> Le 24/08/2022 =C3=A0 20:56, Eyal Birger a =C3=A9crit :
-> > Hi Nicolas,
-> >
-> > On Wed, Aug 24, 2022 at 6:21 PM Nicolas Dichtel
-> > <nicolas.dichtel@6wind.com> wrote:
-> >>
-> >>
-> >> Le 23/08/2022 =C3=A0 17:45, Eyal Birger a =C3=A9crit :
-> >>> Allow specifying the xfrm interface if_id as part of a route metadata
-> >>> using the lwtunnel infrastructure.
-> >>>
-> >>> This allows for example using a single xfrm interface in collect_md
-> >>> mode as the target of multiple routes each specifying a different if_=
-id.
-> >>>
-> >>> With the appropriate changes to iproute2, considering an xfrm device
-> >>> ipsec1 in collect_md mode one can for example add a route specifying
-> >>> an if_id like so:
-> >>>
-> >>> ip route add <SUBNET> dev ipsec1 encap xfrm if_id 1
-> >> It would be nice to be able to specify the link also. It may help to c=
-ombine
-> >> this with vrf. Something like
-> >> ip route add <SUBNET> dev ipsec1 encap xfrm if_id 1 dev eth0
-> >
-> > I think I understand how this would work on xmit - if you mean adding l=
-ink
-> > to the metadata and using it to set fl.flowi_oif in xfrmi_xmit() - in w=
-hich
-> > case the link would be used in the underlying lookup such that routes i=
-n
-> > a vrf could specify a device which is part of the vrf for egress.
-> Yes.
+> Looks like this series throws NULL pointer derefs in the CI. I just reran=
+ it and
+> same result whereas various other bpf-next targeted patches CI seems gree=
+n and w/o
+> below panic ... perhaps an issue in last patch; please investigate.
+
+Was it only occurring with LLVM before, or with GCC too?
+
 >
-> >
-> > On RX we could assign the link in the metadata in xfrmi_rcv_cb() to the=
- original
-> > skb->dev. I suspect this would be aligned with the link device, but any=
- input
-> > you may have on this would be useful.
-> The link is not used in the rx path, only in the tx path to perform the r=
-oute
-> lookup in the right vrf. You can assign the input iface to the link devic=
-e, but
-> the if_id should be enough to identify the tunnel.
+> https://github.com/kernel-patches/bpf/runs/7982907380?check_suite_focus=
+=3Dtrue
+>
 
-Thanks. I tested this in the context of VRF and it works well.
+I've been trying to reproduce this for a day with no luck. First I did
+it with GCC, then I noticed that the CI is only red for LLVM, so I
+also tried with LLVM 16.
 
-I'll include it in v2.
-
-Eyal.
+I'll keep trying, but just wanted to update the thread. Also, would
+there be a way to look at logs of the past runs (that you saw and then
+triggered this failing run again)? Maybe their splat has some
+difference which might provide more clues.
