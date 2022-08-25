@@ -2,68 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD3E75A160F
-	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 17:47:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C80D25A1627
+	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 17:54:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240663AbiHYPrH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Aug 2022 11:47:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44112 "EHLO
+        id S236736AbiHYPyL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Aug 2022 11:54:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240647AbiHYPrE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Aug 2022 11:47:04 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90222B729B;
-        Thu, 25 Aug 2022 08:46:56 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id h5so24341397wru.7;
-        Thu, 25 Aug 2022 08:46:56 -0700 (PDT)
+        with ESMTP id S229560AbiHYPyK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Aug 2022 11:54:10 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F32ED1AF3A
+        for <bpf@vger.kernel.org>; Thu, 25 Aug 2022 08:54:09 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id r22so18261018pgm.5
+        for <bpf@vger.kernel.org>; Thu, 25 Aug 2022 08:54:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc;
-        bh=m/LmRBw78bFkcmmYhxRj5wBNqOr6Pqa9GLuJS79j/y0=;
-        b=URKZq7zcukHOTJ1es8ZHD3vr0YYYEyd4C6/HGcYfqKTjRp+V0QUb7Wzas32ScU2m0L
-         u3fUSIpwJjzH7vaebCZHoktZEmh1ukRzggRjcKevmE7by3bIT2zGFimk9Uy3pGzWiLmA
-         1s3ZyEFYVQeqfyN8MciDAvZhbNHsb3b8T23pOOpDNQH27ieitYmh5OtmIdTDjFrrwwa+
-         IlFYRRJxh7faif8tdpkOB2jL4LCZLxiUCfzOnQpSN0Mq5HbDBsbgnOGiDJoFP4t9EmK0
-         /w/kAv0D3PWpmfa7e+oYwDkRORQZE6Q8xjEAnTbnFRYkRCaSYRMtYxOqcHEbT7H2gVFz
-         WQ2Q==
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:to:from:date:from:to:cc;
+        bh=cQilVpz64KznvhP/8doZmFlrCpPKyu329zBOL29B+0k=;
+        b=gPXTpS7evo/IyyijWuOsb7fiMkCWftjRvUInXpssmG3LIlHamzgyxJ6wPzOgZnWKH6
+         DSGFJM9xiBula3aMtUWj2aUxn5WLUzwCD5B2315uCBtTYVbugG0Og6NP+nbKWaDsu+pu
+         YSz2vGDB+8R0oj5StVRG4+PZsuwmEVF7cLerXRwj1NnHGwgxj+0aXPTvmMhyCx1qCYYq
+         ixP2QO+L0/QAoc7pg3JrbcrqBCZTBIm4QxqKaO5ydllA4ca3erInu3OqaLaUt0/oYJk9
+         Ld7YntyFC0wxlZcvLIV2amgQXS5s9rZyGQJUAjanSXYdCgha26PsVa6dUKYagZnQD0cp
+         EtWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc;
-        bh=m/LmRBw78bFkcmmYhxRj5wBNqOr6Pqa9GLuJS79j/y0=;
-        b=7KVuyvKX5tMRue0Njna3oTyNipD0bbY1R1bGA8prD8Qfh2jCkv8eKS9RW8kh83fP7n
-         zjUB7oIiMDyVbmDQAZxW1pAxr05fHRJLtVCAOGq79V0ZZSVdj/9WJSldY0XwoLTHzEFL
-         UK0BDaSsDuaeYCbmcag/Iahyd2abftCIUSJenhrIDuJvP4PxBcG/02MNYyyMjUlo1Xs7
-         e5hN8xCHR62vjA1zzukk740BBiGbWCSWy1CIN8g5zcRSqLvV6bSOrQsUXb1gelPlnReX
-         qfj6q/90wrELY/oLKfAqoG7BsVsFBLfRbsENeLVantJHJMjBCXEmpodjKrVfS7qfDP3N
-         8kpA==
-X-Gm-Message-State: ACgBeo1RAo3UxfclZ1UQ5axCBWBa3nYHvsqjIUx8GeNkKqPG97Ud5rVD
-        3TruBcCwbHcl7MzOYDwMcms=
-X-Google-Smtp-Source: AA6agR5fK+ANNSAVjTEH4nAoz2WHdq2jfod8NPnveV/WXPjX3h7iNH+6u+4s48etU3cayeOXNrTxJw==
-X-Received: by 2002:adf:f103:0:b0:225:2532:99e4 with SMTP id r3-20020adff103000000b00225253299e4mr2733509wro.277.1661442414949;
-        Thu, 25 Aug 2022 08:46:54 -0700 (PDT)
-Received: from localhost.localdomain ([213.57.189.88])
-        by smtp.gmail.com with ESMTPSA id ay17-20020a05600c1e1100b003a541d893desm5661496wmb.38.2022.08.25.08.46.53
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:to:from:date:x-gm-message-state:from:to:cc;
+        bh=cQilVpz64KznvhP/8doZmFlrCpPKyu329zBOL29B+0k=;
+        b=jdfc/6m6ZhkGdtMW5R+/FIcdIRTnlaGtmSTZb1cqsTRvfideyWMnrP9uS46GDBnF+c
+         khMp0c4YKTxbh0wEsD9JAsXnwtVYpm1pBIEkEWz17ByAFRc6+zf/KpDyGjkPJ5wgYv1A
+         TJ/rrurmnr7EnqNsR8fxQt1i3QF9wFKArVz6tGYFmdbE5F3UwJWOCDFMrx4lzzX27IUP
+         FwUiz51qGLoJCmzAZxqqPRGuWhdCqk1GQ/xbPDEy01gCWup7ACIR23mXgY81j2OvN9Ap
+         Pp2LNVcRO1WhpwrbFXrdBos+ST2SG4QGTs0SxtD4FCfgvYUb+TgMDcTpW6AG/FKi4+oR
+         UbfQ==
+X-Gm-Message-State: ACgBeo2Hd1udZOPCpKtDKT39fT5nj1BIa0e3es08l6aLUBWqCR/FBoxy
+        S9UuqLS0iAZJT7+Rjk+QCcg=
+X-Google-Smtp-Source: AA6agR5h+DOtAehwHN2opOgT8DH3+DujjkQO/1vC+/WQJw/UwzHCyafD8jxTBgbucYZ19ELHiCLGQw==
+X-Received: by 2002:a65:5889:0:b0:428:90f3:6257 with SMTP id d9-20020a655889000000b0042890f36257mr3897281pgu.590.1661442849400;
+        Thu, 25 Aug 2022 08:54:09 -0700 (PDT)
+Received: from localhost ([98.97.36.33])
+        by smtp.gmail.com with ESMTPSA id o185-20020a625ac2000000b0052b7f0ff197sm15337267pfb.49.2022.08.25.08.54.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Aug 2022 08:46:54 -0700 (PDT)
-From:   Eyal Birger <eyal.birger@gmail.com>
-To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, steffen.klassert@secunet.com,
-        herbert@gondor.apana.org.au, dsahern@kernel.org,
-        contact@proelbtn.com, pablo@netfilter.org,
-        nicolas.dichtel@6wind.com, razor@blackwall.org,
-        daniel@iogearbox.net
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Eyal Birger <eyal.birger@gmail.com>
-Subject: [PATCH ipsec-next,v3 3/3] xfrm: lwtunnel: add lwtunnel support for xfrm interfaces in collect_md mode
-Date:   Thu, 25 Aug 2022 18:46:30 +0300
-Message-Id: <20220825154630.2174742-4-eyal.birger@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220825154630.2174742-1-eyal.birger@gmail.com>
-References: <20220825154630.2174742-1-eyal.birger@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Thu, 25 Aug 2022 08:54:08 -0700 (PDT)
+Date:   Thu, 25 Aug 2022 08:54:07 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Quentin Monnet <quentin@isovalent.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Lam Thai <lamthai@arista.com>, bpf@vger.kernel.org
+Message-ID: <63079b1f19592_12460b208f7@john.notmuch>
+In-Reply-To: <e510b3f8-ed6c-55c7-3585-2e065324ae85@isovalent.com>
+References: <20220824225859.9038-1-lamthai@arista.com>
+ <630716d02ebbe_e1c39208c3@john.notmuch>
+ <e510b3f8-ed6c-55c7-3585-2e065324ae85@isovalent.com>
+Subject: Re: [PATCH] bpftool: fix a wrong type cast in btf_dumper_int
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -74,219 +72,98 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Allow specifying the xfrm interface if_id and link as part of a route
-metadata using the lwtunnel infrastructure.
+Quentin Monnet wrote:
+> On 25/08/2022 07:29, John Fastabend wrote:
+> > Lam Thai wrote:
+> >> When `data` points to a boolean value, casting it to `int *` is problematic
+> >> and could lead to a wrong value being passed to `jsonw_bool`. Change the
+> >> cast to `bool *` instead.
+> > 
+> > How is it problematic? Its from BTF_KIND_INT by my quick reading.
+> 
+> Hi John, it's an INT but it also has a size of 1:
+> 
+>     struct map_value {
+>        int a;
+>        int b;
+>        short c;
+>        bool d;
+>     };
+> 
+>     # bpftool btf dump id 1107
+>     [...]
+>     [2] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
+>     [...]
+>     [12] STRUCT 'map_value' size=12 vlen=4
+>             'a' type_id=2 bits_offset=0
+>             'b' type_id=2 bits_offset=32
+>             'c' type_id=13 bits_offset=64
+>             'd' type_id=14 bits_offset=80
+>     [13] INT 'short' size=2 bits_offset=0 nr_bits=16 encoding=SIGNED
+>     [14] INT '_Bool' size=1 bits_offset=0 nr_bits=8 encoding=BOOL
+>     [...]
+> 
+> And Lam reported [0] that the pretty-print for the map does not display
+> the correct boolean value, because it reads too many bytes from this
+> *(int *)data.
+> 
+>     # bpftool map dump name my_map --pretty
+>     [{
+>             "key": ["0x00","0x00","0x00","0x00"
+>             ],
+>             "value":
+> ["0x00","0x00","0x00","0x00","0x00","0x00","0x00","0x00","0x00","0x00","0x00","0x00"
+>             ],
+>             "formatted": {
+>                 "key": 0,
+>                 "value": {
+>                     "a": 0,
+>                     "b": 0,
+>                     "c": 0,
+>                     "d": true
+>                 }
+>             }
+>         }
+>     ]
+> 
+> The above is before the map gets any update. The bytes in "value" look
+> correct, but "d" says "true" when it should be "false". So bpf tree
+> would make sense to me.
+> 
+> [0] https://github.com/libbpf/bpftool/issues/38
 
-This allows for example using a single xfrm interface in collect_md
-mode as the target of multiple routes each specifying a different if_id.
+Thanks for the explanation. It would be nice to add the above in the
+commit message.
 
-With the appropriate changes to iproute2, considering an xfrm device
-ipsec1 in collect_md mode one can for example add a route specifying
-an if_id like so:
+Otherwise though.
 
-ip route add <SUBNET> dev ipsec1 encap xfrm if_id 1
+Acked-by: John Fastabend <john.fastabend@gmail.com>
 
-In which case traffic routed to the device via this route would use
-if_id in the xfrm interface policy lookup.
+> 
+> > 
+> >>
+> >> Fixes: b12d6ec09730 ("bpf: btf: add btf print functionality")
+> >> Signed-off-by: Lam Thai <lamthai@arista.com>
+> >> ---
+> > 
+> > for bpf-next looks like a nice cleanup, I don't think its needed for bpf
+> > tree?
+> > 
+> >>  tools/bpf/bpftool/btf_dumper.c | 2 +-
+> >>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> diff --git a/tools/bpf/bpftool/btf_dumper.c b/tools/bpf/bpftool/btf_dumper.c
+> >> index 125798b0bc5d..19924b6ce796 100644
+> >> --- a/tools/bpf/bpftool/btf_dumper.c
+> >> +++ b/tools/bpf/bpftool/btf_dumper.c
+> >> @@ -452,7 +452,7 @@ static int btf_dumper_int(const struct btf_type *t, __u8 bit_offset,
+> >>  					     *(char *)data);
+> >>  		break;
+> >>  	case BTF_INT_BOOL:
+> >> -		jsonw_bool(jw, *(int *)data);
+> >> +		jsonw_bool(jw, *(bool *)data);
+> 
+> Looks good, thanks
+> Reviewed-by: Quentin Monnet <quentin@isovalent.com>
 
-Or in the context of vrf, one can also specify the "link" property:
-
-ip route add <SUBNET> dev ipsec1 encap xfrm if_id 1 link_dev eth15
-
-Signed-off-by: Eyal Birger <eyal.birger@gmail.com>
-
-----
-
-v3: netlink improvements as suggested by Nikolay Aleksandrov and
-    Nicolas Dichtel
-
-v2:
-  - move lwt_xfrm_info() helper to dst_metadata.h
-  - add "link" property as suggested by Nicolas Dichtel
----
- include/net/dst_metadata.h    | 11 +++++
- include/uapi/linux/lwtunnel.h | 10 +++++
- net/core/lwtunnel.c           |  1 +
- net/xfrm/xfrm_interface.c     | 85 +++++++++++++++++++++++++++++++++++
- 4 files changed, 107 insertions(+)
-
-diff --git a/include/net/dst_metadata.h b/include/net/dst_metadata.h
-index e4b059908cc7..57f75960fa28 100644
---- a/include/net/dst_metadata.h
-+++ b/include/net/dst_metadata.h
-@@ -60,13 +60,24 @@ skb_tunnel_info(const struct sk_buff *skb)
- 	return NULL;
- }
- 
-+static inline struct xfrm_md_info *lwt_xfrm_info(struct lwtunnel_state *lwt)
-+{
-+	return (struct xfrm_md_info *)lwt->data;
-+}
-+
- static inline struct xfrm_md_info *skb_xfrm_md_info(const struct sk_buff *skb)
- {
- 	struct metadata_dst *md_dst = skb_metadata_dst(skb);
-+	struct dst_entry *dst;
- 
- 	if (md_dst && md_dst->type == METADATA_XFRM)
- 		return &md_dst->u.xfrm_info;
- 
-+	dst = skb_dst(skb);
-+	if (dst && dst->lwtstate &&
-+	    dst->lwtstate->type == LWTUNNEL_ENCAP_XFRM)
-+		return lwt_xfrm_info(dst->lwtstate);
-+
- 	return NULL;
- }
- 
-diff --git a/include/uapi/linux/lwtunnel.h b/include/uapi/linux/lwtunnel.h
-index 2e206919125c..229655ef792f 100644
---- a/include/uapi/linux/lwtunnel.h
-+++ b/include/uapi/linux/lwtunnel.h
-@@ -15,6 +15,7 @@ enum lwtunnel_encap_types {
- 	LWTUNNEL_ENCAP_SEG6_LOCAL,
- 	LWTUNNEL_ENCAP_RPL,
- 	LWTUNNEL_ENCAP_IOAM6,
-+	LWTUNNEL_ENCAP_XFRM,
- 	__LWTUNNEL_ENCAP_MAX,
- };
- 
-@@ -111,4 +112,13 @@ enum {
- 
- #define LWT_BPF_MAX_HEADROOM 256
- 
-+enum {
-+	LWT_XFRM_UNSPEC,
-+	LWT_XFRM_IF_ID,
-+	LWT_XFRM_LINK,
-+	__LWT_XFRM_MAX,
-+};
-+
-+#define LWT_XFRM_MAX (__LWT_XFRM_MAX - 1)
-+
- #endif /* _UAPI_LWTUNNEL_H_ */
-diff --git a/net/core/lwtunnel.c b/net/core/lwtunnel.c
-index 9ccd64e8a666..6fac2f0ef074 100644
---- a/net/core/lwtunnel.c
-+++ b/net/core/lwtunnel.c
-@@ -50,6 +50,7 @@ static const char *lwtunnel_encap_str(enum lwtunnel_encap_types encap_type)
- 		return "IOAM6";
- 	case LWTUNNEL_ENCAP_IP6:
- 	case LWTUNNEL_ENCAP_IP:
-+	case LWTUNNEL_ENCAP_XFRM:
- 	case LWTUNNEL_ENCAP_NONE:
- 	case __LWTUNNEL_ENCAP_MAX:
- 		/* should not have got here */
-diff --git a/net/xfrm/xfrm_interface.c b/net/xfrm/xfrm_interface.c
-index e9a355047468..495dee8b0764 100644
---- a/net/xfrm/xfrm_interface.c
-+++ b/net/xfrm/xfrm_interface.c
-@@ -60,6 +60,88 @@ struct xfrmi_net {
- 	struct xfrm_if __rcu *collect_md_xfrmi;
- };
- 
-+static const struct nla_policy xfrm_lwt_policy[LWT_XFRM_MAX + 1] = {
-+	[LWT_XFRM_IF_ID]	= NLA_POLICY_MIN(NLA_U32, 1),
-+	[LWT_XFRM_LINK]		= NLA_POLICY_MIN(NLA_S32, 1),
-+};
-+
-+static void xfrmi_destroy_state(struct lwtunnel_state *lwt)
-+{
-+}
-+
-+static int xfrmi_build_state(struct net *net, struct nlattr *nla,
-+			     unsigned int family, const void *cfg,
-+			     struct lwtunnel_state **ts,
-+			     struct netlink_ext_ack *extack)
-+{
-+	struct nlattr *tb[LWT_XFRM_MAX + 1];
-+	struct lwtunnel_state *new_state;
-+	struct xfrm_md_info *info;
-+	int ret;
-+
-+	ret = nla_parse_nested(tb, LWT_XFRM_MAX, nla, xfrm_lwt_policy, extack);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (!tb[LWT_XFRM_IF_ID]) {
-+		NL_SET_ERR_MSG(extack, "if_id must be set");
-+		return -EINVAL;
-+	}
-+
-+	new_state = lwtunnel_state_alloc(sizeof(*info));
-+	if (!new_state) {
-+		NL_SET_ERR_MSG(extack, "failed to create encap info");
-+		return -ENOMEM;
-+	}
-+
-+	new_state->type = LWTUNNEL_ENCAP_XFRM;
-+
-+	info = lwt_xfrm_info(new_state);
-+
-+	info->if_id = nla_get_u32(tb[LWT_XFRM_IF_ID]);
-+
-+	if (tb[LWT_XFRM_LINK])
-+		info->link = nla_get_s32(tb[LWT_XFRM_LINK]);
-+
-+	*ts = new_state;
-+	return 0;
-+}
-+
-+static int xfrmi_fill_encap_info(struct sk_buff *skb,
-+				 struct lwtunnel_state *lwt)
-+{
-+	struct xfrm_md_info *info = lwt_xfrm_info(lwt);
-+
-+	if (nla_put_u32(skb, LWT_XFRM_IF_ID, info->if_id) ||
-+	    (info->link && nla_put_s32(skb, LWT_XFRM_LINK, info->link)))
-+		return -EMSGSIZE;
-+
-+	return 0;
-+}
-+
-+static int xfrmi_encap_nlsize(struct lwtunnel_state *lwtstate)
-+{
-+	return nla_total_size(sizeof(u32)) + /* LWT_XFRM_IF_ID */
-+		nla_total_size(sizeof(s32)); /* LWT_XFRM_LINK */
-+}
-+
-+static int xfrmi_encap_cmp(struct lwtunnel_state *a, struct lwtunnel_state *b)
-+{
-+	struct xfrm_md_info *a_info = lwt_xfrm_info(a);
-+	struct xfrm_md_info *b_info = lwt_xfrm_info(b);
-+
-+	return memcmp(a_info, b_info, sizeof(*a_info));
-+}
-+
-+static const struct lwtunnel_encap_ops xfrmi_encap_ops = {
-+	.build_state	= xfrmi_build_state,
-+	.destroy_state	= xfrmi_destroy_state,
-+	.fill_encap	= xfrmi_fill_encap_info,
-+	.get_encap_size = xfrmi_encap_nlsize,
-+	.cmp_encap	= xfrmi_encap_cmp,
-+	.owner		= THIS_MODULE,
-+};
-+
- #define for_each_xfrmi_rcu(start, xi) \
- 	for (xi = rcu_dereference(start); xi; xi = rcu_dereference(xi->next))
- 
-@@ -1080,6 +1162,8 @@ static int __init xfrmi_init(void)
- 	if (err < 0)
- 		goto rtnl_link_failed;
- 
-+	lwtunnel_encap_add_ops(&xfrmi_encap_ops, LWTUNNEL_ENCAP_XFRM);
-+
- 	xfrm_if_register_cb(&xfrm_if_cb);
- 
- 	return err;
-@@ -1098,6 +1182,7 @@ static int __init xfrmi_init(void)
- static void __exit xfrmi_fini(void)
- {
- 	xfrm_if_unregister_cb();
-+	lwtunnel_encap_del_ops(&xfrmi_encap_ops, LWTUNNEL_ENCAP_XFRM);
- 	rtnl_link_unregister(&xfrmi_link_ops);
- 	xfrmi4_fini();
- 	xfrmi6_fini();
--- 
-2.34.1
 
