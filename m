@@ -2,232 +2,173 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0C795A1A69
-	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 22:36:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD9815A1A80
+	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 22:39:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243626AbiHYUf6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Aug 2022 16:35:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55634 "EHLO
+        id S243748AbiHYUja (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Aug 2022 16:39:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243350AbiHYUf4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Aug 2022 16:35:56 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C202D10E;
-        Thu, 25 Aug 2022 13:35:53 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id og21so4230491ejc.2;
-        Thu, 25 Aug 2022 13:35:53 -0700 (PDT)
+        with ESMTP id S243896AbiHYUjR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Aug 2022 16:39:17 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33139BD771;
+        Thu, 25 Aug 2022 13:39:14 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id q2so25458035edb.6;
+        Thu, 25 Aug 2022 13:39:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc;
-        bh=7jCpBi0gO1X5H+QivyPxPqlG7PUje4Vf82qjoN1XYWI=;
-        b=nr6R7SSDginCvMcow4HYvrEPPqf16D6Hr+lEamHliByKhbOB3MyST9QLxZCR5V/sSy
-         NnfKtO495pDJa+xe26BjoREzFUuN0kypsXSXHDybt3BJgwp5Y1RJozfbOBsi1UZih0Sc
-         hKoayD0xSrNIkwkQ/hgywNrtWeGWQA7pnr2vhxlMZtQi9iNWGFBgaB8ep1Ica5XZbM14
-         YoKTBFOIg3MC3sEsv5/UJz7hoKSt0FeI/LPITK8hAbZBzzU24vnAS7AkRQPknwXIYnsO
-         3cqcYx/Agrr/oxAvG1hRisnE53p4inf5KYoUs0EzcQ82+kGLJsWvOhwz2zaCMq5JLQ5I
-         U5ew==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=zh+rsVhs6RHx+r2VsK9thtDxlesJsxRCbV60iL9P0Vc=;
+        b=oN0+X9r4GXeCrnJKxuiZzx0FmmzWQC/LQOWBmI4YtoylyC6+rYkX0Dxf82F10VEmxm
+         2LFokK4FAnYA1NrPhHBjy2lZVKQsNyRuZMWxH3OyJUA70/0luGcs6IdkFZ6Y4QhMhjX2
+         n0Kdb8HgBve12wBCUXd6M4gebxmzsHLA81hwGfrsX7sK7wqDW8caax8wCvsblF9XnixY
+         rEaCrl/Pd4Eaq0xKiOwqsdH57I2eJGoD7LS7OI7Sn98IUlq7aZalEkFta3iyaM42lnth
+         2w/TuYA1KUi9JfprFKUKFZHODfUJqwMSpfzSHfYHeXmfgvO8QH/xEGUgZKVgT81ocdVo
+         XVRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc;
-        bh=7jCpBi0gO1X5H+QivyPxPqlG7PUje4Vf82qjoN1XYWI=;
-        b=1tQ+DsbfyUG3Is9chDq2uhPU/DqQ6FOYDTiPmN3y7+uzvMMyPtgMCF0ceuHlBrar9N
-         SnUTVQkXhRUqS2ICX0bFPux8j3rPRe53FKAOML9U9Dit7mAF4kLQ1HWta/Ohn8idH5q7
-         g3dZbax6XnBA2RFuI18G2HyuOiDhHAkLGYbeLgHZ0N5MyrGi44Bvf70ensNln7mwKVkz
-         UUoYsFV6fV9qQIkRB60OC54QZVmuIivUjsV2Ia+Fh75nyLGA+7emNmGt3LaCP656jaEV
-         9XQtrtWj0zG7rwcgDCiysrIMoPg9Lv3FWfMlJNwGJBd++u7IkO2VLXvVNKmfpgqM1PZs
-         X5Ag==
-X-Gm-Message-State: ACgBeo1Wyxjqc3i4Hx2ykoF1i+1GKUeiKQgtMxW/UdN72krdLIUmlUEk
-        tGzX9xRnJTKb4Q50COEphsdgM5Kkxc8si1liwPjUAS0Z
-X-Google-Smtp-Source: AA6agR6tU3tYvv9KsddpLK7CsQyVz3mtd+el7q2X+xyQhZE6CwY2yk6dDl5oUOL1tBC1zwVxPB6unzcQfFG8VZYlGto=
-X-Received: by 2002:a17:907:2d12:b0:731:6a4e:ceb0 with SMTP id
- gs18-20020a1709072d1200b007316a4eceb0mr3489988ejc.115.1661459751643; Thu, 25
- Aug 2022 13:35:51 -0700 (PDT)
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=zh+rsVhs6RHx+r2VsK9thtDxlesJsxRCbV60iL9P0Vc=;
+        b=zQME9NFSsIJzy9905IAu01TNftgRNsfNSbyT2vmm/3F2p+ybNEJSvKCZIvRwXOiH5l
+         vFztQzs/pqb0HVATB1Km16yXJgdQV2lZ4SMj271Gng0yRsjyzOYFmULhRGOpQjWUPuUj
+         GHu0M0LZAj+OkVWejDaTcR8gYfSv+AYo5raw/IDmwfTM0v9kuXXwAkVDOOIn47rM26lC
+         QpoVM9yH4wsODeZYq3ZNnmMzonqQfYTLkJ4gQbV3pM9fsJHmTUYXO+2FhlIohmeDxtgf
+         1F77LQBHdCsuAYUzNgxrmVV6oQphochGw91c94AhPpiOhbZ+XiSAkDyV7szo2k4hmrEB
+         gIuQ==
+X-Gm-Message-State: ACgBeo21XKoRC6JI1PjxPzci2pMtVnGTMuCpawPgFQqJL/CCgBzciclc
+        JCitSLqhW1oOaxWfOaKngxKUN2mMpj5t6MsMfyY=
+X-Google-Smtp-Source: AA6agR5BmmVFRVzpRq40ym3Us7GapEPm8NCzdDoOJTd09LFB7anaLZwiECsDq1HlnFnZZHQbtuO3yZd8CcS7HN95kEs=
+X-Received: by 2002:a05:6402:2751:b0:443:d90a:43d4 with SMTP id
+ z17-20020a056402275100b00443d90a43d4mr4656933edd.368.1661459952598; Thu, 25
+ Aug 2022 13:39:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220824221018.24684-1-donald.hunter@gmail.com> <20220824221018.24684-3-donald.hunter@gmail.com>
-In-Reply-To: <20220824221018.24684-3-donald.hunter@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 25 Aug 2022 13:35:40 -0700
-Message-ID: <CAEf4BzZnsEAGOXY0KGAN6ZcLsHeMYEfRGaO20jEJk_soqLnD7w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/2] Add table of BPF program types to libbpf docs
-To:     Donald Hunter <donald.hunter@gmail.com>
-Cc:     bpf@vger.kernel.org, linux-doc@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>
+References: <20220822235649.2218031-1-joannelkoong@gmail.com>
+ <20220822235649.2218031-3-joannelkoong@gmail.com> <CAP01T77h2+a9OonHuiPRFsAForWYJfQ71G6teqbcLg4KuGpK5A@mail.gmail.com>
+ <CAJnrk1aq3gJgz0DKo47SS0J2wTtg1C_B3eVfsh-036nmDKKVWA@mail.gmail.com> <CAP01T77A1Z0dbWVzTFMRuHJYN-V8_siMBUg=MqUU3kQzx+Osdg@mail.gmail.com>
+In-Reply-To: <CAP01T77A1Z0dbWVzTFMRuHJYN-V8_siMBUg=MqUU3kQzx+Osdg@mail.gmail.com>
+From:   Joanne Koong <joannelkoong@gmail.com>
+Date:   Thu, 25 Aug 2022 13:39:01 -0700
+Message-ID: <CAJnrk1aO0VPmg7pEjNTt2J-JttOYOMGx6GM+hQ1G2J-fkDPN8g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 2/3] bpf: Add xdp dynptrs
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf@vger.kernel.org, andrii@kernel.org, daniel@iogearbox.net,
+        ast@kernel.org, kafai@fb.com, kuba@kernel.org,
+        netdev@vger.kernel.org, "toke@redhat.com" <toke@redhat.com>,
+        "brouer@redhat.com" <brouer@redhat.com>, lorenzo@kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 24, 2022 at 3:30 PM Donald Hunter <donald.hunter@gmail.com> wro=
-te:
+On Wed, Aug 24, 2022 at 2:11 PM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
 >
-> Extend the libbpf documentation with a table of program types,
-> attach points and ELF section names. This table uses data from
-> program_types.csv which is generated from tools/lib/bpf/libbpf.c
-> during the documentation build.
+> On Wed, 24 Aug 2022 at 00:27, Joanne Koong <joannelkoong@gmail.com> wrote:
+> >
+> > On Mon, Aug 22, 2022 at 7:31 PM Kumar Kartikeya Dwivedi
+> > <memxor@gmail.com> wrote:
+> > > > [...]
+> > > >                 if (func_id == BPF_FUNC_dynptr_data &&
+> > > > -                   dynptr_type == BPF_DYNPTR_TYPE_SKB) {
+> > > > +                   (dynptr_type == BPF_DYNPTR_TYPE_SKB ||
+> > > > +                    dynptr_type == BPF_DYNPTR_TYPE_XDP)) {
+> > > >                         regs[BPF_REG_0].type = PTR_TO_PACKET | ret_flag;
+> > > >                         regs[BPF_REG_0].range = meta.mem_size;
+> > >
+> > > It doesn't seem like this is safe. Since PTR_TO_PACKET's range can be
+> > > modified by comparisons with packet pointers loaded from the xdp/skb
+> > > ctx, how do we distinguish e.g. between a pkt slice obtained from some
+> > > frag in a multi-buff XDP vs pkt pointer from a linear area?
+> > >
+> > > Someone can compare data_meta from ctx with PTR_TO_PACKET from
+> > > bpf_dynptr_data on xdp dynptr (which might be pointing to a xdp mb
+> > > frag). While MAX_PACKET_OFF is 0xffff, it can still be used to do OOB
+> > > access for the linear area. reg_is_init_pkt_pointer will return true
+> > > as modified range is not considered for it. Same kind of issues when
+> > > doing comparison with data_end from ctx (though maybe you won't be
+> > > able to do incorrect data access at runtime using that).
+> > >
+> > > I had a pkt_uid field in my patch [0] which disallowed comparisons
+> > > among bpf_packet_pointer slices. Each call assigned a fresh pkt_uid,
+> > > and that disabled comparisons for them. reg->id is used for var_off
+> > > range propagation so it cannot be reused.
+> > >
+> > > Coming back to this: What we really want here is a PTR_TO_MEM with a
+> > > mem_size, so maybe you should go that route instead of PTR_TO_PACKET
+> > > (and add a type tag to maybe pretty print it also as a packet pointer
+> > > in verifier log), or add some way to distinguish slice vs non-slice
+> > > pkt pointers like I did in my patch. You might also want to add some
+> > > tests for this corner case (there are some later in [0] if you want to
+> > > reuse them).
+> > >
+> > > So TBH, I kinda dislike my own solution in [0] :). The complexity does
+> > > not seem worth it. The pkt_uid distinction is more useful (and
+> > > actually would be needed) in Toke's xdp queueing series, where in a
+> > > dequeue program you have multiple xdp_mds and want scoped slice
+> > > invalidations (i.e. adjust_head on one xdp_md doesn't invalidate
+> > > slices of some other xdp_md). Here we can just get away with normal
+> > > PTR_TO_MEM.
+> > >
+> > > ... Or just let me know if you handle this correctly already, or if
+> > > this won't be an actual problem :).
+> >
+> > Ooh interesting, I hadn't previously taken a look at
+> > try_match_pkt_pointers(), thanks for mentioning it :)
+> >
+> > The cleanest solution to me is to add the flag "DYNPTR_TYPE_{SKB/XDP}"
+> > to PTR_TO_PACKET and change reg_is_init_pkt_pointer() to return false
+> > if the DYNPTR_TYPE_{SKB/XDP} flag is present. I prefer this over
+> > returning PTR_TO_MEM because it seems more robust (eg if in the future
+> > we reject x behavior on the packet data reg types, this will
+> > automatically apply to the data slices), and because it'll keep the
+> > logic more efficient/simpler for the case when the pkt pointer has to
+> > be cleared after any helper that changes pkt data is called (aka the
+> > case where the data slice gets invalidated).
+> >
+> > What are your thoughts?
+> >
 >
-> Signed-off-by: Donald Hunter <donald.hunter@gmail.com>
-> ---
->  Documentation/Makefile                     |  3 +-
->  Documentation/bpf/libbpf/Makefile          | 36 ++++++++++++++++++++++
->  Documentation/bpf/libbpf/index.rst         |  3 ++
->  Documentation/bpf/libbpf/program_types.rst | 18 +++++++++++
->  Documentation/bpf/programs.rst             |  3 ++
->  5 files changed, 62 insertions(+), 1 deletion(-)
->  create mode 100644 Documentation/bpf/libbpf/Makefile
->  create mode 100644 Documentation/bpf/libbpf/program_types.rst
+> Thinking more deeply about it, probably not, we need more work here. I
+> remember _now_ why I chose the pkt_uid approach (and this tells us my
+> commit log lacks all the details about the motivation :( ).
 >
-> diff --git a/Documentation/Makefile b/Documentation/Makefile
-> index 8a63ef2dcd1c..f007314770e1 100644
-> --- a/Documentation/Makefile
-> +++ b/Documentation/Makefile
-> @@ -66,7 +66,8 @@ I18NSPHINXOPTS  =3D $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) =
-.
->  loop_cmd =3D $(echo-cmd) $(cmd_$(1)) || exit;
+> Consider how equivalency checking for packet pointers works in
+> regsafe. It is checking type, then if old range > cur range, then
+> offs, etc.
 >
->  BUILD_SUBDIRS =3D \
-> -       Documentation/userspace-api/media
-> +       Documentation/userspace-api/media \
-> +       Documentation/bpf/libbpf
->
->  quiet_cmd_build_subdir =3D SUBDIR  $2
->        cmd_build_subdir =3D $(MAKE) BUILDDIR=3D$(abspath $(BUILDDIR)) $(b=
-uild)=3D$2 $3
-> diff --git a/Documentation/bpf/libbpf/Makefile b/Documentation/bpf/libbpf=
-/Makefile
-> new file mode 100644
-> index 000000000000..c0c2811c4dd6
-> --- /dev/null
-> +++ b/Documentation/bpf/libbpf/Makefile
-> @@ -0,0 +1,36 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +#
-> +# Rules to convert BPF program types in tools/lib/bpf/libbpf.c
-> +# into a .csv file
-> +
-> +FILES =3D program_types.csv
-> +
-> +TARGETS :=3D $(addprefix $(BUILDDIR)/, $(FILES))
-> +
-> +$(BUILDDIR)/program_types.csv: $(srctree)/tools/lib/bpf/libbpf.c
-> +       $(Q)awk -F'[",[:space:]]+' \
-> +       'BEGIN { print "Program Type,Attach Type,ELF Section Name,Sleepab=
-le" } \
-> +       /SEC_DEF\(\"/ && !/SEC_DEPRECATED/ { \
-> +       type =3D "``BPF_PROG_TYPE_" $$4 "``"; \
-> +       attach =3D index($$5, "0") ? "" : "``" $$5 "``"; \
-> +       section =3D "``" $$3 "``"; \
-> +       sleepable =3D index($$0, "SEC_SLEEPABLE") ? "Yes" : ""; \
-> +       print type "," attach "," section "," sleepable }' \
-> +       $< > $@
-> +
-> +.PHONY: all html epub xml latex linkcheck clean
-> +
-> +all: $(BUILDDIR) ${TARGETS}
-> +       @:
-> +
-> +html: all
-> +epub: all
-> +xml: all
-> +latex: all
-> +linkcheck:
-> +
-> +clean:
-> +       -$(Q)rm -f ${TARGETS} 2>/dev/null
-> +
-> +$(BUILDDIR):
-> +       $(Q)mkdir -p $@
-> diff --git a/Documentation/bpf/libbpf/index.rst b/Documentation/bpf/libbp=
-f/index.rst
-> index 3722537d1384..2c04a9b3aa1f 100644
-> --- a/Documentation/bpf/libbpf/index.rst
-> +++ b/Documentation/bpf/libbpf/index.rst
-> @@ -1,5 +1,7 @@
->  .. SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
->
-> +.. _libbpf:
-> +
->  libbpf
->  =3D=3D=3D=3D=3D=3D
->
-> @@ -9,6 +11,7 @@ libbpf
->     API Documentation <https://libbpf.readthedocs.io/en/latest/api.html>
+> The problem is, while we now don't prune on access to ptr_to_pkt vs
+> ptr_to_pkt | dynptr_pkt types in same reg (since type differs we
+> return false), we still prune if old range of ptr_to_pkt | dynptr_pkt
+> > cur range of ptr_to_pkt | dynptr_pkt. Both could be pointing into
+> separate frags, so this assumption would be incorrect. I would be able
+> to trick the verifier into accessing data beyond the length of a
+> different frag, by first making sure one line of exploration is
+> verified, and then changing the register in another branch reaching
+> the same branch target. Helpers can take packet pointers so the access
+> can become a pruning point. It would think the rest of the stuff is
+> safe, while they are not equivalent at all. It is ok if they are bit
+> by bit equivalent (same type, range, off, etc.).
 
-I'd put program_types here, it's more relevant and important than
-libbpf naming conventions
+Thanks for the explanation. To clarify, if old range of ptr_to_pkt >
+cur range of ptr_to_pkt, what gets pruned? Is it access to cur range
+of ptr_to_pkt since if old range > cur range, then if old range is
+acceptable cur range must definitely be acceptable?
 
->     libbpf_naming_convention
->     libbpf_build
-> +   program_types
 >
->  This is documentation for libbpf, a userspace library for loading and
->  interacting with bpf programs.
-> diff --git a/Documentation/bpf/libbpf/program_types.rst b/Documentation/b=
-pf/libbpf/program_types.rst
-> new file mode 100644
-> index 000000000000..dc65ede09eef
-> --- /dev/null
-> +++ b/Documentation/bpf/libbpf/program_types.rst
-> @@ -0,0 +1,18 @@
-> +.. SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
-> +
-> +.. _program_types_and_elf:
-> +
-> +Program Types  and ELF Sections
+> If you start returning false whenever you see this type tag set, it
+> will become too conservative (it considers reg copies of the same
+> dynptr_data lookup as distinct). So you need some kind of id assigned
+> during dynptr_data lookup to distinguish them.
 
-nit: two spaces?
-
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D
-> +
-> +The table below lists the program types, their attach types where releva=
-nt and the ELF section
-> +names supported by libbpf for them. The ELF section names follow these r=
-ules:
-> +
-> +- ``type`` is an exact match, e.g. ``SEC("socket")``
-> +- ``type+`` means it can be either exact ``SEC("type")`` or well-formed =
-``SEC("type/extras")``
-> +  with a =E2=80=98``/``=E2=80=99 separator, e.g. ``SEC("tracepoint/sysca=
-lls/sys_enter_open")``
-
-'/' is always going to be a type and "extras" separator, but extra
-section format is not formalized. We have cases where it's all '/'s
-(like tracepoint you mentioned), but newer and more complicated format
-uses ':' as separator, e.g.
-SEC("usdt/<path-to-binary>:<usdt_provide>:<usdt_name>") (let's mention
-the latter as well to not create false impression of only ever having
-'/' as separator)
-
-> +
-> +.. csv-table:: Program Types and Their ELF Section Names
-> +   :file: ../../output/program_types.csv
-> +   :widths: 40 30 20 10
-> +   :header-rows: 1
-
-it would be helpful to include a short snippet from generated CSV file
-to give a general idea of the output
-
-> diff --git a/Documentation/bpf/programs.rst b/Documentation/bpf/programs.=
-rst
-> index 620eb667ac7a..c99000ab6d9b 100644
-> --- a/Documentation/bpf/programs.rst
-> +++ b/Documentation/bpf/programs.rst
-> @@ -7,3 +7,6 @@ Program Types
->     :glob:
->
->     prog_*
-> +
-> +For a list of all program types, see :ref:`program_types_and_elf` in
-> +the :ref:`libbpf` documentation.
-> --
-> 2.35.1
->
+What about if the dynptr_pkt type tag is set, then we compare the
+ranges as well? If the ranges are the same, then we return true, else
+false. Does that work?
