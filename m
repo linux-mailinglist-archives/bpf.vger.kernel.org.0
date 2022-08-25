@@ -2,80 +2,34 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6708A5A0725
-	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 04:09:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E38595A072C
+	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 04:11:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230038AbiHYCJb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Aug 2022 22:09:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36956 "EHLO
+        id S231875AbiHYCLy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Aug 2022 22:11:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbiHYCJ3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Aug 2022 22:09:29 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E901177EA7;
-        Wed, 24 Aug 2022 19:09:26 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id v14so304724ejf.9;
-        Wed, 24 Aug 2022 19:09:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=00m4IEZE5ymczAS2BUKtiJ+vi+Xy5c2+SWdERk9o0Uk=;
-        b=XUIvvDE9rb07vRHUIuRXdPojnd2u+LRkrd7NUXqdJbASQ4pc6DJzy1xL27y/fUIJUu
-         DFYkYSy6vJBh0vjTngR/JYHMFgUYkz5ovrKbIfQ8ti/UNB5X0bAuLknVM3I8dqTySI8v
-         aNC6NnXT/bwq7HVDnRjWcviT4NyxzbZ5SyY+msV1T/13fvAiJ/4o5WPyIoHrVBf2AzT+
-         VUj1v3TLgjGH9VKySxCO5hYoVGQ1RgGzPDgWUzMh7irERe68LMD3qrFdvxKsjOfCAyzp
-         YYjSL2ZzkeY/7L/XxhzTJEopLxiUfMRZNunwMvNXZ/v63LwTj8PXPJm/1aESeSwdrVHp
-         LJzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=00m4IEZE5ymczAS2BUKtiJ+vi+Xy5c2+SWdERk9o0Uk=;
-        b=bcVRjaqaOeR196JXGOrH6ZALBNRi/TIzpIWrTDh3s3CqUqkttpgz2JXRrZaoqdpVLf
-         eF9mPvvixrq8wIB2L0wEzXOxOwIRga3yKZVzQ77SBUXiAalIIlSdrBla/9Hqn06tYjVT
-         oNkQcmmqm/+glqPghQy7ihva8L8e5gr/Qc8OqbS5vrmfrcDkNQL0qSyg1002alpetivl
-         AoWnhFPNpCWB1WFC3dQTi6UxW5kkSFOMYZgb2P74Qigg6uPhwfTQ1lyPVO6Vfm8yHrkf
-         XwdGBLHmeFii5hBJLzGV0BBUeozFa//uy2wSYjJ8dat6h0ZvMtMoWh/hNIdwMTSr1T11
-         28iw==
-X-Gm-Message-State: ACgBeo3NowmSEiPOL2qm7jr0kNt6QVpuX42o8T4AtVRgY4pqGjJ9UJ11
-        WKO6u0Vk/FLtFJ3VZfRVpy4U/toSq1FEpyR09qo=
-X-Google-Smtp-Source: AA6agR5xH7PowIkM6L2EPJHlcPwZQ+/IQSpb5qiBAaqANQh5nn5ml1VAKGhwbX4ol5FQeupFXspuRSe02UTSkDWsL20=
-X-Received: by 2002:a17:906:3a15:b0:73d:80bf:542c with SMTP id
- z21-20020a1709063a1500b0073d80bf542cmr972895eje.633.1661393365478; Wed, 24
- Aug 2022 19:09:25 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220824233117.1312810-1-haoluo@google.com> <20220824233117.1312810-6-haoluo@google.com>
-In-Reply-To: <20220824233117.1312810-6-haoluo@google.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 24 Aug 2022 19:09:14 -0700
-Message-ID: <CAADnVQKC_USyXe1RyWL+EY0q=x=c88opvPW-rWZ5znGJOq63CQ@mail.gmail.com>
-Subject: Re: [RESEND PATCH bpf-next v9 5/5] selftests/bpf: add a selftest for
- cgroup hierarchical stats collection
-To:     Hao Luo <haoluo@google.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>, Michal Koutny <mkoutny@suse.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        David Rientjes <rientjes@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Yosry Ahmed <yosryahmed@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        with ESMTP id S229821AbiHYCLt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Aug 2022 22:11:49 -0400
+Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60BD958DF2;
+        Wed, 24 Aug 2022 19:11:48 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R861e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=mqaio@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0VNB6M88_1661393504;
+Received: from localhost(mailfrom:mqaio@linux.alibaba.com fp:SMTPD_---0VNB6M88_1661393504)
+          by smtp.aliyun-inc.com;
+          Thu, 25 Aug 2022 10:11:45 +0800
+From:   Qiao Ma <mqaio@linux.alibaba.com>
+To:     andrii@kernel.org, shuah@kernel.org, mykolal@fb.com,
+        alexei.starovoitov@gmail.com
+Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: [PATCH bpf-next v2] selftests/bpf: fix incorrect fcntl call (test_sockmap.c)
+Date:   Thu, 25 Aug 2022 10:11:43 +0800
+Message-Id: <38269a1610deebf8d51127f15b1c55d00caa4283.1661392989.git.mqaio@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,45 +37,40 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 24, 2022 at 4:31 PM Hao Luo <haoluo@google.com> wrote:
-> +
-> +       for (i = 0; i < N_CGROUPS; i++) {
-> +               fd = create_and_get_cgroup(cgroups[i].path);
-> +               if (!ASSERT_GE(fd, 0, "create_and_get_cgroup"))
-> +                       return fd;
-> +
-> +               cgroups[i].fd = fd;
-> +               cgroups[i].id = get_cgroup_id(cgroups[i].path);
-> +
-> +               /*
-> +                * Enable memcg controller for the entire hierarchy.
-> +                * Note that stats are collected for all cgroups in a hierarchy
-> +                * with memcg enabled anyway, but are only exposed for cgroups
-> +                * that have memcg enabled.
-> +                */
-> +               if (i < N_NON_LEAF_CGROUPS) {
-> +                       err = enable_controllers(cgroups[i].path, "memory");
-> +                       if (!ASSERT_OK(err, "enable_controllers"))
-> +                               return err;
-> +               }
-> +       }
+In test_sockmap.c, the testcase sets socket nonblock first, and then
+calls select() and recvmsg() to receive data.
+If some error occur, nonblock setting will make recvmsg() return
+immediately, rather than blocking forever.
 
-It passes BPF CI, but fails in my setup with:
+However, the way to call fcntl() to set nonblock is wrong.
+To set socket noblock, we need to use
+> fcntl(fd, F_SETFL, O_NONBLOCK);
+rather than:
+> fcntl(fd, O_NONBLOCK);
 
-# ./test_progs -t cgroup_hier -vv
-bpf_testmod.ko is already unloaded.
-Loading bpf_testmod.ko...
-Successfully loaded bpf_testmod.ko.
-setup_bpffs:PASS:mount 0 nsec
-setup_cgroups:PASS:setup_cgroup_environment 0 nsec
-setup_cgroups:PASS:get_root_cgroup 0 nsec
-setup_cgroups:PASS:create_and_get_cgroup 0 nsec
-(cgroup_helpers.c:92: errno: No such file or directory) Enabling
-controller memory:
-/mnt/cgroup-test-work-dir6526//test/cgroup.subtree_control
-setup_cgroups:FAIL:enable_controllers unexpected error: 1 (errno 2)
-cleanup_bpffs:FAIL:rmdir /sys/fs/bpf/vmscan/ unexpected error: -1 (errno 2)
-#36      cgroup_hierarchical_stats:FAIL
-Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
+Signed-off-by: Qiao Ma <mqaio@linux.alibaba.com>
+---
+ tools/testing/selftests/bpf/test_sockmap.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-How do I debug it?
+diff --git a/tools/testing/selftests/bpf/test_sockmap.c b/tools/testing/selftests/bpf/test_sockmap.c
+index 0fbaccdc8861..abb4102f33b0 100644
+--- a/tools/testing/selftests/bpf/test_sockmap.c
++++ b/tools/testing/selftests/bpf/test_sockmap.c
+@@ -598,7 +598,12 @@ static int msg_loop(int fd, int iov_count, int iov_length, int cnt,
+ 		struct timeval timeout;
+ 		fd_set w;
+ 
+-		fcntl(fd, fd_flags);
++		err = fcntl(fd, F_SETFL, fd_flags);
++		if (err < 0) {
++			perror("fcntl failed");
++			goto out_errno;
++		}
++
+ 		/* Account for pop bytes noting each iteration of apply will
+ 		 * call msg_pop_data helper so we need to account for this
+ 		 * by calculating the number of apply iterations. Note user
+-- 
+1.8.3.1
+
