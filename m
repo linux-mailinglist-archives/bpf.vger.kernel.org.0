@@ -2,109 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E489F5A18DA
-	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 20:37:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 442BF5A18E5
+	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 20:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234467AbiHYShu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Aug 2022 14:37:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57310 "EHLO
+        id S243449AbiHYSkZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Aug 2022 14:40:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238683AbiHYSht (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Aug 2022 14:37:49 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A42A28E0EA
-        for <bpf@vger.kernel.org>; Thu, 25 Aug 2022 11:37:48 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id w19so41256161ejc.7
-        for <bpf@vger.kernel.org>; Thu, 25 Aug 2022 11:37:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=9qQ8ZmlxfyXw+EtrhkezKCshSnI/4a41yn2NAFgScQY=;
-        b=G9iJ+8vqn7V99++Y793JRJaw8Wh9txn4QnYk+0S7mhIFoXTe+1dMk/StuluDEbpw0y
-         7jh74BaSbL6OMuqjq9fx0++h2zz47X/ICZ/cqr38EOBeWJcX20I7UW83RWu2VoLEIawc
-         ZP8Za6i7Ox2KGyDA00jaEOX/39xNqZG3hMFqhFxQBV2KaszIS1rYCci5h9Zby411JUSB
-         LVnrFwBeJBdzsp/YJ6hSO5Iw7ANWJ5Q5xLS8eVu3L857UDMJc5VPUIBeO4dChxXeRAET
-         9jxEEaAgK8no9JzgaIXg1ZuhseFyxQ2qmG1xDjmJet5YxKUWWD9g+0vRb82Y+q0OYzH3
-         1zQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=9qQ8ZmlxfyXw+EtrhkezKCshSnI/4a41yn2NAFgScQY=;
-        b=oyfKsqpF+3aeVlmpecP7mg0B8kPI87Q0VYT++IhF5hbZq8pSLOlxcej7yLhu/9dO/H
-         4shz+mcGfPBKvkm37yjCYxAEGjtAZLK6m4EhgjzPeqsV6yOjejjzxYYGfoqMvQfhjG+r
-         ysQwjN5Fihjnb3lcXiQrMP6lahmFFzCByWacgxtq5OpXiJrtGPaJ6nMni9eEHs+3jew7
-         IWqJhjcgHnGZAcdI4+JUEpqkmmWzyn/yOUPWJvOYuY/+SWA1p9JVi3gKWFHemjIDNrkv
-         E1MrvcG5uXQeQfws4BnxN3PD9rlMcR+YcMjo7RPHn6EUqqxf4n5vHJ5H5yf9VEbvy5co
-         BZDg==
-X-Gm-Message-State: ACgBeo2r//HuUoWVhWyM8CbLnnktWx2VPf92pTPhlxWWwghZNQQp3AKD
-        kJoVDzETWXSerD046x/tbFzzeu5nERzl3fvJ01Y=
-X-Google-Smtp-Source: AA6agR73CQy1Soss7aKsshp859yAlbxC065TUXOBrNA6+rmSejKdzfEliLpffi4b9SLxYbJ6MPEn32pa15Z4u9a5oPc=
-X-Received: by 2002:a17:906:99c5:b0:73d:70c5:1a4f with SMTP id
- s5-20020a17090699c500b0073d70c51a4fmr3207460ejn.302.1661452667222; Thu, 25
- Aug 2022 11:37:47 -0700 (PDT)
+        with ESMTP id S235039AbiHYSkT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Aug 2022 14:40:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1C2A3ECDC;
+        Thu, 25 Aug 2022 11:40:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 722B861CFB;
+        Thu, 25 Aug 2022 18:40:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id BF656C433D7;
+        Thu, 25 Aug 2022 18:40:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1661452816;
+        bh=oy+NBN9E7Uaxy3eSfIAa1sdIgOULz1blQP0IjoBk3Vg=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=FDmdjJgqyelrTfZ0uschjSe0H9q5nw0oYruPp6vBbi97OophCphclgyVWMYbT2aEU
+         4rVZNUdQXuFqyTHfLNaoxJgThH1E6Gqf2tsU4zjR8dwQkCbzxD7NTkVNFTtfx0JsWu
+         nNMDG8nEsgEV0x1hPLMw0NpRrCvZ00tDPvQrh0nQxaBQmMEKbehU8fxd07uQHpktAy
+         Fe4IEDfC/28kHjBhHxEPQITJ8CuJyoZGEmZm60Jc7engXUckPrYawLLDX7UcdI+XSQ
+         5xm77dyPuBVsUT7poQpZnt7e4NdMuGl4xjmYddh791Tyek9pFMh77+jOyS3l9i0IVf
+         0xUx4GZ2isY1w==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A22A9C004EF;
+        Thu, 25 Aug 2022 18:40:16 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20220824033837.458197-1-weiyongjun1@huawei.com> <b942bf8f-204b-6bf1-7847-ec5f11c50ca0@isovalent.com>
-In-Reply-To: <b942bf8f-204b-6bf1-7847-ec5f11c50ca0@isovalent.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 25 Aug 2022 11:37:35 -0700
-Message-ID: <CAEf4BzafSAZfhkun5PBGODw6v1s10Nh4JeH8azdqZY-62kBCKg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] bpftool: implement perf attach command
-To:     Quentin Monnet <quentin@isovalent.com>
-Cc:     Wei Yongjun <weiyongjun1@huawei.com>, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [RESEND PATCH bpf-next v9 0/5] bpf: rstat: cgroup hierarchical
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166145281665.28094.14483828352332763496.git-patchwork-notify@kernel.org>
+Date:   Thu, 25 Aug 2022 18:40:16 +0000
+References: <20220824233117.1312810-1-haoluo@google.com>
+In-Reply-To: <20220824233117.1312810-1-haoluo@google.com>
+To:     Hao Luo <haoluo@google.com>
+Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        cgroups@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
+        andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, tj@kernel.org,
+        lizefan.x@bytedance.com, kpsingh@kernel.org, hannes@cmpxchg.org,
+        mhocko@kernel.org, john.fastabend@gmail.com, jolsa@kernel.org,
+        mkoutny@suse.com, roman.gushchin@linux.dev, rientjes@google.com,
+        sdf@google.com, shakeelb@google.com, yosryahmed@google.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Aug 25, 2022 at 8:28 AM Quentin Monnet <quentin@isovalent.com> wrote:
->
-> Hi Wei,
->
-> Apologies for failing to answer to your previous email and for the delay
-> on this one, I just found out GMail had classified them as spam :(.
->
-> So as for your last message, yes: your understanding of my previous
-> answer was correct. Thanks for the patch below! Some comments inline.
->
+Hello:
 
-Do we really want to add such a specific command to bpftool that would
-attach BPF object files with programs of only RAW_TRACEPOINT and
-RAW_TRACEPOINT_WRITABLE type?
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-I could understand if we added something that would be equivalent of
-BPF skeleton's auto-attach method. That would make sense in some
-contexts, especially for some quick testing and validation, to avoid
-writing (a rather simple) user-space loading code.
+On Wed, 24 Aug 2022 16:31:12 -0700 you wrote:
+> This patch series allows for using bpf to collect hierarchical cgroup
+> stats efficiently by integrating with the rstat framework. The rstat
+> framework provides an efficient way to collect cgroup stats percpu and
+> propagate them through the cgroup hierarchy.
+> 
+> The stats are exposed to userspace in textual form by reading files in
+> bpffs, similar to cgroupfs stats by using a cgroup_iter program.
+> cgroup_iter is a type of bpf_iter. It walks over cgroups in four modes:
+> - walking a cgroup's descendants in pre-order.
+> - walking a cgroup's descendants in post-order.
+> - walking a cgroup's ancestors.
+> - process only a single object.
+> 
+> [...]
 
-But "perf attach" for raw_tp programs only? Seem way too limited and
-specific, just adding bloat to bpftool, IMO.
+Here is the summary with links:
+  - [RESEND,bpf-next,v9,1/5] bpf: Introduce cgroup iter
+    https://git.kernel.org/bpf/bpf-next/c/d4ccaf58a847
+  - [RESEND,bpf-next,v9,2/5] selftests/bpf: Test cgroup_iter.
+    https://git.kernel.org/bpf/bpf-next/c/fe0dd9d4b740
+  - [RESEND,bpf-next,v9,3/5] cgroup: bpf: enable bpf programs to integrate with rstat
+    https://git.kernel.org/bpf/bpf-next/c/a319185be9f5
+  - [RESEND,bpf-next,v9,4/5] selftests/bpf: extend cgroup helpers
+    https://git.kernel.org/bpf/bpf-next/c/434992bb6037
+  - [RESEND,bpf-next,v9,5/5] selftests/bpf: add a selftest for cgroup hierarchical stats collection
+    https://git.kernel.org/bpf/bpf-next/c/88886309d2e8
 
-> On 24/08/2022 04:38, Wei Yongjun wrote:
-> > This patch introduces a new bpftool command: perf attach,
-> > which used to attaching/pinning tracepoints programs.
-> >
-> >   bpftool perf attach PROG TP_NAME FILE
-> >
-> > It will attach bpf program PROG to tracepoint TP_NAME and
-> > pin tracepoint program as FILE, FILE must be located in
-> > bpffs mount.
-> >
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-[...]
+
