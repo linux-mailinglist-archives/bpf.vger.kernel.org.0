@@ -2,77 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8E325A18EE
-	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 20:43:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4EBA5A18F2
+	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 20:45:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239861AbiHYSnT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Aug 2022 14:43:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38290 "EHLO
+        id S233141AbiHYSpB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Aug 2022 14:45:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230239AbiHYSnS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Aug 2022 14:43:18 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1CFC6DAE9;
-        Thu, 25 Aug 2022 11:43:17 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id m1so2353369edb.7;
-        Thu, 25 Aug 2022 11:43:17 -0700 (PDT)
+        with ESMTP id S230239AbiHYSo7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Aug 2022 14:44:59 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B0F3E03B
+        for <bpf@vger.kernel.org>; Thu, 25 Aug 2022 11:44:58 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id z8so6628789edb.0
+        for <bpf@vger.kernel.org>; Thu, 25 Aug 2022 11:44:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc;
-        bh=q7xP9HYksRjqLoxLlP1cb34no2b9u1Ll2vr0oi+McwQ=;
-        b=XOqJ3TBYRzFpP+cMJKmEBu0B3npy15NaAGmcCArco/3+wGTzzIiiCAu2ZCVZDdFR9G
-         /LMjc8Xj9mfBtDxzji8MR4S9z++LHemj90jLEHc+ywrrwlDQs9K56aq6TIMYz7K72xk8
-         9TBgT0yobN6qqk9EuDPMxJ2RNd4cioI4dyqqz+ZDXTuNzFU1Y2VNEeO0MEhByoNDKJCJ
-         hNvMVU0tVwtDPZlwEG16x3nI4oup6mgWYZpJMin3M/ZvzFz+JmaOQyiUp9Z018nspDcJ
-         gs42e1ddt1tlRkHk0f6MPowAyq5PD6qxY9/IFDH5awt2uPRo+TOB8yOhVxqt7U6phjd8
-         hPQw==
+        bh=Voh9Mbu15A7EuF5S/qfbvVMJNleJCtPSP2BLw4qeU20=;
+        b=Pdv2pqf0IAKFeMfq32HD9aYUQZneulpWc1zGM0GauK08xlic/HGmX0/FS0QmTLnrzo
+         o5jZyWrMdUFrHHaJKRWCWmbtek1s7QE8ZmiQahAUF8dIJUc7BL9pI7iBxHI8nqsoazrO
+         TFEsrVdkJlMh3Ck8d6m7a4/UJekOMUpNOHFFI4+cIoFAX/gVZUc9U08eVCuNjMRzYOHL
+         CU+0LAa/Dsbql4wGv+Y6JEh/ILRiCBj/b3P+uuCHVrgdAySR9WR/ajiyxuBj3/lpx13L
+         +Etvj5mo3thtcNjeQxIK+o+dvNAt+VnBULTtaZP0TtCk4nmgt/geFK41nZkXA9Ks9XtN
+         L2zA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc;
-        bh=q7xP9HYksRjqLoxLlP1cb34no2b9u1Ll2vr0oi+McwQ=;
-        b=WfUNq5pUidV0UAUXUhfmj6WRO1MMAILcYjUpSfR+VeHeWs+PoUQ7aMdrAa/dwpJF2Y
-         4LqXs0GMpYwxUuun1NVpRU9EseLQ5+Kn/j9CX5Y2LoAnh+119rfqz4aRuy/BoQXgGHDG
-         ihAsXpf/tvCzrNwMgPSBU2JsJgBUXNAFKYB4yKzh3jEaTI6g2n0vTSvf9JlplYcKNSuG
-         JY+6vOeWcF6ooXr2G0Ql6o8BnjDnGCV8EmHSU0GQr5+QTBqOimTpJg1vXzV/XI/vdn/M
-         CIaflQG4rdXKEcsnE8U8EnpDyfZleysTIb13tIHhHz4LunSCFm3SXIBoNrjKX1RSx48O
-         v+QA==
-X-Gm-Message-State: ACgBeo2DYkw9YCH9zMUe/CSdEWiuY+MKGBXLlOqpWb5RAw9nYMU4eI7U
-        AmXReWsTrtc3MnAmVkHO7582xcV5JI88pqiQHGo=
-X-Google-Smtp-Source: AA6agR7wowlfpCyGH5pWBsnlYYu7H8yDOs+ogIlvciVB/XtpLsuQeOqRkxiOpNDwkwrm2ulB42xY4peQmP7htJydOas=
-X-Received: by 2002:a05:6402:270d:b0:43a:67b9:6eea with SMTP id
- y13-20020a056402270d00b0043a67b96eeamr4211471edd.94.1661452996140; Thu, 25
- Aug 2022 11:43:16 -0700 (PDT)
+        bh=Voh9Mbu15A7EuF5S/qfbvVMJNleJCtPSP2BLw4qeU20=;
+        b=HN/kDPxL/nH3P0c/TLBqSdZJUJSLSgVXoTklw3z480FgbyUNGTwa6GB2kYsViRD9J9
+         VQlsWoqAvoCLLVuPGbNyHdX0OH5skn9AuqpsMxU5MARF6IhN2rpTH/17VRGOfXN6yT/C
+         wZjun3R/PocmhMjahqRiigp9XtWHyHhZ1truKRVAF/91TJaLkcmfroPqHj5m4zYbntzS
+         Y/xsya3DJjdOGBdrXd8/DXVSfAdMScxy6o0F1mfOe3FntWqcHueqMOo0TOF2Jcbyvw1h
+         Mtym7bRyYfr+fyqRbtY0QhH5/tTgF6MkVTtSR3Y8Z/l2VN2OG4CZDlWJdwgHjrjtATVs
+         9xog==
+X-Gm-Message-State: ACgBeo3BZ1NcL9ii6CLpnr0rC6kwPOz/DEU71tmGhZVi8G87wEJyf/rT
+        49kVmuXSLXS588dbaCFVjXzDtDja+3JwAYr5kxE=
+X-Google-Smtp-Source: AA6agR5osXE4/l+Mr/G3AMdQBZB1U+FaPF72t5w+SEw40VIkXMc+qqAuPOk2id0I6FWewMakqzOp+bVmKDxMVLnO78w=
+X-Received: by 2002:a05:6402:1704:b0:447:811f:1eef with SMTP id
+ y4-20020a056402170400b00447811f1eefmr4318041edu.14.1661453097155; Thu, 25 Aug
+ 2022 11:44:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220824233117.1312810-1-haoluo@google.com> <20220824233117.1312810-6-haoluo@google.com>
- <CAADnVQKC_USyXe1RyWL+EY0q=x=c88opvPW-rWZ5znGJOq63CQ@mail.gmail.com> <CAJD7tkZGxkV8_3qNy_Q=k-DT2=aGknzT08WiVtESpzur1JxCwA@mail.gmail.com>
-In-Reply-To: <CAJD7tkZGxkV8_3qNy_Q=k-DT2=aGknzT08WiVtESpzur1JxCwA@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 25 Aug 2022 11:43:04 -0700
-Message-ID: <CAADnVQLD+PcyO1qmxaBxdK1_tLRfBEqth8kzxts_8f+nSqu+hA@mail.gmail.com>
-Subject: Re: [RESEND PATCH bpf-next v9 5/5] selftests/bpf: add a selftest for
- cgroup hierarchical stats collection
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Hao Luo <haoluo@google.com>, LKML <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>, Michal Koutny <mkoutny@suse.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        David Rientjes <rientjes@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Shakeel Butt <shakeelb@google.com>
+References: <20220824225859.9038-1-lamthai@arista.com> <630716d02ebbe_e1c39208c3@john.notmuch>
+ <e510b3f8-ed6c-55c7-3585-2e065324ae85@isovalent.com>
+In-Reply-To: <e510b3f8-ed6c-55c7-3585-2e065324ae85@isovalent.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 25 Aug 2022 11:44:45 -0700
+Message-ID: <CAEf4BzZpyjUY8iMy09DdcO6xtxCbE-5Qr62-Wb7R05uaauHmgg@mail.gmail.com>
+Subject: Re: [PATCH] bpftool: fix a wrong type cast in btf_dumper_int
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        Lam Thai <lamthai@arista.com>, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -84,75 +66,95 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 24, 2022 at 7:41 PM Yosry Ahmed <yosryahmed@google.com> wrote:
+On Thu, Aug 25, 2022 at 1:57 AM Quentin Monnet <quentin@isovalent.com> wrote:
 >
-> On Wed, Aug 24, 2022 at 7:09 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
+> On 25/08/2022 07:29, John Fastabend wrote:
+> > Lam Thai wrote:
+> >> When `data` points to a boolean value, casting it to `int *` is problematic
+> >> and could lead to a wrong value being passed to `jsonw_bool`. Change the
+> >> cast to `bool *` instead.
 > >
-> > On Wed, Aug 24, 2022 at 4:31 PM Hao Luo <haoluo@google.com> wrote:
-> > > +
-> > > +       for (i = 0; i < N_CGROUPS; i++) {
-> > > +               fd = create_and_get_cgroup(cgroups[i].path);
-> > > +               if (!ASSERT_GE(fd, 0, "create_and_get_cgroup"))
-> > > +                       return fd;
-> > > +
-> > > +               cgroups[i].fd = fd;
-> > > +               cgroups[i].id = get_cgroup_id(cgroups[i].path);
-> > > +
-> > > +               /*
-> > > +                * Enable memcg controller for the entire hierarchy.
-> > > +                * Note that stats are collected for all cgroups in a hierarchy
-> > > +                * with memcg enabled anyway, but are only exposed for cgroups
-> > > +                * that have memcg enabled.
-> > > +                */
-> > > +               if (i < N_NON_LEAF_CGROUPS) {
-> > > +                       err = enable_controllers(cgroups[i].path, "memory");
-> > > +                       if (!ASSERT_OK(err, "enable_controllers"))
-> > > +                               return err;
-> > > +               }
-> > > +       }
-> >
-> > It passes BPF CI, but fails in my setup with:
-> >
-> > # ./test_progs -t cgroup_hier -vv
-> > bpf_testmod.ko is already unloaded.
-> > Loading bpf_testmod.ko...
-> > Successfully loaded bpf_testmod.ko.
-> > setup_bpffs:PASS:mount 0 nsec
-> > setup_cgroups:PASS:setup_cgroup_environment 0 nsec
-> > setup_cgroups:PASS:get_root_cgroup 0 nsec
-> > setup_cgroups:PASS:create_and_get_cgroup 0 nsec
-> > (cgroup_helpers.c:92: errno: No such file or directory) Enabling
-> > controller memory:
-> > /mnt/cgroup-test-work-dir6526//test/cgroup.subtree_control
-> > setup_cgroups:FAIL:enable_controllers unexpected error: 1 (errno 2)
-> > cleanup_bpffs:FAIL:rmdir /sys/fs/bpf/vmscan/ unexpected error: -1 (errno 2)
-> > #36      cgroup_hierarchical_stats:FAIL
-> > Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
-> >
-> > How do I debug it?
+> > How is it problematic? Its from BTF_KIND_INT by my quick reading.
 >
-> The failure with ENOENT happens when we try to write "+memory" to
-> /mnt/cgroup-test-work-dir6526//test/cgroup.subtree_control, not when
-> we try to open it. So the file is there. AFAICT, ENOENT can be
-> returned from this write if the memory controller is not enabled on
-> this cgroup.
+> Hi John, it's an INT but it also has a size of 1:
 >
-> In setup_cgroup_environment(), we should be enabling all available
-> controllers on /mnt and /mnt/cgroup-test-work-dir6526 by this line:
+>     struct map_value {
+>        int a;
+>        int b;
+>        short c;
+>        bool d;
+>     };
 >
->         if (__enable_controllers(CGROUP_MOUNT_PATH, NULL) ||
->               __enable_controllers(cgroup_workdir, NULL))
->                   return 1;
+>     # bpftool btf dump id 1107
+>     [...]
+>     [2] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
+>     [...]
+>     [12] STRUCT 'map_value' size=12 vlen=4
+>             'a' type_id=2 bits_offset=0
+>             'b' type_id=2 bits_offset=32
+>             'c' type_id=13 bits_offset=64
+>             'd' type_id=14 bits_offset=80
+>     [13] INT 'short' size=2 bits_offset=0 nr_bits=16 encoding=SIGNED
+>     [14] INT '_Bool' size=1 bits_offset=0 nr_bits=8 encoding=BOOL
+>     [...]
 >
-> The first thing that comes to mind is that maybe the memory controller
-> is not enabled on your setup at all? Can you check
-> /sys/fs/cgroup/cgroup.controllers (or wherever your global cgroup
-> mount is)?
+> And Lam reported [0] that the pretty-print for the map does not display
+> the correct boolean value, because it reads too many bytes from this
+> *(int *)data.
+>
+>     # bpftool map dump name my_map --pretty
+>     [{
+>             "key": ["0x00","0x00","0x00","0x00"
+>             ],
+>             "value":
+> ["0x00","0x00","0x00","0x00","0x00","0x00","0x00","0x00","0x00","0x00","0x00","0x00"
+>             ],
+>             "formatted": {
+>                 "key": 0,
+>                 "value": {
+>                     "a": 0,
+>                     "b": 0,
+>                     "c": 0,
+>                     "d": true
+>                 }
+>             }
+>         }
+>     ]
+>
+> The above is before the map gets any update. The bytes in "value" look
+> correct, but "d" says "true" when it should be "false". So bpf tree
+> would make sense to me.
 
-Indeed. I didn't have a memory controller in cgroup2.
-My system booted with cgroup v1 and it had cgroup1 memory
-controller enabled which prevented cgroup2 to enable it.
-Without Tejun's help I would have been able to figure this out.
+That code is back from 2018. Alexei recently clarified that bpf is for
+hi-pri and urgent fixes. I don't think this one classifies as such.
+Plus bpftool itself should be packaged from github mirror, so this fix
+will make it there fast. Applied to bpf-next.
 
-Anyway, pushed the set to bpf-next. Thanks everyone.
+>
+> [0] https://github.com/libbpf/bpftool/issues/38
+>
+> >
+> >>
+> >> Fixes: b12d6ec09730 ("bpf: btf: add btf print functionality")
+> >> Signed-off-by: Lam Thai <lamthai@arista.com>
+> >> ---
+> >
+> > for bpf-next looks like a nice cleanup, I don't think its needed for bpf
+> > tree?
+> >
+> >>  tools/bpf/bpftool/btf_dumper.c | 2 +-
+> >>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> diff --git a/tools/bpf/bpftool/btf_dumper.c b/tools/bpf/bpftool/btf_dumper.c
+> >> index 125798b0bc5d..19924b6ce796 100644
+> >> --- a/tools/bpf/bpftool/btf_dumper.c
+> >> +++ b/tools/bpf/bpftool/btf_dumper.c
+> >> @@ -452,7 +452,7 @@ static int btf_dumper_int(const struct btf_type *t, __u8 bit_offset,
+> >>                                           *(char *)data);
+> >>              break;
+> >>      case BTF_INT_BOOL:
+> >> -            jsonw_bool(jw, *(int *)data);
+> >> +            jsonw_bool(jw, *(bool *)data);
+>
+> Looks good, thanks
+> Reviewed-by: Quentin Monnet <quentin@isovalent.com>
