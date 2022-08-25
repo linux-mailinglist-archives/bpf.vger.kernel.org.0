@@ -2,124 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 678295A055C
-	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 02:49:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85CE95A055E
+	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 02:50:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229573AbiHYAtq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Aug 2022 20:49:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46930 "EHLO
+        id S231375AbiHYAuc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Aug 2022 20:50:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231349AbiHYAto (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Aug 2022 20:49:44 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B92D10550
-        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 17:49:44 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id 62so14793957iov.5
-        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 17:49:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=N5i57tWQ+irbW+vnVsv9droGyD3UZBCcowhtHNvVvPU=;
-        b=s/ooz3pquL0Gz0cf/qsj/faJ+E6H3xbieImxrb1Xqr7y1hyNM/EvkqoGAOKnb9BFDe
-         irGhnXyWcfg20C8oUBPV5LSCI3iiMrezDMfq0eAm2Q+ISsR0r5IC2UH7dGY6jzZZe0DC
-         mQyo+32zxbNZJ0cLIPk66CV9E3rQf2ITAzQ2A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=N5i57tWQ+irbW+vnVsv9droGyD3UZBCcowhtHNvVvPU=;
-        b=zHmCsHW4SBx9UBcqbaFZ6hVqZYkKrb3fqgRW8J8vP4sOtlZ8qU43XzmefleqqvA8Zt
-         ObqdTTF9t1TQ+nHL9p9aEHnA0Nejf8xq8jR690claLAZazTEtvqwp2FY89U5TBV/yRcg
-         r3mp3TJAljeK25A9kAKxefICsQmgO+Y3gr4RmZZKQpfOpay417mHGV/4bFAotziJBt1N
-         IZNVALgVwDmQC6uODp5k4mav0ysJec7JHrmpOtxbQ148ksUse4YFI2Q7MU7xtpzdlWIB
-         JG6A3cdllAUcd6COafxiRp6YOJyw0A+xpzsEET1CKdRYOPxZ8aXOhtROckprkx+Cq3Xe
-         89Iw==
-X-Gm-Message-State: ACgBeo1FQWymh1QqGSqfGrpIO+ki7DD0CgbEDD8DkOoyP/A02kYSkXCE
-        RcM/OG57H0ltEo4lH/bmmHI7SDPtn8pAT4j56LSA1w==
-X-Google-Smtp-Source: AA6agR6468ijP2gfHY/mTIsuu4vjhOIIKZZRxIDj36hgNKBAeicdpHwPHQjKgrWvxkmVcfnoCSnS9CEdCfOyHcuJXG8=
-X-Received: by 2002:a05:6638:40a8:b0:346:8e3c:8141 with SMTP id
- m40-20020a05663840a800b003468e3c8141mr668278jam.107.1661388583517; Wed, 24
- Aug 2022 17:49:43 -0700 (PDT)
+        with ESMTP id S231476AbiHYAua (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Aug 2022 20:50:30 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4392F596;
+        Wed, 24 Aug 2022 17:50:26 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4MCksD337Yz4x1P;
+        Thu, 25 Aug 2022 10:50:24 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1661388625;
+        bh=jkJhTztnPozjBCAI2OXAXu68d53m4Zie/yipx6ewnvU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=a4viQohaRfNokVNeIdcHIcHj149f6jR+b1RHoajsoZaLYDvc0tlgYWB8UDqjPNCKO
+         qq10fPc3lzwE8fpsTxn5EspqVHcrBW5CX+Ga0Z2JCEtHj3+awtNOScwdoirYq3hf6F
+         ZNANOorqMjGuP+z/I/5m5JqOfeT5a41eOqxKXTd/OKpzh/1ijNgIcKCtfOQRpU6w+1
+         h1yR9T9+1E44KyKeou5xuAJMPg9g2l9+bQHVsozNGA17rg8cir+bHnNriFflIA6pJd
+         /DAbTH0JliN1DK2wXraus69pRUDL/sVn0W1YIDNfgkvuzR0HGlvZt4yda80VptqXsn
+         qO/dnWBKdBwiQ==
+Date:   Thu, 25 Aug 2022 10:50:22 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Daniel =?UTF-8?B?TcO8bGxlcg==?= <deso@posteo.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>
+Subject: linux-next: manual merge of the bpf-next tree with the bpf tree
+Message-ID: <20220825105022.7bcaade9@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20220819214232.18784-1-alexei.starovoitov@gmail.com>
- <20220819214232.18784-10-alexei.starovoitov@gmail.com> <CAP01T74qCUsm3mO64d6mbDcjQZxO2fxjZ+JX7kkv2ACXPpZojw@mail.gmail.com>
- <CAADnVQJqqjN=i-ghnk4hjaztBtrRmyDZD7ro8cPNNwRP16=gkg@mail.gmail.com> <CAEXW_YSDzfBmHsAtPruRQp6YKA6vXnV4MD3AxsS3=xxWAxuY2g@mail.gmail.com>
-In-Reply-To: <CAEXW_YSDzfBmHsAtPruRQp6YKA6vXnV4MD3AxsS3=xxWAxuY2g@mail.gmail.com>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Wed, 24 Aug 2022 20:49:31 -0400
-Message-ID: <CAEXW_YSa9PhCNv=nmiBtydYhwb+rs-_Wn+0s1zaSvMKjA6=2+Q@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 09/15] bpf: Batch call_rcu callbacks instead
- of SLAB_TYPESAFE_BY_RCU.
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Delyan Kratunov <delyank@fb.com>,
-        linux-mm <linux-mm@kvack.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/h2zF+eM+1jSWEbUpYb5CiSs";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 24, 2022 at 8:35 PM Joel Fernandes <joel@joelfernandes.org> wrote:
->
-> On Wed, Aug 24, 2022 at 8:14 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Wed, Aug 24, 2022 at 12:59 PM Kumar Kartikeya Dwivedi
-> > <memxor@gmail.com> wrote:
-> > >
-> > > On Fri, 19 Aug 2022 at 23:43, Alexei Starovoitov
-> > > <alexei.starovoitov@gmail.com> wrote:
-> > > >
-> > > > From: Alexei Starovoitov <ast@kernel.org>
-> > > >
-> > > > SLAB_TYPESAFE_BY_RCU makes kmem_caches non mergeable and slows down
-> > > > kmem_cache_destroy. All bpf_mem_cache are safe to share across different maps
-> > > > and programs. Convert SLAB_TYPESAFE_BY_RCU to batched call_rcu. This change
-> > > > solves the memory consumption issue, avoids kmem_cache_destroy latency and
-> > > > keeps bpf hash map performance the same.
-> > > >
-> > > > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> > >
-> > > Makes sense, there was a call_rcu_lazy work from Joel (CCed) on doing
-> > > this batching using a timer + max batch count instead, I wonder if
-> > > that fits our use case and could be useful in the future when it is
-> > > merged?
-> > >
-> > > https://lore.kernel.org/rcu/20220713213237.1596225-2-joel@joelfernandes.org
-> >
-> > Thanks for the pointer. It looks orthogonal.
-> > timer based call_rcu is for power savings.
-> > I'm not sure how it would help here. Probably wouldn't hurt.
-> > But explicit waiting_for_gp list is necessary here,
-> > because two later patches (sleepable support and per-cpu rcu-safe
-> > freeing) are relying on this patch.
->
-> Hello Kumar and Alexei,
->
-> Kumar thanks for the CC. I am seeing this BPF work for the first time
-> so have not gone over it too much - but in case the waiting is
-> synchronous by any chance, call_rcu_lazy() could hurt. The idea is to
-> only queue callbacks that are not all that important to the system
-> while keeping it quiet (power being the primary reason but Daniel
-> Bristot would concur it brings down OS noise and helps RT as well).
+--Sig_/h2zF+eM+1jSWEbUpYb5CiSs
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Just as FYI, I see rcu_barrier() used in Alexei's patch - that will
-flush the lazy CBs to keep rcu_barrier() both correct and performant.
-At that point call_rcu_lazy() is equivalent to call_rcu() as we  no
-longer kept the callbacks a secret from the rest of the system.
+Hi all,
 
-Thanks,
+Today's linux-next merge of the bpf-next tree got a conflict in:
 
- -  Joel
+  tools/testing/selftests/bpf/DENYLIST.s390x
+
+between commit:
+
+  27e23836ce22 ("selftests/bpf: Add lru_bug to s390x deny list")
+
+from the bpf tree and commits:
+
+  b979f005d9b1 ("selftest/bpf: Add setget_sockopt to DENYLIST.s390x")
+  092e67772728 ("selftests/bpf: Add cb_refs test to s390x deny list")
+
+from the bpf-next tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc tools/testing/selftests/bpf/DENYLIST.s390x
+index 5cadfbdadf36,37bafcbf952a..000000000000
+--- a/tools/testing/selftests/bpf/DENYLIST.s390x
++++ b/tools/testing/selftests/bpf/DENYLIST.s390x
+@@@ -65,4 -65,5 +65,6 @@@ send_signa
+  select_reuseport                         # intermittently fails on new s3=
+90x setup
+  xdp_synproxy                             # JIT does not support calling k=
+ernel function                                (kfunc)
+  unpriv_bpf_disabled                      # fentry
+ +lru_bug                                  # prog 'printk': failed to auto-=
+attach: -524
++ setget_sockopt                           # attach unexpected error: -524 =
+                                              (trampoline)
++ cb_refs                                  # expected error message unexpec=
+ted error: -524                               (trampoline)
+
+--Sig_/h2zF+eM+1jSWEbUpYb5CiSs
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmMGx04ACgkQAVBC80lX
+0Gx0Cwf/anXU6xaCKz9Ov8vB6G1PNLR3uOqG/X0xGnKd5gyMiKCASasF0qLaP1fk
+xJHI6rrSWQ8dZXRnzIN4GvyNEWsvaV529ST9R22SfpYWGHENY61W5zsEyefEgFMc
+jKML81Yt70douwFYv31vG19sxWDCEFC9XqsocguecWLTElpnlKUMSed94UI8vjnw
+e2a4ZUoKTAFveuONgTBPTSVeVgcGiLkPBYYAO6pisqJEMHZN9FawFU9TWIg+DDXK
+rKRuWdyCQU9+3+2d5zD9WMFwRsrZLXDAzZEi+GeE68QfXT286yffQRN3B5sF876G
+3ARiTjwQdrlUUjSesTNg+cybIjPHOA==
+=5Xzz
+-----END PGP SIGNATURE-----
+
+--Sig_/h2zF+eM+1jSWEbUpYb5CiSs--
