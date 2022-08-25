@@ -2,167 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E1FE5A1922
-	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 20:53:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 105F55A192B
+	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 20:53:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243520AbiHYSw7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Aug 2022 14:52:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57048 "EHLO
+        id S233616AbiHYSxe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Aug 2022 14:53:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243303AbiHYSw6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Aug 2022 14:52:58 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B92C4481F1
-        for <bpf@vger.kernel.org>; Thu, 25 Aug 2022 11:52:56 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id r6so6908982qtx.6
-        for <bpf@vger.kernel.org>; Thu, 25 Aug 2022 11:52:56 -0700 (PDT)
+        with ESMTP id S242945AbiHYSxc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Aug 2022 14:53:32 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C7A8B6D51
+        for <bpf@vger.kernel.org>; Thu, 25 Aug 2022 11:53:31 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id v14so4769896ejf.9
+        for <bpf@vger.kernel.org>; Thu, 25 Aug 2022 11:53:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc;
-        bh=iYkms9FOcVHRMQ8nnVym8avn1yHBqqPQKbrXBh8EpAg=;
-        b=ernArX/gsESCKDxGzFCn7QheTg6rO6ShblTP5Cc3wCPphLkfsifDo5R5ObXE3j6jZ4
-         ln6V0hLEnJTZPc8ImbAZswhYMmwAVOPk1VhxrwPwrpjsRZUzBoWEqKYiJmRDUONRvHv1
-         oUhM0dBrpZu53zByZiZy5ELiA4VPJiOaTveVlbCC2A4RzTkzwtZ6QiBQ0gmNlo/X+7Vr
-         M8Qk2OVc/daWcWg20LJQhUUV92x9lbQ7Qvm+sLlvEEnsl0LasLz+/E1lU7Fk6DhGIstt
-         9+n4V18u6y6H2Nu8/zRffL51gE2h6C5P6ukRD5JKMtmD4Ui1R3bfBRxoF/l821Pu46oc
-         7I3A==
+        bh=F3UQw/oEPAVWlomN/rgczr4FtllspZQh2OL7U169HSQ=;
+        b=NUFrgp0lDQsvE7u2asfA4WsLP9PYdsMIfxYatQ/EUpFeJrI2uAWLJ4UphN3rMvAuhQ
+         H6Kd9ySNnfp5+dyFFQavnva/Z/yvGYfFaVs9d2PTyPxtPYPfvS/aodgv0jLhWu++fyjR
+         O1Zf1cPbMLfFabwD8DkwM+7n2pi1cnEtBhA+806hZvaZSrDugDotmuCLP6rFBRBmo4Ck
+         yN/9MRb1IHK8szO2kYMn1nUAYuAhqW8EIu8zTmxk0pUOIYjUu5uL594VQw71CgPMNHVU
+         Mt3HiC3/Tyz+Xkz2K+4SJu8oHTQ2htFlu5FMxs84c7B21XTWYFPl/jtZAwpsHs9yiOIp
+         BGQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc;
-        bh=iYkms9FOcVHRMQ8nnVym8avn1yHBqqPQKbrXBh8EpAg=;
-        b=lgmruBkeiSa/MisUBfAlDKW1kvegv8URqxfJml3OwT5sdU9wGHdnajF71JBmOcG6zY
-         obKbfQ2XQwZkNMfRJE78HpGRozJCeV3VFxHGyQZFin0116c9lfMze28jhDjaGRjCuVlZ
-         7n8EqKMTDHbrV3RxMFk1sZ9OhzLkdt3rpjR5r0/R2kkFvKRR7xLbavO9G/RzBafMAu0x
-         KS4r3XMICio5nSk9TASDc+8h6W3mnX+JEhM9L+Xcb5TiDTJ1bPMxdUQbW0w+r0xi8Oon
-         k8kWV2ZLKcYfrNqfxeky45d2REdDTnQ//l9TVpxiKNyD2/5wuDrWiksv2ghyV8/qclpH
-         mx7w==
-X-Gm-Message-State: ACgBeo3Cpx9a8F3NoO2DEGEL7ZXRBumlGV3Em/8QCioQm3Oi4DiSr7PI
-        k3ceKNspoVhn9ZZH/PdahZgXrVZQlBOScQ2TY0HCkQ==
-X-Google-Smtp-Source: AA6agR48ZvB5ActsSVjSq3vRtM4RfekkHdDEj6wknDLegitpHkTI1l0gJHvzsL78KJ1H+7AyvyZOIhoCN3zEWskpNYY=
-X-Received: by 2002:a05:622a:552:b0:342:f8c2:442 with SMTP id
- m18-20020a05622a055200b00342f8c20442mr4912166qtx.478.1661453575766; Thu, 25
- Aug 2022 11:52:55 -0700 (PDT)
+        bh=F3UQw/oEPAVWlomN/rgczr4FtllspZQh2OL7U169HSQ=;
+        b=xrE0pbmUIl4W+ZgOIzmxYOoL1fMWGBH02YcNowwj4RYX6xLffa3ChBPkWiV2Sjt3cS
+         ewzRdzTg75n0i9TyZUYUCr+2A1LvWz2flifLc5nW8nBdRTNNRJNzLZjLtJ4Znh8nNhG6
+         I0Wrqljp83szgZBno/DtjhqU8QD3b/koqTrWPKvWqvGt09rhI/+xDDjMLM5A2jlS8XZ+
+         aT0jW9CLIHh/zx3po6vJjSK7hlAkrDVSMATMUlGWeXBOGNiWYO8+xn3FKWEyK26qg/k/
+         TZnMEONAVEe4VV86/0S6VOULSUm6McurKYnAtn4Mcpx71PaR0pxOWmbhR78OxM1a6at2
+         /XfQ==
+X-Gm-Message-State: ACgBeo0U79dfmNG5sXGx+A8dq8pGcQF1wOOyd6M9btOaSYX417bS+Htd
+        QeWalhBh7JTHNsI/6I3gkL+576PSJonbGxm3LUs=
+X-Google-Smtp-Source: AA6agR5mIIE9S0NLT5FxUuQNWPKZfFm++rtEplObppeqxYZgZum+h3FOiJu/l/9WO8VFf7XlFSvecWihN/bPwm8OHSc=
+X-Received: by 2002:a17:907:6096:b0:73d:9d12:4b04 with SMTP id
+ ht22-20020a170907609600b0073d9d124b04mr3405042ejc.745.1661453609950; Thu, 25
+ Aug 2022 11:53:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220824233117.1312810-1-haoluo@google.com> <20220824233117.1312810-6-haoluo@google.com>
- <CAADnVQKC_USyXe1RyWL+EY0q=x=c88opvPW-rWZ5znGJOq63CQ@mail.gmail.com>
- <CAJD7tkZGxkV8_3qNy_Q=k-DT2=aGknzT08WiVtESpzur1JxCwA@mail.gmail.com> <CAADnVQLD+PcyO1qmxaBxdK1_tLRfBEqth8kzxts_8f+nSqu+hA@mail.gmail.com>
-In-Reply-To: <CAADnVQLD+PcyO1qmxaBxdK1_tLRfBEqth8kzxts_8f+nSqu+hA@mail.gmail.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Thu, 25 Aug 2022 11:52:45 -0700
-Message-ID: <CA+khW7hKRk-=s=eOJAGqJ9bap17kZu8p+YU+Bx-BUg+WaU2q_A@mail.gmail.com>
-Subject: Re: [RESEND PATCH bpf-next v9 5/5] selftests/bpf: add a selftest for
- cgroup hierarchical stats collection
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Yosry Ahmed <yosryahmed@google.com>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>, Michal Koutny <mkoutny@suse.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        David Rientjes <rientjes@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Shakeel Butt <shakeelb@google.com>
+References: <20220824181043.1601429-1-eyal.birger@gmail.com>
+In-Reply-To: <20220824181043.1601429-1-eyal.birger@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 25 Aug 2022 11:53:18 -0700
+Message-ID: <CAEf4BzaQ9ZS0a4Y_nTaXUX6m5PM0VC9B92o9uhGxwydZkocMXw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next,v4] bpf/scripts: assert helper enum value is
+ aligned with comment order
+To:     Eyal Birger <eyal.birger@gmail.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, quentin@isovalent.com,
+        bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Aug 25, 2022 at 11:43 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Wed, Aug 24, 2022 at 11:11 AM Eyal Birger <eyal.birger@gmail.com> wrote:
 >
-> On Wed, Aug 24, 2022 at 7:41 PM Yosry Ahmed <yosryahmed@google.com> wrote:
-> >
-> > On Wed, Aug 24, 2022 at 7:09 PM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Wed, Aug 24, 2022 at 4:31 PM Hao Luo <haoluo@google.com> wrote:
-> > > > +
-> > > > +       for (i = 0; i < N_CGROUPS; i++) {
-> > > > +               fd = create_and_get_cgroup(cgroups[i].path);
-> > > > +               if (!ASSERT_GE(fd, 0, "create_and_get_cgroup"))
-> > > > +                       return fd;
-> > > > +
-> > > > +               cgroups[i].fd = fd;
-> > > > +               cgroups[i].id = get_cgroup_id(cgroups[i].path);
-> > > > +
-> > > > +               /*
-> > > > +                * Enable memcg controller for the entire hierarchy.
-> > > > +                * Note that stats are collected for all cgroups in a hierarchy
-> > > > +                * with memcg enabled anyway, but are only exposed for cgroups
-> > > > +                * that have memcg enabled.
-> > > > +                */
-> > > > +               if (i < N_NON_LEAF_CGROUPS) {
-> > > > +                       err = enable_controllers(cgroups[i].path, "memory");
-> > > > +                       if (!ASSERT_OK(err, "enable_controllers"))
-> > > > +                               return err;
-> > > > +               }
-> > > > +       }
-> > >
-> > > It passes BPF CI, but fails in my setup with:
-> > >
-> > > # ./test_progs -t cgroup_hier -vv
-> > > bpf_testmod.ko is already unloaded.
-> > > Loading bpf_testmod.ko...
-> > > Successfully loaded bpf_testmod.ko.
-> > > setup_bpffs:PASS:mount 0 nsec
-> > > setup_cgroups:PASS:setup_cgroup_environment 0 nsec
-> > > setup_cgroups:PASS:get_root_cgroup 0 nsec
-> > > setup_cgroups:PASS:create_and_get_cgroup 0 nsec
-> > > (cgroup_helpers.c:92: errno: No such file or directory) Enabling
-> > > controller memory:
-> > > /mnt/cgroup-test-work-dir6526//test/cgroup.subtree_control
-> > > setup_cgroups:FAIL:enable_controllers unexpected error: 1 (errno 2)
-> > > cleanup_bpffs:FAIL:rmdir /sys/fs/bpf/vmscan/ unexpected error: -1 (errno 2)
-> > > #36      cgroup_hierarchical_stats:FAIL
-> > > Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
-> > >
-> > > How do I debug it?
-> >
-> > The failure with ENOENT happens when we try to write "+memory" to
-> > /mnt/cgroup-test-work-dir6526//test/cgroup.subtree_control, not when
-> > we try to open it. So the file is there. AFAICT, ENOENT can be
-> > returned from this write if the memory controller is not enabled on
-> > this cgroup.
-> >
-> > In setup_cgroup_environment(), we should be enabling all available
-> > controllers on /mnt and /mnt/cgroup-test-work-dir6526 by this line:
-> >
-> >         if (__enable_controllers(CGROUP_MOUNT_PATH, NULL) ||
-> >               __enable_controllers(cgroup_workdir, NULL))
-> >                   return 1;
-> >
-> > The first thing that comes to mind is that maybe the memory controller
-> > is not enabled on your setup at all? Can you check
-> > /sys/fs/cgroup/cgroup.controllers (or wherever your global cgroup
-> > mount is)?
->
-> Indeed. I didn't have a memory controller in cgroup2.
-> My system booted with cgroup v1 and it had cgroup1 memory
-> controller enabled which prevented cgroup2 to enable it.
-> Without Tejun's help I would have been able to figure this out.
->
-> Anyway, pushed the set to bpf-next. Thanks everyone.
+> The helper value is ABI as defined by enum bpf_func_id.
+> As bpf_helper_defs.h is used for the userpace part, it must be consistent
+> with this enum.
 
-Really awesome! Thanks everyone for the code review and the helpful
-comments! Yosry and I can now start playing this new tool in our
-production kernel. We will monitor for bugs and continue making
-further improvements.
+I think the way we implicitly define the value of those BPF_FUNC_
+enums is also suboptimal. It makes it much harder to cherry-pick and
+backport only few latest helpers onto old kernels (there was a case
+backporting one of the pretty trivial timestamp fetching helpers
+without backporting other stuff). It's also quite hard to correlate
+llvm-objdump output with just `call 123;` instruction into which
+helper it is.
+
+If each FN(xxx) definition in __BPF_FUNC_MAPPER was taking explicit
+integer number, I think it would be a big win and make things better
+all around.
+
+Is there any opposition to doing that?
+
+
+But regardless, applied this patch to bpf-next as well as an improvement.
+
+
+>
+> Before this change the comments order was used by the bpf_doc script in
+> order to set the helper values defined in the helpers file.
+>
+> When adding new helpers it is very puzzling when the userspace application
+> breaks in weird places if the comment is inserted instead of appended -
+> because the generated helper ABI is incorrect and shifted.
+>
+> This commit sets the helper value to the enum value.
+>
+> In addition it is currently the practice to have the comments appended
+> and kept in the same order as the enum. As such, add an assertion
+> validating the comment order is consistent with enum value.
+>
+> In case a different comments ordering is desired, this assertion can
+> be lifted.
+>
+> Signed-off-by: Eyal Birger <eyal.birger@gmail.com>
+>
+> ---
+> v4: fix variable name typo
+> v3: based on feedback from Quentin Monnet:
+> - move assertion to parser
+> - avoid using define_unique_helpers as elem_number_check() relies on
+>   it being an array
+> - set enum_val in helper object instead of passing as a dict to the
+>   printer
+>
+> v2: based on feedback from Quentin Monnet:
+> - assert the current comment ordering
+> - match only one FN in each line
+> ---
+>  scripts/bpf_doc.py | 39 ++++++++++++++++++++++++++++++++++-----
+>  1 file changed, 34 insertions(+), 5 deletions(-)
+>
+
+[...]
