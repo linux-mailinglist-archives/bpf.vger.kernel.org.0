@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ABFC5A1677
-	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 18:14:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E97E5A16BB
+	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 18:33:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230173AbiHYQOz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Aug 2022 12:14:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59800 "EHLO
+        id S234792AbiHYQdp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Aug 2022 12:33:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233475AbiHYQOy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Aug 2022 12:14:54 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D1441CFE3
-        for <bpf@vger.kernel.org>; Thu, 25 Aug 2022 09:14:53 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id x14-20020a17090a8a8e00b001fb61a71d99so5450552pjn.2
-        for <bpf@vger.kernel.org>; Thu, 25 Aug 2022 09:14:53 -0700 (PDT)
+        with ESMTP id S231437AbiHYQdo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Aug 2022 12:33:44 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 827F5B81F5
+        for <bpf@vger.kernel.org>; Thu, 25 Aug 2022 09:33:43 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id x15so19409177pfp.4
+        for <bpf@vger.kernel.org>; Thu, 25 Aug 2022 09:33:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:from:to:cc;
-        bh=mw212yvPRnXeLb2w2KnA5nqe8QeHOTqKwCroqPRjVJ0=;
-        b=icwnomgIUZ3BnbCIM8D0YZIJ14e5Bh9n+0UMQqlG1ZZwBYKFkK6ztD9EY5ESKV9SYq
-         2vQdVPk95lvgoHcx48gyB0P4duwa7KkueX74MLGbeBM0V6W0BAn6otfYbQXCPWgxIlsK
-         19RrgJ+jBGuGLeldLJ7IbjthtArPT93OP31IC+z5pHfXVQk1cIwbj59tqDn5lxHTwiw6
-         t8vJPnHitkAxEV+oPlwv/ZFB1ijCEusMxOTfsRBAQWtYHy/+oCWX2l3mvipJUok+IciE
-         co5Cl53A0Mc5s5PNTgqyfWikMPdoK3eKQVfu6gJnultsqztl4PUm/Ertgua+TmIKAoJ+
-         6X3A==
+        bh=KYx6gX9g7Fbj1Or+g/WAHahx+nCBrW5usgQlZDdwngs=;
+        b=bVobJguaLYbipHkHRXrUp1HQCkXRQl9+tqfsKo9o9MFOy+h3lmtX0mev9H5xgHmaR9
+         ulCZyzVnA9greH5F0Zo1/aOoS+wdnAGa9YtplwYQZdJR2Ky8vr0TouHeTE9d3AFfff3B
+         r6QmpGk+PzIBrryNX0ZGuEbXccXIwayM/ea3MoxuUAfIf32oez8p+ZUsbDfmDA1+nIEv
+         1H2CTiofs7qa9Qn2Or3lCV8Hgzii0EK2YqzPb73Mv+rkvu0VIyszrH2de02D6eC6LQAW
+         pvdDeaOe8XEF/poGoi3QMiHOYCXGbsY2qHmWmUfJhhJWbwOCvpbIyrY+OmaNefx5X947
+         ixrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
          :cc;
-        bh=mw212yvPRnXeLb2w2KnA5nqe8QeHOTqKwCroqPRjVJ0=;
-        b=iVqwl3L5DzoykCvYtL9gdxDZxpdEBw8YmNL1FN07iVvtuS9wLr14Ctwdj7yz7rllWm
-         3XaAOcvMmW2ELAIRMr9Zjx8cxmvwJ5DLiOJl9HeVMddoSMq6PWSyU6rDD87i8WvZJN31
-         lFZLTjxlaqaVtL1ok5cyuF7O+/4T48lASUByTGEMuJ663NZThdf9XAVFycBl+XNwnVvV
-         lzOoKjOzJa4pfFY0yqvP3vjn0/yp4A0sabYi8s/wgq/4SzZfTCCvlvNB0oaHYLqXTVuL
-         ojxyyLBUq1Bbl+WENLWgPAUdWQUGmDoIcrzmV3jU/GiA16jUiorOqSe98U/zeW2m8Jec
-         RRfw==
-X-Gm-Message-State: ACgBeo0F74MI8ldGzjzGpfr7BC+VjLBNtNOEukkQjnZHiYVAdpcEbmVn
-        BsIzZh9suPY/nFdWLxlPxME=
-X-Google-Smtp-Source: AA6agR71lRl7luNOaSnSCUdGqxJol9/+5R+DKr3JQcQuMQ7HhJn8WEaEuMiRb/rCDdgRW64BW142PQ==
-X-Received: by 2002:a17:90a:3c89:b0:1fa:acc2:bafe with SMTP id g9-20020a17090a3c8900b001faacc2bafemr14738777pjc.84.1661444092781;
-        Thu, 25 Aug 2022 09:14:52 -0700 (PDT)
+        bh=KYx6gX9g7Fbj1Or+g/WAHahx+nCBrW5usgQlZDdwngs=;
+        b=Db75b6CLoBxLQlEy0d4xra/bKGhwqOmnaWOdCVAkFlF92Q/+pRt66uxOWrZxykZTxU
+         yJUvhZjkA6siJZXk1TKRI2iGYAvRlDbG/5B0CblJhgbac0+ls4//8wk2g7XGSb6qwp3p
+         fhiUEIZip5ov5m1bX5VJ14l0knpxbshFCqwOAyUkmZ5cWJLJkmuR/VTTRqGe2qwCt+mD
+         UL/0reO1+Ykzh3Wt6GroY3ob0ymtbsZDMbHcRAo7KEJhSrOHhrcaVS5OoJPsKt1j7jRn
+         xhzXk+gNTwSWiHK3WJ8mPHRLFPNr7tjj00ymnXKcG7zt2lEPA13ifNH/IWe0SfLj0pip
+         x0gw==
+X-Gm-Message-State: ACgBeo2juBzr262drXuzQ+vOCbhoopMw+SHUCvFJV6dGUixVzb6HVoBt
+        aH8ax5pnt0FJ136pVGCcNF3Lr5nilQ4=
+X-Google-Smtp-Source: AA6agR6LYA6TaCOvZfffrC8fb/IND8+RVBqaFW7tANKGtp3kYs2DejLtIgjgv6tVFAhNiZeZIt6qtA==
+X-Received: by 2002:a63:ef49:0:b0:42b:40b5:9bc4 with SMTP id c9-20020a63ef49000000b0042b40b59bc4mr3934125pgk.266.1661445222636;
+        Thu, 25 Aug 2022 09:33:42 -0700 (PDT)
 Received: from localhost ([98.97.36.33])
-        by smtp.gmail.com with ESMTPSA id b6-20020a17090a6e0600b001f1f5e812e9sm3846671pjk.20.2022.08.25.09.14.51
+        by smtp.gmail.com with ESMTPSA id w6-20020a170902e88600b0016bf803341asm11598523plg.146.2022.08.25.09.33.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Aug 2022 09:14:52 -0700 (PDT)
-Date:   Thu, 25 Aug 2022 09:14:50 -0700
+        Thu, 25 Aug 2022 09:33:41 -0700 (PDT)
+Date:   Thu, 25 Aug 2022 09:33:39 -0700
 From:   John Fastabend <john.fastabend@gmail.com>
 To:     Shmulik Ladkani <shmulik@metanetworks.com>, bpf@vger.kernel.org,
         Alexei Starovoitov <ast@kernel.org>,
@@ -58,11 +58,12 @@ To:     Shmulik Ladkani <shmulik@metanetworks.com>, bpf@vger.kernel.org,
 Cc:     Andrii Nakryiko <andrii@kernel.org>,
         Paul Chaignon <paul@isovalent.com>,
         Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Message-ID: <63079ffa3f2d_12460b208d0@john.notmuch>
-In-Reply-To: <20220824044117.137658-2-shmulik.ladkani@gmail.com>
+Message-ID: <6307a4631c9a5_12460b20842@john.notmuch>
+In-Reply-To: <20220824044117.137658-5-shmulik.ladkani@gmail.com>
 References: <20220824044117.137658-1-shmulik.ladkani@gmail.com>
- <20220824044117.137658-2-shmulik.ladkani@gmail.com>
-Subject: RE: [PATCH v5 bpf-next 1/4] bpf: Add 'bpf_dynptr_get_data' helper
+ <20220824044117.137658-5-shmulik.ladkani@gmail.com>
+Subject: RE: [PATCH v5 bpf-next 4/4] selftests/bpf: Add geneve with
+ bpf_skb_set_tunnel_opt_dynptr test-case to test_progs
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
@@ -78,87 +79,109 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 Shmulik Ladkani wrote:
-> The task of calculating bpf_dynptr_kern's available size, and the
-> current (offset) data pointer is common for BPF functions working with
-> ARG_PTR_TO_DYNPTR parameters.
+> Add geneve test to test_tunnel. The test setup and scheme resembles the
+> existing vxlan test.
 > 
-> Introduce 'bpf_dynptr_get_data' which returns the current data
-> (with properer offset), and the number of usable bytes it has.
-> 
-> This will void callers from directly calculating bpf_dynptr_kern's
-> data, offset and size.
+> The test also checks variable length tunnel option assignment using
+> bpf_skb_set_tunnel_opt_dynptr.
 > 
 > Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
 > ---
-> v5:
-> - fix bpf_dynptr_get_data's incorrect usage of bpf_dynptr_kern's size
->   spotted by Joanne Koong <joannelkoong@gmail.com>
-> ---
->  include/linux/bpf.h  | 1 +
->  kernel/bpf/helpers.c | 8 ++++++++
->  2 files changed, 9 insertions(+)
-> 
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 99fc7a64564f..d84d37bda87f 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -2577,6 +2577,7 @@ void bpf_dynptr_init(struct bpf_dynptr_kern *ptr, void *data,
->  		     enum bpf_dynptr_type type, u32 offset, u32 size);
->  void bpf_dynptr_set_null(struct bpf_dynptr_kern *ptr);
->  int bpf_dynptr_check_size(u32 size);
-> +void *bpf_dynptr_get_data(struct bpf_dynptr_kern *ptr, u32 *avail_bytes);
->  
->  #ifdef CONFIG_BPF_LSM
->  void bpf_cgroup_atype_get(u32 attach_btf_id, int cgroup_atype);
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index fc08035f14ed..96ff93941cae 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -1427,6 +1427,14 @@ void bpf_dynptr_init(struct bpf_dynptr_kern *ptr, void *data,
->  	bpf_dynptr_set_type(ptr, type);
->  }
->  
-> +void *bpf_dynptr_get_data(struct bpf_dynptr_kern *ptr, u32 *avail_bytes)
+>  .../selftests/bpf/prog_tests/test_tunnel.c    | 108 ++++++++++++++
+>  .../selftests/bpf/progs/test_tunnel_kern.c    | 136 ++++++++++++++++++
+>  2 files changed, 244 insertions(+)
+
+Overall lgtm couple missing ret codes.
+
+[...]
+
+> +
+> +SEC("tc")
+> +int geneve_set_tunnel_src(struct __sk_buff *skb)
 > +{
-> +	if (!ptr->data)
-> +		return NULL;
-> +	*avail_bytes = bpf_dynptr_get_size(ptr);
-> +	return ptr->data + ptr->offset;
+> +	int ret;
+> +	struct bpf_tunnel_key key;
+> +	__u32 index = 0;
+> +	__u32 *local_ip = NULL;
+> +
+> +	local_ip = bpf_map_lookup_elem(&local_ip_map, &index);
+> +	if (!local_ip) {
+> +		log_err(ret);
+
+log_err(-1)?
+
+> +		return TC_ACT_SHOT;
+> +	}
+> +
+> +	__builtin_memset(&key, 0x0, sizeof(key));
+> +	key.local_ipv4 = *local_ip;
+> +	key.remote_ipv4 = 0xac100164; /* 172.16.1.100 */
+> +	key.tunnel_id = 2;
+> +	key.tunnel_tos = 0;
+> +	key.tunnel_ttl = 64;
+> +
+> +	ret = bpf_skb_set_tunnel_key(skb, &key, sizeof(key),
+> +				     BPF_F_ZERO_CSUM_TX);
+> +	if (ret < 0) {
+> +		log_err(ret);
+> +		return TC_ACT_SHOT;
+> +	}
+> +
+> +	return TC_ACT_OK;
 > +}
 > +
->  void bpf_dynptr_set_null(struct bpf_dynptr_kern *ptr)
+> +SEC("tc")
+> +int geneve_get_tunnel_src(struct __sk_buff *skb)
+> +{
+> +	int ret;
+> +	struct bpf_tunnel_key key;
+> +	struct tun_opts_raw opts;
+> +	int expected_opts_len;
+> +	__u32 index = 0;
+> +	__u32 *local_ip = NULL;
+> +
+> +	local_ip = bpf_map_lookup_elem(&local_ip_map, &index);
+> +	if (!local_ip) {
+> +		log_err(ret);
+
+log_err(-1)
+
+> +		return TC_ACT_SHOT;
+> +	}
+> +
+> +	ret = bpf_skb_get_tunnel_key(skb, &key, sizeof(key), 0);
+> +	if (ret < 0) {
+> +		log_err(ret);
+> +		return TC_ACT_SHOT;
+> +	}
+> +
+> +	ret = bpf_skb_get_tunnel_opt(skb, &opts, sizeof(opts));
+> +	if (ret < 0) {
+> +		log_err(ret);
+> +		return TC_ACT_SHOT;
+> +	}
+> +
+> +	expected_opts_len = (skb->len % sizeof(opts)) & ~(sizeof(__u32) - 1);
+> +	if (key.local_ipv4 != *local_ip || ret != expected_opts_len) {
+> +		bpf_printk("geneve key %d local ip 0x%x remote ip 0x%x opts_len %d\n",
+> +			   key.tunnel_id, key.local_ipv4,
+> +			   key.remote_ipv4, ret);
+
+In general I don't really like the printks. But ok.
+
+> +		bpf_printk("local_ip 0x%x\n", *local_ip);
+> +		log_err(ret);
+> +		return TC_ACT_SHOT;
+> +	}
+> +
+> +	return TC_ACT_OK;
+> +}
+> +
+>  SEC("tc")
+>  int vxlan_set_tunnel_dst(struct __sk_buff *skb)
 >  {
->  	memset(ptr, 0, sizeof(*ptr));
 > -- 
 > 2.37.2
 > 
 
-As a bit of an addmitedly nitpick I just wonder if having the avail_bytes
-passed through like this is much use anymore? For example,
 
-+BPF_CALL_3(bpf_skb_set_tunnel_opt_dynptr, struct sk_buff *, skb,
-+	   struct bpf_dynptr_kern *, ptr, u32, len)
-+{
-+	const u8 *from;
-+	u32 avail;
-+
--       if (!ptr->data)
--		return -EFAULT;
--       avail = bpf_dynptr_get_size(ptr)
-+	from = bpf_dynptr_get_data(ptr, &avail);
-+	if (unlikely(len > avail))
-+		return -EINVAL;
-+	return __bpf_skb_set_tunopt(skb, from, len);
-+}
-+
-
-seems just about as compact to me and then drop the null check from the
-helper so we have a bpf_dynptr_get_data(*ptr) that just does the
-data+offset arithmatic. Then it could also be used in a few other
-spots where that calculation seems common.
-
-I find it easier to read at least and think the helper would get
-more use, also land it in one of the .h files. And avoids bouncing
-avail around.
-
-Bit of a gripe but what do you think?
