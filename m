@@ -2,133 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89AB55A0781
-	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 04:56:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A40615A07C2
+	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 06:08:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230038AbiHYC4N (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Aug 2022 22:56:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42726 "EHLO
+        id S229741AbiHYEFB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Aug 2022 00:05:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229741AbiHYC4L (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Aug 2022 22:56:11 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC6A79DF9B
-        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 19:56:10 -0700 (PDT)
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27P0itbO023753;
-        Wed, 24 Aug 2022 19:55:55 -0700
+        with ESMTP id S229437AbiHYEFA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Aug 2022 00:05:00 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA8A31AF25
+        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 21:04:58 -0700 (PDT)
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27P0j4LH021418;
+        Wed, 24 Aug 2022 21:04:43 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
- subject : to : references : from : in-reply-to : content-type :
+ subject : to : cc : references : from : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=KZK4jv4EWUqiyOGSD1j0YP+W1Ydd2eBOP1Ske5UqOzI=;
- b=WFjTsvFICbo7JGShM2XSb8w8O4fVPbJOQAWVtZWslzeGS6n1WzEsKd4A1kSvmk8nepIe
- lsXDGjNhUHmorQjOC6H7G5hXsJxt1osacHJr6MV2T0HDqShLaRneWdbhzfgvsLgIzKJD
- DbybDGbCitimc8REqJ7Z7D9EmQzxqUxYto8= 
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2175.outbound.protection.outlook.com [104.47.59.175])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3j5u571vf0-1
+ bh=EzFg6BIIniOexUL+rHw+L+nmyZyAtEusH20ly7gdYOA=;
+ b=ZW277+8eOdaOlrQhZ196jSL7qaf6veacqEPg7wye80AjiRIQnRa8iTzcW+So85zoaJu8
+ H5qUZGCYnd+M1/9RhxJrtMPlplSGb7icnUNA7ZFKAsTQyAS8qhlYO/c6jw8U4H6oBbB6
+ aGGilE62eMq+eimdubQ74LEPbSdbtidgqZI= 
+Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam02lp2041.outbound.protection.outlook.com [104.47.56.41])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3j5bek00sk-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 24 Aug 2022 19:55:55 -0700
+        Wed, 24 Aug 2022 21:04:42 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KRdxZSoWbXHVM9e3AF/kkcGuqi6AWKzt5/skFTYV+t1iIf6ESkmrgUf+E+WommW/maTjwm3ERZRbv575q9aDsLU2mRnwML3Duz0bMLqx38F5k0unlHjWDmkDz5Za+UVJ+sB8CRYH04hErvptU3mjGK/ahze9sOue0SxFZtZlnUmz559vtkXeb8O7Y8rVkzeABeFzvEnyvb7Q/11Wyb08WERnnhUkDAsWyOBCpRODVGUGm1eGjGSjjkut643EIGrJieLqZloZGf2hUtxKjYS53z8ITSW4jh76MLwRMvQPOg+i804KYzURpdBdYCHxUYsxbwWTTPntbDhDgp+Dw0fZnQ==
+ b=Ddp/AhI9wRqCQcjNiRmhxMIQhKL4rdhh1s4Fjra8iROo8Vbpwuu/JCyqgLVL2VtZW2y+FINL0xcuU45COEz7knRETzLEOhWb5YnrDxh5FFNgYj/AcpRPlArhhdhaxDmugNijOM7Qy5MGqC0JyF5s8E0h8/Ce5JWad6AQdGJFEGGeRosi5JqHi+XcSC0Py2j+FWgrK8SKV9xm+q/d5L8uACkgJL+bJp7j1xtacIttmG406BD96JUu649ve62IfQIZbNPKYEyfZcSnHO0Bk+dj716tJdub9jBCFCM3kN7KqlCrzID3MffnVi80NRdMI5OHwN7mks3lsa8Z9dcyZosypg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=KZK4jv4EWUqiyOGSD1j0YP+W1Ydd2eBOP1Ske5UqOzI=;
- b=C1VzL+LvBFUlMlrQi1WLgHXcW7a6ZfoS/yIBqwDbxCdCkWzM/id4FVnP2pBdwIQfo/7NfeYWaxYW6VnC5Wlwn2QdQFCOlA3SgEqoPlnk3WQ8DhZ7YKdoDD4edAzcSUH37owUinuP5RmtNzVtoo2ANijjnTRpKVnitVhLclmf0UpEL2GSNipejK5EcNLSVzY3DiioA8Djzmnf4bkg4+NuJvQRP1GrtaoBXxkEOeFa7BnfnR85UEjFJA9Vj+N/XttfyU2dgZ+QLcV8uwhDLSo9UrjrTpPS+mqoeiklccXhxgBSqp0rPUQIx3rber55FCHO/qe8M83fCv5sGXf8fyaHRQ==
+ bh=EzFg6BIIniOexUL+rHw+L+nmyZyAtEusH20ly7gdYOA=;
+ b=Ksi28PvMy/Op1CT0v5UztL1T6sisVARF0ft55ZoRZ3+7gJXtdxx4BD+JQ3LVslR7jKn/iq8kQcn+cUXJF+0+7+aUv+8ryD3opBwiEQ+thpJJH6e0W9T7xtjKBErPVIx32tSzCT3BDRHcSC41JZDqSkBwg8vZWg4ZyA3eOo1+BD8cIwm/+kCXZCAvz25+1wVyXB2FUOWVohyoTz8Thyn6LOYNkJKWYhHpapAlbD9SjbU69r/6EHvAyirEn8PFy4XZ0iIN5OVcCfGuMBcqLGoytM5ZdeEKZxyBWAZB102AS/6xBNMoSy/tsJfic8KcvpOW2qbXB50DGAzL2jHTeL1lqA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by SA1PR15MB4386.namprd15.prod.outlook.com (2603:10b6:806:191::11) with
+ by DM6PR15MB3467.namprd15.prod.outlook.com (2603:10b6:5:171::11) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5566.15; Thu, 25 Aug
- 2022 02:55:54 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5566.14; Thu, 25 Aug
+ 2022 04:04:30 +0000
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::dde5:25a3:a125:7bc7]) by SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::dde5:25a3:a125:7bc7%2]) with mapi id 15.20.5566.015; Thu, 25 Aug 2022
- 02:55:54 +0000
-Message-ID: <d9bf2adc-96e6-c6cd-8d69-e381e8568e0b@fb.com>
-Date:   Wed, 24 Aug 2022 19:55:51 -0700
+ 04:04:30 +0000
+Message-ID: <7de2c92f-844c-a12e-3dc4-c92821c18e3a@fb.com>
+Date:   Wed, 24 Aug 2022 21:04:28 -0700
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
  Gecko/20100101 Thunderbird/91.13.0
-Subject: Re: [PATCH RFC bpf-next 1/2] bpf: propagate nullness information for
- reg to reg comparisons
+Subject: Re: [PATCH bpf-next v2 3/6] bpf: x86: Support in-register struct
+ arguments
 Content-Language: en-US
-To:     John Fastabend <john.fastabend@gmail.com>,
-        Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org,
-        ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
-        kernel-team@fb.com
-References: <20220822094312.175448-1-eddyz87@gmail.com>
- <20220822094312.175448-2-eddyz87@gmail.com>
- <63055fa5a080e_292a8208db@john.notmuch>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+References: <20220812052419.520522-1-yhs@fb.com>
+ <20220812052435.523068-1-yhs@fb.com>
+ <CAADnVQKvtxdSo3chBeGtv8KsoQ8drrpa7x=1sOem1kwYKr5iRw@mail.gmail.com>
+ <bdb4feae-47c3-80f6-cc10-741f90c28eeb@fb.com>
+ <20220818204428.whsirz2m6prikg7n@MacBook-Pro-3.local>
+ <CAEf4BzZOGWFxGOD8hMH9v4gJPGv0tf5464Aa0DivDFrRhenx0Q@mail.gmail.com>
 From:   Yonghong Song <yhs@fb.com>
-In-Reply-To: <63055fa5a080e_292a8208db@john.notmuch>
+In-Reply-To: <CAEf4BzZOGWFxGOD8hMH9v4gJPGv0tf5464Aa0DivDFrRhenx0Q@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR13CA0137.namprd13.prod.outlook.com
- (2603:10b6:a03:2c6::22) To SN6PR1501MB2064.namprd15.prod.outlook.com
+X-ClientProxiedBy: BY3PR04CA0019.namprd04.prod.outlook.com
+ (2603:10b6:a03:217::24) To SN6PR1501MB2064.namprd15.prod.outlook.com
  (2603:10b6:805:d::27)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4a3b3359-4e30-40d5-d016-08da86455380
-X-MS-TrafficTypeDiagnostic: SA1PR15MB4386:EE_
+X-MS-Office365-Filtering-Correlation-Id: 02ae1584-3cdf-45d9-870a-08da864ee8e9
+X-MS-TrafficTypeDiagnostic: DM6PR15MB3467:EE_
 X-FB-Source: Internal
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: cy9k7KQCGnz6jiA8UfdQLCK7qDv6HCPLsfW+1yd6Yf70H8amcTPugBC1hnXz/WygtytldeTBy4qU5JVJPWs8fNfR1eFzX0hBedmwGO2rg7B6TdERPNIOtQrZgH31de2HrtwuajcjkNXoPj8UQO6t2DzJiSKxDMkC6Gu2et3gkh54yR2nvHHhRDVan713IkUClEMgfiIvfbKkk9QGlX/QEft26Z3/l2Yak1V0SjnZjtRql3lsRwKnkCQrY07GgyaJccLX9I76H1Mm7J8a91XVh7/CeIHn89TSiv2H22UDjJZQXwYVGQhr4rY+K7Tk6aRHQJazfEkdXdOSR5yCNXlKLaoEeSOAsiNXMh+SDndLYqSxJGXtuEoWBji8ZELwfwqmpRTDYJfrNGL7JchUTvcmZVVUYF8dl0l0rhCcClzf+dIDQVWc/A0oRPgz9Ja5TTzYKa2pnMyNpHOcp7FLRv0T8byYFWdd2J1DN86JZ1edGv1EZmvVE31kxmPQvN2pDawu+fuzTYBqlAA1btvyAZ0aoJUUAIY1ZNQ0oqGqSggyay04zmpy3PdxR+8Ukr8bA/krZE1+ov6Y/G3XoQqNM11rtTMTwkdMSssVxkkBJxVidjYgCpUimIMIoM2Jvy2eBB62L64F6ttadnv6OsphmpAPgeqTjwc2OeQRl7+d+iTpI+8N5yVnoXfem/+XdxMJfQX7BmBa1S/I2wya/orR02zVMAlafcKoBZp9zl1FFggYjjYx/L5Qzype9h8IlCslo5vnnqLfvq6I7nD/2eLoKk6c/wZXx+NzH9rBvarr9MoOeHI=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(376002)(396003)(346002)(366004)(136003)(39860400002)(83380400001)(2906002)(6512007)(53546011)(2616005)(186003)(6506007)(31696002)(86362001)(38100700002)(6636002)(36756003)(8936002)(110136005)(5660300002)(316002)(66946007)(41300700001)(66556008)(66476007)(31686004)(6486002)(478600001)(6666004)(8676002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: 4eXEeY3hpWlGzsUQ4tyBtorg8qxWCTz+g3I7qQ7LUuOSuRp4XyvaoRLKt18kJO1YfidGyI/pwlKYV0h12G4eoPvXv1VRelC7p461uRvmm7W/DTo6uIvtEiW8uWqVX9M8Mqdc1e5NO5vqV/2hCtWcSWW36ge2CPjNNXiihvhvtJwcN0Fe/v4ULVi6LM7PEFZKLBu5tnPc4ZrT6jX+1GZbx+VEIR2ueYcdlIKkUIA6I09lr7BarhFdxcLR51kogNqTM3xyesVJGvxWle5TosRe1jqc3HaTHqzbaviNsTLIgpbzLJAFoaR+Ms9TzvtDH+p26qODZ8Q96eJJSBnUQpk6Yi+z9r0sHcrFzG+qhXNOQD3UdvyUmnGRzTYD2eRzdfAUYtdtplVj6ptvIIMXXA0eapf162xBPfjue1cX2WrtkGCpgvdAVn7YnwucABiBBZQLRKDruvxKqGUiCD/F/AXlZCfwTQ2cpa5ph+joEHvbdMzZ67Ql4IH6q8KnQdnp53bOomPnfK0g0crlY9auyBcu9iklmIT5xEN5FXlVyA5OkLwJwTAqCNh1ZCUJyINfxWG1Deiszl5xLf2+hoxDBI8JDCgLVEVEnl/1kF4+YNx4JaD24zNqwkQLCO57byvltymFDrxYtOsobPapXpIssI5j4oG63LU0Ob5+uxC5qh+o3v8Mu8II+YN8nCwhi3hcvpIA0HqzhgUxqiAq0fZhYDmlb5T8bTEXYMRKWplysn693YckX9ZQOAPWGMbgW3ziBwK452zdlS2WEdceguIDU3rEnz2jSXOR6ZuXEtdccr4w7QE=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(136003)(396003)(346002)(366004)(39860400002)(376002)(6486002)(478600001)(4326008)(5660300002)(41300700001)(66556008)(30864003)(8676002)(66476007)(38100700002)(36756003)(316002)(66946007)(8936002)(54906003)(31686004)(110136005)(2906002)(6506007)(6512007)(53546011)(86362001)(186003)(31696002)(2616005)(83380400001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bmZTbDBQS3FOVTBnaTM1RnROZ2FXUGpnZnU4ekxlQ0pjenJnc05LSVJJTnhl?=
- =?utf-8?B?YmR3WHVsL2hKNXdETmF2bkFIRXZmRG9LV0xleUZwNjZVR2paVjVRNm9xZXA5?=
- =?utf-8?B?azZSRW96eFhITVdPOXJZUWkxQkpSQUdrMU1sOFk4VDlGemhTZFFRT3ZkTnhw?=
- =?utf-8?B?QUxnb0VoOW9ybjQ3YXFrcWFMVFB4U3hRU1k5STBEQy9Vcng1Tk9TOUQ3d05F?=
- =?utf-8?B?bnRhbWVjbDRmQklqYmdGVXY4b3luV1ByQWU2KzU3ang3Z2dJb3dzOSthYnpL?=
- =?utf-8?B?dmlQdjF4RDkxVE03YWJ5NCtNSjlSTyt1SjdSejVWaXl6SWczS2RIRVZSQzBK?=
- =?utf-8?B?UGN2aWVnUDV1aVVyRlFrcGp5MkVFVDEvdzVaOGJkS25TYmhRSDR3OHFHSm5p?=
- =?utf-8?B?and5R2dyWUticUdGZC9pRlhvalJ0WXNGWWpiaklyc0xHZjZuV3lTQWNjSWJM?=
- =?utf-8?B?NUNyNnNoTGRLZE5mL3I2NS95bFdoNWVJZXVaVTBhcVBxdlNJSER2cGc3MzJq?=
- =?utf-8?B?SHVSZjE0bTA3aGtGVVVYbTNWNEtUWjV3c0NPcmV0WEwzakVVRjlpdEh0RlF5?=
- =?utf-8?B?S3hDRUVVamJjWFFsMDBWU3lmT3VrOEYvQ1hGa3c5WEpBUHU2bFdyS3BaWmF1?=
- =?utf-8?B?RnhHWGNsM3AwVWk0Ui9jZ2lZR1dtZ3FZNG9PL1ZEUUVLSjJOdFVWUjJycXZJ?=
- =?utf-8?B?a2tlZW5zcGZUaUh2Nm9qSStiU0hZZmZGb1QyYVVGV2tMUFY0VEpCeGhFRFgr?=
- =?utf-8?B?TkErRmFHU0xUYmlwWU93cldidjhvZ2J3N2p4emtORGVEb1UzcDJ2YzlJVGk1?=
- =?utf-8?B?MDRGclRBdTlKcUhXN0VkQXF5bnUwLzd5dWlobWpLMmJscTVMQW5LWUpGaTdM?=
- =?utf-8?B?dFo1L0dNNjdPTE9JL1JnRFRmOEUwK041UWtwTFl5cmlTQ0lzdm14M0tlajdy?=
- =?utf-8?B?Vnd2ZDNMMmREUmV1V1d6L3YyVjhIdHM2aWx0Mm5rU0ROZ1Z0VVQzQ0hLeGtj?=
- =?utf-8?B?Rjl2bHZYbXg1ZVlsWUFiVVJQM2x4TzFKL25tbW1ZZGN5WlRzbTNNZkx5MzNp?=
- =?utf-8?B?MkJGdTFrak5TeVZPdElSSC9xaFVjOXp2cVB6YmJPUHlPa1RTWFFobHV2WjM2?=
- =?utf-8?B?WlIxUXVoaCt5V2NZVW5Md053U2FkSnBaL1M5ZUtRSWt5eHRqYWVLS3Z1R0dp?=
- =?utf-8?B?WjFsNStGMlNRajZuNU1Rbm51ODE5OWxxbEV0TThRTTdlNkdiWXRVa0paQTNn?=
- =?utf-8?B?RmZhTUlOcENlK05qK3VKTDNsajBEcCtqbit0eFdHUmh4ZEVzZ21GRlljTklv?=
- =?utf-8?B?cXFiWldYbERLZFNiaEY1L01rQW1XVXdSV0ZCaUkxWElva2xaNVhBRXRqSjIr?=
- =?utf-8?B?eVpuNVBPckJJSzVLenBrUEJ5Z3U5SW0vQkdjUHJ3aGk4STFVRzhqYzRaaGYr?=
- =?utf-8?B?cHNHQUx0c1ExSHhYZXY0d3FqQkdYSGxlRzFWenF3czlGbkFKL2lPZU5IaWNN?=
- =?utf-8?B?cnVxczlDNGdlNFFXcS9vV01oOUIzUTA3T0ltZE5iWDZ1WmMwNldYQVJNeFcz?=
- =?utf-8?B?TU5vZ1R5dXZvaTFRK0RVSnI0bktlWUZLb0x3bTh3V2VMc2pORkxnaWw4SDVK?=
- =?utf-8?B?Q1hFejQ0cUlPbWZ4WUc4TUhLeGxUNDBTalE1Q01sNjFpZ1NMMjNlaHhUMU1V?=
- =?utf-8?B?aCtTVUpnU0RhQldYT2N1a0N1VkN4WjB5TXp2WVp5QWxjbzc2MVYwbUUrZUhP?=
- =?utf-8?B?MkVwbjNXanN0K2RmdHpqRW1MalhhdkVhNW92ejNOVW5lVG40OTZEUUkvZkhC?=
- =?utf-8?B?T0FEaUlRT3pzVS9hMWRBbHhDbHdnMk1yRTdYUGtKd1lML1d5UDhUMjFLZG5L?=
- =?utf-8?B?QVpFRlJTZGhMeHhNWWI0dGJqUVlNWHpVaXhRdkExbFVxR1FHeWtpTVdmVlJk?=
- =?utf-8?B?c0tzV1RrYzNuUWF4bklqeEdDYnBjdnBhZlp3Y3U3NC9iWWk1dkJ5cEZLamgr?=
- =?utf-8?B?T2hWb2dMZFNHcC9vV2RjSTZWbDI3WWJiTlVpemRUajc5K1FSRHIrODdUcGkw?=
- =?utf-8?B?V2VjM3lpL1hBYTVSZ3RmQWdaTnlmNE05NkVlSG5Zbjk2U3VWaklTNjFva1VD?=
- =?utf-8?B?eU5lV01Jb0pIM3ZXVjlFMTFFN1JlMUI0dUV3SDVMb0t2NGNKL2hNNksrcjVu?=
- =?utf-8?B?dmc9PQ==?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?T0t6NEk0TEt0QTV5S1dzVTA3VGVhaUtHSkU1d201ZHl1OUpJenVpSFZuckl4?=
+ =?utf-8?B?ODFBMjNMUGZOSVlaNlkwTXlLOGI0OVRucUliaEZmNmN5ajlJVytHd1J1cWYr?=
+ =?utf-8?B?TUVtUU4zWUFrNnhDRzlRWG5YcnhMaXQrRi9rR3AxQkJGRlhlWEtzWW9zYWF6?=
+ =?utf-8?B?KzNTZEJOYmxZb1NiNTZIMXJkczk0bktLbHhKMFdDU0lWcFMzaE54TVQ5SnI5?=
+ =?utf-8?B?OEZjVFZvbExvYlIrSTBTdHhIbUx5dzRDUTlDMnI1RFJWc0l2N2N4MWJ3Tmh2?=
+ =?utf-8?B?Y0RGSkV6U0hCVkM1MzgxTGpmeHhuZE5MdjkrL25XaUVxWWcvdng0Q0NhaVlu?=
+ =?utf-8?B?QTJEZm1UajlLekFxTFVEK2dNamJscENkWEw1WkZkTWkwcXhBU1V1amVpTmw4?=
+ =?utf-8?B?c29paXpOSjJGRDdtVnpYYVVWZDNqUGlhK3NDeGxpV2trUlJxTXJIQXdjaGQw?=
+ =?utf-8?B?a3o4UkpzT1Z2QkEwZlBHdXFzZWZBZ2s4NGZyS2dhRzVaKythcnQ3SVVWRUxN?=
+ =?utf-8?B?MDFIbUNWaVh0ZXBSWTcyN1YxSHVtTHlScXRoQjZhclV5QVE0cytUUTNvbW9V?=
+ =?utf-8?B?Y2QzQnBPenExcDVrNk0rSVJCb3lpRWZpMFU0bmN6dTk1N1h6V05zY1hpNmZl?=
+ =?utf-8?B?a3JWaWlPN3ptZkljTEdMMGIwOXlMZGVVU0dGSjd4T1R5cGNrOG5CZi9ZNnhv?=
+ =?utf-8?B?OVU3eFZmMWo2ckFQbVZMTUpWWnNZZzJoU3lNNGJXOTAwKzNxTHZPUGp1aWM2?=
+ =?utf-8?B?dWZseVV1akEyYm5yM1VyN3dzMWdpLzhwNnl6RzVCcjQ2UHhzVGxVbmFzcmc0?=
+ =?utf-8?B?UjdFMU9pN3FUSHU3bnJ6MjF5MFhYcGErZzM3ZDgxbERPbWlNYVBHR25hU3I5?=
+ =?utf-8?B?a1I2cUl6YTlmb1FmRmlaQUQrVlZpSWpDSDdqVTUvRjJjYlQybEJVaDJBQW9E?=
+ =?utf-8?B?cGJkUUZnRVZHU1A4RGlMRUhDVkVLbVNsYmtqWkZwZ0RNYkVjUGVJNHVvc1h2?=
+ =?utf-8?B?dDh1ZVUwMFlaQlRtUW1vS0wrOFdEM3E1NW5Md0tKZEZ3MXlURlVFR0YyYytt?=
+ =?utf-8?B?ZUk5ejdtVVZUVnFFU1hiQmFkUXphZDNMaXNRbUZ4bXhSSlJ0dDQzVjZqbFEr?=
+ =?utf-8?B?VmdsLzVDZ0xRUURLeXFXME01c1JiOFQvbnZmVEhVMTNnOGhZbktYbllkbVVa?=
+ =?utf-8?B?RVZ3bzZoSFpsbTFETm50Qi9pelptdTlsLzJUM2xoZ2NkdUVHc2QyaXBWVmFa?=
+ =?utf-8?B?anpBNWt5N0tpcGJ3cUxYUTZhNmMyR0hrZXBlMkZlUkRlRmtuMWxTbm1kbEhK?=
+ =?utf-8?B?ZzFBMXhycXFCZTBBenJsUDlSYXNFKzd1R3p1OE9sSmVaZ0NCazVDQmJ6VWdB?=
+ =?utf-8?B?a3N0VXp5UTVRNFk1VzdCU29lcXBGb1VjNHlSNUU5NXpHRFJIcURacXAyeGFY?=
+ =?utf-8?B?dHhjZWtabXhqVnVBZ2dUT1gvTjMvY3J0WE1KN0tZOUhzeC9jN0FSMllXZ3BY?=
+ =?utf-8?B?aDhYMUMxcFhVTSs1TlNsSEpubWtxOWVyaHRpMWhjd2xmbjJoSW1LdTg3R2ND?=
+ =?utf-8?B?aktEQWt2dy82Uk1lYTdOTUZOVi9WTjROd0hVMDA0WXRJdzJBZjY5aklKMWVa?=
+ =?utf-8?B?b1FBQ21JREJ5QVZyRXB4RDQxQXQ5dmxENFNXbXFJMmd1VnpWZUduM29oZTFT?=
+ =?utf-8?B?bzdWMGhMVG9nNHJYZGxBVktNOUpTbE5CREswZUJSWFUrMko1VHZMWGlINU5E?=
+ =?utf-8?B?bWVCZVU0SW1mVlJkMVlZS3JObU11NWdjMXlJR3JLd2xKWUsrWk0rcDl3L3JR?=
+ =?utf-8?B?NTQ2WU1VSUV0UFFyT00zY0MzREtkd1dUdTJZbjZzTkR4NG45YldZamc3bmEw?=
+ =?utf-8?B?aTQza25ZWUNITGNaOHBxdmVoak1jNnZpcnBacVpYcGI2azBEZGhMcjBWUHc5?=
+ =?utf-8?B?ZnU3R0xwbVZqN2F1NXkvTjNURndsZm8vRGhxc3F6TUQ4RElnc0UxdkZxSjJZ?=
+ =?utf-8?B?TUZuUk9GZlk5ZklFUWZreVVTUEdjdmZwdjhrdGRseFdsR0M0NmNPRjZLVmxF?=
+ =?utf-8?B?V0lWZWFWdldUN1ozUUZVdzVWSXE2aVI3U1VhYWplYjdCUEtxZlFjVW1Xa3Bu?=
+ =?utf-8?B?WFU4R2Y2VWtINFJMaG9GZ1pvY1Y5b09wVUkveDNBTElpYXJHVFJjUjl2MlE3?=
+ =?utf-8?B?Unc9PQ==?=
 X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4a3b3359-4e30-40d5-d016-08da86455380
+X-MS-Exchange-CrossTenant-Network-Message-Id: 02ae1584-3cdf-45d9-870a-08da864ee8e9
 X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2022 02:55:53.9412
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2022 04:04:30.1098
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: evqC2eOYhG+YYTWPLwEFQbdznYVN5SBVUxLA4DegzwA501zGyd9fJLMFjraPMGxq
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4386
-X-Proofpoint-GUID: o77vQcy3F3U8yC_d0y_ClCD6TuD7OfBn
-X-Proofpoint-ORIG-GUID: o77vQcy3F3U8yC_d0y_ClCD6TuD7OfBn
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1wQDGBOd4QPTKnxEQZB7T/XDV2j7mWqshld4trxaLrcueIhkYX1v9ng/tqrlY6tk
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB3467
+X-Proofpoint-ORIG-GUID: lbwJfEVtHCEvWnUQD1nIgd9_1kzAsZK9
+X-Proofpoint-GUID: lbwJfEVtHCEvWnUQD1nIgd9_1kzAsZK9
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.517,FMLib:17.11.122.1
  definitions=2022-08-25_02,2022-08-22_02,2022-06-22_01
@@ -145,120 +150,308 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 8/23/22 4:15 PM, John Fastabend wrote:
-> Eduard Zingerman wrote:
->> Propagate nullness information for branches of register to register
->> equality compare instructions. The following rules are used:
->> - suppose register A maybe null
->> - suppose register B is not null
->> - for JNE A, B, ... - A is not null in the false branch
->> - for JEQ A, B, ... - A is not null in the true branch
+On 8/24/22 12:05 PM, Andrii Nakryiko wrote:
+> On Thu, Aug 18, 2022 at 1:44 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
 >>
->> E.g. for program like below:
+>> On Wed, Aug 17, 2022 at 09:56:23PM -0700, Yonghong Song wrote:
+>>>
+>>>
+>>> On 8/15/22 3:44 PM, Alexei Starovoitov wrote:
+>>>> On Thu, Aug 11, 2022 at 10:24 PM Yonghong Song <yhs@fb.com> wrote:
+>>>>>
+>>>>> In C, struct value can be passed as a function argument.
+>>>>> For small structs, struct value may be passed in
+>>>>> one or more registers. For trampoline based bpf programs,
+>>>>> This would cause complication since one-to-one mapping between
+>>>>> function argument and arch argument register is not valid
+>>>>> any more.
+>>>>>
+>>>>> To support struct value argument and make bpf programs
+>>>>> easy to write, the bpf program function parameter is
+>>>>> changed from struct type to a pointer to struct type.
+>>>>> The following is a simplified example.
+>>>>>
+>>>>> In one of later selftests, we have a bpf_testmod function:
+>>>>>       struct bpf_testmod_struct_arg_2 {
+>>>>>           long a;
+>>>>>           long b;
+>>>>>       };
+>>>>>       noinline int
+>>>>>       bpf_testmod_test_struct_arg_2(int a, struct bpf_testmod_struct_arg_2 b, int c) {
+>>>>>           bpf_testmod_test_struct_arg_result = a + b.a + b.b + c;
+>>>>>           return bpf_testmod_test_struct_arg_result;
+>>>>>       }
+>>>>>
+>>>>> When a bpf program is attached to the bpf_testmod function
+>>>>> bpf_testmod_test_struct_arg_2(), the bpf program may look like
+>>>>>       SEC("fentry/bpf_testmod_test_struct_arg_2")
+>>>>>       int BPF_PROG(test_struct_arg_3, int a, struct bpf_testmod_struct_arg_2 *b, int c)
+>>>>>       {
+>>>>>           t2_a = a;
+>>>>>           t2_b_a = b->a;
+>>>>>           t2_b_b = b->b;
+>>>>>           t2_c = c;
+>>>>>           return 0;
+>>>>>       }
+>>>>>
+>>>>> Basically struct value becomes a pointer to the struct.
+>>>>> The trampoline stack will be increased to store the stack values and
+>>>>> the pointer to these values will be saved in the stack slot corresponding
+>>>>> to that argument. For x86_64, the struct size is limited up to 16 bytes
+>>>>> so the struct can fit in one or two registers. The struct size of more
+>>>>> than 16 bytes is not supported now as our current use case is
+>>>>> for sockptr_t in the argument. We could handle such large struct's
+>>>>> in the future if we have concrete use cases.
+>>>>>
+>>>>> The main changes are in save_regs() and restore_regs(). The following
+>>>>> illustrated the trampoline asm codes for save_regs() and restore_regs().
+>>>>> save_regs():
+>>>>>       /* first argument */
+>>>>>       mov    DWORD PTR [rbp-0x18],edi
+>>>>>       /* second argument: struct, save actual values and put the pointer to the slot */
+>>>>>       lea    rax,[rbp-0x40]
+>>>>>       mov    QWORD PTR [rbp-0x10],rax
+>>>>>       mov    QWORD PTR [rbp-0x40],rsi
+>>>>>       mov    QWORD PTR [rbp-0x38],rdx
+>>>>>       /* third argument */
+>>>>>       mov    DWORD PTR [rbp-0x8],esi
+>>>>> restore_regs():
+>>>>>       mov    edi,DWORD PTR [rbp-0x18]
+>>>>>       mov    rsi,QWORD PTR [rbp-0x40]
+>>>>>       mov    rdx,QWORD PTR [rbp-0x38]
+>>>>>       mov    esi,DWORD PTR [rbp-0x8]
+>>>>
+>>>> Not sure whether it was discussed before, but
+>>>> why cannot we adjust the bpf side instead?
+>>>> Technically struct passing between bpf progs was never
+>>>> officially supported. llvm generates something.
+>>>> Probably always passes by reference, but we can adjust
+>>>> that behavior without breaking any programs because
+>>>> we don't have bpf libraries. Programs are fully contained
+>>>> in one or few files. libbpf can do static linking, but
+>>>> without any actual libraries the chance of breaking
+>>>> backward compat is close to zero.
+>>>
+>>> Agree. At this point, we don't need to worry about
+>>> compatibility between bpf program and bpf program libraries.
+>>>
+>>>> Can we teach llvm to pass sizeof(struct) <= 16 in
+>>>> two bpf registers?
+>>>
+>>> Yes, we can. I just hacked llvm and was able to
+>>> do that.
+>>>
+>>>> Then we wouldn't need to have a discrepancy between
+>>>> kernel function prototype and bpf fentry prog proto.
+>>>> Both will have struct by value in the same spot.
+>>>> The trampoline generation will be simpler for x86 and
+>>>> its runtime faster too.
+>>>
+>>> I tested x86 and arm64 both supports two registers
+>>> for a 16 byte struct.
+>>>
+>>>> The other architectures that pass small structs by reference
+>>>> can do a bit more work in the trampoline: copy up to 16 byte
+>>>> and bpf prog side will see it as they were passed in 'registers'.
+>>>> wdyt?
+>>>
+>>> I know systemz and Hexagon will pass by reference for any
+>>> struct size >= 8 bytes. Didn't complete check others.
+>>>
+>>> But since x86 and arm64 supports direct value passing
+>>> with two registers, we should be okay. As you mentioned,
+>>> we could support systemz/hexagon style of struct passing
+>>> by copying the values to the stack.
+>>>
+>>>
+>>> But I have a problem how to define a user friendly
+>>> macro like BPF_PROG for user to use.
+>>>
+>>> Let us say, we have a program like below:
+>>> SEC("fentry/bpf_testmod_test_struct_arg_1")
+>>> int BPF_PROG(test_struct_arg_1, struct bpf_testmod_struct_arg_2 *a, int b,
+>>> int c) {
+>>> ...
+>>> }
+>>>
+>>> We have BPF_PROG macro definition here:
+>>>
+>>> #define BPF_PROG(name, args...)     \
+>>> name(unsigned long long *ctx);     \
+>>> static __always_inline typeof(name(0))     \
+>>> ____##name(unsigned long long *ctx, ##args);     \
+>>> typeof(name(0)) name(unsigned long long *ctx)     \
+>>> {     \
+>>>          _Pragma("GCC diagnostic push")      \
+>>>          _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")      \
+>>>          return ____##name(___bpf_ctx_cast(args));      \
+>>>          _Pragma("GCC diagnostic pop")      \
+>>> }     \
+>>> static __always_inline typeof(name(0))     \
+>>> ____##name(unsigned long long *ctx, ##args)
+>>>
+>>> Some we have static function definition
+>>>
+>>> int ____test_struct_arg_1(unsigned long long *ctx, struct
+>>> bpf_testmod_struct_arg_2 *a, int b, int c);
+>>>
+>>> But the function call inside the function test_struct_arg_1()
+>>> is
+>>>    ____test_struct_arg_1(ctx, ctx[0], ctx[1], ctx[2]);
+>>>
+>>> We have two problems here:
+>>>    ____test_struct_arg_1(ctx, ctx[0], ctx[1], ctx[2])
+>>> does not match the static function declaration.
+>>> This is not problem if everything is int/ptr type.
+>>> If one of argument is structure type, we will have
+>>> type conversion problem. Let us this can be resolved
+>>> somehow through some hack.
+>>>
+>>> More importantly, because some structure may take two
+>>> registers,
+>>>     ____test_struct_arg_1(ctx, ctx[0], ctx[1], ctx[2])
+>>> may not be correct. In my above example, if the
+>>> structure size is 16 bytes,
+>>> then the actual call should be
+>>>     ____test_struct_arg_1(ctx, ctx[0], ctx[1], ctx[2], ctx[3])
+>>> So we need to provide how many extra registers are needed
+>>> beyond ##args in the macro. I have not tried how to
+>>> resolve this but this extra information in the macro
+>>> definite is not user friendly.
+>>>
+>>> Not sure what is the best way to handle this issue (##args is not precise
+>>> and needs addition registers for >8 struct arguments).
 >>
->>    r6 = skb->sk;
->>    r7 = sk_fullsock(r6);
->>    r0 = sk_fullsock(r6);
->>    if (r0 == 0) return 0;    (a)
->>    if (r0 != r7) return 0;   (b)
->>    *r7->type;                (c)
->>    return 0;
+>> The kernel is using this trick to cast 8 byte structs to u64:
+>> /* cast any integer, pointer, or small struct to u64 */
+>> #define UINTTYPE(size) \
+>>          __typeof__(__builtin_choose_expr(size == 1,  (u8)1, \
+>>                     __builtin_choose_expr(size == 2, (u16)2, \
+>>                     __builtin_choose_expr(size == 4, (u32)3, \
+>>                     __builtin_choose_expr(size == 8, (u64)4, \
+>>                                           (void)5)))))
+>> #define __CAST_TO_U64(x) ({ \
+>>          typeof(x) __src = (x); \
+>>          UINTTYPE(sizeof(x)) __dst; \
+>>          memcpy(&__dst, &__src, sizeof(__dst)); \
+>>          (u64)__dst; })
 >>
->> It is safe to dereference r7 at point (c), because of (a) and (b).
+>> casting 16 byte struct to two u64 can be similar.
+>> Ideally we would declare bpf prog as:
+>> SEC("fentry/bpf_testmod_test_struct_arg_1")
+>> int BPF_PROG(test_struct_arg_1, struct bpf_testmod_struct_arg_2 a, int b, int c) {
+>> note there is no '*'. It's struct by value.
 > 
-> I think the idea makes sense. Perhaps Yonhong can comment seeing he was active
-> on the LLVM thread. I just scanned the LLVM side for now will take a look
-> in more detail in a bit.
+> Agree. So I tried to compile this:
+> 
+> $ git diff
+> diff --git a/tools/testing/selftests/bpf/progs/test_vmlinux.c
+> b/tools/testing/selftests/bpf/progs/test_vmlinux.c
+> index e9dfa0313d1b..dccb9ae9801f 100644
+> --- a/tools/testing/selftests/bpf/progs/test_vmlinux.c
+> +++ b/tools/testing/selftests/bpf/progs/test_vmlinux.c
+> @@ -15,6 +15,16 @@ bool tp_btf_called = false;
+>   bool kprobe_called = false;
+>   bool fentry_called = false;
+> 
+> +typedef struct {
+> +       void *x;
+> +       int t;
+> +} sockptr;
+> +
+> +static int blah(sockptr x)
+> +{
+> +       return x.t;
+> +}
+> +
+>   SEC("tp/syscalls/sys_enter_nanosleep")
+>   int handle__tp(struct trace_event_raw_sys_enter *args)
+>   {
+> @@ -30,7 +40,14 @@ int handle__tp(struct trace_event_raw_sys_enter *args)
+>                  return 0;
+> 
+>          tp_called = true;
+> -       return 0;
+> +
+> +       return blah(({ union {
+> +               struct { u64 x, y; } z;
+> +               sockptr s;
+> +               } tmp = {.z = {0, 1}};
+> +
+> +               tmp.s;
+> +       }));
+>   }
+> 
+>   SEC("raw_tp/sys_enter")
+> 
+> 
+> And it compiled. So I think it's possible to do u64 to struct
+> conversion using this approach.
+> We'd have to define two variations of macro -- one for structs <= 8
+> bytes, another for structs > 8 and <= 16 bytes. One will "consume"
+> single ctx[] slot, another -- will consume both. And then each variant
+> knows which other macro to refer to after itself.
+> 
+> A bit of macro hackery, but it should work.
 
-The issue is discovered when making some changes in llvm compiler.
-I think it is good to add support in verifier so in the future
-if compiler generates such code patterns, user won't get
-surprised verification failure.
+Thanks for suggestion. This approach might work. Let me
+give a try.
 
 > 
+> 
+>> The main challenge is how to do the math in the BPF_PROG macros.
+>> Currently it's doing:
+>> #define ___bpf_ctx_cast1(x)           ___bpf_ctx_cast0(), (void *)ctx[0]
+>> #define ___bpf_ctx_cast2(x, args...)  ___bpf_ctx_cast1(args), (void *)ctx[1]
+>> #define ___bpf_ctx_cast3(x, args...)  ___bpf_ctx_cast2(args), (void *)ctx[2]
+>> #define ___bpf_ctx_cast4(x, args...)  ___bpf_ctx_cast3(args), (void *)ctx[3]
 >>
->> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
->> ---
->>   kernel/bpf/verifier.c | 39 ++++++++++++++++++++++++++++++++++++++-
->>   1 file changed, 38 insertions(+), 1 deletion(-)
+>> The ctx[index] is one-to-one with argument position.
+>> That 'index' needs to be calculated.
+>> Maybe something like UINTTYPE() that applies to previous arguments?
+>> #define REG_CNT(arg) \
+>>          __builtin_choose_expr(sizeof(arg) == 1,  1, \
+>>          __builtin_choose_expr(sizeof(arg) == 2,  1, \
+>>          __builtin_choose_expr(sizeof(arg) == 4,  1, \
+>>          __builtin_choose_expr(sizeof(arg) == 8,  1, \
+>>          __builtin_choose_expr(sizeof(arg) == 16,  2, \
+>>                                           (void)0)))))
 >>
->> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->> index 2c1f8069f7b7..c48d34625bfd 100644
->> --- a/kernel/bpf/verifier.c
->> +++ b/kernel/bpf/verifier.c
->> @@ -472,6 +472,11 @@ static bool type_may_be_null(u32 type)
->>   	return type & PTR_MAYBE_NULL;
->>   }
->>   
->> +static bool type_is_pointer(enum bpf_reg_type type)
->> +{
->> +	return type != NOT_INIT && type != SCALAR_VALUE;
->> +}
->> +
-> 
-> Instead of having another helper is_pointer_value() could work here?
-> Checking if we need NOT_INIT in that helper now.
-> 
->>   static bool is_acquire_function(enum bpf_func_id func_id,
->>   				const struct bpf_map *map)
->>   {
->> @@ -10046,6 +10051,7 @@ static int check_cond_jmp_op(struct bpf_verifier_env *env,
->>   	struct bpf_verifier_state *other_branch;
->>   	struct bpf_reg_state *regs = this_branch->frame[this_branch->curframe]->regs;
->>   	struct bpf_reg_state *dst_reg, *other_branch_regs, *src_reg = NULL;
->> +	struct bpf_reg_state *eq_branch_regs;
->>   	u8 opcode = BPF_OP(insn->code);
->>   	bool is_jmp32;
->>   	int pred = -1;
->> @@ -10155,7 +10161,7 @@ static int check_cond_jmp_op(struct bpf_verifier_env *env,
->>   	/* detect if we are comparing against a constant value so we can adjust
->>   	 * our min/max values for our dst register.
->>   	 * this is only legit if both are scalars (or pointers to the same
->> -	 * object, I suppose, but we don't support that right now), because
->> +	 * object, I suppose, see the next if block), because
->>   	 * otherwise the different base pointers mean the offsets aren't
->>   	 * comparable.
->>   	 */
->> @@ -10199,6 +10205,37 @@ static int check_cond_jmp_op(struct bpf_verifier_env *env,
->>   					opcode, is_jmp32);
->>   	}
->>   
->> +	/* if one pointer register is compared to another pointer
->> +	 * register check if PTR_MAYBE_NULL could be lifted.
->> +	 * E.g. register A - maybe null
->> +	 *      register B - not null
->> +	 * for JNE A, B, ... - A is not null in the false branch;
->> +	 * for JEQ A, B, ... - A is not null in the true branch.
->> +	 */
->> +	if (!is_jmp32 &&
->> +	    BPF_SRC(insn->code) == BPF_X &&
->> +	    type_is_pointer(src_reg->type) && type_is_pointer(dst_reg->type) &&
->> +	    type_may_be_null(src_reg->type) != type_may_be_null(dst_reg->type)) {
->> +		eq_branch_regs = NULL;
->> +		switch (opcode) {
->> +		case BPF_JEQ:
->> +			eq_branch_regs = other_branch_regs;
->> +			break;
->> +		case BPF_JNE:
->> +			eq_branch_regs = regs;
->> +			break;
->> +		default:
->> +			/* do nothing */
->> +			break;
->> +		}
->> +		if (eq_branch_regs) {
->> +			if (type_may_be_null(src_reg->type))
->> +				mark_ptr_not_null_reg(&eq_branch_regs[insn->src_reg]);
->> +			else
->> +				mark_ptr_not_null_reg(&eq_branch_regs[insn->dst_reg]);
->> +		}
->> +	}
->> +
->>   	if (dst_reg->type == SCALAR_VALUE && dst_reg->id &&
->>   	    !WARN_ON_ONCE(dst_reg->id != other_branch_regs[insn->dst_reg].id)) {
->>   		find_equal_scalars(this_branch, dst_reg);
->> -- 
->> 2.37.1
+>> #define ___bpf_reg_cnt0()            0
+>> #define ___bpf_reg_cnt1(x)          ___bpf_reg_cnt0() + REG_CNT(x)
+>> #define ___bpf_reg_cnt2(x, args...) ___bpf_reg_cnt1(args) + REG_CNT(x)
+>> #define ___bpf_reg_cnt(args...)    ___bpf_apply(___bpf_reg_cnt, ___bpf_narg(args))(args)
 >>
-> 
-> 
+>> This way the macro will calculate the index inside ctx[] array.
+>>
+>> and then inside ___bpf_ctx_castN macro use ___bpf_reg_cnt.
+>> Instead of:
+>> ___bpf_ctx_cast3(x, args...)  ___bpf_ctx_cast2(args), (void *)ctx[2]
+>> it will be
+>> ___bpf_ctx_cast3(x, args...)  ___bpf_ctx_cast2(args), \
+>>    __builtin_choose_expr(sizeof(x) <= 8, (void *)ctx[___bpf_reg_cnt(args)],
+>>                          *(typeof(x) *) &ctx[___bpf_reg_cnt(args)])
+>>
+>> x - is one of the arguments.
+>> args - all args before 'x'. Doing __bpf_reg_cnt on them should calculate the index.
+>> *(typeof(x) *)& should type cast to struct of 16 bytes.
+>>
+>> Rough idea, of course.
+>>
+>> Another alternative is instead of:
+>> #define BPF_PROG(name, args...)
+>> name(unsigned long long *ctx);
+>> do:
+>> #define BPF_PROG(name, args...)
+>> struct XX {
+>>    macro inserts all 'args' here separated by ; so it becomes a proper struct
+>> };
+>> name(struct XX *ctx);
+>>
+>> and then instead of doing ___bpf_ctx_castN for each argument
+>> do single cast of all of 'u64 ctx[N]' passed from fentry into 'struct XX *'.
+>> The problem with this approach that small args like char, short, int needs to
+>> be declared in struct XX with __align__(8).
+>>
+>> Both approaches may be workable?
