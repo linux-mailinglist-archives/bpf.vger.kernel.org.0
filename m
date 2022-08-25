@@ -2,139 +2,269 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A170F5A18B1
-	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 20:20:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 295DB5A18D5
+	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 20:36:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242108AbiHYSUv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Aug 2022 14:20:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57938 "EHLO
+        id S242888AbiHYSgl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Aug 2022 14:36:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242794AbiHYSUq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Aug 2022 14:20:46 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBC5713D47
-        for <bpf@vger.kernel.org>; Thu, 25 Aug 2022 11:20:43 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id d21so21812958eje.3
-        for <bpf@vger.kernel.org>; Thu, 25 Aug 2022 11:20:43 -0700 (PDT)
+        with ESMTP id S231310AbiHYSgk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Aug 2022 14:36:40 -0400
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AE838C453
+        for <bpf@vger.kernel.org>; Thu, 25 Aug 2022 11:36:39 -0700 (PDT)
+Received: by mail-pf1-x44a.google.com with SMTP id c142-20020a621c94000000b005324991c5b8so9437820pfc.15
+        for <bpf@vger.kernel.org>; Thu, 25 Aug 2022 11:36:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=UUHClXdut6PUeLYHtEq5sGhrLcmtjvbUSatE5PjSGO4=;
-        b=k49/DAZZqNuuLFykdCdc9VCBkxooNiWbu96z3K7N5Zfp070UYFUDWAXqB0qfL7leNR
-         Ftnv7Hl8SQFvp6FyDvH1tzQho9YlvskNCJGVPgrawc1031c+Jmiqwrp9QBPP08+sAu+K
-         HR1nvNJBRnMGpRmoKGNrRq4CND+GvYS7AZ75Jrhd7d8ConZtmmHnOuZAw3B5mttH9X3W
-         hMZLtOBsSDAtjOn8MJ15jWb/N2jOjrn9rid3BSDNSXSD7B0xCVMAjhPh94pYQ3ONlJC7
-         AXlnVDe9epT4Zwht46oZ722LUTp1VEjcvALsmhskiNGx6C4A5fT4POq/+/dZbElrj4ga
-         2zAQ==
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc;
+        bh=oyBXURF9YG/v27ncFf/mRCNlp5AuCrFo5WlVihsTHZc=;
+        b=q/sFBEeicreJT0ZJyAMqOX2kQ8JCPWupA5flHhu+YhY4RKUjoUV7OHHjChV0GGV7Vk
+         /EbRjU1XvaLcfVfs6wIKlnaJ+A5ZOklZ4e79KhSFST8SXVgUsEs8aMJkXku2vElZpf+/
+         gBCenj1/vRxTa65Jv1o7JRCSzgr7Hp20m17U+LSj9qlCL+CrUZ/XEFOKvD9uMff2stDh
+         4PiLvE35NVErn/mbsP2BgmY3NcE+yZZe0lNHNCkEAloNCR/sjsnLuK2GZhpDgM0bLD6N
+         cNiRs8RXHufosnBmsHYnvYAnbOYaJoRKiPNh3y2a6/cXhf7gh9zk00T8WMDQODjDwiu7
+         tzKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=UUHClXdut6PUeLYHtEq5sGhrLcmtjvbUSatE5PjSGO4=;
-        b=Q8SGIWVrZ8nTT4A2xoWktl4MOhGMdhH9P5Vg61f/c+IK5yig3llyDSWp8DJqPgCEJN
-         /QxZNeR0VcuDDrED1/HIHsvLq1yhELJF35dIoCNFhx+GVe1L5DSR/kN0QUPqu13DEVek
-         FZJwNPbVJr2VApu7je3n0aPJMqMP62a7HypGFI5HXCvjKrBISysLRkT2eOWpMboBOPPj
-         MvMit1UIXLXu7Wt5lISdt1DO0XDrgfbTefv3DVWBK81tA/bDm/Z/3opHVKlgV21DFcU6
-         rAhhkrAy6qe682iLDv15SkZtEKnQ966KH0XuEPEFAU2Bbwsjr+ETb4McS9w/bzvOD73O
-         56Gw==
-X-Gm-Message-State: ACgBeo3D7c4nGYI4w6AZ/GXKo8mj/6PVZoyRJTei0wflgqUe7taXX7Iw
-        8YXmrbPnxUiEJL/LMA30sV8m9is+krrPuZw5/pw=
-X-Google-Smtp-Source: AA6agR5Lk0buamG+gVGzCN2OjGWvzfKB3Ys44RIRNC5WeNQPn3K86KjrNk/4G0aIriez3TTJj0EkWuRBrZyIkI2X2ME=
-X-Received: by 2002:a17:907:2bdb:b0:73d:d7af:c133 with SMTP id
- gv27-20020a1709072bdb00b0073dd7afc133mr2013527ejc.545.1661451642344; Thu, 25
- Aug 2022 11:20:42 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220824044117.137658-1-shmulik.ladkani@gmail.com> <20220824044117.137658-3-shmulik.ladkani@gmail.com>
-In-Reply-To: <20220824044117.137658-3-shmulik.ladkani@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 25 Aug 2022 11:20:31 -0700
-Message-ID: <CAEf4BzZKts8NckT7L-FWBRWJxAgkHEZoR=wjaKBxYpTD_jjyAg@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf-next 2/4] bpf: Support setting variable-length
- tunnel options
-To:     Shmulik Ladkani <shmulik@metanetworks.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Joanne Koong <joannelkoong@gmail.com>,
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc;
+        bh=oyBXURF9YG/v27ncFf/mRCNlp5AuCrFo5WlVihsTHZc=;
+        b=wLtarOEQZDI91l7qTcFZyfQmVyale27lvTcXjKYlMDBBgZoJH1PSDiibHl3iaM2D5k
+         PN0o4jrGp58gE/Znq4895l2mqAlh20JTZzs1p5XGj9UGMkA8U58cBAmR53v5OqwRmpHP
+         ZGkc8gAd4kLgpNogcL31gYBlwD0ZjyBTrmQpsBJ2RT2OEfjABtT604cp2HOrG0+oBDr4
+         PfxHWhp5imE32GqjoQ8HMCIyNLdedtOBiKnGtrE46NuNGivBwYAEhsommaNqiYAi+OjU
+         /Kx+ZAGHrzAiBjJasmitGEUis3qxFkYD+ktJ7oO6HO6B2kG+E51wKDaZSGw1YnXHt9Tj
+         cSRA==
+X-Gm-Message-State: ACgBeo0hfqk/rtdjcHRqXdMn4JfOp01/ARTSx5/eAae3qP/6v8dzrwqy
+        CeiXpxc31AjCo3lCXVzdeU4ZNBY=
+X-Google-Smtp-Source: AA6agR7lA7T076hyKsjD+WyQZZVjwg/mVPh8akWx95M4BIv2vR/pr8c8mjBADKv+UnKjo1ktYmDCmmQ=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a05:6a00:10cf:b0:528:48c3:79e0 with SMTP id
+ d15-20020a056a0010cf00b0052848c379e0mr334339pfu.18.1661452598753; Thu, 25 Aug
+ 2022 11:36:38 -0700 (PDT)
+Date:   Thu, 25 Aug 2022 11:36:36 -0700
+In-Reply-To: <20220824222730.1923992-1-kafai@fb.com>
+Mime-Version: 1.0
+References: <20220824222601.1916776-1-kafai@fb.com> <20220824222730.1923992-1-kafai@fb.com>
+Message-ID: <YwfBNEVrxkafzpYE@google.com>
+Subject: Re: [PATCH bpf-next 14/17] bpf: Change bpf_getsockopt(SOL_TCP) to
+ reuse do_tcp_getsockopt()
+From:   sdf@google.com
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Paul Chaignon <paul@isovalent.com>,
-        Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>, kernel-team@fb.com,
+        Paolo Abeni <pabeni@redhat.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 23, 2022 at 9:41 PM Shmulik Ladkani
-<shmulik@metanetworks.com> wrote:
->
-> Existing 'bpf_skb_set_tunnel_opt' allows setting tunnel options given
-> an option buffer (ARG_PTR_TO_MEM) and the compile-time fixed buffer
-> size (ARG_CONST_SIZE).
->
-> However, in certain cases we wish to set tunnel options of dynamic
-> length.
->
-> For example, we have an ebpf program that gets geneve options on
-> incoming packets, stores them into a map (using a key representing
-> the incoming flow), and later needs to assign *same* options to
-> reply packets (belonging to same flow).
->
-> This is currently imposssible without knowing sender's exact geneve
-> options length, which unfortunately is dymamic.
->
-> Introduce 'bpf_skb_set_tunnel_opt_dynptr'.
->
-> This is a variant of 'bpf_skb_set_tunnel_opt' which gets a bpf dynamic
-> pointer (ARG_PTR_TO_DYNPTR) parameter 'ptr' whose data points to the
-> options buffer, and 'len', the byte length of options data caller wishes
-> to copy into ip_tunnnel_info.
-> 'len' must never exceed the dynptr's internal size, o/w EINVAL is
-> returned.
->
-> Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+On 08/24, Martin KaFai Lau wrote:
+> This patch changes bpf_getsockopt(SOL_TCP) to reuse
+> do_tcp_getsockopt().  It removes the duplicated code from
+> bpf_getsockopt(SOL_TCP).
+
+> Before this patch, there were some optnames available to
+> bpf_setsockopt(SOL_TCP) but missing in bpf_getsockopt(SOL_TCP).
+> For example, TCP_NODELAY, TCP_MAXSEG, TCP_KEEPIDLE, TCP_KEEPINTVL,
+> and a few more.  It surprises users from time to time.  This patch
+> automatically closes this gap without duplicating more code.
+
+> bpf_getsockopt(TCP_SAVED_SYN) does not free the saved_syn,
+> so it stays in sol_tcp_sockopt().
+
+> For string name value like TCP_CONGESTION, bpf expects it
+> is always null terminated, so sol_tcp_sockopt() decrements
+> optlen by one before calling do_tcp_getsockopt() and
+> the 'if (optlen < saved_optlen) memset(..,0,..);'
+> in __bpf_getsockopt() will always do a null termination.
+
+> Signed-off-by: Martin KaFai Lau <kafai@fb.com>
 > ---
-> v3: Avoid 'inline' for the __bpf_skb_set_tunopt helper function
-> v4: change API to be based on bpf_dynptr, suggested by John Fastabend <john.fastabend@gmail.com>
-> ---
->  include/uapi/linux/bpf.h       | 12 ++++++++++++
->  net/core/filter.c              | 36 ++++++++++++++++++++++++++++++++--
->  tools/include/uapi/linux/bpf.h | 12 ++++++++++++
->  3 files changed, 58 insertions(+), 2 deletions(-)
->
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 644600dbb114..c7b313e30635 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -5367,6 +5367,17 @@ union bpf_attr {
->   *     Return
->   *             Current *ktime*.
->   *
-> + * long bpf_skb_set_tunnel_opt_dynptr(struct sk_buff *skb, struct bpf_dynptr *opt, u32 len)
+>   include/net/tcp.h |  2 ++
+>   net/core/filter.c | 70 ++++++++++++++++++++++++++---------------------
+>   net/ipv4/tcp.c    |  4 +--
+>   3 files changed, 43 insertions(+), 33 deletions(-)
 
-why can't we rely on dynptr's len instead of specifying extra one
-here? dynptr is a range of memory, so just specify that you take that
-entire range?
+> diff --git a/include/net/tcp.h b/include/net/tcp.h
+> index c03a50c72f40..735e957f7f4b 100644
+> --- a/include/net/tcp.h
+> +++ b/include/net/tcp.h
+> @@ -402,6 +402,8 @@ void tcp_init_sock(struct sock *sk);
+>   void tcp_init_transfer(struct sock *sk, int bpf_op, struct sk_buff *skb);
+>   __poll_t tcp_poll(struct file *file, struct socket *sock,
+>   		      struct poll_table_struct *wait);
+> +int do_tcp_getsockopt(struct sock *sk, int level,
+> +		      int optname, sockptr_t optval, sockptr_t optlen);
+>   int tcp_getsockopt(struct sock *sk, int level, int optname,
+>   		   char __user *optval, int __user *optlen);
+>   bool tcp_bpf_bypass_getsockopt(int level, int optname);
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 68b52243b306..cdbbcec46e8b 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -5096,8 +5096,9 @@ static int bpf_sol_tcp_setsockopt(struct sock *sk,  
+> int optname,
+>   	return 0;
+>   }
 
-And then we'll have (or partially already have) generic dynptr helpers
-to adjust internal dynptr offset and len.
+> -static int sol_tcp_setsockopt(struct sock *sk, int optname,
+> -			      char *optval, int optlen)
+> +static int sol_tcp_sockopt(struct sock *sk, int optname,
+> +			   char *optval, int *optlen,
+> +			   bool getopt)
+>   {
+>   	if (sk->sk_prot->setsockopt != tcp_setsockopt)
+>   		return -EINVAL;
+> @@ -5114,17 +5115,47 @@ static int sol_tcp_setsockopt(struct sock *sk,  
+> int optname,
+>   	case TCP_USER_TIMEOUT:
+>   	case TCP_NOTSENT_LOWAT:
+>   	case TCP_SAVE_SYN:
+> -		if (optlen != sizeof(int))
+> +		if (*optlen != sizeof(int))
+>   			return -EINVAL;
+>   		break;
 
-> + *     Description
-> + *             Set tunnel options metadata for the packet associated to *skb*
-> + *             to the variable length *len* bytes of option data pointed to
-> + *             by the *opt* dynptr.
-> + *
-> + *             See also the description of the **bpf_skb_get_tunnel_opt**\ ()
-> + *             helper for additional information.
-> + *     Return
-> + *             0 on success, or a negative error in case of failure.
-> + *
->   */
+[..]
 
-[...]
+>   	case TCP_CONGESTION:
+> +		if (*optlen < 2)
+> +			return -EINVAL;
+> +		break;
+> +	case TCP_SAVED_SYN:
+> +		if (*optlen < 1)
+> +			return -EINVAL;
+>   		break;
+
+This looks a bit inconsistent vs '*optlen != sizeof(int)' above. Maybe
+
+if (*optlen < sizeof(u16))
+if (*optlen < sizeof(u8))
+
+?
+
+>   	default:
+> -		return bpf_sol_tcp_setsockopt(sk, optname, optval, optlen);
+> +		if (getopt)
+> +			return -EINVAL;
+> +		return bpf_sol_tcp_setsockopt(sk, optname, optval, *optlen);
+> +	}
+> +
+> +	if (getopt) {
+> +		if (optname == TCP_SAVED_SYN) {
+> +			struct tcp_sock *tp = tcp_sk(sk);
+> +
+> +			if (!tp->saved_syn ||
+> +			    *optlen > tcp_saved_syn_len(tp->saved_syn))
+> +				return -EINVAL;
+
+You mention in the description that bpf doesn't doesn't free saved_syn,
+maybe worth putting a comment with the rationale here as well?
+I'm assuming we don't free from bpf because we want userspace to
+have an opportunity to read it as well?
+
+> +			memcpy(optval, tp->saved_syn->data, *optlen);
+> +			return 0;
+> +		}
+> +
+> +		if (optname == TCP_CONGESTION) {
+> +			if (!inet_csk(sk)->icsk_ca_ops)
+> +				return -EINVAL;
+
+Is it worth it doing null termination more explicitly here?
+For readability sake:
+			/* BPF always expects NULL-terminated strings. */
+			optval[*optlen-1] = '\0';
+> +			(*optlen)--;
+> +		}
+> +
+> +		return do_tcp_getsockopt(sk, SOL_TCP, optname,
+> +					 KERNEL_SOCKPTR(optval),
+> +					 KERNEL_SOCKPTR(optlen));
+>   	}
+
+>   	return do_tcp_setsockopt(sk, SOL_TCP, optname,
+> -				 KERNEL_SOCKPTR(optval), optlen);
+> +				 KERNEL_SOCKPTR(optval), *optlen);
+>   }
+
+>   static int sol_ip_setsockopt(struct sock *sk, int optname,
+> @@ -5179,7 +5210,7 @@ static int __bpf_setsockopt(struct sock *sk, int  
+> level, int optname,
+>   	else if (IS_ENABLED(CONFIG_IPV6) && level == SOL_IPV6)
+>   		return sol_ipv6_setsockopt(sk, optname, optval, optlen);
+>   	else if (IS_ENABLED(CONFIG_INET) && level == SOL_TCP)
+> -		return sol_tcp_setsockopt(sk, optname, optval, optlen);
+> +		return sol_tcp_sockopt(sk, optname, optval, &optlen, false);
+
+>   	return -EINVAL;
+>   }
+> @@ -5202,31 +5233,8 @@ static int __bpf_getsockopt(struct sock *sk, int  
+> level, int optname,
+
+>   	if (level == SOL_SOCKET) {
+>   		err = sol_socket_sockopt(sk, optname, optval, &optlen, true);
+> -	} else if (IS_ENABLED(CONFIG_INET) &&
+> -		   level == SOL_TCP && sk->sk_prot->getsockopt == tcp_getsockopt) {
+> -		struct inet_connection_sock *icsk;
+> -		struct tcp_sock *tp;
+> -
+> -		switch (optname) {
+> -		case TCP_CONGESTION:
+> -			icsk = inet_csk(sk);
+> -
+> -			if (!icsk->icsk_ca_ops || optlen <= 1)
+> -				goto err_clear;
+> -			strncpy(optval, icsk->icsk_ca_ops->name, optlen);
+> -			optval[optlen - 1] = 0;
+> -			break;
+> -		case TCP_SAVED_SYN:
+> -			tp = tcp_sk(sk);
+> -
+> -			if (optlen <= 0 || !tp->saved_syn ||
+> -			    optlen > tcp_saved_syn_len(tp->saved_syn))
+> -				goto err_clear;
+> -			memcpy(optval, tp->saved_syn->data, optlen);
+> -			break;
+> -		default:
+> -			goto err_clear;
+> -		}
+> +	} else if (IS_ENABLED(CONFIG_INET) && level == SOL_TCP) {
+> +		err = sol_tcp_sockopt(sk, optname, optval, &optlen, true);
+>   	} else if (IS_ENABLED(CONFIG_INET) && level == SOL_IP) {
+>   		struct inet_sock *inet = inet_sk(sk);
+
+> diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
+> index ab8118225797..a47cb5662be6 100644
+> --- a/net/ipv4/tcp.c
+> +++ b/net/ipv4/tcp.c
+> @@ -4043,8 +4043,8 @@ struct sk_buff  
+> *tcp_get_timestamping_opt_stats(const struct sock *sk,
+>   	return stats;
+>   }
+
+> -static int do_tcp_getsockopt(struct sock *sk, int level,
+> -			     int optname, sockptr_t optval, sockptr_t optlen)
+> +int do_tcp_getsockopt(struct sock *sk, int level,
+> +		      int optname, sockptr_t optval, sockptr_t optlen)
+>   {
+>   	struct inet_connection_sock *icsk = inet_csk(sk);
+>   	struct tcp_sock *tp = tcp_sk(sk);
+> --
+> 2.30.2
+
