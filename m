@@ -2,165 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC4AF5A1C05
-	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 00:13:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A6B75A1C16
+	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 00:18:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229990AbiHYWNm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Aug 2022 18:13:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44496 "EHLO
+        id S229619AbiHYWSC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Aug 2022 18:18:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237937AbiHYWNj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Aug 2022 18:13:39 -0400
-Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C360C3F61;
-        Thu, 25 Aug 2022 15:13:38 -0700 (PDT)
-Received: by mail-ot1-f53.google.com with SMTP id q39-20020a056830442700b0063889adc0ddso14873457otv.1;
-        Thu, 25 Aug 2022 15:13:38 -0700 (PDT)
+        with ESMTP id S229462AbiHYWSC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Aug 2022 18:18:02 -0400
+Received: from mail-oa1-x2c.google.com (mail-oa1-x2c.google.com [IPv6:2001:4860:4864:20::2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E0F1956A6;
+        Thu, 25 Aug 2022 15:18:01 -0700 (PDT)
+Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-11c9af8dd3eso26369575fac.10;
+        Thu, 25 Aug 2022 15:18:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc;
+        bh=NplIUhMLfPOec8AZZdsvB3N3SHtQQbKwWNlCDqLOTGU=;
+        b=SlPWJVV5zZdLa4gstqqlzR1+hBQ5WNclTHjetSzqvpgyYhB4c/jVIiIV09TVkn9kGY
+         SnA/ZXIO6/XeruRDnmWdzwIZWifGm3jeNp93O0l41jq16dLNi9aXePfqcqqLmkePLkKd
+         ViPButwdAaKmnlS5kgVHpf+HIaFaDBx3C5v57Bq8x3UrPnHwgTGemAKhlh/CY02ykg9x
+         5jzBuKcZFQugaBNmwrXaRyx04xPy+nAye+fQnX5QFuWbtettZ8J9iP/uNpVmz90g91ld
+         eKzVHiD8YHdABe7lSGoefMrTVdTch7T0FU3aHVXzSEjSbJdCaHo/q/wp9XhAlDPeRhmQ
+         ym4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=0yiLGAygSoo6Ig9sU43elYK3mW36FwAxOIDV175b8NU=;
-        b=k1PYE919Z7zpQDHLmPmmvphNiPAbxv8ZCESZGCQjHQdBbFzhnISeD+O8SDzwceLueZ
-         DKJHhN699ZSh6+UVh/XpCoxcxerWN4ueN4O8Kv/Rnet5c6p9fGbIBxvV8qGnbSpNuOlz
-         kHsc2o4YtZOsSUe9Jr5y11okQN5VQBx3hu8UZKrFubWuu8xMLBwEtAIJJC2Kkn6PpNTE
-         KpAjUoVlPkkA1z71CvilacOKs0nR8YZ+rvilvJtcTtFjuhDNLr0PnK45K9rcW6nEDwZg
-         08gdDU2VzM5dkUHCpupntmnV0Nw53a5LTQBT58K+fhOcf+/SVZyX8z9N62WpmHEz5/Qk
-         hvkw==
-X-Gm-Message-State: ACgBeo2/oSQlcR2vN7Cp29G5b8S66Yah5qMmK8bw6uEnQgTQgsYz81WX
-        gBq+74gGGo0B5mbWX+4gCsEKx/ZJagEEuNYHuYOHg02A
-X-Google-Smtp-Source: AA6agR5GWdpSBvdNXxpMD6f3n3eheZKR+Hy6vRNlOopt4CjawCKDkuGUtFbxMlJ1F5C1JAg1sZCT24VWl4xiLXNYGx8=
-X-Received: by 2002:a9d:6f18:0:b0:638:b4aa:a546 with SMTP id
- n24-20020a9d6f18000000b00638b4aaa546mr409050otq.124.1661465617600; Thu, 25
- Aug 2022 15:13:37 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220823210354.1407473-1-namhyung@kernel.org> <CAEf4Bzbd0-jGFCSCJu3eDxxom42xnH9Tevq0n50-AajjHb5t3g@mail.gmail.com>
-In-Reply-To: <CAEf4Bzbd0-jGFCSCJu3eDxxom42xnH9Tevq0n50-AajjHb5t3g@mail.gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Thu, 25 Aug 2022 15:13:28 -0700
-Message-ID: <CAM9d7cjiGjO5dAw_zf01+j=5cvd6cnz0_TK4OJW5MVxDwi7psA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Add bpf_read_raw_record() helper
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc;
+        bh=NplIUhMLfPOec8AZZdsvB3N3SHtQQbKwWNlCDqLOTGU=;
+        b=wVq2T+P0ttLrfIj55UJcxU4gUoO9cKYHUDL+cLFBRWxI95q7reeKmXOLwk2rXOzBsZ
+         ANawGw4dokJrpSLyzC9yF2fgYAxD2GsYKe1UvRmjVabLM10j4gCGWw0UOPIAdn3S9rOZ
+         RGJRdiyMXLqUNmc/SMX1dTll72lbTfNm2v4Sd300yTIq353qhaxTV8ouGLRgLZk3/jis
+         Mv4Aup/jbvrPjc4CKo1ZY1ywP52TFTRS7cMcvwl/gdzAmMNMVOvICqf4j0oxvdN6fv9N
+         EoO/qo4Syw1fELBJG3aFSksEoe23EZciVuMfw4bv0KjU7QKy9IiI/QEFsIMquVA54dXu
+         h8vA==
+X-Gm-Message-State: ACgBeo0MWkFarm+vs8K25+UVc57t0Qnu47Lm2ktyh6PM6isyEutpAAxy
+        8S1bFBKY2hsREgmbn6moRjJRMCcb0Ik=
+X-Google-Smtp-Source: AA6agR5uQXYiGy90D0OFm5Nyz97HD/CT/9F+CFp4q0vUBJBAi105LAeM9Yetjtp1p1WWN1m6oH119w==
+X-Received: by 2002:a05:6870:171c:b0:10e:40b9:8cd0 with SMTP id h28-20020a056870171c00b0010e40b98cd0mr553037oae.283.1661465879036;
+        Thu, 25 Aug 2022 15:17:59 -0700 (PDT)
+Received: from james-x399.localdomain (71-33-138-207.hlrn.qwest.net. [71.33.138.207])
+        by smtp.gmail.com with ESMTPSA id i19-20020a056871029300b0011c8c2c9020sm247722oae.33.2022.08.25.15.17.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Aug 2022 15:17:58 -0700 (PDT)
+From:   James Hilliard <james.hilliard1@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     James Hilliard <james.hilliard1@gmail.com>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Mykola Lysenko <mykolal@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+        Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] selftests/bpf: Fix bind{4,6} tcp/socket header type conflict
+Date:   Thu, 25 Aug 2022 16:17:49 -0600
+Message-Id: <20220825221751.258958-1-james.hilliard1@gmail.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+There is a potential for us to hit a type conflict when including
+netinet/tcp.h with sys/socket.h, we can replace both of these includes
+with linux/tcp.h to avoid this conflict.
 
-On Thu, Aug 25, 2022 at 2:34 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Tue, Aug 23, 2022 at 2:04 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> >
-> > The helper is for BPF programs attached to perf_event in order to read
-> > event-specific raw data.  I followed the convention of the
-> > bpf_read_branch_records() helper so that it can tell the size of
-> > record using BPF_F_GET_RAW_RECORD flag.
-> >
-> > The use case is to filter perf event samples based on the HW provided
-> > data which have more detailed information about the sample.
-> >
-> > Note that it only reads the first fragment of the raw record.  But it
-> > seems mostly ok since all the existing PMU raw data have only single
-> > fragment and the multi-fragment records are only for BPF output attached
-> > to sockets.  So unless it's used with such an extreme case, it'd work
-> > for most of tracing use cases.
-> >
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > ---
-> > I don't know how to test this.  As the raw data is available on some
-> > hardware PMU only (e.g. AMD IBS).  I tried a tracepoint event but it was
-> > rejected by the verifier.  Actually it needs a bpf_perf_event_data
-> > context so that's not an option IIUC.
-> >
-> >  include/uapi/linux/bpf.h | 23 ++++++++++++++++++++++
-> >  kernel/trace/bpf_trace.c | 41 ++++++++++++++++++++++++++++++++++++++++
-> >  2 files changed, 64 insertions(+)
-> >
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index 934a2a8beb87..af7f70564819 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -5355,6 +5355,23 @@ union bpf_attr {
-> >   *     Return
-> >   *             Current *ktime*.
-> >   *
-> > + * long bpf_read_raw_record(struct bpf_perf_event_data *ctx, void *buf, u32 size, u64 flags)
-> > + *     Description
-> > + *             For an eBPF program attached to a perf event, retrieve the
-> > + *             raw record associated to *ctx* and store it in the buffer
-> > + *             pointed by *buf* up to size *size* bytes.
-> > + *     Return
-> > + *             On success, number of bytes written to *buf*. On error, a
-> > + *             negative value.
-> > + *
-> > + *             The *flags* can be set to **BPF_F_GET_RAW_RECORD_SIZE** to
-> > + *             instead return the number of bytes required to store the raw
-> > + *             record. If this flag is set, *buf* may be NULL.
->
-> It looks pretty ugly from a usability standpoint to have one helper
-> doing completely different things and returning two different values
-> based on BPF_F_GET_RAW_RECORD_SIZE.
+Fixes errors like:
+In file included from /usr/include/netinet/tcp.h:91,
+                 from progs/bind4_prog.c:10:
+/home/buildroot/opt/cross/lib/gcc/bpf/13.0.0/include/stdint.h:34:23: error: conflicting types for 'int8_t'; have 'char'
+   34 | typedef __INT8_TYPE__ int8_t;
+      |                       ^~~~~~
+In file included from /usr/include/x86_64-linux-gnu/sys/types.h:155,
+                 from /usr/include/x86_64-linux-gnu/bits/socket.h:29,
+                 from /usr/include/x86_64-linux-gnu/sys/socket.h:33,
+                 from progs/bind4_prog.c:9:
+/usr/include/x86_64-linux-gnu/bits/stdint-intn.h:24:18: note: previous declaration of 'int8_t' with type 'int8_t' {aka 'signed char'}
+   24 | typedef __int8_t int8_t;
+      |                  ^~~~~~
+/home/buildroot/opt/cross/lib/gcc/bpf/13.0.0/include/stdint.h:43:24: error: conflicting types for 'int64_t'; have 'long int'
+   43 | typedef __INT64_TYPE__ int64_t;
+      |                        ^~~~~~~
+/usr/include/x86_64-linux-gnu/bits/stdint-intn.h:27:19: note: previous declaration of 'int64_t' with type 'int64_t' {aka 'long long int'}
+   27 | typedef __int64_t int64_t;
+      |                   ^~~~~~~
+make: *** [Makefile:537: /home/buildroot/bpf-next/tools/testing/selftests/bpf/bpf_gcc/bind4_prog.o] Error 1
 
-Agreed.
+Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+---
+ tools/testing/selftests/bpf/progs/bind4_prog.c | 3 +--
+ tools/testing/selftests/bpf/progs/bind6_prog.c | 3 +--
+ 2 files changed, 2 insertions(+), 4 deletions(-)
 
->
-> I'm not sure what's best, but I have two alternative proposals:
->
-> 1. Add two helpers: one to get perf record information (and size will
-> be one of them). Something like bpf_perf_record_query(ctx, flags)
-> where you pass perf ctx and what kind of information you want to read
-> (through flags), and u64 return result returns that (see
-> bpf_ringbuf_query() for such approach). And then have separate helper
-> to read data.
+diff --git a/tools/testing/selftests/bpf/progs/bind4_prog.c b/tools/testing/selftests/bpf/progs/bind4_prog.c
+index 474c6a62078a..6bd20042fd53 100644
+--- a/tools/testing/selftests/bpf/progs/bind4_prog.c
++++ b/tools/testing/selftests/bpf/progs/bind4_prog.c
+@@ -6,8 +6,7 @@
+ #include <linux/bpf.h>
+ #include <linux/in.h>
+ #include <linux/in6.h>
+-#include <sys/socket.h>
+-#include <netinet/tcp.h>
++#include <linux/tcp.h>
+ #include <linux/if.h>
+ #include <errno.h>
+ 
+diff --git a/tools/testing/selftests/bpf/progs/bind6_prog.c b/tools/testing/selftests/bpf/progs/bind6_prog.c
+index c19cfa869f30..f37617b35a55 100644
+--- a/tools/testing/selftests/bpf/progs/bind6_prog.c
++++ b/tools/testing/selftests/bpf/progs/bind6_prog.c
+@@ -6,8 +6,7 @@
+ #include <linux/bpf.h>
+ #include <linux/in.h>
+ #include <linux/in6.h>
+-#include <sys/socket.h>
+-#include <netinet/tcp.h>
++#include <linux/tcp.h>
+ #include <linux/if.h>
+ #include <errno.h>
+ 
+-- 
+2.34.1
 
-I like this as I want to have more info for the perf event sample like
-instruction address or sample type.  I know some of the info is
-available through the context but I think this is a better approach.
-
->
-> 2. Keep one helper, but specify that it always returns record size,
-> even if user specified smaller size to read. And then allow passing
-> buf==NULL && size==0. So passing NULL, 0 -- you get record size.
-> Passing non-NULL buf -- you read data.
->
->
-> And also, "read_raw_record" is way too generic. We have
-> bpf_perf_prog_read_value(), let's use "bpf_perf_read_raw_record()" as
-> a name. We should have called bpf_read_branch_records() as
-> bpf_perf_read_branch_records(), probably, as well. But it's too late.
-
-Yeah, what about this?
-
- * bpf_perf_event_query(ctx, flag)
- * bpf_perf_event_get(ctx, flag, buf, size)
-
-Maybe we can use the same flag for both.  Like BPF_PERF_RAW_RECORD
-can return the size (or -1 if not) on _query() and read the data on _get().
-Or we can have a BPF_PERF_RAW_RECORD_SIZE only for _query().
-It seems we don't need _get() for things like BPF_PERF_SAMPLE_IP.
-What do you think?
-
-Thanks,
-Namhyung
