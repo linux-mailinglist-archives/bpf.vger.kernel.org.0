@@ -2,61 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBE4B5A1AC0
-	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 23:04:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 633BC5A1ADE
+	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 23:14:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243512AbiHYVDC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Aug 2022 17:03:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41460 "EHLO
+        id S243477AbiHYVOO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Aug 2022 17:14:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243408AbiHYVDB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Aug 2022 17:03:01 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59133A927A;
-        Thu, 25 Aug 2022 14:03:00 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id z2so27678911edc.1;
-        Thu, 25 Aug 2022 14:03:00 -0700 (PDT)
+        with ESMTP id S243337AbiHYVOL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Aug 2022 17:14:11 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACED2B601B
+        for <bpf@vger.kernel.org>; Thu, 25 Aug 2022 14:14:10 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id c93so2991424edf.5
+        for <bpf@vger.kernel.org>; Thu, 25 Aug 2022 14:14:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc;
-        bh=y8DGgMkuP66GuprPWjy+PkncMDo9zYdwcp6zIGLT3Uw=;
-        b=eyJXnAcbkLcejfPt9dylM4b4bph5LSRouhujKTQ3RmLGnJP1fqm/z2MZozf2dnSIXE
-         ObMXfCQwidWgQJYqIkRMuz2TqGhAXtqUhjRf0K82hk93slepHSAvCeiTXpDNYOUeOyB+
-         oYMQKkSGt2TgjnT81IXh0xo8KGIaTiJEcC9wtifUJMD9ogQTIjo+SlZywxQ/ubibVpYD
-         7VydtHPfQBFNK7pPEJ3TBHVtZLX8G4V6ryw2ZxvwEhGkZJS9yEGKN8WUVDqa85qlo4EE
-         2cVmGUjnps/ilymgBBRn/biYCnbTN5ygCsWdFvap2GS3yXQ4wlkPc3ZmfF3qBrp2xZPj
-         s6CA==
+        bh=TPSCW/s+HtabbEDrrYc1N5jZdCIueX4AqrBBrZ61ohc=;
+        b=LFLszTpiCwz58KrQ0dmJq7n9ll32HVYVludru+tI8n+zvfNJkEs0X73NbWDLJSqwH3
+         GLPRWIiV11oJ2RifBgg1+YjjKj4Olq2ZIV4iVhZF2DIAdjThCtwpK1hFs5wOfb1FhNg8
+         EBG8Ipk7jCMdwopK3GtjZ6+igUMK9ZWcywP/Ecgs98xPlRPMOsHDy+9Qe1k0foQD10Nk
+         W/CIY13ykdMkl9lFlb9b7kGhhb62fjtvUQyluI1fIpoNijLM08i9YIMqd9puVhj8mTEr
+         Tq9Hr80mFb4Ha9gv7SPQNib4JjWowbzd9dDYYLEtxgFBphmPiPLRBd7aitd/HyuSFPVG
+         8KUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc;
-        bh=y8DGgMkuP66GuprPWjy+PkncMDo9zYdwcp6zIGLT3Uw=;
-        b=Ni5Gt0oq3bfDyRM+RIR5aH+BM9QPflXQW8PLNTIJmt0feGJWzRz9ItOg/tLI87rgBf
-         7l1bXTup1648UH6YEib4wmFRQmYuX5/0TLg+G9Yicq6b1qC7IZ9hk4g2iz7dejAn5ALN
-         svNsL1C/aUD5t4lvLEbrvQg71TuFV6/b5A2j2agqnEGZRDle+KVQ4A+FS3+c/JEmATO+
-         +IMFEkJmWpJjpHO6EGPO91ibxTDMKBIfG/mQYk1ZUME+deW5lqot7b0Z/yBf5RtsntYh
-         q1cvwISBlxHnw+S5plIfgQRWIDxy7x2hn+HWSHTQiTxqHUTI779PFQotyGi6bOXaZJIu
-         o5lA==
-X-Gm-Message-State: ACgBeo0Xn2/nVXH0GSY0VQm1wKeVhZV5HcXDfUkyyJtlahVZwGfm20k0
-        G/28W20hn8Rz1aojz6ceht2I/UasMfxmLKrG9eg=
-X-Google-Smtp-Source: AA6agR7QM8zeYeKCB6BbWflAjg4e5bCd8K4R3Rjt9kof1aAOt6ZKVKi0CVltQKpv4qX+yPAlIWY9ch28A7i6EAfy9pY=
-X-Received: by 2002:a05:6402:2996:b0:447:7be7:2d67 with SMTP id
- eq22-20020a056402299600b004477be72d67mr4605335edb.15.1661461378850; Thu, 25
- Aug 2022 14:02:58 -0700 (PDT)
+        bh=TPSCW/s+HtabbEDrrYc1N5jZdCIueX4AqrBBrZ61ohc=;
+        b=a4Rn904MbVte60aMORc3eMexwDSK4SVGy5m/VHv4Cjkm5CIH9IlIbXukgzDlbrizOM
+         lJvc6jaluTi+cLaoEFC/Swc4cPI0DvaO04+k9ksMabn76Jsdrhdt4a32gUHIsYZPYufo
+         LJ7VEczYJLTAW1xuvmcPCGceTYGOxCMNHqyJoTAArbD1h+6Xr1E+dV/kMHAayY7VSAyM
+         sGceWQ8zuccEyyPmi0PZUGb/bU3hfNXlMyz5Q3F/0dbKacREjVQRG5lPa8CSgQLoBtm9
+         PZ5gXabaO7FqKSnnuqFCbIdYelpT7D21sKGkoiTF7JxiCzwPgWCkSgaf0TDMDd6MkAfE
+         blvQ==
+X-Gm-Message-State: ACgBeo2mrY++kYxyM+Kw/LmMmpdcRyj5czdD35zDjREoqDvV4FB3MR5Y
+        ck1nSfHM8jT89CKeFZrstMTJbEl79zfy32vN5c0=
+X-Google-Smtp-Source: AA6agR6NS8iF0x/XSme7PIGoJdJS7IdE2/jlkS5X4aKRP3I5T7WGFdAVys26KK0Vz/4Qc3PXkg9Eiguk/zFibvPUCRc=
+X-Received: by 2002:a05:6402:1704:b0:447:811f:1eef with SMTP id
+ y4-20020a056402170400b00447811f1eefmr4678707edu.14.1661462049159; Thu, 25 Aug
+ 2022 14:14:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220822235649.2218031-1-joannelkoong@gmail.com>
- <20220822235649.2218031-2-joannelkoong@gmail.com> <CAEf4BzZm7eUX3w-NwP0JuWtvKbO6GxN911TraY5bA8-z+ocyCg@mail.gmail.com>
- <CAP01T77izAbefN5CJ1ZdjwUdii=gMFMduKTYtSbYC3S9jbRoEA@mail.gmail.com>
-In-Reply-To: <CAP01T77izAbefN5CJ1ZdjwUdii=gMFMduKTYtSbYC3S9jbRoEA@mail.gmail.com>
-From:   Joanne Koong <joannelkoong@gmail.com>
-Date:   Thu, 25 Aug 2022 14:02:47 -0700
-Message-ID: <CAJnrk1Y0r3++RLpT2jvp4st-79x3dUYk3uP-4tfnAeL5_kgM0Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 1/3] bpf: Add skb dynptrs
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf@vger.kernel.org,
-        andrii@kernel.org, daniel@iogearbox.net, ast@kernel.org,
-        kafai@fb.com, kuba@kernel.org, netdev@vger.kernel.org
+References: <20220819220927.3409575-1-kuifeng@fb.com> <20220819220927.3409575-2-kuifeng@fb.com>
+ <CAEf4Bzai7s1E6Y5=+URKXvSO7h8NJ6aNLxZCQrTq2ucTUp=S_Q@mail.gmail.com> <52171bf63f54b311116988cefd275c0847396d45.camel@fb.com>
+In-Reply-To: <52171bf63f54b311116988cefd275c0847396d45.camel@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 25 Aug 2022 14:13:47 -0700
+Message-ID: <CAEf4BzZEVzh5eTjHt_PmDKMJMgtSKkTcGpidNGamyH3__38R9g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6 1/4] bpf: Parameterize task iterators.
+To:     Kui-Feng Lee <kuifeng@fb.com>
+Cc:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        Kernel Team <Kernel-team@fb.com>, Yonghong Song <yhs@fb.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -68,288 +69,157 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 24, 2022 at 4:26 PM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
+On Wed, Aug 24, 2022 at 5:16 PM Kui-Feng Lee <kuifeng@fb.com> wrote:
 >
-> On Wed, 24 Aug 2022 at 20:42, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Mon, Aug 22, 2022 at 4:57 PM Joanne Koong <joannelkoong@gmail.com> wrote:
+> On Wed, 2022-08-24 at 15:20 -0700, Andrii Nakryiko wrote:
+> > On Fri, Aug 19, 2022 at 3:09 PM Kui-Feng Lee <kuifeng@fb.com> wrote:
 > > >
-> > > Add skb dynptrs, which are dynptrs whose underlying pointer points
-> > > to a skb. The dynptr acts on skb data. skb dynptrs have two main
-> > > benefits. One is that they allow operations on sizes that are not
-> > > statically known at compile-time (eg variable-sized accesses).
-> > > Another is that parsing the packet data through dynptrs (instead of
-> > > through direct access of skb->data and skb->data_end) can be more
-> > > ergonomic and less brittle (eg does not need manual if checking for
-> > > being within bounds of data_end).
+> > > Allow creating an iterator that loops through resources of one
+> > > task/thread.
 > > >
-> > > For bpf prog types that don't support writes on skb data, the dynptr is
-> > > read-only. For reads and writes through the bpf_dynptr_read() and
-> > > bpf_dynptr_write() interfaces, this supports reading and writing into
-> > > data in the non-linear paged buffers. For data slices (through the
-> > > bpf_dynptr_data() interface), if the data is in a paged buffer, the user
-> > > must first call bpf_skb_pull_data() to pull the data into the linear
-> > > portion. The returned data slice from a call to bpf_dynptr_data() is of
-> > > reg type PTR_TO_PACKET | PTR_MAYBE_NULL.
+> > > People could only create iterators to loop through all resources of
+> > > files, vma, and tasks in the system, even though they were
+> > > interested
+> > > in only the resources of a specific task or process.  Passing the
+> > > additional parameters, people can now create an iterator to go
+> > > through all resources or only the resources of a task.
 > > >
-> > > Any bpf_dynptr_write() automatically invalidates any prior data slices
-> > > to the skb dynptr. This is because a bpf_dynptr_write() may be writing
-> > > to data in a paged buffer, so it will need to pull the buffer first into
-> > > the head. The reason it needs to be pulled instead of writing directly to
-> > > the paged buffers is because they may be cloned (only the head of the skb
-> > > is by default uncloned). As such, any bpf_dynptr_write() will
-> > > automatically have its prior data slices invalidated, even if the write
-> > > is to data in the skb head (the verifier has no way of differentiating
-> > > whether the write is to the head or paged buffers during program load
-> > > time). Please note as well that any other helper calls that change the
-> > > underlying packet buffer (eg bpf_skb_pull_data()) invalidates any data
-> > > slices of the skb dynptr as well. Whenever such a helper call is made,
-> > > the verifier marks any PTR_TO_PACKET reg type (which includes skb dynptr
-> > > slices since they are PTR_TO_PACKETs) as unknown. The stack trace for
-> > > this is check_helper_call() -> clear_all_pkt_pointers() ->
-> > > __clear_all_pkt_pointers() -> mark_reg_unknown()
-> > >
-> > > For examples of how skb dynptrs can be used, please see the attached
-> > > selftests.
-> > >
-> > > Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
+> > > Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
 > > > ---
-> > >  include/linux/bpf.h            | 83 +++++++++++++++++-----------
-> > >  include/linux/filter.h         |  4 ++
-> > >  include/uapi/linux/bpf.h       | 40 ++++++++++++--
-> > >  kernel/bpf/helpers.c           | 81 +++++++++++++++++++++++++---
-> > >  kernel/bpf/verifier.c          | 99 ++++++++++++++++++++++++++++------
-> > >  net/core/filter.c              | 53 ++++++++++++++++--
-> > >  tools/include/uapi/linux/bpf.h | 40 ++++++++++++--
-> > >  7 files changed, 335 insertions(+), 65 deletions(-)
+> > >  include/linux/bpf.h            |  25 +++++++
+> > >  include/uapi/linux/bpf.h       |   6 ++
+> > >  kernel/bpf/task_iter.c         | 116 ++++++++++++++++++++++++++---
+> > > ----
+> > >  tools/include/uapi/linux/bpf.h |   6 ++
+> > >  4 files changed, 129 insertions(+), 24 deletions(-)
 > > >
+> > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > > index 39bd36359c1e..59712dd917d8 100644
+> > > --- a/include/linux/bpf.h
+> > > +++ b/include/linux/bpf.h
+> > > @@ -1729,8 +1729,33 @@ int bpf_obj_get_user(const char __user
+> > > *pathname, int flags);
+> > >         extern int bpf_iter_ ## target(args);                   \
+> > >         int __init bpf_iter_ ## target(args) { return 0; }
+> > >
+> > > +/*
+> > > + * The task type of iterators.
+> > > + *
+> > > + * For BPF task iterators, they can be parameterized with various
+> > > + * parameters to visit only some of tasks.
+> > > + *
+> > > + * BPF_TASK_ITER_ALL (default)
+> > > + *     Iterate over resources of every task.
+> > > + *
+> > > + * BPF_TASK_ITER_TID
+> > > + *     Iterate over resources of a task/tid.
+> > > + *
+> > > + * BPF_TASK_ITER_TGID
+> > > + *     Iterate over reosurces of evevry task of a process / task
+> > > group.
+> >
+> > typos: resources, every
+> >
+> > > + */
+> > > +enum bpf_iter_task_type {
+> > > +       BPF_TASK_ITER_ALL = 0,
+> > > +       BPF_TASK_ITER_TID,
+> > > +       BPF_TASK_ITER_TGID,
+> > > +};
+> > > +
 > >
 > > [...]
 > >
-> > > @@ -1521,9 +1532,19 @@ BPF_CALL_5(bpf_dynptr_read, void *, dst, u32, len, struct bpf_dynptr_kern *, src
-> > >         if (err)
-> > >                 return err;
-> > >
-> > > -       memcpy(dst, src->data + src->offset + offset, len);
-> > > +       type = bpf_dynptr_get_type(src);
-> > >
-> > > -       return 0;
-> > > +       switch (type) {
-> > > +       case BPF_DYNPTR_TYPE_LOCAL:
-> > > +       case BPF_DYNPTR_TYPE_RINGBUF:
-> > > +               memcpy(dst, src->data + src->offset + offset, len);
-> > > +               return 0;
-> > > +       case BPF_DYNPTR_TYPE_SKB:
-> > > +               return __bpf_skb_load_bytes(src->data, src->offset + offset, dst, len);
-> > > +       default:
-> > > +               WARN(true, "bpf_dynptr_read: unknown dynptr type %d\n", type);
+> > >         rcu_read_lock();
+> > >  retry:
+> > > -       pid = find_ge_pid(*tid, ns);
+> > > +       pid = find_ge_pid(*tid, common->ns);
+> > >         if (pid) {
+> > > -               *tid = pid_nr_ns(pid, ns);
+> > > +               *tid = pid_nr_ns(pid, common->ns);
+> > >                 task = get_pid_task(pid, PIDTYPE_PID);
+> > >                 if (!task) {
+> > >                         ++*tid;
+> > >                         goto retry;
+> > > -               } else if (skip_if_dup_files &&
+> > > !thread_group_leader(task) &&
+> > > -                          task->files == task->group_leader-
+> > > >files) {
+> > > +               } else if ((skip_if_dup_files &&
+> > > !thread_group_leader(task) &&
+> > > +                           task->files == task->group_leader-
+> > > >files) ||
+> > > +                          (common->type == BPF_TASK_ITER_TGID &&
+> > > +                           __task_pid_nr_ns(task, PIDTYPE_TGID,
+> > > common->ns) != common->pid)) {
 > >
-> > nit: probably better to WARN_ONCE?
-> >
-> > > +               return -EFAULT;
-> > > +       }
-> > >  }
-> > >
-> > >  static const struct bpf_func_proto bpf_dynptr_read_proto = {
-> > > @@ -1540,18 +1561,32 @@ static const struct bpf_func_proto bpf_dynptr_read_proto = {
-> > >  BPF_CALL_5(bpf_dynptr_write, struct bpf_dynptr_kern *, dst, u32, offset, void *, src,
-> > >            u32, len, u64, flags)
-> > >  {
-> > > +       enum bpf_dynptr_type type;
-> > >         int err;
-> > >
-> > > -       if (!dst->data || flags || bpf_dynptr_is_rdonly(dst))
-> > > +       if (!dst->data || bpf_dynptr_is_rdonly(dst))
-> > >                 return -EINVAL;
-> > >
-> > >         err = bpf_dynptr_check_off_len(dst, offset, len);
-> > >         if (err)
-> > >                 return err;
-> > >
-> > > -       memcpy(dst->data + dst->offset + offset, src, len);
-> > > +       type = bpf_dynptr_get_type(dst);
-> > >
-> > > -       return 0;
-> > > +       switch (type) {
-> > > +       case BPF_DYNPTR_TYPE_LOCAL:
-> > > +       case BPF_DYNPTR_TYPE_RINGBUF:
-> > > +               if (flags)
-> > > +                       return -EINVAL;
-> > > +               memcpy(dst->data + dst->offset + offset, src, len);
-> > > +               return 0;
-> > > +       case BPF_DYNPTR_TYPE_SKB:
-> > > +               return __bpf_skb_store_bytes(dst->data, dst->offset + offset, src, len,
-> > > +                                            flags);
-> > > +       default:
-> > > +               WARN(true, "bpf_dynptr_write: unknown dynptr type %d\n", type);
-> >
-> > ditto about WARN_ONCE
-> >
-> > > +               return -EFAULT;
-> > > +       }
-> > >  }
-> > >
-> > >  static const struct bpf_func_proto bpf_dynptr_write_proto = {
-> >
-> > [...]
-> >
-> > > +static enum bpf_dynptr_type stack_slot_get_dynptr_info(struct bpf_verifier_env *env,
-> > > +                                                      struct bpf_reg_state *reg,
-> > > +                                                      int *ref_obj_id)
-> > >  {
-> > >         struct bpf_func_state *state = func(env, reg);
-> > >         int spi = get_spi(reg->off);
-> > >
-> > > -       return state->stack[spi].spilled_ptr.id;
-> > > +       if (ref_obj_id)
-> > > +               *ref_obj_id = state->stack[spi].spilled_ptr.id;
-> > > +
-> > > +       return state->stack[spi].spilled_ptr.dynptr.type;
-> > >  }
-> > >
-> > >  static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
-> > > @@ -6056,7 +6075,8 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
-> > >                         case DYNPTR_TYPE_RINGBUF:
-> > >                                 err_extra = "ringbuf ";
-> > >                                 break;
-> > > -                       default:
-> > > +                       case DYNPTR_TYPE_SKB:
-> > > +                               err_extra = "skb ";
-> > >                                 break;
-> > >                         }
-> > >
-> > > @@ -7149,6 +7169,7 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
-> > >  {
-> > >         enum bpf_prog_type prog_type = resolve_prog_type(env->prog);
-> > >         const struct bpf_func_proto *fn = NULL;
-> > > +       enum bpf_dynptr_type dynptr_type;
-> >
-> > compiler technically can complain about use of uninitialized
-> > dynptr_type, maybe initialize it to BPF_DYNPTR_TYPE_INVALID ?
-> >
-> > >         enum bpf_return_type ret_type;
-> > >         enum bpf_type_flag ret_flag;
-> > >         struct bpf_reg_state *regs;
-> > > @@ -7320,24 +7341,43 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
-> > >                         }
-> > >                 }
-> > >                 break;
-> > > -       case BPF_FUNC_dynptr_data:
-> > > -               for (i = 0; i < MAX_BPF_FUNC_REG_ARGS; i++) {
-> > > -                       if (arg_type_is_dynptr(fn->arg_type[i])) {
-> > > -                               if (meta.ref_obj_id) {
-> > > -                                       verbose(env, "verifier internal error: meta.ref_obj_id already set\n");
-> > > -                                       return -EFAULT;
-> > > -                               }
-> > > -                               /* Find the id of the dynptr we're tracking the reference of */
-> > > -                               meta.ref_obj_id = stack_slot_get_id(env, &regs[BPF_REG_1 + i]);
-> > > -                               break;
-> > > -                       }
-> > > +       case BPF_FUNC_dynptr_write:
-> > > +       {
-> > > +               struct bpf_reg_state *reg;
-> > > +
-> > > +               reg = get_dynptr_arg_reg(fn, regs);
-> > > +               if (!reg) {
-> > > +                       verbose(env, "verifier internal error: no dynptr in bpf_dynptr_data()\n");
-> >
-> > s/bpf_dynptr_data/bpf_dynptr_write/
-> >
-> > > +                       return -EFAULT;
-> > >                 }
-> > > -               if (i == MAX_BPF_FUNC_REG_ARGS) {
-> > > +
-> > > +               /* bpf_dynptr_write() for skb-type dynptrs may pull the skb, so we must
-> > > +                * invalidate all data slices associated with it
-> > > +                */
-> > > +               if (stack_slot_get_dynptr_info(env, reg, NULL) == BPF_DYNPTR_TYPE_SKB)
-> > > +                       changes_data = true;
-> > > +
-> > > +               break;
-> > > +       }
-> > > +       case BPF_FUNC_dynptr_data:
-> > > +       {
-> > > +               struct bpf_reg_state *reg;
-> > > +
-> > > +               reg = get_dynptr_arg_reg(fn, regs);
-> > > +               if (!reg) {
-> > >                         verbose(env, "verifier internal error: no dynptr in bpf_dynptr_data()\n");
-> > >                         return -EFAULT;
-> > >                 }
-> > > +
-> > > +               if (meta.ref_obj_id) {
-> > > +                       verbose(env, "verifier internal error: meta.ref_obj_id already set\n");
-> > > +                       return -EFAULT;
-> > > +               }
-> > > +
-> > > +               dynptr_type = stack_slot_get_dynptr_info(env, reg, &meta.ref_obj_id);
-> > >                 break;
-> > >         }
-> > > +       }
-> > >
-> > >         if (err)
-> > >                 return err;
-> > > @@ -7397,8 +7437,15 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
-> > >                 break;
-> > >         case RET_PTR_TO_ALLOC_MEM:
-> > >                 mark_reg_known_zero(env, regs, BPF_REG_0);
-> > > -               regs[BPF_REG_0].type = PTR_TO_MEM | ret_flag;
-> > > -               regs[BPF_REG_0].mem_size = meta.mem_size;
-> > > +
-> > > +               if (func_id == BPF_FUNC_dynptr_data &&
-> > > +                   dynptr_type == BPF_DYNPTR_TYPE_SKB) {
-> > > +                       regs[BPF_REG_0].type = PTR_TO_PACKET | ret_flag;
-> > > +                       regs[BPF_REG_0].range = meta.mem_size;
-> > > +               } else {
-> > > +                       regs[BPF_REG_0].type = PTR_TO_MEM | ret_flag;
-> > > +                       regs[BPF_REG_0].mem_size = meta.mem_size;
-> > > +               }
-> > >                 break;
-> > >         case RET_PTR_TO_MEM_OR_BTF_ID:
-> > >         {
-> > > @@ -14141,6 +14188,24 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
-> > >                         goto patch_call_imm;
-> > >                 }
-> > >
-> > > +               if (insn->imm == BPF_FUNC_dynptr_from_skb) {
-> > > +                       bool is_rdonly = !may_access_direct_pkt_data(env, NULL, BPF_WRITE);
-> > > +
-> > > +                       insn_buf[0] = BPF_MOV32_IMM(BPF_REG_4, is_rdonly);
-> > > +                       insn_buf[1] = *insn;
-> > > +                       cnt = 2;
-> >
-> > This might have been discussed before, sorry if I missed it. But why
-> > this special rewrite to provide read-only flag vs having two
-> > implementations of bpf_dynptr_from_skb() depending on program types?
-> > If program type allows read+write access, return
-> > bpf_dynptr_from_skb_rdwr(), for those that have read-only access -
-> > bpf_dynptr_from_skb_rdonly(), and for others return NULL proto
-> > (disable helper)?
-
-Ooh I love this idea, thanks Andrii! I'll add this in v5.
-
-> >
-> > You can then use it very similarly for bpf_dynptr_from_skb_meta().
-> >
+> > it gets super hard to follow this logic, would a simple helper
+> > function to calculate this condition (and maybe some comments to
+> > explain the logic behind these checks?) make it a bit more readable?
 >
-> Related question, it seems we know statically if dynptr is read only
-> or not, so why even do all this hidden parameter passing and instead
-> just reject writes directly? You only need to be able to set
-> MEM_RDONLY on dynptr_data returned PTR_TO_PACKETs, and reject
-> dynptr_write when dynptr type is xdp/skb (and ctx is only one). That
-> seems simpler than checking it at runtime. Verifier already handles
-> MEM_RDONLY generically, you only need to add the guard for
-> check_packet_acces (and check_helper_mem_access for meta->raw_mode
-> under pkt case), and rejecting dynptr_write seems like a if condition.
+> !matched_task(task, common, skip_if_dup_file)?
+>
+> bool matched_task(struct task_struct *task,
+>                   struct bpf_iter_seq_task_common *common,
+>                   bool skip_if_dup_file) {
+>         /* Should not have the same 'files' if skip_if_dup_file is true
+> */
+>         bool diff_files_if =
+>                 !skip_if_dup_file ||
+>                 (thread_group_leader(task) &&
+>                 task->file != task->gorup_leader->fies);
+>         /* Should have the given tgid if the type is BPF_TASK_ITER_TGI
+> */
+>         bool have_tgid_if =
+>                 common->type != BPF_TASK_ITER_TGID ||
+>                 __task_pid_nr_ns(task, PIDTYPE_TGID,
+>                 common->ns) == common->pid;
+>         return diff_files_if && have_tgid_if;
+> }
+>
+> How about this?
+>
 
-There will be other helper functions that do writes (eg memcpy to
-dynptrs, strncpy to dynptrs, probe read user to dynptrs, hashing
-dynptrs, ...) so it's more scalable if we reject these at runtime
-rather than enforce these at the verifier level. I also think it's
-cleaner to keep the verifier logic as simple as possible and do the
-checking in the helper.
+Hm... "matched_task" doesn't mean much, tbh, so not really. I wanted
+to suggest having a separate helper just for your TGID check and call
+it something more meaningful like "task_belongs_to_tgid". Can't come
+up with a good name for existing dup_file check, so I'd probably keep
+it as is. But also seems like there is same_thread_group() helper in
+include/linux/sched/signal.h, so let's look if we can use it, it seems
+like it's just comparing signal pointers (probably quite faster than
+what you are doing right now).
 
-There's a prior discussion about this in v1 [0] as well.
+But looking at this some more made me realize that even if we specify
+pid (tgid in kernel terms) we are still going to iterate through all
+the tasks, essentially. Is that right? So TGID mode isn't great for
+speeding up, we should point out to users that if they want to iterate
+files of the process, they probably want to use TID mode and set tid
+to pid to use the early termination condition in TID.
 
-[0] https://lore.kernel.org/bpf/20220726184706.954822-1-joannelkoong@gmail.com/T/#mf3fe3965bc1852b07b8f2d306d09818b35acf3c1
+It wasn't obvious to me until I re-read this patch like 3 times and
+wrote three different replies here :)
+
+But then I also went looking at what procfs doing for
+/proc/<pid/task/* dirs. It does seem like there are faster ways to
+iterate all threads of a process. See next_tid() which uses
+next_thread(), etc. Can you please check those and see if we can have
+faster in-process iteration?
+
+
+> >
+> > >                         put_task_struct(task);
+> > >                         task = NULL;
+> > >                         ++*tid;
+> > > @@ -56,7 +73,7 @@ static void *task_seq_start(struct seq_file *seq,
+> > > loff_t *pos)
+> > >         struct bpf_iter_seq_task_info *info = seq->private;
+> > >         struct task_struct *task;
+> > >
+> > > -       task = task_seq_get_next(info->common.ns, &info->tid,
+> > > false);
+> > > +       task = task_seq_get_next(&info->common, &info->tid, false);
+> > >         if (!task)
+> > >                 return NULL;
+> > >
+
+[...]
