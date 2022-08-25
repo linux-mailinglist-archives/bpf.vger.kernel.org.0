@@ -2,99 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF44F5A12BF
-	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 15:52:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0948A5A14F8
+	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 16:58:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241862AbiHYNwX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Aug 2022 09:52:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50108 "EHLO
+        id S237468AbiHYO65 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Aug 2022 10:58:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241378AbiHYNwT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Aug 2022 09:52:19 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08AC51A3BE;
-        Thu, 25 Aug 2022 06:52:17 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 0399F20AE5;
-        Thu, 25 Aug 2022 13:52:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1661435536; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SG8vYYGWMAWN9Mvff6IMP73eu6yuDvbm1ewu/sn138A=;
-        b=RWOYQ/ofWltretqyG242UAx8o2hrUiuG20EgcZ3u0Xj78uaymJk52azJltrCnl9SXU58ks
-        BmzGVXICuo8hjW4wGGnFig3EsszDCY1sY5nFEruoVPfGvjNdeBi9DP/CnR/4HqQ/zFX7mc
-        d9gQv3u/qcznWqjn8R08buVVTot4t0Q=
-Received: from suse.cz (unknown [10.100.201.202])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 5377D2C141;
-        Thu, 25 Aug 2022 13:52:14 +0000 (UTC)
-Date:   Thu, 25 Aug 2022 15:52:14 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S238272AbiHYO64 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Aug 2022 10:58:56 -0400
+Received: from 10.mo552.mail-out.ovh.net (10.mo552.mail-out.ovh.net [87.98.187.244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D4F6B5A78
+        for <bpf@vger.kernel.org>; Thu, 25 Aug 2022 07:58:55 -0700 (PDT)
+Received: from mxplan6.mail.ovh.net (unknown [10.108.4.35])
+        by mo552.mail-out.ovh.net (Postfix) with ESMTPS id CC3AF2729F;
+        Thu, 25 Aug 2022 14:23:01 +0000 (UTC)
+Received: from jwilk.net (37.59.142.100) by DAG4EX1.mxp6.local (172.16.2.31)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.12; Thu, 25 Aug
+ 2022 16:22:58 +0200
+Authentication-Results: garm.ovh; auth=pass (GARM-100R0039edb75d6-ed00-4167-8455-8a71bd083319,
+                    7E6AE0283D4A57E58743953EE7A8FB9473A8110D) smtp.auth=jwilk@jwilk.net
+X-OVh-ClientIp: 5.172.255.184
+Date:   Thu, 25 Aug 2022 16:22:56 +0200
+From:   Jakub Wilk <jwilk@jwilk.net>
+To:     Quentin Monnet <quentin@isovalent.com>
+CC:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>, bpf@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH] kernel: move from strlcpy with unused retval to strscpy
-Message-ID: <Ywd+jrlh+6ZJw7u5@alley>
-References: <20220818210202.8227-1-wsa+renesas@sang-engineering.com>
- <YwdAknZFyKxCXZuL@alley>
- <YwdtunymYd4VO83D@shikoro>
+        <bpf@vger.kernel.org>, Alejandro Colomar <alx.manpages@gmail.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        <linux-man@vger.kernel.org>
+Subject: Re: [PATCH bpf-next v2] bpf: Fix a few typos in BPF helpers
+ documentation
+Message-ID: <20220825142256.of3glbnwi77kgkzo@jwilk.net>
+References: <20220825110216.53698-1-quentin@isovalent.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"; format=flowed
 Content-Disposition: inline
-In-Reply-To: <YwdtunymYd4VO83D@shikoro>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20220825110216.53698-1-quentin@isovalent.com>
+X-Originating-IP: [37.59.142.100]
+X-ClientProxiedBy: DAG5EX1.mxp6.local (172.16.2.41) To DAG4EX1.mxp6.local
+ (172.16.2.31)
+X-Ovh-Tracer-GUID: 43b2c289-649c-4bcf-8c4c-9677574ae55c
+X-Ovh-Tracer-Id: 9639110581004851076
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvfedrvdejfedgjeehucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepfffhvfevuffkfhggtggujghisehttdertddttddvnecuhfhrohhmpeflrghkuhgsucghihhlkhcuoehjfihilhhksehjfihilhhkrdhnvghtqeenucggtffrrghtthgvrhhnpeeutddtteelhfffuddvhefgfedujeeltdekheduveekkeelfeduuedvgeejudffgfenucfkpheptddrtddrtddrtddpfeejrdehledrudegvddruddttdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphhouhhtpdhhvghlohepmhigphhlrghniedrmhgrihhlrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehjfihilhhksehjfihilhhkrdhnvghtpdhnsggprhgtphhtthhopedupdhrtghpthhtoheplhhinhhugidqmhgrnhesvhhgvghrrdhkvghrnhgvlhdrohhrghdpoffvtefjohhsthepmhhoheehvd
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu 2022-08-25 14:40:26, Wolfram Sang wrote:
-> 
-> > > Generated by a coccinelle script.
-> ^ ^ ^
-> 
-> > You might want to use Coccinelle if a simple sed/awk gets too
-> > complicated. See
-> 
-> :)
-> 
-> So, I did a tree wide conversion and let Linus know that I have a branch
-> available. He didn't respond, so I assumed that individual patches is
-> the way to go.
+* Quentin Monnet <quentin@isovalent.com>, 2022-08-25 12:02:
+>--- a/tools/include/uapi/linux/bpf.h
+>+++ b/tools/include/uapi/linux/bpf.h
+>@@ -79,7 +79,7 @@ struct bpf_insn {
+> /* Key of an a BPF_MAP_TYPE_LPM_TRIE entry */
+> struct bpf_lpm_trie_key {
+> 	__u32	prefixlen;	/* up to 32 for AF_INET, 128 for AF_INET6 */
+>-	__u8	data[0];	/* Arbitrary size */
+>+	__u8	data[];	/* Arbitrary size */
+> };
 
-I am not sure when exactly you sent it. Linus is very busy during the
-merge window and might miss less important things.
+This hunk picks the change from 94dfc73e7cf4 ("treewide: uapi: Replace 
+zero-length arrays with flexible-array members").
 
-Also he might prefer to get the script that did the tree-wide change so
-that he knows what exactly has changed.
+A bit weird to see it in a spelling-fix patch though. Wouldn't it be 
+better to put it in a separate one?
 
-Best Regards,
-Petr
+-- 
+Jakub Wilk
