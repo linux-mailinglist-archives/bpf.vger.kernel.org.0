@@ -2,115 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 174395A0BF5
-	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 10:56:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD6B85A0C3C
+	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 11:07:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231695AbiHYI4S (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Aug 2022 04:56:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41108 "EHLO
+        id S237778AbiHYJH5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Aug 2022 05:07:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbiHYI4S (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Aug 2022 04:56:18 -0400
-Received: from out30-43.freemail.mail.aliyun.com (out30-43.freemail.mail.aliyun.com [115.124.30.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36FCAA3D15;
-        Thu, 25 Aug 2022 01:56:16 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=kangjie.xu@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0VNCZWjK_1661417770;
-Received: from localhost(mailfrom:kangjie.xu@linux.alibaba.com fp:SMTPD_---0VNCZWjK_1661417770)
-          by smtp.aliyun-inc.com;
-          Thu, 25 Aug 2022 16:56:11 +0800
-From:   Kangjie Xu <kangjie.xu@linux.alibaba.com>
-To:     virtualization@lists.linux-foundation.org
-Cc:     mst@redhat.com, jasowang@redhat.com, kvm@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, hengqi@linux.alibaba.com,
-        xuanzhuo@linux.alibaba.com
-Subject: [PATCH] vhost-net: support VIRTIO_F_RING_RESET
-Date:   Thu, 25 Aug 2022 16:56:10 +0800
-Message-Id: <20220825085610.80315-1-kangjie.xu@linux.alibaba.com>
-X-Mailer: git-send-email 2.32.0
+        with ESMTP id S233811AbiHYJH4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Aug 2022 05:07:56 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F34547E81C;
+        Thu, 25 Aug 2022 02:07:55 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id C020634FFC;
+        Thu, 25 Aug 2022 09:07:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1661418473; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qZHbxp4wW4UmzUmh4XCTZ+wLLXSuw5g/i7CYWPwKp9I=;
+        b=TDCdXpFANzcf2BsutI0MOoaO3u+98fgAWYbg6sbPae9Jb/y8nhG582Z9lnFLdiB0YG1ETT
+        jKG/wibbYJsEUTzAPcf+lZ8umzrbhly/NYQtVQfCP+e2m8kCG/EA9OSAEsEzbm3autZ593
+        Iywm9+PScv6KVmMMcUppMsgTivIprBs=
+Received: from suse.cz (unknown [10.100.201.202])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 7E9C92C141;
+        Thu, 25 Aug 2022 09:07:53 +0000 (UTC)
+Date:   Thu, 25 Aug 2022 11:07:53 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Guangbin Huang <huangguangbin2@huawei.com>
+Cc:     rostedt@goodmis.org, senozhatsky@chromium.org,
+        andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        lipeng321@huawei.com, shenjian15@huawei.com
+Subject: Re: [PATCH] lib/vnsprintf: add const modifier for param 'bitmap'
+Message-ID: <Ywc76XQFYddD8KOf@alley>
+References: <20220816144557.30779-1-huangguangbin2@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220816144557.30779-1-huangguangbin2@huawei.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add VIRTIO_F_RING_RESET, which indicates that the driver can reset a
-queue individually.
+On Tue 2022-08-16 22:45:57, Guangbin Huang wrote:
+> From: Jian Shen <shenjian15@huawei.com>
+> 
+> There is no modification for param bitmap in function
+> bitmap_string() and bitmap_list_string(), so add const
+> modifier for it.
+> 
+> Signed-off-by: Jian Shen <shenjian15@huawei.com>
+> Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
 
-VIRTIO_F_RING_RESET feature is added to virtio-spec 1.2. The relevant
-information is in
-    oasis-tcs/virtio-spec#124
-    oasis-tcs/virtio-spec#139
+The patch has been committed into printk/linux.git, branch
+for-6.1/trivial.
 
-The implementation only adds the feature bit in supported features. It
-does not require any other changes because we reuse the existing vhost
-protocol.
-
-The virtqueue reset process can be concluded as two parts:
-1. The driver can reset a virtqueue. When it is triggered, we use the
-set_backend to disable the virtqueue.
-2. After the virtqueue is disabled, the driver may optionally re-enable
-it. The process is basically similar to when the device is started,
-except that the restart process does not need to set features and set
-mem table since they do not change. QEMU will send messages containing
-size, base, addr, kickfd and callfd of the virtqueue in order.
-Specifically, the host kernel will receive these messages in order:
-    a. VHOST_SET_VRING_NUM
-    b. VHOST_SET_VRING_BASE
-    c. VHOST_SET_VRING_ADDR
-    d. VHOST_SET_VRING_KICK
-    e. VHOST_SET_VRING_CALL
-    f. VHOST_NET_SET_BACKEND
-Finally, after we use set_backend to attach the virtqueue, the virtqueue
-will be enabled and start to work.
-
-Signed-off-by: Kangjie Xu <kangjie.xu@linux.alibaba.com>
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
----
-
-Test environment and method:
-    Host: 5.19.0-rc3
-    Qemu: QEMU emulator version 7.0.50 (With vq rset support)
-    Guest: 5.19.0-rc3 (With vq reset support)
-    Test Cmd: ethtool -g eth1; ethtool -G eth1 rx $1 tx $2; ethtool -g eth1;
-
-    The drvier can resize the virtio queue, then virtio queue reset function should
-    be triggered.
-
-    The default is split mode, modify Qemu virtio-net to add PACKED feature to 
-    test packed mode.
-
-Guest Kernel Patch:
-    https://lore.kernel.org/bpf/20220801063902.129329-1-xuanzhuo@linux.alibaba.com/
-
-QEMU Patch:
-    https://lore.kernel.org/qemu-devel/cover.1661414345.git.kangjie.xu@linux.alibaba.com/
-
-Looking forward to your review and comments. Thanks.
-
- drivers/vhost/net.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
-index 68e4ecd1cc0e..8a34928d4fef 100644
---- a/drivers/vhost/net.c
-+++ b/drivers/vhost/net.c
-@@ -73,7 +73,8 @@ enum {
- 	VHOST_NET_FEATURES = VHOST_FEATURES |
- 			 (1ULL << VHOST_NET_F_VIRTIO_NET_HDR) |
- 			 (1ULL << VIRTIO_NET_F_MRG_RXBUF) |
--			 (1ULL << VIRTIO_F_ACCESS_PLATFORM)
-+			 (1ULL << VIRTIO_F_ACCESS_PLATFORM) |
-+			 (1ULL << VIRTIO_F_RING_RESET)
- };
- 
- enum {
--- 
-2.32.0
-
+Best Regards,
+Petr
