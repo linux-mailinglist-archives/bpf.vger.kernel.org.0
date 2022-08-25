@@ -2,109 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 962495A08D6
-	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 08:29:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 076BB5A08FF
+	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 08:42:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233144AbiHYG3k (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Aug 2022 02:29:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37598 "EHLO
+        id S236194AbiHYGl6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Aug 2022 02:41:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231604AbiHYG3j (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Aug 2022 02:29:39 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 850B29F8C5
-        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 23:29:38 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id bh13so17045263pgb.4
-        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 23:29:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc;
-        bh=xN6ix5QqMvCzHdKCZRghSQjKhZolGhFYirvCfNMJwm4=;
-        b=VGFXpHAXG74OwfpnWZVMx+8MKd6qJN12XuXgtIm9TApmsIHExDaH1uCbHX0okWeeZK
-         bg5lX5V6hQdBo84TPP1pNG1itw1AWDwhCIylGsMig1g/usG7u8KH+kxwyzhF0CouIPAM
-         u4wSPeuhRoGiON1gE0uWKusEj6/Q1txPG/tzLFa5FwPrEtiDFsoCBoqNIzk35D5SwQaP
-         bkCowqMPLeJHVmwLDxmqZDikaZK+JynXIttS6Su3MSavB0yehUzroZ/q+qOpzG2B8iPJ
-         5HEoO6QrmuRiEpIakRlHBv66vE9q27DGG/Ihj13qAYfonm/dp7KOnvBDj/1KcJcjtrMb
-         Yq8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc;
-        bh=xN6ix5QqMvCzHdKCZRghSQjKhZolGhFYirvCfNMJwm4=;
-        b=WykNqrTjOKM/ME3n56/F1fCTVW4aXwE4U+Au40C3m5iHmceDEqvmfwnEr1SNCExVdt
-         drmLypexmPL7X3kyL6i0YOXtttPxmMFzMWgDrs+EYoaPT6Rq9P2kb7NN8p0l9Bp/KNt/
-         GnhvbjaXuLPMcCqlN/2cO2OAjNH5mTwXoFyXHzBHyEiTARCScHsIaSJuqqS+pDK9NO2Y
-         CWvGje+5olBcnYGOQmiQyQ9hs43nK0JfrzblzMx4lG3AvYRIvFvNH1LWsf8sm/LX6MzU
-         nqeCWAHoTPDKVcLz9FIGncSywKXFeHXx2ojLI9A+NubHm3GE4dpu3hO1kFADOi85TjmD
-         JNbQ==
-X-Gm-Message-State: ACgBeo0yU07oQ8uUFjAea+EJ5uYScVhiv+67cgcZDyIvk2p7w2eSsDR4
-        koTYmCcB/6blUjc76jf4THY=
-X-Google-Smtp-Source: AA6agR5DyslL9y11JoCLXtcHz2ineChQwQ+EaI1nngs9k2EiNACM1jdYCAdQwFvpuahRw7aF6LABXA==
-X-Received: by 2002:a63:86c2:0:b0:42a:42d5:a4a6 with SMTP id x185-20020a6386c2000000b0042a42d5a4a6mr2021763pgd.189.1661408978050;
-        Wed, 24 Aug 2022 23:29:38 -0700 (PDT)
-Received: from localhost ([98.97.36.33])
-        by smtp.gmail.com with ESMTPSA id q67-20020a634346000000b004161e62a3a5sm12290260pga.78.2022.08.24.23.29.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Aug 2022 23:29:37 -0700 (PDT)
-Date:   Wed, 24 Aug 2022 23:29:36 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Lam Thai <lamthai@arista.com>, bpf@vger.kernel.org
-Cc:     Lam Thai <lamthai@arista.com>
-Message-ID: <630716d02ebbe_e1c39208c3@john.notmuch>
-In-Reply-To: <20220824225859.9038-1-lamthai@arista.com>
-References: <20220824225859.9038-1-lamthai@arista.com>
-Subject: RE: [PATCH] bpftool: fix a wrong type cast in btf_dumper_int
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S236097AbiHYGl4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Aug 2022 02:41:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0BEE9E8BA
+        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 23:41:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1661409715;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SnRGgUUehtI16T785sfGREjFhyN78UXi6fpoRdTOHys=;
+        b=gT1+9Rz4s07FhxfX75EfbcYw6dQr5HofVUK6bWoRQBtq5cx5zJ0KC+lJejL7oFERc+4qjU
+        EBjWnuQdsSDTm9H4CDWoj3PpE6gdcIaEHxWtPPen6IJpL0t9xOKmFCJuqwSDQBJvMq9paG
+        6lJ73oAunEESp0wmx4lxUCO4/b3wnn0=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-8-uafwPPMeNIyDl-sRA6BA8g-1; Thu, 25 Aug 2022 02:41:49 -0400
+X-MC-Unique: uafwPPMeNIyDl-sRA6BA8g-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BDD461C05153;
+        Thu, 25 Aug 2022 06:41:48 +0000 (UTC)
+Received: from oldenburg.str.redhat.com (unknown [10.39.192.36])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id BAC4A492CA5;
+        Thu, 25 Aug 2022 06:41:43 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Alejandro Colomar <alx.manpages@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Alex Colomar <alx@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        linux-man <linux-man@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Zack Weinberg <zackw@panix.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        glibc <libc-alpha@sourceware.org>, GCC <gcc-patches@gcc.gnu.org>,
+        bpf <bpf@vger.kernel.org>, LTP List <ltp@lists.linux.it>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        Joseph Myers <joseph@codesourcery.com>,
+        Cyril Hrubis <chrubis@suse.cz>,
+        David Howells <dhowells@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>, Rich Felker <dalias@libc.org>,
+        Adhemerval Zanella <adhemerval.zanella@linaro.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH v3] Many pages: Document fixed-width types with ISO C
+ naming
+References: <20210423230609.13519-1-alx.manpages@gmail.com>
+        <20220824185505.56382-1-alx.manpages@gmail.com>
+        <CAADnVQKiEVL9zRtN4WY2+cTD2b3b3buV8BQb83yQw13pWq4OGQ@mail.gmail.com>
+        <c06008bc-0c13-12f1-df85-3814b74e47f9@gmail.com>
+        <YwcPQ987poRYjfoL@kroah.com>
+Date:   Thu, 25 Aug 2022 08:41:41 +0200
+In-Reply-To: <YwcPQ987poRYjfoL@kroah.com> (Greg Kroah-Hartman's message of
+        "Thu, 25 Aug 2022 07:57:23 +0200")
+Message-ID: <87ilmgddui.fsf@oldenburg.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.85 on 10.11.54.9
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Lam Thai wrote:
-> When `data` points to a boolean value, casting it to `int *` is problematic
-> and could lead to a wrong value being passed to `jsonw_bool`. Change the
-> cast to `bool *` instead.
+* Greg Kroah-Hartman:
 
-How is it problematic? Its from BTF_KIND_INT by my quick reading.
+> On Thu, Aug 25, 2022 at 01:36:10AM +0200, Alejandro Colomar wrote:
+>> But from your side what do we have?  Just direct NAKs without much
+>> explanation.  The only one who gave some explanation was Greg, and he
+>> vaguely pointed to Linus's comments about it in the past, with no precise
+>> pointer to it.  I investigated a lot before v2, and could not find anything
+>> strong enough to recommend using kernel types in user space, so I pushed v2,
+>> and the discussion was kept.
+>
+> So despite me saying that "this is not ok", and many other maintainers
+> saying "this is not ok", you applied a patch with our objections on it?
+> That is very odd and a bit rude.
 
-> 
-> Fixes: b12d6ec09730 ("bpf: btf: add btf print functionality")
-> Signed-off-by: Lam Thai <lamthai@arista.com>
-> ---
+The justifications brought forward are just regurgitating previous
+misinformation.  If you do that, it's hard to take you seriously.
 
-for bpf-next looks like a nice cleanup, I don't think its needed for bpf
-tree?
+There is actually a good reason for using __u64: it's always based on
+long long, so the format strings are no longer architecture-specific,
+and those ugly macro hacks are not needed to achieve portability.  But
+that's really the only reason I'm aware of.  Admittedly, it's a pretty
+good reason.
 
->  tools/bpf/bpftool/btf_dumper.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/bpf/bpftool/btf_dumper.c b/tools/bpf/bpftool/btf_dumper.c
-> index 125798b0bc5d..19924b6ce796 100644
-> --- a/tools/bpf/bpftool/btf_dumper.c
-> +++ b/tools/bpf/bpftool/btf_dumper.c
-> @@ -452,7 +452,7 @@ static int btf_dumper_int(const struct btf_type *t, __u8 bit_offset,
->  					     *(char *)data);
->  		break;
->  	case BTF_INT_BOOL:
-> -		jsonw_bool(jw, *(int *)data);
-> +		jsonw_bool(jw, *(bool *)data);
->  		break;
->  	default:
->  		/* shouldn't happen */
-> 
-> base-commit: 6fc2838b148f8fe6aa14fc435e666984a0505018
-> -- 
-> 2.37.0
-> 
+>> I would like that if you still oppose to the patch, at least were able to
+>> provide some facts to this discussion.
+>
+> The fact is that the kernel can not use the namespace that userspace has
+> with ISO C names.  It's that simple as the ISO standard does NOT
+> describe the variable types for an ABI that can cross the user/kernel
+> boundry.
 
+You cannot avoid using certain ISO C names with current GCC or Clang,
+however hard you try.  But currently, the kernel does not try at all,
+not really: it is not using -ffreestanding and -fno-builtin, at least
+not consistently.  This means that if the compiler sees a known function
+(with the right name and a compatible prototype), it will optimize based
+on that.  What kind of headers you use does not matter.
+
+<stdarg.h>, <stddef.h>, <stdint.h> are compiler-provided headers that
+are designed to be safe to use for bare-metal contexts (like in
+kernels).  Avoiding them is not necessary per se.  However, <stdint.h>
+is not particularly useful if you want to use your own printf-style
+functions with the usual format specifiers (see above for __u64).  But
+on its own, it's perfectly safe to use.  You have problems with
+<stdint.h> *because* you use well-known, standard facilities in kernel
+space (the printf format specifiers), not because you avoid them.  So
+exactly the opposite of what you say.
+
+> But until then, we have to stick to our variable name types,
+> just like all other operating systems have to (we are not alone here.)
+
+FreeBSD uses <stdint.h> and the <inttypes.h> formatting macros in kernel
+space.  I don't think that's unusual at all for current kernels.  It's
+particularly safe for FreeBSD because they use a monorepo and toolchain
+variance among developers is greatly reduced.  Linux would need to
+provide its own <inttypes.h> equivalent for the formatting macros
+(as it's not a compiler header; FreeBSD has <machine/_inttypes.h>).
+
+At this point and with the current ABIs we have for Linux, it makes
+equal (maybe more) sense to avoid the <stdint.h> types altogether and
+use Linux-specific typedefs with have architecture-independent format
+strings.
+
+Thanks,
+Florian
 
