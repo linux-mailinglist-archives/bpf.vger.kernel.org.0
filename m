@@ -2,70 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAA175A0722
-	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 04:07:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6708A5A0725
+	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 04:09:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231995AbiHYCGv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Aug 2022 22:06:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35756 "EHLO
+        id S230038AbiHYCJb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Aug 2022 22:09:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235847AbiHYCGr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Aug 2022 22:06:47 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13B4370E75;
-        Wed, 24 Aug 2022 19:06:44 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id gb36so36804768ejc.10;
-        Wed, 24 Aug 2022 19:06:44 -0700 (PDT)
+        with ESMTP id S229510AbiHYCJ3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Aug 2022 22:09:29 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E901177EA7;
+        Wed, 24 Aug 2022 19:09:26 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id v14so304724ejf.9;
+        Wed, 24 Aug 2022 19:09:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc;
-        bh=8TqByloDSlg58SemH92k8gPZuSCHkGBcxDf5SmwhPCg=;
-        b=oNo1F4J3UTDT7c5gLaH/OTw09gC57RIJqxzNRsrUZZII6M7TNutIoXPX8rESxE725N
-         s/GJ2mqQ+kwIMa6NTbY2AGNRXV9tB9aXiifrLcQ6xN18hjX5D6yehUtR0e5ZgY/5u8sc
-         2FnfZ2zyMp6UDJpmzths3h3wJzyEqAmipT7+Bx82sXNL3rhgUrqkJN+g415YEdVCBv1X
-         aeHU6yer3QWcgQ2TiGXnHzCTuAcc3jp3+pZvdx/IfYgXScqSsPIOdopEDc2qNQ3UuVXT
-         GMkHEtBx9Hi6s0qFE91dzCxibKNdT4mtz4vPI4iLK51fKANjyQIIVaUaRHjWVmTNPkWh
-         BJVg==
+        bh=00m4IEZE5ymczAS2BUKtiJ+vi+Xy5c2+SWdERk9o0Uk=;
+        b=XUIvvDE9rb07vRHUIuRXdPojnd2u+LRkrd7NUXqdJbASQ4pc6DJzy1xL27y/fUIJUu
+         DFYkYSy6vJBh0vjTngR/JYHMFgUYkz5ovrKbIfQ8ti/UNB5X0bAuLknVM3I8dqTySI8v
+         aNC6NnXT/bwq7HVDnRjWcviT4NyxzbZ5SyY+msV1T/13fvAiJ/4o5WPyIoHrVBf2AzT+
+         VUj1v3TLgjGH9VKySxCO5hYoVGQ1RgGzPDgWUzMh7irERe68LMD3qrFdvxKsjOfCAyzp
+         YYjSL2ZzkeY/7L/XxhzTJEopLxiUfMRZNunwMvNXZ/v63LwTj8PXPJm/1aESeSwdrVHp
+         LJzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc;
-        bh=8TqByloDSlg58SemH92k8gPZuSCHkGBcxDf5SmwhPCg=;
-        b=BUCN95KOVhJIrdDKHoZSm/EhJ/1+mGFPQOJYYXYrqjPK5DGCX1+5CjOCNzSgom8gBY
-         XPk6AIfXleWmJEFrR/JBYm6k0T+vxuLwXvAGiMD4Q67oZzPhPr3n62cDcFxDn6uTr+KF
-         uRg5J3MXcNTgScOTC4sxTv+FCdT4I9/NO2NOPV6Z6Y+3kPC8XBZoWBON6r6xsBDjqpFa
-         d5rxn1oYbk7JAX0MFmCQ5v5vhNrp1/ktDGCvLi+H5aBWuP5GMdbkGaT5KtZEt2Qjm1FV
-         hcR6WRic7W1IKh1ulWQ2P34j9DGnqe1E6Sx7h9XZdByW6wlfCppybu/ug/6KEgv7T65V
-         pggA==
-X-Gm-Message-State: ACgBeo2M4wrwnzpwBAR0k6az42dVPvxNoU5HsUVIYe77qihWisdW20zQ
-        f2o9cMMyActUvjqQHwvp9Or4IPJF0si7OzQhQEhAkTOS
-X-Google-Smtp-Source: AA6agR4w1XFfUtQqz2s80F9c4wcXWZEgspoKiLx5nqgvgPh1tJLYQVWFC+OqrXbYjSnIUMwe7aXCnJ7IkXrUgYwPeJI=
-X-Received: by 2002:a17:907:2896:b0:730:983c:4621 with SMTP id
- em22-20020a170907289600b00730983c4621mr1026272ejc.502.1661393203311; Wed, 24
- Aug 2022 19:06:43 -0700 (PDT)
+        bh=00m4IEZE5ymczAS2BUKtiJ+vi+Xy5c2+SWdERk9o0Uk=;
+        b=bcVRjaqaOeR196JXGOrH6ZALBNRi/TIzpIWrTDh3s3CqUqkttpgz2JXRrZaoqdpVLf
+         eF9mPvvixrq8wIB2L0wEzXOxOwIRga3yKZVzQ77SBUXiAalIIlSdrBla/9Hqn06tYjVT
+         oNkQcmmqm/+glqPghQy7ihva8L8e5gr/Qc8OqbS5vrmfrcDkNQL0qSyg1002alpetivl
+         AoWnhFPNpCWB1WFC3dQTi6UxW5kkSFOMYZgb2P74Qigg6uPhwfTQ1lyPVO6Vfm8yHrkf
+         XwdGBLHmeFii5hBJLzGV0BBUeozFa//uy2wSYjJ8dat6h0ZvMtMoWh/hNIdwMTSr1T11
+         28iw==
+X-Gm-Message-State: ACgBeo3NowmSEiPOL2qm7jr0kNt6QVpuX42o8T4AtVRgY4pqGjJ9UJ11
+        WKO6u0Vk/FLtFJ3VZfRVpy4U/toSq1FEpyR09qo=
+X-Google-Smtp-Source: AA6agR5xH7PowIkM6L2EPJHlcPwZQ+/IQSpb5qiBAaqANQh5nn5ml1VAKGhwbX4ol5FQeupFXspuRSe02UTSkDWsL20=
+X-Received: by 2002:a17:906:3a15:b0:73d:80bf:542c with SMTP id
+ z21-20020a1709063a1500b0073d80bf542cmr972895eje.633.1661393365478; Wed, 24
+ Aug 2022 19:09:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220824110632.1592592-1-eyal.birger@gmail.com> <166136161501.22569.15129561246366098327.git-patchwork-notify@kernel.org>
-In-Reply-To: <166136161501.22569.15129561246366098327.git-patchwork-notify@kernel.org>
+References: <20220824233117.1312810-1-haoluo@google.com> <20220824233117.1312810-6-haoluo@google.com>
+In-Reply-To: <20220824233117.1312810-6-haoluo@google.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 24 Aug 2022 19:06:32 -0700
-Message-ID: <CAADnVQKeaFwU_f9WYMh91HwLuU4NJnmM5OW9dLfq9sXuB6_kbw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next,v3] selftests/bpf: add lwt ip encap tests to test_progs
-To:     patchwork-bot+netdevbpf@kernel.org
-Cc:     Eyal Birger <eyal.birger@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
+Date:   Wed, 24 Aug 2022 19:09:14 -0700
+Message-ID: <CAADnVQKC_USyXe1RyWL+EY0q=x=c88opvPW-rWZ5znGJOq63CQ@mail.gmail.com>
+Subject: Re: [RESEND PATCH bpf-next v9 5/5] selftests/bpf: add a selftest for
+ cgroup hierarchical stats collection
+To:     Hao Luo <haoluo@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <martin.lau@linux.dev>,
         Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
         KP Singh <kpsingh@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>, Michal Koutny <mkoutny@suse.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        David Rientjes <rientjes@google.com>,
         Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
+        Shakeel Butt <shakeelb@google.com>,
+        Yosry Ahmed <yosryahmed@google.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -77,32 +83,45 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 24, 2022 at 10:20 AM <patchwork-bot+netdevbpf@kernel.org> wrote:
->
-> Hello:
->
-> This patch was applied to bpf/bpf-next.git (master)
-> by Daniel Borkmann <daniel@iogearbox.net>:
->
-> On Wed, 24 Aug 2022 14:06:32 +0300 you wrote:
-> > Port test_lwt_ip_encap.sh tests onto test_progs.
-> >
-> > In addition, this commit adds "egress_md" tests which test a similar
-> > flow as egress tests only they use gre devices in collect_md mode
-> > for encapsulation and set the tunnel key using bpf_set_tunnel_key().
-> >
-> > This introduces minor changes to the test setup and test_lwt_ip_encap.c:
-> >
-> > [...]
->
-> Here is the summary with links:
->   - [bpf-next,v3] selftests/bpf: add lwt ip encap tests to test_progs
->     https://git.kernel.org/bpf/bpf-next/c/a8df1b0636af
->
-> You are awesome, thank you!
+On Wed, Aug 24, 2022 at 4:31 PM Hao Luo <haoluo@google.com> wrote:
+> +
+> +       for (i = 0; i < N_CGROUPS; i++) {
+> +               fd = create_and_get_cgroup(cgroups[i].path);
+> +               if (!ASSERT_GE(fd, 0, "create_and_get_cgroup"))
+> +                       return fd;
+> +
+> +               cgroups[i].fd = fd;
+> +               cgroups[i].id = get_cgroup_id(cgroups[i].path);
+> +
+> +               /*
+> +                * Enable memcg controller for the entire hierarchy.
+> +                * Note that stats are collected for all cgroups in a hierarchy
+> +                * with memcg enabled anyway, but are only exposed for cgroups
+> +                * that have memcg enabled.
+> +                */
+> +               if (i < N_NON_LEAF_CGROUPS) {
+> +                       err = enable_controllers(cgroups[i].path, "memory");
+> +                       if (!ASSERT_OK(err, "enable_controllers"))
+> +                               return err;
+> +               }
+> +       }
 
-Sorry. I had to revert this patch.
-It added 1 min 40 seconds to test_progs that I manually run
-every time I apply patches.
-Essentially it doubled the test_progs run-time.
-Please find a way to test the same functionality in a few seconds.
+It passes BPF CI, but fails in my setup with:
+
+# ./test_progs -t cgroup_hier -vv
+bpf_testmod.ko is already unloaded.
+Loading bpf_testmod.ko...
+Successfully loaded bpf_testmod.ko.
+setup_bpffs:PASS:mount 0 nsec
+setup_cgroups:PASS:setup_cgroup_environment 0 nsec
+setup_cgroups:PASS:get_root_cgroup 0 nsec
+setup_cgroups:PASS:create_and_get_cgroup 0 nsec
+(cgroup_helpers.c:92: errno: No such file or directory) Enabling
+controller memory:
+/mnt/cgroup-test-work-dir6526//test/cgroup.subtree_control
+setup_cgroups:FAIL:enable_controllers unexpected error: 1 (errno 2)
+cleanup_bpffs:FAIL:rmdir /sys/fs/bpf/vmscan/ unexpected error: -1 (errno 2)
+#36      cgroup_hierarchical_stats:FAIL
+Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
+
+How do I debug it?
