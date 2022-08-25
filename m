@@ -2,154 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ACCA5A0772
-	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 04:45:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0E535A077B
+	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 04:53:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231289AbiHYCmU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Aug 2022 22:42:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59930 "EHLO
+        id S232160AbiHYCxH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Aug 2022 22:53:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232355AbiHYCmI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Aug 2022 22:42:08 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A30699E0E3
-        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 19:41:59 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id c187-20020a1c35c4000000b003a30d88fe8eso1906190wma.2
-        for <bpf@vger.kernel.org>; Wed, 24 Aug 2022 19:41:59 -0700 (PDT)
+        with ESMTP id S232051AbiHYCxG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Aug 2022 22:53:06 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39F439CCD2;
+        Wed, 24 Aug 2022 19:53:06 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id r69so16697173pgr.2;
+        Wed, 24 Aug 2022 19:53:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=doFUHdVPTABkZsDuf0MJLhPZVm+o4dycrmtaBb1zaGg=;
-        b=ljEZc6yMBm22SLRA96eNiZ8zgNwa6AiCs/mIj4MH8Lu0ITLXCDbw1rPAThOIFT6Hls
-         ospWapMqLKqRDIfRiC+dCGUxBR5sBvXQ26YTcthtauabE4uJitMLdbltOEAcI4UYmaD8
-         j1f06IYOrOaeiFBdUe+UDv9Lah3WVcDkkdi7vs8AauhaW43RVxrNEy24rmWtaAHHHM+u
-         h7B3HLp+8WRyddXXmzTHtWjnkO1iV1aa6u2vo0XFu1N8LA90hsMIcwYJkyIP72cSCzHn
-         Oy6w8nNGH41msDEU6rjbzxVYJQG80prf38WQ/d2GRWv/I5OlSZFlOdPtahy7/ehSx+7F
-         8fAg==
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc;
+        bh=ZBRn3glusYyDDS6wNhVu2goiaQqoWM1kcfMmuuxqfeo=;
+        b=MPAY3R16cIl2HRQO0QjpATwvz0RbCN/3Oxj+pPn5MM8V8xA2H4ipSi8OnNAnaswXlT
+         E4rI3X57BYoJeGQ9kQ2JDf4Ci0JVCQoYjfHG/lgQjwiWv+9x8YdxzeHawlD8QxC/8qBq
+         EGPYi8hgbB3Yy+M7wvDqpiIiGnrNC4bMz6TKpIbNvAMFJNFywMw2SiSTY+Vu6sNkN8ZD
+         igO2r+RUqlQ19SlqFs4QEwN+msWM39iffaA/ttpZk0cBOqz6TcF6zaWzOl0+FFlmBty6
+         1GrNnZ2UEF6DIMiQw+lvkxuV9jPR5VS0QYNCy4GA1d4vkctOUFbv3hQfaxplYJwPJwOD
+         nsMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=doFUHdVPTABkZsDuf0MJLhPZVm+o4dycrmtaBb1zaGg=;
-        b=7ufZKK4hYzGWXVaolPKUbzQPplo5Y+jC6GOmqb7aVDu7mvcTdzcT2lWK6KeyK2cS6r
-         1oerOfQOfnMhTPgR1QXRJUXAMxdsmSDyZpIDoSSRFMJRK8+M+fKsgUN6I3K4ZZ90r4Ao
-         QTHCGhAQETZQaqk291gbJG1JxgllTMd0iMJLVbzl/6C5kQT6EHXIws3dsC9r/g5uRG15
-         Zdl3x+pReQ3ipQmtFqayTtkRMOp3+uHpEfWceRl4KgVE1oEs3rTSml43IpJ3I8qEKoU8
-         8a5vsY6iur2NIZZfQc0kegw6G4chx0lN8f5e1+wl7OL+W3SG798waAm18SEO+sE45vXn
-         2Gjw==
-X-Gm-Message-State: ACgBeo0RXGj3h3Bfxbao88R7DYCP6tFVfNgHg4kro3HL1cJLi4dup19L
-        dAYZeCBDissqHit54q643C8aGLdNuxOTTvOkXLqjVQ==
-X-Google-Smtp-Source: AA6agR5GPEqqnND+ToMCQEGITdPdIK1ZE/Wm2wUBTGxdKJhYUMI7lrl6GTXYj8E7Tr2c5EbngEn6ZtlnS1UXQr145V8=
-X-Received: by 2002:a05:600c:1e05:b0:3a5:b441:e9c with SMTP id
- ay5-20020a05600c1e0500b003a5b4410e9cmr794100wmb.24.1661395317923; Wed, 24 Aug
- 2022 19:41:57 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220824233117.1312810-1-haoluo@google.com> <20220824233117.1312810-6-haoluo@google.com>
- <CAADnVQKC_USyXe1RyWL+EY0q=x=c88opvPW-rWZ5znGJOq63CQ@mail.gmail.com>
-In-Reply-To: <CAADnVQKC_USyXe1RyWL+EY0q=x=c88opvPW-rWZ5znGJOq63CQ@mail.gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Wed, 24 Aug 2022 19:41:21 -0700
-Message-ID: <CAJD7tkZGxkV8_3qNy_Q=k-DT2=aGknzT08WiVtESpzur1JxCwA@mail.gmail.com>
-Subject: Re: [RESEND PATCH bpf-next v9 5/5] selftests/bpf: add a selftest for
- cgroup hierarchical stats collection
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Hao Luo <haoluo@google.com>, LKML <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc;
+        bh=ZBRn3glusYyDDS6wNhVu2goiaQqoWM1kcfMmuuxqfeo=;
+        b=PiG/FXj0DfEK65Jgw0PJlkQGjFcnccA9nfbBAID/DASLs66EREIKRvJXvZ1m0h13JA
+         PBN/UgGBQ4XcLs0yakpw48FzvJkBLkvYt/vmV6EjTdG5AnYmyoRgEIXdeTxTJymfNU9c
+         HDGpBRsGIJStzGj9OWSHpmzweOibNE/B3YqxgS8qTSoRKelWR61sTf/td1pMOp+wppGF
+         IZDACT3be2eDuxt3E3GLM73cTJEJKu0ayxBiLYR1YMI5pfLlltmXaFK6LW4lIjYULnlB
+         E3YIbd6xA5mN4PDcX3uWfAyR7OP6wLXNFR1FGyIGVOaa9p4gZx0ZY0mt+CNTZqwgtrc4
+         kA1w==
+X-Gm-Message-State: ACgBeo39xET9po7cldyGjZ9EwUOHdGw5Z73RFZjDOpgW+SVwXX7ylYUh
+        fTtxIa/HVv4BQlnM8YqyTSU=
+X-Google-Smtp-Source: AA6agR5Q0ST3Yu6ZCFGqnW+CQmNOuUqjcWQ4lT5jynnps9v76ptvuDUKqgDW5F7Vj338dAtgMAQa3Q==
+X-Received: by 2002:a65:6b8e:0:b0:42a:162c:e3a0 with SMTP id d14-20020a656b8e000000b0042a162ce3a0mr1539015pgw.464.1661395985677;
+        Wed, 24 Aug 2022 19:53:05 -0700 (PDT)
+Received: from debian.me (subs32-116-206-28-33.three.co.id. [116.206.28.33])
+        by smtp.gmail.com with ESMTPSA id qi3-20020a17090b274300b001f3162e4e55sm2170817pjb.35.2022.08.24.19.53.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Aug 2022 19:53:05 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id 8E1C9103C07; Thu, 25 Aug 2022 09:53:00 +0700 (WIB)
+Date:   Thu, 25 Aug 2022 09:52:59 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Jiri Kosina <jikos@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>, Michal Koutny <mkoutny@suse.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        David Rientjes <rientjes@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Shakeel Butt <shakeelb@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Joe Stringer <joe@cilium.io>, Jonathan Corbet <corbet@lwn.net>,
+        Tero Kristo <tero.kristo@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH bpf-next v7 24/24] Documentation: add HID-BPF docs
+Message-ID: <YwbkC9v83gk0Eq/d@debian.me>
+References: <20220721153625.1282007-1-benjamin.tissoires@redhat.com>
+ <20220721153625.1282007-25-benjamin.tissoires@redhat.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="fd9AMyEzaCZxSJic"
+Content-Disposition: inline
+In-Reply-To: <20220721153625.1282007-25-benjamin.tissoires@redhat.com>
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 24, 2022 at 7:09 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Wed, Aug 24, 2022 at 4:31 PM Hao Luo <haoluo@google.com> wrote:
-> > +
-> > +       for (i = 0; i < N_CGROUPS; i++) {
-> > +               fd = create_and_get_cgroup(cgroups[i].path);
-> > +               if (!ASSERT_GE(fd, 0, "create_and_get_cgroup"))
-> > +                       return fd;
-> > +
-> > +               cgroups[i].fd = fd;
-> > +               cgroups[i].id = get_cgroup_id(cgroups[i].path);
-> > +
-> > +               /*
-> > +                * Enable memcg controller for the entire hierarchy.
-> > +                * Note that stats are collected for all cgroups in a hierarchy
-> > +                * with memcg enabled anyway, but are only exposed for cgroups
-> > +                * that have memcg enabled.
-> > +                */
-> > +               if (i < N_NON_LEAF_CGROUPS) {
-> > +                       err = enable_controllers(cgroups[i].path, "memory");
-> > +                       if (!ASSERT_OK(err, "enable_controllers"))
-> > +                               return err;
-> > +               }
-> > +       }
->
-> It passes BPF CI, but fails in my setup with:
->
-> # ./test_progs -t cgroup_hier -vv
-> bpf_testmod.ko is already unloaded.
-> Loading bpf_testmod.ko...
-> Successfully loaded bpf_testmod.ko.
-> setup_bpffs:PASS:mount 0 nsec
-> setup_cgroups:PASS:setup_cgroup_environment 0 nsec
-> setup_cgroups:PASS:get_root_cgroup 0 nsec
-> setup_cgroups:PASS:create_and_get_cgroup 0 nsec
-> (cgroup_helpers.c:92: errno: No such file or directory) Enabling
-> controller memory:
-> /mnt/cgroup-test-work-dir6526//test/cgroup.subtree_control
-> setup_cgroups:FAIL:enable_controllers unexpected error: 1 (errno 2)
-> cleanup_bpffs:FAIL:rmdir /sys/fs/bpf/vmscan/ unexpected error: -1 (errno 2)
-> #36      cgroup_hierarchical_stats:FAIL
-> Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
->
-> How do I debug it?
 
-The failure with ENOENT happens when we try to write "+memory" to
-/mnt/cgroup-test-work-dir6526//test/cgroup.subtree_control, not when
-we try to open it. So the file is there. AFAICT, ENOENT can be
-returned from this write if the memory controller is not enabled on
-this cgroup.
+--fd9AMyEzaCZxSJic
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-In setup_cgroup_environment(), we should be enabling all available
-controllers on /mnt and /mnt/cgroup-test-work-dir6526 by this line:
+On Thu, Jul 21, 2022 at 05:36:25PM +0200, Benjamin Tissoires wrote:
+> +When (and why) to use HID-BPF
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+> +
+> +We can enumerate several use cases for when using HID-BPF is better than
+> +using a standard kernel driver fix:
+> +
 
-        if (__enable_controllers(CGROUP_MOUNT_PATH, NULL) ||
-              __enable_controllers(cgroup_workdir, NULL))
-                  return 1;
+Better say "There are several use cases when using HID-BPF is better
+than standard kernel driver fix:"
 
-The first thing that comes to mind is that maybe the memory controller
-is not enabled on your setup at all? Can you check
-/sys/fs/cgroup/cgroup.controllers (or wherever your global cgroup
-mount is)?
+> +When a BPF program needs to emit input events, it needs to talk HID, and=
+ rely
+> +on the HID kernel processing to translate the HID data into input events.
+> +
 
-I don't know much about namespaces, so I am not sure if the privately
-mounted /mnt directory here would be the same as the cgroup root or
-not. Maybe we can add a pause() somewhere and check
-/mnt/cgroup.controllers as well?
+talk to HID?
+
+Otherwise the documentation LGTM (no new warnings caused by the doc).
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--fd9AMyEzaCZxSJic
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCYwbkBwAKCRD2uYlJVVFO
+oz3rAQCgczCdX57yjfzPE8zpu9jiwd33nPbcTmawxaCDNeO/owEAgYmMVll2dF0j
+zQo9yKz4+kiQWQNTPR3m6sXcj3WDsQU=
+=Ww1R
+-----END PGP SIGNATURE-----
+
+--fd9AMyEzaCZxSJic--
