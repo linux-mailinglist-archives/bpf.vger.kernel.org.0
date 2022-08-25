@@ -2,75 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49DAB5A0863
-	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 07:16:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E9985A0890
+	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 07:57:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233348AbiHYFQm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Aug 2022 01:16:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42208 "EHLO
+        id S233537AbiHYF5S (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Aug 2022 01:57:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229642AbiHYFQl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Aug 2022 01:16:41 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 870CC9E697;
-        Wed, 24 Aug 2022 22:16:40 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id w28so14438341qtc.7;
-        Wed, 24 Aug 2022 22:16:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=/IezxT3YpP/ZjkPS+Sq1V7sUV/YNLeMEPS9rX6LVw9Q=;
-        b=UkOOJVih0dAjblIhangVtEHpzEmp4UPcqY6Jw4xE2aaNGGq2l77AtJAVTUqUrFwKht
-         G139yS8e6ugVaSeXJNnI3oAejgh7RwSHiurVUfkTf2AO0JhM5CmWg3AePjLa/pBnAw2w
-         Sr5W8zL5xdCDO2QbW29tt9xLbwyh/u6EmNcXJbTlN4ebBSlGpkwRRj8l8HOIGAyUPOxS
-         eMM52r0/u5aniYyAMEX9rdzEUKuM006h+f20jZ10Kj0L59aHy3WoF63Sh0r/lMxy6AUN
-         /4Szbh9fmnx2XiQIRZgkeHzZrF7SAV8DDtcEc/Y0wxC+z2e2i1fmJuxTfGv1euLwITmO
-         bcLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=/IezxT3YpP/ZjkPS+Sq1V7sUV/YNLeMEPS9rX6LVw9Q=;
-        b=Frsg4vkoif/WLlfucV5Wc5C9IO39qGl4okbO53Y0tIxCvbPHN5V0B+sw/JONjofYmn
-         Mk6As4AZmJYa8NtYzTI3b8xfGLiBJtxOBe/CWLbP1RvfBtj92huw0WALH8FEgqFY50+w
-         T6prDfui6JgFH5c7XjHeaxWlX/lWtpFqJublA1doV8vMQgHxoJoQu4C0MRMBAyxgPxZF
-         CZQjb2CR4k6T0i2mbkaAQgO9z/GrBfCZlFpomay569wceSw5f3cf/hclq3PlT6PsJ6wW
-         qqSRi9KdEoOlt7u8Yo5rkQI5j/6xeVX0aafSH5yXfpRxXA/5ArblQjDkJoXZblTPRx5q
-         urUg==
-X-Gm-Message-State: ACgBeo3MyfzbKAhi34XJwCP3i/7qV71am1Q5/0hH0ihn8TeknXbxfNno
-        jET881dUldtiyH7mXZFpiPFncR2thxJr2+9Ld9s=
-X-Google-Smtp-Source: AA6agR7dbvdf53Ku9mgcjUs4w/KuJACzIcGua7jYnSSH0TxPDmQdTjWK2m3y3o+6vlS9a275sNagDjSQn0pOZNAGvxE=
-X-Received: by 2002:ac8:7fc5:0:b0:343:681d:c3fb with SMTP id
- b5-20020ac87fc5000000b00343681dc3fbmr2273958qtk.157.1661404599568; Wed, 24
- Aug 2022 22:16:39 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220824110632.1592592-1-eyal.birger@gmail.com>
- <166136161501.22569.15129561246366098327.git-patchwork-notify@kernel.org> <CAADnVQKeaFwU_f9WYMh91HwLuU4NJnmM5OW9dLfq9sXuB6_kbw@mail.gmail.com>
-In-Reply-To: <CAADnVQKeaFwU_f9WYMh91HwLuU4NJnmM5OW9dLfq9sXuB6_kbw@mail.gmail.com>
-From:   Eyal Birger <eyal.birger@gmail.com>
-Date:   Thu, 25 Aug 2022 08:16:29 +0300
-Message-ID: <CAHsH6GvRyRiQ3KWN49b6aKRZuubHqqdD=B1BBjiczg3XsaH-kA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next,v3] selftests/bpf: add lwt ip encap tests to test_progs
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     patchwork-bot+netdevbpf@kernel.org,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
+        with ESMTP id S231853AbiHYF5R (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Aug 2022 01:57:17 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B95499F197;
+        Wed, 24 Aug 2022 22:57:14 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 6DF82B826A7;
+        Thu, 25 Aug 2022 05:57:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E63CC433C1;
+        Thu, 25 Aug 2022 05:57:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1661407032;
+        bh=BzxcFbEfQ/Yeo0E0e2sHS9CwVB1n9JHMHeKD1IhcYQE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WEt6QVjfJvyXaIx6HafON24CGsg9kBIx410clN6sJBNxvMYqYT3t69Qvv8fUydCii
+         VOwmEd+zP/S8e5fTVek0cwEzoI7qPe3LRWV7/keV37Vli2wwYtB4pRJJqPwFYcThG8
+         Wop0557JL/SJdBKCbpMCKDMgvC3WMpgcPTgoiaFA=
+Date:   Thu, 25 Aug 2022 07:57:23 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Alejandro Colomar <alx.manpages@gmail.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Alex Colomar <alx@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
+        linux-man <linux-man@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        Zack Weinberg <zackw@panix.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        glibc <libc-alpha@sourceware.org>, GCC <gcc-patches@gcc.gnu.org>,
+        bpf <bpf@vger.kernel.org>, LTP List <ltp@lists.linux.it>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        Joseph Myers <joseph@codesourcery.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Cyril Hrubis <chrubis@suse.cz>,
+        David Howells <dhowells@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>, Rich Felker <dalias@libc.org>,
+        Adhemerval Zanella <adhemerval.zanella@linaro.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH v3] Many pages: Document fixed-width types with ISO C
+ naming
+Message-ID: <YwcPQ987poRYjfoL@kroah.com>
+References: <20210423230609.13519-1-alx.manpages@gmail.com>
+ <20220824185505.56382-1-alx.manpages@gmail.com>
+ <CAADnVQKiEVL9zRtN4WY2+cTD2b3b3buV8BQb83yQw13pWq4OGQ@mail.gmail.com>
+ <c06008bc-0c13-12f1-df85-3814b74e47f9@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c06008bc-0c13-12f1-df85-3814b74e47f9@gmail.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,41 +72,31 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Aug 25, 2022 at 5:06 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Wed, Aug 24, 2022 at 10:20 AM <patchwork-bot+netdevbpf@kernel.org> wrote:
-> >
-> > Hello:
-> >
-> > This patch was applied to bpf/bpf-next.git (master)
-> > by Daniel Borkmann <daniel@iogearbox.net>:
-> >
-> > On Wed, 24 Aug 2022 14:06:32 +0300 you wrote:
-> > > Port test_lwt_ip_encap.sh tests onto test_progs.
-> > >
-> > > In addition, this commit adds "egress_md" tests which test a similar
-> > > flow as egress tests only they use gre devices in collect_md mode
-> > > for encapsulation and set the tunnel key using bpf_set_tunnel_key().
-> > >
-> > > This introduces minor changes to the test setup and test_lwt_ip_encap.c:
-> > >
-> > > [...]
-> >
-> > Here is the summary with links:
-> >   - [bpf-next,v3] selftests/bpf: add lwt ip encap tests to test_progs
-> >     https://git.kernel.org/bpf/bpf-next/c/a8df1b0636af
-> >
-> > You are awesome, thank you!
->
-> Sorry. I had to revert this patch.
-> It added 1 min 40 seconds to test_progs that I manually run
-> every time I apply patches.
-> Essentially it doubled the test_progs run-time.
-> Please find a way to test the same functionality in a few seconds.
+On Thu, Aug 25, 2022 at 01:36:10AM +0200, Alejandro Colomar wrote:
+> But from your side what do we have?  Just direct NAKs without much
+> explanation.  The only one who gave some explanation was Greg, and he
+> vaguely pointed to Linus's comments about it in the past, with no precise
+> pointer to it.  I investigated a lot before v2, and could not find anything
+> strong enough to recommend using kernel types in user space, so I pushed v2,
+> and the discussion was kept.
 
-Sorry about that! I ported some of the delays from the original script
-in an effort to improve robustness which is probably the bulk of the run time.
-I'll find a different approach.
+So despite me saying that "this is not ok", and many other maintainers
+saying "this is not ok", you applied a patch with our objections on it?
+That is very odd and a bit rude.
 
-Eyal.
+> I would like that if you still oppose to the patch, at least were able to
+> provide some facts to this discussion.
+
+The fact is that the kernel can not use the namespace that userspace has
+with ISO C names.  It's that simple as the ISO standard does NOT
+describe the variable types for an ABI that can cross the user/kernel
+boundry.
+
+Work with the ISO C standard if you wish to document such type usage,
+and get it approved and then we would be willing to consider such a
+change.  But until then, we have to stick to our variable name types,
+just like all other operating systems have to (we are not alone here.)
+
+Please revert your change.
+
+greg k-h
