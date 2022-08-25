@@ -2,136 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E7695A10C4
-	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 14:40:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7C785A116F
+	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 15:04:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241994AbiHYMkz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Aug 2022 08:40:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58214 "EHLO
+        id S242159AbiHYNEu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Aug 2022 09:04:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242014AbiHYMkv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Aug 2022 08:40:51 -0400
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E4C34BA50
-        for <bpf@vger.kernel.org>; Thu, 25 Aug 2022 05:40:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=k1; bh=aZqNW6W08ih6JS2IUvIIZiIqCV3W
-        gHPNwpTFgHstyik=; b=m2WPERIsCK59vBzWco9kmFaJ/EdlAkSDaOmQX21n+pUB
-        hY77VM8gyKz77N60QfRJXv+nVVZTH7hJ2o86ZUFrXv0a3Rr1uHAgMa3by4QVdlVX
-        IyUWRuZwcj0lfbdsiCZB/p6+2IOScAleePiChPOJEQTOOwHUaYYjG8RzipR6m8s=
-Received: (qmail 2687725 invoked from network); 25 Aug 2022 14:40:29 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 25 Aug 2022 14:40:29 +0200
-X-UD-Smtp-Session: l3s3148p1@UcMaGhDnZNcgAwDtxwoDABxA2q3xYuRb
-Date:   Thu, 25 Aug 2022 14:40:26 +0200
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>, bpf@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH] kernel: move from strlcpy with unused retval to strscpy
-Message-ID: <YwdtunymYd4VO83D@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Petr Mladek <pmladek@suse.com>, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>, bpf@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-perf-users@vger.kernel.org
-References: <20220818210202.8227-1-wsa+renesas@sang-engineering.com>
- <YwdAknZFyKxCXZuL@alley>
+        with ESMTP id S242317AbiHYNEJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Aug 2022 09:04:09 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C618B4E8B;
+        Thu, 25 Aug 2022 06:03:22 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id a15so15054398qko.4;
+        Thu, 25 Aug 2022 06:03:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc;
+        bh=GJC7qD9d1W6eDyppasNe8HwkoqM5dpioIU4IhwDYcaQ=;
+        b=qHZrw1guA6eKGfxXcu7JwAbjiXJtCGR0zfN/sL+4Ye1Rzl8U9+iRyrunXnD+i+pnrf
+         tj+O/OIDAtfqqB+WerC2ZOA81oMUJzValr8n9winslL3AI+xVU178LswuAUeF/zIrGQ0
+         gyeakclDrYNGRaCYAEe5Yjts4wUysTzT+/lHFwrWkOlWTlEOIFYk6xJctbLVKGQYQgZv
+         gx1+TfVEf0UtDjlTgwyj2brZjp10rQwFJtf8kLriTnQlyxLTF1PpMCCRongDLHz6uGou
+         OhAV2dtOAZPV/kFbK+REnJaV9x4gdD8V6RlhTfPk18s75C80MVF8wQqZcF4J7IaN7YQI
+         7DfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc;
+        bh=GJC7qD9d1W6eDyppasNe8HwkoqM5dpioIU4IhwDYcaQ=;
+        b=j3V+/GHpIrl5xY8nFHKaT8070Y8oRA6zifnqxyLqhlV3vzIYTsrIlEaWdwDaz7HXBd
+         wYeiXWCX4AdItyjihBYvoyREzAt7+6GImDB1Ql7vDNdxKGoVeAJHE1d5E5Pu1GlhdvYp
+         BHbb0WfYzNhy7gfXmBQtm7ZRX7kcAoJ09LybS0BXJEGt6rUTybpEuXcyDcM7sqQNks9d
+         UNMpAHYZ4t2wpYa9z/xqSvr1wv/C1hHyh92+z17yz0G2GU3B08xTDfDHzwY/Qj0LHo4S
+         oyreELlXhQoAVIqYEKpGJX+8/6Yee1J87ea72/o7siy4LClBN47nSc023rKFO0cllpjC
+         Vs0g==
+X-Gm-Message-State: ACgBeo1Q17yWwmQiUC6fzweqVWHYcB2ryHmL19S9OJPSWL5BUSBI9FdR
+        xDI44Qsz7QMFVepmP+rLGlR3XyLoM1Eu6cEpH7EASkvDCNZc0A==
+X-Google-Smtp-Source: AA6agR7sBYeMOY7eBKvp2nOxyOpxuCFGUmrA1j0MJ/awVykpx7cT2eddspJ7lsEj4uv3QA+2icXMK8WQwn4OJIAldQI=
+X-Received: by 2002:a05:620a:1786:b0:6bb:38b2:b1d7 with SMTP id
+ ay6-20020a05620a178600b006bb38b2b1d7mr2906183qkb.510.1661432595693; Thu, 25
+ Aug 2022 06:03:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="QWwBO+hWQkYuUjLm"
-Content-Disposition: inline
-In-Reply-To: <YwdAknZFyKxCXZuL@alley>
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+References: <20220823154557.1400380-1-eyal.birger@gmail.com>
+ <20220823154557.1400380-4-eyal.birger@gmail.com> <565cce1e-0890-dd35-7b26-362da2cde128@6wind.com>
+ <CAHsH6Gv0AaNamsumhdqVtuTCMkJCwcAam07kZZoQ0vbuZi7tHA@mail.gmail.com> <0e44ad3b-e1a0-6af4-5e8f-f808d3b28715@6wind.com>
+In-Reply-To: <0e44ad3b-e1a0-6af4-5e8f-f808d3b28715@6wind.com>
+From:   Eyal Birger <eyal.birger@gmail.com>
+Date:   Thu, 25 Aug 2022 16:03:05 +0300
+Message-ID: <CAHsH6GviZudwDHwG-JDqGapzVP95spY1=J+5xM2GX_711L+DWA@mail.gmail.com>
+Subject: Re: [PATCH ipsec-next 3/3] xfrm: lwtunnel: add lwtunnel support for
+ xfrm interfaces in collect_md mode
+To:     nicolas.dichtel@6wind.com
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, steffen.klassert@secunet.com,
+        herbert@gondor.apana.org.au, pablo@netfilter.org,
+        contact@proelbtn.com, dsahern@kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, devel@linux-ipsec.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Thu, Aug 25, 2022 at 1:07 PM Nicolas Dichtel
+<nicolas.dichtel@6wind.com> wrote:
+>
+>
+> Le 24/08/2022 =C3=A0 20:56, Eyal Birger a =C3=A9crit :
+> > Hi Nicolas,
+> >
+> > On Wed, Aug 24, 2022 at 6:21 PM Nicolas Dichtel
+> > <nicolas.dichtel@6wind.com> wrote:
+> >>
+> >>
+> >> Le 23/08/2022 =C3=A0 17:45, Eyal Birger a =C3=A9crit :
+> >>> Allow specifying the xfrm interface if_id as part of a route metadata
+> >>> using the lwtunnel infrastructure.
+> >>>
+> >>> This allows for example using a single xfrm interface in collect_md
+> >>> mode as the target of multiple routes each specifying a different if_=
+id.
+> >>>
+> >>> With the appropriate changes to iproute2, considering an xfrm device
+> >>> ipsec1 in collect_md mode one can for example add a route specifying
+> >>> an if_id like so:
+> >>>
+> >>> ip route add <SUBNET> dev ipsec1 encap xfrm if_id 1
+> >> It would be nice to be able to specify the link also. It may help to c=
+ombine
+> >> this with vrf. Something like
+> >> ip route add <SUBNET> dev ipsec1 encap xfrm if_id 1 dev eth0
+> >
+> > I think I understand how this would work on xmit - if you mean adding l=
+ink
+> > to the metadata and using it to set fl.flowi_oif in xfrmi_xmit() - in w=
+hich
+> > case the link would be used in the underlying lookup such that routes i=
+n
+> > a vrf could specify a device which is part of the vrf for egress.
+> Yes.
+>
+> >
+> > On RX we could assign the link in the metadata in xfrmi_rcv_cb() to the=
+ original
+> > skb->dev. I suspect this would be aligned with the link device, but any=
+ input
+> > you may have on this would be useful.
+> The link is not used in the rx path, only in the tx path to perform the r=
+oute
+> lookup in the right vrf. You can assign the input iface to the link devic=
+e, but
+> the if_id should be enough to identify the tunnel.
 
---QWwBO+hWQkYuUjLm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thanks. I tested this in the context of VRF and it works well.
 
+I'll include it in v2.
 
-> > Generated by a coccinelle script.
-^ ^ ^
-
-> You might want to use Coccinelle if a simple sed/awk gets too
-> complicated. See
-
-:)
-
-So, I did a tree wide conversion and let Linus know that I have a branch
-available. He didn't respond, so I assumed that individual patches is
-the way to go.
-
-
---QWwBO+hWQkYuUjLm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmMHbbYACgkQFA3kzBSg
-KbZAYw/+NDqOY8g0Yuz+VlyR09k33L8XgacCAPbI3iIT3HWMPSLM5PILZvw4/KmS
-fbEWjJpCFWjSOoZSM5M+vw6MicaUqwjn7UXrJNLIR25RklM/Re8rfgmmo2iqqyb+
-UPAdKt3tapAX5Yb4BQWBRSNxp8+TOl+CiNtdZjec35ESDaSdAd2vDtHE6C6yxP43
-pY3tgKgjIwpI5jqMU/KxOLMCdQHy7TTr63qbeHZcPPpqeBkMMO55rqucIBrx8h26
-WtCE2di3Uzt4ma7Lo+7NJUiYdzvX17U+98XDxm0MxeeQpEstI6qK/zz0NE9pR1pH
-1AmJjRt72JxP0o7ryWvxcnXHOer2j1vEMI05kS8kmMjwCBeQWiV5/KvbxcA6S4dU
-vsUiHJQfJlzpYjjudEV7De6l3zKbrjf/jJQvhv8Poz4AkrFR8kUIGfvV5sRM06wq
-ASybvskRI+M+7BiyJC/KwHjRePkqsHsp/0FqtjOt+Ztejinu9mFc8xPcfqjiPAXx
-bTzqhvtmyUDn+vxJpfmGh59mBzyp3toKatWCH7Xwr6RYBgwBZLTucH6K64XJp7Gz
-4rb2ubLz8PZhLDCmi01R5z9E3nZD1Jpn8XV0/qYyrA+8zFqdV4iZSFKxMjwL+Csd
-LvvbPt0YRE8mmR9zwZqNoSi6xSDIx6KBrtQpUbs2lCw9H5riV50=
-=lWpT
------END PGP SIGNATURE-----
-
---QWwBO+hWQkYuUjLm--
+Eyal.
