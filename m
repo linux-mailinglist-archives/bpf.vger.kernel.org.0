@@ -2,161 +2,210 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 006ED5A1825
-	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 19:50:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B6DB5A1830
+	for <lists+bpf@lfdr.de>; Thu, 25 Aug 2022 19:58:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239089AbiHYRuu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Aug 2022 13:50:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37256 "EHLO
+        id S242949AbiHYR6o (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Aug 2022 13:58:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231931AbiHYRut (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Aug 2022 13:50:49 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 770EBA8957
-        for <bpf@vger.kernel.org>; Thu, 25 Aug 2022 10:50:48 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id w19so41031611ejc.7
-        for <bpf@vger.kernel.org>; Thu, 25 Aug 2022 10:50:48 -0700 (PDT)
+        with ESMTP id S242669AbiHYR6k (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Aug 2022 13:58:40 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9053EBD0B1
+        for <bpf@vger.kernel.org>; Thu, 25 Aug 2022 10:58:38 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id b2so15784002qkh.12
+        for <bpf@vger.kernel.org>; Thu, 25 Aug 2022 10:58:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=Kq5NCG/Dcfv3fMvHlGc6AqJdZ2o+2zzgqOfL4O8RTEs=;
-        b=Pv/qG6Qf6ZVKLXT0Vzzbs0loyO/UkYcCYymlhUAtLeT/+Iks6SBc5Hz7Zr53IbKIMX
-         sNKqygbRAowEVwAXDrs876a2rc9xh337szI5glAF7T0ijgAB1Efv7nAhOlCzOSILxt5B
-         soXf3IO45S2qiP6fi1rC33uQpjJZ90z8n5qQ806Jda6FidlvVv70PdyUg0LPuWcl9CtL
-         AH5TxmbS1LNaRaY7NRy9obSc4LDEVeEAJmxbxx4oBQMhlhAzfkJvpEVWlnqrwnCSHOGN
-         Yk4jPtERkGsw9XUNYKa87Ia8J3Fx4idZpI3onEYZkJUnHXbNseH4ggKmPuroAGSxkT46
-         L5ig==
+        d=google.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc;
+        bh=/GYRroV0j1HQtttqGy5ikwY0tvszI/gqxle1gBMtBi8=;
+        b=ck2vOHHo88Dym2Eg5dmOrOFWsd+DiRYzQswvx+qDw/AaR6oiFaBJuXUDozxFm5NdeY
+         RyIHT6ucnHWVYW6HD8rQ+SaVdPk0knVAyhXIGj5w8crdLz6PBdvQtFIIaAYJdupUr7Jf
+         m1xm1ISYsse8LApnX9JzNrTmopx1LnHBt+ZKHiKPVL0+L8GUr6VeP3JxqlvNj8ckaxzE
+         V4nu1m+hX8cIclMyiKgMwCNn4rkZdPf3FccCw+8fdv7PtEeMjXwsvWy9eT3Gia6EroBO
+         DE334U1ACpqjXh+T9+MFSK12LcnccR145icds02vQe0SfVkKnQiwa6FtY2yGHSVjM2t+
+         KwEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=Kq5NCG/Dcfv3fMvHlGc6AqJdZ2o+2zzgqOfL4O8RTEs=;
-        b=AcnaBUybgG8YROqFVKhwEa4zdi1K7yxcsdL/eiUN7dSUw4pQ664gOmf8JzEM4WvijH
-         k2AP+ZJNoUg8jF7XCTkuIK//lbbEJkpzJ6PbOBH30q2QEdCo7g+B5WmZUNaFBYN/Sl+P
-         yKKlJ4LDhVAm3mQD1UMj3ue3RX2fux5wiFQi0pHDwk77sTQW/BPzgFwkMNEkX5oHtGxU
-         FIxUmiMn6bYYFO0GBtlybTJIT1pEOeYkzkblVqGKv6UOXLX0vJY08q0Im4V0MqOK5eql
-         o8vBeRprw8yQKrKkOeqkYjykwMdrLg+Z1FUMlfgqXREwfPW5E0Vclj5Jf27Yh/gm3ocw
-         K8rA==
-X-Gm-Message-State: ACgBeo2i1YRb3Md8XgpLGUAbY43b/yFcHyHJQcmLK98/qmqnyY5uInvB
-        SFvpLT9JModJtS3IMKV3fpZeETcV4uoNOArccJA=
-X-Google-Smtp-Source: AA6agR5SDmrGfe13EfYSrdTOEJn2pEzF+pTrU9QVLUC1hKzV15haO1hBMo2jw//0X8hxTpxsAXGtrwhMoYuEC2afhJY=
-X-Received: by 2002:a17:907:2bdb:b0:73d:d7af:c133 with SMTP id
- gv27-20020a1709072bdb00b0073dd7afc133mr1940452ejc.545.1661449847038; Thu, 25
- Aug 2022 10:50:47 -0700 (PDT)
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc;
+        bh=/GYRroV0j1HQtttqGy5ikwY0tvszI/gqxle1gBMtBi8=;
+        b=DLI9VPs1gVEWwOwg/YAtrf67MLxwwipE+i8K1GmA8atodglv+S9vpkMXgIhWLBoBp+
+         I3WUyGWRRRJ4lysU1WPKt4OEaO2InsInoQA9WPMB1fuyPMIvQfVf32DOyPirWaqRYjLU
+         yW9FRFZhpPwFQ7J3nyq7mos3yBkSaq9CL9KveHp7byWvnH6ne8Vdt82ZJ2B73NHkQNwS
+         28eFojQ+TpxdPAOb2PMy+IipeIgobQZM1SAfQX9NK+Xby3S1tcS4JPO3NwDp9KTQHBNu
+         GbKflo8kxLe3z2kWSwoZvfAnjRFz+YxFHc7ag0YEYQ/eoqadkn0swiB9+p/cGLacDkeo
+         3qSw==
+X-Gm-Message-State: ACgBeo2AoiDgCsE8HgFDeFWkYSvzdAlo2HPzNAfpZ+N0l9ldvnVz4OUc
+        6osR8Z3LtDgOzIHRxkfRdGENBmrPBqmzqXvJrFa9Aw==
+X-Google-Smtp-Source: AA6agR6ELzGCme7sNE+BR81Sm1mE1ctCXPEA2yfDoucsxgkqNCq0OsDtN/7qgdFikCJXE381jvngdogkJXIw9FJc8Ew=
+X-Received: by 2002:a05:620a:458c:b0:6bb:848a:b86b with SMTP id
+ bp12-20020a05620a458c00b006bb848ab86bmr3882934qkb.267.1661450317552; Thu, 25
+ Aug 2022 10:58:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220811001654.1316689-1-kuifeng@fb.com> <20220811001654.1316689-2-kuifeng@fb.com>
- <0f5123dc-5334-7e23-e143-c82002762242@fb.com> <CAEf4BzaRK5hfuDP6HJXzCHfhuLZBF44z7RTzdEGQw54zTwrAaw@mail.gmail.com>
- <c752a54f-d2e2-157e-778a-5b3f01bf5e6f@fb.com>
-In-Reply-To: <c752a54f-d2e2-157e-778a-5b3f01bf5e6f@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 25 Aug 2022 10:50:35 -0700
-Message-ID: <CAEf4BzbmxcO9wiN9k+AROq7JDHvwBoJ7eV43tE2mSUXao89oEQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 1/3] bpf: Parameterize task iterators.
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Kui-Feng Lee <kuifeng@fb.com>, bpf@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kernel-team@fb.com
+References: <20220824030031.1013441-1-haoluo@google.com> <20220824030031.1013441-2-haoluo@google.com>
+ <20220825152455.GA29058@blackbody.suse.cz>
+In-Reply-To: <20220825152455.GA29058@blackbody.suse.cz>
+From:   Hao Luo <haoluo@google.com>
+Date:   Thu, 25 Aug 2022 10:58:26 -0700
+Message-ID: <CA+khW7hKk8yMvsQCQjnEoR3=G9=77F2TgAEDa+uSVedoOE=NsA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v9 1/5] bpf: Introduce cgroup iter
+To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        cgroups@vger.kernel.org, netdev@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        David Rientjes <rientjes@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Yosry Ahmed <yosryahmed@google.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 17, 2022 at 9:31 PM Yonghong Song <yhs@fb.com> wrote:
+On Thu, Aug 25, 2022 at 8:24 AM Michal Koutn=C3=BD <mkoutny@suse.com> wrote=
+:
 >
+> Hello.
 >
+> On Tue, Aug 23, 2022 at 08:00:27PM -0700, Hao Luo <haoluo@google.com> wro=
+te:
+> > +static int bpf_iter_attach_cgroup(struct bpf_prog *prog,
+> > +                               union bpf_iter_link_info *linfo,
+> > +                               struct bpf_iter_aux_info *aux)
+> > +{
+> > +     int fd =3D linfo->cgroup.cgroup_fd;
+> > +     u64 id =3D linfo->cgroup.cgroup_id;
+> > +     int order =3D linfo->cgroup.order;
+> > +     struct cgroup *cgrp;
+> > +
+> > +     if (order !=3D BPF_ITER_DESCENDANTS_PRE &&
+> > +         order !=3D BPF_ITER_DESCENDANTS_POST &&
+> > +         order !=3D BPF_ITER_ANCESTORS_UP &&
+> > +         order !=3D BPF_ITER_SELF_ONLY)
+> > +             return -EINVAL;
+> > +
+> > +     if (fd && id)
+> > +             return -EINVAL;
+> > +
+> > +     if (fd)
+> > +             cgrp =3D cgroup_get_from_fd(fd);
+> > +     else if (id)
+> > +             cgrp =3D cgroup_get_from_id(id);
+> > +     else /* walk the entire hierarchy by default. */
+> > +             cgrp =3D cgroup_get_from_path("/");
+> > +
+> > +     if (IS_ERR(cgrp))
+> > +             return PTR_ERR(cgrp);
 >
-> On 8/15/22 10:25 PM, Andrii Nakryiko wrote:
-> > On Sat, Aug 13, 2022 at 3:17 PM Yonghong Song <yhs@fb.com> wrote:
-> >>
-> >>
-> >>
-> >> On 8/10/22 5:16 PM, Kui-Feng Lee wrote:
-> >>> Allow creating an iterator that loops through resources of one task/thread.
-> >>>
-> >>> People could only create iterators to loop through all resources of
-> >>> files, vma, and tasks in the system, even though they were interested
-> >>> in only the resources of a specific task or process.  Passing the
-> >>> additional parameters, people can now create an iterator to go
-> >>> through all resources or only the resources of a task.
-> >>>
-> >>> Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
-> >>> ---
-> >>>    include/linux/bpf.h            |  29 ++++++++
-> >>>    include/uapi/linux/bpf.h       |   8 +++
-> >>>    kernel/bpf/task_iter.c         | 126 ++++++++++++++++++++++++++-------
-> >>>    tools/include/uapi/linux/bpf.h |   8 +++
-> >>>    4 files changed, 147 insertions(+), 24 deletions(-)
-> >>>
-> >
-> > Btw, Yonghong, I tried to figure it out myself, but got lost in all
-> > the kernel functions that don't seem to be very well documented. Sorry
-> > for being lazy and throwing this at you :)
-> >
-> > Is it easy and efficient to iterate only processes using whatever
-> > kernel helpers we have at our disposal? E.g., if I wanted to write an
-> > iterator that would go only over processes (not individual threads,
-> > just task leaders of each different process) within a cgroup, is that
-> > possible?
+> This section caught my eye.
 >
-> To traverse processes in a cgroup, the best location is in
-> kernel/cgroup/cgroup.c where there exists a seq_ops to
-> traverse all processes in cgroup.procs file. If we try
-> to implement a bpf based iterator, we could reuse some
-> codes in that file.
+> Perhaps the simpler way for the default hierachy fallback would be
+>
+>                 cgrp =3D &cgrp_dfl_root.cgrp;
+>                 cgroup_get(cgroup)
+>
+> But maybe it's not what is the intention if cgroup NS should be taken
+> into account and cgroup_get_from_path() is buggy in this regard.
+>
+> Would it make sense to prepend the patch below to your series?
+
+Yep. Being able to take cgroup NS into account is my intention here.
+Right now, I imagine the control plane who uses this default option is
+the system daemon which lives in the init cgroup ns. They could always
+specify a particular cgroup using ID or FD. Printing the whole
+hierarchy is something a system daemon would do. Anyhow, can I add the
+appended patch if there is going to be a v10 of this patch series? If
+v9 is ok to merge, I can send the appended patch separately. Does that
+sound good? The appended patch looks good to me, thanks!
+
+>
+> Also, that makes me think about iter initialization with ID. In contrast
+> with FD passing (that's subject to some permissions and NS checks), the
+> retrieval via ID is not equipped with that, ids are not unguessable and
+> I'd consider cgroup IDs an implementation detail.
+>
+> So, is the ID initialization that much useful? (I have no idea about
+> permissions model of BPF here, so it might be just fine but still it'd
+> be good to take cgroup NS into account. Likely for BPF_ITER_ANCESTORS_UP
+> too.)
 >
 
-yep
+Permission is a valid point about FD. There was discussion in an
+earlier version of this patch series [0]. The good thing about ID is
+that it can be passed across processes and it's meaningful to appear
+in logs. It's more user-friendly. So we decided to support both.
 
-> >
-> > I see task iterator as consisting of two different parts (and that
-> > makes it a bit hard to define nice and clean interface, but if we can
-> > crack this, we'd get an elegant and powerful construct):
-> >
-> > 1. What entity to iterate: threads or processes? (I'm ignoring
-> > task_vma and task_files here, but one could task about files of each
-> > thread or files of each process, but it's less practical, probably)
-> >
-> > 2. What's the scope of objects to iterate: just a thread by tid, just
-> > a process by pid/pidfd, once cgroup iter lands, we'll be able to talk
-> > about threads or processes within a cgroup or cgroup hierarchy (this
-> > is where descendants_{pre,post}, cgroup_self_only and ancestors
-> > ordering comes in as well).
-> >
-> > Currently Kui-Feng is addressing first half of #2 (tid/pid/pidfd
-> > parameters), we can use cgroup iter's parameters to define the scope
-> > of tasks/processes by cgroup "filter" in a follow up (it naturally
-> > extends what we have in this patch set).
+[0] https://lore.kernel.org/netdev/YuK+eg3lgwJ2CJnJ@slm.duckdns.org/
+
+> HTH,
+> Michal
 >
-> For #2 as well, it is also possible to have a complete new seq_ops
-> if the traversal is only once. That is why in Kui-Feng's patch,
-> there are a few special case w.r.t. TID. But current approach
-> is also okay.
+> ----8<----
+> From 1098e60e89d4d901b7eef04e531f2c889309a91b Mon Sep 17 00:00:00 2001
+> From: =3D?UTF-8?q?Michal=3D20Koutn=3DC3=3DBD?=3D <mkoutny@suse.com>
+> Date: Thu, 25 Aug 2022 15:19:04 +0200
+> Subject: [PATCH] cgroup: Honor caller's cgroup NS when resolving path
+> MIME-Version: 1.0
+> Content-Type: text/plain; charset=3DUTF-8
+> Content-Transfer-Encoding: 8bit
 >
-
-sounds good!
-
-> >
-> > So now I'm wondering if there is any benefit to also somehow
-> > specifying threads vs processes as entities to iterate? And if we do
-> > that, does kernel support efficient iteration of processes (as opposed
-> > to threads).
+> cgroup_get_from_path() is not widely used function. Its callers presume
+> the path is resolved under cgroup namespace. (There is one caller
+> currently and resolving in init NS won't make harm (netfilter). However,
+> future users may be subject to different effects when resolving
+> globally.)
+> Since, there's currently no use for the global resolution, modify the
+> existing function to take cgroup NS into account.
 >
-> IIUC, I didn't find an efficient way to traverse processes only.
-> The current pid_ns.idr records all tasks so traversing processes
-> have to skip intermediate non-main-thread tasks.
+> Fixes: a79a908fd2b0 ("cgroup: introduce cgroup namespaces")
+> Signed-off-by: Michal Koutn=C3=BD <mkoutny@suse.com>
+> ---
+>  kernel/cgroup/cgroup.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
 >
-
-I see, too bad, but thanks for checking!
-
-> >
-> >
-> > To be clear, there is a lot of value in having just #2, but while we
-> > are all at this topic, I thought I'd clarify for myself #1 as well.
-> >
-> > Thanks!
+> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+> index ffaccd6373f1..9280f4b41d8b 100644
+> --- a/kernel/cgroup/cgroup.c
+> +++ b/kernel/cgroup/cgroup.c
+> @@ -6603,8 +6603,12 @@ struct cgroup *cgroup_get_from_path(const char *pa=
+th)
+>  {
+>         struct kernfs_node *kn;
+>         struct cgroup *cgrp =3D ERR_PTR(-ENOENT);
+> +       struct cgroup *root_cgrp;
+>
+> -       kn =3D kernfs_walk_and_get(cgrp_dfl_root.cgrp.kn, path);
+> +       spin_lock_irq(&css_set_lock);
+> +       root_cgrp =3D current_cgns_cgroup_from_root(&cgrp_dfl_root);
+> +       kn =3D kernfs_walk_and_get(root_cgrp->kn, path);
+> +       spin_unlock_irq(&css_set_lock);
+>         if (!kn)
+>                 goto out;
+>
+>
+> base-commit: 3cc40a443a04d52b0c95255dce264068b01e9bfe
+> --
+> 2.37.0
+>
