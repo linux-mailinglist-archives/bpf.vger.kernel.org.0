@@ -2,53 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73D525A2C73
+	by mail.lfdr.de (Postfix) with ESMTP id BBC9A5A2C74
 	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 18:41:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244258AbiHZQkn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Aug 2022 12:40:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56438 "EHLO
+        id S244134AbiHZQk5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Aug 2022 12:40:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229922AbiHZQkm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Aug 2022 12:40:42 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 445DC17E25
-        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 09:40:41 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-33dc888dc62so33554277b3.4
-        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 09:40:41 -0700 (PDT)
+        with ESMTP id S245006AbiHZQkz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Aug 2022 12:40:55 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C89D1C930
+        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 09:40:52 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-340862314d9so18301687b3.3
+        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 09:40:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc;
-        bh=x7OCRh/WujRFV4WEHTN0aVfGYVTj+gZ5+QGOawN0UMQ=;
-        b=SNMgfiuxecw2Mr6TA0q7y8uPZF3KtVNwELB22w+RnG5cpZ7Lpmb6hS4TesLt8RM54i
-         sH2ZHH8ekSX5Au2x4wH+4n/IPcNqdkqnuKFL45JCCwJZ6s1wUnUO9skzzcHPX7NOW/rO
-         jDRt5EWg5AJfbIrePjkoQJqcokGlOfpt2/iATWBdE/ESOzEXFTvOJEaw1a/TclcUZIuN
-         iX90tCdmmvleaQWzFD7tXw2DlfPqYpjvOxcUFlHTwcIqBq0MphCcc55Lni0i0kVAUlVf
-         9y5Zkb141Lv3+QpIvukmcJKuV3lgFJXUzUqu7OTsxdaHqyggwR0R4x4SW06fTTpU8MnV
-         RLRQ==
+        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
+         :date:from:to:cc;
+        bh=OGW6u/w8E7rtFoVCHl2hMelnGzxIW2OVOqfv9qQJktE=;
+        b=Us5VjbWSTTYWTUWhMO9QVkqK75L6jBcCi16bdVeorKHLmtT0O5D6vIzNnOxkBi+sKT
+         Kxg24QY04c6r7tNyxiAD+DNwLXbZp5huo5+VXagaSrKd6VlWmoye8ZI3flUpKTV86EUD
+         OBpnraCaGGzi8cG2JouBOrg63br6SrePVnRpzPCmTBpF8j+L5qKGGFeE02HudTcsSH9h
+         ETs/6+fUeIygYPrXqQkb0WXTbZkSz/r5d1FmtF+ylURcXRaFnf+U6RN5ZF4PK0nlPz8l
+         lQWUTI+b6i3gknhkGf8oSMlxfjW50S/Jph1MHQyud46ephTT7OL4vv3se4oNYSIeDF8m
+         3yyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
-         :from:to:cc;
-        bh=x7OCRh/WujRFV4WEHTN0aVfGYVTj+gZ5+QGOawN0UMQ=;
-        b=ocv7NgNQbL2mHDBvRSJSJHaSMd3xm1XZoT9X6VBjne1FS/8UxeRNTgd+lMK43H3s5s
-         kAhXlrUVKVyM5sk+3d06NtvznruW1lfECZsMZuSLQJuCouoPx6qmmv2EDyRrbGoILg9s
-         obiEmUf2//hxFBxyIwJjSz0sLj37VwUX6pWHNchQcyfn1JzxX0O0UBQqdUKYq2PQ98z7
-         0i7o8BSxUsD3r6rxD91GBcW4La/8pWxblTibTZrWpkIispF19jLyxJoIIgyGmNJND2mu
-         LaKYh3H1vCRNibxAJVthooZUqdykiWlHg3VdeK+iPrNw/nAzsOJVIWbuiYcMrC1J3hvd
-         xmBg==
-X-Gm-Message-State: ACgBeo3k4eOD7sKPNZ0/+vKMWyFPGuGR5gGd4vsj15Tbi2rALtmU0PVH
-        MBEOVfqfYArtTohLZWqvjkYwyJ44+Kbw
-X-Google-Smtp-Source: AA6agR4eO4PXcKlrllCSwczRZAsAEuS5W9eDVC8xKxGrtreEufZRgpHi5uaPnW8bZ1fF0ROtDj8dA8lTrrbt
+        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
+         :date:x-gm-message-state:from:to:cc;
+        bh=OGW6u/w8E7rtFoVCHl2hMelnGzxIW2OVOqfv9qQJktE=;
+        b=szIlvGbHUh00PsohQD+YbUdS3ZfhaynG4A0/mm3ZQaDsne8AH1Bh9JutG7UY3rfJY9
+         L9uw0zVWjRkplYT7kPDyJ2k7DjR+ylxT3sBiAoaDmkaiwEQtnOrgeFjx3CBUE2Qtw42v
+         EbyyJisVISkRo6jQKia0VVFNb/U9dhUzHWgXxq+4AibfxSWT1FLD2iBRpHQ0kdtyyWLJ
+         SnuhUkklObuLXFuxyW5SxXlBDqlNDVKwVzAQ+I7gaaqpyROeD7+Am4zl/GxCRIIXSpwe
+         RdNbvn8WeufJ9u9JTiGfJcJd1gs4bqdRns8loDweDU72hez5B46+zmqMJ/bOtN36Y3HP
+         ENTA==
+X-Gm-Message-State: ACgBeo39aLMOETK0X83YzW/Zdj5Dkchq4aOd0g47RBoQGx9NsJ+CYAN+
+        twATsE3hPb8kWOK5VvmIb72wbnxkkXgW
+X-Google-Smtp-Source: AA6agR7ACSGk8a4B4SYUIPDiyv+IvwuRMOpPIzYnR5Pdpg5EGNHHAIX7sG/1uSiMSFQJXGxypQPIE3kyzxwM
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2d4:203:ccb1:c46b:7044:2508])
- (user=irogers job=sendgmr) by 2002:a25:53c7:0:b0:695:6af4:a5ed with SMTP id
- h190-20020a2553c7000000b006956af4a5edmr499951ybb.472.1661532040380; Fri, 26
- Aug 2022 09:40:40 -0700 (PDT)
-Date:   Fri, 26 Aug 2022 09:40:09 -0700
-Message-Id: <20220826164027.42929-1-irogers@google.com>
+ (user=irogers job=sendgmr) by 2002:a5b:401:0:b0:696:48ef:d1ab with SMTP id
+ m1-20020a5b0401000000b0069648efd1abmr506277ybp.338.1661532051744; Fri, 26 Aug
+ 2022 09:40:51 -0700 (PDT)
+Date:   Fri, 26 Aug 2022 09:40:10 -0700
+In-Reply-To: <20220826164027.42929-1-irogers@google.com>
+Message-Id: <20220826164027.42929-2-irogers@google.com>
 Mime-Version: 1.0
+References: <20220826164027.42929-1-irogers@google.com>
 X-Mailer: git-send-email 2.37.2.672.g94769d06f0-goog
-Subject: [PATCH v4 00/18] Mutex wrapper, locking and memory leak fixes
+Subject: [PATCH v4 01/18] perf mutex: Wrapped usage of mutex and cond
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -103,103 +106,218 @@ Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When fixing a locking race and memory leak in:
-https://lore.kernel.org/linux-perf-users/20211118193714.2293728-1-irogers@google.com/
+From: Pavithra Gurushankar <gpavithrasha@gmail.com>
 
-It was requested that debug mutex code be separated out into its own
-files. This was, in part, done by Pavithra Gurushankar in:
-https://lore.kernel.org/lkml/20220727111954.105118-1-gpavithrasha@gmail.com/
+Added a new header file mutex.h that wraps the usage of
+pthread_mutex_t and pthread_cond_t. By abstracting these it is
+possible to introduce error checking.
 
-These patches fix issues with the previous patches, add in the
-original dso->nsinfo fix and then build on our mutex wrapper with
-clang's -Wthread-safety analysis. The analysis found missing unlocks
-in builtin-sched.c which are fixed and -Wthread-safety is enabled by
-default when building with clang.
-
-v4. Adds a comment for the trylock result, fixes the new line (missed
-    in v3) and removes two blank lines as suggested by Adrian Hunter.
-v3. Adds a missing new line to the error messages and removes the
-    pshared argument to mutex_init by having two functions, mutex_init
-    and mutex_init_pshared. These changes were suggested by Adrian Hunter.
-v2. Breaks apart changes that s/pthread_mutex/mutex/g and the lock
-    annotations as requested by Arnaldo and Namhyung. A boolean is
-    added to builtin-sched.c to terminate thread funcs rather than
-    leaving them blocked on delted mutexes.
-
-Ian Rogers (17):
-  perf bench: Update use of pthread mutex/cond
-  perf tests: Avoid pthread.h inclusion
-  perf hist: Update use of pthread mutex
-  perf bpf: Remove unused pthread.h include
-  perf lock: Remove unused pthread.h include
-  perf record: Update use of pthread mutex
-  perf sched: Update use of pthread mutex
-  perf ui: Update use of pthread mutex
-  perf mmap: Remove unnecessary pthread.h include
-  perf dso: Update use of pthread mutex
-  perf annotate: Update use of pthread mutex
-  perf top: Update use of pthread mutex
-  perf dso: Hold lock when accessing nsinfo
-  perf mutex: Add thread safety annotations
-  perf sched: Fixes for thread safety analysis
-  perf top: Fixes for thread safety analysis
-  perf build: Enable -Wthread-safety with clang
-
-Pavithra Gurushankar (1):
-  perf mutex: Wrapped usage of mutex and cond
-
- tools/perf/Makefile.config                 |   5 +
- tools/perf/bench/epoll-ctl.c               |  33 +++---
- tools/perf/bench/epoll-wait.c              |  33 +++---
- tools/perf/bench/futex-hash.c              |  33 +++---
- tools/perf/bench/futex-lock-pi.c           |  33 +++---
- tools/perf/bench/futex-requeue.c           |  33 +++---
- tools/perf/bench/futex-wake-parallel.c     |  33 +++---
- tools/perf/bench/futex-wake.c              |  33 +++---
- tools/perf/bench/numa.c                    |  93 ++++++----------
- tools/perf/builtin-inject.c                |   4 +
- tools/perf/builtin-lock.c                  |   1 -
- tools/perf/builtin-record.c                |  13 ++-
- tools/perf/builtin-sched.c                 | 105 +++++++++---------
- tools/perf/builtin-top.c                   |  45 ++++----
- tools/perf/tests/mmap-basic.c              |   2 -
- tools/perf/tests/openat-syscall-all-cpus.c |   2 +-
- tools/perf/tests/perf-record.c             |   2 -
- tools/perf/ui/browser.c                    |  20 ++--
- tools/perf/ui/browsers/annotate.c          |  12 +--
- tools/perf/ui/setup.c                      |   5 +-
- tools/perf/ui/tui/helpline.c               |   5 +-
- tools/perf/ui/tui/progress.c               |   8 +-
- tools/perf/ui/tui/setup.c                  |   8 +-
- tools/perf/ui/tui/util.c                   |  18 ++--
- tools/perf/ui/ui.h                         |   4 +-
- tools/perf/util/Build                      |   1 +
- tools/perf/util/annotate.c                 |  15 +--
- tools/perf/util/annotate.h                 |   4 +-
- tools/perf/util/bpf-event.h                |   1 -
- tools/perf/util/build-id.c                 |  12 ++-
- tools/perf/util/dso.c                      |  19 ++--
- tools/perf/util/dso.h                      |   4 +-
- tools/perf/util/hist.c                     |   6 +-
- tools/perf/util/hist.h                     |   4 +-
- tools/perf/util/map.c                      |   3 +
- tools/perf/util/mmap.h                     |   1 -
- tools/perf/util/mutex.c                    | 119 +++++++++++++++++++++
- tools/perf/util/mutex.h                    | 108 +++++++++++++++++++
- tools/perf/util/probe-event.c              |   3 +
- tools/perf/util/symbol.c                   |   4 +-
- tools/perf/util/top.h                      |   5 +-
- 41 files changed, 569 insertions(+), 323 deletions(-)
+Signed-off-by: Pavithra Gurushankar <gpavithrasha@gmail.com>
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/util/Build   |   1 +
+ tools/perf/util/mutex.c | 117 ++++++++++++++++++++++++++++++++++++++++
+ tools/perf/util/mutex.h |  48 +++++++++++++++++
+ 3 files changed, 166 insertions(+)
  create mode 100644 tools/perf/util/mutex.c
  create mode 100644 tools/perf/util/mutex.h
 
+diff --git a/tools/perf/util/Build b/tools/perf/util/Build
+index 9dfae1bda9cc..8fd6dc8de521 100644
+--- a/tools/perf/util/Build
++++ b/tools/perf/util/Build
+@@ -143,6 +143,7 @@ perf-y += branch.o
+ perf-y += mem2node.o
+ perf-y += clockid.o
+ perf-y += list_sort.o
++perf-y += mutex.o
+ 
+ perf-$(CONFIG_LIBBPF) += bpf-loader.o
+ perf-$(CONFIG_LIBBPF) += bpf_map.o
+diff --git a/tools/perf/util/mutex.c b/tools/perf/util/mutex.c
+new file mode 100644
+index 000000000000..5029237164e5
+--- /dev/null
++++ b/tools/perf/util/mutex.c
+@@ -0,0 +1,117 @@
++// SPDX-License-Identifier: GPL-2.0
++#include "mutex.h"
++
++#include "debug.h"
++#include <linux/string.h>
++#include <errno.h>
++
++static void check_err(const char *fn, int err)
++{
++	char sbuf[STRERR_BUFSIZE];
++
++	if (err == 0)
++		return;
++
++	pr_err("%s error: '%s'\n", fn, str_error_r(err, sbuf, sizeof(sbuf)));
++}
++
++#define CHECK_ERR(err) check_err(__func__, err)
++
++static void __mutex_init(struct mutex *mtx, bool pshared)
++{
++	pthread_mutexattr_t attr;
++
++	CHECK_ERR(pthread_mutexattr_init(&attr));
++
++#ifndef NDEBUG
++	/* In normal builds enable error checking, such as recursive usage. */
++	CHECK_ERR(pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_ERRORCHECK));
++#endif
++	if (pshared)
++		CHECK_ERR(pthread_mutexattr_setpshared(&attr, PTHREAD_PROCESS_SHARED));
++
++	CHECK_ERR(pthread_mutex_init(&mtx->lock, &attr));
++	CHECK_ERR(pthread_mutexattr_destroy(&attr));
++}
++
++void mutex_init(struct mutex *mtx)
++{
++	__mutex_init(mtx, /*pshared=*/false);
++}
++
++void mutex_init_pshared(struct mutex *mtx)
++{
++	__mutex_init(mtx, /*pshared=*/true);
++}
++
++void mutex_destroy(struct mutex *mtx)
++{
++	CHECK_ERR(pthread_mutex_destroy(&mtx->lock));
++}
++
++void mutex_lock(struct mutex *mtx)
++{
++	CHECK_ERR(pthread_mutex_lock(&mtx->lock));
++}
++
++void mutex_unlock(struct mutex *mtx)
++{
++	CHECK_ERR(pthread_mutex_unlock(&mtx->lock));
++}
++
++bool mutex_trylock(struct mutex *mtx)
++{
++	int ret = pthread_mutex_trylock(&mtx->lock);
++
++	if (ret == 0)
++		return true; /* Lock acquired. */
++
++	if (ret == EBUSY)
++		return false; /* Lock busy. */
++
++	/* Print error. */
++	CHECK_ERR(ret);
++	return false;
++}
++
++static void __cond_init(struct cond *cnd, bool pshared)
++{
++	pthread_condattr_t attr;
++
++	CHECK_ERR(pthread_condattr_init(&attr));
++	if (pshared)
++		CHECK_ERR(pthread_condattr_setpshared(&attr, PTHREAD_PROCESS_SHARED));
++
++	CHECK_ERR(pthread_cond_init(&cnd->cond, &attr));
++	CHECK_ERR(pthread_condattr_destroy(&attr));
++}
++
++void cond_init(struct cond *cnd)
++{
++	__cond_init(cnd, /*pshared=*/false);
++}
++
++void cond_init_pshared(struct cond *cnd)
++{
++	__cond_init(cnd, /*pshared=*/true);
++}
++
++void cond_destroy(struct cond *cnd)
++{
++	CHECK_ERR(pthread_cond_destroy(&cnd->cond));
++}
++
++void cond_wait(struct cond *cnd, struct mutex *mtx)
++{
++	CHECK_ERR(pthread_cond_wait(&cnd->cond, &mtx->lock));
++}
++
++void cond_signal(struct cond *cnd)
++{
++	CHECK_ERR(pthread_cond_signal(&cnd->cond));
++}
++
++void cond_broadcast(struct cond *cnd)
++{
++	CHECK_ERR(pthread_cond_broadcast(&cnd->cond));
++}
+diff --git a/tools/perf/util/mutex.h b/tools/perf/util/mutex.h
+new file mode 100644
+index 000000000000..cfff32a902d9
+--- /dev/null
++++ b/tools/perf/util/mutex.h
+@@ -0,0 +1,48 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __PERF_MUTEX_H
++#define __PERF_MUTEX_H
++
++#include <pthread.h>
++#include <stdbool.h>
++
++/*
++ * A wrapper around the mutex implementation that allows perf to error check
++ * usage, etc.
++ */
++struct mutex {
++	pthread_mutex_t lock;
++};
++
++/* A wrapper around the condition variable implementation. */
++struct cond {
++	pthread_cond_t cond;
++};
++
++/* Default initialize the mtx struct. */
++void mutex_init(struct mutex *mtx);
++/*
++ * Initialize the mtx struct and set the process-shared rather than default
++ * process-private attribute.
++ */
++void mutex_init_pshared(struct mutex *mtx);
++void mutex_destroy(struct mutex *mtx);
++
++void mutex_lock(struct mutex *mtx);
++void mutex_unlock(struct mutex *mtx);
++/* Tries to acquire the lock and returns true on success. */
++bool mutex_trylock(struct mutex *mtx);
++
++/* Default initialize the cond struct. */
++void cond_init(struct cond *cnd);
++/*
++ * Initialize the cond struct and specify the process-shared rather than default
++ * process-private attribute.
++ */
++void cond_init_pshared(struct cond *cnd);
++void cond_destroy(struct cond *cnd);
++
++void cond_wait(struct cond *cnd, struct mutex *mtx);
++void cond_signal(struct cond *cnd);
++void cond_broadcast(struct cond *cnd);
++
++#endif /* __PERF_MUTEX_H */
 -- 
 2.37.2.672.g94769d06f0-goog
 
