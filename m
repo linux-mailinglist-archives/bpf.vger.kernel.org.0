@@ -2,251 +2,204 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D33905A2C6B
-	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 18:38:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73D525A2C73
+	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 18:41:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236456AbiHZQhc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Aug 2022 12:37:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51702 "EHLO
+        id S244258AbiHZQkn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Aug 2022 12:40:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243854AbiHZQhc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Aug 2022 12:37:32 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3232DF084;
-        Fri, 26 Aug 2022 09:37:30 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 73FDAB831D7;
-        Fri, 26 Aug 2022 16:37:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6EE5C433D6;
-        Fri, 26 Aug 2022 16:37:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661531848;
-        bh=77z6JnzJcw0ptfDeQMykFv551L6QZ4YbBkOoz1WpbwM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gU01zDd8ALXOBQlVbXTe206SWPFY9qPBFkEhBemYX72iQk9K1axPp9THSEvAc1/gT
-         uxXzhRltVlWxo8xJz6XIjv5UxDk/7Fjz0NzfOtkuRPCBwwioUOcb873QVtoaS/skva
-         uErbBhFGq2aMoZRZaFJIYwt7lPnQnUqZbVOoqmg4BbJD4X1Zr9ywrxQFk0AN/xuaYO
-         /4/9hTV0UY0CLw0/QgRJ2/OeLPmNhQcxjHinFohAKlZhSw2miZHTlEqzCMOXLCaung
-         h/BijBmdSsTmbI4cwJUQQTIKMjB1X2tEZ+gErKV7PtUlxr7wuwZLEauGHn3ipT+KaZ
-         O31m6c64QMJhg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 16D9E404A1; Fri, 26 Aug 2022 13:37:24 -0300 (-03)
-Date:   Fri, 26 Aug 2022 13:37:24 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Vitaly Chikunov <vt@altlinux.org>
-Cc:     Jiri Olsa <olsajiri@gmail.com>, Yonghong Song <yhs@fb.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>,
-        Martin Reboredo <yakoyoku@gmail.com>
-Subject: Re: pahole v1.24: FAILED: load BTF from vmlinux: Invalid argument
-Message-ID: <Ywj2xCPATz1qb0lC@kernel.org>
-References: <20220825163538.vajnsv3xcpbhl47v@altlinux.org>
- <CA+JHD904e2TPpz1ybsaaqD+qMTDcueXu4nVcmotEPhxNfGN+Gw@mail.gmail.com>
- <20220825171620.cioobudss6ovyrkc@altlinux.org>
- <20220826025220.cxfwwpem2ycpvrmm@altlinux.org>
- <20220826025944.hd7htqqwljhse6ht@altlinux.org>
- <YwjQDBovX+cX/JDJ@krava>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YwjQDBovX+cX/JDJ@krava>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S229922AbiHZQkm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Aug 2022 12:40:42 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 445DC17E25
+        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 09:40:41 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-33dc888dc62so33554277b3.4
+        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 09:40:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc;
+        bh=x7OCRh/WujRFV4WEHTN0aVfGYVTj+gZ5+QGOawN0UMQ=;
+        b=SNMgfiuxecw2Mr6TA0q7y8uPZF3KtVNwELB22w+RnG5cpZ7Lpmb6hS4TesLt8RM54i
+         sH2ZHH8ekSX5Au2x4wH+4n/IPcNqdkqnuKFL45JCCwJZ6s1wUnUO9skzzcHPX7NOW/rO
+         jDRt5EWg5AJfbIrePjkoQJqcokGlOfpt2/iATWBdE/ESOzEXFTvOJEaw1a/TclcUZIuN
+         iX90tCdmmvleaQWzFD7tXw2DlfPqYpjvOxcUFlHTwcIqBq0MphCcc55Lni0i0kVAUlVf
+         9y5Zkb141Lv3+QpIvukmcJKuV3lgFJXUzUqu7OTsxdaHqyggwR0R4x4SW06fTTpU8MnV
+         RLRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc;
+        bh=x7OCRh/WujRFV4WEHTN0aVfGYVTj+gZ5+QGOawN0UMQ=;
+        b=ocv7NgNQbL2mHDBvRSJSJHaSMd3xm1XZoT9X6VBjne1FS/8UxeRNTgd+lMK43H3s5s
+         kAhXlrUVKVyM5sk+3d06NtvznruW1lfECZsMZuSLQJuCouoPx6qmmv2EDyRrbGoILg9s
+         obiEmUf2//hxFBxyIwJjSz0sLj37VwUX6pWHNchQcyfn1JzxX0O0UBQqdUKYq2PQ98z7
+         0i7o8BSxUsD3r6rxD91GBcW4La/8pWxblTibTZrWpkIispF19jLyxJoIIgyGmNJND2mu
+         LaKYh3H1vCRNibxAJVthooZUqdykiWlHg3VdeK+iPrNw/nAzsOJVIWbuiYcMrC1J3hvd
+         xmBg==
+X-Gm-Message-State: ACgBeo3k4eOD7sKPNZ0/+vKMWyFPGuGR5gGd4vsj15Tbi2rALtmU0PVH
+        MBEOVfqfYArtTohLZWqvjkYwyJ44+Kbw
+X-Google-Smtp-Source: AA6agR4eO4PXcKlrllCSwczRZAsAEuS5W9eDVC8xKxGrtreEufZRgpHi5uaPnW8bZ1fF0ROtDj8dA8lTrrbt
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2d4:203:ccb1:c46b:7044:2508])
+ (user=irogers job=sendgmr) by 2002:a25:53c7:0:b0:695:6af4:a5ed with SMTP id
+ h190-20020a2553c7000000b006956af4a5edmr499951ybb.472.1661532040380; Fri, 26
+ Aug 2022 09:40:40 -0700 (PDT)
+Date:   Fri, 26 Aug 2022 09:40:09 -0700
+Message-Id: <20220826164027.42929-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.37.2.672.g94769d06f0-goog
+Subject: [PATCH v4 00/18] Mutex wrapper, locking and memory leak fixes
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Darren Hart <dvhart@infradead.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        "=?UTF-8?q?Andr=C3=A9=20Almeida?=" <andrealmeid@igalia.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, Weiguo Li <liwg06@foxmail.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Dario Petrillo <dario.pk1@gmail.com>,
+        Hewenliang <hewenliang4@huawei.com>,
+        yaowenbin <yaowenbin1@huawei.com>,
+        Wenyu Liu <liuwenyu7@huawei.com>,
+        Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Pavithra Gurushankar <gpavithrasha@gmail.com>,
+        Alexandre Truong <alexandre.truong@arm.com>,
+        Quentin Monnet <quentin@isovalent.com>,
+        William Cohen <wcohen@redhat.com>,
+        Andres Freund <andres@anarazel.de>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        "=?UTF-8?q?Martin=20Li=C5=A1ka?=" <mliska@suse.cz>,
+        Colin Ian King <colin.king@intel.com>,
+        James Clark <james.clark@arm.com>,
+        Fangrui Song <maskray@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>,
+        Riccardo Mancini <rickyman7@gmail.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Zechuan Chen <chenzechuan1@huawei.com>,
+        Jason Wang <wangborong@cdjrlc.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Remi Bernon <rbernon@codeweavers.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        bpf@vger.kernel.org, llvm@lists.linux.dev
+Cc:     Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Fri, Aug 26, 2022 at 03:52:12PM +0200, Jiri Olsa escreveu:
-> On Fri, Aug 26, 2022 at 05:59:44AM +0300, Vitaly Chikunov wrote:
-> > On Fri, Aug 26, 2022 at 05:52:20AM +0300, Vitaly Chikunov wrote:
-> > > On Thu, Aug 25, 2022 at 08:16:20PM +0300, Vitaly Chikunov wrote:
-> > > > On Thu, Aug 25, 2022 at 01:47:59PM -0300, Arnaldo Carvalho de Melo wrote:
-> > > > > On Thu, Aug 25, 2022, 1:35 PM Vitaly Chikunov <vt@altlinux.org> wrote:
-> > > > > > I also noticed that after upgrading pahole to v1.24 kernel build (tested on
-> > > > > > v5.18.19, v5.15.63, sorry for not testing on mainline) fails with:
+When fixing a locking race and memory leak in:
+https://lore.kernel.org/linux-perf-users/20211118193714.2293728-1-irogers@google.com/
 
-> > > > > >     BTFIDS  vmlinux
-> > > > > >   + ./tools/bpf/resolve_btfids/resolve_btfids vmlinux
-> > > > > >   FAILED: load BTF from vmlinux: Invalid argument
+It was requested that debug mutex code be separated out into its own
+files. This was, in part, done by Pavithra Gurushankar in:
+https://lore.kernel.org/lkml/20220727111954.105118-1-gpavithrasha@gmail.com/
 
-> > > > > > Perhaps, .tmp_vmlinux.btf is generated incorrectly? Downgrading dwarves to
-> > > > > > v1.23 resolves the issue.
+These patches fix issues with the previous patches, add in the
+original dso->nsinfo fix and then build on our mutex wrapper with
+clang's -Wthread-safety analysis. The analysis found missing unlocks
+in builtin-sched.c which are fixed and -Wthread-safety is enabled by
+default when building with clang.
 
-> > > > > Can you try this, from Martin Reboredo (Archlinux):
+v4. Adds a comment for the trylock result, fixes the new line (missed
+    in v3) and removes two blank lines as suggested by Adrian Hunter.
+v3. Adds a missing new line to the error messages and removes the
+    pshared argument to mutex_init by having two functions, mutex_init
+    and mutex_init_pshared. These changes were suggested by Adrian Hunter.
+v2. Breaks apart changes that s/pthread_mutex/mutex/g and the lock
+    annotations as requested by Arnaldo and Namhyung. A boolean is
+    added to builtin-sched.c to terminate thread funcs rather than
+    leaving them blocked on delted mutexes.
 
-> > > > > Can you try a build of the kernel or the by passing the
-> > > > > --skip_encoding_btf_enum64 to scripts/pahole-flags.sh?
+Ian Rogers (17):
+  perf bench: Update use of pthread mutex/cond
+  perf tests: Avoid pthread.h inclusion
+  perf hist: Update use of pthread mutex
+  perf bpf: Remove unused pthread.h include
+  perf lock: Remove unused pthread.h include
+  perf record: Update use of pthread mutex
+  perf sched: Update use of pthread mutex
+  perf ui: Update use of pthread mutex
+  perf mmap: Remove unnecessary pthread.h include
+  perf dso: Update use of pthread mutex
+  perf annotate: Update use of pthread mutex
+  perf top: Update use of pthread mutex
+  perf dso: Hold lock when accessing nsinfo
+  perf mutex: Add thread safety annotations
+  perf sched: Fixes for thread safety analysis
+  perf top: Fixes for thread safety analysis
+  perf build: Enable -Wthread-safety with clang
 
-> > > > > Here's a patch for either in tree scripts/pahole-flags.sh or
-> > > > > /usr/lib/modules/5.19.3-arch1-1/build/scripts/pahole-flags.sh
+Pavithra Gurushankar (1):
+  perf mutex: Wrapped usage of mutex and cond
 
-> > > > This patch helped and kernel builds successfully after applying it.
-> > > > (Didn't notice this suggestion in release discussion thread.)
+ tools/perf/Makefile.config                 |   5 +
+ tools/perf/bench/epoll-ctl.c               |  33 +++---
+ tools/perf/bench/epoll-wait.c              |  33 +++---
+ tools/perf/bench/futex-hash.c              |  33 +++---
+ tools/perf/bench/futex-lock-pi.c           |  33 +++---
+ tools/perf/bench/futex-requeue.c           |  33 +++---
+ tools/perf/bench/futex-wake-parallel.c     |  33 +++---
+ tools/perf/bench/futex-wake.c              |  33 +++---
+ tools/perf/bench/numa.c                    |  93 ++++++----------
+ tools/perf/builtin-inject.c                |   4 +
+ tools/perf/builtin-lock.c                  |   1 -
+ tools/perf/builtin-record.c                |  13 ++-
+ tools/perf/builtin-sched.c                 | 105 +++++++++---------
+ tools/perf/builtin-top.c                   |  45 ++++----
+ tools/perf/tests/mmap-basic.c              |   2 -
+ tools/perf/tests/openat-syscall-all-cpus.c |   2 +-
+ tools/perf/tests/perf-record.c             |   2 -
+ tools/perf/ui/browser.c                    |  20 ++--
+ tools/perf/ui/browsers/annotate.c          |  12 +--
+ tools/perf/ui/setup.c                      |   5 +-
+ tools/perf/ui/tui/helpline.c               |   5 +-
+ tools/perf/ui/tui/progress.c               |   8 +-
+ tools/perf/ui/tui/setup.c                  |   8 +-
+ tools/perf/ui/tui/util.c                   |  18 ++--
+ tools/perf/ui/ui.h                         |   4 +-
+ tools/perf/util/Build                      |   1 +
+ tools/perf/util/annotate.c                 |  15 +--
+ tools/perf/util/annotate.h                 |   4 +-
+ tools/perf/util/bpf-event.h                |   1 -
+ tools/perf/util/build-id.c                 |  12 ++-
+ tools/perf/util/dso.c                      |  19 ++--
+ tools/perf/util/dso.h                      |   4 +-
+ tools/perf/util/hist.c                     |   6 +-
+ tools/perf/util/hist.h                     |   4 +-
+ tools/perf/util/map.c                      |   3 +
+ tools/perf/util/mmap.h                     |   1 -
+ tools/perf/util/mutex.c                    | 119 +++++++++++++++++++++
+ tools/perf/util/mutex.h                    | 108 +++++++++++++++++++
+ tools/perf/util/probe-event.c              |   3 +
+ tools/perf/util/symbol.c                   |   4 +-
+ tools/perf/util/top.h                      |   5 +-
+ 41 files changed, 569 insertions(+), 323 deletions(-)
+ create mode 100644 tools/perf/util/mutex.c
+ create mode 100644 tools/perf/util/mutex.h
 
-> > > Even thought it now compiles with this patch, it does not boot
-> > > afterwards (in virtme-like env), witch such console messages:
-
-> > I'm talking here about 5.15.62. Yes, proposed patch does not apply there
-> > (since there is no `scripts/pahole-flags.sh`), but I updated
-> > `scripts/link-vmlinux.sh` with the similar `if` to append
-> > `--skip_encoding_btf_enum64` which lets then compilation pass.
-
-> > >   [    0.767649] Run /init as init process
-> > >   [    0.770858] BPF:[593] ENUM perf_event_task_context
-> > >   [    0.771262] BPF:size=4 vlen=4
-> > >   [    0.771511] BPF:
-> > >   [    0.771680] BPF:Invalid btf_info kind_flag
-> > >   [    0.772016] BPF:
- 
-> I can see the same on 5.15, it looks like the libbpf change that
-> pahole is compiled with is setting the type's kflag for values < 0:
-> (which is the case for perf_event_task_context enum first value)
- 
->   dffbbdc2d988 libbpf: Add enum64 parsing and new enum64 public API
- 
-> but IIUC kflag should stay zero for normal enum otherwise the btf meta
-> verifier screams
- 
-> if I compile pahole with the libbpf change below I can boot 5.15 kernel
-> normally
- 
-> Yonghong, any idea?
-
-This made me try to build pahole with the system libbpf instead of with
-the one that goes with it, here, testing with libbpf 0.7.0 it wasn't
-building as BTF_KIND_ENUM64 came with libbpf 1.0 so I added the
-following patch to again allow with the system libbpf, i.e. using:
-
-  $ cmake -DCMAKE_BUILD_TYPE=Release -DLIBBPF_EMBEDDED=Off
-
-This will return errors if trying to encode or load enum64 tags, but
-disabling it, as done with kernels not supporting BTF_KIND_ENUM64 should
-now work, can you please test and report results?
-
-Vitaly I checked and alt:p9 has libbpf 0.2, which is really old, unsure
-if it would build there, but alt:sisyphus has 0.8.0, so should work
-there, please try.
-
-- Arnaldo
-
-From 2bb968b567011f8a3e47706dc11c2a6ec442352c Mon Sep 17 00:00:00 2001
-From: Arnaldo Carvalho de Melo <acme@redhat.com>
-Date: Fri, 26 Aug 2022 13:18:26 -0300
-Subject: [PATCH 1/1] btf: Fix building with system libbpf
-
-Where we may not have newer things, like BTF_KIND_ENUM64.
-
-So we're now again building with -DLIBBPF_EMBEDDED=Off.
-
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
----
- btf_encoder.c | 27 +++++++++++++++++++++++++--
- btf_loader.c  |  7 +++++++
- dutil.h       |  4 ++++
- 3 files changed, 36 insertions(+), 2 deletions(-)
-
-diff --git a/btf_encoder.c b/btf_encoder.c
-index daa8e3b507d4a856..51d9897fbf1bf41f 100644
---- a/btf_encoder.c
-+++ b/btf_encoder.c
-@@ -9,12 +9,12 @@
-   Copyright (C) Red Hat Inc
-  */
- 
-+#include <linux/btf.h>
- #include "dwarves.h"
- #include "elf_symtab.h"
- #include "btf_encoder.h"
- #include "gobuffer.h"
- 
--#include <linux/btf.h>
- #include <bpf/btf.h>
- #include <bpf/libbpf.h>
- #include <ctype.h> /* for isalpha() and isalnum() */
-@@ -124,7 +124,7 @@ static int btf_var_secinfo_cmp(const void *a, const void *b)
- #define BITS_ROUNDDOWN_BYTES(bits) ((bits) >> 3)
- #define BITS_ROUNDUP_BYTES(bits) (BITS_ROUNDDOWN_BYTES(bits) + !!BITS_PER_BYTE_MASKED(bits))
- 
--static const char * const btf_kind_str[NR_BTF_KINDS] = {
-+static const char * const btf_kind_str[] = {
- 	[BTF_KIND_UNKN]		= "UNKNOWN",
- 	[BTF_KIND_INT]		= "INT",
- 	[BTF_KIND_PTR]		= "PTR",
-@@ -491,6 +491,29 @@ static int32_t btf_encoder__add_struct(struct btf_encoder *encoder, uint8_t kind
- 	return id;
- }
- 
-+#if LIBBPF_MAJOR_VERSION < 1
-+static inline int libbpf_err(int ret)
-+{
-+        if (ret < 0)
-+                errno = -ret;
-+        return ret;
-+}
-+
-+static
-+int btf__add_enum64(struct btf *btf __maybe_unused, const char *name __maybe_unused,
-+		    __u32 byte_sz __maybe_unused, bool is_signed __maybe_unused)
-+{
-+	return  libbpf_err(-ENOTSUP);
-+}
-+
-+static
-+int btf__add_enum64_value(struct btf *btf __maybe_unused, const char *name __maybe_unused,
-+			  __u64 value __maybe_unused)
-+{
-+	return  libbpf_err(-ENOTSUP);
-+}
-+#endif
-+
- static int32_t btf_encoder__add_enum(struct btf_encoder *encoder, const char *name, struct type *etype,
- 				     struct conf_load *conf_load)
- {
-diff --git a/btf_loader.c b/btf_loader.c
-index 406a007b61fd4014..69b63a52f591eb84 100644
---- a/btf_loader.c
-+++ b/btf_loader.c
-@@ -312,6 +312,7 @@ out_free:
- 	return -ENOMEM;
- }
- 
-+#if LIBBPF_MAJOR_VERSION >= 1
- static struct enumerator *enumerator__new64(const char *name, uint64_t value)
- {
- 	struct enumerator *en = tag__alloc(sizeof(*en));
-@@ -354,6 +355,12 @@ out_free:
- 	enumeration__delete(enumeration);
- 	return -ENOMEM;
- }
-+#else
-+static int create_new_enumeration64(struct cu *cu __maybe_unused, const struct btf_type *tp __maybe_unused, uint32_t id __maybe_unused)
-+{
-+	return -ENOTSUP;
-+}
-+#endif
- 
- static int create_new_subroutine_type(struct cu *cu, const struct btf_type *tp, uint32_t id)
- {
-diff --git a/dutil.h b/dutil.h
-index e45bba05d05d3725..335a17c07c80e28e 100644
---- a/dutil.h
-+++ b/dutil.h
-@@ -344,4 +344,8 @@ void __zfree(void **ptr);
- 
- #define zfree(ptr) __zfree((void **)(ptr))
- 
-+#ifndef BTF_KIND_ENUM64
-+#define BTF_KIND_ENUM64 19
-+#endif
-+
- #endif /* _DUTIL_H_ */
 -- 
-2.37.2
+2.37.2.672.g94769d06f0-goog
 
