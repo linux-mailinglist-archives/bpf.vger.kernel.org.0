@@ -2,94 +2,242 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86AC25A1DCB
-	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 02:47:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BFB85A1E1B
+	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 03:25:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231610AbiHZArN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Aug 2022 20:47:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56822 "EHLO
+        id S244166AbiHZBZQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Aug 2022 21:25:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229990AbiHZArM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Aug 2022 20:47:12 -0400
-X-Greylist: delayed 78 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 25 Aug 2022 17:47:11 PDT
-Received: from frotz.zork.net (frotz.zork.net [69.164.197.204])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17FF8C7FBF;
-        Thu, 25 Aug 2022 17:47:11 -0700 (PDT)
-Received: by frotz.zork.net (Postfix, from userid 1008)
-        id 5364213265E9; Fri, 26 Aug 2022 00:45:52 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 frotz.zork.net 5364213265E9
-Date:   Thu, 25 Aug 2022 17:45:52 -0700
-From:   Seth David Schoen <schoen@loyalty.org>
-To:     "G. Branden Robinson" <g.branden.robinson@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Alejandro Colomar <alx.manpages@gmail.com>,
-        Quentin Monnet <quentin@isovalent.com>,
-        bpf <bpf@vger.kernel.org>, linux-man <linux-man@vger.kernel.org>,
+        with ESMTP id S231750AbiHZBZP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Aug 2022 21:25:15 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9AB01D0C6;
+        Thu, 25 Aug 2022 18:25:13 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id p187so128419iod.8;
+        Thu, 25 Aug 2022 18:25:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=J5snBVTDlWBFu801/ywde1pPm00Eyyw3yMLWbRdtRFQ=;
+        b=Ex1tXuuT1qkRrdHQJdEwKN8pBVE5IGGrbZROLG/2VjcLX/gM6oaE6/E5c6j9phsSZa
+         MUFOU9IRnYNlCNutvBjkjQQZaWhz4bUobD13vwZjcYb7AZgYfwcIkvUaVYHoE8n3GZIL
+         Ag0hzmCR0iu3bZt47wsgC8lkXAp1LJOPVZ8L5Uv4RKgVcGvbrk9Wk38yfYj5TSxXzvDa
+         O7Ptz/IKMhoRYxz5srL3oTv3WFNSfhkGlAF7/aV22LkoDVvxzsqsf2wt3Yq9Tfebl0dw
+         MjNSc1M5F1HhaFmtxZjD+gTJYpQXPV+P7Zw2tN3uoglHFXGn7AI0zr0txqU/4vKiYd26
+         XaPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=J5snBVTDlWBFu801/ywde1pPm00Eyyw3yMLWbRdtRFQ=;
+        b=Rp1kcYUaRgtBWDnzc0l5YRI75fP8tiqTVGw5/fXBu462M5HM5LlWYXTmlz81SDFQ2o
+         RV5gl7dbG9/dSxpC0ENEIG6KWujkL+oZKrDwD76qyQj046kkP4mhGr/cvbiZoVuKCqVb
+         Qz4MeLG3FsMkJ8cGO3pnl+kZvZPSoIKpQhoNNbAZIu0W4Z9ujdmDuxqmqY3KtpVATr2W
+         nKGh3G2pH/DqE/16Rqfs06T0maqau3FAeuYFtyQABwHdkZ/0gI/6tQSjqbP7JizBEatS
+         am6w/EjKok39ZEMkd4phXekO6MAn9p7gyg6d9lzZD3+9Z9uBGixjaLitiftS8zri3STY
+         1xqA==
+X-Gm-Message-State: ACgBeo0Y/K6UZ1AowOmGYifersenyiSVy+ldLAA0HgErtyL3GMtWBkTg
+        0chKNI1rWZSDqXP/qT6NpvctirK9Tk4ME0pix5E=
+X-Google-Smtp-Source: AA6agR5OoRAsYmkKWzn7x8LBM1xeXfEXZP3NcBAmEHhFG5PrKOCKqxwbhXKIm69DDl2rYhZCc3tzxzRN4htkc0G8UEM=
+X-Received: by 2002:a05:6638:3828:b0:349:e863:f16c with SMTP id
+ i40-20020a056638382800b00349e863f16cmr3153987jav.206.1661477112952; Thu, 25
+ Aug 2022 18:25:12 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220824134055.1328882-1-benjamin.tissoires@redhat.com> <20220824134055.1328882-5-benjamin.tissoires@redhat.com>
+In-Reply-To: <20220824134055.1328882-5-benjamin.tissoires@redhat.com>
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date:   Fri, 26 Aug 2022 03:24:37 +0200
+Message-ID: <CAP01T74ZmvoYtG=8wiDm0_X3hrMN8s55CkSzurphDrZ3b86UZQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v9 04/23] bpf/verifier: allow kfunc to return an
+ allocated mem
+To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Jiri Kosina <jikos@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: Re: [PATCH] Fit line in 80 columns
-Message-ID: <20220826004552.GM2831600@frotz.zork.net>
-References: <20220825175653.131125-1-alx.manpages@gmail.com>
- <CAADnVQ+yM_R4vuCLxtNJb0sp61ar=grJh9KmLWVGhXA7Lhpmvw@mail.gmail.com>
- <20220825225425.hp2ylp5rxq453ewl@illithid>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220825225425.hp2ylp5rxq453ewl@illithid>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Joe Stringer <joe@cilium.io>, Jonathan Corbet <corbet@lwn.net>,
+        Tero Kristo <tero.kristo@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-G. Branden Robinson writes:
+On Wed, 24 Aug 2022 at 15:41, Benjamin Tissoires
+<benjamin.tissoires@redhat.com> wrote:
+>
+> For drivers (outside of network), the incoming data is not statically
+> defined in a struct. Most of the time the data buffer is kzalloc-ed
+> and thus we can not rely on eBPF and BTF to explore the data.
+>
+> This commit allows to return an arbitrary memory, previously allocated by
+> the driver.
+> An interesting extra point is that the kfunc can mark the exported
+> memory region as read only or read/write.
+>
+> So, when a kfunc is not returning a pointer to a struct but to a plain
+> type, we can consider it is a valid allocated memory assuming that:
+> - one of the arguments is either called rdonly_buf_size or
+>   rdwr_buf_size
+> - and this argument is a const from the caller point of view
+>
+> We can then use this parameter as the size of the allocated memory.
+>
+> The memory is either read-only or read-write based on the name
+> of the size parameter.
+>
+> Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+>
+> ---
+>
+> changes in v9:
+> - updated to match upstream (replaced kfunc_flag by a field in
+>   kfunc_meta)
+>
+> no changes in v8
+>
+> changes in v7:
+> - ensures btf_type_is_struct_ptr() checks for a ptr first
+>   (squashed from next commit)
+> - remove multiple_ref_obj_id need
+> - use btf_type_skip_modifiers instead of manually doing it in
+>   btf_type_is_struct_ptr()
+> - s/strncmp/strcmp/ in btf_is_kfunc_arg_mem_size()
+> - check for tnum_is_const when retrieving the size value
+> - have only one check for "Ensure only one argument is referenced
+>   PTR_TO_BTF_ID"
+> - add some more context to the commit message
+>
+> changes in v6:
+> - code review from Kartikeya:
+>   - remove comment change that had no reasons to be
+>   - remove handling of PTR_TO_MEM with kfunc releases
+>   - introduce struct bpf_kfunc_arg_meta
+>   - do rdonly/rdwr_buf_size check in btf_check_kfunc_arg_match
+>   - reverted most of the changes in verifier.c
+>   - make sure kfunc acquire is using a struct pointer, not just a plain
+>     pointer
+>   - also forward ref_obj_id to PTR_TO_MEM in kfunc to not use after free
+>     the allocated memory
+>
+> changes in v5:
+> - updated PTR_TO_MEM comment in btf.c to match upstream
+> - make it read-only or read-write based on the name of size
+>
+> new in v4
+>
+> change btf.h
+>
+> fix allow kfunc to return an allocated mem
+> ---
+>  include/linux/bpf.h   |  9 +++-
+>  include/linux/btf.h   | 10 +++++
+>  kernel/bpf/btf.c      | 98 ++++++++++++++++++++++++++++++++++---------
+>  kernel/bpf/verifier.c | 43 +++++++++++++------
+>  4 files changed, 128 insertions(+), 32 deletions(-)
+>
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 39bd36359c1e..90dd218e0199 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1932,13 +1932,20 @@ int btf_distill_func_proto(struct bpf_verifier_log *log,
+>                            const char *func_name,
+>                            struct btf_func_model *m);
+> [...]
+> +
+>  static int btf_check_func_arg_match(struct bpf_verifier_env *env,
+>                                     const struct btf *btf, u32 func_id,
+>                                     struct bpf_reg_state *regs,
+>                                     bool ptr_to_mem_ok,
+> -                                   u32 kfunc_flags)
+> +                                   struct bpf_kfunc_arg_meta *kfunc_meta)
+>  {
+>         enum bpf_prog_type prog_type = resolve_prog_type(env->prog);
+>         bool rel = false, kptr_get = false, trusted_arg = false;
+> @@ -6207,12 +6232,12 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
+>                 return -EINVAL;
+>         }
+>
+> -       if (is_kfunc) {
+> +       if (is_kfunc && kfunc_meta) {
+>                 /* Only kfunc can be release func */
+> -               rel = kfunc_flags & KF_RELEASE;
+> -               kptr_get = kfunc_flags & KF_KPTR_GET;
+> -               trusted_arg = kfunc_flags & KF_TRUSTED_ARGS;
+> -               sleepable = kfunc_flags & KF_SLEEPABLE;
+> +               rel = kfunc_meta->flags & KF_RELEASE;
+> +               kptr_get = kfunc_meta->flags & KF_KPTR_GET;
+> +               trusted_arg = kfunc_meta->flags & KF_TRUSTED_ARGS;
+> +               sleepable = kfunc_meta->flags & KF_SLEEPABLE;
+>         }
+>
+>         /* check that BTF function arguments match actual types that the
+> @@ -6225,6 +6250,35 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
+>
+>                 t = btf_type_skip_modifiers(btf, args[i].type, NULL);
+>                 if (btf_type_is_scalar(t)) {
+> +                       if (is_kfunc && kfunc_meta) {
+> +                               bool is_buf_size = false;
+> +
+> +                               /* check for any const scalar parameter of name "rdonly_buf_size"
+> +                                * or "rdwr_buf_size"
+> +                                */
+> +                               if (btf_is_kfunc_arg_mem_size(btf, &args[i], reg,
+> +                                                             "rdonly_buf_size")) {
+> +                                       kfunc_meta->r0_rdonly = true;
+> +                                       is_buf_size = true;
+> +                               } else if (btf_is_kfunc_arg_mem_size(btf, &args[i], reg,
+> +                                                                    "rdwr_buf_size"))
+> +                                       is_buf_size = true;
+> +
+> +                               if (is_buf_size) {
+> +                                       if (kfunc_meta->r0_size) {
+> +                                               bpf_log(log, "2 or more rdonly/rdwr_buf_size parameters for kfunc");
+> +                                               return -EINVAL;
+> +                                       }
+> +
+> +                                       if (!tnum_is_const(reg->var_off)) {
+> +                                               bpf_log(log, "R%d is not a const\n", regno);
+> +                                               return -EINVAL;
+> +                                       }
+> +
+> +                                       kfunc_meta->r0_size = reg->var_off.value;
 
-> If someone got a contract with O'Reilly or No Starch Press to write a
-> book on BPF and how revolutionarily awesome it is, it's conceivable they
-> would be faced with exposing some BPF-related function declarations in
-> the text.  In cases like the following, what would you have them do?
-> 
-> int bpf_map_update_elem(struct bpf_map *map, const void *key, const void *value, u64 flags)
+Sorry for not pointing it out before, but you will need a call to
+mark_chain_precision here after this, since the value of the scalar is
+being used to decide the size of the returned pointer.
 
-I imagine that the author or editor would break it over two lines like
+> +                               }
+> +                       }
+> +
+>                         if (reg->type == SCALAR_VALUE)
+>                                 continue;
+>                         bpf_log(log, "R%d is not a scalar\n", regno);
+> @@ -6255,6 +6309,19 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
+>                 if (ret < 0)
+>                         return ret;
+>
+> +               if (is_kfunc && reg->type == PTR_TO_BTF_ID) {
 
-int bpf_map_update_elem(struct bpf_map *map, const void *key,
-                        const void *value, u64 flags)
+I think you can drop this extra check 'reg->type == PTR_TO_BTF_ID),
+this condition of only one ref_obj_id should hold regardless of the
+type.
 
-or maybe the slightly uglier
-
-int bpf_map_update_elem(struct bpf_map *map, const void *key,
-    const void *value, u64 flags)
-
-I just looked in _Advanced Programming in the Unix Environment, Third
-Edition_ by Stevens and Rago (published by Addison Wesley rather than
-either of the fine publishers you mentioned), and it didn't take long
-to find a C function prototype that was split across two lines in the
-former style, on p. 880
-
-sem_t     *sem_open(const char *name, int oflag, ... /* mode_t mode,
-                    unsigned int value */ );
-
-... or on the next page, a better example because of the absence of the
-comment:
-
-ssize_t    sendto(int sockfd, const void *buf, size_t nbytes, int flags,
-                  const struct sockaddr *destaddr, socklen_t destlen);
-
-It's convenient that C's rules for whitespace semantics make all of
-these line-wrapped prototypes have exactly the same meaning as their
-un-line-wrapped equivalents, so programmers reading the books shouldn't
-have cause to be confused by this.  It could be more challenging in a
-language like Python, although there, too, there are syntactically
-valid ways to break up some kinds of long lines.
+> [...]
