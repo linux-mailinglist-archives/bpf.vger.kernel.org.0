@@ -2,148 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78FE85A309F
-	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 22:48:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CC485A30A2
+	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 22:48:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231298AbiHZUsN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Aug 2022 16:48:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51908 "EHLO
+        id S232244AbiHZUsY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Aug 2022 16:48:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230416AbiHZUsM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Aug 2022 16:48:12 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCBF2CEB1E;
-        Fri, 26 Aug 2022 13:48:11 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id sd33so5257065ejc.8;
-        Fri, 26 Aug 2022 13:48:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=4qYVa5gkmIfp9UdswOaDQEBHPPp6j3YcVSB+u/dlh1g=;
-        b=g5/VSsck6th7O2vR+jHRYc9yaHwJprFd7ILlPerpBOxHAX/ricKISbRbfUjOyWNZi4
-         9FPMzjR1DTz97pLia7DOkpLSvg8KTWnb6mwFRAWsq0V3xlU4+X4Ha2w24jZml8lNOSTd
-         GxzJChz6Tgt81DiIk5uHiMDxks01Bx00DXT5w5BZa7DF3Vj+jXqUs7lUcHr5cTv8k4na
-         SpQ0xVnM7q+wirtPyGGv16+R9KViqPrUhpeSYfqBkWc+iduuUFS7n36Ev/AsDFePl5HF
-         Ixk4Ju1q4/cUU2M03X08Kl8f4OqOWDF/ais3f4bsxh2vkffGYmVQA7PN8XLnanw6FGvo
-         +rJQ==
+        with ESMTP id S232426AbiHZUsW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Aug 2022 16:48:22 -0400
+Received: from mail-oa1-f41.google.com (mail-oa1-f41.google.com [209.85.160.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E67BD1E3C;
+        Fri, 26 Aug 2022 13:48:21 -0700 (PDT)
+Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-11d2dcc31dbso3541247fac.7;
+        Fri, 26 Aug 2022 13:48:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc;
-        bh=4qYVa5gkmIfp9UdswOaDQEBHPPp6j3YcVSB+u/dlh1g=;
-        b=PvmwjnwQ2LOKKBBgZKM5Sx7AKe4Xt8L8qYMmql/taN2NNsy6sDViEwvRn90BF9Qd36
-         TWhhEGImojB/6hHJTzxjqRRjEGPdfVgtEIsKF9JpUcm8lFYsnCT+1R/3/EFft864hZyh
-         BAup1V2yZ+rXppW1uDE34fm9f0gcpA1+swZVENbRMIaCPdAvoNlA8Y8J38+aDogqUDtb
-         BqdqqZPOlCAMMSFAwTbf4pHVMeGDz8mq+m1P6UeDeGRg/q3t+9sfEQkzavqPSAq3o+XS
-         43dxISHXpYxRfyg/VLlKELmToqDypk/VHI0TISJ/hu1H7CVbQjOgxMGX8dm0vJjbAD7m
-         B7dA==
-X-Gm-Message-State: ACgBeo3wRCyg18BQVBlZvrfV0W/tTbiMdTLMg+CUn6itUlJ3RwlKgPWf
-        0fLYo4gtvKGww5zPOFTzL10//nRjSD4ZkviWPbA=
-X-Google-Smtp-Source: AA6agR66Bso917h19XZvRgHShtjNzX0ajsmcZ1V5q0VIywERvJoCZRTryJBKEadFN4lgO3cf/S+R98xJJLRhvs9P2I4=
-X-Received: by 2002:a17:907:2716:b0:73d:cdf9:b08a with SMTP id
- w22-20020a170907271600b0073dcdf9b08amr6113062ejk.463.1661546890310; Fri, 26
- Aug 2022 13:48:10 -0700 (PDT)
+        bh=+sFY7D0l2mnCR+yBDf+opIgpmAA2WEbHZKwcSvQkuz0=;
+        b=XZ7s0hXNmEde4ohHK74sH3BCjN8BfQWuAVtuPeoYll6FujPuRx/7MHB46fAzrOANeI
+         cV1m3rpy8yWAcw8d+huZZGtCxQSe9U4c3tB4JgAvZ67g/p+h+/SrqhVJqB348xYEtrrD
+         k2HNPc6avqVRmOfwlDEIUUaArHhDtvqqYaA6p58pNsVxfY4UFi/00D3Bm2f3QfiVwAtm
+         kwrYz1GyRmfbckQy0knBnLbaSvQxw4S6Hkhp1WqlbHXyby8AzK/f6gd+S0srbjo1Ecrd
+         zFbA4Yz5QITn1NTrsDx59C8pAQ4YOtxT6dd14Tn5yCCD4Tx1OMgaEUMHasDMz+r85lOo
+         uCmw==
+X-Gm-Message-State: ACgBeo1GXVxnN4ULki3E9ut2eLDCsLmzWEu9m5LM0N0zG+FM17vHUhuO
+        RMUIT6M6+QqPxnlcjjq9zQluuXAirghgW4nL3V0=
+X-Google-Smtp-Source: AA6agR5zjotJNa9cZNMRCVklNAcj4vN3wXvrE7llGej28AXg2L/RwCW7jMpT+qihLPXgoIk9036xBPWFpfl3w2jC2PQ=
+X-Received: by 2002:a05:6870:5b84:b0:10c:d1fa:2f52 with SMTP id
+ em4-20020a0568705b8400b0010cd1fa2f52mr2736185oab.92.1661546900488; Fri, 26
+ Aug 2022 13:48:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220822235649.2218031-1-joannelkoong@gmail.com>
- <20220822235649.2218031-3-joannelkoong@gmail.com> <CAP01T77h2+a9OonHuiPRFsAForWYJfQ71G6teqbcLg4KuGpK5A@mail.gmail.com>
- <CAJnrk1aq3gJgz0DKo47SS0J2wTtg1C_B3eVfsh-036nmDKKVWA@mail.gmail.com>
- <878rnehqnd.fsf@toke.dk> <CAJnrk1YYpcW2Z9XQ9sfq2U7Y6OYMc3CZk1Xgc2p1e7DVCq3kmw@mail.gmail.com>
- <CAP01T75isW8EtuL2AZBwYNzk-OPsMR=QS3YB_oiR8cOLhJzmUg@mail.gmail.com>
- <20220826063706.pufgtu4rff4urbzf@kafai-mbp.dhcp.thefacebook.com> <CAP01T74oMaGGtJNQ_hHWKzBwwGgwOmH=1Z-c3mauqC9U95UPvA@mail.gmail.com>
-In-Reply-To: <CAP01T74oMaGGtJNQ_hHWKzBwwGgwOmH=1Z-c3mauqC9U95UPvA@mail.gmail.com>
-From:   Joanne Koong <joannelkoong@gmail.com>
-Date:   Fri, 26 Aug 2022 13:47:59 -0700
-Message-ID: <CAJnrk1bpHQie+T5vuaQ8-3isLCMp77btLiZrbOwRcR-7dvoU9A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 2/3] bpf: Add xdp dynptrs
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     Martin KaFai Lau <kafai@fb.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        bpf@vger.kernel.org, andrii@kernel.org, daniel@iogearbox.net,
-        ast@kernel.org, kuba@kernel.org, netdev@vger.kernel.org,
-        "brouer@redhat.com" <brouer@redhat.com>, lorenzo@kernel.org
+References: <20220824153901.488576-1-irogers@google.com> <20220824153901.488576-17-irogers@google.com>
+ <a7176263-7dc8-6cbd-af2d-5338c4c4b546@intel.com> <CAP-5=fXk+mLv=C0CTrvnBeuhCTAtJ=x2O8D2YqvmVZSMHqcLvQ@mail.gmail.com>
+ <b9ffea78-48c4-e2cd-20c2-dc0c9c2c69f7@intel.com> <CAP-5=fVXuwxP-REryDShX0RZQjkdy2YJKJ5M+zczUqDE2=59Bg@mail.gmail.com>
+ <CAM9d7cgcLHYded1w4h22F_KWcHUpuxqak7Ny02Awj1WDFLynDQ@mail.gmail.com> <5a0b4083-084a-56b3-a6a1-0fad1100a316@intel.com>
+In-Reply-To: <5a0b4083-084a-56b3-a6a1-0fad1100a316@intel.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Fri, 26 Aug 2022 13:48:09 -0700
+Message-ID: <CAM9d7chNUhmULYUfkEuBC3LcD08y7hLGmFn0qeX83KqoPksvCQ@mail.gmail.com>
+Subject: Re: [PATCH v3 16/18] perf sched: Fixes for thread safety analysis
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Darren Hart <dvhart@infradead.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, Weiguo Li <liwg06@foxmail.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Dario Petrillo <dario.pk1@gmail.com>,
+        Hewenliang <hewenliang4@huawei.com>,
+        yaowenbin <yaowenbin1@huawei.com>,
+        Wenyu Liu <liuwenyu7@huawei.com>,
+        Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Pavithra Gurushankar <gpavithrasha@gmail.com>,
+        Alexandre Truong <alexandre.truong@arm.com>,
+        Quentin Monnet <quentin@isovalent.com>,
+        William Cohen <wcohen@redhat.com>,
+        Andres Freund <andres@anarazel.de>,
+        =?UTF-8?Q?Martin_Li=C5=A1ka?= <mliska@suse.cz>,
+        Colin Ian King <colin.king@intel.com>,
+        James Clark <james.clark@arm.com>,
+        Fangrui Song <maskray@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>,
+        Riccardo Mancini <rickyman7@gmail.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Zechuan Chen <chenzechuan1@huawei.com>,
+        Jason Wang <wangborong@cdjrlc.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Remi Bernon <rbernon@codeweavers.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, llvm@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Aug 26, 2022 at 12:09 PM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
+On Fri, Aug 26, 2022 at 12:36 PM Adrian Hunter <adrian.hunter@intel.com> wrote:
 >
-> On Fri, 26 Aug 2022 at 08:37, Martin KaFai Lau <kafai@fb.com> wrote:
-> >
-> > On Thu, Aug 25, 2022 at 01:04:16AM +0200, Kumar Kartikeya Dwivedi wrote:
-> > > On Wed, 24 Aug 2022 at 20:11, Joanne Koong <joannelkoong@gmail.com> wrote:
-> > > > I'm more and more liking the idea of limiting xdp to match the
-> > > > constraints of skb given that both you, Kumar, and Jakub have
-> > > > mentioned that portability between xdp and skb would be useful for
-> > > > users :)
-> > > >
-> > > > What are your thoughts on this API:
-> > > >
-> > > > 1) bpf_dynptr_data()
-> > > >
-> > > > Before:
-> > > >   for skb-type progs:
-> > > >       - data slices in fragments is not supported
-> > > >
-> > > >   for xdp-type progs:
-> > > >       - data slices in fragments is supported as long as it is in a
-> > > > contiguous frag (eg not across frags)
-> > > >
-> > > > Now:
-> > > >   for skb + xdp type progs:
-> > > >       - data slices in fragments is not supported
-> > I don't think it is necessary (or help) to restrict xdp slice from getting
-> > a fragment.  In any case, the xdp prog has to deal with the case
-> > that bpf_dynptr_data(xdp_dynptr, offset, len) is across two fragments.
-> > Although unlikely, it still need to handle it (dynptr_data returns NULL)
-> > properly by using bpf_dynptr_read().  The same that the skb case
-> > also needs to handle dynptr_data returning NULL.
-> >
-> > Something like Kumar's sample in [0] should work for both
-> > xdp and skb dynptr but replace the helpers with
-> > bpf_dynptr_{data,read,write}().
-> >
-> > [0]: https://lore.kernel.org/bpf/20220726184706.954822-1-joannelkoong@gmail.com/T/#mf082a11403bc76fa56fde4de79a25c660680285c
-> >
-> > > >
-> > > >
-> > > > 2)  bpf_dynptr_write()
-> > > >
-> > > > Before:
-> > > >   for skb-type progs:
-> > > >      - all data slices are invalidated after a write
-> > > >
-> > > >   for xdp-type progs:
-> > > >      - nothing
-> > > >
-> > > > Now:
-> > > >   for skb + xdp type progs:
-> > > >      - all data slices are invalidated after a write
-> > I wonder if the 'Before' behavior can be kept as is.
-> >
-> > The bpf prog that runs in both xdp and bpf should be
-> > the one always expecting the data-slice will be invalidated and
-> > it has to call the bpf_dynptr_data() again after writing.
-> > Yes, it is unnecessary for xdp but the bpf prog needs to the
-> > same anyway if the verifier was the one enforcing it for
-> > both skb and xdp dynptr type.
-> >
-> > If the bpf prog is written for xdp alone, then it has
-> > no need to re-get the bpf_dynptr_data() after writing.
-> >
->
-> Yeah, compared to the alternative, I guess it's better how it is right
-> now. It doesn't seem possible to meaningfully hide the differences
-> without penalizing either case. It also wouldn't be good to make it
-> less useful for XDP, since the whole point of this and the previous
-> effort was exposing bpf_xdp_pointer to the user.
+> On 26/08/22 21:26, Namhyung Kim wrote:
+> > On Fri, Aug 26, 2022 at 10:48 AM Ian Rogers <irogers@google.com> wrote:
 
-I'll keep it as is for v5.
+> >> In the previous code the threads were blocked on mutexes that were
+> >> stack allocated and the stack memory went away. You are correct to say
+> >> that to those locks I added an init and destroy call. The lifetime of
+> >> the mutex was wrong previously and remains wrong in this change.
+> >
+> > I think you fixed the lifetime issue with sched->thread_funcs_exit here.
+> > All you need to do is calling pthread_join() after the mutex_unlock, no?
+>
+> Like this maybe:
+
+Yeah, but at this point we might want to factor it out as a function like
+destroy_tasks().
+
+Thanks,
+Namhyung
+
+>
+> diff --git a/tools/perf/builtin-sched.c b/tools/perf/builtin-sched.c
+> index b483ff0d432e..8090c1218855 100644
+> --- a/tools/perf/builtin-sched.c
+> +++ b/tools/perf/builtin-sched.c
+> @@ -3326,6 +3326,13 @@ static int perf_sched__replay(struct perf_sched *sched)
+>         sched->thread_funcs_exit = true;
+>         mutex_unlock(&sched->start_work_mutex);
+>         mutex_unlock(&sched->work_done_wait_mutex);
+> +       /* Get rid of threads so they won't be upset by mutex destruction */
+> +       for (i = 0; i < sched->nr_tasks; i++) {
+> +               int err = pthread_join(sched->tasks[i]->thread, NULL);
+> +
+> +               if (err)
+> +                       pr_err("pthread_join() failed for task nr %lu, error %d\n", i, err);
+> +       }
+>         return 0;
+>  }
