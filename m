@@ -2,254 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA5AD5A2DB1
-	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 19:42:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D288D5A2DBF
+	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 19:43:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344934AbiHZRm0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Aug 2022 13:42:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52804 "EHLO
+        id S1344885AbiHZRmj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Aug 2022 13:42:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344913AbiHZRmR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Aug 2022 13:42:17 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5372E3430
-        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 10:42:14 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id ay39-20020a05600c1e2700b003a5503a80cfso1217642wmb.2
-        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 10:42:14 -0700 (PDT)
+        with ESMTP id S1344924AbiHZRmZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Aug 2022 13:42:25 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBB9FE2C64;
+        Fri, 26 Aug 2022 10:42:23 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id s31-20020a17090a2f2200b001faaf9d92easo8730809pjd.3;
+        Fri, 26 Aug 2022 10:42:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc;
-        bh=he/bfvf1mDfynCT5CMERAlIneGT6+vfp7BBeASbZgO4=;
-        b=KxEI28tPSvUdNvAkCqxed+rLWbEo5ARCEAFxCt3dpg9zrIvuE3hyl80F3lBx6u6qJ8
-         R3H2BDEl5L7K+oGIDQ+GjK3+LxQch4naSX+wXjC37jJ8uPcV/nR7R/TpQnB1BwSld3zJ
-         8A9o6uWd5OHoG6EhSrquWNsRUo+btk7LVQYEwB9wWyLHaMoMxohYIhDMTLJWnQc1wOIu
-         5oAFiC+QxDuY95fL6yWs6rGPB3zd9X2TzZJMsdYhExNwR4VFmsnTXyA0+3vf81dhV4nc
-         e6Yo3jfLObOFrEj8pqSkT2fdafWMy12nNaRl2jJm6z+Rm+/zknxKzE0IeiFATBFDDZX2
-         lMxA==
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=SVEAc9oaWwhvsLjCRpgqc3gUfUn0N+3jiLz9lf/QEE0=;
+        b=jrbTNnCOFn/3IiMbZtS5oHbXx/Z/L+v8WALSOxCOUFCaVYnGdV9w8k1AI0vjJxSdFj
+         m68cRNUVk7cXGOoGaIP5uKsvRlx/V+oTn4LYwkbbC2Vsam1+/SsFT2ctnqHANIgH4xBe
+         ixnCvpdXJBCfGSB6ZDZxPRe7d2Jm3RPuuxHJxO6VG8nkOLZJAnx/maXDun1H0eqaMxsp
+         ZmGCB6eFljZBXIJKnnHyZzPNycSW58BlELK4CyymZULNmfLr9F7zBO4Vejf32Hhl4huN
+         y61UnFf3o3uNOSXrrbMJqKHxLPzFFn6b308Q92LnMKRrInwqk3EytJ09j2ETLL2/DjcQ
+         D9Og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc;
-        bh=he/bfvf1mDfynCT5CMERAlIneGT6+vfp7BBeASbZgO4=;
-        b=n/5jKdpSpE/jTxXEORadldkerVqD0y8wpeuk1s1n+nqRDJ1HKGTBzmfP3JqnhbaZjy
-         kiOvrHFVYQNJAb+tRhYHHK3jSAB11ca4JOUiXWdNTSAapTNF3bERblpbtUdhhqFPzthn
-         KMe51SpH3ruqGGnWq4bZmffM96o6AYgQs4OsSi/KrIqt3iVIekHArAjki/rpVIjvxnbO
-         +uAix+vMFe6O96I2eNbRNSU8Di0TqlKko6KDgKwX/EpO+5HtHCBZ5bqeKQcj6Ya88g2g
-         fYNO3+M2QUOgfn+REffVLM8caoBN1IrpjmXeJCG9tEA4ZWsGZHsTDof3Gmn8h915PYCg
-         kOlw==
-X-Gm-Message-State: ACgBeo3YJGfaxRof5qsNnd3iSuIieVs68YqdaN5lFawLahQiQhyM6G4N
-        T891zn3u10FaRL2aaHdOAVEXqRjeDvDwII5OgiKCVQ==
-X-Google-Smtp-Source: AA6agR7/djEpyXLmdsCZ/Kfc2/F8wSfF7w1WoiOTxpF6ZpcmN5MGMotc82Np/jxf3XCYtHfCucVkRsVFYrjqmymNdjw=
-X-Received: by 2002:a05:600c:224c:b0:3a6:7234:551 with SMTP id
- a12-20020a05600c224c00b003a672340551mr367113wmm.27.1661535733158; Fri, 26 Aug
- 2022 10:42:13 -0700 (PDT)
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=SVEAc9oaWwhvsLjCRpgqc3gUfUn0N+3jiLz9lf/QEE0=;
+        b=tI8rHVHu9Y0CK/04frz3LzWyn7/JGSExrpUzH+pBJA1bbeCBb3/mjZXo1xM6+m7v2g
+         EZEgP9lCxWu8yJFKRQffXOdBLsMe7aSHIEH9OH0V8xm2TDHtAj3AHJd28kEtkiMbB4ZZ
+         PURn7L26F6yRFnmdthmFRKY6UraNQoC238jFsTLmPrtNrgDJ0W32O7PCcN2nE2i0BB5M
+         KBHuxhnZ1JEU8Zsy7aekCuOoqvh9omIM5PgUnvsdLw9TAntJAcfVI5e6cWqScdvkN7go
+         9la15YyFgGTJ7LbCi9sJNeFomJSyeve4Z+J0QXZvhcO0NwnzTC8v5HfPsw1tYeGOwdTq
+         7v0Q==
+X-Gm-Message-State: ACgBeo2w+4pvown2/OId2EDDcLRHEGowDa4y1/60pgdmLxYFS1U+9GMA
+        83XMaNcacyYACSrt4Mo1UOrq50KvruixuNSkd/A=
+X-Google-Smtp-Source: AA6agR73VkI5nQg0Uq15XnxNDnwRXSDwjN4iilceZ2rCXSyc+ELTXRAfOfJ4O12Z1tONjm9l2NqVwPWAN5MiGrI9Ulc=
+X-Received: by 2002:a17:902:6b82:b0:16d:d268:3842 with SMTP id
+ p2-20020a1709026b8200b0016dd2683842mr4673930plk.16.1661535742946; Fri, 26 Aug
+ 2022 10:42:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220826165238.30915-1-mkoutny@suse.com> <20220826165238.30915-5-mkoutny@suse.com>
-In-Reply-To: <20220826165238.30915-5-mkoutny@suse.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Fri, 26 Aug 2022 10:41:37 -0700
-Message-ID: <CAJD7tkZZ6j6mPfwwFDy_ModYux5447HFP=oPwa6MFA_NYAZ9-g@mail.gmail.com>
-Subject: Re: [PATCH 4/4] cgroup/bpf: Honor cgroup NS in cgroup_iter for ancestors
-To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Aditya Kali <adityakali@google.com>,
-        Serge Hallyn <serge.hallyn@canonical.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Yonghong Song <yhs@fb.com>,
-        Muneendra Kumar <muneendra.kumar@broadcom.com>,
-        Hao Luo <haoluo@google.com>
+References: <20220825221751.258958-1-james.hilliard1@gmail.com>
+ <20220826051630.glhrbdhiybtqwc4p@kafai-mbp.dhcp.thefacebook.com>
+ <CADvTj4rQdnd=V0tENFGCTtpTESwSCcwK+h3i9nZ75M+TywNWzA@mail.gmail.com>
+ <20220826054944.5bcx7unsyx4ts6ok@kafai-mbp.dhcp.thefacebook.com>
+ <CADvTj4qNR+m2fQMMf9+=hMruhon8G_7yFC2_43-qhZ9X7ZW=8A@mail.gmail.com> <20220826171741.pdiqa4n4mls56bw3@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20220826171741.pdiqa4n4mls56bw3@kafai-mbp.dhcp.thefacebook.com>
+From:   James Hilliard <james.hilliard1@gmail.com>
+Date:   Fri, 26 Aug 2022 11:42:10 -0600
+Message-ID: <CADvTj4qg6R9udazmGFoFhn9pXN6HOqLGEsQOhCAELi1LxzoTmw@mail.gmail.com>
+Subject: Re: [PATCH] selftests/bpf: Fix bind{4,6} tcp/socket header type conflict
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi there!
+On Fri, Aug 26, 2022 at 11:17 AM Martin KaFai Lau <kafai@fb.com> wrote:
+>
+> On Fri, Aug 26, 2022 at 12:13:54AM -0600, James Hilliard wrote:
+> > On Thu, Aug 25, 2022 at 11:49 PM Martin KaFai Lau <kafai@fb.com> wrote:
+> > >
+> > > On Thu, Aug 25, 2022 at 11:31:15PM -0600, James Hilliard wrote:
+> > > > On Thu, Aug 25, 2022 at 11:16 PM Martin KaFai Lau <kafai@fb.com> wrote:
+> > > > >
+> > > > > On Thu, Aug 25, 2022 at 04:17:49PM -0600, James Hilliard wrote:
+> > > > > > There is a potential for us to hit a type conflict when including
+> > > > > > netinet/tcp.h with sys/socket.h, we can replace both of these includes
+> > > > > > with linux/tcp.h to avoid this conflict.
+> > > > > >
+> > > > > > Fixes errors like:
+> > > > > > In file included from /usr/include/netinet/tcp.h:91,
+> > > > > >                  from progs/bind4_prog.c:10:
+> > > > > > /home/buildroot/opt/cross/lib/gcc/bpf/13.0.0/include/stdint.h:34:23: error: conflicting types for 'int8_t'; have 'char'
+> > > > > >    34 | typedef __INT8_TYPE__ int8_t;
+> > > > > >       |                       ^~~~~~
+> > > > > > In file included from /usr/include/x86_64-linux-gnu/sys/types.h:155,
+> > > > > >                  from /usr/include/x86_64-linux-gnu/bits/socket.h:29,
+> > > > > >                  from /usr/include/x86_64-linux-gnu/sys/socket.h:33,
+> > > > > >                  from progs/bind4_prog.c:9:
+> > > > > > /usr/include/x86_64-linux-gnu/bits/stdint-intn.h:24:18: note: previous declaration of 'int8_t' with type 'int8_t' {aka 'signed char'}
+> > > > > >    24 | typedef __int8_t int8_t;
+> > > > > >       |                  ^~~~~~
+> > > > > > /home/buildroot/opt/cross/lib/gcc/bpf/13.0.0/include/stdint.h:43:24: error: conflicting types for 'int64_t'; have 'long int'
+> > > > > >    43 | typedef __INT64_TYPE__ int64_t;
+> > > > > >       |                        ^~~~~~~
+> > > > > > /usr/include/x86_64-linux-gnu/bits/stdint-intn.h:27:19: note: previous declaration of 'int64_t' with type 'int64_t' {aka 'long long int'}
+> > > > > >    27 | typedef __int64_t int64_t;
+> > > > > >       |                   ^~~~~~~
+> > > > > > make: *** [Makefile:537: /home/buildroot/bpf-next/tools/testing/selftests/bpf/bpf_gcc/bind4_prog.o] Error 1
+> > > > > >
+> > > > > > Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+> > > > > > ---
+> > > > > >  tools/testing/selftests/bpf/progs/bind4_prog.c | 3 +--
+> > > > > >  tools/testing/selftests/bpf/progs/bind6_prog.c | 3 +--
+> > > > > >  2 files changed, 2 insertions(+), 4 deletions(-)
+> > > > > >
+> > > > > > diff --git a/tools/testing/selftests/bpf/progs/bind4_prog.c b/tools/testing/selftests/bpf/progs/bind4_prog.c
+> > > > > > index 474c6a62078a..6bd20042fd53 100644
+> > > > > > --- a/tools/testing/selftests/bpf/progs/bind4_prog.c
+> > > > > > +++ b/tools/testing/selftests/bpf/progs/bind4_prog.c
+> > > > > > @@ -6,8 +6,7 @@
+> > > > > >  #include <linux/bpf.h>
+> > > > > >  #include <linux/in.h>
+> > > > > >  #include <linux/in6.h>
+> > > > > > -#include <sys/socket.h>
+> > > > > > -#include <netinet/tcp.h>
+> > > > > These includes look normal to me.  What environment is hitting this.
+> > > >
+> > > > I was hitting this error with GCC 13(GCC master branch).
+> > > These two includes (<sys/socket.h> and <netinet/tcp.h>) are normal,
+> > > so does it mean all existing programs need to change to use gcc 13 ?
+> >
+> > Well I think it's mostly just an issue getting hit with GCC-BPF as it
+> > looks to me like a cross compilation host/target header conflict.
+> The users have been using these headers in the bpf progs.
 
-Thanks for following up with this series!
+Users can migrate away from libc headers over time, migrating away
+shouldn't cause regressions and should improve reliability.
 
-On Fri, Aug 26, 2022 at 9:53 AM Michal Koutn=C3=BD <mkoutny@suse.com> wrote=
-:
->
-> The iterator with BPF_CGROUP_ITER_ANCESTORS_UP can traverse up across a
-> cgroup namespace level, which may be surprising within a non-init cgroup
-> namespace.
->
-> Introduce and use a new cgroup_parent_ns() helper that stops according
-> to cgroup namespace boundary. With BPF_CGROUP_ITER_ANCESTORS_UP. We use
-> the cgroup namespace of the iterator caller, not that one of the creator
-> (might be different, the former is relevant).
->
-> Fixes: d4ccaf58a847 ("bpf: Introduce cgroup iter")
-> Signed-off-by: Michal Koutn=C3=BD <mkoutny@suse.com>
-> ---
->  include/linux/cgroup.h   |  3 +++
->  kernel/bpf/cgroup_iter.c |  9 ++++++---
->  kernel/cgroup/cgroup.c   | 32 +++++++++++++++++++++++---------
->  3 files changed, 32 insertions(+), 12 deletions(-)
->
-> diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
-> index b6a9528374a8..b63a80e03fae 100644
-> --- a/include/linux/cgroup.h
-> +++ b/include/linux/cgroup.h
-> @@ -858,6 +858,9 @@ struct cgroup_namespace *copy_cgroup_ns(unsigned long=
- flags,
->  int cgroup_path_ns(struct cgroup *cgrp, char *buf, size_t buflen,
->                    struct cgroup_namespace *ns);
->
-> +struct cgroup *cgroup_parent_ns(struct cgroup *cgrp,
-> +                               struct cgroup_namespace *ns);
-> +
->  #else /* !CONFIG_CGROUPS */
->
->  static inline void free_cgroup_ns(struct cgroup_namespace *ns) { }
-> diff --git a/kernel/bpf/cgroup_iter.c b/kernel/bpf/cgroup_iter.c
-> index c69bce2f4403..06ee4a0c5870 100644
-> --- a/kernel/bpf/cgroup_iter.c
-> +++ b/kernel/bpf/cgroup_iter.c
-> @@ -104,6 +104,7 @@ static void *cgroup_iter_seq_next(struct seq_file *se=
-q, void *v, loff_t *pos)
->  {
->         struct cgroup_subsys_state *curr =3D (struct cgroup_subsys_state =
-*)v;
->         struct cgroup_iter_priv *p =3D seq->private;
-> +       struct cgroup *parent;
->
->         ++*pos;
->         if (p->terminate)
-> @@ -113,9 +114,11 @@ static void *cgroup_iter_seq_next(struct seq_file *s=
-eq, void *v, loff_t *pos)
->                 return css_next_descendant_pre(curr, p->start_css);
->         else if (p->order =3D=3D BPF_CGROUP_ITER_DESCENDANTS_POST)
->                 return css_next_descendant_post(curr, p->start_css);
-> -       else if (p->order =3D=3D BPF_CGROUP_ITER_ANCESTORS_UP)
-> -               return curr->parent;
-> -       else  /* BPF_CGROUP_ITER_SELF_ONLY */
-> +       else if (p->order =3D=3D BPF_CGROUP_ITER_ANCESTORS_UP) {
-> +               parent =3D cgroup_parent_ns(curr->cgroup,
-> +                                         current->nsproxy->cgroup_ns);
-> +               return parent ? &parent->self : NULL;
-> +       } else  /* BPF_CGROUP_ITER_SELF_ONLY */
->                 return NULL;
->  }
->
-> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-> index c0377726031f..d60b5dfbbbc9 100644
-> --- a/kernel/cgroup/cgroup.c
-> +++ b/kernel/cgroup/cgroup.c
-> @@ -1417,11 +1417,11 @@ static inline struct cgroup *__cset_cgroup_from_r=
-oot(struct css_set *cset,
->  }
->
->  /*
-> - * look up cgroup associated with current task's cgroup namespace on the
-> + * look up cgroup associated with given cgroup namespace on the
->   * specified hierarchy
->   */
-> -static struct cgroup *
-> -current_cgns_cgroup_from_root(struct cgroup_root *root)
-> +static struct cgroup *cgns_cgroup_from_root(struct cgroup_root *root,
-> +                                           struct cgroup_namespace *ns)
->  {
->         struct cgroup *res =3D NULL;
->         struct css_set *cset;
-> @@ -1430,7 +1430,7 @@ current_cgns_cgroup_from_root(struct cgroup_root *r=
-oot)
->
->         rcu_read_lock();
->
-> -       cset =3D current->nsproxy->cgroup_ns->root_cset;
-> +       cset =3D ns->root_cset;
->         res =3D __cset_cgroup_from_root(cset, root);
->
->         rcu_read_unlock();
-> @@ -1852,15 +1852,15 @@ int cgroup_show_path(struct seq_file *sf, struct =
-kernfs_node *kf_node,
->         int len =3D 0;
->         char *buf =3D NULL;
->         struct cgroup_root *kf_cgroot =3D cgroup_root_from_kf(kf_root);
-> -       struct cgroup *ns_cgroup;
-> +       struct cgroup *root_cgroup;
->
->         buf =3D kmalloc(PATH_MAX, GFP_KERNEL);
->         if (!buf)
->                 return -ENOMEM;
->
->         spin_lock_irq(&css_set_lock);
-> -       ns_cgroup =3D current_cgns_cgroup_from_root(kf_cgroot);
-> -       len =3D kernfs_path_from_node(kf_node, ns_cgroup->kn, buf, PATH_M=
-AX);
-> +       root_cgroup =3D cgns_cgroup_from_root(kf_cgroot, current->nsproxy=
-->cgroup_ns);
-> +       len =3D kernfs_path_from_node(kf_node, root_cgroup->kn, buf, PATH=
-_MAX);
->         spin_unlock_irq(&css_set_lock);
->
->         if (len >=3D PATH_MAX)
-> @@ -2330,6 +2330,18 @@ int cgroup_path_ns(struct cgroup *cgrp, char *buf,=
- size_t buflen,
->  }
->  EXPORT_SYMBOL_GPL(cgroup_path_ns);
->
-> +struct cgroup *cgroup_parent_ns(struct cgroup *cgrp,
-> +                                  struct cgroup_namespace *ns)
-> +{
-> +       struct cgroup *root_cgrp;
-> +
-> +       spin_lock_irq(&css_set_lock);
-> +       root_cgrp =3D cgns_cgroup_from_root(cgrp->root, ns);
-> +       spin_unlock_irq(&css_set_lock);
-> +
-> +       return cgrp =3D=3D root_cgrp ? NULL : cgroup_parent(cgrp);
+> The solution should be on the GCC-BPF side instead of changing
+> all bpf progs.
 
-I understand that currently cgroup_iter is the only user of this, but
-for future use cases, is it safe to assume that cgrp will always be
-inside ns? Would it be safer to do something like:
+I mean, GCC doesn't really control which libc is available, it seems to
+be a bad idea to use libc headers in general as they are developed
+separately from GCC and the kernel/libbpf.
 
-struct cgroup *parent =3D cgroup_parent(cgrp);
-
-if (!parent)
-    return NULL;
-
-return cgroup_is_descendant(parent, root_cgrp) ? parent : NULL;
-
-
-> +}
-> +
->  /**
->   * task_cgroup_path - cgroup path of a task in the first cgroup hierarch=
-y
->   * @task: target task
-> @@ -6031,7 +6043,8 @@ struct cgroup *cgroup_get_from_id(u64 id)
->                 goto out;
->
->         spin_lock_irq(&css_set_lock);
-> -       root_cgrp =3D current_cgns_cgroup_from_root(&cgrp_dfl_root);
-> +       root_cgrp =3D cgns_cgroup_from_root(&cgrp_dfl_root,
-> +                                         current->nsproxy->cgroup_ns);
->         spin_unlock_irq(&css_set_lock);
->         if (!cgroup_is_descendant(cgrp, root_cgrp)) {
->                 cgroup_put(cgrp);
-> @@ -6612,7 +6625,8 @@ struct cgroup *cgroup_get_from_path(const char *pat=
-h)
->         struct cgroup *root_cgrp;
->
->         spin_lock_irq(&css_set_lock);
-> -       root_cgrp =3D current_cgns_cgroup_from_root(&cgrp_dfl_root);
-> +       root_cgrp =3D cgns_cgroup_from_root(&cgrp_dfl_root,
-> +                                         current->nsproxy->cgroup_ns);
->         kn =3D kernfs_walk_and_get(root_cgrp->kn, path);
->         spin_unlock_irq(&css_set_lock);
->         if (!kn)
-> --
-> 2.37.0
->
+I'm not really sure how one would fix this on the GCC-BPF side without
+introducing more potential header conflicts.
