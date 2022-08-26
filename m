@@ -2,198 +2,200 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 995915A2D3C
-	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 19:18:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60BE35A2D3D
+	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 19:18:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244516AbiHZRSA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Aug 2022 13:18:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41712 "EHLO
+        id S241676AbiHZRSI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Aug 2022 13:18:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229845AbiHZRR6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Aug 2022 13:17:58 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C70EDFB7F;
-        Fri, 26 Aug 2022 10:17:54 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id u5so2526510wrt.11;
-        Fri, 26 Aug 2022 10:17:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:from:content-language:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc;
-        bh=Ka9MFQxCPa3boCvexoTm1hMno6nNE4dkf87Rf/h60HU=;
-        b=XvRHMimkxLs4l2e7h72+dJUfYu6kNtimgMceLfKIPm7T6bKuNMarYSN3MWz7ZyUCck
-         oY/sD8yOQXt145+QqdSDtlfxOp5DosnVyoGWGMvW+ASB8ZHzjQwuH2sWG2zxtk4fbG3O
-         SPGu2y08jo9AuselxIC15UpN1Q2nPf0KP1THTD7RnaDNn33B8AYrVywu1KL7V9xCEo/2
-         yCjBjQbxKwDwvUM9M+5XGf02Tn9cFRwntOitXwmvxbOr13IHr5IW8AAiB5XZDWlbO7Cy
-         4An4d791DuQOr5eoiagTrBoo6SrmP5WjUWMaPQkwG5jma2bP1+6w+KP8MrhZ88pi4Op0
-         R7gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:from:content-language:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc;
-        bh=Ka9MFQxCPa3boCvexoTm1hMno6nNE4dkf87Rf/h60HU=;
-        b=wozQLNEDXZD1SRrDmHfLsdJqK09NfCyo0POsClQZEXssZuKP7Z6ilgH9UVwli9XNiH
-         oav1LUiGaT6o6FmkBCX4KFw3rDJmEpA86cT4gVcJohVSrB3VFJ4z+Ln36JAAkgvHt6ZL
-         wmF+AB+EVVox2YeEPbW31bmO083MTuhnOAvfU0Cg3BbtboXrLPuLeSB5DzKEOraRvISq
-         zjCOyfAv4azYmOgPL5YYznDLO4iaimvMuDeFGC99/8XMdYn/bTLjvitMDGsqQVfczH2g
-         VwruZFciXjq6+qq3nzBKLyPHwzWIb4UQtMfmVthKYS9o3GLiudVi4zpNM1FPThqpL1uM
-         QcVA==
-X-Gm-Message-State: ACgBeo3zxJR2jTjtS1G3PwUHJjFaS7xYAFeYpr1+C4Pq7+visDL7EVwi
-        AO4fUAE1BHyrfY1vW9bgHaA=
-X-Google-Smtp-Source: AA6agR4ijIQeZNxPRBLulms8XntO5lTf9WdjS7PGHtnPolPLLEQmQn43MWYAWTTRN8V7PHsyz7e2Jw==
-X-Received: by 2002:adf:d1e4:0:b0:221:6c37:277e with SMTP id g4-20020adfd1e4000000b002216c37277emr380673wrd.498.1661534273185;
-        Fri, 26 Aug 2022 10:17:53 -0700 (PDT)
-Received: from [192.168.0.160] ([170.253.36.171])
-        by smtp.gmail.com with ESMTPSA id i12-20020a1c540c000000b003a2f2bb72d5sm186388wmb.45.2022.08.26.10.17.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Aug 2022 10:17:52 -0700 (PDT)
-Message-ID: <67989b1b-712a-6110-b0a4-7d855179e17c@gmail.com>
-Date:   Fri, 26 Aug 2022 19:17:40 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCH bpf-next v3] bpf: Fix a few typos in BPF helpers
- documentation
-To:     Quentin Monnet <quentin@isovalent.com>,
+        with ESMTP id S239029AbiHZRSE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Aug 2022 13:18:04 -0400
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9E4CDF09B;
+        Fri, 26 Aug 2022 10:18:03 -0700 (PDT)
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 27QG75rp012626;
+        Fri, 26 Aug 2022 10:17:47 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=zqJrUzTrGJcUXDO+Xp68iugw1pyZpEltqdZPhEG/tXE=;
+ b=Tr0pX9SG2D17QJ7LzNKUWnaxqaWXuQUcRL7v+2lTMCjBdnFFnihS5x7XmU7U4Qzk4DPm
+ cWtygTnwmB5e202rvTvlf7Qd1DIT1TloQhPMlShJFJLH6x1Eofl5eBuOAHud9wK7c9Ce
+ n/TvbCd6ZVsPTswgmITWXFyG3qtfwphuVmA= 
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2169.outbound.protection.outlook.com [104.47.58.169])
+        by m0001303.ppops.net (PPS) with ESMTPS id 3j71dhghen-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 26 Aug 2022 10:17:46 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=c39QCjQmXKkAGpj78OllX8sg39yBku0J9WCjQadqjlcgiYhn+WjTBk65SFeIXQ2GTt48E5mntr882vxLGPkvUpXlLwS0IqwEpg+HReOxb6Zt8Ahz2nc4Z569MquPXRibS5+R6TEI0eI1rKp/7DrLq2/4Q9Uh9lszpHe4CrLy4KO++Fxhor0ERKypb74EeevfSbqM3V5MS5x9hEzLIzqPdrnwQhQSSnW1u+QLlook5dByjcX9+9qLV5NyQT/PNNgHobxycPcdPkq8l68ws3hr3zMr9StkcW4PFesVgf7H+hG9lTF2m6huP+2+TdsBmmqVeFyzkCVfkk7KK3NXJlu9Eg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=zqJrUzTrGJcUXDO+Xp68iugw1pyZpEltqdZPhEG/tXE=;
+ b=csOEQobaASB3kCHmZaDxhJ6rfkBZEGQjGbZaTH24c+RQJlyD6v/LWbUW262SBxCuVvUBdP7l2K3OECMMGjZpL/eQXCdZHIJImicGOT8aWrchoqiPSOwur36dZtthGGo06RtNH5861RALPD8quGnRjfvJInym6CoSDGEyvOPX0+/ykarvMEL5837zvCxDLD44hBUxNrG0ABtHWNHGHwpw7mR4BRP+Z3f9YuHK7ifkUq4TlTu0jSF6oBLLddrQJc7uXpWSRYfhpsN2X4dgrVyfcX8GR7xXi9eZ7YuU3Mqkr4iBdWG6wiQ/0Q4q0K+j3ZvsOJFMNncHrzfICe6fFFdy/Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from MW4PR15MB4475.namprd15.prod.outlook.com (2603:10b6:303:104::16)
+ by SA1PR15MB4690.namprd15.prod.outlook.com (2603:10b6:806:19d::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5566.16; Fri, 26 Aug
+ 2022 17:17:45 +0000
+Received: from MW4PR15MB4475.namprd15.prod.outlook.com
+ ([fe80::1858:f420:93d2:4b5e]) by MW4PR15MB4475.namprd15.prod.outlook.com
+ ([fe80::1858:f420:93d2:4b5e%3]) with mapi id 15.20.5566.016; Fri, 26 Aug 2022
+ 17:17:45 +0000
+Date:   Fri, 26 Aug 2022 10:17:41 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     James Hilliard <james.hilliard1@gmail.com>
+Cc:     bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org, Jakub Wilk <jwilk@jwilk.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        linux-man@vger.kernel.org
-References: <20220825220806.107143-1-quentin@isovalent.com>
- <ebbae976-b452-c359-fd67-5b0511c3ef10@gmail.com>
- <c94959da-67f6-da66-1d46-ae9dfdc0e674@isovalent.com>
-Content-Language: en-US
-From:   Alejandro Colomar <alx.manpages@gmail.com>
-In-Reply-To: <c94959da-67f6-da66-1d46-ae9dfdc0e674@isovalent.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------mZNAThT0tH0c4ZVKlFpEt0u2"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] selftests/bpf: Fix bind{4,6} tcp/socket header type
+ conflict
+Message-ID: <20220826171741.pdiqa4n4mls56bw3@kafai-mbp.dhcp.thefacebook.com>
+References: <20220825221751.258958-1-james.hilliard1@gmail.com>
+ <20220826051630.glhrbdhiybtqwc4p@kafai-mbp.dhcp.thefacebook.com>
+ <CADvTj4rQdnd=V0tENFGCTtpTESwSCcwK+h3i9nZ75M+TywNWzA@mail.gmail.com>
+ <20220826054944.5bcx7unsyx4ts6ok@kafai-mbp.dhcp.thefacebook.com>
+ <CADvTj4qNR+m2fQMMf9+=hMruhon8G_7yFC2_43-qhZ9X7ZW=8A@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CADvTj4qNR+m2fQMMf9+=hMruhon8G_7yFC2_43-qhZ9X7ZW=8A@mail.gmail.com>
+X-ClientProxiedBy: BYAPR06CA0055.namprd06.prod.outlook.com
+ (2603:10b6:a03:14b::32) To MW4PR15MB4475.namprd15.prod.outlook.com
+ (2603:10b6:303:104::16)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1b6ea093-88cb-4020-6f0e-08da8786e407
+X-MS-TrafficTypeDiagnostic: SA1PR15MB4690:EE_
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: KbqKR0eScrKifpNpPzCADAx8QxOkqwMyv5HbAbModVFs90YjBWsm8i7CMpDnx+gn5+0HXwakSqAGkgOqWzhZQuiqLSsB2dffHVnTvdTneDwHw4PJJEaJ1TtdPkJXLZk9UBV6xOBiYGiSCjyGbFhEiC1SezPt5hZlzOPZmeBHjzF8lAHCEbmSROZzbGp2EN3SnB8I5trGLjXT8Uw8NK0fJj/7hzFAA8BTrEU65uq0+hcnSO2wqJ0TOfpWYqh5KEcleay5rU6LlzDtycBJlxDQMks5KgEnWZbz0WT3eqkHvUJpugaXXYo+klAgQysaoSB03jkjxoeARde8mR8llOka2Y+ZudSMpZC9njM2ulpzvEmKz6RWFC0JfiJ/UjRMl9wOU6eGAk0HLqEyUv0YoLxHav7IxxLYZQKYkt0cYYe3pM6BzWxIlEVw9cEhFHuhSPjTmQConQ4QJhjTytIwHrY0mbvn8zIMXNWmlyL8ScGTP36sMnXloHGsgRB1ABpj+W3Qqv5B126MAi/L01r52oDLVHZvefk8FvfKiBLE2EgL/JoDgbDC4owIpBbwKFlrKPB+8VxH9LdD3LoKXh5zFs04mvahRfKApWHE8NuOlHKq/47u6lKK9qDpa9r1Ez8G5XIEg/gIaKEq++2XUVtPvhDLd/6gu60Pi4XWtoR8VHxuPLqhCAQbbdsDsRFHQBttWKqA91Gys0LLfAushwwttWBs5Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR15MB4475.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(346002)(376002)(366004)(39860400002)(396003)(136003)(8676002)(66476007)(6916009)(66556008)(66946007)(54906003)(316002)(5660300002)(4326008)(2906002)(8936002)(7416002)(478600001)(1076003)(52116002)(86362001)(53546011)(6506007)(6666004)(6512007)(6486002)(9686003)(186003)(41300700001)(38100700002)(83380400001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ze6P6mC8Y1Tr09isdPHoHf0ia3YP5uLThx2B4uG4Ep+naBaxQVP6xBvQNZYM?=
+ =?us-ascii?Q?us/RRuktBxWF3iTCdYwC3k2OZXQB9CR4xzYPlveNQ29LqCnijCUvj8wyefWq?=
+ =?us-ascii?Q?Op+zsS3vM+oqmXkvwSgpkohpW0Zq+TArIkDpLP50TPn9e77cUV2F3EHW49Zl?=
+ =?us-ascii?Q?7LuQ7RoCF6ZnHTZLGMIuO6L7tsAsKSQ5SPGA8qOPJgUrXAOXqUiBtxEYCr2P?=
+ =?us-ascii?Q?QZit0VkevuuxPR9jo69NNzEcxk2kERcxPXRqJxUTWjLDCaM8k17PY8/fL1qS?=
+ =?us-ascii?Q?iKLoaHbam3AQxOT8xdgGwmVVKB3dcKlL4+fLD7ETOHnMri2vszENNvm4kNIZ?=
+ =?us-ascii?Q?gBTCJOX7CApDytTgcsHTRpfNJ7HmwcHyee5btVyZJpBtNTjGsripc6SwSQZt?=
+ =?us-ascii?Q?0NtKlAPtyXkK5/bZCPNukuOsHJ+JmRITwX/NcESS6xSEG9R3883VsYZ3vmCE?=
+ =?us-ascii?Q?sGFLY+6ezDeLovq2QLrS3peVPafxA/2PyajHkd4VJRhpB35zis5OuJbKLxiH?=
+ =?us-ascii?Q?QQ/AGk9gyE2UqTQ9XdMR20l9PMTrE6ujiLo5bbWap/NQunHOryNzQikxODEF?=
+ =?us-ascii?Q?e6H36JOU82RGiOIPgM7RhXzjNR+53c6T2eJFgp0tnWrx21NMtyWohxffCSrk?=
+ =?us-ascii?Q?IjjGSj7kA9tG86/i1cBhna0+MKQWSbTOTNdQ4Xr1eo9S8h8yWnkLTWV9OIqy?=
+ =?us-ascii?Q?SUo+wvUrHWbEv5/AUxwUo+ePA20+sge6ivuUGBcla/e+zEZT5tGwrboeznXe?=
+ =?us-ascii?Q?9wa9ddNLmsgtOHuS+IqyKc1TtDv991CKKXOfN1IcQ6p28980a5gawIP1jywl?=
+ =?us-ascii?Q?EYN7h+6YT10IWR7h7EMe571/os0hb0lPcwAF2KxsxuVDENAMyWNCBPCakB4H?=
+ =?us-ascii?Q?yCDIOhcAjbi6PZpRZ14flmpneXqMLs5IjtEvw4noD7vklEhk4pQ65ClJESOG?=
+ =?us-ascii?Q?Mf7hHOzQ/LMIhBym3EY89HrysZ8Rir4ke8kcndUgXSNoW0Z3hAyeaScCSzsk?=
+ =?us-ascii?Q?wlj6NGcBX8GGgy0+CHoe8IJJciYVvVmBanxlpBrqMgRPy0GmGT+nSND58p3E?=
+ =?us-ascii?Q?Z7MUTnsBS2kwwBGmqXgClgZxOtICDk4xGdlEhNUR5Nk6zgEoqJRwjajjR9xx?=
+ =?us-ascii?Q?pRbwaqwriw81FsXY6B3j+fVNPhemMazxqvvyUVmUfpyDxI6JRLmqknVwNUKE?=
+ =?us-ascii?Q?j18ad1pvel/d+OncBUzMZWUf/MXFA4Eq/XPKQ7OPmXh/NUSqOT6FzaNsU0XF?=
+ =?us-ascii?Q?SKyaTCyKnazBYOEA1sdtl9J6LS0wTYQo9wMqNUqqsptdM3rJhjzJzpNsRbwi?=
+ =?us-ascii?Q?o363NadOwJ5TPsEKXfFGS7Kfs4VDnpgWUc5TE6blXJnX3H+BxkD3ABY6xOYf?=
+ =?us-ascii?Q?HxjQ0t2BBKOYZzpIoyG1SIdzJbDZ88X3S5VjziD/ZhbfKQQqRmaJ5C4MGKVm?=
+ =?us-ascii?Q?+Xc6sHI8BN/vWjFmAlMFqCA26SESsMYHLvF17eZ/aFAzCDxNBaVTki++1Oxp?=
+ =?us-ascii?Q?9v81xulxl1VgptgalQ76l+U9Q62Q9tjfGT8AFsh4/x2ljf+1ShV8dat7t2UD?=
+ =?us-ascii?Q?nXo5OAt2Q/3qKg2q65pRPMZXEiGPh9pzuLddGDq0gWPzFPYj1flbdOGGEkws?=
+ =?us-ascii?Q?cg=3D=3D?=
+X-OriginatorOrg: fb.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1b6ea093-88cb-4020-6f0e-08da8786e407
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR15MB4475.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Aug 2022 17:17:44.9280
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: V/a4nSz9JN42jdBCzVdTtUxE79ne0YFDqsD7SkcmFLVaRSwOmqfwCKJ0BUAZgKPx
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4690
+X-Proofpoint-ORIG-GUID: OWE43n6iKADVexSylntR9zlFJyaPF2Tu
+X-Proofpoint-GUID: OWE43n6iKADVexSylntR9zlFJyaPF2Tu
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-08-26_09,2022-08-25_01,2022-06-22_01
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------mZNAThT0tH0c4ZVKlFpEt0u2
-Content-Type: multipart/mixed; boundary="------------Td10TF0aG2n0O4U37KtzdKkQ";
- protected-headers="v1"
-From: Alejandro Colomar <alx.manpages@gmail.com>
-To: Quentin Monnet <quentin@isovalent.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>
-Cc: Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
- Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>,
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- bpf@vger.kernel.org, Jakub Wilk <jwilk@jwilk.net>,
- Jesper Dangaard Brouer <brouer@redhat.com>, linux-man@vger.kernel.org
-Message-ID: <67989b1b-712a-6110-b0a4-7d855179e17c@gmail.com>
-Subject: Re: [PATCH bpf-next v3] bpf: Fix a few typos in BPF helpers
- documentation
-References: <20220825220806.107143-1-quentin@isovalent.com>
- <ebbae976-b452-c359-fd67-5b0511c3ef10@gmail.com>
- <c94959da-67f6-da66-1d46-ae9dfdc0e674@isovalent.com>
-In-Reply-To: <c94959da-67f6-da66-1d46-ae9dfdc0e674@isovalent.com>
-
---------------Td10TF0aG2n0O4U37KtzdKkQ
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
-
-SGkgUXVlbnRpbiwNCg0KT24gOC8yNi8yMiAxMTo0NCwgUXVlbnRpbiBNb25uZXQgd3JvdGU6
-DQo+IE9uIDI1LzA4LzIwMjIgMjM6MTIsIEFsZWphbmRybyBDb2xvbWFyIHdyb3RlOg0KPj4g
-SGkgUXVlbnRpbiwNCj4+DQo+IA0KPj4+IC0gKsKgwqDCoMKgwqDCoMKgIGN0eC4gUHJvdmlk
-aW5nIGFuICpsZW5fZGlmZiogYWRqdXN0bWVudCB0aGF0IGlzIGxhcmdlciB0aGFuDQo+Pj4g
-dGhlDQo+Pg0KPj4gSSBqdXN0IG5vdGljZWQ6wqAgZ3JvZmYoMSkgdXNlcyBkb3VibGUgc3Bh
-Y2VzIGFmdGVyIGFuIGVuZC1vZi1zZW50ZW5jZQ0KPj4gcGVyaW9kLsKgIE90aGVyd2lzZSwg
-aXQgaXMgdW5kZXJzdG9vZCBhcyBzb21ldGhpbmcgbGlrZSBpbml0aWFscywgb3IgYW4NCj4+
-IGFiYnJldmlhdHVyZSwgYW5kIGl0IGNhdXNlcyBzb21lIGlzc3Vlcy7CoCBQbGVhc2UgY2hl
-Y2sgdGhlIHdob2xlDQo+PiBkb2N1bWVudCwgYXMgSSd2ZSBzZWVuIGEgbWl4IG9mIHN0eWxl
-cy4NCj4+DQo+PiBTZWFyY2ggZm9yIHNvbWV0aGluZyBsaWtlICcuXC4gW14gXScNCj4gDQo+
-IFRoaXMgaXMgYSBzdHJhbmdlIHJlc3RyaWN0aW9uIGluIG15IG9waW5pb24sIGJ1dCBJIGNh
-biBsb29rIGludG8gdGhpcyBhcw0KPiBhIGZvbGxvdy11cC4gSSd2ZSBub3Qgbm90aWNlZCBp
-c3N1ZXMgd2l0aCB0aGUgcmVuZGVyZWQgcGFnZSBzbyBmYXIsIG91dA0KPiBvZiBjdXJpb3Np
-dHkgd2hhdCBpc3N1ZXMgYXJlIHdlIHRhbGtpbmcgYWJvdXQ/DQoNCkl0J3Mgbm90IHNvIHZp
-c2libGUsIGFuZCBJJ20gbm90IGEgZ3JvZmYoMSkgZXhwZXJ0LCBzbyBtYXliZSB0aGVyZSBh
-cmUgDQptb3JlIGlzc3VlcyB0aGFuIHRoZSBvbmVzIEkga25vdywgYnV0IEknbGwgZXhwbGFp
-biBpdCBhcyBJIHVuZGVyc3RhbmQgaXQ6DQoNCkZvciBncm9mZidzIG91dHB1dCwgdGhlcmUg
-YXJlIHR3byBraW5kcyBvZiBzcGFjZXM6IGludGVyd29yZCBhbmQgDQppbnRlcnNlbnRlbmNl
-IHNwYWNlcy4gIEludGVyd29yZCBzcGFjZSBpcyBub3JtYWxseSBhIHNpbmdsZSBjaGFyYWN0
-ZXIgaW4gDQptb25vc3BhY2VkIGZvbnRzLiAgSW50ZXJzZW50ZW5jZSBpcyBhbHNvIGEgc2lu
-Z2xlIHNwYWNlIGJ5IGRlZmF1bHQgaW4gDQptb25vc3BhY2UgZm9udHMsIGJ1dCBpdCBpcyBu
-b3Qgc3Vic3RpdHV0aW5nIGludGVyd29yZCBzcGFjZSwgYnV0IHJhdGhlciANCmFkZGluZyB0
-byBpdCwgc28gZWZmZWN0aXZlbHkgdGhlIGludGVyc2VudGVuY2Ugc2VwYXJhdGlvbiBpcyB0
-d28gc3BhY2VzIA0KaW4gYSBtb25vc3BhY2VkIGZvbnQuICBUaGF0IGNhbiBiZSBjb25maWd1
-cmVkLCBhbmQgb25lIGNhbiBmb3IgZXhhbXBsZSANCmFzayB0aGVpciBpbnRlcnNlbnRlbmNl
-IHNwYWNlIHRvIGJlIDIgY2hhcnMsIGFuZCB0aGVyZWZvcmUgaGF2ZSBhbiANCmludGVyc2Vu
-dGVuY2UgZWZmZWN0aXZlIHNlcHBhcmF0aW9uIG9mIDMgY2hhcnMuDQoNCkluIFBERiBvdXRw
-dXQsIHRoZSBkaWZmZXJlbmNlIG1heSBiZSBhbHNvIG5vdGljZWFibGUgc2xpZ2h0bHkgZGlm
-ZmVyZW50bHkuDQoNCkkgcHJlcGFyZWQgYSBzaW1wbGUgZmlsZSB0aGF0IHdpbGwgc2hvdyB5
-b3UgaG93IGl0IGNhbiBtYWtlIHNlbnRlbmNlcyANCm11Y2ggbW9yZSByZWFkYWJsZSwgZXZl
-biBpZiB0aGUgdGhlb3JldGljYWwgZGlmZmVyZW5jZSBtaWdodCBub3QgYmUgDQpub3RpY2Vh
-YmxlIGF0IGZpcnN0IGdsYW5jZSB0byB0aGUgdW50cmFpbmVkIGV5ZToNCg0KJCBjYXQgc3Au
-bWFuDQouVEggc3BhY2VzIDcgdG9kYXkgZXhwZXJpbWVudHMNCi5TSCBjb3JyZWN0IHNwYWNp
-bmcNCkhlbGxvIHdvcmxkISAgVG9kYXkgaXMgRnJpZGF5LiAgVGhpcyBhcmUgZXh0cmEgd29y
-ZHMgdG8gZmlsbC4NCkFuZCBldmVuIG1vcmUgd29yZHMuDQouU0ggaW5jb3JyZWN0IHNwYWNp
-bmcNCkhlbGxvIHdvcmxkISBUb2RheSBpcyBNb25kYXkuIFRoaXMgYXJlIGV4dHJhIHdvcmRz
-IHRvIGZpbGwuIEFuZCBldmVuIA0KbW9yZSB3b3Jkcy4NCiQgbWFuIC1QIGNhdCAuL3NwLm1h
-bg0Kc3BhY2VzKDcpICAgICAgICAgIE1pc2NlbGxhbmVvdXMgSW5mb3JtYXRpb24gTWFudWFs
-ICAgICAgICAgIHNwYWNlcyg3KQ0KDQpjb3JyZWN0IHNwYWNpbmcNCiAgICAgICAgSGVsbG8g
-IHdvcmxkISAgIFRvZGF5IGlzIEZyaWRheS4gIFRoaXMgYXJlIGV4dHJhIHdvcmRzIHRvIGZp
-bGwuDQogICAgICAgIEFuZCBldmVuIG1vcmUgd29yZHMuDQoNCmluY29ycmVjdCBzcGFjaW5n
-DQogICAgICAgIEhlbGxvIHdvcmxkISBUb2RheSBpcyBNb25kYXkuIFRoaXMgYXJlIGV4dHJh
-IHdvcmRzIHRvIGZpbGwuIEFuZA0KICAgICAgICBldmVuIG1vcmUgd29yZHMuDQoNCmV4cGVy
-aW1lbnRzICAgICAgICAgICAgICAgICAgICAgIHRvZGF5ICAgICAgICAgICAgICAgICAgICAg
-ICBzcGFjZXMoNykNCg0KDQoNCk5vdGljZSBob3cgdGhlIGZpcnN0IG9uZSBpcyBtdWNoIG1v
-cmUgbmljZWx5IHJlbmRlcmVkLiAgSSByZW5kZXJlZCBpdCBpbiANCmEgNzItY29sIHRlcm1p
-bmFsIGJlY2F1c2UgbXkgbWFpbGVyIHdvdWxkIHdyYXAgYXQgdGhhdCBib3VuZGFyeSBhbnl3
-YXkuIA0KWW91IGNhbiByZW5kZXIgdGhlIGZpbGUgYXQgODAgY29sdW1ucyBhbmQgc2VlIGEg
-ZGlmZmVyZW50IHJlbmRlcmluZywgDQp3aGVyZSBpdCBpcyBldmVuIGJpZ2dlciB0aGUgZGlm
-ZmVyZW5jZSBpbiBmYXZvciBvZiB0aGUgY29ycmVjdGx5IHdyaXR0ZW4gDQpvbmUuDQoNCg0K
-PiANCj4gQWxzbyBiZWZvcmUgdGhhdCwgaXQgd291bGQgYmUgZ29vZCB0byBzeW5jIGFuZCBz
-ZWUgd2hhdCBvdGhlciBmb3JtYXR0aW5nDQo+IGVsZW1lbnRzIG5lZWQgYmUgYWRkcmVzc2Vk
-IG9uIHRoZSBwYWdlLCBzbyB3ZSBjYW4gZml4IHRoZW0gaW4gYSBiYXRjaA0KPiByYXRoZXIg
-dGhhbiBzdWJtaXR0aW5nIHRoZW0gb25lIGFmdGVyIHRoZSBvdGhlciBsaWtlIHdlJ3JlIGRv
-aW5nLg0KDQpTdXJlISAgSXQnbGwgdGFrZSBzb21lIHRpbWUgZnJvbSBteSBzaWRlLCBidXQg
-SSdsbCB0cnkgdG8gY29tZSB1cCB3aXRoIGEgDQpsaXN0IG9mIGlzc3VlcyBpbiB0aGF0IHBh
-Z2UuDQoNCj4gDQo+IFF1ZW50aW4NCg0KDQpDaGVlcnMsDQoNCkFsZXgNCg0KLS0gDQpBbGVq
-YW5kcm8gQ29sb21hcg0KPGh0dHA6Ly93d3cuYWxlamFuZHJvLWNvbG9tYXIuZXMvPg0K
-
---------------Td10TF0aG2n0O4U37KtzdKkQ--
-
---------------mZNAThT0tH0c4ZVKlFpEt0u2
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmMJADQACgkQnowa+77/
-2zKSiw//aY8Msc7kKVb/vJsBUiTXtrJUGwWgGdD/YZFjiHimdpL412R7teJrR5ba
-1fqpAGIGzUNDxwjqBTDXdLLJ+4P2/WmtVSbyv3un0EhiQ89URoahngV6X89qALP6
-m16ebWfxDVJtmUJjQlUmEGf8k1b8AZaTv2qHzw1m5w1XkdxsFCC7UyG5vUQ9M6Qq
-sSfSUSF7a8XpLHbFF1n2n83/4zl3QBYRUpugQpM56mpBLTD7vmqKK/aDPdMweTiL
-otAbwTvLLBf1SSBSP3p/8v9jkzDVXX8pll2lU4vgqGHEeLMsGf77qbcC8hYIeUvj
-u9FBK4iGbULYSr+MQscbTYr3cScZAfmLkXFLkZkgTsjH/pm4oZ1jONzZ6EGdqwJl
-Tfb9Rtkv8BODBSHgs4jN/JRhTD5psxIae1hZHTaZvNFjnPibDl5XzXRTX3IZ//t8
-Wa1qeWbEy+IjR5grj/DsBiBPZDjWRX0z79ZebbhknXsIJ/wfAyHPUPQSvqcvg1sA
-yixZdsr9SqV7CmNy83JD1DbbtZFvz6oh/TbJtiIbdAyZT31wtT6qSrN4aeFdLA+e
-kEbgAcD964G86MS5gznFUhDV0f0Ry8Dg/a7yuJB00UnbfrTpu+zAKM8v3GGQZTLh
-89J4ZhW/aTOjs6Up8cohslkERd0/nVJRa9fPiHM3ECQiaUrOi20=
-=qQQu
------END PGP SIGNATURE-----
-
---------------mZNAThT0tH0c4ZVKlFpEt0u2--
+On Fri, Aug 26, 2022 at 12:13:54AM -0600, James Hilliard wrote:
+> On Thu, Aug 25, 2022 at 11:49 PM Martin KaFai Lau <kafai@fb.com> wrote:
+> >
+> > On Thu, Aug 25, 2022 at 11:31:15PM -0600, James Hilliard wrote:
+> > > On Thu, Aug 25, 2022 at 11:16 PM Martin KaFai Lau <kafai@fb.com> wrote:
+> > > >
+> > > > On Thu, Aug 25, 2022 at 04:17:49PM -0600, James Hilliard wrote:
+> > > > > There is a potential for us to hit a type conflict when including
+> > > > > netinet/tcp.h with sys/socket.h, we can replace both of these includes
+> > > > > with linux/tcp.h to avoid this conflict.
+> > > > >
+> > > > > Fixes errors like:
+> > > > > In file included from /usr/include/netinet/tcp.h:91,
+> > > > >                  from progs/bind4_prog.c:10:
+> > > > > /home/buildroot/opt/cross/lib/gcc/bpf/13.0.0/include/stdint.h:34:23: error: conflicting types for 'int8_t'; have 'char'
+> > > > >    34 | typedef __INT8_TYPE__ int8_t;
+> > > > >       |                       ^~~~~~
+> > > > > In file included from /usr/include/x86_64-linux-gnu/sys/types.h:155,
+> > > > >                  from /usr/include/x86_64-linux-gnu/bits/socket.h:29,
+> > > > >                  from /usr/include/x86_64-linux-gnu/sys/socket.h:33,
+> > > > >                  from progs/bind4_prog.c:9:
+> > > > > /usr/include/x86_64-linux-gnu/bits/stdint-intn.h:24:18: note: previous declaration of 'int8_t' with type 'int8_t' {aka 'signed char'}
+> > > > >    24 | typedef __int8_t int8_t;
+> > > > >       |                  ^~~~~~
+> > > > > /home/buildroot/opt/cross/lib/gcc/bpf/13.0.0/include/stdint.h:43:24: error: conflicting types for 'int64_t'; have 'long int'
+> > > > >    43 | typedef __INT64_TYPE__ int64_t;
+> > > > >       |                        ^~~~~~~
+> > > > > /usr/include/x86_64-linux-gnu/bits/stdint-intn.h:27:19: note: previous declaration of 'int64_t' with type 'int64_t' {aka 'long long int'}
+> > > > >    27 | typedef __int64_t int64_t;
+> > > > >       |                   ^~~~~~~
+> > > > > make: *** [Makefile:537: /home/buildroot/bpf-next/tools/testing/selftests/bpf/bpf_gcc/bind4_prog.o] Error 1
+> > > > >
+> > > > > Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+> > > > > ---
+> > > > >  tools/testing/selftests/bpf/progs/bind4_prog.c | 3 +--
+> > > > >  tools/testing/selftests/bpf/progs/bind6_prog.c | 3 +--
+> > > > >  2 files changed, 2 insertions(+), 4 deletions(-)
+> > > > >
+> > > > > diff --git a/tools/testing/selftests/bpf/progs/bind4_prog.c b/tools/testing/selftests/bpf/progs/bind4_prog.c
+> > > > > index 474c6a62078a..6bd20042fd53 100644
+> > > > > --- a/tools/testing/selftests/bpf/progs/bind4_prog.c
+> > > > > +++ b/tools/testing/selftests/bpf/progs/bind4_prog.c
+> > > > > @@ -6,8 +6,7 @@
+> > > > >  #include <linux/bpf.h>
+> > > > >  #include <linux/in.h>
+> > > > >  #include <linux/in6.h>
+> > > > > -#include <sys/socket.h>
+> > > > > -#include <netinet/tcp.h>
+> > > > These includes look normal to me.  What environment is hitting this.
+> > >
+> > > I was hitting this error with GCC 13(GCC master branch).
+> > These two includes (<sys/socket.h> and <netinet/tcp.h>) are normal,
+> > so does it mean all existing programs need to change to use gcc 13 ?
+> 
+> Well I think it's mostly just an issue getting hit with GCC-BPF as it
+> looks to me like a cross compilation host/target header conflict.
+The users have been using these headers in the bpf progs.
+The solution should be on the GCC-BPF side instead of changing
+all bpf progs.
