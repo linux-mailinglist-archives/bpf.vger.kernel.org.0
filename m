@@ -2,246 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 847925A25EF
-	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 12:37:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1FB95A25FB
+	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 12:40:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245563AbiHZKhm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Aug 2022 06:37:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52534 "EHLO
+        id S245560AbiHZKkl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Aug 2022 06:40:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242864AbiHZKhk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Aug 2022 06:37:40 -0400
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D23DED570D;
-        Fri, 26 Aug 2022 03:37:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1661510259; x=1693046259;
-  h=message-id:date:mime-version:subject:to:references:from:
-   in-reply-to:content-transfer-encoding;
-  bh=9hnCuIQP0Do9Va8hiUiS3qPMSpvIWNQCjLORaXq96rM=;
-  b=SkN7+8A8mFTAywJwapYZC4VN9VBqMP4vOj9mMlam4gdn8rex+34AVvYA
-   jkCrdxf0cXhuzs0exIQ9fsVGQYS1CfbEh27VgMcmeSL3C2Rf2Meubusmq
-   1oer5ZqlWeavcdZyEyOZltAWsoyw5t+eJGDIayszalqzYlqL4edfK6AVr
-   fhHY+h50PEMqZBcvaAHI7qZcaVyHkL1RpmBez/0Rl0cMu49HTAMK+Don0
-   /FEMlYNvh6xs8Ll/r9hACXjuHis34AXg6mV8u0MpCdROhHiOrR1kYnkFI
-   xp9eVdmiJTv7SkHsXVlo8rbu6Iyir0OQtp/x2XfRw+ecUE6gMfsGONl16
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10450"; a="293220362"
-X-IronPort-AV: E=Sophos;i="5.93,265,1654585200"; 
-   d="scan'208";a="293220362"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2022 03:37:39 -0700
-X-IronPort-AV: E=Sophos;i="5.93,265,1654585200"; 
-   d="scan'208";a="606726872"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.50.209])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2022 03:37:26 -0700
-Message-ID: <12acbe02-bd73-07bb-d0e1-cb13dcd790c0@intel.com>
-Date:   Fri, 26 Aug 2022 13:37:21 +0300
+        with ESMTP id S245632AbiHZKk0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Aug 2022 06:40:26 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C69FCDFE5
+        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 03:40:23 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id tl26so1637417ejc.9
+        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 03:40:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=blackwall-org.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc;
+        bh=nfsAQp2OHcZwKprkZEs24IMM+iQYxe3xIY7tA0WFMko=;
+        b=xIR+/ME4jvJ6JFwTaGY2rSSWxnwVs9tGS+2dPz1d5BeeTpi7nxywD+EbAH8Zxa9eiF
+         dXUH9Z1APrMbadibgf/CX88VTdzDdwL02PHrbzWsptaaQS3tJvg2jm3Tm88E4k8kKFMH
+         lfyFF6h8AN+FM+YiOm9z6EBNhV8vi12mgxvfB2vu4hE1X22qxTdUg1rD1vOMgTMtHn4d
+         vPi9mw7ZpMAL6WWdjT4xtDOVRAVmvmgh1MT1BDthogEewHxcfdsviyk+lX2Hi6JREmjk
+         NDyI9GNPqTvhZfdKiBPUGdSB4o8tSJ1H0ruof7CgfPty9QEk1ZkvQO9H/Zw2jUFAtL1H
+         Gq8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc;
+        bh=nfsAQp2OHcZwKprkZEs24IMM+iQYxe3xIY7tA0WFMko=;
+        b=K7ACqYZsRB4xJejcUrLysqU/vc5Cv/ue2kxBAEbI6xIp6cqwGehDWKrcyGQHbLLC4D
+         rTe5TuEesR/InpFCIyG+RmNxfwZQf2XWdmdJVbU6z67lD3sMY7BPxOO/wfBfGZeMZZ+H
+         j4F8V9lc0aOAIHCYzdW8DQ14COnoiJoI4+pYRu1vLSmKFVMGn0qyUn3OFJyjXMJPUgam
+         mmUul9ymyRTZt/Eg37hdxGGaARBQGLvBIDuMw82lyhGIQHik9NyUm3TBbXYAFrOUX/mE
+         UsaxNzO8RK01UP4/EwLGHh9Eh3mUUaMz1vhX72zdeVdOfGnclqoefHUI5q6QRTAcMLFY
+         dHow==
+X-Gm-Message-State: ACgBeo3owqmK4yLvXuNR01M9BzodV3IJuQ5Sx+4n3Qe66AUOmT1ea3hQ
+        e8g4f++9Y5j46sNrRYTXajqjSHDn9uK56xMifik=
+X-Google-Smtp-Source: AA6agR4jv2f82zJfWadF4ZV7vC2HxcnVixJCZnORg1WIn0PDEHireAiwKiDsmoKozbPurauwBL/+Zg==
+X-Received: by 2002:a17:907:8a01:b0:731:4316:b0ad with SMTP id sc1-20020a1709078a0100b007314316b0admr5233007ejc.477.1661510422078;
+        Fri, 26 Aug 2022 03:40:22 -0700 (PDT)
+Received: from [192.168.0.111] (87-243-81-1.ip.btc-net.bg. [87.243.81.1])
+        by smtp.gmail.com with ESMTPSA id gg3-20020a170906e28300b0073dc3acfe26sm744396ejb.65.2022.08.26.03.40.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Aug 2022 03:40:21 -0700 (PDT)
+Message-ID: <a851e2eb-9d21-bef8-ef14-d2001ff7a7a6@blackwall.org>
+Date:   Fri, 26 Aug 2022 13:40:19 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.11.0
-Subject: Re: [PATCH v3 11/18] perf dso: Update use of pthread mutex
+ Thunderbird/91.10.0
+Subject: Re: [PATCH ipsec-next,v3 1/3] net: allow storing xfrm interface
+ metadata in metadata_dst
 Content-Language: en-US
-To:     Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Weiguo Li <liwg06@foxmail.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Dario Petrillo <dario.pk1@gmail.com>,
-        Hewenliang <hewenliang4@huawei.com>,
-        yaowenbin <yaowenbin1@huawei.com>,
-        Wenyu Liu <liuwenyu7@huawei.com>,
-        Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Pavithra Gurushankar <gpavithrasha@gmail.com>,
-        Alexandre Truong <alexandre.truong@arm.com>,
-        Quentin Monnet <quentin@isovalent.com>,
-        William Cohen <wcohen@redhat.com>,
-        Andres Freund <andres@anarazel.de>,
-        =?UTF-8?Q?Martin_Li=c5=a1ka?= <mliska@suse.cz>,
-        Colin Ian King <colin.king@intel.com>,
-        James Clark <james.clark@arm.com>,
-        Fangrui Song <maskray@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>,
-        Riccardo Mancini <rickyman7@gmail.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Zechuan Chen <chenzechuan1@huawei.com>,
-        Jason Wang <wangborong@cdjrlc.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Remi Bernon <rbernon@codeweavers.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        bpf@vger.kernel.org, llvm@lists.linux.dev
-References: <20220824153901.488576-1-irogers@google.com>
- <20220824153901.488576-12-irogers@google.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <20220824153901.488576-12-irogers@google.com>
+To:     Eyal Birger <eyal.birger@gmail.com>, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        steffen.klassert@secunet.com, herbert@gondor.apana.org.au,
+        dsahern@kernel.org, contact@proelbtn.com, pablo@netfilter.org,
+        nicolas.dichtel@6wind.com, daniel@iogearbox.net
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
+References: <20220825154630.2174742-1-eyal.birger@gmail.com>
+ <20220825154630.2174742-2-eyal.birger@gmail.com>
+From:   Nikolay Aleksandrov <razor@blackwall.org>
+In-Reply-To: <20220825154630.2174742-2-eyal.birger@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 24/08/22 18:38, Ian Rogers wrote:
-> Switch to the use of mutex wrappers that provide better error checking.
+On 25/08/2022 18:46, Eyal Birger wrote:
+> XFRM interfaces provide the association of various XFRM transformations
+> to a netdevice using an 'if_id' identifier common to both the XFRM data
+> structures (polcies, states) and the interface. The if_id is configured by
+> the controlling entity (usually the IKE daemon) and can be used by the
+> administrator to define logical relations between different connections.
 > 
-> Signed-off-by: Ian Rogers <irogers@google.com>
+> For example, different connections can share the if_id identifier so
+> that they pass through the same interface, . However, currently it is
+> not possible for connections using a different if_id to use the same
+> interface while retaining the logical separation between them, without
+> using additional criteria such as skb marks or different traffic
+> selectors.
+> 
+> When having a large number of connections, it is useful to have a the
+> logical separation offered by the if_id identifier but use a single
+> network interface. Similar to the way collect_md mode is used in IP
+> tunnels.
+> 
+> This patch attempts to enable different configuration mechanisms - such
+> as ebpf programs, LWT encapsulations, and TC - to attach metadata
+> to skbs which would carry the if_id. This way a single xfrm interface in
+> collect_md mode can demux traffic based on this configuration on tx and
+> provide this metadata on rx.
+> 
+> The XFRM metadata is somewhat similar to ip tunnel metadata in that it
+> has an "id", and shares similar configuration entities (bpf, tc, ...),
+> however, it does not necessarily represent an IP tunnel or use other
+> ip tunnel information, and also has an optional "link" property which
+> can be used for affecting underlying routing decisions.
+> 
+> Additional xfrm related criteria may also be added in the future.
+> 
+> Therefore, a new metadata type is introduced, to be used in subsequent
+> patches in the xfrm interface and configuration entities.
+> 
+> Signed-off-by: Eyal Birger <eyal.birger@gmail.com>
+> 
+> ----
+> 
+> v2: add "link" property as suggested by Nicolas Dichtel
 > ---
->  tools/perf/util/dso.c    | 12 ++++++------
-
-Some not done yet
-
-$ grep -i pthread_mut tools/perf/util/dso.c
-static pthread_mutex_t dso__data_open_lock = PTHREAD_MUTEX_INITIALIZER;
-        pthread_mutex_lock(&dso__data_open_lock);
-        pthread_mutex_unlock(&dso__data_open_lock);
-        if (pthread_mutex_lock(&dso__data_open_lock) < 0)
-                pthread_mutex_unlock(&dso__data_open_lock);
-        pthread_mutex_unlock(&dso__data_open_lock);
-        pthread_mutex_lock(&dso__data_open_lock);
-        pthread_mutex_unlock(&dso__data_open_lock);
-        pthread_mutex_lock(&dso__data_open_lock);
-        pthread_mutex_unlock(&dso__data_open_lock);
-
-
->  tools/perf/util/dso.h    |  4 ++--
->  tools/perf/util/symbol.c |  4 ++--
->  3 files changed, 10 insertions(+), 10 deletions(-)
+>  include/net/dst_metadata.h | 20 ++++++++++++++++++++
+>  1 file changed, 20 insertions(+)
 > 
-> diff --git a/tools/perf/util/dso.c b/tools/perf/util/dso.c
-> index 5ac13958d1bd..a9789a955403 100644
-> --- a/tools/perf/util/dso.c
-> +++ b/tools/perf/util/dso.c
-> @@ -795,7 +795,7 @@ dso_cache__free(struct dso *dso)
->  	struct rb_root *root = &dso->data.cache;
->  	struct rb_node *next = rb_first(root);
->  
-> -	pthread_mutex_lock(&dso->lock);
-> +	mutex_lock(&dso->lock);
->  	while (next) {
->  		struct dso_cache *cache;
->  
-> @@ -804,7 +804,7 @@ dso_cache__free(struct dso *dso)
->  		rb_erase(&cache->rb_node, root);
->  		free(cache);
->  	}
-> -	pthread_mutex_unlock(&dso->lock);
-> +	mutex_unlock(&dso->lock);
->  }
->  
->  static struct dso_cache *__dso_cache__find(struct dso *dso, u64 offset)
-> @@ -841,7 +841,7 @@ dso_cache__insert(struct dso *dso, struct dso_cache *new)
->  	struct dso_cache *cache;
->  	u64 offset = new->offset;
->  
-> -	pthread_mutex_lock(&dso->lock);
-> +	mutex_lock(&dso->lock);
->  	while (*p != NULL) {
->  		u64 end;
->  
-> @@ -862,7 +862,7 @@ dso_cache__insert(struct dso *dso, struct dso_cache *new)
->  
->  	cache = NULL;
->  out:
-> -	pthread_mutex_unlock(&dso->lock);
-> +	mutex_unlock(&dso->lock);
->  	return cache;
->  }
->  
-> @@ -1297,7 +1297,7 @@ struct dso *dso__new_id(const char *name, struct dso_id *id)
->  		dso->root = NULL;
->  		INIT_LIST_HEAD(&dso->node);
->  		INIT_LIST_HEAD(&dso->data.open_entry);
-> -		pthread_mutex_init(&dso->lock, NULL);
-> +		mutex_init(&dso->lock);
->  		refcount_set(&dso->refcnt, 1);
->  	}
->  
-> @@ -1336,7 +1336,7 @@ void dso__delete(struct dso *dso)
->  	dso__free_a2l(dso);
->  	zfree(&dso->symsrc_filename);
->  	nsinfo__zput(dso->nsinfo);
-> -	pthread_mutex_destroy(&dso->lock);
-> +	mutex_destroy(&dso->lock);
->  	free(dso);
->  }
->  
-> diff --git a/tools/perf/util/dso.h b/tools/perf/util/dso.h
-> index 66981c7a9a18..58d94175e714 100644
-> --- a/tools/perf/util/dso.h
-> +++ b/tools/perf/util/dso.h
-> @@ -2,7 +2,6 @@
->  #ifndef __PERF_DSO
->  #define __PERF_DSO
->  
-> -#include <pthread.h>
->  #include <linux/refcount.h>
->  #include <linux/types.h>
->  #include <linux/rbtree.h>
-> @@ -11,6 +10,7 @@
->  #include <stdio.h>
->  #include <linux/bitops.h>
->  #include "build-id.h"
-> +#include "mutex.h"
->  
->  struct machine;
->  struct map;
-> @@ -145,7 +145,7 @@ struct dso_cache {
->  struct auxtrace_cache;
->  
->  struct dso {
-> -	pthread_mutex_t	 lock;
-> +	struct mutex	 lock;
->  	struct list_head node;
->  	struct rb_node	 rb_node;	/* rbtree node sorted by long name */
->  	struct rb_root	 *root;		/* root of rbtree that rb_node is in */
-> diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
-> index a4b22caa7c24..656d9b4dd456 100644
-> --- a/tools/perf/util/symbol.c
-> +++ b/tools/perf/util/symbol.c
-> @@ -1800,7 +1800,7 @@ int dso__load(struct dso *dso, struct map *map)
->  	}
->  
->  	nsinfo__mountns_enter(dso->nsinfo, &nsc);
-> -	pthread_mutex_lock(&dso->lock);
-> +	mutex_lock(&dso->lock);
->  
->  	/* check again under the dso->lock */
->  	if (dso__loaded(dso)) {
-> @@ -1964,7 +1964,7 @@ int dso__load(struct dso *dso, struct map *map)
->  		ret = 0;
->  out:
->  	dso__set_loaded(dso);
-> -	pthread_mutex_unlock(&dso->lock);
-> +	mutex_unlock(&dso->lock);
->  	nsinfo__mountns_exit(&nsc);
->  
->  	return ret;
+
+Reviewed-by: Nikolay Aleksandrov <razor@blackwall.org>
 
