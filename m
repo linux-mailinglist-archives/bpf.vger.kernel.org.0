@@ -2,219 +2,183 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D6935A1F9D
-	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 06:04:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99D605A1FF2
+	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 06:38:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243013AbiHZEEI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Aug 2022 00:04:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39340 "EHLO
+        id S242671AbiHZEiD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Aug 2022 00:38:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241183AbiHZEEI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Aug 2022 00:04:08 -0400
-Received: from mail-oa1-x43.google.com (mail-oa1-x43.google.com [IPv6:2001:4860:4864:20::43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75D23A1A78
-        for <bpf@vger.kernel.org>; Thu, 25 Aug 2022 21:04:06 -0700 (PDT)
-Received: by mail-oa1-x43.google.com with SMTP id 586e51a60fabf-11c5505dba2so634634fac.13
-        for <bpf@vger.kernel.org>; Thu, 25 Aug 2022 21:04:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=SGK5ZlWM9b6qYmqhXgGoTObxhcpjAzjA6xu2vbvNzqE=;
-        b=UWqfkndplOFof4e6snuSaWT+543Kt9prIaFWJwUSH3UJSwvSCVqTJJvXzxvz2SiNvQ
-         Bq/Rb7sGF9R0bBUU++inHNBs2v7EiHsqqkRrZcaLhA8JS6S4bxx+fn984Y0G+a1cYZ/u
-         43QnsxnJY1vcC/D7fxHfFnMHGixloX+WF+dRhp8//UMfSNlw3f4W54g4bnI+uKo0oF2t
-         yLT1FWNetB+fJwSaPd4p0mEvC81ndP04MJz/lx3hSaKzEZqpZSByXbTcFZ8AZOG/GYyy
-         75WIup8qewB0ENMlviy/x2c4teFym7eOwgUJH6RBqZCn3jPIgL3M41MPhWxp87C1j3hA
-         0YFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=SGK5ZlWM9b6qYmqhXgGoTObxhcpjAzjA6xu2vbvNzqE=;
-        b=2bR4s44p24xFgURTPQhMN35ZLeYroHC2D+TRrSEtdhmp3S8YJRMPnGhIdOP0Q70TTn
-         +VAV1+MEA1RWHr8UwcCy+Q3f1XNTJOVu1MST+HI9EruNmpSIWRnU4HxbH5nC71P97+F5
-         cS8FJqlP6sd8MgYNuJBbmZ/Id7KP4ud1Ki/IJWCH1gMyVYp8YatfO4gf6TCHBsNzre+P
-         uw3/sV3fawJejxzIRIBHUaRkKqitU9DRMbLQFjCS1ZD0vGGhI9bXwTNOCcpZHTArLjsY
-         koilz9AMBBBLKMBdZp5CgWPMlM5qgRDBo9aWr4gHuJz/JAMTcVSYxm2/as9RfCTglX6B
-         39wg==
-X-Gm-Message-State: ACgBeo2ZNP+WNRIemzSAErshzlFqQVmdF6VjRHsJVp5w5mfhDvkCffek
-        lrLQKNfjO5Wyl6KunSMgYGp39XmuEpC1GmnedbA=
-X-Google-Smtp-Source: AA6agR7pLHTfldeXNwLfE+rVeL7/pSV0Fs2jtcKp7LO9QzN3zhf2Ll3z+uBsadyKuiH0WLQ9xYOjs12o64hQL5KlEwM=
-X-Received: by 2002:a05:6870:fb9f:b0:11d:6525:6746 with SMTP id
- kv31-20020a056870fb9f00b0011d65256746mr1050988oab.28.1661486645716; Thu, 25
- Aug 2022 21:04:05 -0700 (PDT)
+        with ESMTP id S236285AbiHZEiB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Aug 2022 00:38:01 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FE0CCE302
+        for <bpf@vger.kernel.org>; Thu, 25 Aug 2022 21:37:59 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id CC1FCB82F77
+        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 04:37:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88FA7C43470
+        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 04:37:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1661488676;
+        bh=sfzUtsC57m9rJH+tGRl0Bup4dHifRRD72v5i+xAdkv0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=pfcc1Hwai3tYuyD5GdaZb5va9yQVpmqD3364nM4qnEZ3UUmeOQOB7pIwg8VKXC4+O
+         M4S3/q4ofSDChNEwxJZ+LFxHS7M4QZApDqzyVnrOTA9TYwggP1PzjAGHiJUsZf2JI1
+         rOjuemvaZMDSy8c7gq9JcNHKKH6bser/FUmqqjax7JqDaNkq0z2y6V6EQ747kz2cET
+         d3b8LD7Ukx2YF72EQ/cKYiFxVpfS11qcgMdecdFNiK2Zgq70NuQlEyJf3bUmb38gLZ
+         ykCE7fEYWijKEwZ4KXAKv0Xn7JW3/8p1jj0UZSElkzTVJYaQNTRqnkD8sf5MH6Bd2A
+         Mhe1IVH0yGOQA==
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-334dc616f86so8452947b3.8
+        for <bpf@vger.kernel.org>; Thu, 25 Aug 2022 21:37:56 -0700 (PDT)
+X-Gm-Message-State: ACgBeo11dBz8bABkQ0HV85gWphA2u99hmRh0QGvNXNqb4wVa8VilNn28
+        8MMtpyodW582EN5kSZlCGk6+q0PSsBtmZyXcdbU=
+X-Google-Smtp-Source: AA6agR7zYLTDjiKCUAyPw5jTHg4EUO+TIdP27bkMRYubuLfZLmDNn6TH+uDJGYcB8Wwmg2rGQ8TNdcWxbrjsaS8rinA=
+X-Received: by 2002:a05:6902:110d:b0:670:b10b:d16e with SMTP id
+ o13-20020a056902110d00b00670b10bd16emr6107437ybu.259.1661488675533; Thu, 25
+ Aug 2022 21:37:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220819214232.18784-1-alexei.starovoitov@gmail.com> <d3f76b27f4e55ec9e400ae8dcaecbb702a4932e8.camel@fb.com>
-In-Reply-To: <d3f76b27f4e55ec9e400ae8dcaecbb702a4932e8.camel@fb.com>
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date:   Fri, 26 Aug 2022 06:03:29 +0200
-Message-ID: <CAP01T75G-gp2hymxO+x4=3cJ9CHJKsD3DHPn5QbvOL_-o_4qmA@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 00/15] bpf: BPF specific memory allocator,
- UAPI in particular
-To:     Delyan Kratunov <delyank@fb.com>
-Cc:     "davem@davemloft.net" <davem@davemloft.net>,
-        "alexei.starovoitov@gmail.com" <alexei.starovoitov@gmail.com>,
-        "tj@kernel.org" <tj@kernel.org>,
-        "joannelkoong@gmail.com" <joannelkoong@gmail.com>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Kernel Team <Kernel-team@fb.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+References: <20220808140626.422731-1-jolsa@kernel.org> <20220808140626.422731-11-jolsa@kernel.org>
+ <20220824012237.h57uimu2m3medkz5@macbook-pro-3.dhcp.thefacebook.com>
+ <YweedGDaL7yI382D@krava> <CAADnVQKVnSu-wDiVk6E3mU9J_LGC+0ou63T8TUv-J=BSCZf6iQ@mail.gmail.com>
+In-Reply-To: <CAADnVQKVnSu-wDiVk6E3mU9J_LGC+0ou63T8TUv-J=BSCZf6iQ@mail.gmail.com>
+From:   Song Liu <song@kernel.org>
+Date:   Thu, 25 Aug 2022 21:37:44 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW66-Od4wHB8vMPT0cB3oueHq57B6cd9TYAhoA+CDnyH1w@mail.gmail.com>
+Message-ID: <CAPhsuW66-Od4wHB8vMPT0cB3oueHq57B6cd9TYAhoA+CDnyH1w@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 10/17] bpf: Add support to attach program to
+ multiple trampolines
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Jiri Olsa <olsajiri@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 25 Aug 2022 at 02:56, Delyan Kratunov <delyank@fb.com> wrote:
+On Thu, Aug 25, 2022 at 10:44 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> Alexei and I spent some time today going back and forth on what the uapi to this
-> allocator should look like in a BPF program. To both of our surprise, the problem
-> space became far more complicated than we anticipated.
+> On Thu, Aug 25, 2022 at 9:08 AM Jiri Olsa <olsajiri@gmail.com> wrote:
+> >
+> > On Tue, Aug 23, 2022 at 06:22:37PM -0700, Alexei Starovoitov wrote:
+> > > On Mon, Aug 08, 2022 at 04:06:19PM +0200, Jiri Olsa wrote:
+> > > > Adding support to attach program to multiple trampolines
+> > > > with new attach/detach interface:
+> > > >
+> > > >   int bpf_trampoline_multi_attach(struct bpf_tramp_prog *tp,
+> > > >                                   struct bpf_tramp_id *id)
+> > > >   int bpf_trampoline_multi_detach(struct bpf_tramp_prog *tp,
+> > > >                                   struct bpf_tramp_id *id)
+> > > >
+> > > > The program is passed as bpf_tramp_prog object and trampolines to
+> > > > attach it to are passed as bpf_tramp_id object.
+> > > >
+> > > > The interface creates new bpf_trampoline object which is initialized
+> > > > as 'multi' trampoline and stored separtely from standard trampolines.
+> > > >
+> > > > There are following rules how the standard and multi trampolines
+> > > > go along:
+> > > >   - multi trampoline can attach on top of existing single trampolines,
+> > > >     which creates 2 types of function IDs:
+> > > >
+> > > >       1) single-IDs - functions that are attached within existing single
+> > > >          trampolines
+> > > >       2) multi-IDs  - functions that were 'free' and are now taken by new
+> > > >          'multi' trampoline
+> > > >
+> > > >   - we allow overlapping of 2 'multi' trampolines if they are attached
+> > > >     to same IDs
+> > > >   - we do now allow any other overlapping of 2 'multi' trampolines
+> > > >   - any new 'single' trampoline cannot attach to existing multi-IDs IDs.
+> > > >
+> > > > Maybe better explained on following example:
+> > > >
+> > > >    - you want to attach program P to functions A,B,C,D,E,F
+> > > >      via bpf_trampoline_multi_attach
+> > > >
+> > > >    - D,E,F already have standard trampoline attached
+> > > >
+> > > >    - the bpf_trampoline_multi_attach will create new 'multi' trampoline
+> > > >      which spans over A,B,C functions and attach program P to single
+> > > >      trampolines D,E,F
+> > > >
+> > > >    - A,B,C functions are now 'not attachable' by any trampoline
+> > > >      until the above 'multi' trampoline is released
+> > >
+> > > This restriction is probably too severe.
+> > > Song added support for trampoline and KLPs to co-exist on the same function.
+> > > This multi trampoline restriction will resurface the same issue.
+> > > afiak this restriction is only because multi trampoline image
+> > > is the same for A,B,C. This memory optimization is probably going too far.
+> > > How about we keep existing logic of one tramp image per function.
+> > > Pretend that multi-prog P matches BTF of the target function,
+> > > create normal tramp for it and attach prog P there.
+> > > The prototype of P allows six u64. The args are potentially rearding
+> > > garbage, but there are no safety issues, since multi progs don't know BTF types.
+> > >
+> > > We still need sinle bpf_link_multi to contain btf_ids of all functions,
+> > > but it can point to many bpf tramps. One for each attach function.
+> > >
+> > > iirc we discussed something like this long ago, but I don't remember
+> > > why we didn't go that route.
+> > > arch_prepare_bpf_trampoline is fast.
+> > > bpf_tramp_image_alloc is fast too.
+> > > So attaching one multi-prog to thousands of btf_id-s should be fast too.
+> > > The destroy part is interesting.
+> > > There we will be doing thousands of bpf_tramp_image_put,
+> > > but it's all async now. We used to have synchronize_rcu() which could
+> > > be the reason why this approach was slow.
+> > > Or is this unregister_fentry that slows it down?
+> > > But register_ftrace_direct_multi() interface should have solved it
+> > > for both register and unregister?
+> >
+> > I think it's the synchronize_rcu_tasks at the end of each ftrace update,
+> > that's why we added un/register_ftrace_direct_multi that makes the changes
+> > for multiple ips and syncs once at the end
 >
-> There are three primary problems we have to solve:
-> 1) Knowing which allocator an object came from, so we can safely reclaim it when
-> necessary (e.g., freeing a map).
-> 2) Type confusion between local and kernel types. (I.e., a program allocating kernel
-> types and passing them to helpers/kfuncs that don't expect them). This is especially
-> important because the existing kptr mechanism assumes kernel types everywhere.
-
-Why is the btf_is_kernel(reg->btf) check not enough to distinguish
-local vs kernel kptr?
-We add that wherever kfunc/helpers verify the PTR_TO_BTF_ID right now.
-
-Fun fact: I added a similar check on purpose in map_kptr_match_type,
-since Alexei mentioned back then he was working on a local type
-allocator, so forgetting to add it later would have been a problem.
-
-> 3) Allocated objects lifetimes, allocator refcounting, etc. It all gets very hairy
-> when you allow allocated objects in pinned maps.
+> hmm. Can synchronize_rcu_tasks be made optional?
+> For ftrace_direct that points to bpf tramps is it really needed?
 >
-> This is the proposed design that we landed on:
+> > un/register_ftrace_direct_multi will attach/detach multiple multiple ips
+> > to single address (trampoline), so for this approach we would need to add new
+> > ftrace direct api that would allow to set multiple ips to multiple trampolines
+> > within one call..
 >
-> 1. Allocators get their own MAP_TYPE_ALLOCATOR, so you can specify initial capacity
-> at creation time. Value_size > 0 takes the kmem_cache path. Probably with
-> btf_value_type_id enforcement for the kmem_cache path.
+> right
 >
-> 2. The helper APIs are just bpf_obj_alloc(bpf_map *, bpf_core_type_id_local(struct
-> foo)) and bpf_obj_free(void *). Note that obj_free() only takes an object pointer.
+> > I was already checking on that and looks doable
 >
-> 3. To avoid mixing BTF type domains, a new type tag (provisionally __kptr_local)
-> annotates fields that can hold values with verifier type `PTR_TO_BTF_ID |
-> BTF_ID_LOCAL`. obj_alloc only ever returns these local kptrs and only ever resolves
-> against program-local btf (in the verifier, at runtime it only gets an allocation
-> size).
-
-This is ok too, but I think just gating everywhere with btf_is_kernel
-would be fine as well.
-
-> 3.1. If eventually we need to pass these objects to kfuncs/helpers, we can introduce
-> a new bpf_obj_export helper that takes a PTR_TO_LOCAL_BTF_ID and returns the
-> corresponding PTR_TO_BTF_ID, after verifying against an allowlist of some kind. This
-
-It would be fine to allow passing if it is just plain data (e.g. what
-scalar_struct check does for kfuncs).
-There we had the issue where it can take PTR_TO_MEM, PTR_TO_BTF_ID,
-etc. so it was necessary to restrict the kind of type to LCD.
-
-But we don't have to do it from day 1, just listing what should be ok.
-
-> would be the only place these objects can leak out of bpf land. If there's no runtime
-> aspect (and there likely wouldn't be), we might consider doing this transparently,
-> still against an allowlist of types.
+> awesome.
 >
-> 4. To ensure the allocator stays alive while objects from it are alive, we must be
-> able to identify which allocator each __kptr_local pointer came from, and we must
-> keep the refcount up while any such values are alive. One concern here is that doing
-> the refcount manipulation in kptr_xchg would be too expensive. The proposed solution
-> is to:
-> 4.1 Keep a struct bpf_mem_alloc* in the header before the returned object pointer
-> from bpf_mem_alloc(). This way we never lose track which bpf_mem_alloc to return the
-> object to and can simplify the bpf_obj_free() call.
-> 4.2. Tracking used_allocators in each bpf_map. When unloading a program, we would
-> walk all maps that the program has access to (that have kptr_local fields), walk each
-> value and ensure that any allocators not already in the map's used_allocators are
-> refcount_inc'd and added to the list. Do note that allocators are also kept alive by
-> their bpf_map wrapper but after that's gone, used_allocators is the main mechanism.
-> Once the bpf_map is gone, the allocator cannot be used to allocate new objects, we
-> can only return objects to it.
-> 4.3. On map free, we walk and obj_free() all the __kptr_local fields, then
-> refcount_dec all the used_allocators.
+> > another problem might be that this update function will need to be called with
+> > all related trampoline locks, which in this case would be thousands
 >
+> sure. but these will be newly allocated trampolines and
+> brand new mutexes, so no contention.
 
-So to summarize your approach:
-Each allocation has a bpf_mem_alloc pointer before it to track its
-owner allocator.
-We know used_maps of each prog, so during unload of program, walk all
-local kptrs in each used_maps map values, and that map takes a
-reference to the allocator stashing it in used_allocators list,
-because prog is going to relinquish its ref to allocator_map (which if
-it were the last one would release allocator reference as well for
-local kptrs held by those maps).
-Once prog is gone, the allocator is kept alive by other maps holding
-objects allocated from it. References to the allocator are taken
-lazily when required.
-Did I get it right?
+I guess we still need to lock existing tr->mutex in some cases? Say, we
+have 3 functions, A, B, C, and A already have tr_A. If we want to attach
+tr_multi for all three, we still need to lock tr_A->mutex, no?
 
-I see two problems: the first is concurrency. When walking each value,
-it is going to be hard to ensure the kptr field remains stable while
-you load and take ref to its allocator. Some other programs may also
-have access to the map value and may concurrently change the kptr
-field (xchg and even release it). How do we safely do a refcount_inc
-of its allocator?
+Thanks,
+Song
 
-For the second problem, consider this:
-obj = bpf_obj_alloc(&alloc_map, ...);
-inner_map = bpf_map_lookup_elem(&map_in_map, ...);
-map_val = bpf_map_lookup_elem(inner_map, ...);
-kptr_xchg(&map_val->kptr, obj);
-
-Now delete the entry having that inner_map, but keep its fd open.
-Unload the program, since it is map-in-map, no way to fill used_allocators.
-alloc_map is freed, releases reference on allocator, allocator is freed.
-Now close(inner_map_fd), inner_map is free. Either bad unit_free or memory leak.
-Is there a way to prevent this in your scheme?
-
---
-
-I had another idea, but it's not _completely_ 0 overhead. Heavy
-prototyping so I might be missing corner cases.
-It is to take reference on each allocation and deallocation. Yes,
-naive and slow if using atomics, but instead we can use percpu_ref
-instead of atomic refcount for the allocator. percpu_ref_get/put on
-each unit_alloc/unit_free.
-The problem though is that once initial reference is killed, it
-downgrades to atomic, which will kill performance. So we need to be
-smart about how that initial reference is managed.
-My idea is that the initial ref is taken and killed by the allocator
-bpf_map pinning the allocator. Once that bpf_map is gone, you cannot
-do any more allocations anyway (since you need to pass the map pointer
-to bpf_obj_alloc), so once it downgrades to atomics at that point we
-will only be releasing the references after freeing its allocated
-objects. Yes, then the free path becomes a bit costly after the
-allocator map is gone.
-
-We might be able to remove the cost on free path as well using the
-used_allocators scheme from above (to delay percpu_ref_kill), but it
-is not clear how to safely increment the ref of the allocator from map
-value...
-
-wdyt?
-
-> Overall, we think this handles all the nasty corners - objects escaping into
-> kfuncs/helpers when they shouldn't, pinned maps containing pointers to allocations,
-> programs accessing multiple allocators having deterministic freelist behaviors -
-> while keeping the API and complexity sane. The used_allocators approach can certainly
-> be less conservative (or can be even precise) but for a v1 that's probably overkill.
->
-> Please, feel free to shoot holes in this design! We tried to capture everything but
-> I'd love confirmation that we didn't miss anything.
->
-> --Delyan
+> But thousands of cmpxchg-s will take time. Would be good to measure
+> though. It might not be that bad.
