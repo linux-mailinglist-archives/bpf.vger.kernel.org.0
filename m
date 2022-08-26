@@ -2,111 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BD2C5A3014
-	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 21:36:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 652A55A302C
+	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 21:49:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231447AbiHZTgP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Aug 2022 15:36:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42182 "EHLO
+        id S1344528AbiHZTtP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Aug 2022 15:49:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230408AbiHZTgM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Aug 2022 15:36:12 -0400
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA82DCE49A;
-        Fri, 26 Aug 2022 12:36:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1661542571; x=1693078571;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=iSj/SuZhPON+rDmdOdwBzP5dOtaScuuVxlTIXwYMKPE=;
-  b=DRt/p4S7CY0viVcYn0LywGrg+HrBcUCJhmQLo8HoqzUeYB+qRvxyVvW4
-   gWyjgvOcuAcIMJ/H1xXOgDwKthBmpEGvKcburnsLqDO6ysDPZ2UFszDkV
-   w8EBCSGY0Bxh69TojQBDItbGWGzWO5GtEP/IIuRGesOdWli5ryVA94Mcj
-   Yh5Df2M0RNiq6ZbL+DJe+ACClc+OMagH9q8VdfUUBzaNPYlBdUv5q2Txm
-   W74U0MebEUWCxTQZZnZkzyzPCwtn700sJwwjcxqFZ06ybZhAYY17fktmn
-   lXNr6sk/J9Fb0rKeMLP3vkCjjk89bpgYqqxtEzA1xqCRjFxi7zPbx2SRC
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10451"; a="274332374"
-X-IronPort-AV: E=Sophos;i="5.93,266,1654585200"; 
-   d="scan'208";a="274332374"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2022 12:36:11 -0700
-X-IronPort-AV: E=Sophos;i="5.93,266,1654585200"; 
-   d="scan'208";a="671592528"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.50.209])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2022 12:36:00 -0700
-Message-ID: <5a0b4083-084a-56b3-a6a1-0fad1100a316@intel.com>
-Date:   Fri, 26 Aug 2022 22:35:53 +0300
+        with ESMTP id S231483AbiHZTtO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Aug 2022 15:49:14 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFB7DD41B8;
+        Fri, 26 Aug 2022 12:49:12 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id bj12so4976945ejb.13;
+        Fri, 26 Aug 2022 12:49:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=lFfRhGq/C2tmzV8LpNcEWTFvD11vZdOiT2ymmvZNkXM=;
+        b=SYXgKBCMsfvYQ+mL4y8sw6phUTHL+zxW8ToWaE9wkWtCrec5gmotGEUV1r+2fcMfmq
+         2GjOV/zdXam7qjDdD9kKsO/ZGNpx7GRp8VuA73VLI91wZKCLaqndMk+UjIgjBM4HdMpL
+         Y881dUBs//1chWclNOSIrl4vdZ9LyggT0ph1WLpl0pacywoYt8ieCPPWCgRpqTrOvIZl
+         2uIaMg1RgY9fCORr+TcliD/i1/WI7KDdaSA0DfmYfrrUqyhayspA1VyMBLxdHTRV4x0W
+         OGBERC8FI/9f348lT+XcAW7/y/XQlfYEHCyJwkAAfY8AUZEgIoCX9h3MOyT9BMzJ0vFG
+         5Etw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=lFfRhGq/C2tmzV8LpNcEWTFvD11vZdOiT2ymmvZNkXM=;
+        b=yAM4JhFSsvLkrGWulncDLSFnlz+SjmjwHPtVY6o8EM5BxjIwd5MQMTKZRQSUlD9RnK
+         K5ahZWzPMcERNwVKA8hRTo6T0fWlkkRcJq+42jEnHhO7SDoujB0SykerUCZqwnDuKVV/
+         tXVPxDVCYfck651ckVzUwJkA5REEUAiSRxJ6Zk/NYRYidbuPZc3oHKiGDmewgI42HTsY
+         ZI3N7ZLjV1tC3b63L2ANhuxQG4dEPwJF5DMuehEJRNqWbSuuObu4RfLfmYD5/Ekkl+Qh
+         ojl3Nn3k/1kK0ztzU+OZ6pMJzQFM8fEPijaEFCa3QpvumuHT+x+D3Zj6eYKSXfecH811
+         IE2A==
+X-Gm-Message-State: ACgBeo3zyJ8wmdkQGDaS0jN+A8IK0wh1cbWFoU57wvww4ivQBn0s9UDn
+        H32N3gl8Boh5RVfp1YLrB24KSxH69Lz5WEt6qbE=
+X-Google-Smtp-Source: AA6agR73Q0HZSxNSzeeEdfHDFFhd1ixwXdbVhBqtfaMp38clySFHtgypZqz/TFy1WAXJt8jgV2ioFw11a6+4IHRot0s=
+X-Received: by 2002:a17:907:b013:b0:73d:c708:3f22 with SMTP id
+ fu19-20020a170907b01300b0073dc7083f22mr6169995ejc.608.1661543351468; Fri, 26
+ Aug 2022 12:49:11 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.11.0
-Subject: Re: [PATCH v3 16/18] perf sched: Fixes for thread safety analysis
-Content-Language: en-US
-To:     Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Weiguo Li <liwg06@foxmail.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Dario Petrillo <dario.pk1@gmail.com>,
-        Hewenliang <hewenliang4@huawei.com>,
-        yaowenbin <yaowenbin1@huawei.com>,
-        Wenyu Liu <liuwenyu7@huawei.com>,
-        Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Pavithra Gurushankar <gpavithrasha@gmail.com>,
-        Alexandre Truong <alexandre.truong@arm.com>,
-        Quentin Monnet <quentin@isovalent.com>,
-        William Cohen <wcohen@redhat.com>,
-        Andres Freund <andres@anarazel.de>,
-        =?UTF-8?Q?Martin_Li=c5=a1ka?= <mliska@suse.cz>,
-        Colin Ian King <colin.king@intel.com>,
-        James Clark <james.clark@arm.com>,
-        Fangrui Song <maskray@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>,
-        Riccardo Mancini <rickyman7@gmail.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Zechuan Chen <chenzechuan1@huawei.com>,
-        Jason Wang <wangborong@cdjrlc.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Remi Bernon <rbernon@codeweavers.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, llvm@lists.linux.dev
-References: <20220824153901.488576-1-irogers@google.com>
- <20220824153901.488576-17-irogers@google.com>
- <a7176263-7dc8-6cbd-af2d-5338c4c4b546@intel.com>
- <CAP-5=fXk+mLv=C0CTrvnBeuhCTAtJ=x2O8D2YqvmVZSMHqcLvQ@mail.gmail.com>
- <b9ffea78-48c4-e2cd-20c2-dc0c9c2c69f7@intel.com>
- <CAP-5=fVXuwxP-REryDShX0RZQjkdy2YJKJ5M+zczUqDE2=59Bg@mail.gmail.com>
- <CAM9d7cgcLHYded1w4h22F_KWcHUpuxqak7Ny02Awj1WDFLynDQ@mail.gmail.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <CAM9d7cgcLHYded1w4h22F_KWcHUpuxqak7Ny02Awj1WDFLynDQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE
+References: <20220822235649.2218031-1-joannelkoong@gmail.com>
+ <20220822235649.2218031-2-joannelkoong@gmail.com> <CAEf4BzZm7eUX3w-NwP0JuWtvKbO6GxN911TraY5bA8-z+ocyCg@mail.gmail.com>
+ <CAP01T77izAbefN5CJ1ZdjwUdii=gMFMduKTYtSbYC3S9jbRoEA@mail.gmail.com>
+ <CAJnrk1Y0r3++RLpT2jvp4st-79x3dUYk3uP-4tfnAeL5_kgM0Q@mail.gmail.com>
+ <CAP01T74O6ZuH_NPObYTLUjFSADjWjzfHjTsLBf8b67jgchf6Gw@mail.gmail.com>
+ <CAJnrk1Z39+pLzAOL3tbqvQyTcB4HvrbLghmr6_vLXhtJYHuwEA@mail.gmail.com> <CAP01T76ChONTCVtHNZ_X3Z6qmuZTKCVYwe0s6_TGcuC1tEx9sw@mail.gmail.com>
+In-Reply-To: <CAP01T76ChONTCVtHNZ_X3Z6qmuZTKCVYwe0s6_TGcuC1tEx9sw@mail.gmail.com>
+From:   Joanne Koong <joannelkoong@gmail.com>
+Date:   Fri, 26 Aug 2022 12:49:00 -0700
+Message-ID: <CAJnrk1Zmne1uDn8EKdNKJe6O-k_moU9Sryfws_J-TF2BvX2QMg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 1/3] bpf: Add skb dynptrs
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf@vger.kernel.org,
+        andrii@kernel.org, daniel@iogearbox.net, ast@kernel.org,
+        kafai@fb.com, kuba@kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -114,156 +71,111 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 26/08/22 21:26, Namhyung Kim wrote:
-> On Fri, Aug 26, 2022 at 10:48 AM Ian Rogers <irogers@google.com> wrote:
->>
->> On Fri, Aug 26, 2022 at 10:41 AM Adrian Hunter <adrian.hunter@intel.com> wrote:
->>>
->>> On 26/08/22 19:06, Ian Rogers wrote:
->>>> On Fri, Aug 26, 2022 at 5:12 AM Adrian Hunter <adrian.hunter@intel.com> wrote:
->>>>>
->>>>> On 24/08/22 18:38, Ian Rogers wrote:
->>>>>> Add annotations to describe lock behavior. Add unlocks so that mutexes
->>>>>> aren't conditionally held on exit from perf_sched__replay. Add an exit
->>>>>> variable so that thread_func can terminate, rather than leaving the
->>>>>> threads blocked on mutexes.
->>>>>>
->>>>>> Signed-off-by: Ian Rogers <irogers@google.com>
->>>>>> ---
->>>>>>  tools/perf/builtin-sched.c | 46 ++++++++++++++++++++++++--------------
->>>>>>  1 file changed, 29 insertions(+), 17 deletions(-)
->>>>>>
->>>>>> diff --git a/tools/perf/builtin-sched.c b/tools/perf/builtin-sched.c
->>>>>> index 7e4006d6b8bc..b483ff0d432e 100644
->>>>>> --- a/tools/perf/builtin-sched.c
->>>>>> +++ b/tools/perf/builtin-sched.c
->>>>>> @@ -246,6 +246,7 @@ struct perf_sched {
->>>>>>       const char      *time_str;
->>>>>>       struct perf_time_interval ptime;
->>>>>>       struct perf_time_interval hist_time;
->>>>>> +     volatile bool   thread_funcs_exit;
->>>>>>  };
->>>>>>
->>>>>>  /* per thread run time data */
->>>>>> @@ -633,31 +634,34 @@ static void *thread_func(void *ctx)
->>>>>>       prctl(PR_SET_NAME, comm2);
->>>>>>       if (fd < 0)
->>>>>>               return NULL;
->>>>>> -again:
->>>>>> -     ret = sem_post(&this_task->ready_for_work);
->>>>>> -     BUG_ON(ret);
->>>>>> -     mutex_lock(&sched->start_work_mutex);
->>>>>> -     mutex_unlock(&sched->start_work_mutex);
->>>>>>
->>>>>> -     cpu_usage_0 = get_cpu_usage_nsec_self(fd);
->>>>>> +     while (!sched->thread_funcs_exit) {
->>>>>> +             ret = sem_post(&this_task->ready_for_work);
->>>>>> +             BUG_ON(ret);
->>>>>> +             mutex_lock(&sched->start_work_mutex);
->>>>>> +             mutex_unlock(&sched->start_work_mutex);
->>>>>>
->>>>>> -     for (i = 0; i < this_task->nr_events; i++) {
->>>>>> -             this_task->curr_event = i;
->>>>>> -             perf_sched__process_event(sched, this_task->atoms[i]);
->>>>>> -     }
->>>>>> +             cpu_usage_0 = get_cpu_usage_nsec_self(fd);
->>>>>>
->>>>>> -     cpu_usage_1 = get_cpu_usage_nsec_self(fd);
->>>>>> -     this_task->cpu_usage = cpu_usage_1 - cpu_usage_0;
->>>>>> -     ret = sem_post(&this_task->work_done_sem);
->>>>>> -     BUG_ON(ret);
->>>>>> +             for (i = 0; i < this_task->nr_events; i++) {
->>>>>> +                     this_task->curr_event = i;
->>>>>> +                     perf_sched__process_event(sched, this_task->atoms[i]);
->>>>>> +             }
->>>>>>
->>>>>> -     mutex_lock(&sched->work_done_wait_mutex);
->>>>>> -     mutex_unlock(&sched->work_done_wait_mutex);
->>>>>> +             cpu_usage_1 = get_cpu_usage_nsec_self(fd);
->>>>>> +             this_task->cpu_usage = cpu_usage_1 - cpu_usage_0;
->>>>>> +             ret = sem_post(&this_task->work_done_sem);
->>>>>> +             BUG_ON(ret);
->>>>>>
->>>>>> -     goto again;
->>>>>> +             mutex_lock(&sched->work_done_wait_mutex);
->>>>>> +             mutex_unlock(&sched->work_done_wait_mutex);
->>>>>> +     }
->>>>>> +     return NULL;
->>>>>>  }
->>>>>>
->>>>>>  static void create_tasks(struct perf_sched *sched)
->>>>>> +     EXCLUSIVE_LOCK_FUNCTION(sched->start_work_mutex)
->>>>>> +     EXCLUSIVE_LOCK_FUNCTION(sched->work_done_wait_mutex)
->>>>>>  {
->>>>>>       struct task_desc *task;
->>>>>>       pthread_attr_t attr;
->>>>>> @@ -687,6 +691,8 @@ static void create_tasks(struct perf_sched *sched)
->>>>>>  }
->>>>>>
->>>>>>  static void wait_for_tasks(struct perf_sched *sched)
->>>>>> +     EXCLUSIVE_LOCKS_REQUIRED(sched->work_done_wait_mutex)
->>>>>> +     EXCLUSIVE_LOCKS_REQUIRED(sched->start_work_mutex)
->>>>>>  {
->>>>>>       u64 cpu_usage_0, cpu_usage_1;
->>>>>>       struct task_desc *task;
->>>>>> @@ -738,6 +744,8 @@ static void wait_for_tasks(struct perf_sched *sched)
->>>>>>  }
->>>>>>
->>>>>>  static void run_one_test(struct perf_sched *sched)
->>>>>> +     EXCLUSIVE_LOCKS_REQUIRED(sched->work_done_wait_mutex)
->>>>>> +     EXCLUSIVE_LOCKS_REQUIRED(sched->start_work_mutex)
->>>>>>  {
->>>>>>       u64 T0, T1, delta, avg_delta, fluct;
->>>>>>
->>>>>> @@ -3309,11 +3317,15 @@ static int perf_sched__replay(struct perf_sched *sched)
->>>>>>       print_task_traces(sched);
->>>>>>       add_cross_task_wakeups(sched);
->>>>>>
->>>>>> +     sched->thread_funcs_exit = false;
->>>>>>       create_tasks(sched);
->>>>>>       printf("------------------------------------------------------------\n");
->>>>>>       for (i = 0; i < sched->replay_repeat; i++)
->>>>>>               run_one_test(sched);
->>>>>>
->>>>>> +     sched->thread_funcs_exit = true;
->>>>>> +     mutex_unlock(&sched->start_work_mutex);
->>>>>> +     mutex_unlock(&sched->work_done_wait_mutex);
->>>>>
->>>>> I think you still need to wait for the threads to exit before
->>>>> destroying the mutexes.
->>>>
->>>> This is a pre-existing issue and beyond the scope of this patch set.
->>>
->>> You added the mutex_destroy functions in patch 8, so it is still
->>> fallout from that.
->>
->> In the previous code the threads were blocked on mutexes that were
->> stack allocated and the stack memory went away. You are correct to say
->> that to those locks I added an init and destroy call. The lifetime of
->> the mutex was wrong previously and remains wrong in this change.
-> 
-> I think you fixed the lifetime issue with sched->thread_funcs_exit here.
-> All you need to do is calling pthread_join() after the mutex_unlock, no?
+On Fri, Aug 26, 2022 at 11:52 AM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
+>
+> On Fri, 26 Aug 2022 at 20:44, Joanne Koong <joannelkoong@gmail.com> wrote:
+> >
+> > On Thu, Aug 25, 2022 at 5:19 PM Kumar Kartikeya Dwivedi
+> > <memxor@gmail.com> wrote:
+> > >
+> > > On Thu, 25 Aug 2022 at 23:02, Joanne Koong <joannelkoong@gmail.com> wrote:
+> > > > [...]
+> > > > >
+> > > > > Related question, it seems we know statically if dynptr is read only
+> > > > > or not, so why even do all this hidden parameter passing and instead
+> > > > > just reject writes directly? You only need to be able to set
+> > > > > MEM_RDONLY on dynptr_data returned PTR_TO_PACKETs, and reject
+> > > > > dynptr_write when dynptr type is xdp/skb (and ctx is only one). That
+> > > > > seems simpler than checking it at runtime. Verifier already handles
+> > > > > MEM_RDONLY generically, you only need to add the guard for
+> > > > > check_packet_acces (and check_helper_mem_access for meta->raw_mode
+> > > > > under pkt case), and rejecting dynptr_write seems like a if condition.
+> > > >
+> > > > There will be other helper functions that do writes (eg memcpy to
+> > > > dynptrs, strncpy to dynptrs, probe read user to dynptrs, hashing
+> > > > dynptrs, ...) so it's more scalable if we reject these at runtime
+> > > > rather than enforce these at the verifier level. I also think it's
+> > > > cleaner to keep the verifier logic as simple as possible and do the
+> > > > checking in the helper.
+> > >
+> > > I won't be pushing this further, since you know what you plan to add
+> > > in the future better, but I still disagree.
+> > >
+> > > I'm guessing there might be dynptrs where this read only property is
+> > > set dynamically at runtime, which is why you want to go this route?
+> > > I.e. you might not know statically whether dynptr is read only or not?
+> > >
+> > > My main confusion is the inconsistency here.
+> > >
+> > > Right now the patch implicitly relies on may_access_direct_pkt_data to
+> > > protect slices returned from dynptr_data, instead of setting
+> > > MEM_RDONLY on the returned PTR_TO_PACKET. Which is fine, it's not
+> > > needed. So indirectly, you are relying on knowing statically whether
+> > > the dynptr is read only or not. But then you also set this bit at
+> > > runtime.
+> > >
+> > > So you reject some cases at load time, and the rest of them only at
+> > > runtime. Direct writes to dynptr slice fails load, writes through
+> > > helper does not (only fails at runtime).
+> > >
+> > > Also, dynptr_data needs to know whether dynptr is read only
+> > > statically, to protect writes to its returned pointer, unless you
+> > > decide to introduce another helper for the dynamic rdonly bit case
+> > > (like dynptr_data_rdonly). Then you have a mismatch, where dynptr_data
+> > > works for some rdonly dynptrs (known to be rdonly statically, like
+> > > this skb one), but not for others.
+> > >
+> > > I also don't agree about the complexity or scalability part, all the
+> > > infra and precedence is already there. We already have similar checks
+> > > for meta->raw_mode where we reject writes to read only pointers in
+> > > check_helper_mem_access.
+> >
+> > My point about scalability is that if we reject bpf_dynptr_write() at
+> > load time, then we must reject any future dynptr helper that does any
+> > writing at load time as well, to be consistent.
+> >
+> > I don't feel strongly about whether we reject at load time or run
+> > time. Rejecting at load time instead of runtime doesn't seem that
+> > useful to me, but there's a good chance I'm wrong here since Martin
+> > stated that he prefers rejecting at load time as well.
+> >
+> > As for the added complexity part, what I mean is that we'll need to
+> > keep track of some more stuff to support this, such as whether the
+> > dynptr is read only and which helper functions need to check whether
+> > the dynptr is read only or not.
+>
+> What I'm trying to understand is how dynptr_data is supposed to work
+> if this dynptr read only bit is only known at runtime. Or will it be
+> always known statically so that it can set returned pointer as read
+> only? Because then it doesn't seem it is required or useful to track
+> the readonly bit at runtime.
 
-Like this maybe:
+I think it'll always be known statically whether the dynptr is
+read-only or not. If we make all writable dynptr helper functions
+reject read-only dynptrs at load time instead of run time, then yes we
+can remove the read-only bit in the bpf_dynptr_kern struct.
 
-diff --git a/tools/perf/builtin-sched.c b/tools/perf/builtin-sched.c
-index b483ff0d432e..8090c1218855 100644
---- a/tools/perf/builtin-sched.c
-+++ b/tools/perf/builtin-sched.c
-@@ -3326,6 +3326,13 @@ static int perf_sched__replay(struct perf_sched *sched)
- 	sched->thread_funcs_exit = true;
- 	mutex_unlock(&sched->start_work_mutex);
- 	mutex_unlock(&sched->work_done_wait_mutex);
-+	/* Get rid of threads so they won't be upset by mutex destruction */
-+	for (i = 0; i < sched->nr_tasks; i++) {
-+		int err = pthread_join(sched->tasks[i]->thread, NULL);
-+
-+		if (err)
-+			pr_err("pthread_join() failed for task nr %lu, error %d\n", i, err);
-+	}
- 	return 0;
- }
- 
+There's also the question of whether this constraint (eg all read-only
+writes are rejected at load time) is too rigid - for example, what if
+in the future we want to add a helper function where if a certain
+condition is met, then we write some number of bytes, else we read
+some number of bytes? This would be not possible to add then, since
+we'll only know at runtime whether the condition is met.
 
+I personally lean towards rejecting helper function writes at runtime,
+but if you think it's a non-trivial benefit to reject at load time
+instead, I'm fine going with that.
 
+>
+> It is fine if _everything_ checks it at runtime, but that doesn't seem
+> possible, hence the question. We would need a new slice helper that
+> only returns read-only slices, because dynptr_data can return rw
+> slices currently and it is already UAPI so changing that is not
+> possible anymore.
+
+I don't agree that if bpf_dynptr_write() is checked at runtime, then
+bpf_dynptr_data must also be checked at runtime to be consistent. I
+think it's fine if writes through helper functions are rejected at
+runtime, and writes through direct access are rejected at load time.
+That doesn't seem inconsistent to me.
