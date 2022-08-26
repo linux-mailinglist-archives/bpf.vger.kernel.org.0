@@ -2,142 +2,175 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78B495A2FAD
-	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 21:10:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02B4A5A2FB8
+	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 21:11:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345080AbiHZTKB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Aug 2022 15:10:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51042 "EHLO
+        id S237904AbiHZTLX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Aug 2022 15:11:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345084AbiHZTJ7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Aug 2022 15:09:59 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C301D8B;
-        Fri, 26 Aug 2022 12:09:52 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id h78so1878051iof.13;
-        Fri, 26 Aug 2022 12:09:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=cNe7/LdZ1k5s4+t2GvksH0Kd21I+AeA6M+dWLUMiXp8=;
-        b=ghTR7Vl8VXcQgwHOlzh20AYV/+pdOjtMSVCzW1b1kWcrLYkyJPlXA7FBFZWiwYAuLs
-         ZLcBvuJA/gkN77bOABeNLZhOIQCioTfJNYd+shx3FUqXTyQM43tixfLdZgKGzBkjo+mX
-         Oaov1HZ07YmV/QwdiGg78r3FdqF/ib9khGHo6iEljXwM5agHIijJQd7ZfGf/jfA4cHdq
-         hulUAXa+G1MKmJ5VbNhilo7yFSA3fqu5vqj/gKMHuowP7woE/FHydodU5avD3b2DBLF9
-         Hrho3yDi3RDKpJ3s5OOsip2pG86JLWBC99SYzWs9FagG39hICbwqTmSG96LL07wDYWqH
-         xccg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=cNe7/LdZ1k5s4+t2GvksH0Kd21I+AeA6M+dWLUMiXp8=;
-        b=3G4seYxByBLi6YM6qGsixFXo4/RyMvhhHlrdxP4w2x1UqIXjC0bT+nmHbWpuU9jv+b
-         DKi3RIpLC4c/tjHRb3pVI98t3sqIBMuJoHg8ZVALy/PxErNP96DEHaS4+G9ADhqUyYL7
-         CjL1JmrpAXkdDAM//uV9EpdjhByrW35wf5f+zlNNkfQasTj4sSupgtH6ZwYUQFMy9XGo
-         4ilsfAz8BXAjQJhlcGiq3A/kmY6fTAMVsbJyRFRYLdgRwAp3E9BxGSVhUh2Sb05V/+Oe
-         aLe2uc7DmcO7e2bdUoVeHTmnO1mqqkGO1zFeaWEVuTJWTOQIKTihQszbRemDXkv3adWR
-         dYQg==
-X-Gm-Message-State: ACgBeo19Bficxoq0FWG/Jt9Cm6EFp30ALx+j1Lbi35S4w7m5ZKhg9UWJ
-        0mkXGX9BKvmTtanrwb97s3W/eOMZLpu5Hs4NAEk=
-X-Google-Smtp-Source: AA6agR5KmcaeD/ZAx7hyk/EVO0VjNRxj2+mY1Oqnq+QkYk2/KGrTWl17x+/UAXk89yVKvUz8Ga+hbMBVbUyKs93wrws=
-X-Received: by 2002:a05:6638:2391:b0:34a:262:819d with SMTP id
- q17-20020a056638239100b0034a0262819dmr4532584jat.93.1661540991106; Fri, 26
- Aug 2022 12:09:51 -0700 (PDT)
+        with ESMTP id S229704AbiHZTLW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Aug 2022 15:11:22 -0400
+Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D5B46CD03;
+        Fri, 26 Aug 2022 12:11:20 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.227])
+        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4MDq6s1nGVz9v7N9;
+        Sat, 27 Aug 2022 03:05:57 +0800 (CST)
+Received: from [10.81.204.244] (unknown [10.81.204.244])
+        by APP2 (Coremail) with SMTP id GxC2BwA38hmqGgljYsJSAA--.58619S2;
+        Fri, 26 Aug 2022 20:10:50 +0100 (CET)
+Message-ID: <9e11d51c-891f-739f-30a9-bb5361ceccb2@huaweicloud.com>
+Date:   Fri, 26 Aug 2022 21:10:21 +0200
 MIME-Version: 1.0
-References: <20220822235649.2218031-1-joannelkoong@gmail.com>
- <20220822235649.2218031-3-joannelkoong@gmail.com> <CAP01T77h2+a9OonHuiPRFsAForWYJfQ71G6teqbcLg4KuGpK5A@mail.gmail.com>
- <CAJnrk1aq3gJgz0DKo47SS0J2wTtg1C_B3eVfsh-036nmDKKVWA@mail.gmail.com>
- <878rnehqnd.fsf@toke.dk> <CAJnrk1YYpcW2Z9XQ9sfq2U7Y6OYMc3CZk1Xgc2p1e7DVCq3kmw@mail.gmail.com>
- <CAP01T75isW8EtuL2AZBwYNzk-OPsMR=QS3YB_oiR8cOLhJzmUg@mail.gmail.com> <20220826063706.pufgtu4rff4urbzf@kafai-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20220826063706.pufgtu4rff4urbzf@kafai-mbp.dhcp.thefacebook.com>
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date:   Fri, 26 Aug 2022 21:09:15 +0200
-Message-ID: <CAP01T74oMaGGtJNQ_hHWKzBwwGgwOmH=1Z-c3mauqC9U95UPvA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 2/3] bpf: Add xdp dynptrs
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     Joanne Koong <joannelkoong@gmail.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        bpf@vger.kernel.org, andrii@kernel.org, daniel@iogearbox.net,
-        ast@kernel.org, kuba@kernel.org, netdev@vger.kernel.org,
-        "brouer@redhat.com" <brouer@redhat.com>, lorenzo@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.0
+Subject: Re: [PATCH v12 02/10] btf: Handle dynamic pointer parameter in kfuncs
+Content-Language: en-US
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Howells <dhowells@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        keyrings@vger.kernel.org,
+        LSM List <linux-security-module@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        =?UTF-8?Q?Daniel_M=c3=bcller?= <deso@posteo.net>,
+        Roberto Sassu <roberto.sassu@huawei.com>,
+        Joanne Koong <joannelkoong@gmail.com>
+References: <20220818152929.402605-1-roberto.sassu@huaweicloud.com>
+ <20220818152929.402605-3-roberto.sassu@huaweicloud.com>
+ <YwhSCE0H+JfUe4Ew@kernel.org>
+ <CAADnVQJbTzfe28ife1+vg+ByLfyLBTCoEZW_eg8TEw838JGaog@mail.gmail.com>
+ <YwheJqUDLOxL3iTi@kernel.org> <YwjcItv0q8GdzPbb@kernel.org>
+ <bb4bdd90017d5772bdc31dfac93f2e86c6c61b82.camel@huaweicloud.com>
+ <Ywj1s6d7XowV82PZ@kernel.org> <Ywj3pOahYdxA8Dza@kernel.org>
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+In-Reply-To: <Ywj3pOahYdxA8Dza@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: GxC2BwA38hmqGgljYsJSAA--.58619S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxJw1ruw1UAF47KFW3KFyxGrg_yoW5Wr4Dpa
+        48Aayqkr4UJr45Cwnrtr1xtF10yrWjqr48Xry5J34FyF1qvF1SgF4xJr1Yka45Gr18AF18
+        Za1UX347XF15A37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+        AFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
+        6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyT
+        uYvjxUFYFCUUUUU
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAQBF1jj35XHQABsS
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 26 Aug 2022 at 08:37, Martin KaFai Lau <kafai@fb.com> wrote:
->
-> On Thu, Aug 25, 2022 at 01:04:16AM +0200, Kumar Kartikeya Dwivedi wrote:
-> > On Wed, 24 Aug 2022 at 20:11, Joanne Koong <joannelkoong@gmail.com> wrote:
-> > > I'm more and more liking the idea of limiting xdp to match the
-> > > constraints of skb given that both you, Kumar, and Jakub have
-> > > mentioned that portability between xdp and skb would be useful for
-> > > users :)
-> > >
-> > > What are your thoughts on this API:
-> > >
-> > > 1) bpf_dynptr_data()
-> > >
-> > > Before:
-> > >   for skb-type progs:
-> > >       - data slices in fragments is not supported
-> > >
-> > >   for xdp-type progs:
-> > >       - data slices in fragments is supported as long as it is in a
-> > > contiguous frag (eg not across frags)
-> > >
-> > > Now:
-> > >   for skb + xdp type progs:
-> > >       - data slices in fragments is not supported
-> I don't think it is necessary (or help) to restrict xdp slice from getting
-> a fragment.  In any case, the xdp prog has to deal with the case
-> that bpf_dynptr_data(xdp_dynptr, offset, len) is across two fragments.
-> Although unlikely, it still need to handle it (dynptr_data returns NULL)
-> properly by using bpf_dynptr_read().  The same that the skb case
-> also needs to handle dynptr_data returning NULL.
->
-> Something like Kumar's sample in [0] should work for both
-> xdp and skb dynptr but replace the helpers with
-> bpf_dynptr_{data,read,write}().
->
-> [0]: https://lore.kernel.org/bpf/20220726184706.954822-1-joannelkoong@gmail.com/T/#mf082a11403bc76fa56fde4de79a25c660680285c
->
-> > >
-> > >
-> > > 2)  bpf_dynptr_write()
-> > >
-> > > Before:
-> > >   for skb-type progs:
-> > >      - all data slices are invalidated after a write
-> > >
-> > >   for xdp-type progs:
-> > >      - nothing
-> > >
-> > > Now:
-> > >   for skb + xdp type progs:
-> > >      - all data slices are invalidated after a write
-> I wonder if the 'Before' behavior can be kept as is.
->
-> The bpf prog that runs in both xdp and bpf should be
-> the one always expecting the data-slice will be invalidated and
-> it has to call the bpf_dynptr_data() again after writing.
-> Yes, it is unnecessary for xdp but the bpf prog needs to the
-> same anyway if the verifier was the one enforcing it for
-> both skb and xdp dynptr type.
->
-> If the bpf prog is written for xdp alone, then it has
-> no need to re-get the bpf_dynptr_data() after writing.
->
+On 8/26/2022 6:41 PM, Jarkko Sakkinen wrote:
+> On Fri, Aug 26, 2022 at 07:32:54PM +0300, Jarkko Sakkinen wrote:
+>> On Fri, Aug 26, 2022 at 05:34:57PM +0200, Roberto Sassu wrote:
+>>> On Fri, 2022-08-26 at 17:43 +0300, Jarkko Sakkinen wrote:
+>>>> On Fri, Aug 26, 2022 at 08:46:14AM +0300, Jarkko Sakkinen wrote:
+>>>>> On Thu, Aug 25, 2022 at 10:16:14PM -0700, Alexei Starovoitov wrote:
+>>>>>> On Thu, Aug 25, 2022 at 9:54 PM Jarkko Sakkinen <
+>>>>>> jarkko@kernel.org> wrote:
+>>>>>>>> -static bool is_dynptr_reg_valid_init(struct bpf_verifier_env
+>>>>>>>> *env, struct bpf_reg_state *reg,
+>>>>>>>> -                                  enum bpf_arg_type
+>>>>>>>> arg_type)
+>>>>>>>> +bool is_dynptr_reg_valid_init(struct bpf_verifier_env *env,
+>>>>>>>> struct bpf_reg_state *reg,
+>>>>>>>> +                           enum bpf_arg_type arg_type)
+>>>>>>>>   {
+>>>>>>>>        struct bpf_func_state *state = func(env, reg);
+>>>>>>>>        int spi = get_spi(reg->off);
+>>>>>>>> --
+>>>>>>>> 2.25.1
+>>>>>>>>
+>>>>>>>
+>>>>>>> Might be niticking but generally I'd consider splitting
+>>>>>>> exports as commits of their own.
+>>>>>>
+>>>>>> -static bool
+>>>>>> +bool
+>>>>>>
+>>>>>> into a separate commit?
+>>>>>>
+>>>>>> I guess it makes sense for people whose salary depends on
+>>>>>> number of commits.
+>>>>>> We don't play these games.
+>>>>>
+>>>>> What kind of argument is that anyway.
+>>>>
+>>>> "Separate each *logical change* into a separate patch." [*]
+>>>
+>>> The logical change, as per the patch subject, is allowing the
+>>> possibility of including eBPF dynamic pointers in a kfunc definition.
+>>> It requires to call an existing function that was already defined
+>>> elsewhere.
+>>>
+>>> Maybe I'm wrong, but I don't see only exporting a function definition
+>>> to an include file as a logical change. To me, the changes in this
+>>> patch are clearly connected. Or even better, they tell why the function
+>>> definition has been exported, that would not appear if moving the
+>>> function definition is a standalone patch.
+>>>
+>>>>
+>>>> To add, generally any user space visible space should be an
+>>>> isolated patch.
+>>>
+>>> As far as I understood, definitions visible to user space should be in
+>>> include/uapi.
+>>
+>> It does change e.g. the output of kallsyms.
+>>
+>> It's not ABI but it's still user space visble.
+>>
+>>>
+>>>>
+>>>> Please, stop posting nonsense.
+>>>
+>>> If I may, saying this does not encourage people to try to submit their
+>>> code. I feel it is a bit strong, and I kindly ask you to express your
+>>> opinion in a more gentle way.
+>>
+>> I agree. That's why I was wondering what is this nonsense
+>> about salary and games.
+> 
+> Please denote that I started my review with "Might be nitpicking...".
+> 
+> It's neither particularly disencouraging nor enforcing for anyone.
 
-Yeah, compared to the alternative, I guess it's better how it is right
-now. It doesn't seem possible to meaningfully hide the differences
-without penalizing either case. It also wouldn't be good to make it
-less useful for XDP, since the whole point of this and the previous
-effort was exposing bpf_xdp_pointer to the user.
+Thanks for clarifying. Yes, it is not. Sorry, I misunderstood.
+
+Roberto
+
