@@ -2,181 +2,172 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FACA5A2078
-	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 07:50:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DF285A2080
+	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 07:53:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235918AbiHZFus (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Aug 2022 01:50:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54778 "EHLO
+        id S244854AbiHZFx2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Aug 2022 01:53:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244922AbiHZFur (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Aug 2022 01:50:47 -0400
-Received: from mail-oa1-x2d.google.com (mail-oa1-x2d.google.com [IPv6:2001:4860:4864:20::2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E608ADCDD;
-        Thu, 25 Aug 2022 22:50:45 -0700 (PDT)
-Received: by mail-oa1-x2d.google.com with SMTP id 586e51a60fabf-11c59785966so843780fac.11;
-        Thu, 25 Aug 2022 22:50:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc;
-        bh=7Isa32vjxy67XTD9NcDv4PtKbRD7YWANWp5LplWp5g0=;
-        b=VCz76a4BwVXS1QPdFhtwb0IDkZdia53KpfMTJnGNFikINOrIth/KrxtGCAWC+D0LXC
-         6VisE6Ea18HpgaPmr/qeAPb1Aeqy+jWJZyHALf8jbOL5mHcMjei0iRIDIm9x7ZIlWoF8
-         oQmURCAtj76kyr393HOg0COITMVmy7NNh/HwP8io3mp+KrhGc20LegcPdb5Ntn9EVnP5
-         SRlsainoFY7TAzcw/bfiomWPD7CkMlxeW5vTPHC26+w5GsUGTDXPY9tRiY9mUKA5XOuA
-         kv2ziFr3wZxhYNU2vLLlBxXTKcpw48fo1YWqHigGrgaQkd/6y4oV4YIpEvYAqeorapKq
-         gyxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc;
-        bh=7Isa32vjxy67XTD9NcDv4PtKbRD7YWANWp5LplWp5g0=;
-        b=4f2VvI1Y3TkjhuDr2vbdthlfxxgBKbMQxN+gbubLXGXJaD06B5P30lEMVQHpDc6VHA
-         +hi7wwAOWV2ur2+tL2PD2aPNhyaBCCmsoHUDtLdjYMP9n70uNCqPP+3EQ4pv39t3DnS8
-         +J20NpHQHE0/Ox+T4xZkqnq7aS3h8g453Eoi2a5hdny10t23uvILiY/G9V8Ljxk65BJV
-         XXxUnR9mxFmPlXE/BYITW8hH6OMLCOmE/DiXLWPsfKpogK3QarGScRnM4XeWLcoAFSZt
-         kb2Go2KSFun0+sEx9aQb/rfxnO3eeqwGuKq/k5zj6z53HuTlXRVDqhzVASIOuzMJCG0j
-         5GoQ==
-X-Gm-Message-State: ACgBeo3IFPHsky5vfH5RWPTcSBFftDYbGsRy534fmzUKst1x0zgd32Nf
-        7P/cCPWbdFCdv1q/Tv07lMYHSn6mOgjQJg==
-X-Google-Smtp-Source: AA6agR72CATl4WtPtwoUbhrD6jJBGYE2f62n+APBrUkg+W5te4elbSOgFe9TQnZjoYPjuGidVGjFEQ==
-X-Received: by 2002:a05:6870:41d5:b0:11c:cbbf:50c7 with SMTP id z21-20020a05687041d500b0011ccbbf50c7mr1188376oac.77.1661493044138;
-        Thu, 25 Aug 2022 22:50:44 -0700 (PDT)
-Received: from james-x399.localdomain (71-33-138-207.hlrn.qwest.net. [71.33.138.207])
-        by smtp.gmail.com with ESMTPSA id bk9-20020a056830368900b006370b948974sm554544otb.32.2022.08.25.22.50.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Aug 2022 22:50:43 -0700 (PDT)
-From:   James Hilliard <james.hilliard1@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     James Hilliard <james.hilliard1@gmail.com>,
+        with ESMTP id S231315AbiHZFxZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Aug 2022 01:53:25 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE204D0762;
+        Thu, 25 Aug 2022 22:53:23 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3F2E761982;
+        Fri, 26 Aug 2022 05:53:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A29DBC433D7;
+        Fri, 26 Aug 2022 05:53:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1661493202;
+        bh=R4FIJTfK5BiXshJ8j5B3MsFnPhCrQXJMHxLvbBW+/z4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=KmZvjY6ikSzn7lPBKetcxAOrQPXQyjZIx36hNrTJhovdLiwgEOUzSHkd9B9OKj+v0
+         zgjPY7sOvlCUpzgIm63O276vB5Dwsb22rXotnIUWRhVWwYisfDkT1HTFwaQ3eX70aW
+         KVXyFSypWN6riV8YSbs4X0qxdrgH0sC0SKf9UEqeWHcRTX80iJkbkxyA946Ca40WSn
+         G/BAsZpYIpP4mh3kusPDxn8zYvZM3J2peV3EVhcJDgJJmIFOguTS4Q5dDRb2Vfu5yg
+         QQtrEniSh60DkfaQJdDzvHm8tOY+G/jUYSA71bDYk+WZPWKWVLMpR9uUIOE4tsLozN
+         QAFn6r8TP2TZA==
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-33dba2693d0so10909737b3.12;
+        Thu, 25 Aug 2022 22:53:22 -0700 (PDT)
+X-Gm-Message-State: ACgBeo02mga5t78SidZI30TT3+CPnrBbyQmUGem6rryVPzhq68LJgvld
+        DPVgv1FSzbdRansU/KOIc4is0P2//vZ3mYNEyl0=
+X-Google-Smtp-Source: AA6agR7gOaZjs09UmPPNpKm1NS4oraRvce3kHiygNJeUNU9HmN2KZtckn/Yb498983PO2QNnsgsyHBbq7EsQKUYXG4s=
+X-Received: by 2002:a81:63c3:0:b0:323:ce27:4e4d with SMTP id
+ x186-20020a8163c3000000b00323ce274e4dmr7280253ywb.472.1661493201690; Thu, 25
+ Aug 2022 22:53:21 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220823210354.1407473-1-namhyung@kernel.org> <CAEf4Bzbd0-jGFCSCJu3eDxxom42xnH9Tevq0n50-AajjHb5t3g@mail.gmail.com>
+ <A9E2E766-E8A2-4E2E-A661-922400D2674D@fb.com> <CAEf4BzbGf6FuM7VcnA7HKb33HJeJjrDuydC4h1_tCUB8sPCW2g@mail.gmail.com>
+ <E215461A-01E7-4677-A404-C4439D66A7AF@fb.com> <CAM9d7cgigkU8quUMpScL=Xt8+WLDVXKiF5xdKiz7BbDPibSNjg@mail.gmail.com>
+In-Reply-To: <CAM9d7cgigkU8quUMpScL=Xt8+WLDVXKiF5xdKiz7BbDPibSNjg@mail.gmail.com>
+From:   Song Liu <song@kernel.org>
+Date:   Thu, 25 Aug 2022 22:53:10 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW5V1U_UTHQw9E80vCTeP4Jqg9Ta8B+7o3pybKB=8CGRFA@mail.gmail.com>
+Message-ID: <CAPhsuW5V1U_UTHQw9E80vCTeP4Jqg9Ta8B+7o3pybKB=8CGRFA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: Add bpf_read_raw_record() helper
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] selftests/bpf: Fix connect4_prog tcp/socket header type conflict
-Date:   Thu, 25 Aug 2022 23:50:24 -0600
-Message-Id: <20220826055025.1018491-1-james.hilliard1@gmail.com>
-X-Mailer: git-send-email 2.34.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-There is a potential for us to hit a type conflict when including
-netinet/tcp.h and sys/socket.h, we can replace both of these includes
-with linux/tcp.h to avoid this conflict.
+On Thu, Aug 25, 2022 at 10:22 PM Namhyung Kim <namhyung@kernel.org> wrote:
+>
+> On Thu, Aug 25, 2022 at 7:35 PM Song Liu <songliubraving@fb.com> wrote:
+> >
+> >
+> >
+> > > On Aug 25, 2022, at 4:03 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Thu, Aug 25, 2022 at 3:08 PM Song Liu <songliubraving@fb.com> wrote:
+> > >>
+> > >>
+> > >>
+> > >>> On Aug 25, 2022, at 2:33 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> > >>>
+> > >>> On Tue, Aug 23, 2022 at 2:04 PM Namhyung Kim <namhyung@kernel.org> wrote:
+> > >>>> + * long bpf_read_raw_record(struct bpf_perf_event_data *ctx, void *buf, u32 size, u64 flags)
+> > >>>> + *     Description
+> > >>>> + *             For an eBPF program attached to a perf event, retrieve the
+> > >>>> + *             raw record associated to *ctx* and store it in the buffer
+> > >>>> + *             pointed by *buf* up to size *size* bytes.
+> > >>>> + *     Return
+> > >>>> + *             On success, number of bytes written to *buf*. On error, a
+> > >>>> + *             negative value.
+> > >>>> + *
+> > >>>> + *             The *flags* can be set to **BPF_F_GET_RAW_RECORD_SIZE** to
+> > >>>> + *             instead return the number of bytes required to store the raw
+> > >>>> + *             record. If this flag is set, *buf* may be NULL.
+> > >>>
+> > >>> It looks pretty ugly from a usability standpoint to have one helper
+> > >>> doing completely different things and returning two different values
+> > >>> based on BPF_F_GET_RAW_RECORD_SIZE.
+> > >>
+> > >> Yeah, I had the same thought when I first looked at it. But that's the
+> > >> exact syntax with bpf_read_branch_records(). Well, we still have time
+> > >> to fix the new helper..
+> > >>
+> > >>>
+> > >>> I'm not sure what's best, but I have two alternative proposals:
+> > >>>
+> > >>> 1. Add two helpers: one to get perf record information (and size will
+> > >>> be one of them). Something like bpf_perf_record_query(ctx, flags)
+> > >>> where you pass perf ctx and what kind of information you want to read
+> > >>> (through flags), and u64 return result returns that (see
+> > >>> bpf_ringbuf_query() for such approach). And then have separate helper
+> > >>> to read data.
+> > >>>
+> > >>> 2. Keep one helper, but specify that it always returns record size,
+> > >>> even if user specified smaller size to read. And then allow passing
+> > >>> buf==NULL && size==0. So passing NULL, 0 -- you get record size.
+> > >>> Passing non-NULL buf -- you read data.
+> > >>
+> > >> AFAICT, this is also confusing.
+> > >>
+> > >
+> > > this is analogous to snprintf() behavior, so not that new and
+> > > surprising when you think about it. But if query + read makes more
+> > > sense, then it's fine by me
+> >
+> > Given the name discussion (the other email), I now like one API better.
+> >
+> > Actually, since we are on this, can we make it more generic, and handle
+> > all possible PERF_SAMPLE_* (in enum perf_event_sample_format)? Something
+> > like:
+> >
+> > long bpf_perf_event_read_sample(void *ctx, void *buf, u64 size, u64 flags);
+> >
+> > WDYT Namhyung?
+>
+> Do you mean reading the whole sample data at once?
+> Then it needs to parse the sample data format properly
+> which is non trivial due to a number of variable length
+> fields like callchains and branch stack, etc.
+>
+> Also I'm afraid I might need event configuration info
+> other than sample data like attr.type, attr.config,
+> attr.sample_type and so on.
+>
+> Hmm.. maybe we can add it to the ctx directly like ctx.attr_type?
 
-We also need to replace SOL_TCP with equivalent IPPROTO_TCP.
+The user should have access to the perf_event_attr used to
+create the event. This is also available in ctx->event->attr.
 
-Fixes the following error:
-In file included from /usr/include/netinet/tcp.h:91,
-                 from progs/connect4_prog.c:11:
-/home/buildroot/opt/cross/lib/gcc/bpf/13.0.0/include/stdint.h:34:23: error: conflicting types for 'int8_t'; have 'char'
-   34 | typedef __INT8_TYPE__ int8_t;
-      |                       ^~~~~~
-In file included from /usr/include/x86_64-linux-gnu/sys/types.h:155,
-                 from /usr/include/x86_64-linux-gnu/bits/socket.h:29,
-                 from /usr/include/x86_64-linux-gnu/sys/socket.h:33,
-                 from progs/connect4_prog.c:10:
-/usr/include/x86_64-linux-gnu/bits/stdint-intn.h:24:18: note: previous declaration of 'int8_t' with type 'int8_t' {aka 'signed char'}
-   24 | typedef __int8_t int8_t;
-      |                  ^~~~~~
-/home/buildroot/opt/cross/lib/gcc/bpf/13.0.0/include/stdint.h:43:24: error: conflicting types for 'int64_t'; have 'long int'
-   43 | typedef __INT64_TYPE__ int64_t;
-      |                        ^~~~~~~
-/usr/include/x86_64-linux-gnu/bits/stdint-intn.h:27:19: note: previous declaration of 'int64_t' with type 'int64_t' {aka 'long long int'}
-   27 | typedef __int64_t int64_t;
-      |                   ^~~~~~~
+Would this work?
 
-Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
----
- .../selftests/bpf/progs/connect4_prog.c       | 21 +++++++++----------
- 1 file changed, 10 insertions(+), 11 deletions(-)
+Thanks,
+Song
 
-diff --git a/tools/testing/selftests/bpf/progs/connect4_prog.c b/tools/testing/selftests/bpf/progs/connect4_prog.c
-index b241932911db..0f68b8d756b3 100644
---- a/tools/testing/selftests/bpf/progs/connect4_prog.c
-+++ b/tools/testing/selftests/bpf/progs/connect4_prog.c
-@@ -7,8 +7,7 @@
- #include <linux/bpf.h>
- #include <linux/in.h>
- #include <linux/in6.h>
--#include <sys/socket.h>
--#include <netinet/tcp.h>
-+#include <linux/tcp.h>
- #include <linux/if.h>
- #include <errno.h>
- 
-@@ -52,7 +51,7 @@ static __inline int verify_cc(struct bpf_sock_addr *ctx,
- 	char buf[TCP_CA_NAME_MAX];
- 	int i;
- 
--	if (bpf_getsockopt(ctx, SOL_TCP, TCP_CONGESTION, &buf, sizeof(buf)))
-+	if (bpf_getsockopt(ctx, IPPROTO_TCP, TCP_CONGESTION, &buf, sizeof(buf)))
- 		return 1;
- 
- 	for (i = 0; i < TCP_CA_NAME_MAX; i++) {
-@@ -70,12 +69,12 @@ static __inline int set_cc(struct bpf_sock_addr *ctx)
- 	char reno[TCP_CA_NAME_MAX] = "reno";
- 	char cubic[TCP_CA_NAME_MAX] = "cubic";
- 
--	if (bpf_setsockopt(ctx, SOL_TCP, TCP_CONGESTION, &reno, sizeof(reno)))
-+	if (bpf_setsockopt(ctx, IPPROTO_TCP, TCP_CONGESTION, &reno, sizeof(reno)))
- 		return 1;
- 	if (verify_cc(ctx, reno))
- 		return 1;
- 
--	if (bpf_setsockopt(ctx, SOL_TCP, TCP_CONGESTION, &cubic, sizeof(cubic)))
-+	if (bpf_setsockopt(ctx, IPPROTO_TCP, TCP_CONGESTION, &cubic, sizeof(cubic)))
- 		return 1;
- 	if (verify_cc(ctx, cubic))
- 		return 1;
-@@ -113,15 +112,15 @@ static __inline int set_keepalive(struct bpf_sock_addr *ctx)
- 	if (bpf_setsockopt(ctx, SOL_SOCKET, SO_KEEPALIVE, &one, sizeof(one)))
- 		return 1;
- 	if (ctx->type == SOCK_STREAM) {
--		if (bpf_setsockopt(ctx, SOL_TCP, TCP_KEEPIDLE, &one, sizeof(one)))
-+		if (bpf_setsockopt(ctx, IPPROTO_TCP, TCP_KEEPIDLE, &one, sizeof(one)))
- 			return 1;
--		if (bpf_setsockopt(ctx, SOL_TCP, TCP_KEEPINTVL, &one, sizeof(one)))
-+		if (bpf_setsockopt(ctx, IPPROTO_TCP, TCP_KEEPINTVL, &one, sizeof(one)))
- 			return 1;
--		if (bpf_setsockopt(ctx, SOL_TCP, TCP_KEEPCNT, &one, sizeof(one)))
-+		if (bpf_setsockopt(ctx, IPPROTO_TCP, TCP_KEEPCNT, &one, sizeof(one)))
- 			return 1;
--		if (bpf_setsockopt(ctx, SOL_TCP, TCP_SYNCNT, &one, sizeof(one)))
-+		if (bpf_setsockopt(ctx, IPPROTO_TCP, TCP_SYNCNT, &one, sizeof(one)))
- 			return 1;
--		if (bpf_setsockopt(ctx, SOL_TCP, TCP_USER_TIMEOUT, &one, sizeof(one)))
-+		if (bpf_setsockopt(ctx, IPPROTO_TCP, TCP_USER_TIMEOUT, &one, sizeof(one)))
- 			return 1;
- 	}
- 	if (bpf_setsockopt(ctx, SOL_SOCKET, SO_KEEPALIVE, &zero, sizeof(zero)))
-@@ -135,7 +134,7 @@ static __inline int set_notsent_lowat(struct bpf_sock_addr *ctx)
- 	int lowat = 65535;
- 
- 	if (ctx->type == SOCK_STREAM) {
--		if (bpf_setsockopt(ctx, SOL_TCP, TCP_NOTSENT_LOWAT, &lowat, sizeof(lowat)))
-+		if (bpf_setsockopt(ctx, IPPROTO_TCP, TCP_NOTSENT_LOWAT, &lowat, sizeof(lowat)))
- 			return 1;
- 	}
- 
--- 
-2.34.1
-
+>
+> >
+> > Another idea is to add another parameter, so that we can pick which
+> > PERF_SAMPLE_* to output via bpf_perf_event_read_sample().
+> >
+> > I think this will cover all cases with sample perf_event. Thoughts?
+>
+> Yeah, I like this more and it looks easier to use.
