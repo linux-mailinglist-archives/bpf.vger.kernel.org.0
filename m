@@ -2,215 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCD835A2CDC
-	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 18:53:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2188C5A2CDD
+	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 18:53:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344801AbiHZQxF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Aug 2022 12:53:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344615AbiHZQxB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        id S1344760AbiHZQxB (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Fri, 26 Aug 2022 12:53:01 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E32212AD6;
-        Fri, 26 Aug 2022 09:53:00 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245701AbiHZQxB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Aug 2022 12:53:01 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D15BB84;
+        Fri, 26 Aug 2022 09:52:59 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 46B12336B4;
-        Fri, 26 Aug 2022 16:52:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1661532779; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FAT+HbYA8AiuL1IZx0uK6pAdzXLKQU6eTml9pacvrDQ=;
-        b=E2icuEnaJOofHI7HbH7GmPRTqNDQ6cuVu/tzJk/IGT4qxLXxpxiP6CiTWWTXoomAMgmzvF
-        TGmuEwwVED6BQApstrm0xs1lHvruBWuj+5qGkVD0r/BS56ypSf/s5S+2pF7FGbd52LDg+r
-        HE5pByM8aeXv+r7JFPf/t20xJPO8E1A=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0BD7A13A7E;
-        Fri, 26 Aug 2022 16:52:59 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id yB+PAWv6CGMofAAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Fri, 26 Aug 2022 16:52:59 +0000
-From:   =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
-To:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     Tejun Heo <tj@kernel.org>, Aditya Kali <adityakali@google.com>,
-        Serge Hallyn <serge.hallyn@canonical.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Yonghong Song <yhs@fb.com>,
-        Muneendra Kumar <muneendra.kumar@broadcom.com>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Hao Luo <haoluo@google.com>
-Subject: [PATCH 4/4] cgroup/bpf: Honor cgroup NS in cgroup_iter for ancestors
-Date:   Fri, 26 Aug 2022 18:52:38 +0200
-Message-Id: <20220826165238.30915-5-mkoutny@suse.com>
-X-Mailer: git-send-email 2.37.0
-In-Reply-To: <20220826165238.30915-1-mkoutny@suse.com>
-References: <20220826165238.30915-1-mkoutny@suse.com>
+        by sin.source.kernel.org (Postfix) with ESMTPS id C8453CE3097;
+        Fri, 26 Aug 2022 16:52:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82C0CC433D6;
+        Fri, 26 Aug 2022 16:52:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1661532775;
+        bh=Y/uzqAIh1YcNPax6RpqdWo4bFq80gveYSsLUPXyiOXI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Rhta6UATMURxluUg/NlWzY+ixrgJdnYbSk3hUq0vXNzAcTjxEB8uPnDmMvGc2T2vy
+         b0zvK+jwmy/v8YJFu2VAFZX8oWH89uyVzgP3roCDdXcKuIx0lo0L2Bn1ZyU7hY7Uoi
+         cfkwpAnqa70l4NJpCBDOzia74cCBSBvMJDh1kAUBUK0gTCwXJGwHvsxyWWlo1A5LF7
+         zGIePKVwy41B2BM87SwkL8Y9rluSUgI9ECacG46TCC+vrHtoQYulofLRLkPcH9jNBF
+         TysOa60zZqQerFnNySPOW71mOOB+0M0u07wxtsBnUuWTUOh7BdJI/faOS0/Oij6vpl
+         K7X+FlA7g7w/w==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 30529404A1; Fri, 26 Aug 2022 13:52:53 -0300 (-03)
+Date:   Fri, 26 Aug 2022 13:52:53 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Vitaly Chikunov <vt@altlinux.org>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+        Martin Reboredo <yakoyoku@gmail.com>
+Subject: Re: pahole v1.24: FAILED: load BTF from vmlinux: Invalid argument
+Message-ID: <Ywj6ZcqWsz8Au6qO@kernel.org>
+References: <20220825163538.vajnsv3xcpbhl47v@altlinux.org>
+ <CA+JHD904e2TPpz1ybsaaqD+qMTDcueXu4nVcmotEPhxNfGN+Gw@mail.gmail.com>
+ <20220825171620.cioobudss6ovyrkc@altlinux.org>
+ <20220826025220.cxfwwpem2ycpvrmm@altlinux.org>
+ <20220826025944.hd7htqqwljhse6ht@altlinux.org>
+ <00cb99bd-bd17-3ff6-9008-92861518aff8@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <00cb99bd-bd17-3ff6-9008-92861518aff8@fb.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The iterator with BPF_CGROUP_ITER_ANCESTORS_UP can traverse up across a
-cgroup namespace level, which may be surprising within a non-init cgroup
-namespace.
+Em Fri, Aug 26, 2022 at 09:47:59AM -0700, Yonghong Song escreveu:
+> 
+> 
+> On 8/25/22 7:59 PM, Vitaly Chikunov wrote:
+> > On Fri, Aug 26, 2022 at 05:52:20AM +0300, Vitaly Chikunov wrote:
+> > > Arnaldo,
+> > > 
+> > > On Thu, Aug 25, 2022 at 08:16:20PM +0300, Vitaly Chikunov wrote:
+> > > > On Thu, Aug 25, 2022 at 01:47:59PM -0300, Arnaldo Carvalho de Melo wrote:
+> > > > > On Thu, Aug 25, 2022, 1:35 PM Vitaly Chikunov <vt@altlinux.org> wrote:
+> > > > > > 
+> > > > > > I also noticed that after upgrading pahole to v1.24 kernel build (tested on
+> > > > > > v5.18.19, v5.15.63, sorry for not testing on mainline) fails with:
+> > > > > > 
+> > > > > >      BTFIDS  vmlinux
+> > > > > >    + ./tools/bpf/resolve_btfids/resolve_btfids vmlinux
+> > > > > >    FAILED: load BTF from vmlinux: Invalid argument
+> > > > > > 
+> > > > > > Perhaps, .tmp_vmlinux.btf is generated incorrectly? Downgrading dwarves to
+> > > > > > v1.23 resolves the issue.
+> > > > > > 
+> > > > > 
+> > > > > Can you try this, from Martin Reboredo (Archlinux):
+> > > > > 
+> > > > > Can you try a build of the kernel or the by passing the
+> > > > > --skip_encoding_btf_enum64 to scripts/pahole-flags.sh?
+> > > > > 
+> > > > > Here's a patch for either in tree scripts/pahole-flags.sh or
+> > > > > /usr/lib/modules/5.19.3-arch1-1/build/scripts/pahole-flags.sh
+> > > > 
+> > > > This patch helped and kernel builds successfully after applying it.
+> > > > (Didn't notice this suggestion in release discussion thread.)
+> > > 
+> > > Even thought it now compiles with this patch, it does not boot
+> > > afterwards (in virtme-like env), witch such console messages:
+> > 
+> > I'm talking here about 5.15.62. Yes, proposed patch does not apply there
+> > (since there is no `scripts/pahole-flags.sh`), but I updated
+> > `scripts/link-vmlinux.sh` with the similar `if` to append
+> > `--skip_encoding_btf_enum64` which lets then compilation pass.
+> 
+> Right, pahole v1.24 supports enum64 to correctly encode
+> some big 64bit values in BTF. But enum64 is only supported
+> in recent kernels. For old kernels, --skip_encoding_btf_enum64
+> is the way to workaround the issue.
 
-Introduce and use a new cgroup_parent_ns() helper that stops according
-to cgroup namespace boundary. With BPF_CGROUP_ITER_ANCESTORS_UP. We use
-the cgroup namespace of the iterator caller, not that one of the creator
-(might be different, the former is relevant).
+Check Jiri response, this doesn't seem to be enough.
 
-Fixes: d4ccaf58a847 ("bpf: Introduce cgroup iter")
-Signed-off-by: Michal Koutný <mkoutny@suse.com>
----
- include/linux/cgroup.h   |  3 +++
- kernel/bpf/cgroup_iter.c |  9 ++++++---
- kernel/cgroup/cgroup.c   | 32 +++++++++++++++++++++++---------
- 3 files changed, 32 insertions(+), 12 deletions(-)
+- Arnaldo
 
-diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
-index b6a9528374a8..b63a80e03fae 100644
---- a/include/linux/cgroup.h
-+++ b/include/linux/cgroup.h
-@@ -858,6 +858,9 @@ struct cgroup_namespace *copy_cgroup_ns(unsigned long flags,
- int cgroup_path_ns(struct cgroup *cgrp, char *buf, size_t buflen,
- 		   struct cgroup_namespace *ns);
- 
-+struct cgroup *cgroup_parent_ns(struct cgroup *cgrp,
-+				struct cgroup_namespace *ns);
-+
- #else /* !CONFIG_CGROUPS */
- 
- static inline void free_cgroup_ns(struct cgroup_namespace *ns) { }
-diff --git a/kernel/bpf/cgroup_iter.c b/kernel/bpf/cgroup_iter.c
-index c69bce2f4403..06ee4a0c5870 100644
---- a/kernel/bpf/cgroup_iter.c
-+++ b/kernel/bpf/cgroup_iter.c
-@@ -104,6 +104,7 @@ static void *cgroup_iter_seq_next(struct seq_file *seq, void *v, loff_t *pos)
- {
- 	struct cgroup_subsys_state *curr = (struct cgroup_subsys_state *)v;
- 	struct cgroup_iter_priv *p = seq->private;
-+	struct cgroup *parent;
- 
- 	++*pos;
- 	if (p->terminate)
-@@ -113,9 +114,11 @@ static void *cgroup_iter_seq_next(struct seq_file *seq, void *v, loff_t *pos)
- 		return css_next_descendant_pre(curr, p->start_css);
- 	else if (p->order == BPF_CGROUP_ITER_DESCENDANTS_POST)
- 		return css_next_descendant_post(curr, p->start_css);
--	else if (p->order == BPF_CGROUP_ITER_ANCESTORS_UP)
--		return curr->parent;
--	else  /* BPF_CGROUP_ITER_SELF_ONLY */
-+	else if (p->order == BPF_CGROUP_ITER_ANCESTORS_UP) {
-+		parent = cgroup_parent_ns(curr->cgroup,
-+					  current->nsproxy->cgroup_ns);
-+		return parent ? &parent->self : NULL;
-+	} else  /* BPF_CGROUP_ITER_SELF_ONLY */
- 		return NULL;
- }
- 
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index c0377726031f..d60b5dfbbbc9 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -1417,11 +1417,11 @@ static inline struct cgroup *__cset_cgroup_from_root(struct css_set *cset,
- }
- 
- /*
-- * look up cgroup associated with current task's cgroup namespace on the
-+ * look up cgroup associated with given cgroup namespace on the
-  * specified hierarchy
-  */
--static struct cgroup *
--current_cgns_cgroup_from_root(struct cgroup_root *root)
-+static struct cgroup *cgns_cgroup_from_root(struct cgroup_root *root,
-+					    struct cgroup_namespace *ns)
- {
- 	struct cgroup *res = NULL;
- 	struct css_set *cset;
-@@ -1430,7 +1430,7 @@ current_cgns_cgroup_from_root(struct cgroup_root *root)
- 
- 	rcu_read_lock();
- 
--	cset = current->nsproxy->cgroup_ns->root_cset;
-+	cset = ns->root_cset;
- 	res = __cset_cgroup_from_root(cset, root);
- 
- 	rcu_read_unlock();
-@@ -1852,15 +1852,15 @@ int cgroup_show_path(struct seq_file *sf, struct kernfs_node *kf_node,
- 	int len = 0;
- 	char *buf = NULL;
- 	struct cgroup_root *kf_cgroot = cgroup_root_from_kf(kf_root);
--	struct cgroup *ns_cgroup;
-+	struct cgroup *root_cgroup;
- 
- 	buf = kmalloc(PATH_MAX, GFP_KERNEL);
- 	if (!buf)
- 		return -ENOMEM;
- 
- 	spin_lock_irq(&css_set_lock);
--	ns_cgroup = current_cgns_cgroup_from_root(kf_cgroot);
--	len = kernfs_path_from_node(kf_node, ns_cgroup->kn, buf, PATH_MAX);
-+	root_cgroup = cgns_cgroup_from_root(kf_cgroot, current->nsproxy->cgroup_ns);
-+	len = kernfs_path_from_node(kf_node, root_cgroup->kn, buf, PATH_MAX);
- 	spin_unlock_irq(&css_set_lock);
- 
- 	if (len >= PATH_MAX)
-@@ -2330,6 +2330,18 @@ int cgroup_path_ns(struct cgroup *cgrp, char *buf, size_t buflen,
- }
- EXPORT_SYMBOL_GPL(cgroup_path_ns);
- 
-+struct cgroup *cgroup_parent_ns(struct cgroup *cgrp,
-+				   struct cgroup_namespace *ns)
-+{
-+	struct cgroup *root_cgrp;
-+
-+	spin_lock_irq(&css_set_lock);
-+	root_cgrp = cgns_cgroup_from_root(cgrp->root, ns);
-+	spin_unlock_irq(&css_set_lock);
-+
-+	return cgrp == root_cgrp ? NULL : cgroup_parent(cgrp);
-+}
-+
- /**
-  * task_cgroup_path - cgroup path of a task in the first cgroup hierarchy
-  * @task: target task
-@@ -6031,7 +6043,8 @@ struct cgroup *cgroup_get_from_id(u64 id)
- 		goto out;
- 
- 	spin_lock_irq(&css_set_lock);
--	root_cgrp = current_cgns_cgroup_from_root(&cgrp_dfl_root);
-+	root_cgrp = cgns_cgroup_from_root(&cgrp_dfl_root,
-+					  current->nsproxy->cgroup_ns);
- 	spin_unlock_irq(&css_set_lock);
- 	if (!cgroup_is_descendant(cgrp, root_cgrp)) {
- 		cgroup_put(cgrp);
-@@ -6612,7 +6625,8 @@ struct cgroup *cgroup_get_from_path(const char *path)
- 	struct cgroup *root_cgrp;
- 
- 	spin_lock_irq(&css_set_lock);
--	root_cgrp = current_cgns_cgroup_from_root(&cgrp_dfl_root);
-+	root_cgrp = cgns_cgroup_from_root(&cgrp_dfl_root,
-+					  current->nsproxy->cgroup_ns);
- 	kn = kernfs_walk_and_get(root_cgrp->kn, path);
- 	spin_unlock_irq(&css_set_lock);
- 	if (!kn)
+> > Thanks,
+> > 
+> > > 
+> > >    [    0.767649] Run /init as init process
+> > >    [    0.770858] BPF:[593] ENUM perf_event_task_context
+> > >    [    0.771262] BPF:size=4 vlen=4
+> > >    [    0.771511] BPF:
+> > >    [    0.771680] BPF:Invalid btf_info kind_flag
+> > >    [    0.772016] BPF:
+> > >    [    0.772016]
+> > >    [    0.772288] failed to validate module [9pnet] BTF: -22
+> > >    init_module '9pnet.ko' error -1
+> > >    [    0.785515] 9p: Unknown symbol p9_client_getattr_dotl (err -2)
+> > >    [    0.786005] 9p: Unknown symbol p9_client_wstat (err -2)
+> > >    [    0.786438] 9p: Unknown symbol p9_client_open (err -2)
+> > >    [    0.786863] 9p: Unknown symbol p9_client_rename (err -2)
+> > >    [    0.787307] 9p: Unknown symbol p9_client_remove (err -2)
+> > >    [    0.787749] 9p: Unknown symbol p9_client_renameat (err -2)
+> [...]
+
 -- 
-2.37.0
 
+- Arnaldo
