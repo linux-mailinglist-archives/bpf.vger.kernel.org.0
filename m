@@ -2,91 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02B4A5A2FB8
-	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 21:11:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 662875A2FBE
+	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 21:13:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237904AbiHZTLX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Aug 2022 15:11:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56790 "EHLO
+        id S231216AbiHZTNo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Aug 2022 15:13:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229704AbiHZTLW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Aug 2022 15:11:22 -0400
-Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D5B46CD03;
-        Fri, 26 Aug 2022 12:11:20 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.227])
-        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4MDq6s1nGVz9v7N9;
-        Sat, 27 Aug 2022 03:05:57 +0800 (CST)
-Received: from [10.81.204.244] (unknown [10.81.204.244])
-        by APP2 (Coremail) with SMTP id GxC2BwA38hmqGgljYsJSAA--.58619S2;
-        Fri, 26 Aug 2022 20:10:50 +0100 (CET)
-Message-ID: <9e11d51c-891f-739f-30a9-bb5361ceccb2@huaweicloud.com>
-Date:   Fri, 26 Aug 2022 21:10:21 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.0
-Subject: Re: [PATCH v12 02/10] btf: Handle dynamic pointer parameter in kfuncs
-Content-Language: en-US
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        David Howells <dhowells@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
+        with ESMTP id S230408AbiHZTNl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Aug 2022 15:13:41 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7B2B98CB4;
+        Fri, 26 Aug 2022 12:13:40 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 8726DB83117;
+        Fri, 26 Aug 2022 19:13:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3BB3C433D6;
+        Fri, 26 Aug 2022 19:13:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1661541218;
+        bh=JE597L0A8gq9ni57nPTbmMIrbFvwDzfCUptaHqm/PD8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=llIVgHlns//rbdeTSXSMeKly1n1//+21QUco6oCapWf30ICEfWmSE0BwDs9Gppwby
+         Q74BxtWgot+r8SAsvro02yInv4G7BD1J7DfBgWrzuuxnJf85wtrzEQTc9CrfjQk0nH
+         ZUksYFBilRTg59WqWKZ7zC+abisJaposQOz8wqKAfpAtFoHcmC5n4TGDhm80QYQ4oI
+         16OsjtzdR6aaaxZLsBoeQRWYilvc8My2Mce4OZI4KL1PNn/T1lkiD/JOFKdoocJXRx
+         u5EMdf1RsMU/4kBFqeiOvqT8Tq4ewyvXyAzeewn0qmVbxXgirW8loLME+y3UBKaHxE
+         SE9puroD7iMcg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 36438404A1; Fri, 26 Aug 2022 16:13:35 -0300 (-03)
+Date:   Fri, 26 Aug 2022 16:13:35 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        keyrings@vger.kernel.org,
-        LSM List <linux-security-module@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        =?UTF-8?Q?Daniel_M=c3=bcller?= <deso@posteo.net>,
-        Roberto Sassu <roberto.sassu@huawei.com>,
-        Joanne Koong <joannelkoong@gmail.com>
-References: <20220818152929.402605-1-roberto.sassu@huaweicloud.com>
- <20220818152929.402605-3-roberto.sassu@huaweicloud.com>
- <YwhSCE0H+JfUe4Ew@kernel.org>
- <CAADnVQJbTzfe28ife1+vg+ByLfyLBTCoEZW_eg8TEw838JGaog@mail.gmail.com>
- <YwheJqUDLOxL3iTi@kernel.org> <YwjcItv0q8GdzPbb@kernel.org>
- <bb4bdd90017d5772bdc31dfac93f2e86c6c61b82.camel@huaweicloud.com>
- <Ywj1s6d7XowV82PZ@kernel.org> <Ywj3pOahYdxA8Dza@kernel.org>
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-In-Reply-To: <Ywj3pOahYdxA8Dza@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: GxC2BwA38hmqGgljYsJSAA--.58619S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxJw1ruw1UAF47KFW3KFyxGrg_yoW5Wr4Dpa
-        48Aayqkr4UJr45Cwnrtr1xtF10yrWjqr48Xry5J34FyF1qvF1SgF4xJr1Yka45Gr18AF18
-        Za1UX347XF15A37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-        AFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
-        6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyT
-        uYvjxUFYFCUUUUU
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAQBF1jj35XHQABsS
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Darren Hart <dvhart@infradead.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, Weiguo Li <liwg06@foxmail.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Dario Petrillo <dario.pk1@gmail.com>,
+        Hewenliang <hewenliang4@huawei.com>,
+        yaowenbin <yaowenbin1@huawei.com>,
+        Wenyu Liu <liuwenyu7@huawei.com>,
+        Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Pavithra Gurushankar <gpavithrasha@gmail.com>,
+        Alexandre Truong <alexandre.truong@arm.com>,
+        Quentin Monnet <quentin@isovalent.com>,
+        William Cohen <wcohen@redhat.com>,
+        Andres Freund <andres@anarazel.de>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Martin =?utf-8?B?TGnFoWth?= <mliska@suse.cz>,
+        Colin Ian King <colin.king@intel.com>,
+        James Clark <james.clark@arm.com>,
+        Fangrui Song <maskray@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>,
+        Riccardo Mancini <rickyman7@gmail.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Zechuan Chen <chenzechuan1@huawei.com>,
+        Jason Wang <wangborong@cdjrlc.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Remi Bernon <rbernon@codeweavers.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        bpf@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH v3 15/18] perf mutex: Add thread safety annotations
+Message-ID: <YwkbXwLGXitFuEfV@kernel.org>
+References: <20220824153901.488576-1-irogers@google.com>
+ <20220824153901.488576-16-irogers@google.com>
+ <Ywj4vnYp6KGrrwl+@kernel.org>
+ <CAP-5=fU0Kc+ZhVBXWz1zup1wFGUf8EOyaRREmfXDfD+hGGoL6w@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAP-5=fU0Kc+ZhVBXWz1zup1wFGUf8EOyaRREmfXDfD+hGGoL6w@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -95,82 +104,55 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 8/26/2022 6:41 PM, Jarkko Sakkinen wrote:
-> On Fri, Aug 26, 2022 at 07:32:54PM +0300, Jarkko Sakkinen wrote:
->> On Fri, Aug 26, 2022 at 05:34:57PM +0200, Roberto Sassu wrote:
->>> On Fri, 2022-08-26 at 17:43 +0300, Jarkko Sakkinen wrote:
->>>> On Fri, Aug 26, 2022 at 08:46:14AM +0300, Jarkko Sakkinen wrote:
->>>>> On Thu, Aug 25, 2022 at 10:16:14PM -0700, Alexei Starovoitov wrote:
->>>>>> On Thu, Aug 25, 2022 at 9:54 PM Jarkko Sakkinen <
->>>>>> jarkko@kernel.org> wrote:
->>>>>>>> -static bool is_dynptr_reg_valid_init(struct bpf_verifier_env
->>>>>>>> *env, struct bpf_reg_state *reg,
->>>>>>>> -                                  enum bpf_arg_type
->>>>>>>> arg_type)
->>>>>>>> +bool is_dynptr_reg_valid_init(struct bpf_verifier_env *env,
->>>>>>>> struct bpf_reg_state *reg,
->>>>>>>> +                           enum bpf_arg_type arg_type)
->>>>>>>>   {
->>>>>>>>        struct bpf_func_state *state = func(env, reg);
->>>>>>>>        int spi = get_spi(reg->off);
->>>>>>>> --
->>>>>>>> 2.25.1
->>>>>>>>
->>>>>>>
->>>>>>> Might be niticking but generally I'd consider splitting
->>>>>>> exports as commits of their own.
->>>>>>
->>>>>> -static bool
->>>>>> +bool
->>>>>>
->>>>>> into a separate commit?
->>>>>>
->>>>>> I guess it makes sense for people whose salary depends on
->>>>>> number of commits.
->>>>>> We don't play these games.
->>>>>
->>>>> What kind of argument is that anyway.
->>>>
->>>> "Separate each *logical change* into a separate patch." [*]
->>>
->>> The logical change, as per the patch subject, is allowing the
->>> possibility of including eBPF dynamic pointers in a kfunc definition.
->>> It requires to call an existing function that was already defined
->>> elsewhere.
->>>
->>> Maybe I'm wrong, but I don't see only exporting a function definition
->>> to an include file as a logical change. To me, the changes in this
->>> patch are clearly connected. Or even better, they tell why the function
->>> definition has been exported, that would not appear if moving the
->>> function definition is a standalone patch.
->>>
->>>>
->>>> To add, generally any user space visible space should be an
->>>> isolated patch.
->>>
->>> As far as I understood, definitions visible to user space should be in
->>> include/uapi.
->>
->> It does change e.g. the output of kallsyms.
->>
->> It's not ABI but it's still user space visble.
->>
->>>
->>>>
->>>> Please, stop posting nonsense.
->>>
->>> If I may, saying this does not encourage people to try to submit their
->>> code. I feel it is a bit strong, and I kindly ask you to express your
->>> opinion in a more gentle way.
->>
->> I agree. That's why I was wondering what is this nonsense
->> about salary and games.
+Em Fri, Aug 26, 2022 at 10:00:43AM -0700, Ian Rogers escreveu:
+> On Fri, Aug 26, 2022 at 9:45 AM Arnaldo Carvalho de Melo
+> <acme@kernel.org> wrote:
+> >
+> > Em Wed, Aug 24, 2022 at 08:38:58AM -0700, Ian Rogers escreveu:
+> > > Add thread safety annotations to struct mutex so that when compiled with
+> > > clang's -Wthread-safety warnings are generated for erroneous lock
+> > > patterns. NO_THREAD_SAFETY_ANALYSIS is needed for
+> > > mutex_lock/mutex_unlock as the analysis doesn't under pthread calls.
+> >
+> > So even having the guards checking if the attribute is available it
+> > seems at least clang 11.0 is needed, as the "lockable" arg was
+> > introduced there:
+> >
+> >   37    42.61 fedora:32                     : FAIL clang version 10.0.1 (Fedora 10.0.1-3.fc32)
+> >     In file included from /git/perf-6.0.0-rc2/tools/perf/util/../ui/ui.h:5:
+> >     /git/perf-6.0.0-rc2/tools/perf/util/../ui/../util/mutex.h:74:8: error: invalid capability name 'lockable'; capability name must be 'mutex' or 'role' [-Werror,-Wthread-safety-attributes]
+> >     struct LOCKABLE mutex {
+> >            ^
+> >     /git/perf-6.0.0-rc2/tools/perf/util/../ui/../util/mutex.h:35:44: note: expanded from macro 'LOCKABLE'
+> >     #define LOCKABLE __attribute__((capability("lockable")))
 > 
-> Please denote that I started my review with "Might be nitpicking...".
 > 
-> It's neither particularly disencouraging nor enforcing for anyone.
+> capability("lockable") can just be lockable, the capability
+> generalization came in a later clang release.
+> 
+> That is change:
+> #define LOCKABLE __attribute__((capability("lockable")))
+> to:
+> #define LOCKABLE __attribute__((lockable))
+> 
+> and later clangs take the earlier name. Do you want a v5 for this 1 liner?
 
-Thanks for clarifying. Yes, it is not. Sorry, I misunderstood.
+I did it and I'm now testing, thanks.
 
-Roberto
+- Arnaldo
 
+diff --git a/tools/perf/util/mutex.h b/tools/perf/util/mutex.h
+index 48a2d87598f0d725..29b5494b213a3fc9 100644
+--- a/tools/perf/util/mutex.h
++++ b/tools/perf/util/mutex.h
+@@ -32,7 +32,7 @@
+ #define PT_GUARDED_BY(x) __attribute__((pt_guarded_by(x)))
+ 
+ /* Documents if a type is a lockable type. */
+-#define LOCKABLE __attribute__((capability("lockable")))
++#define LOCKABLE __attribute__((lockable))
+ 
+ /* Documents functions that acquire a lock in the body of a function, and do not release it. */
+ #define EXCLUSIVE_LOCK_FUNCTION(...)  __attribute__((exclusive_lock_function(__VA_ARGS__)))
+
+- Arnaldo
