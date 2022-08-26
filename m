@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62F155A2BF1
-	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 18:06:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E5CF5A2BF6
+	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 18:07:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245006AbiHZQFa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Aug 2022 12:05:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58486 "EHLO
+        id S243811AbiHZQGh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Aug 2022 12:06:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344241AbiHZQF2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Aug 2022 12:05:28 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81B9A7697E
-        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 09:05:25 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id b5so2329796wrr.5
-        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 09:05:25 -0700 (PDT)
+        with ESMTP id S229845AbiHZQGg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Aug 2022 12:06:36 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF2D1D41A5
+        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 09:06:34 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id z16so2323243wrh.10
+        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 09:06:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc;
-        bh=Eve3FE7hOWsinCveAVX9btkiK/Cf9c1/3T/dGcwovAU=;
-        b=oIRAeTZZXtyEI1qVYgsm+cggY3Mliak5OfKLrgEvg4J3HtAne/Ixhy4qpZ133xXkTJ
-         XluRuBLn7hv8hPkqcKze/kDl/7ya7eh/LlXvhPCmLXW9kFiadRarEmHnjOoPx4KZWFsr
-         TMSZnRIR9VmuC6NnvJG67u7vGhVkmuJ6YvfwH2P8iV79r9wMpIrpnzigtzjsGmPPnFzr
-         CyLR5/v0RtXM+mOXxcMfIzBi1l37XxC6NmxbWgYowtAmd7a9uicTFeQdS9DrEK6adLTL
-         YQpr8yz/qFSad5jhr0bPxzG0o2bIYS5wa2H4zeZenCS9B8O8BRwBypYy4kGVIb6x7D07
-         D8tQ==
+        bh=L0H2b2GPKZYIuMR6iWTYOgB5/UtrkJG2fxwjDyQeFtE=;
+        b=ntlSXkWi8J2ryefHCTq55BPnbPb2Tas1Jil+sp/Cx9DrtNvaySXbCSUKAFZ1+1uSXJ
+         g8aVWdh4PfNRBWp6P/clzaRfOi8H1idIkp7YVevW1l4LbLHBgZntSjkJthdEwQHUiswo
+         xQOEuPgF9GzCZ2/4A4/kr9nwOIlkk90esnB0tOCt9Kq806CqKx0F5uB7WMSAQxMpEDkQ
+         Tvs4+3fV4fry9twJESAgmRw7qMrZ9Bh/isM+rGLIEt+i0rJn//YBNlQkqTt9c3CpTBKD
+         tomYLfnOJ8HJD8zWgtOV9P9d4WH/L+6bUb9+YWkdZYYRCkKJL+IZRFJsajsi8aO+BDg1
+         Tkew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc;
-        bh=Eve3FE7hOWsinCveAVX9btkiK/Cf9c1/3T/dGcwovAU=;
-        b=O1PjLERQsaAvDgS/JZLM9E8Mt2BGWTOCkEv4VE2FKbbp/PJMYYrq5AK98s+8XJuqfj
-         0Ss15kwUPYDEMmQBpTCKu6gk1/C4SUwimqP2R9e9aVTFKH3AmpjLYp1rjnBWJQ51Xshk
-         ECnCgTPFojyPljw0SNYWaGaBj+KXlzs3jQJxFeq0IG3sev7+ocd9tHF37+0L3ae4g9nr
-         DrspTbxeuneX7tkBN8UJ8m8UEwvVoD8eqolpa0P0o99Xn2VeBrF3gGvyGIQSYX6a5S+C
-         QTTGs65I1x56x7Wj3A9R15xeyNbF9WGgF9hGmJ4xdnwgtYg7FUyIQKaeIQCRG2ewy129
-         A2hg==
-X-Gm-Message-State: ACgBeo36eThPP0RSNb0SA9eK5EClOGsReWDlHN0ZxEZci9k7SteZENQS
-        RyBfavfVE7v5GEY5y0QKHm+AagVbt0MJkwvNaeZw8w==
-X-Google-Smtp-Source: AA6agR4WMcZViHYZpEd/SVtNnppVJwpOi1ucgCxNEiA6EzB60zAGxFEFit4aqH2BPsbjzmfKyLISll05O9Er9BqpMHY=
-X-Received: by 2002:a05:6000:1008:b0:225:58e0:223f with SMTP id
- a8-20020a056000100800b0022558e0223fmr187277wrx.375.1661529923505; Fri, 26 Aug
- 2022 09:05:23 -0700 (PDT)
+        bh=L0H2b2GPKZYIuMR6iWTYOgB5/UtrkJG2fxwjDyQeFtE=;
+        b=T8UZjKKcMBXsOPa9ALb642nrycNZO9/+vFFf91aT/g93KVtw/6JBBUWw0wIbLpHvzF
+         4j9LoEW5MoPy1SjRVxviczwGNOhl0vLOWqfQTsqUYUxKJp4ks7rU//QbbfA1w2msUiID
+         XQ5jaal3Df69Katy8AteuOGYufTmPIIqUpedZV6B9gfLdbQQzP/NLyGeomTHW5yq85yx
+         oSDfrkoEi6nENVaKZCkqvEdwTrYIJrVqfewCYl3kfpqCKHNSsqOCyBl3Lloz0ai6IYls
+         NQtBqU1Q1czLbvQ+2dh7O8CVLvu/Iijw0JMc04a2pDVw7NbbIUlKpUmYw2ky0Svsg922
+         PMFg==
+X-Gm-Message-State: ACgBeo3TZN8XjhlEPUddHd2Jmi/Vx809MroWdURYecsFeBTngQHLPTHe
+        lYd+lR1ONhZG2kXjCucIznulrLYO3u2/U9Jn7cyOSw==
+X-Google-Smtp-Source: AA6agR7GbATeJG4gjXTUnx740JnOkntF0bsh5wXXtuvzI4dmU+OBcbKvRbwC4vpMbhWY0TyQoXad/xg1iOGWvXK8XXA=
+X-Received: by 2002:a05:6000:1ac9:b0:220:7f40:49e3 with SMTP id
+ i9-20020a0560001ac900b002207f4049e3mr219844wry.40.1661529992826; Fri, 26 Aug
+ 2022 09:06:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220824153901.488576-1-irogers@google.com> <20220824153901.488576-12-irogers@google.com>
- <12acbe02-bd73-07bb-d0e1-cb13dcd790c0@intel.com>
-In-Reply-To: <12acbe02-bd73-07bb-d0e1-cb13dcd790c0@intel.com>
+References: <20220824153901.488576-1-irogers@google.com> <20220824153901.488576-17-irogers@google.com>
+ <a7176263-7dc8-6cbd-af2d-5338c4c4b546@intel.com>
+In-Reply-To: <a7176263-7dc8-6cbd-af2d-5338c4c4b546@intel.com>
 From:   Ian Rogers <irogers@google.com>
-Date:   Fri, 26 Aug 2022 09:05:11 -0700
-Message-ID: <CAP-5=fWCpoqAhLzdMn1zHXfKpsYg0LQPMSz6Uy82+QL_MQpc8g@mail.gmail.com>
-Subject: Re: [PATCH v3 11/18] perf dso: Update use of pthread mutex
+Date:   Fri, 26 Aug 2022 09:06:20 -0700
+Message-ID: <CAP-5=fXk+mLv=C0CTrvnBeuhCTAtJ=x2O8D2YqvmVZSMHqcLvQ@mail.gmail.com>
+Subject: Re: [PATCH v3 16/18] perf sched: Fixes for thread safety analysis
 To:     Adrian Hunter <adrian.hunter@intel.com>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -112,148 +112,124 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Aug 26, 2022 at 3:37 AM Adrian Hunter <adrian.hunter@intel.com> wrote:
+On Fri, Aug 26, 2022 at 5:12 AM Adrian Hunter <adrian.hunter@intel.com> wrote:
 >
 > On 24/08/22 18:38, Ian Rogers wrote:
-> > Switch to the use of mutex wrappers that provide better error checking.
+> > Add annotations to describe lock behavior. Add unlocks so that mutexes
+> > aren't conditionally held on exit from perf_sched__replay. Add an exit
+> > variable so that thread_func can terminate, rather than leaving the
+> > threads blocked on mutexes.
 > >
 > > Signed-off-by: Ian Rogers <irogers@google.com>
 > > ---
-> >  tools/perf/util/dso.c    | 12 ++++++------
+> >  tools/perf/builtin-sched.c | 46 ++++++++++++++++++++++++--------------
+> >  1 file changed, 29 insertions(+), 17 deletions(-)
+> >
+> > diff --git a/tools/perf/builtin-sched.c b/tools/perf/builtin-sched.c
+> > index 7e4006d6b8bc..b483ff0d432e 100644
+> > --- a/tools/perf/builtin-sched.c
+> > +++ b/tools/perf/builtin-sched.c
+> > @@ -246,6 +246,7 @@ struct perf_sched {
+> >       const char      *time_str;
+> >       struct perf_time_interval ptime;
+> >       struct perf_time_interval hist_time;
+> > +     volatile bool   thread_funcs_exit;
+> >  };
+> >
+> >  /* per thread run time data */
+> > @@ -633,31 +634,34 @@ static void *thread_func(void *ctx)
+> >       prctl(PR_SET_NAME, comm2);
+> >       if (fd < 0)
+> >               return NULL;
+> > -again:
+> > -     ret = sem_post(&this_task->ready_for_work);
+> > -     BUG_ON(ret);
+> > -     mutex_lock(&sched->start_work_mutex);
+> > -     mutex_unlock(&sched->start_work_mutex);
+> >
+> > -     cpu_usage_0 = get_cpu_usage_nsec_self(fd);
+> > +     while (!sched->thread_funcs_exit) {
+> > +             ret = sem_post(&this_task->ready_for_work);
+> > +             BUG_ON(ret);
+> > +             mutex_lock(&sched->start_work_mutex);
+> > +             mutex_unlock(&sched->start_work_mutex);
+> >
+> > -     for (i = 0; i < this_task->nr_events; i++) {
+> > -             this_task->curr_event = i;
+> > -             perf_sched__process_event(sched, this_task->atoms[i]);
+> > -     }
+> > +             cpu_usage_0 = get_cpu_usage_nsec_self(fd);
+> >
+> > -     cpu_usage_1 = get_cpu_usage_nsec_self(fd);
+> > -     this_task->cpu_usage = cpu_usage_1 - cpu_usage_0;
+> > -     ret = sem_post(&this_task->work_done_sem);
+> > -     BUG_ON(ret);
+> > +             for (i = 0; i < this_task->nr_events; i++) {
+> > +                     this_task->curr_event = i;
+> > +                     perf_sched__process_event(sched, this_task->atoms[i]);
+> > +             }
+> >
+> > -     mutex_lock(&sched->work_done_wait_mutex);
+> > -     mutex_unlock(&sched->work_done_wait_mutex);
+> > +             cpu_usage_1 = get_cpu_usage_nsec_self(fd);
+> > +             this_task->cpu_usage = cpu_usage_1 - cpu_usage_0;
+> > +             ret = sem_post(&this_task->work_done_sem);
+> > +             BUG_ON(ret);
+> >
+> > -     goto again;
+> > +             mutex_lock(&sched->work_done_wait_mutex);
+> > +             mutex_unlock(&sched->work_done_wait_mutex);
+> > +     }
+> > +     return NULL;
+> >  }
+> >
+> >  static void create_tasks(struct perf_sched *sched)
+> > +     EXCLUSIVE_LOCK_FUNCTION(sched->start_work_mutex)
+> > +     EXCLUSIVE_LOCK_FUNCTION(sched->work_done_wait_mutex)
+> >  {
+> >       struct task_desc *task;
+> >       pthread_attr_t attr;
+> > @@ -687,6 +691,8 @@ static void create_tasks(struct perf_sched *sched)
+> >  }
+> >
+> >  static void wait_for_tasks(struct perf_sched *sched)
+> > +     EXCLUSIVE_LOCKS_REQUIRED(sched->work_done_wait_mutex)
+> > +     EXCLUSIVE_LOCKS_REQUIRED(sched->start_work_mutex)
+> >  {
+> >       u64 cpu_usage_0, cpu_usage_1;
+> >       struct task_desc *task;
+> > @@ -738,6 +744,8 @@ static void wait_for_tasks(struct perf_sched *sched)
+> >  }
+> >
+> >  static void run_one_test(struct perf_sched *sched)
+> > +     EXCLUSIVE_LOCKS_REQUIRED(sched->work_done_wait_mutex)
+> > +     EXCLUSIVE_LOCKS_REQUIRED(sched->start_work_mutex)
+> >  {
+> >       u64 T0, T1, delta, avg_delta, fluct;
+> >
+> > @@ -3309,11 +3317,15 @@ static int perf_sched__replay(struct perf_sched *sched)
+> >       print_task_traces(sched);
+> >       add_cross_task_wakeups(sched);
+> >
+> > +     sched->thread_funcs_exit = false;
+> >       create_tasks(sched);
+> >       printf("------------------------------------------------------------\n");
+> >       for (i = 0; i < sched->replay_repeat; i++)
+> >               run_one_test(sched);
+> >
+> > +     sched->thread_funcs_exit = true;
+> > +     mutex_unlock(&sched->start_work_mutex);
+> > +     mutex_unlock(&sched->work_done_wait_mutex);
 >
-> Some not done yet
->
-> $ grep -i pthread_mut tools/perf/util/dso.c
-> static pthread_mutex_t dso__data_open_lock = PTHREAD_MUTEX_INITIALIZER;
->         pthread_mutex_lock(&dso__data_open_lock);
->         pthread_mutex_unlock(&dso__data_open_lock);
->         if (pthread_mutex_lock(&dso__data_open_lock) < 0)
->                 pthread_mutex_unlock(&dso__data_open_lock);
->         pthread_mutex_unlock(&dso__data_open_lock);
->         pthread_mutex_lock(&dso__data_open_lock);
->         pthread_mutex_unlock(&dso__data_open_lock);
->         pthread_mutex_lock(&dso__data_open_lock);
->         pthread_mutex_unlock(&dso__data_open_lock);
+> I think you still need to wait for the threads to exit before
+> destroying the mutexes.
 
-Yes, these are all solely dso__data_open_lock that lacks any clear
-init/exit code to place the initialization/destruction hooks onto. I
-don't plan to alter these in this patch set.
+This is a pre-existing issue and beyond the scope of this patch set.
 
 Thanks,
 Ian
 
->
-> >  tools/perf/util/dso.h    |  4 ++--
-> >  tools/perf/util/symbol.c |  4 ++--
-> >  3 files changed, 10 insertions(+), 10 deletions(-)
-> >
-> > diff --git a/tools/perf/util/dso.c b/tools/perf/util/dso.c
-> > index 5ac13958d1bd..a9789a955403 100644
-> > --- a/tools/perf/util/dso.c
-> > +++ b/tools/perf/util/dso.c
-> > @@ -795,7 +795,7 @@ dso_cache__free(struct dso *dso)
-> >       struct rb_root *root = &dso->data.cache;
-> >       struct rb_node *next = rb_first(root);
-> >
-> > -     pthread_mutex_lock(&dso->lock);
-> > +     mutex_lock(&dso->lock);
-> >       while (next) {
-> >               struct dso_cache *cache;
-> >
-> > @@ -804,7 +804,7 @@ dso_cache__free(struct dso *dso)
-> >               rb_erase(&cache->rb_node, root);
-> >               free(cache);
-> >       }
-> > -     pthread_mutex_unlock(&dso->lock);
-> > +     mutex_unlock(&dso->lock);
+> >       return 0;
 > >  }
 > >
-> >  static struct dso_cache *__dso_cache__find(struct dso *dso, u64 offset)
-> > @@ -841,7 +841,7 @@ dso_cache__insert(struct dso *dso, struct dso_cache *new)
-> >       struct dso_cache *cache;
-> >       u64 offset = new->offset;
-> >
-> > -     pthread_mutex_lock(&dso->lock);
-> > +     mutex_lock(&dso->lock);
-> >       while (*p != NULL) {
-> >               u64 end;
-> >
-> > @@ -862,7 +862,7 @@ dso_cache__insert(struct dso *dso, struct dso_cache *new)
-> >
-> >       cache = NULL;
-> >  out:
-> > -     pthread_mutex_unlock(&dso->lock);
-> > +     mutex_unlock(&dso->lock);
-> >       return cache;
-> >  }
-> >
-> > @@ -1297,7 +1297,7 @@ struct dso *dso__new_id(const char *name, struct dso_id *id)
-> >               dso->root = NULL;
-> >               INIT_LIST_HEAD(&dso->node);
-> >               INIT_LIST_HEAD(&dso->data.open_entry);
-> > -             pthread_mutex_init(&dso->lock, NULL);
-> > +             mutex_init(&dso->lock);
-> >               refcount_set(&dso->refcnt, 1);
-> >       }
-> >
-> > @@ -1336,7 +1336,7 @@ void dso__delete(struct dso *dso)
-> >       dso__free_a2l(dso);
-> >       zfree(&dso->symsrc_filename);
-> >       nsinfo__zput(dso->nsinfo);
-> > -     pthread_mutex_destroy(&dso->lock);
-> > +     mutex_destroy(&dso->lock);
-> >       free(dso);
-> >  }
-> >
-> > diff --git a/tools/perf/util/dso.h b/tools/perf/util/dso.h
-> > index 66981c7a9a18..58d94175e714 100644
-> > --- a/tools/perf/util/dso.h
-> > +++ b/tools/perf/util/dso.h
-> > @@ -2,7 +2,6 @@
-> >  #ifndef __PERF_DSO
-> >  #define __PERF_DSO
-> >
-> > -#include <pthread.h>
-> >  #include <linux/refcount.h>
-> >  #include <linux/types.h>
-> >  #include <linux/rbtree.h>
-> > @@ -11,6 +10,7 @@
-> >  #include <stdio.h>
-> >  #include <linux/bitops.h>
-> >  #include "build-id.h"
-> > +#include "mutex.h"
-> >
-> >  struct machine;
-> >  struct map;
-> > @@ -145,7 +145,7 @@ struct dso_cache {
-> >  struct auxtrace_cache;
-> >
-> >  struct dso {
-> > -     pthread_mutex_t  lock;
-> > +     struct mutex     lock;
-> >       struct list_head node;
-> >       struct rb_node   rb_node;       /* rbtree node sorted by long name */
-> >       struct rb_root   *root;         /* root of rbtree that rb_node is in */
-> > diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
-> > index a4b22caa7c24..656d9b4dd456 100644
-> > --- a/tools/perf/util/symbol.c
-> > +++ b/tools/perf/util/symbol.c
-> > @@ -1800,7 +1800,7 @@ int dso__load(struct dso *dso, struct map *map)
-> >       }
-> >
-> >       nsinfo__mountns_enter(dso->nsinfo, &nsc);
-> > -     pthread_mutex_lock(&dso->lock);
-> > +     mutex_lock(&dso->lock);
-> >
-> >       /* check again under the dso->lock */
-> >       if (dso__loaded(dso)) {
-> > @@ -1964,7 +1964,7 @@ int dso__load(struct dso *dso, struct map *map)
-> >               ret = 0;
-> >  out:
-> >       dso__set_loaded(dso);
-> > -     pthread_mutex_unlock(&dso->lock);
-> > +     mutex_unlock(&dso->lock);
-> >       nsinfo__mountns_exit(&nsc);
-> >
-> >       return ret;
 >
