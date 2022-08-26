@@ -2,148 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 856AF5A2432
-	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 11:23:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 178CE5A2450
+	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 11:28:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343525AbiHZJXo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Aug 2022 05:23:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54304 "EHLO
+        id S1343776AbiHZJ1n (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Aug 2022 05:27:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245405AbiHZJXo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Aug 2022 05:23:44 -0400
-Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D8719DF8C;
-        Fri, 26 Aug 2022 02:23:42 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.229])
-        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4MDZ4n5G6Hz9v7Gy;
-        Fri, 26 Aug 2022 17:18:17 +0800 (CST)
-Received: from roberto-ThinkStation-P620 (unknown [10.204.63.22])
-        by APP1 (Coremail) with SMTP id LxC2BwCHVxPykAhjEntOAA--.37856S2;
-        Fri, 26 Aug 2022 10:23:12 +0100 (CET)
-Message-ID: <6d85d7b1f0c2341698e88bad025bd6e0b34c7666.camel@huaweicloud.com>
-Subject: Re: [PATCH v14 04/10] KEYS: Move KEY_LOOKUP_ to include/linux/key.h
- and add flags check function
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
-        corbet@lwn.net, dhowells@redhat.com, jarkko@kernel.org,
-        rostedt@goodmis.org, mingo@redhat.com, paul@paul-moore.com,
-        jmorris@namei.org, serge@hallyn.com, shuah@kernel.org
-Cc:     bpf@vger.kernel.org, linux-doc@vger.kernel.org,
-        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        deso@posteo.net, Roberto Sassu <roberto.sassu@huawei.com>
-Date:   Fri, 26 Aug 2022 11:22:54 +0200
-In-Reply-To: <20220826091228.1701185-1-roberto.sassu@huaweicloud.com>
-References: <acae432697e854748d9a44c732ec8cab807d9d46.camel@huaweicloud.com>
-         <20220826091228.1701185-1-roberto.sassu@huaweicloud.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        with ESMTP id S1343798AbiHZJ12 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Aug 2022 05:27:28 -0400
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB5EFD7D2C
+        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 02:27:26 -0700 (PDT)
+Received: by mail-il1-f197.google.com with SMTP id w6-20020a056e02190600b002e74e05fdc2so775548ilu.21
+        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 02:27:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc;
+        bh=JYJG5UxiN0a2AO6OxY+5nDjC+apgSZhDXbL9j4TOLYk=;
+        b=crS0bubIwLbTSCUW7Iq227skhuBbqSFzik7OLNRSjFOnNTvTmumB5QWJFKgWzKDWhT
+         nTMZtkUL+GMcBbYG3o5R6uLmQRua1FLuLhUVRgC8OJax/ZS+2GECi3Cy2UwrGc+w2dZv
+         J+FXgM7oYuqD6PWF1xufcy2ewb7Tkgq/GxDIEu9UDB6X9NJOMdjmqSrl6trgfPyIPKlh
+         IxjtzxymiHoISBjRJuDoZFPm444dhAkBtZQW/ANKV/zBkmkfkZpTvnxnY6SCd7uvK+k1
+         0ffFx2GRWadYuuo9CsIgQbFHxqWSPMzfKzzrAQnM5EM3ypJsOVkktnfluUb7UV3c1Odx
+         W3xw==
+X-Gm-Message-State: ACgBeo2kcpNXJaOVzJFMUKnZK6C34FbkMOiFUGjBzLNq3riJPK5DFmrC
+        M4uoz1f0OXuMdpFvRBNuVbJW4bFpRH1YjmeRvG5X6Alhgz+/
+X-Google-Smtp-Source: AA6agR6eqwrjrpVeMwl7VIFrNYLBEzwhHeODpy8ynmimx1Emvv50z6yX3MEaOBySec/ep1PjTIEFxOXyikHH/wkaDNMqiuXiUZg0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LxC2BwCHVxPykAhjEntOAA--.37856S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7uF1DurWrJFWxtFWxJF4kXrb_yoW8Kr13pF
-        yDCFyFkryUCFy7W3s3GanIya1Sg3yrGr17Cr9xWwn09Fsag3y8tr1kGF15WF15CrWUuw1j
-        qr42ga15ur1DA3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkIb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I
-        0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8C
-        rVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4
-        IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY
-        0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I
-        0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAI
-        cVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UMIIF0x
-        vE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
-        87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7IU1ebytUUUUU==
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAQBF1jj35StQAAs+
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Received: by 2002:a05:6e02:158a:b0:2d3:f198:9f39 with SMTP id
+ m10-20020a056e02158a00b002d3f1989f39mr3895529ilu.206.1661506045661; Fri, 26
+ Aug 2022 02:27:25 -0700 (PDT)
+Date:   Fri, 26 Aug 2022 02:27:25 -0700
+In-Reply-To: <0000000000002c7abf05e721698d@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a4d93d05e7218510@google.com>
+Subject: Re: [syzbot] KMSAN: uninit-value in psi_poll_worker
+From:   syzbot <syzbot+dd8e45eb61404849cde9@syzkaller.appspotmail.com>
+To:     bpf@vger.kernel.org, brauner@kernel.org, cgroups@vger.kernel.org,
+        glider@google.com, hannes@cmpxchg.org,
+        linux-kernel@vger.kernel.org, lizefan.x@bytedance.com,
+        syzkaller-bugs@googlegroups.com, tj@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 2022-08-26 at 11:12 +0200, Roberto Sassu wrote:
-> From: Roberto Sassu <roberto.sassu@huawei.com>
-> 
-> In preparation for the patch that introduces the
-> bpf_lookup_user_key() eBPF
-> kfunc, move KEY_LOOKUP_ definitions to include/linux/key.h, to be
-> able to
-> validate the kfunc parameters.
-> 
-> Also, introduce key_lookup_flags_valid() to check if the caller set
-> in the
-> argument only defined flags. Introduce it directly in
-> include/linux/key.h,
-> to reduce the risk that the check is not in sync with currently
-> defined
-> flags.
-> 
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> Reviewed-by: KP Singh <kpsingh@kernel.org>
+syzbot has found a reproducer for the following issue on:
 
-Jarkko, could you please ack it if it is fine?
+HEAD commit:    3a2b6b904ea7 x86: kmsan: enable KMSAN builds for x86
+git tree:       https://github.com/google/kmsan.git master
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=14d6a513080000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8e64bc5364a1307e
+dashboard link: https://syzkaller.appspot.com/bug?extid=dd8e45eb61404849cde9
+compiler:       clang version 15.0.0 (https://github.com/llvm/llvm-project.git 610139d2d9ce6746b3c617fb3e2f7886272d26ff), GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10fc7ac7080000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14ea06db080000
 
-Thanks
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+dd8e45eb61404849cde9@syzkaller.appspotmail.com
 
-Roberto
+=====================================================
+BUG: KMSAN: uninit-value in psi_show+0x701/0x810 kernel/sched/psi.c:1082
+ psi_show+0x701/0x810 kernel/sched/psi.c:1082
+ cgroup_io_pressure_show+0x2b6/0x2f0 kernel/cgroup/cgroup.c:3662
+ cgroup_seqfile_show+0x1fe/0x470 kernel/cgroup/cgroup.c:3991
+ kernfs_seq_show+0x13b/0x1f0 fs/kernfs/file.c:217
+ seq_read_iter+0x926/0x20c0 fs/seq_file.c:230
+ kernfs_fop_read_iter+0x1f2/0xa10 fs/kernfs/file.c:299
+ call_read_iter include/linux/fs.h:2181 [inline]
+ generic_file_splice_read+0x1e5/0x770 fs/splice.c:309
+ do_splice_to fs/splice.c:793 [inline]
+ splice_direct_to_actor+0x5b2/0x1190 fs/splice.c:865
+ do_splice_direct+0x252/0x3d0 fs/splice.c:974
+ do_sendfile+0xbe9/0x1ba0 fs/read_write.c:1249
+ __do_sys_sendfile64 fs/read_write.c:1317 [inline]
+ __se_sys_sendfile64+0x202/0x2a0 fs/read_write.c:1303
+ __x64_sys_sendfile64+0xb9/0x110 fs/read_write.c:1303
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-> ---
->  include/linux/key.h      | 16 ++++++++++++++++
->  security/keys/internal.h |  2 --
->  2 files changed, 16 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/key.h b/include/linux/key.h
-> index 7febc4881363..e679dbf0c940 100644
-> --- a/include/linux/key.h
-> +++ b/include/linux/key.h
-> @@ -88,6 +88,22 @@ enum key_need_perm {
->  	KEY_DEFER_PERM_CHECK,	/* Special: permission check is
-> deferred */
->  };
->  
-> +#define KEY_LOOKUP_CREATE	0x01
-> +#define KEY_LOOKUP_PARTIAL	0x02
-> +
-> +/**
-> + * key_lookup_flags_valid - detect if provided key lookup flags are
-> valid
-> + * @flags: key lookup flags.
-> + *
-> + * Verify whether or not the caller set in the argument only defined
-> flags.
-> + *
-> + * Return: true if flags are valid, false if not.
-> + */
-> +static inline bool key_lookup_flags_valid(u64 flags)
-> +{
-> +	return !(flags & ~(KEY_LOOKUP_CREATE | KEY_LOOKUP_PARTIAL));
-> +}
-> +
->  struct seq_file;
->  struct user_struct;
->  struct signal_struct;
-> diff --git a/security/keys/internal.h b/security/keys/internal.h
-> index 9b9cf3b6fcbb..3c1e7122076b 100644
-> --- a/security/keys/internal.h
-> +++ b/security/keys/internal.h
-> @@ -165,8 +165,6 @@ extern struct key *request_key_and_link(struct
-> key_type *type,
->  
->  extern bool lookup_user_key_possessed(const struct key *key,
->  				      const struct key_match_data
-> *match_data);
-> -#define KEY_LOOKUP_CREATE	0x01
-> -#define KEY_LOOKUP_PARTIAL	0x02
->  
->  extern long join_session_keyring(const char *name);
->  extern void key_change_session_keyring(struct callback_head *twork);
+Uninit was created at:
+ slab_post_alloc_hook mm/slab.h:732 [inline]
+ slab_alloc_node mm/slub.c:3258 [inline]
+ slab_alloc mm/slub.c:3266 [inline]
+ kmem_cache_alloc_trace+0x696/0xdf0 mm/slub.c:3297
+ kmalloc include/linux/slab.h:600 [inline]
+ psi_cgroup_alloc+0x83/0x250 kernel/sched/psi.c:960
+ cgroup_create kernel/cgroup/cgroup.c:5430 [inline]
+ cgroup_mkdir+0x10a3/0x3080 kernel/cgroup/cgroup.c:5550
+ kernfs_iop_mkdir+0x2ba/0x520 fs/kernfs/dir.c:1185
+ vfs_mkdir+0x62a/0x870 fs/namei.c:4013
+ do_mkdirat+0x466/0x7b0 fs/namei.c:4038
+ __do_sys_mkdirat fs/namei.c:4053 [inline]
+ __se_sys_mkdirat fs/namei.c:4051 [inline]
+ __x64_sys_mkdirat+0xc4/0x120 fs/namei.c:4051
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+CPU: 1 PID: 3493 Comm: syz-executor306 Not tainted 6.0.0-rc2-syzkaller-47460-g3a2b6b904ea7 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/22/2022
+=====================================================
 
