@@ -2,162 +2,221 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 742D65A2282
-	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 10:01:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71D015A228B
+	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 10:05:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241853AbiHZIBG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Aug 2022 04:01:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50786 "EHLO
+        id S239753AbiHZIFM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Aug 2022 04:05:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241772AbiHZIBF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Aug 2022 04:01:05 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB01FD3ECE;
-        Fri, 26 Aug 2022 01:01:03 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id k9so886516wri.0;
-        Fri, 26 Aug 2022 01:01:03 -0700 (PDT)
+        with ESMTP id S237371AbiHZIFL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Aug 2022 04:05:11 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F20F86C3F
+        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 01:05:09 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id bu22so521771wrb.3
+        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 01:05:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc;
-        bh=YKvx6Cj1xYUX2DCCsWQM+Zo2QVYcF66rAfcZQEp7iEQ=;
-        b=T42JkReyAMSo4VSqTWGrerpNlXhidixAmat1mZ0sQX1NCfY85uNUSkEv188VYmQoZv
-         tr94poynOv2itOtjfretoErIELTWi2u1CcgLTxj13h7TNV7+V1cpnCrl2/kM37TyL8w6
-         sAlgiW0FfnJUCwWa2xqAI+SeLsFzljhoO4ECrsxFTPNmrL3xO2F28KnuXhtH1/TIsbPF
-         pbhYYtri0YLLPUO75mC3QZ2k85W2/81CBLyHcBkQf8rdCJc+OBinKqOWYUaHneaZ8bzR
-         K1yNCLfCf2VC0c1sU6HihdvfKDACL1oyCXYjnnfolQUugZCy6SJxOC6HJPAdZOAszwsj
-         VcjA==
+        d=6wind.com; s=google;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:reply-to:user-agent:mime-version
+         :date:message-id:from:to:cc;
+        bh=ED7g6fNeSeCTR/jLw3rybZ8N6LujPjusVSBkx6nXT9s=;
+        b=OfNV7ZxF97T4QWiF31Htys78WBKkBVWDKwCCG/5rtA4Rtx4c/5JohrbwtkPth+u0e1
+         am3HiU9zymT6an2Elp+6NWS8mvf1ZAAQ8m5EoxlXiKmVivaGC675mPUc3cxyEykQnN25
+         NwyQFGIYmNJepnQ0ySEzjaZ71SyVXxoHmTRK6AmOTHxMdUIfQ4VHFLw6ItXjp36cS6g1
+         IxPARyXmG23UmGyFQ+V/IQNBC2SuWfVDMZuq6DjIE6uu+pNgVQdlPM5mj10xtwOh0ek1
+         AyM3B6eUcgbC7gpBYl0f6uA1REMlkaLyiE6gQgc+2wpN4nkKbAf5qLOZxOtskeaUd7ma
+         cu8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc;
-        bh=YKvx6Cj1xYUX2DCCsWQM+Zo2QVYcF66rAfcZQEp7iEQ=;
-        b=6d5vJp3s3PIizdsEM6IYY8/feqmFfNm7cxfPJQ1Wv+0SliHGuGCX0A4duNpmKHA5hx
-         9ZfDNE2q1A99jVZhYn0mSDJx3ui1V9r9GwyG9FT9U8jmliFguvQh7oIQijFDHhRp2W97
-         uPtbLcwvH0BR0b9VCz+soWqf02wYIFz/2yFl5Ku5QxDSrbRrgWQiD7rfdgLD5iIFuFje
-         CuB4POo0B/xUapQFCvfxuAvtnO0FUGUzOYScs95p1aY0NrMQRk/wuq9Oz1TslIIvvDVJ
-         pCIszl9NJGMc3k8qFNnWomVN6n8DqUIvURbtz1+lWv2bzQbSnOhnorgPR2yQBvnqK1lt
-         ihwQ==
-X-Gm-Message-State: ACgBeo1DPaduIlEgg6COHfsFSyCDJr8CVU3baofJJMwh6912hSagg6Ca
-        pl3M3LGLMQ/Uybb28JrjGBI=
-X-Google-Smtp-Source: AA6agR50DqvB0YCyRCtnNZIMYF3rLVQtp8wNj2e/H+sDHsFqdKxFun9l/A5Ec9xDjcwIAitKznYcZA==
-X-Received: by 2002:a5d:64e2:0:b0:225:79d3:d6d9 with SMTP id g2-20020a5d64e2000000b0022579d3d6d9mr3873080wri.240.1661500862157;
-        Fri, 26 Aug 2022 01:01:02 -0700 (PDT)
-Received: from krava ([193.85.244.190])
-        by smtp.gmail.com with ESMTPSA id o1-20020a5d6701000000b0022571d43d32sm1239859wru.21.2022.08.26.01.01.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Aug 2022 01:01:01 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Fri, 26 Aug 2022 10:00:58 +0200
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Jiri Olsa <olsajiri@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: [RFC] ftrace: Add support to keep some functions out of ftrace
-Message-ID: <Ywh9uo7fhRMQjrSl@krava>
-References: <Yvpf67eCerqaDmlE@worktop.programming.kicks-ass.net>
- <CAADnVQKX5xJz5N_mVyf7wg4BT8Q2cNh8ze-SxTRfk6KtcFQ0=Q@mail.gmail.com>
- <YvpmAnFldR0iwAFC@worktop.programming.kicks-ass.net>
- <YvppJ7TjMXD3cSdZ@worktop.programming.kicks-ass.net>
- <Yv6gm09CMdZ/HMr5@krava>
- <20220818165024.433f56fd@gandalf.local.home>
- <CAADnVQ+n=x=CuBk23UNnD9CHVXjrXLUofbockh-SWaLwH3H9fw@mail.gmail.com>
- <Yv6wB4El4iueJtwX@krava>
- <Yv933mq/DTIz5g7q@krava>
- <CAADnVQK=kbCRuj9ZF9oV0YGf0pN-am3vFXYBMQ6m2ze5--nqtQ@mail.gmail.com>
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:reply-to:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc;
+        bh=ED7g6fNeSeCTR/jLw3rybZ8N6LujPjusVSBkx6nXT9s=;
+        b=kLmuACntGUssEYxkUmhy1U6oBDi2oekYvgs2vU5NRuSWpAtap5TSdudJuJWRJttRXX
+         r+S39FxyQYCAd4CMKwKLc638vGcQqa08xQSYbwijMeqkggwdH2bqBo1bByr+2uEiuQdT
+         kYQ96zTMLkxQcSv650xal4WWKnr1c2T+O6nOuW39m/auYwhMm+rkRI9N3iTv9P8bwU6P
+         IDUbK3SkGXLJeSR/TrS5gTBehzVVS4qssn1pK4nNy7fji1nTzTahFmigj6QE38b3i/1N
+         QHQMk1L/1786379WXHJlIT/yRTJJIrltmWMwqipyiQNPO1B4zxEKZYuaW6Wx3M3eCO6n
+         MYVA==
+X-Gm-Message-State: ACgBeo1xPeuWIjBxVNxGcEx5nfDeuQU9oGJVfRq28l1oGd+kgvWnUsP7
+        XtAWhztSC8f9NP9VA9LQ9iZXnA==
+X-Google-Smtp-Source: AA6agR6GeX41tIWppV7E9wVs6YrQ6AlPOhdtiIijkACA/Z3xgQmCAnM6r5EitNGQjzNGoZlJ6Ey4fg==
+X-Received: by 2002:a5d:52d0:0:b0:21e:4923:fa09 with SMTP id r16-20020a5d52d0000000b0021e4923fa09mr4282567wrv.244.1661501107637;
+        Fri, 26 Aug 2022 01:05:07 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:b41:c160:5d94:b816:24d3:cd91? ([2a01:e0a:b41:c160:5d94:b816:24d3:cd91])
+        by smtp.gmail.com with ESMTPSA id b3-20020a5d40c3000000b0022533c4fa48sm1246133wrq.55.2022.08.26.01.05.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Aug 2022 01:05:07 -0700 (PDT)
+Message-ID: <d2836dfb-6666-52cc-0d9c-17cb1542893c@6wind.com>
+Date:   Fri, 26 Aug 2022 10:05:05 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQK=kbCRuj9ZF9oV0YGf0pN-am3vFXYBMQ6m2ze5--nqtQ@mail.gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Reply-To: nicolas.dichtel@6wind.com
+Subject: Re: [PATCH ipsec-next,v3 3/3] xfrm: lwtunnel: add lwtunnel support
+ for xfrm interfaces in collect_md mode
+Content-Language: en-US
+To:     Eyal Birger <eyal.birger@gmail.com>, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        steffen.klassert@secunet.com, herbert@gondor.apana.org.au,
+        dsahern@kernel.org, contact@proelbtn.com, pablo@netfilter.org,
+        razor@blackwall.org, daniel@iogearbox.net
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
+References: <20220825154630.2174742-1-eyal.birger@gmail.com>
+ <20220825154630.2174742-4-eyal.birger@gmail.com>
+From:   Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Organization: 6WIND
+In-Reply-To: <20220825154630.2174742-4-eyal.birger@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 23, 2022 at 10:23:24AM -0700, Alexei Starovoitov wrote:
-> On Fri, Aug 19, 2022 at 4:45 AM Jiri Olsa <olsajiri@gmail.com> wrote:
-> >
-> > On Thu, Aug 18, 2022 at 11:32:55PM +0200, Jiri Olsa wrote:
-> > > On Thu, Aug 18, 2022 at 02:00:21PM -0700, Alexei Starovoitov wrote:
-> > > > On Thu, Aug 18, 2022 at 1:50 PM Steven Rostedt <rostedt@goodmis.org> wrote:
-> > > > >
-> > > > > On Thu, 18 Aug 2022 22:27:07 +0200
-> > > > > Jiri Olsa <olsajiri@gmail.com> wrote:
-> > > > >
-> > > > > > ok, so the problem with __attribute__((patchable_function_entry(5))) is that
-> > > > > > it puts function address into __patchable_function_entries section, which is
-> > > > > > one of ftrace locations source:
-> > > > > >
-> > > > > >   #define MCOUNT_REC()    . = ALIGN(8);     \
-> > > > > >     __start_mcount_loc = .;                 \
-> > > > > >     KEEP(*(__mcount_loc))                   \
-> > > > > >     KEEP(*(__patchable_function_entries))   \
-> > > > > >     __stop_mcount_loc = .;                  \
-> > > > > >    ...
-> > > > > >
-> > > > > >
-> > > > > > it looks like __patchable_function_entries is used for other than x86 archs,
-> > > > > > so we perhaps we could have x86 specific MCOUNT_REC macro just with
-> > > > > > __mcount_loc section?
-> > > > >
-> > > > > So something like this:
-> > > > >
-> > > > > #ifdef CONFIG_X86
-> > > > > # define NON_MCOUNT_PATCHABLE KEEP(*(__patchable_function_entries))
-> > > > > # define MCOUNT_PATCHABLE
-> > > > > #else
-> > > > > # define NON_MCOUNT_PATCHABLE
-> > > > > # define MCOUNT_PATCHABLE  KEEP(*(__patchable_function_entries))
-> > > > > #endif
-> > > > >
-> > > > >   #define MCOUNT_REC()    . = ALIGN(8);     \
-> > > > >     __start_mcount_loc = .;                 \
-> > > > >     KEEP(*(__mcount_loc))                   \
-> > > > >     MCOUNT_PATCHABLE                        \
-> > > > >     __stop_mcount_loc = .;                  \
-> > > > >     NON_MCOUNT_PATCHABLE                    \
-> > > > >    ...
-> > > > >
-> > > > > ??
-> > > >
-> > > > That's what more or less Peter's patch is doing:
-> > > > Here it is again for reference:
-> > > > https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git/commit/?id=8d075bdf11193f1d276bf19fa56b4b8dfe24df9e
-> > >
-> > > ah nice, and discards the __patchable_function_entries section, great
-> > >
-> >
-> > tested change below with Peter's change above and it seems to work,
-> > once it get merged I'll send full patch
-> 
-> Peter,
-> what is the ETA to land your changes?
-> That particular commit is detached in your git tree.
-> Did you move it to a different branch?
-> 
-> Just trying to figure out the logistics to land Jiri's fix below.
-> We can take it into bpf-next, since it's harmless as-is,
-> but it won't have an effect until your change lands.
-> Sounds like they both will get in during the next merge window?
 
-I discussed with Peter and I'll send his change together with my fix
+Le 25/08/2022 à 17:46, Eyal Birger a écrit :
+> Allow specifying the xfrm interface if_id and link as part of a route
+> metadata using the lwtunnel infrastructure.
+> 
+> This allows for example using a single xfrm interface in collect_md
+> mode as the target of multiple routes each specifying a different if_id.
+> 
+> With the appropriate changes to iproute2, considering an xfrm device
+> ipsec1 in collect_md mode one can for example add a route specifying
+> an if_id like so:
+> 
+> ip route add <SUBNET> dev ipsec1 encap xfrm if_id 1
+> 
+> In which case traffic routed to the device via this route would use
+> if_id in the xfrm interface policy lookup.
+> 
+> Or in the context of vrf, one can also specify the "link" property:
+> 
+> ip route add <SUBNET> dev ipsec1 encap xfrm if_id 1 link_dev eth15
+> 
+> Signed-off-by: Eyal Birger <eyal.birger@gmail.com>
+> 
+> ----
+> 
+> v3: netlink improvements as suggested by Nikolay Aleksandrov and
+>     Nicolas Dichtel
+> 
+> v2:
+>   - move lwt_xfrm_info() helper to dst_metadata.h
+>   - add "link" property as suggested by Nicolas Dichtel
+> ---
+>  include/net/dst_metadata.h    | 11 +++++
+>  include/uapi/linux/lwtunnel.h | 10 +++++
+>  net/core/lwtunnel.c           |  1 +
+>  net/xfrm/xfrm_interface.c     | 85 +++++++++++++++++++++++++++++++++++
+>  4 files changed, 107 insertions(+)
+> 
+> diff --git a/include/net/dst_metadata.h b/include/net/dst_metadata.h
+> index e4b059908cc7..57f75960fa28 100644
+> --- a/include/net/dst_metadata.h
+> +++ b/include/net/dst_metadata.h
+> @@ -60,13 +60,24 @@ skb_tunnel_info(const struct sk_buff *skb)
+>  	return NULL;
+>  }
+>  
+> +static inline struct xfrm_md_info *lwt_xfrm_info(struct lwtunnel_state *lwt)
+> +{
+> +	return (struct xfrm_md_info *)lwt->data;
+> +}
+> +
+>  static inline struct xfrm_md_info *skb_xfrm_md_info(const struct sk_buff *skb)
+>  {
+>  	struct metadata_dst *md_dst = skb_metadata_dst(skb);
+> +	struct dst_entry *dst;
+>  
+>  	if (md_dst && md_dst->type == METADATA_XFRM)
+>  		return &md_dst->u.xfrm_info;
+>  
+> +	dst = skb_dst(skb);
+> +	if (dst && dst->lwtstate &&
+> +	    dst->lwtstate->type == LWTUNNEL_ENCAP_XFRM)
+> +		return lwt_xfrm_info(dst->lwtstate);
+> +
+>  	return NULL;
+>  }
+>  
+> diff --git a/include/uapi/linux/lwtunnel.h b/include/uapi/linux/lwtunnel.h
+> index 2e206919125c..229655ef792f 100644
+> --- a/include/uapi/linux/lwtunnel.h
+> +++ b/include/uapi/linux/lwtunnel.h
+> @@ -15,6 +15,7 @@ enum lwtunnel_encap_types {
+>  	LWTUNNEL_ENCAP_SEG6_LOCAL,
+>  	LWTUNNEL_ENCAP_RPL,
+>  	LWTUNNEL_ENCAP_IOAM6,
+> +	LWTUNNEL_ENCAP_XFRM,
+>  	__LWTUNNEL_ENCAP_MAX,
+>  };
+>  
+> @@ -111,4 +112,13 @@ enum {
+>  
+>  #define LWT_BPF_MAX_HEADROOM 256
+>  
+> +enum {
+> +	LWT_XFRM_UNSPEC,
+> +	LWT_XFRM_IF_ID,
+> +	LWT_XFRM_LINK,
+> +	__LWT_XFRM_MAX,
+> +};
+> +
+> +#define LWT_XFRM_MAX (__LWT_XFRM_MAX - 1)
+> +
+>  #endif /* _UAPI_LWTUNNEL_H_ */
+> diff --git a/net/core/lwtunnel.c b/net/core/lwtunnel.c
+> index 9ccd64e8a666..6fac2f0ef074 100644
+> --- a/net/core/lwtunnel.c
+> +++ b/net/core/lwtunnel.c
+> @@ -50,6 +50,7 @@ static const char *lwtunnel_encap_str(enum lwtunnel_encap_types encap_type)
+>  		return "IOAM6";
+>  	case LWTUNNEL_ENCAP_IP6:
+>  	case LWTUNNEL_ENCAP_IP:
+> +	case LWTUNNEL_ENCAP_XFRM:
+>  	case LWTUNNEL_ENCAP_NONE:
+>  	case __LWTUNNEL_ENCAP_MAX:
+>  		/* should not have got here */
+> diff --git a/net/xfrm/xfrm_interface.c b/net/xfrm/xfrm_interface.c
+> index e9a355047468..495dee8b0764 100644
+> --- a/net/xfrm/xfrm_interface.c
+> +++ b/net/xfrm/xfrm_interface.c
+> @@ -60,6 +60,88 @@ struct xfrmi_net {
+>  	struct xfrm_if __rcu *collect_md_xfrmi;
+>  };
+>  
+> +static const struct nla_policy xfrm_lwt_policy[LWT_XFRM_MAX + 1] = {
+> +	[LWT_XFRM_IF_ID]	= NLA_POLICY_MIN(NLA_U32, 1),
+> +	[LWT_XFRM_LINK]		= NLA_POLICY_MIN(NLA_S32, 1),
+IMHO, it would be better to keep consistency with IFLA_XFRM_LINK.
 
-jirka
+$ git grep _LINK.*NLA_U32 net/ drivers/net/
+drivers/net/gtp.c:      [GTPA_LINK]             = { .type = NLA_U32, },
+drivers/net/vxlan/vxlan_core.c: [IFLA_VXLAN_LINK]       = { .type = NLA_U32 },
+...
+net/core/rtnetlink.c:   [IFLA_LINK]             = { .type = NLA_U32 },
+...
+net/ipv4/ip_gre.c:      [IFLA_GRE_LINK]         = { .type = NLA_U32 },
+net/ipv4/ip_vti.c:      [IFLA_VTI_LINK]         = { .type = NLA_U32 },
+net/ipv4/ipip.c:        [IFLA_IPTUN_LINK]               = { .type = NLA_U32 },
+net/ipv6/ip6_gre.c:     [IFLA_GRE_LINK]        = { .type = NLA_U32 },
+net/ipv6/ip6_tunnel.c:  [IFLA_IPTUN_LINK]               = { .type = NLA_U32 },
+net/ipv6/ip6_vti.c:     [IFLA_VTI_LINK]         = { .type = NLA_U32 },
+net/ipv6/sit.c: [IFLA_IPTUN_LINK]               = { .type = NLA_U32 },
+net/sched/cls_u32.c:    [TCA_U32_LINK]          = { .type = NLA_U32 },
+...
+net/xfrm/xfrm_interface.c:      [IFLA_XFRM_LINK]        = { .type = NLA_U32 },
+$ git grep _LINK.*NLA_S32 net/ drivers/net/
+net/core/rtnetlink.c:   [IFLA_LINK_NETNSID]     = { .type = NLA_S32 },
+$
+
+They all are U32. Adding one S32 would just add confusion.
