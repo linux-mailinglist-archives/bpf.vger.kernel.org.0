@@ -2,250 +2,248 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE07C5A261F
-	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 12:51:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94E715A26A8
+	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 13:13:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344027AbiHZKvE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Aug 2022 06:51:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51244 "EHLO
+        id S245546AbiHZLND (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Aug 2022 07:13:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344030AbiHZKu6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Aug 2022 06:50:58 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 632C632ED0
-        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 03:50:48 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id b44so1595539edf.9
-        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 03:50:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=blackwall-org.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc;
-        bh=BVMt85H4uwkZXKo3Dy3Nzz0cObJCNXfSwD3HhcULZDk=;
-        b=HBeGZodvgGlI5lYH5sDojs/WqkFFqn/7FT3Wx4EsXREBFcujnLk54eX97bWM657re1
-         2INAVAFLFnhL0EfWXJzwTyd62zgasI9d9MHjNVA6p44O03YHYBCAnBgYpAHjFStopDmU
-         gVDBo6Btf0KFzdz+Qj/LhFCrBJo3uEZ5CCBsORr8ZHdtwN9sC99x2fBq13Urp/KanczM
-         2wPg2erpRQjhyinJ1cyP5MI+H0h4VCNKvNwpLko/uPojIUcCmxK+W3gOogu2t219dBs5
-         U0WmQCaTdrbWiOfznS6ZHqhNW/8kbx2QUWl7NX/rmvTQ8aJZauVjrOMfD3R13wjOQ/EA
-         gRJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc;
-        bh=BVMt85H4uwkZXKo3Dy3Nzz0cObJCNXfSwD3HhcULZDk=;
-        b=e36vmlVbvsqwnKAoi0/gLgEMOMrQ0SrbaA9lvQP6AYR52a8Vlwh83rWwn8ZDKXt1Ws
-         QeCgqIGz4yDedwdLuZaEvZk9f/u54Q+M3pfoINy6OQ6mZPo7c9fuyQOJlCpdoasUrzBX
-         kMw7gAU08e7wZJ8Wm7DpoY7PfVvia42NQmoC0lmGehQcV43GRqQkoO2dO+HhW6LPaMo3
-         ZtoA5hEceCfgZoRHslVR+UkCXH1aTliv1qFXBZWQOH/tuJmxLZTCTr427xZV2cbYgz3A
-         3HYNeGr/ICFu43lPTyXbmJxlbku0wjHdr9RZLp3EVmHn9WzKu3fnTZxwRFVKCvQLBbBy
-         slbA==
-X-Gm-Message-State: ACgBeo3X3pzQfSohqtatt5V0n1g62FwGox9FRQr0fL6t5v8RLvDfpB8Z
-        rcQANezCoIPQgRMZPv9VIiufTA==
-X-Google-Smtp-Source: AA6agR64G4YKQjkfGqYsfzvNPSh9aQzsAN+cbkqO3vYIB/76HzJ1I2YCou3VLlLCDafBJHbWIQQzwA==
-X-Received: by 2002:a05:6402:1041:b0:446:b290:ea94 with SMTP id e1-20020a056402104100b00446b290ea94mr6250852edu.389.1661511047489;
-        Fri, 26 Aug 2022 03:50:47 -0700 (PDT)
-Received: from [192.168.0.111] (87-243-81-1.ip.btc-net.bg. [87.243.81.1])
-        by smtp.gmail.com with ESMTPSA id ky11-20020a170907778b00b0072abb95eaa4sm725190ejc.215.2022.08.26.03.50.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Aug 2022 03:50:47 -0700 (PDT)
-Message-ID: <11448e15-f882-5494-65d4-1d4a06ab4438@blackwall.org>
-Date:   Fri, 26 Aug 2022 13:50:45 +0300
+        with ESMTP id S244972AbiHZLNC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Aug 2022 07:13:02 -0400
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A01E1D31F7;
+        Fri, 26 Aug 2022 04:13:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1661512381; x=1693048381;
+  h=message-id:date:mime-version:subject:to:references:from:
+   in-reply-to:content-transfer-encoding;
+  bh=3r4b9fNqoE5fw/Wja2N6QhB8LgGuDbCrGO8y5pnVRGo=;
+  b=XQNB3MGVNIsumnH+1KSMdSzCsOjAGPSAKFJlW2hEa7NzqY9Ht9fa2rl2
+   w+hmIugXPgZsgP6PKSMkZnn4ft27cZHNs69PP/lpbPAR+oZENBDfxRPWi
+   snqhnQZv3P3vY5yylmFTbri/Y0ulfVGz6GC1xL7BmMVRWYhQi5AmrQz8t
+   BDhMYcF2gKfi/D1LOolVqsOSsJt7U3v+Ahr3kk7hTgQj9gvmkBXYUYr1d
+   90z/+chKdiLTQJItMS9cUZk280oe7HpjVDOmY8Ao9zo4l2q8vDyT5RMUm
+   IImAq3pZf/hezFMkDELan1GCsxraIS0KVXHkfSOLIGQexMZ9m5yphYKcI
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10450"; a="295756583"
+X-IronPort-AV: E=Sophos;i="5.93,265,1654585200"; 
+   d="scan'208";a="295756583"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2022 04:12:59 -0700
+X-IronPort-AV: E=Sophos;i="5.93,265,1654585200"; 
+   d="scan'208";a="606734124"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.50.209])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2022 04:12:47 -0700
+Message-ID: <b87631c8-aa36-b72d-64d7-9343ddeebdc3@intel.com>
+Date:   Fri, 26 Aug 2022 14:12:42 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Subject: Re: [PATCH ipsec-next,v3 3/3] xfrm: lwtunnel: add lwtunnel support
- for xfrm interfaces in collect_md mode
+ Firefox/91.0 Thunderbird/91.11.0
+Subject: Re: [PATCH v3 15/18] perf mutex: Add thread safety annotations
 Content-Language: en-US
-To:     Eyal Birger <eyal.birger@gmail.com>, nicolas.dichtel@6wind.com
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, steffen.klassert@secunet.com,
-        herbert@gondor.apana.org.au, dsahern@kernel.org,
-        contact@proelbtn.com, pablo@netfilter.org, daniel@iogearbox.net,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-References: <20220825154630.2174742-1-eyal.birger@gmail.com>
- <20220825154630.2174742-4-eyal.birger@gmail.com>
- <d2836dfb-6666-52cc-0d9c-17cb1542893c@6wind.com>
- <CAHsH6Gt3kU6tLVpSiq4jk7QQnVDzQin8qQyv_occKhL2RM8edA@mail.gmail.com>
-From:   Nikolay Aleksandrov <razor@blackwall.org>
-In-Reply-To: <CAHsH6Gt3kU6tLVpSiq4jk7QQnVDzQin8qQyv_occKhL2RM8edA@mail.gmail.com>
+To:     Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Darren Hart <dvhart@infradead.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, Weiguo Li <liwg06@foxmail.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Dario Petrillo <dario.pk1@gmail.com>,
+        Hewenliang <hewenliang4@huawei.com>,
+        yaowenbin <yaowenbin1@huawei.com>,
+        Wenyu Liu <liuwenyu7@huawei.com>,
+        Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Pavithra Gurushankar <gpavithrasha@gmail.com>,
+        Alexandre Truong <alexandre.truong@arm.com>,
+        Quentin Monnet <quentin@isovalent.com>,
+        William Cohen <wcohen@redhat.com>,
+        Andres Freund <andres@anarazel.de>,
+        =?UTF-8?Q?Martin_Li=c5=a1ka?= <mliska@suse.cz>,
+        Colin Ian King <colin.king@intel.com>,
+        James Clark <james.clark@arm.com>,
+        Fangrui Song <maskray@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>,
+        Riccardo Mancini <rickyman7@gmail.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Zechuan Chen <chenzechuan1@huawei.com>,
+        Jason Wang <wangborong@cdjrlc.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Remi Bernon <rbernon@codeweavers.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        bpf@vger.kernel.org, llvm@lists.linux.dev
+References: <20220824153901.488576-1-irogers@google.com>
+ <20220824153901.488576-16-irogers@google.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <20220824153901.488576-16-irogers@google.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 26/08/2022 13:18, Eyal Birger wrote:
-> On Fri, Aug 26, 2022 at 11:05 AM Nicolas Dichtel
-> <nicolas.dichtel@6wind.com> wrote:
->>
->>
->> Le 25/08/2022 à 17:46, Eyal Birger a écrit :
->>> Allow specifying the xfrm interface if_id and link as part of a route
->>> metadata using the lwtunnel infrastructure.
->>>
->>> This allows for example using a single xfrm interface in collect_md
->>> mode as the target of multiple routes each specifying a different if_id.
->>>
->>> With the appropriate changes to iproute2, considering an xfrm device
->>> ipsec1 in collect_md mode one can for example add a route specifying
->>> an if_id like so:
->>>
->>> ip route add <SUBNET> dev ipsec1 encap xfrm if_id 1
->>>
->>> In which case traffic routed to the device via this route would use
->>> if_id in the xfrm interface policy lookup.
->>>
->>> Or in the context of vrf, one can also specify the "link" property:
->>>
->>> ip route add <SUBNET> dev ipsec1 encap xfrm if_id 1 link_dev eth15
->>>
->>> Signed-off-by: Eyal Birger <eyal.birger@gmail.com>
->>>
->>> ----
->>>
->>> v3: netlink improvements as suggested by Nikolay Aleksandrov and
->>>     Nicolas Dichtel
->>>
->>> v2:
->>>   - move lwt_xfrm_info() helper to dst_metadata.h
->>>   - add "link" property as suggested by Nicolas Dichtel
->>> ---
->>>  include/net/dst_metadata.h    | 11 +++++
->>>  include/uapi/linux/lwtunnel.h | 10 +++++
->>>  net/core/lwtunnel.c           |  1 +
->>>  net/xfrm/xfrm_interface.c     | 85 +++++++++++++++++++++++++++++++++++
->>>  4 files changed, 107 insertions(+)
->>>
->>> diff --git a/include/net/dst_metadata.h b/include/net/dst_metadata.h
->>> index e4b059908cc7..57f75960fa28 100644
->>> --- a/include/net/dst_metadata.h
->>> +++ b/include/net/dst_metadata.h
->>> @@ -60,13 +60,24 @@ skb_tunnel_info(const struct sk_buff *skb)
->>>       return NULL;
->>>  }
->>>
->>> +static inline struct xfrm_md_info *lwt_xfrm_info(struct lwtunnel_state *lwt)
->>> +{
->>> +     return (struct xfrm_md_info *)lwt->data;
->>> +}
->>> +
->>>  static inline struct xfrm_md_info *skb_xfrm_md_info(const struct sk_buff *skb)
->>>  {
->>>       struct metadata_dst *md_dst = skb_metadata_dst(skb);
->>> +     struct dst_entry *dst;
->>>
->>>       if (md_dst && md_dst->type == METADATA_XFRM)
->>>               return &md_dst->u.xfrm_info;
->>>
->>> +     dst = skb_dst(skb);
->>> +     if (dst && dst->lwtstate &&
->>> +         dst->lwtstate->type == LWTUNNEL_ENCAP_XFRM)
->>> +             return lwt_xfrm_info(dst->lwtstate);
->>> +
->>>       return NULL;
->>>  }
->>>
->>> diff --git a/include/uapi/linux/lwtunnel.h b/include/uapi/linux/lwtunnel.h
->>> index 2e206919125c..229655ef792f 100644
->>> --- a/include/uapi/linux/lwtunnel.h
->>> +++ b/include/uapi/linux/lwtunnel.h
->>> @@ -15,6 +15,7 @@ enum lwtunnel_encap_types {
->>>       LWTUNNEL_ENCAP_SEG6_LOCAL,
->>>       LWTUNNEL_ENCAP_RPL,
->>>       LWTUNNEL_ENCAP_IOAM6,
->>> +     LWTUNNEL_ENCAP_XFRM,
->>>       __LWTUNNEL_ENCAP_MAX,
->>>  };
->>>
->>> @@ -111,4 +112,13 @@ enum {
->>>
->>>  #define LWT_BPF_MAX_HEADROOM 256
->>>
->>> +enum {
->>> +     LWT_XFRM_UNSPEC,
->>> +     LWT_XFRM_IF_ID,
->>> +     LWT_XFRM_LINK,
->>> +     __LWT_XFRM_MAX,
->>> +};
->>> +
->>> +#define LWT_XFRM_MAX (__LWT_XFRM_MAX - 1)
->>> +
->>>  #endif /* _UAPI_LWTUNNEL_H_ */
->>> diff --git a/net/core/lwtunnel.c b/net/core/lwtunnel.c
->>> index 9ccd64e8a666..6fac2f0ef074 100644
->>> --- a/net/core/lwtunnel.c
->>> +++ b/net/core/lwtunnel.c
->>> @@ -50,6 +50,7 @@ static const char *lwtunnel_encap_str(enum lwtunnel_encap_types encap_type)
->>>               return "IOAM6";
->>>       case LWTUNNEL_ENCAP_IP6:
->>>       case LWTUNNEL_ENCAP_IP:
->>> +     case LWTUNNEL_ENCAP_XFRM:
->>>       case LWTUNNEL_ENCAP_NONE:
->>>       case __LWTUNNEL_ENCAP_MAX:
->>>               /* should not have got here */
->>> diff --git a/net/xfrm/xfrm_interface.c b/net/xfrm/xfrm_interface.c
->>> index e9a355047468..495dee8b0764 100644
->>> --- a/net/xfrm/xfrm_interface.c
->>> +++ b/net/xfrm/xfrm_interface.c
->>> @@ -60,6 +60,88 @@ struct xfrmi_net {
->>>       struct xfrm_if __rcu *collect_md_xfrmi;
->>>  };
->>>
->>> +static const struct nla_policy xfrm_lwt_policy[LWT_XFRM_MAX + 1] = {
->>> +     [LWT_XFRM_IF_ID]        = NLA_POLICY_MIN(NLA_U32, 1),
->>> +     [LWT_XFRM_LINK]         = NLA_POLICY_MIN(NLA_S32, 1),
->> IMHO, it would be better to keep consistency with IFLA_XFRM_LINK.
->>
->> $ git grep _LINK.*NLA_U32 net/ drivers/net/
->> drivers/net/gtp.c:      [GTPA_LINK]             = { .type = NLA_U32, },
->> drivers/net/vxlan/vxlan_core.c: [IFLA_VXLAN_LINK]       = { .type = NLA_U32 },
->> ...
->> net/core/rtnetlink.c:   [IFLA_LINK]             = { .type = NLA_U32 },
->> ...
->> net/ipv4/ip_gre.c:      [IFLA_GRE_LINK]         = { .type = NLA_U32 },
->> net/ipv4/ip_vti.c:      [IFLA_VTI_LINK]         = { .type = NLA_U32 },
->> net/ipv4/ipip.c:        [IFLA_IPTUN_LINK]               = { .type = NLA_U32 },
->> net/ipv6/ip6_gre.c:     [IFLA_GRE_LINK]        = { .type = NLA_U32 },
->> net/ipv6/ip6_tunnel.c:  [IFLA_IPTUN_LINK]               = { .type = NLA_U32 },
->> net/ipv6/ip6_vti.c:     [IFLA_VTI_LINK]         = { .type = NLA_U32 },
->> net/ipv6/sit.c: [IFLA_IPTUN_LINK]               = { .type = NLA_U32 },
->> net/sched/cls_u32.c:    [TCA_U32_LINK]          = { .type = NLA_U32 },
->> ...
->> net/xfrm/xfrm_interface.c:      [IFLA_XFRM_LINK]        = { .type = NLA_U32 },
->> $ git grep _LINK.*NLA_S32 net/ drivers/net/
->> net/core/rtnetlink.c:   [IFLA_LINK_NETNSID]     = { .type = NLA_S32 },
->> $
->>
->> They all are U32. Adding one S32 would just add confusion.
+On 24/08/22 18:38, Ian Rogers wrote:
+> Add thread safety annotations to struct mutex so that when compiled with
+> clang's -Wthread-safety warnings are generated for erroneous lock
+> patterns. NO_THREAD_SAFETY_ANALYSIS is needed for
+> mutex_lock/mutex_unlock as the analysis doesn't under pthread calls.
 > 
-> Thanks for this input!
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/util/mutex.c |  2 ++
+>  tools/perf/util/mutex.h | 72 ++++++++++++++++++++++++++++++++++++++---
+>  2 files changed, 69 insertions(+), 5 deletions(-)
 > 
-> Indeed going over the other references it seems ifindex is treated as U32
-> when interfacing with userspace almost everywhere including netlink and
-> bpf. In the IOCTL interface it seems to be implemented as int, but at
-> least on my Ubuntu machine the manpage for e.g. if_nametoindex() describes
-> it as returning unsigned int.
-> 
-> Therefore I intend to resubmit this as U32.
-> 
-> Thanks,
-> Eyal.
+> diff --git a/tools/perf/util/mutex.c b/tools/perf/util/mutex.c
+> index 892294ac1769..ec813093276d 100644
+> --- a/tools/perf/util/mutex.c
+> +++ b/tools/perf/util/mutex.c
+> @@ -50,11 +50,13 @@ void mutex_destroy(struct mutex *mtx)
+>  }
+>  
+>  void mutex_lock(struct mutex *mtx)
+> +	NO_THREAD_SAFETY_ANALYSIS
+>  {
+>  	CHECK_ERR(pthread_mutex_lock(&mtx->lock));
+>  }
+>  
+>  void mutex_unlock(struct mutex *mtx)
+> +	NO_THREAD_SAFETY_ANALYSIS
+>  {
+>  	CHECK_ERR(pthread_mutex_unlock(&mtx->lock));
+>  }
+> diff --git a/tools/perf/util/mutex.h b/tools/perf/util/mutex.h
+> index c9e110a2b55e..48a2d87598f0 100644
+> --- a/tools/perf/util/mutex.h
+> +++ b/tools/perf/util/mutex.h
+> @@ -5,11 +5,73 @@
+>  #include <pthread.h>
+>  #include <stdbool.h>
+>  
+> +/*
+> + * A function-like feature checking macro that is a wrapper around
+> + * `__has_attribute`, which is defined by GCC 5+ and Clang and evaluates to a
+> + * nonzero constant integer if the attribute is supported or 0 if not.
+> + */
+> +#ifdef __has_attribute
+> +#define HAVE_ATTRIBUTE(x) __has_attribute(x)
+> +#else
+> +#define HAVE_ATTRIBUTE(x) 0
+> +#endif
+> +
+> +
 
-Ack, good point, note that ifindex is not always a u32 and ifindex itself is usually a
-signed integer field in structs (e.g. net_device), as well as flowic_oif (flowi_oif). :) 
-rtnetlink.c:	[IFLA_NEW_IFINDEX]	= NLA_POLICY_MIN(NLA_S32, 1),
-rtnetlink.c:	[NDA_IFINDEX]	= NLA_POLICY_MIN(NLA_S32, 1),
+Multiple blank lines
 
-Just using the old U32 code and making link a u32 should be ok.
+> +#if HAVE_ATTRIBUTE(guarded_by) && HAVE_ATTRIBUTE(pt_guarded_by) && \
+> +	HAVE_ATTRIBUTE(lockable) && HAVE_ATTRIBUTE(exclusive_lock_function) && \
+> +	HAVE_ATTRIBUTE(exclusive_trylock_function) && HAVE_ATTRIBUTE(exclusive_locks_required) && \
+> +	HAVE_ATTRIBUTE(no_thread_safety_analysis)
+> +
+> +/* Documents if a shared field or global variable needs to be protected by a mutex. */
+> +#define GUARDED_BY(x) __attribute__((guarded_by(x)))
+> +
+> +/*
+> + * Documents if the memory location pointed to by a pointer should be guarded by
+> + * a mutex when dereferencing the pointer.
+> + */
+> +#define PT_GUARDED_BY(x) __attribute__((pt_guarded_by(x)))
+> +
+> +/* Documents if a type is a lockable type. */
+> +#define LOCKABLE __attribute__((capability("lockable")))
+> +
+> +/* Documents functions that acquire a lock in the body of a function, and do not release it. */
+> +#define EXCLUSIVE_LOCK_FUNCTION(...)  __attribute__((exclusive_lock_function(__VA_ARGS__)))
+> +
+> +/*
+> + * Documents functions that expect a lock to be held on entry to the function,
+> + * and release it in the body of the function.
+> + */
+> +#define UNLOCK_FUNCTION(...) __attribute__((unlock_function(__VA_ARGS__)))
+> +
+> +/* Documents functions that try to acquire a lock, and return success or failure. */
+> +#define EXCLUSIVE_TRYLOCK_FUNCTION(...) \
+> +	__attribute__((exclusive_trylock_function(__VA_ARGS__)))
+> +
+> +
 
-Cheers,
- Nik
+Multiple blank lines
 
-
+> +/* Documents a function that expects a mutex to be held prior to entry. */
+> +#define EXCLUSIVE_LOCKS_REQUIRED(...) __attribute__((exclusive_locks_required(__VA_ARGS__)))
+> +
+> +/* Turns off thread safety checking within the body of a particular function. */
+> +#define NO_THREAD_SAFETY_ANALYSIS __attribute__((no_thread_safety_analysis))
+> +
+> +#else
+> +
+> +#define GUARDED_BY(x)
+> +#define PT_GUARDED_BY(x)
+> +#define LOCKABLE
+> +#define EXCLUSIVE_LOCK_FUNCTION(...)
+> +#define UNLOCK_FUNCTION(...)
+> +#define EXCLUSIVE_TRYLOCK_FUNCTION(...)
+> +#define EXCLUSIVE_LOCKS_REQUIRED(...)
+> +#define NO_THREAD_SAFETY_ANALYSIS
+> +
+> +#endif
+> +
+>  /*
+>   * A wrapper around the mutex implementation that allows perf to error check
+>   * usage, etc.
+>   */
+> -struct mutex {
+> +struct LOCKABLE mutex {
+>  	pthread_mutex_t lock;
+>  };
+>  
+> @@ -27,9 +89,9 @@ void mutex_init(struct mutex *mtx);
+>  void mutex_init_pshared(struct mutex *mtx);
+>  void mutex_destroy(struct mutex *mtx);
+>  
+> -void mutex_lock(struct mutex *mtx);
+> -void mutex_unlock(struct mutex *mtx);
+> -bool mutex_trylock(struct mutex *mtx);
+> +void mutex_lock(struct mutex *mtx) EXCLUSIVE_LOCK_FUNCTION(*mtx);
+> +void mutex_unlock(struct mutex *mtx) UNLOCK_FUNCTION(*mtx);
+> +bool mutex_trylock(struct mutex *mtx) EXCLUSIVE_TRYLOCK_FUNCTION(true, *mtx);
+>  
+>  /* Default initialize the cond struct. */
+>  void cond_init(struct cond *cnd);
+> @@ -40,7 +102,7 @@ void cond_init(struct cond *cnd);
+>  void cond_init_pshared(struct cond *cnd);
+>  void cond_destroy(struct cond *cnd);
+>  
+> -void cond_wait(struct cond *cnd, struct mutex *mtx);
+> +void cond_wait(struct cond *cnd, struct mutex *mtx) EXCLUSIVE_LOCKS_REQUIRED(mtx);
+>  void cond_signal(struct cond *cnd);
+>  void cond_broadcast(struct cond *cnd);
+>  
 
