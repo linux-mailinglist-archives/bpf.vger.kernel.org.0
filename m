@@ -2,210 +2,243 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF8325A2DFF
-	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 20:10:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 577485A2E5C
+	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 20:23:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344806AbiHZSJb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Aug 2022 14:09:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39122 "EHLO
+        id S230381AbiHZSX5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Aug 2022 14:23:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344829AbiHZSJ3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Aug 2022 14:09:29 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FE82192BB;
-        Fri, 26 Aug 2022 11:09:27 -0700 (PDT)
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27QHgGoJ018852;
-        Fri, 26 Aug 2022 11:09:26 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : mime-version; s=facebook;
- bh=Gu3nGV7C5fY7JBqQudLva1ChSel/hRFlcTDpC7VGJR0=;
- b=kPitFJaigLUTiWTNs78m3MZTg7LO/OczKyBI+td/Difl+o7yg8eMXgmBNWjwrmQKquOp
- 7PJ4ODV3Sk7S+UJxPgi6amn/6D47ypnrgb+BThxbEkj+ZJeNsOdS+bQIe+dd4wSaQhnt
- ZR+CNTwR5QQLaRkj9AQkH0QiUUHAzrOko58= 
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2177.outbound.protection.outlook.com [104.47.57.177])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3j6rwdbvwq-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 26 Aug 2022 11:09:26 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Z+zWRDvNk/AWcu7MVjTuKArzmBMe8VgqJgbxfcfLx5POwUmabdlDmL/YQ3bJBe/hR7J/pZ3zOG/zc3JmYEvLdbn8ncqBVINsDeHFenuy95NZ4BAItWO4AJ0p5DDSTC7PU/LHQ8/VP2Sp+LvleCT13xCdOIB33WSO8qBDJDyvaO0fCQBJnZNo/hS0Kc3TuyxeHLo8za3meyOT0e3VyRvvMtUoVWVgRDL3gaVM2nXBNbas2kSGYikEaT8UKtuQpd5gURIo73abSIDKA1P3kewX6bys86OrIZe5XZEzrdxhOGXZGT9bkVr+TVnUa2U3SSOkGCpV/Gz28+msNsqC1zb+Mg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Gu3nGV7C5fY7JBqQudLva1ChSel/hRFlcTDpC7VGJR0=;
- b=f9vSVtb1VCndn3x3cNSCEGfBFjj4OnS3ymkoPJoceVvUYD+63Wus8SPSoftVpRRnFJ2KtXxIbkjFmJ7Ew1rR4r5T48ZeUeUTLPwvUkE1F9ZrOgZtIgJkvjSnfqgNeWeApiVX8T5jJ3tVA5EiWlXXFx8PkPu3vZ0avzbAOLIuMFnLX6zsMZxaMyVFtZ4hRklit41Enk0ZVpWxQ3N2xfF2soeV6Aop/ohcO642M8XsXrBmD2GPodm86AEDiXrxLbtx6ecv09IV1kwWDuG5W0Z1+bNz784I1iM7j+icfL+/+3ZR6gmEY7r8pNKjBkZg5zJ0UZ2nQljDCp4Eih0EymM2UA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
- by MN2PR15MB3376.namprd15.prod.outlook.com (2603:10b6:208:3d::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5566.16; Fri, 26 Aug
- 2022 18:09:23 +0000
-Received: from SA1PR15MB5109.namprd15.prod.outlook.com
- ([fe80::c488:891f:57b:d5da]) by SA1PR15MB5109.namprd15.prod.outlook.com
- ([fe80::c488:891f:57b:d5da%9]) with mapi id 15.20.5566.015; Fri, 26 Aug 2022
- 18:09:23 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Namhyung Kim <namhyung@kernel.org>
-CC:     Song Liu <song@kernel.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf-next] bpf: Add bpf_read_raw_record() helper
-Thread-Topic: [PATCH bpf-next] bpf: Add bpf_read_raw_record() helper
-Thread-Index: AQHYtzPeWFYcAGzsN0Wstq4jJDfNwK3AJloAgAAJpYCAAA9aAIAAO0MAgAAulQCAAAilAIAAsuMAgAAazgA=
-Date:   Fri, 26 Aug 2022 18:09:23 +0000
-Message-ID: <C7F3F33B-4A8E-428C-9FED-FB635955C2B1@fb.com>
-References: <20220823210354.1407473-1-namhyung@kernel.org>
- <CAEf4Bzbd0-jGFCSCJu3eDxxom42xnH9Tevq0n50-AajjHb5t3g@mail.gmail.com>
- <A9E2E766-E8A2-4E2E-A661-922400D2674D@fb.com>
- <CAEf4BzbGf6FuM7VcnA7HKb33HJeJjrDuydC4h1_tCUB8sPCW2g@mail.gmail.com>
- <E215461A-01E7-4677-A404-C4439D66A7AF@fb.com>
- <CAM9d7cgigkU8quUMpScL=Xt8+WLDVXKiF5xdKiz7BbDPibSNjg@mail.gmail.com>
- <CAPhsuW5V1U_UTHQw9E80vCTeP4Jqg9Ta8B+7o3pybKB=8CGRFA@mail.gmail.com>
- <CAM9d7cjTtOkRHLOosxHN8PcbVbhTK=uLDGjw8N5=1QiTHcd6rQ@mail.gmail.com>
-In-Reply-To: <CAM9d7cjTtOkRHLOosxHN8PcbVbhTK=uLDGjw8N5=1QiTHcd6rQ@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3696.120.41.1.1)
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: a7fb0380-d0ed-47f5-14fa-08da878e1aca
-x-ms-traffictypediagnostic: MN2PR15MB3376:EE_
-x-fb-source: Internal
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: C1B29zViZFfvQT9SfYbQl7F0lztjJ4pIqJZrdmUOuIV6Z0JTV8aOd2TaYfjURAjmL9znUbvJf0c8WKq8snSyW4nJ/13WrTsGNsw/BoFxRM0eqkeK4JmMZHP5XaKVe9BYU6r62E7CK8zPMnQaqpUQIS/fWtKsvGWpKW0IPvu3ycdUARJUcOQ9lvY3MbOV2Nt37Ns9Pb60V1ZD7Gw8HuKwFWopQw83X1gOMRk13asiIEIqP8XOSvT+HMNJAIWwDHX4q8NPiG0Y+9M0zPLk/LNyKxbszS09e3/GJqMAXttXEEwn0avb2jCE8IDbW+a6MdtIuwtnPOMC7VdbbacylW47KAdd9oH7zq5s0PHjqmUKmT6fLYtdSr3ArgsEdmgSlob/aaqZCj2vCK8MoAGR7Mg59z7w7inyI2DJj9QEZEpEZTMWeIj7qYmLGzx2ctjvYY4tj2jH+2weyE3zoMNKZAMFK1Vkyu/Prp/mGzOiXItzW4/BRWVcRa+PAM1v7B0N8thQ4rQD0lYxB43S1fEoTxzHBzRB/qIQoHWfdVflTV1HVs4D4v8cWaet61EaTFe1Y5hQIOHme7IyaBLJkb8AtNKeQeVACBiHAFiSlY+kFyqpkJTTMFuB6UhnW4q0dcO0U4u8rHGMaZOs46WM/A3jJxRzbbBYipaFjr0Ujj86zUbW6GjL2htuS0JboeiAG4wv9+EArKRycJhUtTt0OSDXWBmIFB5gYUzpvIQvfdUPbadt8EZuhOt6By2s0jA8T2jo/jrp11fMU4Hp3LiiD36QSXVIR2xpU7NG8TrP0ikRhQuYpcw=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(396003)(366004)(39860400002)(346002)(376002)(136003)(6486002)(71200400001)(478600001)(54906003)(122000001)(6506007)(76116006)(8676002)(64756008)(66946007)(66446008)(66556008)(91956017)(66476007)(4326008)(8936002)(41300700001)(316002)(7416002)(5660300002)(6916009)(36756003)(83380400001)(6512007)(33656002)(53546011)(2906002)(2616005)(186003)(38100700002)(38070700005)(86362001)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?X4PBqRbLImipUzGKWcx16fmlBpQvnvX8aeluENOdkdth2YS5Np/KOHLq4ljh?=
- =?us-ascii?Q?BMZhR+CYPuWxVnax6MlhCRVXtJx3OdrrQ3qVcu/EMDZIBaonf8l2RXJKIgTg?=
- =?us-ascii?Q?kISZqWrLStkQqrNs4eiymOZSXj5NCNkPPH59ybsT+kl8QEClRwWuOiet7FgK?=
- =?us-ascii?Q?4cLgLMAwIJ+TtvlBLQ4pu4Bzc6Rtcz0oSV69poDtI/wDieNhh1Nc2/UuW/xJ?=
- =?us-ascii?Q?/RPxXSvIiiLLgzxfc+Gk2iX3fxq4BwBZ9fNi00tVzceLybkOYTTaHMYwiLKV?=
- =?us-ascii?Q?PRFH3F2CNBvsDF0vWBDnZvr+PSbbh34Hd9eu6uJxax6nqvTfF3qyjacQQpXB?=
- =?us-ascii?Q?n/i00S2TMo6bnFmZxY8/MkP8W78ZFbpLWbXNFObISK39jmP+2v26852dGItI?=
- =?us-ascii?Q?yUV8uGFemG1YEwVbz7E26FGAUy+t1EBVVSsHUgIY/ldK6864Va46ox8W6MdE?=
- =?us-ascii?Q?OwFqYawtybdLn/Ge2hUd/weMRi3OHrl1aJgPVa3JL85mClqamzy1BS2zMvTz?=
- =?us-ascii?Q?24eKMhkDBE0xlOxHXEXrXZGsdfDhxu0zamaRtQyczlT8ewp75RhcCsedvTft?=
- =?us-ascii?Q?sZdLCa6tA/xQ+OlBfE8NWyD5TvIACVEqCC4kkOFWgD85weFC1LMO3MPpmbg8?=
- =?us-ascii?Q?e6APgdrwGtOTwV1hVi8JAg0J+noTC+6PkNCYp98hqVc31lbnig4RQYgSBwwY?=
- =?us-ascii?Q?zdvGjgdqP+WyWTDui2ZFb3R+0Y/hZs7OIjw1OsNuCW4RSBcuKWfIj+97N6qe?=
- =?us-ascii?Q?bibLbyh3nnJQeluzQwf9bOLm4nMgXRyod+xa6d/deKvJpGPMeh0sI+FOwabz?=
- =?us-ascii?Q?Nyj3L4eGlwwJNpR/xz2f7RXQKJBvpBVSzHWcugdXJl8dB8wO+BhmT188wsxP?=
- =?us-ascii?Q?6YZ6KPPIX7FClv/CXuyo+K+Z/iRfszNWSfR6tDuNVyUT3YknMAbpxMLOfO7y?=
- =?us-ascii?Q?vQUNLgByuH6LaILVb65FjAGuBxnYxq4BZSK5TYlMa90T/CT9Py2hXp/Jhl1s?=
- =?us-ascii?Q?c+KTnqhlJchnBZO0XbqgbjRUxckwIdyiY0MRmH8CHoj5qfUuJOU3FpMxB85o?=
- =?us-ascii?Q?nEHQaQP2QJkLNlqmzC8eXZEPyYkZtwH7ZbtJfkpUNpeqvwIkOMILbi/dxYzx?=
- =?us-ascii?Q?+iwMF6vY6AZoBpRKWonKMNesZ8tYc+1pJV5G9cbVzlp+EAX4HwSTmvleApHt?=
- =?us-ascii?Q?137gJl41ffJqcQXZWca5yos0xb4n67WMys2LMKeoWCoclqCJjVU/q7P5Iirz?=
- =?us-ascii?Q?tWCGiV8wEX/muMTOMc6Aqui7ceqQxnPqZBYYkoPXZwmPAh2+WBlCwc7Wvyys?=
- =?us-ascii?Q?tppKx5Jpv/0yLyrI79dJLNbJjOvrRc68AhnR1NN5Jk6NpyuBawDv5XqsOAly?=
- =?us-ascii?Q?Tb2y8ZW4Ssmvx3gRtw64lSTBtWJS1zwGM+Cgy8DcBeWTN4SLg0ujB0Fazpjw?=
- =?us-ascii?Q?zq/ycUyoD9MmDKQbl+Ddej9h+QXrV5wJT+euv1N/kFAPqi5K5MG2mhwzMnCX?=
- =?us-ascii?Q?4FoNdXAogOfXZaVqVqVBWYcdVAA7o24xKL9NtyNwNoQD/2dh0HtzpjuZbfX5?=
- =?us-ascii?Q?apCYfl7pqXEwwFSTl2xghseQvlfckGxHNBDuzuSV5tK+bwW2dZXSLsGArrx3?=
- =?us-ascii?Q?VWG+KhlJg4cEy7XfKFk4XPw=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <324940FCDECC194AAD25889888829074@namprd15.prod.outlook.com>
+        with ESMTP id S231181AbiHZSXz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Aug 2022 14:23:55 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4956A6EF0C;
+        Fri, 26 Aug 2022 11:23:54 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id m1so3091874edb.7;
+        Fri, 26 Aug 2022 11:23:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=mnqTntBBUixCBmK/KgH2joTYOGTwv8oYMOUMhSLv8JE=;
+        b=qUzyqf/PxxhU5HYYOUVMajaCeiUefYf6xB+Zcn6gYrih5Jh9sGc3WR5nHBSXCxfsre
+         qoJhuK5UQ53F1Mdd0amtpEkTu08bFiNn9JfDlXFv+RiKwW4uGlY4lEkR+vACzpYPyqfY
+         vvjIsZYt/KDzGjkd5IK+S5fmOGA/z2HCr+YClC51maOkCSLtXYB/F+ZhbMHUV/PywO8v
+         wCsWPtF0KE1mn3QLYrIvCqBjvgpvTosqq2RgwNIGpK+MKCW9XKcUWPE1F1nHnu/WHha+
+         PrQgYDwr81hNNeL8pGpHKDHsQr2qZz4/jpxRE2+a990P561YF5ODUKSrh0z2hIbrmAdH
+         TMww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=mnqTntBBUixCBmK/KgH2joTYOGTwv8oYMOUMhSLv8JE=;
+        b=IIHgoVmpSAH3W+q7FY1hspoUZE9j/HBfu+qraWUUr8dWo/6TIYIdXcPUMKct+s8Ca6
+         YXfYXaJXYYlIzrxARS16/xylXTL6l6Pudipd9JdtEOaEZ405oZAKyIX54fl6XUz6obzM
+         0PlLlhnj8t0JNeEpgOWH8qpF+uOFf57BAO8EUfBQ7b9E2hOIZ6ScEDw3VyM/RFBonwzc
+         bl9qJOZv3qQ/UvDZm5t+ulVEN8OQWPc6QPSDK7Aa/KmTd6ayxMfEXFxIOb9VpNUMoMSx
+         Y5iWYV33iE73hawX/7t4OcTYEjBGtTmO+tafy1OiUhQIEQjOGiGGD8ZRvILSzGX5eS9F
+         xEUg==
+X-Gm-Message-State: ACgBeo0dq9An0y+2eGqcg1+ddj/mx42OJPUBtzIGKzVdoEqohSZ69Cqh
+        3zPOWRHvb+X2DMPywAdbSLIJNrKihq1NjuEllEI=
+X-Google-Smtp-Source: AA6agR5o2UKBfKOSTjnQ+A10InlWFErMKTsVhyuq7y+GX+xEHqECN8jC4L4AplIk5tnvfa6FxXI/Pga3/8iq+agLzoc=
+X-Received: by 2002:a05:6402:2949:b0:445:dc8d:44d with SMTP id
+ ed9-20020a056402294900b00445dc8d044dmr7802453edb.60.1661538232841; Fri, 26
+ Aug 2022 11:23:52 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a7fb0380-d0ed-47f5-14fa-08da878e1aca
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Aug 2022 18:09:23.0434
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 5/i27Cbi4R4ItTNJGAHG064oqgfURzuK1ASRGbiJRjb2iEHL0s6UG7MxP/tSSBmA3AQ3gG+XvXoUUAatp5i8yw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB3376
-X-Proofpoint-GUID: Jlk20QM8mWV7LBNDfz4i90Vzos09WrCF
-X-Proofpoint-ORIG-GUID: Jlk20QM8mWV7LBNDfz4i90Vzos09WrCF
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-08-26_10,2022-08-25_01,2022-06-22_01
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20220822235649.2218031-1-joannelkoong@gmail.com>
+ <20220822235649.2218031-3-joannelkoong@gmail.com> <CAP01T77h2+a9OonHuiPRFsAForWYJfQ71G6teqbcLg4KuGpK5A@mail.gmail.com>
+ <CAJnrk1aq3gJgz0DKo47SS0J2wTtg1C_B3eVfsh-036nmDKKVWA@mail.gmail.com>
+ <CAP01T77A1Z0dbWVzTFMRuHJYN-V8_siMBUg=MqUU3kQzx+Osdg@mail.gmail.com>
+ <CAJnrk1aO0VPmg7pEjNTt2J-JttOYOMGx6GM+hQ1G2J-fkDPN8g@mail.gmail.com> <CAP01T779thB5vYr112+Zc4d1=wXQ8EvW00e8V5mC=mP+dgxbBA@mail.gmail.com>
+In-Reply-To: <CAP01T779thB5vYr112+Zc4d1=wXQ8EvW00e8V5mC=mP+dgxbBA@mail.gmail.com>
+From:   Joanne Koong <joannelkoong@gmail.com>
+Date:   Fri, 26 Aug 2022 11:23:41 -0700
+Message-ID: <CAJnrk1ZznUTdSSazWtwFQzWkzXPbqv6=i7wNrA+O1a7YdZRY2Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 2/3] bpf: Add xdp dynptrs
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf@vger.kernel.org, andrii@kernel.org, daniel@iogearbox.net,
+        ast@kernel.org, kafai@fb.com, kuba@kernel.org,
+        netdev@vger.kernel.org, "toke@redhat.com" <toke@redhat.com>,
+        "brouer@redhat.com" <brouer@redhat.com>, lorenzo@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Thu, Aug 25, 2022 at 4:19 PM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
+>
+> On Thu, 25 Aug 2022 at 22:39, Joanne Koong <joannelkoong@gmail.com> wrote:
+> >
+> > On Wed, Aug 24, 2022 at 2:11 PM Kumar Kartikeya Dwivedi
+> > <memxor@gmail.com> wrote:
+> > >
+> > > On Wed, 24 Aug 2022 at 00:27, Joanne Koong <joannelkoong@gmail.com> wrote:
+> > > >
+> > > > On Mon, Aug 22, 2022 at 7:31 PM Kumar Kartikeya Dwivedi
+> > > > <memxor@gmail.com> wrote:
+> > > > > > [...]
+> > > > > >                 if (func_id == BPF_FUNC_dynptr_data &&
+> > > > > > -                   dynptr_type == BPF_DYNPTR_TYPE_SKB) {
+> > > > > > +                   (dynptr_type == BPF_DYNPTR_TYPE_SKB ||
+> > > > > > +                    dynptr_type == BPF_DYNPTR_TYPE_XDP)) {
+> > > > > >                         regs[BPF_REG_0].type = PTR_TO_PACKET | ret_flag;
+> > > > > >                         regs[BPF_REG_0].range = meta.mem_size;
+> > > > >
+> > > > > It doesn't seem like this is safe. Since PTR_TO_PACKET's range can be
+> > > > > modified by comparisons with packet pointers loaded from the xdp/skb
+> > > > > ctx, how do we distinguish e.g. between a pkt slice obtained from some
+> > > > > frag in a multi-buff XDP vs pkt pointer from a linear area?
+> > > > >
+> > > > > Someone can compare data_meta from ctx with PTR_TO_PACKET from
+> > > > > bpf_dynptr_data on xdp dynptr (which might be pointing to a xdp mb
+> > > > > frag). While MAX_PACKET_OFF is 0xffff, it can still be used to do OOB
+> > > > > access for the linear area. reg_is_init_pkt_pointer will return true
+> > > > > as modified range is not considered for it. Same kind of issues when
+> > > > > doing comparison with data_end from ctx (though maybe you won't be
+> > > > > able to do incorrect data access at runtime using that).
+> > > > >
+> > > > > I had a pkt_uid field in my patch [0] which disallowed comparisons
+> > > > > among bpf_packet_pointer slices. Each call assigned a fresh pkt_uid,
+> > > > > and that disabled comparisons for them. reg->id is used for var_off
+> > > > > range propagation so it cannot be reused.
+> > > > >
+> > > > > Coming back to this: What we really want here is a PTR_TO_MEM with a
+> > > > > mem_size, so maybe you should go that route instead of PTR_TO_PACKET
+> > > > > (and add a type tag to maybe pretty print it also as a packet pointer
+> > > > > in verifier log), or add some way to distinguish slice vs non-slice
+> > > > > pkt pointers like I did in my patch. You might also want to add some
+> > > > > tests for this corner case (there are some later in [0] if you want to
+> > > > > reuse them).
+> > > > >
+> > > > > So TBH, I kinda dislike my own solution in [0] :). The complexity does
+> > > > > not seem worth it. The pkt_uid distinction is more useful (and
+> > > > > actually would be needed) in Toke's xdp queueing series, where in a
+> > > > > dequeue program you have multiple xdp_mds and want scoped slice
+> > > > > invalidations (i.e. adjust_head on one xdp_md doesn't invalidate
+> > > > > slices of some other xdp_md). Here we can just get away with normal
+> > > > > PTR_TO_MEM.
+> > > > >
+> > > > > ... Or just let me know if you handle this correctly already, or if
+> > > > > this won't be an actual problem :).
+> > > >
+> > > > Ooh interesting, I hadn't previously taken a look at
+> > > > try_match_pkt_pointers(), thanks for mentioning it :)
+> > > >
+> > > > The cleanest solution to me is to add the flag "DYNPTR_TYPE_{SKB/XDP}"
+> > > > to PTR_TO_PACKET and change reg_is_init_pkt_pointer() to return false
+> > > > if the DYNPTR_TYPE_{SKB/XDP} flag is present. I prefer this over
+> > > > returning PTR_TO_MEM because it seems more robust (eg if in the future
+> > > > we reject x behavior on the packet data reg types, this will
+> > > > automatically apply to the data slices), and because it'll keep the
+> > > > logic more efficient/simpler for the case when the pkt pointer has to
+> > > > be cleared after any helper that changes pkt data is called (aka the
+> > > > case where the data slice gets invalidated).
+> > > >
+> > > > What are your thoughts?
+> > > >
+> > >
+> > > Thinking more deeply about it, probably not, we need more work here. I
+> > > remember _now_ why I chose the pkt_uid approach (and this tells us my
+> > > commit log lacks all the details about the motivation :( ).
+> > >
+> > > Consider how equivalency checking for packet pointers works in
+> > > regsafe. It is checking type, then if old range > cur range, then
+> > > offs, etc.
+> > >
+> > > The problem is, while we now don't prune on access to ptr_to_pkt vs
+> > > ptr_to_pkt | dynptr_pkt types in same reg (since type differs we
+> > > return false), we still prune if old range of ptr_to_pkt | dynptr_pkt
+> > > > cur range of ptr_to_pkt | dynptr_pkt. Both could be pointing into
+> > > separate frags, so this assumption would be incorrect. I would be able
+> > > to trick the verifier into accessing data beyond the length of a
+> > > different frag, by first making sure one line of exploration is
+> > > verified, and then changing the register in another branch reaching
+> > > the same branch target. Helpers can take packet pointers so the access
+> > > can become a pruning point. It would think the rest of the stuff is
+> > > safe, while they are not equivalent at all. It is ok if they are bit
+> > > by bit equivalent (same type, range, off, etc.).
+> >
+> > Thanks for the explanation. To clarify, if old range of ptr_to_pkt >
+> > cur range of ptr_to_pkt, what gets pruned? Is it access to cur range
+> > of ptr_to_pkt since if old range > cur range, then if old range is
+> > acceptable cur range must definitely be acceptable?
+>
+> No, my description was bad :).
+> We return false when old_range > cur_range, i.e. the path is
+> considered safe and not explored again when old_range <= cur_range
+> (pruning), otherwise we continue verifying.
+> Consider if it was doing pkt[cur_range + 1] access in the path we are
+> about to explore again (already verified for old_range). That is <=
+> old_range, but > cur_range, so it would be problematic if we pruned
+> search for old_range > cur_range.
 
+Does "old_range" here refer to the range that was already previously
+verified as safe by the verifier? And "cur_range" is the new range
+that we are trying to figure out is safe or not?
 
-> On Aug 26, 2022, at 9:33 AM, Namhyung Kim <namhyung@kernel.org> wrote:
-> 
-> On Thu, Aug 25, 2022 at 10:53 PM Song Liu <song@kernel.org> wrote:
->> 
->> On Thu, Aug 25, 2022 at 10:22 PM Namhyung Kim <namhyung@kernel.org> wrote:
->>> 
->>> On Thu, Aug 25, 2022 at 7:35 PM Song Liu <songliubraving@fb.com> wrote:
->>>> Actually, since we are on this, can we make it more generic, and handle
->>>> all possible PERF_SAMPLE_* (in enum perf_event_sample_format)? Something
->>>> like:
->>>> 
->>>> long bpf_perf_event_read_sample(void *ctx, void *buf, u64 size, u64 flags);
->>>> 
->>>> WDYT Namhyung?
->>> 
->>> Do you mean reading the whole sample data at once?
->>> Then it needs to parse the sample data format properly
->>> which is non trivial due to a number of variable length
->>> fields like callchains and branch stack, etc.
->>> 
->>> Also I'm afraid I might need event configuration info
->>> other than sample data like attr.type, attr.config,
->>> attr.sample_type and so on.
->>> 
->>> Hmm.. maybe we can add it to the ctx directly like ctx.attr_type?
->> 
->> The user should have access to the perf_event_attr used to
->> create the event. This is also available in ctx->event->attr.
-> 
-> Do you mean from BPF?  I'd like to have a generic BPF program
-> that can handle various filtering according to the command line
-> arguments.  I'm not sure but it might do something differently
-> for each event based on the attr settings.
+When you say "we return false when old_range > cur_range", what
+function are we returning false from?
 
-Yeah, we can access perf_event_attr from BPF program. Note that
-the ctx for perf_event bpf program is struct bpf_perf_event_data_kern:
+>
+> So maybe it won't be a problem here, and just the current range checks
+> for pkt pointer slices is fine even if they belong to different frags.
+> I didn't craft any test case when writing my previous reply.
+> Especially since you will disable comparisons, one cannot relearn
+> range again using var_off + comparison, which closes another loophole.
+>
+> It just seems simpler to me to be a bit more conservative, since it is
+> only an optimization. There might be some corner case lurking we can't
+> think of right now. But I leave the judgement up to you if you can
+> reason about it. In either case it would be good to include some
+> comments in the commit log about all this.
+>
+> Meanwhile, looking at the current code, I'm more inclined to suggest
+> PTR_TO_MEM (and handle invalidation specially), but again, I will
+> leave it up to you to decide.
+>
+> When we do += var_off to a pkt reg, its range is reset to zero,
+> compared to PTR_TO_MEM, where off + var_off (smin/umax) is used to
+> check against the actual size for an access, which is a bit more
+> flexible. The reason to reset range is that it will be relearned using
+> comparisons and transferred to copies (reg->id is assigned for each +=
 
-SEC("perf_event")
-int perf_e(struct bpf_perf_event_data_kern *ctx)
-{	
-	...
-}
+Can you direct me to the function where this relearning happens? thanks!
 
-struct bpf_perf_event_data_kern {
-        bpf_user_pt_regs_t *regs;
-        struct perf_sample_data *data;
-        struct perf_event *event;
-};
+> var_off), which doesn't apply to slice pointers (essentially the only
+> reason to keep them is being able to pick them for invalidation), we
+> try to disable the rest of the pkt pointer magic in the verifier,
+> anyway.
+>
+> pkt_reg->umax_value influences the prog->aux->max_pkt_offset (and iiuc
+> it can reach that point with range == 0 after += var_off, and
+> zero_size_allowed == true), only seems to be used by netronome's ebpf
+> offload for now, but still a bit confusing if slice pkt pointers cause
+> this to change.
 
-Alternatively, we can also have bpf user space configure the BPF 
-program via a few knobs. 
+My major takeaway from this discussion is that there's a lot of extra
+subtleties when reg is PTR_TO_PACKET :) I'm going to delve deeper into
+the source code, but from a glance, I think you're right that just
+assigning PTR_TO_MEM for the data slice will probably make things a
+lot more straightforward. thanks for the discussion!
 
-And actually, we can just read ctx->data and get the raw record, 
-right..?
-
-Thanks,
-Song
+>
+> >
+> > >
+> > > If you start returning false whenever you see this type tag set, it
+> > > will become too conservative (it considers reg copies of the same
+> > > dynptr_data lookup as distinct). So you need some kind of id assigned
+> > > during dynptr_data lookup to distinguish them.
+> >
+> > What about if the dynptr_pkt type tag is set, then we compare the
+> > ranges as well? If the ranges are the same, then we return true, else
+> > false. Does that work?
+>
+> Seems like it, and true part is already covered by memcmp at the start
+> of the function, I think.
