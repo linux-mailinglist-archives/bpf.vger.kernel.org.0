@@ -1,181 +1,217 @@
 Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 652A55A302C
-	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 21:49:18 +0200 (CEST)
+Received: from out1.vger.email (unknown [IPv6:2620:137:e000::1:20])
+	by mail.lfdr.de (Postfix) with ESMTP id CCFF65A3030
+	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 21:50:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344528AbiHZTtP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Aug 2022 15:49:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58080 "EHLO
+        id S238962AbiHZTtw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Aug 2022 15:49:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231483AbiHZTtO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Aug 2022 15:49:14 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFB7DD41B8;
-        Fri, 26 Aug 2022 12:49:12 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id bj12so4976945ejb.13;
-        Fri, 26 Aug 2022 12:49:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=lFfRhGq/C2tmzV8LpNcEWTFvD11vZdOiT2ymmvZNkXM=;
-        b=SYXgKBCMsfvYQ+mL4y8sw6phUTHL+zxW8ToWaE9wkWtCrec5gmotGEUV1r+2fcMfmq
-         2GjOV/zdXam7qjDdD9kKsO/ZGNpx7GRp8VuA73VLI91wZKCLaqndMk+UjIgjBM4HdMpL
-         Y881dUBs//1chWclNOSIrl4vdZ9LyggT0ph1WLpl0pacywoYt8ieCPPWCgRpqTrOvIZl
-         2uIaMg1RgY9fCORr+TcliD/i1/WI7KDdaSA0DfmYfrrUqyhayspA1VyMBLxdHTRV4x0W
-         OGBERC8FI/9f348lT+XcAW7/y/XQlfYEHCyJwkAAfY8AUZEgIoCX9h3MOyT9BMzJ0vFG
-         5Etw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=lFfRhGq/C2tmzV8LpNcEWTFvD11vZdOiT2ymmvZNkXM=;
-        b=yAM4JhFSsvLkrGWulncDLSFnlz+SjmjwHPtVY6o8EM5BxjIwd5MQMTKZRQSUlD9RnK
-         K5ahZWzPMcERNwVKA8hRTo6T0fWlkkRcJq+42jEnHhO7SDoujB0SykerUCZqwnDuKVV/
-         tXVPxDVCYfck651ckVzUwJkA5REEUAiSRxJ6Zk/NYRYidbuPZc3oHKiGDmewgI42HTsY
-         ZI3N7ZLjV1tC3b63L2ANhuxQG4dEPwJF5DMuehEJRNqWbSuuObu4RfLfmYD5/Ekkl+Qh
-         ojl3Nn3k/1kK0ztzU+OZ6pMJzQFM8fEPijaEFCa3QpvumuHT+x+D3Zj6eYKSXfecH811
-         IE2A==
-X-Gm-Message-State: ACgBeo3zyJ8wmdkQGDaS0jN+A8IK0wh1cbWFoU57wvww4ivQBn0s9UDn
-        H32N3gl8Boh5RVfp1YLrB24KSxH69Lz5WEt6qbE=
-X-Google-Smtp-Source: AA6agR73Q0HZSxNSzeeEdfHDFFhd1ixwXdbVhBqtfaMp38clySFHtgypZqz/TFy1WAXJt8jgV2ioFw11a6+4IHRot0s=
-X-Received: by 2002:a17:907:b013:b0:73d:c708:3f22 with SMTP id
- fu19-20020a170907b01300b0073dc7083f22mr6169995ejc.608.1661543351468; Fri, 26
- Aug 2022 12:49:11 -0700 (PDT)
+        with ESMTP id S231483AbiHZTtu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Aug 2022 15:49:50 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B97FF1
+        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 12:49:48 -0700 (PDT)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27QIP6a8003788;
+        Fri, 26 Aug 2022 12:49:34 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
+ subject : to : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=L8IxtbkHebmzPlikITWIG7tMYSK8+Im1/b8rdWz92ZE=;
+ b=fPcNbFJlyncuwuYzdG/6TbfUT0nSxG7U+928z5b9ldcXvTu5Tqo/rYPrTIDcDPHZSdvW
+ GoOLp121JAttY4RfT4UiBWiyhcRFOs5sF9JH7X10r9gJ2Js6Hf/K1+eF8wiDsf0VBqYr
+ xtzbR+F/BnGFisZrxelt1k+uInjnZVfV7rU= 
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2174.outbound.protection.outlook.com [104.47.57.174])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3j6yw0a92p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 26 Aug 2022 12:49:34 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HUexWt/QRoHapBMoEzKYD/h6iLzT2Ia4csVOVUPkMXrhafZ5B1UItngUCYZm59B+gZrk2jkaW8aFXvfoD8nmIfWyrq3dLxsJotzrN48JRahAWkd1P/TyvAZZiNlpkrNjN7DuokvStNQCCPRtpAX5pyEgdfgpAXbHcUHtPqbjCCepLpbqmCHhPQ5T/WBMVXS+TpWSsQGddOqEs00pUV2Hub5K0XTOQ2j8mpzZDWsfKuGAVQ2Z1zoVTTUSZmnrrutTNKcQT4DNwt4NNWIeyeifAs2+kFjJBlJBMOzNxDcNC/qn/6+SxcrjVfE9oOx8TpnlKmV/CtruuV5glZFpe+BdUA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=L8IxtbkHebmzPlikITWIG7tMYSK8+Im1/b8rdWz92ZE=;
+ b=WsiDq/AsY/KifEKTlS9a7Iq2vtihs5DYLg0HwSGBzddZLFjqmUFx5GirQQeBu00+UI5/U2MZ0oKHTItmCZmqrORb0/beu39n4aVxxWRGieQ0kHVBmqunbyOQrxPrAMBYpTdeBQoTgKrcw5UJi8bHnbZjdnchuJlUg4WGQx7NBZDh5zu/aswM3cgSSlACan8VKPq3+JhhgXJGsk2H5vK0p7SR14UNDyWY6w4UVMY7gaBHDHAE8y3eu/VWF2++EeKSg84kWFY4ZnkpNNWXCPhmKudxfQ6HMlyonY0Z1Ig8i39SvSvkfZP04OCr/Zbpov8oWaVXAOyGZqWjW4//m44chA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from DM5PR1501MB2055.namprd15.prod.outlook.com (2603:10b6:4:a1::13)
+ by DM5PR15MB1131.namprd15.prod.outlook.com (2603:10b6:3:b9::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5566.15; Fri, 26 Aug
+ 2022 19:49:32 +0000
+Received: from DM5PR1501MB2055.namprd15.prod.outlook.com
+ ([fe80::d4af:bf29:567:6cb3]) by DM5PR1501MB2055.namprd15.prod.outlook.com
+ ([fe80::d4af:bf29:567:6cb3%7]) with mapi id 15.20.5566.015; Fri, 26 Aug 2022
+ 19:49:32 +0000
+Message-ID: <af4b71d1-b793-8774-171e-7d8104153b66@fb.com>
+Date:   Fri, 26 Aug 2022 12:49:30 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.13.0
+Subject: Re: [PATCH bpf-next v7 3/5] bpf: Handle show_fdinfo for the
+ parameterized task BPF iterators
+Content-Language: en-US
+To:     Kui-Feng Lee <kuifeng@fb.com>, bpf@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kernel-team@fb.com
+References: <20220826003712.2810158-1-kuifeng@fb.com>
+ <20220826003712.2810158-4-kuifeng@fb.com>
+From:   Yonghong Song <yhs@fb.com>
+In-Reply-To: <20220826003712.2810158-4-kuifeng@fb.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BYAPR06CA0038.namprd06.prod.outlook.com
+ (2603:10b6:a03:14b::15) To DM5PR1501MB2055.namprd15.prod.outlook.com
+ (2603:10b6:4:a1::13)
 MIME-Version: 1.0
-References: <20220822235649.2218031-1-joannelkoong@gmail.com>
- <20220822235649.2218031-2-joannelkoong@gmail.com> <CAEf4BzZm7eUX3w-NwP0JuWtvKbO6GxN911TraY5bA8-z+ocyCg@mail.gmail.com>
- <CAP01T77izAbefN5CJ1ZdjwUdii=gMFMduKTYtSbYC3S9jbRoEA@mail.gmail.com>
- <CAJnrk1Y0r3++RLpT2jvp4st-79x3dUYk3uP-4tfnAeL5_kgM0Q@mail.gmail.com>
- <CAP01T74O6ZuH_NPObYTLUjFSADjWjzfHjTsLBf8b67jgchf6Gw@mail.gmail.com>
- <CAJnrk1Z39+pLzAOL3tbqvQyTcB4HvrbLghmr6_vLXhtJYHuwEA@mail.gmail.com> <CAP01T76ChONTCVtHNZ_X3Z6qmuZTKCVYwe0s6_TGcuC1tEx9sw@mail.gmail.com>
-In-Reply-To: <CAP01T76ChONTCVtHNZ_X3Z6qmuZTKCVYwe0s6_TGcuC1tEx9sw@mail.gmail.com>
-From:   Joanne Koong <joannelkoong@gmail.com>
-Date:   Fri, 26 Aug 2022 12:49:00 -0700
-Message-ID: <CAJnrk1Zmne1uDn8EKdNKJe6O-k_moU9Sryfws_J-TF2BvX2QMg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 1/3] bpf: Add skb dynptrs
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf@vger.kernel.org,
-        andrii@kernel.org, daniel@iogearbox.net, ast@kernel.org,
-        kafai@fb.com, kuba@kernel.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6bb65095-8e04-4085-fccd-08da879c18b6
+X-MS-TrafficTypeDiagnostic: DM5PR15MB1131:EE_
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 883WeUFyXYXGoGCVUfCZx2NOa0JCprTbjIq0Z4MdJyBfn3WmVL/gePgoxizLuHUUtKjyeGi3tLDVQCwc1k+rtRC0YltasHPVaLZmNCmE2ZGnz6DPd9gvduOix2jBqyaabHMRf1JL3uNziIWftgt+iTsHev2IkP9pNljevtz1kbpv4cb72toBjkAnMk99yxSEjP7HKu405xilCQMiQOFcV1Ty1/o7eXZWDrCq/OxruEZuqHbnpwweKSX9xk5PPpM4k3iU2PxqMUF4brkqZU4La/SZv7dHVOuJoJf3bxXsystpHrZcaeBzkJajLotO5hdTdUroPv8FhW8DtOISzAh1XJX/yuwBm+qP8Fsc17ex2yaJKLrLH6Gua89DzSjH73zq2jEATmfTeQpY85bSJsU8c0b3I1aTcWvI7BNp+sBmfXlbFObtksCuA1ovAuTDlVB1Z2kWm6dumT4lIzAesPNFEHoyx0GO43DVbgNw+pmsyGI2t200bclEnADQA/8a/Rzqggx0Aj2WLP5MasXqGkYvdKWIsUxLt45j5g6YwXSWwtetLFrpDhxDYufjBxrLJgQHY+oByMxClLEmicvhE20BeOYXMU+3MfxbIiw/CzYc7UxzN8GPND3UDaBDroFmnjSQpt4TeinmXakZeWTOB8AFqz7SDsSE4Az971FMBjtJL02dDgH3zaFdnlsAHOeXKJRdsRs6w6tYmgF2+JGdqPajTz2puffmx+9KSvc9V0/AN9pQD6O7XM0yIQ1lmdAbopZ00jOH8FQU36IDNAAOs8ChYwSdRsBLdWMxwBj67O0x0Oc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR1501MB2055.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(366004)(136003)(39860400002)(376002)(396003)(346002)(6512007)(8936002)(2616005)(38100700002)(316002)(66556008)(66476007)(6506007)(53546011)(8676002)(41300700001)(186003)(5660300002)(478600001)(6636002)(31696002)(6486002)(83380400001)(31686004)(66946007)(36756003)(86362001)(2906002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TGpPUDk3NGpyY29iK1FxSzNuMDV2SHVtNVFPNFZWU0wzbldnaFNGVFFVd0F3?=
+ =?utf-8?B?RjZRRFhQUEdHSWlPcU56cE9DWU5YU1ZtSmF1SzVCUU9BSXp2citZTWZ3WWdj?=
+ =?utf-8?B?bEZZSGZ1aFBZTVhualdvdUlFMGp1NU5pVmc0d3VIU0pZdC9QRkN4NmxnZ0F0?=
+ =?utf-8?B?c0t1dGYzaVVwVzZqS3prSTgzVmQyS3VkQTU5WEN2WXlBWUxpRTZ1ZlBROEdF?=
+ =?utf-8?B?QTFIZm5rK0JJcW5nK0ZsaUtZVGVpTzJETHVtdlhoUWNmWG1rWHB2R0RDbEIr?=
+ =?utf-8?B?Y2NFeHYvNXF1TGVCbmlBaG9xR2hjTEliUXU3NGMzYkVEWmtIUG11bGVFaHZC?=
+ =?utf-8?B?VUt0SDhFbHp6SWdnTUZuNWFKU0ErdXNGSUJWa3VKcU1TcVZSWjZLNWI2ZUox?=
+ =?utf-8?B?OXFDSUNha0NVL2tKc2JFMXB1S0E4czV2WExYM1FrZzZabG1rTUFVZW9jRElJ?=
+ =?utf-8?B?UHNhaGdCTE5GejBtclhCbS93TDQzS1RYUjB0WkVnenJnTU5FS0JTNFozTjZI?=
+ =?utf-8?B?QnNHUnZzZDVRNFRmeWNLV1lub1V1UUJRbGJDTkdXcjd0S2V4MFM1Sm9yR3Nx?=
+ =?utf-8?B?YzRsM0w0WHVlaTdBWndDQnk4MGRXcXVNcWRIOEEzcGNmbTVTbW52Qk8rNzl4?=
+ =?utf-8?B?K3BJWUVhVFJMUmxXc2FXTnpKNUVIM2h0NXVpWkQyc3lnZTVPc0hHUWYwMEhU?=
+ =?utf-8?B?REE1ano3OVo5YzVwVXBsdldIV3BVUytlVHBEWEFPdTdNaHQrN3J5K0Qvb2tt?=
+ =?utf-8?B?QkR4bmdZamNCSnVaNm5zek9yV1B6SE5Bemd5NXBOQW45bXQzK1dwbVQrTUlI?=
+ =?utf-8?B?ckozaFRybHhRVEYwb3YxenNlejZrbTJ2QUdiU3dOc1FQZTBYM1VEVkdxd0Mw?=
+ =?utf-8?B?Tml6eThCSjJYcFpzV3g3RjB0T1UwRmhJVmkwL2xsYUJmbHF6bEN1Y1NCd09M?=
+ =?utf-8?B?bTdqUlFZeDllNjlqaGc4NWtHdW00N0Zick9ON0dJc0NWVGRtMXo3aDZ5am5t?=
+ =?utf-8?B?YzRCcDZhU3RFVWU5NEZWVFN4QWNVUkhGRG5PSExxM20rVDJ6bGxLQlAybWtn?=
+ =?utf-8?B?WXdQUDcydzUvcjNpdDkxOUlENi9RbDVIeGNIa3lmLzFxZFQ2OEFRZlBkN0pJ?=
+ =?utf-8?B?elZUYzltVm8xaTZ1U01WVDFKaDEwU21jTTdTdXpHcVViVktlVFdRejlIOEg5?=
+ =?utf-8?B?UE9tcnhNdmxuc3B1cFVXcndveFBjWXB5RDVxdFZnelNzelJpejlPTnVlcExy?=
+ =?utf-8?B?VWJ1SEI2aVg5SDBPZnJXY2l1YnpRQ09vc1p6SkV2UCsxNFc4R1kyNmtjd0ZI?=
+ =?utf-8?B?aGc3Ni9jSGtiRmNBOXBLZk9MaDFxYnBEUk9VdlZEeFFuVmRkdk5DY3lxT3JG?=
+ =?utf-8?B?RC9hVTB5WGdvRi9BZ0s5cXBHMk94UjNubTNtaGtuUW5nZ3VpYUFVWkZpNmxk?=
+ =?utf-8?B?L0VFRkx6RDRsQ0c5M3dqUzBYTXdCRDBIL1pGOHZZNzZjMkltaUw1Tk8yaVF3?=
+ =?utf-8?B?amZWV2JQNW8wa0gyRjMxbGVFZHppRTJiTmc5KzVDcjd1ZWxXQ2JxcSttU0l0?=
+ =?utf-8?B?YVlVb1VzVFhWSEFHdHJFNXhVY01qaFp0a0lwT0lsSXpCWVlXak4vNENtV3Zi?=
+ =?utf-8?B?UEZ0Y1pZOFZIckczOVVlUE5Xc0FvMTMzWnAyaDhaWFNSc2dhdCtURVJJZjBU?=
+ =?utf-8?B?NE5JVE1VanRvY3l4cEhLVVJweGd2UzB0Ym1WMS91WitQSDgzSHV3SGJmMkNO?=
+ =?utf-8?B?RWxycDcxTEM3Sk12TDJlMk1OQWtMb3U5TlNwZHJOMGhmckZoZTlKdVYyalNB?=
+ =?utf-8?B?Y3Y5bVNNWi9xZXVxMHh6cXRVQ1p0VzR4cWdOZmRxYWltR0Z0V1hxKzVUNzF1?=
+ =?utf-8?B?RStqNk5yVkZIckF0MUpWdGVSU01tcUFSbFpyMTlWTjlhOU9sVy84dHMzcHZM?=
+ =?utf-8?B?OHNRdllVSEVTOWRpQ2xTZmdmaWlEUGlxckRLZVhjOG1mQmRFTnB4eHRHQ1B1?=
+ =?utf-8?B?NXdBKzZCb0x6ejhOTlpwWlVZZE41NGhGQXNDRlhZaGJnbjlSRHZxYTRkSGpQ?=
+ =?utf-8?B?RGlmbmw0cFBXMzJTbUw2WXNaaVNqaGZqWXRJa0Rnb0RSVDFtRGo1Z2NXdng2?=
+ =?utf-8?B?U0FPV0R1cVlOd2F5aVRxR2pXUmYyQjduaDdDakVrcllSWXBSbi9MNVE1M1Fu?=
+ =?utf-8?B?RUE9PQ==?=
+X-OriginatorOrg: fb.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6bb65095-8e04-4085-fccd-08da879c18b6
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR1501MB2055.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Aug 2022 19:49:32.7202
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: AIPsleVh/Krrdgns1X64+kqKdYiSM0YxVY2Olt/OijVyRrjl/LAsQjqKdm4Lwhfi
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR15MB1131
+X-Proofpoint-GUID: zU_za1X6abcb-1CW3ByLW7M9ozN2YZZj
+X-Proofpoint-ORIG-GUID: zU_za1X6abcb-1CW3ByLW7M9ozN2YZZj
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-08-26_10,2022-08-25_01,2022-06-22_01
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Aug 26, 2022 at 11:52 AM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
->
-> On Fri, 26 Aug 2022 at 20:44, Joanne Koong <joannelkoong@gmail.com> wrote:
-> >
-> > On Thu, Aug 25, 2022 at 5:19 PM Kumar Kartikeya Dwivedi
-> > <memxor@gmail.com> wrote:
-> > >
-> > > On Thu, 25 Aug 2022 at 23:02, Joanne Koong <joannelkoong@gmail.com> wrote:
-> > > > [...]
-> > > > >
-> > > > > Related question, it seems we know statically if dynptr is read only
-> > > > > or not, so why even do all this hidden parameter passing and instead
-> > > > > just reject writes directly? You only need to be able to set
-> > > > > MEM_RDONLY on dynptr_data returned PTR_TO_PACKETs, and reject
-> > > > > dynptr_write when dynptr type is xdp/skb (and ctx is only one). That
-> > > > > seems simpler than checking it at runtime. Verifier already handles
-> > > > > MEM_RDONLY generically, you only need to add the guard for
-> > > > > check_packet_acces (and check_helper_mem_access for meta->raw_mode
-> > > > > under pkt case), and rejecting dynptr_write seems like a if condition.
-> > > >
-> > > > There will be other helper functions that do writes (eg memcpy to
-> > > > dynptrs, strncpy to dynptrs, probe read user to dynptrs, hashing
-> > > > dynptrs, ...) so it's more scalable if we reject these at runtime
-> > > > rather than enforce these at the verifier level. I also think it's
-> > > > cleaner to keep the verifier logic as simple as possible and do the
-> > > > checking in the helper.
-> > >
-> > > I won't be pushing this further, since you know what you plan to add
-> > > in the future better, but I still disagree.
-> > >
-> > > I'm guessing there might be dynptrs where this read only property is
-> > > set dynamically at runtime, which is why you want to go this route?
-> > > I.e. you might not know statically whether dynptr is read only or not?
-> > >
-> > > My main confusion is the inconsistency here.
-> > >
-> > > Right now the patch implicitly relies on may_access_direct_pkt_data to
-> > > protect slices returned from dynptr_data, instead of setting
-> > > MEM_RDONLY on the returned PTR_TO_PACKET. Which is fine, it's not
-> > > needed. So indirectly, you are relying on knowing statically whether
-> > > the dynptr is read only or not. But then you also set this bit at
-> > > runtime.
-> > >
-> > > So you reject some cases at load time, and the rest of them only at
-> > > runtime. Direct writes to dynptr slice fails load, writes through
-> > > helper does not (only fails at runtime).
-> > >
-> > > Also, dynptr_data needs to know whether dynptr is read only
-> > > statically, to protect writes to its returned pointer, unless you
-> > > decide to introduce another helper for the dynamic rdonly bit case
-> > > (like dynptr_data_rdonly). Then you have a mismatch, where dynptr_data
-> > > works for some rdonly dynptrs (known to be rdonly statically, like
-> > > this skb one), but not for others.
-> > >
-> > > I also don't agree about the complexity or scalability part, all the
-> > > infra and precedence is already there. We already have similar checks
-> > > for meta->raw_mode where we reject writes to read only pointers in
-> > > check_helper_mem_access.
-> >
-> > My point about scalability is that if we reject bpf_dynptr_write() at
-> > load time, then we must reject any future dynptr helper that does any
-> > writing at load time as well, to be consistent.
-> >
-> > I don't feel strongly about whether we reject at load time or run
-> > time. Rejecting at load time instead of runtime doesn't seem that
-> > useful to me, but there's a good chance I'm wrong here since Martin
-> > stated that he prefers rejecting at load time as well.
-> >
-> > As for the added complexity part, what I mean is that we'll need to
-> > keep track of some more stuff to support this, such as whether the
-> > dynptr is read only and which helper functions need to check whether
-> > the dynptr is read only or not.
->
-> What I'm trying to understand is how dynptr_data is supposed to work
-> if this dynptr read only bit is only known at runtime. Or will it be
-> always known statically so that it can set returned pointer as read
-> only? Because then it doesn't seem it is required or useful to track
-> the readonly bit at runtime.
 
-I think it'll always be known statically whether the dynptr is
-read-only or not. If we make all writable dynptr helper functions
-reject read-only dynptrs at load time instead of run time, then yes we
-can remove the read-only bit in the bpf_dynptr_kern struct.
 
-There's also the question of whether this constraint (eg all read-only
-writes are rejected at load time) is too rigid - for example, what if
-in the future we want to add a helper function where if a certain
-condition is met, then we write some number of bytes, else we read
-some number of bytes? This would be not possible to add then, since
-we'll only know at runtime whether the condition is met.
+On 8/25/22 5:37 PM, Kui-Feng Lee wrote:
+> Show information of iterators in the respective files under
+> /proc/<pid>/fdinfo/.
+> 
+> For example, for a task file iterator with 1723 as the value of tid
+> parameter, its fdinfo would look like the following lines.
+> 
+>      pos:    0
+>      flags:  02000000
+>      mnt_id: 14
+>      ino:    38
+>      link_type:      iter
+>      link_id:        51
+>      prog_tag:       a590ac96db22b825
+>      prog_id:        299
+>      target_name:    task_file
+>      task_type:      TID
+>      tid: 1723
+> 
+> This patch add the last three fields.  task_type is the type of the
+> task parameter.  TID means the iterator visit only the thread
+> specified by tid.  The value of tid in the above example is 1723.  For
+> the case of PID task_type, it means the iterator visits only threads
+> of a process and will show the pid value of the process instead of a
+> tid.
+> 
+> Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
 
-I personally lean towards rejecting helper function writes at runtime,
-but if you think it's a non-trivial benefit to reject at load time
-instead, I'm fine going with that.
+LGTM with a nit below.
 
->
-> It is fine if _everything_ checks it at runtime, but that doesn't seem
-> possible, hence the question. We would need a new slice helper that
-> only returns read-only slices, because dynptr_data can return rw
-> slices currently and it is already UAPI so changing that is not
-> possible anymore.
+Acked-by: Yonghong Song <yhs@fb.com>
 
-I don't agree that if bpf_dynptr_write() is checked at runtime, then
-bpf_dynptr_data must also be checked at runtime to be consistent. I
-think it's fine if writes through helper functions are rejected at
-runtime, and writes through direct access are rejected at load time.
-That doesn't seem inconsistent to me.
+> ---
+>   kernel/bpf/task_iter.c | 18 ++++++++++++++++++
+>   1 file changed, 18 insertions(+)
+> 
+> diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
+> index 72c8747dff89..d3e8e1549135 100644
+> --- a/kernel/bpf/task_iter.c
+> +++ b/kernel/bpf/task_iter.c
+> @@ -10,6 +10,12 @@
+>   #include <linux/btf_ids.h>
+>   #include "mmap_unlock_work.h"
+>   
+> +static const char * const iter_task_type_names[] = {
+> +	"ALL",
+> +	"TID",
+> +	"PID",
+> +};
+> +
+>   struct bpf_iter_seq_task_common {
+>   	struct pid_namespace *ns;
+>   	enum bpf_iter_task_type	type;
+> @@ -623,6 +629,15 @@ static int bpf_iter_fill_link_info(const struct bpf_iter_aux_info *aux, struct b
+>   	return 0;
+>   }
+>   
+> +static void bpf_iter_task_show_fdinfo(const struct bpf_iter_aux_info *aux, struct seq_file *seq)
+> +{
+> +	seq_printf(seq, "task_type:\t%s\n", iter_task_type_names[aux->task.type]);
+> +	if (aux->task.type == BPF_TASK_ITER_TID)
+> +		seq_printf(seq, "tid: %d\n", aux->task.pid);
+
+"tid:\t%d\n"
+
+> +	else if (aux->task.type == BPF_TASK_ITER_TGID)
+> +		seq_printf(seq, "pid: %d\n", aux->task.pid);
+
+"pid:\t%d\n"
+
+> +}
+> +
+[...]
