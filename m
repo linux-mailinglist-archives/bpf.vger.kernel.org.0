@@ -2,156 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D2075A2204
-	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 09:33:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D5315A225D
+	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 09:53:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245534AbiHZHdA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Aug 2022 03:33:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48312 "EHLO
+        id S245688AbiHZHxo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Aug 2022 03:53:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245416AbiHZHcX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Aug 2022 03:32:23 -0400
-Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E5EDD39A9;
-        Fri, 26 Aug 2022 00:32:20 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.229])
-        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4MDWf62tdRz9v7Gg;
-        Fri, 26 Aug 2022 15:28:30 +0800 (CST)
-Received: from roberto-ThinkStation-P620 (unknown [10.204.63.22])
-        by APP1 (Coremail) with SMTP id LxC2BwD3xhLYdghjuylOAA--.37523S2;
-        Fri, 26 Aug 2022 08:31:50 +0100 (CET)
-Message-ID: <2b1961925a6f0e10a75b6aa23ed1a014edfcd99e.camel@huaweicloud.com>
-Subject: Re: [PATCH v13 05/10] bpf: Add bpf_lookup_*_key() and bpf_key_put()
- kfuncs
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     Song Liu <song@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, paul@paul-moore.com,
-        jmorris@namei.org, serge@hallyn.com, Shuah Khan <shuah@kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        Daniel =?ISO-8859-1?Q?M=FCller?= <deso@posteo.net>,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Date:   Fri, 26 Aug 2022 09:31:32 +0200
-In-Reply-To: <CAPhsuW76kwaX2mhDtp3_5cC+gxsB3tnVQ00CUrjAR6bFKBcFtQ@mail.gmail.com>
-References: <20220823150035.711534-1-roberto.sassu@huaweicloud.com>
-         <20220823150035.711534-6-roberto.sassu@huaweicloud.com>
-         <CAPhsuW5iVRSCQsMRC7bGHw=ZHW1Y7y0SccQG-i-7=umHF2yJEQ@mail.gmail.com>
-         <67c4a5e7cf363a6c9b79a436690c4c3f469652de.camel@huaweicloud.com>
-         <CAPhsuW76kwaX2mhDtp3_5cC+gxsB3tnVQ00CUrjAR6bFKBcFtQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        with ESMTP id S245726AbiHZHxj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Aug 2022 03:53:39 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81BF5D3ED0
+        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 00:53:34 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id m16so817515wru.9
+        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 00:53:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=6wind.com; s=google;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:reply-to:user-agent:mime-version
+         :date:message-id:from:to:cc;
+        bh=pLGkByOQtUyNIrq+AB6ywJQFRaPW2OijF5FLi8vGm90=;
+        b=fA5Rd+taknD3yl0VFm1rZMyGtDdJHsb+Dih5HDSv4K+CHzlYGoieAFfETL/e0tDgbd
+         S7RLIRP+3jHFbd8m+0S1F/2fDL8OdOBU5aelAqwZkMqy1gfvHeRYL/4EDMjUpUFPymM6
+         +mPYFNG6jkDprQeTnsXZPuNseE/1CJbL6wKRvEMtjp2wQ54muJIe8vf2WrZJhzFqhd8q
+         MMCWjg2WTnhQ/Z6I37gPsG699y59sTUCh1tkK+i/R6DooX3PMfsEVFZ7VIUquzaw5s7S
+         2guWt/jLzJ7iPCCYBTtS5qJrK5zF3T/I/9z7jKRhF7B23vv3/5B7rQfWc6BUfSz7lKA7
+         nWAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:reply-to:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc;
+        bh=pLGkByOQtUyNIrq+AB6ywJQFRaPW2OijF5FLi8vGm90=;
+        b=TjwUhsYzzY8kHiPbTjXov42q3qSOXA/607s/qXDWXKp1naI20nHczOKOyxndC0wBOo
+         K+PmufN8Lg1ZmqMZp3BtdCCxHzp+aTLB6ei+DzZJfA31fu57ePM52Nec5NWj5hLeWs/R
+         Us2lhUthOGnWgSPSkaLr/2aePrKj0kRrWdE+1DWrmf4spJfcaYG4yrFOQgihcGpxvUoy
+         hPq51/L/w6wzkFV6qUoKWst8S1T+AV9GX9FyH7Z9tVxbnvRCQuoLTHVhmVAKnjRrL/Il
+         BioM3As8HlWtXeg+ykALvelU8yz1eaCWXvL9S7VsZ4SUiYsaoOo5MetGhoddQ2vlL/7N
+         uY0A==
+X-Gm-Message-State: ACgBeo1qYp1wVQwnQAP7GkXkHaIMWhaUsqZSwwSLnZAisWmTf3EMeDKT
+        Y2WYy8od1+pOjUCO2y5SrgitthKJyBweFg==
+X-Google-Smtp-Source: AA6agR6dcDBRP9cKMK4QGQBlOFV2gZL3V/tX7XVXExYygh0kQ336/ycDAMuG/yv0YGb1axMp6BDemQ==
+X-Received: by 2002:a5d:64c6:0:b0:225:4073:8fef with SMTP id f6-20020a5d64c6000000b0022540738fefmr4217818wri.253.1661500412689;
+        Fri, 26 Aug 2022 00:53:32 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:b41:c160:5d94:b816:24d3:cd91? ([2a01:e0a:b41:c160:5d94:b816:24d3:cd91])
+        by smtp.gmail.com with ESMTPSA id r184-20020a1c2bc1000000b003a6125562e1sm1525075wmr.46.2022.08.26.00.53.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Aug 2022 00:53:31 -0700 (PDT)
+Message-ID: <e80f14c5-4ca4-55b0-57e0-108fb73fb828@6wind.com>
+Date:   Fri, 26 Aug 2022 09:53:30 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LxC2BwD3xhLYdghjuylOAA--.37523S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Ww4DtryDXr1DAr18WFWktFb_yoW8Zry3pF
-        yUGF4rCF4kXry7Ar9av34avF9ayw4vgr1jg3srWw1jyF9F9F18Kr1UGF43uryrArn7Cr1U
-        WrWYgFW3ur13AwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I
-        0E14v26r4j6r4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI
-        7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
-        Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY
-        6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1lIxAIcV
-        CF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
-        jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UQZ2-UUUUU=
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAQBF1jj4JPsQABsZ
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Reply-To: nicolas.dichtel@6wind.com
+Subject: Re: [PATCH ipsec-next,v2 2/3] xfrm: interface: support collect
+ metadata mode
+Content-Language: en-US
+To:     Eyal Birger <eyal.birger@gmail.com>,
+        Nikolay Aleksandrov <razor@blackwall.org>
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, steffen.klassert@secunet.com,
+        herbert@gondor.apana.org.au, dsahern@kernel.org,
+        contact@proelbtn.com, pablo@netfilter.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, "daniel@iogearbox.net" <daniel@iogearbox.net>
+References: <20220825134636.2101222-1-eyal.birger@gmail.com>
+ <20220825134636.2101222-3-eyal.birger@gmail.com>
+ <a825aa13-6f82-e6c1-3c5c-7974b14f881e@blackwall.org>
+ <CAHsH6Gv8Zv722pjtKrWDiSHYKvV0FUxUSnHf_8B+gJnAVYiziQ@mail.gmail.com>
+From:   Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Organization: 6WIND
+In-Reply-To: <CAHsH6Gv8Zv722pjtKrWDiSHYKvV0FUxUSnHf_8B+gJnAVYiziQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 2022-08-26 at 00:25 -0700, Song Liu wrote:
-> On Fri, Aug 26, 2022 at 12:22 AM Roberto Sassu
-> <roberto.sassu@huaweicloud.com> wrote:
-> > On Thu, 2022-08-25 at 22:56 -0700, Song Liu wrote:
-> > > On Tue, Aug 23, 2022 at 8:02 AM Roberto Sassu
-> > > <roberto.sassu@huaweicloud.com> wrote:
-> > > > From: Roberto Sassu <roberto.sassu@huawei.com>
-> > > > 
-> > > > Add the bpf_lookup_user_key(), bpf_lookup_system_key() and
-> > > > bpf_key_put()
-> > > > kfuncs, to respectively search a key with a given key handle
-> > > > serial
-> > > > number
-> > > > and flags, obtain a key from a pre-determined ID defined in
-> > > > include/linux/verification.h, and cleanup.
-> > > > 
-> > > > Introduce system_keyring_id_check() to validate the keyring ID
-> > > > parameter of
-> > > > bpf_lookup_system_key().
-> > > > 
-> > > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> > > > ---
-> > > >  include/linux/bpf.h          |   6 ++
-> > > >  include/linux/verification.h |   8 +++
-> > > >  kernel/trace/bpf_trace.c     | 135
-> > > > +++++++++++++++++++++++++++++++++++
-> > > >  3 files changed, 149 insertions(+)
-> > > > 
-> > > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > > > index 6041304b402e..991da09a5858 100644
-> > > > --- a/include/linux/bpf.h
-> > > > +++ b/include/linux/bpf.h
-> > > > @@ -2586,4 +2586,10 @@ static inline void
-> > > > bpf_cgroup_atype_get(u32
-> > > > attach_btf_id, int cgroup_atype) {}
-> > > >  static inline void bpf_cgroup_atype_put(int cgroup_atype) {}
-> > > >  #endif /* CONFIG_BPF_LSM */
-> > > > 
-> > > > +#ifdef CONFIG_KEYS
-> > > 
-> > > Do we need to declare struct key here?
-> > > 
-> > > > +struct bpf_key {
-> > > > +       struct key *key;
-> > > > +       bool has_ref;
-> > > > +};
-> > > > +#endif /* CONFIG_KEYS */
-> > > >  #endif /* _LINUX_BPF_H */
-> > > > 
-> > 
-> > If there is a better place, I will move there.
-> 
-> I guess you misunderstood. I meant we need
-> 
-> struct key;
-> 
-> struct bpf_key {
->        struct key *key;
->        bool has_ref;
-> };
-> 
-> Otherwise, we may get some warning with certain config.
 
-Argh, thanks!
-
-Will add it.
-
-Roberto
-
+Le 25/08/2022 à 17:14, Eyal Birger a écrit :
+> On Thu, Aug 25, 2022 at 5:24 PM Nikolay Aleksandrov <razor@blackwall.org> wrote:
+>>
+>> On 25/08/2022 16:46, Eyal Birger wrote:
+>>> This commit adds support for 'collect_md' mode on xfrm interfaces.
+>>>
+>>> Each net can have one collect_md device, created by providing the
+>>> IFLA_XFRM_COLLECT_METADATA flag at creation. This device cannot be
+>>> altered and has no if_id or link device attributes.
+>>>
+>>> On transmit to this device, the if_id is fetched from the attached dst
+>>> metadata on the skb. If exists, the link property is also fetched from
+>>> the metadata. The dst metadata type used is METADATA_XFRM which holds
+>>> these properties.
+>>>
+>>> On the receive side, xfrmi_rcv_cb() populates a dst metadata for each
+>>> packet received and attaches it to the skb. The if_id used in this case is
+>>> fetched from the xfrm state, and the link is fetched from the incoming
+>>> device. This information can later be used by upper layers such as tc,
+>>> ebpf, and ip rules.
+>>>
+>>> Because the skb is scrubed in xfrmi_rcv_cb(), the attachment of the dst
+>>> metadata is postponed until after scrubing. Similarly, xfrm_input() is
+>>> adapted to avoid dropping metadata dsts by only dropping 'valid'
+>>> (skb_valid_dst(skb) == true) dsts.
+>>>
+>>> Policy matching on packets arriving from collect_md xfrmi devices is
+>>> done by using the xfrm state existing in the skb's sec_path.
+>>> The xfrm_if_cb.decode_cb() interface implemented by xfrmi_decode_session()
+>>> is changed to keep the details of the if_id extraction tucked away
+>>> in xfrm_interface.c.
+>>>
+>>> Signed-off-by: Eyal Birger <eyal.birger@gmail.com>
+>>>
+>>> ----
+>>>
+>>> v2:
+>>>   - add "link" property as suggested by Nicolas Dichtel
+>>>   - rename xfrm_if_decode_session_params to xfrm_if_decode_session_result
+>>> ---
+>>
+>> (+CC Daniel)
+>>
+>> Hi,
+>> Generally I really like the idea, but I missed to comment the first round. :)
+>> A few comments below..
+>>
+> 
+> Thanks for the review!
+> 
+>>>  include/net/xfrm.h           |  11 +++-
+> <...snip...>
+>>>
+>>>  static const struct nla_policy xfrmi_policy[IFLA_XFRM_MAX + 1] = {
+>>> -     [IFLA_XFRM_LINK]        = { .type = NLA_U32 },
+>>> -     [IFLA_XFRM_IF_ID]       = { .type = NLA_U32 },
+>>> +     [IFLA_XFRM_UNSPEC]              = { .strict_start_type = IFLA_XFRM_COLLECT_METADATA },
+>>> +     [IFLA_XFRM_LINK]                = { .type = NLA_U32 },
+>>
+>> link is signed, so s32
+> 
+> Ack on all comments except this one - I'm a little hesitant to change
+> this one as the change would be unrelated to this series.
+I agree, it's unrelated to this series.
