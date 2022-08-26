@@ -2,160 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C3FF5A2FCA
-	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 21:21:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECD865A2FCC
+	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 21:22:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243923AbiHZTVK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Aug 2022 15:21:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45946 "EHLO
+        id S235389AbiHZTWB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Aug 2022 15:22:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235389AbiHZTVJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Aug 2022 15:21:09 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44FD7B07F6;
-        Fri, 26 Aug 2022 12:21:08 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BB19461E86;
-        Fri, 26 Aug 2022 19:21:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C381FC433C1;
-        Fri, 26 Aug 2022 19:21:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661541667;
-        bh=QvGGfd4u3ZgGNQzPE8cvR++tbeSXUZdTtSLRfphuRE0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hpZWFIk7lRrtsGJa4ByLTO07Az2diNblNKXw38vxSFZWOD5B5cddPYiKIDDRz4a//
-         9z+u4etBw19PB9BzhBsiLLLgBx4B4Rnxz+QfB3YAMd476DOnri7C5lM19u5jIlagix
-         oyLfXFn7SoKxxcABMjSlmAHd3zMGL7jkuBIlDS3Mcy7ARZF68/7kuiTDVuFYFyO1FP
-         c/1LWUsqCALw5vcgk/UF6mHPL8w0GyN87zfyXVQf4r1XtzTLVJkh6yCcy/brxEi5Hx
-         lZCD8w78PS5G2+p4ExhYnVdXG3fOZfd25Gpr4SPH8C0qPG1Ctj+sXhTeORATjWmyxq
-         JTDkKV//4dBzg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 9B00B404A1; Fri, 26 Aug 2022 16:21:04 -0300 (-03)
-Date:   Fri, 26 Aug 2022 16:21:04 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Weiguo Li <liwg06@foxmail.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Dario Petrillo <dario.pk1@gmail.com>,
-        Hewenliang <hewenliang4@huawei.com>,
-        yaowenbin <yaowenbin1@huawei.com>,
-        Wenyu Liu <liuwenyu7@huawei.com>,
-        Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Pavithra Gurushankar <gpavithrasha@gmail.com>,
-        Alexandre Truong <alexandre.truong@arm.com>,
-        Quentin Monnet <quentin@isovalent.com>,
-        William Cohen <wcohen@redhat.com>,
-        Andres Freund <andres@anarazel.de>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Martin =?utf-8?B?TGnFoWth?= <mliska@suse.cz>,
-        Colin Ian King <colin.king@intel.com>,
-        James Clark <james.clark@arm.com>,
-        Fangrui Song <maskray@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>,
-        Riccardo Mancini <rickyman7@gmail.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Zechuan Chen <chenzechuan1@huawei.com>,
-        Jason Wang <wangborong@cdjrlc.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Remi Bernon <rbernon@codeweavers.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, llvm@lists.linux.dev
-Subject: Re: [PATCH v4 00/18] Mutex wrapper, locking and memory leak fixes
-Message-ID: <YwkdIBsQEKXG3/rE@kernel.org>
-References: <20220826164242.43412-1-irogers@google.com>
- <CAM9d7cgQZsbwWSdRNQqUE+GsSgPVqFmKs9LJ5b6ta2-dax5T2Q@mail.gmail.com>
+        with ESMTP id S231181AbiHZTWA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Aug 2022 15:22:00 -0400
+Received: from mail-oa1-f47.google.com (mail-oa1-f47.google.com [209.85.160.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB482BD1C4;
+        Fri, 26 Aug 2022 12:21:59 -0700 (PDT)
+Received: by mail-oa1-f47.google.com with SMTP id 586e51a60fabf-11c5505dba2so3227540fac.13;
+        Fri, 26 Aug 2022 12:21:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=9Mtsf8bHADcXsmpT2IJ7HPB/pQKds1pL0AHVcqCIStc=;
+        b=cmENxV6t64cmV6cBRxnLLTtChQqCKRodwQtDzqMwtZaEMlD8RjdgCLGS85CQ4MvqXa
+         HpAHyZJPS/9WkAYlGHkce9f2B44I9edJ7EZfuxYZW63+GXZ8ZYG2bInHrzmOpMc4LJdm
+         PZW7OTGJyTA349itbBnsM/NemiZ333Q7dBWoZGVOQkGKRxTndxWVV7RXJJcXo0fqQdyS
+         tR5dwp/po4McmFReOCeQaSLq7kFnTaXOtP1bdOHh+D+xBExNXfCjPOBfaE9wmOe9ktTB
+         rq/Ueq+7rTt+3rlryKqkv8nJLeX8x1kqgwBl5FN0U25EQEHTUwWXF/Cern7b39ZjSm3I
+         EwUA==
+X-Gm-Message-State: ACgBeo0yc5TNr+bte9Ly44xtv2Hm8x/zTqaicfmIgizjDX0ZNg5RqvAb
+        mz8er7T7jrA/jefH6ruUPiRZVLhJZWfGKx1KQdk=
+X-Google-Smtp-Source: AA6agR5eGUgPyBFPVu1HsfP6uCAZyM/tmCP9iIXGJCjvvi1qRj/HQmlcresZmNs8IlzuKwQKJPFhZ21gAD7nMQwNIuQ=
+X-Received: by 2002:a05:6870:a184:b0:116:bd39:7f94 with SMTP id
+ a4-20020a056870a18400b00116bd397f94mr2610720oaf.5.1661541719270; Fri, 26 Aug
+ 2022 12:21:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAM9d7cgQZsbwWSdRNQqUE+GsSgPVqFmKs9LJ5b6ta2-dax5T2Q@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220823210354.1407473-1-namhyung@kernel.org> <CAEf4Bzbd0-jGFCSCJu3eDxxom42xnH9Tevq0n50-AajjHb5t3g@mail.gmail.com>
+ <A9E2E766-E8A2-4E2E-A661-922400D2674D@fb.com> <CAEf4BzbGf6FuM7VcnA7HKb33HJeJjrDuydC4h1_tCUB8sPCW2g@mail.gmail.com>
+ <E215461A-01E7-4677-A404-C4439D66A7AF@fb.com> <CAM9d7cgigkU8quUMpScL=Xt8+WLDVXKiF5xdKiz7BbDPibSNjg@mail.gmail.com>
+ <CAPhsuW5V1U_UTHQw9E80vCTeP4Jqg9Ta8B+7o3pybKB=8CGRFA@mail.gmail.com>
+ <CAM9d7cjTtOkRHLOosxHN8PcbVbhTK=uLDGjw8N5=1QiTHcd6rQ@mail.gmail.com> <C7F3F33B-4A8E-428C-9FED-FB635955C2B1@fb.com>
+In-Reply-To: <C7F3F33B-4A8E-428C-9FED-FB635955C2B1@fb.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Fri, 26 Aug 2022 12:21:48 -0700
+Message-ID: <CAM9d7cgUVg1Cv+0fs=Mc7OBTOHNJkMqWnm0SZ5R7xfm5peBNDQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: Add bpf_read_raw_record() helper
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Song Liu <song@kernel.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Fri, Aug 26, 2022 at 12:08:06PM -0700, Namhyung Kim escreveu:
-> On Fri, Aug 26, 2022 at 9:42 AM Ian Rogers <irogers@google.com> wrote:
+On Fri, Aug 26, 2022 at 11:09 AM Song Liu <songliubraving@fb.com> wrote:
+>
+>
+>
+> > On Aug 26, 2022, at 9:33 AM, Namhyung Kim <namhyung@kernel.org> wrote:
 > >
-> > When fixing a locking race and memory leak in:
-> > https://lore.kernel.org/linux-perf-users/20211118193714.2293728-1-irogers@google.com/
+> > On Thu, Aug 25, 2022 at 10:53 PM Song Liu <song@kernel.org> wrote:
+> >>
+> >> On Thu, Aug 25, 2022 at 10:22 PM Namhyung Kim <namhyung@kernel.org> wrote:
+> >>>
+> >>> On Thu, Aug 25, 2022 at 7:35 PM Song Liu <songliubraving@fb.com> wrote:
+> >>>> Actually, since we are on this, can we make it more generic, and handle
+> >>>> all possible PERF_SAMPLE_* (in enum perf_event_sample_format)? Something
+> >>>> like:
+> >>>>
+> >>>> long bpf_perf_event_read_sample(void *ctx, void *buf, u64 size, u64 flags);
+> >>>>
+> >>>> WDYT Namhyung?
+> >>>
+> >>> Do you mean reading the whole sample data at once?
+> >>> Then it needs to parse the sample data format properly
+> >>> which is non trivial due to a number of variable length
+> >>> fields like callchains and branch stack, etc.
+> >>>
+> >>> Also I'm afraid I might need event configuration info
+> >>> other than sample data like attr.type, attr.config,
+> >>> attr.sample_type and so on.
+> >>>
+> >>> Hmm.. maybe we can add it to the ctx directly like ctx.attr_type?
+> >>
+> >> The user should have access to the perf_event_attr used to
+> >> create the event. This is also available in ctx->event->attr.
 > >
-> > It was requested that debug mutex code be separated out into its own
-> > files. This was, in part, done by Pavithra Gurushankar in:
-> > https://lore.kernel.org/lkml/20220727111954.105118-1-gpavithrasha@gmail.com/
-> >
-> > These patches fix issues with the previous patches, add in the
-> > original dso->nsinfo fix and then build on our mutex wrapper with
-> > clang's -Wthread-safety analysis. The analysis found missing unlocks
-> > in builtin-sched.c which are fixed and -Wthread-safety is enabled by
-> > default when building with clang.
-> >
-> > v4. Adds a comment for the trylock result, fixes the new line (missed
-> >     in v3) and removes two blank lines as suggested by Adrian Hunter.
-> > v3. Adds a missing new line to the error messages and removes the
-> >     pshared argument to mutex_init by having two functions, mutex_init
-> >     and mutex_init_pshared. These changes were suggested by Adrian Hunter.
-> > v2. Breaks apart changes that s/pthread_mutex/mutex/g and the lock
-> >     annotations as requested by Arnaldo and Namhyung. A boolean is
-> >     added to builtin-sched.c to terminate thread funcs rather than
-> >     leaving them blocked on delted mutexes.
-> >
-> > Ian Rogers (17):
-> >   perf bench: Update use of pthread mutex/cond
-> >   perf tests: Avoid pthread.h inclusion
-> >   perf hist: Update use of pthread mutex
-> >   perf bpf: Remove unused pthread.h include
-> >   perf lock: Remove unused pthread.h include
-> >   perf record: Update use of pthread mutex
-> >   perf sched: Update use of pthread mutex
-> >   perf ui: Update use of pthread mutex
-> >   perf mmap: Remove unnecessary pthread.h include
-> >   perf dso: Update use of pthread mutex
-> >   perf annotate: Update use of pthread mutex
-> >   perf top: Update use of pthread mutex
-> >   perf dso: Hold lock when accessing nsinfo
-> >   perf mutex: Add thread safety annotations
-> >   perf sched: Fixes for thread safety analysis
-> >   perf top: Fixes for thread safety analysis
-> >   perf build: Enable -Wthread-safety with clang
-> >
-> > Pavithra Gurushankar (1):
-> >   perf mutex: Wrapped usage of mutex and cond
-> 
-> For the patches 1-7 and 10-13
-> 
-> Acked-by: Namhyung Kim <namhyung@kernel.org>
+> > Do you mean from BPF?  I'd like to have a generic BPF program
+> > that can handle various filtering according to the command line
+> > arguments.  I'm not sure but it might do something differently
+> > for each event based on the attr settings.
+>
+> Yeah, we can access perf_event_attr from BPF program. Note that
+> the ctx for perf_event bpf program is struct bpf_perf_event_data_kern:
+>
+> SEC("perf_event")
+> int perf_e(struct bpf_perf_event_data_kern *ctx)
+> {
+>         ...
+> }
+>
+> struct bpf_perf_event_data_kern {
+>         bpf_user_pt_regs_t *regs;
+>         struct perf_sample_data *data;
+>         struct perf_event *event;
+> };
 
-Thanks added it, will try to get what is done so far merged and then we
-can go on addressing the other issues brought up in this thread.
+I didn't know that it's allowed to access the kernel data directly.
+For some reason, I thought it should use fields in bpf_event_event_data
+only, like sample_period and addr.  And the verifier will convert the
+access to them according to pe_prog_convert_ctx_access().
 
-- Arnaldo
+>
+> Alternatively, we can also have bpf user space configure the BPF
+> program via a few knobs.
+>
+> And actually, we can just read ctx->data and get the raw record,
+> right..?
+
+If it's possible, sure, it'd be more powerful.
+
+Thanks,
+Namhyung
