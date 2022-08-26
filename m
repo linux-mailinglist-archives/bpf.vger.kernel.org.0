@@ -2,200 +2,455 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60BE35A2D3D
-	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 19:18:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39E325A2D5E
+	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 19:23:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241676AbiHZRSI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Aug 2022 13:18:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41942 "EHLO
+        id S230355AbiHZRWp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Aug 2022 13:22:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239029AbiHZRSE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Aug 2022 13:18:04 -0400
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9E4CDF09B;
-        Fri, 26 Aug 2022 10:18:03 -0700 (PDT)
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 27QG75rp012626;
-        Fri, 26 Aug 2022 10:17:47 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=zqJrUzTrGJcUXDO+Xp68iugw1pyZpEltqdZPhEG/tXE=;
- b=Tr0pX9SG2D17QJ7LzNKUWnaxqaWXuQUcRL7v+2lTMCjBdnFFnihS5x7XmU7U4Qzk4DPm
- cWtygTnwmB5e202rvTvlf7Qd1DIT1TloQhPMlShJFJLH6x1Eofl5eBuOAHud9wK7c9Ce
- n/TvbCd6ZVsPTswgmITWXFyG3qtfwphuVmA= 
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2169.outbound.protection.outlook.com [104.47.58.169])
-        by m0001303.ppops.net (PPS) with ESMTPS id 3j71dhghen-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 26 Aug 2022 10:17:46 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=c39QCjQmXKkAGpj78OllX8sg39yBku0J9WCjQadqjlcgiYhn+WjTBk65SFeIXQ2GTt48E5mntr882vxLGPkvUpXlLwS0IqwEpg+HReOxb6Zt8Ahz2nc4Z569MquPXRibS5+R6TEI0eI1rKp/7DrLq2/4Q9Uh9lszpHe4CrLy4KO++Fxhor0ERKypb74EeevfSbqM3V5MS5x9hEzLIzqPdrnwQhQSSnW1u+QLlook5dByjcX9+9qLV5NyQT/PNNgHobxycPcdPkq8l68ws3hr3zMr9StkcW4PFesVgf7H+hG9lTF2m6huP+2+TdsBmmqVeFyzkCVfkk7KK3NXJlu9Eg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=zqJrUzTrGJcUXDO+Xp68iugw1pyZpEltqdZPhEG/tXE=;
- b=csOEQobaASB3kCHmZaDxhJ6rfkBZEGQjGbZaTH24c+RQJlyD6v/LWbUW262SBxCuVvUBdP7l2K3OECMMGjZpL/eQXCdZHIJImicGOT8aWrchoqiPSOwur36dZtthGGo06RtNH5861RALPD8quGnRjfvJInym6CoSDGEyvOPX0+/ykarvMEL5837zvCxDLD44hBUxNrG0ABtHWNHGHwpw7mR4BRP+Z3f9YuHK7ifkUq4TlTu0jSF6oBLLddrQJc7uXpWSRYfhpsN2X4dgrVyfcX8GR7xXi9eZ7YuU3Mqkr4iBdWG6wiQ/0Q4q0K+j3ZvsOJFMNncHrzfICe6fFFdy/Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from MW4PR15MB4475.namprd15.prod.outlook.com (2603:10b6:303:104::16)
- by SA1PR15MB4690.namprd15.prod.outlook.com (2603:10b6:806:19d::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5566.16; Fri, 26 Aug
- 2022 17:17:45 +0000
-Received: from MW4PR15MB4475.namprd15.prod.outlook.com
- ([fe80::1858:f420:93d2:4b5e]) by MW4PR15MB4475.namprd15.prod.outlook.com
- ([fe80::1858:f420:93d2:4b5e%3]) with mapi id 15.20.5566.016; Fri, 26 Aug 2022
- 17:17:45 +0000
-Date:   Fri, 26 Aug 2022 10:17:41 -0700
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     James Hilliard <james.hilliard1@gmail.com>
-Cc:     bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] selftests/bpf: Fix bind{4,6} tcp/socket header type
- conflict
-Message-ID: <20220826171741.pdiqa4n4mls56bw3@kafai-mbp.dhcp.thefacebook.com>
-References: <20220825221751.258958-1-james.hilliard1@gmail.com>
- <20220826051630.glhrbdhiybtqwc4p@kafai-mbp.dhcp.thefacebook.com>
- <CADvTj4rQdnd=V0tENFGCTtpTESwSCcwK+h3i9nZ75M+TywNWzA@mail.gmail.com>
- <20220826054944.5bcx7unsyx4ts6ok@kafai-mbp.dhcp.thefacebook.com>
- <CADvTj4qNR+m2fQMMf9+=hMruhon8G_7yFC2_43-qhZ9X7ZW=8A@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CADvTj4qNR+m2fQMMf9+=hMruhon8G_7yFC2_43-qhZ9X7ZW=8A@mail.gmail.com>
-X-ClientProxiedBy: BYAPR06CA0055.namprd06.prod.outlook.com
- (2603:10b6:a03:14b::32) To MW4PR15MB4475.namprd15.prod.outlook.com
- (2603:10b6:303:104::16)
+        with ESMTP id S234090AbiHZRWo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Aug 2022 13:22:44 -0400
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAB62E1A89;
+        Fri, 26 Aug 2022 10:22:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1661534562; x=1693070562;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=9cy24XYcLvU6w1XlSrvVD0EpP1CFPGhWLRfNWWyPsA0=;
+  b=IOmtfSvipSd9XloJTPcPEWmdO7kgmtkn7ITZAGTtvi4yjdA8YNUAIU9a
+   28GLDXwbxBgRxiKe6djewt7JR8fRoqQQgomHy5fTl4dol+n8l9PDvPRsC
+   coE/y7kjFHrBvFpm72qZfL07YHEp4NXUUJucfckVU6lzAH8OfDLTpgFjc
+   MhIG8ADoPsIg/01JNWNrFA2vd9BhRbUPZjannNKJ6CgFFeRO4BdRgLm66
+   hX8P01d8LMjRkD85G6H5BPweOHwVH2ZfTeefqp7uCUWYIH/gmF5xQFBEr
+   x0zgq9nYvlz6ZP/HJrJTrQRJiqJpXmj5mFS8skJND4F34OaKwVeCmcDuV
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10451"; a="295829489"
+X-IronPort-AV: E=Sophos;i="5.93,265,1654585200"; 
+   d="scan'208";a="295829489"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2022 10:22:42 -0700
+X-IronPort-AV: E=Sophos;i="5.93,265,1654585200"; 
+   d="scan'208";a="640136395"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.50.209])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2022 10:22:30 -0700
+Message-ID: <a9b4f79d-cdea-821e-0e57-cd4854de6cf4@intel.com>
+Date:   Fri, 26 Aug 2022 20:22:24 +0300
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1b6ea093-88cb-4020-6f0e-08da8786e407
-X-MS-TrafficTypeDiagnostic: SA1PR15MB4690:EE_
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: KbqKR0eScrKifpNpPzCADAx8QxOkqwMyv5HbAbModVFs90YjBWsm8i7CMpDnx+gn5+0HXwakSqAGkgOqWzhZQuiqLSsB2dffHVnTvdTneDwHw4PJJEaJ1TtdPkJXLZk9UBV6xOBiYGiSCjyGbFhEiC1SezPt5hZlzOPZmeBHjzF8lAHCEbmSROZzbGp2EN3SnB8I5trGLjXT8Uw8NK0fJj/7hzFAA8BTrEU65uq0+hcnSO2wqJ0TOfpWYqh5KEcleay5rU6LlzDtycBJlxDQMks5KgEnWZbz0WT3eqkHvUJpugaXXYo+klAgQysaoSB03jkjxoeARde8mR8llOka2Y+ZudSMpZC9njM2ulpzvEmKz6RWFC0JfiJ/UjRMl9wOU6eGAk0HLqEyUv0YoLxHav7IxxLYZQKYkt0cYYe3pM6BzWxIlEVw9cEhFHuhSPjTmQConQ4QJhjTytIwHrY0mbvn8zIMXNWmlyL8ScGTP36sMnXloHGsgRB1ABpj+W3Qqv5B126MAi/L01r52oDLVHZvefk8FvfKiBLE2EgL/JoDgbDC4owIpBbwKFlrKPB+8VxH9LdD3LoKXh5zFs04mvahRfKApWHE8NuOlHKq/47u6lKK9qDpa9r1Ez8G5XIEg/gIaKEq++2XUVtPvhDLd/6gu60Pi4XWtoR8VHxuPLqhCAQbbdsDsRFHQBttWKqA91Gys0LLfAushwwttWBs5Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR15MB4475.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(346002)(376002)(366004)(39860400002)(396003)(136003)(8676002)(66476007)(6916009)(66556008)(66946007)(54906003)(316002)(5660300002)(4326008)(2906002)(8936002)(7416002)(478600001)(1076003)(52116002)(86362001)(53546011)(6506007)(6666004)(6512007)(6486002)(9686003)(186003)(41300700001)(38100700002)(83380400001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ze6P6mC8Y1Tr09isdPHoHf0ia3YP5uLThx2B4uG4Ep+naBaxQVP6xBvQNZYM?=
- =?us-ascii?Q?us/RRuktBxWF3iTCdYwC3k2OZXQB9CR4xzYPlveNQ29LqCnijCUvj8wyefWq?=
- =?us-ascii?Q?Op+zsS3vM+oqmXkvwSgpkohpW0Zq+TArIkDpLP50TPn9e77cUV2F3EHW49Zl?=
- =?us-ascii?Q?7LuQ7RoCF6ZnHTZLGMIuO6L7tsAsKSQ5SPGA8qOPJgUrXAOXqUiBtxEYCr2P?=
- =?us-ascii?Q?QZit0VkevuuxPR9jo69NNzEcxk2kERcxPXRqJxUTWjLDCaM8k17PY8/fL1qS?=
- =?us-ascii?Q?iKLoaHbam3AQxOT8xdgGwmVVKB3dcKlL4+fLD7ETOHnMri2vszENNvm4kNIZ?=
- =?us-ascii?Q?gBTCJOX7CApDytTgcsHTRpfNJ7HmwcHyee5btVyZJpBtNTjGsripc6SwSQZt?=
- =?us-ascii?Q?0NtKlAPtyXkK5/bZCPNukuOsHJ+JmRITwX/NcESS6xSEG9R3883VsYZ3vmCE?=
- =?us-ascii?Q?sGFLY+6ezDeLovq2QLrS3peVPafxA/2PyajHkd4VJRhpB35zis5OuJbKLxiH?=
- =?us-ascii?Q?QQ/AGk9gyE2UqTQ9XdMR20l9PMTrE6ujiLo5bbWap/NQunHOryNzQikxODEF?=
- =?us-ascii?Q?e6H36JOU82RGiOIPgM7RhXzjNR+53c6T2eJFgp0tnWrx21NMtyWohxffCSrk?=
- =?us-ascii?Q?IjjGSj7kA9tG86/i1cBhna0+MKQWSbTOTNdQ4Xr1eo9S8h8yWnkLTWV9OIqy?=
- =?us-ascii?Q?SUo+wvUrHWbEv5/AUxwUo+ePA20+sge6ivuUGBcla/e+zEZT5tGwrboeznXe?=
- =?us-ascii?Q?9wa9ddNLmsgtOHuS+IqyKc1TtDv991CKKXOfN1IcQ6p28980a5gawIP1jywl?=
- =?us-ascii?Q?EYN7h+6YT10IWR7h7EMe571/os0hb0lPcwAF2KxsxuVDENAMyWNCBPCakB4H?=
- =?us-ascii?Q?yCDIOhcAjbi6PZpRZ14flmpneXqMLs5IjtEvw4noD7vklEhk4pQ65ClJESOG?=
- =?us-ascii?Q?Mf7hHOzQ/LMIhBym3EY89HrysZ8Rir4ke8kcndUgXSNoW0Z3hAyeaScCSzsk?=
- =?us-ascii?Q?wlj6NGcBX8GGgy0+CHoe8IJJciYVvVmBanxlpBrqMgRPy0GmGT+nSND58p3E?=
- =?us-ascii?Q?Z7MUTnsBS2kwwBGmqXgClgZxOtICDk4xGdlEhNUR5Nk6zgEoqJRwjajjR9xx?=
- =?us-ascii?Q?pRbwaqwriw81FsXY6B3j+fVNPhemMazxqvvyUVmUfpyDxI6JRLmqknVwNUKE?=
- =?us-ascii?Q?j18ad1pvel/d+OncBUzMZWUf/MXFA4Eq/XPKQ7OPmXh/NUSqOT6FzaNsU0XF?=
- =?us-ascii?Q?SKyaTCyKnazBYOEA1sdtl9J6LS0wTYQo9wMqNUqqsptdM3rJhjzJzpNsRbwi?=
- =?us-ascii?Q?o363NadOwJ5TPsEKXfFGS7Kfs4VDnpgWUc5TE6blXJnX3H+BxkD3ABY6xOYf?=
- =?us-ascii?Q?HxjQ0t2BBKOYZzpIoyG1SIdzJbDZ88X3S5VjziD/ZhbfKQQqRmaJ5C4MGKVm?=
- =?us-ascii?Q?+Xc6sHI8BN/vWjFmAlMFqCA26SESsMYHLvF17eZ/aFAzCDxNBaVTki++1Oxp?=
- =?us-ascii?Q?9v81xulxl1VgptgalQ76l+U9Q62Q9tjfGT8AFsh4/x2ljf+1ShV8dat7t2UD?=
- =?us-ascii?Q?nXo5OAt2Q/3qKg2q65pRPMZXEiGPh9pzuLddGDq0gWPzFPYj1flbdOGGEkws?=
- =?us-ascii?Q?cg=3D=3D?=
-X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1b6ea093-88cb-4020-6f0e-08da8786e407
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR15MB4475.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Aug 2022 17:17:44.9280
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: V/a4nSz9JN42jdBCzVdTtUxE79ne0YFDqsD7SkcmFLVaRSwOmqfwCKJ0BUAZgKPx
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4690
-X-Proofpoint-ORIG-GUID: OWE43n6iKADVexSylntR9zlFJyaPF2Tu
-X-Proofpoint-GUID: OWE43n6iKADVexSylntR9zlFJyaPF2Tu
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-08-26_09,2022-08-25_01,2022-06-22_01
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.11.0
+Subject: Re: [PATCH v3 09/18] perf ui: Update use of pthread mutex
+Content-Language: en-US
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Darren Hart <dvhart@infradead.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, Weiguo Li <liwg06@foxmail.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Dario Petrillo <dario.pk1@gmail.com>,
+        Hewenliang <hewenliang4@huawei.com>,
+        yaowenbin <yaowenbin1@huawei.com>,
+        Wenyu Liu <liuwenyu7@huawei.com>,
+        Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Pavithra Gurushankar <gpavithrasha@gmail.com>,
+        Alexandre Truong <alexandre.truong@arm.com>,
+        Quentin Monnet <quentin@isovalent.com>,
+        William Cohen <wcohen@redhat.com>,
+        Andres Freund <andres@anarazel.de>,
+        =?UTF-8?Q?Martin_Li=c5=a1ka?= <mliska@suse.cz>,
+        Colin Ian King <colin.king@intel.com>,
+        James Clark <james.clark@arm.com>,
+        Fangrui Song <maskray@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>,
+        Riccardo Mancini <rickyman7@gmail.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Zechuan Chen <chenzechuan1@huawei.com>,
+        Jason Wang <wangborong@cdjrlc.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Remi Bernon <rbernon@codeweavers.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        bpf@vger.kernel.org, llvm@lists.linux.dev
+References: <20220824153901.488576-1-irogers@google.com>
+ <20220824153901.488576-10-irogers@google.com>
+ <2cf6edac-6e41-b43c-2bc1-f49cb739201a@intel.com>
+ <CAP-5=fVVWx=LZAzXsxfuktPHwki1gYbV4mcmvJp_9GTDS6KJcQ@mail.gmail.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <CAP-5=fVVWx=LZAzXsxfuktPHwki1gYbV4mcmvJp_9GTDS6KJcQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Aug 26, 2022 at 12:13:54AM -0600, James Hilliard wrote:
-> On Thu, Aug 25, 2022 at 11:49 PM Martin KaFai Lau <kafai@fb.com> wrote:
-> >
-> > On Thu, Aug 25, 2022 at 11:31:15PM -0600, James Hilliard wrote:
-> > > On Thu, Aug 25, 2022 at 11:16 PM Martin KaFai Lau <kafai@fb.com> wrote:
-> > > >
-> > > > On Thu, Aug 25, 2022 at 04:17:49PM -0600, James Hilliard wrote:
-> > > > > There is a potential for us to hit a type conflict when including
-> > > > > netinet/tcp.h with sys/socket.h, we can replace both of these includes
-> > > > > with linux/tcp.h to avoid this conflict.
-> > > > >
-> > > > > Fixes errors like:
-> > > > > In file included from /usr/include/netinet/tcp.h:91,
-> > > > >                  from progs/bind4_prog.c:10:
-> > > > > /home/buildroot/opt/cross/lib/gcc/bpf/13.0.0/include/stdint.h:34:23: error: conflicting types for 'int8_t'; have 'char'
-> > > > >    34 | typedef __INT8_TYPE__ int8_t;
-> > > > >       |                       ^~~~~~
-> > > > > In file included from /usr/include/x86_64-linux-gnu/sys/types.h:155,
-> > > > >                  from /usr/include/x86_64-linux-gnu/bits/socket.h:29,
-> > > > >                  from /usr/include/x86_64-linux-gnu/sys/socket.h:33,
-> > > > >                  from progs/bind4_prog.c:9:
-> > > > > /usr/include/x86_64-linux-gnu/bits/stdint-intn.h:24:18: note: previous declaration of 'int8_t' with type 'int8_t' {aka 'signed char'}
-> > > > >    24 | typedef __int8_t int8_t;
-> > > > >       |                  ^~~~~~
-> > > > > /home/buildroot/opt/cross/lib/gcc/bpf/13.0.0/include/stdint.h:43:24: error: conflicting types for 'int64_t'; have 'long int'
-> > > > >    43 | typedef __INT64_TYPE__ int64_t;
-> > > > >       |                        ^~~~~~~
-> > > > > /usr/include/x86_64-linux-gnu/bits/stdint-intn.h:27:19: note: previous declaration of 'int64_t' with type 'int64_t' {aka 'long long int'}
-> > > > >    27 | typedef __int64_t int64_t;
-> > > > >       |                   ^~~~~~~
-> > > > > make: *** [Makefile:537: /home/buildroot/bpf-next/tools/testing/selftests/bpf/bpf_gcc/bind4_prog.o] Error 1
-> > > > >
-> > > > > Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
-> > > > > ---
-> > > > >  tools/testing/selftests/bpf/progs/bind4_prog.c | 3 +--
-> > > > >  tools/testing/selftests/bpf/progs/bind6_prog.c | 3 +--
-> > > > >  2 files changed, 2 insertions(+), 4 deletions(-)
-> > > > >
-> > > > > diff --git a/tools/testing/selftests/bpf/progs/bind4_prog.c b/tools/testing/selftests/bpf/progs/bind4_prog.c
-> > > > > index 474c6a62078a..6bd20042fd53 100644
-> > > > > --- a/tools/testing/selftests/bpf/progs/bind4_prog.c
-> > > > > +++ b/tools/testing/selftests/bpf/progs/bind4_prog.c
-> > > > > @@ -6,8 +6,7 @@
-> > > > >  #include <linux/bpf.h>
-> > > > >  #include <linux/in.h>
-> > > > >  #include <linux/in6.h>
-> > > > > -#include <sys/socket.h>
-> > > > > -#include <netinet/tcp.h>
-> > > > These includes look normal to me.  What environment is hitting this.
-> > >
-> > > I was hitting this error with GCC 13(GCC master branch).
-> > These two includes (<sys/socket.h> and <netinet/tcp.h>) are normal,
-> > so does it mean all existing programs need to change to use gcc 13 ?
+On 26/08/22 19:02, Ian Rogers wrote:
+> On Fri, Aug 26, 2022 at 3:24 AM Adrian Hunter <adrian.hunter@intel.com> wrote:
+>>
+>> On 24/08/22 18:38, Ian Rogers wrote:
+>>> Switch to the use of mutex wrappers that provide better error checking.
+>>>
+>>> Signed-off-by: Ian Rogers <irogers@google.com>
+>>> ---
+>>>  tools/perf/ui/browser.c           | 20 ++++++++++----------
+>>>  tools/perf/ui/browsers/annotate.c |  2 +-
+>>>  tools/perf/ui/setup.c             |  5 +++--
+>>>  tools/perf/ui/tui/helpline.c      |  5 ++---
+>>>  tools/perf/ui/tui/progress.c      |  8 ++++----
+>>>  tools/perf/ui/tui/setup.c         |  8 ++++----
+>>>  tools/perf/ui/tui/util.c          | 18 +++++++++---------
+>>>  tools/perf/ui/ui.h                |  4 ++--
+>>>  8 files changed, 35 insertions(+), 35 deletions(-)
+>>>
+>>> diff --git a/tools/perf/ui/browser.c b/tools/perf/ui/browser.c
+>>> index fa5bd5c20e96..78fb01d6ad63 100644
+>>> --- a/tools/perf/ui/browser.c
+>>> +++ b/tools/perf/ui/browser.c
+>>> @@ -268,9 +268,9 @@ void __ui_browser__show_title(struct ui_browser *browser, const char *title)
+>>>
+>>>  void ui_browser__show_title(struct ui_browser *browser, const char *title)
+>>>  {
+>>> -     pthread_mutex_lock(&ui__lock);
+>>> +     mutex_lock(&ui__lock);
+>>>       __ui_browser__show_title(browser, title);
+>>> -     pthread_mutex_unlock(&ui__lock);
+>>> +     mutex_unlock(&ui__lock);
+>>>  }
+>>>
+>>>  int ui_browser__show(struct ui_browser *browser, const char *title,
+>>> @@ -284,7 +284,7 @@ int ui_browser__show(struct ui_browser *browser, const char *title,
+>>>
+>>>       browser->refresh_dimensions(browser);
+>>>
+>>> -     pthread_mutex_lock(&ui__lock);
+>>> +     mutex_lock(&ui__lock);
+>>>       __ui_browser__show_title(browser, title);
+>>>
+>>>       browser->title = title;
+>>> @@ -295,16 +295,16 @@ int ui_browser__show(struct ui_browser *browser, const char *title,
+>>>       va_end(ap);
+>>>       if (err > 0)
+>>>               ui_helpline__push(browser->helpline);
+>>> -     pthread_mutex_unlock(&ui__lock);
+>>> +     mutex_unlock(&ui__lock);
+>>>       return err ? 0 : -1;
+>>>  }
+>>>
+>>>  void ui_browser__hide(struct ui_browser *browser)
+>>>  {
+>>> -     pthread_mutex_lock(&ui__lock);
+>>> +     mutex_lock(&ui__lock);
+>>>       ui_helpline__pop();
+>>>       zfree(&browser->helpline);
+>>> -     pthread_mutex_unlock(&ui__lock);
+>>> +     mutex_unlock(&ui__lock);
+>>>  }
+>>>
+>>>  static void ui_browser__scrollbar_set(struct ui_browser *browser)
+>>> @@ -352,9 +352,9 @@ static int __ui_browser__refresh(struct ui_browser *browser)
+>>>
+>>>  int ui_browser__refresh(struct ui_browser *browser)
+>>>  {
+>>> -     pthread_mutex_lock(&ui__lock);
+>>> +     mutex_lock(&ui__lock);
+>>>       __ui_browser__refresh(browser);
+>>> -     pthread_mutex_unlock(&ui__lock);
+>>> +     mutex_unlock(&ui__lock);
+>>>
+>>>       return 0;
+>>>  }
+>>> @@ -390,10 +390,10 @@ int ui_browser__run(struct ui_browser *browser, int delay_secs)
+>>>       while (1) {
+>>>               off_t offset;
+>>>
+>>> -             pthread_mutex_lock(&ui__lock);
+>>> +             mutex_lock(&ui__lock);
+>>>               err = __ui_browser__refresh(browser);
+>>>               SLsmg_refresh();
+>>> -             pthread_mutex_unlock(&ui__lock);
+>>> +             mutex_unlock(&ui__lock);
+>>>               if (err < 0)
+>>>                       break;
+>>>
+>>> diff --git a/tools/perf/ui/browsers/annotate.c b/tools/perf/ui/browsers/annotate.c
+>>> index 44ba900828f6..b8747e8dd9ea 100644
+>>> --- a/tools/perf/ui/browsers/annotate.c
+>>> +++ b/tools/perf/ui/browsers/annotate.c
+>>> @@ -8,11 +8,11 @@
+>>>  #include "../../util/hist.h"
+>>>  #include "../../util/sort.h"
+>>>  #include "../../util/map.h"
+>>> +#include "../../util/mutex.h"
+>>>  #include "../../util/symbol.h"
+>>>  #include "../../util/evsel.h"
+>>>  #include "../../util/evlist.h"
+>>>  #include <inttypes.h>
+>>> -#include <pthread.h>
+>>>  #include <linux/kernel.h>
+>>>  #include <linux/string.h>
+>>>  #include <linux/zalloc.h>
+>>> diff --git a/tools/perf/ui/setup.c b/tools/perf/ui/setup.c
+>>> index 700335cde618..25ded88801a3 100644
+>>> --- a/tools/perf/ui/setup.c
+>>> +++ b/tools/perf/ui/setup.c
+>>> @@ -1,5 +1,4 @@
+>>>  // SPDX-License-Identifier: GPL-2.0
+>>> -#include <pthread.h>
+>>>  #include <dlfcn.h>
+>>>  #include <unistd.h>
+>>>
+>>> @@ -8,7 +7,7 @@
+>>>  #include "../util/hist.h"
+>>>  #include "ui.h"
+>>>
+>>> -pthread_mutex_t ui__lock = PTHREAD_MUTEX_INITIALIZER;
+>>> +struct mutex ui__lock;
+>>>  void *perf_gtk_handle;
+>>>  int use_browser = -1;
+>>>
+>>> @@ -76,6 +75,7 @@ int stdio__config_color(const struct option *opt __maybe_unused,
+>>>
+>>>  void setup_browser(bool fallback_to_pager)
+>>>  {
+>>> +     mutex_init(&ui__lock);
+>>>       if (use_browser < 2 && (!isatty(1) || dump_trace))
+>>>               use_browser = 0;
+>>>
+>>> @@ -118,4 +118,5 @@ void exit_browser(bool wait_for_ok)
+>>>       default:
+>>>               break;
+>>>       }
+>>> +     mutex_destroy(&ui__lock);
+>>
+>> Looks like exit_browser() can be called even when setup_browser()
+>> was never called.
+>>
+>> Note, it also looks like PTHREAD_MUTEX_INITIALIZER is all zeros so
+>> pthread won't notice.
 > 
-> Well I think it's mostly just an issue getting hit with GCC-BPF as it
-> looks to me like a cross compilation host/target header conflict.
-The users have been using these headers in the bpf progs.
-The solution should be on the GCC-BPF side instead of changing
-all bpf progs.
+> Memory sanitizer will notice some cases of this and so I didn't want
+> to code defensively around exit being called ahead of setup.
+
+I am not sure you understood.
+
+As I wrote, exit_browser() can be called even when setup_browser()
+was never called, so it is not defensive programming, it is necessary
+programming that you only get away without doing because
+PTHREAD_MUTEX_INITIALIZER is all zeros.
+
+> 
+> Thanks,
+> Ian
+> 
+>>>  }
+>>> diff --git a/tools/perf/ui/tui/helpline.c b/tools/perf/ui/tui/helpline.c
+>>> index 298d6af82fdd..db4952f5990b 100644
+>>> --- a/tools/perf/ui/tui/helpline.c
+>>> +++ b/tools/perf/ui/tui/helpline.c
+>>> @@ -2,7 +2,6 @@
+>>>  #include <stdio.h>
+>>>  #include <stdlib.h>
+>>>  #include <string.h>
+>>> -#include <pthread.h>
+>>>  #include <linux/kernel.h>
+>>>  #include <linux/string.h>
+>>>
+>>> @@ -33,7 +32,7 @@ static int tui_helpline__show(const char *format, va_list ap)
+>>>       int ret;
+>>>       static int backlog;
+>>>
+>>> -     pthread_mutex_lock(&ui__lock);
+>>> +     mutex_lock(&ui__lock);
+>>>       ret = vscnprintf(ui_helpline__last_msg + backlog,
+>>>                       sizeof(ui_helpline__last_msg) - backlog, format, ap);
+>>>       backlog += ret;
+>>> @@ -45,7 +44,7 @@ static int tui_helpline__show(const char *format, va_list ap)
+>>>               SLsmg_refresh();
+>>>               backlog = 0;
+>>>       }
+>>> -     pthread_mutex_unlock(&ui__lock);
+>>> +     mutex_unlock(&ui__lock);
+>>>
+>>>       return ret;
+>>>  }
+>>> diff --git a/tools/perf/ui/tui/progress.c b/tools/perf/ui/tui/progress.c
+>>> index 3d74af5a7ece..71b6c8d9474f 100644
+>>> --- a/tools/perf/ui/tui/progress.c
+>>> +++ b/tools/perf/ui/tui/progress.c
+>>> @@ -45,7 +45,7 @@ static void tui_progress__update(struct ui_progress *p)
+>>>       }
+>>>
+>>>       ui__refresh_dimensions(false);
+>>> -     pthread_mutex_lock(&ui__lock);
+>>> +     mutex_lock(&ui__lock);
+>>>       y = SLtt_Screen_Rows / 2 - 2;
+>>>       SLsmg_set_color(0);
+>>>       SLsmg_draw_box(y, 0, 3, SLtt_Screen_Cols);
+>>> @@ -56,7 +56,7 @@ static void tui_progress__update(struct ui_progress *p)
+>>>       bar = ((SLtt_Screen_Cols - 2) * p->curr) / p->total;
+>>>       SLsmg_fill_region(y, 1, 1, bar, ' ');
+>>>       SLsmg_refresh();
+>>> -     pthread_mutex_unlock(&ui__lock);
+>>> +     mutex_unlock(&ui__lock);
+>>>  }
+>>>
+>>>  static void tui_progress__finish(void)
+>>> @@ -67,12 +67,12 @@ static void tui_progress__finish(void)
+>>>               return;
+>>>
+>>>       ui__refresh_dimensions(false);
+>>> -     pthread_mutex_lock(&ui__lock);
+>>> +     mutex_lock(&ui__lock);
+>>>       y = SLtt_Screen_Rows / 2 - 2;
+>>>       SLsmg_set_color(0);
+>>>       SLsmg_fill_region(y, 0, 3, SLtt_Screen_Cols, ' ');
+>>>       SLsmg_refresh();
+>>> -     pthread_mutex_unlock(&ui__lock);
+>>> +     mutex_unlock(&ui__lock);
+>>>  }
+>>>
+>>>  static struct ui_progress_ops tui_progress__ops = {
+>>> diff --git a/tools/perf/ui/tui/setup.c b/tools/perf/ui/tui/setup.c
+>>> index b1be59b4e2a4..a3b8c397c24d 100644
+>>> --- a/tools/perf/ui/tui/setup.c
+>>> +++ b/tools/perf/ui/tui/setup.c
+>>> @@ -29,10 +29,10 @@ void ui__refresh_dimensions(bool force)
+>>>  {
+>>>       if (force || ui__need_resize) {
+>>>               ui__need_resize = 0;
+>>> -             pthread_mutex_lock(&ui__lock);
+>>> +             mutex_lock(&ui__lock);
+>>>               SLtt_get_screen_size();
+>>>               SLsmg_reinit_smg();
+>>> -             pthread_mutex_unlock(&ui__lock);
+>>> +             mutex_unlock(&ui__lock);
+>>>       }
+>>>  }
+>>>
+>>> @@ -170,10 +170,10 @@ void ui__exit(bool wait_for_ok)
+>>>                                   "Press any key...", 0);
+>>>
+>>>       SLtt_set_cursor_visibility(1);
+>>> -     if (!pthread_mutex_trylock(&ui__lock)) {
+>>> +     if (mutex_trylock(&ui__lock)) {
+>>>               SLsmg_refresh();
+>>>               SLsmg_reset_smg();
+>>> -             pthread_mutex_unlock(&ui__lock);
+>>> +             mutex_unlock(&ui__lock);
+>>>       }
+>>>       SLang_reset_tty();
+>>>       perf_error__unregister(&perf_tui_eops);
+>>> diff --git a/tools/perf/ui/tui/util.c b/tools/perf/ui/tui/util.c
+>>> index 0f562e2cb1e8..3c5174854ac8 100644
+>>> --- a/tools/perf/ui/tui/util.c
+>>> +++ b/tools/perf/ui/tui/util.c
+>>> @@ -95,7 +95,7 @@ int ui_browser__input_window(const char *title, const char *text, char *input,
+>>>               t = sep + 1;
+>>>       }
+>>>
+>>> -     pthread_mutex_lock(&ui__lock);
+>>> +     mutex_lock(&ui__lock);
+>>>
+>>>       max_len += 2;
+>>>       nr_lines += 8;
+>>> @@ -125,17 +125,17 @@ int ui_browser__input_window(const char *title, const char *text, char *input,
+>>>       SLsmg_write_nstring((char *)exit_msg, max_len);
+>>>       SLsmg_refresh();
+>>>
+>>> -     pthread_mutex_unlock(&ui__lock);
+>>> +     mutex_unlock(&ui__lock);
+>>>
+>>>       x += 2;
+>>>       len = 0;
+>>>       key = ui__getch(delay_secs);
+>>>       while (key != K_TIMER && key != K_ENTER && key != K_ESC) {
+>>> -             pthread_mutex_lock(&ui__lock);
+>>> +             mutex_lock(&ui__lock);
+>>>
+>>>               if (key == K_BKSPC) {
+>>>                       if (len == 0) {
+>>> -                             pthread_mutex_unlock(&ui__lock);
+>>> +                             mutex_unlock(&ui__lock);
+>>>                               goto next_key;
+>>>                       }
+>>>                       SLsmg_gotorc(y, x + --len);
+>>> @@ -147,7 +147,7 @@ int ui_browser__input_window(const char *title, const char *text, char *input,
+>>>               }
+>>>               SLsmg_refresh();
+>>>
+>>> -             pthread_mutex_unlock(&ui__lock);
+>>> +             mutex_unlock(&ui__lock);
+>>>
+>>>               /* XXX more graceful overflow handling needed */
+>>>               if (len == sizeof(buf) - 1) {
+>>> @@ -215,19 +215,19 @@ void __ui__info_window(const char *title, const char *text, const char *exit_msg
+>>>
+>>>  void ui__info_window(const char *title, const char *text)
+>>>  {
+>>> -     pthread_mutex_lock(&ui__lock);
+>>> +     mutex_lock(&ui__lock);
+>>>       __ui__info_window(title, text, NULL);
+>>>       SLsmg_refresh();
+>>> -     pthread_mutex_unlock(&ui__lock);
+>>> +     mutex_unlock(&ui__lock);
+>>>  }
+>>>
+>>>  int ui__question_window(const char *title, const char *text,
+>>>                       const char *exit_msg, int delay_secs)
+>>>  {
+>>> -     pthread_mutex_lock(&ui__lock);
+>>> +     mutex_lock(&ui__lock);
+>>>       __ui__info_window(title, text, exit_msg);
+>>>       SLsmg_refresh();
+>>> -     pthread_mutex_unlock(&ui__lock);
+>>> +     mutex_unlock(&ui__lock);
+>>>       return ui__getch(delay_secs);
+>>>  }
+>>>
+>>> diff --git a/tools/perf/ui/ui.h b/tools/perf/ui/ui.h
+>>> index 9b6fdf06e1d2..99f8d2fe9bc5 100644
+>>> --- a/tools/perf/ui/ui.h
+>>> +++ b/tools/perf/ui/ui.h
+>>> @@ -2,11 +2,11 @@
+>>>  #ifndef _PERF_UI_H_
+>>>  #define _PERF_UI_H_ 1
+>>>
+>>> -#include <pthread.h>
+>>> +#include "../util/mutex.h"
+>>>  #include <stdbool.h>
+>>>  #include <linux/compiler.h>
+>>>
+>>> -extern pthread_mutex_t ui__lock;
+>>> +extern struct mutex ui__lock;
+>>>  extern void *perf_gtk_handle;
+>>>
+>>>  extern int use_browser;
+>>
+
