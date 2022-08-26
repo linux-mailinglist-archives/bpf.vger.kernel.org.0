@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B52015A2CB6
-	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 18:48:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EB6B5A2CBD
+	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 18:48:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344421AbiHZQrG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Aug 2022 12:47:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34112 "EHLO
+        id S230446AbiHZQrO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Aug 2022 12:47:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344599AbiHZQqY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Aug 2022 12:46:24 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D962D3342F
-        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 09:45:28 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-340ae84fb7dso1345497b3.17
-        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 09:45:28 -0700 (PDT)
+        with ESMTP id S1344765AbiHZQq0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Aug 2022 12:46:26 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 091C744568
+        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 09:45:36 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-337ed9110c2so33571227b3.15
+        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 09:45:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
          :date:from:to:cc;
-        bh=qVZGUrjNaf+uaIklV22hg50RBgn+7V45ToWO7LHu6z0=;
-        b=KHJFy5APhi23hCB5yhBJbIt9QnW9DPxdVtwh9gL5fbHIYRHK3POGYS46+q2HkyOStC
-         76K6TkDIM4sJYciYCZapgV+g78ZVpk+J4MwS4SdpMuSUyUj1+4fLMR5afhfyFuWXTpmU
-         ZDI89zMH1X54UbxfpgRHoJ8NKFjReW0C17bEAFMiD2YuZo9/MlfTIgj6OoCs0J/6Qs9v
-         Pvk6mvDm/iNVPGZ6P+HTAHuE75ABfGTMz4NSGJZyWLpb+bOxLLiomAK2i4UP5IPDIORg
-         2nD82jqta63p0XiFw5/8qAyBlH+7+B9IyCPQLmSFDJElrJtkcY+fpxPVGMM09tEFQx7F
-         DJ1w==
+        bh=taa3AgrUGklZBinkwVt0bQeh1ht8ynjIrx3kuUJRxJw=;
+        b=RCSICxAMM6hk3ItMYtco0m9Sf6jGuFwmDEqz3qYYgbJ5Y6hKFjHIWnsaPtK2ZlXWFf
+         GPwzXBHgxMvQkOEwxAPDe7t3hFITeGDkOPPmm/iJPxvDVVe1NwUHVvBMg9dJYHkgzuHJ
+         gRuZAGzuxm5KQuJgcZ3b0xNoLUy2rDHQ/o767HC22XYfGYRdLMrgNzreWhw88pdnW/sh
+         0mhfBarjKntwWqB7xZMoDTvvX7J9uPYAe2mIL+9O7YcLs/JHel+EtttxKzxYoLskXfcZ
+         bBpcjMu4Bb/kLPmMIXlYgVvpsYlYdc8It4TMkF27UNF0Tc7IGyTfDZSkXy3KvaZQze2+
+         xvTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
          :date:x-gm-message-state:from:to:cc;
-        bh=qVZGUrjNaf+uaIklV22hg50RBgn+7V45ToWO7LHu6z0=;
-        b=XtFWrgF84mJNmVG8dK+n+Wip6Lo1m0LOOPNd9MCulYbLYOwuh7ZN6+4oMmJyZF9QjS
-         9J/RKe1YCz7u8HMpGIyOLCusZf3eNMosl2WJ3//1Mn8G027I4KpJfe0T5al/jAgOBWRn
-         RMGsoga/usHgz8buahvi382yLTHyTF2qEi1JN1PqCN0aIVzkTPHbpdqnQN1F3jJtVzzi
-         mu/Fge0Vv+u+Q5/zjSDfeH+zhDUckpR9xsHNL9ansVWaFRmhrr7T0h9fvQBHvKKMVVl0
-         ETCApyiXcm4Ef/Dtxe5GrflwxViqAbWYIsnczjAlc74Ga/TKMELoiEyvXt5G9r/2hIwN
-         JEmg==
-X-Gm-Message-State: ACgBeo0yN32CdLtT686RWwU/ibpng6xk87dg5qYEXTDskmRnCFwQWCCw
-        2eJI8yc7g8Fl+hNrSC0BJOMyUOHSLxbW
-X-Google-Smtp-Source: AA6agR6J0Hznz0vPOdzwS6MMpPQI4D+kQEceU90qKk0iVhgT86mCXFGZ9ZRvq5vU8WGX7k2j0+P8PXMbYM+2
+        bh=taa3AgrUGklZBinkwVt0bQeh1ht8ynjIrx3kuUJRxJw=;
+        b=B/FH6HNbGEDOqoXgL5+aVU4Ia0htBHHdtZGYzmOKMvG063Cvu3D4eOaqi1/eqqt1X1
+         hhqkXEw7pDC8oxJa90iRJdHdRUeTYfVwdr469n+OZklO+Z9jsTNn2y9RWyV/56gs3ggm
+         hduYdTViCO+xUnhMstX6Z/rUOrLYGWl7btlDlSNIG+i5VldTQnpBOSc1eVLIAxw5bzhL
+         aidYtZ4z0QOYBB3Y87rCtjbRcd8VT5QmSXWakaLDIt+i7kNfNbOsFVTUm6bEVKa/TGxa
+         Xf3Q7S4Ianc8FIybLMJn0It+xNAlYQXQrE0Ok/0MHB5WfLP4rt3GpJ3P88O9qejO4f+O
+         yAqQ==
+X-Gm-Message-State: ACgBeo3PPVkZj3mcLvmn6Nc3YtrgXMAhD0MRqxse86m41jwNUSvxZqGD
+        xJwvRDY7ShC8G/77tcmHzUa8rPkBpDy4
+X-Google-Smtp-Source: AA6agR7ev6SqhADqDt5uLWdJHobeI3O4tugxHnBnZzIqU9aNAwe8a818CmiT0W42Jhsf3qgC2JcEr6Zr1uz9
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2d4:203:ccb1:c46b:7044:2508])
- (user=irogers job=sendgmr) by 2002:a25:b901:0:b0:682:66a2:f714 with SMTP id
- x1-20020a25b901000000b0068266a2f714mr428844ybj.577.1661532327823; Fri, 26 Aug
- 2022 09:45:27 -0700 (PDT)
-Date:   Fri, 26 Aug 2022 09:42:40 -0700
+ (user=irogers job=sendgmr) by 2002:a05:6902:549:b0:696:42fd:60aa with SMTP id
+ z9-20020a056902054900b0069642fd60aamr464473ybs.575.1661532335547; Fri, 26 Aug
+ 2022 09:45:35 -0700 (PDT)
+Date:   Fri, 26 Aug 2022 09:42:41 -0700
 In-Reply-To: <20220826164242.43412-1-irogers@google.com>
-Message-Id: <20220826164242.43412-17-irogers@google.com>
+Message-Id: <20220826164242.43412-18-irogers@google.com>
 Mime-Version: 1.0
 References: <20220826164242.43412-1-irogers@google.com>
 X-Mailer: git-send-email 2.37.2.672.g94769d06f0-goog
-Subject: [PATCH v4 16/18] perf sched: Fixes for thread safety analysis
+Subject: [PATCH v4 17/18] perf top: Fixes for thread safety analysis
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -113,114 +113,41 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add annotations to describe lock behavior. Add unlocks so that mutexes
-aren't conditionally held on exit from perf_sched__replay. Add an exit
-variable so that thread_func can terminate, rather than leaving the
-threads blocked on mutexes.
+Add annotations to describe lock behavior.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/builtin-sched.c | 46 ++++++++++++++++++++++++--------------
- 1 file changed, 29 insertions(+), 17 deletions(-)
+ tools/perf/builtin-top.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/tools/perf/builtin-sched.c b/tools/perf/builtin-sched.c
-index 7e4006d6b8bc..b483ff0d432e 100644
---- a/tools/perf/builtin-sched.c
-+++ b/tools/perf/builtin-sched.c
-@@ -246,6 +246,7 @@ struct perf_sched {
- 	const char	*time_str;
- 	struct perf_time_interval ptime;
- 	struct perf_time_interval hist_time;
-+	volatile bool   thread_funcs_exit;
- };
- 
- /* per thread run time data */
-@@ -633,31 +634,34 @@ static void *thread_func(void *ctx)
- 	prctl(PR_SET_NAME, comm2);
- 	if (fd < 0)
- 		return NULL;
--again:
--	ret = sem_post(&this_task->ready_for_work);
--	BUG_ON(ret);
--	mutex_lock(&sched->start_work_mutex);
--	mutex_unlock(&sched->start_work_mutex);
- 
--	cpu_usage_0 = get_cpu_usage_nsec_self(fd);
-+	while (!sched->thread_funcs_exit) {
-+		ret = sem_post(&this_task->ready_for_work);
-+		BUG_ON(ret);
-+		mutex_lock(&sched->start_work_mutex);
-+		mutex_unlock(&sched->start_work_mutex);
- 
--	for (i = 0; i < this_task->nr_events; i++) {
--		this_task->curr_event = i;
--		perf_sched__process_event(sched, this_task->atoms[i]);
--	}
-+		cpu_usage_0 = get_cpu_usage_nsec_self(fd);
- 
--	cpu_usage_1 = get_cpu_usage_nsec_self(fd);
--	this_task->cpu_usage = cpu_usage_1 - cpu_usage_0;
--	ret = sem_post(&this_task->work_done_sem);
--	BUG_ON(ret);
-+		for (i = 0; i < this_task->nr_events; i++) {
-+			this_task->curr_event = i;
-+			perf_sched__process_event(sched, this_task->atoms[i]);
-+		}
- 
--	mutex_lock(&sched->work_done_wait_mutex);
--	mutex_unlock(&sched->work_done_wait_mutex);
-+		cpu_usage_1 = get_cpu_usage_nsec_self(fd);
-+		this_task->cpu_usage = cpu_usage_1 - cpu_usage_0;
-+		ret = sem_post(&this_task->work_done_sem);
-+		BUG_ON(ret);
- 
--	goto again;
-+		mutex_lock(&sched->work_done_wait_mutex);
-+		mutex_unlock(&sched->work_done_wait_mutex);
-+	}
-+	return NULL;
- }
- 
- static void create_tasks(struct perf_sched *sched)
-+	EXCLUSIVE_LOCK_FUNCTION(sched->start_work_mutex)
-+	EXCLUSIVE_LOCK_FUNCTION(sched->work_done_wait_mutex)
+diff --git a/tools/perf/builtin-top.c b/tools/perf/builtin-top.c
+index 5af3347eedc1..e89208b4ad4b 100644
+--- a/tools/perf/builtin-top.c
++++ b/tools/perf/builtin-top.c
+@@ -196,6 +196,7 @@ static void perf_top__record_precise_ip(struct perf_top *top,
+ 					struct hist_entry *he,
+ 					struct perf_sample *sample,
+ 					struct evsel *evsel, u64 ip)
++	EXCLUSIVE_LOCKS_REQUIRED(he->hists->lock)
  {
- 	struct task_desc *task;
- 	pthread_attr_t attr;
-@@ -687,6 +691,8 @@ static void create_tasks(struct perf_sched *sched)
- }
- 
- static void wait_for_tasks(struct perf_sched *sched)
-+	EXCLUSIVE_LOCKS_REQUIRED(sched->work_done_wait_mutex)
-+	EXCLUSIVE_LOCKS_REQUIRED(sched->start_work_mutex)
+ 	struct annotation *notes;
+ 	struct symbol *sym = he->ms.sym;
+@@ -724,13 +725,13 @@ static void *display_thread(void *arg)
+ static int hist_iter__top_callback(struct hist_entry_iter *iter,
+ 				   struct addr_location *al, bool single,
+ 				   void *arg)
++	EXCLUSIVE_LOCKS_REQUIRED(iter->he->hists->lock)
  {
- 	u64 cpu_usage_0, cpu_usage_1;
- 	struct task_desc *task;
-@@ -738,6 +744,8 @@ static void wait_for_tasks(struct perf_sched *sched)
- }
+ 	struct perf_top *top = arg;
+-	struct hist_entry *he = iter->he;
+ 	struct evsel *evsel = iter->evsel;
  
- static void run_one_test(struct perf_sched *sched)
-+	EXCLUSIVE_LOCKS_REQUIRED(sched->work_done_wait_mutex)
-+	EXCLUSIVE_LOCKS_REQUIRED(sched->start_work_mutex)
- {
- 	u64 T0, T1, delta, avg_delta, fluct;
+ 	if (perf_hpp_list.sym && single)
+-		perf_top__record_precise_ip(top, he, iter->sample, evsel, al->addr);
++		perf_top__record_precise_ip(top, iter->he, iter->sample, evsel, al->addr);
  
-@@ -3309,11 +3317,15 @@ static int perf_sched__replay(struct perf_sched *sched)
- 	print_task_traces(sched);
- 	add_cross_task_wakeups(sched);
- 
-+	sched->thread_funcs_exit = false;
- 	create_tasks(sched);
- 	printf("------------------------------------------------------------\n");
- 	for (i = 0; i < sched->replay_repeat; i++)
- 		run_one_test(sched);
- 
-+	sched->thread_funcs_exit = true;
-+	mutex_unlock(&sched->start_work_mutex);
-+	mutex_unlock(&sched->work_done_wait_mutex);
- 	return 0;
- }
- 
+ 	hist__account_cycles(iter->sample->branch_stack, al, iter->sample,
+ 		     !(top->record_opts.branch_stack & PERF_SAMPLE_BRANCH_ANY),
 -- 
 2.37.2.672.g94769d06f0-goog
 
