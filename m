@@ -2,48 +2,48 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BB345A2A3C
-	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 17:02:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A02AD5A2AFD
+	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 17:19:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240244AbiHZPCU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Aug 2022 11:02:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54044 "EHLO
+        id S231267AbiHZPTU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Aug 2022 11:19:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231210AbiHZPCR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Aug 2022 11:02:17 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64479D9E87
-        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 08:02:15 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id r1-20020a056830418100b0063938f634feso1169431otu.8
-        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 08:02:15 -0700 (PDT)
+        with ESMTP id S1344578AbiHZPSz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Aug 2022 11:18:55 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56056E1936
+        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 08:13:01 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id br15-20020a056830390f00b0061c9d73b8bdso1197367otb.6
+        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 08:13:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc;
-        bh=tRhd/2/uHL0VX0F4GeRi6SnOKLBFJo3Q7T6F3F0TR3s=;
-        b=orhQFJnsjMOMEl1XYB+lStIgrX4ra7SL0ABeZSgcWzIJcW65G6IzHoIBENxN8sseM4
-         CoAsY/870bHVS0FlrCS9ipyA4VCGdNf5nQmNvDdLVx/azkoX2x2btuKOCv48mV3Y+ylC
-         hjOEY0WAesEQlmTkAi55NKTX05lKq3t4syAEoUszo9ZiAbZqfxhsJM1fiF+/x+BAX6xJ
-         OhogR1k6QWDtXqvaxG0/7agNJPwoah7vt6vcOG6dsUJJ8o8LNiRCMkdEVCa8OF1yY7jg
-         gaR+VqCefuGhBiOdD9DAtM6o+3mqXrjCWTrlKKX3Ss8zz4QhR0+UGbOcoaRVxTModdNe
-         kJBQ==
+        bh=MWZMc/+7Wyi/uH5iBX0ev6WW8TlaXh1EF/RFAjrq9cc=;
+        b=O7KZCB0y1/yc3jLe5isYu8f/xlGryRQKFSDsS5+Hm9S2iSPTWg+/tkKRDJLMXqshhb
+         +us7nVxANSqnydDjRDeuP/shH3xeBXZADJo3AVQV9nalnGzdZLGI6merUmjQoJjxUBCM
+         DXrIOH91I9znXlCTNFB4gBesUnzcpxaogynP+8rVz+EbUHCgWuDPQcf7sEuC9LsM8Xvk
+         UhzSK1m6W2F8HmZd6k+A7t06IkgtlVlv3EFIompATN0RSz1vsylQMclGBndBQXwxz9nK
+         hJ2Adpznn4iVgzfZAfIjJOpwzy850Ob5dnoVTQh5W9UDec2uMqZNMK7/94JTxpJy2pUA
+         1A2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc;
-        bh=tRhd/2/uHL0VX0F4GeRi6SnOKLBFJo3Q7T6F3F0TR3s=;
-        b=om4WfE5bR1VPZCBqp3pok/LCbKK/LuOtHFmaenZc79nlBL8uRCkDCFFTFdsXBy5d8T
-         n0BNuY7XIUhpdscK6XtjyTPJaNErHVOZUBhV//VbGPihT4y0aefHeoUuHmz1iD9TYY1E
-         k+s/dZzqlHe5EVWXQD6Lyb7v2qhsRT96JpOIYrkkYVnnwchT4oSa0GKeezKj9o7/V2Wt
-         3mEfXjjZn35B4PyXpG2fWou7xWhI4WRA8nEoXPCFIxtSetrl4M3JTSQWx0czubABMYzi
-         aC4hy4zUTgx6Cbv/1GulT9tvzUHkNgSSD1GpcAYrvEcgP8X+mhaS00gDAXFLrCOCpKNA
-         5aNA==
-X-Gm-Message-State: ACgBeo1MgaCh+VVUHoD7g78nsWJTpqfsltRAN6HGmeuA9XKMRWCux/Y2
-        DPkBMYvvchAWq/U3Ae+1PWTmPB8XTIxLZbj8FUYI
-X-Google-Smtp-Source: AA6agR56pOHGSBiz/+WZK6L4lhfNAe2FeRxCZVmxSMGb8hKzyXQdARkr25+BXbcIUJSAKIdw0+UELoCxFiaeDXQtsyg=
-X-Received: by 2002:a9d:2de3:0:b0:638:e210:c9da with SMTP id
- g90-20020a9d2de3000000b00638e210c9damr1506204otb.69.1661526134578; Fri, 26
- Aug 2022 08:02:14 -0700 (PDT)
+        bh=MWZMc/+7Wyi/uH5iBX0ev6WW8TlaXh1EF/RFAjrq9cc=;
+        b=TKLxWgA0sjvz0NWlsyT2BUhLCxa5MEHm7/eG6HATxg+WubT8pFdjlOiJ6QJ5gsZ4Vh
+         Rz35GH8Xsy614nF8eTHwEH6O4VrTCXBkkZAEW6wX/eRecqWIatLsYTFiUdPzJRamq6b5
+         86KiT+2SZ9kWyci3DMEZIu0X07pAPWggUIbc1kyNERIx3Ltfi/8UTCPAUKfuSPn/8zJF
+         Ru+WxAfnQNPck4MS6dvMk054HyPogee7BiCmWMZqChkXHUncSkJn8mTBCcWmOKsXNV7j
+         /DDr8NkvQDECBbMjxh8KBYIdCEW13baNu1wtFWDYp+gp5NdCOtnbT7N2LA+A82dm+RBo
+         yvvg==
+X-Gm-Message-State: ACgBeo21uHhYYRhKY6DbD10dEnN39U1L2o8e6HoVRwFYWBWkumNeszZN
+        sXzVN4X68LKf4HZvP8i10J7sn9VXNnH1W/S+ZQm/
+X-Google-Smtp-Source: AA6agR7MDnpNbCR4YIuVIqyJJ5RWNbTAHPbId2dvXBf5nrjFi+9oTJaH2/L6j7qZudY3DqHaAnZxH1naaj8Dn8ifCxo=
+X-Received: by 2002:a05:6830:449e:b0:638:c72b:68ff with SMTP id
+ r30-20020a056830449e00b00638c72b68ffmr1561158otv.26.1661526780412; Fri, 26
+ Aug 2022 08:13:00 -0700 (PDT)
 MIME-Version: 1.0
 References: <CAHC9VhTuxxRfJg=Ax5z87Jz6tq1oVRcppB444dHM2gP-FZrkTQ@mail.gmail.com>
  <8735dux60p.fsf@email.froward.int.ebiederm.org> <CAHC9VhSHJNLS-KJ-Rz1R12PQbqACSksLYLbymF78d5hMkSGc-g@mail.gmail.com>
@@ -53,126 +53,72 @@ References: <CAHC9VhTuxxRfJg=Ax5z87Jz6tq1oVRcppB444dHM2gP-FZrkTQ@mail.gmail.com>
  <CAHC9VhRqBxtV04ARQFPWpMf1aFZo0HP_HiJ+8VpXAT-zXF6UXw@mail.gmail.com>
  <20220819144537.GA16552@mail.hallyn.com> <CAHC9VhSZ0aaa3k3704j8_9DJvSNRy-0jfXpy1ncs2Jmo8H0a7g@mail.gmail.com>
  <875yigp4tp.fsf@email.froward.int.ebiederm.org> <CAHC9VhTN09ZabnQnsmbSjKgb8spx7_hkh4Z+mq5ArQmfPcVqAg@mail.gmail.com>
- <0D14C118-E644-4D7B-84C0-CA7752DC0605@fb.com> <CAHC9VhS4ROEY6uBwJPaTKX_bLiDRCyFJ9_+_08gFP0VWF_s-bQ@mail.gmail.com>
- <ABA58A31-E4BE-445A-B98C-F462D2ED7679@fb.com>
-In-Reply-To: <ABA58A31-E4BE-445A-B98C-F462D2ED7679@fb.com>
+ <CALrw=nHRFC-Ws2j-MJAs50oznfRC5fG3a3opmYRkxQCtK61EEg@mail.gmail.com>
+In-Reply-To: <CALrw=nHRFC-Ws2j-MJAs50oznfRC5fG3a3opmYRkxQCtK61EEg@mail.gmail.com>
 From:   Paul Moore <paul@paul-moore.com>
-Date:   Fri, 26 Aug 2022 11:02:03 -0400
-Message-ID: <CAHC9VhRU-b8LC3722tBHAzd6atrgiSAaGm16sRf_M7hywWFOOA@mail.gmail.com>
+Date:   Fri, 26 Aug 2022 11:12:49 -0400
+Message-ID: <CAHC9VhT_yz4XBSqyfnYkeLtpdQR_Vo9=mKYu+DSBZtyrjLmiVQ@mail.gmail.com>
 Subject: Re: [PATCH v5 0/4] Introduce security_create_user_ns()
-To:     Song Liu <songliubraving@fb.com>
+To:     Ignat Korchagin <ignat@cloudflare.com>
 Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
         "Serge E. Hallyn" <serge@hallyn.com>,
         Linus Torvalds <torvalds@linux-foundation.org>,
-        Frederick Lawler <fred@cloudflare.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "revest@chromium.org" <revest@chromium.org>,
-        "jackmanb@chromium.org" <jackmanb@chromium.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        James Morris <jmorris@namei.org>,
-        "stephen.smalley.work@gmail.com" <stephen.smalley.work@gmail.com>,
-        "eparis@parisplace.org" <eparis@parisplace.org>,
-        Shuah Khan <shuah@kernel.org>,
-        "brauner@kernel.org" <brauner@kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        bpf <bpf@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        "selinux@vger.kernel.org" <selinux@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "kernel-team@cloudflare.com" <kernel-team@cloudflare.com>,
-        "cgzones@googlemail.com" <cgzones@googlemail.com>,
-        "karl@bigbadwolfsecurity.com" <karl@bigbadwolfsecurity.com>,
-        "tixxdz@gmail.com" <tixxdz@gmail.com>
+        Frederick Lawler <fred@cloudflare.com>, kpsingh@kernel.org,
+        revest@chromium.org, jackmanb@chromium.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        jmorris@namei.org, stephen.smalley.work@gmail.com,
+        eparis@parisplace.org, shuah@kernel.org,
+        Christian Brauner <brauner@kernel.org>, casey@schaufler-ca.com,
+        bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
+        selinux@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>, cgzones@googlemail.com,
+        karl@bigbadwolfsecurity.com, tixxdz@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Aug 25, 2022 at 6:42 PM Song Liu <songliubraving@fb.com> wrote:
-> > On Aug 25, 2022, at 3:10 PM, Paul Moore <paul@paul-moore.com> wrote:
-> > On Thu, Aug 25, 2022 at 5:58 PM Song Liu <songliubraving@fb.com> wrote:
-
-...
-
-> >> I am new to user_namespace and security work, so please pardon me if
-> >> anything below is very wrong.
-> >>
-> >> IIUC, user_namespace is a tool that enables trusted userspace code to
-> >> control the behavior of untrusted (or less trusted) userspace code.
-> >> Failing create_user_ns() doesn't make the system more reliable.
-> >> Specifically, we call create_user_ns() via two paths: fork/clone and
-> >> unshare. For both paths, we need the userspace to use user_namespace,
-> >> and to honor failed create_user_ns().
-> >>
-> >> On the other hand, I would echo that killing the process is not
-> >> practical in some use cases. Specifically, allowing the application to
-> >> run in a less secure environment for a short period of time might be
-> >> much better than killing it and taking down the whole service. Of
-> >> course, there are other cases that security is more important, and
-> >> taking down the whole service is the better choice.
-> >>
-> >> I guess the ultimate solution is a way to enforce using user_namespace
-> >> in the kernel (if it ever makes sense...).
-> >
-> > The LSM framework, and the BPF and SELinux LSM implementations in this
-> > patchset, provide a mechanism to do just that: kernel enforced access
-> > controls using flexible security policies which can be tailored by the
-> > distro, solution provider, or end user to meet the specific needs of
-> > their use case.
+On Fri, Aug 26, 2022 at 5:11 AM Ignat Korchagin <ignat@cloudflare.com> wrote:
+> I would also add here that seccomp allows more flexibility than just
+> delivering SIGSYS to a violating application. We can program seccomp
+> bpf to:
+>   * deliver a signal
+>   * return a CUSTOM error code (and BTW somehow this does not trigger
+> any requirements to change userapi or document in manpages: in my toy
+> example in [1] I'm delivering ENETDOWN from a uname(2) system call,
+> which is not documented in the man pages, but totally valid from a
+> seccomp usage perspective)
+>   * do-nothing, but log the action
 >
-> In this case, I wouldn't call the kernel is enforcing access control.
-> (I might be wrong). There are 3 components here: kernel, LSM, and
-> trusted userspace (whoever calls unshare).
+> So I would say the seccomp reference supports the current approach
+> more than the alternative approach of delivering SIGSYS as technically
+> an LSM implementation of the hook (at least in-kernel one) can chose
+> to deliver a signal to a task via kernel-api, but BPF-LSM (and others)
+> can deliver custom error codes and log the actions as well.
 
-The LSM layer, and the LSMs themselves are part of the kernel; look at
-the changes in this patchset to see the LSM, BPF LSM, and SELinux
-kernel changes.  Explaining how the different LSMs work is quite a bit
-beyond the scope of this discussion, but there is plenty of
-information available online that should be able to serve as an
-introduction, not to mention the kernel source itself.  However, in
-very broad terms you can think of the individual LSMs as somewhat
-analogous to filesystem drivers, e.g. ext4, and the LSM itself as the
-VFS layer.
-
-> AFAICT, kernel simply passes
-> the decision made by LSM (BPF or SELinux) to the trusted userspace. It
-> is up to the trusted userspace to honor the return value of unshare().
-
-With a LSM enabled and enforcing a security policy on user namespace
-creation, which appears to be the case of most concern, the kernel
-would make a decision on the namespace creation based on various
-factors (e.g. for SELinux this would be the calling process' security
-domain and the domain's permission set as determined by the configured
-security policy) and if the operation was rejected an error code would
-be returned to userspace and the operation rejected.  It is the exact
-same thing as what would happen if the calling process is chrooted or
-doesn't have a proper UID/GID mapping.  Don't forget that the
-create_user_ns() function already enforces a security policy and
-returns errors to userspace; this patchset doesn't add anything new in
-that regard, it just allows for a richer and more flexible security
-policy to be built on top of the existing constraints.
-
-> If the userspace simply ignores unshare failures, or does not call
-> unshare(CLONE_NEWUSER), kernel and LSM cannot do much about it, right?
-
-The process is still subject to any security policies that are active
-and being enforced by the kernel.  A malicious or misconfigured
-application can still be constrained by the kernel using both the
-kernel's legacy Discretionary Access Controls (DAC) as well as the
-more comprehensive Mandatory Access Controls (MAC) provided by many of
-the LSMs.
+I agree that seccomp mode 2 allows for more flexibility than was
+mentioned earlier, however seccomp filtering has some limitations in
+this particular case which can be an issue for some.  The first, and
+perhaps most important, is that some of the information that a seccomp
+filter might want to inspect is effectively hidden with the clone3(2)
+syscall due to the clone_args struct; this would make it difficult for
+a seccomp filter to identify namespace related operations.  The second
+issue is that a seccomp mode 2 based approach requires the
+applications themselves to "Do The Right Thing" and ensure that the
+proper seccomp filter is loaded into the kernel before the target
+fork()/clone()/unshare() call is executed; a LSM which implements a
+proper mandatory access control mechanism does not rely on the
+application, it enforces the system's security policy regardless of
+what actions userspace performs.
 
 -- 
 paul-moore.com
