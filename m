@@ -2,136 +2,165 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7B3B5A2C87
-	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 18:43:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 629E45A2C7C
+	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 18:42:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344217AbiHZQm3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Aug 2022 12:42:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60688 "EHLO
+        id S1343887AbiHZQmJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Aug 2022 12:42:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343881AbiHZQmU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Aug 2022 12:42:20 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1683DFB6E
-        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 09:42:12 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-3328a211611so33436007b3.5
-        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 09:42:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
-         :date:from:to:cc;
-        bh=byVpB80TV/x11qGZZj1V9Hbrrk6J+Ff/Bi0KHWzM1Uo=;
-        b=W/VJ5rg3aGuizEVj60WkWyRqB0n4EBZUrHEDpDfRWvuCCWoehnJyi3Rk4VJfX4ZUDJ
-         I2qBuJe2t5g52IWnleVkrQQz++kvZNpZPyFEgMwfRm+f7sF4VtcbNJOlWZTi6pCehRIr
-         WCC5X6P0Vq6ehNJhHIf9a5DEEgCpOc+aebP+RNnyveFmorCqIWQu2kFfiJlYzI6iz7OI
-         YYJXu/LyVg+QaqaArBg3BaR+aYN8AWMqgj9/MKglaxPcrCyRkJ9+U2ORELhlXx8IIb21
-         2wnW+TFj9uBCL4tTwo7HjI9gvXNizSNw/kSNLvGjfWNm/dqGnCaCebYOMNsO2V7xYT7p
-         3SGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
-         :date:x-gm-message-state:from:to:cc;
-        bh=byVpB80TV/x11qGZZj1V9Hbrrk6J+Ff/Bi0KHWzM1Uo=;
-        b=Ri5Q2vXA6vDU8RtKXz03wea+NUOeXY2f2+pktBokQS8qQFs+bcVffVE5BNcZLh6TPu
-         IT2ZRYPQzq9jSYPYLxys/RfbmBaiRBH5wjQKNOVUg5gmdxXBJlWKvvyw6lgZ1eikkN+i
-         h+jQ6WYZUWy6LpdQO7bxA3GxK9teoZqfIYAnb9C3SA0p4MdwzJySkAwQQbfm2dYBeW8m
-         A7lJg3kdlg4V5OKAs6YqSUA8B7av3xtN+MB+al9iW4EEgfhto819ktCMRnex79ouLjzf
-         Vu5gLPGE7gQgvN432ABycfUEkxB6lXS+I7PVt3ReIMQToJMABCoNIdJv7XYvLWqcq1hG
-         Z3wA==
-X-Gm-Message-State: ACgBeo15Z8jdRyN82G2AovKqlyjabeRfQ8cx93703385ltrqPOFcas5L
-        q4t19fhNhc7Llgw5y4+LnjLtDeTx53Yq
-X-Google-Smtp-Source: AA6agR6t3Ar57WkibYNIjXdxikxJkwvqy8S0oMCIakUmWXO2vxiyAyZG49JLY3UVp2N9ZoitG2YIlxHWSu8N
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2d4:203:ccb1:c46b:7044:2508])
- (user=irogers job=sendgmr) by 2002:a25:ba90:0:b0:68e:de4c:b2e0 with SMTP id
- s16-20020a25ba90000000b0068ede4cb2e0mr484149ybg.528.1661532132627; Fri, 26
- Aug 2022 09:42:12 -0700 (PDT)
-Date:   Fri, 26 Aug 2022 09:40:14 -0700
-In-Reply-To: <20220826164027.42929-1-irogers@google.com>
-Message-Id: <20220826164027.42929-6-irogers@google.com>
-Mime-Version: 1.0
-References: <20220826164027.42929-1-irogers@google.com>
-X-Mailer: git-send-email 2.37.2.672.g94769d06f0-goog
-Subject: [PATCH v4 05/18] perf bpf: Remove unused pthread.h include
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        "=?UTF-8?q?Andr=C3=A9=20Almeida?=" <andrealmeid@igalia.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Weiguo Li <liwg06@foxmail.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Dario Petrillo <dario.pk1@gmail.com>,
-        Hewenliang <hewenliang4@huawei.com>,
-        yaowenbin <yaowenbin1@huawei.com>,
-        Wenyu Liu <liuwenyu7@huawei.com>,
-        Song Liu <songliubraving@fb.com>,
+        with ESMTP id S1343791AbiHZQl7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Aug 2022 12:41:59 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7990C3AB01;
+        Fri, 26 Aug 2022 09:41:55 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 302A4B831D7;
+        Fri, 26 Aug 2022 16:41:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 548EEC43141;
+        Fri, 26 Aug 2022 16:41:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1661532112;
+        bh=XeDtcz1Gd48tZyQA1aYnSkeMEWO+Xd1Bf+UvW5Grxqk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PvRKmfKFGihJsHTX6bGgDE8r/+C9WObW+Q2c8U7mDZ5zT/VHDBQN4CCtyymREWkve
+         wsP+ilQ0QfksG81m+A1t/cH0/B3xRU414ceOGxSLJgla5dF5Ae1UhC3iijxIk1uCkx
+         hjqkiVhSFt7IfVwqszEYGkYqvbFI28fujs1qXv2hMVpDO+ooSM+CDr3Nclx0HjVsgZ
+         J79Tl2mH3595+9dyrfzAguoKXxlLauzaMw/yVB4Lf6K/zEvw24v0EvGiUfUf1B2Qxk
+         K67dUMWdkyPDTOG264CgGX4rS+4CsFG34E3EtTpEwieJx6Q1oc/t/vwPAqcuVkb3mW
+         n7XhNOqyT8xhw==
+Date:   Fri, 26 Aug 2022 19:41:45 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Pavithra Gurushankar <gpavithrasha@gmail.com>,
-        Alexandre Truong <alexandre.truong@arm.com>,
-        Quentin Monnet <quentin@isovalent.com>,
-        William Cohen <wcohen@redhat.com>,
-        Andres Freund <andres@anarazel.de>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        "=?UTF-8?q?Martin=20Li=C5=A1ka?=" <mliska@suse.cz>,
-        Colin Ian King <colin.king@intel.com>,
-        James Clark <james.clark@arm.com>,
-        Fangrui Song <maskray@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>,
-        Riccardo Mancini <rickyman7@gmail.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Zechuan Chen <chenzechuan1@huawei.com>,
-        Jason Wang <wangborong@cdjrlc.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Remi Bernon <rbernon@codeweavers.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        bpf@vger.kernel.org, llvm@lists.linux.dev
-Cc:     Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Howells <dhowells@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        keyrings@vger.kernel.org,
+        LSM List <linux-security-module@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Daniel =?iso-8859-1?Q?M=FCller?= <deso@posteo.net>,
+        Roberto Sassu <roberto.sassu@huawei.com>,
+        Joanne Koong <joannelkoong@gmail.com>
+Subject: Re: [PATCH v12 02/10] btf: Handle dynamic pointer parameter in kfuncs
+Message-ID: <Ywj3pOahYdxA8Dza@kernel.org>
+References: <20220818152929.402605-1-roberto.sassu@huaweicloud.com>
+ <20220818152929.402605-3-roberto.sassu@huaweicloud.com>
+ <YwhSCE0H+JfUe4Ew@kernel.org>
+ <CAADnVQJbTzfe28ife1+vg+ByLfyLBTCoEZW_eg8TEw838JGaog@mail.gmail.com>
+ <YwheJqUDLOxL3iTi@kernel.org>
+ <YwjcItv0q8GdzPbb@kernel.org>
+ <bb4bdd90017d5772bdc31dfac93f2e86c6c61b82.camel@huaweicloud.com>
+ <Ywj1s6d7XowV82PZ@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Ywj1s6d7XowV82PZ@kernel.org>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-No pthread usage in bpf-event.h.
+On Fri, Aug 26, 2022 at 07:32:54PM +0300, Jarkko Sakkinen wrote:
+> On Fri, Aug 26, 2022 at 05:34:57PM +0200, Roberto Sassu wrote:
+> > On Fri, 2022-08-26 at 17:43 +0300, Jarkko Sakkinen wrote:
+> > > On Fri, Aug 26, 2022 at 08:46:14AM +0300, Jarkko Sakkinen wrote:
+> > > > On Thu, Aug 25, 2022 at 10:16:14PM -0700, Alexei Starovoitov wrote:
+> > > > > On Thu, Aug 25, 2022 at 9:54 PM Jarkko Sakkinen <
+> > > > > jarkko@kernel.org> wrote:
+> > > > > > > -static bool is_dynptr_reg_valid_init(struct bpf_verifier_env
+> > > > > > > *env, struct bpf_reg_state *reg,
+> > > > > > > -                                  enum bpf_arg_type
+> > > > > > > arg_type)
+> > > > > > > +bool is_dynptr_reg_valid_init(struct bpf_verifier_env *env,
+> > > > > > > struct bpf_reg_state *reg,
+> > > > > > > +                           enum bpf_arg_type arg_type)
+> > > > > > >  {
+> > > > > > >       struct bpf_func_state *state = func(env, reg);
+> > > > > > >       int spi = get_spi(reg->off);
+> > > > > > > --
+> > > > > > > 2.25.1
+> > > > > > > 
+> > > > > > 
+> > > > > > Might be niticking but generally I'd consider splitting
+> > > > > > exports as commits of their own.
+> > > > > 
+> > > > > -static bool
+> > > > > +bool
+> > > > > 
+> > > > > into a separate commit?
+> > > > > 
+> > > > > I guess it makes sense for people whose salary depends on
+> > > > > number of commits.
+> > > > > We don't play these games.
+> > > > 
+> > > > What kind of argument is that anyway.
+> > > 
+> > > "Separate each *logical change* into a separate patch." [*]
+> > 
+> > The logical change, as per the patch subject, is allowing the
+> > possibility of including eBPF dynamic pointers in a kfunc definition.
+> > It requires to call an existing function that was already defined
+> > elsewhere.
+> > 
+> > Maybe I'm wrong, but I don't see only exporting a function definition
+> > to an include file as a logical change. To me, the changes in this
+> > patch are clearly connected. Or even better, they tell why the function
+> > definition has been exported, that would not appear if moving the
+> > function definition is a standalone patch.
+> > 
+> > > 
+> > > To add, generally any user space visible space should be an
+> > > isolated patch.
+> > 
+> > As far as I understood, definitions visible to user space should be in
+> > include/uapi.
+> 
+> It does change e.g. the output of kallsyms.
+> 
+> It's not ABI but it's still user space visble.
+> 
+> > 
+> > > 
+> > > Please, stop posting nonsense.
+> > 
+> > If I may, saying this does not encourage people to try to submit their
+> > code. I feel it is a bit strong, and I kindly ask you to express your
+> > opinion in a more gentle way.
+> 
+> I agree. That's why I was wondering what is this nonsense
+> about salary and games.
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/util/bpf-event.h | 1 -
- 1 file changed, 1 deletion(-)
+Please denote that I started my review with "Might be nitpicking...".
 
-diff --git a/tools/perf/util/bpf-event.h b/tools/perf/util/bpf-event.h
-index 144a8a24cc69..1bcbd4fb6c66 100644
---- a/tools/perf/util/bpf-event.h
-+++ b/tools/perf/util/bpf-event.h
-@@ -4,7 +4,6 @@
- 
- #include <linux/compiler.h>
- #include <linux/rbtree.h>
--#include <pthread.h>
- #include <api/fd/array.h>
- #include <stdio.h>
- 
--- 
-2.37.2.672.g94769d06f0-goog
+It's neither particularly disencouraging nor enforcing for anyone.
 
+The blast that came after that, on the other hand, IMHO meets
+exactly those standards.
+
+BR, Jarkko
