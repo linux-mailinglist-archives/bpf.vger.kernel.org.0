@@ -2,122 +2,169 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3D6A5A2091
-	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 07:57:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC25D5A20B6
+	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 08:14:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236722AbiHZF5C (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Aug 2022 01:57:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35090 "EHLO
+        id S229591AbiHZGOM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Aug 2022 02:14:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230054AbiHZF5B (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Aug 2022 01:57:01 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B230C5789;
-        Thu, 25 Aug 2022 22:56:59 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 7F5A6B82F5C;
-        Fri, 26 Aug 2022 05:56:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43271C4314A;
-        Fri, 26 Aug 2022 05:56:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661493417;
-        bh=/FvktWWHz025DxZFW/BBwLRligmr0a9pBYK2MH9aV5Q=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=uCgUQCc/Qlk7Pi7/drdrT0yEzgE2IinbxX+THqgq2Tq5u0b5Kb6RL++DEn7XlDWwg
-         pYwPj+IIOFPS9bL8SODw+FRZcnizjhFomi548R9lX+YLXdbaY748aaWkVEYjme6hG7
-         kV5JeqS6f+G69EWtgP68/6H/Ms6Afj/30OGf33XPFhiV2cmSBuhN1aEjSHsCpT0drP
-         A4TKWrBDUKKkmluFZHkgYrgNYwkRrR5UNov35B1g5xgEiQfZL3lzJpBdRBuTNvHqiy
-         sSDyAl6KZkWo2fKpZ5mGp01B0TUS7PiXF0UcFhNmpv9xdEClFTjZzxL33z+aBOsBrF
-         B3BComuHnQQ1A==
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-324ec5a9e97so11435067b3.7;
-        Thu, 25 Aug 2022 22:56:57 -0700 (PDT)
-X-Gm-Message-State: ACgBeo2JzkJT2fwEKc8wnwNdSGmoyvYPTovwp5l7/ioZTM8r830icmMW
-        6wecUxg4jG/aJUqOolAfMhrP5TCQtqfLYbsFJg4=
-X-Google-Smtp-Source: AA6agR5vlJNlo+eJot0Uf/IDkuELdfK6w7/mY1PtEAOjZwbYPWIA9NBIT4itd5TdjUSZY6bc90hWaEd9s8Kvg6BA5WU=
-X-Received: by 2002:a81:7489:0:b0:33e:dca7:9750 with SMTP id
- p131-20020a817489000000b0033edca79750mr489448ywc.73.1661493416193; Thu, 25
- Aug 2022 22:56:56 -0700 (PDT)
+        with ESMTP id S232033AbiHZGOM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Aug 2022 02:14:12 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38934BCC38;
+        Thu, 25 Aug 2022 23:14:08 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id a65so678098pfa.1;
+        Thu, 25 Aug 2022 23:14:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=h6vPwvG1eOkQpAC5Em2N5b6VPCfvePS3xQSt2oOQck4=;
+        b=hm+bW9uGuVV9IQnmCk3BOzBf0iilvnUqTXRZaVhny7OquF+nPI51w1ezQOuQ7eeckr
+         YvZ6i7oqlf81Lc3vQ/WtSUpdRY+nIoZJzqQunkkqEO+Hm/Yr4RgUflRS60qPmu1In6em
+         H8LUA2EjRpBcEGeNxNx+WXnKKJa4N4gW8JTwPEpa505Zkt8l6+wNJEciDDQxzi0PfvfU
+         eEoEwvE1cMQfK5WCife6UJnTWhkCx6RJ8HSf9CnFxFZrLz71WSkEfjIfdRR28Zqv4Sjr
+         R6uAFfHEYMSS8LKa8jhLkWmoutgubzfuOxiHwfgCO27s9QUfMRtxS5lCi+tzfO8shti0
+         jbSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=h6vPwvG1eOkQpAC5Em2N5b6VPCfvePS3xQSt2oOQck4=;
+        b=WnVHcsNrcgy3EElJ0Mx7QVxocvKz+fiaFvHCw9J1pFzOzkIb1HDyekG9t5sE+/Z3FA
+         cXovIghEpAh7FRVziTKkcOh1098aiC4Mr2W0octFzj2oh1W57duAwzfwOSwkeJpj6xsb
+         fYigqgNt7vi3yG10WAlKZgq5vaMRXOiyLSCUNxKuhQBz8f0rl3Tf5RYNzpdMjGcNlq+5
+         hB+bliMB4HTMZCnhDso8zI4bazA2h/PhI+gUJ6zPE2x/R38lWuafBXcybP7eyCzczmJC
+         ojuxnBoEq5Fk2SKpTyGTeWYrpqZctzajW3oABGV8wvcL0r0/O8KglwDEh/cEUCUBDm4Y
+         aZOQ==
+X-Gm-Message-State: ACgBeo1wwsKLZnWIE52JN2B8UPA67stTBxUt/VykU6PkWkXEAIoJ1hG4
+        Q6gsNRqJH/kxudaNJ0Cr3P3Cg4qVe++z2WDjXvI=
+X-Google-Smtp-Source: AA6agR5oDZJR/frhZRnlNnAattouhZlDZJe50IAr5qsbrG2E6Lhav8BG/MU7GCv7+pk20zQVLxQCvml4Am01ngIr8ao=
+X-Received: by 2002:a63:fb4a:0:b0:429:8605:6ebf with SMTP id
+ w10-20020a63fb4a000000b0042986056ebfmr2051552pgj.225.1661494447719; Thu, 25
+ Aug 2022 23:14:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220823150035.711534-1-roberto.sassu@huaweicloud.com> <20220823150035.711534-6-roberto.sassu@huaweicloud.com>
-In-Reply-To: <20220823150035.711534-6-roberto.sassu@huaweicloud.com>
-From:   Song Liu <song@kernel.org>
-Date:   Thu, 25 Aug 2022 22:56:45 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW5iVRSCQsMRC7bGHw=ZHW1Y7y0SccQG-i-7=umHF2yJEQ@mail.gmail.com>
-Message-ID: <CAPhsuW5iVRSCQsMRC7bGHw=ZHW1Y7y0SccQG-i-7=umHF2yJEQ@mail.gmail.com>
-Subject: Re: [PATCH v13 05/10] bpf: Add bpf_lookup_*_key() and bpf_key_put() kfuncs
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+References: <20220825221751.258958-1-james.hilliard1@gmail.com>
+ <20220826051630.glhrbdhiybtqwc4p@kafai-mbp.dhcp.thefacebook.com>
+ <CADvTj4rQdnd=V0tENFGCTtpTESwSCcwK+h3i9nZ75M+TywNWzA@mail.gmail.com> <20220826054944.5bcx7unsyx4ts6ok@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20220826054944.5bcx7unsyx4ts6ok@kafai-mbp.dhcp.thefacebook.com>
+From:   James Hilliard <james.hilliard1@gmail.com>
+Date:   Fri, 26 Aug 2022 00:13:54 -0600
+Message-ID: <CADvTj4qNR+m2fQMMf9+=hMruhon8G_7yFC2_43-qhZ9X7ZW=8A@mail.gmail.com>
+Subject: Re: [PATCH] selftests/bpf: Fix bind{4,6} tcp/socket header type conflict
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
-        Yonghong Song <yhs@fb.com>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, paul@paul-moore.com,
-        jmorris@namei.org, serge@hallyn.com, Shuah Khan <shuah@kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        =?UTF-8?Q?Daniel_M=C3=BCller?= <deso@posteo.net>,
-        Roberto Sassu <roberto.sassu@huawei.com>
+        Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 23, 2022 at 8:02 AM Roberto Sassu
-<roberto.sassu@huaweicloud.com> wrote:
+On Thu, Aug 25, 2022 at 11:49 PM Martin KaFai Lau <kafai@fb.com> wrote:
 >
-> From: Roberto Sassu <roberto.sassu@huawei.com>
->
-> Add the bpf_lookup_user_key(), bpf_lookup_system_key() and bpf_key_put()
-> kfuncs, to respectively search a key with a given key handle serial number
-> and flags, obtain a key from a pre-determined ID defined in
-> include/linux/verification.h, and cleanup.
->
-> Introduce system_keyring_id_check() to validate the keyring ID parameter of
-> bpf_lookup_system_key().
->
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> ---
->  include/linux/bpf.h          |   6 ++
->  include/linux/verification.h |   8 +++
->  kernel/trace/bpf_trace.c     | 135 +++++++++++++++++++++++++++++++++++
->  3 files changed, 149 insertions(+)
->
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 6041304b402e..991da09a5858 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -2586,4 +2586,10 @@ static inline void bpf_cgroup_atype_get(u32 attach_btf_id, int cgroup_atype) {}
->  static inline void bpf_cgroup_atype_put(int cgroup_atype) {}
->  #endif /* CONFIG_BPF_LSM */
->
-> +#ifdef CONFIG_KEYS
+> On Thu, Aug 25, 2022 at 11:31:15PM -0600, James Hilliard wrote:
+> > On Thu, Aug 25, 2022 at 11:16 PM Martin KaFai Lau <kafai@fb.com> wrote:
+> > >
+> > > On Thu, Aug 25, 2022 at 04:17:49PM -0600, James Hilliard wrote:
+> > > > There is a potential for us to hit a type conflict when including
+> > > > netinet/tcp.h with sys/socket.h, we can replace both of these includes
+> > > > with linux/tcp.h to avoid this conflict.
+> > > >
+> > > > Fixes errors like:
+> > > > In file included from /usr/include/netinet/tcp.h:91,
+> > > >                  from progs/bind4_prog.c:10:
+> > > > /home/buildroot/opt/cross/lib/gcc/bpf/13.0.0/include/stdint.h:34:23: error: conflicting types for 'int8_t'; have 'char'
+> > > >    34 | typedef __INT8_TYPE__ int8_t;
+> > > >       |                       ^~~~~~
+> > > > In file included from /usr/include/x86_64-linux-gnu/sys/types.h:155,
+> > > >                  from /usr/include/x86_64-linux-gnu/bits/socket.h:29,
+> > > >                  from /usr/include/x86_64-linux-gnu/sys/socket.h:33,
+> > > >                  from progs/bind4_prog.c:9:
+> > > > /usr/include/x86_64-linux-gnu/bits/stdint-intn.h:24:18: note: previous declaration of 'int8_t' with type 'int8_t' {aka 'signed char'}
+> > > >    24 | typedef __int8_t int8_t;
+> > > >       |                  ^~~~~~
+> > > > /home/buildroot/opt/cross/lib/gcc/bpf/13.0.0/include/stdint.h:43:24: error: conflicting types for 'int64_t'; have 'long int'
+> > > >    43 | typedef __INT64_TYPE__ int64_t;
+> > > >       |                        ^~~~~~~
+> > > > /usr/include/x86_64-linux-gnu/bits/stdint-intn.h:27:19: note: previous declaration of 'int64_t' with type 'int64_t' {aka 'long long int'}
+> > > >    27 | typedef __int64_t int64_t;
+> > > >       |                   ^~~~~~~
+> > > > make: *** [Makefile:537: /home/buildroot/bpf-next/tools/testing/selftests/bpf/bpf_gcc/bind4_prog.o] Error 1
+> > > >
+> > > > Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+> > > > ---
+> > > >  tools/testing/selftests/bpf/progs/bind4_prog.c | 3 +--
+> > > >  tools/testing/selftests/bpf/progs/bind6_prog.c | 3 +--
+> > > >  2 files changed, 2 insertions(+), 4 deletions(-)
+> > > >
+> > > > diff --git a/tools/testing/selftests/bpf/progs/bind4_prog.c b/tools/testing/selftests/bpf/progs/bind4_prog.c
+> > > > index 474c6a62078a..6bd20042fd53 100644
+> > > > --- a/tools/testing/selftests/bpf/progs/bind4_prog.c
+> > > > +++ b/tools/testing/selftests/bpf/progs/bind4_prog.c
+> > > > @@ -6,8 +6,7 @@
+> > > >  #include <linux/bpf.h>
+> > > >  #include <linux/in.h>
+> > > >  #include <linux/in6.h>
+> > > > -#include <sys/socket.h>
+> > > > -#include <netinet/tcp.h>
+> > > These includes look normal to me.  What environment is hitting this.
+> >
+> > I was hitting this error with GCC 13(GCC master branch).
+> These two includes (<sys/socket.h> and <netinet/tcp.h>) are normal,
+> so does it mean all existing programs need to change to use gcc 13 ?
 
-Do we need to declare struct key here?
+Well I think it's mostly just an issue getting hit with GCC-BPF as it
+looks to me like a cross compilation host/target header conflict.
 
-> +struct bpf_key {
-> +       struct key *key;
-> +       bool has_ref;
-> +};
-> +#endif /* CONFIG_KEYS */
->  #endif /* _LINUX_BPF_H */
 >
+> >
+> > > I don't prefer the selftest writers need to remember this rule.
+> > >
+> > > Beside, afaict, tcp.h should be removed because
+> > > I don't see this test needs it.  I tried removing it
+> > > and it works fine.  It should be removed instead of replacing it
+> > > with another unnecessary tcp.h.
+> >
+> > Oh, that does also appear to work, thought I had tried that already but I guess
+> > I hadn't, sent a v2 with them removed:
+> > https://lore.kernel.org/bpf/20220826052925.980431-1-james.hilliard1@gmail.com/T/#u
+> >
+> > >
+> > > > +#include <linux/tcp.h>
+> > > >  #include <linux/if.h>
+> > > >  #include <errno.h>
+> > > >
+> > > > diff --git a/tools/testing/selftests/bpf/progs/bind6_prog.c b/tools/testing/selftests/bpf/progs/bind6_prog.c
+> > > > index c19cfa869f30..f37617b35a55 100644
+> > > > --- a/tools/testing/selftests/bpf/progs/bind6_prog.c
+> > > > +++ b/tools/testing/selftests/bpf/progs/bind6_prog.c
+> > > > @@ -6,8 +6,7 @@
+> > > >  #include <linux/bpf.h>
+> > > >  #include <linux/in.h>
+> > > >  #include <linux/in6.h>
+> > > > -#include <sys/socket.h>
+> > > > -#include <netinet/tcp.h>
+> > > > +#include <linux/tcp.h>
+> > > >  #include <linux/if.h>
+> > > >  #include <errno.h>
+> > > >
+> > > > --
+> > > > 2.34.1
+> > > >
