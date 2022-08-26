@@ -2,49 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C1D55A2774
-	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 14:12:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39ED55A27E9
+	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 14:38:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231208AbiHZMMz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Aug 2022 08:12:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45280 "EHLO
+        id S230167AbiHZMhI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Aug 2022 08:37:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229917AbiHZMMy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Aug 2022 08:12:54 -0400
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 546CADDA93;
-        Fri, 26 Aug 2022 05:12:53 -0700 (PDT)
+        with ESMTP id S244686AbiHZMhH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Aug 2022 08:37:07 -0400
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37A00C3F5E;
+        Fri, 26 Aug 2022 05:37:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1661515973; x=1693051973;
-  h=message-id:date:mime-version:subject:to:references:from:
-   in-reply-to:content-transfer-encoding;
-  bh=8gzeq3HsKshBpNjIIChQDXSz7Xg1mcO3yxgdPGuVa2A=;
-  b=Gm0FsFNVYtMIw82tYTf+GLrn3cxVX3qlqqUBH0bZ7n3oEGGie4gahSGr
-   4xCGcZHP3iLZO09rcuwJnhjRKglQONhlTJtn1R3c+6h3L/6AevD6waC53
-   KDzqHioXHlmdlcMt49ADYRKl17ffF4HmO42f2yyEWdLxvvb1/maobyk4Y
-   Qa2YCw0Yv/Kd+QqAUMIfSY7XAHo+X+jk0e3PFyxlpxJTA/zYA95gPdGW9
-   Ni7TvGiYAh3L/aOwEhUmaqEHpQ63Qxu/5PHv3yo/Xgx0K3A0JKJhsomIE
-   spTW77D3YZyYt0dOnseX7Za+lu9O0uCLyu8P5NEmtv2/Z5nBE2Lt83una
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10450"; a="295764431"
+  t=1661517426; x=1693053426;
+  h=message-id:date:mime-version:subject:from:to:cc:
+   references:in-reply-to:content-transfer-encoding;
+  bh=yTOtV6ciy/JdpsT5lvadz9gkIiCcMqq8uplUxtO4454=;
+  b=KILrfgHXoKS0qsmIJnrVY7TYV3nRApZuXkThEWNLcT6L7j+zjeF7Ayw9
+   xfhAdtzdqe1ttNopCmvXZT1y9gYIGCxph26z4aBmMWf1W4sibdeXmzyJQ
+   8kQ9nhLWoPS0d5lDu8zyydBCim77gq27C6EQpnBV3kjagC28cndvKWrCb
+   IDu7LBETEfJ9hEK2P/UYARl1nteDkmImDtMJ2iq4Xdb+Y70RbgWNfCS7J
+   Jkdpa241VZYotjhEiHXOzATicIvFJxyJFD7dkxXvmMzxG7tMCn27a6PCZ
+   zXGBWXS0XzciMr6FRSIy8FHcaAJk+IgNxQPL+iu3RGvN/gk1bmm481Qb6
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10450"; a="281465791"
 X-IronPort-AV: E=Sophos;i="5.93,265,1654585200"; 
-   d="scan'208";a="295764431"
+   d="scan'208";a="281465791"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2022 05:12:52 -0700
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2022 05:37:05 -0700
 X-IronPort-AV: E=Sophos;i="5.93,265,1654585200"; 
-   d="scan'208";a="640034953"
+   d="scan'208";a="640040886"
 Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.50.209])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2022 05:12:40 -0700
-Message-ID: <a7176263-7dc8-6cbd-af2d-5338c4c4b546@intel.com>
-Date:   Fri, 26 Aug 2022 15:12:34 +0300
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2022 05:36:52 -0700
+Message-ID: <fd249ce0-f065-e522-d6c7-72985367cc53@intel.com>
+Date:   Fri, 26 Aug 2022 15:36:46 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Firefox/91.0 Thunderbird/91.11.0
-Subject: Re: [PATCH v3 16/18] perf sched: Fixes for thread safety analysis
+Subject: Re: [PATCH v3 00/18] Mutex wrapper, locking and memory leak fixes
 Content-Language: en-US
-To:     Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
+From:   Adrian Hunter <adrian.hunter@intel.com>
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
         Arnaldo Carvalho de Melo <acme@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
@@ -89,137 +91,137 @@ To:     Ian Rogers <irogers@google.com>,
         Jason Wang <wangborong@cdjrlc.com>,
         Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         Remi Bernon <rbernon@codeweavers.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        bpf@vger.kernel.org, llvm@lists.linux.dev
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, llvm@lists.linux.dev
 References: <20220824153901.488576-1-irogers@google.com>
- <20220824153901.488576-17-irogers@google.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
+ <CA+JHD906M0truH7wPNZ=eJwdCA=qLhYDonUx_ZQBwJYpiX1hNg@mail.gmail.com>
+ <c422c9b3-d6e2-e1d5-5273-6a720fdde6c4@intel.com>
 Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
  Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <20220824153901.488576-17-irogers@google.com>
+In-Reply-To: <c422c9b3-d6e2-e1d5-5273-6a720fdde6c4@intel.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 24/08/22 18:38, Ian Rogers wrote:
-> Add annotations to describe lock behavior. Add unlocks so that mutexes
-> aren't conditionally held on exit from perf_sched__replay. Add an exit
-> variable so that thread_func can terminate, rather than leaving the
-> threads blocked on mutexes.
+On 25/08/22 19:14, Adrian Hunter wrote:
+> On 25/08/22 15:30, Arnaldo Carvalho de Melo wrote:
+>> On Wed, Aug 24, 2022, 12:39 PM Ian Rogers <irogers@google.com <mailto:irogers@google.com>> wrote:
+>>
+>>     When fixing a locking race and memory leak in:
+>>     https://lore.kernel.org/linux-perf-users/20211118193714.2293728-1-irogers@google.com/ <https://lore.kernel.org/linux-perf-users/20211118193714.2293728-1-irogers@google.com/>
+>>
+>>     It was requested that debug mutex code be separated out into its own
+>>     files. This was, in part, done by Pavithra Gurushankar in:
+>>     https://lore.kernel.org/lkml/20220727111954.105118-1-gpavithrasha@gmail.com/ <https://lore.kernel.org/lkml/20220727111954.105118-1-gpavithrasha@gmail.com/>
+>>
+>>     These patches fix issues with the previous patches, add in the
+>>     original dso->nsinfo fix and then build on our mutex wrapper with
+>>     clang's -Wthread-safety analysis. The analysis found missing unlocks
+>>     in builtin-sched.c which are fixed and -Wthread-safety is enabled by
+>>     default when building with clang.
+>>
+>>     v3. Adds a missing new line to the error messages and removes the
+>>         pshared argument to mutex_init by having two functions, mutex_init
+>>         and mutex_init_pshared. These changes were suggested by Adrian Hunter.
+>>
+>>
+>> Adrian, can I have your Acked-by or, better, Reviewed-by?
 > 
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/builtin-sched.c | 46 ++++++++++++++++++++++++--------------
->  1 file changed, 29 insertions(+), 17 deletions(-)
+> Sure, just let me have another look.  Should get to it
+> tomorrow.
+
+Looks good but a couple of things that need to be fixed up.
+
 > 
-> diff --git a/tools/perf/builtin-sched.c b/tools/perf/builtin-sched.c
-> index 7e4006d6b8bc..b483ff0d432e 100644
-> --- a/tools/perf/builtin-sched.c
-> +++ b/tools/perf/builtin-sched.c
-> @@ -246,6 +246,7 @@ struct perf_sched {
->  	const char	*time_str;
->  	struct perf_time_interval ptime;
->  	struct perf_time_interval hist_time;
-> +	volatile bool   thread_funcs_exit;
->  };
->  
->  /* per thread run time data */
-> @@ -633,31 +634,34 @@ static void *thread_func(void *ctx)
->  	prctl(PR_SET_NAME, comm2);
->  	if (fd < 0)
->  		return NULL;
-> -again:
-> -	ret = sem_post(&this_task->ready_for_work);
-> -	BUG_ON(ret);
-> -	mutex_lock(&sched->start_work_mutex);
-> -	mutex_unlock(&sched->start_work_mutex);
->  
-> -	cpu_usage_0 = get_cpu_usage_nsec_self(fd);
-> +	while (!sched->thread_funcs_exit) {
-> +		ret = sem_post(&this_task->ready_for_work);
-> +		BUG_ON(ret);
-> +		mutex_lock(&sched->start_work_mutex);
-> +		mutex_unlock(&sched->start_work_mutex);
->  
-> -	for (i = 0; i < this_task->nr_events; i++) {
-> -		this_task->curr_event = i;
-> -		perf_sched__process_event(sched, this_task->atoms[i]);
-> -	}
-> +		cpu_usage_0 = get_cpu_usage_nsec_self(fd);
->  
-> -	cpu_usage_1 = get_cpu_usage_nsec_self(fd);
-> -	this_task->cpu_usage = cpu_usage_1 - cpu_usage_0;
-> -	ret = sem_post(&this_task->work_done_sem);
-> -	BUG_ON(ret);
-> +		for (i = 0; i < this_task->nr_events; i++) {
-> +			this_task->curr_event = i;
-> +			perf_sched__process_event(sched, this_task->atoms[i]);
-> +		}
->  
-> -	mutex_lock(&sched->work_done_wait_mutex);
-> -	mutex_unlock(&sched->work_done_wait_mutex);
-> +		cpu_usage_1 = get_cpu_usage_nsec_self(fd);
-> +		this_task->cpu_usage = cpu_usage_1 - cpu_usage_0;
-> +		ret = sem_post(&this_task->work_done_sem);
-> +		BUG_ON(ret);
->  
-> -	goto again;
-> +		mutex_lock(&sched->work_done_wait_mutex);
-> +		mutex_unlock(&sched->work_done_wait_mutex);
-> +	}
-> +	return NULL;
->  }
->  
->  static void create_tasks(struct perf_sched *sched)
-> +	EXCLUSIVE_LOCK_FUNCTION(sched->start_work_mutex)
-> +	EXCLUSIVE_LOCK_FUNCTION(sched->work_done_wait_mutex)
->  {
->  	struct task_desc *task;
->  	pthread_attr_t attr;
-> @@ -687,6 +691,8 @@ static void create_tasks(struct perf_sched *sched)
->  }
->  
->  static void wait_for_tasks(struct perf_sched *sched)
-> +	EXCLUSIVE_LOCKS_REQUIRED(sched->work_done_wait_mutex)
-> +	EXCLUSIVE_LOCKS_REQUIRED(sched->start_work_mutex)
->  {
->  	u64 cpu_usage_0, cpu_usage_1;
->  	struct task_desc *task;
-> @@ -738,6 +744,8 @@ static void wait_for_tasks(struct perf_sched *sched)
->  }
->  
->  static void run_one_test(struct perf_sched *sched)
-> +	EXCLUSIVE_LOCKS_REQUIRED(sched->work_done_wait_mutex)
-> +	EXCLUSIVE_LOCKS_REQUIRED(sched->start_work_mutex)
->  {
->  	u64 T0, T1, delta, avg_delta, fluct;
->  
-> @@ -3309,11 +3317,15 @@ static int perf_sched__replay(struct perf_sched *sched)
->  	print_task_traces(sched);
->  	add_cross_task_wakeups(sched);
->  
-> +	sched->thread_funcs_exit = false;
->  	create_tasks(sched);
->  	printf("------------------------------------------------------------\n");
->  	for (i = 0; i < sched->replay_repeat; i++)
->  		run_one_test(sched);
->  
-> +	sched->thread_funcs_exit = true;
-> +	mutex_unlock(&sched->start_work_mutex);
-> +	mutex_unlock(&sched->work_done_wait_mutex);
-
-I think you still need to wait for the threads to exit before
-destroying the mutexes.
-
->  	return 0;
->  }
->  
+>>
+>> Thanks, 
+>>
+>> -  Arnaldo 
+>>
+>>     v2. Breaks apart changes that s/pthread_mutex/mutex/g and the lock
+>>         annotations as requested by Arnaldo and Namhyung. A boolean is
+>>         added to builtin-sched.c to terminate thread funcs rather than
+>>         leaving them blocked on delted mutexes.
+>>
+>>     Ian Rogers (17):
+>>       perf bench: Update use of pthread mutex/cond
+>>       perf tests: Avoid pthread.h inclusion
+>>       perf hist: Update use of pthread mutex
+>>       perf bpf: Remove unused pthread.h include
+>>       perf lock: Remove unused pthread.h include
+>>       perf record: Update use of pthread mutex
+>>       perf sched: Update use of pthread mutex
+>>       perf ui: Update use of pthread mutex
+>>       perf mmap: Remove unnecessary pthread.h include
+>>       perf dso: Update use of pthread mutex
+>>       perf annotate: Update use of pthread mutex
+>>       perf top: Update use of pthread mutex
+>>       perf dso: Hold lock when accessing nsinfo
+>>       perf mutex: Add thread safety annotations
+>>       perf sched: Fixes for thread safety analysis
+>>       perf top: Fixes for thread safety analysis
+>>       perf build: Enable -Wthread-safety with clang
+>>
+>>     Pavithra Gurushankar (1):
+>>       perf mutex: Wrapped usage of mutex and cond
+>>
+>>      tools/perf/Makefile.config                 |   5 +
+>>      tools/perf/bench/epoll-ctl.c               |  33 +++---
+>>      tools/perf/bench/epoll-wait.c              |  33 +++---
+>>      tools/perf/bench/futex-hash.c              |  33 +++---
+>>      tools/perf/bench/futex-lock-pi.c           |  33 +++---
+>>      tools/perf/bench/futex-requeue.c           |  33 +++---
+>>      tools/perf/bench/futex-wake-parallel.c     |  33 +++---
+>>      tools/perf/bench/futex-wake.c              |  33 +++---
+>>      tools/perf/bench/numa.c                    |  93 ++++++----------
+>>      tools/perf/builtin-inject.c                |   4 +
+>>      tools/perf/builtin-lock.c                  |   1 -
+>>      tools/perf/builtin-record.c                |  13 ++-
+>>      tools/perf/builtin-sched.c                 | 105 +++++++++---------
+>>      tools/perf/builtin-top.c                   |  45 ++++----
+>>      tools/perf/tests/mmap-basic.c              |   2 -
+>>      tools/perf/tests/openat-syscall-all-cpus.c |   2 +-
+>>      tools/perf/tests/perf-record.c             |   2 -
+>>      tools/perf/ui/browser.c                    |  20 ++--
+>>      tools/perf/ui/browsers/annotate.c          |  12 +--
+>>      tools/perf/ui/setup.c                      |   5 +-
+>>      tools/perf/ui/tui/helpline.c               |   5 +-
+>>      tools/perf/ui/tui/progress.c               |   8 +-
+>>      tools/perf/ui/tui/setup.c                  |   8 +-
+>>      tools/perf/ui/tui/util.c                   |  18 ++--
+>>      tools/perf/ui/ui.h                         |   4 +-
+>>      tools/perf/util/Build                      |   1 +
+>>      tools/perf/util/annotate.c                 |  15 +--
+>>      tools/perf/util/annotate.h                 |   4 +-
+>>      tools/perf/util/bpf-event.h                |   1 -
+>>      tools/perf/util/build-id.c                 |  12 ++-
+>>      tools/perf/util/dso.c                      |  19 ++--
+>>      tools/perf/util/dso.h                      |   4 +-
+>>      tools/perf/util/hist.c                     |   6 +-
+>>      tools/perf/util/hist.h                     |   4 +-
+>>      tools/perf/util/map.c                      |   3 +
+>>      tools/perf/util/mmap.h                     |   1 -
+>>      tools/perf/util/mutex.c                    | 119 +++++++++++++++++++++
+>>      tools/perf/util/mutex.h                    | 109 +++++++++++++++++++
+>>      tools/perf/util/probe-event.c              |   3 +
+>>      tools/perf/util/symbol.c                   |   4 +-
+>>      tools/perf/util/top.h                      |   5 +-
+>>      41 files changed, 570 insertions(+), 323 deletions(-)
+>>      create mode 100644 tools/perf/util/mutex.c
+>>      create mode 100644 tools/perf/util/mutex.h
+>>
+>>     -- 
+>>     2.37.2.609.g9ff673ca1a-goog
+>>
+> 
 
