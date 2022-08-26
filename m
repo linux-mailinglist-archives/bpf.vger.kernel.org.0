@@ -2,49 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CC485A30A2
-	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 22:48:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C3C15A30A6
+	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 22:53:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232244AbiHZUsY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Aug 2022 16:48:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52050 "EHLO
+        id S1344992AbiHZUw1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Aug 2022 16:52:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232426AbiHZUsW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Aug 2022 16:48:22 -0400
-Received: from mail-oa1-f41.google.com (mail-oa1-f41.google.com [209.85.160.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E67BD1E3C;
-        Fri, 26 Aug 2022 13:48:21 -0700 (PDT)
-Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-11d2dcc31dbso3541247fac.7;
-        Fri, 26 Aug 2022 13:48:21 -0700 (PDT)
+        with ESMTP id S1344820AbiHZUw0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Aug 2022 16:52:26 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A086EDDA9F
+        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 13:52:22 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id m16so3095484wru.9
+        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 13:52:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=/FKV8NfeABOB5rtbgWYmbTPwp8Mt3Wy5s1mzFHehzCI=;
+        b=iGdU9mei9DSZLuS7uHMIilQd2lkoyJdSwxMI0mReZhtN5gkUjZ/wrXKT6lcyVWfI9/
+         tSFEDjKo7eNzCSM30CeVaMzrZNaxDUnrPRphbe/K9PkwnBBazL4zX7PI3/+oGgwh5Q7L
+         3AKr1t8J/rXzDnfuOfT7+4CTJJ1LAPtw04XEl6tR5l3+D4KBpg52ot7ATUaTg8NZUb3k
+         or4JQYq+nMk1Gs+Q2/BmuTpabwasj/n4rO+JuYwI5336KrkHtYygVkgHP5DTbK8WQ4/N
+         d1tPQHY3ycYE50AtVpwKar6L2Df6EgDYGz2wDtXA7euueSCPx5CC1D0PpALlrwPPqOhh
+         ysmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc;
-        bh=+sFY7D0l2mnCR+yBDf+opIgpmAA2WEbHZKwcSvQkuz0=;
-        b=XZ7s0hXNmEde4ohHK74sH3BCjN8BfQWuAVtuPeoYll6FujPuRx/7MHB46fAzrOANeI
-         cV1m3rpy8yWAcw8d+huZZGtCxQSe9U4c3tB4JgAvZ67g/p+h+/SrqhVJqB348xYEtrrD
-         k2HNPc6avqVRmOfwlDEIUUaArHhDtvqqYaA6p58pNsVxfY4UFi/00D3Bm2f3QfiVwAtm
-         kwrYz1GyRmfbckQy0knBnLbaSvQxw4S6Hkhp1WqlbHXyby8AzK/f6gd+S0srbjo1Ecrd
-         zFbA4Yz5QITn1NTrsDx59C8pAQ4YOtxT6dd14Tn5yCCD4Tx1OMgaEUMHasDMz+r85lOo
-         uCmw==
-X-Gm-Message-State: ACgBeo1GXVxnN4ULki3E9ut2eLDCsLmzWEu9m5LM0N0zG+FM17vHUhuO
-        RMUIT6M6+QqPxnlcjjq9zQluuXAirghgW4nL3V0=
-X-Google-Smtp-Source: AA6agR5zjotJNa9cZNMRCVklNAcj4vN3wXvrE7llGej28AXg2L/RwCW7jMpT+qihLPXgoIk9036xBPWFpfl3w2jC2PQ=
-X-Received: by 2002:a05:6870:5b84:b0:10c:d1fa:2f52 with SMTP id
- em4-20020a0568705b8400b0010cd1fa2f52mr2736185oab.92.1661546900488; Fri, 26
- Aug 2022 13:48:20 -0700 (PDT)
+        bh=/FKV8NfeABOB5rtbgWYmbTPwp8Mt3Wy5s1mzFHehzCI=;
+        b=4qTXaUvKeu7tKCwH+tePeFK/QdyEZ69/f6txxjJ9ezsSNQOKVT+Tg7JDlNWrH8Yg/B
+         GIjswkzlKGs72uDKD43+xzQuJoLUaSDN3YbanMCY8yreyyPRu+L4S0kS7ADIC0eAMHIi
+         bnhyHWtsq5sKEDpqxiv8wDmVJy0cCgvjz0HSqFNf17fs/0lDZgFd44Uz2VAp1axvGc/7
+         acfwYdinNdvtvcZRLOxb0e9F1qLzvQtEZ9VnYXuY9yQr8DsIp7hYl/dkIiaOHt+EzngS
+         6xXA6wY+vAd3DJQhAe98EIZo/pSxo8pPWgN0PRdvhVpCKHvdrDmOjYE5urAWZyg12jiQ
+         Y/ZQ==
+X-Gm-Message-State: ACgBeo1BdbxdHzHkeJ9Ks2oVCQCLumn0RWn2bz8FaDWDOuB7fLSrT7IJ
+        zKSEI74NK3hq150Os1JQjGqXJcwvlwuY6YfPeugo6Q==
+X-Google-Smtp-Source: AA6agR6ZX12RvsXCpQ9Cff+4vP0t6K9e1t4KciZ/ugNMY7xpQnsmru7piccWOa5mOvIGJPe4W+8t0gQU5sT8viOyTYU=
+X-Received: by 2002:a05:6000:1ac9:b0:220:7f40:49e3 with SMTP id
+ i9-20020a0560001ac900b002207f4049e3mr738777wry.40.1661547139826; Fri, 26 Aug
+ 2022 13:52:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220824153901.488576-1-irogers@google.com> <20220824153901.488576-17-irogers@google.com>
- <a7176263-7dc8-6cbd-af2d-5338c4c4b546@intel.com> <CAP-5=fXk+mLv=C0CTrvnBeuhCTAtJ=x2O8D2YqvmVZSMHqcLvQ@mail.gmail.com>
- <b9ffea78-48c4-e2cd-20c2-dc0c9c2c69f7@intel.com> <CAP-5=fVXuwxP-REryDShX0RZQjkdy2YJKJ5M+zczUqDE2=59Bg@mail.gmail.com>
- <CAM9d7cgcLHYded1w4h22F_KWcHUpuxqak7Ny02Awj1WDFLynDQ@mail.gmail.com> <5a0b4083-084a-56b3-a6a1-0fad1100a316@intel.com>
-In-Reply-To: <5a0b4083-084a-56b3-a6a1-0fad1100a316@intel.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Fri, 26 Aug 2022 13:48:09 -0700
-Message-ID: <CAM9d7chNUhmULYUfkEuBC3LcD08y7hLGmFn0qeX83KqoPksvCQ@mail.gmail.com>
-Subject: Re: [PATCH v3 16/18] perf sched: Fixes for thread safety analysis
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Ian Rogers <irogers@google.com>,
+References: <20220824153901.488576-1-irogers@google.com> <20220824153901.488576-10-irogers@google.com>
+ <2cf6edac-6e41-b43c-2bc1-f49cb739201a@intel.com> <CAP-5=fVVWx=LZAzXsxfuktPHwki1gYbV4mcmvJp_9GTDS6KJcQ@mail.gmail.com>
+ <a9b4f79d-cdea-821e-0e57-cd4854de6cf4@intel.com> <CAP-5=fW7t9tcJpyUbv8JAo-BFna-KS6FC+HkbuGx6S=h+nBMqw@mail.gmail.com>
+ <43540a3d-e64e-ec08-e12e-aebb236a2efe@intel.com> <CAM9d7chBnZtrKe6b8k+VYk1Nmz8YnNWSMmyLydH6+Otvw4xGeA@mail.gmail.com>
+ <b0f86189-be17-d1e7-d23c-692eeee2b5ec@intel.com> <CAM9d7ciroc1XzRL+W34D5G7kCp4KCzRxjyRqnO2OXj=-ZaMTLQ@mail.gmail.com>
+In-Reply-To: <CAM9d7ciroc1XzRL+W34D5G7kCp4KCzRxjyRqnO2OXj=-ZaMTLQ@mail.gmail.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Fri, 26 Aug 2022 13:52:07 -0700
+Message-ID: <CAP-5=fWvf66snfmUfaTQ6BZ9EmsmBs0PUT8PAfehW74bnEE5nQ@mail.gmail.com>
+Subject: Re: [PATCH v3 09/18] perf ui: Update use of pthread mutex
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
         Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -93,53 +105,48 @@ Cc:     Ian Rogers <irogers@google.com>,
         linux-perf-users <linux-perf-users@vger.kernel.org>,
         bpf <bpf@vger.kernel.org>, llvm@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Aug 26, 2022 at 12:36 PM Adrian Hunter <adrian.hunter@intel.com> wrote:
+On Fri, Aug 26, 2022 at 1:40 PM Namhyung Kim <namhyung@kernel.org> wrote:
 >
-> On 26/08/22 21:26, Namhyung Kim wrote:
-> > On Fri, Aug 26, 2022 at 10:48 AM Ian Rogers <irogers@google.com> wrote:
-
-> >> In the previous code the threads were blocked on mutexes that were
-> >> stack allocated and the stack memory went away. You are correct to say
-> >> that to those locks I added an init and destroy call. The lifetime of
-> >> the mutex was wrong previously and remains wrong in this change.
+> On Fri, Aug 26, 2022 at 12:21 PM Adrian Hunter <adrian.hunter@intel.com> wrote:
 > >
-> > I think you fixed the lifetime issue with sched->thread_funcs_exit here.
-> > All you need to do is calling pthread_join() after the mutex_unlock, no?
+> > On 26/08/22 22:00, Namhyung Kim wrote:
+> > > On Fri, Aug 26, 2022 at 11:53 AM Adrian Hunter <adrian.hunter@intel.com> wrote:
+> > >> Below seems adequate for now, at least logically, but maybe it
+> > >> would confuse clang thread-safety analysis?
+> > >
+> > > I think it's not just about locks, the exit_browser should bail out early
+> > > if the setup code was not called.
+> >
+> > In those cases, use_browser is 0 or -1 unless someone has inserted
+> > an invalid perf config like "tui.script=on" or "gtk.script=on".
+> > So currently, in cases where exit_browser() is called without
+> > setup_browser(), it does nothing.  Which means it is only the
+> > unconditional mutex_destroy() that needs to be conditional.
 >
-> Like this maybe:
+> Yeah there's a possibility that it can be called with > 0 use_browser
+> on some broken config or something.  So I think it's safer and better
+> for future changes.
 
-Yeah, but at this point we might want to factor it out as a function like
-destroy_tasks().
+I'd thought about a:
+static bool ui__lock_initialized;
+but the issue is shouldn't it be atomic? Maybe we should guard it with
+a lock? Then we are back where we started. Having a clean init/exit
+invariant would be best but such a change has the potential to be
+large and out of scope here.
 
 Thanks,
-Namhyung
+Ian
 
->
-> diff --git a/tools/perf/builtin-sched.c b/tools/perf/builtin-sched.c
-> index b483ff0d432e..8090c1218855 100644
-> --- a/tools/perf/builtin-sched.c
-> +++ b/tools/perf/builtin-sched.c
-> @@ -3326,6 +3326,13 @@ static int perf_sched__replay(struct perf_sched *sched)
->         sched->thread_funcs_exit = true;
->         mutex_unlock(&sched->start_work_mutex);
->         mutex_unlock(&sched->work_done_wait_mutex);
-> +       /* Get rid of threads so they won't be upset by mutex destruction */
-> +       for (i = 0; i < sched->nr_tasks; i++) {
-> +               int err = pthread_join(sched->tasks[i]->thread, NULL);
-> +
-> +               if (err)
-> +                       pr_err("pthread_join() failed for task nr %lu, error %d\n", i, err);
-> +       }
->         return 0;
->  }
+> Thanks,
+> Namhyung
