@@ -2,74 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC25D5A20B6
-	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 08:14:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 954F55A20F2
+	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 08:37:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229591AbiHZGOM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Aug 2022 02:14:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59286 "EHLO
+        id S238466AbiHZGhi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Aug 2022 02:37:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232033AbiHZGOM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Aug 2022 02:14:12 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38934BCC38;
-        Thu, 25 Aug 2022 23:14:08 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id a65so678098pfa.1;
-        Thu, 25 Aug 2022 23:14:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=h6vPwvG1eOkQpAC5Em2N5b6VPCfvePS3xQSt2oOQck4=;
-        b=hm+bW9uGuVV9IQnmCk3BOzBf0iilvnUqTXRZaVhny7OquF+nPI51w1ezQOuQ7eeckr
-         YvZ6i7oqlf81Lc3vQ/WtSUpdRY+nIoZJzqQunkkqEO+Hm/Yr4RgUflRS60qPmu1In6em
-         H8LUA2EjRpBcEGeNxNx+WXnKKJa4N4gW8JTwPEpa505Zkt8l6+wNJEciDDQxzi0PfvfU
-         eEoEwvE1cMQfK5WCife6UJnTWhkCx6RJ8HSf9CnFxFZrLz71WSkEfjIfdRR28Zqv4Sjr
-         R6uAFfHEYMSS8LKa8jhLkWmoutgubzfuOxiHwfgCO27s9QUfMRtxS5lCi+tzfO8shti0
-         jbSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=h6vPwvG1eOkQpAC5Em2N5b6VPCfvePS3xQSt2oOQck4=;
-        b=WnVHcsNrcgy3EElJ0Mx7QVxocvKz+fiaFvHCw9J1pFzOzkIb1HDyekG9t5sE+/Z3FA
-         cXovIghEpAh7FRVziTKkcOh1098aiC4Mr2W0octFzj2oh1W57duAwzfwOSwkeJpj6xsb
-         fYigqgNt7vi3yG10WAlKZgq5vaMRXOiyLSCUNxKuhQBz8f0rl3Tf5RYNzpdMjGcNlq+5
-         hB+bliMB4HTMZCnhDso8zI4bazA2h/PhI+gUJ6zPE2x/R38lWuafBXcybP7eyCzczmJC
-         ojuxnBoEq5Fk2SKpTyGTeWYrpqZctzajW3oABGV8wvcL0r0/O8KglwDEh/cEUCUBDm4Y
-         aZOQ==
-X-Gm-Message-State: ACgBeo1wwsKLZnWIE52JN2B8UPA67stTBxUt/VykU6PkWkXEAIoJ1hG4
-        Q6gsNRqJH/kxudaNJ0Cr3P3Cg4qVe++z2WDjXvI=
-X-Google-Smtp-Source: AA6agR5oDZJR/frhZRnlNnAattouhZlDZJe50IAr5qsbrG2E6Lhav8BG/MU7GCv7+pk20zQVLxQCvml4Am01ngIr8ao=
-X-Received: by 2002:a63:fb4a:0:b0:429:8605:6ebf with SMTP id
- w10-20020a63fb4a000000b0042986056ebfmr2051552pgj.225.1661494447719; Thu, 25
- Aug 2022 23:14:07 -0700 (PDT)
+        with ESMTP id S235419AbiHZGhh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Aug 2022 02:37:37 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA558C9264;
+        Thu, 25 Aug 2022 23:37:35 -0700 (PDT)
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27PM4FI5007927;
+        Thu, 25 Aug 2022 23:37:18 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=qXNAl9U+2sPMBSoNFaPp5Qqmr4TewV/xwNvyPOOvlvY=;
+ b=gzbGgFkVCNsbrIFRWZQTrZ/9wVJgSboa6K77fVIMJQUP97gS7zdnFPpZPkqBgd+VFkkn
+ hW2NRyWa84SMxT299D+iNjD4f8cpO6mYBI8m8EGRe8kylJlBx6nroBlBGbxF+kDYSMz7
+ YZo8gDqwuk7YEGwVgInuLM9PZUCpzZMbZWs= 
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2104.outbound.protection.outlook.com [104.47.58.104])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3j6cfwmq6b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Aug 2022 23:37:18 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kj5GsEWFkCnpDHyeuGzm65sEE+lDBdosknKH1Jyi7nKgF4po0YKLGDE0bE15E8NM8JB28qJW7aWNcAFG3acJLZnmYStQs6+sQ3qEHRtoJM3pDo0OHXEAEihz+UgeANVqIpfGm+J4FahLGzEdUScbDahk41mjfig2aaw3+5iiy+1Wo512LW6i3MeVV7An+KKn7xB10u7EtXBHwOloJAY2beF3Tg9r7VBnocKXYBBBLxjv2KwmaajvpWVQRwaPx/ed+6TR+aMjcgypgqj3bEHqBJBogCO1AaUAAQB9UTAoYtrAJLzeT1bQd63Y5O0tyU2CvFnxzBLh99J/Lggouhlcyw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=qXNAl9U+2sPMBSoNFaPp5Qqmr4TewV/xwNvyPOOvlvY=;
+ b=IQdYuCsgusSJblfMKvYzzxVcz3YK+p6sPU/XfH08zFGRlSM9e225lx8xO1X+vvh+9UbfFiJA1Q8YARpUzx1ocoIGrS+/1ea23PRGrC/qsYqoETXaeES7n8QJhGzrYnr2wmaWEy5gBecWvJzI1DbX9LtN/6fei5jo/nhkU0Pjc4/YfObzpYWF0QGY1UjImpH+g9RsHLCuLMdYiVWrtJXFL2dJ0bfhgkiP8x1MdaYY24wnyOUAP7ejKxQeYvF3lHYXBgp9DAFv+19HN31lxr5AObQD/Z2HzfB8ehuqO5XWLJVsYxrZz8HzMeaN1F4NUw3tnbXVDjWV0fW9iTiDCeTLtA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from MW4PR15MB4475.namprd15.prod.outlook.com (2603:10b6:303:104::16)
+ by BN8PR15MB2625.namprd15.prod.outlook.com (2603:10b6:408:c1::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5566.15; Fri, 26 Aug
+ 2022 06:37:15 +0000
+Received: from MW4PR15MB4475.namprd15.prod.outlook.com
+ ([fe80::1858:f420:93d2:4b5e]) by MW4PR15MB4475.namprd15.prod.outlook.com
+ ([fe80::1858:f420:93d2:4b5e%3]) with mapi id 15.20.5566.016; Fri, 26 Aug 2022
+ 06:37:08 +0000
+Date:   Thu, 25 Aug 2022 23:37:06 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Joanne Koong <joannelkoong@gmail.com>
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        bpf@vger.kernel.org, andrii@kernel.org, daniel@iogearbox.net,
+        ast@kernel.org, kuba@kernel.org, netdev@vger.kernel.org,
+        "brouer@redhat.com" <brouer@redhat.com>, lorenzo@kernel.org
+Subject: Re: [PATCH bpf-next v4 2/3] bpf: Add xdp dynptrs
+Message-ID: <20220826063706.pufgtu4rff4urbzf@kafai-mbp.dhcp.thefacebook.com>
+References: <20220822235649.2218031-1-joannelkoong@gmail.com>
+ <20220822235649.2218031-3-joannelkoong@gmail.com>
+ <CAP01T77h2+a9OonHuiPRFsAForWYJfQ71G6teqbcLg4KuGpK5A@mail.gmail.com>
+ <CAJnrk1aq3gJgz0DKo47SS0J2wTtg1C_B3eVfsh-036nmDKKVWA@mail.gmail.com>
+ <878rnehqnd.fsf@toke.dk>
+ <CAJnrk1YYpcW2Z9XQ9sfq2U7Y6OYMc3CZk1Xgc2p1e7DVCq3kmw@mail.gmail.com>
+ <CAP01T75isW8EtuL2AZBwYNzk-OPsMR=QS3YB_oiR8cOLhJzmUg@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAP01T75isW8EtuL2AZBwYNzk-OPsMR=QS3YB_oiR8cOLhJzmUg@mail.gmail.com>
+X-ClientProxiedBy: SJ0PR13CA0146.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c6::31) To MW4PR15MB4475.namprd15.prod.outlook.com
+ (2603:10b6:303:104::16)
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e3d067a3-224b-4ee5-345a-08da872d6634
+X-MS-TrafficTypeDiagnostic: BN8PR15MB2625:EE_
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: tqsq7CkTlnWgYyNpoRFzHYf8l/yehgMAFyAyq+8GgI/6nyqTJ7mkJncx+VlpT11thEtSPf4w0FF3s9C16IoBkq43GuxLnRIq5ZsyY9BvhPWsTvCQ8b57NI+LiN2NQxgEElBXxF46PItFeM+9zTCYZit0z+AdQAToisj+ABG5/z+3mWuRi6z8plBzfPVrTGBp7Y9UnDh8xeaitQUgxlmr/L4670lO7jMZl7yo06Ij891LPSewfvckK9Oa22nQNFGjgfV2sxDIsiFPen5SDD2Fxfic2POEd67omJSYH4bKW2umEwme5PdjC9t/UbvFlvcPZ1iGBOdyf4G8GPqORjUM7Z4uYGyCbnac9bsBntrYC1yE6LxNxhtfjs83BQS+jIzC68oLLXh1YECfkCpvE58HcH3fmpSrCZjZc1BiruElyoF8vBt2twpOCcYoqeiiPZUKyoyiK3DP7wFNSxo2/YJZAskpEsGsdHmqy+Ubm+2aVGvCS+CkNTXrAnReHgNYo89zPJwqntKIi+pS6Gx7IlDFG7sK/2IMVk1uHFQEcdVHEZzzSzDxTxAFmGdrdAsltIPjYekZgIPej3trWTA3lOruRU2iz/ZLJEbXDHxmOS+MTPcoAW27zcuHTidC1pcdwVd5qVOPVW9ZhlKNtdE6gtZ5hCNXswR2XhMQmxdrU9OvPvEIuec3gW7NJxjq1WbrVKdxdWmeDaSABaTza9uEHYc1K7lDWob4hnzEQYcqUXuoYIw=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR15MB4475.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(136003)(39860400002)(376002)(366004)(396003)(346002)(41300700001)(316002)(5660300002)(7416002)(54906003)(8936002)(66946007)(6916009)(38100700002)(966005)(4326008)(8676002)(66556008)(66476007)(478600001)(6486002)(2906002)(6506007)(52116002)(186003)(6512007)(9686003)(1076003)(83380400001)(86362001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Mvlh5DbyVxqUO13DheiU5oMDuvyj1apl9jXWYslIUKCN5Uf1NKYQuSC1mE6u?=
+ =?us-ascii?Q?W7ZEA/Y5NWkediq8amoFbCqgCnyBwd7/lCmJ8lWya2P2VGViduizk/TJVZFG?=
+ =?us-ascii?Q?4Cpl6di6bVKb5LgFgORZQO7v5oHD6DTryuUhv8oYkv39XXtk9UwkvcEUI/eT?=
+ =?us-ascii?Q?CL29XFPilr/Ui7143jyGAiLTc8mwAU0BbsAO9OENw61Qgcf+kupP5Di2ftu4?=
+ =?us-ascii?Q?o8Ex74DfbvXHIt85yVIx2KlS+APgQ+z2/juzHiRl4oY8w+tEvyS/+YrMqAP1?=
+ =?us-ascii?Q?kcuWCKw/eov57p5sKTn9GLq4wkP1Q0zN2mu9tavLxD+8w4btinzgdK6kU5u8?=
+ =?us-ascii?Q?PcogV5+ipNH8YmeNj+e1feHOxxpUEXpJfkFAFBbFlW/Urc+UBQVH6CFMyG/8?=
+ =?us-ascii?Q?hCwGctM/ZynwIbE8oB23czv6YQNHx2m6TB8qn1+nrCW3UZhBhjYoZtA4fii0?=
+ =?us-ascii?Q?b4wTEZWv7NynF4rXZRu/rMQqwYMSqm4aIxE8k3s/R0xhKwPNJ5GqPyREo1kR?=
+ =?us-ascii?Q?8anhQwZGOYUIXGhBgP/CpUxItrHbqUGrkWZC0nONGq20+a7cQEqVicH/SlQt?=
+ =?us-ascii?Q?IPxClAK9UOhmixgLNuEHH9QW+MPbWuBF4cAoY798pPxSJYkrXkvh3rSfo2hr?=
+ =?us-ascii?Q?GJXYZzkX/p/uG06HBrwn7MNuLYVawlZZ4vo8DJcc7ZaH/iMN09tC2TgQ94+t?=
+ =?us-ascii?Q?yyjdRE++tefutoWHBvy4NHtXh+kHEzxuBLavOynBT/ZblQ3rGsCHGrGR40H8?=
+ =?us-ascii?Q?8ujRI8YO75ioVYsFvcWs0jkGeDrl/7uSJtVanWkF76rgW+HMZOa98V3LPOB5?=
+ =?us-ascii?Q?ZZT8fOAuHwKOm38FxW936m8HcfFX/+JUrKM+cCYDTw32OepTYKC9S4FQOIja?=
+ =?us-ascii?Q?/EDGcdMWkrHLzf32jQ1iBWi9A31lBhKIxY2pkGzgfFvgJZAKXz/TDTZoZj2m?=
+ =?us-ascii?Q?nIvL6IXmS0lDc/Ui3nhkGFb4wUrBe6v8W571TVPC4bCF+OwEcuth+gVf75hR?=
+ =?us-ascii?Q?ixNu6fGTtt0nOV0IG/FZbJuXkGiWwUPxZUsO3Ca4Nq9yN7pwwF+jsB4qxr/2?=
+ =?us-ascii?Q?bj2uUehBmObFtBMTMP7P8dBhotB1Bz22bhIWl6RPpF6I1b+KPVPpNogi8mXa?=
+ =?us-ascii?Q?vSaFtbu6f0Qdb1LBRzbW010Jh4E+gKuytmFBfJ4ah1zRE+AYwswARvjtMNvI?=
+ =?us-ascii?Q?8TqcT3foYfNBuB8/4kar6UjYRbSiEV+LSb/enWr6JeNADKRUk1Z7QaJz0koS?=
+ =?us-ascii?Q?nG7ecETfvqixPojOmOJqOXvHelctjZqn9UuppaWW41RTHaOx4zHThiSPEaaN?=
+ =?us-ascii?Q?PpI5RmVYpS0F+z5rBRPYsDVb8zc0N5xDltNxZ/0j0vZ6jyuOjiBwtWO8qEOB?=
+ =?us-ascii?Q?qbDCLSb0p3T+2x/BDOCo1mzkzWzcNs5HekS04OusAM6mZXfcw/vM6O+CUDgX?=
+ =?us-ascii?Q?a7tSQooR9uoHiZm6bjzxsZltGBolFkRPHkiJxGpJo19E9dbpd3jGyJaHXl9m?=
+ =?us-ascii?Q?RtJkaqXoGDOScBc9UDqGpsLEQMtEk/7xoXJss1fwiMgAA0wZI6FUgpSUtSbj?=
+ =?us-ascii?Q?lzQOtZCL6MWx1IcjkzPhRio6sdgHzh2IJFAjhurGSWXP8zlOAX0ys6iXbSyL?=
+ =?us-ascii?Q?LA=3D=3D?=
+X-OriginatorOrg: fb.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e3d067a3-224b-4ee5-345a-08da872d6634
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR15MB4475.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Aug 2022 06:37:08.7434
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /V5cYrff78zKkeVPREzu2q2L93ddXeZcFQxAQ4oHCEKYicl/HjOh4cB8k2oS8Be+
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR15MB2625
+X-Proofpoint-GUID: GHk4nv-5ClBB5NY7ZwIlFNHgeMffp3KG
+X-Proofpoint-ORIG-GUID: GHk4nv-5ClBB5NY7ZwIlFNHgeMffp3KG
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <20220825221751.258958-1-james.hilliard1@gmail.com>
- <20220826051630.glhrbdhiybtqwc4p@kafai-mbp.dhcp.thefacebook.com>
- <CADvTj4rQdnd=V0tENFGCTtpTESwSCcwK+h3i9nZ75M+TywNWzA@mail.gmail.com> <20220826054944.5bcx7unsyx4ts6ok@kafai-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20220826054944.5bcx7unsyx4ts6ok@kafai-mbp.dhcp.thefacebook.com>
-From:   James Hilliard <james.hilliard1@gmail.com>
-Date:   Fri, 26 Aug 2022 00:13:54 -0600
-Message-ID: <CADvTj4qNR+m2fQMMf9+=hMruhon8G_7yFC2_43-qhZ9X7ZW=8A@mail.gmail.com>
-Subject: Re: [PATCH] selftests/bpf: Fix bind{4,6} tcp/socket header type conflict
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-08-26_02,2022-08-25_01,2022-06-22_01
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,94 +135,68 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Aug 25, 2022 at 11:49 PM Martin KaFai Lau <kafai@fb.com> wrote:
->
-> On Thu, Aug 25, 2022 at 11:31:15PM -0600, James Hilliard wrote:
-> > On Thu, Aug 25, 2022 at 11:16 PM Martin KaFai Lau <kafai@fb.com> wrote:
-> > >
-> > > On Thu, Aug 25, 2022 at 04:17:49PM -0600, James Hilliard wrote:
-> > > > There is a potential for us to hit a type conflict when including
-> > > > netinet/tcp.h with sys/socket.h, we can replace both of these includes
-> > > > with linux/tcp.h to avoid this conflict.
-> > > >
-> > > > Fixes errors like:
-> > > > In file included from /usr/include/netinet/tcp.h:91,
-> > > >                  from progs/bind4_prog.c:10:
-> > > > /home/buildroot/opt/cross/lib/gcc/bpf/13.0.0/include/stdint.h:34:23: error: conflicting types for 'int8_t'; have 'char'
-> > > >    34 | typedef __INT8_TYPE__ int8_t;
-> > > >       |                       ^~~~~~
-> > > > In file included from /usr/include/x86_64-linux-gnu/sys/types.h:155,
-> > > >                  from /usr/include/x86_64-linux-gnu/bits/socket.h:29,
-> > > >                  from /usr/include/x86_64-linux-gnu/sys/socket.h:33,
-> > > >                  from progs/bind4_prog.c:9:
-> > > > /usr/include/x86_64-linux-gnu/bits/stdint-intn.h:24:18: note: previous declaration of 'int8_t' with type 'int8_t' {aka 'signed char'}
-> > > >    24 | typedef __int8_t int8_t;
-> > > >       |                  ^~~~~~
-> > > > /home/buildroot/opt/cross/lib/gcc/bpf/13.0.0/include/stdint.h:43:24: error: conflicting types for 'int64_t'; have 'long int'
-> > > >    43 | typedef __INT64_TYPE__ int64_t;
-> > > >       |                        ^~~~~~~
-> > > > /usr/include/x86_64-linux-gnu/bits/stdint-intn.h:27:19: note: previous declaration of 'int64_t' with type 'int64_t' {aka 'long long int'}
-> > > >    27 | typedef __int64_t int64_t;
-> > > >       |                   ^~~~~~~
-> > > > make: *** [Makefile:537: /home/buildroot/bpf-next/tools/testing/selftests/bpf/bpf_gcc/bind4_prog.o] Error 1
-> > > >
-> > > > Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
-> > > > ---
-> > > >  tools/testing/selftests/bpf/progs/bind4_prog.c | 3 +--
-> > > >  tools/testing/selftests/bpf/progs/bind6_prog.c | 3 +--
-> > > >  2 files changed, 2 insertions(+), 4 deletions(-)
-> > > >
-> > > > diff --git a/tools/testing/selftests/bpf/progs/bind4_prog.c b/tools/testing/selftests/bpf/progs/bind4_prog.c
-> > > > index 474c6a62078a..6bd20042fd53 100644
-> > > > --- a/tools/testing/selftests/bpf/progs/bind4_prog.c
-> > > > +++ b/tools/testing/selftests/bpf/progs/bind4_prog.c
-> > > > @@ -6,8 +6,7 @@
-> > > >  #include <linux/bpf.h>
-> > > >  #include <linux/in.h>
-> > > >  #include <linux/in6.h>
-> > > > -#include <sys/socket.h>
-> > > > -#include <netinet/tcp.h>
-> > > These includes look normal to me.  What environment is hitting this.
+On Thu, Aug 25, 2022 at 01:04:16AM +0200, Kumar Kartikeya Dwivedi wrote:
+> On Wed, 24 Aug 2022 at 20:11, Joanne Koong <joannelkoong@gmail.com> wrote:
+> > I'm more and more liking the idea of limiting xdp to match the
+> > constraints of skb given that both you, Kumar, and Jakub have
+> > mentioned that portability between xdp and skb would be useful for
+> > users :)
 > >
-> > I was hitting this error with GCC 13(GCC master branch).
-> These two includes (<sys/socket.h> and <netinet/tcp.h>) are normal,
-> so does it mean all existing programs need to change to use gcc 13 ?
+> > What are your thoughts on this API:
+> >
+> > 1) bpf_dynptr_data()
+> >
+> > Before:
+> >   for skb-type progs:
+> >       - data slices in fragments is not supported
+> >
+> >   for xdp-type progs:
+> >       - data slices in fragments is supported as long as it is in a
+> > contiguous frag (eg not across frags)
+> >
+> > Now:
+> >   for skb + xdp type progs:
+> >       - data slices in fragments is not supported
+I don't think it is necessary (or help) to restrict xdp slice from getting
+a fragment.  In any case, the xdp prog has to deal with the case
+that bpf_dynptr_data(xdp_dynptr, offset, len) is across two fragments.
+Although unlikely, it still need to handle it (dynptr_data returns NULL)
+properly by using bpf_dynptr_read().  The same that the skb case
+also needs to handle dynptr_data returning NULL.
 
-Well I think it's mostly just an issue getting hit with GCC-BPF as it
-looks to me like a cross compilation host/target header conflict.
+Something like Kumar's sample in [0] should work for both
+xdp and skb dynptr but replace the helpers with
+bpf_dynptr_{data,read,write}().
 
->
+[0]: https://lore.kernel.org/bpf/20220726184706.954822-1-joannelkoong@gmail.com/T/#mf082a11403bc76fa56fde4de79a25c660680285c
+
 > >
-> > > I don't prefer the selftest writers need to remember this rule.
-> > >
-> > > Beside, afaict, tcp.h should be removed because
-> > > I don't see this test needs it.  I tried removing it
-> > > and it works fine.  It should be removed instead of replacing it
-> > > with another unnecessary tcp.h.
 > >
-> > Oh, that does also appear to work, thought I had tried that already but I guess
-> > I hadn't, sent a v2 with them removed:
-> > https://lore.kernel.org/bpf/20220826052925.980431-1-james.hilliard1@gmail.com/T/#u
+> > 2)  bpf_dynptr_write()
 > >
-> > >
-> > > > +#include <linux/tcp.h>
-> > > >  #include <linux/if.h>
-> > > >  #include <errno.h>
-> > > >
-> > > > diff --git a/tools/testing/selftests/bpf/progs/bind6_prog.c b/tools/testing/selftests/bpf/progs/bind6_prog.c
-> > > > index c19cfa869f30..f37617b35a55 100644
-> > > > --- a/tools/testing/selftests/bpf/progs/bind6_prog.c
-> > > > +++ b/tools/testing/selftests/bpf/progs/bind6_prog.c
-> > > > @@ -6,8 +6,7 @@
-> > > >  #include <linux/bpf.h>
-> > > >  #include <linux/in.h>
-> > > >  #include <linux/in6.h>
-> > > > -#include <sys/socket.h>
-> > > > -#include <netinet/tcp.h>
-> > > > +#include <linux/tcp.h>
-> > > >  #include <linux/if.h>
-> > > >  #include <errno.h>
-> > > >
-> > > > --
-> > > > 2.34.1
-> > > >
+> > Before:
+> >   for skb-type progs:
+> >      - all data slices are invalidated after a write
+> >
+> >   for xdp-type progs:
+> >      - nothing
+> >
+> > Now:
+> >   for skb + xdp type progs:
+> >      - all data slices are invalidated after a write
+I wonder if the 'Before' behavior can be kept as is.
+
+The bpf prog that runs in both xdp and bpf should be
+the one always expecting the data-slice will be invalidated and
+it has to call the bpf_dynptr_data() again after writing.
+Yes, it is unnecessary for xdp but the bpf prog needs to the
+same anyway if the verifier was the one enforcing it for
+both skb and xdp dynptr type.
+
+If the bpf prog is written for xdp alone, then it has
+no need to re-get the bpf_dynptr_data() after writing.
+
+> >
+> 
+> There is also the other option: failing to write until you pull skb,
+> which looks a lot better to me if we are adding this helper anyway...
