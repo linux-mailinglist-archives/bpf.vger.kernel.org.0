@@ -2,455 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39E325A2D5E
-	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 19:23:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9FD25A2D7F
+	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 19:30:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230355AbiHZRWp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Aug 2022 13:22:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48280 "EHLO
+        id S1343975AbiHZRaG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Aug 2022 13:30:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234090AbiHZRWo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Aug 2022 13:22:44 -0400
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAB62E1A89;
-        Fri, 26 Aug 2022 10:22:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1661534562; x=1693070562;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=9cy24XYcLvU6w1XlSrvVD0EpP1CFPGhWLRfNWWyPsA0=;
-  b=IOmtfSvipSd9XloJTPcPEWmdO7kgmtkn7ITZAGTtvi4yjdA8YNUAIU9a
-   28GLDXwbxBgRxiKe6djewt7JR8fRoqQQgomHy5fTl4dol+n8l9PDvPRsC
-   coE/y7kjFHrBvFpm72qZfL07YHEp4NXUUJucfckVU6lzAH8OfDLTpgFjc
-   MhIG8ADoPsIg/01JNWNrFA2vd9BhRbUPZjannNKJ6CgFFeRO4BdRgLm66
-   hX8P01d8LMjRkD85G6H5BPweOHwVH2ZfTeefqp7uCUWYIH/gmF5xQFBEr
-   x0zgq9nYvlz6ZP/HJrJTrQRJiqJpXmj5mFS8skJND4F34OaKwVeCmcDuV
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10451"; a="295829489"
-X-IronPort-AV: E=Sophos;i="5.93,265,1654585200"; 
-   d="scan'208";a="295829489"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2022 10:22:42 -0700
-X-IronPort-AV: E=Sophos;i="5.93,265,1654585200"; 
-   d="scan'208";a="640136395"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.50.209])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2022 10:22:30 -0700
-Message-ID: <a9b4f79d-cdea-821e-0e57-cd4854de6cf4@intel.com>
-Date:   Fri, 26 Aug 2022 20:22:24 +0300
+        with ESMTP id S231443AbiHZRaF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Aug 2022 13:30:05 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 547B36C768
+        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 10:30:02 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id z2so2947064edc.1
+        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 10:30:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc;
+        bh=SBDXMLwkQPT9KYidJ/iNRRZl7Nh4ZCLPA4uu4ijHNBo=;
+        b=Bo2URVR74Xp8eezXm4O+c7ulXk5HGrXJ5nJBhvHNd51tXunBwUvd/uzsOblkZkbAah
+         ziM/ECWc1OR2weuzJ/SwZo/qe6RrXoO/J79Eh3jcw8GqpOVp5OvQOA750NIJ2L0kr3CE
+         I6mlnj3+VmDhCA0TXshQA0p6qpBh06/ngxLMZrG4GZkBkVkhVKF4ITCLCxeMitO74mIG
+         /edqU3cmLycjmH8bG/Mf/exXxi/gEH9gFIiP/+GPmBuGPSa2CzLBBEtCCA7Aue4/29dt
+         F1QoNcJEM1v1cKqb/MiOuZk7essr81XFZP1FG6VTFd/TqY55QUjG9i2A+gXsnd6mKwmK
+         0uxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc;
+        bh=SBDXMLwkQPT9KYidJ/iNRRZl7Nh4ZCLPA4uu4ijHNBo=;
+        b=iNIu/k6ktzKP5xH1OvDhU1Y0ERofOI/Eo0sOzNE89/aeI5Tbv76OOxd/76/dpfns24
+         I28N/RBuCXb1cFfpmtACj6Gf0RaQWP/kq9iotq1q6GQO4M75GF5Ok5s80tWvHydGyQjc
+         ojNMiPdsNH7n+Dj7Ltpo6lBdbShtcACh9gcvZtX9k9+91KrIdo1qIYSV8tliqq9kGDhO
+         b9Gwowwl3FKJYxRX9vVvRgRrafy80TFSNo0vWI7u8eNYUNxs+V7tobZOnzhuZ++nXweZ
+         uivCveLpDpX95FHt+voKYEw7dkdDQHB6Tqx82UGjxJApPrPrQi77y00MXQXWvPsn7U+o
+         7OWw==
+X-Gm-Message-State: ACgBeo2jUOecNtOKockdXnDu5L1yAvqbOwG16REhe2c0q8nLicV9LWYm
+        uG44sxx18p1H3sX1vHQ8qOtolGzVmX421OL1
+X-Google-Smtp-Source: AA6agR4m6Z0rOOb4+o8cnxaC8U8USZYhEeBgw0+0Vi0sZeylUmOVtogj9rVZIVY3raQoKf28ZaZWNQ==
+X-Received: by 2002:a05:6402:510c:b0:43e:305c:a4d1 with SMTP id m12-20020a056402510c00b0043e305ca4d1mr7271297edd.35.1661535000623;
+        Fri, 26 Aug 2022 10:30:00 -0700 (PDT)
+Received: from badger.. (boundsly.muster.volia.net. [93.72.16.93])
+        by smtp.gmail.com with ESMTPSA id l13-20020a170906a40d00b0073d79d0c9c7sm1119896ejz.127.2022.08.26.10.29.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Aug 2022 10:30:00 -0700 (PDT)
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com
+Cc:     Eduard Zingerman <eddyz87@gmail.com>
+Subject: [PATCH bpf-next 0/2] propagate nullness information for reg to reg comparisons
+Date:   Fri, 26 Aug 2022 20:29:13 +0300
+Message-Id: <20220826172915.1536914-1-eddyz87@gmail.com>
+X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.11.0
-Subject: Re: [PATCH v3 09/18] perf ui: Update use of pthread mutex
-Content-Language: en-US
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Weiguo Li <liwg06@foxmail.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Dario Petrillo <dario.pk1@gmail.com>,
-        Hewenliang <hewenliang4@huawei.com>,
-        yaowenbin <yaowenbin1@huawei.com>,
-        Wenyu Liu <liuwenyu7@huawei.com>,
-        Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Pavithra Gurushankar <gpavithrasha@gmail.com>,
-        Alexandre Truong <alexandre.truong@arm.com>,
-        Quentin Monnet <quentin@isovalent.com>,
-        William Cohen <wcohen@redhat.com>,
-        Andres Freund <andres@anarazel.de>,
-        =?UTF-8?Q?Martin_Li=c5=a1ka?= <mliska@suse.cz>,
-        Colin Ian King <colin.king@intel.com>,
-        James Clark <james.clark@arm.com>,
-        Fangrui Song <maskray@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>,
-        Riccardo Mancini <rickyman7@gmail.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Zechuan Chen <chenzechuan1@huawei.com>,
-        Jason Wang <wangborong@cdjrlc.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Remi Bernon <rbernon@codeweavers.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        bpf@vger.kernel.org, llvm@lists.linux.dev
-References: <20220824153901.488576-1-irogers@google.com>
- <20220824153901.488576-10-irogers@google.com>
- <2cf6edac-6e41-b43c-2bc1-f49cb739201a@intel.com>
- <CAP-5=fVVWx=LZAzXsxfuktPHwki1gYbV4mcmvJp_9GTDS6KJcQ@mail.gmail.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <CAP-5=fVVWx=LZAzXsxfuktPHwki1gYbV4mcmvJp_9GTDS6KJcQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 26/08/22 19:02, Ian Rogers wrote:
-> On Fri, Aug 26, 2022 at 3:24 AM Adrian Hunter <adrian.hunter@intel.com> wrote:
->>
->> On 24/08/22 18:38, Ian Rogers wrote:
->>> Switch to the use of mutex wrappers that provide better error checking.
->>>
->>> Signed-off-by: Ian Rogers <irogers@google.com>
->>> ---
->>>  tools/perf/ui/browser.c           | 20 ++++++++++----------
->>>  tools/perf/ui/browsers/annotate.c |  2 +-
->>>  tools/perf/ui/setup.c             |  5 +++--
->>>  tools/perf/ui/tui/helpline.c      |  5 ++---
->>>  tools/perf/ui/tui/progress.c      |  8 ++++----
->>>  tools/perf/ui/tui/setup.c         |  8 ++++----
->>>  tools/perf/ui/tui/util.c          | 18 +++++++++---------
->>>  tools/perf/ui/ui.h                |  4 ++--
->>>  8 files changed, 35 insertions(+), 35 deletions(-)
->>>
->>> diff --git a/tools/perf/ui/browser.c b/tools/perf/ui/browser.c
->>> index fa5bd5c20e96..78fb01d6ad63 100644
->>> --- a/tools/perf/ui/browser.c
->>> +++ b/tools/perf/ui/browser.c
->>> @@ -268,9 +268,9 @@ void __ui_browser__show_title(struct ui_browser *browser, const char *title)
->>>
->>>  void ui_browser__show_title(struct ui_browser *browser, const char *title)
->>>  {
->>> -     pthread_mutex_lock(&ui__lock);
->>> +     mutex_lock(&ui__lock);
->>>       __ui_browser__show_title(browser, title);
->>> -     pthread_mutex_unlock(&ui__lock);
->>> +     mutex_unlock(&ui__lock);
->>>  }
->>>
->>>  int ui_browser__show(struct ui_browser *browser, const char *title,
->>> @@ -284,7 +284,7 @@ int ui_browser__show(struct ui_browser *browser, const char *title,
->>>
->>>       browser->refresh_dimensions(browser);
->>>
->>> -     pthread_mutex_lock(&ui__lock);
->>> +     mutex_lock(&ui__lock);
->>>       __ui_browser__show_title(browser, title);
->>>
->>>       browser->title = title;
->>> @@ -295,16 +295,16 @@ int ui_browser__show(struct ui_browser *browser, const char *title,
->>>       va_end(ap);
->>>       if (err > 0)
->>>               ui_helpline__push(browser->helpline);
->>> -     pthread_mutex_unlock(&ui__lock);
->>> +     mutex_unlock(&ui__lock);
->>>       return err ? 0 : -1;
->>>  }
->>>
->>>  void ui_browser__hide(struct ui_browser *browser)
->>>  {
->>> -     pthread_mutex_lock(&ui__lock);
->>> +     mutex_lock(&ui__lock);
->>>       ui_helpline__pop();
->>>       zfree(&browser->helpline);
->>> -     pthread_mutex_unlock(&ui__lock);
->>> +     mutex_unlock(&ui__lock);
->>>  }
->>>
->>>  static void ui_browser__scrollbar_set(struct ui_browser *browser)
->>> @@ -352,9 +352,9 @@ static int __ui_browser__refresh(struct ui_browser *browser)
->>>
->>>  int ui_browser__refresh(struct ui_browser *browser)
->>>  {
->>> -     pthread_mutex_lock(&ui__lock);
->>> +     mutex_lock(&ui__lock);
->>>       __ui_browser__refresh(browser);
->>> -     pthread_mutex_unlock(&ui__lock);
->>> +     mutex_unlock(&ui__lock);
->>>
->>>       return 0;
->>>  }
->>> @@ -390,10 +390,10 @@ int ui_browser__run(struct ui_browser *browser, int delay_secs)
->>>       while (1) {
->>>               off_t offset;
->>>
->>> -             pthread_mutex_lock(&ui__lock);
->>> +             mutex_lock(&ui__lock);
->>>               err = __ui_browser__refresh(browser);
->>>               SLsmg_refresh();
->>> -             pthread_mutex_unlock(&ui__lock);
->>> +             mutex_unlock(&ui__lock);
->>>               if (err < 0)
->>>                       break;
->>>
->>> diff --git a/tools/perf/ui/browsers/annotate.c b/tools/perf/ui/browsers/annotate.c
->>> index 44ba900828f6..b8747e8dd9ea 100644
->>> --- a/tools/perf/ui/browsers/annotate.c
->>> +++ b/tools/perf/ui/browsers/annotate.c
->>> @@ -8,11 +8,11 @@
->>>  #include "../../util/hist.h"
->>>  #include "../../util/sort.h"
->>>  #include "../../util/map.h"
->>> +#include "../../util/mutex.h"
->>>  #include "../../util/symbol.h"
->>>  #include "../../util/evsel.h"
->>>  #include "../../util/evlist.h"
->>>  #include <inttypes.h>
->>> -#include <pthread.h>
->>>  #include <linux/kernel.h>
->>>  #include <linux/string.h>
->>>  #include <linux/zalloc.h>
->>> diff --git a/tools/perf/ui/setup.c b/tools/perf/ui/setup.c
->>> index 700335cde618..25ded88801a3 100644
->>> --- a/tools/perf/ui/setup.c
->>> +++ b/tools/perf/ui/setup.c
->>> @@ -1,5 +1,4 @@
->>>  // SPDX-License-Identifier: GPL-2.0
->>> -#include <pthread.h>
->>>  #include <dlfcn.h>
->>>  #include <unistd.h>
->>>
->>> @@ -8,7 +7,7 @@
->>>  #include "../util/hist.h"
->>>  #include "ui.h"
->>>
->>> -pthread_mutex_t ui__lock = PTHREAD_MUTEX_INITIALIZER;
->>> +struct mutex ui__lock;
->>>  void *perf_gtk_handle;
->>>  int use_browser = -1;
->>>
->>> @@ -76,6 +75,7 @@ int stdio__config_color(const struct option *opt __maybe_unused,
->>>
->>>  void setup_browser(bool fallback_to_pager)
->>>  {
->>> +     mutex_init(&ui__lock);
->>>       if (use_browser < 2 && (!isatty(1) || dump_trace))
->>>               use_browser = 0;
->>>
->>> @@ -118,4 +118,5 @@ void exit_browser(bool wait_for_ok)
->>>       default:
->>>               break;
->>>       }
->>> +     mutex_destroy(&ui__lock);
->>
->> Looks like exit_browser() can be called even when setup_browser()
->> was never called.
->>
->> Note, it also looks like PTHREAD_MUTEX_INITIALIZER is all zeros so
->> pthread won't notice.
-> 
-> Memory sanitizer will notice some cases of this and so I didn't want
-> to code defensively around exit being called ahead of setup.
+Changes since RFC:
+ - newly added if block in `check_cond_jmp_op` is moved down to keep
+   `make_ptr_not_null_reg` actions together;
+ - tests rewritten to have a single `r0 = 0; exit;` block.
 
-I am not sure you understood.
+Original message follows:
 
-As I wrote, exit_browser() can be called even when setup_browser()
-was never called, so it is not defensive programming, it is necessary
-programming that you only get away without doing because
-PTHREAD_MUTEX_INITIALIZER is all zeros.
+Hi Everyone,
 
-> 
-> Thanks,
-> Ian
-> 
->>>  }
->>> diff --git a/tools/perf/ui/tui/helpline.c b/tools/perf/ui/tui/helpline.c
->>> index 298d6af82fdd..db4952f5990b 100644
->>> --- a/tools/perf/ui/tui/helpline.c
->>> +++ b/tools/perf/ui/tui/helpline.c
->>> @@ -2,7 +2,6 @@
->>>  #include <stdio.h>
->>>  #include <stdlib.h>
->>>  #include <string.h>
->>> -#include <pthread.h>
->>>  #include <linux/kernel.h>
->>>  #include <linux/string.h>
->>>
->>> @@ -33,7 +32,7 @@ static int tui_helpline__show(const char *format, va_list ap)
->>>       int ret;
->>>       static int backlog;
->>>
->>> -     pthread_mutex_lock(&ui__lock);
->>> +     mutex_lock(&ui__lock);
->>>       ret = vscnprintf(ui_helpline__last_msg + backlog,
->>>                       sizeof(ui_helpline__last_msg) - backlog, format, ap);
->>>       backlog += ret;
->>> @@ -45,7 +44,7 @@ static int tui_helpline__show(const char *format, va_list ap)
->>>               SLsmg_refresh();
->>>               backlog = 0;
->>>       }
->>> -     pthread_mutex_unlock(&ui__lock);
->>> +     mutex_unlock(&ui__lock);
->>>
->>>       return ret;
->>>  }
->>> diff --git a/tools/perf/ui/tui/progress.c b/tools/perf/ui/tui/progress.c
->>> index 3d74af5a7ece..71b6c8d9474f 100644
->>> --- a/tools/perf/ui/tui/progress.c
->>> +++ b/tools/perf/ui/tui/progress.c
->>> @@ -45,7 +45,7 @@ static void tui_progress__update(struct ui_progress *p)
->>>       }
->>>
->>>       ui__refresh_dimensions(false);
->>> -     pthread_mutex_lock(&ui__lock);
->>> +     mutex_lock(&ui__lock);
->>>       y = SLtt_Screen_Rows / 2 - 2;
->>>       SLsmg_set_color(0);
->>>       SLsmg_draw_box(y, 0, 3, SLtt_Screen_Cols);
->>> @@ -56,7 +56,7 @@ static void tui_progress__update(struct ui_progress *p)
->>>       bar = ((SLtt_Screen_Cols - 2) * p->curr) / p->total;
->>>       SLsmg_fill_region(y, 1, 1, bar, ' ');
->>>       SLsmg_refresh();
->>> -     pthread_mutex_unlock(&ui__lock);
->>> +     mutex_unlock(&ui__lock);
->>>  }
->>>
->>>  static void tui_progress__finish(void)
->>> @@ -67,12 +67,12 @@ static void tui_progress__finish(void)
->>>               return;
->>>
->>>       ui__refresh_dimensions(false);
->>> -     pthread_mutex_lock(&ui__lock);
->>> +     mutex_lock(&ui__lock);
->>>       y = SLtt_Screen_Rows / 2 - 2;
->>>       SLsmg_set_color(0);
->>>       SLsmg_fill_region(y, 0, 3, SLtt_Screen_Cols, ' ');
->>>       SLsmg_refresh();
->>> -     pthread_mutex_unlock(&ui__lock);
->>> +     mutex_unlock(&ui__lock);
->>>  }
->>>
->>>  static struct ui_progress_ops tui_progress__ops = {
->>> diff --git a/tools/perf/ui/tui/setup.c b/tools/perf/ui/tui/setup.c
->>> index b1be59b4e2a4..a3b8c397c24d 100644
->>> --- a/tools/perf/ui/tui/setup.c
->>> +++ b/tools/perf/ui/tui/setup.c
->>> @@ -29,10 +29,10 @@ void ui__refresh_dimensions(bool force)
->>>  {
->>>       if (force || ui__need_resize) {
->>>               ui__need_resize = 0;
->>> -             pthread_mutex_lock(&ui__lock);
->>> +             mutex_lock(&ui__lock);
->>>               SLtt_get_screen_size();
->>>               SLsmg_reinit_smg();
->>> -             pthread_mutex_unlock(&ui__lock);
->>> +             mutex_unlock(&ui__lock);
->>>       }
->>>  }
->>>
->>> @@ -170,10 +170,10 @@ void ui__exit(bool wait_for_ok)
->>>                                   "Press any key...", 0);
->>>
->>>       SLtt_set_cursor_visibility(1);
->>> -     if (!pthread_mutex_trylock(&ui__lock)) {
->>> +     if (mutex_trylock(&ui__lock)) {
->>>               SLsmg_refresh();
->>>               SLsmg_reset_smg();
->>> -             pthread_mutex_unlock(&ui__lock);
->>> +             mutex_unlock(&ui__lock);
->>>       }
->>>       SLang_reset_tty();
->>>       perf_error__unregister(&perf_tui_eops);
->>> diff --git a/tools/perf/ui/tui/util.c b/tools/perf/ui/tui/util.c
->>> index 0f562e2cb1e8..3c5174854ac8 100644
->>> --- a/tools/perf/ui/tui/util.c
->>> +++ b/tools/perf/ui/tui/util.c
->>> @@ -95,7 +95,7 @@ int ui_browser__input_window(const char *title, const char *text, char *input,
->>>               t = sep + 1;
->>>       }
->>>
->>> -     pthread_mutex_lock(&ui__lock);
->>> +     mutex_lock(&ui__lock);
->>>
->>>       max_len += 2;
->>>       nr_lines += 8;
->>> @@ -125,17 +125,17 @@ int ui_browser__input_window(const char *title, const char *text, char *input,
->>>       SLsmg_write_nstring((char *)exit_msg, max_len);
->>>       SLsmg_refresh();
->>>
->>> -     pthread_mutex_unlock(&ui__lock);
->>> +     mutex_unlock(&ui__lock);
->>>
->>>       x += 2;
->>>       len = 0;
->>>       key = ui__getch(delay_secs);
->>>       while (key != K_TIMER && key != K_ENTER && key != K_ESC) {
->>> -             pthread_mutex_lock(&ui__lock);
->>> +             mutex_lock(&ui__lock);
->>>
->>>               if (key == K_BKSPC) {
->>>                       if (len == 0) {
->>> -                             pthread_mutex_unlock(&ui__lock);
->>> +                             mutex_unlock(&ui__lock);
->>>                               goto next_key;
->>>                       }
->>>                       SLsmg_gotorc(y, x + --len);
->>> @@ -147,7 +147,7 @@ int ui_browser__input_window(const char *title, const char *text, char *input,
->>>               }
->>>               SLsmg_refresh();
->>>
->>> -             pthread_mutex_unlock(&ui__lock);
->>> +             mutex_unlock(&ui__lock);
->>>
->>>               /* XXX more graceful overflow handling needed */
->>>               if (len == sizeof(buf) - 1) {
->>> @@ -215,19 +215,19 @@ void __ui__info_window(const char *title, const char *text, const char *exit_msg
->>>
->>>  void ui__info_window(const char *title, const char *text)
->>>  {
->>> -     pthread_mutex_lock(&ui__lock);
->>> +     mutex_lock(&ui__lock);
->>>       __ui__info_window(title, text, NULL);
->>>       SLsmg_refresh();
->>> -     pthread_mutex_unlock(&ui__lock);
->>> +     mutex_unlock(&ui__lock);
->>>  }
->>>
->>>  int ui__question_window(const char *title, const char *text,
->>>                       const char *exit_msg, int delay_secs)
->>>  {
->>> -     pthread_mutex_lock(&ui__lock);
->>> +     mutex_lock(&ui__lock);
->>>       __ui__info_window(title, text, exit_msg);
->>>       SLsmg_refresh();
->>> -     pthread_mutex_unlock(&ui__lock);
->>> +     mutex_unlock(&ui__lock);
->>>       return ui__getch(delay_secs);
->>>  }
->>>
->>> diff --git a/tools/perf/ui/ui.h b/tools/perf/ui/ui.h
->>> index 9b6fdf06e1d2..99f8d2fe9bc5 100644
->>> --- a/tools/perf/ui/ui.h
->>> +++ b/tools/perf/ui/ui.h
->>> @@ -2,11 +2,11 @@
->>>  #ifndef _PERF_UI_H_
->>>  #define _PERF_UI_H_ 1
->>>
->>> -#include <pthread.h>
->>> +#include "../util/mutex.h"
->>>  #include <stdbool.h>
->>>  #include <linux/compiler.h>
->>>
->>> -extern pthread_mutex_t ui__lock;
->>> +extern struct mutex ui__lock;
->>>  extern void *perf_gtk_handle;
->>>
->>>  extern int use_browser;
->>
+This patchset adds ability to propagates nullness information for
+branches of register to register equality compare instructions. The
+following rules are used:
+ - suppose register A maybe null
+ - suppose register B is not null
+ - for JNE A, B, ... - A is not null in the false branch
+ - for JEQ A, B, ... - A is not null in the true branch
+
+E.g. for program like below:
+
+  r6 = skb->sk;
+  r7 = sk_fullsock(r6);
+  r0 = sk_fullsock(r6);
+  if (r0 == 0) return 0;    (a)
+  if (r0 != r7) return 0;   (b)
+  *r7->type;                (c)
+  return 0;
+
+It is safe to dereference r7 at point (c), because of (a) and (b).
+
+The utility of this change came up while working on BPF CLang backend
+issue [1]. Specifically, while debugging issue with selftest
+`test_sk_lookup.c`. This test has the following structure:
+
+    int access_ctx_sk(struct bpf_sk_lookup *ctx __CTX__)
+    {
+        struct bpf_sock *sk1 = NULL, *sk2 = NULL;
+        ...
+        sk1 = bpf_map_lookup_elem(&redir_map, &KEY_SERVER_A);
+        if (!sk1)           // (a)
+            goto out;
+        ...
+        if (ctx->sk != sk1) // (b)
+            goto out;
+        ...
+        if (ctx->sk->family != AF_INET ||     // (c)
+            ctx->sk->type != SOCK_STREAM ||
+            ctx->sk->state != BPF_TCP_LISTEN)
+            goto out;
+            ...
+    }
+
+- at (a) `sk1` is checked to be not null;
+- at (b) `ctx->sk` is verified to be equal to `sk1`;
+- at (c) `ctx->sk` is accessed w/o nullness check.
+
+Currently Global Value Numbering pass considers expressions `sk1` and
+`ctx->sk` to be identical at point (c) and replaces `ctx->sk` with
+`sk1` (not expressions themselves but corresponding SSA values).
+Since `sk1` is known to be not null after (b) verifier allows
+execution of the program.
+
+However, such optimization is not guaranteed to happen. When it does
+not happen verifier reports an error.
+
+[1] https://reviews.llvm.org/D131633#3722231
+
+Thanks,
+Eduard
+
+Eduard Zingerman (2):
+  bpf: propagate nullness information for reg to reg comparisons
+  selftests/bpf: check nullness propagation for reg to reg comparisons
+
+ kernel/bpf/verifier.c                         |  41 ++++-
+ .../bpf/verifier/jeq_infer_not_null.c         | 166 ++++++++++++++++++
+ 2 files changed, 205 insertions(+), 2 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/verifier/jeq_infer_not_null.c
+
+-- 
+2.37.2
 
