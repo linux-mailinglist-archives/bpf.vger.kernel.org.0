@@ -2,133 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FB205A1E74
-	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 04:00:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 836335A1E7C
+	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 04:03:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244491AbiHZCA1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Aug 2022 22:00:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43354 "EHLO
+        id S244659AbiHZCDT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Aug 2022 22:03:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230106AbiHZCAT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Aug 2022 22:00:19 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6100B792D5;
-        Thu, 25 Aug 2022 19:00:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 0ED41B82F67;
-        Fri, 26 Aug 2022 02:00:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 8FFA0C433D6;
-        Fri, 26 Aug 2022 02:00:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661479214;
-        bh=SuxfnH1J9bBwDaPQn24zrh7Rtn1UTyoTanq1mS1gv4U=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=R6/CfEf+1XxED41xU0xdlbCWTuf606iTef8eXp2xmLfpsTEevrLtsn50u8YaRQ2NJ
-         YyYhsnW6EYnK5nV4ognDRVT0qSIOXYPIXIYWz8wNXsijVAGrdS+4QwHpyrK2ITlS0L
-         3l1Gc01ykhGtKaW/4biOqs1oJzVQv5dCCDCjJvw+8V47CXWEpB8m4bHwc/+0hoNWRo
-         442mpfytLC2gHxugVBnLQQktvidJmiDzKSkzY07anPu0pZjNwcMrQuGJnACgOEOgyn
-         OL3hux+99ourHecgj3lpLYNeyZfn2gtsfr/fRtiTagX0+H7w8ix5f4/P+3YfLLqN14
-         UM/oaN8326uVg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 720A5C4166E;
-        Fri, 26 Aug 2022 02:00:14 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S244651AbiHZCDS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Aug 2022 22:03:18 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2983CAC83;
+        Thu, 25 Aug 2022 19:03:16 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id m1so457346edb.7;
+        Thu, 25 Aug 2022 19:03:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=9EgT7+sSPiTYWPr9b+oWvfezXK6YiJhJIgl4/Hn+Ap4=;
+        b=RrW3j1im3HWeri6Mix5m5sujVq1KbzucVZSMIDVaZ2jLd29swg40n944O42CYvcV4W
+         lf25TUd/2XbOXaPoRH1HKwmdq0I/SPVsed7dpauPnYwTX8xHigXNogkPk1jCj04WCp8m
+         Msd6zQUekVgHR8MdQzqotsEq03k8mqke09VW+0SuIUYftuvGGOZ/zgdsPJ8+UCAU5s0H
+         Y/OfsTkbLVVn4Ck0F9+dyURwu+zYQwuu/NjmVy+mN0gd9nu2QUvK9eTphHU+QYR77Qoc
+         h0c3YCkg8+oMpefiqr7zUg8VqYo3Bot4h/0gEHuhSHB9NdboeVfYVp6lAtAF3L4j8Rwj
+         8FrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=9EgT7+sSPiTYWPr9b+oWvfezXK6YiJhJIgl4/Hn+Ap4=;
+        b=IXRR+DJaTyQvFNScEdZHUTB1HRdlzd8BQfF9Oo2coqM/569BSXapeIK8DE3oTpFFNd
+         km8/f4rletoZNiEdHK1fCAbP1NRIBPtWBz+Egn+ezDQjLID0OJ6Z7LWWT+3Oyv0+pYgd
+         lWTVZuSKKk8+M34lXOi4U57lRV3mFDavfjlK/7pL7bn2gFTvE06CHl8CJ1GEs+1sJqIP
+         OQjik+QmileAVgN4kYvg6KCWO/3RlBI1ys2R8Iorf0LsZ6/c7tupfc/d2j1z329wiSdV
+         /rakgPV+X3PRJPVOO/oi/1664gSMDlFeLZjzihPFWdfvRBnR20y9IPs8M6XM7WlKNwGv
+         3XQQ==
+X-Gm-Message-State: ACgBeo1BOIv+mrAC8VMTw/I4f1LRmejPIyzJqRirO2s3b2GORJXwHV8n
+        IBs4tJl7fz2Fkx/NSktIDBDuVCpEsGo5kXhUBII=
+X-Google-Smtp-Source: AA6agR5XguDIy9h+0nX1vI83YX7Vk1ZKTHuVBeVEsTLmmLXy/Zx4Q/WlaZogfq3iro5Mx+6Atm+nzhDptIs36y5ve2Q=
+X-Received: by 2002:aa7:df01:0:b0:445:f7b3:cd4 with SMTP id
+ c1-20020aa7df01000000b00445f7b30cd4mr5119924edy.232.1661479395460; Thu, 25
+ Aug 2022 19:03:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v9 00/23] Introduce eBPF support for HID devices
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <166147921446.22284.3135870790322146375.git-patchwork-notify@kernel.org>
-Date:   Fri, 26 Aug 2022 02:00:14 +0000
-References: <20220824134055.1328882-1-benjamin.tissoires@redhat.com>
-In-Reply-To: <20220824134055.1328882-1-benjamin.tissoires@redhat.com>
-To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     gregkh@linuxfoundation.org, jikos@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, memxor@gmail.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, shuah@kernel.org,
-        davemarchevsky@fb.com, joe@cilium.io, corbet@lwn.net,
-        tero.kristo@linux.intel.com, linux-kernel@vger.kernel.org,
-        linux-input@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-doc@vger.kernel.org
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220825213905.1817722-1-haoluo@google.com> <CAEf4BzaQOj3QqEbKKXhgUmWMF3gef-8+a-dYoe_t4=g+cM2KaQ@mail.gmail.com>
+ <CAJD7tkZAE_Kx9z2cXnrheFfEtSZJn4VFczhkVEb3VdcP2o_H+g@mail.gmail.com>
+In-Reply-To: <CAJD7tkZAE_Kx9z2cXnrheFfEtSZJn4VFczhkVEb3VdcP2o_H+g@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 25 Aug 2022 19:03:04 -0700
+Message-ID: <CAEf4BzbMUNo6gj+DJcnvixiMoVr-LX9JZuJbe0Txp71sZJ_F=g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/2] Add CGROUP prefix to cgroup_iter_order
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Hao Luo <haoluo@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Thu, Aug 25, 2022 at 4:20 PM Yosry Ahmed <yosryahmed@google.com> wrote:
+>
+> On Thu, Aug 25, 2022 at 2:56 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Thu, Aug 25, 2022 at 2:39 PM Hao Luo <haoluo@google.com> wrote:
+> > >
+> > > As suggested by Andrii, add 'CGROUP' to cgroup_iter_order. This fix is
+> > > divided into two patches. Patch 1/2 fixes the commit that introduced
+> > > cgroup_iter. Patch 2/2 fixes the selftest that uses the
+> > > cgroup_iter_order. This is because the selftest was introduced in a
+> >
+> > but if you split rename into two patches, you break selftests build
+> > and thus potentially bisectability of selftests regressions. So I
+> > think you have to keep both in the same patch.
+>
+> I thought fixes to commits still in bpf-next would get squashed. Would
+> you mind elaborating why we don't do this?
+>
 
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+We don't amend follow up fixes into original commits and preserve history.
 
-On Wed, 24 Aug 2022 15:40:30 +0200 you wrote:
-> Hi,
-> 
-> here comes the v9 of the HID-BPF series.
-> 
-> Again, for a full explanation of HID-BPF, please refer to the last patch
-> in this series (23/23).
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf-next,v9,01/23] bpf/verifier: allow all functions to read user provided context
-    (no matching commit)
-  - [bpf-next,v9,02/23] bpf/verifier: do not clear meta in check_mem_size
-    (no matching commit)
-  - [bpf-next,v9,03/23] selftests/bpf: add test for accessing ctx from syscall program type
-    (no matching commit)
-  - [bpf-next,v9,04/23] bpf/verifier: allow kfunc to return an allocated mem
-    (no matching commit)
-  - [bpf-next,v9,05/23] selftests/bpf: Add tests for kfunc returning a memory pointer
-    (no matching commit)
-  - [bpf-next,v9,06/23] bpf: prepare for more bpf syscall to be used from kernel and user space.
-    https://git.kernel.org/bpf/bpf-next/c/b88df6979682
-  - [bpf-next,v9,07/23] libbpf: add map_get_fd_by_id and map_delete_elem in light skeleton
-    https://git.kernel.org/bpf/bpf-next/c/343949e10798
-  - [bpf-next,v9,08/23] HID: core: store the unique system identifier in hid_device
-    (no matching commit)
-  - [bpf-next,v9,09/23] HID: export hid_report_type to uapi
-    (no matching commit)
-  - [bpf-next,v9,10/23] HID: convert defines of HID class requests into a proper enum
-    (no matching commit)
-  - [bpf-next,v9,11/23] HID: Kconfig: split HID support and hid-core compilation
-    (no matching commit)
-  - [bpf-next,v9,12/23] HID: initial BPF implementation
-    (no matching commit)
-  - [bpf-next,v9,13/23] selftests/bpf: add tests for the HID-bpf initial implementation
-    (no matching commit)
-  - [bpf-next,v9,14/23] HID: bpf: allocate data memory for device_event BPF programs
-    (no matching commit)
-  - [bpf-next,v9,15/23] selftests/bpf/hid: add test to change the report size
-    (no matching commit)
-  - [bpf-next,v9,16/23] HID: bpf: introduce hid_hw_request()
-    (no matching commit)
-  - [bpf-next,v9,17/23] selftests/bpf: add tests for bpf_hid_hw_request
-    (no matching commit)
-  - [bpf-next,v9,18/23] HID: bpf: allow to change the report descriptor
-    (no matching commit)
-  - [bpf-next,v9,19/23] selftests/bpf: add report descriptor fixup tests
-    (no matching commit)
-  - [bpf-next,v9,20/23] selftests/bpf: Add a test for BPF_F_INSERT_HEAD
-    (no matching commit)
-  - [bpf-next,v9,21/23] samples/bpf: add new hid_mouse example
-    (no matching commit)
-  - [bpf-next,v9,22/23] HID: bpf: add Surface Dial example
-    (no matching commit)
-  - [bpf-next,v9,23/23] Documentation: add HID-BPF docs
-    (no matching commit)
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+> >
+> > With that:
+> >
+> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> >
+> > > different commit. I tested this patchset via the following command:
+> > >
+> > >   test_progs -t cgroup,iter,btf_dump
+> > >
+> > > Hao Luo (2):
+> > >   bpf: Add CGROUP to cgroup_iter order
+> > >   selftests/bpf: Fix test that uses cgroup_iter order
+> > >
+> > >  include/uapi/linux/bpf.h                      | 10 +++---
+> > >  kernel/bpf/cgroup_iter.c                      | 32 +++++++++----------
+> > >  tools/include/uapi/linux/bpf.h                | 10 +++---
+> > >  .../selftests/bpf/prog_tests/btf_dump.c       |  2 +-
+> > >  .../prog_tests/cgroup_hierarchical_stats.c    |  2 +-
+> > >  .../selftests/bpf/prog_tests/cgroup_iter.c    | 10 +++---
+> > >  6 files changed, 33 insertions(+), 33 deletions(-)
+> > >
+> > > --
+> > > 2.37.2.672.g94769d06f0-goog
+> > >
