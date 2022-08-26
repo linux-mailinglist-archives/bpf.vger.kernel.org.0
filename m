@@ -2,239 +2,254 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A959A5A2DBB
-	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 19:43:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA5AD5A2DB1
+	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 19:42:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344886AbiHZRly (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Aug 2022 13:41:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52060 "EHLO
+        id S1344934AbiHZRm0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Aug 2022 13:42:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344726AbiHZRlt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Aug 2022 13:41:49 -0400
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD11475385;
-        Fri, 26 Aug 2022 10:41:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1661535706; x=1693071706;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=y+5UHSCKqDo8+5mfChXR80HnmMPwWmD45j5P+hWg1wk=;
-  b=V91dgmRq0VFwA5+fbwzwuTpKbf04M7deayiSZ2ySYHNx0MRBaKLz/Vsc
-   Yrr8MllZsb5in6qYm83nLQStQjlmn/z7iwoNApFY2eAwflqc1k9ysjMGv
-   eD0cjIzMEjZCt3oJReNwwO8K2LkOUADu3D+QXd4vfH0e8xBBq2iYgbjma
-   ToM2L7VU2ml/H4D5HbHI0QA5u7Ek+ofuvbPwoKfgr6McQN+oKIQoOtb1M
-   X4XZR9ORjXyMNQVaJZL8cAhfQ4EzetBSL/Uwj2IADSK7PK8yGb1Rb2lRR
-   th6nI5UQ747OguGudPnnC+/yLHG7ubwMGgFJ1PpnudjwXwz/PTxWw8JPm
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10451"; a="295833336"
-X-IronPort-AV: E=Sophos;i="5.93,265,1654585200"; 
-   d="scan'208";a="295833336"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2022 10:41:31 -0700
-X-IronPort-AV: E=Sophos;i="5.93,265,1654585200"; 
-   d="scan'208";a="640142949"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.50.209])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2022 10:41:19 -0700
-Message-ID: <b9ffea78-48c4-e2cd-20c2-dc0c9c2c69f7@intel.com>
-Date:   Fri, 26 Aug 2022 20:41:12 +0300
+        with ESMTP id S1344913AbiHZRmR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Aug 2022 13:42:17 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5372E3430
+        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 10:42:14 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id ay39-20020a05600c1e2700b003a5503a80cfso1217642wmb.2
+        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 10:42:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc;
+        bh=he/bfvf1mDfynCT5CMERAlIneGT6+vfp7BBeASbZgO4=;
+        b=KxEI28tPSvUdNvAkCqxed+rLWbEo5ARCEAFxCt3dpg9zrIvuE3hyl80F3lBx6u6qJ8
+         R3H2BDEl5L7K+oGIDQ+GjK3+LxQch4naSX+wXjC37jJ8uPcV/nR7R/TpQnB1BwSld3zJ
+         8A9o6uWd5OHoG6EhSrquWNsRUo+btk7LVQYEwB9wWyLHaMoMxohYIhDMTLJWnQc1wOIu
+         5oAFiC+QxDuY95fL6yWs6rGPB3zd9X2TzZJMsdYhExNwR4VFmsnTXyA0+3vf81dhV4nc
+         e6Yo3jfLObOFrEj8pqSkT2fdafWMy12nNaRl2jJm6z+Rm+/zknxKzE0IeiFATBFDDZX2
+         lMxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc;
+        bh=he/bfvf1mDfynCT5CMERAlIneGT6+vfp7BBeASbZgO4=;
+        b=n/5jKdpSpE/jTxXEORadldkerVqD0y8wpeuk1s1n+nqRDJ1HKGTBzmfP3JqnhbaZjy
+         kiOvrHFVYQNJAb+tRhYHHK3jSAB11ca4JOUiXWdNTSAapTNF3bERblpbtUdhhqFPzthn
+         KMe51SpH3ruqGGnWq4bZmffM96o6AYgQs4OsSi/KrIqt3iVIekHArAjki/rpVIjvxnbO
+         +uAix+vMFe6O96I2eNbRNSU8Di0TqlKko6KDgKwX/EpO+5HtHCBZ5bqeKQcj6Ya88g2g
+         fYNO3+M2QUOgfn+REffVLM8caoBN1IrpjmXeJCG9tEA4ZWsGZHsTDof3Gmn8h915PYCg
+         kOlw==
+X-Gm-Message-State: ACgBeo3YJGfaxRof5qsNnd3iSuIieVs68YqdaN5lFawLahQiQhyM6G4N
+        T891zn3u10FaRL2aaHdOAVEXqRjeDvDwII5OgiKCVQ==
+X-Google-Smtp-Source: AA6agR7/djEpyXLmdsCZ/Kfc2/F8wSfF7w1WoiOTxpF6ZpcmN5MGMotc82Np/jxf3XCYtHfCucVkRsVFYrjqmymNdjw=
+X-Received: by 2002:a05:600c:224c:b0:3a6:7234:551 with SMTP id
+ a12-20020a05600c224c00b003a672340551mr367113wmm.27.1661535733158; Fri, 26 Aug
+ 2022 10:42:13 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.11.0
-Subject: Re: [PATCH v3 16/18] perf sched: Fixes for thread safety analysis
-Content-Language: en-US
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Weiguo Li <liwg06@foxmail.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Dario Petrillo <dario.pk1@gmail.com>,
-        Hewenliang <hewenliang4@huawei.com>,
-        yaowenbin <yaowenbin1@huawei.com>,
-        Wenyu Liu <liuwenyu7@huawei.com>,
-        Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Pavithra Gurushankar <gpavithrasha@gmail.com>,
-        Alexandre Truong <alexandre.truong@arm.com>,
-        Quentin Monnet <quentin@isovalent.com>,
-        William Cohen <wcohen@redhat.com>,
-        Andres Freund <andres@anarazel.de>,
-        =?UTF-8?Q?Martin_Li=c5=a1ka?= <mliska@suse.cz>,
-        Colin Ian King <colin.king@intel.com>,
-        James Clark <james.clark@arm.com>,
-        Fangrui Song <maskray@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>,
-        Riccardo Mancini <rickyman7@gmail.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Zechuan Chen <chenzechuan1@huawei.com>,
-        Jason Wang <wangborong@cdjrlc.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Remi Bernon <rbernon@codeweavers.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        bpf@vger.kernel.org, llvm@lists.linux.dev
-References: <20220824153901.488576-1-irogers@google.com>
- <20220824153901.488576-17-irogers@google.com>
- <a7176263-7dc8-6cbd-af2d-5338c4c4b546@intel.com>
- <CAP-5=fXk+mLv=C0CTrvnBeuhCTAtJ=x2O8D2YqvmVZSMHqcLvQ@mail.gmail.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <CAP-5=fXk+mLv=C0CTrvnBeuhCTAtJ=x2O8D2YqvmVZSMHqcLvQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20220826165238.30915-1-mkoutny@suse.com> <20220826165238.30915-5-mkoutny@suse.com>
+In-Reply-To: <20220826165238.30915-5-mkoutny@suse.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Fri, 26 Aug 2022 10:41:37 -0700
+Message-ID: <CAJD7tkZZ6j6mPfwwFDy_ModYux5447HFP=oPwa6MFA_NYAZ9-g@mail.gmail.com>
+Subject: Re: [PATCH 4/4] cgroup/bpf: Honor cgroup NS in cgroup_iter for ancestors
+To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Aditya Kali <adityakali@google.com>,
+        Serge Hallyn <serge.hallyn@canonical.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Yonghong Song <yhs@fb.com>,
+        Muneendra Kumar <muneendra.kumar@broadcom.com>,
+        Hao Luo <haoluo@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 26/08/22 19:06, Ian Rogers wrote:
-> On Fri, Aug 26, 2022 at 5:12 AM Adrian Hunter <adrian.hunter@intel.com> wrote:
->>
->> On 24/08/22 18:38, Ian Rogers wrote:
->>> Add annotations to describe lock behavior. Add unlocks so that mutexes
->>> aren't conditionally held on exit from perf_sched__replay. Add an exit
->>> variable so that thread_func can terminate, rather than leaving the
->>> threads blocked on mutexes.
->>>
->>> Signed-off-by: Ian Rogers <irogers@google.com>
->>> ---
->>>  tools/perf/builtin-sched.c | 46 ++++++++++++++++++++++++--------------
->>>  1 file changed, 29 insertions(+), 17 deletions(-)
->>>
->>> diff --git a/tools/perf/builtin-sched.c b/tools/perf/builtin-sched.c
->>> index 7e4006d6b8bc..b483ff0d432e 100644
->>> --- a/tools/perf/builtin-sched.c
->>> +++ b/tools/perf/builtin-sched.c
->>> @@ -246,6 +246,7 @@ struct perf_sched {
->>>       const char      *time_str;
->>>       struct perf_time_interval ptime;
->>>       struct perf_time_interval hist_time;
->>> +     volatile bool   thread_funcs_exit;
->>>  };
->>>
->>>  /* per thread run time data */
->>> @@ -633,31 +634,34 @@ static void *thread_func(void *ctx)
->>>       prctl(PR_SET_NAME, comm2);
->>>       if (fd < 0)
->>>               return NULL;
->>> -again:
->>> -     ret = sem_post(&this_task->ready_for_work);
->>> -     BUG_ON(ret);
->>> -     mutex_lock(&sched->start_work_mutex);
->>> -     mutex_unlock(&sched->start_work_mutex);
->>>
->>> -     cpu_usage_0 = get_cpu_usage_nsec_self(fd);
->>> +     while (!sched->thread_funcs_exit) {
->>> +             ret = sem_post(&this_task->ready_for_work);
->>> +             BUG_ON(ret);
->>> +             mutex_lock(&sched->start_work_mutex);
->>> +             mutex_unlock(&sched->start_work_mutex);
->>>
->>> -     for (i = 0; i < this_task->nr_events; i++) {
->>> -             this_task->curr_event = i;
->>> -             perf_sched__process_event(sched, this_task->atoms[i]);
->>> -     }
->>> +             cpu_usage_0 = get_cpu_usage_nsec_self(fd);
->>>
->>> -     cpu_usage_1 = get_cpu_usage_nsec_self(fd);
->>> -     this_task->cpu_usage = cpu_usage_1 - cpu_usage_0;
->>> -     ret = sem_post(&this_task->work_done_sem);
->>> -     BUG_ON(ret);
->>> +             for (i = 0; i < this_task->nr_events; i++) {
->>> +                     this_task->curr_event = i;
->>> +                     perf_sched__process_event(sched, this_task->atoms[i]);
->>> +             }
->>>
->>> -     mutex_lock(&sched->work_done_wait_mutex);
->>> -     mutex_unlock(&sched->work_done_wait_mutex);
->>> +             cpu_usage_1 = get_cpu_usage_nsec_self(fd);
->>> +             this_task->cpu_usage = cpu_usage_1 - cpu_usage_0;
->>> +             ret = sem_post(&this_task->work_done_sem);
->>> +             BUG_ON(ret);
->>>
->>> -     goto again;
->>> +             mutex_lock(&sched->work_done_wait_mutex);
->>> +             mutex_unlock(&sched->work_done_wait_mutex);
->>> +     }
->>> +     return NULL;
->>>  }
->>>
->>>  static void create_tasks(struct perf_sched *sched)
->>> +     EXCLUSIVE_LOCK_FUNCTION(sched->start_work_mutex)
->>> +     EXCLUSIVE_LOCK_FUNCTION(sched->work_done_wait_mutex)
->>>  {
->>>       struct task_desc *task;
->>>       pthread_attr_t attr;
->>> @@ -687,6 +691,8 @@ static void create_tasks(struct perf_sched *sched)
->>>  }
->>>
->>>  static void wait_for_tasks(struct perf_sched *sched)
->>> +     EXCLUSIVE_LOCKS_REQUIRED(sched->work_done_wait_mutex)
->>> +     EXCLUSIVE_LOCKS_REQUIRED(sched->start_work_mutex)
->>>  {
->>>       u64 cpu_usage_0, cpu_usage_1;
->>>       struct task_desc *task;
->>> @@ -738,6 +744,8 @@ static void wait_for_tasks(struct perf_sched *sched)
->>>  }
->>>
->>>  static void run_one_test(struct perf_sched *sched)
->>> +     EXCLUSIVE_LOCKS_REQUIRED(sched->work_done_wait_mutex)
->>> +     EXCLUSIVE_LOCKS_REQUIRED(sched->start_work_mutex)
->>>  {
->>>       u64 T0, T1, delta, avg_delta, fluct;
->>>
->>> @@ -3309,11 +3317,15 @@ static int perf_sched__replay(struct perf_sched *sched)
->>>       print_task_traces(sched);
->>>       add_cross_task_wakeups(sched);
->>>
->>> +     sched->thread_funcs_exit = false;
->>>       create_tasks(sched);
->>>       printf("------------------------------------------------------------\n");
->>>       for (i = 0; i < sched->replay_repeat; i++)
->>>               run_one_test(sched);
->>>
->>> +     sched->thread_funcs_exit = true;
->>> +     mutex_unlock(&sched->start_work_mutex);
->>> +     mutex_unlock(&sched->work_done_wait_mutex);
->>
->> I think you still need to wait for the threads to exit before
->> destroying the mutexes.
-> 
-> This is a pre-existing issue and beyond the scope of this patch set.
+Hi there!
 
-You added the mutex_destroy functions in patch 8, so it is still
-fallout from that.
+Thanks for following up with this series!
 
-> 
-> Thanks,
-> Ian
-> 
->>>       return 0;
->>>  }
->>>
->>
+On Fri, Aug 26, 2022 at 9:53 AM Michal Koutn=C3=BD <mkoutny@suse.com> wrote=
+:
+>
+> The iterator with BPF_CGROUP_ITER_ANCESTORS_UP can traverse up across a
+> cgroup namespace level, which may be surprising within a non-init cgroup
+> namespace.
+>
+> Introduce and use a new cgroup_parent_ns() helper that stops according
+> to cgroup namespace boundary. With BPF_CGROUP_ITER_ANCESTORS_UP. We use
+> the cgroup namespace of the iterator caller, not that one of the creator
+> (might be different, the former is relevant).
+>
+> Fixes: d4ccaf58a847 ("bpf: Introduce cgroup iter")
+> Signed-off-by: Michal Koutn=C3=BD <mkoutny@suse.com>
+> ---
+>  include/linux/cgroup.h   |  3 +++
+>  kernel/bpf/cgroup_iter.c |  9 ++++++---
+>  kernel/cgroup/cgroup.c   | 32 +++++++++++++++++++++++---------
+>  3 files changed, 32 insertions(+), 12 deletions(-)
+>
+> diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
+> index b6a9528374a8..b63a80e03fae 100644
+> --- a/include/linux/cgroup.h
+> +++ b/include/linux/cgroup.h
+> @@ -858,6 +858,9 @@ struct cgroup_namespace *copy_cgroup_ns(unsigned long=
+ flags,
+>  int cgroup_path_ns(struct cgroup *cgrp, char *buf, size_t buflen,
+>                    struct cgroup_namespace *ns);
+>
+> +struct cgroup *cgroup_parent_ns(struct cgroup *cgrp,
+> +                               struct cgroup_namespace *ns);
+> +
+>  #else /* !CONFIG_CGROUPS */
+>
+>  static inline void free_cgroup_ns(struct cgroup_namespace *ns) { }
+> diff --git a/kernel/bpf/cgroup_iter.c b/kernel/bpf/cgroup_iter.c
+> index c69bce2f4403..06ee4a0c5870 100644
+> --- a/kernel/bpf/cgroup_iter.c
+> +++ b/kernel/bpf/cgroup_iter.c
+> @@ -104,6 +104,7 @@ static void *cgroup_iter_seq_next(struct seq_file *se=
+q, void *v, loff_t *pos)
+>  {
+>         struct cgroup_subsys_state *curr =3D (struct cgroup_subsys_state =
+*)v;
+>         struct cgroup_iter_priv *p =3D seq->private;
+> +       struct cgroup *parent;
+>
+>         ++*pos;
+>         if (p->terminate)
+> @@ -113,9 +114,11 @@ static void *cgroup_iter_seq_next(struct seq_file *s=
+eq, void *v, loff_t *pos)
+>                 return css_next_descendant_pre(curr, p->start_css);
+>         else if (p->order =3D=3D BPF_CGROUP_ITER_DESCENDANTS_POST)
+>                 return css_next_descendant_post(curr, p->start_css);
+> -       else if (p->order =3D=3D BPF_CGROUP_ITER_ANCESTORS_UP)
+> -               return curr->parent;
+> -       else  /* BPF_CGROUP_ITER_SELF_ONLY */
+> +       else if (p->order =3D=3D BPF_CGROUP_ITER_ANCESTORS_UP) {
+> +               parent =3D cgroup_parent_ns(curr->cgroup,
+> +                                         current->nsproxy->cgroup_ns);
+> +               return parent ? &parent->self : NULL;
+> +       } else  /* BPF_CGROUP_ITER_SELF_ONLY */
+>                 return NULL;
+>  }
+>
+> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+> index c0377726031f..d60b5dfbbbc9 100644
+> --- a/kernel/cgroup/cgroup.c
+> +++ b/kernel/cgroup/cgroup.c
+> @@ -1417,11 +1417,11 @@ static inline struct cgroup *__cset_cgroup_from_r=
+oot(struct css_set *cset,
+>  }
+>
+>  /*
+> - * look up cgroup associated with current task's cgroup namespace on the
+> + * look up cgroup associated with given cgroup namespace on the
+>   * specified hierarchy
+>   */
+> -static struct cgroup *
+> -current_cgns_cgroup_from_root(struct cgroup_root *root)
+> +static struct cgroup *cgns_cgroup_from_root(struct cgroup_root *root,
+> +                                           struct cgroup_namespace *ns)
+>  {
+>         struct cgroup *res =3D NULL;
+>         struct css_set *cset;
+> @@ -1430,7 +1430,7 @@ current_cgns_cgroup_from_root(struct cgroup_root *r=
+oot)
+>
+>         rcu_read_lock();
+>
+> -       cset =3D current->nsproxy->cgroup_ns->root_cset;
+> +       cset =3D ns->root_cset;
+>         res =3D __cset_cgroup_from_root(cset, root);
+>
+>         rcu_read_unlock();
+> @@ -1852,15 +1852,15 @@ int cgroup_show_path(struct seq_file *sf, struct =
+kernfs_node *kf_node,
+>         int len =3D 0;
+>         char *buf =3D NULL;
+>         struct cgroup_root *kf_cgroot =3D cgroup_root_from_kf(kf_root);
+> -       struct cgroup *ns_cgroup;
+> +       struct cgroup *root_cgroup;
+>
+>         buf =3D kmalloc(PATH_MAX, GFP_KERNEL);
+>         if (!buf)
+>                 return -ENOMEM;
+>
+>         spin_lock_irq(&css_set_lock);
+> -       ns_cgroup =3D current_cgns_cgroup_from_root(kf_cgroot);
+> -       len =3D kernfs_path_from_node(kf_node, ns_cgroup->kn, buf, PATH_M=
+AX);
+> +       root_cgroup =3D cgns_cgroup_from_root(kf_cgroot, current->nsproxy=
+->cgroup_ns);
+> +       len =3D kernfs_path_from_node(kf_node, root_cgroup->kn, buf, PATH=
+_MAX);
+>         spin_unlock_irq(&css_set_lock);
+>
+>         if (len >=3D PATH_MAX)
+> @@ -2330,6 +2330,18 @@ int cgroup_path_ns(struct cgroup *cgrp, char *buf,=
+ size_t buflen,
+>  }
+>  EXPORT_SYMBOL_GPL(cgroup_path_ns);
+>
+> +struct cgroup *cgroup_parent_ns(struct cgroup *cgrp,
+> +                                  struct cgroup_namespace *ns)
+> +{
+> +       struct cgroup *root_cgrp;
+> +
+> +       spin_lock_irq(&css_set_lock);
+> +       root_cgrp =3D cgns_cgroup_from_root(cgrp->root, ns);
+> +       spin_unlock_irq(&css_set_lock);
+> +
+> +       return cgrp =3D=3D root_cgrp ? NULL : cgroup_parent(cgrp);
 
+I understand that currently cgroup_iter is the only user of this, but
+for future use cases, is it safe to assume that cgrp will always be
+inside ns? Would it be safer to do something like:
+
+struct cgroup *parent =3D cgroup_parent(cgrp);
+
+if (!parent)
+    return NULL;
+
+return cgroup_is_descendant(parent, root_cgrp) ? parent : NULL;
+
+
+> +}
+> +
+>  /**
+>   * task_cgroup_path - cgroup path of a task in the first cgroup hierarch=
+y
+>   * @task: target task
+> @@ -6031,7 +6043,8 @@ struct cgroup *cgroup_get_from_id(u64 id)
+>                 goto out;
+>
+>         spin_lock_irq(&css_set_lock);
+> -       root_cgrp =3D current_cgns_cgroup_from_root(&cgrp_dfl_root);
+> +       root_cgrp =3D cgns_cgroup_from_root(&cgrp_dfl_root,
+> +                                         current->nsproxy->cgroup_ns);
+>         spin_unlock_irq(&css_set_lock);
+>         if (!cgroup_is_descendant(cgrp, root_cgrp)) {
+>                 cgroup_put(cgrp);
+> @@ -6612,7 +6625,8 @@ struct cgroup *cgroup_get_from_path(const char *pat=
+h)
+>         struct cgroup *root_cgrp;
+>
+>         spin_lock_irq(&css_set_lock);
+> -       root_cgrp =3D current_cgns_cgroup_from_root(&cgrp_dfl_root);
+> +       root_cgrp =3D cgns_cgroup_from_root(&cgrp_dfl_root,
+> +                                         current->nsproxy->cgroup_ns);
+>         kn =3D kernfs_walk_and_get(root_cgrp->kn, path);
+>         spin_unlock_irq(&css_set_lock);
+>         if (!kn)
+> --
+> 2.37.0
+>
