@@ -2,129 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD57F5A23DF
-	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 11:14:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4F935A241F
+	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 11:21:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229535AbiHZJN0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Aug 2022 05:13:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33664 "EHLO
+        id S1343528AbiHZJTc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Aug 2022 05:19:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233000AbiHZJNZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Aug 2022 05:13:25 -0400
-Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A285DCD78F;
-        Fri, 26 Aug 2022 02:13:23 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.228])
-        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4MDYrv5GwNz9v7Gy;
-        Fri, 26 Aug 2022 17:07:59 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.204.63.22])
-        by APP2 (Coremail) with SMTP id GxC2BwCnXxeKjghjdBVRAA--.23684S2;
-        Fri, 26 Aug 2022 10:12:54 +0100 (CET)
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
-        corbet@lwn.net, dhowells@redhat.com, jarkko@kernel.org,
-        rostedt@goodmis.org, mingo@redhat.com, paul@paul-moore.com,
-        jmorris@namei.org, serge@hallyn.com, shuah@kernel.org
-Cc:     bpf@vger.kernel.org, linux-doc@vger.kernel.org,
-        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        deso@posteo.net, Roberto Sassu <roberto.sassu@huawei.com>
-Subject: [PATCH v14 04/10] KEYS: Move KEY_LOOKUP_ to include/linux/key.h and add flags check function
-Date:   Fri, 26 Aug 2022 11:12:28 +0200
-Message-Id: <20220826091228.1701185-1-roberto.sassu@huaweicloud.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <acae432697e854748d9a44c732ec8cab807d9d46.camel@huaweicloud.com>
-References: <acae432697e854748d9a44c732ec8cab807d9d46.camel@huaweicloud.com>
+        with ESMTP id S245703AbiHZJTa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Aug 2022 05:19:30 -0400
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B417AD7435
+        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 02:19:28 -0700 (PDT)
+Received: by mail-il1-f197.google.com with SMTP id i26-20020a056e021d1a00b002e9865e8963so774843ila.14
+        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 02:19:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc;
+        bh=7awWSOHLPnAjg3OIqppgmOG9YBZWnjkmLUSpTqU3g/U=;
+        b=KYM9UA4JPPoT8iqqkszsOjJbakADLVqfGf/tkzfFnzAtMZHxgLZgFQjvK+cgqaKJIa
+         mCU2wB/QEq337dhqCWcesYQikYVDE8foiavBmKsHM9oF1L+XdV3utcCWLEs4NOdyD9X/
+         gL5nF5Nyf8+1Dq+ARtZId29lkEEEYYZsZQyCV0nFRQgwM7OdoBemy8nE9G5uxOQPk+CU
+         DGRJFAciPQ6VBaxWPsR60mKcwDpGcln/3DdqXPJAlDIhD4G5eS5hf52I2bh50I8RkRJ+
+         BiAe7XR6U49s+BoB1Q3CvTLtL5697HdHXBYVo+sBpVSoTwIwKJ7rRW5xYBrlIXKX3v7Z
+         5eSA==
+X-Gm-Message-State: ACgBeo2jVnUjksxvhRlW0P6a7J5gdYTHCncT7zMKtEx2jRA98+Rl33+g
+        UrT5E5Aj2EnEcyOHDAiTJ6nFxPjqlwG/pfH5evpWrSqYGlFX
+X-Google-Smtp-Source: AA6agR7pWosGxbwJcVkZzs0IfYElXo5vIiEU4cXBP2pG9isPQ6jF+KiGcl/yCCX6hd6UyGuGdM6EwGdqUar6HS0gYGviz1tfg664
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: GxC2BwCnXxeKjghjdBVRAA--.23684S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7urW3JFWUGryftw1rWr4fuFg_yoW8uF1kpF
-        yUCa4rKry8GFy2g3s3GFsIya1ag3yfGr17AFZIgwn0vF9ag3y8Jrn7GF43GF15urWruFy2
-        qr42ga15uw1UA3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkIb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-        AFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28I
-        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
-        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI
-        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42
-        IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
-        87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7IUbHa0PUUUUU==
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAQBF1jj4JQwgAFsx
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Received: by 2002:a6b:510d:0:b0:689:5a18:1150 with SMTP id
+ f13-20020a6b510d000000b006895a181150mr3075634iob.73.1661505568010; Fri, 26
+ Aug 2022 02:19:28 -0700 (PDT)
+Date:   Fri, 26 Aug 2022 02:19:27 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002c7abf05e721698d@google.com>
+Subject: [syzbot] KMSAN: uninit-value in psi_poll_worker
+From:   syzbot <syzbot+dd8e45eb61404849cde9@syzkaller.appspotmail.com>
+To:     bpf@vger.kernel.org, brauner@kernel.org, cgroups@vger.kernel.org,
+        glider@google.com, hannes@cmpxchg.org,
+        linux-kernel@vger.kernel.org, lizefan.x@bytedance.com,
+        syzkaller-bugs@googlegroups.com, tj@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Roberto Sassu <roberto.sassu@huawei.com>
+Hello,
 
-In preparation for the patch that introduces the bpf_lookup_user_key() eBPF
-kfunc, move KEY_LOOKUP_ definitions to include/linux/key.h, to be able to
-validate the kfunc parameters.
+syzbot found the following issue on:
 
-Also, introduce key_lookup_flags_valid() to check if the caller set in the
-argument only defined flags. Introduce it directly in include/linux/key.h,
-to reduce the risk that the check is not in sync with currently defined
-flags.
+HEAD commit:    3a2b6b904ea7 x86: kmsan: enable KMSAN builds for x86
+git tree:       https://github.com/google/kmsan.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=13f51a33080000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8e64bc5364a1307e
+dashboard link: https://syzkaller.appspot.com/bug?extid=dd8e45eb61404849cde9
+compiler:       clang version 15.0.0 (https://github.com/llvm/llvm-project.git 610139d2d9ce6746b3c617fb3e2f7886272d26ff), GNU ld (GNU Binutils for Debian) 2.35.2
 
-Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-Reviewed-by: KP Singh <kpsingh@kernel.org>
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+dd8e45eb61404849cde9@syzkaller.appspotmail.com
+
+=====================================================
+BUG: KMSAN: uninit-value in update_triggers kernel/sched/psi.c:525 [inline]
+BUG: KMSAN: uninit-value in psi_poll_work kernel/sched/psi.c:626 [inline]
+BUG: KMSAN: uninit-value in psi_poll_worker+0x972/0x16a0 kernel/sched/psi.c:648
+ update_triggers kernel/sched/psi.c:525 [inline]
+ psi_poll_work kernel/sched/psi.c:626 [inline]
+ psi_poll_worker+0x972/0x16a0 kernel/sched/psi.c:648
+ kthread+0x31b/0x430 kernel/kthread.c:376
+ ret_from_fork+0x1f/0x30
+
+Uninit was stored to memory at:
+ collect_percpu_times+0x193d/0x19a0 kernel/sched/psi.c:355
+ psi_poll_work kernel/sched/psi.c:604 [inline]
+ psi_poll_worker+0x587/0x16a0 kernel/sched/psi.c:648
+ kthread+0x31b/0x430 kernel/kthread.c:376
+ ret_from_fork+0x1f/0x30
+
+Uninit was stored to memory at:
+ collect_percpu_times+0x193d/0x19a0 kernel/sched/psi.c:355
+ psi_poll_work kernel/sched/psi.c:604 [inline]
+ psi_poll_worker+0x587/0x16a0 kernel/sched/psi.c:648
+ kthread+0x31b/0x430 kernel/kthread.c:376
+ ret_from_fork+0x1f/0x30
+
+Uninit was created at:
+ slab_post_alloc_hook mm/slab.h:732 [inline]
+ slab_alloc_node mm/slub.c:3258 [inline]
+ slab_alloc mm/slub.c:3266 [inline]
+ kmem_cache_alloc_trace+0x696/0xdf0 mm/slub.c:3297
+ kmalloc include/linux/slab.h:600 [inline]
+ psi_cgroup_alloc+0x83/0x250 kernel/sched/psi.c:960
+ cgroup_create kernel/cgroup/cgroup.c:5430 [inline]
+ cgroup_mkdir+0x10a3/0x3080 kernel/cgroup/cgroup.c:5550
+ kernfs_iop_mkdir+0x2ba/0x520 fs/kernfs/dir.c:1185
+ vfs_mkdir+0x62a/0x870 fs/namei.c:4013
+ do_mkdirat+0x466/0x7b0 fs/namei.c:4038
+ __do_sys_mkdirat fs/namei.c:4053 [inline]
+ __se_sys_mkdirat fs/namei.c:4051 [inline]
+ __x64_sys_mkdirat+0xc4/0x120 fs/namei.c:4051
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+CPU: 0 PID: 19765 Comm: psimon Not tainted 6.0.0-rc2-syzkaller-47460-g3a2b6b904ea7 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/22/2022
+=====================================================
+
+
 ---
- include/linux/key.h      | 16 ++++++++++++++++
- security/keys/internal.h |  2 --
- 2 files changed, 16 insertions(+), 2 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/include/linux/key.h b/include/linux/key.h
-index 7febc4881363..e679dbf0c940 100644
---- a/include/linux/key.h
-+++ b/include/linux/key.h
-@@ -88,6 +88,22 @@ enum key_need_perm {
- 	KEY_DEFER_PERM_CHECK,	/* Special: permission check is deferred */
- };
- 
-+#define KEY_LOOKUP_CREATE	0x01
-+#define KEY_LOOKUP_PARTIAL	0x02
-+
-+/**
-+ * key_lookup_flags_valid - detect if provided key lookup flags are valid
-+ * @flags: key lookup flags.
-+ *
-+ * Verify whether or not the caller set in the argument only defined flags.
-+ *
-+ * Return: true if flags are valid, false if not.
-+ */
-+static inline bool key_lookup_flags_valid(u64 flags)
-+{
-+	return !(flags & ~(KEY_LOOKUP_CREATE | KEY_LOOKUP_PARTIAL));
-+}
-+
- struct seq_file;
- struct user_struct;
- struct signal_struct;
-diff --git a/security/keys/internal.h b/security/keys/internal.h
-index 9b9cf3b6fcbb..3c1e7122076b 100644
---- a/security/keys/internal.h
-+++ b/security/keys/internal.h
-@@ -165,8 +165,6 @@ extern struct key *request_key_and_link(struct key_type *type,
- 
- extern bool lookup_user_key_possessed(const struct key *key,
- 				      const struct key_match_data *match_data);
--#define KEY_LOOKUP_CREATE	0x01
--#define KEY_LOOKUP_PARTIAL	0x02
- 
- extern long join_session_keyring(const char *name);
- extern void key_change_session_keyring(struct callback_head *twork);
--- 
-2.25.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
