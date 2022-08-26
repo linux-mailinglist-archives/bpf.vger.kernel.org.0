@@ -2,233 +2,184 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A9D85A30AB
-	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 22:55:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45CE85A30B0
+	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 22:58:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231618AbiHZUy6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Aug 2022 16:54:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59770 "EHLO
+        id S1344712AbiHZU6x (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Aug 2022 16:58:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234122AbiHZUyz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Aug 2022 16:54:55 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EADE42AE1A;
-        Fri, 26 Aug 2022 13:54:53 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id q81so2109742iod.9;
-        Fri, 26 Aug 2022 13:54:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=pkt0Yzf4R3Fd9DgZlP6dgeGDdAgSwq8fsjN4t7nFaSY=;
-        b=W3w0hee66ofmZMrx+Ds27aTFgShoZHh6HewqQgmYAyESwL/AaJ4DgWRNy3ytwZdWw6
-         blELn9t3Ra4aJoiTUKPETMjN2EYaECSQ9cdTw1Tb8uUnhyQQ8s5gXY7ofwJ1sTmClXDa
-         TrGGJFCnVx3/s16ST93sCSsl5ilx1S/4MMvC0umilDoHVBnkPPuExZlLSboz/flx4rSi
-         Wucxo982QHh9tQ7Mr7yhcH6ADlz27nrh1eJURmGyuLLcpqWjv1vH6usB+5ZBy5Sg5o34
-         kidTbmOM5ZxREbnkrGcTwdZ+AgZK0nQIfjW4t1qEFSdPCP6alAbgeibe2e7MS0VGbqJj
-         J1XQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=pkt0Yzf4R3Fd9DgZlP6dgeGDdAgSwq8fsjN4t7nFaSY=;
-        b=kqcZ4siBOXI9H/kcT4gC4QMjfX+7c3CwnscfjC6dPI474EK11brwAK3APSCX6eUVNr
-         DrV+DJTSeNchwi1mzU7aBULyIV/jAumzI5wQSVojVfcfaORHs2/1DJkHUD5+M1rAdVWd
-         BIvtWxzvp8NveQr8zlHn9hoIM8fPVrBGwdkAS6Pzx9JEl0qa0yW4yCJFNCaBCezkZ7xB
-         XmbSGk8vfK114MTyJBb49vJzP/JCDu0RD7oJ1grtFjtzqArmnBZi9kgCbk6pSwRInFK2
-         M7Bz2UC4BdzBrja2cHDy7c9JrqAIofzPfzyguWC+gp1Zd36BrN81qphQT4mtsVES4aDi
-         4a3w==
-X-Gm-Message-State: ACgBeo3NOzIWwqPoYwTDZuF65mm4+2RBIME0TxAzGlq0nUdqTE/8arCl
-        SwIkKxyTcMWBk1CumiU2Z5r3F+QLFRhMB1fb7uprvbM+
-X-Google-Smtp-Source: AA6agR4p00HwGGk93wZrsTQs6U5UdOeH+kAa/n95672KaD16yM9lM4tk6zT9FL1jksREeHRCTPZ2uYUS3stIp3welAI=
-X-Received: by 2002:a5e:dc46:0:b0:689:94f6:fa3e with SMTP id
- s6-20020a5edc46000000b0068994f6fa3emr4374435iop.110.1661547293198; Fri, 26
- Aug 2022 13:54:53 -0700 (PDT)
+        with ESMTP id S234122AbiHZU6w (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Aug 2022 16:58:52 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36B6AE1163;
+        Fri, 26 Aug 2022 13:58:52 -0700 (PDT)
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27QIP419018131;
+        Fri, 26 Aug 2022 13:58:51 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : mime-version; s=facebook;
+ bh=rTNsdSZOf5RfwrRe1/wkCvZHoBG9V4j4TjT5kyqNIUc=;
+ b=c5VfFRLgaV6UC+EqCKAqb2y2oQ6HwQ//jM/kKysI1vji9VmbEOOXDvG8iakctATNlC9c
+ ZCMJVKWZOtcHAocEtepOoy16G6Syg5X3H97B03hLmlXN/NQT19MQP0A9Hjlf6n2hXCUe
+ CKib2rfro/Veh99o6IM2HvsPVdHON8kXvKQ= 
+Received: from nam04-bn8-obe.outbound.protection.outlook.com (mail-bn8nam04lp2044.outbound.protection.outlook.com [104.47.74.44])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3j70s9t9du-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 26 Aug 2022 13:58:51 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dmWpHnQ5Ls/xxd8v4ueTMpiJTUcXeyKH7m/AEmSk+fKOG2O+sm4qlCR5yQYGi353zynrcdDFZDn9c1rK5qbEl4UH35o4QrvBldCBeOQGRBEGNpaHFIsE2qYL6+R+X8bvMNE/5tr4Xth/CzkcB6shL3owkOw3KnHItTJY1BgYKRXTiI5UnSD+ru0l81VWSfw2ue1ZaC7VliUzhcmfSoGB+cZR58m0UO4nsM3RHXENAJcTqgcu3Opwy7tAL7wgJ3XpmtOgr/w3GvA5hOSTaPxvzNvdILm3DiaWuEKcYPVLczL0vUIAF8pj/p/+AgX9gfU+6xMFagg8isqBQlhUTZD/hQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=rTNsdSZOf5RfwrRe1/wkCvZHoBG9V4j4TjT5kyqNIUc=;
+ b=NF22YOvWgb1f1rhRpc0MJo3nmL4O2Bc7bBZpQN6XJExxQwhfM61CDPcwA5Ftmg+26xP3rHN3brJGLlxrKcSKj25apNEvPU+MWXYArueT13VNzKKirnUw4TDsrYxgvS4sXjQpKDv81s4o+48B94shgPzRtpRW56s1ubIzTuzhZYipHGR1zx51BT8JdwKptqTSyieHHeE2Uy7H8fi8yDgcAkRxzl0GRmAkAevBsi22Qrq4Tj9SDa3Jye5KyCtTb981nuNwp3Nwg675VlNgGyeCsmYzBC0kwMQ28VHDTtFJ+QeKl4Bvt6XfmWBWeunjU4JVZTW942V0K7ZjTNMgr8yBVA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
+ by MW4PR15MB4395.namprd15.prod.outlook.com (2603:10b6:303:100::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5566.16; Fri, 26 Aug
+ 2022 20:58:48 +0000
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::c488:891f:57b:d5da]) by SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::c488:891f:57b:d5da%9]) with mapi id 15.20.5566.015; Fri, 26 Aug 2022
+ 20:58:48 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Namhyung Kim <namhyung@kernel.org>
+CC:     Song Liu <song@kernel.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH bpf-next] bpf: Add bpf_read_raw_record() helper
+Thread-Topic: [PATCH bpf-next] bpf: Add bpf_read_raw_record() helper
+Thread-Index: AQHYtzPeWFYcAGzsN0Wstq4jJDfNwK3AJloAgAAJpYCAAA9aAIAAO0MAgAAulQCAAAilAIAAsuMAgAAazgCAAAnxgIAADKuAgAAYuoA=
+Date:   Fri, 26 Aug 2022 20:58:48 +0000
+Message-ID: <FD49F694-10FA-4346-8303-E1E185C3E6E4@fb.com>
+References: <20220823210354.1407473-1-namhyung@kernel.org>
+ <CAEf4Bzbd0-jGFCSCJu3eDxxom42xnH9Tevq0n50-AajjHb5t3g@mail.gmail.com>
+ <A9E2E766-E8A2-4E2E-A661-922400D2674D@fb.com>
+ <CAEf4BzbGf6FuM7VcnA7HKb33HJeJjrDuydC4h1_tCUB8sPCW2g@mail.gmail.com>
+ <E215461A-01E7-4677-A404-C4439D66A7AF@fb.com>
+ <CAM9d7cgigkU8quUMpScL=Xt8+WLDVXKiF5xdKiz7BbDPibSNjg@mail.gmail.com>
+ <CAPhsuW5V1U_UTHQw9E80vCTeP4Jqg9Ta8B+7o3pybKB=8CGRFA@mail.gmail.com>
+ <CAM9d7cjTtOkRHLOosxHN8PcbVbhTK=uLDGjw8N5=1QiTHcd6rQ@mail.gmail.com>
+ <C7F3F33B-4A8E-428C-9FED-FB635955C2B1@fb.com>
+ <FCC75F8E-4C2F-42A4-B582-9BE3BB87E15A@fb.com>
+ <CAM9d7cj6YNTL+u38PZjhPF2Qg_BYiJ1NMmDkPDx3N3Xe+ZTbyA@mail.gmail.com>
+In-Reply-To: <CAM9d7cj6YNTL+u38PZjhPF2Qg_BYiJ1NMmDkPDx3N3Xe+ZTbyA@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3696.120.41.1.1)
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: fd5d0881-60e4-498c-ab6c-08da87a5c5f6
+x-ms-traffictypediagnostic: MW4PR15MB4395:EE_
+x-fb-source: Internal
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: UEdjNZeVAUqY+FKWRbGMUYPEEQPkjCGMQFFZmbSqR33Qa+zYivmbAai0iquQ1sYeNntcMF63Fc/eZ73r4wi39ztjCv1mJ0UbcujOchlVGUZG4I6+0UVT1OpLLYMUVCMUYPzyVhZVzKOeSDhUN84zADtDcTdTd9L2XHtq7ZCDtyqtCMfaJxpzvocywiEaxGE4vCcImEi6OR4FJAJ0h9kv5qzRwuL8xep4Zq/zHKGLXG+lxARQY1gdzIjAYCrDEJDRed3Y2biL0mUvPw0C5glOv+NqDkEnFKdsM2UxR3pmrdYyWW2bm8vbKryLZaBwohXdwJ8GMrIVjbPXCRH3nCZlv9RRLmli+s7CD9s1/tGgb+Re4dmOlsa4n5PPx6NUXRS6eDxsxlctjj60YIbtv/nLocMAi0S8xWXeLtm+LosVEQUgTU7ly8ZKYv+Ygy9bX7Q79S545i2hxf5yCOhX5DkJVAKwztsDNBIIwMBopOXpf/PJL49vZeWdUCFqd2G+LLbuXl48nC3/u4KWsaTsXfJLqqRqHUpr+IpauV3cyDJqjt/dBWPsqD1aHBR7HeW/Flg6wrWOeiYumEY/oF80lGIftC3mxTkPJqT9eDowqbTEaAsomEQxlJPQI6uqRhjPVrF2wFiGsC4+bn3h5f3BeLLHUPamP+Z/1ZL+61Rra+9JlZxHhyxNx8TR1KfOGVj5efI4m+E1n2XVUcXxaNMeHYMHAbssXHx9wkhbIkcYOHiEkHUgHPv2nGvCfEumXTgegwY7yj7LVmVUDYG67H+5sK0eYb8qTX7iy107i+LL+harbRE=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(136003)(366004)(376002)(39860400002)(346002)(396003)(8676002)(38070700005)(76116006)(6916009)(54906003)(66556008)(66446008)(64756008)(66476007)(91956017)(4326008)(66946007)(316002)(6512007)(83380400001)(36756003)(186003)(2616005)(478600001)(6486002)(122000001)(53546011)(6506007)(71200400001)(33656002)(38100700002)(41300700001)(2906002)(4744005)(7416002)(5660300002)(8936002)(86362001)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?6u/GQVURjFN3xbtGR1fjPIPtI3krgzoTQMx8Vhj4UqaBNFNbWt66K4LDl8qW?=
+ =?us-ascii?Q?zF7RzdVA7pd0eY/hxFeTeaA8wsfi2fze8ojq8CRHvPv1dmnQBJy+n7FvRbYk?=
+ =?us-ascii?Q?ie40LoE991wFJjQrTpT8TD2yaE4AJjhf3v5yY0iiza39Y0Y0RdRqCa5Bw+TJ?=
+ =?us-ascii?Q?N3SKRufYcJKNxablezbNG+f8ULc2bqdNC8GnExEpeRl3Z1nUO7uuaJ6t7C52?=
+ =?us-ascii?Q?mRYOwERzb+4hIgsvINh2LWxSyBvFm2hzEBzAcW73txj0ixQz7l6CLK/FcX3R?=
+ =?us-ascii?Q?/V2BxHDqSjptIglJeMmllJFuXalD6MctMkyD6uasYXUi/n12X4bCp7lk+WSS?=
+ =?us-ascii?Q?Mrc6GS1VEq3Am59bmOF5qzyTaS2KttkAORExfDSLjeg8MSX9oSF6yAo2pYS6?=
+ =?us-ascii?Q?g6+1dDDb9iF5AbhRL5B5+1ZCJPOjcbRxb3RXP4HIga2kU/T9gIL4rjhgCaa4?=
+ =?us-ascii?Q?VMqceLcyvKAlP8SauuMbYT6DiQTeJDmNSno6HY4iQSPeVEBtdBzboOc5sj8Q?=
+ =?us-ascii?Q?aJ3BklV/4L/EVHLliV5vaQYKdEHNgqAUSAkd5Tnhufd+lNB9PSgPg1YBDSM3?=
+ =?us-ascii?Q?8wxP78/k05FY2R0RE6n/7FHlMJF0sxxb9gu6Za9tyCWCxSVcPoTp76XjBuT7?=
+ =?us-ascii?Q?XNNNHN/4wMAqGoa4pU6jwLtg61QHN4UZ1IQBfh6xJSJFsOVIy53dMcCZPX93?=
+ =?us-ascii?Q?bZ9QqqaMdyWZgWWXMPZrY7kCpZDZ+L8IVzpVCVpxdk7xHfnZXpMLOL7JhEdl?=
+ =?us-ascii?Q?F5XGG9YRAlevnzYnJalEYqH2X2pgjT2k/H/61EWFt7CQFnUwf6BQPva/vDU5?=
+ =?us-ascii?Q?cw6hnRfiTj5q8kSMFjbJsr1aX8Cpe9sIZrwJ3GqhLFCdUNGhYM/NE9bxuPME?=
+ =?us-ascii?Q?k6gW44h0PszsMKpw8lBXmDxc7yALm9oTyffnhzbpTfgmPhZLOfNVbc4qRbbY?=
+ =?us-ascii?Q?aAXGVwJ2zpfto1FzZKJF0HAfhFJolJRn4I8Foj+SelWXgM5ldg1NH642QUxc?=
+ =?us-ascii?Q?NpDDQE1X7DFpdNZqp3cV6IqC+QP4jY+t1loZlnAku9mmQlSNUXbmvuiPbM1L?=
+ =?us-ascii?Q?gyEksk4KFfc2bc259WkHd8lCJcYxFYhNkJQj5Vn/8QBa2Pok6o/kWlBl42zi?=
+ =?us-ascii?Q?S5J8VzvcWL/WOJ951AMltjHwtXwGkKZcH4ISKQdSstaWEKRZMW+KOBlrUvcB?=
+ =?us-ascii?Q?nuQcgDwI1wi3EvhMc6V9NU7bCnCdaNL3wV+Ws2FeRD0UPDiu48p7fqrz8LQm?=
+ =?us-ascii?Q?PkoyMRlprcyMNDQoc2UVGz4bnKK0mqHZGj8hHe2Vxw+yoYvXWHuMq/faeKqD?=
+ =?us-ascii?Q?Eo9zwJGQNw7ST2RrMbGIcR1faF63rDC4mVSt+Wl74foKFkQx01SlkWcWemIP?=
+ =?us-ascii?Q?N+GjFeWxjatj7t3kNrjRuCMp5JmLVps4Gq1IIWzBvHQOit6M7UEKcsHk1WJV?=
+ =?us-ascii?Q?eoTKFnliR7VBJxkj2qc5SEhXTdh5yISv3j5XUJmI5BfkZJRXNQ6dVyDv+tcq?=
+ =?us-ascii?Q?Ccmj8eSTqPcw8NNR1f9wOjcsgyeuuUAwPcXGBA8F2uzXrVelmRCJwReYmtZQ?=
+ =?us-ascii?Q?HulVDedGN7+ap9A2k0z0ZOItq7NHWmfV8QQRhuvNKt+FCsBO3KXd9g/3+Swp?=
+ =?us-ascii?Q?VNh99Z6FsP+26yNzqGJhc1I=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <6D089AB07810C24D9E38596F890F64D8@namprd15.prod.outlook.com>
 MIME-Version: 1.0
-References: <20220822235649.2218031-1-joannelkoong@gmail.com>
- <20220822235649.2218031-2-joannelkoong@gmail.com> <CAEf4BzZm7eUX3w-NwP0JuWtvKbO6GxN911TraY5bA8-z+ocyCg@mail.gmail.com>
- <CAP01T77izAbefN5CJ1ZdjwUdii=gMFMduKTYtSbYC3S9jbRoEA@mail.gmail.com>
- <CAJnrk1Y0r3++RLpT2jvp4st-79x3dUYk3uP-4tfnAeL5_kgM0Q@mail.gmail.com>
- <CAP01T74O6ZuH_NPObYTLUjFSADjWjzfHjTsLBf8b67jgchf6Gw@mail.gmail.com>
- <CAJnrk1Z39+pLzAOL3tbqvQyTcB4HvrbLghmr6_vLXhtJYHuwEA@mail.gmail.com>
- <CAP01T76ChONTCVtHNZ_X3Z6qmuZTKCVYwe0s6_TGcuC1tEx9sw@mail.gmail.com> <CAJnrk1Zmne1uDn8EKdNKJe6O-k_moU9Sryfws_J-TF2BvX2QMg@mail.gmail.com>
-In-Reply-To: <CAJnrk1Zmne1uDn8EKdNKJe6O-k_moU9Sryfws_J-TF2BvX2QMg@mail.gmail.com>
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date:   Fri, 26 Aug 2022 22:54:17 +0200
-Message-ID: <CAP01T746gvoOM7DuWY-3N2xJbEainTinTPhyqHki2Ms6E0Dk_A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 1/3] bpf: Add skb dynptrs
-To:     Joanne Koong <joannelkoong@gmail.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf@vger.kernel.org,
-        andrii@kernel.org, daniel@iogearbox.net, ast@kernel.org,
-        kafai@fb.com, kuba@kernel.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-OriginatorOrg: fb.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fd5d0881-60e4-498c-ab6c-08da87a5c5f6
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Aug 2022 20:58:48.6352
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: jvGqe3Fa93X+fzzY6kBaDXbtJVAU+RahE9X+RF9iDdtK7vwDCSvKLn51Sij7ECYUmBeocL+5qfqaF3lOmx54ow==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR15MB4395
+X-Proofpoint-GUID: lKHw2aZi1xkt_AlvdI57yoqALavoGkcB
+X-Proofpoint-ORIG-GUID: lKHw2aZi1xkt_AlvdI57yoqALavoGkcB
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-08-26_12,2022-08-25_01,2022-06-22_01
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 26 Aug 2022 at 21:49, Joanne Koong <joannelkoong@gmail.com> wrote:
->
-> On Fri, Aug 26, 2022 at 11:52 AM Kumar Kartikeya Dwivedi
-> <memxor@gmail.com> wrote:
-> >
-> > On Fri, 26 Aug 2022 at 20:44, Joanne Koong <joannelkoong@gmail.com> wrote:
-> > >
-> > > On Thu, Aug 25, 2022 at 5:19 PM Kumar Kartikeya Dwivedi
-> > > <memxor@gmail.com> wrote:
-> > > >
-> > > > On Thu, 25 Aug 2022 at 23:02, Joanne Koong <joannelkoong@gmail.com> wrote:
-> > > > > [...]
-> > > > > >
-> > > > > > Related question, it seems we know statically if dynptr is read only
-> > > > > > or not, so why even do all this hidden parameter passing and instead
-> > > > > > just reject writes directly? You only need to be able to set
-> > > > > > MEM_RDONLY on dynptr_data returned PTR_TO_PACKETs, and reject
-> > > > > > dynptr_write when dynptr type is xdp/skb (and ctx is only one). That
-> > > > > > seems simpler than checking it at runtime. Verifier already handles
-> > > > > > MEM_RDONLY generically, you only need to add the guard for
-> > > > > > check_packet_acces (and check_helper_mem_access for meta->raw_mode
-> > > > > > under pkt case), and rejecting dynptr_write seems like a if condition.
-> > > > >
-> > > > > There will be other helper functions that do writes (eg memcpy to
-> > > > > dynptrs, strncpy to dynptrs, probe read user to dynptrs, hashing
-> > > > > dynptrs, ...) so it's more scalable if we reject these at runtime
-> > > > > rather than enforce these at the verifier level. I also think it's
-> > > > > cleaner to keep the verifier logic as simple as possible and do the
-> > > > > checking in the helper.
-> > > >
-> > > > I won't be pushing this further, since you know what you plan to add
-> > > > in the future better, but I still disagree.
-> > > >
-> > > > I'm guessing there might be dynptrs where this read only property is
-> > > > set dynamically at runtime, which is why you want to go this route?
-> > > > I.e. you might not know statically whether dynptr is read only or not?
-> > > >
-> > > > My main confusion is the inconsistency here.
-> > > >
-> > > > Right now the patch implicitly relies on may_access_direct_pkt_data to
-> > > > protect slices returned from dynptr_data, instead of setting
-> > > > MEM_RDONLY on the returned PTR_TO_PACKET. Which is fine, it's not
-> > > > needed. So indirectly, you are relying on knowing statically whether
-> > > > the dynptr is read only or not. But then you also set this bit at
-> > > > runtime.
-> > > >
-> > > > So you reject some cases at load time, and the rest of them only at
-> > > > runtime. Direct writes to dynptr slice fails load, writes through
-> > > > helper does not (only fails at runtime).
-> > > >
-> > > > Also, dynptr_data needs to know whether dynptr is read only
-> > > > statically, to protect writes to its returned pointer, unless you
-> > > > decide to introduce another helper for the dynamic rdonly bit case
-> > > > (like dynptr_data_rdonly). Then you have a mismatch, where dynptr_data
-> > > > works for some rdonly dynptrs (known to be rdonly statically, like
-> > > > this skb one), but not for others.
-> > > >
-> > > > I also don't agree about the complexity or scalability part, all the
-> > > > infra and precedence is already there. We already have similar checks
-> > > > for meta->raw_mode where we reject writes to read only pointers in
-> > > > check_helper_mem_access.
-> > >
-> > > My point about scalability is that if we reject bpf_dynptr_write() at
-> > > load time, then we must reject any future dynptr helper that does any
-> > > writing at load time as well, to be consistent.
-> > >
-> > > I don't feel strongly about whether we reject at load time or run
-> > > time. Rejecting at load time instead of runtime doesn't seem that
-> > > useful to me, but there's a good chance I'm wrong here since Martin
-> > > stated that he prefers rejecting at load time as well.
-> > >
-> > > As for the added complexity part, what I mean is that we'll need to
-> > > keep track of some more stuff to support this, such as whether the
-> > > dynptr is read only and which helper functions need to check whether
-> > > the dynptr is read only or not.
-> >
-> > What I'm trying to understand is how dynptr_data is supposed to work
-> > if this dynptr read only bit is only known at runtime. Or will it be
-> > always known statically so that it can set returned pointer as read
-> > only? Because then it doesn't seem it is required or useful to track
-> > the readonly bit at runtime.
->
-> I think it'll always be known statically whether the dynptr is
-> read-only or not. If we make all writable dynptr helper functions
-> reject read-only dynptrs at load time instead of run time, then yes we
-> can remove the read-only bit in the bpf_dynptr_kern struct.
->
-> There's also the question of whether this constraint (eg all read-only
-> writes are rejected at load time) is too rigid - for example, what if
-> in the future we want to add a helper function where if a certain
-> condition is met, then we write some number of bytes, else we read
-> some number of bytes? This would be not possible to add then, since
-> we'll only know at runtime whether the condition is met.
->
-> I personally lean towards rejecting helper function writes at runtime,
-> but if you think it's a non-trivial benefit to reject at load time
-> instead, I'm fine going with that.
->
 
-My personal opinion is this:
 
-When I am working with a statically known read only dynptr, it is like
-declaring a variable const. Every function expecting it to be
-non-const should fail compilation, and trying to mutate the variables
-through writes should also fail compilation. For BPF compilation is
-analogous to program load.
+> On Aug 26, 2022, at 12:30 PM, Namhyung Kim <namhyung@kernel.org> wrote:
+> 
+> On Fri, Aug 26, 2022 at 11:45 AM Song Liu <songliubraving@fb.com> wrote:
+> 
+>>> And actually, we can just read ctx->data and get the raw record,
+>>> right..?
+>> 
+>> Played with this for a little bit. ctx->data appears to be not
+>> reliable sometimes. I guess (not 100% sure) this is because we
+>> call bpf program before event->orig_overflow_handler. We can
+>> probably add a flag to specify we want to call orig_overflow_handler
+>> first.
+> 
+> I'm not sure.  The sample_data should be provided by the caller
+> of perf_event_overflow.  So I guess the bpf program should see
+> a valid ctx->data.
 
-It might be that said variable is not const, then those operations may
-fail at runtime due to some other reason. Being dynamically read-only
-is then a runtime failure condition, which will cause failure at
-runtime. Both are distinct cases in my mind, and it is fine to fail at
-runtime when we don't know. In general, you save a lot of time of the
-user in my opinion (esp. people new to things) if you reject known
-incorrectness as early as possible.
+Let's dig into this. Maybe we need some small changes in 
+pe_prog_convert_ctx_access. 
 
-E.g. load a dynptr from a map, where the field accepts storing both
-read only and non-read only ones. Then it is expected that writes may
-fail at runtime. That also allows you to switch read-only ness at
-runtime back to rw. But if the field only expects rdonly dynptr,
-verifier knows that the type is const statically, so it triggers
-failures for writes at load time instead.
+> Also I want to control calling the orig_overflow_handler based
+> on the return value of the BPF program.  So calling the orig
+> handler before BPF won't work for me. :)
 
-Taking this a step further, you may even store rw dynptr to a map
-field expecting rdonly dynptr. That's like returning a const pointer
-from a function for a rw memory, where you want to limit access of the
-user, even better if you do it statically. Then functions trying to
-write to dynptr loaded from said map field will fail load itself,
-while others having access to rw dynptr can do it just fine.
+Interesting. Could you share more information about the use case?
 
-When the verifier does not know, it does not know. There will be such
-cases when you make const-ness a runtime property.
-
-> >
-> > It is fine if _everything_ checks it at runtime, but that doesn't seem
-> > possible, hence the question. We would need a new slice helper that
-> > only returns read-only slices, because dynptr_data can return rw
-> > slices currently and it is already UAPI so changing that is not
-> > possible anymore.
->
-> I don't agree that if bpf_dynptr_write() is checked at runtime, then
-> bpf_dynptr_data must also be checked at runtime to be consistent. I
-> think it's fine if writes through helper functions are rejected at
-> runtime, and writes through direct access are rejected at load time.
-> That doesn't seem inconsistent to me.
-
-My point was more that dynptr_data cannot propagate runtime
-read-only-ness to its returned pointer. The verifier has to know
-statically, at which point I don't see why we can't just reject other
-cases at load anyway.
-
-When we have dynptrs which have const-ness as a runtime property, it
-is ok to support that by failing at runtime (but then you'll have a
-hard time deciding how you want dynptr_data to work, most likely
-you'll need another helper which returns only a rdonly slice, when it
-fails, we call dynptr_data for rw slice).
-
-But as I said before, I don't know how dynptr is going to evolve in
-the future, so you'll have a better idea, and I'll leave it up to you
-decide how you want to design its API. Enough words exchanged about
-this :).
+Thanks,
+Song
