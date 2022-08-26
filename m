@@ -2,221 +2,324 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71D015A228B
-	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 10:05:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBE0B5A2390
+	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 10:50:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239753AbiHZIFM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Aug 2022 04:05:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54346 "EHLO
+        id S245290AbiHZIud (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Aug 2022 04:50:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237371AbiHZIFL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Aug 2022 04:05:11 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F20F86C3F
-        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 01:05:09 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id bu22so521771wrb.3
-        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 01:05:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=6wind.com; s=google;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:reply-to:user-agent:mime-version
-         :date:message-id:from:to:cc;
-        bh=ED7g6fNeSeCTR/jLw3rybZ8N6LujPjusVSBkx6nXT9s=;
-        b=OfNV7ZxF97T4QWiF31Htys78WBKkBVWDKwCCG/5rtA4Rtx4c/5JohrbwtkPth+u0e1
-         am3HiU9zymT6an2Elp+6NWS8mvf1ZAAQ8m5EoxlXiKmVivaGC675mPUc3cxyEykQnN25
-         NwyQFGIYmNJepnQ0ySEzjaZ71SyVXxoHmTRK6AmOTHxMdUIfQ4VHFLw6ItXjp36cS6g1
-         IxPARyXmG23UmGyFQ+V/IQNBC2SuWfVDMZuq6DjIE6uu+pNgVQdlPM5mj10xtwOh0ek1
-         AyM3B6eUcgbC7gpBYl0f6uA1REMlkaLyiE6gQgc+2wpN4nkKbAf5qLOZxOtskeaUd7ma
-         cu8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:reply-to:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc;
-        bh=ED7g6fNeSeCTR/jLw3rybZ8N6LujPjusVSBkx6nXT9s=;
-        b=kLmuACntGUssEYxkUmhy1U6oBDi2oekYvgs2vU5NRuSWpAtap5TSdudJuJWRJttRXX
-         r+S39FxyQYCAd4CMKwKLc638vGcQqa08xQSYbwijMeqkggwdH2bqBo1bByr+2uEiuQdT
-         kYQ96zTMLkxQcSv650xal4WWKnr1c2T+O6nOuW39m/auYwhMm+rkRI9N3iTv9P8bwU6P
-         IDUbK3SkGXLJeSR/TrS5gTBehzVVS4qssn1pK4nNy7fji1nTzTahFmigj6QE38b3i/1N
-         QHQMk1L/1786379WXHJlIT/yRTJJIrltmWMwqipyiQNPO1B4zxEKZYuaW6Wx3M3eCO6n
-         MYVA==
-X-Gm-Message-State: ACgBeo1xPeuWIjBxVNxGcEx5nfDeuQU9oGJVfRq28l1oGd+kgvWnUsP7
-        XtAWhztSC8f9NP9VA9LQ9iZXnA==
-X-Google-Smtp-Source: AA6agR6GeX41tIWppV7E9wVs6YrQ6AlPOhdtiIijkACA/Z3xgQmCAnM6r5EitNGQjzNGoZlJ6Ey4fg==
-X-Received: by 2002:a5d:52d0:0:b0:21e:4923:fa09 with SMTP id r16-20020a5d52d0000000b0021e4923fa09mr4282567wrv.244.1661501107637;
-        Fri, 26 Aug 2022 01:05:07 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:b41:c160:5d94:b816:24d3:cd91? ([2a01:e0a:b41:c160:5d94:b816:24d3:cd91])
-        by smtp.gmail.com with ESMTPSA id b3-20020a5d40c3000000b0022533c4fa48sm1246133wrq.55.2022.08.26.01.05.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Aug 2022 01:05:07 -0700 (PDT)
-Message-ID: <d2836dfb-6666-52cc-0d9c-17cb1542893c@6wind.com>
-Date:   Fri, 26 Aug 2022 10:05:05 +0200
+        with ESMTP id S245511AbiHZIuS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Aug 2022 04:50:18 -0400
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC1C032DB9;
+        Fri, 26 Aug 2022 01:50:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1661503815; x=1693039815;
+  h=message-id:date:mime-version:subject:to:references:from:
+   in-reply-to:content-transfer-encoding;
+  bh=QBRLETGvncTRL0lzh7ch6U3+EDLdG+HLMX8Hw3Ab734=;
+  b=clA/n1vuiM1T4wjHhwqxeptIAHtaawyUHWuiAUB5j0vWO1xTluEE7kUu
+   /lxxW4NlZEpbOqnyCJqHMQLiMy+Cc7dKjAE0ONzEFsTNugUWIqRmvf0Q6
+   WL4+4QlFVvxaC4svEN6rnt1YdshuE6mtbidcEVCkVbMXropxjGuA7T/Vp
+   TNRy1PKieQC2LaJ3MQnOplH1TvJp6qlha0xTeoamrRrZX31JRFldPATAh
+   Rw6aN4tF1Lo8xpXIdrEGWLN+fmvPPoF4gcbJLkP9gnI8dpVJ2pu0Kd/+L
+   Fyl2cfkgZcxDdnez3spmeuP2NexhPXRGZ90NlSkFKpfXkxAUIpHjb9ofw
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10450"; a="294464126"
+X-IronPort-AV: E=Sophos;i="5.93,264,1654585200"; 
+   d="scan'208";a="294464126"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2022 01:50:13 -0700
+X-IronPort-AV: E=Sophos;i="5.93,264,1654585200"; 
+   d="scan'208";a="671381337"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.50.209])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2022 01:50:01 -0700
+Message-ID: <40f723d1-a030-983b-93b3-63791321ae4c@intel.com>
+Date:   Fri, 26 Aug 2022 11:49:56 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Reply-To: nicolas.dichtel@6wind.com
-Subject: Re: [PATCH ipsec-next,v3 3/3] xfrm: lwtunnel: add lwtunnel support
- for xfrm interfaces in collect_md mode
+ Firefox/91.0 Thunderbird/91.11.0
+Subject: Re: [PATCH v3 01/18] perf mutex: Wrapped usage of mutex and cond
 Content-Language: en-US
-To:     Eyal Birger <eyal.birger@gmail.com>, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        steffen.klassert@secunet.com, herbert@gondor.apana.org.au,
-        dsahern@kernel.org, contact@proelbtn.com, pablo@netfilter.org,
-        razor@blackwall.org, daniel@iogearbox.net
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
-References: <20220825154630.2174742-1-eyal.birger@gmail.com>
- <20220825154630.2174742-4-eyal.birger@gmail.com>
-From:   Nicolas Dichtel <nicolas.dichtel@6wind.com>
-Organization: 6WIND
-In-Reply-To: <20220825154630.2174742-4-eyal.birger@gmail.com>
+To:     Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Darren Hart <dvhart@infradead.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, Weiguo Li <liwg06@foxmail.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Dario Petrillo <dario.pk1@gmail.com>,
+        Hewenliang <hewenliang4@huawei.com>,
+        yaowenbin <yaowenbin1@huawei.com>,
+        Wenyu Liu <liuwenyu7@huawei.com>,
+        Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Pavithra Gurushankar <gpavithrasha@gmail.com>,
+        Alexandre Truong <alexandre.truong@arm.com>,
+        Quentin Monnet <quentin@isovalent.com>,
+        William Cohen <wcohen@redhat.com>,
+        Andres Freund <andres@anarazel.de>,
+        =?UTF-8?Q?Martin_Li=c5=a1ka?= <mliska@suse.cz>,
+        Colin Ian King <colin.king@intel.com>,
+        James Clark <james.clark@arm.com>,
+        Fangrui Song <maskray@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>,
+        Riccardo Mancini <rickyman7@gmail.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Zechuan Chen <chenzechuan1@huawei.com>,
+        Jason Wang <wangborong@cdjrlc.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Remi Bernon <rbernon@codeweavers.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        bpf@vger.kernel.org, llvm@lists.linux.dev
+References: <20220824153901.488576-1-irogers@google.com>
+ <20220824153901.488576-2-irogers@google.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <20220824153901.488576-2-irogers@google.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-Le 25/08/2022 à 17:46, Eyal Birger a écrit :
-> Allow specifying the xfrm interface if_id and link as part of a route
-> metadata using the lwtunnel infrastructure.
+On 24/08/22 18:38, Ian Rogers wrote:
+> From: Pavithra Gurushankar <gpavithrasha@gmail.com>
 > 
-> This allows for example using a single xfrm interface in collect_md
-> mode as the target of multiple routes each specifying a different if_id.
+> Added a new header file mutex.h that wraps the usage of
+> pthread_mutex_t and pthread_cond_t. By abstracting these it is
+> possible to introduce error checking.
 > 
-> With the appropriate changes to iproute2, considering an xfrm device
-> ipsec1 in collect_md mode one can for example add a route specifying
-> an if_id like so:
-> 
-> ip route add <SUBNET> dev ipsec1 encap xfrm if_id 1
-> 
-> In which case traffic routed to the device via this route would use
-> if_id in the xfrm interface policy lookup.
-> 
-> Or in the context of vrf, one can also specify the "link" property:
-> 
-> ip route add <SUBNET> dev ipsec1 encap xfrm if_id 1 link_dev eth15
-> 
-> Signed-off-by: Eyal Birger <eyal.birger@gmail.com>
-> 
-> ----
-> 
-> v3: netlink improvements as suggested by Nikolay Aleksandrov and
->     Nicolas Dichtel
-> 
-> v2:
->   - move lwt_xfrm_info() helper to dst_metadata.h
->   - add "link" property as suggested by Nicolas Dichtel
+> Signed-off-by: Pavithra Gurushankar <gpavithrasha@gmail.com>
+> Signed-off-by: Ian Rogers <irogers@google.com>
 > ---
->  include/net/dst_metadata.h    | 11 +++++
->  include/uapi/linux/lwtunnel.h | 10 +++++
->  net/core/lwtunnel.c           |  1 +
->  net/xfrm/xfrm_interface.c     | 85 +++++++++++++++++++++++++++++++++++
->  4 files changed, 107 insertions(+)
+>  tools/perf/util/Build   |   1 +
+>  tools/perf/util/mutex.c | 117 ++++++++++++++++++++++++++++++++++++++++
+>  tools/perf/util/mutex.h |  47 ++++++++++++++++
+>  3 files changed, 165 insertions(+)
+>  create mode 100644 tools/perf/util/mutex.c
+>  create mode 100644 tools/perf/util/mutex.h
 > 
-> diff --git a/include/net/dst_metadata.h b/include/net/dst_metadata.h
-> index e4b059908cc7..57f75960fa28 100644
-> --- a/include/net/dst_metadata.h
-> +++ b/include/net/dst_metadata.h
-> @@ -60,13 +60,24 @@ skb_tunnel_info(const struct sk_buff *skb)
->  	return NULL;
->  }
+> diff --git a/tools/perf/util/Build b/tools/perf/util/Build
+> index 9dfae1bda9cc..8fd6dc8de521 100644
+> --- a/tools/perf/util/Build
+> +++ b/tools/perf/util/Build
+> @@ -143,6 +143,7 @@ perf-y += branch.o
+>  perf-y += mem2node.o
+>  perf-y += clockid.o
+>  perf-y += list_sort.o
+> +perf-y += mutex.o
 >  
-> +static inline struct xfrm_md_info *lwt_xfrm_info(struct lwtunnel_state *lwt)
+>  perf-$(CONFIG_LIBBPF) += bpf-loader.o
+>  perf-$(CONFIG_LIBBPF) += bpf_map.o
+> diff --git a/tools/perf/util/mutex.c b/tools/perf/util/mutex.c
+> new file mode 100644
+> index 000000000000..892294ac1769
+> --- /dev/null
+> +++ b/tools/perf/util/mutex.c
+> @@ -0,0 +1,117 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include "mutex.h"
+> +
+> +#include "debug.h"
+> +#include <linux/string.h>
+> +#include <errno.h>
+> +
+> +static void check_err(const char *fn, int err)
 > +{
-> +	return (struct xfrm_md_info *)lwt->data;
+> +	char sbuf[STRERR_BUFSIZE];
+> +
+> +	if (err == 0)
+> +		return;
+> +
+> +	pr_err("%s error: '%s'", fn, str_error_r(err, sbuf, sizeof(sbuf)));
+                              ^
+Still needs \n here >---------^
+
 > +}
 > +
->  static inline struct xfrm_md_info *skb_xfrm_md_info(const struct sk_buff *skb)
->  {
->  	struct metadata_dst *md_dst = skb_metadata_dst(skb);
-> +	struct dst_entry *dst;
->  
->  	if (md_dst && md_dst->type == METADATA_XFRM)
->  		return &md_dst->u.xfrm_info;
->  
-> +	dst = skb_dst(skb);
-> +	if (dst && dst->lwtstate &&
-> +	    dst->lwtstate->type == LWTUNNEL_ENCAP_XFRM)
-> +		return lwt_xfrm_info(dst->lwtstate);
+> +#define CHECK_ERR(err) check_err(__func__, err)
 > +
->  	return NULL;
->  }
->  
-> diff --git a/include/uapi/linux/lwtunnel.h b/include/uapi/linux/lwtunnel.h
-> index 2e206919125c..229655ef792f 100644
-> --- a/include/uapi/linux/lwtunnel.h
-> +++ b/include/uapi/linux/lwtunnel.h
-> @@ -15,6 +15,7 @@ enum lwtunnel_encap_types {
->  	LWTUNNEL_ENCAP_SEG6_LOCAL,
->  	LWTUNNEL_ENCAP_RPL,
->  	LWTUNNEL_ENCAP_IOAM6,
-> +	LWTUNNEL_ENCAP_XFRM,
->  	__LWTUNNEL_ENCAP_MAX,
->  };
->  
-> @@ -111,4 +112,13 @@ enum {
->  
->  #define LWT_BPF_MAX_HEADROOM 256
->  
-> +enum {
-> +	LWT_XFRM_UNSPEC,
-> +	LWT_XFRM_IF_ID,
-> +	LWT_XFRM_LINK,
-> +	__LWT_XFRM_MAX,
+> +static void __mutex_init(struct mutex *mtx, bool pshared)
+> +{
+> +	pthread_mutexattr_t attr;
+> +
+> +	CHECK_ERR(pthread_mutexattr_init(&attr));
+> +
+> +#ifndef NDEBUG
+> +	/* In normal builds enable error checking, such as recursive usage. */
+> +	CHECK_ERR(pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_ERRORCHECK));
+> +#endif
+> +	if (pshared)
+> +		CHECK_ERR(pthread_mutexattr_setpshared(&attr, PTHREAD_PROCESS_SHARED));
+> +
+> +	CHECK_ERR(pthread_mutex_init(&mtx->lock, &attr));
+> +	CHECK_ERR(pthread_mutexattr_destroy(&attr));
+> +}
+> +
+> +void mutex_init(struct mutex *mtx)
+> +{
+> +	__mutex_init(mtx, /*pshared=*/false);
+> +}
+> +
+> +void mutex_init_pshared(struct mutex *mtx)
+> +{
+> +	__mutex_init(mtx, /*pshared=*/true);
+> +}
+> +
+> +void mutex_destroy(struct mutex *mtx)
+> +{
+> +	CHECK_ERR(pthread_mutex_destroy(&mtx->lock));
+> +}
+> +
+> +void mutex_lock(struct mutex *mtx)
+> +{
+> +	CHECK_ERR(pthread_mutex_lock(&mtx->lock));
+> +}
+> +
+> +void mutex_unlock(struct mutex *mtx)
+> +{
+> +	CHECK_ERR(pthread_mutex_unlock(&mtx->lock));
+> +}
+> +
+> +bool mutex_trylock(struct mutex *mtx)
+> +{
+> +	int ret = pthread_mutex_trylock(&mtx->lock);
+> +
+> +	if (ret == 0)
+> +		return true; /* Lock acquired. */
+> +
+> +	if (ret == EBUSY)
+> +		return false; /* Lock busy. */
+> +
+> +	/* Print error. */
+> +	CHECK_ERR(ret);
+> +	return false;
+> +}
+> +
+> +static void __cond_init(struct cond *cnd, bool pshared)
+> +{
+> +	pthread_condattr_t attr;
+> +
+> +	CHECK_ERR(pthread_condattr_init(&attr));
+> +	if (pshared)
+> +		CHECK_ERR(pthread_condattr_setpshared(&attr, PTHREAD_PROCESS_SHARED));
+> +
+> +	CHECK_ERR(pthread_cond_init(&cnd->cond, &attr));
+> +	CHECK_ERR(pthread_condattr_destroy(&attr));
+> +}
+> +
+> +void cond_init(struct cond *cnd)
+> +{
+> +	__cond_init(cnd, /*pshared=*/false);
+> +}
+> +
+> +void cond_init_pshared(struct cond *cnd)
+> +{
+> +	__cond_init(cnd, /*pshared=*/true);
+> +}
+> +
+> +void cond_destroy(struct cond *cnd)
+> +{
+> +	CHECK_ERR(pthread_cond_destroy(&cnd->cond));
+> +}
+> +
+> +void cond_wait(struct cond *cnd, struct mutex *mtx)
+> +{
+> +	CHECK_ERR(pthread_cond_wait(&cnd->cond, &mtx->lock));
+> +}
+> +
+> +void cond_signal(struct cond *cnd)
+> +{
+> +	CHECK_ERR(pthread_cond_signal(&cnd->cond));
+> +}
+> +
+> +void cond_broadcast(struct cond *cnd)
+> +{
+> +	CHECK_ERR(pthread_cond_broadcast(&cnd->cond));
+> +}
+> diff --git a/tools/perf/util/mutex.h b/tools/perf/util/mutex.h
+> new file mode 100644
+> index 000000000000..c9e110a2b55e
+> --- /dev/null
+> +++ b/tools/perf/util/mutex.h
+> @@ -0,0 +1,47 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef __PERF_MUTEX_H
+> +#define __PERF_MUTEX_H
+> +
+> +#include <pthread.h>
+> +#include <stdbool.h>
+> +
+> +/*
+> + * A wrapper around the mutex implementation that allows perf to error check
+> + * usage, etc.
+> + */
+> +struct mutex {
+> +	pthread_mutex_t lock;
 > +};
 > +
-> +#define LWT_XFRM_MAX (__LWT_XFRM_MAX - 1)
+> +/* A wrapper around the condition variable implementation. */
+> +struct cond {
+> +	pthread_cond_t cond;
+> +};
 > +
->  #endif /* _UAPI_LWTUNNEL_H_ */
-> diff --git a/net/core/lwtunnel.c b/net/core/lwtunnel.c
-> index 9ccd64e8a666..6fac2f0ef074 100644
-> --- a/net/core/lwtunnel.c
-> +++ b/net/core/lwtunnel.c
-> @@ -50,6 +50,7 @@ static const char *lwtunnel_encap_str(enum lwtunnel_encap_types encap_type)
->  		return "IOAM6";
->  	case LWTUNNEL_ENCAP_IP6:
->  	case LWTUNNEL_ENCAP_IP:
-> +	case LWTUNNEL_ENCAP_XFRM:
->  	case LWTUNNEL_ENCAP_NONE:
->  	case __LWTUNNEL_ENCAP_MAX:
->  		/* should not have got here */
-> diff --git a/net/xfrm/xfrm_interface.c b/net/xfrm/xfrm_interface.c
-> index e9a355047468..495dee8b0764 100644
-> --- a/net/xfrm/xfrm_interface.c
-> +++ b/net/xfrm/xfrm_interface.c
-> @@ -60,6 +60,88 @@ struct xfrmi_net {
->  	struct xfrm_if __rcu *collect_md_xfrmi;
->  };
->  
-> +static const struct nla_policy xfrm_lwt_policy[LWT_XFRM_MAX + 1] = {
-> +	[LWT_XFRM_IF_ID]	= NLA_POLICY_MIN(NLA_U32, 1),
-> +	[LWT_XFRM_LINK]		= NLA_POLICY_MIN(NLA_S32, 1),
-IMHO, it would be better to keep consistency with IFLA_XFRM_LINK.
+> +/* Default initialize the mtx struct. */
+> +void mutex_init(struct mutex *mtx);
+> +/*
+> + * Initialize the mtx struct and set the process-shared rather than default
+> + * process-private attribute.
+> + */
+> +void mutex_init_pshared(struct mutex *mtx);
+> +void mutex_destroy(struct mutex *mtx);
+> +
+> +void mutex_lock(struct mutex *mtx);
+> +void mutex_unlock(struct mutex *mtx);
+> +bool mutex_trylock(struct mutex *mtx);
 
-$ git grep _LINK.*NLA_U32 net/ drivers/net/
-drivers/net/gtp.c:      [GTPA_LINK]             = { .type = NLA_U32, },
-drivers/net/vxlan/vxlan_core.c: [IFLA_VXLAN_LINK]       = { .type = NLA_U32 },
-...
-net/core/rtnetlink.c:   [IFLA_LINK]             = { .type = NLA_U32 },
-...
-net/ipv4/ip_gre.c:      [IFLA_GRE_LINK]         = { .type = NLA_U32 },
-net/ipv4/ip_vti.c:      [IFLA_VTI_LINK]         = { .type = NLA_U32 },
-net/ipv4/ipip.c:        [IFLA_IPTUN_LINK]               = { .type = NLA_U32 },
-net/ipv6/ip6_gre.c:     [IFLA_GRE_LINK]        = { .type = NLA_U32 },
-net/ipv6/ip6_tunnel.c:  [IFLA_IPTUN_LINK]               = { .type = NLA_U32 },
-net/ipv6/ip6_vti.c:     [IFLA_VTI_LINK]         = { .type = NLA_U32 },
-net/ipv6/sit.c: [IFLA_IPTUN_LINK]               = { .type = NLA_U32 },
-net/sched/cls_u32.c:    [TCA_U32_LINK]          = { .type = NLA_U32 },
-...
-net/xfrm/xfrm_interface.c:      [IFLA_XFRM_LINK]        = { .type = NLA_U32 },
-$ git grep _LINK.*NLA_S32 net/ drivers/net/
-net/core/rtnetlink.c:   [IFLA_LINK_NETNSID]     = { .type = NLA_S32 },
-$
+Might be worth noting that mutex_trylock() returns true if the
+lock is acquired, inverting the logic from pthread_mutex_trylock()
+but consistent with the kernel's mutex_trylock().
 
-They all are U32. Adding one S32 would just add confusion.
+> +
+> +/* Default initialize the cond struct. */
+> +void cond_init(struct cond *cnd);
+> +/*
+> + * Initialize the cond struct and specify the process-shared rather than default
+> + * process-private attribute.
+> + */
+> +void cond_init_pshared(struct cond *cnd);
+> +void cond_destroy(struct cond *cnd);
+> +
+> +void cond_wait(struct cond *cnd, struct mutex *mtx);
+> +void cond_signal(struct cond *cnd);
+> +void cond_broadcast(struct cond *cnd);
+> +
+> +#endif /* __PERF_MUTEX_H */
+
