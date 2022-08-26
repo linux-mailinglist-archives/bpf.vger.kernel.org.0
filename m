@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC7105A2C99
-	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 18:45:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0E3A5A2C9E
+	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 18:45:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344664AbiHZQoW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Aug 2022 12:44:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33998 "EHLO
+        id S1344764AbiHZQpF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Aug 2022 12:45:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344647AbiHZQoB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Aug 2022 12:44:01 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F8FBE095F
-        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 09:43:29 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-31f5960500bso33278807b3.14
-        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 09:43:29 -0700 (PDT)
+        with ESMTP id S1344717AbiHZQoo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Aug 2022 12:44:44 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F146DFB54
+        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 09:43:58 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-33dbfb6d2a3so33516067b3.11
+        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 09:43:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
          :date:from:to:cc;
-        bh=byVpB80TV/x11qGZZj1V9Hbrrk6J+Ff/Bi0KHWzM1Uo=;
-        b=ROEzNU2vLJMBQ/ebGwfQ6eGsi2A4XeOX0z4/AtBTW7uH+wvBDbvD9U7dJUuGUu0/t/
-         RG9SYRmEyQo81EQ6zm3BjTZyRAd/U+mfJ7acDyId27JWIUA+paGfqTwDijvDB5d96jS4
-         0Evlu4LK9nXucMq0urv221+RSew0RsqU7Avx7QFSET/cxIFWkyK8hulDJfmqHHoDNT5d
-         xzKrx5b6n0zWGgGV0Vid5qk43WAwDqZ2pDO3Z9r3V/WssKhdPELqolGKQo+4CFfR2Ggh
-         H3RSQhX3uRz8yinHvLoTXXd77gH0H5rzVUCKfgzHXTupkv1hVDBVI3XndkxCFQPKiQVA
-         mRTw==
+        bh=ACInBWBwNvRh9+ZIkz7xZW+D59fAbxI1HNUoQj5EwTw=;
+        b=A0ERzChba5qfQmN7t7ZnM+aWwRGaH2/CrJK4ga0h0ake/rNiQ1IkyR3JmXhJrMT9a2
+         KnHqRjX6PAnDpWoIkW8DOomTPRLzc1TyRbC3t+/4APWQ++yOkmcb7vZpIh864xKc8YkK
+         TXueOMvwyqUW3p/H3jsDEaZeJ+ManaFKIw162zxrEZglv7KFe53adPbLvLotwONtq3m/
+         VkC4OmR/ajX51K4DFiENSlLRlXTjnnPJs3yS3cx54uVvE0IWijCmALy9ppEdFbi335dQ
+         oYkX423X1tMjhhM+hPZBMshXdSCABfYwEL8duHu/C0YW0phgba8d6AjJngM2mSDJoJtU
+         Qqcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
          :date:x-gm-message-state:from:to:cc;
-        bh=byVpB80TV/x11qGZZj1V9Hbrrk6J+Ff/Bi0KHWzM1Uo=;
-        b=pfLdM2fwmOIJ1IT7FXEEpC6kH3R7UFodcT1vSbSHLptlNGBlkCCxkf2hMBYnQrSRvz
-         vec2FWj0ypU38nt0/sh358vJHJX14TPbDW0eqeaUjye5nXKm+4fFMrvWjAiUI5WnO+bh
-         0IykO7/2/QyFhtJwWzq/WUdNT0qNZYfYdmkbkC6wct6YXup+LmWg523XZYNVZsdpfmWY
-         JaHwpopTVFLA9OU2tXmzNzhf4EumZMVuNEXS7nynjcJHmlA90Y86IIX5RTfQ2v590J1r
-         TZVCDn33R0/U10atnd+Z1QF05CUtTFGQ9pRG3WJELx5DLvxLhvp61x9VtAJ0+DAz1eS3
-         uf9Q==
-X-Gm-Message-State: ACgBeo3sDYLJnqWiQTZKlg8jw85qRFHI3v9RMGiPOFMA9E+miS3NVN9H
-        v+uESTjVkT8bw4YIV9zfS3aJ/7tSa/cA
-X-Google-Smtp-Source: AA6agR6+TnZFZIJcRd/XLNKJvnwoJOukG+FHhTf/+Ns3Gs61SwVZyHKl1Nu9OjgbFxM6njZlSR8C8NrDOQey
+        bh=ACInBWBwNvRh9+ZIkz7xZW+D59fAbxI1HNUoQj5EwTw=;
+        b=fLdSwm5r+fA4TTY8uKW9XsNYgila/Hv7suFjxreIArhTPwPQV+wRBT1mUEBdstfK5p
+         X9B2R9GM55gg4t/BWhslQnKqrHWShkiMj+8qF05ddi7SC5JohLY9TGz5Lgv/hodcAYbP
+         lQw8CVcfhASgFn42OtXB+zAM105r+0/7LY+gTjNeJX4o8Z8e5x22agpUypXLfqQAvPs9
+         yG5jesPXZnj3HABczyru1dwy1Yg6nX+L8Gx6ye+p8a8FwawpeZZjVwC1fZD0MXAKuW4U
+         2iLDrrrLO4IrCX3gpBUQsPeRTDI3Wphq5TTcdN1m9u+kln4sdnYZwMK7F+gljZwa6IxO
+         /sZA==
+X-Gm-Message-State: ACgBeo0qEyhwBoparv2xaamGrcs5hbqXR+0nV/PiB24M0QRw4qKDpK3D
+        Se3wsNhxGctClkzGcnu2NEmhMpQditNk
+X-Google-Smtp-Source: AA6agR674nFvhyZ8kZZpDZ9P2qEjEXJiLqOtFWE4EU1fMUMemGrNgewnTe7bwqftGS+iFizSaZUFrMd6XEEw
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2d4:203:ccb1:c46b:7044:2508])
- (user=irogers job=sendgmr) by 2002:a25:afc6:0:b0:695:8a28:1dc6 with SMTP id
- d6-20020a25afc6000000b006958a281dc6mr494579ybj.500.1661532207957; Fri, 26 Aug
- 2022 09:43:27 -0700 (PDT)
-Date:   Fri, 26 Aug 2022 09:42:29 -0700
+ (user=irogers job=sendgmr) by 2002:a5b:6c7:0:b0:66e:3713:9929 with SMTP id
+ r7-20020a5b06c7000000b0066e37139929mr535950ybq.34.1661532237966; Fri, 26 Aug
+ 2022 09:43:57 -0700 (PDT)
+Date:   Fri, 26 Aug 2022 09:42:30 -0700
 In-Reply-To: <20220826164242.43412-1-irogers@google.com>
-Message-Id: <20220826164242.43412-6-irogers@google.com>
+Message-Id: <20220826164242.43412-7-irogers@google.com>
 Mime-Version: 1.0
 References: <20220826164242.43412-1-irogers@google.com>
 X-Mailer: git-send-email 2.37.2.672.g94769d06f0-goog
-Subject: [PATCH v4 05/18] perf bpf: Remove unused pthread.h include
+Subject: [PATCH v4 06/18] perf lock: Remove unused pthread.h include
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -113,24 +113,24 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-No pthread usage in bpf-event.h.
+No pthread usage in builtin-lock.c.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/bpf-event.h | 1 -
+ tools/perf/builtin-lock.c | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/tools/perf/util/bpf-event.h b/tools/perf/util/bpf-event.h
-index 144a8a24cc69..1bcbd4fb6c66 100644
---- a/tools/perf/util/bpf-event.h
-+++ b/tools/perf/util/bpf-event.h
-@@ -4,7 +4,6 @@
- 
- #include <linux/compiler.h>
- #include <linux/rbtree.h>
+diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
+index dd11d3471baf..70197c0593b1 100644
+--- a/tools/perf/builtin-lock.c
++++ b/tools/perf/builtin-lock.c
+@@ -28,7 +28,6 @@
+ #include <sys/types.h>
+ #include <sys/prctl.h>
+ #include <semaphore.h>
 -#include <pthread.h>
- #include <api/fd/array.h>
- #include <stdio.h>
+ #include <math.h>
+ #include <limits.h>
  
 -- 
 2.37.2.672.g94769d06f0-goog
