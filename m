@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47F4E5A2F42
-	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 20:52:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 519B95A2F47
+	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 20:52:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345514AbiHZSuy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Aug 2022 14:50:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40756 "EHLO
+        id S229676AbiHZSu4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Aug 2022 14:50:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345374AbiHZStx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Aug 2022 14:49:53 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDC35ED03A
-        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 11:46:28 -0700 (PDT)
+        with ESMTP id S1344934AbiHZSuK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Aug 2022 14:50:10 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99E26EE4BB
+        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 11:46:40 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 647D2B83104
-        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 18:46:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53F1AC433D6;
-        Fri, 26 Aug 2022 18:46:22 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 0FD9DB831BD
+        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 18:46:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA36FC433D7;
+        Fri, 26 Aug 2022 18:46:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661539586;
-        bh=MOCThZ+nzYei+M5m8s6y6e1bR5O/c33Xh2cxXEoLyHA=;
+        s=k20201202; t=1661539597;
+        bh=du8fWsQCbxzY/EeYC3OGOcaE1VHprOzf40Mpkt7IlRg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iiV/nmzoy/c13QZObTJrAECP/KBueo2+BS8r17JtLORchVF/ZIO3PH9snrrU4ggy3
-         cuWD8BwQ9gEiNlUDnnfKFGWK+W7sd78eeFWb1NmMJaRVyt39eOU2ShrbMTzxxAIL7n
-         z8SsVdxoYWmd1AE7agIUKkrOiwWL91t1DIFkDqe7ZJeflspVGoKmnYTorV7OHlU7kQ
-         RcSmf67hmn/E9/LSaj0ahT/3sQybUHVpCxztQTm2MsN/+riwmV8wsUubqXh3+fthDo
-         REY+1X5j9YtrtY+pSOPJJhPvFZQ1myr4d+MbFH6OcKCnj+sXeE5ZroxqcNY4udUg9D
-         Q+Tpnv3Gs1Xuw==
+        b=VrXw6FndIPCbrWtLin8q4WPW3uZo/lDQWxmGbPLa1mUKBao+5867Y63N/HJ+iLLag
+         alHLkdoL/h5K6Nct3hbqHzQO1DYvk+1waMDAhCi6RmZop8ohBZqcUUli21ow8ctASg
+         JI16p5JPKTvs4+Cw49M0Sq9zyIRi1Cpg1UL4Ano5+mlldfqdLdY3cTlKKEEXsbCvlt
+         hnZJY/YxT9zuhhfVOSVWXQMUDgNbxX2jbbUtW+kgz7hSxWwl2wAK5gjfwVoiCtnpcG
+         JqyeO2HDiBkEm/FZ7jLfsVmuaRgHkUlPW4sDf/qZbPm1pSC/3u/CBqiqrxHEkbt/fk
+         RLhnzQLpf7CXA==
 From:   Jiri Olsa <jolsa@kernel.org>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+Cc:     Peter Zijlstra <peterz@infradead.org>, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@chromium.org>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>
-Subject: [PATCH bpf-next 1/2] ftrace: Add HAVE_DYNAMIC_FTRACE_NO_PATCHABLE
-Date:   Fri, 26 Aug 2022 20:46:07 +0200
-Message-Id: <20220826184608.141475-2-jolsa@kernel.org>
+Subject: [PATCH bpf-next 2/2] bpf: Move bpf_dispatcher function out of ftrace locations
+Date:   Fri, 26 Aug 2022 20:46:08 +0200
+Message-Id: <20220826184608.141475-3-jolsa@kernel.org>
 X-Mailer: git-send-email 2.37.2
 In-Reply-To: <20220826184608.141475-1-jolsa@kernel.org>
 References: <20220826184608.141475-1-jolsa@kernel.org>
@@ -62,88 +62,61 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: "Peter Zijlstra (Intel)" <peterz@infradead.org>
+The dispatcher function is attached/detached to trampoline by
+dispatcher update function. At the same time it's available as
+ftrace attachable function.
 
-x86 will shortly start using -fpatchable-function-entry for purposes
-other than ftrace, make sure the __patchable_function_entry section
-isn't merged in the mcount_loc section.
+After discussion [1] the proposed solution is to use compiler
+attributes to alter bpf_dispatcher_##name##_func function:
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+  - remove it from being instrumented with __no_instrument_function__
+    attribute, so ftrace has no track of it
+
+  - but still generate 5 nop instructions with patchable_function_entry(5)
+    attribute, which are expected by bpf_arch_text_poke used by
+    dispatcher update function
+
+Enabling HAVE_DYNAMIC_FTRACE_NO_PATCHABLE option for x86, so
+__patchable_function_entries functions are not part of ftrace/mcount
+locations.
+
+The dispatcher code is generated and attached only for x86 so it's safe
+to keep bpf_dispatcher func in patchable_function_entry locations for
+other archs.
+
+[1] https://lore.kernel.org/bpf/20220722110811.124515-1-jolsa@kernel.org/
+Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- include/asm-generic/vmlinux.lds.h | 11 ++++++++++-
- kernel/trace/Kconfig              |  6 ++++++
- tools/objtool/check.c             |  3 ++-
- 3 files changed, 18 insertions(+), 2 deletions(-)
+ arch/x86/Kconfig    | 1 +
+ include/linux/bpf.h | 2 ++
+ 2 files changed, 3 insertions(+)
 
-diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-index 7515a465ec03..13b197ef0d63 100644
---- a/include/asm-generic/vmlinux.lds.h
-+++ b/include/asm-generic/vmlinux.lds.h
-@@ -154,6 +154,14 @@
- #define MEM_DISCARD(sec) *(.mem##sec)
- #endif
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index f9920f1341c8..089c20cefd2b 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -284,6 +284,7 @@ config X86
+ 	select PROC_PID_ARCH_STATUS		if PROC_FS
+ 	select HAVE_ARCH_NODE_DEV_GROUP		if X86_SGX
+ 	imply IMA_SECURE_AND_OR_TRUSTED_BOOT    if EFI
++	select HAVE_DYNAMIC_FTRACE_NO_PATCHABLE
  
-+#ifndef CONFIG_HAVE_DYNAMIC_FTRACE_NO_PATCHABLE
-+#define KEEP_PATCHABLE		KEEP(*(__patchable_function_entries))
-+#define PATCHABLE_DISCARDS
-+#else
-+#define KEEP_PATCHABLE
-+#define PATCHABLE_DISCARDS	*(__patchable_function_entries)
-+#endif
-+
- #ifdef CONFIG_FTRACE_MCOUNT_RECORD
- /*
-  * The ftrace call sites are logged to a section whose name depends on the
-@@ -172,7 +180,7 @@
- #define MCOUNT_REC()	. = ALIGN(8);				\
- 			__start_mcount_loc = .;			\
- 			KEEP(*(__mcount_loc))			\
--			KEEP(*(__patchable_function_entries))	\
-+			KEEP_PATCHABLE				\
- 			__stop_mcount_loc = .;			\
- 			ftrace_stub_graph = ftrace_stub;	\
- 			ftrace_ops_list_func = arch_ftrace_ops_list_func;
-@@ -1024,6 +1032,7 @@
+ config INSTRUCTION_DECODER
+ 	def_bool y
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 9c1674973e03..945d5414bb62 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -925,6 +925,8 @@ int arch_prepare_bpf_dispatcher(void *image, s64 *funcs, int num_funcs);
+ }
  
- #define COMMON_DISCARDS							\
- 	SANITIZER_DISCARDS						\
-+	PATCHABLE_DISCARDS						\
- 	*(.discard)							\
- 	*(.discard.*)							\
- 	*(.modinfo)							\
-diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
-index 1052126bdca2..e9e95c790b8e 100644
---- a/kernel/trace/Kconfig
-+++ b/kernel/trace/Kconfig
-@@ -51,6 +51,12 @@ config HAVE_DYNAMIC_FTRACE_WITH_ARGS
- 	 This allows for use of regs_get_kernel_argument() and
- 	 kernel_stack_pointer().
- 
-+config HAVE_DYNAMIC_FTRACE_NO_PATCHABLE
-+	bool
-+	help
-+	  If the architecture generates __patchable_function_entries sections
-+	  but does not want them included in the ftrace locations.
-+
- config HAVE_FTRACE_MCOUNT_RECORD
- 	bool
- 	help
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index 0cec74da7ffe..f23e8d11f6d4 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -4110,7 +4110,8 @@ static int validate_ibt(struct objtool_file *file)
- 		    !strcmp(sec->name, "__bug_table")			||
- 		    !strcmp(sec->name, "__ex_table")			||
- 		    !strcmp(sec->name, "__jump_table")			||
--		    !strcmp(sec->name, "__mcount_loc"))
-+		    !strcmp(sec->name, "__mcount_loc")			||
-+		    strstr(sec->name, "__patchable_function_entries"))
- 			continue;
- 
- 		list_for_each_entry(reloc, &sec->reloc->reloc_list, list)
+ #define DEFINE_BPF_DISPATCHER(name)					\
++	__attribute__((__no_instrument_function__))			\
++	__attribute__((patchable_function_entry(5)))			\
+ 	noinline __nocfi unsigned int bpf_dispatcher_##name##_func(	\
+ 		const void *ctx,					\
+ 		const struct bpf_insn *insnsi,				\
 -- 
 2.37.2
 
