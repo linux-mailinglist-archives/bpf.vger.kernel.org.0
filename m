@@ -2,109 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DCED5A288D
-	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 15:29:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 173925A28CF
+	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 15:48:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344349AbiHZN3o (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Aug 2022 09:29:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50836 "EHLO
+        id S230255AbiHZNsy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Aug 2022 09:48:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344335AbiHZN3l (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Aug 2022 09:29:41 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6C51D9D7B
-        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 06:29:39 -0700 (PDT)
-Received: from canpemm500009.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4MDgcp56VTzGpcB;
-        Fri, 26 Aug 2022 21:27:54 +0800 (CST)
-Received: from [10.174.178.165] (10.174.178.165) by
- canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Fri, 26 Aug 2022 21:29:36 +0800
-Subject: Re: [PATCH bpf-next v2] bpftool: implement perf attach command
-To:     Quentin Monnet <quentin@isovalent.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S229837AbiHZNsw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Aug 2022 09:48:52 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7B0B8053C;
+        Fri, 26 Aug 2022 06:48:51 -0700 (PDT)
+Received: from [192.168.10.7] (unknown [39.53.61.43])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: usama.anjum)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 661336601ECE;
+        Fri, 26 Aug 2022 14:48:46 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1661521730;
+        bh=wyZTBkl/LljdYgt4Tb8GKYj0jjhaykvQW272r+/nshQ=;
+        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+        b=IgmxoTsgUfOVWXf/KEJQDzoqZeRe0KKtoYXfGSkmDpS70G0baYwxBg3F2BqF2MGbE
+         XzjP1GFlFTKafCVRBVyvmR/osEtcgutNdIrT5s55ThREBgT9h4SB0EvlgEdJ5yzfGO
+         CGfa5OvyJcoXrqEJ+FXFd/ZE6EsVOGYEGWMn4HxMruXKB4qMsJQK8gSeXiYeFsEocE
+         zKgDqcRM8SmS71qVZlBhlcO9Y0g4N82giiCEfnxosfGX/mKS1RoZaQdfU7QB62J8s4
+         KhVwkhQEw+whtbjPQJbw8/7MSt6j+zOEpeZ2zNmqXqr0KRujOsrHigOsvkAajkarA6
+         FififvfrelAew==
+Message-ID: <f1aa5e6c-6bcd-c605-97e9-c8aa58520cc3@collabora.com>
+Date:   Fri, 26 Aug 2022 18:48:41 +0500
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.12.0
+Cc:     usama.anjum@collabora.com, Andrii Nakryiko <andrii@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
         Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
-References: <20220824033837.458197-1-weiyongjun1@huawei.com>
- <b942bf8f-204b-6bf1-7847-ec5f11c50ca0@isovalent.com>
- <CAEf4BzafSAZfhkun5PBGODw6v1s10Nh4JeH8azdqZY-62kBCKg@mail.gmail.com>
- <ee620e99-dc04-aa2c-f53b-b875dba79feb@isovalent.com>
-From:   "weiyongjun (A)" <weiyongjun1@huawei.com>
-Message-ID: <8679b084-c22c-aca2-a9c1-003984a443c5@huawei.com>
-Date:   Fri, 26 Aug 2022 21:29:35 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <ee620e99-dc04-aa2c-f53b-b875dba79feb@isovalent.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] selftests/bpf: Fix bind{4,6} tcp/socket header type
+ conflict
+Content-Language: en-US
+To:     James Hilliard <james.hilliard1@gmail.com>, bpf@vger.kernel.org
+References: <20220825221751.258958-1-james.hilliard1@gmail.com>
+From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <20220825221751.258958-1-james.hilliard1@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.165]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- canpemm500009.china.huawei.com (7.192.105.203)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Quentin,
-
-On 2022/8/26 18:45, Quentin Monnet wrote:
-> Hi Andrii,
+On 8/26/22 3:17 AM, James Hilliard wrote:
+> There is a potential for us to hit a type conflict when including
+> netinet/tcp.h with sys/socket.h, we can replace both of these includes
+> with linux/tcp.h to avoid this conflict.
 > 
-> On 25/08/2022 19:37, Andrii Nakryiko wrote:
->> On Thu, Aug 25, 2022 at 8:28 AM Quentin Monnet <quentin@isovalent.com> wrote:
->>>
->>> Hi Wei,
->>>
->>> Apologies for failing to answer to your previous email and for the delay
->>> on this one, I just found out GMail had classified them as spam :(.
->>>
->>> So as for your last message, yes: your understanding of my previous
->>> answer was correct. Thanks for the patch below! Some comments inline.
->>>
->>
->> Do we really want to add such a specific command to bpftool that would
->> attach BPF object files with programs of only RAW_TRACEPOINT and
->> RAW_TRACEPOINT_WRITABLE type?
->>
->> I could understand if we added something that would be equivalent of
->> BPF skeleton's auto-attach method. That would make sense in some
->> contexts, especially for some quick testing and validation, to avoid
->> writing (a rather simple) user-space loading code.
+> Fixes errors like:
+> In file included from /usr/include/netinet/tcp.h:91,
+>                  from progs/bind4_prog.c:10:
+> /home/buildroot/opt/cross/lib/gcc/bpf/13.0.0/include/stdint.h:34:23: error: conflicting types for 'int8_t'; have 'char'
+>    34 | typedef __INT8_TYPE__ int8_t;
+>       |                       ^~~~~~
+> In file included from /usr/include/x86_64-linux-gnu/sys/types.h:155,
+>                  from /usr/include/x86_64-linux-gnu/bits/socket.h:29,
+>                  from /usr/include/x86_64-linux-gnu/sys/socket.h:33,
+>                  from progs/bind4_prog.c:9:
+> /usr/include/x86_64-linux-gnu/bits/stdint-intn.h:24:18: note: previous declaration of 'int8_t' with type 'int8_t' {aka 'signed char'}
+>    24 | typedef __int8_t int8_t;
+>       |                  ^~~~~~
+> /home/buildroot/opt/cross/lib/gcc/bpf/13.0.0/include/stdint.h:43:24: error: conflicting types for 'int64_t'; have 'long int'
+>    43 | typedef __INT64_TYPE__ int64_t;
+>       |                        ^~~~~~~
+> /usr/include/x86_64-linux-gnu/bits/stdint-intn.h:27:19: note: previous declaration of 'int64_t' with type 'int64_t' {aka 'long long int'}
+>    27 | typedef __int64_t int64_t;
+>       |                   ^~~~~~~
+> make: *** [Makefile:537: /home/buildroot/bpf-next/tools/testing/selftests/bpf/bpf_gcc/bind4_prog.o] Error 1
 > 
-> Do you mean loading and attaching in a single step, or keeping the
-> possibility to load first as in the current proposal?
+> Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+Reviewed-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+
+> ---
+>  tools/testing/selftests/bpf/progs/bind4_prog.c | 3 +--
+>  tools/testing/selftests/bpf/progs/bind6_prog.c | 3 +--
+>  2 files changed, 2 insertions(+), 4 deletions(-)
 > 
->>
->> But "perf attach" for raw_tp programs only? Seem way too limited and
->> specific, just adding bloat to bpftool, IMO.
-> 
-> We already support attaching some kinds of program types through
-> "prog|cgroup|net attach". Here I thought we could add support for other
-> types as a follow-up, but thinking again, you're probably right, it
-> would be best if all the types were supported from the start. Wei, have
-> you looked into how much work it would be to add support for
-> tracepoints, k(ret)probes, u(ret)probes as well? The code should be
-> mostly identical?
+> diff --git a/tools/testing/selftests/bpf/progs/bind4_prog.c b/tools/testing/selftests/bpf/progs/bind4_prog.c
+> index 474c6a62078a..6bd20042fd53 100644
+> --- a/tools/testing/selftests/bpf/progs/bind4_prog.c
+> +++ b/tools/testing/selftests/bpf/progs/bind4_prog.c
+> @@ -6,8 +6,7 @@
+>  #include <linux/bpf.h>
+>  #include <linux/in.h>
+>  #include <linux/in6.h>
+> -#include <sys/socket.h>
+> -#include <netinet/tcp.h>
+> +#include <linux/tcp.h>
+>  #include <linux/if.h>
+>  #include <errno.h>
+>  
+> diff --git a/tools/testing/selftests/bpf/progs/bind6_prog.c b/tools/testing/selftests/bpf/progs/bind6_prog.c
+> index c19cfa869f30..f37617b35a55 100644
+> --- a/tools/testing/selftests/bpf/progs/bind6_prog.c
+> +++ b/tools/testing/selftests/bpf/progs/bind6_prog.c
+> @@ -6,8 +6,7 @@
+>  #include <linux/bpf.h>
+>  #include <linux/in.h>
+>  #include <linux/in6.h>
+> -#include <sys/socket.h>
+> -#include <netinet/tcp.h>
+> +#include <linux/tcp.h>
+>  #include <linux/if.h>
+>  #include <errno.h>
+>  
 
-
-Will post in next version with all other comments fixed after some 
-testing for them.
-
-
-Regrads,
-
-Wei Yongjun
+-- 
+Muhammad Usama Anjum
