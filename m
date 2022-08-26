@@ -2,115 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CC035A226D
-	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 09:55:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 742D65A2282
+	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 10:01:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245610AbiHZHzt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Aug 2022 03:55:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40040 "EHLO
+        id S241853AbiHZIBG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Aug 2022 04:01:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343558AbiHZHzh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Aug 2022 03:55:37 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5046187098
-        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 00:55:30 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id c187-20020a1c35c4000000b003a30d88fe8eso3955569wma.2
-        for <bpf@vger.kernel.org>; Fri, 26 Aug 2022 00:55:30 -0700 (PDT)
+        with ESMTP id S241772AbiHZIBF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Aug 2022 04:01:05 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB01FD3ECE;
+        Fri, 26 Aug 2022 01:01:03 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id k9so886516wri.0;
+        Fri, 26 Aug 2022 01:01:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=6wind.com; s=google;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:reply-to:user-agent:mime-version
-         :date:message-id:from:to:cc;
-        bh=mI7+lToELE6EMlyR2Vmj76yyzmG/NU74JgIyAcMpaD0=;
-        b=O8cGR6kBKCPokk0HOZLB/45r9CivLzhXg2X8sYMdlyKCCZtufltiSqEYR3mgOzSFPR
-         jfrsopsOmQGBV+UM7Qgd4it/KaGZTDgGlbF28sqIET3lpZdUWA+L6IeaJbGk1nl1EhDw
-         vwlJzdgATtMnk4Uo9vibvMJKiWMWoOiisk2eCbj12leBxxv4IDXgTHpEclZmABZCQNB7
-         uYVlAuCzOEwR9bGd89p/r2f8a7xizwtfRt8mmPVkiN0jqnImWRK3aN0MPaAqvbRyDfOS
-         khJwI6RF6DBHilpcmbuEcxfLuv3p/SKloRC+h41BJrRDXLuevJs4bS+XcIx0nGpKiMj5
-         IfVA==
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc;
+        bh=YKvx6Cj1xYUX2DCCsWQM+Zo2QVYcF66rAfcZQEp7iEQ=;
+        b=T42JkReyAMSo4VSqTWGrerpNlXhidixAmat1mZ0sQX1NCfY85uNUSkEv188VYmQoZv
+         tr94poynOv2itOtjfretoErIELTWi2u1CcgLTxj13h7TNV7+V1cpnCrl2/kM37TyL8w6
+         sAlgiW0FfnJUCwWa2xqAI+SeLsFzljhoO4ECrsxFTPNmrL3xO2F28KnuXhtH1/TIsbPF
+         pbhYYtri0YLLPUO75mC3QZ2k85W2/81CBLyHcBkQf8rdCJc+OBinKqOWYUaHneaZ8bzR
+         K1yNCLfCf2VC0c1sU6HihdvfKDACL1oyCXYjnnfolQUugZCy6SJxOC6HJPAdZOAszwsj
+         VcjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:reply-to:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc;
-        bh=mI7+lToELE6EMlyR2Vmj76yyzmG/NU74JgIyAcMpaD0=;
-        b=1yeocV/ioBjgbHKnWtVuwcIVdiQ7cidQCL8+Y31QP0xJPsTfE3ZzwdPp9wkPXSB6Ue
-         N1DjaZsEXhkEyat7vHEpCwX7lZRoNOo1AX+ueS9AwXpjzLpDQ5Vd0AZJ0Unmo/bW2XZF
-         atU4COjCONxoSnGan9CiRI45pS6ezbOSAeN87Ra4ah8lKcL/ZXhP+ig+4d6RSNLFRoj7
-         5cDwU/H33ZpeFwiUfA4mOW4UYMbwsxgYItuC9dcIO4SYElzFRhiEr2EeeBhsWmbMI7MY
-         94SkzcdV8x9D1pjeTn01ExJCYQEDvOPNgEDQZQ707nKMqePtuFQyAhAZR/PppxzoJOTJ
-         OXQw==
-X-Gm-Message-State: ACgBeo3vJ6VHQaHnIVJE8doX2FdmRHTVS1b8+MZuEo3o97g+V1d8NutD
-        5xNI3/oCb2XxwEi6Rvx2i1MMEg==
-X-Google-Smtp-Source: AA6agR7JTKmJzH3+nzZVmHR0qMfNWWJDLapy8gSz0sUjxXa6QOZzGp/MElkan8LjuvY7tbv1yll0Yg==
-X-Received: by 2002:a1c:f406:0:b0:3a5:d667:10 with SMTP id z6-20020a1cf406000000b003a5d6670010mr4438343wma.70.1661500528574;
-        Fri, 26 Aug 2022 00:55:28 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:b41:c160:5d94:b816:24d3:cd91? ([2a01:e0a:b41:c160:5d94:b816:24d3:cd91])
-        by smtp.gmail.com with ESMTPSA id g4-20020a5d4884000000b002250fa18eb6sm1210514wrq.71.2022.08.26.00.55.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Aug 2022 00:55:28 -0700 (PDT)
-Message-ID: <03415861-593d-6bef-5b50-7a8d87281ea2@6wind.com>
-Date:   Fri, 26 Aug 2022 09:55:27 +0200
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc;
+        bh=YKvx6Cj1xYUX2DCCsWQM+Zo2QVYcF66rAfcZQEp7iEQ=;
+        b=6d5vJp3s3PIizdsEM6IYY8/feqmFfNm7cxfPJQ1Wv+0SliHGuGCX0A4duNpmKHA5hx
+         9ZfDNE2q1A99jVZhYn0mSDJx3ui1V9r9GwyG9FT9U8jmliFguvQh7oIQijFDHhRp2W97
+         uPtbLcwvH0BR0b9VCz+soWqf02wYIFz/2yFl5Ku5QxDSrbRrgWQiD7rfdgLD5iIFuFje
+         CuB4POo0B/xUapQFCvfxuAvtnO0FUGUzOYScs95p1aY0NrMQRk/wuq9Oz1TslIIvvDVJ
+         pCIszl9NJGMc3k8qFNnWomVN6n8DqUIvURbtz1+lWv2bzQbSnOhnorgPR2yQBvnqK1lt
+         ihwQ==
+X-Gm-Message-State: ACgBeo1DPaduIlEgg6COHfsFSyCDJr8CVU3baofJJMwh6912hSagg6Ca
+        pl3M3LGLMQ/Uybb28JrjGBI=
+X-Google-Smtp-Source: AA6agR50DqvB0YCyRCtnNZIMYF3rLVQtp8wNj2e/H+sDHsFqdKxFun9l/A5Ec9xDjcwIAitKznYcZA==
+X-Received: by 2002:a5d:64e2:0:b0:225:79d3:d6d9 with SMTP id g2-20020a5d64e2000000b0022579d3d6d9mr3873080wri.240.1661500862157;
+        Fri, 26 Aug 2022 01:01:02 -0700 (PDT)
+Received: from krava ([193.85.244.190])
+        by smtp.gmail.com with ESMTPSA id o1-20020a5d6701000000b0022571d43d32sm1239859wru.21.2022.08.26.01.01.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Aug 2022 01:01:01 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Fri, 26 Aug 2022 10:00:58 +0200
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Jiri Olsa <olsajiri@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [RFC] ftrace: Add support to keep some functions out of ftrace
+Message-ID: <Ywh9uo7fhRMQjrSl@krava>
+References: <Yvpf67eCerqaDmlE@worktop.programming.kicks-ass.net>
+ <CAADnVQKX5xJz5N_mVyf7wg4BT8Q2cNh8ze-SxTRfk6KtcFQ0=Q@mail.gmail.com>
+ <YvpmAnFldR0iwAFC@worktop.programming.kicks-ass.net>
+ <YvppJ7TjMXD3cSdZ@worktop.programming.kicks-ass.net>
+ <Yv6gm09CMdZ/HMr5@krava>
+ <20220818165024.433f56fd@gandalf.local.home>
+ <CAADnVQ+n=x=CuBk23UNnD9CHVXjrXLUofbockh-SWaLwH3H9fw@mail.gmail.com>
+ <Yv6wB4El4iueJtwX@krava>
+ <Yv933mq/DTIz5g7q@krava>
+ <CAADnVQK=kbCRuj9ZF9oV0YGf0pN-am3vFXYBMQ6m2ze5--nqtQ@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Reply-To: nicolas.dichtel@6wind.com
-Subject: Re: [PATCH ipsec-next,v3 2/3] xfrm: interface: support collect
- metadata mode
-Content-Language: en-US
-To:     Eyal Birger <eyal.birger@gmail.com>, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        steffen.klassert@secunet.com, herbert@gondor.apana.org.au,
-        dsahern@kernel.org, contact@proelbtn.com, pablo@netfilter.org,
-        razor@blackwall.org, daniel@iogearbox.net
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
-References: <20220825154630.2174742-1-eyal.birger@gmail.com>
- <20220825154630.2174742-3-eyal.birger@gmail.com>
-From:   Nicolas Dichtel <nicolas.dichtel@6wind.com>
-Organization: 6WIND
-In-Reply-To: <20220825154630.2174742-3-eyal.birger@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQK=kbCRuj9ZF9oV0YGf0pN-am3vFXYBMQ6m2ze5--nqtQ@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Tue, Aug 23, 2022 at 10:23:24AM -0700, Alexei Starovoitov wrote:
+> On Fri, Aug 19, 2022 at 4:45 AM Jiri Olsa <olsajiri@gmail.com> wrote:
+> >
+> > On Thu, Aug 18, 2022 at 11:32:55PM +0200, Jiri Olsa wrote:
+> > > On Thu, Aug 18, 2022 at 02:00:21PM -0700, Alexei Starovoitov wrote:
+> > > > On Thu, Aug 18, 2022 at 1:50 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+> > > > >
+> > > > > On Thu, 18 Aug 2022 22:27:07 +0200
+> > > > > Jiri Olsa <olsajiri@gmail.com> wrote:
+> > > > >
+> > > > > > ok, so the problem with __attribute__((patchable_function_entry(5))) is that
+> > > > > > it puts function address into __patchable_function_entries section, which is
+> > > > > > one of ftrace locations source:
+> > > > > >
+> > > > > >   #define MCOUNT_REC()    . = ALIGN(8);     \
+> > > > > >     __start_mcount_loc = .;                 \
+> > > > > >     KEEP(*(__mcount_loc))                   \
+> > > > > >     KEEP(*(__patchable_function_entries))   \
+> > > > > >     __stop_mcount_loc = .;                  \
+> > > > > >    ...
+> > > > > >
+> > > > > >
+> > > > > > it looks like __patchable_function_entries is used for other than x86 archs,
+> > > > > > so we perhaps we could have x86 specific MCOUNT_REC macro just with
+> > > > > > __mcount_loc section?
+> > > > >
+> > > > > So something like this:
+> > > > >
+> > > > > #ifdef CONFIG_X86
+> > > > > # define NON_MCOUNT_PATCHABLE KEEP(*(__patchable_function_entries))
+> > > > > # define MCOUNT_PATCHABLE
+> > > > > #else
+> > > > > # define NON_MCOUNT_PATCHABLE
+> > > > > # define MCOUNT_PATCHABLE  KEEP(*(__patchable_function_entries))
+> > > > > #endif
+> > > > >
+> > > > >   #define MCOUNT_REC()    . = ALIGN(8);     \
+> > > > >     __start_mcount_loc = .;                 \
+> > > > >     KEEP(*(__mcount_loc))                   \
+> > > > >     MCOUNT_PATCHABLE                        \
+> > > > >     __stop_mcount_loc = .;                  \
+> > > > >     NON_MCOUNT_PATCHABLE                    \
+> > > > >    ...
+> > > > >
+> > > > > ??
+> > > >
+> > > > That's what more or less Peter's patch is doing:
+> > > > Here it is again for reference:
+> > > > https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git/commit/?id=8d075bdf11193f1d276bf19fa56b4b8dfe24df9e
+> > >
+> > > ah nice, and discards the __patchable_function_entries section, great
+> > >
+> >
+> > tested change below with Peter's change above and it seems to work,
+> > once it get merged I'll send full patch
+> 
+> Peter,
+> what is the ETA to land your changes?
+> That particular commit is detached in your git tree.
+> Did you move it to a different branch?
+> 
+> Just trying to figure out the logistics to land Jiri's fix below.
+> We can take it into bpf-next, since it's harmless as-is,
+> but it won't have an effect until your change lands.
+> Sounds like they both will get in during the next merge window?
 
-Le 25/08/2022 à 17:46, Eyal Birger a écrit :
-> This commit adds support for 'collect_md' mode on xfrm interfaces.
-> 
-> Each net can have one collect_md device, created by providing the
-> IFLA_XFRM_COLLECT_METADATA flag at creation. This device cannot be
-> altered and has no if_id or link device attributes.
-> 
-> On transmit to this device, the if_id is fetched from the attached dst
-> metadata on the skb. If exists, the link property is also fetched from
-> the metadata. The dst metadata type used is METADATA_XFRM which holds
-> these properties.
-> 
-> On the receive side, xfrmi_rcv_cb() populates a dst metadata for each
-> packet received and attaches it to the skb. The if_id used in this case is
-> fetched from the xfrm state, and the link is fetched from the incoming
-> device. This information can later be used by upper layers such as tc,
-> ebpf, and ip rules.
-> 
-> Because the skb is scrubed in xfrmi_rcv_cb(), the attachment of the dst
-> metadata is postponed until after scrubing. Similarly, xfrm_input() is
-> adapted to avoid dropping metadata dsts by only dropping 'valid'
-> (skb_valid_dst(skb) == true) dsts.
-> 
-> Policy matching on packets arriving from collect_md xfrmi devices is
-> done by using the xfrm state existing in the skb's sec_path.
-> The xfrm_if_cb.decode_cb() interface implemented by xfrmi_decode_session()
-> is changed to keep the details of the if_id extraction tucked away
-> in xfrm_interface.c.
-> 
-> Signed-off-by: Eyal Birger <eyal.birger@gmail.com>
-> 
-Reviewed-by: Nicolas Dichtel <nicolas.dichtel@6wind.com>
+I discussed with Peter and I'll send his change together with my fix
+
+jirka
