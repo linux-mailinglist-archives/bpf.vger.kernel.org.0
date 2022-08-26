@@ -2,59 +2,50 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30B595A2FC8
-	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 21:20:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C3FF5A2FCA
+	for <lists+bpf@lfdr.de>; Fri, 26 Aug 2022 21:21:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232757AbiHZTUs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Aug 2022 15:20:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44824 "EHLO
+        id S243923AbiHZTVK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Aug 2022 15:21:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231267AbiHZTUr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Aug 2022 15:20:47 -0400
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 756346CD32;
-        Fri, 26 Aug 2022 12:20:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1661541646; x=1693077646;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=+Ad09Os/PUvK/J76FchENgrJ52K2/K/VEG9kiQ+ar/Q=;
-  b=n9is3YBMJkvP0neh/9fwPpzcliUTZb1yENjweqwxbDJNA672BiOklqhC
-   SFbeelea1gRq9pMFixEZU8bXlq+g8TsWlQEyypN7LL8WRwhazzgGjdFd1
-   jxEu2XPGknTI0/3nFRgzRFejLNauhoyENVZd5/Hmn9Un9wn6E9EQheAle
-   c64UHOLJa5XLFhjwiMj0SgdTi3/5y4GqzixCaC8yCP5hcdOReTPRHc2NB
-   JqJedaaCCVpCADcoPq/jseJEosAipNV1fyvWA6IK3PRTNIZQupKYoYLIB
-   0ZdtetuN3HbR6lZAM078WnvkQ9bI4+05H3JnXtVkQsGsgHVbFzwqXMEkv
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10451"; a="293320759"
-X-IronPort-AV: E=Sophos;i="5.93,266,1654585200"; 
-   d="scan'208";a="293320759"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2022 12:20:46 -0700
-X-IronPort-AV: E=Sophos;i="5.93,266,1654585200"; 
-   d="scan'208";a="671588431"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.50.209])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2022 12:20:34 -0700
-Message-ID: <b0f86189-be17-d1e7-d23c-692eeee2b5ec@intel.com>
-Date:   Fri, 26 Aug 2022 22:20:28 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.11.0
-Subject: Re: [PATCH v3 09/18] perf ui: Update use of pthread mutex
-Content-Language: en-US
+        with ESMTP id S235389AbiHZTVJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Aug 2022 15:21:09 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44FD7B07F6;
+        Fri, 26 Aug 2022 12:21:08 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BB19461E86;
+        Fri, 26 Aug 2022 19:21:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C381FC433C1;
+        Fri, 26 Aug 2022 19:21:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1661541667;
+        bh=QvGGfd4u3ZgGNQzPE8cvR++tbeSXUZdTtSLRfphuRE0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hpZWFIk7lRrtsGJa4ByLTO07Az2diNblNKXw38vxSFZWOD5B5cddPYiKIDDRz4a//
+         9z+u4etBw19PB9BzhBsiLLLgBx4B4Rnxz+QfB3YAMd476DOnri7C5lM19u5jIlagix
+         oyLfXFn7SoKxxcABMjSlmAHd3zMGL7jkuBIlDS3Mcy7ARZF68/7kuiTDVuFYFyO1FP
+         c/1LWUsqCALw5vcgk/UF6mHPL8w0GyN87zfyXVQf4r1XtzTLVJkh6yCcy/brxEi5Hx
+         lZCD8w78PS5G2+p4ExhYnVdXG3fOZfd25Gpr4SPH8C0qPG1Ctj+sXhTeORATjWmyxq
+         JTDkKV//4dBzg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 9B00B404A1; Fri, 26 Aug 2022 16:21:04 -0300 (-03)
+Date:   Fri, 26 Aug 2022 16:21:04 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
 To:     Namhyung Kim <namhyung@kernel.org>
 Cc:     Ian Rogers <irogers@google.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Jiri Olsa <jolsa@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Darren Hart <dvhart@infradead.org>,
         Davidlohr Bueso <dave@stgolabs.net>,
-        =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
+        =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
         Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
         Tom Rix <trix@redhat.com>, Weiguo Li <liwg06@foxmail.com>,
@@ -75,7 +66,8 @@ Cc:     Ian Rogers <irogers@google.com>,
         Quentin Monnet <quentin@isovalent.com>,
         William Cohen <wcohen@redhat.com>,
         Andres Freund <andres@anarazel.de>,
-        =?UTF-8?Q?Martin_Li=c5=a1ka?= <mliska@suse.cz>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Martin =?utf-8?B?TGnFoWth?= <mliska@suse.cz>,
         Colin Ian King <colin.king@intel.com>,
         James Clark <james.clark@arm.com>,
         Fangrui Song <maskray@google.com>,
@@ -92,79 +84,78 @@ Cc:     Ian Rogers <irogers@google.com>,
         linux-kernel <linux-kernel@vger.kernel.org>,
         linux-perf-users <linux-perf-users@vger.kernel.org>,
         bpf <bpf@vger.kernel.org>, llvm@lists.linux.dev
-References: <20220824153901.488576-1-irogers@google.com>
- <20220824153901.488576-10-irogers@google.com>
- <2cf6edac-6e41-b43c-2bc1-f49cb739201a@intel.com>
- <CAP-5=fVVWx=LZAzXsxfuktPHwki1gYbV4mcmvJp_9GTDS6KJcQ@mail.gmail.com>
- <a9b4f79d-cdea-821e-0e57-cd4854de6cf4@intel.com>
- <CAP-5=fW7t9tcJpyUbv8JAo-BFna-KS6FC+HkbuGx6S=h+nBMqw@mail.gmail.com>
- <43540a3d-e64e-ec08-e12e-aebb236a2efe@intel.com>
- <CAM9d7chBnZtrKe6b8k+VYk1Nmz8YnNWSMmyLydH6+Otvw4xGeA@mail.gmail.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <CAM9d7chBnZtrKe6b8k+VYk1Nmz8YnNWSMmyLydH6+Otvw4xGeA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v4 00/18] Mutex wrapper, locking and memory leak fixes
+Message-ID: <YwkdIBsQEKXG3/rE@kernel.org>
+References: <20220826164242.43412-1-irogers@google.com>
+ <CAM9d7cgQZsbwWSdRNQqUE+GsSgPVqFmKs9LJ5b6ta2-dax5T2Q@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAM9d7cgQZsbwWSdRNQqUE+GsSgPVqFmKs9LJ5b6ta2-dax5T2Q@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 26/08/22 22:00, Namhyung Kim wrote:
-> On Fri, Aug 26, 2022 at 11:53 AM Adrian Hunter <adrian.hunter@intel.com> wrote:
->> Below seems adequate for now, at least logically, but maybe it
->> would confuse clang thread-safety analysis?
+Em Fri, Aug 26, 2022 at 12:08:06PM -0700, Namhyung Kim escreveu:
+> On Fri, Aug 26, 2022 at 9:42 AM Ian Rogers <irogers@google.com> wrote:
+> >
+> > When fixing a locking race and memory leak in:
+> > https://lore.kernel.org/linux-perf-users/20211118193714.2293728-1-irogers@google.com/
+> >
+> > It was requested that debug mutex code be separated out into its own
+> > files. This was, in part, done by Pavithra Gurushankar in:
+> > https://lore.kernel.org/lkml/20220727111954.105118-1-gpavithrasha@gmail.com/
+> >
+> > These patches fix issues with the previous patches, add in the
+> > original dso->nsinfo fix and then build on our mutex wrapper with
+> > clang's -Wthread-safety analysis. The analysis found missing unlocks
+> > in builtin-sched.c which are fixed and -Wthread-safety is enabled by
+> > default when building with clang.
+> >
+> > v4. Adds a comment for the trylock result, fixes the new line (missed
+> >     in v3) and removes two blank lines as suggested by Adrian Hunter.
+> > v3. Adds a missing new line to the error messages and removes the
+> >     pshared argument to mutex_init by having two functions, mutex_init
+> >     and mutex_init_pshared. These changes were suggested by Adrian Hunter.
+> > v2. Breaks apart changes that s/pthread_mutex/mutex/g and the lock
+> >     annotations as requested by Arnaldo and Namhyung. A boolean is
+> >     added to builtin-sched.c to terminate thread funcs rather than
+> >     leaving them blocked on delted mutexes.
+> >
+> > Ian Rogers (17):
+> >   perf bench: Update use of pthread mutex/cond
+> >   perf tests: Avoid pthread.h inclusion
+> >   perf hist: Update use of pthread mutex
+> >   perf bpf: Remove unused pthread.h include
+> >   perf lock: Remove unused pthread.h include
+> >   perf record: Update use of pthread mutex
+> >   perf sched: Update use of pthread mutex
+> >   perf ui: Update use of pthread mutex
+> >   perf mmap: Remove unnecessary pthread.h include
+> >   perf dso: Update use of pthread mutex
+> >   perf annotate: Update use of pthread mutex
+> >   perf top: Update use of pthread mutex
+> >   perf dso: Hold lock when accessing nsinfo
+> >   perf mutex: Add thread safety annotations
+> >   perf sched: Fixes for thread safety analysis
+> >   perf top: Fixes for thread safety analysis
+> >   perf build: Enable -Wthread-safety with clang
+> >
+> > Pavithra Gurushankar (1):
+> >   perf mutex: Wrapped usage of mutex and cond
 > 
-> I think it's not just about locks, the exit_browser should bail out early
-> if the setup code was not called.
+> For the patches 1-7 and 10-13
+> 
+> Acked-by: Namhyung Kim <namhyung@kernel.org>
 
-In those cases, use_browser is 0 or -1 unless someone has inserted
-an invalid perf config like "tui.script=on" or "gtk.script=on".
-So currently, in cases where exit_browser() is called without
-setup_browser(), it does nothing.  Which means it is only the
-unconditional mutex_destroy() that needs to be conditional.
+Thanks added it, will try to get what is done so far merged and then we
+can go on addressing the other issues brought up in this thread.
 
-> 
-> Thanks,
-> Namhyung
-> 
-> 
->>
->> diff --git a/tools/perf/ui/setup.c b/tools/perf/ui/setup.c
->> index 25ded88801a3..6d81be6a349e 100644
->> --- a/tools/perf/ui/setup.c
->> +++ b/tools/perf/ui/setup.c
->> @@ -73,9 +73,17 @@ int stdio__config_color(const struct option *opt __maybe_unused,
->>         return 0;
->>  }
->>
->> +/*
->> + * exit_browser() can get called without setup_browser() having been called
->> + * first, so it is necessary to keep track of whether ui__lock has been
->> + * initialized.
->> + */
->> +static bool ui__lock_initialized;
->> +
->>  void setup_browser(bool fallback_to_pager)
->>  {
->>         mutex_init(&ui__lock);
->> +       ui__lock_initialized = true;
->>         if (use_browser < 2 && (!isatty(1) || dump_trace))
->>                 use_browser = 0;
->>
->> @@ -118,5 +126,6 @@ void exit_browser(bool wait_for_ok)
->>         default:
->>                 break;
->>         }
->> -       mutex_destroy(&ui__lock);
->> +       if (ui__lock_initialized)
->> +               mutex_destroy(&ui__lock);
->>  }
->>
-
+- Arnaldo
