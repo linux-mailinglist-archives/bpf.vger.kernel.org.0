@@ -2,59 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 738A45A38F5
-	for <lists+bpf@lfdr.de>; Sat, 27 Aug 2022 18:58:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 101EC5A3923
+	for <lists+bpf@lfdr.de>; Sat, 27 Aug 2022 19:08:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233876AbiH0Q6E (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 27 Aug 2022 12:58:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50564 "EHLO
+        id S230024AbiH0RIw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 27 Aug 2022 13:08:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230024AbiH0Q6D (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 27 Aug 2022 12:58:03 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A102558DF8
-        for <bpf@vger.kernel.org>; Sat, 27 Aug 2022 09:58:00 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id gb36so8279882ejc.10
-        for <bpf@vger.kernel.org>; Sat, 27 Aug 2022 09:58:00 -0700 (PDT)
+        with ESMTP id S233501AbiH0RIu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 27 Aug 2022 13:08:50 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9B3628E01;
+        Sat, 27 Aug 2022 10:08:49 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id p16so5208345ejb.9;
+        Sat, 27 Aug 2022 10:08:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date;
-        bh=UH/bQrlcY3qy+d3vRB45tQDHJMPwlx5v9AaMDIYAjgQ=;
-        b=W5h/+FSmglVlSgGSgzquYkjELn992cmjIkHWV5/o9LR6Jp+U4+EoVTjGAHChls1//q
-         vmuXwcCpXIVKkqrWexNLP73AmjQN0Ka1H8QCqxhv+b7f4l74n3zY/o67Rl+X+YbSm6Uv
-         zwTSLUBpvnCUTk/nSfj6t9lf8LIeZK37lC+MGYMuiX0r+8mo3H2IGsiTUlq748nt3dhq
-         25Vsi0uv74VranF+zMai3yHbycHmDWQ3tE7r3V5yz9Hs3IR0WFIQtq9TIyTcQ87GdFS1
-         sM7Te5ddk26T8fI3M6yyMIRf84AihBajHmcyHinGHnblXN84mjSIcVbl4oOA31Vkgvl7
-         h+ww==
+        bh=t4YmsgZLUK6Kxn6VegF+FGswxULfoRLmy+ksomEpPk4=;
+        b=ZKU21KdzTtXtLA9di6gzcMDcX2ETEJPS13mtDfhiEgM2J5DoIyyw9Wa9jPe2lSGavz
+         L8eSIv5+gebaIX3er/lZ1kE5L8XRKV+F9QN6X1yBXLKS8qtuJp+ZpdAI63dOMJ4K73+7
+         KViv2t0utlkCvN8aavffv9NBJuzXDB+iUoR13pbSGJBYsOay41NAGdFni9xUK69tgTeK
+         hY5T9EAkkjcBJt6WBJlFHPNNDKoUC5MM1u8IAnm/Vw5bQD3mj+wgJsCJNIqKhsHzcWcv
+         BOEzoZl/v8bchmhyL4KrX9f/PZiBOSyNUu3D6lF+ltazStOlwZLIjY4lWrRkuojmW4OO
+         bhuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=UH/bQrlcY3qy+d3vRB45tQDHJMPwlx5v9AaMDIYAjgQ=;
-        b=VfyxSfp8E5JH/9GdCDOtNFQXmyLNab4zCWmy/fFWu9ATHYETZVh+n0JVot0wIbXEtr
-         e5d1yxCuPlDeUoO40MZOQTebZ6JarsWTJaWW7JHt54nwrwFYG8tIQTtBRFUkQqfOCuEt
-         MJ6v2Z38Y+aTflnJs2B0Smjrmm2j4eJzuS+InPnHHS6+RlROF3KxnWRrmg+nF92jbjjY
-         amnmNm6XzSVtTD08L/MC2ajWHlYrHCSIv/0eu6QfN5eMwGMj/aIoGWy8y4wfgR67JDX7
-         2ErsmZceT0274QFhG0tRGHfZZ3M4pQFmp4+u5ryDL+DKJVdqMxCoxOBLZ90nSk9fVGHX
-         xMeA==
-X-Gm-Message-State: ACgBeo3DxqYwoR9G3I2p95oUW2oyYEyjUaxrVzZDEAXxMPn2t5ctxbia
-        jTSLUKVa7gTBKCtjEHt/HFq2w7PolFdT5s1o6+3sEjnPfPU=
-X-Google-Smtp-Source: AA6agR5BCHlpqqmUvMgkGUYyrlYQwcB3+STdxYryA5d/zheNS8DkK5nR+hqZgGxsk42fYx2Ebn3OMGVT+wKtxXYbWWE=
-X-Received: by 2002:a17:907:6e8b:b0:73d:c094:e218 with SMTP id
- sh11-20020a1709076e8b00b0073dc094e218mr8745372ejc.226.1661619478696; Sat, 27
- Aug 2022 09:57:58 -0700 (PDT)
+        bh=t4YmsgZLUK6Kxn6VegF+FGswxULfoRLmy+ksomEpPk4=;
+        b=3zwDD7/K37PNwltOyBJQaqRlposehilIYUu7HeTHidCkhMaX8hkcq+Wk5iLedeiZoN
+         fjpJrkLiiZh27lD9uueLZrG1wWSGmTvvCi/kddPayFO03A5j2XReXalrmYX4LlhX0UZ4
+         MddZBd3rCZpT4KE7t9TUI77XiP5FQsapCfFvrI/m5Cp+uM79PyQ0epvEI9KW5f9vWHmu
+         lUoVghi+c3HuHtI/sQ16I09B6+ji+Hu3ry6w0nswQmt7PijanxYbkpmwZ7jnJJoORzlV
+         OXOGEjUh+2SHciuAUHRbX/UMgcWyx2XHmpVklt2V/SjNfA3OunUW75ZzcgOpjCkQx5ZE
+         QLXA==
+X-Gm-Message-State: ACgBeo0PqaPVrnBOf0Opv5eQaUQRY9PFGLd5AxEKE996CQlyBrsXUbMV
+        C8lQe/+vWpbVimGM5Q8xegpzfsvzOwQY3Ki56X0=
+X-Google-Smtp-Source: AA6agR4l07uJ6t4lzIZsEsYOwVV3Irrndpss4hUt0gz6altEgoD/VcZ/GxY4d5l6POfslTN3rN2Iw1ax08lCREdWviM=
+X-Received: by 2002:a17:907:2bdb:b0:73d:d7af:c133 with SMTP id
+ gv27-20020a1709072bdb00b0073dd7afc133mr7496212ejc.545.1661620128476; Sat, 27
+ Aug 2022 10:08:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220826024430.84565-1-alexei.starovoitov@gmail.com>
-In-Reply-To: <20220826024430.84565-1-alexei.starovoitov@gmail.com>
+References: <20220826012614.552860-1-james.hilliard1@gmail.com>
+ <CAEf4BzahSjt1huoJXAxSj-ycVjGKJm_dFinsZFBHtRGj7apiUQ@mail.gmail.com> <CADvTj4p8pykr4Vy-YSLcaXsfmuWAmZ9ay-np6mxTdwOT1LBnXw@mail.gmail.com>
+In-Reply-To: <CADvTj4p8pykr4Vy-YSLcaXsfmuWAmZ9ay-np6mxTdwOT1LBnXw@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Sat, 27 Aug 2022 09:57:47 -0700
-Message-ID: <CAEf4Bzapz-SNfM+ky7UwnqNZAbJyy4eBHpxuNjW-TMk8C5ba8g@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 00/15] bpf: BPF specific memory allocator.
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     davem@davemloft.net, daniel@iogearbox.net, andrii@kernel.org,
-        tj@kernel.org, memxor@gmail.com, delyank@fb.com,
-        linux-mm@kvack.org, bpf@vger.kernel.org, kernel-team@fb.com
+Date:   Sat, 27 Aug 2022 10:08:37 -0700
+Message-ID: <CAEf4BzbhH9DtBsen8x9BUrAZy0d-osK57Zg=Cor-BmLyvAX+jg@mail.gmail.com>
+Subject: Re: [PATCH] selftests/bpf: Fix conflicts with built-in functions in bpf_iter_ksym
+To:     James Hilliard <james.hilliard1@gmail.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -66,116 +76,114 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Aug 25, 2022 at 7:44 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Sat, Aug 27, 2022 at 3:47 AM James Hilliard
+<james.hilliard1@gmail.com> wrote:
 >
-> From: Alexei Starovoitov <ast@kernel.org>
+> On Fri, Aug 26, 2022 at 10:55 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Thu, Aug 25, 2022 at 6:26 PM James Hilliard
+> > <james.hilliard1@gmail.com> wrote:
+> > >
+> > > Both tolower and toupper are built in c functions, we should not
+> >
+> > Really? How come? Can you point out where this is specified in C
+> > standard? From what I can tell you have to include <ctype.h> to get
+> > toupper()/tolower().
 >
-> Introduce any context BPF specific memory allocator.
+> See background on this sort of issue:
+> https://stackoverflow.com/a/20582607
+> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=12213
 >
-> Tracing BPF programs can attach to kprobe and fentry. Hence they
-> run in unknown context where calling plain kmalloc() might not be safe.
-> Front-end kmalloc() with per-cpu cache of free elements.
-> Refill this cache asynchronously from irq_work.
->
-> Major achievements enabled by bpf_mem_alloc:
-> - Dynamically allocated hash maps used to be 10 times slower than fully preallocated.
->   With bpf_mem_alloc and subsequent optimizations the speed of dynamic maps is equal to full prealloc.
-> - Tracing bpf programs can use dynamically allocated hash maps.
->   Potentially saving lots of memory. Typical hash map is sparsely populated.
-> - Sleepable bpf programs can used dynamically allocated hash maps.
->
-> v3->v4:
-> - fix build issue due to missing local.h on 32-bit arch
-> - add Kumar's ack
-> - proposal for next steps from Delyan:
-> https://lore.kernel.org/bpf/d3f76b27f4e55ec9e400ae8dcaecbb702a4932e8.camel@fb.com/
->
-> v2->v3:
-> - Rewrote the free_list algorithm based on discussions with Kumar. Patch 1.
-> - Allowed sleepable bpf progs use dynamically allocated maps. Patches 13 and 14.
-> - Added sysctl to force bpf_mem_alloc in hash map even if pre-alloc is
->   requested to reduce memory consumption. Patch 15.
-> - Fix: zero-fill percpu allocation
-> - Single rcu_barrier at the end instead of each cpu during bpf_mem_alloc destruction
->
-> v2 thread:
-> https://lore.kernel.org/bpf/20220817210419.95560-1-alexei.starovoitov@gmail.com/
->
-> v1->v2:
-> - Moved unsafe direct call_rcu() from hash map into safe place inside bpf_mem_alloc. Patches 7 and 9.
-> - Optimized atomic_inc/dec in hash map with percpu_counter. Patch 6.
-> - Tuned watermarks per allocation size. Patch 8
-> - Adopted this approach to per-cpu allocation. Patch 10.
-> - Fully converted hash map to bpf_mem_alloc. Patch 11.
-> - Removed tracing prog restriction on map types. Combination of all patches and final patch 12.
->
-> v1 thread:
-> https://lore.kernel.org/bpf/20220623003230.37497-1-alexei.starovoitov@gmail.com/
->
-> LWN article:
-> https://lwn.net/Articles/899274/
->
-> Future work:
-> - expose bpf_mem_alloc as uapi FD to be used in dynptr_alloc, kptr_alloc
-> - convert lru map to bpf_mem_alloc
->
-> Alexei Starovoitov (15):
->   bpf: Introduce any context BPF specific memory allocator.
->   bpf: Convert hash map to bpf_mem_alloc.
->   selftests/bpf: Improve test coverage of test_maps
->   samples/bpf: Reduce syscall overhead in map_perf_test.
->   bpf: Relax the requirement to use preallocated hash maps in tracing
->     progs.
->   bpf: Optimize element count in non-preallocated hash map.
->   bpf: Optimize call_rcu in non-preallocated hash map.
->   bpf: Adjust low/high watermarks in bpf_mem_cache
->   bpf: Batch call_rcu callbacks instead of SLAB_TYPESAFE_BY_RCU.
->   bpf: Add percpu allocation support to bpf_mem_alloc.
->   bpf: Convert percpu hash map to per-cpu bpf_mem_alloc.
->   bpf: Remove tracing program restriction on map types
->   bpf: Prepare bpf_mem_alloc to be used by sleepable bpf programs.
->   bpf: Remove prealloc-only restriction for sleepable bpf programs.
->   bpf: Introduce sysctl kernel.bpf_force_dyn_alloc.
->
->  include/linux/bpf_mem_alloc.h             |  26 +
->  include/linux/filter.h                    |   2 +
->  kernel/bpf/Makefile                       |   2 +-
->  kernel/bpf/core.c                         |   2 +
->  kernel/bpf/hashtab.c                      | 132 +++--
->  kernel/bpf/memalloc.c                     | 602 ++++++++++++++++++++++
->  kernel/bpf/syscall.c                      |  14 +-
->  kernel/bpf/verifier.c                     |  52 --
->  samples/bpf/map_perf_test_kern.c          |  44 +-
->  samples/bpf/map_perf_test_user.c          |   2 +-
->  tools/testing/selftests/bpf/progs/timer.c |  11 -
->  tools/testing/selftests/bpf/test_maps.c   |  38 +-
->  12 files changed, 796 insertions(+), 131 deletions(-)
->  create mode 100644 include/linux/bpf_mem_alloc.h
->  create mode 100644 kernel/bpf/memalloc.c
->
-> --
-> 2.30.2
+> (C99, 7.1.3p1) "All identifiers with external linkage in any of the following
+> subclauses (including the future library directions) are always reserved
+> for use as identifiers with external linkage."
 >
 
-It's great to lift all those NMI restrictions on non-prealloc hashmap!
-This should also open up new maps (like qp-trie) that can't be
-pre-sized to the NMI world as well.
+Sigh, ok. Ghost functions: you can't use them without ctype.h, but you
+can't define your own either. Very nice.
 
-But just to clarify, in NMI mode we can exhaust memory in caches (and
-thus if we do a lot of allocation in single BPF program execution we
-can fail some operations). That's unavoidable. But it's not 100% clear
-what's the behavior in IRQ mode and separately from that in "usual"
-less restrictive mode. Is my understanding correct that we shouldn't
-run out of memory (assuming there is memory available, of course)
-because replenishing of caches will interrupt BPF program execution?
-Or am I wrong and we can still run out of memory if we don't have
-enough pre-cached memory. I think it would be good to clearly state
-such things (unless I missed them somewhere in patches). I'm trying to
-understand if in non-restrictive mode we can still fail to allocate a
-bunch of hashmap elements in a loop just because of the design of
-bpf_mem_alloc?
-
-But it looks great otherwise. For the series:
+Can you please put all these details into a commit for the future? With that:
 
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
+> >
+> > This seems like yet another GCC-BPF quirk?
+>
+> Seems GCC takes a stricter interpretation of the standard here than
+> llvm.
+>
+> It's also documented behavior in GCC:
+> https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html#index-std-2
+>
+> See:
+> The ISO C90 functions abort, abs, acos, asin, atan2, atan, calloc, ceil,
+> cosh, cos, exit, exp, fabs, floor, fmod, fprintf, fputs, free, frexp, fscanf,
+> isalnum, isalpha, iscntrl, isdigit, isgraph, islower, isprint, ispunct, isspace,
+> isupper, isxdigit, tolower, toupper, labs, ldexp, log10, log, malloc, memchr,
+> memcmp, memcpy, memset, modf, pow, printf, putchar, puts, realloc,
+> scanf, sinh, sin, snprintf, sprintf, sqrt, sscanf, strcat, strchr,
+> strcmp, strcpy,
+> strcspn, strlen, strncat, strncmp, strncpy, strpbrk, strrchr, strspn, strstr,
+> tanh, tan, vfprintf, vprintf and vsprintf are all recognized as
+> built-in functions
+> unless -fno-builtin is specified (or -fno-builtin-function is specified for an
+> individual function).
+>
+> We could disable builtin functions but it seems more correct to just
+> rename it so that it doesn't conflict.
+>
+> >
+> > > redefine them as this can result in a build error.
+> > >
+> > > Fixes the following errors:
+> > > progs/bpf_iter_ksym.c:10:20: error: conflicting types for built-in function 'tolower'; expected 'int(int)' [-Werror=builtin-declaration-mismatch]
+> > >    10 | static inline char tolower(char c)
+> > >       |                    ^~~~~~~
+> > > progs/bpf_iter_ksym.c:5:1: note: 'tolower' is declared in header '<ctype.h>'
+> > >     4 | #include <bpf/bpf_helpers.h>
+> > >   +++ |+#include <ctype.h>
+> > >     5 |
+> > > progs/bpf_iter_ksym.c:17:20: error: conflicting types for built-in function 'toupper'; expected 'int(int)' [-Werror=builtin-declaration-mismatch]
+> > >    17 | static inline char toupper(char c)
+> > >       |                    ^~~~~~~
+> > > progs/bpf_iter_ksym.c:17:20: note: 'toupper' is declared in header '<ctype.h>'
+> > >
+> > > Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+> > > ---
+> > >  tools/testing/selftests/bpf/progs/bpf_iter_ksym.c | 6 +++---
+> > >  1 file changed, 3 insertions(+), 3 deletions(-)
+> > >
+> > > diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_ksym.c b/tools/testing/selftests/bpf/progs/bpf_iter_ksym.c
+> > > index 285c008cbf9c..9ba14c37bbcc 100644
+> > > --- a/tools/testing/selftests/bpf/progs/bpf_iter_ksym.c
+> > > +++ b/tools/testing/selftests/bpf/progs/bpf_iter_ksym.c
+> > > @@ -7,14 +7,14 @@ char _license[] SEC("license") = "GPL";
+> > >
+> > >  unsigned long last_sym_value = 0;
+> > >
+> > > -static inline char tolower(char c)
+> > > +static inline char to_lower(char c)
+> > >  {
+> > >         if (c >= 'A' && c <= 'Z')
+> > >                 c += ('a' - 'A');
+> > >         return c;
+> > >  }
+> > >
+> > > -static inline char toupper(char c)
+> > > +static inline char to_upper(char c)
+> > >  {
+> > >         if (c >= 'a' && c <= 'z')
+> > >                 c -= ('a' - 'A');
+> > > @@ -54,7 +54,7 @@ int dump_ksym(struct bpf_iter__ksym *ctx)
+> > >         type = iter->type;
+> > >
+> > >         if (iter->module_name[0]) {
+> > > -               type = iter->exported ? toupper(type) : tolower(type);
+> > > +               type = iter->exported ? to_upper(type) : to_lower(type);
+> > >                 BPF_SEQ_PRINTF(seq, "0x%llx %c %s [ %s ] ",
+> > >                                value, type, iter->name, iter->module_name);
+> > >         } else {
+> > > --
+> > > 2.34.1
+> > >
