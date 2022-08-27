@@ -2,168 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FB245A3760
-	for <lists+bpf@lfdr.de>; Sat, 27 Aug 2022 13:38:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 119505A3779
+	for <lists+bpf@lfdr.de>; Sat, 27 Aug 2022 13:45:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232923AbiH0Lip (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 27 Aug 2022 07:38:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48950 "EHLO
+        id S1345259AbiH0Lpo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 27 Aug 2022 07:45:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232870AbiH0Lio (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 27 Aug 2022 07:38:44 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C082153018;
-        Sat, 27 Aug 2022 04:38:43 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id y141so3942526pfb.7;
-        Sat, 27 Aug 2022 04:38:43 -0700 (PDT)
+        with ESMTP id S233914AbiH0Lpd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 27 Aug 2022 07:45:33 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A72825F23F
+        for <bpf@vger.kernel.org>; Sat, 27 Aug 2022 04:45:31 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id y3so7449138ejc.1
+        for <bpf@vger.kernel.org>; Sat, 27 Aug 2022 04:45:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=fKm8PTeHvCa5gW5IYcXvuTsv3yWHzgHsjdj8oIF/6x4=;
-        b=fR5HBKlN7VZTa78dk2ANAMFEBQ2PRWmM8MhMTZnTcytzb2rjbofsUTFedrZUXf5nd9
-         2OWUVq7tYvfmUSIq3+qH3PzcW+HHKpCNCMqEbOG1W7bS/0+fi476T2IF2zGk3opOOKAQ
-         cUtuxaWSTPxmcQgKxAVkpTEyikcixreELEmf/Jn7d4tScrIrGybzvMk/VHT8GEjNcnFy
-         e2PS04NlgzFUdz11VtUSvZiXEWingoXqCVs+ILfwtf5wv9aLiCr3tPL8s/s1roRTg7km
-         8ZCBJy5GU+Z6g8Lri7wP0nSH9I9v+E3OqsvpEiOVFJCWzs5x22eSZy4VKhef5myFrbn/
-         8hEw==
+        d=blackwall-org.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc;
+        bh=Uiwsx18+PIfPz8cnyidyt6nJqQWpgQBOhncDXGNdZ44=;
+        b=uz5I1OOQSl1cIngBs/kpcpdH2jOhD7IdT1UDm7nhq5x8FOC57Kw2AJN/mWYmaX1tvI
+         3i+AdZL2snZ9AbQJpDScXctDkNQlRewjh5KwJliaEQZDn4EXDnaQMVVR5n7iHm3MQoEX
+         yCqLTR1ok+FT0EKcKoGREOsUdw1Now6JZEOkByPNUwcm6GLB5SwNB3jjOQIrTay5DJ3M
+         /0qshNwOF/YKQuxuCuaQaddGjkOtfqBjbs1xtrAX4XF48eRsrL+wxmtF6QN93SfC1wIF
+         BzdezYt4Kic+Hy3vgk4FcgcIGuxEeg/X+EWJ2JChd7VwawolAKOb2N5P2ejiydrmyDlF
+         +WWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=fKm8PTeHvCa5gW5IYcXvuTsv3yWHzgHsjdj8oIF/6x4=;
-        b=Egw/j5zuX6S0v1NYNNjdAkozmaJnWQpe4GN6vXP+tmIlLr8lR+StNY9Z88stDMgXL2
-         vu7zERJynOUYXqzZrWg8w5dXf/B2OKSw0TkCP5D4K2+/idmAKZWhRrYjngeMP6ZKOpp6
-         oi2Ojv4xcmchu5YCvpKHC4A0pBUeQdoPAbI/dvsWV3l8lf90PXT9OQOmS1NBptgpkGhg
-         U7Fvl4evKvo1J8SYzqnkmNbQiZ8BddYLADjn1r9iYJa5bHyY3NWowi3JGnXLTmpss2Hs
-         0tOl9MNRKRe2dNMQ+kfYW9NBTBIYybiLyb2Vht42qkldz8NtbxEkHY1hi1UprO/by4DS
-         o77g==
-X-Gm-Message-State: ACgBeo3HNHFm7MpFrDl50AR5r6RkHHuBrKHYJkYHBZBXcOnO1XIxdhwo
-        +QR8L6yWLLtczWKA7Y9H6a+Z3H3M7KTKE/7RceU=
-X-Google-Smtp-Source: AA6agR6CQgq187WrNQh/reDXejA6D1Rg4+gPGYq1dxoJuoHn2mznmL+vIAffWbzJjxb4AWn8ObVNGvTP+MQmXaBoR6w=
-X-Received: by 2002:a63:fb4a:0:b0:429:8605:6ebf with SMTP id
- w10-20020a63fb4a000000b0042986056ebfmr6651316pgj.225.1661600323166; Sat, 27
- Aug 2022 04:38:43 -0700 (PDT)
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc;
+        bh=Uiwsx18+PIfPz8cnyidyt6nJqQWpgQBOhncDXGNdZ44=;
+        b=poCtsMD9zsxs1YVyX+eMjIVpJdlQFdYUPD9VItYFhS3GMiuCX13ASDY5TAFZbIn7vv
+         wXKH77dEUFlhO11KUHluUmMMQj1MjbATKzr4awkZvLZUuO0UvK+YH3Xj6cWhUErFD8zu
+         1wBjc3YBcPgs9e5mPJ+bF93mz+omjqHop4xz4T6Qekb5cDtU9T+8OyoQpIE9gd/8KTmd
+         iPICAwj54HbnDz7YYnOQLiJ6qY+HA46jwUl8nH2RRG+P01JSNmXnpR2QlJTcOwh5y4bW
+         O1j6Bzo2ddbEKR82h6Et+6BqspdKI7kD6O1dh6A/N3POmIj98VD57Wtu5F5p4kNRApkz
+         GZEA==
+X-Gm-Message-State: ACgBeo0ChcEAJ6tJLhWM7xlL8ca6zT5sTN79g0D6wmI2gGSBhrA9VnXn
+        RRzIaQ0XI7zru/WlsPxWQVf84YWLbcwBjEoKdQk=
+X-Google-Smtp-Source: AA6agR58mXo/pcOpmfdDlH8zVf13b1q3vXakLSsyWmrsOPVAeF04JfEdvTXohaJhnyAy2TdJ9ZEDkw==
+X-Received: by 2002:a17:907:1c1f:b0:73d:6883:9869 with SMTP id nc31-20020a1709071c1f00b0073d68839869mr7965199ejc.241.1661600730126;
+        Sat, 27 Aug 2022 04:45:30 -0700 (PDT)
+Received: from [192.168.0.111] (87-243-81-1.ip.btc-net.bg. [87.243.81.1])
+        by smtp.gmail.com with ESMTPSA id v12-20020a1709061dcc00b0073dc8d0eabesm2054379ejh.15.2022.08.27.04.45.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 27 Aug 2022 04:45:29 -0700 (PDT)
+Message-ID: <0b6143d1-d4d4-7765-3e27-c686abda25d5@blackwall.org>
+Date:   Sat, 27 Aug 2022 14:45:28 +0300
 MIME-Version: 1.0
-References: <20220826052925.980431-1-james.hilliard1@gmail.com> <20220826230455.b5dcrvlmollglhx3@kafai-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20220826230455.b5dcrvlmollglhx3@kafai-mbp.dhcp.thefacebook.com>
-From:   James Hilliard <james.hilliard1@gmail.com>
-Date:   Sat, 27 Aug 2022 05:38:29 -0600
-Message-ID: <CADvTj4rkSRsOtDcC1SCsGH59DyYQWJY_YRJAyt4a29yZP=SSLQ@mail.gmail.com>
-Subject: Re: [PATCH v2] selftests/bpf: Fix bind{4,6} tcp/socket header type conflict
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.12.0
+Subject: Re: [PATCH ipsec-next,v4 3/3] xfrm: lwtunnel: add lwtunnel support
+ for xfrm interfaces in collect_md mode
+Content-Language: en-US
+To:     Eyal Birger <eyal.birger@gmail.com>, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        steffen.klassert@secunet.com, herbert@gondor.apana.org.au,
+        dsahern@kernel.org, contact@proelbtn.com, pablo@netfilter.org,
+        nicolas.dichtel@6wind.com, daniel@iogearbox.net
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
+References: <20220826114700.2272645-1-eyal.birger@gmail.com>
+ <20220826114700.2272645-4-eyal.birger@gmail.com>
+From:   Nikolay Aleksandrov <razor@blackwall.org>
+In-Reply-To: <20220826114700.2272645-4-eyal.birger@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Aug 26, 2022 at 5:05 PM Martin KaFai Lau <kafai@fb.com> wrote:
->
-> On Thu, Aug 25, 2022 at 11:29:22PM -0600, James Hilliard wrote:
-> > There is a potential for us to hit a type conflict when including
-> > netinet/tcp.h with sys/socket.h, we can remove these as they are not
-> > actually needed.
-> >
-> > Fixes errors like:
-> > In file included from /usr/include/netinet/tcp.h:91,
-> >                  from progs/bind4_prog.c:10:
-> > /home/buildroot/opt/cross/lib/gcc/bpf/13.0.0/include/stdint.h:34:23: error: conflicting types for 'int8_t'; have 'char'
-> >    34 | typedef __INT8_TYPE__ int8_t;
-> >       |                       ^~~~~~
-> > In file included from /usr/include/x86_64-linux-gnu/sys/types.h:155,
-> >                  from /usr/include/x86_64-linux-gnu/bits/socket.h:29,
-> >                  from /usr/include/x86_64-linux-gnu/sys/socket.h:33,
-> >                  from progs/bind4_prog.c:9:
-> > /usr/include/x86_64-linux-gnu/bits/stdint-intn.h:24:18: note: previous declaration of 'int8_t' with type 'int8_t' {aka 'signed char'}
-> >    24 | typedef __int8_t int8_t;
-> >       |                  ^~~~~~
-> > /home/buildroot/opt/cross/lib/gcc/bpf/13.0.0/include/stdint.h:43:24: error: conflicting types for 'int64_t'; have 'long int'
-> >    43 | typedef __INT64_TYPE__ int64_t;
-> >       |                        ^~~~~~~
-> > /usr/include/x86_64-linux-gnu/bits/stdint-intn.h:27:19: note: previous declaration of 'int64_t' with type 'int64_t' {aka 'long long int'}
-> >    27 | typedef __int64_t int64_t;
-> >       |                   ^~~~~~~
-> > make: *** [Makefile:537: /home/buildroot/bpf-next/tools/testing/selftests/bpf/bpf_gcc/bind4_prog.o] Error 1
-> >
-> > Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
-> > ---
-> > Changes v1 -> v2:
-> >   - just remove netinet/tcp.h and sys/socket.h
-> > ---
-> >  tools/testing/selftests/bpf/progs/bind4_prog.c | 2 --
-> >  tools/testing/selftests/bpf/progs/bind6_prog.c | 2 --
-> >  2 files changed, 4 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/bpf/progs/bind4_prog.c b/tools/testing/selftests/bpf/progs/bind4_prog.c
-> > index 474c6a62078a..a487f60b73ac 100644
-> > --- a/tools/testing/selftests/bpf/progs/bind4_prog.c
-> > +++ b/tools/testing/selftests/bpf/progs/bind4_prog.c
-> > @@ -6,8 +6,6 @@
-> >  #include <linux/bpf.h>
-> >  #include <linux/in.h>
-> >  #include <linux/in6.h>
-> > -#include <sys/socket.h>
-> > -#include <netinet/tcp.h>
-> >  #include <linux/if.h>
-> Are the AF_INET and SOCK_STREAM coming from linux/if.h somehow
-> and they are not from indirectly including sys/socket.h ?
+On 26/08/2022 14:47, Eyal Birger wrote:
+> Allow specifying the xfrm interface if_id and link as part of a route
+> metadata using the lwtunnel infrastructure.
+> 
+> This allows for example using a single xfrm interface in collect_md
+> mode as the target of multiple routes each specifying a different if_id.
+> 
+> With the appropriate changes to iproute2, considering an xfrm device
+> ipsec1 in collect_md mode one can for example add a route specifying
+> an if_id like so:
+> 
+> ip route add <SUBNET> dev ipsec1 encap xfrm if_id 1
+> 
+> In which case traffic routed to the device via this route would use
+> if_id in the xfrm interface policy lookup.
+> 
+> Or in the context of vrf, one can also specify the "link" property:
+> 
+> ip route add <SUBNET> dev ipsec1 encap xfrm if_id 1 link_dev eth15
+> 
+> Note: LWT_XFRM_LINK uses NLA_U32 similar to IFLA_XFRM_LINK even though
+> internally "link" is signed. This is consistent with other _LINK
+> attributes in other devices as well as in bpf and should not have an
+> effect as device indexes can't be negative.
+> 
+> Signed-off-by: Eyal Birger <eyal.birger@gmail.com>
+> 
+> ----
+> 
+> v4: use NLA_U32 for LWT_XFRM_LINK as suggested by Nicolas Dichtel
+> 
+> v3: netlink improvements as suggested by Nikolay Aleksandrov and
+>     Nicolas Dichtel
+> 
+> v2:
+>   - move lwt_xfrm_info() helper to dst_metadata.h
+>   - add "link" property as suggested by Nicolas Dichtel
+> ---
+>  include/net/dst_metadata.h    | 11 +++++
+>  include/uapi/linux/lwtunnel.h | 10 +++++
+>  net/core/lwtunnel.c           |  1 +
+>  net/xfrm/xfrm_interface.c     | 85 +++++++++++++++++++++++++++++++++++
+>  4 files changed, 107 insertions(+)
+> 
 
-Hmm, seems they are both coming from sys/socket.h:
+Reviewed-by: Nikolay Aleksandrov <razor@blackwall.org>
 
-Tests with my v2 patch applied:
-progs/bind4_prog.c:15: error: "AF_INET" redefined [-Werror]
-   15 | #define AF_INET nonsense
-      |
-In file included from /usr/include/x86_64-linux-gnu/sys/socket.h:33,
-                 from /usr/include/linux/if.h:28,
-                 from progs/bind4_prog.c:9:
-/usr/include/x86_64-linux-gnu/bits/socket.h:97: note: this is the
-location of the previous definition
-   97 | #define AF_INET         PF_INET
-      |
-
-progs/bind4_prog.c:15: error: "SOCK_STREAM" redefined [-Werror]
-   15 | #define SOCK_STREAM nonsense
-      |
-In file included from /usr/include/x86_64-linux-gnu/bits/socket.h:38,
-                 from /usr/include/x86_64-linux-gnu/sys/socket.h:33,
-                 from /usr/include/linux/if.h:28,
-                 from progs/bind4_prog.c:9:
-/usr/include/x86_64-linux-gnu/bits/socket_type.h:28: note: this is the
-location of the previous definition
-   28 | #define SOCK_STREAM SOCK_STREAM
-      |
-
-So I guess the problematic header is netinet/tcp.h and sys/socket.h is
-just a redundant include?
-
-Removing just netinet/tcp.h does appear sufficient to fix the issue.
-
->
-> If the program does not need if.h, what should it use ?
-> There are other progs in selftest/bpf that include sys/socket.h
-> and they have no issue ?
-
-I'm still working through gcc issues with the test suite so there's
-probably some cases I haven't identified yet but this is the only one
-that seemed to need any code changes when removing those 2
-headers that I've found so far:
-https://lore.kernel.org/bpf/20220826055025.1018491-1-james.hilliard1@gmail.com/
