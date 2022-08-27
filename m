@@ -2,355 +2,284 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6846B5A392A
-	for <lists+bpf@lfdr.de>; Sat, 27 Aug 2022 19:22:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1959D5A397A
+	for <lists+bpf@lfdr.de>; Sat, 27 Aug 2022 20:29:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233354AbiH0RWI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 27 Aug 2022 13:22:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57444 "EHLO
+        id S229445AbiH0S3z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 27 Aug 2022 14:29:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbiH0RWH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 27 Aug 2022 13:22:07 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93A2A2A71C;
-        Sat, 27 Aug 2022 10:22:05 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id x93so5387424ede.6;
-        Sat, 27 Aug 2022 10:22:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=Y0Jg5A8w/HfRMOqIFodrSXnycjO3otfCsSGBf7fuc7s=;
-        b=WUVXvgLZttin1TxB5PTeQhMlGjbA76GcjvcaHNxmnyBezANGPDX0hRLiJ9hAUSWH8n
-         ptrQzFkR3uRpezTJC2SvmkgzB6Gt5lxDfrIdRSBqc8BBpJCzz+ay0qLY1m+r0/H7bVkk
-         qaoEDGOIZeXL05D5XWpUnltj2UejzZ4I9Ip4qSFiy85utpevWbfxoYRIzvx7aIQNoECc
-         sIi966KoGNCwxpf7J8NIxxvPe3F0vefk/nHREQ3YYbhyLKyMm6nolbL2j/FmZdm+iyYU
-         zDN199+GuPYjhcTylGtpM9TI7+s+17Um5mN3RKmdpTc3FiyH8Tv6UyhMY+WQWJprk9zX
-         EjZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=Y0Jg5A8w/HfRMOqIFodrSXnycjO3otfCsSGBf7fuc7s=;
-        b=5DrqqqYDLkn5rk2ftbOwNb+jDTJqxuWXpnZwHAuKn5toFKmsBMqe7m6cV47yTSIKox
-         270wiBnimqjrBhGMSRil6kkI7QxtwCGeYuz4YS1XUVVlwMpiodcqqDHb8hHxXiCH6Efb
-         qIEiF44q/NMLVogiAu9pu9IPyTh/EwnaDPGJSz8tUCJowU2wEHe59MfQO1kiGd+Yskwl
-         35cbmqSu9SeJk+9nbX8Cbu/uRZq2MNqjNp5p2MOoR4mbfoNre1NUdup0SGKn2h0utXFH
-         XkufVg/LGMU2YYktK2TIGaMUCrs1UwHNe5nIsBgQMrPp4IqvEu52lqVUz998Bks05VuA
-         LChA==
-X-Gm-Message-State: ACgBeo1H7LRqonpLUbK8qC+zbFGOnLwn8cQONHSOfLzz9J1ulEjLMDex
-        dBoZWdYoT46fpoAAVXFlfq7KEt1gk0Om4CRR/tM=
-X-Google-Smtp-Source: AA6agR6VTPMLHW4qz7XbQ0ud7EH9P97aYPuS5SBkYM56+6hVs6RomWEPd7pOVWmVo4GAMYbeAQS+rp4R+Z9pIYHVgUg=
-X-Received: by 2002:aa7:cad7:0:b0:446:5d20:6708 with SMTP id
- l23-20020aa7cad7000000b004465d206708mr10714093edt.224.1661620923939; Sat, 27
- Aug 2022 10:22:03 -0700 (PDT)
+        with ESMTP id S229455AbiH0S3y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 27 Aug 2022 14:29:54 -0400
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E77FBE18
+        for <bpf@vger.kernel.org>; Sat, 27 Aug 2022 11:29:50 -0700 (PDT)
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27R9dBqG018055
+        for <bpf@vger.kernel.org>; Sat, 27 Aug 2022 11:29:50 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : subject :
+ date : message-id : references : in-reply-to : content-type : content-id :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=2TX0nhEEkrcCozfAqqkH4h7t9PQAOpIClmmc23rUQ3Y=;
+ b=pe/juo8gBcgnif0966Z3VaG/HAVHciPLckfosb2+V+TjArX1QOI6u+y2XuqquFmWzxqB
+ uoYBCg1sVvpUw5Zh7AL7TdHO9132aYC2tMieQR+Lyvy6Q3uW2ETLuXWjQ4Rgx8c3I5A1
+ iQADaowKydkChwdWwsJ2R53s5dmE72d/mWM= 
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2172.outbound.protection.outlook.com [104.47.59.172])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3j7gsysjfp-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Sat, 27 Aug 2022 11:29:49 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=g2o9nAIFXHFOYzLk1qwDMYqEQab2drNZmKQTu4VYp77m01FtNBzJYiJFb4YQDEcAGcODt7TAizFH7pHLpUKal84/c8TzEw1s9wVvFG24U8fr6kgWNFYwF7k/jY3tZJhzf2x66b5zFxAKFTTs0JhlgCsDdNV2PCWfac7A4M7pHyYiyUEbmJuPAEBgdZMkBhHVoWk+YHZg+V99Tr9sg3PMIE03H9ks+4XcarmtkloQ+iAvxSdC2QAWiY+xxF2p8lP2NTzmPekNytheJw6JkXJoYKU6HwKz03dtWUbrsVWRYtOC9ff3OvJ5BPw+C12dhWB4QbTd7l+dhFVOhEtzahgUkQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=2TX0nhEEkrcCozfAqqkH4h7t9PQAOpIClmmc23rUQ3Y=;
+ b=INEUb/elErCuIacnU0e07HKUDpRD0vBnS3s2Y1AOZU9ANjOrwVqukcBYpOOhJlyooTiJwIRu1IkuWHQlk7Ra6ZG+Gy5yLc2CkDiMiOiMCxVodbKYrxzchINh7X6d03v/nwtukirHgoAIXVnlPDdgVjMGaQCE0Nfh7X8BsIOTXSsWcH7Vh5rcnUzNZTciw6yx2yPA2rVuLev4TmweZ7jNiP+KrRE6hHEGZz6WRgpE9vt7U87HDzzSqqjUQ87nIQc0XhlPeqpmLQPjNhxLhyg96ZG56OqSRHy4BzOcu66qfF/btIeBln7qEfPC82k1eM9jMK5GwbS4zyuC9dLCO/WUaA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from BY5PR15MB3651.namprd15.prod.outlook.com (2603:10b6:a03:1f7::15)
+ by BL0PR1501MB2019.namprd15.prod.outlook.com (2603:10b6:207:33::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5566.19; Sat, 27 Aug
+ 2022 18:29:47 +0000
+Received: from BY5PR15MB3651.namprd15.prod.outlook.com
+ ([fe80::14b0:8f09:488d:f55f]) by BY5PR15MB3651.namprd15.prod.outlook.com
+ ([fe80::14b0:8f09:488d:f55f%6]) with mapi id 15.20.5566.019; Sat, 27 Aug 2022
+ 18:29:46 +0000
+From:   Kui-Feng Lee <kuifeng@fb.com>
+To:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>, Kernel Team <Kernel-team@fb.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: Re: [PATCH bpf-next v7 1/5] bpf: Parameterize task iterators.
+Thread-Topic: [PATCH bpf-next v7 1/5] bpf: Parameterize task iterators.
+Thread-Index: AQHYuOQcpP6zsybgYEKq3yzbPiNgKK3BksKAgAGA2QA=
+Date:   Sat, 27 Aug 2022 18:29:46 +0000
+Message-ID: <4ecfceb863d64ed45dcaac2a210744210a2d854d.camel@fb.com>
+References: <20220826003712.2810158-1-kuifeng@fb.com>
+         <20220826003712.2810158-2-kuifeng@fb.com>
+         <7beb3850-c1e4-7cfc-d39b-1a24f1354fdd@fb.com>
+In-Reply-To: <7beb3850-c1e4-7cfc-d39b-1a24f1354fdd@fb.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: cb2f20df-70b5-48cf-7c9a-08da885a1e65
+x-ms-traffictypediagnostic: BL0PR1501MB2019:EE_
+x-fb-source: Internal
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: +thpOGcbs8lfA6IMqlZN33goa5zQny9ptAoOFDSbAddhY/p2TJWTEuuC7p0EHgo21PjnBLpf3OIhwoXZ3C49u3fp7rIL8o9mYNgDn5l/RnO+qlr9tbcauaZ7re9n4Yw7SShKa0OgT7TEb8lp/ufaIRrQrLdN1wpnToTybjwmGNK/v9d4zOaQVrZ41BQYzxLzdFFxTuEqyUorzQd5oIKIuNlGIwYcm4EeUYfY3j9F9w3xmELJByeLvyXJwCZW1/dxp3tCYyzvxBRBg8zbezCgqtfOEtvMiVQZmRlDHY7Dbe/ctINcg/TyIpibgRZMlwdT9uqROTO9O7dezslu4JVEVpj9tybZXnRtOpF0AGFpySmfCpvsRZHn6SccpUFKMMyO1MG5zWYGqBwmJCqkh2HfscvCmh+qUzQupmarRAgapi3fIBneVDS9Pws0ECFsmfk2fJQoenY0coNhrnCW2p1tuqeo1s/x2hSAU1kKhv1ZEYhBU94SFTrXx3XfANgWNxgH24lzGs6+S7Vf0TyETBNkrU8aUrwafIPW05oSRfPVInYlX/YLxg69wbetDHCy7L2BDykw4MNbqfp9TwfCk+x/kGrqgyBRY8p01WEV8g1qswOvgWAtQ+hwA10S5+9AZNp4wpii1Ij2ogI7AZu5XwyVUbwIppdAAj8aK+3KdIgSO5ImLS2R5MosvMkHRMB4gYmde+iRHy4ZFRzN7iPL9Q2Qi9/RNOwx4he5SOUZO9YhAL1uOIOEOXK3V94leB40gzA9bc5w+/JW68Nle+KkWBuCRw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3651.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(39860400002)(396003)(136003)(376002)(366004)(346002)(6506007)(36756003)(53546011)(6512007)(186003)(2616005)(110136005)(66946007)(2906002)(76116006)(316002)(8676002)(71200400001)(41300700001)(66556008)(6486002)(478600001)(66476007)(64756008)(66446008)(122000001)(38070700005)(5660300002)(86362001)(38100700002)(8936002)(83380400001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?QXJRTGRYM0tKb1hKeFQyYk1JS3Zvd1cyMjgxM3ZYVUpSK25DUlZVV2tMSUdS?=
+ =?utf-8?B?cTQzMnIrL2xmOVd1bmpucTM5c1F6QW91NVVYWDMwWW5WbUtvbnBTTDI5TWNV?=
+ =?utf-8?B?Z0lnTlR6SWpOVG5MZGtYTVJZSU1DdDE2WjVtYVNBcC9qUVczbmxMYmNjSVp4?=
+ =?utf-8?B?cTRzam1RYURHVEdKejdGSVQ2a2ZXNy9tNktNamlmbUliWGJSMGs0THpVNVFx?=
+ =?utf-8?B?dmJIQzNqS3podWFRNTU5UFNPR09LU3BJci9QUjBmM1Y1cWt6ZkFUSWU1WG1X?=
+ =?utf-8?B?N1BWMzJ1UjhsQnp6SmYrVFlGQWJsVHVORTQwcFBKMEp4WnZPSy90Rld3YThi?=
+ =?utf-8?B?cFdYSHRxNC9YcXVBM0ZUeXVzckpqR1FBb2xrNU5GNnY3V1hIV212N2g3MFEy?=
+ =?utf-8?B?c2FGZ2xKcWNEYndGMmI1eHdwdEMwWi9TaVB6VU83RGZZd3dVZHVxbWp6VGNV?=
+ =?utf-8?B?MUMvcTA5cVNGOVFaNzBaaFY1RHZORzlYZjFvWERTUjVHcnpHeVdEYXJEQ0FT?=
+ =?utf-8?B?bWtxVHlmZmJkNEd4WHF5WnZOZVVSMHIzZ0RIREd6ZklTN0NCdU9UeVA5dEFC?=
+ =?utf-8?B?b09xWW1VeGIxaWx4ejdXUHF4ZTNDUVFGb1hOVFQwUVNuakFYWWcyWXcvc2lU?=
+ =?utf-8?B?Nmh5UzBkRTd0UnRtbGdPL2tGcXV4VVZodlByOFF6YVZiTFZqaHBUSHZhOCt1?=
+ =?utf-8?B?MVd6ejdHWjY1TEJyQ2psZWx6bmdaK2hOOEl0Y3JQbFd0SDNvZVo4SnhIcGNT?=
+ =?utf-8?B?dUN3NXFhSmxULzlZOFhQTGloL3Q2QktuQmdWaWgvTWhmckJPSldsU0l6MnhK?=
+ =?utf-8?B?UzBBWDRrSlBmOWg5SWlUYzNDczJTSVdJa1Bkd3dZTkdwR1U3dERyMFFaR1pP?=
+ =?utf-8?B?OFhkMmJFeXRJRlpRNVFkRG53THI5SnpUSndYZy9ZWGRYdXUwNjh3MHQ2VU9Y?=
+ =?utf-8?B?UWtmRzQyZm41aVp6TFlFNWg0Q1FvQXdIZndYSEFCendvM3FrMFNzZFZ0aDRF?=
+ =?utf-8?B?ZFFHaEQzNDBMMTFsekl0ZkJPVjlVVTQ3NlZyS1Z1Qm1EOGI4c3drRTR3Q0h1?=
+ =?utf-8?B?SWNsVzl4RENlT0Q4ZitrZmgwNWd1QUVMK2RFRXFWQzV0SDYza1YzSXVpWUZD?=
+ =?utf-8?B?M0QrQnhVdGdFRW9RZ0gxRmJyc0FqeWlEUEpUczIxbldvVXNPT2lUb015TC9l?=
+ =?utf-8?B?ZEJRVWh3ZHlFbkJKUmtCR1lwRDFLODVjaXo4Tlg1dCtuaVV4MmhmakJnbm50?=
+ =?utf-8?B?SzRNZ2JKMVBrNDdxb2h6ZDJJWGtYL29HTWFkU3JGNlE4SC91cXQ3YkVVWXdI?=
+ =?utf-8?B?Y0lvTDdScWRSZkhIeFZ1RmVpN1JMSHlKTU8vWit4YTNWaCtiRnlOalFxaGIy?=
+ =?utf-8?B?NjZDVkRacnZ3ZzZvUjF0c1Y3TDZCcXRCMnp0YmtuakxzQWZvM1Y0ejEvV0ZR?=
+ =?utf-8?B?R29ocTNEQ3ZKaFNqS09lWVAyOE5GTkxXM3V1Q3RWdVZCYnYySjVxWUtsQ0ZN?=
+ =?utf-8?B?Ym0rSWpzWWVRczdNRDNZQWVpeFNEN3NoVWpZUmFmc2U3OTJieCtFczNxMmR2?=
+ =?utf-8?B?eW40KzBMcGwwMTdwL0doVHdqTy8vWWN5V2s4dk1tMUI4TDlqN3NvdXhudTk3?=
+ =?utf-8?B?SVl1cEFlSTNscTNCMStYYXZIdzI3RDM1WGcrUUQyWm9IRS9EaFNSdG1zYnJB?=
+ =?utf-8?B?cW9GUytwRmtCUXVEVHoyNkRTUXJlYXdIa2hQUUQ4WUdSOEZnTDlJY3VnQ0hG?=
+ =?utf-8?B?dkFVaHdseE9oTWlkb0dXbHBuV0hBR0NieVZEMjk5ajZrV0FwblA5R01iVGJx?=
+ =?utf-8?B?QndrTWZOb1ZyVkt2V0hqenkwTzJZdG9ZTDdnV1RRRmNCUjhvSytkcy9icy9n?=
+ =?utf-8?B?aGphaUtTU2VJR3JRNmlDaGJYSnk5ZW8rRDloSzFKb3B5UW9QSENBdGFhUjBv?=
+ =?utf-8?B?OWc2UFVvVGlKSkd0OVpVbXc5cXdLNEIvem9rWElvWDY3cXEzaXY0M0RRc2Fm?=
+ =?utf-8?B?YmRFYUwrbSsvY1ZtUElFVDNpeStIdklvdVQ3RHlXZkFuYjBKRGVYWWdJdVZG?=
+ =?utf-8?B?MEtuWGRhb3hzM1o5SGdaZHFQdUw5NEwzZlZpVS9FQ1F5eGM3ZXRtUHlwOHdQ?=
+ =?utf-8?B?UEhtYlVUL0ZESHZ2N3dxUHhDN2xHcE1mU1E4NEdtTXNlNlM2ZjlIUlo5dXNy?=
+ =?utf-8?B?VWc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <5CD6326CAB88D44D9129AF345F2E3B33@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20220822235649.2218031-1-joannelkoong@gmail.com>
- <20220822235649.2218031-2-joannelkoong@gmail.com> <CAEf4BzZm7eUX3w-NwP0JuWtvKbO6GxN911TraY5bA8-z+ocyCg@mail.gmail.com>
- <CAP01T77izAbefN5CJ1ZdjwUdii=gMFMduKTYtSbYC3S9jbRoEA@mail.gmail.com>
- <CAJnrk1Y0r3++RLpT2jvp4st-79x3dUYk3uP-4tfnAeL5_kgM0Q@mail.gmail.com>
- <CAP01T74O6ZuH_NPObYTLUjFSADjWjzfHjTsLBf8b67jgchf6Gw@mail.gmail.com>
- <CAJnrk1Z39+pLzAOL3tbqvQyTcB4HvrbLghmr6_vLXhtJYHuwEA@mail.gmail.com>
- <CAP01T76ChONTCVtHNZ_X3Z6qmuZTKCVYwe0s6_TGcuC1tEx9sw@mail.gmail.com>
- <CAJnrk1Zmne1uDn8EKdNKJe6O-k_moU9Sryfws_J-TF2BvX2QMg@mail.gmail.com>
- <CAP01T746gvoOM7DuWY-3N2xJbEainTinTPhyqHki2Ms6E0Dk_A@mail.gmail.com>
- <CAEf4BzZYTN=gGsc88jetv-SSMBy78P7w7Y08zfwGR7cCenJPiQ@mail.gmail.com> <CAP01T74mbnYJkq0CfknZBqYg4T5B-OenB+SB6=gc24GvpVxA8g@mail.gmail.com>
-In-Reply-To: <CAP01T74mbnYJkq0CfknZBqYg4T5B-OenB+SB6=gc24GvpVxA8g@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Sat, 27 Aug 2022 10:21:52 -0700
-Message-ID: <CAEf4BzYpV-RJ456n0UQFPXSG6SvUPK5=jM4nS+x25z7pTkfMGQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 1/3] bpf: Add skb dynptrs
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     Joanne Koong <joannelkoong@gmail.com>, bpf@vger.kernel.org,
-        andrii@kernel.org, daniel@iogearbox.net, ast@kernel.org,
-        kafai@fb.com, kuba@kernel.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-OriginatorOrg: fb.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3651.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cb2f20df-70b5-48cf-7c9a-08da885a1e65
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Aug 2022 18:29:46.4123
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ah6O0EW90TKWiOeRLmtE7z0VQzHTrCoOEJaaagFCQKmVXQJqiVT618o2JlrqUi/V
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR1501MB2019
+X-Proofpoint-ORIG-GUID: NR2BU9s5XHj6ZqUez5j72SHWz3wbzdqr
+X-Proofpoint-GUID: NR2BU9s5XHj6ZqUez5j72SHWz3wbzdqr
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-08-27_10,2022-08-25_01,2022-06-22_01
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Aug 27, 2022 at 12:12 AM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
->
-> On Sat, 27 Aug 2022 at 07:37, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Fri, Aug 26, 2022 at 1:54 PM Kumar Kartikeya Dwivedi
-> > <memxor@gmail.com> wrote:
-> > >
-> > > On Fri, 26 Aug 2022 at 21:49, Joanne Koong <joannelkoong@gmail.com> wrote:
-> > > >
-> > > > On Fri, Aug 26, 2022 at 11:52 AM Kumar Kartikeya Dwivedi
-> > > > <memxor@gmail.com> wrote:
-> > > > >
-> > > > > On Fri, 26 Aug 2022 at 20:44, Joanne Koong <joannelkoong@gmail.com> wrote:
-> > > > > >
-> > > > > > On Thu, Aug 25, 2022 at 5:19 PM Kumar Kartikeya Dwivedi
-> > > > > > <memxor@gmail.com> wrote:
-> > > > > > >
-> > > > > > > On Thu, 25 Aug 2022 at 23:02, Joanne Koong <joannelkoong@gmail.com> wrote:
-> > > > > > > > [...]
-> > > > > > > > >
-> > > > > > > > > Related question, it seems we know statically if dynptr is read only
-> > > > > > > > > or not, so why even do all this hidden parameter passing and instead
-> > > > > > > > > just reject writes directly? You only need to be able to set
-> > > > > > > > > MEM_RDONLY on dynptr_data returned PTR_TO_PACKETs, and reject
-> > > > > > > > > dynptr_write when dynptr type is xdp/skb (and ctx is only one). That
-> > > > > > > > > seems simpler than checking it at runtime. Verifier already handles
-> > > > > > > > > MEM_RDONLY generically, you only need to add the guard for
-> > > > > > > > > check_packet_acces (and check_helper_mem_access for meta->raw_mode
-> > > > > > > > > under pkt case), and rejecting dynptr_write seems like a if condition.
-> > > > > > > >
-> > > > > > > > There will be other helper functions that do writes (eg memcpy to
-> > > > > > > > dynptrs, strncpy to dynptrs, probe read user to dynptrs, hashing
-> > > > > > > > dynptrs, ...) so it's more scalable if we reject these at runtime
-> > > > > > > > rather than enforce these at the verifier level. I also think it's
-> > > > > > > > cleaner to keep the verifier logic as simple as possible and do the
-> > > > > > > > checking in the helper.
-> > > > > > >
-> > > > > > > I won't be pushing this further, since you know what you plan to add
-> > > > > > > in the future better, but I still disagree.
-> > > > > > >
-> > > > > > > I'm guessing there might be dynptrs where this read only property is
-> > > > > > > set dynamically at runtime, which is why you want to go this route?
-> > > > > > > I.e. you might not know statically whether dynptr is read only or not?
-> > > > > > >
-> > > > > > > My main confusion is the inconsistency here.
-> > > > > > >
-> > > > > > > Right now the patch implicitly relies on may_access_direct_pkt_data to
-> > > > > > > protect slices returned from dynptr_data, instead of setting
-> > > > > > > MEM_RDONLY on the returned PTR_TO_PACKET. Which is fine, it's not
-> > > > > > > needed. So indirectly, you are relying on knowing statically whether
-> > > > > > > the dynptr is read only or not. But then you also set this bit at
-> > > > > > > runtime.
-> > > > > > >
-> > > > > > > So you reject some cases at load time, and the rest of them only at
-> > > > > > > runtime. Direct writes to dynptr slice fails load, writes through
-> > > > > > > helper does not (only fails at runtime).
-> > > > > > >
-> > > > > > > Also, dynptr_data needs to know whether dynptr is read only
-> > > > > > > statically, to protect writes to its returned pointer, unless you
-> > > > > > > decide to introduce another helper for the dynamic rdonly bit case
-> > > > > > > (like dynptr_data_rdonly). Then you have a mismatch, where dynptr_data
-> > > > > > > works for some rdonly dynptrs (known to be rdonly statically, like
-> > > > > > > this skb one), but not for others.
-> > > > > > >
-> > > > > > > I also don't agree about the complexity or scalability part, all the
-> > > > > > > infra and precedence is already there. We already have similar checks
-> > > > > > > for meta->raw_mode where we reject writes to read only pointers in
-> > > > > > > check_helper_mem_access.
-> > > > > >
-> > > > > > My point about scalability is that if we reject bpf_dynptr_write() at
-> > > > > > load time, then we must reject any future dynptr helper that does any
-> > > > > > writing at load time as well, to be consistent.
-> > > > > >
-> > > > > > I don't feel strongly about whether we reject at load time or run
-> > > > > > time. Rejecting at load time instead of runtime doesn't seem that
-> > > > > > useful to me, but there's a good chance I'm wrong here since Martin
-> > > > > > stated that he prefers rejecting at load time as well.
-> > > > > >
-> > > > > > As for the added complexity part, what I mean is that we'll need to
-> > > > > > keep track of some more stuff to support this, such as whether the
-> > > > > > dynptr is read only and which helper functions need to check whether
-> > > > > > the dynptr is read only or not.
-> > > > >
-> > > > > What I'm trying to understand is how dynptr_data is supposed to work
-> > > > > if this dynptr read only bit is only known at runtime. Or will it be
-> > > > > always known statically so that it can set returned pointer as read
-> > > > > only? Because then it doesn't seem it is required or useful to track
-> > > > > the readonly bit at runtime.
-> > > >
-> > > > I think it'll always be known statically whether the dynptr is
-> > > > read-only or not. If we make all writable dynptr helper functions
-> > > > reject read-only dynptrs at load time instead of run time, then yes we
-> > > > can remove the read-only bit in the bpf_dynptr_kern struct.
-> > > >
-> > > > There's also the question of whether this constraint (eg all read-only
-> > > > writes are rejected at load time) is too rigid - for example, what if
-> > > > in the future we want to add a helper function where if a certain
-> > > > condition is met, then we write some number of bytes, else we read
-> > > > some number of bytes? This would be not possible to add then, since
-> > > > we'll only know at runtime whether the condition is met.
-> > > >
-> > > > I personally lean towards rejecting helper function writes at runtime,
-> > > > but if you think it's a non-trivial benefit to reject at load time
-> > > > instead, I'm fine going with that.
-> > > >
-> > >
-> > > My personal opinion is this:
-> > >
-> > > When I am working with a statically known read only dynptr, it is like
-> > > declaring a variable const. Every function expecting it to be
-> > > non-const should fail compilation, and trying to mutate the variables
-> > > through writes should also fail compilation. For BPF compilation is
-> > > analogous to program load.
-> > >
-> > > It might be that said variable is not const, then those operations may
-> > > fail at runtime due to some other reason. Being dynamically read-only
-> > > is then a runtime failure condition, which will cause failure at
-> > > runtime. Both are distinct cases in my mind, and it is fine to fail at
-> > > runtime when we don't know. In general, you save a lot of time of the
-> > > user in my opinion (esp. people new to things) if you reject known
-> > > incorrectness as early as possible.
-> > >
-> > > E.g. load a dynptr from a map, where the field accepts storing both
-> > > read only and non-read only ones. Then it is expected that writes may
-> > > fail at runtime. That also allows you to switch read-only ness at
-> > > runtime back to rw. But if the field only expects rdonly dynptr,
-> > > verifier knows that the type is const statically, so it triggers
-> > > failures for writes at load time instead.
-> > >
-> > > Taking this a step further, you may even store rw dynptr to a map
-> > > field expecting rdonly dynptr. That's like returning a const pointer
-> > > from a function for a rw memory, where you want to limit access of the
-> > > user, even better if you do it statically. Then functions trying to
-> > > write to dynptr loaded from said map field will fail load itself,
-> > > while others having access to rw dynptr can do it just fine.
-> > >
-> > > When the verifier does not know, it does not know. There will be such
-> > > cases when you make const-ness a runtime property.
-> > >
-> > > > >
-> > > > > It is fine if _everything_ checks it at runtime, but that doesn't seem
-> > > > > possible, hence the question. We would need a new slice helper that
-> > > > > only returns read-only slices, because dynptr_data can return rw
-> > > > > slices currently and it is already UAPI so changing that is not
-> > > > > possible anymore.
-> > > >
-> > > > I don't agree that if bpf_dynptr_write() is checked at runtime, then
-> > > > bpf_dynptr_data must also be checked at runtime to be consistent. I
-> > > > think it's fine if writes through helper functions are rejected at
-> > > > runtime, and writes through direct access are rejected at load time.
-> > > > That doesn't seem inconsistent to me.
-> > >
-> > > My point was more that dynptr_data cannot propagate runtime
-> > > read-only-ness to its returned pointer. The verifier has to know
-> > > statically, at which point I don't see why we can't just reject other
-> > > cases at load anyway.
-> >
-> > I think the right answer here is to not make bpf_dynptr_data() return
-> > direct pointer of changing read-only-ness. Maybe the right answer here
-> > is another helper, bpf_dynptr_data_rdonly(), that will return NULL for
-> > non-read-only dynptr and PTR_TO_MEM | MEM_RDONLY if dynptr is indeed
-> > read-only?
->
-> Shouldn't it be the other way around? bpf_dynptr_data_rdonly() should
-> work for both ro and rw dynptrs, and bpf_dynptr_data() only for rw
-> dynptr?
-
-Right, that's what I proposed:
-
-  "bpf_dynptr_data_rdonly(), that will return NULL for non-read-only dynptr"
-
-so if you pass read-write dynptr, it will return NULL (because it's
-unsafe to take writable direct pointer).
-
-bpf_dynptr_data_rdonly() should still work fine with both rdonly and
-read-write dynptr.
-bpf_dynptr_data() only works (in the sense returns non-NULL) for
-read-write dynptr only.
-
-
->
-> And yes, you're kind of painting yourself in a corner if you allow
-> dynptr_data to work with statically ro dynptrs now, ascertaining the
-> ro bit for the returned slice, and then later you plan to add dynptrs
-> whose ro vs rw is not known to the verifier statically. Then it works
-> well for statically known ones (returning both ro and rw slices), but
-> has to return NULL at runtime for statically unknown read only ones,
-> and always rw slice in verifier state for them.
-
-Right, will be both inconsistent and puzzling.
-
->
-> >
-> > By saying that read-only-ness of dynptr should be statically known and
-> > rejecting some dynptr functions at load time places us at the mercy of
-> > verifier's complete knowledge of application logic, which is exactly
-> > against the spirit of dynptr.
-> >
->
-> Right, that might be too restrictive if we require them to be
-> statically read only.
->
-> But it's not about forcing it to be statically ro, it is more about
-> rejecting load when we know the program is incorrect (e.g. the types
-> are incorrect when passed to helpers), otherwise we throw the error at
-> runtime anyway, which seems to be the convention afaicu. But maybe I
-> missed the memo and we gradually want to move away from such strict
-> static checks.
->
-> I view the situation here similar to if we were rejecting direct
-> writes to PTR_TO_MEM | MEM_RDONLY at load time, but offloading as
-> runtime check in the helper writing to it as rw memory arg. It's as if
-> we pretend it's part of the 'type' of the register when doing direct
-> writes, but then ignore it while matching it against the said helper's
-> argument type.
-
-I disagree, it's not the same. bpf_dynptr_data/bpf_dynptr_data_rdonly
-turns completely dynamic dynptr into static slice of memory. Only
-after that point it makes sense for BPF verifier to reject something.
-Until then it's not incorrect. BPF program will always have to deal
-with some dynptr operations potentially failing. dynptr can always be
-NULL internally, you can still call bpf_dynptr_xxx() operations on it,
-they will just do nothing and return error. That doesn't make BPF
-program incorrect.
-
-As I said, dynptr is about shifting static verification to runtime
-checks for stuff that BPF verifier can't or shouldn't verify
-statically. Like dynptr's dynamic size, for example. We've used a
-special data/data_end pointer types to try to solve this for skb, but
-it is quite painful in practice and relies on compiler generating
-"good" sequence of instructions understandable to BPF verifier.
-
-dynptr takes a different approach, shifts validation to runtime and
-"interfaces" with static verification through bpf_dynptr_data() and
-similar APIs.
-
->
-> > It's only slightly tangential, but I still dread my experience proving
-> > to BPF verifier that some value is strictly greater than zero for BPF
-> > helper that expected ARG_CONST_SIZE (not ARG_CONST_SIZE_OR_ZERO).
-> > There were also cases were absolutely correct program had to be
-> > mangled just to prove to BPF verifier that it indeed can return just 0
-> > or 1, etc. This is not to bash BPF verifier, but just to point out
-> > that sometimes unnecessary strictness adds nothing but unnecessary
-> > pain to user. So, let's not reject anything at load, we can check all
-> > that at runtime and return NULL.
-> >
-> > But bpf_dynptr_data_rdonly() seems useful for cases where we know we
-> > are not going to write
-> >
-> > >
-> > > When we have dynptrs which have const-ness as a runtime property, it
-> > > is ok to support that by failing at runtime (but then you'll have a
-> > > hard time deciding how you want dynptr_data to work, most likely
-> > > you'll need another helper which returns only a rdonly slice, when it
-> > > fails, we call dynptr_data for rw slice).
-> > >
-> > > But as I said before, I don't know how dynptr is going to evolve in
-> > > the future, so you'll have a better idea, and I'll leave it up to you
-> > > decide how you want to design its API. Enough words exchanged about
-> > > this :).
-> >
-> > directionally, dynptr is about offloading decisions to runtime, so I
-> > think avoiding unnecessary restrictions at verification time is the
-> > right trade off
->
-> Fair enough, I guess I've made my point. Let's go with what you both
-> feel would be best.
-
-Sounds good. I tried to point out the "philosophy" behind dynptr. It
-doesn't preclude making the BPF verifier smarter and track more
-things. But it's a deliberate design of dynptr to shift more checks to
-runtime because in a lot of cases it makes more sense than "fighting
-BPF verifier". This "fighting verifier" phrase is like a meme now.
-I've heard this exact phrase from multiple unrelated engineers. BPF
-verifier should be helpful, we should engineers having to "fight" it,
-so overly strict checks from verifier should be avoided if they don't
-compromise correctness, IMO.
+T24gRnJpLCAyMDIyLTA4LTI2IGF0IDEyOjMwIC0wNzAwLCBZb25naG9uZyBTb25nIHdyb3RlOgo+
+IAo+IAo+IE9uIDgvMjUvMjIgNTozNyBQTSwgS3VpLUZlbmcgTGVlIHdyb3RlOgo+ID4gQWxsb3cg
+Y3JlYXRpbmcgYW4gaXRlcmF0b3IgdGhhdCBsb29wcyB0aHJvdWdoIHJlc291cmNlcyBvZiBvbmUK
+PiA+IHRocmVhZC9wcm9jZXNzLgo+ID4gCj4gPiBQZW9wbGUgY291bGQgb25seSBjcmVhdGUgaXRl
+cmF0b3JzIHRvIGxvb3AgdGhyb3VnaCBhbGwgcmVzb3VyY2VzIG9mCj4gPiBmaWxlcywgdm1hLCBh
+bmQgdGFza3MgaW4gdGhlIHN5c3RlbSwgZXZlbiB0aG91Z2ggdGhleSB3ZXJlCj4gPiBpbnRlcmVz
+dGVkCj4gPiBpbiBvbmx5IHRoZSByZXNvdXJjZXMgb2YgYSBzcGVjaWZpYyB0YXNrIG9yIHByb2Nl
+c3MuwqAgUGFzc2luZyB0aGUKPiA+IGFkZGl0aW9uYWwgcGFyYW1ldGVycywgcGVvcGxlIGNhbiBu
+b3cgY3JlYXRlIGFuIGl0ZXJhdG9yIHRvIGdvCj4gPiB0aHJvdWdoIGFsbCByZXNvdXJjZXMgb3Ig
+b25seSB0aGUgcmVzb3VyY2VzIG9mIGEgdGFzay4KPiA+IAo+ID4gU2lnbmVkLW9mZi1ieTogS3Vp
+LUZlbmcgTGVlIDxrdWlmZW5nQGZiLmNvbT4KPiA+IEFja2VkLWJ5OiBZb25naG9uZyBTb25nIDx5
+aHNAZmIuY29tPgo+ID4gLS0tCj4gPiDCoCBpbmNsdWRlL2xpbnV4L2JwZi5owqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoCB8wqAgMjUgKysrKysrKwo+ID4gwqAgaW5jbHVkZS91YXBpL2xpbnV4L2JwZi5o
+wqDCoMKgwqDCoMKgIHzCoMKgIDYgKysKPiA+IMKgIGtlcm5lbC9icGYvdGFza19pdGVyLmPCoMKg
+wqDCoMKgwqDCoMKgIHwgMTI4ICsrKysrKysrKysrKysrKysrKysrKysrKysrLS0KPiA+IC0tLS0t
+Cj4gPiDCoCB0b29scy9pbmNsdWRlL3VhcGkvbGludXgvYnBmLmggfMKgwqAgNiArKwo+ID4gwqAg
+NCBmaWxlcyBjaGFuZ2VkLCAxNDEgaW5zZXJ0aW9ucygrKSwgMjQgZGVsZXRpb25zKC0pCj4gPiAK
+PiA+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L2JwZi5oIGIvaW5jbHVkZS9saW51eC9icGYu
+aAo+ID4gaW5kZXggOWMxNjc0OTczZTAzLi4zMWFjMmMxMTgxZjUgMTAwNjQ0Cj4gPiAtLS0gYS9p
+bmNsdWRlL2xpbnV4L2JwZi5oCj4gPiArKysgYi9pbmNsdWRlL2xpbnV4L2JwZi5oCj4gPiBAQCAt
+MTczMCw2ICsxNzMwLDI3IEBAIGludCBicGZfb2JqX2dldF91c2VyKGNvbnN0IGNoYXIgX191c2Vy
+Cj4gPiAqcGF0aG5hbWUsIGludCBmbGFncyk7Cj4gPiDCoMKgwqDCoMKgwqDCoMKgZXh0ZXJuIGlu
+dCBicGZfaXRlcl8gIyMgdGFyZ2V0KGFyZ3MpO8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgXAo+ID4gwqDCoMKgwqDCoMKgwqDCoGludCBfX2luaXQgYnBmX2l0ZXJfICMjIHRh
+cmdldChhcmdzKSB7IHJldHVybiAwOyB9Cj4gPiDCoCAKPiA+ICsvKgo+ID4gKyAqIFRoZSB0YXNr
+IHR5cGUgb2YgaXRlcmF0b3JzLgo+ID4gKyAqCj4gPiArICogRm9yIEJQRiB0YXNrIGl0ZXJhdG9y
+cywgdGhleSBjYW4gYmUgcGFyYW1ldGVyaXplZCB3aXRoIHZhcmlvdXMKPiA+ICsgKiBwYXJhbWV0
+ZXJzIHRvIHZpc2l0IG9ubHkgc29tZSBvZiB0YXNrcy4KPiA+ICsgKgo+ID4gKyAqIEJQRl9UQVNL
+X0lURVJfQUxMIChkZWZhdWx0KQo+ID4gKyAqwqDCoMKgwqDCoEl0ZXJhdGUgb3ZlciByZXNvdXJj
+ZXMgb2YgZXZlcnkgdGFzay4KPiA+ICsgKgo+ID4gKyAqIEJQRl9UQVNLX0lURVJfVElECj4gPiAr
+ICrCoMKgwqDCoMKgSXRlcmF0ZSBvdmVyIHJlc291cmNlcyBvZiBhIHRhc2svdGlkLgo+ID4gKyAq
+Cj4gPiArICogQlBGX1RBU0tfSVRFUl9UR0lECj4gPiArICrCoMKgwqDCoMKgSXRlcmF0ZSBvdmVy
+IHJlc291cmNlcyBvZiBldmVyeSB0YXNrIG9mIGEgcHJvY2VzcyAvIHRhc2sKPiA+IGdyb3VwLgo+
+ID4gKyAqLwo+ID4gK2VudW0gYnBmX2l0ZXJfdGFza190eXBlIHsKPiA+ICvCoMKgwqDCoMKgwqDC
+oEJQRl9UQVNLX0lURVJfQUxMID0gMCwKPiA+ICvCoMKgwqDCoMKgwqDCoEJQRl9UQVNLX0lURVJf
+VElELAo+ID4gK8KgwqDCoMKgwqDCoMKgQlBGX1RBU0tfSVRFUl9UR0lELAo+ID4gK307Cj4gPiAr
+Cj4gPiDCoCBzdHJ1Y3QgYnBmX2l0ZXJfYXV4X2luZm8gewo+ID4gwqDCoMKgwqDCoMKgwqDCoC8q
+IGZvciBtYXBfZWxlbSBpdGVyICovCj4gPiDCoMKgwqDCoMKgwqDCoMKgc3RydWN0IGJwZl9tYXAg
+Km1hcDsKPiA+IEBAIC0xNzM5LDYgKzE3NjAsMTAgQEAgc3RydWN0IGJwZl9pdGVyX2F1eF9pbmZv
+IHsKPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgc3RydWN0IGNncm91cCAqc3Rh
+cnQ7IC8qIHN0YXJ0aW5nIGNncm91cCAqLwo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqBlbnVtIGJwZl9jZ3JvdXBfaXRlcl9vcmRlciBvcmRlcjsKPiA+IMKgwqDCoMKgwqDCoMKg
+wqB9IGNncm91cDsKPiA+ICvCoMKgwqDCoMKgwqDCoHN0cnVjdCB7Cj4gPiArwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgZW51bSBicGZfaXRlcl90YXNrX3R5cGXCoHR5cGU7Cj4gPiArwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgdTMyIHBpZDsKPiA+ICvCoMKgwqDCoMKgwqDCoH0g
+dGFzazsKPiA+IMKgIH07Cj4gPiDCoCAKPiA+IMKgIHR5cGVkZWYgaW50ICgqYnBmX2l0ZXJfYXR0
+YWNoX3RhcmdldF90KShzdHJ1Y3QgYnBmX3Byb2cgKnByb2csCj4gPiBkaWZmIC0tZ2l0IGEvaW5j
+bHVkZS91YXBpL2xpbnV4L2JwZi5oIGIvaW5jbHVkZS91YXBpL2xpbnV4L2JwZi5oCj4gPiBpbmRl
+eCAwZjYxZjA5ZjQ2N2EuLjM4NWRlYWI5ODRlMSAxMDA2NDQKPiA+IC0tLSBhL2luY2x1ZGUvdWFw
+aS9saW51eC9icGYuaAo+ID4gKysrIGIvaW5jbHVkZS91YXBpL2xpbnV4L2JwZi5oCj4gPiBAQCAt
+MTEwLDYgKzExMCwxMiBAQCB1bmlvbiBicGZfaXRlcl9saW5rX2luZm8gewo+ID4gwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBfX3UzMsKgwqDCoGNncm91cF9mZDsKPiA+IMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgX191NjTCoMKgwqBjZ3JvdXBfaWQ7Cj4gPiDCoMKgwqDC
+oMKgwqDCoMKgfSBjZ3JvdXA7Cj4gPiArwqDCoMKgwqDCoMKgwqAvKiBQYXJhbWV0ZXJzIG9mIHRh
+c2sgaXRlcmF0b3JzLiAqLwo+ID4gK8KgwqDCoMKgwqDCoMKgc3RydWN0IHsKPiA+ICvCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBfX3UzMsKgwqDCoHRpZDsKPiA+ICvCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqBfX3UzMsKgwqDCoHBpZDsKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqBfX3UzMsKgwqDCoHBpZF9mZDsKPiA+ICvCoMKgwqDCoMKgwqDCoH0gdGFzazsK
+PiA+IMKgIH07Cj4gPiDCoCAKPiA+IMKgIC8qIEJQRiBzeXNjYWxsIGNvbW1hbmRzLCBzZWUgYnBm
+KDIpIG1hbi1wYWdlIGZvciBtb3JlIGRldGFpbHMuICovCj4gPiBkaWZmIC0tZ2l0IGEva2VybmVs
+L2JwZi90YXNrX2l0ZXIuYyBiL2tlcm5lbC9icGYvdGFza19pdGVyLmMKPiA+IGluZGV4IDhjOTIx
+Nzk5ZGVmNC4uMTIwMGNmZGU3MWUzIDEwMDY0NAo+ID4gLS0tIGEva2VybmVsL2JwZi90YXNrX2l0
+ZXIuYwo+ID4gKysrIGIva2VybmVsL2JwZi90YXNrX2l0ZXIuYwo+ID4gQEAgLTEyLDYgKzEyLDgg
+QEAKPiA+IMKgIAo+ID4gwqAgc3RydWN0IGJwZl9pdGVyX3NlcV90YXNrX2NvbW1vbiB7Cj4gPiDC
+oMKgwqDCoMKgwqDCoMKgc3RydWN0IHBpZF9uYW1lc3BhY2UgKm5zOwo+ID4gK8KgwqDCoMKgwqDC
+oMKgZW51bSBicGZfaXRlcl90YXNrX3R5cGXCoHR5cGU7Cj4gPiArwqDCoMKgwqDCoMKgwqB1MzIg
+cGlkOwo+ID4gwqAgfTsKPiA+IMKgIAo+ID4gwqAgc3RydWN0IGJwZl9pdGVyX3NlcV90YXNrX2lu
+Zm8gewo+ID4gQEAgLTIyLDI0ICsyNCw1NCBAQCBzdHJ1Y3QgYnBmX2l0ZXJfc2VxX3Rhc2tfaW5m
+byB7Cj4gPiDCoMKgwqDCoMKgwqDCoMKgdTMyIHRpZDsKPiA+IMKgIH07Cj4gPiDCoCAKPiA+IC1z
+dGF0aWMgc3RydWN0IHRhc2tfc3RydWN0ICp0YXNrX3NlcV9nZXRfbmV4dChzdHJ1Y3QgcGlkX25h
+bWVzcGFjZQo+ID4gKm5zLAo+ID4gK3N0YXRpYyBib29sIG1hdGNoZWRfdGFzayhzdHJ1Y3QgdGFz
+a19zdHJ1Y3QgKnRhc2ssCj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoCBzdHJ1Y3QgYnBmX2l0ZXJfc2VxX3Rhc2tfY29tbW9uICpjb21tb24sCj4gPiAr
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBib29sIHNraXBf
+aWZfZHVwX2ZpbGUpCj4gPiArewo+ID4gK8KgwqDCoMKgwqDCoMKgLyogU2hvdWxkIG5vdCBoYXZl
+IHRoZSBzYW1lICdmaWxlcycgaWYgc2tpcF9pZl9kdXBfZmlsZSBpcwo+ID4gdHJ1ZSAqLwo+ID4g
+K8KgwqDCoMKgwqDCoMKgYm9vbCBkaWZmX2ZpbGVzX2lmID0KPiA+ICvCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqAhc2tpcF9pZl9kdXBfZmlsZSB8fAo+ID4gK8KgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoCh0aHJlYWRfZ3JvdXBfbGVhZGVyKHRhc2spICYmCj4gPiArwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgIHRhc2stPmZpbGVzICE9IHRhc2stPmdyb3VwX2xlYWRlci0+
+ZmlsZXMpOwo+IAo+IFNob3VsZCB0aGlzIGJlCj4gwqDCoMKgwqDCoMKgwqDCoCFza2lwX2lmX2R1
+cF9maWxlIHx8IHRocmVhZF9ncm91cF9sZWFkZXIodGFzaykgfHwKPiDCoMKgwqDCoMKgwqDCoMKg
+dGFzay0+ZmlsZXMgIT0gdGFzay0+Z3JvdXBfbGVhZGVyLT5maWxlcwo+ID8KCkdvb2QgY2F0Y2gh
+ClRoaXMgY2hhbmdlIHdpbGwgYmUgcm9sbGJhY2tlZCBieSB1c2luZyBuZXh0X3RocmVhZCgpLgoK
+PiAKPiA+ICvCoMKgwqDCoMKgwqDCoC8qIFNob3VsZCBoYXZlIHRoZSBnaXZlbiB0Z2lkIGlmIHRo
+ZSB0eXBlIGlzCj4gPiBCUEZfVEFTS19JVEVSX1RHSSAqLwo+IAo+IEJQRl9UQVNLX0lURVJfVEdJ
+RD8KPiAKPiA+ICvCoMKgwqDCoMKgwqDCoGJvb2wgaGF2ZV90Z2lkX2lmID0KPiA+ICvCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBjb21tb24tPnR5cGUgIT0gQlBGX1RBU0tfSVRFUl9UR0lE
+IHx8Cj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgX190YXNrX3BpZF9ucl9ucyh0
+YXNrLCBQSURUWVBFX1RHSUQsCj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY29tbW9uLT5ucykgPT0gY29tbW9uLT5waWQ7
+Cj4gPiArwqDCoMKgwqDCoMKgwqByZXR1cm4gZGlmZl9maWxlc19pZiAmJiBoYXZlX3RnaWRfaWY7
+Cj4gPiArfQo+ID4gKwo+ID4gKwo+ID4gK3N0YXRpYyBzdHJ1Y3QgdGFza19zdHJ1Y3QgKnRhc2tf
+c2VxX2dldF9uZXh0KHN0cnVjdAo+ID4gYnBmX2l0ZXJfc2VxX3Rhc2tfY29tbW9uICpjb21tb24s
+Cj4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHUzMiAqdGlkLAo+ID4gwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBib29sCj4gPiBza2lwX2lmX2R1cF9maWxlcykKPiA+
+IMKgIHsKPiA+IMKgwqDCoMKgwqDCoMKgwqBzdHJ1Y3QgdGFza19zdHJ1Y3QgKnRhc2sgPSBOVUxM
+Owo+ID4gwqDCoMKgwqDCoMKgwqDCoHN0cnVjdCBwaWQgKnBpZDsKPiA+IMKgIAo+ID4gK8KgwqDC
+oMKgwqDCoMKgaWYgKGNvbW1vbi0+dHlwZSA9PSBCUEZfVEFTS19JVEVSX1RJRCkgewo+ID4gK8Kg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGlmICgqdGlkICYmICp0aWQgIT0gY29tbW9uLT5w
+aWQpCj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJl
+dHVybiBOVUxMOwo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJjdV9yZWFkX2xv
+Y2soKTsKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBwaWQgPSBmaW5kX3BpZF9u
+cyhjb21tb24tPnBpZCwgY29tbW9uLT5ucyk7Cj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgaWYgKHBpZCkgewo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqB0YXNrID0gZ2V0X3BpZF90YXNrKHBpZCwgUElEVFlQRV9QSUQpOwo+ID4gK8Kg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAqdGlkID0gY29tbW9u
+LT5waWQ7Cj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgfQo+ID4gK8KgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJjdV9yZWFkX3VubG9jaygpOwo+ID4gK8KgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoHJldHVybiB0YXNrOwo+ID4gK8KgwqDCoMKgwqDCoMKgfQo+ID4g
+Kwo+ID4gwqDCoMKgwqDCoMKgwqDCoHJjdV9yZWFkX2xvY2soKTsKPiA+IMKgIHJldHJ5Ogo+ID4g
+LcKgwqDCoMKgwqDCoMKgcGlkID0gZmluZF9nZV9waWQoKnRpZCwgbnMpOwo+ID4gK8KgwqDCoMKg
+wqDCoMKgcGlkID0gZmluZF9nZV9waWQoKnRpZCwgY29tbW9uLT5ucyk7Cj4gPiDCoMKgwqDCoMKg
+wqDCoMKgaWYgKHBpZCkgewo+ID4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCp0aWQg
+PSBwaWRfbnJfbnMocGlkLCBucyk7Cj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+KnRpZCA9IHBpZF9ucl9ucyhwaWQsIGNvbW1vbi0+bnMpOwo+ID4gwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqB0YXNrID0gZ2V0X3BpZF90YXNrKHBpZCwgUElEVFlQRV9QSUQpOwo+ID4g
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpZiAoIXRhc2spIHsKPiA+IMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCsrKnRpZDsKPiA+IMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGdvdG8gcmV0cnk7Cj4g
+PiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgfSBlbHNlIGlmIChza2lwX2lmX2R1cF9m
+aWxlcyAmJgo+ID4gIXRocmVhZF9ncm91cF9sZWFkZXIodGFzaykgJiYKPiA+IC3CoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB0YXNrLT5maWxlcyA9PSB0
+YXNrLT5ncm91cF9sZWFkZXItCj4gPiA+ZmlsZXMpIHsKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqB9IGVsc2UgaWYgKCFtYXRjaGVkX3Rhc2sodGFzaywgY29tbW9uLAo+ID4gc2tp
+cF9pZl9kdXBfZmlsZXMpKSB7Cj4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqBwdXRfdGFza19zdHJ1Y3QodGFzayk7Cj4gPiDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB0YXNrID0gTlVMTDsKPiA+IMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCsrKnRpZDsKPiA+IEBAIC01
+Niw3ICs4OCw3IEBAIHN0YXRpYyB2b2lkICp0YXNrX3NlcV9zdGFydChzdHJ1Y3Qgc2VxX2ZpbGUg
+KnNlcSwKPiA+IGxvZmZfdCAqcG9zKQo+ID4gwqDCoMKgwqDCoMKgwqDCoHN0cnVjdCBicGZfaXRl
+cl9zZXFfdGFza19pbmZvICppbmZvID0gc2VxLT5wcml2YXRlOwo+ID4gwqDCoMKgwqDCoMKgwqDC
+oHN0cnVjdCB0YXNrX3N0cnVjdCAqdGFzazsKPiA+IMKgIAo+ID4gLcKgwqDCoMKgwqDCoMKgdGFz
+ayA9IHRhc2tfc2VxX2dldF9uZXh0KGluZm8tPmNvbW1vbi5ucywgJmluZm8tPnRpZCwKPiA+IGZh
+bHNlKTsKPiA+ICvCoMKgwqDCoMKgwqDCoHRhc2sgPSB0YXNrX3NlcV9nZXRfbmV4dCgmaW5mby0+
+Y29tbW9uLCAmaW5mby0+dGlkLCBmYWxzZSk7Cj4gPiDCoMKgwqDCoMKgwqDCoMKgaWYgKCF0YXNr
+KQo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqByZXR1cm4gTlVMTDsKPiA+IMKg
+IAo+IFsuLi5dCgo=
