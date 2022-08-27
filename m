@@ -2,258 +2,176 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7062C5A3666
-	for <lists+bpf@lfdr.de>; Sat, 27 Aug 2022 11:43:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAFCF5A3717
+	for <lists+bpf@lfdr.de>; Sat, 27 Aug 2022 12:47:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230179AbiH0Jnd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 27 Aug 2022 05:43:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35212 "EHLO
+        id S233171AbiH0Krd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 27 Aug 2022 06:47:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230427AbiH0Jnb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 27 Aug 2022 05:43:31 -0400
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4A7A97528
-        for <bpf@vger.kernel.org>; Sat, 27 Aug 2022 02:43:29 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4MFBYW03Rcz6S9c9
-        for <bpf@vger.kernel.org>; Sat, 27 Aug 2022 17:41:51 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP2 (Coremail) with SMTP id Syh0CgDHsb085wljpJSmAw--.1436S6;
-        Sat, 27 Aug 2022 17:43:27 +0800 (CST)
-From:   Hou Tao <houtao@huaweicloud.com>
-To:     bpf@vger.kernel.org, Song Liu <songliubraving@fb.com>,
-        Hao Luo <haoluo@google.com>
-Cc:     Hao Sun <sunhao.th@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Lorenz Bauer <oss@lmb.io>, houtao1@huawei.com
-Subject: [PATCH bpf-next v2 3/3] selftests/bpf: add test cases for htab update
-Date:   Sat, 27 Aug 2022 18:01:34 +0800
-Message-Id: <20220827100134.1621137-3-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20220827100134.1621137-1-houtao@huaweicloud.com>
-References: <20220827100134.1621137-1-houtao@huaweicloud.com>
+        with ESMTP id S229737AbiH0Krc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 27 Aug 2022 06:47:32 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00DE1785B4;
+        Sat, 27 Aug 2022 03:47:28 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id f17so3846419pfk.11;
+        Sat, 27 Aug 2022 03:47:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=UiHwxXfvf1lDenWPgsX45rCLCR+OFcWjJxU/UZK7aIo=;
+        b=N3jkl6qBfSNVLEFzksiBm1DIrDicLiM88RZroDY5uc2qA38yAEVblgA3G76oMG7d50
+         x3M5Bl9JDfgliUFD5LjuksYya1DfUD+E8UGgOUGcNEYLJ/0HzEseNeVT3X6hYPWlpIZt
+         4xHJOOnsSVyVi7fpzFxZSTcrx9xoeMXvExO9Mrht7bQRRyaUgq3iCJIOIoldSJXPmC8k
+         w2NEcZBS75d1i7JSDHP2BaVrgQKRPKiH5ALpgt0S+ZZlzP3W86O52OwkY1JMimJnV8VF
+         0mu9g7UcHPJpZnc/9L8i45TSdUU4nDMrvETKkxvbxHUCyBva7ZhZb6S9mKJSR5jNbUl0
+         qYEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=UiHwxXfvf1lDenWPgsX45rCLCR+OFcWjJxU/UZK7aIo=;
+        b=YxEad2+uEQlBhkmGMo9M14D1rj0wjp7XPHXiSe0uV9Hp/zEv2SaRsd5UFLV7V0eDyH
+         becS9jVGgFZQ/Bn12sZEtqQx2+70aQ1Dwb1aSgbqAol9nPnqdJmYBScKRap2Qt0Ob96P
+         hFSzL2UA40LiWiWevrGetHAMAB8Sf7u6NolzC+Trxby58FF67PIRd7AEKL7m8FrddOO1
+         QcBLIKqrcDdYOGVVdY1CflKjgeFNxhR3W33qJlI+ORDNrfMXLCuNVfNfvYS+c6K74UQG
+         4n+cd1lSmPDUuOjZHpDTwQbT0D/rPYZJxp+dPJBuPjhl4anVjlWs2kv3bLHx+HESTTxd
+         Uc4Q==
+X-Gm-Message-State: ACgBeo2jGS7NJUcG72PDMaNFuGGQ8i3WRopJ/zLb7DyKrM0u194c5MZI
+        aGnswh0mSWWLtdWC4XtmtIt50+MRVmgh+puw1e0=
+X-Google-Smtp-Source: AA6agR49sEvqpMA2cK1Xwqyg1sP2oY2XiyKOFpintjr1QcEOsgqXyRFQYnpvPbDjpRDr7tnp0yFrlagsFv1Me4W/UcI=
+X-Received: by 2002:a65:6944:0:b0:41b:4483:35cc with SMTP id
+ w4-20020a656944000000b0041b448335ccmr6796918pgq.296.1661597247459; Sat, 27
+ Aug 2022 03:47:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgDHsb085wljpJSmAw--.1436S6
-X-Coremail-Antispam: 1UD129KBjvJXoWxAry8Gr17Jry8Kr17Gr4xXrb_yoWrtw48pa
-        48Ca4xtr4ftw1DXw1rta17KFWYkF4rXr4Yyrs5WF15Ar4j9rnaqr1xKFyrtF4fJrZ5Zr1r
-        Z3sxtF4UW3yxZF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBYb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
-        A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-        Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
-        Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64
-        vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
-        jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2I
-        x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY6xAI
-        w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
-        0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1sa9DUUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20220826012614.552860-1-james.hilliard1@gmail.com> <CAEf4BzahSjt1huoJXAxSj-ycVjGKJm_dFinsZFBHtRGj7apiUQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzahSjt1huoJXAxSj-ycVjGKJm_dFinsZFBHtRGj7apiUQ@mail.gmail.com>
+From:   James Hilliard <james.hilliard1@gmail.com>
+Date:   Sat, 27 Aug 2022 04:47:14 -0600
+Message-ID: <CADvTj4p8pykr4Vy-YSLcaXsfmuWAmZ9ay-np6mxTdwOT1LBnXw@mail.gmail.com>
+Subject: Re: [PATCH] selftests/bpf: Fix conflicts with built-in functions in bpf_iter_ksym
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Hou Tao <houtao1@huawei.com>
+On Fri, Aug 26, 2022 at 10:55 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Thu, Aug 25, 2022 at 6:26 PM James Hilliard
+> <james.hilliard1@gmail.com> wrote:
+> >
+> > Both tolower and toupper are built in c functions, we should not
+>
+> Really? How come? Can you point out where this is specified in C
+> standard? From what I can tell you have to include <ctype.h> to get
+> toupper()/tolower().
 
-One test demonstrates the reentrancy of hash map update fails, and
-another one shows concureently updates of the same hash map bucket
-succeed.
+See background on this sort of issue:
+https://stackoverflow.com/a/20582607
+https://gcc.gnu.org/bugzilla/show_bug.cgi?id=12213
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- .../selftests/bpf/prog_tests/htab_update.c    | 126 ++++++++++++++++++
- .../testing/selftests/bpf/progs/htab_update.c |  29 ++++
- 2 files changed, 155 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/htab_update.c
- create mode 100644 tools/testing/selftests/bpf/progs/htab_update.c
+(C99, 7.1.3p1) "All identifiers with external linkage in any of the following
+subclauses (including the future library directions) are always reserved
+for use as identifiers with external linkage."
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/htab_update.c b/tools/testing/selftests/bpf/prog_tests/htab_update.c
-new file mode 100644
-index 000000000000..e2a4034daa79
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/htab_update.c
-@@ -0,0 +1,126 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (C) 2022. Huawei Technologies Co., Ltd */
-+#define _GNU_SOURCE
-+#include <sched.h>
-+#include <stdbool.h>
-+#include <test_progs.h>
-+#include "htab_update.skel.h"
-+
-+struct htab_update_ctx {
-+	int fd;
-+	int loop;
-+	bool stop;
-+};
-+
-+static void test_reenter_update(void)
-+{
-+	struct htab_update *skel;
-+	unsigned int key, value;
-+	int err;
-+
-+	skel = htab_update__open();
-+	if (!ASSERT_OK_PTR(skel, "htab_update__open"))
-+		return;
-+
-+	/* lookup_elem_raw() may be inlined and find_kernel_btf_id() will return -ESRCH */
-+	bpf_program__set_autoload(skel->progs.lookup_elem_raw, true);
-+	err = htab_update__load(skel);
-+	if (!ASSERT_TRUE(!err || err == -ESRCH, "htab_update__load") || err)
-+		goto out;
-+
-+	skel->bss->pid = getpid();
-+	err = htab_update__attach(skel);
-+	if (!ASSERT_OK(err, "htab_update__attach"))
-+		goto out;
-+
-+	/* Will trigger the reentrancy of bpf_map_update_elem() */
-+	key = 0;
-+	value = 0;
-+	err = bpf_map_update_elem(bpf_map__fd(skel->maps.htab), &key, &value, 0);
-+	if (!ASSERT_OK(err, "add element"))
-+		goto out;
-+
-+	ASSERT_EQ(skel->bss->update_err, -EBUSY, "no reentrancy");
-+out:
-+	htab_update__destroy(skel);
-+}
-+
-+static void *htab_update_thread(void *arg)
-+{
-+	struct htab_update_ctx *ctx = arg;
-+	cpu_set_t cpus;
-+	int i;
-+
-+	/* Pin on CPU 0 */
-+	CPU_ZERO(&cpus);
-+	CPU_SET(0, &cpus);
-+	pthread_setaffinity_np(pthread_self(), sizeof(cpus), &cpus);
-+
-+	i = 0;
-+	while (i++ < ctx->loop && !ctx->stop) {
-+		unsigned int key = 0, value = 0;
-+		int err;
-+
-+		err = bpf_map_update_elem(ctx->fd, &key, &value, 0);
-+		if (err) {
-+			ctx->stop = true;
-+			return (void *)(long)err;
-+		}
-+	}
-+
-+	return NULL;
-+}
-+
-+static void test_concurrent_update(void)
-+{
-+	struct htab_update_ctx ctx;
-+	struct htab_update *skel;
-+	unsigned int i, nr;
-+	pthread_t *tids;
-+	int err;
-+
-+	skel = htab_update__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "htab_update__open_and_load"))
-+		return;
-+
-+	ctx.fd = bpf_map__fd(skel->maps.htab);
-+	ctx.loop = 1000;
-+	ctx.stop = false;
-+
-+	nr = 4;
-+	tids = calloc(nr, sizeof(*tids));
-+	if (!ASSERT_NEQ(tids, NULL, "no mem"))
-+		goto out;
-+
-+	for (i = 0; i < nr; i++) {
-+		err = pthread_create(&tids[i], NULL, htab_update_thread, &ctx);
-+		if (!ASSERT_OK(err, "pthread_create")) {
-+			unsigned int j;
-+
-+			ctx.stop = true;
-+			for (j = 0; j < i; j++)
-+				pthread_join(tids[j], NULL);
-+			goto out;
-+		}
-+	}
-+
-+	for (i = 0; i < nr; i++) {
-+		void *thread_err = NULL;
-+
-+		pthread_join(tids[i], &thread_err);
-+		ASSERT_EQ(thread_err, NULL, "update error");
-+	}
-+
-+out:
-+	if (tids)
-+		free(tids);
-+	htab_update__destroy(skel);
-+}
-+
-+void test_htab_update(void)
-+{
-+	if (test__start_subtest("reenter_update"))
-+		test_reenter_update();
-+	if (test__start_subtest("concurrent_update"))
-+		test_concurrent_update();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/htab_update.c b/tools/testing/selftests/bpf/progs/htab_update.c
-new file mode 100644
-index 000000000000..7481bb30b29b
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/htab_update.c
-@@ -0,0 +1,29 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (C) 2022. Huawei Technologies Co., Ltd */
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(max_entries, 1);
-+	__uint(key_size, sizeof(__u32));
-+	__uint(value_size, sizeof(__u32));
-+} htab SEC(".maps");
-+
-+int pid = 0;
-+int update_err = 0;
-+
-+SEC("?fentry/lookup_elem_raw")
-+int lookup_elem_raw(void *ctx)
-+{
-+	__u32 key = 0, value = 1;
-+
-+	if ((bpf_get_current_pid_tgid() >> 32) != pid)
-+		return 0;
-+
-+	update_err = bpf_map_update_elem(&htab, &key, &value, 0);
-+	return 0;
-+}
--- 
-2.29.2
+>
+> This seems like yet another GCC-BPF quirk?
 
+Seems GCC takes a stricter interpretation of the standard here than
+llvm.
+
+It's also documented behavior in GCC:
+https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html#index-std-2
+
+See:
+The ISO C90 functions abort, abs, acos, asin, atan2, atan, calloc, ceil,
+cosh, cos, exit, exp, fabs, floor, fmod, fprintf, fputs, free, frexp, fscanf,
+isalnum, isalpha, iscntrl, isdigit, isgraph, islower, isprint, ispunct, isspace,
+isupper, isxdigit, tolower, toupper, labs, ldexp, log10, log, malloc, memchr,
+memcmp, memcpy, memset, modf, pow, printf, putchar, puts, realloc,
+scanf, sinh, sin, snprintf, sprintf, sqrt, sscanf, strcat, strchr,
+strcmp, strcpy,
+strcspn, strlen, strncat, strncmp, strncpy, strpbrk, strrchr, strspn, strstr,
+tanh, tan, vfprintf, vprintf and vsprintf are all recognized as
+built-in functions
+unless -fno-builtin is specified (or -fno-builtin-function is specified for an
+individual function).
+
+We could disable builtin functions but it seems more correct to just
+rename it so that it doesn't conflict.
+
+>
+> > redefine them as this can result in a build error.
+> >
+> > Fixes the following errors:
+> > progs/bpf_iter_ksym.c:10:20: error: conflicting types for built-in function 'tolower'; expected 'int(int)' [-Werror=builtin-declaration-mismatch]
+> >    10 | static inline char tolower(char c)
+> >       |                    ^~~~~~~
+> > progs/bpf_iter_ksym.c:5:1: note: 'tolower' is declared in header '<ctype.h>'
+> >     4 | #include <bpf/bpf_helpers.h>
+> >   +++ |+#include <ctype.h>
+> >     5 |
+> > progs/bpf_iter_ksym.c:17:20: error: conflicting types for built-in function 'toupper'; expected 'int(int)' [-Werror=builtin-declaration-mismatch]
+> >    17 | static inline char toupper(char c)
+> >       |                    ^~~~~~~
+> > progs/bpf_iter_ksym.c:17:20: note: 'toupper' is declared in header '<ctype.h>'
+> >
+> > Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+> > ---
+> >  tools/testing/selftests/bpf/progs/bpf_iter_ksym.c | 6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_ksym.c b/tools/testing/selftests/bpf/progs/bpf_iter_ksym.c
+> > index 285c008cbf9c..9ba14c37bbcc 100644
+> > --- a/tools/testing/selftests/bpf/progs/bpf_iter_ksym.c
+> > +++ b/tools/testing/selftests/bpf/progs/bpf_iter_ksym.c
+> > @@ -7,14 +7,14 @@ char _license[] SEC("license") = "GPL";
+> >
+> >  unsigned long last_sym_value = 0;
+> >
+> > -static inline char tolower(char c)
+> > +static inline char to_lower(char c)
+> >  {
+> >         if (c >= 'A' && c <= 'Z')
+> >                 c += ('a' - 'A');
+> >         return c;
+> >  }
+> >
+> > -static inline char toupper(char c)
+> > +static inline char to_upper(char c)
+> >  {
+> >         if (c >= 'a' && c <= 'z')
+> >                 c -= ('a' - 'A');
+> > @@ -54,7 +54,7 @@ int dump_ksym(struct bpf_iter__ksym *ctx)
+> >         type = iter->type;
+> >
+> >         if (iter->module_name[0]) {
+> > -               type = iter->exported ? toupper(type) : tolower(type);
+> > +               type = iter->exported ? to_upper(type) : to_lower(type);
+> >                 BPF_SEQ_PRINTF(seq, "0x%llx %c %s [ %s ] ",
+> >                                value, type, iter->name, iter->module_name);
+> >         } else {
+> > --
+> > 2.34.1
+> >
