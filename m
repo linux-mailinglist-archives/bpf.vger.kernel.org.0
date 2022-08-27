@@ -2,68 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAFCF5A3717
-	for <lists+bpf@lfdr.de>; Sat, 27 Aug 2022 12:47:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF6F55A3723
+	for <lists+bpf@lfdr.de>; Sat, 27 Aug 2022 13:04:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233171AbiH0Krd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 27 Aug 2022 06:47:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41856 "EHLO
+        id S230071AbiH0LD7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 27 Aug 2022 07:03:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbiH0Krc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 27 Aug 2022 06:47:32 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00DE1785B4;
-        Sat, 27 Aug 2022 03:47:28 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id f17so3846419pfk.11;
-        Sat, 27 Aug 2022 03:47:27 -0700 (PDT)
+        with ESMTP id S229737AbiH0LD7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 27 Aug 2022 07:03:59 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D34B59A9A9;
+        Sat, 27 Aug 2022 04:03:57 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id x80so31010pgx.0;
+        Sat, 27 Aug 2022 04:03:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc;
-        bh=UiHwxXfvf1lDenWPgsX45rCLCR+OFcWjJxU/UZK7aIo=;
-        b=N3jkl6qBfSNVLEFzksiBm1DIrDicLiM88RZroDY5uc2qA38yAEVblgA3G76oMG7d50
-         x3M5Bl9JDfgliUFD5LjuksYya1DfUD+E8UGgOUGcNEYLJ/0HzEseNeVT3X6hYPWlpIZt
-         4xHJOOnsSVyVi7fpzFxZSTcrx9xoeMXvExO9Mrht7bQRRyaUgq3iCJIOIoldSJXPmC8k
-         w2NEcZBS75d1i7JSDHP2BaVrgQKRPKiH5ALpgt0S+ZZlzP3W86O52OwkY1JMimJnV8VF
-         0mu9g7UcHPJpZnc/9L8i45TSdUU4nDMrvETKkxvbxHUCyBva7ZhZb6S9mKJSR5jNbUl0
-         qYEA==
+        bh=9QPIuF5VX05eaazS36ZR/e2rlmTFI6M8eQ+pda8Kkzw=;
+        b=k3yu5fZPhUeyIYn086KuMw3nERywjq3XN4eU/iqmd7Nb33+FIhNVcnXCmrQ2W6pLFa
+         +/Fe9Hc13pMESNY2Z7n66WvCYyB6bZkXk455cKTMgQhRUOPlzaML/eq357inOfR0sYix
+         LI72To+iizth3EszqkLT8jW7BZckiYJ0Inyxl4jrtTYkcXbh0ZfwwCV2XeqzSmExsuWS
+         khIsVhMAJaYtMFXW3kStXM8FNMrgZotymqZ7FkTlAlkyO/RshmjrFwf4KzgDo4upOpBt
+         E/0WyMUlL2tnoedM0BHXXzlaR0mBhdu4BWWLvMH9sv1MU9i+QOIIVPsYHK3edWUbMR8N
+         rdHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc;
-        bh=UiHwxXfvf1lDenWPgsX45rCLCR+OFcWjJxU/UZK7aIo=;
-        b=YxEad2+uEQlBhkmGMo9M14D1rj0wjp7XPHXiSe0uV9Hp/zEv2SaRsd5UFLV7V0eDyH
-         becS9jVGgFZQ/Bn12sZEtqQx2+70aQ1Dwb1aSgbqAol9nPnqdJmYBScKRap2Qt0Ob96P
-         hFSzL2UA40LiWiWevrGetHAMAB8Sf7u6NolzC+Trxby58FF67PIRd7AEKL7m8FrddOO1
-         QcBLIKqrcDdYOGVVdY1CflKjgeFNxhR3W33qJlI+ORDNrfMXLCuNVfNfvYS+c6K74UQG
-         4n+cd1lSmPDUuOjZHpDTwQbT0D/rPYZJxp+dPJBuPjhl4anVjlWs2kv3bLHx+HESTTxd
-         Uc4Q==
-X-Gm-Message-State: ACgBeo2jGS7NJUcG72PDMaNFuGGQ8i3WRopJ/zLb7DyKrM0u194c5MZI
-        aGnswh0mSWWLtdWC4XtmtIt50+MRVmgh+puw1e0=
-X-Google-Smtp-Source: AA6agR49sEvqpMA2cK1Xwqyg1sP2oY2XiyKOFpintjr1QcEOsgqXyRFQYnpvPbDjpRDr7tnp0yFrlagsFv1Me4W/UcI=
-X-Received: by 2002:a65:6944:0:b0:41b:4483:35cc with SMTP id
- w4-20020a656944000000b0041b448335ccmr6796918pgq.296.1661597247459; Sat, 27
- Aug 2022 03:47:27 -0700 (PDT)
+        bh=9QPIuF5VX05eaazS36ZR/e2rlmTFI6M8eQ+pda8Kkzw=;
+        b=sgkm4o2WPyW3fcg3H4GM9i5KSjmL2rCV9rNKLheWFjJR3tTFBroO5plcISkPhAGxD4
+         Un0JYSGFgLxv5gHVD8X9PQJRHeS8uVUF+TVV13cm5LaQ+B0yAWXzwk4z9yTNT+3fdSK2
+         lurDCbb6R/palx06Wb/nr8jnfFwajJbO9L7TcmU24GQWJPLv0jspVb77Ro6Oj2z9duYS
+         KY9sxop4lJFWb/lvUXqp9h9JZ+PkA4kK5eFP2j016srfm36xDnEcna/T0LIAUEwBNAJr
+         JQMz/EI1zIPfP8s+gLEsQwJUX2KTgYd+qBbwfQm2TRmRIuqmADm9k/+q1o06RbSeOR7X
+         Z9Gg==
+X-Gm-Message-State: ACgBeo0x7RYss8UjFl9JpdsnUV+tId45QZTKHwQL0+YEHdvGZtgPw0RG
+        0/A9vE+RCIW/wtJieyKSNnbYmy+g5H3t7jY6qLk=
+X-Google-Smtp-Source: AA6agR48PF1cBouEoLENq1yBECMWDiJxkro+jc/gbXeo/l743DQRtxmIr00k4auLoGGo03BwaUnI/Sf4Q8CME8H0cMg=
+X-Received: by 2002:a05:6a00:13a2:b0:537:159c:4413 with SMTP id
+ t34-20020a056a0013a200b00537159c4413mr7939849pfg.8.1661598237317; Sat, 27 Aug
+ 2022 04:03:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220826012614.552860-1-james.hilliard1@gmail.com> <CAEf4BzahSjt1huoJXAxSj-ycVjGKJm_dFinsZFBHtRGj7apiUQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzahSjt1huoJXAxSj-ycVjGKJm_dFinsZFBHtRGj7apiUQ@mail.gmail.com>
+References: <20220706172814.169274-1-james.hilliard1@gmail.com>
+ <a0bddf0b-e8c4-46ce-b7c6-a22809af1677@fb.com> <CADvTj4ovwExtM-bWUpJELy-OqsT=J9stmqbAXto8ds2n+G8mfw@mail.gmail.com>
+ <CAEf4BzYwRyXG1zE5BK1ZXmxLh+ZPU0=yQhNhpqr0JmfNA30tdQ@mail.gmail.com>
+ <87v8s260j1.fsf@oracle.com> <CAADnVQLQGHoj_gCOvdFFw2pRxgMubPSp+bRpFeCSa5zvcK2qRQ@mail.gmail.com>
+ <CADvTj4qqxckZmxvL=97e-2W5M4DgCCMDV8RCFDg23+cY2URjTA@mail.gmail.com>
+ <20220713011851.4a2tnqhdd5f5iwak@macbook-pro-3.dhcp.thefacebook.com>
+ <CADvTj4o7z7J=4BOtKM9dthZyfFogV6hL5zKBwiBq7vs+bNhUHA@mail.gmail.com> <CAADnVQJAz7BcZjrBwu-8MjQprh86Z_UpWGMSQtFnowZTc4d6Vw@mail.gmail.com>
+In-Reply-To: <CAADnVQJAz7BcZjrBwu-8MjQprh86Z_UpWGMSQtFnowZTc4d6Vw@mail.gmail.com>
 From:   James Hilliard <james.hilliard1@gmail.com>
-Date:   Sat, 27 Aug 2022 04:47:14 -0600
-Message-ID: <CADvTj4p8pykr4Vy-YSLcaXsfmuWAmZ9ay-np6mxTdwOT1LBnXw@mail.gmail.com>
-Subject: Re: [PATCH] selftests/bpf: Fix conflicts with built-in functions in bpf_iter_ksym
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+Date:   Sat, 27 Aug 2022 05:03:44 -0600
+Message-ID: <CADvTj4rrUYr0QVRtXL3AfSV8GnwyGioTd_HXD1ca03My_CNBYw@mail.gmail.com>
+Subject: Re: [PATCH v2] bpf/scripts: Generate GCC compatible helpers
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     "Jose E. Marchesi" <jose.marchesi@oracle.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, Networking <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
@@ -75,103 +85,137 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Aug 26, 2022 at 10:55 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Tue, Jul 12, 2022 at 7:45 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> On Thu, Aug 25, 2022 at 6:26 PM James Hilliard
+> On Tue, Jul 12, 2022 at 6:29 PM James Hilliard
 > <james.hilliard1@gmail.com> wrote:
 > >
-> > Both tolower and toupper are built in c functions, we should not
+> > On Tue, Jul 12, 2022 at 7:18 PM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Tue, Jul 12, 2022 at 07:10:27PM -0600, James Hilliard wrote:
+> > > > On Tue, Jul 12, 2022 at 10:48 AM Alexei Starovoitov
+> > > > <alexei.starovoitov@gmail.com> wrote:
+> > > > >
+> > > > > On Tue, Jul 12, 2022 at 4:20 AM Jose E. Marchesi
+> > > > > <jose.marchesi@oracle.com> wrote:
+> > > > > >
+> > > > > >
+> > > > > > > CC Quentin as well
+> > > > > > >
+> > > > > > > On Mon, Jul 11, 2022 at 5:11 PM James Hilliard
+> > > > > > > <james.hilliard1@gmail.com> wrote:
+> > > > > > >>
+> > > > > > >> On Mon, Jul 11, 2022 at 5:36 PM Yonghong Song <yhs@fb.com> wrote:
+> > > > > > >> >
+> > > > > > >> >
+> > > > > > >> >
+> > > > > > >> > On 7/6/22 10:28 AM, James Hilliard wrote:
+> > > > > > >> > > The current bpf_helper_defs.h helpers are llvm specific and don't work
+> > > > > > >> > > correctly with gcc.
+> > > > > > >> > >
+> > > > > > >> > > GCC appears to required kernel helper funcs to have the following
+> > > > > > >> > > attribute set: __attribute__((kernel_helper(NUM)))
+> > > > > > >> > >
+> > > > > > >> > > Generate gcc compatible headers based on the format in bpf-helpers.h.
+> > > > > > >> > >
+> > > > > > >> > > This adds conditional blocks for GCC while leaving clang codepaths
+> > > > > > >> > > unchanged, for example:
+> > > > > > >> > >       #if __GNUC__ && !__clang__
+> > > > > > >> > >       void *bpf_map_lookup_elem(void *map, const void *key)
+> > > > > > >> > > __attribute__((kernel_helper(1)));
+> > > > > > >> > >       #else
+> > > > > > >> > >       static void *(*bpf_map_lookup_elem)(void *map, const void *key) = (void *) 1;
+> > > > > > >> > >       #endif
+> > > > > > >> >
+> > > > > > >> > It does look like that gcc kernel_helper attribute is better than
+> > > > > > >> > '(void *) 1' style. The original clang uses '(void *) 1' style is
+> > > > > > >> > just for simplicity.
+> > > > > > >>
+> > > > > > >> Isn't the original style going to be needed for backwards compatibility with
+> > > > > > >> older clang versions for a while?
+> > > > > > >
+> > > > > > > I'm curious, is there any added benefit to having this special
+> > > > > > > kernel_helper attribute vs what we did in Clang for a long time?
+> > > > > > > Did GCC do it just to be different and require workarounds like this
+> > > > > > > or there was some technical benefit to this?
+> > > > > >
+> > > > > > We did it that way so we could make trouble and piss you off.
+> > > > > >
+> > > > > > Nah :)
+> > > > > >
+> > > > > > We did it that way because technically speaking the clang construction
+> > > > > > works relying on particular optimizations to happen to get correct
+> > > > > > compiled programs, which is not guaranteed to happen and _may_ break in
+> > > > > > the future.
+> > > > > >
+> > > > > > In fact, if you compile a call to such a function prototype with clang
+> > > > > > with -O0 the compiler will try to load the function's address in a
+> > > > > > register and then emit an invalid BPF instruction:
+> > > > > >
+> > > > > >   28:   8d 00 00 00 03 00 00 00         *unknown*
+> > > > > >
+> > > > > > On the other hand the kernel_helper attribute is bullet-proof: will work
+> > > > > > with any optimization level, with any version of the compiler, and in
+> > > > > > our opinion it is also more readable, more tidy and more correct.
+> > > > > >
+> > > > > > Note I'm not saying what you do in clang is not reasonable; it may be,
+> > > > > > obviously it works well enough for you in practice.  Only that we have
+> > > > > > good reasons for doing it differently in GCC.
+> > > > >
+> > > > > Not questioning the validity of the reasons, but they created
+> > > > > the unnecessary difference between compilers.
+> > > >
+> > > > Sounds to me like clang is relying on an unreliable hack that may
+> > > > be difficult to implement in GCC, so let's see what's the best option
+> > > > moving forwards in terms of a migration path for both GCC and clang.
+> > >
+> > > The following is a valid C code:
+> > > static long (*foo) (void) = (void *) 1234;
+> > > foo();
+> > >
+> > > and GCC has to generate correct assembly assuming it runs at -O1 or higher.
+> >
+> > Providing -O1 or higher with gcc-bpf does not seem to work at the moment.
 >
-> Really? How come? Can you point out where this is specified in C
-> standard? From what I can tell you have to include <ctype.h> to get
-> toupper()/tolower().
+> Let's fix gcc first.
 
-See background on this sort of issue:
-https://stackoverflow.com/a/20582607
-https://gcc.gnu.org/bugzilla/show_bug.cgi?id=12213
-
-(C99, 7.1.3p1) "All identifiers with external linkage in any of the following
-subclauses (including the future library directions) are always reserved
-for use as identifiers with external linkage."
+FYI this should now be fixed in master:
+https://github.com/gcc-mirror/gcc/commit/6d1f144b3e6e3761375bea657718f58fb720fb44
 
 >
-> This seems like yet another GCC-BPF quirk?
-
-Seems GCC takes a stricter interpretation of the standard here than
-llvm.
-
-It's also documented behavior in GCC:
-https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html#index-std-2
-
-See:
-The ISO C90 functions abort, abs, acos, asin, atan2, atan, calloc, ceil,
-cosh, cos, exit, exp, fabs, floor, fmod, fprintf, fputs, free, frexp, fscanf,
-isalnum, isalpha, iscntrl, isdigit, isgraph, islower, isprint, ispunct, isspace,
-isupper, isxdigit, tolower, toupper, labs, ldexp, log10, log, malloc, memchr,
-memcmp, memcpy, memset, modf, pow, printf, putchar, puts, realloc,
-scanf, sinh, sin, snprintf, sprintf, sqrt, sscanf, strcat, strchr,
-strcmp, strcpy,
-strcspn, strlen, strncat, strncmp, strncpy, strpbrk, strrchr, strspn, strstr,
-tanh, tan, vfprintf, vprintf and vsprintf are all recognized as
-built-in functions
-unless -fno-builtin is specified (or -fno-builtin-function is specified for an
-individual function).
-
-We could disable builtin functions but it seems more correct to just
-rename it so that it doesn't conflict.
-
+> > > There is no indirect call insn defined in BPF ISA yet,
+> > > so the -O0 behavior is undefined.
+> >
+> > Well GCC at least seems to be able to compile BPF programs with -O0 using
+> > kernel_helper. I assume -O0 is probably just targeting the minimum BPF ISA
+> > optimization level or something like that which avoids indirect calls.
 >
-> > redefine them as this can result in a build error.
+> There are other reasons why -O0 compiled progs will
+> fail in the verifier.
+>
+> > >
+> > > > Or we can just feature detect kernel_helper and leave the (void *)1 style
+> > > > fallback in place until we drop support for clang variants that don't support
+> > > > kernel_helper. This would provide GCC compatibility and a better migration
+> > > > path for clang as well as clang will then automatically use the new variant
+> > > > whenever support for kernel_helper is introduced.
+> > >
+> > > Support for valid C code will not be dropped from clang.
 > >
-> > Fixes the following errors:
-> > progs/bpf_iter_ksym.c:10:20: error: conflicting types for built-in function 'tolower'; expected 'int(int)' [-Werror=builtin-declaration-mismatch]
-> >    10 | static inline char tolower(char c)
-> >       |                    ^~~~~~~
-> > progs/bpf_iter_ksym.c:5:1: note: 'tolower' is declared in header '<ctype.h>'
-> >     4 | #include <bpf/bpf_helpers.h>
-> >   +++ |+#include <ctype.h>
-> >     5 |
-> > progs/bpf_iter_ksym.c:17:20: error: conflicting types for built-in function 'toupper'; expected 'int(int)' [-Werror=builtin-declaration-mismatch]
-> >    17 | static inline char toupper(char c)
-> >       |                    ^~~~~~~
-> > progs/bpf_iter_ksym.c:17:20: note: 'toupper' is declared in header '<ctype.h>'
-> >
-> > Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
-> > ---
-> >  tools/testing/selftests/bpf/progs/bpf_iter_ksym.c | 6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_ksym.c b/tools/testing/selftests/bpf/progs/bpf_iter_ksym.c
-> > index 285c008cbf9c..9ba14c37bbcc 100644
-> > --- a/tools/testing/selftests/bpf/progs/bpf_iter_ksym.c
-> > +++ b/tools/testing/selftests/bpf/progs/bpf_iter_ksym.c
-> > @@ -7,14 +7,14 @@ char _license[] SEC("license") = "GPL";
-> >
-> >  unsigned long last_sym_value = 0;
-> >
-> > -static inline char tolower(char c)
-> > +static inline char to_lower(char c)
-> >  {
-> >         if (c >= 'A' && c <= 'Z')
-> >                 c += ('a' - 'A');
-> >         return c;
-> >  }
-> >
-> > -static inline char toupper(char c)
-> > +static inline char to_upper(char c)
-> >  {
-> >         if (c >= 'a' && c <= 'z')
-> >                 c -= ('a' - 'A');
-> > @@ -54,7 +54,7 @@ int dump_ksym(struct bpf_iter__ksym *ctx)
-> >         type = iter->type;
-> >
-> >         if (iter->module_name[0]) {
-> > -               type = iter->exported ? toupper(type) : tolower(type);
-> > +               type = iter->exported ? to_upper(type) : to_lower(type);
-> >                 BPF_SEQ_PRINTF(seq, "0x%llx %c %s [ %s ] ",
-> >                                value, type, iter->name, iter->module_name);
-> >         } else {
-> > --
-> > 2.34.1
-> >
+> > That wasn't what I was suggesting, I was suggesting adding support for
+> > kernel_helper to clang, and then in the future libbpf(not clang) can
+> > drop support
+> > for the (void *)1 style in the future if desired(or can just keep the
+> > fallback). By
+> > feature detecting kernel_helper and providing a fallback we get a nice clean
+> > migration path.
+>
+> Makes sense. That deprecation step is far away though.
+> Assuming that kernel_helper attr is actually necessary
+> we have to add its support to clang as well.
+> We have to keep compilers in sync.
+> gcc-bpf is a niche. If gcc devs want it to become a real
+> alternative to clang they have to always aim for feature parity
+> instead of inventing their own ways of doing things.
