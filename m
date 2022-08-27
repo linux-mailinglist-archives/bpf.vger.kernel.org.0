@@ -2,284 +2,200 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1959D5A397A
-	for <lists+bpf@lfdr.de>; Sat, 27 Aug 2022 20:29:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5426C5A397C
+	for <lists+bpf@lfdr.de>; Sat, 27 Aug 2022 20:33:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229445AbiH0S3z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 27 Aug 2022 14:29:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46652 "EHLO
+        id S229455AbiH0SdD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 27 Aug 2022 14:33:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbiH0S3y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 27 Aug 2022 14:29:54 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E77FBE18
-        for <bpf@vger.kernel.org>; Sat, 27 Aug 2022 11:29:50 -0700 (PDT)
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27R9dBqG018055
-        for <bpf@vger.kernel.org>; Sat, 27 Aug 2022 11:29:50 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : subject :
- date : message-id : references : in-reply-to : content-type : content-id :
- content-transfer-encoding : mime-version; s=facebook;
- bh=2TX0nhEEkrcCozfAqqkH4h7t9PQAOpIClmmc23rUQ3Y=;
- b=pe/juo8gBcgnif0966Z3VaG/HAVHciPLckfosb2+V+TjArX1QOI6u+y2XuqquFmWzxqB
- uoYBCg1sVvpUw5Zh7AL7TdHO9132aYC2tMieQR+Lyvy6Q3uW2ETLuXWjQ4Rgx8c3I5A1
- iQADaowKydkChwdWwsJ2R53s5dmE72d/mWM= 
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2172.outbound.protection.outlook.com [104.47.59.172])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3j7gsysjfp-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Sat, 27 Aug 2022 11:29:49 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=g2o9nAIFXHFOYzLk1qwDMYqEQab2drNZmKQTu4VYp77m01FtNBzJYiJFb4YQDEcAGcODt7TAizFH7pHLpUKal84/c8TzEw1s9wVvFG24U8fr6kgWNFYwF7k/jY3tZJhzf2x66b5zFxAKFTTs0JhlgCsDdNV2PCWfac7A4M7pHyYiyUEbmJuPAEBgdZMkBhHVoWk+YHZg+V99Tr9sg3PMIE03H9ks+4XcarmtkloQ+iAvxSdC2QAWiY+xxF2p8lP2NTzmPekNytheJw6JkXJoYKU6HwKz03dtWUbrsVWRYtOC9ff3OvJ5BPw+C12dhWB4QbTd7l+dhFVOhEtzahgUkQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2TX0nhEEkrcCozfAqqkH4h7t9PQAOpIClmmc23rUQ3Y=;
- b=INEUb/elErCuIacnU0e07HKUDpRD0vBnS3s2Y1AOZU9ANjOrwVqukcBYpOOhJlyooTiJwIRu1IkuWHQlk7Ra6ZG+Gy5yLc2CkDiMiOiMCxVodbKYrxzchINh7X6d03v/nwtukirHgoAIXVnlPDdgVjMGaQCE0Nfh7X8BsIOTXSsWcH7Vh5rcnUzNZTciw6yx2yPA2rVuLev4TmweZ7jNiP+KrRE6hHEGZz6WRgpE9vt7U87HDzzSqqjUQ87nIQc0XhlPeqpmLQPjNhxLhyg96ZG56OqSRHy4BzOcu66qfF/btIeBln7qEfPC82k1eM9jMK5GwbS4zyuC9dLCO/WUaA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from BY5PR15MB3651.namprd15.prod.outlook.com (2603:10b6:a03:1f7::15)
- by BL0PR1501MB2019.namprd15.prod.outlook.com (2603:10b6:207:33::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5566.19; Sat, 27 Aug
- 2022 18:29:47 +0000
-Received: from BY5PR15MB3651.namprd15.prod.outlook.com
- ([fe80::14b0:8f09:488d:f55f]) by BY5PR15MB3651.namprd15.prod.outlook.com
- ([fe80::14b0:8f09:488d:f55f%6]) with mapi id 15.20.5566.019; Sat, 27 Aug 2022
- 18:29:46 +0000
-From:   Kui-Feng Lee <kuifeng@fb.com>
-To:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>, Kernel Team <Kernel-team@fb.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v7 1/5] bpf: Parameterize task iterators.
-Thread-Topic: [PATCH bpf-next v7 1/5] bpf: Parameterize task iterators.
-Thread-Index: AQHYuOQcpP6zsybgYEKq3yzbPiNgKK3BksKAgAGA2QA=
-Date:   Sat, 27 Aug 2022 18:29:46 +0000
-Message-ID: <4ecfceb863d64ed45dcaac2a210744210a2d854d.camel@fb.com>
-References: <20220826003712.2810158-1-kuifeng@fb.com>
-         <20220826003712.2810158-2-kuifeng@fb.com>
-         <7beb3850-c1e4-7cfc-d39b-1a24f1354fdd@fb.com>
-In-Reply-To: <7beb3850-c1e4-7cfc-d39b-1a24f1354fdd@fb.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: cb2f20df-70b5-48cf-7c9a-08da885a1e65
-x-ms-traffictypediagnostic: BL0PR1501MB2019:EE_
-x-fb-source: Internal
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: +thpOGcbs8lfA6IMqlZN33goa5zQny9ptAoOFDSbAddhY/p2TJWTEuuC7p0EHgo21PjnBLpf3OIhwoXZ3C49u3fp7rIL8o9mYNgDn5l/RnO+qlr9tbcauaZ7re9n4Yw7SShKa0OgT7TEb8lp/ufaIRrQrLdN1wpnToTybjwmGNK/v9d4zOaQVrZ41BQYzxLzdFFxTuEqyUorzQd5oIKIuNlGIwYcm4EeUYfY3j9F9w3xmELJByeLvyXJwCZW1/dxp3tCYyzvxBRBg8zbezCgqtfOEtvMiVQZmRlDHY7Dbe/ctINcg/TyIpibgRZMlwdT9uqROTO9O7dezslu4JVEVpj9tybZXnRtOpF0AGFpySmfCpvsRZHn6SccpUFKMMyO1MG5zWYGqBwmJCqkh2HfscvCmh+qUzQupmarRAgapi3fIBneVDS9Pws0ECFsmfk2fJQoenY0coNhrnCW2p1tuqeo1s/x2hSAU1kKhv1ZEYhBU94SFTrXx3XfANgWNxgH24lzGs6+S7Vf0TyETBNkrU8aUrwafIPW05oSRfPVInYlX/YLxg69wbetDHCy7L2BDykw4MNbqfp9TwfCk+x/kGrqgyBRY8p01WEV8g1qswOvgWAtQ+hwA10S5+9AZNp4wpii1Ij2ogI7AZu5XwyVUbwIppdAAj8aK+3KdIgSO5ImLS2R5MosvMkHRMB4gYmde+iRHy4ZFRzN7iPL9Q2Qi9/RNOwx4he5SOUZO9YhAL1uOIOEOXK3V94leB40gzA9bc5w+/JW68Nle+KkWBuCRw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3651.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(39860400002)(396003)(136003)(376002)(366004)(346002)(6506007)(36756003)(53546011)(6512007)(186003)(2616005)(110136005)(66946007)(2906002)(76116006)(316002)(8676002)(71200400001)(41300700001)(66556008)(6486002)(478600001)(66476007)(64756008)(66446008)(122000001)(38070700005)(5660300002)(86362001)(38100700002)(8936002)(83380400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?QXJRTGRYM0tKb1hKeFQyYk1JS3Zvd1cyMjgxM3ZYVUpSK25DUlZVV2tMSUdS?=
- =?utf-8?B?cTQzMnIrL2xmOVd1bmpucTM5c1F6QW91NVVYWDMwWW5WbUtvbnBTTDI5TWNV?=
- =?utf-8?B?Z0lnTlR6SWpOVG5MZGtYTVJZSU1DdDE2WjVtYVNBcC9qUVczbmxMYmNjSVp4?=
- =?utf-8?B?cTRzam1RYURHVEdKejdGSVQ2a2ZXNy9tNktNamlmbUliWGJSMGs0THpVNVFx?=
- =?utf-8?B?dmJIQzNqS3podWFRNTU5UFNPR09LU3BJci9QUjBmM1Y1cWt6ZkFUSWU1WG1X?=
- =?utf-8?B?N1BWMzJ1UjhsQnp6SmYrVFlGQWJsVHVORTQwcFBKMEp4WnZPSy90Rld3YThi?=
- =?utf-8?B?cFdYSHRxNC9YcXVBM0ZUeXVzckpqR1FBb2xrNU5GNnY3V1hIV212N2g3MFEy?=
- =?utf-8?B?c2FGZ2xKcWNEYndGMmI1eHdwdEMwWi9TaVB6VU83RGZZd3dVZHVxbWp6VGNV?=
- =?utf-8?B?MUMvcTA5cVNGOVFaNzBaaFY1RHZORzlYZjFvWERTUjVHcnpHeVdEYXJEQ0FT?=
- =?utf-8?B?bWtxVHlmZmJkNEd4WHF5WnZOZVVSMHIzZ0RIREd6ZklTN0NCdU9UeVA5dEFC?=
- =?utf-8?B?b09xWW1VeGIxaWx4ejdXUHF4ZTNDUVFGb1hOVFQwUVNuakFYWWcyWXcvc2lU?=
- =?utf-8?B?Nmh5UzBkRTd0UnRtbGdPL2tGcXV4VVZodlByOFF6YVZiTFZqaHBUSHZhOCt1?=
- =?utf-8?B?MVd6ejdHWjY1TEJyQ2psZWx6bmdaK2hOOEl0Y3JQbFd0SDNvZVo4SnhIcGNT?=
- =?utf-8?B?dUN3NXFhSmxULzlZOFhQTGloL3Q2QktuQmdWaWgvTWhmckJPSldsU0l6MnhK?=
- =?utf-8?B?UzBBWDRrSlBmOWg5SWlUYzNDczJTSVdJa1Bkd3dZTkdwR1U3dERyMFFaR1pP?=
- =?utf-8?B?OFhkMmJFeXRJRlpRNVFkRG53THI5SnpUSndYZy9ZWGRYdXUwNjh3MHQ2VU9Y?=
- =?utf-8?B?UWtmRzQyZm41aVp6TFlFNWg0Q1FvQXdIZndYSEFCendvM3FrMFNzZFZ0aDRF?=
- =?utf-8?B?ZFFHaEQzNDBMMTFsekl0ZkJPVjlVVTQ3NlZyS1Z1Qm1EOGI4c3drRTR3Q0h1?=
- =?utf-8?B?SWNsVzl4RENlT0Q4ZitrZmgwNWd1QUVMK2RFRXFWQzV0SDYza1YzSXVpWUZD?=
- =?utf-8?B?M0QrQnhVdGdFRW9RZ0gxRmJyc0FqeWlEUEpUczIxbldvVXNPT2lUb015TC9l?=
- =?utf-8?B?ZEJRVWh3ZHlFbkJKUmtCR1lwRDFLODVjaXo4Tlg1dCtuaVV4MmhmakJnbm50?=
- =?utf-8?B?SzRNZ2JKMVBrNDdxb2h6ZDJJWGtYL29HTWFkU3JGNlE4SC91cXQ3YkVVWXdI?=
- =?utf-8?B?Y0lvTDdScWRSZkhIeFZ1RmVpN1JMSHlKTU8vWit4YTNWaCtiRnlOalFxaGIy?=
- =?utf-8?B?NjZDVkRacnZ3ZzZvUjF0c1Y3TDZCcXRCMnp0YmtuakxzQWZvM1Y0ejEvV0ZR?=
- =?utf-8?B?R29ocTNEQ3ZKaFNqS09lWVAyOE5GTkxXM3V1Q3RWdVZCYnYySjVxWUtsQ0ZN?=
- =?utf-8?B?Ym0rSWpzWWVRczdNRDNZQWVpeFNEN3NoVWpZUmFmc2U3OTJieCtFczNxMmR2?=
- =?utf-8?B?eW40KzBMcGwwMTdwL0doVHdqTy8vWWN5V2s4dk1tMUI4TDlqN3NvdXhudTk3?=
- =?utf-8?B?SVl1cEFlSTNscTNCMStYYXZIdzI3RDM1WGcrUUQyWm9IRS9EaFNSdG1zYnJB?=
- =?utf-8?B?cW9GUytwRmtCUXVEVHoyNkRTUXJlYXdIa2hQUUQ4WUdSOEZnTDlJY3VnQ0hG?=
- =?utf-8?B?dkFVaHdseE9oTWlkb0dXbHBuV0hBR0NieVZEMjk5ajZrV0FwblA5R01iVGJx?=
- =?utf-8?B?QndrTWZOb1ZyVkt2V0hqenkwTzJZdG9ZTDdnV1RRRmNCUjhvSytkcy9icy9n?=
- =?utf-8?B?aGphaUtTU2VJR3JRNmlDaGJYSnk5ZW8rRDloSzFKb3B5UW9QSENBdGFhUjBv?=
- =?utf-8?B?OWc2UFVvVGlKSkd0OVpVbXc5cXdLNEIvem9rWElvWDY3cXEzaXY0M0RRc2Fm?=
- =?utf-8?B?YmRFYUwrbSsvY1ZtUElFVDNpeStIdklvdVQ3RHlXZkFuYjBKRGVYWWdJdVZG?=
- =?utf-8?B?MEtuWGRhb3hzM1o5SGdaZHFQdUw5NEwzZlZpVS9FQ1F5eGM3ZXRtUHlwOHdQ?=
- =?utf-8?B?UEhtYlVUL0ZESHZ2N3dxUHhDN2xHcE1mU1E4NEdtTXNlNlM2ZjlIUlo5dXNy?=
- =?utf-8?B?VWc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <5CD6326CAB88D44D9129AF345F2E3B33@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        with ESMTP id S230346AbiH0SdB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 27 Aug 2022 14:33:01 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BA555B797;
+        Sat, 27 Aug 2022 11:33:00 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id y187so3633566iof.0;
+        Sat, 27 Aug 2022 11:33:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=/N/ezHxVsgAfcCGDG1F+RCyeREMqFYLP8sDRw+OOlHc=;
+        b=c+/M4a3l2qPAtYKWa+kRSLpp7qucNcXwq4w0i1NFWQ1EGqv2fvmIX9ekmKEDzep4as
+         68ZDV0vWLemZj7I4wy7Q+X7+fzKS/jJQUISza2UZXq15h412qypxKCHeA5FGBH0gjyUF
+         QUrkS2oJTthgv7R91BToE7/OLfNw/BiQ2DGrP1sp5zUWagpDaSMejpvtttbHghCwvCy7
+         kEfMe8hR3BXi18XH7QF+nYMfe8FIM8KK3fr0VDerLOxkyCYcULuzC6Mf6w4FuHzllFYj
+         MlJH7eFzdylilRfa88YlnVYSBGTCi1MVem/TJ5uQI38Lad5mwSGHwGcdYuzqIWKsR+JX
+         lGwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=/N/ezHxVsgAfcCGDG1F+RCyeREMqFYLP8sDRw+OOlHc=;
+        b=LatVRKbkHSzsP8kqIfofcsXYJQPMDk74CyFPqJFUuKl1OrE4BsvnrFfX8TjEe3e9FC
+         fIQ0tlwn5sEK4vkrfCm6SMp8wSPjXEKta/CTbSAJRZVGg0nufpnf3HsCGtD/xglTAR9S
+         C+mL94ssp0Lx9n93UtxbM0BgYy0RV8DQDxg8dzp8U0FbTYGdTq3L+/zGphH7NnjHz+ut
+         /4CTQpjA1JaZqE+yeIT9dS5TmhTekTJTMDDHN/tWWdAkEX9yg9Hw4++Lr+bkqgzQy0Im
+         ValHjA/MSNG2ZSaMmrRVsahtU6kENHcCiW226PGTBa8r30QPx+Qsn6cKsd6qjGmOk4QK
+         dTNw==
+X-Gm-Message-State: ACgBeo0TC8lqkEdIPRYLCto96bYebe9OJZOkgh//MUWrncMnzPrxJiO7
+        YkznDo2Cad2QwvidDGmJiygnr87ep0OqLg3faMY=
+X-Google-Smtp-Source: AA6agR4kUp8prdndg4QMweWeWgAgVLQpL77+1q1gn7CI+ksKj0ebVI32qiq/owr45wPiV5maep8CIHyRMaM9u++KQ0Y=
+X-Received: by 2002:a05:6638:3828:b0:349:e863:f16c with SMTP id
+ i40-20020a056638382800b00349e863f16cmr6763738jav.206.1661625179745; Sat, 27
+ Aug 2022 11:32:59 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3651.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cb2f20df-70b5-48cf-7c9a-08da885a1e65
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Aug 2022 18:29:46.4123
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ah6O0EW90TKWiOeRLmtE7z0VQzHTrCoOEJaaagFCQKmVXQJqiVT618o2JlrqUi/V
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR1501MB2019
-X-Proofpoint-ORIG-GUID: NR2BU9s5XHj6ZqUez5j72SHWz3wbzdqr
-X-Proofpoint-GUID: NR2BU9s5XHj6ZqUez5j72SHWz3wbzdqr
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-08-27_10,2022-08-25_01,2022-06-22_01
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20220822235649.2218031-1-joannelkoong@gmail.com>
+ <20220822235649.2218031-2-joannelkoong@gmail.com> <CAEf4BzZm7eUX3w-NwP0JuWtvKbO6GxN911TraY5bA8-z+ocyCg@mail.gmail.com>
+ <CAP01T77izAbefN5CJ1ZdjwUdii=gMFMduKTYtSbYC3S9jbRoEA@mail.gmail.com>
+ <CAJnrk1Y0r3++RLpT2jvp4st-79x3dUYk3uP-4tfnAeL5_kgM0Q@mail.gmail.com>
+ <CAP01T74O6ZuH_NPObYTLUjFSADjWjzfHjTsLBf8b67jgchf6Gw@mail.gmail.com>
+ <CAJnrk1Z39+pLzAOL3tbqvQyTcB4HvrbLghmr6_vLXhtJYHuwEA@mail.gmail.com>
+ <CAP01T76ChONTCVtHNZ_X3Z6qmuZTKCVYwe0s6_TGcuC1tEx9sw@mail.gmail.com>
+ <CAJnrk1Zmne1uDn8EKdNKJe6O-k_moU9Sryfws_J-TF2BvX2QMg@mail.gmail.com>
+ <CAP01T746gvoOM7DuWY-3N2xJbEainTinTPhyqHki2Ms6E0Dk_A@mail.gmail.com>
+ <CAEf4BzZYTN=gGsc88jetv-SSMBy78P7w7Y08zfwGR7cCenJPiQ@mail.gmail.com>
+ <CAP01T74mbnYJkq0CfknZBqYg4T5B-OenB+SB6=gc24GvpVxA8g@mail.gmail.com> <CAEf4BzYpV-RJ456n0UQFPXSG6SvUPK5=jM4nS+x25z7pTkfMGQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzYpV-RJ456n0UQFPXSG6SvUPK5=jM4nS+x25z7pTkfMGQ@mail.gmail.com>
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date:   Sat, 27 Aug 2022 20:32:23 +0200
+Message-ID: <CAP01T74UojWGWk=1nbE8N=fM9-vzyJJv=qNMM5dJO7A5qO7S6g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 1/3] bpf: Add skb dynptrs
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Joanne Koong <joannelkoong@gmail.com>, bpf@vger.kernel.org,
+        andrii@kernel.org, daniel@iogearbox.net, ast@kernel.org,
+        kafai@fb.com, kuba@kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-T24gRnJpLCAyMDIyLTA4LTI2IGF0IDEyOjMwIC0wNzAwLCBZb25naG9uZyBTb25nIHdyb3RlOgo+
-IAo+IAo+IE9uIDgvMjUvMjIgNTozNyBQTSwgS3VpLUZlbmcgTGVlIHdyb3RlOgo+ID4gQWxsb3cg
-Y3JlYXRpbmcgYW4gaXRlcmF0b3IgdGhhdCBsb29wcyB0aHJvdWdoIHJlc291cmNlcyBvZiBvbmUK
-PiA+IHRocmVhZC9wcm9jZXNzLgo+ID4gCj4gPiBQZW9wbGUgY291bGQgb25seSBjcmVhdGUgaXRl
-cmF0b3JzIHRvIGxvb3AgdGhyb3VnaCBhbGwgcmVzb3VyY2VzIG9mCj4gPiBmaWxlcywgdm1hLCBh
-bmQgdGFza3MgaW4gdGhlIHN5c3RlbSwgZXZlbiB0aG91Z2ggdGhleSB3ZXJlCj4gPiBpbnRlcmVz
-dGVkCj4gPiBpbiBvbmx5IHRoZSByZXNvdXJjZXMgb2YgYSBzcGVjaWZpYyB0YXNrIG9yIHByb2Nl
-c3MuwqAgUGFzc2luZyB0aGUKPiA+IGFkZGl0aW9uYWwgcGFyYW1ldGVycywgcGVvcGxlIGNhbiBu
-b3cgY3JlYXRlIGFuIGl0ZXJhdG9yIHRvIGdvCj4gPiB0aHJvdWdoIGFsbCByZXNvdXJjZXMgb3Ig
-b25seSB0aGUgcmVzb3VyY2VzIG9mIGEgdGFzay4KPiA+IAo+ID4gU2lnbmVkLW9mZi1ieTogS3Vp
-LUZlbmcgTGVlIDxrdWlmZW5nQGZiLmNvbT4KPiA+IEFja2VkLWJ5OiBZb25naG9uZyBTb25nIDx5
-aHNAZmIuY29tPgo+ID4gLS0tCj4gPiDCoCBpbmNsdWRlL2xpbnV4L2JwZi5owqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoCB8wqAgMjUgKysrKysrKwo+ID4gwqAgaW5jbHVkZS91YXBpL2xpbnV4L2JwZi5o
-wqDCoMKgwqDCoMKgIHzCoMKgIDYgKysKPiA+IMKgIGtlcm5lbC9icGYvdGFza19pdGVyLmPCoMKg
-wqDCoMKgwqDCoMKgIHwgMTI4ICsrKysrKysrKysrKysrKysrKysrKysrKysrLS0KPiA+IC0tLS0t
-Cj4gPiDCoCB0b29scy9pbmNsdWRlL3VhcGkvbGludXgvYnBmLmggfMKgwqAgNiArKwo+ID4gwqAg
-NCBmaWxlcyBjaGFuZ2VkLCAxNDEgaW5zZXJ0aW9ucygrKSwgMjQgZGVsZXRpb25zKC0pCj4gPiAK
-PiA+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L2JwZi5oIGIvaW5jbHVkZS9saW51eC9icGYu
-aAo+ID4gaW5kZXggOWMxNjc0OTczZTAzLi4zMWFjMmMxMTgxZjUgMTAwNjQ0Cj4gPiAtLS0gYS9p
-bmNsdWRlL2xpbnV4L2JwZi5oCj4gPiArKysgYi9pbmNsdWRlL2xpbnV4L2JwZi5oCj4gPiBAQCAt
-MTczMCw2ICsxNzMwLDI3IEBAIGludCBicGZfb2JqX2dldF91c2VyKGNvbnN0IGNoYXIgX191c2Vy
-Cj4gPiAqcGF0aG5hbWUsIGludCBmbGFncyk7Cj4gPiDCoMKgwqDCoMKgwqDCoMKgZXh0ZXJuIGlu
-dCBicGZfaXRlcl8gIyMgdGFyZ2V0KGFyZ3MpO8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgXAo+ID4gwqDCoMKgwqDCoMKgwqDCoGludCBfX2luaXQgYnBmX2l0ZXJfICMjIHRh
-cmdldChhcmdzKSB7IHJldHVybiAwOyB9Cj4gPiDCoCAKPiA+ICsvKgo+ID4gKyAqIFRoZSB0YXNr
-IHR5cGUgb2YgaXRlcmF0b3JzLgo+ID4gKyAqCj4gPiArICogRm9yIEJQRiB0YXNrIGl0ZXJhdG9y
-cywgdGhleSBjYW4gYmUgcGFyYW1ldGVyaXplZCB3aXRoIHZhcmlvdXMKPiA+ICsgKiBwYXJhbWV0
-ZXJzIHRvIHZpc2l0IG9ubHkgc29tZSBvZiB0YXNrcy4KPiA+ICsgKgo+ID4gKyAqIEJQRl9UQVNL
-X0lURVJfQUxMIChkZWZhdWx0KQo+ID4gKyAqwqDCoMKgwqDCoEl0ZXJhdGUgb3ZlciByZXNvdXJj
-ZXMgb2YgZXZlcnkgdGFzay4KPiA+ICsgKgo+ID4gKyAqIEJQRl9UQVNLX0lURVJfVElECj4gPiAr
-ICrCoMKgwqDCoMKgSXRlcmF0ZSBvdmVyIHJlc291cmNlcyBvZiBhIHRhc2svdGlkLgo+ID4gKyAq
-Cj4gPiArICogQlBGX1RBU0tfSVRFUl9UR0lECj4gPiArICrCoMKgwqDCoMKgSXRlcmF0ZSBvdmVy
-IHJlc291cmNlcyBvZiBldmVyeSB0YXNrIG9mIGEgcHJvY2VzcyAvIHRhc2sKPiA+IGdyb3VwLgo+
-ID4gKyAqLwo+ID4gK2VudW0gYnBmX2l0ZXJfdGFza190eXBlIHsKPiA+ICvCoMKgwqDCoMKgwqDC
-oEJQRl9UQVNLX0lURVJfQUxMID0gMCwKPiA+ICvCoMKgwqDCoMKgwqDCoEJQRl9UQVNLX0lURVJf
-VElELAo+ID4gK8KgwqDCoMKgwqDCoMKgQlBGX1RBU0tfSVRFUl9UR0lELAo+ID4gK307Cj4gPiAr
-Cj4gPiDCoCBzdHJ1Y3QgYnBmX2l0ZXJfYXV4X2luZm8gewo+ID4gwqDCoMKgwqDCoMKgwqDCoC8q
-IGZvciBtYXBfZWxlbSBpdGVyICovCj4gPiDCoMKgwqDCoMKgwqDCoMKgc3RydWN0IGJwZl9tYXAg
-Km1hcDsKPiA+IEBAIC0xNzM5LDYgKzE3NjAsMTAgQEAgc3RydWN0IGJwZl9pdGVyX2F1eF9pbmZv
-IHsKPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgc3RydWN0IGNncm91cCAqc3Rh
-cnQ7IC8qIHN0YXJ0aW5nIGNncm91cCAqLwo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqBlbnVtIGJwZl9jZ3JvdXBfaXRlcl9vcmRlciBvcmRlcjsKPiA+IMKgwqDCoMKgwqDCoMKg
-wqB9IGNncm91cDsKPiA+ICvCoMKgwqDCoMKgwqDCoHN0cnVjdCB7Cj4gPiArwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgZW51bSBicGZfaXRlcl90YXNrX3R5cGXCoHR5cGU7Cj4gPiArwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgdTMyIHBpZDsKPiA+ICvCoMKgwqDCoMKgwqDCoH0g
-dGFzazsKPiA+IMKgIH07Cj4gPiDCoCAKPiA+IMKgIHR5cGVkZWYgaW50ICgqYnBmX2l0ZXJfYXR0
-YWNoX3RhcmdldF90KShzdHJ1Y3QgYnBmX3Byb2cgKnByb2csCj4gPiBkaWZmIC0tZ2l0IGEvaW5j
-bHVkZS91YXBpL2xpbnV4L2JwZi5oIGIvaW5jbHVkZS91YXBpL2xpbnV4L2JwZi5oCj4gPiBpbmRl
-eCAwZjYxZjA5ZjQ2N2EuLjM4NWRlYWI5ODRlMSAxMDA2NDQKPiA+IC0tLSBhL2luY2x1ZGUvdWFw
-aS9saW51eC9icGYuaAo+ID4gKysrIGIvaW5jbHVkZS91YXBpL2xpbnV4L2JwZi5oCj4gPiBAQCAt
-MTEwLDYgKzExMCwxMiBAQCB1bmlvbiBicGZfaXRlcl9saW5rX2luZm8gewo+ID4gwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBfX3UzMsKgwqDCoGNncm91cF9mZDsKPiA+IMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgX191NjTCoMKgwqBjZ3JvdXBfaWQ7Cj4gPiDCoMKgwqDC
-oMKgwqDCoMKgfSBjZ3JvdXA7Cj4gPiArwqDCoMKgwqDCoMKgwqAvKiBQYXJhbWV0ZXJzIG9mIHRh
-c2sgaXRlcmF0b3JzLiAqLwo+ID4gK8KgwqDCoMKgwqDCoMKgc3RydWN0IHsKPiA+ICvCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBfX3UzMsKgwqDCoHRpZDsKPiA+ICvCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqBfX3UzMsKgwqDCoHBpZDsKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqBfX3UzMsKgwqDCoHBpZF9mZDsKPiA+ICvCoMKgwqDCoMKgwqDCoH0gdGFzazsK
-PiA+IMKgIH07Cj4gPiDCoCAKPiA+IMKgIC8qIEJQRiBzeXNjYWxsIGNvbW1hbmRzLCBzZWUgYnBm
-KDIpIG1hbi1wYWdlIGZvciBtb3JlIGRldGFpbHMuICovCj4gPiBkaWZmIC0tZ2l0IGEva2VybmVs
-L2JwZi90YXNrX2l0ZXIuYyBiL2tlcm5lbC9icGYvdGFza19pdGVyLmMKPiA+IGluZGV4IDhjOTIx
-Nzk5ZGVmNC4uMTIwMGNmZGU3MWUzIDEwMDY0NAo+ID4gLS0tIGEva2VybmVsL2JwZi90YXNrX2l0
-ZXIuYwo+ID4gKysrIGIva2VybmVsL2JwZi90YXNrX2l0ZXIuYwo+ID4gQEAgLTEyLDYgKzEyLDgg
-QEAKPiA+IMKgIAo+ID4gwqAgc3RydWN0IGJwZl9pdGVyX3NlcV90YXNrX2NvbW1vbiB7Cj4gPiDC
-oMKgwqDCoMKgwqDCoMKgc3RydWN0IHBpZF9uYW1lc3BhY2UgKm5zOwo+ID4gK8KgwqDCoMKgwqDC
-oMKgZW51bSBicGZfaXRlcl90YXNrX3R5cGXCoHR5cGU7Cj4gPiArwqDCoMKgwqDCoMKgwqB1MzIg
-cGlkOwo+ID4gwqAgfTsKPiA+IMKgIAo+ID4gwqAgc3RydWN0IGJwZl9pdGVyX3NlcV90YXNrX2lu
-Zm8gewo+ID4gQEAgLTIyLDI0ICsyNCw1NCBAQCBzdHJ1Y3QgYnBmX2l0ZXJfc2VxX3Rhc2tfaW5m
-byB7Cj4gPiDCoMKgwqDCoMKgwqDCoMKgdTMyIHRpZDsKPiA+IMKgIH07Cj4gPiDCoCAKPiA+IC1z
-dGF0aWMgc3RydWN0IHRhc2tfc3RydWN0ICp0YXNrX3NlcV9nZXRfbmV4dChzdHJ1Y3QgcGlkX25h
-bWVzcGFjZQo+ID4gKm5zLAo+ID4gK3N0YXRpYyBib29sIG1hdGNoZWRfdGFzayhzdHJ1Y3QgdGFz
-a19zdHJ1Y3QgKnRhc2ssCj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoCBzdHJ1Y3QgYnBmX2l0ZXJfc2VxX3Rhc2tfY29tbW9uICpjb21tb24sCj4gPiAr
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBib29sIHNraXBf
-aWZfZHVwX2ZpbGUpCj4gPiArewo+ID4gK8KgwqDCoMKgwqDCoMKgLyogU2hvdWxkIG5vdCBoYXZl
-IHRoZSBzYW1lICdmaWxlcycgaWYgc2tpcF9pZl9kdXBfZmlsZSBpcwo+ID4gdHJ1ZSAqLwo+ID4g
-K8KgwqDCoMKgwqDCoMKgYm9vbCBkaWZmX2ZpbGVzX2lmID0KPiA+ICvCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAhc2tpcF9pZl9kdXBfZmlsZSB8fAo+ID4gK8KgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoCh0aHJlYWRfZ3JvdXBfbGVhZGVyKHRhc2spICYmCj4gPiArwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgIHRhc2stPmZpbGVzICE9IHRhc2stPmdyb3VwX2xlYWRlci0+
-ZmlsZXMpOwo+IAo+IFNob3VsZCB0aGlzIGJlCj4gwqDCoMKgwqDCoMKgwqDCoCFza2lwX2lmX2R1
-cF9maWxlIHx8IHRocmVhZF9ncm91cF9sZWFkZXIodGFzaykgfHwKPiDCoMKgwqDCoMKgwqDCoMKg
-dGFzay0+ZmlsZXMgIT0gdGFzay0+Z3JvdXBfbGVhZGVyLT5maWxlcwo+ID8KCkdvb2QgY2F0Y2gh
-ClRoaXMgY2hhbmdlIHdpbGwgYmUgcm9sbGJhY2tlZCBieSB1c2luZyBuZXh0X3RocmVhZCgpLgoK
-PiAKPiA+ICvCoMKgwqDCoMKgwqDCoC8qIFNob3VsZCBoYXZlIHRoZSBnaXZlbiB0Z2lkIGlmIHRo
-ZSB0eXBlIGlzCj4gPiBCUEZfVEFTS19JVEVSX1RHSSAqLwo+IAo+IEJQRl9UQVNLX0lURVJfVEdJ
-RD8KPiAKPiA+ICvCoMKgwqDCoMKgwqDCoGJvb2wgaGF2ZV90Z2lkX2lmID0KPiA+ICvCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBjb21tb24tPnR5cGUgIT0gQlBGX1RBU0tfSVRFUl9UR0lE
-IHx8Cj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgX190YXNrX3BpZF9ucl9ucyh0
-YXNrLCBQSURUWVBFX1RHSUQsCj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY29tbW9uLT5ucykgPT0gY29tbW9uLT5waWQ7
-Cj4gPiArwqDCoMKgwqDCoMKgwqByZXR1cm4gZGlmZl9maWxlc19pZiAmJiBoYXZlX3RnaWRfaWY7
-Cj4gPiArfQo+ID4gKwo+ID4gKwo+ID4gK3N0YXRpYyBzdHJ1Y3QgdGFza19zdHJ1Y3QgKnRhc2tf
-c2VxX2dldF9uZXh0KHN0cnVjdAo+ID4gYnBmX2l0ZXJfc2VxX3Rhc2tfY29tbW9uICpjb21tb24s
-Cj4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHUzMiAqdGlkLAo+ID4gwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBib29sCj4gPiBza2lwX2lmX2R1cF9maWxlcykKPiA+
-IMKgIHsKPiA+IMKgwqDCoMKgwqDCoMKgwqBzdHJ1Y3QgdGFza19zdHJ1Y3QgKnRhc2sgPSBOVUxM
-Owo+ID4gwqDCoMKgwqDCoMKgwqDCoHN0cnVjdCBwaWQgKnBpZDsKPiA+IMKgIAo+ID4gK8KgwqDC
-oMKgwqDCoMKgaWYgKGNvbW1vbi0+dHlwZSA9PSBCUEZfVEFTS19JVEVSX1RJRCkgewo+ID4gK8Kg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGlmICgqdGlkICYmICp0aWQgIT0gY29tbW9uLT5w
-aWQpCj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJl
-dHVybiBOVUxMOwo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJjdV9yZWFkX2xv
-Y2soKTsKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBwaWQgPSBmaW5kX3BpZF9u
-cyhjb21tb24tPnBpZCwgY29tbW9uLT5ucyk7Cj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgaWYgKHBpZCkgewo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqB0YXNrID0gZ2V0X3BpZF90YXNrKHBpZCwgUElEVFlQRV9QSUQpOwo+ID4gK8Kg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAqdGlkID0gY29tbW9u
-LT5waWQ7Cj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgfQo+ID4gK8KgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJjdV9yZWFkX3VubG9jaygpOwo+ID4gK8KgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoHJldHVybiB0YXNrOwo+ID4gK8KgwqDCoMKgwqDCoMKgfQo+ID4g
-Kwo+ID4gwqDCoMKgwqDCoMKgwqDCoHJjdV9yZWFkX2xvY2soKTsKPiA+IMKgIHJldHJ5Ogo+ID4g
-LcKgwqDCoMKgwqDCoMKgcGlkID0gZmluZF9nZV9waWQoKnRpZCwgbnMpOwo+ID4gK8KgwqDCoMKg
-wqDCoMKgcGlkID0gZmluZF9nZV9waWQoKnRpZCwgY29tbW9uLT5ucyk7Cj4gPiDCoMKgwqDCoMKg
-wqDCoMKgaWYgKHBpZCkgewo+ID4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCp0aWQg
-PSBwaWRfbnJfbnMocGlkLCBucyk7Cj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-KnRpZCA9IHBpZF9ucl9ucyhwaWQsIGNvbW1vbi0+bnMpOwo+ID4gwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqB0YXNrID0gZ2V0X3BpZF90YXNrKHBpZCwgUElEVFlQRV9QSUQpOwo+ID4g
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpZiAoIXRhc2spIHsKPiA+IMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCsrKnRpZDsKPiA+IMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGdvdG8gcmV0cnk7Cj4g
-PiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgfSBlbHNlIGlmIChza2lwX2lmX2R1cF9m
-aWxlcyAmJgo+ID4gIXRocmVhZF9ncm91cF9sZWFkZXIodGFzaykgJiYKPiA+IC3CoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB0YXNrLT5maWxlcyA9PSB0
-YXNrLT5ncm91cF9sZWFkZXItCj4gPiA+ZmlsZXMpIHsKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqB9IGVsc2UgaWYgKCFtYXRjaGVkX3Rhc2sodGFzaywgY29tbW9uLAo+ID4gc2tp
-cF9pZl9kdXBfZmlsZXMpKSB7Cj4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqBwdXRfdGFza19zdHJ1Y3QodGFzayk7Cj4gPiDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB0YXNrID0gTlVMTDsKPiA+IMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCsrKnRpZDsKPiA+IEBAIC01
-Niw3ICs4OCw3IEBAIHN0YXRpYyB2b2lkICp0YXNrX3NlcV9zdGFydChzdHJ1Y3Qgc2VxX2ZpbGUg
-KnNlcSwKPiA+IGxvZmZfdCAqcG9zKQo+ID4gwqDCoMKgwqDCoMKgwqDCoHN0cnVjdCBicGZfaXRl
-cl9zZXFfdGFza19pbmZvICppbmZvID0gc2VxLT5wcml2YXRlOwo+ID4gwqDCoMKgwqDCoMKgwqDC
-oHN0cnVjdCB0YXNrX3N0cnVjdCAqdGFzazsKPiA+IMKgIAo+ID4gLcKgwqDCoMKgwqDCoMKgdGFz
-ayA9IHRhc2tfc2VxX2dldF9uZXh0KGluZm8tPmNvbW1vbi5ucywgJmluZm8tPnRpZCwKPiA+IGZh
-bHNlKTsKPiA+ICvCoMKgwqDCoMKgwqDCoHRhc2sgPSB0YXNrX3NlcV9nZXRfbmV4dCgmaW5mby0+
-Y29tbW9uLCAmaW5mby0+dGlkLCBmYWxzZSk7Cj4gPiDCoMKgwqDCoMKgwqDCoMKgaWYgKCF0YXNr
-KQo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqByZXR1cm4gTlVMTDsKPiA+IMKg
-IAo+IFsuLi5dCgo=
+On Sat, 27 Aug 2022 at 19:22, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+>
+> On Sat, Aug 27, 2022 at 12:12 AM Kumar Kartikeya Dwivedi
+> <memxor@gmail.com> wrote:
+> > [...]
+> > >
+> > > I think the right answer here is to not make bpf_dynptr_data() return
+> > > direct pointer of changing read-only-ness. Maybe the right answer here
+> > > is another helper, bpf_dynptr_data_rdonly(), that will return NULL for
+> > > non-read-only dynptr and PTR_TO_MEM | MEM_RDONLY if dynptr is indeed
+> > > read-only?
+> >
+> > Shouldn't it be the other way around? bpf_dynptr_data_rdonly() should
+> > work for both ro and rw dynptrs, and bpf_dynptr_data() only for rw
+> > dynptr?
+>
+> Right, that's what I proposed:
+>
+>   "bpf_dynptr_data_rdonly(), that will return NULL for non-read-only dynptr"
+>
+> so if you pass read-write dynptr, it will return NULL (because it's
+> unsafe to take writable direct pointer).
+>
+> bpf_dynptr_data_rdonly() should still work fine with both rdonly and
+> read-write dynptr.
+> bpf_dynptr_data() only works (in the sense returns non-NULL) for
+> read-write dynptr only.
+>
+>
+> >
+> > And yes, you're kind of painting yourself in a corner if you allow
+> > dynptr_data to work with statically ro dynptrs now, ascertaining the
+> > ro bit for the returned slice, and then later you plan to add dynptrs
+> > whose ro vs rw is not known to the verifier statically. Then it works
+> > well for statically known ones (returning both ro and rw slices), but
+> > has to return NULL at runtime for statically unknown read only ones,
+> > and always rw slice in verifier state for them.
+>
+> Right, will be both inconsistent and puzzling.
+>
+> >
+> > >
+> > > By saying that read-only-ness of dynptr should be statically known and
+> > > rejecting some dynptr functions at load time places us at the mercy of
+> > > verifier's complete knowledge of application logic, which is exactly
+> > > against the spirit of dynptr.
+> > >
+> >
+> > Right, that might be too restrictive if we require them to be
+> > statically read only.
+> >
+> > But it's not about forcing it to be statically ro, it is more about
+> > rejecting load when we know the program is incorrect (e.g. the types
+> > are incorrect when passed to helpers), otherwise we throw the error at
+> > runtime anyway, which seems to be the convention afaicu. But maybe I
+> > missed the memo and we gradually want to move away from such strict
+> > static checks.
+> >
+> > I view the situation here similar to if we were rejecting direct
+> > writes to PTR_TO_MEM | MEM_RDONLY at load time, but offloading as
+> > runtime check in the helper writing to it as rw memory arg. It's as if
+> > we pretend it's part of the 'type' of the register when doing direct
+> > writes, but then ignore it while matching it against the said helper's
+> > argument type.
+>
+> I disagree, it's not the same. bpf_dynptr_data/bpf_dynptr_data_rdonly
+> turns completely dynamic dynptr into static slice of memory. Only
+> after that point it makes sense for BPF verifier to reject something.
+> Until then it's not incorrect. BPF program will always have to deal
+> with some dynptr operations potentially failing. dynptr can always be
+> NULL internally, you can still call bpf_dynptr_xxx() operations on it,
+> they will just do nothing and return error. That doesn't make BPF
+> program incorrect.
+
+Let me just explain one last time why I'm unable to swallow this
+'completely dynamic dynptr' explanation, because it is not treated as
+completely dynamic by all dynptr helpers.
+
+No pushback, but it would be great if you could further help me wrap
+my head around this, so that we're in sync for future discussions.
+
+So you say you may not know the type of dynptr (read-only, rw, local,
+ringbuf, etc.). Hence you want to treat every dynptr as 'dynamic
+dynptr' you know nothing about even when you do know some information
+about it statically (e.g. if it's on stack). You don't want to reject
+things early at load even if you have all the info to do so. You want
+operations on it to fail at runtime instead.
+
+If you cannot track ro vs rw in the future statically, you won't be be
+able to track local or ringbuf or skb either (since both are part of
+the type of the dynptr). If you can, you can just as well encode
+const-ness as part of the type where you declare it (e.g. in a map
+field where the value is assigned dynamically, where you say
+dynptr_ringbuf etc.). Type comprises local vs skb vs ringbuf | ro vs
+rw for me. But maybe I could be wrong.
+
+So following this line of reasoning, will you be relaxing the argument
+type of helpers like bpf_ringbuf_submit_dynptr? Right now they take
+'dynamic dynptr' as arg, but also expect DYNPTR_TYPE_RINGBUF, so you
+reject load when it's not a ringbuf dynptr. Will it then fallback to
+checking the type at runtime when the type will not be known? But then
+it will also permit passing local or skb dynptr in the future which it
+rejects right now.
+
+I'm just hoping you are able to see why it's looking a bit
+inconsistent to me. If DYNPTR_TYPE_RINGBUF has to be checked, it felt
+to me like DYNPTR_RDONLY is as much part of that kind of type safety
+wrt helpers. It would be set on the dynptr when skb passed to
+dynptr_from_skb is rdonly in some program types, along with
+DYNPTR_TYPE_SKB, and expect to be matched when invoking helpers on
+such dynptrs.
+
+It is fine to push checks to runtime, especially when you won't know
+the type, because verifier cannot reasonably track the dynptr type
+then.
+
+But right now there's still some level of state you maintain in the
+verifier about dynptrs (like it's type), and it seems to me like some
+helpers are using that state to reject things at load time, while some
+other helper will ignore it and fallback to runtime checks.
+
+I hope this is a clear enough description to atleast justify why I'm
+(still) a bit confused.
