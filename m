@@ -2,78 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF6F55A3723
-	for <lists+bpf@lfdr.de>; Sat, 27 Aug 2022 13:04:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FB245A3760
+	for <lists+bpf@lfdr.de>; Sat, 27 Aug 2022 13:38:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230071AbiH0LD7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 27 Aug 2022 07:03:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58910 "EHLO
+        id S232923AbiH0Lip (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 27 Aug 2022 07:38:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbiH0LD7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 27 Aug 2022 07:03:59 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D34B59A9A9;
-        Sat, 27 Aug 2022 04:03:57 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id x80so31010pgx.0;
-        Sat, 27 Aug 2022 04:03:57 -0700 (PDT)
+        with ESMTP id S232870AbiH0Lio (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 27 Aug 2022 07:38:44 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C082153018;
+        Sat, 27 Aug 2022 04:38:43 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id y141so3942526pfb.7;
+        Sat, 27 Aug 2022 04:38:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc;
-        bh=9QPIuF5VX05eaazS36ZR/e2rlmTFI6M8eQ+pda8Kkzw=;
-        b=k3yu5fZPhUeyIYn086KuMw3nERywjq3XN4eU/iqmd7Nb33+FIhNVcnXCmrQ2W6pLFa
-         +/Fe9Hc13pMESNY2Z7n66WvCYyB6bZkXk455cKTMgQhRUOPlzaML/eq357inOfR0sYix
-         LI72To+iizth3EszqkLT8jW7BZckiYJ0Inyxl4jrtTYkcXbh0ZfwwCV2XeqzSmExsuWS
-         khIsVhMAJaYtMFXW3kStXM8FNMrgZotymqZ7FkTlAlkyO/RshmjrFwf4KzgDo4upOpBt
-         E/0WyMUlL2tnoedM0BHXXzlaR0mBhdu4BWWLvMH9sv1MU9i+QOIIVPsYHK3edWUbMR8N
-         rdHg==
+        bh=fKm8PTeHvCa5gW5IYcXvuTsv3yWHzgHsjdj8oIF/6x4=;
+        b=fR5HBKlN7VZTa78dk2ANAMFEBQ2PRWmM8MhMTZnTcytzb2rjbofsUTFedrZUXf5nd9
+         2OWUVq7tYvfmUSIq3+qH3PzcW+HHKpCNCMqEbOG1W7bS/0+fi476T2IF2zGk3opOOKAQ
+         cUtuxaWSTPxmcQgKxAVkpTEyikcixreELEmf/Jn7d4tScrIrGybzvMk/VHT8GEjNcnFy
+         e2PS04NlgzFUdz11VtUSvZiXEWingoXqCVs+ILfwtf5wv9aLiCr3tPL8s/s1roRTg7km
+         8ZCBJy5GU+Z6g8Lri7wP0nSH9I9v+E3OqsvpEiOVFJCWzs5x22eSZy4VKhef5myFrbn/
+         8hEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc;
-        bh=9QPIuF5VX05eaazS36ZR/e2rlmTFI6M8eQ+pda8Kkzw=;
-        b=sgkm4o2WPyW3fcg3H4GM9i5KSjmL2rCV9rNKLheWFjJR3tTFBroO5plcISkPhAGxD4
-         Un0JYSGFgLxv5gHVD8X9PQJRHeS8uVUF+TVV13cm5LaQ+B0yAWXzwk4z9yTNT+3fdSK2
-         lurDCbb6R/palx06Wb/nr8jnfFwajJbO9L7TcmU24GQWJPLv0jspVb77Ro6Oj2z9duYS
-         KY9sxop4lJFWb/lvUXqp9h9JZ+PkA4kK5eFP2j016srfm36xDnEcna/T0LIAUEwBNAJr
-         JQMz/EI1zIPfP8s+gLEsQwJUX2KTgYd+qBbwfQm2TRmRIuqmADm9k/+q1o06RbSeOR7X
-         Z9Gg==
-X-Gm-Message-State: ACgBeo0x7RYss8UjFl9JpdsnUV+tId45QZTKHwQL0+YEHdvGZtgPw0RG
-        0/A9vE+RCIW/wtJieyKSNnbYmy+g5H3t7jY6qLk=
-X-Google-Smtp-Source: AA6agR48PF1cBouEoLENq1yBECMWDiJxkro+jc/gbXeo/l743DQRtxmIr00k4auLoGGo03BwaUnI/Sf4Q8CME8H0cMg=
-X-Received: by 2002:a05:6a00:13a2:b0:537:159c:4413 with SMTP id
- t34-20020a056a0013a200b00537159c4413mr7939849pfg.8.1661598237317; Sat, 27 Aug
- 2022 04:03:57 -0700 (PDT)
+        bh=fKm8PTeHvCa5gW5IYcXvuTsv3yWHzgHsjdj8oIF/6x4=;
+        b=Egw/j5zuX6S0v1NYNNjdAkozmaJnWQpe4GN6vXP+tmIlLr8lR+StNY9Z88stDMgXL2
+         vu7zERJynOUYXqzZrWg8w5dXf/B2OKSw0TkCP5D4K2+/idmAKZWhRrYjngeMP6ZKOpp6
+         oi2Ojv4xcmchu5YCvpKHC4A0pBUeQdoPAbI/dvsWV3l8lf90PXT9OQOmS1NBptgpkGhg
+         U7Fvl4evKvo1J8SYzqnkmNbQiZ8BddYLADjn1r9iYJa5bHyY3NWowi3JGnXLTmpss2Hs
+         0tOl9MNRKRe2dNMQ+kfYW9NBTBIYybiLyb2Vht42qkldz8NtbxEkHY1hi1UprO/by4DS
+         o77g==
+X-Gm-Message-State: ACgBeo3HNHFm7MpFrDl50AR5r6RkHHuBrKHYJkYHBZBXcOnO1XIxdhwo
+        +QR8L6yWLLtczWKA7Y9H6a+Z3H3M7KTKE/7RceU=
+X-Google-Smtp-Source: AA6agR6CQgq187WrNQh/reDXejA6D1Rg4+gPGYq1dxoJuoHn2mznmL+vIAffWbzJjxb4AWn8ObVNGvTP+MQmXaBoR6w=
+X-Received: by 2002:a63:fb4a:0:b0:429:8605:6ebf with SMTP id
+ w10-20020a63fb4a000000b0042986056ebfmr6651316pgj.225.1661600323166; Sat, 27
+ Aug 2022 04:38:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220706172814.169274-1-james.hilliard1@gmail.com>
- <a0bddf0b-e8c4-46ce-b7c6-a22809af1677@fb.com> <CADvTj4ovwExtM-bWUpJELy-OqsT=J9stmqbAXto8ds2n+G8mfw@mail.gmail.com>
- <CAEf4BzYwRyXG1zE5BK1ZXmxLh+ZPU0=yQhNhpqr0JmfNA30tdQ@mail.gmail.com>
- <87v8s260j1.fsf@oracle.com> <CAADnVQLQGHoj_gCOvdFFw2pRxgMubPSp+bRpFeCSa5zvcK2qRQ@mail.gmail.com>
- <CADvTj4qqxckZmxvL=97e-2W5M4DgCCMDV8RCFDg23+cY2URjTA@mail.gmail.com>
- <20220713011851.4a2tnqhdd5f5iwak@macbook-pro-3.dhcp.thefacebook.com>
- <CADvTj4o7z7J=4BOtKM9dthZyfFogV6hL5zKBwiBq7vs+bNhUHA@mail.gmail.com> <CAADnVQJAz7BcZjrBwu-8MjQprh86Z_UpWGMSQtFnowZTc4d6Vw@mail.gmail.com>
-In-Reply-To: <CAADnVQJAz7BcZjrBwu-8MjQprh86Z_UpWGMSQtFnowZTc4d6Vw@mail.gmail.com>
+References: <20220826052925.980431-1-james.hilliard1@gmail.com> <20220826230455.b5dcrvlmollglhx3@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20220826230455.b5dcrvlmollglhx3@kafai-mbp.dhcp.thefacebook.com>
 From:   James Hilliard <james.hilliard1@gmail.com>
-Date:   Sat, 27 Aug 2022 05:03:44 -0600
-Message-ID: <CADvTj4rrUYr0QVRtXL3AfSV8GnwyGioTd_HXD1ca03My_CNBYw@mail.gmail.com>
-Subject: Re: [PATCH v2] bpf/scripts: Generate GCC compatible helpers
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     "Jose E. Marchesi" <jose.marchesi@oracle.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
+Date:   Sat, 27 Aug 2022 05:38:29 -0600
+Message-ID: <CADvTj4rkSRsOtDcC1SCsGH59DyYQWJY_YRJAyt4a29yZP=SSLQ@mail.gmail.com>
+Subject: Re: [PATCH v2] selftests/bpf: Fix bind{4,6} tcp/socket header type conflict
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        llvm@lists.linux.dev
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
@@ -85,137 +75,95 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 12, 2022 at 7:45 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Fri, Aug 26, 2022 at 5:05 PM Martin KaFai Lau <kafai@fb.com> wrote:
 >
-> On Tue, Jul 12, 2022 at 6:29 PM James Hilliard
-> <james.hilliard1@gmail.com> wrote:
+> On Thu, Aug 25, 2022 at 11:29:22PM -0600, James Hilliard wrote:
+> > There is a potential for us to hit a type conflict when including
+> > netinet/tcp.h with sys/socket.h, we can remove these as they are not
+> > actually needed.
 > >
-> > On Tue, Jul 12, 2022 at 7:18 PM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Tue, Jul 12, 2022 at 07:10:27PM -0600, James Hilliard wrote:
-> > > > On Tue, Jul 12, 2022 at 10:48 AM Alexei Starovoitov
-> > > > <alexei.starovoitov@gmail.com> wrote:
-> > > > >
-> > > > > On Tue, Jul 12, 2022 at 4:20 AM Jose E. Marchesi
-> > > > > <jose.marchesi@oracle.com> wrote:
-> > > > > >
-> > > > > >
-> > > > > > > CC Quentin as well
-> > > > > > >
-> > > > > > > On Mon, Jul 11, 2022 at 5:11 PM James Hilliard
-> > > > > > > <james.hilliard1@gmail.com> wrote:
-> > > > > > >>
-> > > > > > >> On Mon, Jul 11, 2022 at 5:36 PM Yonghong Song <yhs@fb.com> wrote:
-> > > > > > >> >
-> > > > > > >> >
-> > > > > > >> >
-> > > > > > >> > On 7/6/22 10:28 AM, James Hilliard wrote:
-> > > > > > >> > > The current bpf_helper_defs.h helpers are llvm specific and don't work
-> > > > > > >> > > correctly with gcc.
-> > > > > > >> > >
-> > > > > > >> > > GCC appears to required kernel helper funcs to have the following
-> > > > > > >> > > attribute set: __attribute__((kernel_helper(NUM)))
-> > > > > > >> > >
-> > > > > > >> > > Generate gcc compatible headers based on the format in bpf-helpers.h.
-> > > > > > >> > >
-> > > > > > >> > > This adds conditional blocks for GCC while leaving clang codepaths
-> > > > > > >> > > unchanged, for example:
-> > > > > > >> > >       #if __GNUC__ && !__clang__
-> > > > > > >> > >       void *bpf_map_lookup_elem(void *map, const void *key)
-> > > > > > >> > > __attribute__((kernel_helper(1)));
-> > > > > > >> > >       #else
-> > > > > > >> > >       static void *(*bpf_map_lookup_elem)(void *map, const void *key) = (void *) 1;
-> > > > > > >> > >       #endif
-> > > > > > >> >
-> > > > > > >> > It does look like that gcc kernel_helper attribute is better than
-> > > > > > >> > '(void *) 1' style. The original clang uses '(void *) 1' style is
-> > > > > > >> > just for simplicity.
-> > > > > > >>
-> > > > > > >> Isn't the original style going to be needed for backwards compatibility with
-> > > > > > >> older clang versions for a while?
-> > > > > > >
-> > > > > > > I'm curious, is there any added benefit to having this special
-> > > > > > > kernel_helper attribute vs what we did in Clang for a long time?
-> > > > > > > Did GCC do it just to be different and require workarounds like this
-> > > > > > > or there was some technical benefit to this?
-> > > > > >
-> > > > > > We did it that way so we could make trouble and piss you off.
-> > > > > >
-> > > > > > Nah :)
-> > > > > >
-> > > > > > We did it that way because technically speaking the clang construction
-> > > > > > works relying on particular optimizations to happen to get correct
-> > > > > > compiled programs, which is not guaranteed to happen and _may_ break in
-> > > > > > the future.
-> > > > > >
-> > > > > > In fact, if you compile a call to such a function prototype with clang
-> > > > > > with -O0 the compiler will try to load the function's address in a
-> > > > > > register and then emit an invalid BPF instruction:
-> > > > > >
-> > > > > >   28:   8d 00 00 00 03 00 00 00         *unknown*
-> > > > > >
-> > > > > > On the other hand the kernel_helper attribute is bullet-proof: will work
-> > > > > > with any optimization level, with any version of the compiler, and in
-> > > > > > our opinion it is also more readable, more tidy and more correct.
-> > > > > >
-> > > > > > Note I'm not saying what you do in clang is not reasonable; it may be,
-> > > > > > obviously it works well enough for you in practice.  Only that we have
-> > > > > > good reasons for doing it differently in GCC.
-> > > > >
-> > > > > Not questioning the validity of the reasons, but they created
-> > > > > the unnecessary difference between compilers.
-> > > >
-> > > > Sounds to me like clang is relying on an unreliable hack that may
-> > > > be difficult to implement in GCC, so let's see what's the best option
-> > > > moving forwards in terms of a migration path for both GCC and clang.
-> > >
-> > > The following is a valid C code:
-> > > static long (*foo) (void) = (void *) 1234;
-> > > foo();
-> > >
-> > > and GCC has to generate correct assembly assuming it runs at -O1 or higher.
+> > Fixes errors like:
+> > In file included from /usr/include/netinet/tcp.h:91,
+> >                  from progs/bind4_prog.c:10:
+> > /home/buildroot/opt/cross/lib/gcc/bpf/13.0.0/include/stdint.h:34:23: error: conflicting types for 'int8_t'; have 'char'
+> >    34 | typedef __INT8_TYPE__ int8_t;
+> >       |                       ^~~~~~
+> > In file included from /usr/include/x86_64-linux-gnu/sys/types.h:155,
+> >                  from /usr/include/x86_64-linux-gnu/bits/socket.h:29,
+> >                  from /usr/include/x86_64-linux-gnu/sys/socket.h:33,
+> >                  from progs/bind4_prog.c:9:
+> > /usr/include/x86_64-linux-gnu/bits/stdint-intn.h:24:18: note: previous declaration of 'int8_t' with type 'int8_t' {aka 'signed char'}
+> >    24 | typedef __int8_t int8_t;
+> >       |                  ^~~~~~
+> > /home/buildroot/opt/cross/lib/gcc/bpf/13.0.0/include/stdint.h:43:24: error: conflicting types for 'int64_t'; have 'long int'
+> >    43 | typedef __INT64_TYPE__ int64_t;
+> >       |                        ^~~~~~~
+> > /usr/include/x86_64-linux-gnu/bits/stdint-intn.h:27:19: note: previous declaration of 'int64_t' with type 'int64_t' {aka 'long long int'}
+> >    27 | typedef __int64_t int64_t;
+> >       |                   ^~~~~~~
+> > make: *** [Makefile:537: /home/buildroot/bpf-next/tools/testing/selftests/bpf/bpf_gcc/bind4_prog.o] Error 1
 > >
-> > Providing -O1 or higher with gcc-bpf does not seem to work at the moment.
->
-> Let's fix gcc first.
+> > Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+> > ---
+> > Changes v1 -> v2:
+> >   - just remove netinet/tcp.h and sys/socket.h
+> > ---
+> >  tools/testing/selftests/bpf/progs/bind4_prog.c | 2 --
+> >  tools/testing/selftests/bpf/progs/bind6_prog.c | 2 --
+> >  2 files changed, 4 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/progs/bind4_prog.c b/tools/testing/selftests/bpf/progs/bind4_prog.c
+> > index 474c6a62078a..a487f60b73ac 100644
+> > --- a/tools/testing/selftests/bpf/progs/bind4_prog.c
+> > +++ b/tools/testing/selftests/bpf/progs/bind4_prog.c
+> > @@ -6,8 +6,6 @@
+> >  #include <linux/bpf.h>
+> >  #include <linux/in.h>
+> >  #include <linux/in6.h>
+> > -#include <sys/socket.h>
+> > -#include <netinet/tcp.h>
+> >  #include <linux/if.h>
+> Are the AF_INET and SOCK_STREAM coming from linux/if.h somehow
+> and they are not from indirectly including sys/socket.h ?
 
-FYI this should now be fixed in master:
-https://github.com/gcc-mirror/gcc/commit/6d1f144b3e6e3761375bea657718f58fb720fb44
+Hmm, seems they are both coming from sys/socket.h:
+
+Tests with my v2 patch applied:
+progs/bind4_prog.c:15: error: "AF_INET" redefined [-Werror]
+   15 | #define AF_INET nonsense
+      |
+In file included from /usr/include/x86_64-linux-gnu/sys/socket.h:33,
+                 from /usr/include/linux/if.h:28,
+                 from progs/bind4_prog.c:9:
+/usr/include/x86_64-linux-gnu/bits/socket.h:97: note: this is the
+location of the previous definition
+   97 | #define AF_INET         PF_INET
+      |
+
+progs/bind4_prog.c:15: error: "SOCK_STREAM" redefined [-Werror]
+   15 | #define SOCK_STREAM nonsense
+      |
+In file included from /usr/include/x86_64-linux-gnu/bits/socket.h:38,
+                 from /usr/include/x86_64-linux-gnu/sys/socket.h:33,
+                 from /usr/include/linux/if.h:28,
+                 from progs/bind4_prog.c:9:
+/usr/include/x86_64-linux-gnu/bits/socket_type.h:28: note: this is the
+location of the previous definition
+   28 | #define SOCK_STREAM SOCK_STREAM
+      |
+
+So I guess the problematic header is netinet/tcp.h and sys/socket.h is
+just a redundant include?
+
+Removing just netinet/tcp.h does appear sufficient to fix the issue.
 
 >
-> > > There is no indirect call insn defined in BPF ISA yet,
-> > > so the -O0 behavior is undefined.
-> >
-> > Well GCC at least seems to be able to compile BPF programs with -O0 using
-> > kernel_helper. I assume -O0 is probably just targeting the minimum BPF ISA
-> > optimization level or something like that which avoids indirect calls.
->
-> There are other reasons why -O0 compiled progs will
-> fail in the verifier.
->
-> > >
-> > > > Or we can just feature detect kernel_helper and leave the (void *)1 style
-> > > > fallback in place until we drop support for clang variants that don't support
-> > > > kernel_helper. This would provide GCC compatibility and a better migration
-> > > > path for clang as well as clang will then automatically use the new variant
-> > > > whenever support for kernel_helper is introduced.
-> > >
-> > > Support for valid C code will not be dropped from clang.
-> >
-> > That wasn't what I was suggesting, I was suggesting adding support for
-> > kernel_helper to clang, and then in the future libbpf(not clang) can
-> > drop support
-> > for the (void *)1 style in the future if desired(or can just keep the
-> > fallback). By
-> > feature detecting kernel_helper and providing a fallback we get a nice clean
-> > migration path.
->
-> Makes sense. That deprecation step is far away though.
-> Assuming that kernel_helper attr is actually necessary
-> we have to add its support to clang as well.
-> We have to keep compilers in sync.
-> gcc-bpf is a niche. If gcc devs want it to become a real
-> alternative to clang they have to always aim for feature parity
-> instead of inventing their own ways of doing things.
+> If the program does not need if.h, what should it use ?
+> There are other progs in selftest/bpf that include sys/socket.h
+> and they have no issue ?
+
+I'm still working through gcc issues with the test suite so there's
+probably some cases I haven't identified yet but this is the only one
+that seemed to need any code changes when removing those 2
+headers that I've found so far:
+https://lore.kernel.org/bpf/20220826055025.1018491-1-james.hilliard1@gmail.com/
