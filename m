@@ -2,60 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 792305A3A56
-	for <lists+bpf@lfdr.de>; Sun, 28 Aug 2022 00:54:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F9725A3A63
+	for <lists+bpf@lfdr.de>; Sun, 28 Aug 2022 01:03:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229486AbiH0Wya (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 27 Aug 2022 18:54:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56030 "EHLO
+        id S229462AbiH0XDc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 27 Aug 2022 19:03:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbiH0Wy3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 27 Aug 2022 18:54:29 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05BC94A104
-        for <bpf@vger.kernel.org>; Sat, 27 Aug 2022 15:54:26 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id j6so1832726ilu.9
-        for <bpf@vger.kernel.org>; Sat, 27 Aug 2022 15:54:25 -0700 (PDT)
+        with ESMTP id S229458AbiH0XDb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 27 Aug 2022 19:03:31 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 742371A824;
+        Sat, 27 Aug 2022 16:03:29 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id z8so6131472edb.0;
+        Sat, 27 Aug 2022 16:03:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=w9D9D/NajGhrxoSovCkbBuI+jyK+pO/iei9GkIyjXiU=;
-        b=Ki5wKNYle8YZQxup08zAYtp+lXjSRiLE2fDEfdCfbjGNz0lpkyDig51LhwrJMCRkx+
-         N6V0cGnczPxy99G1rEIOPqraw7bpXAqjyICLnJpWEq434A1H5T3bTW+o3ecSK7qqYQAU
-         hRYDHqnaC0RYloD87WtZ1MgA4/S872TsopYSVcC0WCjwjJXdJ0njUnW1TpuqBnTTPuIf
-         CQsOxYfFwU4CK8JoHT/VPRzR577nbjT59h6/v1dHkqOjrciBfkd5Xf6YJWOzmJApNykn
-         QPJeyp4Fvn0GKEUGvdm5C4Io+d5vNsylHY9njcVA/+pc0AGBLkm161ygO+28ac6lpKdT
-         aWwQ==
+         :mime-version:from:to:cc:subject:date;
+        bh=PLxGI4SbyOdiPSPxSoupr4i4Z6BqYIXWFq8Y5ah7TYw=;
+        b=M943WISz8L5G0eamyek9nrgiUFBwArk5/ehe3t8C9XqdHSwA3j/reKocgFSYRCyuwG
+         DVLrYcopji/G/lElOHo/wZVahk4IH6NrC5GBcb3UJFBRgt+BgJLe+ZGO1OqYMTIZll0D
+         KNaKQRlJmasvHXLYsDRNgwbQdnTUtlK/2s8qvD5iBiD804Wkup8ZpN/UmbfFPWwt8a+l
+         qouN9UxwhCnZLom22AMLMmc1ObEzHl73Ej17yBYJCc9jAgdYiOHmZbu9q7eL2ws+sq60
+         dEONVe0iBR2z7eqy7JB2BqkVl6EA5m8O09eyMDLOAlW+HdeZ6xXkTLLkAgDnIkcsAw5X
+         1eKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=w9D9D/NajGhrxoSovCkbBuI+jyK+pO/iei9GkIyjXiU=;
-        b=jmEU0DTTJ1YgTxs0daLGEwTrhZUCgUayPSS0joXT0T6/CWa0kJTT/mGHBzK4zip655
-         SytbYGfj5Xshe+aCYQoKjatCVMdiW9rsIN7wwFucMVQwWad/UKdvYY1cptQ6pGloEJnX
-         FD1LoO8dySiucFUNz0Ffo+LQMvLnAuseyWnr/hMdO5WuSv0sUlJ0273611yLhP1igzEQ
-         NIpHy36IwpkFVS5UA+2rdx9NmH9WFdT7jKZ6ISNf/SpGwfmCcjf2/wjQI7iZMmZZdjbd
-         Pu9Hz7i+AjPXOf1RsmI4i6SfdtOM0B00teRPBjEakQgMftA498LDdsTvx5Rlpv9he+68
-         TpWQ==
-X-Gm-Message-State: ACgBeo1ZdcvVqLwbRvEkvl8RX7vB6kG+Y8Jq1CFZRUicBSlBD5YHrT6w
-        2MmnFPF3FdeebnjCpckUW8QrE4cN6lRHQnTctpM=
-X-Google-Smtp-Source: AA6agR6qg5REdc8mr1uyH5qF6IZtkImJQoczv6iCKoMk1GxyArMuXcsq1N/Qn/AnYCJh3yEEGg8KKNqMmmapeHYbHcM=
-X-Received: by 2002:a05:6e02:661:b0:2e2:be22:67f0 with SMTP id
- l1-20020a056e02066100b002e2be2267f0mr7007047ilt.91.1661640865299; Sat, 27 Aug
- 2022 15:54:25 -0700 (PDT)
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=PLxGI4SbyOdiPSPxSoupr4i4Z6BqYIXWFq8Y5ah7TYw=;
+        b=NEUeKioRhDokpnpqNUTyvlEdeKPCSvOf9aNGgMYpCj62iANz9jI8/H7GgwE8Ry8J5t
+         dLI7bbDiMoEruIfdlOYHOLIi5yfRKLuBNu+Z1gYTujlxXmYv5410HSB27Ypyu3PLuGe6
+         25mY61nYrZce09VYz+Kl7m/7wzGgZZr0XayCi8p8FOw4SCeFG+a8sXa8NomAlzxDLKnq
+         GaFhFGCpoUGW/laGomLc0U6dRU0Y23ialY91AkouYucTQd91Ft9DnZKu0GaHrJQc66OR
+         wPhU0dbnI16cmc9m7z0V9+8J1mycpNDYB1rH+PgtUsMycZQ8quzWtia6y+iOu1MY5Iqk
+         UO5A==
+X-Gm-Message-State: ACgBeo2eAAvPf4E4WvjThVdFrm4An6vFoScUSgOSscMgFbf1TyBMSNHE
+        XLPlgO/xg631XefM9C1RXSptNJSph/GXbU3pSr8=
+X-Google-Smtp-Source: AA6agR4rIml3TgH0RnuYNkLiG5s4+s69wKqOHh7QXz45zObBIqFqq5rDzYbqdy5l5Cm6wbbOn31o0qeTf+qwPJ+eIUc=
+X-Received: by 2002:a05:6402:24a4:b0:440:8c0c:8d2b with SMTP id
+ q36-20020a05640224a400b004408c0c8d2bmr11123111eda.311.1661641407650; Sat, 27
+ Aug 2022 16:03:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220826024430.84565-1-alexei.starovoitov@gmail.com> <CAEf4Bzapz-SNfM+ky7UwnqNZAbJyy4eBHpxuNjW-TMk8C5ba8g@mail.gmail.com>
-In-Reply-To: <CAEf4Bzapz-SNfM+ky7UwnqNZAbJyy4eBHpxuNjW-TMk8C5ba8g@mail.gmail.com>
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date:   Sun, 28 Aug 2022 00:53:48 +0200
-Message-ID: <CAP01T76scR191CLFU10iiVn1aP47N+b8UrZtzf0syMd6az-hWA@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 00/15] bpf: BPF specific memory allocator.
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        davem@davemloft.net, daniel@iogearbox.net, andrii@kernel.org,
-        tj@kernel.org, delyank@fb.com, linux-mm@kvack.org,
-        bpf@vger.kernel.org, kernel-team@fb.com
+References: <20220822235649.2218031-1-joannelkoong@gmail.com>
+ <20220822235649.2218031-2-joannelkoong@gmail.com> <CAEf4BzZm7eUX3w-NwP0JuWtvKbO6GxN911TraY5bA8-z+ocyCg@mail.gmail.com>
+ <CAP01T77izAbefN5CJ1ZdjwUdii=gMFMduKTYtSbYC3S9jbRoEA@mail.gmail.com>
+ <CAJnrk1Y0r3++RLpT2jvp4st-79x3dUYk3uP-4tfnAeL5_kgM0Q@mail.gmail.com>
+ <CAP01T74O6ZuH_NPObYTLUjFSADjWjzfHjTsLBf8b67jgchf6Gw@mail.gmail.com>
+ <CAJnrk1Z39+pLzAOL3tbqvQyTcB4HvrbLghmr6_vLXhtJYHuwEA@mail.gmail.com>
+ <CAP01T76ChONTCVtHNZ_X3Z6qmuZTKCVYwe0s6_TGcuC1tEx9sw@mail.gmail.com>
+ <CAJnrk1Zmne1uDn8EKdNKJe6O-k_moU9Sryfws_J-TF2BvX2QMg@mail.gmail.com>
+ <CAP01T746gvoOM7DuWY-3N2xJbEainTinTPhyqHki2Ms6E0Dk_A@mail.gmail.com>
+ <CAEf4BzZYTN=gGsc88jetv-SSMBy78P7w7Y08zfwGR7cCenJPiQ@mail.gmail.com>
+ <CAP01T74mbnYJkq0CfknZBqYg4T5B-OenB+SB6=gc24GvpVxA8g@mail.gmail.com>
+ <CAEf4BzYpV-RJ456n0UQFPXSG6SvUPK5=jM4nS+x25z7pTkfMGQ@mail.gmail.com> <CAP01T74UojWGWk=1nbE8N=fM9-vzyJJv=qNMM5dJO7A5qO7S6g@mail.gmail.com>
+In-Reply-To: <CAP01T74UojWGWk=1nbE8N=fM9-vzyJJv=qNMM5dJO7A5qO7S6g@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Sat, 27 Aug 2022 16:03:15 -0700
+Message-ID: <CAEf4BzYzP_7ZR_KSpEuVHGF9V1isfoo5p-v-zQx0102z=ipciA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 1/3] bpf: Add skb dynptrs
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     Joanne Koong <joannelkoong@gmail.com>, bpf@vger.kernel.org,
+        andrii@kernel.org, daniel@iogearbox.net, ast@kernel.org,
+        kafai@fb.com, kuba@kernel.org, netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -67,160 +77,202 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 27 Aug 2022 at 18:57, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+On Sat, Aug 27, 2022 at 11:33 AM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
 >
-> On Thu, Aug 25, 2022 at 7:44 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
+> On Sat, 27 Aug 2022 at 19:22, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
 > >
-> > From: Alexei Starovoitov <ast@kernel.org>
+> > On Sat, Aug 27, 2022 at 12:12 AM Kumar Kartikeya Dwivedi
+> > <memxor@gmail.com> wrote:
+> > > [...]
+> > > >
+> > > > I think the right answer here is to not make bpf_dynptr_data() return
+> > > > direct pointer of changing read-only-ness. Maybe the right answer here
+> > > > is another helper, bpf_dynptr_data_rdonly(), that will return NULL for
+> > > > non-read-only dynptr and PTR_TO_MEM | MEM_RDONLY if dynptr is indeed
+> > > > read-only?
+> > >
+> > > Shouldn't it be the other way around? bpf_dynptr_data_rdonly() should
+> > > work for both ro and rw dynptrs, and bpf_dynptr_data() only for rw
+> > > dynptr?
 > >
-> > Introduce any context BPF specific memory allocator.
+> > Right, that's what I proposed:
 > >
-> > Tracing BPF programs can attach to kprobe and fentry. Hence they
-> > run in unknown context where calling plain kmalloc() might not be safe.
-> > Front-end kmalloc() with per-cpu cache of free elements.
-> > Refill this cache asynchronously from irq_work.
+> >   "bpf_dynptr_data_rdonly(), that will return NULL for non-read-only dynptr"
 > >
-> > Major achievements enabled by bpf_mem_alloc:
-> > - Dynamically allocated hash maps used to be 10 times slower than fully preallocated.
-> >   With bpf_mem_alloc and subsequent optimizations the speed of dynamic maps is equal to full prealloc.
-> > - Tracing bpf programs can use dynamically allocated hash maps.
-> >   Potentially saving lots of memory. Typical hash map is sparsely populated.
-> > - Sleepable bpf programs can used dynamically allocated hash maps.
+> > so if you pass read-write dynptr, it will return NULL (because it's
+> > unsafe to take writable direct pointer).
 > >
-> > v3->v4:
-> > - fix build issue due to missing local.h on 32-bit arch
-> > - add Kumar's ack
-> > - proposal for next steps from Delyan:
-> > https://lore.kernel.org/bpf/d3f76b27f4e55ec9e400ae8dcaecbb702a4932e8.camel@fb.com/
+> > bpf_dynptr_data_rdonly() should still work fine with both rdonly and
+> > read-write dynptr.
+> > bpf_dynptr_data() only works (in the sense returns non-NULL) for
+> > read-write dynptr only.
 > >
-> > v2->v3:
-> > - Rewrote the free_list algorithm based on discussions with Kumar. Patch 1.
-> > - Allowed sleepable bpf progs use dynamically allocated maps. Patches 13 and 14.
-> > - Added sysctl to force bpf_mem_alloc in hash map even if pre-alloc is
-> >   requested to reduce memory consumption. Patch 15.
-> > - Fix: zero-fill percpu allocation
-> > - Single rcu_barrier at the end instead of each cpu during bpf_mem_alloc destruction
 > >
-> > v2 thread:
-> > https://lore.kernel.org/bpf/20220817210419.95560-1-alexei.starovoitov@gmail.com/
+> > >
+> > > And yes, you're kind of painting yourself in a corner if you allow
+> > > dynptr_data to work with statically ro dynptrs now, ascertaining the
+> > > ro bit for the returned slice, and then later you plan to add dynptrs
+> > > whose ro vs rw is not known to the verifier statically. Then it works
+> > > well for statically known ones (returning both ro and rw slices), but
+> > > has to return NULL at runtime for statically unknown read only ones,
+> > > and always rw slice in verifier state for them.
 > >
-> > v1->v2:
-> > - Moved unsafe direct call_rcu() from hash map into safe place inside bpf_mem_alloc. Patches 7 and 9.
-> > - Optimized atomic_inc/dec in hash map with percpu_counter. Patch 6.
-> > - Tuned watermarks per allocation size. Patch 8
-> > - Adopted this approach to per-cpu allocation. Patch 10.
-> > - Fully converted hash map to bpf_mem_alloc. Patch 11.
-> > - Removed tracing prog restriction on map types. Combination of all patches and final patch 12.
+> > Right, will be both inconsistent and puzzling.
 > >
-> > v1 thread:
-> > https://lore.kernel.org/bpf/20220623003230.37497-1-alexei.starovoitov@gmail.com/
+> > >
+> > > >
+> > > > By saying that read-only-ness of dynptr should be statically known and
+> > > > rejecting some dynptr functions at load time places us at the mercy of
+> > > > verifier's complete knowledge of application logic, which is exactly
+> > > > against the spirit of dynptr.
+> > > >
+> > >
+> > > Right, that might be too restrictive if we require them to be
+> > > statically read only.
+> > >
+> > > But it's not about forcing it to be statically ro, it is more about
+> > > rejecting load when we know the program is incorrect (e.g. the types
+> > > are incorrect when passed to helpers), otherwise we throw the error at
+> > > runtime anyway, which seems to be the convention afaicu. But maybe I
+> > > missed the memo and we gradually want to move away from such strict
+> > > static checks.
+> > >
+> > > I view the situation here similar to if we were rejecting direct
+> > > writes to PTR_TO_MEM | MEM_RDONLY at load time, but offloading as
+> > > runtime check in the helper writing to it as rw memory arg. It's as if
+> > > we pretend it's part of the 'type' of the register when doing direct
+> > > writes, but then ignore it while matching it against the said helper's
+> > > argument type.
 > >
-> > LWN article:
-> > https://lwn.net/Articles/899274/
-> >
-> > Future work:
-> > - expose bpf_mem_alloc as uapi FD to be used in dynptr_alloc, kptr_alloc
-> > - convert lru map to bpf_mem_alloc
-> >
-> > Alexei Starovoitov (15):
-> >   bpf: Introduce any context BPF specific memory allocator.
-> >   bpf: Convert hash map to bpf_mem_alloc.
-> >   selftests/bpf: Improve test coverage of test_maps
-> >   samples/bpf: Reduce syscall overhead in map_perf_test.
-> >   bpf: Relax the requirement to use preallocated hash maps in tracing
-> >     progs.
-> >   bpf: Optimize element count in non-preallocated hash map.
-> >   bpf: Optimize call_rcu in non-preallocated hash map.
-> >   bpf: Adjust low/high watermarks in bpf_mem_cache
-> >   bpf: Batch call_rcu callbacks instead of SLAB_TYPESAFE_BY_RCU.
-> >   bpf: Add percpu allocation support to bpf_mem_alloc.
-> >   bpf: Convert percpu hash map to per-cpu bpf_mem_alloc.
-> >   bpf: Remove tracing program restriction on map types
-> >   bpf: Prepare bpf_mem_alloc to be used by sleepable bpf programs.
-> >   bpf: Remove prealloc-only restriction for sleepable bpf programs.
-> >   bpf: Introduce sysctl kernel.bpf_force_dyn_alloc.
-> >
-> >  include/linux/bpf_mem_alloc.h             |  26 +
-> >  include/linux/filter.h                    |   2 +
-> >  kernel/bpf/Makefile                       |   2 +-
-> >  kernel/bpf/core.c                         |   2 +
-> >  kernel/bpf/hashtab.c                      | 132 +++--
-> >  kernel/bpf/memalloc.c                     | 602 ++++++++++++++++++++++
-> >  kernel/bpf/syscall.c                      |  14 +-
-> >  kernel/bpf/verifier.c                     |  52 --
-> >  samples/bpf/map_perf_test_kern.c          |  44 +-
-> >  samples/bpf/map_perf_test_user.c          |   2 +-
-> >  tools/testing/selftests/bpf/progs/timer.c |  11 -
-> >  tools/testing/selftests/bpf/test_maps.c   |  38 +-
-> >  12 files changed, 796 insertions(+), 131 deletions(-)
-> >  create mode 100644 include/linux/bpf_mem_alloc.h
-> >  create mode 100644 kernel/bpf/memalloc.c
-> >
-> > --
-> > 2.30.2
-> >
+> > I disagree, it's not the same. bpf_dynptr_data/bpf_dynptr_data_rdonly
+> > turns completely dynamic dynptr into static slice of memory. Only
+> > after that point it makes sense for BPF verifier to reject something.
+> > Until then it's not incorrect. BPF program will always have to deal
+> > with some dynptr operations potentially failing. dynptr can always be
+> > NULL internally, you can still call bpf_dynptr_xxx() operations on it,
+> > they will just do nothing and return error. That doesn't make BPF
+> > program incorrect.
 >
-> It's great to lift all those NMI restrictions on non-prealloc hashmap!
-> This should also open up new maps (like qp-trie) that can't be
-> pre-sized to the NMI world as well.
+> Let me just explain one last time why I'm unable to swallow this
+> 'completely dynamic dynptr' explanation, because it is not treated as
+> completely dynamic by all dynptr helpers.
 >
-> But just to clarify, in NMI mode we can exhaust memory in caches (and
-> thus if we do a lot of allocation in single BPF program execution we
-> can fail some operations). That's unavoidable. But it's not 100% clear
-> what's the behavior in IRQ mode and separately from that in "usual"
-> less restrictive mode. Is my understanding correct that we shouldn't
-> run out of memory (assuming there is memory available, of course)
-> because replenishing of caches will interrupt BPF program execution?
-
-When I was reviewing the code what I understood was as follows:
-
-There are two ways work is queued. On non-RT, it is queued for
-execution in hardirq context (raised_list), on RT it will instead be
-executed by per-CPU pinned irq_work kthreads (from lazy_list).
-
-We cannot set the IRQ_WORK_HARD_IRQ to force RT to execute them in
-hardirq context, as bpf_mem_refill may take sleepable non-raw
-spinlocks when calling into kmalloc, which is disallowed.
-
-So, to summarize the behavior:
-In NMI context:
-- for both RT and non-RT, once we deplete the cache we get -ENOMEM.
-In IRQ context:
-- for RT, it will fill it asynchronously by waking up the irq_work
-kthread, so you may still get -ENOMEM (also depends on if bpf prog is
-in hardirq or threaded irq context, since hardirq context would be
-non-preemptible, delaying refilling from irq_work kthread context).
-- for non-RT, it is already inside the interrupt handler hence you
-will get -ENOMEM. Interrupt handlers keep interrupts disabled, so IPI
-execution is delayed until the handler returns.
-In softirq and task context:
-- for RT, it will fill it asynchronously by waking up the irq_work
-kthread, so you may still get -ENOMEM.
-- for non-RT, it will send IPI to local cpu, which will execute the
-work synchronously, so you will refill the cache by interrupting the
-program. Even when executing softirq inside the exit path of
-interrupts, at that point interrupts are enabled so it will refill
-synchronously by raising local IPI.
-
-For the last case (say task context), the problem of kmalloc
-reentrancy comes to mind again, e.g if we are tracing in guts of
-kmalloc and send local IPI which eventually calls kmalloc again (which
-may deadlock). But remember that such cases are already possible
-without BPF, interrupts which allocate may come in at any time, so the
-kmalloc code itself will keep IRQs disabled at these places, hence we
-are fine from BPF side as well.
-
-Please let me know of any inaccuracies in the above description.
-
-
-> Or am I wrong and we can still run out of memory if we don't have
-> enough pre-cached memory. I think it would be good to clearly state
-> such things (unless I missed them somewhere in patches). I'm trying to
-> understand if in non-restrictive mode we can still fail to allocate a
-> bunch of hashmap elements in a loop just because of the design of
-> bpf_mem_alloc?
+> No pushback, but it would be great if you could further help me wrap
+> my head around this, so that we're in sync for future discussions.
 >
-> But it looks great otherwise. For the series:
+> So you say you may not know the type of dynptr (read-only, rw, local,
+> ringbuf, etc.). Hence you want to treat every dynptr as 'dynamic
+
+No, that's not what I said. I didn't talk about dynptr type (ringbuf
+vs skb vs local). Type we have to track statically precisely to limit
+what kind of helpers can be used on dynptrs of specific type.
+
+But note that there are helpers that don't care about dynptr and, in
+theory, should work with any dynptr. Because dynptr is an abstraction
+of "logically continuous range of memory". So in some cases even types
+don't matter.
+
+But regardless, I just don't think about read-only bit as part of
+dynptr types. I don't see why it has to be statically known and even
+why it has to stay as read-only or read-write for the entire duration
+of dynptr lifetime. Why can't we allow flipping dynptr from read-write
+to read-only before passing it to some custom BPF subprog, potentially
+provided from some BPF library which you don't control; just to make
+sure that it cannot really modify underlying memory (even if it is
+fundamentally modifiable, like with ringbuf)?
+
+So the point I'm trying to communicate is that things that don't
+**need** to be knowable statically to BPF verifier - **should not** be
+knowable and should be checked at runtime only. With any dynptr helper
+that is interfacing its runtime nature into static thing that verifier
+enforces (which is what bpf_dynptr_data/bpf_dynptr_data_rdonly are),
+it will always be "fallible" and users will have to expect that they
+might return NULL or do nothing, or whatever way to deal with failure
+case.
+
+
+And I believe dynptr read-onliness is not something that BPF verifier
+should be tracking statically. PTR_TO_MEM -- yes, dynptr -- no. That's
+it. Dynptr type/kind -- yes, track statically, it's way more important
+to determine what you can at all do with dynptr.
+
+
+> dynptr' you know nothing about even when you do know some information
+> about it statically (e.g. if it's on stack). You don't want to reject
+> things early at load even if you have all the info to do so. You want
+> operations on it to fail at runtime instead.
 >
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> If you cannot track ro vs rw in the future statically, you won't be be
+> able to track local or ringbuf or skb either (since both are part of
+> the type of the dynptr). If you can, you can just as well encode
+> const-ness as part of the type where you declare it (e.g. in a map
+> field where the value is assigned dynamically, where you say
+> dynptr_ringbuf etc.). Type comprises local vs skb vs ringbuf | ro vs
+> rw for me. But maybe I could be wrong.
+
+I don't consider read-only to be a part of type. It's more like offset
+and size to me, rather than type. And even if we can track constness
+(e.g., we can teach BPF verifier to recognize that hypothetical
+bpf_dynptr_set_read_only() makes dynptr into dynptr_rdonly, but why?)
+
+>
+> So following this line of reasoning, will you be relaxing the argument
+> type of helpers like bpf_ringbuf_submit_dynptr? Right now they take
+> 'dynamic dynptr' as arg, but also expect DYNPTR_TYPE_RINGBUF, so you
+> reject load when it's not a ringbuf dynptr. Will it then fallback to
+> checking the type at runtime when the type will not be known? But then
+> it will also permit passing local or skb dynptr in the future which it
+> rejects right now.
+
+No, which is exactly why we track dynptr type statically. Because some
+operations don't make sense and they have additional semantics (like
+with ringbuf submit).
+
+>
+> I'm just hoping you are able to see why it's looking a bit
+> inconsistent to me. If DYNPTR_TYPE_RINGBUF has to be checked, it felt
+> to me like DYNPTR_RDONLY is as much part of that kind of type safety
+> wrt helpers. It would be set on the dynptr when skb passed to
+> dynptr_from_skb is rdonly in some program types, along with
+> DYNPTR_TYPE_SKB, and expect to be matched when invoking helpers on
+> such dynptrs.
+
+I understand your view point. But you are taking "completely dynamic"
+nature of dynptr too far (not tracking dynptr type) in one case, or
+making it too restrictive (tracking read-only state) in another. We
+can argue what substitutes "inconsistent", but I'm just leaning
+towards slightly different tradeoffs. I don't see a huge value in
+preventing bpf_dynptr_write() to be called on read-only dynptr
+**statically**. I've ran into various cases where I'd rather BPF
+verifier not pretend to be all-knowing and too helpful, because it
+sometimes turns into a game of proving to BPF verifier that "I know
+what I'm doing, and it's correct, so please just let me do it".
+
+>
+> It is fine to push checks to runtime, especially when you won't know
+> the type, because verifier cannot reasonably track the dynptr type
+> then.
+>
+> But right now there's still some level of state you maintain in the
+> verifier about dynptrs (like it's type), and it seems to me like some
+> helpers are using that state to reject things at load time, while some
+> other helper will ignore it and fallback to runtime checks.
+
+Exactly. There are helpers that can fail no matter what, and
+read-onliness is just another condition they will have to check and
+reject.
+
+And some helpers really don't and shouldn't care about the nature of
+dynptr (like bpf_dynptr_get_size(), for example).
+
+>
+> I hope this is a clear enough description to atleast justify why I'm
+> (still) a bit confused.
+
+I don't think you are confused, you just prefer a different tradeoff.
+Hopefully I gave a few more arguments in favor of less static
+treatment of dynptr where it doesn't hurt correctness.
+
+P.S. I'm going away on vacation, so unlikely to be able to continue
+this discussion in a timely manner going forward.
