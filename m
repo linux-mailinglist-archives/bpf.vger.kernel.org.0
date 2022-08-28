@@ -2,150 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC6A45A3EE8
-	for <lists+bpf@lfdr.de>; Sun, 28 Aug 2022 19:37:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBB875A3F11
+	for <lists+bpf@lfdr.de>; Sun, 28 Aug 2022 20:22:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229697AbiH1Rgl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 28 Aug 2022 13:36:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57868 "EHLO
+        id S229747AbiH1SWJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 28 Aug 2022 14:22:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230025AbiH1Rgl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 28 Aug 2022 13:36:41 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46ABE32AA3
-        for <bpf@vger.kernel.org>; Sun, 28 Aug 2022 10:36:40 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id u6so7671629eda.12
-        for <bpf@vger.kernel.org>; Sun, 28 Aug 2022 10:36:40 -0700 (PDT)
+        with ESMTP id S229633AbiH1SWJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 28 Aug 2022 14:22:09 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47E5D2A430;
+        Sun, 28 Aug 2022 11:22:05 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id y127so6234539pfy.5;
+        Sun, 28 Aug 2022 11:22:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc;
-        bh=6aEi9sGsKYzyV+EPu0jnl/8R1OHSRxD7Wt/ZKOb4VfI=;
-        b=fkVg/izSAbzBQrgZFGV9qJlhnmb044TBEyojI+HdFl+oWWjmg39a+c3WNJUsDQhS44
-         W3K0mcXdk8QAB+MDXxUaxRnbvOssEPa92lf97Qpj9m6L3YToTpRw2M8m/QG69A2oE6QW
-         IIBaUSAn4XXeNhtQWZMAnbXL4pgVDjjXmNVXS5VNqLmJ2fCDpsT3FZ4+cq7bXAS56hp3
-         06lMwa8E8JI9NUTOQPf9Rcrmjzhhz/9IJKh7A2SqWsG7tl8tpsbmOyyvOG/znqQHSe4r
-         BBbLuVe3Ct35rFDIM1SP37wdDqCTNM8qfVdQauJhFVD+5DOHNG6iB8TI54xomRetgoSn
-         Bveg==
+         :subject:cc:to:from:date:sender:from:to:cc;
+        bh=fDxt/23RMfjSPySyD961NLt4VpOweqOjLnL5SIVCHSw=;
+        b=bYRe2XZSiSci2LOHFk4x2DL4UfLXQoCGgCBD1X+W6bzYL4E1x6f+eLhYmIXp7q53rW
+         Uo4HLItQM5SCdwRKOFo/PKO99zk0ev1GsMB4n8AfLYQjMlsPBBchv0gViHGlRajCZW+K
+         cA9OvTZId4uB8YFICMpI/1EkiEyyzvHs0SZdjd0LBmU+XWTWtTyb/6/HhwPbnmqlIRss
+         kEbrFVTf+Jr0SVAsukYkqK/AOqGbxpalP10Wr6ELwkCpjLKMc4yVLcoMTZQnZfCCmuvf
+         oP/IvdKyf+e3fgFbFTmyrw1IHO3wI6pgK1/WjAkAppW869soncCXuBC+5JdGn0xcr0Ni
+         udyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc;
-        bh=6aEi9sGsKYzyV+EPu0jnl/8R1OHSRxD7Wt/ZKOb4VfI=;
-        b=CzgTZW+J17J/y226Wb75WntDjLt3J7iTGRSM8HiFXRhnqSjQUBdWSYQ6YdOhWZ9XwI
-         M6erD6lc/gd5QouMGvwg5IKREVAx02eF+BuuMQog+PPWAzdP9+biXZkyqfJlQSsYPg0h
-         tEl475/hucgOXnu0TvQWNXG/EKSs7Sl1auHJSrLZx3oB7U+jAYXH2BmId+H02l0zZ8P+
-         hrKQ+rH8XQSdYYiznoxlsyYdJMw408NCD16nveOpjOqVJaNs4vhzeIoKNZrcmUEs7gPB
-         urhi6fSzyNG92/J/3RR3pUnBVd5Qc7AffI0381fDKFcTZVAgFWMRF+bJ/3cuQHZcsz+R
-         fhuw==
-X-Gm-Message-State: ACgBeo3cxuaxBQUoho3j5FulNO4ttNIJuQ52K9cFV/f7K43Pt8WrnVsN
-        nNTRB1Wlgywb/iOruHvU0Nk=
-X-Google-Smtp-Source: AA6agR4ZNiB98XhaAiFweCETcaEltTaBwW3n9nveoFoJkMRLEPeehjSSQNFl0s9cD4GE4qkyQsoXiQ==
-X-Received: by 2002:aa7:d9da:0:b0:447:b14a:e47e with SMTP id v26-20020aa7d9da000000b00447b14ae47emr13256250eds.352.1661708198792;
-        Sun, 28 Aug 2022 10:36:38 -0700 (PDT)
-Received: from krava ([83.240.60.103])
-        by smtp.gmail.com with ESMTPSA id r21-20020aa7d155000000b0043cc66d7accsm4689039edo.36.2022.08.28.10.36.38
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc;
+        bh=fDxt/23RMfjSPySyD961NLt4VpOweqOjLnL5SIVCHSw=;
+        b=C9BOuWz1wHzIsQ6CNyycxbFXoJn/HPEWnj+xhzGQ/X9J+naXDt85twsReXUp1GQGAK
+         T2vqExh/+d1kUkJjm+LhMFfXCuTL8WQljZxH2LjF2iTpBIrzfij08ZDNp23qI2YMmWDl
+         JAWOu7iuBWcETDQdtCDCGLmKteanr5tIOhiDVNOrZaqTAH/6jmBxueWle5eM5e7fQv+Y
+         whUfnvLdmRRTQoJNorE7dsQp0qBiIYyzj595jIsSaG2Dxa2Ck5LLwLLzqXSuAR2eAaGy
+         X1VlCwTekxR81S84AVZlJDQ9rSgSZoZlPdC3c12AkQm5K/rGCqkNQzQdYL8tvJlZtvB4
+         5QuA==
+X-Gm-Message-State: ACgBeo0LtD+Vte6JvP+aKTHh7sBoXD9EENcbSsu7pwOj9hFIfq0lrLDP
+        krs27t8X+/FJGH+kKSui/K8=
+X-Google-Smtp-Source: AA6agR7tU14ikL/UQg9apn73eAvtTX2DR/yMT2CYo2OogdbUN5FCCIPInYPJGDzhUW+NCZRXkw3MpA==
+X-Received: by 2002:a63:c5:0:b0:40d:d290:24ef with SMTP id 188-20020a6300c5000000b0040dd29024efmr11059768pga.141.1661710924333;
+        Sun, 28 Aug 2022 11:22:04 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
+        by smtp.gmail.com with ESMTPSA id m1-20020a170902db0100b0016eef474042sm5650821plx.262.2022.08.28.11.22.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Aug 2022 10:36:38 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Sun, 28 Aug 2022 19:36:37 +0200
-To:     Martin Reboredo <yakoyoku@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Yonghong Song <yhs@fb.com>
-Subject: Re: [PATCH bpf-next] bpf: Add config for skipping BTF enum64s
-Message-ID: <Ywunpcdf3CZTghIt@krava>
-References: <20220828165124.20261-1-yakoyoku@gmail.com>
+        Sun, 28 Aug 2022 11:22:03 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Sun, 28 Aug 2022 08:22:02 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Gabriel Ryan <gabe@cs.columbia.edu>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Abhishek Shah <abhishek.shah@columbia.edu>,
+        linux-kernel@vger.kernel.org, andrii@kernel.org, ast@kernel.org,
+        bpf@vger.kernel.org, cgroups@vger.kernel.org, daniel@iogearbox.net,
+        hannes@cmpxchg.org, john.fastabend@gmail.com, kafai@fb.com,
+        kpsingh@kernel.org, lizefan.x@bytedance.com,
+        netdev@vger.kernel.org, songliubraving@fb.com, yhs@fb.com
+Subject: Re: data-race in cgroup_get_tree / proc_cgroup_show
+Message-ID: <YwuySgH4j6h2CGvk@slm.duckdns.org>
+References: <CAEHB249jcoG=sMGLUgqw3Yf+SjZ7ZkUfF_M+WcyQGCAe77o2kA@mail.gmail.com>
+ <20220819072256.fn7ctciefy4fc4cu@wittgenstein>
+ <CALbthtdFY+GHTzGH9OujzqpOtWZAqsU3MAsjv5OpwZUW6gVa7A@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220828165124.20261-1-yakoyoku@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CALbthtdFY+GHTzGH9OujzqpOtWZAqsU3MAsjv5OpwZUW6gVa7A@mail.gmail.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Aug 28, 2022 at 01:51:24PM -0300, Martin Reboredo wrote:
-> From: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+On Mon, Aug 22, 2022 at 01:04:58PM -0400, Gabriel Ryan wrote:
+> Hi Christian,
 > 
-> After the release of pahole 1.24 some people in the dwarves mailing list
-> notified issues related to building the kernel with the BTF_DEBUG_INFO
-> option toggled. They seem to be happenning due to the kernel and
-> resolve_btfids interpreting btf types erroneously. In the dwarves list
-> I've proposed a change to the scripts that I've written while testing
-> the Rust kernel, it simply passes the --skip_encoding_btf_enum64 to
-> pahole if it has version 1.24, but it might be desirable to have the
-> option to pass said flag.
+> We ran a quick test and confirm your suggestion would eliminate the
+> data race alert we observed. If the data race is benign (and it
+> appears to be), using WRITE_ONCE(cgrp_dfl_visible, true) instead of
+> cmpxchg in cgroup_get_tree() would probably also be ok.
 
-as I wrote in the original thread, I think we need to do this just for
-stable kernels that don't have enum64 support and use pahole 1.24
+I don't see how the data race can lead to anything but would the following
+work?
 
-I think we should switch it off there by default without config option
+Thanks.
 
-jirka
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index ffaccd6373f1e..a90fdba881bdb 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -2172,7 +2172,7 @@ static int cgroup_get_tree(struct fs_context *fc)
+ 	struct cgroup_fs_context *ctx = cgroup_fc2context(fc);
+ 	int ret;
+ 
+-	cgrp_dfl_visible = true;
++	WRITE_ONCE(cgrp_dfl_visible, true);
+ 	cgroup_get_live(&cgrp_dfl_root.cgrp);
+ 	ctx->root = &cgrp_dfl_root;
+ 
+@@ -6056,7 +6056,7 @@ int proc_cgroup_show(struct seq_file *m, struct pid_namespace *ns,
+ 		struct cgroup *cgrp;
+ 		int ssid, count = 0;
+ 
+-		if (root == &cgrp_dfl_root && !cgrp_dfl_visible)
++		if (root == &cgrp_dfl_root && !READ_ONCE(cgrp_dfl_visible))
+ 			continue;
+ 
+ 		seq_printf(m, "%d:", root->hierarchy_id);
 
-> 
-> Signed-off-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-> ---
->  lib/Kconfig.debug       | 14 ++++++++++++++
->  scripts/pahole-flags.sh |  7 +++++++
->  2 files changed, 21 insertions(+)
-> 
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index 072e4b289c13..638a33cf9e57 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -356,6 +356,20 @@ config PAHOLE_HAS_BTF_TAG
->  	  btf_decl_tag) or not. Currently only clang compiler implements
->  	  these attributes, so make the config depend on CC_IS_CLANG.
->  
-> +config PAHOLE_HAS_SKIP_ENCODING_BTF_ENUM64
-> +	def_bool PAHOLE_VERSION >= 124
-> +	help
-> +	  Encoding BTF enum64s can be skipped with the
-> +	  --skip_encoding_btf_enum64 pahole option.
-> +
-> +config DEBUG_INFO_BTF_SKIP_ENCODING_ENUM64
-> +	def_bool n
-> +	depends on DEBUG_INFO_BTF && PAHOLE_HAS_SKIP_ENCODING_BTF_ENUM64
-> +	help
-> +	  Omit the encoding of 64 bits enum values with pahole. With certain
-> +	  kernel configurations having ENUM64s enabled may result in malformed
-> +	  output binaries.
-> +
->  config DEBUG_INFO_BTF_MODULES
->  	def_bool y
->  	depends on DEBUG_INFO_BTF && MODULES && PAHOLE_HAS_SPLIT_BTF
-> diff --git a/scripts/pahole-flags.sh b/scripts/pahole-flags.sh
-> index 0d99ef17e4a5..e44bc2a947ce 100755
-> --- a/scripts/pahole-flags.sh
-> +++ b/scripts/pahole-flags.sh
-> @@ -9,6 +9,10 @@ fi
->  
->  pahole_ver=$($(dirname $0)/pahole-version.sh ${PAHOLE})
->  
-> +is_enabled() {
-> +	grep -q "^$1=y" include/config/auto.conf
-> +}
-> +
->  if [ "${pahole_ver}" -ge "118" ] && [ "${pahole_ver}" -le "121" ]; then
->  	# pahole 1.18 through 1.21 can't handle zero-sized per-CPU vars
->  	extra_paholeopt="${extra_paholeopt} --skip_encoding_btf_vars"
-> @@ -19,5 +23,8 @@ fi
->  if [ "${pahole_ver}" -ge "122" ]; then
->  	extra_paholeopt="${extra_paholeopt} -j"
->  fi
-> +if is_enabled DEBUG_INFO_BTF_SKIP_ENCODING_ENUM64; then
-> +	extra_paholeopt="${extra_paholeopt} --skip_encoding_btf_enum64"
-> +fi
->  
->  echo ${extra_paholeopt}
-> -- 
-> 2.37.2
-> 
+
+-- 
+tejun
