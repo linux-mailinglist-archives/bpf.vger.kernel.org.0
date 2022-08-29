@@ -2,68 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FD9D5A5314
-	for <lists+bpf@lfdr.de>; Mon, 29 Aug 2022 19:25:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6EBF5A532A
+	for <lists+bpf@lfdr.de>; Mon, 29 Aug 2022 19:31:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229447AbiH2RZB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Aug 2022 13:25:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46824 "EHLO
+        id S229715AbiH2RbZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Aug 2022 13:31:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbiH2RY5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Aug 2022 13:24:57 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 312DF9FEB
-        for <bpf@vger.kernel.org>; Mon, 29 Aug 2022 10:24:53 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id bu22so10728667wrb.3
-        for <bpf@vger.kernel.org>; Mon, 29 Aug 2022 10:24:53 -0700 (PDT)
+        with ESMTP id S229531AbiH2RbY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Aug 2022 13:31:24 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD5267B7AB
+        for <bpf@vger.kernel.org>; Mon, 29 Aug 2022 10:31:23 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id n17so11097068wrm.4
+        for <bpf@vger.kernel.org>; Mon, 29 Aug 2022 10:31:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=JHEoFDBYkf+wx8UJlazL9iiOjkp5vY9J/9mubKGK77U=;
-        b=ddU2FvjbjGLKBhjwXR22Ss4a19qcGqXzLI6UAaaamdUNn19uKUVvETZSXaviXhx2JT
-         yr7atnCbEvKkbQRMDTKXJBxWr0zN82CPE7TkUy+Iv7qwgvO6lBV0sW/r3o+wZDf2yFFp
-         rZFHh6FqMczphAJ2L+FtYkGQqxaqMs5qlcUQFq17/Mms/e+r3zN7iVjiBBOGjuNmu1eP
-         2BPQ767jqZTJt4tea81cRG6KG4mDD1+x0ZGmBZSoQZQbjjdXgga447u+IpmBqjPeTca6
-         6dRZD0I7JYyMBfWsoM0aiogMgfKD18NTkmTZAMTA7uAtm/6jLLq9u7VwBi6tudDXpLK5
-         6Klw==
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc;
+        bh=6dZvHbb8IWueLS4eFstq1vaFfQHUYChceiQvahnGWHU=;
+        b=cqoVFEaZpeJD8EjNsoLJ56vZYmVurORt4hKHbg5R3LIFg2MPYs9W9NyBzZJkO2Oxaf
+         wbD4TpbwyAA2cTNYtWJJ+0bHscp0QXqLghWLQzaihARVQXFbGamD/y+wT7uiaBbIMUNk
+         IVcoC++0s7an6V+WAZu0yKjuQWtiHUBYPm2UNNnR/UE4ORHA6YhRMrm4knhOzp0OGr47
+         bvzrpTWLtfX0Bn0PTH4HHg8r3omAX828OO3edjzOICn6IY4eGH9PQhxQwPDxHAtllPBH
+         ncEYOgWP7jsLmEWXULP94ZnYf+pkVq8pn2BhQh5lYmSlUPV5koIisqeachjraxEBVBaf
+         OmNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=JHEoFDBYkf+wx8UJlazL9iiOjkp5vY9J/9mubKGK77U=;
-        b=e/HAukblopArlNql2pCGMdSxN1UoQ6VPMEzJ3q9eee1pjzkBK5PO/eiJ+SyGuFIxU7
-         3+IeEThoi7tShr8QMgVlJI7Ag24nwi1s5XHqFMQI0O66iFlirEjYkjRWj4iD3CD+a8Vy
-         UWkBbcB46FlWIO+B6HfxuNWxxLoAmDPKUggMV1PnFU/vA3aCQOl95cp9OwLzHotKXVsd
-         7Q+E5Omlli+t1UZJ3CWMWLZgHM3eX+acgHCtraTqAmFuJWU+V3ZNkDqY4N9xkNs4WQsC
-         lcyaF+b3FStAropvUrtfAj0DAJjUUdYJmEW0ptvqDv4tUhI/bGPNi+2IeSM3ntBc9Jhx
-         caNA==
-X-Gm-Message-State: ACgBeo2MfTLPSGi71zZmsTyWmDBDi4CQl9i8ng4qLtanhkgCszsuRlRb
-        cxMj3tBfGvwQdUMUrY9G75NcaGizg+K+wodJcmFV2Q==
-X-Google-Smtp-Source: AA6agR4RF/cRQWbRPZWLxBSY+YwtXh6Rf4LW59Ah0otUmTd/0uS8zjk3pR01RTPPb4e0kuBkgo5GHSZl8k3PPVRxxak=
-X-Received: by 2002:a5d:6d0c:0:b0:225:4ff9:7e67 with SMTP id
- e12-20020a5d6d0c000000b002254ff97e67mr7022846wrq.534.1661793891577; Mon, 29
- Aug 2022 10:24:51 -0700 (PDT)
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc;
+        bh=6dZvHbb8IWueLS4eFstq1vaFfQHUYChceiQvahnGWHU=;
+        b=YBAnNGHHYWmctl6jM8tzaiohKoTMoJs8BFmYdfJy+Heqr3c0PENyZOBbJ2PRcz4o+O
+         6LlgeFAJCjH7Gng4ZBTwrClJIRi19IVDMC1nbSiRAawOr6iUPORfqhNcFY7gdJASBkYz
+         LHd7+Jg9WfRdJsuaBJOpO1g8+vd/h37Ax8a0dVaL0X+wKEdUE7OvgOm/+AoPpuqF0Idm
+         cX6w2AB10QqfHmHQzD68NUufN5KnNNzu1GCTp9N6Q4J3ArYdm7UN1KSnMKpxYoRF3upV
+         tSPpNMsum9HGzRDLL046lRbwpRmbkyDusgywfHIi3IXkL8QPUnY+maaPt0xqNA23z3Ae
+         thWQ==
+X-Gm-Message-State: ACgBeo0I+nIZEh62I177qmotS2NAFt52bM3dYNVKFy3lTqmoLoe/tQJf
+        JLjBzWpfMa5Pjn7zRrzA7INtGRLHeUQPn6n0/VCwqA==
+X-Google-Smtp-Source: AA6agR5PMAaW7CWgNC3xjNhmK4ZVCby/7FxoZWwKdWYyXUS94EaAlNQe/fRHGAz2ieW8uX0a+ZjjO/2nncCysdRfGEA=
+X-Received: by 2002:a5d:6609:0:b0:226:ced9:be58 with SMTP id
+ n9-20020a5d6609000000b00226ced9be58mr6644307wru.80.1661794282111; Mon, 29 Aug
+ 2022 10:31:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220826230639.1249436-1-yosryahmed@google.com> <CACYkzJ4=YCZ-rwBdjm59zff-M9q103m6yTnm7da1znbAGX2Ojw@mail.gmail.com>
-In-Reply-To: <CACYkzJ4=YCZ-rwBdjm59zff-M9q103m6yTnm7da1znbAGX2Ojw@mail.gmail.com>
+References: <20220826165238.30915-1-mkoutny@suse.com> <20220826165238.30915-5-mkoutny@suse.com>
+ <CAJD7tkZZ6j6mPfwwFDy_ModYux5447HFP=oPwa6MFA_NYAZ9-g@mail.gmail.com> <20220829125957.GB3579@blackbody.suse.cz>
+In-Reply-To: <20220829125957.GB3579@blackbody.suse.cz>
 From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Mon, 29 Aug 2022 10:24:15 -0700
-Message-ID: <CAJD7tkZtUk8jmtEk559_njcPstyJ5td1xSKPGsqrbggnB6wADg@mail.gmail.com>
-Subject: Re: [PATCH] selftests/bpf: simplify cgroup_hierarchical_stats selftest
-To:     KP Singh <kpsingh@kernel.org>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Mykola Lysenko <mykolal@fb.com>, Song Liu <song@kernel.org>,
+Date:   Mon, 29 Aug 2022 10:30:45 -0700
+Message-ID: <CAJD7tkZySzWgJgp4xbkpSstc_RMN_tJqt83-FFrxv6jASeg8CA@mail.gmail.com>
+Subject: Re: [PATCH 4/4] cgroup/bpf: Honor cgroup NS in cgroup_iter for ancestors
+To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Aditya Kali <adityakali@google.com>,
+        Serge Hallyn <serge.hallyn@canonical.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
         Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        Muneendra Kumar <muneendra.kumar@broadcom.com>,
+        Hao Luo <haoluo@google.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
@@ -75,100 +74,37 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Aug 28, 2022 at 3:48 PM KP Singh <kpsingh@kernel.org> wrote:
+On Mon, Aug 29, 2022 at 6:00 AM Michal Koutn=C3=BD <mkoutny@suse.com> wrote=
+:
 >
-> On Sat, Aug 27, 2022 at 1:06 AM Yosry Ahmed <yosryahmed@google.com> wrote:
-> >
-> > The cgroup_hierarchical_stats selftest is complicated. It has to be,
-> > because it tests an entire workflow of recording, aggregating, and
-> > dumping cgroup stats. However, some of the complexity is unnecessary.
-> > The test now enables the memory controller in a cgroup hierarchy, invokes
-> > reclaim, measure reclaim time, THEN uses that reclaim time to test the
-> > stats collection and aggregation. We don't need to use such a
-> > complicated stat, as the context in which the stat is collected is
-> > orthogonal.
-> >
-> > Simplify the test by using a simple stat instead of reclaim time, the
-> > total number of times a process has ever entered a cgroup. This makes
-> > the test simpler and removes the dependency on the memory controller and
-> > the memory reclaim interface.
-> >
-> > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> On Fri, Aug 26, 2022 at 10:41:37AM -0700, Yosry Ahmed <yosryahmed@google.=
+com> wrote:
+> > I understand that currently cgroup_iter is the only user of this, but
+> > for future use cases, is it safe to assume that cgrp will always be
+> > inside ns? Would it be safer to do something like:
 >
-> Acked-by: KP Singh <kpsingh@kernel.org>
+> I preferred the simpler root_cgrp comparison to avoid pointer
+> arithmetics in cgroup_is_descendant. But I also made the assumption of
+> cgrp in ns.
 >
-> > ---
-> >
-> > When the test failed on Alexei's setup because the memory controller was
-> > not enabled I realized this is an unnecessary dependency for the test,
-> > which inspired this patch :) I am not sure if this prompt a Fixes tag as
-> > the test wasn't broken.
->
-> yeah, this is an improvement, I don't think a fixes tag is needed here.
->
-> >
-> > ---
-> >  .../prog_tests/cgroup_hierarchical_stats.c    | 157 ++++++---------
-> >  .../bpf/progs/cgroup_hierarchical_stats.c     | 181 ++++++------------
-> >  2 files changed, 118 insertions(+), 220 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_hierarchical_stats.c b/tools/testing/selftests/bpf/prog_tests/cgroup_hierarchical_stats.c
-> > index bed1661596f7..12a6d4ddbd77 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/cgroup_hierarchical_stats.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/cgroup_hierarchical_stats.c
-> > @@ -1,6 +1,9 @@
-> >  // SPDX-License-Identifier: GPL-2.0-only
-> >  /*
-> > - * Functions to manage eBPF programs attached to cgroup subsystems
-> > + * This test runs a BPF program that keeps a stat of the number of processes
-> > + * that ever attached to a cgroup, and makes sure that BPF integrates well with
-> > + * the rstat framework to efficiently collect those stat percpu to avoid
-> > + * locking, and to efficiently aggregate the stat across the hierarchy.
-> >   *
-> >   * Copyright 2022 Google LLC.
-> >   */
-> > @@ -21,8 +24,10 @@
-> >  #define PAGE_SIZE 4096
-> >  #define MB(x) (x << 20)
-> >
-> > +#define PROCESSES_PER_CGROUP 3
-> > +
-> >  #define BPFFS_ROOT "/sys/fs/bpf/"
-> > -#define BPFFS_VMSCAN BPFFS_ROOT"vmscan/"
-> > +#define BPFFS_ATTACH_COUNTERS BPFFS_ROOT"attach_counters/"
->
-> minor nit: Is there a missing space here?
-> i.e
->
-> #define BPFFS_ATTACH_COUNTERS BPFFS_ROOT "attach_counters/"
->
-> (this was a case in the line you changed so I am not sure if it's intentional)
+> Thanks, I'll likely adjust cgroup_path_ns to make it more robust for
+> an external cgrp.
 >
 
-Thanks for taking a look! Yeah I forgot that even if I added a space
-there C will still concatenate those strings without adding any
-spaces, so I guess it is better with that space.
-
-> The rest looks good to me, so  maintainers could, potentially, push it
-> with the minor edit if needed?
-
-Yeah if that space can be added that would be great. Otherwise I can send a v2.
+Great, thanks!
 
 >
+> I'd like to clarify, if a process A in a broad cgroup ns sets up a BPF
+> cgroup iterator, exposes it via bpffs and than a process B in a narrowed
+> cgroup ns (which excludes the origin cgroup) wants to traverse the
+> iterator, should it fail straight ahead (regardless of iter order)?
+> The alternative would be to allow self-dereference but prohibit any
+> iterator moves (regardless of order).
 >
-> >
-> >  #define CG_ROOT_NAME "root"
-> >  #define CG_ROOT_ID 1
-> > @@ -79,7 +84,7 @@ static int setup_bpffs(void)
-> >                 return err;
-> >
-> >
+
+imo it should fail straight ahead, but maybe others (Tejun? Hao?) have
+other opinions here.
+
 >
-> [...]
->
-> > -       return 1;
-> > +       return 0;
-> >  }
-> > --
-> > 2.37.2.672.g94769d06f0-goog
-> >
+> Thanks,
+> Michal
