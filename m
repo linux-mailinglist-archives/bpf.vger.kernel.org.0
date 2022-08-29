@@ -2,72 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D02F45A56F4
-	for <lists+bpf@lfdr.de>; Tue, 30 Aug 2022 00:16:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FB195A5712
+	for <lists+bpf@lfdr.de>; Tue, 30 Aug 2022 00:25:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229864AbiH2WQv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Aug 2022 18:16:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51386 "EHLO
+        id S229507AbiH2WZa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Aug 2022 18:25:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230047AbiH2WQk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Aug 2022 18:16:40 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5EBEA6AC7
-        for <bpf@vger.kernel.org>; Mon, 29 Aug 2022 15:16:32 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id bd26-20020a05600c1f1a00b003a5e82a6474so5140168wmb.4
-        for <bpf@vger.kernel.org>; Mon, 29 Aug 2022 15:16:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=HD633EfbN3tb6uFCu45l1iRXG26ohor9loINMI5UFVU=;
-        b=SUtdpCu/SOcGU+qWxAFpyCReRSxrL/K6PFzJ+/br9oyXDpUkXwDACFm/6ovQltGWUO
-         XBOMhVQTIv8mu0iVlA9ww+iYaabHGloTy6maqou87zRcCNHTk4Z/XIa6lSFamNNHjGVK
-         Ru5pgBK29+Scxi+a+0gpuu1hS7KRPw1fxgJZPT40JSLE3HAQ4odX3g1cyXW0rW7PeZIY
-         AXfIO9HwuZY8P8gbV/Y+UTQKp/EMy0t0NQNKX7n2gWLPHvNNDVQYh7qOH2OSgHmCdPA9
-         yX0wuw95Jwu1z6HB5J1Pr1Y18Viec9NZp3PL8uGCbSNOvES7yoNsmBTOqKhWzPDJUknV
-         78Aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=HD633EfbN3tb6uFCu45l1iRXG26ohor9loINMI5UFVU=;
-        b=Y3cgNPASsP3XfoGfy8LB2CAPTqiY95KHxD76EiMn+hSYnFJKhdmM0XFK290LEh/VpV
-         Vyhj6vvWUQ4/JGtId9rstZAfizzDt5LRA5VpYyUypg44eDhXfatkvhjsXZNeI4wxphym
-         K2awSLmqKTNwUfnKUyLPUyhiX3O78+1/Z8WM5GB1xFnN7MhcxX0fJ2Rw/uF/VlYGNBTG
-         vgldCnoebeoqQ+a5WncOXGKHgE+FbvHhDRiLvTpl9VlXgXcw2oKxlARjDkUa17VGsweu
-         T/WtXz+6OSiOko519oJWjRWyCZzO3WmDAt9I07Ihau2cjZo4qU/tIThKoejI9HLQvxBA
-         htCQ==
-X-Gm-Message-State: ACgBeo1uKd58vc9oIhsoN/N2v9blkn5q98/Y97V7EtIuuiqBagab4t1Q
-        EAGsi/OHzze+5rEzR1f3TMiufpKVTfKpZyqd1nW2HQ==
-X-Google-Smtp-Source: AA6agR55y3N/Bia3lsmUgfym4cf6f/K7T33smt9ZGjVFVpWIKNnbjMr2sfb/9TUtY14Hh908C/LzkLs9pnrtbtTGwZU=
-X-Received: by 2002:a1c:7315:0:b0:3a5:ff61:4080 with SMTP id
- d21-20020a1c7315000000b003a5ff614080mr7826816wmb.196.1661811390850; Mon, 29
- Aug 2022 15:16:30 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220826230639.1249436-1-yosryahmed@google.com> <CA+khW7iN6hyyBBR+4ey+9pNmEyKPZS82-C9kZ2NRXKMEOXHrng@mail.gmail.com>
-In-Reply-To: <CA+khW7iN6hyyBBR+4ey+9pNmEyKPZS82-C9kZ2NRXKMEOXHrng@mail.gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Mon, 29 Aug 2022 15:15:54 -0700
-Message-ID: <CAJD7tkYKYv+SKhCJs2281==55sALTX_DXifaWPv1w5=xrJjqQA@mail.gmail.com>
-Subject: Re: [PATCH] selftests/bpf: simplify cgroup_hierarchical_stats selftest
-To:     Hao Luo <haoluo@google.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Mykola Lysenko <mykolal@fb.com>, Song Liu <song@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
+        with ESMTP id S229486AbiH2WZ3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Aug 2022 18:25:29 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4397725299
+        for <bpf@vger.kernel.org>; Mon, 29 Aug 2022 15:25:28 -0700 (PDT)
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1oSnCA-000DqI-48; Tue, 30 Aug 2022 00:25:26 +0200
+Received: from [85.1.206.226] (helo=linux-4.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1oSnC9-0008mj-Ml; Tue, 30 Aug 2022 00:25:25 +0200
+Subject: Re: [PATCH bpf-next 0/2] bpf,ftrace: bpf dispatcher function fix
+To:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
+        KP Singh <kpsingh@chromium.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        Hao Luo <haoluo@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+References: <20220826184608.141475-1-jolsa@kernel.org>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <9099057e-124c-8f30-c29d-54be85eeebfd@iogearbox.net>
+Date:   Tue, 30 Aug 2022 00:25:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <20220826184608.141475-1-jolsa@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.6/26642/Mon Aug 29 09:54:26 2022)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,94 +58,65 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Hao,
+On 8/26/22 8:46 PM, Jiri Olsa wrote:
+> hi,
+> as discussed [1] sending fix that moves bpf dispatcher function of out
+> ftrace locations together with Peter's HAVE_DYNAMIC_FTRACE_NO_PATCHABLE
+> dependency change.
 
-Thanks for taking a look!
+Looks like the series breaks s390x builds; BPF CI link:
 
-On Mon, Aug 29, 2022 at 1:08 PM Hao Luo <haoluo@google.com> wrote:
->
-> On Fri, Aug 26, 2022 at 4:06 PM Yosry Ahmed <yosryahmed@google.com> wrote:
-> >
-> > The cgroup_hierarchical_stats selftest is complicated. It has to be,
-> > because it tests an entire workflow of recording, aggregating, and
-> > dumping cgroup stats. However, some of the complexity is unnecessary.
-> > The test now enables the memory controller in a cgroup hierarchy, invokes
-> > reclaim, measure reclaim time, THEN uses that reclaim time to test the
-> > stats collection and aggregation. We don't need to use such a
-> > complicated stat, as the context in which the stat is collected is
-> > orthogonal.
-> >
-> > Simplify the test by using a simple stat instead of reclaim time, the
-> > total number of times a process has ever entered a cgroup. This makes
-> > the test simpler and removes the dependency on the memory controller and
-> > the memory reclaim interface.
-> >
-> > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> > ---
->
-> Yosry, please tag the patch with the repo it should be applied on:
-> bpf-next or bpf.
->
+https://github.com/kernel-patches/bpf/runs/8079411784?check_suite_focus=true
 
-Will do for v2.
+   [...]
+     CC      net/xfrm/xfrm_state.o
+     CC      net/packet/af_packet.o
+   {standard input}: Assembler messages:
+   {standard input}:16055: Error: bad expression
+   {standard input}:16056: Error: bad expression
+   {standard input}:16057: Error: bad expression
+   {standard input}:16058: Error: bad expression
+   {standard input}:16059: Error: bad expression
+     CC      drivers/s390/char/raw3270.o
+     CC      net/ipv6/ip6_output.o
+   [...]
+     CC      net/xfrm/xfrm_output.o
+     CC      net/ipv6/ip6_input.o
+   {standard input}:16055: Error: invalid operands (*ABS* and *UND* sections) for `%'
+   {standard input}:16056: Error: invalid operands (*ABS* and *UND* sections) for `%'
+   {standard input}:16057: Error: invalid operands (*ABS* and *UND* sections) for `%'
+   {standard input}:16058: Error: invalid operands (*ABS* and *UND* sections) for `%'
+   {standard input}:16059: Error: invalid operands (*ABS* and *UND* sections) for `%'
+   make[3]: *** [scripts/Makefile.build:249: net/core/filter.o] Error 1
+   make[2]: *** [scripts/Makefile.build:465: net/core] Error 2
+   make[2]: *** Waiting for unfinished jobs....
+     CC      net/ipv4/tcp_fastopen.o
+   [...]
+     CC      lib/percpu-refcount.o
+   make[1]: *** [Makefile:1855: net] Error 2
+     CC      lib/rhashtable.o
+   make[1]: *** Waiting for unfinished jobs....
+     CC      lib/base64.o
+   [...]
+     AR      lib/built-in.a
+     CC      kernel/kheaders.o
+     AR      kernel/built-in.a
+   make: *** [Makefile:353: __build_one_by_one] Error 2
+   Error: Process completed with exit code 2.
 
-> >
-> > When the test failed on Alexei's setup because the memory controller was
-> > not enabled I realized this is an unnecessary dependency for the test,
-> > which inspired this patch :) I am not sure if this prompt a Fixes tag as
-> > the test wasn't broken.
-> >
-> > ---
-> >  .../prog_tests/cgroup_hierarchical_stats.c    | 157 ++++++---------
-> >  .../bpf/progs/cgroup_hierarchical_stats.c     | 181 ++++++------------
-> >  2 files changed, 118 insertions(+), 220 deletions(-)
-> >
-> [...]
-> > diff --git a/tools/testing/selftests/bpf/progs/cgroup_hierarchical_stats.c b/tools/testing/selftests/bpf/progs/cgroup_hierarchical_stats.c
-> > index 8ab4253a1592..c74362854948 100644
-> > --- a/tools/testing/selftests/bpf/progs/cgroup_hierarchical_stats.c
-> > +++ b/tools/testing/selftests/bpf/progs/cgroup_hierarchical_stats.c
-> > @@ -1,7 +1,5 @@
-> >  // SPDX-License-Identifier: GPL-2.0-only
-> >  /*
-> > - * Functions to manage eBPF programs attached to cgroup subsystems
-> > - *
->
-> Please also add comments here explaining what the programs in this file do.
->
+> [1] https://lore.kernel.org/bpf/20220722110811.124515-1-jolsa@kernel.org/
+> ---
+> Jiri Olsa (1):
+>        bpf: Move bpf_dispatcher function out of ftrace locations
+> 
+> Peter Zijlstra (Intel) (1):
+>        ftrace: Add HAVE_DYNAMIC_FTRACE_NO_PATCHABLE
+> 
+>   arch/x86/Kconfig                  |  1 +
+>   include/asm-generic/vmlinux.lds.h | 11 ++++++++++-
+>   include/linux/bpf.h               |  2 ++
+>   kernel/trace/Kconfig              |  6 ++++++
+>   tools/objtool/check.c             |  3 ++-
+>   5 files changed, 21 insertions(+), 2 deletions(-)
+> 
 
-Will do.
-
-> >   * Copyright 2022 Google LLC.
-> >   */
-> [...]
-> >
-> > -SEC("tp_btf/mm_vmscan_memcg_reclaim_begin")
-> > -int BPF_PROG(vmscan_start, int order, gfp_t gfp_flags)
-> > +SEC("fentry/cgroup_attach_task")
->
-> Can we select an attachpoint that is more stable? It seems
-> 'cgroup_attach_task' is an internal helper function in cgroup, and its
-> signature can change. I'd prefer using those commonly used tracepoints
-> and EXPORT'ed functions. IMHO their interfaces are more stable.
->
-
-Will try to find a more stable attach point. Thanks!
-
-> > +int BPF_PROG(counter, struct cgroup *dst_cgrp, struct task_struct *leader,
-> > +            bool threadgroup)
-> >  {
-> > -       struct task_struct *task = bpf_get_current_task_btf();
-> > -       __u64 *start_time_ptr;
-> > -
-> > -       start_time_ptr = bpf_task_storage_get(&vmscan_start_time, task, 0,
-> > -                                             BPF_LOCAL_STORAGE_GET_F_CREATE);
-> > -       if (start_time_ptr)
-> > -               *start_time_ptr = bpf_ktime_get_ns();
-> > -       return 0;
-> > -}
-> [...]
-> >  }
-> > --
-> > 2.37.2.672.g94769d06f0-goog
-> >
