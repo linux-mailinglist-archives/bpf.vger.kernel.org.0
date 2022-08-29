@@ -2,140 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB7245A5589
-	for <lists+bpf@lfdr.de>; Mon, 29 Aug 2022 22:29:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF90E5A558B
+	for <lists+bpf@lfdr.de>; Mon, 29 Aug 2022 22:30:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230087AbiH2U30 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Aug 2022 16:29:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46328 "EHLO
+        id S229591AbiH2UaU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Aug 2022 16:30:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbiH2U3Y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Aug 2022 16:29:24 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3772285FCC;
-        Mon, 29 Aug 2022 13:29:23 -0700 (PDT)
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1oSlNn-000G6Y-Df; Mon, 29 Aug 2022 22:29:19 +0200
-Received: from [85.1.206.226] (helo=linux-4.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1oSlNm-000GuQ-V1; Mon, 29 Aug 2022 22:29:18 +0200
-Subject: Re: [PATCH v2] Fit lines in 80 columns
-To:     Alejandro Colomar <alx.manpages@gmail.com>,
-        Quentin Monnet <quentin@isovalent.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-man <linux-man@vger.kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "G. Branden Robinson" <g.branden.robinson@gmail.com>
-References: <20220825175653.131125-1-alx.manpages@gmail.com>
- <20220829195842.85290-1-alx.manpages@gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <0760a7e9-c3a5-fc27-0553-dc4ec6df554b@iogearbox.net>
-Date:   Mon, 29 Aug 2022 22:29:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S229475AbiH2UaS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Aug 2022 16:30:18 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E88944A112;
+        Mon, 29 Aug 2022 13:30:17 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 9AB3FB81210;
+        Mon, 29 Aug 2022 20:30:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 52D94C433B5;
+        Mon, 29 Aug 2022 20:30:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1661805015;
+        bh=xc/8j1puoSwt9zF2PJolhLiYAfpQXkR2k48Kr8P2wek=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=QseKYkdxZN1gmh6xhBqCJNxati+aAyrGeKQExicbC9P9vhtsf5J1qAV4ZgGiYDeIY
+         WghtN3cTQsvsn1vdgpQoK/PqCRXNQZzCOZ200aPCje9dpYJZLbXQVkMitSXPnbphuE
+         bBmRJVObRUgPft6yAlCgxQ+77gS9jLyc89+1zBWU62YdvlB+Y9YDIodelbb4NYLG1G
+         muxd/6wp1vb6QOwTwCFStGS/9kvteVTR57/PZSdDinUS/X2e5XQbU1YH4ONBhrLs3j
+         uk2R+cZFpEHruwNRzglsk6dwgSSNSCSDGhjanvh6qDbaC7ZGcFVdMSh9Lm4BOji+dx
+         HNjtmzKVx1xlA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 29ACBE924D4;
+        Mon, 29 Aug 2022 20:30:15 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20220829195842.85290-1-alx.manpages@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.6/26642/Mon Aug 29 09:54:26 2022)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2] selftests/bpf: Fix connect4_prog tcp/socket header type
+ conflict
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166180501516.3157.816494875355749007.git-patchwork-notify@kernel.org>
+Date:   Mon, 29 Aug 2022 20:30:15 +0000
+References: <20220829154710.3870139-1-james.hilliard1@gmail.com>
+In-Reply-To: <20220829154710.3870139-1-james.hilliard1@gmail.com>
+To:     James Hilliard <james.hilliard1@gmail.com>
+Cc:     bpf@vger.kernel.org, andrii@kernel.org, mykolal@fb.com,
+        ast@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, shuah@kernel.org, davemarchevsky@fb.com,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 8/29/22 9:58 PM, Alejandro Colomar wrote:
-> Those lines is used to generate the bpf-helpers(7) manual page.
-> They are no-fill lines, since they represent code, which means
-> that the formatter can't break the line, and instead just runs
-> across the right margin (in most set-ups this means that the pager
-> will break the line).
-> 
-> Using <fmt> makes it end exactly at the 80-col right margin, both
-> in the header file, and also in the manual page, and also seems to
-> be a sensible name to me.
-> 
-> In the other case, the fix has been to separate the variable
-> definition and its use, as the kernel coding style recommends.
-> 
-> Nacked-by: Alexei Starovoitov <ast@kernel.org>
-> Cc: bpf <bpf@vger.kernel.org>
-> Cc: linux-man <linux-man@vger.kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Andrii Nakryiko <andrii@kernel.org>
-> Cc: Martin KaFai Lau <kafai@fb.com>
-> Cc: Song Liu <songliubraving@fb.com>
-> Cc: Yonghong Song <yhs@fb.com>
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: KP Singh <kpsingh@kernel.org>
-> Cc: Stanislav Fomichev <sdf@google.com>
-> Cc: Hao Luo <haoluo@google.com>
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: Jesper Dangaard Brouer <brouer@redhat.com>
-> Cc: Quentin Monnet <quentin@isovalent.com>
-> Cc: Greg KH <gregkh@linuxfoundation.org>
-> Cc: "G. Branden Robinson" <g.branden.robinson@gmail.com>
-> Signed-off-by: Alejandro Colomar <alx.manpages@gmail.com>
-> ---
->   include/uapi/linux/bpf.h       | 11 ++++++-----
->   tools/include/uapi/linux/bpf.h | 11 ++++++-----
->   2 files changed, 12 insertions(+), 10 deletions(-)
-> 
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index ef78e0e1a754..1443fa2a1915 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -1619,7 +1619,7 @@ union bpf_attr {
->    *
->    * 		::
->    *
-> - * 			telnet-470   [001] .N.. 419421.045894: 0x00000001: <formatted msg>
-> + * 			telnet-470   [001] .N.. 419421.045894: 0x00000001: <fmt>
->    *
->    * 		In the above:
->    *
-> @@ -1636,8 +1636,7 @@ union bpf_attr {
->    * 			* ``419421.045894`` is a timestamp.
->    * 			* ``0x00000001`` is a fake value used by BPF for the
->    * 			  instruction pointer register.
-> - * 			* ``<formatted msg>`` is the message formatted with
-> - * 			  *fmt*.
-> + * 			* ``<fmt>`` is the message formatted with *fmt*.
->    *
->    * 		The conversion specifiers supported by *fmt* are similar, but
->    * 		more limited than for printk(). They are **%d**, **%i**,
-> @@ -3860,8 +3859,10 @@ union bpf_attr {
->    * 			void bpf_sys_open(struct pt_regs *ctx)
->    * 			{
->    * 			        char buf[PATHLEN]; // PATHLEN is defined to 256
-> - * 			        int res = bpf_probe_read_user_str(buf, sizeof(buf),
-> - * 				                                  ctx->di);
-> + * 			        int res;
-> + *
-> + * 			        res = bpf_probe_read_user_str(buf, sizeof(buf),
-> + * 				                              ctx->di);
->    *
+Hello:
 
-Aside that this has been Nacked before, this looks really ugly. I'm not applying
-this, sorry.
+This patch was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-Thanks,
-Daniel
+On Mon, 29 Aug 2022 09:47:09 -0600 you wrote:
+> There is a potential for us to hit a type conflict when including
+> netinet/tcp.h and sys/socket.h, we can replace both of these includes
+> with linux/tcp.h and bpf_tcp_helpers.h to avoid this conflict.
+> 
+> Fixes the following error:
+> In file included from /usr/include/netinet/tcp.h:91,
+>                  from progs/connect4_prog.c:11:
+> /home/buildroot/opt/cross/lib/gcc/bpf/13.0.0/include/stdint.h:34:23: error: conflicting types for 'int8_t'; have 'char'
+>    34 | typedef __INT8_TYPE__ int8_t;
+>       |                       ^~~~~~
+> In file included from /usr/include/x86_64-linux-gnu/sys/types.h:155,
+>                  from /usr/include/x86_64-linux-gnu/bits/socket.h:29,
+>                  from /usr/include/x86_64-linux-gnu/sys/socket.h:33,
+>                  from progs/connect4_prog.c:10:
+> /usr/include/x86_64-linux-gnu/bits/stdint-intn.h:24:18: note: previous declaration of 'int8_t' with type 'int8_t' {aka 'signed char'}
+>    24 | typedef __int8_t int8_t;
+>       |                  ^~~~~~
+> /home/buildroot/opt/cross/lib/gcc/bpf/13.0.0/include/stdint.h:43:24: error: conflicting types for 'int64_t'; have 'long int'
+>    43 | typedef __INT64_TYPE__ int64_t;
+>       |                        ^~~~~~~
+> /usr/include/x86_64-linux-gnu/bits/stdint-intn.h:27:19: note: previous declaration of 'int64_t' with type 'int64_t' {aka 'long long int'}
+>    27 | typedef __int64_t int64_t;
+>       |                   ^~~~~~~
+> 
+> [...]
+
+Here is the summary with links:
+  - [v2] selftests/bpf: Fix connect4_prog tcp/socket header type conflict
+    https://git.kernel.org/bpf/bpf-next/c/2eb680401df6
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
