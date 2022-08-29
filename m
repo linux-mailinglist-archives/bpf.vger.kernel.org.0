@@ -2,55 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6947C5A55E9
-	for <lists+bpf@lfdr.de>; Mon, 29 Aug 2022 23:06:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B76FD5A55F3
+	for <lists+bpf@lfdr.de>; Mon, 29 Aug 2022 23:10:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229686AbiH2VF4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Aug 2022 17:05:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39380 "EHLO
+        id S229543AbiH2VKK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Aug 2022 17:10:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229720AbiH2VFz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Aug 2022 17:05:55 -0400
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 289EF74BAC;
-        Mon, 29 Aug 2022 14:05:54 -0700 (PDT)
-Received: by mail-il1-x129.google.com with SMTP id s11so3359583ilt.7;
-        Mon, 29 Aug 2022 14:05:54 -0700 (PDT)
+        with ESMTP id S229450AbiH2VKJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Aug 2022 17:10:09 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B85961D0CA;
+        Mon, 29 Aug 2022 14:10:06 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id z187so9386067pfb.12;
+        Mon, 29 Aug 2022 14:10:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc;
-        bh=iMrKlQSZZ8llMPUpcA2wkZ6GcnRo6xzhVqACLMFFoSU=;
-        b=bIW6nMBxac3oWFkumBvaLSV52Vt9AeCRygcLmOsPHX3jxbSjnojDVwFhOJ+HdvtNze
-         P5zhXtolNVwIHZN7XcUwe1zJrKI2XrmMAu/zmRaAWnLuaYhEHl0IoKa1FDsaqgZcLN15
-         nuNIOP2iyiCM8TAajoSkPoq4YTwvWn1nHPORFWJHRReuqt4cmS0BLBSutK+PQiK1xooh
-         I01m9MfCQNmjywINSvWr/UDdKuHJaic4oPimpSMBerCIbw72oCkbyV46uzYJxlgUPrMR
-         1C7D9HO1qaYDIMcsx5dcIeGsHqc59tfavyXoPhuKRjIoT5/1gzONB/ltMwVs7+ipAbAJ
-         CS0g==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=80Z/LMgbIz1NkaW4VIUMTglHltl2NN9aw9lPoBjdTqk=;
+        b=X7E6zRvjJ3O2/eUKsHmSROKn0XzAFAHB7VxK125m92C4qAK8tSiaof/PYka09x2tsV
+         skGWIsbR7g+FTG7/P9Z0/EPnW4jsohPorYzpt9NTczaT8yFq8zZBW6I/BP/TWG0PpKWu
+         Ob+wIO17j1oi/d4MFt+rjidQM+0xJTYyYRvW+lRGHp7+QHXyqj2DRgFWlxXY6zRaVfba
+         lkBD0o3tBVD+dmtUUdIiWA+UPSFXbQ2GiAowZd3oUvk/gnMWzbKofTKGY9fGpGpjotjq
+         mEXLo27jbVFl73eS6pQSCyVA7wrNwNYevGxmqI2d801HpSJ1pG1V4Ju5HBTB8zlTWjFf
+         1Q1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc;
-        bh=iMrKlQSZZ8llMPUpcA2wkZ6GcnRo6xzhVqACLMFFoSU=;
-        b=ya5NiYLqm5+vdcZXg52d9HqsAYaM9a+8NxbzFNrTZojCdeFS2iChpPob6ZshG2NrpB
-         Xh+dc40JoFRswXtKA9RMNJnTWJow+3iA4zw/P51gPN03yuoWCq6ua2syzC1QL0A+ujpZ
-         nQ4rI5E8DyIf+Kxl0x+ynEiuDM6RwyoEGoTfgGRe2R92xNfEcTb7U5jM0VSUAvLhECqY
-         ZhWP9UZnlBvriu9P1VCt1rVCGi8NSGYPciC9i1+QfbNnlpcHsU/c47gBwSQWlGOAmF5S
-         KMg9Gi/Hg48Rk8QvlbVfkhzc5BzywRKMCLX84ktFkdOoP97ShL0QKuCx6w9xFnFFdB7E
-         cusg==
-X-Gm-Message-State: ACgBeo1LJaNitOeUmP2Wo7Sx1gGwo5SP8/XW8Zz2ha9EbkCP2d3+UXc+
-        UYrDblIwbsmGDjJfWPtmReeNZFWefCu99A==
-X-Google-Smtp-Source: AA6agR6HwPl7lcId2NQFwlhhy8MwBh/S/oUdT5J+eVfJVXe2bjQjiGZUk/XL01VRi41cBEqKLyL9xA==
-X-Received: by 2002:a92:130f:0:b0:2e4:22c9:7721 with SMTP id 15-20020a92130f000000b002e422c97721mr11343828ilt.34.1661807152810;
-        Mon, 29 Aug 2022 14:05:52 -0700 (PDT)
-Received: from james-x399.localdomain (71-33-138-207.hlrn.qwest.net. [71.33.138.207])
-        by smtp.gmail.com with ESMTPSA id p6-20020a022906000000b00349dccb3855sm4638981jap.72.2022.08.29.14.05.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Aug 2022 14:05:52 -0700 (PDT)
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=80Z/LMgbIz1NkaW4VIUMTglHltl2NN9aw9lPoBjdTqk=;
+        b=wbWWLid3X1uCx60mutBxIlbQvdrK+CAK99jJNxOpUWgZznfmY14//dBRsjHHSFV4cR
+         kqSPuOzbwHJAhud8fgRkOIfBbloNGv8pCOGTzFg1672F615jTDYfLsNGS3SK2edYb9kl
+         J0b5Rti3FrG7TFBwGMqungrGSVu2RRCUwucZowoUrRDlR8Cb0UBTs0TfwZKKahEEZVVL
+         jWyJslKWvc6SimLoQfqGCl+XqtB8R3LCANjrecrUauJa52IlI8f+fmdodqHBwq7BDTKN
+         UfioB1sUaO0a/qaKU0umJ9b+Cx3k6L9t3V4SY9BFOhhNzgd8nJRzJuh+NkE9LESxCq6V
+         QVLQ==
+X-Gm-Message-State: ACgBeo0ie2EzxcMJrnrWUxBO0ETzUSMLgekH3Wt6Sy86yP9ze23W44DO
+        h8qLSrh6tXQ2vMxGpb6zsEghaFEslknrMmXkEwk=
+X-Google-Smtp-Source: AA6agR68oMW0NC2kfSJsPVXsP2hAqG38XZBSndwtRkHxpWid3b3xQ2VvPZymvSFdfppDpPJU0DKSBrJblwDN4m95dmU=
+X-Received: by 2002:a63:fb4a:0:b0:429:8605:6ebf with SMTP id
+ w10-20020a63fb4a000000b0042986056ebfmr15249958pgj.225.1661807406148; Mon, 29
+ Aug 2022 14:10:06 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220826052925.980431-1-james.hilliard1@gmail.com>
+ <20220826230455.b5dcrvlmollglhx3@kafai-mbp.dhcp.thefacebook.com>
+ <CADvTj4rkSRsOtDcC1SCsGH59DyYQWJY_YRJAyt4a29yZP=SSLQ@mail.gmail.com> <20220829180327.p6eakw5mahpaizck@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20220829180327.p6eakw5mahpaizck@kafai-mbp.dhcp.thefacebook.com>
 From:   James Hilliard <james.hilliard1@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     James Hilliard <james.hilliard1@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
+Date:   Mon, 29 Aug 2022 15:09:52 -0600
+Message-ID: <CADvTj4oxgCbHrVVwBmHRvcVV=HNCf_CKdppnbCDY3FBqwNe12g@mail.gmail.com>
+Subject: Re: [PATCH v2] selftests/bpf: Fix bind{4,6} tcp/socket header type conflict
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <martin.lau@linux.dev>,
@@ -59,16 +64,9 @@ Cc:     James Hilliard <james.hilliard1@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-Subject: [PATCH v2] libbpf: add GCC support for bpf_tail_call_static
-Date:   Mon, 29 Aug 2022 15:05:46 -0600
-Message-Id: <20220829210546.755377-1-james.hilliard1@gmail.com>
-X-Mailer: git-send-email 2.34.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
         FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
@@ -79,70 +77,109 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The bpf_tail_call_static function is currently not defined unless
-using clang >= 8.
+On Mon, Aug 29, 2022 at 12:03 PM Martin KaFai Lau <kafai@fb.com> wrote:
+>
+> On Sat, Aug 27, 2022 at 05:38:29AM -0600, James Hilliard wrote:
+> > On Fri, Aug 26, 2022 at 5:05 PM Martin KaFai Lau <kafai@fb.com> wrote:
+> > >
+> > > On Thu, Aug 25, 2022 at 11:29:22PM -0600, James Hilliard wrote:
+> > > > There is a potential for us to hit a type conflict when including
+> > > > netinet/tcp.h with sys/socket.h, we can remove these as they are not
+> > > > actually needed.
+> > > >
+> > > > Fixes errors like:
+> > > > In file included from /usr/include/netinet/tcp.h:91,
+> > > >                  from progs/bind4_prog.c:10:
+> > > > /home/buildroot/opt/cross/lib/gcc/bpf/13.0.0/include/stdint.h:34:23: error: conflicting types for 'int8_t'; have 'char'
+> > > >    34 | typedef __INT8_TYPE__ int8_t;
+> > > >       |                       ^~~~~~
+> > > > In file included from /usr/include/x86_64-linux-gnu/sys/types.h:155,
+> > > >                  from /usr/include/x86_64-linux-gnu/bits/socket.h:29,
+> > > >                  from /usr/include/x86_64-linux-gnu/sys/socket.h:33,
+> > > >                  from progs/bind4_prog.c:9:
+> > > > /usr/include/x86_64-linux-gnu/bits/stdint-intn.h:24:18: note: previous declaration of 'int8_t' with type 'int8_t' {aka 'signed char'}
+> > > >    24 | typedef __int8_t int8_t;
+> > > >       |                  ^~~~~~
+> > > > /home/buildroot/opt/cross/lib/gcc/bpf/13.0.0/include/stdint.h:43:24: error: conflicting types for 'int64_t'; have 'long int'
+> > > >    43 | typedef __INT64_TYPE__ int64_t;
+> > > >       |                        ^~~~~~~
+> > > > /usr/include/x86_64-linux-gnu/bits/stdint-intn.h:27:19: note: previous declaration of 'int64_t' with type 'int64_t' {aka 'long long int'}
+> > > >    27 | typedef __int64_t int64_t;
+> > > >       |                   ^~~~~~~
+> > > > make: *** [Makefile:537: /home/buildroot/bpf-next/tools/testing/selftests/bpf/bpf_gcc/bind4_prog.o] Error 1
+> > > >
+> > > > Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+> > > > ---
+> > > > Changes v1 -> v2:
+> > > >   - just remove netinet/tcp.h and sys/socket.h
+> > > > ---
+> > > >  tools/testing/selftests/bpf/progs/bind4_prog.c | 2 --
+> > > >  tools/testing/selftests/bpf/progs/bind6_prog.c | 2 --
+> > > >  2 files changed, 4 deletions(-)
+> > > >
+> > > > diff --git a/tools/testing/selftests/bpf/progs/bind4_prog.c b/tools/testing/selftests/bpf/progs/bind4_prog.c
+> > > > index 474c6a62078a..a487f60b73ac 100644
+> > > > --- a/tools/testing/selftests/bpf/progs/bind4_prog.c
+> > > > +++ b/tools/testing/selftests/bpf/progs/bind4_prog.c
+> > > > @@ -6,8 +6,6 @@
+> > > >  #include <linux/bpf.h>
+> > > >  #include <linux/in.h>
+> > > >  #include <linux/in6.h>
+> > > > -#include <sys/socket.h>
+> > > > -#include <netinet/tcp.h>
+> > > >  #include <linux/if.h>
+> > > Are the AF_INET and SOCK_STREAM coming from linux/if.h somehow
+> > > and they are not from indirectly including sys/socket.h ?
+> >
+> > Hmm, seems they are both coming from sys/socket.h:
+> >
+> > Tests with my v2 patch applied:
+> > progs/bind4_prog.c:15: error: "AF_INET" redefined [-Werror]
+> >    15 | #define AF_INET nonsense
+> >       |
+> > In file included from /usr/include/x86_64-linux-gnu/sys/socket.h:33,
+> >                  from /usr/include/linux/if.h:28,
+> >                  from progs/bind4_prog.c:9:
+> > /usr/include/x86_64-linux-gnu/bits/socket.h:97: note: this is the
+> > location of the previous definition
+> >    97 | #define AF_INET         PF_INET
+> >       |
+> >
+> > progs/bind4_prog.c:15: error: "SOCK_STREAM" redefined [-Werror]
+> >    15 | #define SOCK_STREAM nonsense
+> >       |
+> > In file included from /usr/include/x86_64-linux-gnu/bits/socket.h:38,
+> >                  from /usr/include/x86_64-linux-gnu/sys/socket.h:33,
+> >                  from /usr/include/linux/if.h:28,
+> >                  from progs/bind4_prog.c:9:
+> > /usr/include/x86_64-linux-gnu/bits/socket_type.h:28: note: this is the
+> > location of the previous definition
+> >    28 | #define SOCK_STREAM SOCK_STREAM
+> >       |
+> >
+> > So I guess the problematic header is netinet/tcp.h and sys/socket.h is
+> > just a redundant include?
+> >
+> > Removing just netinet/tcp.h does appear sufficient to fix the issue.
+> Yeah, it is what I am puzzled and getting at.
+> <sys/socket.h> is fine and <netinet/tcp.h> is not ok.
+> They are both from glibc ?  This kind of header changes
+> is hard to reason without doing the kind of experiment
+> that you just did.
 
-To support bpf_tail_call_static on GCC we can check if __clang__ is
-not defined to enable bpf_tail_call_static.
+I think so, it kind of looks to me like most of the tests were avoiding this
+issue in various ways already, the percentage with this issue seems to
+be fairly low.
 
-We need to use GCC assembly syntax when the compiler does not define
-__clang__ as LLVM inline assembly is not fully compatible with GCC.
-
-Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
----
-Changes v1 -> v2:
-  - drop __BPF__ check as GCC now defines __bpf__
----
- tools/lib/bpf/bpf_helpers.h | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
-
-diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
-index 7349b16b8e2f..867b734839dd 100644
---- a/tools/lib/bpf/bpf_helpers.h
-+++ b/tools/lib/bpf/bpf_helpers.h
-@@ -131,7 +131,7 @@
- /*
-  * Helper function to perform a tail call with a constant/immediate map slot.
-  */
--#if __clang_major__ >= 8 && defined(__bpf__)
-+#if (!defined(__clang__) || __clang_major__ >= 8) && defined(__bpf__)
- static __always_inline void
- bpf_tail_call_static(void *ctx, const void *map, const __u32 slot)
- {
-@@ -139,8 +139,8 @@ bpf_tail_call_static(void *ctx, const void *map, const __u32 slot)
- 		__bpf_unreachable();
- 
- 	/*
--	 * Provide a hard guarantee that LLVM won't optimize setting r2 (map
--	 * pointer) and r3 (constant map index) from _different paths_ ending
-+	 * Provide a hard guarantee that the compiler won't optimize setting r2
-+	 * (map pointer) and r3 (constant map index) from _different paths_ ending
- 	 * up at the _same_ call insn as otherwise we won't be able to use the
- 	 * jmpq/nopl retpoline-free patching by the x86-64 JIT in the kernel
- 	 * given they mismatch. See also d2e4c1e6c294 ("bpf: Constant map key
-@@ -148,12 +148,19 @@ bpf_tail_call_static(void *ctx, const void *map, const __u32 slot)
- 	 *
- 	 * Note on clobber list: we need to stay in-line with BPF calling
- 	 * convention, so even if we don't end up using r0, r4, r5, we need
--	 * to mark them as clobber so that LLVM doesn't end up using them
--	 * before / after the call.
-+	 * to mark them as clobber so that the compiler doesn't end up using
-+	 * them before / after the call.
- 	 */
--	asm volatile("r1 = %[ctx]\n\t"
-+	asm volatile(
-+#ifdef __clang__
-+		     "r1 = %[ctx]\n\t"
- 		     "r2 = %[map]\n\t"
- 		     "r3 = %[slot]\n\t"
-+#else
-+		     "mov %%r1,%[ctx]\n\t"
-+		     "mov %%r2,%[map]\n\t"
-+		     "mov %%r3,%[slot]\n\t"
-+#endif
- 		     "call 12"
- 		     :: [ctx]"r"(ctx), [map]"r"(map), [slot]"i"(slot)
- 		     : "r0", "r1", "r2", "r3", "r4", "r5");
--- 
-2.34.1
-
+>
+> >
+> > >
+> > > If the program does not need if.h, what should it use ?
+> > > There are other progs in selftest/bpf that include sys/socket.h
+> > > and they have no issue ?
+> >
+> > I'm still working through gcc issues with the test suite so there's
+> > probably some cases I haven't identified yet but this is the only one
+> > that seemed to need any code changes when removing those 2
+> > headers that I've found so far:
+> > https://lore.kernel.org/bpf/20220826055025.1018491-1-james.hilliard1@gmail.com/
