@@ -2,104 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF90E5A558B
-	for <lists+bpf@lfdr.de>; Mon, 29 Aug 2022 22:30:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6947C5A55E9
+	for <lists+bpf@lfdr.de>; Mon, 29 Aug 2022 23:06:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229591AbiH2UaU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Aug 2022 16:30:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48506 "EHLO
+        id S229686AbiH2VF4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Aug 2022 17:05:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbiH2UaS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Aug 2022 16:30:18 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E88944A112;
-        Mon, 29 Aug 2022 13:30:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 9AB3FB81210;
-        Mon, 29 Aug 2022 20:30:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 52D94C433B5;
-        Mon, 29 Aug 2022 20:30:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661805015;
-        bh=xc/8j1puoSwt9zF2PJolhLiYAfpQXkR2k48Kr8P2wek=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=QseKYkdxZN1gmh6xhBqCJNxati+aAyrGeKQExicbC9P9vhtsf5J1qAV4ZgGiYDeIY
-         WghtN3cTQsvsn1vdgpQoK/PqCRXNQZzCOZ200aPCje9dpYJZLbXQVkMitSXPnbphuE
-         bBmRJVObRUgPft6yAlCgxQ+77gS9jLyc89+1zBWU62YdvlB+Y9YDIodelbb4NYLG1G
-         muxd/6wp1vb6QOwTwCFStGS/9kvteVTR57/PZSdDinUS/X2e5XQbU1YH4ONBhrLs3j
-         uk2R+cZFpEHruwNRzglsk6dwgSSNSCSDGhjanvh6qDbaC7ZGcFVdMSh9Lm4BOji+dx
-         HNjtmzKVx1xlA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 29ACBE924D4;
-        Mon, 29 Aug 2022 20:30:15 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229720AbiH2VFz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Aug 2022 17:05:55 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 289EF74BAC;
+        Mon, 29 Aug 2022 14:05:54 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id s11so3359583ilt.7;
+        Mon, 29 Aug 2022 14:05:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc;
+        bh=iMrKlQSZZ8llMPUpcA2wkZ6GcnRo6xzhVqACLMFFoSU=;
+        b=bIW6nMBxac3oWFkumBvaLSV52Vt9AeCRygcLmOsPHX3jxbSjnojDVwFhOJ+HdvtNze
+         P5zhXtolNVwIHZN7XcUwe1zJrKI2XrmMAu/zmRaAWnLuaYhEHl0IoKa1FDsaqgZcLN15
+         nuNIOP2iyiCM8TAajoSkPoq4YTwvWn1nHPORFWJHRReuqt4cmS0BLBSutK+PQiK1xooh
+         I01m9MfCQNmjywINSvWr/UDdKuHJaic4oPimpSMBerCIbw72oCkbyV46uzYJxlgUPrMR
+         1C7D9HO1qaYDIMcsx5dcIeGsHqc59tfavyXoPhuKRjIoT5/1gzONB/ltMwVs7+ipAbAJ
+         CS0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc;
+        bh=iMrKlQSZZ8llMPUpcA2wkZ6GcnRo6xzhVqACLMFFoSU=;
+        b=ya5NiYLqm5+vdcZXg52d9HqsAYaM9a+8NxbzFNrTZojCdeFS2iChpPob6ZshG2NrpB
+         Xh+dc40JoFRswXtKA9RMNJnTWJow+3iA4zw/P51gPN03yuoWCq6ua2syzC1QL0A+ujpZ
+         nQ4rI5E8DyIf+Kxl0x+ynEiuDM6RwyoEGoTfgGRe2R92xNfEcTb7U5jM0VSUAvLhECqY
+         ZhWP9UZnlBvriu9P1VCt1rVCGi8NSGYPciC9i1+QfbNnlpcHsU/c47gBwSQWlGOAmF5S
+         KMg9Gi/Hg48Rk8QvlbVfkhzc5BzywRKMCLX84ktFkdOoP97ShL0QKuCx6w9xFnFFdB7E
+         cusg==
+X-Gm-Message-State: ACgBeo1LJaNitOeUmP2Wo7Sx1gGwo5SP8/XW8Zz2ha9EbkCP2d3+UXc+
+        UYrDblIwbsmGDjJfWPtmReeNZFWefCu99A==
+X-Google-Smtp-Source: AA6agR6HwPl7lcId2NQFwlhhy8MwBh/S/oUdT5J+eVfJVXe2bjQjiGZUk/XL01VRi41cBEqKLyL9xA==
+X-Received: by 2002:a92:130f:0:b0:2e4:22c9:7721 with SMTP id 15-20020a92130f000000b002e422c97721mr11343828ilt.34.1661807152810;
+        Mon, 29 Aug 2022 14:05:52 -0700 (PDT)
+Received: from james-x399.localdomain (71-33-138-207.hlrn.qwest.net. [71.33.138.207])
+        by smtp.gmail.com with ESMTPSA id p6-20020a022906000000b00349dccb3855sm4638981jap.72.2022.08.29.14.05.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Aug 2022 14:05:52 -0700 (PDT)
+From:   James Hilliard <james.hilliard1@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     James Hilliard <james.hilliard1@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
+Subject: [PATCH v2] libbpf: add GCC support for bpf_tail_call_static
+Date:   Mon, 29 Aug 2022 15:05:46 -0600
+Message-Id: <20220829210546.755377-1-james.hilliard1@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2] selftests/bpf: Fix connect4_prog tcp/socket header type
- conflict
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <166180501516.3157.816494875355749007.git-patchwork-notify@kernel.org>
-Date:   Mon, 29 Aug 2022 20:30:15 +0000
-References: <20220829154710.3870139-1-james.hilliard1@gmail.com>
-In-Reply-To: <20220829154710.3870139-1-james.hilliard1@gmail.com>
-To:     James Hilliard <james.hilliard1@gmail.com>
-Cc:     bpf@vger.kernel.org, andrii@kernel.org, mykolal@fb.com,
-        ast@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, shuah@kernel.org, davemarchevsky@fb.com,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+The bpf_tail_call_static function is currently not defined unless
+using clang >= 8.
 
-This patch was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
+To support bpf_tail_call_static on GCC we can check if __clang__ is
+not defined to enable bpf_tail_call_static.
 
-On Mon, 29 Aug 2022 09:47:09 -0600 you wrote:
-> There is a potential for us to hit a type conflict when including
-> netinet/tcp.h and sys/socket.h, we can replace both of these includes
-> with linux/tcp.h and bpf_tcp_helpers.h to avoid this conflict.
-> 
-> Fixes the following error:
-> In file included from /usr/include/netinet/tcp.h:91,
->                  from progs/connect4_prog.c:11:
-> /home/buildroot/opt/cross/lib/gcc/bpf/13.0.0/include/stdint.h:34:23: error: conflicting types for 'int8_t'; have 'char'
->    34 | typedef __INT8_TYPE__ int8_t;
->       |                       ^~~~~~
-> In file included from /usr/include/x86_64-linux-gnu/sys/types.h:155,
->                  from /usr/include/x86_64-linux-gnu/bits/socket.h:29,
->                  from /usr/include/x86_64-linux-gnu/sys/socket.h:33,
->                  from progs/connect4_prog.c:10:
-> /usr/include/x86_64-linux-gnu/bits/stdint-intn.h:24:18: note: previous declaration of 'int8_t' with type 'int8_t' {aka 'signed char'}
->    24 | typedef __int8_t int8_t;
->       |                  ^~~~~~
-> /home/buildroot/opt/cross/lib/gcc/bpf/13.0.0/include/stdint.h:43:24: error: conflicting types for 'int64_t'; have 'long int'
->    43 | typedef __INT64_TYPE__ int64_t;
->       |                        ^~~~~~~
-> /usr/include/x86_64-linux-gnu/bits/stdint-intn.h:27:19: note: previous declaration of 'int64_t' with type 'int64_t' {aka 'long long int'}
->    27 | typedef __int64_t int64_t;
->       |                   ^~~~~~~
-> 
-> [...]
+We need to use GCC assembly syntax when the compiler does not define
+__clang__ as LLVM inline assembly is not fully compatible with GCC.
 
-Here is the summary with links:
-  - [v2] selftests/bpf: Fix connect4_prog tcp/socket header type conflict
-    https://git.kernel.org/bpf/bpf-next/c/2eb680401df6
+Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+---
+Changes v1 -> v2:
+  - drop __BPF__ check as GCC now defines __bpf__
+---
+ tools/lib/bpf/bpf_helpers.h | 19 +++++++++++++------
+ 1 file changed, 13 insertions(+), 6 deletions(-)
 
-You are awesome, thank you!
+diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
+index 7349b16b8e2f..867b734839dd 100644
+--- a/tools/lib/bpf/bpf_helpers.h
++++ b/tools/lib/bpf/bpf_helpers.h
+@@ -131,7 +131,7 @@
+ /*
+  * Helper function to perform a tail call with a constant/immediate map slot.
+  */
+-#if __clang_major__ >= 8 && defined(__bpf__)
++#if (!defined(__clang__) || __clang_major__ >= 8) && defined(__bpf__)
+ static __always_inline void
+ bpf_tail_call_static(void *ctx, const void *map, const __u32 slot)
+ {
+@@ -139,8 +139,8 @@ bpf_tail_call_static(void *ctx, const void *map, const __u32 slot)
+ 		__bpf_unreachable();
+ 
+ 	/*
+-	 * Provide a hard guarantee that LLVM won't optimize setting r2 (map
+-	 * pointer) and r3 (constant map index) from _different paths_ ending
++	 * Provide a hard guarantee that the compiler won't optimize setting r2
++	 * (map pointer) and r3 (constant map index) from _different paths_ ending
+ 	 * up at the _same_ call insn as otherwise we won't be able to use the
+ 	 * jmpq/nopl retpoline-free patching by the x86-64 JIT in the kernel
+ 	 * given they mismatch. See also d2e4c1e6c294 ("bpf: Constant map key
+@@ -148,12 +148,19 @@ bpf_tail_call_static(void *ctx, const void *map, const __u32 slot)
+ 	 *
+ 	 * Note on clobber list: we need to stay in-line with BPF calling
+ 	 * convention, so even if we don't end up using r0, r4, r5, we need
+-	 * to mark them as clobber so that LLVM doesn't end up using them
+-	 * before / after the call.
++	 * to mark them as clobber so that the compiler doesn't end up using
++	 * them before / after the call.
+ 	 */
+-	asm volatile("r1 = %[ctx]\n\t"
++	asm volatile(
++#ifdef __clang__
++		     "r1 = %[ctx]\n\t"
+ 		     "r2 = %[map]\n\t"
+ 		     "r3 = %[slot]\n\t"
++#else
++		     "mov %%r1,%[ctx]\n\t"
++		     "mov %%r2,%[map]\n\t"
++		     "mov %%r3,%[slot]\n\t"
++#endif
+ 		     "call 12"
+ 		     :: [ctx]"r"(ctx), [map]"r"(map), [slot]"i"(slot)
+ 		     : "r0", "r1", "r2", "r3", "r4", "r5");
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.34.1
 
