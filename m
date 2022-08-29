@@ -2,147 +2,207 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B04245A54D2
-	for <lists+bpf@lfdr.de>; Mon, 29 Aug 2022 21:54:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90F895A5535
+	for <lists+bpf@lfdr.de>; Mon, 29 Aug 2022 22:00:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229906AbiH2TyJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Aug 2022 15:54:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52772 "EHLO
+        id S229546AbiH2UAy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Aug 2022 16:00:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbiH2TyD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Aug 2022 15:54:03 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03CEA7FF81;
-        Mon, 29 Aug 2022 12:54:03 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id d68so7480173iof.11;
-        Mon, 29 Aug 2022 12:54:02 -0700 (PDT)
+        with ESMTP id S229453AbiH2UAx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Aug 2022 16:00:53 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0EF361721;
+        Mon, 29 Aug 2022 13:00:51 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id v7-20020a1cac07000000b003a6062a4f81so8763305wme.1;
+        Mon, 29 Aug 2022 13:00:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc;
-        bh=WUgMijwl3W/QqZyM5v4oVVeLOTQBRv/iBPfrAQK3cSM=;
-        b=GF2Pf2kbP1bSwmxwKabzsaine2PsPmjRpXpr0oIii0TWbFI2h2/VIQ4ER842ndSgHC
-         BB+YE71B0mKuwPEQ1JW2qu1JIB+fcQNkrw5tnFmE4ZTgrf0u5y4jM+3B06ASeBLny7qn
-         QOF1gAxuY2nLDNq3Rogeqq9yb+zoyju9oujpKoWvGmRsebu1bEe3Kuev8Wm4tNVOFdc9
-         Rah+bJsFxRN0WP2SBUjJu49Wy1vbareMzUoywImszv7gJMVCnw0ZPlrASixQYamWGv6+
-         LKZ0DvRHRXQZ5TUz18FYNLU/+WCFlOwcqZcb7hAkW8YQBLSQ7geH6Yul4KGS3bVmtnQL
-         OnPQ==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc;
+        bh=O8RhKIZc2yZtz2lAJUXOlbXsU53P4O5YbHxV7ztn1WQ=;
+        b=illYhjhFWB7pTcWsXZ7sYKMvl92Ex3/EjGhmOFJ/fafPeg1C67rWXORf8DsuQg93Vx
+         O1rBWeqfNb1p0BeT7xDzhhGPeEaXjCC5aKFXmCG2edGZlAfQSXSHfkzsEFKhDrgfmNml
+         DQYHHTWwSQXhayyj7kWNwHcUTySz0XNQPEPh7So/7vlPJ++XXDdMQcNwZLtnRiA+Si3d
+         mUI5LI747+Sg/HBFTJkEqNItX37zgL2xwrw+X5Fc/By4unhwEVrDceExI/SHhRWO+VF+
+         29ofjiJfy4EQtrnDoc0SE61JUvVBlprAKWsfOuTdyJEwx4yqIH5yRMa5vMxTrSnpsr0Z
+         06Rg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc;
-        bh=WUgMijwl3W/QqZyM5v4oVVeLOTQBRv/iBPfrAQK3cSM=;
-        b=r/sjUL+PtJ4WL7Q1g2QAkS2wTcBjKjuV8JeDQbzM0Ke+bk2GrPwlB5JBhevHf6O7Ya
-         2fy9BO2s7aFMoX6jxiC+vnL3ll6nYnMUd7P+/UCY631q5orNi8XUrXZ9vCCe8zJmx5ar
-         y542jkceXeSBN61YJ+khMrskAlkujyj6Cc4FhmX0J8vZnWcw4SESbZuXU0uB+WUGTVUj
-         GYkPusmWGVl2yqnj2J3AMRm2jIU7go4ilzWom4Ks9fCJmAlM9VGK5RJx7bHjo9+gBhPP
-         JiQXeKAQ2b7jFGAOXDycOiGsN25sML6zTVoFCU78sOURQlp8RvtXoWr4An6FSOl8bN+Z
-         hS9w==
-X-Gm-Message-State: ACgBeo2ES9rhEU5eoIN8zE2LzfP29zNOpB1SLQd8IdKnrKjOIM86cguR
-        Jw1bU6jPTEMCw/a6A9KkUvQGbe/Gy3V23g==
-X-Google-Smtp-Source: AA6agR7JxuA2bQaS834AqPvIcem/ZAFJkF8Qf3POvbHbAw2OGF941suyh0ZkzMo0E9PbNIqrQkq18Q==
-X-Received: by 2002:a6b:b7c2:0:b0:688:ae30:27d1 with SMTP id h185-20020a6bb7c2000000b00688ae3027d1mr9590645iof.1.1661802841930;
-        Mon, 29 Aug 2022 12:54:01 -0700 (PDT)
-Received: from james-x399.localdomain (71-33-138-207.hlrn.qwest.net. [71.33.138.207])
-        by smtp.gmail.com with ESMTPSA id 66-20020a021d45000000b0034a54523fcfsm475119jaj.28.2022.08.29.12.54.00
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc;
+        bh=O8RhKIZc2yZtz2lAJUXOlbXsU53P4O5YbHxV7ztn1WQ=;
+        b=yi/nK/ghb6ulHf6jDw/wtacX5UCC0TeiNA9ODHBGZq+6Xx3p53QxDMUA635XG3Wt4C
+         ReLApl3xkPCY4l3YJtbYeNBe9sr7mIFu/Dm3QmJ1irFwz+UgCdZIFj9yKhQaSfidTeMF
+         tlQciw8HJ77nYMUbCxYTK8lz9VciyG/NL8CfEcFeCRokSMzFKN7lIHuRUAl9VFPwsAGK
+         oaiw8JtkSdvf1mn1QY9wI8dcVsItdp6yX8ybgbEs53yk5+XWcXWhIOAmyQl+rnIe6Z9M
+         hUY4zdjObbKuLCbqPFCeYPCRDOlCYl3P68Tdcb9tDBQ0eZc9PM6irpNEjxOuPEbpiOCG
+         +RJQ==
+X-Gm-Message-State: ACgBeo0vTmrVTlgAP2f9ZDKVUZybyKBFoV0df2MzswQLcwcwn9QkoFmQ
+        Bp+0PIzAIpTHqb3O2FrODmo=
+X-Google-Smtp-Source: AA6agR4fiTyjRSfl/A1iZbb6uhyJb1CwVrd6qmxTxRHDHm+iYIscnBz1QwW5oNhkorckn9VuoxRerQ==
+X-Received: by 2002:a05:600c:3d05:b0:3a5:dd21:e201 with SMTP id bh5-20020a05600c3d0500b003a5dd21e201mr7654637wmb.132.1661803250430;
+        Mon, 29 Aug 2022 13:00:50 -0700 (PDT)
+Received: from asus5775.alejandro-colomar.es ([170.253.36.171])
+        by smtp.googlemail.com with ESMTPSA id n18-20020a05600c3b9200b003a846a014c1sm5273193wms.23.2022.08.29.13.00.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Aug 2022 12:54:01 -0700 (PDT)
-From:   James Hilliard <james.hilliard1@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     James Hilliard <james.hilliard1@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        Mon, 29 Aug 2022 13:00:50 -0700 (PDT)
+From:   Alejandro Colomar <alx.manpages@gmail.com>
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Alejandro Colomar <alx.manpages@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux-man <linux-man@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-Subject: [PATCH] libbpf: add GCC support for bpf_tail_call_static
-Date:   Mon, 29 Aug 2022 13:53:49 -0600
-Message-Id: <20220829195349.706672-1-james.hilliard1@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "G. Branden Robinson" <g.branden.robinson@gmail.com>
+Subject: [PATCH v2] Fit lines in 80 columns
+Date:   Mon, 29 Aug 2022 21:58:44 +0200
+Message-Id: <20220829195842.85290-1-alx.manpages@gmail.com>
+X-Mailer: git-send-email 2.37.2
+In-Reply-To: <20220825175653.131125-1-alx.manpages@gmail.com>
+References: <20220825175653.131125-1-alx.manpages@gmail.com>
 MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4314; i=alx.manpages@gmail.com;
+ h=from:subject; bh=SXQKA7DgCgoz0zVpxVE3/r5g24gf6ZrgXIg75ha3hYQ=;
+ b=owEBbQKS/ZANAwAKAZ6MGvu+/9syAcsmYgBjDRpw7r3tuY2d7WmsoCLYpljp7VhH48Ik3WYMztV5
+ JCCgmeCJAjMEAAEKAB0WIQTqOofwpOugMORd8kCejBr7vv/bMgUCYw0acAAKCRCejBr7vv/bMnfeD/
+ 9JRdgnXkzJa19u7maUnVQV1Hcw50RBDTUV6vHekiYA/rmxIyL64YZMQ/EuHLIb2gen9MsrAn16UCs+
+ 06/EJGED3fg/MQ/HI/nlO/mWmhS0u386dTC56AR3p9Lq4w2OmMTPkOUl/See3QC+s9wdVafjvUbQFE
+ 6dfJdIWZ4GGQNmpqfczpEu0HScIu7zGPnlr0wsu038ev+yfXlK43nIBkykvXzCtnd6LgM4tqlsI4hD
+ SXZUGDLf8ozln278Y/lTxT2pQclozNdkIUFlDzxlxrrDhPJcF9MtUKBAlc410ve4N7ZvP2zvIpbF6/
+ Jrss42kyghaTWemxZTZCx6r9J/Ad23ih9epO6PxxBOybBHw3/U5r+NA56TlUcLDdPp1lHfvhkRRxWu
+ 1hcv1lUtA292jbyobhjdilNmRoF/GYr5z2MU4kZzJPP3quwPUG/2Jat8DBEqZeot3lNnlR3oPv6g01
+ fbqm90hdzk8sxhoXqLRbuQv//w52g6ihtVh/QcKZpjmcfM+2vNyb9iY/Zf0TLQZGX3LcivUu9eGg6g
+ OlCv5cgRCWxwEeg6+9g8ebEnBwCdLGvbkWQ85WIrX1icxXSjRgCdeB/YhLfuGloF/5EwulA59kU6iO
+ Uid8lyelQIngr5AnwXXT4NNzP+uPlqv9DHPjffx13e4Xj8rrVUCVJJoezLPA==
+X-Developer-Key: i=alx.manpages@gmail.com; a=openpgp; fpr=A9348594CE31283A826FBDD8D57633D441E25BB5
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The bpf_tail_call_static function is currently not defined unless
-using clang >= 8.
+Those lines is used to generate the bpf-helpers(7) manual page.
+They are no-fill lines, since they represent code, which means
+that the formatter can't break the line, and instead just runs
+across the right margin (in most set-ups this means that the pager
+will break the line).
 
-To support bpf_tail_call_static on GCC we can check if __clang__ is
-not defined to enable bpf_tail_call_static.
+Using <fmt> makes it end exactly at the 80-col right margin, both
+in the header file, and also in the manual page, and also seems to
+be a sensible name to me.
 
-We also need to check for the GCC style __BPF__ in addition to __bpf__
-for this to work as GCC does not define __bpf__.
+In the other case, the fix has been to separate the variable
+definition and its use, as the kernel coding style recommends.
 
-We need to use GCC assembly syntax when the compiler does not define
-__clang__ as LLVM inline assembly is not fully compatible with GCC.
-
-Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+Nacked-by: Alexei Starovoitov <ast@kernel.org>
+Cc: bpf <bpf@vger.kernel.org>
+Cc: linux-man <linux-man@vger.kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: Martin KaFai Lau <kafai@fb.com>
+Cc: Song Liu <songliubraving@fb.com>
+Cc: Yonghong Song <yhs@fb.com>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: KP Singh <kpsingh@kernel.org>
+Cc: Stanislav Fomichev <sdf@google.com>
+Cc: Hao Luo <haoluo@google.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Jesper Dangaard Brouer <brouer@redhat.com>
+Cc: Quentin Monnet <quentin@isovalent.com>
+Cc: Greg KH <gregkh@linuxfoundation.org>
+Cc: "G. Branden Robinson" <g.branden.robinson@gmail.com>
+Signed-off-by: Alejandro Colomar <alx.manpages@gmail.com>
 ---
- tools/lib/bpf/bpf_helpers.h | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
+ include/uapi/linux/bpf.h       | 11 ++++++-----
+ tools/include/uapi/linux/bpf.h | 11 ++++++-----
+ 2 files changed, 12 insertions(+), 10 deletions(-)
 
-diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
-index 7349b16b8e2f..a0650b840cda 100644
---- a/tools/lib/bpf/bpf_helpers.h
-+++ b/tools/lib/bpf/bpf_helpers.h
-@@ -131,7 +131,7 @@
- /*
-  * Helper function to perform a tail call with a constant/immediate map slot.
-  */
--#if __clang_major__ >= 8 && defined(__bpf__)
-+#if (!defined(__clang__) || __clang_major__ >= 8) && (defined(__bpf__) || defined(__BPF__))
- static __always_inline void
- bpf_tail_call_static(void *ctx, const void *map, const __u32 slot)
- {
-@@ -139,8 +139,8 @@ bpf_tail_call_static(void *ctx, const void *map, const __u32 slot)
- 		__bpf_unreachable();
- 
- 	/*
--	 * Provide a hard guarantee that LLVM won't optimize setting r2 (map
--	 * pointer) and r3 (constant map index) from _different paths_ ending
-+	 * Provide a hard guarantee that the compiler won't optimize setting r2
-+	 * (map pointer) and r3 (constant map index) from _different paths_ ending
- 	 * up at the _same_ call insn as otherwise we won't be able to use the
- 	 * jmpq/nopl retpoline-free patching by the x86-64 JIT in the kernel
- 	 * given they mismatch. See also d2e4c1e6c294 ("bpf: Constant map key
-@@ -148,12 +148,19 @@ bpf_tail_call_static(void *ctx, const void *map, const __u32 slot)
- 	 *
- 	 * Note on clobber list: we need to stay in-line with BPF calling
- 	 * convention, so even if we don't end up using r0, r4, r5, we need
--	 * to mark them as clobber so that LLVM doesn't end up using them
--	 * before / after the call.
-+	 * to mark them as clobber so that the compiler doesn't end up using
-+	 * them before / after the call.
- 	 */
--	asm volatile("r1 = %[ctx]\n\t"
-+	asm volatile(
-+#ifdef __clang__
-+		     "r1 = %[ctx]\n\t"
- 		     "r2 = %[map]\n\t"
- 		     "r3 = %[slot]\n\t"
-+#else
-+		     "mov %%r1,%[ctx]\n\t"
-+		     "mov %%r2,%[map]\n\t"
-+		     "mov %%r3,%[slot]\n\t"
-+#endif
- 		     "call 12"
- 		     :: [ctx]"r"(ctx), [map]"r"(map), [slot]"i"(slot)
- 		     : "r0", "r1", "r2", "r3", "r4", "r5");
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index ef78e0e1a754..1443fa2a1915 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -1619,7 +1619,7 @@ union bpf_attr {
+  *
+  * 		::
+  *
+- * 			telnet-470   [001] .N.. 419421.045894: 0x00000001: <formatted msg>
++ * 			telnet-470   [001] .N.. 419421.045894: 0x00000001: <fmt>
+  *
+  * 		In the above:
+  *
+@@ -1636,8 +1636,7 @@ union bpf_attr {
+  * 			* ``419421.045894`` is a timestamp.
+  * 			* ``0x00000001`` is a fake value used by BPF for the
+  * 			  instruction pointer register.
+- * 			* ``<formatted msg>`` is the message formatted with
+- * 			  *fmt*.
++ * 			* ``<fmt>`` is the message formatted with *fmt*.
+  *
+  * 		The conversion specifiers supported by *fmt* are similar, but
+  * 		more limited than for printk(). They are **%d**, **%i**,
+@@ -3860,8 +3859,10 @@ union bpf_attr {
+  * 			void bpf_sys_open(struct pt_regs *ctx)
+  * 			{
+  * 			        char buf[PATHLEN]; // PATHLEN is defined to 256
+- * 			        int res = bpf_probe_read_user_str(buf, sizeof(buf),
+- * 				                                  ctx->di);
++ * 			        int res;
++ *
++ * 			        res = bpf_probe_read_user_str(buf, sizeof(buf),
++ * 				                              ctx->di);
+  *
+  * 				// Consume buf, for example push it to
+  * 				// userspace via bpf_perf_event_output(); we
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index ef78e0e1a754..1443fa2a1915 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -1619,7 +1619,7 @@ union bpf_attr {
+  *
+  * 		::
+  *
+- * 			telnet-470   [001] .N.. 419421.045894: 0x00000001: <formatted msg>
++ * 			telnet-470   [001] .N.. 419421.045894: 0x00000001: <fmt>
+  *
+  * 		In the above:
+  *
+@@ -1636,8 +1636,7 @@ union bpf_attr {
+  * 			* ``419421.045894`` is a timestamp.
+  * 			* ``0x00000001`` is a fake value used by BPF for the
+  * 			  instruction pointer register.
+- * 			* ``<formatted msg>`` is the message formatted with
+- * 			  *fmt*.
++ * 			* ``<fmt>`` is the message formatted with *fmt*.
+  *
+  * 		The conversion specifiers supported by *fmt* are similar, but
+  * 		more limited than for printk(). They are **%d**, **%i**,
+@@ -3860,8 +3859,10 @@ union bpf_attr {
+  * 			void bpf_sys_open(struct pt_regs *ctx)
+  * 			{
+  * 			        char buf[PATHLEN]; // PATHLEN is defined to 256
+- * 			        int res = bpf_probe_read_user_str(buf, sizeof(buf),
+- * 				                                  ctx->di);
++ * 			        int res;
++ *
++ * 			        res = bpf_probe_read_user_str(buf, sizeof(buf),
++ * 				                              ctx->di);
+  *
+  * 				// Consume buf, for example push it to
+  * 				// userspace via bpf_perf_event_output(); we
 -- 
-2.34.1
+2.37.2
 
