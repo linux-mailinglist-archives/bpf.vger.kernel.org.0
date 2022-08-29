@@ -2,67 +2,49 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76C795A5692
-	for <lists+bpf@lfdr.de>; Mon, 29 Aug 2022 23:57:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC6015A5696
+	for <lists+bpf@lfdr.de>; Mon, 29 Aug 2022 23:59:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229594AbiH2V5T (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Aug 2022 17:57:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54518 "EHLO
+        id S229558AbiH2V7j (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Aug 2022 17:59:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229558AbiH2V5S (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Aug 2022 17:57:18 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D80079696
-        for <bpf@vger.kernel.org>; Mon, 29 Aug 2022 14:57:15 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id u9so18446919ejy.5
-        for <bpf@vger.kernel.org>; Mon, 29 Aug 2022 14:57:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=VBA+kSIQPwArAD1ELvFTspW/7MJBxwV067Y2I2o663Y=;
-        b=mdjwfXLzQ4b/3N7TJXfUe+7bylmjjR55mbwNwXga86/GmiBQ4w7xZYuTdQ5F6kxZWx
-         lbIj0bX5bMBRPJDFxd15UZXQW8HC9KHoub1NGlepKa4htglHD4YRlHYBbQfMVegzfQGO
-         zYSLAvIwHh1qJSkFIJcYDbyImN7EJFG83/T8UjKpwU/nkud49NQc+cHgG8cSluUeDT/d
-         sU/7HH5FxX4kGciVILj2nGNzQ2qg9L0Vz8Sz1rDL2tRKUPq+rCXAe7Hu7KDLSVFKMPLl
-         zXiPSqiBdpO6gVxfp7mt2udxhVvoK/18WV4NsVpkUuLJXmHR4fbN4+8TpfktmkA1qEKR
-         MV/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=VBA+kSIQPwArAD1ELvFTspW/7MJBxwV067Y2I2o663Y=;
-        b=tg2kVWCscir3XjH52fayENmOXCgIrlDHFq0GMvfcWsEFWF2wgFNsEDjX2rMJdB7hHk
-         HAZjHJK2hLcYY3dLraa6kIWK2FCu7luN3AProJHTE129i5WLINgG4kXyUeNZ3o8eh7D/
-         CwXsxa9RSaysDQBoUCf2XnyUpf3mD4f8xZm8G366FVpkMFb/G5r6f0ZjdYjDfNR3tvx2
-         2vI4ZKfOc7JqIR6JuJc+JgkheS3IL50mtkpepcwrKjxpg9nS/C5HSNOssnfioCcVBwau
-         P0wN8o7vShCfQ2Ougv1pjeKcKSW80HeeN7lq+uaw/45o2UbXgoGAj0LByims2Ve1QD99
-         8HrQ==
-X-Gm-Message-State: ACgBeo3np91wTx8Y5MeSVn1ECl+KR3dx+TRt2qFWBWRbVlCCv9CljUUp
-        G4Ad9SPVjJLGH/xMTl3eZprdnX+MVTPvZAzzr6A8YUUn
-X-Google-Smtp-Source: AA6agR6zkN7FHpBFVpPrOBXm20LVg0YdiFNUgES6wyeHYh0zyWorO5bHhinZMWWHFCjSrWOPmaN8ZWrWl3V0S/JuZGQ=
-X-Received: by 2002:a17:907:2c74:b0:741:657a:89de with SMTP id
- ib20-20020a1709072c7400b00741657a89demr6549249ejc.58.1661810233628; Mon, 29
- Aug 2022 14:57:13 -0700 (PDT)
-MIME-Version: 1.0
+        with ESMTP id S229645AbiH2V7i (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Aug 2022 17:59:38 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D19E08C032
+        for <bpf@vger.kernel.org>; Mon, 29 Aug 2022 14:59:36 -0700 (PDT)
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1oSmn4-0009ZZ-Ck; Mon, 29 Aug 2022 23:59:30 +0200
+Received: from [85.1.206.226] (helo=linux-4.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1oSmn4-0004QQ-3v; Mon, 29 Aug 2022 23:59:30 +0200
+Subject: Re: [PATCH v4 bpf-next 01/15] bpf: Introduce any context BPF specific
+ memory allocator.
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        davem@davemloft.net
+Cc:     andrii@kernel.org, tj@kernel.org, memxor@gmail.com, delyank@fb.com,
+        linux-mm@kvack.org, bpf@vger.kernel.org, kernel-team@fb.com
 References: <20220826024430.84565-1-alexei.starovoitov@gmail.com>
- <20220826024430.84565-7-alexei.starovoitov@gmail.com> <75b5f42d-84f6-4227-0bf9-fb62c89217c7@iogearbox.net>
-In-Reply-To: <75b5f42d-84f6-4227-0bf9-fb62c89217c7@iogearbox.net>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 29 Aug 2022 14:57:02 -0700
-Message-ID: <CAADnVQKnZecxOCA9ByNEQYgkT+wDcvAysisJ9fbifAvBv_CW2Q@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 06/15] bpf: Optimize element count in
- non-preallocated hash map.
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Delyan Kratunov <delyank@fb.com>,
-        linux-mm <linux-mm@kvack.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+ <20220826024430.84565-2-alexei.starovoitov@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <181cb6ae-9d98-8986-4419-5013662b0189@iogearbox.net>
+Date:   Mon, 29 Aug 2022 23:59:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <20220826024430.84565-2-alexei.starovoitov@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.6/26642/Mon Aug 29 09:54:26 2022)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -71,33 +53,82 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 29, 2022 at 2:47 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 8/26/22 4:44 AM, Alexei Starovoitov wrote:
-> > From: Alexei Starovoitov <ast@kernel.org>
-> >
-> > The atomic_inc/dec might cause extreme cache line bouncing when multiple cpus
-> > access the same bpf map. Based on specified max_entries for the hash map
-> > calculate when percpu_counter becomes faster than atomic_t and use it for such
-> > maps. For example samples/bpf/map_perf_test is using hash map with max_entries
-> > 1000. On a system with 16 cpus the 'map_perf_test 4' shows 14k events per
-> > second using atomic_t. On a system with 15 cpus it shows 100k events per second
-> > using percpu. map_perf_test is an extreme case where all cpus colliding on
-> > atomic_t which causes extreme cache bouncing. Note that the slow path of
-> > percpu_counter is 5k events per secound vs 14k for atomic, so the heuristic is
-> > necessary. See comment in the code why the heuristic is based on
-> > num_online_cpus().
->
-> nit: Could we include this logic inside percpu_counter logic, or as an extended
-> version of it? Except the heuristic of attr->max_entries / 2 > num_online_cpus() *
-> PERCPU_COUNTER_BATCH which toggles between plain atomic vs percpu_counter, the
-> rest feel generic enough that it could also be applicable outside bpf.
+On 8/26/22 4:44 AM, Alexei Starovoitov wrote:
+> From: Alexei Starovoitov <ast@kernel.org>
+> 
+> Tracing BPF programs can attach to kprobe and fentry. Hence they
+> run in unknown context where calling plain kmalloc() might not be safe.
+> 
+> Front-end kmalloc() with minimal per-cpu cache of free elements.
+> Refill this cache asynchronously from irq_work.
+> 
+> BPF programs always run with migration disabled.
+> It's safe to allocate from cache of the current cpu with irqs disabled.
+> Free-ing is always done into bucket of the current cpu as well.
+> irq_work trims extra free elements from buckets with kfree
+> and refills them with kmalloc, so global kmalloc logic takes care
+> of freeing objects allocated by one cpu and freed on another.
+> 
+> struct bpf_mem_alloc supports two modes:
+> - When size != 0 create kmem_cache and bpf_mem_cache for each cpu.
+>    This is typical bpf hash map use case when all elements have equal size.
+> - When size == 0 allocate 11 bpf_mem_cache-s for each cpu, then rely on
+>    kmalloc/kfree. Max allocation size is 4096 in this case.
+>    This is bpf_dynptr and bpf_kptr use case.
+> 
+> bpf_mem_alloc/bpf_mem_free are bpf specific 'wrappers' of kmalloc/kfree.
+> bpf_mem_cache_alloc/bpf_mem_cache_free are 'wrappers' of kmem_cache_alloc/kmem_cache_free.
+> 
+> The allocators are NMI-safe from bpf programs only. They are not NMI-safe in general.
+> 
+> Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> ---
+>   include/linux/bpf_mem_alloc.h |  26 ++
+>   kernel/bpf/Makefile           |   2 +-
+>   kernel/bpf/memalloc.c         | 476 ++++++++++++++++++++++++++++++++++
+>   3 files changed, 503 insertions(+), 1 deletion(-)
+>   create mode 100644 include/linux/bpf_mem_alloc.h
+>   create mode 100644 kernel/bpf/memalloc.c
+> 
+[...]
+> +#define NUM_CACHES 11
+> +
+> +struct bpf_mem_cache {
+> +	/* per-cpu list of free objects of size 'unit_size'.
+> +	 * All accesses are done with interrupts disabled and 'active' counter
+> +	 * protection with __llist_add() and __llist_del_first().
+> +	 */
+> +	struct llist_head free_llist;
+> +	local_t active;
+> +
+> +	/* Operations on the free_list from unit_alloc/unit_free/bpf_mem_refill
+> +	 * are sequenced by per-cpu 'active' counter. But unit_free() cannot
+> +	 * fail. When 'active' is busy the unit_free() will add an object to
+> +	 * free_llist_extra.
+> +	 */
+> +	struct llist_head free_llist_extra;
+> +
+> +	/* kmem_cache != NULL when bpf_mem_alloc was created for specific
+> +	 * element size.
+> +	 */
+> +	struct kmem_cache *kmem_cache;
+> +	struct irq_work refill_work;
+> +	struct obj_cgroup *objcg;
+> +	int unit_size;
+> +	/* count of objects in free_llist */
+> +	int free_cnt;
+> +};
+> +
+> +struct bpf_mem_caches {
+> +	struct bpf_mem_cache cache[NUM_CACHES];
+> +};
+> +
 
-The heuristic is probably not generic enough and this optimization
-is a stop gap. It helps many cases, but doesn't solve all.
-It's ok for this specific large hash map to count max_entries,
-but we shouldn't claim generality to suggest this heuristic
-to anyone else. I was thinking to do a follow up and create
-a true generic combined percpu and atomic counter, similar
-to percpu_ref that can switch from percpu to atomic.
-But it's more of a wish-list task atm.
+Could we now also completely get rid of the current map prealloc infra (pcpu_freelist*
+I mean), and replace it with above variant altogether? Would be nice to make it work
+for this case, too, and then get rid of percpu_freelist.{h,c} .. it's essentially a
+superset wrt functionality iiuc?
+
+Thanks,
+Daniel
