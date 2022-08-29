@@ -2,92 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90F895A5535
-	for <lists+bpf@lfdr.de>; Mon, 29 Aug 2022 22:00:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AF465A554B
+	for <lists+bpf@lfdr.de>; Mon, 29 Aug 2022 22:08:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229546AbiH2UAy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Aug 2022 16:00:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41628 "EHLO
+        id S229716AbiH2UIu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Aug 2022 16:08:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbiH2UAx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Aug 2022 16:00:53 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0EF361721;
-        Mon, 29 Aug 2022 13:00:51 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id v7-20020a1cac07000000b003a6062a4f81so8763305wme.1;
-        Mon, 29 Aug 2022 13:00:51 -0700 (PDT)
+        with ESMTP id S229453AbiH2UIt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Aug 2022 16:08:49 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56C8B90C4B
+        for <bpf@vger.kernel.org>; Mon, 29 Aug 2022 13:08:48 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id h27so6921563qkk.9
+        for <bpf@vger.kernel.org>; Mon, 29 Aug 2022 13:08:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc;
-        bh=O8RhKIZc2yZtz2lAJUXOlbXsU53P4O5YbHxV7ztn1WQ=;
-        b=illYhjhFWB7pTcWsXZ7sYKMvl92Ex3/EjGhmOFJ/fafPeg1C67rWXORf8DsuQg93Vx
-         O1rBWeqfNb1p0BeT7xDzhhGPeEaXjCC5aKFXmCG2edGZlAfQSXSHfkzsEFKhDrgfmNml
-         DQYHHTWwSQXhayyj7kWNwHcUTySz0XNQPEPh7So/7vlPJ++XXDdMQcNwZLtnRiA+Si3d
-         mUI5LI747+Sg/HBFTJkEqNItX37zgL2xwrw+X5Fc/By4unhwEVrDceExI/SHhRWO+VF+
-         29ofjiJfy4EQtrnDoc0SE61JUvVBlprAKWsfOuTdyJEwx4yqIH5yRMa5vMxTrSnpsr0Z
-         06Rg==
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=qbFnYh6+yxExljXv7kC6ED4iDTkPIabJD2w6r78FSkQ=;
+        b=Gtf1g/NXxYZTaLMDW1gcFmpDCBO7bmirrujsGt82JUvmWp7Y1l2zK7QOCmSZwnJcoY
+         bOfhEL5HKvYzYnSdH6PUx0/+IDQ5DnR5jCCdMCOc90OfqgE12xC7wOlWBiMxhT5xbTSA
+         kDz22UDaG0jqo5VhkBozq3hOuahHSOyrg5fDBJ5Y99esy/ZFF649pHGKRR0hQOLehzQh
+         Etmm7LtzVwr78luRpifIl/a6iDgAgxhP5dyBnXKjQbTOdU7tQJ5PqljPi3fBJSN5uS8Z
+         ZWa0GWtVL9/dRfVBpaWhEx8Y1qY7aBbnvmSQg5oK8oSEoeuZmVFZuTFhHJXGMonruDRG
+         b9qw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc;
-        bh=O8RhKIZc2yZtz2lAJUXOlbXsU53P4O5YbHxV7ztn1WQ=;
-        b=yi/nK/ghb6ulHf6jDw/wtacX5UCC0TeiNA9ODHBGZq+6Xx3p53QxDMUA635XG3Wt4C
-         ReLApl3xkPCY4l3YJtbYeNBe9sr7mIFu/Dm3QmJ1irFwz+UgCdZIFj9yKhQaSfidTeMF
-         tlQciw8HJ77nYMUbCxYTK8lz9VciyG/NL8CfEcFeCRokSMzFKN7lIHuRUAl9VFPwsAGK
-         oaiw8JtkSdvf1mn1QY9wI8dcVsItdp6yX8ybgbEs53yk5+XWcXWhIOAmyQl+rnIe6Z9M
-         hUY4zdjObbKuLCbqPFCeYPCRDOlCYl3P68Tdcb9tDBQ0eZc9PM6irpNEjxOuPEbpiOCG
-         +RJQ==
-X-Gm-Message-State: ACgBeo0vTmrVTlgAP2f9ZDKVUZybyKBFoV0df2MzswQLcwcwn9QkoFmQ
-        Bp+0PIzAIpTHqb3O2FrODmo=
-X-Google-Smtp-Source: AA6agR4fiTyjRSfl/A1iZbb6uhyJb1CwVrd6qmxTxRHDHm+iYIscnBz1QwW5oNhkorckn9VuoxRerQ==
-X-Received: by 2002:a05:600c:3d05:b0:3a5:dd21:e201 with SMTP id bh5-20020a05600c3d0500b003a5dd21e201mr7654637wmb.132.1661803250430;
-        Mon, 29 Aug 2022 13:00:50 -0700 (PDT)
-Received: from asus5775.alejandro-colomar.es ([170.253.36.171])
-        by smtp.googlemail.com with ESMTPSA id n18-20020a05600c3b9200b003a846a014c1sm5273193wms.23.2022.08.29.13.00.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Aug 2022 13:00:50 -0700 (PDT)
-From:   Alejandro Colomar <alx.manpages@gmail.com>
-To:     Quentin Monnet <quentin@isovalent.com>
-Cc:     Alejandro Colomar <alx.manpages@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-man <linux-man@vger.kernel.org>,
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=qbFnYh6+yxExljXv7kC6ED4iDTkPIabJD2w6r78FSkQ=;
+        b=mv0vn1fmJtcukOLJ6pi0QOumiwuf8d9GvUMldDEoITinklCGFZtMwxG0XiAA/ZbH8t
+         VclK4uWAE/LZV9TTibUMlAJl91JIwEVV214fiTdL6lsRJFrgrVu6PfD8LJ6YsxNHYuhI
+         PLOD92kPwFVWQr7TpeT3wh6rPxNHcqZmVjwv7fk9fUozSBTT7GJ+PcRuROKVL5JvH4BD
+         2yjW+1wekqKv71g+J72pQiP1VUeUHN5mmvCwNSkmF48iCPShYvYrM9/JFCpzG7R+dUmB
+         WZYB7HGJ8sSYBINGvrDXt1i8IQQVqo5Xh+SHgq68ix0jrMHx05naaI7+QpwiJG7EgW1m
+         tlxw==
+X-Gm-Message-State: ACgBeo15+2q2aSEWM6InJjWJlws6rsvvZEgsienFo2It9m9VFKYHxd5N
+        ALrIoBxp9Si9oXtxbWxb4Aa5YD5boLU6su+jVBqblbEtsN0=
+X-Google-Smtp-Source: AA6agR7AJf9AOAAtuDFL/SEeBpsglgsS3c78XCsHe+mZR6Ycv5JsqxwDnoulWonFip+nUJqMiv9nqp+8v3nbJaDxNwE=
+X-Received: by 2002:a37:e118:0:b0:6ba:e5ce:123b with SMTP id
+ c24-20020a37e118000000b006bae5ce123bmr9555944qkm.221.1661803727353; Mon, 29
+ Aug 2022 13:08:47 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220826230639.1249436-1-yosryahmed@google.com>
+In-Reply-To: <20220826230639.1249436-1-yosryahmed@google.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Mon, 29 Aug 2022 13:08:36 -0700
+Message-ID: <CA+khW7iN6hyyBBR+4ey+9pNmEyKPZS82-C9kZ2NRXKMEOXHrng@mail.gmail.com>
+Subject: Re: [PATCH] selftests/bpf: simplify cgroup_hierarchical_stats selftest
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Mykola Lysenko <mykolal@fb.com>, Song Liu <song@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "G. Branden Robinson" <g.branden.robinson@gmail.com>
-Subject: [PATCH v2] Fit lines in 80 columns
-Date:   Mon, 29 Aug 2022 21:58:44 +0200
-Message-Id: <20220829195842.85290-1-alx.manpages@gmail.com>
-X-Mailer: git-send-email 2.37.2
-In-Reply-To: <20220825175653.131125-1-alx.manpages@gmail.com>
-References: <20220825175653.131125-1-alx.manpages@gmail.com>
-MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4314; i=alx.manpages@gmail.com;
- h=from:subject; bh=SXQKA7DgCgoz0zVpxVE3/r5g24gf6ZrgXIg75ha3hYQ=;
- b=owEBbQKS/ZANAwAKAZ6MGvu+/9syAcsmYgBjDRpw7r3tuY2d7WmsoCLYpljp7VhH48Ik3WYMztV5
- JCCgmeCJAjMEAAEKAB0WIQTqOofwpOugMORd8kCejBr7vv/bMgUCYw0acAAKCRCejBr7vv/bMnfeD/
- 9JRdgnXkzJa19u7maUnVQV1Hcw50RBDTUV6vHekiYA/rmxIyL64YZMQ/EuHLIb2gen9MsrAn16UCs+
- 06/EJGED3fg/MQ/HI/nlO/mWmhS0u386dTC56AR3p9Lq4w2OmMTPkOUl/See3QC+s9wdVafjvUbQFE
- 6dfJdIWZ4GGQNmpqfczpEu0HScIu7zGPnlr0wsu038ev+yfXlK43nIBkykvXzCtnd6LgM4tqlsI4hD
- SXZUGDLf8ozln278Y/lTxT2pQclozNdkIUFlDzxlxrrDhPJcF9MtUKBAlc410ve4N7ZvP2zvIpbF6/
- Jrss42kyghaTWemxZTZCx6r9J/Ad23ih9epO6PxxBOybBHw3/U5r+NA56TlUcLDdPp1lHfvhkRRxWu
- 1hcv1lUtA292jbyobhjdilNmRoF/GYr5z2MU4kZzJPP3quwPUG/2Jat8DBEqZeot3lNnlR3oPv6g01
- fbqm90hdzk8sxhoXqLRbuQv//w52g6ihtVh/QcKZpjmcfM+2vNyb9iY/Zf0TLQZGX3LcivUu9eGg6g
- OlCv5cgRCWxwEeg6+9g8ebEnBwCdLGvbkWQ85WIrX1icxXSjRgCdeB/YhLfuGloF/5EwulA59kU6iO
- Uid8lyelQIngr5AnwXXT4NNzP+uPlqv9DHPjffx13e4Xj8rrVUCVJJoezLPA==
-X-Developer-Key: i=alx.manpages@gmail.com; a=openpgp; fpr=A9348594CE31283A826FBDD8D57633D441E25BB5
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -95,114 +75,79 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Those lines is used to generate the bpf-helpers(7) manual page.
-They are no-fill lines, since they represent code, which means
-that the formatter can't break the line, and instead just runs
-across the right margin (in most set-ups this means that the pager
-will break the line).
+On Fri, Aug 26, 2022 at 4:06 PM Yosry Ahmed <yosryahmed@google.com> wrote:
+>
+> The cgroup_hierarchical_stats selftest is complicated. It has to be,
+> because it tests an entire workflow of recording, aggregating, and
+> dumping cgroup stats. However, some of the complexity is unnecessary.
+> The test now enables the memory controller in a cgroup hierarchy, invokes
+> reclaim, measure reclaim time, THEN uses that reclaim time to test the
+> stats collection and aggregation. We don't need to use such a
+> complicated stat, as the context in which the stat is collected is
+> orthogonal.
+>
+> Simplify the test by using a simple stat instead of reclaim time, the
+> total number of times a process has ever entered a cgroup. This makes
+> the test simpler and removes the dependency on the memory controller and
+> the memory reclaim interface.
+>
+> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> ---
 
-Using <fmt> makes it end exactly at the 80-col right margin, both
-in the header file, and also in the manual page, and also seems to
-be a sensible name to me.
+Yosry, please tag the patch with the repo it should be applied on:
+bpf-next or bpf.
 
-In the other case, the fix has been to separate the variable
-definition and its use, as the kernel coding style recommends.
+>
+> When the test failed on Alexei's setup because the memory controller was
+> not enabled I realized this is an unnecessary dependency for the test,
+> which inspired this patch :) I am not sure if this prompt a Fixes tag as
+> the test wasn't broken.
+>
+> ---
+>  .../prog_tests/cgroup_hierarchical_stats.c    | 157 ++++++---------
+>  .../bpf/progs/cgroup_hierarchical_stats.c     | 181 ++++++------------
+>  2 files changed, 118 insertions(+), 220 deletions(-)
+>
+[...]
+> diff --git a/tools/testing/selftests/bpf/progs/cgroup_hierarchical_stats.c b/tools/testing/selftests/bpf/progs/cgroup_hierarchical_stats.c
+> index 8ab4253a1592..c74362854948 100644
+> --- a/tools/testing/selftests/bpf/progs/cgroup_hierarchical_stats.c
+> +++ b/tools/testing/selftests/bpf/progs/cgroup_hierarchical_stats.c
+> @@ -1,7 +1,5 @@
+>  // SPDX-License-Identifier: GPL-2.0-only
+>  /*
+> - * Functions to manage eBPF programs attached to cgroup subsystems
+> - *
 
-Nacked-by: Alexei Starovoitov <ast@kernel.org>
-Cc: bpf <bpf@vger.kernel.org>
-Cc: linux-man <linux-man@vger.kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Martin KaFai Lau <kafai@fb.com>
-Cc: Song Liu <songliubraving@fb.com>
-Cc: Yonghong Song <yhs@fb.com>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: KP Singh <kpsingh@kernel.org>
-Cc: Stanislav Fomichev <sdf@google.com>
-Cc: Hao Luo <haoluo@google.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Jesper Dangaard Brouer <brouer@redhat.com>
-Cc: Quentin Monnet <quentin@isovalent.com>
-Cc: Greg KH <gregkh@linuxfoundation.org>
-Cc: "G. Branden Robinson" <g.branden.robinson@gmail.com>
-Signed-off-by: Alejandro Colomar <alx.manpages@gmail.com>
----
- include/uapi/linux/bpf.h       | 11 ++++++-----
- tools/include/uapi/linux/bpf.h | 11 ++++++-----
- 2 files changed, 12 insertions(+), 10 deletions(-)
+Please also add comments here explaining what the programs in this file do.
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index ef78e0e1a754..1443fa2a1915 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -1619,7 +1619,7 @@ union bpf_attr {
-  *
-  * 		::
-  *
-- * 			telnet-470   [001] .N.. 419421.045894: 0x00000001: <formatted msg>
-+ * 			telnet-470   [001] .N.. 419421.045894: 0x00000001: <fmt>
-  *
-  * 		In the above:
-  *
-@@ -1636,8 +1636,7 @@ union bpf_attr {
-  * 			* ``419421.045894`` is a timestamp.
-  * 			* ``0x00000001`` is a fake value used by BPF for the
-  * 			  instruction pointer register.
-- * 			* ``<formatted msg>`` is the message formatted with
-- * 			  *fmt*.
-+ * 			* ``<fmt>`` is the message formatted with *fmt*.
-  *
-  * 		The conversion specifiers supported by *fmt* are similar, but
-  * 		more limited than for printk(). They are **%d**, **%i**,
-@@ -3860,8 +3859,10 @@ union bpf_attr {
-  * 			void bpf_sys_open(struct pt_regs *ctx)
-  * 			{
-  * 			        char buf[PATHLEN]; // PATHLEN is defined to 256
-- * 			        int res = bpf_probe_read_user_str(buf, sizeof(buf),
-- * 				                                  ctx->di);
-+ * 			        int res;
-+ *
-+ * 			        res = bpf_probe_read_user_str(buf, sizeof(buf),
-+ * 				                              ctx->di);
-  *
-  * 				// Consume buf, for example push it to
-  * 				// userspace via bpf_perf_event_output(); we
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index ef78e0e1a754..1443fa2a1915 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -1619,7 +1619,7 @@ union bpf_attr {
-  *
-  * 		::
-  *
-- * 			telnet-470   [001] .N.. 419421.045894: 0x00000001: <formatted msg>
-+ * 			telnet-470   [001] .N.. 419421.045894: 0x00000001: <fmt>
-  *
-  * 		In the above:
-  *
-@@ -1636,8 +1636,7 @@ union bpf_attr {
-  * 			* ``419421.045894`` is a timestamp.
-  * 			* ``0x00000001`` is a fake value used by BPF for the
-  * 			  instruction pointer register.
-- * 			* ``<formatted msg>`` is the message formatted with
-- * 			  *fmt*.
-+ * 			* ``<fmt>`` is the message formatted with *fmt*.
-  *
-  * 		The conversion specifiers supported by *fmt* are similar, but
-  * 		more limited than for printk(). They are **%d**, **%i**,
-@@ -3860,8 +3859,10 @@ union bpf_attr {
-  * 			void bpf_sys_open(struct pt_regs *ctx)
-  * 			{
-  * 			        char buf[PATHLEN]; // PATHLEN is defined to 256
-- * 			        int res = bpf_probe_read_user_str(buf, sizeof(buf),
-- * 				                                  ctx->di);
-+ * 			        int res;
-+ *
-+ * 			        res = bpf_probe_read_user_str(buf, sizeof(buf),
-+ * 				                              ctx->di);
-  *
-  * 				// Consume buf, for example push it to
-  * 				// userspace via bpf_perf_event_output(); we
--- 
-2.37.2
+>   * Copyright 2022 Google LLC.
+>   */
+[...]
+>
+> -SEC("tp_btf/mm_vmscan_memcg_reclaim_begin")
+> -int BPF_PROG(vmscan_start, int order, gfp_t gfp_flags)
+> +SEC("fentry/cgroup_attach_task")
 
+Can we select an attachpoint that is more stable? It seems
+'cgroup_attach_task' is an internal helper function in cgroup, and its
+signature can change. I'd prefer using those commonly used tracepoints
+and EXPORT'ed functions. IMHO their interfaces are more stable.
+
+> +int BPF_PROG(counter, struct cgroup *dst_cgrp, struct task_struct *leader,
+> +            bool threadgroup)
+>  {
+> -       struct task_struct *task = bpf_get_current_task_btf();
+> -       __u64 *start_time_ptr;
+> -
+> -       start_time_ptr = bpf_task_storage_get(&vmscan_start_time, task, 0,
+> -                                             BPF_LOCAL_STORAGE_GET_F_CREATE);
+> -       if (start_time_ptr)
+> -               *start_time_ptr = bpf_ktime_get_ns();
+> -       return 0;
+> -}
+[...]
+>  }
+> --
+> 2.37.2.672.g94769d06f0-goog
+>
