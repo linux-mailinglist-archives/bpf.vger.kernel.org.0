@@ -2,222 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33E575A43A6
-	for <lists+bpf@lfdr.de>; Mon, 29 Aug 2022 09:21:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D42F5A43AE
+	for <lists+bpf@lfdr.de>; Mon, 29 Aug 2022 09:22:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229510AbiH2HVD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Aug 2022 03:21:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40250 "EHLO
+        id S229657AbiH2HWO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Aug 2022 03:22:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbiH2HVC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Aug 2022 03:21:02 -0400
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D42F12AE3B;
-        Mon, 29 Aug 2022 00:20:59 -0700 (PDT)
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 27SLLEkV004415;
-        Mon, 29 Aug 2022 00:20:59 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : mime-version; s=facebook;
- bh=iq0my71+Lmc6ocLkTO4TD3mVzuenBYVNlSDlBufnsf4=;
- b=TRTr0iKW3OA12/3Hn7NR0fxZsQ1d1vyb1u1w//ha7OZnP/P59gTYzWKQ8w1LHuNRpHH9
- /CWKN5XYrj3tCEBNf25w1SS9a5czF/CcWp9ghI5/04/3ac3xYcq/NAlBj1B1YDf6lrsC
- wdVPmr3JZRvr2n7AhohHup1UZxLMXmfvzJ0= 
-Received: from nam02-bn1-obe.outbound.protection.outlook.com (mail-bn1nam07lp2040.outbound.protection.outlook.com [104.47.51.40])
-        by m0089730.ppops.net (PPS) with ESMTPS id 3j7es8fnjk-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 29 Aug 2022 00:20:58 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WqFU5HWMcF5xEyZ79yZky08cIM8OsHHpAK085x4Xe13NmHlkw9kVCgKNrBSrjS4xYtcRBS0DHfv+XYlA/mteo7MMNFVW23xvqUDHJT4FEz+aRbKpD+wfxbsluuKcwvtfh7j7M7gJ68BlldZYuliYmQ4sDj0S1ZsXIXDdvoZ559Nf5jdH/pOQMLVegqhqXx1+osWV+Xxbzo5OEuUngNJG6PsB09twTNBJN7R0R5nIML20MHUG+BlD4ovXjkGJf3N8ijb2syoxW5XSgHisz4ANFiWbiyJaHucDnGH/jVU6geUeOAeC/ktZZ/qQroc8wzGLctbWGF+dASukiBiZCVKFwA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=iq0my71+Lmc6ocLkTO4TD3mVzuenBYVNlSDlBufnsf4=;
- b=fsdNNehby1xPLCF5z7JwNDRS/2UuTiJgJnQBy2vsqKwoCTNItq88yicg9D7ROr8iTyJaEfMxVtSM5vOlXkJB37n+KltDoPBker/RuqV+9kT38PrLkFX87mHyrtDpMtrKk6RBAYy02jL1BnQ3IWfcme+bqX0a4T8CBf6BGHTs/TDOZ/66+gvKiDInRPBi8ug90ZDS2miMf41Xcw1slqoBM3eKF4f1mMtAtjZUXlOpEImFizeULvA2giGc9Sh7yY7m2G8zO7G/QrfE7Fy3dPLd2K4RUVx47PyHX7rUY53SbsK3E7bQ8W9RKEj//P87o5tWDsqoL5rR02RN4UFNwVV/og==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
- by SN7PR15MB4222.namprd15.prod.outlook.com (2603:10b6:806:101::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5566.21; Mon, 29 Aug
- 2022 07:20:56 +0000
-Received: from SA1PR15MB5109.namprd15.prod.outlook.com
- ([fe80::c488:891f:57b:d5da]) by SA1PR15MB5109.namprd15.prod.outlook.com
- ([fe80::c488:891f:57b:d5da%8]) with mapi id 15.20.5566.021; Mon, 29 Aug 2022
- 07:20:56 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Namhyung Kim <namhyung@kernel.org>
-CC:     Song Liu <song@kernel.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf-next] bpf: Add bpf_read_raw_record() helper
-Thread-Topic: [PATCH bpf-next] bpf: Add bpf_read_raw_record() helper
-Thread-Index: AQHYtzPeWFYcAGzsN0Wstq4jJDfNwK3AJloAgAAJpYCAAA9aAIAAO0MAgAAulQCAAAilAIAAsuMAgAAazgCAAAnxgIAADKuAgAAYuoCAAAP0AIAAA5MAgACW0gCAAzQjgA==
-Date:   Mon, 29 Aug 2022 07:20:56 +0000
-Message-ID: <4E6CFFD5-7048-4F64-8F16-70DD6D081ACF@fb.com>
-References: <20220823210354.1407473-1-namhyung@kernel.org>
- <CAEf4Bzbd0-jGFCSCJu3eDxxom42xnH9Tevq0n50-AajjHb5t3g@mail.gmail.com>
- <A9E2E766-E8A2-4E2E-A661-922400D2674D@fb.com>
- <CAEf4BzbGf6FuM7VcnA7HKb33HJeJjrDuydC4h1_tCUB8sPCW2g@mail.gmail.com>
- <E215461A-01E7-4677-A404-C4439D66A7AF@fb.com>
- <CAM9d7cgigkU8quUMpScL=Xt8+WLDVXKiF5xdKiz7BbDPibSNjg@mail.gmail.com>
- <CAPhsuW5V1U_UTHQw9E80vCTeP4Jqg9Ta8B+7o3pybKB=8CGRFA@mail.gmail.com>
- <CAM9d7cjTtOkRHLOosxHN8PcbVbhTK=uLDGjw8N5=1QiTHcd6rQ@mail.gmail.com>
- <C7F3F33B-4A8E-428C-9FED-FB635955C2B1@fb.com>
- <FCC75F8E-4C2F-42A4-B582-9BE3BB87E15A@fb.com>
- <CAM9d7cj6YNTL+u38PZjhPF2Qg_BYiJ1NMmDkPDx3N3Xe+ZTbyA@mail.gmail.com>
- <FD49F694-10FA-4346-8303-E1E185C3E6E4@fb.com>
- <CAM9d7cjj0X90=NsvdwaLMGCDVkMJBLAGF_q-+Eqj6b44OAnzoQ@mail.gmail.com>
- <1CA3FC40-BC8D-4836-B3E7-0EB196DE6E66@fb.com>
- <CAM9d7cg-X6iobbmx3HzCz4H2c20peBVGPt3yf9m3WbqLb5H90A@mail.gmail.com>
-In-Reply-To: <CAM9d7cg-X6iobbmx3HzCz4H2c20peBVGPt3yf9m3WbqLb5H90A@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3696.120.41.1.1)
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 385458e5-7095-49aa-5e67-08da898f03ec
-x-ms-traffictypediagnostic: SN7PR15MB4222:EE_
-x-fb-source: Internal
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: CvgLxOTPSwIsK9K790g5+2EAzXop+l9D30IW3sz1f2k67avOLDxYzTx6Z5eYN5TCaag27NPLZQflA5M9rnDpdjXP7hH08QkTjgxWzue7ft57AKEJbfNVFF5piXA8JrxcV9+TgMG+C9bckuKYH7hYNRzOqL4hVQ48IKph4ak17xfhiQNSCMTwHbLvl2b1NkTBo5Oo44SXE3JO3/q4iXgf/g/zsMniSLwBjfTBGwGciaiDnXvuTm1cHaifasMITWc0tLm4njggtpgxRKUB43+QSiqITxYO4bpGjez+J/1EbTT+l3F+1kz4avxmnca5HeSH4G0fJmijEhJTTw9t+h4nKbMtnUNfVdmZ1GB8xqXizzTgw6x7Pr0Io/GBc00Adm3t+wdkVjyhaD6T1XkcAKEErkzT0jHKoPBhI9pTjmqQy3mfGKWjRZLt8NXz39tQqWmB6noVyf4q7ES8G6IzMz2hWdJuSa6+Vnn0ZAypUuKICSPlj++pVJHaDJkIjsBZVvexmQAeaj2fBHRtppb9LWzxbCbaRmOtgo+q/6NgqNn0+wYC7/QpoPHLbVkdYZ+A/96vdGk9KW5HAZSpGUe8u5+7iQ/TDXt2w46Dcj8SPzn13GHywPCe/6I3it5P2hkD6Cq23xdOR8DdbJ+oM1OjHga4sBemUIdHuAyVCkeYKjSEjxyro+0iJoLYtGOrsixBvh3mDp7AmqCNACBwwx5w7oig5ZjxkT+Kim/FOK0A92U++pOtWRLBgMaqzqwNGRa3HJxHqmhFl+ccl7rAT6bheyJeYs2NBDYQ2gP78CaJzk8ApryjA5moAK5QzFEcXtNFmMo3S74+PN6oOxWks8YkveGnEw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(346002)(136003)(39860400002)(376002)(396003)(366004)(6506007)(122000001)(38100700002)(2906002)(53546011)(2616005)(83380400001)(33656002)(6512007)(186003)(54906003)(6486002)(86362001)(8676002)(4326008)(64756008)(66476007)(91956017)(66556008)(76116006)(66446008)(66946007)(71200400001)(316002)(966005)(6916009)(38070700005)(36756003)(7416002)(41300700001)(8936002)(478600001)(5660300002)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?UTyTdyWQ7rkVZnYxR28ajgCf6U4k880J8kNcmWYZ8x+aF2nXzgprfj5u5KBS?=
- =?us-ascii?Q?y4F/W6ILzqXvPORrmYRbaoa7VxmoFqshhZfUMdj/ZLJhBZDB98oqWge9ftMw?=
- =?us-ascii?Q?TZswA7s5+8RKCIIecM/SIAMTiK1hvmHKa1rp9ucYMHBlHQkOkCpLtNXPkYmD?=
- =?us-ascii?Q?NCamJIx0DWIaQ/H/AAnpeOyI0AaQKUYPenjNkgcJDew0ejP5sd32S30bMsXi?=
- =?us-ascii?Q?nEehSrRWoJJqee9ymJFDvZswduvyrNz/r2MupEZpvpZg9mwPdT7BzHXJU+Dc?=
- =?us-ascii?Q?imc9WHiYaSbOIajWZcIILFa9w9YFtq8GpIMGt1Av6UIren7FYymd4kqiUWFC?=
- =?us-ascii?Q?tKlbNUM3qxJtuKqcDAYxz7TUABrGGWltD4l0eWwuimysj+JneLkUIb/P0oo6?=
- =?us-ascii?Q?/SrVvutLCeekX8WLOCGXa8Aa3fOh8FXDHsGRP+ioP3ZKb106dFL0yxF3lyPI?=
- =?us-ascii?Q?xt7EQodE/BxIbQBtSV1RGpXVThStS+M9NfkliyiJpRkujSV4aDD67/mZzIrs?=
- =?us-ascii?Q?qGTQUZ7htFhIOPWaJpSXj3iqe5fJ2rb4E5UcKgO5bZPLUXD4OQBnLP+vm86v?=
- =?us-ascii?Q?tILeD0FQHIN4K6/Kb501HMh5YzsNI8i8HVTz0huy8JGJu7VdVp8EF3uVV1qZ?=
- =?us-ascii?Q?ghXYCSKEP1ddzO8WHhywqs8KRWatbwEhxZ+OwkXYnO+aeUIzrxisZD2tVh5Z?=
- =?us-ascii?Q?PFOFiAy40W7rhT0SdYcswIr3aWLOv4hgm2JowTPuCzw0QhOFmCKd+rG+xWhd?=
- =?us-ascii?Q?nPV7D0Nls8dLf+WdSPbdbz6Cqhj4uhAqpRVF5Cl86Iz8S/vfX+yN2+tgePO+?=
- =?us-ascii?Q?nw13fRGid5eG3ODqzYNuImvaq6zhvkC3Uane/l1p+qJ1L9rLFFJ58KNkg8BU?=
- =?us-ascii?Q?QKNKhc0bjRzu70LNa4un2jdS/JGuica5J4RTRMN+FOAdubTesc4z2BkO/Rok?=
- =?us-ascii?Q?BYpiZ/ycyKXbNvkKB7Pj6sEnjXwbXDEePxrozAMA5RCVVIkkeAtllvHruw8G?=
- =?us-ascii?Q?wFEX9XG+H5uRjWoasUiziWqLf+dxYwdm0xK8wIASxspP84z21N+RMHZ9RaZ6?=
- =?us-ascii?Q?yFEutCQk5nuadwcIj+38TGkju6Ul5XFBzhgbMnFzZqzVu8ycLP1n/xRHDtaR?=
- =?us-ascii?Q?UEQI1cn3jSs3MHfmxDdgyk2VD1y9NAKYKEKi5ayF2kYzpY0qn21QzDuH3c13?=
- =?us-ascii?Q?OS1Wx8qEkDUH2GFkLCRviD1u13mIroCtUP8elaBV+aJKcJbLgE5ZUGKzr7LU?=
- =?us-ascii?Q?oz7IubITX9sw9RgYG1sZwUDu2jBcrHJxknBpAMBx9A27RKK1ssVcMtknmUVR?=
- =?us-ascii?Q?jbZDEpfJXfesK4ElG3v1ZeWLOItj4aKhaXDq9nMl1BqihT9uzxtCKZs7XoB/?=
- =?us-ascii?Q?+mVx75zNBR+TIHnHAgUn/iddUvpR2ZtqBirbdBTh5R0Eyc0fH70oMsIbPLVU?=
- =?us-ascii?Q?OQ/dBdPqoTYZGCj8P+M8CQCdtw5jrzaHj8O1XXgoRA3E0W0TdOGzwmQZZ6to?=
- =?us-ascii?Q?WK3UZ4HN0D96HACKCIqSjkeUqRvfBLPtMvQBwjxMQphrj2jWPlj+zhGhb7LH?=
- =?us-ascii?Q?fSY0vDfbJvYXvw1eOUwfn1gyETg3SUV1tjr1muzPJkPJ7vqeVt6Y9zFP3/IT?=
- =?us-ascii?Q?54ESfQKmJ9S8LVubLXN7K6s=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3C5A29DB973AD6448557D80D80697B58@namprd15.prod.outlook.com>
-X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 385458e5-7095-49aa-5e67-08da898f03ec
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Aug 2022 07:20:56.4872
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ig+fSAH/ner5o0/wliYVb0JR6eVq6ljd/klexdzYam0Vl0rq5Y137kk1Y2dc+VmnWiVwjK/Ki4GP2XUS91zq6Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR15MB4222
-X-Proofpoint-ORIG-GUID: KJvgAUWRgP7HWkbFWT7_cNkaxfPnFwaf
-X-Proofpoint-GUID: KJvgAUWRgP7HWkbFWT7_cNkaxfPnFwaf
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        with ESMTP id S229594AbiH2HWM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Aug 2022 03:22:12 -0400
+Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FFCA4DB7C;
+        Mon, 29 Aug 2022 00:22:09 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.229])
+        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4MGMGv3QbPz9v7HT;
+        Mon, 29 Aug 2022 15:18:15 +0800 (CST)
+Received: from roberto-ThinkStation-P620 (unknown [10.204.63.22])
+        by APP1 (Coremail) with SMTP id LxC2BwDHcJT1aAxjV_gHAA--.25494S2;
+        Mon, 29 Aug 2022 08:21:40 +0100 (CET)
+Message-ID: <cead9f6ad77a66425324a880bd1df389fe258d40.camel@huaweicloud.com>
+Subject: Re: [PATCH v14 04/10] KEYS: Move KEY_LOOKUP_ to include/linux/key.h
+ and add flags check function
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
+        corbet@lwn.net, dhowells@redhat.com, rostedt@goodmis.org,
+        mingo@redhat.com, paul@paul-moore.com, jmorris@namei.org,
+        serge@hallyn.com, shuah@kernel.org, bpf@vger.kernel.org,
+        linux-doc@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        deso@posteo.net, Roberto Sassu <roberto.sassu@huawei.com>
+Date:   Mon, 29 Aug 2022 09:25:05 +0200
+In-Reply-To: <YwrpL9b3NXtjnPru@kernel.org>
+References: <acae432697e854748d9a44c732ec8cab807d9d46.camel@huaweicloud.com>
+         <20220826091228.1701185-1-roberto.sassu@huaweicloud.com>
+         <6d85d7b1f0c2341698e88bad025bd6e0b34c7666.camel@huaweicloud.com>
+         <YwroKjo7IkQDepp5@kernel.org> <YwrpL9b3NXtjnPru@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-08-29_03,2022-08-25_01,2022-06-22_01
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: LxC2BwDHcJT1aAxjV_gHAA--.25494S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Zw1rZw1fuw48JFW7JFW3GFg_yoW8GF1fpa
+        48JayxKF4vyr13Ar92gFySyw1Fg397Wr1UXrn8Xr98uFnF9rnIyrs7Ga1S9Fyjgr4DK3Wq
+        yFWjq343Zr17AaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWUJVW8JwA2z4x0Y4vEx4A2jsIEc7CjxV
+        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UAkuxUUUUU=
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgATBF1jj35fJgABsi
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-> On Aug 26, 2022, at 11:25 PM, Namhyung Kim <namhyung@kernel.org> wrote:
+On Sun, 2022-08-28 at 07:03 +0300, Jarkko Sakkinen wrote:
+> On Sun, Aug 28, 2022 at 06:59:41AM +0300, Jarkko Sakkinen wrote:
+> > On Fri, Aug 26, 2022 at 11:22:54AM +0200, Roberto Sassu wrote:
+> > > On Fri, 2022-08-26 at 11:12 +0200, Roberto Sassu wrote:
+> > > > From: Roberto Sassu <roberto.sassu@huawei.com>
+> > > > 
+> > > > In preparation for the patch that introduces the
+> > > > bpf_lookup_user_key() eBPF
+> > > > kfunc, move KEY_LOOKUP_ definitions to include/linux/key.h, to
+> > > > be
+> > > > able to
+> > > > validate the kfunc parameters.
+> > > > 
+> > > > Also, introduce key_lookup_flags_valid() to check if the caller
+> > > > set
+> > > > in the
+> > > > argument only defined flags. Introduce it directly in
+> > > > include/linux/key.h,
+> > > > to reduce the risk that the check is not in sync with currently
+> > > > defined
+> > > > flags.
+> > > > 
+> > > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> > > > Reviewed-by: KP Singh <kpsingh@kernel.org>
+> > > 
+> > > Jarkko, could you please ack it if it is fine?
+> > 
+> > So, as said I'm not really confident that a function is
+> > even needed in the first place. It's fine if there are
+> > enough call sites to make it legit.
 > 
-> On Fri, Aug 26, 2022 at 2:26 PM Song Liu <songliubraving@fb.com> wrote:
->> 
->> 
->> 
->>> On Aug 26, 2022, at 2:12 PM, Namhyung Kim <namhyung@kernel.org> wrote:
->>> 
->>> On Fri, Aug 26, 2022 at 1:59 PM Song Liu <songliubraving@fb.com> wrote:
->>>> 
->>>> 
->>>> 
->>>>> On Aug 26, 2022, at 12:30 PM, Namhyung Kim <namhyung@kernel.org> wrote:
->>>>> 
->>>>> On Fri, Aug 26, 2022 at 11:45 AM Song Liu <songliubraving@fb.com> wrote:
->>>>> 
->>>>>>> And actually, we can just read ctx->data and get the raw record,
->>>>>>> right..?
->>>>>> 
->>>>>> Played with this for a little bit. ctx->data appears to be not
->>>>>> reliable sometimes. I guess (not 100% sure) this is because we
->>>>>> call bpf program before event->orig_overflow_handler. We can
->>>>>> probably add a flag to specify we want to call orig_overflow_handler
->>>>>> first.
->>>>> 
->>>>> I'm not sure.  The sample_data should be provided by the caller
->>>>> of perf_event_overflow.  So I guess the bpf program should see
->>>>> a valid ctx->data.
->>>> 
->>>> Let's dig into this. Maybe we need some small changes in
->>>> pe_prog_convert_ctx_access.
->>> 
->>> Sure, can you explain the problem in detail and share your program?
->> 
->> I push the code to
->> 
->> https://git.kernel.org/pub/scm/linux/kernel/git/song/linux.git/log/?h=test-perf-event
->> 
->> The code is in tools/bpf/perf-test/.
->> 
->> The problem is we cannot get reliable print of data->cpu_entry in
->> /sys/kernel/tracing/trace.
-> 
-> Ah, right.  I've realized that the sample data is passed before full
-> initialized.  Please see perf_sample_data_init().  The other members
-> are initialized right before written to the ring buffer in the
-> orig_overflow_handler (__perf_event_output).
-> 
-> That explains why pe_prog_convert_ctx_access() handles
-> data and period specially.  We need to handle it first.
+> And *if* a named constant is enough, you could probably
+> then just squash to the same patch that uses it, right?
 
-Thanks for confirming this. I guess we will need a helper (or kfunc) 
-for the raw data. 
+Yes, the constant seems better. Maybe, I would add in the same patch
+that exports the lookup flags, since we have that.
 
-Shall we make it more generic that we can get other PERF_SAMPLE_*? 
+Thanks
 
-Thanks,
-Song
-
-
+Roberto
 
