@@ -2,152 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AF465A554B
-	for <lists+bpf@lfdr.de>; Mon, 29 Aug 2022 22:08:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2F355A5558
+	for <lists+bpf@lfdr.de>; Mon, 29 Aug 2022 22:11:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229716AbiH2UIu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Aug 2022 16:08:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49500 "EHLO
+        id S230042AbiH2ULU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Aug 2022 16:11:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbiH2UIt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Aug 2022 16:08:49 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56C8B90C4B
-        for <bpf@vger.kernel.org>; Mon, 29 Aug 2022 13:08:48 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id h27so6921563qkk.9
-        for <bpf@vger.kernel.org>; Mon, 29 Aug 2022 13:08:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=qbFnYh6+yxExljXv7kC6ED4iDTkPIabJD2w6r78FSkQ=;
-        b=Gtf1g/NXxYZTaLMDW1gcFmpDCBO7bmirrujsGt82JUvmWp7Y1l2zK7QOCmSZwnJcoY
-         bOfhEL5HKvYzYnSdH6PUx0/+IDQ5DnR5jCCdMCOc90OfqgE12xC7wOlWBiMxhT5xbTSA
-         kDz22UDaG0jqo5VhkBozq3hOuahHSOyrg5fDBJ5Y99esy/ZFF649pHGKRR0hQOLehzQh
-         Etmm7LtzVwr78luRpifIl/a6iDgAgxhP5dyBnXKjQbTOdU7tQJ5PqljPi3fBJSN5uS8Z
-         ZWa0GWtVL9/dRfVBpaWhEx8Y1qY7aBbnvmSQg5oK8oSEoeuZmVFZuTFhHJXGMonruDRG
-         b9qw==
+        with ESMTP id S230050AbiH2ULS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Aug 2022 16:11:18 -0400
+Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DE2983F20;
+        Mon, 29 Aug 2022 13:11:15 -0700 (PDT)
+Received: by mail-ot1-f42.google.com with SMTP id q39-20020a056830442700b0063889adc0ddso6687950otv.1;
+        Mon, 29 Aug 2022 13:11:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc;
-        bh=qbFnYh6+yxExljXv7kC6ED4iDTkPIabJD2w6r78FSkQ=;
-        b=mv0vn1fmJtcukOLJ6pi0QOumiwuf8d9GvUMldDEoITinklCGFZtMwxG0XiAA/ZbH8t
-         VclK4uWAE/LZV9TTibUMlAJl91JIwEVV214fiTdL6lsRJFrgrVu6PfD8LJ6YsxNHYuhI
-         PLOD92kPwFVWQr7TpeT3wh6rPxNHcqZmVjwv7fk9fUozSBTT7GJ+PcRuROKVL5JvH4BD
-         2yjW+1wekqKv71g+J72pQiP1VUeUHN5mmvCwNSkmF48iCPShYvYrM9/JFCpzG7R+dUmB
-         WZYB7HGJ8sSYBINGvrDXt1i8IQQVqo5Xh+SHgq68ix0jrMHx05naaI7+QpwiJG7EgW1m
-         tlxw==
-X-Gm-Message-State: ACgBeo15+2q2aSEWM6InJjWJlws6rsvvZEgsienFo2It9m9VFKYHxd5N
-        ALrIoBxp9Si9oXtxbWxb4Aa5YD5boLU6su+jVBqblbEtsN0=
-X-Google-Smtp-Source: AA6agR7AJf9AOAAtuDFL/SEeBpsglgsS3c78XCsHe+mZR6Ycv5JsqxwDnoulWonFip+nUJqMiv9nqp+8v3nbJaDxNwE=
-X-Received: by 2002:a37:e118:0:b0:6ba:e5ce:123b with SMTP id
- c24-20020a37e118000000b006bae5ce123bmr9555944qkm.221.1661803727353; Mon, 29
- Aug 2022 13:08:47 -0700 (PDT)
+        bh=coRosjD9gelJrEV2YoGWjrUrsYYzPD3GZ/ZhjpCdkmU=;
+        b=QdPtSxl3TFO93ukfu1RexSTS9Ot2qal2NwJ0MPgNqGB5D74e+ulx5SCLTwcgUmLsSJ
+         vKRJKqHj/xe9wDudalLkGP0xFea3T+5c8YgTLxXFxIRrhvmkEXCK2hYc7h86/RAYAFRr
+         NYwVeeKJS+wSPMkx9aeV96zSd3EupsLyu8fm/sOA+QzOUEgsgNfVmdyHEpmshgr6Orwl
+         cjFr/duhw+vzICziy5PNsXpBEDM3t7iGNw2hZObBw2PgKAKZhXw1k3CP4Kwy1eem/wqw
+         N7sy80UZlmdQP8F4hMuvVIMbqKnRkVmHH0TiZ7jXzyH7kAEA/MTinNcxiZftijOSl53s
+         CS5A==
+X-Gm-Message-State: ACgBeo2dxHT+95Y3YQN3C1KJTzxExN8x0+ESIADM2kHOCXqfK0ibxiyV
+        m/ojM1bTyq2SgVdecshsRtFb3Q++7mvNuwCTdYq+Uz4Q
+X-Google-Smtp-Source: AA6agR5Bvw+RNGEMv8abZwAJt8lWnBQhR8+CSsscLfwCd/Nu4ePGjwk5nmwdDH1aAQvjjKHcOQ/qWCw/s1yE80gltk4=
+X-Received: by 2002:a9d:6f18:0:b0:638:b4aa:a546 with SMTP id
+ n24-20020a9d6f18000000b00638b4aaa546mr7012074otq.124.1661803874410; Mon, 29
+ Aug 2022 13:11:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220826230639.1249436-1-yosryahmed@google.com>
-In-Reply-To: <20220826230639.1249436-1-yosryahmed@google.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Mon, 29 Aug 2022 13:08:36 -0700
-Message-ID: <CA+khW7iN6hyyBBR+4ey+9pNmEyKPZS82-C9kZ2NRXKMEOXHrng@mail.gmail.com>
-Subject: Re: [PATCH] selftests/bpf: simplify cgroup_hierarchical_stats selftest
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
+References: <20220823210354.1407473-1-namhyung@kernel.org> <CAEf4Bzbd0-jGFCSCJu3eDxxom42xnH9Tevq0n50-AajjHb5t3g@mail.gmail.com>
+ <A9E2E766-E8A2-4E2E-A661-922400D2674D@fb.com> <CAEf4BzbGf6FuM7VcnA7HKb33HJeJjrDuydC4h1_tCUB8sPCW2g@mail.gmail.com>
+ <E215461A-01E7-4677-A404-C4439D66A7AF@fb.com> <CAM9d7cgigkU8quUMpScL=Xt8+WLDVXKiF5xdKiz7BbDPibSNjg@mail.gmail.com>
+ <CAPhsuW5V1U_UTHQw9E80vCTeP4Jqg9Ta8B+7o3pybKB=8CGRFA@mail.gmail.com>
+ <CAM9d7cjTtOkRHLOosxHN8PcbVbhTK=uLDGjw8N5=1QiTHcd6rQ@mail.gmail.com>
+ <C7F3F33B-4A8E-428C-9FED-FB635955C2B1@fb.com> <FCC75F8E-4C2F-42A4-B582-9BE3BB87E15A@fb.com>
+ <CAM9d7cj6YNTL+u38PZjhPF2Qg_BYiJ1NMmDkPDx3N3Xe+ZTbyA@mail.gmail.com>
+ <FD49F694-10FA-4346-8303-E1E185C3E6E4@fb.com> <CAM9d7cjj0X90=NsvdwaLMGCDVkMJBLAGF_q-+Eqj6b44OAnzoQ@mail.gmail.com>
+ <1CA3FC40-BC8D-4836-B3E7-0EB196DE6E66@fb.com> <CAM9d7cg-X6iobbmx3HzCz4H2c20peBVGPt3yf9m3WbqLb5H90A@mail.gmail.com>
+ <4E6CFFD5-7048-4F64-8F16-70DD6D081ACF@fb.com>
+In-Reply-To: <4E6CFFD5-7048-4F64-8F16-70DD6D081ACF@fb.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Mon, 29 Aug 2022 13:11:03 -0700
+Message-ID: <CAM9d7cgXdL6nnVXGGxtmrdnu4jSKqORCCT=AViAQqJamkpj7ZQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: Add bpf_read_raw_record() helper
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Song Liu <song@kernel.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Mykola Lysenko <mykolal@fb.com>, Song Liu <song@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
         Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Aug 26, 2022 at 4:06 PM Yosry Ahmed <yosryahmed@google.com> wrote:
+On Mon, Aug 29, 2022 at 12:21 AM Song Liu <songliubraving@fb.com> wrote:
 >
-> The cgroup_hierarchical_stats selftest is complicated. It has to be,
-> because it tests an entire workflow of recording, aggregating, and
-> dumping cgroup stats. However, some of the complexity is unnecessary.
-> The test now enables the memory controller in a cgroup hierarchy, invokes
-> reclaim, measure reclaim time, THEN uses that reclaim time to test the
-> stats collection and aggregation. We don't need to use such a
-> complicated stat, as the context in which the stat is collected is
-> orthogonal.
 >
-> Simplify the test by using a simple stat instead of reclaim time, the
-> total number of times a process has ever entered a cgroup. This makes
-> the test simpler and removes the dependency on the memory controller and
-> the memory reclaim interface.
 >
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> ---
+> > On Aug 26, 2022, at 11:25 PM, Namhyung Kim <namhyung@kernel.org> wrote:
+> >
+> > On Fri, Aug 26, 2022 at 2:26 PM Song Liu <songliubraving@fb.com> wrote:
+> >>
+> >>
+> >>
+> >>> On Aug 26, 2022, at 2:12 PM, Namhyung Kim <namhyung@kernel.org> wrote:
+> >>>
+> >>> On Fri, Aug 26, 2022 at 1:59 PM Song Liu <songliubraving@fb.com> wrote:
+> >>>>
+> >>>>
+> >>>>
+> >>>>> On Aug 26, 2022, at 12:30 PM, Namhyung Kim <namhyung@kernel.org> wrote:
+> >>>>>
+> >>>>> On Fri, Aug 26, 2022 at 11:45 AM Song Liu <songliubraving@fb.com> wrote:
+> >>>>>
+> >>>>>>> And actually, we can just read ctx->data and get the raw record,
+> >>>>>>> right..?
+> >>>>>>
+> >>>>>> Played with this for a little bit. ctx->data appears to be not
+> >>>>>> reliable sometimes. I guess (not 100% sure) this is because we
+> >>>>>> call bpf program before event->orig_overflow_handler. We can
+> >>>>>> probably add a flag to specify we want to call orig_overflow_handler
+> >>>>>> first.
+> >>>>>
+> >>>>> I'm not sure.  The sample_data should be provided by the caller
+> >>>>> of perf_event_overflow.  So I guess the bpf program should see
+> >>>>> a valid ctx->data.
+> >>>>
+> >>>> Let's dig into this. Maybe we need some small changes in
+> >>>> pe_prog_convert_ctx_access.
+> >>>
+> >>> Sure, can you explain the problem in detail and share your program?
+> >>
+> >> I push the code to
+> >>
+> >> https://git.kernel.org/pub/scm/linux/kernel/git/song/linux.git/log/?h=test-perf-event
+> >>
+> >> The code is in tools/bpf/perf-test/.
+> >>
+> >> The problem is we cannot get reliable print of data->cpu_entry in
+> >> /sys/kernel/tracing/trace.
+> >
+> > Ah, right.  I've realized that the sample data is passed before full
+> > initialized.  Please see perf_sample_data_init().  The other members
+> > are initialized right before written to the ring buffer in the
+> > orig_overflow_handler (__perf_event_output).
+> >
+> > That explains why pe_prog_convert_ctx_access() handles
+> > data and period specially.  We need to handle it first.
+>
+> Thanks for confirming this. I guess we will need a helper (or kfunc)
+> for the raw data.
+>
+> Shall we make it more generic that we can get other PERF_SAMPLE_*?
 
-Yosry, please tag the patch with the repo it should be applied on:
-bpf-next or bpf.
+I don't think we can (or allow to) get all the sample data but some
+would be useful for filtering.  Currently I'm only interested in the raw
+data, but ip and page size seem useful too.
 
->
-> When the test failed on Alexei's setup because the memory controller was
-> not enabled I realized this is an unnecessary dependency for the test,
-> which inspired this patch :) I am not sure if this prompt a Fixes tag as
-> the test wasn't broken.
->
-> ---
->  .../prog_tests/cgroup_hierarchical_stats.c    | 157 ++++++---------
->  .../bpf/progs/cgroup_hierarchical_stats.c     | 181 ++++++------------
->  2 files changed, 118 insertions(+), 220 deletions(-)
->
-[...]
-> diff --git a/tools/testing/selftests/bpf/progs/cgroup_hierarchical_stats.c b/tools/testing/selftests/bpf/progs/cgroup_hierarchical_stats.c
-> index 8ab4253a1592..c74362854948 100644
-> --- a/tools/testing/selftests/bpf/progs/cgroup_hierarchical_stats.c
-> +++ b/tools/testing/selftests/bpf/progs/cgroup_hierarchical_stats.c
-> @@ -1,7 +1,5 @@
->  // SPDX-License-Identifier: GPL-2.0-only
->  /*
-> - * Functions to manage eBPF programs attached to cgroup subsystems
-> - *
+So I think it'd be better to have a generic helper rather than a specific
+one.  But it'd require some refactoring to get the data before calling
+BPF programs.  Let me work on it first.
 
-Please also add comments here explaining what the programs in this file do.
-
->   * Copyright 2022 Google LLC.
->   */
-[...]
->
-> -SEC("tp_btf/mm_vmscan_memcg_reclaim_begin")
-> -int BPF_PROG(vmscan_start, int order, gfp_t gfp_flags)
-> +SEC("fentry/cgroup_attach_task")
-
-Can we select an attachpoint that is more stable? It seems
-'cgroup_attach_task' is an internal helper function in cgroup, and its
-signature can change. I'd prefer using those commonly used tracepoints
-and EXPORT'ed functions. IMHO their interfaces are more stable.
-
-> +int BPF_PROG(counter, struct cgroup *dst_cgrp, struct task_struct *leader,
-> +            bool threadgroup)
->  {
-> -       struct task_struct *task = bpf_get_current_task_btf();
-> -       __u64 *start_time_ptr;
-> -
-> -       start_time_ptr = bpf_task_storage_get(&vmscan_start_time, task, 0,
-> -                                             BPF_LOCAL_STORAGE_GET_F_CREATE);
-> -       if (start_time_ptr)
-> -               *start_time_ptr = bpf_ktime_get_ns();
-> -       return 0;
-> -}
-[...]
->  }
-> --
-> 2.37.2.672.g94769d06f0-goog
->
+Thanks,
+Namhyung
