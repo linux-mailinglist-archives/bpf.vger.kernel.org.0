@@ -2,49 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF4525A56D5
-	for <lists+bpf@lfdr.de>; Tue, 30 Aug 2022 00:12:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D02F45A56F4
+	for <lists+bpf@lfdr.de>; Tue, 30 Aug 2022 00:16:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229478AbiH2WMM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Aug 2022 18:12:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44944 "EHLO
+        id S229864AbiH2WQv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Aug 2022 18:16:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbiH2WMM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Aug 2022 18:12:12 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0152D7D78B
-        for <bpf@vger.kernel.org>; Mon, 29 Aug 2022 15:12:10 -0700 (PDT)
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1oSmzJ-000BdG-0b; Tue, 30 Aug 2022 00:12:09 +0200
-Received: from [85.1.206.226] (helo=linux-4.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1oSmzI-000Exf-R6; Tue, 30 Aug 2022 00:12:08 +0200
-Subject: Re: [PATCH bpf-next v3 6/7] selftests/bpf: Add struct argument tests
- with fentry/fexit programs.
-To:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, kernel-team@fb.com
-References: <20220828025438.142798-1-yhs@fb.com>
- <20220828025509.145209-1-yhs@fb.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <7cf3de93-ae20-3d76-20d9-67242a65408b@iogearbox.net>
-Date:   Tue, 30 Aug 2022 00:12:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S230047AbiH2WQk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Aug 2022 18:16:40 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5EBEA6AC7
+        for <bpf@vger.kernel.org>; Mon, 29 Aug 2022 15:16:32 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id bd26-20020a05600c1f1a00b003a5e82a6474so5140168wmb.4
+        for <bpf@vger.kernel.org>; Mon, 29 Aug 2022 15:16:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=HD633EfbN3tb6uFCu45l1iRXG26ohor9loINMI5UFVU=;
+        b=SUtdpCu/SOcGU+qWxAFpyCReRSxrL/K6PFzJ+/br9oyXDpUkXwDACFm/6ovQltGWUO
+         XBOMhVQTIv8mu0iVlA9ww+iYaabHGloTy6maqou87zRcCNHTk4Z/XIa6lSFamNNHjGVK
+         Ru5pgBK29+Scxi+a+0gpuu1hS7KRPw1fxgJZPT40JSLE3HAQ4odX3g1cyXW0rW7PeZIY
+         AXfIO9HwuZY8P8gbV/Y+UTQKp/EMy0t0NQNKX7n2gWLPHvNNDVQYh7qOH2OSgHmCdPA9
+         yX0wuw95Jwu1z6HB5J1Pr1Y18Viec9NZp3PL8uGCbSNOvES7yoNsmBTOqKhWzPDJUknV
+         78Aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=HD633EfbN3tb6uFCu45l1iRXG26ohor9loINMI5UFVU=;
+        b=Y3cgNPASsP3XfoGfy8LB2CAPTqiY95KHxD76EiMn+hSYnFJKhdmM0XFK290LEh/VpV
+         Vyhj6vvWUQ4/JGtId9rstZAfizzDt5LRA5VpYyUypg44eDhXfatkvhjsXZNeI4wxphym
+         K2awSLmqKTNwUfnKUyLPUyhiX3O78+1/Z8WM5GB1xFnN7MhcxX0fJ2Rw/uF/VlYGNBTG
+         vgldCnoebeoqQ+a5WncOXGKHgE+FbvHhDRiLvTpl9VlXgXcw2oKxlARjDkUa17VGsweu
+         T/WtXz+6OSiOko519oJWjRWyCZzO3WmDAt9I07Ihau2cjZo4qU/tIThKoejI9HLQvxBA
+         htCQ==
+X-Gm-Message-State: ACgBeo1uKd58vc9oIhsoN/N2v9blkn5q98/Y97V7EtIuuiqBagab4t1Q
+        EAGsi/OHzze+5rEzR1f3TMiufpKVTfKpZyqd1nW2HQ==
+X-Google-Smtp-Source: AA6agR55y3N/Bia3lsmUgfym4cf6f/K7T33smt9ZGjVFVpWIKNnbjMr2sfb/9TUtY14Hh908C/LzkLs9pnrtbtTGwZU=
+X-Received: by 2002:a1c:7315:0:b0:3a5:ff61:4080 with SMTP id
+ d21-20020a1c7315000000b003a5ff614080mr7826816wmb.196.1661811390850; Mon, 29
+ Aug 2022 15:16:30 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20220828025509.145209-1-yhs@fb.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.6/26642/Mon Aug 29 09:54:26 2022)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+References: <20220826230639.1249436-1-yosryahmed@google.com> <CA+khW7iN6hyyBBR+4ey+9pNmEyKPZS82-C9kZ2NRXKMEOXHrng@mail.gmail.com>
+In-Reply-To: <CA+khW7iN6hyyBBR+4ey+9pNmEyKPZS82-C9kZ2NRXKMEOXHrng@mail.gmail.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Mon, 29 Aug 2022 15:15:54 -0700
+Message-ID: <CAJD7tkYKYv+SKhCJs2281==55sALTX_DXifaWPv1w5=xrJjqQA@mail.gmail.com>
+Subject: Re: [PATCH] selftests/bpf: simplify cgroup_hierarchical_stats selftest
+To:     Hao Luo <haoluo@google.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Mykola Lysenko <mykolal@fb.com>, Song Liu <song@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,68 +75,94 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 8/28/22 4:55 AM, Yonghong Song wrote:
-> Add various struct argument tests with fentry/fexit programs.
-> Also add one test with a kernel func which does not have any
-> argument to test BPF_PROG2 macro in such situation.
-> 
-> Signed-off-by: Yonghong Song <yhs@fb.com>
-> ---
->   .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  48 ++++++++
->   .../selftests/bpf/prog_tests/tracing_struct.c |  63 ++++++++++
->   .../selftests/bpf/progs/tracing_struct.c      | 114 ++++++++++++++++++
->   3 files changed, 225 insertions(+)
->   create mode 100644 tools/testing/selftests/bpf/prog_tests/tracing_struct.c
->   create mode 100644 tools/testing/selftests/bpf/progs/tracing_struct.c
-> 
+Hi Hao,
 
-For s390x these tests need to be deny-listed due to missing trampoline support..
+Thanks for taking a look!
 
-   All error logs:
-   test_fentry:PASS:tracing_struct__open_and_load 0 nsec
-   libbpf: prog 'test_struct_arg_1': failed to attach: ERROR: strerror_r(-524)=22
-   libbpf: prog 'test_struct_arg_1': failed to auto-attach: -524
-   test_fentry:FAIL:tracing_struct__attach unexpected error: -524 (errno 524)
-   #209     tracing_struct:FAIL
-   Summary: 189/972 PASSED, 27 SKIPPED, 1 FAILED
+On Mon, Aug 29, 2022 at 1:08 PM Hao Luo <haoluo@google.com> wrote:
+>
+> On Fri, Aug 26, 2022 at 4:06 PM Yosry Ahmed <yosryahmed@google.com> wrote:
+> >
+> > The cgroup_hierarchical_stats selftest is complicated. It has to be,
+> > because it tests an entire workflow of recording, aggregating, and
+> > dumping cgroup stats. However, some of the complexity is unnecessary.
+> > The test now enables the memory controller in a cgroup hierarchy, invokes
+> > reclaim, measure reclaim time, THEN uses that reclaim time to test the
+> > stats collection and aggregation. We don't need to use such a
+> > complicated stat, as the context in which the stat is collected is
+> > orthogonal.
+> >
+> > Simplify the test by using a simple stat instead of reclaim time, the
+> > total number of times a process has ever entered a cgroup. This makes
+> > the test simpler and removes the dependency on the memory controller and
+> > the memory reclaim interface.
+> >
+> > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> > ---
+>
+> Yosry, please tag the patch with the repo it should be applied on:
+> bpf-next or bpf.
+>
 
-However, looks like the no_alu32 ones on x86 fail:
+Will do for v2.
 
-   [...]
-   #207     trace_printk:OK
-   #208     trace_vprintk:OK
-   test_fentry:PASS:tracing_struct__open_and_load 0 nsec
-   test_fentry:PASS:tracing_struct__attach 0 nsec
-   trigger_module_test_read:PASS:testmod_file_open 0 nsec
-   test_fentry:PASS:trigger_read 0 nsec
-   test_fentry:PASS:t1:a.a 0 nsec
-   test_fentry:PASS:t1:a.b 0 nsec
-   test_fentry:PASS:t1:b 0 nsec
-   test_fentry:PASS:t1:c 0 nsec
-   test_fentry:PASS:t1 nregs 0 nsec
-   test_fentry:PASS:t1 reg0 0 nsec
-   test_fentry:PASS:t1 reg1 0 nsec
-   test_fentry:FAIL:t1 reg2 unexpected t1 reg2: actual 7327499336969879553 != expected 1
-   test_fentry:PASS:t1 reg3 0 nsec
-   test_fentry:PASS:t1 ret 0 nsec
-   test_fentry:PASS:t2:a 0 nsec
-   test_fentry:PASS:t2:b.a 0 nsec
-   test_fentry:PASS:t2:b.b 0 nsec
-   test_fentry:PASS:t2:c 0 nsec
-   test_fentry:PASS:t2 ret 0 nsec
-   test_fentry:PASS:t3:a 0 nsec
-   test_fentry:PASS:t3:b 0 nsec
-   test_fentry:PASS:t3:c.a 0 nsec
-   test_fentry:PASS:t3:c.b 0 nsec
-   test_fentry:PASS:t3 ret 0 nsec
-   test_fentry:PASS:t4:a.a 0 nsec
-   test_fentry:PASS:t4:b 0 nsec
-   test_fentry:PASS:t4:c 0 nsec
-   test_fentry:PASS:t4:d 0 nsec
-   test_fentry:PASS:t4:e.a 0 nsec
-   test_fentry:PASS:t4:e.b 0 nsec
-   test_fentry:PASS:t4 ret 0 nsec
-   test_fentry:PASS:t5 ret 0 nsec
-   #209     tracing_struct:FAIL
-   #210     trampoline_count:OK
-   [...]
+> >
+> > When the test failed on Alexei's setup because the memory controller was
+> > not enabled I realized this is an unnecessary dependency for the test,
+> > which inspired this patch :) I am not sure if this prompt a Fixes tag as
+> > the test wasn't broken.
+> >
+> > ---
+> >  .../prog_tests/cgroup_hierarchical_stats.c    | 157 ++++++---------
+> >  .../bpf/progs/cgroup_hierarchical_stats.c     | 181 ++++++------------
+> >  2 files changed, 118 insertions(+), 220 deletions(-)
+> >
+> [...]
+> > diff --git a/tools/testing/selftests/bpf/progs/cgroup_hierarchical_stats.c b/tools/testing/selftests/bpf/progs/cgroup_hierarchical_stats.c
+> > index 8ab4253a1592..c74362854948 100644
+> > --- a/tools/testing/selftests/bpf/progs/cgroup_hierarchical_stats.c
+> > +++ b/tools/testing/selftests/bpf/progs/cgroup_hierarchical_stats.c
+> > @@ -1,7 +1,5 @@
+> >  // SPDX-License-Identifier: GPL-2.0-only
+> >  /*
+> > - * Functions to manage eBPF programs attached to cgroup subsystems
+> > - *
+>
+> Please also add comments here explaining what the programs in this file do.
+>
+
+Will do.
+
+> >   * Copyright 2022 Google LLC.
+> >   */
+> [...]
+> >
+> > -SEC("tp_btf/mm_vmscan_memcg_reclaim_begin")
+> > -int BPF_PROG(vmscan_start, int order, gfp_t gfp_flags)
+> > +SEC("fentry/cgroup_attach_task")
+>
+> Can we select an attachpoint that is more stable? It seems
+> 'cgroup_attach_task' is an internal helper function in cgroup, and its
+> signature can change. I'd prefer using those commonly used tracepoints
+> and EXPORT'ed functions. IMHO their interfaces are more stable.
+>
+
+Will try to find a more stable attach point. Thanks!
+
+> > +int BPF_PROG(counter, struct cgroup *dst_cgrp, struct task_struct *leader,
+> > +            bool threadgroup)
+> >  {
+> > -       struct task_struct *task = bpf_get_current_task_btf();
+> > -       __u64 *start_time_ptr;
+> > -
+> > -       start_time_ptr = bpf_task_storage_get(&vmscan_start_time, task, 0,
+> > -                                             BPF_LOCAL_STORAGE_GET_F_CREATE);
+> > -       if (start_time_ptr)
+> > -               *start_time_ptr = bpf_ktime_get_ns();
+> > -       return 0;
+> > -}
+> [...]
+> >  }
+> > --
+> > 2.37.2.672.g94769d06f0-goog
+> >
