@@ -2,71 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1D475A5780
-	for <lists+bpf@lfdr.de>; Tue, 30 Aug 2022 01:18:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 724095A57C0
+	for <lists+bpf@lfdr.de>; Tue, 30 Aug 2022 01:45:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229546AbiH2XSe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Aug 2022 19:18:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59668 "EHLO
+        id S229451AbiH2Xpy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Aug 2022 19:45:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbiH2XSe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Aug 2022 19:18:34 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 477257F132
-        for <bpf@vger.kernel.org>; Mon, 29 Aug 2022 16:18:33 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-33e1114437fso150347747b3.19
-        for <bpf@vger.kernel.org>; Mon, 29 Aug 2022 16:18:33 -0700 (PDT)
+        with ESMTP id S229446AbiH2Xpx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Aug 2022 19:45:53 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 046DD84EF7
+        for <bpf@vger.kernel.org>; Mon, 29 Aug 2022 16:45:53 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id h5so7265621ejb.3
+        for <bpf@vger.kernel.org>; Mon, 29 Aug 2022 16:45:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc;
-        bh=0lhafXj2iVGO0xHQkpT9DZ5Z9AK3RgqVp2dka9M0juU=;
-        b=X6QrVWknF21loz5DsyEEHlL9TrT4PTGpWOX7oyi4kYvKaRKJJ0N7PSqk69cFjbIrsF
-         ZSiloccWVc8EAwuuvR7o1+vATxAYqpraU2FJGv9yJSl/9in72zezG4RddKNK/w7tfled
-         dSvqtYpvz/w+/o8t7+7tZpjOScqnoT3KqIXsUaBlapICH/wfYOinQGVG8D10Q1kfS47c
-         iOkmioyaN9ls2NeNVRz6xsJfM5fGRfoKpGgLQigtk1F8fvSMMlGWXi36rGuSsqtdXgv6
-         wyFuzTmhSjcGJW0HJMsIQP68MBdzPm+vBgTuzVKLDL73JuFCJB/CEiDZ7mr079OoZagu
-         sAkA==
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=viwm8VlRl5JlVPUTeI9sz3Mqlj2LdoU1RZfVIXgfatI=;
+        b=NyONEqIQ+MMAvKaRHkElSaG6m0/2F2SnwG4rrhIWTK3JbV0i+92EXSKbfE+vC5d3L1
+         5IUMU4DpMlLzEhfr1YujHsDBqyUD/564P/5YTaZSmsns1QxBmCa+LAQDEmtK1ZNYE6qf
+         kRyzDw9imH3JZBSzKy8GvlLh4juCOVzEoD6cMgdrcQCI019+adXBUaCRFnSo47YpFW0e
+         S7odFxfazrb7676hpshUktrAJdRQgTpsBVVxEQzbvvzhIs2CFu9tYak5Rlg4ounN1nZQ
+         L+zdNKWYQut8XpY4BQ+bdqzB2XvKIWVO1IfQcImDONjVKGh/8TXZAwzXiYdydFTkIMLe
+         VwuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc;
-        bh=0lhafXj2iVGO0xHQkpT9DZ5Z9AK3RgqVp2dka9M0juU=;
-        b=VXNs3rjObEswMKuG14+2un0SUQ9PPn/YUFe8q7d+D2O92goS+Ph/Hwb2HI5mjvpKPj
-         xxREs9G/WRqacXZbVt5q8DOYTjNhs3AkLkjvMVbu6VUYDejhkbb4vGFn4fgodekrX5gM
-         SFWm9bclc3eSHz8pB/2kF1G4hL4ZWCBhsArxDjUgGKCa7llgj5h0sNi6MU70MOQivuOr
-         6/vS3h/TzxKt5vopIl9eo5a2jmDGglvaQWFTSK3+0qV9aqOwFwf7JnHQsz9CcSZqIQ29
-         Vn/R7QEzi30lf2MpmR+otxr0rBHqaGUNnKGVScu5XrG8hXCyep1uXPiF4yZ6ShD3ZpTf
-         oalQ==
-X-Gm-Message-State: ACgBeo3NQR62lJEqQdIum5uHOB16dEUHJlVBxQnDsVf1UPzMm8iCBAad
-        C3K9USezm09yvdxuaCOl/pE9/bEZOI4=
-X-Google-Smtp-Source: AA6agR5UJdH5HnV9NGjkFnupHjUrC1l+Gwz4Yi7D3ZklLgd6M0+8CTOt0eyZRsWeEl8mKfDkn9YMU4RhW3c=
-X-Received: from haoluo.svl.corp.google.com ([2620:15c:2d4:203:3698:5104:9e22:e494])
- (user=haoluo job=sendgmr) by 2002:a0d:c1c4:0:b0:330:4891:be97 with SMTP id
- c187-20020a0dc1c4000000b003304891be97mr11529426ywd.465.1661815112615; Mon, 29
- Aug 2022 16:18:32 -0700 (PDT)
-Date:   Mon, 29 Aug 2022 16:18:28 -0700
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.37.2.672.g94769d06f0-goog
-Message-ID: <20220829231828.1016835-1-haoluo@google.com>
-Subject: [PATCH bpf-next v1] bpftool: Add support for querying cgroup_iter link
-From:   Hao Luo <haoluo@google.com>
-To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Hao Luo <haoluo@google.com>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=viwm8VlRl5JlVPUTeI9sz3Mqlj2LdoU1RZfVIXgfatI=;
+        b=yn5JnFbsowwNFHsz+aETHlnW+gI4UNEbKqfj1ZunH6wH3Io6ngJ7uvfve0Vopn0MBF
+         f7v50SllrG9kpMkqquslW3krtSsQsKWxexcwFm4nKoXrB5T7tdKyhvawIORnLGl7Dy1M
+         a71HP7zzHp2bX8rpbGBW7fiIF/jkVvDK/9+BMTLvqZzEltpAr5pZ0i4MFJbor0s79tt/
+         d3rSAg/Wb5gTDv+9cSfQ1tX1zHbSV7Rh6HWn3Vy55WbtqBtulfbUIzqUTDcToZzdm0ja
+         MK8+VaBCfwEwjAVYKTFGwCPfyTnGMnn+6f0sasT4le/9eHvu2yEBeyR7mlSSemTbAxs3
+         clSQ==
+X-Gm-Message-State: ACgBeo1B1ZJgdDlq8u8WNEJ3/9Cub1Vz2SHXVAeqTLzDh+R20FPYp2Qz
+        KFjXiNhMcdDgm8XtK62WFcmgmzJDeKeFon6IB/o=
+X-Google-Smtp-Source: AA6agR5GP2oSUUw4gfIe0jB8ESTDOYmbX7+JRel7aUdcM5bUPEzhfmtV2nbryWfbm2uePB/bXjFVZ0hVW8wcH5bmvrA=
+X-Received: by 2002:a17:906:dc93:b0:742:133b:42c3 with SMTP id
+ cs19-20020a170906dc9300b00742133b42c3mr1046857ejc.502.1661816751567; Mon, 29
+ Aug 2022 16:45:51 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220819214232.18784-1-alexei.starovoitov@gmail.com>
+ <d3f76b27f4e55ec9e400ae8dcaecbb702a4932e8.camel@fb.com> <CAP01T75G-gp2hymxO+x4=3cJ9CHJKsD3DHPn5QbvOL_-o_4qmA@mail.gmail.com>
+ <32a60d8aa6414af288b00a222a019bd3932eb7d2.camel@fb.com> <CAP01T74nPCXAeP=Aj09pW_Ykv5Rx2Y4U_fULQe+a4pWygVxaGg@mail.gmail.com>
+ <5254e00f409cff1e0b8655aeb673b8f77dab21fe.camel@fb.com>
+In-Reply-To: <5254e00f409cff1e0b8655aeb673b8f77dab21fe.camel@fb.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Mon, 29 Aug 2022 16:45:40 -0700
+Message-ID: <CAADnVQL9g=PQzZK06FVOiCPBkM15AuyR6m0K5n5d8GtPBKnNAg@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 00/15] bpf: BPF specific memory allocator,
+ UAPI in particular
+To:     Delyan Kratunov <delyank@fb.com>
+Cc:     "memxor@gmail.com" <memxor@gmail.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "joannelkoong@gmail.com" <joannelkoong@gmail.com>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "tj@kernel.org" <tj@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Kernel Team <Kernel-team@fb.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,101 +76,40 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Support dumping info of a cgroup_iter link. This includes
-showing the cgroup's id and the order for walking the cgroup
-hierarchy. Example output is as follows:
+On Mon, Aug 29, 2022 at 4:18 PM Delyan Kratunov <delyank@fb.com> wrote:
+>
+> >
+> > It is not very precise, but until those maps are gone it delays
+> > release of the allocator (we can empty all percpu caches to save
+> > memory once bpf_map pinning the allocator is gone, because allocations
+> > are not going to be served). But it allows unit_free to be relatively
+> > less costly as long as those 'candidate' maps are around.
+>
+> Yes, we considered this but it's much easier to get to pathological behaviors, by
+> just loading and unloading programs that can access an allocator in a loop. The
+> freelists being empty help but it's still quite easy to hold a lot of memory for
+> nothing.
+>
+> The pointer walk was proposed to prune most such pathological cases while still being
+> conservative enough to be easy to implement. Only races with the pointer walk can
+> extend the lifetime unnecessarily.
 
-> bpftool link show
-1: iter  prog 2  target_name bpf_map
-2: iter  prog 3  target_name bpf_prog
-3: iter  prog 12  target_name cgroup  cgroup_id 72  order self_only
+I'm getting lost in this thread.
 
-> bpftool -p link show
-[{
-        "id": 1,
-        "type": "iter",
-        "prog_id": 2,
-        "target_name": "bpf_map"
-    },{
-        "id": 2,
-        "type": "iter",
-        "prog_id": 3,
-        "target_name": "bpf_prog"
-    },{
-        "id": 3,
-        "type": "iter",
-        "prog_id": 12,
-        "target_name": "cgroup",
-        "cgroup_id": 72,
-        "order": "self_only"
-    }
-]
-
-Signed-off-by: Hao Luo <haoluo@google.com>
----
- tools/bpf/bpftool/link.c | 35 +++++++++++++++++++++++++++++++++++
- 1 file changed, 35 insertions(+)
-
-diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
-index 7a20931c3250..9e8d14d0114d 100644
---- a/tools/bpf/bpftool/link.c
-+++ b/tools/bpf/bpftool/link.c
-@@ -83,6 +83,29 @@ static bool is_iter_map_target(const char *target_name)
- 	       strcmp(target_name, "bpf_sk_storage_map") == 0;
- }
- 
-+static bool is_iter_cgroup_target(const char *target_name)
-+{
-+	return strcmp(target_name, "cgroup") == 0;
-+}
-+
-+static const char *cgroup_order_string(__u32 order)
-+{
-+	switch (order) {
-+	case BPF_CGROUP_ITER_ORDER_UNSPEC:
-+		return "order_unspec";
-+	case BPF_CGROUP_ITER_SELF_ONLY:
-+		return "self_only";
-+	case BPF_CGROUP_ITER_DESCENDANTS_PRE:
-+		return "descendants_pre";
-+	case BPF_CGROUP_ITER_DESCENDANTS_POST:
-+		return "descendants_post";
-+	case BPF_CGROUP_ITER_ANCESTORS_UP:
-+		return "ancestors_up";
-+	default: /* won't happen */
-+		return "";
-+	}
-+}
-+
- static void show_iter_json(struct bpf_link_info *info, json_writer_t *wtr)
- {
- 	const char *target_name = u64_to_ptr(info->iter.target_name);
-@@ -91,6 +114,12 @@ static void show_iter_json(struct bpf_link_info *info, json_writer_t *wtr)
- 
- 	if (is_iter_map_target(target_name))
- 		jsonw_uint_field(wtr, "map_id", info->iter.map.map_id);
-+
-+	if (is_iter_cgroup_target(target_name)) {
-+		jsonw_lluint_field(wtr, "cgroup_id", info->iter.cgroup.cgroup_id);
-+		jsonw_string_field(wtr, "order",
-+				   cgroup_order_string(info->iter.cgroup.order));
-+	}
- }
- 
- static int get_prog_info(int prog_id, struct bpf_prog_info *info)
-@@ -208,6 +237,12 @@ static void show_iter_plain(struct bpf_link_info *info)
- 
- 	if (is_iter_map_target(target_name))
- 		printf("map_id %u  ", info->iter.map.map_id);
-+
-+	if (is_iter_cgroup_target(target_name)) {
-+		printf("cgroup_id %llu  ", info->iter.cgroup.cgroup_id);
-+		printf("order %s  ",
-+		       cgroup_order_string(info->iter.cgroup.order));
-+	}
- }
- 
- static int show_link_close_plain(int fd, struct bpf_link_info *info)
--- 
-2.37.2.672.g94769d06f0-goog
-
+Here is my understanding so far:
+We don't free kernel kptrs from map in release_uref,
+but we should for local kptrs, since such objs are
+not much different from timers.
+So release_uref will xchg all such kptrs and free them
+into the allocator without touching allocator's refcnt.
+So there is no concurrency issue that Kumar was concerned about.
+We might need two arrays though.
+prog->used_allocators[] and map->used_allocators[]
+The verifier would populate both at load time.
+At prog unload dec refcnt in one array.
+At map free dec refcnt in the other array.
+Map-in-map insert/delete of new map would copy allocators[] from
+outer map.
+As the general suggestion to solve this problem I think
+we really need to avoid run-time refcnt changes at alloc/free
+even when they're per-cpu 'fast'.
