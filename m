@@ -2,117 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CECB65A4F9E
-	for <lists+bpf@lfdr.de>; Mon, 29 Aug 2022 16:50:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB3615A4FE2
+	for <lists+bpf@lfdr.de>; Mon, 29 Aug 2022 17:10:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229447AbiH2Ou3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Aug 2022 10:50:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57460 "EHLO
+        id S229522AbiH2PKS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Aug 2022 11:10:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229899AbiH2Ou3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Aug 2022 10:50:29 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C86B72ED4
-        for <bpf@vger.kernel.org>; Mon, 29 Aug 2022 07:50:25 -0700 (PDT)
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1oSg5m-00010j-HI; Mon, 29 Aug 2022 16:50:22 +0200
-Received: from [85.1.206.226] (helo=linux-4.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1oSg5m-000SFR-9c; Mon, 29 Aug 2022 16:50:22 +0200
-Subject: Re: [PATCH bpf-next 3/3] selftests/bpf: add veristat tool for
- mass-verifying BPF object files
-To:     KP Singh <kpsingh@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, kernel-team@fb.com
-References: <20220826231531.1031943-1-andrii@kernel.org>
- <20220826231531.1031943-4-andrii@kernel.org>
- <CACYkzJ7dNQe58g58qUBQJ3kP86o-vvLoFw+e9_hgH-Ltb9ZAHQ@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <a7cae4ad-be07-893f-3923-a64d7fc20cc7@iogearbox.net>
-Date:   Mon, 29 Aug 2022 16:50:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S229494AbiH2PKR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Aug 2022 11:10:17 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 027181C90A;
+        Mon, 29 Aug 2022 08:10:15 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 93C0A61124;
+        Mon, 29 Aug 2022 15:10:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id DB7B6C433D7;
+        Mon, 29 Aug 2022 15:10:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1661785813;
+        bh=8DV5Al8uoRA23fJEzAcTio890uhpNVpl6xlcOCvBmOk=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=WFM/Ps2NBtafeEoYeYpmBQHEE68FMJRCQRfmcUxLmd+UFR+tLTseqXe7oezu+7Emf
+         49O8nJxUTM5nF/wdgumB7C57b4ybNwnlRHSSpkyLnUi24TyJOTbbUEttLHCWhKTqas
+         8LHUdbSXXa3OoSG+pdXIWTjnZum4JNy/c/7MVC4eJYCTGwovm5dQJVF1rxMqq4AY5p
+         VcSyF7di044RkRrwXLy/enF9gn1dCfw8S2HJtywEkeRc3TCBzWbZZj8Zt/mAVXFYJC
+         mKsbFDFZHOfQ4kCJ4GhdypbfZhyB6uR8Cb4G/37EQ2KKiqfoGm0ayO1rvw7sVzm4Tj
+         ttmSULO+s18sA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B991DE924D4;
+        Mon, 29 Aug 2022 15:10:13 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <CACYkzJ7dNQe58g58qUBQJ3kP86o-vvLoFw+e9_hgH-Ltb9ZAHQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.6/26642/Mon Aug 29 09:54:26 2022)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2] selftests/bpf: Fix bind{4,6} tcp/socket header type
+ conflict
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166178581375.25237.2019041652775863863.git-patchwork-notify@kernel.org>
+Date:   Mon, 29 Aug 2022 15:10:13 +0000
+References: <20220826052925.980431-1-james.hilliard1@gmail.com>
+In-Reply-To: <20220826052925.980431-1-james.hilliard1@gmail.com>
+To:     James Hilliard <james.hilliard1@gmail.com>
+Cc:     bpf@vger.kernel.org, andrii@kernel.org, mykolal@fb.com,
+        ast@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, shuah@kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 8/28/22 1:53 AM, KP Singh wrote:
-> On Sat, Aug 27, 2022 at 1:15 AM Andrii Nakryiko <andrii@kernel.org> wrote:
->>
->> Add a small tool, veristat, that allows mass-verification of
->> a set of *libbpf-compatible* BPF ELF object files. For each such object
->> file, veristat will attempt to verify each BPF program *individually*.
->> Regardless of success or failure, it parses BPF verifier stats and
->> outputs them in human-readable table format. In the future we can also
->> add CSV and JSON output for more scriptable post-processing, if necessary.
->>
->> veristat allows to specify a set of stats that should be output and
->> ordering between multiple objects and files (e.g., so that one can
->> easily order by total instructions processed, instead of default file
->> name, prog name, verdict, total instructions order).
->>
->> This tool should be useful for validating various BPF verifier changes
->> or even validating different kernel versions for regressions.
-> 
-> Cool stuff!
+Hello:
 
-+1, out of curiosity, did you try with different kernels to see the deltas?
+This patch was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-> I think this would be useful for cases beyond these (i.e. for users to get
-> stats about the verifier in general) and it's worth thinking if this should
-> be built into bpftool?
+On Thu, 25 Aug 2022 23:29:22 -0600 you wrote:
+> There is a potential for us to hit a type conflict when including
+> netinet/tcp.h with sys/socket.h, we can remove these as they are not
+> actually needed.
 > 
->>
->> Here's an example for some of the heaviest selftests/bpf BPF object
->> files:
->>
->>    $ sudo ./veristat -s insns,file,prog {pyperf,loop,test_verif_scale,strobemeta,test_cls_redirect,profiler}*.linked3.o
->>    File                                  Program                               Verdict  Duration, us  Total insns  Total states  Peak states
->>    ------------------------------------  ------------------------------------  -------  ------------  -----------  ------------  -----------
->>    loop3.linked3.o                       while_true                            failure        350990      1000001          9663         9663
+> Fixes errors like:
+> In file included from /usr/include/netinet/tcp.h:91,
+>                  from progs/bind4_prog.c:10:
+> /home/buildroot/opt/cross/lib/gcc/bpf/13.0.0/include/stdint.h:34:23: error: conflicting types for 'int8_t'; have 'char'
+>    34 | typedef __INT8_TYPE__ int8_t;
+>       |                       ^~~~~~
+> In file included from /usr/include/x86_64-linux-gnu/sys/types.h:155,
+>                  from /usr/include/x86_64-linux-gnu/bits/socket.h:29,
+>                  from /usr/include/x86_64-linux-gnu/sys/socket.h:33,
+>                  from progs/bind4_prog.c:9:
+> /usr/include/x86_64-linux-gnu/bits/stdint-intn.h:24:18: note: previous declaration of 'int8_t' with type 'int8_t' {aka 'signed char'}
+>    24 | typedef __int8_t int8_t;
+>       |                  ^~~~~~
+> /home/buildroot/opt/cross/lib/gcc/bpf/13.0.0/include/stdint.h:43:24: error: conflicting types for 'int64_t'; have 'long int'
+>    43 | typedef __INT64_TYPE__ int64_t;
+>       |                        ^~~~~~~
+> /usr/include/x86_64-linux-gnu/bits/stdint-intn.h:27:19: note: previous declaration of 'int64_t' with type 'int64_t' {aka 'long long int'}
+>    27 | typedef __int64_t int64_t;
+>       |                   ^~~~~~~
+> make: *** [Makefile:537: /home/buildroot/bpf-next/tools/testing/selftests/bpf/bpf_gcc/bind4_prog.o] Error 1
 > 
 > [...]
 
-nit: Looks like CI on gcc is bailing:
+Here is the summary with links:
+  - [v2] selftests/bpf: Fix bind{4,6} tcp/socket header type conflict
+    https://git.kernel.org/bpf/bpf-next/c/3721359d3907
 
-https://github.com/kernel-patches/bpf/runs/8072477251?check_suite_focus=true
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-[...]
-     INSTALL /tmp/work/bpf/bpf/tools/testing/selftests/bpf/tools/include/bpf/skel_internal.h
-   In file included from /tmp/work/bpf/bpf/tools/testing/selftests/bpf/tools/include/bpf/libbpf.h:20,
-     INSTALL /tmp/work/bpf/bpf/tools/testing/selftests/bpf/tools/include/bpf/libbpf_version.h
-                    from veristat.c:17:
-   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/tools/include/bpf/libbpf_common.h:13:10: fatal error: libbpf_version.h: No such file or directory
-      13 | #include "libbpf_version.h"
-         |          ^~~~~~~~~~~~~~~~~~
-   compilation terminated.
-     INSTALL /tmp/work/bpf/bpf/tools/testing/selftests/bpf/tools/include/bpf/usdt.bpf.h
-     HOSTCC  /tmp/work/bpf/bpf/tools/testing/selftests/bpf/tools/build/libbpf/fixdep.o
-   make: *** [Makefile:165: /tmp/work/bpf/bpf/tools/testing/selftests/bpf/veristat.o] Error 1
-   make: *** Waiting for unfinished jobs....
 
-I wonder, to detect regressions in pruning behavior, could we add a test_progs subtest to load
-selected obj files and compare before/after 'verified insns' numbers? The workflow probably
-makes this a bit hard to run with a kernel before this change, but maybe it could be a starting
-point where we have a checked-in file containing current numbers, and e.g. if the new change
-crosses a threshold of current +10% then the test could fail?
-
-Thanks,
-Daniel
