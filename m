@@ -2,208 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BA335A5042
-	for <lists+bpf@lfdr.de>; Mon, 29 Aug 2022 17:33:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49D615A508D
+	for <lists+bpf@lfdr.de>; Mon, 29 Aug 2022 17:48:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229863AbiH2PdV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Aug 2022 11:33:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60250 "EHLO
+        id S230166AbiH2PsG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Aug 2022 11:48:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229566AbiH2PdT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Aug 2022 11:33:19 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B8987E001;
-        Mon, 29 Aug 2022 08:33:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 2D287B810E2;
-        Mon, 29 Aug 2022 15:33:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48D37C433D7;
-        Mon, 29 Aug 2022 15:33:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661787194;
-        bh=jzNzgbkp8S7F5ShJoRQg4sI4IZkepolVYyaXxRiHuaU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ByRHXZZIPHw1GAtaglSfS40oiwbi3+y+Qo+KygaRYVKAAWamjVRSzpM0+P7rovGiV
-         W2dKwScf6KwNN7nKXRugLMCFD5/wZL8+FZHCOiM4wyFgkUlrxTr9XSWexM9LZ9nnTj
-         35ff9NAvlOEdAT6GycEsYNY9RV4kdgFVbkP9Ll6z1gPX1koy3JruNQFOWIU8LB8eo7
-         2FFQx9wTBfh2wWb4S/d8koZZyazHDPw2TRG36g+2Ckd5XNdf8mf0upqDTETfjFSWmc
-         2JUat1koBEYEk4LmBaJKAlI6K7KKDyGl92OI3/lwI8g4ZPPkwd9Y4zsnK3oDjTJF2u
-         gEhyxb0iFW/Bw==
-Date:   Mon, 29 Aug 2022 17:33:04 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     "Serge E. Hallyn" <serge@hallyn.com>
-Cc:     Song Liu <songliubraving@fb.com>, Paul Moore <paul@paul-moore.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Frederick Lawler <fred@cloudflare.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "revest@chromium.org" <revest@chromium.org>,
-        "jackmanb@chromium.org" <jackmanb@chromium.org>,
+        with ESMTP id S230100AbiH2Pr6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Aug 2022 11:47:58 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECE3997539;
+        Mon, 29 Aug 2022 08:47:42 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id q81so6880629iod.9;
+        Mon, 29 Aug 2022 08:47:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc;
+        bh=F8MIYXd/Xz7kSxyNJ7px1zHhNcsXalbvXrm8i70TLIA=;
+        b=MkC5UdWU6+Imh87+mJ22IPOYrjSDsKYj/4VTRMkEYgobRDMqGcUTHShvbFDDhzGCfI
+         hpEMw+y8vqipvOg/wJovZPsZG4SsWXV1vZ6MbVJyhmEGIvj90u6lj00dcPgD/FIEr6Cw
+         8f/Zjm2hz5bMd5oWcReckBHYB5sNYrAQaC89N2DEqP8CJPCHkVQcOTiDQifnFV5wV5d+
+         epLlyF8v3F6Ih0aOOFpW7B4sYL5E+bgt+EZKZH/abLc7eaPsnUMZlTYe2u44rHyb7BvX
+         grt6lZvl574TTY2+i/FHE03X4OEF7srQy3bLB3jQHoNkiYPSqsuvBfSgRKHN9mC/9VYG
+         ij0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc;
+        bh=F8MIYXd/Xz7kSxyNJ7px1zHhNcsXalbvXrm8i70TLIA=;
+        b=puJ6IsDpqy/1mLrjxN69iI2mWtEomQ4cUA9GRxUUIZt5i1uxifdL903jefrOtHcC9+
+         5whIO5O68LPTZ7FMhNuDt+WlL9tdG6wXzI2CIemIE65Rh97xseIvuGAGiSepEZMKqHrq
+         0VX17t/G/cgE5+jDMmqdF/a2zT9flrUMriqLylCST5DfPwwTcn/qQPG5K3fxT/D2RDr/
+         J/9TF11qffvw5iBH3Ss+qAI2LIQutGADfsMW/Y60YsC5UaI5OHW9c8n/Fag8FAipll4j
+         rwj1HDdw/HhgjANlRlFmc0qEnRxX/Ybh84OXclZuB+Gq3ipZ2FtFmGhNdp89SEtNbS3z
+         TXAg==
+X-Gm-Message-State: ACgBeo0+dLUVM7tGp3fNlOxnfDn1bsnXeDeBatws14l9NkEMEf6w7l7S
+        6ZmMVclKfj3qqnh9nVb8+LS3tOzk4E+ZwA==
+X-Google-Smtp-Source: AA6agR7gk30EK0FrDgzRs3klB18ZOu2JkuAeAChQM6pSN6AXzyQX/5WN+1EMghi/8BQ9UMFKU0OGFg==
+X-Received: by 2002:a6b:2ac4:0:b0:688:3a14:2002 with SMTP id q187-20020a6b2ac4000000b006883a142002mr8837385ioq.62.1661788060553;
+        Mon, 29 Aug 2022 08:47:40 -0700 (PDT)
+Received: from james-x399.localdomain (71-33-138-207.hlrn.qwest.net. [71.33.138.207])
+        by smtp.gmail.com with ESMTPSA id f33-20020a05663832a100b0034294118e1bsm4452576jav.126.2022.08.29.08.47.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Aug 2022 08:47:39 -0700 (PDT)
+From:   James Hilliard <james.hilliard1@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     James Hilliard <james.hilliard1@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        James Morris <jmorris@namei.org>,
-        "stephen.smalley.work@gmail.com" <stephen.smalley.work@gmail.com>,
-        "eparis@parisplace.org" <eparis@parisplace.org>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
         Shuah Khan <shuah@kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        bpf <bpf@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        "selinux@vger.kernel.org" <selinux@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "kernel-team@cloudflare.com" <kernel-team@cloudflare.com>,
-        "cgzones@googlemail.com" <cgzones@googlemail.com>,
-        "karl@bigbadwolfsecurity.com" <karl@bigbadwolfsecurity.com>,
-        "tixxdz@gmail.com" <tixxdz@gmail.com>
-Subject: Re: [PATCH v5 0/4] Introduce security_create_user_ns()
-Message-ID: <20220829153304.nvhakybpkj7erpuc@wittgenstein>
-References: <20220818140521.GA1000@mail.hallyn.com>
- <CAHC9VhRqBxtV04ARQFPWpMf1aFZo0HP_HiJ+8VpXAT-zXF6UXw@mail.gmail.com>
- <20220819144537.GA16552@mail.hallyn.com>
- <CAHC9VhSZ0aaa3k3704j8_9DJvSNRy-0jfXpy1ncs2Jmo8H0a7g@mail.gmail.com>
- <875yigp4tp.fsf@email.froward.int.ebiederm.org>
- <CAHC9VhTN09ZabnQnsmbSjKgb8spx7_hkh4Z+mq5ArQmfPcVqAg@mail.gmail.com>
- <0D14C118-E644-4D7B-84C0-CA7752DC0605@fb.com>
- <20220826152445.GB12466@mail.hallyn.com>
- <25C89E75-A900-42C7-A8E4-2800AA2E3387@fb.com>
- <20220826210039.GA15952@mail.hallyn.com>
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] selftests/bpf: Fix connect4_prog tcp/socket header type conflict
+Date:   Mon, 29 Aug 2022 09:47:09 -0600
+Message-Id: <20220829154710.3870139-1-james.hilliard1@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20220826210039.GA15952@mail.hallyn.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Aug 26, 2022 at 04:00:39PM -0500, Serge Hallyn wrote:
-> On Fri, Aug 26, 2022 at 05:00:51PM +0000, Song Liu wrote:
-> > 
-> > 
-> > > On Aug 26, 2022, at 8:24 AM, Serge E. Hallyn <serge@hallyn.com> wrote:
-> > > 
-> > > On Thu, Aug 25, 2022 at 09:58:46PM +0000, Song Liu wrote:
-> > >> 
-> > >> 
-> > >>> On Aug 25, 2022, at 12:19 PM, Paul Moore <paul@paul-moore.com> wrote:
-> > >>> 
-> > >>> On Thu, Aug 25, 2022 at 2:15 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
-> > >>>> Paul Moore <paul@paul-moore.com> writes:
-> > >>>>> On Fri, Aug 19, 2022 at 10:45 AM Serge E. Hallyn <serge@hallyn.com> wrote:
-> > >>>>>> I am hoping we can come up with
-> > >>>>>> "something better" to address people's needs, make everyone happy, and
-> > >>>>>> bring forth world peace.  Which would stack just fine with what's here
-> > >>>>>> for defense in depth.
-> > >>>>>> 
-> > >>>>>> You may well not be interested in further work, and that's fine.  I need
-> > >>>>>> to set aside a few days to think on this.
-> > >>>>> 
-> > >>>>> I'm happy to continue the discussion as long as it's constructive; I
-> > >>>>> think we all are.  My gut feeling is that Frederick's approach falls
-> > >>>>> closest to the sweet spot of "workable without being overly offensive"
-> > >>>>> (*cough*), but if you've got an additional approach in mind, or an
-> > >>>>> alternative approach that solves the same use case problems, I think
-> > >>>>> we'd all love to hear about it.
-> > >>>> 
-> > >>>> I would love to actually hear the problems people are trying to solve so
-> > >>>> that we can have a sensible conversation about the trade offs.
-> > >>> 
-> > >>> Here are several taken from the previous threads, it's surely not a
-> > >>> complete list, but it should give you a good idea:
-> > >>> 
-> > >>> https://lore.kernel.org/linux-security-module/CAHC9VhQnPAsmjmKo-e84XDJ1wmaOFkTKPjjztsOa9Yrq+AeAQA@mail.gmail.com/
-> > >>> 
-> > >>>> As best I can tell without more information people want to use
-> > >>>> the creation of a user namespace as a signal that the code is
-> > >>>> attempting an exploit.
-> > >>> 
-> > >>> Some use cases are like that, there are several other use cases that
-> > >>> go beyond this; see all of our previous discussions on this
-> > >>> topic/patchset.  As has been mentioned before, there are use cases
-> > >>> that require improved observability, access control, or both.
-> > >>> 
-> > >>>> As such let me propose instead of returning an error code which will let
-> > >>>> the exploit continue, have the security hook return a bool.  With true
-> > >>>> meaning the code can continue and on false it will trigger using SIGSYS
-> > >>>> to terminate the program like seccomp does.
-> > >>> 
-> > >>> Having the kernel forcibly exit the process isn't something that most
-> > >>> LSMs would likely want.  I suppose we could modify the hook/caller so
-> > >>> that *if* an LSM wanted to return SIGSYS the system would kill the
-> > >>> process, but I would want that to be something in addition to
-> > >>> returning an error code like LSMs normally do (e.g. EACCES).
-> > >> 
-> > >> I am new to user_namespace and security work, so please pardon me if
-> > >> anything below is very wrong. 
-> > >> 
-> > >> IIUC, user_namespace is a tool that enables trusted userspace code to 
-> > >> control the behavior of untrusted (or less trusted) userspace code. 
-> > > 
-> > > No.  user namespaces are not a way for more trusted code to control the
-> > > behavior of less trusted code.
-> > 
-> > Hmm.. In this case, I think I really need to learn more. 
-> > 
-> > Thanks for pointing out my misunderstanding.
-> 
-> (I thought maybe Eric would chime in with a better explanation, but I'll
-> fill it in for now :)
-> 
-> One of the main goals of user namespaces is to allow unprivileged users
-> to do things like chroot and mount, which are very useful development
-> tools, without needing admin privileges.  So it's almost the opposite
-> of what you said: rather than to enable trusted userspace code to control
-> the behavior of less trusted code, it's to allow less privileged code to
-> do things which do not affect other users, without having to assume *more*
-> privilege.
-> 
-> To be precise, the goals were:
-> 
-> 1. uid mapping - allow two users to both "use uid 500" without conflicting
-> 2. provide (unprivileged) users privilege over their own resources
-> 3. absolutely no extra privilege over other resources
-> 4. be able to nest
-> 
-> While (3) was technically achieved, the problem we have is that
-> (2) provides unprivileged users the ability to exercise kernel code
-> which they previously could not.
+There is a potential for us to hit a type conflict when including
+netinet/tcp.h and sys/socket.h, we can replace both of these includes
+with linux/tcp.h and bpf_tcp_helpers.h to avoid this conflict.
 
-The consequence of the refusal to give users any way to control whether
-or not user namespaces are available to unprivileged users is that a
-non-significant number of distros still carry the same patch for about
-10 years now that adds an unprivileged_userns_clone sysctl to restrict
-them to privileged users. That includes current Debian and Archlinux btw.
+Fixes the following error:
+In file included from /usr/include/netinet/tcp.h:91,
+                 from progs/connect4_prog.c:11:
+/home/buildroot/opt/cross/lib/gcc/bpf/13.0.0/include/stdint.h:34:23: error: conflicting types for 'int8_t'; have 'char'
+   34 | typedef __INT8_TYPE__ int8_t;
+      |                       ^~~~~~
+In file included from /usr/include/x86_64-linux-gnu/sys/types.h:155,
+                 from /usr/include/x86_64-linux-gnu/bits/socket.h:29,
+                 from /usr/include/x86_64-linux-gnu/sys/socket.h:33,
+                 from progs/connect4_prog.c:10:
+/usr/include/x86_64-linux-gnu/bits/stdint-intn.h:24:18: note: previous declaration of 'int8_t' with type 'int8_t' {aka 'signed char'}
+   24 | typedef __int8_t int8_t;
+      |                  ^~~~~~
+/home/buildroot/opt/cross/lib/gcc/bpf/13.0.0/include/stdint.h:43:24: error: conflicting types for 'int64_t'; have 'long int'
+   43 | typedef __INT64_TYPE__ int64_t;
+      |                        ^~~~~~~
+/usr/include/x86_64-linux-gnu/bits/stdint-intn.h:27:19: note: previous declaration of 'int64_t' with type 'int64_t' {aka 'long long int'}
+   27 | typedef __int64_t int64_t;
+      |                   ^~~~~~~
 
-The LSM hook is a simple way to allow administrators to control this and
-will allow user namespaces to be enabled in scenarios where they
-would otherwise not be accepted precisely because they are available to
-unprivileged users.
+Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+---
+Changes v1 -> v2:
+  - use bpf_tcp_helpers.h so we can use SOL_TCP
+---
+ tools/testing/selftests/bpf/progs/connect4_prog.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-I fully understand the motivation and usefulness in unprivileged
-scenarios but it's an unfounded fear that giving users the ability to
-control user namespace creation via an LSM hook will cause proliferation
-of setuid binaries (Ignoring for a moment that any fully unprivileged
-container with useful idmappings has to rely on the new{g,u}idmap setuid
-binaries to setup useful mappings anyway.) or decrease system safety let
-alone cause regressions (Which I don't think is an applicable term here
-at all.). Distros that have unprivileged user namespaces turned on by
-default are extremely unlikely to switch to an LSM profile that turns
-them off and distros that already turn them off will continue to turn
-them off whether or not that LSM hook is available.
+diff --git a/tools/testing/selftests/bpf/progs/connect4_prog.c b/tools/testing/selftests/bpf/progs/connect4_prog.c
+index b241932911db..23d85f5027d3 100644
+--- a/tools/testing/selftests/bpf/progs/connect4_prog.c
++++ b/tools/testing/selftests/bpf/progs/connect4_prog.c
+@@ -7,13 +7,13 @@
+ #include <linux/bpf.h>
+ #include <linux/in.h>
+ #include <linux/in6.h>
+-#include <sys/socket.h>
+-#include <netinet/tcp.h>
++#include <linux/tcp.h>
+ #include <linux/if.h>
+ #include <errno.h>
+ 
+ #include <bpf/bpf_helpers.h>
+ #include <bpf/bpf_endian.h>
++#include "bpf_tcp_helpers.h"
+ 
+ #define SRC_REWRITE_IP4		0x7f000004U
+ #define DST_REWRITE_IP4		0x7f000001U
+-- 
+2.34.1
 
-It's much more likely that workloads that want to minimize their attack
-surface while still getting the benefits of user namespaces for e.g.
-service isolation will feel comfortable enabling them for the first time
-since they can control them via an LSM profile.
