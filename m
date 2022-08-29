@@ -2,67 +2,49 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5225D5A5662
-	for <lists+bpf@lfdr.de>; Mon, 29 Aug 2022 23:45:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F11CA5A566A
+	for <lists+bpf@lfdr.de>; Mon, 29 Aug 2022 23:47:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229538AbiH2Vpb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Aug 2022 17:45:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37408 "EHLO
+        id S229508AbiH2VrK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Aug 2022 17:47:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbiH2Vpa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Aug 2022 17:45:30 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E11577CB63
-        for <bpf@vger.kernel.org>; Mon, 29 Aug 2022 14:45:26 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id z2so11843210edc.1
-        for <bpf@vger.kernel.org>; Mon, 29 Aug 2022 14:45:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=sTw+/z7x03je7/hIMvP8+HPPhki5YAz4a5KqEHAejI0=;
-        b=MCjxUJlazQF3n57DDygoL969ALwymntJYUumQoMMHF8SAJVx/AZS3qfuvFgZ39C61x
-         VuMtxaedr886o3IrTekm8ko/cvwCu79DM16oQmkmuwu28G0LojltBclQvpaIGOeLbvB8
-         5arHjv5kCJYugx4E6JD4YpmHI0MxqnrrOZwGKpYCPnt3NkNN6kYx+cvbkmJbK9oq8+le
-         RHQuR1Gc24vr4+0sA6B1oJS3WHjmzIYptW2f3fCeFo6WueUPKKSOk1yUaHMPIcv/4Ec+
-         LznJqg6f2Q7xc6+4BpF6QQbOIMK2d9Ko+UFW/8LPQTLMPNz/SveNyeZlQK1mptKAkR8V
-         2NIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=sTw+/z7x03je7/hIMvP8+HPPhki5YAz4a5KqEHAejI0=;
-        b=A2BbpTMDb2fe7KbvqDeHadn8SjRXzA5mtOPB9NEUt4uxIG3R2vlqSozrJTtr4RTWCB
-         YlWD93V8FpfAELgEBRRbYEkrCaCA507dBLFG3O3YvANgBrriqBPZR7jSeivBQdbVRQ1U
-         /xVpnIZgn7UFUNIpTJyDqQo01p2LqYOaU/R/X29ELDJf2qfx/wS+Kz4HtN6NQAasys2/
-         EhQ9q7So0ppyk9n9YE67glhOtzm2x+zpGh+G6SZI9PzezH5QQJokL+pxu832Fs69Yyn9
-         23tnv5ynvQcKwrB+UWc2bWU0rHNoSYLMsVId9FOP/7+J6Z3r6186tfso1Q/S4eqdDWII
-         l9mA==
-X-Gm-Message-State: ACgBeo3Con4zXjaYzuViR/jrDMfHwaMwj/iUd1jrv18QcNIN8Wyl2vzD
-        E9L7P3k8+FmTKZG7yIdgoyC0JcvkeqT3teEvG00=
-X-Google-Smtp-Source: AA6agR4iT/8MDNTPI7OIBNJTRlyFMl9mm1PWCshoa168F9VZ2enZ8xhe4feW+V2fcw4i8eixNFHHHJivHE/qYcKkLcs=
-X-Received: by 2002:a05:6402:270d:b0:43a:67b9:6eea with SMTP id
- y13-20020a056402270d00b0043a67b96eeamr17914142edd.94.1661809525449; Mon, 29
- Aug 2022 14:45:25 -0700 (PDT)
-MIME-Version: 1.0
+        with ESMTP id S229596AbiH2VrJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Aug 2022 17:47:09 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF57785F81
+        for <bpf@vger.kernel.org>; Mon, 29 Aug 2022 14:47:07 -0700 (PDT)
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1oSmay-0008Az-Lu; Mon, 29 Aug 2022 23:47:00 +0200
+Received: from [85.1.206.226] (helo=linux-4.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1oSmay-0004PY-Dj; Mon, 29 Aug 2022 23:47:00 +0200
+Subject: Re: [PATCH v4 bpf-next 06/15] bpf: Optimize element count in
+ non-preallocated hash map.
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        davem@davemloft.net
+Cc:     andrii@kernel.org, tj@kernel.org, memxor@gmail.com, delyank@fb.com,
+        linux-mm@kvack.org, bpf@vger.kernel.org, kernel-team@fb.com
 References: <20220826024430.84565-1-alexei.starovoitov@gmail.com>
- <20220826024430.84565-2-alexei.starovoitov@gmail.com> <74acd56b-21bb-8ea8-092f-d1b4fcfc0790@iogearbox.net>
-In-Reply-To: <74acd56b-21bb-8ea8-092f-d1b4fcfc0790@iogearbox.net>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 29 Aug 2022 14:45:14 -0700
-Message-ID: <CAADnVQ+j6dipYGvegVD4umB0rD2nM1p+YGR8ug0XdPqUE8mxLg@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 01/15] bpf: Introduce any context BPF specific
- memory allocator.
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Delyan Kratunov <delyank@fb.com>,
-        linux-mm <linux-mm@kvack.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+ <20220826024430.84565-7-alexei.starovoitov@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <75b5f42d-84f6-4227-0bf9-fb62c89217c7@iogearbox.net>
+Date:   Mon, 29 Aug 2022 23:47:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <20220826024430.84565-7-alexei.starovoitov@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.6/26642/Mon Aug 29 09:54:26 2022)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -71,64 +53,106 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 29, 2022 at 2:30 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 8/26/22 4:44 AM, Alexei Starovoitov wrote:
-> [...]
-> > +
-> > +/* Called from BPF program or from sys_bpf syscall.
-> > + * In both cases migration is disabled.
-> > + */
-> > +void notrace *bpf_mem_alloc(struct bpf_mem_alloc *ma, size_t size)
-> > +{
-> > +     int idx;
-> > +     void *ret;
-> > +
-> > +     if (!size)
-> > +             return ZERO_SIZE_PTR;
-> > +
-> > +     idx = bpf_mem_cache_idx(size + LLIST_NODE_SZ);
-> > +     if (idx < 0)
-> > +             return NULL;
-> > +
-> > +     ret = unit_alloc(this_cpu_ptr(ma->caches)->cache + idx);
-> > +     return !ret ? NULL : ret + LLIST_NODE_SZ;
-> > +}
-> > +
-> > +void notrace bpf_mem_free(struct bpf_mem_alloc *ma, void *ptr)
-> > +{
-> > +     int idx;
-> > +
-> > +     if (!ptr)
-> > +             return;
-> > +
-> > +     idx = bpf_mem_cache_idx(__ksize(ptr - LLIST_NODE_SZ));
-> > +     if (idx < 0)
-> > +             return;
-> > +
-> > +     unit_free(this_cpu_ptr(ma->caches)->cache + idx, ptr);
-> > +}
-> > +
-> > +void notrace *bpf_mem_cache_alloc(struct bpf_mem_alloc *ma)
-> > +{
-> > +     void *ret;
-> > +
-> > +     ret = unit_alloc(this_cpu_ptr(ma->cache));
-> > +     return !ret ? NULL : ret + LLIST_NODE_SZ;
-> > +}
-> > +
-> > +void notrace bpf_mem_cache_free(struct bpf_mem_alloc *ma, void *ptr)
-> > +{
-> > +     if (!ptr)
-> > +             return;
-> > +
-> > +     unit_free(this_cpu_ptr(ma->cache), ptr);
-> > +}
->
-> Looks like smp_processor_id() needs to be made aware that preemption might
-> be ok just not migration to a different CPU?
+On 8/26/22 4:44 AM, Alexei Starovoitov wrote:
+> From: Alexei Starovoitov <ast@kernel.org>
+> 
+> The atomic_inc/dec might cause extreme cache line bouncing when multiple cpus
+> access the same bpf map. Based on specified max_entries for the hash map
+> calculate when percpu_counter becomes faster than atomic_t and use it for such
+> maps. For example samples/bpf/map_perf_test is using hash map with max_entries
+> 1000. On a system with 16 cpus the 'map_perf_test 4' shows 14k events per
+> second using atomic_t. On a system with 15 cpus it shows 100k events per second
+> using percpu. map_perf_test is an extreme case where all cpus colliding on
+> atomic_t which causes extreme cache bouncing. Note that the slow path of
+> percpu_counter is 5k events per secound vs 14k for atomic, so the heuristic is
+> necessary. See comment in the code why the heuristic is based on
+> num_online_cpus().
 
-ahh. migration is not disabled when map is freed from worker.
-this_cpu_ptr above and local_irq_save shortly after need to happen
-on the same cpu, so I'm thinking to add migrate_disable
-to htab free path.
+nit: Could we include this logic inside percpu_counter logic, or as an extended
+version of it? Except the heuristic of attr->max_entries / 2 > num_online_cpus() *
+PERCPU_COUNTER_BATCH which toggles between plain atomic vs percpu_counter, the
+rest feel generic enough that it could also be applicable outside bpf.
+
+> Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> ---
+>   kernel/bpf/hashtab.c | 70 +++++++++++++++++++++++++++++++++++++++-----
+>   1 file changed, 62 insertions(+), 8 deletions(-)
+> 
+> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+> index bd23c8830d49..8f68c6e13339 100644
+> --- a/kernel/bpf/hashtab.c
+> +++ b/kernel/bpf/hashtab.c
+> @@ -101,7 +101,12 @@ struct bpf_htab {
+>   		struct bpf_lru lru;
+>   	};
+>   	struct htab_elem *__percpu *extra_elems;
+> -	atomic_t count;	/* number of elements in this hashtable */
+> +	/* number of elements in non-preallocated hashtable are kept
+> +	 * in either pcount or count
+> +	 */
+> +	struct percpu_counter pcount;
+> +	atomic_t count;
+> +	bool use_percpu_counter;
+>   	u32 n_buckets;	/* number of hash buckets */
+>   	u32 elem_size;	/* size of each element in bytes */
+>   	u32 hashrnd;
+> @@ -552,6 +557,29 @@ static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
+>   
+>   	htab_init_buckets(htab);
+>   
+> +/* compute_batch_value() computes batch value as num_online_cpus() * 2
+> + * and __percpu_counter_compare() needs
+> + * htab->max_entries - cur_number_of_elems to be more than batch * num_online_cpus()
+> + * for percpu_counter to be faster than atomic_t. In practice the average bpf
+> + * hash map size is 10k, which means that a system with 64 cpus will fill
+> + * hashmap to 20% of 10k before percpu_counter becomes ineffective. Therefore
+> + * define our own batch count as 32 then 10k hash map can be filled up to 80%:
+> + * 10k - 8k > 32 _batch_ * 64 _cpus_
+> + * and __percpu_counter_compare() will still be fast. At that point hash map
+> + * collisions will dominate its performance anyway. Assume that hash map filled
+> + * to 50+% isn't going to be O(1) and use the following formula to choose
+> + * between percpu_counter and atomic_t.
+> + */
+> +#define PERCPU_COUNTER_BATCH 32
+> +	if (attr->max_entries / 2 > num_online_cpus() * PERCPU_COUNTER_BATCH)
+> +		htab->use_percpu_counter = true;
+> +
+> +	if (htab->use_percpu_counter) {
+> +		err = percpu_counter_init(&htab->pcount, 0, GFP_KERNEL);
+> +		if (err)
+> +			goto free_map_locked;
+> +	}
+> +
+>   	if (prealloc) {
+>   		err = prealloc_init(htab);
+>   		if (err)
+> @@ -878,6 +906,31 @@ static void htab_put_fd_value(struct bpf_htab *htab, struct htab_elem *l)
+>   	}
+>   }
+>   
+> +static bool is_map_full(struct bpf_htab *htab)
+> +{
+> +	if (htab->use_percpu_counter)
+> +		return __percpu_counter_compare(&htab->pcount, htab->map.max_entries,
+> +						PERCPU_COUNTER_BATCH) >= 0;
+> +	return atomic_read(&htab->count) >= htab->map.max_entries;
+> +}
+> +
+> +static void inc_elem_count(struct bpf_htab *htab)
+> +{
+> +	if (htab->use_percpu_counter)
+> +		percpu_counter_add_batch(&htab->pcount, 1, PERCPU_COUNTER_BATCH);
+> +	else
+> +		atomic_inc(&htab->count);
+> +}
+> +
+> +static void dec_elem_count(struct bpf_htab *htab)
+> +{
+> +	if (htab->use_percpu_counter)
+> +		percpu_counter_add_batch(&htab->pcount, -1, PERCPU_COUNTER_BATCH);
+> +	else
+> +		atomic_dec(&htab->count);
+> +}
+> +
+> +
