@@ -2,291 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88A7F5A664A
-	for <lists+bpf@lfdr.de>; Tue, 30 Aug 2022 16:29:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4405C5A668A
+	for <lists+bpf@lfdr.de>; Tue, 30 Aug 2022 16:45:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229541AbiH3O3n (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Aug 2022 10:29:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50232 "EHLO
+        id S230167AbiH3OpH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 30 Aug 2022 10:45:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229826AbiH3O3l (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Aug 2022 10:29:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5D8ED2775
-        for <bpf@vger.kernel.org>; Tue, 30 Aug 2022 07:29:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1661869779;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lmXShkPGu5qohlisPijwUoqxiVIKAZ+9/TfZzFh7608=;
-        b=UwgPFnjG7CgXtJ9Zl/qNdugT/qMhKR7XKlytrNebDOU3oOXLIRaATEo0oCLQ0EMvXiPhFA
-        UY/L6qz9wU6Rua+1M0CcQx0vCuiCsM/fRYsJa7vjvVeE8yscLOmtMqLYm8Pq10XjdWH/fW
-        QOvjH7ul2RmnoBPGTubLCBqyNRvJYZM=
-Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
- [209.85.214.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-187-3B7E2GnpO6OwTx7-XuYDMg-1; Tue, 30 Aug 2022 10:29:37 -0400
-X-MC-Unique: 3B7E2GnpO6OwTx7-XuYDMg-1
-Received: by mail-pl1-f199.google.com with SMTP id y9-20020a17090322c900b00174c881abaeso3830565plg.6
-        for <bpf@vger.kernel.org>; Tue, 30 Aug 2022 07:29:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=lmXShkPGu5qohlisPijwUoqxiVIKAZ+9/TfZzFh7608=;
-        b=xINLZ68wvNwRg3T+s4CU3DP2AhtzGkc64rmCLAwN8UMawavWS9uKly5hMZS32Wgsk2
-         yCw04jAqh7evnrzb3FrehLPuqtGaLu0Hohwws7lqF244/U1f83045pdFjcmKlo894fH9
-         5wWc43LtqTC1y6jzIFFj7UADI9T2fECm6ip3rSaRuAo7eZvIW3YLOh4k4LS81k2Vraei
-         yXPA7Gf79++KgfhcOAxrSV43FxGgkZ8DHFbYv5AZX7AGSpenTMC7JnCCo1+Bel2YZ3yb
-         spcphyWdbCJOmAq4VH47SyVxoQk0qllXi2n5t1doA5p/I5n16f+iRQCg4wENrWBq4Qvi
-         20RA==
-X-Gm-Message-State: ACgBeo3ZUaqlhYmz1H1Yhm5af+s/ynnoInpJWERSJc5KxL+ft/74bKgD
-        ISP63GeuVhY1Wrtzq2WjLFO0EyK0ji59l/xce+7ycniAQTVUupUnd+iwKHR0SWzBayOk0bRmUFZ
-        NtrdBShaQk7KncPxgrbOBi1pSdhH7
-X-Received: by 2002:a63:d10b:0:b0:41d:bd7d:7759 with SMTP id k11-20020a63d10b000000b0041dbd7d7759mr18107734pgg.196.1661869775379;
-        Tue, 30 Aug 2022 07:29:35 -0700 (PDT)
-X-Google-Smtp-Source: AA6agR6ZkHiVpznHXYfoQbkr7dm3Zi5mkVALp/HWJ4F89gPVcA8KOGuI5YxXe4p2AipIfQA48i4dFJ6SAqik3HjUw/A=
-X-Received: by 2002:a63:d10b:0:b0:41d:bd7d:7759 with SMTP id
- k11-20020a63d10b000000b0041dbd7d7759mr18107710pgg.196.1661869775042; Tue, 30
- Aug 2022 07:29:35 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220824134055.1328882-1-benjamin.tissoires@redhat.com>
- <20220824134055.1328882-2-benjamin.tissoires@redhat.com> <CAADnVQKgkFpLh_URJn6qCiAONteA1dwZHd6=4cZn15g1JCAPag@mail.gmail.com>
- <CAP01T75ec_T0M6DU=JE2tfNsWRZuPSMu_7JHA7ZoOBw5eDh1Bg@mail.gmail.com>
-In-Reply-To: <CAP01T75ec_T0M6DU=JE2tfNsWRZuPSMu_7JHA7ZoOBw5eDh1Bg@mail.gmail.com>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Tue, 30 Aug 2022 16:29:23 +0200
-Message-ID: <CAO-hwJLd9wXx+ppccBYPKZDymO0sk++Nt2E3-R97PY7LbfJfTg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v9 01/23] bpf/verifier: allow all functions to
- read user provided context
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Jiri Kosina <jikos@kernel.org>,
+        with ESMTP id S230338AbiH3OpA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Aug 2022 10:45:00 -0400
+Received: from relay12.mail.gandi.net (relay12.mail.gandi.net [217.70.178.232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE503E0DD;
+        Tue, 30 Aug 2022 07:44:57 -0700 (PDT)
+Received: (Authenticated sender: hadess@hadess.net)
+        by mail.gandi.net (Postfix) with ESMTPSA id 11D24200002;
+        Tue, 30 Aug 2022 14:44:52 +0000 (UTC)
+Message-ID: <31207cebad932bd9d943421d6528ad81877758a5.camel@hadess.net>
+Subject: Re: [PATCH 2/2] usb: Implement usb_revoke() BPF function
+From:   Bastien Nocera <hadess@hadess.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-usb@vger.kernel.org, bpf@vger.kernel.org,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Peter Hutterer <peter.hutterer@who-t.net>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Joe Stringer <joe@cilium.io>, Jonathan Corbet <corbet@lwn.net>,
-        Tero Kristo <tero.kristo@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+        Andrii Nakryiko <andrii@kernel.org>
+Date:   Tue, 30 Aug 2022 16:44:52 +0200
+In-Reply-To: <Yv5V1KWOQa5mnktE@kroah.com>
+References: <20220809094300.83116-1-hadess@hadess.net>
+         <20220809094300.83116-3-hadess@hadess.net> <YvI5DJnOjhJbNnNO@kroah.com>
+         <2cde406b4d59ddfe71a7cdc11a76913a0a168595.camel@hadess.net>
+         <YvKMVjl6x38Hud6I@kroah.com>
+         <fae7e35a920239fe2a35b6b967bd17e04af1e1b7.camel@hadess.net>
+         <Yv5V1KWOQa5mnktE@kroah.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.44.4 (3.44.4-1.fc36) 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Aug 26, 2022 at 3:51 AM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
->
-> On Fri, 26 Aug 2022 at 03:42, Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Wed, Aug 24, 2022 at 6:41 AM Benjamin Tissoires
-> > <benjamin.tissoires@redhat.com> wrote:
-> > >
-> > > When a function was trying to access data from context in a syscall eBPF
-> > > program, the verifier was rejecting the call unless it was accessing the
-> > > first element.
-> > > This is because the syscall context is not known at compile time, and
-> > > so we need to check this when actually accessing it.
-> > >
-> > > Check for the valid memory access if there is no convert_ctx callback,
-> > > and allow such situation to happen.
-> > >
-> > > There is a slight hiccup with subprogs. btf_check_subprog_arg_match()
-> > > will check that the types are matching, which is a good thing, but to
-> > > have an accurate result, it hides the fact that the context register may
-> > > be null. This makes env->prog->aux->max_ctx_offset being set to the size
-> > > of the context, which is incompatible with a NULL context.
-> > >
-> > > Solve that last problem by storing max_ctx_offset before the type check
-> > > and restoring it after.
-> > >
-> > > Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > > Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-> > >
-> > > ---
-> > >
-> > > changes in v9:
-> > > - rewrote the commit title and description
-> > > - made it so all functions can make use of context even if there is
-> > >   no convert_ctx
-> > > - remove the is_kfunc field in bpf_call_arg_meta
-> > >
-> > > changes in v8:
-> > > - fixup comment
-> > > - return -EACCESS instead of -EINVAL for consistency
-> > >
-> > > changes in v7:
-> > > - renamed access_t into atype
-> > > - allow zero-byte read
-> > > - check_mem_access() to the correct offset/size
-> > >
-> > > new in v6
-> > > ---
-> > >  kernel/bpf/btf.c      | 11 ++++++++++-
-> > >  kernel/bpf/verifier.c | 19 +++++++++++++++++++
-> > >  2 files changed, 29 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> > > index 903719b89238..386300f52b23 100644
-> > > --- a/kernel/bpf/btf.c
-> > > +++ b/kernel/bpf/btf.c
-> > > @@ -6443,8 +6443,8 @@ int btf_check_subprog_arg_match(struct bpf_verifier_env *env, int subprog,
-> > >  {
-> > >         struct bpf_prog *prog = env->prog;
-> > >         struct btf *btf = prog->aux->btf;
-> > > +       u32 btf_id, max_ctx_offset;
-> > >         bool is_global;
-> > > -       u32 btf_id;
-> > >         int err;
-> > >
-> > >         if (!prog->aux->func_info)
-> > > @@ -6457,9 +6457,18 @@ int btf_check_subprog_arg_match(struct bpf_verifier_env *env, int subprog,
-> > >         if (prog->aux->func_info_aux[subprog].unreliable)
-> > >                 return -EINVAL;
-> > >
-> > > +       /* subprogs arguments are not actually accessing the data, we need
-> > > +        * to check for the types if they match.
-> > > +        * Store the max_ctx_offset and restore it after btf_check_func_arg_match()
-> > > +        * given that this function will have a side effect of changing it.
-> > > +        */
-> > > +       max_ctx_offset = env->prog->aux->max_ctx_offset;
-> > > +
-> > >         is_global = prog->aux->func_info_aux[subprog].linkage == BTF_FUNC_GLOBAL;
-> > >         err = btf_check_func_arg_match(env, btf, btf_id, regs, is_global, 0);
-> > >
-> > > +       env->prog->aux->max_ctx_offset = max_ctx_offset;
-> >
-> > I don't understand this.
-> > If we pass a ctx into a helper and it's going to
-> > access [0..N] bytes from it why do we need to hide it?
-> > max_ctx_offset will be used later raw_tp, tp, syscall progs
-> > to determine whether it's ok to load them.
-> > By hiding the actual size of access somebody can construct
-> > a prog that reads out of bounds.
-> > How is this related to NULL-ness property?
->
-> Same question, was just typing exactly the same thing.
+On Thu, 2022-08-18 at 17:08 +0200, Greg Kroah-Hartman wrote:
+> On Tue, Aug 09, 2022 at 07:27:11PM +0200, Bastien Nocera wrote:
+> > On Tue, 2022-08-09 at 18:33 +0200, Greg Kroah-Hartman wrote:
+> > > On Tue, Aug 09, 2022 at 04:31:04PM +0200, Bastien Nocera wrote:
+> > > > On Tue, 2022-08-09 at 12:38 +0200, Greg Kroah-Hartman wrote:
+> > > > > Now if you really really want to disable a device from under
+> > > > > a
+> > > > > user,
+> > > > > without the file handle present, you can do that today, as
+> > > > > root,
+> > > > > by
+> > > > > doing the 'unbind' hack through userspace and sysfs.  It's so
+> > > > > common
+> > > > > that this seems to be how virtual device managers handle
+> > > > > virtual
+> > > > > machines, so it should be well tested by now.
+> > > > 
+> > > > The only thing I know that works that way is usbip, and it
+> > > > requires
+> > > > unbinding each of the interfaces:
+> > > > 
+> > > > https://sourceforge.net/p/usbip/git-windows/ci/master/tree/trunk/userspace/src/bind-driver.c#l157
+> > > 
+> > > virtio devices also use the api from what I recall.
+> > 
+> > I can't find any code that would reference
+> > /sys/bus/usb/drivers/usbfs/unbind or /sys/bus/usb/drivers/usbfs wrt
+> > virtio. Where's the host side code for that?
+> 
+> I mean the virtio code uses bind/unbind for it's devices, nothing to
+> do
+> with USB other than the userspace interface involved.
 
-The test I have that is failing in patch 2/23 is the following, with
-args being set to NULL by userspace:
+This is one big hammer that is really counterproductive in some fairly
+common use cases. It's fine for assigning a full USB device to a VM, it
+really isn't for gently removing "just that bit of interface" the user
+is using while leaving the rest running.
 
-SEC("syscall")
-int kfunc_syscall_test_null(struct syscall_test_args *args)
-{
-       bpf_kfunc_call_test_mem_len_pass1(args, 0);
+If a USB device has 2 interfaces, and one of those interfaces is used
+by a kernel driver, or a system-wide application, then the whole USB
+device is made unavailable.
 
-       return 0;
-}
+For example:
+- a wireless headset, sound is handled by ALSA at the kernel-level,
+battery status is monitored through another interface by the user
+directly, unbinding the USB driver will disable both the sound driver
+and the battery monitor
+- a keyboard with RGB backlight, key presses are handled by the input
+subsystem in the kernel, RGB backlight through another interface as a
+normal user, unbinding the USB driver disconnects the keyboard
+completely making it lose lock keys status, amongst other things
+- a phone used for both network access and file access through MTP,
+unbinding the USB driver will boot the computer off the network as well
+as disconnecting the file access when we only wanted the latter to
+happen
 
-Basically:
-if userspace declares the following:
- DECLARE_LIBBPF_OPTS(bpf_test_run_opts, syscall_topts,
-               .ctx_in = NULL,
-               .ctx_size_in = 0,
-       );
+I'll explain those use cases in the commit message.
 
-The verifier is happy with the current released kernel:
-kfunc_syscall_test_fail() never dereferences the ctx pointer, it just
-passes it around to bpf_kfunc_call_test_mem_len_pass1(), which in turn
-is also happy because it says it is not accessing the data at all (0
-size memory parameter).
+For those who want to reproduce the problem, tested with USB wireless
+headset:
+$ lsusb
+Bus 001 Device 011: ID 1038:12b6 SteelSeries ApS SteelSeries Arctis 1 Wireless
 
-In the current code, check_helper_mem_access() actually returns
--EINVAL, but doesn't change max_ctx_offset (it's still at the value of
-0 here). The program is now marked as unreliable, but the verifier
-goes on.
+# Using the bus and device IDs
+$ grep -l 001/011 /sys/bus/usb/devices/*/uevent | sed 's,/sys/bus/usb/devices/,,' | sed 's,/uevent,,'
+1-10
 
-When adding this patch, if we declare a syscall eBPF (or any other
-function that doesn't have env->ops->convert_ctx_access), the previous
-"test" is failing because this ensures the syscall program has to have
-a valid ctx pointer.
-btf_check_func_arg_match() now calls check_mem_access() which
-basically validates the fact that the program can dereference the ctx.
+$ echo 1-10 > /sys/bus/usb/drivers/usb/unbind
 
-So now, without the max_ctx_offset store/restore, the verifier
-enforces that the provided ctx is not null.
+Both the ALSA device:
+Aug 30 16:19:07 classic pipewire[2061]: spa.alsa: hw:2: snd_pcm_drop No such device
+Aug 30 16:19:07 classic pipewire[2061]: spa.alsa: hw:2: close failed: No such device
+Aug 30 16:19:07 classic pipewire[2061]: spa.alsa: front:2: snd_pcm_drop No such device
+Aug 30 16:19:07 classic pipewire[2061]: spa.alsa: front:2: close failed: No such device
 
-What I thought that would happen was that if we were to pass a NULL
-context from userspace, but the eBPF program dereferences it (or in
-that case have a subprog or a function call that dereferences it),
-then max_ctx_offset would still be set to the proper value because of
-that internal dereference, and so the verifier would reject with
--EINVAL the call to the eBPF program.
 
-If I add another test that has the following ebpf prog (with ctx_in
-being set to NULL by the userspace):
-
-SEC("syscall")
-int kfunc_syscall_test_null_fail(struct syscall_test_args *args)
-{
-       bpf_kfunc_call_test_mem_len_pass1(args, sizeof(*args));
-
-       return 0;
-}
-
-Then the call of the program is actually failing with -EINVAL, even
-with this patch.
-
-But again, if setting from userspace a ctx of NULL with a 0 size is
-not considered as valid, then we can just drop that hunk and add a
-test to enforce it.
-
-Cheers,
-Benjamin
-
->
-> >
-> > > +
-> > >         /* Compiler optimizations can remove arguments from static functions
-> > >          * or mismatched type can be passed into a global function.
-> > >          * In such cases mark the function as unreliable from BTF point of view.
-> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > > index 2c1f8069f7b7..d694f43ab911 100644
-> > > --- a/kernel/bpf/verifier.c
-> > > +++ b/kernel/bpf/verifier.c
-> > > @@ -5229,6 +5229,25 @@ static int check_helper_mem_access(struct bpf_verifier_env *env, int regno,
-> > >                                 env,
-> > >                                 regno, reg->off, access_size,
-> > >                                 zero_size_allowed, ACCESS_HELPER, meta);
-> > > +       case PTR_TO_CTX:
-> > > +               /* in case the function doesn't know how to access the context,
-> > > +                * (because we are in a program of type SYSCALL for example), we
-> > > +                * can not statically check its size.
-> > > +                * Dynamically check it now.
-> > > +                */
-> > > +               if (!env->ops->convert_ctx_access) {
-> > > +                       enum bpf_access_type atype = meta && meta->raw_mode ? BPF_WRITE : BPF_READ;
-> > > +                       int offset = access_size - 1;
-> > > +
-> > > +                       /* Allow zero-byte read from PTR_TO_CTX */
-> > > +                       if (access_size == 0)
-> > > +                               return zero_size_allowed ? 0 : -EACCES;
-> > > +
-> > > +                       return check_mem_access(env, env->insn_idx, regno, offset, BPF_B,
-> > > +                                               atype, -1, false);
-> > > +               }
-> >
-> > This part looks good alone. Without max_ctx_offset save/restore.
->
-> +1, save/restore would be incorrect.
->
-
+and the battery script
+(https://github.com/Sapd/HeadsetControl/pull/230) are gone.
