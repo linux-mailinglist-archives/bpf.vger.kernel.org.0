@@ -2,140 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BB565A60EF
-	for <lists+bpf@lfdr.de>; Tue, 30 Aug 2022 12:41:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AD575A60FE
+	for <lists+bpf@lfdr.de>; Tue, 30 Aug 2022 12:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229544AbiH3Kld (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Aug 2022 06:41:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39994 "EHLO
+        id S229476AbiH3Kon (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Aug 2022 06:44:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbiH3Klc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Aug 2022 06:41:32 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F138B9A99D
-        for <bpf@vger.kernel.org>; Tue, 30 Aug 2022 03:41:31 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id b5so13622977wrr.5
-        for <bpf@vger.kernel.org>; Tue, 30 Aug 2022 03:41:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:from:to:cc;
-        bh=8Rj9+DjhOY3ujUKP9B2raP154GqlkoLt9zAowUyjN/g=;
-        b=dGWBZdYPvts4zAo26KOCamW+0ojextozuXzYZyBqh8qM0tXprecUnruqiEm9ni3H3c
-         5Xb4pP7qBtq52xJD8opKCPANWmizv078tfolheM/vMRrdlWA36siabkpcgZeTYeh2FEx
-         xZzA/3C4Dhucl3K6vOSbcha9i7D5Oh9lBN+mQBsDr5Rc9bojof7+VblGwJ3QCogAGskf
-         5ZcfTr2NnE9CS5KJAkl6F3h5xEhrVNio3VY09hDp5jtKgM522wjDbsmUfFtwVeiIiJX1
-         9CTQyLR3zw/5KC+aF9O5BjSCIKJWFaKo+lSPQmebg6ruoZCL6ASEK0T+E8TLhPb+4Yso
-         1W/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
-         :to:cc;
-        bh=8Rj9+DjhOY3ujUKP9B2raP154GqlkoLt9zAowUyjN/g=;
-        b=i4tBCb86M+0W1Q2+fnvzIinSXADeLX0tqT/tHv6sFgVIN0j3ZZqjeusZeWssLbHOo7
-         j6sZ6iORG31RL45Iu75ynHK3hGjcnr/bo67AR+5wMBcFvMptvVY+vq3nfVjLfTjWZ3E5
-         BgCI0hsx/ympWObPqnw7KPIbqXW6H2Zu/37Ag1ZxYz43MWO3k59vG+7C6s8pRrh/G9HK
-         crGvLMYfw40DwyIxx5gCv+ekmVNOs+Bcjw+rR0IeAdH/CCT+MMf/arygXrcKPxCaFaTt
-         z0CT5vYWLWmwNSI2lQkv5kNNU3nU8i+PPUFpd5FsnfJZ3OvZusRRWH2WfXLCHzd7FkKI
-         gAQA==
-X-Gm-Message-State: ACgBeo1XXQWmub5k4fhnsFf/q92SJ707GUT2raySXh4qBjf/MTASnIQ7
-        NktCBuJzVy0dXzNDIRr1tPM=
-X-Google-Smtp-Source: AA6agR5iLFYQapUrQnh1i2T9PKq5L7TAeJ0ZaiNng4pjjSYeHEk4EsfbCJoLm6aIhmTq+aQfC1mdyw==
-X-Received: by 2002:a05:6000:1c1e:b0:225:84e6:658f with SMTP id ba30-20020a0560001c1e00b0022584e6658fmr8845265wrb.6.1661856090525;
-        Tue, 30 Aug 2022 03:41:30 -0700 (PDT)
-Received: from [192.168.1.24] (boundsly.muster.volia.net. [93.72.16.93])
-        by smtp.gmail.com with ESMTPSA id e3-20020adfe383000000b0021ef34124ebsm9694666wrm.11.2022.08.30.03.41.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Aug 2022 03:41:29 -0700 (PDT)
-Message-ID: <83b97d563cd3f2041288fcffad1e830aac3bc2da.camel@gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: propagate nullness information for
- reg to reg comparisons
-From:   Eduard Zingerman <eddyz87@gmail.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
-        ast@kernel.org, andrii@kernel.org, kernel-team@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com
-Date:   Tue, 30 Aug 2022 13:41:28 +0300
-In-Reply-To: <60a49435-85b8-f752-51d6-3946fa186b24@iogearbox.net>
-References: <20220826172915.1536914-1-eddyz87@gmail.com>
-         <20220826172915.1536914-2-eddyz87@gmail.com>
-         <60a49435-85b8-f752-51d6-3946fa186b24@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 (3.44.4-1.fc36) 
+        with ESMTP id S229468AbiH3Kon (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Aug 2022 06:44:43 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB131A3D2A
+        for <bpf@vger.kernel.org>; Tue, 30 Aug 2022 03:44:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=NOGCZOgdOOkPcWIhOncPBTHvKhkYXHsNeuVIFczq+TU=; b=N63JsYoEWcrOCnl4Nwf5JrzJyf
+        bQaDahM5/VHWg3+qvR8VXSX7rSQDrBownvYEDTc/A+0hAZ15UjLInPrS1ZbVHqrWVvnwQBqli85N+
+        6O9GJdHeh59R4vv9iPWuy6GIXUNbR2HZLNDywPdS1VinRDt0uT+hkQmD+myVhe4n8k6dLJdnQzJvZ
+        5TsGCIFdzkmXZmhEP2ZiBYeyN6o3L8x3vsgAQyDWDXqOzU6SAG/zJnpoxmOB3VYq0ibImhTxwOBJO
+        o9eIFSjGtfKNdHteGWZrUH67MxBujIoGdlVs6aWFgrtJElbNjFFFVGVlweroNXk4WgdcWwwBXi3Rh
+        N3KpNHpw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1oSyj8-007oGH-6Z; Tue, 30 Aug 2022 10:44:14 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5E03A3002C7;
+        Tue, 30 Aug 2022 12:44:13 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 3D43D20A3D215; Tue, 30 Aug 2022 12:44:13 +0200 (CEST)
+Date:   Tue, 30 Aug 2022 12:44:13 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>
+Subject: Re: [PATCH bpf-next 2/2] bpf: Move bpf_dispatcher function out of
+ ftrace locations
+Message-ID: <Yw3p/WBKlOaN+W9h@hirez.programming.kicks-ass.net>
+References: <20220826184608.141475-1-jolsa@kernel.org>
+ <20220826184608.141475-3-jolsa@kernel.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220826184608.141475-3-jolsa@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Daniel,
+On Fri, Aug 26, 2022 at 08:46:08PM +0200, Jiri Olsa wrote:
+> The dispatcher function is attached/detached to trampoline by
+> dispatcher update function. At the same time it's available as
+> ftrace attachable function.
+> 
+> After discussion [1] the proposed solution is to use compiler
+> attributes to alter bpf_dispatcher_##name##_func function:
+> 
+>   - remove it from being instrumented with __no_instrument_function__
+>     attribute, so ftrace has no track of it
 
-Thank you for commenting.
+This is typically spelled like: 'notrace' in the kernel.
 
-> On Mon, 2022-08-29 at 16:23 +0200, Daniel Borkmann wrote:
-> [...]
-> >   kernel/bpf/verifier.c | 41 +++++++++++++++++++++++++++++++++++++++--
-> >   1 file changed, 39 insertions(+), 2 deletions(-)
-> >=20
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index 0194a36d0b36..7585288e035b 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -472,6 +472,11 @@ static bool type_may_be_null(u32 type)
-> >   	return type & PTR_MAYBE_NULL;
-> >   }
-> >  =20
-> > +static bool type_is_pointer(enum bpf_reg_type type)
-> > +{
-> > +	return type !=3D NOT_INIT && type !=3D SCALAR_VALUE;
-> > +}
->=20
-> We also have is_pointer_value(), semantics there are a bit different (and=
- mainly to
-> prevent leakage under unpriv), but I wonder if this can be refactored to =
-accommodate
-> both. My worry is that if in future we extend one but not the other bugs =
-might slip
-> in.
+>   - but still generate 5 nop instructions with patchable_function_entry(5)
+>     attribute, which are expected by bpf_arch_text_poke used by
+>     dispatcher update function
+> 
+> Enabling HAVE_DYNAMIC_FTRACE_NO_PATCHABLE option for x86, so
+> __patchable_function_entries functions are not part of ftrace/mcount
+> locations.
+> 
+> The dispatcher code is generated and attached only for x86 so it's safe
+> to keep bpf_dispatcher func in patchable_function_entry locations for
+> other archs.
+> 
+> [1] https://lore.kernel.org/bpf/20220722110811.124515-1-jolsa@kernel.org/
+> Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  arch/x86/Kconfig    | 1 +
+>  include/linux/bpf.h | 2 ++
+>  2 files changed, 3 insertions(+)
+> 
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index f9920f1341c8..089c20cefd2b 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -284,6 +284,7 @@ config X86
+>  	select PROC_PID_ARCH_STATUS		if PROC_FS
+>  	select HAVE_ARCH_NODE_DEV_GROUP		if X86_SGX
+>  	imply IMA_SECURE_AND_OR_TRUSTED_BOOT    if EFI
+> +	select HAVE_DYNAMIC_FTRACE_NO_PATCHABLE
+>  
+>  config INSTRUCTION_DECODER
+>  	def_bool y
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 9c1674973e03..945d5414bb62 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -925,6 +925,8 @@ int arch_prepare_bpf_dispatcher(void *image, s64 *funcs, int num_funcs);
+>  }
+>  
+>  #define DEFINE_BPF_DISPATCHER(name)					\
+> +	__attribute__((__no_instrument_function__))			\
+> +	__attribute__((patchable_function_entry(5)))			\
+>  	noinline __nocfi unsigned int bpf_dispatcher_##name##_func(	\
+>  		const void *ctx,					\
+>  		const struct bpf_insn *insnsi,				\
 
-John was concerned about this as well, guess I won't not dodging it :)
-Suppose I do the following modification:
+What makes that whole dispatcher thing x86 only? AFAICT it is only under
+BPF_JIT here and could be used by anyone.
 
-    static bool type_is_pointer(enum bpf_reg_type type)
-    {
-    	return type !=3D NOT_INIT && type !=3D SCALAR_VALUE;
-    }
-   =20
-    static bool __is_pointer_value(bool allow_ptr_leaks,
-    			       const struct bpf_reg_state *reg)
-    {
-    	if (allow_ptr_leaks)
-    		return false;
-
--    	return reg->type !=3D SCALAR_VALUE;
-+    	return type_is_pointer(reg->type);
-    }
-   =20
-And check if there are test cases that have to be added because of the
-change in the __is_pointer_value behavior (it does not check for
-`NOT_INIT` right now). Does this sound like a plan?
-
-[...]
-> Could we consolidate the logic above with the one below which deals with =
-R =3D=3D 0 checks?
-> There are some similarities, e.g. !is_jmp32, both test for jeq/jne and wh=
-ile one is based
-> on K, the other one on X, though we could also add check X =3D=3D 0 for b=
-elow. Anyway, just
-> a though that it may be nice to consolidate the handling.
-
-Ok, I will try to consolidate those.
-
-Thanks,
-Eduard
+ARM64 for instance has BPG_JIT and builds net/core/filter.c. And ARM64
+very much does use patchable_function_entry() for its ftrace
+implementation.
