@@ -1,146 +1,179 @@
 Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from out1.vger.email (unknown [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B0415A68D4
-	for <lists+bpf@lfdr.de>; Tue, 30 Aug 2022 18:53:10 +0200 (CEST)
+Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
+	by mail.lfdr.de (Postfix) with ESMTP id 865A45A68DC
+	for <lists+bpf@lfdr.de>; Tue, 30 Aug 2022 18:54:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231129AbiH3QxI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Aug 2022 12:53:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35930 "EHLO
+        id S229674AbiH3Qye (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Aug 2022 12:54:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230513AbiH3Qwo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Aug 2022 12:52:44 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE7196448
-        for <bpf@vger.kernel.org>; Tue, 30 Aug 2022 09:52:16 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id n23-20020a7bc5d7000000b003a62f19b453so10300798wmk.3
-        for <bpf@vger.kernel.org>; Tue, 30 Aug 2022 09:52:16 -0700 (PDT)
+        with ESMTP id S229550AbiH3Qyd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Aug 2022 12:54:33 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEF3FE6F;
+        Tue, 30 Aug 2022 09:54:32 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id cu2so23485671ejb.0;
+        Tue, 30 Aug 2022 09:54:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc;
-        bh=fQYbCHWbiVFfVd/aiH1NG/dZPz6KpzTWHjFvZzux7k0=;
-        b=H82mw0Zn1UBhbpRvBWyhIPTW2LOfTZ0SVfWdzf9Gq0m59qtc3iPUeUQ6hlfxhjN1aA
-         hbezNJUffRE9YNRehSv5z7asJ/ZLZY2QCNDElv7w23rli+UnkVg60oADVm+P6IyaOS7H
-         owc76Kh5c4CzsSJgD3Ya4Sw2PSiA9GVvnw7EmL42V2N3BxEseDPEmtWmJXJo9Yra3OSX
-         rI1F1TqxGtfV1smA9f+bzKa5AmhzdpeJPO1gdKgTNcLbke1UEu3gImmeYZNiieilln9u
-         0bhHe+y3WGg9St4jtNKDT9YF2XnhRcTqvkiiyQc9l8krurz/eOgmOPyL8q5y3dFnRdiW
-         MNnQ==
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=f+s1k0QulyVXl2cK6VcOd5dpUM4UDZztKU/w4k+ArrM=;
+        b=ci58jmQlGnU2jB4nlRYAOnSraJY1ggplK67rwPALlfMK1VRtx4W6BJUOC7DmxpTfr0
+         6rwi8kdaQBT+oT5MNxkLj+CmrZ3P3sqAGLAE3KK3NkF7zkpt1iSEcsZc72KOlv3tMNdP
+         ebsqwYz4DKdKwVEs6+7taCAxp2dw4n3qdyZOjKjbcCNLzISL/A+lxVnEoXkQUrZHRwyt
+         eH5qb1SfE0jQi/mUY7MJ0BRbVivlbUKvRuVQ8A2O5ic1UzDA3ZFmeTwsdESpYtu0yl0O
+         dKh5+0NrNDAm/xjuAaqi/vAsZ9YljZpPuYFdl7Fg4bErSTbou1VZaPKRlT3m6v07NhAX
+         4g4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc;
-        bh=fQYbCHWbiVFfVd/aiH1NG/dZPz6KpzTWHjFvZzux7k0=;
-        b=YWLpR9ka7Xk3TLo/S/MZrdAW6IszaoLFXaeqjt/httxjNEOtCf0GTBzrHXwLy+QfUz
-         6c1nDCIgYBXOtz0FmceJ2XCnOtURuMXxZW/HmDi1ZhQRh5clyt+CiH5/gcGNreYTqGcP
-         VXCrtZypcTJsh3kcpaB8H8szvMzsqI+pQK+0Hu6YduP9lr/cdUgKpb5mVHD+TpAG/fD3
-         jqYyPT85gl3EKq23w3Nm9veIPVIu2jEgaefXQ80UtP5Hyhsrt1t8cEUdiXzvQ4bva0GD
-         mBEQ2EGTxiEMWLxh0nDeYim79eSyvz7CJdmztgQkiLi6tMxwW7FZOCY0mXKdAPimIE7S
-         2iRQ==
-X-Gm-Message-State: ACgBeo1M+rDSUnYJKQuJiSaT4y0vOcFytahhLGmgRe9zL077PYGsRHvz
-        B7f2oablyf/8k/gpJZUfh5/s/w==
-X-Google-Smtp-Source: AA6agR6yU0dwUJcsfZdvCkuyZWuktifd+/weY46Lfa4p8i7neGtOCZp+/ld52fy+WJU8NeH3k/V7aw==
-X-Received: by 2002:a05:600c:3551:b0:3a5:dcf3:1001 with SMTP id i17-20020a05600c355100b003a5dcf31001mr10140735wmq.58.1661878334589;
-        Tue, 30 Aug 2022 09:52:14 -0700 (PDT)
-Received: from [192.168.178.32] ([51.155.200.13])
-        by smtp.gmail.com with ESMTPSA id w5-20020a5d4b45000000b00226db764fb5sm5923136wrs.47.2022.08.30.09.52.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Aug 2022 09:52:13 -0700 (PDT)
-Message-ID: <1b14efc0-a292-30f4-c94b-207b40818e86@isovalent.com>
-Date:   Tue, 30 Aug 2022 17:52:13 +0100
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=f+s1k0QulyVXl2cK6VcOd5dpUM4UDZztKU/w4k+ArrM=;
+        b=8F+EYyEE4o0zzVMRYbq2qRr4s7q18KggU5L0K1DSdOTUMPk7VkmHkS0lVGLg/cssul
+         ke01VapQywVcUbOy0VY2Cnj7M8OPztHt7D26Yb/AfHZT6ZaGcmXtPO/so7bh1Xx9xPv1
+         PIWzKokFj8Jur1NyOPVHsWFmPUluvbs42mpUSJV1NC7KY3IWO3+LdEz5WNjKWuTOwXse
+         rTLb5UkSuJmq/0Ra7XVuyZDqeaHOtTSn31k4of5wzH7Qy8mi4tOpvSf79nQ2LQIaEJQZ
+         DgGWn4EUp/6oOYsVKTd+Jmp9xO9WFn+5fX4jFokvf7U4HmeampOAKiQm0nO4Z3k5ZAjo
+         5VXg==
+X-Gm-Message-State: ACgBeo0tijqCI6PZiTnWW/8A+P0JklZNx7EK76rcuryfhaMpHbI9M/Pr
+        Hm8x9++mE0ME0uEX8lmEY79UlXW5aDKUPS84Mt8=
+X-Google-Smtp-Source: AA6agR7SC44Sm+boGLEfKHaUzccEMv81eM5eoBTV4ajaGZB8+mYygPKcBYZWDV9QOhempE3NPLc7H827Z67nhgtqRSM=
+X-Received: by 2002:a17:906:ef8f:b0:731:4a01:7781 with SMTP id
+ ze15-20020a170906ef8f00b007314a017781mr18235299ejb.268.1661878471414; Tue, 30
+ Aug 2022 09:54:31 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.0
-Subject: Re: [PATCH bpf-next v8 5/5] bpftool: Show parameters of BPF task
- iterators.
-Content-Language: en-GB
-To:     Kui-Feng Lee <kuifeng@fb.com>, bpf@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kernel-team@fb.com,
-        yhs@fb.com, Hao Luo <haoluo@google.com>
-References: <20220829192317.486946-1-kuifeng@fb.com>
- <20220829192317.486946-6-kuifeng@fb.com>
-From:   Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <20220829192317.486946-6-kuifeng@fb.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20220830161716.754078-1-roberto.sassu@huaweicloud.com> <20220830161716.754078-13-roberto.sassu@huaweicloud.com>
+In-Reply-To: <20220830161716.754078-13-roberto.sassu@huaweicloud.com>
+From:   Joanne Koong <joannelkoong@gmail.com>
+Date:   Tue, 30 Aug 2022 09:54:20 -0700
+Message-ID: <CAJnrk1ZzLkc_TBpqejSOYOpLOVgtPJty2X_3v8i4UgDLR+59VQ@mail.gmail.com>
+Subject: Re: [PATCH v14 12/12] selftests/bpf: Add verifier tests for dynamic
+ pointers parameters in kfuncs
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
+        dhowells@redhat.com, jarkko@kernel.org, rostedt@goodmis.org,
+        mingo@redhat.com, paul@paul-moore.com, jmorris@namei.org,
+        serge@hallyn.com, shuah@kernel.org, bpf@vger.kernel.org,
+        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        deso@posteo.net, memxor@gmail.com,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 29/08/2022 20:23, Kui-Feng Lee wrote:
-> Show tid or pid of iterators if giving an argument of tid or pid
-> 
-> For example, the command `bpftool link list` may list following
-> lines.
-> 
-> 1: iter  prog 2  target_name bpf_map
-> 2: iter  prog 3  target_name bpf_prog
-> 33: iter  prog 225  target_name task_file  tid 1644
->         pids test_progs(1644)
-> 
-> Link 33 is a task_file iterator with tid 1644.  For now, only targets
-> of task, task_file and task_vma may be with tid or pid to filter out
-> tasks other than those belonging to a process (pid) or a thread (tid).
-> 
-> Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
+On Tue, Aug 30, 2022 at 9:22 AM Roberto Sassu
+<roberto.sassu@huaweicloud.com> wrote:
+>
+> From: Roberto Sassu <roberto.sassu@huawei.com>
+>
+> Add verifier tests to ensure that only supported dynamic pointer types are
+> accepted, that the passed argument is actually a dynamic pointer, and that
+> the passed argument is a pointer to the stack.
+>
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
 > ---
->  tools/bpf/bpftool/link.c | 19 +++++++++++++++++++
->  1 file changed, 19 insertions(+)
-> 
-> diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
-> index 7a20931c3250..88937036fae0 100644
-> --- a/tools/bpf/bpftool/link.c
-> +++ b/tools/bpf/bpftool/link.c
-> @@ -83,6 +83,13 @@ static bool is_iter_map_target(const char *target_name)
->  	       strcmp(target_name, "bpf_sk_storage_map") == 0;
->  }
->  
-> +static bool is_iter_task_target(const char *target_name)
+>  .../bpf/verifier/kfunc_dynptr_param.c         | 72 +++++++++++++++++++
+>  1 file changed, 72 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/verifier/kfunc_dynptr_param.c
+>
+> diff --git a/tools/testing/selftests/bpf/verifier/kfunc_dynptr_param.c b/tools/testing/selftests/bpf/verifier/kfunc_dynptr_param.c
+> new file mode 100644
+> index 000000000000..8abb8d566321
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/verifier/kfunc_dynptr_param.c
+> @@ -0,0 +1,72 @@
 > +{
-> +	return strcmp(target_name, "task") == 0 ||
-> +		strcmp(target_name, "task_file") == 0 ||
-> +		strcmp(target_name, "task_vma") == 0;
-> +}
-> +
->  static void show_iter_json(struct bpf_link_info *info, json_writer_t *wtr)
->  {
->  	const char *target_name = u64_to_ptr(info->iter.target_name);
-> @@ -91,6 +98,12 @@ static void show_iter_json(struct bpf_link_info *info, json_writer_t *wtr)
->  
->  	if (is_iter_map_target(target_name))
->  		jsonw_uint_field(wtr, "map_id", info->iter.map.map_id);
-> +	else if (is_iter_task_target(target_name)) {
-> +		if (info->iter.task.tid)
-> +			jsonw_uint_field(wtr, "tid", info->iter.task.tid);
-> +		else if (info->iter.task.pid)
-> +			jsonw_uint_field(wtr, "pid", info->iter.task.pid);
-> +	}
->  }
->  
->  static int get_prog_info(int prog_id, struct bpf_prog_info *info)
-> @@ -208,6 +221,12 @@ static void show_iter_plain(struct bpf_link_info *info)
->  
->  	if (is_iter_map_target(target_name))
->  		printf("map_id %u  ", info->iter.map.map_id);
-> +	else if (is_iter_task_target(target_name)) {
-> +		if (info->iter.task.tid)
-> +			printf("tid %u ", info->iter.task.tid);
-> +		else if (info->iter.task.pid)
-> +			printf("pid %u ", info->iter.task.pid);
-> +	}
->  }
->  
->  static int show_link_close_plain(int fd, struct bpf_link_info *info)
+> +       "kfunc dynamic pointer param: type not supported",
+> +       .insns = {
+> +       BPF_ST_MEM(BPF_DW, BPF_REG_10, -16, 0),
+> +       BPF_MOV64_REG(BPF_REG_6, BPF_REG_10),
+> +       BPF_ALU64_IMM(BPF_ADD, BPF_REG_6, -16),
+> +       BPF_LD_MAP_FD(BPF_REG_1, 0),
+> +       BPF_MOV64_IMM(BPF_REG_2, 8),
+> +       BPF_MOV64_IMM(BPF_REG_3, 0),
+> +       BPF_MOV64_REG(BPF_REG_4, BPF_REG_6),
+> +       BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_ringbuf_reserve_dynptr),
+> +       BPF_MOV64_REG(BPF_REG_1, BPF_REG_6),
+> +       BPF_MOV64_REG(BPF_REG_2, BPF_REG_6),
+> +       BPF_MOV64_IMM(BPF_REG_3, 0),
+> +       BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, BPF_PSEUDO_KFUNC_CALL, 0, 0),
+> +       BPF_MOV64_REG(BPF_REG_1, BPF_REG_6),
+> +       BPF_MOV64_IMM(BPF_REG_2, 0),
+> +       BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_ringbuf_discard_dynptr),
+> +       BPF_MOV64_IMM(BPF_REG_0, 0),
+> +       BPF_EXIT_INSN(),
+> +       },
+> +       .fixup_map_ringbuf = { 3 },
+> +       .prog_type = BPF_PROG_TYPE_LSM,
+> +       .kfunc = "bpf",
+> +       .expected_attach_type = BPF_LSM_MAC,
+> +       .flags = BPF_F_SLEEPABLE,
+> +       .errstr = "arg#0 pointer type STRUCT bpf_dynptr_kern points to unsupported dynamic pointer type",
+> +       .result = REJECT,
+> +       .fixup_kfunc_btf_id = {
+> +               { "bpf_verify_pkcs7_signature", 12 },
+> +       },
+> +},
+> +{
+> +       "kfunc dynamic pointer param: arg not a dynamic pointer",
+> +       .insns = {
+> +       BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),
+> +       BPF_MOV64_REG(BPF_REG_1, BPF_REG_10),
+> +       BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, -8),
+> +       BPF_MOV64_REG(BPF_REG_2, BPF_REG_1),
+> +       BPF_MOV64_IMM(BPF_REG_3, 0),
+> +       BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, BPF_PSEUDO_KFUNC_CALL, 0, 0),
+> +       BPF_EXIT_INSN(),
+> +       },
+> +       .prog_type = BPF_PROG_TYPE_LSM,
+> +       .kfunc = "bpf",
+> +       .expected_attach_type = BPF_LSM_MAC,
+> +       .flags = BPF_F_SLEEPABLE,
+> +       .errstr = "arg#0 pointer type STRUCT bpf_dynptr_kern must be valid and initialized",
+> +       .result = REJECT,
+> +       .fixup_kfunc_btf_id = {
+> +               { "bpf_verify_pkcs7_signature", 5 },
+> +       },
+> +},
+> +{
+> +       "kfunc dynamic pointer param: arg not a pointer to stack",
+> +       .insns = {
+> +       BPF_MOV64_IMM(BPF_REG_1, 0),
+> +       BPF_MOV64_IMM(BPF_REG_2, 0),
+> +       BPF_MOV64_IMM(BPF_REG_3, 0),
+> +       BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, BPF_PSEUDO_KFUNC_CALL, 0, 0),
+> +       BPF_EXIT_INSN(),
+> +       },
+> +       .prog_type = BPF_PROG_TYPE_LSM,
+> +       .kfunc = "bpf",
+> +       .expected_attach_type = BPF_LSM_MAC,
+> +       .flags = BPF_F_SLEEPABLE,
+> +       .errstr = "arg#0 pointer type STRUCT bpf_dynptr_kern not to stack",
+> +       .result = REJECT,
+> +       .fixup_kfunc_btf_id = {
+> +               { "bpf_verify_pkcs7_signature", 3 },
+> +       },
+> +},
 
-Acked-by: Quentin Monnet <quentin@isovalent.com>
+Is this logic testable in plain C BPF code? I tend to side with Andrii
+[0] about finding these kinds of tests hard to maintain and read.
 
-Looks good to me, although this patch may conflict with
-https://lore.kernel.org/bpf/20220829231828.1016835-1-haoluo@google.com/t/#u
+[0] https://lore.kernel.org/bpf/CAEf4BzZJvr+vcO57TK94GM7B5=k2wPgAub4BBJf1Uz0xNpCPVg@mail.gmail.com/
+
+> --
+> 2.25.1
+>
