@@ -2,39 +2,40 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87F815A6B08
-	for <lists+bpf@lfdr.de>; Tue, 30 Aug 2022 19:44:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 473055A6B79
+	for <lists+bpf@lfdr.de>; Tue, 30 Aug 2022 19:58:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231556AbiH3Roi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Aug 2022 13:44:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34820 "EHLO
+        id S230522AbiH3R62 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Aug 2022 13:58:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231891AbiH3RoM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Aug 2022 13:44:12 -0400
+        with ESMTP id S232108AbiH3R6E (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Aug 2022 13:58:04 -0400
 Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98B8A8A7D0
-        for <bpf@vger.kernel.org>; Tue, 30 Aug 2022 10:41:03 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73E741CB2C
+        for <bpf@vger.kernel.org>; Tue, 30 Aug 2022 10:56:03 -0700 (PDT)
 Received: from submission (posteo.de [185.67.36.169]) 
-        by mout01.posteo.de (Postfix) with ESMTPS id ADB33240027
-        for <bpf@vger.kernel.org>; Tue, 30 Aug 2022 19:29:06 +0200 (CEST)
+        by mout01.posteo.de (Postfix) with ESMTPS id 14D36240029
+        for <bpf@vger.kernel.org>; Tue, 30 Aug 2022 19:56:02 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1661880546; bh=KZeH438Ux4GbL8fDlssepyY6t7vjgjpBCA11/hHxCO0=;
-        h=From:To:Subject:Date:From;
-        b=X7+KXOkTUHvxjiI5+Na6LvLS/TA3FmKFUylRVyo+o9kyjLhAWH5MDeFKCmtGNk01A
-         TJaSd9SozgcAo6sEnJjup//lrR4a3ZarrxnS49LkQW8SY8ZEVUGFXZsD8lobjvLbbu
-         neDfatz/W2eJfBaaGq8A8OsHDzK9sfqI7KdZs9uw4Llu2vsaHaz2z1ETSM8O0yUPGj
-         6biDnve61OxHeBYJCMYOBFRsBoGEcMAV+GYftg56n4Md9PTbEHS4auLAJ4TklAwDUm
-         999yfIcQGQFyLOhz6fkj3E0IwXQAjFA9gVvPrRjBg127l+E2BDj3Q94Eo/UInotLrD
-         n34MGoYkdrDug==
+        t=1661882162; bh=zuIZ5BmhwrzPF7Oju+BbJUTFoviY2GwEQTKCqGkaZUo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=OB+oGjxtZuBcKXD6Jz+MR487MbIb8dWCVrciUV0n9l7sFXkB4udCVqPmPV2BR9X7w
+         brumXpM7BcCfs6Rgi6sFrLPm75OP5s0JjzGq2zi8sGrm7yi9+pa8ythf4YXB0g2xr4
+         kYYPuFe6gbh3Zx8XTEOT07w8tNft2svYYz8ceI+9fCe9hnHWCtiJ+c7TP1cQAM7rVO
+         AN5iAKl9XXDD2XoU3rk5DMHgWo+wbYnMYfJDmGCPUiA36D5YWLci3FF6PkQeYckl0T
+         DVq9TwkULgZMxGIlEnFcDLiPI6B+xBQvopwxRemXbUVIko8TPt6SVwbQWIrFWmD73q
+         FsQSZ0w8UFyhQ==
 Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4MHDnF1wxLz6tmY;
-        Tue, 30 Aug 2022 19:29:05 +0200 (CEST)
+        by submission (posteo.de) with ESMTPSA id 4MHFNJ3JPSz6tn5;
+        Tue, 30 Aug 2022 19:56:00 +0200 (CEST)
 From:   =?UTF-8?q?Daniel=20M=C3=BCller?= <deso@posteo.net>
 To:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
         daniel@iogearbox.net, kafai@fb.com, kernel-team@fb.com
-Subject: [PATCH bpf-next 1/2] selftests/bpf: Store BPF object files with .bpf.o extension
-Date:   Tue, 30 Aug 2022 17:28:36 +0000
-Message-Id: <20220830172837.3699840-1-deso@posteo.net>
+Cc:     deso@posteo.net
+Subject: [PATCH bpf-next v2] selftests/bpf: Store BPF object files with .bpf.o extension
+Date:   Tue, 30 Aug 2022 17:55:50 +0000
+Message-Id: <20220830175550.3838206-1-deso@posteo.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -65,6 +66,10 @@ the test programs loading BPF object files to work with .bpf.o files.
 Signed-off-by: Daniel Müller <deso@posteo.net>
 Suggested-by: Andrii Nakryiko <andrii@kernel.org>
 ---
+
+Changelog:
+- fixed up subject; it's only a single patch
+
  tools/testing/selftests/bpf/Makefile          | 34 ++++-----
  .../selftests/bpf/get_cgroup_id_user.c        |  2 +-
  .../selftests/bpf/prog_tests/bpf_obj_id.c     |  2 +-
