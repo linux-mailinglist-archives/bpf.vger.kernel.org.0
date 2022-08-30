@@ -2,129 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2B215A5903
-	for <lists+bpf@lfdr.de>; Tue, 30 Aug 2022 03:51:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E8445A594C
+	for <lists+bpf@lfdr.de>; Tue, 30 Aug 2022 04:21:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229875AbiH3BvW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Aug 2022 21:51:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32824 "EHLO
+        id S229921AbiH3CVl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Aug 2022 22:21:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229866AbiH3BvU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Aug 2022 21:51:20 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8468BA6C3B
-        for <bpf@vger.kernel.org>; Mon, 29 Aug 2022 18:51:18 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id bu22so11930866wrb.3
-        for <bpf@vger.kernel.org>; Mon, 29 Aug 2022 18:51:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=Q05G2zuncPpN5tmYJ7jQG6d9qUvvJiUejd0roDcqj9E=;
-        b=tGK6VqsYBvmH9ycBcWO3t19n1kN5o7R6OtufsNYS+w5914lw3Hg2S+SaONPfMz+Wnu
-         157LkgyFDSvMI1WBIoeZ6yw29Sk7Cy/3ks74pnhx2aABrV1SYr9wr0LJtZ8J+Rff+qwA
-         /JhXcOv3L930UF3Hoa15NUIzWJ4OKhF8EYaOjbt0gmYvH6pJzJ/ieEMqarhFxbXeQ8zQ
-         s3uPCzIVpfknRBIKEA798acz/vRRqaz0HamIW5VmS9lYEY3vt8nPwuyAlG1kSr16lC9P
-         1NcyoS1H3VRmKyHBWqqQ0iDhy3WSRlZ9sEE5pmFYj5FzvXpP/G74phCUbK5yMVkBtk1f
-         XusQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=Q05G2zuncPpN5tmYJ7jQG6d9qUvvJiUejd0roDcqj9E=;
-        b=sQeprdEEewLFxBbB1blIQIqePsNTZ0M6eIqlZ+i32ggup/VfYO6yliuTrqzP3w8YAK
-         Dh7+t/L1xnZONSDWEqWzOeInEAQ9eN/zJ733oF5bH3Y16UVVLV/tzXWXg/VpxqxqGuO9
-         /UrsVXDDMfwSphKH4KraLw0gWRDruNqo+UVWqiktPBWNS25df3e9KN42ZK1HSO4FQSJI
-         otwX2QAU9L4XSsyLftf5tWGartUI+BFyzhKYAK4P/TFZvggcVeUJbyejgemAVRAkPDgP
-         EUgkRtdbcB9SzOvdngDGpDYrkwo0RbTxW1UCRP6Vd28egIn5S9hV62xYl8ObH92eOH2i
-         hV0Q==
-X-Gm-Message-State: ACgBeo18V8nqNkICpfQfU3+BQFf2vkI4nez+2HGo1ls2MG3Bg/C9Q5DD
-        FyqHqk1d0alcY6GoZhvJPQjg8BMubwqk1RutTW1GaA==
-X-Google-Smtp-Source: AA6agR5mXJrEV26XyK5LWMzqktTezuEYvByr6z1rzvf5kOhfA/GgHQlLShc9Oct06+8XRM37AJOQBV0ySnXwbNBjqjk=
-X-Received: by 2002:a5d:6609:0:b0:226:ced9:be58 with SMTP id
- n9-20020a5d6609000000b00226ced9be58mr7252461wru.80.1661824276689; Mon, 29 Aug
- 2022 18:51:16 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220826230639.1249436-1-yosryahmed@google.com>
- <CA+khW7iN6hyyBBR+4ey+9pNmEyKPZS82-C9kZ2NRXKMEOXHrng@mail.gmail.com>
- <CAJD7tkYKYv+SKhCJs2281==55sALTX_DXifaWPv1w5=xrJjqQA@mail.gmail.com>
- <CAJD7tkZg2jzDDR6vn5=-TS93Tm3P-YEQ+06KDsjg=Mzkt5LqsA@mail.gmail.com> <CA+khW7g-jeiXMM-K+KK7L3tzG0catFSM+x5vHKMs=PF=s+=Pag@mail.gmail.com>
-In-Reply-To: <CA+khW7g-jeiXMM-K+KK7L3tzG0catFSM+x5vHKMs=PF=s+=Pag@mail.gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Mon, 29 Aug 2022 18:50:40 -0700
-Message-ID: <CAJD7tkZ77JDt62CMw2AmpvTJ5fpVs0mkPdVqMJm8X8zCBq=LhA@mail.gmail.com>
-Subject: Re: [PATCH] selftests/bpf: simplify cgroup_hierarchical_stats selftest
-To:     Hao Luo <haoluo@google.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        with ESMTP id S229911AbiH3CVk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Aug 2022 22:21:40 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82AA08E4DF
+        for <bpf@vger.kernel.org>; Mon, 29 Aug 2022 19:21:37 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4MGrcC5hvBzKCgC
+        for <bpf@vger.kernel.org>; Tue, 30 Aug 2022 10:19:55 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+        by APP2 (Coremail) with SMTP id Syh0CgBnAWsqdA1jXkF4AA--.1258S2;
+        Tue, 30 Aug 2022 10:21:34 +0800 (CST)
+Subject: Re: [PATCH bpf-next 1/3] bpf: Use this_cpu_{inc|dec|inc_return} for
+ bpf_task_storage_busy
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf@vger.kernel.org, Song Liu <songliubraving@fb.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Hao Sun <sunhao.th@gmail.com>, Hao Luo <haoluo@google.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Mykola Lysenko <mykolal@fb.com>, Song Liu <song@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Lorenz Bauer <oss@lmb.io>, houtao1@huawei.com
+References: <20220829142752.330094-1-houtao@huaweicloud.com>
+ <20220829142752.330094-2-houtao@huaweicloud.com>
+ <20220830005228.xc7nhufvx4oetel3@kafai-mbp.dhcp.thefacebook.com>
+From:   Hou Tao <houtao@huaweicloud.com>
+Message-ID: <a0e8ef04-fb9c-1245-9aff-c5aa8520add8@huaweicloud.com>
+Date:   Tue, 30 Aug 2022 10:21:30 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <20220830005228.xc7nhufvx4oetel3@kafai-mbp.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID: Syh0CgBnAWsqdA1jXkF4AA--.1258S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Ww4fJryUXFyxKFWxKryrXrb_yoW8Zr17pr
+        WxGFy7JryDWwn5AFn8Jr4xAry5t3yUXw4xG39YyF97Aw45JryIvr1Igr1v9ryfZr4Fqa45
+        ZF4DXan8ur17XFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
+        6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
+        67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
+        uYvjxUFDGOUUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 29, 2022 at 6:42 PM Hao Luo <haoluo@google.com> wrote:
->
-> On Mon, Aug 29, 2022 at 6:07 PM Yosry Ahmed <yosryahmed@google.com> wrote:
-> >
-> > On Mon, Aug 29, 2022 at 3:15 PM Yosry Ahmed <yosryahmed@google.com> wrote:
-> > >
-> > > On Mon, Aug 29, 2022 at 1:08 PM Hao Luo <haoluo@google.com> wrote:
-> > > >
-> > > > On Fri, Aug 26, 2022 at 4:06 PM Yosry Ahmed <yosryahmed@google.com> wrote:
-> > > > >
-> [...]
-> > > > >
-> > > > > -SEC("tp_btf/mm_vmscan_memcg_reclaim_begin")
-> > > > > -int BPF_PROG(vmscan_start, int order, gfp_t gfp_flags)
-> > > > > +SEC("fentry/cgroup_attach_task")
-> > > >
-> > > > Can we select an attachpoint that is more stable? It seems
-> > > > 'cgroup_attach_task' is an internal helper function in cgroup, and its
-> > > > signature can change. I'd prefer using those commonly used tracepoints
-> > > > and EXPORT'ed functions. IMHO their interfaces are more stable.
-> > > >
-> > >
-> > > Will try to find a more stable attach point. Thanks!
-> >
-> > Hey Hao,
-> >
-> > I couldn't find any suitable stable attach points under kernel/cgroup.
-> > Most tracepoints are created using TRACE_CGROUP_PATH which only
-> > invokes the tracepoint if the trace event is enabled, which I assume
-> > is not something we can rely on. Otherwise, there is only
->
-> Can we explicitly enable the cgroup_attach_task event, just for this
-> test? If it's not easy, I am fine with using fentry.
+Hi,
 
-I see a couple of tests that read from /sys/kernel/debug/tracing, but
-they are mostly reading event ids, I don't see any tests enabling or
-disabling a tracing event, so I am not sure if that's an accepted
-pattern. Also I am not sure if we can rely on tracefs being in that
-path. Andrii, is this considered acceptable?
-
+On 8/30/2022 8:52 AM, Martin KaFai Lau wrote:
+> On Mon, Aug 29, 2022 at 10:27:50PM +0800, Hou Tao wrote:
+>> From: Hou Tao <houtao1@huawei.com>
+>>
+>> Now migrate_disable() does not disable preemption and under some
+>> architecture (e.g. arm64) __this_cpu_{inc|dec|inc_return} are neither
+>> preemption-safe nor IRQ-safe, so the concurrent lookups or updates on
+>> the same task local storage and the same CPU may make
+>> bpf_task_storage_busy be imbalanced, and bpf_task_storage_trylock()
+>> will always fail.
+>>
+>> Fixing it by using this_cpu_{inc|dec|inc_return} when manipulating
+>> bpf_task_storage_busy.
+SNIP
+>>  static bool bpf_task_storage_trylock(void)
+>>  {
+>>  	migrate_disable();
+>> -	if (unlikely(__this_cpu_inc_return(bpf_task_storage_busy) != 1)) {
+>> -		__this_cpu_dec(bpf_task_storage_busy);
+>> +	if (unlikely(this_cpu_inc_return(bpf_task_storage_busy) != 1)) {
+>> +		this_cpu_dec(bpf_task_storage_busy);
+> This change is only needed here but not in the htab fix [0]
+> or you are planning to address it separately ?
 >
-> > trace_cgroup_setup_root() and trace_cgroup_destroy_root() which are
-> > irrelevant here. A lot of EXPORT'ed functions are not called in the
-> > kernel, or cannot be invoked from userspace (the test) in a
-> > straightforward way. Even if they did, future changes to such code
-> > paths can also change in the future, so I don't think there is really
-> > a way to guarantee that future changes don't break the test.
-> >
-> > Let me know what you think.
-> >
+> [0]: https://lore.kernel.org/bpf/20220829023709.1958204-2-houtao@huaweicloud.com/
+> .
+For htab_lock_bucket() in hash-table, in theory there will be problem as shown
+below, but I can not reproduce it on ARM64 host:
+
+*p = 0
+
+// process A
+r0 = *p
+r0 += 1
+            // process B
+            r1 = *p
+// *p = 1
+*p = r0
+            r1 += 1
+            // *p = 1
+            *p = r1
+
+// r0 = 1
+r0 = *p
+            // r1 = 1
+            r1 = *p
+
+In hash table fixes, migrate_disable() in htab_lock_bucket()  is replaced by
+preempt_disable(), so the above case will be impossible. And if process A is
+preempted by IRQ, __this_cpu_inc_return will be OK.
+
+Beside bpf hash-table, there are also other __this_cpu_inc_return users in bpf
+(e.g. __bpf_prog_enter), maybe I should fix these usage as well ?
+
+
