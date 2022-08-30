@@ -2,186 +2,203 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 509995A6893
-	for <lists+bpf@lfdr.de>; Tue, 30 Aug 2022 18:41:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D38BF5A68BA
+	for <lists+bpf@lfdr.de>; Tue, 30 Aug 2022 18:49:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229923AbiH3Qlm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Aug 2022 12:41:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49290 "EHLO
+        id S229510AbiH3QtB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Aug 2022 12:49:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230099AbiH3Qld (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Aug 2022 12:41:33 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 668A1AB4CC;
-        Tue, 30 Aug 2022 09:41:30 -0700 (PDT)
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27UFxLf6021056;
-        Tue, 30 Aug 2022 09:41:11 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=YQWMvv73ewq94/MYy9Z9O6tZEZ8CWiIFUI7gsQ2259c=;
- b=C/N2ugmPc9uayDn0BD/tIE+EreGCrR5R9NvfPei5DyDuH0zT5nXaoCejeEm4X/0+EIEZ
- XjT4Y2dPe4fNJ60H9ZBQ/HyMPdfdOUTJdrKtfkUGftwueroTERXNgHRU8Yh9ySFiQ9B6
- MJDZNzsLFkZGe/OC8fwbATveVzVppUl3XZ8= 
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2104.outbound.protection.outlook.com [104.47.55.104])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3j7jk4shex-1
+        with ESMTP id S230171AbiH3Qs7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Aug 2022 12:48:59 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F278CB943C
+        for <bpf@vger.kernel.org>; Tue, 30 Aug 2022 09:48:58 -0700 (PDT)
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27UGU7oW032847;
+        Tue, 30 Aug 2022 16:46:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=BHYi+b0IRvWUKwAUo2ZsrIK5SUUkorJwUFjV3EePe4A=;
+ b=tRdRZs+Y5+RpZQqddqefPnOOrcGHc3NcspUqodSn1F146/SymHR+38X1j1HPkj/nzBZU
+ iXAaLR6UT5ZGw3CoLAzY2U5i4p2KanZlYNGA6M9kODPTwCnUzF5Kssbub3l6BFi5ATnC
+ qzFFEpxsN3/4QIMPf0kyvVhUGZ/fZBb3C7Y5iiOpfCy7+fnL8V8IKLbnK+gEzpV5guEQ
+ +XTzGivX3CxafHRPaN1bEs3Pw1CMiGCPcFFeMQFA8BiQvCIeDP2S+y0K8HqunPru8MQ3
+ MVOd3Bh7lHNGDlVtjWvgcRh2AYBXSLZrNLz3i4fWV23bn/LrMmTDLsIU/jpBQgml8gCd qg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3j9p4a0fba-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 30 Aug 2022 09:41:11 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EyMZ1ss/LlD5Sw0sroaUzvC/rKGQYGM+Z8Sz+iDdxzHjbGpIZ5dGlyFDD0HyPDuFyMLVNrqWPH9bWscbF8o949/aRfpkZrQZWU4HU49E2z8BV3ElBl7wqdoYS8MaCaZ8EHeJ/s8cHfwU60qtwbATxAtuLl5dmDAy9B3gLUfq+VqujIXNVWtze4LzHqr7XY3+VAYEhjkyZsZm+dtZOK8xNsPpE4VXucZzTRbBH/hDFyGHbFAacLU2EMkByM/S8L/VDeJmHnYKze44BNwJD/7YFY38Rx9nWxGNAE1FxvS0yyVXa3p4eJaNnerG3xi61ElxQ4bqS7fPnvlttPu86JxbyA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YQWMvv73ewq94/MYy9Z9O6tZEZ8CWiIFUI7gsQ2259c=;
- b=fY+aJHx0qsbKq8jtW3XcfootFaQGQdi7Oh9v99e1x7a38pwf6bvSOrxRSZimM3HOefVeZs43LchRhaZgTVGLV/d5u58N2Ku3JuAVZ8LuZOz4aaUg5OSVpZzpNb1vePowXM9RTXSZQ5edaU/LxMyPnLrCz4UMwMEm9gt1NGq/BS7DFOGlj7t+i7QOeZ9qmcivhHQqkBgq8IzpFIH58T+8dbD3sJ1j8qi2yNvxTzIpC1jhKBtOOwuaLZQEkQ1lHTVAFc9wfl+asY3TP3XYhce1r6b3GOdtTLwieuMOZPyCVhlO1IOGNjxHQKCvBDWgIlhEl+YcPH1Iz+hif5Eh+obNXQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by MWHPR15MB1584.namprd15.prod.outlook.com (2603:10b6:300:bd::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5566.21; Tue, 30 Aug
- 2022 16:41:09 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::dde5:25a3:a125:7bc7]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::dde5:25a3:a125:7bc7%2]) with mapi id 15.20.5566.021; Tue, 30 Aug 2022
- 16:41:09 +0000
-Message-ID: <c84fa46d-8f37-c449-06ea-5da795f091e8@fb.com>
-Date:   Tue, 30 Aug 2022 09:41:06 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.13.0
-Subject: Re: [PATCH bpf-next v1] bpftool: Add support for querying cgroup_iter
- link
-Content-Language: en-US
-To:     Hao Luo <haoluo@google.com>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
+        Tue, 30 Aug 2022 16:46:24 +0000
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 27UGW3kk038682;
+        Tue, 30 Aug 2022 16:46:24 GMT
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3j9p4a0faf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 30 Aug 2022 16:46:24 +0000
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 27UGLicb017705;
+        Tue, 30 Aug 2022 16:46:22 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma04fra.de.ibm.com with ESMTP id 3j7aw9axfk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 30 Aug 2022 16:46:21 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 27UGkJ5339846294
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 30 Aug 2022 16:46:19 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 786ACA405C;
+        Tue, 30 Aug 2022 16:46:19 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C2AB7A405B;
+        Tue, 30 Aug 2022 16:46:18 +0000 (GMT)
+Received: from [9.171.5.135] (unknown [9.171.5.135])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 30 Aug 2022 16:46:18 +0000 (GMT)
+Message-ID: <480244bd73be4fca57da47801b9135c2b4ad9457.camel@linux.ibm.com>
+Subject: Re: [PATCH bpf-next 0/2] bpf,ftrace: bpf dispatcher function fix
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Jiri Olsa <olsajiri@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, KP Singh <kpsingh@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Quentin Monnet <quentin@isovalent.com>
-References: <20220829231828.1016835-1-haoluo@google.com>
-From:   Yonghong Song <yhs@fb.com>
-In-Reply-To: <20220829231828.1016835-1-haoluo@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR03CA0383.namprd03.prod.outlook.com
- (2603:10b6:a03:3a1::28) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+        Hao Luo <haoluo@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        =?ISO-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>
+Date:   Tue, 30 Aug 2022 18:46:18 +0200
+In-Reply-To: <Yw4VSr7X8hacimrB@krava>
+References: <20220826184608.141475-1-jolsa@kernel.org>
+         <9099057e-124c-8f30-c29d-54be85eeebfd@iogearbox.net>
+         <Yw4VSr7X8hacimrB@krava>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.4 (3.42.4-2.fc35) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: p3_fXXzGntHEHRtdxN2y7pLwC9-fIFwK
+X-Proofpoint-ORIG-GUID: C50DECv9sg92C1HRB7UvkcAIarvXEi3-
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 71ad9c88-afb2-4d64-e378-08da8aa670bb
-X-MS-TrafficTypeDiagnostic: MWHPR15MB1584:EE_
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: cSOSvXxIklYtadC2rncQXOf7z/gTVJxw2MTB44eiy6xs97Oe5eI585OAXXgSL6JSo8x4hN+EzWE+RDCbJwOHNHSS2OA4dfaidz+w5yz2+GSYBT0JNNf6CrwK5rojKqIJF1kNdpGxVV4hacM4T1c2X/NFHzJIWNKyLWAuiScQZXVmUz3DgXhhRXU04FlQ34XyVRfiFuwJ9jgZmqWOcRMB4gL8/id2rQUYw4xODhxa5bCc+EVhkdbP2FCbHykr3evVexgHDunzojjs+rY6JYGTTL4F7DEdB5JN/Tkw+7vx3mz+5YO/Rw+zBhn5ZqiG5JGlQ5MefxiimSsvUXIaEPqFWMDF6VZ8NbEYkhes0k3L1wlPFx0v5MC/93ksJqT5lhyDeDlXKBPQpgJa2N+Wxl51tpD7YMQnJby9W3JYTh/tZO3KnhB1Bfp1UAXrrJNlWvBou1U0VYJ4DtEiZnQLGoHHLgxGOv4fuYQtF06JHGrZkbupPC204YTnQmHTRVzNtHjEypODctkXPinyARBSCsMX98wsl0OGikNrP0+P+TGPgWluWU5MgFF4QyLZIIM0SkEGHB0xcH6yYwUgSdYLa/miw7ULZZnzAm2jf67q0cThtOYR2vA1LWSORhCnmlpOuDqWdYSC6EKlD++GL34GCbUI6omqAfnfhdBEVj12oDdyY2LxT2MYSkwEz42w4ZetsKBvkpMgDh7rSzDOy9vw3Af9qVlvXZCn0yrNgWo0AC/wi3u4LqEkD0v2YA0wauX0A2rrD+tIdioezLjoXoa6u+F9eyOl/4W7W65Xc/Jm4o/bZQw=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(39860400002)(376002)(346002)(366004)(396003)(136003)(6512007)(4744005)(2906002)(38100700002)(6666004)(53546011)(2616005)(6506007)(83380400001)(186003)(31696002)(54906003)(31686004)(8676002)(66476007)(6486002)(66556008)(4326008)(316002)(66946007)(41300700001)(36756003)(86362001)(7416002)(8936002)(5660300002)(478600001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?amI3Z0FGYVoycTUxV2lIVHBKRUlHdzBvSHRTVHZKdmZCZG9MK01uUnIwNnNJ?=
- =?utf-8?B?N3RiTkJiREdXUnlhV1YvWU9HVTNJU1Nvb3pEM1NEYXFjdzZiMHFLVURZMXNq?=
- =?utf-8?B?d2lRT3RlV3AycEVucCtaZVVKdXBuOVBPWG90UURRaGI4b3NUdldKR1hJSTBq?=
- =?utf-8?B?MzRnZk5vQXc1T1NHd3FkWWVQSlAzWEJBeERTM1BNWHZWUHFBTUpZZDdVTHQ5?=
- =?utf-8?B?b25EUXc3dXBUcDdtREhidHo2aHptMHJkd1J5QjRlejNYaGpDM1BLa1BmNis3?=
- =?utf-8?B?cTdkdmVxMDFxVUJCSUZHRmNaK241ZFFxbzdKRmRKbkQ1QXdoa0FGeEFaMVZY?=
- =?utf-8?B?YnZqd3RJNUNjOFJ6UG1VZ3NOdXZmWTkxQlhIcFNGaTJ2aUE3MkhVREhPb0hp?=
- =?utf-8?B?SVpqWHhVRlBac2RuWkFtQUNsTkVkUXBFbEx0bXhCKzZGalJmdGROWjlKb3Ux?=
- =?utf-8?B?Ny9mdGtZUnNjSUtsWXA1ckVDMnNxUTIzQ1h4ZVJRNTNqSTVQblkzSHd5djJE?=
- =?utf-8?B?SW9CdGZZQ2VtMVdvSUFIKzNIMmpKcXZBOUVIcHgvT2MyUGN3a05PMVdhWEsx?=
- =?utf-8?B?aFU5YWNQNEMvSUVzOHdCSUVXTjd0L3hPUXlXZnFKUWxOQURYMzZScXFUOVVw?=
- =?utf-8?B?UXZ3WVllSzVPOVJYNDNXQm5FWE1sYUxteWl3YnJIK1N2aEp2b0REdCtLOXN5?=
- =?utf-8?B?TmVVbWVKNm9hVjduWXR6TUpsMnhFZGw3UGV0SjlaZU52cTVpLzdScW5NN0dv?=
- =?utf-8?B?a3hFOHBGWWhOWitHbmd4S2VZNTZqZzcvazg5UEhQV0Zsd2tROWNxcjRubWo1?=
- =?utf-8?B?LzJlNm1MS1hSTE1QZERVQmJrZnBYQXA4cG1WOTRCbG1zdy9lLzZnNnpxaFk2?=
- =?utf-8?B?TCt4MCtUMENOT1J3eW56dHFTUGJKN1VLa2dmR05YVjVnWWNnWlcyVHFSTTY3?=
- =?utf-8?B?emFhMjFRYVE5aFppdFlyT1g3N2ZNdnlhMm1iTFhqQ0hWQ2Q1MmpMemw1OEUw?=
- =?utf-8?B?cGw1SjkrQXgwRWkvUk5uVUYxa1FyQ1lHeENIcnZnQ3ZkTHhGZjdMci9XTUpO?=
- =?utf-8?B?UVdOUTdMeFZoMjZzSDJ5TlRLZVg4Vk9Mb3o5cUtHck9lZmYyLzlncmtTNHpm?=
- =?utf-8?B?Yy9vb0o0Z3JjYldrWWFiOEUwTndGQzErZ2cwZFJSUlRWc1E2bDNpWTJ2SDE3?=
- =?utf-8?B?Ni8xR0tqV3Uzb1N1Q3ZXUHU3K3VmaHQ5VXQ3Tzl3ejhVUjh2K3EwbnVIRlBh?=
- =?utf-8?B?R2czM0VFVnd3cjR5N0JUOUtaQWdISUVFdUc3VHF3eVByMUVuVE4vZ2RlYzlJ?=
- =?utf-8?B?TVI3N09KU05BUlYvNUMxaUFhVGtoMW9sY1BoZkVJQWtlM0hxd3pnTzRFSjhv?=
- =?utf-8?B?ZTNvbndpb0V5N2Jnc1NVM3h6dGk5RmRnSUVoRVlOY3VjTFpmbzJ4am1xcE9l?=
- =?utf-8?B?aHFpWHcvankxOEsyeVhNNzRnaFZmY0lVWGxHWGE4R09hS1RoOElFdGx0czVB?=
- =?utf-8?B?WFpScGpKMW1JdFdMdUVxUFBLeHc1Z2ttSWlkTGM1UzJRSlk4cisyK1dDV0J0?=
- =?utf-8?B?dWs0ZHhGZzJZMjB6UDlYSHREeUxLWUVvaTFmNmZmRjltUHRPUDdnWWJIT1Z6?=
- =?utf-8?B?Zm9MQlV0N3lHVkdzUW8zZFJxVUJiS2QxSmo1eVNyeWlCTmxoUFluUEZ3eVl2?=
- =?utf-8?B?UTlra3ZSWDArWngvdkg5VEtYOG51NHpTOTRVMURyQVpHOENkcFBWVndOS04x?=
- =?utf-8?B?SXBaWVg0TDJRaTdPVzlLSFB4OTkrT05nNUVIOStYVG1BZkZlWEtkc0kraXgx?=
- =?utf-8?B?QjV3Z0I0dTcxRlNqajVMaHV0MzVESlN4OTloSGhxZE45TCtNR0pXeEU3c1dv?=
- =?utf-8?B?aW82UTRUdkp4YXFpYlVxb2o2K0ZpOEMzMkRRNmgwM1pDcXYzUTdYWVBqWDlW?=
- =?utf-8?B?cXBucngyVnUwRlhNT2dvT2xIQ0dmSGRIUkg3cEpRaXoxSFNvN0FBbmJBSitv?=
- =?utf-8?B?ZVh0aW1EWkZkY1dLYkw2UjhDeS8xbDRUYyt4dFpGSC90Sm11THVKd29KdlZG?=
- =?utf-8?B?eGRCZXNuZXMzVWtEVVNaRklEK1F4d0VJS2hPRUozbDNJQnRrREFUcHpReGJv?=
- =?utf-8?B?NUszZlhtY2hpWmhJcXhmU2VkVi92cjNHdEVlMjJTNGdWL2ZGRE5OdXJmV0JU?=
- =?utf-8?B?U0E9PQ==?=
-X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 71ad9c88-afb2-4d64-e378-08da8aa670bb
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Aug 2022 16:41:09.3161
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 31qv6yrnTTY1u3GLxkC0rxnsIqkZi4EmJNDKJ+fsmIQYFs5iefQ12Ll9HNg5QyCQ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1584
-X-Proofpoint-ORIG-GUID: Gi3FLUjfe3q6GB1a1ur0kaR5FHe8OvGn
-X-Proofpoint-GUID: Gi3FLUjfe3q6GB1a1ur0kaR5FHe8OvGn
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.517,FMLib:17.11.122.1
  definitions=2022-08-30_10,2022-08-30_01,2022-06-22_01
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ suspectscore=0 phishscore=0 mlxlogscore=999 malwarescore=0 spamscore=0
+ adultscore=0 mlxscore=0 lowpriorityscore=0 impostorscore=0 bulkscore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2207270000 definitions=main-2208300074
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 8/29/22 4:18 PM, Hao Luo wrote:
-> Support dumping info of a cgroup_iter link. This includes
-> showing the cgroup's id and the order for walking the cgroup
-> hierarchy. Example output is as follows:
+On Tue, 2022-08-30 at 15:48 +0200, Jiri Olsa wrote:
+> On Tue, Aug 30, 2022 at 12:25:25AM +0200, Daniel Borkmann wrote:
+> > On 8/26/22 8:46 PM, Jiri Olsa wrote:
+> > > hi,
+> > > as discussed [1] sending fix that moves bpf dispatcher function
+> > > of out
+> > > ftrace locations together with Peter's
+> > > HAVE_DYNAMIC_FTRACE_NO_PATCHABLE
+> > > dependency change.
+> > 
+> > Looks like the series breaks s390x builds; BPF CI link:
+> > 
+> > https://github.com/kernel-patches/bpf/runs/8079411784?check_suite_focus=true
+> > 
+> >   [...]
+> >     CC      net/xfrm/xfrm_state.o
+> >     CC      net/packet/af_packet.o
+> >   {standard input}: Assembler messages:
+> >   {standard input}:16055: Error: bad expression
+> >   {standard input}:16056: Error: bad expression
+> >   {standard input}:16057: Error: bad expression
+> >   {standard input}:16058: Error: bad expression
+> >   {standard input}:16059: Error: bad expression
+> >     CC      drivers/s390/char/raw3270.o
+> >     CC      net/ipv6/ip6_output.o
+> >   [...]
+> >     CC      net/xfrm/xfrm_output.o
+> >     CC      net/ipv6/ip6_input.o
+> >   {standard input}:16055: Error: invalid operands (*ABS* and *UND*
+> > sections) for `%'
+> >   {standard input}:16056: Error: invalid operands (*ABS* and *UND*
+> > sections) for `%'
+> >   {standard input}:16057: Error: invalid operands (*ABS* and *UND*
+> > sections) for `%'
+> >   {standard input}:16058: Error: invalid operands (*ABS* and *UND*
+> > sections) for `%'
+> >   {standard input}:16059: Error: invalid operands (*ABS* and *UND*
+> > sections) for `%'
+> >   make[3]: *** [scripts/Makefile.build:249: net/core/filter.o]
+> > Error 1
+> >   make[2]: *** [scripts/Makefile.build:465: net/core] Error 2
+> >   make[2]: *** Waiting for unfinished jobs....
+> >     CC      net/ipv4/tcp_fastopen.o
+> >   [...]
+> >     CC      lib/percpu-refcount.o
+> >   make[1]: *** [Makefile:1855: net] Error 2
+> >     CC      lib/rhashtable.o
+> >   make[1]: *** Waiting for unfinished jobs....
+> >     CC      lib/base64.o
+> >   [...]
+> >     AR      lib/built-in.a
+> >     CC      kernel/kheaders.o
+> >     AR      kernel/built-in.a
+> >   make: *** [Makefile:353: __build_one_by_one] Error 2
+> >   Error: Process completed with exit code 2.
 > 
->> bpftool link show
-> 1: iter  prog 2  target_name bpf_map
-> 2: iter  prog 3  target_name bpf_prog
-> 3: iter  prog 12  target_name cgroup  cgroup_id 72  order self_only
 > 
->> bpftool -p link show
-> [{
->          "id": 1,
->          "type": "iter",
->          "prog_id": 2,
->          "target_name": "bpf_map"
->      },{
->          "id": 2,
->          "type": "iter",
->          "prog_id": 3,
->          "target_name": "bpf_prog"
->      },{
->          "id": 3,
->          "type": "iter",
->          "prog_id": 12,
->          "target_name": "cgroup",
->          "cgroup_id": 72,
->          "order": "self_only"
->      }
-> ]
+> it does not break on my cross build with gcc 12, but I can
+> reproduce with gcc 8 (CI seems to be on gcc 9)
 > 
-> Signed-off-by: Hao Luo <haoluo@google.com>
+> the problem seems to be wrong assembler code with extra '%'
+> that's generated for patchable_function_entry(5)
+> 
+> gcc 8 generates:
+> 
+> .LPFE1:
+>         nopr    %%r0
+>         nopr    %%r0
+>         nopr    %%r0
+>         nopr    %%r0
+>         nopr    %%r0
+> 
+> and gcc 12 generates:
+> 
+> .LPFE1:
+>         nopr    %r0
+>         nopr    %r0
+>         nopr    %r0
+>         nopr    %r0
+>         nopr    %r0
+> 
+> perhaps we need to upgrade gcc in CI? cc-ing Ilya, any idea?
+> 
+> thanks,
+> jirka
 
-Acked-by: Yonghong Song <yhs@fb.com>
+It's not obvious to me which gcc commit fixed this; I will bisect and
+find out. This will take some time.
+
+However, officially, the kernel must be buildable by gcc 5.1+.
+Whatever I find, it's unlikely that we'll be able to backport it
+that far.
+
+Therefore I think we need to find a way to conditionally
+do something else when using broken gccs. Or maybe just keep this
+x86-only after all.
+
+Best regards,
+Ilya
