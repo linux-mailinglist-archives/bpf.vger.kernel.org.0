@@ -2,178 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 865A45A68DC
-	for <lists+bpf@lfdr.de>; Tue, 30 Aug 2022 18:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE99F5A68E6
+	for <lists+bpf@lfdr.de>; Tue, 30 Aug 2022 18:57:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229674AbiH3Qye (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Aug 2022 12:54:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45154 "EHLO
+        id S230323AbiH3Q54 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Aug 2022 12:57:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229550AbiH3Qyd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Aug 2022 12:54:33 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEF3FE6F;
-        Tue, 30 Aug 2022 09:54:32 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id cu2so23485671ejb.0;
-        Tue, 30 Aug 2022 09:54:32 -0700 (PDT)
+        with ESMTP id S230032AbiH3Q5y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Aug 2022 12:57:54 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEF3891D08
+        for <bpf@vger.kernel.org>; Tue, 30 Aug 2022 09:57:53 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id z41so7627383ede.0
+        for <bpf@vger.kernel.org>; Tue, 30 Aug 2022 09:57:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=f+s1k0QulyVXl2cK6VcOd5dpUM4UDZztKU/w4k+ArrM=;
-        b=ci58jmQlGnU2jB4nlRYAOnSraJY1ggplK67rwPALlfMK1VRtx4W6BJUOC7DmxpTfr0
-         6rwi8kdaQBT+oT5MNxkLj+CmrZ3P3sqAGLAE3KK3NkF7zkpt1iSEcsZc72KOlv3tMNdP
-         ebsqwYz4DKdKwVEs6+7taCAxp2dw4n3qdyZOjKjbcCNLzISL/A+lxVnEoXkQUrZHRwyt
-         eH5qb1SfE0jQi/mUY7MJ0BRbVivlbUKvRuVQ8A2O5ic1UzDA3ZFmeTwsdESpYtu0yl0O
-         dKh5+0NrNDAm/xjuAaqi/vAsZ9YljZpPuYFdl7Fg4bErSTbou1VZaPKRlT3m6v07NhAX
-         4g4Q==
+        d=metanetworks.com; s=google;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc;
+        bh=bT65q1iQ2py+CqowRZWXOpFtPip1wjZtfTnnAdWaQuA=;
+        b=KyteclhreRZoMBQIkCZ6mZXidH1FdB03VepUNhGBucVfbP9bDKlcuTjtTSJnPwa37j
+         Z1N/4fSR8H6g+XIo28M5CBUN1F/rNAXK0neO9O+kfGlxIwAAR7WI5MVt6rCWZM+fWFpQ
+         ARFpx0AN1xODXsjgMK7FBz81GCEem+wJgB4NU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=f+s1k0QulyVXl2cK6VcOd5dpUM4UDZztKU/w4k+ArrM=;
-        b=8F+EYyEE4o0zzVMRYbq2qRr4s7q18KggU5L0K1DSdOTUMPk7VkmHkS0lVGLg/cssul
-         ke01VapQywVcUbOy0VY2Cnj7M8OPztHt7D26Yb/AfHZT6ZaGcmXtPO/so7bh1Xx9xPv1
-         PIWzKokFj8Jur1NyOPVHsWFmPUluvbs42mpUSJV1NC7KY3IWO3+LdEz5WNjKWuTOwXse
-         rTLb5UkSuJmq/0Ra7XVuyZDqeaHOtTSn31k4of5wzH7Qy8mi4tOpvSf79nQ2LQIaEJQZ
-         DgGWn4EUp/6oOYsVKTd+Jmp9xO9WFn+5fX4jFokvf7U4HmeampOAKiQm0nO4Z3k5ZAjo
-         5VXg==
-X-Gm-Message-State: ACgBeo0tijqCI6PZiTnWW/8A+P0JklZNx7EK76rcuryfhaMpHbI9M/Pr
-        Hm8x9++mE0ME0uEX8lmEY79UlXW5aDKUPS84Mt8=
-X-Google-Smtp-Source: AA6agR7SC44Sm+boGLEfKHaUzccEMv81eM5eoBTV4ajaGZB8+mYygPKcBYZWDV9QOhempE3NPLc7H827Z67nhgtqRSM=
-X-Received: by 2002:a17:906:ef8f:b0:731:4a01:7781 with SMTP id
- ze15-20020a170906ef8f00b007314a017781mr18235299ejb.268.1661878471414; Tue, 30
- Aug 2022 09:54:31 -0700 (PDT)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc;
+        bh=bT65q1iQ2py+CqowRZWXOpFtPip1wjZtfTnnAdWaQuA=;
+        b=WVRJvv58Z1Vi/xmzBuGPB/tHm24mggXiKT/+PtLKztrtnM3HSy4VlTBCJhqKuJvw/4
+         cUxan5rnbYnmMS2TLFNNyfWaHCHWxxoTbAe5peYSh8vnUgxc5lHhowsU4+iQCeTQT18s
+         5ROtgRh67dub4HoxXjFmIzwL1GIHbECVcwcRPGisOMATOh7P2Vp4gcjQmnB6BJ7Z5waR
+         k2Bla3HGI0+5ClY8tnXDSEUFsr/Z7cNaJmILFWZ1F7Yt564RAMOrT2CEW4nmOFos9gNM
+         EdPJ56fzT5Gu7voFhWr1Yz1ziPIbeJ8jIlpiRz0/WH11PvFEgIHGj9kBDDD4sCtNERpW
+         ueyQ==
+X-Gm-Message-State: ACgBeo3vA7Fq0vkEYOizoBSRxVnDH1MBPSZdz3/OZhZrERt7s5HBCFJn
+        jO/wpDGIL1A34ABD4mxDmY4ToQ==
+X-Google-Smtp-Source: AA6agR75BQdZddBUP/2Kp03EjwNp2CN3+lxoFntbD+FULR885GgABIjHYPZpvNtyPs2kf2H8LDhiDg==
+X-Received: by 2002:a05:6402:e96:b0:443:a086:e3e8 with SMTP id h22-20020a0564020e9600b00443a086e3e8mr21713863eda.330.1661878672293;
+        Tue, 30 Aug 2022 09:57:52 -0700 (PDT)
+Received: from blondie ([5.102.239.127])
+        by smtp.gmail.com with ESMTPSA id d13-20020a170906304d00b0073c8d4c9f38sm6161818ejd.177.2022.08.30.09.57.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Aug 2022 09:57:51 -0700 (PDT)
+Date:   Tue, 30 Aug 2022 19:57:46 +0300
+From:   Shmulik Ladkani <shmulik@metanetworks.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Joanne Koong <joannelkoong@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Paul Chaignon <paul@isovalent.com>,
+        Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Subject: Re: [PATCH v5 bpf-next 1/4] bpf: Add 'bpf_dynptr_get_data' helper
+Message-ID: <20220830195746.59b2ff6a@blondie>
+In-Reply-To: <63079ffa3f2d_12460b208d0@john.notmuch>
+References: <20220824044117.137658-1-shmulik.ladkani@gmail.com>
+        <20220824044117.137658-2-shmulik.ladkani@gmail.com>
+        <63079ffa3f2d_12460b208d0@john.notmuch>
 MIME-Version: 1.0
-References: <20220830161716.754078-1-roberto.sassu@huaweicloud.com> <20220830161716.754078-13-roberto.sassu@huaweicloud.com>
-In-Reply-To: <20220830161716.754078-13-roberto.sassu@huaweicloud.com>
-From:   Joanne Koong <joannelkoong@gmail.com>
-Date:   Tue, 30 Aug 2022 09:54:20 -0700
-Message-ID: <CAJnrk1ZzLkc_TBpqejSOYOpLOVgtPJty2X_3v8i4UgDLR+59VQ@mail.gmail.com>
-Subject: Re: [PATCH v14 12/12] selftests/bpf: Add verifier tests for dynamic
- pointers parameters in kfuncs
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
-        dhowells@redhat.com, jarkko@kernel.org, rostedt@goodmis.org,
-        mingo@redhat.com, paul@paul-moore.com, jmorris@namei.org,
-        serge@hallyn.com, shuah@kernel.org, bpf@vger.kernel.org,
-        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        deso@posteo.net, memxor@gmail.com,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 30, 2022 at 9:22 AM Roberto Sassu
-<roberto.sassu@huaweicloud.com> wrote:
->
-> From: Roberto Sassu <roberto.sassu@huawei.com>
->
-> Add verifier tests to ensure that only supported dynamic pointer types are
-> accepted, that the passed argument is actually a dynamic pointer, and that
-> the passed argument is a pointer to the stack.
->
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> ---
->  .../bpf/verifier/kfunc_dynptr_param.c         | 72 +++++++++++++++++++
->  1 file changed, 72 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/verifier/kfunc_dynptr_param.c
->
-> diff --git a/tools/testing/selftests/bpf/verifier/kfunc_dynptr_param.c b/tools/testing/selftests/bpf/verifier/kfunc_dynptr_param.c
-> new file mode 100644
-> index 000000000000..8abb8d566321
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/verifier/kfunc_dynptr_param.c
-> @@ -0,0 +1,72 @@
-> +{
-> +       "kfunc dynamic pointer param: type not supported",
-> +       .insns = {
-> +       BPF_ST_MEM(BPF_DW, BPF_REG_10, -16, 0),
-> +       BPF_MOV64_REG(BPF_REG_6, BPF_REG_10),
-> +       BPF_ALU64_IMM(BPF_ADD, BPF_REG_6, -16),
-> +       BPF_LD_MAP_FD(BPF_REG_1, 0),
-> +       BPF_MOV64_IMM(BPF_REG_2, 8),
-> +       BPF_MOV64_IMM(BPF_REG_3, 0),
-> +       BPF_MOV64_REG(BPF_REG_4, BPF_REG_6),
-> +       BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_ringbuf_reserve_dynptr),
-> +       BPF_MOV64_REG(BPF_REG_1, BPF_REG_6),
-> +       BPF_MOV64_REG(BPF_REG_2, BPF_REG_6),
-> +       BPF_MOV64_IMM(BPF_REG_3, 0),
-> +       BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, BPF_PSEUDO_KFUNC_CALL, 0, 0),
-> +       BPF_MOV64_REG(BPF_REG_1, BPF_REG_6),
-> +       BPF_MOV64_IMM(BPF_REG_2, 0),
-> +       BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_ringbuf_discard_dynptr),
-> +       BPF_MOV64_IMM(BPF_REG_0, 0),
-> +       BPF_EXIT_INSN(),
-> +       },
-> +       .fixup_map_ringbuf = { 3 },
-> +       .prog_type = BPF_PROG_TYPE_LSM,
-> +       .kfunc = "bpf",
-> +       .expected_attach_type = BPF_LSM_MAC,
-> +       .flags = BPF_F_SLEEPABLE,
-> +       .errstr = "arg#0 pointer type STRUCT bpf_dynptr_kern points to unsupported dynamic pointer type",
-> +       .result = REJECT,
-> +       .fixup_kfunc_btf_id = {
-> +               { "bpf_verify_pkcs7_signature", 12 },
-> +       },
-> +},
-> +{
-> +       "kfunc dynamic pointer param: arg not a dynamic pointer",
-> +       .insns = {
-> +       BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),
-> +       BPF_MOV64_REG(BPF_REG_1, BPF_REG_10),
-> +       BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, -8),
-> +       BPF_MOV64_REG(BPF_REG_2, BPF_REG_1),
-> +       BPF_MOV64_IMM(BPF_REG_3, 0),
-> +       BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, BPF_PSEUDO_KFUNC_CALL, 0, 0),
-> +       BPF_EXIT_INSN(),
-> +       },
-> +       .prog_type = BPF_PROG_TYPE_LSM,
-> +       .kfunc = "bpf",
-> +       .expected_attach_type = BPF_LSM_MAC,
-> +       .flags = BPF_F_SLEEPABLE,
-> +       .errstr = "arg#0 pointer type STRUCT bpf_dynptr_kern must be valid and initialized",
-> +       .result = REJECT,
-> +       .fixup_kfunc_btf_id = {
-> +               { "bpf_verify_pkcs7_signature", 5 },
-> +       },
-> +},
-> +{
-> +       "kfunc dynamic pointer param: arg not a pointer to stack",
-> +       .insns = {
-> +       BPF_MOV64_IMM(BPF_REG_1, 0),
-> +       BPF_MOV64_IMM(BPF_REG_2, 0),
-> +       BPF_MOV64_IMM(BPF_REG_3, 0),
-> +       BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, BPF_PSEUDO_KFUNC_CALL, 0, 0),
-> +       BPF_EXIT_INSN(),
-> +       },
-> +       .prog_type = BPF_PROG_TYPE_LSM,
-> +       .kfunc = "bpf",
-> +       .expected_attach_type = BPF_LSM_MAC,
-> +       .flags = BPF_F_SLEEPABLE,
-> +       .errstr = "arg#0 pointer type STRUCT bpf_dynptr_kern not to stack",
-> +       .result = REJECT,
-> +       .fixup_kfunc_btf_id = {
-> +               { "bpf_verify_pkcs7_signature", 3 },
-> +       },
-> +},
+On Thu, 25 Aug 2022 09:14:50 -0700
+John Fastabend <john.fastabend@gmail.com> wrote:
 
-Is this logic testable in plain C BPF code? I tend to side with Andrii
-[0] about finding these kinds of tests hard to maintain and read.
+> As a bit of an addmitedly nitpick I just wonder if having the avail_bytes
+> passed through like this is much use anymore? For example,
+> 
+> +BPF_CALL_3(bpf_skb_set_tunnel_opt_dynptr, struct sk_buff *, skb,
+> +	   struct bpf_dynptr_kern *, ptr, u32, len)
+> +{
+> +	const u8 *from;
+> +	u32 avail;
+> +
+> -       if (!ptr->data)
+> -		return -EFAULT;
+> -       avail = bpf_dynptr_get_size(ptr)
+> +	from = bpf_dynptr_get_data(ptr, &avail);
+> +	if (unlikely(len > avail))
+> +		return -EINVAL;
+> +	return __bpf_skb_set_tunopt(skb, from, len);
+> +}
+> +
+> 
+> seems just about as compact to me and then drop the null check from the
+> helper so we have a bpf_dynptr_get_data(*ptr) that just does the
+> data+offset arithmatic. Then it could also be used in a few other
+> spots where that calculation seems common.
+> 
+> I find it easier to read at least and think the helper would get
+> more use, also land it in one of the .h files. And avoids bouncing
+> avail around.
+> 
+> Bit of a gripe but what do you think?
 
-[0] https://lore.kernel.org/bpf/CAEf4BzZJvr+vcO57TK94GM7B5=k2wPgAub4BBJf1Uz0xNpCPVg@mail.gmail.com/
+Sure, I don't mind. 
 
-> --
-> 2.25.1
->
+My rationale extracting 'avail' was due to the fact the combo of 
+"if !ptr->data + bpf_dynptr_get_size + bpf_dynptr_get_data" will be
+repeated in future locations that need to access the stored data.
+Therefore encapsulating this looked beneficial.
+
+BTW, note we'll need to make bpf_dynptr_get_size public (currently it's
+static).
+
+Let me know your preference, I'm fine either way.
