@@ -2,38 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FE5E5A6B65
-	for <lists+bpf@lfdr.de>; Tue, 30 Aug 2022 19:56:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 250DA5A6B4A
+	for <lists+bpf@lfdr.de>; Tue, 30 Aug 2022 19:53:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229692AbiH3R4B (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Aug 2022 13:56:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57920 "EHLO
+        id S229902AbiH3Rw7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Aug 2022 13:52:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229550AbiH3Rzc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Aug 2022 13:55:32 -0400
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA7666432
-        for <bpf@vger.kernel.org>; Tue, 30 Aug 2022 10:53:32 -0700 (PDT)
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 27UBRw26009744
-        for <bpf@vger.kernel.org>; Tue, 30 Aug 2022 10:31:31 -0700
+        with ESMTP id S231808AbiH3Rwn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Aug 2022 13:52:43 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBE02A9C38
+        for <bpf@vger.kernel.org>; Tue, 30 Aug 2022 10:49:19 -0700 (PDT)
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27UFrVfi007679
+        for <bpf@vger.kernel.org>; Tue, 30 Aug 2022 10:35:15 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=8N08rjWdYAwkipbOIudqIE5mbw3dqNFIvt/ESVcSr+g=;
- b=npAN54olPuuNpxLR0Hj+eGOTb/pHMOF/QAG0+uYH1n4pa40uVG8H1R017U9S6v8yW7DU
- 2XMeMAvf8ObUEKL5H6uSEs42L/rnuJy6h8G057GmR3wAsLoRpeLqEzb7Uc+WwNgsYjbH
- 4fIrrwLLXhBxSJMWR8lFYmgcKjvvpLBju1g= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0089730.ppops.net (PPS) with ESMTPS id 3j9hpwjkb9-1
+ bh=TPNw2gPY2Pxjdru4n0HetYVA0UxIqST4v7qkVNdkt9E=;
+ b=iJMeQo+IMZ3aLt8OE2B+VMfEKe3BSbFv/53LjLDs5PNoS8X/3pFcAsFj8yOjVW/gnROL
+ FqdKBOH6zO+nxY5nDBjynME4mrE6mEGf6zAvqxufhzF+g7DUa2bo92D7OVIdqGnpTPlE
+ 4oLQ/3GNl7zkJSkj+xkRc61kXuROGEmPZ1A= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3j9e9yk9df-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 30 Aug 2022 10:31:30 -0700
-Received: from twshared0646.06.ash9.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Tue, 30 Aug 2022 10:35:15 -0700
+Received: from twshared10711.09.ash9.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Tue, 30 Aug 2022 10:31:30 -0700
+ 15.1.2375.31; Tue, 30 Aug 2022 10:35:14 -0700
 Received: by devbig077.ldc1.facebook.com (Postfix, from userid 158236)
-        id 3E8E2CAD077C; Tue, 30 Aug 2022 10:28:09 -0700 (PDT)
+        id 5F1B3CAD0781; Tue, 30 Aug 2022 10:28:10 -0700 (PDT)
 From:   Dave Marchevsky <davemarchevsky@fb.com>
 To:     <bpf@vger.kernel.org>
 CC:     Alexei Starovoitov <ast@kernel.org>,
@@ -41,9 +41,9 @@ CC:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Kernel Team <kernel-team@fb.com>,
         Dave Marchevsky <davemarchevsky@fb.com>
-Subject: [RFCv2 PATCH bpf-next 09/18] bpf: Support declarative association of lock with rbtree map
-Date:   Tue, 30 Aug 2022 10:27:50 -0700
-Message-ID: <20220830172759.4069786-10-davemarchevsky@fb.com>
+Subject: [RFCv2 PATCH bpf-next 10/18] bpf: Verifier tracking of rbtree_spin_lock held
+Date:   Tue, 30 Aug 2022 10:27:51 -0700
+Message-ID: <20220830172759.4069786-11-davemarchevsky@fb.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220830172759.4069786-1-davemarchevsky@fb.com>
 References: <20220830172759.4069786-1-davemarchevsky@fb.com>
@@ -51,439 +51,417 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: roxt62D_UWYUzjWZCpi-D09ytmvUVeCO
-X-Proofpoint-GUID: roxt62D_UWYUzjWZCpi-D09ytmvUVeCO
+X-Proofpoint-ORIG-GUID: ebW7U4wkAjWabDPwk_GD9Ne9aMa0bLPq
+X-Proofpoint-GUID: ebW7U4wkAjWabDPwk_GD9Ne9aMa0bLPq
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.517,FMLib:17.11.122.1
  definitions=2022-08-30_10,2022-08-30_01,2022-06-22_01
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch adds support for association of a bpf_spin_lock in an
-internal arraymap with an rbtree, using the following pattern:
+This patch teaches the verifier that rbtree_{lock,unlock} interact with
+locks and eases use of rbtree_lock(&some_lock) where &some_lock is in a
+global internal map.
 
-  struct bpf_spin_lock rbtree_lock SEC(".bss.private");
+The verifier now tracks lock id for rbtree_{lock,unlock} and understands
+that lock can / must be held when calling various other rbtree helpers.
 
-  struct {
-          __uint(type, BPF_MAP_TYPE_RBTREE);
-          __type(value, struct node_data);
-          __array(lock, struct bpf_spin_lock);
-  } rbtree SEC(".maps") =3D {
-          .lock =3D {
-                  [0] =3D &rbtree_lock,
-          },
-  };
+Logic is also added to ease this pattern:
 
-There are a few benefits of this pattern over existing "init lock as
-part of map, use bpf_rbtree_get_lock" logic:
+  /* internal map */
+  struct bpf_spin_lock lock SEC(".bss.private");
 
-  * Multiple rbtrees, potentially in different compilation units, may
-    share the same lock
+  /* In bpf prog */
 
-  * Lock lifetime does not need to be tied to map lifetime, aside from
-    being strictly greater than map's lifetime
+  rbtree_lock(&lock);
+  /* ... use all registers for other work */
+  rbtree_unlock(&lock);
 
-  * Can move from bpf_rbtree_{lock,unlock} to more generic
-    bpf_{lock,unlock} helpers while still retaining static verification
-    of locking behavior
-    * struct bpf_rbtree still keeps lock pointer and this declarative
-      association guarantees that the pointer address is known at rbtree
-      map creation time
+In the above example, the prog compiles down to something like:
 
-Implementation notes:
+  r1 =3D 0x12345
+  call rbtree_lock
+  /* begin other work
+  r1 =3D some_unrelated_value
+  r2 =3D r1 or similar never happens
+  */
+  r1 =3D 0x12345
+  call rbtree_unlock
 
-The mechanics of declarative lock association are heavily inspired by
-declarative map-in-map inner map definition using __array(values,... .
-Similarly to map-in-map "values", libbpf's bpf_map init_slots is used to
-hold the target map, which in the above example is the .bss.private
-internal arraymap. However, unlike "values" inner maps, the lock is a
-map value within this map, so it's necessary to also pass the offset of
-the lock symbol within the internal arraymap.
+Each time "r1 =3D 0x12345" happens, verifier's check_ld_imm will assign a
+new id to the lock, which will result in it later complaining that
+the incorrect lock is being unlocked when checking rbtree_unlock.
 
-No uapi changes are necessary as existing BPF_MAP_CREATE map_extra is
-used to pass the pair (fd of lock map, offset of symbol within lock map)
-to the kernel when creating the rbtree map. rbtree_map_alloc can then
-use this pair to find the address of the lock. Logic here is equivalent
-to verifier's rewrite of BPF_PSEUDO_MAP_FD in check_ld_imm and
-resolve_pseudo_ldimm64 - get actual struct bpf_map using fd, get address
-of map's value region using map_direct_value_addr, add offset to get
-actual lock addr.
+To help with this pattern, bpf_verifier_state now has a
+maybe_active_spin_lock_addr field. If this field is nonzero and
+bpf_verifier_state's active_spin_lock is also nonzero, then
+maybe_active_spin_lock_addr contains the address of the active spin lock
+(corresponding to active_spin_lock's id). This allows the verifier to
+avoid assigning a new lock id when it sees the second "r1 =3D 0x12345",
+since it can recognize that the address matches an existing lock id.
 
-This does introduce a dependency on the internal map containing the lock
-("lock map") on both the libbpf- and kernel-side. For the former, it's
-now necessary to init internal global data maps before user btf maps, as
-the fd of the lock map must be known when data relo on rbtree map is
-performed. For the latter, rbtree now holds refcount to the lock map to
-ensure it cannot be freed until after the rbtree map is.
+[ RFC Notes:
 
-[
-  RFC NOTE: This patch doesn't change verifier behavior, it's still doing
-  dynamic lock checking. Further patches in the series change this
-  behavior. This patch and the rest of the locking patches should be
-  squashed, leaving in this state for now to make it easier to include
-  or toss things piecemeal after feedback
+  * rbtree_process_spin_lock should be merged w/ normal
+    process_spin_lock, same with rbtree_lock and normal lock helpers.
+    Left separate for now to highlight the logic differences.
+
+  * The hacky maybe_active_spin_lock_addr logic can be improved by
+    adding support to a custom .lock section similar to existing use of
+    .bss.private. The new section type would function like .bss.private,
+    but the verifier would know that locks in .lock are likely to be
+    used like bpf_spin_lock(&lock), and could track the address of each
+    map value for deduping, instead of just tracking single address. For
+    multiple-lock scenario this is probably necessary.
 ]
 
 Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
 ---
- kernel/bpf/rbtree.c    | 47 +++++++++++++++++---
- kernel/bpf/syscall.c   |  8 +++-
- tools/lib/bpf/libbpf.c | 99 +++++++++++++++++++++++++++++++++++++-----
- 3 files changed, 136 insertions(+), 18 deletions(-)
+ include/linux/bpf.h          |   2 +
+ include/linux/bpf_verifier.h |   1 +
+ kernel/bpf/rbtree.c          |   2 +-
+ kernel/bpf/verifier.c        | 136 ++++++++++++++++++++++++++++++++---
+ 4 files changed, 129 insertions(+), 12 deletions(-)
 
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index b4a44ffb0d6c..d6458aa7b79c 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -497,6 +497,7 @@ enum bpf_return_type {
+ 	RET_PTR_TO_ALLOC_MEM,		/* returns a pointer to dynamically allocated me=
+mory */
+ 	RET_PTR_TO_MEM_OR_BTF_ID,	/* returns a pointer to a valid memory or a b=
+tf_id */
+ 	RET_PTR_TO_BTF_ID,		/* returns a pointer to a btf_id */
++	RET_PTR_TO_SPIN_LOCK,		/* returns a pointer to a struct bpf_spin_lock *=
+/
+ 	__BPF_RET_TYPE_MAX,
+=20
+ 	/* Extended ret_types. */
+@@ -612,6 +613,7 @@ enum bpf_reg_type {
+ 	PTR_TO_MEM,		 /* reg points to valid memory region */
+ 	PTR_TO_BUF,		 /* reg points to a read/write buffer */
+ 	PTR_TO_FUNC,		 /* reg points to a bpf program function */
++	PTR_TO_SPIN_LOCK,	 /* reg points to a struct bpf_spin_lock */
+ 	__BPF_REG_TYPE_MAX,
+=20
+ 	/* Extended reg_types. */
+diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+index 9c017575c034..f81638844a4d 100644
+--- a/include/linux/bpf_verifier.h
++++ b/include/linux/bpf_verifier.h
+@@ -313,6 +313,7 @@ struct bpf_verifier_state {
+ 	u32 insn_idx;
+ 	u32 curframe;
+ 	u32 active_spin_lock;
++	void *maybe_active_spin_lock_addr;
+ 	bool speculative;
+=20
+ 	/* first and last insn idx of this verifier state */
 diff --git a/kernel/bpf/rbtree.c b/kernel/bpf/rbtree.c
-index 85a1d35818d0..c61662822511 100644
+index c61662822511..0821e841a518 100644
 --- a/kernel/bpf/rbtree.c
 +++ b/kernel/bpf/rbtree.c
-@@ -11,6 +11,7 @@ struct bpf_rbtree {
- 	struct bpf_map map;
- 	struct rb_root_cached root;
- 	struct bpf_spin_lock *lock;
-+	struct bpf_map *lock_map;
+@@ -305,7 +305,7 @@ BPF_CALL_1(bpf_rbtree_get_lock, struct bpf_map *, map=
+)
+ const struct bpf_func_proto bpf_rbtree_get_lock_proto =3D {
+ 	.func =3D bpf_rbtree_get_lock,
+ 	.gpl_only =3D true,
+-	.ret_type =3D RET_PTR_TO_MAP_VALUE,
++	.ret_type =3D RET_PTR_TO_SPIN_LOCK,
+ 	.arg1_type =3D ARG_CONST_MAP_PTR,
  };
 =20
- static bool __rbtree_lock_held(struct bpf_rbtree *tree)
-@@ -26,10 +27,22 @@ static int rbtree_map_alloc_check(union bpf_attr *att=
-r)
- 	return 0;
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index b9e5d87fe323..f8ba381f1327 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -452,8 +452,9 @@ static bool reg_type_not_null(enum bpf_reg_type type)
+=20
+ static bool reg_may_point_to_spin_lock(const struct bpf_reg_state *reg)
+ {
+-	return reg->type =3D=3D PTR_TO_MAP_VALUE &&
+-		map_value_has_spin_lock(reg->map_ptr);
++	return (reg->type =3D=3D PTR_TO_MAP_VALUE &&
++		map_value_has_spin_lock(reg->map_ptr)) ||
++		reg->type =3D=3D PTR_TO_SPIN_LOCK;
  }
 =20
-+static void __rbtree_map_free(struct bpf_rbtree *tree)
+ static bool reg_type_may_be_refcounted_or_null(enum bpf_reg_type type)
+@@ -507,6 +508,34 @@ static bool is_ptr_cast_function(enum bpf_func_id fu=
+nc_id)
+ 		func_id =3D=3D BPF_FUNC_skc_to_tcp_request_sock;
+ }
+=20
++/* These functions can only be called when spinlock associated with rbtr=
+ee
++ * is held. If they have a callback argument, that callback is not requi=
+red
++ * to release active_spin_lock before exiting
++ */
++static bool is_rbtree_lock_required_function(enum bpf_func_id func_id)
 +{
-+	if (tree->lock_map)
-+		bpf_map_put(tree->lock_map);
-+	else if (tree->lock)
-+		kfree(tree->lock);
-+	bpf_map_area_free(tree);
++	return func_id =3D=3D BPF_FUNC_rbtree_add ||
++		func_id =3D=3D BPF_FUNC_rbtree_remove ||
++		func_id =3D=3D BPF_FUNC_rbtree_find ||
++		func_id =3D=3D BPF_FUNC_rbtree_unlock;
 +}
 +
- static struct bpf_map *rbtree_map_alloc(union bpf_attr *attr)
++/* These functions are OK to call when spinlock associated with rbtree
++ * is held.
++ */
++static bool is_rbtree_lock_ok_function(enum bpf_func_id func_id)
++{
++	return func_id =3D=3D BPF_FUNC_rbtree_alloc_node ||
++		func_id =3D=3D BPF_FUNC_rbtree_free_node ||
++		is_rbtree_lock_required_function(func_id);
++}
++
++static bool is_lock_allowed_function(enum bpf_func_id func_id)
++{
++	return func_id =3D=3D BPF_FUNC_spin_unlock ||
++		is_rbtree_lock_ok_function(func_id);
++}
++
+ static bool is_dynptr_ref_function(enum bpf_func_id func_id)
  {
-+	u32 lock_map_ufd, lock_map_offset;
- 	struct bpf_rbtree *tree;
-+	u64 lock_map_addr;
- 	int numa_node;
-+	int err;
+ 	return func_id =3D=3D BPF_FUNC_dynptr_data;
+@@ -579,6 +608,7 @@ static const char *reg_type_str(struct bpf_verifier_e=
+nv *env,
+ 		[PTR_TO_BUF]		=3D "buf",
+ 		[PTR_TO_FUNC]		=3D "func",
+ 		[PTR_TO_MAP_KEY]	=3D "map_key",
++		[PTR_TO_SPIN_LOCK]	=3D "spin_lock",
+ 	};
 =20
- 	if (!bpf_capable())
- 		return ERR_PTR(-EPERM);
-@@ -45,14 +58,35 @@ static struct bpf_map *rbtree_map_alloc(union bpf_att=
-r *attr)
- 	tree->root =3D RB_ROOT_CACHED;
- 	bpf_map_init_from_attr(&tree->map, attr);
-=20
--	tree->lock =3D bpf_map_kzalloc(&tree->map, sizeof(struct bpf_spin_lock)=
-,
--				     GFP_KERNEL | __GFP_NOWARN);
--	if (!tree->lock) {
--		bpf_map_area_free(tree);
--		return ERR_PTR(-ENOMEM);
-+	if (!attr->map_extra) {
-+		tree->lock =3D bpf_map_kzalloc(&tree->map, sizeof(struct bpf_spin_lock=
-),
-+					     GFP_KERNEL | __GFP_NOWARN);
-+		if (!tree->lock) {
-+			err =3D -ENOMEM;
-+			goto err_free;
+ 	if (type & PTR_MAYBE_NULL) {
+@@ -1199,6 +1229,7 @@ static int copy_verifier_state(struct bpf_verifier_=
+state *dst_state,
+ 	dst_state->speculative =3D src->speculative;
+ 	dst_state->curframe =3D src->curframe;
+ 	dst_state->active_spin_lock =3D src->active_spin_lock;
++	dst_state->maybe_active_spin_lock_addr =3D src->maybe_active_spin_lock_=
+addr;
+ 	dst_state->branches =3D src->branches;
+ 	dst_state->parent =3D src->parent;
+ 	dst_state->first_insn_idx =3D src->first_insn_idx;
+@@ -5471,6 +5502,35 @@ static int process_spin_lock(struct bpf_verifier_e=
+nv *env, int regno,
+ 			return -EINVAL;
+ 		}
+ 		cur->active_spin_lock =3D 0;
++		cur->maybe_active_spin_lock_addr =3D 0;
++	}
++	return 0;
++}
++
++static int rbtree_process_spin_lock(struct bpf_verifier_env *env, int re=
+gno,
++				    bool is_lock)
++{
++	struct bpf_reg_state *regs =3D cur_regs(env), *reg =3D &regs[regno];
++	struct bpf_verifier_state *cur =3D env->cur_state;
++
++	if (is_lock) {
++		if (cur->active_spin_lock) {
++			verbose(env,
++				"Locking two bpf_spin_locks are not allowed\n");
++			return -EINVAL;
 +		}
++		cur->active_spin_lock =3D reg->id;
 +	} else {
-+		lock_map_ufd =3D (u32)(attr->map_extra >> 32);
-+		lock_map_offset =3D (u32)attr->map_extra;
-+		tree->lock_map =3D bpf_map_get(lock_map_ufd);
-+		if (IS_ERR(tree->lock_map) || !tree->lock_map->ops->map_direct_value_a=
-ddr) {
-+			err =3D PTR_ERR(tree->lock_map);
-+			tree->lock_map =3D NULL;
-+			goto err_free;
++		if (!cur->active_spin_lock) {
++			verbose(env, "rbtree_spin_unlock without taking a lock\n");
++			return -EINVAL;
 +		}
-+
-+		err =3D tree->lock_map->ops->map_direct_value_addr(tree->lock_map, &lo=
-ck_map_addr,
-+								 lock_map_offset);
-+		if (err)
-+			goto err_free;
-+
-+		tree->lock =3D (struct bpf_spin_lock *)(lock_map_addr + lock_map_offse=
-t);
++		if (cur->active_spin_lock !=3D reg->id) {
++			verbose(env, "rbtree_spin_unlock of different lock\n");
++			return -EINVAL;
++		}
++		cur->active_spin_lock =3D 0;
++		cur->maybe_active_spin_lock_addr =3D 0;
  	}
-=20
- 	return &tree->map;
-+err_free:
-+	__rbtree_map_free(tree);
-+	return ERR_PTR(err);
+ 	return 0;
  }
+@@ -5686,12 +5746,18 @@ static const struct bpf_reg_types int_ptr_types =3D=
+ {
+ 	},
+ };
 =20
- static struct rb_node *rbtree_map_alloc_node(struct bpf_map *map, size_t=
- sz)
-@@ -159,8 +193,7 @@ static void rbtree_map_free(struct bpf_map *map)
-=20
- 	bpf_rbtree_postorder_for_each_entry_safe(pos, n, &tree->root.rb_root)
- 		kfree(pos);
--	kfree(tree->lock);
--	bpf_map_area_free(tree);
-+	__rbtree_map_free(tree);
- }
-=20
- static int rbtree_map_check_btf(const struct bpf_map *map,
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 3947fbd137af..fa1220394462 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -1066,6 +1066,12 @@ static int map_check_btf(struct bpf_map *map, cons=
-t struct btf *btf,
- 	return ret;
- }
-=20
-+static bool map_uses_map_extra(enum bpf_map_type type)
-+{
-+	return type =3D=3D BPF_MAP_TYPE_BLOOM_FILTER ||
-+	       type =3D=3D BPF_MAP_TYPE_RBTREE;
-+}
++static const struct bpf_reg_types spin_lock_types =3D {
++	.types =3D {
++		PTR_TO_MAP_VALUE,
++		PTR_TO_SPIN_LOCK
++	},
++};
 +
- #define BPF_MAP_CREATE_LAST_FIELD map_extra
- /* called via syscall */
- static int map_create(union bpf_attr *attr)
-@@ -1087,7 +1093,7 @@ static int map_create(union bpf_attr *attr)
- 		return -EINVAL;
- 	}
-=20
--	if (attr->map_type !=3D BPF_MAP_TYPE_BLOOM_FILTER &&
-+	if (!map_uses_map_extra(attr->map_type) &&
- 	    attr->map_extra !=3D 0)
- 		return -EINVAL;
-=20
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index a6dd53e0c4b4..10c840137bac 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -1429,6 +1429,11 @@ bpf_object__init_kversion(struct bpf_object *obj, =
-void *data, size_t size)
+ static const struct bpf_reg_types fullsock_types =3D { .types =3D { PTR_=
+TO_SOCKET } };
+ static const struct bpf_reg_types scalar_types =3D { .types =3D { SCALAR=
+_VALUE } };
+ static const struct bpf_reg_types context_types =3D { .types =3D { PTR_T=
+O_CTX } };
+ static const struct bpf_reg_types alloc_mem_types =3D { .types =3D { PTR=
+_TO_MEM | MEM_ALLOC } };
+ static const struct bpf_reg_types const_map_ptr_types =3D { .types =3D {=
+ CONST_PTR_TO_MAP } };
+-static const struct bpf_reg_types btf_ptr_types =3D { .types =3D { PTR_T=
+O_BTF_ID } };
+ static const struct bpf_reg_types spin_lock_types =3D { .types =3D { PTR=
+_TO_MAP_VALUE } };
+ static const struct bpf_reg_types percpu_btf_ptr_types =3D { .types =3D =
+{ PTR_TO_BTF_ID | MEM_PERCPU } };
+ static const struct bpf_reg_types func_ptr_types =3D { .types =3D { PTR_=
+TO_FUNC } };
+@@ -6057,8 +6123,12 @@ static int check_func_arg(struct bpf_verifier_env =
+*env, u32 arg,
+ 		} else if (meta->func_id =3D=3D BPF_FUNC_spin_unlock) {
+ 			if (process_spin_lock(env, regno, false))
+ 				return -EACCES;
+-		} else if (meta->func_id =3D=3D BPF_FUNC_rbtree_lock ||
+-			   meta->func_id =3D=3D BPF_FUNC_rbtree_unlock) { // Do nothing for n=
+ow
++		} else if (meta->func_id =3D=3D BPF_FUNC_rbtree_lock) {
++			if (rbtree_process_spin_lock(env, regno, true))
++				return -EACCES;
++		} else if (meta->func_id =3D=3D BPF_FUNC_rbtree_unlock) {
++			if (rbtree_process_spin_lock(env, regno, false))
++				return -EACCES;
+ 		} else {
+ 			verbose(env, "verifier internal error\n");
+ 			return -EFAULT;
+@@ -6993,6 +7063,29 @@ static int set_find_vma_callback_state(struct bpf_=
+verifier_env *env,
  	return 0;
  }
 =20
-+static bool bpf_map_type__uses_lock_def(enum bpf_map_type type)
++/* Are we currently verifying the callback for a rbtree helper that must
++ * be called with lock held? If so, no need to complain about unreleased
++ * lock
++ */
++static bool in_rbtree_lock_required_cb(struct bpf_verifier_env *env)
 +{
-+	return type =3D=3D BPF_MAP_TYPE_RBTREE;
++	struct bpf_verifier_state *state =3D env->cur_state;
++	struct bpf_insn *insn =3D env->prog->insnsi;
++	struct bpf_func_state *callee;
++	int func_id;
++
++	if (!state->curframe)
++		return false;
++
++	callee =3D state->frame[state->curframe];
++
++	if (!callee->in_callback_fn)
++		return false;
++
++	func_id =3D insn[callee->callsite].imm;
++	return is_rbtree_lock_required_function(func_id);
 +}
 +
- static bool bpf_map_type__is_map_in_map(enum bpf_map_type type)
+ static int prepare_func_exit(struct bpf_verifier_env *env, int *insn_idx=
+)
  {
- 	if (type =3D=3D BPF_MAP_TYPE_ARRAY_OF_MAPS ||
-@@ -1517,6 +1522,16 @@ static size_t bpf_map_mmap_sz(const struct bpf_map=
- *map)
- 	return map_sz;
- }
-=20
-+static bool internal_map_in_custom_section(const char *real_name)
-+{
-+	if (strchr(real_name + 1, '.') !=3D NULL) {
-+		if (strcmp(real_name, BSS_SEC_PRIVATE) =3D=3D 0)
-+			return false;
-+		return true;
-+	}
-+	return false;
-+}
-+
- static char *internal_map_name(struct bpf_object *obj, const char *real_=
-name)
- {
- 	char map_name[BPF_OBJ_NAME_LEN], *p;
-@@ -1559,7 +1574,7 @@ static char *internal_map_name(struct bpf_object *o=
-bj, const char *real_name)
- 		sfx_len =3D BPF_OBJ_NAME_LEN - 1;
-=20
- 	/* if there are two or more dots in map name, it's a custom dot map */
--	if (strchr(real_name + 1, '.') !=3D NULL)
-+	if (internal_map_in_custom_section(real_name))
- 		pfx_len =3D 0;
- 	else
- 		pfx_len =3D min((size_t)BPF_OBJ_NAME_LEN - sfx_len - 1, strlen(obj->na=
-me));
-@@ -2331,10 +2346,23 @@ int parse_btf_map_def(const char *map_name, struc=
-t btf *btf,
- 		} else if (strcmp(name, "map_extra") =3D=3D 0) {
- 			__u32 map_extra;
-=20
-+			if (bpf_map_type__uses_lock_def(map_def->map_type)) {
-+				pr_warn("map '%s': can't set map_extra for map using 'lock' def.\n",
-+					map_name);
-+				return -EINVAL;
-+			}
-+
- 			if (!get_map_field_int(map_name, btf, m, &map_extra))
- 				return -EINVAL;
- 			map_def->map_extra =3D map_extra;
- 			map_def->parts |=3D MAP_DEF_MAP_EXTRA;
-+		} else if (strcmp(name, "lock") =3D=3D 0) {
-+			if (!bpf_map_type__uses_lock_def(map_def->map_type)) {
-+				pr_warn("map '%s': can't set 'lock' for map.\n", map_name);
-+				return -ENOTSUP;
-+			}
-+			/* TODO: More sanity checking
-+			 */
- 		} else {
- 			if (strict) {
- 				pr_warn("map '%s': unknown field '%s'.\n", map_name, name);
-@@ -2603,8 +2631,8 @@ static int bpf_object__init_maps(struct bpf_object =
-*obj,
- 	strict =3D !OPTS_GET(opts, relaxed_maps, false);
- 	pin_root_path =3D OPTS_GET(opts, pin_root_path, NULL);
-=20
--	err =3D err ?: bpf_object__init_user_btf_maps(obj, strict, pin_root_pat=
-h);
- 	err =3D err ?: bpf_object__init_global_data_maps(obj);
-+	err =3D err ?: bpf_object__init_user_btf_maps(obj, strict, pin_root_pat=
-h);
- 	err =3D err ?: bpf_object__init_kconfig_map(obj);
- 	err =3D err ?: bpf_object__init_struct_ops_maps(obj);
-=20
-@@ -4865,6 +4893,25 @@ static bool map_is_reuse_compat(const struct bpf_m=
-ap *map, int map_fd)
- 		map_info.map_extra =3D=3D map->map_extra);
- }
-=20
-+static struct bpf_map *find_internal_map_by_shndx(struct bpf_object *obj=
-,
-+						  int shndx)
-+{
-+	struct bpf_map *map;
-+	int i;
-+
-+	for (i =3D 0; i < obj->nr_maps; i++) {
-+		map =3D &obj->maps[i];
-+
-+		if (!bpf_map__is_internal(map))
-+			continue;
-+
-+		if (map->sec_idx =3D=3D shndx)
-+			return map;
-+	}
-+
-+	return NULL;
-+}
-+
- static int
- bpf_object__reuse_map(struct bpf_map *map)
- {
-@@ -4981,6 +5028,19 @@ static int bpf_object__create_map(struct bpf_objec=
-t *obj, struct bpf_map *map, b
+ 	struct bpf_verifier_state *state =3D env->cur_state;
+@@ -7508,6 +7601,11 @@ static int check_helper_call(struct bpf_verifier_e=
+nv *env, struct bpf_insn *insn
+ 			regs[BPF_REG_0].id =3D ++env->id_gen;
  		}
- 		if (map->inner_map_fd >=3D 0)
- 			create_attr.inner_map_fd =3D map->inner_map_fd;
-+	} else if (bpf_map_type__uses_lock_def(def->type)) {
-+		if (map->init_slots_sz !=3D 1) {
-+			pr_warn("map '%s': expecting single lock def, actual count %d\n",
-+				map->name, map->init_slots_sz);
-+			return -EINVAL;
-+		}
-+
-+		if (bpf_map__fd(map->init_slots[0]) < 0) {
-+			pr_warn("map '%s': failed to find lock map fd\n", map->name);
-+			return -EINVAL;
-+		}
-+
-+		create_attr.map_extra |=3D (__u64)bpf_map__fd(map->init_slots[0]) << 3=
-2;
- 	}
+ 		break;
++	case RET_PTR_TO_SPIN_LOCK:
++		mark_reg_known_zero(env, regs, BPF_REG_0);
++		regs[BPF_REG_0].type =3D PTR_TO_SPIN_LOCK | ret_flag;
++		regs[BPF_REG_0].id =3D ++env->id_gen;
++		break;
+ 	case RET_PTR_TO_SOCKET:
+ 		mark_reg_known_zero(env, regs, BPF_REG_0);
+ 		regs[BPF_REG_0].type =3D PTR_TO_SOCKET | ret_flag;
+@@ -10366,6 +10464,20 @@ static int check_cond_jmp_op(struct bpf_verifier=
+_env *env,
+ 	return 0;
+ }
 =20
- 	switch (def->type) {
-@@ -5229,8 +5289,7 @@ bpf_object__create_maps(struct bpf_object *obj)
- 					goto err_out;
- 				}
- 			}
++static unsigned int ld_imm_lock_id_gen(struct bpf_verifier_env *env,
++					     void *imm)
++{
++	struct bpf_verifier_state *cur =3D env->cur_state;
++
++	if (cur->active_spin_lock && cur->maybe_active_spin_lock_addr &&
++	    cur->maybe_active_spin_lock_addr =3D=3D imm)
++		return cur->active_spin_lock;
++
++	if (!cur->active_spin_lock)
++		cur->maybe_active_spin_lock_addr =3D imm;
++	return ++env->id_gen;
++}
++
+ /* verify BPF_LD_IMM64 instruction */
+ static int check_ld_imm(struct bpf_verifier_env *env, struct bpf_insn *i=
+nsn)
+ {
+@@ -10373,6 +10485,7 @@ static int check_ld_imm(struct bpf_verifier_env *=
+env, struct bpf_insn *insn)
+ 	struct bpf_reg_state *regs =3D cur_regs(env);
+ 	struct bpf_reg_state *dst_reg;
+ 	struct bpf_map *map;
++	u64 imm;
+ 	int err;
+=20
+ 	if (BPF_SIZE(insn->code) !=3D BPF_DW) {
+@@ -10390,7 +10503,7 @@ static int check_ld_imm(struct bpf_verifier_env *=
+env, struct bpf_insn *insn)
+=20
+ 	dst_reg =3D &regs[insn->dst_reg];
+ 	if (insn->src_reg =3D=3D 0) {
+-		u64 imm =3D ((u64)(insn + 1)->imm << 32) | (u32)insn->imm;
++		imm =3D ((u64)(insn + 1)->imm << 32) | (u32)insn->imm;
+=20
+ 		dst_reg->type =3D SCALAR_VALUE;
+ 		__mark_reg_known(&regs[insn->dst_reg], imm);
+@@ -10441,13 +10554,14 @@ static int check_ld_imm(struct bpf_verifier_env=
+ *env, struct bpf_insn *insn)
+=20
+ 	map =3D env->used_maps[aux->map_index];
+ 	dst_reg->map_ptr =3D map;
 -
--			if (map->init_slots_sz && map->def.type !=3D BPF_MAP_TYPE_PROG_ARRAY)=
- {
-+			if (map->init_slots_sz && bpf_map_type__is_map_in_map(map->def.type))=
- {
- 				err =3D init_map_in_map_slots(obj, map);
- 				if (err < 0) {
- 					zclose(map->fd);
-@@ -6424,9 +6483,9 @@ static int bpf_object__collect_map_relos(struct bpf=
-_object *obj,
- 	const struct btf_type *sec, *var, *def;
- 	struct bpf_map *map =3D NULL, *targ_map =3D NULL;
- 	struct bpf_program *targ_prog =3D NULL;
--	bool is_prog_array, is_map_in_map;
- 	const struct btf_member *member;
- 	const char *name, *mname, *type;
-+	bool is_prog_array;
- 	unsigned int moff;
- 	Elf64_Sym *sym;
- 	Elf64_Rel *rel;
-@@ -6474,10 +6533,12 @@ static int bpf_object__collect_map_relos(struct b=
-pf_object *obj,
- 			return -EINVAL;
- 		}
+ 	if (insn->src_reg =3D=3D BPF_PSEUDO_MAP_VALUE ||
+ 	    insn->src_reg =3D=3D BPF_PSEUDO_MAP_IDX_VALUE) {
+ 		dst_reg->type =3D PTR_TO_MAP_VALUE;
+ 		dst_reg->off =3D aux->map_off;
+-		if (map_value_has_spin_lock(map))
+-			dst_reg->id =3D ++env->id_gen;
++		if (map_value_has_spin_lock(map)) {
++			imm =3D ((u64)(insn + 1)->imm << 32) | (u32)insn->imm;
++			dst_reg->id =3D ld_imm_lock_id_gen(env, (void *)imm);
++		}
+ 	} else if (insn->src_reg =3D=3D BPF_PSEUDO_MAP_FD ||
+ 		   insn->src_reg =3D=3D BPF_PSEUDO_MAP_IDX) {
+ 		dst_reg->type =3D CONST_PTR_TO_MAP;
+@@ -12432,7 +12546,7 @@ static int do_check(struct bpf_verifier_env *env)
 =20
--		is_map_in_map =3D bpf_map_type__is_map_in_map(map->def.type);
-+		/* PROG_ARRAY passes prog pointers using init_slots, other map
-+		 * types pass map pointers
-+		 */
- 		is_prog_array =3D map->def.type =3D=3D BPF_MAP_TYPE_PROG_ARRAY;
--		type =3D is_map_in_map ? "map" : "prog";
--		if (is_map_in_map) {
-+		type =3D is_prog_array ? "prog" : "map";
-+		if (bpf_map_type__is_map_in_map(map->def.type)) {
- 			if (sym->st_shndx !=3D obj->efile.btf_maps_shndx) {
- 				pr_warn(".maps relo #%d: '%s' isn't a BTF-defined map\n",
- 					i, name);
-@@ -6509,6 +6570,24 @@ static int bpf_object__collect_map_relos(struct bp=
-f_object *obj,
- 					i, name);
- 				return -LIBBPF_ERRNO__RELOC;
- 			}
-+		} else if (bpf_map_type__uses_lock_def(map->def.type)) {
-+			targ_map =3D find_internal_map_by_shndx(obj, sym->st_shndx);
-+			if (!targ_map) {
-+				pr_warn(".maps relo #%d: '%s' isn't a valid map reference\n",
-+					i, name);
-+				return -LIBBPF_ERRNO__RELOC;
-+			}
-+
-+			/* This shouldn't happen, check in parse_btf_map_def
-+			 * should catch this, but to be safe let's prevent
-+			 * map_extra overwrite
-+			 */
-+			if (map->map_extra) {
-+				pr_warn(".maps rbtree relo #%d: map '%s' has ", i, map->name);
-+				pr_warn("map_extra, can't relo lock, internal error.\n");
-+				return -EINVAL;
-+			}
-+			map->map_extra =3D sym->st_value;
- 		} else {
- 			return -EINVAL;
- 		}
-@@ -6519,7 +6598,7 @@ static int bpf_object__collect_map_relos(struct bpf=
-_object *obj,
- 			return -EINVAL;
- 		member =3D btf_members(def) + btf_vlen(def) - 1;
- 		mname =3D btf__name_by_offset(obj->btf, member->name_off);
--		if (strcmp(mname, "values"))
-+		if (strcmp(mname, "values") && strcmp(mname, "lock"))
- 			return -EINVAL;
+ 				if (env->cur_state->active_spin_lock &&
+ 				    (insn->src_reg =3D=3D BPF_PSEUDO_CALL ||
+-				     insn->imm !=3D BPF_FUNC_spin_unlock)) {
++				     !is_lock_allowed_function(insn->imm))) {
+ 					verbose(env, "function calls are not allowed while holding a lock\n=
+");
+ 					return -EINVAL;
+ 				}
+@@ -12467,7 +12581,7 @@ static int do_check(struct bpf_verifier_env *env)
+ 					return -EINVAL;
+ 				}
 =20
- 		moff =3D btf_member_bit_offset(def, btf_vlen(def) - 1) / 8;
-@@ -6543,7 +6622,7 @@ static int bpf_object__collect_map_relos(struct bpf=
-_object *obj,
- 			       (new_sz - map->init_slots_sz) * host_ptr_sz);
- 			map->init_slots_sz =3D new_sz;
- 		}
--		map->init_slots[moff] =3D is_map_in_map ? (void *)targ_map : (void *)t=
-arg_prog;
-+		map->init_slots[moff] =3D is_prog_array ? (void *)targ_prog : (void *)=
-targ_map;
-=20
- 		pr_debug(".maps relo #%d: map '%s' slot [%d] points to %s '%s'\n",
- 			 i, map->name, moff, type, name);
+-				if (env->cur_state->active_spin_lock) {
++				if (state->active_spin_lock && !in_rbtree_lock_required_cb(env)) {
+ 					verbose(env, "bpf_spin_unlock is missing\n");
+ 					return -EINVAL;
+ 				}
 --=20
 2.30.2
 
