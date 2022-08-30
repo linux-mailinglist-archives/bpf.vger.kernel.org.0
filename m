@@ -2,110 +2,193 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C31745A66FC
-	for <lists+bpf@lfdr.de>; Tue, 30 Aug 2022 17:11:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CFE45A6715
+	for <lists+bpf@lfdr.de>; Tue, 30 Aug 2022 17:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230212AbiH3PLC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Aug 2022 11:11:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55732 "EHLO
+        id S229740AbiH3POu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Aug 2022 11:14:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230367AbiH3PKv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Aug 2022 11:10:51 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 761D59C21F;
-        Tue, 30 Aug 2022 08:10:47 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 26C47B81C96;
-        Tue, 30 Aug 2022 15:10:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44195C433D6;
-        Tue, 30 Aug 2022 15:10:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1661872244;
-        bh=ewVoJ0Ub9aQVJqdQwvoU/eXz2zj20xdFlvG9aqP3DCI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lGIMGPjodJL1WkHiMFw2jwe5ksBSizpJv4BeP0CbRHv1smA3e9DS6lgBlN9K/H3eo
-         G0ooAjwlKWpUOny/5zULoGUZw1L49CuGcitDOuZHU6NuCS/znrZmjhFqdk7oU1yiJq
-         XSYjQUwcZkoZVFdlJla1h62ZDaZ27tt9nkQblc14=
-Date:   Tue, 30 Aug 2022 17:10:41 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Bastien Nocera <hadess@hadess.net>
-Cc:     linux-usb@vger.kernel.org, bpf@vger.kernel.org,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Peter Hutterer <peter.hutterer@who-t.net>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH 2/2] usb: Implement usb_revoke() BPF function
-Message-ID: <Yw4ocSXDuWmlFkIg@kroah.com>
-References: <20220809094300.83116-1-hadess@hadess.net>
- <20220809094300.83116-3-hadess@hadess.net>
- <YvI5DJnOjhJbNnNO@kroah.com>
- <2cde406b4d59ddfe71a7cdc11a76913a0a168595.camel@hadess.net>
- <YvKMVjl6x38Hud6I@kroah.com>
- <fae7e35a920239fe2a35b6b967bd17e04af1e1b7.camel@hadess.net>
- <Yv5V1KWOQa5mnktE@kroah.com>
- <31207cebad932bd9d943421d6528ad81877758a5.camel@hadess.net>
+        with ESMTP id S229796AbiH3POt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Aug 2022 11:14:49 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A03DC6E;
+        Tue, 30 Aug 2022 08:14:45 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id fy31so22425654ejc.6;
+        Tue, 30 Aug 2022 08:14:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=w78Op6E5EuNFAMF7+a+1TxFn1y6Nd4iLcTWfFOX96PU=;
+        b=eTc5Ctjs1SZnEra5J8DQ/TxN9mxmfp5xa7KGV2mnNn+qNIrYkPV4dgkoDqkqlO9AQQ
+         FivWFG7isDsVPbORdYlQ6txbgXmHNwi7mW7oYfKU/J7obCR9aZRw64J8EKQ2Z/VABGRx
+         IjULF8qtcoWK4NJnfl1I55iQTW5fCwc8e5VR8VpF2Md4eZ04dePO/OE4ki1d0htR9iD4
+         y2H/pkma+XvaW+wr8hw9a36/zuBPCR4ReO0nkmIqE/DuibWiUIahJKozlfOOVr0VYGHL
+         NcsVXi1UYavtsBZvk33NJXdpyf3v+PijSog5loYxM1C8su7s2ru1Lb8Yo2FzFvqPqQn8
+         o8Wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=w78Op6E5EuNFAMF7+a+1TxFn1y6Nd4iLcTWfFOX96PU=;
+        b=HWoIa0eIB5EA4qYB8tDko6DPWfZMHLeHTu4nh4yAcchPOcqDwmYIDD13qXh4YcsPFE
+         Z0quG7ChT2yKQLfUrjEwcxHoHtMw4yd/y3S+QUyFkoWwpm2zkyjOa4jOU0JnOAbGcvZC
+         gq0VCIj9j8B998K+CVroFUK/PUi998ZZRnGAN7TfFDS2Nmm0EOuh3C1XDwB2ri+imEbF
+         3Um9K0OdqGa96ostCw6871Fcz3ArAU2jqASBenjbuyb/SgDizu1UEO2L2NDPxuHYHdBo
+         mbR02dXiF7xsSQykJIKnRcz0s0JlA47voCN3IMnPeM8WdNGg/Avt2IodDtsDefhZnmIA
+         YPYg==
+X-Gm-Message-State: ACgBeo2KRSFK039VI6s1gSRnHqPQe6Es6mfQ0dXZ2FC4/TxQi8Wcf671
+        4/su/j3E5biYrln4ejTS0UMOcSxbuJA9E6Xn/bTq8ptl
+X-Google-Smtp-Source: AA6agR4t9c5nkIlACYpay1xL/RNeq7p8AXGmXBKzS0c/vowoef+IRnnXGk3RtBHWIyP/KN2vAFzvJF7u+FzZacSAJow=
+X-Received: by 2002:a17:907:2c74:b0:741:657a:89de with SMTP id
+ ib20-20020a1709072c7400b00741657a89demr8890765ejc.58.1661872483740; Tue, 30
+ Aug 2022 08:14:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <31207cebad932bd9d943421d6528ad81877758a5.camel@hadess.net>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220826184911.168442-1-stephen.s.brennan@oracle.com>
+In-Reply-To: <20220826184911.168442-1-stephen.s.brennan@oracle.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 30 Aug 2022 08:14:32 -0700
+Message-ID: <CAADnVQKbK__y8GOD4LqaX0aCgT+rtC5aw54-02mSZj1-U6_mgw@mail.gmail.com>
+Subject: Re: [PATCH dwarves 0/7] Add support for generating BTF for all variables
+To:     Stephen Brennan <stephen.s.brennan@oracle.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alan Maguire <alan.maguire@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 30, 2022 at 04:44:52PM +0200, Bastien Nocera wrote:
-> On Thu, 2022-08-18 at 17:08 +0200, Greg Kroah-Hartman wrote:
-> > On Tue, Aug 09, 2022 at 07:27:11PM +0200, Bastien Nocera wrote:
-> > > On Tue, 2022-08-09 at 18:33 +0200, Greg Kroah-Hartman wrote:
-> > > > On Tue, Aug 09, 2022 at 04:31:04PM +0200, Bastien Nocera wrote:
-> > > > > On Tue, 2022-08-09 at 12:38 +0200, Greg Kroah-Hartman wrote:
-> > > > > > Now if you really really want to disable a device from under
-> > > > > > a
-> > > > > > user,
-> > > > > > without the file handle present, you can do that today, as
-> > > > > > root,
-> > > > > > by
-> > > > > > doing the 'unbind' hack through userspace and sysfs.  It's so
-> > > > > > common
-> > > > > > that this seems to be how virtual device managers handle
-> > > > > > virtual
-> > > > > > machines, so it should be well tested by now.
-> > > > > 
-> > > > > The only thing I know that works that way is usbip, and it
-> > > > > requires
-> > > > > unbinding each of the interfaces:
-> > > > > 
-> > > > > https://sourceforge.net/p/usbip/git-windows/ci/master/tree/trunk/userspace/src/bind-driver.c#l157
-> > > > 
-> > > > virtio devices also use the api from what I recall.
-> > > 
-> > > I can't find any code that would reference
-> > > /sys/bus/usb/drivers/usbfs/unbind or /sys/bus/usb/drivers/usbfs wrt
-> > > virtio. Where's the host side code for that?
-> > 
-> > I mean the virtio code uses bind/unbind for it's devices, nothing to
-> > do
-> > with USB other than the userspace interface involved.
-> 
-> This is one big hammer that is really counterproductive in some fairly
-> common use cases. It's fine for assigning a full USB device to a VM, it
-> really isn't for gently removing "just that bit of interface" the user
-> is using while leaving the rest running.
+On Fri, Aug 26, 2022 at 11:54 AM Stephen Brennan
+<stephen.s.brennan@oracle.com> wrote:
+>
+> Hello everyone,
+>
+> BTF offers some exciting new possibilities beyond its original intent;
+> one of these is making the kernel more self-describing for debug tools.
+> Kallsyms contains symbol table data, and ORC (for x86_64) contains
+> information to help unwind stacks. Now, BTF can provide type information
+> for functions and variables. Taken together, this data is enough to
+> power the basic (read-only) functions of a postmortem or live debugger,
+> without falling back on the heavier debugging information formats like
+> DWARF. What's more, all of these data sources are contained within the
+> kernel image itself, and are thus available on live systems and within
+> crash dumps, without consulting any external debug information files.
+>
+> However, currently BTF generation emits information only for percpu
+> variables. This patch series removes that limitation, allowing
+> generating BTF for all variables, thus providing complete type
+> information for debuggers.
+>
+> Of course, generating additional BTF means that more data must be stored
+> in the kernel image, and that may not be okay for everyone. Thus, the
+> new behavior must be explicitly enabled by a flag.
+>
+> Testing
+> -------
+>
+> To verify this change and illustrate the additional space required, I
+> built v5.19-rc7 on x86_defconfig, with the following additionally
+> enabled:
+>
+> enable DEBUG_INFO_DWARF4
+> enable BPF_SYSCALL
+> enable DEBUG_INFO_BTF
+>
+> I then ran pahole to generate BTF from the built vmlinux in three
+> configurations, and recorded the size of the BTF for each:
+>
+> 1) using the current master branch
+>    size: 5505315 bytes
+> 2) using this patched version, without enabling --encode_all_btf_vars
+>    size: 5505315 bytes
+> 3) using this patched version, with --encode_all_btf_vars enabled
+>    size: 6811291 bytes
+>
+> A total increase of 1.25 MiB, or a 23.7% increase. This is definitely
+> notable, but not unreasonable for many use cases such as desktop or
+> server applications. I also verified that the data generated by cases 1
+> and 2 are byte-for-byte identical: that is, there are no changes to the
+> generated BTF unless --encode_all_btf_vars is enabled.
+>
+> I also verified that the output variables makes sense. I created an
+> application which parses the output BTF and dumps the
+> declarations (BTF_KIND_VAR and BTF_KIND_FUNC), and then diffed its
+> output between configuration 2 and 3. I'm happy to provide a link to
+> that diff (it's of course too big to include in the email).
+>
+> End-to-end test
+> ---------------
+>
+> To show this is not just theory, I've created an end-to-end test which
+> combines BTF generated via this patch series, along with a kernel patch
+> necessary to expose the kallsyms data [1], and a branch of the drgn
+> debugger[2] which implements kallsyms and BTF parsing. Core dumps
+> generated on the resulting kernel can be loaded by the drgn debugger,
+> and the it can read out variables from the dump with full type
+> information without needing to consult a DWARF debuginfo file.
+>
+> Future Work
+> -----------
+>
+> If this proves acceptable, I'd like to follow-up with a kernel patch to
+> add a configuration option (default=n) for generating BTF with all
+> variables, which distributions could choose to enable or not.
+>
+> There was previous discussion[3] about leveraging split BTF or building
+> additional kernel modules to contain the extra variables. I believe with
+> this patch series, it is possible to do that. However, I'd argue that
+> simpler is better here: the advantage for using BTF is having it all
+> available in the kernel/module image. Storing extra BTF on the
+> filesystem would break that advantage, and at that point, you'd be
+> better off using a debuginfo format like CTF, which is lightweight and
+> expected to be found on the filesystem.
 
-In USB, drivers are bound to interfaces, not to the device.
+With all or nothing approach the distros would have a hard choice
+to make whether to enable that kconfig, increase BTF and consume
+extra memory without any obvious reason or just don't do it.
+Majority probably is not going to enable it.
+So the feature will become a single vendor only and with
+inevitable bit-rot.
 
-But as Alan pointed out, we don't ever really "bind" the usbfs code to
-the interface, so that will not work all that well :(
+Whereas with split BTF and extra kernel module approach
+we can enable BTF with all global vars by default.
+The extra module will be shipped by all distros and tools
+like bpftrace might start using it.
 
-greg k-h
+>
+> [1]: https://lore.kernel.org/lkml/20220517000508.777145-3-stephen.s.brennan@oracle.com/T/
+>      (The above series is already in the 6.0 RC's)
+> [2]: https://github.com/brenns10/drgn/tree/kallsyms_plus_btf
+> [3]: https://lore.kernel.org/bpf/586a6288-704a-f7a7-b256-e18a675927df@oracle.com/
+>
+> Stephen Brennan (7):
+>   dutil: return ELF section name when looked up by index
+>   btf_encoder: Rename percpu structures to variables
+>   btf_encoder: cache all ELF section info
+>   btf_encoder: make the variable array dynamic
+>   btf_encoder: record ELF section for collected variables
+>   btf_encoder: collect all variables
+>   btf_encoder: allow encoding all variables
+>
+>  btf_encoder.c      | 196 +++++++++++++++++++++++++++------------------
+>  btf_encoder.h      |   8 +-
+>  dutil.c            |  10 ++-
+>  dutil.h            |   2 +-
+>  man-pages/pahole.1 |   6 +-
+>  pahole.c           |  31 +++++--
+>  6 files changed, 165 insertions(+), 88 deletions(-)
+>
+> --
+> 2.34.1
+>
