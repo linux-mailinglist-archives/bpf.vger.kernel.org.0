@@ -2,129 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4405C5A668A
-	for <lists+bpf@lfdr.de>; Tue, 30 Aug 2022 16:45:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 506C85A6690
+	for <lists+bpf@lfdr.de>; Tue, 30 Aug 2022 16:46:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230167AbiH3OpH convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 30 Aug 2022 10:45:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45150 "EHLO
+        id S229753AbiH3Oqx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Aug 2022 10:46:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230338AbiH3OpA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Aug 2022 10:45:00 -0400
-Received: from relay12.mail.gandi.net (relay12.mail.gandi.net [217.70.178.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE503E0DD;
-        Tue, 30 Aug 2022 07:44:57 -0700 (PDT)
-Received: (Authenticated sender: hadess@hadess.net)
-        by mail.gandi.net (Postfix) with ESMTPSA id 11D24200002;
-        Tue, 30 Aug 2022 14:44:52 +0000 (UTC)
-Message-ID: <31207cebad932bd9d943421d6528ad81877758a5.camel@hadess.net>
-Subject: Re: [PATCH 2/2] usb: Implement usb_revoke() BPF function
-From:   Bastien Nocera <hadess@hadess.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, bpf@vger.kernel.org,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Peter Hutterer <peter.hutterer@who-t.net>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Date:   Tue, 30 Aug 2022 16:44:52 +0200
-In-Reply-To: <Yv5V1KWOQa5mnktE@kroah.com>
-References: <20220809094300.83116-1-hadess@hadess.net>
-         <20220809094300.83116-3-hadess@hadess.net> <YvI5DJnOjhJbNnNO@kroah.com>
-         <2cde406b4d59ddfe71a7cdc11a76913a0a168595.camel@hadess.net>
-         <YvKMVjl6x38Hud6I@kroah.com>
-         <fae7e35a920239fe2a35b6b967bd17e04af1e1b7.camel@hadess.net>
-         <Yv5V1KWOQa5mnktE@kroah.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.44.4 (3.44.4-1.fc36) 
+        with ESMTP id S229486AbiH3Oqw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Aug 2022 10:46:52 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22046B1BBB
+        for <bpf@vger.kernel.org>; Tue, 30 Aug 2022 07:46:52 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id D7185B81C28
+        for <bpf@vger.kernel.org>; Tue, 30 Aug 2022 14:46:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6B21C4347C
+        for <bpf@vger.kernel.org>; Tue, 30 Aug 2022 14:46:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1661870809;
+        bh=N2Kd4RIu5KJsSz3YgD3aAOyOltYesRLjncK1uecGVQk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=FWel4NULvqsDD1ERRvcl1+CjG4s+kW7CJB1SgryQwZ4PA9ftQ7xFZQpwU/g98qbDt
+         ZiQ0h+ZtdR9P/PxPzUWNIxo3OuYy2A904RCbMqKM1AIGziU0QtNrp0WtGgsUoDmw7f
+         s46xUafL/x9robtyPBHbAUUmJtLSYIwmfeppadtZ1iXWpGGX0mjbUqRWxeMxGj/CmK
+         0O2TiE4NtexQNw8RJeC9vM0uD9dPyqm0DpPI7op4xpZ+2kfNYqiMOQZ2usz7tygcWv
+         nP24B39Hu/EJ48k3XzR5uTHpAQyEYKBWrhJi6Z28z2oaI68Eibh2fB4aT2VrvnxDcO
+         MfvOJqnA4hnNQ==
+Received: by mail-vk1-f171.google.com with SMTP id j11so3375353vkl.12
+        for <bpf@vger.kernel.org>; Tue, 30 Aug 2022 07:46:49 -0700 (PDT)
+X-Gm-Message-State: ACgBeo1mi3LWt9hXSFAGpx+9ybU6hNkJJoGIZILtQKG3emCJMBzW9mfp
+        qkj6dYCiHpnO2yJ9dTz+wn7yUvX2nsm6kLr+du4=
+X-Google-Smtp-Source: AA6agR6oM7G1MLmcYASfcAuFn7liigOP7I4nrX6IQ9x9bzVgCGvWfPevTXzq95IHagahQP0fQ5nI311cq0tIuYwSQZY=
+X-Received: by 2002:a1f:b248:0:b0:377:aa0c:941 with SMTP id
+ b69-20020a1fb248000000b00377aa0c0941mr5230063vkf.37.1661870808667; Tue, 30
+ Aug 2022 07:46:48 -0700 (PDT)
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <1661857809-10828-1-git-send-email-yangtiezhu@loongson.cn> <1661857809-10828-5-git-send-email-yangtiezhu@loongson.cn>
+In-Reply-To: <1661857809-10828-5-git-send-email-yangtiezhu@loongson.cn>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Tue, 30 Aug 2022 22:46:00 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H6Dq+Z_kS0LcM=QGF1h=k2i0hR7fYZdXgU2kXAfm1VPLw@mail.gmail.com>
+Message-ID: <CAAhV-H6Dq+Z_kS0LcM=QGF1h=k2i0hR7fYZdXgU2kXAfm1VPLw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 4/4] LoongArch: Enable BPF_JIT and TEST_BPF in
+ default config
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        loongarch@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 2022-08-18 at 17:08 +0200, Greg Kroah-Hartman wrote:
-> On Tue, Aug 09, 2022 at 07:27:11PM +0200, Bastien Nocera wrote:
-> > On Tue, 2022-08-09 at 18:33 +0200, Greg Kroah-Hartman wrote:
-> > > On Tue, Aug 09, 2022 at 04:31:04PM +0200, Bastien Nocera wrote:
-> > > > On Tue, 2022-08-09 at 12:38 +0200, Greg Kroah-Hartman wrote:
-> > > > > Now if you really really want to disable a device from under
-> > > > > a
-> > > > > user,
-> > > > > without the file handle present, you can do that today, as
-> > > > > root,
-> > > > > by
-> > > > > doing the 'unbind' hack through userspace and sysfs.  It's so
-> > > > > common
-> > > > > that this seems to be how virtual device managers handle
-> > > > > virtual
-> > > > > machines, so it should be well tested by now.
-> > > > 
-> > > > The only thing I know that works that way is usbip, and it
-> > > > requires
-> > > > unbinding each of the interfaces:
-> > > > 
-> > > > https://sourceforge.net/p/usbip/git-windows/ci/master/tree/trunk/userspace/src/bind-driver.c#l157
-> > > 
-> > > virtio devices also use the api from what I recall.
-> > 
-> > I can't find any code that would reference
-> > /sys/bus/usb/drivers/usbfs/unbind or /sys/bus/usb/drivers/usbfs wrt
-> > virtio. Where's the host side code for that?
-> 
-> I mean the virtio code uses bind/unbind for it's devices, nothing to
-> do
-> with USB other than the userspace interface involved.
+Hi, Tiezhu,
 
-This is one big hammer that is really counterproductive in some fairly
-common use cases. It's fine for assigning a full USB device to a VM, it
-really isn't for gently removing "just that bit of interface" the user
-is using while leaving the rest running.
+On Tue, Aug 30, 2022 at 7:10 PM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
+>
+> For now, BPF JIT for LoongArch is supported, update loongson3_defconfig to
+> enable BPF_JIT to allow the kernel to generate native code when a program
+> is loaded into the kernel, and also enable TEST_BPF to test BPF JIT.
+>
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+>  arch/loongarch/configs/loongson3_defconfig | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/arch/loongarch/configs/loongson3_defconfig b/arch/loongarch/configs/loongson3_defconfig
+> index 3712552..93dc072 100644
+> --- a/arch/loongarch/configs/loongson3_defconfig
+> +++ b/arch/loongarch/configs/loongson3_defconfig
+> @@ -4,6 +4,7 @@ CONFIG_POSIX_MQUEUE=y
+>  CONFIG_NO_HZ=y
+>  CONFIG_HIGH_RES_TIMERS=y
+>  CONFIG_BPF_SYSCALL=y
+> +CONFIG_BPF_JIT=y
+>  CONFIG_PREEMPT=y
+>  CONFIG_BSD_PROCESS_ACCT=y
+>  CONFIG_BSD_PROCESS_ACCT_V3=y
+> @@ -801,3 +802,4 @@ CONFIG_MAGIC_SYSRQ=y
+>  CONFIG_SCHEDSTATS=y
+>  # CONFIG_DEBUG_PREEMPT is not set
+>  # CONFIG_FTRACE is not set
+> +CONFIG_TEST_BPF=m
+I don't want the test module be built by default, but I don't insist
+if you have a strong requirement.
 
-If a USB device has 2 interfaces, and one of those interfaces is used
-by a kernel driver, or a system-wide application, then the whole USB
-device is made unavailable.
-
-For example:
-- a wireless headset, sound is handled by ALSA at the kernel-level,
-battery status is monitored through another interface by the user
-directly, unbinding the USB driver will disable both the sound driver
-and the battery monitor
-- a keyboard with RGB backlight, key presses are handled by the input
-subsystem in the kernel, RGB backlight through another interface as a
-normal user, unbinding the USB driver disconnects the keyboard
-completely making it lose lock keys status, amongst other things
-- a phone used for both network access and file access through MTP,
-unbinding the USB driver will boot the computer off the network as well
-as disconnecting the file access when we only wanted the latter to
-happen
-
-I'll explain those use cases in the commit message.
-
-For those who want to reproduce the problem, tested with USB wireless
-headset:
-$ lsusb
-Bus 001 Device 011: ID 1038:12b6 SteelSeries ApS SteelSeries Arctis 1 Wireless
-
-# Using the bus and device IDs
-$ grep -l 001/011 /sys/bus/usb/devices/*/uevent | sed 's,/sys/bus/usb/devices/,,' | sed 's,/uevent,,'
-1-10
-
-$ echo 1-10 > /sys/bus/usb/drivers/usb/unbind
-
-Both the ALSA device:
-Aug 30 16:19:07 classic pipewire[2061]: spa.alsa: hw:2: snd_pcm_drop No such device
-Aug 30 16:19:07 classic pipewire[2061]: spa.alsa: hw:2: close failed: No such device
-Aug 30 16:19:07 classic pipewire[2061]: spa.alsa: front:2: snd_pcm_drop No such device
-Aug 30 16:19:07 classic pipewire[2061]: spa.alsa: front:2: close failed: No such device
-
-
-and the battery script
-(https://github.com/Sapd/HeadsetControl/pull/230) are gone.
+Huacai
+> --
+> 2.1.0
+>
