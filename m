@@ -2,148 +2,216 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FC2C5A62EE
-	for <lists+bpf@lfdr.de>; Tue, 30 Aug 2022 14:11:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E2425A6313
+	for <lists+bpf@lfdr.de>; Tue, 30 Aug 2022 14:17:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230064AbiH3MLZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Aug 2022 08:11:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60878 "EHLO
+        id S229781AbiH3MRQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Aug 2022 08:17:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229834AbiH3MLW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Aug 2022 08:11:22 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7368A2D8B
-        for <bpf@vger.kernel.org>; Tue, 30 Aug 2022 05:11:21 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id m1so13918506edb.7
-        for <bpf@vger.kernel.org>; Tue, 30 Aug 2022 05:11:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date;
-        bh=soWZCupSQYBVtPMJfvUGYIPJsNm5QO6KiW/DM1zN+9s=;
-        b=OT6FXxI1CD2VxdRQ69NyT8J+hqsT1P6LrP2zv2bmjfrO8hbYVSOeWLyPMmM3EGG94Z
-         vBVB5lFnOEtlWtWlR9HJzR6H1jJP2tVTmceg7cKjz77ay6TK7lazmMgU33dvhO7uMiPG
-         GIsDQbvZLzq4S2pHxhuSZX4AvZBPAT9Dh7QK0/y+Oq+hRI/AutajpbccgueiTZUZGAMk
-         Xzvk4ZSEq2btqumTH/4ZB/fwddfIvpjdzohRA+U11iZz79iedrNwU0tm5a+M6Nm+gz/X
-         mJx4/F3mMhAKCUDAOO0ywk1aRusbwxIiCRUulhtSf6fyv60cSRcBgo9R3qrfuKvq2zCF
-         myww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date;
-        bh=soWZCupSQYBVtPMJfvUGYIPJsNm5QO6KiW/DM1zN+9s=;
-        b=Raif2CM+xsuyFX5gilxZ6FyjE3ipf2jiAsacgSdfX24n3MSxBG78QqeNR7dzX4DG8Q
-         ZFD8jWV20NG9sna1PD4bzkMrty3JOvlHHEDClGJIu5zVp576CpFsnrZXGVRkxyZxfkdK
-         aWlGc1MJMamH6r9lqpU7X4xyike5Zzcpl/oo43+mwHgaqYGoVpoBR6zWchFcJInv2p4F
-         1zby5gwTbDl74hmfOg8sqH3VKtJc+ygHubOBvs+MEC/x5fSkXDAOgjmmywN4sVEyNHym
-         9j20r3oKicsti3yrPwf70jl+He7fCTWUwttP/V/fDJKHBxaYxrVtrDHpYPizSlQXbrpg
-         /BUw==
-X-Gm-Message-State: ACgBeo3kmYFD8thSSGMk0JTrWE9iJUUrJ/cTGW///yLVYgoNZPoG+b3v
-        SdjqWPpusl4TY8NoOB9QdlpWLm8Jums=
-X-Google-Smtp-Source: AA6agR7Mk0tHIC6I15jNeXqZWhXFXb1fjWHzDUBoKbf7A5TnGUtBmlXC9ZB9NQ4hIgJqohna/lKTNg==
-X-Received: by 2002:a05:6402:d05:b0:425:b5c8:faeb with SMTP id eb5-20020a0564020d0500b00425b5c8faebmr19735234edb.273.1661861480301;
-        Tue, 30 Aug 2022 05:11:20 -0700 (PDT)
-Received: from krava ([193.85.244.190])
-        by smtp.gmail.com with ESMTPSA id rl26-20020a170907217a00b0073db043a6f7sm5700859ejb.210.2022.08.30.05.11.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Aug 2022 05:11:19 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Tue, 30 Aug 2022 14:11:17 +0200
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, kernel-team@fb.com
-Subject: Re: [PATCH bpf-next v3 6/7] selftests/bpf: Add struct argument tests
- with fentry/fexit programs.
-Message-ID: <Yw3+ZfsbBdqo6R41@krava>
-References: <20220828025438.142798-1-yhs@fb.com>
- <20220828025509.145209-1-yhs@fb.com>
- <7cf3de93-ae20-3d76-20d9-67242a65408b@iogearbox.net>
+        with ESMTP id S230085AbiH3MRO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Aug 2022 08:17:14 -0400
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F975AB4CE;
+        Tue, 30 Aug 2022 05:17:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1661861833; x=1693397833;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=P9C48dSSTkztXv+4cuY1FGRC92QtKSnE/J85TKf89Hc=;
+  b=bfLnG5JsR+Ksz8ZwEJoLPCD9Mp12DDWhqYVBMikMpXCjIa4rIF7VWtST
+   koz+q8ek91THo3k+cEtfrG4n5TDmmToFJa0I69NURwKbjzRNBu2+1fa5D
+   FwBmQthEuwHR7++bxfOcio9iMQsihokChL0dZJZLpZLVHvx6cnvrNTh6p
+   dCYPEx0a8FPXE18SLFK1xSz0zuQBAiwgr9thz7HfkWPcwoUmDILMJW67Y
+   PIws8gC9UHrMehfAkLk/OZJk3MA1jjH5FUeZNqm2IfzgoM0FC0yPDT9RH
+   xCjdw+SaPHmpJFIcGGuelKQBSB/jpOKEpoXpolnDgwIOrHgHF9hY4GbvW
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10454"; a="293902379"
+X-IronPort-AV: E=Sophos;i="5.93,274,1654585200"; 
+   d="scan'208";a="293902379"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2022 05:17:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,274,1654585200"; 
+   d="scan'208";a="641349723"
+Received: from boxer.igk.intel.com ([10.102.20.173])
+  by orsmga008.jf.intel.com with ESMTP; 30 Aug 2022 05:17:10 -0700
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org
+Cc:     netdev@vger.kernel.org, magnus.karlsson@intel.com,
+        bjorn@kernel.org, Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Subject: [PATCH bpf] xsk: fix backpressure mechanism on Tx
+Date:   Tue, 30 Aug 2022 14:17:05 +0200
+Message-Id: <20220830121705.8618-1-maciej.fijalkowski@intel.com>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7cf3de93-ae20-3d76-20d9-67242a65408b@iogearbox.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 30, 2022 at 12:12:08AM +0200, Daniel Borkmann wrote:
-> On 8/28/22 4:55 AM, Yonghong Song wrote:
-> > Add various struct argument tests with fentry/fexit programs.
-> > Also add one test with a kernel func which does not have any
-> > argument to test BPF_PROG2 macro in such situation.
-> > 
-> > Signed-off-by: Yonghong Song <yhs@fb.com>
-> > ---
-> >   .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  48 ++++++++
-> >   .../selftests/bpf/prog_tests/tracing_struct.c |  63 ++++++++++
-> >   .../selftests/bpf/progs/tracing_struct.c      | 114 ++++++++++++++++++
-> >   3 files changed, 225 insertions(+)
-> >   create mode 100644 tools/testing/selftests/bpf/prog_tests/tracing_struct.c
-> >   create mode 100644 tools/testing/selftests/bpf/progs/tracing_struct.c
-> > 
-> 
-> For s390x these tests need to be deny-listed due to missing trampoline support..
-> 
->   All error logs:
->   test_fentry:PASS:tracing_struct__open_and_load 0 nsec
->   libbpf: prog 'test_struct_arg_1': failed to attach: ERROR: strerror_r(-524)=22
->   libbpf: prog 'test_struct_arg_1': failed to auto-attach: -524
->   test_fentry:FAIL:tracing_struct__attach unexpected error: -524 (errno 524)
->   #209     tracing_struct:FAIL
->   Summary: 189/972 PASSED, 27 SKIPPED, 1 FAILED
-> 
-> However, looks like the no_alu32 ones on x86 fail:
-> 
->   [...]
->   #207     trace_printk:OK
->   #208     trace_vprintk:OK
->   test_fentry:PASS:tracing_struct__open_and_load 0 nsec
->   test_fentry:PASS:tracing_struct__attach 0 nsec
->   trigger_module_test_read:PASS:testmod_file_open 0 nsec
->   test_fentry:PASS:trigger_read 0 nsec
->   test_fentry:PASS:t1:a.a 0 nsec
->   test_fentry:PASS:t1:a.b 0 nsec
->   test_fentry:PASS:t1:b 0 nsec
->   test_fentry:PASS:t1:c 0 nsec
->   test_fentry:PASS:t1 nregs 0 nsec
->   test_fentry:PASS:t1 reg0 0 nsec
->   test_fentry:PASS:t1 reg1 0 nsec
->   test_fentry:FAIL:t1 reg2 unexpected t1 reg2: actual 7327499336969879553 != expected 1
+Commit d678cbd2f867 ("xsk: Fix handling of invalid descriptors in XSK TX
+batching API") fixed batch API usage against set of descriptors with
+invalid ones but introduced a problem when AF_XDP SW rings are smaller
+than HW ones. Mismatch of reported Tx'ed frames between HW generator and
+user space app was observed. It turned out that backpressure mechanism
+became a bottleneck when the amount of produced descriptors to CQ is
+lower than what we grabbed from XSK Tx ring.
 
-I'm getting the same, I think it's because the argument is int (4 bytes)
-while the register is 8, we need to cast to int before we check for the
-argument value
+Say that 512 entries had been taken from XSK Tx ring but we had only 490
+free entries in CQ. Then callsite (ZC driver) will produce only 490
+entries onto HW Tx ring but 512 entries will be released from Tx ring
+and this is what will be seen by the user space.
 
-jirka
+In order to fix this case, mix XSK Tx/CQ ring interractions by moving
+around internal functions and changing call order:
+*  pull out xskq_prod_nb_free() from xskq_prod_reserve_addr_batch() up to
+   xsk_tx_peek_release_desc_batch();
+** move xskq_cons_release_n() into xskq_cons_read_desc_batch()
 
->   test_fentry:PASS:t1 reg3 0 nsec
->   test_fentry:PASS:t1 ret 0 nsec
->   test_fentry:PASS:t2:a 0 nsec
->   test_fentry:PASS:t2:b.a 0 nsec
->   test_fentry:PASS:t2:b.b 0 nsec
->   test_fentry:PASS:t2:c 0 nsec
->   test_fentry:PASS:t2 ret 0 nsec
->   test_fentry:PASS:t3:a 0 nsec
->   test_fentry:PASS:t3:b 0 nsec
->   test_fentry:PASS:t3:c.a 0 nsec
->   test_fentry:PASS:t3:c.b 0 nsec
->   test_fentry:PASS:t3 ret 0 nsec
->   test_fentry:PASS:t4:a.a 0 nsec
->   test_fentry:PASS:t4:b 0 nsec
->   test_fentry:PASS:t4:c 0 nsec
->   test_fentry:PASS:t4:d 0 nsec
->   test_fentry:PASS:t4:e.a 0 nsec
->   test_fentry:PASS:t4:e.b 0 nsec
->   test_fentry:PASS:t4 ret 0 nsec
->   test_fentry:PASS:t5 ret 0 nsec
->   #209     tracing_struct:FAIL
->   #210     trampoline_count:OK
->   [...]
+After doing so, algorithm can be described as follows:
+1. lookup Tx entries
+2. use value from 1. to reserve space in CQ (*)
+3. Read from Tx ring as much descriptors as value from 2
+ 3a. release descriptors from XSK Tx ring (**)
+4. Finally produce addresses to CQ
+
+Fixes: d678cbd2f867 ("xsk: Fix handling of invalid descriptors in XSK TX batching API")
+Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+---
+ net/xdp/xsk.c       | 22 +++++++++++-----------
+ net/xdp/xsk_queue.h | 22 ++++++++++------------
+ 2 files changed, 21 insertions(+), 23 deletions(-)
+
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index 5b4ce6ba1bc7..639b2c3beb69 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -355,16 +355,15 @@ static u32 xsk_tx_peek_release_fallback(struct xsk_buff_pool *pool, u32 max_entr
+ 	return nb_pkts;
+ }
+ 
+-u32 xsk_tx_peek_release_desc_batch(struct xsk_buff_pool *pool, u32 max_entries)
++u32 xsk_tx_peek_release_desc_batch(struct xsk_buff_pool *pool, u32 nb_pkts)
+ {
+ 	struct xdp_sock *xs;
+-	u32 nb_pkts;
+ 
+ 	rcu_read_lock();
+ 	if (!list_is_singular(&pool->xsk_tx_list)) {
+ 		/* Fallback to the non-batched version */
+ 		rcu_read_unlock();
+-		return xsk_tx_peek_release_fallback(pool, max_entries);
++		return xsk_tx_peek_release_fallback(pool, nb_pkts);
+ 	}
+ 
+ 	xs = list_first_or_null_rcu(&pool->xsk_tx_list, struct xdp_sock, tx_list);
+@@ -373,12 +372,7 @@ u32 xsk_tx_peek_release_desc_batch(struct xsk_buff_pool *pool, u32 max_entries)
+ 		goto out;
+ 	}
+ 
+-	max_entries = xskq_cons_nb_entries(xs->tx, max_entries);
+-	nb_pkts = xskq_cons_read_desc_batch(xs->tx, pool, max_entries);
+-	if (!nb_pkts) {
+-		xs->tx->queue_empty_descs++;
+-		goto out;
+-	}
++	nb_pkts = xskq_cons_nb_entries(xs->tx, nb_pkts);
+ 
+ 	/* This is the backpressure mechanism for the Tx path. Try to
+ 	 * reserve space in the completion queue for all packets, but
+@@ -386,12 +380,18 @@ u32 xsk_tx_peek_release_desc_batch(struct xsk_buff_pool *pool, u32 max_entries)
+ 	 * packets. This avoids having to implement any buffering in
+ 	 * the Tx path.
+ 	 */
+-	nb_pkts = xskq_prod_reserve_addr_batch(pool->cq, pool->tx_descs, nb_pkts);
++	nb_pkts = xskq_prod_nb_free(pool->cq, nb_pkts);
+ 	if (!nb_pkts)
+ 		goto out;
+ 
+-	xskq_cons_release_n(xs->tx, max_entries);
++	nb_pkts = xskq_cons_read_desc_batch(xs->tx, pool, nb_pkts);
++	if (!nb_pkts) {
++		xs->tx->queue_empty_descs++;
++		goto out;
++	}
++
+ 	__xskq_cons_release(xs->tx);
++	xskq_prod_write_addr_batch(pool->cq, pool->tx_descs, nb_pkts);
+ 	xs->sk.sk_write_space(&xs->sk);
+ 
+ out:
+diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
+index fb20bf7207cf..c6fb6b763658 100644
+--- a/net/xdp/xsk_queue.h
++++ b/net/xdp/xsk_queue.h
+@@ -205,6 +205,11 @@ static inline bool xskq_cons_read_desc(struct xsk_queue *q,
+ 	return false;
+ }
+ 
++static inline void xskq_cons_release_n(struct xsk_queue *q, u32 cnt)
++{
++	q->cached_cons += cnt;
++}
++
+ static inline u32 xskq_cons_read_desc_batch(struct xsk_queue *q, struct xsk_buff_pool *pool,
+ 					    u32 max)
+ {
+@@ -226,6 +231,8 @@ static inline u32 xskq_cons_read_desc_batch(struct xsk_queue *q, struct xsk_buff
+ 		cached_cons++;
+ 	}
+ 
++	/* Release valid plus any invalid entries */
++	xskq_cons_release_n(q, cached_cons - q->cached_cons);
+ 	return nb_entries;
+ }
+ 
+@@ -291,11 +298,6 @@ static inline void xskq_cons_release(struct xsk_queue *q)
+ 	q->cached_cons++;
+ }
+ 
+-static inline void xskq_cons_release_n(struct xsk_queue *q, u32 cnt)
+-{
+-	q->cached_cons += cnt;
+-}
+-
+ static inline u32 xskq_cons_present_entries(struct xsk_queue *q)
+ {
+ 	/* No barriers needed since data is not accessed */
+@@ -350,21 +352,17 @@ static inline int xskq_prod_reserve_addr(struct xsk_queue *q, u64 addr)
+ 	return 0;
+ }
+ 
+-static inline u32 xskq_prod_reserve_addr_batch(struct xsk_queue *q, struct xdp_desc *descs,
+-					       u32 max)
++static inline void xskq_prod_write_addr_batch(struct xsk_queue *q, struct xdp_desc *descs,
++					      u32 nb_entries)
+ {
+ 	struct xdp_umem_ring *ring = (struct xdp_umem_ring *)q->ring;
+-	u32 nb_entries, i, cached_prod;
+-
+-	nb_entries = xskq_prod_nb_free(q, max);
++	u32 i, cached_prod;
+ 
+ 	/* A, matches D */
+ 	cached_prod = q->cached_prod;
+ 	for (i = 0; i < nb_entries; i++)
+ 		ring->desc[cached_prod++ & q->ring_mask] = descs[i].addr;
+ 	q->cached_prod = cached_prod;
+-
+-	return nb_entries;
+ }
+ 
+ static inline int xskq_prod_reserve_desc(struct xsk_queue *q,
+-- 
+2.34.1
+
