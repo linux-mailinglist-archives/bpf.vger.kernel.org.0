@@ -2,157 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71E165A791F
-	for <lists+bpf@lfdr.de>; Wed, 31 Aug 2022 10:34:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 095695A7996
+	for <lists+bpf@lfdr.de>; Wed, 31 Aug 2022 10:56:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230376AbiHaIeL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 31 Aug 2022 04:34:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40692 "EHLO
+        id S231796AbiHaI4r (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 31 Aug 2022 04:56:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229601AbiHaIeK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 31 Aug 2022 04:34:10 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CC45E0AA
-        for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 01:34:09 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id y3so26925623ejc.1
-        for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 01:34:09 -0700 (PDT)
+        with ESMTP id S231734AbiHaI4S (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 31 Aug 2022 04:56:18 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43A097820D;
+        Wed, 31 Aug 2022 01:55:18 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id u9-20020a17090a1f0900b001fde6477464so7320784pja.4;
+        Wed, 31 Aug 2022 01:55:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=metanetworks.com; s=google;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc;
-        bh=wk2vEHtqDKnUOKmShZ01Zr5PxUlXYM4WzMq4C1GbUMw=;
-        b=MpuQ/6x6SswOUjx7LpFsJ880DuAN6ApcGJlyLLH7QelP+xxDK9PmprnB0M45Ciz2U5
-         We7k/jCodRwsTC7L2GVfPEiJSUWx1IKMzkKNPP5JkP0gSaN2sb89DMZZDvRirkvKLBd8
-         unwMqsU9QN9qp50GYbVHWmkmZ0uPu6YAx0USI=
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=MuINGSAvN8dmwGydRR1Dg0xBbQjT1kSTnxINwZg/HxY=;
+        b=U1xCiaa2OCFaMU2//b4N0n7SCpxYz6Bcwyubm/QiFWMnWh8vmWenktp7jUbxmj7r2D
+         RTxOwFA6Agwjnaq1tuPcflPUfJkH3WQMrlK6TaSbER7Ysm8pRhdG5f470ffY1AZAVg3W
+         05Gk9q4pqg0qmOaqF5o2oHjf96CveHxWGyFUzk/oSk5n/biBPi44DplZc5VdW8Rayeuj
+         LOvkY4r2/pdmfynaXHec8i+5xM3Sf4fZK0ZAcxihYnAbxqZTsR8KAzDqXMHWuu4dd44F
+         JxpgMDcB5WhywW6IyOzH2QpOm0vSSq9xacKbuq8/c0jJDUOkP4V0Xs9qe3YQoo2Brllm
+         K4BQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc;
-        bh=wk2vEHtqDKnUOKmShZ01Zr5PxUlXYM4WzMq4C1GbUMw=;
-        b=KoFaGnEGdP2S8Rkd0GWnp2Hneq4l9SQGN4IdIr9brokqcZPtYlMTQTh+lYj4k2P5kG
-         T+NHMpgXt7ZWU4ZoToh3NtOI97rzMWaOqcgyXWGhT5jP7H2KRh5ipkNa+rV6e0PhHROV
-         tQWUFodogdO6nDQaM6jeDb3xlJZU8gBvyrTCjmXUODl+sG/cvogXapB0y2608cjqr1jC
-         XH4HU8W4eUjdVV3A7r7ciAf0YlQJLjy5sRX6C2WutKMKVrqL+S0+sefJ9EbjXgUm97Ko
-         Qu0lEtYgtWH7Pp+34h8a8vwB1IWyhNUdtM8xH19l/lCaUDn/tN3uxFikoNYRzFVpbWQC
-         MHPg==
-X-Gm-Message-State: ACgBeo0oM1nLdB2S/p2yK+wQkcvPdI54GD1lTETyMUjnwdkwUbgaPUn3
-        LrH+vFThVbzlhdoPy8V1RmVZ/w==
-X-Google-Smtp-Source: AA6agR71TdS+ni8tjUfytd3r+DgFBy927jpeiKqnOlclStYahiJ9z6I2vprCZjDtj7YU021aSUMVdg==
-X-Received: by 2002:a17:907:7d8e:b0:742:8ea0:686c with SMTP id oz14-20020a1709077d8e00b007428ea0686cmr4500934ejc.591.1661934847609;
-        Wed, 31 Aug 2022 01:34:07 -0700 (PDT)
-Received: from blondie ([5.102.239.127])
-        by smtp.gmail.com with ESMTPSA id gh21-20020a1709073c1500b0073a644ef803sm6769583ejc.101.2022.08.31.01.34.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Aug 2022 01:34:06 -0700 (PDT)
-Date:   Wed, 31 Aug 2022 11:34:04 +0300
-From:   Shmulik Ladkani <shmulik@metanetworks.com>
-To:     John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Paul Chaignon <paul@isovalent.com>,
-        Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Subject: Re: [PATCH v3 bpf-next 1/3] bpf: Support setting variable-length
- tunnel options
-Message-ID: <20220831113404.78e6f317@blondie>
-In-Reply-To: <630488c5d0f99_2ad4d720813@john.notmuch>
-References: <20220822052152.378622-1-shmulik.ladkani@gmail.com>
-        <20220822052152.378622-2-shmulik.ladkani@gmail.com>
-        <630488c5d0f99_2ad4d720813@john.notmuch>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=MuINGSAvN8dmwGydRR1Dg0xBbQjT1kSTnxINwZg/HxY=;
+        b=ejCYyYMTjFMze/SNFNX4PjMpEv4di716c7ZsZ6oAQvGl5TEVX3p+X44AJypiY21sAp
+         U761dGqQmBQahXlzpQBWoJkZmwmcAJNYYzVVo+9IrkhcxrAHnQvTwZ1BeJqOUikgbCDY
+         Xalk5Ksg4mE/aaDnyNOilD21oOokAyo8W1V0fbrT1Pk6QZrZ02Ds3yHsn3CplvY9vFlx
+         KL3CyTBDl5rYABEZEYfLK2+5G6xEVTSbojP8Ci6rKReMeOydLjZ/GPKAGKN9iYV5xLW3
+         h0cagD7IxYYw8h7tzTaiMn67LtDm9wQVLh0EKBMmrPrUL4fXHg05vN3HFb+zDyDq0clC
+         iZbg==
+X-Gm-Message-State: ACgBeo1IwkS4CzrercFE4yXcWyhRRPRSyxWWEyWoS+e90+fvjoqKzbz6
+        Pp9yM9tmxB4jfT+1vLpLPLSO47hSnkUeySG8LMl+oTLF1Ed7v4rm
+X-Google-Smtp-Source: AA6agR5pobNE1EM3kS0q3Rf5cqsvpOMlTx8WA7oaEmiXAPHjAC5DfPpdDdeknL545QFZpkhpTwFEPLZGWSoUK21QNWI=
+X-Received: by 2002:a17:90b:350f:b0:1fb:479b:8e51 with SMTP id
+ ls15-20020a17090b350f00b001fb479b8e51mr2258071pjb.46.1661936116860; Wed, 31
+ Aug 2022 01:55:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20220830135604.10173-1-maciej.fijalkowski@intel.com> <20220830135604.10173-4-maciej.fijalkowski@intel.com>
+In-Reply-To: <20220830135604.10173-4-maciej.fijalkowski@intel.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Wed, 31 Aug 2022 10:55:05 +0200
+Message-ID: <CAJ8uoz1sbkE+_-5B3BZQZ-8MqbXVkSi-YkoGEfvBsJa0n_oq9g@mail.gmail.com>
+Subject: Re: [PATCH v5 bpf-next 3/6] selftests: xsk: increase chars for
+ interface name
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, netdev@vger.kernel.org,
+        magnus.karlsson@intel.com, bjorn@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 23 Aug 2022 00:59:01 -0700
-John Fastabend <john.fastabend@gmail.com> wrote:
+On Tue, Aug 30, 2022 at 4:00 PM Maciej Fijalkowski
+<maciej.fijalkowski@intel.com> wrote:
+>
+> So that "enp240s0f0" or such name can be used against xskxceiver.
 
-> > + * long bpf_skb_set_var_tunnel_opt(struct sk_buff *skb, void *opt, u32 size, u32 len)
-> > + *	Description
-> > + *		Set tunnel options metadata for the packet associated to *skb*
-> > + *		to the variable length *len* bytes of option data contained in
-> > + *		the raw buffer *opt* sized *size*.
-> > + *
-> > + *		See also the description of the **bpf_skb_get_tunnel_opt**\ ()
-> > + *		helper for additional information.
-> > + *	Return
-> > + *		0 on success, or a negative error in case of failure.  
-> 
-> This API feels akward to me. Could you collapse this by using a dynamic pointer,
-> recently added? And drop the ptr_to_mem+const_size part at least? That seems
-> redundant with latest kernels.
+Why not bump them up to 16 why you are at it, including
+MAX_INTERFACES_NAMESPACE_CHARS? In any case:
 
-Revisiting this decision.
+Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
 
-After following that path, seems to me that adding the newly proposed
-'bpf_skb_set_tunnel_opt_dynptr' API creates awkwardness in user's bpf
-program.
-
-Suppose user needs to hold a map of the options received on incoming
-traffic based on whatever 'bpf_skb_get_tunnel_opt' returns.
-
-Then, when user needs to apply the options on the return traffic, we
-have the following two alternative APIs:
-
-
-option A: bpf_skb_set_var_tunnel_opt
-------------------------------------
-
-struct tun_opts {
-    __u8 data[MAX_OPT_SZ];
-    __u32 len;
-};
-BPF_MAP_TYPE_HASH opts_map; // __type(value, tun_opts)
-
-  ...
-
-  struct tun_opts *opts;
-
-  opts = bpf_map_lookup_elem(&opts_map, &the_flow_key);
-  bpf_skb_set_var_tunnel_opt(skb, opts->data, sizeof(opts->data), opts->len);
-
-
-option B: bpf_skb_set_tunnel_opt_dynptr
----------------------------------------
-
-struct tun_opts {
-    __u8 data[MAX_OPT_SZ];
-};
-BPF_MAP_TYPE_HASH opts_map;       // __type(value, tun_opts)
-BPF_MAP_TYPE_HASH opts_len_map;   // __type(value, __u32)
-
-  ... 
-
-  struct bpf_dynptr dptr;
-  struct tun_opts *opts;
-  __u32 *opts_len;
-
-  opts = bpf_map_lookup_elem(&opts_map, &the_flow_key);
-  opts_len = bpf_map_lookup_elem(&opts_len_map, &the_flow_key);
-
-  bpf_dynptr_from_mem(opts, sizeof(*opts), 0, &dptr);  // construct a dynptr from the raw option data
-  bpf_dynptr_trim(&dptr, opts_len);                    // trim it based on stored option len
-  bpf_skb_set_tunnel_opt_dynptr(skb, &dptr);
-
-
-IMO, the 2nd user program is less readable:
- - need to store the received options length in a separate map
- - 5 bpf function calls instead of 2
-
-Despite the awkwardness of the 'bpf_skb_set_var_tunnel_opt' API (passing
-both constant size *and* dynamic len), it really creates more simple and
-readable ebpf programs.
-
-WDYT?
-
-Best
-Shmulik
-
+> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+> ---
+>  tools/testing/selftests/bpf/xskxceiver.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/tools/testing/selftests/bpf/xskxceiver.h b/tools/testing/selftests/bpf/xskxceiver.h
+> index 8d1c31f127e7..12bfa6e463d3 100644
+> --- a/tools/testing/selftests/bpf/xskxceiver.h
+> +++ b/tools/testing/selftests/bpf/xskxceiver.h
+> @@ -29,7 +29,7 @@
+>  #define TEST_FAILURE -1
+>  #define TEST_CONTINUE 1
+>  #define MAX_INTERFACES 2
+> -#define MAX_INTERFACE_NAME_CHARS 7
+> +#define MAX_INTERFACE_NAME_CHARS 10
+>  #define MAX_INTERFACES_NAMESPACE_CHARS 10
+>  #define MAX_SOCKETS 2
+>  #define MAX_TEST_NAME_SIZE 32
+> --
+> 2.34.1
+>
