@@ -2,90 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C31235A8136
-	for <lists+bpf@lfdr.de>; Wed, 31 Aug 2022 17:27:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B68845A814F
+	for <lists+bpf@lfdr.de>; Wed, 31 Aug 2022 17:33:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231589AbiHaP1k (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 31 Aug 2022 11:27:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45726 "EHLO
+        id S231795AbiHaPdx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 31 Aug 2022 11:33:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231707AbiHaP1i (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 31 Aug 2022 11:27:38 -0400
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41F13D7D3D
-        for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 08:27:34 -0700 (PDT)
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 27VEgxmX002355
-        for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 08:27:34 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=qDok8Iq5w17SAnHEfnuZ66U119jMnfMCQ5dCfMHVvxU=;
- b=cqYd4Ns0rDq3MvI6ymxknsCU4Q6kEPm1oVIhQkEUxe8VPbyxUbNbPDHWOYUimZPAVO1k
- aJv7c+3fX4Djcbs6VkKEYsp9uzT8v+nZ6JyoxPmFZ+UhI04QhEsy5gg0aKycjP6IRl8p
- EEcZU8rk9BCDCaCpByYpsWUf0BpP+M6s70E= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net (PPS) with ESMTPS id 3j9nkryfad-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 08:27:34 -0700
-Received: from twshared10425.14.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 31 Aug 2022 08:27:33 -0700
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id A66D5ECDED70; Wed, 31 Aug 2022 08:27:23 -0700 (PDT)
-From:   Yonghong Song <yhs@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next v4 8/8] selftests/bpf: Add tracing_struct test in DENYLIST.s390x
-Date:   Wed, 31 Aug 2022 08:27:23 -0700
-Message-ID: <20220831152723.2081551-1-yhs@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220831152641.2077476-1-yhs@fb.com>
-References: <20220831152641.2077476-1-yhs@fb.com>
+        with ESMTP id S231320AbiHaPdw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 31 Aug 2022 11:33:52 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4032FD75B0;
+        Wed, 31 Aug 2022 08:33:51 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id kk26so29110557ejc.11;
+        Wed, 31 Aug 2022 08:33:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=ySlGrlk1/qae8TbwPoGGtLZ4RY6cb/qJdCyFNUKnw4k=;
+        b=O5aHbfC4ftLEYuWR2lKoTnlB+EEHkTYbNxiLgifnfeWI3p77cSrJHGA0CATa5yilgV
+         MoODiwPODnMk7W5nC5YKiPm9IKa67WmAIPQBYtOgmiwUORrlaHXmUwPhA+o/6aYGaoiv
+         hb8C3UcA5vpHaVrM3hLYSoAyEjeplyRY9wURdBjfmTEEyVKB9DjLf5RyVLE5ynZd3DYv
+         r20zrd/PQrYhHknPCtvb+CIeOS9s7Udu5VkwECjus+J7gC9ym1OzZqO5FB4WaVFxArmd
+         K++h6IlBnmPe6qFAT8o1EJKD2fR/jCXnADy6rV8/jgU93M+HYz8AzW9NGzK4JbeCiTO3
+         pi5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=ySlGrlk1/qae8TbwPoGGtLZ4RY6cb/qJdCyFNUKnw4k=;
+        b=emcqlF+tS5pxtez3dDFkVsQvIFnNDREX8SWVaZLYfI++ggw2CUXrf24lgVdLefe/Vi
+         ULyJEakeB3DJ46IEfcSkWSnWW9mgkDTRlsNhV6DOsGPd5Zl3FgczOlTAlH2hMIQ0rLJJ
+         qvffWGSzzRcSuIm3AnICrYCrJ7jE0otBfOnTyCFsWhQRbSwZm+0+67fV54hhs6Lggviz
+         FK8I+fMDTs0QeEhcEXmvhe49fO9B3wS5Sr2JpFw6UZ7yqIC2v/j3c/pmu1o6kBbyZz4V
+         HaTOj9iCeR56TlKiNKPsodzPmWK7soyEmde+If1RK57hnyYvosHWSKxhNkFV+k3aO2/z
+         Az6w==
+X-Gm-Message-State: ACgBeo0lKieegsLDtpqj2oTni1IGC97WRKSX8PLe+nA1WWKITZb1kbNy
+        kkjdX1qO7RjI4lXgbcyMkHwRG+gaJNgRHhkjk00=
+X-Google-Smtp-Source: AA6agR6zLzQyHzCh0SYGCtJ2iVRCCcor95L8jxGfZu91b7yD5fNTVfUcKhZC1aLkvbiIxkBeOxSeLLv1K5tiwN/gUzY=
+X-Received: by 2002:a17:907:7b94:b0:731:1b11:c241 with SMTP id
+ ne20-20020a1709077b9400b007311b11c241mr21418881ejc.676.1661960029590; Wed, 31
+ Aug 2022 08:33:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: yiHvCCHu_6r92-Xzk4S9at_JLnGXWPQW
-X-Proofpoint-ORIG-GUID: yiHvCCHu_6r92-Xzk4S9at_JLnGXWPQW
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-08-31_09,2022-08-31_03,2022-06-22_01
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20220830161716.754078-1-roberto.sassu@huaweicloud.com>
+ <20220830161716.754078-6-roberto.sassu@huaweicloud.com> <Yw7NKJfhyJqIWUcx@kernel.org>
+ <Yw7o43Ivfo3jRwQg@kernel.org> <cad9a20cadc074cf15dcd0d8eb63b43c98a2f13d.camel@huaweicloud.com>
+In-Reply-To: <cad9a20cadc074cf15dcd0d8eb63b43c98a2f13d.camel@huaweicloud.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 31 Aug 2022 08:33:38 -0700
+Message-ID: <CAADnVQLCyts0JZ7_=rTp8vP67ET4PjVsZ0Cis0XKUpeCdC13LA@mail.gmail.com>
+Subject: Re: [PATCH v14 05/12] KEYS: Move KEY_LOOKUP_ to include/linux/key.h
+ and set KEY_LOOKUP_FLAGS_ALL
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        David Howells <dhowells@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>,
+        keyrings@vger.kernel.org,
+        LSM List <linux-security-module@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        =?UTF-8?Q?Daniel_M=C3=BCller?= <deso@posteo.net>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add tracing_struct test in DENYLIST.s390x since s390x does not
-support trampoline now.
+On Wed, Aug 31, 2022 at 2:24 AM Roberto Sassu
+<roberto.sassu@huaweicloud.com> wrote:
+> > > >
+> > > > +#define KEY_LOOKUP_CREATE        0x01
+> > > > +#define KEY_LOOKUP_PARTIAL       0x02
+> > > > +#define KEY_LOOKUP_FLAGS_ALL     (KEY_LOOKUP_CREATE |
+> > > > KEY_LOOKUP_PARTIAL)
+> > >
+> > > IMHO this could be just KEY_LOOKUP_ALL.
 
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- tools/testing/selftests/bpf/DENYLIST.s390x | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/tools/testing/selftests/bpf/DENYLIST.s390x b/tools/testing/s=
-elftests/bpf/DENYLIST.s390x
-index 736b65f61022..aa18b6d24510 100644
---- a/tools/testing/selftests/bpf/DENYLIST.s390x
-+++ b/tools/testing/selftests/bpf/DENYLIST.s390x
-@@ -68,3 +68,4 @@ unpriv_bpf_disabled                      # fentry
- setget_sockopt                           # attach unexpected error: -524=
-                                               (trampoline)
- cb_refs                                  # expected error message unexpe=
-cted error: -524                               (trampoline)
- cgroup_hierarchical_stats                # JIT does not support calling =
-kernel function                                (kfunc)
-+tracing_struct                           # failed to auto-attach: -524  =
-                                               (trampoline)
---=20
-2.30.2
-
+Since this is supposed to be kernel internal flags
+please make them enum, so that bpf progs can auto-adjust
+(with the help of CORE) to changes in this enum.
+With #define there is no way for bpf prog to know
+when #define changed in the future kernels.
