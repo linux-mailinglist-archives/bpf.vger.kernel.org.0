@@ -2,277 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50E035A8909
-	for <lists+bpf@lfdr.de>; Thu,  1 Sep 2022 00:33:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70B485A894F
+	for <lists+bpf@lfdr.de>; Thu,  1 Sep 2022 01:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232440AbiHaWdM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 31 Aug 2022 18:33:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37984 "EHLO
+        id S232364AbiHaXCQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 31 Aug 2022 19:02:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231700AbiHaWdM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 31 Aug 2022 18:33:12 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACE646D9E3
-        for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 15:33:10 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id b17so1003610ilh.0
-        for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 15:33:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=v4lImSENi5KPW8WGLM941rwt0f9jjjGHY5oeaa+py10=;
-        b=VCkKR9ZCTnt+CtYPmUX+N3+nwggT0GGyA74dBdATJNzYuNJERu/5TL9NaxhLn8xJdO
-         /NjkeU4IPAzsopnyH8Bho13TzYFGrBeSU6oDu7n4P1H9UPHL2fcF+vbEh9GzBmxjOkPB
-         Am8gt6VSc88OCLtQtLJHtnTgg7sgcmEHfRAKfXUmgp2Ss0GBQ5Zn0LMpp+tToZ4XZ3Ly
-         1X1r4Dp2HnC7Hy7TsS21Piq33f44jLPNpSslr8XowIrjXbpkq3z5LxZniapsWhqOgvXG
-         /Wm2zYaDufON1LswG6b/vf+RRnJ/Tsdfu34K0johU0v49jx6w66UG2f62nl7NgAH9Kfn
-         F1zQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=v4lImSENi5KPW8WGLM941rwt0f9jjjGHY5oeaa+py10=;
-        b=VjZ++I0r8FgxQK2puPQdl78KjPCnMLVknNv28jggHtqvQgl7y3Q7EZduDPH3c6/Zzi
-         3iA5qc3blCo10Lf9I+ZFbjMbJCnb6aAWXDakUmkWtV/qOa8kjmwEMjtSslhoyIjv+95X
-         nXNYhaENYJk1WSNtk8hshfTym6ETQnXghbzA1VERboZFyhpUp/mDH9oNLGORcJTrVpP+
-         IxMllOOmAJZkulflsJDn3as7PGmSfP37NOoJpwjDWtrIW5SuoMWFZc+rZlBj7sXF4dLC
-         n7vZrxksxDbMHoBP/knVZDtyWjJ5XVpjdjsbQl+ATe1zyAfvHmLvaNaV6/Qz7uKej0h9
-         H1OA==
-X-Gm-Message-State: ACgBeo2/sI+FB5lcumWESOnmvXZdbidL0++pHh4OupSJBUS2xkUhZdlX
-        oANoem7iudLWrkvGa9JswM1qV9HuLd58FgRlZFUnkLHL
-X-Google-Smtp-Source: AA6agR7cdFLnRmGXLNwOfX4CQxv99oaibxN7bQqPVmH/f5+FDnglQuKxOpvJOGFG5TSc333IQYPngL7dNc5w1rJY/Bs=
-X-Received: by 2002:a05:6e02:1d0b:b0:2eb:73fc:2235 with SMTP id
- i11-20020a056e021d0b00b002eb73fc2235mr3699790ila.164.1661985189947; Wed, 31
- Aug 2022 15:33:09 -0700 (PDT)
+        with ESMTP id S229970AbiHaXCP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 31 Aug 2022 19:02:15 -0400
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB5AB8FD41;
+        Wed, 31 Aug 2022 16:02:14 -0700 (PDT)
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27VJrYGq001342;
+        Wed, 31 Aug 2022 16:02:03 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=0u4fGsRwFEz6YfUIswhqCx5WFhEvNmp/Z3cO9EN9LHs=;
+ b=Wq4rafAlmcrAfGwhLVFnhtnLlY2n18BmN3rkHHt77K2ISS/jcDX0i27te6Lz8ydAQlkm
+ px58NklZFIkUA7qcS/6xd/6py4aYMtsJhdxLcI9WH17Yx9I2z4HemlNSR3f2b1RhnsPa
+ CL0fA1tYCuN4fQmp7vh/uLxDxudRNmkyQcw= 
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2042.outbound.protection.outlook.com [104.47.66.42])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3jaab2u2mt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 31 Aug 2022 16:02:03 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jgyII2n6Izn5fAz4MMU6+GQSzp0J5bRU5ImGJBrQfeXVl7xXLy2PLwTpCBZeF80NUCNZiDo8iyCs4fl7W23zlAOA4lghyVZY05I6OcxLBcaFawVl+JBwzjRdk69DTB+fFCFca6GZ3cTqpUgMy2Kdiuom6xs74RfwpJNsPEt3LBVwEtTrb624jcUG38CCzU95gD1Y2xRVQ8Fq0kXnBfj+fBD09u03QhSdnuDwonjAsrPH+roSSAE7iJG8Do9Sx2GSBNjAUsN9ce/Vv9EXYtgpMH1JZA4Fa6i3E9AqC+Bz8Wd8DfH68i2SUp420Gfsvlwd860WZvwpkSLMeFPBic0LYw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=0u4fGsRwFEz6YfUIswhqCx5WFhEvNmp/Z3cO9EN9LHs=;
+ b=fKDgs81FMVI4KixrbFZRJmWHVJwvQYRJjZNUSDRnQJK6b2pawR8G9GzhvpWt9wQHvILWLamE8ofYGj0Q7sdziBlykvrTlJZ0j3PU+YOC9yZj3NOun0w6/nU5BGLagx6fhiVZatqmWDPUSFwdQqae3cmVRN++ldgJHKRnzI8moROmdOJ2Yyy7JZlKBnSgKA6fJ5Dsfti9eoucDPI1GpLb2dq/3vj7Y5+gSO6ohz5q260lizRrMWhnbQBUghEOOhIFA1Ji/fLPG8bh2Px8FYysdPNP5kbDXla/VJ7TiaSoxvNlGWyLD3h6iU1Cpek+zulmg0IR72ysPpsAHKzWyxN2UQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from MW4PR15MB4475.namprd15.prod.outlook.com (2603:10b6:303:104::16)
+ by SA0PR15MB3823.namprd15.prod.outlook.com (2603:10b6:806:82::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5588.10; Wed, 31 Aug
+ 2022 23:02:00 +0000
+Received: from MW4PR15MB4475.namprd15.prod.outlook.com
+ ([fe80::1858:f420:93d2:4b5e]) by MW4PR15MB4475.namprd15.prod.outlook.com
+ ([fe80::1858:f420:93d2:4b5e%3]) with mapi id 15.20.5588.012; Wed, 31 Aug 2022
+ 23:02:00 +0000
+Date:   Wed, 31 Aug 2022 16:01:57 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Aditi Ghag <aditivghag@gmail.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>,
+        Kuniyuki Iwashima <kuniyu@amazon.com>
+Subject: Re: [RFC] Socket termination for policy enforcement and
+ load-balancing
+Message-ID: <20220831230157.7lchomcdxmvq3qqw@kafai-mbp.dhcp.thefacebook.com>
+References: <CABG=zsBEh-P4NXk23eBJw7eajB5YJeRS7oPXnTAzs=yob4EMoQ@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABG=zsBEh-P4NXk23eBJw7eajB5YJeRS7oPXnTAzs=yob4EMoQ@mail.gmail.com>
+X-ClientProxiedBy: BYAPR03CA0024.namprd03.prod.outlook.com
+ (2603:10b6:a02:a8::37) To MW4PR15MB4475.namprd15.prod.outlook.com
+ (2603:10b6:303:104::16)
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 52ec6194-30f8-4949-4445-08da8ba4cf99
+X-MS-TrafficTypeDiagnostic: SA0PR15MB3823:EE_
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: rAJHbb4gV+b7cCbrM2nbd9xKfXL5o1my5VURQrOxvJ1j6OZGCDBzqJhkqb5cklv0jR4rnNHnT2M3hpHul+ea4fjKOKS+cuyrwIaLFL9sIzxZ6Y2m+uKaEcpoPT654yQuOi+pi+kCOXDW+lFmCaNJlNVKUaXu7SoVwXa8v5GjvFBE09gYsYOoQP9/dF6uczHpzp+6ZPQqx5XdViK9iiw1XclqB8IOy/Usr50Qo4j9WkJW1lxAc4i/LzzI+N6o7Abd8w0ktoTiva4BcB6F0NLI5Egw3nXdd66B9XzsbfOLOZ2HgH5YIlITZrDvdzXEcnc0lneCgspmKg8OMFwxbDa1JDO2k+RGmgMkh4g2C2cYcpwkHbkNNtwA0EO3P3zC6eEh9a7jskKKFtQWJCg0QQw2/2aqgJGPeTeurbr6psNiWOpt9QcKPEuqf5YW7xLjdFmvBZJefqYBhODSXXKNlbSkz0sfwqh2aDAkNz5a5r6dChYGuJ74rhVM+/WuMqY9bGK+Rkir++b2f9snuKtiN6Etnr+TA7EpApLq6UE9NVqKBJmAoIX6Sgo1b8QaQvvaqKupWfO5nSD5kRAz+AoSsl0xGpKx5dhMNbuvhj+GamP32Rz03U8kfcitwKbRnVKIGeBMaWg6HCmttXeqWTitwUlxBO1MnOHUaMCw2YNy9Jsn5Kb2YTl/oOB5Gp0MMHwrSwjAfnwVOAQCI8TBAWk945rh0RvbEh202IQNkatLFf+24to=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR15MB4475.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(346002)(396003)(39860400002)(376002)(366004)(136003)(66946007)(66556008)(8936002)(5660300002)(8676002)(66476007)(4326008)(478600001)(6666004)(316002)(54906003)(41300700001)(6916009)(6486002)(966005)(2906002)(1076003)(186003)(6512007)(52116002)(6506007)(9686003)(83380400001)(38100700002)(86362001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?cJtxsAbY6GHPTrXJAySDK6LKiF3QpYDdEmiVpiq7mNAH30444kaA4z9jLhcv?=
+ =?us-ascii?Q?35ZQQ+AIWZdGaS8sajApJASxBzKa2hxZB2mk0JuOlOd3bVJb7URVlbc17nQ3?=
+ =?us-ascii?Q?3I1k9hKQJHEd7yALoWlzCCxFGyh9kTSJJPNpZ4zBTvSbBIY7l/ApAcwnjXVx?=
+ =?us-ascii?Q?9Mx3mL/Zo+6RzYtoRn/zxEdX/DwHeIkMMult3i5gtpBo9FSLgg4+Zw1tsp6r?=
+ =?us-ascii?Q?saVP3flw2NuWAbe7uJeQvAhaTlXCrJRCvxiFXDgfR46xjF3Aks3MpK7c9IRz?=
+ =?us-ascii?Q?aJB02fBC341eeDr6L+8mcBAXUoZj8uiL3lw86H8rY5lO6O2o6XFIXB8tvZVH?=
+ =?us-ascii?Q?leXbbcjMIODHY4yzQ0frBBOjNv/luQ8Uj+BdexnK1hmSmmDJZOoD3ExfTJ4D?=
+ =?us-ascii?Q?NTBHQcpo0NIuOoWxv1bprr83cAZtbomAg9VRAMBOuSr4Ocml9KeuYWnxp4Oy?=
+ =?us-ascii?Q?lHx1YOXVy4XVXJu9IRA2+FNyo8ElXNSfB7Z+K3p6j+Erw85Ul0Tj9ZgqkNaP?=
+ =?us-ascii?Q?MVLjknc9yS4YebA/SXzXSAAnlY1HFU1w0VEi1GBWNDFLE8s22eVdOKfux1dK?=
+ =?us-ascii?Q?OQNfja9E80x0IX91mlKqoE9r2SPIfxSPO/Na9+yo0E8imp9ShfByarvz3cvH?=
+ =?us-ascii?Q?raZGJ6n5hlWKx/2jGLkFBtrv8m9dMIzbS5/XfHdmJQW1h7jyHDhJ02twhmRK?=
+ =?us-ascii?Q?59NA5ZURcMLL6pWTHIYkGuJSQkG6W78S7gAQ0qw9J3tZ3N+sIUySJgOQa/0Y?=
+ =?us-ascii?Q?4ODniGVq1RJyc5eMvfSMj2cl0TkygX/EnSHPXK/3/MrC+tfvSzu9vIKwGFsr?=
+ =?us-ascii?Q?xC2Tfp+tP5vnty2zzAT4J291RZOW0kR2aSINxG/xmv1f8guIFA5iPzs4p8s3?=
+ =?us-ascii?Q?rDa4jCMLFDOHn9IKy6Yl3NuP3EpNLA1NHhLxe1i3fSVy/cZByOTobBLS7xyB?=
+ =?us-ascii?Q?hNeV448bnRBKvNm5jjdwlh0MU7HQI4d/c9JxP020WbWOW1rGqDuOJUAANnSS?=
+ =?us-ascii?Q?ESDyn/fGq8qvWD8FiGK3fk+f9X/NpERD1znbBrc/+VyRynjQpb5MG0PLhWO4?=
+ =?us-ascii?Q?k9UQf6dhwYKFHlTk2kLAhI71zGIJLeZ3+98dfdW1SAvoShzitkjgb6BkqbD5?=
+ =?us-ascii?Q?NfJFJ3KmKGVYUPwvYRs7l4z5hHcazBCZ+XijRgTx2fp5FX4LTXeyFt5Szi5t?=
+ =?us-ascii?Q?mdCIdviLkLwd59S4DySVZpF5KayPIPbRNB0pmYgkVSm9AUPPpxL0KUIYuA6e?=
+ =?us-ascii?Q?XZs0KjtdR3pdrD6Eok0Rpqfaww8WqmYqqKawLaVtStXssWYJ681WjblYL7uJ?=
+ =?us-ascii?Q?wznZejyRXJLfN8wRKeK2A09LXZYn3TCdXlou5Yzv1PEOrjBqhL6vFaz0yDy3?=
+ =?us-ascii?Q?L0zXi/6FclZIrTZu+xQUxXkN8QFuzIx+VMn9r263wZyOqhdDAEXKQtdTkIhq?=
+ =?us-ascii?Q?OVZpeUKQ4ABA9Xpm1C60zO4srCU6iCJdnrozps+/3sO7peqCNKMaF5HC2HDs?=
+ =?us-ascii?Q?Qhp+VYdgTHhJWWs3y5jnVjWZyoX2m+Kax4l17xAiV80CHf/1EYF60Wh77bL2?=
+ =?us-ascii?Q?0bn3/vevchMcVDSjJcqI+qBuA65EiBmfKE9OAWSyA7o+lNklA4MWxwhDsByS?=
+ =?us-ascii?Q?7A=3D=3D?=
+X-OriginatorOrg: fb.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 52ec6194-30f8-4949-4445-08da8ba4cf99
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR15MB4475.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Aug 2022 23:02:00.5340
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5+tlEvft18MbWZzxja9vBjmMtOZaEDDeqSPdTnjuXiHa97nD/cXZ85s+zTiYTg/n
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR15MB3823
+X-Proofpoint-GUID: y4rgRywWfgoeEFJKP8S6xOza7r1r4TMR
+X-Proofpoint-ORIG-GUID: y4rgRywWfgoeEFJKP8S6xOza7r1r4TMR
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <CAADnVQLXji_sK8rURTeJJzoM4E40iXNKeEwfK-bB-CMUZcz90Q@mail.gmail.com>
- <CAP01T746jPM1r=fSVJBG-iW=pQAW8JAzLzocnB_GDkb3HKZ+Aw@mail.gmail.com>
- <CAADnVQKAG80STa=iHTBT8NpQWBw=3Hs8nRwq6Vy=zOLjP8YHqw@mail.gmail.com>
- <1e05c903cc12d3dd9e53cb96698a18d12d8c6927.camel@fb.com> <CAADnVQJUTybKJQ=2jR4UjjC_8yom_B7cWAOGEWDDRcoJSZJ7AQ@mail.gmail.com>
- <CAP01T76N+6cRMNM=hEKwVkhrjSv5cuzp7F-uT3WEa710Ry5Tdg@mail.gmail.com>
- <CAADnVQLZaJmNyvQKvzG0ezfgPO9P+zG+WKk0cfdEgT3cqF3dZw@mail.gmail.com>
- <73ec48e4c4956d97744b17d77d61392f7227b78d.camel@fb.com> <20220831015247.lf3quucbhg53dxts@macbook-pro-4.dhcp.thefacebook.com>
- <094a932af88d5e0a7e0ceb895ec9b2ad640a4f71.camel@fb.com> <20220831185710.pngpynntwvjrmm6g@MacBook-Pro-4.local.dhcp.thefacebook.com>
- <e37a3f11074245b04b086f3d9877ca08f0fef7dd.camel@fb.com>
-In-Reply-To: <e37a3f11074245b04b086f3d9877ca08f0fef7dd.camel@fb.com>
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date:   Thu, 1 Sep 2022 00:32:33 +0200
-Message-ID: <CAP01T77gfP5ogEfvAgkGxfqypUtVzaPKu5pE2dYqFgp6=UL20w@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 00/15] bpf: BPF specific memory allocator,
- UAPI in particular
-To:     Delyan Kratunov <delyank@fb.com>
-Cc:     "alexei.starovoitov@gmail.com" <alexei.starovoitov@gmail.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "joannelkoong@gmail.com" <joannelkoong@gmail.com>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "tj@kernel.org" <tj@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Kernel Team <Kernel-team@fb.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-08-31_14,2022-08-31_03,2022-06-22_01
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 31 Aug 2022 at 23:02, Delyan Kratunov <delyank@fb.com> wrote:
->
-> On Wed, 2022-08-31 at 11:57 -0700, Alexei Starovoitov wrote:
-> > !-------------------------------------------------------------------|
-> >   This Message Is From an External Sender
-> >
-> > > -------------------------------------------------------------------!
-> >
-> > On Wed, Aug 31, 2022 at 05:38:15PM +0000, Delyan Kratunov wrote:
-> > >
-> > > Overall, this design (or maybe the way it's presented here) conflates a few ideas.
-> > >
-> > > 1) The extensions to expose and customize map's internal element allocator are fine
-> > > independently of even this patchset.
-> > >
-> > > 2) The idea that kptrs in a map need to have a statically identifiable allocator is
-> > > taken as an axiom, and then expanded to its extreme (single allocator per map as
-> > > opposed to the smarter verifier schemes). I still contest that this is not the case
-> > > and the runtime overhead it avoids is paid back in bad developer experience multiple
-> > > times over.
-> > >
-> > > 3) The idea that allocators can be merged between elements and kptrs is independent
-> > > of the static requirements. If the map's internal allocator is exposed per 1), we can
-> > > still use it to allocate kptrs but not require that all kptrs in a map are from the
-> > > same allocator.
-> > >
-> > > Going this coarse in the API is easy for us but fundamentally more limiting for
-> > > developers. It's not hard to imagine situations where the verifier dependency
-> > > tracking or runtime lifetime tracking would allow for pinned maps to be retained but
-> > > this scheme would require new maps entirely. (Any situation where you just refactored
-> > > the implicit allocator out to share it, for example)
-> > >
-> > > I also don't think that simplicity for us (a one time implementation cost +
-> > > continuous maintenance cost) trumps over long term developer experience (a much
-> > > bigger implementation cost over a much bigger time span).
-> >
-> > It feels we're thinking about scope and use cases for the allocator quite
-> > differently and what you're seeing as 'limiting developer choices' to me looks
-> > like 'not a limiting issue at all'. To me the allocator is one
-> > jemalloc/tcmalloc instance. One user space application with multiple threads,
-> > lots of maps and code is using exactly one such allocator. The allocator
-> > manages all the memory of user space process. In bpf land we don't have a bpf
-> > process. We don't have a bpf name space either.  A loose analogy would be a set
-> > of programs and maps managed by one user space agent. The bpf allocator would
-> > manage all the memory of these maps and programs and provide a "memory namespace"
-> > for this set of programs. Another user space agent with its own programs
-> > would never want to share the same allocator. In user space a chunk of memory
-> > could be mmap-ed between different process to share the data, but you would never
-> > put a tcmalloc over such memory to be an allocator for different processes.
-> >
-> > More below.
-> >
-> > > So far, my ranked choice vote is:
-> > >
-> > > 1) maximum flexibility and runtime live object counts (with exposed allocators, I
-> > > like the merging)
-> > > 2) medium flexibility with per-field allocator tracking in the verifier and the
-> > > ability to lose the association once programs are unloaded and values are gone. This
-> > > also works better with exposed allocators since they are implicitly pinned and would
-> > > be usable to store values in another map.
-> > > 3) minimum flexibility with static whole-map kptr allocators
-> >
-> > The option 1 flexibility is necessary when allocator is seen as a private pool
-> > of objects of given size. Like kernel's kmem_cache instance.
-> > I don't think we quite there yet.
->
-> If we're not there, we should aim to get there :)
->
-> > There is a need to "preallocate this object from sleepable context,
-> > so the prog has a guaranteed chunk of memory to use in restricted context",
-> > but, arguably, it's not a job of bpf allocator.
->
-> Leaving it to the programs is worse for memory usage (discussed below).
->
-> > bpf prog can allocate an object, stash it into kptr, and use it later.
->
-> Given that tracing programs can't really maintain their own freelists safely (I think
-> they're missing the building blocks - you can't cmpxchg kptrs), I do feel like
-> isolated allocators are a requirement here. Without them, allocations can fail and
-> there's no way to write a reliable program.
->
-> *If* we ensure that you can build a usable freelist out of allocator-backed memory
-> for (a set of) nmi programs, then I can maybe get behind this (but there's other
-> reasons not to do this).
->
-> > So option 3 doesn't feel less flexible to me. imo the whole-map-allocator is
-> > more than we need. Ideally it would be easy to specifiy one single
-> > allocator for all maps and progs in a set of .c files. Sort-of a bpf package.
-> > In other words one bpf allocator per bpf "namespace" is more than enough.
->
-> _Potentially_. Programs need to know that when they reserved X objects, they'll have
-> them available at a later time and any sharing with other programs can remove this
-> property. A _set_ of programs can in theory determine the right prefill levels, but
-> this is certainly easier to reason about on a per-program basis, given that programs
-> will run at different rates.
->
-> > Program authors shouldn't be creating allocators left and right. All these
-> > free lists will waste memory.
-> > btw I've added an extra patch to bpf_mem_alloc series:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/ast/bpf.git/commit/?h=memalloc&id=6a586327a270272780bdad7446259bbe62574db1
-> > that removes kmem_cache usage.
-> > Turned out (hindsight 20/20) kmem_cache for each bpf map was a bad idea.
-> > When free_lists are not shared they will similarly waste memory.
-> > In user space the C code just does malloc() and the memory is isolated per process.
-> > Ideally in bpf world the programs would just do:
-> > bpf_mem_alloc(btf_type_id_local(struct foo));
-> > without specifying an allocator, but that would require one global allocator
-> > for all bpf programs in the kernel which is probably not a direction we should go ?
->
-> Why does it require a global allocator? For example, you can have each program have
-> its own internal allocator and with runtime live counts, this API is very achievable.
-> Once the program unloads, you can drain the freelists, so most allocator memory does
-> not have to live as long as the longest-lived object from that allocator. In
-> addition, all allocators can share a global freelist too, so chunks released after
-> the program unloads get a chance to be reused.
->
-> > So the programs have to specify an allocator to use in bpf_mem_alloc(),
-> > but it should be one for all progs, maps in a bpf-package/set/namespace.
-> > If it's easy for programs to specify a bunch of allocators, like one for each program,
-> > or one for each btf_type_id the bpf kernel infra would be required to merge
-> > these allocators from day one.
->
-> How is having one allocator per program different from having one allocator per set
-> of programs, with per-program bpf-side freelists? The requirement that some (most?)
-> programs need deterministic access to their freelists is still there, no matter the
-> number of allocators. If we fear that the default freelist behavior will waste
-> memory, then the defaults need to be aggressively conservative, with programs being
-> able to adjust them.
->
-> Besides, if we punt the freelists to bpf, then we get absolutely no control over the
-> memory usage, which is strictly worse for us (and worse developer experience on top).
->
-> > (The profileration of kmem_cache-s in the past
-> > forced merging of them). By restricting bpf program choices with allocator-per-map
-> > (this option 3) we're not only making the kernel side to do less work
-> > (no run-time ref counts, no merging is required today), we're also pushing
-> > bpf progs to use memory concious choices.
->
-> This is conflating "there needs to be a limit on memory stuck in freelists" with "you
-> can only store kptrs from one allocator in each map." The former practically
-> advocates for freelists to _not_ be hand-rolled inside bpf progs. I still disagree
-> with the latter - it's coming strictly from the desire to have static mappings
-> between object storage and allocators; it's not coming from a memory usage need, it
-> only avoids runtime live object counts.
->
-> > Having said all that maybe one global allocator is not such a bad idea.
->
-> It _is_ a bad idea because it doesn't have freelist usage determinism. I do, however,
-> think there is value in having precise and conservative freelist policies, along with
-> a global freelist for overflow and draining after program unload. The latter would
-> allow us to share memory between allocators without sacrificing per-allocator
-> freelist determinism, especially if paired with very static (but configurable)
-> freelist thresholds.
->
+On Wed, Aug 31, 2022 at 09:37:41AM -0700, Aditi Ghag wrote:
+> - Use BPF (sockets) iterator to identify sockets connected to a
+> deleted backend. The BPF (sockets) iterator is network namespace aware
+> so we'll either need to enter every possible container network
+> namespace to identify the affected connections, or adapt the iterator
+> to be without netns checks [3]. This was discussed with my colleague
+> Daniel Borkmann based on the feedback he shared from the LSFMMBPF
+> conference discussions.
+Being able to iterate all sockets across different netns will
+be useful.
 
-These are all good points. Sharing an allocator between all programs
-means bpf_mem_prefill request cannot really guarantee much, it does
-hurt determinism. The prefilled items can be drained by some other
-program with an inconsistent allocation pattern.
+It should be doable to ignore the netns check.  For udp, a quick
+thought is to have another iter target. eg. "udp_all_netns".
+From the sk, the bpf prog should be able to learn the netns and
+the bpf prog can filter the netns by itself.
 
-But going back to what Alexei replied in the other thread:
-> bpf progs are more analogous to kernel modules.
-> The modules just do kmalloc.
-> The more we discuss the more I'm leaning towards the same model as well:
-> Just one global allocator for all bpf progs.
+The TCP side is going to have an 'optional' per netns ehash table [0] soon,
+not lhash2 (listening hash) though.  Ideally, the same bpf
+all-netns iter interface should work similarly for both udp and
+tcp case.  Thus, both should be considered and work at the same time.
 
-There does seem to be one big benefit in having a global allocator
-(not per program, but actually globally in the kernel, basically a
-percpu freelist cache fronting kmalloc) usable safely in any context.
-We don't have to do any allocator lifetime tracking at all, that case
-reduces to basically how we handle kernel kptrs currently.
+For udp, something more useful than plain udp_abort() could potentially
+be done.  eg. directly connect to another backend (by bpf kfunc?).
+There may be some details in socket locking...etc but should
+be doable and the bpf-iter program could be sleepable also.
+fwiw, we are iterating the tcp socket to retire some older
+bpf-tcp-cc (congestion control) on the long-lived connections
+by bpf_setsockopt(TCP_CONGESTION).
 
-I am wondering if we can go with such an approach: by default, the
-global allocator in the kernel serves bpf_mem_alloc requests, which
-allows freelist sharing between all programs, it is basically kmalloc
-but safe in NMI and with reentrancy protection. When determinism is
-needed, use the percpu refcount approach with option 1 from Delyan for
-the custom allocator case.
+Also, potentially, instead of iterating all,
+a more selective case can be done by
+bpf_prog_test_run()+bpf_sk_lookup_*()+udp_abort().
 
-Now by default you have conservative global freelist sharing (percpu),
-and when required program can use a custom allocator and prefill to
-keep the cache ready to serve requests (where that kind of control
-will be very useful for progs in NMI/hardirq context, where depletion
-of cache means NULL from unit_alloc), where its own allocator freelist
-will be unaffected by other allocations.
-
-Any kptr from the bpf_mem_alloc allocator can go to any map, no problem at all.
-The only extra cost is maintaining the percpu live counts for
-non-global allocators, it is basically free for the global case.
-And it would also be allowed to probably choose and share allocators
-between maps, as proposed by Alexei before. That has no effect on
-kptrs being stored in them, as most commonly they would be from the
-global allocator.
-
-Thoughts on this?
+[0]: https://lore.kernel.org/netdev/20220830191518.77083-1-kuniyu@amazon.com/
