@@ -2,110 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDD085A88AA
-	for <lists+bpf@lfdr.de>; Wed, 31 Aug 2022 23:58:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C9C25A88B9
+	for <lists+bpf@lfdr.de>; Thu,  1 Sep 2022 00:02:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232470AbiHaV6s (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 31 Aug 2022 17:58:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35920 "EHLO
+        id S229992AbiHaWCO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 31 Aug 2022 18:02:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232607AbiHaV6Y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 31 Aug 2022 17:58:24 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E805275C5;
-        Wed, 31 Aug 2022 14:57:47 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1oTViL-0006Km-UW; Wed, 31 Aug 2022 23:57:37 +0200
-Date:   Wed, 31 Aug 2022 23:57:37 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Florian Westphal <fw@strlen.de>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Toke =?iso-8859-15?Q?H=F8iland-J=F8rgensen?= <toke@kernel.org>,
-        netfilter-devel <netfilter-devel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH nf-next] netfilter: nf_tables: add ebpf expression
-Message-ID: <20220831215737.GE15107@breakpoint.cc>
-References: <20220831101617.22329-1-fw@strlen.de>
- <87v8q84nlq.fsf@toke.dk>
- <20220831125608.GA8153@breakpoint.cc>
- <87o7w04jjb.fsf@toke.dk>
- <20220831135757.GC8153@breakpoint.cc>
- <87ilm84goh.fsf@toke.dk>
- <20220831152624.GA15107@breakpoint.cc>
- <CAADnVQJp5RJ0kZundd5ag-b3SDYir8cF4R_nVbN8Zj9Rcn0rww@mail.gmail.com>
- <20220831155341.GC15107@breakpoint.cc>
- <CAADnVQJGQmu02f5B=mc1xJvVWSmk_GNZj9WAUskekykmyo8FzA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQJGQmu02f5B=mc1xJvVWSmk_GNZj9WAUskekykmyo8FzA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S229735AbiHaWCM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 31 Aug 2022 18:02:12 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 398E0DC5FA
+        for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 15:02:11 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id p18-20020a170902a41200b00172b0dc71e0so10554970plq.0
+        for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 15:02:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date;
+        bh=r9j9UaaDE9X/fY022QlBZ5udCV7NoZgyGORt+9AxKm0=;
+        b=Y/1MS+x26c6iPkEkuv0QMTJorex6WIyuyWIiBPEAMsuUvgYO8C1+JHOmQ8X/NlbOV0
+         1rsYQT5EKz8nj0Y9adeen0XCiMeU83iHpIGCtHf7EcuP6LR+LyGfMZzcuxRWmT8KO6Sg
+         P3YirDsxLGB188mIeXn92fw45m4toftVW8Rw0MoRcQ37XFt9ExyPF/p6dy2ODdJxbJaw
+         Up75/dGHEaAeKWUj2+onPosc8XjhcXU0rCOWHZ+W8ZJnLxIjo+Fea2xZjk3ypF6HCLxW
+         SFyvG1pS5iXLOLXi4j+ez8jx2yA03P3pBNuCwpRfNculrm4+vsHLoESmPU0Ho8dhFO4o
+         jICA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date;
+        bh=r9j9UaaDE9X/fY022QlBZ5udCV7NoZgyGORt+9AxKm0=;
+        b=CpnE38bicvFsXykIUojePjukP2fQmG4mAClj+PnaLxt3AjMT4+bsh+gLZKGtS/BDpw
+         Ax32RKT3ZZIyPgm33nDe27SPuRT6bG7gHo7KjZk8W8pB/Rg0K9dczrffVrn/IGFB1xY3
+         Bx+XKqWM+63/7a/4LYn3PuNQVap7jb8YbKBa96fv7iIuRb4/ia7Xdl6juJuwdNCRpGBT
+         OVhmK10mG25xfeTIyxLAOyVaoAZLvFdRGNzy8PunVY1oms6W90h2wc46JBC/aDhPZqKT
+         WU5pBX05MOu+IG/e0YJg6GhfZIleFYdcRnQtyeiPmGdK09r+uP1aMO8ZKYN6V8r0Y5eY
+         3wCg==
+X-Gm-Message-State: ACgBeo0M1caX1Atyp9YQVMONQ300uXuQfi5oO4BlcBgOlvOezCDP9U1p
+        mnzV/iayrAkNfC+SgeOtsg5r8cU=
+X-Google-Smtp-Source: AA6agR49drocjZ0i2QppRHAYciWa4wRqWZV+P2gTJMtFvBQ+0bmrqsnZM1oN5+OWxpO6NHX/hEUf40E=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a17:90a:249:b0:1e0:a8a3:3c6c with SMTP id
+ t9-20020a17090a024900b001e0a8a33c6cmr309305pje.0.1661983330118; Wed, 31 Aug
+ 2022 15:02:10 -0700 (PDT)
+Date:   Wed, 31 Aug 2022 15:02:08 -0700
+In-Reply-To: <CABG=zsBEh-P4NXk23eBJw7eajB5YJeRS7oPXnTAzs=yob4EMoQ@mail.gmail.com>
+Mime-Version: 1.0
+References: <CABG=zsBEh-P4NXk23eBJw7eajB5YJeRS7oPXnTAzs=yob4EMoQ@mail.gmail.com>
+Message-ID: <Yw/aYIR3mBABN75G@google.com>
+Subject: Re: [RFC] Socket termination for policy enforcement and load-balancing
+From:   sdf@google.com
+To:     Aditi Ghag <aditivghag@gmail.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-> > This helps gradually moving towards move epbf for those that
-> > still heavily rely on the classic forwarding path.
-> 
-> No one is using it.
-> If it was, we would have seen at least one bug report over
-> all these years. We've seen none.
+On 08/31, Aditi Ghag wrote:
+> This is an RFC for terminating sockets with intent. We have two
+> prominent use cases in Cilium [1] where we need a way to identify and
+> forcefully terminate a set of sockets so that they can reconnect.
+> Cilium uses eBPF cgroup hooks for load-balancing, where it translates
+> a service vip to one of the service backend ip addresses at socket
+> connect time for TCP and connected UDP. Client applications are likely
+> to be unaware of the remote containers that they are connected to
+> getting deleted, and are left hanging when the remotes go away
+> (long-running UDP applications, particularly). For the policy
+> enforcement use case, users may want to enforce policies on-the-fly
+> where they want all client applications traffic including established
+> connections to be redirected to a subset of destinations.
 
-Err, it IS used, else I would not have sent this patch.
+> We evaluated following ways to identify, and forcefully terminate sockets:
 
-> very reasonable early on and turned out to be useless with
-> zero users.
-> BPF_PROG_TYPE_SCHED_ACT and BPF_PROG_TYPE_LWT*
-> are in this category.
+> - The sock_destroy API added for similar Android use cases is
+> effective in tearing down sockets. The API is behind the
+> CONFIG_INET_DIAG_DESTROY config that's disabled by default, and
+> currently exposed via SOCK_DIAG netlink infrastructure in userspace.
+> The sock destroy handlers for TCP and UDP protocols send ECONNABORTED
+> error code to sockets related to the abort state as mentioned in RFC
+> 793.
 
-I doubt it had 0 users.  Those users probably moved to something
-better?
+> - Add unreachable routes for deleted backends. I experimented with
+> this approach with my colleague, Nikolay Aleksandrov. We found that
+> TCP and connected UDP sockets in the established state simply ignore
+> the ICMP error messages, and continue to send data in the presence of
+> such routes. My read is that applications are ignoring the ICMP errors
+> reported on sockets [2].
 
-> As a minimum we shouldn't step on the same rakes.
-> xt_ebpf would be the same dead code as xt_bpf.
+[..]
 
-Its just 160 LOC or so, I don't see it has a huge technical debt.
+> - Use BPF (sockets) iterator to identify sockets connected to a
+> deleted backend. The BPF (sockets) iterator is network namespace aware
+> so we'll either need to enter every possible container network
+> namespace to identify the affected connections, or adapt the iterator
+> to be without netns checks [3]. This was discussed with my colleague
+> Daniel Borkmann based on the feedback he shared from the LSFMMBPF
+> conference discussions.
 
-> > If you are open to BPF_PROG_TYPE_NETFILTER I can go that route
-> > as well, raw bpf program attachment via NF_HOOK and the bpf dispatcher,
-> > but it will take significantly longer to get there.
-> >
-> > It involves reviving
-> > https://lore.kernel.org/netfilter-devel/20211014121046.29329-1-fw@strlen.de/
-> 
-> I missed it earlier. What is the end goal ?
+Maybe something worth fixing as well even if you end up using netlink?
+Having to manually go over all networking namespaces (if I want
+to iterate over all sockets on the host) doesn't seem feasible?
 
-Immediate goal: get rid of all indirect calls from NF_HOOK()
-invocations. Its about 2% speedup in my tests (with connection
-tracking+defrag enabled).
+> - Use INET_DIAG infrastructure to filter and destroy sockets connected
+> to stale backends. This approach involves first making a query to
+> filter sockets connecting to a destination ip address/port using
+> netlink messages with type SOCK_DIAG_BY_FAMILY, and then use the query
+> results to make another message of type SOCK_DESTROY to actually
+> destroy the sockets. The SOCK_DIAG infrastructure, similar to BPF
+> iterators, is network namespace aware.
 
-This series changes prototype of the callbacks to int foo(struct *),
-so I think it would be possible to build on this and allow attaching raw
-bpf progs/implement what is now a netfilter kernel module as a bpf
-program.
+> We are currently leaning towards invoking the sock_destroy API
+> directly from BPF programs. This allows us to have an effective
+> mechanism without having to enter every possible container network
+> namespace on a node, and rely on the CONFIG_INET_DIAG_DESTROY config
+> with the right permissions. BPF programs attached to cgroup hooks can
+> store client sockets connected to a backend, and invoke destroy APIs
+> when backends are deleted.
 
-I have not spent time on this so far though, so I don't know yet
-how the "please attach prog id 12345 at FORWARD with prio 42" should
-be done.
+> To that end, I'm in the process of adding a new BPF helper for the
+> sock_destroy kernel function similar to the sock_diag_destroy function
+> [4], and am soliciting early feedback on the evaluated and selected
+> approaches. Happy to share more context.
 
-> Optimize nft run-time with on the fly generation of bpf byte code ?
-
-This could be done too, so far this JITs nf_hook_slow() only.
-The big question for nft run-time would be how and where to do the JIT
-translation.
-
-I think that "nft run time jit" would be step 3, after allowing
-(re)implementation of netfilter modules via bpf programs.
+> [1] https://github.com/cilium/cilium
+> [2] https://github.com/torvalds/linux/blob/master/net/ipv4/tcp_ipv4.c#L464
+> [3] https://github.com/torvalds/linux/blob/master/net/ipv4/udp.c#L3011
+> [4]  
+> https://github.com/torvalds/linux/blob/master/net/core/sock_diag.c#L298
