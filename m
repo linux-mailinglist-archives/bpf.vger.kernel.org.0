@@ -2,59 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A97D85A8863
-	for <lists+bpf@lfdr.de>; Wed, 31 Aug 2022 23:50:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C835E5A8869
+	for <lists+bpf@lfdr.de>; Wed, 31 Aug 2022 23:50:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230339AbiHaVuF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 31 Aug 2022 17:50:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55246 "EHLO
+        id S230437AbiHaVu6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 31 Aug 2022 17:50:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231210AbiHaVtz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 31 Aug 2022 17:49:55 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ADDB7679;
-        Wed, 31 Aug 2022 14:49:51 -0700 (PDT)
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1oTVai-000FnW-A8; Wed, 31 Aug 2022 23:49:44 +0200
-Received: from [85.1.206.226] (helo=linux-4.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1oTVai-000NY6-0s; Wed, 31 Aug 2022 23:49:44 +0200
-Subject: Re: [PATCH nf-next] netfilter: nf_tables: add ebpf expression
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Florian Westphal <fw@strlen.de>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@kernel.org>,
-        netfilter-devel <netfilter-devel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-References: <20220831101617.22329-1-fw@strlen.de> <87v8q84nlq.fsf@toke.dk>
- <20220831125608.GA8153@breakpoint.cc> <87o7w04jjb.fsf@toke.dk>
- <20220831135757.GC8153@breakpoint.cc> <87ilm84goh.fsf@toke.dk>
- <20220831152624.GA15107@breakpoint.cc>
- <CAADnVQJp5RJ0kZundd5ag-b3SDYir8cF4R_nVbN8Zj9Rcn0rww@mail.gmail.com>
- <20220831155341.GC15107@breakpoint.cc>
- <CAADnVQJGQmu02f5B=mc1xJvVWSmk_GNZj9WAUskekykmyo8FzA@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <1cc40302-f006-31a7-b270-30813b8f4b67@iogearbox.net>
-Date:   Wed, 31 Aug 2022 23:49:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S230377AbiHaVu4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 31 Aug 2022 17:50:56 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00066E6886;
+        Wed, 31 Aug 2022 14:50:55 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id m5so11911481qkk.1;
+        Wed, 31 Aug 2022 14:50:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date;
+        bh=vOy+aMqhVVgkaFdcKPS9BO6pUN7ZgzHkeevfPR3xgF8=;
+        b=moMlIKwBR5qnYuq9/hV5tNMraORsTiT1tQ/JJRfZM7uOBVm1j61bYK7YcjRSU9nGqw
+         qZEYIjKDHn1l3GLGwQ42OJYivWEw9ifn2fCgYAzflrlLSCtCL+agQ0tw2sI+CYh4zk27
+         QWjf4S75dInJz9H1m+vaF3805hHNeUVxkhi8BuFMApCREwmjGgAdgysFN1x7X+HCb/jL
+         9Ur3FrvcPYhrC9/7l1O9s7MwiY+tBV3nBp66dzq/Ofr/jEbLjqnKn6GgVYBngdX2T60m
+         k7XSKxcN2Y8Ftngs1IKD/Hy6Az/YeUamOFrPZeDUEPOS11Ce5XP+yr1MzVKEfUm+qCZ+
+         UaOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date;
+        bh=vOy+aMqhVVgkaFdcKPS9BO6pUN7ZgzHkeevfPR3xgF8=;
+        b=vdPK5PTVggoGB0y8XEWQcKAL+fSJCAp7t9Xyqcq7PFYSa4STv1w3YxaR6CRAIa74uV
+         WGXq5q2rfDPIRcUE8g53Ep4+E9LzxgAUPIRBosN0K+FIogGA9T7VWnKOEVh1kM0e9pNa
+         faCn7x5DeWrxHMaCjP8ah8eooy5b7hgEwROLMEgqPpJt4UOOZJVAi77F7qmkpPcKDozE
+         YKnXlLPgDwNGigsDkmjtuN1D7urcmrZClGpoPIcNbX0tQA6S70QV0tSby1KwFM+9yZlb
+         F9Pxgi0PwIGWiHCkBFZNFQcYIWe6qJ9WzHs8E8a2vRis2NKOEUeWCLis9uishmvQNZQ6
+         VIUg==
+X-Gm-Message-State: ACgBeo2HyqUoRMS4f4AmlOi2nqGdK3Dv4OSUYzc5Uun+6BKQwEiHlKgr
+        xBLWaw5lt2fvBsxp4ESYM0A=
+X-Google-Smtp-Source: AA6agR5geD3j89IRsqLWukwG9AJmINLMZD/jIMiSMIrcF9dGTHQwDO1QvOnnST9XHmsotiUKXfC2Xw==
+X-Received: by 2002:a37:a811:0:b0:6ba:bc14:18ff with SMTP id r17-20020a37a811000000b006babc1418ffmr17077658qke.173.1661982655028;
+        Wed, 31 Aug 2022 14:50:55 -0700 (PDT)
+Received: from [192.168.1.3] (ip72-194-116-95.oc.oc.cox.net. [72.194.116.95])
+        by smtp.gmail.com with ESMTPSA id bx4-20020a05622a090400b00342fcdc2d46sm9180494qtb.56.2022.08.31.14.50.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 31 Aug 2022 14:50:53 -0700 (PDT)
+Message-ID: <1d5510f7-7c2d-6e30-f5d9-e45c470c380a@gmail.com>
+Date:   Wed, 31 Aug 2022 14:50:51 -0700
 MIME-Version: 1.0
-In-Reply-To: <CAADnVQJGQmu02f5B=mc1xJvVWSmk_GNZj9WAUskekykmyo8FzA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.0
+Subject: Re: [PATCH] libbpf: Initialize err in probe_map_create
 Content-Language: en-US
+To:     patchwork-bot+netdevbpf@kernel.org
+Cc:     bpf@vger.kernel.org, andrii@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+        davemarchevsky@fb.com, linux-kernel@vger.kernel.org
+References: <20220801025109.1206633-1-f.fainelli@gmail.com>
+ <165964981402.20332.403823292048774488.git-patchwork-notify@kernel.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <165964981402.20332.403823292048774488.git-patchwork-notify@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.6/26644/Wed Aug 31 09:53:02 2022)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -63,55 +78,35 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 8/31/22 7:26 PM, Alexei Starovoitov wrote:
-> On Wed, Aug 31, 2022 at 8:53 AM Florian Westphal <fw@strlen.de> wrote:
->> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
->>>> 1 and 2 have the upside that its easy to handle a 'file not found'
->>>> error.
->>>
->>> I'm strongly against calling into bpf from the inner guts of nft.
->>> Nack to all options discussed in this thread.
->>> None of them make any sense.
+
+
+On 8/4/2022 2:50 PM, patchwork-bot+netdevbpf@kernel.org wrote:
+> Hello:
+> 
+> This patch was applied to bpf/bpf-next.git (master)
+> by Andrii Nakryiko <andrii@kernel.org>:
+> 
+> On Sun, 31 Jul 2022 19:51:09 -0700 you wrote:
+>> GCC-11 warns about the possibly unitialized err variable in
+>> probe_map_create:
 >>
->> -v please.  I can just rework userspace to allow going via xt_bpf
->> but its brain damaged.
-> 
-> Right. xt_bpf was a dead end from the start.
-> It's time to deprecate it and remove it.
-> 
->> This helps gradually moving towards move epbf for those that
->> still heavily rely on the classic forwarding path.
-> 
-> No one is using it.
-> If it was, we would have seen at least one bug report over
-> all these years. We've seen none.
-> 
-> tbh we had a fair share of wrong design decisions that look
-> very reasonable early on and turned out to be useless with
-> zero users.
-> BPF_PROG_TYPE_SCHED_ACT and BPF_PROG_TYPE_LWT*
-> are in this category. > All this code does is bit rot.
-
-+1
-
-> As a minimum we shouldn't step on the same rakes.
-> xt_ebpf would be the same dead code as xt_bpf.
-
-+1, and on top, the user experience will just be horrible. :(
-
->> If you are open to BPF_PROG_TYPE_NETFILTER I can go that route
->> as well, raw bpf program attachment via NF_HOOK and the bpf dispatcher,
->> but it will take significantly longer to get there.
+>> libbpf_probes.c: In function 'probe_map_create':
+>> libbpf_probes.c:361:38: error: 'err' may be used uninitialized in this function [-Werror=maybe-uninitialized]
+>>    361 |                 return fd < 0 && err == exp_err ? 1 : 0;
+>>        |                                  ~~~~^~~~~~~~~~
 >>
->> It involves reviving
->> https://lore.kernel.org/netfilter-devel/20211014121046.29329-1-fw@strlen.de/
+>> [...]
 > 
-> I missed it earlier. What is the end goal ?
-> Optimize nft run-time with on the fly generation of bpf byte code ?
+> Here is the summary with links:
+>    - libbpf: Initialize err in probe_map_create
+>      https://git.kernel.org/bpf/bpf-next/c/3045f42a6432
+> 
+> You are awesome, thank you!
 
-Or rather to provide a pendant to nft given existence of xt_bpf, and the
-latter will be removed at some point? (If so, can't we just deprecate the
-old xt_bpf?)
+Thanks for applying, I was sort of expecting this patch to land to Linus 
+a bit quicker, as far as I can see it is still only in linux-next yet it 
+does fix a build warning turned error. Any chance of fast tracking it?
 
-Thanks,
-Daniel
+Thanks!
+-- 
+Florian
