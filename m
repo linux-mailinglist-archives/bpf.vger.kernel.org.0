@@ -2,119 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 645295A7998
-	for <lists+bpf@lfdr.de>; Wed, 31 Aug 2022 10:57:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F7705A79B1
+	for <lists+bpf@lfdr.de>; Wed, 31 Aug 2022 11:02:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231537AbiHaI5L (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 31 Aug 2022 04:57:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45986 "EHLO
+        id S231226AbiHaJCg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 31 Aug 2022 05:02:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231685AbiHaI4k (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 31 Aug 2022 04:56:40 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44B0713D4C;
-        Wed, 31 Aug 2022 01:55:52 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id j5so9645656plj.5;
-        Wed, 31 Aug 2022 01:55:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=KfqP3P5fzreqUNYWNqqi/aKR4WW6NY9UAjQRNRu9+Qk=;
-        b=hIa7176CXKK35z9AVMa/XaFVWDpb5yjP+xlj/GiO89fhNWE4gtmTNjooGPlqZ+o994
-         7Rdcqi7r+N+1xz4W5gP8qGxhxOCKYmY/axQ9fLB1mrAhdlqvgNjyYeWPhaH2k66JytIZ
-         VPiPHN1rBshG6qgeBk91wPfP6c2SKSoMrHpGxW746IMoFhF9k6aoAQB9UFXJa80U+pV6
-         1wW9H2+obpTGwGE/EB6WRbJ3mvb1XZVnQDgGmDCcklyE0sEEMkr5vEW8GgPw7DTlvDGF
-         KdZUlWzJsmq21BwKPROJ40fbbnSRmtUX8dAVRZQr7sPWkElvf79G/87pcxKbaWM7VhfB
-         JUHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=KfqP3P5fzreqUNYWNqqi/aKR4WW6NY9UAjQRNRu9+Qk=;
-        b=n7+IkV0I694J4rpXhKTvQ2D/kmn77oKWbRIcoiiePI33xCxwZH/iswHnezjL5ujCyH
-         qurrjlH2dtBtblV5x/vPBu7K8EwEQ0lBVxmxKWOClEMy5VgzUFx5M0hRbJzmmJMEr+pq
-         fZznIrtBAbASQl4GkjclgDNtzwhfZtMHtoVXnlWFHrW2Edd0qkKv6nFaedyuKtRPYLQL
-         At44asPfGeCipSjUh3QK2mLJLdVRdhZuTnuGqZnxpyb8IJWpFG/e84DxDiLXsmI8QqRV
-         aIzTPIJ00YkAGcJM0KkxVpXpepUdEH4OBC8vUL6adbD6+VYvXcmGPsu6N2+fu8El9IYr
-         qx6w==
-X-Gm-Message-State: ACgBeo1jOExBEkhzQi4iGd7225nuN0i3soKzVZN3c/ICFTjfLeh/D88u
-        9qv8tMWgG9bhZnq/1U8VeKxgiALTxLRL2lrMv0k=
-X-Google-Smtp-Source: AA6agR5Q7mDCACRvloh77FB6PS1ee4PLZBqEvQQFaTYcaEXQj3Teu0pIhv/TncaRvisJRDj1mcuXB6BJD911OydyUOs=
-X-Received: by 2002:a17:902:d4c2:b0:172:c519:9004 with SMTP id
- o2-20020a170902d4c200b00172c5199004mr24457708plg.154.1661936151703; Wed, 31
- Aug 2022 01:55:51 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220830135604.10173-1-maciej.fijalkowski@intel.com> <20220830135604.10173-6-maciej.fijalkowski@intel.com>
-In-Reply-To: <20220830135604.10173-6-maciej.fijalkowski@intel.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Wed, 31 Aug 2022 10:55:40 +0200
-Message-ID: <CAJ8uoz2=OgOvh3xj5mGizMU9jbmzQEzdF_-ftn+Tync4-9W1_w@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf-next 5/6] selftests: xsk: make sure single threaded
- test terminates
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, netdev@vger.kernel.org,
-        magnus.karlsson@intel.com, bjorn@kernel.org
+        with ESMTP id S230458AbiHaJCf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 31 Aug 2022 05:02:35 -0400
+Received: from xry111.site (xry111.site [IPv6:2001:470:683e::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C69E5BD747
+        for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 02:02:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
+        s=default; t=1661936552;
+        bh=ECqsVjBTRWNtq87Rj1rE7CyanoR0fzh8v6Jx+yreDLE=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=M4WDTBDs0+mXFJZpVCOe67+s1EQwPozaVwWJJBQGwmxtPWVoQSrhPveMxhBuASrCj
+         cFHwXTjrxUKuYghhs0A7OVOnsXn2+VlLpi4IEl3NpdhJshuwmB4SLqir7JtuTjZqWw
+         Npm8lmwjjUBOfuyBafuGSWydjVRGV+Hie2puUGKc=
+Received: from [IPv6:240e:358:118a:f800:dc73:854d:832e:4] (unknown [IPv6:240e:358:118a:f800:dc73:854d:832e:4])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
+        (Client did not present a certificate)
+        (Authenticated sender: xry111@xry111.site)
+        by xry111.site (Postfix) with ESMTPSA id 760C566819;
+        Wed, 31 Aug 2022 05:02:28 -0400 (EDT)
+Message-ID: <e477e042aee090d6c3cf7ebeabed25df5b0fa07e.camel@xry111.site>
+Subject: Re: [PATCH bpf-next v2 4/4] LoongArch: Enable BPF_JIT and TEST_BPF
+ in default config
+From:   Xi Ruoyao <xry111@xry111.site>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Huacai Chen <chenhuacai@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        loongarch@lists.linux.dev
+Date:   Wed, 31 Aug 2022 17:02:18 +0800
+In-Reply-To: <75b27dacb8b4d779c6b2c0e46871baf404a32b6b.camel@xry111.site>
+References: <1661857809-10828-1-git-send-email-yangtiezhu@loongson.cn>
+         <1661857809-10828-5-git-send-email-yangtiezhu@loongson.cn>
+         <CAAhV-H6Dq+Z_kS0LcM=QGF1h=k2i0hR7fYZdXgU2kXAfm1VPLw@mail.gmail.com>
+         <6bc9bd64-1ba9-a35f-c0b7-480429b26b9f@loongson.cn>
+         <75b27dacb8b4d779c6b2c0e46871baf404a32b6b.camel@xry111.site>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.45.2 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_SUSPICIOUS_NTLD,
+        PDS_OTHER_BAD_TLD,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 30, 2022 at 4:14 PM Maciej Fijalkowski
-<maciej.fijalkowski@intel.com> wrote:
->
-> For single threaded poll tests call pthread_kill() from main thread so
-> that we are sure worker thread has finished its job and it is possible
-> to proceed with next test types from test suite. It was observed that on
-> some platforms it takes a bit longer for worker thread to exit and next
-> test case sees device as busy in this case.
+On Wed, 2022-08-31 at 12:12 +0800, Xi Ruoyao wrote:
+> On Wed, 2022-08-31 at 09:23 +0800, Tiezhu Yang wrote:
+> >=20
+> >=20
+> > On 08/30/2022 10:46 PM, Huacai Chen wrote:
+> > > Hi, Tiezhu,
+> > >=20
+> > > On Tue, Aug 30, 2022 at 7:10 PM Tiezhu Yang
+> > > <yangtiezhu@loongson.cn> wrote:
+> > > >=20
+> > > > For now, BPF JIT for LoongArch is supported, update
+> > > > loongson3_defconfig to
+> > > > enable BPF_JIT to allow the kernel to generate native code when
+> > > > a program
+> > > > is loaded into the kernel, and also enable TEST_BPF to test BPF
+> > > > JIT.
+> > > >=20
+> > > > Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> > > > ---
+> > > > =C2=A0arch/loongarch/configs/loongson3_defconfig | 2 ++
+> > > > =C2=A01 file changed, 2 insertions(+)
+> > > >=20
+> > > > diff --git a/arch/loongarch/configs/loongson3_defconfig
+> > > > b/arch/loongarch/configs/loongson3_defconfig
+> > > > index 3712552..93dc072 100644
+> > > > --- a/arch/loongarch/configs/loongson3_defconfig
+> > > > +++ b/arch/loongarch/configs/loongson3_defconfig
+> > > > @@ -4,6 +4,7 @@ CONFIG_POSIX_MQUEUE=3Dy
+> > > > =C2=A0CONFIG_NO_HZ=3Dy
+> > > > =C2=A0CONFIG_HIGH_RES_TIMERS=3Dy
+> > > > =C2=A0CONFIG_BPF_SYSCALL=3Dy
+> > > > +CONFIG_BPF_JIT=3Dy
+> > > > =C2=A0CONFIG_PREEMPT=3Dy
+> > > > =C2=A0CONFIG_BSD_PROCESS_ACCT=3Dy
+> > > > =C2=A0CONFIG_BSD_PROCESS_ACCT_V3=3Dy
+> > > > @@ -801,3 +802,4 @@ CONFIG_MAGIC_SYSRQ=3Dy
+> > > > =C2=A0CONFIG_SCHEDSTATS=3Dy
+> > > > =C2=A0# CONFIG_DEBUG_PREEMPT is not set
+> > > > =C2=A0# CONFIG_FTRACE is not set
+> > > > +CONFIG_TEST_BPF=3Dm
+> > > I don't want the test module be built by default, but I don't
+> > > insist
+> > > if you have a strong requirement.
+> > >=20
+> >=20
+> > Hi Huacai,
+> >=20
+> > It is useful to enable TEST_BPF in default config, otherwise we
+> > need to use "make menuconfig" to select it manually if we want
+> > to test bpf jit, and build it as a module by default has no side
+> > effect, so I prefer to enable TEST_BPF in default config.
+>=20
+> IMO we shouldn't enable a test feature which is never used by 99% of
+> users in the default.
 
-Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
+P. S. this is not a strong option.  CONFIG_TEST_BPF seems enabled by
+default for S390, and I'm not sure if defconfig is designed for "kernel
+developers" or "distro builders", or even "normal users".
 
-> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> ---
->  tools/testing/selftests/bpf/xskxceiver.c | 7 +++++++
->  1 file changed, 7 insertions(+)
->
-> diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/selftests/bpf/xskxceiver.c
-> index 4f8a028f5433..8e157c462cd0 100644
-> --- a/tools/testing/selftests/bpf/xskxceiver.c
-> +++ b/tools/testing/selftests/bpf/xskxceiver.c
-> @@ -1345,6 +1345,11 @@ static void testapp_clean_xsk_umem(struct ifobject *ifobj)
->         munmap(ifobj->umem->buffer, umem_sz);
->  }
->
-> +static void handler(int signum)
-> +{
-> +       pthread_exit(NULL);
-> +}
-> +
->  static int testapp_validate_traffic_single_thread(struct test_spec *test, struct ifobject *ifobj,
->                                                   enum test_type type)
->  {
-> @@ -1362,6 +1367,7 @@ static int testapp_validate_traffic_single_thread(struct test_spec *test, struct
->         test->ifobj_rx->shared_umem = false;
->         test->ifobj_tx->shared_umem = false;
->
-> +       signal(SIGUSR1, handler);
->         /* Spawn thread */
->         pthread_create(&t0, NULL, ifobj->func_ptr, test);
->
-> @@ -1371,6 +1377,7 @@ static int testapp_validate_traffic_single_thread(struct test_spec *test, struct
->         if (pthread_barrier_destroy(&barr))
->                 exit_with_error(errno);
->
-> +       pthread_kill(t0, SIGUSR1);
->         pthread_join(t0, NULL);
->
->         if (test->total_steps == test->current_step || test->fail) {
-> --
-> 2.34.1
->
+
+--=20
+Xi Ruoyao <xry111@xry111.site>
+School of Aerospace Science and Technology, Xidian University
