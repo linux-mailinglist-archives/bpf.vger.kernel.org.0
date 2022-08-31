@@ -2,46 +2,46 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0A9C5A8132
-	for <lists+bpf@lfdr.de>; Wed, 31 Aug 2022 17:27:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3FD25A8135
+	for <lists+bpf@lfdr.de>; Wed, 31 Aug 2022 17:27:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231626AbiHaP1W (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 31 Aug 2022 11:27:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45170 "EHLO
+        id S231658AbiHaP1d (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 31 Aug 2022 11:27:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231682AbiHaP1N (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 31 Aug 2022 11:27:13 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4798DD7D3D
-        for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 08:27:12 -0700 (PDT)
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27VEh3YZ005204
-        for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 08:27:11 -0700
+        with ESMTP id S231682AbiHaP1c (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 31 Aug 2022 11:27:32 -0400
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 694B1D7D1D
+        for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 08:27:31 -0700 (PDT)
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 27VEh0Uq029787
+        for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 08:27:30 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=aSPJH4PfRfZIUVIya1Yu+6J8yQ3dyT0KsPY5SACrh8o=;
- b=ogGmarR2zfREDpa8HYWlj118BkVxz6OKnHrkS0aSOqCw+P2zUSbAV0AtdzxV6P6jIXa2
- 1QQJ+2VoeD8YpUuevGWbq7ILOmeDI5nRaO9B5Pup0fGNZTvYG2Urqb7VcQJDgIBod2oS
- 4r2hXtwZgmmWB4YsmTiqONDDqYBM1kagYtc= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3ja8n38t42-1
+ bh=6DJ9YoWl2ydCXY6Fm77qa7kK7tke7a6sqm35dikVA5c=;
+ b=MjPpCFeNCOna6pNEuMCm52SdR62NmvTMWyCgvpLadymo5OemOB4drmUIMaA/WJoWAILA
+ IN1A2vrWtulifPpGsPJeTpn95rXHX37yCQhJiuKt0VofDF7HTNTxmywEw0+xs9vLeoaT
+ +HA5ZBBd00BJRNUeoz8+e0LZmFPwYboTxjA= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0089730.ppops.net (PPS) with ESMTPS id 3j9hpws4jy-4
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 08:27:11 -0700
-Received: from twshared3888.09.ash9.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 08:27:30 -0700
+Received: from twshared11415.03.ash7.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 31 Aug 2022 08:27:09 -0700
+ 15.1.2375.31; Wed, 31 Aug 2022 08:27:20 -0700
 Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id D468BECDED0D; Wed, 31 Aug 2022 08:27:07 -0700 (PDT)
+        id 22CC9ECDED35; Wed, 31 Aug 2022 08:27:13 -0700 (PDT)
 From:   Yonghong Song <yhs@fb.com>
 To:     <bpf@vger.kernel.org>
 CC:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next v4 5/8] libbpf: Add new BPF_PROG2 macro
-Date:   Wed, 31 Aug 2022 08:27:07 -0700
-Message-ID: <20220831152707.2079473-1-yhs@fb.com>
+Subject: [PATCH bpf-next v4 6/8] selftests/bpf: Add struct argument tests with fentry/fexit programs.
+Date:   Wed, 31 Aug 2022 08:27:13 -0700
+Message-ID: <20220831152713.2080039-1-yhs@fb.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220831152641.2077476-1-yhs@fb.com>
 References: <20220831152641.2077476-1-yhs@fb.com>
@@ -49,8 +49,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: XVkpjTOkX5XgTDAXDWlF-X5RRlRZssZw
-X-Proofpoint-ORIG-GUID: XVkpjTOkX5XgTDAXDWlF-X5RRlRZssZw
+X-Proofpoint-ORIG-GUID: J-UqeEdyLbdOdJcQwLsD_1jqbVPON-6r
+X-Proofpoint-GUID: J-UqeEdyLbdOdJcQwLsD_1jqbVPON-6r
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.517,FMLib:17.11.122.1
  definitions=2022-08-31_09,2022-08-31_03,2022-06-22_01
@@ -64,178 +64,302 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-To support struct arguments in trampoline based programs,
-existing BPF_PROG doesn't work any more since
-the type size is needed to find whether a parameter
-takes one or two registers. So this patch added a new
-BPF_PROG2 macro to support such trampoline programs.
-
-The idea is suggested by Andrii. For example, if the
-to-be-traced function has signature like
-  typedef struct {
-       void *x;
-       int t;
-  } sockptr;
-  int blah(sockptr x, char y);
-
-In the new BPF_PROG2 macro, the argument can be
-represented as
-  __bpf_prog_call(
-     ({ union {
-          struct { __u64 x, y; } ___z;
-          sockptr x;
-        } ___tmp =3D { .___z =3D { ctx[0], ctx[1] }};
-        ___tmp.x;
-     }),
-     ({ union {
-          struct { __u8 x; } ___z;
-          char y;
-        } ___tmp =3D { .___z =3D { ctx[2] }};
-        ___tmp.y;
-     }));
-In the above, the values stored on the stack are properly
-assigned to the actual argument type value by using 'union'
-magic. Note that the macro also works even if no arguments
-are with struct types.
-
-Note that new BPF_PROG2 works for both llvm16 and pre-llvm16
-compilers where llvm16 supports bpf target passing value
-with struct up to 16 byte size and pre-llvm16 will pass
-by reference by storing values on the stack. With static functions
-with struct argument as always inline, the compiler is able
-to optimize and remove additional stack saving of struct values.
+Add various struct argument tests with fentry/fexit programs.
+Also add one test with a kernel func which does not have any
+argument to test BPF_PROG2 macro in such situation.
 
 Signed-off-by: Yonghong Song <yhs@fb.com>
 ---
- tools/lib/bpf/bpf_tracing.h | 79 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 79 insertions(+)
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  48 +++++++
+ .../selftests/bpf/prog_tests/tracing_struct.c |  63 +++++++++
+ .../selftests/bpf/progs/tracing_struct.c      | 120 ++++++++++++++++++
+ 3 files changed, 231 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/tracing_struct=
+.c
+ create mode 100644 tools/testing/selftests/bpf/progs/tracing_struct.c
 
-diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
-index 5fdb93da423b..8d4bdd18cb3d 100644
---- a/tools/lib/bpf/bpf_tracing.h
-+++ b/tools/lib/bpf/bpf_tracing.h
-@@ -438,6 +438,85 @@ typeof(name(0)) name(unsigned long long *ctx)				   =
- \
- static __always_inline typeof(name(0))					    \
- ____##name(unsigned long long *ctx, ##args)
+diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tool=
+s/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+index 792cb15bac40..a6021d6117b5 100644
+--- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
++++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+@@ -18,6 +18,46 @@ typedef int (*func_proto_typedef_nested1)(func_proto_t=
+ypedef);
+ typedef int (*func_proto_typedef_nested2)(func_proto_typedef_nested1);
 =20
-+#ifndef ____bpf_nth
-+#define ____bpf_nth(_, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12=
-, _13, _14, _15, _16, _17, _18, _19, _20, _21, _22, _23, _24, N, ...) N
-+#endif
-+#ifndef ____bpf_narg
-+#define ____bpf_narg(...) ____bpf_nth(_, ##__VA_ARGS__, 12, 12, 11, 11, =
-10, 10, 9, 9, 8, 8, 7, 7, 6, 6, 5, 5, 4, 4, 3, 3, 2, 2, 1, 1, 0)
-+#endif
+ DEFINE_PER_CPU(int, bpf_testmod_ksym_percpu) =3D 123;
++long bpf_testmod_test_struct_arg_result;
 +
-+#define BPF_REG_CNT(t) \
-+	(__builtin_choose_expr(sizeof(t) =3D=3D 1 || sizeof(t) =3D=3D 2 || size=
-of(t) =3D=3D 4 || sizeof(t) =3D=3D 8, 1,	\
-+	 __builtin_choose_expr(sizeof(t) =3D=3D 16, 2,							\
-+			       (void)0)))
++struct bpf_testmod_struct_arg_1 {
++	int a;
++};
++struct bpf_testmod_struct_arg_2 {
++	long a;
++	long b;
++};
 +
-+#define ____bpf_reg_cnt0()			(0)
-+#define ____bpf_reg_cnt1(t, x)			(____bpf_reg_cnt0() + BPF_REG_CNT(t))
-+#define ____bpf_reg_cnt2(t, x, args...)		(____bpf_reg_cnt1(args) + BPF_R=
-EG_CNT(t))
-+#define ____bpf_reg_cnt3(t, x, args...)		(____bpf_reg_cnt2(args) + BPF_R=
-EG_CNT(t))
-+#define ____bpf_reg_cnt4(t, x, args...)		(____bpf_reg_cnt3(args) + BPF_R=
-EG_CNT(t))
-+#define ____bpf_reg_cnt5(t, x, args...)		(____bpf_reg_cnt4(args) + BPF_R=
-EG_CNT(t))
-+#define ____bpf_reg_cnt6(t, x, args...)		(____bpf_reg_cnt5(args) + BPF_R=
-EG_CNT(t))
-+#define ____bpf_reg_cnt7(t, x, args...)		(____bpf_reg_cnt6(args) + BPF_R=
-EG_CNT(t))
-+#define ____bpf_reg_cnt8(t, x, args...)		(____bpf_reg_cnt7(args) + BPF_R=
-EG_CNT(t))
-+#define ____bpf_reg_cnt9(t, x, args...)		(____bpf_reg_cnt8(args) + BPF_R=
-EG_CNT(t))
-+#define ____bpf_reg_cnt10(t, x, args...)	(____bpf_reg_cnt9(args) + BPF_R=
-EG_CNT(t))
-+#define ____bpf_reg_cnt11(t, x, args...)	(____bpf_reg_cnt10(args) + BPF_=
-REG_CNT(t))
-+#define ____bpf_reg_cnt12(t, x, args...)	(____bpf_reg_cnt11(args) + BPF_=
-REG_CNT(t))
-+#define ____bpf_reg_cnt(args...)	 ___bpf_apply(____bpf_reg_cnt, ____bpf_=
-narg(args))(args)
++noinline int
++bpf_testmod_test_struct_arg_1(struct bpf_testmod_struct_arg_2 a, int b, =
+int c) {
++	bpf_testmod_test_struct_arg_result =3D a.a + a.b  + b + c;
++	return bpf_testmod_test_struct_arg_result;
++}
 +
-+#define ____bpf_union_arg(t, x, n) \
-+	__builtin_choose_expr(sizeof(t) =3D=3D 1, ({ union { struct { __u8 x; }=
- ___z; t x; } ___tmp =3D { .___z =3D {ctx[n]}}; ___tmp.x; }), \
-+	__builtin_choose_expr(sizeof(t) =3D=3D 2, ({ union { struct { __u16 x; =
-} ___z; t x; } ___tmp =3D { .___z =3D {ctx[n]} }; ___tmp.x; }), \
-+	__builtin_choose_expr(sizeof(t) =3D=3D 4, ({ union { struct { __u32 x; =
-} ___z; t x; } ___tmp =3D { .___z =3D {ctx[n]} }; ___tmp.x; }), \
-+	__builtin_choose_expr(sizeof(t) =3D=3D 8, ({ union { struct { __u64 x; =
-} ___z; t x; } ___tmp =3D {.___z =3D {ctx[n]} }; ___tmp.x; }), \
-+	__builtin_choose_expr(sizeof(t) =3D=3D 16, ({ union { struct { __u64 x,=
- y; } ___z; t x; } ___tmp =3D {.___z =3D {ctx[n], ctx[n + 1]} }; ___tmp.x=
-; }), \
-+			      (void)0)))))
++noinline int
++bpf_testmod_test_struct_arg_2(int a, struct bpf_testmod_struct_arg_2 b, =
+int c) {
++	bpf_testmod_test_struct_arg_result =3D a + b.a + b.b + c;
++	return bpf_testmod_test_struct_arg_result;
++}
 +
-+#define ____bpf_ctx_arg0(n, args...)
-+#define ____bpf_ctx_arg1(n, t, x)		, ____bpf_union_arg(t, x, n - ____bpf=
-_reg_cnt1(t, x))
-+#define ____bpf_ctx_arg2(n, t, x, args...)	, ____bpf_union_arg(t, x, n -=
- ____bpf_reg_cnt2(t, x, args)) ____bpf_ctx_arg1(n, args)
-+#define ____bpf_ctx_arg3(n, t, x, args...)	, ____bpf_union_arg(t, x, n -=
- ____bpf_reg_cnt3(t, x, args)) ____bpf_ctx_arg2(n, args)
-+#define ____bpf_ctx_arg4(n, t, x, args...)	, ____bpf_union_arg(t, x, n -=
- ____bpf_reg_cnt4(t, x, args)) ____bpf_ctx_arg3(n, args)
-+#define ____bpf_ctx_arg5(n, t, x, args...)	, ____bpf_union_arg(t, x, n -=
- ____bpf_reg_cnt5(t, x, args)) ____bpf_ctx_arg4(n, args)
-+#define ____bpf_ctx_arg6(n, t, x, args...)	, ____bpf_union_arg(t, x, n -=
- ____bpf_reg_cnt6(t, x, args)) ____bpf_ctx_arg5(n, args)
-+#define ____bpf_ctx_arg7(n, t, x, args...)	, ____bpf_union_arg(t, x, n -=
- ____bpf_reg_cnt7(t, x, args)) ____bpf_ctx_arg6(n, args)
-+#define ____bpf_ctx_arg8(n, t, x, args...)	, ____bpf_union_arg(t, x, n -=
- ____bpf_reg_cnt8(t, x, args)) ____bpf_ctx_arg7(n, args)
-+#define ____bpf_ctx_arg9(n, t, x, args...)	, ____bpf_union_arg(t, x, n -=
- ____bpf_reg_cnt9(t, x, args)) ____bpf_ctx_arg8(n, args)
-+#define ____bpf_ctx_arg10(n, t, x, args...)	, ____bpf_union_arg(t, x, n =
-- ____bpf_reg_cnt10(t, x, args)) ____bpf_ctx_arg9(n, args)
-+#define ____bpf_ctx_arg11(n, t, x, args...)	, ____bpf_union_arg(t, x, n =
-- ____bpf_reg_cnt11(t, x, args)) ____bpf_ctx_arg10(n, args)
-+#define ____bpf_ctx_arg12(n, t, x, args...)	, ____bpf_union_arg(t, x, n =
-- ____bpf_reg_cnt12(t, x, args)) ____bpf_ctx_arg11(n, args)
-+#define ____bpf_ctx_arg(n, args...)	___bpf_apply(____bpf_ctx_arg, ____bp=
-f_narg(args))(n, args)
++noinline int
++bpf_testmod_test_struct_arg_3(int a, int b, struct bpf_testmod_struct_ar=
+g_2 c) {
++	bpf_testmod_test_struct_arg_result =3D a + b + c.a + c.b;
++	return bpf_testmod_test_struct_arg_result;
++}
 +
-+#define ____bpf_ctx_decl0()
-+#define ____bpf_ctx_decl1(t, x)			, t x
-+#define ____bpf_ctx_decl2(t, x, args...)	, t x ____bpf_ctx_decl1(args)
-+#define ____bpf_ctx_decl3(t, x, args...)	, t x ____bpf_ctx_decl2(args)
-+#define ____bpf_ctx_decl4(t, x, args...)	, t x ____bpf_ctx_decl3(args)
-+#define ____bpf_ctx_decl5(t, x, args...)	, t x ____bpf_ctx_decl4(args)
-+#define ____bpf_ctx_decl6(t, x, args...)	, t x ____bpf_ctx_decl5(args)
-+#define ____bpf_ctx_decl7(t, x, args...)	, t x ____bpf_ctx_decl6(args)
-+#define ____bpf_ctx_decl8(t, x, args...)	, t x ____bpf_ctx_decl7(args)
-+#define ____bpf_ctx_decl9(t, x, args...)	, t x ____bpf_ctx_decl8(args)
-+#define ____bpf_ctx_decl10(t, x, args...)	, t x ____bpf_ctx_decl9(args)
-+#define ____bpf_ctx_decl11(t, x, args...)	, t x ____bpf_ctx_decl10(args)
-+#define ____bpf_ctx_decl12(t, x, args...)	, t x ____bpf_ctx_decl11(args)
-+#define ____bpf_ctx_decl(args...)	___bpf_apply(____bpf_ctx_decl, ____bpf=
-_narg(args))(args)
++noinline int
++bpf_testmod_test_struct_arg_4(struct bpf_testmod_struct_arg_1 a, int b,
++			      int c, int d, struct bpf_testmod_struct_arg_2 e) {
++	bpf_testmod_test_struct_arg_result =3D a.a + b + c + d + e.a + e.b;
++	return bpf_testmod_test_struct_arg_result;
++}
 +
-+/*
-+ * BPF_PROG2 can handle struct arguments.
-+ */
-+#define BPF_PROG2(name, args...)						\
-+name(unsigned long long *ctx);							\
-+static __always_inline typeof(name(0))						\
-+____##name(unsigned long long *ctx ____bpf_ctx_decl(args));			\
-+typeof(name(0)) name(unsigned long long *ctx)					\
-+{										\
-+	return ____##name(ctx ____bpf_ctx_arg(____bpf_reg_cnt(args), args));	\
-+}										\
-+static __always_inline typeof(name(0))						\
-+____##name(unsigned long long *ctx ____bpf_ctx_decl(args))
-+
- struct pt_regs;
++noinline int
++bpf_testmod_test_struct_arg_5(void) {
++	bpf_testmod_test_struct_arg_result =3D 1;
++	return bpf_testmod_test_struct_arg_result;
++}
 =20
- #define ___bpf_kprobe_args0()           ctx
+ noinline void
+ bpf_testmod_test_mod_kfunc(int i)
+@@ -98,11 +138,19 @@ bpf_testmod_test_read(struct file *file, struct kobj=
+ect *kobj,
+ 		.off =3D off,
+ 		.len =3D len,
+ 	};
++	struct bpf_testmod_struct_arg_1 struct_arg1 =3D {10};
++	struct bpf_testmod_struct_arg_2 struct_arg2 =3D {2, 3};
+ 	int i =3D 1;
+=20
+ 	while (bpf_testmod_return_ptr(i))
+ 		i++;
+=20
++	(void)bpf_testmod_test_struct_arg_1(struct_arg2, 1, 4);
++	(void)bpf_testmod_test_struct_arg_2(1, struct_arg2, 4);
++	(void)bpf_testmod_test_struct_arg_3(1, 4, struct_arg2);
++	(void)bpf_testmod_test_struct_arg_4(struct_arg1, 1, 2, 3, struct_arg2);
++	(void)bpf_testmod_test_struct_arg_5();
++
+ 	/* This is always true. Use the check to make sure the compiler
+ 	 * doesn't remove bpf_testmod_loop_test.
+ 	 */
+diff --git a/tools/testing/selftests/bpf/prog_tests/tracing_struct.c b/to=
+ols/testing/selftests/bpf/prog_tests/tracing_struct.c
+new file mode 100644
+index 000000000000..d5022b91d1e4
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/tracing_struct.c
+@@ -0,0 +1,63 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
++
++#include <test_progs.h>
++#include "tracing_struct.skel.h"
++
++static void test_fentry(void)
++{
++	struct tracing_struct *skel;
++	int err;
++
++	skel =3D tracing_struct__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "tracing_struct__open_and_load"))
++		return;
++
++	err =3D tracing_struct__attach(skel);
++	if (!ASSERT_OK(err, "tracing_struct__attach"))
++		return;
++
++	ASSERT_OK(trigger_module_test_read(256), "trigger_read");
++
++	ASSERT_EQ(skel->bss->t1_a_a, 2, "t1:a.a");
++	ASSERT_EQ(skel->bss->t1_a_b, 3, "t1:a.b");
++	ASSERT_EQ(skel->bss->t1_b, 1, "t1:b");
++	ASSERT_EQ(skel->bss->t1_c, 4, "t1:c");
++
++	ASSERT_EQ(skel->bss->t1_nregs, 4, "t1 nregs");
++	ASSERT_EQ(skel->bss->t1_reg0, 2, "t1 reg0");
++	ASSERT_EQ(skel->bss->t1_reg1, 3, "t1 reg1");
++	ASSERT_EQ(skel->bss->t1_reg2, 1, "t1 reg2");
++	ASSERT_EQ(skel->bss->t1_reg3, 4, "t1 reg3");
++	ASSERT_EQ(skel->bss->t1_ret, 10, "t1 ret");
++
++	ASSERT_EQ(skel->bss->t2_a, 1, "t2:a");
++	ASSERT_EQ(skel->bss->t2_b_a, 2, "t2:b.a");
++	ASSERT_EQ(skel->bss->t2_b_b, 3, "t2:b.b");
++	ASSERT_EQ(skel->bss->t2_c, 4, "t2:c");
++	ASSERT_EQ(skel->bss->t2_ret, 10, "t2 ret");
++
++	ASSERT_EQ(skel->bss->t3_a, 1, "t3:a");
++	ASSERT_EQ(skel->bss->t3_b, 4, "t3:b");
++	ASSERT_EQ(skel->bss->t3_c_a, 2, "t3:c.a");
++	ASSERT_EQ(skel->bss->t3_c_b, 3, "t3:c.b");
++	ASSERT_EQ(skel->bss->t3_ret, 10, "t3 ret");
++
++	ASSERT_EQ(skel->bss->t4_a_a, 10, "t4:a.a");
++	ASSERT_EQ(skel->bss->t4_b, 1, "t4:b");
++	ASSERT_EQ(skel->bss->t4_c, 2, "t4:c");
++	ASSERT_EQ(skel->bss->t4_d, 3, "t4:d");
++	ASSERT_EQ(skel->bss->t4_e_a, 2, "t4:e.a");
++	ASSERT_EQ(skel->bss->t4_e_b, 3, "t4:e.b");
++	ASSERT_EQ(skel->bss->t4_ret, 21, "t4 ret");
++
++	ASSERT_EQ(skel->bss->t5_ret, 1, "t5 ret");
++
++	tracing_struct__detach(skel);
++	tracing_struct__destroy(skel);
++}
++
++void test_tracing_struct(void)
++{
++	test_fentry();
++}
+diff --git a/tools/testing/selftests/bpf/progs/tracing_struct.c b/tools/t=
+esting/selftests/bpf/progs/tracing_struct.c
+new file mode 100644
+index 000000000000..e718f0ebee7d
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/tracing_struct.c
+@@ -0,0 +1,120 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
++
++#include <vmlinux.h>
++#include <bpf/bpf_tracing.h>
++#include <bpf/bpf_helpers.h>
++
++struct bpf_testmod_struct_arg_1 {
++	int a;
++};
++struct bpf_testmod_struct_arg_2 {
++	long a;
++	long b;
++};
++
++long t1_a_a, t1_a_b, t1_b, t1_c, t1_ret, t1_nregs;
++__u64 t1_reg0, t1_reg1, t1_reg2, t1_reg3;
++long t2_a, t2_b_a, t2_b_b, t2_c, t2_ret;
++long t3_a, t3_b, t3_c_a, t3_c_b, t3_ret;
++long t4_a_a, t4_b, t4_c, t4_d, t4_e_a, t4_e_b, t4_ret;
++long t5_ret;
++
++SEC("fentry/bpf_testmod_test_struct_arg_1")
++int BPF_PROG2(test_struct_arg_1, struct bpf_testmod_struct_arg_2, a, int=
+, b, int, c)
++{
++	t1_a_a =3D a.a;
++	t1_a_b =3D a.b;
++	t1_b =3D b;
++	t1_c =3D c;
++	return 0;
++}
++
++SEC("fexit/bpf_testmod_test_struct_arg_1")
++int BPF_PROG2(test_struct_arg_2, struct bpf_testmod_struct_arg_2, a, int=
+, b, int, c, int, ret)
++{
++	t1_nregs =3D  bpf_get_func_arg_cnt(ctx);
++	/* a.a */
++	bpf_get_func_arg(ctx, 0, &t1_reg0);
++	/* a.b */
++	bpf_get_func_arg(ctx, 1, &t1_reg1);
++	/* b */
++	bpf_get_func_arg(ctx, 2, &t1_reg2);
++	t1_reg2 =3D (int)t1_reg2;
++	/* c */
++	bpf_get_func_arg(ctx, 3, &t1_reg3);
++	t1_reg3 =3D (int)t1_reg3;
++
++	t1_ret =3D ret;
++	return 0;
++}
++
++SEC("fentry/bpf_testmod_test_struct_arg_2")
++int BPF_PROG2(test_struct_arg_3, int, a, struct bpf_testmod_struct_arg_2=
+, b, int, c)
++{
++	t2_a =3D a;
++	t2_b_a =3D b.a;
++	t2_b_b =3D b.b;
++	t2_c =3D c;
++	return 0;
++}
++
++SEC("fexit/bpf_testmod_test_struct_arg_2")
++int BPF_PROG2(test_struct_arg_4, int, a, struct bpf_testmod_struct_arg_2=
+, b, int, c, int, ret)
++{
++	t2_ret =3D ret;
++	return 0;
++}
++
++SEC("fentry/bpf_testmod_test_struct_arg_3")
++int BPF_PROG2(test_struct_arg_5, int, a, int, b, struct bpf_testmod_stru=
+ct_arg_2, c)
++{
++	t3_a =3D a;
++	t3_b =3D b;
++	t3_c_a =3D c.a;
++	t3_c_b =3D c.b;
++	return 0;
++}
++
++SEC("fexit/bpf_testmod_test_struct_arg_3")
++int BPF_PROG2(test_struct_arg_6, int, a, int, b, struct bpf_testmod_stru=
+ct_arg_2, c, int, ret)
++{
++	t3_ret =3D ret;
++	return 0;
++}
++
++SEC("fentry/bpf_testmod_test_struct_arg_4")
++int BPF_PROG2(test_struct_arg_7, struct bpf_testmod_struct_arg_1, a, int=
+, b,
++	     int, c, int, d, struct bpf_testmod_struct_arg_2, e)
++{
++	t4_a_a =3D a.a;
++	t4_b =3D b;
++	t4_c =3D c;
++	t4_d =3D d;
++	t4_e_a =3D e.a;
++	t4_e_b =3D e.b;
++	return 0;
++}
++
++SEC("fexit/bpf_testmod_test_struct_arg_4")
++int BPF_PROG2(test_struct_arg_8, struct bpf_testmod_struct_arg_1, a, int=
+, b,
++	     int, c, int, d, struct bpf_testmod_struct_arg_2, e, int, ret)
++{
++	t4_ret =3D ret;
++	return 0;
++}
++
++SEC("fentry/bpf_testmod_test_struct_arg_5")
++int BPF_PROG2(test_struct_arg_9)
++{
++	return 0;
++}
++
++SEC("fexit/bpf_testmod_test_struct_arg_5")
++int BPF_PROG2(test_struct_arg_10, int, ret)
++{
++	t5_ret =3D ret;
++	return 0;
++}
++
++char _license[] SEC("license") =3D "GPL";
 --=20
 2.30.2
 
