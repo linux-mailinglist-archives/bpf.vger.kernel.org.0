@@ -2,60 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F1F35A8386
-	for <lists+bpf@lfdr.de>; Wed, 31 Aug 2022 18:51:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F6A15A8399
+	for <lists+bpf@lfdr.de>; Wed, 31 Aug 2022 18:55:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231893AbiHaQvd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 31 Aug 2022 12:51:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51998 "EHLO
+        id S231487AbiHaQzp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 31 Aug 2022 12:55:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231797AbiHaQvb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 31 Aug 2022 12:51:31 -0400
-Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECB29DABA3;
-        Wed, 31 Aug 2022 09:51:26 -0700 (PDT)
-Received: by mail-qt1-f180.google.com with SMTP id w28so11429048qtc.7;
-        Wed, 31 Aug 2022 09:51:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc;
-        bh=ZgVAyvWuBLN586YX5+Y5kX62NTvZSqbDsBciF0hbTT0=;
-        b=pDvfDEPoyTLBVl132fdBQ4AXuR5JP2F5rZ24+Ca+carhiTkTTGEoHrzxhTSYq7CJaa
-         sO+d1NemjeOkn7pUu4nlCOvzEvcO9nA9EspWTJPc+wOECZ5JGAcz1OtYIjX0q8/zpOI7
-         YW66h3fMuBYH29glVO9pVkq5qvADtxASzMpCVQPZSw12b2ZSM1/pmPGhbM/EvNIm2G2k
-         7Yle4f3IFz7dNJj+s9lfZhgZs5UkJOl6ztWASg3yRjt3mvVH7JrtxmtUREQMDkE18wNt
-         ZqMQgXQfiQ9SsXmYwBJAvGMe8syWeYVsdxw3KgySuxCTGgDnm07C1PrEk4BjnJvv4+yN
-         gelQ==
-X-Gm-Message-State: ACgBeo3LPON4NLvZDAyVF6yzmkgYp6aME9tk0lCL20nsO12Sw8/L/yFQ
-        hlHWW/VO1MA+mZzFt/RES0ziSmww/x/wBL9lw5k=
-X-Google-Smtp-Source: AA6agR5jh5XWHG41WHY5XPjzaQyRCZEeZkdTHuF/IBCtntUZWwyraBe67ZR4tpPuHTAnAa7MpLlhuQ==
-X-Received: by 2002:ac8:7f03:0:b0:344:6f5c:6aee with SMTP id f3-20020ac87f03000000b003446f5c6aeemr20270004qtk.558.1661964685709;
-        Wed, 31 Aug 2022 09:51:25 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::c6a9])
-        by smtp.gmail.com with ESMTPSA id v17-20020a05620a0f1100b006b58d8f6181sm10275181qkl.72.2022.08.31.09.51.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Aug 2022 09:51:25 -0700 (PDT)
-From:   David Vernet <void@manifault.com>
-To:     ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
-        martin.lau@linux.dev
-Cc:     song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, void@manifault.com,
-        kernel-team@fb.com
-Subject: [PATCH v4 4/4] selftests/bpf: Add selftests validating the user ringbuf
-Date:   Wed, 31 Aug 2022 11:51:19 -0500
-Message-Id: <20220831165119.2216749-4-void@manifault.com>
-X-Mailer: git-send-email 2.37.1
-In-Reply-To: <20220831165119.2216749-1-void@manifault.com>
-References: <20220831165119.2216749-1-void@manifault.com>
+        with ESMTP id S229607AbiHaQzn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 31 Aug 2022 12:55:43 -0400
+Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FA7085A99;
+        Wed, 31 Aug 2022 09:55:39 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.227])
+        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4MHqsv2sLBz9xHfP;
+        Thu,  1 Sep 2022 00:50:11 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.204.63.22])
+        by APP2 (Coremail) with SMTP id GxC2BwBX0lxfkg9jJXIRAA--.5993S2;
+        Wed, 31 Aug 2022 17:55:09 +0100 (CET)
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
+        dhowells@redhat.com, jarkko@kernel.org, rostedt@goodmis.org,
+        mingo@redhat.com, paul@paul-moore.com, jmorris@namei.org,
+        serge@hallyn.com, shuah@kernel.org
+Cc:     bpf@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        deso@posteo.net, memxor@gmail.com,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Subject: [PATCH v15 00/12] bpf: Add kfuncs for PKCS#7 signature verification
+Date:   Wed, 31 Aug 2022 18:54:33 +0200
+Message-Id: <20220831165445.1071641-1-roberto.sassu@huaweicloud.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+X-CM-TRANSID: GxC2BwBX0lxfkg9jJXIRAA--.5993S2
+X-Coremail-Antispam: 1UD129KBjvAXoW3uFyxtFy3uryUKFW5Gw1xZrb_yoW8XF1DJo
+        WfWw4fWay5Kr17AwnrCF1xCFyUuw1Ik3s8ArsIvr15WFnFgrW7CFyDua1xXr4qgan5WFyY
+        ga45C34DZFZrXFnxn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
+        AaLaJ3UjIYCTnIWjp_UUUYf7kC6x804xWl14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK
+        8VAvwI8IcIk0rVWUuVWrJwAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4
+        AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF
+        7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7
+        CjxVAFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAq
+        x4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6x
+        CaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF
+        7I0En4kS14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI
+        8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AK
+        xVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r4j6ryUMIIF0xvE2Ix0cI
+        8IcVCY1x0267AKxVW8Jr0_Cr1UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY
+        6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2Kf
+        nxnUUI43ZEXa7IU8RuWJUUUUU==
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQABBF1jj4J6AgAAsP
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,1227 +68,310 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This change includes selftests that validate the expected behavior and
-APIs of the new BPF_MAP_TYPE_USER_RINGBUF map type.
+From: Roberto Sassu <roberto.sassu@huawei.com>
 
-Signed-off-by: David Vernet <void@manifault.com>
----
- .../selftests/bpf/prog_tests/user_ringbuf.c   | 752 ++++++++++++++++++
- .../selftests/bpf/progs/test_user_ringbuf.h   |  35 +
- .../selftests/bpf/progs/user_ringbuf_fail.c   | 177 +++++
- .../bpf/progs/user_ringbuf_success.c          | 218 +++++
- 4 files changed, 1182 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/user_ringbuf.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_user_ringbuf.h
- create mode 100644 tools/testing/selftests/bpf/progs/user_ringbuf_fail.c
- create mode 100644 tools/testing/selftests/bpf/progs/user_ringbuf_success.c
+One of the desirable features in security is the ability to restrict import
+of data to a given system based on data authenticity. If data import can be
+restricted, it would be possible to enforce a system-wide policy based on
+the signing keys the system owner trusts.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c b/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c
-new file mode 100644
-index 000000000000..4411c227ff59
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c
-@@ -0,0 +1,752 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
-+
-+#define _GNU_SOURCE
-+#include <linux/compiler.h>
-+#include <linux/ring_buffer.h>
-+#include <pthread.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <sys/mman.h>
-+#include <sys/syscall.h>
-+#include <sys/sysinfo.h>
-+#include <test_progs.h>
-+#include <uapi/linux/bpf.h>
-+#include <unistd.h>
-+
-+#include "user_ringbuf_fail.skel.h"
-+#include "user_ringbuf_success.skel.h"
-+
-+#include "../progs/test_user_ringbuf.h"
-+
-+static size_t log_buf_sz = 1 << 20; /* 1 MB */
-+static char obj_log_buf[1048576];
-+static const long c_sample_size = sizeof(struct sample) + BPF_RINGBUF_HDR_SZ;
-+static const long c_ringbuf_size = 1 << 12; /* 1 small page */
-+static const long c_max_entries = c_ringbuf_size / c_sample_size;
-+
-+static void drain_current_samples(void)
-+{
-+	syscall(__NR_getpgid);
-+}
-+
-+static int write_samples(struct user_ring_buffer *ringbuf, uint32_t num_samples)
-+{
-+	int i, err = 0;
-+
-+	/* Write some number of samples to the ring buffer. */
-+	for (i = 0; i < num_samples; i++) {
-+		struct sample *entry;
-+		int read;
-+
-+		entry = user_ring_buffer__reserve(ringbuf, sizeof(*entry));
-+		if (!entry) {
-+			err = -errno;
-+			goto done;
-+		}
-+
-+		entry->pid = getpid();
-+		entry->seq = i;
-+		entry->value = i * i;
-+
-+		read = snprintf(entry->comm, sizeof(entry->comm), "%u", i);
-+		if (read <= 0) {
-+			/* Assert on the error path to avoid spamming logs with
-+			 * mostly success messages.
-+			 */
-+			ASSERT_GT(read, 0, "snprintf_comm");
-+			err = read;
-+			user_ring_buffer__discard(ringbuf, entry);
-+			goto done;
-+		}
-+
-+		user_ring_buffer__submit(ringbuf, entry);
-+	}
-+
-+done:
-+	drain_current_samples();
-+
-+	return err;
-+}
-+
-+static struct user_ringbuf_success *open_load_ringbuf_skel(void)
-+{
-+	struct user_ringbuf_success *skel;
-+	int err;
-+
-+	skel = user_ringbuf_success__open();
-+	if (!ASSERT_OK_PTR(skel, "skel_open"))
-+		return NULL;
-+
-+	err = bpf_map__set_max_entries(skel->maps.user_ringbuf, c_ringbuf_size);
-+	if (!ASSERT_OK(err, "set_max_entries"))
-+		goto cleanup;
-+
-+	err = bpf_map__set_max_entries(skel->maps.kernel_ringbuf, c_ringbuf_size);
-+	if (!ASSERT_OK(err, "set_max_entries"))
-+		goto cleanup;
-+
-+	err = user_ringbuf_success__load(skel);
-+	if (!ASSERT_OK(err, "skel_load"))
-+		goto cleanup;
-+
-+	return skel;
-+
-+cleanup:
-+	user_ringbuf_success__destroy(skel);
-+	return NULL;
-+}
-+
-+static void test_user_ringbuf_mappings(void)
-+{
-+	int err, rb_fd;
-+	int page_size = getpagesize();
-+	void *mmap_ptr;
-+	struct user_ringbuf_success *skel;
-+
-+	skel = open_load_ringbuf_skel();
-+	if (!skel)
-+		return;
-+
-+	rb_fd = bpf_map__fd(skel->maps.user_ringbuf);
-+	/* cons_pos can be mapped R/O, can't add +X with mprotect. */
-+	mmap_ptr = mmap(NULL, page_size, PROT_READ, MAP_SHARED, rb_fd, 0);
-+	ASSERT_OK_PTR(mmap_ptr, "ro_cons_pos");
-+	ASSERT_ERR(mprotect(mmap_ptr, page_size, PROT_WRITE), "write_cons_pos_protect");
-+	ASSERT_ERR(mprotect(mmap_ptr, page_size, PROT_EXEC), "exec_cons_pos_protect");
-+	ASSERT_ERR_PTR(mremap(mmap_ptr, 0, 4 * page_size, MREMAP_MAYMOVE), "wr_prod_pos");
-+	err = -errno;
-+	ASSERT_ERR(err, "wr_prod_pos_err");
-+	ASSERT_OK(munmap(mmap_ptr, page_size), "unmap_ro_cons");
-+
-+	/* prod_pos can be mapped RW, can't add +X with mprotect. */
-+	mmap_ptr = mmap(NULL, page_size, PROT_READ | PROT_WRITE, MAP_SHARED,
-+			rb_fd, page_size);
-+	ASSERT_OK_PTR(mmap_ptr, "rw_prod_pos");
-+	ASSERT_ERR(mprotect(mmap_ptr, page_size, PROT_EXEC), "exec_prod_pos_protect");
-+	err = -errno;
-+	ASSERT_ERR(err, "wr_prod_pos_err");
-+	ASSERT_OK(munmap(mmap_ptr, page_size), "unmap_rw_prod");
-+
-+	/* data pages can be mapped RW, can't add +X with mprotect. */
-+	mmap_ptr = mmap(NULL, page_size, PROT_WRITE, MAP_SHARED, rb_fd,
-+			2 * page_size);
-+	ASSERT_OK_PTR(mmap_ptr, "rw_data");
-+	ASSERT_ERR(mprotect(mmap_ptr, page_size, PROT_EXEC), "exec_data_protect");
-+	err = -errno;
-+	ASSERT_ERR(err, "exec_data_err");
-+	ASSERT_OK(munmap(mmap_ptr, page_size), "unmap_rw_data");
-+
-+	user_ringbuf_success__destroy(skel);
-+}
-+
-+static int load_skel_create_ringbufs(struct user_ringbuf_success **skel_out,
-+				     struct ring_buffer **kern_ringbuf_out,
-+				     ring_buffer_sample_fn callback,
-+				     struct user_ring_buffer **user_ringbuf_out)
-+{
-+	struct user_ringbuf_success *skel;
-+	struct ring_buffer *kern_ringbuf = NULL;
-+	struct user_ring_buffer *user_ringbuf = NULL;
-+	int err = -ENOMEM, rb_fd;
-+
-+	skel = open_load_ringbuf_skel();
-+	if (!skel)
-+		return err;
-+
-+	/* only trigger BPF program for current process */
-+	skel->bss->pid = getpid();
-+
-+	if (kern_ringbuf_out) {
-+		rb_fd = bpf_map__fd(skel->maps.kernel_ringbuf);
-+		kern_ringbuf = ring_buffer__new(rb_fd, callback, skel, NULL);
-+		if (!ASSERT_OK_PTR(kern_ringbuf, "kern_ringbuf_create"))
-+			goto cleanup;
-+
-+		*kern_ringbuf_out = kern_ringbuf;
-+	}
-+
-+	if (user_ringbuf_out) {
-+		rb_fd = bpf_map__fd(skel->maps.user_ringbuf);
-+		user_ringbuf = user_ring_buffer__new(rb_fd, NULL);
-+		if (!ASSERT_OK_PTR(user_ringbuf, "user_ringbuf_create"))
-+			goto cleanup;
-+
-+		*user_ringbuf_out = user_ringbuf;
-+		ASSERT_EQ(skel->bss->read, 0, "no_reads_after_load");
-+	}
-+
-+	err = user_ringbuf_success__attach(skel);
-+	if (!ASSERT_OK(err, "skel_attach"))
-+		goto cleanup;
-+
-+	*skel_out = skel;
-+	return 0;
-+
-+cleanup:
-+	if (kern_ringbuf_out)
-+		*kern_ringbuf_out = NULL;
-+	if (user_ringbuf_out)
-+		*user_ringbuf_out = NULL;
-+	ring_buffer__free(kern_ringbuf);
-+	user_ring_buffer__free(user_ringbuf);
-+	user_ringbuf_success__destroy(skel);
-+	return err;
-+}
-+
-+static int load_skel_create_user_ringbuf(struct user_ringbuf_success **skel_out,
-+					 struct user_ring_buffer **ringbuf_out)
-+{
-+	return load_skel_create_ringbufs(skel_out, NULL, NULL, ringbuf_out);
-+}
-+
-+static void manually_write_test_invalid_sample(struct user_ringbuf_success *skel,
-+					       __u32 size, __u64 producer_pos, int err)
-+{
-+	void *data_ptr;
-+	__u64 *producer_pos_ptr;
-+	int rb_fd, page_size = getpagesize();
-+
-+	rb_fd = bpf_map__fd(skel->maps.user_ringbuf);
-+
-+	ASSERT_EQ(skel->bss->read, 0, "num_samples_before_bad_sample");
-+
-+	/* Map the producer_pos as RW. */
-+	producer_pos_ptr = mmap(NULL, page_size, PROT_READ | PROT_WRITE,
-+				MAP_SHARED, rb_fd, page_size);
-+	ASSERT_OK_PTR(producer_pos_ptr, "producer_pos_ptr");
-+
-+	/* Map the data pages as RW. */
-+	data_ptr = mmap(NULL, page_size, PROT_WRITE, MAP_SHARED, rb_fd, 2 * page_size);
-+	ASSERT_OK_PTR(data_ptr, "rw_data");
-+
-+	memset(data_ptr, 0, BPF_RINGBUF_HDR_SZ);
-+	*(__u32 *)data_ptr = size;
-+
-+	/* Synchronizes with smp_load_acquire() in __bpf_user_ringbuf_peek() in the kernel. */
-+	smp_store_release(producer_pos_ptr, producer_pos + BPF_RINGBUF_HDR_SZ);
-+
-+	drain_current_samples();
-+	ASSERT_EQ(skel->bss->read, 0, "num_samples_after_bad_sample");
-+	ASSERT_EQ(skel->bss->err, err, "err_after_bad_sample");
-+
-+	ASSERT_OK(munmap(producer_pos_ptr, page_size), "unmap_producer_pos");
-+	ASSERT_OK(munmap(data_ptr, page_size), "unmap_data_ptr");
-+}
-+
-+static void test_user_ringbuf_post_misaligned(void)
-+{
-+	struct user_ringbuf_success *skel;
-+	struct user_ring_buffer *ringbuf;
-+	int err;
-+	__u32 size = (1 << 5) + 7;
-+
-+	err = load_skel_create_user_ringbuf(&skel, &ringbuf);
-+	if (!ASSERT_OK(err, "misaligned_skel"))
-+		return;
-+
-+	manually_write_test_invalid_sample(skel, size, size, -EINVAL);
-+	user_ring_buffer__free(ringbuf);
-+	user_ringbuf_success__destroy(skel);
-+}
-+
-+static void test_user_ringbuf_post_producer_wrong_offset(void)
-+{
-+	struct user_ringbuf_success *skel;
-+	struct user_ring_buffer *ringbuf;
-+	int err;
-+	__u32 size = (1 << 5);
-+
-+	err = load_skel_create_user_ringbuf(&skel, &ringbuf);
-+	if (!ASSERT_OK(err, "wrong_offset_skel"))
-+		return;
-+
-+	manually_write_test_invalid_sample(skel, size, size - 8, -EINVAL);
-+	user_ring_buffer__free(ringbuf);
-+	user_ringbuf_success__destroy(skel);
-+}
-+
-+static void test_user_ringbuf_post_larger_than_ringbuf_sz(void)
-+{
-+	struct user_ringbuf_success *skel;
-+	struct user_ring_buffer *ringbuf;
-+	int err;
-+	__u32 size = c_ringbuf_size;
-+
-+	err = load_skel_create_user_ringbuf(&skel, &ringbuf);
-+	if (!ASSERT_OK(err, "huge_sample_skel"))
-+		return;
-+
-+	manually_write_test_invalid_sample(skel, size, size, -E2BIG);
-+	user_ring_buffer__free(ringbuf);
-+	user_ringbuf_success__destroy(skel);
-+}
-+
-+static void test_user_ringbuf_basic(void)
-+{
-+	struct user_ringbuf_success *skel;
-+	struct user_ring_buffer *ringbuf;
-+	int err;
-+
-+	err = load_skel_create_user_ringbuf(&skel, &ringbuf);
-+	if (!ASSERT_OK(err, "ringbuf_basic_skel"))
-+		return;
-+
-+	ASSERT_EQ(skel->bss->read, 0, "num_samples_read_before");
-+
-+	err = write_samples(ringbuf, 2);
-+	if (!ASSERT_OK(err, "write_samples"))
-+		goto cleanup;
-+
-+	ASSERT_EQ(skel->bss->read, 2, "num_samples_read_after");
-+
-+cleanup:
-+	user_ring_buffer__free(ringbuf);
-+	user_ringbuf_success__destroy(skel);
-+}
-+
-+static void test_user_ringbuf_sample_full_ringbuffer(void)
-+{
-+	struct user_ringbuf_success *skel;
-+	struct user_ring_buffer *ringbuf;
-+	int err;
-+	void *sample;
-+
-+	err = load_skel_create_user_ringbuf(&skel, &ringbuf);
-+	if (!ASSERT_OK(err, "ringbuf_full_sample_skel"))
-+		return;
-+
-+	sample = user_ring_buffer__reserve(ringbuf, c_ringbuf_size - BPF_RINGBUF_HDR_SZ);
-+	if (!ASSERT_OK_PTR(sample, "full_sample"))
-+		goto cleanup;
-+
-+	user_ring_buffer__submit(ringbuf, sample);
-+	ASSERT_EQ(skel->bss->read, 0, "num_samples_read_before");
-+	drain_current_samples();
-+	ASSERT_EQ(skel->bss->read, 1, "num_samples_read_after");
-+
-+cleanup:
-+	user_ring_buffer__free(ringbuf);
-+	user_ringbuf_success__destroy(skel);
-+}
-+
-+static void test_user_ringbuf_post_alignment_autoadjust(void)
-+{
-+	struct user_ringbuf_success *skel;
-+	struct user_ring_buffer *ringbuf;
-+	struct sample *sample;
-+	int err;
-+
-+	err = load_skel_create_user_ringbuf(&skel, &ringbuf);
-+	if (!ASSERT_OK(err, "ringbuf_align_autoadjust_skel"))
-+		return;
-+
-+	/* libbpf should automatically round any sample up to an 8-byte alignment. */
-+	sample = user_ring_buffer__reserve(ringbuf, sizeof(*sample) + 1);
-+	ASSERT_OK_PTR(sample, "reserve_autoaligned");
-+	user_ring_buffer__submit(ringbuf, sample);
-+
-+	ASSERT_EQ(skel->bss->read, 0, "num_samples_read_before");
-+	drain_current_samples();
-+	ASSERT_EQ(skel->bss->read, 1, "num_samples_read_after");
-+
-+	user_ring_buffer__free(ringbuf);
-+	user_ringbuf_success__destroy(skel);
-+}
-+
-+static void test_user_ringbuf_overfill(void)
-+{
-+	struct user_ringbuf_success *skel;
-+	struct user_ring_buffer *ringbuf;
-+	int err;
-+
-+	err = load_skel_create_user_ringbuf(&skel, &ringbuf);
-+	if (err)
-+		return;
-+
-+	err = write_samples(ringbuf, c_max_entries * 5);
-+	ASSERT_ERR(err, "write_samples");
-+	ASSERT_EQ(skel->bss->read, c_max_entries, "max_entries");
-+
-+	user_ring_buffer__free(ringbuf);
-+	user_ringbuf_success__destroy(skel);
-+}
-+
-+static void test_user_ringbuf_discards_properly_ignored(void)
-+{
-+	struct user_ringbuf_success *skel;
-+	struct user_ring_buffer *ringbuf;
-+	int err, num_discarded = 0;
-+	__u64 *token;
-+
-+	err = load_skel_create_user_ringbuf(&skel, &ringbuf);
-+	if (err)
-+		return;
-+
-+	ASSERT_EQ(skel->bss->read, 0, "num_samples_read_before");
-+
-+	while (1) {
-+		/* Write samples until the buffer is full. */
-+		token = user_ring_buffer__reserve(ringbuf, sizeof(*token));
-+		if (!token)
-+			break;
-+
-+		user_ring_buffer__discard(ringbuf, token);
-+		num_discarded++;
-+	}
-+
-+	if (!ASSERT_GE(num_discarded, 0, "num_discarded"))
-+		goto cleanup;
-+
-+	/* Should not read any samples, as they are all discarded. */
-+	ASSERT_EQ(skel->bss->read, 0, "num_pre_kick");
-+	drain_current_samples();
-+	ASSERT_EQ(skel->bss->read, 0, "num_post_kick");
-+
-+	/* Now that the ringbuffer has been drained, we should be able to reserve another token. */
-+	token = user_ring_buffer__reserve(ringbuf, sizeof(*token));
-+
-+	if (!ASSERT_OK_PTR(token, "new_token"))
-+		goto cleanup;
-+
-+	user_ring_buffer__discard(ringbuf, token);
-+cleanup:
-+	user_ring_buffer__free(ringbuf);
-+	user_ringbuf_success__destroy(skel);
-+}
-+
-+static void test_user_ringbuf_loop(void)
-+{
-+	struct user_ringbuf_success *skel;
-+	struct user_ring_buffer *ringbuf;
-+	uint32_t total_samples = 8192;
-+	uint32_t remaining_samples = total_samples;
-+	int err;
-+
-+	BUILD_BUG_ON(total_samples <= c_max_entries);
-+	err = load_skel_create_user_ringbuf(&skel, &ringbuf);
-+	if (err)
-+		return;
-+
-+	do  {
-+		uint32_t curr_samples;
-+
-+		curr_samples = remaining_samples > c_max_entries
-+			? c_max_entries : remaining_samples;
-+		err = write_samples(ringbuf, curr_samples);
-+		if (err != 0) {
-+			/* Assert inside of if statement to avoid flooding logs
-+			 * on the success path.
-+			 */
-+			ASSERT_OK(err, "write_samples");
-+			goto cleanup;
-+		}
-+
-+		remaining_samples -= curr_samples;
-+		ASSERT_EQ(skel->bss->read, total_samples - remaining_samples,
-+			  "current_batched_entries");
-+	} while (remaining_samples > 0);
-+	ASSERT_EQ(skel->bss->read, total_samples, "total_batched_entries");
-+
-+cleanup:
-+	user_ring_buffer__free(ringbuf);
-+	user_ringbuf_success__destroy(skel);
-+}
-+
-+static int send_test_message(struct user_ring_buffer *ringbuf,
-+			     enum test_msg_op op, s64 operand_64,
-+			     s32 operand_32)
-+{
-+	struct test_msg *msg;
-+
-+	msg = user_ring_buffer__reserve(ringbuf, sizeof(*msg));
-+	if (!msg) {
-+		/* Assert on the error path to avoid spamming logs with mostly
-+		 * success messages.
-+		 */
-+		ASSERT_OK_PTR(msg, "reserve_msg");
-+		return -ENOMEM;
-+	}
-+
-+	msg->msg_op = op;
-+
-+	switch (op) {
-+	case TEST_MSG_OP_INC64:
-+	case TEST_MSG_OP_MUL64:
-+		msg->operand_64 = operand_64;
-+		break;
-+	case TEST_MSG_OP_INC32:
-+	case TEST_MSG_OP_MUL32:
-+		msg->operand_32 = operand_32;
-+		break;
-+	default:
-+		PRINT_FAIL("Invalid operand %d\n", op);
-+		user_ring_buffer__discard(ringbuf, msg);
-+		return -EINVAL;
-+	}
-+
-+	user_ring_buffer__submit(ringbuf, msg);
-+
-+	return 0;
-+}
-+
-+static void kick_kernel_read_messages(void)
-+{
-+	syscall(__NR_prctl);
-+}
-+
-+static int handle_kernel_msg(void *ctx, void *data, size_t len)
-+{
-+	struct user_ringbuf_success *skel = ctx;
-+	struct test_msg *msg = data;
-+
-+	switch (msg->msg_op) {
-+	case TEST_MSG_OP_INC64:
-+		skel->bss->user_mutated += msg->operand_64;
-+		return 0;
-+	case TEST_MSG_OP_INC32:
-+		skel->bss->user_mutated += msg->operand_32;
-+		return 0;
-+	case TEST_MSG_OP_MUL64:
-+		skel->bss->user_mutated *= msg->operand_64;
-+		return 0;
-+	case TEST_MSG_OP_MUL32:
-+		skel->bss->user_mutated *= msg->operand_32;
-+		return 0;
-+	default:
-+		fprintf(stderr, "Invalid operand %d\n", msg->msg_op);
-+		return -EINVAL;
-+	}
-+}
-+
-+static void drain_kernel_messages_buffer(struct ring_buffer *kern_ringbuf,
-+					 struct user_ringbuf_success *skel)
-+{
-+	int cnt;
-+
-+	cnt = ring_buffer__consume(kern_ringbuf);
-+	ASSERT_EQ(cnt, 8, "consume_kern_ringbuf");
-+	ASSERT_OK(skel->bss->err, "consume_kern_ringbuf_err");
-+}
-+
-+static void test_user_ringbuf_msg_protocol(void)
-+{
-+	struct user_ringbuf_success *skel;
-+	struct user_ring_buffer *user_ringbuf;
-+	struct ring_buffer *kern_ringbuf;
-+	int err, i;
-+	__u64 expected_kern = 0;
-+
-+	err = load_skel_create_ringbufs(&skel, &kern_ringbuf, handle_kernel_msg, &user_ringbuf);
-+	if (!ASSERT_OK(err, "create_ringbufs"))
-+		return;
-+
-+	for (i = 0; i < 64; i++) {
-+		enum test_msg_op op = i % TEST_MSG_OP_NUM_OPS;
-+		__u64 operand_64 = TEST_OP_64;
-+		__u32 operand_32 = TEST_OP_32;
-+
-+		err = send_test_message(user_ringbuf, op, operand_64, operand_32);
-+		if (err) {
-+			/* Only assert on a failure to avoid spamming success logs. */
-+			ASSERT_OK(err, "send_test_message");
-+			goto cleanup;
-+		}
-+
-+		switch (op) {
-+		case TEST_MSG_OP_INC64:
-+			expected_kern += operand_64;
-+			break;
-+		case TEST_MSG_OP_INC32:
-+			expected_kern += operand_32;
-+			break;
-+		case TEST_MSG_OP_MUL64:
-+			expected_kern *= operand_64;
-+			break;
-+		case TEST_MSG_OP_MUL32:
-+			expected_kern *= operand_32;
-+			break;
-+		default:
-+			PRINT_FAIL("Unexpected op %d\n", op);
-+			goto cleanup;
-+		}
-+
-+		if (i % 8 == 0) {
-+			kick_kernel_read_messages();
-+			ASSERT_EQ(skel->bss->kern_mutated, expected_kern, "expected_kern");
-+			ASSERT_EQ(skel->bss->err, 0, "bpf_prog_err");
-+			drain_kernel_messages_buffer(kern_ringbuf, skel);
-+		}
-+	}
-+
-+cleanup:
-+	ring_buffer__free(kern_ringbuf);
-+	user_ring_buffer__free(user_ringbuf);
-+	user_ringbuf_success__destroy(skel);
-+}
-+
-+static void *kick_kernel_cb(void *arg)
-+{
-+	/* Kick the kernel, causing it to drain the ringbuffer and then wake up
-+	 * the test thread waiting on epoll.
-+	 */
-+	syscall(__NR_getrlimit);
-+
-+	return NULL;
-+}
-+
-+static int spawn_kick_thread_for_poll(void)
-+{
-+	pthread_t thread;
-+
-+	return pthread_create(&thread, NULL, kick_kernel_cb, NULL);
-+}
-+
-+static void test_user_ringbuf_blocking_reserve(void)
-+{
-+	struct user_ringbuf_success *skel;
-+	struct user_ring_buffer *ringbuf;
-+	int err, num_written = 0;
-+	__u64 *token;
-+
-+	err = load_skel_create_user_ringbuf(&skel, &ringbuf);
-+	if (err)
-+		return;
-+
-+	ASSERT_EQ(skel->bss->read, 0, "num_samples_read_before");
-+
-+	while (1) {
-+		/* Write samples until the buffer is full. */
-+		token = user_ring_buffer__reserve(ringbuf, sizeof(*token));
-+		if (!token)
-+			break;
-+
-+		*token = 0xdeadbeef;
-+
-+		user_ring_buffer__submit(ringbuf, token);
-+		num_written++;
-+	}
-+
-+	if (!ASSERT_GE(num_written, 0, "num_written"))
-+		goto cleanup;
-+
-+	/* Should not have read any samples until the kernel is kicked. */
-+	ASSERT_EQ(skel->bss->read, 0, "num_pre_kick");
-+
-+	/* We correctly time out after 1 second, without a sample. */
-+	token = user_ring_buffer__reserve_blocking(ringbuf, sizeof(*token), 1000);
-+	if (!ASSERT_EQ(token, NULL, "pre_kick_timeout_token"))
-+		goto cleanup;
-+
-+	err = spawn_kick_thread_for_poll();
-+	if (!ASSERT_EQ(err, 0, "deferred_kick_thread\n"))
-+		goto cleanup;
-+
-+	/* After spawning another thread that asychronously kicks the kernel to
-+	 * drain the messages, we're able to block and successfully get a
-+	 * sample once we receive an event notification.
-+	 */
-+	token = user_ring_buffer__reserve_blocking(ringbuf, sizeof(*token), 10000);
-+
-+	if (!ASSERT_OK_PTR(token, "block_token"))
-+		goto cleanup;
-+
-+	ASSERT_GT(skel->bss->read, 0, "num_post_kill");
-+	ASSERT_LE(skel->bss->read, num_written, "num_post_kill");
-+	ASSERT_EQ(skel->bss->err, 0, "err_post_poll");
-+	user_ring_buffer__discard(ringbuf, token);
-+
-+cleanup:
-+	user_ring_buffer__free(ringbuf);
-+	user_ringbuf_success__destroy(skel);
-+}
-+
-+static struct {
-+	const char *prog_name;
-+	const char *expected_err_msg;
-+} failure_tests[] = {
-+	/* failure cases */
-+	{"user_ringbuf_callback_bad_access1", "negative offset dynptr_ptr ptr"},
-+	{"user_ringbuf_callback_bad_access2", "dereference of modified dynptr_ptr ptr"},
-+	{"user_ringbuf_callback_write_forbidden", "invalid mem access 'dynptr_ptr'"},
-+	{"user_ringbuf_callback_null_context_write", "invalid mem access 'scalar'"},
-+	{"user_ringbuf_callback_null_context_read", "invalid mem access 'scalar'"},
-+	{"user_ringbuf_callback_discard_dynptr", "arg 1 is an unacquired reference"},
-+	{"user_ringbuf_callback_submit_dynptr", "arg 1 is an unacquired reference"},
-+	{"user_ringbuf_callback_invalid_return", "At callback return the register R0 has value"},
-+};
-+
-+#define SUCCESS_TEST(_func) { _func, #_func }
-+
-+static struct {
-+	void (*test_callback)(void);
-+	const char *test_name;
-+} success_tests[] = {
-+	SUCCESS_TEST(test_user_ringbuf_mappings),
-+	SUCCESS_TEST(test_user_ringbuf_post_misaligned),
-+	SUCCESS_TEST(test_user_ringbuf_post_producer_wrong_offset),
-+	SUCCESS_TEST(test_user_ringbuf_post_larger_than_ringbuf_sz),
-+	SUCCESS_TEST(test_user_ringbuf_basic),
-+	SUCCESS_TEST(test_user_ringbuf_sample_full_ringbuffer),
-+	SUCCESS_TEST(test_user_ringbuf_post_alignment_autoadjust),
-+	SUCCESS_TEST(test_user_ringbuf_overfill),
-+	SUCCESS_TEST(test_user_ringbuf_discards_properly_ignored),
-+	SUCCESS_TEST(test_user_ringbuf_loop),
-+	SUCCESS_TEST(test_user_ringbuf_msg_protocol),
-+	SUCCESS_TEST(test_user_ringbuf_blocking_reserve),
-+};
-+
-+static void verify_fail(const char *prog_name, const char *expected_err_msg)
-+{
-+	LIBBPF_OPTS(bpf_object_open_opts, opts);
-+	struct bpf_program *prog;
-+	struct user_ringbuf_fail *skel;
-+	int err;
-+
-+	opts.kernel_log_buf = obj_log_buf;
-+	opts.kernel_log_size = log_buf_sz;
-+	opts.kernel_log_level = 1;
-+
-+	skel = user_ringbuf_fail__open_opts(&opts);
-+	if (!ASSERT_OK_PTR(skel, "dynptr_fail__open_opts"))
-+		goto cleanup;
-+
-+	prog = bpf_object__find_program_by_name(skel->obj, prog_name);
-+	if (!ASSERT_OK_PTR(prog, "bpf_object__find_program_by_name"))
-+		goto cleanup;
-+
-+	bpf_program__set_autoload(prog, true);
-+
-+	bpf_map__set_max_entries(skel->maps.user_ringbuf, getpagesize());
-+
-+	err = user_ringbuf_fail__load(skel);
-+	if (!ASSERT_ERR(err, "unexpected load success"))
-+		goto cleanup;
-+
-+	if (!ASSERT_OK_PTR(strstr(obj_log_buf, expected_err_msg), "expected_err_msg")) {
-+		fprintf(stderr, "Expected err_msg: %s\n", expected_err_msg);
-+		fprintf(stderr, "Verifier output: %s\n", obj_log_buf);
-+	}
-+
-+cleanup:
-+	user_ringbuf_fail__destroy(skel);
-+}
-+
-+void test_user_ringbuf(void)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(success_tests); i++) {
-+		if (!test__start_subtest(success_tests[i].test_name))
-+			continue;
-+
-+		success_tests[i].test_callback();
-+	}
-+
-+	for (i = 0; i < ARRAY_SIZE(failure_tests); i++) {
-+		if (!test__start_subtest(failure_tests[i].prog_name))
-+			continue;
-+
-+		verify_fail(failure_tests[i].prog_name, failure_tests[i].expected_err_msg);
-+	}
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_user_ringbuf.h b/tools/testing/selftests/bpf/progs/test_user_ringbuf.h
-new file mode 100644
-index 000000000000..1643b4d59ba7
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_user_ringbuf.h
-@@ -0,0 +1,35 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
-+
-+#ifndef _TEST_USER_RINGBUF_H
-+#define _TEST_USER_RINGBUF_H
-+
-+#define TEST_OP_64 4
-+#define TEST_OP_32 2
-+
-+enum test_msg_op {
-+	TEST_MSG_OP_INC64,
-+	TEST_MSG_OP_INC32,
-+	TEST_MSG_OP_MUL64,
-+	TEST_MSG_OP_MUL32,
-+
-+	// Must come last.
-+	TEST_MSG_OP_NUM_OPS,
-+};
-+
-+struct test_msg {
-+	enum test_msg_op msg_op;
-+	union {
-+		__s64 operand_64;
-+		__s32 operand_32;
-+	};
-+};
-+
-+struct sample {
-+	int pid;
-+	int seq;
-+	long value;
-+	char comm[16];
-+};
-+
-+#endif /* _TEST_USER_RINGBUF_H */
-diff --git a/tools/testing/selftests/bpf/progs/user_ringbuf_fail.c b/tools/testing/selftests/bpf/progs/user_ringbuf_fail.c
-new file mode 100644
-index 000000000000..82aba4529aa9
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/user_ringbuf_fail.c
-@@ -0,0 +1,177 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_misc.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+struct sample {
-+	int pid;
-+	int seq;
-+	long value;
-+	char comm[16];
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_USER_RINGBUF);
-+} user_ringbuf SEC(".maps");
-+
-+static long
-+bad_access1(struct bpf_dynptr *dynptr, void *context)
-+{
-+	const struct sample *sample;
-+
-+	sample = bpf_dynptr_data(dynptr - 1, 0, sizeof(*sample));
-+	bpf_printk("Was able to pass bad pointer %lx\n", (__u64)dynptr - 1);
-+
-+	return 0;
-+}
-+
-+/* A callback that accesses a dynptr in a bpf_user_ringbuf_drain callback should
-+ * not be able to read before the pointer.
-+ */
-+SEC("?raw_tp/sys_nanosleep")
-+int user_ringbuf_callback_bad_access1(void *ctx)
-+{
-+	bpf_user_ringbuf_drain(&user_ringbuf, bad_access1, NULL, 0);
-+
-+	return 0;
-+}
-+
-+static long
-+bad_access2(struct bpf_dynptr *dynptr, void *context)
-+{
-+	const struct sample *sample;
-+
-+	sample = bpf_dynptr_data(dynptr + 1, 0, sizeof(*sample));
-+	bpf_printk("Was able to pass bad pointer %lx\n", (__u64)dynptr + 1);
-+
-+	return 0;
-+}
-+
-+/* A callback that accesses a dynptr in a bpf_user_ringbuf_drain callback should
-+ * not be able to read past the end of the pointer.
-+ */
-+SEC("?raw_tp/sys_nanosleep")
-+int user_ringbuf_callback_bad_access2(void *ctx)
-+{
-+	bpf_user_ringbuf_drain(&user_ringbuf, bad_access2, NULL, 0);
-+
-+	return 0;
-+}
-+
-+static long
-+write_forbidden(struct bpf_dynptr *dynptr, void *context)
-+{
-+	*((long *)dynptr) = 0;
-+
-+	return 0;
-+}
-+
-+/* A callback that accesses a dynptr in a bpf_user_ringbuf_drain callback should
-+ * not be able to write to that pointer.
-+ */
-+SEC("?raw_tp/sys_nanosleep")
-+int user_ringbuf_callback_write_forbidden(void *ctx)
-+{
-+	bpf_user_ringbuf_drain(&user_ringbuf, write_forbidden, NULL, 0);
-+
-+	return 0;
-+}
-+
-+static long
-+null_context_write(struct bpf_dynptr *dynptr, void *context)
-+{
-+	*((__u64 *)context) = 0;
-+
-+	return 0;
-+}
-+
-+/* A callback that accesses a dynptr in a bpf_user_ringbuf_drain callback should
-+ * not be able to write to that pointer.
-+ */
-+SEC("?raw_tp/sys_nanosleep")
-+int user_ringbuf_callback_null_context_write(void *ctx)
-+{
-+	bpf_user_ringbuf_drain(&user_ringbuf, null_context_write, NULL, 0);
-+
-+	return 0;
-+}
-+
-+static long
-+null_context_read(struct bpf_dynptr *dynptr, void *context)
-+{
-+	__u64 id = *((__u64 *)context);
-+
-+	bpf_printk("Read id %lu\n", id);
-+
-+	return 0;
-+}
-+
-+/* A callback that accesses a dynptr in a bpf_user_ringbuf_drain callback should
-+ * not be able to write to that pointer.
-+ */
-+SEC("?raw_tp/sys_nanosleep")
-+int user_ringbuf_callback_null_context_read(void *ctx)
-+{
-+	bpf_user_ringbuf_drain(&user_ringbuf, null_context_read, NULL, 0);
-+
-+	return 0;
-+}
-+
-+static long
-+try_discard_dynptr(struct bpf_dynptr *dynptr, void *context)
-+{
-+	bpf_ringbuf_discard_dynptr(dynptr, 0);
-+
-+	return 0;
-+}
-+
-+/* A callback that accesses a dynptr in a bpf_user_ringbuf_drain callback should
-+ * not be able to read past the end of the pointer.
-+ */
-+SEC("?raw_tp/sys_nanosleep")
-+int user_ringbuf_callback_discard_dynptr(void *ctx)
-+{
-+	bpf_user_ringbuf_drain(&user_ringbuf, try_discard_dynptr, NULL, 0);
-+
-+	return 0;
-+}
-+
-+static long
-+try_submit_dynptr(struct bpf_dynptr *dynptr, void *context)
-+{
-+	bpf_ringbuf_submit_dynptr(dynptr, 0);
-+
-+	return 0;
-+}
-+
-+/* A callback that accesses a dynptr in a bpf_user_ringbuf_drain callback should
-+ * not be able to read past the end of the pointer.
-+ */
-+SEC("?raw_tp/sys_nanosleep")
-+int user_ringbuf_callback_submit_dynptr(void *ctx)
-+{
-+	bpf_user_ringbuf_drain(&user_ringbuf, try_submit_dynptr, NULL, 0);
-+
-+	return 0;
-+}
-+
-+static long
-+invalid_drain_callback_return(struct bpf_dynptr *dynptr, void *context)
-+{
-+	return 2;
-+}
-+
-+/* A callback that accesses a dynptr in a bpf_user_ringbuf_drain callback should
-+ * not be able to write to that pointer.
-+ */
-+SEC("?raw_tp/sys_nanosleep")
-+int user_ringbuf_callback_invalid_return(void *ctx)
-+{
-+	bpf_user_ringbuf_drain(&user_ringbuf, invalid_drain_callback_return, NULL, 0);
-+
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/bpf/progs/user_ringbuf_success.c b/tools/testing/selftests/bpf/progs/user_ringbuf_success.c
-new file mode 100644
-index 000000000000..099c23d9aa21
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/user_ringbuf_success.c
-@@ -0,0 +1,218 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_misc.h"
-+#include "test_user_ringbuf.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_USER_RINGBUF);
-+} user_ringbuf SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_RINGBUF);
-+} kernel_ringbuf SEC(".maps");
-+
-+/* inputs */
-+int pid, err, val;
-+
-+int read = 0;
-+
-+/* Counter used for end-to-end protocol test */
-+__u64 kern_mutated = 0;
-+__u64 user_mutated = 0;
-+__u64 expected_user_mutated = 0;
-+
-+static int
-+is_test_process(void)
-+{
-+	int cur_pid = bpf_get_current_pid_tgid() >> 32;
-+
-+	return cur_pid == pid;
-+}
-+
-+static long
-+record_sample(struct bpf_dynptr *dynptr, void *context)
-+{
-+	const struct sample *sample = NULL;
-+	struct sample stack_sample;
-+	int status;
-+	static int num_calls;
-+
-+	if (num_calls++ % 2 == 0) {
-+		status = bpf_dynptr_read(&stack_sample, sizeof(stack_sample), dynptr, 0, 0);
-+		if (status) {
-+			bpf_printk("bpf_dynptr_read() failed: %d\n", status);
-+			err = 1;
-+			return 0;
-+		}
-+	} else {
-+		sample = bpf_dynptr_data(dynptr, 0, sizeof(*sample));
-+		if (!sample) {
-+			bpf_printk("Unexpectedly failed to get sample\n");
-+			err = 2;
-+			return 0;
-+		}
-+		stack_sample = *sample;
-+	}
-+
-+	__sync_fetch_and_add(&read, 1);
-+	return 0;
-+}
-+
-+static void
-+handle_sample_msg(const struct test_msg *msg)
-+{
-+	switch (msg->msg_op) {
-+	case TEST_MSG_OP_INC64:
-+		kern_mutated += msg->operand_64;
-+		break;
-+	case TEST_MSG_OP_INC32:
-+		kern_mutated += msg->operand_32;
-+		break;
-+	case TEST_MSG_OP_MUL64:
-+		kern_mutated *= msg->operand_64;
-+		break;
-+	case TEST_MSG_OP_MUL32:
-+		kern_mutated *= msg->operand_32;
-+		break;
-+	default:
-+		bpf_printk("Unrecognized op %d\n", msg->msg_op);
-+		err = 2;
-+	}
-+}
-+
-+static long
-+read_protocol_msg(struct bpf_dynptr *dynptr, void *context)
-+{
-+	const struct test_msg *msg = NULL;
-+
-+	msg = bpf_dynptr_data(dynptr, 0, sizeof(*msg));
-+	if (!msg) {
-+		err = 1;
-+		bpf_printk("Unexpectedly failed to get msg\n");
-+		return 0;
-+	}
-+
-+	handle_sample_msg(msg);
-+
-+	return 0;
-+}
-+
-+static int publish_next_kern_msg(__u32 index, void *context)
-+{
-+	struct test_msg *msg = NULL;
-+	int operand_64 = TEST_OP_64;
-+	int operand_32 = TEST_OP_32;
-+
-+	msg = bpf_ringbuf_reserve(&kernel_ringbuf, sizeof(*msg), 0);
-+	if (!msg) {
-+		err = 4;
-+		return 1;
-+	}
-+
-+	switch (index % TEST_MSG_OP_NUM_OPS) {
-+	case TEST_MSG_OP_INC64:
-+		msg->operand_64 = operand_64;
-+		msg->msg_op = TEST_MSG_OP_INC64;
-+		expected_user_mutated += operand_64;
-+		break;
-+	case TEST_MSG_OP_INC32:
-+		msg->operand_32 = operand_32;
-+		msg->msg_op = TEST_MSG_OP_INC32;
-+		expected_user_mutated += operand_32;
-+		break;
-+	case TEST_MSG_OP_MUL64:
-+		msg->operand_64 = operand_64;
-+		msg->msg_op = TEST_MSG_OP_MUL64;
-+		expected_user_mutated *= operand_64;
-+		break;
-+	case TEST_MSG_OP_MUL32:
-+		msg->operand_32 = operand_32;
-+		msg->msg_op = TEST_MSG_OP_MUL32;
-+		expected_user_mutated *= operand_32;
-+		break;
-+	default:
-+		bpf_ringbuf_discard(msg, 0);
-+		err = 5;
-+		return 1;
-+	}
-+
-+	bpf_ringbuf_submit(msg, 0);
-+
-+	return 0;
-+}
-+
-+static void
-+publish_kern_messages(void)
-+{
-+	if (expected_user_mutated != user_mutated) {
-+		bpf_printk("%lu != %lu\n", expected_user_mutated, user_mutated);
-+		err = 3;
-+		return;
-+	}
-+
-+	bpf_loop(8, publish_next_kern_msg, NULL, 0);
-+}
-+
-+SEC("fentry/" SYS_PREFIX "sys_prctl")
-+int test_user_ringbuf_protocol(void *ctx)
-+{
-+	long status = 0;
-+	struct sample *sample = NULL;
-+	struct bpf_dynptr ptr;
-+
-+	if (!is_test_process())
-+		return 0;
-+
-+	status = bpf_user_ringbuf_drain(&user_ringbuf, read_protocol_msg, NULL, 0);
-+	if (status < 0) {
-+		bpf_printk("Drain returned: %ld\n", status);
-+		err = 1;
-+		return 0;
-+	}
-+
-+	publish_kern_messages();
-+
-+	return 0;
-+}
-+
-+SEC("fentry/" SYS_PREFIX "sys_getpgid")
-+int test_user_ringbuf(void *ctx)
-+{
-+	int status = 0;
-+	struct sample *sample = NULL;
-+	struct bpf_dynptr ptr;
-+
-+	if (!is_test_process())
-+		return 0;
-+
-+	err = bpf_user_ringbuf_drain(&user_ringbuf, record_sample, NULL, 0);
-+
-+	return 0;
-+}
-+
-+static long
-+do_nothing_cb(struct bpf_dynptr *dynptr, void *context)
-+{
-+	__sync_fetch_and_add(&read, 1);
-+	return 0;
-+}
-+
-+SEC("fentry/" SYS_PREFIX "sys_getrlimit")
-+int test_user_ringbuf_epoll(void *ctx)
-+{
-+	long num_samples;
-+
-+	if (!is_test_process())
-+		return 0;
-+
-+	num_samples = bpf_user_ringbuf_drain(&user_ringbuf, do_nothing_cb, NULL, 0);
-+	if (num_samples <= 0)
-+		err = 1;
-+
-+	return 0;
-+}
+This feature is widely used in the kernel. For example, if the restriction
+is enabled, kernel modules can be plugged in only if they are signed with a
+key whose public part is in the primary or secondary keyring.
+
+For eBPF, it can be useful as well. For example, it might be useful to
+authenticate data an eBPF program makes security decisions on.
+
+After a discussion in the eBPF mailing list, it was decided that the stated
+goal should be accomplished by introducing four new kfuncs:
+bpf_lookup_user_key() and bpf_lookup_system_key(), for retrieving a keyring
+with keys trusted for signature verification, respectively from its serial
+and from a pre-determined ID; bpf_key_put(), to release the reference
+obtained with the former two kfuncs, bpf_verify_pkcs7_signature(), for
+verifying PKCS#7 signatures.
+
+Other than the key serial, bpf_lookup_user_key() also accepts key lookup
+flags, that influence the behavior of the lookup. bpf_lookup_system_key()
+accepts pre-determined IDs defined in include/linux/verification.h.
+
+bpf_key_put() accepts the new bpf_key structure, introduced to tell whether
+the other structure member, a key pointer, is valid or not. The reason is
+that verify_pkcs7_signature() also accepts invalid pointers, set with the
+pre-determined ID, to select a system-defined keyring. key_put() must be
+called only for valid key pointers.
+
+Since the two key lookup functions allocate memory and one increments a key
+reference count, they must be used in conjunction with bpf_key_put(). The
+latter must be called only if the lookup functions returned a non-NULL
+pointer. The verifier denies the execution of eBPF programs that don't
+respect this rule.
+
+The two key lookup functions should be used in alternative, depending on
+the use case. While bpf_lookup_user_key() provides great flexibility, it
+seems suboptimal in terms of security guarantees, as even if the eBPF
+program is assumed to be trusted, the serial used to obtain the key pointer
+might come from untrusted user space not choosing one that the system
+administrator approves to enforce a mandatory policy.
+
+bpf_lookup_system_key() instead provides much stronger guarantees,
+especially if the pre-determined ID is not passed by user space but is
+hardcoded in the eBPF program, and that program is signed. In this case,
+bpf_verify_pkcs7_signature() will always perform signature verification
+with a key that the system administrator approves, i.e. the primary,
+secondary or platform keyring.
+
+Nevertheless, key permission checks need to be done accurately. Since
+bpf_lookup_user_key() cannot determine how a key will be used by other
+kfuncs, it has to defer the permission check to the actual kfunc using the
+key. It does it by calling lookup_user_key() with KEY_DEFER_PERM_CHECK as
+needed permission. Later, bpf_verify_pkcs7_signature(), if called,
+completes the permission check by calling key_validate(). It does not need
+to call key_task_permission() with permission KEY_NEED_SEARCH, as it is
+already done elsewhere by the key subsystem. Future kfuncs using the
+bpf_key structure need to implement the proper checks as well.
+
+Finally, the last kfunc, bpf_verify_pkcs7_signature(), accepts the data and
+signature to verify as eBPF dynamic pointers, to minimize the number of
+kfunc parameters, and the keyring with keys for signature verification as a
+bpf_key structure, returned by one of the two key lookup functions.
+
+bpf_lookup_user_key() and bpf_verify_pkcs7_signature() can be called only
+from sleepable programs, because of memory allocation and crypto
+operations. For example, the lsm.s/bpf attach point is suitable,
+fexit/array_map_update_elem is not.
+
+The correctness of implementation of the new kfuncs and of their usage is
+checked with the introduced tests.
+
+The patch set includes a patch from another author (dependency) for sake of
+completeness. It is organized as follows.
+
+Patch 1 from KP Singh allows kfuncs to be used by LSM programs. Patch 2
+splits is_dynptr_reg_valid_init() and introduces is_dynptr_type_expected(),
+to know more precisely the cause of a negative result of a dynamic pointer
+check. Patch 3 allows dynamic pointers to be used as kfunc parameters.
+Patch 4 exports bpf_dynptr_get_size(), to obtain the real size of data
+carried by a dynamic pointer. Patch 5 makes available for new eBPF kfuncs
+and programs some key-related definitions. Patch 6 introduces the
+bpf_lookup_*_key() and bpf_key_put() kfuncs. Patch 7 introduces the
+bpf_verify_pkcs7_signature() kfunc. Patch 8 changes the testing kernel
+configuration to compile everything as built-in. Finally, patches 9-12
+introduce the tests.
+
+Changelog
+
+v14:
+ - Explain that is_dynptr_type_expected() will be useful also for BTF
+   (suggested by Joanne)
+ - Rename KEY_LOOKUP_FLAGS_ALL to KEY_LOOKUP_ALL (suggested by Jarkko)
+ - Swap declaration of spi and dynptr_type in is_dynptr_type_expected()
+   (suggested by Joanne)
+ - Reimplement kfunc dynptr tests with a regular eBPF program instead of
+   executing them with test_verifier (suggested by Joanne)
+ - Make key lookup flags as enum so that they are automatically exported
+   through BTF (suggested by Alexei)
+ 
+v13:
+ - Split is_dynptr_reg_valid_init() and introduce is_dynptr_type_expected()
+   to see if the dynamic pointer type passed as argument to a kfunc is
+   supported (suggested by Kumar)
+ - Add forward declaration of struct key in include/linux/bpf.h (suggested
+   by Song)
+ - Declare mask for key lookup flags, remove key_lookup_flags_check()
+   (suggested by Jarkko and KP)
+ - Allow only certain dynamic pointer types (currently, local) to be passed
+   as argument to kfuncs (suggested by Kumar)
+ - For each dynamic pointer parameter in kfunc, additionally check if the
+   passed pointer is to the stack (suggested by Kumar)
+ - Split the validity/initialization and dynamic pointer type check also in
+   the verifier, and adjust the expected error message in the test (a test
+   for an unexpected dynptr type passed to a helper cannot be added due to
+   missing suitable helpers, but this case has been tested manually)
+ - Add verifier tests to check the dynamic pointers passed as argument to
+   kfuncs (suggested by Kumar)
+
+v12:
+ - Put lookup_key and verify_pkcs7_sig tests in deny list for s390x (JIT
+   does not support calling kernel function)
+
+v11:
+ - Move stringify_struct() macro to include/linux/btf.h (suggested by
+   Daniel)
+ - Change kernel configuration options in
+   tools/testing/selftests/bpf/config* from =m to =y
+
+v10:
+ - Introduce key_lookup_flags_check() and system_keyring_id_check() inline
+   functions to check parameters (suggested by KP)
+ - Fix descriptions and comment of key-related kfuncs (suggested by KP)
+ - Register kfunc set only once (suggested by Alexei)
+ - Move needed kernel options to the architecture-independent configuration
+   for testing
+
+v9:
+ - Drop patch to introduce KF_SLEEPABLE kfunc flag (already merged)
+ - Rename valid_ptr member of bpf_key to has_ref (suggested by Daniel)
+ - Check dynamic pointers in kfunc definition with bpf_dynptr_kern struct
+   definition instead of string, to detect structure renames (suggested by
+   Daniel)
+ - Explicitly say that we permit initialized dynamic pointers in kfunc
+   definition (suggested by Daniel)
+ - Remove noinline __weak from kfuncs definition (reported by Daniel)
+ - Simplify key lookup flags check in bpf_lookup_user_key() (suggested by
+   Daniel)
+ - Explain the reason for deferring key permission check (suggested by
+   Daniel)
+ - Allocate memory with GFP_ATOMIC in bpf_lookup_system_key(), and remove
+   KF_SLEEPABLE kfunc flag from kfunc declaration (suggested by Daniel)
+ - Define only one kfunc set and remove the loop for registration
+   (suggested by Alexei)
+
+v8:
+ - Define the new bpf_key structure to carry the key pointer and whether
+   that pointer is valid or not (suggested by Daniel)
+ - Drop patch to mark a kfunc parameter with the __maybe_null suffix
+ - Improve documentation of kfuncs
+ - Introduce bpf_lookup_system_key() to obtain a key pointer suitable for
+   verify_pkcs7_signature() (suggested by Daniel)
+ - Use the new kfunc registration API
+ - Drop patch to test the __maybe_null suffix
+ - Add tests for bpf_lookup_system_key()
+
+v7:
+ - Add support for using dynamic and NULL pointers in kfunc (suggested by
+   Alexei)
+ - Add new kfunc-related tests
+
+v6:
+ - Switch back to key lookup helpers + signature verification (until v5),
+   and defer permission check from bpf_lookup_user_key() to
+   bpf_verify_pkcs7_signature()
+ - Add additional key lookup test to illustrate the usage of the
+   KEY_LOOKUP_CREATE flag and validate the flags (suggested by Daniel)
+ - Make description of flags of bpf_lookup_user_key() more user-friendly
+   (suggested by Daniel)
+ - Fix validation of flags parameter in bpf_lookup_user_key() (reported by
+   Daniel)
+ - Rename bpf_verify_pkcs7_signature() keyring-related parameters to
+   user_keyring and system_keyring to make their purpose more clear
+ - Accept keyring-related parameters of bpf_verify_pkcs7_signature() as
+   alternatives (suggested by KP)
+ - Replace unsigned long type with u64 in helper declaration (suggested by
+   Daniel)
+ - Extend the bpf_verify_pkcs7_signature() test by calling the helper
+   without data, by ensuring that the helper enforces the keyring-related
+   parameters as alternatives, by ensuring that the helper rejects
+   inaccessible and expired keyrings, and by checking all system keyrings
+ - Move bpf_lookup_user_key() and bpf_key_put() usage tests to
+   ref_tracking.c (suggested by John)
+ - Call bpf_lookup_user_key() and bpf_key_put() only in sleepable programs
+
+v5:
+ - Move KEY_LOOKUP_ to include/linux/key.h
+   for validation of bpf_verify_pkcs7_signature() parameter
+ - Remove bpf_lookup_user_key() and bpf_key_put() helpers, and the
+   corresponding tests
+ - Replace struct key parameter of bpf_verify_pkcs7_signature() with the
+   keyring serial and lookup flags
+ - Call lookup_user_key() and key_put() in bpf_verify_pkcs7_signature()
+   code, to ensure that the retrieved key is used according to the
+   permission requested at lookup time
+ - Clarified keyring precedence in the description of
+   bpf_verify_pkcs7_signature() (suggested by John)
+ - Remove newline in the second argument of ASSERT_
+ - Fix helper prototype regular expression in bpf_doc.py
+
+v4:
+ - Remove bpf_request_key_by_id(), don't return an invalid pointer that
+   other helpers can use
+ - Pass the keyring ID (without ULONG_MAX, suggested by Alexei) to
+   bpf_verify_pkcs7_signature()
+ - Introduce bpf_lookup_user_key() and bpf_key_put() helpers (suggested by
+   Alexei)
+ - Add lookup_key_norelease test, to ensure that the verifier blocks eBPF
+   programs which don't decrement the key reference count
+ - Parse raw PKCS#7 signature instead of module-style signature in the
+   verify_pkcs7_signature test (suggested by Alexei)
+ - Parse kernel module in user space and pass raw PKCS#7 signature to the
+   eBPF program for signature verification
+
+v3:
+ - Rename bpf_verify_signature() back to bpf_verify_pkcs7_signature() to
+   avoid managing different parameters for each signature verification
+   function in one helper (suggested by Daniel)
+ - Use dynamic pointers and export bpf_dynptr_get_size() (suggested by
+   Alexei)
+ - Introduce bpf_request_key_by_id() to give more flexibility to the caller
+   of bpf_verify_pkcs7_signature() to retrieve the appropriate keyring
+   (suggested by Alexei)
+ - Fix test by reordering the gcc command line, always compile sign-file
+ - Improve helper support check mechanism in the test
+
+v2:
+ - Rename bpf_verify_pkcs7_signature() to a more generic
+   bpf_verify_signature() and pass the signature type (suggested by KP)
+ - Move the helper and prototype declaration under #ifdef so that user
+   space can probe for support for the helper (suggested by Daniel)
+ - Describe better the keyring types (suggested by Daniel)
+ - Include linux/bpf.h instead of vmlinux.h to avoid implicit or
+   redeclaration
+ - Make the test selfcontained (suggested by Alexei)
+
+v1:
+ - Don't define new map flag but introduce simple wrapper of
+   verify_pkcs7_signature() (suggested by Alexei and KP)
+
+KP Singh (1):
+  bpf: Allow kfuncs to be used in LSM programs
+
+Roberto Sassu (11):
+  bpf: Move dynptr type check to is_dynptr_type_expected()
+  btf: Allow dynamic pointer parameters in kfuncs
+  bpf: Export bpf_dynptr_get_size()
+  KEYS: Move KEY_LOOKUP_ to include/linux/key.h and define
+    KEY_LOOKUP_ALL
+  bpf: Add bpf_lookup_*_key() and bpf_key_put() kfuncs
+  bpf: Add bpf_verify_pkcs7_signature() kfunc
+  selftests/bpf: Compile kernel with everything as built-in
+  selftests/bpf: Add verifier tests for bpf_lookup_*_key() and
+    bpf_key_put()
+  selftests/bpf: Add additional tests for bpf_lookup_*_key()
+  selftests/bpf: Add test for bpf_verify_pkcs7_signature() kfunc
+  selftests/bpf: Add tests for dynamic pointers parameters in kfuncs
+
+ include/linux/bpf.h                           |   9 +
+ include/linux/bpf_verifier.h                  |   5 +
+ include/linux/btf.h                           |   9 +
+ include/linux/key.h                           |   6 +
+ include/linux/verification.h                  |   8 +
+ kernel/bpf/btf.c                              |  34 ++
+ kernel/bpf/helpers.c                          |   2 +-
+ kernel/bpf/verifier.c                         |  35 +-
+ kernel/trace/bpf_trace.c                      | 180 ++++++++
+ security/keys/internal.h                      |   2 -
+ tools/testing/selftests/bpf/DENYLIST.s390x    |   2 +
+ tools/testing/selftests/bpf/Makefile          |  14 +-
+ tools/testing/selftests/bpf/config            |  32 +-
+ tools/testing/selftests/bpf/config.x86_64     |   7 +-
+ .../testing/selftests/bpf/prog_tests/dynptr.c |   2 +-
+ .../bpf/prog_tests/kfunc_dynptr_param.c       | 102 +++++
+ .../selftests/bpf/prog_tests/lookup_key.c     | 112 +++++
+ .../bpf/prog_tests/verify_pkcs7_sig.c         | 399 ++++++++++++++++++
+ .../bpf/progs/test_kfunc_dynptr_param.c       |  57 +++
+ .../selftests/bpf/progs/test_lookup_key.c     |  46 ++
+ .../bpf/progs/test_verify_pkcs7_sig.c         | 100 +++++
+ tools/testing/selftests/bpf/test_verifier.c   |   3 +-
+ .../selftests/bpf/verifier/ref_tracking.c     | 139 ++++++
+ .../testing/selftests/bpf/verify_sig_setup.sh | 104 +++++
+ 24 files changed, 1374 insertions(+), 35 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/kfunc_dynptr_param.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/lookup_key.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/verify_pkcs7_sig.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_lookup_key.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_verify_pkcs7_sig.c
+ create mode 100755 tools/testing/selftests/bpf/verify_sig_setup.sh
+
 -- 
-2.37.1
+2.25.1
 
