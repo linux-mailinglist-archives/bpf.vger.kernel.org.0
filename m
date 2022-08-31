@@ -2,123 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F7705A79B1
-	for <lists+bpf@lfdr.de>; Wed, 31 Aug 2022 11:02:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E72765A79B9
+	for <lists+bpf@lfdr.de>; Wed, 31 Aug 2022 11:07:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231226AbiHaJCg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 31 Aug 2022 05:02:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35790 "EHLO
+        id S230118AbiHaJHF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 31 Aug 2022 05:07:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230458AbiHaJCf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 31 Aug 2022 05:02:35 -0400
-Received: from xry111.site (xry111.site [IPv6:2001:470:683e::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C69E5BD747
-        for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 02:02:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
-        s=default; t=1661936552;
-        bh=ECqsVjBTRWNtq87Rj1rE7CyanoR0fzh8v6Jx+yreDLE=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=M4WDTBDs0+mXFJZpVCOe67+s1EQwPozaVwWJJBQGwmxtPWVoQSrhPveMxhBuASrCj
-         cFHwXTjrxUKuYghhs0A7OVOnsXn2+VlLpi4IEl3NpdhJshuwmB4SLqir7JtuTjZqWw
-         Npm8lmwjjUBOfuyBafuGSWydjVRGV+Hie2puUGKc=
-Received: from [IPv6:240e:358:118a:f800:dc73:854d:832e:4] (unknown [IPv6:240e:358:118a:f800:dc73:854d:832e:4])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
-        (Client did not present a certificate)
-        (Authenticated sender: xry111@xry111.site)
-        by xry111.site (Postfix) with ESMTPSA id 760C566819;
-        Wed, 31 Aug 2022 05:02:28 -0400 (EDT)
-Message-ID: <e477e042aee090d6c3cf7ebeabed25df5b0fa07e.camel@xry111.site>
-Subject: Re: [PATCH bpf-next v2 4/4] LoongArch: Enable BPF_JIT and TEST_BPF
- in default config
-From:   Xi Ruoyao <xry111@xry111.site>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Huacai Chen <chenhuacai@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        loongarch@lists.linux.dev
-Date:   Wed, 31 Aug 2022 17:02:18 +0800
-In-Reply-To: <75b27dacb8b4d779c6b2c0e46871baf404a32b6b.camel@xry111.site>
-References: <1661857809-10828-1-git-send-email-yangtiezhu@loongson.cn>
-         <1661857809-10828-5-git-send-email-yangtiezhu@loongson.cn>
-         <CAAhV-H6Dq+Z_kS0LcM=QGF1h=k2i0hR7fYZdXgU2kXAfm1VPLw@mail.gmail.com>
-         <6bc9bd64-1ba9-a35f-c0b7-480429b26b9f@loongson.cn>
-         <75b27dacb8b4d779c6b2c0e46871baf404a32b6b.camel@xry111.site>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.45.2 
+        with ESMTP id S231296AbiHaJHE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 31 Aug 2022 05:07:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E814AB43E
+        for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 02:07:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1661936821;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=cMNfIgRTVmZqKAiwpQKkEBgXh25nieGSRIjhYl0Ufu8=;
+        b=gnilemmSIRIDtxenExVvJttfgfi4CtTLAi7v/ejbwzoFYgkxHiwV8G8HKISPDcmN1KSmxi
+        U9rtCgMMJ3enctBt6V7Vskab5Y/ZZDY43Aw2uLgjKxwS54TV+r28V14dNG4oF96qmNPxtw
+        BbYjynwRvRO6q89liKc7FALsk+R2Esc=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-179-lCFGhxHsPFSsbx6gktO6Mg-1; Wed, 31 Aug 2022 05:07:00 -0400
+X-MC-Unique: lCFGhxHsPFSsbx6gktO6Mg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id EA24085A589;
+        Wed, 31 Aug 2022 09:06:59 +0000 (UTC)
+Received: from astarta.redhat.com (unknown [10.39.193.173])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7B48F1415117;
+        Wed, 31 Aug 2022 09:06:58 +0000 (UTC)
+From:   Yauheni Kaliuta <ykaliuta@redhat.com>
+To:     bpf@vger.kernel.org
+Cc:     alexei.starovoitov@gmail.com, jbenc@redhat.com,
+        Yauheni Kaliuta <ykaliuta@redhat.com>
+Subject: [RFC PATCH] bpf: use bpf_capable() instead of CAP_SYS_ADMIN for blinding decision
+Date:   Wed, 31 Aug 2022 12:06:55 +0300
+Message-Id: <20220831090655.156434-1-ykaliuta@redhat.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_SUSPICIOUS_NTLD,
-        PDS_OTHER_BAD_TLD,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.85 on 10.11.54.7
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 2022-08-31 at 12:12 +0800, Xi Ruoyao wrote:
-> On Wed, 2022-08-31 at 09:23 +0800, Tiezhu Yang wrote:
-> >=20
-> >=20
-> > On 08/30/2022 10:46 PM, Huacai Chen wrote:
-> > > Hi, Tiezhu,
-> > >=20
-> > > On Tue, Aug 30, 2022 at 7:10 PM Tiezhu Yang
-> > > <yangtiezhu@loongson.cn> wrote:
-> > > >=20
-> > > > For now, BPF JIT for LoongArch is supported, update
-> > > > loongson3_defconfig to
-> > > > enable BPF_JIT to allow the kernel to generate native code when
-> > > > a program
-> > > > is loaded into the kernel, and also enable TEST_BPF to test BPF
-> > > > JIT.
-> > > >=20
-> > > > Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> > > > ---
-> > > > =C2=A0arch/loongarch/configs/loongson3_defconfig | 2 ++
-> > > > =C2=A01 file changed, 2 insertions(+)
-> > > >=20
-> > > > diff --git a/arch/loongarch/configs/loongson3_defconfig
-> > > > b/arch/loongarch/configs/loongson3_defconfig
-> > > > index 3712552..93dc072 100644
-> > > > --- a/arch/loongarch/configs/loongson3_defconfig
-> > > > +++ b/arch/loongarch/configs/loongson3_defconfig
-> > > > @@ -4,6 +4,7 @@ CONFIG_POSIX_MQUEUE=3Dy
-> > > > =C2=A0CONFIG_NO_HZ=3Dy
-> > > > =C2=A0CONFIG_HIGH_RES_TIMERS=3Dy
-> > > > =C2=A0CONFIG_BPF_SYSCALL=3Dy
-> > > > +CONFIG_BPF_JIT=3Dy
-> > > > =C2=A0CONFIG_PREEMPT=3Dy
-> > > > =C2=A0CONFIG_BSD_PROCESS_ACCT=3Dy
-> > > > =C2=A0CONFIG_BSD_PROCESS_ACCT_V3=3Dy
-> > > > @@ -801,3 +802,4 @@ CONFIG_MAGIC_SYSRQ=3Dy
-> > > > =C2=A0CONFIG_SCHEDSTATS=3Dy
-> > > > =C2=A0# CONFIG_DEBUG_PREEMPT is not set
-> > > > =C2=A0# CONFIG_FTRACE is not set
-> > > > +CONFIG_TEST_BPF=3Dm
-> > > I don't want the test module be built by default, but I don't
-> > > insist
-> > > if you have a strong requirement.
-> > >=20
-> >=20
-> > Hi Huacai,
-> >=20
-> > It is useful to enable TEST_BPF in default config, otherwise we
-> > need to use "make menuconfig" to select it manually if we want
-> > to test bpf jit, and build it as a module by default has no side
-> > effect, so I prefer to enable TEST_BPF in default config.
->=20
-> IMO we shouldn't enable a test feature which is never used by 99% of
-> users in the default.
+I'm wodering about the cap check against CAP_SYS_ADMIN. Is it
+intentional to provide more security or oversight in commit
+2c78ee898d8f ("bpf: Implement CAP_BPF")?
 
-P. S. this is not a strong option.  CONFIG_TEST_BPF seems enabled by
-default for S390, and I'm not sure if defconfig is designed for "kernel
-developers" or "distro builders", or even "normal users".
+Signed-off-by: Yauheni Kaliuta <ykaliuta@redhat.com>
+---
+ include/linux/filter.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/include/linux/filter.h b/include/linux/filter.h
+index a5f21dc3c432..3de96b1a736b 100644
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -1100,7 +1100,7 @@ static inline bool bpf_jit_blinding_enabled(struct bpf_prog *prog)
+ 		return false;
+ 	if (!bpf_jit_harden)
+ 		return false;
+-	if (bpf_jit_harden == 1 && capable(CAP_SYS_ADMIN))
++	if (bpf_jit_harden == 1 && bpf_capable())
+ 		return false;
+ 
+ 	return true;
+-- 
+2.34.1
 
---=20
-Xi Ruoyao <xry111@xry111.site>
-School of Aerospace Science and Technology, Xidian University
