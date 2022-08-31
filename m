@@ -2,56 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A8B75A812E
-	for <lists+bpf@lfdr.de>; Wed, 31 Aug 2022 17:27:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 175A55A812F
+	for <lists+bpf@lfdr.de>; Wed, 31 Aug 2022 17:27:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231397AbiHaP07 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 31 Aug 2022 11:26:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44920 "EHLO
+        id S231475AbiHaP1E (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 31 Aug 2022 11:27:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231331AbiHaP06 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 31 Aug 2022 11:26:58 -0400
+        with ESMTP id S231431AbiHaP1D (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 31 Aug 2022 11:27:03 -0400
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 823BBD7D22
-        for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 08:26:57 -0700 (PDT)
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27VEh2X0028814
-        for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 08:26:57 -0700
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB26ED7D24
+        for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 08:27:02 -0700 (PDT)
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27VEh40O031368
+        for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 08:27:02 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=emdnKVJ4XcLIuDUVNft48RUwh3aV8FfKVh/bkMSddX4=;
- b=HcCD85LoocIHJV0nG7jLWaGOD3wnYw7XDzLJwZbPAkRIqK2rj/O8aR6/tZAgkFB+bb+7
- 0swxqJtyZkI7SG2Jus52PP6flHcMHBOABqGWFtDQpPkAmaXE7lmTB+UfIv4CgaaoNIKZ
- 8Ao/APeus6NTTsUUGpJh/U24TYNwA8DtrTQ= 
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=facebook;
+ bh=McXEiJptNjPYOdgh7RLsNyGLsvK5M/BUrqqZzx6Ikeo=;
+ b=A5DhkRA8EkDkHyUeo1WoM1xfINXJYYVpi+vz8qEjTN06RvY7o1y3HlThs7ernwvyv/+F
+ BPc1jaUe+YXmRckHq82myiFP9UgTx+4gCBJSm7VprS+EAp82r+CXcNRYX1niFo6rKxW7
+ 7qRuamEt/D2prfNqag7T8sZ1z62lV6raHhU= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3j9qmh65kq-3
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3j9a6jahy7-5
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 08:26:57 -0700
-Received: from twshared2273.16.frc2.facebook.com (2620:10d:c085:108::8) by
+        for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 08:27:02 -0700
+Received: from twshared2273.16.frc2.facebook.com (2620:10d:c085:208::11) by
  mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 31 Aug 2022 08:26:55 -0700
+ 15.1.2375.31; Wed, 31 Aug 2022 08:27:01 -0700
 Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id 1C62CECDECE6; Wed, 31 Aug 2022 08:26:52 -0700 (PDT)
+        id 5A525ECDECF2; Wed, 31 Aug 2022 08:26:57 -0700 (PDT)
 From:   Yonghong Song <yhs@fb.com>
 To:     <bpf@vger.kernel.org>
 CC:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next v4 2/8] bpf: x86: Support in-register struct arguments in trampoline programs
-Date:   Wed, 31 Aug 2022 08:26:52 -0700
-Message-ID: <20220831152652.2078600-1-yhs@fb.com>
+Subject: [PATCH bpf-next v4 3/8] bpf: Update descriptions for helpers bpf_get_func_arg[_cnt]()
+Date:   Wed, 31 Aug 2022 08:26:57 -0700
+Message-ID: <20220831152657.2078805-1-yhs@fb.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220831152641.2077476-1-yhs@fb.com>
 References: <20220831152641.2077476-1-yhs@fb.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: Is7ebSvDhUDSiXsXOUaWIM5ekpIiGrjf
-X-Proofpoint-GUID: Is7ebSvDhUDSiXsXOUaWIM5ekpIiGrjf
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
+X-Proofpoint-ORIG-GUID: 4GjOD3ifS6oAmVpTLSkiGihv5_gel-bT
+X-Proofpoint-GUID: 4GjOD3ifS6oAmVpTLSkiGihv5_gel-bT
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.517,FMLib:17.11.122.1
  definitions=2022-08-31_09,2022-08-31_03,2022-06-22_01
@@ -65,165 +64,93 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In C, struct value can be passed as a function argument.
-For small structs, struct value may be passed in
-one or more registers. For trampoline based bpf programs,
-this would cause complication since one-to-one mapping between
-function argument and arch argument register is not valid
-any more.
-
-The latest llvm16 added bpf support to pass by values
-for struct up to 16 bytes ([1]). This is also true for
-x86_64 architecture where two registers will hold
-the struct value if the struct size is >8 and <=3D 16.
-This may not be true if one of struct member is 'double'
-type but in current linux source code we don't have
-such instance yet, so we assume all >8 && <=3D 16 struct
-holds two general purpose argument registers.
-
-Also change on-stack nr_args value to the number
-of registers holding the arguments. This will
-permit bpf_get_func_arg() helper to get all
-argument values.
-
- [1] https://reviews.llvm.org/D132144
+Now instead of the number of arguments, the number of registers
+holding argument values are stored in trampoline. Update
+the description of bpf_get_func_arg[_cnt]() helpers. Previous
+programs without struct arguments should continue to work
+as usual.
 
 Signed-off-by: Yonghong Song <yhs@fb.com>
 ---
- arch/x86/net/bpf_jit_comp.c | 68 +++++++++++++++++++++++++++----------
- 1 file changed, 51 insertions(+), 17 deletions(-)
+ include/uapi/linux/bpf.h       | 9 +++++----
+ tools/include/uapi/linux/bpf.h | 9 +++++----
+ 2 files changed, 10 insertions(+), 8 deletions(-)
 
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index c1f6c1c51d99..ae89f4143eb4 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -1751,34 +1751,60 @@ st:			if (is_imm8(insn->off))
- static void save_regs(const struct btf_func_model *m, u8 **prog, int nr_ar=
-gs,
- 		      int stack_size)
- {
--	int i;
-+	int i, j, arg_size, nr_regs;
- 	/* Store function arguments to stack.
- 	 * For a function that accepts two pointers the sequence will be:
- 	 * mov QWORD PTR [rbp-0x10],rdi
- 	 * mov QWORD PTR [rbp-0x8],rsi
- 	 */
--	for (i =3D 0; i < min(nr_args, 6); i++)
--		emit_stx(prog, bytes_to_bpf_size(m->arg_size[i]),
--			 BPF_REG_FP,
--			 i =3D=3D 5 ? X86_REG_R9 : BPF_REG_1 + i,
--			 -(stack_size - i * 8));
-+	for (i =3D 0, j =3D 0; i < min(nr_args, 6); i++) {
-+		if (m->arg_flags[i] & BTF_FMODEL_STRUCT_ARG) {
-+			nr_regs =3D (m->arg_size[i] + 7) / 8;
-+			arg_size =3D 8;
-+		} else {
-+			nr_regs =3D 1;
-+			arg_size =3D m->arg_size[i];
-+		}
-+
-+		while (nr_regs) {
-+			emit_stx(prog, bytes_to_bpf_size(arg_size),
-+				 BPF_REG_FP,
-+				 j =3D=3D 5 ? X86_REG_R9 : BPF_REG_1 + j,
-+				 -(stack_size - j * 8));
-+			nr_regs--;
-+			j++;
-+		}
-+	}
- }
-=20
- static void restore_regs(const struct btf_func_model *m, u8 **prog, int nr=
-_args,
- 			 int stack_size)
- {
--	int i;
-+	int i, j, arg_size, nr_regs;
-=20
- 	/* Restore function arguments from stack.
- 	 * For a function that accepts two pointers the sequence will be:
- 	 * EMIT4(0x48, 0x8B, 0x7D, 0xF0); mov rdi,QWORD PTR [rbp-0x10]
- 	 * EMIT4(0x48, 0x8B, 0x75, 0xF8); mov rsi,QWORD PTR [rbp-0x8]
- 	 */
--	for (i =3D 0; i < min(nr_args, 6); i++)
--		emit_ldx(prog, bytes_to_bpf_size(m->arg_size[i]),
--			 i =3D=3D 5 ? X86_REG_R9 : BPF_REG_1 + i,
--			 BPF_REG_FP,
--			 -(stack_size - i * 8));
-+	for (i =3D 0, j =3D 0; i < min(nr_args, 6); i++) {
-+		if (m->arg_flags[i] & BTF_FMODEL_STRUCT_ARG) {
-+			nr_regs =3D (m->arg_size[i] + 7) / 8;
-+			arg_size =3D 8;
-+		} else {
-+			nr_regs =3D 1;
-+			arg_size =3D m->arg_size[i];
-+		}
-+
-+		while (nr_regs) {
-+			emit_ldx(prog, bytes_to_bpf_size(arg_size),
-+				 j =3D=3D 5 ? X86_REG_R9 : BPF_REG_1 + j,
-+				 BPF_REG_FP,
-+				 -(stack_size - j * 8));
-+			nr_regs--;
-+			j++;
-+		}
-+	}
- }
-=20
- static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
-@@ -2015,7 +2041,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_imag=
-e *im, void *image, void *i
- 				struct bpf_tramp_links *tlinks,
- 				void *orig_call)
- {
--	int ret, i, nr_args =3D m->nr_args;
-+	int ret, i, nr_args =3D m->nr_args, extra_nregs =3D 0;
- 	int regs_off, ip_off, args_off, stack_size =3D nr_args * 8, run_ctx_off;
- 	struct bpf_tramp_links *fentry =3D &tlinks[BPF_TRAMP_FENTRY];
- 	struct bpf_tramp_links *fexit =3D &tlinks[BPF_TRAMP_FEXIT];
-@@ -2028,6 +2054,14 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_ima=
-ge *im, void *image, void *i
- 	if (nr_args > 6)
- 		return -ENOTSUPP;
-=20
-+	for (i =3D 0; i < MAX_BPF_FUNC_ARGS; i++) {
-+		if (m->arg_flags[i] & BTF_FMODEL_STRUCT_ARG)
-+			extra_nregs +=3D (m->arg_size[i] + 7) / 8 - 1;
-+	}
-+	if (nr_args + extra_nregs > 6)
-+		return -ENOTSUPP;
-+	stack_size +=3D extra_nregs * 8;
-+
- 	/* Generated trampoline stack layout:
- 	 *
- 	 * RBP + 8         [ return address  ]
-@@ -2040,7 +2074,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_imag=
-e *im, void *image, void *i
- 	 *                 [ ...             ]
- 	 * RBP - regs_off  [ reg_arg1        ]  program's ctx pointer
- 	 *
--	 * RBP - args_off  [ args count      ]  always
-+	 * RBP - args_off  [ arg regs count  ]  always
- 	 *
- 	 * RBP - ip_off    [ traced function ]  BPF_TRAMP_F_IP_ARG flag
- 	 *
-@@ -2083,11 +2117,11 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_im=
-age *im, void *image, void *i
- 	EMIT4(0x48, 0x83, 0xEC, stack_size); /* sub rsp, stack_size */
- 	EMIT1(0x53);		 /* push rbx */
-=20
--	/* Store number of arguments of the traced function:
--	 *   mov rax, nr_args
-+	/* Store number of argument registers of the traced function:
-+	 *   mov rax, nr_args + extra_nregs
- 	 *   mov QWORD PTR [rbp - args_off], rax
- 	 */
--	emit_mov_imm64(&prog, BPF_REG_0, 0, (u32) nr_args);
-+	emit_mov_imm64(&prog, BPF_REG_0, 0, (u32) nr_args + extra_nregs);
- 	emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -args_off);
-=20
- 	if (flags & BPF_TRAMP_F_IP_ARG) {
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 962960a98835..f9f43343ef93 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -5079,12 +5079,12 @@ union bpf_attr {
+  *
+  * long bpf_get_func_arg(void *ctx, u32 n, u64 *value)
+  *	Description
+- *		Get **n**-th argument (zero based) of the traced function (for traci=
+ng programs)
++ *		Get **n**-th argument register (zero based) of the traced function (=
+for tracing programs)
+  *		returned in **value**.
+  *
+  *	Return
+  *		0 on success.
+- *		**-EINVAL** if n >=3D arguments count of traced function.
++ *		**-EINVAL** if n >=3D argument register count of traced function.
+  *
+  * long bpf_get_func_ret(void *ctx, u64 *value)
+  *	Description
+@@ -5097,10 +5097,11 @@ union bpf_attr {
+  *
+  * long bpf_get_func_arg_cnt(void *ctx)
+  *	Description
+- *		Get number of arguments of the traced function (for tracing programs=
+).
++ *		Get number of registers of the traced function (for tracing programs=
+) where
++ *		function arguments are stored in these registers.
+  *
+  *	Return
+- *		The number of arguments of the traced function.
++ *		The number of argument registers of the traced function.
+  *
+  * int bpf_get_retval(void)
+  *	Description
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bp=
+f.h
+index f4ba82a1eace..f13fa71822f4 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -5079,12 +5079,12 @@ union bpf_attr {
+  *
+  * long bpf_get_func_arg(void *ctx, u32 n, u64 *value)
+  *	Description
+- *		Get **n**-th argument (zero based) of the traced function (for traci=
+ng programs)
++ *		Get **n**-th argument register (zero based) of the traced function (=
+for tracing programs)
+  *		returned in **value**.
+  *
+  *	Return
+  *		0 on success.
+- *		**-EINVAL** if n >=3D arguments count of traced function.
++ *		**-EINVAL** if n >=3D argument register count of traced function.
+  *
+  * long bpf_get_func_ret(void *ctx, u64 *value)
+  *	Description
+@@ -5097,10 +5097,11 @@ union bpf_attr {
+  *
+  * long bpf_get_func_arg_cnt(void *ctx)
+  *	Description
+- *		Get number of arguments of the traced function (for tracing programs=
+).
++ *		Get number of registers of the traced function (for tracing programs=
+) where
++ *		function arguments are stored in these registers.
+  *
+  *	Return
+- *		The number of arguments of the traced function.
++ *		The number of argument registers of the traced function.
+  *
+  * int bpf_get_retval(void)
+  *	Description
 --=20
 2.30.2
 
