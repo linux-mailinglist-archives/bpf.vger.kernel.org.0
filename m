@@ -2,389 +2,166 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA3925A84D4
-	for <lists+bpf@lfdr.de>; Wed, 31 Aug 2022 19:57:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 295305A8536
+	for <lists+bpf@lfdr.de>; Wed, 31 Aug 2022 20:13:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231215AbiHaR5G (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 31 Aug 2022 13:57:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53358 "EHLO
+        id S231965AbiHaSN4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 31 Aug 2022 14:13:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230490AbiHaR5F (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 31 Aug 2022 13:57:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D795D7CEB
-        for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 10:57:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1661968621;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lKRE16b9MM8u6Z8O6Bdi3U8ibkp6UbNP1fi8My+b5A8=;
-        b=VYG3BHLtpT+3HSAtiCg2HvePBO+xqAACMKFW91pU+WYQMKdCy2/guomaQ0jNd+wIE6Jabn
-        eqb//43YD6bqgQFZPR+8o1XOelDwEI3vNWFPedhg6T2tKoaI+WMZZAjhxVDc3eZgDfV2nN
-        s9pF5aBI+ccvpFjz/0TrlWXz3O9yptE=
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
- [209.85.216.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-356-cGJfmd37OhypWkpKSJ8JgQ-1; Wed, 31 Aug 2022 13:56:58 -0400
-X-MC-Unique: cGJfmd37OhypWkpKSJ8JgQ-1
-Received: by mail-pj1-f71.google.com with SMTP id e11-20020a17090a630b00b001f8b2deb88dso15863pjj.1
-        for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 10:56:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=lKRE16b9MM8u6Z8O6Bdi3U8ibkp6UbNP1fi8My+b5A8=;
-        b=vrV746r04sCzY2Gb31/mrVg1i8TQ4W8Vkekv0Zs+oSM+R5D57WPKWT7MUnW+e01dwE
-         ReKss49P8AoXDVkLOL5UiDRCu0+FW/XX1TK57ye4V/LvpTsAUaOxSPn1AkAJoYF1uEhL
-         cWGdB1EVyeK9ktVOumIQf3pnVI7ITpTOecHtSWh/06PIiajCu8/ow/CS9iJt5/8I/uKR
-         TCX8eC1XEDFxvFmV2Rpx0PEwLnC/byskWzDhOeutXyQNc+oDBPE06V8trY0yo6J8PeCt
-         eFm4UcORkJgBihnHq+yk5Hd0iykXz8JmFzmqzOrT1Szs0tkbEES6gHjtimyikkze//jK
-         rqfQ==
-X-Gm-Message-State: ACgBeo0stbVCd+h4PgkeuH9KGATXCa3vODVtWqVcz6mhUlv2rvFF1q4N
-        feAoL1mEAwo/CIg1zxXVR5KWXABrscZk5lYN+8otYAvld116FQYgH8DsOM5W8wF692a2yGxNvqe
-        TYcgP+B+NDp7hGmeJY8kS6HiZ8+Wi
-X-Received: by 2002:a65:6255:0:b0:42c:87b1:485b with SMTP id q21-20020a656255000000b0042c87b1485bmr8853661pgv.491.1661968617015;
-        Wed, 31 Aug 2022 10:56:57 -0700 (PDT)
-X-Google-Smtp-Source: AA6agR7yF6XgnbUA7X7pkH/iSvWC9vC651aFLswA1iXydDYqeAQponIFLXm+j24vx9ittOajohLxG7OhhxuSOM34jyE=
-X-Received: by 2002:a65:6255:0:b0:42c:87b1:485b with SMTP id
- q21-20020a656255000000b0042c87b1485bmr8853631pgv.491.1661968616657; Wed, 31
- Aug 2022 10:56:56 -0700 (PDT)
+        with ESMTP id S232340AbiHaSN3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 31 Aug 2022 14:13:29 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24141E9A90
+        for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 11:12:08 -0700 (PDT)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27VHrw4e001115
+        for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 11:11:10 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=sJft1uwMhrICHGesHFQX1fcoOlpj7x+v+T17ufjKYF0=;
+ b=ZNqch0uccPuk7V8w8lSSja6d0iJAyW9Qn6PkjRvzE5zhcN8sqM0teacY4yzqHBtH/feP
+ 59CYh//wOL7OT4milIpIxDBdJj2q8fdU8/xMbslfSrrA6AyjEiSjWz7G1AeE2qIMVoeH
+ L9CNEclmrrK3JgCoUucYBos3uFiYpuaRPoQ= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3j9qmh7enf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 11:11:10 -0700
+Received: from twshared5413.23.frc3.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Wed, 31 Aug 2022 11:11:09 -0700
+Received: by devbig931.frc1.facebook.com (Postfix, from userid 460691)
+        id 4D5FB762CC29; Wed, 31 Aug 2022 11:10:56 -0700 (PDT)
+From:   Kui-Feng Lee <kuifeng@fb.com>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <andrii@kernel.org>, <kernel-team@fb.com>, <yhs@fb.com>
+CC:     Kui-Feng Lee <kuifeng@fb.com>
+Subject: [PATCH bpf-next v10 0/5] Parameterize task iterators.
+Date:   Wed, 31 Aug 2022 11:10:34 -0700
+Message-ID: <20220831181039.2680134-1-kuifeng@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: ldKks9O3-4bM5NPE9_jh2J-nV2wurSfd
+X-Proofpoint-GUID: ldKks9O3-4bM5NPE9_jh2J-nV2wurSfd
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <20220824134055.1328882-1-benjamin.tissoires@redhat.com>
- <20220824134055.1328882-2-benjamin.tissoires@redhat.com> <CAADnVQKgkFpLh_URJn6qCiAONteA1dwZHd6=4cZn15g1JCAPag@mail.gmail.com>
- <CAP01T75ec_T0M6DU=JE2tfNsWRZuPSMu_7JHA7ZoOBw5eDh1Bg@mail.gmail.com>
- <CAO-hwJLd9wXx+ppccBYPKZDymO0sk++Nt2E3-R97PY7LbfJfTg@mail.gmail.com> <CAADnVQK8dS+2KbWsqktvxoNKhHtdD5UPiaWVfNu=ESdn_OHpgQ@mail.gmail.com>
-In-Reply-To: <CAADnVQK8dS+2KbWsqktvxoNKhHtdD5UPiaWVfNu=ESdn_OHpgQ@mail.gmail.com>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Wed, 31 Aug 2022 19:56:45 +0200
-Message-ID: <CAO-hwJK9uHTWCg3_6jrPF6UKiamkNfj=cuH5mHauoLX+0udV9w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v9 01/23] bpf/verifier: allow all functions to
- read user provided context
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Joe Stringer <joe@cilium.io>, Jonathan Corbet <corbet@lwn.net>,
-        Tero Kristo <tero.kristo@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-08-31_10,2022-08-31_03,2022-06-22_01
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 31, 2022 at 6:37 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Tue, Aug 30, 2022 at 7:29 AM Benjamin Tissoires
-> <benjamin.tissoires@redhat.com> wrote:
-> >
-> > On Fri, Aug 26, 2022 at 3:51 AM Kumar Kartikeya Dwivedi
-> > <memxor@gmail.com> wrote:
-> > >
-> > > On Fri, 26 Aug 2022 at 03:42, Alexei Starovoitov
-> > > <alexei.starovoitov@gmail.com> wrote:
-> > > >
-> > > > On Wed, Aug 24, 2022 at 6:41 AM Benjamin Tissoires
-> > > > <benjamin.tissoires@redhat.com> wrote:
-> > > > >
-> > > > > When a function was trying to access data from context in a syscall eBPF
-> > > > > program, the verifier was rejecting the call unless it was accessing the
-> > > > > first element.
-> > > > > This is because the syscall context is not known at compile time, and
-> > > > > so we need to check this when actually accessing it.
-> > > > >
-> > > > > Check for the valid memory access if there is no convert_ctx callback,
-> > > > > and allow such situation to happen.
-> > > > >
-> > > > > There is a slight hiccup with subprogs. btf_check_subprog_arg_match()
-> > > > > will check that the types are matching, which is a good thing, but to
-> > > > > have an accurate result, it hides the fact that the context register may
-> > > > > be null. This makes env->prog->aux->max_ctx_offset being set to the size
-> > > > > of the context, which is incompatible with a NULL context.
-> > > > >
-> > > > > Solve that last problem by storing max_ctx_offset before the type check
-> > > > > and restoring it after.
-> > > > >
-> > > > > Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > > > > Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-> > > > >
-> > > > > ---
-> > > > >
-> > > > > changes in v9:
-> > > > > - rewrote the commit title and description
-> > > > > - made it so all functions can make use of context even if there is
-> > > > >   no convert_ctx
-> > > > > - remove the is_kfunc field in bpf_call_arg_meta
-> > > > >
-> > > > > changes in v8:
-> > > > > - fixup comment
-> > > > > - return -EACCESS instead of -EINVAL for consistency
-> > > > >
-> > > > > changes in v7:
-> > > > > - renamed access_t into atype
-> > > > > - allow zero-byte read
-> > > > > - check_mem_access() to the correct offset/size
-> > > > >
-> > > > > new in v6
-> > > > > ---
-> > > > >  kernel/bpf/btf.c      | 11 ++++++++++-
-> > > > >  kernel/bpf/verifier.c | 19 +++++++++++++++++++
-> > > > >  2 files changed, 29 insertions(+), 1 deletion(-)
-> > > > >
-> > > > > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> > > > > index 903719b89238..386300f52b23 100644
-> > > > > --- a/kernel/bpf/btf.c
-> > > > > +++ b/kernel/bpf/btf.c
-> > > > > @@ -6443,8 +6443,8 @@ int btf_check_subprog_arg_match(struct bpf_verifier_env *env, int subprog,
-> > > > >  {
-> > > > >         struct bpf_prog *prog = env->prog;
-> > > > >         struct btf *btf = prog->aux->btf;
-> > > > > +       u32 btf_id, max_ctx_offset;
-> > > > >         bool is_global;
-> > > > > -       u32 btf_id;
-> > > > >         int err;
-> > > > >
-> > > > >         if (!prog->aux->func_info)
-> > > > > @@ -6457,9 +6457,18 @@ int btf_check_subprog_arg_match(struct bpf_verifier_env *env, int subprog,
-> > > > >         if (prog->aux->func_info_aux[subprog].unreliable)
-> > > > >                 return -EINVAL;
-> > > > >
-> > > > > +       /* subprogs arguments are not actually accessing the data, we need
-> > > > > +        * to check for the types if they match.
-> > > > > +        * Store the max_ctx_offset and restore it after btf_check_func_arg_match()
-> > > > > +        * given that this function will have a side effect of changing it.
-> > > > > +        */
-> > > > > +       max_ctx_offset = env->prog->aux->max_ctx_offset;
-> > > > > +
-> > > > >         is_global = prog->aux->func_info_aux[subprog].linkage == BTF_FUNC_GLOBAL;
-> > > > >         err = btf_check_func_arg_match(env, btf, btf_id, regs, is_global, 0);
-> > > > >
-> > > > > +       env->prog->aux->max_ctx_offset = max_ctx_offset;
-> > > >
-> > > > I don't understand this.
-> > > > If we pass a ctx into a helper and it's going to
-> > > > access [0..N] bytes from it why do we need to hide it?
-> > > > max_ctx_offset will be used later raw_tp, tp, syscall progs
-> > > > to determine whether it's ok to load them.
-> > > > By hiding the actual size of access somebody can construct
-> > > > a prog that reads out of bounds.
-> > > > How is this related to NULL-ness property?
-> > >
-> > > Same question, was just typing exactly the same thing.
-> >
-> > The test I have that is failing in patch 2/23 is the following, with
-> > args being set to NULL by userspace:
-> >
-> > SEC("syscall")
-> > int kfunc_syscall_test_null(struct syscall_test_args *args)
-> > {
-> >        bpf_kfunc_call_test_mem_len_pass1(args, 0);
-> >
-> >        return 0;
-> > }
-> >
-> > Basically:
-> > if userspace declares the following:
-> >  DECLARE_LIBBPF_OPTS(bpf_test_run_opts, syscall_topts,
-> >                .ctx_in = NULL,
-> >                .ctx_size_in = 0,
-> >        );
-> >
-> > The verifier is happy with the current released kernel:
-> > kfunc_syscall_test_fail() never dereferences the ctx pointer, it just
-> > passes it around to bpf_kfunc_call_test_mem_len_pass1(), which in turn
-> > is also happy because it says it is not accessing the data at all (0
-> > size memory parameter).
-> >
-> > In the current code, check_helper_mem_access() actually returns
-> > -EINVAL, but doesn't change max_ctx_offset (it's still at the value of
-> > 0 here). The program is now marked as unreliable, but the verifier
-> > goes on.
-> >
-> > When adding this patch, if we declare a syscall eBPF (or any other
-> > function that doesn't have env->ops->convert_ctx_access), the previous
-> > "test" is failing because this ensures the syscall program has to have
-> > a valid ctx pointer.
-> > btf_check_func_arg_match() now calls check_mem_access() which
-> > basically validates the fact that the program can dereference the ctx.
-> >
-> > So now, without the max_ctx_offset store/restore, the verifier
-> > enforces that the provided ctx is not null.
-> >
-> > What I thought that would happen was that if we were to pass a NULL
-> > context from userspace, but the eBPF program dereferences it (or in
-> > that case have a subprog or a function call that dereferences it),
-> > then max_ctx_offset would still be set to the proper value because of
-> > that internal dereference, and so the verifier would reject with
-> > -EINVAL the call to the eBPF program.
-> >
-> > If I add another test that has the following ebpf prog (with ctx_in
-> > being set to NULL by the userspace):
-> >
-> > SEC("syscall")
-> > int kfunc_syscall_test_null_fail(struct syscall_test_args *args)
-> > {
-> >        bpf_kfunc_call_test_mem_len_pass1(args, sizeof(*args));
-> >
-> >        return 0;
-> > }
-> >
-> > Then the call of the program is actually failing with -EINVAL, even
-> > with this patch.
-> >
-> > But again, if setting from userspace a ctx of NULL with a 0 size is
-> > not considered as valid, then we can just drop that hunk and add a
-> > test to enforce it.
->
-> PTR_TO_CTX in the verifier always means valid pointer.
-> All code paths in the verifier assumes that it's not NULL.
-> Pointer to skb, to xdp, to pt_regs, etc.
-> The syscall prog type is little bit special, since it
-> makes sense not to pass any argument to such prog.
-> So ctx_size_in == 0 is enforced after the verification:
-> if (ctx_size_in < prog->aux->max_ctx_offset ||
->     ctx_size_in > U16_MAX)
->           return -EINVAL;
-> The verifier should be able to proceed assuming ctx != NULL
-> and remember max max_ctx_offset.
-> If max_ctx_offset == 4 and ctx_size_in == 0 then
-> it doesn't matter whether the actual 'ctx' pointer is NULL
-> or points to a valid memory.
-> So it's ok for the verifier to assume ctx != NULL everywhere.
+Allow creating an iterator that loops through resources of one task/thread.
 
-Ok, thanks for the detailed explanation.
+People could only create iterators to loop through all resources of
+files, vma, and tasks in the system, even though they were interested in on=
+ly the
+resources of a specific task or process.  Passing the additional
+parameters, people can now create an iterator to go through all
+resources or only the resources of a task.
 
->
-> Back to the issue at hand.
-> With this patch the line:
->     bpf_kfunc_call_test_mem_len_pass1(args, sizeof(*args));
-> will be seen as access_size == sizeof(*args), right?
-> So this part:
-> +                       if (access_size == 0)
-> +                               return zero_size_allowed ? 0 : -EACCES;
->
-> will be skipped and
-> the newly added check_mem_access() will call check_ctx_access()
-> which will call syscall_prog_is_valid_access() and it will say
-> that any off < U16_MAX is fine and will simply
-> record max max_ctx_offset.
-> The ctx_size_in < prog->aux->max_ctx_offset check is done later.
+Major Changes:
 
-Yep, this is correct and this is working now, with a proper error (and
-no, this is not the error I am trying to fix, see below):
+ - Add new parameters in bpf_iter_link_info to indicate to go through
+   all tasks or to go through a specific task.
 
-eBPF prog:
-```
-  SEC("?syscall")
-  int kfunc_syscall_test_null_fail(struct syscall_test_args *args)
-  {
-          bpf_kfunc_call_test_mem_len_pass1(args, sizeof(*args));
-          return 0;
-  }
-```
+ - Change the implementations of BPF iterators of vma, files, and
+   tasks to allow going through only the resources of a specific task.
 
-before this patch (1/23):
-* with ctx not NULL:
-libbpf: prog 'kfunc_syscall_test_null_fail': BPF program load failed:
-Invalid argument
-R1 type=ctx expected=fp
-arg#0 arg#1 memory, len pair leads to invalid memory access
+ - Provide the arguments of parameterized task iterators in
+   bpf_link_info.
 
- => this is not correct, we expect the program to be loaded (and it is
-expected, this is the bug that is fixed)
+Differences from v9:
 
-* Same result with ctx being NULL from the caller
+  - Fix the boundary check of computing page_shift.
 
-With just the hunk in kernel/bpf/verifier.c (so without touching max_ctx_offset:
-* with ctx not NULL:
-program is loaded, and executed correctly
+  - Rewording the reason of checking and returning the same task.
 
-* with ctx being NULL:
-program is now loaded, but execution returns -EINVAL, as expected
+Differences from v8:
 
-So this case is fully solved by just the hunk in verifier.c
+ - Fix uninitialized variable.
 
-With the full patch:
-same results, with or without ctx being set to NULL, so no side effects.
+ - Avoid redundant work of getting task from pid.
 
->
-> So when you're saying:
-> "call of the program is actually failing with -EINVAL"
-> that's the check you're referring to?
+ - Change format string to use %u instead of %d.
 
-No. I am referring to the following eBPF program:
-```
-  SEC("syscall")
-  int kfunc_syscall_test_null(struct syscall_test_args *args)
-  {
-           return 0;
-  }
-```
+ - Use the value of page_shift to compute correct offset in
+   bpf_iter_vm_offset.c.
 
-(no calls, just the declaration of a program)
+Differences from v7:
 
-This one is supposed to be loaded and properly run whatever the
-context is, right?
+ - Travel the tasks of a process through task_group linked list
+   instead of traveling through the whole namespace.
 
-However, without the hunk in the btf.c file (max_ctx_offset), we have
-the following (ctx is set to NULL by the userspace):
-verify_success:FAIL:kfunc_syscall_test_null unexpected error: -22 (errno 22)
+Differences from v6:
 
-The reason is that the verifier is calling
-btf_check_subprog_arg_match() on programs too, and considers that ctx
-is not NULL, and bumps the max_ctx_offset value.
+ - Add part 5 to make bpftool show the value of parameters.
 
->
-> If so, everything works as expected.
+ - Change of wording of show_fdinfo() to show pid or tid instead of
+   always pid.
 
-Not exactly, we can not call a syscall program with a null context
-without this hunk.
+ - Simplify error handling and naming of test cases.
 
-> The verifier thinks that bpf_kfunc_call_test_mem_len_pass1()
-> can read that many bytes from args,
-> so it has to reject running the loaded prog in bpf_prog_test_run_syscall().
+Differences from v5:
 
-Yes, that part works. I am focusing on the program declaration.
+ - Use user-space tid/pid terminologies in bpf_iter_link_info and
+   bpf_link_info.
 
->
-> So what are you trying to achieve ?
+ - Fix reference count
 
-See above :)
+ - Merge all variants to one 'u32 pid' in internal structs.
+   (bpf_iter_aux_info and bpf_iter_seq_task_common)
 
-> Make the verifier understand that ctx can be NULL ?
+ - Compare the result of get_uprobe_offset() with the implementation
+   with the vma iterators.
 
-Nope. I am fine with the way it is. But any eBPF (sub)prog is checked
-against btf_check_subprog_arg_match(), which in turns marks all of
-these calls accessing the entire ctx, even if the ctx is null when
-that case is valid.
+ - Implement show_fdinfo.
 
-> If so that is a probably huge undertaking.
-> Something else?
->
+Differences from v4:
 
-Hopefully this is clearer now.
+ - Remove 'type' from bpf_iter_link_info and bpf_link_info.
 
-Cheers,
-Benjamin
+v9: https://lore.kernel.org/bpf/20220829192317.486946-1-kuifeng@fb.com/
+v8: https://lore.kernel.org/bpf/20220829192317.486946-1-kuifeng@fb.com/
+v7: https://lore.kernel.org/bpf/20220826003712.2810158-1-kuifeng@fb.com/
+v6: https://lore.kernel.org/bpf/20220819220927.3409575-1-kuifeng@fb.com/
+v5: https://lore.kernel.org/bpf/20220811001654.1316689-1-kuifeng@fb.com/
+v4: https://lore.kernel.org/bpf/20220809195429.1043220-1-kuifeng@fb.com/
+v3: https://lore.kernel.org/bpf/20220809063501.667610-1-kuifeng@fb.com/
+v2: https://lore.kernel.org/bpf/20220801232649.2306614-1-kuifeng@fb.com/
+v1: https://lore.kernel.org/bpf/20220726051713.840431-1-kuifeng@fb.com/
+
+Kui-Feng Lee (5):
+  bpf: Parameterize task iterators.
+  bpf: Handle bpf_link_info for the parameterized task BPF iterators.
+  bpf: Handle show_fdinfo for the parameterized task BPF iterators
+  selftests/bpf: Test parameterized task BPF iterators.
+  bpftool: Show parameters of BPF task iterators.
+
+ include/linux/bpf.h                           |  25 ++
+ include/uapi/linux/bpf.h                      |  10 +
+ kernel/bpf/task_iter.c                        | 223 ++++++++++++--
+ tools/bpf/bpftool/link.c                      |  19 ++
+ tools/include/uapi/linux/bpf.h                |  10 +
+ .../selftests/bpf/prog_tests/bpf_iter.c       | 282 ++++++++++++++++--
+ .../selftests/bpf/prog_tests/btf_dump.c       |   2 +-
+ .../selftests/bpf/progs/bpf_iter_task.c       |   9 +
+ .../selftests/bpf/progs/bpf_iter_task_file.c  |   9 +-
+ .../selftests/bpf/progs/bpf_iter_task_vma.c   |   7 +-
+ .../selftests/bpf/progs/bpf_iter_vma_offset.c |  37 +++
+ 11 files changed, 587 insertions(+), 46 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_vma_offset.c
+
+--=20
+2.30.2
 
