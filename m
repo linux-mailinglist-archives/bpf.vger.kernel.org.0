@@ -2,136 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05C2E5A8533
-	for <lists+bpf@lfdr.de>; Wed, 31 Aug 2022 20:13:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61BF15A85DB
+	for <lists+bpf@lfdr.de>; Wed, 31 Aug 2022 20:39:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232357AbiHaSNw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 31 Aug 2022 14:13:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44962 "EHLO
+        id S233086AbiHaSjk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 31 Aug 2022 14:39:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232540AbiHaSNE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 31 Aug 2022 14:13:04 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E63C9E3432
-        for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 11:12:15 -0700 (PDT)
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27VHrwIQ003968
-        for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 11:11:18 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=nX0hkaXwbGcj6iPUlMAG3o/aYy1QJ3VMvYwK3ghX1eI=;
- b=Bclzh9OOgz94RnelK8qZmOA5WqVj3VyD+6olBktskv1/C6fUG2dh30vH90lTRfriv5hT
- sMcuj9cZdfZTXCiozNjdW1Bqugt/bHTIhVBpC5+XV03kJjSsiUiPPuvb8hnxUJghbV0o
- xPT5Xtb7xA0te+roue7EEcbFVla3C4NhjBY= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3j9e9yu0ab-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 11:11:18 -0700
-Received: from twshared2273.16.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 31 Aug 2022 11:11:14 -0700
-Received: by devbig931.frc1.facebook.com (Postfix, from userid 460691)
-        id E9CA9762CD0A; Wed, 31 Aug 2022 11:11:05 -0700 (PDT)
-From:   Kui-Feng Lee <kuifeng@fb.com>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <andrii@kernel.org>, <kernel-team@fb.com>, <yhs@fb.com>
-CC:     Kui-Feng Lee <kuifeng@fb.com>,
-        Quentin Monnet <quentin@isovalent.com>
-Subject: [PATCH bpf-next v10 5/5] bpftool: Show parameters of BPF task iterators.
-Date:   Wed, 31 Aug 2022 11:10:39 -0700
-Message-ID: <20220831181039.2680134-6-kuifeng@fb.com>
+        with ESMTP id S232825AbiHaSjJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 31 Aug 2022 14:39:09 -0400
+Received: from 66-220-155-178.mail-mxout.facebook.com (66-220-155-178.mail-mxout.facebook.com [66.220.155.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C960617E23
+        for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 11:36:44 -0700 (PDT)
+Received: by devbig010.atn6.facebook.com (Postfix, from userid 115148)
+        id 5E02C1127DA12; Wed, 31 Aug 2022 11:36:30 -0700 (PDT)
+From:   Joanne Koong <joannelkoong@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     andrii@kernel.org, daniel@iogearbox.net, ast@kernel.org,
+        kafai@fb.com, memxor@gmail.com, toke@redhat.com, kuba@kernel.org,
+        netdev@vger.kernel.org, Joanne Koong <joannelkoong@gmail.com>
+Subject: [PATCH bpf-next v5 0/3] Add skb + xdp dynptrs
+Date:   Wed, 31 Aug 2022 11:32:21 -0700
+Message-Id: <20220831183224.3754305-1-joannelkoong@gmail.com>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220831181039.2680134-1-kuifeng@fb.com>
-References: <20220831181039.2680134-1-kuifeng@fb.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: kjETfWbRcP9kfoY3NvvP5dhM0NCiGdPW
-X-Proofpoint-GUID: kjETfWbRcP9kfoY3NvvP5dhM0NCiGdPW
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-08-31_10,2022-08-31_03,2022-06-22_01
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=3.2 required=5.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+        FORGED_GMAIL_RCVD,FREEMAIL_FROM,NML_ADSP_CUSTOM_MED,RDNS_DYNAMIC,
+        SPF_HELO_PASS,SPF_SOFTFAIL,SPOOFED_FREEMAIL,SPOOF_GMAIL_MID,
+        TVD_RCVD_IP,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Show tid or pid of iterators if giving an argument of tid or pid
+This patchset is the 2nd in the dynptr series. The 1st can be found here =
+[0].
 
-For example, the command `bpftool link list` may list following
-lines.
+This patchset adds skb and xdp type dynptrs, which have two main benefits=
+ for
+packet parsing:
+    * allowing operations on sizes that are not statically known at
+      compile-time (eg variable-sized accesses).
+    * more ergonomic and less brittle iteration through data (eg does not=
+ need
+      manual if checking for being within bounds of data_end)
 
-1: iter  prog 2  target_name bpf_map
-2: iter  prog 3  target_name bpf_prog
-33: iter  prog 225  target_name task_file  tid 1644
-        pids test_progs(1644)
+When comparing the differences in runtime for packet parsing without dynp=
+trs
+vs. with dynptrs for the more simple cases, there is no noticeable differ=
+ence.
+For the more complex cases where lengths are non-statically known at comp=
+ile
+time, there can be a significant speed-up when using dynptrs (eg a 2x spe=
+ed up
+for cls redirection). Patch 3 contains more details as well as examples o=
+f how
+to use skb and xdp dynptrs.
 
-Link 33 is a task_file iterator with tid 1644.  For now, only targets
-of task, task_file and task_vma may be with tid or pid to filter out
-tasks other than those belonging to a process (pid) or a thread (tid).
+[0] https://lore.kernel.org/bpf/20220523210712.3641569-1-joannelkoong@gma=
+il.com/
 
-Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
-Acked-by: Quentin Monnet <quentin@isovalent.com>
-Acked-by: Yonghong Song <yhs@fb.com>
----
- tools/bpf/bpftool/link.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+--
+Changelog:
 
-diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
-index ef0dc2f8d5a2..2863639706dd 100644
---- a/tools/bpf/bpftool/link.c
-+++ b/tools/bpf/bpftool/link.c
-@@ -106,6 +106,13 @@ static const char *cgroup_order_string(__u32 order)
- 	}
- }
-=20
-+static bool is_iter_task_target(const char *target_name)
-+{
-+	return strcmp(target_name, "task") =3D=3D 0 ||
-+		strcmp(target_name, "task_file") =3D=3D 0 ||
-+		strcmp(target_name, "task_vma") =3D=3D 0;
-+}
-+
- static void show_iter_json(struct bpf_link_info *info, json_writer_t *wt=
-r)
- {
- 	const char *target_name =3D u64_to_ptr(info->iter.target_name);
-@@ -114,6 +121,12 @@ static void show_iter_json(struct bpf_link_info *inf=
-o, json_writer_t *wtr)
-=20
- 	if (is_iter_map_target(target_name))
- 		jsonw_uint_field(wtr, "map_id", info->iter.map.map_id);
-+	else if (is_iter_task_target(target_name)) {
-+		if (info->iter.task.tid)
-+			jsonw_uint_field(wtr, "tid", info->iter.task.tid);
-+		else if (info->iter.task.pid)
-+			jsonw_uint_field(wtr, "pid", info->iter.task.pid);
-+	}
-=20
- 	if (is_iter_cgroup_target(target_name)) {
- 		jsonw_lluint_field(wtr, "cgroup_id", info->iter.cgroup.cgroup_id);
-@@ -237,6 +250,12 @@ static void show_iter_plain(struct bpf_link_info *in=
-fo)
-=20
- 	if (is_iter_map_target(target_name))
- 		printf("map_id %u  ", info->iter.map.map_id);
-+	else if (is_iter_task_target(target_name)) {
-+		if (info->iter.task.tid)
-+			printf("tid %u ", info->iter.task.tid);
-+		else if (info->iter.task.pid)
-+			printf("pid %u ", info->iter.task.pid);
-+	}
-=20
- 	if (is_iter_cgroup_target(target_name)) {
- 		printf("cgroup_id %llu  ", info->iter.cgroup.cgroup_id);
+v4 =3D https://lore.kernel.org/bpf/20220822235649.2218031-1-joannelkoong@=
+gmail.com/
+v4 -> v5
+    * Address kernel test robot errors for configs w/out CONFIG_NET set
+    * For data slices, return PTR_TO_MEM instead of PTR_TO_PACKET (Kumar)
+    * Split selftests into subtests (Andrii)
+    * Remove insn patching. Use rdonly and rdwr protos for dynptr skb
+      construction (Andrii)
+    * bpf_dynptr_data() returns NULL for rd-only dynptrs. There will be a
+      separate bpf_dynptr_data_rdonly() added later (Andrii and Kumar)
+
+v3 =3D https://lore.kernel.org/bpf/20220822193442.657638-1-joannelkoong@g=
+mail.com/
+v3 -> v4
+    * Forgot to commit --amend the kernel test robot error fixups
+
+v2 =3D https://lore.kernel.org/bpf/20220811230501.2632393-1-joannelkoong@=
+gmail.com/
+v2 -> v3
+    * Fix kernel test robot build test errors
+
+v1 =3D https://lore.kernel.org/bpf/20220726184706.954822-1-joannelkoong@g=
+mail.com/
+v1 -> v2
+  * Return data slices to rd-only skb dynptrs (Martin)
+  * bpf_dynptr_write allows writes to frags for skb dynptrs, but always
+    invalidates associated data slices (Martin)
+  * Use switch casing instead of ifs (Andrii)
+  * Use 0xFD for experimental kind number in the selftest (Zvi)
+  * Put selftest conversions w/ dynptrs into new files (Alexei)
+  * Add new selftest "test_cls_redirect_dynptr.c"=20
+
+Joanne Koong (3):
+  bpf: Add skb dynptrs
+  bpf: Add xdp dynptrs
+  selftests/bpf: tests for using dynptrs to parse skb and xdp buffers
+
+ include/linux/bpf.h                           |  86 +-
+ include/linux/filter.h                        |  35 +
+ include/uapi/linux/bpf.h                      |  62 +-
+ kernel/bpf/helpers.c                          |  83 +-
+ kernel/bpf/verifier.c                         |  96 +-
+ net/core/filter.c                             | 118 ++-
+ tools/include/uapi/linux/bpf.h                |  62 +-
+ .../selftests/bpf/prog_tests/cls_redirect.c   |  25 +
+ .../testing/selftests/bpf/prog_tests/dynptr.c |  73 +-
+ .../selftests/bpf/prog_tests/l4lb_all.c       |   2 +
+ .../bpf/prog_tests/parse_tcp_hdr_opt.c        |  93 ++
+ .../selftests/bpf/prog_tests/xdp_attach.c     |  11 +-
+ .../testing/selftests/bpf/progs/dynptr_fail.c |  92 ++
+ .../selftests/bpf/progs/dynptr_success.c      |  32 +
+ .../bpf/progs/test_cls_redirect_dynptr.c      | 968 ++++++++++++++++++
+ .../bpf/progs/test_l4lb_noinline_dynptr.c     | 469 +++++++++
+ .../bpf/progs/test_parse_tcp_hdr_opt.c        | 119 +++
+ .../bpf/progs/test_parse_tcp_hdr_opt_dynptr.c | 110 ++
+ .../selftests/bpf/progs/test_xdp_dynptr.c     | 235 +++++
+ .../selftests/bpf/test_tcp_hdr_options.h      |   1 +
+ 20 files changed, 2686 insertions(+), 86 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/parse_tcp_hdr_=
+opt.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_cls_redirect_d=
+ynptr.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_l4lb_noinline_=
+dynptr.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_parse_tcp_hdr_=
+opt.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_parse_tcp_hdr_=
+opt_dynptr.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_dynptr.c
+
 --=20
 2.30.2
 
