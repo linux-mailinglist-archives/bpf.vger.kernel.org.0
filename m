@@ -2,114 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E91335A74B5
-	for <lists+bpf@lfdr.de>; Wed, 31 Aug 2022 06:12:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE3AA5A74AC
+	for <lists+bpf@lfdr.de>; Wed, 31 Aug 2022 06:08:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229675AbiHaEMS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 31 Aug 2022 00:12:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35898 "EHLO
+        id S229457AbiHaEIb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 31 Aug 2022 00:08:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbiHaEMR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 31 Aug 2022 00:12:17 -0400
-Received: from xry111.site (xry111.site [89.208.246.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ADE9AB4D6
-        for <bpf@vger.kernel.org>; Tue, 30 Aug 2022 21:12:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
-        s=default; t=1661919133;
-        bh=pzNye2XBDt4NiEtfnZRNvN6qLjvjcmj+9QQheAr/AuI=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=Gr+E6gBiTpyvMfZhK4bFOaGlS7G+0lXaDxZUMQdh8cjWrPTgQs3pL0nwRmtIrh+g0
-         DCyARycW9DvjN0Nfu3VSPUsoUXNTsrfsVO7AMFeFbGE+FKBX2BnaKJNWJqndJhDD7f
-         EJWEs2flJZc5rVg01wy13OOzdnERYP+mqmQU5THI=
-Received: from localhost.localdomain (xry111.site [IPv6:2001:470:683e::1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
-        (Client did not present a certificate)
-        (Authenticated sender: xry111@xry111.site)
-        by xry111.site (Postfix) with ESMTPSA id 5387E66220;
-        Wed, 31 Aug 2022 00:12:12 -0400 (EDT)
-Message-ID: <75b27dacb8b4d779c6b2c0e46871baf404a32b6b.camel@xry111.site>
-Subject: Re: [PATCH bpf-next v2 4/4] LoongArch: Enable BPF_JIT and TEST_BPF
- in default config
-From:   Xi Ruoyao <xry111@xry111.site>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Huacai Chen <chenhuacai@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S229599AbiHaEI3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 31 Aug 2022 00:08:29 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 257B6B14E7
+        for <bpf@vger.kernel.org>; Tue, 30 Aug 2022 21:08:27 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4MHVx04YqfzKFKH
+        for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 12:06:44 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+        by APP2 (Coremail) with SMTP id Syh0CgA3inOz3g5jRQ6pAA--.419S4;
+        Wed, 31 Aug 2022 12:08:22 +0800 (CST)
+From:   Hou Tao <houtao@huaweicloud.com>
+To:     bpf@vger.kernel.org
+Cc:     Song Liu <songliubraving@fb.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Hao Sun <sunhao.th@gmail.com>, Hao Luo <haoluo@google.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        loongarch@lists.linux.dev
-Date:   Wed, 31 Aug 2022 12:12:10 +0800
-In-Reply-To: <6bc9bd64-1ba9-a35f-c0b7-480429b26b9f@loongson.cn>
-References: <1661857809-10828-1-git-send-email-yangtiezhu@loongson.cn>
-         <1661857809-10828-5-git-send-email-yangtiezhu@loongson.cn>
-         <CAAhV-H6Dq+Z_kS0LcM=QGF1h=k2i0hR7fYZdXgU2kXAfm1VPLw@mail.gmail.com>
-         <6bc9bd64-1ba9-a35f-c0b7-480429b26b9f@loongson.cn>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.45.2 
+        Martin KaFai Lau <kafai@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Lorenz Bauer <oss@lmb.io>, houtao1@huawei.com
+Subject: [PATCH bpf-next v4 0/3] fixes for concurrent htab updates
+Date:   Wed, 31 Aug 2022 12:26:26 +0800
+Message-Id: <20220831042629.130006-1-houtao@huaweicloud.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_SUSPICIOUS_NTLD,
-        PDS_OTHER_BAD_TLD,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: Syh0CgA3inOz3g5jRQ6pAA--.419S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7urW8JryxWr4DCFW5Ww15urg_yoW8Kw13pa
+        y8W3W5Kw1SqrnFqw47Kw129FWFya1rGr1j9rn3W3yrZ3yjkFyxur4I9r4rXrs5KrZagryf
+        Ar4xKFs5Z3W8urDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUk2b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28I
+        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
+        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI
+        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42
+        IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
+        87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFDGOUUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 2022-08-31 at 09:23 +0800, Tiezhu Yang wrote:
->=20
->=20
-> On 08/30/2022 10:46 PM, Huacai Chen wrote:
-> > Hi, Tiezhu,
-> >=20
-> > On Tue, Aug 30, 2022 at 7:10 PM Tiezhu Yang <yangtiezhu@loongson.cn> wr=
-ote:
-> > >=20
-> > > For now, BPF JIT for LoongArch is supported, update loongson3_defconf=
-ig to
-> > > enable BPF_JIT to allow the kernel to generate native code when a pro=
-gram
-> > > is loaded into the kernel, and also enable TEST_BPF to test BPF JIT.
-> > >=20
-> > > Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> > > ---
-> > > =C2=A0arch/loongarch/configs/loongson3_defconfig | 2 ++
-> > > =C2=A01 file changed, 2 insertions(+)
-> > >=20
-> > > diff --git a/arch/loongarch/configs/loongson3_defconfig b/arch/loonga=
-rch/configs/loongson3_defconfig
-> > > index 3712552..93dc072 100644
-> > > --- a/arch/loongarch/configs/loongson3_defconfig
-> > > +++ b/arch/loongarch/configs/loongson3_defconfig
-> > > @@ -4,6 +4,7 @@ CONFIG_POSIX_MQUEUE=3Dy
-> > > =C2=A0CONFIG_NO_HZ=3Dy
-> > > =C2=A0CONFIG_HIGH_RES_TIMERS=3Dy
-> > > =C2=A0CONFIG_BPF_SYSCALL=3Dy
-> > > +CONFIG_BPF_JIT=3Dy
-> > > =C2=A0CONFIG_PREEMPT=3Dy
-> > > =C2=A0CONFIG_BSD_PROCESS_ACCT=3Dy
-> > > =C2=A0CONFIG_BSD_PROCESS_ACCT_V3=3Dy
-> > > @@ -801,3 +802,4 @@ CONFIG_MAGIC_SYSRQ=3Dy
-> > > =C2=A0CONFIG_SCHEDSTATS=3Dy
-> > > =C2=A0# CONFIG_DEBUG_PREEMPT is not set
-> > > =C2=A0# CONFIG_FTRACE is not set
-> > > +CONFIG_TEST_BPF=3Dm
-> > I don't want the test module be built by default, but I don't insist
-> > if you have a strong requirement.
-> >=20
->=20
-> Hi Huacai,
->=20
-> It is useful to enable TEST_BPF in default config, otherwise we
-> need to use "make menuconfig" to select it manually if we want
-> to test bpf jit, and build it as a module by default has no side
-> effect, so I prefer to enable TEST_BPF in default config.
+From: Hou Tao <houtao1@huawei.com>
 
-IMO we shouldn't enable a test feature which is never used by 99% of
-users in the default.
+Hi,
 
---=20
-Xi Ruoyao <xry111@xry111.site>
-School of Aerospace Science and Technology, Xidian University
+The patchset aims to fix the issues found during investigating the
+syzkaller problem reported in [0]. It seems that the concurrent updates
+to the same hash-table bucket may fail as shown in patch 1.
+
+Patch 1 uses preempt_disable() to fix the problem for
+htab_use_raw_lock() case. For !htab_use_raw_lock() case, the problem is
+left to "BPF specific memory allocator" patchset [1] in which
+!htab_use_raw_lock() will be removed.
+
+Patch 2 fixes the out-of-bound memory read problem reported in [0]. The
+problem has the root cause as patch 1 and it is fixed by handling -EBUSY
+from htab_lock_bucket() correctly.
+
+Patch 3 add two cases for hash-table update: one for the reentrancy of
+bpf_map_update_elem(), and another one for concurrent updates of the
+same hash-table bucket.
+
+Comments are always welcome.
+
+Regards,
+Tao
+
+[0]: https://lore.kernel.org/bpf/CACkBjsbuxaR6cv0kXJoVnBfL9ZJXjjoUcMpw_Ogc313jSrg14A@mail.gmail.com/
+[1]: https://lore.kernel.org/bpf/20220819214232.18784-1-alexei.starovoitov@gmail.com/
+
+Change Log:
+
+v4:
+ * rebased on bpf-next
+ * add htab_update to DENYLIST.s390x
+
+v3: https://lore.kernel.org/bpf/20220829023709.1958204-1-houtao@huaweicloud.com/
+ * patch 1: update commit message and add Fixes tag
+ * patch 2: add Fixes tag
+ * patch 3: elaborate the description of test cases
+
+v2: https://lore.kernel.org/bpf/bd60ef93-1c6a-2db2-557d-b09b92ad22bd@huaweicloud.com/
+ * Note the fix is for CONFIG_PREEMPT case in commit message and add
+   Reviewed-by tag for patch 1
+ * Drop patch "bpf: Allow normally concurrent map updates for !htab_use_raw_lock() case"
+
+v1: https://lore.kernel.org/bpf/20220821033223.2598791-1-houtao@huaweicloud.com/
+
+Hou Tao (3):
+  bpf: Disable preemption when increasing per-cpu map_locked
+  bpf: Propagate error from htab_lock_bucket() to userspace
+  selftests/bpf: Add test cases for htab update
+
+ kernel/bpf/hashtab.c                          |  30 ++++-
+ tools/testing/selftests/bpf/DENYLIST.s390x    |   1 +
+ .../selftests/bpf/prog_tests/htab_update.c    | 126 ++++++++++++++++++
+ .../testing/selftests/bpf/progs/htab_update.c |  29 ++++
+ 4 files changed, 179 insertions(+), 7 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/htab_update.c
+ create mode 100644 tools/testing/selftests/bpf/progs/htab_update.c
+
+-- 
+2.29.2
+
