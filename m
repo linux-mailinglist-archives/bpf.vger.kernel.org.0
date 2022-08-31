@@ -2,261 +2,296 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC4475A7ACA
-	for <lists+bpf@lfdr.de>; Wed, 31 Aug 2022 12:01:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7D3E5A7B26
+	for <lists+bpf@lfdr.de>; Wed, 31 Aug 2022 12:16:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230491AbiHaKBY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 31 Aug 2022 06:01:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49610 "EHLO
+        id S229679AbiHaKQe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 31 Aug 2022 06:16:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231166AbiHaKA4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 31 Aug 2022 06:00:56 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FDD5B81F1
-        for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 03:00:53 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id w2so2171586edc.0
-        for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 03:00:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date;
-        bh=OkgkNsV83y5Hwh3TY/7BY4JJyYSbClGBlYquGtiapgs=;
-        b=PyXBKTxa9Z5FkA4cnoK0cIwv3/F+BCXSdIiGHNd5Q1HgOTGc2ft5gsJKle56/5EHUK
-         HxJ7jRh0yuS5M1mAPB0Hr+yHgX91mdY6SoOgoiL2yWraFhpswcdT7AeQIJU6aKmjUHCo
-         56wbiBsrldWrvpkl+VCgJmjKG6QKxrHXhFBNeYMtLeaXZKVlO6qBKKz+VtCuKIyXZTTy
-         H16V6xWp5V9AtqplZL3n2IdjAqWbQZeLHmj3d2dWjuZLMZGdAoaWuqw2zQGwebq5zgfx
-         5DzsLQgKC+JrBScWC46D/Kn2aFmG1jumFM33i5PnFs4v/eSSl1xT892b+18ba0ooe4CM
-         g10g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date;
-        bh=OkgkNsV83y5Hwh3TY/7BY4JJyYSbClGBlYquGtiapgs=;
-        b=k2VDWYnVjJZ1dVVVqRLjuQypQ0ysbiXpy5LIHOCRLAiiUtKElvY15dd80r3aNtwGNf
-         tjuy4QCnTA+cPABrQzXAhWLtaKFsLEdqGURvRxJlj0iHBnbrdv2YGQtaA6AUAi1b8yoK
-         l7vS073j8HtUVHbEXZ66oOT9M4PgX00u3IsrwSjsLlR+WjNBoyL728Pdwj5QI0ksuRs/
-         Tj3wVmIy03cBzl53594VEJnAgGqXdh1jnmJOpdnmRQHQe6PNff07jETCISIMT4EkGg8R
-         MtNzRuxnvJdHDRRo/vOIHTIFnS4Nq8Qylg7Q4jx/ePNXvuDsJ99qqg74SW4WbtVhN1C/
-         xt+Q==
-X-Gm-Message-State: ACgBeo1O01AOZSxiir5iGBhcA+q98FpcSaZEV7RCrGbFGdz2GlDKmi3t
-        EG5xC7NCljddiHQb9GdpdR8=
-X-Google-Smtp-Source: AA6agR7J179QpUzqLFpD/TQbxVJq9EaB3R6EpljuNeZKnG5GHU9Q8BVyoOQoCWQYv+voCxmS2wo7jg==
-X-Received: by 2002:aa7:d78b:0:b0:447:d501:14c8 with SMTP id s11-20020aa7d78b000000b00447d50114c8mr19894731edq.82.1661940051409;
-        Wed, 31 Aug 2022 03:00:51 -0700 (PDT)
-Received: from krava ([193.85.244.190])
-        by smtp.gmail.com with ESMTPSA id v18-20020a170906293200b007417c5dbfeesm4326365ejd.70.2022.08.31.03.00.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Aug 2022 03:00:50 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Wed, 31 Aug 2022 12:00:49 +0200
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Jiri Olsa <olsajiri@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>
-Subject: Re: [PATCH bpf-next 0/2] bpf,ftrace: bpf dispatcher function fix
-Message-ID: <Yw8xUf23aBXoYCRc@krava>
-References: <20220826184608.141475-1-jolsa@kernel.org>
- <9099057e-124c-8f30-c29d-54be85eeebfd@iogearbox.net>
- <Yw4VSr7X8hacimrB@krava>
- <480244bd73be4fca57da47801b9135c2b4ad9457.camel@linux.ibm.com>
- <969a14281a7791c334d476825863ee449964dd0c.camel@linux.ibm.com>
+        with ESMTP id S229644AbiHaKQa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 31 Aug 2022 06:16:30 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E96D225C64;
+        Wed, 31 Aug 2022 03:16:28 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@breakpoint.cc>)
+        id 1oTKln-0002O1-1G; Wed, 31 Aug 2022 12:16:27 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     <netfilter-devel@vger.kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Florian Westphal <fw@strlen.de>
+Subject: [PATCH nf-next] netfilter: nf_tables: add ebpf expression
+Date:   Wed, 31 Aug 2022 12:16:17 +0200
+Message-Id: <20220831101617.22329-1-fw@strlen.de>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <969a14281a7791c334d476825863ee449964dd0c.camel@linux.ibm.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 31, 2022 at 01:46:09AM +0200, Ilya Leoshkevich wrote:
-> On Tue, 2022-08-30 at 18:46 +0200, Ilya Leoshkevich wrote:
-> > On Tue, 2022-08-30 at 15:48 +0200, Jiri Olsa wrote:
-> > > On Tue, Aug 30, 2022 at 12:25:25AM +0200, Daniel Borkmann wrote:
-> > > > On 8/26/22 8:46 PM, Jiri Olsa wrote:
-> > > > > hi,
-> > > > > as discussed [1] sending fix that moves bpf dispatcher function
-> > > > > of out
-> > > > > ftrace locations together with Peter's
-> > > > > HAVE_DYNAMIC_FTRACE_NO_PATCHABLE
-> > > > > dependency change.
-> > > > 
-> > > > Looks like the series breaks s390x builds; BPF CI link:
-> > > > 
-> > > > https://github.com/kernel-patches/bpf/runs/8079411784?check_suite_focus=true
-> > > > 
-> > > >   [...]
-> > > >     CC      net/xfrm/xfrm_state.o
-> > > >     CC      net/packet/af_packet.o
-> > > >   {standard input}: Assembler messages:
-> > > >   {standard input}:16055: Error: bad expression
-> > > >   {standard input}:16056: Error: bad expression
-> > > >   {standard input}:16057: Error: bad expression
-> > > >   {standard input}:16058: Error: bad expression
-> > > >   {standard input}:16059: Error: bad expression
-> > > >     CC      drivers/s390/char/raw3270.o
-> > > >     CC      net/ipv6/ip6_output.o
-> > > >   [...]
-> > > >     CC      net/xfrm/xfrm_output.o
-> > > >     CC      net/ipv6/ip6_input.o
-> > > >   {standard input}:16055: Error: invalid operands (*ABS* and
-> > > > *UND*
-> > > > sections) for `%'
-> > > >   {standard input}:16056: Error: invalid operands (*ABS* and
-> > > > *UND*
-> > > > sections) for `%'
-> > > >   {standard input}:16057: Error: invalid operands (*ABS* and
-> > > > *UND*
-> > > > sections) for `%'
-> > > >   {standard input}:16058: Error: invalid operands (*ABS* and
-> > > > *UND*
-> > > > sections) for `%'
-> > > >   {standard input}:16059: Error: invalid operands (*ABS* and
-> > > > *UND*
-> > > > sections) for `%'
-> > > >   make[3]: *** [scripts/Makefile.build:249: net/core/filter.o]
-> > > > Error 1
-> > > >   make[2]: *** [scripts/Makefile.build:465: net/core] Error 2
-> > > >   make[2]: *** Waiting for unfinished jobs....
-> > > >     CC      net/ipv4/tcp_fastopen.o
-> > > >   [...]
-> > > >     CC      lib/percpu-refcount.o
-> > > >   make[1]: *** [Makefile:1855: net] Error 2
-> > > >     CC      lib/rhashtable.o
-> > > >   make[1]: *** Waiting for unfinished jobs....
-> > > >     CC      lib/base64.o
-> > > >   [...]
-> > > >     AR      lib/built-in.a
-> > > >     CC      kernel/kheaders.o
-> > > >     AR      kernel/built-in.a
-> > > >   make: *** [Makefile:353: __build_one_by_one] Error 2
-> > > >   Error: Process completed with exit code 2.
-> > > 
-> > > 
-> > > it does not break on my cross build with gcc 12, but I can
-> > > reproduce with gcc 8 (CI seems to be on gcc 9)
-> > > 
-> > > the problem seems to be wrong assembler code with extra '%'
-> > > that's generated for patchable_function_entry(5)
-> > > 
-> > > gcc 8 generates:
-> > > 
-> > > .LPFE1:
-> > >         nopr    %%r0
-> > >         nopr    %%r0
-> > >         nopr    %%r0
-> > >         nopr    %%r0
-> > >         nopr    %%r0
-> > > 
-> > > and gcc 12 generates:
-> > > 
-> > > .LPFE1:
-> > >         nopr    %r0
-> > >         nopr    %r0
-> > >         nopr    %r0
-> > >         nopr    %r0
-> > >         nopr    %r0
-> > > 
-> > > perhaps we need to upgrade gcc in CI? cc-ing Ilya, any idea?
-> > > 
-> > > thanks,
-> > > jirka
-> > 
-> > It's not obvious to me which gcc commit fixed this; I will bisect and
-> > find out. This will take some time.
-> > 
-> > However, officially, the kernel must be buildable by gcc 5.1+.
-> > Whatever I find, it's unlikely that we'll be able to backport it
-> > that far.
-> > 
-> > Therefore I think we need to find a way to conditionally
-> > do something else when using broken gccs. Or maybe just keep this
-> > x86-only after all.
-> > 
-> > Best regards,
-> > Ilya
-> 
-> FWIW, bisect points to
-> 
-> https://gcc.gnu.org/git/?p=gcc.git;a=commit;h=45d06a4045bebc3dbaaf0b1c676f4e22b7c6aca1
+This expression is a native replacement for xtables 'bpf' match "pinned" mode.
+Userspace needs to pass a file descriptor referencing the program (of socket
+filter type).
+Userspace should also pass the original pathname for that fd so userspace can
+print the original filename again.
 
-great, thanks for doing that
+Tag and program id are dumped to userspace on 'list' to allow to see which
+program is in use in case the filename isn't available/present.
 
-> 
-> which makes perfect sense. Still, as I mentioned above, it's probably
-> worth tolerating brokens gccs instead of spending time backporting this
-> everywhere. And upgrading the CI machine will only paper over the
-> issue.
-> 
-> At a closer look, it looks weird to me that we have
-> patchable_function_entry(5) in a common header. If this optimization
-> is ever implemented for another architecture, a different number will
-> be required.
-> 
-> For simplicity, would it make sense to hide this under an #ifdef?
-> Something like this (untested):
-> 
-> #ifdef CONFIG_X86
-> #define BPF_DISPATCHER_ATTRIBUTES
-> __attribute__((patchable_function_entry(5)))
-> #else
-> #define BPF_DISPATCHER_ATTRIBUTES
-> #endif
+cbpf bytecode isn't supported.
 
-right, I think we can limit it directly to x86_64 like below
+No new Kconfig option is added: Its included if BPF_SYSCALL is enabled.
 
-jirka
+Proposed nft userspace syntax is:
 
+add rule ... ebpf pinned "/sys/fs/bpf/myprog"
 
+Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index f9920f1341c8..089c20cefd2b 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -284,6 +284,7 @@ config X86
- 	select PROC_PID_ARCH_STATUS		if PROC_FS
- 	select HAVE_ARCH_NODE_DEV_GROUP		if X86_SGX
- 	imply IMA_SECURE_AND_OR_TRUSTED_BOOT    if EFI
-+	select HAVE_DYNAMIC_FTRACE_NO_PATCHABLE
+ include/net/netfilter/nf_tables_core.h   |   3 +
+ include/uapi/linux/netfilter/nf_tables.h |  18 ++++
+ net/netfilter/Makefile                   |   4 +
+ net/netfilter/nf_tables_core.c           |   7 ++
+ net/netfilter/nft_ebpf.c                 | 128 +++++++++++++++++++++++
+ 5 files changed, 160 insertions(+)
+ create mode 100644 net/netfilter/nft_ebpf.c
+
+diff --git a/include/net/netfilter/nf_tables_core.h b/include/net/netfilter/nf_tables_core.h
+index 1223af68cd9a..72ee4a6e2952 100644
+--- a/include/net/netfilter/nf_tables_core.h
++++ b/include/net/netfilter/nf_tables_core.h
+@@ -18,6 +18,7 @@ extern struct nft_expr_type nft_meta_type;
+ extern struct nft_expr_type nft_rt_type;
+ extern struct nft_expr_type nft_exthdr_type;
+ extern struct nft_expr_type nft_last_type;
++extern struct nft_expr_type nft_ebpf_type;
  
- config INSTRUCTION_DECODER
- 	def_bool y
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 9c1674973e03..4ab4b0a1beb8 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -924,7 +924,15 @@ int arch_prepare_bpf_dispatcher(void *image, s64 *funcs, int num_funcs);
- 	},							\
- }
+ #ifdef CONFIG_NETWORK_SECMARK
+ extern struct nft_object_type nft_secmark_obj_type;
+@@ -148,4 +149,6 @@ void nft_rt_get_eval(const struct nft_expr *expr,
+ 		     struct nft_regs *regs, const struct nft_pktinfo *pkt);
+ void nft_counter_eval(const struct nft_expr *expr, struct nft_regs *regs,
+                       const struct nft_pktinfo *pkt);
++void nft_ebpf_eval(const struct nft_expr *expr, struct nft_regs *regs,
++		   const struct nft_pktinfo *pkt);
+ #endif /* _NET_NF_TABLES_CORE_H */
+diff --git a/include/uapi/linux/netfilter/nf_tables.h b/include/uapi/linux/netfilter/nf_tables.h
+index 466fd3f4447c..39e9442e8c2a 100644
+--- a/include/uapi/linux/netfilter/nf_tables.h
++++ b/include/uapi/linux/netfilter/nf_tables.h
+@@ -805,6 +805,24 @@ enum nft_payload_attributes {
+ };
+ #define NFTA_PAYLOAD_MAX	(__NFTA_PAYLOAD_MAX - 1)
  
-+#ifdef CONFIG_X86_64
-+#define BPF_DISPATCHER_ATTRIBUTES __attribute__((__no_instrument_function__)) \
-+				   __attribute__((patchable_function_entry(5)))
-+#else
-+#define BPF_DISPATCHER_ATTRIBUTES
-+#endif
++/**
++ * enum nft_ebpf_attributes - nf_tables ebpf expression netlink attributes
++ *
++ * @NFTA_EBPF_FD: file descriptor holding ebpf program (NLA_U32)
++ * @NFTA_EBPF_FILENAME: file name, only for storage/printing (NLA_STRING)
++ * @NFTA_EBPF_ID: bpf program id (NLA_U32)
++ * @NFTA_EBPF_TAG: bpf tag (NLA_BINARY)
++ */
++enum nft_ebpf_attributes {
++	NFTA_EBPF_UNSPEC,
++	NFTA_EBPF_FD,
++	NFTA_EBPF_FILENAME,
++	NFTA_EBPF_ID,
++	NFTA_EBPF_TAG,
++	__NFTA_EBPF_MAX,
++};
++#define NFTA_EBPF_MAX	(__NFTA_EBPF_MAX - 1)
 +
- #define DEFINE_BPF_DISPATCHER(name)					\
-+	BPF_DISPATCHER_ATTRIBUTES					\
- 	noinline __nocfi unsigned int bpf_dispatcher_##name##_func(	\
- 		const void *ctx,					\
- 		const struct bpf_insn *insnsi,				\
+ enum nft_exthdr_flags {
+ 	NFT_EXTHDR_F_PRESENT = (1 << 0),
+ };
+diff --git a/net/netfilter/Makefile b/net/netfilter/Makefile
+index 06df49ea6329..f335a1ea26b9 100644
+--- a/net/netfilter/Makefile
++++ b/net/netfilter/Makefile
+@@ -90,6 +90,10 @@ nf_tables-objs += nft_set_pipapo_avx2.o
+ endif
+ endif
+ 
++ifdef CONFIG_BPF_SYSCALL
++nf_tables-objs += nft_ebpf.o
++endif
++
+ obj-$(CONFIG_NF_TABLES)		+= nf_tables.o
+ obj-$(CONFIG_NFT_COMPAT)	+= nft_compat.o
+ obj-$(CONFIG_NFT_CONNLIMIT)	+= nft_connlimit.o
+diff --git a/net/netfilter/nf_tables_core.c b/net/netfilter/nf_tables_core.c
+index cee3e4e905ec..f33064959f6c 100644
+--- a/net/netfilter/nf_tables_core.c
++++ b/net/netfilter/nf_tables_core.c
+@@ -8,6 +8,7 @@
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/init.h>
++#include <linux/filter.h>
+ #include <linux/list.h>
+ #include <linux/rculist.h>
+ #include <linux/skbuff.h>
+@@ -209,6 +210,9 @@ static void expr_call_ops_eval(const struct nft_expr *expr,
+ 	X(e, nft_dynset_eval);
+ 	X(e, nft_rt_get_eval);
+ 	X(e, nft_bitwise_eval);
++#ifdef CONFIG_BPF_SYSCALL
++	X(e, nft_ebpf_eval);
++#endif
+ #undef  X
+ #endif /* CONFIG_RETPOLINE */
+ 	expr->ops->eval(expr, regs, pkt);
+@@ -340,6 +344,9 @@ static struct nft_expr_type *nft_basic_types[] = {
+ 	&nft_exthdr_type,
+ 	&nft_last_type,
+ 	&nft_counter_type,
++#ifdef CONFIG_BPF_SYSCALL
++	&nft_ebpf_type,
++#endif
+ };
+ 
+ static struct nft_object_type *nft_basic_objects[] = {
+diff --git a/net/netfilter/nft_ebpf.c b/net/netfilter/nft_ebpf.c
+new file mode 100644
+index 000000000000..f4945f4e7bc5
+--- /dev/null
++++ b/net/netfilter/nft_ebpf.c
+@@ -0,0 +1,128 @@
++#include <linux/bpf.h>
++#include <linux/filter.h>
++
++#include <net/netfilter/nf_tables.h>
++#include <net/netfilter/nf_tables_core.h>
++
++struct nft_ebpf {
++	struct bpf_prog *prog;
++	const char *name;
++};
++
++static const struct nla_policy nft_ebpf_policy[NFTA_EBPF_MAX + 1] = {
++	[NFTA_EBPF_FD] = { .type = NLA_U32 },
++	[NFTA_EBPF_FILENAME] = { .type = NLA_STRING,
++				 .len = PATH_MAX },
++	[NFTA_EBPF_ID] = { .type = NLA_U32 },
++	[NFTA_EBPF_TAG] = NLA_POLICY_EXACT_LEN(BPF_TAG_SIZE),
++};
++
++void nft_ebpf_eval(const struct nft_expr *expr, struct nft_regs *regs,
++		   const struct nft_pktinfo *pkt)
++{
++	const struct nft_ebpf *priv = nft_expr_priv(expr);
++
++	if (!bpf_prog_run_save_cb(priv->prog, pkt->skb))
++		regs->verdict.code = NFT_BREAK;
++}
++
++static int nft_ebpf_init(const struct nft_ctx *ctx,
++			 const struct nft_expr *expr,
++			 const struct nlattr * const tb[])
++{
++	struct nft_ebpf *priv = nft_expr_priv(expr);
++	struct bpf_prog *prog;
++	int fd;
++
++	if (!tb[NFTA_EBPF_FD])
++		return -EINVAL;
++
++	if (tb[NFTA_EBPF_ID] || tb[NFTA_EBPF_TAG])
++		return -EOPNOTSUPP;
++
++	fd = ntohl(nla_get_u32(tb[NFTA_EBPF_FD]));
++	if (fd < 0)
++		return -EBADF;
++
++	if (tb[NFTA_EBPF_FILENAME]) {
++		priv->name = nla_strdup(tb[NFTA_EBPF_FILENAME], GFP_KERNEL);
++		if (!priv->name)
++			return -ENOMEM;
++	}
++
++	prog = bpf_prog_get_type(fd, BPF_PROG_TYPE_SOCKET_FILTER);
++	if (IS_ERR(prog)) {
++		kfree(priv->name);
++		return PTR_ERR(prog);
++	}
++
++	priv->prog = prog;
++	return 0;
++}
++
++static void nft_ebpf_destroy(const struct nft_ctx *ctx,
++			     const struct nft_expr *expr)
++{
++	struct nft_ebpf *priv = nft_expr_priv(expr);
++
++	bpf_prog_destroy(priv->prog);
++	kfree(priv->name);
++}
++
++static int nft_ebpf_validate(const struct nft_ctx *ctx,
++			     const struct nft_expr *expr,
++			     const struct nft_data **data)
++{
++	static const unsigned int supported_hooks = ((1 << NF_INET_PRE_ROUTING) |
++						     (1 << NF_INET_LOCAL_IN) |
++						     (1 << NF_INET_FORWARD) |
++						     (1 << NF_INET_LOCAL_OUT) |
++						     (1 << NF_INET_POST_ROUTING));
++
++	switch (ctx->family) {
++	case NFPROTO_IPV4:
++	case NFPROTO_IPV6:
++	case NFPROTO_INET:
++		break;
++	default:
++		return -EOPNOTSUPP;
++	}
++
++	return nft_chain_validate_hooks(ctx->chain, supported_hooks);
++}
++
++static int nft_ebpf_dump(struct sk_buff *skb, const struct nft_expr *expr)
++{
++	const struct nft_ebpf *priv = nft_expr_priv(expr);
++	const struct bpf_prog *prog = priv->prog;
++
++	if (nla_put_be32(skb, NFTA_EBPF_ID, htonl(prog->aux->id)))
++		return -1;
++
++	if (nla_put(skb, NFTA_EBPF_TAG, sizeof(prog->tag), prog->tag))
++		return -1;
++
++	if (priv->name && nla_put_string(skb, NFTA_EBPF_FILENAME, priv->name))
++		return -1;
++
++	return 0;
++}
++
++static const struct nft_expr_ops nft_ebpf_ops = {
++	.type		= &nft_ebpf_type,
++	.size		= NFT_EXPR_SIZE(sizeof(struct nft_ebpf)),
++	.init		= nft_ebpf_init,
++	.eval		= nft_ebpf_eval,
++	.reduce		= NFT_REDUCE_READONLY,
++	.destroy	= nft_ebpf_destroy,
++	.dump		= nft_ebpf_dump,
++	.validate	= nft_ebpf_validate,
++};
++
++struct nft_expr_type nft_ebpf_type __read_mostly = {
++	.name		= "ebpf",
++	.ops		= &nft_ebpf_ops,
++	.policy		= nft_ebpf_policy,
++	.maxattr	= NFTA_EBPF_MAX,
++	.owner		= THIS_MODULE,
++};
+-- 
+2.35.1
+
