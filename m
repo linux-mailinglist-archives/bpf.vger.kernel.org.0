@@ -2,51 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93BEA5A7D02
-	for <lists+bpf@lfdr.de>; Wed, 31 Aug 2022 14:14:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EA6E5A7E16
+	for <lists+bpf@lfdr.de>; Wed, 31 Aug 2022 14:56:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229616AbiHaMOB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 31 Aug 2022 08:14:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51684 "EHLO
+        id S231124AbiHaM4a convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 31 Aug 2022 08:56:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229599AbiHaMN5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 31 Aug 2022 08:13:57 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7188D2EBC;
-        Wed, 31 Aug 2022 05:13:56 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4FE1A618DC;
-        Wed, 31 Aug 2022 12:13:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E296C433D6;
-        Wed, 31 Aug 2022 12:13:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1661948035;
-        bh=mCsUJD5LOfeuiHvACicA+nO9wvGQ9ZtmcAbbma6MWno=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=M48LuQOAc92LkpXkEtP6VCZrJZo6LCvB8UACTB/P6ipjYGlosID4fBmzPGr5O1Pd7
-         QSKmYklKtlZQzLjKmNVtiz/8p35FIy1xWgiJA6a7wNQ8ValGjhfe82yed5r4vogQYT
-         JYNsXtdWt/ImpjWgwA1iPOzUC38S3AcLiLkBbSR2bI12oufz89Cfz5Bd0BOylhQN4A
-         aydHX3kdJm2vYrCfNrc4h70z073rnjidOePquVCrn7wIG7iF/gGXvzedmw2WlvhyQt
-         Mr/uhFh5ev2bHyw+I1Ka/QpjG/tLxSgQDBmQAuYwHDhnEOuZ3kH/Iw7YSVtsQQNLga
-         6I76LiP2fFvRw==
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 3DAB9588AEC; Wed, 31 Aug 2022 14:13:53 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
-To:     Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org
+        with ESMTP id S231588AbiHaM4M (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 31 Aug 2022 08:56:12 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EB617C76A;
+        Wed, 31 Aug 2022 05:56:10 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1oTNGK-0003Ku-VU; Wed, 31 Aug 2022 14:56:09 +0200
+Date:   Wed, 31 Aug 2022 14:56:08 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     Toke =?iso-8859-15?Q?H=F8iland-J=F8rgensen?= <toke@kernel.org>
+Cc:     Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org,
+        bpf@vger.kernel.org, netdev@vger.kernel.org
 Subject: Re: [PATCH nf-next] netfilter: nf_tables: add ebpf expression
-In-Reply-To: <20220831101617.22329-1-fw@strlen.de>
+Message-ID: <20220831125608.GA8153@breakpoint.cc>
 References: <20220831101617.22329-1-fw@strlen.de>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 31 Aug 2022 14:13:53 +0200
-Message-ID: <87v8q84nlq.fsf@toke.dk>
+ <87v8q84nlq.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <87v8q84nlq.fsf@toke.dk>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,40 +41,56 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Florian Westphal <fw@strlen.de> writes:
+Toke Høiland-Jørgensen <toke@kernel.org> wrote:
+> > Tag and program id are dumped to userspace on 'list' to allow to see which
+> > program is in use in case the filename isn't available/present.
+> 
+> It seems a bit odd to include the file path in the kernel as well.
 
-> This expression is a native replacement for xtables 'bpf' match "pinned" mode.
-> Userspace needs to pass a file descriptor referencing the program (of socket
-> filter type).
-> Userspace should also pass the original pathname for that fd so userspace can
-> print the original filename again.
->
-> Tag and program id are dumped to userspace on 'list' to allow to see which
-> program is in use in case the filename isn't available/present.
+Its needed to be able to re-load the ruleset.
 
-It seems a bit odd to include the file path in the kernel as well. For
-one thing, the same object can be pinned multiple times in different
-paths (even in different mount namespaces), and there's also nothing
-preventing a different program to have been substituted by the pinned
-one by the time the value is echoed back.
+> For
+> one thing, the same object can be pinned multiple times in different
+> paths (even in different mount namespaces),
 
-Also, there's nothing checking that the path attribute actually contains
-a path, so it's really just an arbitrary label that the kernel promises
-to echo back. But doesn't NFT already have a per-rule comment feature,
-so why add another specifically for BPF? Instead we could just teach the
-userspace utility to extract metadata from the BPF program (based on the
-ID) like bpftool does. This would include the program name, BTW, so it
-does have a semantic identifier.
+Sure.
 
-> cbpf bytecode isn't supported.
->
-> No new Kconfig option is added: Its included if BPF_SYSCALL is enabled.
->
-> Proposed nft userspace syntax is:
->
-> add rule ... ebpf pinned "/sys/fs/bpf/myprog"
+> and there's also nothing
+> preventing a different program to have been substituted by the pinned
+> one by the time the value is echoed back.
 
-Any plan to also teach the nft binary to load a BPF program from an ELF
-file (instead of relying on pinning)?
+Yes, but what would you expect it should do?
 
--Toke
+> Also, there's nothing checking that the path attribute actually contains
+> a path, so it's really just an arbitrary label that the kernel promises
+> to echo back
+
+Yes exactly.
+
+> But doesn't NFT already have a per-rule comment feature,
+> so why add another specifically for BPF?
+
+You can attach up to 256 bytes to a rule, yes.
+Might not be enough for a longer path, and there could be multiple
+expressions in the same rule.
+
+This way was the most simple solution.
+
+> Instead we could just teach the
+> userspace utility to extract metadata from the BPF program (based on the
+> ID) like bpftool does. This would include the program name, BTW, so it
+> does have a semantic identifier.
+
+Sure, I could change the grammar so it expects a tag or ID, e.g.
+'ebpf id 42'
+
+If thats preferred, I can change this, it avoids the need for storing
+the name.
+
+> > cbpf bytecode isn't supported.
+> > add rule ... ebpf pinned "/sys/fs/bpf/myprog"
+> 
+> Any plan to also teach the nft binary to load a BPF program from an ELF
+> file (instead of relying on pinning)?
+
+I used pinning because that is what '-m bpf' uses.
