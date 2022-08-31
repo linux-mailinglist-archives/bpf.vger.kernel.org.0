@@ -2,111 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C835E5A8869
-	for <lists+bpf@lfdr.de>; Wed, 31 Aug 2022 23:50:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDD085A88AA
+	for <lists+bpf@lfdr.de>; Wed, 31 Aug 2022 23:58:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230437AbiHaVu6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 31 Aug 2022 17:50:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60186 "EHLO
+        id S232470AbiHaV6s (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 31 Aug 2022 17:58:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230377AbiHaVu4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 31 Aug 2022 17:50:56 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00066E6886;
-        Wed, 31 Aug 2022 14:50:55 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id m5so11911481qkk.1;
-        Wed, 31 Aug 2022 14:50:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date;
-        bh=vOy+aMqhVVgkaFdcKPS9BO6pUN7ZgzHkeevfPR3xgF8=;
-        b=moMlIKwBR5qnYuq9/hV5tNMraORsTiT1tQ/JJRfZM7uOBVm1j61bYK7YcjRSU9nGqw
-         qZEYIjKDHn1l3GLGwQ42OJYivWEw9ifn2fCgYAzflrlLSCtCL+agQ0tw2sI+CYh4zk27
-         QWjf4S75dInJz9H1m+vaF3805hHNeUVxkhi8BuFMApCREwmjGgAdgysFN1x7X+HCb/jL
-         9Ur3FrvcPYhrC9/7l1O9s7MwiY+tBV3nBp66dzq/Ofr/jEbLjqnKn6GgVYBngdX2T60m
-         k7XSKxcN2Y8Ftngs1IKD/Hy6Az/YeUamOFrPZeDUEPOS11Ce5XP+yr1MzVKEfUm+qCZ+
-         UaOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date;
-        bh=vOy+aMqhVVgkaFdcKPS9BO6pUN7ZgzHkeevfPR3xgF8=;
-        b=vdPK5PTVggoGB0y8XEWQcKAL+fSJCAp7t9Xyqcq7PFYSa4STv1w3YxaR6CRAIa74uV
-         WGXq5q2rfDPIRcUE8g53Ep4+E9LzxgAUPIRBosN0K+FIogGA9T7VWnKOEVh1kM0e9pNa
-         faCn7x5DeWrxHMaCjP8ah8eooy5b7hgEwROLMEgqPpJt4UOOZJVAi77F7qmkpPcKDozE
-         YKnXlLPgDwNGigsDkmjtuN1D7urcmrZClGpoPIcNbX0tQA6S70QV0tSby1KwFM+9yZlb
-         F9Pxgi0PwIGWiHCkBFZNFQcYIWe6qJ9WzHs8E8a2vRis2NKOEUeWCLis9uishmvQNZQ6
-         VIUg==
-X-Gm-Message-State: ACgBeo2HyqUoRMS4f4AmlOi2nqGdK3Dv4OSUYzc5Uun+6BKQwEiHlKgr
-        xBLWaw5lt2fvBsxp4ESYM0A=
-X-Google-Smtp-Source: AA6agR5geD3j89IRsqLWukwG9AJmINLMZD/jIMiSMIrcF9dGTHQwDO1QvOnnST9XHmsotiUKXfC2Xw==
-X-Received: by 2002:a37:a811:0:b0:6ba:bc14:18ff with SMTP id r17-20020a37a811000000b006babc1418ffmr17077658qke.173.1661982655028;
-        Wed, 31 Aug 2022 14:50:55 -0700 (PDT)
-Received: from [192.168.1.3] (ip72-194-116-95.oc.oc.cox.net. [72.194.116.95])
-        by smtp.gmail.com with ESMTPSA id bx4-20020a05622a090400b00342fcdc2d46sm9180494qtb.56.2022.08.31.14.50.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 31 Aug 2022 14:50:53 -0700 (PDT)
-Message-ID: <1d5510f7-7c2d-6e30-f5d9-e45c470c380a@gmail.com>
-Date:   Wed, 31 Aug 2022 14:50:51 -0700
+        with ESMTP id S232607AbiHaV6Y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 31 Aug 2022 17:58:24 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E805275C5;
+        Wed, 31 Aug 2022 14:57:47 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1oTViL-0006Km-UW; Wed, 31 Aug 2022 23:57:37 +0200
+Date:   Wed, 31 Aug 2022 23:57:37 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Florian Westphal <fw@strlen.de>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Toke =?iso-8859-15?Q?H=F8iland-J=F8rgensen?= <toke@kernel.org>,
+        netfilter-devel <netfilter-devel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH nf-next] netfilter: nf_tables: add ebpf expression
+Message-ID: <20220831215737.GE15107@breakpoint.cc>
+References: <20220831101617.22329-1-fw@strlen.de>
+ <87v8q84nlq.fsf@toke.dk>
+ <20220831125608.GA8153@breakpoint.cc>
+ <87o7w04jjb.fsf@toke.dk>
+ <20220831135757.GC8153@breakpoint.cc>
+ <87ilm84goh.fsf@toke.dk>
+ <20220831152624.GA15107@breakpoint.cc>
+ <CAADnVQJp5RJ0kZundd5ag-b3SDYir8cF4R_nVbN8Zj9Rcn0rww@mail.gmail.com>
+ <20220831155341.GC15107@breakpoint.cc>
+ <CAADnVQJGQmu02f5B=mc1xJvVWSmk_GNZj9WAUskekykmyo8FzA@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.0
-Subject: Re: [PATCH] libbpf: Initialize err in probe_map_create
-Content-Language: en-US
-To:     patchwork-bot+netdevbpf@kernel.org
-Cc:     bpf@vger.kernel.org, andrii@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
-        davemarchevsky@fb.com, linux-kernel@vger.kernel.org
-References: <20220801025109.1206633-1-f.fainelli@gmail.com>
- <165964981402.20332.403823292048774488.git-patchwork-notify@kernel.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <165964981402.20332.403823292048774488.git-patchwork-notify@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQJGQmu02f5B=mc1xJvVWSmk_GNZj9WAUskekykmyo8FzA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 8/4/2022 2:50 PM, patchwork-bot+netdevbpf@kernel.org wrote:
-> Hello:
+Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> > This helps gradually moving towards move epbf for those that
+> > still heavily rely on the classic forwarding path.
 > 
-> This patch was applied to bpf/bpf-next.git (master)
-> by Andrii Nakryiko <andrii@kernel.org>:
-> 
-> On Sun, 31 Jul 2022 19:51:09 -0700 you wrote:
->> GCC-11 warns about the possibly unitialized err variable in
->> probe_map_create:
->>
->> libbpf_probes.c: In function 'probe_map_create':
->> libbpf_probes.c:361:38: error: 'err' may be used uninitialized in this function [-Werror=maybe-uninitialized]
->>    361 |                 return fd < 0 && err == exp_err ? 1 : 0;
->>        |                                  ~~~~^~~~~~~~~~
->>
->> [...]
-> 
-> Here is the summary with links:
->    - libbpf: Initialize err in probe_map_create
->      https://git.kernel.org/bpf/bpf-next/c/3045f42a6432
-> 
-> You are awesome, thank you!
+> No one is using it.
+> If it was, we would have seen at least one bug report over
+> all these years. We've seen none.
 
-Thanks for applying, I was sort of expecting this patch to land to Linus 
-a bit quicker, as far as I can see it is still only in linux-next yet it 
-does fix a build warning turned error. Any chance of fast tracking it?
+Err, it IS used, else I would not have sent this patch.
 
-Thanks!
--- 
-Florian
+> very reasonable early on and turned out to be useless with
+> zero users.
+> BPF_PROG_TYPE_SCHED_ACT and BPF_PROG_TYPE_LWT*
+> are in this category.
+
+I doubt it had 0 users.  Those users probably moved to something
+better?
+
+> As a minimum we shouldn't step on the same rakes.
+> xt_ebpf would be the same dead code as xt_bpf.
+
+Its just 160 LOC or so, I don't see it has a huge technical debt.
+
+> > If you are open to BPF_PROG_TYPE_NETFILTER I can go that route
+> > as well, raw bpf program attachment via NF_HOOK and the bpf dispatcher,
+> > but it will take significantly longer to get there.
+> >
+> > It involves reviving
+> > https://lore.kernel.org/netfilter-devel/20211014121046.29329-1-fw@strlen.de/
+> 
+> I missed it earlier. What is the end goal ?
+
+Immediate goal: get rid of all indirect calls from NF_HOOK()
+invocations. Its about 2% speedup in my tests (with connection
+tracking+defrag enabled).
+
+This series changes prototype of the callbacks to int foo(struct *),
+so I think it would be possible to build on this and allow attaching raw
+bpf progs/implement what is now a netfilter kernel module as a bpf
+program.
+
+I have not spent time on this so far though, so I don't know yet
+how the "please attach prog id 12345 at FORWARD with prio 42" should
+be done.
+
+> Optimize nft run-time with on the fly generation of bpf byte code ?
+
+This could be done too, so far this JITs nf_hook_slow() only.
+The big question for nft run-time would be how and where to do the JIT
+translation.
+
+I think that "nft run time jit" would be step 3, after allowing
+(re)implementation of netfilter modules via bpf programs.
