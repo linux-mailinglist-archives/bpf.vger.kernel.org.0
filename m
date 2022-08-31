@@ -2,123 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D3845A80F0
-	for <lists+bpf@lfdr.de>; Wed, 31 Aug 2022 17:09:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90BBC5A8124
+	for <lists+bpf@lfdr.de>; Wed, 31 Aug 2022 17:24:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231383AbiHaPJU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 31 Aug 2022 11:09:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44870 "EHLO
+        id S231231AbiHaPYX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 31 Aug 2022 11:24:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231282AbiHaPJT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 31 Aug 2022 11:09:19 -0400
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A1420543FE;
-        Wed, 31 Aug 2022 08:09:18 -0700 (PDT)
-Date:   Wed, 31 Aug 2022 17:09:15 +0200
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
-Cc:     Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org,
-        bpf@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH nf-next] netfilter: nf_tables: add ebpf expression
-Message-ID: <Yw95m0mcPeE68fRJ@salvia>
-References: <20220831101617.22329-1-fw@strlen.de>
- <87v8q84nlq.fsf@toke.dk>
- <20220831125608.GA8153@breakpoint.cc>
- <87o7w04jjb.fsf@toke.dk>
- <20220831135757.GC8153@breakpoint.cc>
- <87ilm84goh.fsf@toke.dk>
+        with ESMTP id S231147AbiHaPYW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 31 Aug 2022 11:24:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C85CCD8E08
+        for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 08:24:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1661959461;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Rps/yJBAwXB89WpAJeggNdBtdGS1yl5U+irzY4lHG4M=;
+        b=LW3EpAfFTfb0S4FJRQp4yaGZQph22z9WCcdAhzXC2Oq3RGyR8SXfiep4MIhNXhTOzYpPqm
+        3d3PpVH4Jzy0d30cBmE36/beGK3j/HYWxPDS1zbpxYYrM6dGSrgkA5/XdHfMXBEZcoHbMc
+        y6iuKmoMGHNhB55eOyct7axj3pdM2rQ=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-189-cgakyn-RMqiyAdH_ON0bTQ-1; Wed, 31 Aug 2022 11:24:17 -0400
+X-MC-Unique: cgakyn-RMqiyAdH_ON0bTQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 37BE4294EDCA;
+        Wed, 31 Aug 2022 15:24:17 +0000 (UTC)
+Received: from astarta.redhat.com (unknown [10.39.192.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 08062909FF;
+        Wed, 31 Aug 2022 15:24:15 +0000 (UTC)
+From:   Yauheni Kaliuta <ykaliuta@redhat.com>
+To:     bpf@vger.kernel.org
+Cc:     andrii@kernel.org, alexei.starovoitov@gmail.com, jbenc@redhat.com,
+        linux-security-module@vger.kernel.org,
+        Yauheni Kaliuta <ykaliuta@redhat.com>
+Subject: [RFC PATCH v2] bpf: use bpf_capable() instead of CAP_SYS_ADMIN for blinding decision
+Date:   Wed, 31 Aug 2022 18:24:14 +0300
+Message-Id: <20220831152414.171484-1-ykaliuta@redhat.com>
+In-Reply-To: <20220831090655.156434-1-ykaliuta@redhat.com>
+References: <20220831090655.156434-1-ykaliuta@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <87ilm84goh.fsf@toke.dk>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Scanned-By: MIMEDefang 2.79 on 10.11.54.5
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 31, 2022 at 04:43:26PM +0200, Toke Høiland-Jørgensen wrote:
-> Florian Westphal <fw@strlen.de> writes:
-> 
-> > Toke Høiland-Jørgensen <toke@kernel.org> wrote:
-> >> >> It seems a bit odd to include the file path in the kernel as well.
-> >> >
-> >> > Its needed to be able to re-load the ruleset.
-> >> 
-> >> How does that work, exactly? Is this so that the userspace binary can
-> >> query the current ruleset, and feed it back to the kernel expecting it
-> >> to stay the same?
-> >
-> > Yes.
-> >
-> >> Because in that case, if the pinned object goes away
-> >> in the meantime (or changes to a different program), this could lead to
-> >> some really hard to debug errors, where a reload subtly changes the
-> >> behaviour because the BPF program is not in fact the same.
-> >
-> > Correct, but thats kind of expected when the user changes programs
-> > logic.
-> >
-> > Same with a 'nft list ruleset > /etc/nft.txt', reboot,
-> > 'nft -f /etc/nft.txt' fails because user forgot to load/pin the program
-> > first.
-> 
-> Right, so under what conditions is the identifier expected to survive,
-> exactly? It's okay if it fails after a reboot, but it should keep
-> working while the system is up?
-> 
-> >> > This way was the most simple solution.
-> >> 
-> >> My point here was more that if it's just a label for human consumption,
-> >> the comment field should be fine, didn't realise it was needed for the
-> >> tool operation (and see above re: that).
-> >
-> > Yes, this is unfortunate.  I would like to avoid introducing an
-> > asymmetry between input and output (as in "... add rule ebpf pinned
-> > bla', but 'nft list ruleset' showing 'ebpf id 42') or similar, UNLESS we
-> > can somehow use that alternate output to reconstruct that was originally
-> > intended.  And so far I can only see that happening with storing some
-> > label in the kernel for userspace to consume (elf filename, pinned name,
-> > program name ... ).
-> >
-> > To give an example:
-> >
-> > With 'ebpf id 42', we might be able to let this get echoed back as if
-> > user would have said 'ebpf progname myfilter' (I am making this up!),
-> > just to have a more 'stable' identifier.
-> >
-> > This would make it necessary to also support load-by-program-name, of
-> > course.
-> 
-> Seems like this kind of mapping can be done in userspace without
-> involving the kernel?
-> 
-> For example, the 'progname' thing could be implemented by defining an
-> nft-specific pinning location so that 'ebpf progname myfilter' is
-> equivalent to 'ebpf pinned /sys/bpf/nft/myfilter' and when nft receives
-> an ID from the kernel it goes looking in /sys/bpf/nft to see if it can
-> find the program with that ID and echoes it with the appropriate
-> progname if it does exist?
-> 
-> This could also be extended, so that if a user does '... add rule ebpf
-> file /usr/lib/bpf/myrule.o' the nft binary stashes the id -> .o file
-> mapping somewhere (in /run for instance) so that it can echo back where
-> it got it from later?
-> 
-> In either case I'm not really sure that there's much to be gained from
-> asking the kernel to store an additional label with the program rule?
+The capability check can cause SELinux denial.
 
-@Florian, could you probably use the object infrastructure to refer to
-the program?
+For example, in ptp4l, setsockopt() with the SO_ATTACH_FILTER option
+raises sk_attach_filter() to run a bpf program. SELinux hooks into
+capable() calls and performs an additional check if the task's
+SELinux domain has permission to "use" the given capability. ptp4l_t
+already has CAP_BPF granted by SELinux, so if the function used
+bpf_capable() as most BPF code does, there would be no change needed
+in selinux-policy.
 
-This might also allow you to refer to this new object type from
-nf_tables maps.
+Signed-off-by: Yauheni Kaliuta <ykaliuta@redhat.com>
+---
 
-It would be good to avoid linear rule-based matching to select what
-program to run.
+v2: put the reasoning in the commit message
 
-Maybe this also fits fine for your requirements?
+---
+ include/linux/filter.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/linux/filter.h b/include/linux/filter.h
+index a5f21dc3c432..3de96b1a736b 100644
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -1100,7 +1100,7 @@ static inline bool bpf_jit_blinding_enabled(struct bpf_prog *prog)
+ 		return false;
+ 	if (!bpf_jit_harden)
+ 		return false;
+-	if (bpf_jit_harden == 1 && capable(CAP_SYS_ADMIN))
++	if (bpf_jit_harden == 1 && bpf_capable())
+ 		return false;
+ 
+ 	return true;
+-- 
+2.34.1
+
