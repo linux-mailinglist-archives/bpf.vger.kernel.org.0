@@ -2,23 +2,23 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6645D5A74AB
-	for <lists+bpf@lfdr.de>; Wed, 31 Aug 2022 06:08:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B058E5A74AE
+	for <lists+bpf@lfdr.de>; Wed, 31 Aug 2022 06:08:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230483AbiHaEIa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 31 Aug 2022 00:08:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58756 "EHLO
+        id S230082AbiHaEId (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 31 Aug 2022 00:08:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbiHaEI3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 31 Aug 2022 00:08:29 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D3ABB14ED
-        for <bpf@vger.kernel.org>; Tue, 30 Aug 2022 21:08:27 -0700 (PDT)
+        with ESMTP id S231224AbiHaEIa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 31 Aug 2022 00:08:30 -0400
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86C07B14F5
+        for <bpf@vger.kernel.org>; Tue, 30 Aug 2022 21:08:28 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4MHVxJ1Kd2zl6j6
-        for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 12:07:00 +0800 (CST)
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4MHVx24xcyz6R4sx
+        for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 12:06:46 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP2 (Coremail) with SMTP id Syh0CgA3inOz3g5jRQ6pAA--.419S5;
+        by APP2 (Coremail) with SMTP id Syh0CgA3inOz3g5jRQ6pAA--.419S6;
         Wed, 31 Aug 2022 12:08:26 +0800 (CST)
 From:   Hou Tao <houtao@huaweicloud.com>
 To:     bpf@vger.kernel.org
@@ -37,21 +37,21 @@ Cc:     Song Liu <songliubraving@fb.com>,
         Jiri Olsa <jolsa@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
         Lorenz Bauer <oss@lmb.io>, houtao1@huawei.com
-Subject: [PATCH bpf-next v4 1/3] bpf: Disable preemption when increasing per-cpu map_locked
-Date:   Wed, 31 Aug 2022 12:26:27 +0800
-Message-Id: <20220831042629.130006-2-houtao@huaweicloud.com>
+Subject: [PATCH bpf-next v4 2/3] bpf: Propagate error from htab_lock_bucket() to userspace
+Date:   Wed, 31 Aug 2022 12:26:28 +0800
+Message-Id: <20220831042629.130006-3-houtao@huaweicloud.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20220831042629.130006-1-houtao@huaweicloud.com>
 References: <20220831042629.130006-1-houtao@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgA3inOz3g5jRQ6pAA--.419S5
-X-Coremail-Antispam: 1UD129KBjvJXoWxWFykXFWkCF18GFWxCFy7trb_yoW5ZFyxpF
-        48GF9ayw48XF9Y9a9rXr1Iqr15Aw4xK3yIy3ykGrWxZr45Zr1fur1IyFySqF1Fvr9xArsa
-        vw42qa1Yyr4UAFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUB0b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUGw
-        A2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+X-CM-TRANSID: Syh0CgA3inOz3g5jRQ6pAA--.419S6
+X-Coremail-Antispam: 1UD129KBjvJXoW7uFW5Ary8Ar43Wry8CF48WFg_yoW8Jw1rpa
+        yxK347Kw40qrZ2vas7XF4xKFy5u3s5Wr4UGrWDC34Fvr1qqr9a9w10qasIqFWFqry3JF4Y
+        vr42va4Fy345AFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBYb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
+        A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
         w2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
         W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
         6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
@@ -59,9 +59,9 @@ X-Coremail-Antispam: 1UD129KBjvJXoWxWFykXFWkCF18GFWxCFy7trb_yoW5ZFyxpF
         Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64
         vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
         jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2I
-        x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK
-        8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
-        0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU2mL9UUUUU
+        x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY6xAI
+        w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
+        0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1sa9DUUUUU==
 X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
@@ -75,104 +75,41 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Hou Tao <houtao1@huawei.com>
 
-Per-cpu htab->map_locked is used to prohibit the concurrent accesses
-from both NMI and non-NMI contexts. But since commit 74d862b682f5
-("sched: Make migrate_disable/enable() independent of RT"),
-migrate_disable() is also preemptible under CONFIG_PREEMPT case, so now
-map_locked also disallows concurrent updates from normal contexts
-(e.g. userspace processes) unexpectedly as shown below:
+In __htab_map_lookup_and_delete_batch() if htab_lock_bucket() returns
+-EBUSY, it will go to next bucket. Going to next bucket may not only
+skip the elements in current bucket silently, but also incur
+out-of-bound memory access or expose kernel memory to userspace if
+current bucket_cnt is greater than bucket_size or zero.
 
-process A                      process B
+Fixing it by stopping batch operation and returning -EBUSY when
+htab_lock_bucket() fails, and the application can retry or skip the busy
+batch as needed.
 
-htab_map_update_elem()
-  htab_lock_bucket()
-    migrate_disable()
-    /* return 1 */
-    __this_cpu_inc_return()
-    /* preempted by B */
-
-                               htab_map_update_elem()
-                                 /* the same bucket as A */
-                                 htab_lock_bucket()
-                                   migrate_disable()
-                                   /* return 2, so lock fails */
-                                   __this_cpu_inc_return()
-                                   return -EBUSY
-
-A fix that seems feasible is using in_nmi() in htab_lock_bucket() and
-only checking the value of map_locked for nmi context. But it will
-re-introduce dead-lock on bucket lock if htab_lock_bucket() is re-entered
-through non-tracing program (e.g. fentry program).
-
-One cannot use preempt_disable() to fix this issue as htab_use_raw_lock
-being false causes the bucket lock to be a spin lock which can sleep and
-does not work with preempt_disable().
-
-Therefore, use migrate_disable() when using the spinlock instead of
-preempt_disable() and defer fixing concurrent updates to when the kernel
-has its own BPF memory allocator.
-
-Fixes: 74d862b682f5 ("sched: Make migrate_disable/enable() independent of RT")
-Reviewed-by: Hao Luo <haoluo@google.com>
+Fixes: 20b6cc34ea74 ("bpf: Avoid hashtab deadlock with map_locked")
+Reported-by: Hao Sun <sunhao.th@gmail.com>
 Signed-off-by: Hou Tao <houtao1@huawei.com>
 ---
- kernel/bpf/hashtab.c | 23 ++++++++++++++++++-----
- 1 file changed, 18 insertions(+), 5 deletions(-)
+ kernel/bpf/hashtab.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
 diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index b301a63afa2f..6fb3b7fd1622 100644
+index 6fb3b7fd1622..eb1263f03e9b 100644
 --- a/kernel/bpf/hashtab.c
 +++ b/kernel/bpf/hashtab.c
-@@ -162,17 +162,25 @@ static inline int htab_lock_bucket(const struct bpf_htab *htab,
- 				   unsigned long *pflags)
- {
- 	unsigned long flags;
-+	bool use_raw_lock;
- 
- 	hash = hash & HASHTAB_MAP_LOCK_MASK;
- 
--	migrate_disable();
-+	use_raw_lock = htab_use_raw_lock(htab);
-+	if (use_raw_lock)
-+		preempt_disable();
-+	else
-+		migrate_disable();
- 	if (unlikely(__this_cpu_inc_return(*(htab->map_locked[hash])) != 1)) {
- 		__this_cpu_dec(*(htab->map_locked[hash]));
--		migrate_enable();
-+		if (use_raw_lock)
-+			preempt_enable();
-+		else
-+			migrate_enable();
- 		return -EBUSY;
+@@ -1704,8 +1704,11 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
+ 	/* do not grab the lock unless need it (bucket_cnt > 0). */
+ 	if (locked) {
+ 		ret = htab_lock_bucket(htab, b, batch, &flags);
+-		if (ret)
+-			goto next_batch;
++		if (ret) {
++			rcu_read_unlock();
++			bpf_enable_instrumentation();
++			goto after_loop;
++		}
  	}
  
--	if (htab_use_raw_lock(htab))
-+	if (use_raw_lock)
- 		raw_spin_lock_irqsave(&b->raw_lock, flags);
- 	else
- 		spin_lock_irqsave(&b->lock, flags);
-@@ -185,13 +193,18 @@ static inline void htab_unlock_bucket(const struct bpf_htab *htab,
- 				      struct bucket *b, u32 hash,
- 				      unsigned long flags)
- {
-+	bool use_raw_lock = htab_use_raw_lock(htab);
-+
- 	hash = hash & HASHTAB_MAP_LOCK_MASK;
--	if (htab_use_raw_lock(htab))
-+	if (use_raw_lock)
- 		raw_spin_unlock_irqrestore(&b->raw_lock, flags);
- 	else
- 		spin_unlock_irqrestore(&b->lock, flags);
- 	__this_cpu_dec(*(htab->map_locked[hash]));
--	migrate_enable();
-+	if (use_raw_lock)
-+		preempt_enable();
-+	else
-+		migrate_enable();
- }
- 
- static bool htab_lru_map_delete_node(void *arg, struct bpf_lru_node *node);
+ 	bucket_cnt = 0;
 -- 
 2.29.2
 
