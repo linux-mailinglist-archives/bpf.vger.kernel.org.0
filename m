@@ -2,40 +2,40 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03ED25A8385
-	for <lists+bpf@lfdr.de>; Wed, 31 Aug 2022 18:51:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F1F35A8386
+	for <lists+bpf@lfdr.de>; Wed, 31 Aug 2022 18:51:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229652AbiHaQvc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 31 Aug 2022 12:51:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51898 "EHLO
+        id S231893AbiHaQvd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 31 Aug 2022 12:51:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231660AbiHaQv1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 31 Aug 2022 12:51:27 -0400
-Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 185D2DA3F6;
-        Wed, 31 Aug 2022 09:51:25 -0700 (PDT)
-Received: by mail-qt1-f179.google.com with SMTP id a22so8740498qtw.10;
-        Wed, 31 Aug 2022 09:51:25 -0700 (PDT)
+        with ESMTP id S231797AbiHaQvb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 31 Aug 2022 12:51:31 -0400
+Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECB29DABA3;
+        Wed, 31 Aug 2022 09:51:26 -0700 (PDT)
+Received: by mail-qt1-f180.google.com with SMTP id w28so11429048qtc.7;
+        Wed, 31 Aug 2022 09:51:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc;
-        bh=5KQSP/VlgBpcKNYWuJh8UkiOBZK8rZYWAzvAQvGQclI=;
-        b=GccI/qzHIuYO78XXrTrHOOCTI1TuiYKOVPAUkZjo8koDd9dR/Tb+rR7KSWM/AKx6ak
-         qB5hRzOAJZEmf32MS2kCGAIgLgHg0eUn89qZck6t13Sjw7NASPnAqz0y6qT12dO40AQv
-         vS5JJClX9kQSDavKcUEA5nR+5EbhXQAn2jvxET1ufwPA6Az0yjN7qlLhGBbqXk8H/KpD
-         0UgCEpxACmRP0uNxGbtcTAVY7+zM3JpchyQ5WJ1To/liTU+RWmXJvyU37+POD+BXAFFC
-         mcVMcvLjCPb5J9AV99gTrZZ+LpJFMPF8OURedU9XnUq5u1FbhCT8eK++dRbn4a8NRQQc
-         RWog==
-X-Gm-Message-State: ACgBeo2eJh8hxoTnnOBxQqnuhEdZyRmAjgMof+nzWD4kEC6NYPysjLZS
-        goHahu02pYiGrKU7Bk/TejA=
-X-Google-Smtp-Source: AA6agR710LOq6lqKHcj0bF8uovpi8Ep7z15/GKTEHz1O2wfg6PvEzYaJmSu0Bl2rvgV9O+FcnSej2g==
-X-Received: by 2002:a05:622a:130d:b0:344:8f5c:2cda with SMTP id v13-20020a05622a130d00b003448f5c2cdamr19769883qtk.685.1661964684030;
-        Wed, 31 Aug 2022 09:51:24 -0700 (PDT)
+        bh=ZgVAyvWuBLN586YX5+Y5kX62NTvZSqbDsBciF0hbTT0=;
+        b=pDvfDEPoyTLBVl132fdBQ4AXuR5JP2F5rZ24+Ca+carhiTkTTGEoHrzxhTSYq7CJaa
+         sO+d1NemjeOkn7pUu4nlCOvzEvcO9nA9EspWTJPc+wOECZ5JGAcz1OtYIjX0q8/zpOI7
+         YW66h3fMuBYH29glVO9pVkq5qvADtxASzMpCVQPZSw12b2ZSM1/pmPGhbM/EvNIm2G2k
+         7Yle4f3IFz7dNJj+s9lfZhgZs5UkJOl6ztWASg3yRjt3mvVH7JrtxmtUREQMDkE18wNt
+         ZqMQgXQfiQ9SsXmYwBJAvGMe8syWeYVsdxw3KgySuxCTGgDnm07C1PrEk4BjnJvv4+yN
+         gelQ==
+X-Gm-Message-State: ACgBeo3LPON4NLvZDAyVF6yzmkgYp6aME9tk0lCL20nsO12Sw8/L/yFQ
+        hlHWW/VO1MA+mZzFt/RES0ziSmww/x/wBL9lw5k=
+X-Google-Smtp-Source: AA6agR5jh5XWHG41WHY5XPjzaQyRCZEeZkdTHuF/IBCtntUZWwyraBe67ZR4tpPuHTAnAa7MpLlhuQ==
+X-Received: by 2002:ac8:7f03:0:b0:344:6f5c:6aee with SMTP id f3-20020ac87f03000000b003446f5c6aeemr20270004qtk.558.1661964685709;
+        Wed, 31 Aug 2022 09:51:25 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:480::c6a9])
-        by smtp.gmail.com with ESMTPSA id e19-20020ac84b53000000b003435a198849sm8656089qts.47.2022.08.31.09.51.23
+        by smtp.gmail.com with ESMTPSA id v17-20020a05620a0f1100b006b58d8f6181sm10275181qkl.72.2022.08.31.09.51.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Aug 2022 09:51:23 -0700 (PDT)
+        Wed, 31 Aug 2022 09:51:25 -0700 (PDT)
 From:   David Vernet <void@manifault.com>
 To:     ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
         martin.lau@linux.dev
@@ -44,9 +44,9 @@ Cc:     song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
         jolsa@kernel.org, bpf@vger.kernel.org,
         linux-kernel@vger.kernel.org, void@manifault.com,
         kernel-team@fb.com
-Subject: [PATCH v4 3/4] bpf: Add libbpf logic for user-space ring buffer
-Date:   Wed, 31 Aug 2022 11:51:18 -0500
-Message-Id: <20220831165119.2216749-3-void@manifault.com>
+Subject: [PATCH v4 4/4] selftests/bpf: Add selftests validating the user ringbuf
+Date:   Wed, 31 Aug 2022 11:51:19 -0500
+Message-Id: <20220831165119.2216749-4-void@manifault.com>
 X-Mailer: git-send-email 2.37.1
 In-Reply-To: <20220831165119.2216749-1-void@manifault.com>
 References: <20220831165119.2216749-1-void@manifault.com>
@@ -63,542 +63,1226 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Now that all of the logic is in place in the kernel to support user-space
-produced ring buffers, we can add the user-space logic to libbpf. This
-patch therefore adds the following public symbols to libbpf:
-
-struct user_ring_buffer *
-user_ring_buffer__new(int map_fd,
-		      const struct user_ring_buffer_opts *opts);
-void *user_ring_buffer__reserve(struct user_ring_buffer *rb, __u32 size);
-void *user_ring_buffer__reserve_blocking(struct user_ring_buffer *rb,
-                                         __u32 size, int timeout_ms);
-void user_ring_buffer__submit(struct user_ring_buffer *rb, void *sample);
-void user_ring_buffer__discard(struct user_ring_buffer *rb,
-void user_ring_buffer__free(struct user_ring_buffer *rb);
-
-A user-space producer must first create a struct user_ring_buffer * object
-with user_ring_buffer__new(), and can then reserve samples in the
-ring buffer using one of the following two symbols:
-
-void *user_ring_buffer__reserve(struct user_ring_buffer *rb, __u32 size);
-void *user_ring_buffer__reserve_blocking(struct user_ring_buffer *rb,
-                                         __u32 size, int timeout_ms);
-
-With user_ring_buffer__reserve(), a pointer to a 'size' region of the ring
-buffer will be returned if sufficient space is available in the buffer.
-user_ring_buffer__reserve_blocking() provides similar semantics, but will
-block for up to 'timeout_ms' in epoll_wait if there is insufficient space
-in the buffer. This function has the guarantee from the kernel that it will
-receive at least one event-notification per invocation to
-bpf_ringbuf_drain(), provided that at least one sample is drained, and the
-BPF program did not pass the BPF_RB_NO_WAKEUP flag to bpf_ringbuf_drain().
-
-Once a sample is reserved, it must either be committed to the ring buffer
-with user_ring_buffer__submit(), or discarded with
-user_ring_buffer__discard().
+This change includes selftests that validate the expected behavior and
+APIs of the new BPF_MAP_TYPE_USER_RINGBUF map type.
 
 Signed-off-by: David Vernet <void@manifault.com>
 ---
- tools/lib/bpf/libbpf.c         |  10 +-
- tools/lib/bpf/libbpf.h         | 105 +++++++++++++
- tools/lib/bpf/libbpf.map       |  10 ++
- tools/lib/bpf/libbpf_probes.c  |   1 +
- tools/lib/bpf/libbpf_version.h |   2 +-
- tools/lib/bpf/ringbuf.c        | 270 +++++++++++++++++++++++++++++++++
- 6 files changed, 395 insertions(+), 3 deletions(-)
+ .../selftests/bpf/prog_tests/user_ringbuf.c   | 752 ++++++++++++++++++
+ .../selftests/bpf/progs/test_user_ringbuf.h   |  35 +
+ .../selftests/bpf/progs/user_ringbuf_fail.c   | 177 +++++
+ .../bpf/progs/user_ringbuf_success.c          | 218 +++++
+ 4 files changed, 1182 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/user_ringbuf.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_user_ringbuf.h
+ create mode 100644 tools/testing/selftests/bpf/progs/user_ringbuf_fail.c
+ create mode 100644 tools/testing/selftests/bpf/progs/user_ringbuf_success.c
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 6b580ba027ba..588cf0474743 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -2373,6 +2373,12 @@ static size_t adjust_ringbuf_sz(size_t sz)
- 	return sz;
- }
- 
-+static bool map_is_ringbuf(const struct bpf_map *map)
+diff --git a/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c b/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c
+new file mode 100644
+index 000000000000..4411c227ff59
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/user_ringbuf.c
+@@ -0,0 +1,752 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
++
++#define _GNU_SOURCE
++#include <linux/compiler.h>
++#include <linux/ring_buffer.h>
++#include <pthread.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <sys/mman.h>
++#include <sys/syscall.h>
++#include <sys/sysinfo.h>
++#include <test_progs.h>
++#include <uapi/linux/bpf.h>
++#include <unistd.h>
++
++#include "user_ringbuf_fail.skel.h"
++#include "user_ringbuf_success.skel.h"
++
++#include "../progs/test_user_ringbuf.h"
++
++static size_t log_buf_sz = 1 << 20; /* 1 MB */
++static char obj_log_buf[1048576];
++static const long c_sample_size = sizeof(struct sample) + BPF_RINGBUF_HDR_SZ;
++static const long c_ringbuf_size = 1 << 12; /* 1 small page */
++static const long c_max_entries = c_ringbuf_size / c_sample_size;
++
++static void drain_current_samples(void)
 +{
-+	return map->def.type == BPF_MAP_TYPE_RINGBUF ||
-+	       map->def.type == BPF_MAP_TYPE_USER_RINGBUF;
++	syscall(__NR_getpgid);
 +}
 +
- static void fill_map_from_def(struct bpf_map *map, const struct btf_map_def *def)
- {
- 	map->def.type = def->map_type;
-@@ -2387,7 +2393,7 @@ static void fill_map_from_def(struct bpf_map *map, const struct btf_map_def *def
- 	map->btf_value_type_id = def->value_type_id;
- 
- 	/* auto-adjust BPF ringbuf map max_entries to be a multiple of page size */
--	if (map->def.type == BPF_MAP_TYPE_RINGBUF)
-+	if (map_is_ringbuf(map))
- 		map->def.max_entries = adjust_ringbuf_sz(map->def.max_entries);
- 
- 	if (def->parts & MAP_DEF_MAP_TYPE)
-@@ -4370,7 +4376,7 @@ int bpf_map__set_max_entries(struct bpf_map *map, __u32 max_entries)
- 	map->def.max_entries = max_entries;
- 
- 	/* auto-adjust BPF ringbuf map max_entries to be a multiple of page size */
--	if (map->def.type == BPF_MAP_TYPE_RINGBUF)
-+	if (map_is_ringbuf(map))
- 		map->def.max_entries = adjust_ringbuf_sz(map->def.max_entries);
- 
- 	return 0;
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index 88a1ac34b12a..92fdbe484482 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -1011,6 +1011,7 @@ LIBBPF_API int bpf_tc_query(const struct bpf_tc_hook *hook,
- 
- /* Ring buffer APIs */
- struct ring_buffer;
-+struct user_ring_buffer;
- 
- typedef int (*ring_buffer_sample_fn)(void *ctx, void *data, size_t size);
- 
-@@ -1030,6 +1031,110 @@ LIBBPF_API int ring_buffer__poll(struct ring_buffer *rb, int timeout_ms);
- LIBBPF_API int ring_buffer__consume(struct ring_buffer *rb);
- LIBBPF_API int ring_buffer__epoll_fd(const struct ring_buffer *rb);
- 
-+struct user_ring_buffer_opts {
-+	size_t sz; /* size of this struct, for forward/backward compatibility */
-+};
-+
-+#define user_ring_buffer_opts__last_field sz
-+
-+/* @brief **user_ring_buffer__new()** creates a new instance of a user ring
-+ * buffer.
-+ *
-+ * @param map_fd A file descriptor to a BPF_MAP_TYPE_RINGBUF map.
-+ * @param opts Options for how the ring buffer should be created.
-+ * @return A user ring buffer on success; NULL and errno being set on a
-+ * failure.
-+ */
-+LIBBPF_API struct user_ring_buffer *
-+user_ring_buffer__new(int map_fd, const struct user_ring_buffer_opts *opts);
-+
-+/* @brief **user_ring_buffer__reserve()** reserves a pointer to a sample in the
-+ * user ring buffer.
-+ * @param rb A pointer to a user ring buffer.
-+ * @param size The size of the sample, in bytes.
-+ * @return A pointer to a reserved region of the user ring buffer; NULL, and
-+ * errno being set if a sample could not be reserved.
-+ *
-+ * This function is *not* thread safe, and callers must synchronize accessing
-+ * this function if there are multiple producers.  If a size is requested that
-+ * is larger than the size of the entire ring buffer, errno will be set to
-+ * E2BIG and NULL is returned. If the ring buffer could accommodate the size,
-+ * but currently does not have enough space, errno is set to ENOSPC and NULL is
-+ * returned.
-+ *
-+ * After initializing the sample, callers must invoke
-+ * **user_ring_buffer__submit()** to post the sample to the kernel. Otherwise,
-+ * the sample must be freed with **user_ring_buffer__discard()**.
-+ */
-+LIBBPF_API void *user_ring_buffer__reserve(struct user_ring_buffer *rb, __u32 size);
-+
-+/* @brief **user_ring_buffer__reserve_blocking()** reserves a record in the
-+ * ring buffer, possibly blocking for up to @timeout_ms until a sample becomes
-+ * available.
-+ * @param rb The user ring buffer.
-+ * @param size The size of the sample, in bytes.
-+ * @param timeout_ms The amount of time, in milliseconds, for which the caller
-+ * should block when waiting for a sample. -1 causes the caller to block
-+ * indefinitely.
-+ * @return A pointer to a reserved region of the user ring buffer; NULL, and
-+ * errno being set if a sample could not be reserved.
-+ *
-+ * This function is *not* thread safe, and callers must synchronize
-+ * accessing this function if there are multiple producers
-+ *
-+ * If **timeout_ms** is -1, the function will block indefinitely until a sample
-+ * becomes available. Otherwise, **timeout_ms** must be non-negative, or errno
-+ * is set to EINVAL, and NULL is returned. If **timeout_ms** is 0, no blocking
-+ * will occur and the function will return immediately after attempting to
-+ * reserve a sample.
-+ *
-+ * If **size** is larger than the size of the entire ring buffer, errno is set
-+ * to E2BIG and NULL is returned. If the ring buffer could accommodate
-+ * **size**, but currently does not have enough space, the caller will block
-+ * until at most **timeout_ms** has elapsed. If insufficient space is available
-+ * at that time, errno is set to ENOSPC, and NULL is returned.
-+ *
-+ * The kernel guarantees that it will wake up this thread to check if
-+ * sufficient space is available in the ring buffer at least once per
-+ * invocation of the **bpf_ringbuf_drain()** helper function, provided that at
-+ * least one sample is consumed, and the BPF program did not invoke the
-+ * function with BPF_RB_NO_WAKEUP. A wakeup may occur sooner than that, but the
-+ * kernel does not guarantee this.
-+ *
-+ * When a sample of size **size** is found within **timeout_ms**, a pointer to
-+ * the sample is returned. After initializing the sample, callers must invoke
-+ * **user_ring_buffer__submit()** to post the sample to the ring buffer.
-+ * Otherwise, the sample must be freed with **user_ring_buffer__discard()**.
-+ */
-+LIBBPF_API void *user_ring_buffer__reserve_blocking(struct user_ring_buffer *rb,
-+						    __u32 size,
-+						    int timeout_ms);
-+
-+/* @brief **user_ring_buffer__submit()** submits a previously reserved sample
-+ * into the ring buffer.
-+ * @param rb The user ring buffer.
-+ * @param sample A reserved sample.
-+ *
-+ * It is not necessary to synchronize amongst multiple producers when invoking
-+ * this function.
-+ */
-+LIBBPF_API void user_ring_buffer__submit(struct user_ring_buffer *rb, void *sample);
-+
-+/* @brief **user_ring_buffer__discard()** discards a previously reserved sample.
-+ * @param rb The user ring buffer.
-+ * @param sample A reserved sample.
-+ *
-+ * It is not necessary to synchronize amongst multiple producers when invoking
-+ * this function.
-+ */
-+LIBBPF_API void user_ring_buffer__discard(struct user_ring_buffer *rb, void *sample);
-+
-+/* @brief **user_ring_buffer__free()** frees a ring buffer that was previously
-+ * created with **user_ring_buffer__new()**.
-+ * @param rb The user ring buffer being freed.
-+ */
-+LIBBPF_API void user_ring_buffer__free(struct user_ring_buffer *rb);
-+
- /* Perf buffer APIs */
- struct perf_buffer;
- 
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index 2b928dc21af0..c1d6aa7c82b6 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -368,3 +368,13 @@ LIBBPF_1.0.0 {
- 		libbpf_bpf_prog_type_str;
- 		perf_buffer__buffer;
- };
-+
-+LIBBPF_1.1.0 {
-+	global:
-+		user_ring_buffer__discard;
-+		user_ring_buffer__free;
-+		user_ring_buffer__new;
-+		user_ring_buffer__reserve;
-+		user_ring_buffer__reserve_blocking;
-+		user_ring_buffer__submit;
-+} LIBBPF_1.0.0;
-diff --git a/tools/lib/bpf/libbpf_probes.c b/tools/lib/bpf/libbpf_probes.c
-index 6d495656f554..f3a8e8e74eb8 100644
---- a/tools/lib/bpf/libbpf_probes.c
-+++ b/tools/lib/bpf/libbpf_probes.c
-@@ -231,6 +231,7 @@ static int probe_map_create(enum bpf_map_type map_type)
- 			return btf_fd;
- 		break;
- 	case BPF_MAP_TYPE_RINGBUF:
-+	case BPF_MAP_TYPE_USER_RINGBUF:
- 		key_size = 0;
- 		value_size = 0;
- 		max_entries = 4096;
-diff --git a/tools/lib/bpf/libbpf_version.h b/tools/lib/bpf/libbpf_version.h
-index 2fb2f4290080..e944f5bce728 100644
---- a/tools/lib/bpf/libbpf_version.h
-+++ b/tools/lib/bpf/libbpf_version.h
-@@ -4,6 +4,6 @@
- #define __LIBBPF_VERSION_H
- 
- #define LIBBPF_MAJOR_VERSION 1
--#define LIBBPF_MINOR_VERSION 0
-+#define LIBBPF_MINOR_VERSION 1
- 
- #endif /* __LIBBPF_VERSION_H */
-diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
-index 8bc117bcc7bc..08b56762f217 100644
---- a/tools/lib/bpf/ringbuf.c
-+++ b/tools/lib/bpf/ringbuf.c
-@@ -16,6 +16,7 @@
- #include <asm/barrier.h>
- #include <sys/mman.h>
- #include <sys/epoll.h>
-+#include <time.h>
- 
- #include "libbpf.h"
- #include "libbpf_internal.h"
-@@ -39,6 +40,23 @@ struct ring_buffer {
- 	int ring_cnt;
- };
- 
-+struct user_ring_buffer {
-+	struct epoll_event event;
-+	unsigned long *consumer_pos;
-+	unsigned long *producer_pos;
-+	void *data;
-+	unsigned long mask;
-+	size_t page_size;
-+	int map_fd;
-+	int epoll_fd;
-+};
-+
-+/* 8-byte ring buffer header structure */
-+struct ringbuf_hdr {
-+	__u32 len;
-+	__u32 pad;
-+};
-+
- static void ringbuf_unmap_ring(struct ring_buffer *rb, struct ring *r)
- {
- 	if (r->consumer_pos) {
-@@ -300,3 +318,255 @@ int ring_buffer__epoll_fd(const struct ring_buffer *rb)
- {
- 	return rb->epoll_fd;
- }
-+
-+static void user_ringbuf_unmap_ring(struct user_ring_buffer *rb)
++static int write_samples(struct user_ring_buffer *ringbuf, uint32_t num_samples)
 +{
-+	if (rb->consumer_pos) {
-+		munmap(rb->consumer_pos, rb->page_size);
-+		rb->consumer_pos = NULL;
++	int i, err = 0;
++
++	/* Write some number of samples to the ring buffer. */
++	for (i = 0; i < num_samples; i++) {
++		struct sample *entry;
++		int read;
++
++		entry = user_ring_buffer__reserve(ringbuf, sizeof(*entry));
++		if (!entry) {
++			err = -errno;
++			goto done;
++		}
++
++		entry->pid = getpid();
++		entry->seq = i;
++		entry->value = i * i;
++
++		read = snprintf(entry->comm, sizeof(entry->comm), "%u", i);
++		if (read <= 0) {
++			/* Assert on the error path to avoid spamming logs with
++			 * mostly success messages.
++			 */
++			ASSERT_GT(read, 0, "snprintf_comm");
++			err = read;
++			user_ring_buffer__discard(ringbuf, entry);
++			goto done;
++		}
++
++		user_ring_buffer__submit(ringbuf, entry);
 +	}
-+	if (rb->producer_pos) {
-+		munmap(rb->producer_pos, rb->page_size + 2 * (rb->mask + 1));
-+		rb->producer_pos = NULL;
-+	}
++
++done:
++	drain_current_samples();
++
++	return err;
 +}
 +
-+void user_ring_buffer__free(struct user_ring_buffer *rb)
++static struct user_ringbuf_success *open_load_ringbuf_skel(void)
 +{
-+	if (!rb)
-+		return;
-+
-+	user_ringbuf_unmap_ring(rb);
-+
-+	if (rb->epoll_fd >= 0)
-+		close(rb->epoll_fd);
-+
-+	free(rb);
-+}
-+
-+static int user_ringbuf_map(struct user_ring_buffer *rb, int map_fd)
-+{
-+	struct bpf_map_info info;
-+	__u32 len = sizeof(info);
-+	void *tmp;
-+	struct epoll_event *rb_epoll;
++	struct user_ringbuf_success *skel;
 +	int err;
 +
-+	memset(&info, 0, sizeof(info));
++	skel = user_ringbuf_success__open();
++	if (!ASSERT_OK_PTR(skel, "skel_open"))
++		return NULL;
 +
-+	err = bpf_obj_get_info_by_fd(map_fd, &info, &len);
-+	if (err) {
-+		err = -errno;
-+		pr_warn("user ringbuf: failed to get map info for fd=%d: %d\n", map_fd, err);
++	err = bpf_map__set_max_entries(skel->maps.user_ringbuf, c_ringbuf_size);
++	if (!ASSERT_OK(err, "set_max_entries"))
++		goto cleanup;
++
++	err = bpf_map__set_max_entries(skel->maps.kernel_ringbuf, c_ringbuf_size);
++	if (!ASSERT_OK(err, "set_max_entries"))
++		goto cleanup;
++
++	err = user_ringbuf_success__load(skel);
++	if (!ASSERT_OK(err, "skel_load"))
++		goto cleanup;
++
++	return skel;
++
++cleanup:
++	user_ringbuf_success__destroy(skel);
++	return NULL;
++}
++
++static void test_user_ringbuf_mappings(void)
++{
++	int err, rb_fd;
++	int page_size = getpagesize();
++	void *mmap_ptr;
++	struct user_ringbuf_success *skel;
++
++	skel = open_load_ringbuf_skel();
++	if (!skel)
++		return;
++
++	rb_fd = bpf_map__fd(skel->maps.user_ringbuf);
++	/* cons_pos can be mapped R/O, can't add +X with mprotect. */
++	mmap_ptr = mmap(NULL, page_size, PROT_READ, MAP_SHARED, rb_fd, 0);
++	ASSERT_OK_PTR(mmap_ptr, "ro_cons_pos");
++	ASSERT_ERR(mprotect(mmap_ptr, page_size, PROT_WRITE), "write_cons_pos_protect");
++	ASSERT_ERR(mprotect(mmap_ptr, page_size, PROT_EXEC), "exec_cons_pos_protect");
++	ASSERT_ERR_PTR(mremap(mmap_ptr, 0, 4 * page_size, MREMAP_MAYMOVE), "wr_prod_pos");
++	err = -errno;
++	ASSERT_ERR(err, "wr_prod_pos_err");
++	ASSERT_OK(munmap(mmap_ptr, page_size), "unmap_ro_cons");
++
++	/* prod_pos can be mapped RW, can't add +X with mprotect. */
++	mmap_ptr = mmap(NULL, page_size, PROT_READ | PROT_WRITE, MAP_SHARED,
++			rb_fd, page_size);
++	ASSERT_OK_PTR(mmap_ptr, "rw_prod_pos");
++	ASSERT_ERR(mprotect(mmap_ptr, page_size, PROT_EXEC), "exec_prod_pos_protect");
++	err = -errno;
++	ASSERT_ERR(err, "wr_prod_pos_err");
++	ASSERT_OK(munmap(mmap_ptr, page_size), "unmap_rw_prod");
++
++	/* data pages can be mapped RW, can't add +X with mprotect. */
++	mmap_ptr = mmap(NULL, page_size, PROT_WRITE, MAP_SHARED, rb_fd,
++			2 * page_size);
++	ASSERT_OK_PTR(mmap_ptr, "rw_data");
++	ASSERT_ERR(mprotect(mmap_ptr, page_size, PROT_EXEC), "exec_data_protect");
++	err = -errno;
++	ASSERT_ERR(err, "exec_data_err");
++	ASSERT_OK(munmap(mmap_ptr, page_size), "unmap_rw_data");
++
++	user_ringbuf_success__destroy(skel);
++}
++
++static int load_skel_create_ringbufs(struct user_ringbuf_success **skel_out,
++				     struct ring_buffer **kern_ringbuf_out,
++				     ring_buffer_sample_fn callback,
++				     struct user_ring_buffer **user_ringbuf_out)
++{
++	struct user_ringbuf_success *skel;
++	struct ring_buffer *kern_ringbuf = NULL;
++	struct user_ring_buffer *user_ringbuf = NULL;
++	int err = -ENOMEM, rb_fd;
++
++	skel = open_load_ringbuf_skel();
++	if (!skel)
 +		return err;
++
++	/* only trigger BPF program for current process */
++	skel->bss->pid = getpid();
++
++	if (kern_ringbuf_out) {
++		rb_fd = bpf_map__fd(skel->maps.kernel_ringbuf);
++		kern_ringbuf = ring_buffer__new(rb_fd, callback, skel, NULL);
++		if (!ASSERT_OK_PTR(kern_ringbuf, "kern_ringbuf_create"))
++			goto cleanup;
++
++		*kern_ringbuf_out = kern_ringbuf;
 +	}
 +
-+	if (info.type != BPF_MAP_TYPE_USER_RINGBUF) {
-+		pr_warn("user ringbuf: map fd=%d is not BPF_MAP_TYPE_USER_RINGBUF\n", map_fd);
++	if (user_ringbuf_out) {
++		rb_fd = bpf_map__fd(skel->maps.user_ringbuf);
++		user_ringbuf = user_ring_buffer__new(rb_fd, NULL);
++		if (!ASSERT_OK_PTR(user_ringbuf, "user_ringbuf_create"))
++			goto cleanup;
++
++		*user_ringbuf_out = user_ringbuf;
++		ASSERT_EQ(skel->bss->read, 0, "no_reads_after_load");
++	}
++
++	err = user_ringbuf_success__attach(skel);
++	if (!ASSERT_OK(err, "skel_attach"))
++		goto cleanup;
++
++	*skel_out = skel;
++	return 0;
++
++cleanup:
++	if (kern_ringbuf_out)
++		*kern_ringbuf_out = NULL;
++	if (user_ringbuf_out)
++		*user_ringbuf_out = NULL;
++	ring_buffer__free(kern_ringbuf);
++	user_ring_buffer__free(user_ringbuf);
++	user_ringbuf_success__destroy(skel);
++	return err;
++}
++
++static int load_skel_create_user_ringbuf(struct user_ringbuf_success **skel_out,
++					 struct user_ring_buffer **ringbuf_out)
++{
++	return load_skel_create_ringbufs(skel_out, NULL, NULL, ringbuf_out);
++}
++
++static void manually_write_test_invalid_sample(struct user_ringbuf_success *skel,
++					       __u32 size, __u64 producer_pos, int err)
++{
++	void *data_ptr;
++	__u64 *producer_pos_ptr;
++	int rb_fd, page_size = getpagesize();
++
++	rb_fd = bpf_map__fd(skel->maps.user_ringbuf);
++
++	ASSERT_EQ(skel->bss->read, 0, "num_samples_before_bad_sample");
++
++	/* Map the producer_pos as RW. */
++	producer_pos_ptr = mmap(NULL, page_size, PROT_READ | PROT_WRITE,
++				MAP_SHARED, rb_fd, page_size);
++	ASSERT_OK_PTR(producer_pos_ptr, "producer_pos_ptr");
++
++	/* Map the data pages as RW. */
++	data_ptr = mmap(NULL, page_size, PROT_WRITE, MAP_SHARED, rb_fd, 2 * page_size);
++	ASSERT_OK_PTR(data_ptr, "rw_data");
++
++	memset(data_ptr, 0, BPF_RINGBUF_HDR_SZ);
++	*(__u32 *)data_ptr = size;
++
++	/* Synchronizes with smp_load_acquire() in __bpf_user_ringbuf_peek() in the kernel. */
++	smp_store_release(producer_pos_ptr, producer_pos + BPF_RINGBUF_HDR_SZ);
++
++	drain_current_samples();
++	ASSERT_EQ(skel->bss->read, 0, "num_samples_after_bad_sample");
++	ASSERT_EQ(skel->bss->err, err, "err_after_bad_sample");
++
++	ASSERT_OK(munmap(producer_pos_ptr, page_size), "unmap_producer_pos");
++	ASSERT_OK(munmap(data_ptr, page_size), "unmap_data_ptr");
++}
++
++static void test_user_ringbuf_post_misaligned(void)
++{
++	struct user_ringbuf_success *skel;
++	struct user_ring_buffer *ringbuf;
++	int err;
++	__u32 size = (1 << 5) + 7;
++
++	err = load_skel_create_user_ringbuf(&skel, &ringbuf);
++	if (!ASSERT_OK(err, "misaligned_skel"))
++		return;
++
++	manually_write_test_invalid_sample(skel, size, size, -EINVAL);
++	user_ring_buffer__free(ringbuf);
++	user_ringbuf_success__destroy(skel);
++}
++
++static void test_user_ringbuf_post_producer_wrong_offset(void)
++{
++	struct user_ringbuf_success *skel;
++	struct user_ring_buffer *ringbuf;
++	int err;
++	__u32 size = (1 << 5);
++
++	err = load_skel_create_user_ringbuf(&skel, &ringbuf);
++	if (!ASSERT_OK(err, "wrong_offset_skel"))
++		return;
++
++	manually_write_test_invalid_sample(skel, size, size - 8, -EINVAL);
++	user_ring_buffer__free(ringbuf);
++	user_ringbuf_success__destroy(skel);
++}
++
++static void test_user_ringbuf_post_larger_than_ringbuf_sz(void)
++{
++	struct user_ringbuf_success *skel;
++	struct user_ring_buffer *ringbuf;
++	int err;
++	__u32 size = c_ringbuf_size;
++
++	err = load_skel_create_user_ringbuf(&skel, &ringbuf);
++	if (!ASSERT_OK(err, "huge_sample_skel"))
++		return;
++
++	manually_write_test_invalid_sample(skel, size, size, -E2BIG);
++	user_ring_buffer__free(ringbuf);
++	user_ringbuf_success__destroy(skel);
++}
++
++static void test_user_ringbuf_basic(void)
++{
++	struct user_ringbuf_success *skel;
++	struct user_ring_buffer *ringbuf;
++	int err;
++
++	err = load_skel_create_user_ringbuf(&skel, &ringbuf);
++	if (!ASSERT_OK(err, "ringbuf_basic_skel"))
++		return;
++
++	ASSERT_EQ(skel->bss->read, 0, "num_samples_read_before");
++
++	err = write_samples(ringbuf, 2);
++	if (!ASSERT_OK(err, "write_samples"))
++		goto cleanup;
++
++	ASSERT_EQ(skel->bss->read, 2, "num_samples_read_after");
++
++cleanup:
++	user_ring_buffer__free(ringbuf);
++	user_ringbuf_success__destroy(skel);
++}
++
++static void test_user_ringbuf_sample_full_ringbuffer(void)
++{
++	struct user_ringbuf_success *skel;
++	struct user_ring_buffer *ringbuf;
++	int err;
++	void *sample;
++
++	err = load_skel_create_user_ringbuf(&skel, &ringbuf);
++	if (!ASSERT_OK(err, "ringbuf_full_sample_skel"))
++		return;
++
++	sample = user_ring_buffer__reserve(ringbuf, c_ringbuf_size - BPF_RINGBUF_HDR_SZ);
++	if (!ASSERT_OK_PTR(sample, "full_sample"))
++		goto cleanup;
++
++	user_ring_buffer__submit(ringbuf, sample);
++	ASSERT_EQ(skel->bss->read, 0, "num_samples_read_before");
++	drain_current_samples();
++	ASSERT_EQ(skel->bss->read, 1, "num_samples_read_after");
++
++cleanup:
++	user_ring_buffer__free(ringbuf);
++	user_ringbuf_success__destroy(skel);
++}
++
++static void test_user_ringbuf_post_alignment_autoadjust(void)
++{
++	struct user_ringbuf_success *skel;
++	struct user_ring_buffer *ringbuf;
++	struct sample *sample;
++	int err;
++
++	err = load_skel_create_user_ringbuf(&skel, &ringbuf);
++	if (!ASSERT_OK(err, "ringbuf_align_autoadjust_skel"))
++		return;
++
++	/* libbpf should automatically round any sample up to an 8-byte alignment. */
++	sample = user_ring_buffer__reserve(ringbuf, sizeof(*sample) + 1);
++	ASSERT_OK_PTR(sample, "reserve_autoaligned");
++	user_ring_buffer__submit(ringbuf, sample);
++
++	ASSERT_EQ(skel->bss->read, 0, "num_samples_read_before");
++	drain_current_samples();
++	ASSERT_EQ(skel->bss->read, 1, "num_samples_read_after");
++
++	user_ring_buffer__free(ringbuf);
++	user_ringbuf_success__destroy(skel);
++}
++
++static void test_user_ringbuf_overfill(void)
++{
++	struct user_ringbuf_success *skel;
++	struct user_ring_buffer *ringbuf;
++	int err;
++
++	err = load_skel_create_user_ringbuf(&skel, &ringbuf);
++	if (err)
++		return;
++
++	err = write_samples(ringbuf, c_max_entries * 5);
++	ASSERT_ERR(err, "write_samples");
++	ASSERT_EQ(skel->bss->read, c_max_entries, "max_entries");
++
++	user_ring_buffer__free(ringbuf);
++	user_ringbuf_success__destroy(skel);
++}
++
++static void test_user_ringbuf_discards_properly_ignored(void)
++{
++	struct user_ringbuf_success *skel;
++	struct user_ring_buffer *ringbuf;
++	int err, num_discarded = 0;
++	__u64 *token;
++
++	err = load_skel_create_user_ringbuf(&skel, &ringbuf);
++	if (err)
++		return;
++
++	ASSERT_EQ(skel->bss->read, 0, "num_samples_read_before");
++
++	while (1) {
++		/* Write samples until the buffer is full. */
++		token = user_ring_buffer__reserve(ringbuf, sizeof(*token));
++		if (!token)
++			break;
++
++		user_ring_buffer__discard(ringbuf, token);
++		num_discarded++;
++	}
++
++	if (!ASSERT_GE(num_discarded, 0, "num_discarded"))
++		goto cleanup;
++
++	/* Should not read any samples, as they are all discarded. */
++	ASSERT_EQ(skel->bss->read, 0, "num_pre_kick");
++	drain_current_samples();
++	ASSERT_EQ(skel->bss->read, 0, "num_post_kick");
++
++	/* Now that the ringbuffer has been drained, we should be able to reserve another token. */
++	token = user_ring_buffer__reserve(ringbuf, sizeof(*token));
++
++	if (!ASSERT_OK_PTR(token, "new_token"))
++		goto cleanup;
++
++	user_ring_buffer__discard(ringbuf, token);
++cleanup:
++	user_ring_buffer__free(ringbuf);
++	user_ringbuf_success__destroy(skel);
++}
++
++static void test_user_ringbuf_loop(void)
++{
++	struct user_ringbuf_success *skel;
++	struct user_ring_buffer *ringbuf;
++	uint32_t total_samples = 8192;
++	uint32_t remaining_samples = total_samples;
++	int err;
++
++	BUILD_BUG_ON(total_samples <= c_max_entries);
++	err = load_skel_create_user_ringbuf(&skel, &ringbuf);
++	if (err)
++		return;
++
++	do  {
++		uint32_t curr_samples;
++
++		curr_samples = remaining_samples > c_max_entries
++			? c_max_entries : remaining_samples;
++		err = write_samples(ringbuf, curr_samples);
++		if (err != 0) {
++			/* Assert inside of if statement to avoid flooding logs
++			 * on the success path.
++			 */
++			ASSERT_OK(err, "write_samples");
++			goto cleanup;
++		}
++
++		remaining_samples -= curr_samples;
++		ASSERT_EQ(skel->bss->read, total_samples - remaining_samples,
++			  "current_batched_entries");
++	} while (remaining_samples > 0);
++	ASSERT_EQ(skel->bss->read, total_samples, "total_batched_entries");
++
++cleanup:
++	user_ring_buffer__free(ringbuf);
++	user_ringbuf_success__destroy(skel);
++}
++
++static int send_test_message(struct user_ring_buffer *ringbuf,
++			     enum test_msg_op op, s64 operand_64,
++			     s32 operand_32)
++{
++	struct test_msg *msg;
++
++	msg = user_ring_buffer__reserve(ringbuf, sizeof(*msg));
++	if (!msg) {
++		/* Assert on the error path to avoid spamming logs with mostly
++		 * success messages.
++		 */
++		ASSERT_OK_PTR(msg, "reserve_msg");
++		return -ENOMEM;
++	}
++
++	msg->msg_op = op;
++
++	switch (op) {
++	case TEST_MSG_OP_INC64:
++	case TEST_MSG_OP_MUL64:
++		msg->operand_64 = operand_64;
++		break;
++	case TEST_MSG_OP_INC32:
++	case TEST_MSG_OP_MUL32:
++		msg->operand_32 = operand_32;
++		break;
++	default:
++		PRINT_FAIL("Invalid operand %d\n", op);
++		user_ring_buffer__discard(ringbuf, msg);
 +		return -EINVAL;
 +	}
 +
-+	rb->map_fd = map_fd;
-+	rb->mask = info.max_entries - 1;
-+
-+	/* Map read-only consumer page */
-+	tmp = mmap(NULL, rb->page_size, PROT_READ, MAP_SHARED, map_fd, 0);
-+	if (tmp == MAP_FAILED) {
-+		err = -errno;
-+		pr_warn("user ringbuf: failed to mmap consumer page for map fd=%d: %d\n",
-+			map_fd, err);
-+		return err;
-+	}
-+	rb->consumer_pos = tmp;
-+
-+	/* Map read-write the producer page and data pages. We map the data
-+	 * region as twice the total size of the ringbuffer to allow the simple
-+	 * reading and writing of samples that wrap around the end of the
-+	 * buffer.  See the kernel implementation for details.
-+	 */
-+	tmp = mmap(NULL, rb->page_size + 2 * info.max_entries,
-+		   PROT_READ | PROT_WRITE, MAP_SHARED, map_fd, rb->page_size);
-+	if (tmp == MAP_FAILED) {
-+		err = -errno;
-+		pr_warn("user ringbuf: failed to mmap data pages for map fd=%d: %d\n",
-+			map_fd, err);
-+		return err;
-+	}
-+
-+	rb->producer_pos = tmp;
-+	rb->data = tmp + rb->page_size;
-+
-+	rb_epoll = &rb->event;
-+	rb_epoll->events = EPOLLOUT;
-+	if (epoll_ctl(rb->epoll_fd, EPOLL_CTL_ADD, map_fd, rb_epoll) < 0) {
-+		err = -errno;
-+		pr_warn("user ringbuf: failed to epoll add map fd=%d: %d\n", map_fd, err);
-+		return err;
-+	}
++	user_ring_buffer__submit(ringbuf, msg);
 +
 +	return 0;
 +}
 +
-+struct user_ring_buffer *
-+user_ring_buffer__new(int map_fd, const struct user_ring_buffer_opts *opts)
++static void kick_kernel_read_messages(void)
 +{
-+	struct user_ring_buffer *rb;
-+	int err;
++	syscall(__NR_prctl);
++}
 +
-+	if (!OPTS_VALID(opts, user_ring_buffer_opts))
-+		return errno = EINVAL, NULL;
++static int handle_kernel_msg(void *ctx, void *data, size_t len)
++{
++	struct user_ringbuf_success *skel = ctx;
++	struct test_msg *msg = data;
 +
-+	rb = calloc(1, sizeof(*rb));
-+	if (!rb)
-+		return errno = ENOMEM, NULL;
++	switch (msg->msg_op) {
++	case TEST_MSG_OP_INC64:
++		skel->bss->user_mutated += msg->operand_64;
++		return 0;
++	case TEST_MSG_OP_INC32:
++		skel->bss->user_mutated += msg->operand_32;
++		return 0;
++	case TEST_MSG_OP_MUL64:
++		skel->bss->user_mutated *= msg->operand_64;
++		return 0;
++	case TEST_MSG_OP_MUL32:
++		skel->bss->user_mutated *= msg->operand_32;
++		return 0;
++	default:
++		fprintf(stderr, "Invalid operand %d\n", msg->msg_op);
++		return -EINVAL;
++	}
++}
 +
-+	rb->page_size = getpagesize();
++static void drain_kernel_messages_buffer(struct ring_buffer *kern_ringbuf,
++					 struct user_ringbuf_success *skel)
++{
++	int cnt;
 +
-+	rb->epoll_fd = epoll_create1(EPOLL_CLOEXEC);
-+	if (rb->epoll_fd < 0) {
-+		err = -errno;
-+		pr_warn("user ringbuf: failed to create epoll instance: %d\n", err);
-+		goto err_out;
++	cnt = ring_buffer__consume(kern_ringbuf);
++	ASSERT_EQ(cnt, 8, "consume_kern_ringbuf");
++	ASSERT_OK(skel->bss->err, "consume_kern_ringbuf_err");
++}
++
++static void test_user_ringbuf_msg_protocol(void)
++{
++	struct user_ringbuf_success *skel;
++	struct user_ring_buffer *user_ringbuf;
++	struct ring_buffer *kern_ringbuf;
++	int err, i;
++	__u64 expected_kern = 0;
++
++	err = load_skel_create_ringbufs(&skel, &kern_ringbuf, handle_kernel_msg, &user_ringbuf);
++	if (!ASSERT_OK(err, "create_ringbufs"))
++		return;
++
++	for (i = 0; i < 64; i++) {
++		enum test_msg_op op = i % TEST_MSG_OP_NUM_OPS;
++		__u64 operand_64 = TEST_OP_64;
++		__u32 operand_32 = TEST_OP_32;
++
++		err = send_test_message(user_ringbuf, op, operand_64, operand_32);
++		if (err) {
++			/* Only assert on a failure to avoid spamming success logs. */
++			ASSERT_OK(err, "send_test_message");
++			goto cleanup;
++		}
++
++		switch (op) {
++		case TEST_MSG_OP_INC64:
++			expected_kern += operand_64;
++			break;
++		case TEST_MSG_OP_INC32:
++			expected_kern += operand_32;
++			break;
++		case TEST_MSG_OP_MUL64:
++			expected_kern *= operand_64;
++			break;
++		case TEST_MSG_OP_MUL32:
++			expected_kern *= operand_32;
++			break;
++		default:
++			PRINT_FAIL("Unexpected op %d\n", op);
++			goto cleanup;
++		}
++
++		if (i % 8 == 0) {
++			kick_kernel_read_messages();
++			ASSERT_EQ(skel->bss->kern_mutated, expected_kern, "expected_kern");
++			ASSERT_EQ(skel->bss->err, 0, "bpf_prog_err");
++			drain_kernel_messages_buffer(kern_ringbuf, skel);
++		}
 +	}
 +
-+	err = user_ringbuf_map(rb, map_fd);
++cleanup:
++	ring_buffer__free(kern_ringbuf);
++	user_ring_buffer__free(user_ringbuf);
++	user_ringbuf_success__destroy(skel);
++}
++
++static void *kick_kernel_cb(void *arg)
++{
++	/* Kick the kernel, causing it to drain the ringbuffer and then wake up
++	 * the test thread waiting on epoll.
++	 */
++	syscall(__NR_getrlimit);
++
++	return NULL;
++}
++
++static int spawn_kick_thread_for_poll(void)
++{
++	pthread_t thread;
++
++	return pthread_create(&thread, NULL, kick_kernel_cb, NULL);
++}
++
++static void test_user_ringbuf_blocking_reserve(void)
++{
++	struct user_ringbuf_success *skel;
++	struct user_ring_buffer *ringbuf;
++	int err, num_written = 0;
++	__u64 *token;
++
++	err = load_skel_create_user_ringbuf(&skel, &ringbuf);
 +	if (err)
-+		goto err_out;
++		return;
 +
-+	return rb;
++	ASSERT_EQ(skel->bss->read, 0, "num_samples_read_before");
 +
-+err_out:
-+	user_ring_buffer__free(rb);
-+	return errno = -err, NULL;
-+}
++	while (1) {
++		/* Write samples until the buffer is full. */
++		token = user_ring_buffer__reserve(ringbuf, sizeof(*token));
++		if (!token)
++			break;
 +
-+static void user_ringbuf__commit(struct user_ring_buffer *rb, void *sample, bool discard)
-+{
-+	__u32 new_len;
-+	struct ringbuf_hdr *hdr;
-+	uintptr_t hdr_offset;
++		*token = 0xdeadbeef;
 +
-+	hdr_offset = rb->mask + 1 + (sample - rb->data) - BPF_RINGBUF_HDR_SZ;
-+	hdr = rb->data + (hdr_offset & rb->mask);
-+
-+	new_len = hdr->len & ~BPF_RINGBUF_BUSY_BIT;
-+	if (discard)
-+		new_len |= BPF_RINGBUF_DISCARD_BIT;
-+
-+	/* Synchronizes with smp_load_acquire() in __bpf_user_ringbuf_peek() in
-+	 * the kernel.
-+	 */
-+	__atomic_exchange_n(&hdr->len, new_len, __ATOMIC_ACQ_REL);
-+}
-+
-+void user_ring_buffer__discard(struct user_ring_buffer *rb, void *sample)
-+{
-+	user_ringbuf__commit(rb, sample, true);
-+}
-+
-+void user_ring_buffer__submit(struct user_ring_buffer *rb, void *sample)
-+{
-+	user_ringbuf__commit(rb, sample, false);
-+}
-+
-+void *user_ring_buffer__reserve(struct user_ring_buffer *rb, __u32 size)
-+{
-+	__u32 avail_size, total_size, max_size;
-+	/* 64-bit to avoid overflow in case of extreme application behavior */
-+	__u64 cons_pos, prod_pos;
-+	struct ringbuf_hdr *hdr;
-+
-+	/* Synchronizes with smp_store_release() in __bpf_user_ringbuf_peek() in
-+	 * the kernel.
-+	 */
-+	cons_pos = smp_load_acquire(rb->consumer_pos);
-+	/* Synchronizes with smp_store_release() in user_ringbuf__commit() */
-+	prod_pos = smp_load_acquire(rb->producer_pos);
-+
-+	max_size = rb->mask + 1;
-+	avail_size = max_size - (prod_pos - cons_pos);
-+	/* Round up total size to a multiple of 8. */
-+	total_size = (size + BPF_RINGBUF_HDR_SZ + 7) / 8 * 8;
-+
-+	if (total_size > max_size)
-+		return errno = E2BIG, NULL;
-+
-+	if (avail_size < total_size)
-+		return errno = ENOSPC, NULL;
-+
-+	hdr = rb->data + (prod_pos & rb->mask);
-+	hdr->len = size | BPF_RINGBUF_BUSY_BIT;
-+	hdr->pad = 0;
-+
-+	/* Synchronizes with smp_load_acquire() in __bpf_user_ringbuf_peek() in
-+	 * the kernel.
-+	 */
-+	smp_store_release(rb->producer_pos, prod_pos + total_size);
-+
-+	return (void *)rb->data + ((prod_pos + BPF_RINGBUF_HDR_SZ) & rb->mask);
-+}
-+
-+static __u64 ns_elapsed_timespec(const struct timespec *start, const struct timespec *end)
-+{
-+	__u64 start_ns, end_ns, ns_per_s = 1000000000;
-+
-+	start_ns = (__u64)start->tv_sec * ns_per_s + start->tv_nsec;
-+	end_ns = (__u64)end->tv_sec * ns_per_s + end->tv_nsec;
-+
-+	return end_ns - start_ns;
-+}
-+
-+void *user_ring_buffer__reserve_blocking(struct user_ring_buffer *rb, __u32 size, int timeout_ms)
-+{
-+	int err;
-+	struct timespec start;
-+	__u64 ns_per_ms = 1000000, ns_elapsed = 0, timeout_ns;
-+
-+	if (timeout_ms < 0 && timeout_ms != -1)
-+		return errno = EINVAL, NULL;
-+
-+	if (timeout_ms != -1) {
-+		err = clock_gettime(CLOCK_MONOTONIC, &start);
-+		if (err)
-+			return NULL;
++		user_ring_buffer__submit(ringbuf, token);
++		num_written++;
 +	}
 +
-+	timeout_ns = timeout_ms * ns_per_ms;
-+	do {
-+		__u64 ns_remaining = timeout_ns - ns_elapsed;
-+		int cnt, ms_remaining;
-+		void *sample;
-+		struct timespec curr;
++	if (!ASSERT_GE(num_written, 0, "num_written"))
++		goto cleanup;
 +
-+		sample = user_ring_buffer__reserve(rb, size);
-+		if (sample)
-+			return sample;
-+		else if (errno != ENOSPC)
-+			return NULL;
++	/* Should not have read any samples until the kernel is kicked. */
++	ASSERT_EQ(skel->bss->read, 0, "num_pre_kick");
 +
-+		ms_remaining = timeout_ms == -1 ? -1 : ns_remaining / ns_per_ms;
-+		/* The kernel guarantees at least one event notification
-+		 * delivery whenever at least one sample is drained from the
-+		 * ring buffer in an invocation to bpf_ringbuf_drain(). Other
-+		 * additional events may be delivered at any time, but only one
-+		 * event is guaranteed per bpf_ringbuf_drain() invocation,
-+		 * provided that a sample is drained, and the BPF program did
-+		 * not pass BPF_RB_NO_WAKEUP to bpf_ringbuf_drain().
-+		 */
-+		cnt = epoll_wait(rb->epoll_fd, &rb->event, 1, ms_remaining);
-+		if (cnt < 0)
-+			return NULL;
++	/* We correctly time out after 1 second, without a sample. */
++	token = user_ring_buffer__reserve_blocking(ringbuf, sizeof(*token), 1000);
++	if (!ASSERT_EQ(token, NULL, "pre_kick_timeout_token"))
++		goto cleanup;
 +
-+		if (timeout_ms == -1)
++	err = spawn_kick_thread_for_poll();
++	if (!ASSERT_EQ(err, 0, "deferred_kick_thread\n"))
++		goto cleanup;
++
++	/* After spawning another thread that asychronously kicks the kernel to
++	 * drain the messages, we're able to block and successfully get a
++	 * sample once we receive an event notification.
++	 */
++	token = user_ring_buffer__reserve_blocking(ringbuf, sizeof(*token), 10000);
++
++	if (!ASSERT_OK_PTR(token, "block_token"))
++		goto cleanup;
++
++	ASSERT_GT(skel->bss->read, 0, "num_post_kill");
++	ASSERT_LE(skel->bss->read, num_written, "num_post_kill");
++	ASSERT_EQ(skel->bss->err, 0, "err_post_poll");
++	user_ring_buffer__discard(ringbuf, token);
++
++cleanup:
++	user_ring_buffer__free(ringbuf);
++	user_ringbuf_success__destroy(skel);
++}
++
++static struct {
++	const char *prog_name;
++	const char *expected_err_msg;
++} failure_tests[] = {
++	/* failure cases */
++	{"user_ringbuf_callback_bad_access1", "negative offset dynptr_ptr ptr"},
++	{"user_ringbuf_callback_bad_access2", "dereference of modified dynptr_ptr ptr"},
++	{"user_ringbuf_callback_write_forbidden", "invalid mem access 'dynptr_ptr'"},
++	{"user_ringbuf_callback_null_context_write", "invalid mem access 'scalar'"},
++	{"user_ringbuf_callback_null_context_read", "invalid mem access 'scalar'"},
++	{"user_ringbuf_callback_discard_dynptr", "arg 1 is an unacquired reference"},
++	{"user_ringbuf_callback_submit_dynptr", "arg 1 is an unacquired reference"},
++	{"user_ringbuf_callback_invalid_return", "At callback return the register R0 has value"},
++};
++
++#define SUCCESS_TEST(_func) { _func, #_func }
++
++static struct {
++	void (*test_callback)(void);
++	const char *test_name;
++} success_tests[] = {
++	SUCCESS_TEST(test_user_ringbuf_mappings),
++	SUCCESS_TEST(test_user_ringbuf_post_misaligned),
++	SUCCESS_TEST(test_user_ringbuf_post_producer_wrong_offset),
++	SUCCESS_TEST(test_user_ringbuf_post_larger_than_ringbuf_sz),
++	SUCCESS_TEST(test_user_ringbuf_basic),
++	SUCCESS_TEST(test_user_ringbuf_sample_full_ringbuffer),
++	SUCCESS_TEST(test_user_ringbuf_post_alignment_autoadjust),
++	SUCCESS_TEST(test_user_ringbuf_overfill),
++	SUCCESS_TEST(test_user_ringbuf_discards_properly_ignored),
++	SUCCESS_TEST(test_user_ringbuf_loop),
++	SUCCESS_TEST(test_user_ringbuf_msg_protocol),
++	SUCCESS_TEST(test_user_ringbuf_blocking_reserve),
++};
++
++static void verify_fail(const char *prog_name, const char *expected_err_msg)
++{
++	LIBBPF_OPTS(bpf_object_open_opts, opts);
++	struct bpf_program *prog;
++	struct user_ringbuf_fail *skel;
++	int err;
++
++	opts.kernel_log_buf = obj_log_buf;
++	opts.kernel_log_size = log_buf_sz;
++	opts.kernel_log_level = 1;
++
++	skel = user_ringbuf_fail__open_opts(&opts);
++	if (!ASSERT_OK_PTR(skel, "dynptr_fail__open_opts"))
++		goto cleanup;
++
++	prog = bpf_object__find_program_by_name(skel->obj, prog_name);
++	if (!ASSERT_OK_PTR(prog, "bpf_object__find_program_by_name"))
++		goto cleanup;
++
++	bpf_program__set_autoload(prog, true);
++
++	bpf_map__set_max_entries(skel->maps.user_ringbuf, getpagesize());
++
++	err = user_ringbuf_fail__load(skel);
++	if (!ASSERT_ERR(err, "unexpected load success"))
++		goto cleanup;
++
++	if (!ASSERT_OK_PTR(strstr(obj_log_buf, expected_err_msg), "expected_err_msg")) {
++		fprintf(stderr, "Expected err_msg: %s\n", expected_err_msg);
++		fprintf(stderr, "Verifier output: %s\n", obj_log_buf);
++	}
++
++cleanup:
++	user_ringbuf_fail__destroy(skel);
++}
++
++void test_user_ringbuf(void)
++{
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(success_tests); i++) {
++		if (!test__start_subtest(success_tests[i].test_name))
 +			continue;
 +
-+		err = clock_gettime(CLOCK_MONOTONIC, &curr);
-+		if (err)
-+			return NULL;
++		success_tests[i].test_callback();
++	}
 +
-+		ns_elapsed = ns_elapsed_timespec(&start, &curr);
-+	} while (ns_elapsed <= timeout_ns);
++	for (i = 0; i < ARRAY_SIZE(failure_tests); i++) {
++		if (!test__start_subtest(failure_tests[i].prog_name))
++			continue;
 +
-+	errno = ENOSPC;
-+	return NULL;
++		verify_fail(failure_tests[i].prog_name, failure_tests[i].expected_err_msg);
++	}
++}
+diff --git a/tools/testing/selftests/bpf/progs/test_user_ringbuf.h b/tools/testing/selftests/bpf/progs/test_user_ringbuf.h
+new file mode 100644
+index 000000000000..1643b4d59ba7
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_user_ringbuf.h
+@@ -0,0 +1,35 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
++
++#ifndef _TEST_USER_RINGBUF_H
++#define _TEST_USER_RINGBUF_H
++
++#define TEST_OP_64 4
++#define TEST_OP_32 2
++
++enum test_msg_op {
++	TEST_MSG_OP_INC64,
++	TEST_MSG_OP_INC32,
++	TEST_MSG_OP_MUL64,
++	TEST_MSG_OP_MUL32,
++
++	// Must come last.
++	TEST_MSG_OP_NUM_OPS,
++};
++
++struct test_msg {
++	enum test_msg_op msg_op;
++	union {
++		__s64 operand_64;
++		__s32 operand_32;
++	};
++};
++
++struct sample {
++	int pid;
++	int seq;
++	long value;
++	char comm[16];
++};
++
++#endif /* _TEST_USER_RINGBUF_H */
+diff --git a/tools/testing/selftests/bpf/progs/user_ringbuf_fail.c b/tools/testing/selftests/bpf/progs/user_ringbuf_fail.c
+new file mode 100644
+index 000000000000..82aba4529aa9
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/user_ringbuf_fail.c
+@@ -0,0 +1,177 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
++
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++#include "bpf_misc.h"
++
++char _license[] SEC("license") = "GPL";
++
++struct sample {
++	int pid;
++	int seq;
++	long value;
++	char comm[16];
++};
++
++struct {
++	__uint(type, BPF_MAP_TYPE_USER_RINGBUF);
++} user_ringbuf SEC(".maps");
++
++static long
++bad_access1(struct bpf_dynptr *dynptr, void *context)
++{
++	const struct sample *sample;
++
++	sample = bpf_dynptr_data(dynptr - 1, 0, sizeof(*sample));
++	bpf_printk("Was able to pass bad pointer %lx\n", (__u64)dynptr - 1);
++
++	return 0;
++}
++
++/* A callback that accesses a dynptr in a bpf_user_ringbuf_drain callback should
++ * not be able to read before the pointer.
++ */
++SEC("?raw_tp/sys_nanosleep")
++int user_ringbuf_callback_bad_access1(void *ctx)
++{
++	bpf_user_ringbuf_drain(&user_ringbuf, bad_access1, NULL, 0);
++
++	return 0;
++}
++
++static long
++bad_access2(struct bpf_dynptr *dynptr, void *context)
++{
++	const struct sample *sample;
++
++	sample = bpf_dynptr_data(dynptr + 1, 0, sizeof(*sample));
++	bpf_printk("Was able to pass bad pointer %lx\n", (__u64)dynptr + 1);
++
++	return 0;
++}
++
++/* A callback that accesses a dynptr in a bpf_user_ringbuf_drain callback should
++ * not be able to read past the end of the pointer.
++ */
++SEC("?raw_tp/sys_nanosleep")
++int user_ringbuf_callback_bad_access2(void *ctx)
++{
++	bpf_user_ringbuf_drain(&user_ringbuf, bad_access2, NULL, 0);
++
++	return 0;
++}
++
++static long
++write_forbidden(struct bpf_dynptr *dynptr, void *context)
++{
++	*((long *)dynptr) = 0;
++
++	return 0;
++}
++
++/* A callback that accesses a dynptr in a bpf_user_ringbuf_drain callback should
++ * not be able to write to that pointer.
++ */
++SEC("?raw_tp/sys_nanosleep")
++int user_ringbuf_callback_write_forbidden(void *ctx)
++{
++	bpf_user_ringbuf_drain(&user_ringbuf, write_forbidden, NULL, 0);
++
++	return 0;
++}
++
++static long
++null_context_write(struct bpf_dynptr *dynptr, void *context)
++{
++	*((__u64 *)context) = 0;
++
++	return 0;
++}
++
++/* A callback that accesses a dynptr in a bpf_user_ringbuf_drain callback should
++ * not be able to write to that pointer.
++ */
++SEC("?raw_tp/sys_nanosleep")
++int user_ringbuf_callback_null_context_write(void *ctx)
++{
++	bpf_user_ringbuf_drain(&user_ringbuf, null_context_write, NULL, 0);
++
++	return 0;
++}
++
++static long
++null_context_read(struct bpf_dynptr *dynptr, void *context)
++{
++	__u64 id = *((__u64 *)context);
++
++	bpf_printk("Read id %lu\n", id);
++
++	return 0;
++}
++
++/* A callback that accesses a dynptr in a bpf_user_ringbuf_drain callback should
++ * not be able to write to that pointer.
++ */
++SEC("?raw_tp/sys_nanosleep")
++int user_ringbuf_callback_null_context_read(void *ctx)
++{
++	bpf_user_ringbuf_drain(&user_ringbuf, null_context_read, NULL, 0);
++
++	return 0;
++}
++
++static long
++try_discard_dynptr(struct bpf_dynptr *dynptr, void *context)
++{
++	bpf_ringbuf_discard_dynptr(dynptr, 0);
++
++	return 0;
++}
++
++/* A callback that accesses a dynptr in a bpf_user_ringbuf_drain callback should
++ * not be able to read past the end of the pointer.
++ */
++SEC("?raw_tp/sys_nanosleep")
++int user_ringbuf_callback_discard_dynptr(void *ctx)
++{
++	bpf_user_ringbuf_drain(&user_ringbuf, try_discard_dynptr, NULL, 0);
++
++	return 0;
++}
++
++static long
++try_submit_dynptr(struct bpf_dynptr *dynptr, void *context)
++{
++	bpf_ringbuf_submit_dynptr(dynptr, 0);
++
++	return 0;
++}
++
++/* A callback that accesses a dynptr in a bpf_user_ringbuf_drain callback should
++ * not be able to read past the end of the pointer.
++ */
++SEC("?raw_tp/sys_nanosleep")
++int user_ringbuf_callback_submit_dynptr(void *ctx)
++{
++	bpf_user_ringbuf_drain(&user_ringbuf, try_submit_dynptr, NULL, 0);
++
++	return 0;
++}
++
++static long
++invalid_drain_callback_return(struct bpf_dynptr *dynptr, void *context)
++{
++	return 2;
++}
++
++/* A callback that accesses a dynptr in a bpf_user_ringbuf_drain callback should
++ * not be able to write to that pointer.
++ */
++SEC("?raw_tp/sys_nanosleep")
++int user_ringbuf_callback_invalid_return(void *ctx)
++{
++	bpf_user_ringbuf_drain(&user_ringbuf, invalid_drain_callback_return, NULL, 0);
++
++	return 0;
++}
+diff --git a/tools/testing/selftests/bpf/progs/user_ringbuf_success.c b/tools/testing/selftests/bpf/progs/user_ringbuf_success.c
+new file mode 100644
+index 000000000000..099c23d9aa21
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/user_ringbuf_success.c
+@@ -0,0 +1,218 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
++
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++#include "bpf_misc.h"
++#include "test_user_ringbuf.h"
++
++char _license[] SEC("license") = "GPL";
++
++struct {
++	__uint(type, BPF_MAP_TYPE_USER_RINGBUF);
++} user_ringbuf SEC(".maps");
++
++struct {
++	__uint(type, BPF_MAP_TYPE_RINGBUF);
++} kernel_ringbuf SEC(".maps");
++
++/* inputs */
++int pid, err, val;
++
++int read = 0;
++
++/* Counter used for end-to-end protocol test */
++__u64 kern_mutated = 0;
++__u64 user_mutated = 0;
++__u64 expected_user_mutated = 0;
++
++static int
++is_test_process(void)
++{
++	int cur_pid = bpf_get_current_pid_tgid() >> 32;
++
++	return cur_pid == pid;
++}
++
++static long
++record_sample(struct bpf_dynptr *dynptr, void *context)
++{
++	const struct sample *sample = NULL;
++	struct sample stack_sample;
++	int status;
++	static int num_calls;
++
++	if (num_calls++ % 2 == 0) {
++		status = bpf_dynptr_read(&stack_sample, sizeof(stack_sample), dynptr, 0, 0);
++		if (status) {
++			bpf_printk("bpf_dynptr_read() failed: %d\n", status);
++			err = 1;
++			return 0;
++		}
++	} else {
++		sample = bpf_dynptr_data(dynptr, 0, sizeof(*sample));
++		if (!sample) {
++			bpf_printk("Unexpectedly failed to get sample\n");
++			err = 2;
++			return 0;
++		}
++		stack_sample = *sample;
++	}
++
++	__sync_fetch_and_add(&read, 1);
++	return 0;
++}
++
++static void
++handle_sample_msg(const struct test_msg *msg)
++{
++	switch (msg->msg_op) {
++	case TEST_MSG_OP_INC64:
++		kern_mutated += msg->operand_64;
++		break;
++	case TEST_MSG_OP_INC32:
++		kern_mutated += msg->operand_32;
++		break;
++	case TEST_MSG_OP_MUL64:
++		kern_mutated *= msg->operand_64;
++		break;
++	case TEST_MSG_OP_MUL32:
++		kern_mutated *= msg->operand_32;
++		break;
++	default:
++		bpf_printk("Unrecognized op %d\n", msg->msg_op);
++		err = 2;
++	}
++}
++
++static long
++read_protocol_msg(struct bpf_dynptr *dynptr, void *context)
++{
++	const struct test_msg *msg = NULL;
++
++	msg = bpf_dynptr_data(dynptr, 0, sizeof(*msg));
++	if (!msg) {
++		err = 1;
++		bpf_printk("Unexpectedly failed to get msg\n");
++		return 0;
++	}
++
++	handle_sample_msg(msg);
++
++	return 0;
++}
++
++static int publish_next_kern_msg(__u32 index, void *context)
++{
++	struct test_msg *msg = NULL;
++	int operand_64 = TEST_OP_64;
++	int operand_32 = TEST_OP_32;
++
++	msg = bpf_ringbuf_reserve(&kernel_ringbuf, sizeof(*msg), 0);
++	if (!msg) {
++		err = 4;
++		return 1;
++	}
++
++	switch (index % TEST_MSG_OP_NUM_OPS) {
++	case TEST_MSG_OP_INC64:
++		msg->operand_64 = operand_64;
++		msg->msg_op = TEST_MSG_OP_INC64;
++		expected_user_mutated += operand_64;
++		break;
++	case TEST_MSG_OP_INC32:
++		msg->operand_32 = operand_32;
++		msg->msg_op = TEST_MSG_OP_INC32;
++		expected_user_mutated += operand_32;
++		break;
++	case TEST_MSG_OP_MUL64:
++		msg->operand_64 = operand_64;
++		msg->msg_op = TEST_MSG_OP_MUL64;
++		expected_user_mutated *= operand_64;
++		break;
++	case TEST_MSG_OP_MUL32:
++		msg->operand_32 = operand_32;
++		msg->msg_op = TEST_MSG_OP_MUL32;
++		expected_user_mutated *= operand_32;
++		break;
++	default:
++		bpf_ringbuf_discard(msg, 0);
++		err = 5;
++		return 1;
++	}
++
++	bpf_ringbuf_submit(msg, 0);
++
++	return 0;
++}
++
++static void
++publish_kern_messages(void)
++{
++	if (expected_user_mutated != user_mutated) {
++		bpf_printk("%lu != %lu\n", expected_user_mutated, user_mutated);
++		err = 3;
++		return;
++	}
++
++	bpf_loop(8, publish_next_kern_msg, NULL, 0);
++}
++
++SEC("fentry/" SYS_PREFIX "sys_prctl")
++int test_user_ringbuf_protocol(void *ctx)
++{
++	long status = 0;
++	struct sample *sample = NULL;
++	struct bpf_dynptr ptr;
++
++	if (!is_test_process())
++		return 0;
++
++	status = bpf_user_ringbuf_drain(&user_ringbuf, read_protocol_msg, NULL, 0);
++	if (status < 0) {
++		bpf_printk("Drain returned: %ld\n", status);
++		err = 1;
++		return 0;
++	}
++
++	publish_kern_messages();
++
++	return 0;
++}
++
++SEC("fentry/" SYS_PREFIX "sys_getpgid")
++int test_user_ringbuf(void *ctx)
++{
++	int status = 0;
++	struct sample *sample = NULL;
++	struct bpf_dynptr ptr;
++
++	if (!is_test_process())
++		return 0;
++
++	err = bpf_user_ringbuf_drain(&user_ringbuf, record_sample, NULL, 0);
++
++	return 0;
++}
++
++static long
++do_nothing_cb(struct bpf_dynptr *dynptr, void *context)
++{
++	__sync_fetch_and_add(&read, 1);
++	return 0;
++}
++
++SEC("fentry/" SYS_PREFIX "sys_getrlimit")
++int test_user_ringbuf_epoll(void *ctx)
++{
++	long num_samples;
++
++	if (!is_test_process())
++		return 0;
++
++	num_samples = bpf_user_ringbuf_drain(&user_ringbuf, do_nothing_cb, NULL, 0);
++	if (num_samples <= 0)
++		err = 1;
++
++	return 0;
 +}
 -- 
 2.37.1
