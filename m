@@ -2,228 +2,290 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66F1E5A8380
-	for <lists+bpf@lfdr.de>; Wed, 31 Aug 2022 18:50:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E27B45A8382
+	for <lists+bpf@lfdr.de>; Wed, 31 Aug 2022 18:51:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230151AbiHaQuu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 31 Aug 2022 12:50:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50752 "EHLO
+        id S231318AbiHaQvV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 31 Aug 2022 12:51:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229652AbiHaQut (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 31 Aug 2022 12:50:49 -0400
-Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A05B022294;
-        Wed, 31 Aug 2022 09:50:47 -0700 (PDT)
-Received: by mail-qk1-f173.google.com with SMTP id w18so11264014qki.8;
-        Wed, 31 Aug 2022 09:50:47 -0700 (PDT)
+        with ESMTP id S229652AbiHaQvU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 31 Aug 2022 12:51:20 -0400
+Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4F5072EEC;
+        Wed, 31 Aug 2022 09:51:19 -0700 (PDT)
+Received: by mail-qt1-f179.google.com with SMTP id cr9so11409796qtb.13;
+        Wed, 31 Aug 2022 09:51:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc;
-        bh=QHmycpNT7GF/3PrblTnfZbP58NSFtYk8Ync9Nt2I4v4=;
-        b=udcDRstAA+cHQmM5EOJe7EOqCC+fjwEzQlZStPDqlX4SQqSiy0qf4m+Uhmwk6OXawA
-         PiTQBDcN+8gc8cgB8B3x28VODG20VO/K5ALgDIQ2G19mK73usA4W9SuIbsqavbmxgNnB
-         S1gAf4iaSinck2Wnvui2BVHtu8qkVlNyJBzN0Z3dupHgLlqBZmQo7h0mWx3MTcYDd/Ex
-         ypZBbQRm4HYaxG2WMq3/UiUmQlBmPJflB0VY58dy1Rep8+UgEXcyaNFy43Y1mIAZYLnW
-         k8+m9QobEtqQaDRprSmhgEhBwOFc8fvX4+pISaICHS8LYCa+BK/xA5uE/rH6chcKslNN
-         Xd4w==
-X-Gm-Message-State: ACgBeo2m+3LV/DA4rYaxImN2JmDN0/yEGtRjDshh7j8/fQ0TH+8CdopA
-        KJUod9nqX4YoA1EyseYKGLI=
-X-Google-Smtp-Source: AA6agR5F6Y57TgIachamqiFf3LrcBaQ3FxV2hDP3d7VPRB0HuHsjAZKvOClfL5ntWBHElGF8e3xetw==
-X-Received: by 2002:a05:620a:c50:b0:6b9:6e6:428d with SMTP id u16-20020a05620a0c5000b006b906e6428dmr16291982qki.280.1661964646555;
-        Wed, 31 Aug 2022 09:50:46 -0700 (PDT)
+        bh=d88fmSpkkY6F2ZKIwxwgsU6nVAd26ZE20XMqAoaFMaU=;
+        b=Q7mKqdN3wJFvFIOIcbwpQww9SqY5pXhLSyfuhOdqVa/6MJQtIb+VOkGzlhMhoHVOdf
+         KNOOJy1Xvk75toM0B2Fc3fr2VS13dD7/Fn/ALZHQf0EkVCezLlN7P8a4UQrhpTcSFbtz
+         yVho1Jf22Dm0tHcGgZ1I2PdeBkTI9QbBdIHgDIVtKpK0drGRef0Kqlzh7zeB5du5oYVU
+         pMFSpYfXYnyvCS+ElDLj/KYLWAu+A9tZY+31P8U0KQcZTipvehOXyAhLb+uSzh69/6Sn
+         BULlS8oQoKRI5wlb110d/nyeNOzRzLhDVaKEM4K9GDAIjtqVMWH1xpo98foivpN6YAEb
+         KYyA==
+X-Gm-Message-State: ACgBeo2WhlvV3rIzXnJMmAd15kZgeGiFRQM0KGV7S6545PtcoSHxq5g4
+        It5OS1JCy1unz4CIcCEylLA=
+X-Google-Smtp-Source: AA6agR6rWzbCkc+KWxcHV67KtyfcUUWbmJgU1GQZJSfu1DcnEbMz7qrOG5eB0gOdGLrW03Yg56EtkA==
+X-Received: by 2002:a05:622a:12:b0:343:7535:6981 with SMTP id x18-20020a05622a001200b0034375356981mr20046450qtw.287.1661964678552;
+        Wed, 31 Aug 2022 09:51:18 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:480::c6a9])
-        by smtp.gmail.com with ESMTPSA id f3-20020a05620a408300b006b905e003a4sm5522816qko.135.2022.08.31.09.50.45
+        by smtp.gmail.com with ESMTPSA id h5-20020a05622a170500b0034490214788sm9309334qtk.49.2022.08.31.09.51.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Aug 2022 09:50:46 -0700 (PDT)
+        Wed, 31 Aug 2022 09:51:18 -0700 (PDT)
 From:   David Vernet <void@manifault.com>
 To:     ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
         martin.lau@linux.dev
 Cc:     song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
         kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
         jolsa@kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, void@manifault.com
-Subject: [PATCH v4 0/4] bpf: Add user-space-publisher ring buffer map type
-Date:   Wed, 31 Aug 2022 11:50:39 -0500
-Message-Id: <20220831165043.2208526-1-void@manifault.com>
+        linux-kernel@vger.kernel.org, void@manifault.com,
+        kernel-team@fb.com
+Subject: [PATCH v4 1/4] bpf: Define new BPF_MAP_TYPE_USER_RINGBUF map type
+Date:   Wed, 31 Aug 2022 11:51:16 -0500
+Message-Id: <20220831165119.2216749-1-void@manifault.com>
 X-Mailer: git-send-email 2.37.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
         FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch set defines a new map type, BPF_MAP_TYPE_USER_RINGBUF, which
-provides single-user-space-producer / single-kernel-consumer semantics over
-a ring buffer.  Along with the new map type, a helper function called
-bpf_user_ringbuf_drain() is added which allows a BPF program to specify a
-callback with the following signature, to which samples are posted by the
-helper:
+We want to support a ringbuf map type where samples are published from
+user-space, to be consumed by BPF programs. BPF currently supports a
+kernel -> user-space circular ring buffer via the BPF_MAP_TYPE_RINGBUF
+map type.  We'll need to define a new map type for user-space -> kernel,
+as none of the helpers exported for BPF_MAP_TYPE_RINGBUF will apply
+to a user-space producer ring buffer, and we'll want to add one or
+more helper functions that would not apply for a kernel-producer
+ring buffer.
 
-void (struct bpf_dynptr *dynptr, void *context);
+This patch therefore adds a new BPF_MAP_TYPE_USER_RINGBUF map type
+definition. The map type is useless in its current form, as there is no
+way to access or use it for anything until we one or more BPF helpers. A
+follow-on patch will therefore add a new helper function that allows BPF
+programs to run callbacks on samples that are published to the ring
+buffer.
 
-The program can then use the bpf_dynptr_read() or bpf_dynptr_data() helper
-functions to safely read the sample from the dynptr. There are currently no
-helpers available to determine the size of the sample, but one could easily
-be added if required.
-
-On the user-space side, libbpf has been updated to export a new
-'struct ring_buffer_user' type, along with the following symbols:
-
-struct ring_buffer_user *
-ring_buffer_user__new(int map_fd,
-                      const struct ring_buffer_user_opts *opts);
-void ring_buffer_user__free(struct ring_buffer_user *rb);
-void *ring_buffer_user__reserve(struct ring_buffer_user *rb,
-				uint32_t size);
-void *ring_buffer_user__poll(struct ring_buffer_user *rb, uint32_t size,
-			     int timeout_ms);
-void ring_buffer_user__discard(struct ring_buffer_user *rb, void *sample);
-void ring_buffer_user__submit(struct ring_buffer_user *rb, void *sample);
-
-These symbols are exported for inclusion in libbpf version 1.0.0.
-
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: David Vernet <void@manifault.com>
---
-v3 -> v4:
-- Update BPF_MAX_USER_RINGBUF_SAMPLES to not specify a bit, and instead
-  just specify a number of samples. (Andrii)
-- Update "ringbuffer" in comments and commit summaries to say "ring
-  buffer". (Andrii)
-- Return -E2BIG from bpf_user_ringbuf_drain() both when a sample can't
-  fit into the ring buffer, and when it can't fit into a dynptr. (Andrii)
-- Don't loop over samples in __bpf_user_ringbuf_peek() if a sample was
-  discarded. Instead, return -EAGAIN so the caller can deal with it. Also
-  updated the caller to detect -EAGAIN and skip over it when iterating.
-  (Andrii)
-- Removed the heuristic for notifying user-space when a sample is drained,
-  causing the ring buffer to no longer be full. This may be useful in the
-  future, but is being removed now because it's strictly a heuristic.
-- Re-add BPF_RB_FORCE_WAKEUP flag to bpf_user_ringbuf_drain(). (Andrii)
-- Remove helper_allocated_dynptr tracker from verifier. (Andrii)
-- Add libbpf function header comments to tools/lib/bpf/libbpf.h, so that
-  they will be included in rendered libbpf docs. (Andrii)
-- Add symbols to a new LIBBPF_1.1.0 section in linker version script,
-  rather than including them in LIBBPF_1.0.0. (Andrii)
-- Remove libbpf_err() calls from static libbpf functions. (Andrii)
-- Check user_ring_buffer_opts instead of ring_buffer_opts in
-  user_ring_buffer__new(). (Andrii)
-- Avoid an extra if in the hot path in user_ringbuf__commit(). (Andrii)
-- Use ENOSPC rather than ENODATA if no space is available in the ring
-  buffer. (Andrii)
-- Don't round sample size in header to 8, but still round size that is
-  reserved and written to 8, and validate positions are multiples of 8
-  (Andrii).
-- Use nanoseconds for most calculations in
-  user_ring_buffer__reserve_blocking(). (Andrii)
-- Don't use CHECK() in testcases, instead use ASSERT_*. (Andrii)
-- Use SEC("?raw_tp") instead of SEC("?raw_tp/sys_nanosleep") in negative
-  test. (Andrii)
-- Move test_user_ringbuf.h header to live next to BPF program instead of
-  a directory up from both it and the user-space test program. (Andrii)
-- Update bpftool help message / docs to also include user_ringbuf.
-v2 -> v3:
-- Lots of formatting fixes, such as keeping things on one line if they fit
-  within 100 characters, and removing some extraneous newlines. Applies
-  to all diffs in the patch-set. (Andrii)
-- Renamed ring_buffer_user__* symbols to user_ring_buffer__*. (Andrii)
-- Added a missing smb_mb__before_atomic() in
-  __bpf_user_ringbuf_sample_release(). (Hao)
-- Restructure how and when notification events are sent from the kernel to
-  the user-space producers via the .map_poll() callback for the
-  BPF_MAP_TYPE_USER_RINGBUF map. Before, we only sent a notification when
-  the ringbuffer was fully drained. Now, we guarantee user-space that
-  we'll send an event at least once per bpf_user_ringbuf_drain(), as long
-  as at least one sample was drained, and BPF_RB_NO_WAKEUP was not passed.
-  As a heuristic, we also send a notification event any time a sample being
-  drained causes the ringbuffer to no longer be full. (Andrii)
-- Continuing on the above point, updated
-  user_ring_buffer__reserve_blocking() to loop around epoll_wait() until a
-  sufficiently large sample is found. (Andrii)
-- Communicate BPF_RINGBUF_BUSY_BIT and BPF_RINGBUF_DISCARD_BIT in sample
-  headers. The ringbuffer implementation still only supports
-  single-producer semantics, but we can now add synchronization support in
-  user_ring_buffer__reserve(), and will automatically get multi-producer
-  semantics. (Andrii)
-- Updated some commit summaries, specifically adding more details where
-  warranted. (Andrii)
-- Improved function documentation for bpf_user_ringbuf_drain(), more
-  clearly explaining all function arguments and return types, as well as
-  the semantics for waking up user-space producers.
-- Add function header comments for user_ring_buffer__reserve{_blocking}().
-  (Andrii)
-- Rounding-up all samples to 8-bytes in the user-space producer, and
-  enforcing that all samples are properly aligned in the kernel. (Andrii)
-- Added testcases that verify that bpf_user_ringbuf_drain() properly
-  validates samples, and returns error conditions if any invalid samples
-  are encountered. (Andrii)
-- Move atomic_t busy field out of the consumer page, and into the
-  struct bpf_ringbuf. (Andrii)
-- Split ringbuf_map_{mmap, poll}_{kern, user}() into separate
-  implementations. (Andrii)
-- Don't silently consume errors in bpf_user_ringbuf_drain(). (Andrii)
-- Remove magic number of samples (4096) from bpf_user_ringbuf_drain(),
-  and instead use BPF_MAX_USER_RINGBUF_SAMPLES macro, which allows
-  128k samples. (Andrii)
-- Remove MEM_ALLOC modifier from PTR_TO_DYNPTR register in verifier, and
-  instead rely solely on the register being PTR_TO_DYNPTR. (Andrii)
-- Move freeing of atomic_t busy bit to before we invoke irq_work_queue() in
-  __bpf_user_ringbuf_sample_release(). (Andrii)
-- Only check for BPF_RB_NO_WAKEUP flag in bpf_ringbuf_drain().
-- Remove libbpf function names from kernel smp_{load, store}* comments in
-  the kernel. (Andrii)
-- Don't use double-underscore naming convention in libbpf functions.
-  (Andrii)
-- Use proper __u32 and __u64 for types where we need to guarantee their
-  size. (Andrii)
+---
+ include/linux/bpf_types.h                     |  1 +
+ include/uapi/linux/bpf.h                      |  1 +
+ kernel/bpf/ringbuf.c                          | 62 +++++++++++++++++--
+ kernel/bpf/verifier.c                         |  3 +
+ .../bpf/bpftool/Documentation/bpftool-map.rst |  2 +-
+ tools/bpf/bpftool/map.c                       |  2 +-
+ tools/include/uapi/linux/bpf.h                |  1 +
+ tools/lib/bpf/libbpf.c                        |  1 +
+ 8 files changed, 65 insertions(+), 8 deletions(-)
 
-v1 -> v2:
-- Following Joanne landing 883743422ced ("bpf: Fix ref_obj_id for dynptr
-  data slices in verifier") [0], removed [PATCH 1/5] bpf: Clear callee
-  saved regs after updating REG0 [1]. (Joanne)
-- Following the above adjustment, updated check_helper_call() to not store
-  a reference for bpf_dynptr_data() if the register containing the dynptr
-  is of type MEM_ALLOC. (Joanne)
-- Fixed casting issue pointed out by kernel test robot by adding a missing
-  (uintptr_t) cast. (lkp)
-
-[0] https://lore.kernel.org/all/20220809214055.4050604-1-joannelkoong@gmail.com/
-[1] https://lore.kernel.org/all/20220808155341.2479054-1-void@manifault.com/
-
-David Vernet (4):
-  bpf: Define new BPF_MAP_TYPE_USER_RINGBUF map type
-  bpf: Add bpf_user_ringbuf_drain() helper
-  bpf: Add libbpf logic for user-space ring buffer
-  selftests/bpf: Add selftests validating the user ringbuf
-
- include/linux/bpf.h                           |  11 +-
- include/linux/bpf_types.h                     |   1 +
- include/uapi/linux/bpf.h                      |  37 +
- kernel/bpf/helpers.c                          |   2 +
- kernel/bpf/ringbuf.c                          | 272 ++++++-
- kernel/bpf/verifier.c                         |  73 +-
- tools/include/uapi/linux/bpf.h                |  37 +
- tools/lib/bpf/libbpf.c                        |  11 +-
- tools/lib/bpf/libbpf.h                        |  21 +
- tools/lib/bpf/libbpf.map                      |   6 +
- tools/lib/bpf/libbpf_probes.c                 |   1 +
- tools/lib/bpf/ringbuf.c                       | 327 ++++++++
- .../selftests/bpf/prog_tests/user_ringbuf.c   | 715 ++++++++++++++++++
- .../selftests/bpf/progs/user_ringbuf_fail.c   | 177 +++++
- .../bpf/progs/user_ringbuf_success.c          | 220 ++++++
- .../testing/selftests/bpf/test_user_ringbuf.h |  35 +
- 16 files changed, 1924 insertions(+), 22 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/user_ringbuf.c
- create mode 100644 tools/testing/selftests/bpf/progs/user_ringbuf_fail.c
- create mode 100644 tools/testing/selftests/bpf/progs/user_ringbuf_success.c
- create mode 100644 tools/testing/selftests/bpf/test_user_ringbuf.h
-
+diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.h
+index 2b9112b80171..2c6a4f2562a7 100644
+--- a/include/linux/bpf_types.h
++++ b/include/linux/bpf_types.h
+@@ -126,6 +126,7 @@ BPF_MAP_TYPE(BPF_MAP_TYPE_STRUCT_OPS, bpf_struct_ops_map_ops)
+ #endif
+ BPF_MAP_TYPE(BPF_MAP_TYPE_RINGBUF, ringbuf_map_ops)
+ BPF_MAP_TYPE(BPF_MAP_TYPE_BLOOM_FILTER, bloom_filter_map_ops)
++BPF_MAP_TYPE(BPF_MAP_TYPE_USER_RINGBUF, user_ringbuf_map_ops)
+ 
+ BPF_LINK_TYPE(BPF_LINK_TYPE_RAW_TRACEPOINT, raw_tracepoint)
+ BPF_LINK_TYPE(BPF_LINK_TYPE_TRACING, tracing)
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 962960a98835..b1c36904831a 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -928,6 +928,7 @@ enum bpf_map_type {
+ 	BPF_MAP_TYPE_INODE_STORAGE,
+ 	BPF_MAP_TYPE_TASK_STORAGE,
+ 	BPF_MAP_TYPE_BLOOM_FILTER,
++	BPF_MAP_TYPE_USER_RINGBUF,
+ };
+ 
+ /* Note that tracing related programs such as
+diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
+index b483aea35f41..0a8de712ecbe 100644
+--- a/kernel/bpf/ringbuf.c
++++ b/kernel/bpf/ringbuf.c
+@@ -38,10 +38,27 @@ struct bpf_ringbuf {
+ 	struct page **pages;
+ 	int nr_pages;
+ 	spinlock_t spinlock ____cacheline_aligned_in_smp;
+-	/* Consumer and producer counters are put into separate pages to allow
+-	 * mapping consumer page as r/w, but restrict producer page to r/o.
+-	 * This protects producer position from being modified by user-space
+-	 * application and ruining in-kernel position tracking.
++	/* Consumer and producer counters are put into separate pages to
++	 * allow each position to be mapped with different permissions.
++	 * This prevents a user-space application from modifying the
++	 * position and ruining in-kernel tracking. The permissions of the
++	 * pages depend on who is producing samples: user-space or the
++	 * kernel.
++	 *
++	 * Kernel-producer
++	 * ---------------
++	 * The producer position and data pages are mapped as r/o in
++	 * userspace. For this approach, bits in the header of samples are
++	 * used to signal to user-space, and to other producers, whether a
++	 * sample is currently being written.
++	 *
++	 * User-space producer
++	 * -------------------
++	 * Only the page containing the consumer position is mapped r/o in
++	 * user-space. User-space producers also use bits of the header to
++	 * communicate to the kernel, but the kernel must carefully check and
++	 * validate each sample to ensure that they're correctly formatted, and
++	 * fully contained within the ringbuffer.
+ 	 */
+ 	unsigned long consumer_pos __aligned(PAGE_SIZE);
+ 	unsigned long producer_pos __aligned(PAGE_SIZE);
+@@ -224,7 +241,7 @@ static int ringbuf_map_get_next_key(struct bpf_map *map, void *key,
+ 	return -ENOTSUPP;
+ }
+ 
+-static int ringbuf_map_mmap(struct bpf_map *map, struct vm_area_struct *vma)
++static int ringbuf_map_mmap_kern(struct bpf_map *map, struct vm_area_struct *vma)
+ {
+ 	struct bpf_ringbuf_map *rb_map;
+ 
+@@ -242,6 +259,26 @@ static int ringbuf_map_mmap(struct bpf_map *map, struct vm_area_struct *vma)
+ 				   vma->vm_pgoff + RINGBUF_PGOFF);
+ }
+ 
++static int ringbuf_map_mmap_user(struct bpf_map *map, struct vm_area_struct *vma)
++{
++	struct bpf_ringbuf_map *rb_map;
++
++	rb_map = container_of(map, struct bpf_ringbuf_map, map);
++
++	if (vma->vm_flags & VM_WRITE) {
++		if (vma->vm_pgoff == 0)
++			/* Disallow writable mappings to the consumer pointer,
++			 * and allow writable mappings to both the producer
++			 * position, and the ring buffer data itself.
++			 */
++			return -EPERM;
++	} else {
++		vma->vm_flags &= ~VM_MAYWRITE;
++	}
++	/* remap_vmalloc_range() checks size and offset constraints */
++	return remap_vmalloc_range(vma, rb_map->rb, vma->vm_pgoff + RINGBUF_PGOFF);
++}
++
+ static unsigned long ringbuf_avail_data_sz(struct bpf_ringbuf *rb)
+ {
+ 	unsigned long cons_pos, prod_pos;
+@@ -269,7 +306,7 @@ const struct bpf_map_ops ringbuf_map_ops = {
+ 	.map_meta_equal = bpf_map_meta_equal,
+ 	.map_alloc = ringbuf_map_alloc,
+ 	.map_free = ringbuf_map_free,
+-	.map_mmap = ringbuf_map_mmap,
++	.map_mmap = ringbuf_map_mmap_kern,
+ 	.map_poll = ringbuf_map_poll,
+ 	.map_lookup_elem = ringbuf_map_lookup_elem,
+ 	.map_update_elem = ringbuf_map_update_elem,
+@@ -278,6 +315,19 @@ const struct bpf_map_ops ringbuf_map_ops = {
+ 	.map_btf_id = &ringbuf_map_btf_ids[0],
+ };
+ 
++BTF_ID_LIST_SINGLE(user_ringbuf_map_btf_ids, struct, bpf_ringbuf_map)
++const struct bpf_map_ops user_ringbuf_map_ops = {
++	.map_meta_equal = bpf_map_meta_equal,
++	.map_alloc = ringbuf_map_alloc,
++	.map_free = ringbuf_map_free,
++	.map_mmap = ringbuf_map_mmap_user,
++	.map_lookup_elem = ringbuf_map_lookup_elem,
++	.map_update_elem = ringbuf_map_update_elem,
++	.map_delete_elem = ringbuf_map_delete_elem,
++	.map_get_next_key = ringbuf_map_get_next_key,
++	.map_btf_id = &user_ringbuf_map_btf_ids[0],
++};
++
+ /* Given pointer to ring buffer record metadata and struct bpf_ringbuf itself,
+  * calculate offset from record metadata to ring buffer in pages, rounded
+  * down. This page offset is stored as part of record metadata and allows to
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 0194a36d0b36..37ce3208c626 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -6206,6 +6206,8 @@ static int check_map_func_compatibility(struct bpf_verifier_env *env,
+ 		    func_id != BPF_FUNC_ringbuf_discard_dynptr)
+ 			goto error;
+ 		break;
++	case BPF_MAP_TYPE_USER_RINGBUF:
++		goto error;
+ 	case BPF_MAP_TYPE_STACK_TRACE:
+ 		if (func_id != BPF_FUNC_get_stackid)
+ 			goto error;
+@@ -12705,6 +12707,7 @@ static int check_map_prog_compatibility(struct bpf_verifier_env *env,
+ 			}
+ 			break;
+ 		case BPF_MAP_TYPE_RINGBUF:
++		case BPF_MAP_TYPE_USER_RINGBUF:
+ 		case BPF_MAP_TYPE_INODE_STORAGE:
+ 		case BPF_MAP_TYPE_SK_STORAGE:
+ 		case BPF_MAP_TYPE_TASK_STORAGE:
+diff --git a/tools/bpf/bpftool/Documentation/bpftool-map.rst b/tools/bpf/bpftool/Documentation/bpftool-map.rst
+index 7c188a598444..7f3b67a8b48f 100644
+--- a/tools/bpf/bpftool/Documentation/bpftool-map.rst
++++ b/tools/bpf/bpftool/Documentation/bpftool-map.rst
+@@ -55,7 +55,7 @@ MAP COMMANDS
+ |		| **devmap** | **devmap_hash** | **sockmap** | **cpumap** | **xskmap** | **sockhash**
+ |		| **cgroup_storage** | **reuseport_sockarray** | **percpu_cgroup_storage**
+ |		| **queue** | **stack** | **sk_storage** | **struct_ops** | **ringbuf** | **inode_storage**
+-|		| **task_storage** | **bloom_filter** }
++|		| **task_storage** | **bloom_filter** | **user_ringbuf** }
+ 
+ DESCRIPTION
+ ===========
+diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
+index 38b6bc9c26c3..9a6ca9f31133 100644
+--- a/tools/bpf/bpftool/map.c
++++ b/tools/bpf/bpftool/map.c
+@@ -1459,7 +1459,7 @@ static int do_help(int argc, char **argv)
+ 		"                 devmap | devmap_hash | sockmap | cpumap | xskmap | sockhash |\n"
+ 		"                 cgroup_storage | reuseport_sockarray | percpu_cgroup_storage |\n"
+ 		"                 queue | stack | sk_storage | struct_ops | ringbuf | inode_storage |\n"
+-		"                 task_storage | bloom_filter }\n"
++		"                 task_storage | bloom_filter | user_ringbuf }\n"
+ 		"       " HELP_SPEC_OPTIONS " |\n"
+ 		"                    {-f|--bpffs} | {-n|--nomount} }\n"
+ 		"",
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index f4ba82a1eace..c1f9c3766956 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -928,6 +928,7 @@ enum bpf_map_type {
+ 	BPF_MAP_TYPE_INODE_STORAGE,
+ 	BPF_MAP_TYPE_TASK_STORAGE,
+ 	BPF_MAP_TYPE_BLOOM_FILTER,
++	BPF_MAP_TYPE_USER_RINGBUF,
+ };
+ 
+ /* Note that tracing related programs such as
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 3ad139285fad..6b580ba027ba 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -163,6 +163,7 @@ static const char * const map_type_name[] = {
+ 	[BPF_MAP_TYPE_INODE_STORAGE]		= "inode_storage",
+ 	[BPF_MAP_TYPE_TASK_STORAGE]		= "task_storage",
+ 	[BPF_MAP_TYPE_BLOOM_FILTER]		= "bloom_filter",
++	[BPF_MAP_TYPE_USER_RINGBUF]             = "user_ringbuf",
+ };
+ 
+ static const char * const prog_type_name[] = {
 -- 
 2.37.1
 
