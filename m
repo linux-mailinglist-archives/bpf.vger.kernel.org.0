@@ -2,81 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7F7F5A8433
-	for <lists+bpf@lfdr.de>; Wed, 31 Aug 2022 19:23:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA22E5A8459
+	for <lists+bpf@lfdr.de>; Wed, 31 Aug 2022 19:27:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229437AbiHaRXI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 31 Aug 2022 13:23:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48692 "EHLO
+        id S232279AbiHaR1Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 31 Aug 2022 13:27:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230241AbiHaRXH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 31 Aug 2022 13:23:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3E90D2E9B
-        for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 10:22:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1661966577;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6Qw1UhrKTnM4IdzxlTeskNvNIVZa+aLSFhW+Yw0Wjd8=;
-        b=RHLtz9eDKNNqLAPcwAks5dKDuaf7qkQHXpz9UmuLk0ssZFK007yvUUwBlrxt0RMxCXUjQX
-        fKJC4Zu8byJa6teNTTXYHBMhnTAsxafOtyUP0DscxG4SA1+zlbunrFbTNNZm47CoXQ98fE
-        X7l+3ZHaV4wFkpQzvKrEq8AbljMOMfw=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-607-kVFoMo2hPyKOegSgh3TrWw-1; Wed, 31 Aug 2022 13:22:56 -0400
-X-MC-Unique: kVFoMo2hPyKOegSgh3TrWw-1
-Received: by mail-lf1-f72.google.com with SMTP id p8-20020a056512234800b0048b12cb7738so3863924lfu.6
-        for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 10:22:55 -0700 (PDT)
+        with ESMTP id S232079AbiHaR1B (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 31 Aug 2022 13:27:01 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 665F9DAA1F;
+        Wed, 31 Aug 2022 10:26:24 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id y3so29830476ejc.1;
+        Wed, 31 Aug 2022 10:26:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=EmVU6fQXplLhb5FJjrNDE6yAisAqWxYbsd3m0Nr1FHY=;
+        b=iMYwS8kagrFZzGSlezaXYi9K88IIxga4XxmCx61r2FTPdpOy7wULit4WrBLyGzPhJn
+         wB7FB1Mc1Fz4BKTwz2L1r6KXR0oYm7PPwTUKSoflslPqWPyuiT8i2KYMxHwE9lndS+NF
+         jB+S9EoEm3OD4gt1/Yz+iSdQbuKDupvtL9Os/9p4EhKrlc95h5ZwJk4DAXOTSctkZRy6
+         OEVn04kqE8fDU8XGRR/GnA4YQqhxjIB0YRHL3aEE8E+kQBdZL1kuGOAwqsmkzozpYpUN
+         0AMw3smLWsCmwwYHrpnDJ0fwauxM99Rj7FGKSfA6R1YN8KPnO5Zk3Sy4eEI9qkQABnbW
+         ewXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:references:to
-         :content-language:subject:cc:user-agent:mime-version:date:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date;
-        bh=6Qw1UhrKTnM4IdzxlTeskNvNIVZa+aLSFhW+Yw0Wjd8=;
-        b=S8Aj/7gzrLN17FGbBgF/NclxpZSZfnR3GFZl7AYcKF/kycFEJFeXxQryapRx81xAIW
-         Vrfo8PML028xjorvXPDpMoaRgek9JhDFfLnX752ZG9RyZK2glef2jKIaPeqaCAmlg5VR
-         MaakTkOeOeqt5Fxf/mqftVHDBUvmVQmTYFCE3eRYUtyY6mZL3JFTC4dYGvCTUcb9N71h
-         ddLXpAJMlEj2Tl7XKhSUGFhPRqtYpx9yoDJ1KS/L0ZPqf82YeGe1pjEfFWBlfLNrS6ts
-         SF9djpBbfP8tzgr+QOVQWWJwNVmbXnOTdPkIAPqkr+dyaH9dFsehYO6RV+f+7CFAYPe+
-         Th+w==
-X-Gm-Message-State: ACgBeo1u/aK8lWW/VqLc9FkIJhpFJGrnAVi+w7u2+XQiEnP3EF9N4U5V
-        tyx5RpsOvSmS7PYLcI16EWFGzbn9KL9A77wwc/cgIFO4uG2Hd6t8+GNLqXRKGEKCjK9aGS6TGQw
-        qmh2zqkovprHS
-X-Received: by 2002:a05:6512:3e1:b0:494:64c5:5b52 with SMTP id n1-20020a05651203e100b0049464c55b52mr5688422lfq.420.1661966574592;
-        Wed, 31 Aug 2022 10:22:54 -0700 (PDT)
-X-Google-Smtp-Source: AA6agR5pnc7eYXnsTgthRG+lXb2BFtSmELH7WJHDEqWOcYHqTehuH0QM5gO8YYZQmy7Fvnp6lzUgNA==
-X-Received: by 2002:a05:6512:3e1:b0:494:64c5:5b52 with SMTP id n1-20020a05651203e100b0049464c55b52mr5688413lfq.420.1661966574395;
-        Wed, 31 Aug 2022 10:22:54 -0700 (PDT)
-Received: from [192.168.41.81] (83-90-141-187-cable.dk.customer.tdc.net. [83.90.141.187])
-        by smtp.gmail.com with ESMTPSA id q18-20020a2eb4b2000000b00265757e0e66sm1190814ljm.48.2022.08.31.10.22.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 31 Aug 2022 10:22:53 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <f5c47d95-5ff4-3b5b-98db-c69fbf6538b5@redhat.com>
-Date:   Wed, 31 Aug 2022 19:22:52 +0200
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=EmVU6fQXplLhb5FJjrNDE6yAisAqWxYbsd3m0Nr1FHY=;
+        b=H2QTxs6JS6tlLhxlbLc7LQHeWgAqeWI+7snbb/FvevEmNhpfJsqriYx9MonJjpgjC6
+         fDGm94RKkYoLRnLNlGjhjv2ljuBVhDOkrX+A0YckOKLbNIPznOFHIsYTJhYxgRrqowwf
+         bkSQA2MG2p3We/Fwbk9BGOxJjPc6kTTJRF7C7MY09EOipCtDiudiKE+htSS+WGpTk1/8
+         pxRLOdZMtrDw+ybqeC8xeF2CVO2MURae0fiu3VTprEQqj+FaObynqTJzYEoeHyti/0n1
+         bwi2BneOiaqfbyCgMzv3EkGeaP1F2n+aQJtKdQMm0shwJqeD28yCzhb2t/pVa3dBbVl4
+         msrw==
+X-Gm-Message-State: ACgBeo0QcPGEguJLUoU/0YnN5lAi9MVoysClmL3WL03gUcNIXRd1iDrR
+        ZU4dwlzVD9NbH3BLL8bcStOo9OS7XoclQp/LlQQ=
+X-Google-Smtp-Source: AA6agR6SEN0GxOkWKPYfLlMOkffRTV2x2CO57YYxSdEkjKnORaSKFImfBPboCxiyUYnxraxc9fKsySMMigykfkl+HcE=
+X-Received: by 2002:a17:906:dc93:b0:742:133b:42c3 with SMTP id
+ cs19-20020a170906dc9300b00742133b42c3mr6999566ejc.502.1661966779730; Wed, 31
+ Aug 2022 10:26:19 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.0
-Cc:     brouer@redhat.com, Zaremba Larysa <larysa.zaremba@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        "xdp-hints@xdp-project.net" <xdp-hints@xdp-project.net>,
-        Netdev <netdev@vger.kernel.org>
-Subject: Re: How to extract BTF object ID from kernel module?
-Content-Language: en-US
-To:     Andrii Nakryiko <andrii@kernel.org>,
-        "andrii.nakryiko@gmail.com" <andrii.nakryiko@gmail.com>
-References: <2c7c8f91-a430-719c-5ef7-174cafa6c0be@redhat.com>
-In-Reply-To: <2c7c8f91-a430-719c-5ef7-174cafa6c0be@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+References: <20220831101617.22329-1-fw@strlen.de> <87v8q84nlq.fsf@toke.dk>
+ <20220831125608.GA8153@breakpoint.cc> <87o7w04jjb.fsf@toke.dk>
+ <20220831135757.GC8153@breakpoint.cc> <87ilm84goh.fsf@toke.dk>
+ <20220831152624.GA15107@breakpoint.cc> <CAADnVQJp5RJ0kZundd5ag-b3SDYir8cF4R_nVbN8Zj9Rcn0rww@mail.gmail.com>
+ <20220831155341.GC15107@breakpoint.cc>
+In-Reply-To: <20220831155341.GC15107@breakpoint.cc>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 31 Aug 2022 10:26:08 -0700
+Message-ID: <CAADnVQJGQmu02f5B=mc1xJvVWSmk_GNZj9WAUskekykmyo8FzA@mail.gmail.com>
+Subject: Re: [PATCH nf-next] netfilter: nf_tables: add ebpf expression
+To:     Florian Westphal <fw@strlen.de>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>,
+        netfilter-devel <netfilter-devel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,43 +76,44 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Wed, Aug 31, 2022 at 8:53 AM Florian Westphal <fw@strlen.de> wrote:
+>
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> > > 1 and 2 have the upside that its easy to handle a 'file not found'
+> > > error.
+> >
+> > I'm strongly against calling into bpf from the inner guts of nft.
+> > Nack to all options discussed in this thread.
+> > None of them make any sense.
+>
+> -v please.  I can just rework userspace to allow going via xt_bpf
+> but its brain damaged.
 
-On 30/08/2022 15.17, Jesper Dangaard Brouer wrote:
-> Hi Andrii,
-> 
-> When opening a modules BTF file (e.g. /sys/kernel/btf/i40e), can I
-> somehow get the kernels BTF object ID value (via that FD)?
+Right. xt_bpf was a dead end from the start.
+It's time to deprecate it and remove it.
 
-I had hoped I could simply open /sys/kernel/btf/module [1]
-and use bpf_obj_get_info_by_fd(), but that fails
+> This helps gradually moving towards move epbf for those that
+> still heavily rely on the classic forwarding path.
 
-  [1] 
-https://github.com/xdp-project/bpf-examples/blob/BTF-playground01/BTF-playground/btf_module_read.c#L84
-  [2] 
-https://github.com/xdp-project/bpf-examples/blob/BTF-playground01/BTF-playground/btf_module_read.c#L48
+No one is using it.
+If it was, we would have seen at least one bug report over
+all these years. We've seen none.
 
-> I think I want the BTF object IDs as displayed by 'btftool btf'.
-> That code walks all IDs via bpf_btf_get_next_id() and then gets the FD
-> via bpf_btf_get_fd_by_id().  I'm looking for a more direct way than
-> having to walk all IDs...
-> 
-> (p.s. Cc. Larysa, I also looked at your code, which like bpftool end-up
-> walking all BTF IDs and extends libbpf with internal btf_obj_id to keep
-> track).
+tbh we had a fair share of wrong design decisions that look
+very reasonable early on and turned out to be useless with
+zero users.
+BPF_PROG_TYPE_SCHED_ACT and BPF_PROG_TYPE_LWT*
+are in this category.
+All this code does is bit rot.
+As a minimum we shouldn't step on the same rakes.
+xt_ebpf would be the same dead code as xt_bpf.
 
-My current approach I end-up walking [3] all the BTF IDs via 
-bpf_btf_get_next_id() and then use bpf_obj_get_info_by_fd().
-And then searching for the module name like this[4].
+> If you are open to BPF_PROG_TYPE_NETFILTER I can go that route
+> as well, raw bpf program attachment via NF_HOOK and the bpf dispatcher,
+> but it will take significantly longer to get there.
+>
+> It involves reviving
+> https://lore.kernel.org/netfilter-devel/20211014121046.29329-1-fw@strlen.de/
 
-  [3] 
-https://github.com/xdp-project/bpf-examples/blob/BTF-playground01/BTF-playground/btf_module_ids.c#L144
-  [4] 
-https://github.com/xdp-project/bpf-examples/blob/BTF-playground01/BTF-playground/btf_module_ids.c#L187-L256
-
-Is this the only approach?
-
-It seems wasteful that I have to walk all the IDs, when I already knows 
-what BTF file in /sys/kernel/btf/ I'm interested in...
-
---Jesper
-
+I missed it earlier. What is the end goal ?
+Optimize nft run-time with on the fly generation of bpf byte code ?
