@@ -2,56 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 796DF5A9FB5
-	for <lists+bpf@lfdr.de>; Thu,  1 Sep 2022 21:16:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D28955A9FB9
+	for <lists+bpf@lfdr.de>; Thu,  1 Sep 2022 21:16:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233814AbiIATQE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Sep 2022 15:16:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57004 "EHLO
+        id S233822AbiIATQF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Sep 2022 15:16:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233800AbiIATQD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S233807AbiIATQD (ORCPT <rfc822;bpf@vger.kernel.org>);
         Thu, 1 Sep 2022 15:16:03 -0400
 Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FD8E6FA1E
-        for <bpf@vger.kernel.org>; Thu,  1 Sep 2022 12:15:59 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id o12-20020a170902d4cc00b0016e81c62cc8so12327975plg.13
-        for <bpf@vger.kernel.org>; Thu, 01 Sep 2022 12:15:59 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AFC46F553
+        for <bpf@vger.kernel.org>; Thu,  1 Sep 2022 12:16:01 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id n1-20020a170902d2c100b0017520dd4a0eso5290405plc.8
+        for <bpf@vger.kernel.org>; Thu, 01 Sep 2022 12:16:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date;
-        bh=MXJtNOBxN7ObTMTXcoi2Dvdqm4buArxE+p1YwI5SP88=;
-        b=Uu86W21Hf1pPgtqtqJYj4eY0W17tv6bo+qdEYI2+NrtPkjPloPtuUhX1ZLGfMNt5Hk
-         rwI81fCGmz502ljEzzSrJGiwbKObfe0CXsFf4K+MtC16AmeJcZU2vxd/flTQRfjKUOb4
-         rioleX3fB86uctffU66o3ZttR20KmLAjRDMSaB9f/QQZ3eMYybg95Hwv8lOnA2njkrlQ
-         6dZMJ3HHd/Ghp8T7SRj4l7yR+/YqgALiQQvF/KSM+W1Ks0W5vnZPM6XffT/NuGsBqk5k
-         fhOi/vVzo0M95btYOoBIwBfqvA6PtEn6dbIqGNZGxDk5jB4W1Yb7uJEVMvYnZXAiJkSh
-         vezA==
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date;
+        bh=7JzQvNuV+huKghBCFvtgwncICdsG5n37tZbHNby+uDE=;
+        b=Dp4wEGVqxVOJ7JfOYRoFQl6c0FEA7yyWZTp2hBXRzQc66vJcLSh8oTWsCIymHNABrg
+         4FjYLyQAV6hfpSbiDSW3gv/f6ZANEi6mB5QPrh4coeMCujZnA/DzUpWo0tWzClX+9S9S
+         bDNqqdkK8FegHW18ORmmmWk/r3PaUjZlJbPmCcvMXL1T6Zrhg7m1+0UWuDuWyAMyYFaf
+         +vAA7OrofT3poyv8OmdoyNnVevkWuwGSpMqEnoJDRqjCDCjjlM0XlwxiYUmHsGUUflAN
+         lnpoKQuY+frNKjwjFPJ+5RlyQm/IyKTAfakPfHgVjqmtTWwGPTR7BPFRuwcaa8VbPWYh
+         HFpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date;
-        bh=MXJtNOBxN7ObTMTXcoi2Dvdqm4buArxE+p1YwI5SP88=;
-        b=d/VXoaayU+vOZRErGpGjBJeFQRWtgTOV1Ri+rOOSa2yhim8TmcFLcZcwzv+B4Nf/JT
-         +FX8jpCV9BuwpuNOByXLRUWiWbnyFiBqefrHK1AGrcvWEzmwTnoeDr/ayH0Onjlb3GO1
-         C6rxhpYzx6Mf0hDAtbFM5lpYrDQ3dNNASGHHmzuw7Q9X7NDWamVw1Nm0JYpJhEzll57Z
-         0cYxbh9ZTPjWDfRbQVTjXGrkahqCKgDfzW7LaAYEFct5CSjVk/0mkuFBA2YAaBmRNZKk
-         OXnFIvr9bgqGsoAQd2Ln1L/FlvDcdP9DexoQHNgpaLjXFtRhDSv7J1GxPf4RwDGZNloP
-         ovCQ==
-X-Gm-Message-State: ACgBeo24kJNAo5JtEyHdyydQrUVQMHa+qBr9ettfxo7gGWU6FYZrO7GH
-        s4JimiTYWA84Dd9oHcg5UzYNcS3ZivPpyXaUqek3tfnKi8/hmdz/WfB/rHl0r6C+ZUCyKoF/Z4a
-        BqulzcZTB4KGpJGu7nvmbOokJwW/PLkL5QclsBhZaayIqGQ10ZP44EUuY7Y0eVN4=
-X-Google-Smtp-Source: AA6agR49C94amGl4RQdAlkgw5H7Z9ghZI3Rw5i1DOGrsrbpDnsnpeIHRYNC8MSKZveu24Ew53BCj+Z+EDCwROg==
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date;
+        bh=7JzQvNuV+huKghBCFvtgwncICdsG5n37tZbHNby+uDE=;
+        b=wOr+otUjzVYepDAHU8jSypHRTm3la3Z3NXcKJLCNQbKxetM8d467gllwov6SDggX6O
+         VMLs+YYxLlssqJ7Br8rGOza0HdNGXwQohNZ1bnwtjIF7XRyOwp5uqP/Eya3MPTtGyopl
+         /MG04DdkLRL+BShgfiAV3oe36DVggJcZooTQiIcRjwHsr+n0Y3IErb9IiI+BgDSqqKwU
+         fRQvDMuInvWjOREPiFl5u851uwQRLwfzs+Ej0yUshwzSkZSC0la4LcNw+wny+SGkqe66
+         T9okAz9qcoQsDhn1maJ8/MfKgFgioGFKd3uIkN1z1qLhcS0zgU6hDb1rxk3OSUdnT5aL
+         VlcA==
+X-Gm-Message-State: ACgBeo2G6OT8fpOwnMCO/sz2Lquk9EzqZ5Hhp5NNzwJ3SXHw3BsV+qkV
+        UhauXGCzZtRfCZd22fWzC1hFsTUC8fUHHsh8ifIIC8ZfQhgiZZNH21RdcHZOmpF7+mnyv578tK+
+        R9KSLFtWXQdk9Tcv19aVBqWqyGn7aon9aJZIRa9vQa+S9Vvox5EEfs2fVp03nIp8=
+X-Google-Smtp-Source: AA6agR6FS0gs2xXD+xmLyoB6AqKZ2eajhrPQKKrj9IR76uOm/z3lD27VvNTk9Rz6sbjOLV8YA8tu5zvPEYXyEA==
 X-Received: from zhuyifei-kvm.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2edc])
- (user=zhuyifei job=sendgmr) by 2002:a17:90b:278a:b0:1fd:c2bf:81f5 with SMTP
- id pw10-20020a17090b278a00b001fdc2bf81f5mr636149pjb.81.1662059758905; Thu, 01
- Sep 2022 12:15:58 -0700 (PDT)
-Date:   Thu,  1 Sep 2022 19:15:08 +0000
+ (user=zhuyifei job=sendgmr) by 2002:a05:6a00:1687:b0:518:6c6b:6a9a with SMTP
+ id k7-20020a056a00168700b005186c6b6a9amr33119678pfc.81.1662059760491; Thu, 01
+ Sep 2022 12:16:00 -0700 (PDT)
+Date:   Thu,  1 Sep 2022 19:15:09 +0000
+In-Reply-To: <cover.1662058674.git.zhuyifei@google.com>
 Mime-Version: 1.0
+References: <cover.1662058674.git.zhuyifei@google.com>
 X-Mailer: git-send-email 2.37.2.789.g6183377224-goog
-Message-ID: <cover.1662058674.git.zhuyifei@google.com>
-Subject: [PATCH bpf-next 0/2] cgroup/connect{4,6} programs for unprivileged
- ICMP ping
+Message-ID: <5764914c252fad4cd134fb6664c6ede95f409412.1662058674.git.zhuyifei@google.com>
+Subject: [PATCH bpf-next 1/2] bpf: Invoke cgroup/connect{4,6} programs for
+ unprivileged ICMP ping
 From:   YiFei Zhu <zhuyifei@google.com>
 To:     bpf@vger.kernel.org
 Cc:     netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
@@ -81,27 +83,98 @@ Usually when a TCP/UDP connection is initiated, we can bind the socket
 to a specific IP attached to an interface in a cgroup/connect hook.
 But for pings, this is impossible, as the hook is not being called.
 
-This series adds the invocation for cgroup/connect{4,6} programs to
-unprivileged ICMP ping (i.e. ping sockets created with SOCK_DGRAM
-IPPROTO_ICMP(V6) as opposed to SOCK_RAW). This also adds a test to
-verify that the hooks are being called and invoking bpf_bind() from
-within the hook actually binds the socket.
+This adds the hook invocation to unprivileged ICMP ping (i.e. ping
+sockets created with SOCK_DGRAM IPPROTO_ICMP(V6) as opposed to
+SOCK_RAW. Logic is mirrored from UDP sockets where the hook is invoked
+during pre_connect, after a check for suficiently sized addr_len.
 
-Patch 1 adds the invocation of the hook. Patch 2 adds the tests.
+Signed-off-by: YiFei Zhu <zhuyifei@google.com>
+---
+ net/ipv4/ping.c | 15 +++++++++++++++
+ net/ipv6/ping.c | 16 ++++++++++++++++
+ 2 files changed, 31 insertions(+)
 
-YiFei Zhu (2):
-  bpf: Invoke cgroup/connect{4,6} programs for unprivileged ICMP ping
-  selftests/bpf: Ensure cgroup/connect{4,6} programs can bind unpriv
-    ICMP ping
-
- net/ipv4/ping.c                               |  15 +
- net/ipv6/ping.c                               |  16 +
- .../selftests/bpf/prog_tests/connect_ping.c   | 318 ++++++++++++++++++
- .../selftests/bpf/progs/connect_ping.c        |  53 +++
- 4 files changed, 402 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/connect_ping.c
- create mode 100644 tools/testing/selftests/bpf/progs/connect_ping.c
-
+diff --git a/net/ipv4/ping.c b/net/ipv4/ping.c
+index b83c2bd9d7223..517042caf6dc1 100644
+--- a/net/ipv4/ping.c
++++ b/net/ipv4/ping.c
+@@ -33,6 +33,7 @@
+ #include <linux/skbuff.h>
+ #include <linux/proc_fs.h>
+ #include <linux/export.h>
++#include <linux/bpf-cgroup.h>
+ #include <net/sock.h>
+ #include <net/ping.h>
+ #include <net/udp.h>
+@@ -295,6 +296,19 @@ void ping_close(struct sock *sk, long timeout)
+ }
+ EXPORT_SYMBOL_GPL(ping_close);
+ 
++static int ping_pre_connect(struct sock *sk, struct sockaddr *uaddr,
++			    int addr_len)
++{
++	/* This check is replicated from __ip4_datagram_connect() and
++	 * intended to prevent BPF program called below from accessing bytes
++	 * that are out of the bound specified by user in addr_len.
++	 */
++	if (addr_len < sizeof(struct sockaddr_in))
++		return -EINVAL;
++
++	return BPF_CGROUP_RUN_PROG_INET4_CONNECT_LOCK(sk, uaddr);
++}
++
+ /* Checks the bind address and possibly modifies sk->sk_bound_dev_if. */
+ static int ping_check_bind_addr(struct sock *sk, struct inet_sock *isk,
+ 				struct sockaddr *uaddr, int addr_len)
+@@ -1009,6 +1023,7 @@ struct proto ping_prot = {
+ 	.owner =	THIS_MODULE,
+ 	.init =		ping_init_sock,
+ 	.close =	ping_close,
++	.pre_connect =	ping_pre_connect,
+ 	.connect =	ip4_datagram_connect,
+ 	.disconnect =	__udp_disconnect,
+ 	.setsockopt =	ip_setsockopt,
+diff --git a/net/ipv6/ping.c b/net/ipv6/ping.c
+index 91b8405146569..5f2ef84937142 100644
+--- a/net/ipv6/ping.c
++++ b/net/ipv6/ping.c
+@@ -20,6 +20,7 @@
+ #include <net/udp.h>
+ #include <net/transp_v6.h>
+ #include <linux/proc_fs.h>
++#include <linux/bpf-cgroup.h>
+ #include <net/ping.h>
+ 
+ static void ping_v6_destroy(struct sock *sk)
+@@ -49,6 +50,20 @@ static int dummy_ipv6_chk_addr(struct net *net, const struct in6_addr *addr,
+ 	return 0;
+ }
+ 
++static int ping_v6_pre_connect(struct sock *sk, struct sockaddr *uaddr,
++			       int addr_len)
++{
++	/* This check is replicated from __ip6_datagram_connect() and
++	 * intended to prevent BPF program called below from accessing
++	 * bytes that are out of the bound specified by user in addr_len.
++	 */
++
++	if (addr_len < SIN6_LEN_RFC2133)
++		return -EINVAL;
++
++	return BPF_CGROUP_RUN_PROG_INET6_CONNECT_LOCK(sk, uaddr);
++}
++
+ static int ping_v6_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
+ {
+ 	struct inet_sock *inet = inet_sk(sk);
+@@ -191,6 +206,7 @@ struct proto pingv6_prot = {
+ 	.init =		ping_init_sock,
+ 	.close =	ping_close,
+ 	.destroy =	ping_v6_destroy,
++	.pre_connect =	ping_v6_pre_connect,
+ 	.connect =	ip6_datagram_connect_v6_only,
+ 	.disconnect =	__udp_disconnect,
+ 	.setsockopt =	ipv6_setsockopt,
 -- 
 2.37.2.789.g6183377224-goog
 
