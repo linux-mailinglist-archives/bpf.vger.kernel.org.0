@@ -2,60 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D10DC5A93C8
-	for <lists+bpf@lfdr.de>; Thu,  1 Sep 2022 12:01:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20F5B5A9400
+	for <lists+bpf@lfdr.de>; Thu,  1 Sep 2022 12:14:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233364AbiIAKBt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Sep 2022 06:01:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40326 "EHLO
+        id S233559AbiIAKOX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Sep 2022 06:14:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233581AbiIAKBo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 1 Sep 2022 06:01:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFB46138585
-        for <bpf@vger.kernel.org>; Thu,  1 Sep 2022 03:01:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1662026497;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bCyusxCgfcy9bKbcJepw5A3h/Tdy2+9y1ipbMaeeuyg=;
-        b=AE63p5HX2Td/y/qm8B1CHKj2kl5ihBD3jup58pFuYCfZ3gpcBpcZaAtDoz8qRrA2aQa4SG
-        zBseq2P4CZUqfw8nJqhyCij/j9HK8qdRZrbieteiY1TBywL/1nt3eMVZo1uANkNf3/fZW5
-        OU8bSUN/Na+C12jgkCTkH8Bw4CtKR9c=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-468-1Wcl6Do7PJmRBKnFtaqpLw-1; Thu, 01 Sep 2022 06:01:34 -0400
-X-MC-Unique: 1Wcl6Do7PJmRBKnFtaqpLw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D58C0185A7BA;
-        Thu,  1 Sep 2022 10:01:33 +0000 (UTC)
-Received: from astarta.redhat.com (unknown [10.39.194.241])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 242402026D64;
-        Thu,  1 Sep 2022 10:01:32 +0000 (UTC)
-From:   Yauheni Kaliuta <ykaliuta@redhat.com>
-To:     Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Cc:     bpf <bpf@vger.kernel.org>
-Subject: Re: test_kmod.sh fails with constant blinding
-References: <CANoWsw=eP+kYHvT+AUwY=8D=QDrwHz=1_6he8vz0t+Tc1PVVBQ@mail.gmail.com>
-        <6e86e8c4-4eaf-3e4e-ee72-035a215b48d3@iogearbox.net>
-        <xunyr135ytxr.fsf@redhat.com>
-        <CANoWswmar9ELFGiqNeG7SCuaciaoNWEq2E+YaRq5J4fwRqfuZg@mail.gmail.com>
-        <CAM1=_QTEAA4vzVHJV3-fcLOGqAcef8q6U7bg5LbH-CKehuQLxw@mail.gmail.com>
-        <CANoWswnQK4NfvmNjN9DZpeq5ry4qXra9m1hSrBexT83CzUuR0w@mail.gmail.com>
-Date:   Thu, 01 Sep 2022 13:01:31 +0300
-In-Reply-To: <CANoWswnQK4NfvmNjN9DZpeq5ry4qXra9m1hSrBexT83CzUuR0w@mail.gmail.com>
-        (Yauheni Kaliuta's message of "Tue, 5 Jul 2022 11:31:58 +0300")
-Message-ID: <xuny7d2ne7lw.fsf@redhat.com>
+        with ESMTP id S233750AbiIAKOW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 1 Sep 2022 06:14:22 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E96C1321C2;
+        Thu,  1 Sep 2022 03:14:20 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1oThCz-0001ZC-AI; Thu, 01 Sep 2022 12:14:01 +0200
+Date:   Thu, 1 Sep 2022 12:14:01 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Florian Westphal <fw@strlen.de>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Toke =?iso-8859-15?Q?H=F8iland-J=F8rgensen?= <toke@kernel.org>,
+        netfilter-devel <netfilter-devel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH nf-next] netfilter: nf_tables: add ebpf expression
+Message-ID: <20220901101401.GC4334@breakpoint.cc>
+References: <87v8q84nlq.fsf@toke.dk>
+ <20220831125608.GA8153@breakpoint.cc>
+ <87o7w04jjb.fsf@toke.dk>
+ <20220831135757.GC8153@breakpoint.cc>
+ <87ilm84goh.fsf@toke.dk>
+ <20220831152624.GA15107@breakpoint.cc>
+ <CAADnVQJp5RJ0kZundd5ag-b3SDYir8cF4R_nVbN8Zj9Rcn0rww@mail.gmail.com>
+ <20220831155341.GC15107@breakpoint.cc>
+ <CAADnVQJGQmu02f5B=mc1xJvVWSmk_GNZj9WAUskekykmyo8FzA@mail.gmail.com>
+ <1cc40302-f006-31a7-b270-30813b8f4b67@iogearbox.net>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.78 on 10.11.54.4
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1cc40302-f006-31a7-b270-30813b8f4b67@iogearbox.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,65 +56,36 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi, Johan!
+Daniel Borkmann <daniel@iogearbox.net> wrote:
+> On 8/31/22 7:26 PM, Alexei Starovoitov wrote:
+> > On Wed, Aug 31, 2022 at 8:53 AM Florian Westphal <fw@strlen.de> wrote:
+> > As a minimum we shouldn't step on the same rakes.
+> > xt_ebpf would be the same dead code as xt_bpf.
+> 
+> +1, and on top, the user experience will just be horrible. :(
 
->>>>> On Tue, 5 Jul 2022 11:31:58 +0300, Yauheni Kaliuta  wrote:
+Compared to what?
 
- > Hi, Johan!
- > On Tue, Jul 5, 2022 at 11:06 AM Johan Almbladh
- > <johan.almbladh@anyfinetworks.com> wrote:
- >> 
- >> On Mon, Jul 4, 2022 at 10:22 AM Yauheni Kaliuta <ykaliuta@redhat.com> wrote:
- >> >
- >> > Hi!
- >> >
- >> > On Fri, Jul 1, 2022 at 2:05 PM Yauheni Kaliuta <ykaliuta@redhat.com> wrote:
- >> > > >>>>> On Thu, 30 Jun 2022 22:57:37 +0200, Daniel Borkmann  wrote:
- >> > >
- >> > >  > On 6/30/22 3:19 PM, Yauheni Kaliuta wrote:
- >> > >  >> Hi!
- >> > >  >> test_kmod.sh fails for hardened 2 check with
- >> > >  >> test_bpf: #964 Staggered jumps: JMP_JA FAIL to select_runtime
- >> > >  >> err=-524
- >> > >  >> (-ERANGE during constant blinding)
- >> > >  >> Did I miss something?
- >> > >
- >> > >  > That could be expected if one of bpf_adj_delta_to_imm() / bpf_adj_delta_to_off()
- >> > >  > fails given the targets go out of range.
- >> > >
- >> > > I believe that, but how to fix the test? It should not fail.
- >> > >
- >> > >  > How do the generated insn look?
- >> > >
- >> > > The instruction when it fails is
- >> > >
- >> > > (gdb) p/x insn[0]
- >> > > $8 = {code = 0xb7, dst_reg = 0x0, src_reg = 0x0, off = 0x0, imm = 0x2aaa}
- >> > >
- >> > > And it's rewritten as
- >> > >
- >> > > (gdb) p rewritten
- >> > > $9 = 3
- >> > > (gdb) p/x insn_buff[0]
- >> > > $10 = {code = 0xb7, dst_reg = 0xb, src_reg = 0x0, off = 0x0, imm = 0x68ad0283}
- >> > > (gdb) p/x insn_buff[1]
- >> > > $11 = {code = 0xa7, dst_reg = 0xb, src_reg = 0x0, off = 0x0, imm = 0x68ad2829}
- >> > > (gdb) p/x insn_buff[2]
- >> > > $12 = {code = 0xbf, dst_reg = 0x0, src_reg = 0xb, off = 0x0, imm = 0x0}
- >> > >
- >> > > IIUC.
- >> > >
- >> >
- >> > Johan, what do you think?
- >> 
- >> Hmm, I can take a look at it. What is the target arch?
- >> 
+> > > If you are open to BPF_PROG_TYPE_NETFILTER I can go that route
+> > > as well, raw bpf program attachment via NF_HOOK and the bpf dispatcher,
+> > > but it will take significantly longer to get there.
+> > > 
+> > > It involves reviving
+> > > https://lore.kernel.org/netfilter-devel/20211014121046.29329-1-fw@strlen.de/
+> > 
+> > I missed it earlier. What is the end goal ?
+> > Optimize nft run-time with on the fly generation of bpf byte code ?
+> 
+> Or rather to provide a pendant to nft given existence of xt_bpf, and the
+> latter will be removed at some point? (If so, can't we just deprecate the
+> old xt_bpf?)
 
- > It fails even on x86.
+See my reply to Alexey, immediate goal was to get rid of the indirect
+calls by providing a tailored/jitted equivalent of nf_hook_slow().
 
-Did you have a chance to look?
+The next step could be to allow implementation of netfilter hooks
+(i.e., kernel modules that call nf_register_net_hook()) in bpf
+but AFAIU it requires addition of BPF_PROG_TYPE_NETFILTER etc.
 
--- 
-WBR,
-Yauheni Kaliuta
-
+After that, yes, one could think about how to jit nft_do_chain() and
+all the rest of the nft machinery.
