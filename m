@@ -2,283 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9F0E5A8DE7
-	for <lists+bpf@lfdr.de>; Thu,  1 Sep 2022 08:01:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE9945A8E01
+	for <lists+bpf@lfdr.de>; Thu,  1 Sep 2022 08:10:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230148AbiIAGBo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Sep 2022 02:01:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38774 "EHLO
+        id S232580AbiIAGKs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Sep 2022 02:10:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233269AbiIAGBk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 1 Sep 2022 02:01:40 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4A3CE3C06
-        for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 23:01:36 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4MJ9PN1lYCzlDyP
-        for <bpf@vger.kernel.org>; Thu,  1 Sep 2022 14:00:08 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP2 (Coremail) with SMTP id Syh0CgDHGXO5ShBjaMHaAA--.4132S8;
-        Thu, 01 Sep 2022 14:01:34 +0800 (CST)
-From:   Hou Tao <houtao@huaweicloud.com>
-To:     bpf@vger.kernel.org
-Cc:     Song Liu <songliubraving@fb.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Hao Sun <sunhao.th@gmail.com>, Hao Luo <haoluo@google.com>,
+        with ESMTP id S231752AbiIAGKr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 1 Sep 2022 02:10:47 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B86C9BB01A
+        for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 23:10:46 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id b5so20898542wrr.5
+        for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 23:10:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=metanetworks.com; s=google;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date;
+        bh=BSZ8RYQwsEq+ZHDeMsWovu5X93zcXLSLqCbeRmnPF0g=;
+        b=Q9tdOAtZSvK1cKFUHCrrmy+dNrwbqG4v5Ux2iG7WztwgCgXctUHZVd6nt57AC+o+f/
+         i7BS4oMD+HiWKMsfp2qQSkb42Dw9bEBw/RyPL2+wXdQC3XFUPFR5g3WOk2AbVQmkoJOh
+         7G87x0O84Dy6O6OWkQGBzUU12o1+oxLUgygcs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date;
+        bh=BSZ8RYQwsEq+ZHDeMsWovu5X93zcXLSLqCbeRmnPF0g=;
+        b=rD3QUwYtq3JS+468lSnesLFxQCeFxAK+cO+5v23eUBoSfWeIUWL3OXO+13e3cRWlfT
+         UHTEBw4b+cAf6AR1dAVf7La6dv/UXEbhhhO7IpaJUjThQtkewjnd6anXh+HegZP1PJMU
+         7gq1HBGQMiXlbahsqV/PD7CEIQGxFSomcKPvT+XXY1UE0E5F5qgu8ujCIQkMpzHvyR97
+         G9o9ZEIwzUARS88bCjlIBuofH0nmOhf8PSHpx64t0RzsvMZZcRKCLw1ow8qzK1c686vt
+         V+YPF3xptqA7w1n8gP79BWfBK7edZkgi3n2kQwMeZtS0CjjTW9VCtE3Ew/nHo7WgaK4U
+         gWzg==
+X-Gm-Message-State: ACgBeo1WZEjvPEhumUPmJA11MAOc5nPACwolLj3sjRi+smmiYSs8kx4D
+        FGllX6d5EgEu6Qpe8PhXFFzXOg==
+X-Google-Smtp-Source: AA6agR5n1yptRTC/Isqzm+FAkqPBEptlcnlvS0EMZbFPLukJVercrl+f04L1tu5fp6pktl+ps/L8Ng==
+X-Received: by 2002:a05:6000:4005:b0:225:8b27:e6d5 with SMTP id cy5-20020a056000400500b002258b27e6d5mr13516657wrb.603.1662012645267;
+        Wed, 31 Aug 2022 23:10:45 -0700 (PDT)
+Received: from blondie ([5.102.239.127])
+        by smtp.gmail.com with ESMTPSA id v16-20020a5d6790000000b0021f0c0c62d1sm13715385wru.13.2022.08.31.23.10.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Aug 2022 23:10:44 -0700 (PDT)
+Date:   Thu, 1 Sep 2022 09:10:40 +0300
+From:   Shmulik Ladkani <shmulik@metanetworks.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Lorenz Bauer <oss@lmb.io>, houtao1@huawei.com
-Subject: [PATCH bpf-next v2 4/4] selftests/bpf: Test concurrent updates on bpf_task_storage_busy
-Date:   Thu,  1 Sep 2022 14:19:38 +0800
-Message-Id: <20220901061938.3789460-5-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20220901061938.3789460-1-houtao@huaweicloud.com>
-References: <20220901061938.3789460-1-houtao@huaweicloud.com>
+        Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Support getting tunnel flags
+Message-ID: <20220901091040.2fcd73af@blondie>
+In-Reply-To: <3b4e74bb-5ede-e773-69e6-6c272ffa2459@iogearbox.net>
+References: <20220831144010.174110-1-shmulik.ladkani@gmail.com>
+        <3b4e74bb-5ede-e773-69e6-6c272ffa2459@iogearbox.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgDHGXO5ShBjaMHaAA--.4132S8
-X-Coremail-Antispam: 1UD129KBjvJXoW3Ary8tF4UGw4rJry3WrWktFb_yoW7tw1xpa
-        yIkF90krs5J3Z5Jr1rXwsrAry5K3Z3Za17Crs5GF93Aw40qF95Xr1xKr17ZFyfWw4YqFW3
-        ZrsIqF45Gr1DJaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBIb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
-        Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
-        rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267
-        AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E
-        14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7
-        xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Y
-        z7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2
-        Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
-        6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0x
-        vE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY
-        6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aV
-        CY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU13l1DUUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Hou Tao <houtao1@huawei.com>
+On Wed, 31 Aug 2022 22:46:15 +0200
+Daniel Borkmann <daniel@iogearbox.net> wrote:
 
-Under full preemptible kernel, task local storage lookup operations on
-the same CPU may update per-cpu bpf_task_storage_busy concurrently. If
-the update of bpf_task_storage_busy is not preemption safe, the final
-value of bpf_task_storage_busy may become not-zero forever and
-bpf_task_storage_trylock() will always fail. So add a test case to
-ensure the update of bpf_task_storage_busy is preemption safe.
+> The bpf_skb_set_tunnel_key() helper has a number of flags we pass in, e.g.
+> BPF_F_ZERO_CSUM_TX, BPF_F_DONT_FRAGMENT, BPF_F_SEQ_NUMBER, and then based on
+> those flags we set:
+> 
+>    [...]
+>    info->key.tun_flags = TUNNEL_KEY | TUNNEL_CSUM | TUNNEL_NOCACHE;
+>    if (flags & BPF_F_DONT_FRAGMENT)
+>            info->key.tun_flags |= TUNNEL_DONT_FRAGMENT;
+>    if (flags & BPF_F_ZERO_CSUM_TX)
+>            info->key.tun_flags &= ~TUNNEL_CSUM;
+>    if (flags & BPF_F_SEQ_NUMBER)
+>            info->key.tun_flags |= TUNNEL_SEQ;
+>    [...]
+> 
+> Should we similarly only expose those which are interesting/relevant to BPF
+> program authors as a __u16 tunnel_flags and not the whole set? Which ones
+> do you have a need for? TUNNEL_SEQ, TUNNEL_CSUM, TUNNEL_KEY, and then the
+> TUNNEL_OPTIONS_PRESENT?
 
-Will skip the test case when CONFIG_PREEMPT is disabled, and it can only
-reproduce the problem probabilistically. By increasing
-TASK_STORAGE_MAP_NR_LOOP and running it under ARM64 VM with 4-cpus, it
-takes about four rounds to reproduce:
+Indeed, I noticed this and considered various approaches:
 
-> test_maps is modified to only run test_task_storage_map_stress_lookup()
-$ export TASK_STORAGE_MAP_NR_THREAD=256
-$ export TASK_STORAGE_MAP_NR_LOOP=81920
-$ export TASK_STORAGE_MAP_PIN_CPU=1
-$ time ./test_maps
-test_task_storage_map_stress_lookup(135):FAIL:bad bpf_task_storage_busy got -2
+1. Convert the "interesting" internal TUNNEL_xxx flags back to BPF_F_yyy
+and place into the new 'tunnel_flags' field.
+This has 2 drawbacks:
+ - The BPF_F_yyy flags are from *set_tunnel_key* enumeration space,
+   e.g. BPF_F_ZERO_CSUM_TX.
+   I find it awkward that it is "returned" into tunnel_flags from a
+   *get_tunnel_key* call.
+ - Not all "interesting" TUNNEL_xxx flags can be mapped to existing
+   BPF_F_yyy flags, and it doesn't make sense to create new BPF_F_yyy
+   flags just for purposes of the returned tunnel_flags.
 
-real    0m24.743s
-user    0m6.772s
-sys     0m17.966s
+2. Place key.tun_flags into 'tunnel_flags' but mask them, keeping only
+   "interesting" flags.
+   That's ok, but the drawback is that what's "intersting" for my
+   usecase might be limiting for other usecases.
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- .../bpf/map_tests/task_storage_map.c          | 122 ++++++++++++++++++
- .../bpf/progs/read_bpf_task_storage_busy.c    |  39 ++++++
- 2 files changed, 161 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/map_tests/task_storage_map.c
- create mode 100644 tools/testing/selftests/bpf/progs/read_bpf_task_storage_busy.c
+Therefore I decided to expose what's in key.tun_flags *as is*, which seems
+most flexible. The bpf user can just choose to ingore bits he's not
+interested in. The TUNNEL_xxx are uapi, so no harm exposing them back in
+the get_tunnel_key call.
 
-diff --git a/tools/testing/selftests/bpf/map_tests/task_storage_map.c b/tools/testing/selftests/bpf/map_tests/task_storage_map.c
-new file mode 100644
-index 000000000000..1adc9c292eb2
---- /dev/null
-+++ b/tools/testing/selftests/bpf/map_tests/task_storage_map.c
-@@ -0,0 +1,122 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (C) 2022. Huawei Technologies Co., Ltd */
-+#define _GNU_SOURCE
-+#include <sched.h>
-+#include <unistd.h>
-+#include <stdlib.h>
-+#include <stdbool.h>
-+#include <errno.h>
-+#include <string.h>
-+#include <pthread.h>
-+
-+#include <bpf/bpf.h>
-+#include <bpf/libbpf.h>
-+
-+#include "test_maps.h"
-+#include "task_local_storage_helpers.h"
-+#include "read_bpf_task_storage_busy.skel.h"
-+
-+struct lookup_ctx {
-+	bool start;
-+	bool stop;
-+	int pid_fd;
-+	int map_fd;
-+	int loop;
-+};
-+
-+static void *lookup_fn(void *arg)
-+{
-+	struct lookup_ctx *ctx = arg;
-+	long value;
-+	int i = 0;
-+
-+	while (!ctx->start)
-+		usleep(1);
-+
-+	while (!ctx->stop && i++ < ctx->loop)
-+		bpf_map_lookup_elem(ctx->map_fd, &ctx->pid_fd, &value);
-+	return NULL;
-+}
-+
-+static void abort_lookup(struct lookup_ctx *ctx, pthread_t *tids, unsigned int nr)
-+{
-+	unsigned int i;
-+
-+	ctx->stop = true;
-+	ctx->start = true;
-+	for (i = 0; i < nr; i++)
-+		pthread_join(tids[i], NULL);
-+}
-+
-+void test_task_storage_map_stress_lookup(void)
-+{
-+#define MAX_NR_THREAD 4096
-+	unsigned int i, nr = 256, loop = 8192, cpu = 0;
-+	struct read_bpf_task_storage_busy *skel;
-+	pthread_t tids[MAX_NR_THREAD];
-+	struct lookup_ctx ctx;
-+	cpu_set_t old, new;
-+	const char *cfg;
-+	int err;
-+
-+	cfg = getenv("TASK_STORAGE_MAP_NR_THREAD");
-+	if (cfg) {
-+		nr = atoi(cfg);
-+		if (nr > MAX_NR_THREAD)
-+			nr = MAX_NR_THREAD;
-+	}
-+	cfg = getenv("TASK_STORAGE_MAP_NR_LOOP");
-+	if (cfg)
-+		loop = atoi(cfg);
-+	cfg = getenv("TASK_STORAGE_MAP_PIN_CPU");
-+	if (cfg)
-+		cpu = atoi(cfg);
-+
-+	skel = read_bpf_task_storage_busy__open_and_load();
-+	err = libbpf_get_error(skel);
-+	CHECK(err, "open_and_load", "error %d\n", err);
-+
-+	/* Only for a fully preemptible kernel */
-+	if (!skel->kconfig->CONFIG_PREEMPT)
-+		return;
-+
-+	/* Save the old affinity setting */
-+	sched_getaffinity(getpid(), sizeof(old), &old);
-+
-+	/* Pinned on a specific CPU */
-+	CPU_ZERO(&new);
-+	CPU_SET(cpu, &new);
-+	sched_setaffinity(getpid(), sizeof(new), &new);
-+
-+	ctx.start = false;
-+	ctx.stop = false;
-+	ctx.pid_fd = sys_pidfd_open(getpid(), 0);
-+	ctx.map_fd = bpf_map__fd(skel->maps.task);
-+	ctx.loop = loop;
-+	for (i = 0; i < nr; i++) {
-+		err = pthread_create(&tids[i], NULL, lookup_fn, &ctx);
-+		if (err) {
-+			abort_lookup(&ctx, tids, i);
-+			CHECK(err, "pthread_create", "error %d\n", err);
-+			goto out;
-+		}
-+	}
-+
-+	ctx.start = true;
-+	for (i = 0; i < nr; i++)
-+		pthread_join(tids[i], NULL);
-+
-+	skel->bss->pid = getpid();
-+	err = read_bpf_task_storage_busy__attach(skel);
-+	CHECK(err, "attach", "error %d\n", err);
-+
-+	/* Trigger program */
-+	syscall(SYS_gettid);
-+	skel->bss->pid = 0;
-+
-+	CHECK(skel->bss->busy != 0, "bad bpf_task_storage_busy", "got %d\n", skel->bss->busy);
-+out:
-+	read_bpf_task_storage_busy__destroy(skel);
-+	/* Restore affinity setting */
-+	sched_setaffinity(getpid(), sizeof(old), &old);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/read_bpf_task_storage_busy.c b/tools/testing/selftests/bpf/progs/read_bpf_task_storage_busy.c
-new file mode 100644
-index 000000000000..a47bb0120719
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/read_bpf_task_storage_busy.c
-@@ -0,0 +1,39 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (C) 2022. Huawei Technologies Co., Ltd */
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+extern bool CONFIG_PREEMPT __kconfig __weak;
-+extern const int bpf_task_storage_busy __ksym;
-+
-+char _license[] SEC("license") = "GPL";
-+
-+int pid = 0;
-+int busy = 0;
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_TASK_STORAGE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+	__type(key, int);
-+	__type(value, long);
-+} task SEC(".maps");
-+
-+SEC("raw_tp/sys_enter")
-+int BPF_PROG(read_bpf_task_storage_busy)
-+{
-+	int *value;
-+	int key;
-+
-+	if (!CONFIG_PREEMPT)
-+		return 0;
-+
-+	if (bpf_get_current_pid_tgid() >> 32 != pid)
-+		return 0;
-+
-+	value = bpf_this_cpu_ptr(&bpf_task_storage_busy);
-+	if (value)
-+		busy = *value;
-+
-+	return 0;
-+}
--- 
-2.29.2
+WDYT?
+
+Best,
+Shmulik
+
 
