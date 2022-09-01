@@ -2,53 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28D745A94D8
-	for <lists+bpf@lfdr.de>; Thu,  1 Sep 2022 12:41:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1C465A95EC
+	for <lists+bpf@lfdr.de>; Thu,  1 Sep 2022 13:48:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234040AbiIAKlj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Sep 2022 06:41:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55454 "EHLO
+        id S232892AbiIALsX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Sep 2022 07:48:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234260AbiIAKlS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 1 Sep 2022 06:41:18 -0400
+        with ESMTP id S232859AbiIALsT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 1 Sep 2022 07:48:19 -0400
 Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CB1CDB04F;
-        Thu,  1 Sep 2022 03:40:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5E2613A7C2;
+        Thu,  1 Sep 2022 04:48:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1662028848; x=1693564848;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=ndvJzWq/037gMnmvsm1Ger1dXOrF0UyKuoWIXx89R4c=;
-  b=MJudgpvf2msJCJIGeb42VK1g/ixH7q8fAX92YyVMMHl5PDPsa0tJ+vuI
-   IQkBkoIy4PEoAQdftjb7vIYoJ59EF2acidYdPi/Y1mG9ukvGhIL8LEAGf
-   mrf5Lnw5EX+8yQzh+KAXWcwoulM39122dOHXmOk4DRiG2c8K27XkkHLKL
-   Mkag2TbxFlZBaWLkoOoyWQC9XStRpHT3WrQGWoR9w7ji9y59sAO9rdu08
-   O7Q19MrGcZ2Uy7e8DFIoNqo67Ruaq3lePVCFaaUCb6iEMxVPC8oJvgH54
-   C9BfekA+AtqWYkn3i/4z+SvXywAVDtyWnU578WjcaiUYqd1Oa8Kvh1LMk
+  t=1662032897; x=1693568897;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=P27EPnIzqpU6RwWBQixwKJlpZ+ZGv6BjVXx8T7VYhF8=;
+  b=b/vpoJf6Tit1yHXkrDgxeDoXZGgMTFucqUxeb8KE3VMU3lo9hMJllwhv
+   psbWHhhfcBgBjfRC3MvdPqVjyTqN+fwyCO7vwfZDL7xQZEy74kIjSGMZu
+   bavYAkNgdMTPV3v+yNYqo3zIQytS+bTzE02n9ahiC0Ql7cBpHooIKKXBB
+   7pOZ0cwtup0wfFlXacA1z+O7upyNKT4lSMwcaDw1LZDU/YpFhGFMd/2Zn
+   PZ8kWun1FB+qnmtWVQsb2tjqAyyTqE7rmPWQIJa8Y3XzrGotRMe7KI3kU
+   9qR3+G9csMVt7SpPysFT1bflhsx/vVcylpTo2KZyflhXbAAToBrs8gqz0
    g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10456"; a="357399192"
+X-IronPort-AV: E=McAfee;i="6500,9779,10456"; a="357410331"
 X-IronPort-AV: E=Sophos;i="5.93,280,1654585200"; 
-   d="scan'208";a="357399192"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2022 03:40:47 -0700
+   d="scan'208";a="357410331"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2022 04:48:16 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.93,280,1654585200"; 
-   d="scan'208";a="857801166"
+   d="scan'208";a="673814318"
 Received: from boxer.igk.intel.com ([10.102.20.173])
-  by fmsmga006.fm.intel.com with ESMTP; 01 Sep 2022 03:40:46 -0700
+  by fmsmga008.fm.intel.com with ESMTP; 01 Sep 2022 04:48:14 -0700
 From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     intel-wired-lan@lists.osuosl.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        anthony.l.nguyen@intel.com, magnus.karlsson@intel.com,
-        alasdair.mcwilliam@outlook.com,
+To:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org
+Cc:     netdev@vger.kernel.org, magnus.karlsson@intel.com,
+        bjorn@kernel.org, john.fastabend@gmail.com,
         Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Subject: [PATCH v3 intel-net 2/2] ice: xsk: drop power of 2 ring size restriction for AF_XDP
-Date:   Thu,  1 Sep 2022 12:40:40 +0200
-Message-Id: <20220901104040.15723-3-maciej.fijalkowski@intel.com>
+Subject: [PATCH v6 bpf-next 0/6] selftests: xsk: real device testing support
+Date:   Thu,  1 Sep 2022 13:48:07 +0200
+Message-Id: <20220901114813.16275-1-maciej.fijalkowski@intel.com>
 X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20220901104040.15723-1-maciej.fijalkowski@intel.com>
-References: <20220901104040.15723-1-maciej.fijalkowski@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -61,70 +59,83 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-We had multiple customers in the past months that reported commit
-296f13ff3854 ("ice: xsk: Force rings to be sized to power of 2")
-makes them unable to use ring size of 8160 in conjunction with AF_XDP.
-Remove this restriction.
+v5->v6:
+* rebase properly
+* collect acks (Magnus)
+* extend char limit for iface/netns to 16 (Magnus)
 
-Fixes: 296f13ff3854 ("ice: xsk: Force rings to be sized to power of 2")
-CC: Alasdair McWilliam <alasdair.mcwilliam@outlook.com>
-Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
----
- drivers/net/ethernet/intel/ice/ice_xsk.c | 20 +++++++-------------
- 1 file changed, 7 insertions(+), 13 deletions(-)
+v4->v5:
+* ice patches have gone through its own way, so they are out of this
+  revision
+* rebase
+* close prog fd on error path in patch 1 (John)
+* pull out patch for closing netns fd and send it separately (John)
+* remove a patch that made Tx completion rely on pkts_in_flight (John)
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
-index 26e767eb1c6e..6af33e3618cf 100644
---- a/drivers/net/ethernet/intel/ice/ice_xsk.c
-+++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
-@@ -335,13 +335,6 @@ int ice_xsk_pool_setup(struct ice_vsi *vsi, struct xsk_buff_pool *pool, u16 qid)
- 		goto failure;
- 	}
- 
--	if (!is_power_of_2(vsi->rx_rings[qid]->count) ||
--	    !is_power_of_2(vsi->tx_rings[qid]->count)) {
--		netdev_err(vsi->netdev, "Please align ring sizes to power of 2\n");
--		pool_failure = -EINVAL;
--		goto failure;
--	}
--
- 	if_running = netif_running(vsi->netdev) && ice_is_xdp_ena_vsi(vsi);
- 
- 	if (if_running) {
-@@ -471,11 +464,10 @@ static bool __ice_alloc_rx_bufs_zc(struct ice_rx_ring *rx_ring, u16 count)
- bool ice_alloc_rx_bufs_zc(struct ice_rx_ring *rx_ring, u16 count)
- {
- 	u16 rx_thresh = ICE_RING_QUARTER(rx_ring);
--	u16 batched, leftover, i, tail_bumps;
-+	u16 leftover, i, tail_bumps;
- 
--	batched = ALIGN_DOWN(count, rx_thresh);
--	tail_bumps = batched / rx_thresh;
--	leftover = count & (rx_thresh - 1);
-+	tail_bumps = count / rx_thresh;
-+	leftover = count - (tail_bumps * rx_thresh);
- 
- 	for (i = 0; i < tail_bumps; i++)
- 		if (!__ice_alloc_rx_bufs_zc(rx_ring, rx_thresh))
-@@ -974,14 +966,16 @@ bool ice_xsk_any_rx_ring_ena(struct ice_vsi *vsi)
-  */
- void ice_xsk_clean_rx_ring(struct ice_rx_ring *rx_ring)
- {
--	u16 count_mask = rx_ring->count - 1;
- 	u16 ntc = rx_ring->next_to_clean;
- 	u16 ntu = rx_ring->next_to_use;
- 
--	for ( ; ntc != ntu; ntc = (ntc + 1) & count_mask) {
-+	while (ntc != ntu) {
- 		struct xdp_buff *xdp = *ice_xdp_buf(rx_ring, ntc);
- 
- 		xsk_buff_free(xdp);
-+		ntc++;
-+		if (ntc >= rx_ring->count)
-+			ntc = 0;
- 	}
- }
- 
+v3->v4:
+* use ice_{down,up} rather than ice_{stop,open} and check retvals
+  when toggling loopback mode (Jakub)
+* Remove patch that was throwing away xsk->outstanding_tx (Magnus)
+
+v2->v3:
+* split loopback patch to ice_set_features() refactor part and other
+  part with actual loopback toggling support (Alexandr)
+* collect more acks from Magnus
+
+v1->v2:
+* collect acks from Magnus
+* drop redundant 'ret' variable in patch 4 (Magnus)
+* drop redundant assignments to ifobject->xdp_flags in patch 10 (Magnus)
+* use NETIF_F_LOOPBACK instead of introducing priv-flag (Alexandr)
+
+Hi!
+
+This set makes it possible to use xskxceiver against real devices that
+support MAC loopback. Currently, xskxceiver assumes that underlying
+device supports native XDP. It is true for veth, but might not be for
+other device that might be used with xskxceiver once this patch set
+land. So, first patch adds a logic to find out if underlying device
+supports XDP so that TEST_MODE_DRV can be used for test suite.
+
+In patch 2, default Rx pkt stream is added so physical device testing
+will be able to use shared UMEM in a way that Tx will utilize first half
+of buffer space and Rx second one. Then, patch 4 adds support for running
+xskxceiver on physical devices.
+
+Patch 6 finally adds new TEST_MODE_ZC for testing zero copy AF_XDP
+driver support.
+
+This work already allowed us to spot and fix two bugs in AF_XDP kernel
+side ([0], [1]).
+
+v1 is here [2].
+v2 is here [3].
+v3 is here [4].
+v4 is here [5].
+v5 is not worth including in here.
+
+[0]: https://lore.kernel.org/bpf/20220425153745.481322-1-maciej.fijalkowski@intel.com/
+[1]: https://lore.kernel.org/bpf/20220607142200.576735-1-maciej.fijalkowski@intel.com/
+[2]: https://lore.kernel.org/bpf/20220610150923.583202-1-maciej.fijalkowski@intel.com/
+[3]: https://lore.kernel.org/bpf/20220614174749.901044-1-maciej.fijalkowski@intel.com/
+[4]: https://lore.kernel.org/bpf/20220615161041.902916-1-maciej.fijalkowski@intel.com/
+[5]: https://lore.kernel.org/bpf/20220616180609.905015-1-maciej.fijalkowski@intel.com/
+
+Thank you.
+
+Maciej Fijalkowski (6):
+  selftests: xsk: query for native XDP support
+  selftests: xsk: introduce default Rx pkt stream
+  selftests: xsk: increase chars for interface name to 16
+  selftests: xsk: add support for executing tests on physical device
+  selftests: xsk: make sure single threaded test terminates
+  selftests: xsk: add support for zero copy testing
+
+ tools/testing/selftests/bpf/test_xsk.sh  |  52 ++-
+ tools/testing/selftests/bpf/xskxceiver.c | 398 +++++++++++++++++------
+ tools/testing/selftests/bpf/xskxceiver.h |  11 +-
+ 3 files changed, 340 insertions(+), 121 deletions(-)
+
 -- 
 2.34.1
 
