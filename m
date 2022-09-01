@@ -2,147 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D97EB5A8D39
-	for <lists+bpf@lfdr.de>; Thu,  1 Sep 2022 07:18:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 283F05A8DE2
+	for <lists+bpf@lfdr.de>; Thu,  1 Sep 2022 08:01:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232983AbiIAFSp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Sep 2022 01:18:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55396 "EHLO
+        id S233262AbiIAGBk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Sep 2022 02:01:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229746AbiIAFSg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 1 Sep 2022 01:18:36 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9AE8109090;
-        Wed, 31 Aug 2022 22:18:33 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id w18so12447375qki.8;
-        Wed, 31 Aug 2022 22:18:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=uJN9pb7rprQ3Gc27MWDANcZXB9um/YbpQ3D1DbShuFk=;
-        b=nHT54Ai4WgBBeRKUFudNPXLH7cFO1Nz1vcHiy5oF16LxVVazKqfyM/PLQzCA07EX3c
-         6NF2qws42ylPRR2tgFaHjBk/wQYPpzcHvRglwEIExejYJbLcbgw/g3G9cPACfOeyLfRD
-         kzyE0kUUUwOsrWhDrj/YBhJQLXU7bXBhhYpZXgYmBSccq5D9oMsEHuCYX8yFsrMUCZH1
-         CIgo63wUTgvXVG6KetPqBKv4OiLOjTlttqBey63BlGb3AH8vVLfuQ2fnTiWxJSA//58Z
-         +qSQ2Sn2c6tav2vZ8depzxZcqJW0oa5Dsf9pRjl/QDkKrwJDTuf9CdcOsdZUDCganwku
-         gJHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=uJN9pb7rprQ3Gc27MWDANcZXB9um/YbpQ3D1DbShuFk=;
-        b=l9E2hN8pignmskhimYqTLwRuoUiS7HaLpiyDbCE2QT8K47TDGvpQ5Ob+o+CjbcF2F6
-         P/77O989CspnSmNfaFUzfC9nXmiPx7GitZTlhgx+AkvthHe0Bpo4fiNU3dwexvM2HDGV
-         jEhFlkR31dkcUgsziY24KglqXSTYTnwLsKnIUnbIT7SIc4X2XhcmCcXvdn7Kep2EfJ4o
-         HerT3iNE6r3TyYlxhdTPzVpLCEspCgP9F75DJ3z4i6waz1Q2Gm31+85dHehYpghGeWYj
-         Mu4QLMYJZDQ0gkxS/mrP2+ZHzu7dmN55K/JrFkdJ+VM/hGKzA5vQ+HzHy7jA4znRD49X
-         jZuQ==
-X-Gm-Message-State: ACgBeo2WK0vLeA2VGzEYf2xX+xu72dz3wdWJXtSL9tnFmI0bSEqoCoEd
-        5AN4QJ5ggQMcwCOCqiuRQE28rEX/ptiGT7hltq4=
-X-Google-Smtp-Source: AA6agR6AdC+MzLwcwV0Hf/oJm8mb970XPtArxOTOVRrtSe0m8u+jnpLpQIT35Moe9q3hqYsnHNqsKT3mXXsJ3MUaexI=
-X-Received: by 2002:a05:620a:1786:b0:6bb:38b2:b1d7 with SMTP id
- ay6-20020a05620a178600b006bb38b2b1d7mr18289148qkb.510.1662009512690; Wed, 31
- Aug 2022 22:18:32 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220831101617.22329-1-fw@strlen.de> <87v8q84nlq.fsf@toke.dk>
- <20220831125608.GA8153@breakpoint.cc> <87o7w04jjb.fsf@toke.dk>
- <20220831135757.GC8153@breakpoint.cc> <87ilm84goh.fsf@toke.dk>
- <20220831152624.GA15107@breakpoint.cc> <CAADnVQJp5RJ0kZundd5ag-b3SDYir8cF4R_nVbN8Zj9Rcn0rww@mail.gmail.com>
- <20220831155341.GC15107@breakpoint.cc> <CAADnVQJGQmu02f5B=mc1xJvVWSmk_GNZj9WAUskekykmyo8FzA@mail.gmail.com>
- <1cc40302-f006-31a7-b270-30813b8f4b67@iogearbox.net>
-In-Reply-To: <1cc40302-f006-31a7-b270-30813b8f4b67@iogearbox.net>
-From:   Eyal Birger <eyal.birger@gmail.com>
-Date:   Thu, 1 Sep 2022 08:18:20 +0300
-Message-ID: <CAHsH6GtCgb1getXASkqzN75cNfm7_GOg8Mng5ZY37yK99XBVMQ@mail.gmail.com>
-Subject: Re: [PATCH nf-next] netfilter: nf_tables: add ebpf expression
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Florian Westphal <fw@strlen.de>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        "David S. Miller" <davem@davemloft.net>,
+        with ESMTP id S229514AbiIAGBi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 1 Sep 2022 02:01:38 -0400
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C626E2C50
+        for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 23:01:34 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4MJ9P32CVnz6S5fH
+        for <bpf@vger.kernel.org>; Thu,  1 Sep 2022 13:59:51 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+        by APP2 (Coremail) with SMTP id Syh0CgDHGXO5ShBjaMHaAA--.4132S4;
+        Thu, 01 Sep 2022 14:01:31 +0800 (CST)
+From:   Hou Tao <houtao@huaweicloud.com>
+To:     bpf@vger.kernel.org
+Cc:     Song Liu <songliubraving@fb.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Hao Sun <sunhao.th@gmail.com>, Hao Luo <haoluo@google.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>,
-        netfilter-devel <netfilter-devel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Lorenz Bauer <oss@lmb.io>, houtao1@huawei.com
+Subject: [PATCH bpf-next v2 0/4] Use this_cpu_xxx for preemption-safety
+Date:   Thu,  1 Sep 2022 14:19:34 +0800
+Message-Id: <20220901061938.3789460-1-houtao@huaweicloud.com>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: Syh0CgDHGXO5ShBjaMHaAA--.4132S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7AFyUGFWfJr4xKFyftr1xAFb_yoW8uw15pa
+        yxt345Kr1kK3Z3AwsrJwsrZryFywn5Xw42krs5AFnaya18tryfXr1xKr15ZF9xuryFqr1f
+        Z39YgFs5C348ZFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUk2b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28I
+        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
+        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI
+        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42
+        IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
+        87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFDGOUUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 1, 2022 at 1:16 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 8/31/22 7:26 PM, Alexei Starovoitov wrote:
-> > On Wed, Aug 31, 2022 at 8:53 AM Florian Westphal <fw@strlen.de> wrote:
-> >> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-> >>>> 1 and 2 have the upside that its easy to handle a 'file not found'
-> >>>> error.
-> >>>
-> >>> I'm strongly against calling into bpf from the inner guts of nft.
-> >>> Nack to all options discussed in this thread.
-> >>> None of them make any sense.
-> >>
-> >> -v please.  I can just rework userspace to allow going via xt_bpf
-> >> but its brain damaged.
-> >
-> > Right. xt_bpf was a dead end from the start.
-> > It's time to deprecate it and remove it.
-> >
-> >> This helps gradually moving towards move epbf for those that
-> >> still heavily rely on the classic forwarding path.
-> >
-> > No one is using it.
-> > If it was, we would have seen at least one bug report over
-> > all these years. We've seen none.
-> >
-> > tbh we had a fair share of wrong design decisions that look
-> > very reasonable early on and turned out to be useless with
-> > zero users.
-> > BPF_PROG_TYPE_SCHED_ACT and BPF_PROG_TYPE_LWT*
-> > are in this category. > All this code does is bit rot.
->
-> +1
->
-> > As a minimum we shouldn't step on the same rakes.
-> > xt_ebpf would be the same dead code as xt_bpf.
->
-> +1, and on top, the user experience will just be horrible. :(
->
-> >> If you are open to BPF_PROG_TYPE_NETFILTER I can go that route
-> >> as well, raw bpf program attachment via NF_HOOK and the bpf dispatcher,
-> >> but it will take significantly longer to get there.
-> >>
-> >> It involves reviving
-> >> https://lore.kernel.org/netfilter-devel/20211014121046.29329-1-fw@strlen.de/
-> >
-> > I missed it earlier. What is the end goal ?
-> > Optimize nft run-time with on the fly generation of bpf byte code ?
->
-> Or rather to provide a pendant to nft given existence of xt_bpf, and the
-> latter will be removed at some point? (If so, can't we just deprecate the
-> old xt_bpf?)
+From: Hou Tao <houtao1@huawei.com>
 
-FWIW we've been using both lwt bpf and xt_bpf on our production workloads
-for a few years now.
+Hi,
 
-xt_bpf allows us to apply custom sophisticated policy logic at connection
-establishment - which is not really possible (or efficient) using
-iptables/nft constructs - without needing to reinvent all the facilities that
-nf provides like connection tracking, ALGs, and simple filtering.
+The patchset aims to make the update of per-cpu prog->active and per-cpu
+bpf_task_storage_busy being preemption-safe. The problem is on same
+architectures (e.g. arm64), __this_cpu_{inc|dec|inc_return} are neither
+preemption-safe nor IRQ-safe, so under fully preemptible kernel the
+concurrent updates on these per-cpu variables may be interleaved and the
+final values of these variables may be not zero.
 
-As for lwt bpf, We use it for load balancing towards collect md tunnels.
-While this can be done at tc egress for unfragmented packets, the lwt out hook -
-when used in tandem with nf fragment reassembly - provides a hooking point
-where a bpf program can see reassembled packets and load balance based on
-their internals.
+Patch 1 & 2 use the preemption-safe per-cpu helpers to manipulate
+prog->active and bpf_task_storage_busy. Patch 3 & 4 add a test case in
+map_tests to show the concurrent updates on the per-cpu
+bpf_task_storage_busy by using __this_cpu_{inc|dec} are not atomic.
 
-Eyal.
+Comments are always welcome.
+
+Regards,
+Tao
+
+Change Log:
+v2:
+* Patch 1: update commit message to indicate the problem is only
+  possible for fully preemptible kernel
+* Patch 2: a new patch which fixes the problem for prog->active
+* Patch 3 & 4: move it to test_maps and make it depend on CONFIG_PREEMPT
+ 
+v1: https://lore.kernel.org/bpf/20220829142752.330094-1-houtao@huaweicloud.com/
+
+Hou Tao (4):
+  bpf: Use this_cpu_{inc|dec|inc_return} for bpf_task_storage_busy
+  bpf: Use this_cpu_{inc_return|dec} for prog->active
+  selftests/bpf: Move sys_pidfd_open() into task_local_storage_helpers.h
+  selftests/bpf: Test concurrent updates on bpf_task_storage_busy
+
+ kernel/bpf/bpf_local_storage.c                |   4 +-
+ kernel/bpf/bpf_task_storage.c                 |   8 +-
+ kernel/bpf/trampoline.c                       |   8 +-
+ .../bpf/map_tests/task_storage_map.c          | 122 ++++++++++++++++++
+ .../selftests/bpf/prog_tests/test_bprm_opts.c |  10 +-
+ .../bpf/prog_tests/test_local_storage.c       |  10 +-
+ .../bpf/progs/read_bpf_task_storage_busy.c    |  39 ++++++
+ .../bpf/task_local_storage_helpers.h          |  18 +++
+ 8 files changed, 191 insertions(+), 28 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/map_tests/task_storage_map.c
+ create mode 100644 tools/testing/selftests/bpf/progs/read_bpf_task_storage_busy.c
+ create mode 100644 tools/testing/selftests/bpf/task_local_storage_helpers.h
+
+-- 
+2.29.2
+
