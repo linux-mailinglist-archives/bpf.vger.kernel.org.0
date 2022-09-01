@@ -2,53 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20F5B5A9400
-	for <lists+bpf@lfdr.de>; Thu,  1 Sep 2022 12:14:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BF8B5A94D9
+	for <lists+bpf@lfdr.de>; Thu,  1 Sep 2022 12:41:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233559AbiIAKOX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Sep 2022 06:14:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57860 "EHLO
+        id S234284AbiIAKl3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Sep 2022 06:41:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233750AbiIAKOW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 1 Sep 2022 06:14:22 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E96C1321C2;
-        Thu,  1 Sep 2022 03:14:20 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1oThCz-0001ZC-AI; Thu, 01 Sep 2022 12:14:01 +0200
-Date:   Thu, 1 Sep 2022 12:14:01 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Florian Westphal <fw@strlen.de>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Toke =?iso-8859-15?Q?H=F8iland-J=F8rgensen?= <toke@kernel.org>,
-        netfilter-devel <netfilter-devel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH nf-next] netfilter: nf_tables: add ebpf expression
-Message-ID: <20220901101401.GC4334@breakpoint.cc>
-References: <87v8q84nlq.fsf@toke.dk>
- <20220831125608.GA8153@breakpoint.cc>
- <87o7w04jjb.fsf@toke.dk>
- <20220831135757.GC8153@breakpoint.cc>
- <87ilm84goh.fsf@toke.dk>
- <20220831152624.GA15107@breakpoint.cc>
- <CAADnVQJp5RJ0kZundd5ag-b3SDYir8cF4R_nVbN8Zj9Rcn0rww@mail.gmail.com>
- <20220831155341.GC15107@breakpoint.cc>
- <CAADnVQJGQmu02f5B=mc1xJvVWSmk_GNZj9WAUskekykmyo8FzA@mail.gmail.com>
- <1cc40302-f006-31a7-b270-30813b8f4b67@iogearbox.net>
+        with ESMTP id S234293AbiIAKlR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 1 Sep 2022 06:41:17 -0400
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AE92C88A1;
+        Thu,  1 Sep 2022 03:40:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1662028845; x=1693564845;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=ldRO/Hqc+BxfjmQ0KMK1BIF3nGuLHXkqCkrsqB0q2WI=;
+  b=ncOlazprB6EJI7n6mfvUcsZ5y9N7kyl04DismLk5QNj/8d2h1Vzn5ak8
+   VHtLd4j+pBgCzZibo7xWbfuyb1aqZH8ikA02ZJil1AwmTBXG1pDYmRqWQ
+   xZOOz4BrgGy2MP+dTy9xdSMPU31Cd4xXypSkD1HJGoucXMo2jSSWPI01u
+   U7SVviHcdfIDHjUGGveBHaSd6xzEHRsSuzRarY0d2nRrT8NhrqVTm4pEz
+   k00jQL903KE43ehctZNqBJTZJMn3is7abaURiDPaHUiLNAoBqTs1DKGV2
+   K6Ml0MpF5wjkC1CpkjoXXG86VNNLgZZOAZFu9NoydrC4IMaaubaQwyse8
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10456"; a="357399188"
+X-IronPort-AV: E=Sophos;i="5.93,280,1654585200"; 
+   d="scan'208";a="357399188"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2022 03:40:44 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,280,1654585200"; 
+   d="scan'208";a="857801156"
+Received: from boxer.igk.intel.com ([10.102.20.173])
+  by fmsmga006.fm.intel.com with ESMTP; 01 Sep 2022 03:40:42 -0700
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     intel-wired-lan@lists.osuosl.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        anthony.l.nguyen@intel.com, magnus.karlsson@intel.com,
+        alasdair.mcwilliam@outlook.com,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Subject: [PATCH v3 intel-net 0/2] ice: xsk: ZC changes
+Date:   Thu,  1 Sep 2022 12:40:38 +0200
+Message-Id: <20220901104040.15723-1-maciej.fijalkowski@intel.com>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1cc40302-f006-31a7-b270-30813b8f4b67@iogearbox.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,36 +59,41 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Daniel Borkmann <daniel@iogearbox.net> wrote:
-> On 8/31/22 7:26 PM, Alexei Starovoitov wrote:
-> > On Wed, Aug 31, 2022 at 8:53 AM Florian Westphal <fw@strlen.de> wrote:
-> > As a minimum we shouldn't step on the same rakes.
-> > xt_ebpf would be the same dead code as xt_bpf.
-> 
-> +1, and on top, the user experience will just be horrible. :(
+Hi,
 
-Compared to what?
+this set consists of two fixes to issues that were either pointed out on
+indirectly (John was reviewing AF_XDP selftests that were testing ice's
+ZC support) mailing list or were directly reported by customers.
 
-> > > If you are open to BPF_PROG_TYPE_NETFILTER I can go that route
-> > > as well, raw bpf program attachment via NF_HOOK and the bpf dispatcher,
-> > > but it will take significantly longer to get there.
-> > > 
-> > > It involves reviving
-> > > https://lore.kernel.org/netfilter-devel/20211014121046.29329-1-fw@strlen.de/
-> > 
-> > I missed it earlier. What is the end goal ?
-> > Optimize nft run-time with on the fly generation of bpf byte code ?
-> 
-> Or rather to provide a pendant to nft given existence of xt_bpf, and the
-> latter will be removed at some point? (If so, can't we just deprecate the
-> old xt_bpf?)
+First patch allows user space to see done descriptor in CQ even after a
+single frame being transmitted and second patch removes the need for
+having HW rings sized to power of 2 number of descriptors when used
+against AF_XDP.
 
-See my reply to Alexey, immediate goal was to get rid of the indirect
-calls by providing a tailored/jitted equivalent of nf_hook_slow().
+I also forgot to mention that due to the current Tx cleaning algorithm,
+4k HW ring was broken and these two patches bring it back to life, so we
+kill two birds with one stone.
 
-The next step could be to allow implementation of netfilter hooks
-(i.e., kernel modules that call nf_register_net_hook()) in bpf
-but AFAIU it requires addition of BPF_PROG_TYPE_NETFILTER etc.
+v3:
+- make sure patches apply to net
 
-After that, yes, one could think about how to jit nft_do_chain() and
-all the rest of the nft machinery.
+v2:
+- remove doubled fixes tag from patch 1
+- add Alasdair to CC as he reported need for bigger rings used with
+  AF_XDP ZC
+
+Thanks!
+Maciej
+
+Maciej Fijalkowski (2):
+  ice: xsk: change batched Tx descriptor cleaning
+  ice: xsk: drop power of 2 ring size restriction for AF_XDP
+
+ drivers/net/ethernet/intel/ice/ice_txrx.c |   2 +-
+ drivers/net/ethernet/intel/ice/ice_xsk.c  | 163 +++++++++-------------
+ drivers/net/ethernet/intel/ice/ice_xsk.h  |   7 +-
+ 3 files changed, 71 insertions(+), 101 deletions(-)
+
+-- 
+2.34.1
+
