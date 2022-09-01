@@ -2,58 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C160B5A95FA
-	for <lists+bpf@lfdr.de>; Thu,  1 Sep 2022 13:49:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 983775A9943
+	for <lists+bpf@lfdr.de>; Thu,  1 Sep 2022 15:43:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233157AbiIALtI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Sep 2022 07:49:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58990 "EHLO
+        id S233595AbiIANnD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Sep 2022 09:43:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233034AbiIALsm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 1 Sep 2022 07:48:42 -0400
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5CD613970F;
-        Thu,  1 Sep 2022 04:48:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1662032912; x=1693568912;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=8/bu0Sa1gHfv92mY1RdhiDRB0bnAsrV4aqbf5PhQi3c=;
-  b=DKu7gcjv8yLv3iPfC/XIdz2zKcF1XVKnnyX2uHALF9NjLxZAssCdeWXa
-   Ji4i9fTfyb3YpMCid7JfY/DMGmAYW0fddZUdXbcJ8/83s4UaIn2CClS21
-   vVydykPhoZ79ugYUppAsw672Fw0MY1tjQbuc6bAxXmObe/jKsCBETBnqs
-   66L747UgDGKUBWC58Pg+w/6XHt2otfhL5CCzTGvAUgkE/1YeWVXEyyCfZ
-   Yi2z7MCdwYeEfs3QqFE4zu9wpverF3+a1pp5Hk6W1byVPIAonV/mHUqEg
-   9X8plGMQre1zWZy5QRasal1bSBMmuYvSEPgcPe6z6Ed6b00Gkst77wUDf
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10456"; a="357410403"
-X-IronPort-AV: E=Sophos;i="5.93,280,1654585200"; 
-   d="scan'208";a="357410403"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2022 04:48:31 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,280,1654585200"; 
-   d="scan'208";a="673814410"
-Received: from boxer.igk.intel.com ([10.102.20.173])
-  by fmsmga008.fm.intel.com with ESMTP; 01 Sep 2022 04:48:29 -0700
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org
-Cc:     netdev@vger.kernel.org, magnus.karlsson@intel.com,
-        bjorn@kernel.org, john.fastabend@gmail.com,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Subject: [PATCH v6 bpf-next 6/6] selftests: xsk: add support for zero copy testing
-Date:   Thu,  1 Sep 2022 13:48:13 +0200
-Message-Id: <20220901114813.16275-7-maciej.fijalkowski@intel.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20220901114813.16275-1-maciej.fijalkowski@intel.com>
-References: <20220901114813.16275-1-maciej.fijalkowski@intel.com>
+        with ESMTP id S232895AbiIANmk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 1 Sep 2022 09:42:40 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32A4286077
+        for <bpf@vger.kernel.org>; Thu,  1 Sep 2022 06:42:01 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 5FA24B826E4
+        for <bpf@vger.kernel.org>; Thu,  1 Sep 2022 13:41:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FFE3C433C1;
+        Thu,  1 Sep 2022 13:41:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1662039718;
+        bh=WpGvwJpnsLt2icgJsAk+6krfw2chqtjgQsgN5j+1HsI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=eiw07sji+41sUwEcJEGsiHouq0+G/a1xp+SA6ZtpUQLKfK1AvmNWFiOvgd+c/AVfs
+         xEpmtk1No/vXwItPIU29JjTQ67avd+iqrR+UR7RWIs4CojIdUJT66x0eaey+VFD97T
+         J/gZHxcWUpnS7Gs1u71YCzu8R2iX/55X6vpkYqMmUKa8h0NAX3t5n3PPnpf+lFUA5S
+         f7i31cVUzqvvN0DJ/uE0N+HAcw1GKYictFGR9DYFcEw1r+EO14ZkKSo85JyKazM7Yo
+         rJnVsL0+icJFTlFvZpfUy8dGJDdOeuPCesf4Uj3ZJiceayZe/Kw8l3c+64ZUFQ62dA
+         dsTunqb3ZDl7g==
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [PATCHv2 bpf-next 0/2] bpf,ftrace: bpf dispatcher function fix
+Date:   Thu,  1 Sep 2022 15:41:48 +0200
+Message-Id: <20220901134150.418203-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,162 +61,30 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Introduce new mode to xdpxceiver responsible for testing AF_XDP zero
-copy support of driver that serves underlying physical device. When
-setting up test suite, determine whether driver has ZC support or not by
-trying to bind XSK ZC socket to the interface. If it succeeded,
-interpret it as ZC support being in place and do softirq and busy poll
-tests for zero copy mode.
+hi,
+as discussed [1] sending fix that moves bpf dispatcher function of out
+ftrace locations together with Peter's HAVE_DYNAMIC_FTRACE_NO_PATCHABLE
+dependency change.
 
-Note that Rx dropped tests are skipped since ZC path is not touching
-rx_dropped stat at all.
+v2 changes:
+  - fixing s390x CI build failure by enabling attributes
+    only for x86_64 [Ilya Leoshkevic]
 
-Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
-Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+thanks,
+jirka
+
+
+[1] https://lore.kernel.org/bpf/20220722110811.124515-1-jolsa@kernel.org/
 ---
- tools/testing/selftests/bpf/xskxceiver.c | 76 ++++++++++++++++++++++--
- tools/testing/selftests/bpf/xskxceiver.h |  2 +
- 2 files changed, 74 insertions(+), 4 deletions(-)
+Jiri Olsa (1):
+      bpf: Move bpf_dispatcher function out of ftrace locations
 
-diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/selftests/bpf/xskxceiver.c
-index 74b21ddf5a98..ef33309bbe49 100644
---- a/tools/testing/selftests/bpf/xskxceiver.c
-+++ b/tools/testing/selftests/bpf/xskxceiver.c
-@@ -124,9 +124,20 @@ static void __exit_with_error(int error, const char *file, const char *func, int
- }
- 
- #define exit_with_error(error) __exit_with_error(error, __FILE__, __func__, __LINE__)
--
--#define mode_string(test) (test)->ifobj_tx->xdp_flags & XDP_FLAGS_SKB_MODE ? "SKB" : "DRV"
- #define busy_poll_string(test) (test)->ifobj_tx->busy_poll ? "BUSY-POLL " : ""
-+static char *mode_string(struct test_spec *test)
-+{
-+	switch (test->mode) {
-+	case TEST_MODE_SKB:
-+		return "SKB";
-+	case TEST_MODE_DRV:
-+		return "DRV";
-+	case TEST_MODE_ZC:
-+		return "ZC";
-+	default:
-+		return "BOGUS";
-+	}
-+}
- 
- static void report_failure(struct test_spec *test)
- {
-@@ -322,6 +333,51 @@ static int __xsk_configure_socket(struct xsk_socket_info *xsk, struct xsk_umem_i
- 	return xsk_socket__create(&xsk->xsk, ifobject->ifname, 0, umem->umem, rxr, txr, &cfg);
- }
- 
-+static bool ifobj_zc_avail(struct ifobject *ifobject)
-+{
-+	size_t umem_sz = DEFAULT_UMEM_BUFFERS * XSK_UMEM__DEFAULT_FRAME_SIZE;
-+	int mmap_flags = MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE;
-+	struct xsk_socket_info *xsk;
-+	struct xsk_umem_info *umem;
-+	bool zc_avail = false;
-+	void *bufs;
-+	int ret;
-+
-+	bufs = mmap(NULL, umem_sz, PROT_READ | PROT_WRITE, mmap_flags, -1, 0);
-+	if (bufs == MAP_FAILED)
-+		exit_with_error(errno);
-+
-+	umem = calloc(1, sizeof(struct xsk_umem_info));
-+	if (!umem) {
-+		munmap(bufs, umem_sz);
-+		exit_with_error(-ENOMEM);
-+	}
-+	umem->frame_size = XSK_UMEM__DEFAULT_FRAME_SIZE;
-+	ret = xsk_configure_umem(umem, bufs, umem_sz);
-+	if (ret)
-+		exit_with_error(-ret);
-+
-+	xsk = calloc(1, sizeof(struct xsk_socket_info));
-+	if (!xsk)
-+		goto out;
-+	ifobject->xdp_flags = XDP_FLAGS_UPDATE_IF_NOEXIST;
-+	ifobject->xdp_flags |= XDP_FLAGS_DRV_MODE;
-+	ifobject->bind_flags = XDP_USE_NEED_WAKEUP | XDP_ZEROCOPY;
-+	ifobject->rx_on = true;
-+	xsk->rxqsize = XSK_RING_CONS__DEFAULT_NUM_DESCS;
-+	ret = __xsk_configure_socket(xsk, umem, ifobject, false);
-+	if (!ret)
-+		zc_avail = true;
-+
-+	xsk_socket__delete(xsk->xsk);
-+	free(xsk);
-+out:
-+	munmap(umem->buffer, umem_sz);
-+	xsk_umem__delete(umem->umem);
-+	free(umem);
-+	return zc_avail;
-+}
-+
- static struct option long_options[] = {
- 	{"interface", required_argument, 0, 'i'},
- 	{"busy-poll", no_argument, 0, 'b'},
-@@ -488,9 +544,14 @@ static void test_spec_init(struct test_spec *test, struct ifobject *ifobj_tx,
- 		else
- 			ifobj->xdp_flags |= XDP_FLAGS_DRV_MODE;
- 
--		ifobj->bind_flags = XDP_USE_NEED_WAKEUP | XDP_COPY;
-+		ifobj->bind_flags = XDP_USE_NEED_WAKEUP;
-+		if (mode == TEST_MODE_ZC)
-+			ifobj->bind_flags |= XDP_ZEROCOPY;
-+		else
-+			ifobj->bind_flags |= XDP_COPY;
- 	}
- 
-+	test->mode = mode;
- 	__test_spec_init(test, ifobj_tx, ifobj_rx);
- }
- 
-@@ -1664,6 +1725,10 @@ static void run_pkt_test(struct test_spec *test, enum test_mode mode, enum test_
- {
- 	switch (type) {
- 	case TEST_TYPE_STATS_RX_DROPPED:
-+		if (mode == TEST_MODE_ZC) {
-+			ksft_test_result_skip("Can not run RX_DROPPED test for ZC mode\n");
-+			return;
-+		}
- 		testapp_stats_rx_dropped(test);
- 		break;
- 	case TEST_TYPE_STATS_TX_INVALID_DESCS:
-@@ -1860,8 +1925,11 @@ int main(int argc, char **argv)
- 	init_iface(ifobj_rx, MAC2, MAC1, IP2, IP1, UDP_PORT2, UDP_PORT1,
- 		   worker_testapp_validate_rx);
- 
--	if (is_xdp_supported(ifobj_tx))
-+	if (is_xdp_supported(ifobj_tx)) {
- 		modes++;
-+		if (ifobj_zc_avail(ifobj_tx))
-+			modes++;
-+	}
- 
- 	test_spec_init(&test, ifobj_tx, ifobj_rx, 0);
- 	tx_pkt_stream_default = pkt_stream_generate(ifobj_tx->umem, DEFAULT_PKT_CNT, PKT_SIZE);
-diff --git a/tools/testing/selftests/bpf/xskxceiver.h b/tools/testing/selftests/bpf/xskxceiver.h
-index 11f017785986..edb76d2def9f 100644
---- a/tools/testing/selftests/bpf/xskxceiver.h
-+++ b/tools/testing/selftests/bpf/xskxceiver.h
-@@ -62,6 +62,7 @@
- enum test_mode {
- 	TEST_MODE_SKB,
- 	TEST_MODE_DRV,
-+	TEST_MODE_ZC,
- 	TEST_MODE_MAX
- };
- 
-@@ -167,6 +168,7 @@ struct test_spec {
- 	u16 current_step;
- 	u16 nb_sockets;
- 	bool fail;
-+	enum test_mode mode;
- 	char name[MAX_TEST_NAME_SIZE];
- };
- 
--- 
-2.34.1
+Peter Zijlstra (Intel) (1):
+      ftrace: Add HAVE_DYNAMIC_FTRACE_NO_PATCHABLE
 
+ arch/x86/Kconfig                  |  1 +
+ include/asm-generic/vmlinux.lds.h | 11 ++++++++++-
+ include/linux/bpf.h               |  8 ++++++++
+ kernel/trace/Kconfig              |  6 ++++++
+ tools/objtool/check.c             |  3 ++-
+ 5 files changed, 27 insertions(+), 2 deletions(-)
