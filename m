@@ -2,81 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 994835A8C39
-	for <lists+bpf@lfdr.de>; Thu,  1 Sep 2022 06:15:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D97EB5A8D39
+	for <lists+bpf@lfdr.de>; Thu,  1 Sep 2022 07:18:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229498AbiIAEP3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Sep 2022 00:15:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49310 "EHLO
+        id S232983AbiIAFSp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Sep 2022 01:18:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231211AbiIAEP1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 1 Sep 2022 00:15:27 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 649F52ED58;
-        Wed, 31 Aug 2022 21:15:22 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id s11so20884543edd.13;
-        Wed, 31 Aug 2022 21:15:22 -0700 (PDT)
+        with ESMTP id S229746AbiIAFSg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 1 Sep 2022 01:18:36 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9AE8109090;
+        Wed, 31 Aug 2022 22:18:33 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id w18so12447375qki.8;
+        Wed, 31 Aug 2022 22:18:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=5JSpU1QR2YVELHFzvSSyyf2pVK2J22SigUM2w1BDKSc=;
-        b=HHTdkimlsO8d5i+9a9C62dYNhCVIDoasqJPBl+1Ci5DORlMl5s0ewUa1M2r76LeL9P
-         57MCShbyOsPYCJC8qsLDv6gJEOPOFxdec7Y5kjfjUR38G61oO8WbbJyt9ILu9rsonr6P
-         4f4/aoh3yPQXpzlrcp1jw38/FQ8lIJ9gmV3QzCKzlVWMR/nUOPcYfG44XW5rUGl1lwBT
-         Fq+SjXsYQo5yV8fGJmIGB/fDcAlVZg9BUZ6MoqvdoTbIBriGCvS08R/hvGD7R0XdaL5C
-         ZHiUQJYPOp+H1rfgwTCgiLadQWKjkZVwpN7MLf7fCfA8rKz6fPo4A5OyHofUejikBBxg
-         HXig==
+         :mime-version:from:to:cc:subject:date;
+        bh=uJN9pb7rprQ3Gc27MWDANcZXB9um/YbpQ3D1DbShuFk=;
+        b=nHT54Ai4WgBBeRKUFudNPXLH7cFO1Nz1vcHiy5oF16LxVVazKqfyM/PLQzCA07EX3c
+         6NF2qws42ylPRR2tgFaHjBk/wQYPpzcHvRglwEIExejYJbLcbgw/g3G9cPACfOeyLfRD
+         kzyE0kUUUwOsrWhDrj/YBhJQLXU7bXBhhYpZXgYmBSccq5D9oMsEHuCYX8yFsrMUCZH1
+         CIgo63wUTgvXVG6KetPqBKv4OiLOjTlttqBey63BlGb3AH8vVLfuQ2fnTiWxJSA//58Z
+         +qSQ2Sn2c6tav2vZ8depzxZcqJW0oa5Dsf9pRjl/QDkKrwJDTuf9CdcOsdZUDCganwku
+         gJHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=5JSpU1QR2YVELHFzvSSyyf2pVK2J22SigUM2w1BDKSc=;
-        b=5Fk6ynNKZDXzn+c7Z+ZzSSy/R65hb2TaZA1C3IdqgMCCqkvNbrbRfLFfibTHpxIg3G
-         Cq0lsgmRF/osfcC56pCULfvf6L62J2nZgSw6lXhS6QhAmYUjM6zmU9K9FiJJ44qnHz6j
-         qoZaroBZ0spNnfqA9eGJyuXYMC5rICRMn4YmtE5BTLbv3pgg3zA7mQLmlo51ktnRkNFJ
-         7JuCRt1BrCCN2E6EPtngd7hPiWYuUXBjzcgVNESbtPkl+ioFfa+esYDAYpllBHu7BPiO
-         sVQ1ExEemb6b2aaUiMcFZHC8PKm/kK48t6ALQZ+lQ8gwawDOWMhCoE36AcUlbG4/5IT+
-         D8yA==
-X-Gm-Message-State: ACgBeo13xKFxfBoMb9S2x5lNgVCDMNm8mCFOEZ8dZsV4X90+GqLk1jRx
-        6zuDuMO5c1Byu3PxOXvrcfeapinhehW6mJUtmQQ=
-X-Google-Smtp-Source: AA6agR4qfIZbsIxB5vAtgKbtbizFNfSi9/4OOkflwc7Ld+WvJXNJpXsrW4Es6OlINw66dA2471PUDgLTa9cjvXB6L2s=
-X-Received: by 2002:a05:6402:28cb:b0:43b:c6d7:ef92 with SMTP id
- ef11-20020a05640228cb00b0043bc6d7ef92mr27420244edb.333.1662005720762; Wed, 31
- Aug 2022 21:15:20 -0700 (PDT)
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=uJN9pb7rprQ3Gc27MWDANcZXB9um/YbpQ3D1DbShuFk=;
+        b=l9E2hN8pignmskhimYqTLwRuoUiS7HaLpiyDbCE2QT8K47TDGvpQ5Ob+o+CjbcF2F6
+         P/77O989CspnSmNfaFUzfC9nXmiPx7GitZTlhgx+AkvthHe0Bpo4fiNU3dwexvM2HDGV
+         jEhFlkR31dkcUgsziY24KglqXSTYTnwLsKnIUnbIT7SIc4X2XhcmCcXvdn7Kep2EfJ4o
+         HerT3iNE6r3TyYlxhdTPzVpLCEspCgP9F75DJ3z4i6waz1Q2Gm31+85dHehYpghGeWYj
+         Mu4QLMYJZDQ0gkxS/mrP2+ZHzu7dmN55K/JrFkdJ+VM/hGKzA5vQ+HzHy7jA4znRD49X
+         jZuQ==
+X-Gm-Message-State: ACgBeo2WK0vLeA2VGzEYf2xX+xu72dz3wdWJXtSL9tnFmI0bSEqoCoEd
+        5AN4QJ5ggQMcwCOCqiuRQE28rEX/ptiGT7hltq4=
+X-Google-Smtp-Source: AA6agR6AdC+MzLwcwV0Hf/oJm8mb970XPtArxOTOVRrtSe0m8u+jnpLpQIT35Moe9q3hqYsnHNqsKT3mXXsJ3MUaexI=
+X-Received: by 2002:a05:620a:1786:b0:6bb:38b2:b1d7 with SMTP id
+ ay6-20020a05620a178600b006bb38b2b1d7mr18289148qkb.510.1662009512690; Wed, 31
+ Aug 2022 22:18:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220824134055.1328882-1-benjamin.tissoires@redhat.com>
- <20220824134055.1328882-2-benjamin.tissoires@redhat.com> <CAADnVQKgkFpLh_URJn6qCiAONteA1dwZHd6=4cZn15g1JCAPag@mail.gmail.com>
- <CAP01T75ec_T0M6DU=JE2tfNsWRZuPSMu_7JHA7ZoOBw5eDh1Bg@mail.gmail.com>
- <CAO-hwJLd9wXx+ppccBYPKZDymO0sk++Nt2E3-R97PY7LbfJfTg@mail.gmail.com>
- <CAADnVQK8dS+2KbWsqktvxoNKhHtdD5UPiaWVfNu=ESdn_OHpgQ@mail.gmail.com> <CAO-hwJK9uHTWCg3_6jrPF6UKiamkNfj=cuH5mHauoLX+0udV9w@mail.gmail.com>
-In-Reply-To: <CAO-hwJK9uHTWCg3_6jrPF6UKiamkNfj=cuH5mHauoLX+0udV9w@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 31 Aug 2022 21:15:09 -0700
-Message-ID: <CAADnVQLuL045Sxdvh8kfcNkmD55+Wz8fHU3RtH+oQyOgePU5Pw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v9 01/23] bpf/verifier: allow all functions to
- read user provided context
-To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Joe Stringer <joe@cilium.io>, Jonathan Corbet <corbet@lwn.net>,
-        Tero Kristo <tero.kristo@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+References: <20220831101617.22329-1-fw@strlen.de> <87v8q84nlq.fsf@toke.dk>
+ <20220831125608.GA8153@breakpoint.cc> <87o7w04jjb.fsf@toke.dk>
+ <20220831135757.GC8153@breakpoint.cc> <87ilm84goh.fsf@toke.dk>
+ <20220831152624.GA15107@breakpoint.cc> <CAADnVQJp5RJ0kZundd5ag-b3SDYir8cF4R_nVbN8Zj9Rcn0rww@mail.gmail.com>
+ <20220831155341.GC15107@breakpoint.cc> <CAADnVQJGQmu02f5B=mc1xJvVWSmk_GNZj9WAUskekykmyo8FzA@mail.gmail.com>
+ <1cc40302-f006-31a7-b270-30813b8f4b67@iogearbox.net>
+In-Reply-To: <1cc40302-f006-31a7-b270-30813b8f4b67@iogearbox.net>
+From:   Eyal Birger <eyal.birger@gmail.com>
+Date:   Thu, 1 Sep 2022 08:18:20 +0300
+Message-ID: <CAHsH6GtCgb1getXASkqzN75cNfm7_GOg8Mng5ZY37yK99XBVMQ@mail.gmail.com>
+Subject: Re: [PATCH nf-next] netfilter: nf_tables: add ebpf expression
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Florian Westphal <fw@strlen.de>
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         Network Development <netdev@vger.kernel.org>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>,
+        netfilter-devel <netfilter-devel@vger.kernel.org>,
         bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+        Shmulik Ladkani <shmulik.ladkani@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -88,298 +79,70 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 31, 2022 at 10:56 AM Benjamin Tissoires
-<benjamin.tissoires@redhat.com> wrote:
+On Thu, Sep 1, 2022 at 1:16 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
 >
-> On Wed, Aug 31, 2022 at 6:37 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
+> On 8/31/22 7:26 PM, Alexei Starovoitov wrote:
+> > On Wed, Aug 31, 2022 at 8:53 AM Florian Westphal <fw@strlen.de> wrote:
+> >> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> >>>> 1 and 2 have the upside that its easy to handle a 'file not found'
+> >>>> error.
+> >>>
+> >>> I'm strongly against calling into bpf from the inner guts of nft.
+> >>> Nack to all options discussed in this thread.
+> >>> None of them make any sense.
+> >>
+> >> -v please.  I can just rework userspace to allow going via xt_bpf
+> >> but its brain damaged.
 > >
-> > On Tue, Aug 30, 2022 at 7:29 AM Benjamin Tissoires
-> > <benjamin.tissoires@redhat.com> wrote:
-> > >
-> > > On Fri, Aug 26, 2022 at 3:51 AM Kumar Kartikeya Dwivedi
-> > > <memxor@gmail.com> wrote:
-> > > >
-> > > > On Fri, 26 Aug 2022 at 03:42, Alexei Starovoitov
-> > > > <alexei.starovoitov@gmail.com> wrote:
-> > > > >
-> > > > > On Wed, Aug 24, 2022 at 6:41 AM Benjamin Tissoires
-> > > > > <benjamin.tissoires@redhat.com> wrote:
-> > > > > >
-> > > > > > When a function was trying to access data from context in a syscall eBPF
-> > > > > > program, the verifier was rejecting the call unless it was accessing the
-> > > > > > first element.
-> > > > > > This is because the syscall context is not known at compile time, and
-> > > > > > so we need to check this when actually accessing it.
-> > > > > >
-> > > > > > Check for the valid memory access if there is no convert_ctx callback,
-> > > > > > and allow such situation to happen.
-> > > > > >
-> > > > > > There is a slight hiccup with subprogs. btf_check_subprog_arg_match()
-> > > > > > will check that the types are matching, which is a good thing, but to
-> > > > > > have an accurate result, it hides the fact that the context register may
-> > > > > > be null. This makes env->prog->aux->max_ctx_offset being set to the size
-> > > > > > of the context, which is incompatible with a NULL context.
-> > > > > >
-> > > > > > Solve that last problem by storing max_ctx_offset before the type check
-> > > > > > and restoring it after.
-> > > > > >
-> > > > > > Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > > > > > Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-> > > > > >
-> > > > > > ---
-> > > > > >
-> > > > > > changes in v9:
-> > > > > > - rewrote the commit title and description
-> > > > > > - made it so all functions can make use of context even if there is
-> > > > > >   no convert_ctx
-> > > > > > - remove the is_kfunc field in bpf_call_arg_meta
-> > > > > >
-> > > > > > changes in v8:
-> > > > > > - fixup comment
-> > > > > > - return -EACCESS instead of -EINVAL for consistency
-> > > > > >
-> > > > > > changes in v7:
-> > > > > > - renamed access_t into atype
-> > > > > > - allow zero-byte read
-> > > > > > - check_mem_access() to the correct offset/size
-> > > > > >
-> > > > > > new in v6
-> > > > > > ---
-> > > > > >  kernel/bpf/btf.c      | 11 ++++++++++-
-> > > > > >  kernel/bpf/verifier.c | 19 +++++++++++++++++++
-> > > > > >  2 files changed, 29 insertions(+), 1 deletion(-)
-> > > > > >
-> > > > > > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> > > > > > index 903719b89238..386300f52b23 100644
-> > > > > > --- a/kernel/bpf/btf.c
-> > > > > > +++ b/kernel/bpf/btf.c
-> > > > > > @@ -6443,8 +6443,8 @@ int btf_check_subprog_arg_match(struct bpf_verifier_env *env, int subprog,
-> > > > > >  {
-> > > > > >         struct bpf_prog *prog = env->prog;
-> > > > > >         struct btf *btf = prog->aux->btf;
-> > > > > > +       u32 btf_id, max_ctx_offset;
-> > > > > >         bool is_global;
-> > > > > > -       u32 btf_id;
-> > > > > >         int err;
-> > > > > >
-> > > > > >         if (!prog->aux->func_info)
-> > > > > > @@ -6457,9 +6457,18 @@ int btf_check_subprog_arg_match(struct bpf_verifier_env *env, int subprog,
-> > > > > >         if (prog->aux->func_info_aux[subprog].unreliable)
-> > > > > >                 return -EINVAL;
-> > > > > >
-> > > > > > +       /* subprogs arguments are not actually accessing the data, we need
-> > > > > > +        * to check for the types if they match.
-> > > > > > +        * Store the max_ctx_offset and restore it after btf_check_func_arg_match()
-> > > > > > +        * given that this function will have a side effect of changing it.
-> > > > > > +        */
-> > > > > > +       max_ctx_offset = env->prog->aux->max_ctx_offset;
-> > > > > > +
-> > > > > >         is_global = prog->aux->func_info_aux[subprog].linkage == BTF_FUNC_GLOBAL;
-> > > > > >         err = btf_check_func_arg_match(env, btf, btf_id, regs, is_global, 0);
-> > > > > >
-> > > > > > +       env->prog->aux->max_ctx_offset = max_ctx_offset;
-> > > > >
-> > > > > I don't understand this.
-> > > > > If we pass a ctx into a helper and it's going to
-> > > > > access [0..N] bytes from it why do we need to hide it?
-> > > > > max_ctx_offset will be used later raw_tp, tp, syscall progs
-> > > > > to determine whether it's ok to load them.
-> > > > > By hiding the actual size of access somebody can construct
-> > > > > a prog that reads out of bounds.
-> > > > > How is this related to NULL-ness property?
-> > > >
-> > > > Same question, was just typing exactly the same thing.
-> > >
-> > > The test I have that is failing in patch 2/23 is the following, with
-> > > args being set to NULL by userspace:
-> > >
-> > > SEC("syscall")
-> > > int kfunc_syscall_test_null(struct syscall_test_args *args)
-> > > {
-> > >        bpf_kfunc_call_test_mem_len_pass1(args, 0);
-> > >
-> > >        return 0;
-> > > }
-> > >
-> > > Basically:
-> > > if userspace declares the following:
-> > >  DECLARE_LIBBPF_OPTS(bpf_test_run_opts, syscall_topts,
-> > >                .ctx_in = NULL,
-> > >                .ctx_size_in = 0,
-> > >        );
-> > >
-> > > The verifier is happy with the current released kernel:
-> > > kfunc_syscall_test_fail() never dereferences the ctx pointer, it just
-> > > passes it around to bpf_kfunc_call_test_mem_len_pass1(), which in turn
-> > > is also happy because it says it is not accessing the data at all (0
-> > > size memory parameter).
-> > >
-> > > In the current code, check_helper_mem_access() actually returns
-> > > -EINVAL, but doesn't change max_ctx_offset (it's still at the value of
-> > > 0 here). The program is now marked as unreliable, but the verifier
-> > > goes on.
-> > >
-> > > When adding this patch, if we declare a syscall eBPF (or any other
-> > > function that doesn't have env->ops->convert_ctx_access), the previous
-> > > "test" is failing because this ensures the syscall program has to have
-> > > a valid ctx pointer.
-> > > btf_check_func_arg_match() now calls check_mem_access() which
-> > > basically validates the fact that the program can dereference the ctx.
-> > >
-> > > So now, without the max_ctx_offset store/restore, the verifier
-> > > enforces that the provided ctx is not null.
-> > >
-> > > What I thought that would happen was that if we were to pass a NULL
-> > > context from userspace, but the eBPF program dereferences it (or in
-> > > that case have a subprog or a function call that dereferences it),
-> > > then max_ctx_offset would still be set to the proper value because of
-> > > that internal dereference, and so the verifier would reject with
-> > > -EINVAL the call to the eBPF program.
-> > >
-> > > If I add another test that has the following ebpf prog (with ctx_in
-> > > being set to NULL by the userspace):
-> > >
-> > > SEC("syscall")
-> > > int kfunc_syscall_test_null_fail(struct syscall_test_args *args)
-> > > {
-> > >        bpf_kfunc_call_test_mem_len_pass1(args, sizeof(*args));
-> > >
-> > >        return 0;
-> > > }
-> > >
-> > > Then the call of the program is actually failing with -EINVAL, even
-> > > with this patch.
-> > >
-> > > But again, if setting from userspace a ctx of NULL with a 0 size is
-> > > not considered as valid, then we can just drop that hunk and add a
-> > > test to enforce it.
+> > Right. xt_bpf was a dead end from the start.
+> > It's time to deprecate it and remove it.
 > >
-> > PTR_TO_CTX in the verifier always means valid pointer.
-> > All code paths in the verifier assumes that it's not NULL.
-> > Pointer to skb, to xdp, to pt_regs, etc.
-> > The syscall prog type is little bit special, since it
-> > makes sense not to pass any argument to such prog.
-> > So ctx_size_in == 0 is enforced after the verification:
-> > if (ctx_size_in < prog->aux->max_ctx_offset ||
-> >     ctx_size_in > U16_MAX)
-> >           return -EINVAL;
-> > The verifier should be able to proceed assuming ctx != NULL
-> > and remember max max_ctx_offset.
-> > If max_ctx_offset == 4 and ctx_size_in == 0 then
-> > it doesn't matter whether the actual 'ctx' pointer is NULL
-> > or points to a valid memory.
-> > So it's ok for the verifier to assume ctx != NULL everywhere.
->
-> Ok, thanks for the detailed explanation.
->
+> >> This helps gradually moving towards move epbf for those that
+> >> still heavily rely on the classic forwarding path.
 > >
-> > Back to the issue at hand.
-> > With this patch the line:
-> >     bpf_kfunc_call_test_mem_len_pass1(args, sizeof(*args));
-> > will be seen as access_size == sizeof(*args), right?
-> > So this part:
-> > +                       if (access_size == 0)
-> > +                               return zero_size_allowed ? 0 : -EACCES;
+> > No one is using it.
+> > If it was, we would have seen at least one bug report over
+> > all these years. We've seen none.
 > >
-> > will be skipped and
-> > the newly added check_mem_access() will call check_ctx_access()
-> > which will call syscall_prog_is_valid_access() and it will say
-> > that any off < U16_MAX is fine and will simply
-> > record max max_ctx_offset.
-> > The ctx_size_in < prog->aux->max_ctx_offset check is done later.
+> > tbh we had a fair share of wrong design decisions that look
+> > very reasonable early on and turned out to be useless with
+> > zero users.
+> > BPF_PROG_TYPE_SCHED_ACT and BPF_PROG_TYPE_LWT*
+> > are in this category. > All this code does is bit rot.
 >
-> Yep, this is correct and this is working now, with a proper error (and
-> no, this is not the error I am trying to fix, see below):
+> +1
 >
-> eBPF prog:
-> ```
->   SEC("?syscall")
->   int kfunc_syscall_test_null_fail(struct syscall_test_args *args)
->   {
->           bpf_kfunc_call_test_mem_len_pass1(args, sizeof(*args));
->           return 0;
->   }
-> ```
+> > As a minimum we shouldn't step on the same rakes.
+> > xt_ebpf would be the same dead code as xt_bpf.
 >
-> before this patch (1/23):
-> * with ctx not NULL:
-> libbpf: prog 'kfunc_syscall_test_null_fail': BPF program load failed:
-> Invalid argument
-> R1 type=ctx expected=fp
-> arg#0 arg#1 memory, len pair leads to invalid memory access
+> +1, and on top, the user experience will just be horrible. :(
 >
->  => this is not correct, we expect the program to be loaded (and it is
-> expected, this is the bug that is fixed)
->
-> * Same result with ctx being NULL from the caller
->
-> With just the hunk in kernel/bpf/verifier.c (so without touching max_ctx_offset:
-> * with ctx not NULL:
-> program is loaded, and executed correctly
->
-> * with ctx being NULL:
-> program is now loaded, but execution returns -EINVAL, as expected
->
-> So this case is fully solved by just the hunk in verifier.c
->
-> With the full patch:
-> same results, with or without ctx being set to NULL, so no side effects.
->
+> >> If you are open to BPF_PROG_TYPE_NETFILTER I can go that route
+> >> as well, raw bpf program attachment via NF_HOOK and the bpf dispatcher,
+> >> but it will take significantly longer to get there.
+> >>
+> >> It involves reviving
+> >> https://lore.kernel.org/netfilter-devel/20211014121046.29329-1-fw@strlen.de/
 > >
-> > So when you're saying:
-> > "call of the program is actually failing with -EINVAL"
-> > that's the check you're referring to?
+> > I missed it earlier. What is the end goal ?
+> > Optimize nft run-time with on the fly generation of bpf byte code ?
 >
-> No. I am referring to the following eBPF program:
-> ```
->   SEC("syscall")
->   int kfunc_syscall_test_null(struct syscall_test_args *args)
->   {
->            return 0;
->   }
-> ```
->
-> (no calls, just the declaration of a program)
->
-> This one is supposed to be loaded and properly run whatever the
-> context is, right?
+> Or rather to provide a pendant to nft given existence of xt_bpf, and the
+> latter will be removed at some point? (If so, can't we just deprecate the
+> old xt_bpf?)
 
-Got it. Yes. Indeed.
-The if (!env->ops->convert_ctx_access)
-hunk alone would break existing progs because of
-side effect of max_ctx_offset.
-We have this unfortunate bit of code:
-                ret = btf_check_subprog_arg_match(env, subprog, regs);
-                if (ret == -EFAULT)
-                        /* unlikely verifier bug. abort.
-                         * ret == 0 and ret < 0 are sadly acceptable for
-                         * main() function due to backward compatibility.
-                         * Like socket filter program may be written as:
-                         * int bpf_prog(struct pt_regs *ctx)
-                         * and never dereference that ctx in the program.
-                         * 'struct pt_regs' is a type mismatch for socket
-                         * filter that should be using 'struct __sk_buff'.
-                         */
-                        goto out;
+FWIW we've been using both lwt bpf and xt_bpf on our production workloads
+for a few years now.
 
-because btf_check_subprog_arg_match() is used to match arguments
-for calling into a function and when the verifier just starts
-to analyze a function.
-Before this patch the btf_check_subprog_arg_match() would just
-EINVAL on your above example and will proceed,
-but with the patch the non zero max_ctx_offset will
-disallow execution later and break things.
-I think we need to clean up this bit of code.
-Just save/restore of max_ctx_offset isn't going to work.
-How about adding a flag to btf_check_subprog_arg_match
-to indicate whether the verifier is processing 'call' insn
-or just starting processing a function body and
-then do
-if (ptr_to_mem_ok && processing_call) ?
-Still feels like a hack.
-Maybe btf_check_func_arg_match() needs to be split to
-disambiguate calling vs processing the body ?
-And may cleanup the rest of that function ?
-Like all of if (is_kfunc) applies only to 'calling' case.
-Other ideas?
+xt_bpf allows us to apply custom sophisticated policy logic at connection
+establishment - which is not really possible (or efficient) using
+iptables/nft constructs - without needing to reinvent all the facilities that
+nf provides like connection tracking, ALGs, and simple filtering.
+
+As for lwt bpf, We use it for load balancing towards collect md tunnels.
+While this can be done at tc egress for unfragmented packets, the lwt out hook -
+when used in tandem with nf fragment reassembly - provides a hooking point
+where a bpf program can see reassembled packets and load balance based on
+their internals.
+
+Eyal.
