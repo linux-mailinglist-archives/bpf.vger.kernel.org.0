@@ -2,1957 +2,320 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4BDE5AA334
-	for <lists+bpf@lfdr.de>; Fri,  2 Sep 2022 00:38:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 946A85AA348
+	for <lists+bpf@lfdr.de>; Fri,  2 Sep 2022 00:46:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232332AbiIAWiB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Sep 2022 18:38:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38640 "EHLO
+        id S234321AbiIAWqS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Sep 2022 18:46:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233070AbiIAWiA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 1 Sep 2022 18:38:00 -0400
-Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51B26647DC
-        for <bpf@vger.kernel.org>; Thu,  1 Sep 2022 15:37:57 -0700 (PDT)
-Received: from submission (posteo.de [185.67.36.169]) 
-        by mout02.posteo.de (Postfix) with ESMTPS id D4CDD240103
-        for <bpf@vger.kernel.org>; Fri,  2 Sep 2022 00:23:04 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1662070984; bh=v07XyIoCyurtDQcEWDAHcOvxyZzJ4T0PCtKZCwKf4nc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=VCPqf8MBg1VQfhx/vTPQWWKpU0mkGg8IQeJNlvoRLvq8rD++XdnWvXzgqZFr+TN1V
-         zP3uzddFdSgQOXf2VtJrFRyg2XWN1O3TlCFn6DkAkW6G37uTmKk2IDcOSeSD+GyrZC
-         qSN1+/YAgB6y+9+O3EwArHMRdscx+MYiyFeyQPvxl7gNFbEaKVbpCifEvJnAZGUM6K
-         u0uNFbxBdPlWDA6EaSlAAbdeb4l5H+zhcWmI1UYeEYMFrzNQoVo0BHnubeeus7BuJl
-         A+mErt39VMCeJzndhBkR0ZGtVaxiWIWtjuMpxD+oHiXzvZV3VlkDLM1kOwHLi9idh4
-         w/mJ9buDaC/6Q==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4MJbCW3wV7z6tmW;
-        Fri,  2 Sep 2022 00:23:03 +0200 (CEST)
-From:   =?UTF-8?q?Daniel=20M=C3=BCller?= <deso@posteo.net>
-To:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kafai@fb.com, kernel-team@fb.com
-Cc:     deso@posteo.net
-Subject: [PATCH bpf-next v3] selftests/bpf: Store BPF object files with .bpf.o extension
-Date:   Thu,  1 Sep 2022 22:22:53 +0000
-Message-Id: <20220901222253.1199242-1-deso@posteo.net>
+        with ESMTP id S233582AbiIAWqP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 1 Sep 2022 18:46:15 -0400
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87DEC6E2E3
+        for <bpf@vger.kernel.org>; Thu,  1 Sep 2022 15:46:13 -0700 (PDT)
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 281McJDp017570
+        for <bpf@vger.kernel.org>; Thu, 1 Sep 2022 15:46:12 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=zvgFsVRlA+JaKwspu0y2PcYRwAVHbieJJdMbKRwvhlo=;
+ b=Ta48KTM2qbdEas36m2jfbEyKtsntR1JcaemwS6q06qObjcYw6jset7l8XQnWAnCwbZg0
+ HMMgEShE9RDK7P1FT4skGyQcamDwppiRJBDiUNvH6X/+5Y8m/m/aEpt5OmIAYHTbp4dp
+ MkZYUYPe1UqU322g84gGXfI2+nItbTAmrKs= 
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2177.outbound.protection.outlook.com [104.47.56.177])
+        by m0001303.ppops.net (PPS) with ESMTPS id 3jaur6cn56-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 01 Sep 2022 15:46:12 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EI9DU7tG1TUnNN6spPRdgFeIjOlQaoJXxVLlmPm0tUjhsMQSEACmNaKUNP7ao5O/Ubv5iye1fRzbJl6rk3toBBeuL1nuaBPRJKKXCtk0nLheAcBs6+xu0GYCP2lfw5WmB0512PIzLyqWAQA4DnyLPlA5qRuNebXsiCKBzRo9oxdibjtxBnZ7IW40+4+F7L1GiQjfylYIhvuLFS8+Mj86ZnlHXa4iKQvzqroCpBKoWXqIQgsV3vNQVqR7bgpYjd/mpqJKiagGDiXkpu89vL4bW06oRL8ULtbbNlkQYyaesr9UmTmn8e0JPUjWzCT6T+aPQDRwuexbS4KIX2Y06yu5Eg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=zvgFsVRlA+JaKwspu0y2PcYRwAVHbieJJdMbKRwvhlo=;
+ b=APdLPdbIAj8dO0cRoTZlIrzlhqOwt3+rsbqIM84eY4L+voMTPkmkJOGMy/wXdiTbglXbBDBneOAeam1swAkvS3izcQDxNqMSjaDh3Ye/PVLyaV5Osu2OD/y0NUpIeX1YF8n2RNVfJjL3qMWEgiJKO+/bveEsvP4XawD7CsNXGEN8osnFL/LGa7pJgyMWr/A/cL98/lW2SrQxp1bbBvCzeXYvBpfoi0DoIG5Pq8YQYL6yHdoTXMjQm8BbC6UfhpBHQcSfm94w8MXMfzLtrLXU5X2tqBMZiq+BDYTJbigcKfrOs0b7AU1ETdif2Utpj/JyIk8htWBnKlyDA8OaJvEVRQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from SJ0PR15MB5154.namprd15.prod.outlook.com (2603:10b6:a03:423::6)
+ by MWHPR15MB1280.namprd15.prod.outlook.com (2603:10b6:320:24::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5588.12; Thu, 1 Sep
+ 2022 22:46:09 +0000
+Received: from SJ0PR15MB5154.namprd15.prod.outlook.com
+ ([fe80::f830:c4f2:86dc:9b4]) by SJ0PR15MB5154.namprd15.prod.outlook.com
+ ([fe80::f830:c4f2:86dc:9b4%7]) with mapi id 15.20.5588.011; Thu, 1 Sep 2022
+ 22:46:09 +0000
+From:   Delyan Kratunov <delyank@fb.com>
+To:     "alexei.starovoitov@gmail.com" <alexei.starovoitov@gmail.com>
+CC:     "tj@kernel.org" <tj@kernel.org>,
+        "joannelkoong@gmail.com" <joannelkoong@gmail.com>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        "memxor@gmail.com" <memxor@gmail.com>,
+        Kernel Team <Kernel-team@fb.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: Re: [PATCH v3 bpf-next 00/15] bpf: BPF specific memory allocator,
+ UAPI in particular
+Thread-Topic: [PATCH v3 bpf-next 00/15] bpf: BPF specific memory allocator,
+ UAPI in particular
+Thread-Index: AQHYuB2D39OSH+rKI0eOgpEXWGYdfK3AkV6AgAXZ6gCAAAvjgIAAE9SAgAAHqQCAAAmYAIAAAa6AgAAFQ4CAAAXNAIAACbqAgAAf+YCAABiXAIAAEOgAgADxRACAAFsNgIABBsIAgAAXdACAACK7AIAAc8eAgAE6ZgA=
+Date:   Thu, 1 Sep 2022 22:46:09 +0000
+Message-ID: <11121127244abee0df337777367a6928d95faece.camel@fb.com>
+References: <CAADnVQLXji_sK8rURTeJJzoM4E40iXNKeEwfK-bB-CMUZcz90Q@mail.gmail.com>
+         <CAP01T746jPM1r=fSVJBG-iW=pQAW8JAzLzocnB_GDkb3HKZ+Aw@mail.gmail.com>
+         <CAADnVQKAG80STa=iHTBT8NpQWBw=3Hs8nRwq6Vy=zOLjP8YHqw@mail.gmail.com>
+         <1e05c903cc12d3dd9e53cb96698a18d12d8c6927.camel@fb.com>
+         <CAADnVQJUTybKJQ=2jR4UjjC_8yom_B7cWAOGEWDDRcoJSZJ7AQ@mail.gmail.com>
+         <CAP01T76N+6cRMNM=hEKwVkhrjSv5cuzp7F-uT3WEa710Ry5Tdg@mail.gmail.com>
+         <CAADnVQLZaJmNyvQKvzG0ezfgPO9P+zG+WKk0cfdEgT3cqF3dZw@mail.gmail.com>
+         <73ec48e4c4956d97744b17d77d61392f7227b78d.camel@fb.com>
+         <20220831015247.lf3quucbhg53dxts@macbook-pro-4.dhcp.thefacebook.com>
+         <094a932af88d5e0a7e0ceb895ec9b2ad640a4f71.camel@fb.com>
+         <20220831185710.pngpynntwvjrmm6g@MacBook-Pro-4.local.dhcp.thefacebook.com>
+         <e37a3f11074245b04b086f3d9877ca08f0fef7dd.camel@fb.com>
+         <CAADnVQJOh4qW=yrK5PsC9EH=gG8jmrQrF+e=1W1BJZ9jJQi3jA@mail.gmail.com>
+In-Reply-To: <CAADnVQJOh4qW=yrK5PsC9EH=gG8jmrQrF+e=1W1BJZ9jJQi3jA@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: a7daaee5-e603-4cf5-bd45-08da8c6bc34d
+x-ms-traffictypediagnostic: MWHPR15MB1280:EE_
+x-fb-source: Internal
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: m9/6Y805yw2vVTZIo0dmIfli9oHBdKdPiFOSUPz5fyS8KB6Z4iK+rartElILIUuNlqTNzM50+SdsixiUCcflG90eHIv6uaUlCBXrvwyooF4exEBmiH1jGPaPWQCpTADV0MXhTA6SI67b0UKSfuu6WjllstxZAvbMIwWt+ImxhUbhTTSn2Rlsa7Gy02ccMDhFtGwFM4YxM20y1UPH/rY8SrL8qHAmdfZlpKgglHlvhP8575hFqEKOd2/amYUGjsa2QA/wAssUrZF7ascddfvDIMjTJpZ3gA6GKwSNgg3ibTexCo1ACFfzBtoLMETOLjy5Zk/qGC9L2uh2eDXbK4b49gBadMjsKhWa+rK8luaAxKxDvn/vpNB5XV1DqOU7lUD2yfPjjlRvsXB9A1A9ayL5sstiNxHoA9GKxckWb3v9p3Zx05Ep6w3kGAqrFANr+KPP3v6/SUeAWhAa6UratL0bVuLc7vFb6nS1gkUnZVQdmDNqyT2exbr9IqH7AUSv4Bovfb7TRk6PFvrFbTKtJC6nC+h5ha7v4PGV9UG38v2uix8k4K7Y85BjXbkAqudOFxmLbAaxKr8RK3Wcw/DrmnrW2my7eKW2n7J0UMvu4l2jr4Z/B7dsKyNZOIDz0sKq7nSf0Pb7lEieyo/N+y92wpXR5khVMbnWQZovinpHr9te24a7mW5pFnG8jfwp7eQKcm7zYrJWz4kzzBfcsb6hth/GX+V9iGCjv3NQT6j92vItYTEN9Whqc7dKuuSEnMmAAiicFMmXUbmtV9mBKxgFSXRoKw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR15MB5154.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(366004)(396003)(136003)(376002)(39860400002)(346002)(6506007)(6512007)(71200400001)(53546011)(478600001)(6486002)(41300700001)(83380400001)(2906002)(186003)(2616005)(8936002)(5660300002)(316002)(6916009)(54906003)(4326008)(76116006)(66446008)(66556008)(64756008)(66476007)(66946007)(8676002)(122000001)(36756003)(86362001)(38070700005)(38100700002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Wk5aWHVMUTkydVQvbzVVcnBIRmI5Z2UwaEdSYkpyMCs5SFREc2hhWE5jRjdy?=
+ =?utf-8?B?Y2tqdUNFamVoOUVUR1czV2I4ZXRYSGpOT0pzcUZlblBOdE1TdTRJK05EZDJk?=
+ =?utf-8?B?TlBmbUVBR3dMZ0NidHN3YWFRYUFtRXl5eGlrMXR5TC9VWlpCUGxsSmFHSW5O?=
+ =?utf-8?B?K1VvMkJKejA4dXVheE12MW9GaUVPc0JnUkI2UnBXWllzUTRPTnpqZ0VyWmNi?=
+ =?utf-8?B?Q2NWTXpidjJ0RU9mQW4xd1RhdmZaT21Femd2MEVGSlNNOUI1SEhtNzc2ZkpT?=
+ =?utf-8?B?STJacW1uK3VvTXJabmpVVUp4YTE0Nml5am5xK1ZodWNjRHRYc2RpMnhXRXlh?=
+ =?utf-8?B?azdOaERiUlR6NGlhbFoyZEcyamQ1LzJpQ0hvcDBNMExhQkk0dlp3aXowQzFB?=
+ =?utf-8?B?M3BDUXFzV0lXdjd0UXhxNkJ6Z3FVcGRONkFYQmZMNHY0N3ZZY1ZaQUh0MkJ3?=
+ =?utf-8?B?Q2xoa1NtOHh4VHhsRS83VkpXVS9YZnBjZnVBZEx6VXJ0WUdjOXRYN1pWWlRE?=
+ =?utf-8?B?Tm5CV1BOejd4Mmx3ZWYvaGZBM1ora2NjeVUzbGpRY2VweTBndFUyalpvejJl?=
+ =?utf-8?B?WEJqRUdLTFJMZ2N0c2pKdXltbjN6bDkwam1tSWtpZDBIYzJzbVJ5WW1jWWM0?=
+ =?utf-8?B?SDE2SCticU4wZGVZeGhycjVOSHdFVWVSaHN2QWJvYVFibExjdXVTY2VKYVNC?=
+ =?utf-8?B?ai9EV3V3S0pWTVArdDA1clFPMnpUc0d3Q1hIOUlVWk9hSWFQTUlwWFg3SkJV?=
+ =?utf-8?B?TTYxNng4YTJ5dEo3OTBjQ0l5Qit1aUtRSDRQak5zSXhJTzBjRDNSRTRTRDda?=
+ =?utf-8?B?SlNJQVNTZVB3Wk1QT2tjVW5OL242WUVjQis1emJOK2JZNjJwUGFxZm5sTzZD?=
+ =?utf-8?B?WnpWWlJKZXdIYVRMYk5EZmYzQndDb2lwcDZsdDBYMTBGcXFXODVaNWxhaDc3?=
+ =?utf-8?B?Ry8zNkY3akt5K0ZkZkc4UEFqUWJCbzMrTGxMUXYxRktSUTRQZWhETkdJM2ZT?=
+ =?utf-8?B?VVhkTlJnbTF0T3ZWcUdmZFFVOUNmeHBVOElFaUFjY3dEUWo5cCtOdXJBZS9y?=
+ =?utf-8?B?RDg3bThQbHdBdzlRNGNka3lndFhCVXdUMFRvWHdZRlZISUpQMjIrRytPWkJw?=
+ =?utf-8?B?N1RiUVQzcXd6QURKNmkyYUpVNkErZE5mSWpqSi9sQ2x6RmlYY3JURDFuZHVJ?=
+ =?utf-8?B?STB3QTdTMHZHR0E4R2hMUGp2S2lRd3crREdiUloycDgxNnBnb1pudG4vakhV?=
+ =?utf-8?B?ekRERTFZOVllSk03elY4NzhnUjJseEZCakRySURiSGlTN0ZLNWpjYm8rTWZK?=
+ =?utf-8?B?NDVaeUQwQkRCRW02MVpqZ2pVYzh5di9KMFltRG1oS2ZqYUNjWnF2ajFMNFdj?=
+ =?utf-8?B?RGdoSEp0alVaKysxcURkYnhlTUovd2dnTzJFNFNrQ2FIeVBKdk9jS3FRRlN2?=
+ =?utf-8?B?RjI0NXdrMFVsSGRDbU1KU3dOS2JRK1RXaGk4VXZJZEhPRXVLQjcwdVgzME1X?=
+ =?utf-8?B?ZmFidWhBWDk3RHNtWng5ajBmaFFvRkFFZWhuMFozRkFFUEhiU1BSZE5sdFZM?=
+ =?utf-8?B?ckJGMk43eGNUTitKYzZwcVU3ZTJvWkdpVE1OVUh1YUh1bnlIeGNtTzdqdFNZ?=
+ =?utf-8?B?STlUUGNHeVdMc1ltQ3RoTHk0SkJLMTk3NmRlYmNVTUlWUmdIRDI5YlQ5STVu?=
+ =?utf-8?B?Wkc0YUF4S09hSUJacGw4eHN1K2ZiK2MyN0J3M3d0YkJYd3pkQStiS3FVMWYz?=
+ =?utf-8?B?U01XdTJNOU5lTnF5UUs3cmxlb2s3bmZhWkZlYTFldW5iNDlPU3F5MFE2VHNO?=
+ =?utf-8?B?ZDR0VzBPTWMySks5Tit3Z2g0c0FzWnBOTlF4UC9lWnFGQ3BTTVFMc1NXS0Y0?=
+ =?utf-8?B?NUFLSTNJRHJqU2NvS21ycDFiS3Bub05sN2Zoa1p5M0d0anFWcWtNRkwrNnRu?=
+ =?utf-8?B?Y2VtQjBWT3gzM3Rpbm8rKzBHU2YxdFdXSEs2ZjhUcXZpbEJxQk9lOUtGVUxZ?=
+ =?utf-8?B?emlXcEhHMWdPaU12MmVBcFI1S3RRZ24xaE5ORlNvRFVBUXdWNGhmN285cGRm?=
+ =?utf-8?B?d3BuczNPTldubXJ2TXRFVDN3RGtFMmVLMWNsbHUvclFKUEVHcmpYaWdWL2Ir?=
+ =?utf-8?B?V2FyTzVhMXRqUDlEWGszdmZoUWtCWTFIQll5Z3Z4YkVuQ0V6N2hzb2Y1T1Bq?=
+ =?utf-8?B?bkE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <29A31C3D1A01D547888CD864AC0DEED5@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-OriginatorOrg: fb.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR15MB5154.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a7daaee5-e603-4cf5-bd45-08da8c6bc34d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Sep 2022 22:46:09.1762
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: +2RqP1Uv/wjqJ8y1C1uNadB+1e0SFUzLjPUXusQ1gMUtrQtWXgiwBcUSw3rbjPKI
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1280
+X-Proofpoint-ORIG-GUID: AWkBW_hBq55KlJXwdY42RIkev55_07Ul
+X-Proofpoint-GUID: AWkBW_hBq55KlJXwdY42RIkev55_07Ul
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-09-01_12,2022-08-31_03,2022-06-22_01
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-BPF object files are, in a way, the final artifact produced as part of
-the ahead-of-time compilation process. That makes them somewhat special
-compared to "regular" object files, which are a intermediate build
-artifacts that can typically be removed safely. As such, it can make
-sense to name them differently to make it easier to spot this difference
-at a glance.
-Among others, libbpf-bootstrap [0] has established the extension .bpf.o
-for BPF object files. It seems reasonable to follow this example and
-establish the same denomination for selftest build artifacts. To that
-end, this change adjusts the corresponding part of the build system and
-the test programs loading BPF object files to work with .bpf.o files.
-
-[0] https://github.com/libbpf/libbpf-bootstrap
-
-Changelog:
-v2 -> v3:
-- adjusted msg call to use proper extension substitution
-- adjusted examples in README.rst to use new extension
-v1 -> v2:
-- fixed up subject; it's only a single patch
-
-Signed-off-by: Daniel Müller <deso@posteo.net>
-Suggested-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/testing/selftests/bpf/Makefile          | 36 ++++-----
- tools/testing/selftests/bpf/README.rst        |  8 +-
- .../selftests/bpf/get_cgroup_id_user.c        |  2 +-
- .../selftests/bpf/prog_tests/bpf_obj_id.c     |  2 +-
- .../bpf/prog_tests/bpf_verif_scale.c          | 54 +++++++-------
- tools/testing/selftests/bpf/prog_tests/btf.c  |  4 +-
- .../selftests/bpf/prog_tests/btf_dump.c       |  6 +-
- .../selftests/bpf/prog_tests/btf_endian.c     |  2 +-
- .../bpf/prog_tests/connect_force_port.c       |  2 +-
- .../selftests/bpf/prog_tests/core_reloc.c     | 74 +++++++++----------
- .../selftests/bpf/prog_tests/fexit_bpf2bpf.c  | 44 +++++------
- .../bpf/prog_tests/get_stack_raw_tp.c         |  4 +-
- .../selftests/bpf/prog_tests/global_data.c    |  2 +-
- .../bpf/prog_tests/global_data_init.c         |  2 +-
- .../bpf/prog_tests/global_func_args.c         |  2 +-
- .../selftests/bpf/prog_tests/kfree_skb.c      |  2 +-
- .../selftests/bpf/prog_tests/l4lb_all.c       |  4 +-
- .../bpf/prog_tests/load_bytes_relative.c      |  2 +-
- .../selftests/bpf/prog_tests/map_lock.c       |  2 +-
- .../selftests/bpf/prog_tests/pinning.c        |  4 +-
- .../selftests/bpf/prog_tests/pkt_access.c     |  2 +-
- .../selftests/bpf/prog_tests/pkt_md_access.c  |  2 +-
- .../selftests/bpf/prog_tests/probe_user.c     |  2 +-
- .../bpf/prog_tests/queue_stack_map.c          |  4 +-
- .../selftests/bpf/prog_tests/rdonly_maps.c    |  2 +-
- .../bpf/prog_tests/reference_tracking.c       |  2 +-
- .../selftests/bpf/prog_tests/resolve_btfids.c |  2 +-
- .../bpf/prog_tests/select_reuseport.c         |  4 +-
- .../selftests/bpf/prog_tests/sk_assign.c      |  2 +-
- .../selftests/bpf/prog_tests/skb_ctx.c        |  2 +-
- .../selftests/bpf/prog_tests/skb_helpers.c    |  2 +-
- .../bpf/prog_tests/sockopt_inherit.c          |  2 +-
- .../selftests/bpf/prog_tests/sockopt_multi.c  |  2 +-
- .../selftests/bpf/prog_tests/spinlock.c       |  2 +-
- .../selftests/bpf/prog_tests/stacktrace_map.c |  2 +-
- .../bpf/prog_tests/stacktrace_map_raw_tp.c    |  2 +-
- .../selftests/bpf/prog_tests/tailcalls.c      | 20 ++---
- .../bpf/prog_tests/task_fd_query_rawtp.c      |  2 +-
- .../bpf/prog_tests/task_fd_query_tp.c         |  2 +-
- .../selftests/bpf/prog_tests/tcp_estats.c     |  2 +-
- .../bpf/prog_tests/test_global_funcs.c        | 34 ++++-----
- .../selftests/bpf/prog_tests/test_overhead.c  |  2 +-
- .../bpf/prog_tests/tp_attach_query.c          |  2 +-
- .../bpf/prog_tests/trampoline_count.c         |  2 +-
- tools/testing/selftests/bpf/prog_tests/xdp.c  |  2 +-
- .../bpf/prog_tests/xdp_adjust_frags.c         |  2 +-
- .../bpf/prog_tests/xdp_adjust_tail.c          | 10 +--
- .../selftests/bpf/prog_tests/xdp_attach.c     |  2 +-
- .../selftests/bpf/prog_tests/xdp_info.c       |  2 +-
- .../selftests/bpf/prog_tests/xdp_perf.c       |  2 +-
- .../selftests/bpf/prog_tests/xdp_synproxy.c   |  2 +-
- .../selftests/bpf/progs/fexit_bpf2bpf.c       |  8 +-
- tools/testing/selftests/bpf/test_dev_cgroup.c |  2 +-
- .../selftests/bpf/test_lirc_mode2_user.c      |  2 +-
- tools/testing/selftests/bpf/test_maps.c       | 10 +--
- tools/testing/selftests/bpf/test_offload.py   | 22 +++---
- .../selftests/bpf/test_skb_cgroup_id.sh       |  2 +-
- tools/testing/selftests/bpf/test_sock_addr.c  | 16 ++--
- tools/testing/selftests/bpf/test_sockmap.c    |  4 +-
- tools/testing/selftests/bpf/test_sysctl.c     |  6 +-
- .../selftests/bpf/test_tcp_check_syncookie.sh |  2 +-
- .../selftests/bpf/test_tcpnotify_user.c       |  2 +-
- .../selftests/bpf/test_xdp_redirect.sh        |  8 +-
- .../selftests/bpf/test_xdp_redirect_multi.sh  |  2 +-
- tools/testing/selftests/bpf/test_xdp_veth.sh  |  8 +-
- .../selftests/bpf/xdp_redirect_multi.c        |  2 +-
- tools/testing/selftests/bpf/xdp_synproxy.c    |  2 +-
- tools/testing/selftests/bpf/xdping.c          |  2 +-
- 68 files changed, 241 insertions(+), 241 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index eecad9..c10adec 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -45,7 +45,7 @@ ifneq ($(BPF_GCC),)
- TEST_GEN_PROGS += test_progs-bpf_gcc
- endif
- 
--TEST_GEN_FILES = test_lwt_ip_encap.o test_tc_edt.o
-+TEST_GEN_FILES = test_lwt_ip_encap.bpf.o test_tc_edt.bpf.o
- TEST_FILES = xsk_prereqs.sh $(wildcard progs/btf_dump_test_case_*.c)
- 
- # Order correspond to 'make run_tests' order
-@@ -358,17 +358,17 @@ LSKELS := kfunc_call_test.c fentry_test.c fexit_test.c fexit_sleep.c \
- LSKELS_EXTRA := test_ksyms_module.c test_ksyms_weak.c kfunc_call_test_subprog.c
- SKEL_BLACKLIST += $$(LSKELS)
- 
--test_static_linked.skel.h-deps := test_static_linked1.o test_static_linked2.o
--linked_funcs.skel.h-deps := linked_funcs1.o linked_funcs2.o
--linked_vars.skel.h-deps := linked_vars1.o linked_vars2.o
--linked_maps.skel.h-deps := linked_maps1.o linked_maps2.o
-+test_static_linked.skel.h-deps := test_static_linked1.bpf.o test_static_linked2.bpf.o
-+linked_funcs.skel.h-deps := linked_funcs1.bpf.o linked_funcs2.bpf.o
-+linked_vars.skel.h-deps := linked_vars1.bpf.o linked_vars2.bpf.o
-+linked_maps.skel.h-deps := linked_maps1.bpf.o linked_maps2.bpf.o
- # In the subskeleton case, we want the test_subskeleton_lib.subskel.h file
- # but that's created as a side-effect of the skel.h generation.
--test_subskeleton.skel.h-deps := test_subskeleton_lib2.o test_subskeleton_lib.o test_subskeleton.o
--test_subskeleton_lib.skel.h-deps := test_subskeleton_lib2.o test_subskeleton_lib.o
--test_usdt.skel.h-deps := test_usdt.o test_usdt_multispec.o
-+test_subskeleton.skel.h-deps := test_subskeleton_lib2.bpf.o test_subskeleton_lib.bpf.o test_subskeleton.bpf.o
-+test_subskeleton_lib.skel.h-deps := test_subskeleton_lib2.bpf.o test_subskeleton_lib.bpf.o
-+test_usdt.skel.h-deps := test_usdt.bpf.o test_usdt_multispec.bpf.o
- 
--LINKED_BPF_SRCS := $(patsubst %.o,%.c,$(foreach skel,$(LINKED_SKELS),$($(skel)-deps)))
-+LINKED_BPF_SRCS := $(patsubst %.bpf.o,%.c,$(foreach skel,$(LINKED_SKELS),$($(skel)-deps)))
- 
- # Set up extra TRUNNER_XXX "temporary" variables in the environment (relies on
- # $eval()) and pass control to DEFINE_TEST_RUNNER_RULES.
-@@ -386,7 +386,7 @@ TRUNNER_EXTRA_OBJS := $$(patsubst %.c,$$(TRUNNER_OUTPUT)/%.o,		\
- TRUNNER_EXTRA_HDRS := $$(filter %.h,$(TRUNNER_EXTRA_SOURCES))
- TRUNNER_TESTS_HDR := $(TRUNNER_TESTS_DIR)/tests.h
- TRUNNER_BPF_SRCS := $$(notdir $$(wildcard $(TRUNNER_BPF_PROGS_DIR)/*.c))
--TRUNNER_BPF_OBJS := $$(patsubst %.c,$$(TRUNNER_OUTPUT)/%.o, $$(TRUNNER_BPF_SRCS))
-+TRUNNER_BPF_OBJS := $$(patsubst %.c,$$(TRUNNER_OUTPUT)/%.bpf.o, $$(TRUNNER_BPF_SRCS))
- TRUNNER_BPF_SKELS := $$(patsubst %.c,$$(TRUNNER_OUTPUT)/%.skel.h,	\
- 				 $$(filter-out $(SKEL_BLACKLIST) $(LINKED_BPF_SRCS),\
- 					       $$(TRUNNER_BPF_SRCS)))
-@@ -416,7 +416,7 @@ endif
- # input/output directory combination
- ifeq ($($(TRUNNER_BPF_PROGS_DIR)$(if $2,-)$2-bpfobjs),)
- $(TRUNNER_BPF_PROGS_DIR)$(if $2,-)$2-bpfobjs := y
--$(TRUNNER_BPF_OBJS): $(TRUNNER_OUTPUT)/%.o:				\
-+$(TRUNNER_BPF_OBJS): $(TRUNNER_OUTPUT)/%.bpf.o:				\
- 		     $(TRUNNER_BPF_PROGS_DIR)/%.c			\
- 		     $(TRUNNER_BPF_PROGS_DIR)/*.h			\
- 		     $$(INCLUDE_DIR)/vmlinux.h				\
-@@ -426,25 +426,25 @@ $(TRUNNER_BPF_OBJS): $(TRUNNER_OUTPUT)/%.o:				\
- 	$$(call $(TRUNNER_BPF_BUILD_RULE),$$<,$$@,			\
- 					  $(TRUNNER_BPF_CFLAGS))
- 
--$(TRUNNER_BPF_SKELS): %.skel.h: %.o $(BPFTOOL) | $(TRUNNER_OUTPUT)
-+$(TRUNNER_BPF_SKELS): %.skel.h: %.bpf.o $(BPFTOOL) | $(TRUNNER_OUTPUT)
- 	$$(call msg,GEN-SKEL,$(TRUNNER_BINARY),$$@)
- 	$(Q)$$(BPFTOOL) gen object $$(<:.o=.linked1.o) $$<
- 	$(Q)$$(BPFTOOL) gen object $$(<:.o=.linked2.o) $$(<:.o=.linked1.o)
- 	$(Q)$$(BPFTOOL) gen object $$(<:.o=.linked3.o) $$(<:.o=.linked2.o)
- 	$(Q)diff $$(<:.o=.linked2.o) $$(<:.o=.linked3.o)
--	$(Q)$$(BPFTOOL) gen skeleton $$(<:.o=.linked3.o) name $$(notdir $$(<:.o=)) > $$@
--	$(Q)$$(BPFTOOL) gen subskeleton $$(<:.o=.linked3.o) name $$(notdir $$(<:.o=)) > $$(@:.skel.h=.subskel.h)
-+	$(Q)$$(BPFTOOL) gen skeleton $$(<:.o=.linked3.o) name $$(notdir $$(<:.bpf.o=)) > $$@
-+	$(Q)$$(BPFTOOL) gen subskeleton $$(<:.o=.linked3.o) name $$(notdir $$(<:.bpf.o=)) > $$(@:.skel.h=.subskel.h)
- 
--$(TRUNNER_BPF_LSKELS): %.lskel.h: %.o $(BPFTOOL) | $(TRUNNER_OUTPUT)
-+$(TRUNNER_BPF_LSKELS): %.lskel.h: %.bpf.o $(BPFTOOL) | $(TRUNNER_OUTPUT)
- 	$$(call msg,GEN-SKEL,$(TRUNNER_BINARY),$$@)
- 	$(Q)$$(BPFTOOL) gen object $$(<:.o=.llinked1.o) $$<
- 	$(Q)$$(BPFTOOL) gen object $$(<:.o=.llinked2.o) $$(<:.o=.llinked1.o)
- 	$(Q)$$(BPFTOOL) gen object $$(<:.o=.llinked3.o) $$(<:.o=.llinked2.o)
- 	$(Q)diff $$(<:.o=.llinked2.o) $$(<:.o=.llinked3.o)
--	$(Q)$$(BPFTOOL) gen skeleton -L $$(<:.o=.llinked3.o) name $$(notdir $$(<:.o=_lskel)) > $$@
-+	$(Q)$$(BPFTOOL) gen skeleton -L $$(<:.o=.llinked3.o) name $$(notdir $$(<:.bpf.o=_lskel)) > $$@
- 
- $(TRUNNER_BPF_SKELS_LINKED): $(TRUNNER_BPF_OBJS) $(BPFTOOL) | $(TRUNNER_OUTPUT)
--	$$(call msg,LINK-BPF,$(TRUNNER_BINARY),$$(@:.skel.h=.o))
-+	$$(call msg,LINK-BPF,$(TRUNNER_BINARY),$$(@:.skel.h=.bpf.o))
- 	$(Q)$$(BPFTOOL) gen object $$(@:.skel.h=.linked1.o) $$(addprefix $(TRUNNER_OUTPUT)/,$$($$(@F)-deps))
- 	$(Q)$$(BPFTOOL) gen object $$(@:.skel.h=.linked2.o) $$(@:.skel.h=.linked1.o)
- 	$(Q)$$(BPFTOOL) gen object $$(@:.skel.h=.linked3.o) $$(@:.skel.h=.linked2.o)
-@@ -500,7 +500,7 @@ $(OUTPUT)/$(TRUNNER_BINARY): $(TRUNNER_TEST_OBJS)			\
- 			     | $(TRUNNER_BINARY)-extras
- 	$$(call msg,BINARY,,$$@)
- 	$(Q)$$(CC) $$(CFLAGS) $$(filter %.a %.o,$$^) $$(LDLIBS) -o $$@
--	$(Q)$(RESOLVE_BTFIDS) --btf $(TRUNNER_OUTPUT)/btf_data.o $$@
-+	$(Q)$(RESOLVE_BTFIDS) --btf $(TRUNNER_OUTPUT)/btf_data.bpf.o $$@
- 	$(Q)ln -sf $(if $2,..,.)/tools/build/bpftool/bootstrap/bpftool $(if $2,$2/)bpftool
- 
- endef
-diff --git a/tools/testing/selftests/bpf/README.rst b/tools/testing/selftests/bpf/README.rst
-index eb1b75..d3c6b3d 100644
---- a/tools/testing/selftests/bpf/README.rst
-+++ b/tools/testing/selftests/bpf/README.rst
-@@ -126,11 +126,11 @@ available in 10.0.1. The patch is available in llvm 11.0.0 trunk.
- 
- __  https://reviews.llvm.org/D78466
- 
--bpf_verif_scale/loop6.o test failure with Clang 12
--==================================================
-+bpf_verif_scale/loop6.bpf.o test failure with Clang 12
-+======================================================
- 
- With Clang 12, the following bpf_verif_scale test failed:
--  * ``bpf_verif_scale/loop6.o``
-+  * ``bpf_verif_scale/loop6.bpf.o``
- 
- The verifier output looks like
- 
-@@ -245,7 +245,7 @@ See `kernel llvm reloc`_ for more explanation and some examples.
- Using clang 13 to compile old libbpf which has static linker support,
- there will be a compilation failure::
- 
--  libbpf: ELF relo #0 in section #6 has unexpected type 2 in .../bpf_tcp_nogpl.o
-+  libbpf: ELF relo #0 in section #6 has unexpected type 2 in .../bpf_tcp_nogpl.bpf.o
- 
- Here, ``type 2`` refers to new relocation type ``R_BPF_64_ABS64``.
- To fix this issue, user newer libbpf.
-diff --git a/tools/testing/selftests/bpf/get_cgroup_id_user.c b/tools/testing/selftests/bpf/get_cgroup_id_user.c
-index e021cc6..156743 100644
---- a/tools/testing/selftests/bpf/get_cgroup_id_user.c
-+++ b/tools/testing/selftests/bpf/get_cgroup_id_user.c
-@@ -48,7 +48,7 @@ static int bpf_find_map(const char *test, struct bpf_object *obj,
- int main(int argc, char **argv)
- {
- 	const char *probe_name = "syscalls/sys_enter_nanosleep";
--	const char *file = "get_cgroup_id_kern.o";
-+	const char *file = "get_cgroup_id_kern.bpf.o";
- 	int err, bytes, efd, prog_fd, pmu_fd;
- 	int cgroup_fd, cgidmap_fd, pidmap_fd;
- 	struct perf_event_attr attr = {};
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_obj_id.c b/tools/testing/selftests/bpf/prog_tests/bpf_obj_id.c
-index dbe56f..e1c1e5 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_obj_id.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_obj_id.c
-@@ -7,7 +7,7 @@ void serial_test_bpf_obj_id(void)
- {
- 	const __u64 array_magic_value = 0xfaceb00c;
- 	const __u32 array_key = 0;
--	const char *file = "./test_obj_id.o";
-+	const char *file = "./test_obj_id.bpf.o";
- 	const char *expected_prog_name = "test_obj_id";
- 	const char *expected_map_name = "test_map_id";
- 	const __u64 nsec_per_sec = 1000000000;
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c b/tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c
-index ff6cce..5ca252 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c
-@@ -75,45 +75,45 @@ static void scale_test(const char *file,
- 
- void test_verif_scale1()
- {
--	scale_test("test_verif_scale1.o", BPF_PROG_TYPE_SCHED_CLS, false);
-+	scale_test("test_verif_scale1.bpf.o", BPF_PROG_TYPE_SCHED_CLS, false);
- }
- 
- void test_verif_scale2()
- {
--	scale_test("test_verif_scale2.o", BPF_PROG_TYPE_SCHED_CLS, false);
-+	scale_test("test_verif_scale2.bpf.o", BPF_PROG_TYPE_SCHED_CLS, false);
- }
- 
- void test_verif_scale3()
- {
--	scale_test("test_verif_scale3.o", BPF_PROG_TYPE_SCHED_CLS, false);
-+	scale_test("test_verif_scale3.bpf.o", BPF_PROG_TYPE_SCHED_CLS, false);
- }
- 
- void test_verif_scale_pyperf_global()
- {
--	scale_test("pyperf_global.o", BPF_PROG_TYPE_RAW_TRACEPOINT, false);
-+	scale_test("pyperf_global.bpf.o", BPF_PROG_TYPE_RAW_TRACEPOINT, false);
- }
- 
- void test_verif_scale_pyperf_subprogs()
- {
--	scale_test("pyperf_subprogs.o", BPF_PROG_TYPE_RAW_TRACEPOINT, false);
-+	scale_test("pyperf_subprogs.bpf.o", BPF_PROG_TYPE_RAW_TRACEPOINT, false);
- }
- 
- void test_verif_scale_pyperf50()
- {
- 	/* full unroll by llvm */
--	scale_test("pyperf50.o", BPF_PROG_TYPE_RAW_TRACEPOINT, false);
-+	scale_test("pyperf50.bpf.o", BPF_PROG_TYPE_RAW_TRACEPOINT, false);
- }
- 
- void test_verif_scale_pyperf100()
- {
- 	/* full unroll by llvm */
--	scale_test("pyperf100.o", BPF_PROG_TYPE_RAW_TRACEPOINT, false);
-+	scale_test("pyperf100.bpf.o", BPF_PROG_TYPE_RAW_TRACEPOINT, false);
- }
- 
- void test_verif_scale_pyperf180()
- {
- 	/* full unroll by llvm */
--	scale_test("pyperf180.o", BPF_PROG_TYPE_RAW_TRACEPOINT, false);
-+	scale_test("pyperf180.bpf.o", BPF_PROG_TYPE_RAW_TRACEPOINT, false);
- }
- 
- void test_verif_scale_pyperf600()
-@@ -124,13 +124,13 @@ void test_verif_scale_pyperf600()
- 	 * 16k insns in loop body.
- 	 * Total of 5 such loops. Total program size ~82k insns.
- 	 */
--	scale_test("pyperf600.o", BPF_PROG_TYPE_RAW_TRACEPOINT, false);
-+	scale_test("pyperf600.bpf.o", BPF_PROG_TYPE_RAW_TRACEPOINT, false);
- }
- 
- void test_verif_scale_pyperf600_bpf_loop(void)
- {
- 	/* use the bpf_loop helper*/
--	scale_test("pyperf600_bpf_loop.o", BPF_PROG_TYPE_RAW_TRACEPOINT, false);
-+	scale_test("pyperf600_bpf_loop.bpf.o", BPF_PROG_TYPE_RAW_TRACEPOINT, false);
- }
- 
- void test_verif_scale_pyperf600_nounroll()
-@@ -141,37 +141,37 @@ void test_verif_scale_pyperf600_nounroll()
- 	 * ~110 insns in loop body.
- 	 * Total of 5 such loops. Total program size ~1500 insns.
- 	 */
--	scale_test("pyperf600_nounroll.o", BPF_PROG_TYPE_RAW_TRACEPOINT, false);
-+	scale_test("pyperf600_nounroll.bpf.o", BPF_PROG_TYPE_RAW_TRACEPOINT, false);
- }
- 
- void test_verif_scale_loop1()
- {
--	scale_test("loop1.o", BPF_PROG_TYPE_RAW_TRACEPOINT, false);
-+	scale_test("loop1.bpf.o", BPF_PROG_TYPE_RAW_TRACEPOINT, false);
- }
- 
- void test_verif_scale_loop2()
- {
--	scale_test("loop2.o", BPF_PROG_TYPE_RAW_TRACEPOINT, false);
-+	scale_test("loop2.bpf.o", BPF_PROG_TYPE_RAW_TRACEPOINT, false);
- }
- 
- void test_verif_scale_loop3_fail()
- {
--	scale_test("loop3.o", BPF_PROG_TYPE_RAW_TRACEPOINT, true /* fails */);
-+	scale_test("loop3.bpf.o", BPF_PROG_TYPE_RAW_TRACEPOINT, true /* fails */);
- }
- 
- void test_verif_scale_loop4()
- {
--	scale_test("loop4.o", BPF_PROG_TYPE_SCHED_CLS, false);
-+	scale_test("loop4.bpf.o", BPF_PROG_TYPE_SCHED_CLS, false);
- }
- 
- void test_verif_scale_loop5()
- {
--	scale_test("loop5.o", BPF_PROG_TYPE_SCHED_CLS, false);
-+	scale_test("loop5.bpf.o", BPF_PROG_TYPE_SCHED_CLS, false);
- }
- 
- void test_verif_scale_loop6()
- {
--	scale_test("loop6.o", BPF_PROG_TYPE_KPROBE, false);
-+	scale_test("loop6.bpf.o", BPF_PROG_TYPE_KPROBE, false);
- }
- 
- void test_verif_scale_strobemeta()
-@@ -180,54 +180,54 @@ void test_verif_scale_strobemeta()
- 	 * Total program size 20.8k insn.
- 	 * ~350k processed_insns
- 	 */
--	scale_test("strobemeta.o", BPF_PROG_TYPE_RAW_TRACEPOINT, false);
-+	scale_test("strobemeta.bpf.o", BPF_PROG_TYPE_RAW_TRACEPOINT, false);
- }
- 
- void test_verif_scale_strobemeta_bpf_loop(void)
- {
- 	/* use the bpf_loop helper*/
--	scale_test("strobemeta_bpf_loop.o", BPF_PROG_TYPE_RAW_TRACEPOINT, false);
-+	scale_test("strobemeta_bpf_loop.bpf.o", BPF_PROG_TYPE_RAW_TRACEPOINT, false);
- }
- 
- void test_verif_scale_strobemeta_nounroll1()
- {
- 	/* no unroll, tiny loops */
--	scale_test("strobemeta_nounroll1.o", BPF_PROG_TYPE_RAW_TRACEPOINT, false);
-+	scale_test("strobemeta_nounroll1.bpf.o", BPF_PROG_TYPE_RAW_TRACEPOINT, false);
- }
- 
- void test_verif_scale_strobemeta_nounroll2()
- {
- 	/* no unroll, tiny loops */
--	scale_test("strobemeta_nounroll2.o", BPF_PROG_TYPE_RAW_TRACEPOINT, false);
-+	scale_test("strobemeta_nounroll2.bpf.o", BPF_PROG_TYPE_RAW_TRACEPOINT, false);
- }
- 
- void test_verif_scale_strobemeta_subprogs()
- {
- 	/* non-inlined subprogs */
--	scale_test("strobemeta_subprogs.o", BPF_PROG_TYPE_RAW_TRACEPOINT, false);
-+	scale_test("strobemeta_subprogs.bpf.o", BPF_PROG_TYPE_RAW_TRACEPOINT, false);
- }
- 
- void test_verif_scale_sysctl_loop1()
- {
--	scale_test("test_sysctl_loop1.o", BPF_PROG_TYPE_CGROUP_SYSCTL, false);
-+	scale_test("test_sysctl_loop1.bpf.o", BPF_PROG_TYPE_CGROUP_SYSCTL, false);
- }
- 
- void test_verif_scale_sysctl_loop2()
- {
--	scale_test("test_sysctl_loop2.o", BPF_PROG_TYPE_CGROUP_SYSCTL, false);
-+	scale_test("test_sysctl_loop2.bpf.o", BPF_PROG_TYPE_CGROUP_SYSCTL, false);
- }
- 
- void test_verif_scale_xdp_loop()
- {
--	scale_test("test_xdp_loop.o", BPF_PROG_TYPE_XDP, false);
-+	scale_test("test_xdp_loop.bpf.o", BPF_PROG_TYPE_XDP, false);
- }
- 
- void test_verif_scale_seg6_loop()
- {
--	scale_test("test_seg6_loop.o", BPF_PROG_TYPE_LWT_SEG6LOCAL, false);
-+	scale_test("test_seg6_loop.bpf.o", BPF_PROG_TYPE_LWT_SEG6LOCAL, false);
- }
- 
- void test_verif_twfw()
- {
--	scale_test("twfw.o", BPF_PROG_TYPE_CGROUP_SKB, false);
-+	scale_test("twfw.bpf.o", BPF_PROG_TYPE_CGROUP_SKB, false);
- }
-diff --git a/tools/testing/selftests/bpf/prog_tests/btf.c b/tools/testing/selftests/bpf/prog_tests/btf.c
-index ef6528..127b8ca 100644
---- a/tools/testing/selftests/bpf/prog_tests/btf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/btf.c
-@@ -4651,8 +4651,8 @@ struct btf_file_test {
- };
- 
- static struct btf_file_test file_tests[] = {
--	{ .file = "test_btf_newkv.o", },
--	{ .file = "test_btf_nokv.o", .btf_kv_notfound = true, },
-+	{ .file = "test_btf_newkv.bpf.o", },
-+	{ .file = "test_btf_nokv.bpf.o", .btf_kv_notfound = true, },
- };
- 
- static void do_test_file(unsigned int test_num)
-diff --git a/tools/testing/selftests/bpf/prog_tests/btf_dump.c b/tools/testing/selftests/bpf/prog_tests/btf_dump.c
-index 7b5bbe2..b1ca95 100644
---- a/tools/testing/selftests/bpf/prog_tests/btf_dump.c
-+++ b/tools/testing/selftests/bpf/prog_tests/btf_dump.c
-@@ -52,7 +52,7 @@ static int test_btf_dump_case(int n, struct btf_dump_test_case *t)
- 	int err = 0, fd = -1;
- 	FILE *f = NULL;
- 
--	snprintf(test_file, sizeof(test_file), "%s.o", t->file);
-+	snprintf(test_file, sizeof(test_file), "%s.bpf.o", t->file);
- 
- 	btf = btf__parse_elf(test_file, NULL);
- 	if (!ASSERT_OK_PTR(btf, "btf_parse_elf")) {
-@@ -841,8 +841,8 @@ static void test_btf_dump_datasec_data(char *str)
- 	char license[4] = "GPL";
- 	struct btf_dump *d;
- 
--	btf = btf__parse("xdping_kern.o", NULL);
--	if (!ASSERT_OK_PTR(btf, "xdping_kern.o BTF not found"))
-+	btf = btf__parse("xdping_kern.bpf.o", NULL);
-+	if (!ASSERT_OK_PTR(btf, "xdping_kern.bpf.o BTF not found"))
- 		return;
- 
- 	d = btf_dump__new(btf, btf_dump_snprintf, str, NULL);
-diff --git a/tools/testing/selftests/bpf/prog_tests/btf_endian.c b/tools/testing/selftests/bpf/prog_tests/btf_endian.c
-index 8afbf3d0..5b9f84d 100644
---- a/tools/testing/selftests/bpf/prog_tests/btf_endian.c
-+++ b/tools/testing/selftests/bpf/prog_tests/btf_endian.c
-@@ -23,7 +23,7 @@ void test_btf_endian() {
- 	int var_id;
- 
- 	/* Load BTF in native endianness */
--	btf = btf__parse_elf("btf_dump_test_case_syntax.o", NULL);
-+	btf = btf__parse_elf("btf_dump_test_case_syntax.bpf.o", NULL);
- 	if (!ASSERT_OK_PTR(btf, "parse_native_btf"))
- 		goto err_out;
- 
-diff --git a/tools/testing/selftests/bpf/prog_tests/connect_force_port.c b/tools/testing/selftests/bpf/prog_tests/connect_force_port.c
-index 9c4325f..24d553 100644
---- a/tools/testing/selftests/bpf/prog_tests/connect_force_port.c
-+++ b/tools/testing/selftests/bpf/prog_tests/connect_force_port.c
-@@ -53,7 +53,7 @@ static int run_test(int cgroup_fd, int server_fd, int family, int type)
- 	__u16 expected_peer_port = 60000;
- 	struct bpf_program *prog;
- 	struct bpf_object *obj;
--	const char *obj_file = v4 ? "connect_force_port4.o" : "connect_force_port6.o";
-+	const char *obj_file = v4 ? "connect_force_port4.bpf.o" : "connect_force_port6.bpf.o";
- 	int fd, err;
- 	__u32 duration = 0;
- 
-diff --git a/tools/testing/selftests/bpf/prog_tests/core_reloc.c b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-index c8655ba..47f42e 100644
---- a/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-+++ b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-@@ -13,7 +13,7 @@ static int duration = 0;
- 
- #define MODULES_CASE(name, pg_name, tp_name) {				\
- 	.case_name = name,						\
--	.bpf_obj_file = "test_core_reloc_module.o",			\
-+	.bpf_obj_file = "test_core_reloc_module.bpf.o",			\
- 	.btf_src_file = NULL, /* find in kernel module BTFs */		\
- 	.input = "",							\
- 	.input_len = 0,							\
-@@ -43,8 +43,8 @@ static int duration = 0;
- 
- #define FLAVORS_CASE_COMMON(name)					\
- 	.case_name = #name,						\
--	.bpf_obj_file = "test_core_reloc_flavors.o",			\
--	.btf_src_file = "btf__core_reloc_" #name ".o",			\
-+	.bpf_obj_file = "test_core_reloc_flavors.bpf.o",		\
-+	.btf_src_file = "btf__core_reloc_" #name ".bpf.o",		\
- 	.raw_tp_name = "sys_enter",					\
- 	.prog_name = "test_core_flavors"				\
- 
-@@ -68,8 +68,8 @@ static int duration = 0;
- 
- #define NESTING_CASE_COMMON(name)					\
- 	.case_name = #name,						\
--	.bpf_obj_file = "test_core_reloc_nesting.o",			\
--	.btf_src_file = "btf__core_reloc_" #name ".o",			\
-+	.bpf_obj_file = "test_core_reloc_nesting.bpf.o",		\
-+	.btf_src_file = "btf__core_reloc_" #name ".bpf.o",		\
- 	.raw_tp_name = "sys_enter",					\
- 	.prog_name = "test_core_nesting"				\
- 
-@@ -96,8 +96,8 @@ static int duration = 0;
- 
- #define ARRAYS_CASE_COMMON(name)					\
- 	.case_name = #name,						\
--	.bpf_obj_file = "test_core_reloc_arrays.o",			\
--	.btf_src_file = "btf__core_reloc_" #name ".o",			\
-+	.bpf_obj_file = "test_core_reloc_arrays.bpf.o",			\
-+	.btf_src_file = "btf__core_reloc_" #name ".bpf.o",		\
- 	.raw_tp_name = "sys_enter",					\
- 	.prog_name = "test_core_arrays"					\
- 
-@@ -130,8 +130,8 @@ static int duration = 0;
- 
- #define PRIMITIVES_CASE_COMMON(name)					\
- 	.case_name = #name,						\
--	.bpf_obj_file = "test_core_reloc_primitives.o",			\
--	.btf_src_file = "btf__core_reloc_" #name ".o",			\
-+	.bpf_obj_file = "test_core_reloc_primitives.bpf.o",		\
-+	.btf_src_file = "btf__core_reloc_" #name ".bpf.o",		\
- 	.raw_tp_name = "sys_enter",					\
- 	.prog_name = "test_core_primitives"				\
- 
-@@ -150,8 +150,8 @@ static int duration = 0;
- 
- #define MODS_CASE(name) {						\
- 	.case_name = #name,						\
--	.bpf_obj_file = "test_core_reloc_mods.o",			\
--	.btf_src_file = "btf__core_reloc_" #name ".o",			\
-+	.bpf_obj_file = "test_core_reloc_mods.bpf.o",			\
-+	.btf_src_file = "btf__core_reloc_" #name ".bpf.o",		\
- 	.input = STRUCT_TO_CHAR_PTR(core_reloc_##name) {		\
- 		.a = 1,							\
- 		.b = 2,							\
-@@ -174,8 +174,8 @@ static int duration = 0;
- 
- #define PTR_AS_ARR_CASE(name) {						\
- 	.case_name = #name,						\
--	.bpf_obj_file = "test_core_reloc_ptr_as_arr.o",			\
--	.btf_src_file = "btf__core_reloc_" #name ".o",			\
-+	.bpf_obj_file = "test_core_reloc_ptr_as_arr.bpf.o",		\
-+	.btf_src_file = "btf__core_reloc_" #name ".bpf.o",		\
- 	.input = (const char *)&(struct core_reloc_##name []){		\
- 		{ .a = 1 },						\
- 		{ .a = 2 },						\
-@@ -203,8 +203,8 @@ static int duration = 0;
- 
- #define INTS_CASE_COMMON(name)						\
- 	.case_name = #name,						\
--	.bpf_obj_file = "test_core_reloc_ints.o",			\
--	.btf_src_file = "btf__core_reloc_" #name ".o",			\
-+	.bpf_obj_file = "test_core_reloc_ints.bpf.o",			\
-+	.btf_src_file = "btf__core_reloc_" #name ".bpf.o",		\
- 	.raw_tp_name = "sys_enter",					\
- 	.prog_name = "test_core_ints"
- 
-@@ -223,18 +223,18 @@ static int duration = 0;
- 
- #define FIELD_EXISTS_CASE_COMMON(name)					\
- 	.case_name = #name,						\
--	.bpf_obj_file = "test_core_reloc_existence.o",			\
--	.btf_src_file = "btf__core_reloc_" #name ".o",			\
-+	.bpf_obj_file = "test_core_reloc_existence.bpf.o",		\
-+	.btf_src_file = "btf__core_reloc_" #name ".bpf.o",		\
- 	.raw_tp_name = "sys_enter",					\
- 	.prog_name = "test_core_existence"
- 
- #define BITFIELDS_CASE_COMMON(objfile, test_name_prefix,  name)		\
- 	.case_name = test_name_prefix#name,				\
- 	.bpf_obj_file = objfile,					\
--	.btf_src_file = "btf__core_reloc_" #name ".o"
-+	.btf_src_file = "btf__core_reloc_" #name ".bpf.o"
- 
- #define BITFIELDS_CASE(name, ...) {					\
--	BITFIELDS_CASE_COMMON("test_core_reloc_bitfields_probed.o",	\
-+	BITFIELDS_CASE_COMMON("test_core_reloc_bitfields_probed.bpf.o",	\
- 			      "probed:", name),				\
- 	.input = STRUCT_TO_CHAR_PTR(core_reloc_##name) __VA_ARGS__,	\
- 	.input_len = sizeof(struct core_reloc_##name),			\
-@@ -244,7 +244,7 @@ static int duration = 0;
- 	.raw_tp_name = "sys_enter",					\
- 	.prog_name = "test_core_bitfields",				\
- }, {									\
--	BITFIELDS_CASE_COMMON("test_core_reloc_bitfields_direct.o",	\
-+	BITFIELDS_CASE_COMMON("test_core_reloc_bitfields_direct.bpf.o",	\
- 			      "direct:", name),				\
- 	.input = STRUCT_TO_CHAR_PTR(core_reloc_##name) __VA_ARGS__,	\
- 	.input_len = sizeof(struct core_reloc_##name),			\
-@@ -256,14 +256,14 @@ static int duration = 0;
- 
- 
- #define BITFIELDS_ERR_CASE(name) {					\
--	BITFIELDS_CASE_COMMON("test_core_reloc_bitfields_probed.o",	\
-+	BITFIELDS_CASE_COMMON("test_core_reloc_bitfields_probed.bpf.o",	\
- 			      "probed:", name),				\
- 	.fails = true,							\
--	.run_btfgen_fails = true,							\
-+	.run_btfgen_fails = true,					\
- 	.raw_tp_name = "sys_enter",					\
- 	.prog_name = "test_core_bitfields",				\
- }, {									\
--	BITFIELDS_CASE_COMMON("test_core_reloc_bitfields_direct.o",	\
-+	BITFIELDS_CASE_COMMON("test_core_reloc_bitfields_direct.bpf.o",	\
- 			      "direct:", name),				\
- 	.fails = true,							\
- 	.run_btfgen_fails = true,							\
-@@ -272,8 +272,8 @@ static int duration = 0;
- 
- #define SIZE_CASE_COMMON(name)						\
- 	.case_name = #name,						\
--	.bpf_obj_file = "test_core_reloc_size.o",			\
--	.btf_src_file = "btf__core_reloc_" #name ".o",			\
-+	.bpf_obj_file = "test_core_reloc_size.bpf.o",			\
-+	.btf_src_file = "btf__core_reloc_" #name ".bpf.o",		\
- 	.raw_tp_name = "sys_enter",					\
- 	.prog_name = "test_core_size"
- 
-@@ -307,13 +307,13 @@ static int duration = 0;
- #define SIZE_ERR_CASE(name) {						\
- 	SIZE_CASE_COMMON(name),						\
- 	.fails = true,							\
--	.run_btfgen_fails = true,							\
-+	.run_btfgen_fails = true,					\
- }
- 
- #define TYPE_BASED_CASE_COMMON(name)					\
- 	.case_name = #name,						\
--	.bpf_obj_file = "test_core_reloc_type_based.o",			\
--	.btf_src_file = "btf__core_reloc_" #name ".o",			\
-+	.bpf_obj_file = "test_core_reloc_type_based.bpf.o",		\
-+	.btf_src_file = "btf__core_reloc_" #name ".bpf.o",		\
- 	.raw_tp_name = "sys_enter",					\
- 	.prog_name = "test_core_type_based"
- 
-@@ -331,8 +331,8 @@ static int duration = 0;
- 
- #define TYPE_ID_CASE_COMMON(name)					\
- 	.case_name = #name,						\
--	.bpf_obj_file = "test_core_reloc_type_id.o",			\
--	.btf_src_file = "btf__core_reloc_" #name ".o",			\
-+	.bpf_obj_file = "test_core_reloc_type_id.bpf.o",		\
-+	.btf_src_file = "btf__core_reloc_" #name ".bpf.o",		\
- 	.raw_tp_name = "sys_enter",					\
- 	.prog_name = "test_core_type_id"
- 
-@@ -350,8 +350,8 @@ static int duration = 0;
- 
- #define ENUMVAL_CASE_COMMON(name)					\
- 	.case_name = #name,						\
--	.bpf_obj_file = "test_core_reloc_enumval.o",			\
--	.btf_src_file = "btf__core_reloc_" #name ".o",			\
-+	.bpf_obj_file = "test_core_reloc_enumval.bpf.o",		\
-+	.btf_src_file = "btf__core_reloc_" #name ".bpf.o",		\
- 	.raw_tp_name = "sys_enter",					\
- 	.prog_name = "test_core_enumval"
- 
-@@ -369,8 +369,8 @@ static int duration = 0;
- 
- #define ENUM64VAL_CASE_COMMON(name)					\
- 	.case_name = #name,						\
--	.bpf_obj_file = "test_core_reloc_enum64val.o",			\
--	.btf_src_file = "btf__core_reloc_" #name ".o",			\
-+	.bpf_obj_file = "test_core_reloc_enum64val.bpf.o",		\
-+	.btf_src_file = "btf__core_reloc_" #name ".bpf.o",		\
- 	.raw_tp_name = "sys_enter",					\
- 	.prog_name = "test_core_enum64val"
- 
-@@ -547,7 +547,7 @@ static const struct core_reloc_test_case test_cases[] = {
- 	/* validate we can find kernel image and use its BTF for relocs */
- 	{
- 		.case_name = "kernel",
--		.bpf_obj_file = "test_core_reloc_kernel.o",
-+		.bpf_obj_file = "test_core_reloc_kernel.bpf.o",
- 		.btf_src_file = NULL, /* load from /lib/modules/$(uname -r) */
- 		.input = "",
- 		.input_len = 0,
-@@ -629,8 +629,8 @@ static const struct core_reloc_test_case test_cases[] = {
- 	/* validate edge cases of capturing relocations */
- 	{
- 		.case_name = "misc",
--		.bpf_obj_file = "test_core_reloc_misc.o",
--		.btf_src_file = "btf__core_reloc_misc.o",
-+		.bpf_obj_file = "test_core_reloc_misc.bpf.o",
-+		.btf_src_file = "btf__core_reloc_misc.bpf.o",
- 		.input = (const char *)&(struct core_reloc_misc_extensible[]){
- 			{ .a = 1 },
- 			{ .a = 2 }, /* not read */
-diff --git a/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c b/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
-index da860b..d1e32e7 100644
---- a/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
-@@ -174,8 +174,8 @@ static void test_target_no_callees(void)
- 	const char *prog_name[] = {
- 		"fexit/test_pkt_md_access",
- 	};
--	test_fexit_bpf2bpf_common("./fexit_bpf2bpf_simple.o",
--				  "./test_pkt_md_access.o",
-+	test_fexit_bpf2bpf_common("./fexit_bpf2bpf_simple.bpf.o",
-+				  "./test_pkt_md_access.bpf.o",
- 				  ARRAY_SIZE(prog_name),
- 				  prog_name, true, NULL);
- }
-@@ -188,8 +188,8 @@ static void test_target_yes_callees(void)
- 		"fexit/test_pkt_access_subprog2",
- 		"fexit/test_pkt_access_subprog3",
- 	};
--	test_fexit_bpf2bpf_common("./fexit_bpf2bpf.o",
--				  "./test_pkt_access.o",
-+	test_fexit_bpf2bpf_common("./fexit_bpf2bpf.bpf.o",
-+				  "./test_pkt_access.bpf.o",
- 				  ARRAY_SIZE(prog_name),
- 				  prog_name, true, NULL);
- }
-@@ -206,8 +206,8 @@ static void test_func_replace(void)
- 		"freplace/get_constant",
- 		"freplace/test_pkt_write_access_subprog",
- 	};
--	test_fexit_bpf2bpf_common("./fexit_bpf2bpf.o",
--				  "./test_pkt_access.o",
-+	test_fexit_bpf2bpf_common("./fexit_bpf2bpf.bpf.o",
-+				  "./test_pkt_access.bpf.o",
- 				  ARRAY_SIZE(prog_name),
- 				  prog_name, true, NULL);
- }
-@@ -217,8 +217,8 @@ static void test_func_replace_verify(void)
- 	const char *prog_name[] = {
- 		"freplace/do_bind",
- 	};
--	test_fexit_bpf2bpf_common("./freplace_connect4.o",
--				  "./connect4_prog.o",
-+	test_fexit_bpf2bpf_common("./freplace_connect4.bpf.o",
-+				  "./connect4_prog.bpf.o",
- 				  ARRAY_SIZE(prog_name),
- 				  prog_name, false, NULL);
- }
-@@ -227,7 +227,7 @@ static int test_second_attach(struct bpf_object *obj)
- {
- 	const char *prog_name = "security_new_get_constant";
- 	const char *tgt_name = "get_constant";
--	const char *tgt_obj_file = "./test_pkt_access.o";
-+	const char *tgt_obj_file = "./test_pkt_access.bpf.o";
- 	struct bpf_program *prog = NULL;
- 	struct bpf_object *tgt_obj;
- 	struct bpf_link *link;
-@@ -272,8 +272,8 @@ static void test_func_replace_multi(void)
- 	const char *prog_name[] = {
- 		"freplace/get_constant",
- 	};
--	test_fexit_bpf2bpf_common("./freplace_get_constant.o",
--				  "./test_pkt_access.o",
-+	test_fexit_bpf2bpf_common("./freplace_get_constant.bpf.o",
-+				  "./test_pkt_access.bpf.o",
- 				  ARRAY_SIZE(prog_name),
- 				  prog_name, true, test_second_attach);
- }
-@@ -281,10 +281,10 @@ static void test_func_replace_multi(void)
- static void test_fmod_ret_freplace(void)
- {
- 	struct bpf_object *freplace_obj = NULL, *pkt_obj, *fmod_obj = NULL;
--	const char *freplace_name = "./freplace_get_constant.o";
--	const char *fmod_ret_name = "./fmod_ret_freplace.o";
-+	const char *freplace_name = "./freplace_get_constant.bpf.o";
-+	const char *fmod_ret_name = "./fmod_ret_freplace.bpf.o";
- 	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts);
--	const char *tgt_name = "./test_pkt_access.o";
-+	const char *tgt_name = "./test_pkt_access.bpf.o";
- 	struct bpf_link *freplace_link = NULL;
- 	struct bpf_program *prog;
- 	__u32 duration = 0;
-@@ -339,8 +339,8 @@ static void test_func_sockmap_update(void)
- 	const char *prog_name[] = {
- 		"freplace/cls_redirect",
- 	};
--	test_fexit_bpf2bpf_common("./freplace_cls_redirect.o",
--				  "./test_cls_redirect.o",
-+	test_fexit_bpf2bpf_common("./freplace_cls_redirect.bpf.o",
-+				  "./test_cls_redirect.bpf.o",
- 				  ARRAY_SIZE(prog_name),
- 				  prog_name, false, NULL);
- }
-@@ -385,15 +385,15 @@ static void test_obj_load_failure_common(const char *obj_file,
- static void test_func_replace_return_code(void)
- {
- 	/* test invalid return code in the replaced program */
--	test_obj_load_failure_common("./freplace_connect_v4_prog.o",
--				     "./connect4_prog.o");
-+	test_obj_load_failure_common("./freplace_connect_v4_prog.bpf.o",
-+				     "./connect4_prog.bpf.o");
- }
- 
- static void test_func_map_prog_compatibility(void)
- {
- 	/* test with spin lock map value in the replaced program */
--	test_obj_load_failure_common("./freplace_attach_probe.o",
--				     "./test_attach_probe.o");
-+	test_obj_load_failure_common("./freplace_attach_probe.bpf.o",
-+				     "./test_attach_probe.bpf.o");
- }
- 
- static void test_func_replace_global_func(void)
-@@ -402,8 +402,8 @@ static void test_func_replace_global_func(void)
- 		"freplace/test_pkt_access",
- 	};
- 
--	test_fexit_bpf2bpf_common("./freplace_global_func.o",
--				  "./test_pkt_access.o",
-+	test_fexit_bpf2bpf_common("./freplace_global_func.bpf.o",
-+				  "./test_pkt_access.bpf.o",
- 				  ARRAY_SIZE(prog_name),
- 				  prog_name, false, NULL);
- }
-diff --git a/tools/testing/selftests/bpf/prog_tests/get_stack_raw_tp.c b/tools/testing/selftests/bpf/prog_tests/get_stack_raw_tp.c
-index 160489..858e057 100644
---- a/tools/testing/selftests/bpf/prog_tests/get_stack_raw_tp.c
-+++ b/tools/testing/selftests/bpf/prog_tests/get_stack_raw_tp.c
-@@ -84,8 +84,8 @@ static void get_stack_print_output(void *ctx, int cpu, void *data, __u32 size)
- 
- void test_get_stack_raw_tp(void)
- {
--	const char *file = "./test_get_stack_rawtp.o";
--	const char *file_err = "./test_get_stack_rawtp_err.o";
-+	const char *file = "./test_get_stack_rawtp.bpf.o";
-+	const char *file_err = "./test_get_stack_rawtp_err.bpf.o";
- 	const char *prog_name = "bpf_prog1";
- 	int i, err, prog_fd, exp_cnt = MAX_CNT_RAWTP;
- 	struct perf_buffer *pb = NULL;
-diff --git a/tools/testing/selftests/bpf/prog_tests/global_data.c b/tools/testing/selftests/bpf/prog_tests/global_data.c
-index 027685..fadfb6 100644
---- a/tools/testing/selftests/bpf/prog_tests/global_data.c
-+++ b/tools/testing/selftests/bpf/prog_tests/global_data.c
-@@ -131,7 +131,7 @@ static void test_global_data_rdonly(struct bpf_object *obj, __u32 duration)
- 
- void test_global_data(void)
- {
--	const char *file = "./test_global_data.o";
-+	const char *file = "./test_global_data.bpf.o";
- 	struct bpf_object *obj;
- 	int err, prog_fd;
- 	LIBBPF_OPTS(bpf_test_run_opts, topts,
-diff --git a/tools/testing/selftests/bpf/prog_tests/global_data_init.c b/tools/testing/selftests/bpf/prog_tests/global_data_init.c
-index 57331c..846633 100644
---- a/tools/testing/selftests/bpf/prog_tests/global_data_init.c
-+++ b/tools/testing/selftests/bpf/prog_tests/global_data_init.c
-@@ -3,7 +3,7 @@
- 
- void test_global_data_init(void)
- {
--	const char *file = "./test_global_data.o";
-+	const char *file = "./test_global_data.bpf.o";
- 	int err = -ENOMEM, map_fd, zero = 0;
- 	__u8 *buff = NULL, *newval = NULL;
- 	struct bpf_object *obj;
-diff --git a/tools/testing/selftests/bpf/prog_tests/global_func_args.c b/tools/testing/selftests/bpf/prog_tests/global_func_args.c
-index 29039a3..d99709 100644
---- a/tools/testing/selftests/bpf/prog_tests/global_func_args.c
-+++ b/tools/testing/selftests/bpf/prog_tests/global_func_args.c
-@@ -39,7 +39,7 @@ static void test_global_func_args0(struct bpf_object *obj)
- 
- void test_global_func_args(void)
- {
--	const char *file = "./test_global_func_args.o";
-+	const char *file = "./test_global_func_args.bpf.o";
- 	struct bpf_object *obj;
- 	int err, prog_fd;
- 	LIBBPF_OPTS(bpf_test_run_opts, topts,
-diff --git a/tools/testing/selftests/bpf/prog_tests/kfree_skb.c b/tools/testing/selftests/bpf/prog_tests/kfree_skb.c
-index 1cee695..735793 100644
---- a/tools/testing/selftests/bpf/prog_tests/kfree_skb.c
-+++ b/tools/testing/selftests/bpf/prog_tests/kfree_skb.c
-@@ -69,7 +69,7 @@ void serial_test_kfree_skb(void)
- 	const int zero = 0;
- 	bool test_ok[2];
- 
--	err = bpf_prog_test_load("./test_pkt_access.o", BPF_PROG_TYPE_SCHED_CLS,
-+	err = bpf_prog_test_load("./test_pkt_access.bpf.o", BPF_PROG_TYPE_SCHED_CLS,
- 				 &obj, &prog_fd);
- 	if (CHECK(err, "prog_load sched cls", "err %d errno %d\n", err, errno))
- 		return;
-diff --git a/tools/testing/selftests/bpf/prog_tests/l4lb_all.c b/tools/testing/selftests/bpf/prog_tests/l4lb_all.c
-index 55f733..9c1a18 100644
---- a/tools/testing/selftests/bpf/prog_tests/l4lb_all.c
-+++ b/tools/testing/selftests/bpf/prog_tests/l4lb_all.c
-@@ -90,7 +90,7 @@ static void test_l4lb(const char *file)
- void test_l4lb_all(void)
- {
- 	if (test__start_subtest("l4lb_inline"))
--		test_l4lb("test_l4lb.o");
-+		test_l4lb("test_l4lb.bpf.o");
- 	if (test__start_subtest("l4lb_noinline"))
--		test_l4lb("test_l4lb_noinline.o");
-+		test_l4lb("test_l4lb_noinline.bpf.o");
- }
-diff --git a/tools/testing/selftests/bpf/prog_tests/load_bytes_relative.c b/tools/testing/selftests/bpf/prog_tests/load_bytes_relative.c
-index 4e0b2ec..b150c6 100644
---- a/tools/testing/selftests/bpf/prog_tests/load_bytes_relative.c
-+++ b/tools/testing/selftests/bpf/prog_tests/load_bytes_relative.c
-@@ -27,7 +27,7 @@ void test_load_bytes_relative(void)
- 	if (CHECK_FAIL(server_fd < 0))
- 		goto close_cgroup_fd;
- 
--	err = bpf_prog_test_load("./load_bytes_relative.o", BPF_PROG_TYPE_CGROUP_SKB,
-+	err = bpf_prog_test_load("./load_bytes_relative.bpf.o", BPF_PROG_TYPE_CGROUP_SKB,
- 			    &obj, &prog_fd);
- 	if (CHECK_FAIL(err))
- 		goto close_server_fd;
-diff --git a/tools/testing/selftests/bpf/prog_tests/map_lock.c b/tools/testing/selftests/bpf/prog_tests/map_lock.c
-index e4e99b..1d6726f 100644
---- a/tools/testing/selftests/bpf/prog_tests/map_lock.c
-+++ b/tools/testing/selftests/bpf/prog_tests/map_lock.c
-@@ -49,7 +49,7 @@ static void *parallel_map_access(void *arg)
- 
- void test_map_lock(void)
- {
--	const char *file = "./test_map_lock.o";
-+	const char *file = "./test_map_lock.bpf.o";
- 	int prog_fd, map_fd[2], vars[17] = {};
- 	pthread_t thread_id[6];
- 	struct bpf_object *obj = NULL;
-diff --git a/tools/testing/selftests/bpf/prog_tests/pinning.c b/tools/testing/selftests/bpf/prog_tests/pinning.c
-index 31c09b..d95cee 100644
---- a/tools/testing/selftests/bpf/prog_tests/pinning.c
-+++ b/tools/testing/selftests/bpf/prog_tests/pinning.c
-@@ -26,13 +26,13 @@ __u32 get_map_id(struct bpf_object *obj, const char *name)
- 
- void test_pinning(void)
- {
--	const char *file_invalid = "./test_pinning_invalid.o";
-+	const char *file_invalid = "./test_pinning_invalid.bpf.o";
- 	const char *custpinpath = "/sys/fs/bpf/custom/pinmap";
- 	const char *nopinpath = "/sys/fs/bpf/nopinmap";
- 	const char *nopinpath2 = "/sys/fs/bpf/nopinmap2";
- 	const char *custpath = "/sys/fs/bpf/custom";
- 	const char *pinpath = "/sys/fs/bpf/pinmap";
--	const char *file = "./test_pinning.o";
-+	const char *file = "./test_pinning.bpf.o";
- 	__u32 map_id, map_id2, duration = 0;
- 	struct stat statbuf = {};
- 	struct bpf_object *obj;
-diff --git a/tools/testing/selftests/bpf/prog_tests/pkt_access.c b/tools/testing/selftests/bpf/prog_tests/pkt_access.c
-index 0bcccd..682e4f 100644
---- a/tools/testing/selftests/bpf/prog_tests/pkt_access.c
-+++ b/tools/testing/selftests/bpf/prog_tests/pkt_access.c
-@@ -4,7 +4,7 @@
- 
- void test_pkt_access(void)
- {
--	const char *file = "./test_pkt_access.o";
-+	const char *file = "./test_pkt_access.bpf.o";
- 	struct bpf_object *obj;
- 	int err, prog_fd;
- 	LIBBPF_OPTS(bpf_test_run_opts, topts,
-diff --git a/tools/testing/selftests/bpf/prog_tests/pkt_md_access.c b/tools/testing/selftests/bpf/prog_tests/pkt_md_access.c
-index 00ee1d..0d85e0 100644
---- a/tools/testing/selftests/bpf/prog_tests/pkt_md_access.c
-+++ b/tools/testing/selftests/bpf/prog_tests/pkt_md_access.c
-@@ -4,7 +4,7 @@
- 
- void test_pkt_md_access(void)
- {
--	const char *file = "./test_pkt_md_access.o";
-+	const char *file = "./test_pkt_md_access.bpf.o";
- 	struct bpf_object *obj;
- 	int err, prog_fd;
- 	LIBBPF_OPTS(bpf_test_run_opts, topts,
-diff --git a/tools/testing/selftests/bpf/prog_tests/probe_user.c b/tools/testing/selftests/bpf/prog_tests/probe_user.c
-index 34dbd2..8721671 100644
---- a/tools/testing/selftests/bpf/prog_tests/probe_user.c
-+++ b/tools/testing/selftests/bpf/prog_tests/probe_user.c
-@@ -11,7 +11,7 @@ void serial_test_probe_user(void)
- #endif
- 	};
- 	enum { prog_count = ARRAY_SIZE(prog_names) };
--	const char *obj_file = "./test_probe_user.o";
-+	const char *obj_file = "./test_probe_user.bpf.o";
- 	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts, );
- 	int err, results_map_fd, sock_fd, duration = 0;
- 	struct sockaddr curr, orig, tmp;
-diff --git a/tools/testing/selftests/bpf/prog_tests/queue_stack_map.c b/tools/testing/selftests/bpf/prog_tests/queue_stack_map.c
-index d2743f..722c5f 100644
---- a/tools/testing/selftests/bpf/prog_tests/queue_stack_map.c
-+++ b/tools/testing/selftests/bpf/prog_tests/queue_stack_map.c
-@@ -28,9 +28,9 @@ static void test_queue_stack_map_by_type(int type)
- 		vals[i] = rand();
- 
- 	if (type == QUEUE)
--		strncpy(file, "./test_queue_map.o", sizeof(file));
-+		strncpy(file, "./test_queue_map.bpf.o", sizeof(file));
- 	else if (type == STACK)
--		strncpy(file, "./test_stack_map.o", sizeof(file));
-+		strncpy(file, "./test_stack_map.bpf.o", sizeof(file));
- 	else
- 		return;
- 
-diff --git a/tools/testing/selftests/bpf/prog_tests/rdonly_maps.c b/tools/testing/selftests/bpf/prog_tests/rdonly_maps.c
-index fd5d2d..19e2f2 100644
---- a/tools/testing/selftests/bpf/prog_tests/rdonly_maps.c
-+++ b/tools/testing/selftests/bpf/prog_tests/rdonly_maps.c
-@@ -16,7 +16,7 @@ struct rdonly_map_subtest {
- 
- void test_rdonly_maps(void)
- {
--	const char *file = "test_rdonly_maps.o";
-+	const char *file = "test_rdonly_maps.bpf.o";
- 	struct rdonly_map_subtest subtests[] = {
- 		{ "skip loop", "skip_loop", 0, 0 },
- 		{ "part loop", "part_loop", 3, 2 + 3 + 4 },
-diff --git a/tools/testing/selftests/bpf/prog_tests/reference_tracking.c b/tools/testing/selftests/bpf/prog_tests/reference_tracking.c
-index 739d2ea..d86320 100644
---- a/tools/testing/selftests/bpf/prog_tests/reference_tracking.c
-+++ b/tools/testing/selftests/bpf/prog_tests/reference_tracking.c
-@@ -3,7 +3,7 @@
- 
- void test_reference_tracking(void)
- {
--	const char *file = "test_sk_lookup_kern.o";
-+	const char *file = "test_sk_lookup_kern.bpf.o";
- 	const char *obj_name = "ref_track";
- 	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, open_opts,
- 		.object_name = obj_name,
-diff --git a/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c b/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
-index c197261..f81d08d4 100644
---- a/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
-+++ b/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
-@@ -101,7 +101,7 @@ static int resolve_symbols(void)
- 	int type_id;
- 	__u32 nr;
- 
--	btf = btf__parse_elf("btf_data.o", NULL);
-+	btf = btf__parse_elf("btf_data.bpf.o", NULL);
- 	if (CHECK(libbpf_get_error(btf), "resolve",
- 		  "Failed to load BTF from btf_data.o\n"))
- 		return -1;
-diff --git a/tools/testing/selftests/bpf/prog_tests/select_reuseport.c b/tools/testing/selftests/bpf/prog_tests/select_reuseport.c
-index 1cbd8c..64c5f5 100644
---- a/tools/testing/selftests/bpf/prog_tests/select_reuseport.c
-+++ b/tools/testing/selftests/bpf/prog_tests/select_reuseport.c
-@@ -91,9 +91,9 @@ static int prepare_bpf_obj(void)
- 	struct bpf_map *map;
- 	int err;
- 
--	obj = bpf_object__open("test_select_reuseport_kern.o");
-+	obj = bpf_object__open("test_select_reuseport_kern.bpf.o");
- 	err = libbpf_get_error(obj);
--	RET_ERR(err, "open test_select_reuseport_kern.o",
-+	RET_ERR(err, "open test_select_reuseport_kern.bpf.o",
- 		"obj:%p PTR_ERR(obj):%d\n", obj, err);
- 
- 	map = bpf_object__find_map_by_name(obj, "outer_map");
-diff --git a/tools/testing/selftests/bpf/prog_tests/sk_assign.c b/tools/testing/selftests/bpf/prog_tests/sk_assign.c
-index 1d272e..3e190e 100644
---- a/tools/testing/selftests/bpf/prog_tests/sk_assign.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sk_assign.c
-@@ -47,7 +47,7 @@ configure_stack(void)
- 	if (CHECK_FAIL(system("tc qdisc add dev lo clsact")))
- 		return false;
- 	sprintf(tc_cmd, "%s %s %s %s", "tc filter add dev lo ingress bpf",
--		       "direct-action object-file ./test_sk_assign.o",
-+		       "direct-action object-file ./test_sk_assign.bpf.o",
- 		       "section tc",
- 		       (env.verbosity < VERBOSE_VERY) ? " 2>/dev/null" : "verbose");
- 	if (CHECK(system(tc_cmd), "BPF load failed;",
-diff --git a/tools/testing/selftests/bpf/prog_tests/skb_ctx.c b/tools/testing/selftests/bpf/prog_tests/skb_ctx.c
-index ce0e555..33f950 100644
---- a/tools/testing/selftests/bpf/prog_tests/skb_ctx.c
-+++ b/tools/testing/selftests/bpf/prog_tests/skb_ctx.c
-@@ -31,7 +31,7 @@ void test_skb_ctx(void)
- 	struct bpf_object *obj;
- 	int err, prog_fd, i;
- 
--	err = bpf_prog_test_load("./test_skb_ctx.o", BPF_PROG_TYPE_SCHED_CLS,
-+	err = bpf_prog_test_load("./test_skb_ctx.bpf.o", BPF_PROG_TYPE_SCHED_CLS,
- 				 &obj, &prog_fd);
- 	if (!ASSERT_OK(err, "load"))
- 		return;
-diff --git a/tools/testing/selftests/bpf/prog_tests/skb_helpers.c b/tools/testing/selftests/bpf/prog_tests/skb_helpers.c
-index 97dc8b..f7ee25 100644
---- a/tools/testing/selftests/bpf/prog_tests/skb_helpers.c
-+++ b/tools/testing/selftests/bpf/prog_tests/skb_helpers.c
-@@ -20,7 +20,7 @@ void test_skb_helpers(void)
- 	struct bpf_object *obj;
- 	int err, prog_fd;
- 
--	err = bpf_prog_test_load("./test_skb_helpers.o",
-+	err = bpf_prog_test_load("./test_skb_helpers.bpf.o",
- 				 BPF_PROG_TYPE_SCHED_CLS, &obj, &prog_fd);
- 	if (!ASSERT_OK(err, "load"))
- 		return;
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockopt_inherit.c b/tools/testing/selftests/bpf/prog_tests/sockopt_inherit.c
-index 8ed78a9..c5cb6e 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockopt_inherit.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockopt_inherit.c
-@@ -174,7 +174,7 @@ static void run_test(int cgroup_fd)
- 	pthread_t tid;
- 	int err;
- 
--	obj = bpf_object__open_file("sockopt_inherit.o", NULL);
-+	obj = bpf_object__open_file("sockopt_inherit.bpf.o", NULL);
- 	if (!ASSERT_OK_PTR(obj, "obj_open"))
- 		return;
- 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockopt_multi.c b/tools/testing/selftests/bpf/prog_tests/sockopt_multi.c
-index abce12..28d592dc 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockopt_multi.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockopt_multi.c
-@@ -310,7 +310,7 @@ void test_sockopt_multi(void)
- 	if (CHECK_FAIL(cg_child < 0))
- 		goto out;
- 
--	obj = bpf_object__open_file("sockopt_multi.o", NULL);
-+	obj = bpf_object__open_file("sockopt_multi.bpf.o", NULL);
- 	if (!ASSERT_OK_PTR(obj, "obj_load"))
- 		goto out;
- 
-diff --git a/tools/testing/selftests/bpf/prog_tests/spinlock.c b/tools/testing/selftests/bpf/prog_tests/spinlock.c
-index 8e329ea..15eb13 100644
---- a/tools/testing/selftests/bpf/prog_tests/spinlock.c
-+++ b/tools/testing/selftests/bpf/prog_tests/spinlock.c
-@@ -19,7 +19,7 @@ static void *spin_lock_thread(void *arg)
- 
- void test_spinlock(void)
- {
--	const char *file = "./test_spin_lock.o";
-+	const char *file = "./test_spin_lock.bpf.o";
- 	pthread_t thread_id[4];
- 	struct bpf_object *obj = NULL;
- 	int prog_fd;
-diff --git a/tools/testing/selftests/bpf/prog_tests/stacktrace_map.c b/tools/testing/selftests/bpf/prog_tests/stacktrace_map.c
-index 313f0a6..df59e4 100644
---- a/tools/testing/selftests/bpf/prog_tests/stacktrace_map.c
-+++ b/tools/testing/selftests/bpf/prog_tests/stacktrace_map.c
-@@ -6,7 +6,7 @@ void test_stacktrace_map(void)
- 	int control_map_fd, stackid_hmap_fd, stackmap_fd, stack_amap_fd;
- 	const char *prog_name = "oncpu";
- 	int err, prog_fd, stack_trace_len;
--	const char *file = "./test_stacktrace_map.o";
-+	const char *file = "./test_stacktrace_map.bpf.o";
- 	__u32 key, val, duration = 0;
- 	struct bpf_program *prog;
- 	struct bpf_object *obj;
-diff --git a/tools/testing/selftests/bpf/prog_tests/stacktrace_map_raw_tp.c b/tools/testing/selftests/bpf/prog_tests/stacktrace_map_raw_tp.c
-index 1cb8dd..c6ef06f 100644
---- a/tools/testing/selftests/bpf/prog_tests/stacktrace_map_raw_tp.c
-+++ b/tools/testing/selftests/bpf/prog_tests/stacktrace_map_raw_tp.c
-@@ -5,7 +5,7 @@ void test_stacktrace_map_raw_tp(void)
- {
- 	const char *prog_name = "oncpu";
- 	int control_map_fd, stackid_hmap_fd, stackmap_fd;
--	const char *file = "./test_stacktrace_map.o";
-+	const char *file = "./test_stacktrace_map.bpf.o";
- 	__u32 key, val, duration = 0;
- 	int err, prog_fd;
- 	struct bpf_program *prog;
-diff --git a/tools/testing/selftests/bpf/prog_tests/tailcalls.c b/tools/testing/selftests/bpf/prog_tests/tailcalls.c
-index 19c7088..8409f3 100644
---- a/tools/testing/selftests/bpf/prog_tests/tailcalls.c
-+++ b/tools/testing/selftests/bpf/prog_tests/tailcalls.c
-@@ -20,7 +20,7 @@ static void test_tailcall_1(void)
- 		.repeat = 1,
- 	);
- 
--	err = bpf_prog_test_load("tailcall1.o", BPF_PROG_TYPE_SCHED_CLS, &obj,
-+	err = bpf_prog_test_load("tailcall1.bpf.o", BPF_PROG_TYPE_SCHED_CLS, &obj,
- 			    &prog_fd);
- 	if (CHECK_FAIL(err))
- 		return;
-@@ -156,7 +156,7 @@ static void test_tailcall_2(void)
- 		.repeat = 1,
- 	);
- 
--	err = bpf_prog_test_load("tailcall2.o", BPF_PROG_TYPE_SCHED_CLS, &obj,
-+	err = bpf_prog_test_load("tailcall2.bpf.o", BPF_PROG_TYPE_SCHED_CLS, &obj,
- 			    &prog_fd);
- 	if (CHECK_FAIL(err))
- 		return;
-@@ -299,7 +299,7 @@ static void test_tailcall_count(const char *which)
-  */
- static void test_tailcall_3(void)
- {
--	test_tailcall_count("tailcall3.o");
-+	test_tailcall_count("tailcall3.bpf.o");
- }
- 
- /* test_tailcall_6 checks that the count value of the tail call limit
-@@ -307,7 +307,7 @@ static void test_tailcall_3(void)
-  */
- static void test_tailcall_6(void)
- {
--	test_tailcall_count("tailcall6.o");
-+	test_tailcall_count("tailcall6.bpf.o");
- }
- 
- /* test_tailcall_4 checks that the kernel properly selects indirect jump
-@@ -329,7 +329,7 @@ static void test_tailcall_4(void)
- 		.repeat = 1,
- 	);
- 
--	err = bpf_prog_test_load("tailcall4.o", BPF_PROG_TYPE_SCHED_CLS, &obj,
-+	err = bpf_prog_test_load("tailcall4.bpf.o", BPF_PROG_TYPE_SCHED_CLS, &obj,
- 			    &prog_fd);
- 	if (CHECK_FAIL(err))
- 		return;
-@@ -419,7 +419,7 @@ static void test_tailcall_5(void)
- 		.repeat = 1,
- 	);
- 
--	err = bpf_prog_test_load("tailcall5.o", BPF_PROG_TYPE_SCHED_CLS, &obj,
-+	err = bpf_prog_test_load("tailcall5.bpf.o", BPF_PROG_TYPE_SCHED_CLS, &obj,
- 			    &prog_fd);
- 	if (CHECK_FAIL(err))
- 		return;
-@@ -507,7 +507,7 @@ static void test_tailcall_bpf2bpf_1(void)
- 		.repeat = 1,
- 	);
- 
--	err = bpf_prog_test_load("tailcall_bpf2bpf1.o", BPF_PROG_TYPE_SCHED_CLS,
-+	err = bpf_prog_test_load("tailcall_bpf2bpf1.bpf.o", BPF_PROG_TYPE_SCHED_CLS,
- 			    &obj, &prog_fd);
- 	if (CHECK_FAIL(err))
- 		return;
-@@ -591,7 +591,7 @@ static void test_tailcall_bpf2bpf_2(void)
- 		.repeat = 1,
- 	);
- 
--	err = bpf_prog_test_load("tailcall_bpf2bpf2.o", BPF_PROG_TYPE_SCHED_CLS,
-+	err = bpf_prog_test_load("tailcall_bpf2bpf2.bpf.o", BPF_PROG_TYPE_SCHED_CLS,
- 			    &obj, &prog_fd);
- 	if (CHECK_FAIL(err))
- 		return;
-@@ -671,7 +671,7 @@ static void test_tailcall_bpf2bpf_3(void)
- 		.repeat = 1,
- 	);
- 
--	err = bpf_prog_test_load("tailcall_bpf2bpf3.o", BPF_PROG_TYPE_SCHED_CLS,
-+	err = bpf_prog_test_load("tailcall_bpf2bpf3.bpf.o", BPF_PROG_TYPE_SCHED_CLS,
- 			    &obj, &prog_fd);
- 	if (CHECK_FAIL(err))
- 		return;
-@@ -766,7 +766,7 @@ static void test_tailcall_bpf2bpf_4(bool noise)
- 		.repeat = 1,
- 	);
- 
--	err = bpf_prog_test_load("tailcall_bpf2bpf4.o", BPF_PROG_TYPE_SCHED_CLS,
-+	err = bpf_prog_test_load("tailcall_bpf2bpf4.bpf.o", BPF_PROG_TYPE_SCHED_CLS,
- 			    &obj, &prog_fd);
- 	if (CHECK_FAIL(err))
- 		return;
-diff --git a/tools/testing/selftests/bpf/prog_tests/task_fd_query_rawtp.c b/tools/testing/selftests/bpf/prog_tests/task_fd_query_rawtp.c
-index 17947c..3d34bab 100644
---- a/tools/testing/selftests/bpf/prog_tests/task_fd_query_rawtp.c
-+++ b/tools/testing/selftests/bpf/prog_tests/task_fd_query_rawtp.c
-@@ -3,7 +3,7 @@
- 
- void test_task_fd_query_rawtp(void)
- {
--	const char *file = "./test_get_stack_rawtp.o";
-+	const char *file = "./test_get_stack_rawtp.bpf.o";
- 	__u64 probe_offset, probe_addr;
- 	__u32 len, prog_id, fd_type;
- 	struct bpf_object *obj;
-diff --git a/tools/testing/selftests/bpf/prog_tests/task_fd_query_tp.c b/tools/testing/selftests/bpf/prog_tests/task_fd_query_tp.c
-index c2a98a7..c71774 100644
---- a/tools/testing/selftests/bpf/prog_tests/task_fd_query_tp.c
-+++ b/tools/testing/selftests/bpf/prog_tests/task_fd_query_tp.c
-@@ -4,7 +4,7 @@
- static void test_task_fd_query_tp_core(const char *probe_name,
- 				       const char *tp_name)
- {
--	const char *file = "./test_tracepoint.o";
-+	const char *file = "./test_tracepoint.bpf.o";
- 	int err, bytes, efd, prog_fd, pmu_fd;
- 	struct perf_event_attr attr = {};
- 	__u64 probe_offset, probe_addr;
-diff --git a/tools/testing/selftests/bpf/prog_tests/tcp_estats.c b/tools/testing/selftests/bpf/prog_tests/tcp_estats.c
-index 11bf75..032dbf 100644
---- a/tools/testing/selftests/bpf/prog_tests/tcp_estats.c
-+++ b/tools/testing/selftests/bpf/prog_tests/tcp_estats.c
-@@ -3,7 +3,7 @@
- 
- void test_tcp_estats(void)
- {
--	const char *file = "./test_tcp_estats.o";
-+	const char *file = "./test_tcp_estats.bpf.o";
- 	int err, prog_fd;
- 	struct bpf_object *obj;
- 	__u32 duration = 0;
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c b/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
-index b90ee4..0c59c4 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
-@@ -65,23 +65,23 @@ struct test_def {
- void test_test_global_funcs(void)
- {
- 	struct test_def tests[] = {
--		{ "test_global_func1.o", "combined stack size of 4 calls is 544" },
--		{ "test_global_func2.o" },
--		{ "test_global_func3.o" , "the call stack of 8 frames" },
--		{ "test_global_func4.o" },
--		{ "test_global_func5.o" , "expected pointer to ctx, but got PTR" },
--		{ "test_global_func6.o" , "modified ctx ptr R2" },
--		{ "test_global_func7.o" , "foo() doesn't return scalar" },
--		{ "test_global_func8.o" },
--		{ "test_global_func9.o" },
--		{ "test_global_func10.o", "invalid indirect read from stack" },
--		{ "test_global_func11.o", "Caller passes invalid args into func#1" },
--		{ "test_global_func12.o", "invalid mem access 'mem_or_null'" },
--		{ "test_global_func13.o", "Caller passes invalid args into func#1" },
--		{ "test_global_func14.o", "reference type('FWD S') size cannot be determined" },
--		{ "test_global_func15.o", "At program exit the register R0 has value" },
--		{ "test_global_func16.o", "invalid indirect read from stack" },
--		{ "test_global_func17.o", "Caller passes invalid args into func#1" },
-+		{ "test_global_func1.bpf.o", "combined stack size of 4 calls is 544" },
-+		{ "test_global_func2.bpf.o" },
-+		{ "test_global_func3.bpf.o" , "the call stack of 8 frames" },
-+		{ "test_global_func4.bpf.o" },
-+		{ "test_global_func5.bpf.o" , "expected pointer to ctx, but got PTR" },
-+		{ "test_global_func6.bpf.o" , "modified ctx ptr R2" },
-+		{ "test_global_func7.bpf.o" , "foo() doesn't return scalar" },
-+		{ "test_global_func8.bpf.o" },
-+		{ "test_global_func9.bpf.o" },
-+		{ "test_global_func10.bpf.o", "invalid indirect read from stack" },
-+		{ "test_global_func11.bpf.o", "Caller passes invalid args into func#1" },
-+		{ "test_global_func12.bpf.o", "invalid mem access 'mem_or_null'" },
-+		{ "test_global_func13.bpf.o", "Caller passes invalid args into func#1" },
-+		{ "test_global_func14.bpf.o", "reference type('FWD S') size cannot be determined" },
-+		{ "test_global_func15.bpf.o", "At program exit the register R0 has value" },
-+		{ "test_global_func16.bpf.o", "invalid indirect read from stack" },
-+		{ "test_global_func17.bpf.o", "Caller passes invalid args into func#1" },
- 	};
- 	libbpf_print_fn_t old_print_fn = NULL;
- 	int err, i, duration = 0;
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_overhead.c b/tools/testing/selftests/bpf/prog_tests/test_overhead.c
-index 05acb3..f27013 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_overhead.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_overhead.c
-@@ -72,7 +72,7 @@ void test_test_overhead(void)
- 	if (CHECK_FAIL(prctl(PR_GET_NAME, comm, 0L, 0L, 0L)))
- 		return;
- 
--	obj = bpf_object__open_file("./test_overhead.o", NULL);
-+	obj = bpf_object__open_file("./test_overhead.bpf.o", NULL);
- 	if (!ASSERT_OK_PTR(obj, "obj_open_file"))
- 		return;
- 
-diff --git a/tools/testing/selftests/bpf/prog_tests/tp_attach_query.c b/tools/testing/selftests/bpf/prog_tests/tp_attach_query.c
-index 39e792..a47908 100644
---- a/tools/testing/selftests/bpf/prog_tests/tp_attach_query.c
-+++ b/tools/testing/selftests/bpf/prog_tests/tp_attach_query.c
-@@ -6,7 +6,7 @@ void serial_test_tp_attach_query(void)
- 	const int num_progs = 3;
- 	int i, j, bytes, efd, err, prog_fd[num_progs], pmu_fd[num_progs];
- 	__u32 duration = 0, info_len, saved_prog_ids[num_progs];
--	const char *file = "./test_tracepoint.o";
-+	const char *file = "./test_tracepoint.bpf.o";
- 	struct perf_event_query_bpf *query;
- 	struct perf_event_attr attr = {};
- 	struct bpf_object *obj[num_progs];
-diff --git a/tools/testing/selftests/bpf/prog_tests/trampoline_count.c b/tools/testing/selftests/bpf/prog_tests/trampoline_count.c
-index b0acbd..564b75b 100644
---- a/tools/testing/selftests/bpf/prog_tests/trampoline_count.c
-+++ b/tools/testing/selftests/bpf/prog_tests/trampoline_count.c
-@@ -35,7 +35,7 @@ static struct bpf_program *load_prog(char *file, char *name, struct inst *inst)
- /* TODO: use different target function to run in concurrent mode */
- void serial_test_trampoline_count(void)
- {
--	char *file = "test_trampoline_count.o";
-+	char *file = "test_trampoline_count.bpf.o";
- 	char *const progs[] = { "fentry_test", "fmod_ret_test", "fexit_test" };
- 	struct inst inst[MAX_TRAMP_PROGS + 1] = {};
- 	struct bpf_program *prog;
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp.c b/tools/testing/selftests/bpf/prog_tests/xdp.c
-index ec21c5..947863a1 100644
---- a/tools/testing/selftests/bpf/prog_tests/xdp.c
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp.c
-@@ -8,7 +8,7 @@ void test_xdp(void)
- 	struct vip key6 = {.protocol = 6, .family = AF_INET6};
- 	struct iptnl_info value4 = {.family = AF_INET};
- 	struct iptnl_info value6 = {.family = AF_INET6};
--	const char *file = "./test_xdp.o";
-+	const char *file = "./test_xdp.bpf.o";
- 	struct bpf_object *obj;
- 	char buf[128];
- 	struct ipv6hdr iph6;
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_adjust_frags.c b/tools/testing/selftests/bpf/prog_tests/xdp_adjust_frags.c
-index 2f033da..fce2036 100644
---- a/tools/testing/selftests/bpf/prog_tests/xdp_adjust_frags.c
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_adjust_frags.c
-@@ -4,7 +4,7 @@
- 
- static void test_xdp_update_frags(void)
- {
--	const char *file = "./test_xdp_update_frags.o";
-+	const char *file = "./test_xdp_update_frags.bpf.o";
- 	int err, prog_fd, max_skb_frags, buf_size, num;
- 	struct bpf_program *prog;
- 	struct bpf_object *obj;
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c b/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c
-index 21ceac..9b9cf84 100644
---- a/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c
-@@ -4,7 +4,7 @@
- 
- static void test_xdp_adjust_tail_shrink(void)
- {
--	const char *file = "./test_xdp_adjust_tail_shrink.o";
-+	const char *file = "./test_xdp_adjust_tail_shrink.bpf.o";
- 	__u32 expect_sz;
- 	struct bpf_object *obj;
- 	int err, prog_fd;
-@@ -39,7 +39,7 @@ static void test_xdp_adjust_tail_shrink(void)
- 
- static void test_xdp_adjust_tail_grow(void)
- {
--	const char *file = "./test_xdp_adjust_tail_grow.o";
-+	const char *file = "./test_xdp_adjust_tail_grow.bpf.o";
- 	struct bpf_object *obj;
- 	char buf[4096]; /* avoid segfault: large buf to hold grow results */
- 	__u32 expect_sz;
-@@ -73,7 +73,7 @@ static void test_xdp_adjust_tail_grow(void)
- 
- static void test_xdp_adjust_tail_grow2(void)
- {
--	const char *file = "./test_xdp_adjust_tail_grow.o";
-+	const char *file = "./test_xdp_adjust_tail_grow.bpf.o";
- 	char buf[4096]; /* avoid segfault: large buf to hold grow results */
- 	int tailroom = 320; /* SKB_DATA_ALIGN(sizeof(struct skb_shared_info))*/;
- 	struct bpf_object *obj;
-@@ -135,7 +135,7 @@ static void test_xdp_adjust_tail_grow2(void)
- 
- static void test_xdp_adjust_frags_tail_shrink(void)
- {
--	const char *file = "./test_xdp_adjust_tail_shrink.o";
-+	const char *file = "./test_xdp_adjust_tail_shrink.bpf.o";
- 	__u32 exp_size;
- 	struct bpf_program *prog;
- 	struct bpf_object *obj;
-@@ -202,7 +202,7 @@ static void test_xdp_adjust_frags_tail_shrink(void)
- 
- static void test_xdp_adjust_frags_tail_grow(void)
- {
--	const char *file = "./test_xdp_adjust_tail_grow.o";
-+	const char *file = "./test_xdp_adjust_tail_grow.bpf.o";
- 	__u32 exp_size;
- 	struct bpf_program *prog;
- 	struct bpf_object *obj;
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_attach.c b/tools/testing/selftests/bpf/prog_tests/xdp_attach.c
-index 62aa3e..062fbc 100644
---- a/tools/testing/selftests/bpf/prog_tests/xdp_attach.c
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_attach.c
-@@ -8,7 +8,7 @@ void serial_test_xdp_attach(void)
- {
- 	__u32 duration = 0, id1, id2, id0 = 0, len;
- 	struct bpf_object *obj1, *obj2, *obj3;
--	const char *file = "./test_xdp.o";
-+	const char *file = "./test_xdp.bpf.o";
- 	struct bpf_prog_info info = {};
- 	int err, fd1, fd2, fd3;
- 	LIBBPF_OPTS(bpf_xdp_attach_opts, opts);
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_info.c b/tools/testing/selftests/bpf/prog_tests/xdp_info.c
-index 0d01ff6..cd3aa34 100644
---- a/tools/testing/selftests/bpf/prog_tests/xdp_info.c
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_info.c
-@@ -7,7 +7,7 @@
- void serial_test_xdp_info(void)
- {
- 	__u32 len = sizeof(struct bpf_prog_info), duration = 0, prog_id;
--	const char *file = "./xdp_dummy.o";
-+	const char *file = "./xdp_dummy.bpf.o";
- 	struct bpf_prog_info info = {};
- 	struct bpf_object *obj;
- 	int err, prog_fd;
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_perf.c b/tools/testing/selftests/bpf/prog_tests/xdp_perf.c
-index f543d1..ec5369 100644
---- a/tools/testing/selftests/bpf/prog_tests/xdp_perf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_perf.c
-@@ -3,7 +3,7 @@
- 
- void test_xdp_perf(void)
- {
--	const char *file = "./xdp_dummy.o";
-+	const char *file = "./xdp_dummy.bpf.o";
- 	struct bpf_object *obj;
- 	char in[128], out[128];
- 	int err, prog_fd;
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_synproxy.c b/tools/testing/selftests/bpf/prog_tests/xdp_synproxy.c
-index 874a84..75550a 100644
---- a/tools/testing/selftests/bpf/prog_tests/xdp_synproxy.c
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_synproxy.c
-@@ -82,7 +82,7 @@ static void test_synproxy(bool xdp)
- 	SYS("ethtool -K tmp0 tx off");
- 	if (xdp)
- 		/* Workaround required for veth. */
--		SYS("ip link set tmp0 xdp object xdp_dummy.o section xdp 2> /dev/null");
-+		SYS("ip link set tmp0 xdp object xdp_dummy.bpf.o section xdp 2> /dev/null");
- 
- 	ns = open_netns("synproxy");
- 	if (!ASSERT_OK_PTR(ns, "setns"))
-diff --git a/tools/testing/selftests/bpf/progs/fexit_bpf2bpf.c b/tools/testing/selftests/bpf/progs/fexit_bpf2bpf.c
-index 48cd14b4..4547b0 100644
---- a/tools/testing/selftests/bpf/progs/fexit_bpf2bpf.c
-+++ b/tools/testing/selftests/bpf/progs/fexit_bpf2bpf.c
-@@ -73,10 +73,10 @@ int test_subprog2(struct args_subprog2 *ctx)
- 			      __builtin_preserve_access_index(&skb->len));
- 
- 	ret = ctx->ret;
--	/* bpf_prog_test_load() loads "test_pkt_access.o" with BPF_F_TEST_RND_HI32
--	 * which randomizes upper 32 bits after BPF_ALU32 insns.
--	 * Hence after 'w0 <<= 1' upper bits of $rax are random.
--	 * That is expected and correct. Trim them.
-+	/* bpf_prog_test_load() loads "test_pkt_access.bpf.o" with
-+	 * BPF_F_TEST_RND_HI32 which randomizes upper 32 bits after BPF_ALU32
-+	 * insns. Hence after 'w0 <<= 1' upper bits of $rax are random. That is
-+	 * expected and correct. Trim them.
- 	 */
- 	ret = (__u32) ret;
- 	if (len != 74 || ret != 148)
-diff --git a/tools/testing/selftests/bpf/test_dev_cgroup.c b/tools/testing/selftests/bpf/test_dev_cgroup.c
-index 788626..adeaf6 100644
---- a/tools/testing/selftests/bpf/test_dev_cgroup.c
-+++ b/tools/testing/selftests/bpf/test_dev_cgroup.c
-@@ -16,7 +16,7 @@
- #include "cgroup_helpers.h"
- #include "testing_helpers.h"
- 
--#define DEV_CGROUP_PROG "./dev_cgroup.o"
-+#define DEV_CGROUP_PROG "./dev_cgroup.bpf.o"
- 
- #define TEST_CGROUP "/test-bpf-based-device-cgroup/"
- 
-diff --git a/tools/testing/selftests/bpf/test_lirc_mode2_user.c b/tools/testing/selftests/bpf/test_lirc_mode2_user.c
-index 2893e9f..469442 100644
---- a/tools/testing/selftests/bpf/test_lirc_mode2_user.c
-+++ b/tools/testing/selftests/bpf/test_lirc_mode2_user.c
-@@ -59,7 +59,7 @@ int main(int argc, char **argv)
- 		return 2;
- 	}
- 
--	ret = bpf_prog_test_load("test_lirc_mode2_kern.o",
-+	ret = bpf_prog_test_load("test_lirc_mode2_kern.bpf.o",
- 				 BPF_PROG_TYPE_LIRC_MODE2, &obj, &progfd);
- 	if (ret) {
- 		printf("Failed to load bpf program\n");
-diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
-index cbebfa..c49f20 100644
---- a/tools/testing/selftests/bpf/test_maps.c
-+++ b/tools/testing/selftests/bpf/test_maps.c
-@@ -651,9 +651,9 @@ static void test_stackmap(unsigned int task, void *data)
- #include <arpa/inet.h>
- #include <sys/select.h>
- #include <linux/err.h>
--#define SOCKMAP_PARSE_PROG "./sockmap_parse_prog.o"
--#define SOCKMAP_VERDICT_PROG "./sockmap_verdict_prog.o"
--#define SOCKMAP_TCP_MSG_PROG "./sockmap_tcp_msg_prog.o"
-+#define SOCKMAP_PARSE_PROG "./sockmap_parse_prog.bpf.o"
-+#define SOCKMAP_VERDICT_PROG "./sockmap_verdict_prog.bpf.o"
-+#define SOCKMAP_TCP_MSG_PROG "./sockmap_tcp_msg_prog.bpf.o"
- static void test_sockmap(unsigned int tasks, void *data)
- {
- 	struct bpf_map *bpf_map_rx, *bpf_map_tx, *bpf_map_msg, *bpf_map_break;
-@@ -1143,8 +1143,8 @@ static void test_sockmap(unsigned int tasks, void *data)
- 	exit(1);
- }
- 
--#define MAPINMAP_PROG "./test_map_in_map.o"
--#define MAPINMAP_INVALID_PROG "./test_map_in_map_invalid.o"
-+#define MAPINMAP_PROG "./test_map_in_map.bpf.o"
-+#define MAPINMAP_INVALID_PROG "./test_map_in_map_invalid.bpf.o"
- static void test_map_in_map(void)
- {
- 	struct bpf_object *obj;
-diff --git a/tools/testing/selftests/bpf/test_offload.py b/tools/testing/selftests/bpf/test_offload.py
-index 6cd6ef..7fc15e0 100755
---- a/tools/testing/selftests/bpf/test_offload.py
-+++ b/tools/testing/selftests/bpf/test_offload.py
-@@ -782,7 +782,7 @@ if out.find("/sys/kernel/debug type debugfs") == -1:
-     cmd("mount -t debugfs none /sys/kernel/debug")
- 
- # Check samples are compiled
--samples = ["sample_ret0.o", "sample_map_ret0.o"]
-+samples = ["sample_ret0.bpf.o", "sample_map_ret0.bpf.o"]
- for s in samples:
-     ret, out = cmd("ls %s/%s" % (bpf_test_dir, s), fail=False)
-     skip(ret != 0, "sample %s/%s not found, please compile it" %
-@@ -803,7 +803,7 @@ cmd("ip netns delete %s" % (ns))
- netns = []
- 
- try:
--    obj = bpf_obj("sample_ret0.o")
-+    obj = bpf_obj("sample_ret0.bpf.o")
-     bytecode = bpf_bytecode("1,6 0 0 4294967295,")
- 
-     start_test("Test destruction of generic XDP...")
-@@ -1023,7 +1023,7 @@ try:
- 
-     sim.wait_for_flush()
-     start_test("Test non-offload XDP attaching to HW...")
--    bpftool_prog_load("sample_ret0.o", "/sys/fs/bpf/nooffload")
-+    bpftool_prog_load("sample_ret0.bpf.o", "/sys/fs/bpf/nooffload")
-     nooffload = bpf_pinned("/sys/fs/bpf/nooffload")
-     ret, _, err = sim.set_xdp(nooffload, "offload",
-                               fail=False, include_stderr=True)
-@@ -1032,7 +1032,7 @@ try:
-     rm("/sys/fs/bpf/nooffload")
- 
-     start_test("Test offload XDP attaching to drv...")
--    bpftool_prog_load("sample_ret0.o", "/sys/fs/bpf/offload",
-+    bpftool_prog_load("sample_ret0.bpf.o", "/sys/fs/bpf/offload",
-                       dev=sim['ifname'])
-     offload = bpf_pinned("/sys/fs/bpf/offload")
-     ret, _, err = sim.set_xdp(offload, "drv", fail=False, include_stderr=True)
-@@ -1043,7 +1043,7 @@ try:
- 
-     start_test("Test XDP load failure...")
-     sim.dfs["dev/bpf_bind_verifier_accept"] = 0
--    ret, _, err = bpftool_prog_load("sample_ret0.o", "/sys/fs/bpf/offload",
-+    ret, _, err = bpftool_prog_load("sample_ret0.bpf.o", "/sys/fs/bpf/offload",
-                                  dev=sim['ifname'], fail=False, include_stderr=True)
-     fail(ret == 0, "verifier should fail on load")
-     check_verifier_log(err, "[netdevsim] Hello from netdevsim!")
-@@ -1169,7 +1169,7 @@ try:
- 
-     simdev = NetdevSimDev()
-     sim, = simdev.nsims
--    map_obj = bpf_obj("sample_map_ret0.o")
-+    map_obj = bpf_obj("sample_map_ret0.bpf.o")
-     start_test("Test loading program with maps...")
-     sim.set_xdp(map_obj, "offload", JSON=False) # map fixup msg breaks JSON
- 
-@@ -1307,10 +1307,10 @@ try:
-     sims = (simA, simB1, simB2, simB3)
-     simB = (simB1, simB2, simB3)
- 
--    bpftool_prog_load("sample_map_ret0.o", "/sys/fs/bpf/nsimA",
-+    bpftool_prog_load("sample_map_ret0.bpf.o", "/sys/fs/bpf/nsimA",
-                       dev=simA['ifname'])
-     progA = bpf_pinned("/sys/fs/bpf/nsimA")
--    bpftool_prog_load("sample_map_ret0.o", "/sys/fs/bpf/nsimB",
-+    bpftool_prog_load("sample_map_ret0.bpf.o", "/sys/fs/bpf/nsimB",
-                       dev=simB1['ifname'])
-     progB = bpf_pinned("/sys/fs/bpf/nsimB")
- 
-@@ -1344,14 +1344,14 @@ try:
-     mapA = bpftool("prog show %s" % (progA))[1]["map_ids"][0]
-     mapB = bpftool("prog show %s" % (progB))[1]["map_ids"][0]
- 
--    ret, _ = bpftool_prog_load("sample_map_ret0.o", "/sys/fs/bpf/nsimB_",
-+    ret, _ = bpftool_prog_load("sample_map_ret0.bpf.o", "/sys/fs/bpf/nsimB_",
-                                dev=simB3['ifname'],
-                                maps=["idx 0 id %d" % (mapB)],
-                                fail=False)
-     fail(ret != 0, "couldn't reuse a map on the same ASIC")
-     rm("/sys/fs/bpf/nsimB_")
- 
--    ret, _, err = bpftool_prog_load("sample_map_ret0.o", "/sys/fs/bpf/nsimA_",
-+    ret, _, err = bpftool_prog_load("sample_map_ret0.bpf.o", "/sys/fs/bpf/nsimA_",
-                                     dev=simA['ifname'],
-                                     maps=["idx 0 id %d" % (mapB)],
-                                     fail=False, include_stderr=True)
-@@ -1359,7 +1359,7 @@ try:
-     fail(err.count("offload device mismatch between prog and map") == 0,
-          "error message missing for cross-ASIC map")
- 
--    ret, _, err = bpftool_prog_load("sample_map_ret0.o", "/sys/fs/bpf/nsimB_",
-+    ret, _, err = bpftool_prog_load("sample_map_ret0.bpf.o", "/sys/fs/bpf/nsimB_",
-                                     dev=simB1['ifname'],
-                                     maps=["idx 0 id %d" % (mapA)],
-                                     fail=False, include_stderr=True)
-diff --git a/tools/testing/selftests/bpf/test_skb_cgroup_id.sh b/tools/testing/selftests/bpf/test_skb_cgroup_id.sh
-index a9bc6f8..515c2ea 100755
---- a/tools/testing/selftests/bpf/test_skb_cgroup_id.sh
-+++ b/tools/testing/selftests/bpf/test_skb_cgroup_id.sh
-@@ -54,7 +54,7 @@ DIR=$(dirname $0)
- TEST_IF="test_cgid_1"
- TEST_IF_PEER="test_cgid_2"
- MAX_PING_TRIES=5
--BPF_PROG_OBJ="${DIR}/test_skb_cgroup_id_kern.o"
-+BPF_PROG_OBJ="${DIR}/test_skb_cgroup_id_kern.bpf.o"
- BPF_PROG_SECTION="cgroup_id_logger"
- BPF_PROG_ID=0
- PROG="${DIR}/test_skb_cgroup_id_user"
-diff --git a/tools/testing/selftests/bpf/test_sock_addr.c b/tools/testing/selftests/bpf/test_sock_addr.c
-index 458564..2c8967 100644
---- a/tools/testing/selftests/bpf/test_sock_addr.c
-+++ b/tools/testing/selftests/bpf/test_sock_addr.c
-@@ -26,14 +26,14 @@
- #endif
- 
- #define CG_PATH	"/foo"
--#define CONNECT4_PROG_PATH	"./connect4_prog.o"
--#define CONNECT6_PROG_PATH	"./connect6_prog.o"
--#define SENDMSG4_PROG_PATH	"./sendmsg4_prog.o"
--#define SENDMSG6_PROG_PATH	"./sendmsg6_prog.o"
--#define RECVMSG4_PROG_PATH	"./recvmsg4_prog.o"
--#define RECVMSG6_PROG_PATH	"./recvmsg6_prog.o"
--#define BIND4_PROG_PATH		"./bind4_prog.o"
--#define BIND6_PROG_PATH		"./bind6_prog.o"
-+#define CONNECT4_PROG_PATH	"./connect4_prog.bpf.o"
-+#define CONNECT6_PROG_PATH	"./connect6_prog.bpf.o"
-+#define SENDMSG4_PROG_PATH	"./sendmsg4_prog.bpf.o"
-+#define SENDMSG6_PROG_PATH	"./sendmsg6_prog.bpf.o"
-+#define RECVMSG4_PROG_PATH	"./recvmsg4_prog.bpf.o"
-+#define RECVMSG6_PROG_PATH	"./recvmsg6_prog.bpf.o"
-+#define BIND4_PROG_PATH		"./bind4_prog.bpf.o"
-+#define BIND6_PROG_PATH		"./bind6_prog.bpf.o"
- 
- #define SERV4_IP		"192.168.1.254"
- #define SERV4_REWRITE_IP	"127.0.0.1"
-diff --git a/tools/testing/selftests/bpf/test_sockmap.c b/tools/testing/selftests/bpf/test_sockmap.c
-index 0fbaccd..dcb038 100644
---- a/tools/testing/selftests/bpf/test_sockmap.c
-+++ b/tools/testing/selftests/bpf/test_sockmap.c
-@@ -52,8 +52,8 @@ static void running_handler(int a);
- #define S1_PORT 10000
- #define S2_PORT 10001
- 
--#define BPF_SOCKMAP_FILENAME  "test_sockmap_kern.o"
--#define BPF_SOCKHASH_FILENAME "test_sockhash_kern.o"
-+#define BPF_SOCKMAP_FILENAME  "test_sockmap_kern.bpf.o"
-+#define BPF_SOCKHASH_FILENAME "test_sockhash_kern.bpf.o"
- #define CG_PATH "/sockmap"
- 
- /* global sockets */
-diff --git a/tools/testing/selftests/bpf/test_sysctl.c b/tools/testing/selftests/bpf/test_sysctl.c
-index 57620e..bcdbd2 100644
---- a/tools/testing/selftests/bpf/test_sysctl.c
-+++ b/tools/testing/selftests/bpf/test_sysctl.c
-@@ -1372,7 +1372,7 @@ static struct sysctl_test tests[] = {
- 	},
- 	{
- 		"C prog: deny all writes",
--		.prog_file = "./test_sysctl_prog.o",
-+		.prog_file = "./test_sysctl_prog.bpf.o",
- 		.attach_type = BPF_CGROUP_SYSCTL,
- 		.sysctl = "net/ipv4/tcp_mem",
- 		.open_flags = O_WRONLY,
-@@ -1381,7 +1381,7 @@ static struct sysctl_test tests[] = {
- 	},
- 	{
- 		"C prog: deny access by name",
--		.prog_file = "./test_sysctl_prog.o",
-+		.prog_file = "./test_sysctl_prog.bpf.o",
- 		.attach_type = BPF_CGROUP_SYSCTL,
- 		.sysctl = "net/ipv4/route/mtu_expires",
- 		.open_flags = O_RDONLY,
-@@ -1389,7 +1389,7 @@ static struct sysctl_test tests[] = {
- 	},
- 	{
- 		"C prog: read tcp_mem",
--		.prog_file = "./test_sysctl_prog.o",
-+		.prog_file = "./test_sysctl_prog.bpf.o",
- 		.attach_type = BPF_CGROUP_SYSCTL,
- 		.sysctl = "net/ipv4/tcp_mem",
- 		.open_flags = O_RDONLY,
-diff --git a/tools/testing/selftests/bpf/test_tcp_check_syncookie.sh b/tools/testing/selftests/bpf/test_tcp_check_syncookie.sh
-index 102e65..b42c24 100755
---- a/tools/testing/selftests/bpf/test_tcp_check_syncookie.sh
-+++ b/tools/testing/selftests/bpf/test_tcp_check_syncookie.sh
-@@ -76,7 +76,7 @@ main()
- DIR=$(dirname $0)
- TEST_IF=lo
- MAX_PING_TRIES=5
--BPF_PROG_OBJ="${DIR}/test_tcp_check_syncookie_kern.o"
-+BPF_PROG_OBJ="${DIR}/test_tcp_check_syncookie_kern.bpf.o"
- CLSACT_SECTION="tc"
- XDP_SECTION="xdp"
- BPF_PROG_ID=0
-diff --git a/tools/testing/selftests/bpf/test_tcpnotify_user.c b/tools/testing/selftests/bpf/test_tcpnotify_user.c
-index 8284db..595194 100644
---- a/tools/testing/selftests/bpf/test_tcpnotify_user.c
-+++ b/tools/testing/selftests/bpf/test_tcpnotify_user.c
-@@ -69,7 +69,7 @@ int verify_result(const struct tcpnotify_globals *result)
- 
- int main(int argc, char **argv)
- {
--	const char *file = "test_tcpnotify_kern.o";
-+	const char *file = "test_tcpnotify_kern.bpf.o";
- 	struct bpf_map *perf_map, *global_map;
- 	struct tcpnotify_globals g = {0};
- 	struct perf_buffer *pb = NULL;
-diff --git a/tools/testing/selftests/bpf/test_xdp_redirect.sh b/tools/testing/selftests/bpf/test_xdp_redirect.sh
-index 1d79f3..0746a4 100755
---- a/tools/testing/selftests/bpf/test_xdp_redirect.sh
-+++ b/tools/testing/selftests/bpf/test_xdp_redirect.sh
-@@ -54,10 +54,10 @@ test_xdp_redirect()
- 		return 0
- 	fi
- 
--	ip -n ${NS1} link set veth11 $xdpmode obj xdp_dummy.o sec xdp &> /dev/null
--	ip -n ${NS2} link set veth22 $xdpmode obj xdp_dummy.o sec xdp &> /dev/null
--	ip link set dev veth1 $xdpmode obj test_xdp_redirect.o sec redirect_to_222 &> /dev/null
--	ip link set dev veth2 $xdpmode obj test_xdp_redirect.o sec redirect_to_111 &> /dev/null
-+	ip -n ${NS1} link set veth11 $xdpmode obj xdp_dummy.bpf.o sec xdp &> /dev/null
-+	ip -n ${NS2} link set veth22 $xdpmode obj xdp_dummy.bpf.o sec xdp &> /dev/null
-+	ip link set dev veth1 $xdpmode obj test_xdp_redirect.bpf.o sec redirect_to_222 &> /dev/null
-+	ip link set dev veth2 $xdpmode obj test_xdp_redirect.bpf.o sec redirect_to_111 &> /dev/null
- 
- 	if ip netns exec ${NS1} ping -c 1 10.1.1.22 &> /dev/null &&
- 	   ip netns exec ${NS2} ping -c 1 10.1.1.11 &> /dev/null; then
-diff --git a/tools/testing/selftests/bpf/test_xdp_redirect_multi.sh b/tools/testing/selftests/bpf/test_xdp_redirect_multi.sh
-index cc57cb8..4c3c3fd 100755
---- a/tools/testing/selftests/bpf/test_xdp_redirect_multi.sh
-+++ b/tools/testing/selftests/bpf/test_xdp_redirect_multi.sh
-@@ -94,7 +94,7 @@ setup_ns()
- 		# Add a neigh entry for IPv4 ping test
- 		ip -n ${NS[$i]} neigh add 192.0.2.253 lladdr 00:00:00:00:00:01 dev veth0
- 		ip -n ${NS[$i]} link set veth0 $mode obj \
--			xdp_dummy.o sec xdp &> /dev/null || \
-+			xdp_dummy.bpf.o sec xdp &> /dev/null || \
- 			{ test_fail "Unable to load dummy xdp" && exit 1; }
- 		IFACES="$IFACES veth$i"
- 		veth_mac[$i]=$(ip -n ${NS[0]} link show veth$i | awk '/link\/ether/ {print $2}')
-diff --git a/tools/testing/selftests/bpf/test_xdp_veth.sh b/tools/testing/selftests/bpf/test_xdp_veth.sh
-index 49936c..5211ca9 100755
---- a/tools/testing/selftests/bpf/test_xdp_veth.sh
-+++ b/tools/testing/selftests/bpf/test_xdp_veth.sh
-@@ -101,7 +101,7 @@ ip -n ${NS3} link set dev veth33 up
- 
- mkdir $BPF_DIR
- bpftool prog loadall \
--	xdp_redirect_map.o $BPF_DIR/progs type xdp \
-+	xdp_redirect_map.bpf.o $BPF_DIR/progs type xdp \
- 	pinmaps $BPF_DIR/maps
- bpftool map update pinned $BPF_DIR/maps/tx_port key 0 0 0 0 value 122 0 0 0
- bpftool map update pinned $BPF_DIR/maps/tx_port key 1 0 0 0 value 133 0 0 0
-@@ -110,9 +110,9 @@ ip link set dev veth1 xdp pinned $BPF_DIR/progs/xdp_redirect_map_0
- ip link set dev veth2 xdp pinned $BPF_DIR/progs/xdp_redirect_map_1
- ip link set dev veth3 xdp pinned $BPF_DIR/progs/xdp_redirect_map_2
- 
--ip -n ${NS1} link set dev veth11 xdp obj xdp_dummy.o sec xdp
--ip -n ${NS2} link set dev veth22 xdp obj xdp_tx.o sec xdp
--ip -n ${NS3} link set dev veth33 xdp obj xdp_dummy.o sec xdp
-+ip -n ${NS1} link set dev veth11 xdp obj xdp_dummy.bpf.o sec xdp
-+ip -n ${NS2} link set dev veth22 xdp obj xdp_tx.bpf.o sec xdp
-+ip -n ${NS3} link set dev veth33 xdp obj xdp_dummy.bpf.o sec xdp
- 
- trap cleanup EXIT
- 
-diff --git a/tools/testing/selftests/bpf/xdp_redirect_multi.c b/tools/testing/selftests/bpf/xdp_redirect_multi.c
-index c03b3a..c1fc44 100644
---- a/tools/testing/selftests/bpf/xdp_redirect_multi.c
-+++ b/tools/testing/selftests/bpf/xdp_redirect_multi.c
-@@ -142,7 +142,7 @@ int main(int argc, char **argv)
- 	}
- 	printf("\n");
- 
--	snprintf(filename, sizeof(filename), "%s_kern.o", argv[0]);
-+	snprintf(filename, sizeof(filename), "%s_kern.bpf.o", argv[0]);
- 	obj = bpf_object__open_file(filename, NULL);
- 	err = libbpf_get_error(obj);
- 	if (err)
-diff --git a/tools/testing/selftests/bpf/xdp_synproxy.c b/tools/testing/selftests/bpf/xdp_synproxy.c
-index d874dd..ff35320 100644
---- a/tools/testing/selftests/bpf/xdp_synproxy.c
-+++ b/tools/testing/selftests/bpf/xdp_synproxy.c
-@@ -193,7 +193,7 @@ static int syncookie_attach(const char *argv0, unsigned int ifindex, bool tc)
- 	int prog_fd;
- 	int err;
- 
--	snprintf(xdp_filename, sizeof(xdp_filename), "%s_kern.o", argv0);
-+	snprintf(xdp_filename, sizeof(xdp_filename), "%s_kern.bpf.o", argv0);
- 	obj = bpf_object__open_file(xdp_filename, NULL);
- 	err = libbpf_get_error(obj);
- 	if (err < 0) {
-diff --git a/tools/testing/selftests/bpf/xdping.c b/tools/testing/selftests/bpf/xdping.c
-index 5b6f97..1503a1 100644
---- a/tools/testing/selftests/bpf/xdping.c
-+++ b/tools/testing/selftests/bpf/xdping.c
-@@ -168,7 +168,7 @@ int main(int argc, char **argv)
- 	/* Use libbpf 1.0 API mode */
- 	libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
- 
--	snprintf(filename, sizeof(filename), "%s_kern.o", argv[0]);
-+	snprintf(filename, sizeof(filename), "%s_kern.bpf.o", argv[0]);
- 
- 	if (bpf_prog_test_load(filename, BPF_PROG_TYPE_XDP, &obj, &prog_fd)) {
- 		fprintf(stderr, "load of %s failed\n", filename);
--- 
-2.30.2
-
+T24gV2VkLCAyMDIyLTA4LTMxIGF0IDIwOjU1IC0wNzAwLCBBbGV4ZWkgU3Rhcm92b2l0b3Ygd3Jv
+dGU6DQo+ICEtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tfA0KPiAgIFRoaXMgTWVzc2FnZSBJcyBGcm9tIGFuIEV4dGVybmFs
+IFNlbmRlcg0KPiANCj4gPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tIQ0KPiANCj4gT24gV2VkLCBBdWcgMzEsIDIwMjIg
+YXQgMjowMiBQTSBEZWx5YW4gS3JhdHVub3YgPGRlbHlhbmtAZmIuY29tPiB3cm90ZToNCj4gPiBH
+aXZlbiB0aGF0IHRyYWNpbmcgcHJvZ3JhbXMgY2FuJ3QgcmVhbGx5IG1haW50YWluIHRoZWlyIG93
+biBmcmVlbGlzdHMgc2FmZWx5IChJIHRoaW5rDQo+ID4gdGhleSdyZSBtaXNzaW5nIHRoZSBidWls
+ZGluZyBibG9ja3MgLSB5b3UgY2FuJ3QgY21weGNoZyBrcHRycyksDQo+IA0KPiBUb2RheT8geWVz
+LCBidXQgc29vbiB3ZSB3aWxsIGhhdmUgbGluayBsaXN0cyBzdXBwb3J0ZWQgbmF0aXZlbHkuDQo+
+IA0KPiA+IEkgZG8gZmVlbCBsaWtlDQo+ID4gaXNvbGF0ZWQgYWxsb2NhdG9ycyBhcmUgYSByZXF1
+aXJlbWVudCBoZXJlLiBXaXRob3V0IHRoZW0sIGFsbG9jYXRpb25zIGNhbiBmYWlsIGFuZA0KPiA+
+IHRoZXJlJ3Mgbm8gd2F5IHRvIHdyaXRlIGEgcmVsaWFibGUgcHJvZ3JhbS4NCj4gDQo+IENvbXBs
+ZXRlbHkgYWdyZWUgdGhhdCB0aGVyZSBzaG91bGQgYmUgYSB3YXkgZm9yIHByb2dyYW1zDQo+IHRv
+IGd1YXJhbnRlZSBhdmFpbGFiaWxpdHkgb2YgdGhlIGVsZW1lbnQuDQo+IElubGluZSBhbGxvY2F0
+aW9uIGNhbiBmYWlsIHJlZ2FyZGxlc3Mgd2hldGhlciBhbGxvY2F0aW9uIHBvb2wNCj4gaXMgc2hh
+cmVkIGJ5IG11bHRpcGxlIHByb2dyYW1zIG9yIGEgc2luZ2xlIHByb2dyYW0gb3ducyBhbiBhbGxv
+Y2F0b3IuDQoNCkknbSBub3Qgc3VyZSBJIHVuZGVyc3RhbmQgdGhpcyBwb2ludC7CoA0KSWYgSSBj
+YWxsIGJwZl9tZW1fcHJlZmlsbCgyMCwgdHlwZV9pZChzdHJ1Y3QgZm9vKSksIEkgd291bGQgZXhw
+ZWN0IHRoZSBuZXh0IDIwIGFsbG9jcw0KZm9yIHN0cnVjdCBmb28gdG8gc3VjY2VlZC4gSW4gd2hh
+dCBzaXR1YXRpb25zIGNhbiB0aGlzIGZhaWwgaWYgSSdtIHRoZSBvbmx5IHByb2dyYW0NCnVzaW5n
+IGl0IF9hbmRfIEkndmUgY2FsY3VsYXRlZCB0aGUgcHJlZmlsbCBhbW91bnQgY29ycmVjdGx5Pw0K
+DQpVbmxlc3MgeW91J3JlIHNheWluZyB0aGF0IHRoZSBwcmVmaWxsIHdvdWxkbid0IGFkanVzdCB0
+aGUgZnJlZWxpc3QgbGltaXRzLCBpbiB3aGljaA0KY2FzZSwgSSB0aGluayB0aGF0J3MgYSBtaXN0
+YWtlIC0gcHJlZmlsbCBzaG91bGQgZWZmZWN0aXZlbHkgX3NldF8gdGhlIGZyZWVsaXN0DQpsaW1p
+dHMuDQoNCj4gSW4gdGhhdCBzZW5zZSwgYWxsb3dpbmcgbXVsdGlwbGUgcHJvZ3JhbXMgdG8gY3Jl
+YXRlIGFuIGluc3RhbmNlDQo+IG9mIGFuIGFsbG9jYXRvciBkb2Vzbid0IHNvbHZlIHRoaXMgcHJv
+YmxlbS4NCj4gU2hvcnQgZnJlZSBsaXN0IGluc2lkZSBicGZfbWVtX2NhY2hlIGlzIGFuIGltcGxl
+bWVudGF0aW9uIGRldGFpbC4NCj4gInByZWZpbGwgdG8gZ3VhcmFudGVlIHN1Y2Nlc3NmdWwgYWxs
+b2MiIGlzIGEgYml0IG91dCBvZiBzY29wZQ0KPiBvZiBhbiBhbGxvY2F0b3IuDQoNCkkgZGlzYWdy
+ZWUgdGhhdCBpdCdzIG91dCBvZiBzY29wZS4gVGhpcyBpcyB0aGUgb25seSBhY2Nlc3MgdG8gZHlu
+YW1pYyBtZW1vcnkgZnJvbSBhDQpicGYgcHJvZ3JhbSwgaXQgbWFrZXMgc2Vuc2UgdGhhdCBpdCBj
+b3ZlcnMgdGhlIHJlcXVpcmVtZW50cyBvZiBicGYgcHJvZ3JhbXMsDQppbmNsdWRpbmcgcHJlZmls
+bC9mcmVlbGlzdCBiZWhhdmlvciwgc28gYWxsIHByb2dyYW1zIGNhbiBzYWZlbHkgdXNlIGl0Lg0K
+DQo+ICJhbGxvY2F0ZSBhIHNldCBhbmQgc3Rhc2ggaXQiIHNob3VsZCBiZSBhIHNlcGFyYXRlIGJ1
+aWxkaW5nIGJsb2NrDQo+IGF2YWlsYWJsZSB0byBicGYgcHJvZ3Mgd2hlbiBzdGVwICJhbGxvY2F0
+ZSIgY2FuIGZhaWwgYW5kDQo+IGVmZmljaWVudCAic3Rhc2ggaXQiIGNhbiBwcm9iYWJseSBiZSBk
+b25lIG9uIHRvcCBvZiB0aGUgbGluayBsaXN0Lg0KDQpEbyB5b3UgaW1hZ2luZSBhIEJQRiBvYmpl
+Y3QgdGhhdCBldmVyeSB1c2VyIGhhcyB0byBsaW5rIGludG8gdGhlaXIgcHJvZ3JhbXMgKHl1Y2sp
+LA0Kb3IgYSBkaWZmZXJlbnQgc2V0IG9mIGhlbHBlcnM/IElmIGl0J3MgaGVscGVycy9rZnVuY3Ms
+IEknbSBhbGwgZm9yIHNwbGl0dGluZyB0aGluZ3MNCnRoaXMgd2F5Lg0KDQpJZiBpdCdzIGRpc3Ry
+aWJ1dGVkIHNlcGFyYXRlbHksIEkgdGhpbmsgdGhhdCdzIGFuIHVuZXhwZWN0ZWQgYnVyZGVuIG9u
+IGRldmVsb3BlcnMNCihJJ20gdGhpbmtpbmcgZXNwZWNpYWxseSBvZiB0b29scyBub3Qgd3JpdGlu
+ZyBwcm9ncmFtcyBpbiBDIG9yIHVzaW5nIGxpYmJwZi9icGZ0b29sDQpza2VscykuIFRoZXJlIGFy
+ZSBubyBvdGhlciBicGYgZmVhdHVyZXMgdGhhdCByZXF1aXJlIGEgdXNlcnNwYWNlIHN1cHBvcnQg
+bGlicmFyeSBsaWtlDQp0aGlzLiAoVVNEVCBkb2Vzbid0IGNvdW50LCB1cHJvYmVzIGFyZSB0aGUg
+dW5kZXJseWluZyBicGYgZmVhdHVyZSBhbmQgdGhhdCBpcyB1c2VmdWwNCndpdGhvdXQgYSBsaWJy
+YXJ5KQ0KPiANCj4gPiAqSWYqIHdlIGVuc3VyZSB0aGF0IHlvdSBjYW4gYnVpbGQgYSB1c2FibGUg
+ZnJlZWxpc3Qgb3V0IG9mIGFsbG9jYXRvci1iYWNrZWQgbWVtb3J5DQo+ID4gZm9yIChhIHNldCBv
+Zikgbm1pIHByb2dyYW1zLCB0aGVuIEkgY2FuIG1heWJlIGdldCBiZWhpbmQgdGhpcyAoYnV0IHRo
+ZXJlJ3Mgb3RoZXINCj4gPiByZWFzb25zIG5vdCB0byBkbyB0aGlzKS4NCj4gDQo+IEFncmVlIHRo
+YXQgbm1pIGFkZHMgYW5vdGhlciBxdWlyayB0byAic3Rhc2ggaXQiIHN0ZXAuDQo+IElmIG5hdGl2
+ZSBsaW5rIGxpc3QgaXMgbm90IGdvaW5nIHRvIHdvcmsgdGhlbiBzb21ldGhpbmcNCj4gZWxzZSB3
+b3VsZCBoYXZlIHRvIGJlIGRlc2lnbmVkLg0KDQpHaXZlbiB0aGF0IEknbGwgYmUgbWFraW5nIHRo
+ZSBkZWZlcnJlZCB3b3JrIG1lY2hhbmlzbSBvbiB0b3Agb2YgdGhpcyBhbGxvY2F0b3IsIHdlDQpk
+ZWZpbml0ZWx5IG5lZWQgdG8gY292ZXIgbm1pIHVzYWdlIGNsZWFubHkuIEl0IHdvdWxkIGJlIGFs
+bW9zdCB1bnVzYWJsZSB0byBoYXZlIHlvdXINCmRlZmVycmVkIHdvcmsgZmFpbCB0byBzdWJtaXQg
+cmFuZG9tbHkuDQoNCj4gDQo+ID4gPiBTbyBvcHRpb24gMyBkb2Vzbid0IGZlZWwgbGVzcyBmbGV4
+aWJsZSB0byBtZS4gaW1vIHRoZSB3aG9sZS1tYXAtYWxsb2NhdG9yIGlzDQo+ID4gPiBtb3JlIHRo
+YW4gd2UgbmVlZC4gSWRlYWxseSBpdCB3b3VsZCBiZSBlYXN5IHRvIHNwZWNpZml5IG9uZSBzaW5n
+bGUNCj4gPiA+IGFsbG9jYXRvciBmb3IgYWxsIG1hcHMgYW5kIHByb2dzIGluIGEgc2V0IG9mIC5j
+IGZpbGVzLiBTb3J0LW9mIGEgYnBmIHBhY2thZ2UuDQo+ID4gPiBJbiBvdGhlciB3b3JkcyBvbmUg
+YnBmIGFsbG9jYXRvciBwZXIgYnBmICJuYW1lc3BhY2UiIGlzIG1vcmUgdGhhbiBlbm91Z2guDQo+
+ID4gDQo+ID4gX1BvdGVudGlhbGx5Xy4gUHJvZ3JhbXMgbmVlZCB0byBrbm93IHRoYXQgd2hlbiB0
+aGV5IHJlc2VydmVkIFggb2JqZWN0cywgdGhleSdsbCBoYXZlDQo+ID4gdGhlbSBhdmFpbGFibGUg
+YXQgYSBsYXRlciB0aW1lIGFuZCBhbnkgc2hhcmluZyB3aXRoIG90aGVyIHByb2dyYW1zIGNhbiBy
+ZW1vdmUgdGhpcw0KPiA+IHByb3BlcnR5Lg0KPiANCj4gQWdyZWUuDQo+IA0KPiA+IEEgX3NldF8g
+b2YgcHJvZ3JhbXMgY2FuIGluIHRoZW9yeSBkZXRlcm1pbmUgdGhlIHJpZ2h0IHByZWZpbGwgbGV2
+ZWxzLCBidXQNCj4gPiB0aGlzIGlzIGNlcnRhaW5seSBlYXNpZXIgdG8gcmVhc29uIGFib3V0IG9u
+IGEgcGVyLXByb2dyYW0gYmFzaXMsIGdpdmVuIHRoYXQgcHJvZ3JhbXMNCj4gPiB3aWxsIHJ1biBh
+dCBkaWZmZXJlbnQgcmF0ZXMuDQo+IA0KPiBBZ3JlZSBhcyB3ZWxsLg0KPiANCj4gPiBXaHkgZG9l
+cyBpdCByZXF1aXJlIGEgZ2xvYmFsIGFsbG9jYXRvcj8gRm9yIGV4YW1wbGUsIHlvdSBjYW4gaGF2
+ZSBlYWNoIHByb2dyYW0gaGF2ZQ0KPiA+IGl0cyBvd24gaW50ZXJuYWwgYWxsb2NhdG9yIGFuZCB3
+aXRoIHJ1bnRpbWUgbGl2ZSBjb3VudHMsIHRoaXMgQVBJIGlzIHZlcnkgYWNoaWV2YWJsZS4NCj4g
+PiBPbmNlIHRoZSBwcm9ncmFtIHVubG9hZHMsIHlvdSBjYW4gZHJhaW4gdGhlIGZyZWVsaXN0cywg
+c28gbW9zdCBhbGxvY2F0b3IgbWVtb3J5IGRvZXMNCj4gPiBub3QgaGF2ZSB0byBsaXZlIGFzIGxv
+bmcgYXMgdGhlIGxvbmdlc3QtbGl2ZWQgb2JqZWN0IGZyb20gdGhhdCBhbGxvY2F0b3IuIEluDQo+
+ID4gYWRkaXRpb24sIGFsbCBhbGxvY2F0b3JzIGNhbiBzaGFyZSBhIGdsb2JhbCBmcmVlbGlzdCB0
+b28sIHNvIGNodW5rcyByZWxlYXNlZCBhZnRlcg0KPiA+IHRoZSBwcm9ncmFtIHVubG9hZHMgZ2V0
+IGEgY2hhbmNlIHRvIGJlIHJldXNlZC4NCj4gDQo+IEFsbCBtYWtlcyBzZW5zZSB0byBtZSBleGNl
+cHQgdGhhdCB0aGUga2VybmVsIGNhbiBwcm92aWRlIHRoYXQNCj4gZ2xvYmFsIGFsbG9jYXRvciBh
+bmQgcGVyLXByb2dyYW0gImFsbG9jYXRvcnMiIGNhbiBob3BlZnVsbHkgYmUNCj4gaW1wbGVtZW50
+ZWQgYXMgbmF0aXZlIGJwZiBjb2RlLg0KPiANCj4gPiBIb3cgaXMgaGF2aW5nIG9uZSBhbGxvY2F0
+b3IgcGVyIHByb2dyYW0gZGlmZmVyZW50IGZyb20gaGF2aW5nIG9uZSBhbGxvY2F0b3IgcGVyIHNl
+dA0KPiA+IG9mIHByb2dyYW1zLCB3aXRoIHBlci1wcm9ncmFtIGJwZi1zaWRlIGZyZWVsaXN0cz8g
+VGhlIHJlcXVpcmVtZW50IHRoYXQgc29tZSAobW9zdD8pDQo+ID4gcHJvZ3JhbXMgbmVlZCBkZXRl
+cm1pbmlzdGljIGFjY2VzcyB0byB0aGVpciBmcmVlbGlzdHMgaXMgc3RpbGwgdGhlcmUsIG5vIG1h
+dHRlciB0aGUNCj4gPiBudW1iZXIgb2YgYWxsb2NhdG9ycy4gSWYgd2UgZmVhciB0aGF0IHRoZSBk
+ZWZhdWx0IGZyZWVsaXN0IGJlaGF2aW9yIHdpbGwgd2FzdGUNCj4gPiBtZW1vcnksIHRoZW4gdGhl
+IGRlZmF1bHRzIG5lZWQgdG8gYmUgYWdncmVzc2l2ZWx5IGNvbnNlcnZhdGl2ZSwgd2l0aCBwcm9n
+cmFtcyBiZWluZw0KPiA+IGFibGUgdG8gYWRqdXN0IHRoZW0uDQo+IA0KPiBJIHRoaW5rIHRoZSBk
+aXNhZ3JlZW1lbnQgaGVyZSBpcyB0aGF0IHBlci1wcm9nIGFsbG9jYXRvciBiYXNlZA0KPiBvbiBi
+cGZfbWVtX2FsbG9jIGlzbid0IGdvaW5nIHRvIGJlIGFueSBtb3JlIGRldGVybWluaXN0aWMgdGhh
+bg0KPiBvbmUgZ2xvYmFsIGJwZl9tZW1fYWxsb2MgZm9yIGFsbCBwcm9ncy4NCj4gUGVyLXByb2cg
+c2hvcnQgZnJlZSBsaXN0IG9mIH42NCBlbGVtZW50cyB2cw0KPiBnbG9iYWwgZnJlZSBsaXN0IG9m
+IH42NCBlbGVtZW50cy4NCg0KUmlnaHQsIEkgdGhpbmsgSSBoYWQgYSBoaWRkZW4gYXNzdW1wdGlv
+biBoZXJlIHRoYXQgd2UndmUgZXhwb3NlZC7CoA0KTmFtZWx5LCBJIGltYWdpbmVkIHRoYXQgYWZ0
+ZXIgYSBtZW1fcHJlZmlsbCgxMDAwLCBzdHJ1Y3QgZm9vKSBjYWxsLCB0aGVyZSB3b3VsZCBiZQ0K
+MTAwMCBzdHJ1Y3QgZm9vcyBvbiB0aGUgZnJlZWxpc3QgYW5kIHRoZSBmcmVlbGlzdCB0aHJlc2hv
+bGRzIHdvdWxkIGJlIGFkanVzdGVkDQphY2NvcmRpbmdseSAoaS5lLiwgeW91IGNhbiBmcmVlIGFs
+bCBvZiB0aGVtIGFuZCBhbGxvY2F0ZSB0aGVtIGFnYWluLCBhbGwgZnJvbSB0aGUNCmZyZWVsaXN0
+KS4NCg0KVWx0aW1hdGVseSwgdGhhdCdzIHdoYXQgbm1pIHByb2dyYW1zIGFjdHVhbGx5IG5lZWQg
+YnV0IEkgc2VlIHdoeSB0aGF0J3Mgbm90IGFuDQpvYnZpb3VzIGJlaGF2aW9yLg0KDQo+IEluIGJv
+dGggY2FzZXMgdGhlc2UgbGlzdHMgd2lsbCBoYXZlIHRvIGRvIGlycV93b3JrIGFuZCByZWZpbGwN
+Cj4gb3V0IG9mIGdsb2JhbCBzbGFicy4NCg0KSWYgYSB0cmFjaW5nIHByb2dyYW0gbmVlZHMgaXJx
+X3dvcmsgdG8gcmVmaWxsLCB0aGVuIGhhc24ndCB0aGUgQVBJIGFscmVhZHkgZmFpbGVkIHRoZQ0K
+cHJvZ3JhbSB3cml0ZXI/IEknZCBoYXZlIHRvIHJlbWluZCBteXNlbGYgaG93IGlycV93b3JrIGFj
+dHVhbGx5IHdvcmtzIGJ1dCBnaXZlbiB0aGF0DQppdCdzIGEgc29mdC9oYXJkaXJxLCBhbiBubWkg
+cHJvZ3JhbSBjYW4gdHJpdmlhbGx5IGV4aGF1c3QgdGhlIGVudGlyZSBhbGxvY2F0b3IgYmVmb3Jl
+DQppcnFfd29yayBoYXMgYSBjaGFuY2UgdG8gcmVmaWxsIGl0LiBJIGRvbid0IHNlZSBob3cgeW91
+J2Qgd3JpdGUgcmVsaWFibGUgcHJvZ3JhbXMNCnRoaXMgd2F5Lg0KDQo+IA0KPiA+IEJlc2lkZXMs
+IGlmIHdlIHB1bnQgdGhlIGZyZWVsaXN0cyB0byBicGYsIHRoZW4gd2UgZ2V0IGFic29sdXRlbHkg
+bm8gY29udHJvbCBvdmVyIHRoZQ0KPiA+IG1lbW9yeSB1c2FnZSwgd2hpY2ggaXMgc3RyaWN0bHkg
+d29yc2UgZm9yIHVzIChhbmQgd29yc2UgZGV2ZWxvcGVyIGV4cGVyaWVuY2Ugb24gdG9wKS4NCj4g
+DQo+IEkgZG9uJ3QgdW5kZXJzdGFuZCB0aGlzIHBvaW50Lg0KPiBBbGwgYWxsb2NhdGlvbnMgYXJl
+IHN0aWxsIGNvbWluZyBvdXQgb2YgYnBmX21lbV9hbGxvYy4NCj4gV2UgY2FuIGhhdmUgZGVidWcg
+bW9kZSB3aXRoIG1lbWxlYWsgc3VwcG9ydCBhbmQgb3RoZXIgZGVidWcNCj4gbWVjaGFuaXNtcy4N
+Cg0KSSBtb3N0bHkgbWVhbiBhY2NvdW50aW5nIGhlcmUuIElmIHdlIHNlZ21lbnQgdGhlIGFsbG9j
+YXRlZCBvYmplY3RzIGJ5IGZpbmVyLWdyYWluZWQNCmFsbG9jYXRvcnMsIHdlIGNhbiBhdHRyaWJ1
+dGUgdGhlbSB0byBpbmRpdmlkdWFsIHByb2dyYW1zIGJldHRlci4gQnV0LCBJIGFncmVlLCB0aGlz
+DQpjYW4gYmUgaW1wbGVtZW50ZWQgaW4gb3RoZXIgd2F5cywgaXQgY2FuIGp1c3QgYmUgY291bnRz
+L3RhYmxlcyBvbiBicGZfcHJvZy4NCg0KPiANCj4gPiA+IChUaGUgcHJvZmlsZXJhdGlvbiBvZiBr
+bWVtX2NhY2hlLXMgaW4gdGhlIHBhc3QNCj4gPiA+IGZvcmNlZCBtZXJnaW5nIG9mIHRoZW0pLiBC
+eSByZXN0cmljdGluZyBicGYgcHJvZ3JhbSBjaG9pY2VzIHdpdGggYWxsb2NhdG9yLXBlci1tYXAN
+Cj4gPiA+ICh0aGlzIG9wdGlvbiAzKSB3ZSdyZSBub3Qgb25seSBtYWtpbmcgdGhlIGtlcm5lbCBz
+aWRlIHRvIGRvIGxlc3Mgd29yaw0KPiA+ID4gKG5vIHJ1bi10aW1lIHJlZiBjb3VudHMsIG5vIG1l
+cmdpbmcgaXMgcmVxdWlyZWQgdG9kYXkpLCB3ZSdyZSBhbHNvIHB1c2hpbmcNCj4gPiA+IGJwZiBw
+cm9ncyB0byB1c2UgbWVtb3J5IGNvbmNpb3VzIGNob2ljZXMuDQo+ID4gDQo+ID4gVGhpcyBpcyBj
+b25mbGF0aW5nICJ0aGVyZSBuZWVkcyB0byBiZSBhIGxpbWl0IG9uIG1lbW9yeSBzdHVjayBpbiBm
+cmVlbGlzdHMiIHdpdGggInlvdQ0KPiA+IGNhbiBvbmx5IHN0b3JlIGtwdHJzIGZyb20gb25lIGFs
+bG9jYXRvciBpbiBlYWNoIG1hcC4iIFRoZSBmb3JtZXIgcHJhY3RpY2FsbHkNCj4gPiBhZHZvY2F0
+ZXMgZm9yIGZyZWVsaXN0cyB0byBfbm90XyBiZSBoYW5kLXJvbGxlZCBpbnNpZGUgYnBmIHByb2dz
+LiBJIHN0aWxsIGRpc2FncmVlDQo+ID4gd2l0aCB0aGUgbGF0dGVyIC0gaXQncyBjb21pbmcgc3Ry
+aWN0bHkgZnJvbSB0aGUgZGVzaXJlIHRvIGhhdmUgc3RhdGljIG1hcHBpbmdzDQo+ID4gYmV0d2Vl
+biBvYmplY3Qgc3RvcmFnZSBhbmQgYWxsb2NhdG9yczsgaXQncyBub3QgY29taW5nIGZyb20gYSBt
+ZW1vcnkgdXNhZ2UgbmVlZCwgaXQNCj4gPiBvbmx5IGF2b2lkcyBydW50aW1lIGxpdmUgb2JqZWN0
+IGNvdW50cy4NCj4gPiANCj4gPiA+IEhhdmluZyBzYWlkIGFsbCB0aGF0IG1heWJlIG9uZSBnbG9i
+YWwgYWxsb2NhdG9yIGlzIG5vdCBzdWNoIGEgYmFkIGlkZWEuDQo+ID4gDQo+ID4gSXQgX2lzXyBh
+IGJhZCBpZGVhIGJlY2F1c2UgaXQgZG9lc24ndCBoYXZlIGZyZWVsaXN0IHVzYWdlIGRldGVybWlu
+aXNtLiBJIGRvLCBob3dldmVyLA0KPiA+IHRoaW5rIHRoZXJlIGlzIHZhbHVlIGluIGhhdmluZyBw
+cmVjaXNlIGFuZCBjb25zZXJ2YXRpdmUgZnJlZWxpc3QgcG9saWNpZXMsIGFsb25nIHdpdGgNCj4g
+PiBhIGdsb2JhbCBmcmVlbGlzdCBmb3Igb3ZlcmZsb3cgYW5kIGRyYWluaW5nIGFmdGVyIHByb2dy
+YW0gdW5sb2FkLiBUaGUgbGF0dGVyIHdvdWxkDQo+ID4gYWxsb3cgdXMgdG8gc2hhcmUgbWVtb3J5
+IGJldHdlZW4gYWxsb2NhdG9ycyB3aXRob3V0IHNhY3JpZmljaW5nIHBlci1hbGxvY2F0b3INCj4g
+PiBmcmVlbGlzdCBkZXRlcm1pbmlzbSwgZXNwZWNpYWxseSBpZiBwYWlyZWQgd2l0aCB2ZXJ5IHN0
+YXRpYyAoYnV0IGNvbmZpZ3VyYWJsZSkNCj4gPiBmcmVlbGlzdCB0aHJlc2hvbGRzLg0KPiANCj4g
+V2hhdCBpcyAnZnJlZWxpc3QgZGV0ZXJtaW5pc20nID8NCg0KVGhlIHByb3BlcnR5IHRoYXQgcHJl
+ZmlsbCBrZWVwcyBhbGwgb2JqZWN0cyBvbiB0aGUgZnJlZWxpc3QsIHNvIHRoZSBmb2xsb3dpbmcN
+CnNlcXVlbmNlIGRvZXNuJ3Qgb2JzZXJ2ZSBhbGxvY2F0aW9uIGZhaWx1cmVzOg0KDQpicGZfbWVt
+X3ByZWZpbGwoMTAwMCwgc3RydWN0IGZvbyk7DQpydW5fMTAwMF90aW1lcyB7IGFsbG9jKHN0cnVj
+dCBmb28pOyB9DQpydW5fMTAwMF90aW1lcyB7IGZyZWUoc3RydWN0IGZvbyk7IH0NCnJ1bl8xMDAw
+X3RpbWVzIHsgYWxsb2Moc3RydWN0IGZvbyk7IH0NCmFsbG9jKHN0cnVjdCBmb28pIC8vIHRoaXMg
+Y2FuIG9ic2VydmUgYSBmYWlsdXJlDQoNCj4gQXJlIHlvdSB0YWxraW5nIGFib3V0IHNvbWUgb3Ro
+ZXIgZnJlZWxpc3Qgb24gdG9wIG9mIGJwZl9tZW1fYWxsb2Mncw0KPiBmcmVlIGxpc3RzID8NCg0K
+V2VsbCwgdGhhdCdzIHRoZSBxdWVzdGlvbiwgaXNuJ3QgaXQ/IEkgdGhpbmsgaXQgc2hvdWxkIGJl
+IHBhcnQgb2YgdGhlIGJwZiBrZXJuZWwNCmVjb3N5c3RlbSAoaGVscGVyL2tmdW5jKSBidXQgaXQg
+ZG9lc24ndCBoYXZlIHRvIGJlIGJwZl9tZW1fYWxsb2MgaXRzZWxmLiBBbmQsIGlmIGl0J3MNCmlu
+c3RhbnRpYXRlZCBwZXItcHJvZ3JhbSwgdGhhdCdzIGVhc2llc3QgdG8gcmVhc29uIGFib3V0Lg0K
+DQotLSBEZWx5YW4NCg==
