@@ -2,59 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F8A95A9CDB
-	for <lists+bpf@lfdr.de>; Thu,  1 Sep 2022 18:16:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56DB15A9CDF
+	for <lists+bpf@lfdr.de>; Thu,  1 Sep 2022 18:16:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235027AbiIAQQU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Sep 2022 12:16:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56038 "EHLO
+        id S235018AbiIAQQ2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Sep 2022 12:16:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234995AbiIAQQR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 1 Sep 2022 12:16:17 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F124543306
-        for <bpf@vger.kernel.org>; Thu,  1 Sep 2022 09:16:14 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id x19so16057340pfr.1
-        for <bpf@vger.kernel.org>; Thu, 01 Sep 2022 09:16:14 -0700 (PDT)
+        with ESMTP id S235032AbiIAQQV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 1 Sep 2022 12:16:21 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B88EB48E90
+        for <bpf@vger.kernel.org>; Thu,  1 Sep 2022 09:16:18 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id x1-20020a17090ab00100b001fda21bbc90so2878226pjq.3
+        for <bpf@vger.kernel.org>; Thu, 01 Sep 2022 09:16:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc;
-        bh=YkiR1pR4pf3gc+NcW9hCzitUfw6uraWiWMrmU6Iy0/0=;
-        b=f+Ls2E4aBNf/YW+LcGaS0QlAtFoaKAWpaaXhx4XMeviqrs4Tb1K1XFoYST49thzMTt
-         oqpDgefScu/wrQmgC/tLTjHc8z/f6/W8I3INxxAGbNd7ZC+w7ZFNOV5FgU38G3SjbxUU
-         6an5XqCzvGOoObl6JN84/nVU5AKgl8Zr0PwLhf/51KlDCr3sGKUZGkoNMWtWfQ16gb/b
-         NHIsmwxvti0daoX3TNQzjaMeY7/RuaUxtZqGqLIhA2efJMhWCl9A17zpXvKC/i4MoDGY
-         XkGSDPqtlhYUdJUrTwH85QX8x6kYmdRPJK19dBhX4PQKR5YGHbOpgLu6wpSn0qxLfWEl
-         7Ngg==
+        bh=Hi9c27URf1pim0nXbITJrtMXVEE20b16OwyheBVe8dg=;
+        b=XDJedl0TGYJYEMVy+SyVZrTp/O0ndtJLPhArbdv2y/ghbv3KJ8YYlQHnQ0Xukf04B6
+         W7zMc+TrDoxHUOa3tnD/NIF8Zg7iPT3MaNb9s58znIc3O4J3Gm+88RFCzT/okyZ3PtYo
+         8k20sDJsM7qkH8Eu1gZ9rFQLG813EchbLB61KUF/e3sJBihspNEkzP12PpgECz6jJhB1
+         +GYjLv1YG/uTABwbQEuZxyECdEIo4HMMohgO0cZbD5Edb0JmOVVF8Y8M8JBldyACK7hE
+         hUiZAVV8GpKM6aU6D8butSKvqKtoU+dvKlTejL87tfFsxPeV4pTFXj4NXk+gv++7YRcR
+         LV3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc;
-        bh=YkiR1pR4pf3gc+NcW9hCzitUfw6uraWiWMrmU6Iy0/0=;
-        b=bSgAq7DKkMgGvR9qgo/KOVyJ0eC79uA7BMReA1YKQZHZ0n9kMPBPSq7Ww0DtsgRV+V
-         JqsPq+sbk5QOTCCY6DGdXyWe+ecwGz7BoRKpj2BrZAhTKx4/T5nLnyaRArKAL3ZLg+4J
-         NdX2vRZDVtbzkDcCDTb57nmFqAeAqelcNkTldpHXAwP3/dIQZr8VXuSYc3WFbPw8Gx5Z
-         nhma+x7mMIFOwOXDQJWEMgk5MeahuijlzuoDp8hgytC1Qm8TF2SLW3KVXrKfphUH6u/N
-         iv/6ZjrmF4Y4oWu0lYtSmkGz4OqD7qzJsnG92/CQNwCZ7VUzLS/00yBCAhMD8MrvL3x1
-         ravQ==
-X-Gm-Message-State: ACgBeo2iSupqD+GWDvDWURouddbrful9agVaC97J5rVJj1FpE5OW82sv
-        507DU9sapvZSoA8OG48+cow=
-X-Google-Smtp-Source: AA6agR764NUVqidKnV118YCUV/yNTZGH/FV1amZWfmu8tOL2fxhKLlLNH0gTMCH46VsATqBjGBtJ/w==
-X-Received: by 2002:a63:3d01:0:b0:42b:d5c7:57bc with SMTP id k1-20020a633d01000000b0042bd5c757bcmr19899282pga.3.1662048974110;
-        Thu, 01 Sep 2022 09:16:14 -0700 (PDT)
+        bh=Hi9c27URf1pim0nXbITJrtMXVEE20b16OwyheBVe8dg=;
+        b=jV5W3CHy2aLsevH/nBmYgqUiq/GpOJSRodMZOJI3imfLVl1Eqc2RyXHyIE1hO/PX+J
+         p6/m1Ti5yLBbj/m2aAcrO2Habot7u0IL087Z2SYfg75UA8rFysIE+h6a2/uNclFHhmoo
+         AIbdVT+Osbh1pp4cfmTL6n+btRWUR4YcKUnH93sH86+03m4MhdJin0ZQanT4A6e53fKp
+         uolH1DRayZyyI5sCoPbgva9hp/3i6aF4K7PPavtnohWPUOGTeapd87Pax4ZxoU+1LbQO
+         1tK84dHrjK/4RwQkw4/uqjfJc4tq73Lw6fSswx81ej6Db4UN3lOPnzhaO21wK5Qw38n/
+         nzAQ==
+X-Gm-Message-State: ACgBeo2J6cR4FXORhDiPiiRWsdcnhSaD9rmg3/d6jvxV8FH50SGhDrB4
+        P5rBkArSjRHIrNnMXg4n53268Bf6KV8=
+X-Google-Smtp-Source: AA6agR650XYQ+ZYci8if+HgvgvoSid7GaHbT1zNas30DW/jmjziNiwSgptYBjFIoiScqrSZ9o5rXFg==
+X-Received: by 2002:a17:90b:3b92:b0:1fe:b74:3de0 with SMTP id pc18-20020a17090b3b9200b001fe0b743de0mr9437271pjb.217.1662048977750;
+        Thu, 01 Sep 2022 09:16:17 -0700 (PDT)
 Received: from localhost.localdomain ([2620:10d:c090:500::3:4dc5])
-        by smtp.gmail.com with ESMTPSA id t6-20020a1709027fc600b00172a1e9dad9sm13887968plb.275.2022.09.01.09.16.12
+        by smtp.gmail.com with ESMTPSA id h5-20020a170902680500b00174f7d10a03sm7612980plk.86.2022.09.01.09.16.16
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Thu, 01 Sep 2022 09:16:13 -0700 (PDT)
+        Thu, 01 Sep 2022 09:16:17 -0700 (PDT)
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     davem@davemloft.net
 Cc:     daniel@iogearbox.net, andrii@kernel.org, tj@kernel.org,
         memxor@gmail.com, delyank@fb.com, linux-mm@kvack.org,
         bpf@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v5 bpf-next 06/15] bpf: Optimize element count in non-preallocated hash map.
-Date:   Thu,  1 Sep 2022 09:15:38 -0700
-Message-Id: <20220901161547.57722-7-alexei.starovoitov@gmail.com>
+Subject: [PATCH v5 bpf-next 07/15] bpf: Optimize call_rcu in non-preallocated hash map.
+Date:   Thu,  1 Sep 2022 09:15:39 -0700
+Message-Id: <20220901161547.57722-8-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <20220901161547.57722-1-alexei.starovoitov@gmail.com>
 References: <20220901161547.57722-1-alexei.starovoitov@gmail.com>
@@ -72,153 +72,82 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Alexei Starovoitov <ast@kernel.org>
 
-The atomic_inc/dec might cause extreme cache line bouncing when multiple cpus
-access the same bpf map. Based on specified max_entries for the hash map
-calculate when percpu_counter becomes faster than atomic_t and use it for such
-maps. For example samples/bpf/map_perf_test is using hash map with max_entries
-1000. On a system with 16 cpus the 'map_perf_test 4' shows 14k events per
-second using atomic_t. On a system with 15 cpus it shows 100k events per second
-using percpu. map_perf_test is an extreme case where all cpus colliding on
-atomic_t which causes extreme cache bouncing. Note that the slow path of
-percpu_counter is 5k events per secound vs 14k for atomic, so the heuristic is
-necessary. See comment in the code why the heuristic is based on
-num_online_cpus().
+Doing call_rcu() million times a second becomes a bottle neck.
+Convert non-preallocated hash map from call_rcu to SLAB_TYPESAFE_BY_RCU.
+The rcu critical section is no longer observed for one htab element
+which makes non-preallocated hash map behave just like preallocated hash map.
+The map elements are released back to kernel memory after observing
+rcu critical section.
+This improves 'map_perf_test 4' performance from 100k events per second
+to 250k events per second.
+
+bpf_mem_alloc + percpu_counter + typesafe_by_rcu provide 10x performance
+boost to non-preallocated hash map and make it within few % of preallocated map
+while consuming fraction of memory.
 
 Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 ---
- kernel/bpf/hashtab.c | 70 +++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 62 insertions(+), 8 deletions(-)
+ kernel/bpf/hashtab.c                      |  8 ++++++--
+ kernel/bpf/memalloc.c                     |  2 +-
+ tools/testing/selftests/bpf/progs/timer.c | 11 -----------
+ 3 files changed, 7 insertions(+), 14 deletions(-)
 
 diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index 508e64351f87..36aa16dc43ad 100644
+index 36aa16dc43ad..0d888a90a805 100644
 --- a/kernel/bpf/hashtab.c
 +++ b/kernel/bpf/hashtab.c
-@@ -101,7 +101,12 @@ struct bpf_htab {
- 		struct bpf_lru lru;
- 	};
- 	struct htab_elem *__percpu *extra_elems;
--	atomic_t count;	/* number of elements in this hashtable */
-+	/* number of elements in non-preallocated hashtable are kept
-+	 * in either pcount or count
-+	 */
-+	struct percpu_counter pcount;
-+	atomic_t count;
-+	bool use_percpu_counter;
- 	u32 n_buckets;	/* number of hash buckets */
- 	u32 elem_size;	/* size of each element in bytes */
- 	u32 hashrnd;
-@@ -565,6 +570,29 @@ static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
- 
- 	htab_init_buckets(htab);
- 
-+/* compute_batch_value() computes batch value as num_online_cpus() * 2
-+ * and __percpu_counter_compare() needs
-+ * htab->max_entries - cur_number_of_elems to be more than batch * num_online_cpus()
-+ * for percpu_counter to be faster than atomic_t. In practice the average bpf
-+ * hash map size is 10k, which means that a system with 64 cpus will fill
-+ * hashmap to 20% of 10k before percpu_counter becomes ineffective. Therefore
-+ * define our own batch count as 32 then 10k hash map can be filled up to 80%:
-+ * 10k - 8k > 32 _batch_ * 64 _cpus_
-+ * and __percpu_counter_compare() will still be fast. At that point hash map
-+ * collisions will dominate its performance anyway. Assume that hash map filled
-+ * to 50+% isn't going to be O(1) and use the following formula to choose
-+ * between percpu_counter and atomic_t.
-+ */
-+#define PERCPU_COUNTER_BATCH 32
-+	if (attr->max_entries / 2 > num_online_cpus() * PERCPU_COUNTER_BATCH)
-+		htab->use_percpu_counter = true;
-+
-+	if (htab->use_percpu_counter) {
-+		err = percpu_counter_init(&htab->pcount, 0, GFP_KERNEL);
-+		if (err)
-+			goto free_map_locked;
-+	}
-+
- 	if (prealloc) {
- 		err = prealloc_init(htab);
- 		if (err)
-@@ -891,6 +919,31 @@ static void htab_put_fd_value(struct bpf_htab *htab, struct htab_elem *l)
- 	}
- }
- 
-+static bool is_map_full(struct bpf_htab *htab)
-+{
-+	if (htab->use_percpu_counter)
-+		return __percpu_counter_compare(&htab->pcount, htab->map.max_entries,
-+						PERCPU_COUNTER_BATCH) >= 0;
-+	return atomic_read(&htab->count) >= htab->map.max_entries;
-+}
-+
-+static void inc_elem_count(struct bpf_htab *htab)
-+{
-+	if (htab->use_percpu_counter)
-+		percpu_counter_add_batch(&htab->pcount, 1, PERCPU_COUNTER_BATCH);
-+	else
-+		atomic_inc(&htab->count);
-+}
-+
-+static void dec_elem_count(struct bpf_htab *htab)
-+{
-+	if (htab->use_percpu_counter)
-+		percpu_counter_add_batch(&htab->pcount, -1, PERCPU_COUNTER_BATCH);
-+	else
-+		atomic_dec(&htab->count);
-+}
-+
-+
- static void free_htab_elem(struct bpf_htab *htab, struct htab_elem *l)
- {
- 	htab_put_fd_value(htab, l);
-@@ -899,7 +952,7 @@ static void free_htab_elem(struct bpf_htab *htab, struct htab_elem *l)
- 		check_and_free_fields(htab, l);
+@@ -953,8 +953,12 @@ static void free_htab_elem(struct bpf_htab *htab, struct htab_elem *l)
  		__pcpu_freelist_push(&htab->freelist, &l->fnode);
  	} else {
--		atomic_dec(&htab->count);
-+		dec_elem_count(htab);
- 		l->htab = htab;
- 		call_rcu(&l->rcu, htab_elem_free_rcu);
+ 		dec_elem_count(htab);
+-		l->htab = htab;
+-		call_rcu(&l->rcu, htab_elem_free_rcu);
++		if (htab->map.map_type == BPF_MAP_TYPE_PERCPU_HASH) {
++			l->htab = htab;
++			call_rcu(&l->rcu, htab_elem_free_rcu);
++		} else {
++			htab_elem_free(htab, l);
++		}
  	}
-@@ -983,16 +1036,15 @@ static struct htab_elem *alloc_htab_elem(struct bpf_htab *htab, void *key,
- 			l_new = container_of(l, struct htab_elem, fnode);
- 		}
- 	} else {
--		if (atomic_inc_return(&htab->count) > htab->map.max_entries)
--			if (!old_elem) {
-+		if (is_map_full(htab))
-+			if (!old_elem)
- 				/* when map is full and update() is replacing
- 				 * old element, it's ok to allocate, since
- 				 * old element will be freed immediately.
- 				 * Otherwise return an error
- 				 */
--				l_new = ERR_PTR(-E2BIG);
--				goto dec_count;
--			}
-+				return ERR_PTR(-E2BIG);
-+		inc_elem_count(htab);
- 		l_new = bpf_mem_cache_alloc(&htab->ma);
- 		if (!l_new) {
- 			l_new = ERR_PTR(-ENOMEM);
-@@ -1034,7 +1086,7 @@ static struct htab_elem *alloc_htab_elem(struct bpf_htab *htab, void *key,
- 	l_new->hash = hash;
- 	return l_new;
- dec_count:
--	atomic_dec(&htab->count);
-+	dec_elem_count(htab);
- 	return l_new;
  }
  
-@@ -1513,6 +1565,8 @@ static void htab_map_free(struct bpf_map *map)
- 	free_percpu(htab->extra_elems);
- 	bpf_map_area_free(htab->buckets);
- 	bpf_mem_alloc_destroy(&htab->ma);
-+	if (htab->use_percpu_counter)
-+		percpu_counter_destroy(&htab->pcount);
- 	for (i = 0; i < HASHTAB_MAP_LOCK_COUNT; i++)
- 		free_percpu(htab->map_locked[i]);
- 	lockdep_unregister_key(&htab->lockdep_key);
+diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
+index 1c46763d855e..da0721f8c28f 100644
+--- a/kernel/bpf/memalloc.c
++++ b/kernel/bpf/memalloc.c
+@@ -281,7 +281,7 @@ int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size)
+ 			return -ENOMEM;
+ 		size += LLIST_NODE_SZ; /* room for llist_node */
+ 		snprintf(buf, sizeof(buf), "bpf-%u", size);
+-		kmem_cache = kmem_cache_create(buf, size, 8, 0, NULL);
++		kmem_cache = kmem_cache_create(buf, size, 8, SLAB_TYPESAFE_BY_RCU, NULL);
+ 		if (!kmem_cache) {
+ 			free_percpu(pc);
+ 			return -ENOMEM;
+diff --git a/tools/testing/selftests/bpf/progs/timer.c b/tools/testing/selftests/bpf/progs/timer.c
+index 5f5309791649..0053c5402173 100644
+--- a/tools/testing/selftests/bpf/progs/timer.c
++++ b/tools/testing/selftests/bpf/progs/timer.c
+@@ -208,17 +208,6 @@ static int timer_cb2(void *map, int *key, struct hmap_elem *val)
+ 		 */
+ 		bpf_map_delete_elem(map, key);
+ 
+-		/* in non-preallocated hashmap both 'key' and 'val' are RCU
+-		 * protected and still valid though this element was deleted
+-		 * from the map. Arm this timer for ~35 seconds. When callback
+-		 * finishes the call_rcu will invoke:
+-		 * htab_elem_free_rcu
+-		 *   check_and_free_timer
+-		 *     bpf_timer_cancel_and_free
+-		 * to cancel this 35 second sleep and delete the timer for real.
+-		 */
+-		if (bpf_timer_start(&val->timer, 1ull << 35, 0) != 0)
+-			err |= 256;
+ 		ok |= 4;
+ 	}
+ 	return 0;
 -- 
 2.30.2
 
