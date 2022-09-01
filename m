@@ -2,47 +2,50 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62F0B5A8B6A
-	for <lists+bpf@lfdr.de>; Thu,  1 Sep 2022 04:28:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77D175A8B6D
+	for <lists+bpf@lfdr.de>; Thu,  1 Sep 2022 04:28:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232635AbiIAC1m (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 31 Aug 2022 22:27:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54066 "EHLO
+        id S232619AbiIAC1n (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 31 Aug 2022 22:27:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232350AbiIAC1l (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S232351AbiIAC1l (ORCPT <rfc822;bpf@vger.kernel.org>);
         Wed, 31 Aug 2022 22:27:41 -0400
 Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D9E0D136B06
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D9C8B136B05
         for <bpf@vger.kernel.org>; Wed, 31 Aug 2022 19:27:39 -0700 (PDT)
 Received: from linux.localdomain (unknown [113.200.148.30])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxXWuSGBBjOGUOAA--.1806S2;
-        Thu, 01 Sep 2022 10:27:30 +0800 (CST)
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxXWuSGBBjOGUOAA--.1806S3;
+        Thu, 01 Sep 2022 10:27:32 +0800 (CST)
 From:   Tiezhu Yang <yangtiezhu@loongson.cn>
 To:     Huacai Chen <chenhuacai@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>
 Cc:     bpf@vger.kernel.org, loongarch@lists.linux.dev
-Subject: [PATCH bpf-next v3 0/4] Add BPF JIT support for LoongArch
-Date:   Thu,  1 Sep 2022 10:27:25 +0800
-Message-Id: <1661999249-10258-1-git-send-email-yangtiezhu@loongson.cn>
+Subject: [PATCH bpf-next v3 1/4] LoongArch: Move {signed,unsigned}_imm_check() to inst.h
+Date:   Thu,  1 Sep 2022 10:27:26 +0800
+Message-Id: <1661999249-10258-2-git-send-email-yangtiezhu@loongson.cn>
 X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf8BxXWuSGBBjOGUOAA--.1806S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxJrW7Zw4rur1kuw1DJrW7CFg_yoW5JFyxpa
-        17Crn8KrWDGr1fXr4ft3yDuFyYyr4fGrW7W3W7A343ArZ8Z3Wjqa4xK34DZFn0q39YgFy0
-        qr93Kw1jgF4UJa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUk2b7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
-        C2z280aVCY1x0267AKxVWxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r
-        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_Gr1l42xK
-        82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGw
-        C20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48J
-        MIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMI
-        IF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
-        87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUqR6zDUUUU
+In-Reply-To: <1661999249-10258-1-git-send-email-yangtiezhu@loongson.cn>
+References: <1661999249-10258-1-git-send-email-yangtiezhu@loongson.cn>
+X-CM-TRANSID: AQAAf8BxXWuSGBBjOGUOAA--.1806S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7Ar17Gry5KFy8tF4xZF43KFg_yoW8uF48pF
+        ZxZr4kGrWjgrn5AFyDKwn8XF98Crs7GwnIqa9xKa4xAF47XF1UXryv9rn8XFWjqa95uFW0
+        gayfJr13ua1DJaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBFb7Iv0xC_KF4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI
+        8067AKxVWUGwA2048vs2IY020Ec7CjxVAFwI0_JFI_Gr1l8cAvFVAK0II2c7xJM28CjxkF
+        64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcV
+        CY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv
+        6xkF7I0E14v26F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzV
+        Aqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S
+        6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8JwCF04k20xvY0x
+        0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E
+        7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcV
+        C0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF
+        04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7
+        CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07j07KxUUUUU=
 X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
@@ -53,67 +56,64 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The basic support for LoongArch has been merged into the upstream Linux
-kernel since 5.19-rc1 on June 5, 2022, this patch series adds BPF JIT
-support for LoongArch.
+{signed,unsigned}_imm_check() will also be used in the bpf jit, so move
+them from module.c to inst.h, this is preparation for later patch.
 
-Here is the LoongArch documention:
-https://www.kernel.org/doc/html/latest/loongarch/index.html
+By the way, no need to explicitly include asm/inst.h in module.c, because
+the header file has been included indirectly.
 
-With this patch series, the test cases in lib/test_bpf.ko have passed
-on LoongArch.
+  arch/loongarch/kernel/module.c
+    include/linux/moduleloader.h
+      include/linux/module.h
+        arch/loongarch/include/asm/module.h
+          arch/loongarch/include/asm/inst.h
 
-  # echo 1 > /proc/sys/net/core/bpf_jit_enable
-  # modprobe test_bpf
-  # dmesg | grep Summary
-  test_bpf: Summary: 1026 PASSED, 0 FAILED, [1014/1014 JIT'ed]
-  test_bpf: test_tail_calls: Summary: 10 PASSED, 0 FAILED, [10/10 JIT'ed]
-  test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ arch/loongarch/include/asm/inst.h | 10 ++++++++++
+ arch/loongarch/kernel/module.c    | 10 ----------
+ 2 files changed, 10 insertions(+), 10 deletions(-)
 
-It seems that this patch series can not be applied cleanly to bpf-next
-which is not synced to v6.0-rc3.
-
-v3:
-  -- Remove CONFIG_TEST_BPF in loongson3_defconfig
-
-v2:
-  -- Rebased series on v6.0-rc3
-  -- Make build_epilogue() static
-  -- Use alsl.d, bstrpick.d, [ld/st]ptr.[w/d] to save some instructions
-  -- Replace move_imm32() and move_imm64() with move_imm() and optimize it
-  -- Add code comments to explain the considerations of conditional jump
-  https://lore.kernel.org/bpf/1661857809-10828-1-git-send-email-yangtiezhu@loongson.cn/
-
-v1:
-  -- Rebased series on v6.0-rc1
-  -- Move {signed,unsigned}_imm_check() to inst.h
-  -- Define the imm field as "unsigned int" in the instruction format
-  -- Use DEF_EMIT_*_FORMAT to define the same kind of instructions
-  -- Use "stack_adjust += sizeof(long) * 8" in build_prologue()
-  https://lore.kernel.org/bpf/1660996260-11337-1-git-send-email-yangtiezhu@loongson.cn/
-
-RFC:
-  https://lore.kernel.org/bpf/1660013580-19053-1-git-send-email-yangtiezhu@loongson.cn/
-
-Tiezhu Yang (4):
-  LoongArch: Move {signed,unsigned}_imm_check() to inst.h
-  LoongArch: Add some instruction opcodes and formats
-  LoongArch: Add BPF JIT support
-  LoongArch: Enable BPF_JIT in default config
-
- arch/loongarch/Kbuild                      |    1 +
- arch/loongarch/Kconfig                     |    1 +
- arch/loongarch/configs/loongson3_defconfig |    1 +
- arch/loongarch/include/asm/inst.h          |  383 ++++++++-
- arch/loongarch/kernel/module.c             |   10 -
- arch/loongarch/net/Makefile                |    7 +
- arch/loongarch/net/bpf_jit.c               | 1160 ++++++++++++++++++++++++++++
- arch/loongarch/net/bpf_jit.h               |  282 +++++++
- 8 files changed, 1830 insertions(+), 15 deletions(-)
- create mode 100644 arch/loongarch/net/Makefile
- create mode 100644 arch/loongarch/net/bpf_jit.c
- create mode 100644 arch/loongarch/net/bpf_jit.h
-
+diff --git a/arch/loongarch/include/asm/inst.h b/arch/loongarch/include/asm/inst.h
+index 7b07cbb..7b37509 100644
+--- a/arch/loongarch/include/asm/inst.h
++++ b/arch/loongarch/include/asm/inst.h
+@@ -166,4 +166,14 @@ u32 larch_insn_gen_lu32id(enum loongarch_gpr rd, int imm);
+ u32 larch_insn_gen_lu52id(enum loongarch_gpr rd, enum loongarch_gpr rj, int imm);
+ u32 larch_insn_gen_jirl(enum loongarch_gpr rd, enum loongarch_gpr rj, unsigned long pc, unsigned long dest);
+ 
++static inline bool signed_imm_check(long val, unsigned int bit)
++{
++	return -(1L << (bit - 1)) <= val && val < (1L << (bit - 1));
++}
++
++static inline bool unsigned_imm_check(unsigned long val, unsigned int bit)
++{
++	return val < (1UL << bit);
++}
++
+ #endif /* _ASM_INST_H */
+diff --git a/arch/loongarch/kernel/module.c b/arch/loongarch/kernel/module.c
+index 638427f..edaee67 100644
+--- a/arch/loongarch/kernel/module.c
++++ b/arch/loongarch/kernel/module.c
+@@ -18,16 +18,6 @@
+ #include <linux/string.h>
+ #include <linux/kernel.h>
+ 
+-static inline bool signed_imm_check(long val, unsigned int bit)
+-{
+-	return -(1L << (bit - 1)) <= val && val < (1L << (bit - 1));
+-}
+-
+-static inline bool unsigned_imm_check(unsigned long val, unsigned int bit)
+-{
+-	return val < (1UL << bit);
+-}
+-
+ static int rela_stack_push(s64 stack_value, s64 *rela_stack, size_t *rela_stack_top)
+ {
+ 	if (*rela_stack_top >= RELA_STACK_DEPTH)
 -- 
 2.1.0
 
