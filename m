@@ -2,68 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4916B5AB9F2
-	for <lists+bpf@lfdr.de>; Fri,  2 Sep 2022 23:12:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1846D5ABAB7
+	for <lists+bpf@lfdr.de>; Sat,  3 Sep 2022 00:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229649AbiIBVME (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Sep 2022 17:12:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54158 "EHLO
+        id S229913AbiIBWQh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Sep 2022 18:16:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231124AbiIBVMD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Sep 2022 17:12:03 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFA1BDF4FE
-        for <bpf@vger.kernel.org>; Fri,  2 Sep 2022 14:12:01 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id c66so3051495pfc.10
-        for <bpf@vger.kernel.org>; Fri, 02 Sep 2022 14:12:01 -0700 (PDT)
+        with ESMTP id S229650AbiIBWQg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Sep 2022 18:16:36 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A4B4A0624
+        for <bpf@vger.kernel.org>; Fri,  2 Sep 2022 15:16:35 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id c8-20020a170902d48800b0017545868987so1979276plg.15
+        for <bpf@vger.kernel.org>; Fri, 02 Sep 2022 15:16:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
-        bh=TNRfuwjqb+LO+kCM/Gb16FKn3hCFhHeYDMKUUqgmZJU=;
-        b=mUxeRFBjujyis+Oaqckkc+Lfw3tvqmjSQQaa9XEhJefD1zM9ot961+hcJnTVarStvu
-         vOgf+8whE9N/pIhGsOwoRvu4z75yZlh7ppOXENTADsYN461+8hJOvqVs0YHr+o20aK3V
-         vjjltMqDFAZP2PP2fBm/wiEvpg/xGXioyWGTgUjCDZ76R2ShBw7jvn7k6sbaNkYnjj65
-         vcUQlyvUk7+7yxMdCw3cPhSbV1+yBHCl01/wcbozp1b8rJ1Xn6FLz+H9ymdfIWOypI4x
-         ymajU7G6+gW96jJsGr7AapONB+oaj2BTe19Skoi1jHt9APVBnyamdP2wz/c8x2zOAHP4
-         cb6A==
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date;
+        bh=Bh3U2E64C9QgQ7uAnXLjMJWJpvMMy/IcNnabGflMPaI=;
+        b=Sz4k555vieOfiRqNHm2fa7Zrha640Ob2D9ONPRQCeuVt+m9s3O8/Wt43T6AU8SE/SY
+         v/EGgDMcVGV9nQNnIE6cobRVvD+hTAUy1tZQ9Xk7Yf4ETk/fWudxzsdv8HdM1JACSk3g
+         pM9ei7VPh9K1QoON/Zwe9GHoqrd2hOSnQ/srmIIv1swV8bT5F1o9puZASPjW6/laNpBP
+         W6w3ja+ro0cQ2QrWDgCSRp0lNccaeMxtjvLFMIznTcrbC2vAMXt/NBwiqFfa/ZbW5Guw
+         fPLg8ClctTyK66N1jZFiBLzY3WFaFCvjbzqmmj1R2/rxLsXHdeWOvkVonhUiTjj/X8bu
+         4Www==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date;
-        bh=TNRfuwjqb+LO+kCM/Gb16FKn3hCFhHeYDMKUUqgmZJU=;
-        b=ubIlNuFs14fW2oz+nHdEYzzYEZkCqeES+bYG22Wdb4reYSv0+CXkH1lSwfYiZ5aKc0
-         /rAUFE764WAEVBmBSPX+BXT0ocpoTA0CcpzlveMa5h5GG4K/NZzF39YUFWv5NADcOt4Q
-         voNV2CU9b3/Q3NF8LKWr00k/HvBqLhDZJW0MGj7EbekqyIGQkzOs/omMjG0ALSIao2v6
-         lnDE46JiHk8+X+UtNC+qTv/nGyqli6tOrL3FMAjN/DCQr4/oW1jwzq5Oq7qLxhp3LCp/
-         fszDy4EudqslfwIjMl0QuB6rkeebj2IKEmWoAHhlwM0fPA06Qp6pLU0pWBMHbmatnoh0
-         F7ug==
-X-Gm-Message-State: ACgBeo1ouB17QwWwwyV4g9dglGDLhoa4CqnS+58sTpnFARkUV4covXtK
-        9vP3U22N5/AkjPKR3aPFG3I=
-X-Google-Smtp-Source: AA6agR6oG9yBLI5jQxAMQ6eReXxNUFt9PmBKK9JLSdg7raR8jc1au4n4apR6oJwGTu+n1V7+P2v/6w==
-X-Received: by 2002:a05:6a00:1393:b0:536:5b8a:c35b with SMTP id t19-20020a056a00139300b005365b8ac35bmr39009212pfg.5.1662153121244;
-        Fri, 02 Sep 2022 14:12:01 -0700 (PDT)
-Received: from localhost.localdomain ([2620:10d:c090:500::c978])
-        by smtp.gmail.com with ESMTPSA id e16-20020aa798d0000000b005360da6b26bsm2221360pfm.159.2022.09.02.14.11.59
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Fri, 02 Sep 2022 14:12:00 -0700 (PDT)
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     davem@davemloft.net
-Cc:     daniel@iogearbox.net, andrii@kernel.org, tj@kernel.org,
-        memxor@gmail.com, delyank@fb.com, linux-mm@kvack.org,
-        bpf@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v6 bpf-next 16/16] bpf: Optimize rcu_barrier usage between hash map and bpf_mem_alloc.
-Date:   Fri,  2 Sep 2022 14:10:58 -0700
-Message-Id: <20220902211058.60789-17-alexei.starovoitov@gmail.com>
-X-Mailer: git-send-email 2.36.1
-In-Reply-To: <20220902211058.60789-1-alexei.starovoitov@gmail.com>
-References: <20220902211058.60789-1-alexei.starovoitov@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date;
+        bh=Bh3U2E64C9QgQ7uAnXLjMJWJpvMMy/IcNnabGflMPaI=;
+        b=RGIQ4OCqZ/S2XnBqtFoxR7yCJegNZ1T+d9xmRbQFtLA9lO46kxVik1U5NnGgixDEZI
+         L/+wUc/R8CEzqQr+2COfbM5k0ddBXehgJ1VlfwK7/vjUJvL8OYkXDGj6144aBOROaFok
+         qE4sbU5leRKU9uQJCtoc61WxcTCDbKR0rUIywViGsRu+mwu2GG6BGOXTv7duYGtotvIN
+         HmaLYRctfhsi7Fvt7NUDeJ7qTirF2hVEd88WfJRV7/buwXOEpJUW7PrRFCKdYxdiEYPc
+         dFnCjZDayPrkYRwwQfxp/oWGO0aurOollDadv6DtHz+xFA1Q427IzbfcbjhMo19DpLyV
+         NIEA==
+X-Gm-Message-State: ACgBeo3PpmW640e9jHON+M2LopX2k1eSdntK38tSMLY8IBAJ+/atmzEf
+        ik5sByLQFqW4ZP95xyn5GO9Swfs=
+X-Google-Smtp-Source: AA6agR6/G1ix2sGJUJSuRYZeQSXlLouOinEnX5a7t0AflyvR0shyKG5oczRBr9Ppu8tCoJ9lhMTlnTA=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a17:90a:249:b0:1e0:a8a3:3c6c with SMTP id
+ t9-20020a17090a024900b001e0a8a33c6cmr733pje.0.1662156994353; Fri, 02 Sep 2022
+ 15:16:34 -0700 (PDT)
+Date:   Fri, 2 Sep 2022 15:16:32 -0700
+In-Reply-To: <20220902002750.2887415-1-kafai@fb.com>
+Mime-Version: 1.0
+References: <20220902002750.2887415-1-kafai@fb.com>
+Message-ID: <YxKAwN/PgQE4pAon@google.com>
+Subject: Re: [PATCH v2 bpf-next 00/17] bpf: net: Remove duplicated code from bpf_getsockopt()
+From:   sdf@google.com
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>, kernel-team@fb.com,
+        Paolo Abeni <pabeni@redhat.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,187 +72,75 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Alexei Starovoitov <ast@kernel.org>
+On 09/01, Martin KaFai Lau wrote:
+> From: Martin KaFai Lau <martin.lau@kernel.org>
 
-User space might be creating and destroying a lot of hash maps. Synchronous
-rcu_barrier-s in a destruction path of hash map delay freeing of hash buckets
-and other map memory and may cause artificial OOM situation under stress.
-Optimize rcu_barrier usage between bpf hash map and bpf_mem_alloc:
-- remove rcu_barrier from hash map, since htab doesn't use call_rcu
-  directly and there are no callback to wait for.
-- bpf_mem_alloc has call_rcu_in_progress flag that indicates pending callbacks.
-  Use it to avoid barriers in fast path.
-- When barriers are needed copy bpf_mem_alloc into temp structure
-  and wait for rcu barrier-s in the worker to let the rest of
-  hash map freeing to proceed.
+> The earlier commits [0] removed duplicated code from bpf_setsockopt().
+> This series is to remove duplicated code from bpf_getsockopt().
 
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
----
- include/linux/bpf_mem_alloc.h |  2 +
- kernel/bpf/hashtab.c          |  6 +--
- kernel/bpf/memalloc.c         | 80 ++++++++++++++++++++++++++++-------
- 3 files changed, 69 insertions(+), 19 deletions(-)
+> Unlike the setsockopt() which had already changed to take
+> the sockptr_t argument, the same has not been done to
+> getsockopt().  This is the extra step being done in this
+> series.
 
-diff --git a/include/linux/bpf_mem_alloc.h b/include/linux/bpf_mem_alloc.h
-index 653ed1584a03..3e164b8efaa9 100644
---- a/include/linux/bpf_mem_alloc.h
-+++ b/include/linux/bpf_mem_alloc.h
-@@ -3,6 +3,7 @@
- #ifndef _BPF_MEM_ALLOC_H
- #define _BPF_MEM_ALLOC_H
- #include <linux/compiler_types.h>
-+#include <linux/workqueue.h>
- 
- struct bpf_mem_cache;
- struct bpf_mem_caches;
-@@ -10,6 +11,7 @@ struct bpf_mem_caches;
- struct bpf_mem_alloc {
- 	struct bpf_mem_caches __percpu *caches;
- 	struct bpf_mem_cache __percpu *cache;
-+	struct work_struct work;
- };
- 
- int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, bool percpu);
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index a77b9c4a4e48..0fe3f136cbbe 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -1546,10 +1546,10 @@ static void htab_map_free(struct bpf_map *map)
- 	 * There is no need to synchronize_rcu() here to protect map elements.
- 	 */
- 
--	/* some of free_htab_elem() callbacks for elements of this map may
--	 * not have executed. Wait for them.
-+	/* htab no longer uses call_rcu() directly. bpf_mem_alloc does it
-+	 * underneath and is reponsible for waiting for callbacks to finish
-+	 * during bpf_mem_alloc_destroy().
- 	 */
--	rcu_barrier();
- 	if (!htab_is_prealloc(htab)) {
- 		delete_all_elements(htab);
- 	} else {
-diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
-index 38fbd15c130a..5cc952da7d41 100644
---- a/kernel/bpf/memalloc.c
-+++ b/kernel/bpf/memalloc.c
-@@ -414,10 +414,9 @@ static void drain_mem_cache(struct bpf_mem_cache *c)
- {
- 	struct llist_node *llnode, *t;
- 
--	/* The caller has done rcu_barrier() and no progs are using this
--	 * bpf_mem_cache, but htab_map_free() called bpf_mem_cache_free() for
--	 * all remaining elements and they can be in free_by_rcu or in
--	 * waiting_for_gp lists, so drain those lists now.
-+	/* No progs are using this bpf_mem_cache, but htab_map_free() called
-+	 * bpf_mem_cache_free() for all remaining elements and they can be in
-+	 * free_by_rcu or in waiting_for_gp lists, so drain those lists now.
- 	 */
- 	llist_for_each_safe(llnode, t, __llist_del_all(&c->free_by_rcu))
- 		free_one(c, llnode);
-@@ -429,42 +428,91 @@ static void drain_mem_cache(struct bpf_mem_cache *c)
- 		free_one(c, llnode);
- }
- 
-+static void free_mem_alloc_no_barrier(struct bpf_mem_alloc *ma)
-+{
-+	free_percpu(ma->cache);
-+	free_percpu(ma->caches);
-+	ma->cache = NULL;
-+	ma->caches = NULL;
-+}
-+
-+static void free_mem_alloc(struct bpf_mem_alloc *ma)
-+{
-+	/* waiting_for_gp lists was drained, but __free_rcu might
-+	 * still execute. Wait for it now before we freeing percpu caches.
-+	 */
-+	rcu_barrier_tasks_trace();
-+	rcu_barrier();
-+	free_mem_alloc_no_barrier(ma);
-+}
-+
-+static void free_mem_alloc_deferred(struct work_struct *work)
-+{
-+	struct bpf_mem_alloc *ma = container_of(work, struct bpf_mem_alloc, work);
-+
-+	free_mem_alloc(ma);
-+	kfree(ma);
-+}
-+
-+static void destroy_mem_alloc(struct bpf_mem_alloc *ma, int rcu_in_progress)
-+{
-+	struct bpf_mem_alloc *copy;
-+
-+	if (!rcu_in_progress) {
-+		/* Fast path. No callbacks are pending, hence no need to do
-+		 * rcu_barrier-s.
-+		 */
-+		free_mem_alloc_no_barrier(ma);
-+		return;
-+	}
-+
-+	copy = kmalloc(sizeof(*ma), GFP_KERNEL);
-+	if (!copy) {
-+		/* Slow path with inline barrier-s */
-+		free_mem_alloc(ma);
-+		return;
-+	}
-+
-+	/* Defer barriers into worker to let the rest of map memory to be freed */
-+	copy->cache = ma->cache;
-+	ma->cache = NULL;
-+	copy->caches = ma->caches;
-+	ma->caches = NULL;
-+	INIT_WORK(&copy->work, free_mem_alloc_deferred);
-+	queue_work(system_unbound_wq, &copy->work);
-+}
-+
- void bpf_mem_alloc_destroy(struct bpf_mem_alloc *ma)
- {
- 	struct bpf_mem_caches *cc;
- 	struct bpf_mem_cache *c;
--	int cpu, i;
-+	int cpu, i, rcu_in_progress;
- 
- 	if (ma->cache) {
-+		rcu_in_progress = 0;
- 		for_each_possible_cpu(cpu) {
- 			c = per_cpu_ptr(ma->cache, cpu);
- 			drain_mem_cache(c);
-+			rcu_in_progress += atomic_read(&c->call_rcu_in_progress);
- 		}
- 		/* objcg is the same across cpus */
- 		if (c->objcg)
- 			obj_cgroup_put(c->objcg);
--		/* c->waiting_for_gp list was drained, but __free_rcu might
--		 * still execute. Wait for it now before we free 'c'.
--		 */
--		rcu_barrier_tasks_trace();
--		rcu_barrier();
--		free_percpu(ma->cache);
--		ma->cache = NULL;
-+		destroy_mem_alloc(ma, rcu_in_progress);
- 	}
- 	if (ma->caches) {
-+		rcu_in_progress = 0;
- 		for_each_possible_cpu(cpu) {
- 			cc = per_cpu_ptr(ma->caches, cpu);
- 			for (i = 0; i < NUM_CACHES; i++) {
- 				c = &cc->cache[i];
- 				drain_mem_cache(c);
-+				rcu_in_progress += atomic_read(&c->call_rcu_in_progress);
- 			}
- 		}
- 		if (c->objcg)
- 			obj_cgroup_put(c->objcg);
--		rcu_barrier_tasks_trace();
--		rcu_barrier();
--		free_percpu(ma->caches);
--		ma->caches = NULL;
-+		destroy_mem_alloc(ma, rcu_in_progress);
- 	}
- }
- 
--- 
-2.30.2
+> [0]: https://lore.kernel.org/all/20220817061704.4174272-1-kafai@fb.com/
+
+> v2:
+> - The previous v2 did not reach the list. It is a resend.
+> - Add comments on bpf_getsockopt() should not free
+>    the saved_syn (Stanislav)
+> - Explicitly null-terminate the tcp-cc name (Stanislav)
+
+Looks great!
+
+Reviewed-by: Stanislav Fomichev <sdf@google.com>
+
+> Martin KaFai Lau (17):
+>    net: Change sock_getsockopt() to take the sk ptr instead of the sock
+>      ptr
+>    bpf: net: Change sk_getsockopt() to take the sockptr_t argument
+>    bpf: net: Avoid sk_getsockopt() taking sk lock when called from bpf
+>    bpf: net: Change do_tcp_getsockopt() to take the sockptr_t argument
+>    bpf: net: Avoid do_tcp_getsockopt() taking sk lock when called from
+>      bpf
+>    bpf: net: Change do_ip_getsockopt() to take the sockptr_t argument
+>    bpf: net: Avoid do_ip_getsockopt() taking sk lock when called from bpf
+>    net: Remove unused flags argument from do_ipv6_getsockopt
+>    net: Add a len argument to compat_ipv6_get_msfilter()
+>    bpf: net: Change do_ipv6_getsockopt() to take the sockptr_t argument
+>    bpf: net: Avoid do_ipv6_getsockopt() taking sk lock when called from
+>      bpf
+>    bpf: Embed kernel CONFIG check into the if statement in bpf_getsockopt
+>    bpf: Change bpf_getsockopt(SOL_SOCKET) to reuse sk_getsockopt()
+>    bpf: Change bpf_getsockopt(SOL_TCP) to reuse do_tcp_getsockopt()
+>    bpf: Change bpf_getsockopt(SOL_IP) to reuse do_ip_getsockopt()
+>    bpf: Change bpf_getsockopt(SOL_IPV6) to reuse do_ipv6_getsockopt()
+>    selftest/bpf: Add test for bpf_getsockopt()
+
+>   include/linux/filter.h                        |   3 +-
+>   include/linux/igmp.h                          |   4 +-
+>   include/linux/mroute.h                        |   6 +-
+>   include/linux/mroute6.h                       |   4 +-
+>   include/linux/sockptr.h                       |   5 +
+>   include/net/ip.h                              |   2 +
+>   include/net/ipv6.h                            |   4 +-
+>   include/net/ipv6_stubs.h                      |   2 +
+>   include/net/sock.h                            |   2 +
+>   include/net/tcp.h                             |   2 +
+>   net/core/filter.c                             | 220 ++++++++----------
+>   net/core/sock.c                               |  51 ++--
+>   net/ipv4/igmp.c                               |  22 +-
+>   net/ipv4/ip_sockglue.c                        |  98 ++++----
+>   net/ipv4/ipmr.c                               |   9 +-
+>   net/ipv4/tcp.c                                |  92 ++++----
+>   net/ipv6/af_inet6.c                           |   1 +
+>   net/ipv6/ip6mr.c                              |  10 +-
+>   net/ipv6/ipv6_sockglue.c                      |  95 ++++----
+>   net/ipv6/mcast.c                              |   8 +-
+>   .../selftests/bpf/progs/bpf_tracing_net.h     |   1 +
+>   .../selftests/bpf/progs/setget_sockopt.c      | 148 ++++--------
+>   22 files changed, 379 insertions(+), 410 deletions(-)
+
+> --
+> 2.30.2
 
