@@ -2,61 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 773385AB7D5
-	for <lists+bpf@lfdr.de>; Fri,  2 Sep 2022 19:57:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5983D5AB92D
+	for <lists+bpf@lfdr.de>; Fri,  2 Sep 2022 22:09:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235468AbiIBR5Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Sep 2022 13:57:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45672 "EHLO
+        id S229490AbiIBUJw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Sep 2022 16:09:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234477AbiIBR5O (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Sep 2022 13:57:14 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7149ABD4B;
-        Fri,  2 Sep 2022 10:57:13 -0700 (PDT)
+        with ESMTP id S229482AbiIBUJu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Sep 2022 16:09:50 -0400
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F04CA32A8B;
+        Fri,  2 Sep 2022 13:09:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1662141433; x=1693677433;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=TjwFYCJhwXHxjhHf8QaDkV8NvtzPTtsxsyE+yFToU6Q=;
-  b=Jkz2Tdt4bPx1+eeaU6I3Ba0K7NlmzFyQ9efe5JWGeamqi/4NxsUQEZnJ
-   fWVTlI6LZKKnHaSZv5g2eJ7GdfuygNlfYGm3IAWQs2cOzWNFoYaF6jcPn
-   NWYBYcZX3Bx3EvnAMsbTzrSTMSFdOtKCHHzuWwm5J+GAutmh90p9vDyLQ
-   MvPpzor/ojJ1FhAAaGWG4d0u0LQscaVV6aquejJ0I9xOAQ29EB5AMJQ9Y
-   8NVTZTzfbHi2R30GcuOqBu4GneUu5P5U5OP3SG7WXPr/jSBWMTP7vUDmi
-   wqpf90H1mjR2qnPwRbYB0ps7zHJ/VevBxNLWBWr4U7X9/NN+GHjd/pvc6
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10458"; a="296046888"
-X-IronPort-AV: E=Sophos;i="5.93,283,1654585200"; 
-   d="scan'208";a="296046888"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2022 10:57:13 -0700
+  t=1662149388; x=1693685388;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=dfYcUn+noeT5T7sIeUiJNjSqZU06JxPpPMa1yx2CwNs=;
+  b=Xy8Y9qqZGC/baP+jeME/oFDbDgmHUmWi1ZUnQv47muSxlHpzswmPrO5R
+   v5j48Zmjw7/Jd1bWtVpbAME/5PvYBVtiNaIXsHzg/iDRhMpZhufn2HjzK
+   PA3wpiKlLjaB9By2ungKB4gUxq1UDkNtcMv33Tnhhxp2RUqi41Yu74EGQ
+   BqczzdPFWPwOIR7fbsg2TkKUzJ4qznQqnaXyrkobiBfsa59De5gt7kkwp
+   DU60wfV3+9osazpwG9ANUng4J3H/Vkr0T5rjLjH+h4m3IB8sWhH3a11PA
+   E3fWASxJ2z88bYfkbCrSfyxGZFqHiDeKkTb670PzM6uRKLkc7/q7VJ0UD
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10458"; a="382373013"
+X-IronPort-AV: E=Sophos;i="5.93,285,1654585200"; 
+   d="scan'208";a="382373013"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2022 12:36:25 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,283,1654585200"; 
-   d="scan'208";a="590156240"
-Received: from anguy11-desk2.jf.intel.com ([10.166.244.147])
-  by orsmga006.jf.intel.com with ESMTP; 02 Sep 2022 10:57:12 -0700
-From:   Tony Nguyen <anthony.l.nguyen@intel.com>
-To:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        edumazet@google.com
-Cc:     Przemyslaw Patynowski <przemyslawx.patynowski@intel.com>,
-        netdev@vger.kernel.org, anthony.l.nguyen@intel.com,
-        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
-        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-        john.fastabend@gmail.com, bpf@vger.kernel.org,
-        Mateusz Palczewski <mateusz.palczewski@intel.com>,
-        Chandan <chandanx.rout@intel.com>
-Subject: [PATCH net v2 1/2] ice: Fix DMA mappings leak
-Date:   Fri,  2 Sep 2022 10:57:02 -0700
-Message-Id: <20220902175703.1171660-2-anthony.l.nguyen@intel.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220902175703.1171660-1-anthony.l.nguyen@intel.com>
-References: <20220902175703.1171660-1-anthony.l.nguyen@intel.com>
+X-IronPort-AV: E=Sophos;i="5.93,285,1654585200"; 
+   d="scan'208";a="609084187"
+Received: from lkp-server02.sh.intel.com (HELO 95dfd251caa2) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 02 Sep 2022 12:36:18 -0700
+Received: from kbuild by 95dfd251caa2 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1oUCSf-0000WB-2p;
+        Fri, 02 Sep 2022 19:36:17 +0000
+Date:   Sat, 3 Sep 2022 03:35:57 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Yunhui Cui <cuiyunhui@bytedance.com>, corbet@lwn.net,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, akpm@linux-foundation.org,
+        hannes@cmpxchg.org, david@redhat.com,
+        mail@christoph.anton.mitterer.name, ccross@google.com,
+        vincent.whitchurch@axis.com, paul.gortmaker@windriver.com,
+        peterz@infradead.org, edumazet@google.com, joshdon@google.com
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH] bpf: added the account of BPF running time
+Message-ID: <202209030333.Goj9I0Pe-lkp@intel.com>
+References: <20220902101217.1419-1-cuiyunhui@bytedance.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220902101217.1419-1-cuiyunhui@bytedance.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -65,227 +72,49 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Przemyslaw Patynowski <przemyslawx.patynowski@intel.com>
+Hi Yunhui,
 
-Fix leak, when user changes ring parameters.
-During reallocation of RX buffers, new DMA mappings are created for
-those buffers. New buffers with different RX ring count should
-substitute older ones, but those buffers were freed in ice_vsi_cfg_rxq
-and reallocated again with ice_alloc_rx_buf. kfree on rx_buf caused
-leak of already mapped DMA.
-Reallocate ZC with xdp_buf struct, when BPF program loads. Reallocate
-back to rx_buf, when BPF program unloads.
-If BPF program is loaded/unloaded and XSK pools are created, reallocate
-RX queues accordingly in XDP_SETUP_XSK_POOL handler.
+Thank you for the patch! Yet something to improve:
 
-Steps for reproduction:
-while :
-do
-	for ((i=0; i<=8160; i=i+32))
-	do
-		ethtool -G enp130s0f0 rx $i tx $i
-		sleep 0.5
-		ethtool -g enp130s0f0
-	done
-done
+[auto build test ERROR on bpf-next/master]
+[also build test ERROR on bpf/master linus/master v6.0-rc3 next-20220901]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Fixes: 617f3e1b588c ("ice: xsk: allocate separate memory for XDP SW ring")
-Signed-off-by: Przemyslaw Patynowski <przemyslawx.patynowski@intel.com>
-Signed-off-by: Mateusz Palczewski <mateusz.palczewski@intel.com>
-Tested-by: Chandan <chandanx.rout@intel.com> (A Contingent Worker at Intel)
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
----
- drivers/net/ethernet/intel/ice/ice_base.c | 17 ------
- drivers/net/ethernet/intel/ice/ice_main.c |  8 +++
- drivers/net/ethernet/intel/ice/ice_xsk.c  | 63 +++++++++++++++++++++++
- drivers/net/ethernet/intel/ice/ice_xsk.h  |  8 +++
- 4 files changed, 79 insertions(+), 17 deletions(-)
+url:    https://github.com/intel-lab-lkp/linux/commits/Yunhui-Cui/bpf-added-the-account-of-BPF-running-time/20220902-181437
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+config: um-x86_64_defconfig (https://download.01.org/0day-ci/archive/20220903/202209030333.Goj9I0Pe-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-5) 11.3.0
+reproduce (this is a W=1 build):
+        # https://github.com/intel-lab-lkp/linux/commit/e31420772f2a63d6bc561211b8ef0331d41b2123
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Yunhui-Cui/bpf-added-the-account-of-BPF-running-time/20220902-181437
+        git checkout e31420772f2a63d6bc561211b8ef0331d41b2123
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        make W=1 O=build_dir ARCH=um SUBARCH=x86_64 SHELL=/bin/bash
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_base.c b/drivers/net/ethernet/intel/ice/ice_base.c
-index 136d7911adb4..1e3243808178 100644
---- a/drivers/net/ethernet/intel/ice/ice_base.c
-+++ b/drivers/net/ethernet/intel/ice/ice_base.c
-@@ -7,18 +7,6 @@
- #include "ice_dcb_lib.h"
- #include "ice_sriov.h"
- 
--static bool ice_alloc_rx_buf_zc(struct ice_rx_ring *rx_ring)
--{
--	rx_ring->xdp_buf = kcalloc(rx_ring->count, sizeof(*rx_ring->xdp_buf), GFP_KERNEL);
--	return !!rx_ring->xdp_buf;
--}
--
--static bool ice_alloc_rx_buf(struct ice_rx_ring *rx_ring)
--{
--	rx_ring->rx_buf = kcalloc(rx_ring->count, sizeof(*rx_ring->rx_buf), GFP_KERNEL);
--	return !!rx_ring->rx_buf;
--}
--
- /**
-  * __ice_vsi_get_qs_contig - Assign a contiguous chunk of queues to VSI
-  * @qs_cfg: gathered variables needed for PF->VSI queues assignment
-@@ -519,11 +507,8 @@ int ice_vsi_cfg_rxq(struct ice_rx_ring *ring)
- 			xdp_rxq_info_reg(&ring->xdp_rxq, ring->netdev,
- 					 ring->q_index, ring->q_vector->napi.napi_id);
- 
--		kfree(ring->rx_buf);
- 		ring->xsk_pool = ice_xsk_pool(ring);
- 		if (ring->xsk_pool) {
--			if (!ice_alloc_rx_buf_zc(ring))
--				return -ENOMEM;
- 			xdp_rxq_info_unreg_mem_model(&ring->xdp_rxq);
- 
- 			ring->rx_buf_len =
-@@ -538,8 +523,6 @@ int ice_vsi_cfg_rxq(struct ice_rx_ring *ring)
- 			dev_info(dev, "Registered XDP mem model MEM_TYPE_XSK_BUFF_POOL on Rx ring %d\n",
- 				 ring->q_index);
- 		} else {
--			if (!ice_alloc_rx_buf(ring))
--				return -ENOMEM;
- 			if (!xdp_rxq_info_is_reg(&ring->xdp_rxq))
- 				/* coverity[check_return] */
- 				xdp_rxq_info_reg(&ring->xdp_rxq,
-diff --git a/drivers/net/ethernet/intel/ice/ice_main.c b/drivers/net/ethernet/intel/ice/ice_main.c
-index 173fe6c31341..e5bc69a9a37c 100644
---- a/drivers/net/ethernet/intel/ice/ice_main.c
-+++ b/drivers/net/ethernet/intel/ice/ice_main.c
-@@ -2898,10 +2898,18 @@ ice_xdp_setup_prog(struct ice_vsi *vsi, struct bpf_prog *prog,
- 			if (xdp_ring_err)
- 				NL_SET_ERR_MSG_MOD(extack, "Setting up XDP Tx resources failed");
- 		}
-+		/* reallocate Rx queues that are used for zero-copy */
-+		xdp_ring_err = ice_realloc_zc_buf(vsi, true);
-+		if (xdp_ring_err)
-+			NL_SET_ERR_MSG_MOD(extack, "Setting up XDP Rx resources failed");
- 	} else if (ice_is_xdp_ena_vsi(vsi) && !prog) {
- 		xdp_ring_err = ice_destroy_xdp_rings(vsi);
- 		if (xdp_ring_err)
- 			NL_SET_ERR_MSG_MOD(extack, "Freeing XDP Tx resources failed");
-+		/* reallocate Rx queues that were used for zero-copy */
-+		xdp_ring_err = ice_realloc_zc_buf(vsi, false);
-+		if (xdp_ring_err)
-+			NL_SET_ERR_MSG_MOD(extack, "Freeing XDP Rx resources failed");
- 	} else {
- 		/* safe to call even when prog == vsi->xdp_prog as
- 		 * dev_xdp_install in net/core/dev.c incremented prog's
-diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
-index e48e29258450..03ce85f6e6df 100644
---- a/drivers/net/ethernet/intel/ice/ice_xsk.c
-+++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
-@@ -192,6 +192,7 @@ static int ice_qp_dis(struct ice_vsi *vsi, u16 q_idx)
- 	err = ice_vsi_ctrl_one_rx_ring(vsi, false, q_idx, true);
- 	if (err)
- 		return err;
-+	ice_clean_rx_ring(rx_ring);
- 
- 	ice_qvec_toggle_napi(vsi, q_vector, false);
- 	ice_qp_clean_rings(vsi, q_idx);
-@@ -316,6 +317,62 @@ ice_xsk_pool_enable(struct ice_vsi *vsi, struct xsk_buff_pool *pool, u16 qid)
- 	return 0;
- }
- 
-+/**
-+ * ice_realloc_rx_xdp_bufs - reallocate for either XSK or normal buffer
-+ * @rx_ring: Rx ring
-+ * @pool_present: is pool for XSK present
-+ *
-+ * Try allocating memory and return ENOMEM, if failed to allocate.
-+ * If allocation was successful, substitute buffer with allocated one.
-+ * Returns 0 on success, negative on failure
-+ */
-+static int
-+ice_realloc_rx_xdp_bufs(struct ice_rx_ring *rx_ring, bool pool_present)
-+{
-+	size_t elem_size = pool_present ? sizeof(*rx_ring->xdp_buf) :
-+					  sizeof(*rx_ring->rx_buf);
-+	void *sw_ring = kcalloc(rx_ring->count, elem_size, GFP_KERNEL);
-+
-+	if (!sw_ring)
-+		return -ENOMEM;
-+
-+	if (pool_present) {
-+		kfree(rx_ring->rx_buf);
-+		rx_ring->rx_buf = NULL;
-+		rx_ring->xdp_buf = sw_ring;
-+	} else {
-+		kfree(rx_ring->xdp_buf);
-+		rx_ring->xdp_buf = NULL;
-+		rx_ring->rx_buf = sw_ring;
-+	}
-+
-+	return 0;
-+}
-+
-+/**
-+ * ice_realloc_zc_buf - reallocate XDP ZC queue pairs
-+ * @vsi: Current VSI
-+ * @zc: is zero copy set
-+ *
-+ * Reallocate buffer for rx_rings that might be used by XSK.
-+ * XDP requires more memory, than rx_buf provides.
-+ * Returns 0 on success, negative on failure
-+ */
-+int ice_realloc_zc_buf(struct ice_vsi *vsi, bool zc)
-+{
-+	struct ice_rx_ring *rx_ring;
-+	unsigned long q;
-+
-+	for_each_set_bit(q, vsi->af_xdp_zc_qps,
-+			 max_t(int, vsi->alloc_txq, vsi->alloc_rxq)) {
-+		rx_ring = vsi->rx_rings[q];
-+		if (ice_realloc_rx_xdp_bufs(rx_ring, zc))
-+			return -ENOMEM;
-+	}
-+
-+	return 0;
-+}
-+
- /**
-  * ice_xsk_pool_setup - enable/disable a buffer pool region depending on its state
-  * @vsi: Current VSI
-@@ -345,11 +402,17 @@ int ice_xsk_pool_setup(struct ice_vsi *vsi, struct xsk_buff_pool *pool, u16 qid)
- 	if_running = netif_running(vsi->netdev) && ice_is_xdp_ena_vsi(vsi);
- 
- 	if (if_running) {
-+		struct ice_rx_ring *rx_ring = vsi->rx_rings[qid];
-+
- 		ret = ice_qp_dis(vsi, qid);
- 		if (ret) {
- 			netdev_err(vsi->netdev, "ice_qp_dis error = %d\n", ret);
- 			goto xsk_pool_if_up;
- 		}
-+
-+		ret = ice_realloc_rx_xdp_bufs(rx_ring, pool_present);
-+		if (ret)
-+			goto xsk_pool_if_up;
- 	}
- 
- 	pool_failure = pool_present ? ice_xsk_pool_enable(vsi, pool, qid) :
-diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.h b/drivers/net/ethernet/intel/ice/ice_xsk.h
-index 21faec8e97db..4edbe81eb646 100644
---- a/drivers/net/ethernet/intel/ice/ice_xsk.h
-+++ b/drivers/net/ethernet/intel/ice/ice_xsk.h
-@@ -27,6 +27,7 @@ bool ice_xsk_any_rx_ring_ena(struct ice_vsi *vsi);
- void ice_xsk_clean_rx_ring(struct ice_rx_ring *rx_ring);
- void ice_xsk_clean_xdp_ring(struct ice_tx_ring *xdp_ring);
- bool ice_xmit_zc(struct ice_tx_ring *xdp_ring, u32 budget, int napi_budget);
-+int ice_realloc_zc_buf(struct ice_vsi *vsi, bool zc);
- #else
- static inline bool
- ice_xmit_zc(struct ice_tx_ring __always_unused *xdp_ring,
-@@ -72,5 +73,12 @@ ice_xsk_wakeup(struct net_device __always_unused *netdev,
- 
- static inline void ice_xsk_clean_rx_ring(struct ice_rx_ring *rx_ring) { }
- static inline void ice_xsk_clean_xdp_ring(struct ice_tx_ring *xdp_ring) { }
-+
-+static inline int
-+ice_realloc_zc_buf(struct ice_vsi __always_unused *vsi,
-+		   bool __always_unused zc)
-+{
-+	return 0;
-+}
- #endif /* CONFIG_XDP_SOCKETS */
- #endif /* !_ICE_XSK_H_ */
+If you fix the issue, kindly add following tag where applicable
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+   /usr/bin/ld: warning: arch/x86/um/vdso/vdso.o: missing .note.GNU-stack section implies executable stack
+   /usr/bin/ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
+   /usr/bin/ld: warning: .tmp_vmlinux.kallsyms1 has a LOAD segment with RWX permissions
+   /usr/bin/ld: kernel/seccomp.o: in function `seccomp_run_filters':
+   seccomp.c:(.text+0xaa7): undefined reference to `bpftime'
+   /usr/bin/ld: fs/proc/stat.o: in function `show_stat':
+   stat.c:(.text+0x124): undefined reference to `bpftime'
+   /usr/bin/ld: stat.c:(.text+0x332): undefined reference to `bpftime'
+   /usr/bin/ld: net/core/flow_dissector.o: in function `bpf_flow_dissect':
+>> flow_dissector.c:(.text+0x9f5): undefined reference to `bpftime'
+   /usr/bin/ld: net/core/dev.o: in function `bpf_prog_run_generic_xdp':
+>> dev.c:(.text+0x8c43): undefined reference to `bpftime'
+   /usr/bin/ld: net/core/ptp_classifier.o:ptp_classifier.c:(.text+0xf8): more undefined references to `bpftime' follow
+   collect2: error: ld returned 1 exit status
+
 -- 
-2.35.1
-
+0-DAY CI Kernel Test Service
+https://01.org/lkp
