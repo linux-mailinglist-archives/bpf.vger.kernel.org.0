@@ -2,108 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BF1A5AB75F
-	for <lists+bpf@lfdr.de>; Fri,  2 Sep 2022 19:21:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AC4C5AB7CA
+	for <lists+bpf@lfdr.de>; Fri,  2 Sep 2022 19:52:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235922AbiIBRVB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Sep 2022 13:21:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34864 "EHLO
+        id S234070AbiIBRw3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Sep 2022 13:52:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235728AbiIBRVA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Sep 2022 13:21:00 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6110C12FA
-        for <bpf@vger.kernel.org>; Fri,  2 Sep 2022 10:20:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=5q4ON7dgvqGPsNeX1sW9LxtFM0ApP0M/CrDWxGZ8U/o=; b=vUIlXVyn5PNluVKf58t/ytQ13M
-        yZ86Gl1rJAxcVePVLgCAF1T7x4MEzW/pTIpXDgSZIo/2xKKCVRgb71aqmY8pxpXL5K4OcNpqVMPtq
-        Xt0A0xF3dbJ4BTNAqDxOP2vHnGt7F2Qbnkkwrc3EI3XNJTXFPuwxB9ARGPlgu03N6xRAquvcPGkIT
-        zsdh/ylcAyZJCXIHVSh6sTdyZzNoT2kMjaQ3o7vfW9RuqLWTOnIPGuWuTOblk8XiUBAFMxlCOP2Up
-        JyqJSRytdfb5k0LW8mygKjFpI6MX6GH4HYqpqnAlo4o3u/19/VtImHmG92AqXk0GtbSl1I9DnFfXB
-        VY69eHmw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1oUALS-007CS0-Ce; Fri, 02 Sep 2022 17:20:42 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6F43630029C;
-        Fri,  2 Sep 2022 19:20:40 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3B3C02B9048DE; Fri,  2 Sep 2022 19:20:40 +0200 (CEST)
-Date:   Fri, 2 Sep 2022 19:20:40 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S232619AbiIBRw2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Sep 2022 13:52:28 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E36BA45F;
+        Fri,  2 Sep 2022 10:52:27 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1oUAq0-0003WX-SU; Fri, 02 Sep 2022 19:52:16 +0200
+Date:   Fri, 2 Sep 2022 19:52:16 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Florian Westphal <fw@strlen.de>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCHv2 bpf-next 2/2] bpf: Move bpf_dispatcher function out of
- ftrace locations
-Message-ID: <YxI7aC4L495CwZWE@hirez.programming.kicks-ass.net>
-References: <20220901134150.418203-1-jolsa@kernel.org>
- <20220901134150.418203-3-jolsa@kernel.org>
- <YxHli+6C5rylF3EH@hirez.programming.kicks-ass.net>
- <YxI1EtYjkLaooFm8@krava>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Toke =?iso-8859-15?Q?H=F8iland-J=F8rgensen?= <toke@kernel.org>,
+        netfilter-devel <netfilter-devel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH nf-next] netfilter: nf_tables: add ebpf expression
+Message-ID: <20220902175216.GB4165@breakpoint.cc>
+References: <87o7w04jjb.fsf@toke.dk>
+ <20220831135757.GC8153@breakpoint.cc>
+ <87ilm84goh.fsf@toke.dk>
+ <20220831152624.GA15107@breakpoint.cc>
+ <CAADnVQJp5RJ0kZundd5ag-b3SDYir8cF4R_nVbN8Zj9Rcn0rww@mail.gmail.com>
+ <20220831155341.GC15107@breakpoint.cc>
+ <CAADnVQJGQmu02f5B=mc1xJvVWSmk_GNZj9WAUskekykmyo8FzA@mail.gmail.com>
+ <1cc40302-f006-31a7-b270-30813b8f4b67@iogearbox.net>
+ <20220901101401.GC4334@breakpoint.cc>
+ <CAADnVQJUDcahx2R58zEPNi_uRdgUNtKKUTqndDY-NVd03pB_+Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YxI1EtYjkLaooFm8@krava>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <CAADnVQJUDcahx2R58zEPNi_uRdgUNtKKUTqndDY-NVd03pB_+Q@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 02, 2022 at 06:53:38PM +0200, Jiri Olsa wrote:
-> > Are you sure you want the notrace x86_64 only?
-> > 
-> > That is, perhaps something like this...
-> > 
-> > +#ifdef CONFIG_X86_64
-> > +#define BPF_DISPATCHER_ATTRIBUTES	   __attribute__((patchable_function_entry(5)))
-> > +#else
-> > +#define BPF_DISPATCHER_ATTRIBUTES
-> > +#endif
-> > +
-> >  #define DEFINE_BPF_DISPATCHER(name)					\
-> > +	notrace BPF_DISPATCHER_ATTRIBUTES				\
-> >  	noinline __nocfi unsigned int bpf_dispatcher_##name##_func(	\
-> > 
+Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> > See my reply to Alexey, immediate goal was to get rid of the indirect
+> > calls by providing a tailored/jitted equivalent of nf_hook_slow().
+> >
+> > The next step could be to allow implementation of netfilter hooks
+> > (i.e., kernel modules that call nf_register_net_hook()) in bpf
+> > but AFAIU it requires addition of BPF_PROG_TYPE_NETFILTER etc.
 > 
-> that's also an option.. but I don't this it's big deal that the function
-> is traceable on other arches, because the dispatcher image is generated
-> only on x86, so no other arch is touching that function entry, so it's
-> safe for ftrace to attach
+> We were adding new prog and maps types in the past.
+> Now new features are being added differently.
+> All of the networking either works with sk_buff-s or xdp frames.
+> We try hard not to add any new uapi helpers.
+> Everything is moving to kfuncs.
+> Other sub-systems should be able to use bpf without touching
+> the bpf core. See hid-bpf as an example.
+> It needs several verifier improvements, but doesn't need
+> new prog types, helpers, etc.
 
-It just seems like a pointless difference.
+I don't see how it can be done without a new prog type, the bpf progs
+would need access to "nf_hook_state" struct, passed as argument
+to nf_hook_slow() (and down to the individual xt_foo modules...).
 
-From a code-gen POV you don't strictly need the notrace; without it
-it'll generate:
+We can't change the existing netfilter hook prototype to go by
+sk_buff * as that doesn't have all information, most prominent are
+the input and output net_device, but also okfn is needed for async
+reinject (nf_queue), the hook location and so on.
 
-bpf_dispatcher_name_func:
-	nop
-	nop
-	nop
-	nop
-	nop
-	call __fentry__
-	RET
+> > After that, yes, one could think about how to jit nft_do_chain() and
+> > all the rest of the nft machinery.
+> 
+> Sounds like a ton of work. All that just to accelerate nft a bit?
+> I think there are more impactful projects to work on.
+> For example, accelerating classic iptables with bpf would immediately
+> help a bunch of users.
 
-It'll just function 'weird', but it'll 'work'.
+Maybe, but from the problem points and the required effort it doesn't matter
+if the chosen target is iptables or nftables; as far as the time/effort
+needed I'd say they are identical.
+
+The hard issues that need to be solved first are the same; they reside
+in the netfilter core and not in the specific interpreter (nft_do_chain
+vs. ipt_do_table and friends).
+
+nf_tables might be *slightly* easier once that point would be reached
+because the core functionality is more integrated with nf_tables whereas
+in iptables there is more copypastry (ipt_do_table, ip6t_do_table,
+ebt_do_table, ...).
