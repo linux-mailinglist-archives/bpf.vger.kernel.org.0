@@ -2,60 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D60F5AB9E1
-	for <lists+bpf@lfdr.de>; Fri,  2 Sep 2022 23:11:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62BF95AB9E4
+	for <lists+bpf@lfdr.de>; Fri,  2 Sep 2022 23:11:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229919AbiIBVLP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Sep 2022 17:11:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53238 "EHLO
+        id S230039AbiIBVLT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Sep 2022 17:11:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbiIBVLO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Sep 2022 17:11:14 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4165D8E32
-        for <bpf@vger.kernel.org>; Fri,  2 Sep 2022 14:11:13 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id w139so3040765pfc.13
-        for <bpf@vger.kernel.org>; Fri, 02 Sep 2022 14:11:13 -0700 (PDT)
+        with ESMTP id S230474AbiIBVLS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Sep 2022 17:11:18 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C19FCD8E32
+        for <bpf@vger.kernel.org>; Fri,  2 Sep 2022 14:11:17 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id j5so3030232plj.5
+        for <bpf@vger.kernel.org>; Fri, 02 Sep 2022 14:11:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
-        bh=fN5UTsD9/UNy4JwRwsLxsSRdDj8AsSF1mCpGXo1LAXw=;
-        b=MzhJb7DeGqrdXTr68P9EuoEFICUOC+F3zkwB7lo4l3TqEH95m7Ve+aXypNk19AOh65
-         yZM0CMp01BZtiR4vXFlq4EEevvOJ3oQ9RBArId6AYe6xSMGcYqVJW6tU+OGn2222jYR/
-         7tfsLlZVy8VP0QZkj1BTy3Sews6BaMbsOzdTLZ1FUyIqthRuRTw4GdnmISsz6aKRflqZ
-         8oRAON32QbXfkaVS4wbQw4MQhUGUB542Anpw2ESQv7RCQ4sOKlNmPWQN+eXBTMhO31dl
-         HSWYQ4OlnSIJYxljp4c7UNYtBJZFh2nBrhKBmuRUNDiKMpYw3z5ddbBdbazRAew0lxL/
-         BVhQ==
+        bh=4+uhdcDVuSjjem7hAR91KRY20zQndt0vkR0L244Rk1E=;
+        b=E721puASI0KcWoJFMcQRS4f6jZ6+ghjyIowMzWFrGqRS6pgXqFl58dxkBEafFaLkKV
+         CJixDExhy3mCCFK2DFTMUfBQjks9eFlG8cXISjtTYqjS0uBjtDfp/JvM3Q2/8fCO/Qg9
+         jN72OKZLXtlsq4xJXOC+xXn2aMP5BqeSMhEZVSDazojdqfNJ/lySABQXrUbfcTjNKDWy
+         +qC0qXQ9/Il3e6etrNaDeiXLpFYw/TF62fkiFIJTo4r8tKqya+s67YZ/ZMFGU24r3tkP
+         J3AMy7qFsq/tblD8OojYdv6DHwFUDqyR+M0pXhgr8oM0yPbaHbLmvLN1Ke6LP41lghpW
+         jBqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date;
-        bh=fN5UTsD9/UNy4JwRwsLxsSRdDj8AsSF1mCpGXo1LAXw=;
-        b=vzC0UYXc51FxbnmDHAfm+WfXzQbUmS1sjlcMh9U5LDRuHz9Fpaec8eyQ4/M2nxDFQD
-         ombnY9wSsWMbKcMxOHFtoC66JC/e0EDbJuhk4FA2wshD+b4uwwu1dqgujvhXY3pIWlT6
-         YXEJOQUXLbEtmBDXGLVCA8kqbCYqQF5lDmaBLVQ8tKkmonKnhzYZl62TZWS/B9V9JBZD
-         xhteVOVYPKW0JC/Y/TllqeMBcorYaa0vLMXkHdE3VOgK2RR5ZKYNY3sQQVwERJ5ESIMx
-         kumLkEt9YMWa9tXYU0JW4TCcxGNtxHz2/BK4SVCaJ9Zin7rEkyVQklRpdDQcK92WKiQx
-         AXqQ==
-X-Gm-Message-State: ACgBeo1rTyUC9/pm55nmN6nayhBO/YnwcgX0ogPyVCdUWfujs3lmP9Ew
-        rRwjmMtg9/qXY90FsAOvuHM=
-X-Google-Smtp-Source: AA6agR4Aia0MYvf8H9EHnMwCgvO736xTHM4ggch+Tusz/FffOHXj94vbODIdwLjAsXKUMbxG2UXe9Q==
-X-Received: by 2002:a63:564f:0:b0:425:f2cd:d0ce with SMTP id g15-20020a63564f000000b00425f2cdd0cemr31670185pgm.143.1662153073177;
-        Fri, 02 Sep 2022 14:11:13 -0700 (PDT)
+        bh=4+uhdcDVuSjjem7hAR91KRY20zQndt0vkR0L244Rk1E=;
+        b=1m0RRk+3jL8T9XR1vY8nHYcc5wIQqmq0/UJSF9ucOG0s221XUKNwxW4ny+UyZPnuNF
+         pfR/a5+hTVbseHOWNjoeE2I9EMzHV3wRVJGYJhsMwxLcs8g8BX78yK7Q23WSkZHDHYV7
+         cjdv6//LIZctkH+5hY8XJOUyM4fs+vZpfH3okFBnm1fjh/Yy+5utBwBogpEBIvzn+XJz
+         2kHg1BwZkQhcNZ9jjku0MUhL5Ixa/3pBCrWbW8TcAtVOcu/mNZCIGHw3tS8bgnlFovgu
+         0RxbIpmR6qRYdGAvYBAcVjWBAb4KLEhfoib6vAnkQHIvytaWKzo8RTUzwRwvsAf2yss+
+         w7Bg==
+X-Gm-Message-State: ACgBeo3ceUEFiB7EAh/6EKI2vF+QXfmUur1aKS8uFKGN67JcqZuHxASw
+        qjfxBt5VgQtFtBOFAq0oqyQ=
+X-Google-Smtp-Source: AA6agR6dWy255w61IoDpzzOIdj3C3jFRxBDgJPN2l719BRrtodChCNCvX7n9Ei0RsrYf0afyK9nbqg==
+X-Received: by 2002:a17:90b:4f81:b0:1fe:1716:fe20 with SMTP id qe1-20020a17090b4f8100b001fe1716fe20mr6735459pjb.63.1662153076920;
+        Fri, 02 Sep 2022 14:11:16 -0700 (PDT)
 Received: from localhost.localdomain ([2620:10d:c090:500::c978])
-        by smtp.gmail.com with ESMTPSA id z8-20020aa79f88000000b0052e57ed8cdasm2321374pfr.55.2022.09.02.14.11.11
+        by smtp.gmail.com with ESMTPSA id e7-20020a17090ab38700b001f1acb6c3ebsm1903023pjr.34.2022.09.02.14.11.15
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Fri, 02 Sep 2022 14:11:12 -0700 (PDT)
+        Fri, 02 Sep 2022 14:11:16 -0700 (PDT)
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     davem@davemloft.net
 Cc:     daniel@iogearbox.net, andrii@kernel.org, tj@kernel.org,
         memxor@gmail.com, delyank@fb.com, linux-mm@kvack.org,
         bpf@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v6 bpf-next 03/16] selftests/bpf: Improve test coverage of test_maps
-Date:   Fri,  2 Sep 2022 14:10:45 -0700
-Message-Id: <20220902211058.60789-4-alexei.starovoitov@gmail.com>
+Subject: [PATCH v6 bpf-next 04/16] samples/bpf: Reduce syscall overhead in map_perf_test.
+Date:   Fri,  2 Sep 2022 14:10:46 -0700
+Message-Id: <20220902211058.60789-5-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <20220902211058.60789-1-alexei.starovoitov@gmail.com>
 References: <20220902211058.60789-1-alexei.starovoitov@gmail.com>
@@ -73,146 +73,129 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Alexei Starovoitov <ast@kernel.org>
 
-Make test_maps more stressful with more parallelism in
-update/delete/lookup/walk including different value sizes.
+Make map_perf_test for preallocated and non-preallocated hash map
+spend more time inside bpf program to focus performance analysis
+on the speed of update/lookup/delete operations performed by bpf program.
+
+It makes 'perf report' of bpf_mem_alloc look like:
+ 11.76%  map_perf_test    [k] _raw_spin_lock_irqsave
+ 11.26%  map_perf_test    [k] htab_map_update_elem
+  9.70%  map_perf_test    [k] _raw_spin_lock
+  9.47%  map_perf_test    [k] htab_map_delete_elem
+  8.57%  map_perf_test    [k] memcpy_erms
+  5.58%  map_perf_test    [k] alloc_htab_elem
+  4.09%  map_perf_test    [k] __htab_map_lookup_elem
+  3.44%  map_perf_test    [k] syscall_exit_to_user_mode
+  3.13%  map_perf_test    [k] lookup_nulls_elem_raw
+  3.05%  map_perf_test    [k] migrate_enable
+  3.04%  map_perf_test    [k] memcmp
+  2.67%  map_perf_test    [k] unit_free
+  2.39%  map_perf_test    [k] lookup_elem_raw
+
+Reduce default iteration count as well to make 'map_perf_test' quick enough
+even on debug kernels.
 
 Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 ---
- tools/testing/selftests/bpf/test_maps.c | 38 ++++++++++++++++---------
- 1 file changed, 24 insertions(+), 14 deletions(-)
+ samples/bpf/map_perf_test_kern.c | 44 ++++++++++++++++++++------------
+ samples/bpf/map_perf_test_user.c |  2 +-
+ 2 files changed, 29 insertions(+), 17 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
-index c49f2056e14f..00b9cc305e58 100644
---- a/tools/testing/selftests/bpf/test_maps.c
-+++ b/tools/testing/selftests/bpf/test_maps.c
-@@ -264,10 +264,11 @@ static void test_hashmap_percpu(unsigned int task, void *data)
- 	close(fd);
+diff --git a/samples/bpf/map_perf_test_kern.c b/samples/bpf/map_perf_test_kern.c
+index 8773f22b6a98..7342c5b2f278 100644
+--- a/samples/bpf/map_perf_test_kern.c
++++ b/samples/bpf/map_perf_test_kern.c
+@@ -108,11 +108,14 @@ int stress_hmap(struct pt_regs *ctx)
+ 	u32 key = bpf_get_current_pid_tgid();
+ 	long init_val = 1;
+ 	long *value;
++	int i;
+ 
+-	bpf_map_update_elem(&hash_map, &key, &init_val, BPF_ANY);
+-	value = bpf_map_lookup_elem(&hash_map, &key);
+-	if (value)
+-		bpf_map_delete_elem(&hash_map, &key);
++	for (i = 0; i < 10; i++) {
++		bpf_map_update_elem(&hash_map, &key, &init_val, BPF_ANY);
++		value = bpf_map_lookup_elem(&hash_map, &key);
++		if (value)
++			bpf_map_delete_elem(&hash_map, &key);
++	}
+ 
+ 	return 0;
+ }
+@@ -123,11 +126,14 @@ int stress_percpu_hmap(struct pt_regs *ctx)
+ 	u32 key = bpf_get_current_pid_tgid();
+ 	long init_val = 1;
+ 	long *value;
++	int i;
+ 
+-	bpf_map_update_elem(&percpu_hash_map, &key, &init_val, BPF_ANY);
+-	value = bpf_map_lookup_elem(&percpu_hash_map, &key);
+-	if (value)
+-		bpf_map_delete_elem(&percpu_hash_map, &key);
++	for (i = 0; i < 10; i++) {
++		bpf_map_update_elem(&percpu_hash_map, &key, &init_val, BPF_ANY);
++		value = bpf_map_lookup_elem(&percpu_hash_map, &key);
++		if (value)
++			bpf_map_delete_elem(&percpu_hash_map, &key);
++	}
+ 	return 0;
  }
  
-+#define VALUE_SIZE 3
- static int helper_fill_hashmap(int max_entries)
- {
- 	int i, fd, ret;
--	long long key, value;
-+	long long key, value[VALUE_SIZE] = {};
+@@ -137,11 +143,14 @@ int stress_hmap_alloc(struct pt_regs *ctx)
+ 	u32 key = bpf_get_current_pid_tgid();
+ 	long init_val = 1;
+ 	long *value;
++	int i;
  
- 	fd = bpf_map_create(BPF_MAP_TYPE_HASH, NULL, sizeof(key), sizeof(value),
- 			    max_entries, &map_opts);
-@@ -276,8 +277,8 @@ static int helper_fill_hashmap(int max_entries)
- 	      "err: %s, flags: 0x%x\n", strerror(errno), map_opts.map_flags);
- 
- 	for (i = 0; i < max_entries; i++) {
--		key = i; value = key;
--		ret = bpf_map_update_elem(fd, &key, &value, BPF_NOEXIST);
-+		key = i; value[0] = key;
-+		ret = bpf_map_update_elem(fd, &key, value, BPF_NOEXIST);
- 		CHECK(ret != 0,
- 		      "can't update hashmap",
- 		      "err: %s\n", strerror(ret));
-@@ -288,8 +289,8 @@ static int helper_fill_hashmap(int max_entries)
- 
- static void test_hashmap_walk(unsigned int task, void *data)
- {
--	int fd, i, max_entries = 1000;
--	long long key, value, next_key;
-+	int fd, i, max_entries = 10000;
-+	long long key, value[VALUE_SIZE], next_key;
- 	bool next_key_valid = true;
- 
- 	fd = helper_fill_hashmap(max_entries);
-@@ -297,7 +298,7 @@ static void test_hashmap_walk(unsigned int task, void *data)
- 	for (i = 0; bpf_map_get_next_key(fd, !i ? NULL : &key,
- 					 &next_key) == 0; i++) {
- 		key = next_key;
--		assert(bpf_map_lookup_elem(fd, &key, &value) == 0);
-+		assert(bpf_map_lookup_elem(fd, &key, value) == 0);
- 	}
- 
- 	assert(i == max_entries);
-@@ -305,9 +306,9 @@ static void test_hashmap_walk(unsigned int task, void *data)
- 	assert(bpf_map_get_next_key(fd, NULL, &key) == 0);
- 	for (i = 0; next_key_valid; i++) {
- 		next_key_valid = bpf_map_get_next_key(fd, &key, &next_key) == 0;
--		assert(bpf_map_lookup_elem(fd, &key, &value) == 0);
--		value++;
--		assert(bpf_map_update_elem(fd, &key, &value, BPF_EXIST) == 0);
-+		assert(bpf_map_lookup_elem(fd, &key, value) == 0);
-+		value[0]++;
-+		assert(bpf_map_update_elem(fd, &key, value, BPF_EXIST) == 0);
- 		key = next_key;
- 	}
- 
-@@ -316,8 +317,8 @@ static void test_hashmap_walk(unsigned int task, void *data)
- 	for (i = 0; bpf_map_get_next_key(fd, !i ? NULL : &key,
- 					 &next_key) == 0; i++) {
- 		key = next_key;
--		assert(bpf_map_lookup_elem(fd, &key, &value) == 0);
--		assert(value - 1 == key);
-+		assert(bpf_map_lookup_elem(fd, &key, value) == 0);
-+		assert(value[0] - 1 == key);
- 	}
- 
- 	assert(i == max_entries);
-@@ -1371,16 +1372,16 @@ static void __run_parallel(unsigned int tasks,
- 
- static void test_map_stress(void)
- {
-+	run_parallel(100, test_hashmap_walk, NULL);
- 	run_parallel(100, test_hashmap, NULL);
- 	run_parallel(100, test_hashmap_percpu, NULL);
- 	run_parallel(100, test_hashmap_sizes, NULL);
--	run_parallel(100, test_hashmap_walk, NULL);
- 
- 	run_parallel(100, test_arraymap, NULL);
- 	run_parallel(100, test_arraymap_percpu, NULL);
+-	bpf_map_update_elem(&hash_map_alloc, &key, &init_val, BPF_ANY);
+-	value = bpf_map_lookup_elem(&hash_map_alloc, &key);
+-	if (value)
+-		bpf_map_delete_elem(&hash_map_alloc, &key);
++	for (i = 0; i < 10; i++) {
++		bpf_map_update_elem(&hash_map_alloc, &key, &init_val, BPF_ANY);
++		value = bpf_map_lookup_elem(&hash_map_alloc, &key);
++		if (value)
++			bpf_map_delete_elem(&hash_map_alloc, &key);
++	}
+ 	return 0;
  }
  
--#define TASKS 1024
-+#define TASKS 100
+@@ -151,11 +160,14 @@ int stress_percpu_hmap_alloc(struct pt_regs *ctx)
+ 	u32 key = bpf_get_current_pid_tgid();
+ 	long init_val = 1;
+ 	long *value;
++	int i;
  
- #define DO_UPDATE 1
- #define DO_DELETE 0
-@@ -1432,6 +1433,8 @@ static void test_update_delete(unsigned int fn, void *data)
- 	int fd = ((int *)data)[0];
- 	int i, key, value, err;
- 
-+	if (fn & 1)
-+		test_hashmap_walk(fn, NULL);
- 	for (i = fn; i < MAP_SIZE; i += TASKS) {
- 		key = value = i;
- 
-@@ -1455,7 +1458,7 @@ static void test_update_delete(unsigned int fn, void *data)
- 
- static void test_map_parallel(void)
- {
--	int i, fd, key = 0, value = 0;
-+	int i, fd, key = 0, value = 0, j = 0;
- 	int data[2];
- 
- 	fd = bpf_map_create(BPF_MAP_TYPE_HASH, NULL, sizeof(key), sizeof(value),
-@@ -1466,6 +1469,7 @@ static void test_map_parallel(void)
- 		exit(1);
- 	}
- 
-+again:
- 	/* Use the same fd in children to add elements to this map:
- 	 * child_0 adds key=0, key=1024, key=2048, ...
- 	 * child_1 adds key=1, key=1025, key=2049, ...
-@@ -1502,6 +1506,12 @@ static void test_map_parallel(void)
- 	key = -1;
- 	assert(bpf_map_get_next_key(fd, NULL, &key) < 0 && errno == ENOENT);
- 	assert(bpf_map_get_next_key(fd, &key, &key) < 0 && errno == ENOENT);
-+
-+	key = 0;
-+	bpf_map_delete_elem(fd, &key);
-+	if (j++ < 5)
-+		goto again;
-+	close(fd);
+-	bpf_map_update_elem(&percpu_hash_map_alloc, &key, &init_val, BPF_ANY);
+-	value = bpf_map_lookup_elem(&percpu_hash_map_alloc, &key);
+-	if (value)
+-		bpf_map_delete_elem(&percpu_hash_map_alloc, &key);
++	for (i = 0; i < 10; i++) {
++		bpf_map_update_elem(&percpu_hash_map_alloc, &key, &init_val, BPF_ANY);
++		value = bpf_map_lookup_elem(&percpu_hash_map_alloc, &key);
++		if (value)
++			bpf_map_delete_elem(&percpu_hash_map_alloc, &key);
++	}
+ 	return 0;
  }
  
- static void test_map_rdonly(void)
+diff --git a/samples/bpf/map_perf_test_user.c b/samples/bpf/map_perf_test_user.c
+index b6fc174ab1f2..1bb53f4b29e1 100644
+--- a/samples/bpf/map_perf_test_user.c
++++ b/samples/bpf/map_perf_test_user.c
+@@ -72,7 +72,7 @@ static int test_flags = ~0;
+ static uint32_t num_map_entries;
+ static uint32_t inner_lru_hash_size;
+ static int lru_hash_lookup_test_entries = 32;
+-static uint32_t max_cnt = 1000000;
++static uint32_t max_cnt = 10000;
+ 
+ static int check_test_flags(enum test_type t)
+ {
 -- 
 2.30.2
 
