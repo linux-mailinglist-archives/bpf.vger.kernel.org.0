@@ -2,60 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62BF95AB9E4
+	by mail.lfdr.de (Postfix) with ESMTP id F38485AB9E6
 	for <lists+bpf@lfdr.de>; Fri,  2 Sep 2022 23:11:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230039AbiIBVLT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Sep 2022 17:11:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53310 "EHLO
+        id S230186AbiIBVLZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Sep 2022 17:11:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230474AbiIBVLS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Sep 2022 17:11:18 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C19FCD8E32
-        for <bpf@vger.kernel.org>; Fri,  2 Sep 2022 14:11:17 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id j5so3030232plj.5
-        for <bpf@vger.kernel.org>; Fri, 02 Sep 2022 14:11:17 -0700 (PDT)
+        with ESMTP id S230474AbiIBVLV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Sep 2022 17:11:21 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01A48D9D75
+        for <bpf@vger.kernel.org>; Fri,  2 Sep 2022 14:11:21 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id fa2so3139615pjb.2
+        for <bpf@vger.kernel.org>; Fri, 02 Sep 2022 14:11:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
-        bh=4+uhdcDVuSjjem7hAR91KRY20zQndt0vkR0L244Rk1E=;
-        b=E721puASI0KcWoJFMcQRS4f6jZ6+ghjyIowMzWFrGqRS6pgXqFl58dxkBEafFaLkKV
-         CJixDExhy3mCCFK2DFTMUfBQjks9eFlG8cXISjtTYqjS0uBjtDfp/JvM3Q2/8fCO/Qg9
-         jN72OKZLXtlsq4xJXOC+xXn2aMP5BqeSMhEZVSDazojdqfNJ/lySABQXrUbfcTjNKDWy
-         +qC0qXQ9/Il3e6etrNaDeiXLpFYw/TF62fkiFIJTo4r8tKqya+s67YZ/ZMFGU24r3tkP
-         J3AMy7qFsq/tblD8OojYdv6DHwFUDqyR+M0pXhgr8oM0yPbaHbLmvLN1Ke6LP41lghpW
-         jBqQ==
+        bh=J/UPgVAZJ6tCW63aRjPvtUFbVFMqtQ38ez6bXN9pU3M=;
+        b=Z+zmpFJC3ftrCUSPfzCV0Qc+2ob3WsvAPqeuvhBKoKbFt/pQFqV+BNYqLRgGlwMwcy
+         qgablL6I2lFEiyqIJPeMGNIfFp1Y4/CFOQbq+7qELRgwOhBw4b+BBOG0cdUFBL/bVKA6
+         l1407TD0ndNw/7Bdljc+ajdeoW28Qt1LrRS2SmJHx2mYoun3SJvjfsj2GyKP2bVpVB7i
+         PkBUxOsdRi3GMkWd3moYkiUoP+O9pxQQ67cPYC0J1q0Y73cOhy/KxQNtAq3e3kWaFIoU
+         IVSlUHtFLztYXZQdXnmTI+ecqcWsvDl2sqtgY4YnafwdeW7UpsJ7wModLPgvD7hvkbVq
+         7CfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date;
-        bh=4+uhdcDVuSjjem7hAR91KRY20zQndt0vkR0L244Rk1E=;
-        b=1m0RRk+3jL8T9XR1vY8nHYcc5wIQqmq0/UJSF9ucOG0s221XUKNwxW4ny+UyZPnuNF
-         pfR/a5+hTVbseHOWNjoeE2I9EMzHV3wRVJGYJhsMwxLcs8g8BX78yK7Q23WSkZHDHYV7
-         cjdv6//LIZctkH+5hY8XJOUyM4fs+vZpfH3okFBnm1fjh/Yy+5utBwBogpEBIvzn+XJz
-         2kHg1BwZkQhcNZ9jjku0MUhL5Ixa/3pBCrWbW8TcAtVOcu/mNZCIGHw3tS8bgnlFovgu
-         0RxbIpmR6qRYdGAvYBAcVjWBAb4KLEhfoib6vAnkQHIvytaWKzo8RTUzwRwvsAf2yss+
-         w7Bg==
-X-Gm-Message-State: ACgBeo3ceUEFiB7EAh/6EKI2vF+QXfmUur1aKS8uFKGN67JcqZuHxASw
-        qjfxBt5VgQtFtBOFAq0oqyQ=
-X-Google-Smtp-Source: AA6agR6dWy255w61IoDpzzOIdj3C3jFRxBDgJPN2l719BRrtodChCNCvX7n9Ei0RsrYf0afyK9nbqg==
-X-Received: by 2002:a17:90b:4f81:b0:1fe:1716:fe20 with SMTP id qe1-20020a17090b4f8100b001fe1716fe20mr6735459pjb.63.1662153076920;
-        Fri, 02 Sep 2022 14:11:16 -0700 (PDT)
+        bh=J/UPgVAZJ6tCW63aRjPvtUFbVFMqtQ38ez6bXN9pU3M=;
+        b=h7E8W3bc5jxSUuwBhMJVpRmCLx2fwOuX4QrCrCUzGhZhTl4qHrxwZT7QR3hG8tSxkV
+         YLSg4MWiF18VAjhEwb2IIxcsCUyoNWHxJys/4Y+d+659OB9DnsCQBH4rWz3Mg5IXJ79i
+         ECDQqqW9T6yIGP+TfsPL/ZXYo0bJIR5cCt/a4snGsTMQfjSsApkf2IMej9d5MCc3Z5EI
+         7HZdi8cb8XBm2N+zYx4L/8I8tx6oWwzpDz7bHHIJMYF2sKhvdd4XoyRt1R+6K+DudDke
+         Xf8PaUT4jASuyXfRb4TKgoFawreC/AgYvlXK9+yBOr7NqvzayJhrfhs/9zSCyHl6I0+F
+         5sTA==
+X-Gm-Message-State: ACgBeo0sBTtd0OpPKN8Xse2v++k90mOiqEfhhOs3n1/TI4RGP+I0YoPh
+        ttQBdA54rm8t+JvZqtYAfZo=
+X-Google-Smtp-Source: AA6agR5fBaKqR/HFJSACOnkb0zESuppM0ekv4TN56bEZPQPXqUAgu74uIojKJ1YoGpyBynonlgp1Sw==
+X-Received: by 2002:a17:90a:c402:b0:1f8:c335:d4d7 with SMTP id i2-20020a17090ac40200b001f8c335d4d7mr6953680pjt.242.1662153080473;
+        Fri, 02 Sep 2022 14:11:20 -0700 (PDT)
 Received: from localhost.localdomain ([2620:10d:c090:500::c978])
-        by smtp.gmail.com with ESMTPSA id e7-20020a17090ab38700b001f1acb6c3ebsm1903023pjr.34.2022.09.02.14.11.15
+        by smtp.gmail.com with ESMTPSA id h16-20020a170902f55000b0017532e01e3fsm2108917plf.276.2022.09.02.14.11.19
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Fri, 02 Sep 2022 14:11:16 -0700 (PDT)
+        Fri, 02 Sep 2022 14:11:20 -0700 (PDT)
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     davem@davemloft.net
 Cc:     daniel@iogearbox.net, andrii@kernel.org, tj@kernel.org,
         memxor@gmail.com, delyank@fb.com, linux-mm@kvack.org,
         bpf@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v6 bpf-next 04/16] samples/bpf: Reduce syscall overhead in map_perf_test.
-Date:   Fri,  2 Sep 2022 14:10:46 -0700
-Message-Id: <20220902211058.60789-5-alexei.starovoitov@gmail.com>
+Subject: [PATCH v6 bpf-next 05/16] bpf: Relax the requirement to use preallocated hash maps in tracing progs.
+Date:   Fri,  2 Sep 2022 14:10:47 -0700
+Message-Id: <20220902211058.60789-6-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <20220902211058.60789-1-alexei.starovoitov@gmail.com>
 References: <20220902211058.60789-1-alexei.starovoitov@gmail.com>
@@ -73,129 +73,79 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Alexei Starovoitov <ast@kernel.org>
 
-Make map_perf_test for preallocated and non-preallocated hash map
-spend more time inside bpf program to focus performance analysis
-on the speed of update/lookup/delete operations performed by bpf program.
+Since bpf hash map was converted to use bpf_mem_alloc it is safe to use
+from tracing programs and in RT kernels.
+But per-cpu hash map is still using dynamic allocation for per-cpu map
+values, hence keep the warning for this map type.
+In the future alloc_percpu_gfp can be front-end-ed with bpf_mem_cache
+and this restriction will be completely lifted.
+perf_event (NMI) bpf programs have to use preallocated hash maps,
+because free_htab_elem() is using call_rcu which might crash if re-entered.
 
-It makes 'perf report' of bpf_mem_alloc look like:
- 11.76%  map_perf_test    [k] _raw_spin_lock_irqsave
- 11.26%  map_perf_test    [k] htab_map_update_elem
-  9.70%  map_perf_test    [k] _raw_spin_lock
-  9.47%  map_perf_test    [k] htab_map_delete_elem
-  8.57%  map_perf_test    [k] memcpy_erms
-  5.58%  map_perf_test    [k] alloc_htab_elem
-  4.09%  map_perf_test    [k] __htab_map_lookup_elem
-  3.44%  map_perf_test    [k] syscall_exit_to_user_mode
-  3.13%  map_perf_test    [k] lookup_nulls_elem_raw
-  3.05%  map_perf_test    [k] migrate_enable
-  3.04%  map_perf_test    [k] memcmp
-  2.67%  map_perf_test    [k] unit_free
-  2.39%  map_perf_test    [k] lookup_elem_raw
-
-Reduce default iteration count as well to make 'map_perf_test' quick enough
-even on debug kernels.
+Sleepable bpf programs have to use preallocated hash maps, because
+life time of the map elements is not protected by rcu_read_lock/unlock.
+This restriction can be lifted in the future as well.
 
 Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 ---
- samples/bpf/map_perf_test_kern.c | 44 ++++++++++++++++++++------------
- samples/bpf/map_perf_test_user.c |  2 +-
- 2 files changed, 29 insertions(+), 17 deletions(-)
+ kernel/bpf/verifier.c | 31 ++++++++++++++++++++++---------
+ 1 file changed, 22 insertions(+), 9 deletions(-)
 
-diff --git a/samples/bpf/map_perf_test_kern.c b/samples/bpf/map_perf_test_kern.c
-index 8773f22b6a98..7342c5b2f278 100644
---- a/samples/bpf/map_perf_test_kern.c
-+++ b/samples/bpf/map_perf_test_kern.c
-@@ -108,11 +108,14 @@ int stress_hmap(struct pt_regs *ctx)
- 	u32 key = bpf_get_current_pid_tgid();
- 	long init_val = 1;
- 	long *value;
-+	int i;
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 0194a36d0b36..3dce3166855f 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -12629,10 +12629,12 @@ static int check_map_prog_compatibility(struct bpf_verifier_env *env,
+ 	 * For programs attached to PERF events this is mandatory as the
+ 	 * perf NMI can hit any arbitrary code sequence.
+ 	 *
+-	 * All other trace types using preallocated hash maps are unsafe as
+-	 * well because tracepoint or kprobes can be inside locked regions
+-	 * of the memory allocator or at a place where a recursion into the
+-	 * memory allocator would see inconsistent state.
++	 * All other trace types using non-preallocated per-cpu hash maps are
++	 * unsafe as well because tracepoint or kprobes can be inside locked
++	 * regions of the per-cpu memory allocator or at a place where a
++	 * recursion into the per-cpu memory allocator would see inconsistent
++	 * state. Non per-cpu hash maps are using bpf_mem_alloc-tor which is
++	 * safe to use from kprobe/fentry and in RT.
+ 	 *
+ 	 * On RT enabled kernels run-time allocation of all trace type
+ 	 * programs is strictly prohibited due to lock type constraints. On
+@@ -12642,15 +12644,26 @@ static int check_map_prog_compatibility(struct bpf_verifier_env *env,
+ 	 */
+ 	if (is_tracing_prog_type(prog_type) && !is_preallocated_map(map)) {
+ 		if (prog_type == BPF_PROG_TYPE_PERF_EVENT) {
++			/* perf_event bpf progs have to use preallocated hash maps
++			 * because non-prealloc is still relying on call_rcu to free
++			 * elements.
++			 */
+ 			verbose(env, "perf_event programs can only use preallocated hash map\n");
+ 			return -EINVAL;
+ 		}
+-		if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
+-			verbose(env, "trace type programs can only use preallocated hash map\n");
+-			return -EINVAL;
++		if (map->map_type == BPF_MAP_TYPE_PERCPU_HASH ||
++		    (map->inner_map_meta &&
++		     map->inner_map_meta->map_type == BPF_MAP_TYPE_PERCPU_HASH)) {
++			if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
++				verbose(env,
++					"trace type programs can only use preallocated per-cpu hash map\n");
++				return -EINVAL;
++			}
++			WARN_ONCE(1, "trace type BPF program uses run-time allocation\n");
++			verbose(env,
++				"trace type programs with run-time allocated per-cpu hash maps are unsafe."
++				" Switch to preallocated hash maps.\n");
+ 		}
+-		WARN_ONCE(1, "trace type BPF program uses run-time allocation\n");
+-		verbose(env, "trace type programs with run-time allocated hash maps are unsafe. Switch to preallocated hash maps.\n");
+ 	}
  
--	bpf_map_update_elem(&hash_map, &key, &init_val, BPF_ANY);
--	value = bpf_map_lookup_elem(&hash_map, &key);
--	if (value)
--		bpf_map_delete_elem(&hash_map, &key);
-+	for (i = 0; i < 10; i++) {
-+		bpf_map_update_elem(&hash_map, &key, &init_val, BPF_ANY);
-+		value = bpf_map_lookup_elem(&hash_map, &key);
-+		if (value)
-+			bpf_map_delete_elem(&hash_map, &key);
-+	}
- 
- 	return 0;
- }
-@@ -123,11 +126,14 @@ int stress_percpu_hmap(struct pt_regs *ctx)
- 	u32 key = bpf_get_current_pid_tgid();
- 	long init_val = 1;
- 	long *value;
-+	int i;
- 
--	bpf_map_update_elem(&percpu_hash_map, &key, &init_val, BPF_ANY);
--	value = bpf_map_lookup_elem(&percpu_hash_map, &key);
--	if (value)
--		bpf_map_delete_elem(&percpu_hash_map, &key);
-+	for (i = 0; i < 10; i++) {
-+		bpf_map_update_elem(&percpu_hash_map, &key, &init_val, BPF_ANY);
-+		value = bpf_map_lookup_elem(&percpu_hash_map, &key);
-+		if (value)
-+			bpf_map_delete_elem(&percpu_hash_map, &key);
-+	}
- 	return 0;
- }
- 
-@@ -137,11 +143,14 @@ int stress_hmap_alloc(struct pt_regs *ctx)
- 	u32 key = bpf_get_current_pid_tgid();
- 	long init_val = 1;
- 	long *value;
-+	int i;
- 
--	bpf_map_update_elem(&hash_map_alloc, &key, &init_val, BPF_ANY);
--	value = bpf_map_lookup_elem(&hash_map_alloc, &key);
--	if (value)
--		bpf_map_delete_elem(&hash_map_alloc, &key);
-+	for (i = 0; i < 10; i++) {
-+		bpf_map_update_elem(&hash_map_alloc, &key, &init_val, BPF_ANY);
-+		value = bpf_map_lookup_elem(&hash_map_alloc, &key);
-+		if (value)
-+			bpf_map_delete_elem(&hash_map_alloc, &key);
-+	}
- 	return 0;
- }
- 
-@@ -151,11 +160,14 @@ int stress_percpu_hmap_alloc(struct pt_regs *ctx)
- 	u32 key = bpf_get_current_pid_tgid();
- 	long init_val = 1;
- 	long *value;
-+	int i;
- 
--	bpf_map_update_elem(&percpu_hash_map_alloc, &key, &init_val, BPF_ANY);
--	value = bpf_map_lookup_elem(&percpu_hash_map_alloc, &key);
--	if (value)
--		bpf_map_delete_elem(&percpu_hash_map_alloc, &key);
-+	for (i = 0; i < 10; i++) {
-+		bpf_map_update_elem(&percpu_hash_map_alloc, &key, &init_val, BPF_ANY);
-+		value = bpf_map_lookup_elem(&percpu_hash_map_alloc, &key);
-+		if (value)
-+			bpf_map_delete_elem(&percpu_hash_map_alloc, &key);
-+	}
- 	return 0;
- }
- 
-diff --git a/samples/bpf/map_perf_test_user.c b/samples/bpf/map_perf_test_user.c
-index b6fc174ab1f2..1bb53f4b29e1 100644
---- a/samples/bpf/map_perf_test_user.c
-+++ b/samples/bpf/map_perf_test_user.c
-@@ -72,7 +72,7 @@ static int test_flags = ~0;
- static uint32_t num_map_entries;
- static uint32_t inner_lru_hash_size;
- static int lru_hash_lookup_test_entries = 32;
--static uint32_t max_cnt = 1000000;
-+static uint32_t max_cnt = 10000;
- 
- static int check_test_flags(enum test_type t)
- {
+ 	if (map_value_has_spin_lock(map)) {
 -- 
 2.30.2
 
