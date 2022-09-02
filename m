@@ -2,67 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76C865AB6D8
-	for <lists+bpf@lfdr.de>; Fri,  2 Sep 2022 18:51:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8CA95AB6E0
+	for <lists+bpf@lfdr.de>; Fri,  2 Sep 2022 18:53:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235806AbiIBQvG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Sep 2022 12:51:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58316 "EHLO
+        id S235438AbiIBQxY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Sep 2022 12:53:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235888AbiIBQvF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Sep 2022 12:51:05 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94841FBA42;
-        Fri,  2 Sep 2022 09:51:04 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id m3-20020a05600c3b0300b003a5e0557150so4724919wms.0;
-        Fri, 02 Sep 2022 09:51:04 -0700 (PDT)
+        with ESMTP id S235075AbiIBQxX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Sep 2022 12:53:23 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20E5B10951D;
+        Fri,  2 Sep 2022 09:53:22 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id r4so3455723edi.8;
+        Fri, 02 Sep 2022 09:53:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date;
-        bh=QNATVCSeiSY8b75vPLlOSvE1KC8ElZ9730A2GbauztE=;
-        b=DBw0hnGscpeLLkgdLirle7B7G5XLmURBG/4p4Y1Z1gyr1fhoPDF0vR7JdquCpNNXa9
-         y7e4He97VXUnpZa4zZShfPWbslJXwnoE8Lwyiqyl2QvZVdDIane86eyBl6zOVltyDseZ
-         CmdC422o0BlQuOR6IJUoPl6Q71Lyjj5ixW/Ot3sJSG/Y1ftB6fhAvTMMZHfbRq8m9BaS
-         RSEKCMhkKyx1UNgMtTwHX6mzoM099MSKKVvBCnoN8H9nnBUj6ubKQBFW/G9wUyXQGcw5
-         rhOVUiqMf2PFZVVjZ8Rt1BReXwg8DmloFcy+ox3CqG7T/04IRTgWAWS/7qYBq22xbi1Q
-         AP0g==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=Hgnkg36DqLyHXWGaLke37obXxrGvUZVl10tSfHjo3U4=;
+        b=LXLy/fwogmYyQtsRaqYmDTarsLXs6H6jqpy/+U6imdMpWkXeBdHMq02Emi9CtWIyhM
+         LoTLqiddSBOzvCxrNYnxDQOaU1pxAW7OzuDdR58CojiZD5b8Dz441uwudPN4F1n6cAWH
+         0qeWdwH9QCASROczsCtDyJ2penS7go6xAbE6t0cqstn4P6b1FtvX9ZRk8d53UPmiicKl
+         TgJd6pkJJanDuGS8T2mgAJYCXPFMXw4bFLhCKIb5DzqjbaCfQhdXYL9CLlZ6NO8eBK1j
+         WTFTWex/DkT9CpM3A4fmOfKiN4cBEWYQowLxqVmWByB9OgalP4H1YFyKjG4Rm5TzA50C
+         R0IQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date;
-        bh=QNATVCSeiSY8b75vPLlOSvE1KC8ElZ9730A2GbauztE=;
-        b=F0o4uCneIxZizne41uQXQYj0QzYG8h4B3qt3Mm/dSWff+NvcA0zZav5NgfIDlX9jBE
-         r9e81aBKCHXIltHbzWuR/fPULbj6XKjM0hkYCCnxLnsQEfMB78pvn4a/Q5Mh4+FWQKpB
-         wQlhgJFH5PbvsW8Dc8Fd5sYd9QMiX7qhm2t3FRrIKt9yRr+IRYY9DWbEYYHdT2TboIyn
-         bMaBRW+eAxECdMJgLcPXiEoZQu2gytWtQp9OKQIPxXzILybqh/CLG0Lknc4Rp6yxeIKe
-         6JSWAs5Bp2cGccEjFKWHVTIYL3U6oDdAKNasy7XbpU++XKPQhF3jCTrJkioTBCyVzNQb
-         im+g==
-X-Gm-Message-State: ACgBeo30Jxo3WtsXftxqMBsGAHDU19VW3Ou4OUj/cb6XJK7qm9tGDwBm
-        19UJzhlI4ufqUwL66NNPAaJdN4uZ5/t0AIop
-X-Google-Smtp-Source: AA6agR5R6dqEnTClgH+rTMkn+MLQpf3/fQz3XI9sjZjdWXmKBkCwdqOl5sPiLxjwbHwyIZx74NK81g==
-X-Received: by 2002:a05:600c:3509:b0:3a6:1888:a4bd with SMTP id h9-20020a05600c350900b003a61888a4bdmr3528396wmq.191.1662137463007;
-        Fri, 02 Sep 2022 09:51:03 -0700 (PDT)
-Received: from krava ([46.189.28.51])
-        by smtp.gmail.com with ESMTPSA id j4-20020adfe504000000b00226cf855861sm1905254wrm.84.2022.09.02.09.51.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Sep 2022 09:51:02 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Fri, 2 Sep 2022 18:51:00 +0200
-To:     stable@vger.kernel.org
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: Re: [PATCH bpf v2] bpf: Add config for skipping BTF enum64s
-Message-ID: <YxI0dO2yuqTK0H6f@krava>
-References: <20220828233317.35464-1-yakoyoku@gmail.com>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=Hgnkg36DqLyHXWGaLke37obXxrGvUZVl10tSfHjo3U4=;
+        b=SLvFvhOux76VkgJ51i2sjDOSS6C7RV2vasein/epUOas9x2eE4AyGjAyj5J1T0cKee
+         g46AHiVk2EK0WeVs3/6jb8s4U6ZnmQDquWIb2jrhT3MOsRb6SGvFyIL56eEt6eJXt2Mh
+         1CxQK1Q+a9ScKthsviNALWj26s80wT82xbyH6j5NLdS/pQ/TzUhgxrU+ManEzyq7ekTl
+         nAeoDiE69hkp7SwkE9Gs+FfaZFiLm95FlvTEZING/2npn6w+44MWMcST18+fhgrGAY/E
+         At2B3LFXWH8W17m4Wvkx3St8lHUglkUPmfGp/4DxdELGnvhW8EyR4rBm9Gw606FuIUPk
+         ZC7A==
+X-Gm-Message-State: ACgBeo3Bb+8LCDORd26s+7iufFSlTMGfNd3RgeCDOKyxCgK6835fwN1b
+        7T+QSaQJHujZzLdxgESLv3pS3nQL6RJ7KxRJkIM=
+X-Google-Smtp-Source: AA6agR6qpPAfSFE5GOdTgEzZGiZRCjwM02CBGNPvle7mE1ssALvBAw6rJ766ER7pI56MhqS/bgsQZDIYCG4R9LzREPk=
+X-Received: by 2002:a05:6402:27ca:b0:43e:ce64:ca07 with SMTP id
+ c10-20020a05640227ca00b0043ece64ca07mr34714274ede.66.1662137600594; Fri, 02
+ Sep 2022 09:53:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220828233317.35464-1-yakoyoku@gmail.com>
+References: <20220831101617.22329-1-fw@strlen.de> <87v8q84nlq.fsf@toke.dk>
+ <20220831125608.GA8153@breakpoint.cc> <87o7w04jjb.fsf@toke.dk>
+ <20220831135757.GC8153@breakpoint.cc> <87ilm84goh.fsf@toke.dk>
+ <20220831152624.GA15107@breakpoint.cc> <CAADnVQJp5RJ0kZundd5ag-b3SDYir8cF4R_nVbN8Zj9Rcn0rww@mail.gmail.com>
+ <20220831155341.GC15107@breakpoint.cc> <CAADnVQJGQmu02f5B=mc1xJvVWSmk_GNZj9WAUskekykmyo8FzA@mail.gmail.com>
+ <1cc40302-f006-31a7-b270-30813b8f4b67@iogearbox.net> <CAHsH6GtCgb1getXASkqzN75cNfm7_GOg8Mng5ZY37yK99XBVMQ@mail.gmail.com>
+In-Reply-To: <CAHsH6GtCgb1getXASkqzN75cNfm7_GOg8Mng5ZY37yK99XBVMQ@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 2 Sep 2022 09:53:09 -0700
+Message-ID: <CAADnVQLSQPnT+8EV15=6MHzMCpfcPn9SOONERLtO2TJY43JUhg@mail.gmail.com>
+Subject: Re: [PATCH nf-next] netfilter: nf_tables: add ebpf expression
+To:     Eyal Birger <eyal.birger@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Florian Westphal <fw@strlen.de>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>,
+        netfilter-devel <netfilter-devel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -73,55 +79,73 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Aug 28, 2022 at 08:33:17PM -0300, Martin Rodriguez Reboredo wrote:
-> After the release of pahole 1.24 some people in the dwarves mailing list
-> notified issues related to building the kernel with the BTF_DEBUG_INFO
-> option toggled. They seem to be happenning due to the kernel and
-> resolve_btfids interpreting btf types erroneously. In the dwarves list
-> I've proposed a change to the scripts that I've written while testing
-> the Rust kernel, it simply passes the --skip_encoding_btf_enum64 to
-> pahole if it has version 1.24.
-> 
-> v1 -> v2:
-> - Switch to off by default and remove the config option.
-> - Send it to stable instead.
+On Wed, Aug 31, 2022 at 10:18 PM Eyal Birger <eyal.birger@gmail.com> wrote:
+>
+> On Thu, Sep 1, 2022 at 1:16 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+> >
+> > On 8/31/22 7:26 PM, Alexei Starovoitov wrote:
+> > > On Wed, Aug 31, 2022 at 8:53 AM Florian Westphal <fw@strlen.de> wrote:
+> > >> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> > >>>> 1 and 2 have the upside that its easy to handle a 'file not found'
+> > >>>> error.
+> > >>>
+> > >>> I'm strongly against calling into bpf from the inner guts of nft.
+> > >>> Nack to all options discussed in this thread.
+> > >>> None of them make any sense.
+> > >>
+> > >> -v please.  I can just rework userspace to allow going via xt_bpf
+> > >> but its brain damaged.
+> > >
+> > > Right. xt_bpf was a dead end from the start.
+> > > It's time to deprecate it and remove it.
+> > >
+> > >> This helps gradually moving towards move epbf for those that
+> > >> still heavily rely on the classic forwarding path.
+> > >
+> > > No one is using it.
+> > > If it was, we would have seen at least one bug report over
+> > > all these years. We've seen none.
+> > >
+> > > tbh we had a fair share of wrong design decisions that look
+> > > very reasonable early on and turned out to be useless with
+> > > zero users.
+> > > BPF_PROG_TYPE_SCHED_ACT and BPF_PROG_TYPE_LWT*
+> > > are in this category. > All this code does is bit rot.
+> >
+> > +1
+> >
+> > > As a minimum we shouldn't step on the same rakes.
+> > > xt_ebpf would be the same dead code as xt_bpf.
+> >
+> > +1, and on top, the user experience will just be horrible. :(
+> >
+> > >> If you are open to BPF_PROG_TYPE_NETFILTER I can go that route
+> > >> as well, raw bpf program attachment via NF_HOOK and the bpf dispatcher,
+> > >> but it will take significantly longer to get there.
+> > >>
+> > >> It involves reviving
+> > >> https://lore.kernel.org/netfilter-devel/20211014121046.29329-1-fw@strlen.de/
+> > >
+> > > I missed it earlier. What is the end goal ?
+> > > Optimize nft run-time with on the fly generation of bpf byte code ?
+> >
+> > Or rather to provide a pendant to nft given existence of xt_bpf, and the
+> > latter will be removed at some point? (If so, can't we just deprecate the
+> > old xt_bpf?)
+>
+> FWIW we've been using both lwt bpf and xt_bpf on our production workloads
+> for a few years now.
+>
+> xt_bpf allows us to apply custom sophisticated policy logic at connection
+> establishment - which is not really possible (or efficient) using
+> iptables/nft constructs - without needing to reinvent all the facilities that
+> nf provides like connection tracking, ALGs, and simple filtering.
+>
+> As for lwt bpf, We use it for load balancing towards collect md tunnels.
+> While this can be done at tc egress for unfragmented packets, the lwt out hook -
+> when used in tandem with nf fragment reassembly - provides a hooking point
+> where a bpf program can see reassembled packets and load balance based on
+> their internals.
 
-hi,
-we have change that needs to go to stable kernels but does not have the
-equivalent fix in Linus tree
-
-what would be the best way to submit it?
-
-the issue is that new 'pahole' will generate BTF data that are not supported
-by older kernels, so we need to add --skip_encoding_btf_enum64 option to
-stable kernel's scripts/pahole-flags.sh to generate proper BTF data
-
-we got complains that after upgrading to latest pahole the stable kernel
-compilation fails
-
-thanks,
-jirka
-
-
-> 
-> Signed-off-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-> ---
->  scripts/pahole-flags.sh | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/scripts/pahole-flags.sh b/scripts/pahole-flags.sh
-> index 0d99ef17e4a5..0a48fd86bc68 100755
-> --- a/scripts/pahole-flags.sh
-> +++ b/scripts/pahole-flags.sh
-> @@ -19,5 +19,8 @@ fi
->  if [ "${pahole_ver}" -ge "122" ]; then
->  	extra_paholeopt="${extra_paholeopt} -j"
->  fi
-> +if [ "${pahole_ver}" -ge "124" ]; then
-> +	extra_paholeopt="${extra_paholeopt} --skip_encoding_btf_enum64"
-> +fi
->  
->  echo ${extra_paholeopt}
-> -- 
-> 2.37.2
-> 
+Sounds very interesting!
+Any open source code to look at ?
