@@ -2,60 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07E065AB9EF
-	for <lists+bpf@lfdr.de>; Fri,  2 Sep 2022 23:11:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13D8B5AB9F0
+	for <lists+bpf@lfdr.de>; Fri,  2 Sep 2022 23:11:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230458AbiIBVLw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Sep 2022 17:11:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53888 "EHLO
+        id S230511AbiIBVL5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Sep 2022 17:11:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229649AbiIBVLv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Sep 2022 17:11:51 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3A34DB7C5
-        for <bpf@vger.kernel.org>; Fri,  2 Sep 2022 14:11:50 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id y127so3078446pfy.5
-        for <bpf@vger.kernel.org>; Fri, 02 Sep 2022 14:11:50 -0700 (PDT)
+        with ESMTP id S229649AbiIBVL4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Sep 2022 17:11:56 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DBD2DD4D6
+        for <bpf@vger.kernel.org>; Fri,  2 Sep 2022 14:11:54 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id x19so3096482pfr.1
+        for <bpf@vger.kernel.org>; Fri, 02 Sep 2022 14:11:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
-        bh=7zZUv+wUiLTbSdfVlnRTA9LoEPz96HdCoAnAM60zCkc=;
-        b=NwS+9ZK2eKTx+aaMOQ7GdHd0ONySpdNTqKHMSj9KKgWrBRR8iXt8Df/fwP/LvFm+10
-         D1EWQA+KOVMQrFsTbYkppw0sjJqjbiJ8xgDT/caLNdqxKR3ulJItoGLuoFfkewGl4GVj
-         WooLniQWrCHe2zNrOzblGJtjrYvUfDWJTZG1kajIikXP6grHGph1/wguaa33stHepzJ+
-         L2ZiXeHpJwK8aDdwIawyaJ8Ex9mjGH+9bWT/TAU3ij0sM/l57nR4efX65CHBrZzq/NiT
-         6ZDREUOVgpQFhfiMnmg/RieFkpIfvfPUn9Bw2snvhhpFPoUHuljnJnBJuQFM1RWMjNxA
-         19EQ==
+        bh=nsaRt32bGU9db3oBvsXD1o3WCeCEvT2VQ8VQ0NN+DuQ=;
+        b=C/CaWD4ElLDtQ9OCjP7zOMpPGB6pYoJ90/7pZPfC3SrcvyyHOFoqMO6a0yYQyCi1X2
+         Qv3gXak4IX/7E9+oBq/vaMNOdlWTE4mbN1D2NtlDP8JvL+1NH31u2uuL3lxCvb+CqmHm
+         RXFf4dGQeIV6ptFYGiSLSYq962jDG0shEmm6CR81FJIgTI5qT8zUCa/aOgsETE6nQbH+
+         FjkDYoz2XK6ynUFRIimGHCiVkJr4Ek+QsKm/d5b4B36jf8JNV8g6zlfGQKUPXIjAFLmn
+         S9EbAHCx0R26ODJyrFWANcbyPq7Ll6QBDUzDb0IokS/ZCsbI79XGtAJfUD6EpE81F26s
+         28jA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date;
-        bh=7zZUv+wUiLTbSdfVlnRTA9LoEPz96HdCoAnAM60zCkc=;
-        b=TldccwNyKZg+Iz/ycMkP1a8pTaUz/gVAdW9e/tvpLMz5MriO77pNVIKH7s2M39YrJT
-         nVX3B+hZjvETsqo6+RBVhA4G6S/JTsgr8KXkQg+9g9VQwwmwN6U3RYzF8SqEhgCswY3S
-         fzzoaGc2fwS+3JMdyUE2qpWHnQSyqa4Tdgtln3pdq7fC3ql7cPjlbOG+uha2pw5ag+fC
-         2eZ6695AeXbvMf86SjTjO2yKcTWs/tYukBbVYvuSR/kZbNrdgRKzTQWZOjEpSPCeCA3C
-         gkh0cZ5qJSFXsD+E+dQg2Ep2RU2zMO3BbnydI9NbvnYaOwzv0443YRG/3wpCYIuJmG5v
-         BTvg==
-X-Gm-Message-State: ACgBeo31Udi+OV63iEb66E1GYR5gTUbKUj5GtSLM+eZxCzQo3+laVzmC
-        ZFx4g3pVmjOjiFe9Fv0um7k=
-X-Google-Smtp-Source: AA6agR5uPuVHb59iNf+oddnsd3ubEx/z1NYbz1Rk4wngjEXEteRwU+dblj5OPnu6zTdC6eXF++2rNA==
-X-Received: by 2002:a63:2048:0:b0:41c:daad:450d with SMTP id r8-20020a632048000000b0041cdaad450dmr31330653pgm.240.1662153110141;
-        Fri, 02 Sep 2022 14:11:50 -0700 (PDT)
+        bh=nsaRt32bGU9db3oBvsXD1o3WCeCEvT2VQ8VQ0NN+DuQ=;
+        b=z0m7/COtFai28AWKPJXz9IwC0JUqZypYXgCFlB4QW0uP6UEgzn34aDLcUn/JyZZsif
+         1hKPCCTuVDPCfnGq5zshmNORUWAJ8etfXGpISwkkJt6hdYcrpYId5JPYA2cUvBUCum6x
+         Jwq58MpcGfAuTyxbWj3lerckT7I5Boj+nTmM8h91ppamZs1q3wO/PnqBggovfmDFSXxE
+         K6LktabLTVHFE5ofqFKXGjSTGTKI/FLAOu8XFidO2k79XBG14BEY3fsE1MZkLGYE584L
+         mgcO3u+/UeaCsusrBVLTvog3+6nKbF2ANpMm30XO3UxUMAxhzawJZn/iRsbj/1Iz7ivW
+         Wmqg==
+X-Gm-Message-State: ACgBeo0cg0U5y93CEs9QPqKHSK53YplD/VBUGUoa2Kfcd159KZ7YtF9m
+        55DG7P8rfG1AHX/oqmDi54U=
+X-Google-Smtp-Source: AA6agR7n2Lcnr0pfUz+dYSYvV00llofPH/wKroO0zBTAg4E6DBUpTD3EVRZhXHdvzx96c3xWOiTC+Q==
+X-Received: by 2002:a05:6a00:1797:b0:538:7c07:f36d with SMTP id s23-20020a056a00179700b005387c07f36dmr21628092pfg.12.1662153113858;
+        Fri, 02 Sep 2022 14:11:53 -0700 (PDT)
 Received: from localhost.localdomain ([2620:10d:c090:500::c978])
-        by smtp.gmail.com with ESMTPSA id c18-20020a170902d49200b0017315b11bb8sm2124526plg.213.2022.09.02.14.11.48
+        by smtp.gmail.com with ESMTPSA id u6-20020a62d446000000b00537f7d04fb3sm2328371pfl.145.2022.09.02.14.11.52
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Fri, 02 Sep 2022 14:11:49 -0700 (PDT)
+        Fri, 02 Sep 2022 14:11:53 -0700 (PDT)
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     davem@davemloft.net
 Cc:     daniel@iogearbox.net, andrii@kernel.org, tj@kernel.org,
         memxor@gmail.com, delyank@fb.com, linux-mm@kvack.org,
         bpf@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v6 bpf-next 13/16] bpf: Prepare bpf_mem_alloc to be used by sleepable bpf programs.
-Date:   Fri,  2 Sep 2022 14:10:55 -0700
-Message-Id: <20220902211058.60789-14-alexei.starovoitov@gmail.com>
+Subject: [PATCH v6 bpf-next 14/16] bpf: Remove prealloc-only restriction for sleepable bpf programs.
+Date:   Fri,  2 Sep 2022 14:10:56 -0700
+Message-Id: <20220902211058.60789-15-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <20220902211058.60789-1-alexei.starovoitov@gmail.com>
 References: <20220902211058.60789-1-alexei.starovoitov@gmail.com>
@@ -73,65 +73,65 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Alexei Starovoitov <ast@kernel.org>
 
-Use call_rcu_tasks_trace() to wait for sleepable progs to finish.
-Then use call_rcu() to wait for normal progs to finish
-and finally do free_one() on each element when freeing objects
-into global memory pool.
+Since hash map is now converted to bpf_mem_alloc and it's waiting for rcu and
+rcu_tasks_trace GPs before freeing elements into global memory slabs it's safe
+to use dynamically allocated hash maps in sleepable bpf programs.
 
 Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 ---
- kernel/bpf/memalloc.c | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
+ kernel/bpf/verifier.c | 23 -----------------------
+ 1 file changed, 23 deletions(-)
 
-diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
-index f7b07787581b..8895c016dcdb 100644
---- a/kernel/bpf/memalloc.c
-+++ b/kernel/bpf/memalloc.c
-@@ -230,6 +230,13 @@ static void __free_rcu(struct rcu_head *head)
- 	atomic_set(&c->call_rcu_in_progress, 0);
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 57ec06b1d09d..068b20ed34d2 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -12586,14 +12586,6 @@ static int check_pseudo_btf_id(struct bpf_verifier_env *env,
+ 	return err;
  }
  
-+static void __free_rcu_tasks_trace(struct rcu_head *head)
-+{
-+	struct bpf_mem_cache *c = container_of(head, struct bpf_mem_cache, rcu);
-+
-+	call_rcu(&c->rcu, __free_rcu);
-+}
-+
- static void enque_to_free(struct bpf_mem_cache *c, void *obj)
+-static int check_map_prealloc(struct bpf_map *map)
+-{
+-	return (map->map_type != BPF_MAP_TYPE_HASH &&
+-		map->map_type != BPF_MAP_TYPE_PERCPU_HASH &&
+-		map->map_type != BPF_MAP_TYPE_HASH_OF_MAPS) ||
+-		!(map->map_flags & BPF_F_NO_PREALLOC);
+-}
+-
+ static bool is_tracing_prog_type(enum bpf_prog_type type)
  {
- 	struct llist_node *llnode = obj;
-@@ -255,7 +262,11 @@ static void do_call_rcu(struct bpf_mem_cache *c)
- 		 * from __free_rcu() and from drain_mem_cache().
- 		 */
- 		__llist_add(llnode, &c->waiting_for_gp);
--	call_rcu(&c->rcu, __free_rcu);
-+	/* Use call_rcu_tasks_trace() to wait for sleepable progs to finish.
-+	 * Then use call_rcu() to wait for normal progs to finish
-+	 * and finally do free_one() on each element.
-+	 */
-+	call_rcu_tasks_trace(&c->rcu, __free_rcu_tasks_trace);
+ 	switch (type) {
+@@ -12608,15 +12600,6 @@ static bool is_tracing_prog_type(enum bpf_prog_type type)
+ 	}
  }
  
- static void free_bulk(struct bpf_mem_cache *c)
-@@ -457,6 +468,7 @@ void bpf_mem_alloc_destroy(struct bpf_mem_alloc *ma)
- 		/* c->waiting_for_gp list was drained, but __free_rcu might
- 		 * still execute. Wait for it now before we free 'c'.
- 		 */
-+		rcu_barrier_tasks_trace();
- 		rcu_barrier();
- 		free_percpu(ma->cache);
- 		ma->cache = NULL;
-@@ -471,6 +483,7 @@ void bpf_mem_alloc_destroy(struct bpf_mem_alloc *ma)
- 		}
- 		if (c->objcg)
- 			obj_cgroup_put(c->objcg);
-+		rcu_barrier_tasks_trace();
- 		rcu_barrier();
- 		free_percpu(ma->caches);
- 		ma->caches = NULL;
+-static bool is_preallocated_map(struct bpf_map *map)
+-{
+-	if (!check_map_prealloc(map))
+-		return false;
+-	if (map->inner_map_meta && !check_map_prealloc(map->inner_map_meta))
+-		return false;
+-	return true;
+-}
+-
+ static int check_map_prog_compatibility(struct bpf_verifier_env *env,
+ 					struct bpf_map *map,
+ 					struct bpf_prog *prog)
+@@ -12669,12 +12652,6 @@ static int check_map_prog_compatibility(struct bpf_verifier_env *env,
+ 		case BPF_MAP_TYPE_LRU_PERCPU_HASH:
+ 		case BPF_MAP_TYPE_ARRAY_OF_MAPS:
+ 		case BPF_MAP_TYPE_HASH_OF_MAPS:
+-			if (!is_preallocated_map(map)) {
+-				verbose(env,
+-					"Sleepable programs can only use preallocated maps\n");
+-				return -EINVAL;
+-			}
+-			break;
+ 		case BPF_MAP_TYPE_RINGBUF:
+ 		case BPF_MAP_TYPE_INODE_STORAGE:
+ 		case BPF_MAP_TYPE_SK_STORAGE:
 -- 
 2.30.2
 
