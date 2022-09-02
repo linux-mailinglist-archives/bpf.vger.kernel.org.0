@@ -2,167 +2,266 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 380325AA939
-	for <lists+bpf@lfdr.de>; Fri,  2 Sep 2022 09:57:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E7A05AAC21
+	for <lists+bpf@lfdr.de>; Fri,  2 Sep 2022 12:13:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235555AbiIBH5H (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Sep 2022 03:57:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53166 "EHLO
+        id S235459AbiIBKN0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Sep 2022 06:13:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235574AbiIBH5C (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Sep 2022 03:57:02 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A244BA17F
-        for <bpf@vger.kernel.org>; Fri,  2 Sep 2022 00:56:46 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id y3so2279976ejc.1
-        for <bpf@vger.kernel.org>; Fri, 02 Sep 2022 00:56:45 -0700 (PDT)
+        with ESMTP id S235565AbiIBKNB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Sep 2022 06:13:01 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC680C7F86
+        for <bpf@vger.kernel.org>; Fri,  2 Sep 2022 03:12:53 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id 202so1548228pgc.8
+        for <bpf@vger.kernel.org>; Fri, 02 Sep 2022 03:12:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date;
-        bh=VtdMeaj+iwWz/QJBcbHznA0xsmO663UXPTTFJYGR/sE=;
-        b=I6BqFTHJ4pUp6U0rdH9R4f6asgO1vjLfdONNdLwjGo25o+0n2iEwgJLF80vsYBBwyt
-         DMtekXYWzOTtoyOPOxCrNiccDkzmhbIxhsMlrNDVbwaUibFpzl68RP5Zilf6pjkfjOjU
-         sS62S1kquh+5U2ff+Ab6bZbhwZE2Xg7cImWk9Qb+1In74XVX/tP0OOk6niUf5QEKiuko
-         vD2WTzCWg+1myOL8Ss+LDM10eDoqtYVYG5ff2ucFDfTanR/qKtxO9S3MtiGfZoNEslz5
-         APPDHbaK3t/HYtA8HCYPGnlotyQ8UT0zfskvuuyVICJ3HDEaLPDrvdi1NtMMhfn4+z5c
-         qEbQ==
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date;
+        bh=3JVroPxTcJOCN2o2XA3WnSR5tC+xoLxrSL/gfmOhIRU=;
+        b=zI95h6sekpVe20vXGieCyawXKPx9nvdc79NfYppL9QuorTJLM/PLN0qDTtMlbMCEJa
+         AWjPyKL86CfWa3tXf9O7SstUJ5RCjn/5vLSbypHrjPuJmmOCQYP4de/6kxoh+HWcdP1U
+         BTujz57FAzIJgnxNhYSU1v7mtjpckSRqaHJ6bDJ5Q0rwgZRQWMhOtGE+MmcdyKcGGUG0
+         kZj5NxSfUM1srmRmOJq0jLgTdV9w2rxy+9JYVJupY1pRcDAyO+BXB1C55qN5lM/UZob2
+         oXZoB/8Wx5b5T2plUiXahXUJopUpV0KIV/keIO6jIheBjzNUnr/n1gvraqEP8vXelTCI
+         jpmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date;
-        bh=VtdMeaj+iwWz/QJBcbHznA0xsmO663UXPTTFJYGR/sE=;
-        b=RjF9Z2jOLnbD/Qq2aD6GXcE+E8LMaGZUhRdNRQd3Bng6fpHN/XlxsSvqJQKf8Cs7lu
-         lGa3p605+hBXiY9cBS0n8akSefNGZUOpLEAnmLsgkKYql+eqA4h0W5MZ4AasBaldwMPZ
-         3X1hnzffh30uQUmHsMmRL8LdCf/JsWQgAy6HsPj9LxOK6xG7U2HJehed5dUxjTBXKHl3
-         +W767kWDQp7dD8PnFGxNZAZGpDbUqJ2ltq3K1LTcR5XA61tsz3WeX6LPvoVU35MytK78
-         GmcRT1Lb7zLUJ3EmfteI5NBZ00PnUDjNiYcu2m+oHCf+VBe0Q8EWDCEULbJvbZH8sWTs
-         gIfg==
-X-Gm-Message-State: ACgBeo22ab4m4P4su5TB0T/ZDoMr9SB92JCMqAw6X6ysKa5/kttYssfc
-        oiQux5NoQc95VRHFhsyMlpk=
-X-Google-Smtp-Source: AA6agR50beTiMlI/DQkk2KwOUYmmk1TUb+ua/De4F8ragNW7DiMYN8P2KKv4FY6Oi3hPMH7jZzvNEA==
-X-Received: by 2002:a17:907:8a0a:b0:730:a118:75de with SMTP id sc10-20020a1709078a0a00b00730a11875demr27986367ejc.189.1662105404317;
-        Fri, 02 Sep 2022 00:56:44 -0700 (PDT)
-Received: from krava ([193.85.244.190])
-        by smtp.gmail.com with ESMTPSA id u3-20020aa7d883000000b004482dd03fe8sm869468edq.91.2022.09.02.00.56.43
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date;
+        bh=3JVroPxTcJOCN2o2XA3WnSR5tC+xoLxrSL/gfmOhIRU=;
+        b=jEzDeQmdSnLnTicLK5nic5Kqi12w8fVuJ4zuj3kMdDzuU7S7MZBYxQyDD+IMcDUYIk
+         zD6pCnSyeSsdPIvCF9wPV9h7vdRQ/iZ8jweDaD9UFXOA0+Q2qmTY8C+c1Ia11R71qNJ2
+         e4OZJjcC0MaxhmowFAEAGpc0ggCzvqVapjVACJzt84fIqZhIc1eWhjGsMVlJAxXYB2Q9
+         M7tm/69r8yCjwzvA2S1PwXzqARMWqhihd8F6AZaLToypJ6UkNKCljQA5OOUCFBlNP/L5
+         OrJ2Op1oMvFeRK71mszhEWWD+IdQkwNqwavCgkLTwklqchyyB2gTRPOac2sJz9z2Legw
+         HJiA==
+X-Gm-Message-State: ACgBeo3YQVDs2IYPg+mScuc0IFMFiqpJya7C6Vfqk6N+QIEFBXK7JRdi
+        MF+dpKwuqeBb4IQYO9ORNmwSAQ==
+X-Google-Smtp-Source: AA6agR6yXjurVloXhqlHPjiqZgE2GPmuzrOFdXC1xZLpi2Bq07HI/s+8bJNdp87p95N8e2rk1sGUoA==
+X-Received: by 2002:a63:564b:0:b0:42c:414a:95fd with SMTP id g11-20020a63564b000000b0042c414a95fdmr18641373pgm.5.1662113573395;
+        Fri, 02 Sep 2022 03:12:53 -0700 (PDT)
+Received: from PF2E59YH-BKX.inc.bytedance.com ([139.177.225.237])
+        by smtp.gmail.com with ESMTPSA id s7-20020a625e07000000b005381d037d07sm1300927pfb.217.2022.09.02.03.12.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Sep 2022 00:56:43 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Fri, 2 Sep 2022 09:56:41 +0200
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com
-Subject: Re: [PATCH bpf-next v4 3/8] bpf: Update descriptions for helpers
- bpf_get_func_arg[_cnt]()
-Message-ID: <YxG3OVk72IaSEJd6@krava>
-References: <20220831152641.2077476-1-yhs@fb.com>
- <20220831152657.2078805-1-yhs@fb.com>
+        Fri, 02 Sep 2022 03:12:53 -0700 (PDT)
+From:   Yunhui Cui <cuiyunhui@bytedance.com>
+To:     corbet@lwn.net, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+        akpm@linux-foundation.org, hannes@cmpxchg.org, david@redhat.com,
+        mail@christoph.anton.mitterer.name, ccross@google.com,
+        cuiyunhui@bytedance.com, vincent.whitchurch@axis.com,
+        paul.gortmaker@windriver.com, peterz@infradead.org,
+        edumazet@google.com, joshdon@google.com
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-doc@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH] bpf: added the account of BPF running time
+Date:   Fri,  2 Sep 2022 18:12:17 +0800
+Message-Id: <20220902101217.1419-1-cuiyunhui@bytedance.com>
+X-Mailer: git-send-email 2.37.3.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220831152657.2078805-1-yhs@fb.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 31, 2022 at 08:26:57AM -0700, Yonghong Song wrote:
-> Now instead of the number of arguments, the number of registers
-> holding argument values are stored in trampoline. Update
-> the description of bpf_get_func_arg[_cnt]() helpers. Previous
-> programs without struct arguments should continue to work
-> as usual.
-> 
-> Signed-off-by: Yonghong Song <yhs@fb.com>
-> ---
->  include/uapi/linux/bpf.h       | 9 +++++----
->  tools/include/uapi/linux/bpf.h | 9 +++++----
->  2 files changed, 10 insertions(+), 8 deletions(-)
-> 
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 962960a98835..f9f43343ef93 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -5079,12 +5079,12 @@ union bpf_attr {
->   *
->   * long bpf_get_func_arg(void *ctx, u32 n, u64 *value)
->   *	Description
-> - *		Get **n**-th argument (zero based) of the traced function (for tracing programs)
-> + *		Get **n**-th argument register (zero based) of the traced function (for tracing programs)
+The following high CPU usage problem is caused by BPF, We found it through
+the perf tools.
+Children Self 	SharedObject 	Symbol
+45.52%	45.51%	[kernel]	[k] native_queued_spin_lock_slowpath
+45.35%	0.10%	[kernel]	[k] _raw_spin_lock_irqsave
+45.29%	0.01%	[kernel]	[k] bpf_map_update_elem
+45.29%	0.02%	[kernel]	[k] htab_map_update_elem
 
-I'm bit worried about the confusion between args/regs we create with
-this, but I don't any have better idea how to solve this
+The above problem is caught when bpf_prog is executed, but we cannot
+get the load on the system from bpf_progs executed before, and we
+cannot monitor the occupancy rate of cpu by BPF all the time.
 
-keeping extra stack values for nr_args and nr_regs and have new helpers
-to get reg values.. but then bpf_get_func_arg still does not return the
-full argument value.. also given that the struct args should be rare,
-I guess it's fine ;-)
+Currently only the running time of a single bpf_prog is counted in the
+/proc/$pid/fdinfo/$fd file. It's impossible to count the occupancy rate
+of all bpf_progs on the CPU, because we can't know which processes, and
+it is possible that the process has exited.
 
-jirka
+With the increasing use of BPF function modules, all running bpf_progs may
+occupy high CPU usage. So we need to add an item to the /proc/stat file to
+observe the CPU usage of BPF from a global perspective.
 
->   *		returned in **value**.
->   *
->   *	Return
->   *		0 on success.
-> - *		**-EINVAL** if n >= arguments count of traced function.
-> + *		**-EINVAL** if n >= argument register count of traced function.
->   *
->   * long bpf_get_func_ret(void *ctx, u64 *value)
->   *	Description
-> @@ -5097,10 +5097,11 @@ union bpf_attr {
->   *
->   * long bpf_get_func_arg_cnt(void *ctx)
->   *	Description
-> - *		Get number of arguments of the traced function (for tracing programs).
-> + *		Get number of registers of the traced function (for tracing programs) where
-> + *		function arguments are stored in these registers.
->   *
->   *	Return
-> - *		The number of arguments of the traced function.
-> + *		The number of argument registers of the traced function.
->   *
->   * int bpf_get_retval(void)
->   *	Description
-> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-> index f4ba82a1eace..f13fa71822f4 100644
-> --- a/tools/include/uapi/linux/bpf.h
-> +++ b/tools/include/uapi/linux/bpf.h
-> @@ -5079,12 +5079,12 @@ union bpf_attr {
->   *
->   * long bpf_get_func_arg(void *ctx, u32 n, u64 *value)
->   *	Description
-> - *		Get **n**-th argument (zero based) of the traced function (for tracing programs)
-> + *		Get **n**-th argument register (zero based) of the traced function (for tracing programs)
->   *		returned in **value**.
->   *
->   *	Return
->   *		0 on success.
-> - *		**-EINVAL** if n >= arguments count of traced function.
-> + *		**-EINVAL** if n >= argument register count of traced function.
->   *
->   * long bpf_get_func_ret(void *ctx, u64 *value)
->   *	Description
-> @@ -5097,10 +5097,11 @@ union bpf_attr {
->   *
->   * long bpf_get_func_arg_cnt(void *ctx)
->   *	Description
-> - *		Get number of arguments of the traced function (for tracing programs).
-> + *		Get number of registers of the traced function (for tracing programs) where
-> + *		function arguments are stored in these registers.
->   *
->   *	Return
-> - *		The number of arguments of the traced function.
-> + *		The number of argument registers of the traced function.
->   *
->   * int bpf_get_retval(void)
->   *	Description
-> -- 
-> 2.30.2
-> 
+Signed-off-by: Yunhui Cui <cuiyunhui@bytedance.com>
+---
+ Documentation/filesystems/proc.rst |  1 +
+ fs/proc/stat.c                     | 25 +++++++++++++++++++++++--
+ include/linux/filter.h             | 17 +++++++++++++++--
+ kernel/bpf/core.c                  |  1 +
+ 4 files changed, 40 insertions(+), 4 deletions(-)
+
+diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
+index e7aafc82be99..353f41c3e4eb 100644
+--- a/Documentation/filesystems/proc.rst
++++ b/Documentation/filesystems/proc.rst
+@@ -1477,6 +1477,7 @@ second).  The meanings of the columns are as follows, from left to right:
+ - steal: involuntary wait
+ - guest: running a normal guest
+ - guest_nice: running a niced guest
++- bpf: running in bpf_programs
+ 
+ The "intr" line gives counts of interrupts  serviced since boot time, for each
+ of the  possible system interrupts.   The first  column  is the  total of  all
+diff --git a/fs/proc/stat.c b/fs/proc/stat.c
+index 4fb8729a68d4..ff8ef959fb4f 100644
+--- a/fs/proc/stat.c
++++ b/fs/proc/stat.c
+@@ -14,6 +14,8 @@
+ #include <linux/irqnr.h>
+ #include <linux/sched/cputime.h>
+ #include <linux/tick.h>
++#include <linux/filter.h>
++#include <linux/u64_stats_sync.h>
+ 
+ #ifndef arch_irq_stat_cpu
+ #define arch_irq_stat_cpu(cpu) 0
+@@ -22,6 +24,20 @@
+ #define arch_irq_stat() 0
+ #endif
+ 
++DECLARE_PER_CPU(struct bpf_account, bpftime);
++
++static void get_bpf_time(u64 *ns, int cpu)
++{
++	unsigned int start = 0;
++	const struct bpf_account *bact;
++
++	bact = per_cpu_ptr(&bpftime, cpu);
++	do {
++		start = u64_stats_fetch_begin_irq(&bact->syncp);
++		*ns = u64_stats_read(&bact->nsecs);
++	} while (u64_stats_fetch_retry_irq(&bact->syncp, start));
++}
++
+ #ifdef arch_idle_time
+ 
+ u64 get_idle_time(struct kernel_cpustat *kcs, int cpu)
+@@ -112,11 +128,12 @@ static int show_stat(struct seq_file *p, void *v)
+ 	u64 guest, guest_nice;
+ 	u64 sum = 0;
+ 	u64 sum_softirq = 0;
++	u64 bpf_sum, bpf;
+ 	unsigned int per_softirq_sums[NR_SOFTIRQS] = {0};
+ 	struct timespec64 boottime;
+ 
+ 	user = nice = system = idle = iowait =
+-		irq = softirq = steal = 0;
++		irq = softirq = steal = bpf = bpf_sum = 0;
+ 	guest = guest_nice = 0;
+ 	getboottime64(&boottime);
+ 	/* shift boot timestamp according to the timens offset */
+@@ -127,6 +144,7 @@ static int show_stat(struct seq_file *p, void *v)
+ 		u64 *cpustat = kcpustat.cpustat;
+ 
+ 		kcpustat_cpu_fetch(&kcpustat, i);
++		get_bpf_time(&bpf, i);
+ 
+ 		user		+= cpustat[CPUTIME_USER];
+ 		nice		+= cpustat[CPUTIME_NICE];
+@@ -138,6 +156,7 @@ static int show_stat(struct seq_file *p, void *v)
+ 		steal		+= cpustat[CPUTIME_STEAL];
+ 		guest		+= cpustat[CPUTIME_GUEST];
+ 		guest_nice	+= cpustat[CPUTIME_GUEST_NICE];
++		bpf_sum		+= bpf;
+ 		sum		+= kstat_cpu_irqs_sum(i);
+ 		sum		+= arch_irq_stat_cpu(i);
+ 
+@@ -160,6 +179,7 @@ static int show_stat(struct seq_file *p, void *v)
+ 	seq_put_decimal_ull(p, " ", nsec_to_clock_t(steal));
+ 	seq_put_decimal_ull(p, " ", nsec_to_clock_t(guest));
+ 	seq_put_decimal_ull(p, " ", nsec_to_clock_t(guest_nice));
++	seq_put_decimal_ull(p, " ", nsec_to_clock_t(bpf_sum));
+ 	seq_putc(p, '\n');
+ 
+ 	for_each_online_cpu(i) {
+@@ -167,7 +187,7 @@ static int show_stat(struct seq_file *p, void *v)
+ 		u64 *cpustat = kcpustat.cpustat;
+ 
+ 		kcpustat_cpu_fetch(&kcpustat, i);
+-
++		get_bpf_time(&bpf, i);
+ 		/* Copy values here to work around gcc-2.95.3, gcc-2.96 */
+ 		user		= cpustat[CPUTIME_USER];
+ 		nice		= cpustat[CPUTIME_NICE];
+@@ -190,6 +210,7 @@ static int show_stat(struct seq_file *p, void *v)
+ 		seq_put_decimal_ull(p, " ", nsec_to_clock_t(steal));
+ 		seq_put_decimal_ull(p, " ", nsec_to_clock_t(guest));
+ 		seq_put_decimal_ull(p, " ", nsec_to_clock_t(guest_nice));
++		seq_put_decimal_ull(p, " ", nsec_to_clock_t(bpf));
+ 		seq_putc(p, '\n');
+ 	}
+ 	seq_put_decimal_ull(p, "intr ", (unsigned long long)sum);
+diff --git a/include/linux/filter.h b/include/linux/filter.h
+index a5f21dc3c432..9cb072f9e32b 100644
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -565,6 +565,12 @@ struct sk_filter {
+ 	struct bpf_prog	*prog;
+ };
+ 
++struct bpf_account {
++	u64_stats_t nsecs;
++	struct u64_stats_sync syncp;
++};
++DECLARE_PER_CPU(struct bpf_account, bpftime);
++
+ DECLARE_STATIC_KEY_FALSE(bpf_stats_enabled_key);
+ 
+ typedef unsigned int (*bpf_dispatcher_fn)(const void *ctx,
+@@ -577,12 +583,14 @@ static __always_inline u32 __bpf_prog_run(const struct bpf_prog *prog,
+ 					  bpf_dispatcher_fn dfunc)
+ {
+ 	u32 ret;
++	struct bpf_account *bact;
++	unsigned long flags;
++	u64 start = 0;
+ 
+ 	cant_migrate();
++	start = sched_clock();
+ 	if (static_branch_unlikely(&bpf_stats_enabled_key)) {
+ 		struct bpf_prog_stats *stats;
+-		u64 start = sched_clock();
+-		unsigned long flags;
+ 
+ 		ret = dfunc(ctx, prog->insnsi, prog->bpf_func);
+ 		stats = this_cpu_ptr(prog->stats);
+@@ -593,6 +601,11 @@ static __always_inline u32 __bpf_prog_run(const struct bpf_prog *prog,
+ 	} else {
+ 		ret = dfunc(ctx, prog->insnsi, prog->bpf_func);
+ 	}
++	bact = this_cpu_ptr(&bpftime);
++	flags = u64_stats_update_begin_irqsave(&bact->syncp);
++	u64_stats_add(&bact->nsecs, sched_clock() - start);
++	u64_stats_update_end_irqrestore(&bact->syncp, flags);
++
+ 	return ret;
+ }
+ 
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index c1e10d088dbb..445ac1c6c01a 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -618,6 +618,7 @@ static const struct latch_tree_ops bpf_tree_ops = {
+ 	.comp	= bpf_tree_comp,
+ };
+ 
++DEFINE_PER_CPU(struct bpf_account, bpftime);
+ static DEFINE_SPINLOCK(bpf_lock);
+ static LIST_HEAD(bpf_kallsyms);
+ static struct latch_tree_root bpf_tree __cacheline_aligned;
+-- 
+2.20.1
+
