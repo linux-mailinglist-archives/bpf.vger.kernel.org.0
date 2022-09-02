@@ -2,53 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AC4C5AB7CA
-	for <lists+bpf@lfdr.de>; Fri,  2 Sep 2022 19:52:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 773385AB7D5
+	for <lists+bpf@lfdr.de>; Fri,  2 Sep 2022 19:57:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234070AbiIBRw3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Sep 2022 13:52:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39300 "EHLO
+        id S235468AbiIBR5Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Sep 2022 13:57:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232619AbiIBRw2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Sep 2022 13:52:28 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E36BA45F;
-        Fri,  2 Sep 2022 10:52:27 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1oUAq0-0003WX-SU; Fri, 02 Sep 2022 19:52:16 +0200
-Date:   Fri, 2 Sep 2022 19:52:16 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Florian Westphal <fw@strlen.de>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Toke =?iso-8859-15?Q?H=F8iland-J=F8rgensen?= <toke@kernel.org>,
-        netfilter-devel <netfilter-devel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH nf-next] netfilter: nf_tables: add ebpf expression
-Message-ID: <20220902175216.GB4165@breakpoint.cc>
-References: <87o7w04jjb.fsf@toke.dk>
- <20220831135757.GC8153@breakpoint.cc>
- <87ilm84goh.fsf@toke.dk>
- <20220831152624.GA15107@breakpoint.cc>
- <CAADnVQJp5RJ0kZundd5ag-b3SDYir8cF4R_nVbN8Zj9Rcn0rww@mail.gmail.com>
- <20220831155341.GC15107@breakpoint.cc>
- <CAADnVQJGQmu02f5B=mc1xJvVWSmk_GNZj9WAUskekykmyo8FzA@mail.gmail.com>
- <1cc40302-f006-31a7-b270-30813b8f4b67@iogearbox.net>
- <20220901101401.GC4334@breakpoint.cc>
- <CAADnVQJUDcahx2R58zEPNi_uRdgUNtKKUTqndDY-NVd03pB_+Q@mail.gmail.com>
+        with ESMTP id S234477AbiIBR5O (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Sep 2022 13:57:14 -0400
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7149ABD4B;
+        Fri,  2 Sep 2022 10:57:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1662141433; x=1693677433;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=TjwFYCJhwXHxjhHf8QaDkV8NvtzPTtsxsyE+yFToU6Q=;
+  b=Jkz2Tdt4bPx1+eeaU6I3Ba0K7NlmzFyQ9efe5JWGeamqi/4NxsUQEZnJ
+   fWVTlI6LZKKnHaSZv5g2eJ7GdfuygNlfYGm3IAWQs2cOzWNFoYaF6jcPn
+   NWYBYcZX3Bx3EvnAMsbTzrSTMSFdOtKCHHzuWwm5J+GAutmh90p9vDyLQ
+   MvPpzor/ojJ1FhAAaGWG4d0u0LQscaVV6aquejJ0I9xOAQ29EB5AMJQ9Y
+   8NVTZTzfbHi2R30GcuOqBu4GneUu5P5U5OP3SG7WXPr/jSBWMTP7vUDmi
+   wqpf90H1mjR2qnPwRbYB0ps7zHJ/VevBxNLWBWr4U7X9/NN+GHjd/pvc6
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10458"; a="296046888"
+X-IronPort-AV: E=Sophos;i="5.93,283,1654585200"; 
+   d="scan'208";a="296046888"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2022 10:57:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,283,1654585200"; 
+   d="scan'208";a="590156240"
+Received: from anguy11-desk2.jf.intel.com ([10.166.244.147])
+  by orsmga006.jf.intel.com with ESMTP; 02 Sep 2022 10:57:12 -0700
+From:   Tony Nguyen <anthony.l.nguyen@intel.com>
+To:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        edumazet@google.com
+Cc:     Przemyslaw Patynowski <przemyslawx.patynowski@intel.com>,
+        netdev@vger.kernel.org, anthony.l.nguyen@intel.com,
+        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
+        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com, bpf@vger.kernel.org,
+        Mateusz Palczewski <mateusz.palczewski@intel.com>,
+        Chandan <chandanx.rout@intel.com>
+Subject: [PATCH net v2 1/2] ice: Fix DMA mappings leak
+Date:   Fri,  2 Sep 2022 10:57:02 -0700
+Message-Id: <20220902175703.1171660-2-anthony.l.nguyen@intel.com>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20220902175703.1171660-1-anthony.l.nguyen@intel.com>
+References: <20220902175703.1171660-1-anthony.l.nguyen@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQJUDcahx2R58zEPNi_uRdgUNtKKUTqndDY-NVd03pB_+Q@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,50 +65,227 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-> > See my reply to Alexey, immediate goal was to get rid of the indirect
-> > calls by providing a tailored/jitted equivalent of nf_hook_slow().
-> >
-> > The next step could be to allow implementation of netfilter hooks
-> > (i.e., kernel modules that call nf_register_net_hook()) in bpf
-> > but AFAIU it requires addition of BPF_PROG_TYPE_NETFILTER etc.
-> 
-> We were adding new prog and maps types in the past.
-> Now new features are being added differently.
-> All of the networking either works with sk_buff-s or xdp frames.
-> We try hard not to add any new uapi helpers.
-> Everything is moving to kfuncs.
-> Other sub-systems should be able to use bpf without touching
-> the bpf core. See hid-bpf as an example.
-> It needs several verifier improvements, but doesn't need
-> new prog types, helpers, etc.
+From: Przemyslaw Patynowski <przemyslawx.patynowski@intel.com>
 
-I don't see how it can be done without a new prog type, the bpf progs
-would need access to "nf_hook_state" struct, passed as argument
-to nf_hook_slow() (and down to the individual xt_foo modules...).
+Fix leak, when user changes ring parameters.
+During reallocation of RX buffers, new DMA mappings are created for
+those buffers. New buffers with different RX ring count should
+substitute older ones, but those buffers were freed in ice_vsi_cfg_rxq
+and reallocated again with ice_alloc_rx_buf. kfree on rx_buf caused
+leak of already mapped DMA.
+Reallocate ZC with xdp_buf struct, when BPF program loads. Reallocate
+back to rx_buf, when BPF program unloads.
+If BPF program is loaded/unloaded and XSK pools are created, reallocate
+RX queues accordingly in XDP_SETUP_XSK_POOL handler.
 
-We can't change the existing netfilter hook prototype to go by
-sk_buff * as that doesn't have all information, most prominent are
-the input and output net_device, but also okfn is needed for async
-reinject (nf_queue), the hook location and so on.
+Steps for reproduction:
+while :
+do
+	for ((i=0; i<=8160; i=i+32))
+	do
+		ethtool -G enp130s0f0 rx $i tx $i
+		sleep 0.5
+		ethtool -g enp130s0f0
+	done
+done
 
-> > After that, yes, one could think about how to jit nft_do_chain() and
-> > all the rest of the nft machinery.
-> 
-> Sounds like a ton of work. All that just to accelerate nft a bit?
-> I think there are more impactful projects to work on.
-> For example, accelerating classic iptables with bpf would immediately
-> help a bunch of users.
+Fixes: 617f3e1b588c ("ice: xsk: allocate separate memory for XDP SW ring")
+Signed-off-by: Przemyslaw Patynowski <przemyslawx.patynowski@intel.com>
+Signed-off-by: Mateusz Palczewski <mateusz.palczewski@intel.com>
+Tested-by: Chandan <chandanx.rout@intel.com> (A Contingent Worker at Intel)
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+---
+ drivers/net/ethernet/intel/ice/ice_base.c | 17 ------
+ drivers/net/ethernet/intel/ice/ice_main.c |  8 +++
+ drivers/net/ethernet/intel/ice/ice_xsk.c  | 63 +++++++++++++++++++++++
+ drivers/net/ethernet/intel/ice/ice_xsk.h  |  8 +++
+ 4 files changed, 79 insertions(+), 17 deletions(-)
 
-Maybe, but from the problem points and the required effort it doesn't matter
-if the chosen target is iptables or nftables; as far as the time/effort
-needed I'd say they are identical.
+diff --git a/drivers/net/ethernet/intel/ice/ice_base.c b/drivers/net/ethernet/intel/ice/ice_base.c
+index 136d7911adb4..1e3243808178 100644
+--- a/drivers/net/ethernet/intel/ice/ice_base.c
++++ b/drivers/net/ethernet/intel/ice/ice_base.c
+@@ -7,18 +7,6 @@
+ #include "ice_dcb_lib.h"
+ #include "ice_sriov.h"
+ 
+-static bool ice_alloc_rx_buf_zc(struct ice_rx_ring *rx_ring)
+-{
+-	rx_ring->xdp_buf = kcalloc(rx_ring->count, sizeof(*rx_ring->xdp_buf), GFP_KERNEL);
+-	return !!rx_ring->xdp_buf;
+-}
+-
+-static bool ice_alloc_rx_buf(struct ice_rx_ring *rx_ring)
+-{
+-	rx_ring->rx_buf = kcalloc(rx_ring->count, sizeof(*rx_ring->rx_buf), GFP_KERNEL);
+-	return !!rx_ring->rx_buf;
+-}
+-
+ /**
+  * __ice_vsi_get_qs_contig - Assign a contiguous chunk of queues to VSI
+  * @qs_cfg: gathered variables needed for PF->VSI queues assignment
+@@ -519,11 +507,8 @@ int ice_vsi_cfg_rxq(struct ice_rx_ring *ring)
+ 			xdp_rxq_info_reg(&ring->xdp_rxq, ring->netdev,
+ 					 ring->q_index, ring->q_vector->napi.napi_id);
+ 
+-		kfree(ring->rx_buf);
+ 		ring->xsk_pool = ice_xsk_pool(ring);
+ 		if (ring->xsk_pool) {
+-			if (!ice_alloc_rx_buf_zc(ring))
+-				return -ENOMEM;
+ 			xdp_rxq_info_unreg_mem_model(&ring->xdp_rxq);
+ 
+ 			ring->rx_buf_len =
+@@ -538,8 +523,6 @@ int ice_vsi_cfg_rxq(struct ice_rx_ring *ring)
+ 			dev_info(dev, "Registered XDP mem model MEM_TYPE_XSK_BUFF_POOL on Rx ring %d\n",
+ 				 ring->q_index);
+ 		} else {
+-			if (!ice_alloc_rx_buf(ring))
+-				return -ENOMEM;
+ 			if (!xdp_rxq_info_is_reg(&ring->xdp_rxq))
+ 				/* coverity[check_return] */
+ 				xdp_rxq_info_reg(&ring->xdp_rxq,
+diff --git a/drivers/net/ethernet/intel/ice/ice_main.c b/drivers/net/ethernet/intel/ice/ice_main.c
+index 173fe6c31341..e5bc69a9a37c 100644
+--- a/drivers/net/ethernet/intel/ice/ice_main.c
++++ b/drivers/net/ethernet/intel/ice/ice_main.c
+@@ -2898,10 +2898,18 @@ ice_xdp_setup_prog(struct ice_vsi *vsi, struct bpf_prog *prog,
+ 			if (xdp_ring_err)
+ 				NL_SET_ERR_MSG_MOD(extack, "Setting up XDP Tx resources failed");
+ 		}
++		/* reallocate Rx queues that are used for zero-copy */
++		xdp_ring_err = ice_realloc_zc_buf(vsi, true);
++		if (xdp_ring_err)
++			NL_SET_ERR_MSG_MOD(extack, "Setting up XDP Rx resources failed");
+ 	} else if (ice_is_xdp_ena_vsi(vsi) && !prog) {
+ 		xdp_ring_err = ice_destroy_xdp_rings(vsi);
+ 		if (xdp_ring_err)
+ 			NL_SET_ERR_MSG_MOD(extack, "Freeing XDP Tx resources failed");
++		/* reallocate Rx queues that were used for zero-copy */
++		xdp_ring_err = ice_realloc_zc_buf(vsi, false);
++		if (xdp_ring_err)
++			NL_SET_ERR_MSG_MOD(extack, "Freeing XDP Rx resources failed");
+ 	} else {
+ 		/* safe to call even when prog == vsi->xdp_prog as
+ 		 * dev_xdp_install in net/core/dev.c incremented prog's
+diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
+index e48e29258450..03ce85f6e6df 100644
+--- a/drivers/net/ethernet/intel/ice/ice_xsk.c
++++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
+@@ -192,6 +192,7 @@ static int ice_qp_dis(struct ice_vsi *vsi, u16 q_idx)
+ 	err = ice_vsi_ctrl_one_rx_ring(vsi, false, q_idx, true);
+ 	if (err)
+ 		return err;
++	ice_clean_rx_ring(rx_ring);
+ 
+ 	ice_qvec_toggle_napi(vsi, q_vector, false);
+ 	ice_qp_clean_rings(vsi, q_idx);
+@@ -316,6 +317,62 @@ ice_xsk_pool_enable(struct ice_vsi *vsi, struct xsk_buff_pool *pool, u16 qid)
+ 	return 0;
+ }
+ 
++/**
++ * ice_realloc_rx_xdp_bufs - reallocate for either XSK or normal buffer
++ * @rx_ring: Rx ring
++ * @pool_present: is pool for XSK present
++ *
++ * Try allocating memory and return ENOMEM, if failed to allocate.
++ * If allocation was successful, substitute buffer with allocated one.
++ * Returns 0 on success, negative on failure
++ */
++static int
++ice_realloc_rx_xdp_bufs(struct ice_rx_ring *rx_ring, bool pool_present)
++{
++	size_t elem_size = pool_present ? sizeof(*rx_ring->xdp_buf) :
++					  sizeof(*rx_ring->rx_buf);
++	void *sw_ring = kcalloc(rx_ring->count, elem_size, GFP_KERNEL);
++
++	if (!sw_ring)
++		return -ENOMEM;
++
++	if (pool_present) {
++		kfree(rx_ring->rx_buf);
++		rx_ring->rx_buf = NULL;
++		rx_ring->xdp_buf = sw_ring;
++	} else {
++		kfree(rx_ring->xdp_buf);
++		rx_ring->xdp_buf = NULL;
++		rx_ring->rx_buf = sw_ring;
++	}
++
++	return 0;
++}
++
++/**
++ * ice_realloc_zc_buf - reallocate XDP ZC queue pairs
++ * @vsi: Current VSI
++ * @zc: is zero copy set
++ *
++ * Reallocate buffer for rx_rings that might be used by XSK.
++ * XDP requires more memory, than rx_buf provides.
++ * Returns 0 on success, negative on failure
++ */
++int ice_realloc_zc_buf(struct ice_vsi *vsi, bool zc)
++{
++	struct ice_rx_ring *rx_ring;
++	unsigned long q;
++
++	for_each_set_bit(q, vsi->af_xdp_zc_qps,
++			 max_t(int, vsi->alloc_txq, vsi->alloc_rxq)) {
++		rx_ring = vsi->rx_rings[q];
++		if (ice_realloc_rx_xdp_bufs(rx_ring, zc))
++			return -ENOMEM;
++	}
++
++	return 0;
++}
++
+ /**
+  * ice_xsk_pool_setup - enable/disable a buffer pool region depending on its state
+  * @vsi: Current VSI
+@@ -345,11 +402,17 @@ int ice_xsk_pool_setup(struct ice_vsi *vsi, struct xsk_buff_pool *pool, u16 qid)
+ 	if_running = netif_running(vsi->netdev) && ice_is_xdp_ena_vsi(vsi);
+ 
+ 	if (if_running) {
++		struct ice_rx_ring *rx_ring = vsi->rx_rings[qid];
++
+ 		ret = ice_qp_dis(vsi, qid);
+ 		if (ret) {
+ 			netdev_err(vsi->netdev, "ice_qp_dis error = %d\n", ret);
+ 			goto xsk_pool_if_up;
+ 		}
++
++		ret = ice_realloc_rx_xdp_bufs(rx_ring, pool_present);
++		if (ret)
++			goto xsk_pool_if_up;
+ 	}
+ 
+ 	pool_failure = pool_present ? ice_xsk_pool_enable(vsi, pool, qid) :
+diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.h b/drivers/net/ethernet/intel/ice/ice_xsk.h
+index 21faec8e97db..4edbe81eb646 100644
+--- a/drivers/net/ethernet/intel/ice/ice_xsk.h
++++ b/drivers/net/ethernet/intel/ice/ice_xsk.h
+@@ -27,6 +27,7 @@ bool ice_xsk_any_rx_ring_ena(struct ice_vsi *vsi);
+ void ice_xsk_clean_rx_ring(struct ice_rx_ring *rx_ring);
+ void ice_xsk_clean_xdp_ring(struct ice_tx_ring *xdp_ring);
+ bool ice_xmit_zc(struct ice_tx_ring *xdp_ring, u32 budget, int napi_budget);
++int ice_realloc_zc_buf(struct ice_vsi *vsi, bool zc);
+ #else
+ static inline bool
+ ice_xmit_zc(struct ice_tx_ring __always_unused *xdp_ring,
+@@ -72,5 +73,12 @@ ice_xsk_wakeup(struct net_device __always_unused *netdev,
+ 
+ static inline void ice_xsk_clean_rx_ring(struct ice_rx_ring *rx_ring) { }
+ static inline void ice_xsk_clean_xdp_ring(struct ice_tx_ring *xdp_ring) { }
++
++static inline int
++ice_realloc_zc_buf(struct ice_vsi __always_unused *vsi,
++		   bool __always_unused zc)
++{
++	return 0;
++}
+ #endif /* CONFIG_XDP_SOCKETS */
+ #endif /* !_ICE_XSK_H_ */
+-- 
+2.35.1
 
-The hard issues that need to be solved first are the same; they reside
-in the netfilter core and not in the specific interpreter (nft_do_chain
-vs. ipt_do_table and friends).
-
-nf_tables might be *slightly* easier once that point would be reached
-because the core functionality is more integrated with nf_tables whereas
-in iptables there is more copypastry (ipt_do_table, ip6t_do_table,
-ebt_do_table, ...).
