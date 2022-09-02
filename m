@@ -2,60 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13D8B5AB9F0
-	for <lists+bpf@lfdr.de>; Fri,  2 Sep 2022 23:11:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57A975AB9F1
+	for <lists+bpf@lfdr.de>; Fri,  2 Sep 2022 23:12:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230511AbiIBVL5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Sep 2022 17:11:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53986 "EHLO
+        id S230523AbiIBVMA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Sep 2022 17:12:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229649AbiIBVL4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Sep 2022 17:11:56 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DBD2DD4D6
-        for <bpf@vger.kernel.org>; Fri,  2 Sep 2022 14:11:54 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id x19so3096482pfr.1
-        for <bpf@vger.kernel.org>; Fri, 02 Sep 2022 14:11:54 -0700 (PDT)
+        with ESMTP id S230188AbiIBVL7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Sep 2022 17:11:59 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 298CDDDAAB
+        for <bpf@vger.kernel.org>; Fri,  2 Sep 2022 14:11:58 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id t11-20020a17090a510b00b001fac77e9d1fso6614803pjh.5
+        for <bpf@vger.kernel.org>; Fri, 02 Sep 2022 14:11:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
-        bh=nsaRt32bGU9db3oBvsXD1o3WCeCEvT2VQ8VQ0NN+DuQ=;
-        b=C/CaWD4ElLDtQ9OCjP7zOMpPGB6pYoJ90/7pZPfC3SrcvyyHOFoqMO6a0yYQyCi1X2
-         Qv3gXak4IX/7E9+oBq/vaMNOdlWTE4mbN1D2NtlDP8JvL+1NH31u2uuL3lxCvb+CqmHm
-         RXFf4dGQeIV6ptFYGiSLSYq962jDG0shEmm6CR81FJIgTI5qT8zUCa/aOgsETE6nQbH+
-         FjkDYoz2XK6ynUFRIimGHCiVkJr4Ek+QsKm/d5b4B36jf8JNV8g6zlfGQKUPXIjAFLmn
-         S9EbAHCx0R26ODJyrFWANcbyPq7Ll6QBDUzDb0IokS/ZCsbI79XGtAJfUD6EpE81F26s
-         28jA==
+        bh=Pags8qPPfwR6EZ4x9OlF9eTDmuCtBGklMkNVzgvuBVU=;
+        b=dt5/tqYKF+8sKq/fRHZyCUDdVjK+DPcHhDtZ6m/chA0Q3MJn9qFWnyvSCWK6/+3yjl
+         xj4mdLcEYxjg6L6ZqvGepiFOLXhps7zRiC6QiREiOCP/Zjbnd07p3evGJYAcH6+jq8v+
+         RuYHGGYvKhoTTvQZ0i8uouxsdCm2mx4r+UPg8VROTr3RNyNJgI+su8OU7tgqLd2Dse1L
+         gzXtjlarLRLSKn06SqHEcD9Ck2eBH4ET3GfOXQcxYMqmG6MUNWs7hi4nzJbH/ysFNezw
+         Nvv71ibCORw/xxC0vBXnr//I9BIoEITz3pyBxuPrYWRYoskO+JFYDy97INFruI9YYoWo
+         p/uA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date;
-        bh=nsaRt32bGU9db3oBvsXD1o3WCeCEvT2VQ8VQ0NN+DuQ=;
-        b=z0m7/COtFai28AWKPJXz9IwC0JUqZypYXgCFlB4QW0uP6UEgzn34aDLcUn/JyZZsif
-         1hKPCCTuVDPCfnGq5zshmNORUWAJ8etfXGpISwkkJt6hdYcrpYId5JPYA2cUvBUCum6x
-         Jwq58MpcGfAuTyxbWj3lerckT7I5Boj+nTmM8h91ppamZs1q3wO/PnqBggovfmDFSXxE
-         K6LktabLTVHFE5ofqFKXGjSTGTKI/FLAOu8XFidO2k79XBG14BEY3fsE1MZkLGYE584L
-         mgcO3u+/UeaCsusrBVLTvog3+6nKbF2ANpMm30XO3UxUMAxhzawJZn/iRsbj/1Iz7ivW
-         Wmqg==
-X-Gm-Message-State: ACgBeo0cg0U5y93CEs9QPqKHSK53YplD/VBUGUoa2Kfcd159KZ7YtF9m
-        55DG7P8rfG1AHX/oqmDi54U=
-X-Google-Smtp-Source: AA6agR7n2Lcnr0pfUz+dYSYvV00llofPH/wKroO0zBTAg4E6DBUpTD3EVRZhXHdvzx96c3xWOiTC+Q==
-X-Received: by 2002:a05:6a00:1797:b0:538:7c07:f36d with SMTP id s23-20020a056a00179700b005387c07f36dmr21628092pfg.12.1662153113858;
-        Fri, 02 Sep 2022 14:11:53 -0700 (PDT)
+        bh=Pags8qPPfwR6EZ4x9OlF9eTDmuCtBGklMkNVzgvuBVU=;
+        b=CjnsUdfEUuvQD8Qhn/lYo1Jvy04C0/LborG1FHRGGevCWQBpdZQ4+DD/w45h+dyhNd
+         +P/TQpMgn63EtuhnSC5x2Dh8KoGsUKusB5F5ZtNnFab7RUB1OeorLE3HtTwDmMpZec/r
+         EqzbxWCN6R8xJStijLwjYnIE6iV6u9xYx3vNfI3Xkm13kZyCl32Wwv+lvelN9Rw8IlZf
+         Lm/zyUsAF8IcxMPcvsKjbzKYYWK1h7zZfP9TQ3BWAF8CFsadRFkKr/NXCfJ/Js9fAA1p
+         hsY+kZrERPpW8gU1H6yBE8xOd+y+6Ldw/jdM8vi9Z+KkTVPaW60Mr3bXd7VgEUiyB7BS
+         jlGw==
+X-Gm-Message-State: ACgBeo2nCw6EkrqxQySK9w7akzxi9FswTfAbnXBZ50eClwctG36uPsV4
+        eBMDXk3+wCkmg5f+puu49HY=
+X-Google-Smtp-Source: AA6agR5nt/10dzw1MEiwQ0MhAY16jQplPyzoS39H0+ktckGNi7GdGsrRpdUU0PcOM1jr5LU9HCCF6Q==
+X-Received: by 2002:a17:90a:e4cb:b0:1fd:9626:c7cf with SMTP id e11-20020a17090ae4cb00b001fd9626c7cfmr6945435pju.103.1662153117526;
+        Fri, 02 Sep 2022 14:11:57 -0700 (PDT)
 Received: from localhost.localdomain ([2620:10d:c090:500::c978])
-        by smtp.gmail.com with ESMTPSA id u6-20020a62d446000000b00537f7d04fb3sm2328371pfl.145.2022.09.02.14.11.52
+        by smtp.gmail.com with ESMTPSA id p2-20020a17090a748200b001fb0cf37db1sm5555785pjk.14.2022.09.02.14.11.56
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Fri, 02 Sep 2022 14:11:53 -0700 (PDT)
+        Fri, 02 Sep 2022 14:11:57 -0700 (PDT)
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     davem@davemloft.net
 Cc:     daniel@iogearbox.net, andrii@kernel.org, tj@kernel.org,
         memxor@gmail.com, delyank@fb.com, linux-mm@kvack.org,
         bpf@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v6 bpf-next 14/16] bpf: Remove prealloc-only restriction for sleepable bpf programs.
-Date:   Fri,  2 Sep 2022 14:10:56 -0700
-Message-Id: <20220902211058.60789-15-alexei.starovoitov@gmail.com>
+Subject: [PATCH v6 bpf-next 15/16] bpf: Remove usage of kmem_cache from bpf_mem_cache.
+Date:   Fri,  2 Sep 2022 14:10:57 -0700
+Message-Id: <20220902211058.60789-16-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <20220902211058.60789-1-alexei.starovoitov@gmail.com>
 References: <20220902211058.60789-1-alexei.starovoitov@gmail.com>
@@ -73,65 +73,154 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Alexei Starovoitov <ast@kernel.org>
 
-Since hash map is now converted to bpf_mem_alloc and it's waiting for rcu and
-rcu_tasks_trace GPs before freeing elements into global memory slabs it's safe
-to use dynamically allocated hash maps in sleepable bpf programs.
+For bpf_mem_cache based hash maps the following stress test:
+for (i = 1; i <= 512; i <<= 1)
+  for (j = 1; j <= 1 << 18; j <<= 1)
+    fd = bpf_map_create(BPF_MAP_TYPE_HASH, NULL, i, j, 2, 0);
+creates many kmem_cache-s that are not mergeable in debug kernels
+and consume unnecessary amount of memory.
+Turned out bpf_mem_cache's free_list logic does batching well,
+so usage of kmem_cache for fixes size allocations doesn't bring
+any performance benefits vs normal kmalloc.
+Hence get rid of kmem_cache in bpf_mem_cache.
+That saves memory, speeds up map create/destroy operations,
+while maintains hash map update/delete performance.
 
-Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 ---
- kernel/bpf/verifier.c | 23 -----------------------
- 1 file changed, 23 deletions(-)
+ kernel/bpf/memalloc.c | 50 ++++++++++++-------------------------------
+ 1 file changed, 14 insertions(+), 36 deletions(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 57ec06b1d09d..068b20ed34d2 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -12586,14 +12586,6 @@ static int check_pseudo_btf_id(struct bpf_verifier_env *env,
- 	return err;
- }
+diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
+index 8895c016dcdb..38fbd15c130a 100644
+--- a/kernel/bpf/memalloc.c
++++ b/kernel/bpf/memalloc.c
+@@ -91,17 +91,13 @@ struct bpf_mem_cache {
+ 	 */
+ 	struct llist_head free_llist_extra;
  
--static int check_map_prealloc(struct bpf_map *map)
--{
--	return (map->map_type != BPF_MAP_TYPE_HASH &&
--		map->map_type != BPF_MAP_TYPE_PERCPU_HASH &&
--		map->map_type != BPF_MAP_TYPE_HASH_OF_MAPS) ||
--		!(map->map_flags & BPF_F_NO_PREALLOC);
--}
--
- static bool is_tracing_prog_type(enum bpf_prog_type type)
- {
- 	switch (type) {
-@@ -12608,15 +12600,6 @@ static bool is_tracing_prog_type(enum bpf_prog_type type)
+-	/* kmem_cache != NULL when bpf_mem_alloc was created for specific
+-	 * element size.
+-	 */
+-	struct kmem_cache *kmem_cache;
+ 	struct irq_work refill_work;
+ 	struct obj_cgroup *objcg;
+ 	int unit_size;
+ 	/* count of objects in free_llist */
+ 	int free_cnt;
+ 	int low_watermark, high_watermark, batch;
+-	bool percpu;
++	int percpu_size;
+ 
+ 	struct rcu_head rcu;
+ 	struct llist_head free_by_rcu;
+@@ -134,8 +130,8 @@ static void *__alloc(struct bpf_mem_cache *c, int node)
+ 	 */
+ 	gfp_t flags = GFP_NOWAIT | __GFP_NOWARN | __GFP_ACCOUNT;
+ 
+-	if (c->percpu) {
+-		void **obj = kmem_cache_alloc_node(c->kmem_cache, flags, node);
++	if (c->percpu_size) {
++		void **obj = kmalloc_node(c->percpu_size, flags, node);
+ 		void *pptr = __alloc_percpu_gfp(c->unit_size, 8, flags);
+ 
+ 		if (!obj || !pptr) {
+@@ -147,9 +143,6 @@ static void *__alloc(struct bpf_mem_cache *c, int node)
+ 		return obj;
  	}
+ 
+-	if (c->kmem_cache)
+-		return kmem_cache_alloc_node(c->kmem_cache, flags, node);
+-
+ 	return kmalloc_node(c->unit_size, flags, node);
  }
  
--static bool is_preallocated_map(struct bpf_map *map)
--{
--	if (!check_map_prealloc(map))
--		return false;
--	if (map->inner_map_meta && !check_map_prealloc(map->inner_map_meta))
--		return false;
--	return true;
--}
--
- static int check_map_prog_compatibility(struct bpf_verifier_env *env,
- 					struct bpf_map *map,
- 					struct bpf_prog *prog)
-@@ -12669,12 +12652,6 @@ static int check_map_prog_compatibility(struct bpf_verifier_env *env,
- 		case BPF_MAP_TYPE_LRU_PERCPU_HASH:
- 		case BPF_MAP_TYPE_ARRAY_OF_MAPS:
- 		case BPF_MAP_TYPE_HASH_OF_MAPS:
--			if (!is_preallocated_map(map)) {
--				verbose(env,
--					"Sleepable programs can only use preallocated maps\n");
--				return -EINVAL;
--			}
--			break;
- 		case BPF_MAP_TYPE_RINGBUF:
- 		case BPF_MAP_TYPE_INODE_STORAGE:
- 		case BPF_MAP_TYPE_SK_STORAGE:
+@@ -207,16 +200,13 @@ static void alloc_bulk(struct bpf_mem_cache *c, int cnt, int node)
+ 
+ static void free_one(struct bpf_mem_cache *c, void *obj)
+ {
+-	if (c->percpu) {
++	if (c->percpu_size) {
+ 		free_percpu(((void **)obj)[1]);
+-		kmem_cache_free(c->kmem_cache, obj);
++		kfree(obj);
+ 		return;
+ 	}
+ 
+-	if (c->kmem_cache)
+-		kmem_cache_free(c->kmem_cache, obj);
+-	else
+-		kfree(obj);
++	kfree(obj);
+ }
+ 
+ static void __free_rcu(struct rcu_head *head)
+@@ -356,7 +346,7 @@ static void prefill_mem_cache(struct bpf_mem_cache *c, int cpu)
+ 	alloc_bulk(c, c->unit_size <= 256 ? 4 : 1, cpu_to_node(cpu));
+ }
+ 
+-/* When size != 0 create kmem_cache and bpf_mem_cache for each cpu.
++/* When size != 0 bpf_mem_cache for each cpu.
+  * This is typical bpf hash map use case when all elements have equal size.
+  *
+  * When size == 0 allocate 11 bpf_mem_cache-s for each cpu, then rely on
+@@ -368,40 +358,29 @@ int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, bool percpu)
+ 	static u16 sizes[NUM_CACHES] = {96, 192, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096};
+ 	struct bpf_mem_caches *cc, __percpu *pcc;
+ 	struct bpf_mem_cache *c, __percpu *pc;
+-	struct kmem_cache *kmem_cache = NULL;
+ 	struct obj_cgroup *objcg = NULL;
+-	char buf[32];
+-	int cpu, i, unit_size;
++	int cpu, i, unit_size, percpu_size = 0;
+ 
+ 	if (size) {
+ 		pc = __alloc_percpu_gfp(sizeof(*pc), 8, GFP_KERNEL);
+ 		if (!pc)
+ 			return -ENOMEM;
+ 
+-		if (percpu) {
+-			unit_size = size;
++		if (percpu)
+ 			/* room for llist_node and per-cpu pointer */
+-			size = LLIST_NODE_SZ + sizeof(void *);
+-		} else {
++			percpu_size = LLIST_NODE_SZ + sizeof(void *);
++		else
+ 			size += LLIST_NODE_SZ; /* room for llist_node */
+-			unit_size = size;
+-		}
++		unit_size = size;
+ 
+-		snprintf(buf, sizeof(buf), "bpf-%u", size);
+-		kmem_cache = kmem_cache_create(buf, size, 8, 0, NULL);
+-		if (!kmem_cache) {
+-			free_percpu(pc);
+-			return -ENOMEM;
+-		}
+ #ifdef CONFIG_MEMCG_KMEM
+ 		objcg = get_obj_cgroup_from_current();
+ #endif
+ 		for_each_possible_cpu(cpu) {
+ 			c = per_cpu_ptr(pc, cpu);
+-			c->kmem_cache = kmem_cache;
+ 			c->unit_size = unit_size;
+ 			c->objcg = objcg;
+-			c->percpu = percpu;
++			c->percpu_size = percpu_size;
+ 			prefill_mem_cache(c, cpu);
+ 		}
+ 		ma->cache = pc;
+@@ -461,8 +440,7 @@ void bpf_mem_alloc_destroy(struct bpf_mem_alloc *ma)
+ 			c = per_cpu_ptr(ma->cache, cpu);
+ 			drain_mem_cache(c);
+ 		}
+-		/* kmem_cache and memcg are the same across cpus */
+-		kmem_cache_destroy(c->kmem_cache);
++		/* objcg is the same across cpus */
+ 		if (c->objcg)
+ 			obj_cgroup_put(c->objcg);
+ 		/* c->waiting_for_gp list was drained, but __free_rcu might
 -- 
 2.30.2
 
