@@ -2,138 +2,254 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 709575AB5A6
-	for <lists+bpf@lfdr.de>; Fri,  2 Sep 2022 17:49:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61F895AB5B4
+	for <lists+bpf@lfdr.de>; Fri,  2 Sep 2022 17:52:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237383AbiIBPtZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Sep 2022 11:49:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55842 "EHLO
+        id S237055AbiIBPwQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Sep 2022 11:52:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236388AbiIBPtC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Sep 2022 11:49:02 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB6F7DA3CA;
-        Fri,  2 Sep 2022 08:39:32 -0700 (PDT)
-Received: from sslproxy04.your-server.de ([78.46.152.42])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1oU8kv-000AgN-B3; Fri, 02 Sep 2022 17:38:53 +0200
-Received: from [85.1.206.226] (helo=linux-4.home)
-        by sslproxy04.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1oU8ku-00094m-Nl; Fri, 02 Sep 2022 17:38:52 +0200
-Subject: Re: [PATCH] bpf: added the account of BPF running time
-To:     Yunhui Cui <cuiyunhui@bytedance.com>, corbet@lwn.net,
-        ast@kernel.org, andrii@kernel.org, martin.lau@linux.dev,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, akpm@linux-foundation.org, hannes@cmpxchg.org,
-        david@redhat.com, mail@christoph.anton.mitterer.name,
-        ccross@google.com, vincent.whitchurch@axis.com,
-        paul.gortmaker@windriver.com, peterz@infradead.org,
-        edumazet@google.com, joshdon@google.com
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-doc@vger.kernel.org, bpf@vger.kernel.org
-References: <20220902101217.1419-1-cuiyunhui@bytedance.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <a16957b9-9247-55f6-eb5e-f9f1c2de7580@iogearbox.net>
-Date:   Fri, 2 Sep 2022 17:38:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S237148AbiIBPv7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Sep 2022 11:51:59 -0400
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79F1B5D0D1;
+        Fri,  2 Sep 2022 08:43:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1662133381; x=1693669381;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version:content-transfer-encoding;
+  bh=LOXSAYrWSIIaBywrC/lBKnhNNi0w24u7+batpcmQSJE=;
+  b=H6MTZguxvJFXUY2ogVUaIFosP/jNXFabyiqIUTEC796SqgNm9O/Ur/UQ
+   FHEQF+lN3gXBdEeD/T/E4PU65F3D07BQysUu6FGgFgYMgTsB1bzIFImQB
+   5TZ0zRvMhvfrmJwgoBJai/0glgYOpUgAiWHiBM2QqmszSoUmp7yXRM3fI
+   Q+NqFw9JMhn6/QEM0iJKPMAbtqdcXuVuh4bGPCueTh9pTNZ892/DaIQSF
+   HvRFRuRVSVbi5iyygb1omVl9KLJblQyyqwp3Bx4WnBhlUG8MVzXIktC22
+   LuaswKnpv1UfkLZ8hzCVPTxtnRfcmAErANlt4Hwt8LFKzzH1Xdd6JDqoy
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10458"; a="294745370"
+X-IronPort-AV: E=Sophos;i="5.93,283,1654585200"; 
+   d="scan'208";a="294745370"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2022 08:42:49 -0700
+X-IronPort-AV: E=Sophos;i="5.93,283,1654585200"; 
+   d="scan'208";a="674396460"
+Received: from svandene-mobl.ger.corp.intel.com (HELO localhost) ([10.252.55.245])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2022 08:42:47 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Donald Hunter <donald.hunter@gmail.com>, bpf@vger.kernel.org,
+        linux-doc@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Donald Hunter <donald.hunter@gmail.com>
+Subject: Re: [PATCH bpf-next v3 2/2] Add table of BPF program types to
+ libbpf docs
+In-Reply-To: <20220829091500.24115-3-donald.hunter@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20220829091500.24115-1-donald.hunter@gmail.com>
+ <20220829091500.24115-3-donald.hunter@gmail.com>
+Date:   Fri, 02 Sep 2022 18:42:35 +0300
+Message-ID: <875yi5dbpw.fsf@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20220902101217.1419-1-cuiyunhui@bytedance.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.6/26646/Fri Sep  2 09:55:25 2022)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 9/2/22 12:12 PM, Yunhui Cui wrote:
-[...]
-> index a5f21dc3c432..9cb072f9e32b 100644
-> --- a/include/linux/filter.h
-> +++ b/include/linux/filter.h
-> @@ -565,6 +565,12 @@ struct sk_filter {
->   	struct bpf_prog	*prog;
->   };
->   
-> +struct bpf_account {
-> +	u64_stats_t nsecs;
-> +	struct u64_stats_sync syncp;
-> +};
-> +DECLARE_PER_CPU(struct bpf_account, bpftime);
+On Mon, 29 Aug 2022, Donald Hunter <donald.hunter@gmail.com> wrote:
+> Extend the libbpf documentation with a table of program types,
+> attach points and ELF section names. This table uses data from
+> program_types.csv which is generated from tools/lib/bpf/libbpf.c
+> during the documentation build.
+
+Oh, would be nice to turn all of these into proper but simple Sphinx
+extensions that take the deps into account in the Sphinx build
+process. And, of course, would be pure python instead of a combo of
+Make, shell, and awk.
+
+That's one of the reasons we chose Sphinx originally, to be able to
+write Sphinx extensions and avoid complicated pipelines.
+
+BR,
+Jani.
+
+
+>
+> Signed-off-by: Donald Hunter <donald.hunter@gmail.com>
+> ---
+>  Documentation/Makefile                     |  3 +-
+>  Documentation/bpf/libbpf/Makefile          | 49 ++++++++++++++++++++++
+>  Documentation/bpf/libbpf/index.rst         |  3 ++
+>  Documentation/bpf/libbpf/program_types.rst | 32 ++++++++++++++
+>  Documentation/bpf/programs.rst             |  3 ++
+>  5 files changed, 89 insertions(+), 1 deletion(-)
+>  create mode 100644 Documentation/bpf/libbpf/Makefile
+>  create mode 100644 Documentation/bpf/libbpf/program_types.rst
+>
+> diff --git a/Documentation/Makefile b/Documentation/Makefile
+> index 8a63ef2dcd1c..f007314770e1 100644
+> --- a/Documentation/Makefile
+> +++ b/Documentation/Makefile
+> @@ -66,7 +66,8 @@ I18NSPHINXOPTS  =3D $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) .
+>  loop_cmd =3D $(echo-cmd) $(cmd_$(1)) || exit;
+>=20=20
+>  BUILD_SUBDIRS =3D \
+> -	Documentation/userspace-api/media
+> +	Documentation/userspace-api/media \
+> +	Documentation/bpf/libbpf
+>=20=20
+>  quiet_cmd_build_subdir =3D SUBDIR  $2
+>        cmd_build_subdir =3D $(MAKE) BUILDDIR=3D$(abspath $(BUILDDIR)) $(b=
+uild)=3D$2 $3
+> diff --git a/Documentation/bpf/libbpf/Makefile b/Documentation/bpf/libbpf=
+/Makefile
+> new file mode 100644
+> index 000000000000..b3dc096c4a96
+> --- /dev/null
+> +++ b/Documentation/bpf/libbpf/Makefile
+> @@ -0,0 +1,49 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +#
+> +# Rules to convert BPF program types in tools/lib/bpf/libbpf.c
+> +# into a .csv file
 > +
->   DECLARE_STATIC_KEY_FALSE(bpf_stats_enabled_key);
->   
->   typedef unsigned int (*bpf_dispatcher_fn)(const void *ctx,
-> @@ -577,12 +583,14 @@ static __always_inline u32 __bpf_prog_run(const struct bpf_prog *prog,
->   					  bpf_dispatcher_fn dfunc)
->   {
->   	u32 ret;
-> +	struct bpf_account *bact;
-> +	unsigned long flags;
-> +	u64 start = 0;
->   
->   	cant_migrate();
-> +	start = sched_clock();
->   	if (static_branch_unlikely(&bpf_stats_enabled_key)) {
->   		struct bpf_prog_stats *stats;
-> -		u64 start = sched_clock();
-> -		unsigned long flags;
->   
->   		ret = dfunc(ctx, prog->insnsi, prog->bpf_func);
->   		stats = this_cpu_ptr(prog->stats);
-> @@ -593,6 +601,11 @@ static __always_inline u32 __bpf_prog_run(const struct bpf_prog *prog,
->   	} else {
->   		ret = dfunc(ctx, prog->insnsi, prog->bpf_func);
->   	}
-> +	bact = this_cpu_ptr(&bpftime);
-> +	flags = u64_stats_update_begin_irqsave(&bact->syncp);
-> +	u64_stats_add(&bact->nsecs, sched_clock() - start);
-> +	u64_stats_update_end_irqrestore(&bact->syncp, flags);
+> +FILES =3D program_types.csv
 > +
->   	return ret;
+> +TARGETS :=3D $(addprefix $(BUILDDIR)/, $(FILES))
+> +
+> +# Extract program types and properties from the section definitions in l=
+ibbpf.c such as
+> +# SEC_DEF("socket", SOCKET_FILTER, 0, SEC_NONE) to generate program_type=
+s.csv
+> +#
+> +# Here is a sample of the generated output that includes .rst formatting:
+> +#
+> +#  Program Type,Attach Type,ELF Section Name,Sleepable
+> +#  ``BPF_PROG_TYPE_SOCKET_FILTER``,,``socket``,
+> +#  ``BPF_PROG_TYPE_SK_REUSEPORT``,``BPF_SK_REUSEPORT_SELECT_OR_MIGRATE``=
+,``sk_reuseport/migrate``,
+> +#  ``BPF_PROG_TYPE_SK_REUSEPORT``,``BPF_SK_REUSEPORT_SELECT``,``sk_reuse=
+port``,
+> +#  ``BPF_PROG_TYPE_KPROBE``,,``kprobe+``,
+> +#  ``BPF_PROG_TYPE_KPROBE``,,``uprobe+``,
+> +#  ``BPF_PROG_TYPE_KPROBE``,,``uprobe.s+``,Yes
+> +
+> +$(BUILDDIR)/program_types.csv:	$(srctree)/tools/lib/bpf/libbpf.c
+> +	$(Q)awk -F'[",[:space:]]+' \
+> +	'BEGIN { print "Program Type,Attach Type,ELF Section Name,Sleepable" } \
+> +	/SEC_DEF\(\"/ && !/SEC_DEPRECATED/ { \
+> +	type =3D "``BPF_PROG_TYPE_" $$4 "``"; \
+> +	attach =3D index($$5, "0") ? "" : "``" $$5 "``"; \
+> +	section =3D "``" $$3 "``"; \
+> +	sleepable =3D index($$0, "SEC_SLEEPABLE") ? "Yes" : ""; \
+> +	print type "," attach "," section "," sleepable }' \
+> +	$< > $@
+> +
+> +.PHONY: all html epub xml latex linkcheck clean
+> +
+> +all: $(BUILDDIR) ${TARGETS}
+> +	@:
+> +
+> +html: all
+> +epub: all
+> +xml: all
+> +latex: all
+> +linkcheck:
+> +
+> +clean:
+> +	-$(Q)rm -f ${TARGETS} 2>/dev/null
+> +
+> +$(BUILDDIR):
+> +	$(Q)mkdir -p $@
+> diff --git a/Documentation/bpf/libbpf/index.rst b/Documentation/bpf/libbp=
+f/index.rst
+> index 3722537d1384..f9b3b252e28f 100644
+> --- a/Documentation/bpf/libbpf/index.rst
+> +++ b/Documentation/bpf/libbpf/index.rst
+> @@ -1,5 +1,7 @@
+>  .. SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
+>=20=20
+> +.. _libbpf:
+> +
+>  libbpf
+>  =3D=3D=3D=3D=3D=3D
+>=20=20
+> @@ -7,6 +9,7 @@ libbpf
+>     :maxdepth: 1
+>=20=20
+>     API Documentation <https://libbpf.readthedocs.io/en/latest/api.html>
+> +   program_types
+>     libbpf_naming_convention
+>     libbpf_build
+>=20=20
+> diff --git a/Documentation/bpf/libbpf/program_types.rst b/Documentation/b=
+pf/libbpf/program_types.rst
+> new file mode 100644
+> index 000000000000..04fbb48b8a6a
+> --- /dev/null
+> +++ b/Documentation/bpf/libbpf/program_types.rst
+> @@ -0,0 +1,32 @@
+> +.. SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
+> +
+> +.. _program_types_and_elf:
+> +
+> +Program Types and ELF Sections
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+> +
+> +The table below lists the program types, their attach types where releva=
+nt and the ELF section
+> +names supported by libbpf for them. The ELF section names follow these r=
+ules:
+> +
+> +- ``type`` is an exact match, e.g. ``SEC("socket")``
+> +- ``type+`` means it can be either exact ``SEC("type")`` or well-formed =
+``SEC("type/extras")``
+> +  with a =E2=80=98``/``=E2=80=99 separator between ``type`` and ``extras=
+``.
+> +
+> +When ``extras`` are specified, they provide details of how to auto-attac=
+h the BPF program.
+> +The format of ``extras`` depends on the program type, e.g. ``SEC("tracep=
+oint/<category>/<name>")``
+> +for tracepoints or ``SEC("usdt/<path-to-binary>:<usdt_provider>:<usdt_na=
+me>")`` for USDT probes.
+> +
+> +..
+> +  program_types.csv is generated from tools/lib/bpf/libbpf.c and is foma=
+tted like this:
+> +    Program Type,Attach Type,ELF Section Name,Sleepable
+> +    ``BPF_PROG_TYPE_SOCKET_FILTER``,,``socket``,
+> +    ``BPF_PROG_TYPE_SK_REUSEPORT``,``BPF_SK_REUSEPORT_SELECT_OR_MIGRATE`=
+`,``sk_reuseport/migrate``,
+> +    ``BPF_PROG_TYPE_SK_REUSEPORT``,``BPF_SK_REUSEPORT_SELECT``,``sk_reus=
+eport``,
+> +    ``BPF_PROG_TYPE_KPROBE``,,``kprobe+``,
+> +    ``BPF_PROG_TYPE_KPROBE``,,``uprobe+``,
+> +    ``BPF_PROG_TYPE_KPROBE``,,``uprobe.s+``,Yes
+> +
+> +.. csv-table:: Program Types and Their ELF Section Names
+> +   :file: ../../output/program_types.csv
+> +   :widths: 40 30 20 10
+> +   :header-rows: 1
+> diff --git a/Documentation/bpf/programs.rst b/Documentation/bpf/programs.=
+rst
+> index 620eb667ac7a..c99000ab6d9b 100644
+> --- a/Documentation/bpf/programs.rst
+> +++ b/Documentation/bpf/programs.rst
+> @@ -7,3 +7,6 @@ Program Types
+>     :glob:
+>=20=20
+>     prog_*
+> +
+> +For a list of all program types, see :ref:`program_types_and_elf` in
+> +the :ref:`libbpf` documentation.
 
-The overhead this adds unconditionally is no-go. Have you tried using/improving:
-
-commit 47c09d6a9f6794caface4ad50930460b82d7c670
-Author: Song Liu <songliubraving@fb.com>
-Date:   Mon Mar 9 10:32:15 2020 -0700
-
-     bpftool: Introduce "prog profile" command
-
-     With fentry/fexit programs, it is possible to profile BPF program with
-     hardware counters. Introduce bpftool "prog profile", which measures key
-     metrics of a BPF program.
-
-     bpftool prog profile command creates per-cpu perf events. Then it attaches
-     fentry/fexit programs to the target BPF program. The fentry program saves
-     perf event value to a map. The fexit program reads the perf event again,
-     and calculates the difference, which is the instructions/cycles used by
-     the target program.
-
-     Example input and output:
-
-       ./bpftool prog profile id 337 duration 3 cycles instructions llc_misses
-
-             4228 run_cnt
-          3403698 cycles                                              (84.08%)
-          3525294 instructions   #  1.04 insn per cycle               (84.05%)
-               13 llc_misses     #  3.69 LLC misses per million isns  (83.50%)
-
-     This command measures cycles and instructions for BPF program with id
-     337 for 3 seconds. The program has triggered 4228 times. The rest of the
-     output is similar to perf-stat. [...]
-
-Thanks,
-Daniel
+--=20
+Jani Nikula, Intel Open Source Graphics Center
