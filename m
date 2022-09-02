@@ -2,69 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E5AC5AB52B
-	for <lists+bpf@lfdr.de>; Fri,  2 Sep 2022 17:30:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B5D65AB538
+	for <lists+bpf@lfdr.de>; Fri,  2 Sep 2022 17:31:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236861AbiIBPaW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Sep 2022 11:30:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39670 "EHLO
+        id S236939AbiIBPbn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Sep 2022 11:31:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236500AbiIBPaD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Sep 2022 11:30:03 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 748151DA49;
-        Fri,  2 Sep 2022 08:08:11 -0700 (PDT)
-Received: from sslproxy04.your-server.de ([78.46.152.42])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1oU8HB-00011S-MS; Fri, 02 Sep 2022 17:08:09 +0200
-Received: from [85.1.206.226] (helo=linux-4.home)
-        by sslproxy04.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1oU8HB-000Sv5-GY; Fri, 02 Sep 2022 17:08:09 +0200
-Subject: Re: [PATCH bpf-next v3 1/2] Add subdir support to Documentation
- makefile
-To:     Donald Hunter <donald.hunter@gmail.com>, bpf@vger.kernel.org,
-        linux-doc@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-References: <20220829091500.24115-1-donald.hunter@gmail.com>
- <20220829091500.24115-2-donald.hunter@gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <3d08894c-b3d1-37e8-664e-48e66dc664ac@iogearbox.net>
-Date:   Fri, 2 Sep 2022 17:08:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S236395AbiIBPbL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Sep 2022 11:31:11 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58BF2F23C9;
+        Fri,  2 Sep 2022 08:12:41 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4MK1ZS1Rw6zKL17;
+        Fri,  2 Sep 2022 23:10:56 +0800 (CST)
+Received: from k01.huawei.com (unknown [10.67.174.197])
+        by APP3 (Coremail) with SMTP id _Ch0CgBn4UhlHRJja8YAAQ--.58277S2;
+        Fri, 02 Sep 2022 23:12:39 +0800 (CST)
+From:   Xu Kuohai <xukuohai@huaweicloud.com>
+To:     bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Subject: [PATCH bpf-next 0/2] Jit BPF_CALL to direct call when possible
+Date:   Fri,  2 Sep 2022 11:20:40 -0400
+Message-Id: <20220902152043.721806-1-xukuohai@huaweicloud.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20220829091500.24115-2-donald.hunter@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.6/26646/Fri Sep  2 09:55:25 2022)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: _Ch0CgBn4UhlHRJja8YAAQ--.58277S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrtrW3ZF15KFW7Kr1ftr13urg_yoW3Jrb_GF
+        WxAFy7A343ZFyUAasYya97AFy8KrWDtr18AFn0qrZ7t34ftw4DAry8XFWkX3WUXrWjkFyr
+        Cwsrur48tr1Y9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb7AYFVCjjxCrM7AC8VAFwI0_Xr0_Wr1l1xkIjI8I6I8E6xAIw20E
+        Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+        A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x02
+        67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
+        AFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
+        j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
+        kEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY
+        0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I
+        0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAI
+        cVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcV
+        CF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280
+        aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU13rcDUUUUU==
+X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 8/29/22 11:14 AM, Donald Hunter wrote:
-> Run make in list of subdirs to build generated sources and migrate
-> userspace-api/media to use this instead of being a special case.
-> 
-> Signed-off-by: Donald Hunter <donald.hunter@gmail.com>
+Currently BPF_CALL is always jited to indirect call, but when target is
+in the range of direct call, a BPF_CALL can be jited to direct call.
 
-Jonathan, given this touches Documentation/Makefile, could you ACK if
-it looks good to you? Noticed both patches don't have doc: $subj prefix,
-but that's something we could fix up.
+For example, the following BPF_CALL
 
-Maybe one small request, would be nice to build Documentation/bpf/libbpf/
-also with every BPF CI run to avoid breakage of program_types.csv. Donald
-could you check if feasible? Follow-up might be ok too, but up to Andrii.
+    call __htab_map_lookup_elem
 
-Thanks,
-Daniel
+is always jited to an indirect call:
+
+    mov     x10, #0xffffffffffff18f4
+    movk    x10, #0x821, lsl #16
+    movk    x10, #0x8000, lsl #32
+    blr     x10
+
+When the target is in the range of a direct call, it can be jited to:
+
+    bl      0xfffffffffd33bc98
+
+This patchset does such jit.
+
+Xu Kuohai (2):
+  bpf, arm64: Jit BPF_CALL to direct call when possible
+  bpf, arm64: Eliminate false -EFBIG error in bpf trampoline
+
+ arch/arm64/net/bpf_jit_comp.c | 136 ++++++++++++++++++++++------------
+ 1 file changed, 87 insertions(+), 49 deletions(-)
+
+-- 
+2.30.2
+
