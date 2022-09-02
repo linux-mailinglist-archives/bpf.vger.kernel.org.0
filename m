@@ -2,74 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E1D95AA633
-	for <lists+bpf@lfdr.de>; Fri,  2 Sep 2022 05:17:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EBF75AA65A
+	for <lists+bpf@lfdr.de>; Fri,  2 Sep 2022 05:28:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234435AbiIBDRL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Sep 2022 23:17:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48720 "EHLO
+        id S235136AbiIBD1u (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Sep 2022 23:27:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233616AbiIBDRI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 1 Sep 2022 23:17:08 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAD22A223D
-        for <bpf@vger.kernel.org>; Thu,  1 Sep 2022 20:17:01 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4MJjhz4WL7zlC5c
-        for <bpf@vger.kernel.org>; Fri,  2 Sep 2022 11:15:31 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-        by APP2 (Coremail) with SMTP id Syh0CgDXcWundRFjbRcDAQ--.40284S2;
-        Fri, 02 Sep 2022 11:16:58 +0800 (CST)
-Subject: Re: [PATCH bpf-next v2 4/4] selftests/bpf: Test concurrent updates on
- bpf_task_storage_busy
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     bpf@vger.kernel.org, Song Liu <songliubraving@fb.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Hao Sun <sunhao.th@gmail.com>, Hao Luo <haoluo@google.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
+        with ESMTP id S235175AbiIBD1g (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 1 Sep 2022 23:27:36 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 874E2A0622;
+        Thu,  1 Sep 2022 20:27:35 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id E5636B829B7;
+        Fri,  2 Sep 2022 03:27:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1416CC433C1;
+        Fri,  2 Sep 2022 03:27:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1662089252;
+        bh=qSAS0T0MuBmaWeT8uG5lNnET4yd1Q33sgQdS6DbDcJo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Qvnk9aGn58J554jGx93rrg65XFeihTphkgWxYKbWYj+w8dYmNgGUwSWflA4AdmhUg
+         AbVqcYUucbQnz/XNnCf9toUpbL1FvSoz5iThdvfUBVbT9xcgJ7y930xmQ81edGrzb0
+         TP/dJuUwCZxQ3SgFlCQSOFNt8bP5c4mjOkrAp9p5u5iZsq3hcIeIjziNHJ1a8PY3SX
+         g64TdCOTQ43CVy3z1fs/wpko3HvbEZC/wUG8rZ+GiiC958/B7ga4p01wl+tPNWovoR
+         EaDg0ltOoemE0r+kTJdaEGn4BFVQ9Bd6d766ultH2RxUxLLnALCVt273hjYLNJ78eQ
+         gRXrdlGXfJXmA==
+Date:   Fri, 2 Sep 2022 06:27:27 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Lorenz Bauer <oss@lmb.io>, houtao1@huawei.com
-References: <20220901061938.3789460-1-houtao@huaweicloud.com>
- <20220901061938.3789460-5-houtao@huaweicloud.com>
- <20220901193745.haylrp5omm7p2yiq@kafai-mbp.dhcp.thefacebook.com>
-From:   Hou Tao <houtao@huaweicloud.com>
-Message-ID: <0946ff6d-32f3-4886-2383-7fa8c73f7a4e@huaweicloud.com>
-Date:   Fri, 2 Sep 2022 11:16:55 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        David Howells <dhowells@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>,
+        keyrings@vger.kernel.org,
+        LSM List <linux-security-module@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Daniel =?iso-8859-1?Q?M=FCller?= <deso@posteo.net>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Subject: Re: [PATCH v14 05/12] KEYS: Move KEY_LOOKUP_ to include/linux/key.h
+ and set KEY_LOOKUP_FLAGS_ALL
+Message-ID: <YxF4H9MTDj+PnJ+V@kernel.org>
+References: <20220830161716.754078-1-roberto.sassu@huaweicloud.com>
+ <20220830161716.754078-6-roberto.sassu@huaweicloud.com>
+ <Yw7NKJfhyJqIWUcx@kernel.org>
+ <Yw7o43Ivfo3jRwQg@kernel.org>
+ <cad9a20cadc074cf15dcd0d8eb63b43c98a2f13d.camel@huaweicloud.com>
+ <CAADnVQLCyts0JZ7_=rTp8vP67ET4PjVsZ0Cis0XKUpeCdC13LA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20220901193745.haylrp5omm7p2yiq@kafai-mbp.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID: Syh0CgDXcWundRFjbRcDAQ--.40284S2
-X-Coremail-Antispam: 1UD129KBjvdXoWruF1kAF4DKw1rKF4xJF13Arb_yoW3WFcE9F
-        4DK3Z3GrW5trnrJ3sYkFnxKayDWw43uas5Wwn8ZFy7Ww17X397tr4DK3WfAws7CFsYyr9x
-        C34UKa40gw15ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbIxYFVCjjxCrM7AC8VAFwI0_Xr0_Wr1l1xkIjI8I6I8E6xAIw20E
-        Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-        A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
-        67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
-        07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_
-        WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-        CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
-        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
-        7IU13rcDUUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQLCyts0JZ7_=rTp8vP67ET4PjVsZ0Cis0XKUpeCdC13LA@mail.gmail.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -78,31 +83,24 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+On Wed, Aug 31, 2022 at 08:33:38AM -0700, Alexei Starovoitov wrote:
+> On Wed, Aug 31, 2022 at 2:24 AM Roberto Sassu
+> <roberto.sassu@huaweicloud.com> wrote:
+> > > > >
+> > > > > +#define KEY_LOOKUP_CREATE        0x01
+> > > > > +#define KEY_LOOKUP_PARTIAL       0x02
+> > > > > +#define KEY_LOOKUP_FLAGS_ALL     (KEY_LOOKUP_CREATE |
+> > > > > KEY_LOOKUP_PARTIAL)
+> > > >
+> > > > IMHO this could be just KEY_LOOKUP_ALL.
+> 
+> Since this is supposed to be kernel internal flags
+> please make them enum, so that bpf progs can auto-adjust
+> (with the help of CORE) to changes in this enum.
+> With #define there is no way for bpf prog to know
+> when #define changed in the future kernels.
 
-On 9/2/2022 3:37 AM, Martin KaFai Lau wrote:
-> On Thu, Sep 01, 2022 at 02:19:38PM +0800, Hou Tao wrote:
->> +void test_task_storage_map_stress_lookup(void)
->> +{
-SNIP
->> +	ctx.start = true;
->> +	for (i = 0; i < nr; i++)
->> +		pthread_join(tids[i], NULL);
->> +
->> +	skel->bss->pid = getpid();
->> +	err = read_bpf_task_storage_busy__attach(skel);
->> +	CHECK(err, "attach", "error %d\n", err);
->> +
->> +	/* Trigger program */
->> +	syscall(SYS_gettid);
->> +	skel->bss->pid = 0;
->> +
->> +	CHECK(skel->bss->busy != 0, "bad bpf_task_storage_busy", "got %d\n", skel->bss->busy);
-> Applied.  One nit.
-> Please follow up with a test PASS or SKIP printf.
-> There is a 'skips' counter in test_maps.c that
-> is good to bump also.
-Will send a follow-up patch to do it. Thanks.
->
-> .
+Isn't enum also Rust compatibility requirement, or do I remember
+incorrectly? Anyway, good suggestion.
 
+BR, Jarkko
