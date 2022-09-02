@@ -2,196 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CEE45AAD8B
-	for <lists+bpf@lfdr.de>; Fri,  2 Sep 2022 13:25:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28E0F5AAE31
+	for <lists+bpf@lfdr.de>; Fri,  2 Sep 2022 14:16:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236014AbiIBLXk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Sep 2022 07:23:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55494 "EHLO
+        id S235217AbiIBMQl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Sep 2022 08:16:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232239AbiIBLXN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Sep 2022 07:23:13 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15067D2EA0;
-        Fri,  2 Sep 2022 04:22:53 -0700 (PDT)
-Received: from dggpeml500026.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4MJwR13v23z1N7k3;
-        Fri,  2 Sep 2022 19:19:09 +0800 (CST)
-Received: from huawei.com (10.175.101.6) by dggpeml500026.china.huawei.com
- (7.185.36.106) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Fri, 2 Sep
- 2022 19:22:50 +0800
-From:   Zhengchao Shao <shaozhengchao@huawei.com>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <jhs@mojatatu.com>, <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
-        <martin.lau@linux.dev>
-CC:     <daniel@iogearbox.net>, <john.fastabend@gmail.com>,
-        <ast@kernel.org>, <andrii@kernel.org>, <song@kernel.org>,
-        <yhs@fb.com>, <kpsingh@kernel.org>, <sdf@google.com>,
-        <haoluo@google.com>, <jolsa@kernel.org>, <weiyongjun1@huawei.com>,
-        <yuehaibing@huawei.com>, <shaozhengchao@huawei.com>
-Subject: [PATCH net-next 22/22] net: sched: act: remove redundant code in act_api
-Date:   Fri, 2 Sep 2022 19:24:46 +0800
-Message-ID: <20220902112446.29858-23-shaozhengchao@huawei.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20220902112446.29858-1-shaozhengchao@huawei.com>
-References: <20220902112446.29858-1-shaozhengchao@huawei.com>
+        with ESMTP id S231266AbiIBMQk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Sep 2022 08:16:40 -0400
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FA7EC2F92;
+        Fri,  2 Sep 2022 05:16:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1662120999; x=1693656999;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=CJ7K6MAmvy9eYTd7oP1wszLEZKBCQJ6tFK2SaopjaYI=;
+  b=Rzs0+2nyXx00SSq6SgHv/p7hUhLoqv/wHOoFB1v12CAXOL2TO6LBzXX/
+   Ky+VtPEcqsqZuXwOaLjckJHMs0HivQkGLU1AV6hgLxb2QJb3hjiA0NnQ7
+   iWaHUVeFKeNfO89VU6k2XFQolGMLbbmmbDvy0L6fydGCEBHgIN9di4EwI
+   lp/KZBOqHEEkApjzi+TPF9tJPqUrio4tVmEqJG2ij47ai2jH/gcYXM0IQ
+   ZVurhisjy74nfCEvQbPWjH/UU5BZQ6rDlIOset0bYF4YjgtvPTjUKTnpX
+   ihHcH5Tx5ZGkKXDqDB4xCry0kNsdwF7wlouRrIo/0E3TmXYMbKXFxvPm5
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10457"; a="278983881"
+X-IronPort-AV: E=Sophos;i="5.93,283,1654585200"; 
+   d="scan'208";a="278983881"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2022 05:16:38 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,283,1654585200"; 
+   d="scan'208";a="681270907"
+Received: from lkp-server02.sh.intel.com (HELO 95dfd251caa2) ([10.239.97.151])
+  by fmsmga004.fm.intel.com with ESMTP; 02 Sep 2022 05:16:34 -0700
+Received: from kbuild by 95dfd251caa2 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1oU5b8-000039-0W;
+        Fri, 02 Sep 2022 12:16:34 +0000
+Date:   Fri, 2 Sep 2022 20:16:24 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Daniel Xu <dxu@dxuuu.xyz>, bpf@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, memxor@gmail.com
+Cc:     kbuild-all@lists.01.org, Daniel Xu <dxu@dxuuu.xyz>,
+        pablo@netfilter.org, fw@strlen.de, toke@kernel.org,
+        martin.lau@linux.dev, netfilter-devel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v4 4/5] bpf: Add support for writing to
+ nf_conn:mark
+Message-ID: <202209022000.s58TmR9h-lkp@intel.com>
+References: <073173502d762faf87bde0ca23e609c84848dd7e.1661192455.git.dxu@dxuuu.xyz>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.101.6]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml500026.china.huawei.com (7.185.36.106)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <073173502d762faf87bde0ca23e609c84848dd7e.1661192455.git.dxu@dxuuu.xyz>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Based on previous patches of this patchset, the walk and lookup hooks in
-the tc_action_ops structure are no longer used, and redundant code logic
-branches should be removed. tcf_generic_walker() and tcf_idr_search() are
-also used only in the act_api.c, change them to static.
+Hi Daniel,
 
-Signed-off-by: Zhengchao Shao <shaozhengchao@huawei.com>
----
- include/net/act_api.h | 10 ----------
- net/sched/act_api.c   | 42 ++++++++++++------------------------------
- 2 files changed, 12 insertions(+), 40 deletions(-)
+Thank you for the patch! Yet something to improve:
 
-diff --git a/include/net/act_api.h b/include/net/act_api.h
-index a79d6e58519e..ebd84ef06b5b 100644
---- a/include/net/act_api.h
-+++ b/include/net/act_api.h
-@@ -118,15 +118,10 @@ struct tc_action_ops {
- 		       struct tcf_result *); /* called under RCU BH lock*/
- 	int     (*dump)(struct sk_buff *, struct tc_action *, int, int);
- 	void	(*cleanup)(struct tc_action *);
--	int     (*lookup)(struct net *net, struct tc_action **a, u32 index);
- 	int     (*init)(struct net *net, struct nlattr *nla,
- 			struct nlattr *est, struct tc_action **act,
- 			struct tcf_proto *tp,
- 			u32 flags, struct netlink_ext_ack *extack);
--	int     (*walk)(struct net *, struct sk_buff *,
--			struct netlink_callback *, int,
--			const struct tc_action_ops *,
--			struct netlink_ext_ack *);
- 	void	(*stats_update)(struct tc_action *, u64, u64, u64, u64, bool);
- 	size_t  (*get_fill_size)(const struct tc_action *act);
- 	struct net_device *(*get_dev)(const struct tc_action *a,
-@@ -178,11 +173,6 @@ static inline void tc_action_net_exit(struct list_head *net_list,
- 	rtnl_unlock();
- }
- 
--int tcf_generic_walker(struct tc_action_net *tn, struct sk_buff *skb,
--		       struct netlink_callback *cb, int type,
--		       const struct tc_action_ops *ops,
--		       struct netlink_ext_ack *extack);
--int tcf_idr_search(struct tc_action_net *tn, struct tc_action **a, u32 index);
- int tcf_idr_create(struct tc_action_net *tn, u32 index, struct nlattr *est,
- 		   struct tc_action **a, const struct tc_action_ops *ops,
- 		   int bind, bool cpustats, u32 flags);
-diff --git a/net/sched/act_api.c b/net/sched/act_api.c
-index 7063d2004199..2d26aec25e3a 100644
---- a/net/sched/act_api.c
-+++ b/net/sched/act_api.c
-@@ -636,10 +636,10 @@ static int tcf_del_walker(struct tcf_idrinfo *idrinfo, struct sk_buff *skb,
- 	return ret;
- }
- 
--int tcf_generic_walker(struct tc_action_net *tn, struct sk_buff *skb,
--		       struct netlink_callback *cb, int type,
--		       const struct tc_action_ops *ops,
--		       struct netlink_ext_ack *extack)
-+static int tcf_generic_walker(struct tc_action_net *tn, struct sk_buff *skb,
-+			      struct netlink_callback *cb, int type,
-+			      const struct tc_action_ops *ops,
-+			      struct netlink_ext_ack *extack)
- {
- 	struct tcf_idrinfo *idrinfo = tn->idrinfo;
- 
-@@ -653,9 +653,8 @@ int tcf_generic_walker(struct tc_action_net *tn, struct sk_buff *skb,
- 		return -EINVAL;
- 	}
- }
--EXPORT_SYMBOL(tcf_generic_walker);
- 
--int tcf_idr_search(struct tc_action_net *tn, struct tc_action **a, u32 index)
-+static int tcf_idr_search(struct tc_action_net *tn, struct tc_action **a, u32 index)
- {
- 	struct tcf_idrinfo *idrinfo = tn->idrinfo;
- 	struct tc_action *p;
-@@ -674,7 +673,6 @@ int tcf_idr_search(struct tc_action_net *tn, struct tc_action **a, u32 index)
- 	}
- 	return false;
- }
--EXPORT_SYMBOL(tcf_idr_search);
- 
- static int __tcf_generic_walker(struct net *net, struct sk_buff *skb,
- 				struct netlink_callback *cb, int type,
-@@ -945,8 +943,7 @@ int tcf_register_action(struct tc_action_ops *act,
- 	struct tc_action_ops *a;
- 	int ret;
- 
--	if (!act->act || !act->dump || !act->init ||
--	    (!act->net_id && (!act->walk || !act->lookup)))
-+	if (!act->act || !act->dump || !act->init || !act->net_id)
- 		return -EINVAL;
- 
- 	/* We have to register pernet ops before making the action ops visible,
-@@ -1658,16 +1655,10 @@ static struct tc_action *tcf_action_get_1(struct net *net, struct nlattr *nla,
- 		goto err_out;
- 	}
- 	err = -ENOENT;
--	if (ops->lookup) {
--		if (ops->lookup(net, &a, index) == 0) {
--			NL_SET_ERR_MSG(extack, "TC action with specified index not found");
--			goto err_mod;
--		}
--	} else {
--		if (__tcf_idr_search(net, ops, &a, index) == 0) {
--			NL_SET_ERR_MSG(extack, "TC action with specified index not found");
--			goto err_mod;
--		}
-+
-+	if (__tcf_idr_search(net, ops, &a, index) == 0) {
-+		NL_SET_ERR_MSG(extack, "TC action with specified index not found");
-+		goto err_mod;
- 	}
- 
- 	module_put(ops->owner);
-@@ -1730,12 +1721,7 @@ static int tca_action_flush(struct net *net, struct nlattr *nla,
- 		goto out_module_put;
- 	}
- 
--	if (ops->walk) {
--		err = ops->walk(net, skb, &dcb, RTM_DELACTION, ops, extack);
--	} else {
--		err = __tcf_generic_walker(net, skb, &dcb, RTM_DELACTION, ops, extack);
--	}
--
-+	err = __tcf_generic_walker(net, skb, &dcb, RTM_DELACTION, ops, extack);
- 	if (err <= 0) {
- 		nla_nest_cancel(skb, nest);
- 		goto out_module_put;
-@@ -2153,11 +2139,7 @@ static int tc_dump_action(struct sk_buff *skb, struct netlink_callback *cb)
- 	if (nest == NULL)
- 		goto out_module_put;
- 
--	if (a_o->walk)
--		ret = a_o->walk(net, skb, cb, RTM_GETACTION, a_o, NULL);
--	else
--		ret = __tcf_generic_walker(net, skb, cb, RTM_GETACTION, a_o, NULL);
--
-+	ret = __tcf_generic_walker(net, skb, cb, RTM_GETACTION, a_o, NULL);
- 	if (ret < 0)
- 		goto out_module_put;
- 
+[auto build test ERROR on bpf-next/master]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Daniel-Xu/bpf-Remove-duplicate-PTR_TO_BTF_ID-RO-check/20220823-032643
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+config: x86_64-rhel-8.3-kselftests (https://download.01.org/0day-ci/archive/20220902/202209022000.s58TmR9h-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-5) 11.3.0
+reproduce (this is a W=1 build):
+        # https://github.com/intel-lab-lkp/linux/commit/496ec6d75c8e8758f93c6b987eee83713c911a05
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Daniel-Xu/bpf-Remove-duplicate-PTR_TO_BTF_ID-RO-check/20220823-032643
+        git checkout 496ec6d75c8e8758f93c6b987eee83713c911a05
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        make W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash
+
+If you fix the issue, kindly add following tag where applicable
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+   ld: net/core/filter.o: in function `tc_cls_act_btf_struct_access':
+>> net/core/filter.c:8644: undefined reference to `nf_conntrack_btf_struct_access'
+   ld: net/core/filter.o: in function `xdp_btf_struct_access':
+   include/net/net_namespace.h:369: undefined reference to `nf_conntrack_btf_struct_access'
+   pahole: .tmp_vmlinux.btf: No such file or directory
+   .btf.vmlinux.bin.o: file not recognized: file format not recognized
+
+
+vim +8644 net/core/filter.c
+
+  8632	
+  8633	static int tc_cls_act_btf_struct_access(struct bpf_verifier_log *log,
+  8634						const struct btf *btf,
+  8635						const struct btf_type *t, int off,
+  8636						int size, enum bpf_access_type atype,
+  8637						u32 *next_btf_id,
+  8638						enum bpf_type_flag *flag)
+  8639	{
+  8640		if (atype == BPF_READ)
+  8641			return btf_struct_access(log, btf, t, off, size, atype, next_btf_id,
+  8642						 flag);
+  8643	
+> 8644		return nf_conntrack_btf_struct_access(log, btf, t, off, size, atype,
+  8645						      next_btf_id, flag);
+  8646	}
+  8647	
+
 -- 
-2.17.1
-
+0-DAY CI Kernel Test Service
+https://01.org/lkp
