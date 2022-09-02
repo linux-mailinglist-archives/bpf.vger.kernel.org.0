@@ -2,66 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5983D5AB92D
-	for <lists+bpf@lfdr.de>; Fri,  2 Sep 2022 22:09:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C02D95AB95E
+	for <lists+bpf@lfdr.de>; Fri,  2 Sep 2022 22:22:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229490AbiIBUJw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Sep 2022 16:09:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55394 "EHLO
+        id S229500AbiIBUS0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Sep 2022 16:18:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbiIBUJu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Sep 2022 16:09:50 -0400
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F04CA32A8B;
-        Fri,  2 Sep 2022 13:09:48 -0700 (PDT)
+        with ESMTP id S229484AbiIBUSZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Sep 2022 16:18:25 -0400
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E64FF0779
+        for <bpf@vger.kernel.org>; Fri,  2 Sep 2022 13:18:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1662149388; x=1693685388;
+  t=1662149904; x=1693685904;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=dfYcUn+noeT5T7sIeUiJNjSqZU06JxPpPMa1yx2CwNs=;
-  b=Xy8Y9qqZGC/baP+jeME/oFDbDgmHUmWi1ZUnQv47muSxlHpzswmPrO5R
-   v5j48Zmjw7/Jd1bWtVpbAME/5PvYBVtiNaIXsHzg/iDRhMpZhufn2HjzK
-   PA3wpiKlLjaB9By2ungKB4gUxq1UDkNtcMv33Tnhhxp2RUqi41Yu74EGQ
-   BqczzdPFWPwOIR7fbsg2TkKUzJ4qznQqnaXyrkobiBfsa59De5gt7kkwp
-   DU60wfV3+9osazpwG9ANUng4J3H/Vkr0T5rjLjH+h4m3IB8sWhH3a11PA
-   E3fWASxJ2z88bYfkbCrSfyxGZFqHiDeKkTb670PzM6uRKLkc7/q7VJ0UD
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10458"; a="382373013"
+  bh=/7vsQj12ut9zMOv/30A2helBXPdrzne8MM0lkuf6Et8=;
+  b=cj07SZoCP+bydHMn0BCktHAWLPMO0phXULS4X5sJEKAoBPpEhOmKcjUm
+   0iZUaWSkYgUX861fyRD3NrskFGnrPTHziF+k8CMfpFCbgT64OCETumWex
+   RPPeZoSKmBr+08yM7oT/zx4ps0OzB/zJ1RADE2vDZaBzORRcPigk3mZR6
+   QT0mUIINWN8XiI+91L9nJZ4fq1eByTqzm9CtnuDD1UAxJrT9+5tHYH4yV
+   Y5CL+v28RxUaw5iB9GXfqp4q1MRnewgiaJNr8v1L3RFdp5G6XpI5OhQPm
+   lgnl7TFSDaduEjrnprYinlbwlnPrK+X3EzzSz5TBNEVKb0EF9GfNahaIp
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10458"; a="297371364"
 X-IronPort-AV: E=Sophos;i="5.93,285,1654585200"; 
-   d="scan'208";a="382373013"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2022 12:36:25 -0700
+   d="scan'208";a="297371364"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2022 13:18:23 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.93,285,1654585200"; 
-   d="scan'208";a="609084187"
+   d="scan'208";a="643046135"
 Received: from lkp-server02.sh.intel.com (HELO 95dfd251caa2) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 02 Sep 2022 12:36:18 -0700
+  by orsmga008.jf.intel.com with ESMTP; 02 Sep 2022 13:18:21 -0700
 Received: from kbuild by 95dfd251caa2 with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1oUCSf-0000WB-2p;
-        Fri, 02 Sep 2022 19:36:17 +0000
-Date:   Sat, 3 Sep 2022 03:35:57 +0800
+        id 1oUD7M-0000ZX-1W;
+        Fri, 02 Sep 2022 20:18:20 +0000
+Date:   Sat, 3 Sep 2022 04:18:03 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Yunhui Cui <cuiyunhui@bytedance.com>, corbet@lwn.net,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, akpm@linux-foundation.org,
-        hannes@cmpxchg.org, david@redhat.com,
-        mail@christoph.anton.mitterer.name, ccross@google.com,
-        vincent.whitchurch@axis.com, paul.gortmaker@windriver.com,
-        peterz@infradead.org, edumazet@google.com, joshdon@google.com
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH] bpf: added the account of BPF running time
-Message-ID: <202209030333.Goj9I0Pe-lkp@intel.com>
-References: <20220902101217.1419-1-cuiyunhui@bytedance.com>
+To:     Harsh Modi <harshmodi@google.com>, bpf@vger.kernel.org
+Cc:     kbuild-all@lists.01.org, harshmodi@google.com, sdf@google.com,
+        ast@kernel.org, haoluo@google.com, joannelkoong@gmail.com,
+        quentin@isovalent.com, joe@cilium.io
+Subject: Re: [PATCH bpf-next] bpf: Add bpf_[skb|xdp]_packet_hash.
+Message-ID: <202209030436.cVQGH3xQ-lkp@intel.com>
+References: <20220831233615.2288256-1-harshmodi@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220902101217.1419-1-cuiyunhui@bytedance.com>
+In-Reply-To: <20220831233615.2288256-1-harshmodi@google.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -72,25 +64,21 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Yunhui,
+Hi Harsh,
 
 Thank you for the patch! Yet something to improve:
 
 [auto build test ERROR on bpf-next/master]
-[also build test ERROR on bpf/master linus/master v6.0-rc3 next-20220901]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Yunhui-Cui/bpf-added-the-account-of-BPF-running-time/20220902-181437
+url:    https://github.com/intel-lab-lkp/linux/commits/Harsh-Modi/bpf-Add-bpf_-skb-xdp-_packet_hash/20220901-073646
 base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-config: um-x86_64_defconfig (https://download.01.org/0day-ci/archive/20220903/202209030333.Goj9I0Pe-lkp@intel.com/config)
+config: um-x86_64_defconfig (https://download.01.org/0day-ci/archive/20220903/202209030436.cVQGH3xQ-lkp@intel.com/config)
 compiler: gcc-11 (Debian 11.3.0-5) 11.3.0
 reproduce (this is a W=1 build):
-        # https://github.com/intel-lab-lkp/linux/commit/e31420772f2a63d6bc561211b8ef0331d41b2123
+        # https://github.com/intel-lab-lkp/linux/commit/078b031d06a73f3fc17333d808db554ec4753a90
         git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Yunhui-Cui/bpf-added-the-account-of-BPF-running-time/20220902-181437
-        git checkout e31420772f2a63d6bc561211b8ef0331d41b2123
+        git fetch --no-tags linux-review Harsh-Modi/bpf-Add-bpf_-skb-xdp-_packet_hash/20220901-073646
+        git checkout 078b031d06a73f3fc17333d808db554ec4753a90
         # save the config file
         mkdir build_dir && cp config build_dir/.config
         make W=1 O=build_dir ARCH=um SUBARCH=x86_64 SHELL=/bin/bash
@@ -103,16 +91,8 @@ All errors (new ones prefixed by >>):
    /usr/bin/ld: warning: arch/x86/um/vdso/vdso.o: missing .note.GNU-stack section implies executable stack
    /usr/bin/ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
    /usr/bin/ld: warning: .tmp_vmlinux.kallsyms1 has a LOAD segment with RWX permissions
-   /usr/bin/ld: kernel/seccomp.o: in function `seccomp_run_filters':
-   seccomp.c:(.text+0xaa7): undefined reference to `bpftime'
-   /usr/bin/ld: fs/proc/stat.o: in function `show_stat':
-   stat.c:(.text+0x124): undefined reference to `bpftime'
-   /usr/bin/ld: stat.c:(.text+0x332): undefined reference to `bpftime'
-   /usr/bin/ld: net/core/flow_dissector.o: in function `bpf_flow_dissect':
->> flow_dissector.c:(.text+0x9f5): undefined reference to `bpftime'
-   /usr/bin/ld: net/core/dev.o: in function `bpf_prog_run_generic_xdp':
->> dev.c:(.text+0x8c43): undefined reference to `bpftime'
-   /usr/bin/ld: net/core/ptp_classifier.o:ptp_classifier.c:(.text+0xf8): more undefined references to `bpftime' follow
+   /usr/bin/ld: net/core/filter.o: in function `crc32c_csum_update':
+>> filter.c:(.text+0x61fd): undefined reference to `crc32c'
    collect2: error: ld returned 1 exit status
 
 -- 
