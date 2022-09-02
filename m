@@ -2,89 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A51B35AB258
-	for <lists+bpf@lfdr.de>; Fri,  2 Sep 2022 15:57:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9CF15AB490
+	for <lists+bpf@lfdr.de>; Fri,  2 Sep 2022 16:58:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232681AbiIBN47 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Sep 2022 09:56:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35278 "EHLO
+        id S236510AbiIBO6Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Sep 2022 10:58:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237128AbiIBN4j (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Sep 2022 09:56:39 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 413985F9A3
-        for <bpf@vger.kernel.org>; Fri,  2 Sep 2022 06:30:21 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BFFB3620BD
-        for <bpf@vger.kernel.org>; Fri,  2 Sep 2022 13:30:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 260BFC43470;
-        Fri,  2 Sep 2022 13:30:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662125415;
-        bh=IGY+W2ex9PE5eB3W6TZ9UFvtM+euQB26qM+2a08CbO0=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=eUydsMBpy6vtJ5Y1pNO/TrClsi+z8z6jQLvNbT9lea5h1l3AdSIgsKvxzvFNJzRWl
-         UPYBwLy/tu1zykSl5HfLHVqYmUsYLW7oKYh1rpHg7a6xT2oTo6DqckSeNDtXbn+t5B
-         C8KaM4mDR0vX0lyIXEGZx4Z8IdrewWBXAtRNeTFK6Uv17YhQ+CWzxy6veSCScYpJIi
-         XRJSWbQ8f1c3CP3ol9htr7D33JCcJpl5eNI7g/MR9q66jtAfisZslVTjWumReezhLI
-         9YNOG4Q8COdiNM8zPtiwf2I7eAJiVT5fFxVOvY9RCRz4dMGdZBkJ9AfV9ObpQco8lR
-         yqWZz2Ju0Ajhg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 0BD40E924D6;
-        Fri,  2 Sep 2022 13:30:15 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S236502AbiIBO5s (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Sep 2022 10:57:48 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90F3DAE4A
+        for <bpf@vger.kernel.org>; Fri,  2 Sep 2022 07:22:53 -0700 (PDT)
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1oU65Y-000C5F-GN; Fri, 02 Sep 2022 14:48:00 +0200
+Received: from [85.1.206.226] (helo=linux-4.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1oU65Y-000B5y-7e; Fri, 02 Sep 2022 14:48:00 +0200
+Subject: Re: [RFC bpf-next 1/2] bpf: tnums: warn against the usage of
+ tnum_in(tnum_range(), ...)
+To:     Shung-Hsi Yu <shung-hsi.yu@suse.com>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+References: <20220831031907.16133-1-shung-hsi.yu@suse.com>
+ <20220831031907.16133-2-shung-hsi.yu@suse.com>
+ <0f6d7f97-8cd9-d513-368b-39706dd6b06a@iogearbox.net>
+ <YxF984GIloJWnV9x@syu-laptop>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <615a2102-2244-f0be-6375-16cf795715ef@iogearbox.net>
+Date:   Fri, 2 Sep 2022 14:47:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next 1/2] bpf: Support getting tunnel flags
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <166212541503.23395.14569680525940531567.git-patchwork-notify@kernel.org>
-Date:   Fri, 02 Sep 2022 13:30:15 +0000
-References: <20220831144010.174110-1-shmulik.ladkani@gmail.com>
-In-Reply-To: <20220831144010.174110-1-shmulik.ladkani@gmail.com>
-To:     Shmulik Ladkani <shmulik@metanetworks.com>
-Cc:     bpf@vger.kernel.org, daniel@iogearbox.net, ast@kernel.org,
-        andrii@kernel.org, shmulik.ladkani@gmail.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <YxF984GIloJWnV9x@syu-laptop>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.6/26646/Fri Sep  2 09:55:25 2022)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This series was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
-
-On Wed, 31 Aug 2022 17:40:09 +0300 you wrote:
-> Existing 'bpf_skb_get_tunnel_key' extracts various tunnel parameters
-> (id, ttl, tos, local and remote) but does not expose ip_tunnel_info's
-> tun_flags to the bpf program.
+On 9/2/22 5:52 AM, Shung-Hsi Yu wrote:
+> On Thu, Sep 01, 2022 at 05:00:58PM +0200, Daniel Borkmann wrote:
+>> On 8/31/22 5:19 AM, Shung-Hsi Yu wrote:
+>>> Commit a657182a5c51 ("bpf: Don't use tnum_range on array range checking
+>>> for poke descriptors") has shown that using tnum_range() as argument to
+>>> tnum_in() can lead to misleading code that looks like tight bound check
+>>> when in fact the actual allowed range is much wider.
+>>>
+>>> Document such behavior to warn against its usage in general, and suggest
+>>> some scenario where result can be trusted.
+>>>
+>>> Link: https://lore.kernel.org/bpf/984b37f9fdf7ac36831d2137415a4a915744c1b6.1661462653.git.daniel@iogearbox.net/
+>>> Link: https://www.openwall.com/lists/oss-security/2022/08/26/1
+>>> Signed-off-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+>>
+>> Any objections from your side if I merge this? Thanks for adding doc. :)
 > 
-> It makes sense to expose tun_flags to the bpf program.
+> There is a small typo I meant to fix with s/including/include below.
 > 
-> Assume for example multiple GRE tunnels maintained on a single GRE
-> interface in collect_md mode. The program expects origins to initiate
-> over GRE, however different origins use different GRE characteristics
-> (e.g. some prefer to use GRE checksum, some do not; some pass a GRE key,
-> some do not, etc..).
-> 
-> [...]
+> Other than that, none at all, thanks! :)
 
-Here is the summary with links:
-  - [bpf-next,1/2] bpf: Support getting tunnel flags
-    https://git.kernel.org/bpf/bpf-next/c/44c51472bef8
-  - [bpf-next,2/2] selftests/bpf: Amend test_tunnel to exercise BPF_F_TUNINFO_FLAGS
-    https://git.kernel.org/bpf/bpf-next/c/8cc61b7a6416
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Fixed up and applied to bpf-next, thanks!
