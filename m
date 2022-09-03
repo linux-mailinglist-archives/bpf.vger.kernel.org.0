@@ -2,57 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60F855ABF12
-	for <lists+bpf@lfdr.de>; Sat,  3 Sep 2022 15:14:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB5C95ABF3F
+	for <lists+bpf@lfdr.de>; Sat,  3 Sep 2022 16:13:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230428AbiICNMf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 3 Sep 2022 09:12:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54686 "EHLO
+        id S229610AbiICONw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 3 Sep 2022 10:13:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbiICNMc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 3 Sep 2022 09:12:32 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6EE0647C6
-        for <bpf@vger.kernel.org>; Sat,  3 Sep 2022 06:12:28 -0700 (PDT)
+        with ESMTP id S229463AbiICONv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 3 Sep 2022 10:13:51 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5F7958517;
+        Sat,  3 Sep 2022 07:13:49 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 3155EB8015B
-        for <bpf@vger.kernel.org>; Sat,  3 Sep 2022 13:12:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C08AAC433D6;
-        Sat,  3 Sep 2022 13:12:21 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4AC126151E;
+        Sat,  3 Sep 2022 14:13:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8490CC433C1;
+        Sat,  3 Sep 2022 14:13:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662210745;
-        bh=FcCmoVd8zXlYviMQ5hMC5tuU6gPTm1FmNDegKhoNshs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G8tsxBD/vxIooDapdo4ukS4XY+rT4/olwprmSh+iSc4G2eNFWQour4SG7+BBYrSd5
-         j51qzXvvMCMyEyGWbMWgx+30bIU3VMSTBwkyIls62sQOm3coymaV3qrUOlppio5IHn
-         sIiNBZp4KXRsXHOzjI44AZEZ8mhdsnwxesZqGRCJuiE4r499ZVvOQ936gCMitgehbA
-         xsrymCldIhwQ/5a5oORrb2vMINtAP5RzoE01l907Ya0vbAu4zZGs4Cc97Nif0tR7Pv
-         FhnDgfiMGyqb6PLaC/+A3FXuBEUP6/tdsrblxeKtXaHUytLCEApdGW755ZZi6rwQ+2
-         Pw5PcsnUI+RGg==
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
+        s=k20201202; t=1662214428;
+        bh=wR96nJJd4WNj9UMkwxs6pSZVS/BHL8f9p4HAQZWJjJ4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Z3KeN3h26tWcHPiPLDiRO4iFIQGbenqR+bbtXn+Gm+0Mj+oZjU9/kFZRypspfbkXu
+         M07a/V/D2PNHdKU1SowaN+ZbmpawwguKXZ+xnmJnihSw3ITOR/wMz+y7N4LjroLGEh
+         RXFY2pv6jxQoJnnx0k0tiicFmdOshTpjVf4EuETNLVIT5VPpIUDnq7IpDuEXxzDpD/
+         wOFgFnOddWCi6B2Zoff/qcDqLE+hER+qRV5rGnraBrvB9H2u81jECvO8wOKsEi0//c
+         lGkfTCz5Zhw832mHKjDB4ZA9tdIkExmy/TAjm9uD97oNRPpguFbAYf5u5B4rmwVBhF
+         u+vDa7vg8Kfiw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 0CE6F404A1; Sat,  3 Sep 2022 11:13:46 -0300 (-03)
+Date:   Sat, 3 Sep 2022 11:13:45 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Jiri Olsa <olsajiri@gmail.com>, stable@vger.kernel.org,
+        bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [PATCHv3 bpf-next 2/2] bpf: Move bpf_dispatcher function out of ftrace locations
-Date:   Sat,  3 Sep 2022 15:11:54 +0200
-Message-Id: <20220903131154.420467-3-jolsa@kernel.org>
-X-Mailer: git-send-email 2.37.2
-In-Reply-To: <20220903131154.420467-1-jolsa@kernel.org>
-References: <20220903131154.420467-1-jolsa@kernel.org>
+        Andrii Nakryiko <andrii@kernel.org>, Yonghong Song <yhs@fb.com>
+Subject: Re: [PATCH bpf v2] bpf: Add config for skipping BTF enum64s
+Message-ID: <YxNhGc7Q+eiHCIr5@kernel.org>
+References: <20220828233317.35464-1-yakoyoku@gmail.com>
+ <YxI0dO2yuqTK0H6f@krava>
+ <YxLlouzk1O1Prg3J@kroah.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YxLlouzk1O1Prg3J@kroah.com>
+X-Url:  http://acmel.wordpress.com
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -63,73 +60,61 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The dispatcher function is attached/detached to trampoline by
-dispatcher update function. At the same time it's available as
-ftrace attachable function.
+Em Sat, Sep 03, 2022 at 07:26:58AM +0200, Greg KH escreveu:
+> On Fri, Sep 02, 2022 at 06:51:00PM +0200, Jiri Olsa wrote:
+> > On Sun, Aug 28, 2022 at 08:33:17PM -0300, Martin Rodriguez Reboredo wrote:
+> > > After the release of pahole 1.24 some people in the dwarves mailing list
+> > > notified issues related to building the kernel with the BTF_DEBUG_INFO
+> > > option toggled. They seem to be happenning due to the kernel and
+> > > resolve_btfids interpreting btf types erroneously. In the dwarves list
+> > > I've proposed a change to the scripts that I've written while testing
+> > > the Rust kernel, it simply passes the --skip_encoding_btf_enum64 to
+> > > pahole if it has version 1.24.
+> > > 
+> > > v1 -> v2:
+> > > - Switch to off by default and remove the config option.
+> > > - Send it to stable instead.
+> > 
+> > hi,
+> > we have change that needs to go to stable kernels but does not have the
+> > equivalent fix in Linus tree
+> 
+> Why isn't it also relevant in Linus's tree?
 
-After discussion [1] the proposed solution is to use compiler
-attributes to alter bpf_dispatcher_##name##_func function:
-
-  - remove it from being instrumented with __no_instrument_function__
-    attribute, so ftrace has no track of it
-
-  - but still generate 5 nop instructions with patchable_function_entry(5)
-    attribute, which are expected by bpf_arch_text_poke used by
-    dispatcher update function
-
-Enabling HAVE_DYNAMIC_FTRACE_NO_PATCHABLE option for x86, so
-__patchable_function_entries functions are not part of ftrace/mcount
-locations.
-
-Adding attributes to bpf_dispatcher_XXX function on x86_64 so it's
-kept out of ftrace locations and has 5 byte nop generated at entry.
-
-These attributes need to be arch specific as pointer out by Ilya
-Leoshkevic in here [2].
-
-The dispatcher image is generated only for x86_64 arch, so the
-code can stay as is for other archs.
-
-[1] https://lore.kernel.org/bpf/20220722110811.124515-1-jolsa@kernel.org/
-[2] https://lore.kernel.org/bpf/969a14281a7791c334d476825863ee449964dd0c.camel@linux.ibm.com/
-Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- arch/x86/Kconfig    | 1 +
- include/linux/bpf.h | 7 +++++++
- 2 files changed, 8 insertions(+)
-
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index f9920f1341c8..089c20cefd2b 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -284,6 +284,7 @@ config X86
- 	select PROC_PID_ARCH_STATUS		if PROC_FS
- 	select HAVE_ARCH_NODE_DEV_GROUP		if X86_SGX
- 	imply IMA_SECURE_AND_OR_TRUSTED_BOOT    if EFI
-+	select HAVE_DYNAMIC_FTRACE_NO_PATCHABLE
+See below.
  
- config INSTRUCTION_DECODER
- 	def_bool y
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 9c1674973e03..e267625557cb 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -924,7 +924,14 @@ int arch_prepare_bpf_dispatcher(void *image, s64 *funcs, int num_funcs);
- 	},							\
- }
- 
-+#ifdef CONFIG_X86_64
-+#define BPF_DISPATCHER_ATTRIBUTES __attribute__((patchable_function_entry(5)))
-+#else
-+#define BPF_DISPATCHER_ATTRIBUTES
-+#endif
-+
- #define DEFINE_BPF_DISPATCHER(name)					\
-+	notrace BPF_DISPATCHER_ATTRIBUTES				\
- 	noinline __nocfi unsigned int bpf_dispatcher_##name##_func(	\
- 		const void *ctx,					\
- 		const struct bpf_insn *insnsi,				\
--- 
-2.37.2
+> > what would be the best way to submit it?
+> 
+> Submit it here and document the heck out of why this isn't in Linus's
+> tree, what changes instead fixed it there, and so on.  Look in the
+> archives for examples of how this is done, one recent one that I can
+> think of is here:
+> 	https://lore.kernel.org/r/20220831191348.3388208-1-jannh@google.com
+> 
+> > the issue is that new 'pahole' will generate BTF data that are not supported
+> > by older kernels, so we need to add --skip_encoding_btf_enum64 option to
+> > stable kernel's scripts/pahole-flags.sh to generate proper BTF data
+> > 
+> > we got complains that after upgrading to latest pahole the stable kernel
+> > compilation fails
+> 
+> And what is happening in Linus's tree for this same issue?
 
+So, BTF_KIND_ENUM64 is a new BTF tag, one that is not accepted by older
+kernels, but is accepted by the BPF verifier on Linus' tree.
+
+Its about avoiding having a pahole command line with lots of
+--enable-new-feature-foo for new stuff with the default producing the
+most recent BTF spec.
+
+One way to documenting it: if you update pahole, then please use
+--skip_encoding_FOO for these new FOO features on kernels where those
+aren't supported.
+
+So this isn't a backport from a fix on Linus' tree, as both the older
+pahole that doesn't encode BTF_KIND_ENUM64 and the new one, that encodes
+it by default, work with Linus' tree.
+
+Does this violates the stable@ rules?
+
+- Arnaldo
