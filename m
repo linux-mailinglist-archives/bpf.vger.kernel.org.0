@@ -2,89 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6AEC5ABF62
-	for <lists+bpf@lfdr.de>; Sat,  3 Sep 2022 16:46:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D1F95AC0EE
+	for <lists+bpf@lfdr.de>; Sat,  3 Sep 2022 20:56:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229525AbiICOon (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 3 Sep 2022 10:44:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60082 "EHLO
+        id S231430AbiICS4S (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 3 Sep 2022 14:56:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229516AbiICOol (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 3 Sep 2022 10:44:41 -0400
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 086431658A
-        for <bpf@vger.kernel.org>; Sat,  3 Sep 2022 07:44:39 -0700 (PDT)
-Received: from [192.168.1.138] ([37.4.248.23]) by mrelayeu.kundenserver.de
- (mreue012 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1M3VAI-1oTwPy2kDq-000f5B; Sat, 03 Sep 2022 16:44:24 +0200
-Message-ID: <d58ed1a8-99d5-c45a-975f-85b71a1f3928@i2se.com>
-Date:   Sat, 3 Sep 2022 16:44:24 +0200
+        with ESMTP id S229526AbiICS4R (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 3 Sep 2022 14:56:17 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8554C4E845;
+        Sat,  3 Sep 2022 11:56:16 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id c11so1985468wrp.11;
+        Sat, 03 Sep 2022 11:56:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date;
+        bh=auo0Yh1ew/M6mCn6aj4WFRXG6DkdVRyhM9HBkAtNNMk=;
+        b=gn1NG5U15WlrFg13cEU+uRfBvztx2UMeacnxZAiCrTVGCwEjx0v2ByLkQVN4n85u2V
+         PWnab4rY8JAtAEcHbUd3+RRcFr8wcYIM9HMVdE21PHiVTKrVTsto2KQfx6V1WrinRYgB
+         drCDNH2grgFt5GiwJ4EI/iwp3+T+wCH/0N6/fw/rSPKpqwhGZLX2Tx6wY7D5ihqKAl7T
+         FPTtXNC02qRdM4M2TGk0hGipLz4BDTX2hoDvvWJOj8jVBR1Nl3h99FCsVpLUvI9Nc2iE
+         BrYGE1XIcqZAOBi62fPHPzUWzua1b1HnRhckSf4UF/H5vyyrzm+2F0+SUFCwYvpdokal
+         8qVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date;
+        bh=auo0Yh1ew/M6mCn6aj4WFRXG6DkdVRyhM9HBkAtNNMk=;
+        b=C/5BSw/+iKO6WLaZN+ZgTBC7npU6wS99xKGrFYnhWdVcPPsyeM6TRjlSQZhYCN1BDi
+         bTZhoc9tRzqLc31/2NHo/VsVcGKDQb02V48hSVIm2MnMkfI2bn8CyYUmE4Hd4jV31cff
+         SdP/mAJSt2W6Dx6uOf+d/lqBjOpo77FdzXZ4/ZIQkA2PA3m07FhM0benDb99OBW/Vvpn
+         ZYw9R2a7hxDL+q9RRP7OIaCHufO0ddO+3oP8ymqyhetVoVxw2fOj5/XlIfBQgqrHJbaG
+         jfSZL+7yD/eFgRC7sOWzWejFa9Q7mfo9gm+/Vsa+lSGAhZVlwBZMzSwQJKR1mEGm9Vbj
+         Tblw==
+X-Gm-Message-State: ACgBeo0OeowRKoXojiWhUeW5DaDW0FLlgPkXqdQWjjwBz0kOINs/7ZuX
+        RnUbx05aTpwNdFN0s/LoVpxTTe7Ur7vb
+X-Google-Smtp-Source: AA6agR6w2GvmL0I/sgLYnsKM5RoKw/N7UFODpAp5t/8fRe5vlsIcHUmZbbE7C99mhzBtq5j272E1bg==
+X-Received: by 2002:adf:e508:0:b0:228:62fd:932b with SMTP id j8-20020adfe508000000b0022862fd932bmr928365wrm.410.1662231374836;
+        Sat, 03 Sep 2022 11:56:14 -0700 (PDT)
+Received: from playground (host-92-29-143-165.as13285.net. [92.29.143.165])
+        by smtp.gmail.com with ESMTPSA id e7-20020a05600c4e4700b003a60f0f34b7sm6006123wmq.40.2022.09.03.11.56.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 03 Sep 2022 11:56:14 -0700 (PDT)
+Date:   Sat, 3 Sep 2022 19:56:06 +0100
+From:   Jules Irenge <jbi.octave@gmail.com>
+To:     ast@kernel.org
+Cc:     john.fastabend@gmail.com, andrii@kernel.org, daniel@iogearbox.net,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        martin.lau@linux.dev, jbi.octave@gmail.com
+Subject: [PATCH 1/2] bpf: Fix warning of Using plain integer as NULL pointer
+Message-ID: <YxOjRm5xqL68JVnt@playground>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [BUG] null pointer dereference when loading bpf_preload on
- Raspberry Pi
-Content-Language: en-US
-From:   Stefan Wahren <stefan.wahren@i2se.com>
-To:     Thorsten Leemhuis <linux@leemhuis.info>,
-        regressions@lists.linux.dev
-Cc:     bpf@vger.kernel.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        jpalus@fastmail.com
-References: <f038d6f9-b96b-0749-111c-33ac8939a1c0@i2se.com>
- <56ffb198-8c93-1ec2-0b5e-9441e96359de@leemhuis.info>
- <76951173-ce4e-adda-e80e-7c313725e937@i2se.com>
-In-Reply-To: <76951173-ce4e-adda-e80e-7c313725e937@i2se.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:+2wqmTWz5UK/XijbOhTsP53XMFGI+FaL6s6B4wNJgCMwtSICCx8
- 4LD7ylUlgQ1XkYJT6EDV1WG7aCsmcDp6is+CDK83zjaZnNbCuoHU51tZhn9tk9SQ1DfwAFR
- KHkm37fSUuSyhirPEcxWOCu41rX2rdlzDVqhn1bZfdba6GmXLAdRIxxWClzgAv3dP+ghdPr
- 5d0PKnT1BVPxFFoiO4dqw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:7oaClSOWpGk=:hjymvORhn7quqz3RChSFiQ
- BsuZRNmTMZ2x9CxzlPU1dn5Bj1OFweURUyH3se562VgueAW5WmHDs/sUfxf1AzrURXfbUsmGB
- Bl4rRKgqgLrNLQZD6tnxk52PjzCbMBmW5aMWvzVO5AwwYD18hkYifs6xMtBkgUDGD9+DvnQZr
- okAEF5kcHuIx09xKwyJH5uJaLN5+FWEBqO95ChbUBCbEmcgNi4yzw+XPd84KzBXE0GEuOc+SG
- ux3x9ih1QmOmr5nrGqtW2+3uTPgQeKk8Equi++L7YYCeYqcFFwIfvK2OoI82I47jJT3fNalsf
- JZVA/UBI3NUumKqrLjlIVk/6akjezvvSZ4ZPSpI2hKpfGq5oHIvFi8U/HJ2Lbpy1ObuhAJHaE
- w177vai/Di9fav4lI40bQu7B82k+ddKPdcng0iMyKFpmM99O/KDrs0kBD1VtKEmmKRwIG88Ee
- ntWuWSklWPySi7AwjUX3yNp8cjxvAzjA05aNUuj8BN6ermPOk692SRNThkQN2REKNVV30J1PE
- VJsp9mUfPd18zqysy74K20guP80uCOf5OT+dSpfbJ5Ex3MKr9HKlAauGSCXRxCuc0E35Fof95
- 9082mgaPh4VZw0qJgY9zp03d95Q6X+P685o9SoAbNgqbhz60Yoie2/vYbY4+3hGOiqLqNlPW9
- fFk+0kLZ0AwyJ5F2iL7191p6FDsc6cMdiE0xS6tKd7F5Div3T/Vli6IRtymD7Q4rDZELd5/Tz
- wtDjsziuLsv5XbibHJJZ7rzVQMjw5E53xd9YfP6UqC3XRaKZqZo4kqhYNU9gSDkCPE0F+po2W
- GN/pzDkyoJQsOuYka4FVwipqiLrbg==
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Am 03.09.22 um 16:17 schrieb Stefan Wahren:
-> Hi Thorsten,
->
-> Am 19.06.22 um 19:06 schrieb Thorsten Leemhuis:
->> [TLDR: I'm adding this regression report to the list of tracked
->> regressions; all text from me you find below is based on a few templates
->> paragraphs you might have encountered already already in similar form.]
->
-> as reported by Jan on Bugzilla [1] the issue has been resolved by
->
-> e2dcac2f58f5 ("BPF: Fix potential bad pointer dereference in 
-> bpf_sys_bpf()")
->
-> I can confirm the fix.
+This patch fixes a warning generated by Sparse
 
-sorry missed the link.
+"Using plain integer as NULL pointer"
 
-[1] - https://bugzilla.kernel.org/show_bug.cgi?id=216105
+by replacing the offending 0 by NULL.
 
-> #regzbot fixed-by: |e2dcac2f58f5
->
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
+---
+ kernel/bpf/syscall.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 27760627370d..427b7e3829e0 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -598,7 +598,7 @@ void bpf_map_free_kptrs(struct bpf_map *map, void *map_value)
+ 		if (off_desc->type == BPF_KPTR_UNREF) {
+ 			u64 *p = (u64 *)btf_id_ptr;
+ 
+-			WRITE_ONCE(p, 0);
++			WRITE_ONCE(p, NULL);
+ 			continue;
+ 		}
+ 		old_ptr = xchg(btf_id_ptr, 0);
+-- 
+2.35.1
+
