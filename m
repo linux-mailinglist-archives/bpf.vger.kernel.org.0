@@ -2,64 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1530D5AC104
-	for <lists+bpf@lfdr.de>; Sat,  3 Sep 2022 21:02:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2F545AC110
+	for <lists+bpf@lfdr.de>; Sat,  3 Sep 2022 21:11:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229648AbiICTC2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 3 Sep 2022 15:02:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37450 "EHLO
+        id S231357AbiICTLM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 3 Sep 2022 15:11:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbiICTC1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 3 Sep 2022 15:02:27 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 410D6459B7;
-        Sat,  3 Sep 2022 12:02:26 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id w5so6213875wrn.12;
-        Sat, 03 Sep 2022 12:02:26 -0700 (PDT)
+        with ESMTP id S229698AbiICTLL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 3 Sep 2022 15:11:11 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 943F159278;
+        Sat,  3 Sep 2022 12:11:10 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id c4so4176032iof.3;
+        Sat, 03 Sep 2022 12:11:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date;
-        bh=Qf7PXikGCovsdv/2K6jAdSbyiEi6rrfmnYyZf0F4aGk=;
-        b=PArMLiFee//94f9H5QNZjUZjFuoq+KvecU3v0RVUxJ3Go0RNuyHUBsggZXC1NuoBXo
-         uvQvbSex10fLw4LMOgDBZQoBmHiCIJli3qPtPq69zkacaxIFT8EldYR5hsuTmOrjcOJK
-         Cg6Qso+q+z3xIpFFqGLEsbqV36YJuTcBO4p9TvQ7SfGxoGCtXkrddaL7jZPgJ97XV+HV
-         MyG5Yhck95bj+0gqLbnaaJCUpSDNDyWaGniBLIImCpeqAiJ1StRaSd3nvByaFHIKlhRW
-         dSTEYvxJ9F26SdLQp/gQC5OjxiAEUfe/9pZB8h2lDfK+mfxMK1k/1/lhq/gBo5nO/a38
-         /6XA==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=Mbyw/mu0jAIVQROaKkVGCnmmrU+pXQz7nTijzFBftWo=;
+        b=RaZ3n9mWytjtDX0egW+ngxgH8Wf329+qiS4fGPVW4zS7OF31vEn7sWrE3Uoiw4NaU5
+         OdrZUtk8ayr+zbaR6mnVkxCBdLYSYWakXP+kYtpis22ihHep13HpJQG9/Pbyv/OokFip
+         hdBxZb/mmlDyQoEo0gUPt+XjlWasQhDlzpoJyFKh8ql/tDMYKwoDeJMTOwR53gKWjZPR
+         tf6UDyumdI5XLSw57ikgYjB5kTj5rdAiJxR+q58b3AJB+q+vEEqZR8o1loZRqVKQClT5
+         0e9t5apyXwCIfFfQX+bWSAhST6qP7jLAA4RBVlVDKVfzk2dpZ1JnGKIcY4+JihTk7b46
+         kBoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date;
-        bh=Qf7PXikGCovsdv/2K6jAdSbyiEi6rrfmnYyZf0F4aGk=;
-        b=eRCW3Y1fehld63zt6v+5/e0zy5z4izaPdivO3sVCQSELAKaU6Q9SyFpDCfOihq5jxi
-         D9QWjHEDnZfTkyKFhfgAxoBo9fRarmqIu+KiwgKLTlM+GLPDOq6zBkAqyM6okGGqYSfY
-         NAeOd/h/6OOHC7qUj1PacGahzYMU2UaH2iJG5l8s9l0VE46H2vTHo/oSNJQG94Xhsxgt
-         CCRpIMvPs4mXeoR+bDbs1jeHRtr3SdJTrK9xz26g6O0MRSAgzYwc4/RFhre25k4EPkZ9
-         TsNBn8PDuGFhq18XvDC4iYgLHSuMW0YBSYGjTl9GhXQHHctKf+pdPU1Q+efFVKtILAZK
-         ynHw==
-X-Gm-Message-State: ACgBeo1v2ML/+lib71nMxkNK5+Uy/vdkehc5eoc17Gg3V+kS13o6oLsa
-        W32d22YYt+KU2cdmpB7Bmg==
-X-Google-Smtp-Source: AA6agR7kdeDvq4gxLSPKLxeBw32Ouq9hhnC9Ft8uf6ZUtdmoNBeGrCy0oyCLkaPvRF4r3SoDu/DJcA==
-X-Received: by 2002:a5d:59a6:0:b0:226:fdaf:3ece with SMTP id p6-20020a5d59a6000000b00226fdaf3ecemr6121754wrr.444.1662231744731;
-        Sat, 03 Sep 2022 12:02:24 -0700 (PDT)
-Received: from playground (host-92-29-143-165.as13285.net. [92.29.143.165])
-        by smtp.gmail.com with ESMTPSA id f15-20020adfb60f000000b00226d1b81b45sm5167315wre.27.2022.09.03.12.02.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Sep 2022 12:02:24 -0700 (PDT)
-Date:   Sat, 3 Sep 2022 20:02:15 +0100
-From:   Jules Irenge <jbi.octave@gmail.com>
-To:     martin.lau@linux.dev
-Cc:     Elana.Copperman@mobileye.com, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org, sdf@google.com,
-        haoluo@google.com
-Subject: [PATCH 2/2] bpf: Fix warning of incorrect type in return expression
-Message-ID: <YxOkt4An+u1azlvG@playground>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=Mbyw/mu0jAIVQROaKkVGCnmmrU+pXQz7nTijzFBftWo=;
+        b=cafaRNT5ajPf0lNQz2HtqT5XequfL9ssy1flKzPGwE69IaBj7oiHcpIwML0mz83i/z
+         JIwxgozTxfXjK6qzO+2wfvYSG4T+KR+baGQVyd75yJwRVNStfZ28Aq8P7iUMjvO+odXz
+         eU5HJpzmYmoiS+hywPQz/5vDqdFL1ePct02rdUfPJde62qcHg5UmeQoGJpuP5ZnfdwgT
+         ZS5H0I+ZCtnCcRY+gE4gZPuMAaJE5HBB3tK2YEYzkZ8s6Dh1AJSKd9AP4nyEgette1x2
+         IcrSRc+Aiddfb6rNwekZaHVmub7zXYX2/bf6mLd2f58fXi3XzAq4d69839dxk6cmpJRr
+         A8bw==
+X-Gm-Message-State: ACgBeo2457uOQlagKlmdPaTXz4he/PNM3A4nsPTeQrexf5bhnDlBz0qJ
+        myDpFHK7hMQ3TEoWOtoBIq0+kEat73TcAVF1ZJgxPUhzFhw=
+X-Google-Smtp-Source: AA6agR6X5Z375QTRfJMD4VpBbtZW/vPEcOsnzOy7Bi4b301xYoD27Gzo7ZeUXt1cn4RKtYPtS1Q7gmw0NY+vHlWWFN0=
+X-Received: by 2002:a02:3f63:0:b0:349:cef9:d8c2 with SMTP id
+ c35-20020a023f63000000b00349cef9d8c2mr22836615jaf.231.1662232269958; Sat, 03
+ Sep 2022 12:11:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <YxOjRm5xqL68JVnt@playground>
+In-Reply-To: <YxOjRm5xqL68JVnt@playground>
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date:   Sat, 3 Sep 2022 21:10:31 +0200
+Message-ID: <CAP01T750UfvnrS7pc6t5_z6P8xH6iPh_66X_fsAgidBqwsbdXQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] bpf: Fix warning of Using plain integer as NULL pointer
+To:     Jules Irenge <jbi.octave@gmail.com>
+Cc:     ast@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
+        daniel@iogearbox.net, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, martin.lau@linux.dev
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -70,48 +66,36 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Sparse reports a warning at bpf_array_map_seq_start()
+On Sat, 3 Sept 2022 at 20:59, Jules Irenge <jbi.octave@gmail.com> wrote:
+>
+> This patch fixes a warning generated by Sparse
+>
+> "Using plain integer as NULL pointer"
+>
+> by replacing the offending 0 by NULL.
+>
+> Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
+> ---
+>  kernel/bpf/syscall.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 27760627370d..427b7e3829e0 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -598,7 +598,7 @@ void bpf_map_free_kptrs(struct bpf_map *map, void *map_value)
+>                 if (off_desc->type == BPF_KPTR_UNREF) {
+>                         u64 *p = (u64 *)btf_id_ptr;
+>
+> -                       WRITE_ONCE(p, 0);
+> +                       WRITE_ONCE(p, NULL);
 
-"warning: incorrect type in return expression (different address spaces)"
+Uff, this should have been WRITE_ONCE(*p, 0) instead. Mea Culpa.
+Can you make that fix? It's not a big problem since it's just that the
+pointer won't be cleared on map value delete (and there is nothing to
+reclaim for the unref case when map is freed), so you can target
+bpf-next with a Fixes tag.
 
-The root cause is the function expect a return of type void *
-but instead got a percpu value in one of the return.
-
-To fix this a variable of type void * is created
-and the complainining return value is saved into the variable and return.
-
-Fix incorrect type in return expression
-
-Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
----
- kernel/bpf/arraymap.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-index 624527401d4d..b1914168c23a 100644
---- a/kernel/bpf/arraymap.c
-+++ b/kernel/bpf/arraymap.c
-@@ -548,6 +548,7 @@ static void *bpf_array_map_seq_start(struct seq_file *seq, loff_t *pos)
- 	struct bpf_map *map = info->map;
- 	struct bpf_array *array;
- 	u32 index;
-+	void *pptrs;
- 
- 	if (info->index >= map->max_entries)
- 		return NULL;
-@@ -556,8 +557,10 @@ static void *bpf_array_map_seq_start(struct seq_file *seq, loff_t *pos)
- 		++*pos;
- 	array = container_of(map, struct bpf_array, map);
- 	index = info->index & array->index_mask;
--	if (info->percpu_value_buf)
--	       return array->pptrs[index];
-+	if (info->percpu_value_buf) {
-+		pptrs = &array->pptrs[index];
-+		return pptrs;
-+	}
- 	return array_map_elem_ptr(array, index);
- }
- 
--- 
-2.35.1
-
+So in your patch you will need [PATCH bpf-next] in the subject and the
+fixes tag would be:
+Fixes: 14a324f6a67e ("bpf: Wire up freeing of referenced kptr")
