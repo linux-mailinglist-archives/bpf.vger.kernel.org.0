@@ -2,206 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A2FB5ABCAF
-	for <lists+bpf@lfdr.de>; Sat,  3 Sep 2022 05:58:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A88C25ABD3C
+	for <lists+bpf@lfdr.de>; Sat,  3 Sep 2022 07:26:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230102AbiICD6f (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Sep 2022 23:58:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38534 "EHLO
+        id S232155AbiICF0o (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 3 Sep 2022 01:26:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231379AbiICD6e (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Sep 2022 23:58:34 -0400
-Received: from mail.hallyn.com (mail.hallyn.com [178.63.66.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 416923ECDF;
-        Fri,  2 Sep 2022 20:58:31 -0700 (PDT)
-Received: by mail.hallyn.com (Postfix, from userid 1001)
-        id E6017D39; Fri,  2 Sep 2022 22:58:28 -0500 (CDT)
-Date:   Fri, 2 Sep 2022 22:58:28 -0500
-From:   "Serge E. Hallyn" <serge@hallyn.com>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     "Serge E. Hallyn" <serge@hallyn.com>,
-        Song Liu <songliubraving@fb.com>,
-        Paul Moore <paul@paul-moore.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Frederick Lawler <fred@cloudflare.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "revest@chromium.org" <revest@chromium.org>,
-        "jackmanb@chromium.org" <jackmanb@chromium.org>,
+        with ESMTP id S232008AbiICF0o (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 3 Sep 2022 01:26:44 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C73AFD345D;
+        Fri,  2 Sep 2022 22:26:42 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 58FD660B28;
+        Sat,  3 Sep 2022 05:26:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E525C433D7;
+        Sat,  3 Sep 2022 05:26:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1662182801;
+        bh=B079wv8FTG2FZoN2VxIhQToUfCLjJr0frv6LTV1SiVw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=W4tKqyF9FUw1vBpORijFWWzJVD0C2XaM5g5h6m19SntJQ4giAynL2VDvuxY+c8lWk
+         MmalnC50fWzxphYxCz4b+m51Fs8KIyI7fkrK/Bm+b0SWuF7c7RyEWmrTaXxqIA5TM3
+         cb2bF6DIhQn2u0NxOgKTuUveMW7o8hEikC8xAXAU=
+Date:   Sat, 3 Sep 2022 07:26:58 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     stable@vger.kernel.org, bpf@vger.kernel.org,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        James Morris <jmorris@namei.org>,
-        "stephen.smalley.work@gmail.com" <stephen.smalley.work@gmail.com>,
-        "eparis@parisplace.org" <eparis@parisplace.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        bpf <bpf@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        "selinux@vger.kernel.org" <selinux@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "kernel-team@cloudflare.com" <kernel-team@cloudflare.com>,
-        "cgzones@googlemail.com" <cgzones@googlemail.com>,
-        "karl@bigbadwolfsecurity.com" <karl@bigbadwolfsecurity.com>,
-        "tixxdz@gmail.com" <tixxdz@gmail.com>
-Subject: Re: [PATCH v5 0/4] Introduce security_create_user_ns()
-Message-ID: <20220903035828.GA23652@mail.hallyn.com>
-References: <CAHC9VhRqBxtV04ARQFPWpMf1aFZo0HP_HiJ+8VpXAT-zXF6UXw@mail.gmail.com>
- <20220819144537.GA16552@mail.hallyn.com>
- <CAHC9VhSZ0aaa3k3704j8_9DJvSNRy-0jfXpy1ncs2Jmo8H0a7g@mail.gmail.com>
- <875yigp4tp.fsf@email.froward.int.ebiederm.org>
- <CAHC9VhTN09ZabnQnsmbSjKgb8spx7_hkh4Z+mq5ArQmfPcVqAg@mail.gmail.com>
- <0D14C118-E644-4D7B-84C0-CA7752DC0605@fb.com>
- <20220826152445.GB12466@mail.hallyn.com>
- <25C89E75-A900-42C7-A8E4-2800AA2E3387@fb.com>
- <20220826210039.GA15952@mail.hallyn.com>
- <20220829153304.nvhakybpkj7erpuc@wittgenstein>
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Subject: Re: [PATCH bpf v2] bpf: Add config for skipping BTF enum64s
+Message-ID: <YxLlouzk1O1Prg3J@kroah.com>
+References: <20220828233317.35464-1-yakoyoku@gmail.com>
+ <YxI0dO2yuqTK0H6f@krava>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220829153304.nvhakybpkj7erpuc@wittgenstein>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <YxI0dO2yuqTK0H6f@krava>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 29, 2022 at 05:33:04PM +0200, Christian Brauner wrote:
-> On Fri, Aug 26, 2022 at 04:00:39PM -0500, Serge Hallyn wrote:
-> > On Fri, Aug 26, 2022 at 05:00:51PM +0000, Song Liu wrote:
-> > > 
-> > > 
-> > > > On Aug 26, 2022, at 8:24 AM, Serge E. Hallyn <serge@hallyn.com> wrote:
-> > > > 
-> > > > On Thu, Aug 25, 2022 at 09:58:46PM +0000, Song Liu wrote:
-> > > >> 
-> > > >> 
-> > > >>> On Aug 25, 2022, at 12:19 PM, Paul Moore <paul@paul-moore.com> wrote:
-> > > >>> 
-> > > >>> On Thu, Aug 25, 2022 at 2:15 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
-> > > >>>> Paul Moore <paul@paul-moore.com> writes:
-> > > >>>>> On Fri, Aug 19, 2022 at 10:45 AM Serge E. Hallyn <serge@hallyn.com> wrote:
-> > > >>>>>> I am hoping we can come up with
-> > > >>>>>> "something better" to address people's needs, make everyone happy, and
-> > > >>>>>> bring forth world peace.  Which would stack just fine with what's here
-> > > >>>>>> for defense in depth.
-> > > >>>>>> 
-> > > >>>>>> You may well not be interested in further work, and that's fine.  I need
-> > > >>>>>> to set aside a few days to think on this.
-> > > >>>>> 
-> > > >>>>> I'm happy to continue the discussion as long as it's constructive; I
-> > > >>>>> think we all are.  My gut feeling is that Frederick's approach falls
-> > > >>>>> closest to the sweet spot of "workable without being overly offensive"
-> > > >>>>> (*cough*), but if you've got an additional approach in mind, or an
-> > > >>>>> alternative approach that solves the same use case problems, I think
-> > > >>>>> we'd all love to hear about it.
-> > > >>>> 
-> > > >>>> I would love to actually hear the problems people are trying to solve so
-> > > >>>> that we can have a sensible conversation about the trade offs.
-> > > >>> 
-> > > >>> Here are several taken from the previous threads, it's surely not a
-> > > >>> complete list, but it should give you a good idea:
-> > > >>> 
-> > > >>> https://lore.kernel.org/linux-security-module/CAHC9VhQnPAsmjmKo-e84XDJ1wmaOFkTKPjjztsOa9Yrq+AeAQA@mail.gmail.com/
-> > > >>> 
-> > > >>>> As best I can tell without more information people want to use
-> > > >>>> the creation of a user namespace as a signal that the code is
-> > > >>>> attempting an exploit.
-> > > >>> 
-> > > >>> Some use cases are like that, there are several other use cases that
-> > > >>> go beyond this; see all of our previous discussions on this
-> > > >>> topic/patchset.  As has been mentioned before, there are use cases
-> > > >>> that require improved observability, access control, or both.
-> > > >>> 
-> > > >>>> As such let me propose instead of returning an error code which will let
-> > > >>>> the exploit continue, have the security hook return a bool.  With true
-> > > >>>> meaning the code can continue and on false it will trigger using SIGSYS
-> > > >>>> to terminate the program like seccomp does.
-> > > >>> 
-> > > >>> Having the kernel forcibly exit the process isn't something that most
-> > > >>> LSMs would likely want.  I suppose we could modify the hook/caller so
-> > > >>> that *if* an LSM wanted to return SIGSYS the system would kill the
-> > > >>> process, but I would want that to be something in addition to
-> > > >>> returning an error code like LSMs normally do (e.g. EACCES).
-> > > >> 
-> > > >> I am new to user_namespace and security work, so please pardon me if
-> > > >> anything below is very wrong. 
-> > > >> 
-> > > >> IIUC, user_namespace is a tool that enables trusted userspace code to 
-> > > >> control the behavior of untrusted (or less trusted) userspace code. 
-> > > > 
-> > > > No.  user namespaces are not a way for more trusted code to control the
-> > > > behavior of less trusted code.
-> > > 
-> > > Hmm.. In this case, I think I really need to learn more. 
-> > > 
-> > > Thanks for pointing out my misunderstanding.
+On Fri, Sep 02, 2022 at 06:51:00PM +0200, Jiri Olsa wrote:
+> On Sun, Aug 28, 2022 at 08:33:17PM -0300, Martin Rodriguez Reboredo wrote:
+> > After the release of pahole 1.24 some people in the dwarves mailing list
+> > notified issues related to building the kernel with the BTF_DEBUG_INFO
+> > option toggled. They seem to be happenning due to the kernel and
+> > resolve_btfids interpreting btf types erroneously. In the dwarves list
+> > I've proposed a change to the scripts that I've written while testing
+> > the Rust kernel, it simply passes the --skip_encoding_btf_enum64 to
+> > pahole if it has version 1.24.
 > > 
-> > (I thought maybe Eric would chime in with a better explanation, but I'll
-> > fill it in for now :)
-> > 
-> > One of the main goals of user namespaces is to allow unprivileged users
-> > to do things like chroot and mount, which are very useful development
-> > tools, without needing admin privileges.  So it's almost the opposite
-> > of what you said: rather than to enable trusted userspace code to control
-> > the behavior of less trusted code, it's to allow less privileged code to
-> > do things which do not affect other users, without having to assume *more*
-> > privilege.
-> > 
-> > To be precise, the goals were:
-> > 
-> > 1. uid mapping - allow two users to both "use uid 500" without conflicting
-> > 2. provide (unprivileged) users privilege over their own resources
-> > 3. absolutely no extra privilege over other resources
-> > 4. be able to nest
-> > 
-> > While (3) was technically achieved, the problem we have is that
-> > (2) provides unprivileged users the ability to exercise kernel code
-> > which they previously could not.
+> > v1 -> v2:
+> > - Switch to off by default and remove the config option.
+> > - Send it to stable instead.
 > 
-> The consequence of the refusal to give users any way to control whether
-> or not user namespaces are available to unprivileged users is that a
-> non-significant number of distros still carry the same patch for about
-> 10 years now that adds an unprivileged_userns_clone sysctl to restrict
-> them to privileged users. That includes current Debian and Archlinux btw.
+> hi,
+> we have change that needs to go to stable kernels but does not have the
+> equivalent fix in Linus tree
 
-Hi Christian,
+Why isn't it also relevant in Linus's tree?
 
-I'm wondering about your placement of this argument in the thread, and whether
-you interpreted what I said above as an argument against this patchset, or
-whether you're just expanding on what I said.
+> what would be the best way to submit it?
 
-> The LSM hook is a simple way to allow administrators to control this and
+Submit it here and document the heck out of why this isn't in Linus's
+tree, what changes instead fixed it there, and so on.  Look in the
+archives for examples of how this is done, one recent one that I can
+think of is here:
+	https://lore.kernel.org/r/20220831191348.3388208-1-jannh@google.com
 
-(I think the "control" here is suboptimal, but I've not seen - nor
-conceived of - anything better as of yet)
-
-> will allow user namespaces to be enabled in scenarios where they
-> would otherwise not be accepted precisely because they are available to
-> unprivileged users.
+> the issue is that new 'pahole' will generate BTF data that are not supported
+> by older kernels, so we need to add --skip_encoding_btf_enum64 option to
+> stable kernel's scripts/pahole-flags.sh to generate proper BTF data
 > 
-> I fully understand the motivation and usefulness in unprivileged
-> scenarios but it's an unfounded fear that giving users the ability to
-> control user namespace creation via an LSM hook will cause proliferation
-> of setuid binaries (Ignoring for a moment that any fully unprivileged
-> container with useful idmappings has to rely on the new{g,u}idmap setuid
-> binaries to setup useful mappings anyway.) or decrease system safety let
-> alone cause regressions (Which I don't think is an applicable term here
-> at all.). Distros that have unprivileged user namespaces turned on by
-> default are extremely unlikely to switch to an LSM profile that turns
-> them off and distros that already turn them off will continue to turn
-> them off whether or not that LSM hook is available.
-> 
-> It's much more likely that workloads that want to minimize their attack
-> surface while still getting the benefits of user namespaces for e.g.
-> service isolation will feel comfortable enabling them for the first time
-> since they can control them via an LSM profile.
+> we got complains that after upgrading to latest pahole the stable kernel
+> compilation fails
+
+And what is happening in Linus's tree for this same issue?
+
+thanks,
+
+greg k-h
