@@ -2,61 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB8C85AC3D8
-	for <lists+bpf@lfdr.de>; Sun,  4 Sep 2022 12:19:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C932B5AC3E5
+	for <lists+bpf@lfdr.de>; Sun,  4 Sep 2022 12:28:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229569AbiIDKTM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 4 Sep 2022 06:19:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38624 "EHLO
+        id S233650AbiIDK2k (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 4 Sep 2022 06:28:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233848AbiIDKTK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 4 Sep 2022 06:19:10 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4795459A2;
-        Sun,  4 Sep 2022 03:19:09 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id k6-20020a05600c1c8600b003a54ecc62f6so4156809wms.5;
-        Sun, 04 Sep 2022 03:19:09 -0700 (PDT)
+        with ESMTP id S233714AbiIDK21 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 4 Sep 2022 06:28:27 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7693443E6F;
+        Sun,  4 Sep 2022 03:28:25 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id f15so3032448wrw.3;
+        Sun, 04 Sep 2022 03:28:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :from:to:cc:subject:date;
         bh=5G8LFHpgoS2bGPzH+k4SrdhCNJTqa4gUr30jZ6kq88I=;
-        b=SpZIQA7padgNfPoNWhcBHbBCP41v/l/k79aeEchtFW7BkVHqo94TvJBkNdIgTfh5pb
-         /KXC4xH8Fned6H+x+5Zz8/ZbpMldn9IopnWW4XF3fIUNbSHo1J2fnckh8rpy0CFa0fKR
-         Mtop+dfMs2oM8MrjXakYLtfPUGQaNWkoItNXOKQtYUEjw6CmVv/W0Fk3DekeAgkrftbv
-         qtDSr2r2C8JoshnLDV/VHYQL+94H5d8jBR9Qyadg1iTtBNOBBUqp5HXhGls8GcUTzK8S
-         RwAOyBovjKqNaBM/3Vzi/hEr4tvdpjkybxRb4JXmXp0LwmCMVc9y1hGCEr19tVVu1jz2
-         VU4g==
+        b=QTyTrQAtLiuU16O+NxwEY3tYgaY2HWgLr3L6tJEYbo8CRp5pu1XcEr3IEwjdGTtrJR
+         fMgtBKetI4F6fgXcxrr4t/vZSE1iKXlXKiFE9qLcHn3oOpw20ZQgagBOf0iJufhbW1k/
+         Ckz5JndZilwPH/XF5xSVfvGOkB72J0lw2xxuDFwROTyK9fECDsnrd2zrOh1LIDdx1baS
+         kgBlbnYJ7dcJVOcr9b+qbojbnD5DLa4MZpV05cdumBdkE/KxpWYkRxlg+tyOEGAWNMEc
+         F601mNGtq/g0ywhAb9fK2OZJJNGokMZhLVsA0qNp4T3CfDrhj65iL9NFmg6TmjeanPvr
+         Hy7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date;
         bh=5G8LFHpgoS2bGPzH+k4SrdhCNJTqa4gUr30jZ6kq88I=;
-        b=pfwdAKxMKy+aLcIWWIoV902nzPZnRMdZm3NpAsO5nAi+ya72JHcw2h/HO9tJCTvYXr
-         7qbzY3meWV+D6NBlY4iEvsqzN3VVknoXQ/igrdxcS+6ayAKrljoW8tzRipTs+V5tHEd+
-         v7arxbmTiR0Xt+YvI2Zi6hVY5bsclLK7J2Fzj10JDe5vFgdfWvpmNrwKnyTfcTf8qIPh
-         nLgAUfO/PGA8OFNQPbR03Fgd9TqRB0g8J5EXX2gELtZcITy+VtazKxKsol2wbGAAQ3S0
-         Cp1xyxeXuWebLd6uRrjRm6MHZExcj8z3fK0lgLMF5OuLVCMxvW3BFcprVYlo4ch6TySu
-         yZIA==
-X-Gm-Message-State: ACgBeo3mS7zB/4DY+kNr6rQs5/eKnuPmv8IuupC6apYesbWc0FKnvEdM
-        4kqhxzw7eIqFoOD3r1L90Q==
-X-Google-Smtp-Source: AA6agR5FwXGLMeTmdx/H1gFIW6Ga6Y7U4wblO9rTBVAk7+teH6Zw5/GJWd9ba4vwsyZSSMrgdXc5cw==
-X-Received: by 2002:a1c:7414:0:b0:3a5:fd9e:e629 with SMTP id p20-20020a1c7414000000b003a5fd9ee629mr8077705wmc.194.1662286748211;
-        Sun, 04 Sep 2022 03:19:08 -0700 (PDT)
+        b=SVwHaXaBCEA4M5C8L32dm1oSniJD7rYmIgWMGQ7D9Eu4MbRupYcrPdnmlwCkbJfxst
+         +Ejt078Dhj9Oes5aoIDejnhhw2CLzC96+8r4MT5hExkuPvNfEad5KGxsOReezrnJ8/Oe
+         6LWVznxptQMe67+Bqb33/K16ZXsVAT9pjZjFHIeCZbH+lJMwZSzDUyutLOpciinXTsx4
+         nrd6u5CnsOb/ZxhNqnSbZYQvTVxTF92E+pV/ByzwOMAUoxYYfzQH8pOU/go4o7Zds0Ef
+         HUPyXOONg/FCzGfZqZOTDMA2eTRp7N+w7e72bFMwFaKGKSQWZC12k9v9VaZHCci+JB2N
+         2x6g==
+X-Gm-Message-State: ACgBeo0yG5A55kLo9SFj/149tTihxaNsFP/5voU4YSwldvLz6lp0MWJI
+        /XKnLiaDxB55ABKPuaczxTZGB541FlcR
+X-Google-Smtp-Source: AA6agR6TjdtFPkMUf1SQmytAC+d8LEhltUJGozS2eJwFtukbL41dpE6jnvcaZZ/a+qehjXZeE6MeZQ==
+X-Received: by 2002:a5d:6f0b:0:b0:226:458c:269 with SMTP id ay11-20020a5d6f0b000000b00226458c0269mr21662874wrb.223.1662287303911;
+        Sun, 04 Sep 2022 03:28:23 -0700 (PDT)
 Received: from playground (host-92-29-143-165.as13285.net. [92.29.143.165])
-        by smtp.gmail.com with ESMTPSA id j4-20020adfe504000000b00226cf855861sm5727153wrm.84.2022.09.04.03.19.07
+        by smtp.gmail.com with ESMTPSA id p28-20020a05600c1d9c00b003a5b788993csm7666235wms.42.2022.09.04.03.28.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Sep 2022 03:19:07 -0700 (PDT)
-Date:   Sun, 4 Sep 2022 11:18:59 +0100
+        Sun, 04 Sep 2022 03:28:23 -0700 (PDT)
+Date:   Sun, 4 Sep 2022 11:28:15 +0100
 From:   Jules Irenge <jbi.octave@gmail.com>
 To:     ast@kernel.org
-Cc:     memxor@gmail.com, john.fastabend@gmail.com, andrii@kernel.org,
-        daniel@iogearbox.net, martin.lau@linux.dev, bpf@vger.kernel.org,
-        inux-kernel@vger.kernel.org, Elana.Copperman@mobileye.com,
-        jbi.octave@gmail.com
+Cc:     memxor@gmail.com, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
+        Elana.Copperman@mobileye.com
 Subject: [PATCH bpf-next] Fixes: 14a324f6a67e ("bpf: Wire up freeing of
  referenced kptr")
-Message-ID: <YxR7k0EH2JCxU5I2@playground>
+Message-ID: <YxR9v/dyzDt8sBFT@playground>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
