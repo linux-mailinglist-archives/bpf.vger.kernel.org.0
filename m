@@ -2,97 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D6025AC39C
-	for <lists+bpf@lfdr.de>; Sun,  4 Sep 2022 11:30:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB8C85AC3D8
+	for <lists+bpf@lfdr.de>; Sun,  4 Sep 2022 12:19:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231905AbiIDJ3D (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 4 Sep 2022 05:29:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38312 "EHLO
+        id S229569AbiIDKTM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 4 Sep 2022 06:19:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229754AbiIDJ3D (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 4 Sep 2022 05:29:03 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B01CF474F0
-        for <bpf@vger.kernel.org>; Sun,  4 Sep 2022 02:29:01 -0700 (PDT)
-Received: from [2a02:8108:963f:de38:eca4:7d19:f9a2:22c5]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1oUlw0-00077B-BR; Sun, 04 Sep 2022 11:28:56 +0200
-Message-ID: <d610de0d-d0f9-6c1f-93e1-b408109b861f@leemhuis.info>
-Date:   Sun, 4 Sep 2022 11:28:53 +0200
+        with ESMTP id S233848AbiIDKTK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 4 Sep 2022 06:19:10 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4795459A2;
+        Sun,  4 Sep 2022 03:19:09 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id k6-20020a05600c1c8600b003a54ecc62f6so4156809wms.5;
+        Sun, 04 Sep 2022 03:19:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date;
+        bh=5G8LFHpgoS2bGPzH+k4SrdhCNJTqa4gUr30jZ6kq88I=;
+        b=SpZIQA7padgNfPoNWhcBHbBCP41v/l/k79aeEchtFW7BkVHqo94TvJBkNdIgTfh5pb
+         /KXC4xH8Fned6H+x+5Zz8/ZbpMldn9IopnWW4XF3fIUNbSHo1J2fnckh8rpy0CFa0fKR
+         Mtop+dfMs2oM8MrjXakYLtfPUGQaNWkoItNXOKQtYUEjw6CmVv/W0Fk3DekeAgkrftbv
+         qtDSr2r2C8JoshnLDV/VHYQL+94H5d8jBR9Qyadg1iTtBNOBBUqp5HXhGls8GcUTzK8S
+         RwAOyBovjKqNaBM/3Vzi/hEr4tvdpjkybxRb4JXmXp0LwmCMVc9y1hGCEr19tVVu1jz2
+         VU4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date;
+        bh=5G8LFHpgoS2bGPzH+k4SrdhCNJTqa4gUr30jZ6kq88I=;
+        b=pfwdAKxMKy+aLcIWWIoV902nzPZnRMdZm3NpAsO5nAi+ya72JHcw2h/HO9tJCTvYXr
+         7qbzY3meWV+D6NBlY4iEvsqzN3VVknoXQ/igrdxcS+6ayAKrljoW8tzRipTs+V5tHEd+
+         v7arxbmTiR0Xt+YvI2Zi6hVY5bsclLK7J2Fzj10JDe5vFgdfWvpmNrwKnyTfcTf8qIPh
+         nLgAUfO/PGA8OFNQPbR03Fgd9TqRB0g8J5EXX2gELtZcITy+VtazKxKsol2wbGAAQ3S0
+         Cp1xyxeXuWebLd6uRrjRm6MHZExcj8z3fK0lgLMF5OuLVCMxvW3BFcprVYlo4ch6TySu
+         yZIA==
+X-Gm-Message-State: ACgBeo3mS7zB/4DY+kNr6rQs5/eKnuPmv8IuupC6apYesbWc0FKnvEdM
+        4kqhxzw7eIqFoOD3r1L90Q==
+X-Google-Smtp-Source: AA6agR5FwXGLMeTmdx/H1gFIW6Ga6Y7U4wblO9rTBVAk7+teH6Zw5/GJWd9ba4vwsyZSSMrgdXc5cw==
+X-Received: by 2002:a1c:7414:0:b0:3a5:fd9e:e629 with SMTP id p20-20020a1c7414000000b003a5fd9ee629mr8077705wmc.194.1662286748211;
+        Sun, 04 Sep 2022 03:19:08 -0700 (PDT)
+Received: from playground (host-92-29-143-165.as13285.net. [92.29.143.165])
+        by smtp.gmail.com with ESMTPSA id j4-20020adfe504000000b00226cf855861sm5727153wrm.84.2022.09.04.03.19.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 04 Sep 2022 03:19:07 -0700 (PDT)
+Date:   Sun, 4 Sep 2022 11:18:59 +0100
+From:   Jules Irenge <jbi.octave@gmail.com>
+To:     ast@kernel.org
+Cc:     memxor@gmail.com, john.fastabend@gmail.com, andrii@kernel.org,
+        daniel@iogearbox.net, martin.lau@linux.dev, bpf@vger.kernel.org,
+        inux-kernel@vger.kernel.org, Elana.Copperman@mobileye.com,
+        jbi.octave@gmail.com
+Subject: [PATCH bpf-next] Fixes: 14a324f6a67e ("bpf: Wire up freeing of
+ referenced kptr")
+Message-ID: <YxR7k0EH2JCxU5I2@playground>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.0
-Content-Language: en-US, de-DE
-To:     Stefan Wahren <stefan.wahren@i2se.com>, regressions@lists.linux.dev
-Cc:     bpf@vger.kernel.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        jpalus@fastmail.com
-References: <f038d6f9-b96b-0749-111c-33ac8939a1c0@i2se.com>
- <56ffb198-8c93-1ec2-0b5e-9441e96359de@leemhuis.info>
- <76951173-ce4e-adda-e80e-7c313725e937@i2se.com>
- <d58ed1a8-99d5-c45a-975f-85b71a1f3928@i2se.com>
-From:   Thorsten Leemhuis <regressions@leemhuis.info>
-Subject: Re: [BUG] null pointer dereference when loading bpf_preload on
- Raspberry Pi
-In-Reply-To: <d58ed1a8-99d5-c45a-975f-85b71a1f3928@i2se.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1662283741;68340a74;
-X-HE-SMSGID: 1oUlw0-00077B-BR
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 03.09.22 16:44, Stefan Wahren wrote:
-> Am 03.09.22 um 16:17 schrieb Stefan Wahren:
->>
->> Am 19.06.22 um 19:06 schrieb Thorsten Leemhuis:
->>> [TLDR: I'm adding this regression report to the list of tracked
->>> regressions; all text from me you find below is based on a few templates
->>> paragraphs you might have encountered already already in similar form.]
->>
->> as reported by Jan on Bugzilla [1] the issue has been resolved by
->>
->> e2dcac2f58f5 ("BPF: Fix potential bad pointer dereference in
->> bpf_sys_bpf()")
->>
->> I can confirm the fix.
-> 
-> sorry missed the link.
-> 
-> [1] - https://bugzilla.kernel.org/show_bug.cgi?id=216105
-> 
->> #regzbot fixed-by: |e2dcac2f58f5
+This patch fixes a warning generated by Sparse
 
-Sorry, I'm totally behind with tracking the progress for some
-regressions because I'm busy preparing three talks :-/ Many thx for
-letting me know!
+"warning: Using plain integer as NULL pointer"
 
-FWIW, this is how you mail looked like here:
+by replacing p with *p in the WRITE_ONCE() macro
 
-```
-|I can confirm the fix.
-|
+This enables the pointer to be cleared on map value delete,
+hence clearing the warning.
 
-|#regzbot fixed-by: |e2dcac2f58f5
-||
-"""
+Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
+---
+ kernel/bpf/syscall.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Regzbot ignored it, as the "#" has to be the first character in a new
-paragraph. And the "|" before e2dcac2f58f5 would have confused it as
-well. No worries, happens, that is easily fixed up:
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 27760627370d..f798acd43a28 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -598,7 +598,7 @@ void bpf_map_free_kptrs(struct bpf_map *map, void *map_value)
+ 		if (off_desc->type == BPF_KPTR_UNREF) {
+ 			u64 *p = (u64 *)btf_id_ptr;
+ 
+-			WRITE_ONCE(p, 0);
++			WRITE_ONCE(*p, 0);
+ 			continue;
+ 		}
+ 		old_ptr = xchg(btf_id_ptr, 0);
+-- 
+2.35.1
 
-#regzbot fixed-by: e2dcac2f58f5
-
-But I wanted to tell you, as it's not the first time you tried to
-interact with regzbot in a way that failed. I suspect you mailer does
-something odd.
-
-But as I said: no worries, things like that happen. :-D
-
-Ciao, Thorsten
