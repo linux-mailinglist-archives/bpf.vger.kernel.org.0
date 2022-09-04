@@ -2,52 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F2205AC66E
-	for <lists+bpf@lfdr.de>; Sun,  4 Sep 2022 22:42:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E13F15AC670
+	for <lists+bpf@lfdr.de>; Sun,  4 Sep 2022 22:42:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234865AbiIDUmN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 4 Sep 2022 16:42:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50308 "EHLO
+        id S234994AbiIDUmR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 4 Sep 2022 16:42:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234725AbiIDUmM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 4 Sep 2022 16:42:12 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 430862CE2B
-        for <bpf@vger.kernel.org>; Sun,  4 Sep 2022 13:42:04 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id 29so3957485edv.2
-        for <bpf@vger.kernel.org>; Sun, 04 Sep 2022 13:42:03 -0700 (PDT)
+        with ESMTP id S234585AbiIDUmN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 4 Sep 2022 16:42:13 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 422672D1D3
+        for <bpf@vger.kernel.org>; Sun,  4 Sep 2022 13:42:05 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id s11so8995534edd.13
+        for <bpf@vger.kernel.org>; Sun, 04 Sep 2022 13:42:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
-        bh=fhbqFkSvXgib6zhrMKHWugAZasrZRoUaieiKXqcLjJQ=;
-        b=Owpnn9DuDzsCQ3NiAFvPRx74DOohlslj5fFLUrqEK73blTGKD6FIbHGp9/6NN4Myay
-         +UecuYITpbqKAqtwHnc+xbdUl7hG9OOrfaeTqwkgrQ8xUJM/9hZoqgzOkNOF/yK+1nRq
-         ifgD8ASF6yrCwAaCd9ZcDVJQ1GIyqdhbKDKi7XClaJEDq8EQSR8h99hqjsR62ZTAudlo
-         1ZyG92poz5tbK6InthkGewD/BUX/GKVDV3K1JPFWCFLCHo0ibsBbrnxOipdr5Gn57sJh
-         Jt+7mUKPVUSZ8eJRyAw+/D3NFKNxJ+hG2lxJgILQuXrzZ9HoOqgZWf7qjiYVr0EcIn/e
-         SF+g==
+        bh=kVJieqTKW9MooQVO4GkKbPpqQQblws1gw62NjLrj1AQ=;
+        b=My7JOVnmVrf5pKx4GfNKZjaDvr7rmhW1hNx7BxjVqY2PUUSWfhJqtuUgniO88lyIzF
+         FcqaagUzacruIr4IGUBvCEaGdsw0Om/hBji3rWO5frqe7Oe8O76W9GVVDtYPTnYlZEjn
+         HJAiixGLt8z8TuDq3WaIm5Z0VajtmoaScc6VTXapEXfbFzHVoinlW+0m1NYKOeLnhkx+
+         FEVcLGXVQC6Y5YkOC3p3ylIcTxCgDWn6x/KgXhf/15muVGRp1YP7vB4pUz9Ow2WBTeqD
+         ++e3kd+WGJNs63u51QjKX61wPlfWoPRj5g8mwqc6HeTb3eqLIKoa+eQHW92KxUMoJ4Xg
+         AqIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date;
-        bh=fhbqFkSvXgib6zhrMKHWugAZasrZRoUaieiKXqcLjJQ=;
-        b=mm+uaKgQ9g6bEYSlsbUjtUunMWfwNgh4jd4f5DlSKk8ryYHa4sbacTHLF9OvodKB8R
-         vwHZQKQSFpQHnk7c6bp792mRCwLhXqsIn3IFWCZgfHuJQIC6Nz+rgaivkwDP+5HcaqBd
-         CT9GiinmG3dNQLKgtWBgnEopPNDVYojZk5jgfNjTEdj2DhSn2d7x/Pb1eg1zkmt6ZTFi
-         b2g8PT4a5aBD9abrVQPJF+WUYRqG3dKrGCdfUuKe7udtCUcbucjUuhPHkNr2gRLPO2tk
-         mr9HSwrVjO8VE4iC/tsupXk4yQuhuBJ7THeNj/RiNnu4VgAxFm5WQXNKDrUNUWfWQ+6G
-         kE9Q==
-X-Gm-Message-State: ACgBeo0P9T5rICwvC3kHwbgNTerjpFLfSrcUS+MfEsbVUtk/luQvwwwu
-        ZIgeVCPRfdgn8j2W4VgVefubTyW7UnX8IA==
-X-Google-Smtp-Source: AA6agR7M6G+6e9ovQMg/RzrRdbR60x130uPSQxvy1UH2E++TUdKFUqMco5O4OdHPbmH5I9/R/m2rQA==
-X-Received: by 2002:a05:6402:35c7:b0:448:95be:380 with SMTP id z7-20020a05640235c700b0044895be0380mr26778332edc.393.1662324121922;
-        Sun, 04 Sep 2022 13:42:01 -0700 (PDT)
+        bh=kVJieqTKW9MooQVO4GkKbPpqQQblws1gw62NjLrj1AQ=;
+        b=wp5QWfSfcjncXJFTp73ct04r25LiTNk1Koe/1foM+ZoTPOM7+JA0/dnm5jvHNjCFqf
+         FKDUwE7dG73Riiv+PwAzBRDmera0fUcqrL9EMVrIFlShHZAVzZPK1Vzo2s7qHfiN5405
+         Z9zZdEqA62RBumqBvMWtHQaRkB/DV3h5yT+mmSirplq3dw8zg8VTm89AM+H2ymzH0YXT
+         E5e/mrL9Vh0zsTFXzwzb7U6rRYSv1kFi/bWr5tiQpLRu8/kOT+zx8/zC0l/Jq7QeX6HH
+         bPxWI2vl19maExPb9BLPxJkByaDqIqJUxC2fGDs3+0grlccy9Ua21X6q8mfbN1ZLBTg4
+         /T8g==
+X-Gm-Message-State: ACgBeo1xlXdGutsomvfcYPntne0kcxx6F/Ysq5eZ/G7MH3ZqzCp+1cwM
+        P5LfmFwpSYlRlC61fF7R+RqDaSsurJL2Vg==
+X-Google-Smtp-Source: AA6agR4d2AsFZURFPuTEBDu19nJL7leZBpLbxa87JUgVMEpGACRdH+X7/q7plfk9zXnK/wWY4MJjpA==
+X-Received: by 2002:a05:6402:34cd:b0:448:8286:23f0 with SMTP id w13-20020a05640234cd00b00448828623f0mr27045913edc.40.1662324123052;
+        Sun, 04 Sep 2022 13:42:03 -0700 (PDT)
 Received: from localhost (212.191.202.62.dynamic.cgnat.res.cust.swisscom.ch. [62.202.191.212])
-        by smtp.gmail.com with ESMTPSA id g22-20020a170906539600b0072b85a735afsm4075955ejo.113.2022.09.04.13.42.01
+        by smtp.gmail.com with ESMTPSA id le6-20020a170907170600b0073306218484sm4091450ejc.26.2022.09.04.13.42.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Sep 2022 13:42:01 -0700 (PDT)
+        Sun, 04 Sep 2022 13:42:02 -0700 (PDT)
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To:     bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -55,14 +55,14 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Dave Marchevsky <davemarchevsky@fb.com>,
         Delyan Kratunov <delyank@fb.com>
-Subject: [PATCH RFC bpf-next v1 12/32] bpf: Teach verifier about non-size constant arguments
-Date:   Sun,  4 Sep 2022 22:41:25 +0200
-Message-Id: <20220904204145.3089-13-memxor@gmail.com>
+Subject: [PATCH RFC bpf-next v1 13/32] bpf: Introduce bpf_list_head support for BPF maps
+Date:   Sun,  4 Sep 2022 22:41:26 +0200
+Message-Id: <20220904204145.3089-14-memxor@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220904204145.3089-1-memxor@gmail.com>
 References: <20220904204145.3089-1-memxor@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=12186; i=memxor@gmail.com; h=from:subject; bh=vPdGmL/y4feiYKyVO8hH+LwICkGb/Y5HVe9jKnwB+2w=; b=owEBbQKS/ZANAwAKAUzgyIZIvxHKAcsmYgBjFQ1wkv5g5OQJF/csyOCuArS+xsnEUUI1AgX13CcV jYfAPH6JAjMEAAEKAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYxUNcAAKCRBM4MiGSL8RytQnD/ 9IiHY6+AXLAa1MjHqEYRn7zTMwhlFqfCwJM1brQxxmvKZ62n2UZ1UW14TdpmrzdjVQKgGv8Z7qFv6C WYM4PrkyyLW1V4uXZ1kZCuPJQStzkTMtDGtTsUVUX54PlRGf1WRt81ls8DKAjInQDdk7lSY7oH/XI1 I1P0F/7VQjyNYn2Vsfg77llIk8gRKerlWpCk3zWfKfMv1LqKfQVOmIBNJuxDZaOP1RXrWEthYcNGYN Q4x8hxqU9kuXzVMr8AHFdf2XykiunEfT0Rq0jcf5YTccBZO+uzcM06aqmDe/kL987p+FlNEUVBK4/y MrE60oqyGDo9HG0jsfl5A042rLmvxd1nNrnxxDIvARfDHWxMGh1JG0o+OSRYe5LwPoOskMeVMBnxz3 rr1OFz0AvO6ZeAmzhYrTCvOTfDqABbnho5H2MvuAVVwVk7Al71TcnmBf4e2OenaWG2MrITpaFH7upi cFtfrEICB4av6a7LU5ZWhshx+lzeezY77rjgYk9PdTr8DP+MWizYcIO3bj7GE5r5PECL2PcDyOJIdE WwvTy1qYpia0FZM7LU1MZmzV/BxxoRz2oc9V/uvDOUxPbi4m4MdVxQWjs3HgRvJ6XDzlISd90FWNRy fZMqzRgru5gHEzIXy3itvXUVoD8RSyzcrlNKXWuxTyOrXy+7Lg8ybsBxc1HA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=27684; i=memxor@gmail.com; h=from:subject; bh=zGIJVlfJHFZ4tTD+ZFBMpFFIILEKghBvD4Kt90M1h94=; b=owEBbQKS/ZANAwAKAUzgyIZIvxHKAcsmYgBjFQ1wl/hLU91aL6MJf/ykrVyZ6rvC9siyInM4OGdn hxkpzbOJAjMEAAEKAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYxUNcAAKCRBM4MiGSL8Rynn9EA CRDWIMQD1oBcOP2PkwnurqpBFj+clIH7hJRxDgNJBwm2t935dzooWyAwP8Ul2jACni3sddMtoB2JAP yZN6JsvDXQyW2Fa4XCnWpRuTCzgTtcPCbNKt2eRp6FsZpxuRFdEVB1dbrKr9Lj78Yji867T6AD2NiZ +CuKhlaWsrKFHxk5g/boBNHeqwQn7sOtlg7q7+YRXBzHkvlMe0Me0+jAQhYFkC9oBuDUs8xXlePM9m pOY0TPbqIIL/NU+6ffxkncg6Ho+A/v2rjWuj81IQvJhg7eqOWofc1e4Miwbi5qHSlDZHDg7IEqtQZf 7wxkBOe9ZYMFJOsHyR7NVulxAlpdqIdR+d6tDEqne2PTp4myKZa8BT2+b8dGUsGs0kRUkCKkGDeljc GVPwLDtWFGLgx7kiPyllx+sY4dyAnIiVmipAqC7Fg/B+mmfEIdFiMdpI0NWRrpkPTZiIw501JPhW15 blKn8MlUtfP2xXw3aOlkPpnsKsGuz69Jj/XMW106e8KoWhFakP7jucfMioXEkaL/EILhfCCjFL+dzx W7gYcPWCnESl/KKTN7aTveAv6SIiV6boeYMPB9EzrSx1U72fRFs5fmpj7MObe8vRK/IYaA0ZdBY45A U5p0E1Ws0sHjUfsVhYnci8goW1reX1ZJI8PSdluk4IYAd3rRrBjOgurXIeFA==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -75,308 +75,820 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currently, the verifier has support for various arguments that either
-describe the size of the memory being passed in to a helper, or describe
-the size of the memory being returned. When a constant is passed in like
-this, it is assumed for the purposes of precision tracking that if the
-value in the already explored safe state is within the value in current
-state, it would fine to prune the search.
+Add the basic support on the map side to parse, recognize, verify, and
+build metadata table for a new special field of the type struct
+bpf_list_head. To parameterize the bpf_list_head for a certain value
+type and the list_node member it will accept in that value type, we use
+BTF declaration tags.
 
-While this holds well for size arguments, arguments where each value may
-denote a distinct meaning and needs to be verified separately needs more
-work. Search can only be pruned if both are constant values and both are
-equal. In all other cases, it would be incorrect to treat those two
-precise registers as equivalent if the new value satisfies the old one
-(i.e. old <= cur).
+The definition of bpf_list_head in a map value will be done as follows:
 
-Hence, make the register precision marker tri-state. There are now three
-values that reg->precise takes: NOT_PRECISE, PRECISE, PRECISE_ABSOLUTE.
+struct foo {
+	int data;
+	struct bpf_list_node list;
+};
 
-Both PRECISE and PRECISE_ABSOLUTE are 'true' values. PRECISE_ABSOLUTE
-affects how regsafe decides whether both registers are equivalent for
-the purposes of verifier state equivalence. When it sees that one
-register has reg->precise == PRECISE_ABSOLUTE, unless both are absolute,
-it will return false. When both are, it returns true only when both are
-const and both have the same value. Otherwise, for PRECISE case it falls
-back to the default check that is present now (i.e. thinking that we're
-talking about sizes).
+struct map_value {
+	struct bpf_list_head list __contains(struct, foo, node);
+};
 
-This is required as a future patch introduces a BPF memory allocator
-interface, where we take the program BTF's type ID as an argument. Each
-distinct type ID may result in the returned pointer obtaining a
-different size, hence precision tracking is needed, and pruning cannot
-just happen when the old value is within the current value. It must only
-happen when the type ID is equal. The type ID will always correspond to
-prog->aux->btf hence actual type match is not required.
+Then, the bpf_list_head only allows adding to the list using the
+bpf_list_node 'list' for the type struct foo.
 
-Finally, change mark_chain_precision to mark_chain_precision_absolute
-for kfuncs constant non-size scalar arguments (tagged with __k suffix).
+The 'contains' annotation is a BTF declaration tag composed of four
+parts, "contains:kind:name:node" where the kind and name is then used to
+look up the type in the map BTF. The node defines name of the member in
+this type that has the type struct bpf_list_node, which is actually used
+for linking into the linked list.
+
+This allows building intrusive linked lists in BPF, using container_of
+to obtain pointer to entry, while being completely type safe from the
+perspective of the verifier. The verifier knows exactly the type of the
+nodes, and knows that list helpers return that type at some fixed offset
+where the bpf_list_node member used for this list exists. The verifier
+also uses this information to disallow adding types that are not
+accepted by a certain list.
+
+For now, no elements can be added to such lists. Support for that is
+coming in future patches, hence draining and freeing items is left out
+for now, and just freeing the list_head_off_tab is done, since it is
+still built and populated when bpf_list_head is specified in the map
+value.
 
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- include/linux/bpf_verifier.h |  8 +++-
- kernel/bpf/verifier.c        | 93 ++++++++++++++++++++++++++----------
- 2 files changed, 76 insertions(+), 25 deletions(-)
+ include/linux/bpf.h                           |  64 +++++--
+ include/linux/btf.h                           |   2 +
+ kernel/bpf/arraymap.c                         |   2 +
+ kernel/bpf/bpf_local_storage.c                |   1 +
+ kernel/bpf/btf.c                              | 173 +++++++++++++++++-
+ kernel/bpf/hashtab.c                          |   1 +
+ kernel/bpf/map_in_map.c                       |   5 +-
+ kernel/bpf/syscall.c                          | 131 +++++++++++--
+ kernel/bpf/verifier.c                         |  21 +++
+ .../testing/selftests/bpf/bpf_experimental.h  |  21 +++
+ 10 files changed, 378 insertions(+), 43 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/bpf_experimental.h
 
-diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index b4a11ff56054..c4d21568d192 100644
---- a/include/linux/bpf_verifier.h
-+++ b/include/linux/bpf_verifier.h
-@@ -43,6 +43,12 @@ enum bpf_reg_liveness {
- 	REG_LIVE_DONE = 0x8, /* liveness won't be updating this register anymore */
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index d4e6bf789c02..35c2e9caeb98 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -28,6 +28,9 @@
+ #include <linux/btf.h>
+ #include <linux/rcupdate_trace.h>
+ 
++/* Experimental BPF APIs header for type definitions */
++#include "../../../tools/testing/selftests/bpf/bpf_experimental.h"
++
+ struct bpf_verifier_env;
+ struct bpf_verifier_log;
+ struct perf_event;
+@@ -164,27 +167,40 @@ struct bpf_map_ops {
  };
  
-+enum bpf_reg_precise {
-+	NOT_PRECISE,
-+	PRECISE,
-+	PRECISE_ABSOLUTE,
+ enum {
+-	/* Support at most 8 pointers in a BPF map value */
+-	BPF_MAP_VALUE_OFF_MAX = 8,
+-	BPF_MAP_OFF_ARR_MAX   = BPF_MAP_VALUE_OFF_MAX +
+-				1 + /* for bpf_spin_lock */
+-				1,  /* for bpf_timer */
+-};
+-
+-enum bpf_kptr_type {
++	/* Support at most 8 offsets in a table */
++	BPF_MAP_VALUE_OFF_MAX		= 8,
++	/* Support at most 8 pointer in a BPF map value */
++	BPF_MAP_VALUE_KPTR_MAX		= BPF_MAP_VALUE_OFF_MAX,
++	/* Support at most 8 list_head in a BPF map value */
++	BPF_MAP_VALUE_LIST_HEAD_MAX	= BPF_MAP_VALUE_OFF_MAX,
++	BPF_MAP_OFF_ARR_MAX		= BPF_MAP_VALUE_KPTR_MAX +
++					  BPF_MAP_VALUE_LIST_HEAD_MAX +
++					  1 + /* for bpf_spin_lock */
++					  1,  /* for bpf_timer */
 +};
 +
- struct bpf_reg_state {
- 	/* Ordering of fields matters.  See states_equal() */
- 	enum bpf_reg_type type;
-@@ -180,7 +186,7 @@ struct bpf_reg_state {
- 	s32 subreg_def;
- 	enum bpf_reg_liveness live;
- 	/* if (!precise && SCALAR_VALUE) min/max/tnum don't affect safety */
--	bool precise;
-+	enum bpf_reg_precise precise;
++enum bpf_off_type {
+ 	BPF_KPTR_UNREF,
+ 	BPF_KPTR_REF,
++	BPF_LIST_HEAD,
  };
  
- enum bpf_stack_slot_type {
+ struct bpf_map_value_off_desc {
+ 	u32 offset;
+-	enum bpf_kptr_type type;
+-	struct {
+-		struct btf *btf;
+-		struct module *module;
+-		btf_dtor_kfunc_t dtor;
+-		u32 btf_id;
+-	} kptr;
++	enum bpf_off_type type;
++	union {
++		struct {
++			struct btf *btf;
++			struct module *module;
++			btf_dtor_kfunc_t dtor;
++			u32 btf_id;
++		} kptr; /* for BPF_KPTR_{UNREF,REF} */
++		struct {
++			struct btf *btf;
++			u32 value_type_id;
++			u32 list_node_off;
++		} list_head; /* for BPF_LIST_HEAD */
++	};
+ };
+ 
+ struct bpf_map_value_off {
+@@ -215,6 +231,7 @@ struct bpf_map {
+ 	u32 map_flags;
+ 	int spin_lock_off; /* >=0 valid offset, <0 error */
+ 	struct bpf_map_value_off *kptr_off_tab;
++	struct bpf_map_value_off *list_head_off_tab;
+ 	int timer_off; /* >=0 valid offset, <0 error */
+ 	u32 id;
+ 	int numa_node;
+@@ -265,6 +282,11 @@ static inline bool map_value_has_kptrs(const struct bpf_map *map)
+ 	return !IS_ERR_OR_NULL(map->kptr_off_tab);
+ }
+ 
++static inline bool map_value_has_list_heads(const struct bpf_map *map)
++{
++	return !IS_ERR_OR_NULL(map->list_head_off_tab);
++}
++
+ static inline void check_and_init_map_value(struct bpf_map *map, void *dst)
+ {
+ 	if (unlikely(map_value_has_spin_lock(map)))
+@@ -278,6 +300,13 @@ static inline void check_and_init_map_value(struct bpf_map *map, void *dst)
+ 		for (i = 0; i < tab->nr_off; i++)
+ 			*(u64 *)(dst + tab->off[i].offset) = 0;
+ 	}
++	if (unlikely(map_value_has_list_heads(map))) {
++		struct bpf_map_value_off *tab = map->list_head_off_tab;
++		int i;
++
++		for (i = 0; i < tab->nr_off; i++)
++			memset(dst + tab->off[i].offset, 0, sizeof(struct list_head));
++	}
+ }
+ 
+ /* memcpy that is used with 8-byte aligned pointers, power-of-8 size and
+@@ -1676,6 +1705,11 @@ struct bpf_map_value_off *bpf_map_copy_kptr_off_tab(const struct bpf_map *map);
+ bool bpf_map_equal_kptr_off_tab(const struct bpf_map *map_a, const struct bpf_map *map_b);
+ void bpf_map_free_kptrs(struct bpf_map *map, void *map_value);
+ 
++struct bpf_map_value_off_desc *bpf_map_list_head_off_contains(struct bpf_map *map, u32 offset);
++void bpf_map_free_list_head_off_tab(struct bpf_map *map);
++struct bpf_map_value_off *bpf_map_copy_list_head_off_tab(const struct bpf_map *map);
++bool bpf_map_equal_list_head_off_tab(const struct bpf_map *map_a, const struct bpf_map *map_b);
++
+ struct bpf_map *bpf_map_get(u32 ufd);
+ struct bpf_map *bpf_map_get_with_uref(u32 ufd);
+ struct bpf_map *__bpf_map_get(struct fd f);
+diff --git a/include/linux/btf.h b/include/linux/btf.h
+index 8062f9da7c40..9b62b8b2117e 100644
+--- a/include/linux/btf.h
++++ b/include/linux/btf.h
+@@ -156,6 +156,8 @@ int btf_find_spin_lock(const struct btf *btf, const struct btf_type *t);
+ int btf_find_timer(const struct btf *btf, const struct btf_type *t);
+ struct bpf_map_value_off *btf_parse_kptrs(const struct btf *btf,
+ 					  const struct btf_type *t);
++struct bpf_map_value_off *btf_parse_list_heads(struct btf *btf,
++					       const struct btf_type *t);
+ bool btf_type_is_void(const struct btf_type *t);
+ s32 btf_find_by_name_kind(const struct btf *btf, const char *name, u8 kind);
+ const struct btf_type *btf_type_skip_modifiers(const struct btf *btf,
+diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
+index 832b2659e96e..c7263ee3a35f 100644
+--- a/kernel/bpf/arraymap.c
++++ b/kernel/bpf/arraymap.c
+@@ -423,6 +423,8 @@ static void array_map_free(struct bpf_map *map)
+ 	struct bpf_array *array = container_of(map, struct bpf_array, map);
+ 	int i;
+ 
++	bpf_map_free_list_head_off_tab(map);
++
+ 	if (map_value_has_kptrs(map)) {
+ 		if (array->map.map_type == BPF_MAP_TYPE_PERCPU_ARRAY) {
+ 			for (i = 0; i < array->map.max_entries; i++) {
+diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storage.c
+index 58cb0c179097..b5ccd76026b6 100644
+--- a/kernel/bpf/bpf_local_storage.c
++++ b/kernel/bpf/bpf_local_storage.c
+@@ -616,6 +616,7 @@ void bpf_local_storage_map_free(struct bpf_local_storage_map *smap,
+ 		rcu_barrier();
+ 		bpf_map_free_kptr_off_tab(&smap->map);
+ 	}
++	bpf_map_free_list_head_off_tab(&smap->map);
+ 	kvfree(smap->buckets);
+ 	bpf_map_area_free(smap);
+ }
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 6740c3ade8f1..0fb045be3837 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -3185,6 +3185,7 @@ enum btf_field_type {
+ 	BTF_FIELD_SPIN_LOCK,
+ 	BTF_FIELD_TIMER,
+ 	BTF_FIELD_KPTR,
++	BTF_FIELD_LIST_HEAD,
+ };
+ 
+ enum {
+@@ -3193,9 +3194,17 @@ enum {
+ };
+ 
+ struct btf_field_info {
+-	u32 type_id;
+ 	u32 off;
+-	enum bpf_kptr_type type;
++	union {
++		struct {
++			u32 type_id;
++			enum bpf_off_type type;
++		} kptr;
++		struct {
++			u32 value_type_id;
++			const char *node_name;
++		} list_head;
++	};
+ };
+ 
+ static int btf_find_struct(const struct btf *btf, const struct btf_type *t,
+@@ -3212,7 +3221,7 @@ static int btf_find_struct(const struct btf *btf, const struct btf_type *t,
+ static int btf_find_kptr(const struct btf *btf, const struct btf_type *t,
+ 			 u32 off, int sz, struct btf_field_info *info)
+ {
+-	enum bpf_kptr_type type;
++	enum bpf_off_type type;
+ 	u32 res_id;
+ 
+ 	/* Permit modifiers on the pointer itself */
+@@ -3241,9 +3250,71 @@ static int btf_find_kptr(const struct btf *btf, const struct btf_type *t,
+ 	if (!__btf_type_is_struct(t))
+ 		return -EINVAL;
+ 
+-	info->type_id = res_id;
+ 	info->off = off;
+-	info->type = type;
++	info->kptr.type_id = res_id;
++	info->kptr.type = type;
++	return BTF_FIELD_FOUND;
++}
++
++static const char *btf_find_decl_tag_value(const struct btf *btf,
++					   const struct btf_type *pt,
++					   int comp_idx, const char *tag_key)
++{
++	int i;
++
++	for (i = 1; i < btf_nr_types(btf); i++) {
++		const struct btf_type *t = btf_type_by_id(btf, i);
++		int len = strlen(tag_key);
++
++		if (!btf_type_is_decl_tag(t))
++			continue;
++		/* TODO: Instead of btf_type pt, it would be much better if we had BTF
++		 * ID of the map value type. This would avoid btf_type_by_id call here.
++		 */
++		if (pt != btf_type_by_id(btf, t->type) ||
++		    btf_type_decl_tag(t)->component_idx != comp_idx)
++			continue;
++		if (strncmp(__btf_name_by_offset(btf, t->name_off), tag_key, len))
++			continue;
++		return __btf_name_by_offset(btf, t->name_off) + len;
++	}
++	return NULL;
++}
++
++static int btf_find_list_head(const struct btf *btf, const struct btf_type *pt,
++			      int comp_idx, const struct btf_type *t,
++			      u32 off, int sz, struct btf_field_info *info)
++{
++	const char *value_type;
++	const char *list_node;
++	s32 id;
++
++	if (!__btf_type_is_struct(t))
++		return BTF_FIELD_IGNORE;
++	if (t->size != sz)
++		return BTF_FIELD_IGNORE;
++	value_type = btf_find_decl_tag_value(btf, pt, comp_idx, "contains:");
++	if (!value_type)
++		return -EINVAL;
++	if (strncmp(value_type, "struct:", sizeof("struct:") - 1))
++		return -EINVAL;
++	value_type += sizeof("struct:") - 1;
++	list_node = strstr(value_type, ":");
++	if (!list_node)
++		return -EINVAL;
++	value_type = kstrndup(value_type, list_node - value_type, GFP_ATOMIC);
++	if (!value_type)
++		return -ENOMEM;
++	id = btf_find_by_name_kind(btf, value_type, BTF_KIND_STRUCT);
++	kfree(value_type);
++	if (id < 0)
++		return id;
++	list_node++;
++	if (str_is_empty(list_node))
++		return -EINVAL;
++	info->off = off;
++	info->list_head.value_type_id = id;
++	info->list_head.node_name = list_node;
+ 	return BTF_FIELD_FOUND;
+ }
+ 
+@@ -3286,6 +3357,12 @@ static int btf_find_struct_field(const struct btf *btf, const struct btf_type *t
+ 			if (ret < 0)
+ 				return ret;
+ 			break;
++		case BTF_FIELD_LIST_HEAD:
++			ret = btf_find_list_head(btf, t, i, member_type, off, sz,
++						 idx < info_cnt ? &info[idx] : &tmp);
++			if (ret < 0)
++				return ret;
++			break;
+ 		default:
+ 			return -EFAULT;
+ 		}
+@@ -3336,6 +3413,12 @@ static int btf_find_datasec_var(const struct btf *btf, const struct btf_type *t,
+ 			if (ret < 0)
+ 				return ret;
+ 			break;
++		case BTF_FIELD_LIST_HEAD:
++			ret = btf_find_list_head(btf, var, -1, var_type, off, sz,
++						 idx < info_cnt ? &info[idx] : &tmp);
++			if (ret < 0)
++				return ret;
++			break;
+ 		default:
+ 			return -EFAULT;
+ 		}
+@@ -3372,6 +3455,11 @@ static int btf_find_field(const struct btf *btf, const struct btf_type *t,
+ 		sz = sizeof(u64);
+ 		align = 8;
+ 		break;
++	case BTF_FIELD_LIST_HEAD:
++		name = "bpf_list_head";
++		sz = sizeof(struct bpf_list_head);
++		align = __alignof__(struct bpf_list_head);
++		break;
+ 	default:
+ 		return -EFAULT;
+ 	}
+@@ -3440,7 +3528,7 @@ struct bpf_map_value_off *btf_parse_kptrs(const struct btf *btf,
+ 		/* Find type in map BTF, and use it to look up the matching type
+ 		 * in vmlinux or module BTFs, by name and kind.
+ 		 */
+-		t = btf_type_by_id(btf, info_arr[i].type_id);
++		t = btf_type_by_id(btf, info_arr[i].kptr.type_id);
+ 		id = bpf_find_btf_id(__btf_name_by_offset(btf, t->name_off), BTF_INFO_KIND(t->info),
+ 				     &kernel_btf);
+ 		if (id < 0) {
+@@ -3451,7 +3539,7 @@ struct bpf_map_value_off *btf_parse_kptrs(const struct btf *btf,
+ 		/* Find and stash the function pointer for the destruction function that
+ 		 * needs to be eventually invoked from the map free path.
+ 		 */
+-		if (info_arr[i].type == BPF_KPTR_REF) {
++		if (info_arr[i].kptr.type == BPF_KPTR_REF) {
+ 			const struct btf_type *dtor_func;
+ 			const char *dtor_func_name;
+ 			unsigned long addr;
+@@ -3494,7 +3582,7 @@ struct bpf_map_value_off *btf_parse_kptrs(const struct btf *btf,
+ 		}
+ 
+ 		tab->off[i].offset = info_arr[i].off;
+-		tab->off[i].type = info_arr[i].type;
++		tab->off[i].type = info_arr[i].kptr.type;
+ 		tab->off[i].kptr.btf_id = id;
+ 		tab->off[i].kptr.btf = kernel_btf;
+ 		tab->off[i].kptr.module = mod;
+@@ -3515,6 +3603,75 @@ struct bpf_map_value_off *btf_parse_kptrs(const struct btf *btf,
+ 	return ERR_PTR(ret);
+ }
+ 
++struct bpf_map_value_off *btf_parse_list_heads(struct btf *btf, const struct btf_type *t)
++{
++	struct btf_field_info info_arr[BPF_MAP_VALUE_OFF_MAX];
++	struct bpf_map_value_off *tab;
++	int ret, i, nr_off;
++
++	ret = btf_find_field(btf, t, BTF_FIELD_LIST_HEAD, info_arr, ARRAY_SIZE(info_arr));
++	if (ret < 0)
++		return ERR_PTR(ret);
++	if (!ret)
++		return NULL;
++
++	nr_off = ret;
++	tab = kzalloc(offsetof(struct bpf_map_value_off, off[nr_off]), GFP_KERNEL | __GFP_NOWARN);
++	if (!tab)
++		return ERR_PTR(-ENOMEM);
++
++	for (i = 0; i < nr_off; i++) {
++		const struct btf_type *t, *n = NULL;
++		const struct btf_member *member;
++		u32 offset;
++		int j;
++
++		t = btf_type_by_id(btf, info_arr[i].list_head.value_type_id);
++		/* We've already checked that value_type_id is a struct type. We
++		 * just need to figure out the offset of the list_node, and
++		 * verify its type.
++		 */
++		ret = -EINVAL;
++		for_each_member(j, t, member) {
++			if (strcmp(info_arr[i].list_head.node_name, __btf_name_by_offset(btf, member->name_off)))
++				continue;
++			/* Invalid BTF, two members with same name */
++			if (n) {
++				/* We also need to btf_put for the current iteration! */
++				i++;
++				goto end;
++			}
++			n = btf_type_by_id(btf, member->type);
++			if (!__btf_type_is_struct(n))
++				goto end;
++			if (strcmp("bpf_list_node", __btf_name_by_offset(btf, n->name_off)))
++				goto end;
++			offset = __btf_member_bit_offset(n, member);
++			if (offset % 8)
++				goto end;
++			offset /= 8;
++			if (offset % __alignof__(struct bpf_list_node))
++				goto end;
++
++			tab->off[i].offset = info_arr[i].off;
++			tab->off[i].type = BPF_LIST_HEAD;
++			btf_get(btf);
++			tab->off[i].list_head.btf = btf;
++			tab->off[i].list_head.value_type_id = info_arr[i].list_head.value_type_id;
++			tab->off[i].list_head.list_node_off = offset;
++		}
++		if (!n)
++			goto end;
++	}
++	tab->nr_off = nr_off;
++	return tab;
++end:
++	while (i--)
++		btf_put(tab->off[i].list_head.btf);
++	kfree(tab);
++	return ERR_PTR(ret);
++}
++
+ static void __btf_struct_show(const struct btf *btf, const struct btf_type *t,
+ 			      u32 type_id, void *data, u8 bits_offset,
+ 			      struct btf_show *show)
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index bb3f8a63c221..270e0ecf4ba3 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -1518,6 +1518,7 @@ static void htab_map_free(struct bpf_map *map)
+ 		prealloc_destroy(htab);
+ 	}
+ 
++	bpf_map_free_list_head_off_tab(map);
+ 	bpf_map_free_kptr_off_tab(map);
+ 	free_percpu(htab->extra_elems);
+ 	bpf_map_area_free(htab->buckets);
+diff --git a/kernel/bpf/map_in_map.c b/kernel/bpf/map_in_map.c
+index 135205d0d560..ced2559129ab 100644
+--- a/kernel/bpf/map_in_map.c
++++ b/kernel/bpf/map_in_map.c
+@@ -53,6 +53,7 @@ struct bpf_map *bpf_map_meta_alloc(int inner_map_ufd)
+ 	inner_map_meta->spin_lock_off = inner_map->spin_lock_off;
+ 	inner_map_meta->timer_off = inner_map->timer_off;
+ 	inner_map_meta->kptr_off_tab = bpf_map_copy_kptr_off_tab(inner_map);
++	inner_map_meta->list_head_off_tab = bpf_map_copy_list_head_off_tab(inner_map);
+ 	if (inner_map->btf) {
+ 		btf_get(inner_map->btf);
+ 		inner_map_meta->btf = inner_map->btf;
+@@ -72,6 +73,7 @@ struct bpf_map *bpf_map_meta_alloc(int inner_map_ufd)
+ 
+ void bpf_map_meta_free(struct bpf_map *map_meta)
+ {
++	bpf_map_free_list_head_off_tab(map_meta);
+ 	bpf_map_free_kptr_off_tab(map_meta);
+ 	btf_put(map_meta->btf);
+ 	kfree(map_meta);
+@@ -86,7 +88,8 @@ bool bpf_map_meta_equal(const struct bpf_map *meta0,
+ 		meta0->value_size == meta1->value_size &&
+ 		meta0->timer_off == meta1->timer_off &&
+ 		meta0->map_flags == meta1->map_flags &&
+-		bpf_map_equal_kptr_off_tab(meta0, meta1);
++		bpf_map_equal_kptr_off_tab(meta0, meta1) &&
++		bpf_map_equal_list_head_off_tab(meta0, meta1);
+ }
+ 
+ void *bpf_map_fd_get_ptr(struct bpf_map *map,
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 0311acca19f6..e1749e0d2143 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -495,7 +495,7 @@ static void bpf_map_release_memcg(struct bpf_map *map)
+ }
+ #endif
+ 
+-static int bpf_map_kptr_off_cmp(const void *a, const void *b)
++static int bpf_map_off_cmp(const void *a, const void *b)
+ {
+ 	const struct bpf_map_value_off_desc *off_desc1 = a, *off_desc2 = b;
+ 
+@@ -506,18 +506,22 @@ static int bpf_map_kptr_off_cmp(const void *a, const void *b)
+ 	return 0;
+ }
+ 
+-struct bpf_map_value_off_desc *bpf_map_kptr_off_contains(struct bpf_map *map, u32 offset)
++static struct bpf_map_value_off_desc *
++__bpf_map_off_contains(struct bpf_map_value_off *off_tab, u32 offset)
+ {
+ 	/* Since members are iterated in btf_find_field in increasing order,
+-	 * offsets appended to kptr_off_tab are in increasing order, so we can
++	 * offsets appended to an off_tab are in increasing order, so we can
+ 	 * do bsearch to find exact match.
+ 	 */
+-	struct bpf_map_value_off *tab;
++	return bsearch(&offset, off_tab->off, off_tab->nr_off, sizeof(off_tab->off[0]),
++		       bpf_map_off_cmp);
++}
+ 
++struct bpf_map_value_off_desc *bpf_map_kptr_off_contains(struct bpf_map *map, u32 offset)
++{
+ 	if (!map_value_has_kptrs(map))
+ 		return NULL;
+-	tab = map->kptr_off_tab;
+-	return bsearch(&offset, tab->off, tab->nr_off, sizeof(tab->off[0]), bpf_map_kptr_off_cmp);
++	return __bpf_map_off_contains(map->kptr_off_tab, offset);
+ }
+ 
+ void bpf_map_free_kptr_off_tab(struct bpf_map *map)
+@@ -563,15 +567,15 @@ struct bpf_map_value_off *bpf_map_copy_kptr_off_tab(const struct bpf_map *map)
+ 	return new_tab;
+ }
+ 
+-bool bpf_map_equal_kptr_off_tab(const struct bpf_map *map_a, const struct bpf_map *map_b)
++static bool __bpf_map_equal_off_tab(const struct bpf_map_value_off *tab_a,
++				    const struct bpf_map_value_off *tab_b,
++				    bool has_a, bool has_b)
+ {
+-	struct bpf_map_value_off *tab_a = map_a->kptr_off_tab, *tab_b = map_b->kptr_off_tab;
+-	bool a_has_kptr = map_value_has_kptrs(map_a), b_has_kptr = map_value_has_kptrs(map_b);
+ 	int size;
+ 
+-	if (!a_has_kptr && !b_has_kptr)
++	if (!has_a && !has_b)
+ 		return true;
+-	if (a_has_kptr != b_has_kptr)
++	if (has_a != has_b)
+ 		return false;
+ 	if (tab_a->nr_off != tab_b->nr_off)
+ 		return false;
+@@ -579,6 +583,13 @@ bool bpf_map_equal_kptr_off_tab(const struct bpf_map *map_a, const struct bpf_ma
+ 	return !memcmp(tab_a, tab_b, size);
+ }
+ 
++bool bpf_map_equal_kptr_off_tab(const struct bpf_map *map_a, const struct bpf_map *map_b)
++{
++	return __bpf_map_equal_off_tab(map_a->kptr_off_tab, map_b->kptr_off_tab,
++				       map_value_has_kptrs(map_a),
++				       map_value_has_kptrs(map_b));
++}
++
+ /* Caller must ensure map_value_has_kptrs is true. Note that this function can
+  * be called on a map value while the map_value is visible to BPF programs, as
+  * it ensures the correct synchronization, and we already enforce the same using
+@@ -606,6 +617,50 @@ void bpf_map_free_kptrs(struct bpf_map *map, void *map_value)
+ 	}
+ }
+ 
++struct bpf_map_value_off_desc *bpf_map_list_head_off_contains(struct bpf_map *map, u32 offset)
++{
++	if (!map_value_has_list_heads(map))
++		return NULL;
++	return __bpf_map_off_contains(map->list_head_off_tab, offset);
++}
++
++void bpf_map_free_list_head_off_tab(struct bpf_map *map)
++{
++	struct bpf_map_value_off *tab = map->list_head_off_tab;
++	int i;
++
++	if (!map_value_has_list_heads(map))
++		return;
++	for (i = 0; i < tab->nr_off; i++)
++		btf_put(tab->off[i].list_head.btf);
++	kfree(tab);
++	map->list_head_off_tab = NULL;
++}
++
++struct bpf_map_value_off *bpf_map_copy_list_head_off_tab(const struct bpf_map *map)
++{
++	struct bpf_map_value_off *tab = map->list_head_off_tab, *new_tab;
++	int size, i;
++
++	if (!map_value_has_list_heads(map))
++		return ERR_PTR(-ENOENT);
++	size = offsetof(struct bpf_map_value_off, off[tab->nr_off]);
++	new_tab = kmemdup(tab, size, GFP_KERNEL | __GFP_NOWARN);
++	if (!new_tab)
++		return ERR_PTR(-ENOMEM);
++	/* Do a deep copy of the list_head_off_tab */
++	for (i = 0; i < tab->nr_off; i++)
++		btf_get(tab->off[i].list_head.btf);
++	return new_tab;
++}
++
++bool bpf_map_equal_list_head_off_tab(const struct bpf_map *map_a, const struct bpf_map *map_b)
++{
++	return __bpf_map_equal_off_tab(map_a->list_head_off_tab, map_b->list_head_off_tab,
++				       map_value_has_list_heads(map_a),
++				       map_value_has_list_heads(map_b));
++}
++
+ /* called from workqueue */
+ static void bpf_map_free_deferred(struct work_struct *work)
+ {
+@@ -776,7 +831,8 @@ static int bpf_map_mmap(struct file *filp, struct vm_area_struct *vma)
+ 	int err;
+ 
+ 	if (!map->ops->map_mmap || map_value_has_spin_lock(map) ||
+-	    map_value_has_timer(map) || map_value_has_kptrs(map))
++	    map_value_has_timer(map) || map_value_has_kptrs(map) ||
++	    map_value_has_list_heads(map))
+ 		return -ENOTSUPP;
+ 
+ 	if (!(vma->vm_flags & VM_SHARED))
+@@ -931,13 +987,14 @@ static void map_off_arr_swap(void *_a, void *_b, int size, const void *priv)
+ 
+ static int bpf_map_alloc_off_arr(struct bpf_map *map)
+ {
++	bool has_list_heads = map_value_has_list_heads(map);
+ 	bool has_spin_lock = map_value_has_spin_lock(map);
+ 	bool has_timer = map_value_has_timer(map);
+ 	bool has_kptrs = map_value_has_kptrs(map);
+ 	struct bpf_map_off_arr *off_arr;
+ 	u32 i;
+ 
+-	if (!has_spin_lock && !has_timer && !has_kptrs) {
++	if (!has_spin_lock && !has_timer && !has_kptrs && !has_list_heads) {
+ 		map->off_arr = NULL;
+ 		return 0;
+ 	}
+@@ -973,6 +1030,17 @@ static int bpf_map_alloc_off_arr(struct bpf_map *map)
+ 		}
+ 		off_arr->cnt += tab->nr_off;
+ 	}
++	if (has_list_heads) {
++		struct bpf_map_value_off *tab = map->list_head_off_tab;
++		u32 *off = &off_arr->field_off[off_arr->cnt];
++		u8 *sz = &off_arr->field_sz[off_arr->cnt];
++
++		for (i = 0; i < tab->nr_off; i++) {
++			*off++ = tab->off[i].offset;
++			*sz++ = sizeof(struct bpf_list_head);
++		}
++		off_arr->cnt += tab->nr_off;
++	}
+ 
+ 	if (off_arr->cnt == 1)
+ 		return 0;
+@@ -1038,11 +1106,11 @@ static int map_check_btf(struct bpf_map *map, const struct btf *btf,
+ 	if (map_value_has_kptrs(map)) {
+ 		if (!bpf_capable()) {
+ 			ret = -EPERM;
+-			goto free_map_tab;
++			goto free_map_kptr_tab;
+ 		}
+ 		if (map->map_flags & (BPF_F_RDONLY_PROG | BPF_F_WRONLY_PROG)) {
+ 			ret = -EACCES;
+-			goto free_map_tab;
++			goto free_map_kptr_tab;
+ 		}
+ 		if (map->map_type != BPF_MAP_TYPE_HASH &&
+ 		    map->map_type != BPF_MAP_TYPE_PERCPU_HASH &&
+@@ -1054,18 +1122,42 @@ static int map_check_btf(struct bpf_map *map, const struct btf *btf,
+ 		    map->map_type != BPF_MAP_TYPE_INODE_STORAGE &&
+ 		    map->map_type != BPF_MAP_TYPE_TASK_STORAGE) {
+ 			ret = -EOPNOTSUPP;
+-			goto free_map_tab;
++			goto free_map_kptr_tab;
++		}
++	}
++
++	/* We need to take ref on the BTF, so pass it as non-const */
++	map->list_head_off_tab = btf_parse_list_heads((struct btf *)btf, value_type);
++	if (map_value_has_list_heads(map)) {
++		if (!bpf_capable()) {
++			ret = -EACCES;
++			goto free_map_list_head_tab;
++		}
++		if (map->map_flags & (BPF_F_RDONLY_PROG | BPF_F_WRONLY_PROG)) {
++			ret = -EACCES;
++			goto free_map_list_head_tab;
++		}
++		if (map->map_type != BPF_MAP_TYPE_HASH &&
++		    map->map_type != BPF_MAP_TYPE_LRU_HASH &&
++		    map->map_type != BPF_MAP_TYPE_ARRAY &&
++		    map->map_type != BPF_MAP_TYPE_SK_STORAGE &&
++		    map->map_type != BPF_MAP_TYPE_INODE_STORAGE &&
++		    map->map_type != BPF_MAP_TYPE_TASK_STORAGE) {
++			ret = -EOPNOTSUPP;
++			goto free_map_list_head_tab;
+ 		}
+ 	}
+ 
+ 	if (map->ops->map_check_btf) {
+ 		ret = map->ops->map_check_btf(map, btf, key_type, value_type);
+ 		if (ret < 0)
+-			goto free_map_tab;
++			goto free_map_list_head_tab;
+ 	}
+ 
+ 	return ret;
+-free_map_tab:
++free_map_list_head_tab:
++	bpf_map_free_list_head_off_tab(map);
++free_map_kptr_tab:
+ 	bpf_map_free_kptr_off_tab(map);
+ 	return ret;
+ }
+@@ -1889,7 +1981,8 @@ static int map_freeze(const union bpf_attr *attr)
+ 		return PTR_ERR(map);
+ 
+ 	if (map->map_type == BPF_MAP_TYPE_STRUCT_OPS ||
+-	    map_value_has_timer(map) || map_value_has_kptrs(map)) {
++	    map_value_has_timer(map) || map_value_has_kptrs(map) ||
++	    map_value_has_list_heads(map)) {
+ 		fdput(f);
+ 		return -ENOTSUPP;
+ 	}
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index b28e88d6fabd..571790ac58d4 100644
+index 571790ac58d4..ab91e5ca7e41 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -838,7 +838,7 @@ static void print_verifier_state(struct bpf_verifier_env *env,
- 		print_liveness(env, reg->live);
- 		verbose(env, "=");
- 		if (t == SCALAR_VALUE && reg->precise)
--			verbose(env, "P");
-+			verbose(env, reg->precise == PRECISE_ABSOLUTE ? "PA" : "P");
- 		if ((t == SCALAR_VALUE || t == PTR_TO_STACK) &&
- 		    tnum_is_const(reg->var_off)) {
- 			/* reg->off should be 0 for SCALAR_VALUE */
-@@ -935,7 +935,7 @@ static void print_verifier_state(struct bpf_verifier_env *env,
- 			t = reg->type;
- 			verbose(env, "=%s", t == SCALAR_VALUE ? "" : reg_type_str(env, t));
- 			if (t == SCALAR_VALUE && reg->precise)
--				verbose(env, "P");
-+				verbose(env, reg->precise == PRECISE_ABSOLUTE ? "PA" : "P");
- 			if (t == SCALAR_VALUE && tnum_is_const(reg->var_off))
- 				verbose(env, "%lld", reg->var_off.value + reg->off);
- 		} else {
-@@ -1668,7 +1668,17 @@ static void __mark_reg_unknown(const struct bpf_verifier_env *env,
- 	reg->type = SCALAR_VALUE;
- 	reg->var_off = tnum_unknown;
- 	reg->frameno = 0;
--	reg->precise = env->subprog_cnt > 1 || !env->bpf_capable;
-+	/* Helpers requiring PRECISE_ABSOLUTE for constant arguments cannot be
-+	 * called from programs without CAP_BPF. This is because we don't
-+	 * propagate precision markers for when CAP_BPF is missing. If we
-+	 * allowed calling such heleprs in those programs, the default would
-+	 * have to be PRECISE_ABSOLUTE for them, which would be too aggresive.
-+	 *
-+	 * We still propagate PRECISE_ABSOLUTE when subprog_cnt > 1, hence
-+	 * those cases would still override the default PRECISE value when
-+	 * we propagate the precision markers.
-+	 */
-+	reg->precise = (env->subprog_cnt > 1 || !env->bpf_capable) ? PRECISE : NOT_PRECISE;
- 	__mark_reg_unbounded(reg);
- }
- 
-@@ -2717,7 +2727,8 @@ static int backtrack_insn(struct bpf_verifier_env *env, int idx,
-  * For now backtracking falls back into conservative marking.
-  */
- static void mark_all_scalars_precise(struct bpf_verifier_env *env,
--				     struct bpf_verifier_state *st)
-+				     struct bpf_verifier_state *st,
-+				     bool absolute)
- {
- 	struct bpf_func_state *func;
- 	struct bpf_reg_state *reg;
-@@ -2733,7 +2744,7 @@ static void mark_all_scalars_precise(struct bpf_verifier_env *env,
- 				reg = &func->regs[j];
- 				if (reg->type != SCALAR_VALUE)
- 					continue;
--				reg->precise = true;
-+				reg->precise = absolute ? PRECISE_ABSOLUTE : PRECISE;
- 			}
- 			for (j = 0; j < func->allocated_stack / BPF_REG_SIZE; j++) {
- 				if (!is_spilled_reg(&func->stack[j]))
-@@ -2741,13 +2752,13 @@ static void mark_all_scalars_precise(struct bpf_verifier_env *env,
- 				reg = &func->stack[j].spilled_ptr;
- 				if (reg->type != SCALAR_VALUE)
- 					continue;
--				reg->precise = true;
-+				reg->precise = absolute ? PRECISE_ABSOLUTE : PRECISE;
+@@ -3879,6 +3879,20 @@ static int check_map_access(struct bpf_verifier_env *env, u32 regno,
  			}
  		}
- }
- 
- static int __mark_chain_precision(struct bpf_verifier_env *env, int regno,
--				  int spi)
-+				  int spi, bool absolute)
- {
- 	struct bpf_verifier_state *st = env->cur_state;
- 	int first_idx = st->first_insn_idx;
-@@ -2774,7 +2785,7 @@ static int __mark_chain_precision(struct bpf_verifier_env *env, int regno,
- 			new_marks = true;
- 		else
- 			reg_mask = 0;
--		reg->precise = true;
-+		reg->precise = absolute ? PRECISE_ABSOLUTE : PRECISE;
  	}
- 
- 	while (spi >= 0) {
-@@ -2791,7 +2802,7 @@ static int __mark_chain_precision(struct bpf_verifier_env *env, int regno,
- 			new_marks = true;
- 		else
- 			stack_mask = 0;
--		reg->precise = true;
-+		reg->precise = absolute ? PRECISE_ABSOLUTE : PRECISE;
- 		break;
- 	}
- 
-@@ -2813,7 +2824,7 @@ static int __mark_chain_precision(struct bpf_verifier_env *env, int regno,
- 				err = backtrack_insn(env, i, &reg_mask, &stack_mask);
- 			}
- 			if (err == -ENOTSUPP) {
--				mark_all_scalars_precise(env, st);
-+				mark_all_scalars_precise(env, st, absolute);
- 				return 0;
- 			} else if (err) {
- 				return err;
-@@ -2854,7 +2865,7 @@ static int __mark_chain_precision(struct bpf_verifier_env *env, int regno,
- 			}
- 			if (!reg->precise)
- 				new_marks = true;
--			reg->precise = true;
-+			reg->precise = absolute ? PRECISE_ABSOLUTE : PRECISE;
- 		}
- 
- 		bitmap_from_u64(mask, stack_mask);
-@@ -2873,7 +2884,7 @@ static int __mark_chain_precision(struct bpf_verifier_env *env, int regno,
- 				 * fp-8 and it's "unallocated" stack space.
- 				 * In such case fallback to conservative.
- 				 */
--				mark_all_scalars_precise(env, st);
-+				mark_all_scalars_precise(env, st, absolute);
- 				return 0;
- 			}
- 
-@@ -2888,7 +2899,7 @@ static int __mark_chain_precision(struct bpf_verifier_env *env, int regno,
- 			}
- 			if (!reg->precise)
- 				new_marks = true;
--			reg->precise = true;
-+			reg->precise = absolute ? PRECISE_ABSOLUTE : PRECISE;
- 		}
- 		if (env->log.level & BPF_LOG_LEVEL2) {
- 			verbose(env, "parent %s regs=%x stack=%llx marks:",
-@@ -2910,12 +2921,24 @@ static int __mark_chain_precision(struct bpf_verifier_env *env, int regno,
- 
- static int mark_chain_precision(struct bpf_verifier_env *env, int regno)
- {
--	return __mark_chain_precision(env, regno, -1);
-+	return __mark_chain_precision(env, regno, -1, false);
-+}
++	if (map_value_has_list_heads(map)) {
++		struct bpf_map_value_off *tab = map->list_head_off_tab;
++		int i;
 +
-+static int mark_chain_precision_absolute(struct bpf_verifier_env *env, int regno)
-+{
-+	WARN_ON_ONCE(!env->bpf_capable);
-+	return __mark_chain_precision(env, regno, -1, true);
- }
- 
- static int mark_chain_precision_stack(struct bpf_verifier_env *env, int spi)
- {
--	return __mark_chain_precision(env, -1, spi);
-+	return __mark_chain_precision(env, -1, spi, false);
-+}
++		for (i = 0; i < tab->nr_off; i++) {
++			u32 p = tab->off[i].offset;
 +
-+static int mark_chain_precision_absolute_stack(struct bpf_verifier_env *env, int spi)
-+{
-+	WARN_ON_ONCE(!env->bpf_capable);
-+	return __mark_chain_precision(env, -1, spi, true);
- }
- 
- static bool is_spillable_regtype(enum bpf_reg_type type)
-@@ -3253,7 +3276,7 @@ static void mark_reg_stack_read(struct bpf_verifier_env *env,
- 		 * backtracking. Any register that contributed
- 		 * to const 0 was marked precise before spill.
- 		 */
--		state->regs[dst_regno].precise = true;
-+		state->regs[dst_regno].precise = PRECISE;
- 	} else {
- 		/* have read misc data from the stack */
- 		mark_reg_unknown(env, state->regs, dst_regno);
-@@ -7903,7 +7926,7 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_arg_m
- 					verbose(env, "R%d must be a known constant\n", regno);
- 					return -EINVAL;
- 				}
--				ret = mark_chain_precision(env, regno);
-+				ret = mark_chain_precision_absolute(env, regno);
- 				if (ret < 0)
- 					return ret;
- 				meta->arg_constant.found = true;
-@@ -11899,9 +11922,23 @@ static bool regsafe(struct bpf_verifier_env *env, struct bpf_reg_state *rold,
- 		if (rcur->type == SCALAR_VALUE) {
- 			if (!rold->precise && !rcur->precise)
- 				return true;
--			/* new val must satisfy old val knowledge */
--			return range_within(rold, rcur) &&
--			       tnum_in(rold->var_off, rcur->var_off);
-+			/* We can only determine safety when type of precision
-+			 * needed is same. For absolute, we must compare actual
-+			 * value, otherwise old being within the current value
-+			 * suffices.
-+			 */
-+			if (rold->precise == PRECISE_ABSOLUTE || rcur->precise == PRECISE_ABSOLUTE) {
-+				/* Both should be PRECISE_ABSOLUTE for a comparison */
-+				if (rold->precise != rcur->precise)
-+					return false;
-+				if (!tnum_is_const(rold->var_off) || !tnum_is_const(rcur->var_off))
-+					return false;
-+				return rold->var_off.value == rcur->var_off.value;
-+			} else {
-+				/* new val must satisfy old val knowledge */
-+				return range_within(rold, rcur) &&
-+				       tnum_in(rold->var_off, rcur->var_off);
++			if (reg->smin_value + off < p + sizeof(struct bpf_list_head) &&
++			    p < reg->umax_value + off + size) {
++				verbose(env, "bpf_list_head cannot be accessed directly by load/store\n");
++				return -EACCES;
 +			}
- 		} else {
- 			/* We're trying to use a pointer in place of a scalar.
- 			 * Even if the scalar was unbounded, this could lead to
-@@ -12229,8 +12266,12 @@ static int propagate_precision(struct bpf_verifier_env *env,
- 		    !state_reg->precise)
- 			continue;
- 		if (env->log.level & BPF_LOG_LEVEL2)
--			verbose(env, "propagating r%d\n", i);
--		err = mark_chain_precision(env, i);
-+			verbose(env, "propagating %sr%d\n",
-+				state_reg->precise == PRECISE_ABSOLUTE ? "abs " : "", i);
-+		if (state_reg->precise == PRECISE_ABSOLUTE)
-+			err = mark_chain_precision_absolute(env, i);
-+		else
-+			err = mark_chain_precision(env, i);
- 		if (err < 0)
- 			return err;
++		}
++	}
+ 	return err;
+ }
+ 
+@@ -13165,6 +13179,13 @@ static int check_map_prog_compatibility(struct bpf_verifier_env *env,
+ 		}
  	}
-@@ -12243,9 +12284,13 @@ static int propagate_precision(struct bpf_verifier_env *env,
- 		    !state_reg->precise)
- 			continue;
- 		if (env->log.level & BPF_LOG_LEVEL2)
--			verbose(env, "propagating fp%d\n",
-+			verbose(env, "propagating %sfp%d\n",
-+				state_reg->precise == PRECISE_ABSOLUTE ? "abs " : "",
- 				(-i - 1) * BPF_REG_SIZE);
--		err = mark_chain_precision_stack(env, i);
-+		if (state_reg->precise == PRECISE_ABSOLUTE)
-+			err = mark_chain_precision_absolute_stack(env, i);
-+		else
-+			err = mark_chain_precision_stack(env, i);
- 		if (err < 0)
- 			return err;
- 	}
+ 
++	if (map_value_has_list_heads(map)) {
++		if (is_tracing_prog_type(prog_type)) {
++			verbose(env, "tracing progs cannot use bpf_list_head yet\n");
++			return -EINVAL;
++		}
++	}
++
+ 	if ((bpf_prog_is_dev_bound(prog->aux) || bpf_map_is_dev_bound(map)) &&
+ 	    !bpf_offload_prog_map_match(prog, map)) {
+ 		verbose(env, "offload device mismatch between prog and map\n");
+diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/testing/selftests/bpf/bpf_experimental.h
+new file mode 100644
+index 000000000000..ea1b3b1839d1
+--- /dev/null
++++ b/tools/testing/selftests/bpf/bpf_experimental.h
+@@ -0,0 +1,21 @@
++#ifndef __KERNEL__
++
++#include <bpf/bpf_tracing.h>
++#include <bpf/bpf_helpers.h>
++
++#else
++
++struct bpf_list_head {
++	__u64 __a;
++	__u64 __b;
++} __attribute__((aligned(8)));
++
++struct bpf_list_node {
++	__u64 __a;
++	__u64 __b;
++} __attribute__((aligned(8)));
++
++#endif
++
++#ifndef __KERNEL__
++#endif
 -- 
 2.34.1
 
