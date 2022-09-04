@@ -2,62 +2,44 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0A465AC384
-	for <lists+bpf@lfdr.de>; Sun,  4 Sep 2022 11:05:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D6025AC39C
+	for <lists+bpf@lfdr.de>; Sun,  4 Sep 2022 11:30:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229661AbiIDJFF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 4 Sep 2022 05:05:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44784 "EHLO
+        id S231905AbiIDJ3D (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 4 Sep 2022 05:29:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbiIDJFE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 4 Sep 2022 05:05:04 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F8D42409F
-        for <bpf@vger.kernel.org>; Sun,  4 Sep 2022 02:05:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id F28E3CE0D89
-        for <bpf@vger.kernel.org>; Sun,  4 Sep 2022 09:04:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 402A4C43140
-        for <bpf@vger.kernel.org>; Sun,  4 Sep 2022 09:04:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662282297;
-        bh=kfKDkyIqU01AYkJiX6BidqnWA1Al77SJE63rtEC73q4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Qfavo3H0eYtuE43iUF5ON8dpnAXe2PzN+wRzB9DKkVhnZ5+KP3XaivqXKeUecXhq6
-         r8tzM+4y5pgzbVX7VUKr7W21VQ0YuOKBH6/QocmTpw1gVKy2SP3zxhDR+cI4ACrppA
-         kuU5JiferoHUJx60Ao4xfZah3NO3QfIVkkNaxuDpZA9961QdXKaCdpx/nXXcnYs09U
-         NqUjQcqf3TSabYYc+lxebQZ1jsAUGmuz3/jqh2llzCPj/BiNTjzA+suGU4ObphlhcJ
-         MkQ/pBUkWEhd3tGEHP1FT3JRhM4BeXvInWJocQCXoK7LZ6n5UGVLvzUDIEEotD1lpD
-         i8yWVvmqciBwg==
-Received: by mail-vs1-f44.google.com with SMTP id n125so6199311vsc.5
-        for <bpf@vger.kernel.org>; Sun, 04 Sep 2022 02:04:57 -0700 (PDT)
-X-Gm-Message-State: ACgBeo2p0mZZMM2kfA7n7NVg4XmQOFLT3BtiovUvQfkmnuiKY+nh8NLB
-        6UsvCFVRRRQ8/Owb3HHCIfvjafCBs72XikwPl64=
-X-Google-Smtp-Source: AA6agR6am6jCJc6e+LkTa+XZhl7ngd056Z2/EOzAxuBwiXpSx7gfqNbmoIH1kBrtm8PCGUcs347WZe5GQMq9/cDbKgI=
-X-Received: by 2002:a05:6102:390d:b0:387:78b9:bf9c with SMTP id
- e13-20020a056102390d00b0038778b9bf9cmr13238356vsu.43.1662282296178; Sun, 04
- Sep 2022 02:04:56 -0700 (PDT)
+        with ESMTP id S229754AbiIDJ3D (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 4 Sep 2022 05:29:03 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B01CF474F0
+        for <bpf@vger.kernel.org>; Sun,  4 Sep 2022 02:29:01 -0700 (PDT)
+Received: from [2a02:8108:963f:de38:eca4:7d19:f9a2:22c5]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1oUlw0-00077B-BR; Sun, 04 Sep 2022 11:28:56 +0200
+Message-ID: <d610de0d-d0f9-6c1f-93e1-b408109b861f@leemhuis.info>
+Date:   Sun, 4 Sep 2022 11:28:53 +0200
 MIME-Version: 1.0
-References: <1661999249-10258-1-git-send-email-yangtiezhu@loongson.cn>
- <1661999249-10258-4-git-send-email-yangtiezhu@loongson.cn>
- <CAAhV-H4yU2tp=DBGCkdSzp-9bAXXDM4+0iqDgOac+fbgQnsx2A@mail.gmail.com> <1a740b5c-041c-85c6-f1d6-bb0b931c0c3e@loongson.cn>
-In-Reply-To: <1a740b5c-041c-85c6-f1d6-bb0b931c0c3e@loongson.cn>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Sun, 4 Sep 2022 17:04:44 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H5vfw+Mv=LbQfa4sPHW91Z+ij3R8+LsHZOAiR+u7pJONw@mail.gmail.com>
-Message-ID: <CAAhV-H5vfw+Mv=LbQfa4sPHW91Z+ij3R8+LsHZOAiR+u7pJONw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 3/4] LoongArch: Add BPF JIT support
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>, WANG Xuerui <git@xen0n.name>,
-        Xi Ruoyao <xry111@xry111.site>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        loongarch@lists.linux.dev, Li Xuefeng <lixuefeng@loongson.cn>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.0
+Content-Language: en-US, de-DE
+To:     Stefan Wahren <stefan.wahren@i2se.com>, regressions@lists.linux.dev
+Cc:     bpf@vger.kernel.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        jpalus@fastmail.com
+References: <f038d6f9-b96b-0749-111c-33ac8939a1c0@i2se.com>
+ <56ffb198-8c93-1ec2-0b5e-9441e96359de@leemhuis.info>
+ <76951173-ce4e-adda-e80e-7c313725e937@i2se.com>
+ <d58ed1a8-99d5-c45a-975f-85b71a1f3928@i2se.com>
+From:   Thorsten Leemhuis <regressions@leemhuis.info>
+Subject: Re: [BUG] null pointer dereference when loading bpf_preload on
+ Raspberry Pi
+In-Reply-To: <d58ed1a8-99d5-c45a-975f-85b71a1f3928@i2se.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1662283741;68340a74;
+X-HE-SMSGID: 1oUlw0-00077B-BR
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -66,90 +48,51 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Sep 3, 2022 at 6:11 PM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
->
->
->
-> On 09/03/2022 04:32 PM, Huacai Chen wrote:
-> > On Thu, Sep 1, 2022 at 10:27 AM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
-> >>
-> >> BPF programs are normally handled by a BPF interpreter, add BPF JIT
-> >> support for LoongArch to allow the kernel to generate native code
-> >> when a program is loaded into the kernel, this will significantly
-> >> speed-up processing of BPF programs.
->
-> [...]
->
-> >> +
-> >> +static inline int emit_cond_jmp(struct jit_ctx *ctx, u8 cond, enum loongarch_gpr rj,
-> >> +                               enum loongarch_gpr rd, int jmp_offset)
-> >> +{
-> >> +       /*
-> >> +        * A large PC-relative jump offset may overflow the immediate field of
-> >> +        * the native conditional branch instruction, triggering a conversion
-> >> +        * to use an absolute jump instead, this jump sequence is particularly
-> >> +        * nasty. For now, use cond_jmp_offs26() directly to keep it simple.
-> >> +        * In the future, maybe we can add support for far branching, the branch
-> >> +        * relaxation requires more than two passes to converge, the code seems
-> >> +        * too complex to understand, not quite sure whether it is necessary and
-> >> +        * worth the extra pain. Anyway, just leave it as it is to enhance code
-> >> +        * readability now.
-> > Oh, no. I don't think this is a very difficult problem, because the
-> > old version has already solved [1]. Please improve your code and send
-> > V4.
-> > BTW, I have committed V3 with some small modifications in
-> > https://github.com/loongson/linux/commits/loongarch-next, please make
-> > V4 based on that.
-> >
-> > [1] https://github.com/loongson/linux/commit/e20b2353f40cd13720996524e1df6d0ca086eeb8#diff-6d2f4f5a862a5dce12f8eb0feeca095825c4ed1c2e7151b0905fb8d03c98922e
-> >
-> > --------code in the old version--------
-> > static inline void emit_cond_jump(struct jit_ctx *ctx, u8 cond, enum
-> > loongarch_gpr rj,
-> >                                   enum loongarch_gpr rd, int jmp_offset)
-> > {
-> >         if (is_signed_imm16(jmp_offset))
-> >                 cond_jump_offs16(ctx, cond, rj, rd, jmp_offset);
-> >         else if (is_signed_imm26(jmp_offset))
-> >                 cond_jump_offs26(ctx, cond, rj, rd, jmp_offset);
-> >         else
-> >                 cond_jump_offs32(ctx, cond, rj, rd, jmp_offset);
-> > }
-> >
-> > static inline void emit_uncond_jump(struct jit_ctx *ctx, int
-> > jmp_offset, bool is_exit)
-> > {
-> >         if (is_signed_imm26(jmp_offset))
-> >                 uncond_jump_offs26(ctx, jmp_offset);
-> >         else
-> >                 uncond_jump_offs32(ctx, jmp_offset, is_exit);
-> > }
-> > --------end of code--------
-> >
-> > Huacai
-> >
->
-> Hi Huacai,
->
-> This change is to pass the special test cases:
-> "a new type of jump test where the program jumps forwards
-> and backwards with increasing offset. It mainly tests JITs where a
-> relative jump may generate different JITed code depending on the offset
-> size."
->
-> They are introduced in commit a7d2e752e520 ("bpf/tests: Add staggered
-> JMP and JMP32 tests") after the old internal version you mentioned.
->
-> Here, we use the native instructions to enlarge the jump range to 26 bit
-> directly rather than 16 bit first, and also take no account of more than
-> 26 bit case because there is no native instruction and it needs to emulate.
->
-> As the code comment said, this is to enhance code readability now.
-I'm not familiar with bpf, Daniel, Ruoyao and Xuerui, what do you
-think about it?
+On 03.09.22 16:44, Stefan Wahren wrote:
+> Am 03.09.22 um 16:17 schrieb Stefan Wahren:
+>>
+>> Am 19.06.22 um 19:06 schrieb Thorsten Leemhuis:
+>>> [TLDR: I'm adding this regression report to the list of tracked
+>>> regressions; all text from me you find below is based on a few templates
+>>> paragraphs you might have encountered already already in similar form.]
+>>
+>> as reported by Jan on Bugzilla [1] the issue has been resolved by
+>>
+>> e2dcac2f58f5 ("BPF: Fix potential bad pointer dereference in
+>> bpf_sys_bpf()")
+>>
+>> I can confirm the fix.
+> 
+> sorry missed the link.
+> 
+> [1] - https://bugzilla.kernel.org/show_bug.cgi?id=216105
+> 
+>> #regzbot fixed-by: |e2dcac2f58f5
 
-Huacai
->
-> Thanks,
-> Tiezhu
->
+Sorry, I'm totally behind with tracking the progress for some
+regressions because I'm busy preparing three talks :-/ Many thx for
+letting me know!
+
+FWIW, this is how you mail looked like here:
+
+```
+|I can confirm the fix.
+|
+
+|#regzbot fixed-by: |e2dcac2f58f5
+||
+"""
+
+Regzbot ignored it, as the "#" has to be the first character in a new
+paragraph. And the "|" before e2dcac2f58f5 would have confused it as
+well. No worries, happens, that is easily fixed up:
+
+#regzbot fixed-by: e2dcac2f58f5
+
+But I wanted to tell you, as it's not the first time you tried to
+interact with regzbot in a way that failed. I suspect you mailer does
+something odd.
+
+But as I said: no worries, things like that happen. :-D
+
+Ciao, Thorsten
