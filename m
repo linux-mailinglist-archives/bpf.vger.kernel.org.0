@@ -2,100 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2F545AC110
-	for <lists+bpf@lfdr.de>; Sat,  3 Sep 2022 21:11:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4DD55AC2F5
+	for <lists+bpf@lfdr.de>; Sun,  4 Sep 2022 08:18:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231357AbiICTLM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 3 Sep 2022 15:11:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50122 "EHLO
+        id S230013AbiIDGS3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 4 Sep 2022 02:18:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229698AbiICTLL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 3 Sep 2022 15:11:11 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 943F159278;
-        Sat,  3 Sep 2022 12:11:10 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id c4so4176032iof.3;
-        Sat, 03 Sep 2022 12:11:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=Mbyw/mu0jAIVQROaKkVGCnmmrU+pXQz7nTijzFBftWo=;
-        b=RaZ3n9mWytjtDX0egW+ngxgH8Wf329+qiS4fGPVW4zS7OF31vEn7sWrE3Uoiw4NaU5
-         OdrZUtk8ayr+zbaR6mnVkxCBdLYSYWakXP+kYtpis22ihHep13HpJQG9/Pbyv/OokFip
-         hdBxZb/mmlDyQoEo0gUPt+XjlWasQhDlzpoJyFKh8ql/tDMYKwoDeJMTOwR53gKWjZPR
-         tf6UDyumdI5XLSw57ikgYjB5kTj5rdAiJxR+q58b3AJB+q+vEEqZR8o1loZRqVKQClT5
-         0e9t5apyXwCIfFfQX+bWSAhST6qP7jLAA4RBVlVDKVfzk2dpZ1JnGKIcY4+JihTk7b46
-         kBoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=Mbyw/mu0jAIVQROaKkVGCnmmrU+pXQz7nTijzFBftWo=;
-        b=cafaRNT5ajPf0lNQz2HtqT5XequfL9ssy1flKzPGwE69IaBj7oiHcpIwML0mz83i/z
-         JIwxgozTxfXjK6qzO+2wfvYSG4T+KR+baGQVyd75yJwRVNStfZ28Aq8P7iUMjvO+odXz
-         eU5HJpzmYmoiS+hywPQz/5vDqdFL1ePct02rdUfPJde62qcHg5UmeQoGJpuP5ZnfdwgT
-         ZS5H0I+ZCtnCcRY+gE4gZPuMAaJE5HBB3tK2YEYzkZ8s6Dh1AJSKd9AP4nyEgette1x2
-         IcrSRc+Aiddfb6rNwekZaHVmub7zXYX2/bf6mLd2f58fXi3XzAq4d69839dxk6cmpJRr
-         A8bw==
-X-Gm-Message-State: ACgBeo2457uOQlagKlmdPaTXz4he/PNM3A4nsPTeQrexf5bhnDlBz0qJ
-        myDpFHK7hMQ3TEoWOtoBIq0+kEat73TcAVF1ZJgxPUhzFhw=
-X-Google-Smtp-Source: AA6agR6X5Z375QTRfJMD4VpBbtZW/vPEcOsnzOy7Bi4b301xYoD27Gzo7ZeUXt1cn4RKtYPtS1Q7gmw0NY+vHlWWFN0=
-X-Received: by 2002:a02:3f63:0:b0:349:cef9:d8c2 with SMTP id
- c35-20020a023f63000000b00349cef9d8c2mr22836615jaf.231.1662232269958; Sat, 03
- Sep 2022 12:11:09 -0700 (PDT)
+        with ESMTP id S229478AbiIDGS3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 4 Sep 2022 02:18:29 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 697DD474FE;
+        Sat,  3 Sep 2022 23:18:27 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AB6DD60DE3;
+        Sun,  4 Sep 2022 06:18:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8918C433D6;
+        Sun,  4 Sep 2022 06:18:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1662272306;
+        bh=/suyhRp9htNZ81ks9sWUMbjb7xBK3OarUmyTbyGexNE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=A2OgtPlKClwMv/Q+gv0/o3j6NgvEXUGIigr3Ika3eRo3Q60dEqwxoO8i4699+0Gb3
+         3dAZ70P+B64g5VQDcdqeyp2RcGJu7KAOxYmoj8lX6xGve56HXeA+HZOmEYaYBnEMts
+         p8IeXjWZ5NqyvM873vWTbdowznbjqai+u3H1QfPE=
+Date:   Sun, 4 Sep 2022 08:18:22 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <olsajiri@gmail.com>, stable@vger.kernel.org,
+        bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Yonghong Song <yhs@fb.com>
+Subject: Re: [PATCH bpf v2] bpf: Add config for skipping BTF enum64s
+Message-ID: <YxRDLrgR0SLBhGum@kroah.com>
+References: <20220828233317.35464-1-yakoyoku@gmail.com>
+ <YxI0dO2yuqTK0H6f@krava>
+ <YxLlouzk1O1Prg3J@kroah.com>
+ <YxNhGc7Q+eiHCIr5@kernel.org>
 MIME-Version: 1.0
-References: <YxOjRm5xqL68JVnt@playground>
-In-Reply-To: <YxOjRm5xqL68JVnt@playground>
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date:   Sat, 3 Sep 2022 21:10:31 +0200
-Message-ID: <CAP01T750UfvnrS7pc6t5_z6P8xH6iPh_66X_fsAgidBqwsbdXQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] bpf: Fix warning of Using plain integer as NULL pointer
-To:     Jules Irenge <jbi.octave@gmail.com>
-Cc:     ast@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
-        daniel@iogearbox.net, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, martin.lau@linux.dev
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YxNhGc7Q+eiHCIr5@kernel.org>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 3 Sept 2022 at 20:59, Jules Irenge <jbi.octave@gmail.com> wrote:
->
-> This patch fixes a warning generated by Sparse
->
-> "Using plain integer as NULL pointer"
->
-> by replacing the offending 0 by NULL.
->
-> Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
-> ---
->  kernel/bpf/syscall.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index 27760627370d..427b7e3829e0 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -598,7 +598,7 @@ void bpf_map_free_kptrs(struct bpf_map *map, void *map_value)
->                 if (off_desc->type == BPF_KPTR_UNREF) {
->                         u64 *p = (u64 *)btf_id_ptr;
->
-> -                       WRITE_ONCE(p, 0);
-> +                       WRITE_ONCE(p, NULL);
+On Sat, Sep 03, 2022 at 11:13:45AM -0300, Arnaldo Carvalho de Melo wrote:
+> Em Sat, Sep 03, 2022 at 07:26:58AM +0200, Greg KH escreveu:
+> > On Fri, Sep 02, 2022 at 06:51:00PM +0200, Jiri Olsa wrote:
+> > > On Sun, Aug 28, 2022 at 08:33:17PM -0300, Martin Rodriguez Reboredo wrote:
+> > > > After the release of pahole 1.24 some people in the dwarves mailing list
+> > > > notified issues related to building the kernel with the BTF_DEBUG_INFO
+> > > > option toggled. They seem to be happenning due to the kernel and
+> > > > resolve_btfids interpreting btf types erroneously. In the dwarves list
+> > > > I've proposed a change to the scripts that I've written while testing
+> > > > the Rust kernel, it simply passes the --skip_encoding_btf_enum64 to
+> > > > pahole if it has version 1.24.
+> > > > 
+> > > > v1 -> v2:
+> > > > - Switch to off by default and remove the config option.
+> > > > - Send it to stable instead.
+> > > 
+> > > hi,
+> > > we have change that needs to go to stable kernels but does not have the
+> > > equivalent fix in Linus tree
+> > 
+> > Why isn't it also relevant in Linus's tree?
+> 
+> See below.
+>  
+> > > what would be the best way to submit it?
+> > 
+> > Submit it here and document the heck out of why this isn't in Linus's
+> > tree, what changes instead fixed it there, and so on.  Look in the
+> > archives for examples of how this is done, one recent one that I can
+> > think of is here:
+> > 	https://lore.kernel.org/r/20220831191348.3388208-1-jannh@google.com
+> > 
+> > > the issue is that new 'pahole' will generate BTF data that are not supported
+> > > by older kernels, so we need to add --skip_encoding_btf_enum64 option to
+> > > stable kernel's scripts/pahole-flags.sh to generate proper BTF data
+> > > 
+> > > we got complains that after upgrading to latest pahole the stable kernel
+> > > compilation fails
+> > 
+> > And what is happening in Linus's tree for this same issue?
+> 
+> So, BTF_KIND_ENUM64 is a new BTF tag, one that is not accepted by older
+> kernels, but is accepted by the BPF verifier on Linus' tree.
+> 
+> Its about avoiding having a pahole command line with lots of
+> --enable-new-feature-foo for new stuff with the default producing the
+> most recent BTF spec.
+> 
+> One way to documenting it: if you update pahole, then please use
+> --skip_encoding_FOO for these new FOO features on kernels where those
+> aren't supported.
+> 
+> So this isn't a backport from a fix on Linus' tree, as both the older
+> pahole that doesn't encode BTF_KIND_ENUM64 and the new one, that encodes
+> it by default, work with Linus' tree.
+> 
+> Does this violates the stable@ rules?
 
-Uff, this should have been WRITE_ONCE(*p, 0) instead. Mea Culpa.
-Can you make that fix? It's not a big problem since it's just that the
-pointer won't be cleared on map value delete (and there is nothing to
-reclaim for the unref case when map is freed), so you can target
-bpf-next with a Fixes tag.
+Not really, if it fixes an issue for those kernels when using newer
+tools, that's fine.  Just document it well like you did here.
 
-So in your patch you will need [PATCH bpf-next] in the subject and the
-fixes tag would be:
-Fixes: 14a324f6a67e ("bpf: Wire up freeing of referenced kptr")
+thanks,
+
+greg k-h
