@@ -2,69 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D1B75AC681
-	for <lists+bpf@lfdr.de>; Sun,  4 Sep 2022 22:42:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6AD85AC692
+	for <lists+bpf@lfdr.de>; Sun,  4 Sep 2022 23:10:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234424AbiIDUma (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 4 Sep 2022 16:42:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50568 "EHLO
+        id S230312AbiIDVK4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 4 Sep 2022 17:10:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230090AbiIDUmY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 4 Sep 2022 16:42:24 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 373212CDD8
-        for <bpf@vger.kernel.org>; Sun,  4 Sep 2022 13:42:23 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id s11so8995991edd.13
-        for <bpf@vger.kernel.org>; Sun, 04 Sep 2022 13:42:23 -0700 (PDT)
+        with ESMTP id S229596AbiIDVK4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 4 Sep 2022 17:10:56 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F786286C3;
+        Sun,  4 Sep 2022 14:10:55 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id z72so5606985iof.12;
+        Sun, 04 Sep 2022 14:10:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
-        bh=Rll5Y/SH2+xolqDbXnPylpG7Mz5O0uAf2HSd4SUGyFE=;
-        b=Fo/xxab9J9N/iweuIXykuaTyTXbjTMMnlGTImN+U6lcvRxZUXUXR17qa+EpF83Dlba
-         jqCAe98nsSOA2v6hRoOTY2jmLLawVC2VfkxclsoR3UaI99pgkRNPTZsIslf/dp67CVKE
-         lCArW/tEZu5d/UanZ5yJ64lhKjHSULlTqaxDJUVp8tVzGjXbY648vbL3nSk9Z58weBwe
-         NJvLOTAX2eb7yu2mW4c1mZhQfu31PFQHQMpKtMWY5eraAsc0iLSnc7g6t02bE0HJFVeR
-         HDpaSWnJ45XK6HJp436PA5Cm+bICXr+yatUYBaQ3bBiFwv+ZTFlI4vNgW83sfGXQZsxX
-         yRxQ==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=J51I8RaCuzdT8Bm/bwvJ5WcPKRZ8WBpgbavhM4XpO+M=;
+        b=hzmufDgT5oVB7PkbGKtfLUEKpLN8jhiF7t4rTHyxd6u4n7cFvai2UUTMqxsi02g8Mo
+         2LP6nd/B6n82UA3Tv29BFhEaTfoTjUp5nqR2qwLFlW/f5Z6eaEUsNNV5F42cz8ze2n1c
+         9zKnQahwia/oOAKw4EzTz+gswVsZZtLA9wincWGyzAA/mLEdP38eThHnvatHvcRpxnIy
+         WiKqilQnYCprbB85dAi/sDffTQCKSDh/craYEcoOZajYtrS3BDI+Nj1evrr/HWg45VWZ
+         4V7A0tB2bzeN2CyxahKJZu/mI+sHZlabZDJwHdUB4FI88nfU3y94ZSiOGpGfWj7PmN0C
+         bJ4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date;
-        bh=Rll5Y/SH2+xolqDbXnPylpG7Mz5O0uAf2HSd4SUGyFE=;
-        b=yu0ZAOM2wqjjtzcupnM+hIENgaYpnc7ZjnMEy10aHZJtmcbVw9ZjtgDx8aVI7/amY/
-         pkrVG3rqDf8yA4Ah+IIq0l3Lt44J5UxW1YyaVnYRPcA1zR0kv47bf0wIuuhJt3JEFIX+
-         ukGyX/7L4qHZDSN8XqwVuFP7fYeMXij1aNQ89IS6xeFIs5f2ALdXIgIU6ekrbxgrFHrZ
-         osXAt/mMljESMC0YnOCXgQ6HvLLRynErOQPIe5f0rpTmCL646qIC7bGLjnuq2HA3ZQH/
-         xsW9+jJvd7auGk+D5vDRAWWKbO5d/rnBScnWXpesIUtam6+Xpr9yIeZbyIpLcK85W8W2
-         c5rw==
-X-Gm-Message-State: ACgBeo0KiOOkorhKIr299l8Qqi6NRAKd0JVqq+Ox/EwOnLoGAEYrNihd
-        2Cq/Y1igkAbDscFI3k6S9ptP31jMgcJsHg==
-X-Google-Smtp-Source: AA6agR56K9vdQRPmMh2R3ilZW0FdJGjEVFTEIGsXi+cTqdgphUpk87erHcxI5wJ0+zp4QzMGrHh4QA==
-X-Received: by 2002:a05:6402:f21:b0:446:19c5:59ea with SMTP id i33-20020a0564020f2100b0044619c559eamr41573320eda.371.1662324142607;
-        Sun, 04 Sep 2022 13:42:22 -0700 (PDT)
-Received: from localhost (212.191.202.62.dynamic.cgnat.res.cust.swisscom.ch. [62.202.191.212])
-        by smtp.gmail.com with ESMTPSA id ch29-20020a0564021bdd00b0044657ecfbb5sm5282614edb.13.2022.09.04.13.42.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Sep 2022 13:42:22 -0700 (PDT)
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Delyan Kratunov <delyank@fb.com>
-Subject: [PATCH RFC bpf-next v1 32/32] selftests/bpf: Add referenced local kptr tests
-Date:   Sun,  4 Sep 2022 22:41:45 +0200
-Message-Id: <20220904204145.3089-33-memxor@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220904204145.3089-1-memxor@gmail.com>
-References: <20220904204145.3089-1-memxor@gmail.com>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=J51I8RaCuzdT8Bm/bwvJ5WcPKRZ8WBpgbavhM4XpO+M=;
+        b=v40HQ92O9AENjD9Q5JXaOeN4ABgY3ez9Y4H9UI8666G3PxkXdwcTl73pwGxO1f/ScX
+         5jDuGZoq93OLfnqFzZi9YjmkfFO/f5I9fq83BJqo+uGCuU6pngCq6iwybeZhcH7VDgFR
+         xDl26pD0ubOagc4ltHjOo6FvJe8BoeU8kxVqU/2DBxoU4pZFuwc02CIWHRZs+SIHjL3X
+         tj76ovPpGHdUPbfKXKTYrLU7Np+4MBd2FHcHKa9/WTJ2WXYsrGDCJyKPBdHc20oZ+Oyz
+         7qZgQokRLpNSR+jRE5ZmReDsAg3gg87slrQWApo7pt7lDlzMBroFKpRfr6OEl4LdQK7g
+         rsyw==
+X-Gm-Message-State: ACgBeo0+8VsFWpuqVYAUYFX7kTfgreIDGyB8I3wH1TUQrD2hayGane3G
+        0pkejFlGvh1e8xUkUfi79WM+rrWitsAHCaewUZ/t9FhOAfk=
+X-Google-Smtp-Source: AA6agR6AywIt7M7No4j2fnJElZWk/VLIDrBPVK5mZaTNsEq1I6Uq8B7FMRTiAPnQeMHuDFxFTEX9CT8IBjljZCtDDjs=
+X-Received: by 2002:a5e:dc46:0:b0:689:94f6:fa3e with SMTP id
+ s6-20020a5edc46000000b0068994f6fa3emr22214989iop.110.1662325854603; Sun, 04
+ Sep 2022 14:10:54 -0700 (PDT)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2324; i=memxor@gmail.com; h=from:subject; bh=4NmgtZzdhfQr8lQeL+WliqY9f63S6v5Gw1dtTf4qzFk=; b=owEBbQKS/ZANAwAKAUzgyIZIvxHKAcsmYgBjFQ1yMrnbUnbNdDqiL2tbCkFAItvxSUWhHxEa7pc0 253qxeuJAjMEAAEKAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYxUNcgAKCRBM4MiGSL8RyllbEA CA9XOrLjww3qcEkZ5dwIGMVTlDowXFMtKLbSutsch38rlxmABOkPS0TEyyqguCIpRxt72glZla1xGP fopEe9TpvpTReEDBcJPNhfs8q0EiXgxgI7ep+0UjldS+myLgAUCdVu2Cp6S4ihTHy16kXjPowhtG9g mQwMihW3YtUNPeg6NHLDRsxiRkbGXCclVNx5jq9eXbVfzUauV6z2/AaqnPBeA2incuGa8BQFHP/L4J A+YiCUybgPt7tFlM2y7FR/yLj4svUVOYXkpH3dUMcxMpqqnTdFdv+ad2/TwuQ6M6KhaTjv2j/Z7JnQ ojINzwjrn21Vgqck3f4Qx7MpZcoM9VIT62im5WrdMbL2f3CN498nPxg/TTaaq+QcwPLdZap/Se1QMH zOKBY+Pt7KOsH9R6frfv6K7rc2gvdD/j8mAoVMLHW6VgkRXQenG8DPmiycd0bfM2k4QwXqVG9lmIlX tg4ditvLpD4Lhrp1ZMHabZDTxwPbptRgueVGuWmxofx2guo/xhsjdByPvx6B5yi00N2e2WXdE76FLZ rfwqXYojWBFeAc6VCKTX62fdmj52ggvWojWI+X13+FFAiQ3WtCsQILtxwlbw2nTzVPZn0HQaKkQBZP x5l451u/IyjhWpTNgetoOA8OgwhEfLEFHyZH3FI0hSoefyhQMRV5erqyFkBQ==
-X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
-Content-Transfer-Encoding: 8bit
+References: <YxR9v/dyzDt8sBFT@playground>
+In-Reply-To: <YxR9v/dyzDt8sBFT@playground>
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date:   Sun, 4 Sep 2022 23:10:18 +0200
+Message-ID: <CAP01T76nG7wQ-WFdjtYr5v-KutAOTRJ_zME-nV6HYUwwYW=z6Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] Fixes: 14a324f6a67e ("bpf: Wire up freeing of
+ referenced kptr")
+To:     Jules Irenge <jbi.octave@gmail.com>
+Cc:     ast@kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, martin.lau@linux.dev,
+        Elana.Copperman@mobileye.com
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -75,93 +67,55 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add some cases where success and failure at verification time is
-tested.
+On Sun, 4 Sept 2022 at 12:28, Jules Irenge <jbi.octave@gmail.com> wrote:
+>
+> This patch fixes a warning generated by Sparse
+>
+> "warning: Using plain integer as NULL pointer"
+>
+> by replacing p with *p in the WRITE_ONCE() macro
+>
+> This enables the pointer to be cleared on map value delete,
+> hence clearing the warning.
+>
+> Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
+> ---
 
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
----
- .../selftests/bpf/prog_tests/map_kptr.c       |  2 +-
- tools/testing/selftests/bpf/progs/map_kptr.c  | 38 +++++++++++++++++++
- 2 files changed, 39 insertions(+), 1 deletion(-)
+1. Always bump the version number when resending a patch
+2. Fixes: ... tag needs to come before your SoB.
+3. The headline can instead be [PATCH bpf-next vN] bpf: Fix resetting
+logic for unreferenced kptrs
+where N is your version number.
+4. Commit message needs more work. Apart from what you have specified
+about sparse, it can be:
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/map_kptr.c b/tools/testing/selftests/bpf/prog_tests/map_kptr.c
-index fdcea7a61491..f2608a3e4e0d 100644
---- a/tools/testing/selftests/bpf/prog_tests/map_kptr.c
-+++ b/tools/testing/selftests/bpf/prog_tests/map_kptr.c
-@@ -91,7 +91,7 @@ static void test_map_kptr_success(bool test_run)
- 	);
- 	struct map_kptr *skel;
- 	int key = 0, ret;
--	char buf[16];
-+	char buf[24];
- 
- 	skel = map_kptr__open_and_load();
- 	if (!ASSERT_OK_PTR(skel, "map_kptr__open_and_load"))
-diff --git a/tools/testing/selftests/bpf/progs/map_kptr.c b/tools/testing/selftests/bpf/progs/map_kptr.c
-index eb8217803493..30c981be008b 100644
---- a/tools/testing/selftests/bpf/progs/map_kptr.c
-+++ b/tools/testing/selftests/bpf/progs/map_kptr.c
-@@ -2,10 +2,17 @@
- #include <vmlinux.h>
- #include <bpf/bpf_tracing.h>
- #include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_core_read.h>
-+#include "bpf_experimental.h"
-+
-+struct foo {
-+	int data;
-+};
- 
- struct map_value {
- 	struct prog_test_ref_kfunc __kptr *unref_ptr;
- 	struct prog_test_ref_kfunc __kptr_ref *ref_ptr;
-+	struct foo __kptr_ref __local *lref_ptr;
- };
- 
- struct array_map {
-@@ -130,11 +137,42 @@ static void test_kptr_get(struct map_value *v)
- 	bpf_kfunc_call_test_release(p);
- }
- 
-+static void test_local_kptr_ref(struct map_value *v)
-+{
-+	struct foo *p;
-+
-+	p = v->lref_ptr;
-+	if (!p)
-+		return;
-+	if (p->data > 100)
-+		return;
-+	/* store NULL */
-+	p = bpf_kptr_xchg(&v->lref_ptr, NULL);
-+	if (!p)
-+		return;
-+	if (p->data > 100) {
-+		p->data = 0;
-+		bpf_kptr_free(p);
-+		return;
-+	}
-+	bpf_kptr_free(p);
-+
-+	p = bpf_kptr_alloc(bpf_core_type_id_local(struct foo), 0);
-+	if (!p)
-+		return;
-+	/* store ptr_ */
-+	p = bpf_kptr_xchg(&v->lref_ptr, p);
-+	if (!p)
-+		return;
-+	bpf_kptr_free(p);
-+}
-+
- static void test_kptr(struct map_value *v)
- {
- 	test_kptr_unref(v);
- 	test_kptr_ref(v);
- 	test_kptr_get(v);
-+	test_local_kptr_ref(v);
- }
- 
- SEC("tc")
--- 
-2.34.1
+During the process of fixing this warning, it was discovered that the
+current code erroneously writes to the pointer variable instead
+dereferencing and writing to the actual kptr. Hence, the sparse tool
+accidently helped tp uncover this problem. Fix this by doing
+WRITE_ONCE(*p, 0) instead of WRITE_ONCE(p, 0). Note that the effect of
+this bug is that unreferenced kptrs won't be cleared during
+check_and_free_fields. It is not a problem if the clearing is not done
+during map_free stage, as there is nothing to free for them.
 
+5. There is no requirement to Cc linux-kernel ML for BPF patches.
+
+>  kernel/bpf/syscall.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 27760627370d..f798acd43a28 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -598,7 +598,7 @@ void bpf_map_free_kptrs(struct bpf_map *map, void *map_value)
+>                 if (off_desc->type == BPF_KPTR_UNREF) {
+>                         u64 *p = (u64 *)btf_id_ptr;
+>
+> -                       WRITE_ONCE(p, 0);
+> +                       WRITE_ONCE(*p, 0);
+>                         continue;
+>                 }
+>                 old_ptr = xchg(btf_id_ptr, 0);
+> --
+> 2.35.1
+>
