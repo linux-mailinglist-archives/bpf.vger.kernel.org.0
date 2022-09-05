@@ -2,73 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 954AC5AD89A
-	for <lists+bpf@lfdr.de>; Mon,  5 Sep 2022 19:50:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BF8B5AD99F
+	for <lists+bpf@lfdr.de>; Mon,  5 Sep 2022 21:27:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232147AbiIERue (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 5 Sep 2022 13:50:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58368 "EHLO
+        id S230115AbiIET1b (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 5 Sep 2022 15:27:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232192AbiIERud (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 5 Sep 2022 13:50:33 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C0775F224;
-        Mon,  5 Sep 2022 10:50:32 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id f4so6695291qkl.7;
-        Mon, 05 Sep 2022 10:50:32 -0700 (PDT)
+        with ESMTP id S232304AbiIET1O (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 5 Sep 2022 15:27:14 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3812622512;
+        Mon,  5 Sep 2022 12:27:02 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id s3so3049241ilv.4;
+        Mon, 05 Sep 2022 12:27:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date;
-        bh=NIxejre8XSlpvZ705nvFUrxMRpB63yvrNzNcvR3IWeo=;
-        b=HRbeyKuzFpMmFL3T6dCdhJNR2I8tnyzlLFo4PfVHb0+IsLTP/PwcxtJk7G/WXaFZtv
-         fbkBJWjR48+c6CG+SY/roeM0NvZtu5YOPEiahvAktzHMW6kaCTqb+UN5a9ALu5pVkgkr
-         1ehxy8+YtfXOcnSUVTFdNY2alQEQsRvV6benXsNXaYSINC6kc4RMO9lhX8NgTp6hGRdM
-         B/zxTyjqEa+rHYqKMg84h8Fv5z0RPxJK0zJeumwbtXOl7sCQUPAnayc/9ozuI/2xuzKE
-         OvDQPJp9Ku4OEabBZNSc03MPO6HBKiJPKBCg0r/5exq/GegS8lqketkuFJGtyJj4wvZj
-         S1Cw==
+        bh=okbKeeBWBjVpIAJiPzx493ODGSDGbaRaZtMV6fwikf4=;
+        b=DZVQ7G1dtNGpG2nPDFL5GYqXFWFqPGklfB9ivgGQ2aCtoZSVxhOJyyuxYcx/PLshpS
+         eSj9Sv5axF7UzOIXn9yXOaw+jPNw992t4wHUi2xwtOYQ6ox9jnaWWL9usAll9xELHad1
+         ibWS4xJpQp9tAZ8kebQ7eS9h7d6ap6iFpnqnq39WDERLgwlpZ8FpEQ388Iz3s+jowlTz
+         9qOONIiPtusL21h0GTRdwelC5MkTob0xEq8QeK73WPkLq+LQ2+vg9p0eeGGJttA5J8i5
+         i27lgI87U0M0oz4nAyDEW+uUPERt27Js/x+KR0XoGCcOdzx/k5hu9mQLAQCdxJuytVe1
+         glFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=NIxejre8XSlpvZ705nvFUrxMRpB63yvrNzNcvR3IWeo=;
-        b=tbYePU6WFlbKC7VGz1GhjMcZ/e1IyLysTKbsvoJ7udTc7Uwk7UL9YrfYBp4H31iI7A
-         QVaARiSKlJg/MN6jCAtHuOsUl5LbuZ/+EkyJgxjCPGKGJPHEImWDshV43/7/lik0dvon
-         3dC2TJlP5yf7cxn4xTFBAzpkwhLoIDdeufMwaO3TL4OBMalX/W4ybR83Nf5om0+VoITG
-         zdTU7AnLsc0yl9b/v5OTkfwftlcfYrX5Jx+rH+4y/hWf1dO207skX9yYR60URIxCpfRg
-         NB19UXeUHy0PKazKVa0vFKPS3f9Byo1o9tSk1u4RYDmOgD0+0Wx952DoxuNtAtlInevQ
-         PP5g==
-X-Gm-Message-State: ACgBeo3FZ5o/bPQj6W11Ap8qypf4OrhGrmtV0UokdALoUWYZ5VY4PwHG
-        OalWR47rr0wwN7uoMuIgTukOOnRk0fD6Stg1160=
-X-Google-Smtp-Source: AA6agR4AeWEab2VeYH3ZQqCHDhtVB8Gy64pypEwNlDKY17HHwSmi/SwuHlkJ0wy5t4bsgndt/hjL+D9Dk2A3yCkk9/o=
-X-Received: by 2002:a05:620a:1011:b0:6bc:62fc:6e4 with SMTP id
- z17-20020a05620a101100b006bc62fc06e4mr33666187qkj.484.1662400231285; Mon, 05
- Sep 2022 10:50:31 -0700 (PDT)
+        bh=okbKeeBWBjVpIAJiPzx493ODGSDGbaRaZtMV6fwikf4=;
+        b=dRF98ZEm7djJegh6Uh5Wp9dCzJKbHY2OaVOoF9W6uGtJaaGpQ4bgzRfl+TCV/0IhBR
+         +iqj38DxLw4oXcHTQ7POHEikmOjCWlSMxFlF9T0Oto+jmucsU5jQJ9QbtSgfAXACgYZc
+         JHOdyUiuH1M+DzRSNNX7pIAGO0/DAdeA7B9pI4iof4pKTjNsjwmnQtTwk3/3tHc9ju9U
+         ToMUAx0c8ioijhFwBIP+aegQuYSF32Jk4pNNNFyiChqxcLov2q8YWZ+gWfzB+WgteWwX
+         IYNMIxKYbrdEpS4iUPNy8kDx1CcRKq/g+Rh9hl5QPpw02/iLXmrkmbFE8tZ9EZc58+HJ
+         KQvQ==
+X-Gm-Message-State: ACgBeo0D2axlqFNtdqpgJ8sTI8ynX4mYkVOX7Tpmc9T1GBdH07jVYtEZ
+        NzwVdmbnRWA7FBKIQPel35osCJfVRG7cKwhglCIXh+uO794=
+X-Google-Smtp-Source: AA6agR4UHGlM1wnVx+7B4pMceGklI3ut/1Hp4jDMKF72vpHZsmVqw49fXPSrCWb1lWNFsrLNyVlaIRExi0CYCpBsOyo=
+X-Received: by 2002:a05:6e02:170f:b0:2f1:6cdf:6f32 with SMTP id
+ u15-20020a056e02170f00b002f16cdf6f32mr3321677ill.216.1662406021617; Mon, 05
+ Sep 2022 12:27:01 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220831101617.22329-1-fw@strlen.de> <87v8q84nlq.fsf@toke.dk>
- <20220831125608.GA8153@breakpoint.cc> <87o7w04jjb.fsf@toke.dk>
- <20220831135757.GC8153@breakpoint.cc> <87ilm84goh.fsf@toke.dk>
- <20220831152624.GA15107@breakpoint.cc> <CAADnVQJp5RJ0kZundd5ag-b3SDYir8cF4R_nVbN8Zj9Rcn0rww@mail.gmail.com>
- <20220831155341.GC15107@breakpoint.cc> <CAADnVQJGQmu02f5B=mc1xJvVWSmk_GNZj9WAUskekykmyo8FzA@mail.gmail.com>
- <1cc40302-f006-31a7-b270-30813b8f4b67@iogearbox.net> <CAHsH6GtCgb1getXASkqzN75cNfm7_GOg8Mng5ZY37yK99XBVMQ@mail.gmail.com>
- <CAADnVQLSQPnT+8EV15=6MHzMCpfcPn9SOONERLtO2TJY43JUhg@mail.gmail.com>
-In-Reply-To: <CAADnVQLSQPnT+8EV15=6MHzMCpfcPn9SOONERLtO2TJY43JUhg@mail.gmail.com>
-From:   Eyal Birger <eyal.birger@gmail.com>
-Date:   Mon, 5 Sep 2022 20:50:20 +0300
-Message-ID: <CAHsH6GuiPvD5Z98=HWvKtR5FkP0rO_8Suhn6_njEgC54CGptXw@mail.gmail.com>
-Subject: Re: [PATCH nf-next] netfilter: nf_tables: add ebpf expression
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Florian Westphal <fw@strlen.de>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>,
-        netfilter-devel <netfilter-devel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        Shmulik Ladkani <shmulik.ladkani@gmail.com>
+References: <20220905143318.1592015-1-roberto.sassu@huaweicloud.com>
+In-Reply-To: <20220905143318.1592015-1-roberto.sassu@huaweicloud.com>
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date:   Mon, 5 Sep 2022 21:26:25 +0200
+Message-ID: <CAP01T77aq-UP02JYp1Vu-LE--K1ieCyfKfyZPw-a7DDKQ7_F+g@mail.gmail.com>
+Subject: Re: [PATCH v16 00/12] bpf: Add kfuncs for PKCS#7 signature verification
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
+        dhowells@redhat.com, jarkko@kernel.org, rostedt@goodmis.org,
+        mingo@redhat.com, paul@paul-moore.com, jmorris@namei.org,
+        serge@hallyn.com, shuah@kernel.org, bpf@vger.kernel.org,
+        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        deso@posteo.net, Roberto Sassu <roberto.sassu@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -80,90 +73,36 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 2, 2022 at 7:53 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Mon, 5 Sept 2022 at 16:34, Roberto Sassu
+<roberto.sassu@huaweicloud.com> wrote:
 >
-> On Wed, Aug 31, 2022 at 10:18 PM Eyal Birger <eyal.birger@gmail.com> wrote:
-> >
-> > On Thu, Sep 1, 2022 at 1:16 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
-> > >
-> > > On 8/31/22 7:26 PM, Alexei Starovoitov wrote:
-> > > > On Wed, Aug 31, 2022 at 8:53 AM Florian Westphal <fw@strlen.de> wrote:
-> > > >> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-> > > >>>> 1 and 2 have the upside that its easy to handle a 'file not found'
-> > > >>>> error.
-> > > >>>
-> > > >>> I'm strongly against calling into bpf from the inner guts of nft.
-> > > >>> Nack to all options discussed in this thread.
-> > > >>> None of them make any sense.
-> > > >>
-> > > >> -v please.  I can just rework userspace to allow going via xt_bpf
-> > > >> but its brain damaged.
-> > > >
-> > > > Right. xt_bpf was a dead end from the start.
-> > > > It's time to deprecate it and remove it.
-> > > >
-> > > >> This helps gradually moving towards move epbf for those that
-> > > >> still heavily rely on the classic forwarding path.
-> > > >
-> > > > No one is using it.
-> > > > If it was, we would have seen at least one bug report over
-> > > > all these years. We've seen none.
-> > > >
-> > > > tbh we had a fair share of wrong design decisions that look
-> > > > very reasonable early on and turned out to be useless with
-> > > > zero users.
-> > > > BPF_PROG_TYPE_SCHED_ACT and BPF_PROG_TYPE_LWT*
-> > > > are in this category. > All this code does is bit rot.
-> > >
-> > > +1
-> > >
-> > > > As a minimum we shouldn't step on the same rakes.
-> > > > xt_ebpf would be the same dead code as xt_bpf.
-> > >
-> > > +1, and on top, the user experience will just be horrible. :(
-> > >
-> > > >> If you are open to BPF_PROG_TYPE_NETFILTER I can go that route
-> > > >> as well, raw bpf program attachment via NF_HOOK and the bpf dispatcher,
-> > > >> but it will take significantly longer to get there.
-> > > >>
-> > > >> It involves reviving
-> > > >> https://lore.kernel.org/netfilter-devel/20211014121046.29329-1-fw@strlen.de/
-> > > >
-> > > > I missed it earlier. What is the end goal ?
-> > > > Optimize nft run-time with on the fly generation of bpf byte code ?
-> > >
-> > > Or rather to provide a pendant to nft given existence of xt_bpf, and the
-> > > latter will be removed at some point? (If so, can't we just deprecate the
-> > > old xt_bpf?)
-> >
-> > FWIW we've been using both lwt bpf and xt_bpf on our production workloads
-> > for a few years now.
-> >
-> > xt_bpf allows us to apply custom sophisticated policy logic at connection
-> > establishment - which is not really possible (or efficient) using
-> > iptables/nft constructs - without needing to reinvent all the facilities that
-> > nf provides like connection tracking, ALGs, and simple filtering.
-> >
-> > As for lwt bpf, We use it for load balancing towards collect md tunnels.
-> > While this can be done at tc egress for unfragmented packets, the lwt out hook -
-> > when used in tandem with nf fragment reassembly - provides a hooking point
-> > where a bpf program can see reassembled packets and load balance based on
-> > their internals.
+> From: Roberto Sassu <roberto.sassu@huawei.com>
 >
-> Sounds very interesting!
-> Any open source code to look at ?
+> One of the desirable features in security is the ability to restrict import
+> of data to a given system based on data authenticity. If data import can be
+> restricted, it would be possible to enforce a system-wide policy based on
+> the signing keys the system owner trusts.
+>
+> This feature is widely used in the kernel. For example, if the restriction
+> is enabled, kernel modules can be plugged in only if they are signed with a
+> key whose public part is in the primary or secondary keyring.
+>
+> For eBPF, it can be useful as well. For example, it might be useful to
+> authenticate data an eBPF program makes security decisions on.
+>
+> [...]
 
-For these projects there isn't at this point. But some of the benefit in these
-specific hooking points is that our custom logic is very scoped and integrates
-well with the "classical" forwarding path.
+CI is crashing with NULL deref for test_progs-no_alu32 with llvm-16,
+but I don't think the problem is in this series. This is most likely
+unrelated to BPF, as the crash happens inside
+kernel/time/tick-sched.c:tick_nohz_restart_sched_tick.
 
-In netfilter we have an identity based policy engine provisioning sets of
-bpf maps. These maps are use used by policy programs invoked by xt_bpf on
-connection establishment as part of a larger set of iptables rules.
+This was the same case in
+https://lore.kernel.org/bpf/CAP01T74steDfP6O8QOshoto3e3RnHhKtAeTbnrPBZS3YJXjvbA@mail.gmail.com.
 
-In LWT this solved us a problem with fragmented traffic, as our load
-balancing solution supports - among other things - IPsec stickiness based
-on ESP-in-UDP SPI and as such needs to see unfragemented traffic.
+So, https://github.com/kernel-patches/bpf/runs/8194263557?check_suite_focus=true
+and https://github.com/kernel-patches/bpf/runs/7982907380?check_suite_focus=true
 
-Eyal.
+look similar to me, and may not be related to BPF. They only trigger
+during runs compiled using LLVM 16, so maybe some compiler
+transformation is surfacing the problem?
