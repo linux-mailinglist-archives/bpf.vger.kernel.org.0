@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA9BD5AD388
-	for <lists+bpf@lfdr.de>; Mon,  5 Sep 2022 15:16:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBFD45AD44B
+	for <lists+bpf@lfdr.de>; Mon,  5 Sep 2022 15:52:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235938AbiIENPR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 5 Sep 2022 09:15:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59704 "EHLO
+        id S238267AbiIENun (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 5 Sep 2022 09:50:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236609AbiIENPE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 5 Sep 2022 09:15:04 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B0C61AF05;
-        Mon,  5 Sep 2022 06:15:00 -0700 (PDT)
+        with ESMTP id S238142AbiIENuc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 5 Sep 2022 09:50:32 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E8D837191
+        for <bpf@vger.kernel.org>; Mon,  5 Sep 2022 06:50:22 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id A13A3B8114A;
-        Mon,  5 Sep 2022 13:14:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F39AEC433C1;
-        Mon,  5 Sep 2022 13:14:57 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 0030ACE129F
+        for <bpf@vger.kernel.org>; Mon,  5 Sep 2022 13:50:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 0F7F1C433D7;
+        Mon,  5 Sep 2022 13:50:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662383698;
-        bh=ZEUw6haRQyPAYKlT/Lq9oNrkOglMfAvDXT9yFT+0owk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LuosIBjH9rsAoT2Nnp19qwoRqKXf6eTNxOSoco9QiVOEv/vkt7JId/a5vzF9ZzJlb
-         5MfAwMxp4TaX5QJhaxdy4jRoRHhqj00IE9EV/ZPP/bFtQYkOmn4Cw0TFp/heu1mp1C
-         5Qt3R9aB9nvX0QAQ3lpPOSo1hKZcRaoAOj/OQtNJMebClIpqdsoCHfEE/fCdr8CeXg
-         oPWv1sw/CVoPE3DPxG5l/jY+ictoC02l+whGUL1zKK3+sN69eID/1cnQiu2MkA7KY3
-         fWQeIClRyOyX2/V0Dlg5L+0RZDSgaUAZ5qX5m1vzy1mlJeuQllXKC37uG5AWyGPff8
-         DbkTiA4+UYAOQ==
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        edumazet@google.com, pabeni@redhat.com, pablo@netfilter.org,
-        fw@strlen.de, netfilter-devel@vger.kernel.org,
-        lorenzo.bianconi@redhat.com, brouer@redhat.com, toke@redhat.com,
-        memxor@gmail.com
-Subject: [PATCH v2 bpf-next 4/4] selftests/bpf: add tests for bpf_ct_set_nat_info kfunc
-Date:   Mon,  5 Sep 2022 15:14:05 +0200
-Message-Id: <6e77fb26ae5854061b6c2d004d6547bf971f7dcd.1662383493.git.lorenzo@kernel.org>
-X-Mailer: git-send-email 2.37.3
-In-Reply-To: <cover.1662383493.git.lorenzo@kernel.org>
-References: <cover.1662383493.git.lorenzo@kernel.org>
+        s=k20201202; t=1662385819;
+        bh=eUwYmKGhoZgjo0QHg9FxI6Saw0fbHPgPwOVDMCzxMo8=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=uzZab+qKXmix3D/2FOdAojpGTbxOZrXrO1RO1XthauIKX6AWV1fGDkX47IMuNXhhb
+         eJLWNZDXsuTkl87j4PEPg4/RNy0TpPgCZhNC/BhXGsZf1gBXp+yzxKEhVt3YJhmeXa
+         qKv+zYTxb9z7KCXZtDg4+v7Nciptnqga9+HWNn+/6ck+RKr/zovQddEwkj+6oA4KKx
+         XTR3kta+zPgYewhyS6snVFahKTIOlJaLBd63Fafoqydwp8UIlHjgWEQFLvF0mNkyPX
+         /u2W0gF6Ji5GPVBpV6hBCU1nshnmFYZ9XuO28547yDDovrt5nnUBVPJzJZE12JhNFt
+         Y2nd8rVDGtH1A==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E41C0C04E59;
+        Mon,  5 Sep 2022 13:50:18 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v6 bpf-next 00/16] bpf: BPF specific memory allocator.
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166238581892.6349.8060523732700103598.git-patchwork-notify@kernel.org>
+Date:   Mon, 05 Sep 2022 13:50:18 +0000
+References: <20220902211058.60789-1-alexei.starovoitov@gmail.com>
+In-Reply-To: <20220902211058.60789-1-alexei.starovoitov@gmail.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     davem@davemloft.net, daniel@iogearbox.net, andrii@kernel.org,
+        tj@kernel.org, memxor@gmail.com, delyank@fb.com,
+        linux-mm@kvack.org, bpf@vger.kernel.org, kernel-team@fb.com
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -57,102 +57,60 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Introduce self-tests for bpf_ct_set_nat_info kfunc used to set the
-source or destination nat addresses/ports.
+Hello:
 
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
----
- tools/testing/selftests/bpf/config            |  1 +
- .../testing/selftests/bpf/prog_tests/bpf_nf.c |  2 ++
- .../testing/selftests/bpf/progs/test_bpf_nf.c | 26 ++++++++++++++++++-
- 3 files changed, 28 insertions(+), 1 deletion(-)
+This series was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
-index 3fc46f9cfb22..8ce48f7213cb 100644
---- a/tools/testing/selftests/bpf/config
-+++ b/tools/testing/selftests/bpf/config
-@@ -57,6 +57,7 @@ CONFIG_NF_CONNTRACK=y
- CONFIG_NF_CONNTRACK_MARK=y
- CONFIG_NF_DEFRAG_IPV4=y
- CONFIG_NF_DEFRAG_IPV6=y
-+CONFIG_NF_NAT=y
- CONFIG_RC_CORE=y
- CONFIG_SECURITY=y
- CONFIG_SECURITYFS=y
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_nf.c b/tools/testing/selftests/bpf/prog_tests/bpf_nf.c
-index 544bf90ac2a7..f16913f8fca2 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_nf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_nf.c
-@@ -115,6 +115,8 @@ static void test_bpf_nf_ct(int mode)
- 	ASSERT_EQ(skel->bss->test_status, 2, "Test for ct status update ");
- 	ASSERT_EQ(skel->data->test_exist_lookup, 0, "Test existing connection lookup");
- 	ASSERT_EQ(skel->bss->test_exist_lookup_mark, 43, "Test existing connection lookup ctmark");
-+	ASSERT_EQ(skel->data->test_snat_addr, 0, "Test for source natting");
-+	ASSERT_EQ(skel->data->test_dnat_addr, 0, "Test for destination natting");
- end:
- 	if (srv_client_fd != -1)
- 		close(srv_client_fd);
-diff --git a/tools/testing/selftests/bpf/progs/test_bpf_nf.c b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
-index 2722441850cc..3f441595098b 100644
---- a/tools/testing/selftests/bpf/progs/test_bpf_nf.c
-+++ b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
-@@ -23,6 +23,8 @@ int test_insert_entry = -EAFNOSUPPORT;
- int test_succ_lookup = -ENOENT;
- u32 test_delta_timeout = 0;
- u32 test_status = 0;
-+int test_snat_addr = -EINVAL;
-+int test_dnat_addr = -EINVAL;
- __be32 saddr = 0;
- __be16 sport = 0;
- __be32 daddr = 0;
-@@ -53,6 +55,8 @@ void bpf_ct_set_timeout(struct nf_conn *, u32) __ksym;
- int bpf_ct_change_timeout(struct nf_conn *, u32) __ksym;
- int bpf_ct_set_status(struct nf_conn *, u32) __ksym;
- int bpf_ct_change_status(struct nf_conn *, u32) __ksym;
-+int bpf_ct_set_nat_info(struct nf_conn *, union nf_inet_addr *,
-+			__be16 *port, enum nf_nat_manip_type) __ksym;
- 
- static __always_inline void
- nf_ct_test(struct nf_conn *(*lookup_fn)(void *, struct bpf_sock_tuple *, u32,
-@@ -140,10 +144,19 @@ nf_ct_test(struct nf_conn *(*lookup_fn)(void *, struct bpf_sock_tuple *, u32,
- 	ct = alloc_fn(ctx, &bpf_tuple, sizeof(bpf_tuple.ipv4), &opts_def,
- 		      sizeof(opts_def));
- 	if (ct) {
-+		__be16 sport = bpf_get_prandom_u32();
-+		__be16 dport = bpf_get_prandom_u32();
-+		union nf_inet_addr saddr = {};
-+		union nf_inet_addr daddr = {};
- 		struct nf_conn *ct_ins;
- 
- 		bpf_ct_set_timeout(ct, 10000);
--		bpf_ct_set_status(ct, IPS_CONFIRMED);
-+		/* snat */
-+		saddr.ip = bpf_get_prandom_u32();
-+		bpf_ct_set_nat_info(ct, &saddr, &sport, NF_NAT_MANIP_SRC);
-+		/* dnat */
-+		daddr.ip = bpf_get_prandom_u32();
-+		bpf_ct_set_nat_info(ct, &daddr, &dport, NF_NAT_MANIP_DST);
- 
- 		ct_ins = bpf_ct_insert_entry(ct);
- 		if (ct_ins) {
-@@ -152,6 +165,17 @@ nf_ct_test(struct nf_conn *(*lookup_fn)(void *, struct bpf_sock_tuple *, u32,
- 			ct_lk = lookup_fn(ctx, &bpf_tuple, sizeof(bpf_tuple.ipv4),
- 					  &opts_def, sizeof(opts_def));
- 			if (ct_lk) {
-+				struct nf_conntrack_tuple *tuple;
-+
-+				/* check snat and dnat addresses */
-+				tuple = &ct_lk->tuplehash[IP_CT_DIR_REPLY].tuple;
-+				if (tuple->dst.u3.ip == saddr.ip &&
-+				    tuple->dst.u.all == sport)
-+					test_snat_addr = 0;
-+				if (tuple->src.u3.ip == daddr.ip &&
-+				    tuple->src.u.all == dport)
-+					test_dnat_addr = 0;
-+
- 				/* update ct entry timeout */
- 				bpf_ct_change_timeout(ct_lk, 10000);
- 				test_delta_timeout = ct_lk->timeout - bpf_jiffies64();
+On Fri,  2 Sep 2022 14:10:42 -0700 you wrote:
+> From: Alexei Starovoitov <ast@kernel.org>
+> 
+> Introduce any context BPF specific memory allocator.
+> 
+> Tracing BPF programs can attach to kprobe and fentry. Hence they
+> run in unknown context where calling plain kmalloc() might not be safe.
+> Front-end kmalloc() with per-cpu cache of free elements.
+> Refill this cache asynchronously from irq_work.
+> 
+> [...]
+
+Here is the summary with links:
+  - [v6,bpf-next,01/16] bpf: Introduce any context BPF specific memory allocator.
+    https://git.kernel.org/bpf/bpf-next/c/7c8199e24fa0
+  - [v6,bpf-next,02/16] bpf: Convert hash map to bpf_mem_alloc.
+    https://git.kernel.org/bpf/bpf-next/c/fba1a1c6c912
+  - [v6,bpf-next,03/16] selftests/bpf: Improve test coverage of test_maps
+    https://git.kernel.org/bpf/bpf-next/c/37521bffdd2d
+  - [v6,bpf-next,04/16] samples/bpf: Reduce syscall overhead in map_perf_test.
+    https://git.kernel.org/bpf/bpf-next/c/89dc8d0c38e0
+  - [v6,bpf-next,05/16] bpf: Relax the requirement to use preallocated hash maps in tracing progs.
+    https://git.kernel.org/bpf/bpf-next/c/34dd3bad1a6f
+  - [v6,bpf-next,06/16] bpf: Optimize element count in non-preallocated hash map.
+    https://git.kernel.org/bpf/bpf-next/c/86fe28f7692d
+  - [v6,bpf-next,07/16] bpf: Optimize call_rcu in non-preallocated hash map.
+    https://git.kernel.org/bpf/bpf-next/c/0fd7c5d43339
+  - [v6,bpf-next,08/16] bpf: Adjust low/high watermarks in bpf_mem_cache
+    https://git.kernel.org/bpf/bpf-next/c/7c266178aa51
+  - [v6,bpf-next,09/16] bpf: Batch call_rcu callbacks instead of SLAB_TYPESAFE_BY_RCU.
+    https://git.kernel.org/bpf/bpf-next/c/8d5a8011b35d
+  - [v6,bpf-next,10/16] bpf: Add percpu allocation support to bpf_mem_alloc.
+    https://git.kernel.org/bpf/bpf-next/c/4ab67149f3c6
+  - [v6,bpf-next,11/16] bpf: Convert percpu hash map to per-cpu bpf_mem_alloc.
+    https://git.kernel.org/bpf/bpf-next/c/ee4ed53c5eb6
+  - [v6,bpf-next,12/16] bpf: Remove tracing program restriction on map types
+    https://git.kernel.org/bpf/bpf-next/c/96da3f7d489d
+  - [v6,bpf-next,13/16] bpf: Prepare bpf_mem_alloc to be used by sleepable bpf programs.
+    https://git.kernel.org/bpf/bpf-next/c/dccb4a9013a6
+  - [v6,bpf-next,14/16] bpf: Remove prealloc-only restriction for sleepable bpf programs.
+    https://git.kernel.org/bpf/bpf-next/c/02cc5aa29e8c
+  - [v6,bpf-next,15/16] bpf: Remove usage of kmem_cache from bpf_mem_cache.
+    https://git.kernel.org/bpf/bpf-next/c/bfc03c15bebf
+  - [v6,bpf-next,16/16] bpf: Optimize rcu_barrier usage between hash map and bpf_mem_alloc.
+    https://git.kernel.org/bpf/bpf-next/c/9f2c6e96c65e
+
+You are awesome, thank you!
 -- 
-2.37.3
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
