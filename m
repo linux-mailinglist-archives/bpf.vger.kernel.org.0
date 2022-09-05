@@ -2,107 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BF8B5AD99F
-	for <lists+bpf@lfdr.de>; Mon,  5 Sep 2022 21:27:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0FDB5AD9AA
+	for <lists+bpf@lfdr.de>; Mon,  5 Sep 2022 21:34:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230115AbiIET1b (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 5 Sep 2022 15:27:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45142 "EHLO
+        id S231842AbiIETeI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 5 Sep 2022 15:34:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232304AbiIET1O (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 5 Sep 2022 15:27:14 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3812622512;
-        Mon,  5 Sep 2022 12:27:02 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id s3so3049241ilv.4;
-        Mon, 05 Sep 2022 12:27:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=okbKeeBWBjVpIAJiPzx493ODGSDGbaRaZtMV6fwikf4=;
-        b=DZVQ7G1dtNGpG2nPDFL5GYqXFWFqPGklfB9ivgGQ2aCtoZSVxhOJyyuxYcx/PLshpS
-         eSj9Sv5axF7UzOIXn9yXOaw+jPNw992t4wHUi2xwtOYQ6ox9jnaWWL9usAll9xELHad1
-         ibWS4xJpQp9tAZ8kebQ7eS9h7d6ap6iFpnqnq39WDERLgwlpZ8FpEQ388Iz3s+jowlTz
-         9qOONIiPtusL21h0GTRdwelC5MkTob0xEq8QeK73WPkLq+LQ2+vg9p0eeGGJttA5J8i5
-         i27lgI87U0M0oz4nAyDEW+uUPERt27Js/x+KR0XoGCcOdzx/k5hu9mQLAQCdxJuytVe1
-         glFA==
+        with ESMTP id S231346AbiIETeH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 5 Sep 2022 15:34:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C371474D2
+        for <bpf@vger.kernel.org>; Mon,  5 Sep 2022 12:34:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1662406444;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=QwEEQPqY2XQyuaWqpR5xEP/Kl2aFbpZLaAQ5AZ98N8c=;
+        b=T8Zv+1RdO2cG6MemZZC2GZ6CgxISimO5HZXIVqCaIkDac0I7ahg4gw6yrT4gFuMMjlNRIU
+        m9C0lGhjZ8X+VXcdbC9JYxCW1YjUirhNCnhh47tJzPRRzgOEqlnJ57NXS8w6KDN1lHvItf
+        7ouUQPEFj60Ff8hyB0jJIq+LwTYhNBM=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-215-c2O8B4qyPferodhivRCeaQ-1; Mon, 05 Sep 2022 15:34:03 -0400
+X-MC-Unique: c2O8B4qyPferodhivRCeaQ-1
+Received: by mail-ed1-f70.google.com with SMTP id i6-20020a05640242c600b00447c00a776aso6358084edc.20
+        for <bpf@vger.kernel.org>; Mon, 05 Sep 2022 12:34:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=okbKeeBWBjVpIAJiPzx493ODGSDGbaRaZtMV6fwikf4=;
-        b=dRF98ZEm7djJegh6Uh5Wp9dCzJKbHY2OaVOoF9W6uGtJaaGpQ4bgzRfl+TCV/0IhBR
-         +iqj38DxLw4oXcHTQ7POHEikmOjCWlSMxFlF9T0Oto+jmucsU5jQJ9QbtSgfAXACgYZc
-         JHOdyUiuH1M+DzRSNNX7pIAGO0/DAdeA7B9pI4iof4pKTjNsjwmnQtTwk3/3tHc9ju9U
-         ToMUAx0c8ioijhFwBIP+aegQuYSF32Jk4pNNNFyiChqxcLov2q8YWZ+gWfzB+WgteWwX
-         IYNMIxKYbrdEpS4iUPNy8kDx1CcRKq/g+Rh9hl5QPpw02/iLXmrkmbFE8tZ9EZc58+HJ
-         KQvQ==
-X-Gm-Message-State: ACgBeo0D2axlqFNtdqpgJ8sTI8ynX4mYkVOX7Tpmc9T1GBdH07jVYtEZ
-        NzwVdmbnRWA7FBKIQPel35osCJfVRG7cKwhglCIXh+uO794=
-X-Google-Smtp-Source: AA6agR4UHGlM1wnVx+7B4pMceGklI3ut/1Hp4jDMKF72vpHZsmVqw49fXPSrCWb1lWNFsrLNyVlaIRExi0CYCpBsOyo=
-X-Received: by 2002:a05:6e02:170f:b0:2f1:6cdf:6f32 with SMTP id
- u15-20020a056e02170f00b002f16cdf6f32mr3321677ill.216.1662406021617; Mon, 05
- Sep 2022 12:27:01 -0700 (PDT)
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date;
+        bh=QwEEQPqY2XQyuaWqpR5xEP/Kl2aFbpZLaAQ5AZ98N8c=;
+        b=OrHSULcWBf7oKD7ZIIbeJ3ck99LE3eWJ2WcZUkPoUAV1bN/BwB6iygdFR5NfiqR2H+
+         GpgnE1xbyS2f3n5yLe90jAUQmC4c/xl86N1LBdcn9hk+sRM7kzL6aWv3+P6PG5gkVO29
+         tMQdepz7rTmyQNJKDH6qPRw+fU8eczqy37o/w3USh8+hGbEK/MIuzdhO8c1Vdt1OuQZm
+         meSSrxOvrZfuLWreIMAmBItnon2eZ9ybN7DcLaYmVdOYKGlZweOU9lUY/hMkdNpot8hT
+         5FNURnZppOxofQefF27ae28+j4DX+nXPVbzCUWeRTtUbuzCoQTVJr0XE/4N94eBvzsLv
+         KLqA==
+X-Gm-Message-State: ACgBeo3ipRM/0jPGTsa3A9TIK2UcHM1m2njg820DytaPFGTF2+rGsrlg
+        rFLvza72ccaiWxMZlfkwLveZu17/+C8/Fq2hPP8hfoJ0EWsT15mbjTJxeKQSwM2zElLjIDiwAy8
+        aZZMQXRRyxX4+
+X-Received: by 2002:a05:6402:524a:b0:43d:aa71:33d8 with SMTP id t10-20020a056402524a00b0043daa7133d8mr45883474edd.33.1662406442490;
+        Mon, 05 Sep 2022 12:34:02 -0700 (PDT)
+X-Google-Smtp-Source: AA6agR5hdWBOqxJUjpVm2PlbQkPxGlZTW132//GBp9WTyWigj7E38khXaPWRdbgPIK1fQRlUmpy8Vg==
+X-Received: by 2002:a05:6402:524a:b0:43d:aa71:33d8 with SMTP id t10-20020a056402524a00b0043daa7133d8mr45883448edd.33.1662406442106;
+        Mon, 05 Sep 2022 12:34:02 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id s4-20020a50d484000000b004479cec6496sm7038060edi.75.2022.09.05.12.34.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Sep 2022 12:34:00 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 3FEEB589580; Mon,  5 Sep 2022 21:34:00 +0200 (CEST)
+From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH bpf-next v2 0/3] A couple of small refactorings of BPF program call sites
+Date:   Mon,  5 Sep 2022 21:33:56 +0200
+Message-Id: <20220905193359.969347-1-toke@redhat.com>
+X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
-References: <20220905143318.1592015-1-roberto.sassu@huaweicloud.com>
-In-Reply-To: <20220905143318.1592015-1-roberto.sassu@huaweicloud.com>
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date:   Mon, 5 Sep 2022 21:26:25 +0200
-Message-ID: <CAP01T77aq-UP02JYp1Vu-LE--K1ieCyfKfyZPw-a7DDKQ7_F+g@mail.gmail.com>
-Subject: Re: [PATCH v16 00/12] bpf: Add kfuncs for PKCS#7 signature verification
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
-        dhowells@redhat.com, jarkko@kernel.org, rostedt@goodmis.org,
-        mingo@redhat.com, paul@paul-moore.com, jmorris@namei.org,
-        serge@hallyn.com, shuah@kernel.org, bpf@vger.kernel.org,
-        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        deso@posteo.net, Roberto Sassu <roberto.sassu@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 5 Sept 2022 at 16:34, Roberto Sassu
-<roberto.sassu@huaweicloud.com> wrote:
->
-> From: Roberto Sassu <roberto.sassu@huawei.com>
->
-> One of the desirable features in security is the ability to restrict import
-> of data to a given system based on data authenticity. If data import can be
-> restricted, it would be possible to enforce a system-wide policy based on
-> the signing keys the system owner trusts.
->
-> This feature is widely used in the kernel. For example, if the restriction
-> is enabled, kernel modules can be plugged in only if they are signed with a
-> key whose public part is in the primary or secondary keyring.
->
-> For eBPF, it can be useful as well. For example, it might be useful to
-> authenticate data an eBPF program makes security decisions on.
->
-> [...]
+Stanislav suggested[0] that these small refactorings could be split out from the
+XDP queueing RFC series and merged separately. The first change is a small
+repacking of struct softnet_data, the others change the BPF call sites to
+support full 64-bit values as arguments to bpf_redirect_map() and as the return
+value of a BPF program, relying on the fact that BPF registers are always 64-bit
+wide to maintain backwards compatibility.
 
-CI is crashing with NULL deref for test_progs-no_alu32 with llvm-16,
-but I don't think the problem is in this series. This is most likely
-unrelated to BPF, as the crash happens inside
-kernel/time/tick-sched.c:tick_nohz_restart_sched_tick.
+Please see the individual patches for details.
 
-This was the same case in
-https://lore.kernel.org/bpf/CAP01T74steDfP6O8QOshoto3e3RnHhKtAeTbnrPBZS3YJXjvbA@mail.gmail.com.
+v2:
+- Rebase on bpf-next (CI failure seems to be unrelated to this series)
+- Collect Stanislav's Reviewed-by
 
-So, https://github.com/kernel-patches/bpf/runs/8194263557?check_suite_focus=true
-and https://github.com/kernel-patches/bpf/runs/7982907380?check_suite_focus=true
+[0] https://lore.kernel.org/r/CAKH8qBtdnku7StcQ-SamadvAF==DRuLLZO94yOR1WJ9Bg=uX1w@mail.gmail.com
 
-look similar to me, and may not be related to BPF. They only trigger
-during runs compiled using LLVM 16, so maybe some compiler
-transformation is surfacing the problem?
+Kumar Kartikeya Dwivedi (1):
+  bpf: Use 64-bit return value for bpf_prog_run
+
+Toke Høiland-Jørgensen (2):
+  dev: Move received_rps counter next to RPS members in softnet data
+  bpf: Expand map key argument of bpf_redirect_map to u64
+
+ include/linux/bpf-cgroup.h | 12 +++++-----
+ include/linux/bpf.h        | 16 ++++++-------
+ include/linux/filter.h     | 46 +++++++++++++++++++-------------------
+ include/linux/netdevice.h  |  2 +-
+ include/uapi/linux/bpf.h   |  2 +-
+ kernel/bpf/cgroup.c        | 12 +++++-----
+ kernel/bpf/core.c          | 14 ++++++------
+ kernel/bpf/cpumap.c        |  4 ++--
+ kernel/bpf/devmap.c        |  4 ++--
+ kernel/bpf/offload.c       |  4 ++--
+ kernel/bpf/verifier.c      |  2 +-
+ net/bpf/test_run.c         | 21 +++++++++--------
+ net/core/filter.c          |  4 ++--
+ net/packet/af_packet.c     |  7 ++++--
+ net/xdp/xskmap.c           |  4 ++--
+ 15 files changed, 80 insertions(+), 74 deletions(-)
+
+-- 
+2.37.2
+
