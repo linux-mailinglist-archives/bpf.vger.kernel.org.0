@@ -2,133 +2,168 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 136205AD7D4
-	for <lists+bpf@lfdr.de>; Mon,  5 Sep 2022 18:48:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 954AC5AD89A
+	for <lists+bpf@lfdr.de>; Mon,  5 Sep 2022 19:50:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231786AbiIEQsJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 5 Sep 2022 12:48:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34398 "EHLO
+        id S232147AbiIERue (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 5 Sep 2022 13:50:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231635AbiIEQsH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 5 Sep 2022 12:48:07 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6225661D51
-        for <bpf@vger.kernel.org>; Mon,  5 Sep 2022 09:48:06 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id bn9so9784756ljb.6
-        for <bpf@vger.kernel.org>; Mon, 05 Sep 2022 09:48:06 -0700 (PDT)
+        with ESMTP id S232192AbiIERud (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 5 Sep 2022 13:50:33 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C0775F224;
+        Mon,  5 Sep 2022 10:50:32 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id f4so6695291qkl.7;
+        Mon, 05 Sep 2022 10:50:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brouer-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:cc:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date;
-        bh=eBPc8+lw+EthbmoJDVfsiUIub6fYAfy3lSFevqTwdLo=;
-        b=En9kd4oHs7ZiMDWysTVzFkwgkH1GBSna1/f4J7enbLjUZsf45f6OYgEl2he4kLnYsn
-         ev7Eizw/O5cLP0Fw2TzMAKWRK4swcR0frYnErngKmdhhAFR/OwLATgnc251hcM63q8Gs
-         S4YAy5Q0FcQsgCFw1y+7nCP8FAhARUwsLC8N4cGgUEuz1LF27VvXCpT1r26Hxiw3JF2o
-         0lf5Y2K4WJ3NhuaXbtJuXA+2OZDxyYnqBKdQ/V1e59Z9/fl9Cx8yT33guIUKmQLMZuCK
-         JiGq58JFJaDLyUkrT7be1Pf3hpDzEa0zkFf/Pi88aaOofXOnUSSVFZ9WMelQeoOPAaGe
-         0Ljg==
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=NIxejre8XSlpvZ705nvFUrxMRpB63yvrNzNcvR3IWeo=;
+        b=HRbeyKuzFpMmFL3T6dCdhJNR2I8tnyzlLFo4PfVHb0+IsLTP/PwcxtJk7G/WXaFZtv
+         fbkBJWjR48+c6CG+SY/roeM0NvZtu5YOPEiahvAktzHMW6kaCTqb+UN5a9ALu5pVkgkr
+         1ehxy8+YtfXOcnSUVTFdNY2alQEQsRvV6benXsNXaYSINC6kc4RMO9lhX8NgTp6hGRdM
+         B/zxTyjqEa+rHYqKMg84h8Fv5z0RPxJK0zJeumwbtXOl7sCQUPAnayc/9ozuI/2xuzKE
+         OvDQPJp9Ku4OEabBZNSc03MPO6HBKiJPKBCg0r/5exq/GegS8lqketkuFJGtyJj4wvZj
+         S1Cw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:cc:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date;
-        bh=eBPc8+lw+EthbmoJDVfsiUIub6fYAfy3lSFevqTwdLo=;
-        b=PWyKiI+YEMetxuuf4gfJMMWqBhNmYI4yHbEfbIVVWQ1h6MW13OqA80eDOzJcoLblai
-         nPjILI7QNTuDIhnu2NJ1zLOy04sVNOJsheSSPdXQNWejyH6q/SEolyO0tIVTYfhtWko9
-         QROPFOOiiVkRDt5buehtqrrh/heqh8Lc/yct2fd9rOZbBiUlX4UUlOMxQp/1kz5x3ZSq
-         MT/demfhq7u4c24/7zvIryOKMg2miDgJYfBjW2dFj8ZvEQ2caD/ZUmvQl0JaFiuIU3nq
-         XZem/Lu35B8j7mmNMvoFL8Gg1KTpupHPOYYXjUEtadDxVv66t3rd9ZH59SJhf+qme9h2
-         vs5w==
-X-Gm-Message-State: ACgBeo0Jcx19zMe4C6IveuQVA1kPfHHJfXAYMlG3TioOmNES1bD/dKeT
-        EA27QAEsVFtUmkmjebCDpqM5jnUc+pi2eQ==
-X-Google-Smtp-Source: AA6agR5Gl3F9BkviHh6nUidmO/FxQm0p+I+k9XcQpfgXdLrhhs5wYrLP6/Z4VmpPSz+3Un25DU2egQ==
-X-Received: by 2002:a2e:6e14:0:b0:268:8813:f997 with SMTP id j20-20020a2e6e14000000b002688813f997mr8133895ljc.519.1662396484774;
-        Mon, 05 Sep 2022 09:48:04 -0700 (PDT)
-Received: from [192.168.41.81] (83-90-141-187-cable.dk.customer.tdc.net. [83.90.141.187])
-        by smtp.gmail.com with ESMTPSA id p4-20020a2e9ac4000000b0026a7199e526sm385233ljj.52.2022.09.05.09.48.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Sep 2022 09:48:04 -0700 (PDT)
-Message-ID: <4c78f2c6-be9e-a85a-2846-f21e9e8bc536@brouer.com>
-Date:   Mon, 5 Sep 2022 18:48:03 +0200
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=NIxejre8XSlpvZ705nvFUrxMRpB63yvrNzNcvR3IWeo=;
+        b=tbYePU6WFlbKC7VGz1GhjMcZ/e1IyLysTKbsvoJ7udTc7Uwk7UL9YrfYBp4H31iI7A
+         QVaARiSKlJg/MN6jCAtHuOsUl5LbuZ/+EkyJgxjCPGKGJPHEImWDshV43/7/lik0dvon
+         3dC2TJlP5yf7cxn4xTFBAzpkwhLoIDdeufMwaO3TL4OBMalX/W4ybR83Nf5om0+VoITG
+         zdTU7AnLsc0yl9b/v5OTkfwftlcfYrX5Jx+rH+4y/hWf1dO207skX9yYR60URIxCpfRg
+         NB19UXeUHy0PKazKVa0vFKPS3f9Byo1o9tSk1u4RYDmOgD0+0Wx952DoxuNtAtlInevQ
+         PP5g==
+X-Gm-Message-State: ACgBeo3FZ5o/bPQj6W11Ap8qypf4OrhGrmtV0UokdALoUWYZ5VY4PwHG
+        OalWR47rr0wwN7uoMuIgTukOOnRk0fD6Stg1160=
+X-Google-Smtp-Source: AA6agR4AeWEab2VeYH3ZQqCHDhtVB8Gy64pypEwNlDKY17HHwSmi/SwuHlkJ0wy5t4bsgndt/hjL+D9Dk2A3yCkk9/o=
+X-Received: by 2002:a05:620a:1011:b0:6bc:62fc:6e4 with SMTP id
+ z17-20020a05620a101100b006bc62fc06e4mr33666187qkj.484.1662400231285; Mon, 05
+ Sep 2022 10:50:31 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.0
-Cc:     brouer@redhat.com
-Subject: Re: [PATCH bpf-next v3 2/2] Add table of BPF program types to libbpf
- docs
-Content-Language: en-US
-To:     Donald Hunter <donald.hunter@gmail.com>, bpf@vger.kernel.org,
-        linux-doc@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-References: <20220829091500.24115-1-donald.hunter@gmail.com>
- <20220829091500.24115-3-donald.hunter@gmail.com>
-From:   "Jesper D. Brouer" <netdev@brouer.com>
-In-Reply-To: <20220829091500.24115-3-donald.hunter@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20220831101617.22329-1-fw@strlen.de> <87v8q84nlq.fsf@toke.dk>
+ <20220831125608.GA8153@breakpoint.cc> <87o7w04jjb.fsf@toke.dk>
+ <20220831135757.GC8153@breakpoint.cc> <87ilm84goh.fsf@toke.dk>
+ <20220831152624.GA15107@breakpoint.cc> <CAADnVQJp5RJ0kZundd5ag-b3SDYir8cF4R_nVbN8Zj9Rcn0rww@mail.gmail.com>
+ <20220831155341.GC15107@breakpoint.cc> <CAADnVQJGQmu02f5B=mc1xJvVWSmk_GNZj9WAUskekykmyo8FzA@mail.gmail.com>
+ <1cc40302-f006-31a7-b270-30813b8f4b67@iogearbox.net> <CAHsH6GtCgb1getXASkqzN75cNfm7_GOg8Mng5ZY37yK99XBVMQ@mail.gmail.com>
+ <CAADnVQLSQPnT+8EV15=6MHzMCpfcPn9SOONERLtO2TJY43JUhg@mail.gmail.com>
+In-Reply-To: <CAADnVQLSQPnT+8EV15=6MHzMCpfcPn9SOONERLtO2TJY43JUhg@mail.gmail.com>
+From:   Eyal Birger <eyal.birger@gmail.com>
+Date:   Mon, 5 Sep 2022 20:50:20 +0300
+Message-ID: <CAHsH6GuiPvD5Z98=HWvKtR5FkP0rO_8Suhn6_njEgC54CGptXw@mail.gmail.com>
+Subject: Re: [PATCH nf-next] netfilter: nf_tables: add ebpf expression
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Florian Westphal <fw@strlen.de>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>,
+        netfilter-devel <netfilter-devel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Shmulik Ladkani <shmulik.ladkani@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Fri, Sep 2, 2022 at 7:53 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Wed, Aug 31, 2022 at 10:18 PM Eyal Birger <eyal.birger@gmail.com> wrote:
+> >
+> > On Thu, Sep 1, 2022 at 1:16 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+> > >
+> > > On 8/31/22 7:26 PM, Alexei Starovoitov wrote:
+> > > > On Wed, Aug 31, 2022 at 8:53 AM Florian Westphal <fw@strlen.de> wrote:
+> > > >> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> > > >>>> 1 and 2 have the upside that its easy to handle a 'file not found'
+> > > >>>> error.
+> > > >>>
+> > > >>> I'm strongly against calling into bpf from the inner guts of nft.
+> > > >>> Nack to all options discussed in this thread.
+> > > >>> None of them make any sense.
+> > > >>
+> > > >> -v please.  I can just rework userspace to allow going via xt_bpf
+> > > >> but its brain damaged.
+> > > >
+> > > > Right. xt_bpf was a dead end from the start.
+> > > > It's time to deprecate it and remove it.
+> > > >
+> > > >> This helps gradually moving towards move epbf for those that
+> > > >> still heavily rely on the classic forwarding path.
+> > > >
+> > > > No one is using it.
+> > > > If it was, we would have seen at least one bug report over
+> > > > all these years. We've seen none.
+> > > >
+> > > > tbh we had a fair share of wrong design decisions that look
+> > > > very reasonable early on and turned out to be useless with
+> > > > zero users.
+> > > > BPF_PROG_TYPE_SCHED_ACT and BPF_PROG_TYPE_LWT*
+> > > > are in this category. > All this code does is bit rot.
+> > >
+> > > +1
+> > >
+> > > > As a minimum we shouldn't step on the same rakes.
+> > > > xt_ebpf would be the same dead code as xt_bpf.
+> > >
+> > > +1, and on top, the user experience will just be horrible. :(
+> > >
+> > > >> If you are open to BPF_PROG_TYPE_NETFILTER I can go that route
+> > > >> as well, raw bpf program attachment via NF_HOOK and the bpf dispatcher,
+> > > >> but it will take significantly longer to get there.
+> > > >>
+> > > >> It involves reviving
+> > > >> https://lore.kernel.org/netfilter-devel/20211014121046.29329-1-fw@strlen.de/
+> > > >
+> > > > I missed it earlier. What is the end goal ?
+> > > > Optimize nft run-time with on the fly generation of bpf byte code ?
+> > >
+> > > Or rather to provide a pendant to nft given existence of xt_bpf, and the
+> > > latter will be removed at some point? (If so, can't we just deprecate the
+> > > old xt_bpf?)
+> >
+> > FWIW we've been using both lwt bpf and xt_bpf on our production workloads
+> > for a few years now.
+> >
+> > xt_bpf allows us to apply custom sophisticated policy logic at connection
+> > establishment - which is not really possible (or efficient) using
+> > iptables/nft constructs - without needing to reinvent all the facilities that
+> > nf provides like connection tracking, ALGs, and simple filtering.
+> >
+> > As for lwt bpf, We use it for load balancing towards collect md tunnels.
+> > While this can be done at tc egress for unfragmented packets, the lwt out hook -
+> > when used in tandem with nf fragment reassembly - provides a hooking point
+> > where a bpf program can see reassembled packets and load balance based on
+> > their internals.
+>
+> Sounds very interesting!
+> Any open source code to look at ?
 
-On 29/08/2022 11.15, Donald Hunter wrote:
-> Extend the libbpf documentation with a table of program types,
-> attach points and ELF section names. This table uses data from
-> program_types.csv which is generated from tools/lib/bpf/libbpf.c
-> during the documentation build.
-> 
-> Signed-off-by: Donald Hunter <donald.hunter@gmail.com>
-> ---
-[...]
-> diff --git a/Documentation/bpf/libbpf/program_types.rst b/Documentation/bpf/libbpf/program_types.rst
-> new file mode 100644
-> index 000000000000..04fbb48b8a6a
-> --- /dev/null
-> +++ b/Documentation/bpf/libbpf/program_types.rst
-> @@ -0,0 +1,32 @@
-> +.. SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
-> +
-> +.. _program_types_and_elf:
-> +
-> +Program Types and ELF Sections
-> +==============================
-> +
-> +The table below lists the program types, their attach types where relevant and the ELF section
-> +names supported by libbpf for them. The ELF section names follow these rules:
-> +
-> +- ``type`` is an exact match, e.g. ``SEC("socket")``
-> +- ``type+`` means it can be either exact ``SEC("type")`` or well-formed ``SEC("type/extras")``
-> +  with a ‘``/``’ separator between ``type`` and ``extras``.
-> +
-> +When ``extras`` are specified, they provide details of how to auto-attach the BPF program.
-> +The format of ``extras`` depends on the program type, e.g. ``SEC("tracepoint/<category>/<name>")``
-> +for tracepoints or ``SEC("usdt/<path-to-binary>:<usdt_provider>:<usdt_name>")`` for USDT probes.
-> +
-> +..
-> +  program_types.csv is generated from tools/lib/bpf/libbpf.c and is fomatted like this:
-                                                                        ^
-Typo:  s/fomatted/formatted
+For these projects there isn't at this point. But some of the benefit in these
+specific hooking points is that our custom logic is very scoped and integrates
+well with the "classical" forwarding path.
 
-> +    Program Type,Attach Type,ELF Section Name,Sleepable
-> +    ``BPF_PROG_TYPE_SOCKET_FILTER``,,``socket``,
-> +    ``BPF_PROG_TYPE_SK_REUSEPORT``,``BPF_SK_REUSEPORT_SELECT_OR_MIGRATE``,``sk_reuseport/migrate``,
-> +    ``BPF_PROG_TYPE_SK_REUSEPORT``,``BPF_SK_REUSEPORT_SELECT``,``sk_reuseport``,
-> +    ``BPF_PROG_TYPE_KPROBE``,,``kprobe+``,
-> +    ``BPF_PROG_TYPE_KPROBE``,,``uprobe+``,
-> +    ``BPF_PROG_TYPE_KPROBE``,,``uprobe.s+``,Yes
-> +
-> +.. csv-table:: Program Types and Their ELF Section Names
-> +   :file: ../../output/program_types.csv
-> +   :widths: 40 30 20 10
-> +   :header-rows: 1
+In netfilter we have an identity based policy engine provisioning sets of
+bpf maps. These maps are use used by policy programs invoked by xt_bpf on
+connection establishment as part of a larger set of iptables rules.
 
-Nice, I didn't know this formatting trick :-)
+In LWT this solved us a problem with fragmented traffic, as our load
+balancing solution supports - among other things - IPsec stickiness based
+on ESP-in-UDP SPI and as such needs to see unfragemented traffic.
 
-Appreciate you are working on this :-)
---Jesper
+Eyal.
