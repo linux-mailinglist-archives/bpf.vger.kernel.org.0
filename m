@@ -2,68 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D08B5ACE47
-	for <lists+bpf@lfdr.de>; Mon,  5 Sep 2022 10:55:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 574685ACE7C
+	for <lists+bpf@lfdr.de>; Mon,  5 Sep 2022 11:04:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237663AbiIEIjD convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Mon, 5 Sep 2022 04:39:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41388 "EHLO
+        id S235795AbiIEJCB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 5 Sep 2022 05:02:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238194AbiIEIiy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 5 Sep 2022 04:38:54 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 348B926ED;
-        Mon,  5 Sep 2022 01:38:53 -0700 (PDT)
-Received: from dggpeml500020.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4MLhhV6737zrS8d;
-        Mon,  5 Sep 2022 16:36:58 +0800 (CST)
-Received: from dggpeml100010.china.huawei.com (7.185.36.14) by
- dggpeml500020.china.huawei.com (7.185.36.88) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Mon, 5 Sep 2022 16:38:51 +0800
-Received: from dggpeml500010.china.huawei.com (7.185.36.155) by
- dggpeml100010.china.huawei.com (7.185.36.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Mon, 5 Sep 2022 16:38:51 +0800
-Received: from dggpeml500010.china.huawei.com ([7.185.36.155]) by
- dggpeml500010.china.huawei.com ([7.185.36.155]) with mapi id 15.01.2375.024;
- Mon, 5 Sep 2022 16:38:51 +0800
-From:   "Liuxin(EulerOS)" <liuxin350@huawei.com>
-To:     "andrii@kernel.org" <andrii@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "martin.lau@linux.dev" <martin.lau@linux.dev>,
-        "song@kernel.org" <song@kernel.org>, "yhs@fb.com" <yhs@fb.com>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>,
-        "sdf@google.com" <sdf@google.com>,
-        "haoluo@google.com" <haoluo@google.com>,
-        "jolsa@kernel.org" <jolsa@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "854182924@qq.com" <854182924@qq.com>
-CC:     "Yanan (Euler)" <yanan@huawei.com>,
-        "Wuchangye (EulerOS)" <wuchangye@huawei.com>,
-        Xiesongyang <xiesongyang@huawei.com>,
-        "zhudi (E)" <zhudi2@huawei.com>,
-        "kongweibin (A)" <kongweibin2@huawei.com>
-Subject: [PATCH] libbpf: Clean up legacy bpf maps declaration in bpf_helpers
-Thread-Topic: [PATCH] libbpf: Clean up legacy bpf maps declaration in
- bpf_helpers
-Thread-Index: AdjBAj9xCLJDkVITTHKlRdMiRgqMGg==
-Date:   Mon, 5 Sep 2022 08:38:50 +0000
-Message-ID: <6d349d1047f44001b926f80ad5416245@huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.136.113.250]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        with ESMTP id S236064AbiIEJB7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 5 Sep 2022 05:01:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 086A527DFD
+        for <bpf@vger.kernel.org>; Mon,  5 Sep 2022 02:01:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1662368518;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dLeCohLxvR1IgW/HiZ/lfOMApbQew6zDCrcm46gfzsg=;
+        b=DB27CEMqUt0TwQCFnHebzDMCiLsiXVdVqvymltr3xMqbG5B6wxFLMsB9VkTlP6AN5xydsk
+        UBUczgRgSwwjMGWCp0BpkbV0UulmZw/VnN0azNmteNZSOd8ysHIz92dDSIkwEpuVoDicu8
+        WA4AnS/d77oHBGSe5oU7PDzIbWyMp8Q=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-421-Q4bg3dFPMgaGe3WH0qWvcw-1; Mon, 05 Sep 2022 05:01:54 -0400
+X-MC-Unique: Q4bg3dFPMgaGe3WH0qWvcw-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C7A3A382ECC1;
+        Mon,  5 Sep 2022 09:01:53 +0000 (UTC)
+Received: from astarta.redhat.com (unknown [10.39.192.175])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9FCB4492C3B;
+        Mon,  5 Sep 2022 09:01:51 +0000 (UTC)
+From:   Yauheni Kaliuta <ykaliuta@redhat.com>
+To:     bpf@vger.kernel.org
+Cc:     andrii@kernel.org, alexei.starovoitov@gmail.com, jbenc@redhat.com,
+        daniel@iogearbox.net, serge@hallyn.com,
+        linux-security-module@vger.kernel.org,
+        Yauheni Kaliuta <ykaliuta@redhat.com>
+Subject: [PATCH bpf-next] bpf: use bpf_capable() instead of CAP_SYS_ADMIN for blinding decision
+Date:   Mon,  5 Sep 2022 12:01:49 +0300
+Message-Id: <20220905090149.61221-1-ykaliuta@redhat.com>
+In-Reply-To: <20220831090655.156434-1-ykaliuta@redhat.com>
+References: <20220831090655.156434-1-ykaliuta@redhat.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.85 on 10.11.54.10
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,39 +61,46 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Legacy bpf maps declaration were no longer supported in Libbpf 1.0,
-so it was time to remove the definition of bpf_map_def in
-bpf_helpers.h.
+The full CAP_SYS_ADMIN requirement for blining looks too strict
+nowadays. These days given unpriv eBPF is disabled by default, the
+main users for constant blinding coming from unpriv in particular
+via cBPF -> eBPF migration (e.g. old-style socket filters).
 
-LINK:[1] https://github.com/libbpf/libbpf/wiki/Libbpf:-the-road-to-v1.0
+Discussion: https://lore.kernel.org/bpf/20220831090655.156434-1-ykaliuta@redhat.com/
 
-Signed-off-by: Liu Xin<liuxin350@huawei.com>
+Signed-off-by: Yauheni Kaliuta <ykaliuta@redhat.com>
 ---
-tools/lib/bpf/bpf_helpers.h | 12 ------------
-1 file changed, 12 deletions(-)
+ Documentation/admin-guide/sysctl/net.rst | 3 +++
+ include/linux/filter.h                   | 2 +-
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
-index 867b73483..9cad13e7f 100644
---- a/tools/lib/bpf/bpf_helpers.h
-+++ b/tools/lib/bpf/bpf_helpers.h
-@@ -167,18 +167,6 @@ bpf_tail_call_static(void *ctx, const void *map, const __u32 slot)
-}
-#endif
+diff --git a/Documentation/admin-guide/sysctl/net.rst b/Documentation/admin-guide/sysctl/net.rst
+index 805f2281e000..ff1e5b5acd28 100644
+--- a/Documentation/admin-guide/sysctl/net.rst
++++ b/Documentation/admin-guide/sysctl/net.rst
+@@ -101,6 +101,9 @@ Values:
+ 	- 1 - enable JIT hardening for unprivileged users only
+ 	- 2 - enable JIT hardening for all users
+ 
++where "privileged user" in this context means a process having
++CAP_BPF or CAP_SYS_ADMIN in the root user name space.
++
+ bpf_jit_kallsyms
+ ----------------
+ 
+diff --git a/include/linux/filter.h b/include/linux/filter.h
+index 527ae1d64e27..75335432fcbc 100644
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -1099,7 +1099,7 @@ static inline bool bpf_jit_blinding_enabled(struct bpf_prog *prog)
+ 		return false;
+ 	if (!bpf_jit_harden)
+ 		return false;
+-	if (bpf_jit_harden == 1 && capable(CAP_SYS_ADMIN))
++	if (bpf_jit_harden == 1 && bpf_capable())
+ 		return false;
+ 
+ 	return true;
+-- 
+2.34.1
 
--/*
-- * Helper structure used by eBPF C program
-- * to describe BPF map attributes to libbpf loader
-- */
--struct bpf_map_def {
--       unsigned int type;
--       unsigned int key_size;
--       unsigned int value_size;
--       unsigned int max_entries;
--       unsigned int map_flags;
--} __attribute__((deprecated("use BTF-defined maps in .maps section")));
--
-enum libbpf_pin_type {
-        LIBBPF_PIN_NONE,
-        /* PIN_BY_NAME: pin maps by name (in /sys/fs/bpf by default) */
---
-2.33.0
