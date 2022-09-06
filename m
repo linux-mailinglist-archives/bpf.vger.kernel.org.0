@@ -2,77 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDA6E5AE503
-	for <lists+bpf@lfdr.de>; Tue,  6 Sep 2022 12:08:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6C715AE5F2
+	for <lists+bpf@lfdr.de>; Tue,  6 Sep 2022 12:53:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233801AbiIFKIG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Sep 2022 06:08:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37502 "EHLO
+        id S233593AbiIFKwy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Sep 2022 06:52:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233948AbiIFKIF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Sep 2022 06:08:05 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0542125C5B
-        for <bpf@vger.kernel.org>; Tue,  6 Sep 2022 03:08:04 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id e17so6839102edc.5
-        for <bpf@vger.kernel.org>; Tue, 06 Sep 2022 03:08:03 -0700 (PDT)
+        with ESMTP id S239629AbiIFKwZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Sep 2022 06:52:25 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E5347B29D;
+        Tue,  6 Sep 2022 03:50:57 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id bp20so14338866wrb.9;
+        Tue, 06 Sep 2022 03:50:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date;
-        bh=zmJzNViE34p6/jA1hPcZaxIhLbmiyBCQ1vHBKsBEiKI=;
-        b=XmNGGEU/lM/VX9Pbm6CZ9V1PonF5qn2K8ULq9JF+GAkqBh0NpyvsD3Uyyfzc38pykf
-         wlwWbAWDLSOUPS0bxa1Ajw5Brt/L3tSieN0JCdVaEs3HZjVgwKsH6vu6RI9QAIQoo2WI
-         IwriVGn0zunFZ2yeeIiQMZEadlURC8oVBw93Gil8JydmxMHZr1XRqj6u3mz/m4lqwqmr
-         vP3dBXdlar9+j6BOJlXTN7XwnyhsjbaSn9eDdSS7m0kLvKZyWXmFs+CX5jugvxM2XvsC
-         cP8vmA69Qu1m4kniJukQYvdU7meEohUvUqHkvXzL+nGqF2YBFZL3rKlTP5h+V45aF1Fv
-         rmSw==
+        h=mime-version:user-agent:references:message-id:date:in-reply-to
+         :subject:cc:to:from:from:to:cc:subject:date;
+        bh=DeZeaGmLe3sAs17o9u4aA+9IGunBSiFEik8IifS7SLk=;
+        b=N7RZ/0QQzjm+knbE/RlztSF707It1haNgKph+ZBYlZgjSTSpbFx7ALekjKZ1JSbqVj
+         4OmM51mK2yEhaqZi7CZy8qDmn2dwQoBCZ9jAznomYjkO/Oh6zZ289ArQ5LwEUIWyQ+vT
+         UE8x1rJWGMUpRjzB70jAJlhoZdg9GIUWAUAu+no9EePC6i09sIRqrOArGJJFt8HkdESg
+         4DMzrswVY1LW0/yfMNHTB1AnnSHDNy+cQfBz0M0J0AGmPb4tN/ORMr/BNxVlOrOX7Wxv
+         TGKuo/oK3zSNftUeSV9vol3cSbUfQip/uqJBRvbsk1bmWRmyClHFbl0XBgiqFgRI7h1U
+         OiQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date;
-        bh=zmJzNViE34p6/jA1hPcZaxIhLbmiyBCQ1vHBKsBEiKI=;
-        b=S5VP8EoHpvIYzb8jwK341NcLLb9UXa821HYtyoy+9aLcoPKU+yMDdOYcd2FiUxjQk6
-         yryruTQcFohfQv99Txd2/Pzm8xCUC7/Mdhc8b2AXCYL0DcjpP9VZ1O20wCvzxdHjKoYH
-         T41ynZEb0joOZYmgWNA8LQQdPXbLH52HOKZm6QLmbllMBXsnxhyHEMwJ1sgjKwhGwOk9
-         uBqhfRK/uMJIQTKYdtUCQNswBT4wrUum8FBKkblJ5L78PMmk+35klVqslGHoZLAMmALD
-         ok9XQhD15JxcwnFwFckH5LduTLLktCcKufkpkr/Bh0VM3Ernioj46U3I67rMljWJkcy4
-         1l6w==
-X-Gm-Message-State: ACgBeo00V9xVcy4zIGR6v7tfvCVKNn/hna7/QgFe6hREkdN4AuGyE6aE
-        Sx7qsbbTIdIiZu7xNZnUOV0=
-X-Google-Smtp-Source: AA6agR4WyoB1Jpi1zEexzPm6CmzknSux2PLdA0EMVF+ONytiWyVraACVhq872zW75ebvPq4w9BvqcQ==
-X-Received: by 2002:a05:6402:2937:b0:44e:b578:6fdd with SMTP id ee55-20020a056402293700b0044eb5786fddmr4330530edb.159.1662458882429;
-        Tue, 06 Sep 2022 03:08:02 -0700 (PDT)
-Received: from krava ([193.85.244.190])
-        by smtp.gmail.com with ESMTPSA id qt14-20020a170906ecee00b00728f6d4d0d7sm6388124ejb.67.2022.09.06.03.08.01
+        h=mime-version:user-agent:references:message-id:date:in-reply-to
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date;
+        bh=DeZeaGmLe3sAs17o9u4aA+9IGunBSiFEik8IifS7SLk=;
+        b=bMm/SkxzfErBfXzEAx6Ba0GsGBiNhJmvNxP4Fxu+skgo/xOblDWQ1XhyJJJd+6oEVZ
+         k5LC24qpdGm5hG6Ztuz5LqdxjC//I9LRznv3xQ0lfmBaQo8kn9LAbkqVJ2BjMY+9lMyP
+         xDiQ95616fJOjty1Gu3fBIFjAnjjbaAflHXdmHK8xZhbajk1+lYJcVMS6OhjzLFDGv9C
+         YdgTAVXNmM3fqdAotRClZDpDRE/hGN0Pyz69fYBykm4ihI53vvlYLNkv/rvtzMkvWQs1
+         Y3TfSperx/G1s9xZcGROYjg1hBzlveUPaWwBTMRcQtLB7/cWhRBA9UsO32XqVdOQ0btJ
+         7Gvg==
+X-Gm-Message-State: ACgBeo0YYd8Xm13pPqfcCXn+VRW8X4AjbIszopijlyIVRm1FYlKYkzsf
+        gNXqEKyXBMw/XWYjEO3azT0=
+X-Google-Smtp-Source: AA6agR79p5K6VeBZ3o0ywObGZXXOxpg7PafY0OT9DSE6RWchw34Oq7Z7KDr/pgwu9Xvm9agFIeSsmA==
+X-Received: by 2002:a5d:47c7:0:b0:225:8905:296 with SMTP id o7-20020a5d47c7000000b0022589050296mr27986402wrc.515.1662461455554;
+        Tue, 06 Sep 2022 03:50:55 -0700 (PDT)
+Received: from imac ([88.97.103.74])
+        by smtp.gmail.com with ESMTPSA id z14-20020a5d4c8e000000b0021e4829d359sm12179006wrs.39.2022.09.06.03.50.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Sep 2022 03:08:01 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Tue, 6 Sep 2022 12:07:59 +0200
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>
-Subject: Re: [PATCHv3 bpf-next 2/2] bpf: Move bpf_dispatcher function out of
- ftrace locations
-Message-ID: <Yxcb/9W3XsoA+QM/@krava>
-References: <20220903131154.420467-1-jolsa@kernel.org>
- <20220903131154.420467-3-jolsa@kernel.org>
- <20220905112345.3daf34a1@gandalf.local.home>
+        Tue, 06 Sep 2022 03:50:54 -0700 (PDT)
+From:   Donald Hunter <donald.hunter@gmail.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf@vger.kernel.org, linux-doc@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/2] Add subdir support to Documentation
+ makefile
+In-Reply-To: <3d08894c-b3d1-37e8-664e-48e66dc664ac@iogearbox.net> (Daniel
+        Borkmann's message of "Fri, 2 Sep 2022 17:08:09 +0200")
+Date:   Tue, 06 Sep 2022 11:21:59 +0100
+Message-ID: <m2h71k6bw8.fsf@gmail.com>
+References: <20220829091500.24115-1-donald.hunter@gmail.com>
+        <20220829091500.24115-2-donald.hunter@gmail.com>
+        <3d08894c-b3d1-37e8-664e-48e66dc664ac@iogearbox.net>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.1 (darwin)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220905112345.3daf34a1@gandalf.local.home>
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -83,58 +74,22 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Sep 05, 2022 at 11:23:45AM -0400, Steven Rostedt wrote:
-> On Sat,  3 Sep 2022 15:11:54 +0200
-> Jiri Olsa <jolsa@kernel.org> wrote:
-> 
-> > diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> > index f9920f1341c8..089c20cefd2b 100644
-> > --- a/arch/x86/Kconfig
-> > +++ b/arch/x86/Kconfig
-> > @@ -284,6 +284,7 @@ config X86
-> >  	select PROC_PID_ARCH_STATUS		if PROC_FS
-> >  	select HAVE_ARCH_NODE_DEV_GROUP		if X86_SGX
-> >  	imply IMA_SECURE_AND_OR_TRUSTED_BOOT    if EFI
-> > +	select HAVE_DYNAMIC_FTRACE_NO_PATCHABLE
-> >  
-> >  config INSTRUCTION_DECODER
-> >  	def_bool y
-> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > index 9c1674973e03..e267625557cb 100644
-> > --- a/include/linux/bpf.h
-> > +++ b/include/linux/bpf.h
-> > @@ -924,7 +924,14 @@ int arch_prepare_bpf_dispatcher(void *image, s64 *funcs, int num_funcs);
-> >  	},							\
-> >  }
-> >  
-> > +#ifdef CONFIG_X86_64
-> 
-> I think Peter may have already mentioned this, but shouldn't he above be:
-> 
->   #ifdef HAVE_DYNAMIC_FTRACE_NO_PATCHABLE
+Daniel Borkmann <daniel@iogearbox.net> writes:
 
-different archs need different patchable_function_entry(X) attribute
-so I think we should use arch configs in here
+> On 8/29/22 11:14 AM, Donald Hunter wrote:
+>> Run make in list of subdirs to build generated sources and migrate
+>> userspace-api/media to use this instead of being a special case.
+>> Signed-off-by: Donald Hunter <donald.hunter@gmail.com>
+>
+> Jonathan, given this touches Documentation/Makefile, could you ACK if
+> it looks good to you? Noticed both patches don't have doc: $subj prefix,
+> but that's something we could fix up.
+>
+> Maybe one small request, would be nice to build Documentation/bpf/libbpf/
+> also with every BPF CI run to avoid breakage of program_types.csv. Donald
+> could you check if feasible? Follow-up might be ok too, but up to Andrii.
 
-also having HAVE_DYNAMIC_FTRACE_NO_PATCHABLE option enabled does not
-imply there's support for dispatcher image generation, so we might
-endup with extra nop bytes
+Sure, I can look at what is needed for the BPF CI run.
 
-jirka
-
-> 
-> ??
-> 
-> -- Steve
-> 
-> > +#define BPF_DISPATCHER_ATTRIBUTES __attribute__((patchable_function_entry(5)))
-> > +#else
-> > +#define BPF_DISPATCHER_ATTRIBUTES
-> > +#endif
-> > +
-> >  #define DEFINE_BPF_DISPATCHER(name)					\
-> > +	notrace BPF_DISPATCHER_ATTRIBUTES				\
-> >  	noinline __nocfi unsigned int bpf_dispatcher_##name##_func(	\
-> >  		const void *ctx,					\
-> >  		const struct bpf_insn *insnsi,				\
-> > -- 
+> Thanks,
+> Daniel
