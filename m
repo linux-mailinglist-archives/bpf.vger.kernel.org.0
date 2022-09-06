@@ -2,50 +2,50 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2998F5AEAB6
-	for <lists+bpf@lfdr.de>; Tue,  6 Sep 2022 15:56:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 767E85AEA74
+	for <lists+bpf@lfdr.de>; Tue,  6 Sep 2022 15:55:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233523AbiIFNox (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Sep 2022 09:44:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53192 "EHLO
+        id S233162AbiIFNot (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Sep 2022 09:44:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239371AbiIFNny (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Sep 2022 09:43:54 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C35BB186C1
-        for <bpf@vger.kernel.org>; Tue,  6 Sep 2022 06:38:23 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id e20so15465568wri.13
-        for <bpf@vger.kernel.org>; Tue, 06 Sep 2022 06:38:23 -0700 (PDT)
+        with ESMTP id S238739AbiIFNnb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Sep 2022 09:43:31 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47E797E83D
+        for <bpf@vger.kernel.org>; Tue,  6 Sep 2022 06:37:56 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id c131-20020a1c3589000000b003a84b160addso8915295wma.2
+        for <bpf@vger.kernel.org>; Tue, 06 Sep 2022 06:37:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=isovalent-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
-        bh=LI8DCiu6TjIj4OulZQ/ctoBXW72bGsaE1sE9uyzbXoM=;
-        b=Lj2hEeMm1oMmAa2X2cMg/JtZ1Ze8KzNCbIq+EF+wrvE9Yy2fE0c3dBEDY6Wltez/Zc
-         zUNXQaXp3tii5Zv+YHQk8ztdWiMZ08+xOp5DEGkgXZ895Db3ogzeYtnu8KuVXQd4EeCO
-         QE4nbojmSHAp6+p3PLFnQlQIYqIorvwCjt+IyWK6CkOO17GnGyXQLF5AhYFAOzPMZb9o
-         ZWaa++po6FwuFeLlVzSTle8ccofvih9KDQDrtBvOmJf95fjCTR1vHygh82WeTn6b/hgb
-         rKuqldrmvi7G89xNwxaBTux9mOnKkTuJ9EwBcEWYqeJ0+lpKo6AfgZTClyVDZ4oY2Lr4
-         5J0w==
+        bh=6H8KdwUCDA9IoCWknsDTaVHGW/ZpCyIDX2q/KTx4PM8=;
+        b=dfbrmGyWjgv64/Jj81UEmI7B+xKkx45326Q+ydfsIwRQ7Ps34tW3RZbw3auwy2rkGZ
+         mp2a+NOLSjmpNzjmSMKw2F9Zvhi1ES8TyPZ/qubtMEvdTyig2+DdWWPWZYOvV+k1tPkR
+         TNIwNtBEcFI03zmqezoiWJzuyn14YWgNpmS9vvgOhAvgbL6Ij+FrB5cjfMipdyBZl0pU
+         QqDRjr9pedxO7fyMPwEIEfDxoQ+s71i8GhLYlmPXxI/3Pz6f874jX3xCYT/aRIGh/5bR
+         YHddQU1Kp8aKlC/VsBO6ynoLxMbJEWqsDeW3Uikyn8CIWb7JgP/F/f0YReKt66ZgQMO7
+         IVFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date;
-        bh=LI8DCiu6TjIj4OulZQ/ctoBXW72bGsaE1sE9uyzbXoM=;
-        b=ZzFMy9MzLOcjout9/SCHvB/v9hin2p2P4KW/7JxjrDSYG9YWsuVMfY7QVU8P73ZjDa
-         Ri16rtwWdCBcg4qe80jgNZUeU7HeuLGAMRXZO1t1/P5rH5TsP4oev3/HLGrwjbMNXE2H
-         14SIWHp28Sfb6+wpxiuIm1pc6E5oL0a/SUrVoenH5kdv7nrXyUUl1bAEgCzucbcBbFCe
-         b+eY8GxehM65Yp0iu17pp9Y/H7H5o0mbR4c2xfUxjMyaRgMtXfsyhRiSy6l3n63zo/et
-         MV+BibJj2+SuVzsYbe9Oqv4dGsfmhoMCf81IYtd690dBdcRDojICJaVtFC7TonYxxClA
-         JX7Q==
-X-Gm-Message-State: ACgBeo3H18xbugck+FzzSyOWkQ9uT1mS6/GMwGYqW4rK8Sn2Ww8Boije
-        5xF+AbpXFGsesw71Ou4jDAkmZw==
-X-Google-Smtp-Source: AA6agR5C2+9R0i8dUUe3jeYG5H35Qbvnh5cvhAfaFL5hioqA5EnfjZnjjmXgm/CPYaVTcch/2oJCfQ==
-X-Received: by 2002:a5d:550e:0:b0:228:da13:952c with SMTP id b14-20020a5d550e000000b00228da13952cmr1852407wrv.694.1662471394407;
-        Tue, 06 Sep 2022 06:36:34 -0700 (PDT)
+        bh=6H8KdwUCDA9IoCWknsDTaVHGW/ZpCyIDX2q/KTx4PM8=;
+        b=ma9pPmsVqT61LaR548syLbuRbdE19CjVPRJJTV4OpIysVnrarGnWEQxQ29fl74gA5G
+         V251nqyS9TGEqhc/tOk4L/5TiPF9fy4Wdl21TJdC4tJJCNqetFbI+GxIwAnTKCHptr6s
+         KpdFPqFfC8qUuHrGnjldpwn01Qs925BZzuO3VEh3lzYStwFuBZXr4GoZAfkBQHfoO6ll
+         wxbQq6pRYHGp/vEAu3jt3D9ECriCkTd6J1h9xb5e4vHnyfoQMZK5y0HYIB0RgrNdSsh4
+         hs/GW1WwqaVVDkL5smXYI3V2TZMTQBvpxazrYDTHLRCumdtj/jJbLEDgwJCO7Ip/RfQQ
+         IR4A==
+X-Gm-Message-State: ACgBeo1byhN7I37gKLF0bnf792QkwM7nXSqAm0AiwpDwG/F6i1JFUimz
+        LFQIQ/maz19jEv11gMd4FVgCNw==
+X-Google-Smtp-Source: AA6agR6cA52XGbaA9LirYLUWCKC8xLDTGQT/v6urlvjVlkvn3+jqKkGvbOkDeGRfkQ5oPhXDUsdXig==
+X-Received: by 2002:a05:600c:1554:b0:3a6:23d7:1669 with SMTP id f20-20020a05600c155400b003a623d71669mr14033021wmg.70.1662471395332;
+        Tue, 06 Sep 2022 06:36:35 -0700 (PDT)
 Received: from harfang.fritz.box ([51.155.200.13])
-        by smtp.gmail.com with ESMTPSA id n189-20020a1ca4c6000000b003a5c244fc13sm21775621wme.2.2022.09.06.06.36.33
+        by smtp.gmail.com with ESMTPSA id n189-20020a1ca4c6000000b003a5c244fc13sm21775621wme.2.2022.09.06.06.36.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Tue, 06 Sep 2022 06:36:34 -0700 (PDT)
 From:   Quentin Monnet <quentin@isovalent.com>
@@ -61,11 +61,10 @@ Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
         bpf@vger.kernel.org,
         =?UTF-8?q?Niklas=20S=C3=B6derlund?= <niklas.soderlund@corigine.com>,
         Simon Horman <simon.horman@corigine.com>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Andres Freund <andres@anarazel.de>
-Subject: [PATCH bpf-next 3/7] bpftool: Split FEATURE_TESTS/FEATURE_DISPLAY definitions in Makefile
-Date:   Tue,  6 Sep 2022 14:36:09 +0100
-Message-Id: <20220906133613.54928-4-quentin@isovalent.com>
+        Quentin Monnet <quentin@isovalent.com>
+Subject: [PATCH bpf-next 4/7] bpftool: Group libbfd defs in Makefile, only pass them if we use libbfd
+Date:   Tue,  6 Sep 2022 14:36:10 +0100
+Message-Id: <20220906133613.54928-5-quentin@isovalent.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220906133613.54928-1-quentin@isovalent.com>
 References: <20220906133613.54928-1-quentin@isovalent.com>
@@ -80,39 +79,77 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Make FEATURE_TESTS and FEATURE_DISPLAY easier to read and less likely to
-be subject to conflicts on updates by having one feature per line.
+Bpftool uses libbfd for disassembling JIT-ed programs. But the feature
+is optional, and the tool can be compiled without libbfd support. The
+Makefile sets the relevant variables accordingly. It also sets variables
+related to libbfd's interface, given that it has changed over time.
 
-Suggested-by: Andres Freund <andres@anarazel.de>
+Group all those libbfd-related definitions so that it's easier to
+understand what we are testing for, and only use variables related to
+libbfd's interface if we need libbfd in the first place.
+
+In addition to make the Makefile clearer, grouping the definitions
+related to disassembling JIT-ed programs will help support alternatives
+to libbfd.
+
 Signed-off-by: Quentin Monnet <quentin@isovalent.com>
 ---
- tools/bpf/bpftool/Makefile | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ tools/bpf/bpftool/Makefile | 27 +++++++++++++++------------
+ 1 file changed, 15 insertions(+), 12 deletions(-)
 
 diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-index 04d733e98bff..8b5bfd8256c5 100644
+index 8b5bfd8256c5..8060c7013d4f 100644
 --- a/tools/bpf/bpftool/Makefile
 +++ b/tools/bpf/bpftool/Makefile
-@@ -93,9 +93,16 @@ INSTALL ?= install
- RM ?= rm -f
+@@ -120,13 +120,6 @@ include $(FEATURES_DUMP)
+ endif
+ endif
  
- FEATURE_USER = .bpftool
--FEATURE_TESTS = libbfd disassembler-four-args disassembler-init-styled libcap \
--	clang-bpf-co-re
--FEATURE_DISPLAY = libbfd libcap clang-bpf-co-re
-+
-+FEATURE_TESTS := clang-bpf-co-re
-+FEATURE_TESTS += libcap
-+FEATURE_TESTS += libbfd
-+FEATURE_TESTS += disassembler-four-args
-+FEATURE_TESTS += disassembler-init-styled
-+
-+FEATURE_DISPLAY := clang-bpf-co-re
-+FEATURE_DISPLAY += libcap
-+FEATURE_DISPLAY += libbfd
+-ifeq ($(feature-disassembler-four-args), 1)
+-CFLAGS += -DDISASM_FOUR_ARGS_SIGNATURE
+-endif
+-ifeq ($(feature-disassembler-init-styled), 1)
+-    CFLAGS += -DDISASM_INIT_STYLED
+-endif
+-
+ LIBS = $(LIBBPF) -lelf -lz
+ LIBS_BOOTSTRAP = $(LIBBPF_BOOTSTRAP) -lelf -lz
+ ifeq ($(feature-libcap), 1)
+@@ -138,9 +131,7 @@ include $(wildcard $(OUTPUT)*.d)
  
- check_feat := 1
- NON_CHECK_FEAT_TARGETS := clean uninstall doc doc-clean doc-install doc-uninstall
+ all: $(OUTPUT)bpftool
+ 
+-BFD_SRCS = jit_disasm.c
+-
+-SRCS = $(filter-out $(BFD_SRCS),$(wildcard *.c))
++SRCS := $(wildcard *.c)
+ 
+ ifeq ($(feature-libbfd),1)
+   LIBS += -lbfd -ldl -lopcodes
+@@ -150,9 +141,21 @@ else ifeq ($(feature-libbfd-liberty-z),1)
+   LIBS += -lbfd -ldl -lopcodes -liberty -lz
+ endif
+ 
++# If one of the above feature combinations is set, we support libbfd
+ ifneq ($(filter -lbfd,$(LIBS)),)
+-CFLAGS += -DHAVE_LIBBFD_SUPPORT
+-SRCS += $(BFD_SRCS)
++  CFLAGS += -DHAVE_LIBBFD_SUPPORT
++
++  # Libbfd interface changed over time, figure out what we need
++  ifeq ($(feature-disassembler-four-args), 1)
++    CFLAGS += -DDISASM_FOUR_ARGS_SIGNATURE
++  endif
++  ifeq ($(feature-disassembler-init-styled), 1)
++    CFLAGS += -DDISASM_INIT_STYLED
++  endif
++endif
++ifeq ($(filter -DHAVE_LIBBFD_SUPPORT,$(CFLAGS)),)
++  # No support for JIT disassembly
++  SRCS := $(filter-out jit_disasm.c,$(SRCS))
+ endif
+ 
+ HOST_CFLAGS = $(subst -I$(LIBBPF_INCLUDE),-I$(LIBBPF_BOOTSTRAP_INCLUDE),\
 -- 
 2.34.1
 
