@@ -2,126 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 740DB5AF1C3
-	for <lists+bpf@lfdr.de>; Tue,  6 Sep 2022 19:05:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A1B75AF2EB
+	for <lists+bpf@lfdr.de>; Tue,  6 Sep 2022 19:42:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239292AbiIFRFZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Sep 2022 13:05:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42964 "EHLO
+        id S230492AbiIFRlj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Sep 2022 13:41:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239352AbiIFRE5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Sep 2022 13:04:57 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 687371012
-        for <bpf@vger.kernel.org>; Tue,  6 Sep 2022 09:51:43 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 735A3615A8
-        for <bpf@vger.kernel.org>; Tue,  6 Sep 2022 16:51:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC607C433D7
-        for <bpf@vger.kernel.org>; Tue,  6 Sep 2022 16:51:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662483102;
-        bh=eVzpS8UbW3F7NnvzwrjmHwwSUdB2CW3lOO+QslUAmMo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Cfh+rX1bbJpQZhf2thYL+rRVmsQT5fzFiqJxuS3h4Av6FjxfQkab1TBbd2X7qo2aE
-         lHomKAqra3t2d7KxyOVIY0qLVlbpUpcdaXhttQRQ12y2eTfqtyAghmmorC7aCLVAHn
-         kvFiv/8zbxI+DE3bFOG9a2Wjb3Crm/eS06TkK0FYEWizWbu7fMXvoqLPvGmpySGoDb
-         k2TYPqQvoax2ENnnbZ5fNhp14UKAyNbk283brLZWmoEm3sRdkaNiG8AbkyCwatLFLg
-         /e31tTc4uluMAotDrFEr2/x3+kg85dCsYYYEG8+X0KkqTO1DMY12qwr7/t3epJ8WkW
-         88B4phwOOSJUw==
-Received: by mail-oa1-f47.google.com with SMTP id 586e51a60fabf-127a3a39131so8817693fac.13
-        for <bpf@vger.kernel.org>; Tue, 06 Sep 2022 09:51:42 -0700 (PDT)
-X-Gm-Message-State: ACgBeo3VK6ltn9uck+L2NATLDwWv8XXUodk8L/+J1VxHI6PI2sTssLTg
-        ySm9tUtCDB0ABNbQM4bE4XRAIRA4ylUgcrwmZa8=
-X-Google-Smtp-Source: AA6agR59TCxORs6AceoiEdZNr/mAmlVPxMXuIFwRm5jFfAtyKclw0Q9AlD5fCR70mTRxQKrSgTnEclX8gL6kpYOhjf8=
-X-Received: by 2002:a05:6808:195:b0:342:ed58:52b5 with SMTP id
- w21-20020a056808019500b00342ed5852b5mr10812855oic.22.1662483101976; Tue, 06
- Sep 2022 09:51:41 -0700 (PDT)
+        with ESMTP id S230175AbiIFRlh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Sep 2022 13:41:37 -0400
+Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D47D6260E;
+        Tue,  6 Sep 2022 10:41:35 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.228])
+        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4MMWmS6PPPz9xFgS;
+        Wed,  7 Sep 2022 00:58:16 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.204.63.22])
+        by APP1 (Coremail) with SMTP id LxC2BwA34JNSfRdjftYoAA--.8234S2;
+        Tue, 06 Sep 2022 18:03:26 +0100 (CET)
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
+        shuah@kernel.org, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, jakub@cloudflare.com
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, houtao1@huawei.com,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Subject: [PATCH 0/7] bpf: Add fd modes check for map iter and extend libbpf
+Date:   Tue,  6 Sep 2022 19:02:54 +0200
+Message-Id: <20220906170301.256206-1-roberto.sassu@huaweicloud.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20220905072219.56361-1-ykaliuta@redhat.com>
-In-Reply-To: <20220905072219.56361-1-ykaliuta@redhat.com>
-From:   Song Liu <song@kernel.org>
-Date:   Tue, 6 Sep 2022 09:51:31 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW4fKb17XXW5LhosJb5PPPFM+G0bqde1d6MC62TtrM=SVQ@mail.gmail.com>
-Message-ID: <CAPhsuW4fKb17XXW5LhosJb5PPPFM+G0bqde1d6MC62TtrM=SVQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests: bpf: test_kmod.sh: pass parameter to
- the module
-To:     Yauheni Kaliuta <ykaliuta@redhat.com>
-Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LxC2BwA34JNSfRdjftYoAA--.8234S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Cw4kWryxAr1fAw4rWr4kZwb_yoW8uw4Dpr
+        Z3Gryakr1FvFWI9F9rGrsIyryfJa4xW3y5G3Z7Jr15Zry5XF4DArW8GF43Gry3u3s3W3Z3
+        Zr4Ykr9xGw17uFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvGb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x
+        0267AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02
+        F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4I
+        kC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7Cj
+        xVAaw2AFwI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2
+        IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v2
+        6r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2
+        IY6xkF7I0E14v26r4UJVWxJr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvE
+        x4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa
+        73UjIFyTuYvjxUsfMaUUUUU
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAHBF1jj4KtRwABsa
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Sep 5, 2022 at 12:25 AM Yauheni Kaliuta <ykaliuta@redhat.com> wrote:
->
-> It's possible to specify particular tests for test_bpf.ko with
-> module parameters. Make it possible to pass a module parameter as
-> the first test_kmod.sh argument, example:
->
-> test_kmod.sh test_range=1,3
->
-> Since magnitude tests take long time it can be reasonable to skip
-> them.
->
-> Signed-off-by: Yauheni Kaliuta <ykaliuta@redhat.com>
-> ---
->  tools/testing/selftests/bpf/test_kmod.sh | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/test_kmod.sh b/tools/testing/selftests/bpf/test_kmod.sh
-> index 4f6444bcd53f..3cb52ba20db8 100755
-> --- a/tools/testing/selftests/bpf/test_kmod.sh
-> +++ b/tools/testing/selftests/bpf/test_kmod.sh
-> @@ -4,6 +4,8 @@
->  # Kselftest framework requirement - SKIP code is 4.
->  ksft_skip=4
->
-> +MOD_PARAM="$1"
+From: Roberto Sassu <roberto.sassu@huawei.com>
 
-Shall we use $@ to pass all remaining arguments to insmod/modprobe?
-Otherwise, users may get confused when some parameters don't get
-passed.
+Add a missing fd modes check in map iterators, potentially causing
+unauthorized map writes by eBPF programs attached to the iterator. Use this
+patch set as an opportunity to start a discussion with the cgroup
+developers about whether a security check is missing or not for their
+iterator.
 
-We should also add a help/usage message or at least a comment in the
-script.
+Also, extend libbpf with the _opts variant of bpf_*_get_fd_by_id(). Only
+bpf_map_get_fd_by_id_opts() is really useful in this patch set, to ensure
+that the creation of a map iterator fails with a read-only fd.
 
-Thanks,
-Song
+Add all variants in this patch set for symmetry with
+bpf_map_get_fd_by_id_opts(), and because all the variants share the same
+opts structure. Also, add all the variants here, to shrink the patch set
+fixing map permissions requested by bpftool, so that the remaining patches
+are only about the latter.
 
-> +
->  msg="skip all tests:"
->  if [ "$(id -u)" != "0" ]; then
->         echo $msg please run this as root >&2
-> @@ -26,15 +28,15 @@ test_run()
->         echo "[ JIT enabled:$1 hardened:$2 ]"
->         dmesg -C
->         if [ -f ${OUTPUT}/lib/test_bpf.ko ]; then
-> -               insmod ${OUTPUT}/lib/test_bpf.ko 2> /dev/null
-> +               insmod ${OUTPUT}/lib/test_bpf.ko $MOD_PARAM 2> /dev/null
->                 if [ $? -ne 0 ]; then
->                         rc=1
->                 fi
->         else
->                 # Use modprobe dry run to check for missing test_bpf module
-> -               if ! /sbin/modprobe -q -n test_bpf; then
-> +               if ! /sbin/modprobe -q -n test_bpf $MOD_PARAM; then
->                         echo "test_bpf: [SKIP]"
-> -               elif /sbin/modprobe -q test_bpf; then
-> +               elif /sbin/modprobe -q test_bpf $MOD_PARAM; then
->                         echo "test_bpf: ok"
->                 else
->                         echo "test_bpf: [FAIL]"
-> --
-> 2.34.1
->
+Finally, extend the bpf_iter test with the read-only fd check, and test
+each _opts variant of bpf_*_get_fd_by_id().
+
+Roberto Sassu (7):
+  bpf: Add missing fd modes check for map iterators
+  libbpf: Define bpf_get_fd_opts and introduce
+    bpf_map_get_fd_by_id_opts()
+  libbpf: Introduce bpf_prog_get_fd_by_id_opts()
+  libbpf: Introduce bpf_btf_get_fd_by_id_opts()
+  libbpf: Introduce bpf_link_get_fd_by_id_opts()
+  selftests/bpf: Ensure fd modes are checked for map iters and destroy
+    links
+  selftests/bpf: Add tests for _opts variants of libbpf
+
+ include/linux/bpf.h                           |   2 +-
+ kernel/bpf/inode.c                            |   2 +-
+ kernel/bpf/map_iter.c                         |   3 +-
+ kernel/bpf/syscall.c                          |   8 +-
+ net/core/bpf_sk_storage.c                     |   3 +-
+ net/core/sock_map.c                           |   3 +-
+ tools/lib/bpf/bpf.c                           |  47 +++++-
+ tools/lib/bpf/bpf.h                           |  16 ++
+ tools/lib/bpf/libbpf.map                      |  10 +-
+ tools/lib/bpf/libbpf_version.h                |   2 +-
+ .../selftests/bpf/prog_tests/bpf_iter.c       |  34 +++-
+ .../bpf/prog_tests/libbpf_get_fd_opts.c       | 145 ++++++++++++++++++
+ .../bpf/progs/test_libbpf_get_fd_opts.c       |  49 ++++++
+ 13 files changed, 309 insertions(+), 15 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/libbpf_get_fd_opts.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_libbpf_get_fd_opts.c
+
+-- 
+2.25.1
+
