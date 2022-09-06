@@ -2,52 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2EF55AF855
-	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 01:19:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BA055AF869
+	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 01:32:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229449AbiIFXS4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Sep 2022 19:18:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47464 "EHLO
+        id S229509AbiIFXcA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Sep 2022 19:32:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229644AbiIFXSy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Sep 2022 19:18:54 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70C05868A7
-        for <bpf@vger.kernel.org>; Tue,  6 Sep 2022 16:18:53 -0700 (PDT)
+        with ESMTP id S229461AbiIFXb7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Sep 2022 19:31:59 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DDFB7F27A
+        for <bpf@vger.kernel.org>; Tue,  6 Sep 2022 16:31:56 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 11CB96172F
-        for <bpf@vger.kernel.org>; Tue,  6 Sep 2022 23:18:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70D66C4347C
-        for <bpf@vger.kernel.org>; Tue,  6 Sep 2022 23:18:52 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id E39C0CE1903
+        for <bpf@vger.kernel.org>; Tue,  6 Sep 2022 23:31:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5DB4C43470
+        for <bpf@vger.kernel.org>; Tue,  6 Sep 2022 23:31:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662506332;
-        bh=tuyjzQt64jwjQwYuD7tPlKfss63NwH7MdoF+wOkwVAo=;
+        s=k20201202; t=1662507112;
+        bh=CAI8hCkDtEWznLoikyeoRYgOzfv7bwbIiilNJHWaewA=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=flPpQvMB2pWCzB9DTrvkcq8tnhK5BJ83bu8GOg1SUTz/OHFXjzCRHwbOaXH6D7lHv
-         FupoeF9FCO9n1Zp5G1auGuJY0YYS3R3uERt4uoWiU/Ds0qtdFeDAkhT0pf8N+3KkD5
-         6FRiwMp+dJqkK2keecmBnv1mmNbxq3GWpcW5cKhx+rVUtS9VnlNfHwP9sxKxbLjjPh
-         ifYSMjFCcij4+PAck8vynnUGWS7blvQwi2tYFUVWhSv1V35NS1TUL+PLJr/j8tb5hX
-         h4NC1iW635b9kQqmvC2t8kcJHMjkzG+yIe77p11WAd32U407J2Dot0U1ZHfnNMi7Ww
-         IbQKn03Xqht0w==
-Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-127d10b4f19so6219809fac.9
-        for <bpf@vger.kernel.org>; Tue, 06 Sep 2022 16:18:52 -0700 (PDT)
-X-Gm-Message-State: ACgBeo1mySNJe7Q4zzDqz09zJ9dcKXmouuQ78KRETEmxijlfqsrYz4P+
-        37jfwSwKOac0Aa8uxT39P9olOmVGX68tcrS+FU8=
-X-Google-Smtp-Source: AA6agR4Rv8cKC36x20ZY4rHR7+l0/HQBT2MyVUUTd8iYC+fzbRQ4fpd4i7AqUPXEtMQVDXJQJmBtSIqqkKpHQELyjBU=
-X-Received: by 2002:a05:6870:32d2:b0:127:f0b4:418f with SMTP id
- r18-20020a05687032d200b00127f0b4418fmr389042oac.22.1662506331628; Tue, 06 Sep
- 2022 16:18:51 -0700 (PDT)
+        b=h9C4pXphgzyP6elgeCvwRwHa87M3zCAw3ZNU46n0IAdp8IAQDDk/MhPHCUA8Z7Zxb
+         0FamvqVENzKRoRgJ/uqw5+zN5Wa37QLk7C2kY1kcgGSuhOWN1yMVUURFHeSlY3iAuU
+         eayq6v0rdZeuK7+1VypMuNTyb5K/GwlPmFVz7R1HkX6/FXTxI6O6SS2+nSh5l7ntMY
+         45pOSWv2fNPFBDCD3yNGtGFXY+wcpiEeYfxT+pmq9jvEAYQNyzLJNwQPFzP02GO6bY
+         60R3sUO51YMm5ib/YXYcoJAn3PPRoHvR9Q8UeSHfKDQDvW88plTzzVm0GfNTjWIXTs
+         fCKpF0yTnRR+g==
+Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-127d10b4f19so6278790fac.9
+        for <bpf@vger.kernel.org>; Tue, 06 Sep 2022 16:31:52 -0700 (PDT)
+X-Gm-Message-State: ACgBeo1LNWS+6EVpqx9vqmby/pX5bNhX0DqO3KuI374BV0UzjIeHXked
+        10yPG41spEMW9OUa6xlAay6p3nmfQygoGXzXb2w=
+X-Google-Smtp-Source: AA6agR6Huj9oEdYmEGTf8Cr00s3b5+vb8j+pg/o0Osg6px/3zl2qHyrpjEmfxqpiUsrLAqpyUycltjapY1gJLc3NtvQ=
+X-Received: by 2002:aca:3016:0:b0:345:9d47:5e11 with SMTP id
+ w22-20020aca3016000000b003459d475e11mr10436132oiw.31.1662507111842; Tue, 06
+ Sep 2022 16:31:51 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220906133613.54928-1-quentin@isovalent.com> <20220906133613.54928-4-quentin@isovalent.com>
-In-Reply-To: <20220906133613.54928-4-quentin@isovalent.com>
+References: <20220906133613.54928-1-quentin@isovalent.com> <20220906133613.54928-5-quentin@isovalent.com>
+In-Reply-To: <20220906133613.54928-5-quentin@isovalent.com>
 From:   Song Liu <song@kernel.org>
-Date:   Tue, 6 Sep 2022 16:18:40 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW7YrYAzVfbj+Ycq9nc9ztRHfWjqqaCJWQQBDiOzz9UhVw@mail.gmail.com>
-Message-ID: <CAPhsuW7YrYAzVfbj+Ycq9nc9ztRHfWjqqaCJWQQBDiOzz9UhVw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/7] bpftool: Split FEATURE_TESTS/FEATURE_DISPLAY
- definitions in Makefile
+Date:   Tue, 6 Sep 2022 16:31:41 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW6DXecC3OsjrL7na-OHM=B6KfhEx5P21en+-QRN-RU_UQ@mail.gmail.com>
+Message-ID: <CAPhsuW6DXecC3OsjrL7na-OHM=B6KfhEx5P21en+-QRN-RU_UQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 4/7] bpftool: Group libbfd defs in Makefile, only
+ pass them if we use libbfd
 To:     Quentin Monnet <quentin@isovalent.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -60,8 +60,7 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
         bpf <bpf@vger.kernel.org>,
         =?UTF-8?Q?Niklas_S=C3=B6derlund?= <niklas.soderlund@corigine.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        Andres Freund <andres@anarazel.de>
+        Simon Horman <simon.horman@corigine.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
@@ -75,10 +74,37 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Tue, Sep 6, 2022 at 6:44 AM Quentin Monnet <quentin@isovalent.com> wrote:
 >
-> Make FEATURE_TESTS and FEATURE_DISPLAY easier to read and less likely to
-> be subject to conflicts on updates by having one feature per line.
+[...]
+
 >
-> Suggested-by: Andres Freund <andres@anarazel.de>
-> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+> +# If one of the above feature combinations is set, we support libbfd
+>  ifneq ($(filter -lbfd,$(LIBS)),)
+> -CFLAGS += -DHAVE_LIBBFD_SUPPORT
+> -SRCS += $(BFD_SRCS)
+> +  CFLAGS += -DHAVE_LIBBFD_SUPPORT
+> +
+> +  # Libbfd interface changed over time, figure out what we need
+> +  ifeq ($(feature-disassembler-four-args), 1)
+> +    CFLAGS += -DDISASM_FOUR_ARGS_SIGNATURE
+> +  endif
+> +  ifeq ($(feature-disassembler-init-styled), 1)
+> +    CFLAGS += -DDISASM_INIT_STYLED
+> +  endif
+> +endif
+
+
+> +ifeq ($(filter -DHAVE_LIBBFD_SUPPORT,$(CFLAGS)),)
+> +  # No support for JIT disassembly
+> +  SRCS := $(filter-out jit_disasm.c,$(SRCS))
+>  endif
+
+This part could just be an else clause for the ifneq above.
+Well, I guess the difference is minimal.
 
 Acked-by: Song Liu <song@kernel.org>
+
+>
+>  HOST_CFLAGS = $(subst -I$(LIBBPF_INCLUDE),-I$(LIBBPF_BOOTSTRAP_INCLUDE),\
+> --
+> 2.34.1
+>
