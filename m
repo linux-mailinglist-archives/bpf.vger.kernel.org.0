@@ -2,326 +2,211 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F19D35AE2A9
-	for <lists+bpf@lfdr.de>; Tue,  6 Sep 2022 10:32:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 272E15AE3FA
+	for <lists+bpf@lfdr.de>; Tue,  6 Sep 2022 11:18:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239234AbiIFIcB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Sep 2022 04:32:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54594 "EHLO
+        id S233363AbiIFJSJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Sep 2022 05:18:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238870AbiIFIbl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Sep 2022 04:31:41 -0400
-Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 943E777562;
-        Tue,  6 Sep 2022 01:31:06 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.227])
-        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4MMJQT3HlTz9xtV6;
-        Tue,  6 Sep 2022 16:26:57 +0800 (CST)
-Received: from roberto-ThinkStation-P620 (unknown [10.204.63.22])
-        by APP1 (Coremail) with SMTP id LxC2BwAnH5MeBRdj+U8nAA--.38178S2;
-        Tue, 06 Sep 2022 09:30:36 +0100 (CET)
-Message-ID: <c723f4fd42163e0a701c94e3002127170c5590aa.camel@huaweicloud.com>
-Subject: Re: [PATCH v16 12/12] selftests/bpf: Add tests for dynamic pointers
- parameters in kfuncs
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
-        dhowells@redhat.com, jarkko@kernel.org, rostedt@goodmis.org,
-        mingo@redhat.com, paul@paul-moore.com, jmorris@namei.org,
-        serge@hallyn.com, shuah@kernel.org, bpf@vger.kernel.org,
-        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        deso@posteo.net, Roberto Sassu <roberto.sassu@huawei.com>
-Date:   Tue, 06 Sep 2022 10:30:19 +0200
-In-Reply-To: <CAP01T750hFZbHdRTzSSeWpc95Omp2-PLmOojhMohFGJD=yrTzg@mail.gmail.com>
-References: <20220905143318.1592015-1-roberto.sassu@huaweicloud.com>
-         <20220905143318.1592015-13-roberto.sassu@huaweicloud.com>
-         <CAP01T750hFZbHdRTzSSeWpc95Omp2-PLmOojhMohFGJD=yrTzg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        with ESMTP id S238694AbiIFJRi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Sep 2022 05:17:38 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AF4F30F64
+        for <bpf@vger.kernel.org>; Tue,  6 Sep 2022 02:17:07 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id az27so14455550wrb.6
+        for <bpf@vger.kernel.org>; Tue, 06 Sep 2022 02:17:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date;
+        bh=WoPmaKXY6vfWROfygWgQitCPzi+zIthSpQENz/1/3Cg=;
+        b=BgeXAvBjXBgfm9rv9oBnPq7+xVEye+QrBCcaa+SYd+ak5QRGop7vXxilEggf8r1gxB
+         SgSR9NKk6L0abyrvMSPBV+e/46O+MKQ7taMcxEDWxhmmdu2MPU8f4e7qBKODs2JtA3xA
+         UvLExurcSSGISWVNxz8BY8qs9+lZbhEGv3JbCGlkL5doTHHlw79dCT5e1lk4+jTI3pJf
+         faylj9h6so2BayOfH3vr/jHefwkLAxyMrA89LmWHLKQ4dSNJAQWjKT9sXU7sELYXoGTK
+         2DXhl7RqdFdexMKfw4ATQuKxm83tATGySCXmb/67mdTvfmcrJXRDE2cwY3f4Q738f5FO
+         W29A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date;
+        bh=WoPmaKXY6vfWROfygWgQitCPzi+zIthSpQENz/1/3Cg=;
+        b=J3FW0XBQdmI1k/kXnNyahUFvJG/YQo1z+/ERgP5z+K2rkEaWOCQOMsAHG75syvnoYe
+         iZyXAbFP3cfUh2zRo99+3YvROM38g31DNctrPxM9GjK846NahK5pkjoV22lQjFKs8F3Q
+         ajIymiAgSt6F99c+KjZyPHv3vn2DoLEo7PCF4PXfxlDdXLSjtDIWueDMWsmuK4fTRWzV
+         jb8N5uAUMc/H0rHReVFogEjbA4LVbDqfBNGOtbEGpduvNzuoFVwxLWILp8O8mNoey00s
+         zcQcDlYnIeQefVTiGpAvLiEzFYv89mT3mUH1d9iu7p7fB95X5LKtpb6EtHfbxtHlSSXw
+         2RZA==
+X-Gm-Message-State: ACgBeo2UQbO5zjrIjhgMWlKtsqm8TrZz2hqIe0QycgT0L0uOMwzGH5WZ
+        7S8UUqvNhceuXkYuWsLvSG4C+A==
+X-Google-Smtp-Source: AA6agR4l+qoJ/Xmjz7N9uOSprrhE4QWyFUTByn7FMViYCvfO4rosa0ctf6qv6YKm5zludg0rVyrTXg==
+X-Received: by 2002:a05:6000:1f83:b0:223:60ee:6c08 with SMTP id bw3-20020a0560001f8300b0022360ee6c08mr25793119wrb.682.1662455825581;
+        Tue, 06 Sep 2022 02:17:05 -0700 (PDT)
+Received: from [192.168.178.32] ([51.155.200.13])
+        by smtp.gmail.com with ESMTPSA id o5-20020a05600c510500b003a31fd05e0fsm40263292wms.2.2022.09.06.02.17.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 06 Sep 2022 02:17:05 -0700 (PDT)
+Message-ID: <0fea646d-429a-9c7f-2c1d-b2893b02554a@isovalent.com>
+Date:   Tue, 6 Sep 2022 10:17:04 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LxC2BwAnH5MeBRdj+U8nAA--.38178S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3Ar4rKF1rWw47Cr17Gw47CFg_yoW3Wr15pa
-        y8GFyj9rWIqF1fJr13XFsruF4ftr48Zr12krZxta4xAr1qvr93uF18KrW3Wwn5K395Ww4Y
-        v34Sqrs3uw4UJa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-        AFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI
-        7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
-        Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY
-        6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6x
-        AIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280
-        aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07UAkuxUUUUU=
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAHBF1jj4Km7QAAs6
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.1
+Subject: Re: [PATCH bpf-next v2] bpftool: implement perf attach command
+Content-Language: en-GB
+To:     "weiyongjun (A)" <weiyongjun1@huawei.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
+References: <20220824033837.458197-1-weiyongjun1@huawei.com>
+ <b942bf8f-204b-6bf1-7847-ec5f11c50ca0@isovalent.com>
+ <CAEf4BzafSAZfhkun5PBGODw6v1s10Nh4JeH8azdqZY-62kBCKg@mail.gmail.com>
+ <ee620e99-dc04-aa2c-f53b-b875dba79feb@isovalent.com>
+ <d17a51a0-954f-7c77-7172-9ef5b3bb84f7@huawei.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <d17a51a0-954f-7c77-7172-9ef5b3bb84f7@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 2022-09-06 at 05:15 +0200, Kumar Kartikeya Dwivedi wrote:
-> On Mon, 5 Sept 2022 at 16:36, Roberto Sassu
-> <roberto.sassu@huaweicloud.com> wrote:
-> > From: Roberto Sassu <roberto.sassu@huawei.com>
-> > 
-> > Add tests to ensure that only supported dynamic pointer types are
-> > accepted,
-> > that the passed argument is actually a dynamic pointer, and that
-> > the passed
-> > argument is a pointer to the stack.
-> > 
-> > The tests are currently in the deny list for s390x (JIT does not
-> > support
-> > calling kernel function).
-> > 
-> > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> > ---
-> >  tools/testing/selftests/bpf/DENYLIST.s390x    |   1 +
-> >  .../bpf/prog_tests/kfunc_dynptr_param.c       | 103
-> > ++++++++++++++++++
-> >  .../bpf/progs/test_kfunc_dynptr_param.c       |  57 ++++++++++
-> >  3 files changed, 161 insertions(+)
-> >  create mode 100644
-> > tools/testing/selftests/bpf/prog_tests/kfunc_dynptr_param.c
-> >  create mode 100644
-> > tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c
-> > 
-> > diff --git a/tools/testing/selftests/bpf/DENYLIST.s390x
-> > b/tools/testing/selftests/bpf/DENYLIST.s390x
-> > index 4e305baa5277..9a6dc3671c65 100644
-> > --- a/tools/testing/selftests/bpf/DENYLIST.s390x
-> > +++ b/tools/testing/selftests/bpf/DENYLIST.s390x
-> > @@ -71,3 +71,4 @@ cgroup_hierarchical_stats                # JIT
-> > does not support calling kernel f
-> >  htab_update                              # failed to attach:
-> > ERROR: strerror_r(-
-> > 524)=22                                (trampoline)
-> >  lookup_key                               # JIT does not support
-> > calling kernel function                                (kfunc)
-> >  verify_pkcs7_sig                         # JIT does not support
-> > calling kernel function                                (kfunc)
-> > +kfunc_dynptr_param                       # JIT does not support
-> > calling kernel function                                (kfunc)
-> > diff --git
-> > a/tools/testing/selftests/bpf/prog_tests/kfunc_dynptr_param.c
-> > b/tools/testing/selftests/bpf/prog_tests/kfunc_dynptr_param.c
-> > new file mode 100644
-> > index 000000000000..ea655a5c9d8b
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/prog_tests/kfunc_dynptr_param.c
-> > @@ -0,0 +1,103 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +
-> > +/*
-> > + * Copyright (c) 2022 Facebook
-> > + * Copyright (C) 2022 Huawei Technologies Duesseldorf GmbH
-> > + *
-> > + * Author: Roberto Sassu <roberto.sassu@huawei.com>
-> > + */
-> > +
-> > +#include <test_progs.h>
-> > +#include "test_kfunc_dynptr_param.skel.h"
-> > +
-> > +static size_t log_buf_sz = 1048576; /* 1 MB */
-> > +static char obj_log_buf[1048576];
-> > +
-> > +static struct {
-> > +       const char *prog_name;
-> > +       const char *expected_err_msg;
-> > +} kfunc_dynptr_tests[] = {
-> > +       {"dynptr_type_not_supp",
-> > +        "arg#0 pointer type STRUCT bpf_dynptr_kern points to
-> > unsupported dynamic pointer type"},
-> > +       {"not_valid_dynptr",
-> > +        "arg#0 pointer type STRUCT bpf_dynptr_kern must be valid
-> > and initialized"},
-> > +       {"not_ptr_to_stack", "arg#0 pointer type STRUCT
-> > bpf_dynptr_kern not to stack"},
-> > +};
-> > +
-> > +static bool kfunc_not_supported;
-> > +
-> > +static int libbpf_print_cb(enum libbpf_print_level level, const
-> > char *fmt,
-> > +                          va_list args)
-> > +{
-> > +       if (strcmp(fmt, "libbpf: extern (func ksym) '%s': not found
-> > in kernel or module BTFs\n"))
-> > +               return 0;
-> > +
-> > +       if (strcmp(va_arg(args, char *),
-> > "bpf_verify_pkcs7_signature"))
-> > +               return 0;
-> > +
-> > +       kfunc_not_supported = true;
-> > +       return 0;
-> > +}
-> > +
-> > +static void verify_fail(const char *prog_name, const char
-> > *expected_err_msg)
-> > +{
-> > +       struct test_kfunc_dynptr_param *skel;
-> > +       LIBBPF_OPTS(bpf_object_open_opts, opts);
-> > +       libbpf_print_fn_t old_print_cb;
-> > +       struct bpf_program *prog;
-> > +       int err;
-> > +
-> > +       opts.kernel_log_buf = obj_log_buf;
-> > +       opts.kernel_log_size = log_buf_sz;
-> > +       opts.kernel_log_level = 1;
-> > +
-> > +       skel = test_kfunc_dynptr_param__open_opts(&opts);
-> > +       if (!ASSERT_OK_PTR(skel,
-> > "test_kfunc_dynptr_param__open_opts"))
-> > +               goto cleanup;
-> > +
-> > +       prog = bpf_object__find_program_by_name(skel->obj,
-> > prog_name);
-> > +       if (!ASSERT_OK_PTR(prog,
-> > "bpf_object__find_program_by_name"))
-> > +               goto cleanup;
-> > +
-> > +       bpf_program__set_autoload(prog, true);
-> > +
-> > +       bpf_map__set_max_entries(skel->maps.ringbuf,
-> > getpagesize());
-> > +
-> > +       kfunc_not_supported = false;
-> > +
-> > +       old_print_cb = libbpf_set_print(libbpf_print_cb);
-> > +       err = test_kfunc_dynptr_param__load(skel);
-> > +       libbpf_set_print(old_print_cb);
-> > +
-> > +       if (err < 0 && kfunc_not_supported) {
-> > +               fprintf(stderr,
-> > +                 "%s:SKIP:bpf_verify_pkcs7_signature() kfunc not
-> > supported\n",
-> > +                 __func__);
-> > +               test__skip();
-> > +               goto cleanup;
-> > +       }
-> > +
-> > +       if (!ASSERT_ERR(err, "unexpected load success"))
-> > +               goto cleanup;
-> > +
-> > +       if (!ASSERT_OK_PTR(strstr(obj_log_buf, expected_err_msg),
-> > "expected_err_msg")) {
-> > +               fprintf(stderr, "Expected err_msg: %s\n",
-> > expected_err_msg);
-> > +               fprintf(stderr, "Verifier output: %s\n",
-> > obj_log_buf);
-> > +       }
-> > +
-> > +cleanup:
-> > +       test_kfunc_dynptr_param__destroy(skel);
-> > +}
-> > +
-> > +void test_kfunc_dynptr_param(void)
-> > +{
-> > +       int i;
-> > +
-> > +       for (i = 0; i < ARRAY_SIZE(kfunc_dynptr_tests); i++) {
-> > +               if
-> > (!test__start_subtest(kfunc_dynptr_tests[i].prog_name))
-> > +                       continue;
-> > +
-> > +               verify_fail(kfunc_dynptr_tests[i].prog_name,
-> > +                           kfunc_dynptr_tests[i].expected_err_msg)
-> > ;
-> > +       }
-> > +}
-> > diff --git
-> > a/tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c
-> > b/tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c
-> > new file mode 100644
-> > index 000000000000..2f09f91a1576
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c
-> > @@ -0,0 +1,57 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +
-> > +/*
-> > + * Copyright (C) 2022 Huawei Technologies Duesseldorf GmbH
-> > + *
-> > + * Author: Roberto Sassu <roberto.sassu@huawei.com>
-> > + */
-> > +
-> > +#include "vmlinux.h"
-> > +#include <errno.h>
-> > +#include <bpf/bpf_helpers.h>
-> > +#include <bpf/bpf_tracing.h>
-> > +
-> > +struct bpf_dynptr {
-> > +       __u64 :64;
-> > +       __u64 :64;
-> > +} __attribute__((aligned(8)));
-> > +
-> > +extern int bpf_verify_pkcs7_signature(struct bpf_dynptr *data_ptr,
-> > +                                     struct bpf_dynptr *sig_ptr,
-> > +                                     struct bpf_key
-> > *trusted_keyring) __ksym;
-> > +
-> > +struct {
-> > +       __uint(type, BPF_MAP_TYPE_RINGBUF);
-> > +} ringbuf SEC(".maps");
-> > +
-> > +char _license[] SEC("license") = "GPL";
-> > +
-> > +SEC("?lsm.s/bpf")
-> > +int BPF_PROG(dynptr_type_not_supp, int cmd, union bpf_attr *attr,
-> > +            unsigned int size)
-> > +{
-> > +       char write_data[64] = "hello there, world!!";
-> > +       struct bpf_dynptr ptr;
-> > +
-> > +       bpf_ringbuf_reserve_dynptr(&ringbuf, sizeof(write_data), 0,
-> > &ptr);
-> > +
-> > +       return bpf_verify_pkcs7_signature(&ptr, &ptr, NULL);
-> > +}
-> > +
-> > +SEC("?lsm.s/bpf")
-> > +int BPF_PROG(not_valid_dynptr, int cmd, union bpf_attr *attr,
-> > unsigned int size)
-> > +{
-> > +       unsigned long val;
-> > +
-> > +       return bpf_verify_pkcs7_signature((struct bpf_dynptr
-> > *)&val,
-> > +                                         (struct bpf_dynptr
-> > *)&val, NULL);
-> > +}
-> > +
-> > +SEC("?lsm.s/bpf")
-> > +int BPF_PROG(not_ptr_to_stack, int cmd, union bpf_attr *attr,
-> > unsigned int size)
-> > +{
-> > +       unsigned long val;
-> > +
-> > +       return bpf_verify_pkcs7_signature((struct bpf_dynptr *)val,
-> > +                                         (struct bpf_dynptr *)val,
-> > NULL);
+On 02/09/2022 11:23, weiyongjun (A) wrote:
+> Hi Quentin,
 > 
-> Please also include a test where you cause the dynptr to be set to
-> NULL, e.g. by passing invalid stuff to ringbuf_reserve_dynptr, and
-> then try to pass it to bpf_verify_pkc7_signature.
+> On 2022/8/26 18:45, Quentin Monnet wrote:
+>> Hi Andrii,
+>>
+>> On 25/08/2022 19:37, Andrii Nakryiko wrote:
+>>> On Thu, Aug 25, 2022 at 8:28 AM Quentin Monnet
+>>> <quentin@isovalent.com> wrote:
+>>>>
+>>>> Hi Wei,
+>>>>
+>>>> Apologies for failing to answer to your previous email and for the
+>>>> delay
+>>>> on this one, I just found out GMail had classified them as spam :(.
+>>>>
+>>>> So as for your last message, yes: your understanding of my previous
+>>>> answer was correct. Thanks for the patch below! Some comments inline.
+>>>>
+>>>
+>>> Do we really want to add such a specific command to bpftool that would
+>>> attach BPF object files with programs of only RAW_TRACEPOINT and
+>>> RAW_TRACEPOINT_WRITABLE type?
+>>>
+>>> I could understand if we added something that would be equivalent of
+>>> BPF skeleton's auto-attach method. That would make sense in some
+>>> contexts, especially for some quick testing and validation, to avoid
+>>> writing (a rather simple) user-space loading code.
+>>
+>> Do you mean loading and attaching in a single step, or keeping the
+>> possibility to load first as in the current proposal?
+>>
+>>>
+>>> But "perf attach" for raw_tp programs only? Seem way too limited and
+>>> specific, just adding bloat to bpftool, IMO.
+>>
+>> We already support attaching some kinds of program types through
+>> "prog|cgroup|net attach". Here I thought we could add support for other
+>> types as a follow-up, but thinking again, you're probably right, it
+>> would be best if all the types were supported from the start. Wei, have
+>> you looked into how much work it would be to add support for
+>> tracepoints, k(ret)probes, u(ret)probes as well? The code should be
+>> mostly identical?
+>>
+> 
+> 
+> When I try to add others support, I found that we need to dup many code
+> with libbpf has already done, since we lost the section name info.
 
-Uhm, bpf_ringbuf_reserve_dynptr() is expecting a valid map. How else I
-can achieve it?
+What amount of code does this represent? Do you have a version of the
+patch accessible somewhere? I trust you, I'm just curious about the
+steps we're missing without having processed the section name info, but
+I can go and look at the details myself otherwise.
 
-Thanks
+> I have tried to add auto-attach, it seems more easier then perf
+> attach command.
+> 
+> What's about your opinion?
 
-Roberto
+Yes I'm good with that approach, too.
 
+> Maybe we only need a little of changes like this:
+> 
+> $ bpftool prog load test.o /sys/fs/bpf/test auto-attach
+
+"auto_attach", other keywords use underscores rather than dashes.
+
+> diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+> index c81362a001ba..87fab89eaa07 100644
+> --- a/tools/bpf/bpftool/prog.c
+> +++ b/tools/bpf/bpftool/prog.c
+> @@ -1464,6 +1464,7 @@ static int load_with_options(int argc, char
+
+
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 3ad139285fad..915ec0a97583 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -7773,15 +7773,32 @@ int bpf_program__pin(struct bpf_program *prog,
+> const char *path)
+>      if (err)
+>          return libbpf_err(err);
+> 
+> -    if (bpf_obj_pin(prog->fd, path)) {
+> -        err = -errno;
+> -        cp = libbpf_strerror_r(err, errmsg, sizeof(errmsg));
+> -        pr_warn("prog '%s': failed to pin at '%s': %s\n", prog->name,
+> path, cp);
+> -        return libbpf_err(err);
+> +    if (prog->autoattach) {
+> +        struct bpf_link *link;
+> +
+> +        link = bpf_program__attach(prog);
+> +        err = libbpf_get_error(link);
+> +        if (err)
+> +            goto err_out;
+> +
+> +        err = bpf_link__pin(link, path);
+> +        if (err) {
+> +            bpf_link__destroy(link);
+> +            goto err_out;
+> +        }
+> +    } else {
+> +        if (bpf_obj_pin(prog->fd, path)) {
+> +            err = -errno;
+> +            goto err_out;
+> +        }
+>      }
+> 
+>      pr_debug("prog '%s': pinned at '%s'\n", prog->name, path);
+>      return 0;
+> +err_out:
+> +    cp = libbpf_strerror_r(err, errmsg, sizeof(errmsg));
+> +    pr_warn("prog '%s': failed to pin at '%s': %s\n", prog->name, path,
+> cp);
+> +    return libbpf_err(err);
+>  }
+> 
+>  int bpf_program__unpin(struct bpf_program *prog, const char *path)
+
+I don't think it is correct to modify libbpf's bpf_program__pin()
+though, because it shouldn't be its role to attach and also because I
+think it might lead to a second attempt to attach if the user tries to
+pin in addition to running the auto-attach from a skeleton. Let's just
+call bpf_program__attach() from bpftool instead?
