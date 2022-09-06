@@ -2,212 +2,185 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA6535AF086
-	for <lists+bpf@lfdr.de>; Tue,  6 Sep 2022 18:37:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD16F5AF093
+	for <lists+bpf@lfdr.de>; Tue,  6 Sep 2022 18:37:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236575AbiIFQgx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Sep 2022 12:36:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36072 "EHLO
+        id S239077AbiIFQhG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Sep 2022 12:37:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235052AbiIFQgd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Sep 2022 12:36:33 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B4AEBE14
-        for <bpf@vger.kernel.org>; Tue,  6 Sep 2022 09:12:25 -0700 (PDT)
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 286F3Tou028425;
-        Tue, 6 Sep 2022 09:12:09 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=/OjV2Q2/up+hLeL+HM0buukSC/qOXkVQ3mjcr7yLigI=;
- b=S1m5Z2z/INhPfAc+0Z8h0kv9GRS64rUVKpDMOUlhznfodNSn13dSG8Rw3cPDl0aCFJsz
- akgmgZL6y5pf8BrR2v0d8Rbc+WSde7UISI0+NA4xyqomWwfpF9sT1giHJMMnGO9UpM6K
- dTQkGpLLhpvVC566vKIzEK99CoPFDFzSLCQ= 
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2109.outbound.protection.outlook.com [104.47.55.109])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3jdnynne01-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 06 Sep 2022 09:12:09 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hvWcCZLK1X8Qyx6qB/RjvqZoB2ZAp7DA1xd5kTOM+GVextdrcQAy4FStvG20nzC8yCwkmP7sNKguWlKiePFrNMmuxXW0CyeJPcfdv0CL6v1w7CJpVpXLYLsGV5JjV5UrY+RptiBMjjcvm9AYgcvqq6JCB0ZpWO5wYDUQKdTa4VIRWXmhqE3kOGdlcOZGGpkwiJaOVb76/LXdIH1V0YCKuhwdp/LfifHjfjtyT1iU6xy8bKQrSB7nBqhxgZqV5ZPJ/vDS/OU6R9Xm+OSuz46qhTP4vQ3RPmGbtEbAXmEPnby9QNWi6EtdM+4nz4L9sWeHJwvKKW3J11gcp8C0/zxVMw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/OjV2Q2/up+hLeL+HM0buukSC/qOXkVQ3mjcr7yLigI=;
- b=Cu2y5/a8mtEQwPJSDYLeKkc+kQ09+sKAzXKsO9R823/z8oKGwv5/1Y03w7g3Vs0uIhSDXRjLCv6qvIzZE0QIcEfyAUervhM/NyArPJ7AAD9ppDTfM3QyNnliwN4j7mx3IpV5oglEyrQWHsvulg1QUjZVE0uCOt6qN2higoxGZ87NENIxyWLWXMRd2Bc2y4cPIhg20y0pi3fB3my/AI763wszd1LP3pFHoyaINOsYRBqeQY3mSSBXQT3qRwrWxpjL8OdJ0uDEmx41H44DzFabqBqzTDyS/Oqi6JNLv5WlIq3MGzV4f2j9cWlYQxTpUnUxA/nSaggnl1a5QUtybDQiHQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by PH7PR15MB5308.namprd15.prod.outlook.com (2603:10b6:510:132::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5588.18; Tue, 6 Sep
- 2022 16:12:07 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::cdbe:b85f:3620:2dff]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::cdbe:b85f:3620:2dff%4]) with mapi id 15.20.5588.016; Tue, 6 Sep 2022
- 16:12:07 +0000
-Message-ID: <90ee59ae-6257-5e0e-067c-d37210a1df7f@fb.com>
-Date:   Tue, 6 Sep 2022 09:12:04 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.13.0
-Subject: Re: [PATCH bpf-next v4 3/8] bpf: Update descriptions for helpers
- bpf_get_func_arg[_cnt]()
-Content-Language: en-US
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com
-References: <20220831152641.2077476-1-yhs@fb.com>
- <20220831152657.2078805-1-yhs@fb.com> <YxG3OVk72IaSEJd6@krava>
-From:   Yonghong Song <yhs@fb.com>
-In-Reply-To: <YxG3OVk72IaSEJd6@krava>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR05CA0109.namprd05.prod.outlook.com
- (2603:10b6:a03:334::24) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+        with ESMTP id S233327AbiIFQgo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Sep 2022 12:36:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22B7213CED
+        for <bpf@vger.kernel.org>; Tue,  6 Sep 2022 09:12:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1662480777;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kg2ZD8/t1Jr30+S6ZmV5Vng3X+mccbhRQidJGUyOJ8o=;
+        b=Hdx2jw3IDZlrCLAi90onICEn5UaRBMqVRZJzny7HB2pFOFn6WF38JxMq5cL7qF3ntLY+AH
+        0Chj4OdzwUj9kPiqaa2oiuhA+Noj6Wbv73sL/O/6ob24LMJsq7hvGSTdnWog0X69XmLRBF
+        BEsVFCTgRjNyiBXYgtk8YiFOIs7jLJg=
+Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
+ [209.85.215.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-649-DB0ODaR5OnSkNfKrp0-Qpg-1; Tue, 06 Sep 2022 12:12:56 -0400
+X-MC-Unique: DB0ODaR5OnSkNfKrp0-Qpg-1
+Received: by mail-pg1-f200.google.com with SMTP id j73-20020a638b4c000000b00434ba65aa7aso871562pge.19
+        for <bpf@vger.kernel.org>; Tue, 06 Sep 2022 09:12:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=kg2ZD8/t1Jr30+S6ZmV5Vng3X+mccbhRQidJGUyOJ8o=;
+        b=SNCruKwhKTtjCLJ5XCNbvdcG7xTBFtQl2rVqex9y5akmPQGeIDyeDdu0aFL+m/uWMQ
+         rY7Pqyf6SBlxEqrE+4JDR5Lch+Jpr4kpwRkCVzh3uZg0fPONPvSbWIwcwbwMM+SMv6Qx
+         O7P9caNqlg7tcYTkELrat8OYEgW4LED3vpGLTATO3us1O5IPHPgK488OaFuN1bFBOGOF
+         iZIiFeOWYOcyLBWPekdZObENz7K0X5TVtJ+hOrCpzDtih5APRAsVWWsC92Q2jEo1d1jn
+         8p6DdmoxfkQPM1AtUXkkaq4RjT6yXinHi3iwQxvMBPzl35fTW6QqGH0KHBxDuvorPUrp
+         fD5w==
+X-Gm-Message-State: ACgBeo2Kiwc9ZK+21g8ZGFEKuX20fu0s9LofPjSfXQFxWzvnN/YJrKYi
+        uvVCIEWIXFlfx1VZ9uYUNNKMh8+oztY1xNTaNoaa17P32RmraBEdUqBnzB02vM6xFme+HP9mGtr
+        CLOWkRMMznNWasD4AtdulHbAlWOkW
+X-Received: by 2002:a17:90a:4485:b0:1fa:cc1f:a7a with SMTP id t5-20020a17090a448500b001facc1f0a7amr25979384pjg.45.1662480774582;
+        Tue, 06 Sep 2022 09:12:54 -0700 (PDT)
+X-Google-Smtp-Source: AA6agR62clyvFNxfvYwrm+zhQNaRY46JYdBxaA8PGMyTRlTBTbWPbc89Y4U7LekV45n04MZzTad6xPl3cyc04nZan6E=
+X-Received: by 2002:a17:90a:4485:b0:1fa:cc1f:a7a with SMTP id
+ t5-20020a17090a448500b001facc1f0a7amr25979368pjg.45.1662480774362; Tue, 06
+ Sep 2022 09:12:54 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7402a23c-4939-4f98-955f-08da90228baf
-X-MS-TrafficTypeDiagnostic: PH7PR15MB5308:EE_
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 7ze+C6YcX57zQuQL7B94Ga9SoFWfSZ99C349ivruwoPPIxi/wX1vFNnaPlQSyAsu23q+dqh320de9oRpoCgJhX5jrWbQwCj87V1ZVkd38ecfp1KJaYqaGqgQ6t5fwxjlIFKE5SXmLpa0+WJ0DH4TwcgzjXLEomL3CEGE9XXO4j5dwpAgB9RGfzaLymu8rxxXqI9sWNtLCkmBqMwvHZAxTgcETbrcjaoXJ8mX31BoBCIswbi5DTP2Pmr62SEwJZy5k347hh9zCQb1OXb8J2S5JpKRIAVKBDCdUhFrWiN7VH8DJTmD1pGylFLMmk1kmQDxEAnMxpFHPkQyXhhLOS/hVuPb17hhTytPm3hPLoqP7bp2Z0ZIUbPWy0OUfG61ioAtVtCxOXxMj1tcfIjOKgM+UlP5TB2XBy9kuoONu1isBOMSA2A1pQqO48ilfusH8nYj4IRmZzqvQZgGHbZlS10FDSnv+bDgSsGqR3jqsdFPwMjPbY7HZrDjdR5fScCqELmii7jgrqXBOAGafZUjKUdXTf1nprKddjlkapGQQy//aevzXylUDsdM5QsStMLBTFk4O3nScuQ6Fyog4PsU5n5RzEYzRS+Qv/8DuGHKgFHkjmJ6XMtfZjdn6Nx9yxMKEOmOnAPfKRDkFZHN7Z+FmGucRREwd0Mcv/C+QFJawsmQRedRngWZZi+V8q0ikKYn6r15ikCouPuszDp/sQFwLagYvimVlcSumzNeRB8NPK+U9zSut5ZJRJjik0xBojEibrNR5piyAJQZbaYh9RqI6sOK8nmQP8f763lt2S7bEPUn0MA=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(366004)(396003)(346002)(376002)(39860400002)(136003)(6486002)(4326008)(66946007)(31696002)(8676002)(66556008)(66476007)(86362001)(478600001)(316002)(54906003)(38100700002)(6916009)(41300700001)(83380400001)(6506007)(2906002)(53546011)(8936002)(5660300002)(2616005)(15650500001)(6666004)(6512007)(186003)(36756003)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eU5GZFp4bDVFa3A2V2hCWTR4dVhuOUsza0UzWTBLMEpuNHk5NFJwYWQxc2NU?=
- =?utf-8?B?YW1GS1VieTZSTzh6RUxnY0ViaEVtTndxQ1pRLzdmc0o0cDVBWDNjeWQwRlY1?=
- =?utf-8?B?NkdSRVNyMURhY1Exd2lwTVJma0VIRlNGaER6Uzd3UGlCeHJlQ1JUcmxEdlds?=
- =?utf-8?B?c1Nyb2tsN0c3QVcxcUt0c2VrRnVwRjVEdGpXTFhlQnZrMCszVm5NM3FVblJM?=
- =?utf-8?B?VzdBZ2NWN0dMZ1JxUG0rTENPTzZNQkpGTXA2ZzRlcVdQWHJlQTNHdjZCOTF0?=
- =?utf-8?B?S25HamcyOFJTUURpclFOZ1pvRnlpd1F3czRtbjVPUXluSnFCa2lkN1hjcVJr?=
- =?utf-8?B?dlFHSndjUkZFS1YrWk5CdXhUVFZyZ1JXejV1VUU2NUVMOG4wQVBJWlRvYXJQ?=
- =?utf-8?B?dEwyQWVWN1N6S3Ztck5OaUxHUHo4bk5nall1dGVVM05jdzNkaHkrM29IQlRD?=
- =?utf-8?B?a053N01ia2JsdUtTS24wVmhtb2RrQVVmOWk0Ujh4QXdkUVFXSmRrYWVxQnh6?=
- =?utf-8?B?T2UvZDBvdGNrb21tTjhnMFFmcmZaTkJwMXY3emMxZUhPZDhsekJNK2wvZFZ2?=
- =?utf-8?B?TWN2UDlIaXRKZUp4cXhPZjBtZ1dyRWJraTJaNXdHL3YrTitmOFN6dmtmK29u?=
- =?utf-8?B?MmZzREpYeUlLVStBRlA4WXhvQmRIV1c3UDJ5UjNwTGNzUTQycnVVOUFMZ1pn?=
- =?utf-8?B?T2RIVlJYSnJlbnlwSW1uU0crNXVsLzF4TitiTXJKN3BRcTZ3YnA0ckx4c1Vk?=
- =?utf-8?B?YlkvTllyVlc4bmc1TEhRVEViVW14RmZVZ3NXRTE3Qk5ieTQ3YzUzUHVXM2dE?=
- =?utf-8?B?eXBzVEN1SFZ5c09HT2UxeUZpWkNOVDBGbzdOTU0wbUY5WGtpVUxPMkN6cmU1?=
- =?utf-8?B?dFZJVW9ScC8yd1FtNWdsVHdsWTdrRmdlQWRvUzFYZ3J6c0ZSY2xVTHlkVW9U?=
- =?utf-8?B?Zy82TlF5MzhVYVB0dWtWQ1J5dTU2azQwYlUzNlBRNXpFMHJYbXE2ZTc1Qytp?=
- =?utf-8?B?VEFMMTdKWTJzQnRhaDhMd3RXQzBXTFNPMzNFNDZyOGZ0VmdieTVWTzR5SWVv?=
- =?utf-8?B?YUcrZllZUDdTamZWUHlhRWFTbWFuUW9GQkQvSkRBeEZkNFNZQzVpckFsQURo?=
- =?utf-8?B?WVRBL2tyYW5EcjR5M0piVFQ4YzhBekVNUFdQaFpQcEdaQTB2QXpZNUdheFpQ?=
- =?utf-8?B?dlJQSUswZDlPOWg3a2FBbGF4NkQ4Z0g5VXVuSDkzTXVvbGhDbnBTQ3NoV25Y?=
- =?utf-8?B?N1hkTUJob1FoT3IyVXkvYXZSRDNZb3k1L2E5aU5kcW1ZazFvNzdvc1grQVlF?=
- =?utf-8?B?RUpqemZNMlJVc3EwcWZKOVgwMCtxQjFkVzNjbEh2b2ZHVmZKS3FxL3dpRkZ1?=
- =?utf-8?B?a0htK01XNUlVeGxnc0VzMmFNVTFxL1B3N1dITHJEYllhcld3b2tmWkN2Y2NL?=
- =?utf-8?B?VTdBNGFDN3RMSllZdFRIek5NWGtOeElDdEJrOUwvbmJMMzNVL0pEbE9PNHZk?=
- =?utf-8?B?YUNWU0lCSFRQYy9BTWxGbCtic0kxK0dRMG4zQUFLV2ZvT2I4aTMvTmJmSEpU?=
- =?utf-8?B?bWZJRStuRk8xcVltQ21YWVBGNmU1S1F0bkpQQ0l0eVFIenBFNWZLRUdwcy9w?=
- =?utf-8?B?V1ZxT2dmOXZYakhXcUJJVElLaUFrTm5YN3lvYzZQbTVxUEpnaE1yTFFsenVH?=
- =?utf-8?B?U3huQUF2d25wK1ZSL0JxdGFiWUllYTJqME5xeGRGZlJlQUx1Si9JcjFWMXdB?=
- =?utf-8?B?Q2FHd3B1aEVYMEJReUpQZm9TdE1ETEE3NW1CMTV4SUFvMHUvMHh0Si9lMmVH?=
- =?utf-8?B?VmtTenR2QmJrcjgzSk9paTcrZ1Mrb0IrOXBFTTB6N0NHNkhpeVpDZFM0dkZI?=
- =?utf-8?B?ZUVDcUVqdk81c0U1eTY5U3Jtb1VmdExKd0ZKdlplN0NMZkFvalZ6ck1xbXhT?=
- =?utf-8?B?L0NBSDA0T0pQRzlYRjJub0I3T2lmV3ZoT2RQRXNvd21JY3RqeXVjMnJBblY3?=
- =?utf-8?B?UktBcm95VU92NEZueDdPY29DY1pXbFdzc2xPdUJnckpMUjRTTFdXZThPSjRE?=
- =?utf-8?B?Q1lyQnYweCs3TWtXQndDbmNHa2YxV2RXOGRaNTlPV2pFOXRRV2RkazFSQTA1?=
- =?utf-8?Q?nyG8tC9wQ69xHID0a5z8aGbl+?=
-X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7402a23c-4939-4f98-955f-08da90228baf
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Sep 2022 16:12:07.4424
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: TC6lpTuWo65nlEcoss9wBsuxLAl1DJ/7ehA3f9FNsbF0E/ncQ54FDDVp/9XG4u3c
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR15MB5308
-X-Proofpoint-ORIG-GUID: zlAvfHBxApEjx_bd0HjCm70kxv628zvv
-X-Proofpoint-GUID: zlAvfHBxApEjx_bd0HjCm70kxv628zvv
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.528,FMLib:17.11.122.1
- definitions=2022-09-06_09,2022-09-06_02,2022-06-22_01
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20220902132938.2409206-1-benjamin.tissoires@redhat.com>
+ <20220902132938.2409206-2-benjamin.tissoires@redhat.com> <CAP01T75KTjawtsvQmhZhj0=tEJVwc7UewRqdT1ui+uKONg07Zw@mail.gmail.com>
+ <CAP01T74zEuSfTYhkKieU1B5YwzdXhKWxPX55AabV84j-=virwA@mail.gmail.com> <CAO-hwJLBtjfU7NWVTRK8HKmATuSb3ZSY__+OOMZhqY85DeQbWQ@mail.gmail.com>
+In-Reply-To: <CAO-hwJLBtjfU7NWVTRK8HKmATuSb3ZSY__+OOMZhqY85DeQbWQ@mail.gmail.com>
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date:   Tue, 6 Sep 2022 18:12:43 +0200
+Message-ID: <CAO-hwJ+K0EmS-j+2uuj-13aDf2+X8ZVU4ue4MNg55p9nJhLAKw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v10 01/23] selftests/bpf: regroup and declare
+ similar kfuncs selftests in an array
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Joe Stringer <joe@cilium.io>, Jonathan Corbet <corbet@lwn.net>,
+        Tero Kristo <tero.kristo@linux.intel.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Tue, Sep 6, 2022 at 3:50 PM Benjamin Tissoires
+<benjamin.tissoires@redhat.com> wrote:
+>
+> On Tue, Sep 6, 2022 at 5:27 AM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+> >
+> > On Tue, 6 Sept 2022 at 05:25, Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+> > >
+> > > On Fri, 2 Sept 2022 at 15:29, Benjamin Tissoires
+> > > <benjamin.tissoires@redhat.com> wrote:
+> > > >
+> > > > Similar to tools/testing/selftests/bpf/prog_tests/dynptr.c:
+> > > > we declare an array of tests that we run one by one in a for loop.
+> > > >
+> > > > Followup patches will add more similar-ish tests, so avoid a lot of copy
+> > > > paste by grouping the declaration in an array.
+> > > >
+> > > > To be able to call bpf_object__find_program_by_name(), we need to use
+> > > > plain libbpf calls, and not light skeletons. So also change the Makefile
+> > > > to not generate light skeletons.
+> > > >
+> > > > Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+> > > >
+> > > > ---
+> > >
+> > > I see your point, but this is also a test so that we keep verifying
+> > > kfunc call in light skeleton.
+> > > Code for relocating both is different in libbpf (we generate BPF ASM
+> > > for light skeleton so it is done inside a loader BPF program instead
+> > > of userspace).
+> >
+> > Err, hit send too early.
+> > We can probably use a macro to hide how program is called, then do
+> > X(prog1)
+> > X(prog2)
+> > in a series, won't look too bad and avoids duplication at the same time.
+> >
+> > > You might then be able to make it work for both light and normal skeleton.
+> > >
+> > WDYT?
+> >
+>
+> On this patch alone, I concede the benefit is minimum. But if you look
+> at 6/23, I must confess I definitely prefer having just an array of
+> tests at the beginning instead of crippling the tests functions with
+> calls or macros.
+>
+> The actual reason for me to ditch light skeletons was because I was
+> using bpf_object__find_program_by_name().
+>
+> But I can work around that by relying on the offsetof() macro, and
+> make the whole thing working for *both* light skeleton and libbpf:
+> +struct kfunc_test_params {
+> +       const char *prog_name;
+> +       unsigned long int lskel_prog_desc_offset;
+> +       int retval;
+> +};
+> +
+> +#define TC_TEST(name,__retval) \
+> +       { \
+> +         .prog_name = #name, \
+> +         .lskel_prog_desc_offset = offsetof(struct
+> kfunc_call_test_lskel, progs.name), \
+> +         .retval = __retval, \
+> +       }
+> +
+> +static struct kfunc_test_params kfunc_tests[] = {
+> +       TC_TEST(kfunc_call_test1, 12),
+> +       TC_TEST(kfunc_call_test2, 3),
+> +       TC_TEST(kfunc_call_test_ref_btf_id, 0),
+> +};
+> +
+> +static void verify_success(struct kfunc_test_params *param)
+>  {
+> [...]
+> +       struct bpf_prog_desc *lskel_prog = (struct bpf_prog_desc
+> *)((char *)lskel + param->lskel_prog_desc_offset);
+>
+> However, for failing tests, I can not really rely on light skeletons
+> because we can not dynamically set the autoload property.
+> So either I split every failed test in its own file, or I only test
+> the ones that are supposed to load, which don't add a lot IMO.
+>
+> I'll repost the bpf-core changes only so you can have a better idea of
+> what I am saying.
+>
 
+FWIW, I have now sent them at [0] and dropped all of the people not in
+get_maintainers.pl.
 
-On 9/2/22 12:56 AM, Jiri Olsa wrote:
-> On Wed, Aug 31, 2022 at 08:26:57AM -0700, Yonghong Song wrote:
->> Now instead of the number of arguments, the number of registers
->> holding argument values are stored in trampoline. Update
->> the description of bpf_get_func_arg[_cnt]() helpers. Previous
->> programs without struct arguments should continue to work
->> as usual.
->>
->> Signed-off-by: Yonghong Song <yhs@fb.com>
->> ---
->>   include/uapi/linux/bpf.h       | 9 +++++----
->>   tools/include/uapi/linux/bpf.h | 9 +++++----
->>   2 files changed, 10 insertions(+), 8 deletions(-)
->>
->> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
->> index 962960a98835..f9f43343ef93 100644
->> --- a/include/uapi/linux/bpf.h
->> +++ b/include/uapi/linux/bpf.h
->> @@ -5079,12 +5079,12 @@ union bpf_attr {
->>    *
->>    * long bpf_get_func_arg(void *ctx, u32 n, u64 *value)
->>    *	Description
->> - *		Get **n**-th argument (zero based) of the traced function (for tracing programs)
->> + *		Get **n**-th argument register (zero based) of the traced function (for tracing programs)
-> 
-> I'm bit worried about the confusion between args/regs we create with
-> this, but I don't any have better idea how to solve this
-> 
-> keeping extra stack values for nr_args and nr_regs and have new helpers
-> to get reg values.. but then bpf_get_func_arg still does not return the
-> full argument value.. also given that the struct args should be rare,
-> I guess it's fine ;-)
+Cheers,
+Benjamin
 
-You are right. Since an argument may takes two u64 space, the helper
-bpf_get_func_arg() might not return the *whole* argument any more.
-But it still returns a func arg, maybe just a partial func arg.
-So the 'n' here has a semantic change, instead of 'n'th argument,
-it becomes 'n'th argument register. To create new helpers probably
-not needed, so that is why I made the description change to the
-existing helper which maintains backward compatability too.
+[0] https://lore.kernel.org/all/20220906151303.2780789-1-benjamin.tissoires@redhat.com/T/#u
 
-> 
-> jirka
-> 
->>    *		returned in **value**.
->>    *
->>    *	Return
->>    *		0 on success.
->> - *		**-EINVAL** if n >= arguments count of traced function.
->> + *		**-EINVAL** if n >= argument register count of traced function.
->>    *
->>    * long bpf_get_func_ret(void *ctx, u64 *value)
->>    *	Description
->> @@ -5097,10 +5097,11 @@ union bpf_attr {
->>    *
->>    * long bpf_get_func_arg_cnt(void *ctx)
->>    *	Description
->> - *		Get number of arguments of the traced function (for tracing programs).
->> + *		Get number of registers of the traced function (for tracing programs) where
->> + *		function arguments are stored in these registers.
->>    *
->>    *	Return
->> - *		The number of arguments of the traced function.
->> + *		The number of argument registers of the traced function.
->>    *
->>    * int bpf_get_retval(void)
->>    *	Description
-[...]
