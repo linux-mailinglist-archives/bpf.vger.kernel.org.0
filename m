@@ -2,148 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 672785AE82F
-	for <lists+bpf@lfdr.de>; Tue,  6 Sep 2022 14:32:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 837C55AE83B
+	for <lists+bpf@lfdr.de>; Tue,  6 Sep 2022 14:33:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232201AbiIFMcE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Sep 2022 08:32:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34460 "EHLO
+        id S239804AbiIFMc5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Sep 2022 08:32:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240224AbiIFMbb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Sep 2022 08:31:31 -0400
-Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD27AF2E;
-        Tue,  6 Sep 2022 05:29:41 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.227])
-        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4MMPh837Wmz9v7Nk;
-        Tue,  6 Sep 2022 20:24:08 +0800 (CST)
-Received: from roberto-ThinkStation-P620 (unknown [10.204.63.22])
-        by APP2 (Coremail) with SMTP id GxC2BwA3ZV8KPRdjOwYoAA--.51363S2;
-        Tue, 06 Sep 2022 13:29:12 +0100 (CET)
-Message-ID: <455d80a39b2bf87c58dae9b6035f8cabb4455639.camel@huaweicloud.com>
-Subject: Re: [PATCH v17 05/12] KEYS: Move KEY_LOOKUP_ to include/linux/key.h
- and define KEY_LOOKUP_ALL
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     kpsingh@kernel.org
-Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, deso@posteo.net, dhowells@redhat.com,
-        haoluo@google.com, jmorris@namei.org, john.fastabend@gmail.com,
-        jolsa@kernel.org, keyrings@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-security-module@vger.kernel.org, martin.lau@linux.dev,
-        memxor@gmail.com, mingo@redhat.com, mykolal@fb.com,
-        paul@paul-moore.com, roberto.sassu@huawei.com, rostedt@goodmis.org,
-        sdf@google.com, serge@hallyn.com, shuah@kernel.org,
-        song@kernel.org, yhs@fb.com, Jarkko Sakkinen <jarkko@kernel.org>
-Date:   Tue, 06 Sep 2022 14:28:55 +0200
-In-Reply-To: <Yxc8fwOgZ+UY0jiX@kernel.org>
-References: <YxcyeZBHGPNQB+qJ@kernel.org>
-         <20220906121506.165001-1-roberto.sassu@huaweicloud.com>
-         <Yxc8fwOgZ+UY0jiX@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        with ESMTP id S240155AbiIFMcc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Sep 2022 08:32:32 -0400
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC2DB11155;
+        Tue,  6 Sep 2022 05:31:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1662467516; x=1694003516;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=M0QrYYCZHzwfHM3DeFebGMHRf+P97fADvrUnnioFUDQ=;
+  b=MlHH/gyFw9oGSOQ2bD6Pfit2OawrHB6scVpZ80hclpkI6ntR27Wlcv+D
+   KV3kpzNwpE9fui4HCPIIfBsub2n5LC8stYVtLdVUVo4EeAlCfLXbtz9uK
+   O+C7x7K5LO7M9V33kAbV+OTVXRWlx6y6wFnuLE+Y43khR05Xe4sLKeT2f
+   eu/R/NW83tLyUrCAfU6x9PrHpgjJ/OueSP6LzK8/FsLA350dmA0U21h39
+   sLfAfZb1w97VG5DYbTEuPJG0RaMZLHWrfn+tLDU0prgs/5Ufnc88FXXay
+   o5ZOHfl9RIW8FBmnMDe7yV0dEe2BNOCgMK543N612wRW4thKgcDIGy2Hj
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10461"; a="283574889"
+X-IronPort-AV: E=Sophos;i="5.93,294,1654585200"; 
+   d="scan'208";a="283574889"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2022 05:31:55 -0700
+X-IronPort-AV: E=Sophos;i="5.93,294,1654585200"; 
+   d="scan'208";a="644152857"
+Received: from reichelh-mobl.ger.corp.intel.com (HELO localhost) ([10.252.45.69])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2022 05:31:53 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Donald Hunter <donald.hunter@gmail.com>
+Cc:     bpf@vger.kernel.org, linux-doc@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: Re: [PATCH bpf-next v3 2/2] Add table of BPF program types to
+ libbpf docs
+In-Reply-To: <m2czc86ami.fsf@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20220829091500.24115-1-donald.hunter@gmail.com>
+ <20220829091500.24115-3-donald.hunter@gmail.com>
+ <875yi5dbpw.fsf@intel.com> <m2czc86ami.fsf@gmail.com>
+Date:   Tue, 06 Sep 2022 15:31:36 +0300
+Message-ID: <87k06gadlj.fsf@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: GxC2BwA3ZV8KPRdjOwYoAA--.51363S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Aw1ftr15Xw4UZF1fZFyfXrb_yoW8tFy8pF
-        WDG3W8KryUtry2gw1DJwsFyw1Sk3y3Kr17WrnrKwn8Zana9r97tr1xtF13ur1FyrWUuw12
-        qr4293WDur4DA3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkIb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I
-        0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8C
-        rVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4
-        IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY
-        0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I
-        0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAI
-        cVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UMIIF0x
-        vE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
-        87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7IUbHa0PUUUUU==
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAHBF1jj36rwAABsk
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 2022-09-06 at 15:26 +0300, Jarkko Sakkinen wrote:
-> On Tue, Sep 06, 2022 at 02:15:06PM +0200, Roberto Sassu wrote:
-> > From: Roberto Sassu <roberto.sassu@huawei.com>
-> > 
-> > In preparation for the patch that introduces the
-> > bpf_lookup_user_key() eBPF
-> > kfunc, move KEY_LOOKUP_ definitions to include/linux/key.h, to be
-> > able to
-> > validate the kfunc parameters. Add them to enum key_lookup_flag, so
-> > that
-> > all the current ones and the ones defined in the future are
-> > automatically
-> > exported through BTF and available to eBPF programs.
-> > 
-> > Also, add KEY_LOOKUP_ALL to the enum, with the logical OR of
-> > currently
-> > defined flags as value, to facilitate checking whether a variable
-> > contains
-> > only those flags.
-> > 
-> > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> > ---
-> >  include/linux/key.h      | 6 ++++++
-> >  security/keys/internal.h | 2 --
-> >  2 files changed, 6 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/include/linux/key.h b/include/linux/key.h
-> > index 7febc4881363..d27477faf00d 100644
-> > --- a/include/linux/key.h
-> > +++ b/include/linux/key.h
-> > @@ -88,6 +88,12 @@ enum key_need_perm {
-> >  	KEY_DEFER_PERM_CHECK,	/* Special: permission check is
-> > deferred */
-> >  };
-> >  
-> > +enum key_lookup_flag {
-> > +	KEY_LOOKUP_CREATE = 0x01,
-> > +	KEY_LOOKUP_PARTIAL = 0x02,
-> > +	KEY_LOOKUP_ALL = (KEY_LOOKUP_CREATE | KEY_LOOKUP_PARTIAL),
-> > +};
-> > +
-> >  struct seq_file;
-> >  struct user_struct;
-> >  struct signal_struct;
-> > diff --git a/security/keys/internal.h b/security/keys/internal.h
-> > index 9b9cf3b6fcbb..3c1e7122076b 100644
-> > --- a/security/keys/internal.h
-> > +++ b/security/keys/internal.h
-> > @@ -165,8 +165,6 @@ extern struct key *request_key_and_link(struct
-> > key_type *type,
-> >  
-> >  extern bool lookup_user_key_possessed(const struct key *key,
-> >  				      const struct key_match_data
-> > *match_data);
-> > -#define KEY_LOOKUP_CREATE	0x01
-> > -#define KEY_LOOKUP_PARTIAL	0x02
-> >  
-> >  extern long join_session_keyring(const char *name);
-> >  extern void key_change_session_keyring(struct callback_head
-> > *twork);
-> > -- 
-> > 2.25.1
-> > 
-> 
-> Thanks,
-> 
-> Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
+On Tue, 06 Sep 2022, Donald Hunter <donald.hunter@gmail.com> wrote:
+> Jani Nikula <jani.nikula@linux.intel.com> writes:
+>
+>> On Mon, 29 Aug 2022, Donald Hunter <donald.hunter@gmail.com> wrote:
+>>> Extend the libbpf documentation with a table of program types,
+>>> attach points and ELF section names. This table uses data from
+>>> program_types.csv which is generated from tools/lib/bpf/libbpf.c
+>>> during the documentation build.
+>>
+>> Oh, would be nice to turn all of these into proper but simple Sphinx
+>> extensions that take the deps into account in the Sphinx build
+>> process. And, of course, would be pure python instead of a combo of
+>> Make, shell, and awk.
+>>
+>> That's one of the reasons we chose Sphinx originally, to be able to
+>> write Sphinx extensions and avoid complicated pipelines.
+>
+> I could look at this as a followup patch since I would need to learn how
+> to write Sphinx extensions first. It seems that it will require a new
+> reST directive, is that right?
 
-Thanks Jarkko.
+Correct. It's not very complicated. The extension that handles
+kernel-doc is under 200 lines, Documentation/sphinx/kerneldoc.py. And a
+lot of that is just translating directive options to kernel-doc the perl
+script options.
 
-KP, ok also for you?
+BR,
+Jani.
 
-Thanks
 
-Roberto
-
+-- 
+Jani Nikula, Intel Open Source Graphics Center
