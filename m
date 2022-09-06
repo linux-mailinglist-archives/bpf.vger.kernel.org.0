@@ -2,125 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A71005AE7A3
-	for <lists+bpf@lfdr.de>; Tue,  6 Sep 2022 14:18:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76EEF5AE7AD
+	for <lists+bpf@lfdr.de>; Tue,  6 Sep 2022 14:19:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239847AbiIFMR6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Sep 2022 08:17:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49490 "EHLO
+        id S233230AbiIFMTs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Sep 2022 08:19:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239955AbiIFMR3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Sep 2022 08:17:29 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57FF87C505
-        for <bpf@vger.kernel.org>; Tue,  6 Sep 2022 05:15:26 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id y187so8762147iof.0
-        for <bpf@vger.kernel.org>; Tue, 06 Sep 2022 05:15:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:sender:mime-version:from:to:cc
-         :subject:date;
-        bh=cswpG9iwOTUnnU6xyH5R+5rqbDW1PNgJFzkzNTjZd9Y=;
-        b=KuS5E3cq0x38gXebrbUbRXvuDu9WF9fXv1Neb+kutD3oH1MHUASqnNEty9tawdChG1
-         zyEzqRHr5lG880K5uUxPG1vEbFS2OCwPFTmEtYg0seWYHfp2otnu+TEnlXLV1zzeCFnb
-         JpC4+NWbm9+Eq7UNuCSMFfzkaJ9DuLLItvJRpXpeQkBiW46+cpnlD5UU8I7jEjo4p7ie
-         BCzuttNcDK1HvHOgLMZZhTGhLpcuxnAShR7Sois1UzPQJ+yLUvplH2oGUyxAqvWVlYjB
-         ObK4c3za/5+aOt3oQBLmIWs9bdKiAQD+BTtgyh8KS4iDY60Ln9BybXZd4GBkGcV0XjjB
-         VPbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:sender:mime-version
-         :x-gm-message-state:from:to:cc:subject:date;
-        bh=cswpG9iwOTUnnU6xyH5R+5rqbDW1PNgJFzkzNTjZd9Y=;
-        b=A3GZxvlDfL0+xC8zUiU1dcNkCsU8aWmxsux1zZxMmLeB9i7ynWh/z2gd1t3G5SHd6L
-         DjromMZ+uWvkOf1Z5EResLkJdPPclkihmRQaY1+TNBqxAU1jWoDmSeaIRw5SQCFuo1CX
-         H5k6dlpqr5NBi92nthhkA2ay6ulm/nYSIp3Y6J4B5KzQMcQALUeDmNeexFmXcFHJ7sZd
-         z0J5dkm2sD1JqId2ns8D7yx1EGnqi+WTUhQTkIG0Ur24EzfFoQ7/e3HcTKf0/eoEwMyN
-         ZmAWLdh5LaAfFkSpeJ0GgqqIYslTfCCrJGav+MRG17NL4910SlxmAQZg0qhCzbuMLmWz
-         ZuPA==
-X-Gm-Message-State: ACgBeo1tadQmspBh7bgb04XZyfa2z0sgXtsVn1TALEgwJ59XxuPk0GFv
-        carFLy+wNlZl+O0XK+HWVSovoM18e22FgaFUcE0=
-X-Google-Smtp-Source: AA6agR67D4yn3sJ2T3Hjhs090PT/AThCWx4lFltdMfgUM0ESrbiXqVAuiI9G9/eDAHLHplQRQaf35F77i4/wjN/I1gk=
-X-Received: by 2002:a05:6638:411f:b0:351:bcfc:be28 with SMTP id
- ay31-20020a056638411f00b00351bcfcbe28mr6660713jab.189.1662466457914; Tue, 06
- Sep 2022 05:14:17 -0700 (PDT)
+        with ESMTP id S240200AbiIFMTQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Sep 2022 08:19:16 -0400
+Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6F227CA80;
+        Tue,  6 Sep 2022 05:16:57 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.228])
+        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4MMPNV6Zymz9v7Z8;
+        Tue,  6 Sep 2022 20:10:34 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.204.63.22])
+        by APP1 (Coremail) with SMTP id LxC2BwDn3pLcORdjV_onAA--.39374S2;
+        Tue, 06 Sep 2022 13:15:39 +0100 (CET)
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     jarkko@kernel.org
+Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, deso@posteo.net, dhowells@redhat.com,
+        haoluo@google.com, jmorris@namei.org, john.fastabend@gmail.com,
+        jolsa@kernel.org, keyrings@vger.kernel.org, kpsingh@kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-security-module@vger.kernel.org, martin.lau@linux.dev,
+        memxor@gmail.com, mingo@redhat.com, mykolal@fb.com,
+        paul@paul-moore.com, roberto.sassu@huawei.com,
+        roberto.sassu@huaweicloud.com, rostedt@goodmis.org, sdf@google.com,
+        serge@hallyn.com, shuah@kernel.org, song@kernel.org, yhs@fb.com
+Subject: [PATCH v17 05/12] KEYS: Move KEY_LOOKUP_ to include/linux/key.h and define KEY_LOOKUP_ALL
+Date:   Tue,  6 Sep 2022 14:15:06 +0200
+Message-Id: <20220906121506.165001-1-roberto.sassu@huaweicloud.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <YxcyeZBHGPNQB+qJ@kernel.org>
+References: <YxcyeZBHGPNQB+qJ@kernel.org>
 MIME-Version: 1.0
-Sender: lovelyvictor827@gmail.com
-Received: by 2002:a02:cc2b:0:b0:34e:2662:91e6 with HTTP; Tue, 6 Sep 2022
- 05:14:17 -0700 (PDT)
-From:   Aisha Gaddafi <aishagaddafi6604@gmail.com>
-Date:   Tue, 6 Sep 2022 12:14:17 +0000
-X-Google-Sender-Auth: PcT_DbUjg0lwyrJtwl9bSnWyhOY
-Message-ID: <CAPjnvb=5WMuaaqqYhHXZhxvMdX00zfCzJDdKW1Ob-NWf6FMN0A@mail.gmail.com>
-Subject: Investment proposal,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=7.5 required=5.0 tests=ADVANCE_FEE_5_NEW_MONEY,
-        BAYES_99,BAYES_999,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,LOTS_OF_MONEY,MILLION_HUNDRED,
-        MILLION_USD,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNDISC_MONEY,URG_BIZ autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:d32 listed in]
-        [list.dnswl.org]
-        *  3.5 BAYES_99 BODY: Bayes spam probability is 99 to 100%
-        *      [score: 1.0000]
-        *  0.2 BAYES_999 BODY: Bayes spam probability is 99.9 to 100%
-        *      [score: 1.0000]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [lovelyvictor827[at]gmail.com]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [aishagaddafi6604[at]gmail.com]
-        *  0.0 MILLION_HUNDRED BODY: Million "One to Nine" Hundred
-        *  0.0 MILLION_USD BODY: Talks about millions of dollars
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        *  0.0 LOTS_OF_MONEY Huge... sums of money
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  0.6 URG_BIZ Contains urgent matter
-        *  3.0 ADVANCE_FEE_5_NEW_MONEY Advance Fee fraud and lots of money
-        *  0.1 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-X-Spam-Level: *******
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LxC2BwDn3pLcORdjV_onAA--.39374S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7urW3JFW3Xr43Gr17tFy5urg_yoW8CF15pF
+        WDC3W8Kry8Cry2gwn5GwsFy3WSk39xGr17XF9IgwnYya1Sg3y8trn7GF47CF1YyrWUuw12
+        qrW29a1Uur1DA3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvF14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWUuVWrJwAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4UJV
+        WxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+        Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+        xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5
+        MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+        0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v2
+        6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvj
+        fUojjgUUUUU
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAHBF1jj36rkwAAs2
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello Dear Friend,
+From: Roberto Sassu <roberto.sassu@huawei.com>
 
-With due respect to your person and much sincerity of purpose I wish
-to write to you today for our mutual benefit in this investment
-transaction.
-I'm Mrs. Aisha. Al-Gaddafi, presently residing herein Oman the
-Southeastern coast of the Arabian Peninsula in Western Asia, I'm a
-single Mother and a widow with three Children. I am the only
-biological Daughter of the late Libyan President (Late. Colonel.
-Muammar Gaddafi.). I have an investment funds worth Twenty Seven
-Million Five Hundred Thousand United State Dollars ( $27.500.000.00)
-and i need an investment Manager/Partner and because of my Asylum
-Status I will authorize you the ownership of the investment funds,
-However, I am interested in you for investment project assistance in
-your country, may be from there, we can build a business relationship
-in the nearest future.
+In preparation for the patch that introduces the bpf_lookup_user_key() eBPF
+kfunc, move KEY_LOOKUP_ definitions to include/linux/key.h, to be able to
+validate the kfunc parameters. Add them to enum key_lookup_flag, so that
+all the current ones and the ones defined in the future are automatically
+exported through BTF and available to eBPF programs.
 
-I am willing to negotiate an investment/business profit sharing ratio
-with you based on the future investment earning profits. If you are
-willing to handle this project kindly reply urgently to enable me to
-provide you more information about the investment funds..
+Also, add KEY_LOOKUP_ALL to the enum, with the logical OR of currently
+defined flags as value, to facilitate checking whether a variable contains
+only those flags.
 
-Your urgent reply will be appreciated if only you are interested in
-this investment project..
-Best Regards
-Mrs. Aisha Muammar. Al-Gaddafi.
+Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+---
+ include/linux/key.h      | 6 ++++++
+ security/keys/internal.h | 2 --
+ 2 files changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/key.h b/include/linux/key.h
+index 7febc4881363..d27477faf00d 100644
+--- a/include/linux/key.h
++++ b/include/linux/key.h
+@@ -88,6 +88,12 @@ enum key_need_perm {
+ 	KEY_DEFER_PERM_CHECK,	/* Special: permission check is deferred */
+ };
+ 
++enum key_lookup_flag {
++	KEY_LOOKUP_CREATE = 0x01,
++	KEY_LOOKUP_PARTIAL = 0x02,
++	KEY_LOOKUP_ALL = (KEY_LOOKUP_CREATE | KEY_LOOKUP_PARTIAL),
++};
++
+ struct seq_file;
+ struct user_struct;
+ struct signal_struct;
+diff --git a/security/keys/internal.h b/security/keys/internal.h
+index 9b9cf3b6fcbb..3c1e7122076b 100644
+--- a/security/keys/internal.h
++++ b/security/keys/internal.h
+@@ -165,8 +165,6 @@ extern struct key *request_key_and_link(struct key_type *type,
+ 
+ extern bool lookup_user_key_possessed(const struct key *key,
+ 				      const struct key_match_data *match_data);
+-#define KEY_LOOKUP_CREATE	0x01
+-#define KEY_LOOKUP_PARTIAL	0x02
+ 
+ extern long join_session_keyring(const char *name);
+ extern void key_change_session_keyring(struct callback_head *twork);
+-- 
+2.25.1
+
