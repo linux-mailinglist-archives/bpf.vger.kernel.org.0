@@ -2,118 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A51C05B0C20
-	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 20:06:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63A135B0C23
+	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 20:06:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229765AbiIGSGO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Sep 2022 14:06:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50922 "EHLO
+        id S230266AbiIGSGT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Sep 2022 14:06:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229718AbiIGSGA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Sep 2022 14:06:00 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D105645983;
-        Wed,  7 Sep 2022 11:05:59 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id b17so8009198ilh.0;
-        Wed, 07 Sep 2022 11:05:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=3VYDrggKK6dYf0vUh61nL8e3i08cyN39P7b9NXouJAk=;
-        b=jCpaSnBdBcuxgMuPjbBYy/Svd6b+hQtSTsEm+pOpu2c71xVBOCGYBEUnLdUFa2PfTb
-         nsOth5VxJSUYtViyvMGo10f27YePi7e0CVkrDrAaAbM+NTCDTl28f5vPUxHzn3k92+dV
-         w0c0++hM5l3e111wUnhwlu5hOy09bmfhe398KURDiQ7D815nh4eN9Nfmibdg7twjD10C
-         R1cXMiAd97dA2D/SlF6VPPfI8o4IIIMJ5mqtpmIwUJMan0Cu9TpeXwX/xwBpVBrb1INs
-         DkluWmixchUKq6mUjUX7ezD0KHnIbneGTDjcrxLWmkj1LnX/xtbvX/17l7h5HbIwAtSa
-         8Oog==
+        with ESMTP id S229668AbiIGSGM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Sep 2022 14:06:12 -0400
+Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com [209.85.210.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AB0E77EBD;
+        Wed,  7 Sep 2022 11:06:10 -0700 (PDT)
+Received: by mail-ot1-f41.google.com with SMTP id 6-20020a9d0106000000b0063963134d04so10807149otu.3;
+        Wed, 07 Sep 2022 11:06:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=3VYDrggKK6dYf0vUh61nL8e3i08cyN39P7b9NXouJAk=;
-        b=Mn9w4bjMdwf0zQga5HLVQ9czRjsYAnHdEe20VlQDu+Rd+S9ptenoeX/wldBxqsS6yx
-         xl3ju4fc28bxP1r8rzrQ8XVvm2L9eCGoyYTNHRThAms/T/6ZRI55mJxoYlZGAxj/kG9P
-         vkLa88/laPTCxNZDOiCzr+lHV+XnwbRpj0YOPU3NYx484+z2Hz+aoU9b5c5+SyrsQdTk
-         oKvy3AXYR5ut6joL6HudJk1ZFffNUmtO1cmFmT6VE4jwnPZxz2KmGmDsxv4fQnH7lHiT
-         quTG5j1a7Z7zdy+tRpv6j1Axt1E7WM9PyEbTEMqwKxGha75/Rq54OspVLB4IFkYRADnO
-         JX0g==
-X-Gm-Message-State: ACgBeo1+qLG2pd3GHGhPe5qC4nrzgLJHgIxAMSy630wSAO8VaAkEjUWR
-        aRcXoO3knFvtbST5olMw5T7e6+YIaoTh980SP2I=
-X-Google-Smtp-Source: AA6agR4akzWSTmL/ozTsDhdQC+Ydb5z3g0nHIkINzA2f1xTKnDFImCHNRXBxC09keviCWSR+xb6UyWxuFbttdGHK1xo=
-X-Received: by 2002:a05:6e02:1d0b:b0:2eb:73fc:2235 with SMTP id
- i11-20020a056e021d0b00b002eb73fc2235mr2537412ila.164.1662573959209; Wed, 07
- Sep 2022 11:05:59 -0700 (PDT)
+        bh=cwQcMikn8PY/begH6mMZDx9ENCQa5sG31sOsvQOo7/o=;
+        b=WqQnu6PIEW7n1nUgrcWf63mnUg9vk4d9mU7tffbJbMJb6iLHf+aFoKSxkO2AupGHLQ
+         qkDcxsUkMFAynW7Vbt2xEtMRsk5uGgnxJEsGUPdt1bFmLiVqdW6szF8fdiFDx8r7kJcs
+         3jrYbtbsBjQg+xkXgW2hw9tBb7iCNJeiubHjLZrXpe5be9mM3F2gKLEZ7buRXdMZ0iBB
+         xTVATKUW1JBBDhHbm6lIhQ65d7C5aYYZ4QyAYid8GqyWyjgW1c+okiJ703A3v1B1xR+P
+         Nt6Fv06HxXsSuxgdvykMsmgo/V4IXHLjbCL2LYiQQ+sLA8fi+50tofpqa1M1hteNFejm
+         HDcw==
+X-Gm-Message-State: ACgBeo2HyVItHEix/dC8Hc5fmWC/Ql/DV7JHwmfkvN2HxPvo36zStYcV
+        WViJM5xj1/PCOO7qjQXvn5jrDkq62tKarZ1pWhY=
+X-Google-Smtp-Source: AA6agR5/jZHCxw7ViqcIaWpsfgM5JHTM8/6JkEPpzd28+g/aL8HtSeYdzEFXej9/DAFCxlF51VWDfeHLWoUSwmZEzYw=
+X-Received: by 2002:a9d:6f18:0:b0:638:b4aa:a546 with SMTP id
+ n24-20020a9d6f18000000b00638b4aaa546mr1910734otq.124.1662573969481; Wed, 07
+ Sep 2022 11:06:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220906151303.2780789-1-benjamin.tissoires@redhat.com> <20220906151303.2780789-6-benjamin.tissoires@redhat.com>
-In-Reply-To: <20220906151303.2780789-6-benjamin.tissoires@redhat.com>
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date:   Wed, 7 Sep 2022 20:05:23 +0200
-Message-ID: <CAP01T77FCFH-12a0f=NEf71X+=8WXiDTAf6i+oOYQ9aAruMTUg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v11 5/7] bpf/btf: bump BTF_KFUNC_SET_MAX_CNT
-To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20220907050407.2711513-1-namhyung@kernel.org> <YxhXLQ9aOuLRLrAJ@krava>
+ <CAM9d7chVuOyY0Nhecj0J=AU6iRkFoKY6hQ5mAMrS8k=-26WeCg@mail.gmail.com>
+In-Reply-To: <CAM9d7chVuOyY0Nhecj0J=AU6iRkFoKY6hQ5mAMrS8k=-26WeCg@mail.gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Wed, 7 Sep 2022 11:05:58 -0700
+Message-ID: <CAM9d7cgG_Jwb1Z98svrk0Q1X9RmeodOyHBvbqxGijP3eyBU_uw@mail.gmail.com>
+Subject: Re: [PATCH v2] perf test: Skip sigtrap test on old kernels
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Marco Elver <elver@google.com>,
+        Song Liu <songliubraving@fb.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 6 Sept 2022 at 17:13, Benjamin Tissoires
-<benjamin.tissoires@redhat.com> wrote:
+On Wed, Sep 7, 2022 at 10:50 AM Namhyung Kim <namhyung@kernel.org> wrote:
 >
-> net/bpf/test_run.c is already presenting 20 kfuncs.
-> net/netfilter/nf_conntrack_bpf.c is also presenting an extra 10 kfuncs.
+> On Wed, Sep 7, 2022 at 1:32 AM Jiri Olsa <olsajiri@gmail.com> wrote:
+> >
+> > On Tue, Sep 06, 2022 at 10:04:07PM -0700, Namhyung Kim wrote:
+> > > If it runs on an old kernel, perf_event_open would fail because of the
+> > > new fields sigtrap and sig_data.  Just skipping the test could miss an
+> > > actual bug in the kernel.
+> > >
+> > > Let's check BTF if it has the perf_event_attr.sigtrap field.
+> > >
+> > > Cc: Marco Elver <elver@google.com>
+> > > Cc: Song Liu <songliubraving@fb.com>
+> > > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > > ---
+> > >  tools/perf/tests/sigtrap.c | 46 +++++++++++++++++++++++++++++++++++++-
+> > >  1 file changed, 45 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/tools/perf/tests/sigtrap.c b/tools/perf/tests/sigtrap.c
+> > > index e32ece90e164..32f08ce0f2b0 100644
+> > > --- a/tools/perf/tests/sigtrap.c
+> > > +++ b/tools/perf/tests/sigtrap.c
+> > > @@ -16,6 +16,8 @@
+> > >  #include <sys/syscall.h>
+> > >  #include <unistd.h>
+> > >
+> > > +#include <bpf/btf.h>
+> > > +
+> > >  #include "cloexec.h"
+> > >  #include "debug.h"
+> > >  #include "event.h"
+> > > @@ -54,6 +56,42 @@ static struct perf_event_attr make_event_attr(void)
+> > >       return attr;
+> > >  }
+> > >
+> > > +static bool attr_has_sigtrap(void)
+> > > +{
+> > > +     bool ret = false;
+> > > +
+> > > +#ifdef HAVE_BPF_SKEL
+> > > +
+> > > +     struct btf *btf;
+> > > +     const struct btf_type *t;
+> > > +     const struct btf_member *m;
+> > > +     const char *name;
+> > > +     int i, id;
+> > > +
+> > > +     /* just assume it doesn't have the field */
+> > > +     btf = btf__load_vmlinux_btf();
+> > > +     if (btf == NULL)
+> > > +             return false;
+> > > +
+> > > +     id = btf__find_by_name_kind(btf, "perf_event_attr", BTF_KIND_STRUCT);
+> > > +     if (id < 0)
+> > > +             goto out;
+> > > +
+> > > +     t = btf__type_by_id(btf, id);
+> > > +     for (i = 0, m = btf_members(t); i < btf_vlen(t); i++, m++) {
+> > > +             name = btf__name_by_offset(btf, m->name_off);
+> > > +             if (!strcmp(name, "sigtrap")) {
+> > > +                     ret = true;
+> > > +                     break;
+> > > +             }
+> > > +     }
+> > > +out:
+> > > +     btf__free(btf);
+> > > +#endif
+> >
+> > would it be easier to call perf_event_open for simple event with
+> > sigtrap set (and perhaps remove_on_exec) ? perf_copy_attr checks
+> > on reserved fields
 >
-> Given that all the kfuncs are regrouped into one unique set, having
-> only 2 space left prevent us to add more selftests.
->
-> Bump it to 64 for now.
->
-> Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
->
-> ---
+> Hmm.. right.  we could do that too.  But it might still fail if there's a
+> bug in the path handling in sigtrap even for the simple case.  I'm not
+> sure if it's a realistic concern though. :)
 
-I can imagine pinning this down as the reason the program was failing
-to load must have been fun, since I ended up requiring this too in the
-linked list series...
+I think we can do that when libbpf is not available.
 
-Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-
->
-> no changes in v11
->
-> new in v10
-> ---
->  kernel/bpf/btf.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index eca9ea78ee5f..8280c1a8dbce 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -208,7 +208,7 @@ enum btf_kfunc_hook {
->  };
->
->  enum {
-> -       BTF_KFUNC_SET_MAX_CNT = 32,
-> +       BTF_KFUNC_SET_MAX_CNT = 64,
->         BTF_DTOR_KFUNC_MAX_CNT = 256,
->  };
->
-> --
-> 2.36.1
->
+Thanks,
+Namhyung
