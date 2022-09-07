@@ -2,58 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3DA95AFCE1
-	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 08:52:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90ADD5AFCF0
+	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 08:58:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229476AbiIGGwo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Sep 2022 02:52:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55664 "EHLO
+        id S229829AbiIGG6X (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Sep 2022 02:58:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230028AbiIGGwn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Sep 2022 02:52:43 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 945396CD39;
-        Tue,  6 Sep 2022 23:52:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=RnlXlqAOM19R0kaFGigt83kvp+plQFMnYjHIbbb/6qI=; b=m7/1yFb0s50S7M292zPjscSOLY
-        yRPL0vsA8r53tcjqjRem66vn/8um3OIpTDf3y2LvnPJozNOtu/uKszlLESigNsUts9wzz28vbvIrr
-        nArbN+o7kKqi3C7yEOU+xgYU7luOnXvIXiCCUOPela9ro1q8IKuHwJEaPmA7ncLko1FTKmG6hdh7G
-        b/nxDyQS4+mKdUUDxeidihffRL8j0uiDJSoU/xhwfkT+6ywAZuVxGOBzSNA7t7E/yadGCZJxGesdy
-        OUOOR5+no7fooT/NCqSkNfWLxfE+q32iUQ8KzKYZBgSSENpDW5jVziu3GRgoz04h2UXlsVStNTH8X
-        2D8JowEA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1oVovI-00AOEi-C2; Wed, 07 Sep 2022 06:52:32 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 65FE33006A4;
-        Wed,  7 Sep 2022 08:52:30 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 120C3203C095B; Wed,  7 Sep 2022 08:52:30 +0200 (CEST)
-Date:   Wed, 7 Sep 2022 08:52:29 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Suleiman Souhlal <suleiman@google.com>,
-        bpf <bpf@vger.kernel.org>, linux-kernel@vger.kernel.org,
-        Borislav Petkov <bp@suse.de>,
-        Josh Poimboeuf <jpoimboe@kernel.org>, x86@kernel.org
-Subject: Re: [PATCH 0/2] x86/kprobes: Fixes for CONFIG_RETHUNK
-Message-ID: <Yxg/rZDPc1fKaS7H@hirez.programming.kicks-ass.net>
-References: <166251211081.632004.1842371136165709807.stgit@devnote2>
+        with ESMTP id S229506AbiIGG6W (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Sep 2022 02:58:22 -0400
+Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B82C48FD52;
+        Tue,  6 Sep 2022 23:58:21 -0700 (PDT)
+Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-1278a61bd57so15293821fac.7;
+        Tue, 06 Sep 2022 23:58:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=d2GxsBffUoX3eM3Z9JvRT1gNftYOiyqMQZCPJIetS/o=;
+        b=397koPNSKD4670SYO4FRp68vrXpBO5cEGeGBxcNN+jr9smvMTa+X1KS1PWbw6sDPGN
+         9x7+G4TnWpnkFxqonTPY/H1DII+57+USRZi21DuQoNbARLcMv4GJeKO2+vbVuers9xBP
+         KMckgp38yzWJbpFnfCZi3JkqqsG9f0rQaVMEX7IY35sf+ddpbaV48SX8li/PVcI1mTIU
+         +oRIAgQrvpdWZzKXUSkzz5J8zqiu0P+EUZHyy7xsN7QekAaZ/FUmZ/Bdp9c35kWwBoUs
+         MJol3fXMSdNqmiMrKWi/p69/Zj+9S1gMWbfaa0IA0UDywZshq22w+c5Jnqaq9xFTIxFn
+         2omw==
+X-Gm-Message-State: ACgBeo1LroH0okj1Tpnoiq78sg6HSyMs88OFhmBTaFXllEZqMuAGVP+W
+        E6W/dpGS9i8SMP6jxiHjkCv33b9BaU8g2qSWYwwzlzw0
+X-Google-Smtp-Source: AA6agR7eviQAT6IDpbbvRlqqBpL0NbF0igKjLYiuZbEZCoA+REG/y+NW3RA8tVNkQUMhLtD3+GIeVNNgs3+WFH+kyy0=
+X-Received: by 2002:a05:6808:d46:b0:345:7b42:f987 with SMTP id
+ w6-20020a0568080d4600b003457b42f987mr910550oik.92.1662533901033; Tue, 06 Sep
+ 2022 23:58:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <166251211081.632004.1842371136165709807.stgit@devnote2>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+References: <20220907050407.2711513-1-namhyung@kernel.org> <CAPhsuW4OT3XC8oREZBNreesYyVvU9hSGs5Hgz=r-cwsQSkiXRQ@mail.gmail.com>
+In-Reply-To: <CAPhsuW4OT3XC8oREZBNreesYyVvU9hSGs5Hgz=r-cwsQSkiXRQ@mail.gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Tue, 6 Sep 2022 23:58:10 -0700
+Message-ID: <CAM9d7cjZ4jJDx0wL5BQ1f4BvT=r0S72Z_q83WwvOdB8cQGzRKw@mail.gmail.com>
+Subject: Re: [PATCH v2] perf test: Skip sigtrap test on old kernels
+To:     Song Liu <song@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Marco Elver <elver@google.com>,
+        Song Liu <songliubraving@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,35 +61,44 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 07, 2022 at 09:55:11AM +0900, Masami Hiramatsu (Google) wrote:
-> Hi,
-> 
-> Here is a couple of patches to fix kprobes and optprobe to work
-> on the kernel with CONFIG_RETHUNK and CONFIG_SLS.
-> 
-> With these configs, the kernel functions may includes padding INT3 in
-> the function code block (body) in addition to the gaps between functions.
-> 
-> Since kprobes on x86 has to ensure the probe address is a function
+Hi Song,
 
-s/function/instruction/
+On Tue, Sep 6, 2022 at 10:58 PM Song Liu <song@kernel.org> wrote:
+>
+> On Tue, Sep 6, 2022 at 10:04 PM Namhyung Kim <namhyung@kernel.org> wrote:
+> >
+> > If it runs on an old kernel, perf_event_open would fail because of the
+> > new fields sigtrap and sig_data.  Just skipping the test could miss an
+> > actual bug in the kernel.
+> >
+> > Let's check BTF if it has the perf_event_attr.sigtrap field.
+> >
+> > Cc: Marco Elver <elver@google.com>
+> > Cc: Song Liu <songliubraving@fb.com>
+> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > ---
+> >  tools/perf/tests/sigtrap.c | 46 +++++++++++++++++++++++++++++++++++++-
+> >  1 file changed, 45 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/tools/perf/tests/sigtrap.c b/tools/perf/tests/sigtrap.c
+> > index e32ece90e164..32f08ce0f2b0 100644
+> > --- a/tools/perf/tests/sigtrap.c
+> > +++ b/tools/perf/tests/sigtrap.c
+> > @@ -16,6 +16,8 @@
+> >  #include <sys/syscall.h>
+> >  #include <unistd.h>
+> >
+> > +#include <bpf/btf.h>
+> > +
+>
+> Do we need "#ifdef HAVE_BPF_SKEL" for the include part?
 
-> bondary, it decodes the instructions in the function until the address.
-> If it finds an INT3 which is not embedded by kprobe, it stops decoding
-> because usually the INT3 is used for debugging as a software breakpoint
-> and such INT3 will replace the first byte of an original instruction.
-> Without recovering it, kprobes can not continue to decode it. Thus the
-> kprobes returns -EILSEQ as below.
+Right, it'd be better to move it under the #ifdef.  Will change.
 
-In the absence of kgdb nobody else except kprobes itself will do this.
+>
+> Other than this, looks good to me.
+>
+> Acked-by: Song Liu <song@kernel.org>
 
->  # echo "p:probe/vfs_truncate_L19 vfs_truncate+98" >> kprobe_events 
->  sh: write error: Invalid or incomplete multibyte or wide character
-> 
-> 
-> Actually, those INT3s are just for padding and can be ignored.
-
-They are speculations stops, not mere padding.
-
-
-Anyway, let me get on with reading the actual patches :-)
+Thanks for the review!
+Namhyung
