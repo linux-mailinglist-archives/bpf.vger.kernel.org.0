@@ -2,51 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D8B55AF8AC
-	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 01:56:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03D815AF8D0
+	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 02:06:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229472AbiIFX4B (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Sep 2022 19:56:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41110 "EHLO
+        id S229476AbiIGAGS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Sep 2022 20:06:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbiIFX4A (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Sep 2022 19:56:00 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C489D95
-        for <bpf@vger.kernel.org>; Tue,  6 Sep 2022 16:55:59 -0700 (PDT)
+        with ESMTP id S229461AbiIGAGR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Sep 2022 20:06:17 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC5CC870B3
+        for <bpf@vger.kernel.org>; Tue,  6 Sep 2022 17:06:16 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id A4CC1B81AD8
-        for <bpf@vger.kernel.org>; Tue,  6 Sep 2022 23:55:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58A54C4347C
-        for <bpf@vger.kernel.org>; Tue,  6 Sep 2022 23:55:57 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 7ACB6B81AD5
+        for <bpf@vger.kernel.org>; Wed,  7 Sep 2022 00:06:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30CD4C43140
+        for <bpf@vger.kernel.org>; Wed,  7 Sep 2022 00:06:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662508557;
-        bh=OtubZhSvf3OyG/4a3kAYoH+UX6Pv16PwClH16uoTHr4=;
+        s=k20201202; t=1662509174;
+        bh=lksmMkeJtUtJ4ZoAjx+rumXJPiKVk+nmPXS5geVhNWc=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=m/eEPe0U21FNvZSFmBC0SWqnuhpFIE4ah0i0DVeVQvJareauWNjnTHUfALOlTwdap
-         wU3QYX+AjGkYLAyeFSHzUL/2WkFtjcFQTgjCO0gieVKcp49JAmAxx2sQ1ySqhh4wow
-         RMllY3kYEc2YjyELQv87m4MTdYpsupwj0TCHAKo8EBq95VDSUC6o/HnnBxB1eDUvJn
-         Ri7fU6iRKERNCLnroQO/ZCOKUWoQ51XhzUbX0M7Dxt3gfh1EmffbpDVi+fyagj3rFZ
-         22hU76sCHjaFjKEqFoISnt232/Fp7Nueeu/6CS7AceEjHyCwCz8EL+BR/nbFdE2LW2
-         ac3aUyseEmREA==
-Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-11e9a7135easo32146263fac.6
-        for <bpf@vger.kernel.org>; Tue, 06 Sep 2022 16:55:57 -0700 (PDT)
-X-Gm-Message-State: ACgBeo2ERj7VKUIhj6kzioizV8ZfiPW2L1NeOxsWOf8FNeY9GpTbHXBv
-        BBwNROojQnDBgMaKFM+N8F0gOIidU6lTYslgez4=
-X-Google-Smtp-Source: AA6agR7NzP2gKzp3zeIJwBfNapBYN9xC3hunkdVWH++SARnszNKruSeJLeZzUjssLsDk45T3nNP2b+2xz/6NZ7Ivaj8=
-X-Received: by 2002:a05:6870:32d2:b0:127:f0b4:418f with SMTP id
- r18-20020a05687032d200b00127f0b4418fmr456745oac.22.1662508556446; Tue, 06 Sep
- 2022 16:55:56 -0700 (PDT)
+        b=scOH92eFXAgEByhimfQI7IX7/t6BI07jkcgryXscNnJ4NppRHP4AJUL5CMCNLemq+
+         hzLfTwcoNAO5SFpUsEj33O61W5ge88YfCotAzzA7+qKXRCVZxoY2sbx68JCcZ2TjSg
+         XYYw6ZpyQRwNTCC/HKgVdZ/2IrRYsFfmWozhXVuZ41U08JP5EN6r4d1tgkfkHl0OOX
+         haK5yP/VHqxqM86rlAK9JjxkyphY5XmNweMU18ucpl1O0JMFXxTxaHl+yBOrRBIFc/
+         AyAlRhHMLjO52HOuQlekg0ImVMkRO1rYAktlh9+boLehwQAR+DFjYOd7D9gp0fXDHj
+         TfY2L5+sg5KIQ==
+Received: by mail-oa1-f54.google.com with SMTP id 586e51a60fabf-127ba06d03fso8626327fac.3
+        for <bpf@vger.kernel.org>; Tue, 06 Sep 2022 17:06:14 -0700 (PDT)
+X-Gm-Message-State: ACgBeo3WyC8qkcQV1IVuO9vdxblek3hjIGjd+BboUR6HzNRgyEvqBLvo
+        vfa8enryFVqh0LRgZ5SolrzbL/fl2u3SZm7GHgU=
+X-Google-Smtp-Source: AA6agR5/0wfyU8QJDv3F6Kk2elxsgf6K/zbluayxZFHYZ+2QoeloS8Q2uvfVqiz2vKNt1xJhbbrvuz2mznp7Pm6Q8Uc=
+X-Received: by 2002:a05:6808:195:b0:342:ed58:52b5 with SMTP id
+ w21-20020a056808019500b00342ed5852b5mr437689oic.22.1662509173262; Tue, 06 Sep
+ 2022 17:06:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220906133613.54928-1-quentin@isovalent.com> <20220906133613.54928-6-quentin@isovalent.com>
-In-Reply-To: <20220906133613.54928-6-quentin@isovalent.com>
+References: <20220906133613.54928-1-quentin@isovalent.com> <20220906133613.54928-7-quentin@isovalent.com>
+In-Reply-To: <20220906133613.54928-7-quentin@isovalent.com>
 From:   Song Liu <song@kernel.org>
-Date:   Tue, 6 Sep 2022 16:55:45 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW7jbOkVBJH8BAo+3KPqmMCmnnKpVgS6niGnTy2ekkuBVA@mail.gmail.com>
-Message-ID: <CAPhsuW7jbOkVBJH8BAo+3KPqmMCmnnKpVgS6niGnTy2ekkuBVA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 5/7] bpftool: Refactor disassembler for JIT-ed programs
+Date:   Tue, 6 Sep 2022 17:06:02 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW6iH0qFfJFxcWfGAnsD1FqOM_ThZLp5H+MARvkBxq8K7w@mail.gmail.com>
+Message-ID: <CAPhsuW6iH0qFfJFxcWfGAnsD1FqOM_ThZLp5H+MARvkBxq8K7w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 6/7] bpftool: Add LLVM as default library for
+ disassembling JIT-ed programs
 To:     Quentin Monnet <quentin@isovalent.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -71,13 +72,24 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 6, 2022 at 6:44 AM Quentin Monnet <quentin@isovalent.com> wrote:
+On Tue, Sep 6, 2022 at 6:46 AM Quentin Monnet <quentin@isovalent.com> wrote:
 >
-> Refactor disasm_print_insn() to extract the code specific to libbfd and
-> move it to dedicated functions. There is no functional change. This is
-> in preparation for supporting an alternative library for disassembling
-> the instructions.
->
-> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+[...]
+> +
+> +static int
+> +init_context(disasm_ctx_t *ctx, const char *arch,
+> +            __maybe_unused const char *disassembler_options,
+> +            __maybe_unused unsigned char *image, __maybe_unused ssize_t len)
+> +{
+> +       char *triple;
+> +
+> +       if (arch) {
+> +               p_err("Architecture %s not supported", arch);
+> +               return -1;
+> +       }
 
-Acked-by: Song Liu <song@kernel.org>
+Does this mean we stop supporting arch by default (prefer llvm
+over bfd)?
+
+Thanks,
+Song
