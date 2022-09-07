@@ -2,61 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 284475AFA58
-	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 05:01:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E7405AFA5C
+	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 05:03:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229653AbiIGDB1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Sep 2022 23:01:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46432 "EHLO
+        id S229775AbiIGDDB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Sep 2022 23:03:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229894AbiIGDBI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Sep 2022 23:01:08 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D1805C95B
-        for <bpf@vger.kernel.org>; Tue,  6 Sep 2022 20:01:06 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id kg20so609476ejc.12
-        for <bpf@vger.kernel.org>; Tue, 06 Sep 2022 20:01:06 -0700 (PDT)
+        with ESMTP id S229437AbiIGDCz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Sep 2022 23:02:55 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7D9283BFA;
+        Tue,  6 Sep 2022 20:02:51 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id a70so1577059edf.10;
+        Tue, 06 Sep 2022 20:02:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date;
-        bh=DAc7mWW3JmhdcvKjCnH0Ud6JzXICTDW5/l0txxxgxlI=;
-        b=UZGiiC8aWbdP+yXKUbc1Ii/kB0aJdlXicyQSSpiS68k6UrSB6fz8Z0OMZQ0oNuhKKp
-         3uCtL5jUI56eTjff0/neF8UNvEQWWQlUjS9+J462dSTMByb/9lMhoBMHDiHPcvUsT8OA
-         46ugqzqdostrT4Xf6v3r6lYe3xfFPbZ+iyLFNYIwFK2HWfHy1PNEcbG2yqgWJGGYLS6d
-         sdfaBKVi55TRuweR1UAqzgS1IQeetftHZkIU++LFlZh8AeoGB8f7Od0yqnf8ZGrkvjd8
-         HNXbtDwegoBCws2MZvXIJpKl0GqGB72PiHZjZ2g+fkXm+bdu/r5WSS80Y0kzAlwB4KPy
-         DREA==
+        bh=XbE8raIYybgu/eeU8tkOPooJt1AdcsnX26x3zxOVBq4=;
+        b=bJ7Rt1Gw7E7bP1DH9ZXXWZ5TAKDKIbI8Nb9tK9Un1NZGIlW2Zjcd9d0SjfXqLgm7hd
+         L8ie2WXUswKPucleTApgfAayFMeEigInBMsdnDnoCESFtJVR5Ohigmd9paPQLlbdEqHi
+         TQ+C3DTqbSABmIzF+XdJeAlaO3Ou1DIowznR1YeytyYlc0k/PiMdDaLp38hMzRLjFz1y
+         2X/z20+5Vg1xkXB1bSYtY28yQqUczv3QRNqwzatxCt2MRK1VdOEIfKKei3pQZILKw9j7
+         mH4i0nDSWtQAu2IJV5AjxRB3Ikgai9Co0FYDn4NhIX5gqeCHnEFDvTr4Oo+SzCy/MxIT
+         liZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=DAc7mWW3JmhdcvKjCnH0Ud6JzXICTDW5/l0txxxgxlI=;
-        b=s33geOIwzfIlJHzXdNAiuPu856fyZfLsC2+tvbdVOAqLtWlPlTl8SC//YGQ/hJCBZK
-         727MU+u4w3rIPT5m5/u3BvX6jGs09FWnlvHToTBdvfB+tD95cZbKMgOE2lYy6/OcZBnF
-         AkFr93qp4/6Rf7WjjcmDPbsMSIRxDQyoAc0VDGNluoBo2yAlPC1910tbL7oZwYbGAgQp
-         Od6xlWNoXDOTkfCYcA9hP0N7HyVvo0KtH/HjetoV5Mc4Y9x4EjT4+mTigsw1Ezi53I9g
-         4sviCoSOqdQf2RvsBSmeIFb20L+CyHkdumMfh4caMCLnqtHxm6ZVnz4ci7kchPb4VUsV
-         QSag==
-X-Gm-Message-State: ACgBeo0LOjGUs13czzfLDVogdJip2WvgmdKsknrkf+kH7p0vPJ7pxar2
-        6mQq2OXoDfTI1Mya/Z2n3C5jgDZW13PNd+cvJJv9nbHP
-X-Google-Smtp-Source: AA6agR7w4CRQ3NLt1p2SaxNcPBUqEXLup93Tk5My7XuwZcQOdX9ElL/068PT+hUJhCnGHbjJaE0yqN8OQe/yicjssQU=
-X-Received: by 2002:a17:906:dc93:b0:742:133b:42c3 with SMTP id
- cs19-20020a170906dc9300b00742133b42c3mr941009ejc.502.1662519664907; Tue, 06
- Sep 2022 20:01:04 -0700 (PDT)
+        bh=XbE8raIYybgu/eeU8tkOPooJt1AdcsnX26x3zxOVBq4=;
+        b=EOVBwGxV+c+W1Euq+U9HMw8Nmr+2lHRENcjDaB0zwSGOoAHuwFn37/pMIOQ6lxAGum
+         Q4jntQ9BzwJ0zmem9LnEyX/LZpMy+xfiwL8+A0uv3ER/5csbRqgQTvQtxWYxXIUC2GXA
+         L3VlOMpgNg2F7JeygQkP37g1aHleXylb6Q/2Gok/V8Vl/EkpcBSYZljYjo+VVhlVq3ha
+         0JBNTVBFlOUnWZDg09rKUNo0oZZ/8RQibxnyNL11tJTf1atQtqTGrlFetbJwe4YsuckP
+         u+U7Av839byAjiaCLPqw7r05Ed8+bRW2wKRE5cBQuiAM4oZJbUxZxKzLoR+PWBMnMjvb
+         nicg==
+X-Gm-Message-State: ACgBeo3wrIUTagmZwGamWJWsDoA5KpMT/Lvsvkhj1PZtEdCAJc4KNHsD
+        tprq/7zAk0qbDxOjwO5OTc5Fc8g1prhizUCbrY8=
+X-Google-Smtp-Source: AA6agR6ARo4dD4hc1YpgGSU6KS0brc6AUkEXv5WLP1LgTy3Qtdb+aiJbaM9PP5sF8yy2rjDS6FT86oUVVLXpEftniv4=
+X-Received: by 2002:a05:6402:1a4f:b0:44e:f731:f7d5 with SMTP id
+ bf15-20020a0564021a4f00b0044ef731f7d5mr1233017edb.357.1662519770220; Tue, 06
+ Sep 2022 20:02:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220831152641.2077476-1-yhs@fb.com> <20220831152652.2078600-1-yhs@fb.com>
-In-Reply-To: <20220831152652.2078600-1-yhs@fb.com>
+References: <0000000000008be47905e7e08b85@google.com> <YxXZT6NxSSLufivZ@krava>
+In-Reply-To: <YxXZT6NxSSLufivZ@krava>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 6 Sep 2022 20:00:53 -0700
-Message-ID: <CAADnVQKb4Js-57c69Ryfdf3Tu3=Ray_Ovqjm7_2ZHw1LX3qgxg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 2/8] bpf: x86: Support in-register struct
- arguments in trampoline programs
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+Date:   Tue, 6 Sep 2022 20:02:39 -0700
+Message-ID: <CAADnVQKthoffNDuO8TsjyCx1JF8jvsyh_pvmT+Q3yB493OeQeA@mail.gmail.com>
+Subject: Re: [syzbot] WARNING in bpf_bprintf_prepare (2)
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     syzbot <syzbot+2251879aa068ad9c960d@syzkaller.appspotmail.com>,
         Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
+        Hao Luo <haoluo@google.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Stanislav Fomichev <sdf@google.com>,
+        Song Liu <song@kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Yonghong Song <yhs@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -68,68 +76,153 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 31, 2022 at 8:26 AM Yonghong Song <yhs@fb.com> wrote:
+On Mon, Sep 5, 2022 at 4:11 AM Jiri Olsa <olsajiri@gmail.com> wrote:
 >
-> In C, struct value can be passed as a function argument.
-> For small structs, struct value may be passed in
-> one or more registers. For trampoline based bpf programs,
-> this would cause complication since one-to-one mapping between
-> function argument and arch argument register is not valid
-> any more.
+> On Sun, Sep 04, 2022 at 02:21:23PM -0700, syzbot wrote:
+> > Hello,
+> >
+> > syzbot found the following issue on:
+> >
+> > HEAD commit:    7fd22855300e Add linux-next specific files for 20220831
+> > git tree:       linux-next
+> > console+strace: https://syzkaller.appspot.com/x/log.txt?x=14e5668b080000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3e56c1a274c93753
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=2251879aa068ad9c960d
+> > compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17dc728b080000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=164748d7080000
+> >
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+2251879aa068ad9c960d@syzkaller.appspotmail.com
+> >
+> > ------------[ cut here ]------------
+> > WARNING: CPU: 1 PID: 3601 at kernel/bpf/helpers.c:769 try_get_fmt_tmp_buf kernel/bpf/helpers.c:769 [inline]
+> > WARNING: CPU: 1 PID: 3601 at kernel/bpf/helpers.c:769 bpf_bprintf_prepare+0xf31/0x11a0 kernel/bpf/helpers.c:817
+> > Modules linked in:
+> > CPU: 1 PID: 3601 Comm: strace-static-x Not tainted 6.0.0-rc3-next-20220831-syzkaller #0
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/22/2022
+> > RIP: 0010:try_get_fmt_tmp_buf kernel/bpf/helpers.c:769 [inline]
+> > RIP: 0010:bpf_bprintf_prepare+0xf31/0x11a0 kernel/bpf/helpers.c:817
+> > Code: ff e8 93 9f ea ff 48 83 7c 24 08 00 41 bd 04 00 00 00 0f 85 8a fa ff ff e8 7c 9f ea ff 8d 6b 03 e9 f7 f6 ff ff e8 6f 9f ea ff <0f> 0b 65 ff 0d 8e ba 71 7e bf 01 00 00 00 41 bc f0 ff ff ff e8 16
+> > RSP: 0018:ffffc90003cfeb70 EFLAGS: 00010093
+> > RAX: 0000000000000000 RBX: 0000000000000002 RCX: 0000000000000000
+> > RDX: ffff8880219b3a80 RSI: ffffffff819186b1 RDI: 0000000000000005
+> > RBP: ffffc90003cfeca0 R08: 0000000000000005 R09: 0000000000000003
+> > R10: 0000000000000004 R11: 0000000000000001 R12: 0000000000000003
+> > R13: 0000000000000004 R14: ffffc90003cfed58 R15: 0000000000000003
+> > FS:  0000000001655340(0000) GS:ffff8880b9b00000(0000) knlGS:0000000000000000
+> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > CR2: 0000000020003000 CR3: 0000000074d58000 CR4: 00000000003506e0
+> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > Call Trace:
+> >  <TASK>
+> >  ____bpf_trace_printk kernel/trace/bpf_trace.c:383 [inline]
+> >  bpf_trace_printk+0xab/0x170 kernel/trace/bpf_trace.c:374
+> >  bpf_prog_0605f9f479290f07+0x2f/0x33
+> >  bpf_dispatcher_nop_func include/linux/bpf.h:904 [inline]
+> >  __bpf_prog_run include/linux/filter.h:594 [inline]
+> >  bpf_prog_run include/linux/filter.h:601 [inline]
+> >  __bpf_trace_run kernel/trace/bpf_trace.c:2046 [inline]
+> >  bpf_trace_run2+0x110/0x340 kernel/trace/bpf_trace.c:2083
+> >  __bpf_trace_contention_begin+0xb5/0xf0 include/trace/events/lock.h:95
+> >  trace_contention_begin.constprop.0+0xda/0x1b0 include/trace/events/lock.h:95
+> >  __pv_queued_spin_lock_slowpath+0x103/0xb50 kernel/locking/qspinlock.c:405
+> >  pv_queued_spin_lock_slowpath arch/x86/include/asm/paravirt.h:591 [inline]
+> >  queued_spin_lock_slowpath arch/x86/include/asm/qspinlock.h:51 [inline]
+> >  queued_spin_lock include/asm-generic/qspinlock.h:114 [inline]
+> >  do_raw_spin_lock+0x200/0x2a0 kernel/locking/spinlock_debug.c:115
+> >  __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:111 [inline]
+> >  _raw_spin_lock_irqsave+0x41/0x50 kernel/locking/spinlock.c:162
+> >  ____bpf_trace_printk kernel/trace/bpf_trace.c:388 [inline]
+> >  bpf_trace_printk+0xcf/0x170 kernel/trace/bpf_trace.c:374
+> >  bpf_prog_0605f9f479290f07+0x2f/0x33
+> >  bpf_dispatcher_nop_func include/linux/bpf.h:904 [inline]
+> >  __bpf_prog_run include/linux/filter.h:594 [inline]
+> >  bpf_prog_run include/linux/filter.h:601 [inline]
+> >  __bpf_trace_run kernel/trace/bpf_trace.c:2046 [inline]
+> >  bpf_trace_run2+0x110/0x340 kernel/trace/bpf_trace.c:2083
+> >  __bpf_trace_contention_begin+0xb5/0xf0 include/trace/events/lock.h:95
+> >  trace_contention_begin.constprop.0+0xda/0x1b0 include/trace/events/lock.h:95
+> >  __pv_queued_spin_lock_slowpath+0x103/0xb50 kernel/locking/qspinlock.c:405
+> >  pv_queued_spin_lock_slowpath arch/x86/include/asm/paravirt.h:591 [inline]
+> >  queued_spin_lock_slowpath arch/x86/include/asm/qspinlock.h:51 [inline]
+> >  queued_spin_lock include/asm-generic/qspinlock.h:114 [inline]
+> >  do_raw_spin_lock+0x200/0x2a0 kernel/locking/spinlock_debug.c:115
+> >  __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:111 [inline]
+> >  _raw_spin_lock_irqsave+0x41/0x50 kernel/locking/spinlock.c:162
+> >  ____bpf_trace_printk kernel/trace/bpf_trace.c:388 [inline]
+> >  bpf_trace_printk+0xcf/0x170 kernel/trace/bpf_trace.c:374
+> >  bpf_prog_0605f9f479290f07+0x2f/0x33
+> >  bpf_dispatcher_nop_func include/linux/bpf.h:904 [inline]
+> >  __bpf_prog_run include/linux/filter.h:594 [inline]
+> >  bpf_prog_run include/linux/filter.h:601 [inline]
+> >  __bpf_trace_run kernel/trace/bpf_trace.c:2046 [inline]
+> >  bpf_trace_run2+0x110/0x340 kernel/trace/bpf_trace.c:2083
+> >  __bpf_trace_contention_begin+0xb5/0xf0 include/trace/events/lock.h:95
+> >  trace_contention_begin.constprop.0+0xda/0x1b0 include/trace/events/lock.h:95
+> >  __pv_queued_spin_lock_slowpath+0x103/0xb50 kernel/locking/qspinlock.c:405
+> >  pv_queued_spin_lock_slowpath arch/x86/include/asm/paravirt.h:591 [inline]
+> >  queued_spin_lock_slowpath arch/x86/include/asm/qspinlock.h:51 [inline]
+> >  queued_spin_lock include/asm-generic/qspinlock.h:114 [inline]
+> >  do_raw_spin_lock+0x200/0x2a0 kernel/locking/spinlock_debug.c:115
+> >  __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:111 [inline]
+> >  _raw_spin_lock_irqsave+0x41/0x50 kernel/locking/spinlock.c:162
+> >  ____bpf_trace_printk kernel/trace/bpf_trace.c:388 [inline]
+> >  bpf_trace_printk+0xcf/0x170 kernel/trace/bpf_trace.c:374
+> >  bpf_prog_0605f9f479290f07+0x2f/0x33
+> >  bpf_dispatcher_nop_func include/linux/bpf.h:904 [inline]
+> >  __bpf_prog_run include/linux/filter.h:594 [inline]
+> >  bpf_prog_run include/linux/filter.h:601 [inline]
+> >  __bpf_trace_run kernel/trace/bpf_trace.c:2046 [inline]
+> >  bpf_trace_run2+0x110/0x340 kernel/trace/bpf_trace.c:2083
+> >  __bpf_trace_contention_begin+0xb5/0xf0 include/trace/events/lock.h:95
+> >  trace_contention_begin+0xc0/0x150 include/trace/events/lock.h:95
+> >  __mutex_lock_common kernel/locking/mutex.c:605 [inline]
+> >  __mutex_lock+0x13c/0x1350 kernel/locking/mutex.c:747
+> >  __pipe_lock fs/pipe.c:103 [inline]
+> >  pipe_write+0x132/0x1be0 fs/pipe.c:431
+> >  call_write_iter include/linux/fs.h:2188 [inline]
+> >  new_sync_write fs/read_write.c:491 [inline]
+> >  vfs_write+0x9e9/0xdd0 fs/read_write.c:578
+> >  ksys_write+0x1e8/0x250 fs/read_write.c:631
+> >  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+> >  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+> >  entry_SYSCALL_64_after_hwframe+0x63/0xcd
 >
-> The latest llvm16 added bpf support to pass by values
-> for struct up to 16 bytes ([1]). This is also true for
-> x86_64 architecture where two registers will hold
-> the struct value if the struct size is >8 and <= 16.
-> This may not be true if one of struct member is 'double'
-> type but in current linux source code we don't have
-> such instance yet, so we assume all >8 && <= 16 struct
-> holds two general purpose argument registers.
+> looks like __bpf_trace_contention_begin needs bpf_prog_active check
+> (like below untested), which would prevent the recursion and bail
+> out after 2nd invocation
 >
-> Also change on-stack nr_args value to the number
-> of registers holding the arguments. This will
-> permit bpf_get_func_arg() helper to get all
-> argument values.
+> should be easy to reproduce, will check
 >
->  [1] https://reviews.llvm.org/D132144
+> jirka
 >
-> Signed-off-by: Yonghong Song <yhs@fb.com>
+>
 > ---
->  arch/x86/net/bpf_jit_comp.c | 68 +++++++++++++++++++++++++++----------
->  1 file changed, 51 insertions(+), 17 deletions(-)
+> diff --git a/include/trace/bpf_probe.h b/include/trace/bpf_probe.h
+> index 6a13220d2d27..481b057cc8d9 100644
+> --- a/include/trace/bpf_probe.h
+> +++ b/include/trace/bpf_probe.h
+> @@ -4,6 +4,8 @@
 >
-> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> index c1f6c1c51d99..ae89f4143eb4 100644
-> --- a/arch/x86/net/bpf_jit_comp.c
-> +++ b/arch/x86/net/bpf_jit_comp.c
-> @@ -1751,34 +1751,60 @@ st:                     if (is_imm8(insn->off))
->  static void save_regs(const struct btf_func_model *m, u8 **prog, int nr_args,
->                       int stack_size)
->  {
-> -       int i;
-> +       int i, j, arg_size, nr_regs;
->         /* Store function arguments to stack.
->          * For a function that accepts two pointers the sequence will be:
->          * mov QWORD PTR [rbp-0x10],rdi
->          * mov QWORD PTR [rbp-0x8],rsi
->          */
-> -       for (i = 0; i < min(nr_args, 6); i++)
-> -               emit_stx(prog, bytes_to_bpf_size(m->arg_size[i]),
-> -                        BPF_REG_FP,
-> -                        i == 5 ? X86_REG_R9 : BPF_REG_1 + i,
-> -                        -(stack_size - i * 8));
-> +       for (i = 0, j = 0; i < min(nr_args, 6); i++) {
-> +               if (m->arg_flags[i] & BTF_FMODEL_STRUCT_ARG) {
-> +                       nr_regs = (m->arg_size[i] + 7) / 8;
-> +                       arg_size = 8;
-> +               } else {
-> +                       nr_regs = 1;
-> +                       arg_size = m->arg_size[i];
-> +               }
+>  #ifdef CONFIG_BPF_EVENTS
+>
+> +DECLARE_PER_CPU(int, bpf_prog_active);
+> +
+>  #undef __entry
+>  #define __entry entry
+>
+> @@ -82,7 +84,11 @@ static notrace void                                                  \
+>  __bpf_trace_##call(void *__data, proto)                                        \
+>  {                                                                      \
+>         struct bpf_prog *prog = __data;                                 \
+> +       if (unlikely(__this_cpu_inc_return(bpf_prog_active) != 1))      \
+> +               goto out;                                               \
+>         CONCATENATE(bpf_trace_run, COUNT_ARGS(args))(prog, CAST_TO_U64(args));  \
+> +out:                                                                   \
+> +        __this_cpu_dec(bpf_prog_active);
 
-This bit begs for a common helper, but I'm not sure
-whether it will look better, so applied as-is.
-
-BPF_PROG2 also feels unusual as an API macro name.
-We probably should bikeshed a bit and follow up
-if a better name is found.
+I don't think we can use this big hammer here.
+raw_tp progs attached to different hooks need to
+run on the same cpu otherwise we will lose events.
