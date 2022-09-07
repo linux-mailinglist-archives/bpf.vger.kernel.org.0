@@ -2,113 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03EEA5AFA6D
-	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 05:10:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 686975AFB4B
+	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 06:27:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229968AbiIGDKV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Sep 2022 23:10:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60508 "EHLO
+        id S229732AbiIGE1s (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Sep 2022 00:27:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbiIGDKU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Sep 2022 23:10:20 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A40DEE0DE
-        for <bpf@vger.kernel.org>; Tue,  6 Sep 2022 20:10:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 901506176A
-        for <bpf@vger.kernel.org>; Wed,  7 Sep 2022 03:10:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id E4F69C433D7;
-        Wed,  7 Sep 2022 03:10:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662520217;
-        bh=HIW/MzMZZ83PvJ2IpR6giGIqQwW4S5k7rlkWwjm63bM=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=nZ2f3ZwG40YWq2E7CGvVCF7UXb8MhNPWA+pHPClY1zYLVS4cm9D0wONqvoxilsczH
-         R2p8AibjllKuQVuY+1lRcDtmkFJMbl614WcHGlJzGIner7lG/Qwhlzu3SfLtb444Ij
-         RwWpLVq/i65SkSZdpfTxBGSD8ey8LkEm7VW2TCCDCcsma/NRfRGev6prTnnD+KIk1/
-         VDI6xcCJsxYHiJfd1kpM1JZakcD/mXdTMza+PockHNtKarftlSTPVXRDINhxWb4bNA
-         3C3oPxAZVIdcM1mqtbnQFYAzz7gvHyChi2gyJcKFz3vJrU/M+FDDHRcAVZ3wXxcGJG
-         2pJNHZrv6NVWw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C7780E1CABE;
-        Wed,  7 Sep 2022 03:10:16 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229706AbiIGE1q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Sep 2022 00:27:46 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0293A8C005;
+        Tue,  6 Sep 2022 21:27:46 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id kg20so870035ejc.12;
+        Tue, 06 Sep 2022 21:27:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=DtQEUbHrZXRVSvv8X3cr2fMxJ2Hd5j5uiQKjuorqFRg=;
+        b=gzHNKSTsW2UnOmGXJY/6xvJyQROkAckj3ZKV3yg1DqGwmgTFzW6PMygHfaZQLiNuOt
+         kVugpkIJX00CPBFesY3tI1m2aaY/5bg70boDpR8kofVad4cMlOuwZnl88XbtarkZihJt
+         5T96PjeDEQ5O8r93y8k//ubptfq4EEvg1XOMDP9Q77cZnKaOwphjakbfQMcBV2XD7m+S
+         m9QWrt9TH9q/LymBBeMjwlfI8BcT8F097C/o1y5UDIXT5UZfH4lDlckrSK4fc794TH7P
+         y3pWWCuBqqVVh85iC9V1ExxWJBDVtEXnat+FvYnv19bdH0h5TKwLxvey27XFEnmeMN+R
+         o/tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=DtQEUbHrZXRVSvv8X3cr2fMxJ2Hd5j5uiQKjuorqFRg=;
+        b=Cxd7Fp7mQMphWEQDxgBZLwfNPUciXbrRef2IpIcNLIgXW2Kw9iBOZ6NPllIzKn8Y6T
+         SV/eWNL5XHsnNX/3U8ESHAVEUarMzDRV4GaUvCt5ON91ZxOgsS689hlncZsLF80ll/u5
+         VDVEOlZuZdF/dcYJaTWRS1Bxj+Wh+borfLtrRcim6QaMQDPOF05KH0ZEt9kfWbcUr6Y1
+         IBh7VecHi5nsS/6B8PuVSZ1wTdMMcOAceJXh7HC3wQemJGTsYzEKWgNzddsBEobE+vKw
+         GlsgaQxYMEU9A/UAAvhdeFi5vQfG0qq8xPsKDzhbtewHPrGH/Pk3Fm9V+PUGQm4roe8u
+         Hl6Q==
+X-Gm-Message-State: ACgBeo2zKvQU4vdh3irYsuwQ+IPdZeqvqJTFT909bjin8JJcLAOB0B0h
+        ecRKaU3YHJxGEx09S8dCXXmbNS7Wkya3h9T4gYw=
+X-Google-Smtp-Source: AA6agR7lq7k88REO9qL4S+HSxpM4lCI9Je0lcsEPs5OD64RGY135DA0Cz2F1x9ZE+oZ6bdcaZ8WWLBHKuc2TgOo/vO4=
+X-Received: by 2002:a17:907:2c74:b0:741:657a:89de with SMTP id
+ ib20-20020a1709072c7400b00741657a89demr1047973ejc.58.1662524864401; Tue, 06
+ Sep 2022 21:27:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v4 0/8] bpf: Support struct argument for trampoline
- base progs
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <166252021681.29304.3215686285897138920.git-patchwork-notify@kernel.org>
-Date:   Wed, 07 Sep 2022 03:10:16 +0000
-References: <20220831152641.2077476-1-yhs@fb.com>
-In-Reply-To: <20220831152641.2077476-1-yhs@fb.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <cover.1662383493.git.lorenzo@kernel.org> <fa02d93153b99bc994215c1644a2c75a226e3c7d.1662383493.git.lorenzo@kernel.org>
+In-Reply-To: <fa02d93153b99bc994215c1644a2c75a226e3c7d.1662383493.git.lorenzo@kernel.org>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 6 Sep 2022 21:27:33 -0700
+Message-ID: <CAADnVQJ4XtFpsEsPRC-cepfQvXr-hN7e_3L5SchieeGHH40_4A@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 3/4] net: netfilter: add bpf_ct_set_nat_info
+ kfunc helper
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        netfilter-devel <netfilter-devel@vger.kernel.org>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Mon, Sep 5, 2022 at 6:14 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
+> +int bpf_ct_set_nat_info(struct nf_conn___init *nfct__ref,
+> +                       union nf_inet_addr *addr, __be16 *port,
+> +                       enum nf_nat_manip_type manip)
+> +{
+...
+> @@ -437,6 +483,7 @@ BTF_ID_FLAGS(func, bpf_ct_set_timeout, KF_TRUSTED_ARGS)
+>  BTF_ID_FLAGS(func, bpf_ct_change_timeout, KF_TRUSTED_ARGS)
+>  BTF_ID_FLAGS(func, bpf_ct_set_status, KF_TRUSTED_ARGS)
+>  BTF_ID_FLAGS(func, bpf_ct_change_status, KF_TRUSTED_ARGS)
+> +BTF_ID_FLAGS(func, bpf_ct_set_nat_info)
+>  BTF_SET8_END(nf_ct_kfunc_set)
 
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
-
-On Wed, 31 Aug 2022 08:26:41 -0700 you wrote:
-> Currently struct arguments are not supported for trampoline based progs.
-> One of major reason is that struct argument may pass by value which may
-> use more than one registers. This breaks trampoline progs where
-> each argument is assumed to take one register. bcc community reported the
-> issue ([1]) where struct argument is not supported for fentry program.
->   typedef struct {
->         uid_t val;
->   } kuid_t;
->   typedef struct {
->         gid_t val;
->   } kgid_t;
->   int security_path_chown(struct path *path, kuid_t uid, kgid_t gid);
-> Inside Meta, we also have a use case to attach to tcp_setsockopt()
->   typedef struct {
->         union {
->                 void            *kernel;
->                 void __user     *user;
->         };
->         bool            is_kernel : 1;
->   } sockptr_t;
->   int tcp_setsockopt(struct sock *sk, int level, int optname,
->                      sockptr_t optval, unsigned int optlen);
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf-next,v4,1/8] bpf: Allow struct argument in trampoline based programs
-    https://git.kernel.org/bpf/bpf-next/c/720e6a435194
-  - [bpf-next,v4,2/8] bpf: x86: Support in-register struct arguments in trampoline programs
-    https://git.kernel.org/bpf/bpf-next/c/a9c5ad31fbdc
-  - [bpf-next,v4,3/8] bpf: Update descriptions for helpers bpf_get_func_arg[_cnt]()
-    https://git.kernel.org/bpf/bpf-next/c/27ed9353aec9
-  - [bpf-next,v4,4/8] bpf: arm64: No support of struct argument in trampoline programs
-    https://git.kernel.org/bpf/bpf-next/c/eb707dde264a
-  - [bpf-next,v4,5/8] libbpf: Add new BPF_PROG2 macro
-    https://git.kernel.org/bpf/bpf-next/c/34586d29f8df
-  - [bpf-next,v4,6/8] selftests/bpf: Add struct argument tests with fentry/fexit programs.
-    https://git.kernel.org/bpf/bpf-next/c/1642a3945e22
-  - [bpf-next,v4,7/8] selftests/bpf: Use BPF_PROG2 for some fentry programs without struct arguments
-    https://git.kernel.org/bpf/bpf-next/c/a7c2ca3a2f69
-  - [bpf-next,v4,8/8] selftests/bpf: Add tracing_struct test in DENYLIST.s390x
-    https://git.kernel.org/bpf/bpf-next/c/ae63c10fc241
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Instead of __ref and patch 1 and 2 it would be better to
+change the meaning of "trusted_args".
+In this case "addr" and "port" are just as "trusted".
+They're not refcounted per verifier definition,
+but they need to be "trusted" by the helper.
+At the end the "trusted_args" flags would mean
+"this helper can assume that all pointers can be safely
+accessed without worrying about lifetime".
