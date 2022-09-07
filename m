@@ -2,58 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90ADD5AFCF0
-	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 08:58:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F8D35AFCFC
+	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 09:00:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229829AbiIGG6X (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Sep 2022 02:58:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35020 "EHLO
+        id S230101AbiIGHAz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Sep 2022 03:00:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbiIGG6W (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Sep 2022 02:58:22 -0400
-Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B82C48FD52;
-        Tue,  6 Sep 2022 23:58:21 -0700 (PDT)
-Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-1278a61bd57so15293821fac.7;
-        Tue, 06 Sep 2022 23:58:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=d2GxsBffUoX3eM3Z9JvRT1gNftYOiyqMQZCPJIetS/o=;
-        b=397koPNSKD4670SYO4FRp68vrXpBO5cEGeGBxcNN+jr9smvMTa+X1KS1PWbw6sDPGN
-         9x7+G4TnWpnkFxqonTPY/H1DII+57+USRZi21DuQoNbARLcMv4GJeKO2+vbVuers9xBP
-         KMckgp38yzWJbpFnfCZi3JkqqsG9f0rQaVMEX7IY35sf+ddpbaV48SX8li/PVcI1mTIU
-         +oRIAgQrvpdWZzKXUSkzz5J8zqiu0P+EUZHyy7xsN7QekAaZ/FUmZ/Bdp9c35kWwBoUs
-         MJol3fXMSdNqmiMrKWi/p69/Zj+9S1gMWbfaa0IA0UDywZshq22w+c5Jnqaq9xFTIxFn
-         2omw==
-X-Gm-Message-State: ACgBeo1LroH0okj1Tpnoiq78sg6HSyMs88OFhmBTaFXllEZqMuAGVP+W
-        E6W/dpGS9i8SMP6jxiHjkCv33b9BaU8g2qSWYwwzlzw0
-X-Google-Smtp-Source: AA6agR7eviQAT6IDpbbvRlqqBpL0NbF0igKjLYiuZbEZCoA+REG/y+NW3RA8tVNkQUMhLtD3+GIeVNNgs3+WFH+kyy0=
-X-Received: by 2002:a05:6808:d46:b0:345:7b42:f987 with SMTP id
- w6-20020a0568080d4600b003457b42f987mr910550oik.92.1662533901033; Tue, 06 Sep
- 2022 23:58:21 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220907050407.2711513-1-namhyung@kernel.org> <CAPhsuW4OT3XC8oREZBNreesYyVvU9hSGs5Hgz=r-cwsQSkiXRQ@mail.gmail.com>
-In-Reply-To: <CAPhsuW4OT3XC8oREZBNreesYyVvU9hSGs5Hgz=r-cwsQSkiXRQ@mail.gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 6 Sep 2022 23:58:10 -0700
-Message-ID: <CAM9d7cjZ4jJDx0wL5BQ1f4BvT=r0S72Z_q83WwvOdB8cQGzRKw@mail.gmail.com>
-Subject: Re: [PATCH v2] perf test: Skip sigtrap test on old kernels
-To:     Song Liu <song@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
+        with ESMTP id S230081AbiIGHAs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Sep 2022 03:00:48 -0400
+Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 383596D566;
+        Wed,  7 Sep 2022 00:00:14 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.229])
+        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4MMtM842RNz9yN0j;
+        Wed,  7 Sep 2022 14:56:04 +0800 (CST)
+Received: from roberto-ThinkStation-P620 (unknown [10.204.63.22])
+        by APP2 (Coremail) with SMTP id GxC2BwBX011QQRhjeCYrAA--.25373S2;
+        Wed, 07 Sep 2022 07:59:43 +0100 (CET)
+Message-ID: <d520738c0a3f7eb13ce9d7c9a0f6f6e18501a495.camel@huaweicloud.com>
+Subject: Re: [PATCH v16 06/12] bpf: Add bpf_lookup_*_key() and bpf_key_put()
+ kfuncs
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>,
+        keyrings@vger.kernel.org,
+        LSM List <linux-security-module@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Marco Elver <elver@google.com>,
-        Song Liu <songliubraving@fb.com>
+        Daniel =?ISO-8859-1?Q?M=FCller?= <deso@posteo.net>,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Date:   Wed, 07 Sep 2022 08:59:25 +0200
+In-Reply-To: <CAADnVQLT9nSEqprcX_hmTeAYGVA9cWupVEfvhnyPuzWwrGKHcQ@mail.gmail.com>
+References: <20220905143318.1592015-1-roberto.sassu@huaweicloud.com>
+         <20220905143318.1592015-7-roberto.sassu@huaweicloud.com>
+         <CAP01T74HKXuf9Aig4v3zsL1rwQAGRpUtTiaN2djWsMiJmaqF_A@mail.gmail.com>
+         <663480e6bdfd9809c9e367bfc8df95d7a1323723.camel@huaweicloud.com>
+         <CAADnVQLT9nSEqprcX_hmTeAYGVA9cWupVEfvhnyPuzWwrGKHcQ@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+User-Agent: Evolution 3.36.5-0ubuntu1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: GxC2BwBX011QQRhjeCYrAA--.25373S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7GFWfZrykZw13Cry7tw17Awb_yoWkJFg_Zr
+        4xCrZ3Zr1UZF1UGrs8tFW3Xa1qyF1kJF10va48t39xWwsrAF48JFWUCrySvFWfGa1xJa43
+        Gws5uFyrX34I9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb78YFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I6I8E6xAIw20E
+        Y4v20xvaj40_JFC_Wr1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+        A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUJVWUCwA2z4x0Y4vE2Ix0cI8IcVCY1x02
+        67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r1j6r4UM28EF7xvwVC2z280aVCY1x0267
+        AKxVW8JVW8Jr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
+        j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
+        kEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY0x0E
+        wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
+        80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0
+        I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04
+        k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY
+        1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1c4S7UUUUU==
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAIBF1jj4KxsgABs8
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,44 +89,42 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Song,
+On Tue, 2022-09-06 at 11:45 -0700, Alexei Starovoitov wrote:
+> On Tue, Sep 6, 2022 at 1:01 AM Roberto Sassu
+> <roberto.sassu@huaweicloud.com> wrote:
+> > > > +struct bpf_key *bpf_lookup_user_key(u32 serial, u64 flags)
+> > > > +{
+> > > > +       key_ref_t key_ref;
+> > > > +       struct bpf_key *bkey;
+> > > > +
+> > > > +       if (flags & ~KEY_LOOKUP_ALL)
+> > > > +               return NULL;
+> > > > +
+> > > > +       /*
+> > > > +        * Permission check is deferred until the key is used,
+> > > > as
+> > > > the
+> > > > +        * intent of the caller is unknown here.
+> > > > +        */
+> > > > +       key_ref = lookup_user_key(serial, flags,
+> > > > KEY_DEFER_PERM_CHECK);
+> > > > +       if (IS_ERR(key_ref))
+> > > > +               return NULL;
+> > > > +
+> > > > +       bkey = kmalloc(sizeof(*bkey), GFP_ATOMIC);
+> > > 
+> > > Since this function (due to lookup_user_key) is sleepable, do we
+> > > really need GFP_ATOMIC here?
+> > 
+> > Daniel suggested it for bpf_lookup_system_key(), so that the kfunc
+> > does
+> > not have to be sleepable.
+> 
+> Hold on. It has to be sleepable. Just take a look
+> at what lookup_user_key is doing inside.
+> 
 
-On Tue, Sep 6, 2022 at 10:58 PM Song Liu <song@kernel.org> wrote:
->
-> On Tue, Sep 6, 2022 at 10:04 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> >
-> > If it runs on an old kernel, perf_event_open would fail because of the
-> > new fields sigtrap and sig_data.  Just skipping the test could miss an
-> > actual bug in the kernel.
-> >
-> > Let's check BTF if it has the perf_event_attr.sigtrap field.
-> >
-> > Cc: Marco Elver <elver@google.com>
-> > Cc: Song Liu <songliubraving@fb.com>
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > ---
-> >  tools/perf/tests/sigtrap.c | 46 +++++++++++++++++++++++++++++++++++++-
-> >  1 file changed, 45 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/tools/perf/tests/sigtrap.c b/tools/perf/tests/sigtrap.c
-> > index e32ece90e164..32f08ce0f2b0 100644
-> > --- a/tools/perf/tests/sigtrap.c
-> > +++ b/tools/perf/tests/sigtrap.c
-> > @@ -16,6 +16,8 @@
-> >  #include <sys/syscall.h>
-> >  #include <unistd.h>
-> >
-> > +#include <bpf/btf.h>
-> > +
->
-> Do we need "#ifdef HAVE_BPF_SKEL" for the include part?
+https://lore.kernel.org/bpf/2b1d62ad-af4b-4694-ecc8-639fbd821a05@iogearbox.net/
 
-Right, it'd be better to move it under the #ifdef.  Will change.
+Roberto
 
->
-> Other than this, looks good to me.
->
-> Acked-by: Song Liu <song@kernel.org>
-
-Thanks for the review!
-Namhyung
