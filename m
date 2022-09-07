@@ -2,81 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D8265AFD40
-	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 09:17:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C7945AFDCC
+	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 09:45:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229627AbiIGHRV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Sep 2022 03:17:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42410 "EHLO
+        id S229721AbiIGHpq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Sep 2022 03:45:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229702AbiIGHRV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Sep 2022 03:17:21 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06F65A2DB0;
-        Wed,  7 Sep 2022 00:17:20 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id u6so18265203eda.12;
-        Wed, 07 Sep 2022 00:17:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date;
-        bh=qhwXdLhrBXs286e4r1ztCl42k4NswLVRSkGgFG4DTWk=;
-        b=aOAtus9+3XemKZO9YquVZVVYGLyibQWiOTCQCKLmu8E6rC2NHM6OtQBfjlYTbNkJZL
-         FX6ivN6gLnjmKSaPe16zBMaOlTzoE33sHxeNfFGR2vLMGW2XbmyykstnR+hFO4I0b4mj
-         S7IAFo5JwUBd79NHwWGlNMJw8SCr0ISyyiU5UWDSXhSIKT65jytyzj+39/RhyV0ZjGe+
-         IRXc6TJ5zJ3zzqQ2KVuQCmE9l/1dEq7+E4psnRzm7jcm6QLRJJtLlI075SFkcnzL6Ayk
-         wkWXc4uBMb3dpitraYo34ZNCJSjkdEH+RLs+PgQc+9S/AvAzG62Sx20XOPTLDsQUqbkI
-         BLmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date;
-        bh=qhwXdLhrBXs286e4r1ztCl42k4NswLVRSkGgFG4DTWk=;
-        b=eZxpVfXNlO21T9aoCdcIGwdcPDZDvDGZ0eJ/mPHsf3MWaUVH3PakoqiKGzQdzM7WjP
-         mxxpWIDnWDse7in+2TlRJ26PW8onZK91pmgIqvXbs+Uf8CrxnQSUeyTSE0UhRkMZ4n1a
-         IyxHVkbZ6/15+4cM0YmPRr4SB7esDhoAv9O3v57C048mzFvpND3GXvX6RMBmfq1B/3B3
-         vwD5WWMBHqCf9cdncy6wTPxH2JJfSpJ01EMnnPBbZRKSQ6Sn+Uc2uqYul1UAmNLMMjFf
-         xVcTcxyj5s82muNDusWhhX2OQQk5/9dxfSX/6BVekObFuPda+2x4zb4WDTdBjM7JYi+a
-         ZDqQ==
-X-Gm-Message-State: ACgBeo2/oxkqCEH7My0VvsiTVb2spQLLOd+FjIdyrrx1AZLt+8AvmXQ6
-        6zJJZ0PHrYCzwQC58ItKKuw=
-X-Google-Smtp-Source: AA6agR7cecyd4hrepTVhA3gpB5uAXT0Cz2JB1iGhZH3EfW9bDJ14ffnACzpoAxcEqzHEJi8a9IpZ4Q==
-X-Received: by 2002:a05:6402:4150:b0:44a:ec16:def4 with SMTP id x16-20020a056402415000b0044aec16def4mr1958930eda.21.1662535038111;
-        Wed, 07 Sep 2022 00:17:18 -0700 (PDT)
-Received: from krava ([193.85.244.190])
-        by smtp.gmail.com with ESMTPSA id o14-20020a056402038e00b0044ef2ac2650sm1877167edv.90.2022.09.07.00.17.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Sep 2022 00:17:17 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Wed, 7 Sep 2022 09:17:15 +0200
+        with ESMTP id S229602AbiIGHpp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Sep 2022 03:45:45 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB2037FFAC;
+        Wed,  7 Sep 2022 00:45:42 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4MMvSM48Bmz4wgr;
+        Wed,  7 Sep 2022 17:45:39 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1662536741;
+        bh=bhsJcQEgyb5vhXPUdvUG6IM1FjPRH71usf9pZQ22R1M=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=cYRv60Mn0VD9/sCRd9f51WWo2eCrDCXr4Bzs0uDkG19XgmBhgzXAvmFA1Snjc2s+X
+         0bpBYSJ//f6SITYk+MhxISXGg/B0muwWFUbuBJQPE8Nwei7j+JNdpgArKGL+89TXLm
+         pPm0hF6l9GRDS0MTstX6c1YOEz5kj3XKKQXQZTthbl0PmpJZDDuPRe2aQrC5DJUxZW
+         4NYauY4Apix4awRLXlM4FkAkew2C0fT1c73vdBhBmXL6f0zh2jr3vCsNLg4TWnYDLc
+         4pBx0nRaXQb2HYytzoPAGqek89313v0+w0LrRQP+Idu48OWA4YYIyd5Tqm2ipBA2Ie
+         GJkcm0Gk9A8dQ==
+Date:   Wed, 7 Sep 2022 17:45:35 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Jiri Olsa <olsajiri@gmail.com>,
-        syzbot <syzbot+2251879aa068ad9c960d@syzkaller.appspotmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Hao Luo <haoluo@google.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Stanislav Fomichev <sdf@google.com>,
-        Song Liu <song@kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Yonghong Song <yhs@fb.com>
-Subject: Re: [syzbot] WARNING in bpf_bprintf_prepare (2)
-Message-ID: <YxhFe3EwqchC/fYf@krava>
-References: <0000000000008be47905e7e08b85@google.com>
- <YxXZT6NxSSLufivZ@krava>
- <CAADnVQKthoffNDuO8TsjyCx1JF8jvsyh_pvmT+Q3yB493OeQeA@mail.gmail.com>
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Marco Elver <elver@google.com>
+Subject: Re: linux-next: build failure after merge of the slab tree
+Message-ID: <20220907174535.4852e7da@canb.auug.org.au>
+In-Reply-To: <CAADnVQKJORAcV75CHE1yG6_+c8qnoOj6gf=zJG9vnWwR5+4SqQ@mail.gmail.com>
+References: <20220906165131.59f395a9@canb.auug.org.au>
+        <dab10759-c059-2254-116b-8360bc240e57@suse.cz>
+        <CAADnVQJTDdA=vpQhrbAbX7oEQ=uaPXwAmjMzpW4Nk2Xi9f2JLA@mail.gmail.com>
+        <CAADnVQKJORAcV75CHE1yG6_+c8qnoOj6gf=zJG9vnWwR5+4SqQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQKthoffNDuO8TsjyCx1JF8jvsyh_pvmT+Q3yB493OeQeA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: multipart/signed; boundary="Sig_/IMql38jc4ngYXPwtr.DpjJM";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,60 +61,74 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 06, 2022 at 08:02:39PM -0700, Alexei Starovoitov wrote:
+--Sig_/IMql38jc4ngYXPwtr.DpjJM
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-SNIP
+Hi all,
 
-> > >  __mutex_lock_common kernel/locking/mutex.c:605 [inline]
-> > >  __mutex_lock+0x13c/0x1350 kernel/locking/mutex.c:747
-> > >  __pipe_lock fs/pipe.c:103 [inline]
-> > >  pipe_write+0x132/0x1be0 fs/pipe.c:431
-> > >  call_write_iter include/linux/fs.h:2188 [inline]
-> > >  new_sync_write fs/read_write.c:491 [inline]
-> > >  vfs_write+0x9e9/0xdd0 fs/read_write.c:578
-> > >  ksys_write+0x1e8/0x250 fs/read_write.c:631
-> > >  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-> > >  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
-> > >  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+On Tue, 6 Sep 2022 20:05:44 -0700 Alexei Starovoitov <alexei.starovoitov@gm=
+ail.com> wrote:
+>
+> On Tue, Sep 6, 2022 at 11:37 AM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
 > >
-> > looks like __bpf_trace_contention_begin needs bpf_prog_active check
-> > (like below untested), which would prevent the recursion and bail
-> > out after 2nd invocation
+> > On Tue, Sep 6, 2022 at 12:53 AM Vlastimil Babka <vbabka@suse.cz> wrote:=
+ =20
+> > >
+> > > On 9/6/22 08:51, Stephen Rothwell wrote: =20
+> > > > Hi all, =20
+> > >
+> > > Hi,
+> > > =20
+> > > > After merging the slab tree, today's linux-next build (powerpc
+> > > > ppc64_defconfig) failed like this:
+> > > >
+> > > > kernel/bpf/memalloc.c: In function 'bpf_mem_free':
+> > > > kernel/bpf/memalloc.c:613:33: error: implicit declaration of functi=
+on '__ksize'; did you mean 'ksize'? [-Werror=3Dimplicit-function-declaratio=
+n]
+> > > >    613 |         idx =3D bpf_mem_cache_idx(__ksize(ptr - LLIST_NODE=
+_SZ));
+> > > >        |                                 ^~~~~~~
+> > > >        |                                 ksize =20
+> > >
+> > > Could you use ksize() here? I'm guessing you picked __ksize() because
+> > > kasan_unpoison_element() in mm/mempool.c did, but that's to avoid
+> > > kasan_unpoison_range() in ksize() as this caller does it differently.
+> > > AFAICS your function doesn't handle kasan differently, so ksize() sho=
+uld
+> > > be fine. =20
 > >
-> > should be easy to reproduce, will check
-> >
-> > jirka
-> >
-> >
-> > ---
-> > diff --git a/include/trace/bpf_probe.h b/include/trace/bpf_probe.h
-> > index 6a13220d2d27..481b057cc8d9 100644
-> > --- a/include/trace/bpf_probe.h
-> > +++ b/include/trace/bpf_probe.h
-> > @@ -4,6 +4,8 @@
-> >
-> >  #ifdef CONFIG_BPF_EVENTS
-> >
-> > +DECLARE_PER_CPU(int, bpf_prog_active);
-> > +
-> >  #undef __entry
-> >  #define __entry entry
-> >
-> > @@ -82,7 +84,11 @@ static notrace void                                                  \
-> >  __bpf_trace_##call(void *__data, proto)                                        \
-> >  {                                                                      \
-> >         struct bpf_prog *prog = __data;                                 \
-> > +       if (unlikely(__this_cpu_inc_return(bpf_prog_active) != 1))      \
-> > +               goto out;                                               \
-> >         CONCATENATE(bpf_trace_run, COUNT_ARGS(args))(prog, CAST_TO_U64(args));  \
-> > +out:                                                                   \
-> > +        __this_cpu_dec(bpf_prog_active);
-> 
-> I don't think we can use this big hammer here.
-> raw_tp progs attached to different hooks need to
-> run on the same cpu otherwise we will lose events.
+> > Ok. Will change to use ksize(). =20
+>=20
+> Just pushed the following commit to address the issue:
+> https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?=
+id=3D1e660f7ebe0ff6ac65ee0000280392d878630a67
+>=20
+> It will get to net-next soon.
 
-might be good place to use prog->active
-I managed to reproduce it localy, will try that
+I replaced my revert with that patch for today (and will discard that
+when it arrives via some other tree).
 
-jirka
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/IMql38jc4ngYXPwtr.DpjJM
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmMYTB8ACgkQAVBC80lX
+0GyK6Qf/QTHmLJ5Q68YznFmFD9sOrzRpxcX1pruMX5LvK7xzTn3NoGEmaFSNPT1i
+2ikd8XlTRk8YIbW+k80qPoHHWJy7hfmYEEwznigEOPfgq1a/HfmUbhc4tYjRffTD
+KBwk2urFFvs59tjKt2PgH0aS2Jr7Ze/1LaY1eYnJ9mS6+wY8b6OeBarl+0qbuAop
+Ia4q0N6/Z1Nf1NrAAo+7llUdda26Ly30iJCrS9prkOfvWYy6k/B6ehgbFwDg5sV5
+1gfz3aZokZXvb5XAKVmwnQHJPq094gZ7qr59OjIkNLKQ1ZkD6pOddWzCmcuqrhQY
+mOoX0BJ/H/c5ez5x43XtgYgMwZrTYQ==
+=tqs4
+-----END PGP SIGNATURE-----
+
+--Sig_/IMql38jc4ngYXPwtr.DpjJM--
