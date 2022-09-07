@@ -1,72 +1,72 @@
 Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B49F5B1034
-	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 01:09:25 +0200 (CEST)
+Received: from out1.vger.email (unknown [IPv6:2620:137:e000::1:20])
+	by mail.lfdr.de (Postfix) with ESMTP id 523A05B1065
+	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 01:30:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229492AbiIGXJX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Sep 2022 19:09:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42032 "EHLO
+        id S229552AbiIGXah (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Sep 2022 19:30:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbiIGXJX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Sep 2022 19:09:23 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9DD1C5789
-        for <bpf@vger.kernel.org>; Wed,  7 Sep 2022 16:09:20 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id k3-20020a170902c40300b001743aafd6c6so10835566plk.20
-        for <bpf@vger.kernel.org>; Wed, 07 Sep 2022 16:09:20 -0700 (PDT)
+        with ESMTP id S230087AbiIGXa3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Sep 2022 19:30:29 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F057A3FA01
+        for <bpf@vger.kernel.org>; Wed,  7 Sep 2022 16:30:27 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id fs14so11230750pjb.5
+        for <bpf@vger.kernel.org>; Wed, 07 Sep 2022 16:30:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date;
-        bh=0KRE6OYzpoJpbXuE9P9l7kcrQIIu1WKtxMVwyyvKu1c=;
-        b=ckJcrD6igVTrWXoFqeGnZSGxuH5Nn5qwLwVLzibXBMVINW/7NM0pw4TElNFmyO4qZu
-         cGnAeUl1HWPNi0mhxnIWGyEFX5L9Ll1PPJz3UWeI/jeIsjACmjzeiZcVIk0rSjPvbAEU
-         /6KCVmjup6gAlnbyCNYmOGeCdlKjn0GZS21oyWInnigqh4vRSQr3+U8KTUFCGSiGKgfb
-         1bVKFa7enblA5n+rUql/rhS0mtLLTrcD84LYqJ/Ccvv0fI9RA+sFgX27sgVYpyTvVP0J
-         VKNGwM/dqKMiOvnlcD3b0JWYItMOE6Z9g4C8U609jVkBCMnQNaaKIrKUk3W2tv0xFVB1
-         cXZg==
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date;
+        bh=Jmg3BNxt12voxE/mgVaVFvyHsZgTOHM2E9oTTBUJjAs=;
+        b=pmYO1QJRINg7mqV0j7OL05QMUvnO/rC8IKBxdxaMGXeaUMlhAV82iQZLW8ePKU3Q97
+         NcvAoiGwRY0i2S0ilxanYinLKzy0ei7Z83eX4IDUj9L2/9SAGvHrOtHPLcmFHzCZnxDX
+         4FBZe6ojSl/xUNxQSBDEl3kmP0PMf8bjkneaSoT8zpoh+vK8nykoKGHRzcAAu8VLdbAe
+         F7jAtfkF0pcfbyopCfLX9GnLUqDTIvp+H7qM1HXCUUTuj3y5N2E54YT5W9NdrBNnnyoK
+         ojtenTsEZApzrJ9gjk9LdtP3pDmG40qKfPt/RYTHSsW8k97AZr6FBhuIJSEGQMLFeZEW
+         dGRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date;
-        bh=0KRE6OYzpoJpbXuE9P9l7kcrQIIu1WKtxMVwyyvKu1c=;
-        b=TgwEOQRSrv4gbug4JImph18FYt5bVCW1oP6g/jfXUHJqgVIMLV0tIlzaguq1imwOTa
-         r3nMacpt2tthLm1GLoSndc8t+E7TelkVFdxJIOXbi1MbGKtCtKOdSg065D+6pDg+KUaG
-         3cL3cmWkVI32L/pw4qnpZJ7hNW7RmFOnKqI/fXNmltP49+EvzSaFLncywh747xZWBfJf
-         8UQFL5GL0k8G2J9J26BZzCvqpSJQeohKYacjyf6BRMsjT96yxTdxQqg4hSn3vkfvsm78
-         F72AIbszm38++PiGxAhakAQojtEQ84xaXTATfsiOdL+wKAypGKOR2cqD66aZI2YjkExh
-         668g==
-X-Gm-Message-State: ACgBeo3yIiozbO+A4XLHKkjI84wYQ+IK2rAGbzbhk/Xy4UJr7xEVgC/G
-        pQxquIdwlWeG5xkqjuIWX1bR5IM=
-X-Google-Smtp-Source: AA6agR4UqSsh1nTYIuhXy56XpuBdst9RiR7IVTxixDObPoM83TUHOyskN7U+ocgvGBmxY/jVYdj8mGo=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a17:90a:249:b0:1e0:a8a3:3c6c with SMTP id
- t9-20020a17090a024900b001e0a8a33c6cmr52768pje.0.1662592159394; Wed, 07 Sep
- 2022 16:09:19 -0700 (PDT)
-Date:   Wed, 7 Sep 2022 16:09:17 -0700
-In-Reply-To: <20220907080140.290413-1-aspsk@isovalent.com>
-Mime-Version: 1.0
-References: <20220907080140.290413-1-aspsk@isovalent.com>
-Message-ID: <YxkknQJC1vWmU/o9@google.com>
-Subject: Re: [RFC PATCH] bpf: introduce new bpf map type BPF_MAP_TYPE_WILDCARD
-From:   sdf@google.com
-To:     Anton Protopopov <aspsk@isovalent.com>
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
+        bh=Jmg3BNxt12voxE/mgVaVFvyHsZgTOHM2E9oTTBUJjAs=;
+        b=RsP8nZQV36WNwytolNRw9eFP6cQYcd40lWArPqXoFnrlxuOWyiXFCHQQgOTjtUdC8X
+         EEgTcomGda2vNtjBaYBi4NsKJRcGs4S9JT9Fr6qgWW6IZF2mt+htoNWsUqNSorNCTCVp
+         Qat80rRowjnVNjCFmfwIglx0WDYBCOuDEBNWTzbEC4pWe9j+HgERNT1cDU59MDSJ1RdE
+         b+89nJ70e5DWwQ5wWb2B9Jec6rkW2LIHeqd9vY1s+yCyjThimk8iduxCIMyRX88DjDFQ
+         ZliS/m+Vuu3eQ+dGUFJKheDbclLzbkBswX1+ei1qj/KpLflp3jgrt/wliVRPN8mZ+pOR
+         GARQ==
+X-Gm-Message-State: ACgBeo33klsDuFFBvaNEho2tUthSRK1aoCR9H2BqQbbKktVoQzPGcf2F
+        2B4o8VIvEd1EiGC3lIk2ZWY=
+X-Google-Smtp-Source: AA6agR57QfjzE5SSVwgFWtSUdWAv8/ypdYiVjzyFwccek6HZXttbBnidWbkrlWL1X96TJ24ClJL/GA==
+X-Received: by 2002:a17:902:f549:b0:176:c033:db03 with SMTP id h9-20020a170902f54900b00176c033db03mr6129963plf.109.1662593426593;
+        Wed, 07 Sep 2022 16:30:26 -0700 (PDT)
+Received: from macbook-pro-4.dhcp.thefacebook.com ([2620:10d:c090:400::5:66c4])
+        by smtp.gmail.com with ESMTPSA id u195-20020a6279cc000000b00537eb00850asm13283444pfc.130.2022.09.07.16.30.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Sep 2022 16:30:26 -0700 (PDT)
+Date:   Wed, 7 Sep 2022 16:30:23 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martynas Pumputis <m@lambda.lt>,
-        Nikolay Aleksandrov <razor@blackwall.org>,
-        Eric Torng <torng@msu.edu>
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Delyan Kratunov <delyank@fb.com>
+Subject: Re: [PATCH RFC bpf-next v1 14/32] bpf: Introduce bpf_kptr_alloc
+ helper
+Message-ID: <20220907233023.x3uclwlnjuhftvtb@macbook-pro-4.dhcp.thefacebook.com>
+References: <20220904204145.3089-1-memxor@gmail.com>
+ <20220904204145.3089-15-memxor@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220904204145.3089-15-memxor@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,138 +74,519 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-W3NvcnJ5IGZvciB0aGUgbm9pc2UsIGdvdCBhIGJvdW5jZSBmcm9tIHRoZSBsaXN0LCByZXNlbmQg
-d2l0aCB0aGUNCm1lc3NhZ2UgdHJpbW1lZF0NCg0KT24gMDkvMDcsIEFudG9uIFByb3RvcG9wb3Yg
-d3JvdGU6DQo+IEFkZCBhIG5ldyBtYXAsIEJQRl9NQVBfVFlQRV9XSUxEQ0FSRCwgd2hpY2ggcHJv
-dmlkZXMgbWVhbnMgdG8gaW1wbGVtZW50ICANCj4gZ2VuZXJpYw0KPiBvbmxpbmUgcGFja2V0IGNs
-YXNzaWZpY2F0aW9uLiBIZXJlICJvbmxpbmUiIHN0YW5kcyBmb3IgImZhc3QgbG9va3VwcyBhbmQg
-IA0KPiBmYXN0DQo+IHVwZGF0ZXMiLCBhbmQgImdlbmVyaWMiIG1lYW5zIHRoYXQgYSB1c2VyIGNh
-biBjcmVhdGUgbWFwcyB3aXRoIGN1c3RvbSAgDQo+IGxvb2t1cA0KPiBzY2hlbWVz4oCUZGlmZmVy
-ZW50IG51bWJlcnMgb2YgZmllbGRzIGFuZCBkaWZmZXJlbnQgaW50ZXJwcmV0YXRpb24gb2YgIA0K
-PiBpbmRpdmlkdWFsDQo+IGZpZWxkcyAocHJlZml4IGJpdG1hc2tzLCByYW5nZXMsIGFuZCBkaXJl
-Y3QgbWF0Y2hlcykuDQoNCj4gSW4gcGFydGljdWxhciwgaW4gQ2lsaXVtIHdlIGhhdmUgc2V2ZXJh
-bCB1c2UgY2FzZXMgZm9yIHN1Y2ggYSBtYXA6DQoNCj4gICAgKiBYRFAgUHJlZmlsdGVyIGlzIGEg
-c2ltcGxlIFhEUC1iYXNlZCBERG9TIG1pdGlnYXRpb24gc3lzdGVtIHByb3ZpZGVkIGJ5DQo+ICAg
-ICAgQ2lsaXVtLiBBdCB0aGUgbW9tZW50IGl0IG9ubHkgc3VwcG9ydHMgZmlsdGVyaW5nIGJ5IHNv
-dXJjZSBDSURScy4gSXQgIA0KPiB3b3VsZA0KPiAgICAgIGJlbmVmaXQgZnJvbSB1c2luZyB0aGlz
-IG5ldyBtYXAsIGFzIGl0IGFsbG93cyB0byB1dGlsaXplIHdpbGRjYXJkICANCj4gcnVsZXMNCj4g
-ICAgICB3aXRob3V0IGJpZyBwZW5hbHR5IGNvbXBhcmluZyB0byBvbmUgaGFzaCBvciBMUE0gbG9v
-a3VwIHV0aWxpemVkIG5vdy4NCg0KPiAgICAqIFhEUCBQYWNrZXQgUmVjb3JkZXIgKHNlZSAgDQo+
-IGh0dHBzOi8vbHBjLmV2ZW50cy9ldmVudC8xMS9jb250cmlidXRpb25zLzk1My8pDQoNCj4gICAg
-KiBLOFMgYW5kIENpbGl1bSBOZXR3b3JrIFBvbGljaWVzOiBhcyBvZiBrOHMgMS4yNSBwb3J0IHJh
-bmdlcyBhcmUgIA0KPiBjb25zaWRlcmVkDQo+ICAgICAgdG8gYmUgYSBzdGFibGUgZmVhdHVyZSwg
-YW5kIHRoaXMgbWFwIGFsbG93cyB0byBpbXBsZW1lbnQgdGhpcyBlYXNpbHkgIA0KPiAoYW5kDQo+
-ICAgICAgYWxzbyB0byBwcm92aWRlIG1vcmUgc29waGlzdGljYXRlZCBmaWx0ZXJpbmcgZm9yIENp
-bGl1bSBOZXR3b3JrICANCj4gUG9saWNpZXMpDQoNCj4gS2V5cyBmb3Igd2lsZGNhcmQgbWFwcyBh
-cmUgZGVmaW5lZCB1c2luZyB0aGUgc3RydWN0IHdpbGRjYXJkX2tleSAgDQo+IHN0cnVjdHVyZS4N
-Cj4gQmVzaWRlcyB0aGUgdHlwZSBmaWVsZCwgaXQgY29udGFpbnMgdGhlIGRhdGEgZmllbGQgb2Yg
-YW4gYXJiaXRyYXJ5IHNpemUuICANCj4gVG8NCj4gZWR1Y2F0ZSBtYXAgYWJvdXQgd2hhdCdzIGNv
-bnRhaW5lZCBpbnNpZGUgdGhlIGRhdGEgZmllbGQsIHR3byBhZGRpdGlvbmFsDQo+IHN0cnVjdHVy
-ZXMgYXJlIHVzZWQuIFRoZSBmaXJzdCBvbmUsIHN0cnVjdCB3aWxkY2FyZF9kZXNjLCBhbHNvIG9m
-ICANCj4gYXJiaXRyYXJ5DQo+IHNpemUsIHRlbGxzIGhvdyBtYW55IGZpZWxkcyBhcmUgY29udGFp
-bmVkIGluc2lkZSBkYXRhLCBhbmQgdGhlIHN0cnVjdA0KPiB3aWxkY2FyZF9ydWxlX2Rlc2Mgc3Ry
-dWN0dXJlIGRlZmluZXMgaG93IGluZGl2aWR1YWwgZmllbGRzIGxvb2sgbGlrZS4NCg0KPiBGaWVs
-ZHMgKHJ1bGVzKSBjYW4gYmUgb2YgdGhyZWUgdHlwZXM6ICANCj4gQlBGX1dJTERDQVJEX1JVTEVf
-e1BSRUZJWCxSQU5HRSxNQVRDSH0uDQoNClsuLl0NCg0KPiBUaGUgUFJFRklYIHJ1bGUgbWVhbnMg
-dGhhdCBpbnNpZGUgZGF0YSB3ZSBoYXZlIGEgYmluYXJ5IHZhbHVlIGFuZCBhIGJpbmFyeQ0KPiAo
-cHJlZml4KSBtYXNrOg0KDQo+ICAgICAgICAgICAgICAgICBzaXplICAgICAgICAgICAgIHUzMg0K
-PiAgICAgICAgICA8LS0tLS0tLS0tLS0tLS0tLT4gPC0tLS0tLS0tLS0tPg0KPiAgICAgLi4uIHwg
-ICAgcnVsZSB2YWx1ZSAgICB8ICAgcHJlZml4ICAgfCAuLi4NCg0KPiBIZXJlIHJ1bGUgdmFsdWUg
-aXMgYSBiaW5hcnkgdmFsdWUsIGUuZy4sIDEyMy4zMjQuMTI4LjAsIGFuZCBwcmVmaXggaXMgYSAg
-DQo+IHUzMiBiaXQNCj4gdmFyaWFibGU7IHdlIG9ubHkgdXNlIGxvd2VyIDggYml0cyBvZiBpdC4g
-V2UgYWxsb3cgOCwgMTYsIDMyLCA2NCwgYW5kIDEyOCAgDQo+IGJpdA0KPiB2YWx1ZXMgZm9yIFBS
-RUZJWCBydWxlcy4NCg0KSSBoYXZlbid0IGxvb2tlZCBhdCB0aGUgY29kZSwgc28gcGFyZG9uIHN0
-dXBpZCBxdWVzdGlvbnMuIFRoaXMgc291bmRzDQpsaWtlIG9wdGltaXplZCBMUE0tdHJpZT8NCg0K
-SWYgbm90LCB3aGF0J3MgdGhlIGRpZmZlcmVuY2U/DQoNCklmIHllcywgY2FuIHRoaXMgYmUgc3Bl
-Y2lhbCBjYXNlZC9vcHRpbWl6ZWQgaW4gdGhlIGV4aXN0aW5nIExQTS10cmllDQpvcHRpbWl6YXRp
-b24/IEkgdGhpbmsgd2UndmUgdHJpZWQgaW4gdGhlIHBhc3QsIG1vc3RseSBnYXZlIHVwIGFuZA0K
-ImZpeGVkIiBieSBjYWNoaW5nIHRoZSBzdGF0ZSBpbiB0aGUgc29ja2V0IGxvY2FsIHN0b3JhZ2Uu
-DQoNCkFsc28sIGZpeGVkIDgvMTYvMzIvNjQgcHJlZml4ZXMgc2VlbXMgbGlrZSBhIGJpZyBsaW1p
-dGF0aW9uPyBBdCBsZWFzdCBpZg0KSSB3ZXJlIHRvIHN0b3JlIGlwdjQgZnJvbSB0aGUgY2xhc3Ns
-ZXNzIChjaWRyKSB3b3JsZC4uDQoNCj4gVGhlIFJBTkdFIHJ1bGUgaXMgZGV0ZXJtaW5lZCBieSB0
-d28gYmluYXJ5IHZhbHVlczogbWluaW11bSBhbmQgbWF4aW11bSwgIA0KPiB0cmVhdGVkDQo+IGFz
-IHVuc2lnbmVkIGludGVnZXJzIG9mIGFwcHJvcHJpYXRlIHNpemU6DQoNCj4gICAgICAgICAgICAg
-ICAgIHNpemUgICAgICAgICAgICAgICBzaXplDQo+ICAgICAgICAgIDwtLS0tLS0tLS0tLS0tLS0t
-PiA8LS0tLS0tLS0tLS0tLS0tLT4NCj4gICAgIC4uLiB8ICBtaW4gcnVsZSB2YWx1ZSAgfCAgbWF4
-IHJ1bGUgdmFsdWUgIHwgLi4uDQoNCj4gV2Ugb25seSBhbGxvdyB0aGUgOCwgMTYsIDMyLCBhbmQg
-NjQtYml0IGZvciBSQU5HRSBydWxlcy4NCg0KVGhhdCBzZWVtcyB1c2VmdWwuIEkgd2FzIHRoaW5r
-aW5nIGFib3V0IHNpbWlsYXIgJ3JhbmdlbWFwJyB3aGVyZQ0Kd2UgY2FuIGVmZmVjdGl2ZWx5IHN0
-b3JlIGFuZCBsb29rdXAgW2EsYl0gcmFuZ2VzLiBNaWdodCBiZSB1c2VmdWwNCmluIGZpcmV3YWxs
-cyBmb3Igc3RvcmluZyBsaXN0cyBvZiBwb3J0cyBlZmZpY2llbnRseS4gU28gd2h5IG5vdA0KYSBz
-ZXBhcmF0ZSBtYXAgaW5zdGVhZD8gQXJlIHlvdSBhYmxlIHRvIHNoYXJlIGEgbG90IG9mIGNvZGUg
-d2l0aA0KdGhlIGdlbmVyYWwgbWF0Y2hpbmcgbWFwPw0KDQo+IFRoZSBNQVRDSCBydWxlIGlzIGRl
-dGVybWluZWQgYnkgb25lIGJpbmFyeSB2YWx1ZSwgYW5kIGlzIGJhc2ljYWxseSB0aGUgIA0KPiBz
-YW1lIGFzDQo+IChYLHNpemVvZihYKSo4KSBQUkVGSVggcnVsZSwgYnV0IGNhbiBiZSBwcm9jZXNz
-ZWQgYSBiaXQgZmFzdGVyOg0KDQo+ICAgICAgICAgICAgICAgICBzaXplDQo+ICAgICAgICAgIDwt
-LS0tLS0tLS0tLS0tLS0tPg0KPiAgICAgLi4uIHwgICAgcnVsZSB2YWx1ZSAgICB8IC4uLg0KDQo+
-IFRvIHNwZWVkIHVwIHByb2Nlc3NpbmcgYWxsIHRoZSBydWxlcywgaW5jbHVkaW5nIHRoZSBwcmVm
-aXggZmllbGQsIHNob3VsZCAgDQo+IGJlDQo+IHN0b3JlZCBpbiBob3N0IGJ5dGUgb3JkZXIsIGFu
-ZCBhbGwgZWxlbWVudHMgaW4gbmV0d29yayBieXRlIG9yZGVyLiAxNi1ieXRlDQo+IGZpZWxkcyBh
-cmUgc3RvcmVkIGFzIHtsbyxoaX3igJRsb3dlciBlaWdodCBieXRlcywgdGhlbiBoaWdoZXIgZWln
-aHQgYnl0ZXMuDQoNCj4gRm9yIGVsZW1lbnRzIG9ubHkgdmFsdWVzIGFyZSBzdG9yZWQuDQoNCkNh
-biB0aGVzZSBvcHRpbWl6YXRpb24gYmUgYXV0by1tYWdpY2FsbHkgZGVyaXZlZCB3aGVuZXZlciBQ
-UkVGSVggbWFwDQp3aXRoIHRoZSByaWdodCB2YWx1ZXMgaXMgY3JlYXRlZD8gV2h5IHB1dCB0aGlz
-IGRlY2lzaW9uIG9uIHRoZSB1c2Vycz8NCg0KPiBUbyBzaW1wbGlmeSBkZWZpbml0aW9uIG9mIGtl
-eSBzdHJ1Y3R1cmVzLCB0aGUgIA0KPiBCUEZfV0lMRENBUkRfREVTQ197MSwyLDMsNCw1fQ0KPiBt
-YWNyb3Mgc2hvdWxkIGJlIHVzZWQuIEZvciBleGFtcGxlLCBvbmUgY2FuIGRlZmluZSBhbiBJUHY0
-IDQtdHVwbGUga2V5cyBhcw0KPiBmb2xsb3dzOg0KDQo+ICAgICBCUEZfV0lMRENBUkRfREVTQ180
-KA0KPiAgICAgICAgICBjYXB0dXJlNF93Y2FyZCwNCj4gICAgICAgICAgQlBGX1dJTERDQVJEX1JV
-TEVfUFJFRklYLCBfX3UzMiwgc2FkZHIsDQo+ICAgICAgICAgIEJQRl9XSUxEQ0FSRF9SVUxFX1BS
-RUZJWCwgX191MzIsIGRhZGRyLA0KPiAgICAgICAgICBCUEZfV0lMRENBUkRfUlVMRV9SQU5HRSwg
-X191MTYsIHNwb3J0LA0KPiAgICAgICAgICBCUEZfV0lMRENBUkRfUlVMRV9SQU5HRSwgX191MTYs
-IGRwb3J0DQo+ICAgICApOw0KDQo+IFRoaXMgbWFjcm8gd2lsbCBkZWZpbmUgdGhlIGZvbGxvd2lu
-ZyBzdHJ1Y3R1cmU6DQoNCj4gICAgIHN0cnVjdCBjYXB0dXJlNF93Y2FyZF9rZXkgew0KPiAgICAg
-ICAgICBfX3UzMiB0eXBlOw0KPiAgICAgICAgICBfX3UzMiBwcmlvcml0eTsNCj4gICAgICAgICAg
-dW5pb24gew0KPiAgICAgICAgICAgICAgc3RydWN0IHsNCj4gICAgICAgICAgICAgICAgICAgICAg
-X191MzIgc2FkZHI7DQo+ICAgICAgICAgICAgICAgICAgICAgIF9fdTMyIHNhZGRyX3ByZWZpeDsN
-Cj4gICAgICAgICAgICAgICAgICAgICAgX191MzIgZGFkZHI7DQo+ICAgICAgICAgICAgICAgICAg
-ICAgIF9fdTMyIGRhZGRyX3ByZWZpeDsNCj4gICAgICAgICAgICAgICAgICAgICAgX191MTYgc3Bv
-cnRfbWluOw0KPiAgICAgICAgICAgICAgICAgICAgICBfX3UxNiBzcG9ydF9tYXg7DQo+ICAgICAg
-ICAgICAgICAgICAgICAgIF9fdTE2IGRwb3J0X21pbjsNCj4gICAgICAgICAgICAgICAgICAgICAg
-X191MTYgZHBvcnRfbWF4Ow0KPiAgICAgICAgICAgICAgfSBfX3BhY2tlZCBydWxlOw0KPiAgICAg
-ICAgICAgICAgc3RydWN0IHsNCj4gICAgICAgICAgICAgICAgICAgICAgX191MzIgc2FkZHI7DQo+
-ICAgICAgICAgICAgICAgICAgICAgIF9fdTMyIGRhZGRyOw0KPiAgICAgICAgICAgICAgICAgICAg
-ICBfX3UxNiBzcG9ydDsNCj4gICAgICAgICAgICAgICAgICAgICAgX191MTYgZHBvcnQ7DQo+ICAg
-ICAgICAgICAgICB9IF9fcGFja2VkOw0KPiAgICAgICAgICB9Ow0KPiAgICAgfSBfX3BhY2tlZDsN
-Cg0KPiBIZXJlIHR5cGUgZmllbGQgc2hvdWxkIGNvbnRhaW4gZWl0aGVyIEJQRl9XSUxEQ0FSRF9L
-RVlfUlVMRSBvcg0KPiBCUEZfV0lMRENBUkRfS0VZX0VMRU0gc28gdGhhdCBrZXJuZWwgY2FuIGRp
-ZmZlcmVudGlhdGUgYmV0d2VlbiBydWxlcyBhbmQNCj4gZWxlbWVudHMuIFRoZSBydWxlIHN0cnVj
-dHVyZSBpcyB1c2VkIHRvIGRlZmluZSAoYW5kIGxvb2t1cCkgcnVsZXMsIHRoZSAgDQo+IHVubmFt
-ZWQNCj4gc3RydWN0dXJlIGNhbiBiZSB1c2VkIHRvIHNwZWNpZnkgZWxlbWVudHMgd2hlbiBtYXRj
-aGluZyB0aGVtIHdpdGggcnVsZXMuDQoNCj4gSW4gb3JkZXIgdG8gc2ltcGxpZnkgZGVmaW5pdGlv
-biBvZiBhIGNvcnJlc3BvbmRpbmcgc3RydWN0IHdpbGRjYXJkX2Rlc2MsICANCj4gdGhlDQo+IEJQ
-Rl9XSUxEQ0FSRF9ERVNDXyogbWFjcm9zIHdpbGwgY3JlYXRlIHlldCBhbm90aGVyIHN0cnVjdHVy
-ZToNCg0KPiAgICAgc3RydWN0IGNhcHR1cmU0X3djYXJkX2Rlc2Mgew0KPiAgICAgICAgICBfX3Vp
-bnQobl9ydWxlcywgNCk7DQo+ICAgICAgICAgIHN0cnVjdCB7DQo+ICAgICAgICAgICAgICAgICAg
-X191aW50KHR5cGUsIEJQRl9XSUxEQ0FSRF9SVUxFX1BSRUZJWCk7DQo+ICAgICAgICAgICAgICAg
-ICAgX191aW50KHNpemUsIHNpemVvZihfX3UzMikpOw0KPiAgICAgICAgICB9IHNhZGRyOw0KPiAg
-ICAgICAgICBzdHJ1Y3Qgew0KPiAgICAgICAgICAgICAgICAgIF9fdWludCh0eXBlLCBCUEZfV0lM
-RENBUkRfUlVMRV9QUkVGSVgpOw0KPiAgICAgICAgICAgICAgICAgIF9fdWludChzaXplLCBzaXpl
-b2YoX191MzIpKTsNCj4gICAgICAgICAgfSBkYWRkcjsNCj4gICAgICAgICAgc3RydWN0IHsNCj4g
-ICAgICAgICAgICAgICAgICBfX3VpbnQodHlwZSwgQlBGX1dJTERDQVJEX1JVTEVfUkFOR0UpOw0K
-PiAgICAgICAgICAgICAgICAgIF9fdWludChzaXplLCBzaXplb2YoX191MTYpKTsNCj4gICAgICAg
-ICAgfSBzcG9ydDsNCj4gICAgICAgICAgc3RydWN0IHsNCj4gICAgICAgICAgICAgICAgICBfX3Vp
-bnQodHlwZSwgQlBGX1dJTERDQVJEX1JVTEVfUkFOR0UpOw0KPiAgICAgICAgICAgICAgICAgIF9f
-dWludChzaXplLCBzaXplb2YoX191MTYpKTsNCj4gICAgICAgICAgfSBkcG9ydDsNCj4gICAgIH07
-DQoNCj4gVGhpcyBzdHJ1Y3R1cmUgY2FuIGJlIHVzZWQgaW4gYSAoQlRGKSBtYXAgZGVmaW5pdGlv
-biBhcyBmb2xsb3dzOg0KDQo+ICAgICAgX190eXBlKHdpbGRjYXJkX2Rlc2MsIHN0cnVjdCBjYXB0
-dXJlNF93Y2FyZF9kZXNjKTsNCg0KPiBUaGVuIGxpYmJwZiB3aWxsIGNyZWF0ZSBhIGNvcnJlc3Bv
-bmRpbmcgc3RydWN0IHdpbGRjYXJkX2Rlc2MgYW5kIHBhc3MgaXQgIA0KPiB0bw0KPiBrZXJuZWwg
-aW4gYnBmX2F0dHIgdXNpbmcgbmV3IG1hcF9leHRyYV9kYXRhL21hcF9leHRyYV9kYXRhX3NpemUg
-ZmllbGRzLg0KDQpbLi5dDQoNCj4gVGhlIG1hcCBpbXBsZW1lbnRhdGlvbiBhbGxvd3MgdXNlcnMg
-dG8gc3BlY2lmeSB3aGljaCBhbGdvcml0aG0gdG8gdXNlIHRvICANCj4gc3RvcmUNCj4gcnVsZXMg
-YW5kIGxvb2t1cCBwYWNrZXRzLiBDdXJyZW50bHksIHRocmVlIGFsZ29yaXRobXMgYXJlIHN1cHBv
-cnRlZDoNCg0KPiAgICAqIEJydXRlIEZvcmNlIChzdWl0YWJsZSBmb3IgbWFwIHNpemVzIG9mIGFi
-b3V0IDMyIG9yIGJlbG93IGVsZW1lbnRzKQ0KDQo+ICAgICogVHVwbGUgTWVyZ2UgKGEgdmFyaWFu
-dCBvZiB0aGUgVHVwbGUgTWVyZ2UgYWxnb3JpdGhtIGRlc2NyaWJlZCBpbiB0aGUNCj4gICAgICAi
-VHVwbGVNZXJnZTogRmFzdCBTb2Z0d2FyZSBQYWNrZXQgUHJvY2Vzc2luZyBmb3IgT25saW5lIFBh
-Y2tldA0KPiAgICAgIENsYXNzaWZpY2F0aW9uIiB3aGl0ZSBwYXBlciwgc2VlICANCj4gaHR0cHM6
-Ly9ub25zbnMuZ2l0aHViLmlvL3BhcGVyL3Jvc3NpMTl0b24ucGRmLg0KPiAgICAgIFRoZSBUdXBs
-ZSBNZXJnZSBhbGdvcml0aG0gaXMgbm90IHByb3RlY3RlZCBieSBhbnkgcGF0ZW50cy4pDQoNCj4g
-ICAgKiBTdGF0aWMgVHVwbGUgTWVyZ2UgKGEgdmFyaWFudCBvZiBUdXBsZSBNZXJnZSB3aGVyZSBh
-IHNldCBvZiBsb29rdXAgIA0KPiB0YWJsZXMNCj4gICAgICBpcyBkaXJlY3RseSBwcm92aWRlZCBi
-eSBhIHVzZXIpDQoNCkFzIGEgdXNlciB0aGF0IGhhcyBubyBjbHVlIGhvdyB0aGlzIG1hcCB3b3Jr
-cywgaG93IGRvIEkgZGVjaWRlIHdoaWNoDQphbGdvcml0aG0gdG8gdXNlPyBXaGF0IEkgbGlrZSB3
-aXRoIHRoZSBjdXJyZW50IG1hcHMgaXMgdGhhdCB0aGV5IGRvbid0DQpsZWFrIHRvbyBtdWNoIG9m
-IHRoZWlyIGlubmVyIHN0YXRlLiBUaGVzZSBjb250cm9scyBzZWVtcyBhIGJpdCBsb3cNCmxldmVs
-Pw0K
+On Sun, Sep 04, 2022 at 10:41:27PM +0200, Kumar Kartikeya Dwivedi wrote:
+> To allocate local kptr of types pointing into program BTF instead of
+> kernel BTF, bpf_kptr_alloc is a new helper that takes the local type's
+> BTF ID and returns a pointer to it. The size is automatically inferred
+> from the type ID by the BPF verifier, so user only passes the BTF ID and
+> flags, if any. For now, no flags are supported.
+> 
+> First, we use the new constant argument type support for kfuncs that
+> enforces argument is a constant. We need to know the local type's BTF ID
+> statically to enforce safety properties for the allocation. Next, we
+> remember this and dynamically assign the return type. During that phase,
+> we also query the actual size of the structure being allocated, and
+> whether it is a struct type. If so, we stash the actual size for
+> do_misc_fixups phase where we rewrite the first argument to be size
+> instead of local type's BTF ID, which we can then pass on to the kernel
+> allocator.
+> 
+> This needs some additional support for kfuncs as we were not doing
+> argument rewrites for them. The fixup has been moved inside
+> fixup_kfunc_call itself to avoid polluting the huge do_misc_fixups,
+> and delta, prog, and insn pointers are recalculated based on if any
+> instructions were patched.
+> 
+> The returned pointer needs to be handled specially as well. While
+> normally, only struct pointers may be returned, a new internal kfunc
+> flag __KF_RET_DYN_BTF is used to indicate the BTF is ascertained from
+> arguments dynamically, hence it is now forced to be void * instead.
+> For now, bpf_kptr_alloc is the only user of this support.
+> 
+> Hence, allocations using bpf_kptr_alloc are type safe. Later patches
+> will introduce constructor and destructor support to local kptrs
+> allocated from this helper. This would allow embedding kernel objects
+> like bpf_spin_lock, bpf_list_node, bpf_list_head inside a local kptr
+> allocation, and ensuring they are correctly initialized before use.
+> 
+> A new type flag is associated with PTR_TO_BTF_ID returned from
+> bpf_kptr_alloc: MEM_TYPE_LOCAL. This indicates that the type of the
+> memory is of a local type coming from program's BTF.
+> 
+> The btf_struct_access mechanism is tuned to allow BPF_WRITE access to
+> these allocated objects, so that programs can store data as usual in
+> them. On following a pointer type inside such PTR_TO_BTF_ID, WALK_PTR
+> sets the destination register as scalar instead. It would not be safe to
+> recognize pointer types in local types. This can be changed in the
+> future if it is allowed to embed kptrs inside such local kptrs.
+> 
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
+>  include/linux/bpf.h                           |  12 +-
+>  include/linux/bpf_verifier.h                  |   1 +
+>  include/linux/btf.h                           |   3 +
+>  kernel/bpf/btf.c                              |   8 +-
+>  kernel/bpf/helpers.c                          |  17 ++
+>  kernel/bpf/verifier.c                         | 156 +++++++++++++++---
+>  net/bpf/bpf_dummy_struct_ops.c                |   5 +-
+>  net/ipv4/bpf_tcp_ca.c                         |   5 +-
+>  .../testing/selftests/bpf/bpf_experimental.h  |  14 ++
+>  9 files changed, 191 insertions(+), 30 deletions(-)
+> 
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 35c2e9caeb98..5c8bfb0eba17 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -486,6 +486,12 @@ enum bpf_type_flag {
+>  	/* Size is known at compile time. */
+>  	MEM_FIXED_SIZE		= BIT(10 + BPF_BASE_TYPE_BITS),
+>  
+> +	/* MEM is of a type from program BTF, not kernel BTF. This is used to
+> +	 * tag PTR_TO_BTF_ID allocated using bpf_kptr_alloc, since they have
+> +	 * entirely different semantics.
+> +	 */
+> +	MEM_TYPE_LOCAL		= BIT(11 + BPF_BASE_TYPE_BITS),
+> +
+>  	__BPF_TYPE_FLAG_MAX,
+>  	__BPF_TYPE_LAST_FLAG	= __BPF_TYPE_FLAG_MAX - 1,
+>  };
+> @@ -757,7 +763,8 @@ struct bpf_verifier_ops {
+>  				 const struct btf *btf,
+>  				 const struct btf_type *t, int off, int size,
+>  				 enum bpf_access_type atype,
+> -				 u32 *next_btf_id, enum bpf_type_flag *flag);
+> +				 u32 *next_btf_id, enum bpf_type_flag *flag,
+> +				 bool local_type);
+>  };
+>  
+>  struct bpf_prog_offload_ops {
+> @@ -1995,7 +2002,8 @@ static inline bool bpf_tracing_btf_ctx_access(int off, int size,
+>  int btf_struct_access(struct bpf_verifier_log *log, const struct btf *btf,
+>  		      const struct btf_type *t, int off, int size,
+>  		      enum bpf_access_type atype,
+> -		      u32 *next_btf_id, enum bpf_type_flag *flag);
+> +		      u32 *next_btf_id, enum bpf_type_flag *flag,
+> +		      bool local_type);
+>  bool btf_struct_ids_match(struct bpf_verifier_log *log,
+>  			  const struct btf *btf, u32 id, int off,
+>  			  const struct btf *need_btf, u32 need_type_id,
+> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+> index c4d21568d192..c6d550978d63 100644
+> --- a/include/linux/bpf_verifier.h
+> +++ b/include/linux/bpf_verifier.h
+> @@ -403,6 +403,7 @@ struct bpf_insn_aux_data {
+>  		 */
+>  		struct bpf_loop_inline_state loop_inline_state;
+>  	};
+> +	u64 kptr_alloc_size; /* used to store size of local kptr allocation */
+>  	u64 map_key_state; /* constant (32 bit) key tracking for maps */
+>  	int ctx_field_size; /* the ctx field size for load insn, maybe 0 */
+>  	u32 seen; /* this insn was processed by the verifier at env->pass_cnt */
+> diff --git a/include/linux/btf.h b/include/linux/btf.h
+> index 9b62b8b2117e..fc35c932e89e 100644
+> --- a/include/linux/btf.h
+> +++ b/include/linux/btf.h
+> @@ -52,6 +52,9 @@
+>  #define KF_SLEEPABLE    (1 << 5) /* kfunc may sleep */
+>  #define KF_DESTRUCTIVE  (1 << 6) /* kfunc performs destructive actions */
+>  
+> +/* Internal kfunc flags, not meant for general use */
+> +#define __KF_RET_DYN_BTF (1 << 7) /* kfunc returns dynamically ascertained PTR_TO_BTF_ID */
+
+Is there going to be another func that returns similar dynamic type?
+We have one such func already kptr_xhcg. I don't see why we need this flag.
+We can just compare func_id-s.
+In this patch it will be just fund_id == kfunc_ids[KF_kptr_alloc];
+When more kfuncs become alloc-like we will just add few ||.
+
+> +
+>  struct btf;
+>  struct btf_member;
+>  struct btf_type;
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index 0fb045be3837..17977e0f4e09 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -5919,7 +5919,8 @@ static int btf_struct_walk(struct bpf_verifier_log *log, const struct btf *btf,
+>  int btf_struct_access(struct bpf_verifier_log *log, const struct btf *btf,
+>  		      const struct btf_type *t, int off, int size,
+>  		      enum bpf_access_type atype __maybe_unused,
+> -		      u32 *next_btf_id, enum bpf_type_flag *flag)
+> +		      u32 *next_btf_id, enum bpf_type_flag *flag,
+> +		      bool local_type)
+>  {
+>  	enum bpf_type_flag tmp_flag = 0;
+>  	int err;
+> @@ -5930,6 +5931,11 @@ int btf_struct_access(struct bpf_verifier_log *log, const struct btf *btf,
+>  
+>  		switch (err) {
+>  		case WALK_PTR:
+> +			/* For local types, the destination register cannot
+> +			 * become a pointer again.
+> +			 */
+> +			if (local_type)
+> +				return SCALAR_VALUE;
+>  			/* If we found the pointer or scalar on t+off,
+>  			 * we're done.
+>  			 */
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index fc08035f14ed..d417aa4f0b22 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -1696,10 +1696,27 @@ bpf_base_func_proto(enum bpf_func_id func_id)
+>  	}
+>  }
+>  
+> +__diag_push();
+> +__diag_ignore_all("-Wmissing-prototypes",
+> +		  "Global functions as their definitions will be in vmlinux BTF");
+> +
+> +void *bpf_kptr_alloc(u64 local_type_id__k, u64 flags)
+> +{
+> +	/* Verifier patches local_type_id__k to size */
+> +	u64 size = local_type_id__k;
+> +
+> +	if (flags)
+> +		return NULL;
+> +	return kmalloc(size, GFP_ATOMIC);
+> +}
+> +
+> +__diag_pop();
+> +
+>  BTF_SET8_START(tracing_btf_ids)
+>  #ifdef CONFIG_KEXEC_CORE
+>  BTF_ID_FLAGS(func, crash_kexec, KF_DESTRUCTIVE)
+>  #endif
+> +BTF_ID_FLAGS(func, bpf_kptr_alloc, KF_ACQUIRE | KF_RET_NULL | __KF_RET_DYN_BTF)
+>  BTF_SET8_END(tracing_btf_ids)
+>  
+>  static const struct btf_kfunc_id_set tracing_kfunc_set = {
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index ab91e5ca7e41..8f28aa7f1e8d 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -472,6 +472,11 @@ static bool type_may_be_null(u32 type)
+>  	return type & PTR_MAYBE_NULL;
+>  }
+>  
+> +static bool type_is_local(u32 type)
+> +{
+> +	return type & MEM_TYPE_LOCAL;
+> +}
+> +
+>  static bool is_acquire_function(enum bpf_func_id func_id,
+>  				const struct bpf_map *map)
+>  {
+> @@ -4556,17 +4561,22 @@ static int check_ptr_to_btf_access(struct bpf_verifier_env *env,
+>  		return -EACCES;
+>  	}
+>  
+> -	if (env->ops->btf_struct_access) {
+> +	/* For allocated PTR_TO_BTF_ID pointing to a local type, we cannot do
+> +	 * btf_struct_access callback.
+> +	 */
+> +	if (env->ops->btf_struct_access && !type_is_local(reg->type)) {
+>  		ret = env->ops->btf_struct_access(&env->log, reg->btf, t,
+> -						  off, size, atype, &btf_id, &flag);
+> +						  off, size, atype, &btf_id, &flag,
+> +						  false);
+>  	} else {
+> -		if (atype != BPF_READ) {
+> +		/* It is allowed to write to pointer to a local type */
+> +		if (atype != BPF_READ && !type_is_local(reg->type)) {
+>  			verbose(env, "only read is supported\n");
+>  			return -EACCES;
+>  		}
+>  
+>  		ret = btf_struct_access(&env->log, reg->btf, t, off, size,
+> -					atype, &btf_id, &flag);
+> +					atype, &btf_id, &flag, type_is_local(reg->type));
+
+imo it's cleaner to pass 'reg' instead of 'reg->btf',
+so we don't have to pass another boolean.
+And check type_is_local(reg) inside btf_struct_access().
+
+>  	}
+>  
+>  	if (ret < 0)
+> @@ -4630,7 +4640,7 @@ static int check_ptr_to_map_access(struct bpf_verifier_env *env,
+>  		return -EACCES;
+>  	}
+>  
+> -	ret = btf_struct_access(&env->log, btf_vmlinux, t, off, size, atype, &btf_id, &flag);
+> +	ret = btf_struct_access(&env->log, btf_vmlinux, t, off, size, atype, &btf_id, &flag, false);
+>  	if (ret < 0)
+>  		return ret;
+>  
+> @@ -7661,6 +7671,11 @@ static bool is_kfunc_destructive(struct bpf_kfunc_arg_meta *meta)
+>  	return meta->kfunc_flags & KF_DESTRUCTIVE;
+>  }
+>  
+> +static bool __is_kfunc_ret_dyn_btf(struct bpf_kfunc_arg_meta *meta)
+> +{
+> +	return meta->kfunc_flags & __KF_RET_DYN_BTF;
+> +}
+> +
+>  static bool is_kfunc_arg_kptr_get(struct bpf_kfunc_arg_meta *meta, int arg)
+>  {
+>  	return arg == 0 && (meta->kfunc_flags & KF_KPTR_GET);
+> @@ -7751,6 +7766,24 @@ static u32 *reg2btf_ids[__BPF_REG_TYPE_MAX] = {
+>  #endif
+>  };
+>  
+> +BTF_ID_LIST(special_kfuncs)
+> +BTF_ID(func, bpf_kptr_alloc)
+> +
+> +enum bpf_special_kfuncs {
+> +	KF_SPECIAL_bpf_kptr_alloc,
+> +	KF_SPECIAL_MAX,
+> +};
+> +
+> +static bool __is_kfunc_special(const struct btf *btf, u32 func_id, unsigned int kf_sp)
+> +{
+> +	if (btf != btf_vmlinux || kf_sp >= KF_SPECIAL_MAX)
+> +		return false;
+> +	return func_id == special_kfuncs[kf_sp];
+> +}
+> +
+> +#define is_kfunc_special(btf, func_id, func_name) \
+> +	__is_kfunc_special(btf, func_id, KF_SPECIAL_##func_name)
+
+This looks like reinventing the wheel.
+I'd think similar to btf_tracing_ids[BTF_TRACING_TYPE_VMA] would work just as well.
+It's less magic. No need for above macro
+and btf != btf_vmlinux should really be explicit in the code
+and done early and once.
+
+> +
+>  enum kfunc_ptr_arg_types {
+>  	KF_ARG_PTR_TO_CTX,
+>  	KF_ARG_PTR_TO_BTF_ID,	     /* Also covers reg2btf_ids conversions */
+> @@ -8120,20 +8153,55 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+>  		mark_reg_unknown(env, regs, BPF_REG_0);
+>  		mark_btf_func_reg_size(env, BPF_REG_0, t->size);
+>  	} else if (btf_type_is_ptr(t)) {
+> -		ptr_type = btf_type_skip_modifiers(desc_btf, t->type,
+> -						   &ptr_type_id);
+> -		if (!btf_type_is_struct(ptr_type)) {
+> -			ptr_type_name = btf_name_by_offset(desc_btf,
+> -							   ptr_type->name_off);
+> -			verbose(env, "kernel function %s returns pointer type %s %s is not supported\n",
+> -				func_name, btf_type_str(ptr_type),
+> -				ptr_type_name);
+> -			return -EINVAL;
+> -		}
+> +		struct btf *ret_btf;
+> +		u32 ret_btf_id;
+> +
+> +		ptr_type = btf_type_skip_modifiers(desc_btf, t->type, &ptr_type_id);
+>  		mark_reg_known_zero(env, regs, BPF_REG_0);
+> -		regs[BPF_REG_0].btf = desc_btf;
+>  		regs[BPF_REG_0].type = PTR_TO_BTF_ID;
+> -		regs[BPF_REG_0].btf_id = ptr_type_id;
+> +
+> +		if (__is_kfunc_ret_dyn_btf(&meta)) {
+
+just check meta.func_id == kfunc_ids[KF_kptr_alloc] instead?
+
+> +			const struct btf_type *ret_t;
+> +
+> +			/* Currently, only bpf_kptr_alloc needs special handling */
+> +			if (!is_kfunc_special(meta.btf, meta.func_id, bpf_kptr_alloc) ||
+
+same thing.
+
+> +			    !meta.arg_constant.found || !btf_type_is_void(ptr_type)) {
+> +				verbose(env, "verifier internal error: misconfigured kfunc\n");
+> +				return -EFAULT;
+> +			}
+> +
+> +			if (((u64)(u32)meta.arg_constant.value) != meta.arg_constant.value) {
+> +				verbose(env, "local type ID argument must be in range [0, U32_MAX]\n");
+> +				return -EINVAL;
+> +			}
+> +
+> +			ret_btf = env->prog->aux->btf;
+> +			ret_btf_id = meta.arg_constant.value;
+> +
+> +			ret_t = btf_type_by_id(ret_btf, ret_btf_id);
+> +			if (!ret_t || !__btf_type_is_struct(ret_t)) {
+> +				verbose(env, "local type ID %d passed to bpf_kptr_alloc does not refer to struct\n",
+> +					ret_btf_id);
+> +				return -EINVAL;
+> +			}
+> +			/* Remember this so that we can rewrite R1 as size in fixup_kfunc_call */
+> +			env->insn_aux_data[insn_idx].kptr_alloc_size = ret_t->size;
+> +			/* For now, since we hardcode prog->btf, also hardcode
+> +			 * setting of this flag.
+> +			 */
+> +			regs[BPF_REG_0].type |= MEM_TYPE_LOCAL;
+> +		} else {
+> +			if (!btf_type_is_struct(ptr_type)) {
+> +				ptr_type_name = btf_name_by_offset(desc_btf, ptr_type->name_off);
+> +				verbose(env, "kernel function %s returns pointer type %s %s is not supported\n",
+> +					func_name, btf_type_str(ptr_type), ptr_type_name);
+> +				return -EINVAL;
+> +			}
+> +			ret_btf = desc_btf;
+> +			ret_btf_id = ptr_type_id;
+> +		}
+> +		regs[BPF_REG_0].btf = ret_btf;
+> +		regs[BPF_REG_0].btf_id = ret_btf_id;
+>  		if (is_kfunc_ret_null(&meta)) {
+>  			regs[BPF_REG_0].type |= PTR_MAYBE_NULL;
+>  			/* For mark_ptr_or_null_reg, see 93c230e3f5bd6 */
+> @@ -14371,8 +14439,43 @@ static int fixup_call_args(struct bpf_verifier_env *env)
+>  	return err;
+>  }
+>  
+> +static int do_kfunc_fixups(struct bpf_verifier_env *env, struct bpf_insn *insn,
+> +			   s32 imm, int insn_idx, int delta)
+> +{
+> +	struct bpf_insn insn_buf[16];
+> +	struct bpf_prog *new_prog;
+> +	int cnt;
+> +
+> +	/* No need to lookup btf, only vmlinux kfuncs are supported for special
+> +	 * kfuncs handling. Hence when insn->off is zero, check if it is a
+> +	 * special kfunc by hardcoding btf as btf_vmlinux.
+> +	 */
+> +	if (!insn->off && is_kfunc_special(btf_vmlinux, insn->imm, bpf_kptr_alloc)) {
+> +		u64 local_type_size = env->insn_aux_data[insn_idx + delta].kptr_alloc_size;
+> +
+> +		insn_buf[0] = BPF_MOV64_IMM(BPF_REG_1, local_type_size);
+> +		insn_buf[1] = *insn;
+> +		cnt = 2;
+> +
+> +		new_prog = bpf_patch_insn_data(env, insn_idx + delta, insn_buf, cnt);
+> +		if (!new_prog)
+> +			return -ENOMEM;
+> +
+> +		delta += cnt - 1;
+> +		insn = new_prog->insnsi + insn_idx + delta;
+> +		goto patch_call_imm;
+> +	}
+> +
+> +	insn->imm = imm;
+> +	return 0;
+> +patch_call_imm:
+> +	insn->imm = imm;
+> +	return cnt - 1;
+> +}
+> +
+>  static int fixup_kfunc_call(struct bpf_verifier_env *env,
+> -			    struct bpf_insn *insn)
+> +			    struct bpf_insn *insn,
+> +			    int insn_idx, int delta)
+>  {
+>  	const struct bpf_kfunc_desc *desc;
+>  
+> @@ -14391,9 +14494,7 @@ static int fixup_kfunc_call(struct bpf_verifier_env *env,
+>  		return -EFAULT;
+>  	}
+>  
+> -	insn->imm = desc->imm;
+> -
+> -	return 0;
+> +	return do_kfunc_fixups(env, insn, desc->imm, insn_idx, delta);
+>  }
+>  
+>  /* Do various post-verification rewrites in a single program pass.
+> @@ -14534,9 +14635,18 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
+>  		if (insn->src_reg == BPF_PSEUDO_CALL)
+>  			continue;
+>  		if (insn->src_reg == BPF_PSEUDO_KFUNC_CALL) {
+> -			ret = fixup_kfunc_call(env, insn);
+> -			if (ret)
+> +			ret = fixup_kfunc_call(env, insn, i, delta);
+> +			if (ret < 0)
+>  				return ret;
+> +			/* If ret > 0, fixup_kfunc_call did some instruction
+> +			 * rewrites. Increment delta, reload prog and insn,
+> +			 * env->prog is already set by it to the new_prog.
+> +			 */
+> +			if (ret) {
+> +				delta += ret;
+> +				prog = env->prog;
+> +				insn = prog->insnsi + i + delta;
+> +			}
+
+See how Yonghong did it:
+https://lore.kernel.org/all/20220807175121.4179410-1-yhs@fb.com/
+
+It's cleaner to patch and adjust here instead of patch in one place
+and adjust in another.
+
+>  			continue;
+>  		}
+>  
+> diff --git a/net/bpf/bpf_dummy_struct_ops.c b/net/bpf/bpf_dummy_struct_ops.c
+> index e78dadfc5829..fa572714c6f6 100644
+> --- a/net/bpf/bpf_dummy_struct_ops.c
+> +++ b/net/bpf/bpf_dummy_struct_ops.c
+> @@ -160,7 +160,8 @@ static int bpf_dummy_ops_btf_struct_access(struct bpf_verifier_log *log,
+>  					   const struct btf_type *t, int off,
+>  					   int size, enum bpf_access_type atype,
+>  					   u32 *next_btf_id,
+> -					   enum bpf_type_flag *flag)
+> +					   enum bpf_type_flag *flag,
+> +					   bool local_type)
+>  {
+>  	const struct btf_type *state;
+>  	s32 type_id;
+> @@ -178,7 +179,7 @@ static int bpf_dummy_ops_btf_struct_access(struct bpf_verifier_log *log,
+>  	}
+>  
+>  	err = btf_struct_access(log, btf, t, off, size, atype, next_btf_id,
+> -				flag);
+> +				flag, false);
+>  	if (err < 0)
+>  		return err;
+>  
+> diff --git a/net/ipv4/bpf_tcp_ca.c b/net/ipv4/bpf_tcp_ca.c
+> index 85a9e500c42d..869b6266833c 100644
+> --- a/net/ipv4/bpf_tcp_ca.c
+> +++ b/net/ipv4/bpf_tcp_ca.c
+> @@ -73,13 +73,14 @@ static int bpf_tcp_ca_btf_struct_access(struct bpf_verifier_log *log,
+>  					const struct btf_type *t, int off,
+>  					int size, enum bpf_access_type atype,
+>  					u32 *next_btf_id,
+> -					enum bpf_type_flag *flag)
+> +					enum bpf_type_flag *flag,
+> +					bool local_type)
+>  {
+>  	size_t end;
+>  
+>  	if (atype == BPF_READ)
+>  		return btf_struct_access(log, btf, t, off, size, atype, next_btf_id,
+> -					 flag);
+> +					 flag, false);
+>  
+>  	if (t != tcp_sock_type) {
+>  		bpf_log(log, "only read is supported\n");
+> diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/testing/selftests/bpf/bpf_experimental.h
+> index ea1b3b1839d1..bddd77093d1e 100644
+> --- a/tools/testing/selftests/bpf/bpf_experimental.h
+> +++ b/tools/testing/selftests/bpf/bpf_experimental.h
+> @@ -18,4 +18,18 @@ struct bpf_list_node {
+>  #endif
+>  
+>  #ifndef __KERNEL__
+> +
+> +/* Description
+> + *	Allocates a local kptr of type represented by 'local_type_id' in program
+> + *	BTF. User may use the bpf_core_type_id_local macro to pass the type ID
+> + *	of a struct in program BTF.
+> + *
+> + *	The 'local_type_id' parameter must be a known constant.
+> + *	The 'flags' parameter must be 0.
+> + * Returns
+> + *	A local kptr corresponding to passed in 'local_type_id', or NULL on
+> + *	failure.
+> + */
+> +void *bpf_kptr_alloc(__u64 local_type_id, __u64 flags) __ksym;
+> +
+>  #endif
+> -- 
+> 2.34.1
+> 
