@@ -2,60 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 243C95B0957
-	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 17:58:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC3ED5B09AA
+	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 18:05:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229508AbiIGP6p (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Sep 2022 11:58:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47722 "EHLO
+        id S230136AbiIGQFh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Sep 2022 12:05:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230002AbiIGP6n (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Sep 2022 11:58:43 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B466BB02E
-        for <bpf@vger.kernel.org>; Wed,  7 Sep 2022 08:58:35 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id s11so7783979ilt.7
-        for <bpf@vger.kernel.org>; Wed, 07 Sep 2022 08:58:35 -0700 (PDT)
+        with ESMTP id S230153AbiIGQEZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Sep 2022 12:04:25 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD349BC82C;
+        Wed,  7 Sep 2022 09:02:46 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id e18so20421821edj.3;
+        Wed, 07 Sep 2022 09:02:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date;
-        bh=k4KTklcG0JXYWiy3L/LW81UYNL/fw/f9zXp372npIYE=;
-        b=LkmRxLTczIfp+ofNR3dd5CS5DnrJqSSj9dCBNKo6DZxsfjmie+Ybb1SQWMJpf673r/
-         ZofWg3Q9c1Dr4ix6eF5DkugsGCGGHbQHcn/YNUxo4BbJiTpxoK/XGbQzAuZALLtZXFQV
-         TfduGxGX6er+sOGsz0ttzWlaC8hoXrtW2Q26THPRI600QQwUhaiaCDXlvHjCL0Dyg1Tr
-         q9UYhih9ijJT7t0LO+QF6lmismjmGk2SGqrV1zhYK76Y7AoheQMWIYfAobXgWGjTMSMi
-         iDxeJoQShaDXxaCEWE+rgflEFZv/ClFAxgLDmb5j49Xed6LYuH6ITHmerwPWBxbkl7oI
-         cEgw==
+        bh=W50vIl8H8okzCAHaiXlJ50UVDkF7Y2icaSoN501LXVk=;
+        b=cSXmBeIU8YEd8KpkA8OIVFcCNyIWOpvxJZ3Z76jqeM1Nfr4CcOUHyr8tnCbWvR/Dd3
+         a+xIS7mQheRBmXzC3OdoGzFj55wYZgGBbG2U68jKwSZMMHE2S3ucY6qgN9hIVp9V3FXA
+         +LjPEjt3YYVTeX7BBNsiwSK2MVLv8QPtTad7Vmwb8R5pwGTDGhzzeWMZFZz76uXc516m
+         My1hyOyYiocDp1zCbWRWNhuqssIcspna7958G/dDtEbmGMHOZOleNsGnpq73KIblz4jP
+         jcsv52FTlrUZ+Kby6kQkkl7xZ0nqxFZs6XI0Mp20FDB37grdSGlo/nJFAMTSzjlf8LuF
+         Zxgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=k4KTklcG0JXYWiy3L/LW81UYNL/fw/f9zXp372npIYE=;
-        b=wnWjZQpC39fJIH5z+voB2b/c5jf2f/ITV6L+Hhk+aIeJQYhxbcMXvZyRPNswAFdvZW
-         3aueDNZy24x5jM4YuW+ptV5xvnjqX0M2hSSJdHmFVXQZqN3iG/8HKUUtKkKK92FRTBGC
-         X9J7+GCmdHtQaS1zOpZUYrG8q6ezgY8NF7M4n9w9gAS1wZtl0IRfsyPDvdv3Uk+X0sMo
-         l3JkiF6kqRDes4i+8kbXpSmgEdjsOKpep3zCQNtxd6/+OTQZd6gSE8LICw5PFdppRE8g
-         IYy9LlQKrz3XzHnqO5XCt7UbvCVXkkCuQRCI2WQbIlufmimyLzI1FK+rJPzG2qlja95d
-         HbJg==
-X-Gm-Message-State: ACgBeo37Qsr5aYcoavtMlKJhq8aP3+9KcIHZHrtITGrEMnZJGIi7MJbl
-        T0m28fFxUHszYTf6F2LNOd10X4X2obGq8nre+NY=
-X-Google-Smtp-Source: AA6agR6jTxGei1pUDj89UGDfib7xMAo+9WfPvKHbBBmCJBXDqj3TpUL2lUCs4XPZyewyYLOsRiZLXHh+DkqtvzLY4vM=
-X-Received: by 2002:a05:6e02:170f:b0:2f1:6cdf:6f32 with SMTP id
- u15-20020a056e02170f00b002f16cdf6f32mr2240650ill.216.1662566314475; Wed, 07
- Sep 2022 08:58:34 -0700 (PDT)
+        bh=W50vIl8H8okzCAHaiXlJ50UVDkF7Y2icaSoN501LXVk=;
+        b=6hYd0tKmEwqNAKHwIbYLX7oYD/cyDkii4ihDWduNCbRibpHTiEJYGwWZwTGz6CcrUK
+         0/bL0nheOb8jd226ZNneFs16KiYuhRiayBEBEaqgx2bf60fhqDWWe3FByAFiGtJia+0E
+         fk8mS1tbSd2FcmN/ZXdwDRJvCut5VppPjw9bFUIKqnG93ignRDA+dIB2Wur9ONdtszXr
+         nXZO/fddyBXbVt0Oe3t6IrmI41tJT/KFWBljMB44pyDRC080hyHfgBEPddR71MM0gHax
+         8AMWt5qtADxmEYU7+uaSk9IMzYC/uPZXHLOsPif8HJu+5Cli4lytr4KZ+vl58jdvg63R
+         aKjg==
+X-Gm-Message-State: ACgBeo1tcMckz4d/UDLD9DuxSX7iS1tyRDDiBo1i920tSM4UlZ2K1nb1
+        zZ3JuT79hiE2Zm+n2a8wDnBU2RMvMgmnriw6efY=
+X-Google-Smtp-Source: AA6agR627hvEYVrK8cONsjNB6SibCo3kdbrD3+RR1gZlPRM5T5pob6+UKUFsFL+3lVkDMtaz8cWkWFUer8OM7q5tXH4=
+X-Received: by 2002:a05:6402:28cb:b0:43b:c6d7:ef92 with SMTP id
+ ef11-20020a05640228cb00b0043bc6d7ef92mr3720169edb.333.1662566558177; Wed, 07
+ Sep 2022 09:02:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <Yxi3pJaK6UDjVJSy@playground>
-In-Reply-To: <Yxi3pJaK6UDjVJSy@playground>
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date:   Wed, 7 Sep 2022 17:57:58 +0200
-Message-ID: <CAP01T77wGxv5aTf=Wwwn79jHMrTuv+Wr9Y8b8x1244tQUBxCyQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] bpf: Fix resetting logic for unreferenced kptrs
-To:     Jules Irenge <jbi.octave@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, bpf@vger.kernel.org, Elana.Copperman@mobileye.com
+References: <20220906170301.256206-1-roberto.sassu@huaweicloud.com>
+ <20220906170301.256206-2-roberto.sassu@huaweicloud.com> <CAADnVQ+o8zyi_Z+XqCQynmvj04AtEtF9AoOTSeyUx9dvKTXOqg@mail.gmail.com>
+ <02309cfbc1ce47f7de6be8addc2caa315b1fee1b.camel@huaweicloud.com>
+In-Reply-To: <02309cfbc1ce47f7de6be8addc2caa315b1fee1b.camel@huaweicloud.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 7 Sep 2022 09:02:26 -0700
+Message-ID: <CAADnVQ+cEM5Sb7d9yPA72Mp2zimx7VZ5Si3SPVdAZgsdFGpP1Q@mail.gmail.com>
+Subject: Re: [PATCH 1/7] bpf: Add missing fd modes check for map iterators
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Hou Tao <houtao1@huawei.com>,
+        Roberto Sassu <roberto.sassu@huawei.com>,
+        stable <stable@vger.kernel.org>, Chenbo Feng <fengc@google.com>,
+        LSM List <linux-security-module@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -67,33 +90,132 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 7 Sept 2022 at 17:24, Jules Irenge <jbi.octave@gmail.com> wrote:
+On Wed, Sep 7, 2022 at 1:03 AM Roberto Sassu
+<roberto.sassu@huaweicloud.com> wrote:
 >
-> Sparse reported a warning at bpf_map_free_kptrs()
+> On Tue, 2022-09-06 at 11:21 -0700, Alexei Starovoitov wrote:
+> > On Tue, Sep 6, 2022 at 10:04 AM Roberto Sassu
+> > <roberto.sassu@huaweicloud.com> wrote:
+> > > From: Roberto Sassu <roberto.sassu@huawei.com>
+> > >
+> > > Commit 6e71b04a82248 ("bpf: Add file mode configuration into bpf
+> > > maps")
+> > > added the BPF_F_RDONLY and BPF_F_WRONLY flags, to let user space
+> > > specify
+> > > whether it will just read or modify a map.
+> > >
+> > > Map access control is done in two steps. First, when user space
+> > > wants to
+> > > obtain a map fd, it provides to the kernel the eBPF-defined flags,
+> > > which
+> > > are converted into open flags and passed to the security_bpf_map()
+> > > security
+> > > hook for evaluation by LSMs.
+> > >
+> > > Second, if user space successfully obtained an fd, it passes that
+> > > fd to the
+> > > kernel when it requests a map operation (e.g. lookup or update).
+> > > The kernel
+> > > first checks if the fd has the modes required to perform the
+> > > requested
+> > > operation and, if yes, continues the execution and returns the
+> > > result to
+> > > user space.
+> > >
+> > > While the fd modes check was added for map_*_elem() functions, it
+> > > is
+> > > currently missing for map iterators, added more recently with
+> > > commit
+> > > a5cbe05a6673 ("bpf: Implement bpf iterator for map elements"). A
+> > > map
+> > > iterator executes a chosen eBPF program for each key/value pair of
+> > > a map
+> > > and allows that program to read and/or modify them.
+> > >
+> > > Whether a map iterator allows only read or also write depends on
+> > > whether
+> > > the MEM_RDONLY flag in the ctx_arg_info member of the bpf_iter_reg
+> > > structure is set. Also, write needs to be supported at verifier
+> > > level (for
+> > > example, it is currently not supported for sock maps).
+> > >
+> > > Since map iterators obtain a map from a user space fd with
+> > > bpf_map_get_with_uref(), add the new req_modes parameter to that
+> > > function,
+> > > so that map iterators can provide the required fd modes to access a
+> > > map. If
+> > > the user space fd doesn't include the required modes,
+> > > bpf_map_get_with_uref() returns with an error, and the map iterator
+> > > will
+> > > not be created.
+> > >
+> > > If a map iterator marks both the key and value as read-only, it
+> > > calls
+> > > bpf_map_get_with_uref() with FMODE_CAN_READ as value for req_modes.
+> > > If it
+> > > also allows write access to either the key or the value, it calls
+> > > that
+> > > function with FMODE_CAN_READ | FMODE_CAN_WRITE as value for
+> > > req_modes,
+> > > regardless of whether or not the write is supported by the verifier
+> > > (the
+> > > write is intentionally allowed).
+> > >
+> > > bpf_fd_probe_obj() does not require any fd mode, as the fd is only
+> > > used for
+> > > the purpose of finding the eBPF object type, for pinning the object
+> > > to the
+> > > bpffs filesystem.
+> > >
+> > > Finally, it is worth to mention that the fd modes check was not
+> > > added for
+> > > the cgroup iterator, although it registers an attach_target method
+> > > like the
+> > > other iterators. The reason is that the fd is not the only way for
+> > > user
+> > > space to reference a cgroup object (also by ID and by path). For
+> > > the
+> > > protection to be effective, all reference methods need to be
+> > > evaluated
+> > > consistently. This work is deferred to a separate patch.
+> >
+> > I think the current behavior is fine.
+> > File permissions don't apply at iterator level or prog level.
 >
-> "warning: Using plain integer as NULL pointer"
+> + Chenbo, linux-security-module
 >
-> During the process of fixing this warning,
-> it was discovered that the current code
-> erroneously writes to the pointer variable
-> instead of deferencing and writing to the actual kptr.
-> Hence, Sparse tool accidentally helped to uncover this problem.
->
-> Fix this by doing WRITE_ONCE(*p, 0) instead of WRITE_ONCE(p, 0).
->
-> Note that the effect of this bug is that
-> unreferenced kptrs will not be cleared during check_and_free_fields.
-> It is not a problem if the clearing is not done during map_free stage,
-> as there is nothing to free for them.
->
+> Well, if you write a security module to prevent writes on a map, and
+> user space is able to do it anyway with an iterator, what is the
+> purpose of the security module then?
 
-You're still missing the fixes tag right before your Signed-off-By.
+sounds like a broken "security module" and nothing else.
 
-Instead of
+> > fmode_can_read/write are for syscall commands only.
+> > To be fair we've added them to lookup/delete commands
+> > and it was more of a pain to maintain and no confirmed good use.
+>
+> I think a good use would be requesting the right permission for the
+> type of operation that needs to be performed, e.g. read-only permission
+> when you have a read-like operation like a lookup or dump.
+>
+> By always requesting read-write permission, for all operations,
+> security modules won't be able to distinguish which operation has to be
+> denied to satisfy the policy.
+>
+> One example of that is that, when there is a security module preventing
+> writes on maps (will be that uncommon?),
 
-Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
+lsm that prevents writes into bpf maps? That's a convoluted design.
+You can try to implement such an lsm, but expect lots of challenges.
 
-It must be
+> bpftool is not able to show
+> the full list of maps because it asks for read-write permission for
+> getting the map info.
 
-Fixes: 14a324f6a67e ("bpf: Wire up freeing of referenced kptr")
-Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
+completely orthogonal issue.
+
+> Freezing the map is not a solution, if you want to allow certain
+> subjects to continuously update the protected map at run-time.
+>
+> Roberto
+>
