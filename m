@@ -2,98 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 027345B07E0
-	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 17:03:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 456EF5B0818
+	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 17:10:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230182AbiIGPDx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Sep 2022 11:03:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59378 "EHLO
+        id S230326AbiIGPKU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Sep 2022 11:10:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229959AbiIGPDv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Sep 2022 11:03:51 -0400
-Received: from mail-oa1-x30.google.com (mail-oa1-x30.google.com [IPv6:2001:4860:4864:20::30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7B039E2F2
-        for <bpf@vger.kernel.org>; Wed,  7 Sep 2022 08:03:50 -0700 (PDT)
-Received: by mail-oa1-x30.google.com with SMTP id 586e51a60fabf-127f5411b9cso5345657fac.4
-        for <bpf@vger.kernel.org>; Wed, 07 Sep 2022 08:03:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20210112.gappssmtp.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=qwoAmwE7uzwpfQFltUBKCke30IDuWY14X85lPw5iYX8=;
-        b=CF2rm5xRQRPuhBo4+WmmI3m1i/0k4lPy5fZy67/JPbhBT54u7zDuEJaxcZaiaQ8Vj2
-         U1qNQ252Dm/VR0W9fo6iZ/OBNdOyq59mXsdlQeL3nJX/4/uMci3v2+uAB0bjUkZPc+U6
-         /EgrutyVmQ7NHeIl6hzH5c8tqUjop51koR5EyIEzIGkGxOhbGHUYXl/qhuCvQ5HOTZjh
-         Ym/d8DqbUYvcVb8jieVD8Srg7uYtk36hCpeNOcXT079xoi8ruRmtYWDi/WC69fK1eJhG
-         2e6j0herMZkZYl89cO2JULaQerpcBHJ77N59L5+xTP/8vTF3hFupt9nK/x2UYOE/Fbaa
-         Sjfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=qwoAmwE7uzwpfQFltUBKCke30IDuWY14X85lPw5iYX8=;
-        b=SRMqfmmQRdqX/zTtdUPQepBD2u2i2XXxApTJ3cBzSpXu8ssp3YnmyVAqIFHGCGzHJz
-         ny//sbQi6Gz0ovtrnelrJuYVkn6eZBDfNmSB80+u+D/jahVe4HF8URA1OYup/TbbaInY
-         8S5xYXGplZFb8j7KUZgJwxon5l5tYAEIchZjWlBTtdTq3VkPHCE560BIXCwujkACtGib
-         ijlfVPvPNiLBMVtvK+IfAWhNboP9D4AtpAeWBBwtlQgvOaQRYSl4Mphr7bHcrHEzKx25
-         c7BjChtKQa7c2gFhjxiuv+Rsy2zJW6IMRiBfllFzxC6dfat3AWzLsHRvhfaiCmr9WNEY
-         y9KQ==
-X-Gm-Message-State: ACgBeo3F69DCeEQNpb2jXMQ2zKvT3vteRQLfBeAVMXD6v9niFtbMV8JU
-        hHvEHakqO8fVqibFEBq32Qu7Cwie7umArB/sBTOrbg==
-X-Google-Smtp-Source: AA6agR74ExVJP/+hViALnfUQQ+EAGCa2ACNRreueZ0t6HqgdEHLnSjUS1OljuLFRWxG78CK2RLOoNTUbizOljJLIIZ8=
-X-Received: by 2002:a05:6808:1d6:b0:344:93c6:ec88 with SMTP id
- x22-20020a05680801d600b0034493c6ec88mr1649793oic.2.1662563028738; Wed, 07 Sep
- 2022 08:03:48 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220906121346.71578-1-shaozhengchao@huawei.com>
-In-Reply-To: <20220906121346.71578-1-shaozhengchao@huawei.com>
-From:   Jamal Hadi Salim <jhs@mojatatu.com>
-Date:   Wed, 7 Sep 2022 11:03:37 -0400
-Message-ID: <CAM0EoMn6NfFwZsDbpP1oq4irjF3d8Gm1t_nzxnWaOb3qXRkDLQ@mail.gmail.com>
-Subject: Re: [PATCH net-next,v2 00/22] refactor the walk and lookup hook
- functions in tc_action_ops
-To:     Zhengchao Shao <shaozhengchao@huawei.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, xiyou.wangcong@gmail.com,
-        jiri@resnulli.us, martin.lau@linux.dev, daniel@iogearbox.net,
-        john.fastabend@gmail.com, ast@kernel.org, andrii@kernel.org,
-        song@kernel.org, yhs@fb.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, weiyongjun1@huawei.com,
-        yuehaibing@huawei.com
+        with ESMTP id S229770AbiIGPKT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Sep 2022 11:10:19 -0400
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF67B30F7D;
+        Wed,  7 Sep 2022 08:10:14 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.229])
+        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4MN5Bs5Dljz9xHvx;
+        Wed,  7 Sep 2022 23:04:37 +0800 (CST)
+Received: from roberto-ThinkStation-P620 (unknown [10.204.63.22])
+        by APP2 (Coremail) with SMTP id GxC2BwBHw10qtBhjIYssAA--.26582S2;
+        Wed, 07 Sep 2022 16:09:42 +0100 (CET)
+Message-ID: <d447540b5adce25efaa29ef1bce001f2bc0a2d12.camel@huaweicloud.com>
+Subject: Re: [PATCH v16 00/12] bpf: Add kfuncs for PKCS#7 signature
+ verification
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
+        dhowells@redhat.com, jarkko@kernel.org, rostedt@goodmis.org,
+        mingo@redhat.com, paul@paul-moore.com, jmorris@namei.org,
+        serge@hallyn.com, shuah@kernel.org, bpf@vger.kernel.org,
+        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        deso@posteo.net, Roberto Sassu <roberto.sassu@huawei.com>
+Date:   Wed, 07 Sep 2022 17:09:29 +0200
+In-Reply-To: <CAP01T764z59qczE37=jf-zPkS2zPuzDyCjdngBDnG-GOovG-rQ@mail.gmail.com>
+References: <20220905143318.1592015-1-roberto.sassu@huaweicloud.com>
+         <CAP01T77aq-UP02JYp1Vu-LE--K1ieCyfKfyZPw-a7DDKQ7_F+g@mail.gmail.com>
+         <b846cedb14235db6950a55e7eec2eff9e9ab56ec.camel@huaweicloud.com>
+         <57cedc7a3008248b5147d03e2f4bd0b33ad9a146.camel@huaweicloud.com>
+         <CAP01T764z59qczE37=jf-zPkS2zPuzDyCjdngBDnG-GOovG-rQ@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Evolution 3.36.5-0ubuntu1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: GxC2BwBHw10qtBhjIYssAA--.26582S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxZw1fGryUJrWxGF1kuw1xZrb_yoW5Xr1UpF
+        W8AFy5KF4ktryUCw4xKry5uFy8t3y7JF12qrn8t34UZas0vr1FkFWIyr43uFWq9r1kCw1a
+        v39IqFy7Xr1DAaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkIb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8C
+        rVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4
+        IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY
+        0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I
+        0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAI
+        cVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UMIIF0x
+        vE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
+        87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7IUbHa0PUUUUU==
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAIBF1jj365RQAAs9
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 6, 2022 at 8:11 AM Zhengchao Shao <shaozhengchao@huawei.com> wrote:
->
-> The implementation logic of the walk/lookup hook function in each action
-> module is the same. Therefore, the two functions can be reconstructed.
-> When registering tc_action_ops of each action module, the corresponding
-> net_id is saved to tc_action_ops. In this way, the net_id of the
-> corresponding module can be directly obtained in act_api without executing
-> the specific walk and lookup hook functions. Then, generic functions can
-> be added to replace the walk and lookup hook functions of each action
-> module. Last, modify each action module in alphabetical order.
->
-> Reserve the walk and lookup interfaces and delete them when they are no
-> longer used.
->
-> This patchset has been tested by using TDC, and I will add selftest in
-> other patchset.
->
+On Wed, 2022-09-07 at 16:57 +0200, Kumar Kartikeya Dwivedi wrote:
+> On Wed, 7 Sept 2022 at 16:49, Roberto Sassu
+> <roberto.sassu@huaweicloud.com> wrote:
+> > On Tue, 2022-09-06 at 09:35 +0200, Roberto Sassu wrote:
+> > > On Mon, 2022-09-05 at 21:26 +0200, Kumar Kartikeya Dwivedi wrote:
+> > > > On Mon, 5 Sept 2022 at 16:34, Roberto Sassu
+> > > > <roberto.sassu@huaweicloud.com> wrote:
+> > > > > From: Roberto Sassu <roberto.sassu@huawei.com>
+> > > > > 
+> > > > > One of the desirable features in security is the ability to
+> > > > > restrict import
+> > > > > of data to a given system based on data authenticity. If data
+> > > > > import can be
+> > > > > restricted, it would be possible to enforce a system-wide
+> > > > > policy
+> > > > > based on
+> > > > > the signing keys the system owner trusts.
+> > > > > 
+> > > > > This feature is widely used in the kernel. For example, if
+> > > > > the
+> > > > > restriction
+> > > > > is enabled, kernel modules can be plugged in only if they are
+> > > > > signed with a
+> > > > > key whose public part is in the primary or secondary keyring.
+> > > > > 
+> > > > > For eBPF, it can be useful as well. For example, it might be
+> > > > > useful
+> > > > > to
+> > > > > authenticate data an eBPF program makes security decisions
+> > > > > on.
+> > > > > 
+> > > > > [...]
+> > > > 
+> > > > CI is crashing with NULL deref for test_progs-no_alu32 with
+> > > > llvm-
+> > > > 16,
+> > > > but I don't think the problem is in this series. This is most
+> > > > likely
+> > > > unrelated to BPF, as the crash happens inside
+> > > > kernel/time/tick-sched.c:tick_nohz_restart_sched_tick.
+> > > > 
+> > > > This was the same case in
+> > > > https://lore.kernel.org/bpf/CAP01T74steDfP6O8QOshoto3e3RnHhKtAeTbnrPBZS3YJXjvbA@mail.gmail.com.
+> > > > 
+> > > > So,
+> > > > https://github.com/kernel-patches/bpf/runs/8194263557?check_suite_focus=true
+> > > > and
+> > > > https://github.com/kernel-patches/bpf/runs/7982907380?check_suite_focus=true
+> > > > 
+> > > > look similar to me, and may not be related to BPF. They only
+> > > > trigger
+> > > > during runs compiled using LLVM 16, so maybe some compiler
+> > > > transformation is surfacing the problem?
+> > > 
+> > > Yes, I saw that too. Not sure what the cause could be.
+> > > 
+> > 
+> > Another occurrence, this time with gcc:
+> > 
+> > https://github.com/robertosassu/vmtest/runs/8230071814?check_suite_focus=true
+> > 
+> 
+> ... and it seems like this run does not even have your patches,
+> right?
+> 
 
-Thank you for running the tdc tests! Please for any future changes to tc try
-to do the same. And you are going to be a hero if you add more tests!
-This is a  better patchset and overall a nice cleanup. For the series:
+Uhm, the kernel patches are there. The tests except the verifier ones
+weren't successfuly applied, probably due to the deny list.
 
-Acked-by: Jamal Hadi Salim <jhs@mojatatu.com>
+One thing in common with the failures seems when the panic happens,
+when test_progs reaches verif_twfw. I will try to execute this and
+earlier tests to reproduce the panic locally.
 
-cheers,
-jamal
+Roberto
+
