@@ -2,117 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A8BC5B064E
-	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 16:20:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD6895B068D
+	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 16:28:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229608AbiIGOUr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Sep 2022 10:20:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51556 "EHLO
+        id S230126AbiIGO2s (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Sep 2022 10:28:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230080AbiIGOUq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Sep 2022 10:20:46 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B5577332F
-        for <bpf@vger.kernel.org>; Wed,  7 Sep 2022 07:20:44 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id 186-20020a1c02c3000000b003b26feb5c6bso811107wmc.5
-        for <bpf@vger.kernel.org>; Wed, 07 Sep 2022 07:20:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date;
-        bh=efygqwxNvo9v+jOGudhVa8fyLoOuSMvJl9Lz6PO309M=;
-        b=Yh2IOXoPSDFS5qQlxKicSC/gGU6TNhXGVDRf2eR67+aWbOgXvVBaTAf6iSlkdtG7km
-         2yu80jofWx80fuTd/6zP7ZyNSmFXz//TP8QlB27h++zreVzS8IdPVh0CBrKGnZHN874p
-         TDimH0XX+MP36v/nfMW7STg11epNjN07w88CfGsf9/Rm2uCJ8ps6GbIUYPsBT3C9LxlO
-         IbwLXqLa9FNGcHHZ0nVX+vG7HJPO0TEB2Yn8Tt4sY0eQiZJ+QFO4VgYCQwm9V0eyCvMG
-         cGlQBkK7Du88IkqA75Du8aBAFA0mRobkiPTeoBjOuEgeQ6d40Mytgw4fCBwZ2JOZEaCh
-         F/8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date;
-        bh=efygqwxNvo9v+jOGudhVa8fyLoOuSMvJl9Lz6PO309M=;
-        b=HxAhf0mh/scUb8qOlB8OllNC3eLkoZX2MPrYq0C87u8FQuyP+gu6HlNt3cgdT3WVtN
-         46UET4HrdBQRuUn2t15bT5UYOhadSMq8GbrMpl+Ytze46VfDwJuA5jv3SQ25or0dtjGN
-         Ujor19R82Y4puNOHe+j77tUuetAHvoPaHNWwZ4vx3ArR5WFp1hdZMqQNaLYP5sckuq1c
-         ox7wprQs6XWctRyXnT1m2M+fXGEjo8XR6wAu1WIKEG/KbjWk/fNgF8ZaWJ5O4o+bVK5u
-         2nNhBJnBhOLCre1XM2dLVdVgPWCy1yIkmduiP7gZ9Mmg/pL8IITZ/nSsL128xpPiWQR+
-         Bp0g==
-X-Gm-Message-State: ACgBeo0Wvj2l5qJlXlY8QUHxOttsw2VFiPXwtBtCKH7CtpiknuHMYaLU
-        YweAjZJKezJcm8D5z2p8BMBJ1A==
-X-Google-Smtp-Source: AA6agR7p+qdHTsQgvthox0mPTdo+T02UoZpV644zqpWkI/+SWQBwMyZ86t3C/brVRNHO/D7EiSF2Hw==
-X-Received: by 2002:a05:600c:4e92:b0:3a5:fd90:24e3 with SMTP id f18-20020a05600c4e9200b003a5fd9024e3mr17334977wmq.59.1662560442612;
-        Wed, 07 Sep 2022 07:20:42 -0700 (PDT)
-Received: from [192.168.178.32] ([51.155.200.13])
-        by smtp.gmail.com with ESMTPSA id d15-20020a5d6dcf000000b00225307f43fbsm18028658wrz.44.2022.09.07.07.20.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Sep 2022 07:20:42 -0700 (PDT)
-Message-ID: <8b0de52e-84e8-c098-113d-5b5b9cdfd22e@isovalent.com>
-Date:   Wed, 7 Sep 2022 15:20:41 +0100
+        with ESMTP id S230265AbiIGO2i (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Sep 2022 10:28:38 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2CDC326FA;
+        Wed,  7 Sep 2022 07:28:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=4jhBj7dPmuLTxxuJxIkQ2mZbwFHE39Abp5GfQEeQl1Q=; b=Oy1vOaX6GJfELthwRG8mE9fitw
+        oyJaBrGQJU/P6ADlS3zGWu46PaNAJnBzxmwRJLxnJ+u9NwXDLimbVqHoauzy8kVnWiZ2S0iesF4ur
+        QPx5yjzr+T10NPSvw/0CjWCUmVgby0yu2Q0AsCzksqFhkX7nGjKasR8SRIKtGzRmyCZem6pJSJCTL
+        504zX85gXXSrYnd0BHkreFoEp2vTBDXvWKKEvalZpIEJA1K/sxTdgu52OfhmdbUB0puDxxfSR+WbD
+        zqrvT386aJljaPg1BpxQT0tWlrn9whrEP01OESbxxl959IpS7R4A1rjGcZD0CmH32b1fQ+/YABfaD
+        pb2yR1wg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1oVw26-00BQAI-Rx; Wed, 07 Sep 2022 14:28:02 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9A25C30013F;
+        Wed,  7 Sep 2022 16:27:59 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 23C792B9CF1E0; Wed,  7 Sep 2022 16:27:59 +0200 (CEST)
+Date:   Wed, 7 Sep 2022 16:27:59 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Suleiman Souhlal <suleiman@google.com>,
+        bpf <bpf@vger.kernel.org>, linux-kernel@vger.kernel.org,
+        Borislav Petkov <bp@suse.de>,
+        Josh Poimboeuf <jpoimboe@kernel.org>, x86@kernel.org
+Subject: Re: [PATCH 1/2] x86/kprobes: Fix kprobes instruction boudary check
+ with CONFIG_RETHUNK
+Message-ID: <Yxiqb+QkSQeAPzJw@hirez.programming.kicks-ass.net>
+References: <166251211081.632004.1842371136165709807.stgit@devnote2>
+ <166251212072.632004.16078953024905883328.stgit@devnote2>
+ <YxhQIBKzi+L0KDhc@hirez.programming.kicks-ass.net>
+ <YxiXCf1LcFqj5di6@hirez.programming.kicks-ass.net>
+ <20220907231450.0a5f085319251349a45465d8@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.1
-Subject: Re: [PATCH bpf-next 6/7] bpftool: Add LLVM as default library for
- disassembling JIT-ed programs
-Content-Language: en-GB
-To:     Song Liu <song@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        =?UTF-8?Q?Niklas_S=c3=b6derlund?= <niklas.soderlund@corigine.com>,
-        Simon Horman <simon.horman@corigine.com>
-References: <20220906133613.54928-1-quentin@isovalent.com>
- <20220906133613.54928-7-quentin@isovalent.com>
- <CAPhsuW6iH0qFfJFxcWfGAnsD1FqOM_ThZLp5H+MARvkBxq8K7w@mail.gmail.com>
-From:   Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <CAPhsuW6iH0qFfJFxcWfGAnsD1FqOM_ThZLp5H+MARvkBxq8K7w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220907231450.0a5f085319251349a45465d8@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 07/09/2022 01:06, Song Liu wrote:
-> On Tue, Sep 6, 2022 at 6:46 AM Quentin Monnet <quentin@isovalent.com> wrote:
->>
-> [...]
->> +
->> +static int
->> +init_context(disasm_ctx_t *ctx, const char *arch,
->> +            __maybe_unused const char *disassembler_options,
->> +            __maybe_unused unsigned char *image, __maybe_unused ssize_t len)
->> +{
->> +       char *triple;
->> +
->> +       if (arch) {
->> +               p_err("Architecture %s not supported", arch);
->> +               return -1;
->> +       }
+On Wed, Sep 07, 2022 at 11:14:50PM +0900, Masami Hiramatsu wrote:
+> On Wed, 7 Sep 2022 15:05:13 +0200
+> Peter Zijlstra <peterz@infradead.org> wrote:
 > 
-> Does this mean we stop supporting arch by default (prefer llvm
-> over bfd)?
+> > On Wed, Sep 07, 2022 at 10:02:41AM +0200, Peter Zijlstra wrote:
+> > 
+> > > 	struct queue q;
+> > > 
+> > > 	start = paddr - offset;
+> > > 	end = start + size;
+> > > 	push(&q, paddr - offset);
+> > > 
+> > > 	while (start = pop(&q)) {
+> > > 		for_each_insn(&insn, start, end, buf) {
+> > > 			if (insn.kaddr == paddr)
+> > > 				return 1;
+> > > 
+> > > 			target = insn_get_branch_addr(&insn);
+> > > 			if (target)
+> > > 				push(&q, target);
+> > > 
+> > > 			if (dead_end_insn(&insn))
+> > > 				break;
+> > > 		}
+> > > 	}
+> > 
+> > There is the very rare case of intra-function-calls; but I *think*
+> > they're all in noinstr/nokprobe code anyway.
+> > 
+> > For instance we have RSB stuffing code like:
+> > 
+> > 	.rept 16
+> > 	call 1f;
+> > 	int3
+> > 	1:
+> > 	.endr
+> > 	add $(BITS_PER_LONG/8) * 16, %_ASM_SP
+> > 
+> > And the proposed will be horribly confused by that. But like said; it
+> > should also never try and untangle it.
+> 
+> Yeah, but I guess if we break the decoding (internal) loop when we
+> hit an INT3, it maybe possible to be handled?
 
-We do drop support in practice, because the "arch" is only used for nfp
-(we only use this when the program is not using the host architecture,
-so when it's offloaded - see ifindex_to_bfd_params() in common.c), and
-LLVM has no support for nfp.
+If you make insn_get_branch_addr() return the target of CALL
+instructions when this target is between function start and end, it
+should work I think.
 
-Although on second thought, it would probably be cleaner to set the arch
-anyway in the snippet above, and to let LLVM return an error if it
-doesn't know about it, so that we don't have to update bpftool in the
-future if a new arch is used for BPF offload. I can update for the next
-iteration.
+But like said; this construct is rare and all instances I can remember
+should not be kprobes to begin with. These are all 'fun' things like
+retpoline stubs and the the above RSB stuff loop.
