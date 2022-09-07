@@ -2,62 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27A305B064C
-	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 16:20:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A8BC5B064E
+	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 16:20:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229812AbiIGOU1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Sep 2022 10:20:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50922 "EHLO
+        id S229608AbiIGOUr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Sep 2022 10:20:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229608AbiIGOUZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Sep 2022 10:20:25 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 637D067C95
-        for <bpf@vger.kernel.org>; Wed,  7 Sep 2022 07:20:23 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id n23-20020a7bc5d7000000b003a62f19b453so11940553wmk.3
-        for <bpf@vger.kernel.org>; Wed, 07 Sep 2022 07:20:23 -0700 (PDT)
+        with ESMTP id S230080AbiIGOUq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Sep 2022 10:20:46 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B5577332F
+        for <bpf@vger.kernel.org>; Wed,  7 Sep 2022 07:20:44 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 186-20020a1c02c3000000b003b26feb5c6bso811107wmc.5
+        for <bpf@vger.kernel.org>; Wed, 07 Sep 2022 07:20:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=isovalent-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date;
-        bh=QzRJ2ObhIwBYin4aTimhto8PEDrgfeYwa+9nYHfkF8o=;
-        b=hWBzKbYCcPZf9OfyCqcbf4lgKd2KPMEHXWp9J1m+Lj2FHhmSfPUug6UwDaeEPFzX9j
-         uwnqavqVunvGTD6/nq8X2pBc3MFrsDZLoOqsPAYuRnJl78NoEDYUn/ymTOiyTwHSow6B
-         7h0EHCNisTL1a/FwqCZhOAVr70ACZhX39gzIf4hgW6+QT9xsVt4FSEhjDDNaFp/vSu2/
-         45l1w8smqOLg4HA5aXlut5i1FbDZZJMz9sCDAMskEmb6naqY3+nlwqHXnDtnYhUrAH1s
-         QKkcrJoF4naAFF17E5BdsLV4KHd8It/Fv2zZ8KnpDjQUfSa4DqOgreQeQJXaEV4l8s7P
-         nBZw==
+        bh=efygqwxNvo9v+jOGudhVa8fyLoOuSMvJl9Lz6PO309M=;
+        b=Yh2IOXoPSDFS5qQlxKicSC/gGU6TNhXGVDRf2eR67+aWbOgXvVBaTAf6iSlkdtG7km
+         2yu80jofWx80fuTd/6zP7ZyNSmFXz//TP8QlB27h++zreVzS8IdPVh0CBrKGnZHN874p
+         TDimH0XX+MP36v/nfMW7STg11epNjN07w88CfGsf9/Rm2uCJ8ps6GbIUYPsBT3C9LxlO
+         IbwLXqLa9FNGcHHZ0nVX+vG7HJPO0TEB2Yn8Tt4sY0eQiZJ+QFO4VgYCQwm9V0eyCvMG
+         cGlQBkK7Du88IkqA75Du8aBAFA0mRobkiPTeoBjOuEgeQ6d40Mytgw4fCBwZ2JOZEaCh
+         F/8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date;
-        bh=QzRJ2ObhIwBYin4aTimhto8PEDrgfeYwa+9nYHfkF8o=;
-        b=cWOy7wb+SsfKon+YLf+JlrCl0e5K4mjaHZRhJ+MOBoI+NGdu4sRsHKk9mdsJMPgvLG
-         2smDvNqgIvfnLAAKQScbK6ZUAKSscLGJGOtXb0PsyCHVvJWCMM0N9MuGUVKH0BnfDC3U
-         dc6Dtt2IYtCVXYEq39utlG2l4Vrsi0PtfNnbpqvzoueV5c+BXp0g1OeB6VQLK/Lj6RT7
-         O72mSgLczsI9lnCkFU9zKr6K/qruvAKxjmQT+m2JXI4SgMayglZJyOG9mDiLXoua/Me7
-         ugzdgEO9U19H3EwrR6YytxBAF/EBVJBe8rBcavI37r4tw+qZW5uXSm1cGMya7G+ZgjR0
-         YReA==
-X-Gm-Message-State: ACgBeo3b89rztWR0KupQjxALPcs0DBn+VvmDbkHxQPVvEh/BxxMGApw0
-        8WG9urDxOq0j7jZDas2CumIhYg==
-X-Google-Smtp-Source: AA6agR5AdNowe8xsUJ45qSA6QkNz9ixviGc5WRpX1u41QOOi3nEVOuW1b3yH7WR6UtJU6vF55uQ3uw==
-X-Received: by 2002:a05:600c:502c:b0:3a8:41e9:cd32 with SMTP id n44-20020a05600c502c00b003a841e9cd32mr16642182wmr.177.1662560421935;
-        Wed, 07 Sep 2022 07:20:21 -0700 (PDT)
+        bh=efygqwxNvo9v+jOGudhVa8fyLoOuSMvJl9Lz6PO309M=;
+        b=HxAhf0mh/scUb8qOlB8OllNC3eLkoZX2MPrYq0C87u8FQuyP+gu6HlNt3cgdT3WVtN
+         46UET4HrdBQRuUn2t15bT5UYOhadSMq8GbrMpl+Ytze46VfDwJuA5jv3SQ25or0dtjGN
+         Ujor19R82Y4puNOHe+j77tUuetAHvoPaHNWwZ4vx3ArR5WFp1hdZMqQNaLYP5sckuq1c
+         ox7wprQs6XWctRyXnT1m2M+fXGEjo8XR6wAu1WIKEG/KbjWk/fNgF8ZaWJ5O4o+bVK5u
+         2nNhBJnBhOLCre1XM2dLVdVgPWCy1yIkmduiP7gZ9Mmg/pL8IITZ/nSsL128xpPiWQR+
+         Bp0g==
+X-Gm-Message-State: ACgBeo0Wvj2l5qJlXlY8QUHxOttsw2VFiPXwtBtCKH7CtpiknuHMYaLU
+        YweAjZJKezJcm8D5z2p8BMBJ1A==
+X-Google-Smtp-Source: AA6agR7p+qdHTsQgvthox0mPTdo+T02UoZpV644zqpWkI/+SWQBwMyZ86t3C/brVRNHO/D7EiSF2Hw==
+X-Received: by 2002:a05:600c:4e92:b0:3a5:fd90:24e3 with SMTP id f18-20020a05600c4e9200b003a5fd9024e3mr17334977wmq.59.1662560442612;
+        Wed, 07 Sep 2022 07:20:42 -0700 (PDT)
 Received: from [192.168.178.32] ([51.155.200.13])
-        by smtp.gmail.com with ESMTPSA id n24-20020a1c7218000000b003a317ee3036sm18881450wmc.2.2022.09.07.07.20.21
+        by smtp.gmail.com with ESMTPSA id d15-20020a5d6dcf000000b00225307f43fbsm18028658wrz.44.2022.09.07.07.20.41
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Sep 2022 07:20:21 -0700 (PDT)
-Message-ID: <f0d9d219-3e5b-94bc-3c90-897da8d27b12@isovalent.com>
-Date:   Wed, 7 Sep 2022 15:20:20 +0100
+        Wed, 07 Sep 2022 07:20:42 -0700 (PDT)
+Message-ID: <8b0de52e-84e8-c098-113d-5b5b9cdfd22e@isovalent.com>
+Date:   Wed, 7 Sep 2022 15:20:41 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.2.1
 Subject: Re: [PATCH bpf-next 6/7] bpftool: Add LLVM as default library for
  disassembling JIT-ed programs
 Content-Language: en-GB
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Song Liu <song@kernel.org>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -72,9 +72,9 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Simon Horman <simon.horman@corigine.com>
 References: <20220906133613.54928-1-quentin@isovalent.com>
  <20220906133613.54928-7-quentin@isovalent.com>
- <CAADnVQJ3K7cLTz9tiEEevyhuYVCO6BfB5NhAssReyYU7MNAyKw@mail.gmail.com>
+ <CAPhsuW6iH0qFfJFxcWfGAnsD1FqOM_ThZLp5H+MARvkBxq8K7w@mail.gmail.com>
 From:   Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <CAADnVQJ3K7cLTz9tiEEevyhuYVCO6BfB5NhAssReyYU7MNAyKw@mail.gmail.com>
+In-Reply-To: <CAPhsuW6iH0qFfJFxcWfGAnsD1FqOM_ThZLp5H+MARvkBxq8K7w@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -86,131 +86,33 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 07/09/2022 00:46, Alexei Starovoitov wrote:
-> On Tue, Sep 6, 2022 at 6:36 AM Quentin Monnet <quentin@isovalent.com> wrote:
+On 07/09/2022 01:06, Song Liu wrote:
+> On Tue, Sep 6, 2022 at 6:46 AM Quentin Monnet <quentin@isovalent.com> wrote:
 >>
->> Naturally, the display of disassembled instructions comes with a few
->> minor differences. Here is a sample output with libbfd (already
->> supported before this patch):
->>
->>     # bpftool prog dump jited id 56
->>     bpf_prog_6deef7357e7b4530:
->>        0:   nopl   0x0(%rax,%rax,1)
->>        5:   xchg   %ax,%ax
->>        7:   push   %rbp
->>        8:   mov    %rsp,%rbp
->>        b:   push   %rbx
->>        c:   push   %r13
->>        e:   push   %r14
->>       10:   mov    %rdi,%rbx
->>       13:   movzwq 0xb0(%rbx),%r13
->>       1b:   xor    %r14d,%r14d
->>       1e:   or     $0x2,%r14d
->>       22:   mov    $0x1,%eax
->>       27:   cmp    $0x2,%r14
->>       2b:   jne    0x000000000000002f
->>       2d:   xor    %eax,%eax
->>       2f:   pop    %r14
->>       31:   pop    %r13
->>       33:   pop    %rbx
->>       34:   leave
->>       35:   ret
->>       36:   int3
->>
->> LLVM supports several variants that we could set when initialising the
->> disassembler, for example with:
->>
->>     LLVMSetDisasmOptions(*ctx,
->>                          LLVMDisassembler_Option_AsmPrinterVariant);
->>
->> but the default printer is kept for now. Here is the output with LLVM:
->>
->>     # bpftool prog dump jited id 56
->>     bpf_prog_6deef7357e7b4530:
->>        0:   nopl    (%rax,%rax)
->>        5:   nop
->>        7:   pushq   %rbp
->>        8:   movq    %rsp, %rbp
->>        b:   pushq   %rbx
->>        c:   pushq   %r13
->>        e:   pushq   %r14
->>       10:   movq    %rdi, %rbx
->>       13:   movzwq  176(%rbx), %r13
->>       1b:   xorl    %r14d, %r14d
->>       1e:   orl     $2, %r14d
->>       22:   movl    $1, %eax
->>       27:   cmpq    $2, %r14
->>       2b:   jne     2
->>       2d:   xorl    %eax, %eax
->>       2f:   popq    %r14
+> [...]
+>> +
+>> +static int
+>> +init_context(disasm_ctx_t *ctx, const char *arch,
+>> +            __maybe_unused const char *disassembler_options,
+>> +            __maybe_unused unsigned char *image, __maybe_unused ssize_t len)
+>> +{
+>> +       char *triple;
+>> +
+>> +       if (arch) {
+>> +               p_err("Architecture %s not supported", arch);
+>> +               return -1;
+>> +       }
 > 
-> If I'm reading the asm correctly the difference is significant.
-> jne 0x2f was an absolute address and jmps were easy
-> to follow.
-> While in llvm disasm it's 'jne 2' ?! What is 2 ?
-> 2 bytes from the next insn of 0x2d ?
+> Does this mean we stop supporting arch by default (prefer llvm
+> over bfd)?
 
-Yes, that's it. Apparently, this is how the operand is encoded, and
-libbfd does the translation to the absolute address:
+We do drop support in practice, because the "arch" is only used for nfp
+(we only use this when the program is not using the host architecture,
+so when it's offloaded - see ifindex_to_bfd_params() in common.c), and
+LLVM has no support for nfp.
 
-    # bpftool prog dump jited id 7868 opcodes
-    [...]
-      2b:   jne    0x000000000000002f
-            75 02
-    [...]
-
-The same difference is observable between objdump and llvm-objdump on an
-x86-64 binary for example, although they usually have labels to refer to
-("jne     -22 <_obstack_memory_used+0x7d0>"), making the navigation
-easier. The only mention I could find of that difference is a report
-from 2013 [0].
-
-[0] https://discourse.llvm.org/t/llvm-objdump-disassembling-jmp/29584/2
-
-> That is super hard to read.
-> Is there a way to tune/configure llvm disasm?
-
-There's a function and some options to tune it, but I tried them and
-none applies to converting the jump operands.
-
-    int LLVMSetDisasmOptions(LLVMDisasmContextRef DC, uint64_t Options);
-
-    /* The option to produce marked up assembly. */
-    #define LLVMDisassembler_Option_UseMarkup 1
-    /* The option to print immediates as hex. */
-    #define LLVMDisassembler_Option_PrintImmHex 2
-    /* The option use the other assembler printer variant */
-    #define LLVMDisassembler_Option_AsmPrinterVariant 4
-    /* The option to set comment on instructions */
-    #define LLVMDisassembler_Option_SetInstrComments 8
-    /* The option to print latency information alongside instructions */
-    #define LLVMDisassembler_Option_PrintLatency 16
-
-I found that LLVMDisassembler_Option_AsmPrinterVariant read better,
-although in my patch I kept the default output which looked closer to
-the existing from libbfd. Here's what the option produces:
-
-    bpf_prog_6deef7357e7b4530:
-       0:   nop     dword ptr [rax + rax]
-       5:   nop
-       7:   push    rbp
-       8:   mov     rbp, rsp
-       b:   push    rbx
-       c:   push    r13
-       e:   push    r14
-      10:   mov     rbx, rdi
-      13:   movzx   r13, word ptr [rbx + 180]
-      1b:   xor     r14d, r14d
-      1e:   or      r14d, 2
-      22:   mov     eax, 1
-      27:   cmp     r14, 2
-      2b:   jne     2
-      2d:   xor     eax, eax
-      2f:   pop     r14
-      31:   pop     r13
-      33:   pop     rbx
-      34:   leave
-      35:   re
-
-But the jne operand remains a '2'. I'm not aware of any option to change
-it in LLVM's disassembler :(.
+Although on second thought, it would probably be cleaner to set the arch
+anyway in the snippet above, and to let LLVM return an error if it
+doesn't know about it, so that we don't have to update bpftool in the
+future if a new arch is used for BPF offload. I can update for the next
+iteration.
