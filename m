@@ -2,219 +2,193 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64A335AF984
-	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 03:53:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BA5D5AF9D6
+	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 04:29:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229582AbiIGBxp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Sep 2022 21:53:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49060 "EHLO
+        id S229793AbiIGC2m (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Sep 2022 22:28:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229603AbiIGBxi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Sep 2022 21:53:38 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04C5184EE8
-        for <bpf@vger.kernel.org>; Tue,  6 Sep 2022 18:53:34 -0700 (PDT)
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 286Nhr6L004428;
-        Tue, 6 Sep 2022 18:53:19 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=RtOf2JgKdkPd90N07G003ifNjYfd1P5DS9clmrAX1l4=;
- b=DQUzKMk13ScanOa7sG/cAP6kL+YPYggGlMci9Y35QW67bHjUn/U/Zdd8tSEXorR2tELa
- U/WCb1+8z2efhWb2xEoest2IzH/tmCIETlbHPMj0DL66BCYq4oz++vcmQGYYYWnu/oqG
- MGSPul6JytIvdpFMh/oRTIwYi5YGGg7UF7s= 
-Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam02lp2047.outbound.protection.outlook.com [104.47.56.47])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3je0d0xsyg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 06 Sep 2022 18:53:19 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CL9cIkCT7XzDAwdMVm3HOTySUnP2ryu8iyR+UDyELLPPGzBT0UDN6TD4En4owjsWGT4ywZq5rbekxpWrms/qUf5Yqkg6U6Sqr7AGeutKszHXzf8dEyJ4J3Nh5+rxg3QZQv2z2Ua+S61WmxSlnikh/CPcHRurbdwKDt5M9lH2yLGZgUXJHu7DIzTRvTF//Uae9OTONYyGb97dgtU2I8lVCuIELIUYk+xhrLoqlPjYKHRKbaZmhn7eZ8A1fyJrDP6Iqe6eM+h/QU4k8GLuF0rEipAPUUBCAYj0M8J2LUVZ+MnI9cIeOREoJ09sW/FXp/mdkdAWPQ9j7ViyRM7NfMi86A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=RtOf2JgKdkPd90N07G003ifNjYfd1P5DS9clmrAX1l4=;
- b=oZxFnEmjUCAZ9fMzb9op58EolvuskI+cUNK4faaxC9GzM59Yyu+ZlQaqLd/oIN2QoGv/ILH4OYYwEzkkMD0tuuOlpCKZsnD31DV/SqCQ4HyWlv+T5ToEOQE9KFdE67B5Mioo8A5dxQ7QHrkKArZY8h+ADfaJZDDc5LwdH+tAyrsC1CT/bAxTf2futfF8+P3A5TT9uSgMP1RdysZ0bCLHr+bh4RAh6wci0NJaXcVdw/iN3v/1NFH8P1vOfEvXhaTG+cFlKfzfQGE2ShhopWmdF2NFgRFh8yx9zbE7GG2fXcbh5rC4y4WmDiaAZcf0Lek9t3kXlsHKtmCSg2wHMjWB/A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from MW4PR15MB4490.namprd15.prod.outlook.com (2603:10b6:303:103::23)
- by SA1PR15MB4498.namprd15.prod.outlook.com (2603:10b6:806:199::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5588.18; Wed, 7 Sep
- 2022 01:53:17 +0000
-Received: from MW4PR15MB4490.namprd15.prod.outlook.com
- ([fe80::ac96:fa9e:9a44:4a23]) by MW4PR15MB4490.namprd15.prod.outlook.com
- ([fe80::ac96:fa9e:9a44:4a23%4]) with mapi id 15.20.5612.012; Wed, 7 Sep 2022
- 01:53:17 +0000
-Message-ID: <2d2bd4ef-e8c8-194e-1d12-a45bb63c9b44@fb.com>
-Date:   Tue, 6 Sep 2022 18:53:14 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.13.0
-Subject: Re: [RFCv2 PATCH bpf-next 01/18] bpf: Add verifier support for custom
- callback return range
-Content-Language: en-US
-To:     Dave Marchevsky <davemarchevsky@fb.com>,
-        Joanne Koong <joannelkoong@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-References: <20220830172759.4069786-1-davemarchevsky@fb.com>
- <20220830172759.4069786-2-davemarchevsky@fb.com>
- <CAJnrk1ZpZ1uLtyiaOK5Sij1nANa8xhOsxMq7PKzyKjVEcL0VtA@mail.gmail.com>
- <93490d2e-6709-e21d-a38a-40296a456808@fb.com>
-From:   Alexei Starovoitov <ast@fb.com>
-In-Reply-To: <93490d2e-6709-e21d-a38a-40296a456808@fb.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BY5PR13CA0010.namprd13.prod.outlook.com
- (2603:10b6:a03:180::23) To MW4PR15MB4490.namprd15.prod.outlook.com
- (2603:10b6:303:103::23)
+        with ESMTP id S229788AbiIGC2k (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Sep 2022 22:28:40 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE00C90802;
+        Tue,  6 Sep 2022 19:28:37 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id v15so6914913iln.6;
+        Tue, 06 Sep 2022 19:28:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=6adJ3vFxu7LJgVGtWumUtBEFtalw2Gru7dwbkWzIto0=;
+        b=Qzes80q1nY3NMTB/u4RR9qRposPgyIWEglwe9n8azaRLBgllpg11dzioo6lHb3SSWP
+         F8YNlr0AikuyTVa9O819Rg/M6iTu9c/OQHv7W/Exf6W01JPK4XmoD9TQyTC7yVCUcu7c
+         r0LjwIYwgVN17yVpDkSVGtd7JNkZ0CkGakzS2ReCWF9HcBOH+OYnUz0Banqdk1xtbdli
+         cUfd795MsTkTiz+16Iue5opV8OSPgxuE8n5PMh8OqSG3vaB56THP6jTBQLrDz/J+3gE2
+         nTn+DPorWFSDFWslz3xDaVFZvbY8ywySWMEr8HOD5EZ+osXBfLJ3z3WInBtlcq95+uJB
+         k1Ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=6adJ3vFxu7LJgVGtWumUtBEFtalw2Gru7dwbkWzIto0=;
+        b=54uhIh1vA1d3RPyxLLCyv16p6V1n97QMEdPljj8Qz/4FAyiyHdfjuOrpwX/jgLFxA9
+         7DAcbsjHQ1QcG65dK+FfCDaowOMIwIw3Q+82UNEv1dcKTYlDUOWmpys00tI1624jgd63
+         u7ZU/eUjx2RkcCX8jXzrVF3Zr7OTXgvw0ZC5Jvb4Ph+GZKKONCCGEvQsWZACGRZyI/9x
+         CAg9WdUWWR56hzKL6IrJXn3HcH3QmhlWjpjx1pOXwoqXPW6potlXQzo8n2TP0Jvjy7nC
+         olBadDkdE6lubi42v9G7s4kG4PdkqrDZNdLp9lpKb59bako5OZDO4EmMRIaPVK5pgTbC
+         QOqw==
+X-Gm-Message-State: ACgBeo2kzyibkUDF12/pujOqs1ZvPRHM6KmJREQy2bq3Y2cVqMhw02Pd
+        H6WWaebkQyASx4X5s6pMekueKMGvu0WRRRTNB2Q=
+X-Google-Smtp-Source: AA6agR5GHMpNuon9uP5D/DsqmVpozOs1KIkPUdiWqptV+F5uPCHPCS2OpvNCpBPI6O64E6+NF/6Y+LZVPqKdfFOe1CM=
+X-Received: by 2002:a05:6e02:190a:b0:2ee:9e75:ae4b with SMTP id
+ w10-20020a056e02190a00b002ee9e75ae4bmr738115ilu.219.1662517717158; Tue, 06
+ Sep 2022 19:28:37 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW4PR15MB4490:EE_|SA1PR15MB4498:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1ada307e-7cf0-4cf0-60ee-08da9073bb74
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: x0aqSvrO5n7lWPZngUWZEE8K7GhsoCTqjWfnu4YNv44xZh9pTJ/E5lhDdEG1SCeIEQPEg0u9MBJtYRlx4Ozw6kP+f6Kky9+LFu88KozjSjUPOd6ZLVL9tW80IpO5tHJz0dvyRH4A8dgBX9GhyqH3jne6x67clxXnozMcRMbPUEtmOsFga/XaNMO6TYuVSLwgWwWHZxnsw4Uhvxz8WZJ+0b7b6DdKMH77EOBM+k88hNTe/juOoGHotoMvtAhcIZiSYHqUq1gL2OvsbEROJyVbq/yU/pculPe4hxM72kgQFO+PVwhkWmdfHAw5rSESKEFWKXRSVswqMw2sg114a9iGX1Kn1ONPxnbYVemnXOyj6BE8wjcCdKNefwp6JrkBIAlWuUzs3NcKEw2G3mH1QLNJlOganvlhsLn5HTiM8IF3E+KDxnARutdGZlbxNtBuVok0ZUPYMfQZp7aBExcSEBz+4VctbjFGciXuglERbv8BI8/95C4iVIlH8yf2mAXM759sgTiGgHP3hb04taDKHmYneIsGXKK0kJeq3N7QiVXdX7G2kcmVIzYQ7eTJR08Cj+7TcSQPC+clbL3ZTuX4VPCztGKK5rNaNXXTRUtEKq/Cj/PsmVKASfA/gYvxvq37gYy8YcKHQbeaCvfdQkelw6uA9sjMyvLgpfwec2o6VXq1TDfjrKRvxWdiUicrZP8Yw0etn8cLsnvJ7My7z2HaxloqRje6J0xzXxuXzlgWg3P7mMo50C9ak4JgVw7nXtMyGNSk00HTNpBEReKk2jLSWfdI/LB5K/4X+mLr0XIJjtMnVrI=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR15MB4490.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(376002)(366004)(39860400002)(136003)(346002)(396003)(66476007)(53546011)(83380400001)(66946007)(4326008)(8676002)(8936002)(5660300002)(52116002)(66556008)(41300700001)(6506007)(478600001)(6486002)(6512007)(6666004)(186003)(2616005)(316002)(54906003)(31696002)(110136005)(86362001)(31686004)(38100700002)(36756003)(2906002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?a1dpZk5oNmhuVUVueHl4eXlKZkdkRnFybUFRNzZLVkEwYmZUSUczREFmQVVW?=
- =?utf-8?B?c1NrcjZpM1BxV3U4dGVubkpFbWJBM1FLaFBkZTdtYVVsTkpMMjFtK1RPRkpo?=
- =?utf-8?B?di9BbTF3UzRQdXpnL2xmaVpPcDRPWVRTV1RxRmEwK0NhMTBYTk9jTE1rTysr?=
- =?utf-8?B?em5oNWdpS2NJS0FTWXlYOFJXenoyYjNjakl5T1krbjlsYWlwQ3NPMUtMV0pR?=
- =?utf-8?B?RjBnc3BxYTBSS0lSN3Z6K0oybDJ5T3Z4Uzh5bTgzNmg1eXBlRGxPNlRvQ0N1?=
- =?utf-8?B?RHJOV2JEaUVzZ3hxWEViVDdSVVRtSWgwMGxxZ2RJVTFKYWk4T1ZLdlVRSi9p?=
- =?utf-8?B?WHpteW5pV2FnYWhOWXFOelhPdGl0SHZEL2hjL1IrRFJXNTdNU0p4L2VRZWZ5?=
- =?utf-8?B?TjZaNG85azNwRW95VHZFL0RnTlliOXZsblEwWjNTS0xNVFBQT2lxSGdtdDM3?=
- =?utf-8?B?bUNGYkhwSnkrQUVsc0NQK1VzY25Pd1ZXTGs3eEpjN3ZoVzhRMTdQQ05HMHg2?=
- =?utf-8?B?enZrOVNVZDFSbDBiVlVrMjNJVnZJZFBLTTRLZFk5cTFLaGRrZ0JKWUZwTEVN?=
- =?utf-8?B?Z29LdEJ2TG95MXBWYUdZeTBmaVZBMTg5YXdSRlNRN1lQMjExRTBvZldSS3cy?=
- =?utf-8?B?YlRsQnZoRDhXWGxzTjNPcjNzUXp5VWVFZW4zUzA4S3VCWjY0RENudkdSUi9K?=
- =?utf-8?B?aGh3dVoxNU9keFpaSkJIdTI0UkN1c2VLc2pKeFhzVHR3NGJja1ViQ3hSSG51?=
- =?utf-8?B?QUVBR04rZlE4dm8rZGtFdTZSalRORHFwR21Uc1dmTk1RZFY1aGJpWjEzb3BL?=
- =?utf-8?B?STJzVWpHL0E1VHExWW40eWNmcUhpaVNPbEF6Ulk5dDk5SnBENjVIVm1ma2hj?=
- =?utf-8?B?RUhHOVhGVm9VVTNGSUdwN1dnYzBMUnpEUXdQVDFSNlZvdFUrRHJTMGZ3cVMx?=
- =?utf-8?B?VXdDM1BtYkxMU0N2eERmVEx3MGkxT0hSUVBhWjZSSWV1UXdLeXB5T0JQVnZz?=
- =?utf-8?B?QVlUZFRveWFOckZIUTU5bjg5YUZrVkR2WHZjNHRkOWZSY1VPd2huRTI5eW5r?=
- =?utf-8?B?akxUV1JGVmdxMnMxcWVZYmdGaThsMHA0empNdENKbHQ3Q0xCRGR2Skt3b0Yx?=
- =?utf-8?B?STViOC9Tb0NJaFl4aTNLZ1l4S2FLT3ZLNnBPT3c0aUhoanc1dVZ0SG9YUmtv?=
- =?utf-8?B?bVBLUUU2RHFCM2hlT2plVnZ6cndGa21Ja0pGczM1NDRydmdjWlFReHlyUjRV?=
- =?utf-8?B?akhLQVl3dDlaaHNnRGEwbnA2dTc3RW1SaHJhZ0YrSzdzWkc3Y2k0VHpCeG12?=
- =?utf-8?B?N1ovWVRxdkU1YlRnNDU5elhUQWdsemYxYUlEaStkcUpZYjZEWWx6Q0huOFc4?=
- =?utf-8?B?eUhsdVVOTTlTTmxwditQY2dWelpIRTFVbWFBZS90cDAzUDl5WDZjeGVJaEwy?=
- =?utf-8?B?L015eWNYcDRKK2lZMjY3eXhldW8wMVpSa2lYTk5hWStFR3M0SXRmMUVOZzBz?=
- =?utf-8?B?Wm1sV3orU1JKc2dlcEx1OFlkNmIxU3IybjR1NkNTWXVUdmhWaDYxaGtKN0Zj?=
- =?utf-8?B?OWdlMmpKaCt1S0FycXpqanNXZXByRTRCYjZnTGJERmUxZnVmZTlxVXF1bTkr?=
- =?utf-8?B?WUEvSlg1b3NuNXZXM2dJNnFQYi9zNTJEL1B5b0VpdnhvUmNGRWRMbTRDbU4v?=
- =?utf-8?B?azNNUnVOZHF6U3VBK0t3ZHhOaFBCS3JUUmdoYmFqbWFIWlg4UFFIbU5RdVJV?=
- =?utf-8?B?NkJxaVowdXBOVVdFaFExdmwxNmdVcW1PS01TZWVJWXloZ2pUbjR5aTIvWTdq?=
- =?utf-8?B?amRqUzgyQTlidklFYWp6Njg4ckY5ZlJnUnNMTkp4VnhIUXJXc3dsVGdnYk5n?=
- =?utf-8?B?eWdkMFZzbkY5MWlnSFhvQ0ZXWDBJVm5ka2FJZDFYTVNjRlVKWUE5Q0QrRUJ3?=
- =?utf-8?B?cHd5VVFlejluZk96SkdHcTRhNWEzekJlU0x1aGRWSGdoSy9JM2Y3eUFxOEl3?=
- =?utf-8?B?amhVZjFGNlBhQ3F4YlV2Mlp3RnNTdlkvRzZKSy9LSWZGQUZRTnRUbDlnTzZT?=
- =?utf-8?B?NjlCZlQ2bjlHK0NiWHl3TXRWZEFrOU1kcXJaSm80SW45ZXd5RjQ1d0VZVlJS?=
- =?utf-8?Q?CGEw1NED5SZCOSqR7qGvoPWRS?=
-X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1ada307e-7cf0-4cf0-60ee-08da9073bb74
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR15MB4490.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Sep 2022 01:53:16.9138
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: k5ONcNsBz0cdqprAlKsdkZVsLZaSbrCYd/rHIJvkO1BAatSmMvR5HCyJEUGAIt/e
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4498
-X-Proofpoint-GUID: ZOYkAtsmAyGCD3Z7X_kD_7a-Nbt04kTV
-X-Proofpoint-ORIG-GUID: ZOYkAtsmAyGCD3Z7X_kD_7a-Nbt04kTV
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.528,FMLib:17.11.122.1
- definitions=2022-09-06_11,2022-09-06_02,2022-06-22_01
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20220905143318.1592015-1-roberto.sassu@huaweicloud.com>
+ <20220905143318.1592015-8-roberto.sassu@huaweicloud.com> <CAP01T77F-A7igW+vp5RhzcqzRJymO6YRvNR2cfsh+2fKNy56YA@mail.gmail.com>
+ <3d32decb1fda80e261d9ed08decfdca45614c4af.camel@huaweicloud.com>
+In-Reply-To: <3d32decb1fda80e261d9ed08decfdca45614c4af.camel@huaweicloud.com>
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date:   Wed, 7 Sep 2022 04:28:00 +0200
+Message-ID: <CAP01T76csO9pdL=KLU4s7M__GnEifmKEB0pb7genw3UN8tA=FQ@mail.gmail.com>
+Subject: Re: [PATCH v16 07/12] bpf: Add bpf_verify_pkcs7_signature() kfunc
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
+Cc:     joannelkoong@gmail.com, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+        mykolal@fb.com, dhowells@redhat.com, jarkko@kernel.org,
+        rostedt@goodmis.org, mingo@redhat.com, paul@paul-moore.com,
+        jmorris@namei.org, serge@hallyn.com, shuah@kernel.org,
+        bpf@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        deso@posteo.net, Roberto Sassu <roberto.sassu@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 9/6/22 4:42 PM, Dave Marchevsky wrote:
-> On 9/1/22 5:01 PM, Joanne Koong wrote:
->> On Tue, Aug 30, 2022 at 11:03 AM Dave Marchevsky <davemarchevsky@fb.com> wrote:
->>>
->>> Verifier logic to confirm that a callback function returns 0 or 1 was
->>> added in commit 69c087ba6225b ("bpf: Add bpf_for_each_map_elem() helper").
->>> At the time, callback return value was only used to continue or stop
->>> iteration.
->>>
->>> In order to support callbacks with a broader return value range, such as
->>> those added further in this series, add a callback_ret_range to
->>> bpf_func_state. Verifier's helpers which set in_callback_fn will also
->>> set the new field, which the verifier will later use to check return
->>> value bounds.
->>>
->>> Default to tnum_range(0, 1) instead of using tnum_unknown as a sentinel
->>> value as the latter would prevent the valid range (0, U64_MAX) being
->>> used.
->>>
->>> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
->>> ---
->>>   include/linux/bpf_verifier.h | 1 +
->>>   kernel/bpf/verifier.c        | 4 +++-
->>>   2 files changed, 4 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
->>> index 2e3bad8640dc..9c017575c034 100644
->>> --- a/include/linux/bpf_verifier.h
->>> +++ b/include/linux/bpf_verifier.h
->>> @@ -237,6 +237,7 @@ struct bpf_func_state {
->>>           */
->>>          u32 async_entry_cnt;
->>>          bool in_callback_fn;
->>> +       struct tnum callback_ret_range;
->>>          bool in_async_callback_fn;
->>>
->>>          /* The following fields should be last. See copy_func_state() */
->>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->>> index 9bef8b41e737..68bfa7c28048 100644
->>> --- a/kernel/bpf/verifier.c
->>> +++ b/kernel/bpf/verifier.c
->>> @@ -1745,6 +1745,7 @@ static void init_func_state(struct bpf_verifier_env *env,
->>>          state->callsite = callsite;
->>>          state->frameno = frameno;
->>>          state->subprogno = subprogno;
->>> +       state->callback_ret_range = tnum_range(0, 1);
->>>          init_reg_state(env, state);
->>>          mark_verifier_state_scratched(env);
->>>   }
->>> @@ -6879,6 +6880,7 @@ static int set_find_vma_callback_state(struct bpf_verifier_env *env,
->>>          __mark_reg_not_init(env, &callee->regs[BPF_REG_4]);
->>>          __mark_reg_not_init(env, &callee->regs[BPF_REG_5]);
->>>          callee->in_callback_fn = true;
->>> +       callee->callback_ret_range = tnum_range(0, 1);
->>
->> Thanks for removing this restriction for callback functions!
->>
->> One quick question: is this line above needed? I think in
->> __check_func_call, we always call init_func_state() first before
->> calling set_find_vma_callback_state(), so after the init_func_state()
->> call, the callee->callback_ret_range will already be set to
->> tnum_range(0,1).
->>
-> 
-> You're right, it's not strictly necessary. I think that the default range being
-> tnum_range(0, 1) - although necessary for backwards compat - is unintuitive. So
-> decided to be explicit with existing callbacks so folks didn't have to go
-> searching for the default to understand what the ret_range is, and it's more
-> obvious that callback_ret_range should be changed if existing helper code is
-> reused.
+On Tue, 6 Sept 2022 at 10:08, Roberto Sassu
+<roberto.sassu@huaweicloud.com> wrote:
+>
+> On Tue, 2022-09-06 at 04:57 +0200, Kumar Kartikeya Dwivedi wrote:
+> > On Mon, 5 Sept 2022 at 16:35, Roberto Sassu
+> > <roberto.sassu@huaweicloud.com> wrote:
+> > > From: Roberto Sassu <roberto.sassu@huawei.com>
+> > >
+> > > Add the bpf_verify_pkcs7_signature() kfunc, to give eBPF security
+> > > modules
+> > > the ability to check the validity of a signature against supplied
+> > > data, by
+> > > using user-provided or system-provided keys as trust anchor.
+> > >
+> > > The new kfunc makes it possible to enforce mandatory policies, as
+> > > eBPF
+> > > programs might be allowed to make security decisions only based on
+> > > data
+> > > sources the system administrator approves.
+> > >
+> > > The caller should provide the data to be verified and the signature
+> > > as eBPF
+> > > dynamic pointers (to minimize the number of parameters) and a
+> > > bpf_key
+> > > structure containing a reference to the keyring with keys trusted
+> > > for
+> > > signature verification, obtained from bpf_lookup_user_key() or
+> > > bpf_lookup_system_key().
+> > >
+> > > For bpf_key structures obtained from the former lookup function,
+> > > bpf_verify_pkcs7_signature() completes the permission check
+> > > deferred by
+> > > that function by calling key_validate(). key_task_permission() is
+> > > already
+> > > called by the PKCS#7 code.
+> > >
+> > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> > > Acked-by: KP Singh <kpsingh@kernel.org>
+> > > ---
+> > >  kernel/trace/bpf_trace.c | 45
+> > > ++++++++++++++++++++++++++++++++++++++++
+> > >  1 file changed, 45 insertions(+)
+> > >
+> > > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> > > index 7a7023704ac2..8e2c026b0a58 100644
+> > > --- a/kernel/trace/bpf_trace.c
+> > > +++ b/kernel/trace/bpf_trace.c
+> > > @@ -1294,12 +1294,57 @@ void bpf_key_put(struct bpf_key *bkey)
+> > >         kfree(bkey);
+> > >  }
+> > >
+> > > +#ifdef CONFIG_SYSTEM_DATA_VERIFICATION
+> > > +/**
+> > > + * bpf_verify_pkcs7_signature - verify a PKCS#7 signature
+> > > + * @data_ptr: data to verify
+> > > + * @sig_ptr: signature of the data
+> > > + * @trusted_keyring: keyring with keys trusted for signature
+> > > verification
+> > > + *
+> > > + * Verify the PKCS#7 signature *sig_ptr* against the supplied
+> > > *data_ptr*
+> > > + * with keys in a keyring referenced by *trusted_keyring*.
+> > > + *
+> > > + * Return: 0 on success, a negative value on error.
+> > > + */
+> > > +int bpf_verify_pkcs7_signature(struct bpf_dynptr_kern *data_ptr,
+> > > +                              struct bpf_dynptr_kern *sig_ptr,
+> > > +                              struct bpf_key *trusted_keyring)
+> > > +{
+> > > +       int ret;
+> > > +
+> > > +       if (trusted_keyring->has_ref) {
+> > > +               /*
+> > > +                * Do the permission check deferred in
+> > > bpf_lookup_user_key().
+> > > +                * See bpf_lookup_user_key() for more details.
+> > > +                *
+> > > +                * A call to key_task_permission() here would be
+> > > redundant, as
+> > > +                * it is already done by keyring_search() called by
+> > > +                * find_asymmetric_key().
+> > > +                */
+> > > +               ret = key_validate(trusted_keyring->key);
+> > > +               if (ret < 0)
+> > > +                       return ret;
+> > > +       }
+> > > +
+> > > +       return verify_pkcs7_signature(data_ptr->data,
+> > > +                                     bpf_dynptr_get_size(data_ptr)
+> > > ,
+> > > +                                     sig_ptr->data,
+> > > +                                     bpf_dynptr_get_size(sig_ptr),
+> >
+> > MIssing check for data_ptr->data == NULL before making this call?
+> > Same
+> > for sig_ptr.
+>
+> Patch 3 requires the dynptrs to be initialized. Isn't enough?
+>
 
-Maybe then it's better to keep callback_ret_range as range(0,0)
-in init_func_state() to nudge/force other places to set it explicitly ?
+No, it seems even initialized dynptr can be NULL at runtime. Look at
+both ringbuf_submit_dynptr and ringbuf_discard_dynptr.
+The verifier won't know after ringbuf_reserve_dynptr whether it set it
+to NULL or some valid pointer.
+
+dynptr_init is basically that stack slot is now STACK_DYNPTR, it says
+nothing more about the dynptr.
+
+As far as testing this goes, you can pass invalid parameters to
+ringbuf_reserve_dynptr to have it set to NULL, then make sure your
+helper returns an error at runtime for it.
+
+> Thanks
+>
+> Roberto
+>
