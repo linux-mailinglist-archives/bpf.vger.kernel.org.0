@@ -2,114 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD9EE5AFD13
-	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 09:06:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 817285AFD29
+	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 09:11:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229628AbiIGHG4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Sep 2022 03:06:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50402 "EHLO
+        id S229574AbiIGHLN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Sep 2022 03:11:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbiIGHGy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Sep 2022 03:06:54 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 351B184EF2;
-        Wed,  7 Sep 2022 00:06:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=LomlCPM6yTE1Gu1LvPHSTZqH0XKNAKGROehmM9dPqmo=; b=An+xOFX3tmOB1j9dGfCKYEJ3Ph
-        B3F7zYFOKpKzKKaaFwTj5ZPciSmJUPJ1DzMoG/man4/KFRrmb9evBprsTjFcthWlZW+D5rgc6wrN2
-        PdgP9xuXnBJFHyyJssjVm8q1xoOwEYWwsgiUfQXlJ0/e6Ra9iiFN+jCbrBnwAzjTrcuhrh/LCXN3B
-        j68L6YRpMfR743b84xbEX1QkRJyNLE+3Hei2SKwLfzV55cEIWnWUqhFHobHegirP/8vdBp1g510qK
-        weWZW+CiCW1FdyrlpbqasEtMjhU/a55zUTbHR7IXaWztoy26W3EwnKCh5AVonjG/6LTNpnhTVNnpq
-        ub8r34Rg==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1oVp96-00B98K-0F; Wed, 07 Sep 2022 07:06:48 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2C6243003B0;
-        Wed,  7 Sep 2022 09:06:45 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 14088203BF6B4; Wed,  7 Sep 2022 09:06:45 +0200 (CEST)
-Date:   Wed, 7 Sep 2022 09:06:44 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Suleiman Souhlal <suleiman@google.com>,
-        bpf <bpf@vger.kernel.org>, linux-kernel@vger.kernel.org,
-        Borislav Petkov <bp@suse.de>,
-        Josh Poimboeuf <jpoimboe@kernel.org>, x86@kernel.org
-Subject: Re: [PATCH 1/2] x86/kprobes: Fix kprobes instruction boudary check
- with CONFIG_RETHUNK
-Message-ID: <YxhDBAhYrs0Sfqjt@hirez.programming.kicks-ass.net>
-References: <166251211081.632004.1842371136165709807.stgit@devnote2>
- <166251212072.632004.16078953024905883328.stgit@devnote2>
+        with ESMTP id S230032AbiIGHLF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Sep 2022 03:11:05 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10B4C86FEB;
+        Wed,  7 Sep 2022 00:11:01 -0700 (PDT)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4MMtdP2BrXznV6P;
+        Wed,  7 Sep 2022 15:08:25 +0800 (CST)
+Received: from huawei.com (10.175.101.6) by canpemm500010.china.huawei.com
+ (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Wed, 7 Sep
+ 2022 15:10:58 +0800
+From:   Liu Jian <liujian56@huawei.com>
+To:     <john.fastabend@gmail.com>, <jakub@cloudflare.com>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <daniel@iogearbox.net>, <ast@kernel.org>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
+CC:     <liujian56@huawei.com>
+Subject: [PATCH bpf] skmsg: schedule psock work if the cached skb exists on the psock
+Date:   Wed, 7 Sep 2022 15:13:11 +0800
+Message-ID: <20220907071311.60534-1-liujian56@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <166251212072.632004.16078953024905883328.stgit@devnote2>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.175.101.6]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ canpemm500010.china.huawei.com (7.192.105.118)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 07, 2022 at 09:55:21AM +0900, Masami Hiramatsu (Google) wrote:
+In sk_psock_backlog function, for ingress direction skb, if no new data
+packet arrives after the skb is cached, the cached skb does not have a
+chance to be added to the receive queue of psock. As a result, the cached
+skb cannot be received by the upper-layer application.
 
-> +/* Return the jump target address or 0 */
-> +static inline unsigned long insn_get_branch_addr(struct insn *insn)
-> +{
-> +	switch (insn->opcode.bytes[0]) {
-> +	case 0xe0:	/* loopne */
-> +	case 0xe1:	/* loope */
-> +	case 0xe2:	/* loop */
+Fix this by reschedule the psock work to dispose the cached skb in
+sk_msg_recvmsg function.
 
-Oh cute, objtool doesn't know about those, let me go add them.
+Fixes: 604326b41a6f ("bpf, sockmap: convert to generic sk_msg interface")
+Signed-off-by: Liu Jian <liujian56@huawei.com>
+---
+ net/core/skmsg.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-> +	case 0xe3:	/* jcxz */
-> +	case 0xe9:	/* near relative jump */
-
- /* JMP.d32 */
-
-> +	case 0xeb:	/* short relative jump */
-
- /* JMP.d8 */
-
-> +		break;
-> +	case 0x0f:
-> +		if ((insn->opcode.bytes[1] & 0xf0) == 0x80) /* jcc near */
-
- /* Jcc.d32 */
-
-Are the GNU AS names for these things.
-
-> +			break;
-> +		return 0;
-
-> +	default:
-> +		if ((insn->opcode.bytes[0] & 0xf0) == 0x70) /* jcc short */
-> +			break;
-> +		return 0;
-
-You could write that as:
-
-	case 0x70 ... 0x7f: /* Jcc.d8 */
-		break;
-
-	default:
-		return 0;
-
-> +	}
-> +	return (unsigned long)insn->next_byte + insn->immediate.value;
-> +}
-
+diff --git a/net/core/skmsg.c b/net/core/skmsg.c
+index 188f8558d27d..ca70525621c7 100644
+--- a/net/core/skmsg.c
++++ b/net/core/skmsg.c
+@@ -434,8 +434,10 @@ int sk_msg_recvmsg(struct sock *sk, struct sk_psock *psock, struct msghdr *msg,
+ 			if (copied + copy > len)
+ 				copy = len - copied;
+ 			copy = copy_page_to_iter(page, sge->offset, copy, iter);
+-			if (!copy)
+-				return copied ? copied : -EFAULT;
++			if (!copy) {
++				copied = copied ? copied : -EFAULT;
++				goto out;
++			}
+ 
+ 			copied += copy;
+ 			if (likely(!peek)) {
+@@ -455,7 +457,7 @@ int sk_msg_recvmsg(struct sock *sk, struct sk_psock *psock, struct msghdr *msg,
+ 				 * didn't copy the entire length lets just break.
+ 				 */
+ 				if (copy != sge->length)
+-					return copied;
++					goto out;
+ 				sk_msg_iter_var_next(i);
+ 			}
+ 
+@@ -477,7 +479,9 @@ int sk_msg_recvmsg(struct sock *sk, struct sk_psock *psock, struct msghdr *msg,
+ 		}
+ 		msg_rx = sk_psock_peek_msg(psock);
+ 	}
+-
++out:
++	if (psock->work_state.skb && copied > 0)
++		schedule_work(&psock->work);
+ 	return copied;
+ }
+ EXPORT_SYMBOL_GPL(sk_msg_recvmsg);
+-- 
+2.17.1
 
