@@ -2,105 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C96FF5AFA63
-	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 05:06:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03EEA5AFA6D
+	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 05:10:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229541AbiIGDGC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Sep 2022 23:06:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54672 "EHLO
+        id S229968AbiIGDKV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Sep 2022 23:10:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbiIGDF6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Sep 2022 23:05:58 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D35F886B75;
-        Tue,  6 Sep 2022 20:05:56 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id w2so17800006edc.0;
-        Tue, 06 Sep 2022 20:05:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=lZhl4GKNh72f6ovup18O37psKeuslqnMIGiRFdPU76Q=;
-        b=RCD3CfGkzkX2ogxVqAP1o0I0iO4u63lKMab7CUkWxpafhcP/27B/CzHvw89JugQLCE
-         oviELWoh5CqMn+DaAkfeKeCSti6hEuOGl47tgpOZDRlMwHTmSRGnCg/5fPFo/rGAWoE9
-         AxXKE5FZJ01NTgbgIidsTJaKudhIdVIbNnjrO/aTIDWdHRY/YGg3safFxLdG/HDrNnr1
-         IAzuyILjxPMoWV27PelaY/9cHlX4Tf2PvZnoeslJmQIvh+KxqrG2XG6JE5DR7F6Btt5b
-         Oo+7Fd1h9WLSlgRA2KvbZm2e8IpZT+DUMiC+XxPMa5zzGKgFK0LvmDrcoxH+z7aGqKkC
-         mm6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=lZhl4GKNh72f6ovup18O37psKeuslqnMIGiRFdPU76Q=;
-        b=4Wfy97KwE52eaRB+6AduykI03l7D469AVr91IP9TF5yV4Fq65ho8yezpilh8Y2cpP/
-         My5dg5Ei0rsCFLO8EOLZKWB28ohYfPCX5GpJh4o4A3xlyEEHAbII4LZ8OlApFyP1Me2h
-         CDEFWoMEj33RNVGNZYFNDC+ZsXiYk+etxdxi0tg9J/v1RL/bAU9x3i0tUm6PUswMQpDD
-         WIHqLtImxuQCWQ/QX5Pt73Xx5vg5xPMKX/Fqh1wZNm+G5RZlTppVNblc1wqeO22ttHwX
-         KliLMxMGGuTdRmyqDoe0aUMkYzGhbSUQ4LvRzwu79YkytshioNNAr6rjyPTV8Y7wC5+9
-         5Mmg==
-X-Gm-Message-State: ACgBeo063cfJcZVFZPHnFse2pZQJyNepWHlBfXbrS+7dGy9gGprjFdfw
-        nAJ2UVx6jCnEpmZUXT7aGKjvom0hPkQkwxfp1x8=
-X-Google-Smtp-Source: AA6agR5ZyoPwvG4+3ilgfNPiu54CYFcndyQtTG6z0EA+LSXSC2vH24jLhLuCSEb3R1/8KW2rWqQJYD7UCOjtmPLyMj0=
-X-Received: by 2002:a05:6402:28cd:b0:448:3856:41a3 with SMTP id
- ef13-20020a05640228cd00b00448385641a3mr1275640edb.6.1662519955333; Tue, 06
- Sep 2022 20:05:55 -0700 (PDT)
+        with ESMTP id S229449AbiIGDKU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Sep 2022 23:10:20 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A40DEE0DE
+        for <bpf@vger.kernel.org>; Tue,  6 Sep 2022 20:10:17 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 901506176A
+        for <bpf@vger.kernel.org>; Wed,  7 Sep 2022 03:10:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id E4F69C433D7;
+        Wed,  7 Sep 2022 03:10:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1662520217;
+        bh=HIW/MzMZZ83PvJ2IpR6giGIqQwW4S5k7rlkWwjm63bM=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=nZ2f3ZwG40YWq2E7CGvVCF7UXb8MhNPWA+pHPClY1zYLVS4cm9D0wONqvoxilsczH
+         R2p8AibjllKuQVuY+1lRcDtmkFJMbl614WcHGlJzGIner7lG/Qwhlzu3SfLtb444Ij
+         RwWpLVq/i65SkSZdpfTxBGSD8ey8LkEm7VW2TCCDCcsma/NRfRGev6prTnnD+KIk1/
+         VDI6xcCJsxYHiJfd1kpM1JZakcD/mXdTMza+PockHNtKarftlSTPVXRDINhxWb4bNA
+         3C3oPxAZVIdcM1mqtbnQFYAzz7gvHyChi2gyJcKFz3vJrU/M+FDDHRcAVZ3wXxcGJG
+         2pJNHZrv6NVWw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C7780E1CABE;
+        Wed,  7 Sep 2022 03:10:16 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20220906165131.59f395a9@canb.auug.org.au> <dab10759-c059-2254-116b-8360bc240e57@suse.cz>
- <CAADnVQJTDdA=vpQhrbAbX7oEQ=uaPXwAmjMzpW4Nk2Xi9f2JLA@mail.gmail.com>
-In-Reply-To: <CAADnVQJTDdA=vpQhrbAbX7oEQ=uaPXwAmjMzpW4Nk2Xi9f2JLA@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 6 Sep 2022 20:05:44 -0700
-Message-ID: <CAADnVQKJORAcV75CHE1yG6_+c8qnoOj6gf=zJG9vnWwR5+4SqQ@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the slab tree
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Marco Elver <elver@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v4 0/8] bpf: Support struct argument for trampoline
+ base progs
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166252021681.29304.3215686285897138920.git-patchwork-notify@kernel.org>
+Date:   Wed, 07 Sep 2022 03:10:16 +0000
+References: <20220831152641.2077476-1-yhs@fb.com>
+In-Reply-To: <20220831152641.2077476-1-yhs@fb.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kernel-team@fb.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 6, 2022 at 11:37 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Tue, Sep 6, 2022 at 12:53 AM Vlastimil Babka <vbabka@suse.cz> wrote:
-> >
-> > On 9/6/22 08:51, Stephen Rothwell wrote:
-> > > Hi all,
-> >
-> > Hi,
-> >
-> > > After merging the slab tree, today's linux-next build (powerpc
-> > > ppc64_defconfig) failed like this:
-> > >
-> > > kernel/bpf/memalloc.c: In function 'bpf_mem_free':
-> > > kernel/bpf/memalloc.c:613:33: error: implicit declaration of function '__ksize'; did you mean 'ksize'? [-Werror=implicit-function-declaration]
-> > >    613 |         idx = bpf_mem_cache_idx(__ksize(ptr - LLIST_NODE_SZ));
-> > >        |                                 ^~~~~~~
-> > >        |                                 ksize
-> >
-> > Could you use ksize() here? I'm guessing you picked __ksize() because
-> > kasan_unpoison_element() in mm/mempool.c did, but that's to avoid
-> > kasan_unpoison_range() in ksize() as this caller does it differently.
-> > AFAICS your function doesn't handle kasan differently, so ksize() should
-> > be fine.
->
-> Ok. Will change to use ksize().
+Hello:
 
-Just pushed the following commit to address the issue:
-https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=1e660f7ebe0ff6ac65ee0000280392d878630a67
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-It will get to net-next soon.
+On Wed, 31 Aug 2022 08:26:41 -0700 you wrote:
+> Currently struct arguments are not supported for trampoline based progs.
+> One of major reason is that struct argument may pass by value which may
+> use more than one registers. This breaks trampoline progs where
+> each argument is assumed to take one register. bcc community reported the
+> issue ([1]) where struct argument is not supported for fentry program.
+>   typedef struct {
+>         uid_t val;
+>   } kuid_t;
+>   typedef struct {
+>         gid_t val;
+>   } kgid_t;
+>   int security_path_chown(struct path *path, kuid_t uid, kgid_t gid);
+> Inside Meta, we also have a use case to attach to tcp_setsockopt()
+>   typedef struct {
+>         union {
+>                 void            *kernel;
+>                 void __user     *user;
+>         };
+>         bool            is_kernel : 1;
+>   } sockptr_t;
+>   int tcp_setsockopt(struct sock *sk, int level, int optname,
+>                      sockptr_t optval, unsigned int optlen);
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next,v4,1/8] bpf: Allow struct argument in trampoline based programs
+    https://git.kernel.org/bpf/bpf-next/c/720e6a435194
+  - [bpf-next,v4,2/8] bpf: x86: Support in-register struct arguments in trampoline programs
+    https://git.kernel.org/bpf/bpf-next/c/a9c5ad31fbdc
+  - [bpf-next,v4,3/8] bpf: Update descriptions for helpers bpf_get_func_arg[_cnt]()
+    https://git.kernel.org/bpf/bpf-next/c/27ed9353aec9
+  - [bpf-next,v4,4/8] bpf: arm64: No support of struct argument in trampoline programs
+    https://git.kernel.org/bpf/bpf-next/c/eb707dde264a
+  - [bpf-next,v4,5/8] libbpf: Add new BPF_PROG2 macro
+    https://git.kernel.org/bpf/bpf-next/c/34586d29f8df
+  - [bpf-next,v4,6/8] selftests/bpf: Add struct argument tests with fentry/fexit programs.
+    https://git.kernel.org/bpf/bpf-next/c/1642a3945e22
+  - [bpf-next,v4,7/8] selftests/bpf: Use BPF_PROG2 for some fentry programs without struct arguments
+    https://git.kernel.org/bpf/bpf-next/c/a7c2ca3a2f69
+  - [bpf-next,v4,8/8] selftests/bpf: Add tracing_struct test in DENYLIST.s390x
+    https://git.kernel.org/bpf/bpf-next/c/ae63c10fc241
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
