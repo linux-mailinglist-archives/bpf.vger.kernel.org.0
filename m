@@ -2,69 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B1C95B091A
-	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 17:47:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E1FF5B0938
+	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 17:52:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229979AbiIGPrM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Sep 2022 11:47:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50414 "EHLO
+        id S229869AbiIGPwV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Sep 2022 11:52:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230013AbiIGPqw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Sep 2022 11:46:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0E3AB95A0
-        for <bpf@vger.kernel.org>; Wed,  7 Sep 2022 08:46:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1662565596;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RpZB9X0DET31F7pJclkQNUipKM0FnFOUPz4JB+ooQnY=;
-        b=WBjf/fOrIRRZbWK8IXtGipUjEIhFd7vCGWrF64FDKYuoQA6xH31PpU4HbR2uOXRJo8c2hg
-        5PEMIgDYBKs9D1m9TujwuYgbwx8IADGR88SJb5ZiJoS04CTdP/XlWtF2OsjaIYLq135yzJ
-        bPE7DBjbW1ImfS1vr3am61BUxmqPGCA=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-554-pSXxsqiNPUWLKJjMVin8Pg-1; Wed, 07 Sep 2022 11:46:33 -0400
-X-MC-Unique: pSXxsqiNPUWLKJjMVin8Pg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E15878039B2;
-        Wed,  7 Sep 2022 15:46:32 +0000 (UTC)
-Received: from firesoul.localdomain (unknown [10.40.208.22])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A63C6C15BB3;
-        Wed,  7 Sep 2022 15:46:32 +0000 (UTC)
-Received: from [192.168.42.3] (localhost [IPv6:::1])
-        by firesoul.localdomain (Postfix) with ESMTP id A37D430721A6C;
-        Wed,  7 Sep 2022 17:46:31 +0200 (CEST)
-Subject: [PATCH RFCv2 bpf-next 18/18] ixgbe: AF_XDP xdp-hints processing in
- ixgbe_clean_rx_irq_zc
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     bpf@vger.kernel.org
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, netdev@vger.kernel.org,
-        xdp-hints@xdp-project.net, larysa.zaremba@intel.com,
-        memxor@gmail.com, Lorenzo Bianconi <lorenzo@kernel.org>,
-        mtahhan@redhat.com,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        dave@dtucker.co.uk, Magnus Karlsson <magnus.karlsson@intel.com>,
-        bjorn@kernel.org
-Date:   Wed, 07 Sep 2022 17:46:31 +0200
-Message-ID: <166256559162.1434226.13443800671075647862.stgit@firesoul>
-In-Reply-To: <166256538687.1434226.15760041133601409770.stgit@firesoul>
-References: <166256538687.1434226.15760041133601409770.stgit@firesoul>
-User-Agent: StGit/1.4
+        with ESMTP id S229712AbiIGPwT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Sep 2022 11:52:19 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 676CB40561
+        for <bpf@vger.kernel.org>; Wed,  7 Sep 2022 08:52:17 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id bj14so7826327wrb.12
+        for <bpf@vger.kernel.org>; Wed, 07 Sep 2022 08:52:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=6wind.com; s=google;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:reply-to:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date;
+        bh=NYzhmzD+Hlo+7fMnBjpgbj1puf06rcJdgGC2mEQ/ztA=;
+        b=LDxfrhEFnmzhrhYxmVz2myek1v8Bg4MQZrIBkKNIxjNF4GsBJfYRcaNQsrLU454+Zu
+         m2M2HNxKxBP3PTGgdMVhVMxjLitd7P9ehj2zQpmTRyfI1uxnISmUzWktA5MqkektQfDT
+         E467PnvS767e8UOwq0biUv1X5OjAnkPx4lXNpqD0FMYx4GuCqnVOQHjZE1iX7HlR285h
+         QSkmX64GTXSzBaHFD+cQzyaOEyse2CjJ1YP5YheOh0tfzQ19wjd1uihOhetibhAQCi4s
+         lgF42EhjbGXR5MpUDEgTRkxmIGThCEyB/us+RykzHCPcdcVx67w+gIZxiOCfDrulW2wH
+         F8XA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:reply-to:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date;
+        bh=NYzhmzD+Hlo+7fMnBjpgbj1puf06rcJdgGC2mEQ/ztA=;
+        b=VFufiZ69ftxxDAt5GfOI8RK4Fr1mMfh10AxlCgd1jlOSdynKIZrQLZFNfTOLYcxD6m
+         gGvuhKyDS0C/Ukv2M1ldU9grep6Q/yt5P/ykvzT3Ckpbq/UGYLeFOLphqzPzK4w8HaHb
+         A15VF3bkFlSkBjH1QE5F6gYqfURw64Tr+7KtVpEA65sgulE37/Xv5ZevFwWrzm9MBjPS
+         bFCbXmbgf23FjMojoup/lfPF098sAeF3ClF1/D5XkKIlJbMe0AQPi/O18RVV/QNXt36D
+         awMkWM1WkJrEyryL12iu/hqvMICgb9jheHwG8zGA7dFRl6rcEocZF2l9XhZaXeXUjau1
+         ZAJg==
+X-Gm-Message-State: ACgBeo3/sOUOj6WWr/sJwtSIBltvy3XdBbnwVHUDaI51aI6DPhnb8V27
+        fe77FfSImlPhu29Bbm54ku3i2g==
+X-Google-Smtp-Source: AA6agR6Ck/iuOSME6EjZf8jow12+0iA5PATS6wY7tjSqX+x7dYs/TYvadEnR8TtfnZ08Q6C4u32vow==
+X-Received: by 2002:a05:6000:18a1:b0:222:c54a:3081 with SMTP id b1-20020a05600018a100b00222c54a3081mr2463664wri.666.1662565935974;
+        Wed, 07 Sep 2022 08:52:15 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:b41:c160:d023:bfe9:4cda:fa70? ([2a01:e0a:b41:c160:d023:bfe9:4cda:fa70])
+        by smtp.gmail.com with ESMTPSA id e4-20020a5d65c4000000b00228cd9f6349sm9500020wrw.106.2022.09.07.08.52.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Sep 2022 08:52:14 -0700 (PDT)
+Message-ID: <953e16f5-80bd-2098-bd7f-5f4fd74ceaaa@6wind.com>
+Date:   Wed, 7 Sep 2022 17:52:13 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.85 on 10.11.54.8
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Reply-To: nicolas.dichtel@6wind.com
+Subject: Re: [PATCH nf-next] netfilter: nf_tables: add ebpf expression
+Content-Language: en-US
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Florian Westphal <fw@strlen.de>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@kernel.org>,
+        netfilter-devel <netfilter-devel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+References: <20220831101617.22329-1-fw@strlen.de> <87v8q84nlq.fsf@toke.dk>
+ <20220831125608.GA8153@breakpoint.cc> <87o7w04jjb.fsf@toke.dk>
+ <20220831135757.GC8153@breakpoint.cc> <87ilm84goh.fsf@toke.dk>
+ <20220831152624.GA15107@breakpoint.cc>
+ <CAADnVQJp5RJ0kZundd5ag-b3SDYir8cF4R_nVbN8Zj9Rcn0rww@mail.gmail.com>
+ <20220831155341.GC15107@breakpoint.cc>
+ <CAADnVQJGQmu02f5B=mc1xJvVWSmk_GNZj9WAUskekykmyo8FzA@mail.gmail.com>
+ <20220831215737.GE15107@breakpoint.cc>
+ <bf148d57-dab9-0e25-d406-332d1b28f045@6wind.com>
+ <CAADnVQLYcjhpVaFJ3vriDcv=bczXddRd=q83exNNPrgnvsCEAg@mail.gmail.com>
+From:   Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Organization: 6WIND
+In-Reply-To: <CAADnVQLYcjhpVaFJ3vriDcv=bczXddRd=q83exNNPrgnvsCEAg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,67 +93,33 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Maryam Tahhan <mtahhan@redhat.com>
 
-Add XDP-hints processing to the AF_XDP zero-copy code path.
+Le 07/09/2022 à 05:04, Alexei Starovoitov a écrit :
+> On Mon, Sep 5, 2022 at 11:57 PM Nicolas Dichtel
+> <nicolas.dichtel@6wind.com> wrote:
+>>
+>>
+>> Le 31/08/2022 à 23:57, Florian Westphal a écrit :
+>>> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+>>>>> This helps gradually moving towards move epbf for those that
+>>>>> still heavily rely on the classic forwarding path.
+>>>>
+>>>> No one is using it.
+>>>> If it was, we would have seen at least one bug report over
+>>>> all these years. We've seen none.
+>>>
+>>> Err, it IS used, else I would not have sent this patch.
+>>>
+>>>> very reasonable early on and turned out to be useless with
+>>>> zero users.
+>>>> BPF_PROG_TYPE_SCHED_ACT and BPF_PROG_TYPE_LWT*
+>>>> are in this category.
+>>>
+>>> I doubt it had 0 users.  Those users probably moved to something
+>>> better?
+>> We are using BPF_PROG_TYPE_SCHED_ACT to perform custom encapsulations.
+>> What could we used to replace that?
+> 
+> SCHED_CLS. It has all of the features of cls and act combined.
 
-Signed-off-by: Maryam Tahhan <mtahhan@redhat.com>
-Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
----
- drivers/net/ethernet/intel/ixgbe/ixgbe.h      |    3 +++
- drivers/net/ethernet/intel/ixgbe/ixgbe_main.c |    4 ++--
- drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c  |    2 ++
- 3 files changed, 7 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe.h b/drivers/net/ethernet/intel/ixgbe/ixgbe.h
-index 97b3fbd2de28..22eddadb3f7c 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe.h
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe.h
-@@ -1025,6 +1025,9 @@ void ixgbe_ptp_rx_pktstamp(struct ixgbe_q_vector *, struct sk_buff *);
- void ixgbe_ptp_rx_rgtstamp(struct ixgbe_q_vector *, struct sk_buff *skb);
- u64 ixgbe_ptp_convert_to_hwtstamp(struct ixgbe_adapter *adapter, u64 timestamp);
- u64 ixgbe_ptp_rx_hwtstamp_raw(struct ixgbe_adapter *adapter);
-+inline void ixgbe_process_xdp_hints(struct ixgbe_ring *ring,
-+						union ixgbe_adv_rx_desc *rx_desc,
-+						struct xdp_buff *xdp);
- static inline void ixgbe_ptp_rx_hwtstamp(struct ixgbe_ring *rx_ring,
- 					 union ixgbe_adv_rx_desc *rx_desc,
- 					 struct sk_buff *skb)
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-index dc371b4c65bb..18f00f2bacaf 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-@@ -1798,7 +1798,7 @@ static inline u32 ixgbe_rx_hash_xdp(struct ixgbe_ring *ring,
- 	return flags;
- }
- 
--static inline void ixgbe_process_xdp_hints(struct ixgbe_ring *ring,
-+inline void ixgbe_process_xdp_hints(struct ixgbe_ring *ring,
- 						union ixgbe_adv_rx_desc *rx_desc,
- 						struct xdp_buff *xdp)
- {
-@@ -2395,7 +2395,7 @@ static struct sk_buff *ixgbe_run_xdp(struct ixgbe_adapter *adapter,
- 	return ERR_PTR(-result);
- }
- 
--static unsigned int ixgbe_rx_frame_truesize(struct ixgbe_ring *rx_ring,
-+static inline unsigned int ixgbe_rx_frame_truesize(struct ixgbe_ring *rx_ring,
- 					    unsigned int size)
- {
- 	unsigned int truesize;
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
-index 1703c640a434..c3fb8f7660df 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
-@@ -304,7 +304,9 @@ int ixgbe_clean_rx_irq_zc(struct ixgbe_q_vector *q_vector,
- 		}
- 
- 		bi->xdp->data_end = bi->xdp->data + size;
-+		ixgbe_process_xdp_hints(rx_ring, rx_desc, bi->xdp);
- 		xsk_buff_dma_sync_for_cpu(bi->xdp, rx_ring->xsk_pool);
-+
- 		xdp_res = ixgbe_run_xdp_zc(adapter, rx_ring, bi->xdp);
- 
- 		if (likely(xdp_res & (IXGBE_XDP_TX | IXGBE_XDP_REDIR))) {
-
-
+Indeed, thanks.
