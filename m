@@ -2,186 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98B8B5B0A52
-	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 18:41:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D42E5B0AE6
+	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 19:01:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230297AbiIGQlX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Sep 2022 12:41:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43942 "EHLO
+        id S229478AbiIGRBg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Sep 2022 13:01:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230238AbiIGQlR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Sep 2022 12:41:17 -0400
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E3866F55D;
-        Wed,  7 Sep 2022 09:41:16 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id C06E65C0143;
-        Wed,  7 Sep 2022 12:41:15 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Wed, 07 Sep 2022 12:41:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-        :cc:content-transfer-encoding:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm1; t=1662568875; x=1662655275; bh=Yi
-        pKfE5H7K9Z8GqiZelawUT7boFvb7Vr7t0y/LekHjU=; b=NuK3uPYJVI4VwIsazO
-        MKYEM8cpzAXqUtbTu6FSAX4Ugx8QI2zubhFtYyvnspqgVE33BJzf6HLl3BIYzTag
-        waauXsxX54P3Z9eMX+LaHZzlsdp/j1RfuofpOXngviC7YPPNLyhAxEYexPICSmqx
-        +VVcdP/hoUGUc8ipXzVwLXOtU3e/5sAuyqzBjvPzEgzi9yPJpMuYr2N0uhaxA3sU
-        CTnIa4TOSB9bIxg/GbUVzeeDh29xqGfBVsSOryl0HEhg0fVPVGhYdJU9hDA5mbJS
-        bLnj6KoSv54Cfq1D9uHbXzkqkxx6IZRJTFLwcBs0JbH9TNCZDzpFE7F0Vgzcsahg
-        6uQQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1662568875; x=1662655275; bh=YipKfE5H7K9Z8
-        GqiZelawUT7boFvb7Vr7t0y/LekHjU=; b=ubAm8/hxHUIJDSTDNStqDEgXEUKNz
-        cdxLmOUdSwQavIQ0iTu28wYTdG1220vY16hif0UGjsQtprBBng31juPpetgK1c/W
-        Fsgi5+uc+bFfgnFMSAVtv7zq/YYlIqnuHeySeu7trNYYdec0mo5ZFanYPAexJLPO
-        UNqv0bzS9fyN8EYbmWjYhGD/P5RdMhGQNcxC7nXooFpRM3u4NjPvZcvzFbB3/qDO
-        cOsnLImFjtmNxOUhWBOfj/CNHPHhv/VDFiC0Sxvx2F1FXU6318tJ8Efj3+AdMofC
-        5LL5PhiUqgY6N2VqcyyXW2ybQ2K8uLDeXVRj3rc30lwkm1WC72mGnNHfA==
-X-ME-Sender: <xms:q8kYY7YCfB7E_WoD9nxkOoGa245k1bwzYqyS3zXR-CfQBMnETTEFOQ>
-    <xme:q8kYY6bH-gBgHErwcO-yhalfUCrgOG3MFQ3ng5mX_7h7xMNGMDDTwn1m2aUQj4q4Z
-    keStJ4lCXkKMZaxLw>
-X-ME-Received: <xmr:q8kYY999jrKx9eOrMnF8NH-dwepulzljkjQ_Hf9XxS22Wk3vPNmINOiVxRlvilQzrYQHS2ryfPo44dFZNNhS7AaFAbuF_SOgp2O-nAY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrfedttddguddtgecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecufghrlhcuvffnffculdejtddmnecujfgurhephf
-    fvvefufffkofgjfhgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcu
-    oegugihusegugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpefgfefggeejhfduie
-    ekvdeuteffleeifeeuvdfhheejleejjeekgfffgefhtddtteenucevlhhushhtvghrufhi
-    iigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:q8kYYxpeObwTzdTA7MyqirliUEXWvzpoMYtCHYJeoXcrppPQ91tqvg>
-    <xmx:q8kYY2oxNDeAPUloykw-Fx_-2NllS_CI8sID6lgSUx1k8D3vIhiyxg>
-    <xmx:q8kYY3TiPGC-U292WtMzUNkR-t95d7KCndPF_7wE-uJm-P4pymmGCA>
-    <xmx:q8kYYzR6YES2iOk9yxDFOpXOlrWmoYZC3fqujM_fDfDTNkKeWL6jQg>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 7 Sep 2022 12:41:14 -0400 (EDT)
-From:   Daniel Xu <dxu@dxuuu.xyz>
-To:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, memxor@gmail.com
-Cc:     Daniel Xu <dxu@dxuuu.xyz>, pablo@netfilter.org, fw@strlen.de,
-        toke@kernel.org, martin.lau@linux.dev,
-        netfilter-devel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v5 6/6] selftests/bpf: Add tests for writing to nf_conn:mark
-Date:   Wed,  7 Sep 2022 10:40:41 -0600
-Message-Id: <f78966b81b9349d2b8ebb4cee2caf15cb6b38ee2.1662568410.git.dxu@dxuuu.xyz>
-X-Mailer: git-send-email 2.37.1
-In-Reply-To: <cover.1662568410.git.dxu@dxuuu.xyz>
-References: <cover.1662568410.git.dxu@dxuuu.xyz>
+        with ESMTP id S229567AbiIGRBf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Sep 2022 13:01:35 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C35FAD998;
+        Wed,  7 Sep 2022 10:01:34 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id u9-20020a17090a1f0900b001fde6477464so18944151pja.4;
+        Wed, 07 Sep 2022 10:01:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date;
+        bh=TqbLb+KgxPbnQGfynSMlarvTL8mplWrZYa3AXE4SSEA=;
+        b=M0aSp3XVpFQ7bWIdvytb5uhz2wbLWyKSJsDmE9iidJ8FRw/dGS/Z3jvvkleFpXTenY
+         QvgPAhYJNZLM593j1hyz554JcYK8lZ17U3nLGgfYdjLbBQ9qrvhmKVafghSFKOweQsDt
+         49OmiKoUXdb3cmQeHkvJODY4gw4stBvrtAKYgAcbjSZQqbBBEg3vrUP+5nqp+OAAsjUB
+         1Op9sgJ3u9W1LoKbhiLq2DFuc2BbWHEHEaWGHqZ6uBfV7XfBwtUlKt7iTyXLlYJh6nmM
+         tRBVFjN8unCaFVD691+iDdrGPoPjsqPsGx0qb0NHCgUXsy5Kb3jqfIaZkSNQjtbTpZ2h
+         vPCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date;
+        bh=TqbLb+KgxPbnQGfynSMlarvTL8mplWrZYa3AXE4SSEA=;
+        b=iSyS21ESlm2QaQNNzLBqWgNWTRIwrq05npo6udclExtiUXYqXLo13g+68G+LlZAOyF
+         S+n9Po1Cm3AUMTLLg+n28AMOO9/AIYuO058d+8urNzRnfSYsUcoEGFip9ZNB7s368CMM
+         QFXFEywUbnIp0ZjgksaxySnf+VITIkyyBfCOUvl7Je+piOi0TDVkkzYkuZzsPTDlniuV
+         nRbo8CJyVPWwqugGYeJ0BkN4bpxeZL0K1UrYx+Q0hb4tsYRti87i4tT+pzNB1iX9cEe/
+         mEbv6vweQ5DXggNoPvM54hOj3OT/pFT+hqTUotFHIlYeZyiQpKKHEhuPAntIRhtZvUXP
+         6Hug==
+X-Gm-Message-State: ACgBeo20MZ9h6ir7xrjI7D3s6yxnYj3atXPUZPcwBF5B5nbgcfB4sQtf
+        o9KbWnDqQHVyqfS9NErIZDI=
+X-Google-Smtp-Source: AA6agR5XuW96crLv372qzBHFxbIiWvRWgr6yOvfA1vq/ggrJyf5TJOCYQNT8b+wBNPtAq3IvAjOTpw==
+X-Received: by 2002:a17:90b:1c8e:b0:1f7:524f:bfcc with SMTP id oo14-20020a17090b1c8e00b001f7524fbfccmr5080854pjb.132.1662570093582;
+        Wed, 07 Sep 2022 10:01:33 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
+        by smtp.gmail.com with ESMTPSA id e10-20020a17090301ca00b0016dbdf7b97bsm12654950plh.266.2022.09.07.10.01.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Sep 2022 10:01:33 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 7 Sep 2022 07:01:31 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Yafang Shao <laoar.shao@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, linux-mm <linux-mm@kvack.org>
+Subject: Re: [PATCH bpf-next v3 00/13] bpf: Introduce selectable memcg for
+ bpf map
+Message-ID: <YxjOawzlgE458ezL@slm.duckdns.org>
+References: <20220902023003.47124-1-laoar.shao@gmail.com>
+ <Yxi8I4fXXSCi6z9T@slm.duckdns.org>
+ <Yxi8i3eP4fDDv2+X@slm.duckdns.org>
+ <CAADnVQ+ZMCeKZOsb3GL0CnnZW0pxR0oDTUjqDczvbsVAViLs-Q@mail.gmail.com>
+ <YxjEQabWR/BQOzk5@slm.duckdns.org>
+ <CAADnVQLe4oGE8vrAMoJZ+xAT3BefyOv3EhwY3QVGBQn5x25DkQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_SUSPICIOUS_NTLD,
-        PDS_OTHER_BAD_TLD,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQLe4oGE8vrAMoJZ+xAT3BefyOv3EhwY3QVGBQn5x25DkQ@mail.gmail.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add a simple extension to the existing selftest to write to
-nf_conn:mark. Also add a failure test for writing to unsupported field.
+On Wed, Sep 07, 2022 at 09:27:09AM -0700, Alexei Starovoitov wrote:
+> On Wed, Sep 7, 2022 at 9:18 AM Tejun Heo <tj@kernel.org> wrote:
+> >
+> > Hello,
+> >
+> > On Wed, Sep 07, 2022 at 09:13:09AM -0700, Alexei Starovoitov wrote:
+> > > Hmm. We discussed this option already. We definitely don't want
+> > > to introduce an uapi knob that will allow anyone to skip memcg
+> > > accounting today and in the future.
+> >
+> > cgroup.memory boot parameter is how memcg provides last-resort workarounds
+> > for this sort of problems / regressions while they're being addressed. It's
+> > not a dynamically changeable or programmable thing. Just a boot time
+> > opt-out. That said, if you don't want it, you don't want it.
+> 
+> ahh. boot param.
+> Are you suggesting a global off switch ? Like nosocket and nokmem.
+> That would be a different story.
+> Need to think more about it. It could be ok.
 
-Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
----
- tools/testing/selftests/bpf/prog_tests/bpf_nf.c    |  2 ++
- tools/testing/selftests/bpf/progs/test_bpf_nf.c    |  9 +++++++--
- .../testing/selftests/bpf/progs/test_bpf_nf_fail.c | 14 ++++++++++++++
- 3 files changed, 23 insertions(+), 2 deletions(-)
+Yeah, nobpf or sth like that. An equivalent cgroup.memory parameter.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_nf.c b/tools/testing/selftests/bpf/prog_tests/bpf_nf.c
-index 544bf90ac2a7..ab9117ae7545 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_nf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_nf.c
-@@ -17,6 +17,7 @@ struct {
- 	{ "set_status_after_insert", "kernel function bpf_ct_set_status args#0 expected pointer to STRUCT nf_conn___init but" },
- 	{ "change_timeout_after_alloc", "kernel function bpf_ct_change_timeout args#0 expected pointer to STRUCT nf_conn but" },
- 	{ "change_status_after_alloc", "kernel function bpf_ct_change_status args#0 expected pointer to STRUCT nf_conn but" },
-+	{ "write_not_allowlisted_field", "no write support to nf_conn at off" },
- };
- 
- enum {
-@@ -113,6 +114,7 @@ static void test_bpf_nf_ct(int mode)
- 	ASSERT_LE(skel->bss->test_delta_timeout, 10, "Test for max ct timeout update");
- 	/* expected status is IPS_SEEN_REPLY */
- 	ASSERT_EQ(skel->bss->test_status, 2, "Test for ct status update ");
-+	ASSERT_EQ(skel->bss->test_insert_lookup_mark, 77, "Test for insert and lookup mark value");
- 	ASSERT_EQ(skel->data->test_exist_lookup, 0, "Test existing connection lookup");
- 	ASSERT_EQ(skel->bss->test_exist_lookup_mark, 43, "Test existing connection lookup ctmark");
- end:
-diff --git a/tools/testing/selftests/bpf/progs/test_bpf_nf.c b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
-index 2722441850cc..b5e7079701e8 100644
---- a/tools/testing/selftests/bpf/progs/test_bpf_nf.c
-+++ b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
-@@ -23,6 +23,7 @@ int test_insert_entry = -EAFNOSUPPORT;
- int test_succ_lookup = -ENOENT;
- u32 test_delta_timeout = 0;
- u32 test_status = 0;
-+u32 test_insert_lookup_mark = 0;
- __be32 saddr = 0;
- __be16 sport = 0;
- __be32 daddr = 0;
-@@ -144,6 +145,7 @@ nf_ct_test(struct nf_conn *(*lookup_fn)(void *, struct bpf_sock_tuple *, u32,
- 
- 		bpf_ct_set_timeout(ct, 10000);
- 		bpf_ct_set_status(ct, IPS_CONFIRMED);
-+		ct->mark = 77;
- 
- 		ct_ins = bpf_ct_insert_entry(ct);
- 		if (ct_ins) {
-@@ -157,6 +159,7 @@ nf_ct_test(struct nf_conn *(*lookup_fn)(void *, struct bpf_sock_tuple *, u32,
- 				test_delta_timeout = ct_lk->timeout - bpf_jiffies64();
- 				test_delta_timeout /= CONFIG_HZ;
- 				test_status = IPS_SEEN_REPLY;
-+				test_insert_lookup_mark = ct_lk->mark;
- 				bpf_ct_change_status(ct_lk, IPS_SEEN_REPLY);
- 				bpf_ct_release(ct_lk);
- 				test_succ_lookup = 0;
-@@ -175,8 +178,10 @@ nf_ct_test(struct nf_conn *(*lookup_fn)(void *, struct bpf_sock_tuple *, u32,
- 		       sizeof(opts_def));
- 	if (ct) {
- 		test_exist_lookup = 0;
--		if (ct->mark == 42)
--			test_exist_lookup_mark = 43;
-+		if (ct->mark == 42) {
-+			ct->mark++;
-+			test_exist_lookup_mark = ct->mark;
-+		}
- 		bpf_ct_release(ct);
- 	} else {
- 		test_exist_lookup = opts_def.error;
-diff --git a/tools/testing/selftests/bpf/progs/test_bpf_nf_fail.c b/tools/testing/selftests/bpf/progs/test_bpf_nf_fail.c
-index bf79af15c808..0e4759ab38ff 100644
---- a/tools/testing/selftests/bpf/progs/test_bpf_nf_fail.c
-+++ b/tools/testing/selftests/bpf/progs/test_bpf_nf_fail.c
-@@ -69,6 +69,20 @@ int lookup_insert(struct __sk_buff *ctx)
- 	return 0;
- }
- 
-+SEC("?tc")
-+int write_not_allowlisted_field(struct __sk_buff *ctx)
-+{
-+	struct bpf_ct_opts___local opts = {};
-+	struct bpf_sock_tuple tup = {};
-+	struct nf_conn *ct;
-+
-+	ct = bpf_skb_ct_lookup(ctx, &tup, sizeof(tup.ipv4), &opts, sizeof(opts));
-+	if (!ct)
-+		return 0;
-+	ct->status = 0xF00;
-+	return 0;
-+}
-+
- SEC("?tc")
- int set_timeout_after_insert(struct __sk_buff *ctx)
- {
+Thanks.
+
 -- 
-2.37.1
-
+tejun
