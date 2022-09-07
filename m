@@ -2,85 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F8D35AFCFC
-	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 09:00:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD9EE5AFD13
+	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 09:06:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230101AbiIGHAz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Sep 2022 03:00:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40412 "EHLO
+        id S229628AbiIGHG4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Sep 2022 03:06:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230081AbiIGHAs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Sep 2022 03:00:48 -0400
-Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 383596D566;
-        Wed,  7 Sep 2022 00:00:14 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.229])
-        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4MMtM842RNz9yN0j;
-        Wed,  7 Sep 2022 14:56:04 +0800 (CST)
-Received: from roberto-ThinkStation-P620 (unknown [10.204.63.22])
-        by APP2 (Coremail) with SMTP id GxC2BwBX011QQRhjeCYrAA--.25373S2;
-        Wed, 07 Sep 2022 07:59:43 +0100 (CET)
-Message-ID: <d520738c0a3f7eb13ce9d7c9a0f6f6e18501a495.camel@huaweicloud.com>
-Subject: Re: [PATCH v16 06/12] bpf: Add bpf_lookup_*_key() and bpf_key_put()
- kfuncs
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>,
-        keyrings@vger.kernel.org,
-        LSM List <linux-security-module@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Daniel =?ISO-8859-1?Q?M=FCller?= <deso@posteo.net>,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Date:   Wed, 07 Sep 2022 08:59:25 +0200
-In-Reply-To: <CAADnVQLT9nSEqprcX_hmTeAYGVA9cWupVEfvhnyPuzWwrGKHcQ@mail.gmail.com>
-References: <20220905143318.1592015-1-roberto.sassu@huaweicloud.com>
-         <20220905143318.1592015-7-roberto.sassu@huaweicloud.com>
-         <CAP01T74HKXuf9Aig4v3zsL1rwQAGRpUtTiaN2djWsMiJmaqF_A@mail.gmail.com>
-         <663480e6bdfd9809c9e367bfc8df95d7a1323723.camel@huaweicloud.com>
-         <CAADnVQLT9nSEqprcX_hmTeAYGVA9cWupVEfvhnyPuzWwrGKHcQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        with ESMTP id S229486AbiIGHGy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Sep 2022 03:06:54 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 351B184EF2;
+        Wed,  7 Sep 2022 00:06:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=LomlCPM6yTE1Gu1LvPHSTZqH0XKNAKGROehmM9dPqmo=; b=An+xOFX3tmOB1j9dGfCKYEJ3Ph
+        B3F7zYFOKpKzKKaaFwTj5ZPciSmJUPJ1DzMoG/man4/KFRrmb9evBprsTjFcthWlZW+D5rgc6wrN2
+        PdgP9xuXnBJFHyyJssjVm8q1xoOwEYWwsgiUfQXlJ0/e6Ra9iiFN+jCbrBnwAzjTrcuhrh/LCXN3B
+        j68L6YRpMfR743b84xbEX1QkRJyNLE+3Hei2SKwLfzV55cEIWnWUqhFHobHegirP/8vdBp1g510qK
+        weWZW+CiCW1FdyrlpbqasEtMjhU/a55zUTbHR7IXaWztoy26W3EwnKCh5AVonjG/6LTNpnhTVNnpq
+        ub8r34Rg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1oVp96-00B98K-0F; Wed, 07 Sep 2022 07:06:48 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2C6243003B0;
+        Wed,  7 Sep 2022 09:06:45 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 14088203BF6B4; Wed,  7 Sep 2022 09:06:45 +0200 (CEST)
+Date:   Wed, 7 Sep 2022 09:06:44 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Suleiman Souhlal <suleiman@google.com>,
+        bpf <bpf@vger.kernel.org>, linux-kernel@vger.kernel.org,
+        Borislav Petkov <bp@suse.de>,
+        Josh Poimboeuf <jpoimboe@kernel.org>, x86@kernel.org
+Subject: Re: [PATCH 1/2] x86/kprobes: Fix kprobes instruction boudary check
+ with CONFIG_RETHUNK
+Message-ID: <YxhDBAhYrs0Sfqjt@hirez.programming.kicks-ass.net>
+References: <166251211081.632004.1842371136165709807.stgit@devnote2>
+ <166251212072.632004.16078953024905883328.stgit@devnote2>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: GxC2BwBX011QQRhjeCYrAA--.25373S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7GFWfZrykZw13Cry7tw17Awb_yoWkJFg_Zr
-        4xCrZ3Zr1UZF1UGrs8tFW3Xa1qyF1kJF10va48t39xWwsrAF48JFWUCrySvFWfGa1xJa43
-        Gws5uFyrX34I9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb78YFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I6I8E6xAIw20E
-        Y4v20xvaj40_JFC_Wr1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-        A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUJVWUCwA2z4x0Y4vE2Ix0cI8IcVCY1x02
-        67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r1j6r4UM28EF7xvwVC2z280aVCY1x0267
-        AKxVW8JVW8Jr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
-        j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
-        kEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY0x0E
-        wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
-        80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0
-        I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04
-        k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY
-        1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1c4S7UUUUU==
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAIBF1jj4KxsgABs8
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <166251212072.632004.16078953024905883328.stgit@devnote2>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -89,42 +63,53 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 2022-09-06 at 11:45 -0700, Alexei Starovoitov wrote:
-> On Tue, Sep 6, 2022 at 1:01 AM Roberto Sassu
-> <roberto.sassu@huaweicloud.com> wrote:
-> > > > +struct bpf_key *bpf_lookup_user_key(u32 serial, u64 flags)
-> > > > +{
-> > > > +       key_ref_t key_ref;
-> > > > +       struct bpf_key *bkey;
-> > > > +
-> > > > +       if (flags & ~KEY_LOOKUP_ALL)
-> > > > +               return NULL;
-> > > > +
-> > > > +       /*
-> > > > +        * Permission check is deferred until the key is used,
-> > > > as
-> > > > the
-> > > > +        * intent of the caller is unknown here.
-> > > > +        */
-> > > > +       key_ref = lookup_user_key(serial, flags,
-> > > > KEY_DEFER_PERM_CHECK);
-> > > > +       if (IS_ERR(key_ref))
-> > > > +               return NULL;
-> > > > +
-> > > > +       bkey = kmalloc(sizeof(*bkey), GFP_ATOMIC);
-> > > 
-> > > Since this function (due to lookup_user_key) is sleepable, do we
-> > > really need GFP_ATOMIC here?
-> > 
-> > Daniel suggested it for bpf_lookup_system_key(), so that the kfunc
-> > does
-> > not have to be sleepable.
-> 
-> Hold on. It has to be sleepable. Just take a look
-> at what lookup_user_key is doing inside.
-> 
+On Wed, Sep 07, 2022 at 09:55:21AM +0900, Masami Hiramatsu (Google) wrote:
 
-https://lore.kernel.org/bpf/2b1d62ad-af4b-4694-ecc8-639fbd821a05@iogearbox.net/
+> +/* Return the jump target address or 0 */
+> +static inline unsigned long insn_get_branch_addr(struct insn *insn)
+> +{
+> +	switch (insn->opcode.bytes[0]) {
+> +	case 0xe0:	/* loopne */
+> +	case 0xe1:	/* loope */
+> +	case 0xe2:	/* loop */
 
-Roberto
+Oh cute, objtool doesn't know about those, let me go add them.
+
+> +	case 0xe3:	/* jcxz */
+> +	case 0xe9:	/* near relative jump */
+
+ /* JMP.d32 */
+
+> +	case 0xeb:	/* short relative jump */
+
+ /* JMP.d8 */
+
+> +		break;
+> +	case 0x0f:
+> +		if ((insn->opcode.bytes[1] & 0xf0) == 0x80) /* jcc near */
+
+ /* Jcc.d32 */
+
+Are the GNU AS names for these things.
+
+> +			break;
+> +		return 0;
+
+> +	default:
+> +		if ((insn->opcode.bytes[0] & 0xf0) == 0x70) /* jcc short */
+> +			break;
+> +		return 0;
+
+You could write that as:
+
+	case 0x70 ... 0x7f: /* Jcc.d8 */
+		break;
+
+	default:
+		return 0;
+
+> +	}
+> +	return (unsigned long)insn->next_byte + insn->immediate.value;
+> +}
+
 
