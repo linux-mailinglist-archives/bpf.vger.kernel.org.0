@@ -2,149 +2,345 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 456EF5B0818
-	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 17:10:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 552EE5B0860
+	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 17:21:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230326AbiIGPKU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Sep 2022 11:10:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43266 "EHLO
+        id S230428AbiIGPV0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Sep 2022 11:21:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbiIGPKT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Sep 2022 11:10:19 -0400
-Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF67B30F7D;
-        Wed,  7 Sep 2022 08:10:14 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.229])
-        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4MN5Bs5Dljz9xHvx;
-        Wed,  7 Sep 2022 23:04:37 +0800 (CST)
-Received: from roberto-ThinkStation-P620 (unknown [10.204.63.22])
-        by APP2 (Coremail) with SMTP id GxC2BwBHw10qtBhjIYssAA--.26582S2;
-        Wed, 07 Sep 2022 16:09:42 +0100 (CET)
-Message-ID: <d447540b5adce25efaa29ef1bce001f2bc0a2d12.camel@huaweicloud.com>
-Subject: Re: [PATCH v16 00/12] bpf: Add kfuncs for PKCS#7 signature
- verification
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
-        dhowells@redhat.com, jarkko@kernel.org, rostedt@goodmis.org,
-        mingo@redhat.com, paul@paul-moore.com, jmorris@namei.org,
-        serge@hallyn.com, shuah@kernel.org, bpf@vger.kernel.org,
-        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        deso@posteo.net, Roberto Sassu <roberto.sassu@huawei.com>
-Date:   Wed, 07 Sep 2022 17:09:29 +0200
-In-Reply-To: <CAP01T764z59qczE37=jf-zPkS2zPuzDyCjdngBDnG-GOovG-rQ@mail.gmail.com>
-References: <20220905143318.1592015-1-roberto.sassu@huaweicloud.com>
-         <CAP01T77aq-UP02JYp1Vu-LE--K1ieCyfKfyZPw-a7DDKQ7_F+g@mail.gmail.com>
-         <b846cedb14235db6950a55e7eec2eff9e9ab56ec.camel@huaweicloud.com>
-         <57cedc7a3008248b5147d03e2f4bd0b33ad9a146.camel@huaweicloud.com>
-         <CAP01T764z59qczE37=jf-zPkS2zPuzDyCjdngBDnG-GOovG-rQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        with ESMTP id S230429AbiIGPVY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Sep 2022 11:21:24 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 435FCA9261;
+        Wed,  7 Sep 2022 08:21:20 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2702B106F;
+        Wed,  7 Sep 2022 08:21:26 -0700 (PDT)
+Received: from [10.57.77.239] (unknown [10.57.77.239])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D11303F71A;
+        Wed,  7 Sep 2022 08:21:15 -0700 (PDT)
+Message-ID: <d5fdbae3-aaf0-e837-d7e6-05e9d3af7e4c@arm.com>
+Date:   Wed, 7 Sep 2022 16:21:14 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH 1/8] perf arm64: Send pointer auth masks to ring buffer
+Content-Language: en-US
+To:     "peterz@infradead.org" <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Tom Rix <trix@redhat.com>,
+        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, llvm@lists.linux.dev,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Andrew Kilroy <andrew.kilroy@arm.com>
+References: <20220704145333.22557-1-andrew.kilroy@arm.com>
+ <20220704145333.22557-2-andrew.kilroy@arm.com> <YvOxOBzsbjX1rMdY@kernel.org>
+From:   James Clark <james.clark@arm.com>
+In-Reply-To: <YvOxOBzsbjX1rMdY@kernel.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: GxC2BwBHw10qtBhjIYssAA--.26582S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxZw1fGryUJrWxGF1kuw1xZrb_yoW5Xr1UpF
-        W8AFy5KF4ktryUCw4xKry5uFy8t3y7JF12qrn8t34UZas0vr1FkFWIyr43uFWq9r1kCw1a
-        v39IqFy7Xr1DAaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkIb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I
-        0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8C
-        rVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4
-        IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY
-        0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I
-        0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAI
-        cVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UMIIF0x
-        vE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
-        87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7IUbHa0PUUUUU==
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAIBF1jj365RQAAs9
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-11.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 2022-09-07 at 16:57 +0200, Kumar Kartikeya Dwivedi wrote:
-> On Wed, 7 Sept 2022 at 16:49, Roberto Sassu
-> <roberto.sassu@huaweicloud.com> wrote:
-> > On Tue, 2022-09-06 at 09:35 +0200, Roberto Sassu wrote:
-> > > On Mon, 2022-09-05 at 21:26 +0200, Kumar Kartikeya Dwivedi wrote:
-> > > > On Mon, 5 Sept 2022 at 16:34, Roberto Sassu
-> > > > <roberto.sassu@huaweicloud.com> wrote:
-> > > > > From: Roberto Sassu <roberto.sassu@huawei.com>
-> > > > > 
-> > > > > One of the desirable features in security is the ability to
-> > > > > restrict import
-> > > > > of data to a given system based on data authenticity. If data
-> > > > > import can be
-> > > > > restricted, it would be possible to enforce a system-wide
-> > > > > policy
-> > > > > based on
-> > > > > the signing keys the system owner trusts.
-> > > > > 
-> > > > > This feature is widely used in the kernel. For example, if
-> > > > > the
-> > > > > restriction
-> > > > > is enabled, kernel modules can be plugged in only if they are
-> > > > > signed with a
-> > > > > key whose public part is in the primary or secondary keyring.
-> > > > > 
-> > > > > For eBPF, it can be useful as well. For example, it might be
-> > > > > useful
-> > > > > to
-> > > > > authenticate data an eBPF program makes security decisions
-> > > > > on.
-> > > > > 
-> > > > > [...]
-> > > > 
-> > > > CI is crashing with NULL deref for test_progs-no_alu32 with
-> > > > llvm-
-> > > > 16,
-> > > > but I don't think the problem is in this series. This is most
-> > > > likely
-> > > > unrelated to BPF, as the crash happens inside
-> > > > kernel/time/tick-sched.c:tick_nohz_restart_sched_tick.
-> > > > 
-> > > > This was the same case in
-> > > > https://lore.kernel.org/bpf/CAP01T74steDfP6O8QOshoto3e3RnHhKtAeTbnrPBZS3YJXjvbA@mail.gmail.com.
-> > > > 
-> > > > So,
-> > > > https://github.com/kernel-patches/bpf/runs/8194263557?check_suite_focus=true
-> > > > and
-> > > > https://github.com/kernel-patches/bpf/runs/7982907380?check_suite_focus=true
-> > > > 
-> > > > look similar to me, and may not be related to BPF. They only
-> > > > trigger
-> > > > during runs compiled using LLVM 16, so maybe some compiler
-> > > > transformation is surfacing the problem?
-> > > 
-> > > Yes, I saw that too. Not sure what the cause could be.
-> > > 
-> > 
-> > Another occurrence, this time with gcc:
-> > 
-> > https://github.com/robertosassu/vmtest/runs/8230071814?check_suite_focus=true
-> > 
+
+
+On 10/08/2022 14:23, Arnaldo Carvalho de Melo wrote:
+> Em Mon, Jul 04, 2022 at 03:53:25PM +0100, Andrew Kilroy escreveu:
+>> Perf report cannot produce callgraphs using dwarf on arm64 where pointer
+>> authentication is enabled.  This is because libunwind and libdw cannot
+>> unmangle instruction pointers that have a pointer authentication code
+>> (PAC) embedded in them.
+>>
+>> libunwind and libdw need to be given an instruction mask which they can
+>> use to arrive at the correct return address that does not contain the
+>> PAC.
+>>
+>> The bits in the return address that contain the PAC can differ by
+>> process, so this patch adds a new sample field PERF_SAMPLE_ARCH_1
+>> to allow the kernel to send the masks up to userspace perf.
+>>
+>> This field can be used in a architecture specific fashion, but on
+>> aarch64, it contains the ptrauth mask information.
 > 
-> ... and it seems like this run does not even have your patches,
-> right?
+> I'm not seeing this kernel patch applied to tip/master or
+> torvalds/master, what is the status of that part? Then I can look at the
+> tooling part.
 > 
 
-Uhm, the kernel patches are there. The tests except the verifier ones
-weren't successfuly applied, probably due to the deny list.
+Hi Peter,
 
-One thing in common with the failures seems when the panic happens,
-when test_progs reaches verif_twfw. I will try to execute this and
-earlier tests to reproduce the panic locally.
+I just left my review tag for the whole set, is it ok by you to apply
+the first commit?
 
-Roberto
+I'm not 100% sure of the process because it has some kernel/events
+changes and arch/arm64 in the same commit. And I'm also not sure if
+there is consensus about the new PERF_SAMPLE_ARCH_1 bit. There was a
+comment from Vince Weaver but I don't agree that perf_event_open should
+or can ever be completely generic so it's not a huge issue for me. And
+there weren't any other comments against adding it.
 
+Thanks
+James
+
+> - Arnaldo
+>  
+>> Signed-off-by: Andrew Kilroy <andrew.kilroy@arm.com>
+>> ---
+>>  arch/arm64/include/asm/arch_sample_data.h | 38 +++++++++++++++++++++++
+>>  arch/arm64/kernel/Makefile                |  2 +-
+>>  arch/arm64/kernel/arch_sample_data.c      | 37 ++++++++++++++++++++++
+>>  include/linux/perf_event.h                | 24 ++++++++++++++
+>>  include/uapi/linux/perf_event.h           |  5 ++-
+>>  kernel/events/core.c                      | 35 +++++++++++++++++++++
+>>  6 files changed, 139 insertions(+), 2 deletions(-)
+>>  create mode 100644 arch/arm64/include/asm/arch_sample_data.h
+>>  create mode 100644 arch/arm64/kernel/arch_sample_data.c
+>>
+>> diff --git a/arch/arm64/include/asm/arch_sample_data.h b/arch/arm64/include/asm/arch_sample_data.h
+>> new file mode 100644
+>> index 000000000000..83fda293b1fc
+>> --- /dev/null
+>> +++ b/arch/arm64/include/asm/arch_sample_data.h
+>> @@ -0,0 +1,38 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 */
+>> +
+>> +#ifndef _ASM_ARCH_SAMPLE_DATA_H
+>> +#define _ASM_ARCH_SAMPLE_DATA_H
+>> +
+>> +#include <linux/types.h>
+>> +
+>> +/*
+>> + * Structure holding masks to help userspace stack unwinding
+>> + * in the presence of arm64 pointer authentication.
+>> + */
+>> +struct ptrauth_info {
+>> +	/*
+>> +	 * Bits 0, 1, 2, 3, 4 may be set to on, to indicate which keys are being used
+>> +	 * The APIAKEY, APIBKEY, APDAKEY, APDBKEY, or the APGAKEY respectively.
+>> +	 * Where all bits are off, pointer authentication is not in use for the
+>> +	 * process.
+>> +	 */
+>> +	u64 enabled_keys;
+>> +
+>> +	/*
+>> +	 * The on bits represent which bits in an instruction pointer
+>> +	 * constitute the pointer authentication code.
+>> +	 */
+>> +	u64 insn_mask;
+>> +
+>> +	/*
+>> +	 * The on bits represent which bits in a data pointer constitute the
+>> +	 * pointer authentication code.
+>> +	 */
+>> +	u64 data_mask;
+>> +};
+>> +
+>> +struct arch_sample_data {
+>> +	struct ptrauth_info ptrauth;
+>> +};
+>> +
+>> +#endif
+>> diff --git a/arch/arm64/kernel/Makefile b/arch/arm64/kernel/Makefile
+>> index fa7981d0d917..843c6e0e2393 100644
+>> --- a/arch/arm64/kernel/Makefile
+>> +++ b/arch/arm64/kernel/Makefile
+>> @@ -44,7 +44,7 @@ obj-$(CONFIG_KUSER_HELPERS)		+= kuser32.o
+>>  obj-$(CONFIG_FUNCTION_TRACER)		+= ftrace.o entry-ftrace.o
+>>  obj-$(CONFIG_MODULES)			+= module.o
+>>  obj-$(CONFIG_ARM64_MODULE_PLTS)		+= module-plts.o
+>> -obj-$(CONFIG_PERF_EVENTS)		+= perf_regs.o perf_callchain.o
+>> +obj-$(CONFIG_PERF_EVENTS)		+= perf_regs.o perf_callchain.o arch_sample_data.o
+>>  obj-$(CONFIG_HW_PERF_EVENTS)		+= perf_event.o
+>>  obj-$(CONFIG_HAVE_HW_BREAKPOINT)	+= hw_breakpoint.o
+>>  obj-$(CONFIG_CPU_PM)			+= sleep.o suspend.o
+>> diff --git a/arch/arm64/kernel/arch_sample_data.c b/arch/arm64/kernel/arch_sample_data.c
+>> new file mode 100644
+>> index 000000000000..2d47e8db0dbe
+>> --- /dev/null
+>> +++ b/arch/arm64/kernel/arch_sample_data.c
+>> @@ -0,0 +1,37 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +
+>> +#include <asm/arch_sample_data.h>
+>> +#include <linux/perf_event.h>
+>> +
+>> +inline void perf_output_sample_arch_1(struct perf_output_handle *handle,
+>> +				      struct perf_event_header *header,
+>> +				      struct perf_sample_data *data,
+>> +				      struct perf_event *event)
+>> +{
+>> +	perf_output_put(handle, data->arch.ptrauth.enabled_keys);
+>> +	perf_output_put(handle, data->arch.ptrauth.insn_mask);
+>> +	perf_output_put(handle, data->arch.ptrauth.data_mask);
+>> +}
+>> +
+>> +inline void perf_prepare_sample_arch_1(struct perf_event_header *header,
+>> +				       struct perf_sample_data *data,
+>> +				       struct perf_event *event,
+>> +				       struct pt_regs *regs)
+>> +{
+>> +	struct task_struct *task = current;
+>> +	int keys_result = ptrauth_get_enabled_keys(task);
+>> +	u64 user_pac_mask = keys_result > 0 ? ptrauth_user_pac_mask() : 0;
+>> +
+>> +	data->arch.ptrauth.enabled_keys = keys_result > 0 ? keys_result : 0;
+>> +	data->arch.ptrauth.insn_mask = user_pac_mask;
+>> +	data->arch.ptrauth.data_mask = user_pac_mask;
+>> +
+>> +	header->size += (3 * sizeof(u64));
+>> +}
+>> +
+>> +inline int perf_event_open_request_arch_1(void)
+>> +{
+>> +	return 0;
+>> +}
+>> +
+>> +
+>> diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+>> index da759560eec5..8a99942989ce 100644
+>> --- a/include/linux/perf_event.h
+>> +++ b/include/linux/perf_event.h
+>> @@ -999,6 +999,29 @@ int perf_event_read_local(struct perf_event *event, u64 *value,
+>>  extern u64 perf_event_read_value(struct perf_event *event,
+>>  				 u64 *enabled, u64 *running);
+>>  
+>> +void perf_output_sample_arch_1(struct perf_output_handle *handle,
+>> +			       struct perf_event_header *header,
+>> +			       struct perf_sample_data *data,
+>> +			       struct perf_event *event);
+>> +
+>> +void perf_prepare_sample_arch_1(struct perf_event_header *header,
+>> +				struct perf_sample_data *data,
+>> +				struct perf_event *event,
+>> +				struct pt_regs *regs);
+>> +
+>> +int perf_event_open_request_arch_1(void);
+>> +
+>> +#if IS_ENABLED(CONFIG_ARM64)
+>> +
+>> +#define HAS_ARCH_SAMPLE_DATA
+>> +#include <asm/arch_sample_data.h>
+>> +
+>> +#endif
+>> +
+>> +#ifndef HAS_ARCH_SAMPLE_DATA
+>> +struct arch_sample_data {
+>> +};
+>> +#endif
+>>  
+>>  struct perf_sample_data {
+>>  	/*
+>> @@ -1041,6 +1064,7 @@ struct perf_sample_data {
+>>  	u64				cgroup;
+>>  	u64				data_page_size;
+>>  	u64				code_page_size;
+>> +	struct arch_sample_data		arch;
+>>  } ____cacheline_aligned;
+>>  
+>>  /* default value for data source */
+>> diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
+>> index d37629dbad72..821bf5ff6a19 100644
+>> --- a/include/uapi/linux/perf_event.h
+>> +++ b/include/uapi/linux/perf_event.h
+>> @@ -162,12 +162,15 @@ enum perf_event_sample_format {
+>>  	PERF_SAMPLE_DATA_PAGE_SIZE		= 1U << 22,
+>>  	PERF_SAMPLE_CODE_PAGE_SIZE		= 1U << 23,
+>>  	PERF_SAMPLE_WEIGHT_STRUCT		= 1U << 24,
+>> +	PERF_SAMPLE_ARCH_1			= 1U << 25,
+>>  
+>> -	PERF_SAMPLE_MAX = 1U << 25,		/* non-ABI */
+>> +	PERF_SAMPLE_MAX = 1U << 26,		/* non-ABI */
+>>  
+>>  	__PERF_SAMPLE_CALLCHAIN_EARLY		= 1ULL << 63, /* non-ABI; internal use */
+>>  };
+>>  
+>> +#define PERF_SAMPLE_ARM64_PTRAUTH PERF_SAMPLE_ARCH_1
+>> +
+>>  #define PERF_SAMPLE_WEIGHT_TYPE	(PERF_SAMPLE_WEIGHT | PERF_SAMPLE_WEIGHT_STRUCT)
+>>  /*
+>>   * values to program into branch_sample_type when PERF_SAMPLE_BRANCH is set
+>> diff --git a/kernel/events/core.c b/kernel/events/core.c
+>> index 80782cddb1da..89ab8120f4f0 100644
+>> --- a/kernel/events/core.c
+>> +++ b/kernel/events/core.c
+>> @@ -6957,6 +6957,29 @@ static inline bool perf_sample_save_hw_index(struct perf_event *event)
+>>  	return event->attr.branch_sample_type & PERF_SAMPLE_BRANCH_HW_INDEX;
+>>  }
+>>  
+>> +#ifndef HAS_ARCH_SAMPLE_DATA
+>> +
+>> +inline void perf_output_sample_arch_1(struct perf_output_handle *handle __maybe_unused,
+>> +				      struct perf_event_header *header __maybe_unused,
+>> +				      struct perf_sample_data *data __maybe_unused,
+>> +				      struct perf_event *event __maybe_unused)
+>> +{
+>> +}
+>> +
+>> +inline void perf_prepare_sample_arch_1(struct perf_event_header *header __maybe_unused,
+>> +				       struct perf_sample_data *data __maybe_unused,
+>> +				       struct perf_event *event __maybe_unused,
+>> +				       struct pt_regs *regs __maybe_unused)
+>> +{
+>> +}
+>> +
+>> +inline int perf_event_open_request_arch_1(void)
+>> +{
+>> +	return -EINVAL;
+>> +}
+>> +
+>> +#endif
+>> +
+>>  void perf_output_sample(struct perf_output_handle *handle,
+>>  			struct perf_event_header *header,
+>>  			struct perf_sample_data *data,
+>> @@ -7125,6 +7148,9 @@ void perf_output_sample(struct perf_output_handle *handle,
+>>  			perf_aux_sample_output(event, handle, data);
+>>  	}
+>>  
+>> +	if (sample_type & PERF_SAMPLE_ARCH_1)
+>> +		perf_output_sample_arch_1(handle, header, data, event);
+>> +
+>>  	if (!event->attr.watermark) {
+>>  		int wakeup_events = event->attr.wakeup_events;
+>>  
+>> @@ -7427,6 +7453,9 @@ void perf_prepare_sample(struct perf_event_header *header,
+>>  	if (sample_type & PERF_SAMPLE_CODE_PAGE_SIZE)
+>>  		data->code_page_size = perf_get_page_size(data->ip);
+>>  
+>> +	if (sample_type & PERF_SAMPLE_ARCH_1)
+>> +		perf_prepare_sample_arch_1(header, data, event, regs);
+>> +
+>>  	if (sample_type & PERF_SAMPLE_AUX) {
+>>  		u64 size;
+>>  
+>> @@ -12074,6 +12103,12 @@ SYSCALL_DEFINE5(perf_event_open,
+>>  			return err;
+>>  	}
+>>  
+>> +	if (attr.sample_type & PERF_SAMPLE_ARCH_1) {
+>> +		err = perf_event_open_request_arch_1();
+>> +		if (err)
+>> +			return err;
+>> +	}
+>> +
+>>  	/*
+>>  	 * In cgroup mode, the pid argument is used to pass the fd
+>>  	 * opened to the cgroup directory in cgroupfs. The cpu argument
+>> -- 
+>> 2.17.1
+> 
