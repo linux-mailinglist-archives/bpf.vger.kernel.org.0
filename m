@@ -2,51 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E67C5B022C
-	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 12:56:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D38D5B0297
+	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 13:14:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229734AbiIGK4m (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Sep 2022 06:56:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51374 "EHLO
+        id S229892AbiIGLOC convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 7 Sep 2022 07:14:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbiIGK4j (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Sep 2022 06:56:39 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E8A979EE0;
-        Wed,  7 Sep 2022 03:56:38 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id BB272B81C3A;
-        Wed,  7 Sep 2022 10:56:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA3B4C433D7;
-        Wed,  7 Sep 2022 10:56:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662548195;
-        bh=ZdsYhMNRXpa+siWudg20LQUtCs/Whh6WN4xVK2FTu/I=;
-        h=From:To:Cc:Subject:Date:From;
-        b=UFm9T+BznUL9mr8+3eDEA7WEmfxvcCsoVU3T0dRKyTUrIRhDgchu3J/Wje2o7WP7D
-         X5if8QDt17HvH4VJvCJef8EGvMx++frL/Rz69rnuh+7uDYofzpPsZIZNJP0yI6VkZZ
-         O7AW/xILMQ3/+sBsn9sgB83nWs24eGrctkmBRs16GOL8A1W23oGZFo1Zx58S1+OZb+
-         M53BD/rKhDG38Y4tM+DRuekickMYWITMaD5SsWSY2/uQIZuvAz+3k22RdiEEflQ5IL
-         pX4c2d6F6I6F3jPw7DN48tPVfeokREEZ0rdnuIhr1nZuWLnl2bkH364WdPF5q/0v2x
-         kgm7+I2aqp2UA==
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        edumazet@google.com, pabeni@redhat.com, pablo@netfilter.org,
-        fw@strlen.de, netfilter-devel@vger.kernel.org,
-        lorenzo.bianconi@redhat.com, brouer@redhat.com, toke@redhat.com,
-        memxor@gmail.com, song@kernel.org
-Subject: [PATCH bpf-next] selftests/bpf: fix ct status check in bpf_nf selftests
-Date:   Wed,  7 Sep 2022 12:56:20 +0200
-Message-Id: <f35b32f3303b7cb70a5e55f5fbe0bd3a1d38c9a6.1662548037.git.lorenzo@kernel.org>
-X-Mailer: git-send-email 2.37.3
+        with ESMTP id S229603AbiIGLOB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Sep 2022 07:14:01 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF3B61580C
+        for <bpf@vger.kernel.org>; Wed,  7 Sep 2022 04:13:59 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-197-OdM3Z-fmPGaTnTMnxUjYKQ-1; Wed, 07 Sep 2022 12:13:56 +0100
+X-MC-Unique: OdM3Z-fmPGaTnTMnxUjYKQ-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.38; Wed, 7 Sep
+ 2022 12:13:54 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.040; Wed, 7 Sep 2022 12:13:54 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Peter Zijlstra' <peterz@infradead.org>
+CC:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Suleiman Souhlal <suleiman@google.com>,
+        bpf <bpf@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Borislav Petkov" <bp@suse.de>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>
+Subject: RE: [PATCH] objtool,x86: Teach decode about LOOP* instructions
+Thread-Topic: [PATCH] objtool,x86: Teach decode about LOOP* instructions
+Thread-Index: AQHYwphvHqpJ+XEnbkqFHiF9z5Fi7a3Tq+bA///5wgCAACe7EA==
+Date:   Wed, 7 Sep 2022 11:13:54 +0000
+Message-ID: <7889af4b7bb84823aca1732fb0d14de5@AcuMS.aculab.com>
+References: <166251211081.632004.1842371136165709807.stgit@devnote2>
+ <166251212072.632004.16078953024905883328.stgit@devnote2>
+ <YxhDBAhYrs0Sfqjt@hirez.programming.kicks-ass.net>
+ <Yxhd4EMKyoFoH9y4@hirez.programming.kicks-ass.net>
+ <7ef4b0d724894ff394f9d8921f8c4332@AcuMS.aculab.com>
+ <Yxhm9HuSKSjznSzP@hirez.programming.kicks-ass.net>
+In-Reply-To: <Yxhm9HuSKSjznSzP@hirez.programming.kicks-ass.net>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -55,59 +67,53 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Check properly the connection tracking entry status configured running
-bpf_ct_change_status kfunc.
-Remove unnecessary IPS_CONFIRMED status configuration since it is
-already done during entry allocation.
+From: Peter Zijlstra
+> Sent: 07 September 2022 10:40
+> 
+> On Wed, Sep 07, 2022 at 09:06:12AM +0000, David Laight wrote:
+> > From: Peter Zijlstra
+> > > Sent: 07 September 2022 10:01
+> > >
+> > > On Wed, Sep 07, 2022 at 09:06:45AM +0200, Peter Zijlstra wrote:
+> > > > On Wed, Sep 07, 2022 at 09:55:21AM +0900, Masami Hiramatsu (Google) wrote:
+> > > >
+> > > > > +/* Return the jump target address or 0 */
+> > > > > +static inline unsigned long insn_get_branch_addr(struct insn *insn)
+> > > > > +{
+> > > > > +	switch (insn->opcode.bytes[0]) {
+> > > > > +	case 0xe0:	/* loopne */
+> > > > > +	case 0xe1:	/* loope */
+> > > > > +	case 0xe2:	/* loop */
+> > > >
+> > > > Oh cute, objtool doesn't know about those, let me go add them.
+> >
+> > Do they ever appear in the kernel?
+> 
+> No; that is, not on any of the random vmlinux.o images I checked this
+> morning.
+> 
+> Still, best to properly decode them anyway.
 
-Fixes: 6eb7fba007a7 ("selftests/bpf: Add tests for new nf_conntrack kfuncs")
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
----
- tools/testing/selftests/bpf/prog_tests/bpf_nf.c | 4 ++--
- tools/testing/selftests/bpf/progs/test_bpf_nf.c | 8 +++++---
- 2 files changed, 7 insertions(+), 5 deletions(-)
+It is annoying that cpu with adox/adcx have slow loop.
+You really want to be able to do:
+	1:	adox ...
+		adcx ...
+		loop	1b
+That would never run with one iteration/clock.
+But unrolling once would probably be enough.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_nf.c b/tools/testing/selftests/bpf/prog_tests/bpf_nf.c
-index 544bf90ac2a7..903d16e3abed 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_nf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_nf.c
-@@ -111,8 +111,8 @@ static void test_bpf_nf_ct(int mode)
- 	/* allow some tolerance for test_delta_timeout value to avoid races. */
- 	ASSERT_GT(skel->bss->test_delta_timeout, 8, "Test for min ct timeout update");
- 	ASSERT_LE(skel->bss->test_delta_timeout, 10, "Test for max ct timeout update");
--	/* expected status is IPS_SEEN_REPLY */
--	ASSERT_EQ(skel->bss->test_status, 2, "Test for ct status update ");
-+	/* expected status is IPS_CONFIRMED | IPS_SEEN_REPLY */
-+	ASSERT_EQ(skel->bss->test_status, 0xa, "Test for ct status update ");
- 	ASSERT_EQ(skel->data->test_exist_lookup, 0, "Test existing connection lookup");
- 	ASSERT_EQ(skel->bss->test_exist_lookup_mark, 43, "Test existing connection lookup ctmark");
- end:
-diff --git a/tools/testing/selftests/bpf/progs/test_bpf_nf.c b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
-index 2722441850cc..a3b9d32d1555 100644
---- a/tools/testing/selftests/bpf/progs/test_bpf_nf.c
-+++ b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
-@@ -143,7 +143,6 @@ nf_ct_test(struct nf_conn *(*lookup_fn)(void *, struct bpf_sock_tuple *, u32,
- 		struct nf_conn *ct_ins;
- 
- 		bpf_ct_set_timeout(ct, 10000);
--		bpf_ct_set_status(ct, IPS_CONFIRMED);
- 
- 		ct_ins = bpf_ct_insert_entry(ct);
- 		if (ct_ins) {
-@@ -156,8 +155,11 @@ nf_ct_test(struct nf_conn *(*lookup_fn)(void *, struct bpf_sock_tuple *, u32,
- 				bpf_ct_change_timeout(ct_lk, 10000);
- 				test_delta_timeout = ct_lk->timeout - bpf_jiffies64();
- 				test_delta_timeout /= CONFIG_HZ;
--				test_status = IPS_SEEN_REPLY;
--				bpf_ct_change_status(ct_lk, IPS_SEEN_REPLY);
-+
-+				bpf_ct_change_status(ct_lk,
-+						     IPS_CONFIRMED | IPS_SEEN_REPLY);
-+				test_status = ct_lk->status;
-+
- 				bpf_ct_release(ct_lk);
- 				test_succ_lookup = 0;
- 			}
--- 
-2.37.3
+What you can do (and gives the fastest IPcsum loop) is:
+	1:	jcxz	2f
+		....
+		lea	%rcx,...
+		jmp	1b
+	2:
+The extra instructions mean that needs unrolling 4 times.
+I've got over 12 bytes/clock that way.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
