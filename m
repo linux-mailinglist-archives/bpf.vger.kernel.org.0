@@ -2,38 +2,42 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66F7F5B00ED
-	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 11:53:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 587A45B01C6
+	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 12:21:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229800AbiIGJxY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Sep 2022 05:53:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45004 "EHLO
+        id S230464AbiIGKV4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Sep 2022 06:21:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229926AbiIGJxX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Sep 2022 05:53:23 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03FE6AED86;
-        Wed,  7 Sep 2022 02:53:21 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id D2753CE1B0A;
-        Wed,  7 Sep 2022 09:53:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA8EEC433D7;
-        Wed,  7 Sep 2022 09:53:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662544397;
-        bh=SoVSVoDeNFNPdZcLz1kUYVKzcVZLSHnQuHzOIPhXmsE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=uM0Mm0BzO+sEEpgI3+rBBmfz8T9FkFOkWg6G+7VliNTyRtwmCUq9ttBcNgWED5X8L
-         bceDgt0iWbSIunn24JuMi5o1KEfy8eiWGS9Px2diY0M3GIYC0ZErnLNnYSYbHhfD03
-         5ZXA2PIQc6G1C2rdUeOrXaVU9Sui7d+W360kXL1hdx/iFwwiOA6O1wPW/84wcYnmgB
-         uUuRO19OHO0esSS+HLHK0x5IJOK7ztfUngSfc4B04WTj3P6tbVd9fPU//o44iRfwpW
-         C4qAM1lGphzPR2G3BK11OB4NUhtb6fwEnZErUbmvFYpAdGT/UAFFoIR5i+2aiyy+vz
-         B5ATNTG01BVLg==
-Date:   Wed, 7 Sep 2022 18:53:12 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
+        with ESMTP id S230494AbiIGKVf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Sep 2022 06:21:35 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 525A9BB928;
+        Wed,  7 Sep 2022 03:19:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=1fH5lTZY7lQmt0IWsqcmVB1n5jzNzdsis9xUZCJTmIQ=; b=ftWDfnPgM0cLdEJqlAVK81kaJr
+        1kWcDQzrg6ONx3W+61Pd8n0DiP+q/KvOx6bvNHekc3JNnTco+EjQyqIpySaVvMXE5uQDzV3Yc5QXy
+        /0UC7qmfvhAG/VFzBKzNHdckGXehM+NahBzwystLfw35yJxrxf3qx2I/LKS3Mq+LdKwMfcAITtNb+
+        OO/W6XCgryjxyXxUjflkVWFJZhFHaVfJ/z7D9DgJfUd6kISO4sbqcVvR/IyMhArBU0jrcMLsDqPs9
+        OAQ4svWMwIwZy0h+hGwXKm+avpSJAqwBKti24abyKzh0AJ8sOt6N7TRSOmxUtxlNBeiDrEM/935vv
+        wkcQcqPw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1oVs9F-00BGKJ-Fh; Wed, 07 Sep 2022 10:19:09 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 762F330013F;
+        Wed,  7 Sep 2022 12:19:06 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2601F203C2334; Wed,  7 Sep 2022 12:19:06 +0200 (CEST)
+Date:   Wed, 7 Sep 2022 12:19:06 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
 Cc:     Steven Rostedt <rostedt@goodmis.org>,
         Ingo Molnar <mingo@kernel.org>,
         Suleiman Souhlal <suleiman@google.com>,
@@ -42,41 +46,31 @@ Cc:     Steven Rostedt <rostedt@goodmis.org>,
         Josh Poimboeuf <jpoimboe@kernel.org>, x86@kernel.org
 Subject: Re: [PATCH 1/2] x86/kprobes: Fix kprobes instruction boudary check
  with CONFIG_RETHUNK
-Message-Id: <20220907185312.3cc1c2c063912f1ca6f8ea2f@kernel.org>
-In-Reply-To: <YxhmnDqSkE8CP3UX@hirez.programming.kicks-ass.net>
+Message-ID: <YxhwGkmRy/kJa9fG@hirez.programming.kicks-ass.net>
 References: <166251211081.632004.1842371136165709807.stgit@devnote2>
-        <166251212072.632004.16078953024905883328.stgit@devnote2>
-        <YxhDBAhYrs0Sfqjt@hirez.programming.kicks-ass.net>
-        <20220907181218.41facc0902789c77e42170ea@kernel.org>
-        <YxhmnDqSkE8CP3UX@hirez.programming.kicks-ass.net>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-11.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+ <166251212072.632004.16078953024905883328.stgit@devnote2>
+ <YxhQIBKzi+L0KDhc@hirez.programming.kicks-ass.net>
+ <20220907184957.d41f085a998b2c7485353171@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220907184957.d41f085a998b2c7485353171@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 7 Sep 2022 11:38:36 +0200
-Peter Zijlstra <peterz@infradead.org> wrote:
+On Wed, Sep 07, 2022 at 06:49:57PM +0900, Masami Hiramatsu wrote:
+> Yeah, this looks good to me. What I just need is to add expanding
+> queue buffer. (can we use xarray for this purpose?)
 
-> On Wed, Sep 07, 2022 at 06:12:18PM +0900, Masami Hiramatsu wrote:
-> > OK, it should be updated. Where can I refer the names (especially '.dX' suffixes)?
-> 
-> https://sourceware.org/binutils/docs-2.23.1/as/i386_002dMnemonics.html
-> 
->   `.d8' or `.d32' suffix prefers 8bit or 32bit displacement in encoding.
+Yeah, xarray might just work.
 
-This is good to know. OK, I'll use this.
-
-Thanks!
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+I need to go fetch the kids from school, but if I remember I'll modify
+objtool to tell us the max number required here (for any one particular
+build obviously).
