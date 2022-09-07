@@ -2,62 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F19B5B0D30
-	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 21:27:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8EB15B0DDE
+	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 22:13:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229696AbiIGT11 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Sep 2022 15:27:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42270 "EHLO
+        id S230057AbiIGUNE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Sep 2022 16:13:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229538AbiIGT1X (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Sep 2022 15:27:23 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C09E49C23C;
-        Wed,  7 Sep 2022 12:27:22 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id u9so32710526ejy.5;
-        Wed, 07 Sep 2022 12:27:22 -0700 (PDT)
+        with ESMTP id S229938AbiIGUND (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Sep 2022 16:13:03 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D182CC0E72
+        for <bpf@vger.kernel.org>; Wed,  7 Sep 2022 13:13:01 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id dv25so3654030ejb.12
+        for <bpf@vger.kernel.org>; Wed, 07 Sep 2022 13:13:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date;
-        bh=rbxAstgqQfuNRBpq8Ijjwuhcg1t0lRJI30o99kg9RaE=;
-        b=Sh/WB+jjHBlF265aX/WN6UX25xxUxpmEI3nKIb2wM45O6t4c59fWhJCoiaMdz/VB94
-         sze/qLCkjh3WIKsqEoTx2n3tgKGeUiFgpAxUtWXDUmyLEJ8yglFrDl+BGjE2tsjbRTDW
-         Qym5v16+wmHyBH/5mZ3lnui8j8DC9sO2DnKhhDyeTKaPmV3YuHeGuRVcSuRLwWIQIytC
-         G3ddy+jEKi3/NSkU033q6y922lcANtPvaq4gscYclj8Iz0OqxuOIBbGdgsrMQoOf0Ss5
-         0TtnBPvCY/3Zw6Y58t3kVsods4HpENgLZuTlRun6YrQpVDT1N4ipCWZxsUiJuZBmiMKO
-         OE7w==
+        bh=/cqJlV0sE8kwmWT8dlmpA2i/xUkjsGME1Uaxd/mqJQ8=;
+        b=M3TcQSllXaiQXG3sJT+anH6I3IEKrSAB0rv5x4BdBhwG4ITipJbDMHCRKNhXJU4NeM
+         Z8zeFv2Ddqd1+h43eF36xv5DOlIhB7YgUV3ADhRuBiXPwsEJDxsoa/LVgeL8BGpWRi4Z
+         8Vzjv1CPqBCysPbtq9VMdniVdhPnQ68+TphNp+6XqdBaxq6ZITnW9uNehJd1GfwDa2Q0
+         /Nb3OPv/4fDj+1i2hwnjy+pyxnzTtMmaScBPbceirukRZzZUEyqSSalUENz/BcXgfHNq
+         aGQBNG8fpcepgH1WlaVX5ousQLyrh2Cz1mNPVM1uBjljlgG17a+nsmT3iIQJmUltJgeL
+         IF4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=rbxAstgqQfuNRBpq8Ijjwuhcg1t0lRJI30o99kg9RaE=;
-        b=lvffc5/9sxskdnWA0Y23aDZApbyX1cDFfuVmPCyIa1pCcFxFT0tBS2dte3u3mAapC1
-         Dcdc6e5vk6kXfAM3By7KsDt97jlvIUYdxy7kH6u1XhqRAbp1LZuaP76GQEoBZ07IwHv4
-         yrMrq6apQqXlKPSIBXKKUMgkwRsnfQyFgH3uQ4/l8GgWZnFA6a7iGw3EcerVoCY3MYP4
-         xpzg9HavqGs+DITZjU5FH60bdDaCaBlpDP9AeQ/b78AA731ZuE8/2dJpP59i7/wUTjFY
-         L0mWNzJLtaXxtVT2uTU+MMm1KJ3gWq6clYKr80r09tY8NWt2BxEcad+U/KZEQJiDHX/b
-         VgDA==
-X-Gm-Message-State: ACgBeo1NO1V3iTblKTcsEt4HBLR4CeeXT9pRj7xAG8kTNgFOAbmAnpev
-        2ZqZ0Vt5fh3J70IIdMCllzFUR5n14xihnNMfPHSNOwWk
-X-Google-Smtp-Source: AA6agR4s1eNvOleNU30EnuRzrWO3j/hdM68qK6928FAXaT+bYjQ/11p/3pjy7bUVZf2mcsKXTFzdcNK1qxf8nV7v6js=
-X-Received: by 2002:a17:907:7b94:b0:731:1b11:c241 with SMTP id
- ne20-20020a1709077b9400b007311b11c241mr3435121ejc.676.1662578841191; Wed, 07
- Sep 2022 12:27:21 -0700 (PDT)
+        bh=/cqJlV0sE8kwmWT8dlmpA2i/xUkjsGME1Uaxd/mqJQ8=;
+        b=xCON7ZiRg+9cJWby4JlrzculNfR/qC2Hub10K4/B81aJNRBg40c7ybAT9QGOULKaJl
+         8NjwN3BLwlixdXTdygdZ0uOxlIH8UOvMA7WSdz63ouGDnBI9bmCaMOqdKsVNgYjKu8kQ
+         g0vNF15xFM616WSIBuO+8EXAYXRKieHNVKUP5Dgt/HK8HW75VLcZNd0DVYwpc6Qu9hru
+         t1kwafvv8izC5Fyk5dD+dN+Q5QgaYUHef2Q22MHrOlJ/XHQ7gIB1g3YqMbJO3PYLhQ+/
+         fDiLbpX43RetE0IGL2vBh9e1HEC3M8NlUp1ci1HhTGe1hT32IveplYb3lr8HLXa1WB/P
+         /57Q==
+X-Gm-Message-State: ACgBeo3MK5FE2x0EtPHLUTLgulNWmtpEmM0YEhV4/IumVJSP8Sb8Brfj
+        XRsrPEpgEYR++t9mCa4nRHt+xdyJfr/6S4/I4cU=
+X-Google-Smtp-Source: AA6agR7xBlNmu73YTfIlAvLXuaOqMSw874LPD8w7dIe5m0DQ/JJYrP33JTeZ6qgMOzRp2qFc1+uoCH61oXMGdZakSYE=
+X-Received: by 2002:a17:907:3f15:b0:741:7ab9:1c5a with SMTP id
+ hq21-20020a1709073f1500b007417ab91c5amr3354978ejc.369.1662581580202; Wed, 07
+ Sep 2022 13:13:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220826184911.168442-1-stephen.s.brennan@oracle.com>
- <CAADnVQKbK__y8GOD4LqaX0aCgT+rtC5aw54-02mSZj1-U6_mgw@mail.gmail.com> <87sfl3j966.fsf@oracle.com>
-In-Reply-To: <87sfl3j966.fsf@oracle.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 7 Sep 2022 12:27:09 -0700
-Message-ID: <CAADnVQKbf5nEBnuSLmfZ_kGLmUzeD5htc1ezbJsVg72adF4bLw@mail.gmail.com>
-Subject: Re: [PATCH dwarves 0/7] Add support for generating BTF for all variables
-To:     Stephen Brennan <stephen.s.brennan@oracle.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alan Maguire <alan.maguire@oracle.com>
+References: <20220831233615.2288256-1-harshmodi@google.com>
+In-Reply-To: <20220831233615.2288256-1-harshmodi@google.com>
+From:   Joanne Koong <joannelkoong@gmail.com>
+Date:   Wed, 7 Sep 2022 13:12:49 -0700
+Message-ID: <CAJnrk1ZVbczXnJrd7NH-q6CV10eu5FytTgrGX_3SC_+G59P73Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: Add bpf_[skb|xdp]_packet_hash.
+To:     Harsh Modi <harshmodi@google.com>
+Cc:     bpf@vger.kernel.org, sdf@google.com, ast@kernel.org,
+        haoluo@google.com, quentin@isovalent.com, joe@cilium.io
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -69,57 +65,93 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 7, 2022 at 12:07 PM Stephen Brennan
-<stephen.s.brennan@oracle.com> wrote:
+On Wed, Aug 31, 2022 at 4:36 PM Harsh Modi <harshmodi@google.com> wrote:
 >
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
-> > On Fri, Aug 26, 2022 at 11:54 AM Stephen Brennan
-> > <stephen.s.brennan@oracle.com> wrote:
-> [...]
-> >> Future Work
-> >> -----------
-> >>
-> >> If this proves acceptable, I'd like to follow-up with a kernel patch to
-> >> add a configuration option (default=n) for generating BTF with all
-> >> variables, which distributions could choose to enable or not.
-> >>
-> >> There was previous discussion[3] about leveraging split BTF or building
-> >> additional kernel modules to contain the extra variables. I believe with
-> >> this patch series, it is possible to do that. However, I'd argue that
-> >> simpler is better here: the advantage for using BTF is having it all
-> >> available in the kernel/module image. Storing extra BTF on the
-> >> filesystem would break that advantage, and at that point, you'd be
-> >> better off using a debuginfo format like CTF, which is lightweight and
-> >> expected to be found on the filesystem.
-> >
-> > With all or nothing approach the distros would have a hard choice
-> > to make whether to enable that kconfig, increase BTF and consume
-> > extra memory without any obvious reason or just don't do it.
-> > Majority probably is not going to enable it.
-> > So the feature will become a single vendor only and with
-> > inevitable bit-rot.
+> eBPF currently does not have a good way to support more advanced
+> checksums like crc32c checksums. A bpf helper that allows users
+> to hash packet data from eBPF will use this.
 >
-> I'd intend to support it even if just a single distribution enabled it.
-> But I do see your concern.
-
-This thread was dormant for 8 days.
-That's a poor example of "intend to support".
-
-
-> > Whereas with split BTF and extra kernel module approach
-> > we can enable BTF with all global vars by default.
-> > The extra module will be shipped by all distros and tools
-> > like bpftrace might start using it.
+> Currently, it only supports crc32c, however, additional support for
+> new hashes can be supported by adding an additional enum and
+> implementing the corresponding code in net/core/filter.c.
 >
-> Split BTF is currently limited to a single base BTF file. We'd need more
-> patches for pahole to support multiple --btf_base files: e.g.
-> vmlinux.btf and vmlinux-variables.btf. There's also the question of
-> modules: presumably we wouldn't try to have "$MODULE" and
-> "$MODULE-btf-extra" modules due to the added complexity. I doubt the
-> space savings would be worth it.
+> Signed-off-by: Harsh Modi <harshmodi@google.com>
+> ---
+>  include/net/xdp.h                             |   3 +
+>  include/uapi/linux/bpf.h                      |  33 ++++
+>  net/core/filter.c                             | 100 +++++++++++
+>  net/core/xdp.c                                |  51 ++++++
+>  scripts/bpf_doc.py                            |   2 +
+>  tools/include/uapi/linux/bpf.h                |  33 ++++
+>  .../selftests/bpf/prog_tests/packet_hash.c    | 159 ++++++++++++++++++
+>  .../testing/selftests/bpf/progs/packet_hash.c | 125 ++++++++++++++
+>  8 files changed, 506 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/packet_hash.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/packet_hash.c
 >
-> I can look into these concerns, but if possible I would like to proceed
-> with this series, as it is a separate concern from the exact mechanism
-> by which we include extra BTF into the kernel.
+> diff --git a/include/net/xdp.h b/include/net/xdp.h
+> index 04c852c7a77f..cbfec47e391d 100644
+> --- a/include/net/xdp.h
+> +++ b/include/net/xdp.h
+> @@ -407,6 +407,9 @@ struct netdev_bpf;
+>  void xdp_attachment_setup(struct xdp_attachment_info *info,
+>                           struct netdev_bpf *bpf);
+>
+> +__wsum __xdp_checksum(struct xdp_buff *xdp, int offset, int len,
+> +                     __wsum csum, const struct skb_checksum_ops *ops);
+> +
+>  #define DEV_MAP_BULK_SIZE XDP_BULK_QUEUE_SIZE
+>
+>  #endif /* __LINUX_NET_XDP_H__ */
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 962960a98835..c8313a13a948 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -5386,6 +5386,25 @@ union bpf_attr {
+>   *     Return
+>   *             Current *ktime*.
+>   *
+> + * int bpf_skb_packet_hash(struct sk_buff *skb, struct bpf_packet_hash_params *params, void *hash, u32 len)
+> + *     Description
+> + *             Hash the packet data based on the parameters set in *params*.
+> + *             The hash will be set in *hash*. The value of *len* will be
+> + *             dependent on the hash algorithm.
+> + *             Currently only crc32c is supported.
+> + *
+> + *     Return
+> + *             0 on success, or negative errno if there is an error.
+> + *
+> + * int bpf_xdp_packet_hash(struct xdp_buff *xdp, struct bpf_packet_hash_params *params, void *hash, u32 len)
+> + *     Description
+> + *             Hash the packet data based on the parameters set in *params*.
+> + *             The hash will be set in *hash*. The value of *len* will be
+> + *             dependent on the hash algorithm.
+> + *             Currently only crc32c is supported.
+> + *
+> + *     Return
+> + *             0 on success, or negative errno if there is an error.
+>   */
 
-Not an option. Sorry.
+What are your thoughts on having a more generic hashing helper? I'm
+thinking about something like
+
+bpf_dynptr_hash(enum bpf_hash hash_type, struct bpf_dynptr src, struct
+bpf_dynptr dst, u64 flags);
+
+where this helper would extend easily to other cases as well (for
+example, to malloc-type dynpts) instead of needing multiple helpers.
+
+
+>  #define __BPF_FUNC_MAPPER(FN)          \
+>         FN(unspec),                     \
+> @@ -5597,6 +5616,8 @@ union bpf_attr {
+>         FN(tcp_raw_check_syncookie_ipv4),       \
+>         FN(tcp_raw_check_syncookie_ipv6),       \
+>         FN(ktime_get_tai_ns),           \
+> +       FN(skb_packet_hash),            \
+> +       FN(xdp_packet_hash),            \
+>         /* */
+[...]
+> --
+> 2.37.2.672.g94769d06f0-goog
+>
