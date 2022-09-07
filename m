@@ -2,163 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B822A5AFB82
-	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 07:04:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C31055AFB96
+	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 07:15:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229558AbiIGFEU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Sep 2022 01:04:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45586 "EHLO
+        id S229509AbiIGFPm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Sep 2022 01:15:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbiIGFEU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Sep 2022 01:04:20 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27C9E9C2F1;
-        Tue,  6 Sep 2022 22:04:19 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id 78so12491671pgb.13;
-        Tue, 06 Sep 2022 22:04:19 -0700 (PDT)
+        with ESMTP id S229480AbiIGFPl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Sep 2022 01:15:41 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C2956F555;
+        Tue,  6 Sep 2022 22:15:40 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id l14so4325886eja.7;
+        Tue, 06 Sep 2022 22:15:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date;
-        bh=Q5bAnJtVFnp319EIgRFa2Zj3l9LOhyIDjH73ZWT66P8=;
-        b=QN2Fh+10PlxGBEB1nyhgecUXLy1tcGt3bU5t8A00gEsdgPGA0IYD71YML0yG7OnVon
-         oZ4q6iidhcx7nEl3/vEaRoI7GAVFF5d2djWXM0XAW8X6rNTuUgljv6FPwYqohtWCoePB
-         5reK0An5RPtU8rhr5Dw9zK7jD+7QnlbSaJO876HCL8Ekj7jjSdvwvJqKkX2LBkjtCJ5j
-         DiWje0Rv4BTEdcicnrtytcDXnPXUWEHpjPaWrLmE0kVT5ODsH1f5Yrs1m5eu6S78yhoz
-         nrqph/tt6EKamrViUTK5uIuiuCa5eRWnAA/fhROTgqqGeCFEJqOCVxbZK1134Lk0QsPl
-         PGpA==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=j+gF2bUdw4ITHGeuOAn3Q2fblVykEdsAK30iGjvCAVE=;
+        b=H0NBzFnfCondXQal0g4/vI4B8E19WEXfXFzHB9S2KIh4Y40ynRBpNhJ7nJZDNhLoqW
+         WVTcWN19+OM4LnBzGOXD2c6rCIR5Ltbs6EVIOPQlJ0Kztj1I4w6uOdXCioIK5ER3ZYTl
+         KrCfH8cullvGLwFNMxdR0Z4r9Ero6j79DxmEtzuSEye0TosR61ANoK3lNvXDzhvZOEXy
+         GerrXQ4MLUUOspAgBj0VzJV27+HkRPQ7Z6bX4iCgE6UfZinXWPPc7DtouBy6ZXuyZM7S
+         ycfDaWynccnL8dtlgMkUiPLmjCzyBm6hwZvJp4328dRAVAg8DI/BvNca51XpxqCfDOeM
+         ucuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-message-state:from:to:cc:subject:date;
-        bh=Q5bAnJtVFnp319EIgRFa2Zj3l9LOhyIDjH73ZWT66P8=;
-        b=lj8IXV+7r0yCQO+m5LIXOJ0MhiAf+LFCS/pTtrhe6qLOIxBsE0TsJpS+nUmM3BGHhz
-         3Ct73Au6HhzS1M049zUKpy7OkzCd2x/55KAoE+7nS2YmzVZFCdAZmUwxF643umQdOCRO
-         xayfqOKSl1mSfp3zoPGCr+hK4UR0wEJHL5KiWtO4F/HAbhqm7kgZxp03mStwA4ECS6tP
-         hm+4qIb2GIFmjsc+4EoqdnGWtIApfCuv1F4qyzHn8SAknMrz3YLakN13eLzXUL9pcbkT
-         p4jVgjDWt+e0r4Bfn6MQfE6o8XGJ6klQXqeNgpHgiy+3t3DAPNFb4SgRItO+lno4OaOJ
-         YtQw==
-X-Gm-Message-State: ACgBeo0TErcu7zC1TODYNskXYV+0leZwKlsbc5ZY3FeQ7ILznITSBmOp
-        WykRJSXGjEeuaPeV9Yoxhbw=
-X-Google-Smtp-Source: AA6agR6sTiTHSLBvwr+g6HRi6Ga/xBnUJar+Hfzxq2qEV5M6iE82lFM2UvwP+JZs0fhors2gUDFqnw==
-X-Received: by 2002:a63:fe54:0:b0:42b:d11d:1490 with SMTP id x20-20020a63fe54000000b0042bd11d1490mr1937714pgj.51.1662527058372;
-        Tue, 06 Sep 2022 22:04:18 -0700 (PDT)
-Received: from youngsil.svl.corp.google.com ([2620:15c:2d4:203:31b5:b507:23a9:c4ba])
-        by smtp.gmail.com with ESMTPSA id q8-20020a170902a3c800b00172897952a0sm6492116plb.283.2022.09.06.22.04.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Sep 2022 22:04:17 -0700 (PDT)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org,
-        Marco Elver <elver@google.com>,
-        Song Liu <songliubraving@fb.com>
-Subject: [PATCH v2] perf test: Skip sigtrap test on old kernels
-Date:   Tue,  6 Sep 2022 22:04:07 -0700
-Message-Id: <20220907050407.2711513-1-namhyung@kernel.org>
-X-Mailer: git-send-email 2.37.2.789.g6183377224-goog
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=j+gF2bUdw4ITHGeuOAn3Q2fblVykEdsAK30iGjvCAVE=;
+        b=VIlC00RcraoTn2DO3sm1R+lm973p1Oh/PEWrK5P8oQxyyX3YokJQ/mn+Ln0+KZ3cJP
+         mdgNTr/Ac4rdLnL8IuWdawc6IAKjvB+IvE3sRTK0BT/a3IAoAWmRlA3Du2ORYMtjNtEk
+         rCRN+mQWBOhiOdBys43qLJQRTNMlrutm+gih2zDdLva4e/Nwuo+JP6eqUVX1fvhJ0m9t
+         c+CWYuui51Tr5ZJyKn5PQtt9IRHjSwkhFkXMDY1SLGX4P8I2nFXoFefuWO8CiL4nq/f3
+         yrL1vh79+eYAwoAgVLbyfQ+Vk79FXGdzsEQWtEhWuW7ZAr9mDvJEGiFDeLPTyFBe6Ftj
+         5d+Q==
+X-Gm-Message-State: ACgBeo143pgyt1XvmTpF3zhIcykswT+LIGcNvRuyS9zVWWPnf+4epcRc
+        Z54m25DiHNaCHOr0YKe4ku0pSAfuO9JvmgA7T9k=
+X-Google-Smtp-Source: AA6agR5Y9xApB8c6DhmDhMDqodjtZVDSPB0Oy8CfE3YZ77w+lxLy8OTqIFDJaADHnjXzBURk9Opg0gqaLuIezBff6I8=
+X-Received: by 2002:a17:906:847c:b0:73f:d7cf:bf2d with SMTP id
+ hx28-20020a170906847c00b0073fd7cfbf2dmr1128579ejc.327.1662527738806; Tue, 06
+ Sep 2022 22:15:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+References: <cover.1662383493.git.lorenzo@kernel.org> <fa02d93153b99bc994215c1644a2c75a226e3c7d.1662383493.git.lorenzo@kernel.org>
+ <CAADnVQJ4XtFpsEsPRC-cepfQvXr-hN7e_3L5SchieeGHH40_4A@mail.gmail.com> <CAP01T77BuY9VNBVt98SJio5D2SqkR5i3bynPXTZG4VVUng-bBA@mail.gmail.com>
+In-Reply-To: <CAP01T77BuY9VNBVt98SJio5D2SqkR5i3bynPXTZG4VVUng-bBA@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 6 Sep 2022 22:15:27 -0700
+Message-ID: <CAADnVQJ7PnY+AQmyaMggx6twZ5a4bOncKApkjhPhjj2iniXoUQ@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 3/4] net: netfilter: add bpf_ct_set_nat_info
+ kfunc helper
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        netfilter-devel <netfilter-devel@vger.kernel.org>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-If it runs on an old kernel, perf_event_open would fail because of the
-new fields sigtrap and sig_data.  Just skipping the test could miss an
-actual bug in the kernel.
+On Tue, Sep 6, 2022 at 9:40 PM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+>
+> On Wed, 7 Sept 2022 at 06:27, Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Mon, Sep 5, 2022 at 6:14 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
+> > > +int bpf_ct_set_nat_info(struct nf_conn___init *nfct__ref,
+> > > +                       union nf_inet_addr *addr, __be16 *port,
+> > > +                       enum nf_nat_manip_type manip)
+> > > +{
+> > ...
+> > > @@ -437,6 +483,7 @@ BTF_ID_FLAGS(func, bpf_ct_set_timeout, KF_TRUSTED_ARGS)
+> > >  BTF_ID_FLAGS(func, bpf_ct_change_timeout, KF_TRUSTED_ARGS)
+> > >  BTF_ID_FLAGS(func, bpf_ct_set_status, KF_TRUSTED_ARGS)
+> > >  BTF_ID_FLAGS(func, bpf_ct_change_status, KF_TRUSTED_ARGS)
+> > > +BTF_ID_FLAGS(func, bpf_ct_set_nat_info)
+> > >  BTF_SET8_END(nf_ct_kfunc_set)
+> >
+> > Instead of __ref and patch 1 and 2 it would be better to
+> > change the meaning of "trusted_args".
+> > In this case "addr" and "port" are just as "trusted".
+> > They're not refcounted per verifier definition,
+> > but they need to be "trusted" by the helper.
+> > At the end the "trusted_args" flags would mean
+> > "this helper can assume that all pointers can be safely
+> > accessed without worrying about lifetime".
+>
+> So you mean it only forces PTR_TO_BTF_ID to have reg->ref_obj_id > 0?
+>
+> But suppose in the future you have a type that has scalars only.
+>
+> struct foo { int a; int b; ... };
+> Just data, and this is acquired from a kfunc and released using another kfunc.
+> Now with this new definition you are proposing, verifier ends up
+> allowing PTR_TO_MEM to also be passed to such helpers for the struct
+> foo *.
+>
+> I guess even reg->ref_obj_id check is not enough, user may also pass
+> PTR_TO_MEM | MEM_ALLOC which can be refcounted.
+>
+> It would be easy to forget such subtle details later.
 
-Let's check BTF if it has the perf_event_attr.sigtrap field.
-
-Cc: Marco Elver <elver@google.com>
-Cc: Song Liu <songliubraving@fb.com>
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/tests/sigtrap.c | 46 +++++++++++++++++++++++++++++++++++++-
- 1 file changed, 45 insertions(+), 1 deletion(-)
-
-diff --git a/tools/perf/tests/sigtrap.c b/tools/perf/tests/sigtrap.c
-index e32ece90e164..32f08ce0f2b0 100644
---- a/tools/perf/tests/sigtrap.c
-+++ b/tools/perf/tests/sigtrap.c
-@@ -16,6 +16,8 @@
- #include <sys/syscall.h>
- #include <unistd.h>
- 
-+#include <bpf/btf.h>
-+
- #include "cloexec.h"
- #include "debug.h"
- #include "event.h"
-@@ -54,6 +56,42 @@ static struct perf_event_attr make_event_attr(void)
- 	return attr;
- }
- 
-+static bool attr_has_sigtrap(void)
-+{
-+	bool ret = false;
-+
-+#ifdef HAVE_BPF_SKEL
-+
-+	struct btf *btf;
-+	const struct btf_type *t;
-+	const struct btf_member *m;
-+	const char *name;
-+	int i, id;
-+
-+	/* just assume it doesn't have the field */
-+	btf = btf__load_vmlinux_btf();
-+	if (btf == NULL)
-+		return false;
-+
-+	id = btf__find_by_name_kind(btf, "perf_event_attr", BTF_KIND_STRUCT);
-+	if (id < 0)
-+		goto out;
-+
-+	t = btf__type_by_id(btf, id);
-+	for (i = 0, m = btf_members(t); i < btf_vlen(t); i++, m++) {
-+		name = btf__name_by_offset(btf, m->name_off);
-+		if (!strcmp(name, "sigtrap")) {
-+			ret = true;
-+			break;
-+		}
-+	}
-+out:
-+	btf__free(btf);
-+#endif
-+
-+	return ret;
-+}
-+
- static void
- sigtrap_handler(int signum __maybe_unused, siginfo_t *info, void *ucontext __maybe_unused)
- {
-@@ -139,7 +177,13 @@ static int test__sigtrap(struct test_suite *test __maybe_unused, int subtest __m
- 
- 	fd = sys_perf_event_open(&attr, 0, -1, -1, perf_event_open_cloexec_flag());
- 	if (fd < 0) {
--		pr_debug("FAILED sys_perf_event_open(): %s\n", str_error_r(errno, sbuf, sizeof(sbuf)));
-+		if (attr_has_sigtrap()) {
-+			pr_debug("FAILED sys_perf_event_open(): %s\n",
-+				 str_error_r(errno, sbuf, sizeof(sbuf)));
-+		} else {
-+			pr_debug("perf_event_attr doesn't have sigtrap\n");
-+			ret = TEST_SKIP;
-+		}
- 		goto out_restore_sigaction;
- 	}
- 
--- 
-2.37.2.789.g6183377224-goog
-
+It may add headaches to the verifier side, but here we have to
+think from pov of other subsystems that add kfuncs.
+They shouldn't need to know the verifier details.
+The internals will change anyway.
+Ideally KF_TRUSTED_ARGS will become the default flag that every kfunc
+will use to indicate that the function assumes valid pointers.
+How the verifier recognizes them is irrelevant from kfunc pov.
+People that write bpf progs are not that much different from
+people that write kfuncs that bpf progs use.
+Both should be easy to write.
