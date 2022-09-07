@@ -2,155 +2,217 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 473105B09BD
-	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 18:08:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F11CE5B09C4
+	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 18:10:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229582AbiIGQIs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Sep 2022 12:08:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36900 "EHLO
+        id S229672AbiIGQKh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Sep 2022 12:10:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229652AbiIGQIZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Sep 2022 12:08:25 -0400
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE1583AE7F;
-        Wed,  7 Sep 2022 09:08:21 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 50B395C0150;
-        Wed,  7 Sep 2022 12:08:18 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Wed, 07 Sep 2022 12:08:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; t=1662566898; x=1662653298; bh=09XcLY+Oh89nxAbOdZB+wq/xVi9I
-        kY5d9sAv3nm7+vU=; b=S+2VagZcRJa0df0SXZoltSC5mTxQ2CJMLQbGS+ADdHeb
-        6GkHCYghhu6pQnr7fny4YGaX/Yce6RLfhEqLSiBT+AUaNN50TaUtBwQRJ7MC1SmQ
-        Q7aaJFrZ/+GwZ+SNNjwG1X9GlAOT/zkiVm7GD6fw7kC6WwE6pI7aeK2TF2AtTyud
-        e9BG7W3tQG0aUUlNMTl+tA+skmheYcf6Ir/dKwhZ8btyFXYAGik/A+YgJ+lpQ2pR
-        PTZI3soXAa4BAnKghj63bdVjjMTs3hq1Qh7DzwkwjE/D3EACsAgNJch4ydfcZSF4
-        K/8QkNh+XUceApvbG9kiyEVU6nTj3LHrnE6xdtncRA==
-X-ME-Sender: <xms:8cEYY8Mo99YOk85-NRX0cy2LFdqOmW0Pd4eG1z8avUKe3n8A50wPJA>
-    <xme:8cEYYy-plYsm4M_CZK7B0HtP5dSsZJcoYjKqESg61_kD7603opVArBAkOIHSOseCY
-    LAwHrpInoM1RXU>
-X-ME-Received: <xmr:8cEYYzSbbZVxXSY0KkJXrtsu6mCQGRvpApk4HqVW5RMl7PwDnbg2n8OkrIntx805cJKR3UpgFsYFroQaRH-meOk1KcdKIw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrfedttddgleejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepkfguohcu
-    ufgthhhimhhmvghluceoihguohhstghhsehiughoshgthhdrohhrgheqnecuggftrfgrth
-    htvghrnhepfeehffeggeffueffheeitdfhkedtfeelffffjeegtedtffegieejjeeuteej
-    teevnecuffhomhgrihhnpehofhhflhhorggurdhphienucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehiughoshgthhesihguohhstghhrdhorhhg
-X-ME-Proxy: <xmx:8cEYY0s574npuVmYzJvedy1Yu5t-t5SZaQ7qQV4isikwv2QTzw8LBQ>
-    <xmx:8cEYY0eLvL8_qBZs6c1d6L16JBKoF2QVityTgEhKcPWxJdtTX8W3lQ>
-    <xmx:8cEYY42zw4BLGYFAtgoF4QyrpVtVonW2PQsx9Xg4Xd_ZxJ4hOtM70A>
-    <xmx:8sEYYz-XXd8EynQ6tmnN6sEV7OTbM-5p3JEML7n-JKmnG5OyzfWK0A>
-Feedback-ID: i494840e7:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 7 Sep 2022 12:08:17 -0400 (EDT)
-Date:   Wed, 7 Sep 2022 19:08:13 +0300
-From:   Ido Schimmel <idosch@idosch.org>
-To:     "Zhou, Jie2X" <jie2x.zhou@intel.com>, kuba@kernel.org
-Cc:     "andrii@kernel.org" <andrii@kernel.org>,
-        "mykolal@fb.com" <mykolal@fb.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "martin.lau@linux.dev" <martin.lau@linux.dev>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "hawk@kernel.org" <hawk@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Li, Philip" <philip.li@intel.com>,
-        "petrm@nvidia.com" <petrm@nvidia.com>
-Subject: Re: test ./tools/testing/selftests/bpf/test_offload.py failed
-Message-ID: <YxjB7RZvVrKxJ4ec@shredder>
-References: <20220907051657.55597-1-jie2x.zhou@intel.com>
- <Yxg9r37w1Wg3mvxy@shredder>
- <CY4PR11MB1320E553043DC1D67B5E7D56C5419@CY4PR11MB1320.namprd11.prod.outlook.com>
+        with ESMTP id S229626AbiIGQKg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Sep 2022 12:10:36 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFEFA79629
+        for <bpf@vger.kernel.org>; Wed,  7 Sep 2022 09:10:34 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id 29so15377313edv.2
+        for <bpf@vger.kernel.org>; Wed, 07 Sep 2022 09:10:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=WCxhH5q/nhzQI6hOC0sgDFYxX/x3T1hlHYD9rhRLbhU=;
+        b=os/Ytb/kS2FZXnGfh9xzElleEsJ5K9uXAtbWPWoO67YUkX9oLlsOwFCiYropAzupG6
+         qqOyK37mMLoOSNT0mNyL8me9ItS7+QsxQXGltuCphNvEn9QlnkNOEBEsQjewV7fe1pnO
+         pZnNfR8Z+WPJeXQNtb8FN/8DgdzUjf5bMbfjUflQD1/6qulpV86f7yMYNFysppkQjrJa
+         1p9f9kktQM7CnXYqk0YHPeCit/FXUw6zmCPxiXPHboRj+iUG70uikx0DLeEu/P9LJbPC
+         kN82eTkdZFDnluIKY5qvKvH0FReizjQhKEM7xLHei0JdNu+VbvjRo7gZlpF9KDv+vzD5
+         Edmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=WCxhH5q/nhzQI6hOC0sgDFYxX/x3T1hlHYD9rhRLbhU=;
+        b=ugPlkm42CcECAFlSWFmabaZ8cQQKXEs8uSTBVt/tW5FpGwpN3STxDPcEriJU9nHEij
+         6EO+XwFj/Dw1Bs7Xzq1OcvkRJ0y3Sh2pvRLXofEhAhAufk3dXsijBh+En2GVqXGy22Rg
+         kpHLxIVgOt1F7eFHs86On2fE8JmmD/AxI6H9cJLue0gzeEoprYiijIeZtgwYOxgUPGlB
+         aouz8qv/CpKM3KRNzz0Yhu24/8m2fSR0rsrGEzPIA4AFYOhYRhUCWGaDxlVkQOMv52cx
+         qEaqiRYG+8QzS08qP4DbL6beJa3kZ/nfw6gDydtbEFFTyqelh/xi6HiDfkpK7ZUHBAaw
+         me8w==
+X-Gm-Message-State: ACgBeo0y//P8OXzuifx+WTZkaI12VwHQa0m3Ygki/+9hS2XfyRflVAtN
+        BruWOvZbH3u8N8AVoVswQ6TZuL4rnpNombGlhP0=
+X-Google-Smtp-Source: AA6agR4WYs1AtiM+w27YCoRToryCHgcqr0ZskxWxhUDZZKYW9fkPAdljTkIo++7GuUmDb7CY53OW4WSYGfNdBip7Kkc=
+X-Received: by 2002:a05:6402:1d48:b0:44e:c6cf:778 with SMTP id
+ dz8-20020a0564021d4800b0044ec6cf0778mr3793078edb.421.1662567033120; Wed, 07
+ Sep 2022 09:10:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CY4PR11MB1320E553043DC1D67B5E7D56C5419@CY4PR11MB1320.namprd11.prod.outlook.com>
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220906133613.54928-1-quentin@isovalent.com> <20220906133613.54928-7-quentin@isovalent.com>
+ <CAADnVQJ3K7cLTz9tiEEevyhuYVCO6BfB5NhAssReyYU7MNAyKw@mail.gmail.com> <f0d9d219-3e5b-94bc-3c90-897da8d27b12@isovalent.com>
+In-Reply-To: <f0d9d219-3e5b-94bc-3c90-897da8d27b12@isovalent.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 7 Sep 2022 09:10:21 -0700
+Message-ID: <CAADnVQKJCwMbvkY5ZNX7KLiB9YT35TK_S_cFH61csm1P2phDDw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 6/7] bpftool: Add LLVM as default library for
+ disassembling JIT-ed programs
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        =?UTF-8?Q?Niklas_S=C3=B6derlund?= <niklas.soderlund@corigine.com>,
+        Simon Horman <simon.horman@corigine.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 07, 2022 at 08:51:56AM +0000, Zhou, Jie2X wrote:
-> What is the output of test_offload.py?
+On Wed, Sep 7, 2022 at 7:20 AM Quentin Monnet <quentin@isovalent.com> wrote:
+>
+> On 07/09/2022 00:46, Alexei Starovoitov wrote:
+> > On Tue, Sep 6, 2022 at 6:36 AM Quentin Monnet <quentin@isovalent.com> wrote:
+> >>
+> >> Naturally, the display of disassembled instructions comes with a few
+> >> minor differences. Here is a sample output with libbfd (already
+> >> supported before this patch):
+> >>
+> >>     # bpftool prog dump jited id 56
+> >>     bpf_prog_6deef7357e7b4530:
+> >>        0:   nopl   0x0(%rax,%rax,1)
+> >>        5:   xchg   %ax,%ax
+> >>        7:   push   %rbp
+> >>        8:   mov    %rsp,%rbp
+> >>        b:   push   %rbx
+> >>        c:   push   %r13
+> >>        e:   push   %r14
+> >>       10:   mov    %rdi,%rbx
+> >>       13:   movzwq 0xb0(%rbx),%r13
+> >>       1b:   xor    %r14d,%r14d
+> >>       1e:   or     $0x2,%r14d
+> >>       22:   mov    $0x1,%eax
+> >>       27:   cmp    $0x2,%r14
+> >>       2b:   jne    0x000000000000002f
+> >>       2d:   xor    %eax,%eax
+> >>       2f:   pop    %r14
+> >>       31:   pop    %r13
+> >>       33:   pop    %rbx
+> >>       34:   leave
+> >>       35:   ret
+> >>       36:   int3
+> >>
+> >> LLVM supports several variants that we could set when initialising the
+> >> disassembler, for example with:
+> >>
+> >>     LLVMSetDisasmOptions(*ctx,
+> >>                          LLVMDisassembler_Option_AsmPrinterVariant);
+> >>
+> >> but the default printer is kept for now. Here is the output with LLVM:
+> >>
+> >>     # bpftool prog dump jited id 56
+> >>     bpf_prog_6deef7357e7b4530:
+> >>        0:   nopl    (%rax,%rax)
+> >>        5:   nop
+> >>        7:   pushq   %rbp
+> >>        8:   movq    %rsp, %rbp
+> >>        b:   pushq   %rbx
+> >>        c:   pushq   %r13
+> >>        e:   pushq   %r14
+> >>       10:   movq    %rdi, %rbx
+> >>       13:   movzwq  176(%rbx), %r13
+> >>       1b:   xorl    %r14d, %r14d
+> >>       1e:   orl     $2, %r14d
+> >>       22:   movl    $1, %eax
+> >>       27:   cmpq    $2, %r14
+> >>       2b:   jne     2
+> >>       2d:   xorl    %eax, %eax
+> >>       2f:   popq    %r14
+> >
+> > If I'm reading the asm correctly the difference is significant.
+> > jne 0x2f was an absolute address and jmps were easy
+> > to follow.
+> > While in llvm disasm it's 'jne 2' ?! What is 2 ?
+> > 2 bytes from the next insn of 0x2d ?
+>
+> Yes, that's it. Apparently, this is how the operand is encoded, and
+> libbfd does the translation to the absolute address:
+>
+>     # bpftool prog dump jited id 7868 opcodes
+>     [...]
+>       2b:   jne    0x000000000000002f
+>             75 02
+>     [...]
+>
+> The same difference is observable between objdump and llvm-objdump on an
+> x86-64 binary for example, although they usually have labels to refer to
+> ("jne     -22 <_obstack_memory_used+0x7d0>"), making the navigation
+> easier. The only mention I could find of that difference is a report
+> from 2013 [0].
+>
+> [0] https://discourse.llvm.org/t/llvm-objdump-disassembling-jmp/29584/2
+>
+> > That is super hard to read.
+> > Is there a way to tune/configure llvm disasm?
+>
+> There's a function and some options to tune it, but I tried them and
+> none applies to converting the jump operands.
+>
+>     int LLVMSetDisasmOptions(LLVMDisasmContextRef DC, uint64_t Options);
+>
+>     /* The option to produce marked up assembly. */
+>     #define LLVMDisassembler_Option_UseMarkup 1
+>     /* The option to print immediates as hex. */
+>     #define LLVMDisassembler_Option_PrintImmHex 2
+>     /* The option use the other assembler printer variant */
+>     #define LLVMDisassembler_Option_AsmPrinterVariant 4
+>     /* The option to set comment on instructions */
+>     #define LLVMDisassembler_Option_SetInstrComments 8
+>     /* The option to print latency information alongside instructions */
+>     #define LLVMDisassembler_Option_PrintLatency 16
+>
+> I found that LLVMDisassembler_Option_AsmPrinterVariant read better,
+> although in my patch I kept the default output which looked closer to
+> the existing from libbfd. Here's what the option produces:
+>
+>     bpf_prog_6deef7357e7b4530:
+>        0:   nop     dword ptr [rax + rax]
+>        5:   nop
+>        7:   push    rbp
+>        8:   mov     rbp, rsp
+>        b:   push    rbx
+>        c:   push    r13
+>        e:   push    r14
+>       10:   mov     rbx, rdi
+>       13:   movzx   r13, word ptr [rbx + 180]
+>       1b:   xor     r14d, r14d
+>       1e:   or      r14d, 2
+>       22:   mov     eax, 1
+>       27:   cmp     r14, 2
+>       2b:   jne     2
+>       2d:   xor     eax, eax
+>       2f:   pop     r14
+>       31:   pop     r13
+>       33:   pop     rbx
+>       34:   leave
+>       35:   re
+>
+> But the jne operand remains a '2'. I'm not aware of any option to change
+> it in LLVM's disassembler :(.
 
-This output [1], but requires this [2] additional fix on top of the one
-I already posted for netdevsim. Hopefully someone more familiar with
-this test can comment if this is the right fix or not.
+Hmm. llvm-objdump -d test_maps
+looks fine:
+  41bfcb: e8 6f f7 ff ff                   callq    0x41b73f
+<find_extern_btf_id>
 
-Without it, bpftool refuses to load the program [3].
-
-[1]
-# ./test_offload.py
-Test destruction of generic XDP...
-Test TC non-offloaded...
-Test TC non-offloaded isn't getting bound...
-Test TC offloads are off by default...
-[...]
-test_offload.py: OK
-# echo $?
-0
-
-[2]
-diff --git a/tools/testing/selftests/bpf/progs/sample_map_ret0.c b/tools/testing/selftests/bpf/progs/sample_map_ret0.c
-index 495990d355ef..91417aae6194 100644
---- a/tools/testing/selftests/bpf/progs/sample_map_ret0.c
-+++ b/tools/testing/selftests/bpf/progs/sample_map_ret0.c
-@@ -17,7 +17,8 @@ struct {
- } array SEC(".maps");
- 
- /* Sample program which should always load for testing control paths. */
--SEC(".text") int func()
-+SEC("xdp")
-+int func()
- {
- 	__u64 key64 = 0;
- 	__u32 key = 0;
-diff --git a/tools/testing/selftests/bpf/progs/sample_ret0.c b/tools/testing/selftests/bpf/progs/sample_ret0.c
-index fec99750d6ea..f51c63dd6f20 100644
---- a/tools/testing/selftests/bpf/progs/sample_ret0.c
-+++ b/tools/testing/selftests/bpf/progs/sample_ret0.c
-@@ -1,6 +1,9 @@
- /* SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause) */
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
- 
- /* Sample program which should always load for testing control paths. */
-+SEC("xdp")
- int func()
- {
- 	return 0;
-diff --git a/tools/testing/selftests/bpf/test_offload.py b/tools/testing/selftests/bpf/test_offload.py
-index 6cd6ef9fc20b..0381f48f45a6 100755
---- a/tools/testing/selftests/bpf/test_offload.py
-+++ b/tools/testing/selftests/bpf/test_offload.py
-@@ -235,7 +235,7 @@ def tc(args, JSON=True, ns="", fail=True, include_stderr=False):
- def ethtool(dev, opt, args, fail=True):
-     return cmd("ethtool %s %s %s" % (opt, dev["ifname"], args), fail=fail)
- 
--def bpf_obj(name, sec=".text", path=bpf_test_dir,):
-+def bpf_obj(name, sec="xdp", path=bpf_test_dir,):
-     return "obj %s sec %s" % (os.path.join(path, name), sec)
- 
- def bpf_pinned(name):
-
-[3]
-# bpftool prog load /home/idosch/code/linux/tools/testing/selftests/bpf/sample_ret0.o /sys/fs/bpf/nooffload type xdp                                                 
-Error: object file doesn't contain any bpf program                                    
-Warning: bpftool is now running in libbpf strict mode and has more stringent requirements about BPF programs.                                                                
-If it used to work for this object file but now doesn't, see --legacy option for more details.
+the must be something llvm disasm is missing when you feed raw bytes
+into it.
+Please keep investigating. In this form I'm afraid it's no go.
