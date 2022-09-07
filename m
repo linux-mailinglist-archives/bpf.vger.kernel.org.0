@@ -2,36 +2,36 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F9465B00E1
-	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 11:50:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66F7F5B00ED
+	for <lists+bpf@lfdr.de>; Wed,  7 Sep 2022 11:53:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229699AbiIGJuH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Sep 2022 05:50:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40076 "EHLO
+        id S229800AbiIGJxY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Sep 2022 05:53:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229668AbiIGJuG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Sep 2022 05:50:06 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F9C6520A5;
-        Wed,  7 Sep 2022 02:50:04 -0700 (PDT)
+        with ESMTP id S229926AbiIGJxX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Sep 2022 05:53:23 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03FE6AED86;
+        Wed,  7 Sep 2022 02:53:21 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 1F9F5B81C02;
-        Wed,  7 Sep 2022 09:50:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93841C433D6;
-        Wed,  7 Sep 2022 09:49:59 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id D2753CE1B0A;
+        Wed,  7 Sep 2022 09:53:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA8EEC433D7;
+        Wed,  7 Sep 2022 09:53:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662544201;
-        bh=hUwrU7rajizpLziyjcQs4WTMAHKfgRP/9kdmaKkNJ14=;
+        s=k20201202; t=1662544397;
+        bh=SoVSVoDeNFNPdZcLz1kUYVKzcVZLSHnQuHzOIPhXmsE=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=D0dVPFRptKPd9XbvMTsS5BW5ZnrCrmsYbKRpyDRzer3jiptFdyO4AOiiBX2CSssPA
-         djh45erZrbdHD1ppOfuHwktynQr4en6Aye3Z98LQ+kwpNUdwlThWA+qPLT69jNyBrd
-         flglSLMICIl6/7Vo+z46idRraNIlLdFs559t1h0G7CpDAvxyIArjjCFbFoJAIiON2O
-         1ZZuj7a9OKxRASyMuAz1jiIMoOkFMJzDW8qRfzM34t/n+zHVCajSCJwVaFFF1NC1nS
-         dH+Y3X4e7SfJOtYknVKA8R37BetX4jCub8wc2BHT7O4dh2CKniCE0ukxrD1f38HS23
-         rNp4DOnlpXGxA==
-Date:   Wed, 7 Sep 2022 18:49:57 +0900
+        b=uM0Mm0BzO+sEEpgI3+rBBmfz8T9FkFOkWg6G+7VliNTyRtwmCUq9ttBcNgWED5X8L
+         bceDgt0iWbSIunn24JuMi5o1KEfy8eiWGS9Px2diY0M3GIYC0ZErnLNnYSYbHhfD03
+         5ZXA2PIQc6G1C2rdUeOrXaVU9Sui7d+W360kXL1hdx/iFwwiOA6O1wPW/84wcYnmgB
+         uUuRO19OHO0esSS+HLHK0x5IJOK7ztfUngSfc4B04WTj3P6tbVd9fPU//o44iRfwpW
+         C4qAM1lGphzPR2G3BK11OB4NUhtb6fwEnZErUbmvFYpAdGT/UAFFoIR5i+2aiyy+vz
+         B5ATNTG01BVLg==
+Date:   Wed, 7 Sep 2022 18:53:12 +0900
 From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
 To:     Peter Zijlstra <peterz@infradead.org>
 Cc:     Steven Rostedt <rostedt@goodmis.org>,
@@ -42,11 +42,13 @@ Cc:     Steven Rostedt <rostedt@goodmis.org>,
         Josh Poimboeuf <jpoimboe@kernel.org>, x86@kernel.org
 Subject: Re: [PATCH 1/2] x86/kprobes: Fix kprobes instruction boudary check
  with CONFIG_RETHUNK
-Message-Id: <20220907184957.d41f085a998b2c7485353171@kernel.org>
-In-Reply-To: <YxhQIBKzi+L0KDhc@hirez.programming.kicks-ass.net>
+Message-Id: <20220907185312.3cc1c2c063912f1ca6f8ea2f@kernel.org>
+In-Reply-To: <YxhmnDqSkE8CP3UX@hirez.programming.kicks-ass.net>
 References: <166251211081.632004.1842371136165709807.stgit@devnote2>
         <166251212072.632004.16078953024905883328.stgit@devnote2>
-        <YxhQIBKzi+L0KDhc@hirez.programming.kicks-ass.net>
+        <YxhDBAhYrs0Sfqjt@hirez.programming.kicks-ass.net>
+        <20220907181218.41facc0902789c77e42170ea@kernel.org>
+        <YxhmnDqSkE8CP3UX@hirez.programming.kicks-ass.net>
 X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -61,168 +63,19 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 7 Sep 2022 10:02:40 +0200
+On Wed, 7 Sep 2022 11:38:36 +0200
 Peter Zijlstra <peterz@infradead.org> wrote:
 
-> On Wed, Sep 07, 2022 at 09:55:21AM +0900, Masami Hiramatsu (Google) wrote:
+> On Wed, Sep 07, 2022 at 06:12:18PM +0900, Masami Hiramatsu wrote:
+> > OK, it should be updated. Where can I refer the names (especially '.dX' suffixes)?
 > 
-> >  static int can_probe(unsigned long paddr)
-> >  {
-> >  	kprobe_opcode_t buf[MAX_INSN_SIZE];
-> > +	unsigned long addr, offset = 0;
-> > +	struct insn insn;
-> >  
-> >  	if (!kallsyms_lookup_size_offset(paddr, NULL, &offset))
-> >  		return 0;
-> >  
-> > +	/* The first address must be instruction boundary. */
-> > +	if (!offset)
-> > +		return 1;
-> >  
-> > +	/* Decode instructions */
-> > +	for_each_insn(&insn, paddr - offset, paddr, buf) {
-> >  		/*
-> > +		 * CONFIG_RETHUNK or CONFIG_SLS or another debug feature
-> > +		 * may install INT3.
+> https://sourceware.org/binutils/docs-2.23.1/as/i386_002dMnemonics.html
 > 
-> Note: they are not debug features.
+>   `.d8' or `.d32' suffix prefers 8bit or 32bit displacement in encoding.
 
-Yes, sorry for confusion. CONFIG_RETHUNK/CONFIG_SLS are security
-feature, and something like kgdb is debug feature, what I meant
-here.
+This is good to know. OK, I'll use this.
 
-> 
-> >  		 */
-> > +		if (insn.opcode.bytes[0] == INT3_INSN_OPCODE) {
-> > +			/* Find the next non-INT3 instruction address */
-> > +			addr = skip_padding_int3((unsigned long)insn.kaddr);
-> > +			if (!addr)
-> > +				return 0;
-> > +			/*
-> > +			 * This can be a padding INT3 for CONFIG_RETHUNK or
-> > +			 * CONFIG_SLS. If a branch jumps to the address next
-> > +			 * to the INT3 sequence, this is just for padding,
-> > +			 * then we can continue decoding.
-> > +			 */
-> > +			for_each_insn(&insn, paddr - offset, addr, buf) {
-> > +				if (insn_get_branch_addr(&insn) == addr)
-> > +					goto found;
-> > +			}
-> >  
-> > +			/* This INT3 can not be decoded safely. */
-> >  			return 0;
-> > +found:
-> > +			/* Set loop cursor */
-> > +			insn.next_byte = (void *)addr;
-> > +			continue;
-> > +		}
-> >  	}
-> >  
-> > +	return ((unsigned long)insn.next_byte == paddr);
-> >  }
-> 
-> If I understand correctly, it'll fail on something like this:
-> 
-> foo:	insn
-> 	insn
-> 	insn
-> 	jmp 2f
-> 	int3
-> 
-> 1:	insn
-> 	insn
-> 2:	insn
-> 	jcc 1b
-> 
-> 	ret
-> 	int3
-> 
-> Which isn't weird code by any means. And soon to be generated by
-> compilers.
-
-Hmm, yeah, I thought that was rare case.
-
-> 
-> 
-> Maybe something like:
-> 
-> struct queue {
-> 	int head, tail;
-> 	unsigned long val[16]; /* insufficient; probably should allocate something */
-> };
-> 
-> void push(struct queue *q, unsigned long val)
-> {
-> 	/* break loops, been here already */
-> 	for (int i = 0; i < q->head; i++) {
-> 		if (q->val[i] == val)
-> 			return;
-> 	}
-> 
-> 	q->val[q->head++] = val;
-> 
-> 	WARN_ON(q->head > ARRAY_SIZE(q->val)
-> }
-> 
-> unsigned long pop(struct queue *q)
-> {
-> 	if (q->tail == q->head)
-> 		return 0;
-> 
-> 	return q->val[q->tail++];
-> }
-> 
-> bool dead_end_insn(struct instruction *insn)
-> {
-> 	switch (insn->opcode.bytes[0]) {
-> 	case INT3_INSN_OPCODE:
-> 	case JMP8_INSN_OPCODE:
-> 	case JMP32_INSN_OPCODE:
-> 		return true; /* no arch execution after these */
-> 
-> 	case 0xff:
-> 		/* jmp *%reg; jmpf */
-> 		if (modrm_reg == 4 || modrm_reg == 5)
-> 			return true;
-> 		break;
-> 
-> 	default:
-> 		break;
-> 	}
-> 
-> 	return false;
-> }
-> 
-> 
-> 
-> 	struct queue q;
-> 
-> 	start = paddr - offset;
-> 	end = start + size;
-> 	push(&q, paddr - offset);
-> 
-> 	while (start = pop(&q)) {
-> 		for_each_insn(&insn, start, end, buf) {
-> 			if (insn.kaddr == paddr)
-> 				return 1;
-> 
-> 			target = insn_get_branch_addr(&insn);
-> 			if (target)
-> 				push(&q, target);
-> 
-> 			if (dead_end_insn(&insn))
-> 				break;
-> 		}
-> 	}
-> 
-> 
-> 
-> It's a bit of a pain, but I think it should cover things.
-
-Yeah, this looks good to me. What I just need is to add expanding
-queue buffer. (can we use xarray for this purpose?)
-
-Thank you!
+Thanks!
 
 
 -- 
