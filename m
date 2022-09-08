@@ -2,129 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3F295B1499
-	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 08:24:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07E905B14C5
+	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 08:38:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229560AbiIHGX7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Sep 2022 02:23:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41898 "EHLO
+        id S230318AbiIHGiC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Sep 2022 02:38:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbiIHGX6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Sep 2022 02:23:58 -0400
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F965CCD56;
-        Wed,  7 Sep 2022 23:23:58 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id 7FCE83200708;
-        Thu,  8 Sep 2022 02:23:54 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Thu, 08 Sep 2022 02:23:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; t=1662618234; x=1662704634; bh=tQVYpCBZL3BsXXUIGuhHhn+GnF9r
-        ZgFIWXrgHaQZMbY=; b=ewJMBlVaLQYFSExMsQK75AOZdcexluLL5bNUc2vWoTxh
-        rgWjfNa5+R7tbzYKG2oUFXPDQVYLSkPhcgmtbm9bZ0LlzCnxI6fs/XXPGcUtNWl/
-        4KTIMXd8rTSeGY1vCbJVWoANYNeO0mzG8NaHJEwfxwjwrOf9byNE+FKcOwqe4zWE
-        +R7HRlcGpkofHCXUiaS2tQHxkOskppkTx9PZ/72AtOafBo9uIIK2OCrSsROttQZw
-        1oswHQSwrvz4FtXJe9S639YmGu326indkySDFvPtm+voHxpGoIOAaZ9wvPKJkAyH
-        v/Q5OJ/5Drtxe1cBd8U6s9CU/i3iD1HD6f+n0/q5fw==
-X-ME-Sender: <xms:eYoZY45VwEC_og3CawJYOAhr4DK9_runwm6215wCONy0pIIGrDrDOw>
-    <xme:eYoZY54doKlfEvYh3dFjXyH-C_jTMUWaBssAub3MM4NvjpeZRD5eoNXYGIaLYw3y2
-    3Fl-cEdXhebJwk>
-X-ME-Received: <xmr:eYoZY3fo0FyVb9UN9URtGDipJTsSOG8pes-MJOkk5UOvzqlI1wGdKWml2VQAGs7ZhUZJiYmPG8WGq8ISrqcYc_mBAjWgwA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrfedtuddgudduudcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefkugho
-    ucfutghhihhmmhgvlhcuoehiughoshgthhesihguohhstghhrdhorhhgqeenucggtffrrg
-    htthgvrhhnpedvudefveekheeugeeftddvveefgfduieefudeifefgleekheegleegjeej
-    geeghfenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hiughoshgthhesihguohhstghhrdhorhhg
-X-ME-Proxy: <xmx:eYoZY9JQZfqfXxqjwaEhpU2l7DyJYG2DKVyOPvnEF_QNc84tDPe31g>
-    <xmx:eYoZY8LZm318XSdzurWKOtkgPmlZOOx2Ga8ovY-8ddKLNIjGWwe4ag>
-    <xmx:eYoZY-yfvvx4-ZCHoPCwJkFyfQFOFOtfd3dMbSozdN06KLKtwtu8jg>
-    <xmx:eooZY-D1Z1Huck6Q0HZ8HeqvfKXEjUEXz3jiS0C0rhd6fdLA8VQ5aA>
-Feedback-ID: i494840e7:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 8 Sep 2022 02:23:53 -0400 (EDT)
-Date:   Thu, 8 Sep 2022 09:23:48 +0300
-From:   Ido Schimmel <idosch@idosch.org>
-To:     "Zhou, Jie2X" <jie2x.zhou@intel.com>
-Cc:     "kuba@kernel.org" <kuba@kernel.org>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "mykolal@fb.com" <mykolal@fb.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "martin.lau@linux.dev" <martin.lau@linux.dev>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "hawk@kernel.org" <hawk@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Li, Philip" <philip.li@intel.com>,
-        "petrm@nvidia.com" <petrm@nvidia.com>
-Subject: Re: test ./tools/testing/selftests/bpf/test_offload.py failed
-Message-ID: <YxmKdBVkNCPF4Kob@shredder>
-References: <20220907051657.55597-1-jie2x.zhou@intel.com>
- <Yxg9r37w1Wg3mvxy@shredder>
- <CY4PR11MB1320E553043DC1D67B5E7D56C5419@CY4PR11MB1320.namprd11.prod.outlook.com>
- <YxjB7RZvVrKxJ4ec@shredder>
- <CY4PR11MB132098D8E47E38FD945E6398C5409@CY4PR11MB1320.namprd11.prod.outlook.com>
+        with ESMTP id S229970AbiIHGiB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Sep 2022 02:38:01 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB3FEC6515;
+        Wed,  7 Sep 2022 23:37:59 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id z187so16919677pfb.12;
+        Wed, 07 Sep 2022 23:37:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date;
+        bh=cvQFVKfsfpYxMErEhYXJffwhmqD/tkknSq1Emm1w1rc=;
+        b=OG40dAmcsya0mIfrs6M7VTGhsPQyc99M2zpnYeKUWlGxufzblnKLD/nYUPy/4B242c
+         PJj8eBvGrP7BtFMn0mr5prdEbu5LAT9j5o7d/nuGcYH9f2HLhkhsc7RGC8gDVmdc7J3G
+         tzq3zR+BUw5sSdJ6By3uj/31+WciaGyDV2UWLhkTTFXf3QhfufE79HLfGrMMBMyp+ufh
+         NyrR/9LU9nqQw3dsHNwJJrsqrgbNAGLUU0uzg2y2HmvGaSQWt4F1sR4k03w/FrwUUtuR
+         rMqv/xKkEy36HVFUD3E4daujJ7oZd3Dda5/aszKzA2NhcRDa2r9cKFQc/3ftaj5mEixu
+         vLNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date;
+        bh=cvQFVKfsfpYxMErEhYXJffwhmqD/tkknSq1Emm1w1rc=;
+        b=2K1tqeUQ9D9sC/+Cgf4eNmD5RKwBgP5GD3Mi6DETPkYSJVNoDqhFMTdvxRwV+QNBeQ
+         X/VuvMvtP36LBVWlE5ABNMEAuvzLVh5usDBj0UmddszwIJc37EX4x+C7r5e7vx13ntA2
+         XbsZ6iaMW2Uzp5poxflFs3b5YmlFH/2NGrQQP8LNcq+4PvTJSbPGc6tHPEOkgYSd8X6v
+         OXYQ6/ctFCTkOgw+gYWuBDfk/7xsVnHZ1wKxfbb5QrZTIkVeASbl29ivG1689ofDkDBG
+         QU1FmWtSD32VGKL89+8nJKI9WbP33lN0OhzNINP5uvnavGHgmXNhkx3B/nG+JPKMNV4L
+         01/A==
+X-Gm-Message-State: ACgBeo1kiVBTLo/ndpXy8l1nNF4M7/GCR4UT5SR+aM91wVgnUKnWlPRE
+        BAv0O5txUEgeBidLdyNrGHWPgfmn99k=
+X-Google-Smtp-Source: AA6agR5HuV/ew0Uwj8ErnMLTC7jyrabpINK0Zcppz8U66W1F9QiUbP2zlOOEyMagiUtMQOTWu1S+PA==
+X-Received: by 2002:a65:5941:0:b0:41d:a203:c043 with SMTP id g1-20020a655941000000b0041da203c043mr6466422pgu.483.1662619078869;
+        Wed, 07 Sep 2022 23:37:58 -0700 (PDT)
+Received: from balhae.hsd1.ca.comcast.net ([2601:647:6780:1040:7f21:d032:3f14:a4e6])
+        by smtp.gmail.com with ESMTPSA id o33-20020a17090a0a2400b001fb0fc33d72sm890716pjo.47.2022.09.07.23.37.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Sep 2022 23:37:56 -0700 (PDT)
+Sender: Namhyung Kim <namhyung@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        linux-perf-users@vger.kernel.org, Song Liu <songliubraving@fb.com>,
+        bpf@vger.kernel.org
+Subject: [PATCH 0/4] perf lock contention: Improve call stack handling (v1)
+Date:   Wed,  7 Sep 2022 23:37:50 -0700
+Message-Id: <20220908063754.1369709-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.37.2.789.g6183377224-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CY4PR11MB132098D8E47E38FD945E6398C5409@CY4PR11MB1320.namprd11.prod.outlook.com>
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 08, 2022 at 03:10:51AM +0000, Zhou, Jie2X wrote:
-> My error is  "Exception: Command failed: cat /sys/kernel/debug/netdevsim/netdevsim0//ports/0/dev/hwstats/l3/disable_ifindex"
+Hello,
 
-This one is solved by the netdevsim patch ([2]).
+I found that call stack from the lock tracepoint (using bpf_get_stackid)
+can be different on each configuration.  For example it's very different
+when I run it on a VM than on a real machine.
 
-> Do you get [1]error, after patch [2]?
+The perf lock contention relies on the stack trace to get the lock
+caller names, this kind of difference can be annoying.  Ideally we could
+skip stack trace entries for internal BPF or lock functions and get the
+correct caller, but it's not the case as of today.  Currently it's hard
+coded to control the behavior of stack traces for the lock contention
+tracepoints.
 
-Yes. Maybe you do not see it because you have an older bpftool without
-"libbpf_strict" feature:
+To handle those differences, add two new options to control the number of
+stack entries and how many it skips.  The default value worked well on
+my VM setup, but I had to use --stack-skip=5 on real machines.
 
-$ bpftool --version
-bpftool v6.8.0
-using libbpf v0.8
-features: libbfd, libbpf_strict, skeletons
+You can get it from 'perf/lock-stack-v1' branch in
 
-> [1]
-> # bpftool prog load /home/idosch/code/linux/tools/testing/selftests/bpf/sample_ret0.o /sys/fs/bpf/nooffload type xdp
-> Error: object file doesn't contain any bpf program
-> Warning: bpftool is now running in libbpf strict mode and has more stringent requirements about BPF programs.
-> If it used to work for this object file but now doesn't, see --legacy option for more details.
-> 
-> [2]
-> diff --git a/drivers/net/netdevsim/hwstats.c b/drivers/net/netdevsim/hwstats.c
-> index 605a38e16db0..0e58aa7f0374 100644
-> --- a/drivers/net/netdevsim/hwstats.c
-> +++ b/drivers/net/netdevsim/hwstats.c
-> @@ -433,11 +433,11 @@ int nsim_dev_hwstats_init(struct nsim_dev *nsim_dev)
->                 goto err_remove_hwstats_recursive;
->         }
-> 
-> -       debugfs_create_file("enable_ifindex", 0600, hwstats->l3_ddir, hwstats,
-> +       debugfs_create_file("enable_ifindex", 0200, hwstats->l3_ddir, hwstats,
->                             &nsim_dev_hwstats_l3_enable_fops.fops);
-> -       debugfs_create_file("disable_ifindex", 0600, hwstats->l3_ddir, hwstats,
-> +       debugfs_create_file("disable_ifindex", 0200, hwstats->l3_ddir, hwstats,
->                             &nsim_dev_hwstats_l3_disable_fops.fops);
-> -       debugfs_create_file("fail_next_enable", 0600, hwstats->l3_ddir, hwstats,
-> +       debugfs_create_file("fail_next_enable", 0200, hwstats->l3_ddir, hwstats,
->                             &nsim_dev_hwstats_l3_fail_fops.fops);
-> 
->         INIT_DELAYED_WORK(&hwstats->traffic_dw,
+  git://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
+
+Thanks,
+Namhyung
+
+
+Namhyung Kim (4):
+  perf lock contention: Factor out get_symbol_name_offset()
+  perf lock contention: Show full callstack with -v option
+  perf lock contention: Allow to change stack depth and skip
+  perf lock contention: Skip stack trace from BPF
+
+ tools/perf/Documentation/perf-lock.txt        |  6 ++
+ tools/perf/builtin-lock.c                     | 89 ++++++++++++++-----
+ tools/perf/util/bpf_lock_contention.c         | 21 +++--
+ .../perf/util/bpf_skel/lock_contention.bpf.c  |  3 +-
+ tools/perf/util/lock-contention.h             |  3 +
+ 5 files changed, 96 insertions(+), 26 deletions(-)
+
+
+base-commit: 6c3bd8d3e01d9014312caa52e4ef1c29d5249648
+-- 
+2.37.2.789.g6183377224-goog
+
