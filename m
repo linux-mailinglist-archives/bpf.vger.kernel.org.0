@@ -2,23 +2,23 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA36A5B1522
-	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 08:51:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD1115B1524
+	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 08:51:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229535AbiIHGve (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Sep 2022 02:51:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56022 "EHLO
+        id S229572AbiIHGvg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Sep 2022 02:51:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230504AbiIHGv3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S230506AbiIHGv3 (ORCPT <rfc822;bpf@vger.kernel.org>);
         Thu, 8 Sep 2022 02:51:29 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFA771CB35;
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF49918385;
         Wed,  7 Sep 2022 23:51:27 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4MNV9G2sgJzKJJM;
-        Thu,  8 Sep 2022 14:49:38 +0800 (CST)
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4MNV9H2LBYz6S32d;
+        Thu,  8 Sep 2022 14:49:39 +0800 (CST)
 Received: from localhost.localdomain (unknown [10.67.175.61])
-        by APP2 (Coremail) with SMTP id Syh0CgBXqHHskBljwcslAg--.10754S3;
+        by APP2 (Coremail) with SMTP id Syh0CgBXqHHskBljwcslAg--.10754S4;
         Thu, 08 Sep 2022 14:51:26 +0800 (CST)
 From:   Pu Lehui <pulehui@huaweicloud.com>
 To:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org
@@ -33,21 +33,22 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
         Pu Lehui <pulehui@huawei.com>
-Subject: [PATCH bpf-next v2 1/2] bpf, cgroup: Fix attach flags being assigned to effective progs
-Date:   Thu,  8 Sep 2022 14:53:03 +0000
-Message-Id: <20220908145304.3436139-2-pulehui@huaweicloud.com>
+Subject: [PATCH bpf-next v2 2/2] bpftool: Fix cgroup attach flags being assigned to effective progs
+Date:   Thu,  8 Sep 2022 14:53:04 +0000
+Message-Id: <20220908145304.3436139-3-pulehui@huaweicloud.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220908145304.3436139-1-pulehui@huaweicloud.com>
 References: <20220908145304.3436139-1-pulehui@huaweicloud.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgBXqHHskBljwcslAg--.10754S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7tFWftw17WFyxAFWxGFW7Arb_yoW8JFy5pF
-        W8ZFy7W3WY9F9Fva97t3yFq3yrZw4ktr1jkr98Ary5AFy7Ww1v9ryFk34ayF1SyryUAw1r
-        ZFyYyr9Fka4UZFJanT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID: Syh0CgBXqHHskBljwcslAg--.10754S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7WFWkWF1xKw1DGFy3JFW5Wrg_yoW8Zr48pr
+        ykZa4UG3Wrur98XFWfK34YqFWrGw4xAryjyas8Jw45uF17GryvvrW2ka4kCr15WFW7Cw4x
+        ZF1Y9FyUWa1UtaUanT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
         9KBjDU0xBIdaVrnRJUUUPIb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
         6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M2
-        8IrcIa0xkI8VA2jI8067AKxVWUGwA2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK
+        8IrcIa0xkI8VA2jI8067AKxVWUXwA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK
         0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4
         x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJr0_GcWl84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2
         z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4
@@ -57,8 +58,8 @@ X-Coremail-Antispam: 1UD129KBjvJXoW7tFWftw17WFyxAFWxGFW7Arb_yoW8JFy5pF
         F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GF
         ylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7Cj
         xVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r
-        1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jg
-        a9fUUUUU=
+        1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07js
+        vtZUUUUU=
 X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
@@ -72,37 +73,60 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Pu Lehui <pulehui@huawei.com>
 
-When root-cgroup attach multi progs and sub-cgroup attach a override
-prog, query sub-cgroup with effective flags will incorrectly fill
-the prog_attach_flags array. Attach flags is only valid for attached
-progs of this layer cgroup, but not for effective progs. We know that
-the attached progs is at the beginning of the effective progs array,
-so we can just populate the elements in front of the prog_attach_flags
-array.
+When root-cgroup attach multi progs and sub-cgroup attach a
+override prog, bpftool will display incorrectly for the attach
+flags of the sub-cgroup’s effective progs:
+
+$ bpftool cgroup tree /sys/fs/cgroup effective
+CgroupPath
+ID       AttachType      AttachFlags     Name
+/sys/fs/cgroup
+6        cgroup_sysctl   multi           sysctl_tcp_mem
+13       cgroup_sysctl   multi           sysctl_tcp_mem
+/sys/fs/cgroup/cg1
+20       cgroup_sysctl   override        sysctl_tcp_mem
+6        cgroup_sysctl   override        sysctl_tcp_mem <- wrong
+13       cgroup_sysctl   override        sysctl_tcp_mem <- wrong
+/sys/fs/cgroup/cg1/cg2
+20       cgroup_sysctl                   sysctl_tcp_mem
+6        cgroup_sysctl                   sysctl_tcp_mem
+13       cgroup_sysctl                   sysctl_tcp_mem
+
+Attach flags is only valid for attached progs of this layer
+cgroup, but not for effective progs. Since prog_attach_flags
+array is already bypass the effective progs, so we can just
+use it.
 
 Signed-off-by: Pu Lehui <pulehui@huawei.com>
 ---
- kernel/bpf/cgroup.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ tools/bpf/bpftool/cgroup.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-index 00c7f864900e..9c439d163a0b 100644
---- a/kernel/bpf/cgroup.c
-+++ b/kernel/bpf/cgroup.c
-@@ -1093,11 +1093,14 @@ static int __cgroup_bpf_query(struct cgroup *cgrp, const union bpf_attr *attr,
- 		}
+diff --git a/tools/bpf/bpftool/cgroup.c b/tools/bpf/bpftool/cgroup.c
+index cced668fb2a3..fa3eef0ff860 100644
+--- a/tools/bpf/bpftool/cgroup.c
++++ b/tools/bpf/bpftool/cgroup.c
+@@ -219,11 +219,7 @@ static int show_attached_bpf_progs(int cgroup_fd, enum bpf_attach_type type,
+ 		return 0;
  
- 		if (prog_attach_flags) {
-+			int progs_cnt = min_t(int, prog_list_length(&cgrp->bpf.progs[atype]), total_cnt);
- 			flags = cgrp->bpf.flags[atype];
- 
--			for (i = 0; i < cnt; i++)
-+			/* attach flags only valid for attached progs, but not effective progs */
-+			for (i = 0; i < progs_cnt; i++)
- 				if (copy_to_user(prog_attach_flags + i, &flags, sizeof(flags)))
- 					return -EFAULT;
-+
- 			prog_attach_flags += cnt;
+ 	for (iter = 0; iter < p.prog_cnt; iter++) {
+-		__u32 attach_flags;
+-
+-		attach_flags = prog_attach_flags[iter] ?: p.attach_flags;
+-
+-		switch (attach_flags) {
++		switch (prog_attach_flags[iter]) {
+ 		case BPF_F_ALLOW_MULTI:
+ 			attach_flags_str = "multi";
+ 			break;
+@@ -234,7 +230,8 @@ static int show_attached_bpf_progs(int cgroup_fd, enum bpf_attach_type type,
+ 			attach_flags_str = "";
+ 			break;
+ 		default:
+-			snprintf(buf, sizeof(buf), "unknown(%x)", attach_flags);
++			snprintf(buf, sizeof(buf), "unknown(%x)",
++				 prog_attach_flags[iter]);
+ 			attach_flags_str = buf;
  		}
  
 -- 
