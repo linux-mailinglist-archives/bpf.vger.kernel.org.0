@@ -2,164 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C0BA5B25C7
-	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 20:31:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6E445B25FB
+	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 20:40:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229601AbiIHSb2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Sep 2022 14:31:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51058 "EHLO
+        id S229822AbiIHSkN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Sep 2022 14:40:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbiIHSb1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Sep 2022 14:31:27 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E77FA74BAE;
-        Thu,  8 Sep 2022 11:31:26 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 701F161DE1;
-        Thu,  8 Sep 2022 18:31:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9EFBC433D6;
-        Thu,  8 Sep 2022 18:31:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662661885;
-        bh=pwiS6dxc4KyhjhtcsKVTP/Sq/be3I4Y28Qt1YVLE2zA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZZKPXlPt65enO3t/+8wobhXq8Rebtsjiw0UxB9PA+OwPCW9zOPne9ygTXi+6IBlFx
-         nU6CQEeZW3c7lyl2UQ7YJB2e7F13d6HRrhH3V9AxxLUVy1yWKWTQyBFKo+8/Sve31x
-         9DWPJqNX5wAmPcnTdxfuwTwtb/bQlGZ8F8bU2q/mNE5ChQGuVYwo1nRCvoIsmw7YnX
-         F5my9C8bkkgiKhmAY7K8K2siA0FJJUnIo9lft8XS6qtTNYCxk+Bx+xceREcoPS1TXm
-         V6bnF4iuWW6ALw5FRqiTcgNbbL1+xMrcihvsna+jcLUpjn2Ir9w/q+/aLtjDLPur3a
-         3etG12xvDLP2g==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 0D6BB404A1; Thu,  8 Sep 2022 15:31:23 -0300 (-03)
-Date:   Thu, 8 Sep 2022 15:31:23 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org,
-        Marco Elver <elver@google.com>,
-        Song Liu <songliubraving@fb.com>
-Subject: Re: [PATCH v2] perf test: Skip sigtrap test on old kernels
-Message-ID: <Yxo0+gYh+e2Ssfk+@kernel.org>
-References: <20220907050407.2711513-1-namhyung@kernel.org>
+        with ESMTP id S229898AbiIHSkJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Sep 2022 14:40:09 -0400
+Received: from mail-oa1-x2e.google.com (mail-oa1-x2e.google.com [IPv6:2001:4860:4864:20::2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 432407E314
+        for <bpf@vger.kernel.org>; Thu,  8 Sep 2022 11:40:08 -0700 (PDT)
+Received: by mail-oa1-x2e.google.com with SMTP id 586e51a60fabf-1280590722dso13278131fac.1
+        for <bpf@vger.kernel.org>; Thu, 08 Sep 2022 11:40:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date;
+        bh=iTGfA/iMqnfd3k85Y1NHL8lddPFv4K9B34/OL+ENFuk=;
+        b=SkxBMfsp5wAtlCovtLuMr1AVxuUWUg3DtsSV7o3P6CNBUxXKWEuOXhu/iiKX0a0+6r
+         a/QXodyHXSrKOB6vrEoF+vQ3Aa/llnFfhwvEq1WcJMUvzPks1hpr/fFmIB+4uyAxVYU3
+         PLJikHFvceA7GyfAo7BBxifNw4XpGPtpDhFO5UcL8da2Fl5M0Y7csShGWXhR0HdusvmU
+         7Y668icsVolR0pxTIbA9WZpnX41q7XJCDYnQn7ody/gdcTon8O2SdSMTq+Fvgso/Ptst
+         x13CDs5c7dIbxxoSlb3ovPzxzdQOCZXrzsM+XGfel43W2bUDFMHw2dbaVOXxpFSSIvMy
+         UMLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date;
+        bh=iTGfA/iMqnfd3k85Y1NHL8lddPFv4K9B34/OL+ENFuk=;
+        b=nZvKjzjwAJXkoDGxYa7JVzr7tGGaC82s8pgUHS2nYXRWDlFJMHzgXDyaOs2dcFfXCV
+         tgVV7G6bMJgtdu/yWqKptQkhXBr/yA7acmd+D6+KNvwKli/sc5ugHdnnlq35ID0lio01
+         xTpGWSJomlDR9fl4P9ryGyUD/nCiShBQDarpPTpAfgIWjIPRHH52p2tlCAFeNSJMz2Xf
+         eHaXQ5dSzw6Vlllf3c0etZkdVlBx943QUzw71V4FvGJFrFeb4y5uWLnUk45c6a5VHvQL
+         nKX9YnT66suAl36kmhrNiCpKD4r5fw7RQxhujOZRhGFM+WEmyS2hANH6bkBQfD+ZtvKl
+         ovAw==
+X-Gm-Message-State: ACgBeo1TAdDpy3fGIEcNjTQq97ywMGunX6lHwoDu+EdQPSsDhxUfS+Sy
+        gmRNLKGvyYKu7rx06K6v7PUYZRDgzME8Mw==
+X-Google-Smtp-Source: AA6agR6G6H4kYaYfOpI1HoI4NW2A/GwqMahoIFvCjNz6tfgGyRPyttt3tq8Q6ZLdDFSB5OKkkLJfGg==
+X-Received: by 2002:a05:6808:16aa:b0:34d:8758:34ef with SMTP id bb42-20020a05680816aa00b0034d875834efmr1016318oib.176.1662662407114;
+        Thu, 08 Sep 2022 11:40:07 -0700 (PDT)
+Received: from localhost.localdomain (r74-192-156-22.gtwncmta01.grtntx.tl.dh.suddenlink.net. [74.192.156.22])
+        by smtp.googlemail.com with ESMTPSA id u18-20020a056870441200b00127a6357bd5sm5029946oah.49.2022.09.08.11.40.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Sep 2022 11:40:06 -0700 (PDT)
+From:   Marcelo Juchem <juchem@gmail.com>
+X-Google-Original-From: Marcelo Juchem <mj@hunetr.com>
+To:     bpf@vger.kernel.org
+Cc:     Marcelo Juchem <mj@hunetr.com>
+Subject: [PATCH] bpftool: output map/prog indices on `gen skeleton`
+Date:   Thu,  8 Sep 2022 13:39:52 -0500
+Message-Id: <20220908183952.3438815-1-mj@hunetr.com>
+X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220907050407.2711513-1-namhyung@kernel.org>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Tue, Sep 06, 2022 at 10:04:07PM -0700, Namhyung Kim escreveu:
-> If it runs on an old kernel, perf_event_open would fail because of the
-> new fields sigtrap and sig_data.  Just skipping the test could miss an
-> actual bug in the kernel.
-> 
-> Let's check BTF if it has the perf_event_attr.sigtrap field.
-> 
-> Cc: Marco Elver <elver@google.com>
-> Cc: Song Liu <songliubraving@fb.com>
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> ---
->  tools/perf/tests/sigtrap.c | 46 +++++++++++++++++++++++++++++++++++++-
->  1 file changed, 45 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/tests/sigtrap.c b/tools/perf/tests/sigtrap.c
-> index e32ece90e164..32f08ce0f2b0 100644
-> --- a/tools/perf/tests/sigtrap.c
-> +++ b/tools/perf/tests/sigtrap.c
-> @@ -16,6 +16,8 @@
->  #include <sys/syscall.h>
->  #include <unistd.h>
->  
-> +#include <bpf/btf.h>
-> +
->  #include "cloexec.h"
->  #include "debug.h"
->  #include "event.h"
-> @@ -54,6 +56,42 @@ static struct perf_event_attr make_event_attr(void)
->  	return attr;
->  }
->  
-> +static bool attr_has_sigtrap(void)
-> +{
-> +	bool ret = false;
-> +
-> +#ifdef HAVE_BPF_SKEL
-> +
-> +	struct btf *btf;
-> +	const struct btf_type *t;
-> +	const struct btf_member *m;
-> +	const char *name;
-> +	int i, id;
-> +
-> +	/* just assume it doesn't have the field */
-> +	btf = btf__load_vmlinux_btf();
+The skeleton generated by `bpftool` makes it easy to attach and load bpf
+objects as a whole. Some BPF programs are not directly portable across kernel
+versions, though, and require some cherry-picking on which programs to
+load/attach. The skeleton makes this cherry-picking possible, but not entirely
+friendly in some cases.
 
-Cool, at some point we'll probably move this to some other global place,
-doing the lazy loading and keeping it in place as probably we'll use it
-more often :-)
+For example, an useful feature is `attach_with_fallback` so that one
+program can be attempted, and fallback programs tried subsequently until
+one works (think `tcp_recvmsg` interface changing on kernel 5.19).
 
-Waiting for v2.
+Being able to represent a set of probes programatically in a way that is both
+descriptive, compile-time validated, runtime efficient and custom library
+friendly is quite desirable for application developers. A very simple way to
+represent a set of probes is with an array of indices.
 
-Thanks for working on this.
+This patch creates a couple of enums under the `__cplusplus` section to
+represent the program and map indices inside the skeleton object, that can be
+used to refer to the proper program/map object.
 
-- Arnaldo
+This is the code generated for the `__cplusplus` section of `profiler.skel.h`:
+```
+  enum map_idxs: size_t {
+    events = 0,
+    fentry_readings = 1,
+    accum_readings = 2,
+    counts = 3,
+    rodata = 4
+  };
+  enum prog_idxs: size_t {
+    fentry_XXX = 0,
+    fexit_XXX = 1
+  };
+  static inline struct profiler_bpf *open(const struct bpf_object_open_opts *opts = nullptr);
+  static inline struct profiler_bpf *open_and_load();
+  static inline int load(struct profiler_bpf *skel);
+  static inline int attach(struct profiler_bpf *skel);
+  static inline void detach(struct profiler_bpf *skel);
+  static inline void destroy(struct profiler_bpf *skel);
+  static inline const void *elf_bytes(size_t *sz);
+```
+---
+ src/gen.c | 32 ++++++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
-> +	if (btf == NULL)
-> +		return false;
-> +
-> +	id = btf__find_by_name_kind(btf, "perf_event_attr", BTF_KIND_STRUCT);
-> +	if (id < 0)
-> +		goto out;
-> +
-> +	t = btf__type_by_id(btf, id);
-> +	for (i = 0, m = btf_members(t); i < btf_vlen(t); i++, m++) {
-> +		name = btf__name_by_offset(btf, m->name_off);
-> +		if (!strcmp(name, "sigtrap")) {
-> +			ret = true;
-> +			break;
-> +		}
-> +	}
-> +out:
-> +	btf__free(btf);
-> +#endif
-> +
-> +	return ret;
-> +}
-> +
->  static void
->  sigtrap_handler(int signum __maybe_unused, siginfo_t *info, void *ucontext __maybe_unused)
->  {
-> @@ -139,7 +177,13 @@ static int test__sigtrap(struct test_suite *test __maybe_unused, int subtest __m
->  
->  	fd = sys_perf_event_open(&attr, 0, -1, -1, perf_event_open_cloexec_flag());
->  	if (fd < 0) {
-> -		pr_debug("FAILED sys_perf_event_open(): %s\n", str_error_r(errno, sbuf, sizeof(sbuf)));
-> +		if (attr_has_sigtrap()) {
-> +			pr_debug("FAILED sys_perf_event_open(): %s\n",
-> +				 str_error_r(errno, sbuf, sizeof(sbuf)));
-> +		} else {
-> +			pr_debug("perf_event_attr doesn't have sigtrap\n");
-> +			ret = TEST_SKIP;
-> +		}
->  		goto out_restore_sigaction;
->  	}
->  
-> -- 
-> 2.37.2.789.g6183377224-goog
-
+diff --git a/src/gen.c b/src/gen.c
+index 7070dcf..7e28dc7 100644
+--- a/src/gen.c
++++ b/src/gen.c
+@@ -1086,6 +1086,38 @@ static int do_skeleton(int argc, char **argv)
+ 		\n\
+ 									    \n\
+ 		#ifdef __cplusplus					    \n\
++		"
++	);
++
++	{
++		size_t i = 0;
++		printf("\tenum map_index: size_t {");
++		bpf_object__for_each_map(map, obj) {
++			if (!get_map_ident(map, ident, sizeof(ident)))
++				continue;
++			if (i) {
++				printf(",");
++			}
++			printf("\n\t\t%s = %lu", ident, i);
++			++i;
++		}
++		printf("\n\t};\n");
++	}
++	{
++		size_t i = 0;
++		printf("\tenum prog_index: size_t {");
++		bpf_object__for_each_program(prog, obj) {
++			if (i) {
++				printf(",");
++			}
++			printf("\n\t\t%s = %lu", bpf_program__name(prog), i);
++			++i;
++		}
++		printf("\n\t};\n");
++	}
++
++	codegen("\
++		\n\
+ 			static inline struct %1$s *open(const struct bpf_object_open_opts *opts = nullptr);\n\
+ 			static inline struct %1$s *open_and_load();	    \n\
+ 			static inline int load(struct %1$s *skel);	    \n\
 -- 
+2.37.2
 
-- Arnaldo
