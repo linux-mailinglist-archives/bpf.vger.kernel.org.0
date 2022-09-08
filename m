@@ -2,119 +2,157 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77B8E5B238A
-	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 18:24:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E0355B23FD
+	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 18:54:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230433AbiIHQYf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Sep 2022 12:24:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57962 "EHLO
+        id S231700AbiIHQyF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Sep 2022 12:54:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231827AbiIHQYd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Sep 2022 12:24:33 -0400
-Received: from mail-vk1-xa2c.google.com (mail-vk1-xa2c.google.com [IPv6:2607:f8b0:4864:20::a2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1AE3D100
-        for <bpf@vger.kernel.org>; Thu,  8 Sep 2022 09:24:30 -0700 (PDT)
-Received: by mail-vk1-xa2c.google.com with SMTP id b81so8976210vkf.1
-        for <bpf@vger.kernel.org>; Thu, 08 Sep 2022 09:24:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=ODfnmlFfycvjfVXmsxtWSPqog+vmYpbjDzuWEGIV7BM=;
-        b=EaAhHTSA2iQzIEOMY0imysjl2phthxebpFlsdwUq1rW8grglIO0/JDXLNMdn0CvgzC
-         eWvSw/5+hYAbAQ0B6eEXgcJvAes5zcqjqaloL461NRHb5fJdAKais39mg6bRD32ycXLj
-         l0p3JjEdy5IvAoHYEENZDPxyY+qK96FyPi9d9HRDWFoN3yogGYsqrGw6N+CkQlIkX120
-         6MX2MQjl7lUYDbKb31teLMwxPppPqb+luygXENNM/ChvlVmkCcKF4bbfsrfqQwqA4Hw3
-         zG69YrJsnKnZOvR/eeehUxCSLDClOsOZgTBWOs6pgfxv6fj4VEhQ1RaRi51RfppVTJ80
-         b1gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=ODfnmlFfycvjfVXmsxtWSPqog+vmYpbjDzuWEGIV7BM=;
-        b=0DluqQc7pzxsIj0Z1VbQ8Y+IvQpe+EbWHoUVPDJIJ/SaPfoziYxoAlSRglz6kGf30b
-         DOQwR+0RgjQM68e1fFvuSbNe+ZchdI2VFMnt6SgBbJdwxVq37B88rMtyAuV59zC9GgPO
-         GwiVCTv3+Nd9Z5S7+svvuNcsKAgnkqsyCOnwQ3l2NRYsMaQ3T+famKtjAjON7Zvs4hfa
-         YDADtxwB8tQVldwlgHeZuxlEfsZadUXvR1SIrvdKd+Lpd31XJSGSDDW1/a7ftCTH+Atw
-         3Tjd29oGLcVMqTk8KTrQTUA6QBGoTTWW96AK5bt5oyh6S+uQybrU9lEwKTGsfv4UL5t8
-         lzsw==
-X-Gm-Message-State: ACgBeo2NtUqxU4czY62yUf+OIuM2Q/kACxgRAhhxiz1dBCocp/o8pglQ
-        eB0T7s3wu04PfLr/boWDAnimbq2wmxxD0dPFcUo=
-X-Google-Smtp-Source: AA6agR64615e19W4s8OzIek4zeXS/CW+Y4vVHwC1MYKo+w1tHjqSIZ3nI7Zw3ujWLNJY3Js8FAbMnSnC7KoEFea8VXo=
-X-Received: by 2002:a1f:980d:0:b0:3a1:d89f:e3b6 with SMTP id
- a13-20020a1f980d000000b003a1d89fe3b6mr923756vke.29.1662654269971; Thu, 08 Sep
- 2022 09:24:29 -0700 (PDT)
+        with ESMTP id S232051AbiIHQxj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Sep 2022 12:53:39 -0400
+Received: from mailbox.box.xen0n.name (mail.xen0n.name [115.28.160.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63068A50E2
+        for <bpf@vger.kernel.org>; Thu,  8 Sep 2022 09:51:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xen0n.name; s=mail;
+        t=1662655872; bh=6rntCE9dXBNSFS5I+DqUbsib3Q8FiCqlcnV09DyYO8k=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=QqmkQIoKV27YBXmyYvx1s7Qwjy2qL/PRqcK3qzYXqVKJpGH7ujt17XTyNl5INihOv
+         XBrtBEGTa9cySF8l72gVttG+EVlX52dBiLRHr79JGLveT0RPlqCXSBjnYQNgQuweJf
+         iDvnNwstIkzN04o8H+UIQwcgFQBpoNiNIL2hTSvk=
+Received: from [192.168.9.172] (unknown [101.88.26.24])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id BAE55600BD;
+        Fri,  9 Sep 2022 00:51:11 +0800 (CST)
+Message-ID: <cfc4c2e5-34af-b968-9c44-28e71731bb75@xen0n.name>
+Date:   Fri, 9 Sep 2022 00:51:11 +0800
 MIME-Version: 1.0
-References: <CAK3+h2zZQ4zEB55Bn565Xf0okf+Jotmo6qHYmzpoJPBcFWPP0A@mail.gmail.com>
- <CAK3+h2y4isKQQWFY9dnEq86a4BRG1zr5nEveyKqFyVvYaRrPpw@mail.gmail.com> <YxlmpEzm/ZDFTjKE@syu-laptop>
-In-Reply-To: <YxlmpEzm/ZDFTjKE@syu-laptop>
-From:   Vincent Li <vincent.mc.li@gmail.com>
-Date:   Thu, 8 Sep 2022 09:24:19 -0700
-Message-ID: <CAK3+h2won0ZJqmJZd46RfmnHnLSaqDc5+f_FuHxn8fpD6khKjw@mail.gmail.com>
-Subject: Re: differentiate the verifier invalid mem access message error?
-To:     Shung-Hsi Yu <shung-hsi.yu@suse.com>
-Cc:     bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:106.0) Gecko/20100101
+ Thunderbird/106.0a1
+Subject: Re: [PATCH bpf-next v3 3/4] LoongArch: Add BPF JIT support
+Content-Language: en-US
+To:     Huacai Chen <chenhuacai@kernel.org>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        WANG Xuerui <git@xen0n.name>, Xi Ruoyao <xry111@xry111.site>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        loongarch@lists.linux.dev, Li Xuefeng <lixuefeng@loongson.cn>
+References: <1661999249-10258-1-git-send-email-yangtiezhu@loongson.cn>
+ <1661999249-10258-4-git-send-email-yangtiezhu@loongson.cn>
+ <CAAhV-H4yU2tp=DBGCkdSzp-9bAXXDM4+0iqDgOac+fbgQnsx2A@mail.gmail.com>
+ <1a740b5c-041c-85c6-f1d6-bb0b931c0c3e@loongson.cn>
+ <CAAhV-H5vfw+Mv=LbQfa4sPHW91Z+ij3R8+LsHZOAiR+u7pJONw@mail.gmail.com>
+From:   WANG Xuerui <kernel@xen0n.name>
+In-Reply-To: <CAAhV-H5vfw+Mv=LbQfa4sPHW91Z+ij3R8+LsHZOAiR+u7pJONw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 7, 2022 at 8:51 PM Shung-Hsi Yu <shung-hsi.yu@suse.com> wrote:
->
-> On Wed, Sep 07, 2022 at 07:40:55PM -0700, Vincent Li wrote:
-> > On Wed, Sep 7, 2022 at 7:35 PM Vincent Li <vincent.mc.li@gmail.com> wrote:
-> > > Hi,
-> > >
-> > > I see some verifier log examples with error like:
-> > >
-> > > R4 invalid mem access 'inv'
-> > >
-> > > It looks like invalid mem access errors occur in two places below,
-> > > does it make sense to make the error message slightly different so for
-> > > new eBPF programmers like me to tell the first invalid mem access is
-> > > maybe the memory is NULL? and the second invalid mem access is because
-> > > the register type does not match any valid memory pointer? or this
-> > > won't help identifying problems and don't bother ?
-> > >
-> > >  4772         } else if (base_type(reg->type) == PTR_TO_MEM) {
-> > >  4773                 bool rdonly_mem = type_is_rdonly_mem(reg->type);
-> > >  4774
-> > >  4775                 if (type_may_be_null(reg->type)) {
-> > >  4776                         verbose(env, "R%d invalid mem access
-> > > '%s'\n", regno,
-> > >  4777                                 reg_type_str(env, reg->type));
->
-> While the error you're seeing is coming from the bottom case (more on that
-> below), I agree hinting the user that a null check is missing may be
-> helpful.
->
-right, I think the reg_type_str will output the 'nul' string in this
-case if I read the code correct.
+Hi,
 
-> > >  4778                         return -EACCES;
-> > >  4779                 }
-> > >
-> > > and
-> > >
-> > >  4924         } else {
-> > >  4925                 verbose(env, "R%d invalid mem access '%s'\n", regno,
-> > >  4926                         reg_type_str(env, reg->type));
-> > >  4927                 return -EACCES;
-> > >  4928         }
-> >
-> > sorry I should read the code more carefully, I guess the "inv" already
-> > says it is invalid memory access, not NULL, right?
->
-> The "inv" actually means that the type of R4 is scalar. IIUC "inv" stands
-> for invariant, which is a term used in static analysis.
->
-> Since v5.18 (commit 7df5072cc05f "bpf: Small BPF verifier log improvements")
-> the verifier will say "scalar" instead.
+On 9/4/22 17:04, Huacai Chen wrote:
+> On Sat, Sep 3, 2022 at 6:11 PM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
+>>
+>>
+>> On 09/03/2022 04:32 PM, Huacai Chen wrote:
+>>> On Thu, Sep 1, 2022 at 10:27 AM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
+>>>> BPF programs are normally handled by a BPF interpreter, add BPF JIT
+>>>> support for LoongArch to allow the kernel to generate native code
+>>>> when a program is loaded into the kernel, this will significantly
+>>>> speed-up processing of BPF programs.
+>> [...]
+>>
+>>>> +
+>>>> +static inline int emit_cond_jmp(struct jit_ctx *ctx, u8 cond, enum loongarch_gpr rj,
+>>>> +                               enum loongarch_gpr rd, int jmp_offset)
+>>>> +{
+>>>> +       /*
+>>>> +        * A large PC-relative jump offset may overflow the immediate field of
+>>>> +        * the native conditional branch instruction, triggering a conversion
+>>>> +        * to use an absolute jump instead, this jump sequence is particularly
+>>>> +        * nasty. For now, use cond_jmp_offs26() directly to keep it simple.
+>>>> +        * In the future, maybe we can add support for far branching, the branch
+>>>> +        * relaxation requires more than two passes to converge, the code seems
+>>>> +        * too complex to understand, not quite sure whether it is necessary and
+>>>> +        * worth the extra pain. Anyway, just leave it as it is to enhance code
+>>>> +        * readability now.
+>>> Oh, no. I don't think this is a very difficult problem, because the
+>>> old version has already solved [1]. Please improve your code and send
+>>> V4.
+>>> BTW, I have committed V3 with some small modifications in
+>>> https://github.com/loongson/linux/commits/loongarch-next, please make
+>>> V4 based on that.
+>>>
+>>> [1] https://github.com/loongson/linux/commit/e20b2353f40cd13720996524e1df6d0ca086eeb8#diff-6d2f4f5a862a5dce12f8eb0feeca095825c4ed1c2e7151b0905fb8d03c98922e
+>>>
+>>> --------code in the old version--------
+>>> static inline void emit_cond_jump(struct jit_ctx *ctx, u8 cond, enum
+>>> loongarch_gpr rj,
+>>>                                    enum loongarch_gpr rd, int jmp_offset)
+>>> {
+>>>          if (is_signed_imm16(jmp_offset))
+>>>                  cond_jump_offs16(ctx, cond, rj, rd, jmp_offset);
+>>>          else if (is_signed_imm26(jmp_offset))
+>>>                  cond_jump_offs26(ctx, cond, rj, rd, jmp_offset);
+>>>          else
+>>>                  cond_jump_offs32(ctx, cond, rj, rd, jmp_offset);
+>>> }
+>>>
+>>> static inline void emit_uncond_jump(struct jit_ctx *ctx, int
+>>> jmp_offset, bool is_exit)
+>>> {
+>>>          if (is_signed_imm26(jmp_offset))
+>>>                  uncond_jump_offs26(ctx, jmp_offset);
+>>>          else
+>>>                  uncond_jump_offs32(ctx, jmp_offset, is_exit);
+>>> }
+>>> --------end of code--------
+>>>
+>>> Huacai
+>>>
+>> Hi Huacai,
+>>
+>> This change is to pass the special test cases:
+>> "a new type of jump test where the program jumps forwards
+>> and backwards with increasing offset. It mainly tests JITs where a
+>> relative jump may generate different JITed code depending on the offset
+>> size."
+>>
+>> They are introduced in commit a7d2e752e520 ("bpf/tests: Add staggered
+>> JMP and JMP32 tests") after the old internal version you mentioned.
+>>
+>> Here, we use the native instructions to enlarge the jump range to 26 bit
+>> directly rather than 16 bit first, and also take no account of more than
+>> 26 bit case because there is no native instruction and it needs to emulate.
+>>
+>> As the code comment said, this is to enhance code readability now.
+> I'm not familiar with bpf, Daniel, Ruoyao and Xuerui, what do you
+> think about it?
 
-Thanks for the clarification :)
+I'm not familiar with eBPF JITs either, but from a cursory look it seems 
+the readability isn't that bad even for the original version? It is 
+clear that the appropriate instructions are selected according to size 
+of the immediate. And the current way of doing things doesn't really fix 
+the problem, it relies on the fact that *normally* the negative branch 
+offset is expressible in 16 bits (actually 18 bits).
+
+So, at the very least, you should keep the fallback logic towards 
+cond_jump_offs32. At which point adding back enough code so you're back 
+to the original version doesn't sound like it's too much anyway...
+
+-- 
+WANG "xen0n" Xuerui
+
+Linux/LoongArch mailing list: https://lore.kernel.org/loongarch/
+
