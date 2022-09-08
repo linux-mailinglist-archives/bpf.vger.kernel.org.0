@@ -2,117 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 804B35B1DD8
-	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 15:04:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 432FC5B1E02
+	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 15:08:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230451AbiIHNEC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Sep 2022 09:04:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49586 "EHLO
+        id S232153AbiIHNIs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Sep 2022 09:08:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232091AbiIHNEB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Sep 2022 09:04:01 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45FA3D742E;
-        Thu,  8 Sep 2022 06:04:00 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CBDD061CEF;
-        Thu,  8 Sep 2022 13:03:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48AD2C433C1;
-        Thu,  8 Sep 2022 13:03:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662642239;
-        bh=RNPjRQkS198xJIWi4rthy4+btO4cb14a8DHt8yLQeOk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=HkIQkhRp+uXeTKAVt9NNLs5t9OV4esVfbKzJNlULRmMDLGxyLqSbZNwWkJlLEZKcA
-         eUix5rXrct29WRPNkT2wUqQc5degImAuLGEj/N/FkfSF/mhI2cDsopSHsaArdl7LAj
-         pzJ/Pd7iWhHytZT0sQC8DBs9PX+m7HZANlZKyZ3xKOZKq4S9jujXYbnS4LPkvlnhob
-         2l++v803TJf30cBhkTBVnOMMA6ILnE3TfjkNv84y9+hheWN9GZJsVSYNptFSpiLLwx
-         bQIOHEVun+SOCKQ4NPYbnNXzyt60by1rPGNI+a7Hq+X48aEowfprAniVoRm4lSZhXM
-         RMnZsUfscoE+w==
-Date:   Thu, 8 Sep 2022 22:03:54 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Josh Poimboeuf <jpoimboe@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Suleiman Souhlal <suleiman@google.com>,
-        bpf <bpf@vger.kernel.org>, linux-kernel@vger.kernel.org,
-        Borislav Petkov <bp@suse.de>, x86@kernel.org
-Subject: Re: [PATCH v2 1/2] x86/kprobes: Fix kprobes instruction boudary
- check with CONFIG_RETHUNK
-Message-Id: <20220908220354.28c196c8bbe4e83c83afcb59@kernel.org>
-In-Reply-To: <20220908050855.w77mimzznrlp6pwe@treble>
-References: <166260087224.759381.4170102827490658262.stgit@devnote2>
-        <166260088298.759381.11727280480035568118.stgit@devnote2>
-        <20220908050855.w77mimzznrlp6pwe@treble>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-10.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S232140AbiIHNIq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Sep 2022 09:08:46 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 471B3D418E
+        for <bpf@vger.kernel.org>; Thu,  8 Sep 2022 06:08:40 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id z20so19825183ljq.3
+        for <bpf@vger.kernel.org>; Thu, 08 Sep 2022 06:08:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
+         :subject:date;
+        bh=v0toXAugjGjZFZEfeoP4HAg6rhjEIJmWAL9nDlVQNu0=;
+        b=Q8TRhyj04NCAf2+67tuiYTlLV7DHt0W1G5q/0cvHeuxyUn/YTwmEOOMNGbLcAJS/JS
+         dgQyrwwX9We/ZBRT/WhKxj455JijIE5Mbb1omLAAPH61+TfN8yMXGHHiJzZpsFxd+j/B
+         jkJHjb+Zu8pv9qKCHSBVxiAQUfppZWj3IalQ/TFPbi35j2dB8B6CRE1RY6+0T6Hp3OwK
+         IASIHvDcxJ8fAuAg0jYpdCssNWADChT4s9t1cYe2wEMEoyai5WI7HH+HAxFSSpaG/B08
+         iTx1oCPCjI78yj6jqBkClbvo8YVAhafI2T8tAqa+uHUvK416r2FtiStX+Ng/EKAVsBIP
+         qAPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:subject:message-id:date:from:reply-to:mime-version
+         :x-gm-message-state:from:to:cc:subject:date;
+        bh=v0toXAugjGjZFZEfeoP4HAg6rhjEIJmWAL9nDlVQNu0=;
+        b=ohDBkBfYs/Wtg1bkMHNkmFdf4LoLd8DkqpmI7rENxUH9TiF37jtdGiFMcSw1aIRfzY
+         1r45ODgbkdeNGKoPH0wkJIiWTa1SgWHJ3Ipg4eBsAbVS1iT2sVNMkhFb3fyTCE4Aubym
+         1bbvVWBhoVt/tNoF3RY8S2mIvAW08yP6sVtItXvhXDSQYp1xZh/9SvEYb1gujMp7VlkG
+         SgjLILUXSP57YDiiazbvA7ewcft3fGAiWfEoZLhHIU2EEQ2FF5+Pq9nWq+OFBRbSAYSU
+         yDXkSEz7Tjp8qwTVBRpNGk674QAPuJZ2s00szhkZE0xG+ghozqvACHirmwAfwOnPvKKk
+         S2Jg==
+X-Gm-Message-State: ACgBeo3pIWUbQX774uSH2N5h5tu4qzb1Vz3FqislxyOxdKH9X0Cj3saK
+        iysSIubxbdJIhiSjlJ2ifheItq6NLjEkjKy21kQ=
+X-Google-Smtp-Source: AA6agR7UQzvjJocMyuT72t+oA+V5H1FLs9A+DUzivOZLUHkBPATD/johdGFRD/P/yABr0CCOj/F4h+SSUUUXlE9XVZA=
+X-Received: by 2002:a2e:854b:0:b0:26a:ccab:daea with SMTP id
+ u11-20020a2e854b000000b0026accabdaeamr2600652ljj.455.1662642517271; Thu, 08
+ Sep 2022 06:08:37 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 2002:ab3:6785:0:b0:1da:cc05:b879 with HTTP; Thu, 8 Sep 2022
+ 06:08:36 -0700 (PDT)
+Reply-To: fredrich.david.mail@gmail.com
+From:   Mr Fredrich David <sinandja17@gmail.com>
+Date:   Thu, 8 Sep 2022 13:08:36 +0000
+Message-ID: <CALZJgRDzaXLH7JOo=4AiRpzBTy7wpEE+n6xcd5m2VbL_R6SA9w@mail.gmail.com>
+Subject: I8N,D3
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=4.9 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_HK_NAME_FM_MR_MRS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 7 Sep 2022 22:08:55 -0700
-Josh Poimboeuf <jpoimboe@kernel.org> wrote:
-
-> On Thu, Sep 08, 2022 at 10:34:43AM +0900, Masami Hiramatsu (Google) wrote:
-> > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > 
-> > Since the CONFIG_RETHUNK and CONFIG_SLS will use INT3 for stopping
-> > speculative execution after RET instruction, kprobes always failes to
-> > check the probed instruction boundary by decoding the function body if
-> > the probed address is after such sequence. (Note that some conditional
-> > code blocks will be placed after function return, if compiler decides
-> > it is not on the hot path.)
-> > 
-> > This is because kprobes expects someone (e.g. kgdb) puts the INT3 as
-> > a software breakpoint and it will replace the original instruction.
-> > But these INT3 are not such purpose, it doesn't need to recover the
-> > original instruction.
-> > 
-> > To avoid this issue, memorize the branch target address during decoding
-> > and if there is INT3, restart decoding from unchecked target address.
-> 
-> Hm, is kprobes conflicting with kgdb actually a realistic concern?
-> Seems like a dangerous combination
-
-I'm actually not sure, I don't recommend it. But it is safe just having
-fail-safe.
-
-> 
-> Either way, this feels overengineered.  Sort of like implementing
-> objtool in the kernel.
-> 
-> And it's incomplete: for a switch statement jump table (or C goto jump
-> table like in BPF), you can't detect the potential targets of the
-> indirect branch.
-
-In that case, it just fails to detect instruction boundary (and anyway
-optprobe just stops optimization if it finds the indirect jump). So it
-is still fail safe.
-
-> 
-> Wouldn't it be much simpler to just encode the knowledge that
-> 
->   	if (CONFIG_RETHUNK && !X86_FEATURE_RETHUNK)
-> 		// all rets are followed by four INT3s
-> 	else if (CONFIG_SLS)
-> 		// all rets are followed by one INT3
-
-Maybe we should just ask kgdb if it is using breakpoint on that
-function, and if so, just reject kprobe on it. Then, all INT3
-can be just skipped. That may be more realistic solution.
-
-Thank you, 
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+And in the response to your emails, I write to inform you that the
+projects have been completed and you have been approved  !
+Best Regard,
+Mr Fredrich David
