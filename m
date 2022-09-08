@@ -2,64 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 704A45B12A6
-	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 04:47:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEC735B12A8
+	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 04:48:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229561AbiIHCrx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Sep 2022 22:47:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52972 "EHLO
+        id S229609AbiIHCsq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Sep 2022 22:48:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbiIHCrw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Sep 2022 22:47:52 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BF726CF79
-        for <bpf@vger.kernel.org>; Wed,  7 Sep 2022 19:47:51 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id y15so1291758ilq.4
-        for <bpf@vger.kernel.org>; Wed, 07 Sep 2022 19:47:51 -0700 (PDT)
+        with ESMTP id S229477AbiIHCsp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Sep 2022 22:48:45 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE2757FFBF;
+        Wed,  7 Sep 2022 19:48:41 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id v6so4864690ljj.0;
+        Wed, 07 Sep 2022 19:48:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date;
-        bh=F0V3Q69Dfh9U3idCQ5zoaJWqNyDIbFU9SJAjb82VWQ4=;
-        b=GSXT+BDrEIkHdygtut3Q3XfmCHdfl3lGdk8Yx4BY059SgNwI7QJEgrtHA80A4jsKQL
-         56tZ2c75Ie43VpAnUJW3qpqPxvfK7Hko5nOzEivcEw0jnJ1s7+yrdsrHx61jNIVMWrm/
-         PqNA6Ws8APgHrOk9Ke2Z77UXMeAWmyltRD1fniP7t4wfCmTIHPMhS91hA+vbEjlgmgaC
-         a+zMiGbePkX/nFmyttjKcFXD/bw0Msp+1SWCeDh+7l/XTz+zKvwe2IWTnyG6Y/AhXV0h
-         Tl7bdLrfzsMrLgVYI0cWgJQS6Zn5E48AsH2RQMd4tDGLU5v8tR3WsS0yQ5cThyPUX4jD
-         ho0w==
+        bh=S007uhudJiEUSw5VwxgkV7xB4iqXJLx8bGrjx4fe7Ec=;
+        b=Wynxkd/Lh2b+ogTbqK96/Gt6zE8OZeDngoOQzpEIsMlpgLwgwooTbQV5YtjXg+k+43
+         UspSoj/yZnUA2/GoXB9T2DiNXkYLbKF4nXr6Ui8BwkpzIXGa9GwJq+SrJNBX7i2yXbdg
+         BfpSllT6UIpzwxu9DLlXK9/1LAXbzA0p4z7ahPmrQIzQB2ovJI9+TvXYJE2+FKSvAGjQ
+         3GXNk8TxFQMKZ3d93OIEUlyB05I+Uvqq/2ynKBJCQWJkYwwRYWpoewHgCVzlHSaru083
+         ACQrWwhViZfE479uxHlF7W8EID7aiLjo/amxw7glHDaVnxPhJivreP+95GHsAcfCSsJW
+         Y3hg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=F0V3Q69Dfh9U3idCQ5zoaJWqNyDIbFU9SJAjb82VWQ4=;
-        b=GoE7anMlh3sTpOBK1vwttNTFoBSjg5RFbuqmVKCFNfsbQcaS6VlYXZM3uWXahcb9Om
-         i7pHFzB/69G0bxiGXNpAGLGB2kQqoT272aPR8yCc69fI347UniP4wIUG3onpiXeA/4gL
-         W4/Iks4vixdpzjsh0oI1U7uZfnv3bMwjKYW2RY2MKPAcInfEy7VQLBfFrcnKLc90mwUm
-         DbPQ++azo7zvUmlsri0VkOUOdCWC2MuZTnsjfpDPM2Fa2fy/Nbif/N6YrfCFa5f6CX1E
-         5EpbyfpInQhRxv5UaRfYma7D13wCMt4NcFTIAG7asxtIxW1IDVdsBtLwcdPt7NYonXTa
-         vpvg==
-X-Gm-Message-State: ACgBeo1RWperUSfqepBOoxtfQ/u/98giF3f0haYDv1byljBN3CSBqOel
-        NYAoCfR87FWktOwdHU5cJWSZ0jRRdiztSct8r9c=
-X-Google-Smtp-Source: AA6agR64GhT8jsrsnH3ChJvKjIx7mChyuu85wc6hM51rDmKliO08c9TljNc8YYyWCD41ptOF0JfEmaO7Yt+8jiU83yI=
-X-Received: by 2002:a05:6e02:170f:b0:2f1:6cdf:6f32 with SMTP id
- u15-20020a056e02170f00b002f16cdf6f32mr778867ill.216.1662605270945; Wed, 07
- Sep 2022 19:47:50 -0700 (PDT)
+        bh=S007uhudJiEUSw5VwxgkV7xB4iqXJLx8bGrjx4fe7Ec=;
+        b=qc2aE6n2HkG9qJrlqmr4fTkaIjFE9MF6pf6p0nGlWL+jmdZ9TS5oOYo9It/pm0T7/G
+         8IQli6iAus0D+DC03P9FBIIuFfRxqTjXrMBQx6TzhqbPW4emB9kqeRlu/ek3b1F3KCoX
+         LYmOOWs5G0qB/c2p4keEW6DRFXVJAsWxeIN7D0iAzdanMfVaEpDzSgxws/I8utowDrrE
+         Ziik5fnV83U6SzfQfwfhALoqt1GpGalhs0+bR7EAkQJ4VoShyEQ5UMnTX2q/MuPVVRZh
+         0Dcj/Xo53eKgVtM/YKfmktm1VBJhx8iq+O2WaFR30o1KyxHVKg9Y5NlE/tCYNqZZw/Po
+         IfNA==
+X-Gm-Message-State: ACgBeo2XqsCMmzhPs2Cd7OI3qokDYTbQibrXzLTnJjacJ79t23Bm8jnl
+        vkNH1Lfx/mv7MH3XrwEq89hU82lszH9fv09lsWY=
+X-Google-Smtp-Source: AA6agR51DPksjb7gaR1DJ20WyBaKaOQEPNurBKQksz7/9Z2PW16bQ3gm9ag9gGKHTWzQzy+kZcizRIHGLZcNsqiLDVA=
+X-Received: by 2002:a2e:91d7:0:b0:26a:c623:ad26 with SMTP id
+ u23-20020a2e91d7000000b0026ac623ad26mr1838663ljg.512.1662605320251; Wed, 07
+ Sep 2022 19:48:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220904204145.3089-1-memxor@gmail.com> <20220904204145.3089-6-memxor@gmail.com>
- <20220907190023.x6syddvu2xgxb47d@MacBook-Pro-4.local>
-In-Reply-To: <20220907190023.x6syddvu2xgxb47d@MacBook-Pro-4.local>
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date:   Thu, 8 Sep 2022 04:47:15 +0200
-Message-ID: <CAP01T75UoRUpvR6HsF8B4n0YiiRT91BNp5aVzp=5XPERYhoDsg@mail.gmail.com>
-Subject: Re: [PATCH RFC bpf-next v1 05/32] bpf: Support kptrs in local storage maps
+References: <20220902023003.47124-1-laoar.shao@gmail.com> <Yxi8I4fXXSCi6z9T@slm.duckdns.org>
+ <YxkVq4S1Eoa4edjZ@P9FQF9L96D.corp.robot.car> <CALOAHbAp=g20rL0taUpQmTwymanArhO-u69Xw42s5ap39Esn=A@mail.gmail.com>
+ <CAADnVQJHtY0m5TnFxnn8w3xBUfAGNzbf1HmS3ChqcLJadEYJFg@mail.gmail.com>
+In-Reply-To: <CAADnVQJHtY0m5TnFxnn8w3xBUfAGNzbf1HmS3ChqcLJadEYJFg@mail.gmail.com>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Thu, 8 Sep 2022 10:48:03 +0800
+Message-ID: <CALOAHbAwvPFp6F8BXjzTeNnL7rT+LfA6_yoCY5sLO9VVkjXONA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 00/13] bpf: Introduce selectable memcg for bpf map
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+Cc:     Roman Gushchin <roman.gushchin@linux.dev>,
+        Tejun Heo <tj@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Delyan Kratunov <delyank@fb.com>
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Cgroups <cgroups@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -71,115 +83,76 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 7 Sept 2022 at 21:00, Alexei Starovoitov
+On Thu, Sep 8, 2022 at 10:43 AM Alexei Starovoitov
 <alexei.starovoitov@gmail.com> wrote:
 >
-> On Sun, Sep 04, 2022 at 10:41:18PM +0200, Kumar Kartikeya Dwivedi wrote:
-> > Enable support for kptrs in local storage maps by wiring up the freeing
-> > of these kptrs from map value.
+> On Wed, Sep 7, 2022 at 7:37 PM Yafang Shao <laoar.shao@gmail.com> wrote:
 > >
-> > Cc: Martin KaFai Lau <kafai@fb.com>
-> > Cc: KP Singh <kpsingh@kernel.org>
-> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > ---
-> >  include/linux/bpf_local_storage.h |  2 +-
-> >  kernel/bpf/bpf_local_storage.c    | 33 +++++++++++++++++++++++++++----
-> >  kernel/bpf/syscall.c              |  5 ++++-
-> >  kernel/bpf/verifier.c             |  9 ++++++---
-> >  4 files changed, 40 insertions(+), 9 deletions(-)
+> > On Thu, Sep 8, 2022 at 6:29 AM Roman Gushchin <roman.gushchin@linux.dev> wrote:
+> > >
+> > > On Wed, Sep 07, 2022 at 05:43:31AM -1000, Tejun Heo wrote:
+> > > > Hello,
+> > > >
+> > > > On Fri, Sep 02, 2022 at 02:29:50AM +0000, Yafang Shao wrote:
+> > > > ...
+> > > > > This patchset tries to resolve the above two issues by introducing a
+> > > > > selectable memcg to limit the bpf memory. Currently we only allow to
+> > > > > select its ancestor to avoid breaking the memcg hierarchy further.
+> > > > > Possible use cases of the selectable memcg as follows,
+> > > >
+> > > > As discussed in the following thread, there are clear downsides to an
+> > > > interface which requires the users to specify the cgroups directly.
+> > > >
+> > > >  https://lkml.kernel.org/r/YwNold0GMOappUxc@slm.duckdns.org
+> > > >
+> > > > So, I don't really think this is an interface we wanna go for. I was hoping
+> > > > to hear more from memcg folks in the above thread. Maybe ping them in that
+> > > > thread and continue there?
+> > >
 > >
-> > diff --git a/include/linux/bpf_local_storage.h b/include/linux/bpf_local_storage.h
-> > index 7ea18d4da84b..6786d00f004e 100644
-> > --- a/include/linux/bpf_local_storage.h
-> > +++ b/include/linux/bpf_local_storage.h
-> > @@ -74,7 +74,7 @@ struct bpf_local_storage_elem {
-> >       struct hlist_node snode;        /* Linked to bpf_local_storage */
-> >       struct bpf_local_storage __rcu *local_storage;
-> >       struct rcu_head rcu;
-> > -     /* 8 bytes hole */
-> > +     struct bpf_map *map;            /* Only set for bpf_selem_free_rcu */
-> >       /* The data is stored in another cacheline to minimize
-> >        * the number of cachelines access during a cache hit.
-> >        */
-> > diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storage.c
-> > index 802fc15b0d73..4a725379d761 100644
-> > --- a/kernel/bpf/bpf_local_storage.c
-> > +++ b/kernel/bpf/bpf_local_storage.c
-> > @@ -74,7 +74,8 @@ bpf_selem_alloc(struct bpf_local_storage_map *smap, void *owner,
-> >                               gfp_flags | __GFP_NOWARN);
-> >       if (selem) {
-> >               if (value)
-> > -                     memcpy(SDATA(selem)->data, value, smap->map.value_size);
-> > +                     copy_map_value(&smap->map, SDATA(selem)->data, value);
-> > +             /* No call to check_and_init_map_value as memory is zero init */
-> >               return selem;
-> >       }
+> > Hi Roman,
 > >
-> > @@ -92,12 +93,27 @@ void bpf_local_storage_free_rcu(struct rcu_head *rcu)
-> >       kfree_rcu(local_storage, rcu);
-> >  }
+> > > As I said previously, I don't like it, because it's an attempt to solve a non
+> > > bpf-specific problem in a bpf-specific way.
+> > >
 > >
-> > +static void check_and_free_fields(struct bpf_local_storage_elem *selem)
-> > +{
-> > +     if (map_value_has_kptrs(selem->map))
-> > +             bpf_map_free_kptrs(selem->map, SDATA(selem));
-> > +}
-> > +
-> >  static void bpf_selem_free_rcu(struct rcu_head *rcu)
-> >  {
-> >       struct bpf_local_storage_elem *selem;
+> > Why do you still insist that bpf_map->memcg is not a bpf-specific
+> > issue after so many discussions?
+> > Do you charge the bpf-map's memory the same way as you charge the page
+> > caches or slabs ?
+> > No, you don't. You charge it in a bpf-specific way.
 > >
-> >       selem = container_of(rcu, struct bpf_local_storage_elem, rcu);
-> > -     kfree_rcu(selem, rcu);
-> > +     check_and_free_fields(selem);
-> > +     kfree(selem);
-> > +}
-> > +
-> > +static void bpf_selem_free_tasks_trace_rcu(struct rcu_head *rcu)
-> > +{
-> > +     struct bpf_local_storage_elem *selem;
-> > +
-> > +     selem = container_of(rcu, struct bpf_local_storage_elem, rcu);
-> > +     call_rcu(&selem->rcu, bpf_selem_free_rcu);
-> >  }
+> > > Yes, memory cgroups are not great for accounting of shared resources, it's well
+> > > known. This patchset looks like an attempt to "fix" it specifically for bpf maps
+> > > in a particular cgroup setup. Honestly, I don't think it's worth the added
+> > > complexity. Especially because a similar behaviour can be achieved simple
+> > > by placing the task which creates the map into the desired cgroup.
 > >
-> >  /* local_storage->lock must be held and selem->local_storage == local_storage.
-> > @@ -150,10 +166,11 @@ bool bpf_selem_unlink_storage_nolock(struct bpf_local_storage *local_storage,
-> >           SDATA(selem))
-> >               RCU_INIT_POINTER(local_storage->cache[smap->cache_idx], NULL);
+> > Are you serious ?
+> > Have you ever read the cgroup doc? Which clearly describe the "No
+> > Internal Process Constraint".[1]
+> > Obviously you can't place the task in the desired cgroup, i.e. the parent memcg.
 > >
-> > +     selem->map = &smap->map;
-> >       if (use_trace_rcu)
-> > -             call_rcu_tasks_trace(&selem->rcu, bpf_selem_free_rcu);
-> > +             call_rcu_tasks_trace(&selem->rcu, bpf_selem_free_tasks_trace_rcu);
-> >       else
-> > -             kfree_rcu(selem, rcu);
-> > +             call_rcu(&selem->rcu, bpf_selem_free_rcu);
+> > [1] https://www.kernel.org/doc/Documentation/cgroup-v2.txt
 > >
-> >       return free_local_storage;
-> >  }
-> > @@ -581,6 +598,14 @@ void bpf_local_storage_map_free(struct bpf_local_storage_map *smap,
-> >        */
-> >       synchronize_rcu();
+> > > Beatiful? Not. Neither is the proposed solution.
+> > >
 > >
-> > +     /* When local storage map has kptrs, the call_rcu callback accesses
-> > +      * kptr_off_tab, hence we need the bpf_selem_free_rcu callbacks to
-> > +      * finish before we free it.
-> > +      */
-> > +     if (map_value_has_kptrs(&smap->map)) {
-> > +             rcu_barrier();
-> > +             bpf_map_free_kptr_off_tab(&smap->map);
+> > Is it really hard to admit a fault?
 >
-> probably needs conditional rcu_barrier_tasks_trace before rcu_barrier?
-> With or without it will be a significant delay in map freeing.
-> Maybe we should generalize the destroy_mem_alloc trick?
+> Yafang,
+>
+> This attitude won't get you anywhere.
 >
 
-Yes, let me take a closer look tomorrow and ask questions if any.
-Otherwise I will rework it. Thanks for catching this.
+Thanks for pointing it out. It is my fault.
 
-> Patch 4 needs rebase. Applied patches 1-3.
-> The first 5 look great to me.
-> Pls follow up with kptr specific tests.
+> Selecting memcg by fd is no go.
+> You need to work with the community to figure out a solution
+> acceptable to maintainers of relevant subsystems.
 
-Thanks, I will split those out into another series with its own test.
+Yes, I'm trying.
+
+-- 
+Regards
+Yafang
