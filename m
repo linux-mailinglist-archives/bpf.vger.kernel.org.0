@@ -2,74 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB1495B1290
-	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 04:37:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 973E05B1292
+	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 04:39:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229607AbiIHChm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Sep 2022 22:37:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40056 "EHLO
+        id S229510AbiIHCjv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Sep 2022 22:39:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbiIHChm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Sep 2022 22:37:42 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1C10C6526;
-        Wed,  7 Sep 2022 19:37:40 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id bn9so18229780ljb.6;
-        Wed, 07 Sep 2022 19:37:40 -0700 (PDT)
+        with ESMTP id S229611AbiIHCjt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Sep 2022 22:39:49 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CC0432AAE
+        for <bpf@vger.kernel.org>; Wed,  7 Sep 2022 19:39:48 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id z17so6711996eje.0
+        for <bpf@vger.kernel.org>; Wed, 07 Sep 2022 19:39:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date;
-        bh=7xfo1t0Mjz7JHwVeDqy2RVRwxIGPpSh2U8isoMwE4RM=;
-        b=KEtUU7pliz21rp1lhfBEiM0Cbjd3FGNGwWUs94BdDhRfJX4Rg7Bb6438/dyEBJjDpm
-         L9ep6h9h0SeW6QhSXcnKU7AFZovBkpZgIu7PDvCOE6euFRb+hgaoXyQU6farRWdFCOmo
-         n8bIuS4vS14N+te+6ip/Q7e1kgsImF6P33OBEQbZy8qHbqwE+2ePOtq8S096fmKirqtL
-         rNhx+t4j5UpvOMCg9EhUbuaKhNfs1b87a8tBGddVwcbfS1sAZ7v8XnxVGeyqFm91hgqh
-         oqp1UmqH9FJi5seXCLUPzB8m02DeHDv2LiXI9ySAMvCt/JPETAcntavsX9t9AOZNM71k
-         qVKw==
+        bh=/wnrLBaOC4aWP82zfkDM/92trSlcecvy7qsO4Kz79x8=;
+        b=Z4/R0+uaQufuejsMnXGQz1Fg+N0dRFgS9zlL93ceH6K7evk+6NbwDteMll4WHO0x8M
+         WhcPV+dVFwQdJ5JkaFRe/JmjbchdDH3+mrbUcOF2FDL0eplXvoDWdkrA01s7ILdxfErP
+         RNntSsF4I196VjURPNC7RpWs7DTvpBzq63pSXqbHLMQ7m4EeC692eEHLDMArh23ienYy
+         B5+7yKoFV4QnKEGLUzn8yyMoILQsdpgNImKaXXZxNo70oyM7nhHFZ91VjUE0UAT8mveE
+         OJJDzdhojS3XeNDryiixnzBQ01V/K9NQ1sqE4bOLXCdyyNMnF7N0VKbTxotQLLEyQp3b
+         4MDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=7xfo1t0Mjz7JHwVeDqy2RVRwxIGPpSh2U8isoMwE4RM=;
-        b=UYZUxhQ/XIzHCn7v9bNUPoOAfY+cQNR3aPOrnPi6G/ZDKGMX/77orfDzUxMTKrwcHW
-         lc11B8jjiFC031FiXjUxR977v6p6eLD5MpF0PfbWQ7Y6PICB7BSPrvqPuJC9ffHllZqY
-         OdMU6nxybITueuf6QRqiUTGneDhctBPtAN1X1UGeTHDEGa0GAc2vo1qEZLg+4H6wvjJ+
-         Mex/7N/I/EbDFpguObmQtdo6VPQkR6ozBltevXt20/ts6q4JGA3iQByxfl8GJdqC+CdN
-         z4ukFuX4qBFgHTtuqnhKG3+Nk53IT4tUo0TahIyRyup+pzn9etl7epUeZwZysShkQdau
-         ZZhg==
-X-Gm-Message-State: ACgBeo3+nWoVsPnEEby7eoaJino1Vtggj50Len2MzxmFpj6I2MMbYQqZ
-        V/8wdDxsGFOotbvbffcb0lE744HVunHeb+BbZWg=
-X-Google-Smtp-Source: AA6agR5wLhRP7P8RVkSNKMnybd00BQQnFi0JKo5dM7rfchYrLrBRpybhTeqEvt/5VFWe8433KIL3bXS4wbC9yU5L7Cc=
-X-Received: by 2002:a05:651c:211d:b0:266:20b6:ae57 with SMTP id
- a29-20020a05651c211d00b0026620b6ae57mr1745525ljq.108.1662604658953; Wed, 07
- Sep 2022 19:37:38 -0700 (PDT)
+        bh=/wnrLBaOC4aWP82zfkDM/92trSlcecvy7qsO4Kz79x8=;
+        b=R35UnA5YOyxYqIA9tg/5B5SRUi5JbGX22p11cshNlR7umuOHWLYOpoNI+4+bohINMI
+         CChLMTWqGILrrk7v8kwf3oJOzFWoZjNyUjWCbCKZNvEn0QrZ9suHzoIoiEIB2IF/zSla
+         ZiXfqZwIcPiNCkqGsErYJplgMqXEUWUnPdp7e9ZIbkR8xQgXHr08nw3ZBJ+fO5t6fhSJ
+         D/KqRg1x9khaKecFGUEbVRxPwRYtMIB+DRvLVBlpQVFxK13K9lX1MWODri07z/c8czly
+         xAt1SvR4BBN4sI59Qc1IdLWIJ8oNQvCEkY7Ks+OociW/UcxcJ1YO3rvWsp9wJbddRdGc
+         HI1g==
+X-Gm-Message-State: ACgBeo21rP2eVZFKyDWLqk2gFCL9Uu1KI0yauT1TdtcAFM5Rp1XQJaBE
+        UuyR+bzfDSI80V5/1YtDgd37ozmR4ke01VYag9o=
+X-Google-Smtp-Source: AA6agR7Wfj8RsEmGsJA3FE/DqrLcVZz0rUzBNoomhWcjXySRlv0scmh2UMw+Ahm9Bj6/nIZpcy31Ztn9SrGbfjWQFUc=
+X-Received: by 2002:a17:907:7b94:b0:731:1b11:c241 with SMTP id
+ ne20-20020a1709077b9400b007311b11c241mr4473898ejc.676.1662604786677; Wed, 07
+ Sep 2022 19:39:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220902023003.47124-1-laoar.shao@gmail.com> <Yxi8I4fXXSCi6z9T@slm.duckdns.org>
- <YxkVq4S1Eoa4edjZ@P9FQF9L96D.corp.robot.car>
-In-Reply-To: <YxkVq4S1Eoa4edjZ@P9FQF9L96D.corp.robot.car>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Thu, 8 Sep 2022 10:37:02 +0800
-Message-ID: <CALOAHbAp=g20rL0taUpQmTwymanArhO-u69Xw42s5ap39Esn=A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 00/13] bpf: Introduce selectable memcg for bpf map
-To:     Roman Gushchin <roman.gushchin@linux.dev>
-Cc:     Tejun Heo <tj@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+References: <20220904204145.3089-1-memxor@gmail.com> <20220904204145.3089-22-memxor@gmail.com>
+ <20220908002742.cqwwahxa5ktaik3r@macbook-pro-4.dhcp.thefacebook.com>
+ <CAP01T76nqGs0gW2MPJVMNu90j7DT6GChU0PKS1KZQt7SHb6ypg@mail.gmail.com>
+ <CAADnVQLvRKiqVLy-SqC-fJjfqGHYvYUXQMRuT3vTzVA7BfoEGw@mail.gmail.com> <CAP01T751R0-CnZev6KRQN+x5b9FNeajaAhqaz7MMSmAdKRy6SA@mail.gmail.com>
+In-Reply-To: <CAP01T751R0-CnZev6KRQN+x5b9FNeajaAhqaz7MMSmAdKRy6SA@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 7 Sep 2022 19:39:35 -0700
+Message-ID: <CAADnVQ+qsBNCcTKaV1SOfX6ajv4duOpsVGPbJ9NOb+OXn_5LgQ@mail.gmail.com>
+Subject: Re: [PATCH RFC bpf-next v1 21/32] bpf: Allow locking bpf_spin_lock
+ global variables
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, jolsa@kernel.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Cgroups <cgroups@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Delyan Kratunov <delyank@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -81,58 +72,82 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 8, 2022 at 6:29 AM Roman Gushchin <roman.gushchin@linux.dev> wrote:
+On Wed, Sep 7, 2022 at 6:15 PM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
 >
-> On Wed, Sep 07, 2022 at 05:43:31AM -1000, Tejun Heo wrote:
-> > Hello,
+> On Thu, 8 Sept 2022 at 03:09, Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
 > >
-> > On Fri, Sep 02, 2022 at 02:29:50AM +0000, Yafang Shao wrote:
-> > ...
-> > > This patchset tries to resolve the above two issues by introducing a
-> > > selectable memcg to limit the bpf memory. Currently we only allow to
-> > > select its ancestor to avoid breaking the memcg hierarchy further.
-> > > Possible use cases of the selectable memcg as follows,
+> > On Wed, Sep 7, 2022 at 6:01 PM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+> > >
+> > > On Thu, 8 Sept 2022 at 02:27, Alexei Starovoitov
+> > > <alexei.starovoitov@gmail.com> wrote:
+> > > >
+> > > > On Sun, Sep 04, 2022 at 10:41:34PM +0200, Kumar Kartikeya Dwivedi wrote:
+> > > > > Global variables reside in maps accessible using direct_value_addr
+> > > > > callbacks, so giving each load instruction's rewrite a unique reg->id
+> > > > > disallows us from holding locks which are global.
+> > > > >
+> > > > > This is not great, so refactor the active_spin_lock into two separate
+> > > > > fields, active_spin_lock_ptr and active_spin_lock_id, which is generic
+> > > > > enough to allow it for global variables, map lookups, and local kptr
+> > > > > registers at the same time.
+> > > > >
+> > > > > Held vs non-held is indicated by active_spin_lock_ptr, which stores the
+> > > > > reg->map_ptr or reg->btf pointer of the register used for locking spin
+> > > > > lock. But the active_spin_lock_id also needs to be compared to ensure
+> > > > > whether bpf_spin_unlock is for the same register.
+> > > > >
+> > > > > Next, pseudo load instructions are not given a unique reg->id, as they
+> > > > > are doing lookup for the same map value (max_entries is never greater
+> > > > > than 1).
+> > > > >
+> > > > > Essentially, we consider that the tuple of (active_spin_lock_ptr,
+> > > > > active_spin_lock_id) will always be unique for any kind of argument to
+> > > > > bpf_spin_{lock,unlock}.
+> > > > >
+> > > > > Note that this can be extended in the future to also remember offset
+> > > > > used for locking, so that we can introduce multiple bpf_spin_lock fields
+> > > > > in the same allocation.
+> > > > >
+> > > > > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > > > > ---
+> > > > >  include/linux/bpf_verifier.h |  3 ++-
+> > > > >  kernel/bpf/verifier.c        | 39 +++++++++++++++++++++++++-----------
+> > > > >  2 files changed, 29 insertions(+), 13 deletions(-)
+> > > > >
+> > > > > diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+> > > > > index 2a9dcefca3b6..00c21ad6f61c 100644
+> > > > > --- a/include/linux/bpf_verifier.h
+> > > > > +++ b/include/linux/bpf_verifier.h
+> > > > > @@ -348,7 +348,8 @@ struct bpf_verifier_state {
+> > > > >       u32 branches;
+> > > > >       u32 insn_idx;
+> > > > >       u32 curframe;
+> > > > > -     u32 active_spin_lock;
+> > > > > +     void *active_spin_lock_ptr;
+> > > > > +     u32 active_spin_lock_id;
+> > > >
+> > > > {map, id=0} is indeed enough to distinguish different global locks and
+> > > > {map, id} for locks in map values,
+> > > > but what 'btf' is for?
+> > > > When is the case when reg->map_ptr is not set?
+> > > > locks in allocated objects?
+> > > > Feels too early to add that in this patch.
+> > > >
+> > >
+> > > It makes active_spin_lock check simpler, just checking
+> > > active_spin_lock_ptr that to be non-NULL indicates lock is held. Don't
+> > > have to always check both ptr and id, only need to compare both when
+> > > verifying that lock is in the same allocation as reg.
 > >
-> > As discussed in the following thread, there are clear downsides to an
-> > interface which requires the users to specify the cgroups directly.
-> >
-> >  https://lkml.kernel.org/r/YwNold0GMOappUxc@slm.duckdns.org
-> >
-> > So, I don't really think this is an interface we wanna go for. I was hoping
-> > to hear more from memcg folks in the above thread. Maybe ping them in that
-> > thread and continue there?
+> > Not following. There is always non-null reg->map_ptr when
+> > we come down this path.
+> > At least in the current state of the verifier.
+> > So it never assigns that btf afacs.
 >
+> map is only set when reg->type == PTR_TO_MAP_VALUE,
+> otherwise btf = reg->btf for local kptrs (else branch). Then the map
+> ptr is NULL.
+> See patch 18 which already added support to local kptrs.
 
-Hi Roman,
-
-> As I said previously, I don't like it, because it's an attempt to solve a non
-> bpf-specific problem in a bpf-specific way.
->
-
-Why do you still insist that bpf_map->memcg is not a bpf-specific
-issue after so many discussions?
-Do you charge the bpf-map's memory the same way as you charge the page
-caches or slabs ?
-No, you don't. You charge it in a bpf-specific way.
-
-> Yes, memory cgroups are not great for accounting of shared resources, it's well
-> known. This patchset looks like an attempt to "fix" it specifically for bpf maps
-> in a particular cgroup setup. Honestly, I don't think it's worth the added
-> complexity. Especially because a similar behaviour can be achieved simple
-> by placing the task which creates the map into the desired cgroup.
-
-Are you serious ?
-Have you ever read the cgroup doc? Which clearly describe the "No
-Internal Process Constraint".[1]
-Obviously you can't place the task in the desired cgroup, i.e. the parent memcg.
-
-[1] https://www.kernel.org/doc/Documentation/cgroup-v2.txt
-
-> Beatiful? Not. Neither is the proposed solution.
->
-
-Is it really hard to admit a fault?
-
--- 
-Regards
-Yafang
+I see. That's what I was missing.
