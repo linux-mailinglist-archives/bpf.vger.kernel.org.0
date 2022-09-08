@@ -2,230 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D33465B11F2
-	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 03:12:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FB1D5B11FD
+	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 03:15:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230156AbiIHBMt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Sep 2022 21:12:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60218 "EHLO
+        id S229619AbiIHBPp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Sep 2022 21:15:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229955AbiIHBMs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Sep 2022 21:12:48 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1376AC6CF3;
-        Wed,  7 Sep 2022 18:12:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1662599565; x=1694135565;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=DzghnYU0wzVB6WTARjWFLQMkyj0Z+o+JZG+YW32sRcI=;
-  b=E5z6Ct8Ads2mENGAiRlVbooC7SFV1xrWwSpE69e0k0yMwu4vS+SH4fw+
-   1bhmIfOFGVv9RJquUn84P0N2OyHfBZ1Mm07tdc+x1K1ot4smGzVhR/Jp8
-   4PMen07ghcKPdgd7N3oycMlUwY+Y+361I3w8M1A8QWTOAt7ZpjMjNR0LS
-   8/aLCvunrAcAR2vnZx2zyOD29KXXWVKjImqx7UcCu4f6kzcf1WF9K6cfo
-   5RUiC2G6qXojQn14uRclusXcT67jysnaHIZm8b/mhGCGIQvA/eUVQ/Ppm
-   P65ULyfLWcSxI/DDeRdblWREbg1XY2ZdtBNOFrFyOF0zUA6HVxmhzq8K6
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10463"; a="297036097"
-X-IronPort-AV: E=Sophos;i="5.93,298,1654585200"; 
-   d="scan'208";a="297036097"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2022 18:12:44 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,298,1654585200"; 
-   d="scan'208";a="683033955"
-Received: from lkp-server02.sh.intel.com (HELO 95dfd251caa2) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 07 Sep 2022 18:12:42 -0700
-Received: from kbuild by 95dfd251caa2 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1oW65x-0007C3-1W;
-        Thu, 08 Sep 2022 01:12:41 +0000
-Date:   Thu, 08 Sep 2022 09:12:15 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-scsi@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, bpf@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: [linux-next:master] BUILD REGRESSION
- 5957ac6635a1a12d4aa2661bbf04d3085a73372a
-Message-ID: <6319416f.h232K5rqqAPQe4ZI%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S229601AbiIHBPo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Sep 2022 21:15:44 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA7DC7AC0A
+        for <bpf@vger.kernel.org>; Wed,  7 Sep 2022 18:15:43 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id k9so5315628ils.12
+        for <bpf@vger.kernel.org>; Wed, 07 Sep 2022 18:15:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=zd/3kAJyk8SP3lRKzftV7SKg9kVpkdTAMDEOourI8Rk=;
+        b=U5t3AbzMRHIILmo6lL8h6P3W4qVw9jmnqEhnTZQadLUICbuV0mYkaldcfw5ZLfAjE+
+         /mI0wM4Hkq6JDF/lJfhwkgGc28nKw/GxkDxbNz9pxhkIF6G1ddoDQE6GM91NN2KIMGfe
+         aoC4WsFqJr7T83gRT0pgfVFdkNejsVHZ+eVvZMm1cPOuOjymHgZW+YciqJCZY7T2b7Al
+         J9iyl86p5QrL4JkGJTZaY3E1hZUWpic0K473PRk7u4lOR/tUFJ6Ca7UnDwAjKQUISKtj
+         twU571GfOB3+vH/WRSBSVi3B9wEHccuhxpE+6rrwwGHiAe3XyDp1XEJeXfEjqz6w8e/B
+         bacg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=zd/3kAJyk8SP3lRKzftV7SKg9kVpkdTAMDEOourI8Rk=;
+        b=Qq+EZgsLU2SVfvYdBz7df6bGWGeGlcgI2ExhtMfD+7CIRT1uAChbnVkql/KoKEJ9ex
+         KBK1cJTCPRr87/Zet0ipkUK7Bu5xsidbTDllVyMwRfxF9SPFl66pZAtIdb5Hd0qUFB/o
+         REh99cB60XxfWlrnAJTjsUcyn/tHcjNYwP1/gf4M1hBf7LD+KcP4M9yz9n4rCj304gdU
+         2KQsUKTVmeDB6k4OfSoitX4rqer97Wjak3POJVWYonXDaPJ7ynPAQoOWzo47o7pJgYFq
+         Ha6x90bRXp8Bn146LEu5G+jWGskwZlAQgp96pzktun/qJz/zZaL49VW+csQiILCXnIjK
+         GjpA==
+X-Gm-Message-State: ACgBeo16GcHIhx5BWCo762xI3SdLfA/2olVKwp4tNazrxfocxJrW5Y62
+        SHLJZ/UcEZruzVZiKmm/C+uuTU6X04wpauEOoC8=
+X-Google-Smtp-Source: AA6agR5HWjYRcU2HOvKLcd81SHsFybd6semTPs7GIEQTpAd3rJlqKTxutpxqp23lJX3JvPmAl4cJMPbh/OffIRZXuyM=
+X-Received: by 2002:a05:6e02:170f:b0:2f1:6cdf:6f32 with SMTP id
+ u15-20020a056e02170f00b002f16cdf6f32mr638301ill.216.1662599743114; Wed, 07
+ Sep 2022 18:15:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220904204145.3089-1-memxor@gmail.com> <20220904204145.3089-22-memxor@gmail.com>
+ <20220908002742.cqwwahxa5ktaik3r@macbook-pro-4.dhcp.thefacebook.com>
+ <CAP01T76nqGs0gW2MPJVMNu90j7DT6GChU0PKS1KZQt7SHb6ypg@mail.gmail.com> <CAADnVQLvRKiqVLy-SqC-fJjfqGHYvYUXQMRuT3vTzVA7BfoEGw@mail.gmail.com>
+In-Reply-To: <CAADnVQLvRKiqVLy-SqC-fJjfqGHYvYUXQMRuT3vTzVA7BfoEGw@mail.gmail.com>
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date:   Thu, 8 Sep 2022 03:15:07 +0200
+Message-ID: <CAP01T751R0-CnZev6KRQN+x5b9FNeajaAhqaz7MMSmAdKRy6SA@mail.gmail.com>
+Subject: Re: [PATCH RFC bpf-next v1 21/32] bpf: Allow locking bpf_spin_lock
+ global variables
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Delyan Kratunov <delyank@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-branch HEAD: 5957ac6635a1a12d4aa2661bbf04d3085a73372a  Add linux-next specific files for 20220907
+On Thu, 8 Sept 2022 at 03:09, Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Wed, Sep 7, 2022 at 6:01 PM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+> >
+> > On Thu, 8 Sept 2022 at 02:27, Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Sun, Sep 04, 2022 at 10:41:34PM +0200, Kumar Kartikeya Dwivedi wrote:
+> > > > Global variables reside in maps accessible using direct_value_addr
+> > > > callbacks, so giving each load instruction's rewrite a unique reg->id
+> > > > disallows us from holding locks which are global.
+> > > >
+> > > > This is not great, so refactor the active_spin_lock into two separate
+> > > > fields, active_spin_lock_ptr and active_spin_lock_id, which is generic
+> > > > enough to allow it for global variables, map lookups, and local kptr
+> > > > registers at the same time.
+> > > >
+> > > > Held vs non-held is indicated by active_spin_lock_ptr, which stores the
+> > > > reg->map_ptr or reg->btf pointer of the register used for locking spin
+> > > > lock. But the active_spin_lock_id also needs to be compared to ensure
+> > > > whether bpf_spin_unlock is for the same register.
+> > > >
+> > > > Next, pseudo load instructions are not given a unique reg->id, as they
+> > > > are doing lookup for the same map value (max_entries is never greater
+> > > > than 1).
+> > > >
+> > > > Essentially, we consider that the tuple of (active_spin_lock_ptr,
+> > > > active_spin_lock_id) will always be unique for any kind of argument to
+> > > > bpf_spin_{lock,unlock}.
+> > > >
+> > > > Note that this can be extended in the future to also remember offset
+> > > > used for locking, so that we can introduce multiple bpf_spin_lock fields
+> > > > in the same allocation.
+> > > >
+> > > > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > > > ---
+> > > >  include/linux/bpf_verifier.h |  3 ++-
+> > > >  kernel/bpf/verifier.c        | 39 +++++++++++++++++++++++++-----------
+> > > >  2 files changed, 29 insertions(+), 13 deletions(-)
+> > > >
+> > > > diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+> > > > index 2a9dcefca3b6..00c21ad6f61c 100644
+> > > > --- a/include/linux/bpf_verifier.h
+> > > > +++ b/include/linux/bpf_verifier.h
+> > > > @@ -348,7 +348,8 @@ struct bpf_verifier_state {
+> > > >       u32 branches;
+> > > >       u32 insn_idx;
+> > > >       u32 curframe;
+> > > > -     u32 active_spin_lock;
+> > > > +     void *active_spin_lock_ptr;
+> > > > +     u32 active_spin_lock_id;
+> > >
+> > > {map, id=0} is indeed enough to distinguish different global locks and
+> > > {map, id} for locks in map values,
+> > > but what 'btf' is for?
+> > > When is the case when reg->map_ptr is not set?
+> > > locks in allocated objects?
+> > > Feels too early to add that in this patch.
+> > >
+> >
+> > It makes active_spin_lock check simpler, just checking
+> > active_spin_lock_ptr that to be non-NULL indicates lock is held. Don't
+> > have to always check both ptr and id, only need to compare both when
+> > verifying that lock is in the same allocation as reg.
+>
+> Not following. There is always non-null reg->map_ptr when
+> we come down this path.
+> At least in the current state of the verifier.
+> So it never assigns that btf afacs.
 
-Error/Warning reports:
-
-https://lore.kernel.org/linux-mm/202209070728.o3stvgVt-lkp@intel.com
-https://lore.kernel.org/linux-mm/202209080545.qMIVj7YM-lkp@intel.com
-https://lore.kernel.org/linux-mm/202209080718.y5QmlNKH-lkp@intel.com
-
-Error/Warning: (recently discovered and may have been fixed)
-
-ERROR: modpost: "__divdi3" [drivers/gpu/drm/vkms/vkms.ko] undefined!
-ERROR: modpost: "__udivdi3" [drivers/gpu/drm/vkms/vkms.ko] undefined!
-arm-linux-gnueabi-ld: vkms_formats.c:(.text+0x824): undefined reference to `__aeabi_ldivmod'
-arm-linux-gnueabi-ld: warning: orphan section `.data.rel.ro.local' from `arch/arm/boot/compressed/fdt.o' being placed in section `.data.rel.ro.local'
-arm-linux-gnueabi-ld: warning: orphan section `.data.rel.ro.local' from `arch/arm/boot/compressed/fdt_ro.o' being placed in section `.data.rel.ro.local'
-arm-linux-gnueabi-ld: warning: orphan section `.data.rel.ro.local' from `arch/arm/boot/compressed/fdt_rw.o' being placed in section `.data.rel.ro.local'
-arm-linux-gnueabi-ld: warning: orphan section `.data.rel.ro.local' from `arch/arm/boot/compressed/fdt_wip.o' being placed in section `.data.rel.ro.local'
-arm-linux-gnueabi-ld: warning: orphan section `.printk_index' from `arch/arm/boot/compressed/fdt.o' being placed in section `.printk_index'
-arm-linux-gnueabi-ld: warning: orphan section `.printk_index' from `arch/arm/boot/compressed/fdt_ro.o' being placed in section `.printk_index'
-arm-linux-gnueabi-ld: warning: orphan section `.printk_index' from `arch/arm/boot/compressed/fdt_rw.o' being placed in section `.printk_index'
-arm-linux-gnueabi-ld: warning: orphan section `.printk_index' from `arch/arm/boot/compressed/fdt_wip.o' being placed in section `.printk_index'
-drivers/base/regmap/regmap-mmio.c:221:17: error: implicit declaration of function 'writesb'; did you mean 'writeb'? [-Werror=implicit-function-declaration]
-drivers/base/regmap/regmap-mmio.c:224:17: error: implicit declaration of function 'writesw'; did you mean 'writew'? [-Werror=implicit-function-declaration]
-drivers/base/regmap/regmap-mmio.c:227:17: error: implicit declaration of function 'writesl'; did you mean 'writel'? [-Werror=implicit-function-declaration]
-drivers/base/regmap/regmap-mmio.c:231:17: error: implicit declaration of function 'writesq'; did you mean 'writeq'? [-Werror=implicit-function-declaration]
-drivers/base/regmap/regmap-mmio.c:231:17: error: implicit declaration of function 'writesq'; did you mean 'writesl'? [-Werror=implicit-function-declaration]
-drivers/base/regmap/regmap-mmio.c:358:17: error: implicit declaration of function 'readsb'; did you mean 'readb'? [-Werror=implicit-function-declaration]
-drivers/base/regmap/regmap-mmio.c:361:17: error: implicit declaration of function 'readsw'; did you mean 'readw'? [-Werror=implicit-function-declaration]
-drivers/base/regmap/regmap-mmio.c:364:17: error: implicit declaration of function 'readsl'; did you mean 'readl'? [-Werror=implicit-function-declaration]
-drivers/base/regmap/regmap-mmio.c:368:17: error: implicit declaration of function 'readsq'; did you mean 'readq'? [-Werror=implicit-function-declaration]
-drivers/base/regmap/regmap-mmio.c:368:17: error: implicit declaration of function 'readsq'; did you mean 'readsl'? [-Werror=implicit-function-declaration]
-drivers/clk/xilinx/clk-xlnx-clock-wizard.c:431: undefined reference to `devm_platform_ioremap_resource'
-drivers/gpu/drm/amd/amdgpu/imu_v11_0_3.c:139:6: warning: no previous prototype for 'imu_v11_0_3_program_rlc_ram' [-Wmissing-prototypes]
-drivers/gpu/drm/drm_atomic_helper.c:802: warning: expecting prototype for drm_atomic_helper_check_wb_connector_state(). Prototype was for drm_atomic_helper_check_wb_encoder_state() instead
-drivers/gpu/drm/vkms/vkms_plane.c:110 vkms_plane_atomic_update() warn: variable dereferenced before check 'fb' (see line 108)
-drivers/scsi/qla2xxx/qla_os.c:2854:23: warning: assignment to 'struct trace_array *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-fs/btrfs/volumes.c:6549 __btrfs_map_block() error: we previously assumed 'mirror_num_ret' could be null (see line 6376)
-include/linux/string.h:303:42: warning: 'strnlen' specified bound 4 exceeds source size 3 [-Wstringop-overread]
-kernel/bpf/memalloc.c:499 bpf_mem_alloc_destroy() error: potentially dereferencing uninitialized 'c'.
-ld: vkms_formats.c:(.text+0x3ba): undefined reference to `__divdi3'
-microblaze-linux-ld: vkms_formats.o:(.text+0xc74): undefined reference to `__divdi3'
-mips-linux-ld: vkms_formats.c:(.text+0x384): undefined reference to `__divdi3'
-mips-linux-ld: vkms_formats.c:(.text.argb_u16_to_RGB565+0xd0): undefined reference to `__divdi3'
-sound/soc/codecs/tas2562.c:442:13: warning: variable 'ret' set but not used [-Wunused-but-set-variable]
-vkms_formats.c:(.text+0x266): undefined reference to `__divdi3'
-vkms_formats.c:(.text+0x364): undefined reference to `__divdi3'
-vkms_formats.c:(.text+0x390): undefined reference to `__divdi3'
-vkms_formats.c:(.text+0x804): undefined reference to `__aeabi_ldivmod'
-vkms_formats.c:(.text.argb_u16_to_RGB565+0xb0): undefined reference to `__divdi3'
-vkms_formats.o:(.text+0xb28): undefined reference to `__divdi3'
-xtensa-linux-ld: vkms_formats.c:(.text+0x560): undefined reference to `__divdi3'
-
-Error/Warning ids grouped by kconfigs:
-
-gcc_recent_errors
-|-- alpha-allyesconfig
-|   |-- drivers-base-regmap-regmap-mmio.c:error:implicit-declaration-of-function-readsb
-|   |-- drivers-base-regmap-regmap-mmio.c:error:implicit-declaration-of-function-readsl
-|   |-- drivers-base-regmap-regmap-mmio.c:error:implicit-declaration-of-function-readsq
-|   |-- drivers-base-regmap-regmap-mmio.c:error:implicit-declaration-of-function-readsw
-|   |-- drivers-base-regmap-regmap-mmio.c:error:implicit-declaration-of-function-writesb
-|   |-- drivers-base-regmap-regmap-mmio.c:error:implicit-declaration-of-function-writesl
-|   |-- drivers-base-regmap-regmap-mmio.c:error:implicit-declaration-of-function-writesq
-|   |-- drivers-base-regmap-regmap-mmio.c:error:implicit-declaration-of-function-writesw
-|   |-- drivers-gpu-drm-amd-amdgpu-imu_v11_0_3.c:warning:no-previous-prototype-for-imu_v11_0_3_program_rlc_ram
-|   |-- drivers-gpu-drm-drm_atomic_helper.c:warning:expecting-prototype-for-drm_atomic_helper_check_wb_connector_state().-Prototype-was-for-drm_atomic_helper_check_wb_encoder_state()-instead
-|   |-- drivers-scsi-qla2xxx-qla_os.c:warning:assignment-to-struct-trace_array-from-int-makes-pointer-from-integer-without-a-cast
-|   `-- sound-soc-codecs-tas2562.c:warning:variable-ret-set-but-not-used
-|-- alpha-randconfig-r015-20220907
-|   |-- drivers-base-regmap-regmap-mmio.c:error:implicit-declaration-of-function-readsb
-|   |-- drivers-base-regmap-regmap-mmio.c:error:implicit-declaration-of-function-readsl
-|   |-- drivers-base-regmap-regmap-mmio.c:error:implicit-declaration-of-function-readsq
-|   |-- drivers-base-regmap-regmap-mmio.c:error:implicit-declaration-of-function-readsw
-|   |-- drivers-base-regmap-regmap-mmio.c:error:implicit-declaration-of-function-writesb
-|   |-- drivers-base-regmap-regmap-mmio.c:error:implicit-declaration-of-function-writesl
-|   |-- drivers-base-regmap-regmap-mmio.c:error:implicit-declaration-of-function-writesq
-|   `-- drivers-base-regmap-regmap-mmio.c:error:implicit-declaration-of-function-writesw
-|-- arc-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-imu_v11_0_3.c:warning:no-previous-prototype-for-imu_v11_0_3_program_rlc_ram
-|   |-- drivers-gpu-drm-drm_atomic_helper.c:warning:expecting-prototype-for-drm_atomic_helper_check_wb_connector_state().-Prototype-was-for-drm_atomic_helper_check_wb_encoder_state()-instead
-|   `-- sound-soc-codecs-tas2562.c:warning:variable-ret-set-but-not-used
-|-- arc-randconfig-r001-20220907
-|   `-- drivers-gpu-drm-drm_atomic_helper.c:warning:expecting-prototype-for-drm_atomic_helper_check_wb_connector_state().-Prototype-was-for-drm_atomic_helper_check_wb_encoder_state()-instead
-|-- arm-allyesconfig
-|   |-- arm-linux-gnueabi-ld:vkms_formats.c:(.text):undefined-reference-to-__aeabi_ldivmod
-|   |-- drivers-gpu-drm-amd-amdgpu-imu_v11_0_3.c:warning:no-previous-prototype-for-imu_v11_0_3_program_rlc_ram
-|   |-- drivers-gpu-drm-drm_atomic_helper.c:warning:expecting-prototype-for-drm_atomic_helper_check_wb_connector_state().-Prototype-was-for-drm_atomic_helper_check_wb_encoder_state()-instead
-|   |-- sound-soc-codecs-tas2562.c:warning:variable-ret-set-but-not-used
-|   `-- vkms_formats.c:(.text):undefined-reference-to-__aeabi_ldivmod
-|-- arm-buildonly-randconfig-r006-20220907
-|   |-- arm-linux-gnueabi-ld:warning:orphan-section-data.rel.ro.local-from-arch-arm-boot-compressed-fdt.o-being-placed-in-section-.data.rel.ro.local
-|   |-- arm-linux-gnueabi-ld:warning:orphan-section-data.rel.ro.local-from-arch-arm-boot-compressed-fdt_ro.o-being-placed-in-section-.data.rel.ro.local
-|   |-- arm-linux-gnueabi-ld:warning:orphan-section-data.rel.ro.local-from-arch-arm-boot-compressed-fdt_rw.o-being-placed-in-section-.data.rel.ro.local
-|   |-- arm-linux-gnueabi-ld:warning:orphan-section-data.rel.ro.local-from-arch-arm-boot-compressed-fdt_wip.o-being-placed-in-section-.data.rel.ro.local
-|   |-- arm-linux-gnueabi-ld:warning:orphan-section-printk_index-from-arch-arm-boot-compressed-fdt.o-being-placed-in-section-.printk_index
-|   |-- arm-linux-gnueabi-ld:warning:orphan-section-printk_index-from-arch-arm-boot-compressed-fdt_ro.o-being-placed-in-section-.printk_index
-|   |-- arm-linux-gnueabi-ld:warning:orphan-section-printk_index-from-arch-arm-boot-compressed-fdt_rw.o-being-placed-in-section-.printk_index
-|   `-- arm-linux-gnueabi-ld:warning:orphan-section-printk_index-from-arch-arm-boot-compressed-fdt_wip.o-being-placed-in-section-.printk_index
-|-- arm-defconfig
-|   `-- drivers-gpu-drm-drm_atomic_helper.c:warning:expecting-prototype-for-drm_atomic_helper_check_wb_connector_state().-Prototype-was-for-drm_atomic_helper_check_wb_encoder_state()-instead
-|-- arm64-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-imu_v11_0_3.c:warning:no-previous-prototype-for-imu_v11_0_3_program_rlc_ram
-|   |-- drivers-gpu-drm-drm_atomic_helper.c:warning:expecting-prototype-for-drm_atomic_helper_check_wb_connector_state().-Prototype-was-for-drm_atomic_helper_check_wb_encoder_state()-instead
-|   `-- sound-soc-codecs-tas2562.c:warning:variable-ret-set-but-not-used
-|-- arm64-randconfig-r033-20220907
-clang_recent_errors
-|-- i386-randconfig-a006
-|   `-- ld.lld:error:undefined-symbol:__udivdi3
-|-- i386-randconfig-a013
-|   `-- ld.lld:error:undefined-symbol:__udivdi3
-|-- powerpc-randconfig-r013-20220907
-|   `-- drivers-extcon-extcon-usbc-tusb320.c:warning:expecting-prototype-for-drivers-extcon-extcon-tusb320c().-Prototype-was-for-TUSB320_REG8()-instead
-`-- riscv-randconfig-r021-20220907
-    `-- drivers-extcon-extcon-usbc-tusb320.c:warning:expecting-prototype-for-drivers-extcon-extcon-tusb320c().-Prototype-was-for-TUSB320_REG8()-instead
-
-elapsed time: 723m
-
-configs tested: 35
-configs skipped: 2
-
-gcc tested configs:
-um                             i386_defconfig
-um                           x86_64_defconfig
-i386                                defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                          rhel-8.3-func
-x86_64                              defconfig
-arc                  randconfig-r043-20220907
-x86_64                         rhel-8.3-kunit
-x86_64                           rhel-8.3-kvm
-x86_64                               rhel-8.3
-x86_64                           rhel-8.3-syz
-x86_64                        randconfig-a013
-x86_64                           allyesconfig
-x86_64                        randconfig-a011
-x86_64                        randconfig-a004
-m68k                             allyesconfig
-arm                                 defconfig
-m68k                             allmodconfig
-alpha                            allyesconfig
-powerpc                           allnoconfig
-arc                              allyesconfig
-ia64                             allmodconfig
-arm                              allyesconfig
-arm64                            allyesconfig
-sh                               allmodconfig
-mips                             allyesconfig
-powerpc                          allmodconfig
-i386                             allyesconfig
-
-clang tested configs:
-hexagon              randconfig-r041-20220907
-riscv                randconfig-r042-20220907
-hexagon              randconfig-r045-20220907
-s390                 randconfig-r044-20220907
-i386                          randconfig-a013
-i386                          randconfig-a006
-x86_64                          rhel-8.3-rust
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+map is only set when reg->type == PTR_TO_MAP_VALUE,
+otherwise btf = reg->btf for local kptrs (else branch). Then the map
+ptr is NULL.
+See patch 18 which already added support to local kptrs.
