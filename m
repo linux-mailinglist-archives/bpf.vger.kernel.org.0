@@ -2,57 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17CEE5B12B4
-	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 04:59:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA0C75B12B8
+	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 05:02:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229478AbiIHC7N (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Sep 2022 22:59:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35650 "EHLO
+        id S229644AbiIHDB7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Sep 2022 23:01:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbiIHC7N (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Sep 2022 22:59:13 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5925C6B4F
-        for <bpf@vger.kernel.org>; Wed,  7 Sep 2022 19:59:11 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id k9so5408464ils.12
-        for <bpf@vger.kernel.org>; Wed, 07 Sep 2022 19:59:11 -0700 (PDT)
+        with ESMTP id S229634AbiIHDBz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Sep 2022 23:01:55 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61E0CC6B6C
+        for <bpf@vger.kernel.org>; Wed,  7 Sep 2022 20:01:53 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id v128so2015614ioe.12
+        for <bpf@vger.kernel.org>; Wed, 07 Sep 2022 20:01:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date;
-        bh=C1R6uWnFuTRL+nsPsZydRBFUuCYNzYqr15UqiqZAhoI=;
-        b=QsLesqf40itZjpir074WyhgbN0PXX3LALoquC4osS0FgZZKeMEBTOXAY6g/DUCfQa8
-         cYIjOADOPiaj+kFA9NCN05GhUbueTo6TZo6PXivTyj9JehbHwyyMnnQVn5ud41dfaB1x
-         cXQli5sz2Eh3Lw+TiXdxg4Cyo5eW6bLELI+sQ+xNfHH/2SghOKULoToeIqpfZ5yCWwte
-         byKb+GdHxvQTCS4f5fsTulq+RFNwrMj3S7duXQStyH70hqGdRc9Vt4MWw935+CRdL+Dl
-         Qr9zpH49gfSXmAxb0ZAKZQaziO1uZ+8XP0B61NT8Gnik7ungAv9MeE9iMXViQXlgojDC
-         zAIA==
+        bh=17LmB6FoXve8s1ZsTw7PK25DWwPXJeYoD21NWCUtcTA=;
+        b=PBOKkThWkmCJpocgdnHl1gDNBt7e1fiFRncGvGvgNNnUcMU720Auy3KCwrawcJUaO1
+         a568JBSw9xOkYSYw5lsxRtsyRLWYEKs9sleZYBqTIuVkejQIsp2a5TJzTzxGxeQorkNl
+         +ko+gApbA/ilrnBOKWD30aL5EKhdYqhYRldwELZrEP1b0lw/fCB/ECc5q+MmSKAzPB9j
+         sYMgxGkIK9M2fpbHJX4BKjamy7EcTm931X4d+tjPBs4+95sOAr7Wgx+EuzMOUoZV0OXq
+         fUKpTe5Et8vCzqoR/Age3Hn1s6BhMx56W0i7aej00eYfUTuduoM6kaL6hgJ7R6y4wSYr
+         rtWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=C1R6uWnFuTRL+nsPsZydRBFUuCYNzYqr15UqiqZAhoI=;
-        b=vaik0y5+LDTxNlQco/VwEIlPbmaqxASjXmvTfnwUqztMI7Dux/ncLF06x5Mmyko8Xp
-         ctgCxca/Lc/7vNVF9LfeOaGdUjyx3l5t/6NDuI0Nr9QzO1wfHBkqkqRh8RUp+gqQCzNL
-         LNHIQxpmj5FHFghdKNiVZz9Cx+QG5NV9nRIRE9Qnvgk2x2ktnxbtC1QqjS2o/A5/x1Mb
-         tSOq8h0QP71yz3pGSPNjsfhvgT+9iF49QjSjOXBL3DoKacfEOnz5//eocaKcJv3sjrQi
-         +ooEDHKKUr5Q9MaQjq4MgYZOCbRWLBMkFBIkjCxZHwcnEN1L88SWm7gtiSG1QaLR73ur
-         3wag==
-X-Gm-Message-State: ACgBeo1NCaPFKStNE9GqY5Kcf+sQeH6W90hBsFHIQXgwxkVuQyw7kkL4
-        sN1BGgozhr0rMcJv1eMPdR/zhwupAVyjASKGnKQ=
-X-Google-Smtp-Source: AA6agR62SAolE1r2SBM2sswNdQmb5pMk3eywRrABCDBZM5K6phkzZ3E/Xe8JQ8g+JlrfmEl29RtFHh0cDSjxOOLW/vs=
-X-Received: by 2002:a05:6e02:1d0b:b0:2eb:73fc:2235 with SMTP id
- i11-20020a056e021d0b00b002eb73fc2235mr804905ila.164.1662605950848; Wed, 07
- Sep 2022 19:59:10 -0700 (PDT)
+        bh=17LmB6FoXve8s1ZsTw7PK25DWwPXJeYoD21NWCUtcTA=;
+        b=xvv52WBriSP1rbE/5ir2VPJ4ujfnN57bJPAUdu7hn3FGh+rq/LQdgN2bwfNumsRGRa
+         oknUXGrv4BkCfzKCm8KwFf7/MmCw94nErK9f1ZZFjve1v2lRTBoJTQz9Af7c3lh94ItZ
+         3adsSfqzlhj715Lbeyf5AkADwp2of6VjFUWFP4RADlxikq1CXq1ymmpE5cOWJZZS3HYe
+         crIVkl2HRhsynmjJOfNFk1NTEFVxhG1GeJoeuFcaAAAYT8oWnqcHfDX3bGjKvJORtdIq
+         7PjIaAxnhzjZd9T7W7nUre9pZDULQsajGoK5aSdOALTyv+7VYhPVotCDwnWytIul5tnY
+         IuaQ==
+X-Gm-Message-State: ACgBeo1e7PMESQ+1MgEkEbShPEtQkPdC6+aubrBRug8wDPKOr1a/oC16
+        PrbhYAxHTP1E2/ANhCAeo+edZVKxKa3sxk+qsCc=
+X-Google-Smtp-Source: AA6agR40XZYSHpe/XheYd1Mp/BcG+PnLCC7dvSyCcRaRnn+rx6zWyIrWElrD11LMjPfeMiJac5ousdfngFGqUyJBNjM=
+X-Received: by 2002:a05:6638:16cf:b0:34a:263f:966d with SMTP id
+ g15-20020a05663816cf00b0034a263f966dmr3588561jat.124.1662606112365; Wed, 07
+ Sep 2022 20:01:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220904204145.3089-1-memxor@gmail.com> <20220904204145.3089-14-memxor@gmail.com>
- <20220907224633.kh6nyqhhk5ut5cax@macbook-pro-4.dhcp.thefacebook.com>
-In-Reply-To: <20220907224633.kh6nyqhhk5ut5cax@macbook-pro-4.dhcp.thefacebook.com>
+References: <20220904204145.3089-1-memxor@gmail.com> <20220904204145.3089-15-memxor@gmail.com>
+ <20220907233023.x3uclwlnjuhftvtb@macbook-pro-4.dhcp.thefacebook.com>
+In-Reply-To: <20220907233023.x3uclwlnjuhftvtb@macbook-pro-4.dhcp.thefacebook.com>
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date:   Thu, 8 Sep 2022 04:58:34 +0200
-Message-ID: <CAP01T77nmnqopjjf56ZqUeFKUKoafhNH1=48HCNs_NXXdNj3jQ@mail.gmail.com>
-Subject: Re: [PATCH RFC bpf-next v1 13/32] bpf: Introduce bpf_list_head
- support for BPF maps
+Date:   Thu, 8 Sep 2022 05:01:16 +0200
+Message-ID: <CAP01T77n8pt8CP2N936L4bTHo1acqA7wrdjg2TXkV4m9fLHamg@mail.gmail.com>
+Subject: Re: [PATCH RFC bpf-next v1 14/32] bpf: Introduce bpf_kptr_alloc helper
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -70,507 +69,466 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 8 Sept 2022 at 00:46, Alexei Starovoitov
+On Thu, 8 Sept 2022 at 01:30, Alexei Starovoitov
 <alexei.starovoitov@gmail.com> wrote:
 >
-> On Sun, Sep 04, 2022 at 10:41:26PM +0200, Kumar Kartikeya Dwivedi wrote:
-> > Add the basic support on the map side to parse, recognize, verify, and
-> > build metadata table for a new special field of the type struct
-> > bpf_list_head. To parameterize the bpf_list_head for a certain value
-> > type and the list_node member it will accept in that value type, we use
-> > BTF declaration tags.
+> On Sun, Sep 04, 2022 at 10:41:27PM +0200, Kumar Kartikeya Dwivedi wrote:
+> > To allocate local kptr of types pointing into program BTF instead of
+> > kernel BTF, bpf_kptr_alloc is a new helper that takes the local type's
+> > BTF ID and returns a pointer to it. The size is automatically inferred
+> > from the type ID by the BPF verifier, so user only passes the BTF ID and
+> > flags, if any. For now, no flags are supported.
 > >
-> > The definition of bpf_list_head in a map value will be done as follows:
+> > First, we use the new constant argument type support for kfuncs that
+> > enforces argument is a constant. We need to know the local type's BTF ID
+> > statically to enforce safety properties for the allocation. Next, we
+> > remember this and dynamically assign the return type. During that phase,
+> > we also query the actual size of the structure being allocated, and
+> > whether it is a struct type. If so, we stash the actual size for
+> > do_misc_fixups phase where we rewrite the first argument to be size
+> > instead of local type's BTF ID, which we can then pass on to the kernel
+> > allocator.
 > >
-> > struct foo {
-> >       int data;
-> >       struct bpf_list_node list;
-> > };
+> > This needs some additional support for kfuncs as we were not doing
+> > argument rewrites for them. The fixup has been moved inside
+> > fixup_kfunc_call itself to avoid polluting the huge do_misc_fixups,
+> > and delta, prog, and insn pointers are recalculated based on if any
+> > instructions were patched.
 > >
-> > struct map_value {
-> >       struct bpf_list_head list __contains(struct, foo, node);
-> > };
+> > The returned pointer needs to be handled specially as well. While
+> > normally, only struct pointers may be returned, a new internal kfunc
+> > flag __KF_RET_DYN_BTF is used to indicate the BTF is ascertained from
+> > arguments dynamically, hence it is now forced to be void * instead.
+> > For now, bpf_kptr_alloc is the only user of this support.
+> >
+> > Hence, allocations using bpf_kptr_alloc are type safe. Later patches
+> > will introduce constructor and destructor support to local kptrs
+> > allocated from this helper. This would allow embedding kernel objects
+> > like bpf_spin_lock, bpf_list_node, bpf_list_head inside a local kptr
+> > allocation, and ensuring they are correctly initialized before use.
+> >
+> > A new type flag is associated with PTR_TO_BTF_ID returned from
+> > bpf_kptr_alloc: MEM_TYPE_LOCAL. This indicates that the type of the
+> > memory is of a local type coming from program's BTF.
+> >
+> > The btf_struct_access mechanism is tuned to allow BPF_WRITE access to
+> > these allocated objects, so that programs can store data as usual in
+> > them. On following a pointer type inside such PTR_TO_BTF_ID, WALK_PTR
+> > sets the destination register as scalar instead. It would not be safe to
+> > recognize pointer types in local types. This can be changed in the
+> > future if it is allowed to embed kptrs inside such local kptrs.
+> >
+> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > ---
+> >  include/linux/bpf.h                           |  12 +-
+> >  include/linux/bpf_verifier.h                  |   1 +
+> >  include/linux/btf.h                           |   3 +
+> >  kernel/bpf/btf.c                              |   8 +-
+> >  kernel/bpf/helpers.c                          |  17 ++
+> >  kernel/bpf/verifier.c                         | 156 +++++++++++++++---
+> >  net/bpf/bpf_dummy_struct_ops.c                |   5 +-
+> >  net/ipv4/bpf_tcp_ca.c                         |   5 +-
+> >  .../testing/selftests/bpf/bpf_experimental.h  |  14 ++
+> >  9 files changed, 191 insertions(+), 30 deletions(-)
+> >
+> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > index 35c2e9caeb98..5c8bfb0eba17 100644
+> > --- a/include/linux/bpf.h
+> > +++ b/include/linux/bpf.h
+> > @@ -486,6 +486,12 @@ enum bpf_type_flag {
+> >       /* Size is known at compile time. */
+> >       MEM_FIXED_SIZE          = BIT(10 + BPF_BASE_TYPE_BITS),
+> >
+> > +     /* MEM is of a type from program BTF, not kernel BTF. This is used to
+> > +      * tag PTR_TO_BTF_ID allocated using bpf_kptr_alloc, since they have
+> > +      * entirely different semantics.
+> > +      */
+> > +     MEM_TYPE_LOCAL          = BIT(11 + BPF_BASE_TYPE_BITS),
+> > +
+> >       __BPF_TYPE_FLAG_MAX,
+> >       __BPF_TYPE_LAST_FLAG    = __BPF_TYPE_FLAG_MAX - 1,
+> >  };
+> > @@ -757,7 +763,8 @@ struct bpf_verifier_ops {
+> >                                const struct btf *btf,
+> >                                const struct btf_type *t, int off, int size,
+> >                                enum bpf_access_type atype,
+> > -                              u32 *next_btf_id, enum bpf_type_flag *flag);
+> > +                              u32 *next_btf_id, enum bpf_type_flag *flag,
+> > +                              bool local_type);
+> >  };
+> >
+> >  struct bpf_prog_offload_ops {
+> > @@ -1995,7 +2002,8 @@ static inline bool bpf_tracing_btf_ctx_access(int off, int size,
+> >  int btf_struct_access(struct bpf_verifier_log *log, const struct btf *btf,
+> >                     const struct btf_type *t, int off, int size,
+> >                     enum bpf_access_type atype,
+> > -                   u32 *next_btf_id, enum bpf_type_flag *flag);
+> > +                   u32 *next_btf_id, enum bpf_type_flag *flag,
+> > +                   bool local_type);
+> >  bool btf_struct_ids_match(struct bpf_verifier_log *log,
+> >                         const struct btf *btf, u32 id, int off,
+> >                         const struct btf *need_btf, u32 need_type_id,
+> > diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+> > index c4d21568d192..c6d550978d63 100644
+> > --- a/include/linux/bpf_verifier.h
+> > +++ b/include/linux/bpf_verifier.h
+> > @@ -403,6 +403,7 @@ struct bpf_insn_aux_data {
+> >                */
+> >               struct bpf_loop_inline_state loop_inline_state;
+> >       };
+> > +     u64 kptr_alloc_size; /* used to store size of local kptr allocation */
+> >       u64 map_key_state; /* constant (32 bit) key tracking for maps */
+> >       int ctx_field_size; /* the ctx field size for load insn, maybe 0 */
+> >       u32 seen; /* this insn was processed by the verifier at env->pass_cnt */
+> > diff --git a/include/linux/btf.h b/include/linux/btf.h
+> > index 9b62b8b2117e..fc35c932e89e 100644
+> > --- a/include/linux/btf.h
+> > +++ b/include/linux/btf.h
+> > @@ -52,6 +52,9 @@
+> >  #define KF_SLEEPABLE    (1 << 5) /* kfunc may sleep */
+> >  #define KF_DESTRUCTIVE  (1 << 6) /* kfunc performs destructive actions */
+> >
+> > +/* Internal kfunc flags, not meant for general use */
+> > +#define __KF_RET_DYN_BTF (1 << 7) /* kfunc returns dynamically ascertained PTR_TO_BTF_ID */
 >
-> kptrs are only for structs.
-> So I would drop explicit 1st argument which is going to be 'struct'
-> for foreseeable future and leave it as:
->  struct bpf_list_head list __contains(foo, node);
+> Is there going to be another func that returns similar dynamic type?
+> We have one such func already kptr_xhcg. I don't see why we need this flag.
+> We can just compare func_id-s.
+> In this patch it will be just fund_id == kfunc_ids[KF_kptr_alloc];
+> When more kfuncs become alloc-like we will just add few ||.
+>
+
+There are, bpf_list_pop_{front,back}, even bpf_list_del, probably more
+as we add more variants of lists.
+But I don't mind keeping a list, they all need to be handled a bit
+differently anyway to ascertain the type of PTR_TO_BTF_ID.
+
+> > +
+> >  struct btf;
+> >  struct btf_member;
+> >  struct btf_type;
+> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> > index 0fb045be3837..17977e0f4e09 100644
+> > --- a/kernel/bpf/btf.c
+> > +++ b/kernel/bpf/btf.c
+> > @@ -5919,7 +5919,8 @@ static int btf_struct_walk(struct bpf_verifier_log *log, const struct btf *btf,
+> >  int btf_struct_access(struct bpf_verifier_log *log, const struct btf *btf,
+> >                     const struct btf_type *t, int off, int size,
+> >                     enum bpf_access_type atype __maybe_unused,
+> > -                   u32 *next_btf_id, enum bpf_type_flag *flag)
+> > +                   u32 *next_btf_id, enum bpf_type_flag *flag,
+> > +                   bool local_type)
+> >  {
+> >       enum bpf_type_flag tmp_flag = 0;
+> >       int err;
+> > @@ -5930,6 +5931,11 @@ int btf_struct_access(struct bpf_verifier_log *log, const struct btf *btf,
+> >
+> >               switch (err) {
+> >               case WALK_PTR:
+> > +                     /* For local types, the destination register cannot
+> > +                      * become a pointer again.
+> > +                      */
+> > +                     if (local_type)
+> > +                             return SCALAR_VALUE;
+> >                       /* If we found the pointer or scalar on t+off,
+> >                        * we're done.
+> >                        */
+> > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> > index fc08035f14ed..d417aa4f0b22 100644
+> > --- a/kernel/bpf/helpers.c
+> > +++ b/kernel/bpf/helpers.c
+> > @@ -1696,10 +1696,27 @@ bpf_base_func_proto(enum bpf_func_id func_id)
+> >       }
+> >  }
+> >
+> > +__diag_push();
+> > +__diag_ignore_all("-Wmissing-prototypes",
+> > +               "Global functions as their definitions will be in vmlinux BTF");
+> > +
+> > +void *bpf_kptr_alloc(u64 local_type_id__k, u64 flags)
+> > +{
+> > +     /* Verifier patches local_type_id__k to size */
+> > +     u64 size = local_type_id__k;
+> > +
+> > +     if (flags)
+> > +             return NULL;
+> > +     return kmalloc(size, GFP_ATOMIC);
+> > +}
+> > +
+> > +__diag_pop();
+> > +
+> >  BTF_SET8_START(tracing_btf_ids)
+> >  #ifdef CONFIG_KEXEC_CORE
+> >  BTF_ID_FLAGS(func, crash_kexec, KF_DESTRUCTIVE)
+> >  #endif
+> > +BTF_ID_FLAGS(func, bpf_kptr_alloc, KF_ACQUIRE | KF_RET_NULL | __KF_RET_DYN_BTF)
+> >  BTF_SET8_END(tracing_btf_ids)
+> >
+> >  static const struct btf_kfunc_id_set tracing_kfunc_set = {
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index ab91e5ca7e41..8f28aa7f1e8d 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -472,6 +472,11 @@ static bool type_may_be_null(u32 type)
+> >       return type & PTR_MAYBE_NULL;
+> >  }
+> >
+> > +static bool type_is_local(u32 type)
+> > +{
+> > +     return type & MEM_TYPE_LOCAL;
+> > +}
+> > +
+> >  static bool is_acquire_function(enum bpf_func_id func_id,
+> >                               const struct bpf_map *map)
+> >  {
+> > @@ -4556,17 +4561,22 @@ static int check_ptr_to_btf_access(struct bpf_verifier_env *env,
+> >               return -EACCES;
+> >       }
+> >
+> > -     if (env->ops->btf_struct_access) {
+> > +     /* For allocated PTR_TO_BTF_ID pointing to a local type, we cannot do
+> > +      * btf_struct_access callback.
+> > +      */
+> > +     if (env->ops->btf_struct_access && !type_is_local(reg->type)) {
+> >               ret = env->ops->btf_struct_access(&env->log, reg->btf, t,
+> > -                                               off, size, atype, &btf_id, &flag);
+> > +                                               off, size, atype, &btf_id, &flag,
+> > +                                               false);
+> >       } else {
+> > -             if (atype != BPF_READ) {
+> > +             /* It is allowed to write to pointer to a local type */
+> > +             if (atype != BPF_READ && !type_is_local(reg->type)) {
+> >                       verbose(env, "only read is supported\n");
+> >                       return -EACCES;
+> >               }
+> >
+> >               ret = btf_struct_access(&env->log, reg->btf, t, off, size,
+> > -                                     atype, &btf_id, &flag);
+> > +                                     atype, &btf_id, &flag, type_is_local(reg->type));
+>
+> imo it's cleaner to pass 'reg' instead of 'reg->btf',
+> so we don't have to pass another boolean.
+> And check type_is_local(reg) inside btf_struct_access().
+>
+
+Yes, makes sense, will change in v1.
+
+> >       }
+> >
+> >       if (ret < 0)
+> > @@ -4630,7 +4640,7 @@ static int check_ptr_to_map_access(struct bpf_verifier_env *env,
+> >               return -EACCES;
+> >       }
+> >
+> > -     ret = btf_struct_access(&env->log, btf_vmlinux, t, off, size, atype, &btf_id, &flag);
+> > +     ret = btf_struct_access(&env->log, btf_vmlinux, t, off, size, atype, &btf_id, &flag, false);
+> >       if (ret < 0)
+> >               return ret;
+> >
+> > @@ -7661,6 +7671,11 @@ static bool is_kfunc_destructive(struct bpf_kfunc_arg_meta *meta)
+> >       return meta->kfunc_flags & KF_DESTRUCTIVE;
+> >  }
+> >
+> > +static bool __is_kfunc_ret_dyn_btf(struct bpf_kfunc_arg_meta *meta)
+> > +{
+> > +     return meta->kfunc_flags & __KF_RET_DYN_BTF;
+> > +}
+> > +
+> >  static bool is_kfunc_arg_kptr_get(struct bpf_kfunc_arg_meta *meta, int arg)
+> >  {
+> >       return arg == 0 && (meta->kfunc_flags & KF_KPTR_GET);
+> > @@ -7751,6 +7766,24 @@ static u32 *reg2btf_ids[__BPF_REG_TYPE_MAX] = {
+> >  #endif
+> >  };
+> >
+> > +BTF_ID_LIST(special_kfuncs)
+> > +BTF_ID(func, bpf_kptr_alloc)
+> > +
+> > +enum bpf_special_kfuncs {
+> > +     KF_SPECIAL_bpf_kptr_alloc,
+> > +     KF_SPECIAL_MAX,
+> > +};
+> > +
+> > +static bool __is_kfunc_special(const struct btf *btf, u32 func_id, unsigned int kf_sp)
+> > +{
+> > +     if (btf != btf_vmlinux || kf_sp >= KF_SPECIAL_MAX)
+> > +             return false;
+> > +     return func_id == special_kfuncs[kf_sp];
+> > +}
+> > +
+> > +#define is_kfunc_special(btf, func_id, func_name) \
+> > +     __is_kfunc_special(btf, func_id, KF_SPECIAL_##func_name)
+>
+> This looks like reinventing the wheel.
+> I'd think similar to btf_tracing_ids[BTF_TRACING_TYPE_VMA] would work just as well.
+> It's less magic. No need for above macro
+> and btf != btf_vmlinux should really be explicit in the code
+> and done early and once.
 >
 
 Ok.
 
-> There is typo s/list;/node;/ in struct foo, right?
-
-Yes.
-
->
-> > Then, the bpf_list_head only allows adding to the list using the
-> > bpf_list_node 'list' for the type struct foo.
-> >
-> > The 'contains' annotation is a BTF declaration tag composed of four
-> > parts, "contains:kind:name:node" where the kind and name is then used to
-> > look up the type in the map BTF. The node defines name of the member in
-> > this type that has the type struct bpf_list_node, which is actually used
-> > for linking into the linked list.
-> >
-> > This allows building intrusive linked lists in BPF, using container_of
-> > to obtain pointer to entry, while being completely type safe from the
-> > perspective of the verifier. The verifier knows exactly the type of the
-> > nodes, and knows that list helpers return that type at some fixed offset
-> > where the bpf_list_node member used for this list exists. The verifier
-> > also uses this information to disallow adding types that are not
-> > accepted by a certain list.
-> >
-> > For now, no elements can be added to such lists. Support for that is
-> > coming in future patches, hence draining and freeing items is left out
-> > for now, and just freeing the list_head_off_tab is done, since it is
-> > still built and populated when bpf_list_head is specified in the map
-> > value.
-> >
-> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > ---
-> >  include/linux/bpf.h                           |  64 +++++--
-> >  include/linux/btf.h                           |   2 +
-> >  kernel/bpf/arraymap.c                         |   2 +
-> >  kernel/bpf/bpf_local_storage.c                |   1 +
-> >  kernel/bpf/btf.c                              | 173 +++++++++++++++++-
-> >  kernel/bpf/hashtab.c                          |   1 +
-> >  kernel/bpf/map_in_map.c                       |   5 +-
-> >  kernel/bpf/syscall.c                          | 131 +++++++++++--
-> >  kernel/bpf/verifier.c                         |  21 +++
-> >  .../testing/selftests/bpf/bpf_experimental.h  |  21 +++
-> >  10 files changed, 378 insertions(+), 43 deletions(-)
-> >  create mode 100644 tools/testing/selftests/bpf/bpf_experimental.h
-> >
-> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > index d4e6bf789c02..35c2e9caeb98 100644
-> > --- a/include/linux/bpf.h
-> > +++ b/include/linux/bpf.h
-> > @@ -28,6 +28,9 @@
-> >  #include <linux/btf.h>
-> >  #include <linux/rcupdate_trace.h>
-> >
-> > +/* Experimental BPF APIs header for type definitions */
-> > +#include "../../../tools/testing/selftests/bpf/bpf_experimental.h"
 > > +
-> >  struct bpf_verifier_env;
-> >  struct bpf_verifier_log;
-> >  struct perf_event;
-> > @@ -164,27 +167,40 @@ struct bpf_map_ops {
-> >  };
-> >
-> >  enum {
-> > -     /* Support at most 8 pointers in a BPF map value */
-> > -     BPF_MAP_VALUE_OFF_MAX = 8,
-> > -     BPF_MAP_OFF_ARR_MAX   = BPF_MAP_VALUE_OFF_MAX +
-> > -                             1 + /* for bpf_spin_lock */
-> > -                             1,  /* for bpf_timer */
-> > -};
-> > -
-> > -enum bpf_kptr_type {
-> > +     /* Support at most 8 offsets in a table */
-> > +     BPF_MAP_VALUE_OFF_MAX           = 8,
-> > +     /* Support at most 8 pointer in a BPF map value */
-> > +     BPF_MAP_VALUE_KPTR_MAX          = BPF_MAP_VALUE_OFF_MAX,
-> > +     /* Support at most 8 list_head in a BPF map value */
-> > +     BPF_MAP_VALUE_LIST_HEAD_MAX     = BPF_MAP_VALUE_OFF_MAX,
-> > +     BPF_MAP_OFF_ARR_MAX             = BPF_MAP_VALUE_KPTR_MAX +
-> > +                                       BPF_MAP_VALUE_LIST_HEAD_MAX +
-> > +                                       1 + /* for bpf_spin_lock */
-> > +                                       1,  /* for bpf_timer */
-> > +};
+> >  enum kfunc_ptr_arg_types {
+> >       KF_ARG_PTR_TO_CTX,
+> >       KF_ARG_PTR_TO_BTF_ID,        /* Also covers reg2btf_ids conversions */
+> > @@ -8120,20 +8153,55 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+> >               mark_reg_unknown(env, regs, BPF_REG_0);
+> >               mark_btf_func_reg_size(env, BPF_REG_0, t->size);
+> >       } else if (btf_type_is_ptr(t)) {
+> > -             ptr_type = btf_type_skip_modifiers(desc_btf, t->type,
+> > -                                                &ptr_type_id);
+> > -             if (!btf_type_is_struct(ptr_type)) {
+> > -                     ptr_type_name = btf_name_by_offset(desc_btf,
+> > -                                                        ptr_type->name_off);
+> > -                     verbose(env, "kernel function %s returns pointer type %s %s is not supported\n",
+> > -                             func_name, btf_type_str(ptr_type),
+> > -                             ptr_type_name);
+> > -                     return -EINVAL;
+> > -             }
+> > +             struct btf *ret_btf;
+> > +             u32 ret_btf_id;
 > > +
-> > +enum bpf_off_type {
-> >       BPF_KPTR_UNREF,
-> >       BPF_KPTR_REF,
-> > +     BPF_LIST_HEAD,
-> >  };
-> >
-> >  struct bpf_map_value_off_desc {
-> >       u32 offset;
-> > -     enum bpf_kptr_type type;
-> > -     struct {
-> > -             struct btf *btf;
-> > -             struct module *module;
-> > -             btf_dtor_kfunc_t dtor;
-> > -             u32 btf_id;
-> > -     } kptr;
-> > +     enum bpf_off_type type;
-> > +     union {
-> > +             struct {
-> > +                     struct btf *btf;
-> > +                     struct module *module;
-> > +                     btf_dtor_kfunc_t dtor;
-> > +                     u32 btf_id;
-> > +             } kptr; /* for BPF_KPTR_{UNREF,REF} */
-> > +             struct {
-> > +                     struct btf *btf;
-> > +                     u32 value_type_id;
-> > +                     u32 list_node_off;
-> > +             } list_head; /* for BPF_LIST_HEAD */
-> > +     };
-> >  };
-> >
-> >  struct bpf_map_value_off {
-> > @@ -215,6 +231,7 @@ struct bpf_map {
-> >       u32 map_flags;
-> >       int spin_lock_off; /* >=0 valid offset, <0 error */
-> >       struct bpf_map_value_off *kptr_off_tab;
-> > +     struct bpf_map_value_off *list_head_off_tab;
+> > +             ptr_type = btf_type_skip_modifiers(desc_btf, t->type, &ptr_type_id);
+> >               mark_reg_known_zero(env, regs, BPF_REG_0);
+> > -             regs[BPF_REG_0].btf = desc_btf;
+> >               regs[BPF_REG_0].type = PTR_TO_BTF_ID;
+> > -             regs[BPF_REG_0].btf_id = ptr_type_id;
+> > +
+> > +             if (__is_kfunc_ret_dyn_btf(&meta)) {
 >
-> The union in bpf_map_value_off_desc prompts the question
-> why separate array is needed.
-> Sorting gets uglier.
+> just check meta.func_id == kfunc_ids[KF_kptr_alloc] instead?
+>
+> > +                     const struct btf_type *ret_t;
+> > +
+> > +                     /* Currently, only bpf_kptr_alloc needs special handling */
+> > +                     if (!is_kfunc_special(meta.btf, meta.func_id, bpf_kptr_alloc) ||
+>
+> same thing.
 >
 
-I'll try to create a unified offset array, there aren't going to be
-any collisions anyway, and we can discern between field types using
-the type field.
+Ack.
 
-> >       int timer_off; /* >=0 valid offset, <0 error */
-> >       u32 id;
-> >       int numa_node;
-> > @@ -265,6 +282,11 @@ static inline bool map_value_has_kptrs(const struct bpf_map *map)
-> >       return !IS_ERR_OR_NULL(map->kptr_off_tab);
+> > +                         !meta.arg_constant.found || !btf_type_is_void(ptr_type)) {
+> > +                             verbose(env, "verifier internal error: misconfigured kfunc\n");
+> > +                             return -EFAULT;
+> > +                     }
+> > +
+> > +                     if (((u64)(u32)meta.arg_constant.value) != meta.arg_constant.value) {
+> > +                             verbose(env, "local type ID argument must be in range [0, U32_MAX]\n");
+> > +                             return -EINVAL;
+> > +                     }
+> > +
+> > +                     ret_btf = env->prog->aux->btf;
+> > +                     ret_btf_id = meta.arg_constant.value;
+> > +
+> > +                     ret_t = btf_type_by_id(ret_btf, ret_btf_id);
+> > +                     if (!ret_t || !__btf_type_is_struct(ret_t)) {
+> > +                             verbose(env, "local type ID %d passed to bpf_kptr_alloc does not refer to struct\n",
+> > +                                     ret_btf_id);
+> > +                             return -EINVAL;
+> > +                     }
+> > +                     /* Remember this so that we can rewrite R1 as size in fixup_kfunc_call */
+> > +                     env->insn_aux_data[insn_idx].kptr_alloc_size = ret_t->size;
+> > +                     /* For now, since we hardcode prog->btf, also hardcode
+> > +                      * setting of this flag.
+> > +                      */
+> > +                     regs[BPF_REG_0].type |= MEM_TYPE_LOCAL;
+> > +             } else {
+> > +                     if (!btf_type_is_struct(ptr_type)) {
+> > +                             ptr_type_name = btf_name_by_offset(desc_btf, ptr_type->name_off);
+> > +                             verbose(env, "kernel function %s returns pointer type %s %s is not supported\n",
+> > +                                     func_name, btf_type_str(ptr_type), ptr_type_name);
+> > +                             return -EINVAL;
+> > +                     }
+> > +                     ret_btf = desc_btf;
+> > +                     ret_btf_id = ptr_type_id;
+> > +             }
+> > +             regs[BPF_REG_0].btf = ret_btf;
+> > +             regs[BPF_REG_0].btf_id = ret_btf_id;
+> >               if (is_kfunc_ret_null(&meta)) {
+> >                       regs[BPF_REG_0].type |= PTR_MAYBE_NULL;
+> >                       /* For mark_ptr_or_null_reg, see 93c230e3f5bd6 */
+> > @@ -14371,8 +14439,43 @@ static int fixup_call_args(struct bpf_verifier_env *env)
+> >       return err;
 > >  }
 > >
-> > +static inline bool map_value_has_list_heads(const struct bpf_map *map)
+> > +static int do_kfunc_fixups(struct bpf_verifier_env *env, struct bpf_insn *insn,
+> > +                        s32 imm, int insn_idx, int delta)
 > > +{
-> > +     return !IS_ERR_OR_NULL(map->list_head_off_tab);
-> > +}
+> > +     struct bpf_insn insn_buf[16];
+> > +     struct bpf_prog *new_prog;
+> > +     int cnt;
 > > +
-> >  static inline void check_and_init_map_value(struct bpf_map *map, void *dst)
-> >  {
-> >       if (unlikely(map_value_has_spin_lock(map)))
-> > @@ -278,6 +300,13 @@ static inline void check_and_init_map_value(struct bpf_map *map, void *dst)
-> >               for (i = 0; i < tab->nr_off; i++)
-> >                       *(u64 *)(dst + tab->off[i].offset) = 0;
-> >       }
-> > +     if (unlikely(map_value_has_list_heads(map))) {
-> > +             struct bpf_map_value_off *tab = map->list_head_off_tab;
-> > +             int i;
+> > +     /* No need to lookup btf, only vmlinux kfuncs are supported for special
+> > +      * kfuncs handling. Hence when insn->off is zero, check if it is a
+> > +      * special kfunc by hardcoding btf as btf_vmlinux.
+> > +      */
+> > +     if (!insn->off && is_kfunc_special(btf_vmlinux, insn->imm, bpf_kptr_alloc)) {
+> > +             u64 local_type_size = env->insn_aux_data[insn_idx + delta].kptr_alloc_size;
 > > +
-> > +             for (i = 0; i < tab->nr_off; i++)
-> > +                     memset(dst + tab->off[i].offset, 0, sizeof(struct list_head));
+> > +             insn_buf[0] = BPF_MOV64_IMM(BPF_REG_1, local_type_size);
+> > +             insn_buf[1] = *insn;
+> > +             cnt = 2;
+> > +
+> > +             new_prog = bpf_patch_insn_data(env, insn_idx + delta, insn_buf, cnt);
+> > +             if (!new_prog)
+> > +                     return -ENOMEM;
+> > +
+> > +             delta += cnt - 1;
+> > +             insn = new_prog->insnsi + insn_idx + delta;
+> > +             goto patch_call_imm;
 > > +     }
->
-> Do we really need to distinguish map_value_has_kptrs vs map_value_has_list_heads ?
-> Can they be generalized?
-> rb_root will be next.
-> that would be yet another array and another 'if'-s everywhere?
-> And then another special pseudo-map type that will cause a bunch of copy-paste again?
-> Maybe it's inevitable.
-> Trying to brainstorm.
->
-
-Yes, it's a bit unfortunate how this is turning out to be.
-If we use a unified array we might be able to do it in one go though,
-taking size from the type.
-
-> >  }
-> >
-> >  /* memcpy that is used with 8-byte aligned pointers, power-of-8 size and
-> > @@ -1676,6 +1705,11 @@ struct bpf_map_value_off *bpf_map_copy_kptr_off_tab(const struct bpf_map *map);
-> >  bool bpf_map_equal_kptr_off_tab(const struct bpf_map *map_a, const struct bpf_map *map_b);
-> >  void bpf_map_free_kptrs(struct bpf_map *map, void *map_value);
-> >
-> > +struct bpf_map_value_off_desc *bpf_map_list_head_off_contains(struct bpf_map *map, u32 offset);
-> > +void bpf_map_free_list_head_off_tab(struct bpf_map *map);
-> > +struct bpf_map_value_off *bpf_map_copy_list_head_off_tab(const struct bpf_map *map);
-> > +bool bpf_map_equal_list_head_off_tab(const struct bpf_map *map_a, const struct bpf_map *map_b);
 > > +
-> >  struct bpf_map *bpf_map_get(u32 ufd);
-> >  struct bpf_map *bpf_map_get_with_uref(u32 ufd);
-> >  struct bpf_map *__bpf_map_get(struct fd f);
-> > diff --git a/include/linux/btf.h b/include/linux/btf.h
-> > index 8062f9da7c40..9b62b8b2117e 100644
-> > --- a/include/linux/btf.h
-> > +++ b/include/linux/btf.h
-> > @@ -156,6 +156,8 @@ int btf_find_spin_lock(const struct btf *btf, const struct btf_type *t);
-> >  int btf_find_timer(const struct btf *btf, const struct btf_type *t);
-> >  struct bpf_map_value_off *btf_parse_kptrs(const struct btf *btf,
-> >                                         const struct btf_type *t);
-> > +struct bpf_map_value_off *btf_parse_list_heads(struct btf *btf,
-> > +                                            const struct btf_type *t);
-> >  bool btf_type_is_void(const struct btf_type *t);
-> >  s32 btf_find_by_name_kind(const struct btf *btf, const char *name, u8 kind);
-> >  const struct btf_type *btf_type_skip_modifiers(const struct btf *btf,
-> > diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-> > index 832b2659e96e..c7263ee3a35f 100644
-> > --- a/kernel/bpf/arraymap.c
-> > +++ b/kernel/bpf/arraymap.c
-> > @@ -423,6 +423,8 @@ static void array_map_free(struct bpf_map *map)
-> >       struct bpf_array *array = container_of(map, struct bpf_array, map);
-> >       int i;
-> >
-> > +     bpf_map_free_list_head_off_tab(map);
+> > +     insn->imm = imm;
+> > +     return 0;
+> > +patch_call_imm:
+> > +     insn->imm = imm;
+> > +     return cnt - 1;
+> > +}
 > > +
-> >       if (map_value_has_kptrs(map)) {
-> >               if (array->map.map_type == BPF_MAP_TYPE_PERCPU_ARRAY) {
-> >                       for (i = 0; i < array->map.max_entries; i++) {
-> > diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storage.c
-> > index 58cb0c179097..b5ccd76026b6 100644
-> > --- a/kernel/bpf/bpf_local_storage.c
-> > +++ b/kernel/bpf/bpf_local_storage.c
-> > @@ -616,6 +616,7 @@ void bpf_local_storage_map_free(struct bpf_local_storage_map *smap,
-> >               rcu_barrier();
-> >               bpf_map_free_kptr_off_tab(&smap->map);
-> >       }
-> > +     bpf_map_free_list_head_off_tab(&smap->map);
-> >       kvfree(smap->buckets);
-> >       bpf_map_area_free(smap);
-> >  }
-> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> > index 6740c3ade8f1..0fb045be3837 100644
-> > --- a/kernel/bpf/btf.c
-> > +++ b/kernel/bpf/btf.c
-> > @@ -3185,6 +3185,7 @@ enum btf_field_type {
-> >       BTF_FIELD_SPIN_LOCK,
-> >       BTF_FIELD_TIMER,
-> >       BTF_FIELD_KPTR,
-> > +     BTF_FIELD_LIST_HEAD,
-> >  };
-> >
-> >  enum {
-> > @@ -3193,9 +3194,17 @@ enum {
-> >  };
-> >
-> >  struct btf_field_info {
-> > -     u32 type_id;
-> >       u32 off;
-> > -     enum bpf_kptr_type type;
-> > +     union {
-> > +             struct {
-> > +                     u32 type_id;
-> > +                     enum bpf_off_type type;
-> > +             } kptr;
-> > +             struct {
-> > +                     u32 value_type_id;
-> > +                     const char *node_name;
-> > +             } list_head;
-> > +     };
-> >  };
-> >
-> >  static int btf_find_struct(const struct btf *btf, const struct btf_type *t,
-> > @@ -3212,7 +3221,7 @@ static int btf_find_struct(const struct btf *btf, const struct btf_type *t,
-> >  static int btf_find_kptr(const struct btf *btf, const struct btf_type *t,
-> >                        u32 off, int sz, struct btf_field_info *info)
+> >  static int fixup_kfunc_call(struct bpf_verifier_env *env,
+> > -                         struct bpf_insn *insn)
+> > +                         struct bpf_insn *insn,
+> > +                         int insn_idx, int delta)
 > >  {
-> > -     enum bpf_kptr_type type;
-> > +     enum bpf_off_type type;
-> >       u32 res_id;
+> >       const struct bpf_kfunc_desc *desc;
 > >
-> >       /* Permit modifiers on the pointer itself */
-> > @@ -3241,9 +3250,71 @@ static int btf_find_kptr(const struct btf *btf, const struct btf_type *t,
-> >       if (!__btf_type_is_struct(t))
-> >               return -EINVAL;
-> >
-> > -     info->type_id = res_id;
-> >       info->off = off;
-> > -     info->type = type;
-> > +     info->kptr.type_id = res_id;
-> > +     info->kptr.type = type;
-> > +     return BTF_FIELD_FOUND;
-> > +}
-> > +
-> > +static const char *btf_find_decl_tag_value(const struct btf *btf,
-> > +                                        const struct btf_type *pt,
-> > +                                        int comp_idx, const char *tag_key)
-> > +{
-> > +     int i;
-> > +
-> > +     for (i = 1; i < btf_nr_types(btf); i++) {
-> > +             const struct btf_type *t = btf_type_by_id(btf, i);
-> > +             int len = strlen(tag_key);
-> > +
-> > +             if (!btf_type_is_decl_tag(t))
-> > +                     continue;
-> > +             /* TODO: Instead of btf_type pt, it would be much better if we had BTF
-> > +              * ID of the map value type. This would avoid btf_type_by_id call here.
-> > +              */
-> > +             if (pt != btf_type_by_id(btf, t->type) ||
-> > +                 btf_type_decl_tag(t)->component_idx != comp_idx)
-> > +                     continue;
-> > +             if (strncmp(__btf_name_by_offset(btf, t->name_off), tag_key, len))
-> > +                     continue;
-> > +             return __btf_name_by_offset(btf, t->name_off) + len;
-> > +     }
-> > +     return NULL;
-> > +}
-> > +
-> > +static int btf_find_list_head(const struct btf *btf, const struct btf_type *pt,
-> > +                           int comp_idx, const struct btf_type *t,
-> > +                           u32 off, int sz, struct btf_field_info *info)
-> > +{
-> > +     const char *value_type;
-> > +     const char *list_node;
-> > +     s32 id;
-> > +
-> > +     if (!__btf_type_is_struct(t))
-> > +             return BTF_FIELD_IGNORE;
-> > +     if (t->size != sz)
-> > +             return BTF_FIELD_IGNORE;
-> > +     value_type = btf_find_decl_tag_value(btf, pt, comp_idx, "contains:");
-> > +     if (!value_type)
-> > +             return -EINVAL;
-> > +     if (strncmp(value_type, "struct:", sizeof("struct:") - 1))
-> > +             return -EINVAL;
-> > +     value_type += sizeof("struct:") - 1;
-> > +     list_node = strstr(value_type, ":");
-> > +     if (!list_node)
-> > +             return -EINVAL;
-> > +     value_type = kstrndup(value_type, list_node - value_type, GFP_ATOMIC);
-> > +     if (!value_type)
-> > +             return -ENOMEM;
-> > +     id = btf_find_by_name_kind(btf, value_type, BTF_KIND_STRUCT);
-> > +     kfree(value_type);
-> > +     if (id < 0)
-> > +             return id;
-> > +     list_node++;
-> > +     if (str_is_empty(list_node))
-> > +             return -EINVAL;
-> > +     info->off = off;
-> > +     info->list_head.value_type_id = id;
-> > +     info->list_head.node_name = list_node;
-> >       return BTF_FIELD_FOUND;
-> >  }
-> >
-> > @@ -3286,6 +3357,12 @@ static int btf_find_struct_field(const struct btf *btf, const struct btf_type *t
-> >                       if (ret < 0)
-> >                               return ret;
-> >                       break;
-> > +             case BTF_FIELD_LIST_HEAD:
-> > +                     ret = btf_find_list_head(btf, t, i, member_type, off, sz,
-> > +                                              idx < info_cnt ? &info[idx] : &tmp);
-> > +                     if (ret < 0)
-> > +                             return ret;
-> > +                     break;
-> >               default:
-> >                       return -EFAULT;
-> >               }
-> > @@ -3336,6 +3413,12 @@ static int btf_find_datasec_var(const struct btf *btf, const struct btf_type *t,
-> >                       if (ret < 0)
-> >                               return ret;
-> >                       break;
-> > +             case BTF_FIELD_LIST_HEAD:
-> > +                     ret = btf_find_list_head(btf, var, -1, var_type, off, sz,
-> > +                                              idx < info_cnt ? &info[idx] : &tmp);
-> > +                     if (ret < 0)
-> > +                             return ret;
-> > +                     break;
-> >               default:
-> >                       return -EFAULT;
-> >               }
-> > @@ -3372,6 +3455,11 @@ static int btf_find_field(const struct btf *btf, const struct btf_type *t,
-> >               sz = sizeof(u64);
-> >               align = 8;
-> >               break;
-> > +     case BTF_FIELD_LIST_HEAD:
-> > +             name = "bpf_list_head";
-> > +             sz = sizeof(struct bpf_list_head);
-> > +             align = __alignof__(struct bpf_list_head);
-> > +             break;
-> >       default:
+> > @@ -14391,9 +14494,7 @@ static int fixup_kfunc_call(struct bpf_verifier_env *env,
 > >               return -EFAULT;
 > >       }
-> > @@ -3440,7 +3528,7 @@ struct bpf_map_value_off *btf_parse_kptrs(const struct btf *btf,
-> >               /* Find type in map BTF, and use it to look up the matching type
-> >                * in vmlinux or module BTFs, by name and kind.
-> >                */
-> > -             t = btf_type_by_id(btf, info_arr[i].type_id);
-> > +             t = btf_type_by_id(btf, info_arr[i].kptr.type_id);
-> >               id = bpf_find_btf_id(__btf_name_by_offset(btf, t->name_off), BTF_INFO_KIND(t->info),
-> >                                    &kernel_btf);
-> >               if (id < 0) {
-> > @@ -3451,7 +3539,7 @@ struct bpf_map_value_off *btf_parse_kptrs(const struct btf *btf,
-> >               /* Find and stash the function pointer for the destruction function that
-> >                * needs to be eventually invoked from the map free path.
-> >                */
-> > -             if (info_arr[i].type == BPF_KPTR_REF) {
-> > +             if (info_arr[i].kptr.type == BPF_KPTR_REF) {
-> >                       const struct btf_type *dtor_func;
-> >                       const char *dtor_func_name;
-> >                       unsigned long addr;
-> > @@ -3494,7 +3582,7 @@ struct bpf_map_value_off *btf_parse_kptrs(const struct btf *btf,
-> >               }
 > >
-> >               tab->off[i].offset = info_arr[i].off;
-> > -             tab->off[i].type = info_arr[i].type;
-> > +             tab->off[i].type = info_arr[i].kptr.type;
-> >               tab->off[i].kptr.btf_id = id;
-> >               tab->off[i].kptr.btf = kernel_btf;
-> >               tab->off[i].kptr.module = mod;
-> > @@ -3515,6 +3603,75 @@ struct bpf_map_value_off *btf_parse_kptrs(const struct btf *btf,
-> >       return ERR_PTR(ret);
+> > -     insn->imm = desc->imm;
+> > -
+> > -     return 0;
+> > +     return do_kfunc_fixups(env, insn, desc->imm, insn_idx, delta);
 > >  }
 > >
-> > +struct bpf_map_value_off *btf_parse_list_heads(struct btf *btf, const struct btf_type *t)
-> > +{
-> > +     struct btf_field_info info_arr[BPF_MAP_VALUE_OFF_MAX];
-> > +     struct bpf_map_value_off *tab;
-> > +     int ret, i, nr_off;
-> > +
-> > +     ret = btf_find_field(btf, t, BTF_FIELD_LIST_HEAD, info_arr, ARRAY_SIZE(info_arr));
->
-> Like if search for both LIST_HEAD and KPTR here to know the size.
->
-
-Yes, it seems like a good idea to unify things, I'll do it in v1.
-
-> > +     if (ret < 0)
-> > +             return ERR_PTR(ret);
-> > +     if (!ret)
-> > +             return NULL;
-> > +
-> > +     nr_off = ret;
-> > +     tab = kzalloc(offsetof(struct bpf_map_value_off, off[nr_off]), GFP_KERNEL | __GFP_NOWARN);
-> > +     if (!tab)
-> > +             return ERR_PTR(-ENOMEM);
-> > +
-> > +     for (i = 0; i < nr_off; i++) {
-> > +             const struct btf_type *t, *n = NULL;
-> > +             const struct btf_member *member;
-> > +             u32 offset;
-> > +             int j;
->
-> and here we can process both, since field_info has type.
->
-> > +
-> > +             t = btf_type_by_id(btf, info_arr[i].list_head.value_type_id);
-> > +             /* We've already checked that value_type_id is a struct type. We
-> > +              * just need to figure out the offset of the list_node, and
-> > +              * verify its type.
-> > +              */
-> > +             ret = -EINVAL;
-> > +             for_each_member(j, t, member) {
-> > +                     if (strcmp(info_arr[i].list_head.node_name, __btf_name_by_offset(btf, member->name_off)))
-> > +                             continue;
-> > +                     /* Invalid BTF, two members with same name */
-> > +                     if (n) {
-> > +                             /* We also need to btf_put for the current iteration! */
-> > +                             i++;
-> > +                             goto end;
+> >  /* Do various post-verification rewrites in a single program pass.
+> > @@ -14534,9 +14635,18 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
+> >               if (insn->src_reg == BPF_PSEUDO_CALL)
+> >                       continue;
+> >               if (insn->src_reg == BPF_PSEUDO_KFUNC_CALL) {
+> > -                     ret = fixup_kfunc_call(env, insn);
+> > -                     if (ret)
+> > +                     ret = fixup_kfunc_call(env, insn, i, delta);
+> > +                     if (ret < 0)
+> >                               return ret;
+> > +                     /* If ret > 0, fixup_kfunc_call did some instruction
+> > +                      * rewrites. Increment delta, reload prog and insn,
+> > +                      * env->prog is already set by it to the new_prog.
+> > +                      */
+> > +                     if (ret) {
+> > +                             delta += ret;
+> > +                             prog = env->prog;
+> > +                             insn = prog->insnsi + i + delta;
 > > +                     }
-> > +                     n = btf_type_by_id(btf, member->type);
-> > +                     if (!__btf_type_is_struct(n))
-> > +                             goto end;
-> > +                     if (strcmp("bpf_list_node", __btf_name_by_offset(btf, n->name_off)))
-> > +                             goto end;
-> > +                     offset = __btf_member_bit_offset(n, member);
-> > +                     if (offset % 8)
-> > +                             goto end;
-> > +                     offset /= 8;
-> > +                     if (offset % __alignof__(struct bpf_list_node))
-> > +                             goto end;
-> > +
-> > +                     tab->off[i].offset = info_arr[i].off;
-> > +                     tab->off[i].type = BPF_LIST_HEAD;
-> > +                     btf_get(btf);
 >
-> Do we need to btf_get? The btf should be pinned already and not going to be released
-> until prog ends.
+> See how Yonghong did it:
+> https://lore.kernel.org/all/20220807175121.4179410-1-yhs@fb.com/
+>
+> It's cleaner to patch and adjust here instead of patch in one place
+> and adjust in another.
 >
 
-Hm, I think that's true. This is also the map BTF, not prog BTF, which
-I guess map holds a ref to it anyway until __bpf_map_put, so it should
-be fine. I'll add a comment.
+Agreed, will fix it in v1.
