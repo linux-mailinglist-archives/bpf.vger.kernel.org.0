@@ -2,57 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C28375B1BC9
-	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 13:45:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CCD65B1BCF
+	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 13:47:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229445AbiIHLpK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Sep 2022 07:45:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60204 "EHLO
+        id S230504AbiIHLrI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Sep 2022 07:47:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229644AbiIHLpJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Sep 2022 07:45:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 026653E771
-        for <bpf@vger.kernel.org>; Thu,  8 Sep 2022 04:45:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1662637508;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=InIEn6Rm7e/7YT/6NTccV9QlpGTX/QrfJ5NqmGvNorI=;
-        b=ccTAKciqH9lZLwgfkzVvMPkmyy2/8CVvln6rwXoNw/VrZFJrLxaBqEHuVkeTtwTXIb/iks
-        IC2oKOjRTzg7z5C6T+d1VgS/RYtwhm8ojR+grHxkBwsP1POq5aU9eb0VuLXTPgcXBi6f2p
-        Pmjht5QovTw8RPPjsnrI6Q7LiFiLy90=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-558-11GEVHHZPjeQ8vwGblbhgw-1; Thu, 08 Sep 2022 07:45:03 -0400
-X-MC-Unique: 11GEVHHZPjeQ8vwGblbhgw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        with ESMTP id S230063AbiIHLrH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Sep 2022 07:47:07 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F3D911450
+        for <bpf@vger.kernel.org>; Thu,  8 Sep 2022 04:47:06 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A4A4B296A608;
-        Thu,  8 Sep 2022 11:45:02 +0000 (UTC)
-Received: from astarta.redhat.com (unknown [10.39.194.56])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 98AB52166B26;
-        Thu,  8 Sep 2022 11:45:00 +0000 (UTC)
-From:   Yauheni Kaliuta <ykaliuta@redhat.com>
-To:     bpf@vger.kernel.org
-Cc:     andrii@kernel.org, alexei.starovoitov@gmail.com,
-        daniel@iogearbox.net, song@kernel.org,
-        Yauheni Kaliuta <ykaliuta@redhat.com>
-Subject: [PATCH bpf-next v2] selftests: bpf: test_kmod.sh: pass parameters to the module
-Date:   Thu,  8 Sep 2022 14:44:58 +0300
-Message-Id: <20220908114458.378999-1-ykaliuta@redhat.com>
-In-Reply-To: <20220905072219.56361-1-ykaliuta@redhat.com>
-References: <20220905072219.56361-1-ykaliuta@redhat.com>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D01C761BE6
+        for <bpf@vger.kernel.org>; Thu,  8 Sep 2022 11:47:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB7D2C433D6;
+        Thu,  8 Sep 2022 11:47:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1662637625;
+        bh=kIZpOa08ce1iTwgyNF9q+imeQ/b6NcGYnc4k+j+Jppo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ZQvPIfIbUwYwyYrmMBMrEDDFjqudl1TUMxwNuzo7OFwGFF4NJ/rjGRsm65ha/Dsn3
+         FJGWhMKwAbUYQD5my4nlQSwgXMhRGC8yRycLFlSTabRwe5szBY1zC4HcVXGJEDY+qE
+         96MQRt0ekV2wzW6heBX7c1/X/PK4coQdud7S5nl3FSA/X9cfAJ6MtqHRde73sdZ3a3
+         vHgdLMPCulMcTVSOE3vBSjsA2G9ejujqQEMVtI3Npgg5QGs0C7lgx85fR33G9eliuc
+         rVo8OvQO+8miD94ztQzbXkAdXucpafuZte9o2qSinQSvUnIyqWLCW0O+ll2ggShuzP
+         nTmH9jWsC5Pzg==
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     syzbot+2251879aa068ad9c960d@syzkaller.appspotmail.com,
+        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>
+Subject: [PATCH bpf-next] bpf: Prevent bpf program recursion for raw tracepoint probes
+Date:   Thu,  8 Sep 2022 13:46:59 +0200
+Message-Id: <20220908114659.102775-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.78 on 10.11.54.6
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,45 +58,116 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-It's possible to specify particular tests for test_bpf.ko with
-module parameters. Make it possible to pass the module parameters,
-example:
+We got report from sysbot [1] about warnings that were caused by
+bpf program attached to contention_begin raw tracepoint triggering
+the same tracepoint by using bpf_trace_printk helper that takes
+trace_printk_lock lock.
 
-test_kmod.sh test_range=1,3
+ Call Trace:
+  <TASK>
+  ? trace_event_raw_event_bpf_trace_printk+0x5f/0x90
+  bpf_trace_printk+0x2b/0xe0
+  bpf_prog_a9aec6167c091eef_prog+0x1f/0x24
+  bpf_trace_run2+0x26/0x90
+  native_queued_spin_lock_slowpath+0x1c6/0x2b0
+  _raw_spin_lock_irqsave+0x44/0x50
+  bpf_trace_printk+0x3f/0xe0
+  bpf_prog_a9aec6167c091eef_prog+0x1f/0x24
+  bpf_trace_run2+0x26/0x90
+  native_queued_spin_lock_slowpath+0x1c6/0x2b0
+  _raw_spin_lock_irqsave+0x44/0x50
+  bpf_trace_printk+0x3f/0xe0
+  bpf_prog_a9aec6167c091eef_prog+0x1f/0x24
+  bpf_trace_run2+0x26/0x90
+  native_queued_spin_lock_slowpath+0x1c6/0x2b0
+  _raw_spin_lock_irqsave+0x44/0x50
+  bpf_trace_printk+0x3f/0xe0
+  bpf_prog_a9aec6167c091eef_prog+0x1f/0x24
+  bpf_trace_run2+0x26/0x90
+  native_queued_spin_lock_slowpath+0x1c6/0x2b0
+  _raw_spin_lock_irqsave+0x44/0x50
+  __unfreeze_partials+0x5b/0x160
+  ...
 
-Since magnitude tests take long time it can be reasonable to skip
-them.
+The can be reproduced by attaching bpf program as raw tracepoint on
+contention_begin tracepoint. The bpf prog calls bpf_trace_printk
+helper. Then by running perf bench the spin lock code is forced to
+take slowpath and call contention_begin tracepoint.
 
-Signed-off-by: Yauheni Kaliuta <ykaliuta@redhat.com>
+Fixing this by skipping execution of the bpf program if it's
+already running, Using bpf prog 'active' field, which is being
+currently used by trampoline programs for the same reason.
+
+Reported-by: syzbot+2251879aa068ad9c960d@syzkaller.appspotmail.com
+[1] https://lore.kernel.org/bpf/YxhFe3EwqchC%2FfYf@krava/T/#t
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
-v1->v2: pass all the parameters, "$@", not only the first one.
----
- tools/testing/selftests/bpf/test_kmod.sh | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ include/linux/bpf.h      | 1 +
+ kernel/bpf/trampoline.c  | 6 +++---
+ kernel/trace/bpf_trace.c | 6 ++++++
+ 3 files changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/test_kmod.sh b/tools/testing/selftests/bpf/test_kmod.sh
-index 4f6444bcd53f..6550d523b04a 100755
---- a/tools/testing/selftests/bpf/test_kmod.sh
-+++ b/tools/testing/selftests/bpf/test_kmod.sh
-@@ -26,15 +26,15 @@ test_run()
- 	echo "[ JIT enabled:$1 hardened:$2 ]"
- 	dmesg -C
- 	if [ -f ${OUTPUT}/lib/test_bpf.ko ]; then
--		insmod ${OUTPUT}/lib/test_bpf.ko 2> /dev/null
-+		insmod ${OUTPUT}/lib/test_bpf.ko "$@" 2> /dev/null
- 		if [ $? -ne 0 ]; then
- 			rc=1
- 		fi
- 	else
- 		# Use modprobe dry run to check for missing test_bpf module
--		if ! /sbin/modprobe -q -n test_bpf; then
-+		if ! /sbin/modprobe -q -n test_bpf "$@"; then
- 			echo "test_bpf: [SKIP]"
--		elif /sbin/modprobe -q test_bpf; then
-+		elif /sbin/modprobe -q test_bpf "$@"; then
- 			echo "test_bpf: ok"
- 		else
- 			echo "test_bpf: [FAIL]"
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 48ae05099f36..4737bd0fcbb8 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -2640,4 +2640,5 @@ static inline void bpf_cgroup_atype_get(u32 attach_btf_id, int cgroup_atype) {}
+ static inline void bpf_cgroup_atype_put(int cgroup_atype) {}
+ #endif /* CONFIG_BPF_LSM */
+ 
++void notrace bpf_prog_inc_misses_counter(struct bpf_prog *prog);
+ #endif /* _LINUX_BPF_H */
+diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+index ad76940b02cc..a098bdc33209 100644
+--- a/kernel/bpf/trampoline.c
++++ b/kernel/bpf/trampoline.c
+@@ -863,7 +863,7 @@ static __always_inline u64 notrace bpf_prog_start_time(void)
+ 	return start;
+ }
+ 
+-static void notrace inc_misses_counter(struct bpf_prog *prog)
++void notrace bpf_prog_inc_misses_counter(struct bpf_prog *prog)
+ {
+ 	struct bpf_prog_stats *stats;
+ 	unsigned int flags;
+@@ -896,7 +896,7 @@ u64 notrace __bpf_prog_enter(struct bpf_prog *prog, struct bpf_tramp_run_ctx *ru
+ 	run_ctx->saved_run_ctx = bpf_set_run_ctx(&run_ctx->run_ctx);
+ 
+ 	if (unlikely(this_cpu_inc_return(*(prog->active)) != 1)) {
+-		inc_misses_counter(prog);
++		bpf_prog_inc_misses_counter(prog);
+ 		return 0;
+ 	}
+ 	return bpf_prog_start_time();
+@@ -967,7 +967,7 @@ u64 notrace __bpf_prog_enter_sleepable(struct bpf_prog *prog, struct bpf_tramp_r
+ 	might_fault();
+ 
+ 	if (unlikely(this_cpu_inc_return(*(prog->active)) != 1)) {
+-		inc_misses_counter(prog);
++		bpf_prog_inc_misses_counter(prog);
+ 		return 0;
+ 	}
+ 
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 68e5cdd24cef..c8cd1aa7b112 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -2042,9 +2042,15 @@ static __always_inline
+ void __bpf_trace_run(struct bpf_prog *prog, u64 *args)
+ {
+ 	cant_sleep();
++	if (unlikely(this_cpu_inc_return(*(prog->active)) != 1)) {
++		bpf_prog_inc_misses_counter(prog);
++		goto out;
++	}
+ 	rcu_read_lock();
+ 	(void) bpf_prog_run(prog, args);
+ 	rcu_read_unlock();
++out:
++	this_cpu_dec(*(prog->active));
+ }
+ 
+ #define UNPACK(...)			__VA_ARGS__
 -- 
 2.37.3
 
