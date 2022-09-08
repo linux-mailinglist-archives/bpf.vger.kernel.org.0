@@ -2,137 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 540205B1286
-	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 04:28:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBF425B128B
+	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 04:35:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230328AbiIHC1k (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Sep 2022 22:27:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48734 "EHLO
+        id S229478AbiIHCfW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Sep 2022 22:35:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230376AbiIHC1I (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Sep 2022 22:27:08 -0400
-Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 337C8C59EE;
-        Wed,  7 Sep 2022 19:26:40 -0700 (PDT)
-Message-ID: <077d56ef-30cb-2d19-6f57-a92fd886b5f2@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1662603998;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OdJgxdOIy/U3ShStsNha7gzjlDjZFsC16duvvdJTQPk=;
-        b=sqI6d/Vf97ScM9Na+cfTdaWibP4dNymNJeSSz1si0rBSkz6SDRnVRHIVlBvZevnjApzk3w
-        XcpSU10C6rVHn0QOIRzD5eb5F4CohkaZK2jAIh6ejYid712hlWWGGwblI78HnHl/3DD+3S
-        +mQhFG1dN6SppgmKxJ+tzuFPf5Ow8Yc=
-Date:   Wed, 7 Sep 2022 19:26:34 -0700
+        with ESMTP id S229437AbiIHCfW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Sep 2022 22:35:22 -0400
+Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C300B89CEA
+        for <bpf@vger.kernel.org>; Wed,  7 Sep 2022 19:35:20 -0700 (PDT)
+Received: by mail-vs1-xe2c.google.com with SMTP id o123so16903036vsc.3
+        for <bpf@vger.kernel.org>; Wed, 07 Sep 2022 19:35:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date;
+        bh=KieW3drvXiTOLYA5jp0rEPB79hndueLow4c4JSecks8=;
+        b=Jp4c0jixyEtoHNDhvMXYqNHFSyZAgnrukZQxO6tT3J40lyss3jF+R1b7H/vwQ8EicO
+         Gkgzfs1CCn7/mAEzLmEYolm6GcLceLQr/ESmYkJhrRdhIkULu9csv4ts3JlO8CdniCo+
+         QfnLTm5pguphFFJ57sSKGwIDUm+5tXgDBmaylMiewNSrJoNYQvauq7X5LgDYI6ZCMxBd
+         mtsy/H+QxaaENOJsYoTVqV0dJMi6LO1qFMd7HOHfEINnkTKUhBDw7peXdkVxgiNRQDrc
+         5ZSi3po30Kj3CnaETpdC4TxSu0uqmmoSapGNUiMoFk9VZbCc1LfXbV9MdiyUMgpXh1+s
+         gfcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date;
+        bh=KieW3drvXiTOLYA5jp0rEPB79hndueLow4c4JSecks8=;
+        b=2YSKXkuVqz+WsrqhOXvzovWvu3sN8o+9eAzvX1k4bxm78EfiI5deyMF3RYiiNnGbJV
+         X1TytY6OFrSDqib24yXzKHB/6orDfiLzzgx1O857JxBpF+t+HjQ98s3u3rZrIo+abF5p
+         /XUxTnmlNJ5nzkqVlRyemniRV+9AX6l6HxIR90bSL3o4TKVpg2zx+PU3cIKPPUiEcxDe
+         HKXImms9M4z+OgNm4DjBQ6v1QZlku6E7a6NC7hrtdosk1IphWdpBH+KmQKYOTZ+khWjW
+         Denwye1K84f0aH9xHAKivNyej2ZIRg2LpVBOFVyAU3YMu5y9rxFHoifCAUGOaTlpRuPf
+         AiFg==
+X-Gm-Message-State: ACgBeo2i4kTQ89ufUwGYTup8yiBCNf78G5YrYPC5KoOaSmeiiemRJmkK
+        RWCkNEmHLUOUrlH9qpdGNvy0ExPRHl8kZjdBl59RhrkHPX1Rsg==
+X-Google-Smtp-Source: AA6agR6LZ9OMtJCVND3xNCJhyaxLFup345SOOz2iJv+cY+ZISyG9A3NVooOyMNsCD8AhtOyidGLDNP9AgOQmDV/GU1g=
+X-Received: by 2002:a05:6102:4413:b0:394:7850:c78f with SMTP id
+ df19-20020a056102441300b003947850c78fmr2146988vsb.65.1662604519612; Wed, 07
+ Sep 2022 19:35:19 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [RFC] Socket termination for policy enforcement and
- load-balancing
-Content-Language: en-US
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Aditi Ghag <aditivghag@gmail.com>
-Cc:     Martin KaFai Lau <kafai@fb.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.com>
-References: <CABG=zsBEh-P4NXk23eBJw7eajB5YJeRS7oPXnTAzs=yob4EMoQ@mail.gmail.com>
- <20220831230157.7lchomcdxmvq3qqw@kafai-mbp.dhcp.thefacebook.com>
- <CABG=zsCQBVga6Tjcc-Y1x0U=0xAjYHH_j8ncFJPOG2XvxSP2UQ@mail.gmail.com>
- <CAP01T76ry6etJ2Zi02a2+ZtGJxrc=rky5gMqFE7on_fuOe8A8A@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <CAP01T76ry6etJ2Zi02a2+ZtGJxrc=rky5gMqFE7on_fuOe8A8A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: linux.dev
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+From:   Vincent Li <vincent.mc.li@gmail.com>
+Date:   Wed, 7 Sep 2022 19:35:08 -0700
+Message-ID: <CAK3+h2zZQ4zEB55Bn565Xf0okf+Jotmo6qHYmzpoJPBcFWPP0A@mail.gmail.com>
+Subject: differentiate the verifier invalid mem access message error?
+To:     bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 9/4/22 2:24 PM, Kumar Kartikeya Dwivedi wrote:
-> On Sun, 4 Sept 2022 at 20:55, Aditi Ghag <aditivghag@gmail.com> wrote:
->>
->> On Wed, Aug 31, 2022 at 4:02 PM Martin KaFai Lau <kafai@fb.com> wrote:
->>>
->>> On Wed, Aug 31, 2022 at 09:37:41AM -0700, Aditi Ghag wrote:
->>>> - Use BPF (sockets) iterator to identify sockets connected to a
->>>> deleted backend. The BPF (sockets) iterator is network namespace aware
->>>> so we'll either need to enter every possible container network
->>>> namespace to identify the affected connections, or adapt the iterator
->>>> to be without netns checks [3]. This was discussed with my colleague
->>>> Daniel Borkmann based on the feedback he shared from the LSFMMBPF
->>>> conference discussions.
->>> Being able to iterate all sockets across different netns will
->>> be useful.
->>>
->>> It should be doable to ignore the netns check.  For udp, a quick
->>> thought is to have another iter target. eg. "udp_all_netns".
->>>  From the sk, the bpf prog should be able to learn the netns and
->>> the bpf prog can filter the netns by itself.
->>>
->>> The TCP side is going to have an 'optional' per netns ehash table [0] soon,
->>> not lhash2 (listening hash) though.  Ideally, the same bpf
->>> all-netns iter interface should work similarly for both udp and
->>> tcp case.  Thus, both should be considered and work at the same time.
->>>
->>> For udp, something more useful than plain udp_abort() could potentially
->>> be done.  eg. directly connect to another backend (by bpf kfunc?).
->>> There may be some details in socket locking...etc but should
->>> be doable and the bpf-iter program could be sleepable also.
->>
->> This won't be effective for connected udp though, will it? Interesting thought
->> around using bpf kfunchmm... why the bpf-prog doing the udp re-connect() won't be effective? 
-I suspect we are talking about different thing.
+Hi,
 
-Regardless, for tcp, I think the user space needs to handle the tcp 
-aborted-error by redoing the connect().  Thus, lets stay with 
-{tcp,udp}_abort() for now.  Try to expose {tcp,udp}_abort() as a kfunc 
-instead of a new bpf_helper.
+I see some verifier log examples with error like:
 
->>
->>> fwiw, we are iterating the tcp socket to retire some older
->>> bpf-tcp-cc (congestion control) on the long-lived connections
->>> by bpf_setsockopt(TCP_CONGESTION).
->>>
->>> Also, potentially, instead of iterating all,
->>> a more selective case can be done by
->>> bpf_prog_test_run()+bpf_sk_lookup_*()+udp_abort().
->>
->> Can you elaborate more on the more selective iterator approach?
-If the 4 tuples (src/dst ip/port) is known, bpf_sk_lookup_*() can lookup 
-a sk from the tcp_hashinfo or udp_table.  bpf_sk_lookup_*() also takes a 
-netns_id argument.  However, yeah, it will still go back to the need to 
-get all netns, so may not work well in the RFC case here.
+R4 invalid mem access 'inv'
 
->>
->> On a similar note, are there better ways as alternatives to the
->> sockets iterator approach.
->> Since we have BPF programs executed on cgroup BPF hooks (e.g.,
->> connect), we already know what client
->> sockets are connected to a backend. Can we somehow store these socket
->> pointers in a regular BPF map, and
->> when a backend is deleted, use a regular map iterator to invoke
->> sock_destroy() for these sockets? Does anyone have
->> experience using the "typed pointer support in BPF maps" APIs [0]?
-> 
-> I am not very familiar with how socket lifetime is managed, it may not
-> be possible in case lifetime is managed by RCU only,
-> or due to other limitations.
-> Martin will probably be able to comment more on that.
-sk is the usual refcnt+rcu_reader pattern.  afaik, the use case here is 
-the sk should be removed from the map when there is a tcp_close() or 
-udp_lib_close().  There is sock_map and sock_hash to store sk as the 
-map-value.  iirc the sk will be automatically removed from the map 
-during tcp_close() and udp_lib_close().  The sock_map and sock_hash have 
-bpf iterator also.  Meaning a bpf-iter-prog can iterate the sock_map and 
-sock_hash and then do abort on each sk, so it looks like most of the 
-pieces are in place.
+It looks like invalid mem access errors occur in two places below,
+does it make sense to make the error message slightly different so for
+new eBPF programmers like me to tell the first invalid mem access is
+maybe the memory is NULL? and the second invalid mem access is because
+the register type does not match any valid memory pointer? or this
+won't help identifying problems and don't bother ?
 
+ 4772         } else if (base_type(reg->type) == PTR_TO_MEM) {
+
+ 4773                 bool rdonly_mem = type_is_rdonly_mem(reg->type);
+
+ 4774
+
+ 4775                 if (type_may_be_null(reg->type)) {
+
+ 4776                         verbose(env, "R%d invalid mem access
+'%s'\n", regno,
+
+ 4777                                 reg_type_str(env, reg->type));
+
+ 4778                         return -EACCES;
+
+ 4779                 }
+
+and
+
+ 4924         } else {
+
+ 4925                 verbose(env, "R%d invalid mem access '%s'\n", regno,
+
+ 4926                         reg_type_str(env, reg->type));
+
+ 4927                 return -EACCES;
+
+ 4928         }
