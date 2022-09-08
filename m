@@ -2,65 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5172A5B1FFE
-	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 16:02:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92E445B205B
+	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 16:18:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232250AbiIHOB7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Sep 2022 10:01:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59932 "EHLO
+        id S229872AbiIHOSY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Sep 2022 10:18:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232543AbiIHOBl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Sep 2022 10:01:41 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEE14C7B8E;
-        Thu,  8 Sep 2022 07:01:25 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id e17so16919817edc.5;
-        Thu, 08 Sep 2022 07:01:25 -0700 (PDT)
+        with ESMTP id S229757AbiIHOSX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Sep 2022 10:18:23 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 472A9A7212
+        for <bpf@vger.kernel.org>; Thu,  8 Sep 2022 07:18:22 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id b16so24623245edd.4
+        for <bpf@vger.kernel.org>; Thu, 08 Sep 2022 07:18:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date;
-        bh=PIgZOnWLxGhDY2AlzhWEJFwfiUjj9jrE4apzm43swg0=;
-        b=i+weFMy2Xb7yh6NeXB9eFWcQEQ0DFDGzxR0kdM/z6DR/hhID0oezbtsUTFGFY5sb+/
-         Y3WujY2+e1IBI8Ql+ZUzCrqLIJ5EhckkHqPaP2blNsibW/1BB+o1cgFNjIi4TcrmvyFx
-         ww7s7v4Re24PyHYKZ8ygYACBeZwkggxIqvrIVMTR0jnG/z1dXYHHauCioylvU2D1T9Fv
-         sW+VmE93lLbRf/QE3GN+363muLAOwdLPdLR1PEZIwUe+tlNEjZGa5Vk2HrbSXicw+B0O
-         7ndzVAA72asvPL9UwqiXQ3GORJn0aeLWfFpo8SI6HAuqKUT1vqbeWfFxnMiE8neVMa8/
-         OiIg==
+        bh=XvtRRIGxtUVWplgca4/AxYWwz+j8cS7opUpKb34QRuM=;
+        b=fhwvnQjR3Gd/AIJjqK4OWCyXHB2ogIT5DxZy/w/hrUVYoAQW1J4mqs8gdmkoDGA43H
+         xSH/q3kJvTVYH0nYrEiFr9cGL5d8XoDXKd+zvrfrq6i89pjO18Nv4etkx2Awidf8lrhw
+         GpDdtlJIryseC0nDctSEcMBqQ/0aRDUOge2b2UnmC+YJ9i6GQ3+Qo6G1JYf7YxIsG8g+
+         uKb1fbDnw/1Zt684hqHXZboJw2rU3CtolZf/DlpuoyyDKnCTG/d5oGdF8MKEzGoq7Q+s
+         AstV25mItDQVeIfhGom0FcxhpDfyUsK4mTpvMIIcXnA9WAxndUrJZ/aeeL8NiD8neGGg
+         bW2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=PIgZOnWLxGhDY2AlzhWEJFwfiUjj9jrE4apzm43swg0=;
-        b=eMgeuNuXWNwf7mwpj/ZGukXsjGBw8UFjhNLNY2StqKz9cURvfYOJ+cRfL6zigSzrFP
-         I9UWXZlZbC2y0bhRHAOdxMDx1J49PasTsRn9Xw41VMbyTduwwjAhh0mQYuTBL5/Ys44S
-         7KdRBSzJHrHRfxa7JCW/IlPHy6Euqqw61cL+LgKFfwNBrq3XXUNuSc8bJLIDQdYwrdRF
-         urFEUSqcoUxq60HAETMK48Bl/VS3Oc5WCur6bxooIOfPzWWMh8x4TeCdpmjh/djTv4Sx
-         WUuSRsHLh87cLWRUpR5VZNVHjeSy4jWLfqobxKs27Vn8zRT+9/ZW7doLj/HCM9L9mzAt
-         W2gw==
-X-Gm-Message-State: ACgBeo0U/NsAVU/5yXmq0eTIpnoOiRRdYTtPMqBJgp/kEz1wT+1T/UXv
-        xpLM0qEVbM/9qfDmmQHbSWcY0JqoDscwipq9Njv/2zkfzOA=
-X-Google-Smtp-Source: AA6agR6uZ/xEU5akWWuzv8LR9vlPZw31oEl7JhOh9rc4AJzhQnkhbATyoJ8zzJ6dLedO3pnL14Bewr5DhQCs4lpD6HY=
+        bh=XvtRRIGxtUVWplgca4/AxYWwz+j8cS7opUpKb34QRuM=;
+        b=02fzfIEwQToLeVX1nNkgeTyKR4m3eQBOFkZ+fZl0WdoPaaMMumsHR2B2qlDJFbvm+m
+         cbC/NpxRLsCkgshS6nC2cRYuzFA3TZUmDWpcl568bTVtL+hOAbPtE9qVPdRQSCVgmOzu
+         DHliTnFUrdwhwKvFtmSlNdKyJzPUNi8IoMLa9i5TWqHIel3zsOFEolRcrOnWuVDyA7lL
+         eMxQXVKvA6v2qjymDXrP/G+VBm6Y2yEFXyyvzRe5P3MFRrUGPMzou6Rc/tZvlgN4uFUS
+         3pc0FzUrfXyFUSTZVWl0QUO752r+/Fm/UeCjgyblZtvRbCH3bBnCy6K2Hq2fuQCEyvGm
+         HTfw==
+X-Gm-Message-State: ACgBeo0fkLnVjNcY2QQHy/WUCL5SvF9nH+26XlMW3IlTZGK2fkGI79gu
+        WUfxh4H07z7pnU431Ql4pOpLZoDS7VXhMWeS9rE=
+X-Google-Smtp-Source: AA6agR7ksRcvKuHgZLdRNcyTaUmPWnr1W1pHvjhZSjFIlfIUef5Sdrpl/6TB0xdAxPXB/V8ViBlJkD6+4HFnrYUkYyY=
 X-Received: by 2002:a05:6402:378f:b0:43a:d3f5:79f2 with SMTP id
- et15-20020a056402378f00b0043ad3f579f2mr7409777edb.338.1662645684183; Thu, 08
- Sep 2022 07:01:24 -0700 (PDT)
+ et15-20020a056402378f00b0043ad3f579f2mr7482040edb.338.1662646700661; Thu, 08
+ Sep 2022 07:18:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <166260087224.759381.4170102827490658262.stgit@devnote2>
- <166260088298.759381.11727280480035568118.stgit@devnote2> <20220908050855.w77mimzznrlp6pwe@treble>
- <Yxm2QU1NJIkIyrrU@hirez.programming.kicks-ass.net> <Yxm+QkFPOhrVSH6q@hirez.programming.kicks-ass.net>
-In-Reply-To: <Yxm+QkFPOhrVSH6q@hirez.programming.kicks-ass.net>
+References: <20220904204145.3089-1-memxor@gmail.com> <20220904204145.3089-17-memxor@gmail.com>
+ <20220908003429.wsucvsdcxnkipcja@macbook-pro-4.dhcp.thefacebook.com>
+ <CAP01T77-ygt+MvvwzRwo+3kDrk_8sCv-ASGT8qL2PvPjL_11jw@mail.gmail.com>
+ <20220908033741.l6zhopfhnfrpi72y@macbook-pro-4.dhcp.thefacebook.com> <CAP01T76YqSKUMFCVz-WqQQL29SFFn4DG6wqwm0HVpN2-DqJuFA@mail.gmail.com>
+In-Reply-To: <CAP01T76YqSKUMFCVz-WqQQL29SFFn4DG6wqwm0HVpN2-DqJuFA@mail.gmail.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 8 Sep 2022 07:01:12 -0700
-Message-ID: <CAADnVQKWTaXFqYri9VG3ux-CJEBsjAP5PetH6Q1ccS8HoeP28g@mail.gmail.com>
-Subject: Re: [PATCH] x86,retpoline: Be sure to emit INT3 after JMP *%\reg
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Josh Poimboeuf <jpoimboe@kernel.org>,
-        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Suleiman Souhlal <suleiman@google.com>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Borislav Petkov <bp@suse.de>, X86 ML <x86@kernel.org>
+Date:   Thu, 8 Sep 2022 07:18:09 -0700
+Message-ID: <CAADnVQ+hgprNMCSk0bjZnRveEzv=t8zoZXH44Gy8tVPJKoPt_A@mail.gmail.com>
+Subject: Re: [PATCH RFC bpf-next v1 16/32] bpf: Introduce BPF memory object model
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Delyan Kratunov <delyank@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -72,57 +71,76 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 8, 2022 at 3:07 AM Peter Zijlstra <peterz@infradead.org> wrote:
+On Thu, Sep 8, 2022 at 4:50 AM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
 >
-> On Thu, Sep 08, 2022 at 11:30:41AM +0200, Peter Zijlstra wrote:
-> > Let me go do a patch.
+> I slept over this. I think I can get behind this idea of implicit
+> ctor/dtor. We might have open coded construction/destruction later if
+> we want.
 >
-> ---
-> Subject: x86,retpoline: Be sure to emit INT3 after JMP *%\reg
->
-> Both AMD and Intel recommend using INT3 after an indirect JMP. Make sure
-> to emit one when rewriting the retpoline JMP irrespective of compiler
-> SLS options or even CONFIG_SLS.
->
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  arch/x86/kernel/alternative.c | 9 +++++++++
->  arch/x86/net/bpf_jit_comp.c   | 3 ++-
->  2 files changed, 11 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
-> index 62f6b8b7c4a5..68d84cf8e001 100644
-> --- a/arch/x86/kernel/alternative.c
-> +++ b/arch/x86/kernel/alternative.c
-> @@ -453,6 +453,15 @@ static int patch_retpoline(void *addr, struct insn *insn, u8 *bytes)
->                 return ret;
->         i += ret;
->
-> +       /*
-> +        * The compiler is supposed to EMIT an INT3 after every unconditional
-> +        * JMP instruction due to AMD BTC. However, if the compiler is too old
-> +        * or SLS isn't enabled, we still need an INT3 after indirect JMPs
-> +        * even on Intel.
-> +        */
-> +       if (op == JMP32_INSN_OPCODE && i < insn->length)
-> +               bytes[i++] = INT3_INSN_OPCODE;
-> +
->         for (; i < insn->length;)
->                 bytes[i++] = BYTES_NOP1;
->
-> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> index c1f6c1c51d99..37f821dee68f 100644
-> --- a/arch/x86/net/bpf_jit_comp.c
-> +++ b/arch/x86/net/bpf_jit_comp.c
-> @@ -419,7 +419,8 @@ static void emit_indirect_jump(u8 **pprog, int reg, u8 *ip)
->                 OPTIMIZER_HIDE_VAR(reg);
->                 emit_jump(&prog, &__x86_indirect_thunk_array[reg], ip);
->         } else {
-> -               EMIT2(0xFF, 0xE0 + reg);
-> +               EMIT2(0xFF, 0xE0 + reg);        /* jmp *%\reg */
-> +               EMIT1(0xCC);                    /* int3 */
+> I am however thinking of naming these helpers:
+> bpf_kptr_new
+> bpf_kptr_delete
+> to make it clear it does a little more than just allocating the type.
+> The open coded cases can later derive their allocation from the more
+> bare bones bpf_kptr_alloc instead in the future.
 
-Hmm. Why is this unconditional?
-Shouldn't it be guarded with CONFIG_xx or cpu_feature_enabled ?
-People that don't care about hw speculation vulnerabilities
-shouldn't pay the price of increased code size.
+New names make complete sense. Good idea.
+
+> The main reason to have open coded-ness was being able to 'manage'
+> resources once visibility reduces to current CPU (bpf_refcount_put,
+> single ownership after xchg, etc.). Even with RCU, we won't allow
+> touching the BPF special fields without refcount. bpf_spin_lock is
+> different, as it protects more than just bpf special fields.
+>
+> But one can still splice or kptr_xchg before passing to bpf_kptr_free
+> to do that. bpf_kptr_free is basically cleaning up whatever is left by
+> then, forcefully. In the future, we might even be able to do elision
+> of implicit dtors based on the seen data flow (splicing in single
+> ownership implies list is empty, any other op will undo that, etc.) if
+> there are big structs with too many fields. Can also support that in
+> open coded cases.
+
+Right.
+
+>
+> What I want to think about more is whether we should still force
+> calling bpf_refcount_set vs always setting it to 1.
+>
+> I know we don't agree about whether list_add in shared mode should
+> take ref vs transfer ref. I'm leaning towards transfer since that will
+> be most intuitive. It then works the same way in both cases, single
+> ownership only transfers the sole reference you have, so you lose
+> access, but in shared you may have more than one. If you have just one
+> you will still lose access.
+>
+> It will be odd for list_add to consume it in one case and not the
+> other. People should already be fully conscious of how they are
+> managing the lifetime of their object.
+>
+> It then seems better to require users to set the initial refcount
+> themselves. When doing the initial linking it can be very cheap.
+> Later get/put/inc are always available.
+>
+> But forcing it to be called is going to be much simpler than this patch.
+
+I'm not convinced yet :)
+Pls hold on implementing one way or another.
+Let's land the single ownership case for locks, lists,
+rbtrees, allocators. That's plenty of patches.
+Then we can start a deeper discussion into the shared case.
+Whether it will be different in terms of 'lose access after list_add'
+is not critical to decide now. It can change in the future too.
+
+The other reason to do implicit inits and ref count sets is to
+avoid fighting llvm.
+obj = bpf_kptr_new();
+obj->var1 = 1;
+some_func(&obj->var2);
+In many cases the compiler is allowed to sink stores.
+If there are two calls that "init" two different fields
+the compiler is allowed to change the order as well
+even if it doesn't see the body of the function and the function is
+marked as __pure. Technically initializers as pure functions.
+The verifier and llvm already "fight" a lot.
+We gotta be very careful in the verifier and not assume
+that the code stays as written in C.
