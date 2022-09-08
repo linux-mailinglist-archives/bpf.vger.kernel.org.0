@@ -2,158 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6E445B25FB
-	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 20:40:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7CEC5B2606
+	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 20:43:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229822AbiIHSkN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Sep 2022 14:40:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41300 "EHLO
+        id S231574AbiIHSnp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Sep 2022 14:43:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229898AbiIHSkJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Sep 2022 14:40:09 -0400
-Received: from mail-oa1-x2e.google.com (mail-oa1-x2e.google.com [IPv6:2001:4860:4864:20::2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 432407E314
-        for <bpf@vger.kernel.org>; Thu,  8 Sep 2022 11:40:08 -0700 (PDT)
-Received: by mail-oa1-x2e.google.com with SMTP id 586e51a60fabf-1280590722dso13278131fac.1
-        for <bpf@vger.kernel.org>; Thu, 08 Sep 2022 11:40:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date;
-        bh=iTGfA/iMqnfd3k85Y1NHL8lddPFv4K9B34/OL+ENFuk=;
-        b=SkxBMfsp5wAtlCovtLuMr1AVxuUWUg3DtsSV7o3P6CNBUxXKWEuOXhu/iiKX0a0+6r
-         a/QXodyHXSrKOB6vrEoF+vQ3Aa/llnFfhwvEq1WcJMUvzPks1hpr/fFmIB+4uyAxVYU3
-         PLJikHFvceA7GyfAo7BBxifNw4XpGPtpDhFO5UcL8da2Fl5M0Y7csShGWXhR0HdusvmU
-         7Y668icsVolR0pxTIbA9WZpnX41q7XJCDYnQn7ody/gdcTon8O2SdSMTq+Fvgso/Ptst
-         x13CDs5c7dIbxxoSlb3ovPzxzdQOCZXrzsM+XGfel43W2bUDFMHw2dbaVOXxpFSSIvMy
-         UMLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date;
-        bh=iTGfA/iMqnfd3k85Y1NHL8lddPFv4K9B34/OL+ENFuk=;
-        b=nZvKjzjwAJXkoDGxYa7JVzr7tGGaC82s8pgUHS2nYXRWDlFJMHzgXDyaOs2dcFfXCV
-         tgVV7G6bMJgtdu/yWqKptQkhXBr/yA7acmd+D6+KNvwKli/sc5ugHdnnlq35ID0lio01
-         xTpGWSJomlDR9fl4P9ryGyUD/nCiShBQDarpPTpAfgIWjIPRHH52p2tlCAFeNSJMz2Xf
-         eHaXQ5dSzw6Vlllf3c0etZkdVlBx943QUzw71V4FvGJFrFeb4y5uWLnUk45c6a5VHvQL
-         nKX9YnT66suAl36kmhrNiCpKD4r5fw7RQxhujOZRhGFM+WEmyS2hANH6bkBQfD+ZtvKl
-         ovAw==
-X-Gm-Message-State: ACgBeo1TAdDpy3fGIEcNjTQq97ywMGunX6lHwoDu+EdQPSsDhxUfS+Sy
-        gmRNLKGvyYKu7rx06K6v7PUYZRDgzME8Mw==
-X-Google-Smtp-Source: AA6agR6G6H4kYaYfOpI1HoI4NW2A/GwqMahoIFvCjNz6tfgGyRPyttt3tq8Q6ZLdDFSB5OKkkLJfGg==
-X-Received: by 2002:a05:6808:16aa:b0:34d:8758:34ef with SMTP id bb42-20020a05680816aa00b0034d875834efmr1016318oib.176.1662662407114;
-        Thu, 08 Sep 2022 11:40:07 -0700 (PDT)
-Received: from localhost.localdomain (r74-192-156-22.gtwncmta01.grtntx.tl.dh.suddenlink.net. [74.192.156.22])
-        by smtp.googlemail.com with ESMTPSA id u18-20020a056870441200b00127a6357bd5sm5029946oah.49.2022.09.08.11.40.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Sep 2022 11:40:06 -0700 (PDT)
-From:   Marcelo Juchem <juchem@gmail.com>
-X-Google-Original-From: Marcelo Juchem <mj@hunetr.com>
-To:     bpf@vger.kernel.org
-Cc:     Marcelo Juchem <mj@hunetr.com>
-Subject: [PATCH] bpftool: output map/prog indices on `gen skeleton`
-Date:   Thu,  8 Sep 2022 13:39:52 -0500
-Message-Id: <20220908183952.3438815-1-mj@hunetr.com>
-X-Mailer: git-send-email 2.37.2
+        with ESMTP id S231342AbiIHSno (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Sep 2022 14:43:44 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A74D9B2DAF;
+        Thu,  8 Sep 2022 11:43:43 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 52DADB82220;
+        Thu,  8 Sep 2022 18:43:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5F2CC433D6;
+        Thu,  8 Sep 2022 18:43:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1662662621;
+        bh=9o8UhnmvSSPQAX15Og0MpXzXj8mBI1uz6bugcbcXZ3w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Vh5ViOxtHE8L/b75nj2myzQzSBr6t6JiYtj/GTWhSx5rpQk3/S6Hh7aGOQJm5K2+9
+         25gO3JcWwgcVzFvQL/V6D8eTFRmWZ0CpkLuCB5hctH2Z5RNep9zBvHSj1sP2C/VDYc
+         iPTzl2un/oFhShla4hnB59+v+rBPKaptwLGjRh5diJ2F1L8RfQpW9o/A1trGPqm/PP
+         cPVDgeWip7GUbwUl3CYfJ3lXqWzVcP3y2ToApjtiGDlpj3gq0TQ2EGN3DX19sz/owU
+         mmCLYLgJNSfdO8GVCLUEFOr+IeS8YxFtR354baTezosAPq4pkn62UBma+B2qYKO3LO
+         gxHeIBeVVv0qA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id C0BBF404A1; Thu,  8 Sep 2022 15:43:38 -0300 (-03)
+Date:   Thu, 8 Sep 2022 15:43:38 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        linux-perf-users@vger.kernel.org, Song Liu <songliubraving@fb.com>,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH 0/4] perf lock contention: Improve call stack handling
+ (v1)
+Message-ID: <Yxo32kpxsl9Mr7Mt@kernel.org>
+References: <20220908063754.1369709-1-namhyung@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220908063754.1369709-1-namhyung@kernel.org>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The skeleton generated by `bpftool` makes it easy to attach and load bpf
-objects as a whole. Some BPF programs are not directly portable across kernel
-versions, though, and require some cherry-picking on which programs to
-load/attach. The skeleton makes this cherry-picking possible, but not entirely
-friendly in some cases.
+Em Wed, Sep 07, 2022 at 11:37:50PM -0700, Namhyung Kim escreveu:
+> Hello,
+> 
+> I found that call stack from the lock tracepoint (using bpf_get_stackid)
+> can be different on each configuration.  For example it's very different
+> when I run it on a VM than on a real machine.
+> 
+> The perf lock contention relies on the stack trace to get the lock
+> caller names, this kind of difference can be annoying.  Ideally we could
+> skip stack trace entries for internal BPF or lock functions and get the
+> correct caller, but it's not the case as of today.  Currently it's hard
+> coded to control the behavior of stack traces for the lock contention
+> tracepoints.
+> 
+> To handle those differences, add two new options to control the number of
+> stack entries and how many it skips.  The default value worked well on
+> my VM setup, but I had to use --stack-skip=5 on real machines.
+> 
+> You can get it from 'perf/lock-stack-v1' branch in
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
 
-For example, an useful feature is `attach_with_fallback` so that one
-program can be attempted, and fallback programs tried subsequently until
-one works (think `tcp_recvmsg` interface changing on kernel 5.19).
+This clashed with a patch you Acked earlier, so lets see if someone has
+extra review comments and a v2 become needed for other reason, when you
+can refresh it, ok?
 
-Being able to represent a set of probes programatically in a way that is both
-descriptive, compile-time validated, runtime efficient and custom library
-friendly is quite desirable for application developers. A very simple way to
-represent a set of probes is with an array of indices.
+- Arnaldo
+ 
+> Thanks,
+> Namhyung
+> 
+> 
+> Namhyung Kim (4):
+>   perf lock contention: Factor out get_symbol_name_offset()
+>   perf lock contention: Show full callstack with -v option
+>   perf lock contention: Allow to change stack depth and skip
+>   perf lock contention: Skip stack trace from BPF
+> 
+>  tools/perf/Documentation/perf-lock.txt        |  6 ++
+>  tools/perf/builtin-lock.c                     | 89 ++++++++++++++-----
+>  tools/perf/util/bpf_lock_contention.c         | 21 +++--
+>  .../perf/util/bpf_skel/lock_contention.bpf.c  |  3 +-
+>  tools/perf/util/lock-contention.h             |  3 +
+>  5 files changed, 96 insertions(+), 26 deletions(-)
+> 
+> 
+> base-commit: 6c3bd8d3e01d9014312caa52e4ef1c29d5249648
+> -- 
+> 2.37.2.789.g6183377224-goog
 
-This patch creates a couple of enums under the `__cplusplus` section to
-represent the program and map indices inside the skeleton object, that can be
-used to refer to the proper program/map object.
-
-This is the code generated for the `__cplusplus` section of `profiler.skel.h`:
-```
-  enum map_idxs: size_t {
-    events = 0,
-    fentry_readings = 1,
-    accum_readings = 2,
-    counts = 3,
-    rodata = 4
-  };
-  enum prog_idxs: size_t {
-    fentry_XXX = 0,
-    fexit_XXX = 1
-  };
-  static inline struct profiler_bpf *open(const struct bpf_object_open_opts *opts = nullptr);
-  static inline struct profiler_bpf *open_and_load();
-  static inline int load(struct profiler_bpf *skel);
-  static inline int attach(struct profiler_bpf *skel);
-  static inline void detach(struct profiler_bpf *skel);
-  static inline void destroy(struct profiler_bpf *skel);
-  static inline const void *elf_bytes(size_t *sz);
-```
----
- src/gen.c | 32 ++++++++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
-
-diff --git a/src/gen.c b/src/gen.c
-index 7070dcf..7e28dc7 100644
---- a/src/gen.c
-+++ b/src/gen.c
-@@ -1086,6 +1086,38 @@ static int do_skeleton(int argc, char **argv)
- 		\n\
- 									    \n\
- 		#ifdef __cplusplus					    \n\
-+		"
-+	);
-+
-+	{
-+		size_t i = 0;
-+		printf("\tenum map_index: size_t {");
-+		bpf_object__for_each_map(map, obj) {
-+			if (!get_map_ident(map, ident, sizeof(ident)))
-+				continue;
-+			if (i) {
-+				printf(",");
-+			}
-+			printf("\n\t\t%s = %lu", ident, i);
-+			++i;
-+		}
-+		printf("\n\t};\n");
-+	}
-+	{
-+		size_t i = 0;
-+		printf("\tenum prog_index: size_t {");
-+		bpf_object__for_each_program(prog, obj) {
-+			if (i) {
-+				printf(",");
-+			}
-+			printf("\n\t\t%s = %lu", bpf_program__name(prog), i);
-+			++i;
-+		}
-+		printf("\n\t};\n");
-+	}
-+
-+	codegen("\
-+		\n\
- 			static inline struct %1$s *open(const struct bpf_object_open_opts *opts = nullptr);\n\
- 			static inline struct %1$s *open_and_load();	    \n\
- 			static inline int load(struct %1$s *skel);	    \n\
 -- 
-2.37.2
 
+- Arnaldo
