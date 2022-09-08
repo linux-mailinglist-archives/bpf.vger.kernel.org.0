@@ -2,56 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83E425B1295
-	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 04:41:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB89B5B1299
+	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 04:43:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229661AbiIHClI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Sep 2022 22:41:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45524 "EHLO
+        id S229853AbiIHCnr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Sep 2022 22:43:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbiIHClH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Sep 2022 22:41:07 -0400
-Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 314F8B56EA
-        for <bpf@vger.kernel.org>; Wed,  7 Sep 2022 19:41:07 -0700 (PDT)
-Received: by mail-vs1-xe2d.google.com with SMTP id k2so16864251vsk.8
-        for <bpf@vger.kernel.org>; Wed, 07 Sep 2022 19:41:07 -0700 (PDT)
+        with ESMTP id S229611AbiIHCnr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Sep 2022 22:43:47 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DA855F9F;
+        Wed,  7 Sep 2022 19:43:46 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id fy31so34844471ejc.6;
+        Wed, 07 Sep 2022 19:43:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
-         :from:to:cc:subject:date;
-        bh=CGV8Zo5Ie3Dll/fjhNV+4sDflQjW6O8bXhbwbuPb+Eg=;
-        b=RG1uWvXc/RoBP1W0rOMNX4MCxTLCCdN1S2YuRH8GGmBiE6kr6jITBwhaDonbodrqoG
-         rKbPN//0+pYQK1BKnwMhxQR73IlpO+o9lCSx19FLR676+RyzzhVcCLEOferneOZtWljq
-         moMyK4sZgAE1WpA9/y1piKcGBudCWjuoqPLPo108WdrvO7VEG14BVMTU/M68gTPEcIvA
-         /e5rDGMZCVcwioxWci8RgR7hgsgtPoy88ALHcTUdN53K+0Tpuv3xl+WJN0BQHKX2PKot
-         HgTNlNFOvhYvhNxrDWiCBsbCjtvFlsjSJ5Ip47HDgclYrBf/Wkux4Smr8CxxGLB/lX6P
-         t6hA==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=1Kp8lVSbVqh0xdCaSGzBnGS0KimrRJEGXexqvO+A61k=;
+        b=VU3x/RATySGCqkn35FuoVNPIlVepIfpPqgHywrVV6qyGcNNaafm8aZ8BLY70OtBm8O
+         7B2qayTgwJ3sgII+LEWkS6NTw3tVAR1E6MLM0fQeIcQhqPItOa+d/+7V+dCP/Mdq8RgN
+         02dVJ/2tCG0NmAFC75e/nIAYNd+tVV8TAOTDpnLEmsm8EVE8OQebqMYLwlUBhIyix0vj
+         awJTD1sijvEhwy/eBYewmdFWk4Rhlo/e0CMllu3BEgKQFjY/A6XNhpG6SyJmXW9tgMt7
+         GXQZAQdAwX/2KlD+gHx4uBCwhxHE0Zp1cW4rE+kqQkCLH54uuYRLqZbMrlkVhwbnKKPF
+         AINg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
-         :x-gm-message-state:from:to:cc:subject:date;
-        bh=CGV8Zo5Ie3Dll/fjhNV+4sDflQjW6O8bXhbwbuPb+Eg=;
-        b=jIAJB3BtXp07qHKAFpkPcPri7uqHveJCRzSOlUiWCVK+qx+TJJ5X8DudBFepjuV1X3
-         +kRJiBtiUw15Z8C3o1T8/Mg2i2EAE+jVYN/FoeNP9HjItzCfvYpbBE7dTael7wGZQd+O
-         aLdMOrkx0FLcUjePcutx2Afu1xRGYv65uPskJKFdyE6UWqiEkso6izxZvs5uWgnHHY/c
-         J8LjLwCI/xcT/mrgOMmWkD66FLXIiCAXgIx2fSFqeHoe+eI6GJolwj6snUZrcZuYTJ1c
-         gWqRxT5UI/KDpSe3sAgorCiQ5y9waTOiInwLRZl+pbLjIx2obvtpqas33HdwGQjCXfJf
-         wZmw==
-X-Gm-Message-State: ACgBeo1DR8ewIRKIdd/2LbgnEfE/1TXsb+QcMM2EoEB1Mi/oQ3WHZc5J
-        u1RPzDVecvQEUICcRqn5nPFnkKjrBAP2rmn+FnzL2XTWWAo=
-X-Google-Smtp-Source: AA6agR6PDm7OPU3lMbWc6uDLTFTad7RPT9xLWPbvKvw+pdCSoLhzmlbqHsgsfwLaQV+TKv+tJRrgcLpSbD/MjQIDVR8=
-X-Received: by 2002:a05:6102:4413:b0:394:7850:c78f with SMTP id
- df19-20020a056102441300b003947850c78fmr2150875vsb.65.1662604866183; Wed, 07
- Sep 2022 19:41:06 -0700 (PDT)
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=1Kp8lVSbVqh0xdCaSGzBnGS0KimrRJEGXexqvO+A61k=;
+        b=LzGw39JyjJWzI5Qk/FKcgK8nfoAAe9N1aDBJNy+BLfiBzyZGCOg5oqgL+SPEgF6UIf
+         IrilAnBnqx5w1KxUMjgZ4Fn/tnt4qgO1qiDNWwPa9tGnSOWm/sLs7eEBayDmrvSp/qvz
+         DV4cFwtF5ik5JseZO7mdchJeYCHIfENv8b2u9i407JMF2hqo/ey88SsSHvvHzry2kEZa
+         +nEt2bT1b6reEthkraTv0CAcVuW1ZifLG0bf3GCtUI5nqM8XpQgCLYBJUoVqhK7dottP
+         /jdlsP14sPDyD/nU5ALVdaS/RI0wHJjmv7IjCeNPvs0mIuS6gdrpxZClp2xozyn1GG7p
+         O0Sg==
+X-Gm-Message-State: ACgBeo3ydJDXsuYbwB+bcVAGRuNrxSEZne1wErEpXuMpaXF0UG27AJ4i
+        wHQO+QEG+cvvxYM7hIC0fUl+F4XhpK68uRUlt6s=
+X-Google-Smtp-Source: AA6agR728kGj9mp65ybKd5ugwGh1WxmY+DSTIg1OQyFpIInFinhIgvFQ72NHe18Wr5xU5wWoSb94EcYU8qJp+G1h7Y0=
+X-Received: by 2002:a17:906:ef90:b0:730:9cd8:56d7 with SMTP id
+ ze16-20020a170906ef9000b007309cd856d7mr4214987ejb.94.1662605024595; Wed, 07
+ Sep 2022 19:43:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAK3+h2zZQ4zEB55Bn565Xf0okf+Jotmo6qHYmzpoJPBcFWPP0A@mail.gmail.com>
-In-Reply-To: <CAK3+h2zZQ4zEB55Bn565Xf0okf+Jotmo6qHYmzpoJPBcFWPP0A@mail.gmail.com>
-From:   Vincent Li <vincent.mc.li@gmail.com>
-Date:   Wed, 7 Sep 2022 19:40:55 -0700
-Message-ID: <CAK3+h2y4isKQQWFY9dnEq86a4BRG1zr5nEveyKqFyVvYaRrPpw@mail.gmail.com>
-Subject: Re: differentiate the verifier invalid mem access message error?
-To:     bpf <bpf@vger.kernel.org>
+References: <20220902023003.47124-1-laoar.shao@gmail.com> <Yxi8I4fXXSCi6z9T@slm.duckdns.org>
+ <YxkVq4S1Eoa4edjZ@P9FQF9L96D.corp.robot.car> <CALOAHbAp=g20rL0taUpQmTwymanArhO-u69Xw42s5ap39Esn=A@mail.gmail.com>
+In-Reply-To: <CALOAHbAp=g20rL0taUpQmTwymanArhO-u69Xw42s5ap39Esn=A@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 7 Sep 2022 19:43:33 -0700
+Message-ID: <CAADnVQJHtY0m5TnFxnn8w3xBUfAGNzbf1HmS3ChqcLJadEYJFg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 00/13] bpf: Introduce selectable memcg for bpf map
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     Roman Gushchin <roman.gushchin@linux.dev>,
+        Tejun Heo <tj@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Cgroups <cgroups@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -63,49 +82,64 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 7, 2022 at 7:35 PM Vincent Li <vincent.mc.li@gmail.com> wrote:
+On Wed, Sep 7, 2022 at 7:37 PM Yafang Shao <laoar.shao@gmail.com> wrote:
 >
-> Hi,
+> On Thu, Sep 8, 2022 at 6:29 AM Roman Gushchin <roman.gushchin@linux.dev> wrote:
+> >
+> > On Wed, Sep 07, 2022 at 05:43:31AM -1000, Tejun Heo wrote:
+> > > Hello,
+> > >
+> > > On Fri, Sep 02, 2022 at 02:29:50AM +0000, Yafang Shao wrote:
+> > > ...
+> > > > This patchset tries to resolve the above two issues by introducing a
+> > > > selectable memcg to limit the bpf memory. Currently we only allow to
+> > > > select its ancestor to avoid breaking the memcg hierarchy further.
+> > > > Possible use cases of the selectable memcg as follows,
+> > >
+> > > As discussed in the following thread, there are clear downsides to an
+> > > interface which requires the users to specify the cgroups directly.
+> > >
+> > >  https://lkml.kernel.org/r/YwNold0GMOappUxc@slm.duckdns.org
+> > >
+> > > So, I don't really think this is an interface we wanna go for. I was hoping
+> > > to hear more from memcg folks in the above thread. Maybe ping them in that
+> > > thread and continue there?
+> >
 >
-> I see some verifier log examples with error like:
+> Hi Roman,
 >
-> R4 invalid mem access 'inv'
+> > As I said previously, I don't like it, because it's an attempt to solve a non
+> > bpf-specific problem in a bpf-specific way.
+> >
 >
-> It looks like invalid mem access errors occur in two places below,
-> does it make sense to make the error message slightly different so for
-> new eBPF programmers like me to tell the first invalid mem access is
-> maybe the memory is NULL? and the second invalid mem access is because
-> the register type does not match any valid memory pointer? or this
-> won't help identifying problems and don't bother ?
+> Why do you still insist that bpf_map->memcg is not a bpf-specific
+> issue after so many discussions?
+> Do you charge the bpf-map's memory the same way as you charge the page
+> caches or slabs ?
+> No, you don't. You charge it in a bpf-specific way.
 >
->  4772         } else if (base_type(reg->type) == PTR_TO_MEM) {
+> > Yes, memory cgroups are not great for accounting of shared resources, it's well
+> > known. This patchset looks like an attempt to "fix" it specifically for bpf maps
+> > in a particular cgroup setup. Honestly, I don't think it's worth the added
+> > complexity. Especially because a similar behaviour can be achieved simple
+> > by placing the task which creates the map into the desired cgroup.
 >
->  4773                 bool rdonly_mem = type_is_rdonly_mem(reg->type);
+> Are you serious ?
+> Have you ever read the cgroup doc? Which clearly describe the "No
+> Internal Process Constraint".[1]
+> Obviously you can't place the task in the desired cgroup, i.e. the parent memcg.
 >
->  4774
+> [1] https://www.kernel.org/doc/Documentation/cgroup-v2.txt
 >
->  4775                 if (type_may_be_null(reg->type)) {
+> > Beatiful? Not. Neither is the proposed solution.
+> >
 >
->  4776                         verbose(env, "R%d invalid mem access
-> '%s'\n", regno,
->
->  4777                                 reg_type_str(env, reg->type));
->
->  4778                         return -EACCES;
->
->  4779                 }
->
-> and
->
->  4924         } else {
->
->  4925                 verbose(env, "R%d invalid mem access '%s'\n", regno,
->
->  4926                         reg_type_str(env, reg->type));
->
->  4927                 return -EACCES;
->
->  4928         }
+> Is it really hard to admit a fault?
 
-sorry I should read the code more carefully, I guess the "inv" already
-says it is invalid memory access, not NULL, right?
+Yafang,
+
+This attitude won't get you anywhere.
+
+Selecting memcg by fd is no go.
+You need to work with the community to figure out a solution
+acceptable to maintainers of relevant subsystems.
