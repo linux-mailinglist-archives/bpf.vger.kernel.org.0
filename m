@@ -2,157 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E0355B23FD
-	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 18:54:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DB985B249F
+	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 19:30:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231700AbiIHQyF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Sep 2022 12:54:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44550 "EHLO
+        id S231685AbiIHRaA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Sep 2022 13:30:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232051AbiIHQxj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Sep 2022 12:53:39 -0400
-Received: from mailbox.box.xen0n.name (mail.xen0n.name [115.28.160.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63068A50E2
-        for <bpf@vger.kernel.org>; Thu,  8 Sep 2022 09:51:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xen0n.name; s=mail;
-        t=1662655872; bh=6rntCE9dXBNSFS5I+DqUbsib3Q8FiCqlcnV09DyYO8k=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=QqmkQIoKV27YBXmyYvx1s7Qwjy2qL/PRqcK3qzYXqVKJpGH7ujt17XTyNl5INihOv
-         XBrtBEGTa9cySF8l72gVttG+EVlX52dBiLRHr79JGLveT0RPlqCXSBjnYQNgQuweJf
-         iDvnNwstIkzN04o8H+UIQwcgFQBpoNiNIL2hTSvk=
-Received: from [192.168.9.172] (unknown [101.88.26.24])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id BAE55600BD;
-        Fri,  9 Sep 2022 00:51:11 +0800 (CST)
-Message-ID: <cfc4c2e5-34af-b968-9c44-28e71731bb75@xen0n.name>
-Date:   Fri, 9 Sep 2022 00:51:11 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:106.0) Gecko/20100101
- Thunderbird/106.0a1
-Subject: Re: [PATCH bpf-next v3 3/4] LoongArch: Add BPF JIT support
-Content-Language: en-US
-To:     Huacai Chen <chenhuacai@kernel.org>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        WANG Xuerui <git@xen0n.name>, Xi Ruoyao <xry111@xry111.site>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S230129AbiIHR3k (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Sep 2022 13:29:40 -0400
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0730AFE4B1
+        for <bpf@vger.kernel.org>; Thu,  8 Sep 2022 10:28:09 -0700 (PDT)
+Received: by mail-pj1-x1049.google.com with SMTP id r13-20020a17090a454d00b001f04dfc6195so1554776pjm.2
+        for <bpf@vger.kernel.org>; Thu, 08 Sep 2022 10:28:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date;
+        bh=fkUCN+klEeB0C8O4KTf6XwwX3lmq4AKlAYjSP+QKrWg=;
+        b=TQP0e+gNeyZeZF4LhUOvDvMP0mvDKb9PD3gHlpQJCFU20Sg0jo4GfxAJgyHfmTQOhN
+         5ujRYjXGsBEPsUyljReZRX6cwVwI+wahCmuC1X9Q7EE8pd7D3/1QOVXK6KtlzFh2kAzk
+         LzZU5bTXBza2SIns090uig4wkKjA859GvrsyCxlgJtn1H0iM6WmhLQg0W0FO6h+PhAc7
+         lhgkBwxpWJV8TuzeZwN7IL5VcJvzgMshC/H7J0WSpypVTqynQdgBl8p7HEK/p9AYzjJt
+         Iit2tce6LLhV30OIozALlksZN0VNe1OwLI2V9Qyw1dvRyk9wr7P5ASRy3tagIK66A/7G
+         l2Lw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date;
+        bh=fkUCN+klEeB0C8O4KTf6XwwX3lmq4AKlAYjSP+QKrWg=;
+        b=fwzuDAYW5KnbT+LraDfOj1/+1dvINOBOhbU++mWXEvsMlg5GpcuZrsne42/3b0rvos
+         JbMzR9Khq5K+lVPY4kFmfmOD7XU4bGvWdgefTB6YDSvT76OdPQmXMXP5PbYybFfeTB+G
+         euE7LGC4KZzg7jD6+u/JLi3HbiW6rZclrVucPU+tgj4S7Nw8vgt5kR3AXO0X1zYi5bLQ
+         KbLvHpAksL0n8WRoeO0Pd7Pbim847SdXNwf71BrvXB4j5+GGlZ2oUcJDveLEumjIYi2D
+         RoENN4pcJLQP2p9NuJwCf5/hna8fgJXN0dhWVi8pB216uD9OR7pm0Q2LGtGXfL4/Lal5
+         94OQ==
+X-Gm-Message-State: ACgBeo1dt5MaLn+QGO6ntiCx2U7AE0bMW6pKdZUwyzWstbpuprDA4cpK
+        QOCzrhdDKGgw4kwQ/CzyGHapqR0=
+X-Google-Smtp-Source: AA6agR4aXwvj1xlc5Yx6YP52NxyfF60X5GXz6q+lQ0/3ZeN7+VTy5i0rgyCNPS4+rXReqOVAURvo0RY=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:aa7:8008:0:b0:53b:af3e:2f with SMTP id
+ j8-20020aa78008000000b0053baf3e002fmr9992766pfi.23.1662658087669; Thu, 08 Sep
+ 2022 10:28:07 -0700 (PDT)
+Date:   Thu, 8 Sep 2022 10:28:06 -0700
+In-Reply-To: <20220908145304.3436139-1-pulehui@huaweicloud.com>
+Mime-Version: 1.0
+References: <20220908145304.3436139-1-pulehui@huaweicloud.com>
+Message-ID: <YxomJlABk3fzQ9bQ@google.com>
+Subject: Re: [PATCH bpf-next v2 0/2] Fix cgroup attach flags being assigned to
+ effective progs
+From:   sdf@google.com
+To:     Pu Lehui <pulehui@huaweicloud.com>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        loongarch@lists.linux.dev, Li Xuefeng <lixuefeng@loongson.cn>
-References: <1661999249-10258-1-git-send-email-yangtiezhu@loongson.cn>
- <1661999249-10258-4-git-send-email-yangtiezhu@loongson.cn>
- <CAAhV-H4yU2tp=DBGCkdSzp-9bAXXDM4+0iqDgOac+fbgQnsx2A@mail.gmail.com>
- <1a740b5c-041c-85c6-f1d6-bb0b931c0c3e@loongson.cn>
- <CAAhV-H5vfw+Mv=LbQfa4sPHW91Z+ij3R8+LsHZOAiR+u7pJONw@mail.gmail.com>
-From:   WANG Xuerui <kernel@xen0n.name>
-In-Reply-To: <CAAhV-H5vfw+Mv=LbQfa4sPHW91Z+ij3R8+LsHZOAiR+u7pJONw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        Andrii Nakryiko <andrii@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, Pu Lehui <pulehui@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
-
-On 9/4/22 17:04, Huacai Chen wrote:
-> On Sat, Sep 3, 2022 at 6:11 PM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
->>
->>
->> On 09/03/2022 04:32 PM, Huacai Chen wrote:
->>> On Thu, Sep 1, 2022 at 10:27 AM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
->>>> BPF programs are normally handled by a BPF interpreter, add BPF JIT
->>>> support for LoongArch to allow the kernel to generate native code
->>>> when a program is loaded into the kernel, this will significantly
->>>> speed-up processing of BPF programs.
->> [...]
->>
->>>> +
->>>> +static inline int emit_cond_jmp(struct jit_ctx *ctx, u8 cond, enum loongarch_gpr rj,
->>>> +                               enum loongarch_gpr rd, int jmp_offset)
->>>> +{
->>>> +       /*
->>>> +        * A large PC-relative jump offset may overflow the immediate field of
->>>> +        * the native conditional branch instruction, triggering a conversion
->>>> +        * to use an absolute jump instead, this jump sequence is particularly
->>>> +        * nasty. For now, use cond_jmp_offs26() directly to keep it simple.
->>>> +        * In the future, maybe we can add support for far branching, the branch
->>>> +        * relaxation requires more than two passes to converge, the code seems
->>>> +        * too complex to understand, not quite sure whether it is necessary and
->>>> +        * worth the extra pain. Anyway, just leave it as it is to enhance code
->>>> +        * readability now.
->>> Oh, no. I don't think this is a very difficult problem, because the
->>> old version has already solved [1]. Please improve your code and send
->>> V4.
->>> BTW, I have committed V3 with some small modifications in
->>> https://github.com/loongson/linux/commits/loongarch-next, please make
->>> V4 based on that.
->>>
->>> [1] https://github.com/loongson/linux/commit/e20b2353f40cd13720996524e1df6d0ca086eeb8#diff-6d2f4f5a862a5dce12f8eb0feeca095825c4ed1c2e7151b0905fb8d03c98922e
->>>
->>> --------code in the old version--------
->>> static inline void emit_cond_jump(struct jit_ctx *ctx, u8 cond, enum
->>> loongarch_gpr rj,
->>>                                    enum loongarch_gpr rd, int jmp_offset)
->>> {
->>>          if (is_signed_imm16(jmp_offset))
->>>                  cond_jump_offs16(ctx, cond, rj, rd, jmp_offset);
->>>          else if (is_signed_imm26(jmp_offset))
->>>                  cond_jump_offs26(ctx, cond, rj, rd, jmp_offset);
->>>          else
->>>                  cond_jump_offs32(ctx, cond, rj, rd, jmp_offset);
->>> }
->>>
->>> static inline void emit_uncond_jump(struct jit_ctx *ctx, int
->>> jmp_offset, bool is_exit)
->>> {
->>>          if (is_signed_imm26(jmp_offset))
->>>                  uncond_jump_offs26(ctx, jmp_offset);
->>>          else
->>>                  uncond_jump_offs32(ctx, jmp_offset, is_exit);
->>> }
->>> --------end of code--------
->>>
->>> Huacai
->>>
->> Hi Huacai,
->>
->> This change is to pass the special test cases:
->> "a new type of jump test where the program jumps forwards
->> and backwards with increasing offset. It mainly tests JITs where a
->> relative jump may generate different JITed code depending on the offset
->> size."
->>
->> They are introduced in commit a7d2e752e520 ("bpf/tests: Add staggered
->> JMP and JMP32 tests") after the old internal version you mentioned.
->>
->> Here, we use the native instructions to enlarge the jump range to 26 bit
->> directly rather than 16 bit first, and also take no account of more than
->> 26 bit case because there is no native instruction and it needs to emulate.
->>
->> As the code comment said, this is to enhance code readability now.
-> I'm not familiar with bpf, Daniel, Ruoyao and Xuerui, what do you
-> think about it?
-
-I'm not familiar with eBPF JITs either, but from a cursory look it seems 
-the readability isn't that bad even for the original version? It is 
-clear that the appropriate instructions are selected according to size 
-of the immediate. And the current way of doing things doesn't really fix 
-the problem, it relies on the fact that *normally* the negative branch 
-offset is expressible in 16 bits (actually 18 bits).
-
-So, at the very least, you should keep the fallback logic towards 
-cond_jump_offs32. At which point adding back enough code so you're back 
-to the original version doesn't sound like it's too much anyway...
-
--- 
-WANG "xen0n" Xuerui
-
-Linux/LoongArch mailing list: https://lore.kernel.org/loongarch/
-
+T24gMDkvMDgsIFB1IExlaHVpIHdyb3RlOg0KPiBGcm9tOiBQdSBMZWh1aSA8cHVsZWh1aUBodWF3
+ZWkuY29tPg0KDQo+IFdoZW4gcm9vdC1jZ3JvdXAgYXR0YWNoIG11bHRpIHByb2dzIGFuZCBzdWIt
+Y2dyb3VwIGF0dGFjaCBhDQo+IG92ZXJyaWRlIHByb2csIGJwZnRvb2wgd2lsbCBkaXNwbGF5IGlu
+Y29ycmVjdGx5IGZvciB0aGUgYXR0YWNoDQo+IGZsYWdzIG9mIHRoZSBzdWItY2dyb3Vw4oCZcyBl
+ZmZlY3RpdmUgcHJvZ3M6DQoNCj4gJCBicGZ0b29sIGNncm91cCB0cmVlIC9zeXMvZnMvY2dyb3Vw
+IGVmZmVjdGl2ZQ0KPiBDZ3JvdXBQYXRoDQo+IElEICAgICAgIEF0dGFjaFR5cGUgICAgICBBdHRh
+Y2hGbGFncyAgICAgTmFtZQ0KPiAvc3lzL2ZzL2Nncm91cA0KPiA2ICAgICAgICBjZ3JvdXBfc3lz
+Y3RsICAgbXVsdGkgICAgICAgICAgIHN5c2N0bF90Y3BfbWVtDQo+IDEzICAgICAgIGNncm91cF9z
+eXNjdGwgICBtdWx0aSAgICAgICAgICAgc3lzY3RsX3RjcF9tZW0NCj4gL3N5cy9mcy9jZ3JvdXAv
+Y2cxDQo+IDIwICAgICAgIGNncm91cF9zeXNjdGwgICBvdmVycmlkZSAgICAgICAgc3lzY3RsX3Rj
+cF9tZW0NCj4gNiAgICAgICAgY2dyb3VwX3N5c2N0bCAgIG92ZXJyaWRlICAgICAgICBzeXNjdGxf
+dGNwX21lbSA8LSB3cm9uZw0KPiAxMyAgICAgICBjZ3JvdXBfc3lzY3RsICAgb3ZlcnJpZGUgICAg
+ICAgIHN5c2N0bF90Y3BfbWVtIDwtIHdyb25nDQo+IC9zeXMvZnMvY2dyb3VwL2NnMS9jZzINCj4g
+MjAgICAgICAgY2dyb3VwX3N5c2N0bCAgICAgICAgICAgICAgICAgICBzeXNjdGxfdGNwX21lbQ0K
+PiA2ICAgICAgICBjZ3JvdXBfc3lzY3RsICAgICAgICAgICAgICAgICAgIHN5c2N0bF90Y3BfbWVt
+DQo+IDEzICAgICAgIGNncm91cF9zeXNjdGwgICAgICAgICAgICAgICAgICAgc3lzY3RsX3RjcF9t
+ZW0NCg0KPiBGb3IgY2cxLCBvYnZpb3VzbHksIHRoZSBhdHRhY2ggZmxhZ3Mgb2YgcHJvZzYgYW5k
+IHByb2cxMyBjYW4gbm90IGJlDQo+IE9WRVJSSURFLCBhbmQgdGhlIGF0dGFjaCBmbGFncyBvZiBw
+cm9nNiBhbmQgcHJvZzEzIGlzIG1lYW5pbmdsZXNzIGZvcg0KPiBjZzEuIFdlIG9ubHkgbmVlZCB0
+byBjYXJlIHRoZSBhdHRhY2ggZmxhZ3Mgb2YgcHJvZyB3aGljaCBhdHRhY2hlZCB0bw0KPiBjZzEs
+IG90aGVyIHByb2dzIGF0dGFjaCBmbGFncyBzaG91bGQgYmUgb21pdC4gQWZ0ZXIgdGhlc2UgcGF0
+Y2hlcywNCj4gdGhlIGFib3ZlIHNpdHVhdGlvbiB3aWxsIHNob3cgYXMgYmVsbG93Og0KDQo+ICQg
+YnBmdG9vbCBjZ3JvdXAgdHJlZSAvc3lzL2ZzL2Nncm91cCBlZmZlY3RpdmUNCj4gQ2dyb3VwUGF0
+aA0KPiBJRCAgICAgICBBdHRhY2hUeXBlICAgICAgQXR0YWNoRmxhZ3MgICAgIE5hbWUNCj4gL3N5
+cy9mcy9jZ3JvdXANCj4gNiAgICAgICAgY2dyb3VwX3N5c2N0bCAgIG11bHRpICAgICAgICAgICBz
+eXNjdGxfdGNwX21lbQ0KPiAxMyAgICAgICBjZ3JvdXBfc3lzY3RsICAgbXVsdGkgICAgICAgICAg
+IHN5c2N0bF90Y3BfbWVtDQo+IC9zeXMvZnMvY2dyb3VwL2NnMQ0KPiAyMCAgICAgICBjZ3JvdXBf
+c3lzY3RsICAgb3ZlcnJpZGUgICAgICAgIHN5c2N0bF90Y3BfbWVtDQo+IDYgICAgICAgIGNncm91
+cF9zeXNjdGwgICAgICAgICAgICAgICAgICAgc3lzY3RsX3RjcF9tZW0NCj4gMTMgICAgICAgY2dy
+b3VwX3N5c2N0bCAgICAgICAgICAgICAgICAgICBzeXNjdGxfdGNwX21lbQ0KPiAvc3lzL2ZzL2Nn
+cm91cC9jZzEvY2cyDQo+IDIwICAgICAgIGNncm91cF9zeXNjdGwgICAgICAgICAgICAgICAgICAg
+c3lzY3RsX3RjcF9tZW0NCj4gNiAgICAgICAgY2dyb3VwX3N5c2N0bCAgICAgICAgICAgICAgICAg
+ICBzeXNjdGxfdGNwX21lbQ0KPiAxMyAgICAgICBjZ3JvdXBfc3lzY3RsICAgICAgICAgICAgICAg
+ICAgIHN5c2N0bF90Y3BfbWVtDQoNCj4gdjI6DQo+IC0gTGltaXQgcHJvZ19jbnQgdG8gYXZvaWQg
+b3ZlcmZsb3cuIChKb2huKQ0KPiAtIEFkZCBtb3JlIGRldGFpbCBtZXNzYWdlLg0KDQpKb2huIGFs
+c28gcmFpc2VkIGEgZ29vZCBxdWVzdGlvbiBpbiB2MTogdGhlIGZsYWdzIGRvbid0IHNlZW0gdG8N
+Cm1ha2Ugc2Vuc2Ugd2hlbiByZXF1ZXN0aW5nIGVmZmVjdGl2ZSBsaXN0LiBTbyBtYXliZSBub3Qg
+ZXhwb3J0IHRoZW0NCmF0IGFsbD8NCg0KPiB2MToNCj4gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcv
+YnBmLzIwMjIwODIwMTIwMjM0LjIxMjEwNDQtMS1wdWxlaHVpQGh1YXdlaS5jb20NCg0KPiBQdSBM
+ZWh1aSAoMik6DQo+ICAgIGJwZiwgY2dyb3VwOiBGaXggYXR0YWNoIGZsYWdzIGJlaW5nIGFzc2ln
+bmVkIHRvIGVmZmVjdGl2ZSBwcm9ncw0KPiAgICBicGZ0b29sOiBGaXggY2dyb3VwIGF0dGFjaCBm
+bGFncyBiZWluZyBhc3NpZ25lZCB0byBlZmZlY3RpdmUgcHJvZ3MNCg0KPiAgIGtlcm5lbC9icGYv
+Y2dyb3VwLmMgICAgICAgIHwgNSArKysrLQ0KPiAgIHRvb2xzL2JwZi9icGZ0b29sL2Nncm91cC5j
+IHwgOSArKystLS0tLS0NCj4gICAyIGZpbGVzIGNoYW5nZWQsIDcgaW5zZXJ0aW9ucygrKSwgNyBk
+ZWxldGlvbnMoLSkNCg0KPiAtLQ0KPiAyLjI1LjENCg0K
