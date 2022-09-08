@@ -2,162 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41A105B14CA
-	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 08:38:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53C9A5B15BF
+	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 09:35:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230397AbiIHGiI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Sep 2022 02:38:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33772 "EHLO
+        id S230391AbiIHHff (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Sep 2022 03:35:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbiIHGiF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Sep 2022 02:38:05 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 530FAC58EB;
-        Wed,  7 Sep 2022 23:38:05 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id c198so7069066pfc.13;
-        Wed, 07 Sep 2022 23:38:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date;
-        bh=XrKerZgfr8OsAjyFj/pfcukHC6xfGt6r5ZUbVw1UMjA=;
-        b=oOdlYalln0v3/1vyUGIKPtIcrNI+M5Q3tPPtiaFjUtIQwIdFPvQHolv1ZZff2MKD0K
-         5Z7+1eocGHNmvFLqu1gK9bD5qKRVVfxwD6MDAmngWQQtWzArLLCTMbOWSGVyDmlqkmau
-         Neaifc+kN8U2q2v7EPjbq34WPdHXtumPbLkDNcjdllxbyUUeLdKBcZxg+3c3PEZBqJqV
-         cbDoGoLHAeKbgN60n3JMHsN7dySDoP8UPsQqO8smJni3T6uTtNStCeJAlRQd3bBKhhcm
-         8NyRla0UmgTwdq9+zrHRXk2sgxJ8cu7KyqKCOQ9m1+D7S9/yLh8J0oE8NyP3Tomp/XC1
-         ZRyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
-         :to:cc:subject:date;
-        bh=XrKerZgfr8OsAjyFj/pfcukHC6xfGt6r5ZUbVw1UMjA=;
-        b=BMvFBeZqksgIaBHAYGZBX7jnyDNfA/4KU0izfm+kNeysT8Z4y77v0y9LRtfrIoE8+d
-         D/xpMhW8xDe6mk9S7BPEznWIo9om7AyocAyHH6YI7LpYcnvpfkcyAVFcethObFNwHCdj
-         JB/QW1mxGYGHi2WPrylxCiCrUSTaVxId1shmadt3SOYPEwZl6Msdk30akGdXYeMBevoO
-         tAxvwsBMyrnUbUFT+tLQAvtBJYxgUtDY9J5INSHCm1fyFf3M6Tq/I4L6LfDudgw8LpOr
-         TZLsuJoSSrnotrHe8meZlKuOgGow45YQGR6AmD8s2ycMw9RKXS1BJkdHPEasRTzIVPQB
-         WV6A==
-X-Gm-Message-State: ACgBeo3mq0JsTpp6+vEiRdZfuspoIkCLcw9yO3YE85QQS9+/+jXqaTMQ
-        g2EvYpGsySVVjlpmEU4/640=
-X-Google-Smtp-Source: AA6agR6Wl3fV/Z9sVDie6QCrAqMZ49pcxWl4rCafzAzHBFQFVXu+/mGB+oPJ0jddzwvRiMsZ1KnAXQ==
-X-Received: by 2002:a63:e317:0:b0:432:38c0:bde3 with SMTP id f23-20020a63e317000000b0043238c0bde3mr6352573pgh.567.1662619084779;
-        Wed, 07 Sep 2022 23:38:04 -0700 (PDT)
-Received: from balhae.hsd1.ca.comcast.net ([2601:647:6780:1040:7f21:d032:3f14:a4e6])
-        by smtp.gmail.com with ESMTPSA id o33-20020a17090a0a2400b001fb0fc33d72sm890716pjo.47.2022.09.07.23.38.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Sep 2022 23:38:04 -0700 (PDT)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        with ESMTP id S229924AbiIHHfe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Sep 2022 03:35:34 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B642B442D;
+        Thu,  8 Sep 2022 00:35:33 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E363661B53;
+        Thu,  8 Sep 2022 07:35:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85081C433D6;
+        Thu,  8 Sep 2022 07:35:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1662622532;
+        bh=myFJHXYjylDbYqIz67EITWqaRTZwH+KbFTWFLPlfzHo=;
+        h=Date:From:To:Subject:References:In-Reply-To:From;
+        b=rWSxQRj9NIxwyjwIuwvIl8vk6rh0HO0v9Un8qVwQb2Mjb9i3M1dBBlrDEGJdKzLju
+         fUECPIfqKlf79D3qC3DfzNDh23UNWQLrM4EMxgZD16KLrq2SV7LkyUG0r6R+VXWSHT
+         WdQF9Bcyr2+liLSTs3pLe19n4Z0olvO4Pk29pCWvBeyNf4mMKSNxiQT4QJ1vNwKPIT
+         CAZRDpcJb2a1MPBo4QPIHnwcSzbmLu3clK7K3rFBDKOgI+dNlB+6OE+5ZnKbYRCIDA
+         vDb8gNfd0Rr2lDPX83BJw9Pq7v/m0CgB9OgJrZY+idMEpA3Tjy3yHDHX6hc88zpSyF
+         6NZp5BLTI4DrA==
+Date:   Thu, 8 Sep 2022 08:35:26 +0100
+From:   Lee Jones <lee@kernel.org>
+To:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, bpf@vger.kernel.org,
         Jiri Olsa <jolsa@kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        linux-perf-users@vger.kernel.org, Song Liu <songliubraving@fb.com>,
-        bpf@vger.kernel.org
-Subject: [PATCH 4/4] perf lock contention: Skip stack trace from BPF
-Date:   Wed,  7 Sep 2022 23:37:54 -0700
-Message-Id: <20220908063754.1369709-5-namhyung@kernel.org>
-X-Mailer: git-send-email 2.37.2.789.g6183377224-goog
-In-Reply-To: <20220908063754.1369709-1-namhyung@kernel.org>
-References: <20220908063754.1369709-1-namhyung@kernel.org>
+Subject: Re: [PATCH v3 1/1] bpf: Drop unprotected find_vpid() in favour of
+ find_get_pid()
+Message-ID: <YxmbPqKZMEXHL6sI@google.com>
+References: <20220809134752.1488608-1-lee@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20220809134752.1488608-1-lee@kernel.org>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currently it collects stack traces to max size then skip entries.
-Because we don't have control how to skip perf callchains.  But BPF can
-do it with bpf_get_stackid() with a flag.
+On Tue, 09 Aug 2022, Lee Jones wrote:
 
-Say we have max-stack=4 and stack-skip=2, we get these stack traces.
+> The documentation for find_vpid() clearly states:
+> 
+>   "Must be called with the tasklist_lock or rcu_read_lock() held."
+> 
+> Presently we do neither.
+> 
+> Let's use find_get_pid() which searches for the vpid, then takes a
+> reference to it preventing early free, all within the safety of
+> rcu_read_lock().  Once we have our reference we can safely make use of
+> it up until the point it is put.
+> 
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: John Fastabend <john.fastabend@gmail.com>
+> Cc: Andrii Nakryiko <andrii@kernel.org>
+> Cc: Martin KaFai Lau <martin.lau@linux.dev>
+> Cc: Song Liu <song@kernel.org>
+> Cc: Yonghong Song <yhs@fb.com>
+> Cc: KP Singh <kpsingh@kernel.org>
+> Cc: Stanislav Fomichev <sdf@google.com>
+> Cc: Hao Luo <haoluo@google.com>
+> Cc: bpf@vger.kernel.org
+> Fixes: 41bdc4b40ed6f ("bpf: introduce bpf subcommand BPF_TASK_FD_QUERY")
+> Acked-by: Jiri Olsa <jolsa@kernel.org>
+> Signed-off-by: Lee Jones <lee@kernel.org>
+> ---
+> 
+> v1 => v2:
+>   * Commit log update - description - no code differences
+> 
+> v2 => v3:
+>   * Commit log update - spelling of find_vpid() - no code differences
 
-Before:                    After:
+Did anyone get a chance to look at this please?
 
-      ---> +---+ <--             ---> +---+ <--
-     /     |   |    \           /     |   |    \
-     |     +---+  usable        |     +---+    |
-    max    |   |    /          max    |   |    |
-   stack   +---+ <--          stack   +---+  usable
-     |     | X |                |     |   |    |
-     |     +---+   skip         |     +---+    |
-     \     | X |                \     |   |    /
-      ---> +---+                 ---> +---+ <--    <=== collection
-                                      | X |
-                                      +---+   skip
-                                      | X |
-                                      +---+
+Would you like a [RESEND]?
 
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/util/bpf_lock_contention.c          | 7 ++++---
- tools/perf/util/bpf_skel/lock_contention.bpf.c | 3 ++-
- 2 files changed, 6 insertions(+), 4 deletions(-)
+>  kernel/bpf/syscall.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 83c7136c5788d..c20cff30581c4 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -4385,6 +4385,7 @@ static int bpf_task_fd_query(const union bpf_attr *attr,
+>  	const struct perf_event *event;
+>  	struct task_struct *task;
+>  	struct file *file;
+> +	struct pid *ppid;
+>  	int err;
+>  
+>  	if (CHECK_ATTR(BPF_TASK_FD_QUERY))
+> @@ -4396,7 +4397,9 @@ static int bpf_task_fd_query(const union bpf_attr *attr,
+>  	if (attr->task_fd_query.flags != 0)
+>  		return -EINVAL;
+>  
+> -	task = get_pid_task(find_vpid(pid), PIDTYPE_PID);
+> +	ppid = find_get_pid(pid);
+> +	task = get_pid_task(ppid, PIDTYPE_PID);
+> +	put_pid(ppid);
+>  	if (!task)
+>  		return -ENOENT;
+>  
 
-diff --git a/tools/perf/util/bpf_lock_contention.c b/tools/perf/util/bpf_lock_contention.c
-index ef5323c78ffc..efe5b9968e77 100644
---- a/tools/perf/util/bpf_lock_contention.c
-+++ b/tools/perf/util/bpf_lock_contention.c
-@@ -93,6 +93,8 @@ int lock_contention_prepare(struct lock_contention *con)
- 		bpf_map_update_elem(fd, &pid, &val, BPF_ANY);
- 	}
- 
-+	skel->bss->stack_skip = con->stack_skip;
-+
- 	lock_contention_bpf__attach(skel);
- 	return 0;
- }
-@@ -127,7 +129,7 @@ int lock_contention_read(struct lock_contention *con)
- 	while (!bpf_map_get_next_key(fd, &prev_key, &key)) {
- 		struct map *kmap;
- 		struct symbol *sym;
--		int idx;
-+		int idx = 0;
- 
- 		bpf_map_lookup_elem(fd, &key, &data);
- 		st = zalloc(sizeof(*st));
-@@ -146,8 +148,7 @@ int lock_contention_read(struct lock_contention *con)
- 
- 		bpf_map_lookup_elem(stack, &key, stack_trace);
- 
--		/* skip BPF + lock internal functions */
--		idx = con->stack_skip;
-+		/* skip lock internal functions */
- 		while (is_lock_function(machine, stack_trace[idx]) &&
- 		       idx < con->max_stack - 1)
- 			idx++;
-diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-index 9e8b94eb6320..e107d71f0f1a 100644
---- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
-+++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-@@ -72,6 +72,7 @@ struct {
- int enabled;
- int has_cpu;
- int has_task;
-+int stack_skip;
- 
- /* error stat */
- unsigned long lost;
-@@ -117,7 +118,7 @@ int contention_begin(u64 *ctx)
- 	pelem->timestamp = bpf_ktime_get_ns();
- 	pelem->lock = (__u64)ctx[0];
- 	pelem->flags = (__u32)ctx[1];
--	pelem->stack_id = bpf_get_stackid(ctx, &stacks, BPF_F_FAST_STACK_CMP);
-+	pelem->stack_id = bpf_get_stackid(ctx, &stacks, BPF_F_FAST_STACK_CMP | stack_skip);
- 
- 	if (pelem->stack_id < 0)
- 		lost++;
 -- 
-2.37.2.789.g6183377224-goog
-
+Lee Jones [李琼斯]
