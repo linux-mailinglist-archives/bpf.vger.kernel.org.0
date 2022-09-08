@@ -2,63 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D9835B15E5
-	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 09:46:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 745F45B1523
+	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 08:51:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230214AbiIHHqF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Sep 2022 03:46:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43238 "EHLO
+        id S230431AbiIHGvf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Sep 2022 02:51:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229614AbiIHHqE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Sep 2022 03:46:04 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98040C6FE5;
-        Thu,  8 Sep 2022 00:46:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 34D7E61B97;
-        Thu,  8 Sep 2022 07:46:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10C2CC433D6;
-        Thu,  8 Sep 2022 07:46:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662623161;
-        bh=1qbcCEX+sQ8g0mZD9IjQGLMCvIx1Q+qXHBZvuLbiDvU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=X568Iaf00v9P6o7xOh7dG11HYFakaGf+cDqRvAJ0/esfarUgbFcE49iJeUCKvlpgD
-         Nt8ClCmVkcnVxgSnW4ZAb56CVPEGBJ9QwLKjLhe/bjVHQCPRg7Bd3GvXhPinslHFL0
-         QMmo+6Gni7zxjWkuv0wSNA0podZOBmZPRSnrneTNAub71uwE19xpx7H3Fkdk7mfo+y
-         iHR82Ro4qJ7dUYE8Rtng1t97hagS/q5QBIHIYIebtf5vu6XUKNL0VRPLNonAuZU1ky
-         y/03HScSP9lBjTSQy93Wborklg7UnDsJ/pb0g0VXMVChzLjISpyvdiXmZStjThcK8i
-         8CEDvmV592CFw==
-Date:   Thu, 8 Sep 2022 09:45:57 +0200
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     Song Liu <song@kernel.org>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S230518AbiIHGv3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Sep 2022 02:51:29 -0400
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF5086346;
+        Wed,  7 Sep 2022 23:51:27 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4MNV9H0rqyz6S33F;
+        Thu,  8 Sep 2022 14:49:39 +0800 (CST)
+Received: from localhost.localdomain (unknown [10.67.175.61])
+        by APP2 (Coremail) with SMTP id Syh0CgBXqHHskBljwcslAg--.10754S2;
+        Thu, 08 Sep 2022 14:51:25 +0800 (CST)
+From:   Pu Lehui <pulehui@huaweicloud.com>
+To:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, pablo@netfilter.org,
-        fw@strlen.de, netfilter-devel@vger.kernel.org,
-        lorenzo.bianconi@redhat.com,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: fix ct status check in bpf_nf
- selftests
-Message-ID: <YxmdteGsAuSUT/Wc@lore-desk>
-References: <f35b32f3303b7cb70a5e55f5fbe0bd3a1d38c9a6.1662548037.git.lorenzo@kernel.org>
- <CAPhsuW4Vcn4GELkKWNdb+X4L+KfdtOiHqN0VijhWy+vLjvD74g@mail.gmail.com>
+        Quentin Monnet <quentin@isovalent.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Pu Lehui <pulehui@huawei.com>
+Subject: [PATCH bpf-next v2 0/2] Fix cgroup attach flags being assigned to effective progs
+Date:   Thu,  8 Sep 2022 14:53:02 +0000
+Message-Id: <20220908145304.3436139-1-pulehui@huaweicloud.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="FpTC8qmoeK9pm397"
-Content-Disposition: inline
-In-Reply-To: <CAPhsuW4Vcn4GELkKWNdb+X4L+KfdtOiHqN0VijhWy+vLjvD74g@mail.gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: Syh0CgBXqHHskBljwcslAg--.10754S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7WFWkWF1xKw1DGFy3JFW5Wrg_yoW8Cw45pF
+        yDA3WUt3Z8Wr9xJrWSya4jgayfKr4fAw12y3WDZr48Zry3tryDtry2k3y0yr17XFsrKw4x
+        ZF15AFy5Gw45taDanT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvvb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M2
+        8lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E
+        3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVAFwI0_Gc
+        CE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxI
+        r21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87
+        Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIE
+        c7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2
+        IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v2
+        6r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2
+        IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E
+        87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73Uj
+        IFyTuYvjxUIf-PUUUUU
+X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -67,68 +68,63 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+From: Pu Lehui <pulehui@huawei.com>
 
---FpTC8qmoeK9pm397
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+When root-cgroup attach multi progs and sub-cgroup attach a
+override prog, bpftool will display incorrectly for the attach
+flags of the sub-cgroup’s effective progs:
 
-> On Wed, Sep 7, 2022 at 3:56 AM Lorenzo Bianconi <lorenzo@kernel.org> wrot=
-e:
-> >
-> > Check properly the connection tracking entry status configured running
-> > bpf_ct_change_status kfunc.
-> > Remove unnecessary IPS_CONFIRMED status configuration since it is
-> > already done during entry allocation.
-> >
-> > Fixes: 6eb7fba007a7 ("selftests/bpf: Add tests for new nf_conntrack kfu=
-ncs")
-> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> > ---
-> >  tools/testing/selftests/bpf/prog_tests/bpf_nf.c | 4 ++--
-> >  tools/testing/selftests/bpf/progs/test_bpf_nf.c | 8 +++++---
-> >  2 files changed, 7 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_nf.c b/tools/te=
-sting/selftests/bpf/prog_tests/bpf_nf.c
-> > index 544bf90ac2a7..903d16e3abed 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/bpf_nf.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/bpf_nf.c
-> > @@ -111,8 +111,8 @@ static void test_bpf_nf_ct(int mode)
-> >         /* allow some tolerance for test_delta_timeout value to avoid r=
-aces. */
-> >         ASSERT_GT(skel->bss->test_delta_timeout, 8, "Test for min ct ti=
-meout update");
-> >         ASSERT_LE(skel->bss->test_delta_timeout, 10, "Test for max ct t=
-imeout update");
-> > -       /* expected status is IPS_SEEN_REPLY */
-> > -       ASSERT_EQ(skel->bss->test_status, 2, "Test for ct status update=
- ");
-> > +       /* expected status is IPS_CONFIRMED | IPS_SEEN_REPLY */
-> > +       ASSERT_EQ(skel->bss->test_status, 0xa, "Test for ct status upda=
-te ");
->=20
-> Why do we use 0xa instead of IPS_CONFIRMED | IPS_SEEN_REPLY?
-> To avoid dependency on the header file?
+$ bpftool cgroup tree /sys/fs/cgroup effective
+CgroupPath
+ID       AttachType      AttachFlags     Name
+/sys/fs/cgroup
+6        cgroup_sysctl   multi           sysctl_tcp_mem
+13       cgroup_sysctl   multi           sysctl_tcp_mem
+/sys/fs/cgroup/cg1
+20       cgroup_sysctl   override        sysctl_tcp_mem
+6        cgroup_sysctl   override        sysctl_tcp_mem <- wrong
+13       cgroup_sysctl   override        sysctl_tcp_mem <- wrong
+/sys/fs/cgroup/cg1/cg2
+20       cgroup_sysctl                   sysctl_tcp_mem
+6        cgroup_sysctl                   sysctl_tcp_mem
+13       cgroup_sysctl                   sysctl_tcp_mem
 
-nope, thx for reporting it. I will fix it in v2.
+For cg1, obviously, the attach flags of prog6 and prog13 can not be
+OVERRIDE, and the attach flags of prog6 and prog13 is meaningless for
+cg1. We only need to care the attach flags of prog which attached to
+cg1, other progs attach flags should be omit. After these patches,
+the above situation will show as bellow:
 
-Regards,
-Lorenzo
+$ bpftool cgroup tree /sys/fs/cgroup effective
+CgroupPath
+ID       AttachType      AttachFlags     Name
+/sys/fs/cgroup
+6        cgroup_sysctl   multi           sysctl_tcp_mem
+13       cgroup_sysctl   multi           sysctl_tcp_mem
+/sys/fs/cgroup/cg1
+20       cgroup_sysctl   override        sysctl_tcp_mem
+6        cgroup_sysctl                   sysctl_tcp_mem
+13       cgroup_sysctl                   sysctl_tcp_mem
+/sys/fs/cgroup/cg1/cg2
+20       cgroup_sysctl                   sysctl_tcp_mem
+6        cgroup_sysctl                   sysctl_tcp_mem
+13       cgroup_sysctl                   sysctl_tcp_mem
 
->=20
-> Thanks,
-> Song
+v2:
+- Limit prog_cnt to avoid overflow. (John)
+- Add more detail message.
 
---FpTC8qmoeK9pm397
-Content-Type: application/pgp-signature; name="signature.asc"
+v1:
+https://lore.kernel.org/bpf/20220820120234.2121044-1-pulehui@huawei.com
 
------BEGIN PGP SIGNATURE-----
+Pu Lehui (2):
+  bpf, cgroup: Fix attach flags being assigned to effective progs
+  bpftool: Fix cgroup attach flags being assigned to effective progs
 
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYxmdtQAKCRA6cBh0uS2t
-rPC9AP9mEeNA0FVy3StHmi5X6GQCdTh5rmO2hvLquhsD+aDT0wD/d+nClLO5HQPr
-X6pTY/4E97C0IuY7XZ41E6VLMsb36gw=
-=Oqzi
------END PGP SIGNATURE-----
+ kernel/bpf/cgroup.c        | 5 ++++-
+ tools/bpf/bpftool/cgroup.c | 9 +++------
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
---FpTC8qmoeK9pm397--
+-- 
+2.25.1
+
