@@ -2,198 +2,169 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AF405B19AE
-	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 12:10:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E06F5B1A67
+	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 12:45:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229673AbiIHKKj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Sep 2022 06:10:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56934 "EHLO
+        id S231218AbiIHKp4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Sep 2022 06:45:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229795AbiIHKKh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Sep 2022 06:10:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A95557968F
-        for <bpf@vger.kernel.org>; Thu,  8 Sep 2022 03:10:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1662631835;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=J5bbihJxibbZG98nvmOoRyWPRDe2h39ZD/bGM+Jcg48=;
-        b=M6wbdEalLKUC9hmr5+8v8FfCVCF5egSKv9tM96Tb9NKVfpOgpAgBnhqHGO1Q9HVidW/1ew
-        3cN5XUrp12P/bYOukSwuQgNrH558RfzXNGra6klxh1E+/25eL9ZONJ7en1O+N66045/phH
-        aneXW3jKRvFJx4KlnK2fnzm4uMRXMk0=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-471-VpwvWFh-NJu13p14Gbw2Wg-1; Thu, 08 Sep 2022 06:10:34 -0400
-X-MC-Unique: VpwvWFh-NJu13p14Gbw2Wg-1
-Received: by mail-wm1-f72.google.com with SMTP id c128-20020a1c3586000000b003b324bb08c5so665347wma.9
-        for <bpf@vger.kernel.org>; Thu, 08 Sep 2022 03:10:34 -0700 (PDT)
+        with ESMTP id S231191AbiIHKpn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Sep 2022 06:45:43 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B0DD7C18E
+        for <bpf@vger.kernel.org>; Thu,  8 Sep 2022 03:45:41 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id n23-20020a7bc5d7000000b003a62f19b453so1363475wmk.3
+        for <bpf@vger.kernel.org>; Thu, 08 Sep 2022 03:45:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:user-agent:message-id:in-reply-to:date:references
+         :subject:cc:to:from:from:to:cc:subject:date;
+        bh=SxXiDCpv5ePqARD9ofSsBk9oYeXNDztMJRIdlqicQ3s=;
+        b=Ic5bgE3qmdoInb3nyWjrnLqplQa6JS/sUvuCBa8GbFL4dYzZq/OL04Aco7SKYxso76
+         5MmQi/s9waL9MULGvdwKV/9mkAltXgmwf3QwESiwpGxDBWgplt6rwEqNNgJBf1bEYnK7
+         kqTpS+chO4JvrQnZcnjVfdZ0IVc6z6J/EuCIrpSDauTP6cB4XKOMOi5DbHgQ9hBnhv7t
+         dCJvfhxdddGvqpMm/65MJjSPkEDLDXr2i97AJXMihpPdgxiMRITtCRZ6JFvVP8O7BE8P
+         /epaRbWs6elt9fziAUc0+WtVGdhCIkTObXTHnblHWDxWr4g7aWjzGfExywezz3expnmC
+         2Sbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date;
-        bh=J5bbihJxibbZG98nvmOoRyWPRDe2h39ZD/bGM+Jcg48=;
-        b=i0vr5UObarw6wKIa89SmjkY32Tzq7UhVRQzCiyTr4WfsO4Q8RgS12L0VK3dElAYZ21
-         XCh2Gz35fHo3v75Ogr8PNgtaqIdWKIVFVCuNfiOspL8uYKu26tygfu8UBr327S0N8P7R
-         MDCZxpvpG32iuAdX2/GSNJm1gKuW3Q1mMgtea3sINYPGFfTGtR0LH2T4Xad+n+irwOe3
-         W6aMA8NjMBi4dpbVGD3tEDnzGpvEQ2vN2ppCo5wHuAdJbuCaPYagjok+mPID3BPBgAnu
-         LOD6DVn1Z/6pBpwnlSK9NQSlVccK8xefc27pHv/zd460pFzzgHUW3tGjKg00oePE6uZ5
-         wp+Q==
-X-Gm-Message-State: ACgBeo1nn5OGY+6IplVAP8Hqo7BIhCYNmAPHkssLLvO4i/FunitVseGX
-        J9Jb/AGPu9doTeWNaCVuH4JtsTCCGWWdfYMB2QCS5qZvdQadPxaFKBdbodJsDXiqqAfJVPT8UYI
-        RS0DfE4ss/LNr
-X-Received: by 2002:a05:6000:1d93:b0:22a:3318:860d with SMTP id bk19-20020a0560001d9300b0022a3318860dmr887163wrb.352.1662631833650;
-        Thu, 08 Sep 2022 03:10:33 -0700 (PDT)
-X-Google-Smtp-Source: AA6agR5j89wi/Zu5U7jnKd0D8sJ2jzDuep/sdQH8t6zKveJvmPbUuarPvV4XeisBWFaemKR+F4jq/g==
-X-Received: by 2002:a05:6000:1d93:b0:22a:3318:860d with SMTP id bk19-20020a0560001d9300b0022a3318860dmr887152wrb.352.1662631833406;
-        Thu, 08 Sep 2022 03:10:33 -0700 (PDT)
-Received: from [192.168.0.4] ([78.17.187.218])
-        by smtp.gmail.com with ESMTPSA id c7-20020adfe747000000b00226dfac0149sm15392967wrn.114.2022.09.08.03.10.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Sep 2022 03:10:33 -0700 (PDT)
-Message-ID: <b5f0d10d-2d4e-34d6-1e45-c206cb6f5d26@redhat.com>
-Date:   Thu, 8 Sep 2022 11:10:31 +0100
+        h=mime-version:user-agent:message-id:in-reply-to:date:references
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date;
+        bh=SxXiDCpv5ePqARD9ofSsBk9oYeXNDztMJRIdlqicQ3s=;
+        b=nz9nzkeewPHXlrhIbKr0i3sp7OLVYaI/8ZjkKY/P9Xo6jFF8XM9/GCiJUgeTV9Gkqw
+         4npUF9WDazM8JhHPEa37Uvg2jLkGp/KiicGOcBzVAorluKJaMOs/01dk7T9EvU9wenPu
+         z7/EB2ReahcrwslRjfMRHM1irEH+hkv+EV5Ncaak4EgFzTfX/R8s7i3Tsc8+huCs+brr
+         LF9HP0Z2XrmFTJTCkQdUl1I+1S4d9vt77RxfdNpVCH2r0uwOsVjPztGyi13mdrEdsxIu
+         JICWYn2ZooZDXKU5lHQYvbEiyoqJuF3QZkEjj0gKnXyB82yriffd9bi7NaR6qxJNgv2m
+         PCIg==
+X-Gm-Message-State: ACgBeo1udYja2BHYvOCPx3SNUikjnGPsr2n+3WBOAkgIGT1S+vArEI29
+        wIWvLS5bwFdQ4spBGqFEZS+Tl2zHz51d0Q==
+X-Google-Smtp-Source: AA6agR7PHj3999h/guCh5epJRzTGtcyBBxFZmcyyWtX9b7PNdQCFkLkPn89R+suWBlEtQDuigYYdgg==
+X-Received: by 2002:a05:600c:4e52:b0:3a6:d89:4d1b with SMTP id e18-20020a05600c4e5200b003a60d894d1bmr1891759wmq.150.1662633939770;
+        Thu, 08 Sep 2022 03:45:39 -0700 (PDT)
+Received: from localhost ([95.148.15.66])
+        by smtp.gmail.com with ESMTPSA id k39-20020a05600c1ca700b003a5f3de6fddsm2611839wms.25.2022.09.08.03.45.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Sep 2022 03:45:38 -0700 (PDT)
+From:   Punit Agrawal <punit.agrawal@bytedance.com>
+To:     Song Liu <song@kernel.org>
+Cc:     Punit Agrawal <punit.agrawal@bytedance.com>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        zhoufeng.zf@bytedance.com, Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Jiri Olsa <jolsa@kernel.org>
+Subject: Re: Re: [PATCH v2] bpf: Simplify code by using for_each_cpu_wrap()
+References: <20220907155746.1750329-1-punit.agrawal@bytedance.com>
+        <CAPhsuW6+D0bfoPZdQ0j-NtCvgMED4YF-LyqXTQQHo+x7tw3yug@mail.gmail.com>
+Date:   Thu, 08 Sep 2022 11:45:37 +0100
+In-Reply-To: <CAPhsuW6+D0bfoPZdQ0j-NtCvgMED4YF-LyqXTQQHo+x7tw3yug@mail.gmail.com>
+        (Song Liu's message of "Wed, 7 Sep 2022 17:55:23 -0700")
+Message-ID: <877d2ecffy.fsf_-_@stealth>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.2.1
-Subject: Re: [PATCH RFCv2 bpf-next 17/18] xsk: AF_XDP xdp-hints support in
- desc options
-Content-Language: en-US
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        xdp-hints@xdp-project.net, larysa.zaremba@intel.com,
-        memxor@gmail.com, Lorenzo Bianconi <lorenzo@kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        dave@dtucker.co.uk, Magnus Karlsson <magnus.karlsson@intel.com>,
-        bjorn@kernel.org
-References: <166256538687.1434226.15760041133601409770.stgit@firesoul>
- <166256558657.1434226.7390735974413846384.stgit@firesoul>
- <CAJ8uoz3UcC2tnMtG8W6a3HpCKgaYSzSCqowLFQVwCcsr+NKBOQ@mail.gmail.com>
-From:   Maryam Tahhan <mtahhan@redhat.com>
-In-Reply-To: <CAJ8uoz3UcC2tnMtG8W6a3HpCKgaYSzSCqowLFQVwCcsr+NKBOQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 08/09/2022 09:06, Magnus Karlsson wrote:
-> On Wed, Sep 7, 2022 at 5:48 PM Jesper Dangaard Brouer <brouer@redhat.com> wrote:
+Hi Song,
+
+Thanks for taking a look.
+
+Song Liu <song@kernel.org> writes:
+
+> On Wed, Sep 7, 2022 at 8:58 AM Punit Agrawal
+> <punit.agrawal@bytedance.com> wrote:
 >>
->> From: Maryam Tahhan <mtahhan@redhat.com>
+>> In the percpu freelist code, it is a common pattern to iterate over
+>> the possible CPUs mask starting with the current CPU. The pattern is
+>> implemented using a hand rolled while loop with the loop variable
+>> increment being open-coded.
 >>
->> Simply set AF_XDP descriptor options to XDP flags.
+>> Simplify the code by using for_each_cpu_wrap() helper to iterate over
+>> the possible cpus starting with the current CPU. As a result, some of
+>> the special-casing in the loop also gets simplified.
 >>
->> Jesper: Will this really be acceptable by AF_XDP maintainers?
-> 
-> Maryam, you guessed correctly that dedicating all these options bits
-> for a single feature will not be ok :-). E.g., I want one bit for the
-> AF_XDP multi-buffer support and who knows what other uses there might
-> be for this options field in the future. Let us try to solve this in
-> some other way. Here are some suggestions, all with their pros and
-> cons.
-> 
-
-TBH it was Jespers question :)
-
-> * Put this feature flag at a known place in the metadata area, for
-> example just before the BTF ID. No need to fill this in if you are not
-> redirecting to AF_XDP, but at a redirect to AF_XDP, the XDP flags are
-> copied into this u32 in the metadata area so that user-space can
-> consume it. Will cost 4 bytes of the metadata area though.
-
-If Jesper agrees I think this approach would make sense. Trying to
-translate encodings into some other flags for AF_XDP I think will lead
-to a growing set of translations as more options come along.
-The other thing to be aware of is just making sure to clear/zero the 
-metadata space in the buffers at some point (ideally when the descriptor 
-is returned from the application) so when the buffers are used again
-they are already in a "reset" state.
-
-> 
-> * Instead encode this information into each metadata entry in the
-> metadata area, in some way so that a flags field is not needed (-1
-> signifies not valid, or whatever happens to make sense). This has the
-> drawback that the user might have to look at a large number of entries
-> just to find out there is nothing valid to read. To alleviate this, it
-> could be combined with the next suggestion.
-> 
-> * Dedicate one bit in the options field to indicate that there is at
-> least one valid metadata entry in the metadata area. This could be
-> combined with the two approaches above. However, depending on what
-> metadata you have enabled, this bit might be pointless. If some
-> metadata is always valid, then it serves no purpose. But it might if
-> all enabled metadata is rarely valid, e.g., if you get an Rx timestamp
-> on one packet out of one thousand.
-> 
->> Signed-off-by: Maryam Tahhan <mtahhan@redhat.com>
+>> No functional change intended.
+>>
+>> Signed-off-by: Punit Agrawal <punit.agrawal@bytedance.com>
 >> ---
->>   include/uapi/linux/if_xdp.h |    2 +-
->>   net/xdp/xsk.c               |    2 +-
->>   net/xdp/xsk_queue.h         |    3 ++-
->>   3 files changed, 4 insertions(+), 3 deletions(-)
+>> v1 -> v2:
+>> * Fixed the incorrect transformation changing semantics of __pcpu_freelist_push_nmi()
 >>
->> diff --git a/include/uapi/linux/if_xdp.h b/include/uapi/linux/if_xdp.h
->> index a78a8096f4ce..9335b56474e7 100644
->> --- a/include/uapi/linux/if_xdp.h
->> +++ b/include/uapi/linux/if_xdp.h
->> @@ -103,7 +103,7 @@ struct xdp_options {
->>   struct xdp_desc {
->>          __u64 addr;
->>          __u32 len;
->> -       __u32 options;
->> +       __u32 options; /* set to the values of xdp_hints_flags*/
->>   };
+>> Previous version -
+>> v1: https://lore.kernel.org/all/20220817130807.68279-1-punit.agrawal@bytedance.com/
 >>
->>   /* UMEM descriptor is __u64 */
->> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
->> index 5b4ce6ba1bc7..32095d78f06b 100644
->> --- a/net/xdp/xsk.c
->> +++ b/net/xdp/xsk.c
->> @@ -141,7 +141,7 @@ static int __xsk_rcv_zc(struct xdp_sock *xs, struct xdp_buff *xdp, u32 len)
->>          int err;
+>>  kernel/bpf/percpu_freelist.c | 48 ++++++++++++------------------------
+>>  1 file changed, 16 insertions(+), 32 deletions(-)
 >>
->>          addr = xp_get_handle(xskb);
->> -       err = xskq_prod_reserve_desc(xs->rx, addr, len);
->> +       err = xskq_prod_reserve_desc(xs->rx, addr, len, xdp->flags);
->>          if (err) {
->>                  xs->rx_queue_full++;
->>                  return err;
->> diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
->> index fb20bf7207cf..7a66f082f97e 100644
->> --- a/net/xdp/xsk_queue.h
->> +++ b/net/xdp/xsk_queue.h
->> @@ -368,7 +368,7 @@ static inline u32 xskq_prod_reserve_addr_batch(struct xsk_queue *q, struct xdp_d
->>   }
+>> diff --git a/kernel/bpf/percpu_freelist.c b/kernel/bpf/percpu_freelist.c
+>> index 00b874c8e889..b6e7f5c5b9ab 100644
+>> --- a/kernel/bpf/percpu_freelist.c
+>> +++ b/kernel/bpf/percpu_freelist.c
+>> @@ -58,23 +58,21 @@ static inline void ___pcpu_freelist_push_nmi(struct pcpu_freelist *s,
+>>  {
+>>         int cpu, orig_cpu;
 >>
->>   static inline int xskq_prod_reserve_desc(struct xsk_queue *q,
->> -                                        u64 addr, u32 len)
->> +                                        u64 addr, u32 len, u32 flags)
->>   {
->>          struct xdp_rxtx_ring *ring = (struct xdp_rxtx_ring *)q->ring;
->>          u32 idx;
->> @@ -380,6 +380,7 @@ static inline int xskq_prod_reserve_desc(struct xsk_queue *q,
->>          idx = q->cached_prod++ & q->ring_mask;
->>          ring->desc[idx].addr = addr;
->>          ring->desc[idx].len = len;
->> +       ring->desc[idx].options = flags;
+>> -       orig_cpu = cpu = raw_smp_processor_id();
+>> +       orig_cpu = raw_smp_processor_id();
+>>         while (1) {
+>> -               struct pcpu_freelist_head *head;
+>> +               for_each_cpu_wrap(cpu, cpu_possible_mask, orig_cpu) {
+>> +                       struct pcpu_freelist_head *head;
 >>
->>          return 0;
->>   }
->>
->>
-> 
+>> -               head = per_cpu_ptr(s->freelist, cpu);
+>> -               if (raw_spin_trylock(&head->lock)) {
+>> -                       pcpu_freelist_push_node(head, node);
+>> -                       raw_spin_unlock(&head->lock);
+>> -                       return;
+>> +                       head = per_cpu_ptr(s->freelist, cpu);
+>> +                       if (raw_spin_trylock(&head->lock)) {
+>> +                               pcpu_freelist_push_node(head, node);
+>> +                               raw_spin_unlock(&head->lock);
+>> +                               return;
+>> +                       }
+>>                 }
+>> -               cpu = cpumask_next(cpu, cpu_possible_mask);
+>> -               if (cpu >= nr_cpu_ids)
+>> -                       cpu = 0;
+>
+> I personally don't like nested loops here. Maybe we can keep
+> the original while loop and use cpumask_next_wrap()?
 
+Out of curiosity, is there a reason to avoid nesting here? The nested
+loop avoids the "cpu == orig_cpu" unnecessary check every iteration.
+
+As suggested, it's possible to use cpumask_next_wrap() like below -
+
+diff --git a/kernel/bpf/percpu_freelist.c b/kernel/bpf/percpu_freelist.c
+index 00b874c8e889..19e8eab70c40 100644
+--- a/kernel/bpf/percpu_freelist.c
++++ b/kernel/bpf/percpu_freelist.c
+@@ -68,9 +68,7 @@ static inline void ___pcpu_freelist_push_nmi(struct pcpu_freelist *s,
+                        raw_spin_unlock(&head->lock);
+                        return;
+                }
+-               cpu = cpumask_next(cpu, cpu_possible_mask);
+-               if (cpu >= nr_cpu_ids)
+-                       cpu = 0;
++               cpu = cpumask_next_wrap(cpu, cpu_possible_mask, orig_cpu, false);
+
+                /* cannot lock any per cpu lock, try extralist */
+                if (cpu == orig_cpu &&
+
+
+I can send an updated patch if this is preferred.
+
+Thanks,
+Punit
