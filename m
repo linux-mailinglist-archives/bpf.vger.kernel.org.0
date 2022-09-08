@@ -2,197 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34FB75B2572
-	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 20:15:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C0BA5B25C7
+	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 20:31:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230269AbiIHSPy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Sep 2022 14:15:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48042 "EHLO
+        id S229601AbiIHSb2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Sep 2022 14:31:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230105AbiIHSPx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Sep 2022 14:15:53 -0400
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B026F979E0
-        for <bpf@vger.kernel.org>; Thu,  8 Sep 2022 11:15:51 -0700 (PDT)
-Received: by mail-pj1-x104a.google.com with SMTP id 92-20020a17090a09e500b001d917022847so8164461pjo.1
-        for <bpf@vger.kernel.org>; Thu, 08 Sep 2022 11:15:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date;
-        bh=8GlmI1JcG6ngJpOfGNzGmoIkPMCbcnikWV5w5TgqHbw=;
-        b=JnWkPNyKsabEya8Fw8WfBdE6XYkfVfu34zD82qZxQelapGoN8wDOOOu+uv+E4RQ4xI
-         XN8W3pWl5xo88XMBBJsdWQOYiekad++Ghuqoc5Vpm2HbohrLuUSFUljygFwTW2fLfj+L
-         0J6y7vutknuidicHJgVu09+uSniF88m2pxhhCpmzWppTTQSvEg6c9TW6slLaEFKDnfcP
-         3LpP4zVJFkgvxbBapBmAj9c087dqGCPp1ElwQtrDStDupdPbvqMu4rivJtoP4cy0W0t7
-         BlRgzO89TH8PDkezlq/KIEG5R3hutCMl/I+/m9DOjkzQ/WNcqsD/vHqMuos8XKpNAHRq
-         /8SQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date;
-        bh=8GlmI1JcG6ngJpOfGNzGmoIkPMCbcnikWV5w5TgqHbw=;
-        b=iG6g1tL+FPInkt/1B821X7w/GZ+UTZOT1YfBevkFuCaIWGRXhMVq3wBbmU2LGJB2w2
-         i2gCIgbVkla9fYRYSORioKnj6xSRwku3N7Ff1IQ8PxJ3mTYXNPdeAZF13QAho6fCSanM
-         sXHy6AyfUFjvhcU+xpNfi7xRhsGc/npwS+uC1vxPa6OhPOiBog+SKjMPpoPJyG+he7qC
-         he+hIiVQCmQbCpD3glA0HwcnJt3UC8slb0lCRm8SQD5lM08JDo3ZCgKq+d/CnZGvKxXE
-         BN28pfY2aoagXTQheLSstCSVLkJb6w7jeGe3Yq8uJvZOrnPLiOucC/0VBYc+ug02x4Vd
-         MDuA==
-X-Gm-Message-State: ACgBeo1SWjyrmV412geHRoHjOAznj79pKUuCfDAqEAKgQNkYAbul4TTZ
-        Cyi2Kg4kSUUTTHKMaXIGHqXnK5s=
-X-Google-Smtp-Source: AA6agR5Hye3v3g3vQNGv2sxDxN0MQYZzy1NniLwFYug9lKHsrYWE9v/m+VPlUdinVqGOD7UrFA0EY4Q=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a05:6a00:1410:b0:528:5a5a:d846 with SMTP id
- l16-20020a056a00141000b005285a5ad846mr10599808pfu.9.1662660951235; Thu, 08
- Sep 2022 11:15:51 -0700 (PDT)
-Date:   Thu, 8 Sep 2022 11:15:49 -0700
-In-Reply-To: <20220908114659.102775-1-jolsa@kernel.org>
-Mime-Version: 1.0
-References: <20220908114659.102775-1-jolsa@kernel.org>
-Message-ID: <YxoxVS4s9NgbpXrP@google.com>
-Subject: Re: [PATCH bpf-next] bpf: Prevent bpf program recursion for raw
- tracepoint probes
-From:   sdf@google.com
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        syzbot+2251879aa068ad9c960d@syzkaller.appspotmail.com,
-        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, Hao Luo <haoluo@google.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229583AbiIHSb1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Sep 2022 14:31:27 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E77FA74BAE;
+        Thu,  8 Sep 2022 11:31:26 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 701F161DE1;
+        Thu,  8 Sep 2022 18:31:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9EFBC433D6;
+        Thu,  8 Sep 2022 18:31:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1662661885;
+        bh=pwiS6dxc4KyhjhtcsKVTP/Sq/be3I4Y28Qt1YVLE2zA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZZKPXlPt65enO3t/+8wobhXq8Rebtsjiw0UxB9PA+OwPCW9zOPne9ygTXi+6IBlFx
+         nU6CQEeZW3c7lyl2UQ7YJB2e7F13d6HRrhH3V9AxxLUVy1yWKWTQyBFKo+8/Sve31x
+         9DWPJqNX5wAmPcnTdxfuwTwtb/bQlGZ8F8bU2q/mNE5ChQGuVYwo1nRCvoIsmw7YnX
+         F5my9C8bkkgiKhmAY7K8K2siA0FJJUnIo9lft8XS6qtTNYCxk+Bx+xceREcoPS1TXm
+         V6bnF4iuWW6ALw5FRqiTcgNbbL1+xMrcihvsna+jcLUpjn2Ir9w/q+/aLtjDLPur3a
+         3etG12xvDLP2g==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 0D6BB404A1; Thu,  8 Sep 2022 15:31:23 -0300 (-03)
+Date:   Thu, 8 Sep 2022 15:31:23 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org,
+        Marco Elver <elver@google.com>,
+        Song Liu <songliubraving@fb.com>
+Subject: Re: [PATCH v2] perf test: Skip sigtrap test on old kernels
+Message-ID: <Yxo0+gYh+e2Ssfk+@kernel.org>
+References: <20220907050407.2711513-1-namhyung@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220907050407.2711513-1-namhyung@kernel.org>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 09/08, Jiri Olsa wrote:
-> We got report from sysbot [1] about warnings that were caused by
-> bpf program attached to contention_begin raw tracepoint triggering
-> the same tracepoint by using bpf_trace_printk helper that takes
-> trace_printk_lock lock.
-
->   Call Trace:
->    <TASK>
->    ? trace_event_raw_event_bpf_trace_printk+0x5f/0x90
->    bpf_trace_printk+0x2b/0xe0
->    bpf_prog_a9aec6167c091eef_prog+0x1f/0x24
->    bpf_trace_run2+0x26/0x90
->    native_queued_spin_lock_slowpath+0x1c6/0x2b0
->    _raw_spin_lock_irqsave+0x44/0x50
->    bpf_trace_printk+0x3f/0xe0
->    bpf_prog_a9aec6167c091eef_prog+0x1f/0x24
->    bpf_trace_run2+0x26/0x90
->    native_queued_spin_lock_slowpath+0x1c6/0x2b0
->    _raw_spin_lock_irqsave+0x44/0x50
->    bpf_trace_printk+0x3f/0xe0
->    bpf_prog_a9aec6167c091eef_prog+0x1f/0x24
->    bpf_trace_run2+0x26/0x90
->    native_queued_spin_lock_slowpath+0x1c6/0x2b0
->    _raw_spin_lock_irqsave+0x44/0x50
->    bpf_trace_printk+0x3f/0xe0
->    bpf_prog_a9aec6167c091eef_prog+0x1f/0x24
->    bpf_trace_run2+0x26/0x90
->    native_queued_spin_lock_slowpath+0x1c6/0x2b0
->    _raw_spin_lock_irqsave+0x44/0x50
->    __unfreeze_partials+0x5b/0x160
->    ...
-
-> The can be reproduced by attaching bpf program as raw tracepoint on
-> contention_begin tracepoint. The bpf prog calls bpf_trace_printk
-> helper. Then by running perf bench the spin lock code is forced to
-> take slowpath and call contention_begin tracepoint.
-
-> Fixing this by skipping execution of the bpf program if it's
-> already running, Using bpf prog 'active' field, which is being
-> currently used by trampoline programs for the same reason.
-
-Makes sense to me and seems to address Alexei's earlier point
-about bpf_prog_active.
-
-Reviewed-by: Stanislav Fomichev <sdf@google.com>
-
-> Reported-by: syzbot+2251879aa068ad9c960d@syzkaller.appspotmail.com
-> [1] https://lore.kernel.org/bpf/YxhFe3EwqchC%2FfYf@krava/T/#t
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+Em Tue, Sep 06, 2022 at 10:04:07PM -0700, Namhyung Kim escreveu:
+> If it runs on an old kernel, perf_event_open would fail because of the
+> new fields sigtrap and sig_data.  Just skipping the test could miss an
+> actual bug in the kernel.
+> 
+> Let's check BTF if it has the perf_event_attr.sigtrap field.
+> 
+> Cc: Marco Elver <elver@google.com>
+> Cc: Song Liu <songliubraving@fb.com>
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 > ---
->   include/linux/bpf.h      | 1 +
->   kernel/bpf/trampoline.c  | 6 +++---
->   kernel/trace/bpf_trace.c | 6 ++++++
->   3 files changed, 10 insertions(+), 3 deletions(-)
+>  tools/perf/tests/sigtrap.c | 46 +++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 45 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/tests/sigtrap.c b/tools/perf/tests/sigtrap.c
+> index e32ece90e164..32f08ce0f2b0 100644
+> --- a/tools/perf/tests/sigtrap.c
+> +++ b/tools/perf/tests/sigtrap.c
+> @@ -16,6 +16,8 @@
+>  #include <sys/syscall.h>
+>  #include <unistd.h>
+>  
+> +#include <bpf/btf.h>
+> +
+>  #include "cloexec.h"
+>  #include "debug.h"
+>  #include "event.h"
+> @@ -54,6 +56,42 @@ static struct perf_event_attr make_event_attr(void)
+>  	return attr;
+>  }
+>  
+> +static bool attr_has_sigtrap(void)
+> +{
+> +	bool ret = false;
+> +
+> +#ifdef HAVE_BPF_SKEL
+> +
+> +	struct btf *btf;
+> +	const struct btf_type *t;
+> +	const struct btf_member *m;
+> +	const char *name;
+> +	int i, id;
+> +
+> +	/* just assume it doesn't have the field */
+> +	btf = btf__load_vmlinux_btf();
 
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 48ae05099f36..4737bd0fcbb8 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -2640,4 +2640,5 @@ static inline void bpf_cgroup_atype_get(u32  
-> attach_btf_id, int cgroup_atype) {}
->   static inline void bpf_cgroup_atype_put(int cgroup_atype) {}
->   #endif /* CONFIG_BPF_LSM */
+Cool, at some point we'll probably move this to some other global place,
+doing the lazy loading and keeping it in place as probably we'll use it
+more often :-)
 
-> +void notrace bpf_prog_inc_misses_counter(struct bpf_prog *prog);
->   #endif /* _LINUX_BPF_H */
-> diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-> index ad76940b02cc..a098bdc33209 100644
-> --- a/kernel/bpf/trampoline.c
-> +++ b/kernel/bpf/trampoline.c
-> @@ -863,7 +863,7 @@ static __always_inline u64 notrace  
-> bpf_prog_start_time(void)
->   	return start;
->   }
+Waiting for v2.
 
-> -static void notrace inc_misses_counter(struct bpf_prog *prog)
-> +void notrace bpf_prog_inc_misses_counter(struct bpf_prog *prog)
->   {
->   	struct bpf_prog_stats *stats;
->   	unsigned int flags;
-> @@ -896,7 +896,7 @@ u64 notrace __bpf_prog_enter(struct bpf_prog *prog,  
-> struct bpf_tramp_run_ctx *ru
->   	run_ctx->saved_run_ctx = bpf_set_run_ctx(&run_ctx->run_ctx);
+Thanks for working on this.
 
->   	if (unlikely(this_cpu_inc_return(*(prog->active)) != 1)) {
-> -		inc_misses_counter(prog);
-> +		bpf_prog_inc_misses_counter(prog);
->   		return 0;
->   	}
->   	return bpf_prog_start_time();
-> @@ -967,7 +967,7 @@ u64 notrace __bpf_prog_enter_sleepable(struct  
-> bpf_prog *prog, struct bpf_tramp_r
->   	might_fault();
+- Arnaldo
 
->   	if (unlikely(this_cpu_inc_return(*(prog->active)) != 1)) {
-> -		inc_misses_counter(prog);
-> +		bpf_prog_inc_misses_counter(prog);
->   		return 0;
->   	}
-
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index 68e5cdd24cef..c8cd1aa7b112 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -2042,9 +2042,15 @@ static __always_inline
->   void __bpf_trace_run(struct bpf_prog *prog, u64 *args)
->   {
->   	cant_sleep();
-> +	if (unlikely(this_cpu_inc_return(*(prog->active)) != 1)) {
-> +		bpf_prog_inc_misses_counter(prog);
+> +	if (btf == NULL)
+> +		return false;
+> +
+> +	id = btf__find_by_name_kind(btf, "perf_event_attr", BTF_KIND_STRUCT);
+> +	if (id < 0)
 > +		goto out;
+> +
+> +	t = btf__type_by_id(btf, id);
+> +	for (i = 0, m = btf_members(t); i < btf_vlen(t); i++, m++) {
+> +		name = btf__name_by_offset(btf, m->name_off);
+> +		if (!strcmp(name, "sigtrap")) {
+> +			ret = true;
+> +			break;
+> +		}
 > +	}
->   	rcu_read_lock();
->   	(void) bpf_prog_run(prog, args);
->   	rcu_read_unlock();
 > +out:
-> +	this_cpu_dec(*(prog->active));
->   }
+> +	btf__free(btf);
+> +#endif
+> +
+> +	return ret;
+> +}
+> +
+>  static void
+>  sigtrap_handler(int signum __maybe_unused, siginfo_t *info, void *ucontext __maybe_unused)
+>  {
+> @@ -139,7 +177,13 @@ static int test__sigtrap(struct test_suite *test __maybe_unused, int subtest __m
+>  
+>  	fd = sys_perf_event_open(&attr, 0, -1, -1, perf_event_open_cloexec_flag());
+>  	if (fd < 0) {
+> -		pr_debug("FAILED sys_perf_event_open(): %s\n", str_error_r(errno, sbuf, sizeof(sbuf)));
+> +		if (attr_has_sigtrap()) {
+> +			pr_debug("FAILED sys_perf_event_open(): %s\n",
+> +				 str_error_r(errno, sbuf, sizeof(sbuf)));
+> +		} else {
+> +			pr_debug("perf_event_attr doesn't have sigtrap\n");
+> +			ret = TEST_SKIP;
+> +		}
+>  		goto out_restore_sigaction;
+>  	}
+>  
+> -- 
+> 2.37.2.789.g6183377224-goog
 
->   #define UNPACK(...)			__VA_ARGS__
-> --
-> 2.37.3
+-- 
 
+- Arnaldo
