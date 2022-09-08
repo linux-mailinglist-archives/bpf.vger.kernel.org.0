@@ -2,116 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAA1F5B2692
-	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 21:14:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7425A5B26BD
+	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 21:31:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229437AbiIHTN7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Sep 2022 15:13:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47812 "EHLO
+        id S232026AbiIHTbx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Sep 2022 15:31:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229938AbiIHTN5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Sep 2022 15:13:57 -0400
-Received: from out0.migadu.com (out0.migadu.com [IPv6:2001:41d0:2:267::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B26FEE51E;
-        Thu,  8 Sep 2022 12:13:55 -0700 (PDT)
-Message-ID: <30cd1aa2-4dcf-d181-30d8-678377bf96c5@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1662664433;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Fcjsre31INBVp/IVj9TsfTLSl4EYVGMrSoczkfDg8/g=;
-        b=RQMBYV6PzyyXv9pu7VQxhNKE4Brl0Wi3VVhhghI9ubjd0G/twMX2U7Yuglf4hsS1h9Yj0J
-        GMdNBmEHq6aNj3v9hRSbGdND0ikx2bRb5X+pJytfK1RJwmWC6Mr2UYNwrbD5bJK46baFuz
-        hK9MO7BaDpctVRhfitPRPlDGaIxzD64=
-Date:   Thu, 8 Sep 2022 12:13:50 -0700
+        with ESMTP id S232011AbiIHTbw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Sep 2022 15:31:52 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18D90BB932;
+        Thu,  8 Sep 2022 12:31:52 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id C5453B82235;
+        Thu,  8 Sep 2022 19:31:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 088B0C433C1;
+        Thu,  8 Sep 2022 19:31:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1662665509;
+        bh=NmE619tRw480q6SlrwPDQuo+MM2YUSnioxegTXmhEHg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KvlRWEJ32TDBz38Gt6UPyhmuOvwv0H6sA6MmoAaBpuZY5csfvvSiCIvigsAZcO44+
+         jrgMuk0DnvyV0bATZ+zKus3DjHznzN1PeD0qA9lt3O0bkkGyKBf6MOL74LaTHezGvN
+         2BLPdJKvyGadn40FA5gf0pM9uD+XcjI1FFv9XXgwnTF8LyOm60EMpL9QmPmftLl30Z
+         GFxD/LOTYhqj7CvVpttkpD7Yy9NRJWcqnhq/WPr4QwWDd8SVMYLhGAlPLeip1GzC9j
+         x5hRVGUDpLIe3563UcHSj+4ZriObyVnyLiIhXpAnZC6wD5mrslcMv9G/2lmPsgeeiq
+         6BddUzRLayJtQ==
+Date:   Thu, 8 Sep 2022 12:31:47 -0700
+From:   Josh Poimboeuf <jpoimboe@kernel.org>
+To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Suleiman Souhlal <suleiman@google.com>,
+        bpf <bpf@vger.kernel.org>, linux-kernel@vger.kernel.org,
+        Borislav Petkov <bp@suse.de>, x86@kernel.org
+Subject: Re: [PATCH v3 0/2] x86/kprobes: Fixes for CONFIG_RETHUNK
+Message-ID: <20220908193147.mtfwh33q2cfbw52b@treble>
+References: <20220908220354.28c196c8bbe4e83c83afcb59@kernel.org>
+ <166264927154.775585.16570756675363838701.stgit@devnote2>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2 0/2] Fix cgroup attach flags being assigned to
- effective progs
-Content-Language: en-US
-To:     sdf@google.com, Pu Lehui <pulehui@huaweicloud.com>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, Pu Lehui <pulehui@huawei.com>
-References: <20220908145304.3436139-1-pulehui@huaweicloud.com>
- <YxomJlABk3fzQ9bQ@google.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <YxomJlABk3fzQ9bQ@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: linux.dev
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <166264927154.775585.16570756675363838701.stgit@devnote2>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 9/8/22 10:28 AM, sdf@google.com wrote:
-> On 09/08, Pu Lehui wrote:
->> From: Pu Lehui <pulehui@huawei.com>
+On Fri, Sep 09, 2022 at 12:01:11AM +0900, Masami Hiramatsu (Google) wrote:
+> Hi Peter and Josh,
 > 
->> When root-cgroup attach multi progs and sub-cgroup attach a
->> override prog, bpftool will display incorrectly for the attach
->> flags of the sub-cgroup’s effective progs:
+> So here is 3rd version of the patches to fix kprobes and optprobe with
+> CONFIG_RETHUNK and CONFIG_SLS.
+> Previous version is here;
 > 
->> $ bpftool cgroup tree /sys/fs/cgroup effective
->> CgroupPath
->> ID       AttachType      AttachFlags     Name
->> /sys/fs/cgroup
->> 6        cgroup_sysctl   multi           sysctl_tcp_mem
->> 13       cgroup_sysctl   multi           sysctl_tcp_mem
->> /sys/fs/cgroup/cg1
->> 20       cgroup_sysctl   override        sysctl_tcp_mem
->> 6        cgroup_sysctl   override        sysctl_tcp_mem <- wrong
->> 13       cgroup_sysctl   override        sysctl_tcp_mem <- wrong
->> /sys/fs/cgroup/cg1/cg2
->> 20       cgroup_sysctl                   sysctl_tcp_mem
->> 6        cgroup_sysctl                   sysctl_tcp_mem
->> 13       cgroup_sysctl                   sysctl_tcp_mem
+> https://lore.kernel.org/all/166260087224.759381.4170102827490658262.stgit@devnote2/
 > 
->> For cg1, obviously, the attach flags of prog6 and prog13 can not be
->> OVERRIDE, and the attach flags of prog6 and prog13 is meaningless for
->> cg1. We only need to care the attach flags of prog which attached to
->> cg1, other progs attach flags should be omit. After these patches,
->> the above situation will show as bellow:
-> 
->> $ bpftool cgroup tree /sys/fs/cgroup effective
->> CgroupPath
->> ID       AttachType      AttachFlags     Name
->> /sys/fs/cgroup
->> 6        cgroup_sysctl   multi           sysctl_tcp_mem
->> 13       cgroup_sysctl   multi           sysctl_tcp_mem
->> /sys/fs/cgroup/cg1
->> 20       cgroup_sysctl   override        sysctl_tcp_mem
->> 6        cgroup_sysctl                   sysctl_tcp_mem
->> 13       cgroup_sysctl                   sysctl_tcp_mem
->> /sys/fs/cgroup/cg1/cg2
->> 20       cgroup_sysctl                   sysctl_tcp_mem
->> 6        cgroup_sysctl                   sysctl_tcp_mem
->> 13       cgroup_sysctl                   sysctl_tcp_mem
-> 
->> v2:
->> - Limit prog_cnt to avoid overflow. (John)
->> - Add more detail message.
-> 
-> John also raised a good question in v1: the flags don't seem to
-> make sense when requesting effective list. So maybe not export them
-> at all?
-+1. not exporting them for 'effective' listing makes sense.
+> In this version, I simplified all code and just checks the INT3 comes
+> from kgdb or not. Other INT3 are treated as one-byte instruction.
 
-This seems to be the day one behavior instead of the recent 
-prog_attach_flags changes? so bpf-next makes sense also.
+Looks good to me.
 
+I was confused by the naming of kgdb_has_hit_break(), because in this
+case, with the function being called from outside the stopped kgdb
+context, the breakpoint hasn't actually been hit.  But it still seems to
+do the right thing: it checks for BP_ACTIVE which means the breakpoint
+has been written.
+
+Reviewed-by: Josh Poimboeuf <jpoimboe@kernel.org>
+
+-- 
+Josh
