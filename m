@@ -2,73 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 832AF5B12FC
-	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 05:37:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70CC85B130D
+	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 05:51:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229514AbiIHDht (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Sep 2022 23:37:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59378 "EHLO
+        id S229526AbiIHDvM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Sep 2022 23:51:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbiIHDhq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Sep 2022 23:37:46 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EEE6C59FA
-        for <bpf@vger.kernel.org>; Wed,  7 Sep 2022 20:37:45 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id y136so11656767pfb.3
-        for <bpf@vger.kernel.org>; Wed, 07 Sep 2022 20:37:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date;
-        bh=o/jZPG3DJKxGqj82wT7GHLoYfjBOK9pwkZxXl5FZHiQ=;
-        b=TVpr39LT9fl0UO08Zer0T4uedczBC7GUU4P4qpzSaILNf/pKEBklGb4NR/QQBA98uM
-         YKlHfgQ7CcRYDE42fczSNbEX/Aa86IQSGuHioLhGtR5CXK3akbXeCWPS3pMuXi/MogYU
-         I/0QwXKUrThQxYyZql/wTOC82p7qEdPJWnZEFRpv+7ov89VDwhoeEG2E01m08qaZPoVn
-         yR3YGAzLfbV+RXLp98W+koeh6eEuX7SBbXcU9bK7vN92KTobbCiw0ZAUhGwdQxsX5g6/
-         2ZydTth9YJAe68bdD0/4Ig1txpAT8D0NQtmRiTfBhibC8fWJqPz1I0v7VdpD4vcAhtUv
-         ROgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
-        bh=o/jZPG3DJKxGqj82wT7GHLoYfjBOK9pwkZxXl5FZHiQ=;
-        b=Ok2/57SKExrkAHeuIXod4wEpvhn5YsC44rdRwGI/b0V72CXmUZQ74g1AWiFVTknyCS
-         xUU2xF1dPv4me9XEZK+uIan2WXtdLVLTxBWG/Qfw3UEvTKwXTLr56EXbCb/ac8Chxsb7
-         JRQ9Tem9q8AXweP+bOg2rFMMKAM80dQ6Wn3hNku7ACos3OUz8YXoJm7xMNhbzEFDrBH1
-         eLtTBgdLXgnYHhLdKin+4Xm5x+EjcqunVS8Q0PMZ6ZodhfhxvSM6MH+bjfoTmA/GIkGG
-         BxhwAkjDbB+xFy4PvV8/Ndu8uajjt/alXKGrjJ+ZLzE4g2Yx/KqNrcyU4TEPNJNlVc7R
-         9KMA==
-X-Gm-Message-State: ACgBeo113WACKNlBbsxRWpoaZNZi+w4NsPZekHrSoujutt6UWUQFEuro
-        gmIwvwO78tLc47sU6+NbHy7mgYRnaRI=
-X-Google-Smtp-Source: AA6agR4bXF0/jCDp89XB6ienlvwi/XyrGAhZ9Y+VpNNHpxTLPi+XBI4UD3q0Xi4SH7QbTFhMF91YnA==
-X-Received: by 2002:a65:6d13:0:b0:41d:b593:e5ab with SMTP id bf19-20020a656d13000000b0041db593e5abmr5982108pgb.467.1662608264762;
-        Wed, 07 Sep 2022 20:37:44 -0700 (PDT)
-Received: from macbook-pro-4.dhcp.thefacebook.com ([2620:10d:c090:400::5:66c4])
-        by smtp.gmail.com with ESMTPSA id i67-20020a626d46000000b0053e7d3b8d6dsm2434761pfc.1.2022.09.07.20.37.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Sep 2022 20:37:44 -0700 (PDT)
-Date:   Wed, 7 Sep 2022 20:37:41 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Delyan Kratunov <delyank@fb.com>
-Subject: Re: [PATCH RFC bpf-next v1 16/32] bpf: Introduce BPF memory object
- model
-Message-ID: <20220908033741.l6zhopfhnfrpi72y@macbook-pro-4.dhcp.thefacebook.com>
-References: <20220904204145.3089-1-memxor@gmail.com>
- <20220904204145.3089-17-memxor@gmail.com>
- <20220908003429.wsucvsdcxnkipcja@macbook-pro-4.dhcp.thefacebook.com>
- <CAP01T77-ygt+MvvwzRwo+3kDrk_8sCv-ASGT8qL2PvPjL_11jw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        with ESMTP id S229513AbiIHDvL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Sep 2022 23:51:11 -0400
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2059.outbound.protection.outlook.com [40.107.20.59])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B2C7A74FB
+        for <bpf@vger.kernel.org>; Wed,  7 Sep 2022 20:51:09 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=a7ah2sSc5VDSwkFRYbF6V8ebQCulkcuuZS+nxUtEVZi/4KySHZecw0RV2mNiFTe2JY6OqA66XiyK9ugN5ddTXOTsTHqnrJrGSRBwyIzb9KbZWIf0/70EDGqfQyaFLA+v74a344NcdVA0EpRnwU9l9p4JZxcwVKSSXOkqpdPYi9H00blGaJSrO1CDeEVRPcNHNLh/2bCBB7Rxp2paSUsVXKeAfBVpm9/19Ok6pegwj6MHJS3DpQ/7hbKXrDvp4V0WeBbu6o2602Lqn7d3Mcepxe4U1q/lHPwGdNyiuLnHclTc+ZkKxivQ+XMSv+fYskvfnDhoQNDPcTHkwYf0hmXVlQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=OkgsJQDVDqW47JsKECTTj/F/yBCsQO325Y96QwIpjg0=;
+ b=C2yveqq6zwC4UWq8YOGVjT8hKMYDi4TSBCjkq3YD7/VoYPC9MPnnsQZhI2pv1QgV5eWtFQd7hcBtuu/e2zbcTs3B9OtmKo6CaRT/JswZ/XaOu0pnN9+TbBdD2DYSVChjGYYAZ9ujrHKkFNQUOCA/1ra3O01RZaPh/tyiOPtzZpbD1tgUU8HiiVB8tvFQPdK83QCiuKnD4HjvKNde4RUpTI1LkdpS8v/zfXEkTVvFHGES7H5ol/4XiEerhib9XUxtxxIyM1zspbmAhejXPqJwh5BkZ86CjYkvtNre56W21JrMQCTm9iacRZ+naASGudQpm85TikCeEX736tUHs3bFyw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OkgsJQDVDqW47JsKECTTj/F/yBCsQO325Y96QwIpjg0=;
+ b=NPQBvxTif9cYocjECNanw1JxvvDvOdn5W4/sQkBB39L5SQ70sZS74u3yOElL50+sM4Jw+4XSgAfR7ThwyeEOpAOI2h0cEcCIMBFWYecVIfEnPUOzXfMaecIpLMreOEoCuvB7AZz+jI9cDrciOIT349yu9s1K2rNlOcOvJ/AZ7zefepvBuDJHgOwaVRwmCJ1EL8+Iy+3gl1N4nmIED7+Y4L9f7lYemlk3kijtazC9It09X4kMedWHtZ35RIcOmMIc6WcZ74hq8nk6XVdNAdZgxo/A9m3pqxp97zeu3h7csiejXehaaFToC5e/1dZkDdC3VcaeaPbK4097s1QSqg5GZg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from DB9PR04MB8107.eurprd04.prod.outlook.com (2603:10a6:10:243::20)
+ by HE1PR0402MB3626.eurprd04.prod.outlook.com (2603:10a6:7:88::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5588.18; Thu, 8 Sep
+ 2022 03:51:06 +0000
+Received: from DB9PR04MB8107.eurprd04.prod.outlook.com
+ ([fe80::9c5d:52c0:6225:826e]) by DB9PR04MB8107.eurprd04.prod.outlook.com
+ ([fe80::9c5d:52c0:6225:826e%6]) with mapi id 15.20.5612.016; Thu, 8 Sep 2022
+ 03:51:06 +0000
+Date:   Thu, 8 Sep 2022 11:51:00 +0800
+From:   Shung-Hsi Yu <shung-hsi.yu@suse.com>
+To:     Vincent Li <vincent.mc.li@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>
+Subject: Re: differentiate the verifier invalid mem access message error?
+Message-ID: <YxlmpEzm/ZDFTjKE@syu-laptop>
+References: <CAK3+h2zZQ4zEB55Bn565Xf0okf+Jotmo6qHYmzpoJPBcFWPP0A@mail.gmail.com>
+ <CAK3+h2y4isKQQWFY9dnEq86a4BRG1zr5nEveyKqFyVvYaRrPpw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAP01T77-ygt+MvvwzRwo+3kDrk_8sCv-ASGT8qL2PvPjL_11jw@mail.gmail.com>
+In-Reply-To: <CAK3+h2y4isKQQWFY9dnEq86a4BRG1zr5nEveyKqFyVvYaRrPpw@mail.gmail.com>
+X-ClientProxiedBy: AS9PR0301CA0047.eurprd03.prod.outlook.com
+ (2603:10a6:20b:469::27) To DB9PR04MB8107.eurprd04.prod.outlook.com
+ (2603:10a6:10:243::20)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DB9PR04MB8107:EE_|HE1PR0402MB3626:EE_
+X-MS-Office365-Filtering-Correlation-Id: 21be54bd-07a6-41ba-cf2a-08da914d5b61
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: IIya8H0bg3Ib2lxakME3BIiLskBS2M/Zq66ptzCfkQ0iL4fL7t+I0sbZIBfDofV91/6oG6+kEotj8QePy2/xaCrvaLfRGiMNPjsB+b3lbSp+vZ9OUXYdnaJ7CO1CBaWLxj3ey9S4McpRqbne0hLf13r2upReWjbHsGF71brF2E6xdv1J2eTWVC890vtl6X3WZl4jY9wtIjH+KHNhs2csAG06PU70sDUrRucVpB6iV35FHc32uPk0ApaEOhl9iINZsFc7+HTUsCW8flMgRiaw5/JCydyudMds0cTu/omeMXpsXzKYOdOQYKWPgwutQROcpccGiWazTm91nQA4fsyBKpaneHmRx+z5Yo9f0Z1yIvpv1mC1gEFQJys4nB+jGxd6a7NRNs2vVuqSaI5ck686L+GJ6YpJO2JZYdNtvqKraRJfsh099kSURvgDqxPwmLV0SkMfo0qG17uA914kwX5a1l4YX4v/3Cn7ehFXzj7yUwwKSzwzxRu9lN8/HoOraBsHUG8F859RM+Qm2o1KXPU0LqAQhmIOZaVwd/O7VGcs5GBN6n+fBImN7Oij3VmItAENzIp8NfFP7sZef+IZVWdn1Y25zgzUdj83s8prik0+EqRiFlpyxQVRxOYGltMYCD0WGdjF6Ii5RiXqWCKqQlzUGeZ0u+2ePKC+wyDyaeaonkwirskY08d7UA53OVDdyt3EUg9ts1HvYB7a3Nr2ifmWtg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR04MB8107.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(7916004)(136003)(346002)(376002)(366004)(396003)(39860400002)(186003)(38100700002)(8676002)(5660300002)(83380400001)(8936002)(66476007)(66946007)(4326008)(2906002)(33716001)(6512007)(6506007)(41300700001)(9686003)(66556008)(26005)(6666004)(6916009)(53546011)(15650500001)(478600001)(6486002)(316002)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MkNQTVRkeSs3OUpISjEyWXAzRkdjNjdiMjExNW9FeDJidGIxSThYMnVjdGFS?=
+ =?utf-8?B?R2d4aTArWUxnSkI2T1pyOXFGTXpyVm03c3c5TW5CZzlBOVFmSE5XVUgrSFcz?=
+ =?utf-8?B?SkViOVF6eld1eXpnNE1GWXpQcmV2VzVzQnR2TGVOTkxzSk52QmdOK2kxTURV?=
+ =?utf-8?B?ZGFiRnRxTVBzVTVqK2N3MHhLN25nb0lyVUM4dm83QnhkL0paVXp0N29lbHcr?=
+ =?utf-8?B?ZCtJbE9qa0ViQUg5WnhnV1J0S3lWUDRVMUZHa2NGMXRuRDVXdW5kQis0SFRh?=
+ =?utf-8?B?QmZWSnVqVzVJSWl3bjRiYUFHeW9VWGdreFA4aXdhd0xSc1ZHMTh5RlRQNWZC?=
+ =?utf-8?B?YytaNmJVcjV4QWJkNTFYVjZJdm1rR2NxQWhYMjdTWDY0Z05ka2tlVTBIUkxH?=
+ =?utf-8?B?cncrMG5MRVVLbERpSHNNcFpBd2hlbUMzMjF3SEJ5L1k2MHUxRStkL01UZ2g3?=
+ =?utf-8?B?aHBHTFNZMUlQQlN5dnBDWkhHK1NhMnkwSXQzakFPUXlMRmo5NzByVC8xQUR6?=
+ =?utf-8?B?aVJ6MjFaUjgveXZ4QnBtTHR1RHkxVGZZMDc4Rmd3MmNqb25oUFFWYWRjM2FY?=
+ =?utf-8?B?bGR4dDJFcTNCelhvQ1d3cFJtVlU5L2tTbDNHNDhtT2NKVmhYa3JIQzhPSlEw?=
+ =?utf-8?B?UjhWbkhHSjl3ZERmQUsvRmxDcVkxeittUnF2N3JQL1N2dkcrS1ZXdjVSVFNB?=
+ =?utf-8?B?T25mVUorWUVIeG1HSXQvKytjK3RSL0VJS1N5bTZUNFFyTlllSktoN09KVlVh?=
+ =?utf-8?B?dmdVVVdtK0IyZ2ZpZjd2VzZVMkJGWFNHOTAzWFpsZEhkQkg3ODVjc3dsRGRx?=
+ =?utf-8?B?WDdsSE5Nb2gvbGdXS2RSWU5UMEZ1ZTVPNm9JVW5hNGpSdXlKRTdSUlEvanY2?=
+ =?utf-8?B?d0loTzJ4Z3pSemFuUVVNeDlqV0Nhc3NDM05UUXZlYWh3OEJhcWtYUnNIditH?=
+ =?utf-8?B?ZUJKSTROd0FDcFZWMnNsK25PazFXSDVrQ1dLcTI1SnRZcms1dTBmdHFPcjd1?=
+ =?utf-8?B?Q1Bxa212dlBVWGxFa0VXU0JFMlArb2tWa21zUGt5d1UzdUwvQnlmajE1SzRG?=
+ =?utf-8?B?ZjllUUlLdmxMc1RxQzJWUTZadkF5ZWpndlowSUNIU0FDcnhUSUppbVdscDZ3?=
+ =?utf-8?B?dStXRFgzTFZjcm1XQzBxZmo2UjVsUkhlT0FaSVBZZC9ub0M3RWpCdDU4ZE5X?=
+ =?utf-8?B?eEFjY0MzSTZ6YjRJVmVHaVJvSTVpZ2Znd1pvQVdXTnhXaEdQZkRkQUJEblRS?=
+ =?utf-8?B?VDE2R1lNK3VQNFBNaXd3RFpkd1Fxc05HN1NWOS8yYmo0Zkhrby9yZTZKNHBJ?=
+ =?utf-8?B?Lzk1N01EZm1xaWcyaStYZ2syQmloVll1V1IxUGRoOFlKb0QrNXBXWDE1ZWYx?=
+ =?utf-8?B?UkZmeUYvRkEvamp6V0VnVzdSRHRucWNabTNCYWJ5cWFtTWZjRERaY2tCc2w1?=
+ =?utf-8?B?T1RGbnhOT1M3K1Jaa1RNdEJJdTJHNC9KVmQwRElGNmVTaGZid0NCZ2ZzK0lP?=
+ =?utf-8?B?MmlyMWlsNUhDazVWbWJHdkJIZC9KVlNQY0Q2R08wc2Zjc21Gckc3cG9UeUNw?=
+ =?utf-8?B?bHJmVGVBdys1MjliOTBrVysxbkNib0FmK1JORUdJdExhQjNFZlNQSWo1ditE?=
+ =?utf-8?B?MlhNazBGbG1FVWtuMWdOOHJhREpoQVNzVkYxU2lFQWVEeTRGTUF0WTNRSUlv?=
+ =?utf-8?B?RG9ld2Rwa01rb0xHOFRwV1pvNWloVEwrV0EzWnIrdGp0aDRaTXVESFByVEJD?=
+ =?utf-8?B?ZkxyTjF2WXBtV3pGMXZMOEhuekV1MUZERDFMWmhmaHZGS1BjSnBiTmtyZmN6?=
+ =?utf-8?B?UE80Sys4Nng5cFh0TmJkR3c1Rm53NE81TWpaZVpMTjdWY05nTVdPOHl5Vi9m?=
+ =?utf-8?B?dWYyTjZhYjNoeHNVK2Y0ZUxzNzNGcE5rSElMdlhaaElIMHhSWjhJN0dVLzEr?=
+ =?utf-8?B?dDJDU0g4VWN6cTlOTGNMUXVMcTI1U3QvSHFCMXRERFNGM3plU1loUG0zazBB?=
+ =?utf-8?B?YTZzZzMvQVhqZ0tlaFh2bzZ4MWRIMTBHU0daZStkVzE0a1U1UUV3N05PNEJh?=
+ =?utf-8?B?d3FodTVKQmtvR0l2NnJIbGdrbEFkZ1prazk4eXNqRmF2UmpqSFl2NXpmUFhr?=
+ =?utf-8?Q?xGc+qMdtozcmvkl83kKWAcRd0?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 21be54bd-07a6-41ba-cf2a-08da914d5b61
+X-MS-Exchange-CrossTenant-AuthSource: DB9PR04MB8107.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2022 03:51:05.9553
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /j7s6HSeSXBCXdrh5Jj4iUlAG9GvYQLTg3HwAhAIUbSgAeCYrAdlnNCCBgIfPxz69kM7nF54HUEyY6nlN+dJgA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0402MB3626
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,200 +120,49 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 08, 2022 at 04:39:43AM +0200, Kumar Kartikeya Dwivedi wrote:
-> On Thu, 8 Sept 2022 at 02:34, Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
+On Wed, Sep 07, 2022 at 07:40:55PM -0700, Vincent Li wrote:
+> On Wed, Sep 7, 2022 at 7:35 PM Vincent Li <vincent.mc.li@gmail.com> wrote:
+> > Hi,
 > >
-> > On Sun, Sep 04, 2022 at 10:41:29PM +0200, Kumar Kartikeya Dwivedi wrote:
-> > > Add the concept of a memory object model to BPF verifier.
-> > >
-> > > What this means is that there are now some types that are not just plain
-> > > old data, but require explicit action when they are allocated on a
-> > > storage, before their lifetime is considered as started and before it is
-> > > allowed for them to escape the program. The verifier will track state of
-> > > such fields during the various phases of the object lifetime, where it
-> > > can be sure about certain invariants.
-> > >
-> > > Some inspiration is taken from existing memory object and lifetime
-> > > models in C and C++ which have stood the test of time. See [0], [1], [2]
-> > > for more information, to find some similarities. In the future, the
-> > > separation of storage and object lifetime may be made more stark by
-> > > allowing to change effective type of storage allocated for a local kptr.
-> > > For now, that has been left out. It is only possible when verifier
-> > > understands when the program has exclusive access to storage, and when
-> > > the object it is hosting is no longer accessible to other CPUs.
-> > >
-> > > This can be useful to maintain size-class based freelists inside BPF
-> > > programs and reuse storage of same size for different types. This would
-> > > only be safe to allow if verifier can ensure that while storage lifetime
-> > > has not ended, object lifetime for the current type has. This
-> > > necessiates separating the two and accomodating a simple model to track
-> > > object lifetime (composed recursively of more objects whose lifetime
-> > > is individually tracked).
-> > >
-> > > Everytime a BPF program allocates such non-trivial types, it must call a
-> > > set of constructors on the object to fully begin its lifetime before it
-> > > can make use of the pointer to this type. If the program does not do so,
-> > > the verifier will complain and lead to failure in loading of the
-> > > program.
-> > >
-> > > Similarly, when ending the lifetime of such types, it is required to
-> > > fully destruct the object using a series of destructors for each
-> > > non-trivial member, before finally freeing the storage the object is
-> > > making use of.
-> > >
-> > > During both the construction and destruction phase, there can be only
-> > > one program that can own and access such an object, hence their is no
-> > > need of any explicit synchronization. The single ownership of such
-> > > objects makes it easy for the verifier to enforce the safety around the
-> > > beginning and end of the lifetime without resorting to dynamic checks.
-> > >
-> > > When there are multiple fields needing construction or destruction, the
-> > > program must call their constructors in ascending order of the offset of
-> > > the field.
-> > >
-> > > For example, consider the following type (support for such fields will
-> > > be added in subsequent patches):
-> > >
-> > > struct data {
-> > >       struct bpf_spin_lock lock;
-> > >       struct bpf_list_head list __contains(struct, foo, node);
-> > >       int data;
-> > > };
-> > >
-> > > struct data *d = bpf_kptr_alloc(...);
-> > > if (!d) { ... }
-> > >
-> > > Now, the type of d would be PTR_TO_BTF_ID | MEM_TYPE_LOCAL |
-> > > OBJ_CONSTRUCTING, as it needs two constructor calls (for lock and head),
-> > > before it can be considered fully initialized and alive.
-> > >
-> > > Hence, we must do (in order of field offsets):
-> > >
-> > > bpf_spin_lock_init(&d->lock);
-> > > bpf_list_head_init(&d->list);
+> > I see some verifier log examples with error like:
 > >
-> > All sounds great in theory, but I think it's unnecessary complex at this point.
-> > There is still a need to __bpf_list_head_init_zeroed as seen in later patches.
+> > R4 invalid mem access 'inv'
+> >
+> > It looks like invalid mem access errors occur in two places below,
+> > does it make sense to make the error message slightly different so for
+> > new eBPF programmers like me to tell the first invalid mem access is
+> > maybe the memory is NULL? and the second invalid mem access is because
+> > the register type does not match any valid memory pointer? or this
+> > won't help identifying problems and don't bother ?
+> >
+> >  4772         } else if (base_type(reg->type) == PTR_TO_MEM) {
+> >  4773                 bool rdonly_mem = type_is_rdonly_mem(reg->type);
+> >  4774
+> >  4775                 if (type_may_be_null(reg->type)) {
+> >  4776                         verbose(env, "R%d invalid mem access
+> > '%s'\n", regno,
+> >  4777                                 reg_type_str(env, reg->type));
+
+While the error you're seeing is coming from the bottom case (more on that
+below), I agree hinting the user that a null check is missing may be
+helpful.
+
+> >  4778                         return -EACCES;
+> >  4779                 }
+> >
+> > and
+> >
+> >  4924         } else {
+> >  4925                 verbose(env, "R%d invalid mem access '%s'\n", regno,
+> >  4926                         reg_type_str(env, reg->type));
+> >  4927                 return -EACCES;
+> >  4928         }
 > 
-> This particular call is only because of map values. INIT_LIST_HEAD for
-> prealloc init or alloc_elem would be costly.
-> There won't be any concern to do it in check_and_init_map_value, we
-> zero out the field there already. Nothing else needs this check.
-> 
-> List helpers I am planning to inline, it doesn't make sense to have
-> two loads/stores inside kfuncs. And then for local kptrs there is no
-> need to zero init. pop_front/pop_back are even uglier. There you need
-> NULL check + zero init, _then_ check for list_empty. Same with future
-> list_splice.
+> sorry I should read the code more carefully, I guess the "inv" already
+> says it is invalid memory access, not NULL, right?
 
-The inlining is an orthogonal topic.
-It doesn't have to be done the way of map_gen_lookup().
+The "inv" actually means that the type of R4 is scalar. IIUC "inv" stands
+for invariant, which is a term used in static analysis.
 
-> I don't believe list helpers are going to be so infrequent such that
-> all this might not matter at all.
-> 
-> But fine, I still consider this a fair point. I thought a lot about this too.
-> 
-> It really boils down to: do we really want to always zero init?
-
-Special fields like locks, timers, lists, trees -> yes.
-
-> 
-> What seems more desirable to me is forcing initialization like this,
-> esp. since memory reuse is going to be the more common case,
-> and then simply relaxing initialization when we know it comes from
-> bpf_kptr_zalloc. needs_construction similar to needs_destruction.
-> We aren't requiring bpf_list_node_fini, same idea there.
-> 
-> Zeroing the entire big struct vs zeroing/initing two fields makes a
-> huge difference.
-
-Right, but too many assumptions in this reasoning.
-I wasn't proposing to do bzero the whole sizeof(struct foo) in bpf_kptr_zalloc.
-I wasn't proposing to have zalloc flavor either.
-We can do selective zeroing.
-The prog will call bpf_kptr_alloc and bpf_kptr_free,
-but it doesn't have to be the same kfunc-s for all btf types.
-We can substitute kfuncs with custom implicit dtors and ctors based on type info.
-Sort of like C++ calls constructors in operator new.
-But here we can go pretty far with _implicit_ ctors/dtors only.
-
-> > So all this verifier enforced constructors we don't need _today_.
-> > Zero init of everything works.
-> > It's the case for list_head, list_node, spin_lock, rb_root, rb_node.
-> > Pretty much all new data structures will work with zero init
-> > and all of them need async dtors.
-> > The verifier cannot help during destruction.
-> > dtors have to be specified declaratively in a bpf prog for new types
-> 
-> I think about it the other way around.
-> 
-> There actually isn't a need to specify any dtor IMO for custom types.
-> Just init and free your type inline. Much more familiar to people
-> doing C already.
-> Custom types are always just data without special fields, and we know
-> how to destroy BPF special fields.
-> Map already knows how to 'destruct' these types, just like it has to
-> know how to destruct map value.
-> 
-> map value type and local kptr type are similar in that regard. They
-> are both local types in prog BTF with special fields.
-> If it can do it for map value, it can do it for local kptr if it finds
-> it in map (it has to).
-> 
-> To me taking prog reference and setting up per-type dtor is the uglier
-> solution. It's unnecessary for the user. That then forces you to have
-> similar semantics like bpf_timer. map_release_uref will be used to
-> break the reference cycle between map and prog, which is undesirable.
-> More effort then - to think about some way to alleviate that, or live
-> with it and compromise.
-
-Completely agree. I think explicit (bpf prog provided) dtor is an extreme case.
-Hopefully we won't need to add support for it for long time.
-The verifier should be able to do implicit ctor/dtor based on BTF only
-and that will allow us to build pretty complex data structures with rbtrees,
-link lists, etc.
-
-The main point is dtor of bpf_list_head in map value has to be implicit anyway.
-The prog can do:
-struct foo {
-  struct bpf_list_head head;
-  struct bpf_spin_lock lock;
-};
-
-bpf_list_lock
-bpf_list_add(&val->head, ...);
-bpf_list_unlock
-exit
-
-The map will have elements allocated and these elements will contain kptrs
-and populated link lists and rbtrees.
-The bpf infra has to be able to free all these things automatically
-based on BTF and it obviously can do so.
-Since it has to do it anyway we can allow:
-foo_ptr = bpf_kptr_xchg(...);
-bpf_kptr_free(foo_ptr);
-and that free function will do the same implicit destruction of
-the link list which will include walking the list and deleting
-elements recursively.
-Maybe it means that it would have to grab the locks automatically as well.
-Not sure. For single owner case locks won't be needed.
-
-> It shouldn't be invoked on bpf_kptr_free automagically. That is the
-> job of the language and best suited to that.
-> Verifier will see BPF ASM after translation from C/C++/Rust/etc., so
-> for us the destruction at language level appears as the destructing
-> phase of local kptr in verifier. For maps it's the last resort, where
-> programs are already gone, so there is nothing left to do but free
-> stuff.
-
-The C++ compiler generated ctors/dtors sequences instructs "dumb"
-cpu execute them. We have the verifier in-between and the whole run-time.
-The map destruction case is not "last resort". It's a feature provided by
-the bpf run-time. Just like golang garbage collector is not a "last resort".
-
-Anyway back to original point which is:
-we don't have to add support to the verifier to enforce explicit ctor/dtor
-sequences. We can solve practical use cases without that additional complexity.
-There are plenty of other complex things in this patch set.
+Since v5.18 (commit 7df5072cc05f "bpf: Small BPF verifier log improvements")
+the verifier will say "scalar" instead.
