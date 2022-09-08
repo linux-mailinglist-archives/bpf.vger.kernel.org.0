@@ -2,173 +2,232 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D41A5B279B
-	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 22:21:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2635C5B27C6
+	for <lists+bpf@lfdr.de>; Thu,  8 Sep 2022 22:35:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229522AbiIHUVU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Sep 2022 16:21:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59174 "EHLO
+        id S229658AbiIHUfZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Sep 2022 16:35:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbiIHUVT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Sep 2022 16:21:19 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8315AEC74A;
-        Thu,  8 Sep 2022 13:21:18 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 07D56B82258;
-        Thu,  8 Sep 2022 20:21:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE503C433C1;
-        Thu,  8 Sep 2022 20:21:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662668475;
-        bh=6pLu81MViNZ3vOfUBzSq3rkw+GwHKE8Ga0clDe9AKfw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=dSeIQS9ErZc40hJTb/ceFFxw+TGRCEkSQ9mkV5D98K5gITwdVUxh9TqSZM9UQiwhJ
-         eWZ7y3zDBex5COdbvvVpyjiJ6SMUhX3NyarURYHA1FvXOGoU/UikpELaoiCeFUY64y
-         gE38cbAopvou/oZWj+MlzpKIc9R9J6rfxv5xmz4tqoUhMxb6MAbj+T9n4kQVFqeSDy
-         e5zp+sYnQtRIammvTPmY8Ivhve8XbJ7cjJ+8qJapSx0KgPrNbd883WLAcoTCcCvypx
-         Osgrq6dUvSB5zHzwsuTvT9XywDm3GGaMB78mXI4VoE4Szj9Nyi8Yh8I1oeXIvqcUD9
-         Cpv2zfHpr8gfg==
-Received: by mail-oa1-f49.google.com with SMTP id 586e51a60fabf-11e9a7135easo47450154fac.6;
-        Thu, 08 Sep 2022 13:21:15 -0700 (PDT)
-X-Gm-Message-State: ACgBeo3BPNob3zVGNfqvhlmj1BLniWeLBg1gO4qgiEoIVx+xYefLmWEm
-        IVBzv9jI/Qn6fI7Knags7Iec25CuEpZk9mbiC5I=
-X-Google-Smtp-Source: AA6agR4yrENLdhkklnrAOjsgiuEW1FkKaUORHB/1XhO7zv+Xb+H3UuNc5IKeV0xQEdTnh83P8F5fTC2PXyVkAhsiysY=
-X-Received: by 2002:aca:3016:0:b0:345:9d47:5e11 with SMTP id
- w22-20020aca3016000000b003459d475e11mr2161800oiw.31.1662668474858; Thu, 08
- Sep 2022 13:21:14 -0700 (PDT)
+        with ESMTP id S229492AbiIHUfY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Sep 2022 16:35:24 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBE8C5F7C5;
+        Thu,  8 Sep 2022 13:35:22 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id z17so12693268eje.0;
+        Thu, 08 Sep 2022 13:35:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=SNgD9OT6RcD4kQFejhxXeO9dxZOjMwO4MJs4p9XvJGg=;
+        b=K9KK5+khQwnCnFJ0VDgcYEYtmwrm83d77Hwsb4aj1W9cVdpohxrSfqi/jgFvLr3KGT
+         3o19C1JKzDlKqK9wKA837WZfCZnUxVoDhzOhJfeSwhF+wy8AIyynywSx7tJSGPf1k08H
+         ZOUPCjN23a2nFiZa/oTEskoKBPXs3RLiUKdNh9iqFG6tayb3IzE38TifFwi8TveJalfp
+         YVRL1bKF6/1yB8I1y/Yg/LRWgfQ+iEzNkvJIYbJKiMhUSCePj8kfFWGysyxVMtHYIbW8
+         V3GR6fKmpHmIiwyuJZQjT8IqfnPi8AS7251PdKNuajjyes694YG+zUIWql9Bju6Kyj4z
+         QBfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=SNgD9OT6RcD4kQFejhxXeO9dxZOjMwO4MJs4p9XvJGg=;
+        b=iql+xEOLgJaBRYHI+ApTUElrAcx/xg92a407XizfGcCSi00kyvhkrYZ0ijgf5wmhZJ
+         o5ySiimJ2abnSECbmyXUvo5P9vzayfx4sNbUFwPtOcAP6Wla7ZhWOb9XuaApkgm49E7X
+         ofIU2/CiT94BpUKXSrYSlCF9EUAuVc3FNhkrtyOFm/dDjZ0j1pkb4J3hxqO7XRCr9QlB
+         mV2gP3ubgVkbc4K2j9gdAywwzml/2FP1Dv7/GyqcF2KB4rGy1w9RC+4S5DwRaOEaM6XB
+         sH39BeLYLeECar/0udo8jGFcQg6whEnIfs6VV1GDum7xOsgup7p8abUu51uAPg7RCM+1
+         ELgA==
+X-Gm-Message-State: ACgBeo3scp/VXeXPyC/dqV5LjoQ8ofhezzslPWGmAxLMo+BqDPIOeCzY
+        zBFU5O3X7LtZcEECGmF5nJAMTRK2uz4IA7a8uFo=
+X-Google-Smtp-Source: AA6agR49ih8mcdhQkCrkWpdGYTHETt7LV3q0ck77mmw90jXDqUdJETTWi052mPQ4qvsPqwXrDK3hQPF7U22y18yXlhg=
+X-Received: by 2002:a17:907:7b94:b0:731:1b11:c241 with SMTP id
+ ne20-20020a1709077b9400b007311b11c241mr7458394ejc.676.1662669321059; Thu, 08
+ Sep 2022 13:35:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220907155746.1750329-1-punit.agrawal@bytedance.com>
- <CAPhsuW6+D0bfoPZdQ0j-NtCvgMED4YF-LyqXTQQHo+x7tw3yug@mail.gmail.com> <877d2ecffy.fsf_-_@stealth>
-In-Reply-To: <877d2ecffy.fsf_-_@stealth>
-From:   Song Liu <song@kernel.org>
-Date:   Thu, 8 Sep 2022 13:21:04 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW6fUuc6E7_EoY1h-cikDAT6AuLYCwb89JnaTeOcdrsNFw@mail.gmail.com>
-Message-ID: <CAPhsuW6fUuc6E7_EoY1h-cikDAT6AuLYCwb89JnaTeOcdrsNFw@mail.gmail.com>
-Subject: Re: Re: [PATCH v2] bpf: Simplify code by using for_each_cpu_wrap()
-To:     Punit Agrawal <punit.agrawal@bytedance.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        zhoufeng.zf@bytedance.com, Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Jiri Olsa <jolsa@kernel.org>
+References: <20220826184911.168442-1-stephen.s.brennan@oracle.com>
+ <CAADnVQKbK__y8GOD4LqaX0aCgT+rtC5aw54-02mSZj1-U6_mgw@mail.gmail.com>
+ <87sfl3j966.fsf@oracle.com> <CAADnVQKbf5nEBnuSLmfZ_kGLmUzeD5htc1ezbJsVg72adF4bLw@mail.gmail.com>
+ <87v8pylukf.fsf@oracle.com>
+In-Reply-To: <87v8pylukf.fsf@oracle.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 8 Sep 2022 13:35:09 -0700
+Message-ID: <CAADnVQJCQdL4j1FFdSE=K6mUaoVGJkcVK-xzgJ_5MSvb2tEkFw@mail.gmail.com>
+Subject: Re: [PATCH dwarves 0/7] Add support for generating BTF for all variables
+To:     Stephen Brennan <stephen.s.brennan@oracle.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alan Maguire <alan.maguire@oracle.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 8, 2022 at 3:45 AM Punit Agrawal
-<punit.agrawal@bytedance.com> wrote:
+On Wed, Sep 7, 2022 at 2:54 PM Stephen Brennan
+<stephen.s.brennan@oracle.com> wrote:
 >
-> Hi Song,
->
-> Thanks for taking a look.
->
-> Song Liu <song@kernel.org> writes:
->
-> > On Wed, Sep 7, 2022 at 8:58 AM Punit Agrawal
-> > <punit.agrawal@bytedance.com> wrote:
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+> > On Wed, Sep 7, 2022 at 12:07 PM Stephen Brennan
+> > <stephen.s.brennan@oracle.com> wrote:
 > >>
-> >> In the percpu freelist code, it is a common pattern to iterate over
-> >> the possible CPUs mask starting with the current CPU. The pattern is
-> >> implemented using a hand rolled while loop with the loop variable
-> >> increment being open-coded.
+> >> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+> >> > On Fri, Aug 26, 2022 at 11:54 AM Stephen Brennan
+> >> > <stephen.s.brennan@oracle.com> wrote:
+> >> [...]
+> >> >> Future Work
+> >> >> -----------
+> >> >>
+> >> >> If this proves acceptable, I'd like to follow-up with a kernel patch to
+> >> >> add a configuration option (default=n) for generating BTF with all
+> >> >> variables, which distributions could choose to enable or not.
+> >> >>
+> >> >> There was previous discussion[3] about leveraging split BTF or building
+> >> >> additional kernel modules to contain the extra variables. I believe with
+> >> >> this patch series, it is possible to do that. However, I'd argue that
+> >> >> simpler is better here: the advantage for using BTF is having it all
+> >> >> available in the kernel/module image. Storing extra BTF on the
+> >> >> filesystem would break that advantage, and at that point, you'd be
+> >> >> better off using a debuginfo format like CTF, which is lightweight and
+> >> >> expected to be found on the filesystem.
+> >> >
+> >> > With all or nothing approach the distros would have a hard choice
+> >> > to make whether to enable that kconfig, increase BTF and consume
+> >> > extra memory without any obvious reason or just don't do it.
+> >> > Majority probably is not going to enable it.
+> >> > So the feature will become a single vendor only and with
+> >> > inevitable bit-rot.
 > >>
-> >> Simplify the code by using for_each_cpu_wrap() helper to iterate over
-> >> the possible cpus starting with the current CPU. As a result, some of
-> >> the special-casing in the loop also gets simplified.
-> >>
-> >> No functional change intended.
-> >>
-> >> Signed-off-by: Punit Agrawal <punit.agrawal@bytedance.com>
-> >> ---
-> >> v1 -> v2:
-> >> * Fixed the incorrect transformation changing semantics of __pcpu_freelist_push_nmi()
-> >>
-> >> Previous version -
-> >> v1: https://lore.kernel.org/all/20220817130807.68279-1-punit.agrawal@bytedance.com/
-> >>
-> >>  kernel/bpf/percpu_freelist.c | 48 ++++++++++++------------------------
-> >>  1 file changed, 16 insertions(+), 32 deletions(-)
-> >>
-> >> diff --git a/kernel/bpf/percpu_freelist.c b/kernel/bpf/percpu_freelist.c
-> >> index 00b874c8e889..b6e7f5c5b9ab 100644
-> >> --- a/kernel/bpf/percpu_freelist.c
-> >> +++ b/kernel/bpf/percpu_freelist.c
-> >> @@ -58,23 +58,21 @@ static inline void ___pcpu_freelist_push_nmi(struct pcpu_freelist *s,
-> >>  {
-> >>         int cpu, orig_cpu;
-> >>
-> >> -       orig_cpu = cpu = raw_smp_processor_id();
-> >> +       orig_cpu = raw_smp_processor_id();
-> >>         while (1) {
-> >> -               struct pcpu_freelist_head *head;
-> >> +               for_each_cpu_wrap(cpu, cpu_possible_mask, orig_cpu) {
-> >> +                       struct pcpu_freelist_head *head;
-> >>
-> >> -               head = per_cpu_ptr(s->freelist, cpu);
-> >> -               if (raw_spin_trylock(&head->lock)) {
-> >> -                       pcpu_freelist_push_node(head, node);
-> >> -                       raw_spin_unlock(&head->lock);
-> >> -                       return;
-> >> +                       head = per_cpu_ptr(s->freelist, cpu);
-> >> +                       if (raw_spin_trylock(&head->lock)) {
-> >> +                               pcpu_freelist_push_node(head, node);
-> >> +                               raw_spin_unlock(&head->lock);
-> >> +                               return;
-> >> +                       }
-> >>                 }
-> >> -               cpu = cpumask_next(cpu, cpu_possible_mask);
-> >> -               if (cpu >= nr_cpu_ids)
-> >> -                       cpu = 0;
+> >> I'd intend to support it even if just a single distribution enabled it.
+> >> But I do see your concern.
 > >
-> > I personally don't like nested loops here. Maybe we can keep
-> > the original while loop and use cpumask_next_wrap()?
+> > This thread was dormant for 8 days.
+> > That's a poor example of "intend to support".
 >
-> Out of curiosity, is there a reason to avoid nesting here? The nested
-> loop avoids the "cpu == orig_cpu" unnecessary check every iteration.
+> You're right, I definitely could have replied sooner. I'm sorry for that.
+>
+> >> > Whereas with split BTF and extra kernel module approach
+> >> > we can enable BTF with all global vars by default.
+> >> > The extra module will be shipped by all distros and tools
+> >> > like bpftrace might start using it.
+> >>
+> >> Split BTF is currently limited to a single base BTF file. We'd need more
+> >> patches for pahole to support multiple --btf_base files: e.g.
+> >> vmlinux.btf and vmlinux-variables.btf. There's also the question of
+> >> modules: presumably we wouldn't try to have "$MODULE" and
+> >> "$MODULE-btf-extra" modules due to the added complexity. I doubt the
+> >> space savings would be worth it.
+> >>
+> >> I can look into these concerns, but if possible I would like to proceed
+> >> with this series, as it is a separate concern from the exact mechanism
+> >> by which we include extra BTF into the kernel.
+> >
+> > Not an option. Sorry.
+>
+> Ok, so let me describe what I understand to be the proposed design as of
+> the previous thread, and see if it satisfies your concerns. We can work
+> from there to make sure we've got a concensus design before going
+> further.
 
-for_each_cpu_wrap is a more complex loop, so we are using some
-checks either way.
+I was hoping Andrii and others will provide their opinion.
+Here are my .02
 
-OTOH, the nesting is not too deep (two loops then one if), so I guess
-current version is fine.
+> Option #1
+> ---------
+>
+> * A new module, "vmlinux-btf-extra" (or something roughly like that) is
+>   added, which contains BTF only. It is generated with
+>   --encode_all_btf_vars and uses --btf_base=path/to/vmlinux_btf so that
+>   it contains only BTF variables. The vmlinux BTF would be generated
+>   same as always (without the --encode_all_btf_vars).
+>
+> * In the previous thread, it was proposed [1] that modules could
+>   include variables in their BTF in order to reduce the complexity of
+>   the change. Modules would have their BTF generated using
+>   --encode_all_btf_vars and --btf_base=path/to/vmlinux_btf. The
+>   resulting hierarchy would look like this:
+>
+>   vmlinux_btf  [ functions and percpu vars only ]
+>   |- vmlinux-btf-extra [ all other vars for vmlinux ]
+>   |- $MODULE   [ functions and all vars ]
+>   ...
+>
+> This option is desirable because it means that we only need 2-level
+> split BTF, and so we don't actually need to make changes to pahole for
+> multiple --btf_base files. There are two downsides I see:
+>
+> (a) While we save space on vmlinux BTF, each module will have a bit of
+>     extra data for variable types. On my laptop (5.15 based) I have 9.8
+>     MB of BTF, and if you deduct vmlinux, you're still left with 4.7 MB.
+>     If we assume the same overhead of 23.7%, that would be 1.1 MB of
+>     extra module BTF for my particular use case.
+>
+>     $ ls -l /sys/kernel/btf | awk '{sum += $5} END {print(sum)}'
+>     9876871
+>     $ ls -l /sys/kernel/btf/vmlinux
+>     -r--r--r-- 1 root root 5174406 Sep  7 14:20 /sys/kernel/btf/vmlinux
+>
+> (b) It's possible for "vmlinux-btf-extras" and "$MODULE" to contain
+>     duplicate type definitions, wasting additional space. However, as
+>     far as I understand it, this was already a possibility, e.g.
+>     $MODULE1 and $MODULE2 could already contain duplicate types. So I
+>     think this downside is no more.
 
-Acked-by: Song Liu <song@kernel.org>
+Both concerns are valid, but I'm a bit puzzled with (a).
+At least in the networking drivers the number of global vars is very small.
+I expected other drivers to be similar.
+So having "functions and all vars" in ko-s should not add
+that much overhead.
 
+Maybe you're seeing this overhead because pahole is adding
+all declared vars and not only the vars that are actually present?
+That would explain the discrepancy.
+(b) with a bunch of duplicates is a sign that something is off as well.
 
 >
-> As suggested, it's possible to use cpumask_next_wrap() like below -
 >
-> diff --git a/kernel/bpf/percpu_freelist.c b/kernel/bpf/percpu_freelist.c
-> index 00b874c8e889..19e8eab70c40 100644
-> --- a/kernel/bpf/percpu_freelist.c
-> +++ b/kernel/bpf/percpu_freelist.c
-> @@ -68,9 +68,7 @@ static inline void ___pcpu_freelist_push_nmi(struct pcpu_freelist *s,
->                         raw_spin_unlock(&head->lock);
->                         return;
->                 }
-> -               cpu = cpumask_next(cpu, cpu_possible_mask);
-> -               if (cpu >= nr_cpu_ids)
-> -                       cpu = 0;
-> +               cpu = cpumask_next_wrap(cpu, cpu_possible_mask, orig_cpu, false);
+> Option #2
+> ---------
 >
->                 /* cannot lock any per cpu lock, try extralist */
->                 if (cpu == orig_cpu &&
+> * The vmlinux-btf-extra module is still added as in Option #1.
 >
+> * Further, each module would have its own "$MODULE-btf-extra" module to
+>   add in extra BTF. These would be built with a --btf_base=$MODULE.ko
+>   and of course that BTF is based on vmlinux, so we would have:
 >
-> I can send an updated patch if this is preferred.
+>   vmlinux_btf              [ functions and percpu vars only ]
+>   |- vmlinux-btf-extras    [ all other vars for vmlinux ]
+>   |- $MODULE               [ functions and percpu vars only ]
+>      |- $MODULE-btf-extra  [ all  other vars for $MODULE ]
 >
-> Thanks,
-> Punit
+> This is much more complex, pahole must be extended to support a
+> hierarchy of --btf_base files. The kernel itself may not need to
+> understand multi-level BTF since there's no requirement that it actually
+> understand $MODULE-btf-extra, so long as it exposes it via
+> /sys/kernel/btf/$MODULE-btf-extra. I'd also like to see some sort of
+> mechanism to allow an administrator to say "please always load
+> $MODULE-btf-extras alongside $MODULE", but I think that would be a
+> userspace problem.
+>
+> This resolves issue (a) from option #1, of course at implementation
+> cost.
+>
+> Regardless of Option #1 or #2, I'd propose that we implement this as a
+> tristate, similar to what Alan proposed [2]. When set to "m" we use the
+> solutions described above, and when set to "y", we don't bother with it,
+> instead using --encode_all_btf_vars for all generation.
+>
+> If we go with Option #1, no changes to this series should be necessary.
+> If we go with Option #2, I'll need to extend pahole to support at least
+> two BTF base files. Please let me know your thoughts.
+
+Completely agree that two level btf-extra needs quite a bit more work.
+Before we proceed with option 2 let's figure out
+the reason for extra space in option 1.
