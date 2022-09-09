@@ -2,143 +2,304 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F4305B429F
-	for <lists+bpf@lfdr.de>; Sat, 10 Sep 2022 00:48:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44DDC5B42A5
+	for <lists+bpf@lfdr.de>; Sat, 10 Sep 2022 00:50:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230359AbiIIWse (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Sep 2022 18:48:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42430 "EHLO
+        id S230280AbiIIWuY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Sep 2022 18:50:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230250AbiIIWsd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Sep 2022 18:48:33 -0400
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39A15FC677
-        for <bpf@vger.kernel.org>; Fri,  9 Sep 2022 15:48:32 -0700 (PDT)
-Received: by mail-io1-f71.google.com with SMTP id y10-20020a5d914a000000b00688fa7b2252so2398799ioq.0
-        for <bpf@vger.kernel.org>; Fri, 09 Sep 2022 15:48:32 -0700 (PDT)
+        with ESMTP id S230514AbiIIWuX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Sep 2022 18:50:23 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C61E7ABF1D
+        for <bpf@vger.kernel.org>; Fri,  9 Sep 2022 15:50:21 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id d16so1553579ils.8
+        for <bpf@vger.kernel.org>; Fri, 09 Sep 2022 15:50:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=4WZtSZGDGbF4xZNUZEBqYoeGViu2Sr1MumfXrZ0idIo=;
+        b=OXheOgVKqv6I1FZTOcdDPHckE9NbGKCmVBgTRT7srdDoKP/BOg453vzea3b5tc54QX
+         MEL78fJq26W1C2yQtJldjb7E+bP/THfSN+xFEX7CBaciuTkNlhDx0Dta1YxgJOhQ64IT
+         XTJADRQ5/E4Nmff5uhNJhpkbFi0TVNhcnr0XGxvPSo1N9C9OIY+1/m30gj8yWfqkKJc2
+         Ive1B2s9FuFlkwk876+oqqTuynxx/OI0CLA67OGqi2karwinqBzdI40h8PTMCkK/OtnH
+         ciRJQ2bu1vn9rWSze4yAnWvllVWY59MoAqh3DdO2c+9e2UDUa0BkO18+7rbNcFUpDRJB
+         UIgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date;
-        bh=hZ0sk6GtJ/mTRESHsdFOvkaVVjN/Wqt7oUUKzm3DAe8=;
-        b=YFCwsQPeUTuNzkTlbbYVyHvwCqYHgMBMChzPjT7EVme2pl0JlPxy/uI4PH6jlhx80N
-         EqMZ3kYvLoeOZKdC5VK9N0rVesDNME2yl0V1bCECB3hcwQptSPql1iBnh68Nbvfg2qvd
-         GW+HLBBNRb/6TZaxmY7QDWuRg5z0Ik+93t99k298/7daN83ywPz3hjyNmzEGuPGOasjo
-         ofMcZ93VzQhqaRZao5o2BwRHXAA0E+9aW2WK5hTvhEfjrH/OymMaVbG1HjUS/BvCe1MY
-         lJCNKPHtVeZo1wg77WrQB54WVVAzGM64YGLLeOC0Cbmx3vE8w/5V7pt9djnZ9k7fL4qA
-         1azw==
-X-Gm-Message-State: ACgBeo3Zli/PeMgkcDEfDu5ReVnF6ZcdkaDV6DooZu6YvP5GnPE0zvw4
-        SwaL+WX3dLSj0d7jyXV/2VEWSrJGnnvKGNwH2/lCjt+zXmPT
-X-Google-Smtp-Source: AA6agR435MDd/F7lHyXeyHhwzx6HnFFs8kd+Q2Xn/CywCUrsZRX8aW0Ei8GaPhzGGDO9OuEWyu59RxPXGSvEv626zAt6BAU53jhd
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=4WZtSZGDGbF4xZNUZEBqYoeGViu2Sr1MumfXrZ0idIo=;
+        b=gq305WPSiL9qrVyH1gZDrok/NAsmD9oPn/PUVpmdmGQ1s2u6x+8iTZM2VVG12Gq4w7
+         562en6roLKhVdpRUjQ/xKyc8AG65fdCCAnPRUH3B387XmQQXqWV+4Ncsu5U/TXxWDDyo
+         /7FbfOx+hsE4sS+Z0heRXP7q6GreG7pRJEoFgGgu9lZxrndNLsjSN5dvhlpbsBXnX492
+         5WHr4wz5oTl7uwPWeM7OJtBL2RjvEGp7phQW99fakLGhZAKXdjxuWAss1si2DDIuz5TQ
+         eoDkdtvZTy+vth2T4rARfGKwU3ynlQgTBbgfgoD2olQvfzQCxt3cqovOYHvJfKeo7SGT
+         yX6A==
+X-Gm-Message-State: ACgBeo0VDJWDfBH/lDSTXw5XW81ejrbCZq9YM+lHiOpBrCLsRw+4FbZI
+        EDu6gzKD2kuDKm2mHtvAmkaBcg8kZzxVP3FVct0=
+X-Google-Smtp-Source: AA6agR6xutNvnncTTTqqaF7x6ZFx6obzdZEQ2MttijC5GRcG9cxRa2FEe5XLVOXNOdviYWjZ9AFJjg8FX7R271HQGhE=
+X-Received: by 2002:a05:6e02:170f:b0:2f1:6cdf:6f32 with SMTP id
+ u15-20020a056e02170f00b002f16cdf6f32mr5242760ill.216.1662763820927; Fri, 09
+ Sep 2022 15:50:20 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:29c7:b0:68b:3a08:4512 with SMTP id
- z7-20020a05660229c700b0068b3a084512mr7911988ioq.199.1662763711517; Fri, 09
- Sep 2022 15:48:31 -0700 (PDT)
-Date:   Fri, 09 Sep 2022 15:48:31 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005ed86405e846585a@google.com>
-Subject: [syzbot] WARNING: ODEBUG bug in htab_map_alloc
-From:   syzbot <syzbot+5d1da78b375c3b5e6c2b@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com,
-        jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        martin.lau@linux.dev, netdev@vger.kernel.org, sdf@google.com,
-        song@kernel.org, syzkaller-bugs@googlegroups.com, yhs@fb.com
+References: <20220904204145.3089-1-memxor@gmail.com> <20220904204145.3089-22-memxor@gmail.com>
+ <311eb0d0-777a-4240-9fa0-59134344f051@fb.com> <CAP01T76QJOYqk4Lsc=bUjM86my=kg3p6GHxuz3yXiwFMHJtjJA@mail.gmail.com>
+ <CAADnVQJ6-kEE=_kHgyth_O3rUVHzJuNhS2MWhjQQed4wHzPpnA@mail.gmail.com>
+ <CAP01T74-Bc8xLihXcoer8fOoSoQQ1dddJ1FGOVdRPRa92RRPyQ@mail.gmail.com>
+ <CAADnVQLJP8YyYx5+mCBuSyenAfQDyXxDP8wfuDYCoZtO6kpunQ@mail.gmail.com>
+ <CAEf4BzZL9GS0oAfkY1h4C9u1_XCzj-HTnKY9KHj+PX+h66TL3g@mail.gmail.com>
+ <20220909192525.aymuhiprgjwfnlfe@macbook-pro-4.dhcp.thefacebook.com> <4b987779-bae0-dcd9-2405-e43f401bf5ad@fb.com>
+In-Reply-To: <4b987779-bae0-dcd9-2405-e43f401bf5ad@fb.com>
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date:   Sat, 10 Sep 2022 00:49:44 +0200
+Message-ID: <CAP01T75voazy_BfqRzQKkLLt7k57LnYXNbu-E05jBKcsTkda3Q@mail.gmail.com>
+Subject: Re: [PATCH RFC bpf-next v1 21/32] bpf: Allow locking bpf_spin_lock
+ global variables
+To:     Dave Marchevsky <davemarchevsky@fb.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Delyan Kratunov <delyank@fb.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On Sat, 10 Sept 2022 at 00:30, Dave Marchevsky <davemarchevsky@fb.com> wrote:
+>
+> On 9/9/22 3:25 PM, Alexei Starovoitov wrote:
+> > On Fri, Sep 09, 2022 at 11:32:40AM -0700, Andrii Nakryiko wrote:
+> >> On Fri, Sep 9, 2022 at 7:58 AM Alexei Starovoitov
+> >> <alexei.starovoitov@gmail.com> wrote:
+> >>>
+> >>> On Fri, Sep 9, 2022 at 7:51 AM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+> >>>>
+> >>>> On Fri, 9 Sept 2022 at 16:24, Alexei Starovoitov
+> >>>> <alexei.starovoitov@gmail.com> wrote:
+> >>>>>
+> >>>>> On Fri, Sep 9, 2022 at 4:05 AM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+> >>>>>>
+> >>>>>> On Fri, 9 Sept 2022 at 10:13, Dave Marchevsky <davemarchevsky@fb.com> wrote:
+> >>>>>>>
+> >>>>>>> On 9/4/22 4:41 PM, Kumar Kartikeya Dwivedi wrote:
+> >>>>>>>> Global variables reside in maps accessible using direct_value_addr
+> >>>>>>>> callbacks, so giving each load instruction's rewrite a unique reg->id
+> >>>>>>>> disallows us from holding locks which are global.
+> >>>>>>>>
+> >>>>>>>> This is not great, so refactor the active_spin_lock into two separate
+> >>>>>>>> fields, active_spin_lock_ptr and active_spin_lock_id, which is generic
+> >>>>>>>> enough to allow it for global variables, map lookups, and local kptr
+> >>>>>>>> registers at the same time.
+> >>>>>>>>
+> >>>>>>>> Held vs non-held is indicated by active_spin_lock_ptr, which stores the
+> >>>>>>>> reg->map_ptr or reg->btf pointer of the register used for locking spin
+> >>>>>>>> lock. But the active_spin_lock_id also needs to be compared to ensure
+> >>>>>>>> whether bpf_spin_unlock is for the same register.
+> >>>>>>>>
+> >>>>>>>> Next, pseudo load instructions are not given a unique reg->id, as they
+> >>>>>>>> are doing lookup for the same map value (max_entries is never greater
+> >>>>>>>> than 1).
+> >>>>>>>>
+> >>>>>>>
+> >>>>>>> For libbpf-style "internal maps" - like .bss.private further in this series -
+> >>>>>>> all the SEC(".bss.private") vars are globbed together into one map_value. e.g.
+> >>>>>>>
+> >>>>>>>   struct bpf_spin_lock lock1 SEC(".bss.private");
+> >>>>>>>   struct bpf_spin_lock lock2 SEC(".bss.private");
+> >>>>>>>   ...
+> >>>>>>>   spin_lock(&lock1);
+> >>>>>>>   ...
+> >>>>>>>   spin_lock(&lock2);
+> >>>>>>>
+> >>>>>>> will result in same map but different offsets for the direct read (and different
+> >>>>>>> aux->map_off set in resolve_pseudo_ldimm64 for use in check_ld_imm). Seems like
+> >>>>>>> this patch would assign both same (active_spin_lock_ptr, active_spin_lock_id).
+> >>>>>>>
+> >>>>>>
+> >>>>>> That won't be a problem. Two spin locks in a map value or datasec are
+> >>>>>> already rejected on BPF_MAP_CREATE,
+> >>>>>> so there is no bug. See idx >= info_cnt check in
+> >>>>>> btf_find_struct_field, btf_find_datasec_var.
+> >>>>>>
+> >>>>>> I can include offset as the third part of the tuple. The problem then
+> >>>>>> is figuring out which lock protects which bpf_list_head. We need
+> >>>>>> another __guarded_by annotation and force users to use that to
+> >>>>>> eliminate the ambiguity. So for now I just put it in the commit log
+> >>>>>> and left it for the future.
+> >>>>>
+> >>>>> Let's not go that far yet.
+> >>>>> Extra annotations are just as confusing and non-obvious as
+> >>>>> putting locks in different sections.
+> >>>>> Let's keep one lock per map value limitation for now.
+> >>>>> libbpf side needs to allow many non-mappable sections though.
+> >>>>> Single bss.private name is too limiting.
+> >>>>
+> >>>> In that case,
+> >>>> Dave, since the libbpf patch is yours, would you be fine with
+> >>>> reworking it to support multiple private maps?
+> >>>> Maybe it can just ignore the .XXX part in .bss.private.XXX?
+> >>>> Also I think Andrii mentioned once that he wants to eventually merge
+> >>>> data and bss, so it might be a good idea to call it .data.private from
+> >>>> the start?
+> >>>
+> >>> I'd probably make all non-canonical names to be not-mmapable.
+> >>> The compiler generates special sections already.
+> >>> Thankfully the code doesn't use them, but it will sooner or later.
+> >>> So libbpf has to create hidden maps for them eventually.
+> >>> They shouldn't be messed up from user space, since it will screw up
+> >>> compiler generated code.
+> >>>
+> >>> Andrii, what's your take?
+> >>
+> >> Ok, a bunch of things to unpack. We've also discussed a lot of this
+> >> with Dave few weeks ago, but I have also few questions.
+> >>
+> >> First, I'd like to not keep extending ".bss" with any custom ".bss.*"
+> >> sections. This is why we have .data.* and .rodata.* and not .bss (bad,
+> >> meaningless, historic name).
+> >>
+> >> But I'm totally fine dedicating some other prefix to non-mmapable data
+> >> sections that won't be exposed in skeleton and, well, not-mmapable.
+> >> What to name it depends on what we anticipate putting in them?
+> >>
+> >> If it's just for spinlocks, then having something like SEC(".locks")
+> >> seems best to me. If it's for more stuff, like global kptrs, rbtrees
+> >> and whatnot, then we'd need a bit more generic name (.private, or
+> >> whatever, didn't think much on best name). We can also allow .locks.*
+> >> or .private.* (i.e., keep it uniform with .data and .rodata handling,
+> >> expect for mmapable aspect).
+> >>
+> >> One benefit for having SEC(".locks") just for spin_locks is that we
+> >> can teach libbpf to create a multi-element ARRAY map, where each lock
+> >> variable is put into a separate element. From BPF verifier's
+> >> perspective, there will be a single BTF type describing spin lock, but
+> >> multiple "instances" of lock, one per each element. That seems a bit
+> >> magical and I think, generally speaking, it's best to start supporting
+> >> multiple lock declarations within single map element (and thus keep
+> >> track of their offset within map_value); but at least that's an
+> >> option.
+> >
+> > ".lock" won't work. We need lock+rb_root or lock+list_head to be
+> > in the same section.
+> > It should be up to user to name that section with something meaningful.
+> > Ideally something like this should be supported:
+> > SEC("enqueue") struct bpf_spin_lock enqueue_lock;
+> > SEC("enqueue") struct bpf_list_head enqueue_head __contains(foo, node);
+> > SEC("dequeue") struct bpf_spin_lock dequeue_lock;
+> > SEC("dequeue") struct bpf_list_head dequeue_head __contains(foo, node);
+> >
+>
+> Isn't the "head and lock must be in same section / map_value" desired, or just
+> a consequence of this implementation? I don't see why it's desirable from user
+> perspective. Seems to have same problem as rbtree RFCv1's rbtree_map struct
+> creating its own bpf_spin_lock, namely not providing a way for multiple
+> datastructures to share same lock in a way that makes sense to the verifier for
+> enforcement.
+>
 
-syzbot found the following issue on:
+There is no such restriction here. You just put a lock and every list
+or rbtree protected by that lock in the same section.
+Then all of them share the same lock for the special section.
 
-HEAD commit:    274052a2b0ab Merge branch 'bpf-allocator'
-git tree:       bpf-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=11a26bcd080000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=924833c12349a8c0
-dashboard link: https://syzkaller.appspot.com/bug?extid=5d1da78b375c3b5e6c2b
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=114109f5080000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11b3b56d080000
+#define __private(X) SEC("map" #X)
+struct bpf_spin_lock lock __private(a);
+struct bpf_list_head head __contains(...) __private(a);
+struct bpf_rb_root root __contains(...) __private(a);
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/be8eff3df48b/disk-274052a2.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/cd3150e84ddd/vmlinux-274052a2.xz
+As I said already, it's also possible to do a more fine grained
+approach by having multiple of them globally.
+Then this multiple separate section based approach is not needed at
+all. You can have just one private section for such bpf special
+structures, maybe even by default from libbpf side, as they can't be
+mmap'd anyway.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5d1da78b375c3b5e6c2b@syzkaller.appspotmail.com
+libbpf will see that you have bpf_spin_lock, bpf_list_head,
+bpf_rb_root, it will put them in .data.nommap.
 
-------------[ cut here ]------------
-ODEBUG: free active (active state 0) object type: percpu_counter hint: 0x0
-WARNING: CPU: 0 PID: 3624 at lib/debugobjects.c:502 debug_print_object+0x16e/0x250 lib/debugobjects.c:502
-Modules linked in:
-CPU: 0 PID: 3624 Comm: syz-executor257 Not tainted 5.19.0-syzkaller-14117-g274052a2b0ab #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/26/2022
-RIP: 0010:debug_print_object+0x16e/0x250 lib/debugobjects.c:502
-Code: ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 af 00 00 00 48 8b 14 dd 60 0c 49 8a 4c 89 ee 48 c7 c7 00 00 49 8a e8 df f1 38 05 <0f> 0b 83 05 65 86 dd 09 01 48 83 c4 18 5b 5d 41 5c 41 5d 41 5e c3
-RSP: 0018:ffffc90003edfa90 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: 0000000000000003 RCX: 0000000000000000
-RDX: ffff8880773cbb00 RSI: ffffffff8161f148 RDI: fffff520007dbf44
-RBP: 0000000000000001 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000080000000 R11: 0000000000000000 R12: ffffffff8a4b90c0
-R13: ffffffff8a490520 R14: 0000000000000000 R15: dffffc0000000000
-FS:  00007f0136485700(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000200004c0 CR3: 0000000072b25000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- __debug_check_no_obj_freed lib/debugobjects.c:989 [inline]
- debug_check_no_obj_freed+0x301/0x420 lib/debugobjects.c:1020
- slab_free_hook mm/slub.c:1729 [inline]
- slab_free_freelist_hook+0xeb/0x1c0 mm/slub.c:1780
- slab_free mm/slub.c:3534 [inline]
- kfree+0xe2/0x580 mm/slub.c:4562
- kvfree+0x42/0x50 mm/util.c:655
- htab_map_alloc+0xc76/0x1620 kernel/bpf/hashtab.c:632
- find_and_alloc_map kernel/bpf/syscall.c:131 [inline]
- map_create kernel/bpf/syscall.c:1105 [inline]
- __sys_bpf+0xa82/0x5f80 kernel/bpf/syscall.c:4938
- __do_sys_bpf kernel/bpf/syscall.c:5060 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:5058 [inline]
- __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:5058
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f01364d3919
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 11 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f0136485318 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 00007f013655b3e8 RCX: 00007f01364d3919
-RDX: 0000000000000048 RSI: 00000000200004c0 RDI: 0000000000000000
-RBP: 00007f013655b3e0 R08: 00007f0136485700 R09: 0000000000000000
-R10: 00007f0136485700 R11: 0000000000000246 R12: 00007f013655b3ec
-R13: 00007ffee9a220af R14: 00007f0136485400 R15: 0000000000022000
- </TASK>
-irq event stamp: 19441
-hardirqs last  enabled at (19445): [<ffffffff816188e8>] __down_trylock_console_sem+0x108/0x120 kernel/printk/printk.c:247
-hardirqs last disabled at (19448): [<ffffffff816188ca>] __down_trylock_console_sem+0xea/0x120 kernel/printk/printk.c:245
-softirqs last  enabled at (19350): [<ffffffff814914c3>] invoke_softirq kernel/softirq.c:445 [inline]
-softirqs last  enabled at (19350): [<ffffffff814914c3>] __irq_exit_rcu+0x123/0x180 kernel/softirq.c:650
-softirqs last disabled at (19341): [<ffffffff814914c3>] invoke_softirq kernel/softirq.c:445 [inline]
-softirqs last disabled at (19341): [<ffffffff814914c3>] __irq_exit_rcu+0x123/0x180 kernel/softirq.c:650
----[ end trace 0000000000000000 ]---
+But then the verifier needs to know which lock protects which data.
+You always need that info, in any approach. Here we assume by default
+just one bpf_spin_lock so the answer is known.
+We can 'learn' that implicitly (storing what we see first in the
+verifier, e.g. if you added to head while holding lockA, we assume
+this is the one you'll be using to protect it). Later the same head
+cannot be added to using lockB.
+Or we can just make the user annotate that explicitly, like clang's
+thread safety annotations (GUARDED_BY(lock) etc.).
+Then the spin_lock_off protecting it is stored with other info in
+bpf_map_value_off_desc.
 
+So compared to the example above, user will just do:
+struct bpf_spin_lock lock1;
+struct bpf_spin_lock lock2;
+struct bpf_list_head head __contains(...) __guarded_by(lock1);
+struct bpf_list_head head2 __contains(...) __guarded_by(lock2);
+struct bpf_rb_root root __contains(...) __guarded_by(lock2);
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+It looks much cleaner to me from a user perspective. Just define what
+protects what, which also doubles as great documentation.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Regardless, the point is there are no limitations regarding
+coarse-grained/fine-grained locking or lock sharing.
+The question is more about how to expose it to the user.
+
+> >> Dave had some concerns about pinning such maps and whatnot, but for
+> >> starters we decided to not worry about pinning for now. Dave, please
+> >> bring up remaining issues, if you don't mind.
+> >
+>
+> @Andrii, aside from vague pinning concerns from our last discussion about this,
+> I don't have any specific concerns. A multi-element ".locks" is more
+> appealing to me now, actually, as I think it enables best-of-both-worlds for
+> this impl and my rbtree RFCv2 experiments:
+>
+>   * This series uses (map_ptr, map_value_offset) as lock identity for
+>     verification purposes and expects map_ptr for list_head and lock
+>     to be the same.
+>     * If my logic in comment preceding this one is correct, downside
+>       is no lock sharing between datastructures.
+>
+
+See above.
+
+>   * rbtree RFCv2 uses lock address as lock identity
+>     for verification purposes and requires lock address to be known
+>     when verifying program using the lock.
+>     * Downside: no clear path forward for map_in_map general case,
+>       can make it work for some specific cases but kludgey.
+>
+>   * If ".locks" exists, supporting multiple lock definitions, we can
+>     use locks_sec_offset or locks_sec_map_{key,idx} as lock identity
+>     for verification purposes.
+>     * As a result "head and lock must be in same section" requirement
+>       is removed, and there's a path forward for map_in_map inner maps
+>       to share locks arbitrarily without losing verifiability.
+>     * But I suspect this requires some special handling of the map backing
+>       ".locks" on kernel side.
+>
+> I have some hacks on top of rbtree RFCv2 that are moving in this ".locks"
+> direction, happy to fix them up and send something if I didn't miss anything
+> above.
+
+I don't really like the ".locks" section or the idea in general. There
+is nothing really special about locks in particular.
+Same problem with bpf_timer. A nommap map approach also allows having
+more than one bpf_timer globally.
+
+>
+> Regardless, @Kumar, happy to iterate on .bss.private patch until it's in
+> a shape that satisfies everyone.
+>
+
+Great, once the discussion concludes it would be great if you send it
+out as its own patch, easier for me too.
