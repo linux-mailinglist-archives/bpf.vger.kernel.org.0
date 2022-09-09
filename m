@@ -2,66 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 666075B3A8F
-	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 16:20:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82D8D5B3AA1
+	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 16:24:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229480AbiIIOUH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Sep 2022 10:20:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48140 "EHLO
+        id S229631AbiIIOYx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Sep 2022 10:24:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbiIIOUH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Sep 2022 10:20:07 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52B3A476E7;
-        Fri,  9 Sep 2022 07:20:04 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id q21so2734427edc.9;
-        Fri, 09 Sep 2022 07:20:04 -0700 (PDT)
+        with ESMTP id S229456AbiIIOYv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Sep 2022 10:24:51 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FB9D13E82
+        for <bpf@vger.kernel.org>; Fri,  9 Sep 2022 07:24:49 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id bj12so4310365ejb.13
+        for <bpf@vger.kernel.org>; Fri, 09 Sep 2022 07:24:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date;
-        bh=il7Ilq03Jy3qK9trP89NQpYDkyj+wCqI9a3iT+1TUqY=;
-        b=CYqElaWEXELaTF0ufxRzWiLbFPW1sx7er6sdeedSg0OT1QzYw90hDvOilly9mpWBKW
-         zZwb4PN2GpiSsd1vGWcIKFXE8BbOgjLlXuqqLwspWkxafjpkQMWIjYqEJjvIZh7KJ1Nq
-         c9AX+m67+KsZYoHJyfiLAh9iGp53sPqNxhIwc5sFv/TeKglFwBvBFquNMDUnwgKOranM
-         9dMCJVMR4sr3kRsrtjUj6xaj65KHH5E9baE8mH4Q3muoxyi6oBEPz9AP3jLMbk/qkc9r
-         m1KRfTv658tTc7Phr1A2CByAAFqcPc2/k67gI9RviGrkB6WI3bJstTbUg0IMvl+cQrvo
-         ghZw==
+        bh=eDVxG2alsJ2zUJ32GcHJov8JxBraRFeNmfdQmlUrAfw=;
+        b=EQUH9X3ONKiOXxtnPMOVyyfZa2Tb0KgCTArhXF4LKkosH7SMYmofbQ0aQmT632li2K
+         RcTAmZKl5befqycRbwpUSVK4MVxiAnGEToyLdzogo/HZ+7QS88bqme+tiHRoKe/A22RV
+         nY5nE2MZ6ujPfwV0UV8ZYozmCVuhkg31fw4Kcng1Eu4LyLZEPboSUlU+uP5hYC42hwLl
+         PlvyIH+2MHy4isQv0JeJbZnnFPmBfr1EJJSKAdlOYL8reYZQr2csrdYsBuvq0UOm0QGc
+         /XbINNg8irGUtiNP2cA8qwQS2/X7lUnSLYuDDMfRuE0nBnTEXr7foDcKI6Je7o5n6Ios
+         LhSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=il7Ilq03Jy3qK9trP89NQpYDkyj+wCqI9a3iT+1TUqY=;
-        b=CMxfiswvBcDU7fcwwIVFt/cZw9GBtbmYCDmEWPt9Gzy7ye0quqzIt+pc5ViNfvNfAs
-         ybPSlOb0J8NUstDj2qI6iF+tgF+4E1tMLHyGSkcyuCRNxDgngjvKSomaOQlHFG2Ed/2m
-         Hgw0OloqWhv/d2miY7LU+pIt7QSSLRFFQ2M+t6OGemp9OGU3jh/QfQj7W/CozhSmSJ1o
-         FlzJ8L4RAbhqGFXPA2At8XVMs/p69dl+gIYZIKcwbK3KADOrx1KcaMERK5AN/TyXf38B
-         8op8B21Bjnj+6AarLgCi5y8+vbECx14desnZoGgxJo+c36+fGR+rUQlPGeiFCwWjQKPF
-         NIZw==
-X-Gm-Message-State: ACgBeo1dFHDqyi35HVftSiIvF1uo8NB9L0QuCrMSBPwm0ujTp5d5o/p3
-        0D2LHAjgtgn6bp+wZo8O59bON/ccyn/WgohqYzo=
-X-Google-Smtp-Source: AA6agR5BmgQ4MZaa5djaaXJJtjRYycr9UQxM+gsSsbSBeg4Ttg4dQf/avu7U/6yHtqooywiUj42VL9eT8NWe4ua/Ccw=
-X-Received: by 2002:a05:6402:1d48:b0:44e:c6cf:778 with SMTP id
- dz8-20020a0564021d4800b0044ec6cf0778mr11986236edb.421.1662733202729; Fri, 09
- Sep 2022 07:20:02 -0700 (PDT)
+        bh=eDVxG2alsJ2zUJ32GcHJov8JxBraRFeNmfdQmlUrAfw=;
+        b=2xuzGB1ELPnFSnO6Y2WoSthGXwIMbpJXSZrnfoa2PwqtNkB3njiTLNXkQB0I6WABqw
+         u5KxSBqWJF//iZPyLjrQ47Humbmzf72ht20p28gBgJ30+6WdLf+OtGtraHIW0gqvhQpc
+         7XnT5Wce3WZxy+LNLItQ80vGrRzp55ML3RJrCwS05rXPAvyrYRipKm/6RULHtERHANPO
+         o1+cNddimbZlzPV6nCTQngDMgm2vXP7FGcBT8RjGXvAbDc+sC9YJBb0XhXTQmtgrtwVG
+         1FbdppntsbxWLwgNKr9h2tqWovxQsli687kbEsZQrMqYdRRx2wHRibGCbOdUMH+xft2R
+         St0A==
+X-Gm-Message-State: ACgBeo1TDlBV84zyZPOJ3ueDw4LqFvZyBDS/mJwblmEFclpQbPuafrAI
+        jq8fgEhG/vohE3VR4+k26PvjBbY2HPTVHrnLL2A=
+X-Google-Smtp-Source: AA6agR5I4uGoo0SDf4W+lj5cehlI7FkGRVF+h5B5EEeYnQsKGkOI4YaZcQqFiZArIkfIUlZ8d0qKV21+QR92cRp9VP4=
+X-Received: by 2002:a17:906:ef90:b0:730:9cd8:56d7 with SMTP id
+ ze16-20020a170906ef9000b007309cd856d7mr9557462ejb.94.1662733487849; Fri, 09
+ Sep 2022 07:24:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <166260087224.759381.4170102827490658262.stgit@devnote2>
- <166260088298.759381.11727280480035568118.stgit@devnote2> <20220908050855.w77mimzznrlp6pwe@treble>
- <Yxm2QU1NJIkIyrrU@hirez.programming.kicks-ass.net> <Yxm+QkFPOhrVSH6q@hirez.programming.kicks-ass.net>
- <CAADnVQKWTaXFqYri9VG3ux-CJEBsjAP5PetH6Q1ccS8HoeP28g@mail.gmail.com> <Yxr2TaWaN8VjJ60D@hirez.programming.kicks-ass.net>
-In-Reply-To: <Yxr2TaWaN8VjJ60D@hirez.programming.kicks-ass.net>
+References: <20220904204145.3089-1-memxor@gmail.com> <20220904204145.3089-22-memxor@gmail.com>
+ <311eb0d0-777a-4240-9fa0-59134344f051@fb.com> <CAP01T76QJOYqk4Lsc=bUjM86my=kg3p6GHxuz3yXiwFMHJtjJA@mail.gmail.com>
+In-Reply-To: <CAP01T76QJOYqk4Lsc=bUjM86my=kg3p6GHxuz3yXiwFMHJtjJA@mail.gmail.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 9 Sep 2022 07:19:51 -0700
-Message-ID: <CAADnVQLqw5o5Pn9Bds03Qse6Y5vSDPj1jyfWesxJOP__kUPXLg@mail.gmail.com>
-Subject: Re: [PATCH] x86,retpoline: Be sure to emit INT3 after JMP *%\reg
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Josh Poimboeuf <jpoimboe@kernel.org>,
-        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Suleiman Souhlal <suleiman@google.com>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Borislav Petkov <bp@suse.de>, X86 ML <x86@kernel.org>
+Date:   Fri, 9 Sep 2022 07:24:36 -0700
+Message-ID: <CAADnVQJ6-kEE=_kHgyth_O3rUVHzJuNhS2MWhjQQed4wHzPpnA@mail.gmail.com>
+Subject: Re: [PATCH RFC bpf-next v1 21/32] bpf: Allow locking bpf_spin_lock
+ global variables
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     Dave Marchevsky <davemarchevsky@fb.com>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Delyan Kratunov <delyank@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -73,72 +70,59 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 9, 2022 at 1:16 AM Peter Zijlstra <peterz@infradead.org> wrote:
+On Fri, Sep 9, 2022 at 4:05 AM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
 >
-> On Thu, Sep 08, 2022 at 07:01:12AM -0700, Alexei Starovoitov wrote:
->
-> > > diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> > > index c1f6c1c51d99..37f821dee68f 100644
-> > > --- a/arch/x86/net/bpf_jit_comp.c
-> > > +++ b/arch/x86/net/bpf_jit_comp.c
-> > > @@ -419,7 +419,8 @@ static void emit_indirect_jump(u8 **pprog, int reg, u8 *ip)
-> > >                 OPTIMIZER_HIDE_VAR(reg);
-> > >                 emit_jump(&prog, &__x86_indirect_thunk_array[reg], ip);
-> > >         } else {
-> > > -               EMIT2(0xFF, 0xE0 + reg);
-> > > +               EMIT2(0xFF, 0xE0 + reg);        /* jmp *%\reg */
-> > > +               EMIT1(0xCC);                    /* int3 */
+> On Fri, 9 Sept 2022 at 10:13, Dave Marchevsky <davemarchevsky@fb.com> wrote:
 > >
-> > Hmm. Why is this unconditional?
-> > Shouldn't it be guarded with CONFIG_xx or cpu_feature_enabled ?
-> > People that don't care about hw speculation vulnerabilities
-> > shouldn't pay the price of increased code size.
+> > On 9/4/22 4:41 PM, Kumar Kartikeya Dwivedi wrote:
+> > > Global variables reside in maps accessible using direct_value_addr
+> > > callbacks, so giving each load instruction's rewrite a unique reg->id
+> > > disallows us from holding locks which are global.
+> > >
+> > > This is not great, so refactor the active_spin_lock into two separate
+> > > fields, active_spin_lock_ptr and active_spin_lock_id, which is generic
+> > > enough to allow it for global variables, map lookups, and local kptr
+> > > registers at the same time.
+> > >
+> > > Held vs non-held is indicated by active_spin_lock_ptr, which stores the
+> > > reg->map_ptr or reg->btf pointer of the register used for locking spin
+> > > lock. But the active_spin_lock_id also needs to be compared to ensure
+> > > whether bpf_spin_unlock is for the same register.
+> > >
+> > > Next, pseudo load instructions are not given a unique reg->id, as they
+> > > are doing lookup for the same map value (max_entries is never greater
+> > > than 1).
+> > >
+> >
+> > For libbpf-style "internal maps" - like .bss.private further in this series -
+> > all the SEC(".bss.private") vars are globbed together into one map_value. e.g.
+> >
+> >   struct bpf_spin_lock lock1 SEC(".bss.private");
+> >   struct bpf_spin_lock lock2 SEC(".bss.private");
+> >   ...
+> >   spin_lock(&lock1);
+> >   ...
+> >   spin_lock(&lock2);
+> >
+> > will result in same map but different offsets for the direct read (and different
+> > aux->map_off set in resolve_pseudo_ldimm64 for use in check_ld_imm). Seems like
+> > this patch would assign both same (active_spin_lock_ptr, active_spin_lock_id).
+> >
 >
-> Sure, like so then?
+> That won't be a problem. Two spin locks in a map value or datasec are
+> already rejected on BPF_MAP_CREATE,
+> so there is no bug. See idx >= info_cnt check in
+> btf_find_struct_field, btf_find_datasec_var.
 >
-> ---
-> Subject: x86,retpoline: Be sure to emit INT3 after JMP *%\reg
-> From: Peter Zijlstra <peterz@infradead.org>
-> Date: Thu, 8 Sep 2022 12:04:50 +0200
->
-> Both AMD and Intel recommend using INT3 after an indirect JMP. Make sure
-> to emit one when rewriting the retpoline JMP irrespective of compiler
-> SLS options or even CONFIG_SLS.
->
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->
->  arch/x86/kernel/alternative.c |    9 +++++++++
->  arch/x86/net/bpf_jit_comp.c   |    4 +++-
->  2 files changed, 12 insertions(+), 1 deletion(-)
->
-> --- a/arch/x86/kernel/alternative.c
-> +++ b/arch/x86/kernel/alternative.c
-> @@ -453,6 +453,15 @@ static int patch_retpoline(void *addr, s
->                 return ret;
->         i += ret;
->
-> +       /*
-> +        * The compiler is supposed to EMIT an INT3 after every unconditional
-> +        * JMP instruction due to AMD BTC. However, if the compiler is too old
-> +        * or SLS isn't enabled, we still need an INT3 after indirect JMPs
-> +        * even on Intel.
-> +        */
-> +       if (op == JMP32_INSN_OPCODE && i < insn->length)
-> +               bytes[i++] = INT3_INSN_OPCODE;
-> +
->         for (; i < insn->length;)
->                 bytes[i++] = BYTES_NOP1;
->
-> --- a/arch/x86/net/bpf_jit_comp.c
-> +++ b/arch/x86/net/bpf_jit_comp.c
-> @@ -419,7 +419,9 @@ static void emit_indirect_jump(u8 **ppro
->                 OPTIMIZER_HIDE_VAR(reg);
->                 emit_jump(&prog, &__x86_indirect_thunk_array[reg], ip);
->         } else {
-> -               EMIT2(0xFF, 0xE0 + reg);
-> +               EMIT2(0xFF, 0xE0 + reg);        /* jmp *%\reg */
-> +               if (IS_ENABLED(CONFIG_RETPOLINE) || IS_ENABLED(CONFIG_SLS))
-> +                       EMIT1(0xCC);            /* int3 */
+> I can include offset as the third part of the tuple. The problem then
+> is figuring out which lock protects which bpf_list_head. We need
+> another __guarded_by annotation and force users to use that to
+> eliminate the ambiguity. So for now I just put it in the commit log
+> and left it for the future.
 
-Looks better. Ack.
+Let's not go that far yet.
+Extra annotations are just as confusing and non-obvious as
+putting locks in different sections.
+Let's keep one lock per map value limitation for now.
+libbpf side needs to allow many non-mappable sections though.
+Single bss.private name is too limiting.
