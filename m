@@ -2,51 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D1A15B3E3F
+	by mail.lfdr.de (Postfix) with ESMTP id A56C75B3E40
 	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 19:53:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231770AbiIIRwr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S231778AbiIIRwr (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Fri, 9 Sep 2022 13:52:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50394 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231742AbiIIRwp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S231760AbiIIRwp (ORCPT <rfc822;bpf@vger.kernel.org>);
         Fri, 9 Sep 2022 13:52:45 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E43C12B28A;
-        Fri,  9 Sep 2022 10:52:43 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id q15-20020a17090a304f00b002002ac83485so2350389pjl.0;
-        Fri, 09 Sep 2022 10:52:43 -0700 (PDT)
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22ABB12BF9B;
+        Fri,  9 Sep 2022 10:52:44 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id c24so2240464pgg.11;
+        Fri, 09 Sep 2022 10:52:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date;
-        bh=nnZVN7GsQJzh7p6I12EKKFy7ReVxa2w2WN+uEU+5yNU=;
-        b=eQbyzUpEdqi/SfaSyFx6h2R4dW5AF9qV/JM6SJrjA654l0Haj7dfULurIyv9T+mU76
-         D+QgOEuEj3uVBk8vv+alZ51/9HKBB56xwi1Gac/ITIggoDXNpYnC9BAkeL8SADd84cdr
-         cPk7wi0ktU7CanW7qt5cmlVogXzzN/bHUvAL+Gob73+fLSLcF8yOH1q1gO5PRrBhB4qs
-         iVVvn/OqumkPgCh8orC5ypWgopJNogVwkWuXtcssLwOfjLsNeAhaZexMqcgAE4r4uLin
-         PmDVnZ0adZCHEAWZGK4Lga5BV3K05LVcM9bX0gOEKQkqjG2Z2uKYGn1HYa++O5UjLHvw
-         UaBw==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date;
+        bh=9ehd9/6UapbHdanxJIohnP32ZiPMfDsE+vEMO9Oxisw=;
+        b=GdQO7MFZo/mvI9h+l7XEm/Wp1hfXEkCTy2o2tcY5spbLZdcRdWqBZzqcD1O3ISOJIS
+         2U61C2nKU63VkvHRyW4Zs3jGvv1amQPSbFdU8c3NBcCdWC3O8YBIQyatXvSNesg40TuF
+         wydSJF9JtQWJnAajdyzcL0Gwlc6cuj12yJuqRbByyC8auEX2QVFWhXadyLeCWXMR5QgL
+         8AmhhTiOG6rOarPggi5fbS3xOoWEEK9VExL5teE4qmInqO6i+KjLxPdP/7nq3mNCpxVP
+         Bdw6riQ4Nm4hvAaTVuuWaE7O4UotWH6hq9RtY2qLmkapG/6YwLL+DbBEiQsY+oJGeHOu
+         9mtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-message-state:from:to:cc:subject:date;
-        bh=nnZVN7GsQJzh7p6I12EKKFy7ReVxa2w2WN+uEU+5yNU=;
-        b=le/3nditz7IVELk/3bVUtOJz+6SHnnk2RVWuzWuDjZKh0UtiNYGi4Jog2q41du5Wlk
-         3Ogc6lZhmwh5YLk/0o+8cPZJsM3VGhKqbkNO/qhhy5mnNIytcV8Czoe9OKpwhnDXeUv4
-         eAQo2CW8Ao6FpqgF0TfIq63Wm75q0xrRmTvLrqbE0b3K95Kl3P68AVuG1tz1K8j0Z05u
-         ha+aQ7xFxdK6xl7vaekxN17cxsfALC2AtxHPaL1jIEKbZN1HDZ9z2yFpeR8WzjoUKV/N
-         cnL+B+s05vFw1bF9qiG08SrtwluGAvXKQWIzDqFDj7z/4XdoC1ZjWQFH3fJvp9TPe+81
-         Desw==
-X-Gm-Message-State: ACgBeo04WKgpcJEwP7La/JZgszeW0LS5XJe/BQ2ovLvUU1pUcr12Er5V
-        toxkMiaymw01X+eIgj2/JCg=
-X-Google-Smtp-Source: AA6agR5zk4CxPmbcz+xAGJaIx+pJSKVlZ7HMxLEvo8jpmPW2Ej5lXROrUrW1asjR9d7DFFWuuMHccg==
-X-Received: by 2002:a17:902:f08a:b0:176:b477:8be0 with SMTP id p10-20020a170902f08a00b00176b4778be0mr15237536pla.66.1662745962407;
-        Fri, 09 Sep 2022 10:52:42 -0700 (PDT)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
+         :to:cc:subject:date;
+        bh=9ehd9/6UapbHdanxJIohnP32ZiPMfDsE+vEMO9Oxisw=;
+        b=3KkKNnBu3Ej0nF6H4S1baudrbz4qoetGjea0IWEgKX7+sEgMzeEk8C9p/xSLWTOxGX
+         U2RhL9NTu3JHgvRnTQ/QEZLs3yUedq/mk9glH2AKPKUugNNozjejVsx8SoljUHpzx8/s
+         ecgINAt+OLfeLlkMLMpXuw3zkLiMZdSdzwAVMsiNpLQ0jbJ+xEZzGHakybXdse7Sp5mP
+         zriKgA4LCqHphsCh/x8I+2KAH3gAg/WqbAjRsTq7aJl89D7TBMpMnnyiQ+YShmmXnvZr
+         qBMunn89DFxoX6GvSDz10ohoCbr9xIPi2iwW72Keldo0+WsQl/XXZu9Kwc7ALoYR1RkS
+         65GQ==
+X-Gm-Message-State: ACgBeo24sV0mkCSZ4asolxfjma0vlH1PQFgFLxlYzHbTtBXBJ9Jpe+VY
+        9bKz+cRkprk8U037m1eqQC8=
+X-Google-Smtp-Source: AA6agR5VeBR8pieqlgGzhpp7NvCL0LzjfMZM8QKF6lol1MJ3x/59ENgdHawWhEZ+SMsPnz4WXG9LAA==
+X-Received: by 2002:a05:6a00:e8a:b0:535:cc5c:3d87 with SMTP id bo10-20020a056a000e8a00b00535cc5c3d87mr15404635pfb.24.1662745963556;
+        Fri, 09 Sep 2022 10:52:43 -0700 (PDT)
 Received: from youngsil.svl.corp.google.com ([2620:15c:2d4:203:b77b:e812:1879:ec2f])
-        by smtp.gmail.com with ESMTPSA id w207-20020a627bd8000000b0052d46b43006sm4275pfc.156.2022.09.09.10.52.41
+        by smtp.gmail.com with ESMTPSA id w207-20020a627bd8000000b0052d46b43006sm4275pfc.156.2022.09.09.10.52.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Sep 2022 10:52:41 -0700 (PDT)
+        Fri, 09 Sep 2022 10:52:43 -0700 (PDT)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -58,10 +59,12 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         Adrian Hunter <adrian.hunter@intel.com>,
         linux-perf-users@vger.kernel.org, Song Liu <songliubraving@fb.com>,
         bpf@vger.kernel.org
-Subject: [PATCH 0/3] perf stat: Fix bperf cgroup counters
-Date:   Fri,  9 Sep 2022 10:52:36 -0700
-Message-Id: <20220909175239.206268-1-namhyung@kernel.org>
+Subject: [PATCH 1/3] perf stat: Fix BPF program section name
+Date:   Fri,  9 Sep 2022 10:52:37 -0700
+Message-Id: <20220909175239.206268-2-namhyung@kernel.org>
 X-Mailer: git-send-email 2.37.2.789.g6183377224-goog
+In-Reply-To: <20220909175239.206268-1-namhyung@kernel.org>
+References: <20220909175239.206268-1-namhyung@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -75,32 +78,39 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+It seems the recent libbpf got more strict about the section name.
+I'm seeing a failure like this:
 
-This fixes a random failures in the perf stat cgroup BPF counters (bperf).
-I've also added a new test to ensure it working properly.
+  $ sudo ./perf stat -a --bpf-counters --for-each-cgroup ^. sleep 1
+  libbpf: prog 'on_cgrp_switch': missing BPF prog type, check ELF section name 'perf_events'
+  libbpf: prog 'on_cgrp_switch': failed to load: -22
+  libbpf: failed to load object 'bperf_cgroup_bpf'
+  libbpf: failed to load BPF skeleton 'bperf_cgroup_bpf': -22
+  Failed to load cgroup skeleton
 
-You can get it from 'perf/bperf-cgrp-fix-v1' branch in
+The section name should be 'perf_event' (without the trailing 's').
+Although it's related to the libbpf change, it'd be better fix the
+section name in the first place.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
+Fixes: 944138f048f7 ("perf stat: Enable BPF counter with --for-each-cgroup")
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+---
+ tools/perf/util/bpf_skel/bperf_cgroup.bpf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-Namhyung
-
-
-Namhyung Kim (3):
-  perf stat: Fix BPF program section name
-  perf stat: Fix cpu map index in bperf cgroup code
-  perf test: Add a new test for perf stat cgroup BPF counter
-
- .../tests/shell/stat_bpf_counters_cgrp.sh     | 83 +++++++++++++++++++
- tools/perf/util/bpf_counter_cgroup.c          |  4 +-
- tools/perf/util/bpf_skel/bperf_cgroup.bpf.c   |  2 +-
- 3 files changed, 86 insertions(+), 3 deletions(-)
- create mode 100755 tools/perf/tests/shell/stat_bpf_counters_cgrp.sh
-
-
-base-commit: 715a6dea8483ff2035de766857f962ac198eb195
+diff --git a/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c b/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
+index 292c430768b5..c72f8ad96f75 100644
+--- a/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
++++ b/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
+@@ -176,7 +176,7 @@ static int bperf_cgroup_count(void)
+ }
+ 
+ // This will be attached to cgroup-switches event for each cpu
+-SEC("perf_events")
++SEC("perf_event")
+ int BPF_PROG(on_cgrp_switch)
+ {
+ 	return bperf_cgroup_count();
 -- 
 2.37.2.789.g6183377224-goog
 
