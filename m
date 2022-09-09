@@ -2,56 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 212B45B2D4E
-	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 06:19:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85EFC5B2E01
+	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 07:22:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229572AbiIIETd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Sep 2022 00:19:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51202 "EHLO
+        id S229825AbiIIFW4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Sep 2022 01:22:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbiIIETc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Sep 2022 00:19:32 -0400
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F00F62621
-        for <bpf@vger.kernel.org>; Thu,  8 Sep 2022 21:19:25 -0700 (PDT)
-Received: by mail-io1-f72.google.com with SMTP id u23-20020a6be917000000b0069f4854e11eso335913iof.2
-        for <bpf@vger.kernel.org>; Thu, 08 Sep 2022 21:19:25 -0700 (PDT)
+        with ESMTP id S229562AbiIIFWz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Sep 2022 01:22:55 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7319210E84C
+        for <bpf@vger.kernel.org>; Thu,  8 Sep 2022 22:22:53 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id b23so467088iof.2
+        for <bpf@vger.kernel.org>; Thu, 08 Sep 2022 22:22:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date;
+        bh=k4wAQyAK4vHNpNiTrG7fMmxiHjuzn99w2bcbeAV+sjQ=;
+        b=B2iHOX1/YU0Aje2lA/qQ3KdYad8+BvVFJ/d/djmonaK4koWkeVH4VEhFJjo7+7XcQZ
+         jLGIVXH3dJfrwkFMAYIqG+WYZHvuZZjui0uqMel19kq+8sigtnnx9Lt6MRlKBo5T978J
+         W/MwRuSoYIaKwJiRIxeGzI03SlEyYB2t73Czo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
          :from:to:cc:subject:date;
-        bh=JbsBL1c3AkZtVs4/cSEGc5hTtYMUj0g0hX9Fbt9+yjg=;
-        b=lQvd6SyCnSxL5nQFHfR1cX48ZBXzIz8QYkuf/aA2Tq0n2OP6yoOjQ/mAe97nfeVejj
-         KNUDzeQTQD9+1SCNN5gp2WQ8HIY7pq589l0fhF2fTY54H7dKjBOQbMG8TWE9N/5slq8q
-         xGpQIOJ4KA4qS9oig8osyLgKkiNEzjQfYoGNWGOEDtKA808i0/0tf+hApm4Z7qKm4sl/
-         AHmTob0Oxv01Rr8hg6PmxsYLdUNE19aTZzHUY0taGMIc2uCbJUZLYhTjozCAmKhO+j7D
-         FGRn/KMr71kwsHdmocERtSr4m/hFZ0JGWzOsi+siF4px3kiP5Ef3609MjqvGArTw5b7y
-         WXHw==
-X-Gm-Message-State: ACgBeo17iVapIz6Aw1l6bocDXCxqdfS/ecEwByo9tjQh/EYLh1Wr7Wfp
-        JvEsTIYCBVpzl5IHwI4ZmE8RsDyJdBESgYfaqXTgew8IvbEb
-X-Google-Smtp-Source: AA6agR479dFZN40nHgHFqZhh2nj8Ibx3ZY9wf4YJrUbXeDaPLOwtxaKkASsbh6S5hVwVKtnImhn9pRjFGROqLGLqB+iHVcVMZOUr
+        bh=k4wAQyAK4vHNpNiTrG7fMmxiHjuzn99w2bcbeAV+sjQ=;
+        b=HwHQzJXDmcBPVdY6rBjTkFxpI/oqBBHJ+UlONExjitpzif36pu+wEGDJcFrsAQspfz
+         OixXLz1MAdCzJY5weGHBDIi1bfMX1adn0tvWg5Jj62WusHpHPIurfIqUKe1E3UbIPmaw
+         NHOAO961dx842MidIADO30FSsPIfxvSgZkLH/fLGDf3a+8cx7zfLMKBCvwLdMg/DyNo6
+         idShhKf92wG8l2GOCSm3H3cur+zlMS5637qbcQDv6VgbJFymPUQI8cXuvKSmMN0Pmzzx
+         xkTpajFsxsAphkHkzzdgBITcy1m+h8mEver9Vzn+hAbeiIXcQk4DG/lt5q0PyNhy6fnd
+         JKgQ==
+X-Gm-Message-State: ACgBeo04oygWvbaIG1Mu2iSW6ozcGVvD0P4glvc4s1oF6prTFLi4GY6M
+        Ib9BzJNENAiyXGgKK8HxFdefDfsbKspHLiuhy0RueBPeEWjfXg==
+X-Google-Smtp-Source: AA6agR62fs35xx76x6JNtmM35ZFS5Rovr6IelLiDgO2oiiEAFRWUi4KsrMf0QGr7KXAdHkXxAiw9XfoMoJhyW24dhAA=
+X-Received: by 2002:a02:84a7:0:b0:358:3910:17a8 with SMTP id
+ f36-20020a0284a7000000b00358391017a8mr3798676jai.2.1662700972727; Thu, 08 Sep
+ 2022 22:22:52 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a02:b001:0:b0:358:2f68:8a07 with SMTP id
- p1-20020a02b001000000b003582f688a07mr5056754jah.280.1662697165094; Thu, 08
- Sep 2022 21:19:25 -0700 (PDT)
-Date:   Thu, 08 Sep 2022 21:19:25 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e506e905e836d9e7@google.com>
-Subject: [syzbot] WARNING in bpf_verifier_vlog
-From:   syzbot <syzbot+8b2a08dfbd25fd933d75@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, haoluo@google.com,
-        hawk@kernel.org, john.fastabend@gmail.com, jolsa@kernel.org,
-        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, martin.lau@linux.dev, nathan@kernel.org,
-        ndesaulniers@google.com, netdev@vger.kernel.org, sdf@google.com,
-        song@kernel.org, syzkaller-bugs@googlegroups.com, trix@redhat.com,
-        yhs@fb.com
+From:   Jeff Xu <jeffxu@chromium.org>
+Date:   Thu, 8 Sep 2022 22:22:42 -0700
+Message-ID: <CABi2SkUVSMM-+7RzGu0z0nwsWT_2NiUZzTMNKsEc0iOPSiNr9A@mail.gmail.com>
+Subject: BTF and libBPF
+To:     bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,78 +58,30 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+Greeting,
 
-syzbot found the following issue on:
+I have questions related to CONFIG_DEBUG_INFO_BTF, and  libbpf_0.8.1.
+Please kindly let me know if this is not the right group to ask, since I'm new.
 
-HEAD commit:    7e18e42e4b28 Linux 6.0-rc4
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=1551da55080000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f4d613baa509128c
-dashboard link: https://syzkaller.appspot.com/bug?extid=8b2a08dfbd25fd933d75
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1798cab7080000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16ccbdc5080000
+To give context of this question:
+This system has limited disk size, doesn't need the CO-RE feature,
+and has all debug symbols stripped in release build.   Having an extra
+btf/vmlinux file might be problematic, disk-wise.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/da260c675b46/disk-7e18e42e.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/58f7bbbaa6ff/vmlinux-7e18e42e.xz
+Question 1>
+Will libbpf_0.8.1(or later) work with kernel 5.10 (or later),  without
+CONFIG_DEBUG_INFO_BTF ?
+Or work with kernel compiled with CONFIG_DEBUG_INFO_BTF but have
+/sys/kernel/btf/vmlinux removed.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+8b2a08dfbd25fd933d75@syzkaller.appspotmail.com
+ Question 2: From debug information included at run time point of view,
+(1) having btf/vmlinux vs (2) kernel build with
+CONFIG_DEBUG_INFO_DWARF5 but not stripped,
+are those two contains the same amount of debug information at runtime?
 
-------------[ cut here ]------------
-verifier log line truncated - local buffer too short
-WARNING: CPU: 1 PID: 3604 at kernel/bpf/verifier.c:300 bpf_verifier_vlog+0x267/0x3c0 kernel/bpf/verifier.c:300
-Modules linked in:
-CPU: 1 PID: 3604 Comm: syz-executor146 Not tainted 6.0.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/26/2022
-RIP: 0010:bpf_verifier_vlog+0x267/0x3c0 kernel/bpf/verifier.c:300
-Code: f5 95 3d 0c 31 ff 89 ee e8 06 07 f0 ff 40 84 ed 75 1a e8 7c 0a f0 ff 48 c7 c7 c0 e7 f3 89 c6 05 d4 95 3d 0c 01 e8 fb 4c ae 07 <0f> 0b e8 62 0a f0 ff 48 89 da 48 b8 00 00 00 00 00 fc ff df 48 c1
-RSP: 0018:ffffc900039bf8a0 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: ffff888017a19210 RCX: 0000000000000000
-RDX: ffff888021fb1d80 RSI: ffffffff8161f408 RDI: fffff52000737f06
-RBP: 0000000000000000 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000080000000 R11: 0000000000000000 R12: ffffffff89f5aba0
-R13: 00000000000003ff R14: ffff888017a19214 R15: ffff888012705800
-FS:  0000555555cba300(0000) GS:ffff8880b9b00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020100000 CR3: 000000001bf9e000 CR4: 0000000000350ee0
-Call Trace:
- <TASK>
- __btf_verifier_log+0xbb/0xf0 kernel/bpf/btf.c:1375
- __btf_verifier_log_type+0x451/0x8f0 kernel/bpf/btf.c:1413
- btf_func_proto_check_meta+0x117/0x160 kernel/bpf/btf.c:3905
- btf_check_meta kernel/bpf/btf.c:4588 [inline]
- btf_check_all_metas+0x3c1/0xa70 kernel/bpf/btf.c:4612
- btf_parse_type_sec kernel/bpf/btf.c:4748 [inline]
- btf_parse kernel/bpf/btf.c:5031 [inline]
- btf_new_fd+0x939/0x1e70 kernel/bpf/btf.c:6710
- bpf_btf_load kernel/bpf/syscall.c:4314 [inline]
- __sys_bpf+0x13bd/0x6130 kernel/bpf/syscall.c:4998
- __do_sys_bpf kernel/bpf/syscall.c:5057 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:5055 [inline]
- __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:5055
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7fb092221c29
-Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fff5b0a6878 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fb092221c29
-RDX: 0000000000000020 RSI: 0000000020000240 RDI: 0000000000000012
-RBP: 00007fb0921e5dd0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007fb0921e5e60
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
- </TASK>
+Question 3: Will libbpf + btf/vmlinx, break expectation of kernel ASLR
+feature ? I assume it shouldn't, but would like to double check.
 
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Thanks
+Best Regards,
+Jeff Xu
