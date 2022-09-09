@@ -2,65 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AB565B3665
-	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 13:32:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A5005B367F
+	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 13:39:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229601AbiIILbX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Sep 2022 07:31:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56072 "EHLO
+        id S230509AbiIILiP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Sep 2022 07:38:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230392AbiIILbV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Sep 2022 07:31:21 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD35D11B008
-        for <bpf@vger.kernel.org>; Fri,  9 Sep 2022 04:31:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=f8O3JhWQoFYRzQBV86lfB7OAUyXJCpm3sBLXXPrXxWo=; b=iHS2i3v4aSohR7JTiq1Mk9o572
-        PQwbvaIHZyS/SYRMOBVCfW3vkM++v/gpJ4BW1olsYcwP6CdUC/oZcqo0kJRhmHYUzWCpVk9zI73X8
-        wbKoo5WPcci/VpmOr3jiwvF5AtfAC4koapCzOyFMTZyhKmChIyS/ozHBS0URVN0sSiHil4poAQL2/
-        Dlo1kugf1F1rQyklkgIZDq/xMzQBDKJwoF325InhGWt8kLUWIqOkJvL2Vjo7HzgMYVS8qS+aUFnAT
-        2FNrd5wyLr0KT+mA1fKlSwRVDM+bk89sjUW1FqkHxTPTt8ggWuq2sj7Fr4nH0a7YXHNpx/rprAa0C
-        bO1T8x5g==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1oWcDl-00B0lY-UU; Fri, 09 Sep 2022 11:30:54 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8F9B1300023;
-        Fri,  9 Sep 2022 13:30:52 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5463C201AF2DB; Fri,  9 Sep 2022 13:30:52 +0200 (CEST)
-Date:   Fri, 9 Sep 2022 13:30:52 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        Martynas Pumputis <m@lambda.lt>
-Subject: Re: [PATCHv3 bpf-next 3/6] bpf: Use given function address for
- trampoline ip arg
-Message-ID: <Yxsj7KUhVYYxJ1l9@hirez.programming.kicks-ass.net>
-References: <20220909101245.347173-1-jolsa@kernel.org>
- <20220909101245.347173-4-jolsa@kernel.org>
+        with ESMTP id S230285AbiIILiO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Sep 2022 07:38:14 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D566E13B554
+        for <bpf@vger.kernel.org>; Fri,  9 Sep 2022 04:38:11 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id bg5-20020a05600c3c8500b003a7b6ae4eb2so4235984wmb.4
+        for <bpf@vger.kernel.org>; Fri, 09 Sep 2022 04:38:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date;
+        bh=84NGXoD+siLqQfDBPyHWMFsUfPe+akx9hJwN05YInGU=;
+        b=5VO91He75j4orh0w15oGO28lWGu/BzWTydVz0VppX4FrYx5vQUjTvqpgu/lwFvCzjU
+         ajXtM/En0mPjpyE15wtpLjfUptFj6kEx/O1EikHJkL9ScHbkY/TaCXaxUyGkSsYAwPq/
+         fJsywVsRjhafEhqbC+o4kzQhNJb5xw/idfJTeujfHYO5+wi9cYQb6QKfdUyZ+aNebd1/
+         aK6fRJCuRPPeuRqJj144NGSDqff/hc8G6kpbfD8nuNeIZKcVnUcodMuht6wxiECk8dBv
+         kqxJduyc7FzbzIEsJC5xjLVTjN7I3HM+dQ65u2fHsdixONoYULtwEe6s3BAhL2LBQGTb
+         eyeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date;
+        bh=84NGXoD+siLqQfDBPyHWMFsUfPe+akx9hJwN05YInGU=;
+        b=NjAXaZDnu1XaHZGCeOHd74mm8gM3Avka9/ARlWGpRsx49ItP3sUyuCiBlnHzUpfE2t
+         U92UKhc3MQLAaf7VeJJAFMJAiXpwGsi/bvYkH/9P+8CYa9dhVZ6lKZ6pQC5uVr+lR264
+         YSlKnQ7V6ZP8s2O+NSvVdTFKpcJsVpcQi2VH4Eiqo/AQCubO50CzfpeIjTntuAXFnGPx
+         8hhu9cF5n7PlEafzVJSJedR1HTwd/yVMYKAAf5cHIueCeUBVpWg+rl234PY/6Y/JJAfI
+         3CJX9AdopKpyXW5M8yQwCHoN5k8RBZ4W7g4OpnTYXpyZqYCeVvQRmu/2uaRCyP55F2rz
+         ykBA==
+X-Gm-Message-State: ACgBeo3Gv35vWXMrLLw//qP5Hk7OOrLtr8qQtlFZllMhsrluGSsmn14T
+        b0vf/bJ29e6QjsB7en8i7Q7byA==
+X-Google-Smtp-Source: AA6agR7VwZ2DkQWvnjj3EsVyS8g8kjr0MD/4/p4leojeDBq/Lgg5vjkpl+LzEtbqBCE9jLkAnEoGlQ==
+X-Received: by 2002:a05:600c:348d:b0:3a6:b4e:ff6d with SMTP id a13-20020a05600c348d00b003a60b4eff6dmr4904787wmq.95.1662723490285;
+        Fri, 09 Sep 2022 04:38:10 -0700 (PDT)
+Received: from [192.168.178.32] ([51.155.200.13])
+        by smtp.gmail.com with ESMTPSA id h8-20020a05600c350800b003a608d69a64sm450511wmq.21.2022.09.09.04.38.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Sep 2022 04:38:09 -0700 (PDT)
+Message-ID: <f0d30049-72b1-0f54-8f2f-fd47e75f71c9@isovalent.com>
+Date:   Fri, 9 Sep 2022 12:38:08 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220909101245.347173-4-jolsa@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.1
+Subject: Re: [bpf-next v3 1/2] bpftool: Add auto_attach for bpf prog
+ load|loadall
+Content-Language: en-GB
+To:     Wang Yufen <wangyufen@huawei.com>, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        hawk@kernel.org, nathan@kernel.org, ndesaulniers@google.com,
+        trix@redhat.com
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, llvm@lists.linux.dev
+References: <1662702807-591-1-git-send-email-wangyufen@huawei.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <1662702807-591-1-git-send-email-wangyufen@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,60 +81,175 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 09, 2022 at 12:12:42PM +0200, Jiri Olsa wrote:
-> Using function address given at the generation time as the trampoline
-> ip argument. This way we get directly the function address that we
-> need, so we don't need to:
->   - read the ip from the stack
->   - subtract X86_PATCH_SIZE
->   - subtract ENDBR_INSN_SIZE if CONFIG_X86_KERNEL_IBT is enabled
->     which is not even implemented yet ;-)
+On 09/09/2022 06:53, Wang Yufen wrote:
+> Add auto_attach optional to support one-step load-attach-pin_link.
 > 
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> For example,
+>    $ bpftool prog loadall test.o /sys/fs/bpf/test auto_attach
+> 
+>    $ bpftool link
+>    26: tracing  name test1  tag f0da7d0058c00236  gpl
+>    	loaded_at 2022-09-09T21:39:49+0800  uid 0
+>    	xlated 88B  jited 55B  memlock 4096B  map_ids 3
+>    	btf_id 55
+>    28: kprobe  name test3  tag 002ef1bef0723833  gpl
+>    	loaded_at 2022-09-09T21:39:49+0800  uid 0
+>    	xlated 88B  jited 56B  memlock 4096B  map_ids 3
+>    	btf_id 55
+>    57: tracepoint  name oncpu  tag 7aa55dfbdcb78941  gpl
+>    	loaded_at 2022-09-09T21:41:32+0800  uid 0
+>    	xlated 456B  jited 265B  memlock 4096B  map_ids 17,13,14,15
+>    	btf_id 82
+> 
+>    $ bpftool link
+>    1: tracing  prog 26
+>    	prog_type tracing  attach_type trace_fentry
+>    3: perf_event  prog 28
+>    10: perf_event  prog 57
+> 
+> The auto_attach optional can support tracepoints, k(ret)probes,
+> u(ret)probes.
+> 
+> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+> Signed-off-by: Wang Yufen <wangyufen@huawei.com>
+
+Thanks, looks better! I just have some minor comments, please see inline
+below.
+
 > ---
->  arch/x86/net/bpf_jit_comp.c | 9 ++++-----
->  1 file changed, 4 insertions(+), 5 deletions(-)
+> v2 -> v3: switch to extend prog load command instead of extend perf
+> v2: https://patchwork.kernel.org/project/netdevbpf/patch/20220824033837.458197-1-weiyongjun1@huawei.com/
+> v1: https://patchwork.kernel.org/project/netdevbpf/patch/20220816151725.153343-1-weiyongjun1@huawei.com/
+>  tools/bpf/bpftool/prog.c | 76 ++++++++++++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 74 insertions(+), 2 deletions(-)
 > 
-> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> index ae89f4143eb4..1047686cc545 100644
-> --- a/arch/x86/net/bpf_jit_comp.c
-> +++ b/arch/x86/net/bpf_jit_comp.c
-> @@ -2039,13 +2039,14 @@ static int invoke_bpf_mod_ret(const struct btf_func_model *m, u8 **pprog,
->  int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *image_end,
->  				const struct btf_func_model *m, u32 flags,
->  				struct bpf_tramp_links *tlinks,
-> -				void *orig_call)
-> +				void *func_addr)
+> diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+> index c81362a..853a73e 100644
+> --- a/tools/bpf/bpftool/prog.c
+> +++ b/tools/bpf/bpftool/prog.c
+> @@ -1453,6 +1453,68 @@ static int do_run(int argc, char **argv)
+>  	return ret;
+>  }
+>  
+> +static int
+> +do_prog_attach_pin(struct bpf_program *prog, const char *path)
+
+Can we rename this function please? The pattern "do_...()" looks like
+one of the names for the functions we use for the subcommands via the
+struct cmd. Maybe auto_attach_program()?
+
+> +{
+> +	struct bpf_link *link = NULL;
+
+Nit: No need to initialise link
+
+> +	int err;
+> +
+> +	link = bpf_program__attach(prog);
+> +	err = libbpf_get_error(link);
+> +	if (err)
+> +		return err;
+> +
+> +	err = bpf_link__pin(link, path);
+> +	if (err) {
+> +		bpf_link__destroy(link);
+> +		return err;
+> +	}
+> +	return 0;
+> +}
+> +
+> +static int pathname_concat(const char *path, const char *name, char *buf)
+> +{
+> +	int len;
+> +
+> +	len = snprintf(buf, PATH_MAX, "%s/%s", path, name);
+> +	if (len < 0)
+> +		return -EINVAL;
+> +	else if (len >= PATH_MAX)
+
+Nit: "else" not necessary, you returned if len < 0.
+
+> +		return -ENAMETOOLONG;
+> +
+> +	return 0;
+> +}
+> +
+> +static int
+> +do_obj_attach_pin_programs(struct bpf_object *obj, const char *path)
+
+Same, can we rename this function please?
+
+> +{
+> +	struct bpf_program *prog;
+> +	char buf[PATH_MAX];
+> +	int err;
+> +
+> +	bpf_object__for_each_program(prog, obj) {
+> +		err = pathname_concat(path, bpf_program__name(prog), buf);
+> +		if (err)
+> +			goto err_unpin_programs;
+> +
+> +		err = do_prog_attach_pin(prog, buf);
+> +		if (err)
+> +			goto err_unpin_programs;
+> +	}
+> +
+> +	return 0;
+> +
+> +err_unpin_programs:
+> +	while ((prog = bpf_object__prev_program(obj, prog))) {
+> +		if (pathname_concat(path, bpf_program__name(prog), buf))
+> +			continue;
+> +
+> +		bpf_program__unpin(prog, buf);
+> +	}
+> +
+> +	return err;
+> +}
+> +
+>  static int load_with_options(int argc, char **argv, bool first_prog_only)
 >  {
->  	int ret, i, nr_args = m->nr_args, extra_nregs = 0;
->  	int regs_off, ip_off, args_off, stack_size = nr_args * 8, run_ctx_off;
->  	struct bpf_tramp_links *fentry = &tlinks[BPF_TRAMP_FENTRY];
->  	struct bpf_tramp_links *fexit = &tlinks[BPF_TRAMP_FEXIT];
->  	struct bpf_tramp_links *fmod_ret = &tlinks[BPF_TRAMP_MODIFY_RETURN];
-> +	void *orig_call = func_addr;
->  	u8 **branches = NULL;
->  	u8 *prog;
->  	bool save_ret;
-> @@ -2126,12 +2127,10 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+>  	enum bpf_prog_type common_prog_type = BPF_PROG_TYPE_UNSPEC;
+> @@ -1464,6 +1526,7 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
+>  	struct bpf_program *prog = NULL, *pos;
+>  	unsigned int old_map_fds = 0;
+>  	const char *pinmaps = NULL;
+> +	bool auto_attach = false;
+>  	struct bpf_object *obj;
+>  	struct bpf_map *map;
+>  	const char *pinfile;
+> @@ -1583,6 +1646,9 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
+>  				goto err_free_reuse_maps;
 >  
->  	if (flags & BPF_TRAMP_F_IP_ARG) {
->  		/* Store IP address of the traced function:
-> -		 * mov rax, QWORD PTR [rbp + 8]
-> -		 * sub rax, X86_PATCH_SIZE
-> +		 * mov rax, func_addr
-
-Shouldn't that be: movabs? Regular mov can't do 64bit immediates.
-
-Also curse Intel syntax, this is bloody unreadable.
-
->  		 * mov QWORD PTR [rbp - ip_off], rax
->  		 */
-> -		emit_ldx(&prog, BPF_DW, BPF_REG_0, BPF_REG_FP, 8);
-> -		EMIT4(0x48, 0x83, 0xe8, X86_PATCH_SIZE);
-> +		emit_mov_imm64(&prog, BPF_REG_0, (long) func_addr >> 32, (u32) (long) func_addr);
->  		emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -ip_off);
->  	}
+>  			pinmaps = GET_ARG();
+> +		} else if (is_prefix(*argv, "auto_attach")) {
+> +			auto_attach = true;
+> +			NEXT_ARG();
+>  		} else {
+>  			p_err("expected no more arguments, 'type', 'map' or 'dev', got: '%s'?",
+>  			      *argv);
+> @@ -1692,14 +1758,20 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
+>  			goto err_close_obj;
+>  		}
 >  
-> -- 
-> 2.37.3
-> 
+> -		err = bpf_obj_pin(bpf_program__fd(prog), pinfile);
+> +		if (auto_attach)
+> +			err = do_prog_attach_pin(prog, pinfile);
+> +		else
+> +			err = bpf_obj_pin(bpf_program__fd(prog), pinfile);
+>  		if (err) {
+>  			p_err("failed to pin program %s",
+>  			      bpf_program__section_name(prog));
+>  			goto err_close_obj;
+>  		}
+>  	} else {
+> -		err = bpf_object__pin_programs(obj, pinfile);
+> +		if (auto_attach)
+> +			err = do_obj_attach_pin_programs(obj, pinfile);
+> +		else
+> +			err = bpf_object__pin_programs(obj, pinfile);
+>  		if (err) {
+>  			p_err("failed to pin all programs");
+>  			goto err_close_obj;
+
+Please update the usage string in do_help() at the end of the file.
