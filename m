@@ -2,274 +2,290 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F7A85B4163
-	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 23:26:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 270425B4173
+	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 23:28:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229698AbiIIV0O (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Sep 2022 17:26:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35842 "EHLO
+        id S229906AbiIIV2e (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Sep 2022 17:28:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229685AbiIIV0M (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Sep 2022 17:26:12 -0400
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5675FFE4A1;
-        Fri,  9 Sep 2022 14:26:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1662758771; x=1694294771;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=cwQ6SCgM+Kl9Bt6tUHM6yFrYsFndLuCrr7838ehODtY=;
-  b=aAYO63KRZ9oNUMHDYBtQKaZv2ToJ3RepuFG6EZIXrHe+6z8OTVo0rc9I
-   A0LHCLf0SDZTIunQPmXtoTAf0O1e0kZOLxKNXD01vJo7Tz1XeLWNebDDl
-   r1MBO4sRyVy+hCwO6vqxk++OXmwqxtAXLCFqchtStT3T1nfjEgWiyI/ko
-   8PPgH+tWC6Y+YCj+aHyneZ31hIHaQo9WUxKIjozc7U91sBFvSGEJ1RSAN
-   57LFtMKEedKN3wRQhyWiuGkkFPKN64MfhTh8xTShS1KaqS8AT/BaWCDTJ
-   +7lZQBTNhMq3MGGSIFoMxZ6YFznC7rlwa2ssvKLEZ4L+i+WyYRKasLk9g
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10465"; a="298373831"
-X-IronPort-AV: E=Sophos;i="5.93,304,1654585200"; 
-   d="scan'208";a="298373831"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2022 14:26:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,304,1654585200"; 
-   d="scan'208";a="592753040"
-Received: from lkp-server02.sh.intel.com (HELO b2938d2e5c5a) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 09 Sep 2022 14:26:08 -0700
-Received: from kbuild by b2938d2e5c5a with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1oWlVn-0001kx-2W;
-        Fri, 09 Sep 2022 21:26:07 +0000
-Date:   Sat, 10 Sep 2022 05:25:34 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-scsi@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        bpf@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        alsa-devel@alsa-project.org,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: [linux-next:master] BUILD REGRESSION
- 9a82ccda91ed2b40619cb3c10d446ae1f97bab6e
-Message-ID: <631baf4e.klxNbMailfUgOTRD%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S229810AbiIIV2d (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Sep 2022 17:28:33 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AF9A1238C5
+        for <bpf@vger.kernel.org>; Fri,  9 Sep 2022 14:28:32 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id nc14so6996843ejc.4
+        for <bpf@vger.kernel.org>; Fri, 09 Sep 2022 14:28:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=rhcvaz5g9WazQUf4SdlHn+VHLhAxVJVMIbj+YHEX368=;
+        b=G6H3SkRPOJYnck4juJcXAjo95BDVSI5BooYWD8svFPS7TdpI/M/OgHEPPYV1bfp/Eh
+         Jm5pMHqKjRS47n+G2HdEYsIx3OFYa2M61ew7AAXzxqv3+lSLx2bvHJ4y2hzbTNlEVly7
+         7EFUtlPBc6rwvuRFGFyAVD4ILAaYulDq5UwwuboTbFbn0qJ6UydlqaFwLg92NRu7+8+I
+         BP6/g+ZSmkoZPdky4kXlmFAQZJJpvslIEoBfmhLtx5sXL4uXjRX/nnnTpCmIIV8yBFKr
+         8S8xnk4UNoR9KSooFlWhkpc1QoioS2v5FMtfdmWMtIH4CK/rqIa3hFuul92rGiJy3c87
+         x82A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=rhcvaz5g9WazQUf4SdlHn+VHLhAxVJVMIbj+YHEX368=;
+        b=qOjk68wCCrfXeyvMiJnRoRLNgY8Wgp8O5nZPw2j0HtlfUxWxscNpo9CEfrU0IYSq8i
+         YeBTYGBRJbWuVmPLw96FeiCklDwSsbidHnky/yZz3cj7PbNfFweSwAu0r616dpwKftbZ
+         Yd6YtB/9g2ZQavB9IE8GQM8xyOPkJBp5ZYoVu0lEcpuC2KUoLYgY53ub6T4bcz+p5hAn
+         DtLNLhN9ItPy1u4WFYeopIupGjMKXj38+SIfT2l0Llo8ZAu1Z6fGrAjF5KzoNKmXW+Gx
+         pS/LxyRAXCwtudDS0rtIuE/XhX73dNcvLShvgnAQ+COn5onHoGEuC1ps6qUQP/XCgNGB
+         LlHQ==
+X-Gm-Message-State: ACgBeo3C8XlmUH6CeSwdNFIBlx4MNT5CJNYk0huNLFkzDhhKgqaoLmVX
+        t7STMJxbiBE/eH8dy/0LMFpYkXWlFrX5qvzckkU=
+X-Google-Smtp-Source: AA6agR7nWCYX2MXATYebG3xgVhJrw66j1ji3PK6rCloilbIoB5MsrSugD4vdUYfspThF1hhoe2D24F7npKyFiQxq/uU=
+X-Received: by 2002:a17:907:d19:b0:77b:2fb5:43ec with SMTP id
+ gn25-20020a1709070d1900b0077b2fb543ecmr21973ejc.608.1662758910452; Fri, 09
+ Sep 2022 14:28:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20220908000254.3079129-1-joannelkoong@gmail.com>
+ <20220908000254.3079129-4-joannelkoong@gmail.com> <CAPhsuW5+4xdJRTD-m781c=N_Rvu-aVCO-OgKwJi7i9sgNO4BkQ@mail.gmail.com>
+In-Reply-To: <CAPhsuW5+4xdJRTD-m781c=N_Rvu-aVCO-OgKwJi7i9sgNO4BkQ@mail.gmail.com>
+From:   Joanne Koong <joannelkoong@gmail.com>
+Date:   Fri, 9 Sep 2022 14:28:19 -0700
+Message-ID: <CAJnrk1aVsNHeYwYwPGhB5pCyG2uCvYZbMD+eVCuYb+0Z4fc+kQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 3/8] bpf: Add bpf_dynptr_is_null and bpf_dynptr_is_rdonly
+To:     Song Liu <song@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+        martin.lau@kernel.org, Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Kernel Team <Kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-branch HEAD: 9a82ccda91ed2b40619cb3c10d446ae1f97bab6e  Add linux-next specific files for 20220909
+On Fri, Sep 9, 2022 at 8:46 AM Song Liu <song@kernel.org> wrote:
+>
+> On Thu, Sep 8, 2022 at 1:07 AM Joanne Koong <joannelkoong@gmail.com> wrote:
+> >
+> > Add two new helper functions: bpf_dynptr_is_null and
+> > bpf_dynptr_is_rdonly.
+> >
+> > bpf_dynptr_is_null returns true if the dynptr is null / invalid
+> > (determined by whether ptr->data is NULL), else false if
+> > the dynptr is a valid dynptr.
+> >
+> > bpf_dynptr_is_rdonly returns true if the dynptr is read-only,
+> > else false if the dynptr is read-writable.
+>
+> Might be a dump question.. Can we just let the bpf program to
+> access struct bpf_dynptr? Using a helper for this feel like an
+> overkill.
+>
+> Thanks,
+> Song
+>
 
-Error/Warning reports:
+Not a dumb question at all, this is an interesting idea :) Right now
+the struct bpf_dynptr is opaque from the bpf program side but if we
+were to expose it (it'd still be read-only in the program), the
+program could directly get offset and whether it's null, but would
+need to do some manipulation to determine the size (since the last few
+bits of 'size' stores the dynptr type and rd-only) and rd-only. I see
+the advantages of either approach - personally I think it's cleaner if
+the struct is completely opaque from the program side but I don't feel
+strongly about it. If the worry is the overhead of needing a helper
+for each, maybe another idea is to conflate them into 1 general
+bpf_dynptr_get_info helper that returns offset, size, is_null, and
+rd-only status?
 
-https://lore.kernel.org/linux-mm/202209042337.FQi69rLV-lkp@intel.com
-https://lore.kernel.org/linux-mm/202209080718.y5QmlNKH-lkp@intel.com
 
-Error/Warning: (recently discovered and may have been fixed)
-
-./drivers/gpu/drm/drm_atomic_helper.c:802: warning: expecting prototype for drm_atomic_helper_check_wb_connector_state(). Prototype was for drm_atomic_helper_check_wb_encoder_state() instead
-ERROR: modpost: "__divdi3" [drivers/gpu/drm/vkms/vkms.ko] undefined!
-ERROR: modpost: "__udivdi3" [drivers/gpu/drm/vkms/vkms.ko] undefined!
-arm-linux-gnueabi-ld: vkms_formats.c:(.text+0x824): undefined reference to `__aeabi_ldivmod'
-drivers/base/regmap/regmap-mmio.c:222:17: error: implicit declaration of function 'writesb'; did you mean 'writeb'? [-Werror=implicit-function-declaration]
-drivers/base/regmap/regmap-mmio.c:225:17: error: implicit declaration of function 'writesw'; did you mean 'writew'? [-Werror=implicit-function-declaration]
-drivers/base/regmap/regmap-mmio.c:228:17: error: implicit declaration of function 'writesl'; did you mean 'writel'? [-Werror=implicit-function-declaration]
-drivers/base/regmap/regmap-mmio.c:358:17: error: implicit declaration of function 'readsb'; did you mean 'readb'? [-Werror=implicit-function-declaration]
-drivers/base/regmap/regmap-mmio.c:361:17: error: implicit declaration of function 'readsw'; did you mean 'readw'? [-Werror=implicit-function-declaration]
-drivers/base/regmap/regmap-mmio.c:364:17: error: implicit declaration of function 'readsl'; did you mean 'readl'? [-Werror=implicit-function-declaration]
-drivers/gpu/drm/amd/amdgpu/imu_v11_0_3.c:139:6: warning: no previous prototype for 'imu_v11_0_3_program_rlc_ram' [-Wmissing-prototypes]
-drivers/gpu/drm/drm_atomic_helper.c:802: warning: expecting prototype for drm_atomic_helper_check_wb_connector_state(). Prototype was for drm_atomic_helper_check_wb_encoder_state() instead
-drivers/gpu/drm/vkms/vkms_formats.c:259: undefined reference to `__divdi3'
-drivers/gpu/drm/vkms/vkms_plane.c:110 vkms_plane_atomic_update() warn: variable dereferenced before check 'fb' (see line 108)
-drivers/scsi/qla2xxx/qla_os.c:2854:23: warning: assignment to 'struct trace_array *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-drivers/scsi/qla2xxx/qla_os.c:2854:25: error: implicit declaration of function 'trace_array_get_by_name'; did you mean 'trace_array_set_clr_event'? [-Werror=implicit-function-declaration]
-drivers/scsi/qla2xxx/qla_os.c:2869:9: error: implicit declaration of function 'trace_array_put' [-Werror=implicit-function-declaration]
-kernel/bpf/memalloc.c:499 bpf_mem_alloc_destroy() error: potentially dereferencing uninitialized 'c'.
-ld: drivers/gpu/drm/vkms/vkms_formats.c:260: undefined reference to `__divdi3'
-ld: vkms_formats.c:(.text+0x362): undefined reference to `__divdi3'
-ld: vkms_formats.c:(.text+0x3b2): undefined reference to `__divdi3'
-ld: vkms_formats.c:(.text+0x3ba): undefined reference to `__divdi3'
-ld: vkms_formats.c:(.text+0x47f): undefined reference to `__divdi3'
-microblaze-linux-ld: drivers/gpu/drm/vkms/vkms_formats.c:260: undefined reference to `__divdi3'
-mips-linux-ld: vkms_formats.c:(.text+0x8b8): undefined reference to `__divdi3'
-mips-linux-ld: vkms_formats.c:(.text.argb_u16_to_RGB565+0xd0): undefined reference to `__divdi3'
-sound/soc/codecs/tas2562.c:442:13: warning: variable 'ret' set but not used [-Wunused-but-set-variable]
-vkms_formats.c:(.text+0x266): undefined reference to `__divdi3'
-vkms_formats.c:(.text+0x338): undefined reference to `__divdi3'
-vkms_formats.c:(.text+0x388): undefined reference to `__divdi3'
-vkms_formats.c:(.text+0x390): undefined reference to `__divdi3'
-vkms_formats.c:(.text+0x455): undefined reference to `__divdi3'
-vkms_formats.c:(.text+0x804): undefined reference to `__aeabi_ldivmod'
-vkms_formats.c:(.text+0x89c): undefined reference to `__divdi3'
-vkms_formats.c:(.text.argb_u16_to_RGB565+0xb0): undefined reference to `__divdi3'
-
-Error/Warning ids grouped by kconfigs:
-
-gcc_recent_errors
-|-- alpha-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-imu_v11_0_3.c:warning:no-previous-prototype-for-imu_v11_0_3_program_rlc_ram
-|   |-- drivers-gpu-drm-drm_atomic_helper.c:warning:expecting-prototype-for-drm_atomic_helper_check_wb_connector_state().-Prototype-was-for-drm_atomic_helper_check_wb_encoder_state()-instead
-|   |-- drivers-scsi-qla2xxx-qla_os.c:error:implicit-declaration-of-function-trace_array_get_by_name
-|   |-- drivers-scsi-qla2xxx-qla_os.c:error:implicit-declaration-of-function-trace_array_put
-|   |-- drivers-scsi-qla2xxx-qla_os.c:warning:assignment-to-struct-trace_array-from-int-makes-pointer-from-integer-without-a-cast
-|   `-- sound-soc-codecs-tas2562.c:warning:variable-ret-set-but-not-used
-|-- arc-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-imu_v11_0_3.c:warning:no-previous-prototype-for-imu_v11_0_3_program_rlc_ram
-|   |-- drivers-gpu-drm-drm_atomic_helper.c:warning:expecting-prototype-for-drm_atomic_helper_check_wb_connector_state().-Prototype-was-for-drm_atomic_helper_check_wb_encoder_state()-instead
-|   `-- sound-soc-codecs-tas2562.c:warning:variable-ret-set-but-not-used
-|-- arc-randconfig-r025-20220908
-|   `-- sound-soc-codecs-tas2562.c:warning:variable-ret-set-but-not-used
-|-- arc-randconfig-s033-20220907
-|   |-- kernel-bpf-hashtab.c:sparse:sparse:cast-removes-address-space-__percpu-of-expression
-|   |-- kernel-bpf-hashtab.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-void-noderef-__percpu-assigned-pptr-got-void
-|   |-- kernel-bpf-hashtab.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-void-ptr_to_pptr-got-void-noderef-__percpu-assigned-pptr
-|   |-- kernel-bpf-memalloc.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-noderef-__percpu-__pdata-got-void
-|   |-- kernel-bpf-memalloc.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-noderef-__percpu-__pdata-got-void-pptr
-|   |-- kernel-bpf-memalloc.c:sparse:sparse:incorrect-type-in-initializer-(different-address-spaces)-expected-void-pptr-got-void-noderef-__percpu
-|   `-- kernel-exit.c:sparse:sparse:incorrect-type-in-initializer-(different-address-spaces)-expected-struct-sighand_struct-sighand-got-struct-sighand_struct-noderef-__rcu-sighand
-|-- arm-allyesconfig
-|   |-- arm-linux-gnueabi-ld:vkms_formats.c:(.text):undefined-reference-to-__aeabi_ldivmod
-|   |-- drivers-gpu-drm-amd-amdgpu-imu_v11_0_3.c:warning:no-previous-prototype-for-imu_v11_0_3_program_rlc_ram
-|   |-- drivers-gpu-drm-drm_atomic_helper.c:warning:expecting-prototype-for-drm_atomic_helper_check_wb_connector_state().-Prototype-was-for-drm_atomic_helper_check_wb_encoder_state()-instead
-|   |-- sound-soc-codecs-tas2562.c:warning:variable-ret-set-but-not-used
-|   `-- vkms_formats.c:(.text):undefined-reference-to-__aeabi_ldivmod
-|-- arm-defconfig
-|   `-- drivers-gpu-drm-drm_atomic_helper.c:warning:expecting-prototype-for-drm_atomic_helper_check_wb_connector_state().-Prototype-was-for-drm_atomic_helper_check_wb_encoder_state()-instead
-|-- arm64-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-imu_v11_0_3.c:warning:no-previous-prototype-for-imu_v11_0_3_program_rlc_ram
-|   |-- drivers-gpu-drm-drm_atomic_helper.c:warning:expecting-prototype-for-drm_atomic_helper_check_wb_connector_state().-Prototype-was-for-drm_atomic_helper_check_wb_encoder_state()-instead
-|   `-- sound-soc-codecs-tas2562.c:warning:variable-ret-set-but-not-used
-|-- arm64-randconfig-r021-20220908
-|   `-- sound-soc-codecs-tas2562.c:warning:variable-ret-set-but-not-used
-|-- arm64-randconfig-r034-20220909
-|   `-- drivers-gpu-drm-drm_atomic_helper.c:warning:expecting-prototype-for-drm_atomic_helper_check_wb_connector_state().-Prototype-was-for-drm_atomic_helper_check_wb_encoder_state()-instead
-|-- i386-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-imu_v11_0_3.c:warning:no-previous-prototype-for-imu_v11_0_3_program_rlc_ram
-|   |-- drivers-gpu-drm-drm_atomic_helper.c:warning:expecting-prototype-for-drm_atomic_helper_check_wb_connector_state().-Prototype-was-for-drm_atomic_helper_check_wb_encoder_state()-instead
-|   |-- ld:vkms_formats.c:(.text):undefined-reference-to-__divdi3
-|   |-- sound-soc-codecs-tas2562.c:warning:variable-ret-set-but-not-used
-|   `-- vkms_formats.c:(.text):undefined-reference-to-__divdi3
-|-- i386-defconfig
-|   `-- drivers-gpu-drm-drm_atomic_helper.c:warning:expecting-prototype-for-drm_atomic_helper_check_wb_connector_state().-Prototype-was-for-drm_atomic_helper_check_wb_encoder_state()-instead
-|-- i386-randconfig-a003
-|   |-- ERROR:__divdi3-drivers-gpu-drm-vkms-vkms.ko-undefined
-|   |-- ERROR:__udivdi3-drivers-gpu-drm-vkms-vkms.ko-undefined
-|   `-- drivers-gpu-drm-drm_atomic_helper.c:warning:expecting-prototype-for-drm_atomic_helper_check_wb_connector_state().-Prototype-was-for-drm_atomic_helper_check_wb_encoder_state()-instead
-|-- i386-randconfig-a012
-clang_recent_errors
-|-- arm64-randconfig-r006-20220908
-|   `-- drivers-gpu-drm-amd-amdgpu-imu_v11_0_3.c:warning:no-previous-prototype-for-function-imu_v11_0_3_program_rlc_ram
-|-- i386-randconfig-a002
-|   `-- drivers-extcon-extcon-usbc-tusb320.c:warning:expecting-prototype-for-drivers-extcon-extcon-tusb320c().-Prototype-was-for-TUSB320_REG8()-instead
-|-- i386-randconfig-a006
-|   `-- ld.lld:error:undefined-symbol:__udivdi3
-|-- i386-randconfig-a013
-|   `-- ld.lld:error:undefined-symbol:__udivdi3
-|-- i386-randconfig-a015
-|   `-- drivers-extcon-extcon-usbc-tusb320.c:warning:expecting-prototype-for-drivers-extcon-extcon-tusb320c().-Prototype-was-for-TUSB320_REG8()-instead
-|-- riscv-randconfig-r001-20220908
-|   `-- ld.lld:error:undefined-symbol:__udivdi3
-|-- riscv-randconfig-r013-20220907
-|   `-- drivers-extcon-extcon-usbc-tusb320.c:warning:expecting-prototype-for-drivers-extcon-extcon-tusb320c().-Prototype-was-for-TUSB320_REG8()-instead
-|-- x86_64-randconfig-a003
-|   `-- drivers-extcon-extcon-usbc-tusb320.c:warning:expecting-prototype-for-drivers-extcon-extcon-tusb320c().-Prototype-was-for-TUSB320_REG8()-instead
-|-- x86_64-randconfig-a012
-|   `-- drivers-extcon-extcon-usbc-tusb320.c:warning:expecting-prototype-for-drivers-extcon-extcon-tusb320c().-Prototype-was-for-TUSB320_REG8()-instead
-`-- x86_64-randconfig-a016
-    `-- drivers-extcon-extcon-usbc-tusb320.c:warning:expecting-prototype-for-drivers-extcon-extcon-tusb320c().-Prototype-was-for-TUSB320_REG8()-instead
-
-elapsed time: 729m
-
-configs tested: 75
-configs skipped: 2
-
-gcc tested configs:
-um                             i386_defconfig
-um                           x86_64_defconfig
-i386                          randconfig-a001
-i386                          randconfig-a003
-x86_64                              defconfig
-i386                                defconfig
-i386                          randconfig-a005
-m68k                             allmodconfig
-arc                              allyesconfig
-i386                             allyesconfig
-arm                                 defconfig
-x86_64                        randconfig-a004
-alpha                            allyesconfig
-x86_64                        randconfig-a002
-x86_64                               rhel-8.3
-m68k                             allyesconfig
-powerpc                           allnoconfig
-x86_64                           allyesconfig
-x86_64                        randconfig-a015
-arm                              allyesconfig
-x86_64                        randconfig-a006
-arm64                            allyesconfig
-x86_64                        randconfig-a013
-powerpc                          allmodconfig
-x86_64                        randconfig-a011
-sh                               allmodconfig
-ia64                             allmodconfig
-mips                             allyesconfig
-mips                      loongson3_defconfig
-arc                  randconfig-r043-20220907
-x86_64                          rhel-8.3-func
-parisc                           alldefconfig
-x86_64                         rhel-8.3-kunit
-sh                            migor_defconfig
-powerpc                      ppc40x_defconfig
-x86_64                           rhel-8.3-kvm
-openrisc                            defconfig
-sh                         apsh4a3a_defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                           rhel-8.3-syz
-i386                          randconfig-a014
-alpha                             allnoconfig
-i386                          randconfig-a012
-riscv                             allnoconfig
-sh                        edosk7705_defconfig
-csky                              allnoconfig
-i386                          randconfig-a016
-sh                             shx3_defconfig
-arc                               allnoconfig
-ia64                         bigsur_defconfig
-s390                       zfcpdump_defconfig
-sh                          rsk7201_defconfig
-powerpc                      bamboo_defconfig
-i386                          randconfig-c001
-
-clang tested configs:
-i386                          randconfig-a002
-i386                          randconfig-a004
-i386                          randconfig-a006
-x86_64                        randconfig-a005
-x86_64                        randconfig-a001
-x86_64                        randconfig-a014
-x86_64                        randconfig-a003
-hexagon              randconfig-r041-20220907
-riscv                randconfig-r042-20220907
-x86_64                        randconfig-a016
-x86_64                        randconfig-a012
-hexagon              randconfig-r045-20220907
-s390                 randconfig-r044-20220907
-i386                          randconfig-a013
-i386                          randconfig-a015
-i386                          randconfig-a011
-mips                           ip22_defconfig
-mips                          ath79_defconfig
-powerpc                     ppa8548_defconfig
-x86_64                          rhel-8.3-rust
-x86_64                        randconfig-k001
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+> >
+> > Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
+> > ---
+> >  include/uapi/linux/bpf.h       | 20 ++++++++++++++++++
+> >  kernel/bpf/helpers.c           | 37 +++++++++++++++++++++++++++++++---
+> >  scripts/bpf_doc.py             |  3 +++
+> >  tools/include/uapi/linux/bpf.h | 20 ++++++++++++++++++
+> >  4 files changed, 77 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index 3b054553be30..90b6d0744df2 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -5467,6 +5467,24 @@ union bpf_attr {
+> >   *     Return
+> >   *             0 on success, -EINVAL if the dynptr is invalid, -ERANGE if
+> >   *             trying to trim more bytes than the size of the dynptr.
+> > + *
+> > + * bool bpf_dynptr_is_null(struct bpf_dynptr *ptr)
+> > + *     Description
+> > + *             Determine whether a dynptr is null / invalid.
+> > + *
+> > + *             *ptr* must be an initialized dynptr.
+> > + *     Return
+> > + *             True if the dynptr is null, else false.
+> > + *
+> > + * bool bpf_dynptr_is_rdonly(struct bpf_dynptr *ptr)
+> > + *     Description
+> > + *             Determine whether a dynptr is read-only.
+> > + *
+> > + *             *ptr* must be an initialized dynptr. If *ptr*
+> > + *             is a null dynptr, this will return false.
+> > + *     Return
+> > + *             True if the dynptr is read-only and a valid dynptr,
+> > + *             else false.
+> >   */
+> >  #define __BPF_FUNC_MAPPER(FN)          \
+> >         FN(unspec),                     \
+> > @@ -5683,6 +5701,8 @@ union bpf_attr {
+> >         FN(dynptr_data_rdonly),         \
+> >         FN(dynptr_advance),             \
+> >         FN(dynptr_trim),                \
+> > +       FN(dynptr_is_null),             \
+> > +       FN(dynptr_is_rdonly),           \
+> >         /* */
+> >
+> >  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> > index 9f356105ab49..8729383d0966 100644
+> > --- a/kernel/bpf/helpers.c
+> > +++ b/kernel/bpf/helpers.c
+> > @@ -1398,7 +1398,7 @@ static const struct bpf_func_proto bpf_kptr_xchg_proto = {
+> >  #define DYNPTR_SIZE_MASK       0xFFFFFF
+> >  #define DYNPTR_RDONLY_BIT      BIT(31)
+> >
+> > -static bool bpf_dynptr_is_rdonly(struct bpf_dynptr_kern *ptr)
+> > +static bool __bpf_dynptr_is_rdonly(struct bpf_dynptr_kern *ptr)
+> >  {
+> >         return ptr->size & DYNPTR_RDONLY_BIT;
+> >  }
+> > @@ -1539,7 +1539,7 @@ BPF_CALL_5(bpf_dynptr_write, struct bpf_dynptr_kern *, dst, u32, offset, void *,
+> >         enum bpf_dynptr_type type;
+> >         int err;
+> >
+> > -       if (!dst->data || bpf_dynptr_is_rdonly(dst))
+> > +       if (!dst->data || __bpf_dynptr_is_rdonly(dst))
+> >                 return -EINVAL;
+> >
+> >         err = bpf_dynptr_check_off_len(dst, offset, len);
+> > @@ -1592,7 +1592,7 @@ void *__bpf_dynptr_data(struct bpf_dynptr_kern *ptr, u32 offset, u32 len, bool w
+> >         if (err)
+> >                 return 0;
+> >
+> > -       if (writable && bpf_dynptr_is_rdonly(ptr))
+> > +       if (writable && __bpf_dynptr_is_rdonly(ptr))
+> >                 return 0;
+> >
+> >         type = bpf_dynptr_get_type(ptr);
+> > @@ -1705,6 +1705,33 @@ static const struct bpf_func_proto bpf_dynptr_trim_proto = {
+> >         .arg2_type      = ARG_ANYTHING,
+> >  };
+> >
+> > +BPF_CALL_1(bpf_dynptr_is_null, struct bpf_dynptr_kern *, ptr)
+> > +{
+> > +       return !ptr->data;
+> > +}
+> > +
+> > +static const struct bpf_func_proto bpf_dynptr_is_null_proto = {
+> > +       .func           = bpf_dynptr_is_null,
+> > +       .gpl_only       = false,
+> > +       .ret_type       = RET_INTEGER,
+> > +       .arg1_type      = ARG_PTR_TO_DYNPTR,
+> > +};
+> > +
+> > +BPF_CALL_1(bpf_dynptr_is_rdonly, struct bpf_dynptr_kern *, ptr)
+> > +{
+> > +       if (!ptr->data)
+> > +               return 0;
+> > +
+> > +       return __bpf_dynptr_is_rdonly(ptr);
+> > +}
+> > +
+> > +static const struct bpf_func_proto bpf_dynptr_is_rdonly_proto = {
+> > +       .func           = bpf_dynptr_is_rdonly,
+> > +       .gpl_only       = false,
+> > +       .ret_type       = RET_INTEGER,
+> > +       .arg1_type      = ARG_PTR_TO_DYNPTR,
+> > +};
+> > +
+> >  const struct bpf_func_proto bpf_get_current_task_proto __weak;
+> >  const struct bpf_func_proto bpf_get_current_task_btf_proto __weak;
+> >  const struct bpf_func_proto bpf_probe_read_user_proto __weak;
+> > @@ -1781,6 +1808,10 @@ bpf_base_func_proto(enum bpf_func_id func_id)
+> >                 return &bpf_dynptr_advance_proto;
+> >         case BPF_FUNC_dynptr_trim:
+> >                 return &bpf_dynptr_trim_proto;
+> > +       case BPF_FUNC_dynptr_is_null:
+> > +               return &bpf_dynptr_is_null_proto;
+> > +       case BPF_FUNC_dynptr_is_rdonly:
+> > +               return &bpf_dynptr_is_rdonly_proto;
+> >         default:
+> >                 break;
+> >         }
+> > diff --git a/scripts/bpf_doc.py b/scripts/bpf_doc.py
+> > index d5c389df6045..ecd227c2ea34 100755
+> > --- a/scripts/bpf_doc.py
+> > +++ b/scripts/bpf_doc.py
+> > @@ -691,6 +691,7 @@ class PrinterHelpers(Printer):
+> >              'int',
+> >              'long',
+> >              'unsigned long',
+> > +            'bool',
+> >
+> >              '__be16',
+> >              '__be32',
+> > @@ -761,6 +762,8 @@ class PrinterHelpers(Printer):
+> >          header = '''\
+> >  /* This is auto-generated file. See bpf_doc.py for details. */
+> >
+> > +#include <stdbool.h>
+> > +
+> >  /* Forward declarations of BPF structs */'''
+> >
+> >          print(header)
+> > diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+> > index 3b054553be30..90b6d0744df2 100644
+> > --- a/tools/include/uapi/linux/bpf.h
+> > +++ b/tools/include/uapi/linux/bpf.h
+> > @@ -5467,6 +5467,24 @@ union bpf_attr {
+> >   *     Return
+> >   *             0 on success, -EINVAL if the dynptr is invalid, -ERANGE if
+> >   *             trying to trim more bytes than the size of the dynptr.
+> > + *
+> > + * bool bpf_dynptr_is_null(struct bpf_dynptr *ptr)
+> > + *     Description
+> > + *             Determine whether a dynptr is null / invalid.
+> > + *
+> > + *             *ptr* must be an initialized dynptr.
+> > + *     Return
+> > + *             True if the dynptr is null, else false.
+> > + *
+> > + * bool bpf_dynptr_is_rdonly(struct bpf_dynptr *ptr)
+> > + *     Description
+> > + *             Determine whether a dynptr is read-only.
+> > + *
+> > + *             *ptr* must be an initialized dynptr. If *ptr*
+> > + *             is a null dynptr, this will return false.
+> > + *     Return
+> > + *             True if the dynptr is read-only and a valid dynptr,
+> > + *             else false.
+> >   */
+> >  #define __BPF_FUNC_MAPPER(FN)          \
+> >         FN(unspec),                     \
+> > @@ -5683,6 +5701,8 @@ union bpf_attr {
+> >         FN(dynptr_data_rdonly),         \
+> >         FN(dynptr_advance),             \
+> >         FN(dynptr_trim),                \
+> > +       FN(dynptr_is_null),             \
+> > +       FN(dynptr_is_rdonly),           \
+> >         /* */
+> >
+> >  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> > --
+> > 2.30.2
+> >
