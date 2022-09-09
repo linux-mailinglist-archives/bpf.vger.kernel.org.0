@@ -2,220 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DA575B34E2
-	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 12:14:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16C0F5B34F1
+	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 12:15:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230379AbiIIKOO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Sep 2022 06:14:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36776 "EHLO
+        id S230061AbiIIKPG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Sep 2022 06:15:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230115AbiIIKOJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Sep 2022 06:14:09 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0212116B40
-        for <bpf@vger.kernel.org>; Fri,  9 Sep 2022 03:13:59 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DFE1361F66
-        for <bpf@vger.kernel.org>; Fri,  9 Sep 2022 10:13:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5C03C433D6;
-        Fri,  9 Sep 2022 10:13:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662718438;
-        bh=e8bbtFYLVSbybF8R+o1g1uIyD4WWd53GoZ4LOoXZOgg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tGn95YzKLhrlY5DYcb3BzOMhxJvgFg5OqONINN8bGlsUCuBLDgPEY0FCk/bw0NHTM
-         FDX9Y2zFbQvGaXt1wRCha9mh+iJuLj34EyIrrSuEz94dXz9BSHDwOqwin91NKElQ6G
-         u/hlAP4GkQ9/zS5uu0Ww2xkxm1UGAkGaHqEINiGkFL3BD+xU2D5Gkm8vlkAxlhlk4E
-         YgMri3EabN37izQmA+xZHYbIvo7da5jEg7iMAzOUDQIh9eEIQQFo70Yg682IXYT8cb
-         mASgha7RQFXDEWON1EUd2cpxJVRpGhmlv+eW3AXGicXELjZCeVWXCBGjEvQW5HdDge
-         NkpQyX3Vmnjug==
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Martynas Pumputis <m@lambda.lt>
-Subject: [PATCHv3 bpf-next 6/6] selftests/bpf: Fix get_func_ip offset test for CONFIG_X86_KERNEL_IBT
-Date:   Fri,  9 Sep 2022 12:12:45 +0200
-Message-Id: <20220909101245.347173-7-jolsa@kernel.org>
-X-Mailer: git-send-email 2.37.3
-In-Reply-To: <20220909101245.347173-1-jolsa@kernel.org>
-References: <20220909101245.347173-1-jolsa@kernel.org>
+        with ESMTP id S229903AbiIIKPC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Sep 2022 06:15:02 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB2E16D9CC;
+        Fri,  9 Sep 2022 03:15:01 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id 78so1101688pgb.13;
+        Fri, 09 Sep 2022 03:15:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=+Yoo2XHsybKaIPn+rG6W0ll92w/5BR8QTYs2PGUujTY=;
+        b=SittS2WotAFX0YP3lK4qge3VAHp3YYnWQyY9HRKwN07YJZr8I/tgFIZNbj1MbfEvMB
+         MJ7cdFboia5tfXq/pshXTAZF6kFWgRnAed+2mgYqsbdbUTwowMliNV9OuQX1SHbcV8VS
+         FCWAkYebaha0FfdyPWekrgH3ezIPLuZv2NitM14vRLgyPysle+SU+OgHos/orjfSAJAa
+         xG4jg6jHCT2cP5rzlSsKMwEUC7PxSskDEuO4W3czADbFgiU5zJ5sy6ft8AN+RvJwKuMI
+         l/fllDqnaJxOqbl3MZ40yVI3zJLX8w4IfKNp8jUrSdxktLK5e7rEQ3rEBKAh/0YBfjeT
+         fQqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=+Yoo2XHsybKaIPn+rG6W0ll92w/5BR8QTYs2PGUujTY=;
+        b=pabOZD2YLAClpBzPoNLcMJwVQNEQPG/c+yHHANjDNpmc2Jv9G4SaJ9iULnCt3yPyIA
+         4iOnsWeGspVcJSrgAFHgK5uX4xcxy5xyI19B6yXbJR3FWo1j9XcWtQLXY4/xJ60gtqAp
+         y6UbPZ2QagRDfBS3/GcxTlvJwwHv5O+oBt26qqOG+rF/ypmXwZhL9OAQsW92TerLHGZ0
+         eRZ6dC/nmzisdjAEK8vqxwQ2MvtUfUM7BKPt8mP1b3eAKV6tSG3usNdBnNanm/R8QocJ
+         CMo7gJkpvflKzGwmChiezk7K98aCPBF4MwYRA2wN5EsJyWeXjsNqmLRHJhRNd2MHyREX
+         DDqQ==
+X-Gm-Message-State: ACgBeo0axldQ1YjYkuppsqr0Igm3RMtmOOmvjH6SkR3qmst8tU3zloB1
+        gWJ37DWMhgPEFrqW8UlsZSbFwbL4/EhdhRBrF4U=
+X-Google-Smtp-Source: AA6agR6SAsGw1d6dcHyh0x3EJuF3OPUnFAJ46LFMfssd/vgZH643N8h+g0Bb6U6xZkCY6TtIWtcrJhS47C0BuE928FA=
+X-Received: by 2002:a05:6a00:801:b0:53e:5e35:336c with SMTP id
+ m1-20020a056a00080100b0053e5e35336cmr13672274pfk.62.1662718501337; Fri, 09
+ Sep 2022 03:15:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <166256538687.1434226.15760041133601409770.stgit@firesoul>
+ <166256558657.1434226.7390735974413846384.stgit@firesoul> <CAJ8uoz3UcC2tnMtG8W6a3HpCKgaYSzSCqowLFQVwCcsr+NKBOQ@mail.gmail.com>
+ <b5f0d10d-2d4e-34d6-1e45-c206cb6f5d26@redhat.com> <9aab9ef1-446d-57ab-5789-afffe27801f4@redhat.com>
+ <CAJ8uoz0CD18RUYU4SMsubB8fhv3uOwp6wi_uKsZSu_aOV5piaA@mail.gmail.com>
+ <e1ab2141-03cc-f97c-3788-59923a029203@redhat.com> <593cc1df-8b65-ae9e-37eb-091b19c4d00e@redhat.com>
+In-Reply-To: <593cc1df-8b65-ae9e-37eb-091b19c4d00e@redhat.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Fri, 9 Sep 2022 12:14:50 +0200
+Message-ID: <CAJ8uoz1omnp888MoZT4AgiPVWo=Ef5nkQApzz7fqnqdcGgR6NA@mail.gmail.com>
+Subject: Re: [PATCH RFCv2 bpf-next 17/18] xsk: AF_XDP xdp-hints support in
+ desc options
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
+Cc:     Maryam Tahhan <mtahhan@redhat.com>, brouer@redhat.com,
+        bpf@vger.kernel.org, netdev@vger.kernel.org,
+        xdp-hints@xdp-project.net, larysa.zaremba@intel.com,
+        memxor@gmail.com, Lorenzo Bianconi <lorenzo@kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        dave@dtucker.co.uk, Magnus Karlsson <magnus.karlsson@intel.com>,
+        bjorn@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-With CONFIG_X86_KERNEL_IBT enabled the test for kprobe with offset
-won't work because of the extra endbr instruction.
+On Fri, Sep 9, 2022 at 11:42 AM Jesper Dangaard Brouer
+<jbrouer@redhat.com> wrote:
+>
+>
+> On 09/09/2022 10.12, Maryam Tahhan wrote:
+> > <snip>
+> >>>>>
+> >>>>> * Instead encode this information into each metadata entry in the
+> >>>>> metadata area, in some way so that a flags field is not needed (-1
+> >>>>> signifies not valid, or whatever happens to make sense). This has the
+> >>>>> drawback that the user might have to look at a large number of entries
+> >>>>> just to find out there is nothing valid to read. To alleviate this, it
+> >>>>> could be combined with the next suggestion.
+> >>>>>
+> >>>>> * Dedicate one bit in the options field to indicate that there is at
+> >>>>> least one valid metadata entry in the metadata area. This could be
+> >>>>> combined with the two approaches above. However, depending on what
+> >>>>> metadata you have enabled, this bit might be pointless. If some
+> >>>>> metadata is always valid, then it serves no purpose. But it might if
+> >>>>> all enabled metadata is rarely valid, e.g., if you get an Rx timestamp
+> >>>>> on one packet out of one thousand.
+> >>>>>
+> >>>
+> >>> I like this option better! Except that I have hoped to get 2 bits ;-)
+> >>
+> >> I will give you two if you need it Jesper, no problem :-).
+> >>
+> >
+> > Ok I will look at implementing and testing this and post an update.
+>
+> Perfect if you Maryam have cycles to work on this.
+>
+> Let me explain what I wanted the 2nd bit for.  I simply wanted to also
+> transfer the XDP_FLAGS_HINTS_COMPAT_COMMON flag.  One could argue that
+> is it redundant information as userspace AF_XDP will have to BTF decode
+> all the know XDP-hints. Thus, it could know if a BTF type ID is
+> compatible with the common struct.   This problem is performance as my
+> userspace AF_XDP code will have to do more code (switch/jump-table or
+> table lookup) to map IDs to common compat (to e.g. extract the RX-csum
+> indication).  Getting this extra "common-compat" bit is actually a
+> micro-optimization.  It is up to AF_XDP maintainers if they can spare
+> this bit.
+>
+>
+> > Thanks folks
+> >
+> >>> The performance advantage is that the AF_XDP descriptor bits will
+> >>> already be cache-hot, and if it indicates no-metadata-hints the AF_XDP
+> >>> application can avoid reading the metadata cache-line :-).
+> >>
+> >> Agreed. I prefer if we can keep it simple and fast like this.
+> >>
+>
+> Great, lets proceed this way then.
+>
+> > <snip>
+> >
+>
+> Thinking ahead: We will likely need 3 bits.
+>
+> The idea is that for TX-side, we set a bit indicating that AF_XDP have
+> provided a valid XDP-hints layout (incl corresponding BTF ID). (I would
+> overload and reuse "common-compat" bit if TX gets a common struct).
 
-As suggested by Andrii adding CONFIG_X86_KERNEL_IBT detection
-and using appropriate offset value based on that.
+I think we should reuse the "Rx metadata valid" flag for this since
+this will not be used in the Tx case by definition. In the Tx case,
+this bit would instead mean that the user has provided a valid
+XDP-hints layout. It has a nice symmetry, on Rx it is set by the
+kernel when it has put something relevant in the metadata area. On Tx,
+it is set by user-space if it has put something relevant in the
+metadata area. We can also reuse this bit when we get a notification
+in the completion queue to indicate if the kernel has produced some
+metadata on tx completions. This could be a Tx timestamp for example.
 
-Also removing test7 program, because it does the same as test6.
+So hopefully we could live with only two bits :-).
 
-Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- .../bpf/prog_tests/get_func_ip_test.c         | 59 +++++++++++++++----
- .../selftests/bpf/progs/get_func_ip_test.c    | 23 ++++----
- 2 files changed, 60 insertions(+), 22 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c b/tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c
-index 938dbd4d7c2f..fede8ef58b5b 100644
---- a/tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c
-+++ b/tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c
-@@ -2,7 +2,7 @@
- #include <test_progs.h>
- #include "get_func_ip_test.skel.h"
- 
--void test_get_func_ip_test(void)
-+static void test_function_entry(void)
- {
- 	struct get_func_ip_test *skel = NULL;
- 	int err, prog_fd;
-@@ -12,14 +12,6 @@ void test_get_func_ip_test(void)
- 	if (!ASSERT_OK_PTR(skel, "get_func_ip_test__open"))
- 		return;
- 
--	/* test6 is x86_64 specifc because of the instruction
--	 * offset, disabling it for all other archs
--	 */
--#ifndef __x86_64__
--	bpf_program__set_autoload(skel->progs.test6, false);
--	bpf_program__set_autoload(skel->progs.test7, false);
--#endif
--
- 	err = get_func_ip_test__load(skel);
- 	if (!ASSERT_OK(err, "get_func_ip_test__load"))
- 		goto cleanup;
-@@ -43,11 +35,56 @@ void test_get_func_ip_test(void)
- 	ASSERT_EQ(skel->bss->test3_result, 1, "test3_result");
- 	ASSERT_EQ(skel->bss->test4_result, 1, "test4_result");
- 	ASSERT_EQ(skel->bss->test5_result, 1, "test5_result");
-+
-+cleanup:
-+	get_func_ip_test__destroy(skel);
-+}
-+
-+/* test6 is x86_64 specific because of the instruction
-+ * offset, disabling it for all other archs
-+ */
- #ifdef __x86_64__
-+static void test_function_body(void)
-+{
-+	struct get_func_ip_test *skel = NULL;
-+	LIBBPF_OPTS(bpf_test_run_opts, topts);
-+	LIBBPF_OPTS(bpf_kprobe_opts, kopts);
-+	struct bpf_link *link6 = NULL;
-+	int err, prog_fd;
-+
-+	skel = get_func_ip_test__open();
-+	if (!ASSERT_OK_PTR(skel, "get_func_ip_test__open"))
-+		return;
-+
-+	bpf_program__set_autoload(skel->progs.test6, true);
-+
-+	err = get_func_ip_test__load(skel);
-+	if (!ASSERT_OK(err, "get_func_ip_test__load"))
-+		goto cleanup;
-+
-+	kopts.offset = skel->kconfig->CONFIG_X86_KERNEL_IBT ? 9 : 5;
-+
-+	link6 = bpf_program__attach_kprobe_opts(skel->progs.test6, "bpf_fentry_test6", &kopts);
-+	if (!ASSERT_OK_PTR(link6, "link6"))
-+		goto cleanup;
-+
-+	prog_fd = bpf_program__fd(skel->progs.test1);
-+	err = bpf_prog_test_run_opts(prog_fd, &topts);
-+	ASSERT_OK(err, "test_run");
-+	ASSERT_EQ(topts.retval, 0, "test_run");
-+
- 	ASSERT_EQ(skel->bss->test6_result, 1, "test6_result");
--	ASSERT_EQ(skel->bss->test7_result, 1, "test7_result");
--#endif
- 
- cleanup:
-+	bpf_link__destroy(link6);
- 	get_func_ip_test__destroy(skel);
- }
-+#else
-+#define test_function_body()
-+#endif
-+
-+void test_get_func_ip_test(void)
-+{
-+	test_function_entry();
-+	test_function_body();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/get_func_ip_test.c b/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-index 6db70757bc8b..8559e698b40d 100644
---- a/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-+++ b/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-@@ -2,6 +2,7 @@
- #include <linux/bpf.h>
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_tracing.h>
-+#include <stdbool.h>
- 
- char _license[] SEC("license") = "GPL";
- 
-@@ -13,6 +14,16 @@ extern const void bpf_modify_return_test __ksym;
- extern const void bpf_fentry_test6 __ksym;
- extern const void bpf_fentry_test7 __ksym;
- 
-+extern bool CONFIG_X86_KERNEL_IBT __kconfig __weak;
-+
-+/* This function is here to have CONFIG_X86_KERNEL_IBT
-+ * used and added to object BTF.
-+ */
-+int unused(void)
-+{
-+	return CONFIG_X86_KERNEL_IBT ? 0 : 1;
-+}
-+
- __u64 test1_result = 0;
- SEC("fentry/bpf_fentry_test1")
- int BPF_PROG(test1, int a)
-@@ -64,7 +75,7 @@ int BPF_PROG(test5, int a, int *b, int ret)
- }
- 
- __u64 test6_result = 0;
--SEC("kprobe/bpf_fentry_test6+0x5")
-+SEC("?kprobe")
- int test6(struct pt_regs *ctx)
- {
- 	__u64 addr = bpf_get_func_ip(ctx);
-@@ -72,13 +83,3 @@ int test6(struct pt_regs *ctx)
- 	test6_result = (const void *) addr == 0;
- 	return 0;
- }
--
--__u64 test7_result = 0;
--SEC("kprobe/bpf_fentry_test7+5")
--int test7(struct pt_regs *ctx)
--{
--	__u64 addr = bpf_get_func_ip(ctx);
--
--	test7_result = (const void *) addr == 0;
--	return 0;
--}
--- 
-2.37.3
-
+> But lets land RX-side first, but make sure we can easily extend for the
+> TX-side.
+>
+> --Jesper
+>
