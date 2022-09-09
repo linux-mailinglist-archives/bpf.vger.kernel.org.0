@@ -2,115 +2,274 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87EB05B4152
-	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 23:15:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F7A85B4163
+	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 23:26:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229948AbiIIVPq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Sep 2022 17:15:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47166 "EHLO
+        id S229698AbiIIV0O (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Sep 2022 17:26:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229824AbiIIVPp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Sep 2022 17:15:45 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CC22A220D;
-        Fri,  9 Sep 2022 14:15:45 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id p18so2914940plr.8;
-        Fri, 09 Sep 2022 14:15:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date;
-        bh=bYdkG3sA2KAUrrJYCSYLU4H9KRcohF9dqpdnh/5rnKg=;
-        b=mcBuJVl8t3eyRCmOMRoeCOZpPZMo0NWm3++hS7OHGIkoDKCkhK9Lj3vnDgo4CYN9kw
-         4sybxy07MVj0Fl/6XbJiQAvt/0uf1ZA9aGWegy/BEKDe/KuOkcKIyWgH5Kca17GndEyv
-         tNTs+db4uV8pyPN2f+cd9XENvvZ+XJ/oyKzc2R4HPIi+MgPfyn4TNj4azNelhWe4AX4E
-         TAt8Wm80JTkjJHRIjDxUGr9Yu9sFWxUZRt685zfPJmKr5tf08IcdF+W/LQy2bR4rmV2y
-         KDOjop4XP7QnrWh6hWEZOZw/Mb6Kg6x1CQibqpnDrmwTJPTDyl52WskH3bLTI8+CtDPo
-         GMkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
-        bh=bYdkG3sA2KAUrrJYCSYLU4H9KRcohF9dqpdnh/5rnKg=;
-        b=QJdbR0bAt9oW1pHZm5T8ZfEgQTlfd4ESVT8yIovSESxIPKOWZAAjWTwKJlfbDxT483
-         HoqizqIr34kZDtl0A3ZubdG2xkP3+NWufV7jSwiI3qVZIWtqbSHcRK9SUONLcoHxNKVP
-         KyO0V2ELN8KCEjIg0sA+L0jPsXpVwNEAleV3ILbF7FS480izA+R1GMzZAp8/RV/dT4o1
-         bKmb46OprUhvAwnYqBl+LWFFq/lg7kW2+0G5CNXGqZKj6R3leRyzyMu35/ra4N/9pEUo
-         eXBfAsgJm6nMH7fmqt050m21MuZnaUzQ25PHRltTQVNinFI0I9szp9Lcn46aQLhR3EJd
-         TtrQ==
-X-Gm-Message-State: ACgBeo1TmtO3NNqVCkNabdW+Gbxx0b0ZAbb4T2gMBPPAUsh1UitUKojW
-        S+hGJicHLEIwS3Q3jKuLAQ==
-X-Google-Smtp-Source: AA6agR6Eu2GT9bB4MMbG6b87ZqbZg8KH+Fqf/rJDkQFGjYrNtBR8BdWj5fK8nNFWL4cv9yeMob3N3Q==
-X-Received: by 2002:a17:903:18a:b0:16f:8a63:18fe with SMTP id z10-20020a170903018a00b0016f8a6318femr15548430plg.174.1662758144506;
-        Fri, 09 Sep 2022 14:15:44 -0700 (PDT)
-Received: from bytedance ([74.199.177.246])
-        by smtp.gmail.com with ESMTPSA id w63-20020a623042000000b00528a097aeffsm8941pfw.118.2022.09.09.14.15.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Sep 2022 14:15:43 -0700 (PDT)
-Date:   Fri, 9 Sep 2022 14:15:40 -0700
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     sdf@google.com
-Cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, davem@davemloft.net,
-        haoluo@google.com, hawk@kernel.org,
-        John Fastabend <john.fastabend@gmail.com>, jolsa@kernel.org,
-        KP Singh <kpsingh@kernel.org>, kuba@kernel.org,
-        lkml <linux-kernel@vger.kernel.org>, llvm@lists.linux.dev,
-        martin.lau@linux.dev, nathan@kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Networking <netdev@vger.kernel.org>, Song Liu <song@kernel.org>,
-        syzkaller-bugs@googlegroups.com, Tom Rix <trix@redhat.com>,
-        Yonghong Song <yhs@fb.com>,
-        Peilin Ye <peilin.ye@bytedance.com>,
-        Peilin Ye <yepeilin.cs@gmail.com>
-Subject: Re: [syzbot] WARNING in bpf_verifier_vlog
-Message-ID: <20220909211540.GA11304@bytedance>
-References: <000000000000e506e905e836d9e7@google.com>
- <YxtrrG8ebrarIqnc@google.com>
- <CAO-hwJJyrhmzWY4fth5miiHd3QXHvs4KPuPRacyNp8xrTxOucA@mail.gmail.com>
- <YxuZ3j0PE0cauK1E@google.com>
+        with ESMTP id S229685AbiIIV0M (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Sep 2022 17:26:12 -0400
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5675FFE4A1;
+        Fri,  9 Sep 2022 14:26:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1662758771; x=1694294771;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=cwQ6SCgM+Kl9Bt6tUHM6yFrYsFndLuCrr7838ehODtY=;
+  b=aAYO63KRZ9oNUMHDYBtQKaZv2ToJ3RepuFG6EZIXrHe+6z8OTVo0rc9I
+   A0LHCLf0SDZTIunQPmXtoTAf0O1e0kZOLxKNXD01vJo7Tz1XeLWNebDDl
+   r1MBO4sRyVy+hCwO6vqxk++OXmwqxtAXLCFqchtStT3T1nfjEgWiyI/ko
+   8PPgH+tWC6Y+YCj+aHyneZ31hIHaQo9WUxKIjozc7U91sBFvSGEJ1RSAN
+   57LFtMKEedKN3wRQhyWiuGkkFPKN64MfhTh8xTShS1KaqS8AT/BaWCDTJ
+   +7lZQBTNhMq3MGGSIFoMxZ6YFznC7rlwa2ssvKLEZ4L+i+WyYRKasLk9g
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10465"; a="298373831"
+X-IronPort-AV: E=Sophos;i="5.93,304,1654585200"; 
+   d="scan'208";a="298373831"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2022 14:26:10 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,304,1654585200"; 
+   d="scan'208";a="592753040"
+Received: from lkp-server02.sh.intel.com (HELO b2938d2e5c5a) ([10.239.97.151])
+  by orsmga006.jf.intel.com with ESMTP; 09 Sep 2022 14:26:08 -0700
+Received: from kbuild by b2938d2e5c5a with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1oWlVn-0001kx-2W;
+        Fri, 09 Sep 2022 21:26:07 +0000
+Date:   Sat, 10 Sep 2022 05:25:34 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-scsi@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        bpf@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        alsa-devel@alsa-project.org,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: [linux-next:master] BUILD REGRESSION
+ 9a82ccda91ed2b40619cb3c10d446ae1f97bab6e
+Message-ID: <631baf4e.klxNbMailfUgOTRD%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YxuZ3j0PE0cauK1E@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi all,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+branch HEAD: 9a82ccda91ed2b40619cb3c10d446ae1f97bab6e  Add linux-next specific files for 20220909
 
-On Fri, Sep 09, 2022 at 12:54:06PM -0700, sdf@google.com wrote:
-> On 09/09, Benjamin Tissoires wrote:
-> Yeah, good point. I've run the repro. I think the issue is that
-> syzkaller is able to pass btf with a super long random name which
-> then hits BPF_VERIFIER_TMP_LOG_SIZE while printing the verifier
-> log line. Seems like a non-issue to me, but maybe we need to
-> add some extra validation..
+Error/Warning reports:
 
-In btf_func_proto_check_meta():
+https://lore.kernel.org/linux-mm/202209042337.FQi69rLV-lkp@intel.com
+https://lore.kernel.org/linux-mm/202209080718.y5QmlNKH-lkp@intel.com
 
-	if (t->name_off) {
-		btf_verifier_log_type(env, t, "Invalid name");
-		return -EINVAL;
-	}
+Error/Warning: (recently discovered and may have been fixed)
 
-In the verifier log, maybe we should just say that BTF_KIND_FUNC_PROTO "must
-not have a name" [1], instead of printing out the user-provided
-(potentially very long) name and say it's "Invalid" ?
+./drivers/gpu/drm/drm_atomic_helper.c:802: warning: expecting prototype for drm_atomic_helper_check_wb_connector_state(). Prototype was for drm_atomic_helper_check_wb_encoder_state() instead
+ERROR: modpost: "__divdi3" [drivers/gpu/drm/vkms/vkms.ko] undefined!
+ERROR: modpost: "__udivdi3" [drivers/gpu/drm/vkms/vkms.ko] undefined!
+arm-linux-gnueabi-ld: vkms_formats.c:(.text+0x824): undefined reference to `__aeabi_ldivmod'
+drivers/base/regmap/regmap-mmio.c:222:17: error: implicit declaration of function 'writesb'; did you mean 'writeb'? [-Werror=implicit-function-declaration]
+drivers/base/regmap/regmap-mmio.c:225:17: error: implicit declaration of function 'writesw'; did you mean 'writew'? [-Werror=implicit-function-declaration]
+drivers/base/regmap/regmap-mmio.c:228:17: error: implicit declaration of function 'writesl'; did you mean 'writel'? [-Werror=implicit-function-declaration]
+drivers/base/regmap/regmap-mmio.c:358:17: error: implicit declaration of function 'readsb'; did you mean 'readb'? [-Werror=implicit-function-declaration]
+drivers/base/regmap/regmap-mmio.c:361:17: error: implicit declaration of function 'readsw'; did you mean 'readw'? [-Werror=implicit-function-declaration]
+drivers/base/regmap/regmap-mmio.c:364:17: error: implicit declaration of function 'readsl'; did you mean 'readl'? [-Werror=implicit-function-declaration]
+drivers/gpu/drm/amd/amdgpu/imu_v11_0_3.c:139:6: warning: no previous prototype for 'imu_v11_0_3_program_rlc_ram' [-Wmissing-prototypes]
+drivers/gpu/drm/drm_atomic_helper.c:802: warning: expecting prototype for drm_atomic_helper_check_wb_connector_state(). Prototype was for drm_atomic_helper_check_wb_encoder_state() instead
+drivers/gpu/drm/vkms/vkms_formats.c:259: undefined reference to `__divdi3'
+drivers/gpu/drm/vkms/vkms_plane.c:110 vkms_plane_atomic_update() warn: variable dereferenced before check 'fb' (see line 108)
+drivers/scsi/qla2xxx/qla_os.c:2854:23: warning: assignment to 'struct trace_array *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
+drivers/scsi/qla2xxx/qla_os.c:2854:25: error: implicit declaration of function 'trace_array_get_by_name'; did you mean 'trace_array_set_clr_event'? [-Werror=implicit-function-declaration]
+drivers/scsi/qla2xxx/qla_os.c:2869:9: error: implicit declaration of function 'trace_array_put' [-Werror=implicit-function-declaration]
+kernel/bpf/memalloc.c:499 bpf_mem_alloc_destroy() error: potentially dereferencing uninitialized 'c'.
+ld: drivers/gpu/drm/vkms/vkms_formats.c:260: undefined reference to `__divdi3'
+ld: vkms_formats.c:(.text+0x362): undefined reference to `__divdi3'
+ld: vkms_formats.c:(.text+0x3b2): undefined reference to `__divdi3'
+ld: vkms_formats.c:(.text+0x3ba): undefined reference to `__divdi3'
+ld: vkms_formats.c:(.text+0x47f): undefined reference to `__divdi3'
+microblaze-linux-ld: drivers/gpu/drm/vkms/vkms_formats.c:260: undefined reference to `__divdi3'
+mips-linux-ld: vkms_formats.c:(.text+0x8b8): undefined reference to `__divdi3'
+mips-linux-ld: vkms_formats.c:(.text.argb_u16_to_RGB565+0xd0): undefined reference to `__divdi3'
+sound/soc/codecs/tas2562.c:442:13: warning: variable 'ret' set but not used [-Wunused-but-set-variable]
+vkms_formats.c:(.text+0x266): undefined reference to `__divdi3'
+vkms_formats.c:(.text+0x338): undefined reference to `__divdi3'
+vkms_formats.c:(.text+0x388): undefined reference to `__divdi3'
+vkms_formats.c:(.text+0x390): undefined reference to `__divdi3'
+vkms_formats.c:(.text+0x455): undefined reference to `__divdi3'
+vkms_formats.c:(.text+0x804): undefined reference to `__aeabi_ldivmod'
+vkms_formats.c:(.text+0x89c): undefined reference to `__divdi3'
+vkms_formats.c:(.text.argb_u16_to_RGB565+0xb0): undefined reference to `__divdi3'
 
-Similarly, for name-too-long errors, should we truncate the name to
-KSYM_NAME_LEN bytes (see __btf_name_valid()) in the log ?
+Error/Warning ids grouped by kconfigs:
 
-[1] commit 2667a2626f4d ("bpf: btf: Add BTF_KIND_FUNC and BTF_KIND_FUNC_PROTO")
+gcc_recent_errors
+|-- alpha-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-imu_v11_0_3.c:warning:no-previous-prototype-for-imu_v11_0_3_program_rlc_ram
+|   |-- drivers-gpu-drm-drm_atomic_helper.c:warning:expecting-prototype-for-drm_atomic_helper_check_wb_connector_state().-Prototype-was-for-drm_atomic_helper_check_wb_encoder_state()-instead
+|   |-- drivers-scsi-qla2xxx-qla_os.c:error:implicit-declaration-of-function-trace_array_get_by_name
+|   |-- drivers-scsi-qla2xxx-qla_os.c:error:implicit-declaration-of-function-trace_array_put
+|   |-- drivers-scsi-qla2xxx-qla_os.c:warning:assignment-to-struct-trace_array-from-int-makes-pointer-from-integer-without-a-cast
+|   `-- sound-soc-codecs-tas2562.c:warning:variable-ret-set-but-not-used
+|-- arc-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-imu_v11_0_3.c:warning:no-previous-prototype-for-imu_v11_0_3_program_rlc_ram
+|   |-- drivers-gpu-drm-drm_atomic_helper.c:warning:expecting-prototype-for-drm_atomic_helper_check_wb_connector_state().-Prototype-was-for-drm_atomic_helper_check_wb_encoder_state()-instead
+|   `-- sound-soc-codecs-tas2562.c:warning:variable-ret-set-but-not-used
+|-- arc-randconfig-r025-20220908
+|   `-- sound-soc-codecs-tas2562.c:warning:variable-ret-set-but-not-used
+|-- arc-randconfig-s033-20220907
+|   |-- kernel-bpf-hashtab.c:sparse:sparse:cast-removes-address-space-__percpu-of-expression
+|   |-- kernel-bpf-hashtab.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-void-noderef-__percpu-assigned-pptr-got-void
+|   |-- kernel-bpf-hashtab.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-void-ptr_to_pptr-got-void-noderef-__percpu-assigned-pptr
+|   |-- kernel-bpf-memalloc.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-noderef-__percpu-__pdata-got-void
+|   |-- kernel-bpf-memalloc.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-noderef-__percpu-__pdata-got-void-pptr
+|   |-- kernel-bpf-memalloc.c:sparse:sparse:incorrect-type-in-initializer-(different-address-spaces)-expected-void-pptr-got-void-noderef-__percpu
+|   `-- kernel-exit.c:sparse:sparse:incorrect-type-in-initializer-(different-address-spaces)-expected-struct-sighand_struct-sighand-got-struct-sighand_struct-noderef-__rcu-sighand
+|-- arm-allyesconfig
+|   |-- arm-linux-gnueabi-ld:vkms_formats.c:(.text):undefined-reference-to-__aeabi_ldivmod
+|   |-- drivers-gpu-drm-amd-amdgpu-imu_v11_0_3.c:warning:no-previous-prototype-for-imu_v11_0_3_program_rlc_ram
+|   |-- drivers-gpu-drm-drm_atomic_helper.c:warning:expecting-prototype-for-drm_atomic_helper_check_wb_connector_state().-Prototype-was-for-drm_atomic_helper_check_wb_encoder_state()-instead
+|   |-- sound-soc-codecs-tas2562.c:warning:variable-ret-set-but-not-used
+|   `-- vkms_formats.c:(.text):undefined-reference-to-__aeabi_ldivmod
+|-- arm-defconfig
+|   `-- drivers-gpu-drm-drm_atomic_helper.c:warning:expecting-prototype-for-drm_atomic_helper_check_wb_connector_state().-Prototype-was-for-drm_atomic_helper_check_wb_encoder_state()-instead
+|-- arm64-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-imu_v11_0_3.c:warning:no-previous-prototype-for-imu_v11_0_3_program_rlc_ram
+|   |-- drivers-gpu-drm-drm_atomic_helper.c:warning:expecting-prototype-for-drm_atomic_helper_check_wb_connector_state().-Prototype-was-for-drm_atomic_helper_check_wb_encoder_state()-instead
+|   `-- sound-soc-codecs-tas2562.c:warning:variable-ret-set-but-not-used
+|-- arm64-randconfig-r021-20220908
+|   `-- sound-soc-codecs-tas2562.c:warning:variable-ret-set-but-not-used
+|-- arm64-randconfig-r034-20220909
+|   `-- drivers-gpu-drm-drm_atomic_helper.c:warning:expecting-prototype-for-drm_atomic_helper_check_wb_connector_state().-Prototype-was-for-drm_atomic_helper_check_wb_encoder_state()-instead
+|-- i386-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-imu_v11_0_3.c:warning:no-previous-prototype-for-imu_v11_0_3_program_rlc_ram
+|   |-- drivers-gpu-drm-drm_atomic_helper.c:warning:expecting-prototype-for-drm_atomic_helper_check_wb_connector_state().-Prototype-was-for-drm_atomic_helper_check_wb_encoder_state()-instead
+|   |-- ld:vkms_formats.c:(.text):undefined-reference-to-__divdi3
+|   |-- sound-soc-codecs-tas2562.c:warning:variable-ret-set-but-not-used
+|   `-- vkms_formats.c:(.text):undefined-reference-to-__divdi3
+|-- i386-defconfig
+|   `-- drivers-gpu-drm-drm_atomic_helper.c:warning:expecting-prototype-for-drm_atomic_helper_check_wb_connector_state().-Prototype-was-for-drm_atomic_helper_check_wb_encoder_state()-instead
+|-- i386-randconfig-a003
+|   |-- ERROR:__divdi3-drivers-gpu-drm-vkms-vkms.ko-undefined
+|   |-- ERROR:__udivdi3-drivers-gpu-drm-vkms-vkms.ko-undefined
+|   `-- drivers-gpu-drm-drm_atomic_helper.c:warning:expecting-prototype-for-drm_atomic_helper_check_wb_connector_state().-Prototype-was-for-drm_atomic_helper_check_wb_encoder_state()-instead
+|-- i386-randconfig-a012
+clang_recent_errors
+|-- arm64-randconfig-r006-20220908
+|   `-- drivers-gpu-drm-amd-amdgpu-imu_v11_0_3.c:warning:no-previous-prototype-for-function-imu_v11_0_3_program_rlc_ram
+|-- i386-randconfig-a002
+|   `-- drivers-extcon-extcon-usbc-tusb320.c:warning:expecting-prototype-for-drivers-extcon-extcon-tusb320c().-Prototype-was-for-TUSB320_REG8()-instead
+|-- i386-randconfig-a006
+|   `-- ld.lld:error:undefined-symbol:__udivdi3
+|-- i386-randconfig-a013
+|   `-- ld.lld:error:undefined-symbol:__udivdi3
+|-- i386-randconfig-a015
+|   `-- drivers-extcon-extcon-usbc-tusb320.c:warning:expecting-prototype-for-drivers-extcon-extcon-tusb320c().-Prototype-was-for-TUSB320_REG8()-instead
+|-- riscv-randconfig-r001-20220908
+|   `-- ld.lld:error:undefined-symbol:__udivdi3
+|-- riscv-randconfig-r013-20220907
+|   `-- drivers-extcon-extcon-usbc-tusb320.c:warning:expecting-prototype-for-drivers-extcon-extcon-tusb320c().-Prototype-was-for-TUSB320_REG8()-instead
+|-- x86_64-randconfig-a003
+|   `-- drivers-extcon-extcon-usbc-tusb320.c:warning:expecting-prototype-for-drivers-extcon-extcon-tusb320c().-Prototype-was-for-TUSB320_REG8()-instead
+|-- x86_64-randconfig-a012
+|   `-- drivers-extcon-extcon-usbc-tusb320.c:warning:expecting-prototype-for-drivers-extcon-extcon-tusb320c().-Prototype-was-for-TUSB320_REG8()-instead
+`-- x86_64-randconfig-a016
+    `-- drivers-extcon-extcon-usbc-tusb320.c:warning:expecting-prototype-for-drivers-extcon-extcon-tusb320c().-Prototype-was-for-TUSB320_REG8()-instead
 
-Thanks,
-Peilin Ye
+elapsed time: 729m
 
+configs tested: 75
+configs skipped: 2
+
+gcc tested configs:
+um                             i386_defconfig
+um                           x86_64_defconfig
+i386                          randconfig-a001
+i386                          randconfig-a003
+x86_64                              defconfig
+i386                                defconfig
+i386                          randconfig-a005
+m68k                             allmodconfig
+arc                              allyesconfig
+i386                             allyesconfig
+arm                                 defconfig
+x86_64                        randconfig-a004
+alpha                            allyesconfig
+x86_64                        randconfig-a002
+x86_64                               rhel-8.3
+m68k                             allyesconfig
+powerpc                           allnoconfig
+x86_64                           allyesconfig
+x86_64                        randconfig-a015
+arm                              allyesconfig
+x86_64                        randconfig-a006
+arm64                            allyesconfig
+x86_64                        randconfig-a013
+powerpc                          allmodconfig
+x86_64                        randconfig-a011
+sh                               allmodconfig
+ia64                             allmodconfig
+mips                             allyesconfig
+mips                      loongson3_defconfig
+arc                  randconfig-r043-20220907
+x86_64                          rhel-8.3-func
+parisc                           alldefconfig
+x86_64                         rhel-8.3-kunit
+sh                            migor_defconfig
+powerpc                      ppc40x_defconfig
+x86_64                           rhel-8.3-kvm
+openrisc                            defconfig
+sh                         apsh4a3a_defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                           rhel-8.3-syz
+i386                          randconfig-a014
+alpha                             allnoconfig
+i386                          randconfig-a012
+riscv                             allnoconfig
+sh                        edosk7705_defconfig
+csky                              allnoconfig
+i386                          randconfig-a016
+sh                             shx3_defconfig
+arc                               allnoconfig
+ia64                         bigsur_defconfig
+s390                       zfcpdump_defconfig
+sh                          rsk7201_defconfig
+powerpc                      bamboo_defconfig
+i386                          randconfig-c001
+
+clang tested configs:
+i386                          randconfig-a002
+i386                          randconfig-a004
+i386                          randconfig-a006
+x86_64                        randconfig-a005
+x86_64                        randconfig-a001
+x86_64                        randconfig-a014
+x86_64                        randconfig-a003
+hexagon              randconfig-r041-20220907
+riscv                randconfig-r042-20220907
+x86_64                        randconfig-a016
+x86_64                        randconfig-a012
+hexagon              randconfig-r045-20220907
+s390                 randconfig-r044-20220907
+i386                          randconfig-a013
+i386                          randconfig-a015
+i386                          randconfig-a011
+mips                           ip22_defconfig
+mips                          ath79_defconfig
+powerpc                     ppa8548_defconfig
+x86_64                          rhel-8.3-rust
+x86_64                        randconfig-k001
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
