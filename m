@@ -2,112 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F66C5B3CA3
-	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 18:06:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE2795B3CC6
+	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 18:16:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229845AbiIIQGb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Sep 2022 12:06:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37402 "EHLO
+        id S229456AbiIIQQI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Sep 2022 12:16:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230510AbiIIQGa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Sep 2022 12:06:30 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A99EB1282D5;
-        Fri,  9 Sep 2022 09:06:29 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 4F4C5B82584;
-        Fri,  9 Sep 2022 16:06:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBAB3C4347C;
-        Fri,  9 Sep 2022 16:06:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662739587;
-        bh=axWEZR2AGhaBfThvLrSFA+NxQSVcKpOAZwv+H9dW4Nk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=iibSQJJ4qO0hADleXEMz2q8bsHl4E5kuxqbEW814lAtB6rTghQGxlaWLayEs9BxL6
-         qWsyybTYDgORZqa6SMD8HdP43rhj1S8YjCOGM9LPqk1nIDUVt5ZuMgXhANuH88DKOX
-         95BFN5MFwjwD9ElXZwnG8HK/hMlNHfBMh1T8AIl9UALOKwpDACprIwB3Q/uJMOMGK9
-         sLu1xcTQkm+vu/dcD4ppCL5/l1YYFiqRqH8Y9AVLUdEQsy+oN4tgJUEMP1ZH820Oi4
-         mIWgpb9JtuezcGS477Kc9vOF3tkLh6WKLFdEXRqhZCKemRhAoj+tFJ1fRKxhMvAKDS
-         51qBZeIRP1V5g==
-Received: by mail-ot1-f48.google.com with SMTP id 6-20020a9d0106000000b0063963134d04so1356595otu.3;
-        Fri, 09 Sep 2022 09:06:26 -0700 (PDT)
-X-Gm-Message-State: ACgBeo26VrXaTyec/izQJuIUnPTImjFNVOv1eFUaqESyTBoEi6C6AFcW
-        0WgF/GpLpCB37EyxNemsswUpO/bndaY6iHRZCkY=
-X-Google-Smtp-Source: AA6agR7gNcjRD/fchDqW/acEVY47PneSmF9ZfU3M+Ex1YMk2RVvQ+AETSXZH7W4vEnLR3dT4sV0ywAUAaVtWdc9Vjok=
-X-Received: by 2002:a9d:7c94:0:b0:636:f74b:2364 with SMTP id
- q20-20020a9d7c94000000b00636f74b2364mr5594298otn.165.1662739586134; Fri, 09
- Sep 2022 09:06:26 -0700 (PDT)
+        with ESMTP id S229610AbiIIQQH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Sep 2022 12:16:07 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 205BE11B03C
+        for <bpf@vger.kernel.org>; Fri,  9 Sep 2022 09:16:06 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id nc14so5169175ejc.4
+        for <bpf@vger.kernel.org>; Fri, 09 Sep 2022 09:16:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date;
+        bh=uZEnJLfJdi18Rz7LSxAFoiY4e8KxCzA6CYNwp7Kb4bc=;
+        b=K0t4Kaf0YJaYRxPG4NAXZtTN8avNSBHLgHN/LwqkD7lGWyOiz16O3zFIdtpSO54C40
+         fnpKpNCgSqdoM4iivMVJ3OMevVUcLJXZQF70WBAWXoJXrywozNgJaRe3r0Oab6IM/QIZ
+         eSUXNI5akzIAfGx8KkBHDOIkrKv9/qdma3qEScK3VGyAhodJGKBTnlPKLfTMiB9KA/+F
+         BKriItuQ6aWvVYNyzUN/2+Q5HKlbRJ82c36dByEOm3U4q/XueiraovtMrf2x/C6fBlbg
+         cW/55FDCwjKhD8Kq4GbjNYGldRacPBsh4Z+Md4HQxL4T7qqPL/TqWRxnh7NrJIytryHN
+         PrgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date;
+        bh=uZEnJLfJdi18Rz7LSxAFoiY4e8KxCzA6CYNwp7Kb4bc=;
+        b=OECRNNrY+0DJkLaRIkq4uPkS0Vc4ufYJC/lG0A4GDG/rWgqtmz52823WS73kU0Xxc0
+         am2JegCajU+3jycISua082g+R8g/iDrGJc2TESLnb+7loyp2Ddbmgiaxyr3PBzmwziNR
+         5gRmW9BT78qkoiLgsFUscsZaJhyJIVVCxJnxm33wRE+sB3eCEwHLR9cXGk7VOYYgWr1m
+         flUhIymwzJKpNTkr8PFy1CDKQnsWDU12K0kFc015oD+HiDHUjwY4WQR4DmfG9rhHDczF
+         I4FNEMbLzx4ggXfzUXL7tgjUal8vmxBXHY5pj/NXUvkzouArZJMkQotLDOadkxMkqyZ1
+         dSPQ==
+X-Gm-Message-State: ACgBeo0g+QZpHHteXaColYiQVhLht1WZBbLc/gNK4YrHAfusYULXe19C
+        nh4iuR4ZbkAY++vpUD1jlpk=
+X-Google-Smtp-Source: AA6agR664SzUHtMGxto1XgTACKnWUP5rGoRV5kxrx6vuFvIoLVIXeFaCWyVvynBUuyvFyjyR5miexw==
+X-Received: by 2002:a17:907:2c74:b0:741:657a:89de with SMTP id ib20-20020a1709072c7400b00741657a89demr10312615ejc.58.1662740164452;
+        Fri, 09 Sep 2022 09:16:04 -0700 (PDT)
+Received: from blondie ([141.226.162.95])
+        by smtp.gmail.com with ESMTPSA id l3-20020a056402344300b0044604ad8b41sm620614edc.23.2022.09.09.09.16.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Sep 2022 09:16:04 -0700 (PDT)
+Date:   Fri, 9 Sep 2022 19:16:02 +0300
+From:   Shmulik Ladkani <shmulik.ladkani@gmail.com>
+To:     Joanne Koong <joannelkoong@gmail.com>
+Cc:     bpf@vger.kernel.org, daniel@iogearbox.net, martin.lau@kernel.org,
+        andrii@kernel.org, ast@kernel.org, Kernel-team@fb.com
+Subject: Re: [PATCH bpf-next v1 2/8] bpf: Add bpf_dynptr_trim and
+ bpf_dynptr_advance
+Message-ID: <20220909191602.1c2be862@blondie>
+In-Reply-To: <20220908000254.3079129-3-joannelkoong@gmail.com>
+References: <20220908000254.3079129-1-joannelkoong@gmail.com>
+        <20220908000254.3079129-3-joannelkoong@gmail.com>
 MIME-Version: 1.0
-References: <20220909120736.1027040-1-roberto.sassu@huaweicloud.com> <20220909120736.1027040-8-roberto.sassu@huaweicloud.com>
-In-Reply-To: <20220909120736.1027040-8-roberto.sassu@huaweicloud.com>
-From:   Song Liu <song@kernel.org>
-Date:   Fri, 9 Sep 2022 17:06:15 +0100
-X-Gmail-Original-Message-ID: <CAPhsuW6zhrUJBfht7RCiUGWWCaWwpcjzAq-R4W-YmpU+YZyMXg@mail.gmail.com>
-Message-ID: <CAPhsuW6zhrUJBfht7RCiUGWWCaWwpcjzAq-R4W-YmpU+YZyMXg@mail.gmail.com>
-Subject: Re: [PATCH v17 07/12] bpf: Add bpf_verify_pkcs7_signature() kfunc
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, paul@paul-moore.com,
-        jmorris@namei.org, serge@hallyn.com, Shuah Khan <shuah@kernel.org>,
-        bpf <bpf@vger.kernel.org>, keyrings@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        =?UTF-8?Q?Daniel_M=C3=BCller?= <deso@posteo.net>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 9, 2022 at 1:09 PM Roberto Sassu
-<roberto.sassu@huaweicloud.com> wrote:
->
-> From: Roberto Sassu <roberto.sassu@huawei.com>
->
-> Add the bpf_verify_pkcs7_signature() kfunc, to give eBPF security modules
-> the ability to check the validity of a signature against supplied data, by
-> using user-provided or system-provided keys as trust anchor.
->
-> The new kfunc makes it possible to enforce mandatory policies, as eBPF
-> programs might be allowed to make security decisions only based on data
-> sources the system administrator approves.
->
-> The caller should provide the data to be verified and the signature as eBPF
-> dynamic pointers (to minimize the number of parameters) and a bpf_key
-> structure containing a reference to the keyring with keys trusted for
-> signature verification, obtained from bpf_lookup_user_key() or
-> bpf_lookup_system_key().
->
-> For bpf_key structures obtained from the former lookup function,
-> bpf_verify_pkcs7_signature() completes the permission check deferred by
-> that function by calling key_validate(). key_task_permission() is already
-> called by the PKCS#7 code.
->
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> Acked-by: KP Singh <kpsingh@kernel.org>
+On Wed,  7 Sep 2022 17:02:48 -0700 Joanne Koong <joannelkoong@gmail.com> wrote:
 
-Acked-by: Song Liu <song@kernel.org>
+> Add two new helper functions: bpf_dynptr_trim and bpf_dynptr_advance.
+> 
+> bpf_dynptr_trim decreases the size of a dynptr by the specified
+> number of bytes (offset remains the same). bpf_dynptr_advance advances
+> the offset of the dynptr by the specified number of bytes (size
+> decreases correspondingly).
+> 
+> One example where trimming / advancing the dynptr may useful is for
+> hashing. If the dynptr points to a larger struct, it is possible to hash
+> an individual field within the struct through dynptrs by using
+> bpf_dynptr_advance+trim.
+> 
+> Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
 
-[...]
+Reviewed-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
