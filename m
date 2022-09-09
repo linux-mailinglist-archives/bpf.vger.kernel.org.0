@@ -2,197 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D62FD5B3455
-	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 11:47:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65BEE5B34EF
+	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 12:15:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231704AbiIIJrL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Sep 2022 05:47:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60176 "EHLO
+        id S230115AbiIIKOh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Sep 2022 06:14:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230435AbiIIJrK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Sep 2022 05:47:10 -0400
-Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 90D3CF3BF4
-        for <bpf@vger.kernel.org>; Fri,  9 Sep 2022 02:47:09 -0700 (PDT)
-Received: from [10.130.0.135] (unknown [113.200.148.30])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxkOCXCxtjqlIVAA--.20658S3;
-        Fri, 09 Sep 2022 17:47:04 +0800 (CST)
-Subject: Re: [PATCH bpf-next v3 3/4] LoongArch: Add BPF JIT support
-To:     WANG Xuerui <kernel@xen0n.name>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <git@xen0n.name>, Xi Ruoyao <xry111@xry111.site>
-References: <1661999249-10258-1-git-send-email-yangtiezhu@loongson.cn>
- <1661999249-10258-4-git-send-email-yangtiezhu@loongson.cn>
- <CAAhV-H4yU2tp=DBGCkdSzp-9bAXXDM4+0iqDgOac+fbgQnsx2A@mail.gmail.com>
- <1a740b5c-041c-85c6-f1d6-bb0b931c0c3e@loongson.cn>
- <CAAhV-H5vfw+Mv=LbQfa4sPHW91Z+ij3R8+LsHZOAiR+u7pJONw@mail.gmail.com>
- <cfc4c2e5-34af-b968-9c44-28e71731bb75@xen0n.name>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        loongarch@lists.linux.dev, Li Xuefeng <lixuefeng@loongson.cn>
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <16f24d7c-39c5-8dfa-a45f-61cd7f0e8b5f@loongson.cn>
-Date:   Fri, 9 Sep 2022 17:47:03 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        with ESMTP id S230159AbiIIKOb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Sep 2022 06:14:31 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DA431167;
+        Fri,  9 Sep 2022 03:14:26 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id b5so1925533wrr.5;
+        Fri, 09 Sep 2022 03:14:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:user-agent:references:message-id:date:in-reply-to
+         :subject:cc:to:from:from:to:cc:subject:date;
+        bh=02N4B3uo/LK8nlmi+RnMMB9q8gQKWvRe4GM8PGErHWs=;
+        b=qjcvcPhwfQa4ir/ripxGmcWvbeaxDckFoNQ2IiWrKi+XzkWAVTWXugWvxn0dcq8ovQ
+         HPSWNESlSJ0PCjGe+ndkFdWN8r1yO9rT/unLn5usp8vFSlrD2x/8l/Y8CSeq2UroFRrI
+         QeMsh6uraVua+z0Q1shVCvcsSkn4RHjYwrTjkr7KPTa53fX8VEqGCuOxdrdTiV8C3DZp
+         wsWUYKyDOpK0BXHjFkS1A1JrqJ5F2TX9LL2fYXy/rWsGJNKFeMmLnB1q0wU9AnE00SNo
+         He6skvIenhYuwnR5a75QVBYpD7kHxbzHDu1B2m8pEfmhLEeurhplOU8HnqVvdtyDnrp1
+         qHeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=mime-version:user-agent:references:message-id:date:in-reply-to
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date;
+        bh=02N4B3uo/LK8nlmi+RnMMB9q8gQKWvRe4GM8PGErHWs=;
+        b=aqEpI5sQNoCIcy43Wb8WrGAR4glTNSeR/FWe/+SPaWJeTwff+gFSxYMdJVX+uFysiZ
+         Jjo2vZ+MSkDY7281s1nn5gorjvXm86WTo/S6Hfd6Uir0I5il4Itd6LyVSuFEZ/Rm9XuF
+         a4QM4IQBNDQ3PUgmzTxmcIqmMu7fRmUaXGyLfqtx3GS4jf5YsN+9dyRRRrX7jFus3YYF
+         n6LMcVK0Qv/ayHffjdZhrguT87Gy2cJXipYHqJb0gSYGKQS7sPdqgLwsjsrekGXI7WN1
+         tL3uFylWejjP4Y3XU+ebyO6sABNKJEsJ9fz15AKtwQwf2NFn5jrTz8edJNHvSX+xj8w7
+         tbdg==
+X-Gm-Message-State: ACgBeo1q8s2QbPEdCb7HzO921tslyo3ThqgKOuTUpmwNa7Qz1Ny4npAv
+        xXdnOkGwe5gvXWG4HxVUSZY5ddC/pO4=
+X-Google-Smtp-Source: AA6agR7lNCXLIBMUU1cUNouP2uyCSi4R0CP+r06yQih+mYJHjNuPXI5zn0if7JNb6JmQpuOYEwEjwg==
+X-Received: by 2002:adf:f80b:0:b0:228:dbb9:5bdf with SMTP id s11-20020adff80b000000b00228dbb95bdfmr7489884wrp.327.1662718464885;
+        Fri, 09 Sep 2022 03:14:24 -0700 (PDT)
+Received: from imac ([88.97.103.74])
+        by smtp.gmail.com with ESMTPSA id d41-20020a05600c4c2900b003a5c999cd1asm206389wmp.14.2022.09.09.03.14.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Sep 2022 03:14:24 -0700 (PDT)
+From:   Donald Hunter <donald.hunter@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Daniel =?utf-8?Q?M=C3=BCller?= <deso@posteo.net>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
+        linux-doc@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH bpf-next v3 1/2] Add subdir support to Documentation
+ makefile
+In-Reply-To: <CAEf4BzZ_2wCVTjhAe0XzJ5qfbVhV0pfZeJ=z9Jg_fj_fzD1JFw@mail.gmail.com>
+        (Andrii Nakryiko's message of "Thu, 8 Sep 2022 16:29:55 -0700")
+Date:   Fri, 09 Sep 2022 11:12:22 +0100
+Message-ID: <m2bkro3lh5.fsf@gmail.com>
+References: <20220829091500.24115-1-donald.hunter@gmail.com>
+        <20220829091500.24115-2-donald.hunter@gmail.com>
+        <3d08894c-b3d1-37e8-664e-48e66dc664ac@iogearbox.net>
+        <m2h71k6bw8.fsf@gmail.com>
+        <CAEf4BzZ_2wCVTjhAe0XzJ5qfbVhV0pfZeJ=z9Jg_fj_fzD1JFw@mail.gmail.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.1 (darwin)
 MIME-Version: 1.0
-In-Reply-To: <cfc4c2e5-34af-b968-9c44-28e71731bb75@xen0n.name>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf8CxkOCXCxtjqlIVAA--.20658S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxZr4UKF1DAr4kZry8Jw13urg_yoW7JrWUpF
-        W3KFZ8KFs3JFy3AF9Fqw45Xa4ay39xKr13XF15Kry8A3s0qr1FgFWrGr1Y9a4DC34xZr1q
-        9F48try3Z3W5AFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9qb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I
-        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVW8JVWxJw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l
-        c7I2V7IY0VAS07AlzVAYIcxG8wCY02Avz4vE14v_GFWl42xK82IYc2Ij64vIr41l4I8I3I
-        0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWU
-        GVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI
-        0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0
-        rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r
-        4UJbIYCTnIWIevJa73UjIFyTuYvjxUgN6JUUUUU
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-
-On 09/09/2022 12:51 AM, WANG Xuerui wrote:
-> Hi,
+> On Tue, Sep 6, 2022 at 3:50 AM Donald Hunter <donald.hunter@gmail.com> wrote:
+>>
+>> Daniel Borkmann <daniel@iogearbox.net> writes:
+>>
+>> > On 8/29/22 11:14 AM, Donald Hunter wrote:
+>> >> Run make in list of subdirs to build generated sources and migrate
+>> >> userspace-api/media to use this instead of being a special case.
+>> >> Signed-off-by: Donald Hunter <donald.hunter@gmail.com>
+>> >
+>> > Jonathan, given this touches Documentation/Makefile, could you ACK if
+>> > it looks good to you? Noticed both patches don't have doc: $subj prefix,
+>> > but that's something we could fix up.
+>> >
+>> > Maybe one small request, would be nice to build Documentation/bpf/libbpf/
+>> > also with every BPF CI run to avoid breakage of program_types.csv. Donald
+>> > could you check if feasible? Follow-up might be ok too, but up to Andrii.
+>>
+>> Sure, I can look at what is needed for the BPF CI run.
+>>
 >
-> On 9/4/22 17:04, Huacai Chen wrote:
->> On Sat, Sep 3, 2022 at 6:11 PM Tiezhu Yang <yangtiezhu@loongson.cn>
->> wrote:
->>>
->>>
->>> On 09/03/2022 04:32 PM, Huacai Chen wrote:
->>>> On Thu, Sep 1, 2022 at 10:27 AM Tiezhu Yang <yangtiezhu@loongson.cn>
->>>> wrote:
->>>>> BPF programs are normally handled by a BPF interpreter, add BPF JIT
->>>>> support for LoongArch to allow the kernel to generate native code
->>>>> when a program is loaded into the kernel, this will significantly
->>>>> speed-up processing of BPF programs.
->>> [...]
->>>
->>>>> +
->>>>> +static inline int emit_cond_jmp(struct jit_ctx *ctx, u8 cond, enum
->>>>> loongarch_gpr rj,
->>>>> +                               enum loongarch_gpr rd, int jmp_offset)
->>>>> +{
->>>>> +       /*
->>>>> +        * A large PC-relative jump offset may overflow the
->>>>> immediate field of
->>>>> +        * the native conditional branch instruction, triggering a
->>>>> conversion
->>>>> +        * to use an absolute jump instead, this jump sequence is
->>>>> particularly
->>>>> +        * nasty. For now, use cond_jmp_offs26() directly to keep
->>>>> it simple.
->>>>> +        * In the future, maybe we can add support for far
->>>>> branching, the branch
->>>>> +        * relaxation requires more than two passes to converge,
->>>>> the code seems
->>>>> +        * too complex to understand, not quite sure whether it is
->>>>> necessary and
->>>>> +        * worth the extra pain. Anyway, just leave it as it is to
->>>>> enhance code
->>>>> +        * readability now.
->>>> Oh, no. I don't think this is a very difficult problem, because the
->>>> old version has already solved [1]. Please improve your code and send
->>>> V4.
->>>> BTW, I have committed V3 with some small modifications in
->>>> https://github.com/loongson/linux/commits/loongarch-next, please make
->>>> V4 based on that.
->>>>
->>>> [1]
->>>> https://github.com/loongson/linux/commit/e20b2353f40cd13720996524e1df6d0ca086eeb8#diff-6d2f4f5a862a5dce12f8eb0feeca095825c4ed1c2e7151b0905fb8d03c98922e
->>>>
->>>>
->>>> --------code in the old version--------
->>>> static inline void emit_cond_jump(struct jit_ctx *ctx, u8 cond, enum
->>>> loongarch_gpr rj,
->>>>                                    enum loongarch_gpr rd, int
->>>> jmp_offset)
->>>> {
->>>>          if (is_signed_imm16(jmp_offset))
->>>>                  cond_jump_offs16(ctx, cond, rj, rd, jmp_offset);
->>>>          else if (is_signed_imm26(jmp_offset))
->>>>                  cond_jump_offs26(ctx, cond, rj, rd, jmp_offset);
->>>>          else
->>>>                  cond_jump_offs32(ctx, cond, rj, rd, jmp_offset);
->>>> }
->>>>
->>>> static inline void emit_uncond_jump(struct jit_ctx *ctx, int
->>>> jmp_offset, bool is_exit)
->>>> {
->>>>          if (is_signed_imm26(jmp_offset))
->>>>                  uncond_jump_offs26(ctx, jmp_offset);
->>>>          else
->>>>                  uncond_jump_offs32(ctx, jmp_offset, is_exit);
->>>> }
->>>> --------end of code--------
->>>>
->>>> Huacai
->>>>
->>> Hi Huacai,
->>>
->>> This change is to pass the special test cases:
->>> "a new type of jump test where the program jumps forwards
->>> and backwards with increasing offset. It mainly tests JITs where a
->>> relative jump may generate different JITed code depending on the offset
->>> size."
->>>
->>> They are introduced in commit a7d2e752e520 ("bpf/tests: Add staggered
->>> JMP and JMP32 tests") after the old internal version you mentioned.
->>>
->>> Here, we use the native instructions to enlarge the jump range to 26 bit
->>> directly rather than 16 bit first, and also take no account of more than
->>> 26 bit case because there is no native instruction and it needs to
->>> emulate.
->>>
->>> As the code comment said, this is to enhance code readability now.
->> I'm not familiar with bpf, Daniel, Ruoyao and Xuerui, what do you
->> think about it?
->
-> I'm not familiar with eBPF JITs either, but from a cursory look it seems
-> the readability isn't that bad even for the original version? It is
-> clear that the appropriate instructions are selected according to size
-> of the immediate. And the current way of doing things doesn't really fix
-> the problem, it relies on the fact that *normally* the negative branch
-> offset is expressible in 16 bits (actually 18 bits).
->
-> So, at the very least, you should keep the fallback logic towards
-> cond_jump_offs32. At which point adding back enough code so you're back
-> to the original version doesn't sound like it's too much anyway...
->
+> Daniel (Mueller, not Borkmann), is this something that can be added to BPF CI?
 
-Hi Huacai and Xuerui,
+It looks to me like it can be added to BPF CI if we change docs/conf.py
+to call a new make target in docs/sphinx/Makefile. Hopefully Daniel can
+confirm whether this is the case.
 
-cond_jump_offs26() has the ability to handle the offs16 range, this
-is intended to pass a new type of jump test where the program jumps
-forwards and backwards with increasing offset.
+Given that the tree layouts of the kernel and libbpf are very different
+I think we need to do one of:
 
-The case with larger jump offset is rare, it can fall back to the
-interpreter if jit failed.
+1. Use a separate a .csv generator script with dedicated makefiles per
+project.
 
-As we discussed offline, the current implementation is OK,
-the committed v3 with some small modifications by Huacai in
-https://github.com/loongson/linux/commits/loongarch-next
-looks good and works well, no need to do more modifications,
-thank you all for your reviews.
+2. Move this entirely to libbpf and include a readthedocs URL in
+index.rst in the same way as currently done for the API docs.
 
-Thanks,
-Tiezhu
+I think my preference would be for 2.
 
+Thanks
+Donald.
