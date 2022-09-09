@@ -2,75 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8451C5B3814
-	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 14:46:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE81C5B39C1
+	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 15:52:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231488AbiIIMow (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Sep 2022 08:44:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54324 "EHLO
+        id S231738AbiIINs7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Sep 2022 09:48:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231252AbiIIMov (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Sep 2022 08:44:51 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA73F2B188;
-        Fri,  9 Sep 2022 05:44:48 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id d82so1545782pfd.10;
-        Fri, 09 Sep 2022 05:44:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=VhZla9GFvX7C+5pJWeSUEDxGd4lVsApmfsr27FzTwyY=;
-        b=EuLEo9EMaoB2IZaEKQSlXqdfMBKpBB3M+flHICO4O6pLeMy8EEIn7B9jCzqzglnYIu
-         ppH17NbpqEsd49rVXV8PEK+NMm4VYN/g2FXv2j4k+me4ZOsH49HjsElQaWuWeA8/7TDY
-         idVX5oahjgzUu4q9QjAVKr4K3di793PxJa6c5XIfSgULxjkxN2f3zlxgsA2peVlTaMDB
-         LvfG+WUPU6e8KDjwel3mXCFRF6H5guC9ZsUZKc587EtNgk9lXt8yS4swdKafo951PaVX
-         1XQKeGqR6BnZ8bW7ceKIZ67lVtQnmQkqD9GwHeOI6BV2OAvLTonsb3CitVU+bATDJ0IW
-         ErtA==
+        with ESMTP id S231982AbiIINst (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Sep 2022 09:48:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C12C311B75A
+        for <bpf@vger.kernel.org>; Fri,  9 Sep 2022 06:48:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1662731314;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YImNobrFe/WhuWDTj42TmI0iV1ssLlERqxsuvNWDERI=;
+        b=OJDq9yKdq7I7U3NdVH3sP1Pti7pNYtw/V/yK90sIJGNJxPAKgtBo19jFqRDy7KbElVDwbm
+        ebv/duF8vnNIgUB6LLhqJySOLIPUdVS7JN+gCjlsm12qR15oJL66YmGAhHTE9u3MQ+fDBh
+        M08hTBcEHU0cfu77asqIRl0iM6Uge4U=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-316-b5sg6FpvP0KI1RwCMYmVOg-1; Fri, 09 Sep 2022 09:48:33 -0400
+X-MC-Unique: b5sg6FpvP0KI1RwCMYmVOg-1
+Received: by mail-ej1-f71.google.com with SMTP id gs35-20020a1709072d2300b00730e14fd76eso1052980ejc.15
+        for <bpf@vger.kernel.org>; Fri, 09 Sep 2022 06:48:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=VhZla9GFvX7C+5pJWeSUEDxGd4lVsApmfsr27FzTwyY=;
-        b=Ot5zJuAwLawWRjhusSOFdu8pDUCEFU0kxO2Lw9Z2F3Wicx+aYCXumCrvtlFm2JRUvO
-         gH+LasyUHrmCdH1BQQb7AsGzg2JYf4yohlvHnfJ8+f7eOsY3SKy7qLDUqFFprj5Nm1rc
-         WL/xMpWUnZtXawT06gdXgW1fNdQtVCVm4joAHEV1fqgAdGvtJwN4gX8pvrx4BLnemlnL
-         Ks7LHDlpjmGb6eKcPFAgmDirElUvrpLOc7r5dTD73pTjEmCiBFtFZ9q1NsuBsCCy76kh
-         ZL9xAGNM3rOifAxTPbJnhaFXnXokfra2byraeco/cky/MlPf6u/4o8ITQb9lPjzjrLeX
-         XcFw==
-X-Gm-Message-State: ACgBeo0LJ6xGBqXYGOOgrBxHe2rmlwZ7gQYnVM5LPNYcLjsLcQfbqvvB
-        gztEs4sMUk0KAvwaGhCxIGbxtKlxt8pPxSsXuz0=
-X-Google-Smtp-Source: AA6agR4czFXLfB5kg0j2ww0+x9ZnPVCyIqwzSXb55TDv+81vTM5U8TxLluZCf0VWG0xet2csgMMb15eDppj8cA+KqEw=
-X-Received: by 2002:a05:6a00:1995:b0:52d:5c39:3f61 with SMTP id
- d21-20020a056a00199500b0052d5c393f61mr14026007pfl.83.1662727488296; Fri, 09
- Sep 2022 05:44:48 -0700 (PDT)
+        h=content-transfer-encoding:in-reply-to:references:to
+         :content-language:subject:cc:user-agent:mime-version:date:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date;
+        bh=YImNobrFe/WhuWDTj42TmI0iV1ssLlERqxsuvNWDERI=;
+        b=lMe2yL0IkOuZccAwtdER/fpv4DAtCIK3lPHMMgTVXXQSBrQB2m9U6iKUaGmohUfEUQ
+         RwhjG9nBdOSaTV7anK385c3bFsJFfMqNVW7foSpaGL2Bz5L8Elq7mGxNUZ/a+E32S/bt
+         q2KOY6fQOgZmWrv/NGb+mJV3H0PbqU/SDwEW0fy6E4Dd7MK0tmw2Xh1Z0w0/ShcECysj
+         c7giB3JI1uR4zPc3elQxKtDs2icYt/RWjzMe5m8/6FertpdfFPkDsXONkWOCpT+agg8V
+         jnUvLuNhUaXcso0NCHY2yeIS4pJI+bblpT5Ew3NjcTH3MbzRuCf1r6aKqmQAvht3/Hy/
+         h7VQ==
+X-Gm-Message-State: ACgBeo1YLxnOHblAjnGE5gkG4PxORmsKTfRYL2Z7btlAl2Lio5RBSHQf
+        XCmcVwFWqS+Wy6p0tX8JocwYLUOR+MGCg2ETj/gDLdwnQ+UVwIg52DsnkqbeQPqtVtHfCp9Rgtn
+        ni1LEdj+DWZRx
+X-Received: by 2002:a05:6402:2786:b0:448:e15d:ab0e with SMTP id b6-20020a056402278600b00448e15dab0emr11602229ede.91.1662731311938;
+        Fri, 09 Sep 2022 06:48:31 -0700 (PDT)
+X-Google-Smtp-Source: AA6agR6N5xVGmsWUYQGhRgZqvZxQk2yqsaCgbYWlCDEXeY7sJ7OUl4WVZyP0sxTnug/6kY7xRheOcA==
+X-Received: by 2002:a05:6402:2786:b0:448:e15d:ab0e with SMTP id b6-20020a056402278600b00448e15dab0emr11602201ede.91.1662731311724;
+        Fri, 09 Sep 2022 06:48:31 -0700 (PDT)
+Received: from [192.168.41.81] (83-90-141-187-cable.dk.customer.tdc.net. [83.90.141.187])
+        by smtp.gmail.com with ESMTPSA id kw4-20020a170907770400b0073dcdf9b0bcsm338050ejc.17.2022.09.09.06.48.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Sep 2022 06:48:31 -0700 (PDT)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Message-ID: <434a45f6-aaf6-3bf0-8efe-c28a6c8b604d@redhat.com>
+Date:   Fri, 9 Sep 2022 15:48:29 +0200
 MIME-Version: 1.0
-References: <166256538687.1434226.15760041133601409770.stgit@firesoul>
- <166256558657.1434226.7390735974413846384.stgit@firesoul> <CAJ8uoz3UcC2tnMtG8W6a3HpCKgaYSzSCqowLFQVwCcsr+NKBOQ@mail.gmail.com>
- <b5f0d10d-2d4e-34d6-1e45-c206cb6f5d26@redhat.com> <9aab9ef1-446d-57ab-5789-afffe27801f4@redhat.com>
- <CAJ8uoz0CD18RUYU4SMsubB8fhv3uOwp6wi_uKsZSu_aOV5piaA@mail.gmail.com>
- <e1ab2141-03cc-f97c-3788-59923a029203@redhat.com> <593cc1df-8b65-ae9e-37eb-091b19c4d00e@redhat.com>
- <CAJ8uoz1omnp888MoZT4AgiPVWo=Ef5nkQApzz7fqnqdcGgR6NA@mail.gmail.com> <51f40ca1-ccf2-bcc3-d20d-931ad0d22526@redhat.com>
-In-Reply-To: <51f40ca1-ccf2-bcc3-d20d-931ad0d22526@redhat.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Fri, 9 Sep 2022 14:44:37 +0200
-Message-ID: <CAJ8uoz01z8=RBPHo1zy-ZPDDX_fmuMFOraU4o0R5e0QLrWDsyQ@mail.gmail.com>
-Subject: Re: [xdp-hints] Re: [PATCH RFCv2 bpf-next 17/18] xsk: AF_XDP
- xdp-hints support in desc options
-To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
-Cc:     brouer@redhat.com, Maryam Tahhan <mtahhan@redhat.com>,
-        bpf@vger.kernel.org, netdev@vger.kernel.org,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.1
+Cc:     brouer@redhat.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
         xdp-hints@xdp-project.net, larysa.zaremba@intel.com,
         memxor@gmail.com, Lorenzo Bianconi <lorenzo@kernel.org>,
+        mtahhan@redhat.com,
         Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         Daniel Borkmann <borkmann@iogearbox.net>,
         Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         dave@dtucker.co.uk, Magnus Karlsson <magnus.karlsson@intel.com>,
-        bjorn@kernel.org, Alexander Lobakin <alexandr.lobakin@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        bjorn@kernel.org
+Subject: Re: [xdp-hints] [PATCH RFCv2 bpf-next 00/18] XDP-hints: XDP gaining
+ access to HW offload hints via BTF
+Content-Language: en-US
+To:     Alexander Lobakin <alexandr.lobakin@intel.com>
+References: <166256538687.1434226.15760041133601409770.stgit@firesoul>
+ <20220908093043.274201-1-alexandr.lobakin@intel.com>
+In-Reply-To: <20220908093043.274201-1-alexandr.lobakin@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,115 +90,42 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 9, 2022 at 2:35 PM Jesper Dangaard Brouer
-<jbrouer@redhat.com> wrote:
->
->
->
-> On 09/09/2022 12.14, Magnus Karlsson wrote:
-> > On Fri, Sep 9, 2022 at 11:42 AM Jesper Dangaard Brouer
-> > <jbrouer@redhat.com> wrote:
-> >>
-> >>
-> >> On 09/09/2022 10.12, Maryam Tahhan wrote:
-> >>> <snip>
-> >>>>>>>
-> >>>>>>> * Instead encode this information into each metadata entry in the
-> >>>>>>> metadata area, in some way so that a flags field is not needed (-1
-> >>>>>>> signifies not valid, or whatever happens to make sense). This has the
-> >>>>>>> drawback that the user might have to look at a large number of entries
-> >>>>>>> just to find out there is nothing valid to read. To alleviate this, it
-> >>>>>>> could be combined with the next suggestion.
-> >>>>>>>
-> >>>>>>> * Dedicate one bit in the options field to indicate that there is at
-> >>>>>>> least one valid metadata entry in the metadata area. This could be
-> >>>>>>> combined with the two approaches above. However, depending on what
-> >>>>>>> metadata you have enabled, this bit might be pointless. If some
-> >>>>>>> metadata is always valid, then it serves no purpose. But it might if
-> >>>>>>> all enabled metadata is rarely valid, e.g., if you get an Rx timestamp
-> >>>>>>> on one packet out of one thousand.
-> >>>>>>>
-> >>>>>
-> >>>>> I like this option better! Except that I have hoped to get 2 bits ;-)
-> >>>>
-> >>>> I will give you two if you need it Jesper, no problem :-).
-> >>>>
-> >>>
-> >>> Ok I will look at implementing and testing this and post an update.
-> >>
-> >> Perfect if you Maryam have cycles to work on this.
-> >>
-> >> Let me explain what I wanted the 2nd bit for.  I simply wanted to also
-> >> transfer the XDP_FLAGS_HINTS_COMPAT_COMMON flag.  One could argue that
-> >> is it redundant information as userspace AF_XDP will have to BTF decode
-> >> all the know XDP-hints. Thus, it could know if a BTF type ID is
-> >> compatible with the common struct.   This problem is performance as my
-> >> userspace AF_XDP code will have to do more code (switch/jump-table or
-> >> table lookup) to map IDs to common compat (to e.g. extract the RX-csum
-> >> indication).  Getting this extra "common-compat" bit is actually a
-> >> micro-optimization.  It is up to AF_XDP maintainers if they can spare
-> >> this bit.
-> >>
-> >>
-> >>> Thanks folks
-> >>>
-> >>>>> The performance advantage is that the AF_XDP descriptor bits will
-> >>>>> already be cache-hot, and if it indicates no-metadata-hints the AF_XDP
-> >>>>> application can avoid reading the metadata cache-line :-).
-> >>>>
-> >>>> Agreed. I prefer if we can keep it simple and fast like this.
-> >>>>
-> >>
-> >> Great, lets proceed this way then.
-> >>
-> >>> <snip>
-> >>>
-> >>
-> >> Thinking ahead: We will likely need 3 bits.
-> >>
-> >> The idea is that for TX-side, we set a bit indicating that AF_XDP have
-> >> provided a valid XDP-hints layout (incl corresponding BTF ID). (I would
-> >> overload and reuse "common-compat" bit if TX gets a common struct).
-> >
-> > I think we should reuse the "Rx metadata valid" flag for this since
-> > this will not be used in the Tx case by definition. In the Tx case,
-> > this bit would instead mean that the user has provided a valid
-> > XDP-hints layout. It has a nice symmetry, on Rx it is set by the
-> > kernel when it has put something relevant in the metadata area. On Tx,
-> > it is set by user-space if it has put something relevant in the
-> > metadata area.
->
-> I generally like reusing the bit, *BUT* there is the problem of
-> (existing) applications ignoring the desc-options bit and forwarding
-> packets.  This would cause the "Rx metadata valid" flag to be seen as
-> userspace having set the "TX-hints-bit" and kernel would use what is
-> provided in metadata area (leftovers from RX-hints).  IMHO that will be
-> hard to debug for end-users and likely break existing applications.
 
-Good point. I buy this. We need separate Rx and Tx bits.
+On 08/09/2022 11.30, Alexander Lobakin wrote:
+> From: Jesper Dangaard Brouer <brouer@redhat.com>
+> Date: Wed, 07 Sep 2022 17:45:00 +0200
+> 
+>> This patchset expose the traditional hardware offload hints to XDP and
+>> rely on BTF to expose the layout to users.
+>>
+[...]
+>> The main different from RFC-v1:
+>>   - Drop idea of BTF "origin" (vmlinux, module or local)
+>>   - Instead to use full 64-bit BTF ID that combine object+type ID
+>>
+>> I've taken some of Alexandr/Larysa's libbpf patches and integrated
+>> those.
+> 
+> Not sure if it's okay to inform the authors about the fact only
+> after sending? Esp from the eeeh... "incompatible" implementation?
 
-> > We can also reuse this bit when we get a notification
-> > in the completion queue to indicate if the kernel has produced some
-> > metadata on tx completions. This could be a Tx timestamp for example.
-> >
->
-> Big YES, reuse "Rx metadata valid" bit when we get a TX notification in
-> completion queue.  This will be okay because it cannot be forgotten and
-> misinterpreted as the kernel will have responsibility to update this bit.
->
-> > So hopefully we could live with only two bits :-).
-> >
->
-> I still think we need three bits ;-)
-> That should be enough to cover the 6 states:
->   - RX hints
->   - RX hints and compat
->   - TX hints
->   - TX hints and compat
->   - TX completion
->   - TX completion and compat
->
->
-> >> But lets land RX-side first, but make sure we can easily extend for the
-> >> TX-side.
->
+Just to be clear: I have made sure that developers of the patches
+maintain authorship (when applied to git via the From: line) and I've
+Cc'ed the developers directly.  I didn't Cc you directly as I knew you
+would be included via XDP-hints list, and I didn't directly use one of
+your patches.
+
+> I realize it's open code, but this looks sorta depreciatingly.
+
+After discussions with Larysa on pre-patchset, I was convinced of the
+idea of a full 64-bit BTF ID.  Thus, I took those patches and carried
+them in my patchset, instead of reimplementing the same myself.
+Precisely out of respect for Larysa's work as I wanted to give her
+credit for coding this.
+
+I'm very interested in collaborating.  That is why I have picked up
+patches from your patchset and are carrying them forward.  I could just
+as easily reimplemented them myself.
+
+--Jesper
+
