@@ -2,161 +2,191 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE05C5B37FD
-	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 14:38:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8451C5B3814
+	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 14:46:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231189AbiIIMiA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Sep 2022 08:38:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42036 "EHLO
+        id S231488AbiIIMow (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Sep 2022 08:44:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229706AbiIIMh7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Sep 2022 08:37:59 -0400
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C157C36DD8;
-        Fri,  9 Sep 2022 05:37:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1662727078; x=1694263078;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=Mo99IpYm1AvzncHba+O/i3dk/CKKv38nddBho+Fzb6Y=;
-  b=hLdYq4ClIxika3o6y653o4u858fTa8ViclQGvB7MSUhQUjjEwYdQBmic
-   zSojbK4c0fr4/4/BjA/qyLyQfTEDgSt8DeFvGL+zpdocNdVt4ZZY9XdJ+
-   CTMycAjIM0oMmcrGU72Pv+2QsN5KZZB9BZ6JtClifw8kq6LEpBEOQKH1d
-   rn/KuVsdFSflHY47md7rq0skrfAs4NxOqgRmNOA8yKeMT5Qt+sOO2SrA0
-   g0wH+jZpbVeH/NcJpP/doA5mQkqYfJt6MjWEbXDHZzs+Y30Vp0ySV+Eb6
-   tqVGokVuvrX9+uIUyIpa92C3MvaW4vWXkMxFm/ISNx1OQChOVVu7CvP/0
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10464"; a="284482523"
-X-IronPort-AV: E=Sophos;i="5.93,303,1654585200"; 
-   d="scan'208";a="284482523"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2022 05:37:58 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,303,1654585200"; 
-   d="scan'208";a="683625990"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga004.fm.intel.com with ESMTP; 09 Sep 2022 05:37:57 -0700
-Received: from [10.252.209.107] (kliang2-mobl1.ccr.corp.intel.com [10.252.209.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id CA530580692;
-        Fri,  9 Sep 2022 05:37:54 -0700 (PDT)
-Message-ID: <842164ce-b754-b727-c976-39d05c34ddf3@linux.intel.com>
-Date:   Fri, 9 Sep 2022 08:37:53 -0400
+        with ESMTP id S231252AbiIIMov (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Sep 2022 08:44:51 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA73F2B188;
+        Fri,  9 Sep 2022 05:44:48 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id d82so1545782pfd.10;
+        Fri, 09 Sep 2022 05:44:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=VhZla9GFvX7C+5pJWeSUEDxGd4lVsApmfsr27FzTwyY=;
+        b=EuLEo9EMaoB2IZaEKQSlXqdfMBKpBB3M+flHICO4O6pLeMy8EEIn7B9jCzqzglnYIu
+         ppH17NbpqEsd49rVXV8PEK+NMm4VYN/g2FXv2j4k+me4ZOsH49HjsElQaWuWeA8/7TDY
+         idVX5oahjgzUu4q9QjAVKr4K3di793PxJa6c5XIfSgULxjkxN2f3zlxgsA2peVlTaMDB
+         LvfG+WUPU6e8KDjwel3mXCFRF6H5guC9ZsUZKc587EtNgk9lXt8yS4swdKafo951PaVX
+         1XQKeGqR6BnZ8bW7ceKIZ67lVtQnmQkqD9GwHeOI6BV2OAvLTonsb3CitVU+bATDJ0IW
+         ErtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=VhZla9GFvX7C+5pJWeSUEDxGd4lVsApmfsr27FzTwyY=;
+        b=Ot5zJuAwLawWRjhusSOFdu8pDUCEFU0kxO2Lw9Z2F3Wicx+aYCXumCrvtlFm2JRUvO
+         gH+LasyUHrmCdH1BQQb7AsGzg2JYf4yohlvHnfJ8+f7eOsY3SKy7qLDUqFFprj5Nm1rc
+         WL/xMpWUnZtXawT06gdXgW1fNdQtVCVm4joAHEV1fqgAdGvtJwN4gX8pvrx4BLnemlnL
+         Ks7LHDlpjmGb6eKcPFAgmDirElUvrpLOc7r5dTD73pTjEmCiBFtFZ9q1NsuBsCCy76kh
+         ZL9xAGNM3rOifAxTPbJnhaFXnXokfra2byraeco/cky/MlPf6u/4o8ITQb9lPjzjrLeX
+         XcFw==
+X-Gm-Message-State: ACgBeo0LJ6xGBqXYGOOgrBxHe2rmlwZ7gQYnVM5LPNYcLjsLcQfbqvvB
+        gztEs4sMUk0KAvwaGhCxIGbxtKlxt8pPxSsXuz0=
+X-Google-Smtp-Source: AA6agR4czFXLfB5kg0j2ww0+x9ZnPVCyIqwzSXb55TDv+81vTM5U8TxLluZCf0VWG0xet2csgMMb15eDppj8cA+KqEw=
+X-Received: by 2002:a05:6a00:1995:b0:52d:5c39:3f61 with SMTP id
+ d21-20020a056a00199500b0052d5c393f61mr14026007pfl.83.1662727488296; Fri, 09
+ Sep 2022 05:44:48 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.1
-Subject: Re: [PATCH 1/3] perf: Use sample_flags for callchain
-To:     Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Stanislav Fomichev <sdf@google.com>, bpf@vger.kernel.org,
-        Ravi Bangoria <ravi.bangoria@amd.com>
-References: <20220908214104.3851807-1-namhyung@kernel.org>
-Content-Language: en-US
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-In-Reply-To: <20220908214104.3851807-1-namhyung@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <166256538687.1434226.15760041133601409770.stgit@firesoul>
+ <166256558657.1434226.7390735974413846384.stgit@firesoul> <CAJ8uoz3UcC2tnMtG8W6a3HpCKgaYSzSCqowLFQVwCcsr+NKBOQ@mail.gmail.com>
+ <b5f0d10d-2d4e-34d6-1e45-c206cb6f5d26@redhat.com> <9aab9ef1-446d-57ab-5789-afffe27801f4@redhat.com>
+ <CAJ8uoz0CD18RUYU4SMsubB8fhv3uOwp6wi_uKsZSu_aOV5piaA@mail.gmail.com>
+ <e1ab2141-03cc-f97c-3788-59923a029203@redhat.com> <593cc1df-8b65-ae9e-37eb-091b19c4d00e@redhat.com>
+ <CAJ8uoz1omnp888MoZT4AgiPVWo=Ef5nkQApzz7fqnqdcGgR6NA@mail.gmail.com> <51f40ca1-ccf2-bcc3-d20d-931ad0d22526@redhat.com>
+In-Reply-To: <51f40ca1-ccf2-bcc3-d20d-931ad0d22526@redhat.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Fri, 9 Sep 2022 14:44:37 +0200
+Message-ID: <CAJ8uoz01z8=RBPHo1zy-ZPDDX_fmuMFOraU4o0R5e0QLrWDsyQ@mail.gmail.com>
+Subject: Re: [xdp-hints] Re: [PATCH RFCv2 bpf-next 17/18] xsk: AF_XDP
+ xdp-hints support in desc options
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
+Cc:     brouer@redhat.com, Maryam Tahhan <mtahhan@redhat.com>,
+        bpf@vger.kernel.org, netdev@vger.kernel.org,
+        xdp-hints@xdp-project.net, larysa.zaremba@intel.com,
+        memxor@gmail.com, Lorenzo Bianconi <lorenzo@kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        dave@dtucker.co.uk, Magnus Karlsson <magnus.karlsson@intel.com>,
+        bjorn@kernel.org, Alexander Lobakin <alexandr.lobakin@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Fri, Sep 9, 2022 at 2:35 PM Jesper Dangaard Brouer
+<jbrouer@redhat.com> wrote:
+>
+>
+>
+> On 09/09/2022 12.14, Magnus Karlsson wrote:
+> > On Fri, Sep 9, 2022 at 11:42 AM Jesper Dangaard Brouer
+> > <jbrouer@redhat.com> wrote:
+> >>
+> >>
+> >> On 09/09/2022 10.12, Maryam Tahhan wrote:
+> >>> <snip>
+> >>>>>>>
+> >>>>>>> * Instead encode this information into each metadata entry in the
+> >>>>>>> metadata area, in some way so that a flags field is not needed (-1
+> >>>>>>> signifies not valid, or whatever happens to make sense). This has the
+> >>>>>>> drawback that the user might have to look at a large number of entries
+> >>>>>>> just to find out there is nothing valid to read. To alleviate this, it
+> >>>>>>> could be combined with the next suggestion.
+> >>>>>>>
+> >>>>>>> * Dedicate one bit in the options field to indicate that there is at
+> >>>>>>> least one valid metadata entry in the metadata area. This could be
+> >>>>>>> combined with the two approaches above. However, depending on what
+> >>>>>>> metadata you have enabled, this bit might be pointless. If some
+> >>>>>>> metadata is always valid, then it serves no purpose. But it might if
+> >>>>>>> all enabled metadata is rarely valid, e.g., if you get an Rx timestamp
+> >>>>>>> on one packet out of one thousand.
+> >>>>>>>
+> >>>>>
+> >>>>> I like this option better! Except that I have hoped to get 2 bits ;-)
+> >>>>
+> >>>> I will give you two if you need it Jesper, no problem :-).
+> >>>>
+> >>>
+> >>> Ok I will look at implementing and testing this and post an update.
+> >>
+> >> Perfect if you Maryam have cycles to work on this.
+> >>
+> >> Let me explain what I wanted the 2nd bit for.  I simply wanted to also
+> >> transfer the XDP_FLAGS_HINTS_COMPAT_COMMON flag.  One could argue that
+> >> is it redundant information as userspace AF_XDP will have to BTF decode
+> >> all the know XDP-hints. Thus, it could know if a BTF type ID is
+> >> compatible with the common struct.   This problem is performance as my
+> >> userspace AF_XDP code will have to do more code (switch/jump-table or
+> >> table lookup) to map IDs to common compat (to e.g. extract the RX-csum
+> >> indication).  Getting this extra "common-compat" bit is actually a
+> >> micro-optimization.  It is up to AF_XDP maintainers if they can spare
+> >> this bit.
+> >>
+> >>
+> >>> Thanks folks
+> >>>
+> >>>>> The performance advantage is that the AF_XDP descriptor bits will
+> >>>>> already be cache-hot, and if it indicates no-metadata-hints the AF_XDP
+> >>>>> application can avoid reading the metadata cache-line :-).
+> >>>>
+> >>>> Agreed. I prefer if we can keep it simple and fast like this.
+> >>>>
+> >>
+> >> Great, lets proceed this way then.
+> >>
+> >>> <snip>
+> >>>
+> >>
+> >> Thinking ahead: We will likely need 3 bits.
+> >>
+> >> The idea is that for TX-side, we set a bit indicating that AF_XDP have
+> >> provided a valid XDP-hints layout (incl corresponding BTF ID). (I would
+> >> overload and reuse "common-compat" bit if TX gets a common struct).
+> >
+> > I think we should reuse the "Rx metadata valid" flag for this since
+> > this will not be used in the Tx case by definition. In the Tx case,
+> > this bit would instead mean that the user has provided a valid
+> > XDP-hints layout. It has a nice symmetry, on Rx it is set by the
+> > kernel when it has put something relevant in the metadata area. On Tx,
+> > it is set by user-space if it has put something relevant in the
+> > metadata area.
+>
+> I generally like reusing the bit, *BUT* there is the problem of
+> (existing) applications ignoring the desc-options bit and forwarding
+> packets.  This would cause the "Rx metadata valid" flag to be seen as
+> userspace having set the "TX-hints-bit" and kernel would use what is
+> provided in metadata area (leftovers from RX-hints).  IMHO that will be
+> hard to debug for end-users and likely break existing applications.
 
+Good point. I buy this. We need separate Rx and Tx bits.
 
-On 2022-09-08 5:41 p.m., Namhyung Kim wrote:
-> So that it can call perf_callchain() only if needed.  Historically it used
-> __PERF_SAMPLE_CALLCHAIN_EARLY but we can do that with sample_flags in the
-> struct perf_sample_data.
-> 
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-
-The series look good to me.
-
-Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
-
-Thanks,
-Kan
-
-> ---
->  arch/x86/events/amd/ibs.c  | 4 +++-
->  arch/x86/events/intel/ds.c | 8 ++++++--
->  kernel/events/core.c       | 2 +-
->  3 files changed, 10 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/x86/events/amd/ibs.c b/arch/x86/events/amd/ibs.c
-> index c251bc44c088..dab094166693 100644
-> --- a/arch/x86/events/amd/ibs.c
-> +++ b/arch/x86/events/amd/ibs.c
-> @@ -798,8 +798,10 @@ static int perf_ibs_handle_irq(struct perf_ibs *perf_ibs, struct pt_regs *iregs)
->  	 * recorded as part of interrupt regs. Thus we need to use rip from
->  	 * interrupt regs while unwinding call stack.
->  	 */
-> -	if (event->attr.sample_type & PERF_SAMPLE_CALLCHAIN)
-> +	if (event->attr.sample_type & PERF_SAMPLE_CALLCHAIN) {
->  		data.callchain = perf_callchain(event, iregs);
-> +		data.sample_flags |= PERF_SAMPLE_CALLCHAIN;
-> +	}
->  
->  	throttle = perf_event_overflow(event, &data, &regs);
->  out:
-> diff --git a/arch/x86/events/intel/ds.c b/arch/x86/events/intel/ds.c
-> index a5275c235c2a..4ba6ab6d0d92 100644
-> --- a/arch/x86/events/intel/ds.c
-> +++ b/arch/x86/events/intel/ds.c
-> @@ -1546,8 +1546,10 @@ static void setup_pebs_fixed_sample_data(struct perf_event *event,
->  	 * previous PMI context or an (I)RET happened between the record and
->  	 * PMI.
->  	 */
-> -	if (sample_type & PERF_SAMPLE_CALLCHAIN)
-> +	if (sample_type & PERF_SAMPLE_CALLCHAIN) {
->  		data->callchain = perf_callchain(event, iregs);
-> +		data->sample_flags |= PERF_SAMPLE_CALLCHAIN;
-> +	}
->  
->  	/*
->  	 * We use the interrupt regs as a base because the PEBS record does not
-> @@ -1719,8 +1721,10 @@ static void setup_pebs_adaptive_sample_data(struct perf_event *event,
->  	 * previous PMI context or an (I)RET happened between the record and
->  	 * PMI.
->  	 */
-> -	if (sample_type & PERF_SAMPLE_CALLCHAIN)
-> +	if (sample_type & PERF_SAMPLE_CALLCHAIN) {
->  		data->callchain = perf_callchain(event, iregs);
-> +		data->sample_flags |= PERF_SAMPLE_CALLCHAIN;
-> +	}
->  
->  	*regs = *iregs;
->  	/* The ip in basic is EventingIP */
-> diff --git a/kernel/events/core.c b/kernel/events/core.c
-> index 15d27b14c827..b8af9fdbf26f 100644
-> --- a/kernel/events/core.c
-> +++ b/kernel/events/core.c
-> @@ -7323,7 +7323,7 @@ void perf_prepare_sample(struct perf_event_header *header,
->  	if (sample_type & PERF_SAMPLE_CALLCHAIN) {
->  		int size = 1;
->  
-> -		if (!(sample_type & __PERF_SAMPLE_CALLCHAIN_EARLY))
-> +		if (filtered_sample_type & PERF_SAMPLE_CALLCHAIN)
->  			data->callchain = perf_callchain(event, regs);
->  
->  		size += data->callchain->nr;
+> > We can also reuse this bit when we get a notification
+> > in the completion queue to indicate if the kernel has produced some
+> > metadata on tx completions. This could be a Tx timestamp for example.
+> >
+>
+> Big YES, reuse "Rx metadata valid" bit when we get a TX notification in
+> completion queue.  This will be okay because it cannot be forgotten and
+> misinterpreted as the kernel will have responsibility to update this bit.
+>
+> > So hopefully we could live with only two bits :-).
+> >
+>
+> I still think we need three bits ;-)
+> That should be enough to cover the 6 states:
+>   - RX hints
+>   - RX hints and compat
+>   - TX hints
+>   - TX hints and compat
+>   - TX completion
+>   - TX completion and compat
+>
+>
+> >> But lets land RX-side first, but make sure we can easily extend for the
+> >> TX-side.
+>
