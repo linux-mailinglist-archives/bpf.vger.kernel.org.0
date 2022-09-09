@@ -2,598 +2,386 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05AE95B36D5
-	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 13:59:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A84E5B3701
+	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 14:11:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231415AbiIIL6n (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Sep 2022 07:58:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57132 "EHLO
+        id S229655AbiIIMIu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Sep 2022 08:08:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231421AbiIIL6j (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Sep 2022 07:58:39 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17208138126;
-        Fri,  9 Sep 2022 04:58:38 -0700 (PDT)
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 289Brkh0022517;
-        Fri, 9 Sep 2022 11:58:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : subject :
- to : cc : references : in-reply-to : message-id : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=XoLO82q+XvKrs0j5PF7N7nn2Yd8b2EvyjNdF43uQ0K8=;
- b=tFBpA0iGWLooLl1GEugPOiQT3RvFHzJs2E3oMMwlvL/E1rGgitf3Pepzt1671ShWqEB9
- Ihu9dyqCtB2n5d+otDCi0ADgu0QooBLPhK5VsdQYL6U6HwtwISEv6b49awLhSbO19TVB
- DU7RKvV/Cx0Y1R19JwJ89lyljX2RslY2Dgyh05ccZXz+yGvpa++xSFYmmejyel/f4Do7
- 29RpanE7a7U8/EAGnPwri5VZkAOWDhSqvffQc5q70iphzOkvSvvy8yrxDJ/ZWOwHEczc
- /pkt6OOJXD4XCnGkD4OmGQl0X78OnfNLxS4TCt0GfxcOJM9bRtLbiYR2axUqCYWzrXwZ 2Q== 
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3jg50y82bq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 09 Sep 2022 11:58:20 +0000
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 289BpEkZ017569;
-        Fri, 9 Sep 2022 11:58:17 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma05fra.de.ibm.com with ESMTP id 3jbxj8wvc3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 09 Sep 2022 11:58:17 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 289BwFN637880150
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 9 Sep 2022 11:58:15 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1376242042;
-        Fri,  9 Sep 2022 11:58:15 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 510A042041;
-        Fri,  9 Sep 2022 11:58:14 +0000 (GMT)
-Received: from localhost (unknown [9.43.41.127])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri,  9 Sep 2022 11:58:14 +0000 (GMT)
-Date:   Fri, 09 Sep 2022 17:28:13 +0530
-From:   "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
-Subject: Re: [PATCH v5 bpf-next 2/4] ftrace: Allow IPMODIFY and DIRECT ops on
- the same function
-To:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        live-patching@vger.kernel.org, Song Liu <song@kernel.org>,
-        rostedt@goodmis.org
-Cc:     daniel@iogearbox.net, jolsa@kernel.org, kernel-team@fb.com
-References: <20220720002126.803253-1-song@kernel.org>
-        <20220720002126.803253-3-song@kernel.org>
-In-Reply-To: <20220720002126.803253-3-song@kernel.org>
-User-Agent: astroid/4d6b06ad (https://github.com/astroidmail/astroid)
-Message-Id: <1662724350.8os86rhyxk.naveen@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: ZkB66JnU-QINt8KeHAZzwsQ_0DjgqYL6
-X-Proofpoint-GUID: ZkB66JnU-QINt8KeHAZzwsQ_0DjgqYL6
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        with ESMTP id S230490AbiIIMIi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Sep 2022 08:08:38 -0400
+Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D97B3134627;
+        Fri,  9 Sep 2022 05:08:32 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.227])
+        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4MPF4H0LqZz9v7N9;
+        Fri,  9 Sep 2022 20:02:55 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.204.63.22])
+        by APP1 (Coremail) with SMTP id LxC2BwC3rpKVLBtj1uszAA--.31607S2;
+        Fri, 09 Sep 2022 13:08:02 +0100 (CET)
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
+        dhowells@redhat.com, jarkko@kernel.org, rostedt@goodmis.org,
+        mingo@redhat.com, paul@paul-moore.com, jmorris@namei.org,
+        serge@hallyn.com, shuah@kernel.org
+Cc:     bpf@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        deso@posteo.net, memxor@gmail.com,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Subject: [PATCH v17 00/12] bpf: Add kfuncs for PKCS#7 signature verification
+Date:   Fri,  9 Sep 2022 14:07:24 +0200
+Message-Id: <20220909120736.1027040-1-roberto.sassu@huaweicloud.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.528,FMLib:17.11.122.1
- definitions=2022-09-09_06,2022-09-09_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 impostorscore=0
- suspectscore=0 bulkscore=0 spamscore=0 phishscore=0 priorityscore=1501
- mlxscore=0 mlxlogscore=999 malwarescore=0 lowpriorityscore=0 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2207270000
- definitions=main-2209090039
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LxC2BwC3rpKVLBtj1uszAA--.31607S2
+X-Coremail-Antispam: 1UD129KBjvAXoW3uFyxtFy3uryUKFW5Gw1xZrb_yoW8XFWkZo
+        WfWw4fWay5Kr17ArnrCF1xCFy8uw1Ik34DArsIvr15WFnFgrWUCFyDua1xXr4qgan5WFyj
+        ga45C34DZFZrXFnxn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
+        AaLaJ3UjIYCTnIWjp_UUUY17kC6x804xWl14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK
+        8VAvwI8IcIk0rVWUuVWrJwAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4
+        AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF
+        7I0E14v26r4j6F4UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26r4j6r4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28I
+        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
+        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI
+        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42
+        IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
+        87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFYFCUUUUU
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAKBF1jj4LqRgAAsQ
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Song Liu wrote:
-> IPMODIFY (livepatch) and DIRECT (bpf trampoline) ops are both important
-> users of ftrace. It is necessary to allow them work on the same function
-> at the same time.
->=20
-> First, DIRECT ops no longer specify IPMODIFY flag. Instead, DIRECT flag is
-> handled together with IPMODIFY flag in __ftrace_hash_update_ipmodify().
->=20
-> Then, a callback function, ops_func, is added to ftrace_ops. This is used
-> by ftrace core code to understand whether the DIRECT ops can share with an
-> IPMODIFY ops. To share with IPMODIFY ops, the DIRECT ops need to implement
-> the callback function and adjust the direct trampoline accordingly.
->=20
-> If DIRECT ops is attached before the IPMODIFY ops, ftrace core code calls
-> ENABLE_SHARE_IPMODIFY_PEER on the DIRECT ops before registering the
-> IPMODIFY ops.
->=20
-> If IPMODIFY ops is attached before the DIRECT ops, ftrace core code calls
-> ENABLE_SHARE_IPMODIFY_SELF in __ftrace_hash_update_ipmodify. Owner of the
-> DIRECT ops may return 0 if the DIRECT trampoline can share with IPMODIFY,
-> so error code otherwise. The error code is propagated to
-> register_ftrace_direct_multi so that onwer of the DIRECT trampoline can
-> handle it properly.
->=20
-> For more details, please refer to comment before enum ftrace_ops_cmd.
->=20
-> Link: https://lore.kernel.org/all/20220602193706.2607681-2-song@kernel.or=
-g/
-> Link: https://lore.kernel.org/all/20220718055449.3960512-1-song@kernel.or=
-g/
-> Signed-off-by: Song Liu <song@kernel.org>
-> ---
->  include/linux/ftrace.h |  38 +++++++
->  kernel/trace/ftrace.c  | 242 ++++++++++++++++++++++++++++++++++++-----
->  2 files changed, 254 insertions(+), 26 deletions(-)
->=20
-> diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-> index acb35243ce5d..0b61371e287b 100644
-> --- a/include/linux/ftrace.h
-> +++ b/include/linux/ftrace.h
-> @@ -208,6 +208,43 @@ enum {
->  	FTRACE_OPS_FL_DIRECT			=3D BIT(17),
->  };
->=20=20
-> +/*
-> + * FTRACE_OPS_CMD_* commands allow the ftrace core logic to request chan=
-ges
-> + * to a ftrace_ops. Note, the requests may fail.
-> + *
-> + * ENABLE_SHARE_IPMODIFY_SELF - enable a DIRECT ops to work on the same
-> + *                              function as an ops with IPMODIFY. Called
-> + *                              when the DIRECT ops is being registered.
-> + *                              This is called with both direct_mutex and
-> + *                              ftrace_lock are locked.
-> + *
-> + * ENABLE_SHARE_IPMODIFY_PEER - enable a DIRECT ops to work on the same
-> + *                              function as an ops with IPMODIFY. Called
-> + *                              when the other ops (the one with IPMODIF=
-Y)
-> + *                              is being registered.
-> + *                              This is called with direct_mutex locked.
-> + *
-> + * DISABLE_SHARE_IPMODIFY_PEER - disable a DIRECT ops to work on the same
-> + *                               function as an ops with IPMODIFY. Called
-> + *                               when the other ops (the one with IPMODI=
-FY)
-> + *                               is being unregistered.
-> + *                               This is called with direct_mutex locked.
-> + */
-> +enum ftrace_ops_cmd {
-> +	FTRACE_OPS_CMD_ENABLE_SHARE_IPMODIFY_SELF,
-> +	FTRACE_OPS_CMD_ENABLE_SHARE_IPMODIFY_PEER,
-> +	FTRACE_OPS_CMD_DISABLE_SHARE_IPMODIFY_PEER,
-> +};
-> +
-> +/*
-> + * For most ftrace_ops_cmd,
-> + * Returns:
-> + *        0 - Success.
-> + *        Negative on failure. The return value is dependent on the
-> + *        callback.
-> + */
-> +typedef int (*ftrace_ops_func_t)(struct ftrace_ops *op, enum ftrace_ops_=
-cmd cmd);
-> +
->  #ifdef CONFIG_DYNAMIC_FTRACE
->  /* The hash used to know what functions callbacks trace */
->  struct ftrace_ops_hash {
-> @@ -250,6 +287,7 @@ struct ftrace_ops {
->  	unsigned long			trampoline;
->  	unsigned long			trampoline_size;
->  	struct list_head		list;
-> +	ftrace_ops_func_t		ops_func;
->  #endif
->  };
->=20=20
-> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-> index 5d67dc12231d..bc921a3f7ea8 100644
-> --- a/kernel/trace/ftrace.c
-> +++ b/kernel/trace/ftrace.c
-> @@ -1861,6 +1861,8 @@ static void ftrace_hash_rec_enable_modify(struct ft=
-race_ops *ops,
->  	ftrace_hash_rec_update_modify(ops, filter_hash, 1);
->  }
->=20=20
-> +static bool ops_references_ip(struct ftrace_ops *ops, unsigned long ip);
-> +
->  /*
->   * Try to update IPMODIFY flag on each ftrace_rec. Return 0 if it is OK
->   * or no-needed to update, -EBUSY if it detects a conflict of the flag
-> @@ -1869,6 +1871,13 @@ static void ftrace_hash_rec_enable_modify(struct f=
-trace_ops *ops,
->   *  - If the hash is NULL, it hits all recs (if IPMODIFY is set, this is=
- rejected)
->   *  - If the hash is EMPTY_HASH, it hits nothing
->   *  - Anything else hits the recs which match the hash entries.
-> + *
-> + * DIRECT ops does not have IPMODIFY flag, but we still need to check it
-> + * against functions with FTRACE_FL_IPMODIFY. If there is any overlap, c=
-all
-> + * ops_func(SHARE_IPMODIFY_SELF) to make sure current ops can share with
-> + * IPMODIFY. If ops_func(SHARE_IPMODIFY_SELF) returns non-zero, propagate
-> + * the return value to the caller and eventually to the owner of the DIR=
-ECT
-> + * ops.
->   */
->  static int __ftrace_hash_update_ipmodify(struct ftrace_ops *ops,
->  					 struct ftrace_hash *old_hash,
-> @@ -1877,17 +1886,26 @@ static int __ftrace_hash_update_ipmodify(struct f=
-trace_ops *ops,
->  	struct ftrace_page *pg;
->  	struct dyn_ftrace *rec, *end =3D NULL;
->  	int in_old, in_new;
-> +	bool is_ipmodify, is_direct;
->=20=20
->  	/* Only update if the ops has been registered */
->  	if (!(ops->flags & FTRACE_OPS_FL_ENABLED))
->  		return 0;
->=20=20
-> -	if (!(ops->flags & FTRACE_OPS_FL_IPMODIFY))
-> +	is_ipmodify =3D ops->flags & FTRACE_OPS_FL_IPMODIFY;
-> +	is_direct =3D ops->flags & FTRACE_OPS_FL_DIRECT;
-> +
-> +	/* neither IPMODIFY nor DIRECT, skip */
-> +	if (!is_ipmodify && !is_direct)
-> +		return 0;
-> +
-> +	if (WARN_ON_ONCE(is_ipmodify && is_direct))
->  		return 0;
->=20=20
->  	/*
-> -	 * Since the IPMODIFY is a very address sensitive action, we do not
-> -	 * allow ftrace_ops to set all functions to new hash.
-> +	 * Since the IPMODIFY and DIRECT are very address sensitive
-> +	 * actions, we do not allow ftrace_ops to set all functions to new
-> +	 * hash.
->  	 */
->  	if (!new_hash || !old_hash)
->  		return -EINVAL;
-> @@ -1905,12 +1923,32 @@ static int __ftrace_hash_update_ipmodify(struct f=
-trace_ops *ops,
->  			continue;
->=20=20
->  		if (in_new) {
-> -			/* New entries must ensure no others are using it */
-> -			if (rec->flags & FTRACE_FL_IPMODIFY)
-> -				goto rollback;
-> -			rec->flags |=3D FTRACE_FL_IPMODIFY;
-> -		} else /* Removed entry */
-> +			if (rec->flags & FTRACE_FL_IPMODIFY) {
-> +				int ret;
-> +
-> +				/* Cannot have two ipmodify on same rec */
-> +				if (is_ipmodify)
-> +					goto rollback;
-> +
-> +				FTRACE_WARN_ON(rec->flags & FTRACE_FL_DIRECT);
-> +
-> +				/*
-> +				 * Another ops with IPMODIFY is already
-> +				 * attached. We are now attaching a direct
-> +				 * ops. Run SHARE_IPMODIFY_SELF, to check
-> +				 * whether sharing is supported.
-> +				 */
-> +				if (!ops->ops_func)
-> +					return -EBUSY;
-> +				ret =3D ops->ops_func(ops, FTRACE_OPS_CMD_ENABLE_SHARE_IPMODIFY_SELF=
-);
-> +				if (ret)
-> +					return ret;
-> +			} else if (is_ipmodify) {
-> +				rec->flags |=3D FTRACE_FL_IPMODIFY;
-> +			}
-> +		} else if (is_ipmodify) {
->  			rec->flags &=3D ~FTRACE_FL_IPMODIFY;
-> +		}
->  	} while_for_each_ftrace_rec();
->=20=20
->  	return 0;
-> @@ -2454,8 +2492,7 @@ static void call_direct_funcs(unsigned long ip, uns=
-igned long pip,
->=20=20
->  struct ftrace_ops direct_ops =3D {
->  	.func		=3D call_direct_funcs,
-> -	.flags		=3D FTRACE_OPS_FL_IPMODIFY
-> -			  | FTRACE_OPS_FL_DIRECT | FTRACE_OPS_FL_SAVE_REGS
-> +	.flags		=3D FTRACE_OPS_FL_DIRECT | FTRACE_OPS_FL_SAVE_REGS
->  			  | FTRACE_OPS_FL_PERMANENT,
->  	/*
->  	 * By declaring the main trampoline as this trampoline
-> @@ -3072,14 +3109,14 @@ static inline int ops_traces_mod(struct ftrace_op=
-s *ops)
->  }
->=20=20
->  /*
-> - * Check if the current ops references the record.
-> + * Check if the current ops references the given ip.
->   *
->   * If the ops traces all functions, then it was already accounted for.
->   * If the ops does not trace the current record function, skip it.
->   * If the ops ignores the function via notrace filter, skip it.
->   */
-> -static inline bool
-> -ops_references_rec(struct ftrace_ops *ops, struct dyn_ftrace *rec)
-> +static bool
-> +ops_references_ip(struct ftrace_ops *ops, unsigned long ip)
->  {
->  	/* If ops isn't enabled, ignore it */
->  	if (!(ops->flags & FTRACE_OPS_FL_ENABLED))
-> @@ -3091,16 +3128,29 @@ ops_references_rec(struct ftrace_ops *ops, struct=
- dyn_ftrace *rec)
->=20=20
->  	/* The function must be in the filter */
->  	if (!ftrace_hash_empty(ops->func_hash->filter_hash) &&
-> -	    !__ftrace_lookup_ip(ops->func_hash->filter_hash, rec->ip))
-> +	    !__ftrace_lookup_ip(ops->func_hash->filter_hash, ip))
->  		return false;
->=20=20
->  	/* If in notrace hash, we ignore it too */
-> -	if (ftrace_lookup_ip(ops->func_hash->notrace_hash, rec->ip))
-> +	if (ftrace_lookup_ip(ops->func_hash->notrace_hash, ip))
->  		return false;
->=20=20
->  	return true;
->  }
->=20=20
-> +/*
-> + * Check if the current ops references the record.
-> + *
-> + * If the ops traces all functions, then it was already accounted for.
-> + * If the ops does not trace the current record function, skip it.
-> + * If the ops ignores the function via notrace filter, skip it.
-> + */
-> +static bool
-> +ops_references_rec(struct ftrace_ops *ops, struct dyn_ftrace *rec)
-> +{
-> +	return ops_references_ip(ops, rec->ip);
-> +}
-> +
->  static int ftrace_update_code(struct module *mod, struct ftrace_page *ne=
-w_pgs)
->  {
->  	bool init_nop =3D ftrace_need_init_nop();
-> @@ -5215,6 +5265,8 @@ static struct ftrace_direct_func *ftrace_alloc_dire=
-ct_func(unsigned long addr)
->  	return direct;
->  }
->=20=20
-> +static int register_ftrace_function_nolock(struct ftrace_ops *ops);
-> +
->  /**
->   * register_ftrace_direct - Call a custom trampoline directly
->   * @ip: The address of the nop at the beginning of a function
-> @@ -5286,7 +5338,7 @@ int register_ftrace_direct(unsigned long ip, unsign=
-ed long addr)
->  	ret =3D ftrace_set_filter_ip(&direct_ops, ip, 0, 0);
->=20=20
->  	if (!ret && !(direct_ops.flags & FTRACE_OPS_FL_ENABLED)) {
-> -		ret =3D register_ftrace_function(&direct_ops);
-> +		ret =3D register_ftrace_function_nolock(&direct_ops);
->  		if (ret)
->  			ftrace_set_filter_ip(&direct_ops, ip, 1, 0);
->  	}
-> @@ -5545,8 +5597,7 @@ int modify_ftrace_direct(unsigned long ip,
->  }
->  EXPORT_SYMBOL_GPL(modify_ftrace_direct);
->=20=20
-> -#define MULTI_FLAGS (FTRACE_OPS_FL_IPMODIFY | FTRACE_OPS_FL_DIRECT | \
-> -		     FTRACE_OPS_FL_SAVE_REGS)
-> +#define MULTI_FLAGS (FTRACE_OPS_FL_DIRECT | FTRACE_OPS_FL_SAVE_REGS)
->=20=20
->  static int check_direct_multi(struct ftrace_ops *ops)
->  {
-> @@ -5639,7 +5690,7 @@ int register_ftrace_direct_multi(struct ftrace_ops =
-*ops, unsigned long addr)
->  	ops->flags =3D MULTI_FLAGS;
->  	ops->trampoline =3D FTRACE_REGS_ADDR;
->=20=20
-> -	err =3D register_ftrace_function(ops);
-> +	err =3D register_ftrace_function_nolock(ops);
->=20=20
->   out_remove:
->  	if (err)
-> @@ -5709,7 +5760,7 @@ __modify_ftrace_direct_multi(struct ftrace_ops *ops=
-, unsigned long addr)
->  	ftrace_ops_init(&tmp_ops);
->  	tmp_ops.func_hash =3D ops->func_hash;
->=20=20
-> -	err =3D register_ftrace_function(&tmp_ops);
-> +	err =3D register_ftrace_function_nolock(&tmp_ops);
->  	if (err)
->  		return err;
->=20=20
-> @@ -8003,6 +8054,143 @@ int ftrace_is_dead(void)
->  	return ftrace_disabled;
->  }
->=20=20
-> +#ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
-> +/*
-> + * When registering ftrace_ops with IPMODIFY, it is necessary to make su=
-re
-> + * it doesn't conflict with any direct ftrace_ops. If there is existing
-> + * direct ftrace_ops on a kernel function being patched, call
-> + * FTRACE_OPS_CMD_ENABLE_SHARE_IPMODIFY_PEER on it to enable sharing.
-> + *
-> + * @ops:     ftrace_ops being registered.
-> + *
-> + * Returns:
-> + *         0 on success;
-> + *         Negative on failure.
-> + */
-> +static int prepare_direct_functions_for_ipmodify(struct ftrace_ops *ops)
-> +{
-> +	struct ftrace_func_entry *entry;
-> +	struct ftrace_hash *hash;
-> +	struct ftrace_ops *op;
-> +	int size, i, ret;
-> +
-> +	lockdep_assert_held_once(&direct_mutex);
-> +
-> +	if (!(ops->flags & FTRACE_OPS_FL_IPMODIFY))
-> +		return 0;
-> +
-> +	hash =3D ops->func_hash->filter_hash;
-> +	size =3D 1 << hash->size_bits;
-> +	for (i =3D 0; i < size; i++) {
-> +		hlist_for_each_entry(entry, &hash->buckets[i], hlist) {
-> +			unsigned long ip =3D entry->ip;
-> +			bool found_op =3D false;
-> +
-> +			mutex_lock(&ftrace_lock);
-> +			do_for_each_ftrace_op(op, ftrace_ops_list) {
-> +				if (!(op->flags & FTRACE_OPS_FL_DIRECT))
-> +					continue;
-> +				if (ops_references_ip(op, ip)) {
-> +					found_op =3D true;
-> +					break;
-> +				}
-> +			} while_for_each_ftrace_op(op);
-> +			mutex_unlock(&ftrace_lock);
-> +
-> +			if (found_op) {
-> +				if (!op->ops_func)
-> +					return -EBUSY;
-> +
-> +				ret =3D op->ops_func(op, FTRACE_OPS_CMD_ENABLE_SHARE_IPMODIFY_PEER);
-> +				if (ret)
-> +					return ret;
-> +			}
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +/*
-> + * Similar to prepare_direct_functions_for_ipmodify, clean up after ops
-> + * with IPMODIFY is unregistered. The cleanup is optional for most DIRECT
-> + * ops.
-> + */
-> +static void cleanup_direct_functions_after_ipmodify(struct ftrace_ops *o=
-ps)
-> +{
-> +	struct ftrace_func_entry *entry;
-> +	struct ftrace_hash *hash;
-> +	struct ftrace_ops *op;
-> +	int size, i;
-> +
-> +	if (!(ops->flags & FTRACE_OPS_FL_IPMODIFY))
-> +		return;
-> +
-> +	mutex_lock(&direct_mutex);
-> +
-> +	hash =3D ops->func_hash->filter_hash;
-> +	size =3D 1 << hash->size_bits;
-> +	for (i =3D 0; i < size; i++) {
-> +		hlist_for_each_entry(entry, &hash->buckets[i], hlist) {
-> +			unsigned long ip =3D entry->ip;
-> +			bool found_op =3D false;
-> +
-> +			mutex_lock(&ftrace_lock);
-> +			do_for_each_ftrace_op(op, ftrace_ops_list) {
-> +				if (!(op->flags & FTRACE_OPS_FL_DIRECT))
-> +					continue;
-> +				if (ops_references_ip(op, ip)) {
-> +					found_op =3D true;
-> +					break;
-> +				}
-> +			} while_for_each_ftrace_op(op);
-> +			mutex_unlock(&ftrace_lock);
-> +
-> +			/* The cleanup is optional, ignore any errors */
-> +			if (found_op && op->ops_func)
-> +				op->ops_func(op, FTRACE_OPS_CMD_DISABLE_SHARE_IPMODIFY_PEER);
-> +		}
-> +	}
-> +	mutex_unlock(&direct_mutex);
-> +}
-> +
-> +#define lock_direct_mutex()	mutex_lock(&direct_mutex)
-> +#define unlock_direct_mutex()	mutex_unlock(&direct_mutex)
-> +
-> +#else  /* CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS */
-> +
-> +static int prepare_direct_functions_for_ipmodify(struct ftrace_ops *ops)
-> +{
-> +	return 0;
-> +}
-> +
-> +static void cleanup_direct_functions_after_ipmodify(struct ftrace_ops *o=
-ps)
-> +{
-> +}
-> +
-> +#define lock_direct_mutex()	do { } while (0)
-> +#define unlock_direct_mutex()	do { } while (0)
-> +
-> +#endif  /* CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS */
-> +
-> +/*
-> + * Similar to register_ftrace_function, except we don't lock direct_mute=
-x.
-> + */
-> +static int register_ftrace_function_nolock(struct ftrace_ops *ops)
-> +{
-> +	int ret;
-> +
-> +	ftrace_ops_init(ops);
-> +
-> +	mutex_lock(&ftrace_lock);
-> +
-> +	ret =3D ftrace_startup(ops, 0);
-> +
-> +	mutex_unlock(&ftrace_lock);
-> +
-> +	return ret;
-> +}
-> +
->  /**
->   * register_ftrace_function - register a function for profiling
->   * @ops:	ops structure that holds the function for profiling.
-> @@ -8018,14 +8206,15 @@ int register_ftrace_function(struct ftrace_ops *o=
-ps)
->  {
->  	int ret;
->=20=20
-> -	ftrace_ops_init(ops);
-> -
-> -	mutex_lock(&ftrace_lock);
-> -
-> -	ret =3D ftrace_startup(ops, 0);
-> +	lock_direct_mutex();
+From: Roberto Sassu <roberto.sassu@huawei.com>
 
-Trying to enable ftrace direct on powerpc, this is resulting in a hung=20
-task when testing samples/ftrace/ftrace-direct-modify.c
+One of the desirable features in security is the ability to restrict import
+of data to a given system based on data authenticity. If data import can be
+restricted, it would be possible to enforce a system-wide policy based on
+the signing keys the system owner trusts.
 
-Essentially, the sample calls modify_ftrace_direct(), which grabs=20
-direct_mutex before calling=20
-ftrace_modify_direct_caller()->register_ftrace_function().
+This feature is widely used in the kernel. For example, if the restriction
+is enabled, kernel modules can be plugged in only if they are signed with a
+key whose public part is in the primary or secondary keyring.
 
+For eBPF, it can be useful as well. For example, it might be useful to
+authenticate data an eBPF program makes security decisions on.
 
-- Naveen
+After a discussion in the eBPF mailing list, it was decided that the stated
+goal should be accomplished by introducing four new kfuncs:
+bpf_lookup_user_key() and bpf_lookup_system_key(), for retrieving a keyring
+with keys trusted for signature verification, respectively from its serial
+and from a pre-determined ID; bpf_key_put(), to release the reference
+obtained with the former two kfuncs, bpf_verify_pkcs7_signature(), for
+verifying PKCS#7 signatures.
 
+Other than the key serial, bpf_lookup_user_key() also accepts key lookup
+flags, that influence the behavior of the lookup. bpf_lookup_system_key()
+accepts pre-determined IDs defined in include/linux/verification.h.
 
-> +	ret =3D prepare_direct_functions_for_ipmodify(ops);
-> +	if (ret < 0)
-> +		goto out_unlock;
->=20=20
-> -	mutex_unlock(&ftrace_lock);
-> +	ret =3D register_ftrace_function_nolock(ops);
->=20=20
-> +out_unlock:
-> +	unlock_direct_mutex();
->  	return ret;
->  }
->  EXPORT_SYMBOL_GPL(register_ftrace_function);
-> @@ -8044,6 +8233,7 @@ int unregister_ftrace_function(struct ftrace_ops *o=
-ps)
->  	ret =3D ftrace_shutdown(ops, 0);
->  	mutex_unlock(&ftrace_lock);
->=20=20
-> +	cleanup_direct_functions_after_ipmodify(ops);
->  	return ret;
->  }
->  EXPORT_SYMBOL_GPL(unregister_ftrace_function);
-> --=20
-> 2.30.2
->=20
->=20
->=20
+bpf_key_put() accepts the new bpf_key structure, introduced to tell whether
+the other structure member, a key pointer, is valid or not. The reason is
+that verify_pkcs7_signature() also accepts invalid pointers, set with the
+pre-determined ID, to select a system-defined keyring. key_put() must be
+called only for valid key pointers.
+
+Since the two key lookup functions allocate memory and one increments a key
+reference count, they must be used in conjunction with bpf_key_put(). The
+latter must be called only if the lookup functions returned a non-NULL
+pointer. The verifier denies the execution of eBPF programs that don't
+respect this rule.
+
+The two key lookup functions should be used in alternative, depending on
+the use case. While bpf_lookup_user_key() provides great flexibility, it
+seems suboptimal in terms of security guarantees, as even if the eBPF
+program is assumed to be trusted, the serial used to obtain the key pointer
+might come from untrusted user space not choosing one that the system
+administrator approves to enforce a mandatory policy.
+
+bpf_lookup_system_key() instead provides much stronger guarantees,
+especially if the pre-determined ID is not passed by user space but is
+hardcoded in the eBPF program, and that program is signed. In this case,
+bpf_verify_pkcs7_signature() will always perform signature verification
+with a key that the system administrator approves, i.e. the primary,
+secondary or platform keyring.
+
+Nevertheless, key permission checks need to be done accurately. Since
+bpf_lookup_user_key() cannot determine how a key will be used by other
+kfuncs, it has to defer the permission check to the actual kfunc using the
+key. It does it by calling lookup_user_key() with KEY_DEFER_PERM_CHECK as
+needed permission. Later, bpf_verify_pkcs7_signature(), if called,
+completes the permission check by calling key_validate(). It does not need
+to call key_task_permission() with permission KEY_NEED_SEARCH, as it is
+already done elsewhere by the key subsystem. Future kfuncs using the
+bpf_key structure need to implement the proper checks as well.
+
+Finally, the last kfunc, bpf_verify_pkcs7_signature(), accepts the data and
+signature to verify as eBPF dynamic pointers, to minimize the number of
+kfunc parameters, and the keyring with keys for signature verification as a
+bpf_key structure, returned by one of the two key lookup functions.
+
+bpf_lookup_user_key() and bpf_verify_pkcs7_signature() can be called only
+from sleepable programs, because of memory allocation and crypto
+operations. For example, the lsm.s/bpf attach point is suitable,
+fexit/array_map_update_elem is not.
+
+The correctness of implementation of the new kfuncs and of their usage is
+checked with the introduced tests.
+
+The patch set includes a patch from another author (dependency) for sake of
+completeness. It is organized as follows.
+
+Patch 1 from KP Singh allows kfuncs to be used by LSM programs. Patch 2
+splits is_dynptr_reg_valid_init() and introduces is_dynptr_type_expected(),
+to know more precisely the cause of a negative result of a dynamic pointer
+check. Patch 3 allows dynamic pointers to be used as kfunc parameters.
+Patch 4 exports bpf_dynptr_get_size(), to obtain the real size of data
+carried by a dynamic pointer. Patch 5 makes available for new eBPF kfuncs
+and programs some key-related definitions. Patch 6 introduces the
+bpf_lookup_*_key() and bpf_key_put() kfuncs. Patch 7 introduces the
+bpf_verify_pkcs7_signature() kfunc. Patch 8 changes the testing kernel
+configuration to compile everything as built-in. Finally, patches 9-12
+introduce the tests.
+
+Changelog
+
+v16:
+ - Remove comments in include/linux/key.h for KEY_LOOKUP_*
+ - Change kmalloc() flag from GFP_ATOMIC to GFP_KERNEL in
+   bpf_lookup_user_key(), as the kfunc needs anyway to be sleepable
+   (suggested by Kumar)
+ - Test passing a dynamic pointer with NULL data to
+   bpf_verify_pkcs7_signature() (suggested by Kumar)
+
+v15:
+ - Add kfunc_dynptr_param test to deny list for s390x
+
+v14:
+ - Explain that is_dynptr_type_expected() will be useful also for BTF
+   (suggested by Joanne)
+ - Rename KEY_LOOKUP_FLAGS_ALL to KEY_LOOKUP_ALL (suggested by Jarkko)
+ - Swap declaration of spi and dynptr_type in is_dynptr_type_expected()
+   (suggested by Joanne)
+ - Reimplement kfunc dynptr tests with a regular eBPF program instead of
+   executing them with test_verifier (suggested by Joanne)
+ - Make key lookup flags as enum so that they are automatically exported
+   through BTF (suggested by Alexei)
+ 
+v13:
+ - Split is_dynptr_reg_valid_init() and introduce is_dynptr_type_expected()
+   to see if the dynamic pointer type passed as argument to a kfunc is
+   supported (suggested by Kumar)
+ - Add forward declaration of struct key in include/linux/bpf.h (suggested
+   by Song)
+ - Declare mask for key lookup flags, remove key_lookup_flags_check()
+   (suggested by Jarkko and KP)
+ - Allow only certain dynamic pointer types (currently, local) to be passed
+   as argument to kfuncs (suggested by Kumar)
+ - For each dynamic pointer parameter in kfunc, additionally check if the
+   passed pointer is to the stack (suggested by Kumar)
+ - Split the validity/initialization and dynamic pointer type check also in
+   the verifier, and adjust the expected error message in the test (a test
+   for an unexpected dynptr type passed to a helper cannot be added due to
+   missing suitable helpers, but this case has been tested manually)
+ - Add verifier tests to check the dynamic pointers passed as argument to
+   kfuncs (suggested by Kumar)
+
+v12:
+ - Put lookup_key and verify_pkcs7_sig tests in deny list for s390x (JIT
+   does not support calling kernel function)
+
+v11:
+ - Move stringify_struct() macro to include/linux/btf.h (suggested by
+   Daniel)
+ - Change kernel configuration options in
+   tools/testing/selftests/bpf/config* from =m to =y
+
+v10:
+ - Introduce key_lookup_flags_check() and system_keyring_id_check() inline
+   functions to check parameters (suggested by KP)
+ - Fix descriptions and comment of key-related kfuncs (suggested by KP)
+ - Register kfunc set only once (suggested by Alexei)
+ - Move needed kernel options to the architecture-independent configuration
+   for testing
+
+v9:
+ - Drop patch to introduce KF_SLEEPABLE kfunc flag (already merged)
+ - Rename valid_ptr member of bpf_key to has_ref (suggested by Daniel)
+ - Check dynamic pointers in kfunc definition with bpf_dynptr_kern struct
+   definition instead of string, to detect structure renames (suggested by
+   Daniel)
+ - Explicitly say that we permit initialized dynamic pointers in kfunc
+   definition (suggested by Daniel)
+ - Remove noinline __weak from kfuncs definition (reported by Daniel)
+ - Simplify key lookup flags check in bpf_lookup_user_key() (suggested by
+   Daniel)
+ - Explain the reason for deferring key permission check (suggested by
+   Daniel)
+ - Allocate memory with GFP_ATOMIC in bpf_lookup_system_key(), and remove
+   KF_SLEEPABLE kfunc flag from kfunc declaration (suggested by Daniel)
+ - Define only one kfunc set and remove the loop for registration
+   (suggested by Alexei)
+
+v8:
+ - Define the new bpf_key structure to carry the key pointer and whether
+   that pointer is valid or not (suggested by Daniel)
+ - Drop patch to mark a kfunc parameter with the __maybe_null suffix
+ - Improve documentation of kfuncs
+ - Introduce bpf_lookup_system_key() to obtain a key pointer suitable for
+   verify_pkcs7_signature() (suggested by Daniel)
+ - Use the new kfunc registration API
+ - Drop patch to test the __maybe_null suffix
+ - Add tests for bpf_lookup_system_key()
+
+v7:
+ - Add support for using dynamic and NULL pointers in kfunc (suggested by
+   Alexei)
+ - Add new kfunc-related tests
+
+v6:
+ - Switch back to key lookup helpers + signature verification (until v5),
+   and defer permission check from bpf_lookup_user_key() to
+   bpf_verify_pkcs7_signature()
+ - Add additional key lookup test to illustrate the usage of the
+   KEY_LOOKUP_CREATE flag and validate the flags (suggested by Daniel)
+ - Make description of flags of bpf_lookup_user_key() more user-friendly
+   (suggested by Daniel)
+ - Fix validation of flags parameter in bpf_lookup_user_key() (reported by
+   Daniel)
+ - Rename bpf_verify_pkcs7_signature() keyring-related parameters to
+   user_keyring and system_keyring to make their purpose more clear
+ - Accept keyring-related parameters of bpf_verify_pkcs7_signature() as
+   alternatives (suggested by KP)
+ - Replace unsigned long type with u64 in helper declaration (suggested by
+   Daniel)
+ - Extend the bpf_verify_pkcs7_signature() test by calling the helper
+   without data, by ensuring that the helper enforces the keyring-related
+   parameters as alternatives, by ensuring that the helper rejects
+   inaccessible and expired keyrings, and by checking all system keyrings
+ - Move bpf_lookup_user_key() and bpf_key_put() usage tests to
+   ref_tracking.c (suggested by John)
+ - Call bpf_lookup_user_key() and bpf_key_put() only in sleepable programs
+
+v5:
+ - Move KEY_LOOKUP_ to include/linux/key.h
+   for validation of bpf_verify_pkcs7_signature() parameter
+ - Remove bpf_lookup_user_key() and bpf_key_put() helpers, and the
+   corresponding tests
+ - Replace struct key parameter of bpf_verify_pkcs7_signature() with the
+   keyring serial and lookup flags
+ - Call lookup_user_key() and key_put() in bpf_verify_pkcs7_signature()
+   code, to ensure that the retrieved key is used according to the
+   permission requested at lookup time
+ - Clarified keyring precedence in the description of
+   bpf_verify_pkcs7_signature() (suggested by John)
+ - Remove newline in the second argument of ASSERT_
+ - Fix helper prototype regular expression in bpf_doc.py
+
+v4:
+ - Remove bpf_request_key_by_id(), don't return an invalid pointer that
+   other helpers can use
+ - Pass the keyring ID (without ULONG_MAX, suggested by Alexei) to
+   bpf_verify_pkcs7_signature()
+ - Introduce bpf_lookup_user_key() and bpf_key_put() helpers (suggested by
+   Alexei)
+ - Add lookup_key_norelease test, to ensure that the verifier blocks eBPF
+   programs which don't decrement the key reference count
+ - Parse raw PKCS#7 signature instead of module-style signature in the
+   verify_pkcs7_signature test (suggested by Alexei)
+ - Parse kernel module in user space and pass raw PKCS#7 signature to the
+   eBPF program for signature verification
+
+v3:
+ - Rename bpf_verify_signature() back to bpf_verify_pkcs7_signature() to
+   avoid managing different parameters for each signature verification
+   function in one helper (suggested by Daniel)
+ - Use dynamic pointers and export bpf_dynptr_get_size() (suggested by
+   Alexei)
+ - Introduce bpf_request_key_by_id() to give more flexibility to the caller
+   of bpf_verify_pkcs7_signature() to retrieve the appropriate keyring
+   (suggested by Alexei)
+ - Fix test by reordering the gcc command line, always compile sign-file
+ - Improve helper support check mechanism in the test
+
+v2:
+ - Rename bpf_verify_pkcs7_signature() to a more generic
+   bpf_verify_signature() and pass the signature type (suggested by KP)
+ - Move the helper and prototype declaration under #ifdef so that user
+   space can probe for support for the helper (suggested by Daniel)
+ - Describe better the keyring types (suggested by Daniel)
+ - Include linux/bpf.h instead of vmlinux.h to avoid implicit or
+   redeclaration
+ - Make the test selfcontained (suggested by Alexei)
+
+v1:
+ - Don't define new map flag but introduce simple wrapper of
+   verify_pkcs7_signature() (suggested by Alexei and KP)
+
+KP Singh (1):
+  bpf: Allow kfuncs to be used in LSM programs
+
+Roberto Sassu (11):
+  bpf: Move dynptr type check to is_dynptr_type_expected()
+  btf: Allow dynamic pointer parameters in kfuncs
+  bpf: Export bpf_dynptr_get_size()
+  KEYS: Move KEY_LOOKUP_ to include/linux/key.h and define
+    KEY_LOOKUP_ALL
+  bpf: Add bpf_lookup_*_key() and bpf_key_put() kfuncs
+  bpf: Add bpf_verify_pkcs7_signature() kfunc
+  selftests/bpf: Compile kernel with everything as built-in
+  selftests/bpf: Add verifier tests for bpf_lookup_*_key() and
+    bpf_key_put()
+  selftests/bpf: Add additional tests for bpf_lookup_*_key()
+  selftests/bpf: Add test for bpf_verify_pkcs7_signature() kfunc
+  selftests/bpf: Add tests for dynamic pointers parameters in kfuncs
+
+ include/linux/bpf.h                           |   9 +
+ include/linux/bpf_verifier.h                  |   5 +
+ include/linux/btf.h                           |   9 +
+ include/linux/key.h                           |   6 +
+ include/linux/verification.h                  |   8 +
+ kernel/bpf/btf.c                              |  34 ++
+ kernel/bpf/helpers.c                          |   2 +-
+ kernel/bpf/verifier.c                         |  35 +-
+ kernel/trace/bpf_trace.c                      | 180 ++++++++
+ security/keys/internal.h                      |   2 -
+ tools/testing/selftests/bpf/DENYLIST.s390x    |   3 +
+ tools/testing/selftests/bpf/Makefile          |  14 +-
+ tools/testing/selftests/bpf/config            |  32 +-
+ tools/testing/selftests/bpf/config.x86_64     |   7 +-
+ .../testing/selftests/bpf/prog_tests/dynptr.c |   2 +-
+ .../bpf/prog_tests/kfunc_dynptr_param.c       | 164 +++++++
+ .../selftests/bpf/prog_tests/lookup_key.c     | 112 +++++
+ .../bpf/prog_tests/verify_pkcs7_sig.c         | 399 ++++++++++++++++++
+ .../bpf/progs/test_kfunc_dynptr_param.c       |  99 +++++
+ .../selftests/bpf/progs/test_lookup_key.c     |  46 ++
+ .../bpf/progs/test_verify_pkcs7_sig.c         | 100 +++++
+ tools/testing/selftests/bpf/test_verifier.c   |   3 +-
+ .../selftests/bpf/verifier/ref_tracking.c     | 139 ++++++
+ .../testing/selftests/bpf/verify_sig_setup.sh | 104 +++++
+ 24 files changed, 1479 insertions(+), 35 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/kfunc_dynptr_param.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/lookup_key.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/verify_pkcs7_sig.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_lookup_key.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_verify_pkcs7_sig.c
+ create mode 100755 tools/testing/selftests/bpf/verify_sig_setup.sh
+
+-- 
+2.25.1
+
