@@ -2,252 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B5A25B2F36
-	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 08:43:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAD205B2FCA
+	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 09:29:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229960AbiIIGnk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Sep 2022 02:43:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52514 "EHLO
+        id S229572AbiIIH3V (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Sep 2022 03:29:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229705AbiIIGnj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Sep 2022 02:43:39 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75756DABA4;
-        Thu,  8 Sep 2022 23:43:36 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id z187so764186pfb.12;
-        Thu, 08 Sep 2022 23:43:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=9nVJLUJ2SiWLWMJ0Bvx+obm2EZ7aQohvbWl7+sg/CKY=;
-        b=n+T6675/krIJ6A3E8YoYenWU2EydjlwLs8xFH/pkUYFhL/GiZUgIBYFkdCIN/rCXBs
-         eVQ4+drmRt13fZwiLN5UvzA2VbtLdYpRPQZZryPYe88GuDOhDKLN9U9jh3FiqcTezbfo
-         U5ITE60hPa6YNqFuVRNqnUy1UnmmsxlL7NkeAzg9IPcNnWboy0P5wQgzkYXaL+XvhUfL
-         1ssAX+v0YikRhiIO4RjWpyIMPl/Ptl/QutI9tV0TK/Yc5lorAh+wyxx5NhQxdoB8Kpbq
-         BQJA2QoGDvecV/GGKg+68rDHKoOHnxi3yNcV6OY5HuUDzDdLnpBqrHA0iiNwU7onJjZm
-         5wNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=9nVJLUJ2SiWLWMJ0Bvx+obm2EZ7aQohvbWl7+sg/CKY=;
-        b=bO0b4m5SNac5I7Wj24OxOV3JM00ikLLbpWK5QXvm34p1iQ4qyjxsLzvFdnPBGsR6be
-         eInt2ArgnwEVnxY1ll3cNeSQeRjzTGgNPnRL8l80fhuKlh+bdAUvi9dP3/LQM23I4z9X
-         PoGXcp4j4tIHyLnnakUgGuKpjztSya3Q+mpIdjTPm9LNcFeeqo65qVnTHWNFSXIZJkLy
-         gsiGh3MPoHSrkl+slAaidt5yOc5Km1CD1T+uxg2Yj8H5BHDyadjjO/ts1UhoQXbWj9wo
-         mF9fXV0Q1z/PNZt8LzMBRsyIBtfKVqhGT8UVFCZh/W9uAIgFJiFG2VMjr0NQQBgwKv60
-         HW0Q==
-X-Gm-Message-State: ACgBeo00BpDCxLybTUIH56pIhpqkkLDn32b+xzO42RMlmvXB8LPWXby4
-        Qw7Ij528CcFqTGFIVuDy9SpeEoSwoO0uQlaI5AQ=
-X-Google-Smtp-Source: AA6agR6sdwzvjtz1vi39G9Zp1CLQhRx+f5IijWX3sEgkW+lbNB04MPIm9scVlgE5MQawGupiVGCfhcCHl0Q+VK+jGcY=
-X-Received: by 2002:a05:6a00:801:b0:53e:5e35:336c with SMTP id
- m1-20020a056a00080100b0053e5e35336cmr12915088pfk.62.1662705815849; Thu, 08
- Sep 2022 23:43:35 -0700 (PDT)
+        with ESMTP id S229639AbiIIH3U (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Sep 2022 03:29:20 -0400
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 346EB11EA5A
+        for <bpf@vger.kernel.org>; Fri,  9 Sep 2022 00:29:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1662708559; x=1694244559;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Pu51tEy4/PIJD5Ecb4usui0DQoruWr34Fyrm8KTKhvY=;
+  b=DepnDB1VipDfFDXawC3Nv+6wgMAoKVeyKqvAxdy7XWCCol84sGm6TrXQ
+   2+JgnCKYlJ4UuF5ZzMgGDKYd4D8zAA/EDCf/1yNpWlm8L0WtWSZZQ0P0y
+   RXp3oLGE7eanOxTyqOr678ReklnnKavvIqfwkPeh25A9obe/h0MKmjnex
+   5nk7SysR6UcScLPf5oRRFnP7XRV+5hfKtKKsHtaSVpg6yQ3DwlValCPS8
+   tYFy4weR+QEMlXJWAjHG99goHFpCsG+iHpW9gnHfiKie9/FCdWV/jy7wG
+   jBo/HW7rpsrhYPBgnWwq5bzcf35a9qd98LH5GKSxEKFVpjKLrhMaTKEgE
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10464"; a="359143073"
+X-IronPort-AV: E=Sophos;i="5.93,302,1654585200"; 
+   d="scan'208";a="359143073"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2022 00:28:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,302,1654585200"; 
+   d="scan'208";a="740965787"
+Received: from lkp-server02.sh.intel.com (HELO b2938d2e5c5a) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 09 Sep 2022 00:28:56 -0700
+Received: from kbuild by b2938d2e5c5a with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1oWYRb-0000rJ-2H;
+        Fri, 09 Sep 2022 07:28:55 +0000
+Date:   Fri, 9 Sep 2022 15:27:57 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     kbuild-all@lists.01.org,
+        syzbot+2251879aa068ad9c960d@syzkaller.appspotmail.com,
+        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>
+Subject: Re: [PATCH bpf-next] bpf: Prevent bpf program recursion for raw
+ tracepoint probes
+Message-ID: <202209091544.TU8KWEUM-lkp@intel.com>
+References: <20220908114659.102775-1-jolsa@kernel.org>
 MIME-Version: 1.0
-References: <166256538687.1434226.15760041133601409770.stgit@firesoul>
- <166256558657.1434226.7390735974413846384.stgit@firesoul> <CAJ8uoz3UcC2tnMtG8W6a3HpCKgaYSzSCqowLFQVwCcsr+NKBOQ@mail.gmail.com>
- <b5f0d10d-2d4e-34d6-1e45-c206cb6f5d26@redhat.com> <9aab9ef1-446d-57ab-5789-afffe27801f4@redhat.com>
-In-Reply-To: <9aab9ef1-446d-57ab-5789-afffe27801f4@redhat.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Fri, 9 Sep 2022 08:43:24 +0200
-Message-ID: <CAJ8uoz0CD18RUYU4SMsubB8fhv3uOwp6wi_uKsZSu_aOV5piaA@mail.gmail.com>
-Subject: Re: [PATCH RFCv2 bpf-next 17/18] xsk: AF_XDP xdp-hints support in
- desc options
-To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
-Cc:     Maryam Tahhan <mtahhan@redhat.com>, brouer@redhat.com,
-        bpf@vger.kernel.org, netdev@vger.kernel.org,
-        xdp-hints@xdp-project.net, larysa.zaremba@intel.com,
-        memxor@gmail.com, Lorenzo Bianconi <lorenzo@kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        dave@dtucker.co.uk, Magnus Karlsson <magnus.karlsson@intel.com>,
-        bjorn@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220908114659.102775-1-jolsa@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 8, 2022 at 5:04 PM Jesper Dangaard Brouer
-<jbrouer@redhat.com> wrote:
->
->
-> On 08/09/2022 12.10, Maryam Tahhan wrote:
-> > On 08/09/2022 09:06, Magnus Karlsson wrote:
-> >> On Wed, Sep 7, 2022 at 5:48 PM Jesper Dangaard Brouer
-> >> <brouer@redhat.com> wrote:
-> >>>
-> >>> From: Maryam Tahhan <mtahhan@redhat.com>
-> >>>
-> >>> Simply set AF_XDP descriptor options to XDP flags.
-> >>>
-> >>> Jesper: Will this really be acceptable by AF_XDP maintainers?
-> >>
-> >> Maryam, you guessed correctly that dedicating all these options bits
-> >> for a single feature will not be ok :-). E.g., I want one bit for the
-> >> AF_XDP multi-buffer support and who knows what other uses there might
-> >> be for this options field in the future. Let us try to solve this in
-> >> some other way. Here are some suggestions, all with their pros and
-> >> cons.
-> >>
-> >
-> > TBH it was Jespers question :)
->
-> True. I'm generally questioning this patch...
-> ... and indirectly asking Magnus.  (If you noticed, I didn't add my SoB)
->
-> >> * Put this feature flag at a known place in the metadata area, for
-> >> example just before the BTF ID. No need to fill this in if you are not
-> >> redirecting to AF_XDP, but at a redirect to AF_XDP, the XDP flags are
-> >> copied into this u32 in the metadata area so that user-space can
-> >> consume it. Will cost 4 bytes of the metadata area though.
-> >
-> > If Jesper agrees I think this approach would make sense. Trying to
-> > translate encodings into some other flags for AF_XDP I think will lead
-> > to a growing set of translations as more options come along.
-> > The other thing to be aware of is just making sure to clear/zero the
-> > metadata space in the buffers at some point (ideally when the descriptor
-> > is returned from the application) so when the buffers are used again
-> > they are already in a "reset" state.
->
-> I don't like this option ;-)
->
-> First of all because this can give false positives, if "XDP flags copied
-> into metadata area" is used for something else.  This can easily happen
-> as XDP BPF-progs are free to metadata for something else.
+Hi Jiri,
 
-Are XDP programs not free to overwrite the BTF id that you have last
-in the md section too and you can get false positives for that as
-well? Or do you protect it in some way? Sorry, but I do not understand
-why a flags field would be different from a BTF id stored in the
-metadata section.
+I love your patch! Yet something to improve:
 
-> Second reason, because it would require AF_XDP to always read the
-> metadata cache-line (and write, if clearing on "return").  Not a good
-> optioon, given how performance sensitive AF_XDP workloads (at least
-> benchmarks).
+[auto build test ERROR on bpf-next/master]
 
-On its own, you are right, but when combined with the "bit in the
-descriptor" proposal below, you would not get this performance
-penalty. If the bit is zero, you do not have to read the MD cache
-line. If the bit is one, you want to read the MD line to get your
-metadata anyway, so one more read on the same cache line to get the
-flags would not hurt performance. (There is of course a case where the
-4 extra bytes of the flags could push the metadata you are interested
-in to a new cache line, but this should be rare.)
+url:    https://github.com/intel-lab-lkp/linux/commits/Jiri-Olsa/bpf-Prevent-bpf-program-recursion-for-raw-tracepoint-probes/20220908-194832
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+config: x86_64-randconfig-c022 (https://download.01.org/0day-ci/archive/20220909/202209091544.TU8KWEUM-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-5) 11.3.0
+reproduce (this is a W=1 build):
+        # https://github.com/intel-lab-lkp/linux/commit/f68b567cfb6572c20e431242a440cc5f01452485
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Jiri-Olsa/bpf-Prevent-bpf-program-recursion-for-raw-tracepoint-probes/20220908-194832
+        git checkout f68b567cfb6572c20e431242a440cc5f01452485
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        make W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash
 
-But it all depends on if you need the resolution of a u32 flags field.
-If not, forget this idea. If you do, then the metadata section is the
-only place for it.
+If you fix the issue, kindly add following tag where applicable
+Reported-by: kernel test robot <lkp@intel.com>
 
-> >>
-> >> * Instead encode this information into each metadata entry in the
-> >> metadata area, in some way so that a flags field is not needed (-1
-> >> signifies not valid, or whatever happens to make sense). This has the
-> >> drawback that the user might have to look at a large number of entries
-> >> just to find out there is nothing valid to read. To alleviate this, it
-> >> could be combined with the next suggestion.
-> >>
-> >> * Dedicate one bit in the options field to indicate that there is at
-> >> least one valid metadata entry in the metadata area. This could be
-> >> combined with the two approaches above. However, depending on what
-> >> metadata you have enabled, this bit might be pointless. If some
-> >> metadata is always valid, then it serves no purpose. But it might if
-> >> all enabled metadata is rarely valid, e.g., if you get an Rx timestamp
-> >> on one packet out of one thousand.
-> >>
->
-> I like this option better! Except that I have hoped to get 2 bits ;-)
+All errors (new ones prefixed by >>):
 
-I will give you two if you need it Jesper, no problem :-).
+   ld: kernel/trace/bpf_trace.o: in function `__bpf_trace_run':
+   kernel/trace/bpf_trace.c:2046: undefined reference to `bpf_prog_inc_misses_counter'
+>> ld: kernel/trace/bpf_trace.c:2046: undefined reference to `bpf_prog_inc_misses_counter'
+>> ld: kernel/trace/bpf_trace.c:2046: undefined reference to `bpf_prog_inc_misses_counter'
+>> ld: kernel/trace/bpf_trace.c:2046: undefined reference to `bpf_prog_inc_misses_counter'
+>> ld: kernel/trace/bpf_trace.c:2046: undefined reference to `bpf_prog_inc_misses_counter'
+   ld: kernel/trace/bpf_trace.o:kernel/trace/bpf_trace.c:2046: more undefined references to `bpf_prog_inc_misses_counter' follow
 
-> The performance advantage is that the AF_XDP descriptor bits will
-> already be cache-hot, and if it indicates no-metadata-hints the AF_XDP
-> application can avoid reading the metadata cache-line :-).
-
-Agreed. I prefer if we can keep it simple and fast like this.
-
-> When metadata is valid and contains valid XDP-hints can change between
-> two packets.  E.g. XDP-hints can be enabled/disabled via ethtool, and
-> the content can be enabled/disabled by other ethtool commands, and even
-> setsockopt calls (e.g timestamping).  An XDP prog can also choose to use
-> the area for something else for a subset of the packets.
->
-> It is a design choice in this patchset to avoid locking down the NIC
-> driver to a fixed XDP-hints layout, and avoid locking/disabling other
-> ethtool config setting to keeping XDP-hints layout stable.  Originally I
-> wanted this, but I realized that it would be impossible (and annoying
-> for users) if we had to control every config interface to NIC hardware
-> offload hints, to keep XDP-hints "always-valid".
-
-> --Jesper
->
-> >>> Signed-off-by: Maryam Tahhan <mtahhan@redhat.com>
-> >>> ---
-> >>>   include/uapi/linux/if_xdp.h |    2 +-
-> >>>   net/xdp/xsk.c               |    2 +-
-> >>>   net/xdp/xsk_queue.h         |    3 ++-
-> >>>   3 files changed, 4 insertions(+), 3 deletions(-)
-> >>>
-> >>> diff --git a/include/uapi/linux/if_xdp.h b/include/uapi/linux/if_xdp.h
-> >>> index a78a8096f4ce..9335b56474e7 100644
-> >>> --- a/include/uapi/linux/if_xdp.h
-> >>> +++ b/include/uapi/linux/if_xdp.h
-> >>> @@ -103,7 +103,7 @@ struct xdp_options {
-> >>>   struct xdp_desc {
-> >>>          __u64 addr;
-> >>>          __u32 len;
-> >>> -       __u32 options;
-> >>> +       __u32 options; /* set to the values of xdp_hints_flags*/
-> >>>   };
-> >>>
-> >>>   /* UMEM descriptor is __u64 */
-> >>> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> >>> index 5b4ce6ba1bc7..32095d78f06b 100644
-> >>> --- a/net/xdp/xsk.c
-> >>> +++ b/net/xdp/xsk.c
-> >>> @@ -141,7 +141,7 @@ static int __xsk_rcv_zc(struct xdp_sock *xs,
-> >>> struct xdp_buff *xdp, u32 len)
-> >>>          int err;
-> >>>
-> >>>          addr = xp_get_handle(xskb);
-> >>> -       err = xskq_prod_reserve_desc(xs->rx, addr, len);
-> >>> +       err = xskq_prod_reserve_desc(xs->rx, addr, len, xdp->flags);
-> >>>          if (err) {
-> >>>                  xs->rx_queue_full++;
-> >>>                  return err;
-> >>> diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
-> >>> index fb20bf7207cf..7a66f082f97e 100644
-> >>> --- a/net/xdp/xsk_queue.h
-> >>> +++ b/net/xdp/xsk_queue.h
-> >>> @@ -368,7 +368,7 @@ static inline u32
-> >>> xskq_prod_reserve_addr_batch(struct xsk_queue *q, struct xdp_d
-> >>>   }
-> >>>
-> >>>   static inline int xskq_prod_reserve_desc(struct xsk_queue *q,
-> >>> -                                        u64 addr, u32 len)
-> >>> +                                        u64 addr, u32 len, u32 flags)
-> >>>   {
-> >>>          struct xdp_rxtx_ring *ring = (struct xdp_rxtx_ring *)q->ring;
-> >>>          u32 idx;
-> >>> @@ -380,6 +380,7 @@ static inline int xskq_prod_reserve_desc(struct
-> >>> xsk_queue *q,
-> >>>          idx = q->cached_prod++ & q->ring_mask;
-> >>>          ring->desc[idx].addr = addr;
-> >>>          ring->desc[idx].len = len;
-> >>> +       ring->desc[idx].options = flags;
-> >>>
-> >>>          return 0;
-> >>>   }
-> >>>
-> >>>
-> >>
-> >
->
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
