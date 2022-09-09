@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 809235B34EC
-	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 12:14:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E4455B34EE
+	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 12:15:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229893AbiIIKN3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Sep 2022 06:13:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36058 "EHLO
+        id S229897AbiIIKNl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Sep 2022 06:13:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbiIIKN2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Sep 2022 06:13:28 -0400
+        with ESMTP id S230143AbiIIKNk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Sep 2022 06:13:40 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC12D32D98
-        for <bpf@vger.kernel.org>; Fri,  9 Sep 2022 03:13:27 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6EEB32D98
+        for <bpf@vger.kernel.org>; Fri,  9 Sep 2022 03:13:38 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 2A4C0B82491
-        for <bpf@vger.kernel.org>; Fri,  9 Sep 2022 10:13:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61FA9C433D6;
-        Fri,  9 Sep 2022 10:13:21 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 55FBFB8247B
+        for <bpf@vger.kernel.org>; Fri,  9 Sep 2022 10:13:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 796D8C433D6;
+        Fri,  9 Sep 2022 10:13:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662718404;
-        bh=ADvd2vYzjmh5rcCio/hEZv35Yc3l3XuYE9cf2aq2aAk=;
+        s=k20201202; t=1662718416;
+        bh=IyABfRG606Y1RpZ1RqpiBYvacFHO9x+vvjdkKYi5Pf0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fmDar7hremxEq0a32UqXc8f1q6qtg/vEjO1wtSCZWtfYKKzOPlDEFAI1HaDNz0jjU
-         IJaySPu9VH9wd4MZLkzZAQeRL+PE9woJ/W4n9of2mS21hDnESdx/g+u1SJrPJZ7h3o
-         wsu1Vwxb8N39qDNGwBD758Fyf+3L/lbxsxMLBoOjCI8H7l/qFlE9A845ZQ7K+olCu5
-         GcG12tYzzTQQToSx0SQkoZnyVAIHeFSbcTCC1NqII8i97EV8t1FeSJ59LMZ3hCikAz
-         p9HZa7BDtvpDMALxXMuN6ppZ6x40hoKie6hnfnMpIrE42/nqjtSLhzFgmweyDSte5N
-         Ff/MR6RlYT1qA==
+        b=rz6fF9NVPh21FpZilkzIjWWYlDVNyaP5cr6ryxypELSfHLjkn09WxfoeAeM1Uxl6r
+         NKGTCT0O44T96rBUaIo3TM9zc62wUGAqIopUFDljcI/q9UVGYWk6TOcQ1d30bVOaP6
+         TINAuM+m/1v2224UoWb/vdh2Ltjc/LcthMFvHuszLIirMAOYc2qvM4HLtM10ondIBJ
+         hQoWg+GMhNIBoNiZGAzu8YpNa1TLZ0HTCAP2Vm7atgqpT2XPQjXe/euULpsDMm5EGo
+         BnUVK+XQHQ/+OotOgyx5q8fXjoRfud79ebYJWf8kOMCAWFCkBrZ4y3sldKQJ7TYjE0
+         0hm9HVPbxTRgg==
 From:   Jiri Olsa <jolsa@kernel.org>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Martynas Pumputis <m@lambda.lt>, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@chromium.org>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>,
-        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Martynas Pumputis <m@lambda.lt>
-Subject: [PATCHv3 bpf-next 3/6] bpf: Use given function address for trampoline ip arg
-Date:   Fri,  9 Sep 2022 12:12:42 +0200
-Message-Id: <20220909101245.347173-4-jolsa@kernel.org>
+        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Subject: [PATCHv3 bpf-next 4/6] bpf: Adjust kprobe_multi entry_ip for CONFIG_X86_KERNEL_IBT
+Date:   Fri,  9 Sep 2022 12:12:43 +0200
+Message-Id: <20220909101245.347173-5-jolsa@kernel.org>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <20220909101245.347173-1-jolsa@kernel.org>
 References: <20220909101245.347173-1-jolsa@kernel.org>
@@ -62,54 +62,67 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Using function address given at the generation time as the trampoline
-ip argument. This way we get directly the function address that we
-need, so we don't need to:
-  - read the ip from the stack
-  - subtract X86_PATCH_SIZE
-  - subtract ENDBR_INSN_SIZE if CONFIG_X86_KERNEL_IBT is enabled
-    which is not even implemented yet ;-)
+Martynas reported bpf_get_func_ip returning +4 address when
+CONFIG_X86_KERNEL_IBT option is enabled.
 
+When CONFIG_X86_KERNEL_IBT is enabled we'll have endbr instruction
+at the function entry, which screws return value of bpf_get_func_ip()
+helper that should return the function address.
+
+There's short term workaround for kprobe_multi bpf program made by
+Alexei [1], but we need this fixup also for bpf_get_attach_cookie,
+that returns cookie based on the entry_ip value.
+
+Moving the fixup in the fprobe handler, so both bpf_get_func_ip
+and bpf_get_attach_cookie get expected function address when
+CONFIG_X86_KERNEL_IBT option is enabled.
+
+[1] commit 7f0059b58f02 ("selftests/bpf: Fix kprobe_multi test.")
+
+Cc: Peter Zijlstra <peterz@infradead.org>
+Reported-by: Martynas Pumputis <m@lambda.lt>
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- arch/x86/net/bpf_jit_comp.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ kernel/trace/bpf_trace.c                         | 4 ++++
+ tools/testing/selftests/bpf/progs/kprobe_multi.c | 4 +---
+ 2 files changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index ae89f4143eb4..1047686cc545 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -2039,13 +2039,14 @@ static int invoke_bpf_mod_ret(const struct btf_func_model *m, u8 **pprog,
- int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *image_end,
- 				const struct btf_func_model *m, u32 flags,
- 				struct bpf_tramp_links *tlinks,
--				void *orig_call)
-+				void *func_addr)
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 68e5cdd24cef..bcada91b0b3b 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -2419,6 +2419,10 @@ kprobe_multi_link_handler(struct fprobe *fp, unsigned long entry_ip,
  {
- 	int ret, i, nr_args = m->nr_args, extra_nregs = 0;
- 	int regs_off, ip_off, args_off, stack_size = nr_args * 8, run_ctx_off;
- 	struct bpf_tramp_links *fentry = &tlinks[BPF_TRAMP_FENTRY];
- 	struct bpf_tramp_links *fexit = &tlinks[BPF_TRAMP_FEXIT];
- 	struct bpf_tramp_links *fmod_ret = &tlinks[BPF_TRAMP_MODIFY_RETURN];
-+	void *orig_call = func_addr;
- 	u8 **branches = NULL;
- 	u8 *prog;
- 	bool save_ret;
-@@ -2126,12 +2127,10 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+ 	struct bpf_kprobe_multi_link *link;
  
- 	if (flags & BPF_TRAMP_F_IP_ARG) {
- 		/* Store IP address of the traced function:
--		 * mov rax, QWORD PTR [rbp + 8]
--		 * sub rax, X86_PATCH_SIZE
-+		 * mov rax, func_addr
- 		 * mov QWORD PTR [rbp - ip_off], rax
- 		 */
--		emit_ldx(&prog, BPF_DW, BPF_REG_0, BPF_REG_FP, 8);
--		EMIT4(0x48, 0x83, 0xe8, X86_PATCH_SIZE);
-+		emit_mov_imm64(&prog, BPF_REG_0, (long) func_addr >> 32, (u32) (long) func_addr);
- 		emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -ip_off);
- 	}
++#ifdef CONFIG_X86_KERNEL_IBT
++	if (is_endbr(*((u32 *) entry_ip - 1)))
++		entry_ip -= ENDBR_INSN_SIZE;
++#endif
+ 	link = container_of(fp, struct bpf_kprobe_multi_link, fp);
+ 	kprobe_multi_link_prog_run(link, entry_ip, regs);
+ }
+diff --git a/tools/testing/selftests/bpf/progs/kprobe_multi.c b/tools/testing/selftests/bpf/progs/kprobe_multi.c
+index 08f95a8155d1..98c3399e15c0 100644
+--- a/tools/testing/selftests/bpf/progs/kprobe_multi.c
++++ b/tools/testing/selftests/bpf/progs/kprobe_multi.c
+@@ -36,15 +36,13 @@ __u64 kretprobe_test6_result = 0;
+ __u64 kretprobe_test7_result = 0;
+ __u64 kretprobe_test8_result = 0;
  
+-extern bool CONFIG_X86_KERNEL_IBT __kconfig __weak;
+-
+ static void kprobe_multi_check(void *ctx, bool is_return)
+ {
+ 	if (bpf_get_current_pid_tgid() >> 32 != pid)
+ 		return;
+ 
+ 	__u64 cookie = test_cookie ? bpf_get_attach_cookie(ctx) : 0;
+-	__u64 addr = bpf_get_func_ip(ctx) - (CONFIG_X86_KERNEL_IBT ? 4 : 0);
++	__u64 addr = bpf_get_func_ip(ctx);
+ 
+ #define SET(__var, __addr, __cookie) ({			\
+ 	if (((const void *) addr == __addr) &&		\
 -- 
 2.37.3
 
