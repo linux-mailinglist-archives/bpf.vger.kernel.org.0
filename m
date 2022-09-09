@@ -2,88 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 532945B3A73
-	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 16:14:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 666075B3A8F
+	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 16:20:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229767AbiIIOOC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Sep 2022 10:14:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34654 "EHLO
+        id S229480AbiIIOUH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Sep 2022 10:20:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229668AbiIIOOB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Sep 2022 10:14:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B15F1A9262
-        for <bpf@vger.kernel.org>; Fri,  9 Sep 2022 07:14:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1662732839;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Xk32t8ThwwHLTdGdpwN3jqOuQlPi1iyqPkh3M3TzE+U=;
-        b=cHcGr0pQF7Wv/ZL18x6ADLtRT/i738xAk0vcWJm0qkGQ0N02snTsyjM0Dff8fqAHnBSZyz
-        UuaF9FmTWWjvdyyuHo5V+coEQhA5tLNmtRmYEIacKuLWLE2oLeMIGMGbgSTcT7TkujFPvw
-        hdpRNXWESnQBBz2GilkPEH/Z/rwGs4k=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-580-Oe2pjcwaPviuK6VoMFGxhQ-1; Fri, 09 Sep 2022 10:13:57 -0400
-X-MC-Unique: Oe2pjcwaPviuK6VoMFGxhQ-1
-Received: by mail-ed1-f69.google.com with SMTP id y14-20020a056402440e00b0044301c7ccd9so1355787eda.19
-        for <bpf@vger.kernel.org>; Fri, 09 Sep 2022 07:13:57 -0700 (PDT)
+        with ESMTP id S229610AbiIIOUH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Sep 2022 10:20:07 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52B3A476E7;
+        Fri,  9 Sep 2022 07:20:04 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id q21so2734427edc.9;
+        Fri, 09 Sep 2022 07:20:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=il7Ilq03Jy3qK9trP89NQpYDkyj+wCqI9a3iT+1TUqY=;
+        b=CYqElaWEXELaTF0ufxRzWiLbFPW1sx7er6sdeedSg0OT1QzYw90hDvOilly9mpWBKW
+         zZwb4PN2GpiSsd1vGWcIKFXE8BbOgjLlXuqqLwspWkxafjpkQMWIjYqEJjvIZh7KJ1Nq
+         c9AX+m67+KsZYoHJyfiLAh9iGp53sPqNxhIwc5sFv/TeKglFwBvBFquNMDUnwgKOranM
+         9dMCJVMR4sr3kRsrtjUj6xaj65KHH5E9baE8mH4Q3muoxyi6oBEPz9AP3jLMbk/qkc9r
+         m1KRfTv658tTc7Phr1A2CByAAFqcPc2/k67gI9RviGrkB6WI3bJstTbUg0IMvl+cQrvo
+         ghZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:references:to
-         :content-language:subject:cc:user-agent:mime-version:date:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date;
-        bh=Xk32t8ThwwHLTdGdpwN3jqOuQlPi1iyqPkh3M3TzE+U=;
-        b=Kkd1XrIKabckRPtQgq2MhI0iR94GL0ksYjwvDTgfNOs3t+xEEpb5+ADWmvIcQ+jorT
-         0G7qTiJHbH2QTnG6YijQJFfDNawFm8MavAS+WGNyN5iTg/0mFY1C+ZNv0vl7otfhFyE7
-         LmWbOcDpJ6as/6dnuFVEMguTHkLIC8xFegOGidbTKJugZ3XWaPw86BMT3SLBKg1XEgpr
-         sYzoIMLuJ7YkrDauKmKAPACb4DHDn2WJFwwMY24LOrMb5bFzfw9zLMs2eAIFe/YfuY7N
-         HwsTRhELc1byyiaBV+s/nilQnU0O0VsMBy5OOzTFU8HQEXsme58jcoZzjJ12m8Tyy+VR
-         7Oqw==
-X-Gm-Message-State: ACgBeo3GsVUT44WR8mfxAFLaoh+AFFTuDO4emErKrNLrvrk5kN/PH/3J
-        nflfYEl3waIsq3fagsk1PHwOePIEnLQel2xXQtCD66EMFatIflkkAuvoW+fb56tC/XUDkeFc/r0
-        Sefnciy5SIg8+
-X-Received: by 2002:a17:907:2da6:b0:73d:d587:6213 with SMTP id gt38-20020a1709072da600b0073dd5876213mr10104227ejc.5.1662732835867;
-        Fri, 09 Sep 2022 07:13:55 -0700 (PDT)
-X-Google-Smtp-Source: AA6agR4EY90EagVDvuKxXzjyal5aWEq+43WPQ4My0vxpoU99rwNuKuJYIARjTDUjajUYtM6uM0Hqsw==
-X-Received: by 2002:a17:907:2da6:b0:73d:d587:6213 with SMTP id gt38-20020a1709072da600b0073dd5876213mr10104207ejc.5.1662732835573;
-        Fri, 09 Sep 2022 07:13:55 -0700 (PDT)
-Received: from [192.168.41.81] (83-90-141-187-cable.dk.customer.tdc.net. [83.90.141.187])
-        by smtp.gmail.com with ESMTPSA id r7-20020a056402018700b0044e96f11359sm473025edv.3.2022.09.09.07.13.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Sep 2022 07:13:54 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <74a68399-35b2-c0f2-92cb-236a0773837e@redhat.com>
-Date:   Fri, 9 Sep 2022 16:13:53 +0200
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=il7Ilq03Jy3qK9trP89NQpYDkyj+wCqI9a3iT+1TUqY=;
+        b=CMxfiswvBcDU7fcwwIVFt/cZw9GBtbmYCDmEWPt9Gzy7ye0quqzIt+pc5ViNfvNfAs
+         ybPSlOb0J8NUstDj2qI6iF+tgF+4E1tMLHyGSkcyuCRNxDgngjvKSomaOQlHFG2Ed/2m
+         Hgw0OloqWhv/d2miY7LU+pIt7QSSLRFFQ2M+t6OGemp9OGU3jh/QfQj7W/CozhSmSJ1o
+         FlzJ8L4RAbhqGFXPA2At8XVMs/p69dl+gIYZIKcwbK3KADOrx1KcaMERK5AN/TyXf38B
+         8op8B21Bjnj+6AarLgCi5y8+vbECx14desnZoGgxJo+c36+fGR+rUQlPGeiFCwWjQKPF
+         NIZw==
+X-Gm-Message-State: ACgBeo1dFHDqyi35HVftSiIvF1uo8NB9L0QuCrMSBPwm0ujTp5d5o/p3
+        0D2LHAjgtgn6bp+wZo8O59bON/ccyn/WgohqYzo=
+X-Google-Smtp-Source: AA6agR5BmgQ4MZaa5djaaXJJtjRYycr9UQxM+gsSsbSBeg4Ttg4dQf/avu7U/6yHtqooywiUj42VL9eT8NWe4ua/Ccw=
+X-Received: by 2002:a05:6402:1d48:b0:44e:c6cf:778 with SMTP id
+ dz8-20020a0564021d4800b0044ec6cf0778mr11986236edb.421.1662733202729; Fri, 09
+ Sep 2022 07:20:02 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.1
-Cc:     brouer@redhat.com, netdev@vger.kernel.org,
-        xdp-hints@xdp-project.net, larysa.zaremba@intel.com,
-        memxor@gmail.com, Lorenzo Bianconi <lorenzo@kernel.org>,
-        mtahhan@redhat.com,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        dave@dtucker.co.uk, Magnus Karlsson <magnus.karlsson@intel.com>,
-        bjorn@kernel.org, Alexander Lobakin <alexandr.lobakin@intel.com>
-Subject: Re: [xdp-hints] Re: [PATCH RFCv2 bpf-next 04/18] net: create
- xdp_hints_common and set functions
-Content-Language: en-US
-To:     "Burakov, Anatoly" <anatoly.burakov@intel.com>, bpf@vger.kernel.org
-References: <166256538687.1434226.15760041133601409770.stgit@firesoul>
- <166256552083.1434226.577215984964402996.stgit@firesoul>
- <f14c367b-fe4e-2956-b34e-8d54862a6393@intel.com>
-In-Reply-To: <f14c367b-fe4e-2956-b34e-8d54862a6393@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+References: <166260087224.759381.4170102827490658262.stgit@devnote2>
+ <166260088298.759381.11727280480035568118.stgit@devnote2> <20220908050855.w77mimzznrlp6pwe@treble>
+ <Yxm2QU1NJIkIyrrU@hirez.programming.kicks-ass.net> <Yxm+QkFPOhrVSH6q@hirez.programming.kicks-ass.net>
+ <CAADnVQKWTaXFqYri9VG3ux-CJEBsjAP5PetH6Q1ccS8HoeP28g@mail.gmail.com> <Yxr2TaWaN8VjJ60D@hirez.programming.kicks-ass.net>
+In-Reply-To: <Yxr2TaWaN8VjJ60D@hirez.programming.kicks-ass.net>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 9 Sep 2022 07:19:51 -0700
+Message-ID: <CAADnVQLqw5o5Pn9Bds03Qse6Y5vSDPj1jyfWesxJOP__kUPXLg@mail.gmail.com>
+Subject: Re: [PATCH] x86,retpoline: Be sure to emit INT3 after JMP *%\reg
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Josh Poimboeuf <jpoimboe@kernel.org>,
+        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Suleiman Souhlal <suleiman@google.com>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Borislav Petkov <bp@suse.de>, X86 ML <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -91,158 +73,72 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Fri, Sep 9, 2022 at 1:16 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Thu, Sep 08, 2022 at 07:01:12AM -0700, Alexei Starovoitov wrote:
+>
+> > > diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> > > index c1f6c1c51d99..37f821dee68f 100644
+> > > --- a/arch/x86/net/bpf_jit_comp.c
+> > > +++ b/arch/x86/net/bpf_jit_comp.c
+> > > @@ -419,7 +419,8 @@ static void emit_indirect_jump(u8 **pprog, int reg, u8 *ip)
+> > >                 OPTIMIZER_HIDE_VAR(reg);
+> > >                 emit_jump(&prog, &__x86_indirect_thunk_array[reg], ip);
+> > >         } else {
+> > > -               EMIT2(0xFF, 0xE0 + reg);
+> > > +               EMIT2(0xFF, 0xE0 + reg);        /* jmp *%\reg */
+> > > +               EMIT1(0xCC);                    /* int3 */
+> >
+> > Hmm. Why is this unconditional?
+> > Shouldn't it be guarded with CONFIG_xx or cpu_feature_enabled ?
+> > People that don't care about hw speculation vulnerabilities
+> > shouldn't pay the price of increased code size.
+>
+> Sure, like so then?
+>
+> ---
+> Subject: x86,retpoline: Be sure to emit INT3 after JMP *%\reg
+> From: Peter Zijlstra <peterz@infradead.org>
+> Date: Thu, 8 Sep 2022 12:04:50 +0200
+>
+> Both AMD and Intel recommend using INT3 after an indirect JMP. Make sure
+> to emit one when rewriting the retpoline JMP irrespective of compiler
+> SLS options or even CONFIG_SLS.
+>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>
+>  arch/x86/kernel/alternative.c |    9 +++++++++
+>  arch/x86/net/bpf_jit_comp.c   |    4 +++-
+>  2 files changed, 12 insertions(+), 1 deletion(-)
+>
+> --- a/arch/x86/kernel/alternative.c
+> +++ b/arch/x86/kernel/alternative.c
+> @@ -453,6 +453,15 @@ static int patch_retpoline(void *addr, s
+>                 return ret;
+>         i += ret;
+>
+> +       /*
+> +        * The compiler is supposed to EMIT an INT3 after every unconditional
+> +        * JMP instruction due to AMD BTC. However, if the compiler is too old
+> +        * or SLS isn't enabled, we still need an INT3 after indirect JMPs
+> +        * even on Intel.
+> +        */
+> +       if (op == JMP32_INSN_OPCODE && i < insn->length)
+> +               bytes[i++] = INT3_INSN_OPCODE;
+> +
+>         for (; i < insn->length;)
+>                 bytes[i++] = BYTES_NOP1;
+>
+> --- a/arch/x86/net/bpf_jit_comp.c
+> +++ b/arch/x86/net/bpf_jit_comp.c
+> @@ -419,7 +419,9 @@ static void emit_indirect_jump(u8 **ppro
+>                 OPTIMIZER_HIDE_VAR(reg);
+>                 emit_jump(&prog, &__x86_indirect_thunk_array[reg], ip);
+>         } else {
+> -               EMIT2(0xFF, 0xE0 + reg);
+> +               EMIT2(0xFF, 0xE0 + reg);        /* jmp *%\reg */
+> +               if (IS_ENABLED(CONFIG_RETPOLINE) || IS_ENABLED(CONFIG_SLS))
+> +                       EMIT1(0xCC);            /* int3 */
 
-
-On 09/09/2022 12.49, Burakov, Anatoly wrote:
-> On 07-Sep-22 4:45 PM, Jesper Dangaard Brouer wrote:
->> XDP-hints via BTF are about giving drivers the ability to extend the
->> common set of hardware offload hints in a flexible way.
->>
->> This patch start out with defining the common set, based on what is
->> used available in the SKB. Having this as a common struct in core
->> vmlinux makes it easier to implement xdp_frame to SKB conversion
->> routines as normal C-code, see later patches.
->>
->> Drivers can redefine the layout of the entire metadata area, but are
->> encouraged to use this common struct as the base, on which they can
->> extend on top for their extra hardware offload hints. When doing so,
->> drivers can mark the xdp_buff (and xdp_frame) with flags indicating
->> this it compatible with the common struct.
->>
->> Patch also provides XDP-hints driver helper functions for updating the
->> common struct. Helpers gets inlined and are defined for maximum
->> performance, which does require some extra care in drivers, e.g. to
->> keep track of flags to reduce data dependencies, see code DOC.
->>
->> Userspace and BPF-prog's MUST not consider the common struct UAPI.
->> The common struct (and enum flags) are only exposed via BTF, which
->> implies consumers must read and decode this BTF before using/consuming
->> data layout.
->>
->> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
->> ---
->>   include/net/xdp.h |  147 
->> +++++++++++++++++++++++++++++++++++++++++++++++++++++
->>   net/core/xdp.c    |    5 ++
->>   2 files changed, 152 insertions(+)
->>
->> diff --git a/include/net/xdp.h b/include/net/xdp.h
->> index 04c852c7a77f..ea5836ccee82 100644
->> --- a/include/net/xdp.h
->> +++ b/include/net/xdp.h
->> @@ -8,6 +8,151 @@
->>   #include <linux/skbuff.h> /* skb_shared_info */
->> +/**
->> + * struct xdp_hints_common - Common XDP-hints offloads shared with 
->> netstack
->> + * @btf_full_id: The modules BTF object + type ID for specific struct
->> + * @vlan_tci: Hardware provided VLAN tag + proto type in 
->> @xdp_hints_flags
->> + * @rx_hash32: Hardware provided RSS hash value
->> + * @xdp_hints_flags: see &enum xdp_hints_flags
->> + *
->> + * This structure contains the most commonly used hardware offloads 
->> hints
->> + * provided by NIC drivers and supported by the SKB.
->> + *
->> + * Driver are expected to extend this structure by include &struct
->> + * xdp_hints_common as part of the drivers own specific xdp_hints 
->> struct's, but
->> + * at the end-of their struct given XDP metadata area grows backwards.
->> + *
->> + * The member @btf_full_id is populated by driver modules to uniquely 
->> identify
->> + * the BTF struct.  The high 32-bits store the modules BTF object ID 
->> and the
->> + * lower 32-bit the BTF type ID within that BTF object.
->> + */
->> +struct xdp_hints_common {
->> +    union {
->> +        __wsum        csum;
->> +        struct {
->> +            __u16    csum_start;
->> +            __u16    csum_offset;
->> +        };
->> +    };
->> +    u16 rx_queue;
->> +    u16 vlan_tci;
->> +    u32 rx_hash32;
->> +    u32 xdp_hints_flags;
->> +    u64 btf_full_id; /* BTF object + type ID */
->> +} __attribute__((aligned(4))) __attribute__((packed));
-> 
-> I'm assuming any Tx metadata will have to go before the Rx checksum union?
-> 
-
-Nope.  The plan is that the TX metadata can reuse the same metadata area
-with its own layout.  I imagine a new xdp_buff->flags bit that tell us
-the layout is now TX-layout with xdp_hints_common_tx.
-
-We could rename xdp_hints_common to xdp_hints_common_rx to anticipate
-and prepare for this. But that would be getting a head of ourselves,
-because someone in the community might have a smarter solution, e.g.
-that could combine common RX and TX in a single struct. e.g. overlapping
-csum and vlan_tci might make sense.
-
->> +
->> +
->> +/**
->> + * enum xdp_hints_flags - flags used by &struct xdp_hints_common
->> + *
->> + * The &enum xdp_hints_flags have reserved the first 16 bits for 
->> common flags
->> + * and drivers can introduce use their own flags bits from BIT(16). For
->> + * BPF-progs to find these flags (via BTF) drivers should define an enum
->> + * xdp_hints_flags_driver.
->> + */
->> +enum xdp_hints_flags {
->> +    HINT_FLAG_CSUM_TYPE_BIT0  = BIT(0),
->> +    HINT_FLAG_CSUM_TYPE_BIT1  = BIT(1),
->> +    HINT_FLAG_CSUM_TYPE_MASK  = 0x3,
->> +
->> +    HINT_FLAG_CSUM_LEVEL_BIT0 = BIT(2),
->> +    HINT_FLAG_CSUM_LEVEL_BIT1 = BIT(3),
->> +    HINT_FLAG_CSUM_LEVEL_MASK = 0xC,
->> +    HINT_FLAG_CSUM_LEVEL_SHIFT = 2,
->> +
->> +    HINT_FLAG_RX_HASH_TYPE_BIT0 = BIT(4),
->> +    HINT_FLAG_RX_HASH_TYPE_BIT1 = BIT(5),
->> +    HINT_FLAG_RX_HASH_TYPE_MASK = 0x30,
->> +    HINT_FLAG_RX_HASH_TYPE_SHIFT = 0x4,
->> +
->> +    HINT_FLAG_RX_QUEUE = BIT(7),
->> +
->> +    HINT_FLAG_VLAN_PRESENT            = BIT(8),
->> +    HINT_FLAG_VLAN_PROTO_ETH_P_8021Q  = BIT(9),
->> +    HINT_FLAG_VLAN_PROTO_ETH_P_8021AD = BIT(10),
->> +    /* Flags from BIT(16) can be used by drivers */
-> 
-> If we assumed we also have Tx section, would 16 bits be enough? For a 
-> basic implementation of UDP checksumming, AF_XDP would need 3x16 more 
-> bits (to store L2/L3/L4 offsets) plus probably a flag field indicating 
-> presence of each. Is there any way to expand common fields in the future 
-> (or is it at all intended to be expandable)?
-> 
-
-As above we could have separate flags for TX side, e.g.
-xdp_hints_flags_tx.  But some of the flags might still be valid for
-TX-side, so they could potentially share some.
-
-BUT it is also important to realize that I'm saying this is not UAPI
-flags being exposed (like in include/uapi/bpf.h).  The runtime value of
-these enum defined flags MUST be obtained via BTF (through help of
-libbpf CO-RE or in userspace by parsing BTF).
-
-Thus, in principle the kernel is free to change these structs and enums.
-In practice it will be very annoying for BPF-progs and AF_XDP userspace
-code if we change the names of the struct's and somewhat annoying if
-members change name.  CO-RE can deal with kernel changes and feature
-detection[1] down to the avail enums e.g. via using
-bpf_core_enum_value_exists().  But we should avoid too many changes as
-the code becomes harder to read.
-
---Jesper
-
-[1] 
-https://nakryiko.com/posts/bpf-core-reference-guide/#bpf-core-enum-value-exists
-
+Looks better. Ack.
