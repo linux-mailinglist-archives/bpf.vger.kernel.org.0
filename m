@@ -2,76 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C8C95B4197
-	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 23:43:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 435F55B41A8
+	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 23:49:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231589AbiIIVnW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Sep 2022 17:43:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37678 "EHLO
+        id S229748AbiIIVta (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Sep 2022 17:49:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230264AbiIIVnV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Sep 2022 17:43:21 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0636F13E4C7
-        for <bpf@vger.kernel.org>; Fri,  9 Sep 2022 14:43:21 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id s15-20020a5b044f000000b00680c4eb89f1so2649239ybp.7
-        for <bpf@vger.kernel.org>; Fri, 09 Sep 2022 14:43:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date;
-        bh=RQ/RHVVHpmpB1V0DuvGfzSeOFbDRdXln7rq3LTWarTA=;
-        b=Y9COy7bDApy6jOXUDs8cE/zwtaXpJVQs2yW5bcVJUB9dEen41pIRSOfHXVEy3XpSMr
-         In1BWDC4ycuBveJyi34VQdSRPykN8pakuW1CdhDdvg2KmEW/9K55JFtORM9Zzbuwc8UM
-         YbQ/ghAlbbAAFF1kOkK5N9S89JsdjbS60gmnh6oNl/ut1jCSz21+k+9fiZIREwDWFrSK
-         NXFJWd8OAt+sTzRI9S7CN1P8dYDaGrnXc4gqLtbT7mSzgg1U5JSXaL8E+FfXULJZ/rJM
-         J2SMtm04BpMuLnTwrpW8SL7iid6zwqKbu6bKDIsl6pj5Y5HgtWT8O+Ee6YOi6s3hURjQ
-         eKlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date;
-        bh=RQ/RHVVHpmpB1V0DuvGfzSeOFbDRdXln7rq3LTWarTA=;
-        b=vDbLw1DtUNUH7n0jihYsj4o2fp05jiYHC3huFVbSQKvhi42BBdXUUauNTdhjmr/Lrr
-         xlOE8vCNZ0jaF9PJ6aMmtuwBljd3SonoK0we5s8q8bMa6k0MNHNcTaZqoT8tHDnx3Wu5
-         sXt9AwayPs9r05eFPORJSLc2plz2Hx98zDCo7Ybmb9lOAcW70kGb1LIGv+NCJSmKlFob
-         C5P7xa+PzGPieFoeAu97YofL6unVCya020r0Kx/Kz24u9T45EJ/7u2QpKRWsbH32QnFt
-         Ol+stO0Y+pkQeXLvA7b/G31pTXRl5VtRIiYmPLOM8NB7S/RqUa8IUWFui0w5l3+XctuB
-         eXLw==
-X-Gm-Message-State: ACgBeo3FDa3lek/uoH/fJ+Vgu0efNRNfCwyaggIcWcUvzkYoBx6G5lb6
-        HF3NpSC9NcdKE1oHhTm5/u6fIhA=
-X-Google-Smtp-Source: AA6agR6hPX1FHMMsmDh95SYa0O35eolLvLx65t+G3+4vzi9V2C7ZvZaasr4ExgdC0ocMNamDN1DmEaw=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a25:bed1:0:b0:695:8192:8d1d with SMTP id
- k17-20020a25bed1000000b0069581928d1dmr13187190ybm.533.1662759800271; Fri, 09
- Sep 2022 14:43:20 -0700 (PDT)
-Date:   Fri, 9 Sep 2022 14:43:18 -0700
-In-Reply-To: <20220909211540.GA11304@bytedance>
-Mime-Version: 1.0
-References: <000000000000e506e905e836d9e7@google.com> <YxtrrG8ebrarIqnc@google.com>
- <CAO-hwJJyrhmzWY4fth5miiHd3QXHvs4KPuPRacyNp8xrTxOucA@mail.gmail.com>
- <YxuZ3j0PE0cauK1E@google.com> <20220909211540.GA11304@bytedance>
-Message-ID: <YxuzdhmaHeyycyRi@google.com>
-Subject: Re: [syzbot] WARNING in bpf_verifier_vlog
-From:   sdf@google.com
-To:     Peilin Ye <yepeilin.cs@gmail.com>
-Cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, davem@davemloft.net,
-        haoluo@google.com, hawk@kernel.org,
-        John Fastabend <john.fastabend@gmail.com>, jolsa@kernel.org,
-        KP Singh <kpsingh@kernel.org>, kuba@kernel.org,
-        lkml <linux-kernel@vger.kernel.org>, llvm@lists.linux.dev,
-        martin.lau@linux.dev, nathan@kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Networking <netdev@vger.kernel.org>, Song Liu <song@kernel.org>,
-        syzkaller-bugs@googlegroups.com, Tom Rix <trix@redhat.com>,
-        Yonghong Song <yhs@fb.com>, Peilin Ye <peilin.ye@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        with ESMTP id S230012AbiIIVt2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Sep 2022 17:49:28 -0400
+Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDF8D2E7
+        for <bpf@vger.kernel.org>; Fri,  9 Sep 2022 14:49:22 -0700 (PDT)
+Received: from submission (posteo.de [185.67.36.169]) 
+        by mout02.posteo.de (Postfix) with ESMTPS id 2B22A240105
+        for <bpf@vger.kernel.org>; Fri,  9 Sep 2022 23:49:21 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1662760161; bh=3rMTshyvUJWma1obwyTT1MmiezlmAqKA/Is5uYaBc9c=;
+        h=Date:From:To:Cc:Subject:From;
+        b=sE/C3OEGbrvYVVa7dTHZcOroh3qQGxAjI497deVWsx05aMIo+d7EBEJKhiMRDj0Ew
+         cV/Cf4SMvGJPCpGmm1g+GSN0I12H0yFfvN7xNfPGwp6iuye0IngLc46vYG7LoT2bPt
+         F245PQVDUk20PInYuLyDAuZTCv9ieTV4X4uKAKNFY7e0YOVktOVqohl30w5VuNVl9d
+         o5m6rZfUeydVX9MV5zKFwYJeKK6x8oRy15e2gflufgcbf3WZxURzI/uz8pUAxcagy1
+         ohfP3pH4qsDH0IhmIzpV9EAOyiJiG0yFTDOn04pdBan72BM53euXK8tKuWGgHwXtDU
+         0cTAl6tlMmrVw==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4MPV4t3hPBz6tpY;
+        Fri,  9 Sep 2022 23:49:18 +0200 (CEST)
+Date:   Fri,  9 Sep 2022 21:49:14 +0000
+From:   Daniel =?utf-8?Q?M=C3=BCller?= <deso@posteo.net>
+To:     Donald Hunter <donald.hunter@gmail.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
+        linux-doc@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH bpf-next v3 1/2] Add subdir support to Documentation
+ makefile
+Message-ID: <20220909214914.hdn4rxsj6b2cy3xj@muellerd-fedora-PC2BDTX9>
+References: <20220829091500.24115-1-donald.hunter@gmail.com>
+ <20220829091500.24115-2-donald.hunter@gmail.com>
+ <3d08894c-b3d1-37e8-664e-48e66dc664ac@iogearbox.net>
+ <m2h71k6bw8.fsf@gmail.com>
+ <CAEf4BzZ_2wCVTjhAe0XzJ5qfbVhV0pfZeJ=z9Jg_fj_fzD1JFw@mail.gmail.com>
+ <m2bkro3lh5.fsf@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <m2bkro3lh5.fsf@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,38 +58,51 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 09/09, Peilin Ye wrote:
-> Hi all,
+On Fri, Sep 09, 2022 at 11:12:22AM +0100, Donald Hunter wrote:
+> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+> 
+> > On Tue, Sep 6, 2022 at 3:50 AM Donald Hunter <donald.hunter@gmail.com> wrote:
+> >>
+> >> Daniel Borkmann <daniel@iogearbox.net> writes:
+> >>
+> >> > On 8/29/22 11:14 AM, Donald Hunter wrote:
+> >> >> Run make in list of subdirs to build generated sources and migrate
+> >> >> userspace-api/media to use this instead of being a special case.
+> >> >> Signed-off-by: Donald Hunter <donald.hunter@gmail.com>
+> >> >
+> >> > Jonathan, given this touches Documentation/Makefile, could you ACK if
+> >> > it looks good to you? Noticed both patches don't have doc: $subj prefix,
+> >> > but that's something we could fix up.
+> >> >
+> >> > Maybe one small request, would be nice to build Documentation/bpf/libbpf/
+> >> > also with every BPF CI run to avoid breakage of program_types.csv. Donald
+> >> > could you check if feasible? Follow-up might be ok too, but up to Andrii.
+> >>
+> >> Sure, I can look at what is needed for the BPF CI run.
+> >>
+> >
+> > Daniel (Mueller, not Borkmann), is this something that can be added to BPF CI?
 
-> On Fri, Sep 09, 2022 at 12:54:06PM -0700, sdf@google.com wrote:
-> > On 09/09, Benjamin Tissoires wrote:
-> > Yeah, good point. I've run the repro. I think the issue is that
-> > syzkaller is able to pass btf with a super long random name which
-> > then hits BPF_VERIFIER_TMP_LOG_SIZE while printing the verifier
-> > log line. Seems like a non-issue to me, but maybe we need to
-> > add some extra validation..
+I think as long as all required packages are available in the CI distribution
+(which I believe is currently a Ubuntu image, but may in the future become Arch
+Linux) it should not be a problem to perform checking in CI. It seems as if
+generating the documentation may take a while, so we should likely try to have
+it run in a separate job. I can't tell what hidden dependencies there may be,
+though.
 
-> In btf_func_proto_check_meta():
+> It looks to me like it can be added to BPF CI if we change docs/conf.py
+> to call a new make target in docs/sphinx/Makefile. Hopefully Daniel can
+> confirm whether this is the case.
 
-> 	if (t->name_off) {
-> 		btf_verifier_log_type(env, t, "Invalid name");
-> 		return -EINVAL;
-> 	}
+I am not familiar with the documentation generation, but my quick search seems
+to suggest that this is done by a 3rd party service and is decoupled from BPF
+CI. Specifically, what you suggest may be reflected in the generated docs at
+https://libbpf.readthedocs.io/, but I believe they are created from the libbpf
+GitHub repository, which is only infrequently synced from bpf tree sources. I
+didn't find any indication that CI triggers documentation creation, but it's
+possible I missed something.
 
-> In the verifier log, maybe we should just say that  
-> BTF_KIND_FUNC_PROTO "must
-> not have a name" [1], instead of printing out the user-provided
-> (potentially very long) name and say it's "Invalid" ?
+[...]
 
-> Similarly, for name-too-long errors, should we truncate the name to
-> KSYM_NAME_LEN bytes (see __btf_name_valid()) in the log ?
-
-Both suggestions sound good to me. Care to cook and send a patch with a
-fix?
-
-> [1] commit 2667a2626f4d ("bpf: btf: Add BTF_KIND_FUNC and  
-> BTF_KIND_FUNC_PROTO")
-
-> Thanks,
-> Peilin Ye
-
+Thanks,
+Daniel
