@@ -2,96 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77B995B37F0
-	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 14:36:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE05C5B37FD
+	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 14:38:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229550AbiIIMfv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Sep 2022 08:35:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57656 "EHLO
+        id S231189AbiIIMiA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Sep 2022 08:38:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229789AbiIIMfo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Sep 2022 08:35:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D865A3B1
-        for <bpf@vger.kernel.org>; Fri,  9 Sep 2022 05:35:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1662726942;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pGqx2u62hLKKX3N8RYLvbvUVmBm3+8IM9BjADWlLTPk=;
-        b=PAT9KSoV1v0cZ612R5k2DRr6Tzad+L+kSgV8+yefcJE2hIAPbK9QcNXgH/Ft9NuFC0zAPP
-        Z/ieWM4PYmSb/6Jhzak5c1gLMLy5zYOIDtR512qN3LzJk/qiiHTGwg9vaRWWweatcjyzzk
-        1hf/JtUJCiq1P3EaWnoERASPvI/qSPE=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-352-V0-fIUY4PZmAR6R2ci3V1A-1; Fri, 09 Sep 2022 08:35:41 -0400
-X-MC-Unique: V0-fIUY4PZmAR6R2ci3V1A-1
-Received: by mail-ej1-f72.google.com with SMTP id xh12-20020a170906da8c00b007413144e87fso940898ejb.14
-        for <bpf@vger.kernel.org>; Fri, 09 Sep 2022 05:35:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:references:to
-         :content-language:subject:cc:user-agent:mime-version:date:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date;
-        bh=pGqx2u62hLKKX3N8RYLvbvUVmBm3+8IM9BjADWlLTPk=;
-        b=gkjYWYy6IbaRbjqt4W+O8J6EjF6z7sRoHdKctJY9h/gVmDYVRVoeKrtgXSLK0yDM9+
-         jEQ42lcgfgf4KNI71v9GdgX6wygB/CRRg6pFrfYTNQkQmcdNHmn7ywqpL7Of4HSRFkLU
-         4MmE20PItJO8em0aA+F1vVd+Hyt2vAK6RcNIPJvLKRAebqAzkUfVDlhim7aFPTVVRIGr
-         q9B0Tml7IhR9PZzJgGqdisbFukxjtaBdGq1TTGDGOG5itYTc3Gyo6V0YiTdZKLPzrO/d
-         HxOroRywAjgkMlBnE40bIgMLO1358+GotCKFvscXTHR4E7Q1s8MTALV8sCM9UPJtTuky
-         PSlw==
-X-Gm-Message-State: ACgBeo0wV4VxFOme61FDEgwG0mKf+9so2jPNErblI/bGUF8jsvZprYrx
-        qVSOBTMscU/EumzXldOeAuGMmNlneEXzB9WpHblE9Umoz/ighCf5vo2fQOx+xC0tvXRQIStZRDM
-        8AX1HNJh0il84
-X-Received: by 2002:a17:906:730d:b0:73d:c8a1:a8ee with SMTP id di13-20020a170906730d00b0073dc8a1a8eemr9657486ejc.661.1662726939925;
-        Fri, 09 Sep 2022 05:35:39 -0700 (PDT)
-X-Google-Smtp-Source: AA6agR7xrdLT+WULchCpcxHkmJP6SFvHuAIXTrdsDzhV2eFGA/BoDIs1Xs3kBZx6e509ipV8zqUVew==
-X-Received: by 2002:a17:906:730d:b0:73d:c8a1:a8ee with SMTP id di13-20020a170906730d00b0073dc8a1a8eemr9657471ejc.661.1662726939652;
-        Fri, 09 Sep 2022 05:35:39 -0700 (PDT)
-Received: from [192.168.41.81] (83-90-141-187-cable.dk.customer.tdc.net. [83.90.141.187])
-        by smtp.gmail.com with ESMTPSA id h22-20020a1709067cd600b0072f112a6ad2sm217729ejp.97.2022.09.09.05.35.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Sep 2022 05:35:39 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <51f40ca1-ccf2-bcc3-d20d-931ad0d22526@redhat.com>
-Date:   Fri, 9 Sep 2022 14:35:37 +0200
+        with ESMTP id S229706AbiIIMh7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Sep 2022 08:37:59 -0400
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C157C36DD8;
+        Fri,  9 Sep 2022 05:37:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1662727078; x=1694263078;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=Mo99IpYm1AvzncHba+O/i3dk/CKKv38nddBho+Fzb6Y=;
+  b=hLdYq4ClIxika3o6y653o4u858fTa8ViclQGvB7MSUhQUjjEwYdQBmic
+   zSojbK4c0fr4/4/BjA/qyLyQfTEDgSt8DeFvGL+zpdocNdVt4ZZY9XdJ+
+   CTMycAjIM0oMmcrGU72Pv+2QsN5KZZB9BZ6JtClifw8kq6LEpBEOQKH1d
+   rn/KuVsdFSflHY47md7rq0skrfAs4NxOqgRmNOA8yKeMT5Qt+sOO2SrA0
+   g0wH+jZpbVeH/NcJpP/doA5mQkqYfJt6MjWEbXDHZzs+Y30Vp0ySV+Eb6
+   tqVGokVuvrX9+uIUyIpa92C3MvaW4vWXkMxFm/ISNx1OQChOVVu7CvP/0
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10464"; a="284482523"
+X-IronPort-AV: E=Sophos;i="5.93,303,1654585200"; 
+   d="scan'208";a="284482523"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Sep 2022 05:37:58 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,303,1654585200"; 
+   d="scan'208";a="683625990"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga004.fm.intel.com with ESMTP; 09 Sep 2022 05:37:57 -0700
+Received: from [10.252.209.107] (kliang2-mobl1.ccr.corp.intel.com [10.252.209.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id CA530580692;
+        Fri,  9 Sep 2022 05:37:54 -0700 (PDT)
+Message-ID: <842164ce-b754-b727-c976-39d05c34ddf3@linux.intel.com>
+Date:   Fri, 9 Sep 2022 08:37:53 -0400
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
  Thunderbird/102.2.1
-Cc:     brouer@redhat.com, Maryam Tahhan <mtahhan@redhat.com>,
-        bpf@vger.kernel.org, netdev@vger.kernel.org,
-        xdp-hints@xdp-project.net, larysa.zaremba@intel.com,
-        memxor@gmail.com, Lorenzo Bianconi <lorenzo@kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        dave@dtucker.co.uk, Magnus Karlsson <magnus.karlsson@intel.com>,
-        bjorn@kernel.org, Alexander Lobakin <alexandr.lobakin@intel.com>
-Subject: Re: [xdp-hints] Re: [PATCH RFCv2 bpf-next 17/18] xsk: AF_XDP
- xdp-hints support in desc options
+Subject: Re: [PATCH 1/3] perf: Use sample_flags for callchain
+To:     Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Stanislav Fomichev <sdf@google.com>, bpf@vger.kernel.org,
+        Ravi Bangoria <ravi.bangoria@amd.com>
+References: <20220908214104.3851807-1-namhyung@kernel.org>
 Content-Language: en-US
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Jesper Dangaard Brouer <jbrouer@redhat.com>
-References: <166256538687.1434226.15760041133601409770.stgit@firesoul>
- <166256558657.1434226.7390735974413846384.stgit@firesoul>
- <CAJ8uoz3UcC2tnMtG8W6a3HpCKgaYSzSCqowLFQVwCcsr+NKBOQ@mail.gmail.com>
- <b5f0d10d-2d4e-34d6-1e45-c206cb6f5d26@redhat.com>
- <9aab9ef1-446d-57ab-5789-afffe27801f4@redhat.com>
- <CAJ8uoz0CD18RUYU4SMsubB8fhv3uOwp6wi_uKsZSu_aOV5piaA@mail.gmail.com>
- <e1ab2141-03cc-f97c-3788-59923a029203@redhat.com>
- <593cc1df-8b65-ae9e-37eb-091b19c4d00e@redhat.com>
- <CAJ8uoz1omnp888MoZT4AgiPVWo=Ef5nkQApzz7fqnqdcGgR6NA@mail.gmail.com>
-In-Reply-To: <CAJ8uoz1omnp888MoZT4AgiPVWo=Ef5nkQApzz7fqnqdcGgR6NA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <20220908214104.3851807-1-namhyung@kernel.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-6.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -100,108 +83,80 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 09/09/2022 12.14, Magnus Karlsson wrote:
-> On Fri, Sep 9, 2022 at 11:42 AM Jesper Dangaard Brouer
-> <jbrouer@redhat.com> wrote:
->>
->>
->> On 09/09/2022 10.12, Maryam Tahhan wrote:
->>> <snip>
->>>>>>>
->>>>>>> * Instead encode this information into each metadata entry in the
->>>>>>> metadata area, in some way so that a flags field is not needed (-1
->>>>>>> signifies not valid, or whatever happens to make sense). This has the
->>>>>>> drawback that the user might have to look at a large number of entries
->>>>>>> just to find out there is nothing valid to read. To alleviate this, it
->>>>>>> could be combined with the next suggestion.
->>>>>>>
->>>>>>> * Dedicate one bit in the options field to indicate that there is at
->>>>>>> least one valid metadata entry in the metadata area. This could be
->>>>>>> combined with the two approaches above. However, depending on what
->>>>>>> metadata you have enabled, this bit might be pointless. If some
->>>>>>> metadata is always valid, then it serves no purpose. But it might if
->>>>>>> all enabled metadata is rarely valid, e.g., if you get an Rx timestamp
->>>>>>> on one packet out of one thousand.
->>>>>>>
->>>>>
->>>>> I like this option better! Except that I have hoped to get 2 bits ;-)
->>>>
->>>> I will give you two if you need it Jesper, no problem :-).
->>>>
->>>
->>> Ok I will look at implementing and testing this and post an update.
->>
->> Perfect if you Maryam have cycles to work on this.
->>
->> Let me explain what I wanted the 2nd bit for.  I simply wanted to also
->> transfer the XDP_FLAGS_HINTS_COMPAT_COMMON flag.  One could argue that
->> is it redundant information as userspace AF_XDP will have to BTF decode
->> all the know XDP-hints. Thus, it could know if a BTF type ID is
->> compatible with the common struct.   This problem is performance as my
->> userspace AF_XDP code will have to do more code (switch/jump-table or
->> table lookup) to map IDs to common compat (to e.g. extract the RX-csum
->> indication).  Getting this extra "common-compat" bit is actually a
->> micro-optimization.  It is up to AF_XDP maintainers if they can spare
->> this bit.
->>
->>
->>> Thanks folks
->>>
->>>>> The performance advantage is that the AF_XDP descriptor bits will
->>>>> already be cache-hot, and if it indicates no-metadata-hints the AF_XDP
->>>>> application can avoid reading the metadata cache-line :-).
->>>>
->>>> Agreed. I prefer if we can keep it simple and fast like this.
->>>>
->>
->> Great, lets proceed this way then.
->>
->>> <snip>
->>>
->>
->> Thinking ahead: We will likely need 3 bits.
->>
->> The idea is that for TX-side, we set a bit indicating that AF_XDP have
->> provided a valid XDP-hints layout (incl corresponding BTF ID). (I would
->> overload and reuse "common-compat" bit if TX gets a common struct).
+On 2022-09-08 5:41 p.m., Namhyung Kim wrote:
+> So that it can call perf_callchain() only if needed.  Historically it used
+> __PERF_SAMPLE_CALLCHAIN_EARLY but we can do that with sample_flags in the
+> struct perf_sample_data.
 > 
-> I think we should reuse the "Rx metadata valid" flag for this since
-> this will not be used in the Tx case by definition. In the Tx case,
-> this bit would instead mean that the user has provided a valid
-> XDP-hints layout. It has a nice symmetry, on Rx it is set by the
-> kernel when it has put something relevant in the metadata area. On Tx,
-> it is set by user-space if it has put something relevant in the
-> metadata area. 
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 
-I generally like reusing the bit, *BUT* there is the problem of 
-(existing) applications ignoring the desc-options bit and forwarding 
-packets.  This would cause the "Rx metadata valid" flag to be seen as 
-userspace having set the "TX-hints-bit" and kernel would use what is 
-provided in metadata area (leftovers from RX-hints).  IMHO that will be 
-hard to debug for end-users and likely break existing applications.
+The series look good to me.
 
-> We can also reuse this bit when we get a notification
-> in the completion queue to indicate if the kernel has produced some
-> metadata on tx completions. This could be a Tx timestamp for example.
+Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+
+Thanks,
+Kan
+
+> ---
+>  arch/x86/events/amd/ibs.c  | 4 +++-
+>  arch/x86/events/intel/ds.c | 8 ++++++--
+>  kernel/events/core.c       | 2 +-
+>  3 files changed, 10 insertions(+), 4 deletions(-)
 > 
-
-Big YES, reuse "Rx metadata valid" bit when we get a TX notification in 
-completion queue.  This will be okay because it cannot be forgotten and 
-misinterpreted as the kernel will have responsibility to update this bit.
-
-> So hopefully we could live with only two bits :-).
-> 
-
-I still think we need three bits ;-)
-That should be enough to cover the 6 states:
-  - RX hints
-  - RX hints and compat
-  - TX hints
-  - TX hints and compat
-  - TX completion
-  - TX completion and compat
-
-
->> But lets land RX-side first, but make sure we can easily extend for the
->> TX-side.
-
+> diff --git a/arch/x86/events/amd/ibs.c b/arch/x86/events/amd/ibs.c
+> index c251bc44c088..dab094166693 100644
+> --- a/arch/x86/events/amd/ibs.c
+> +++ b/arch/x86/events/amd/ibs.c
+> @@ -798,8 +798,10 @@ static int perf_ibs_handle_irq(struct perf_ibs *perf_ibs, struct pt_regs *iregs)
+>  	 * recorded as part of interrupt regs. Thus we need to use rip from
+>  	 * interrupt regs while unwinding call stack.
+>  	 */
+> -	if (event->attr.sample_type & PERF_SAMPLE_CALLCHAIN)
+> +	if (event->attr.sample_type & PERF_SAMPLE_CALLCHAIN) {
+>  		data.callchain = perf_callchain(event, iregs);
+> +		data.sample_flags |= PERF_SAMPLE_CALLCHAIN;
+> +	}
+>  
+>  	throttle = perf_event_overflow(event, &data, &regs);
+>  out:
+> diff --git a/arch/x86/events/intel/ds.c b/arch/x86/events/intel/ds.c
+> index a5275c235c2a..4ba6ab6d0d92 100644
+> --- a/arch/x86/events/intel/ds.c
+> +++ b/arch/x86/events/intel/ds.c
+> @@ -1546,8 +1546,10 @@ static void setup_pebs_fixed_sample_data(struct perf_event *event,
+>  	 * previous PMI context or an (I)RET happened between the record and
+>  	 * PMI.
+>  	 */
+> -	if (sample_type & PERF_SAMPLE_CALLCHAIN)
+> +	if (sample_type & PERF_SAMPLE_CALLCHAIN) {
+>  		data->callchain = perf_callchain(event, iregs);
+> +		data->sample_flags |= PERF_SAMPLE_CALLCHAIN;
+> +	}
+>  
+>  	/*
+>  	 * We use the interrupt regs as a base because the PEBS record does not
+> @@ -1719,8 +1721,10 @@ static void setup_pebs_adaptive_sample_data(struct perf_event *event,
+>  	 * previous PMI context or an (I)RET happened between the record and
+>  	 * PMI.
+>  	 */
+> -	if (sample_type & PERF_SAMPLE_CALLCHAIN)
+> +	if (sample_type & PERF_SAMPLE_CALLCHAIN) {
+>  		data->callchain = perf_callchain(event, iregs);
+> +		data->sample_flags |= PERF_SAMPLE_CALLCHAIN;
+> +	}
+>  
+>  	*regs = *iregs;
+>  	/* The ip in basic is EventingIP */
+> diff --git a/kernel/events/core.c b/kernel/events/core.c
+> index 15d27b14c827..b8af9fdbf26f 100644
+> --- a/kernel/events/core.c
+> +++ b/kernel/events/core.c
+> @@ -7323,7 +7323,7 @@ void perf_prepare_sample(struct perf_event_header *header,
+>  	if (sample_type & PERF_SAMPLE_CALLCHAIN) {
+>  		int size = 1;
+>  
+> -		if (!(sample_type & __PERF_SAMPLE_CALLCHAIN_EARLY))
+> +		if (filtered_sample_type & PERF_SAMPLE_CALLCHAIN)
+>  			data->callchain = perf_callchain(event, regs);
+>  
+>  		size += data->callchain->nr;
