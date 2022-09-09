@@ -2,35 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DAB55B34E4
-	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 12:14:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB1545B34ED
+	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 12:14:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229716AbiIIKNF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Sep 2022 06:13:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35574 "EHLO
+        id S229544AbiIIKNQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Sep 2022 06:13:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbiIIKNE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Sep 2022 06:13:04 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD97174BA8
-        for <bpf@vger.kernel.org>; Fri,  9 Sep 2022 03:13:03 -0700 (PDT)
+        with ESMTP id S229596AbiIIKNP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Sep 2022 06:13:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC4D674BA8
+        for <bpf@vger.kernel.org>; Fri,  9 Sep 2022 03:13:14 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 59D6C61F73
-        for <bpf@vger.kernel.org>; Fri,  9 Sep 2022 10:13:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5FDFC433D6;
-        Fri,  9 Sep 2022 10:12:58 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 77A7F61F81
+        for <bpf@vger.kernel.org>; Fri,  9 Sep 2022 10:13:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 469EFC433C1;
+        Fri,  9 Sep 2022 10:13:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662718382;
-        bh=oomoVeYl/NS7dXqwjk2EddpsaQRK5EqdKhgqMxNE9lk=;
+        s=k20201202; t=1662718393;
+        bh=2WnKXTXVQn0092eVlGqi0BKS7kLkBS0mXywwvISTgBY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o2nPYDyWrcIYONUdnuK8yNqZWPFTAUxfBHrNO9ynJyX2U8qKwK/5nIANpB17CF194
-         Mo80d6yOuYEcyuxfeCZ6ywhdY+T8bcUGHpNYGIk50pauYDAizqc/wynaX1ryySeQi/
-         ocwXWM7OiASe7R1WaE0yGna02sE48GNoRMN3Swzua5ZGTYENO5Z4OAO/XuNDUIjd8A
-         MelZI4Did8EzwGhVxAex7z50MlK5VabeT+4svt/GN234/s/7DIKcZ+7NJVqyQUgwSd
-         YMv2JB/YVPqY1nvu3xBI/GPDtLfXOeRRS7VYqeFiFZFHLDL8+ug6EXJy7OvwIfgnAW
-         ATniyzAVCPlEQ==
+        b=aaQaCwJ/Lq9rDSYDA+3yjoNwPOnoSgf7X0jNUNwsqvg68TnK9tTPGIBw7aBcSRINt
+         FQzndu4mbYZQQuvHU4BEArdWVbzDqemY2W3h0oZQ52VRdnffMvX9/8ZRSPJg6e3EFM
+         yt02kajK/k8GDRGmJQmsgngQNqwk1tHVIEZE00YbTtU67bQYiUJLhablkrgC4W7Lb6
+         asQmqZ9dZlucZ+W7whwEw9xBpoaW0jbIFFxdxG+dHcNl0uUlh7lilDMUbg1X02wLEq
+         uY9XQHu4Yf7q254YgeOha/ZlA2RNsZUKH08wBFpwcLZyRQL4yR2lq1KhlD+Ck0H8DF
+         1gafEFHFEXeXA==
 From:   Jiri Olsa <jolsa@kernel.org>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -44,9 +44,9 @@ Cc:     Masami Hiramatsu <mhiramat@kernel.org>, bpf@vger.kernel.org,
         Hao Luo <haoluo@google.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Martynas Pumputis <m@lambda.lt>
-Subject: [PATCHv3 bpf-next 1/6] kprobes: Add new KPROBE_FLAG_ON_FUNC_ENTRY kprobe flag
-Date:   Fri,  9 Sep 2022 12:12:40 +0200
-Message-Id: <20220909101245.347173-2-jolsa@kernel.org>
+Subject: [PATCHv3 bpf-next 2/6] ftrace: Keep the resolved addr in kallsyms_callback
+Date:   Fri,  9 Sep 2022 12:12:41 +0200
+Message-Id: <20220909101245.347173-3-jolsa@kernel.org>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <20220909101245.347173-1-jolsa@kernel.org>
 References: <20220909101245.347173-1-jolsa@kernel.org>
@@ -62,55 +62,56 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Adding KPROBE_FLAG_ON_FUNC_ENTRY kprobe flag to indicate that
-attach address is on function entry. This is used in following
-changes in get_func_ip helper to return correct function address.
+Keeping the resolved 'addr' in kallsyms_callback, instead of taking
+ftrace_location value, because we depend on symbol address in the
+cookie related code.
 
-Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+With CONFIG_X86_KERNEL_IBT option the ftrace_location value differs
+from symbol address, which screwes the symbol address cookies matching.
+
+There are 2 users of this function:
+- bpf_kprobe_multi_link_attach
+    for which this fix is for
+
+- get_ftrace_locations
+    which is used by register_fprobe_syms
+
+    this function needs to get symbols resolved to addresses,
+    but does not need 'ftrace location addresses' at this point
+    there's another ftrace location translation in the path done
+    by ftrace_set_filter_ips call:
+
+     register_fprobe_syms
+       addrs = get_ftrace_locations
+
+       register_fprobe_ips(addrs)
+         ...
+         ftrace_set_filter_ips
+           ...
+             __ftrace_match_addr
+               ip = ftrace_location(ip);
+               ...
+
+Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- include/linux/kprobes.h | 1 +
- kernel/kprobes.c        | 6 +++++-
- 2 files changed, 6 insertions(+), 1 deletion(-)
+ kernel/trace/ftrace.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
-index 55041d2f884d..a0b92be98984 100644
---- a/include/linux/kprobes.h
-+++ b/include/linux/kprobes.h
-@@ -103,6 +103,7 @@ struct kprobe {
- 				   * this flag is only for optimized_kprobe.
- 				   */
- #define KPROBE_FLAG_FTRACE	8 /* probe is using ftrace */
-+#define KPROBE_FLAG_ON_FUNC_ENTRY	16 /* probe is on the function entry */
+diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+index 439e2ab6905e..447d2e2a8549 100644
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -8265,8 +8265,7 @@ static int kallsyms_callback(void *data, const char *name,
+ 	if (args->addrs[idx])
+ 		return 0;
  
- /* Has this kprobe gone ? */
- static inline bool kprobe_gone(struct kprobe *p)
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index 08350e35aba2..51adc3c94503 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -1606,9 +1606,10 @@ int register_kprobe(struct kprobe *p)
- 	struct kprobe *old_p;
- 	struct module *probed_mod;
- 	kprobe_opcode_t *addr;
-+	bool on_func_entry;
+-	addr = ftrace_location(addr);
+-	if (!addr)
++	if (!ftrace_location(addr))
+ 		return 0;
  
- 	/* Adjust probe address from symbol */
--	addr = kprobe_addr(p);
-+	addr = _kprobe_addr(p->addr, p->symbol_name, p->offset, &on_func_entry);
- 	if (IS_ERR(addr))
- 		return PTR_ERR(addr);
- 	p->addr = addr;
-@@ -1628,6 +1629,9 @@ int register_kprobe(struct kprobe *p)
- 
- 	mutex_lock(&kprobe_mutex);
- 
-+	if (on_func_entry)
-+		p->flags |= KPROBE_FLAG_ON_FUNC_ENTRY;
-+
- 	old_p = get_kprobe(p->addr);
- 	if (old_p) {
- 		/* Since this may unoptimize 'old_p', locking 'text_mutex'. */
+ 	args->addrs[idx] = addr;
 -- 
 2.37.3
 
