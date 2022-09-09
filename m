@@ -2,57 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFA435B3600
-	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 13:05:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E73C5B363C
+	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 13:21:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229628AbiIILFW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Sep 2022 07:05:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32776 "EHLO
+        id S229490AbiIILVW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Sep 2022 07:21:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbiIILFV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Sep 2022 07:05:21 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 037F241D3E;
-        Fri,  9 Sep 2022 04:05:19 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8238261CBE;
-        Fri,  9 Sep 2022 11:05:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF05BC433C1;
-        Fri,  9 Sep 2022 11:05:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662721518;
-        bh=oG8hSgIGfbe54NnptnsKy7utblT30bTgUXBgdYfTVVY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=lreBTcqC42PJjKaWOHUmgwFsELIOQMW0Ocfscm/65Iz1U+FGM84VHa1jfMFrwzeU9
-         qYuDOvfzfI3ufgWrXn6sCy+6jrcvZ2pjkz1iwvgS1drjGCGcZcD84kM6r0ziK19jh7
-         jk3UzvrNGgEfwIAFQ+Ro0chCHNBp5kSF4UQW01wFAdgab08p1Ez0cbPpTJzbNuD18S
-         dgtaPnCimww3jydVUlmNeM9+DPXQ185T6PDt8EPobJGnrvY2SwE3FPQ29d30ZdtFji
-         mMU5jn6qK2k5vhFqHsA15SMUqUNWWARNhJYGf0QYuJMlXMZNuBs7O9o4rP0Pz9cfaY
-         8MDvOqpyEUc8g==
-Date:   Fri, 9 Sep 2022 20:05:14 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Jianlin Lv <iecedge@gmail.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>, corbet@lwn.net,
-        mingo@redhat.com, jianlv@ebay.com, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, Tom Zanussi <zanussi@kernel.org>,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH v2] tracing/kprobes: Add method to display private
- kprobes in tracefs
-Message-Id: <20220909200514.31bd313c8a6fbd0b5150c2d1@kernel.org>
-In-Reply-To: <CAFA-uR_u8Hvh1-pF_hxmsfMcZSoRvpKM-9P+24FY=74EoM_EUg@mail.gmail.com>
-References: <20220725062334.1778-1-iecedge@gmail.com>
-        <20220906111214.0dd113cd@gandalf.local.home>
-        <20220907175136.96b05b241e650de21eb661e6@kernel.org>
-        <CAFA-uR_u8Hvh1-pF_hxmsfMcZSoRvpKM-9P+24FY=74EoM_EUg@mail.gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-9.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        with ESMTP id S229687AbiIILVS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Sep 2022 07:21:18 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C40001269D6
+        for <bpf@vger.kernel.org>; Fri,  9 Sep 2022 04:21:17 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id n81so692911iod.6
+        for <bpf@vger.kernel.org>; Fri, 09 Sep 2022 04:21:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=pMJtpD8lzjZlebUzb4hjthDap7S/m6yp2XaBqfiOfk0=;
+        b=kPpdyOWrSWFUoi+9KAj8L32FfyYb44F3ML0qpjw+sYVPjQNsl0DFayannUmpvL1NiX
+         AuQ4aygA2gCDdvj0OQXqGUDezHS/VMgcaMdiBmcMgeP2Oa77eJNt/7RnrrNUAY6IrtdO
+         qhEW5eYLDFWgdVL8WS0ZWRsO1BHTkI7RnisvfdTLk4VpiJLJVFQlN0ns2ytiUui6gCTP
+         ItqVpGbbXYFEviZrilhSz1fZO48k4f/zqqkWSsuse9WeSU33Io/F6CSpvPhJWH1G2zFB
+         yHTrQfoOQJOmL1AsDuEJwbO2j0LPZkgmI6w2s/5eNgD76TUZYAIy89XqAtpyosJsQZuv
+         rHIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=pMJtpD8lzjZlebUzb4hjthDap7S/m6yp2XaBqfiOfk0=;
+        b=FbSqB2SJVSHokmNGbSvNlrgBre8a9dhBh0mmuMWwSkYb93bBr7qBvzt0YQ/KnMGbhI
+         CHxZXFtsbuWkEQ1sdv9RO/TkseTuB6YJxqKWDdsfo8dhVHWP2AuemW8Dn+hrmqk3VCh+
+         GQGqE8k8pus9QwELOQtvzPg+7eCVWejUuu5rl8NuMbCrr+w0S57yr1MABpifVHEltFiq
+         qP3VxpYwIPjBZlRAhoosLhaX6/DTW/0MUX+hgH34x41B4XnrTuqxPb9ZDbf1m1SNcv9Z
+         BzdlREoPzfmo9CcnV9sBVhVLwA+yjiRFxomQ6GOa1BUEahzLB1WOWw0mIs+HIEXEZ+an
+         l3RQ==
+X-Gm-Message-State: ACgBeo3AOEUEBqJqfbF7hGTfWtSoZfmaPR6fn2nNcedmLPwMgtZnnowz
+        BtWzqSbJ1xeLqledWLYW5zr7TLBg7Abv7i5DieahO8dP
+X-Google-Smtp-Source: AA6agR4NRt2H2AxAlCacOfajhb9iIUhfgSOCljdYAN5wCBHkIA2Z0BWsQ1q4uY7rGP9j/pe9m4yzbzD00jOKe1ZuJKg=
+X-Received: by 2002:a05:6602:2d8b:b0:688:ece0:e1da with SMTP id
+ k11-20020a0566022d8b00b00688ece0e1damr6180322iow.18.1662722477099; Fri, 09
+ Sep 2022 04:21:17 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220904204145.3089-1-memxor@gmail.com> <20220904204145.3089-19-memxor@gmail.com>
+ <20220908003557.uqiiwfjmjoq2sp3j@macbook-pro-4.dhcp.thefacebook.com> <247e2959-410f-f494-1083-f53224fb6f7a@fb.com>
+In-Reply-To: <247e2959-410f-f494-1083-f53224fb6f7a@fb.com>
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date:   Fri, 9 Sep 2022 13:20:41 +0200
+Message-ID: <CAP01T77RdV-yP4RBy2G1R1SDfuwhLPOBi9mdAwnB7q_B8ovPtA@mail.gmail.com>
+Subject: Re: [PATCH RFC bpf-next v1 18/32] bpf: Support bpf_spin_lock in local kptrs
+To:     Dave Marchevsky <davemarchevsky@fb.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Delyan Kratunov <delyank@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,256 +69,37 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 9 Sep 2022 09:26:23 +0800
-Jianlin Lv <iecedge@gmail.com> wrote:
+On Fri, 9 Sept 2022 at 10:25, Dave Marchevsky <davemarchevsky@fb.com> wrote:
+>
+> On 9/7/22 8:35 PM, Alexei Starovoitov wrote:
+> > On Sun, Sep 04, 2022 at 10:41:31PM +0200, Kumar Kartikeya Dwivedi wrote:
+> >> diff --git a/include/linux/poison.h b/include/linux/poison.h
+> >> index d62ef5a6b4e9..753e00b81acf 100644
+> >> --- a/include/linux/poison.h
+> >> +++ b/include/linux/poison.h
+> >> @@ -81,4 +81,7 @@
+> >>  /********** net/core/page_pool.c **********/
+> >>  #define PP_SIGNATURE                (0x40 + POISON_POINTER_DELTA)
+> >>
+> >> +/********** kernel/bpf/helpers.c **********/
+> >> +#define BPF_PTR_POISON              ((void *)((0xeB9FUL << 2) + POISON_POINTER_DELTA))
+> >> +
+> >
+> > That was part of Dave's patch set as well.
+> > Please keep his SOB and authorship and keep it as separate patch.
+>
+> My patch picked a different constant :). But on that note, it also added some
+> checking in verifier.c so that verification fails if any arg or retval type
+> was BPF_PTR_POISON after it should've been replaced. Perhaps it's worth shipping
+> that patch ("bpf: Add verifier check for BPF_PTR_POISON retval and arg")
+> separately? Would allow both rbtree series and this lock-focused patch to drop
+> BPF_PTR_POISON changes after rebase.
 
-> On Wed, Sep 7, 2022 at 4:51 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> >
-> > [Adding bpf ML]
-> >
-> > On Tue, 6 Sep 2022 11:12:14 -0400
-> > Steven Rostedt <rostedt@goodmis.org> wrote:
-> >
-> > >
-> > > [ Adding Masami and Tom ]
-> > >
-> > > On Mon, 25 Jul 2022 06:23:34 +0000
-> > > Jianlin Lv <iecedge@gmail.com> wrote:
-> > >
-> > > > The private kprobes are not added to the global list dyn_event_list,
-> > > > so there is a missing interface to show probe hit and probe miss.
-> > > > This patch adds a profiling interface to check the number of hits or
-> > > > misses for private kprobes.
-> > >
-> > > Masami, what do you think of this patch?
-> >
-> > I discussed it with BPF people when it was introduced and they didn't
-> > want to show up it on tracefs because it is a private one. I agreed that.
-> >
-> > So I think this kind of interface must be managed by BPF subsystem.
-> > Is there any API to manage the BPF probe points in BPF subsystem?
-> >
-> > Thank you,
-> 
-> As far as I know, there is no API to manage private kprobes in the BPF
-> subsystem, so I added a tracefs interface to display private info.
-> 
-> Could you give me some hints about how to implement the current
-> functionality in the BPF subsystem?
+Yeah, feel free to post it separately. I'm using the constant in this
+patch for a different purpose (I separate the BPF_PTR_POISON case into
+its own different argument type, and then check that it is always set
+for it in check_btf_id_ok, to ensure DYN_BTF_ID is not setting some
+static real BTF ID).
 
-There is tools/bpf/bpftool, I think that is the best tool to implement
-such feature. If hitcount is shown with the BPF program, it should be
-more useful.
-
-Thank you,
-
-> 
-> Regards,
-> Jianlin
-> 
-> >
-> > >
-> > > -- Steve
-> > >
-> > > >
-> > > > Signed-off-by: Jianlin Lv <iecedge@gmail.com>
-> > > > ---
-> > > > v2: update commit message
-> > > > ---
-> > > >  Documentation/trace/kprobetrace.rst |  6 +++-
-> > > >  kernel/trace/trace_dynevent.c       | 20 +++++++++++
-> > > >  kernel/trace/trace_dynevent.h       | 37 ++++++++++++++++++++
-> > > >  kernel/trace/trace_kprobe.c         | 54 +++++++++++++++++++++++++++++
-> > > >  4 files changed, 116 insertions(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/Documentation/trace/kprobetrace.rst b/Documentation/trace/kprobetrace.rst
-> > > > index b175d88f31eb..8815d64dd8a6 100644
-> > > > --- a/Documentation/trace/kprobetrace.rst
-> > > > +++ b/Documentation/trace/kprobetrace.rst
-> > > > @@ -146,7 +146,11 @@ trigger:
-> > > >  Event Profiling
-> > > >  ---------------
-> > > >  You can check the total number of probe hits and probe miss-hits via
-> > > > -/sys/kernel/debug/tracing/kprobe_profile.
-> > > > +/sys/kernel/debug/tracing/kprobe_profile or
-> > > > +/sys/kernel/debug/tracing/kprobe_local_profile.
-> > > > +All kprobe events created by kprobe_events will be added to the global
-> > > > +list, you can get their profiling via kprobe_profile; kprobe_local_profile
-> > > > +shows profiling for private kprobe events created by perf_kprobe pmu.
-> > > >  The first column is event name, the second is the number of probe hits,
-> > > >  the third is the number of probe miss-hits.
-> > > >
-> > > > diff --git a/kernel/trace/trace_dynevent.c b/kernel/trace/trace_dynevent.c
-> > > > index 076b447a1b88..70ec99cd9c53 100644
-> > > > --- a/kernel/trace/trace_dynevent.c
-> > > > +++ b/kernel/trace/trace_dynevent.c
-> > > > @@ -181,6 +181,26 @@ static const struct seq_operations dyn_event_seq_op = {
-> > > >     .show   = dyn_event_seq_show
-> > > >  };
-> > > >
-> > > > +#ifdef CONFIG_KPROBE_EVENTS
-> > > > +LIST_HEAD(local_event_list);
-> > > > +
-> > > > +void *local_event_seq_start(struct seq_file *m, loff_t *pos)
-> > > > +{
-> > > > +   mutex_lock(&event_mutex);
-> > > > +   return seq_list_start(&local_event_list, *pos);
-> > > > +}
-> > > > +
-> > > > +void *local_event_seq_next(struct seq_file *m, void *v, loff_t *pos)
-> > > > +{
-> > > > +   return seq_list_next(v, &local_event_list, pos);
-> > > > +}
-> > > > +
-> > > > +void local_event_seq_stop(struct seq_file *m, void *v)
-> > > > +{
-> > > > +   mutex_unlock(&event_mutex);
-> > > > +}
-> > > > +#endif /* CONFIG_KPROBE_EVENTS */
-> > > > +
-> > > >  /*
-> > > >   * dyn_events_release_all - Release all specific events
-> > > >   * @type:  the dyn_event_operations * which filters releasing events
-> > > > diff --git a/kernel/trace/trace_dynevent.h b/kernel/trace/trace_dynevent.h
-> > > > index 936477a111d3..e30193470295 100644
-> > > > --- a/kernel/trace/trace_dynevent.h
-> > > > +++ b/kernel/trace/trace_dynevent.h
-> > > > @@ -101,6 +101,43 @@ void dyn_event_seq_stop(struct seq_file *m, void *v);
-> > > >  int dyn_events_release_all(struct dyn_event_operations *type);
-> > > >  int dyn_event_release(const char *raw_command, struct dyn_event_operations *type);
-> > > >
-> > > > +#ifdef CONFIG_KPROBE_EVENTS
-> > > > +extern struct list_head local_event_list;
-> > > > +
-> > > > +static inline
-> > > > +int local_event_init(struct dyn_event *ev, struct dyn_event_operations *ops)
-> > > > +{
-> > > > +   if (!ev || !ops)
-> > > > +           return -EINVAL;
-> > > > +
-> > > > +   INIT_LIST_HEAD(&ev->list);
-> > > > +   ev->ops = ops;
-> > > > +   return 0;
-> > > > +}
-> > > > +
-> > > > +static inline int local_event_add(struct dyn_event *ev)
-> > > > +{
-> > > > +   lockdep_assert_held(&event_mutex);
-> > > > +
-> > > > +   if (!ev || !ev->ops)
-> > > > +           return -EINVAL;
-> > > > +
-> > > > +   list_add_tail(&ev->list, &local_event_list);
-> > > > +   return 0;
-> > > > +}
-> > > > +
-> > > > +static inline void local_event_remove(struct dyn_event *ev)
-> > > > +{
-> > > > +   lockdep_assert_held(&event_mutex);
-> > > > +   list_del_init(&ev->list);
-> > > > +}
-> > > > +
-> > > > +void *local_event_seq_start(struct seq_file *m, loff_t *pos);
-> > > > +void *local_event_seq_next(struct seq_file *m, void *v, loff_t *pos);
-> > > > +void local_event_seq_stop(struct seq_file *m, void *v);
-> > > > +
-> > > > +#endif /* CONFIG_KPROBE_EVENTS */
-> > > > +
-> > > >  /*
-> > > >   * for_each_dyn_event      -       iterate over the dyn_event list
-> > > >   * @pos:   the struct dyn_event * to use as a loop cursor
-> > > > diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-> > > > index a245ea673715..76f500b17b46 100644
-> > > > --- a/kernel/trace/trace_kprobe.c
-> > > > +++ b/kernel/trace/trace_kprobe.c
-> > > > @@ -1213,6 +1213,52 @@ static const struct file_operations kprobe_profile_ops = {
-> > > >     .release        = seq_release,
-> > > >  };
-> > > >
-> > > > +#ifdef CONFIG_KPROBE_EVENTS
-> > > > +/* kprobe Local profile  */
-> > > > +static int local_probes_profile_seq_show(struct seq_file *m, void *v)
-> > > > +{
-> > > > +   struct dyn_event *ev = v;
-> > > > +   struct trace_kprobe *tk;
-> > > > +
-> > > > +   if (!is_trace_kprobe(ev))
-> > > > +           return 0;
-> > > > +
-> > > > +   tk = to_trace_kprobe(ev);
-> > > > +   seq_printf(m, "  %-44s %15lu %15lu\n",
-> > > > +           trace_probe_name(&tk->tp),
-> > > > +           trace_kprobe_nhit(tk),
-> > > > +           tk->rp.kp.nmissed);
-> > > > +
-> > > > +   return 0;
-> > > > +}
-> > > > +
-> > > > +static const struct seq_operations local_profile_seq_op = {
-> > > > +   .start  = local_event_seq_start,
-> > > > +   .next   = local_event_seq_next,
-> > > > +   .stop   = local_event_seq_stop,
-> > > > +   .show   = local_probes_profile_seq_show
-> > > > +};
-> > > > +
-> > > > +static int local_profile_open(struct inode *inode, struct file *file)
-> > > > +{
-> > > > +   int ret;
-> > > > +
-> > > > +   ret = security_locked_down(LOCKDOWN_TRACEFS);
-> > > > +   if (ret)
-> > > > +           return ret;
-> > > > +
-> > > > +   return seq_open(file, &local_profile_seq_op);
-> > > > +}
-> > > > +
-> > > > +static const struct file_operations kprobe_local_profile_ops = {
-> > > > +   .owner          = THIS_MODULE,
-> > > > +   .open           = local_profile_open,
-> > > > +   .read           = seq_read,
-> > > > +   .llseek         = seq_lseek,
-> > > > +   .release        = seq_release,
-> > > > +};
-> > > > +#endif /* CONFIG_KPROBE_EVENTS */
-> > > > +
-> > > >  /* Kprobe specific fetch functions */
-> > > >
-> > > >  /* Return the length of string -- including null terminal byte */
-> > > > @@ -1830,6 +1876,7 @@ create_local_trace_kprobe(char *func, void *addr, unsigned long offs,
-> > > >     if (ret < 0)
-> > > >             goto error;
-> > > >
-> > > > +   local_event_add(&tk->devent);
-> > > >     return trace_probe_event_call(&tk->tp);
-> > > >  error:
-> > > >     free_trace_kprobe(tk);
-> > > > @@ -1849,6 +1896,7 @@ void destroy_local_trace_kprobe(struct trace_event_call *event_call)
-> > > >             return;
-> > > >     }
-> > > >
-> > > > +   local_event_remove(&tk->devent);
-> > > >     __unregister_trace_kprobe(tk);
-> > > >
-> > > >     free_trace_kprobe(tk);
-> > > > @@ -1929,6 +1977,12 @@ static __init int init_kprobe_trace(void)
-> > > >     trace_create_file("kprobe_profile", TRACE_MODE_READ,
-> > > >                       NULL, NULL, &kprobe_profile_ops);
-> > > >
-> > > > +#ifdef CONFIG_KPROBE_EVENTS
-> > > > +   /* kprobe Local profile */
-> > > > +   tracefs_create_file("kprobe_local_profile", TRACE_MODE_READ,
-> > > > +                     NULL, NULL, &kprobe_local_profile_ops);
-> > > > +#endif /* CONFIG_KPROBE_EVENTS */
-> > > > +
-> > > >     setup_boot_kprobe_events();
-> > > >
-> > > >     return 0;
-> > >
-> >
-> >
-> > --
-> > Masami Hiramatsu (Google) <mhiramat@kernel.org>
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+But why change the constant, eB9F looks very close to eBPF already :).
+UL is just for unsigned long.
