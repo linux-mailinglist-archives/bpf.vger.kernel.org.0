@@ -2,57 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C9355B4320
-	for <lists+bpf@lfdr.de>; Sat, 10 Sep 2022 01:42:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5976B5B4341
+	for <lists+bpf@lfdr.de>; Sat, 10 Sep 2022 01:59:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229607AbiIIXmW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Sep 2022 19:42:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60638 "EHLO
+        id S229623AbiIIX7o (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Sep 2022 19:59:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229540AbiIIXmW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Sep 2022 19:42:22 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BF89B24A6;
-        Fri,  9 Sep 2022 16:42:20 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id go34so7605782ejc.2;
-        Fri, 09 Sep 2022 16:42:20 -0700 (PDT)
+        with ESMTP id S229550AbiIIX7n (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Sep 2022 19:59:43 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB50A1FCFE;
+        Fri,  9 Sep 2022 16:59:40 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 29so4802584edv.2;
+        Fri, 09 Sep 2022 16:59:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date;
-        bh=E0ImdVtQckUlqL5lFPB/n4FHHLzA/xgj5NP2XYhWId8=;
-        b=HI/W8IcxizQCePJ8Hqrk8IR7T0NzS+/JGmVroFNOO2Z4WJINTZ+GE6mEUgvekckLUZ
-         lhBL++L2dpFxcAAkGNHkHBYy89aVotK40u7GmIqNOJKkyDLz1Xa89qoQhIGH1mPzLWDz
-         DXJSZv75KaGYlyFRKTualyTPdx/pQlYUTILUV8d4ji9NJYQCM/i4+Awd09FREFDUY63q
-         +CqdHr1KIN9e/30PahwvZboZpxZGz3qRJtG1V5ylJgNsbz8IHgWgVwoUv5D70qjnbQXm
-         x5EhzwkyCr9IDloys0+F6a0TdRy1cFuRaW7UaG3xQ/oLAujQRvxJsE9YlFXUC+1kB3+8
-         Wvzw==
+        bh=2h7TX7zyfz+iELGyhhuBxOikoKGROoe5cQomBui1i50=;
+        b=FjmqSajXZNYr9/HujCEuoxlgmpqiFGONes9RoHPd+5SFHNkoJ2AVBH6s9WHPROHdof
+         Z3Hh06fs+bBvZPtrzfbPy+nceTJwK06Ctdk+QZ4yJZcBY/MUpenEDf2QMwpyRT9z8ZlK
+         jX0dRw4/6UJMdCRSyT5wIkj+vmQgGEZh4qrUOjiIYm7OgrdU4ovgcY2idkorDDXa4gb5
+         QI95cLtOixqYUu5YTMloAZM1dCyANZqBm5mW4gkjjtAYWi7gDAz7UgCxKrGpAM2izMGj
+         /XceM6P/l/mNTbMHgCHR2BjR0vqw763oSVbd/xN9PYqyVEosCiYpbfOloI5UD+c3KMqj
+         RV0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=E0ImdVtQckUlqL5lFPB/n4FHHLzA/xgj5NP2XYhWId8=;
-        b=kmcqGd50zz9VNBJ+uCkMaefdymjfY+JEgLTxEGiQZ9b3y5paecNGozVVKlwWsuYzah
-         7rlwjHihIsion6dJ90E/vUrczHmsFaj7htfbGMY1QWl/i9L8/k5PGRd0lBzveopMxVza
-         iQmtVCSQ1iQquqsy78e2CE/7qlH3rOqcgg81WDRP075IWMYQ2l6FElfGh9VX1s8gEMap
-         wOCFpFsoF74tQykgYd0YoVviOi2m1wkBidRCHI33uyFt0Mg0CsYvTahpH5Gl/kFhdQJk
-         Dp1wpf9Q56pv/eXQ+3lVczgWNelANcec8rUyJJ+HRAxz0wYBMllPP+yvb83IoEcWMUGb
-         iORg==
-X-Gm-Message-State: ACgBeo0MqqO3PHnb9p+5Iw+6lI9LwnS5yMPQdrmPTXF1yVq9zzbCSsV0
-        fXsNX/5I4Gca01OJnsDTy0zQKDbTSKJ50cF19Oc=
-X-Google-Smtp-Source: AA6agR4pkd3XGvCYx3k6kAPTSsmkIyRgDzAfzEsugHZ6Gprh81B415b5iw/sy2FFv+cjVNjvHXY29ASg+Vl7SWMnqRE=
-X-Received: by 2002:a17:907:7e92:b0:741:5f7e:f1ac with SMTP id
- qb18-20020a1709077e9200b007415f7ef1acmr11700769ejc.176.1662766938977; Fri, 09
- Sep 2022 16:42:18 -0700 (PDT)
+        bh=2h7TX7zyfz+iELGyhhuBxOikoKGROoe5cQomBui1i50=;
+        b=qvTVi81PyCLpDBNA3RQgMrDy6ObblQhY37PI+jat3krsiI+YT7uf989jadFmgs0wIC
+         9qGVl4Z7AvRaA9aVvTDEoDMx8hVxnJw/nHpJ/vikg3o5dzFwUFQK5Udg7BF5lLUss+R4
+         Z1jVGGvXZlWP6KMfyxufPloSInLj6ooC793BmN4Q41G5Tc99/UdZ2BeAzNtB6alokJzx
+         s7P7II8Ouijgu6SeLJO7pVBHJXskHZ4CDYMURRTw0dm51yKfyIOPzZjCvEWFOvXWvX2a
+         GiVv8MmoeGSTgjj8rVJixC1xz//VBaHgq/t++DWJz8BKtXT4iXJoj1xKLkU14u4wsPQt
+         MeFQ==
+X-Gm-Message-State: ACgBeo2wVrITZT5JeiV+UJ2Y39yeZVjn8IkMAHFiWECfypqLyRdannV5
+        JZRjLZBE7rbnWqIeL2yZsuYEhCkIY0SgX8uk/k0=
+X-Google-Smtp-Source: AA6agR7BDwB31uM5K6c2JNxClo8g+L1F3YP60QKU43fgMgu+X/yEMEz/lUeupPVx12cyV0U0ST+k86RFaQNjlz8/+tE=
+X-Received: by 2002:a05:6402:1712:b0:44d:db03:46f2 with SMTP id
+ y18-20020a056402171200b0044ddb0346f2mr13781979edu.260.1662767978547; Fri, 09
+ Sep 2022 16:59:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220902234317.2518808-1-void@manifault.com> <20220902234317.2518808-3-void@manifault.com>
-In-Reply-To: <20220902234317.2518808-3-void@manifault.com>
+References: <20220902234317.2518808-1-void@manifault.com> <20220902234317.2518808-4-void@manifault.com>
+In-Reply-To: <20220902234317.2518808-4-void@manifault.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 9 Sep 2022 16:42:07 -0700
-Message-ID: <CAEf4BzZgv7W=OBi+PogxrvuM1c8QRoZ8O4s347MfKdm-p=qY0w@mail.gmail.com>
-Subject: Re: [PATCH v5 2/4] bpf: Add bpf_user_ringbuf_drain() helper
-To:     David Vernet <void@manifault.com>,
-        Joanne Koong <joannelkoong@gmail.com>
+Date:   Fri, 9 Sep 2022 16:59:27 -0700
+Message-ID: <CAEf4Bzbz_7eVSOY0iGp0YkADx80TgZw8cV6NvSm6V1EF=xKo4A@mail.gmail.com>
+Subject: Re: [PATCH v5 3/4] bpf: Add libbpf logic for user-space ring buffer
+To:     David Vernet <void@manifault.com>
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         martin.lau@linux.dev, bpf@vger.kernel.org, song@kernel.org,
         yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
@@ -71,340 +70,207 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Fri, Sep 2, 2022 at 4:43 PM David Vernet <void@manifault.com> wrote:
 >
-> In a prior change, we added a new BPF_MAP_TYPE_USER_RINGBUF map type which
-> will allow user-space applications to publish messages to a ring buffer
-> that is consumed by a BPF program in kernel-space. In order for this
-> map-type to be useful, it will require a BPF helper function that BPF
-> programs can invoke to drain samples from the ring buffer, and invoke
-> callbacks on those samples. This change adds that capability via a new BPF
-> helper function:
+> Now that all of the logic is in place in the kernel to support user-space
+> produced ring buffers, we can add the user-space logic to libbpf. This
+> patch therefore adds the following public symbols to libbpf:
 >
-> bpf_user_ringbuf_drain(struct bpf_map *map, void *callback_fn, void *ctx,
->                        u64 flags)
+> struct user_ring_buffer *
+> user_ring_buffer__new(int map_fd,
+>                       const struct user_ring_buffer_opts *opts);
+> void *user_ring_buffer__reserve(struct user_ring_buffer *rb, __u32 size);
+> void *user_ring_buffer__reserve_blocking(struct user_ring_buffer *rb,
+>                                          __u32 size, int timeout_ms);
+> void user_ring_buffer__submit(struct user_ring_buffer *rb, void *sample);
+> void user_ring_buffer__discard(struct user_ring_buffer *rb,
+> void user_ring_buffer__free(struct user_ring_buffer *rb);
 >
-> BPF programs may invoke this function to run callback_fn() on a series of
-> samples in the ring buffer. callback_fn() has the following signature:
+> A user-space producer must first create a struct user_ring_buffer * object
+> with user_ring_buffer__new(), and can then reserve samples in the
+> ring buffer using one of the following two symbols:
 >
-> long callback_fn(struct bpf_dynptr *dynptr, void *context);
+> void *user_ring_buffer__reserve(struct user_ring_buffer *rb, __u32 size);
+> void *user_ring_buffer__reserve_blocking(struct user_ring_buffer *rb,
+>                                          __u32 size, int timeout_ms);
 >
-> Samples are provided to the callback in the form of struct bpf_dynptr *'s,
-> which the program can read using BPF helper functions for querying
-> struct bpf_dynptr's.
+> With user_ring_buffer__reserve(), a pointer to a 'size' region of the ring
+> buffer will be returned if sufficient space is available in the buffer.
+> user_ring_buffer__reserve_blocking() provides similar semantics, but will
+> block for up to 'timeout_ms' in epoll_wait if there is insufficient space
+> in the buffer. This function has the guarantee from the kernel that it will
+> receive at least one event-notification per invocation to
+> bpf_ringbuf_drain(), provided that at least one sample is drained, and the
+> BPF program did not pass the BPF_RB_NO_WAKEUP flag to bpf_ringbuf_drain().
 >
-> In order to support bpf_ringbuf_drain(), a new PTR_TO_DYNPTR register
-> type is added to the verifier to reflect a dynptr that was allocated by
-> a helper function and passed to a BPF program. Unlike PTR_TO_STACK
-> dynptrs which are allocated on the stack by a BPF program, PTR_TO_DYNPTR
-> dynptrs need not use reference tracking, as the BPF helper is trusted to
-> properly free the dynptr before returning. The verifier currently only
-> supports PTR_TO_DYNPTR registers that are also DYNPTR_TYPE_LOCAL.
->
-> Note that while the corresponding user-space libbpf logic will be added in
-> a subsequent patch, this patch does contain an implementation of the
-> .map_poll() callback for BPF_MAP_TYPE_USER_RINGBUF maps. This .map_poll()
-> callback guarantees that an epoll-waiting user-space producer will
-> receive at least one event notification whenever at least one sample is
-> drained in an invocation of bpf_user_ringbuf_drain(), provided that the
-> function is not invoked with the BPF_RB_NO_WAKEUP flag.
->
-> Sending an event notification for every sample is not an option, as it
-> could cause the system to hang due to invoking irq_work_queue() in
-> too-frequent succession. So as to try and optimize for the common case,
-> however, bpf_user_ringbuf_drain() will also send an event notification
-> whenever a sample being drained causes the ring buffer to no longer be
-> full. This heuristic may not help some user-space producers, as a
-> producer can publish samples of varying size, and there may not be
-> enough space in the ring buffer after the first sample is drained which
-> causes it to no longer be full. In this case, the producer may have to
-> wait until bpf_ringbuf_drain() returns to receive an event notification.
-
-most of this paragraph should be removed now?
-
-I mentioned few things I didn't see last time (or that were added),
-but overall looks good to me.
-
+> Once a sample is reserved, it must either be committed to the ring buffer
+> with user_ring_buffer__submit(), or discarded with
+> user_ring_buffer__discard().
 >
 > Signed-off-by: David Vernet <void@manifault.com>
 > ---
->  include/linux/bpf.h            |  11 +-
->  include/uapi/linux/bpf.h       |  36 ++++++
->  kernel/bpf/helpers.c           |   2 +
->  kernel/bpf/ringbuf.c           | 199 ++++++++++++++++++++++++++++++++-
->  kernel/bpf/verifier.c          |  61 +++++++++-
->  tools/include/uapi/linux/bpf.h |  36 ++++++
->  6 files changed, 334 insertions(+), 11 deletions(-)
+>  tools/lib/bpf/libbpf.c         |  10 +-
+>  tools/lib/bpf/libbpf.h         | 105 +++++++++++++
+>  tools/lib/bpf/libbpf.map       |  10 ++
+>  tools/lib/bpf/libbpf_probes.c  |   1 +
+>  tools/lib/bpf/libbpf_version.h |   2 +-
+>  tools/lib/bpf/ringbuf.c        | 270 +++++++++++++++++++++++++++++++++
+>  6 files changed, 395 insertions(+), 3 deletions(-)
 >
+
+Thanks for adding nice doc comments! See below for few minor nits, but
+ns_elapsed issue I think is pretty bad and should be fixed.
+
+> @@ -1011,6 +1011,7 @@ LIBBPF_API int bpf_tc_query(const struct bpf_tc_hook *hook,
+>
+>  /* Ring buffer APIs */
+>  struct ring_buffer;
+> +struct user_ring_buffer;
+>
+>  typedef int (*ring_buffer_sample_fn)(void *ctx, void *data, size_t size);
+>
+> @@ -1030,6 +1031,110 @@ LIBBPF_API int ring_buffer__poll(struct ring_buffer *rb, int timeout_ms);
+>  LIBBPF_API int ring_buffer__consume(struct ring_buffer *rb);
+>  LIBBPF_API int ring_buffer__epoll_fd(const struct ring_buffer *rb);
+>
+> +struct user_ring_buffer_opts {
+> +       size_t sz; /* size of this struct, for forward/backward compatibility */
+> +};
+> +
+> +#define user_ring_buffer_opts__last_field sz
+> +
+> +/* @brief **user_ring_buffer__new()** creates a new instance of a user ring
+> + * buffer.
+> + *
+> + * @param map_fd A file descriptor to a BPF_MAP_TYPE_RINGBUF map.
+
+typo: USER_RINGBUF
+
+> + * @param opts Options for how the ring buffer should be created.
+> + * @return A user ring buffer on success; NULL and errno being set on a
+> + * failure.
+> + */
+> +LIBBPF_API struct user_ring_buffer *
+> +user_ring_buffer__new(int map_fd, const struct user_ring_buffer_opts *opts);
+> +
+> +/* @brief **user_ring_buffer__reserve()** reserves a pointer to a sample in the
+> + * user ring buffer.
+> + * @param rb A pointer to a user ring buffer.
+> + * @param size The size of the sample, in bytes.
+> + * @return A pointer to a reserved region of the user ring buffer; NULL, and
+> + * errno being set if a sample could not be reserved.
+> + *
+> + * This function is *not* thread safe, and callers must synchronize accessing
+> + * this function if there are multiple producers.  If a size is requested that
+> + * is larger than the size of the entire ring buffer, errno will be set to
+> + * E2BIG and NULL is returned. If the ring buffer could accommodate the size,
+> + * but currently does not have enough space, errno is set to ENOSPC and NULL is
+> + * returned.
+
+we might want to mention that returned pointer is 8-byte aligned
+
+> + *
+> + * After initializing the sample, callers must invoke
+> + * **user_ring_buffer__submit()** to post the sample to the kernel. Otherwise,
+> + * the sample must be freed with **user_ring_buffer__discard()**.
+> + */
+> +LIBBPF_API void *user_ring_buffer__reserve(struct user_ring_buffer *rb, __u32 size);
+> +
 
 [...]
 
-> -static __poll_t ringbuf_map_poll(struct bpf_map *map, struct file *filp,
-> -                                struct poll_table_struct *pts)
-> +static u32 ringbuf_total_data_sz(const struct bpf_ringbuf *rb)
-> +{
-> +       return rb->mask + 1;
+> +       err = user_ringbuf_map(rb, map_fd);
+> +       if (err)
+> +               goto err_out;
+> +
+> +       return rb;
+> +
+> +err_out:
+> +       user_ring_buffer__free(rb);
+> +       return errno = -err, NULL;
 > +}
 > +
-> +static __poll_t ringbuf_map_poll_kern(struct bpf_map *map, struct file *filp,
-> +                                     struct poll_table_struct *pts)
->  {
->         struct bpf_ringbuf_map *rb_map;
->
-> @@ -301,13 +323,26 @@ static __poll_t ringbuf_map_poll(struct bpf_map *map, struct file *filp,
->         return 0;
->  }
->
-> +static __poll_t ringbuf_map_poll_user(struct bpf_map *map, struct file *filp,
-> +                                     struct poll_table_struct *pts)
+> +static void user_ringbuf__commit(struct user_ring_buffer *rb, void *sample, bool discard)
+
+small nit if you are going to resubmit: we stopped using double
+underscore naming for internal static functions, so this should be
+called user_ringbuf_commit
+
 > +{
-> +       struct bpf_ringbuf_map *rb_map;
+> +       __u32 new_len;
+> +       struct ringbuf_hdr *hdr;
+> +       uintptr_t hdr_offset;
 > +
-> +       rb_map = container_of(map, struct bpf_ringbuf_map, map);
-> +       poll_wait(filp, &rb_map->rb->waitq, pts);
-> +
-> +       if (ringbuf_avail_data_sz(rb_map->rb) < ringbuf_total_data_sz(rb_map->rb))
-> +               return  EPOLLOUT | EPOLLWRNORM;
 
-nit: extra space after return
+[...]
 
-
-> +       return 0;
-> +}
-> +
->  BTF_ID_LIST_SINGLE(ringbuf_map_btf_ids, struct, bpf_ringbuf_map)
->  const struct bpf_map_ops ringbuf_map_ops = {
->         .map_meta_equal = bpf_map_meta_equal,
->         .map_alloc = ringbuf_map_alloc,
->         .map_free = ringbuf_map_free,
->         .map_mmap = ringbuf_map_mmap_kern,
-> -       .map_poll = ringbuf_map_poll,
-> +       .map_poll = ringbuf_map_poll_kern,
->         .map_lookup_elem = ringbuf_map_lookup_elem,
->         .map_update_elem = ringbuf_map_update_elem,
->         .map_delete_elem = ringbuf_map_delete_elem,
-> @@ -321,6 +356,7 @@ const struct bpf_map_ops user_ringbuf_map_ops = {
->         .map_alloc = ringbuf_map_alloc,
->         .map_free = ringbuf_map_free,
->         .map_mmap = ringbuf_map_mmap_user,
-> +       .map_poll = ringbuf_map_poll_user,
->         .map_lookup_elem = ringbuf_map_lookup_elem,
->         .map_update_elem = ringbuf_map_update_elem,
->         .map_delete_elem = ringbuf_map_delete_elem,
-> @@ -362,7 +398,7 @@ static void *__bpf_ringbuf_reserve(struct bpf_ringbuf *rb, u64 size)
->                 return NULL;
->
->         len = round_up(size + BPF_RINGBUF_HDR_SZ, 8);
-> -       if (len > rb->mask + 1)
-> +       if (len > ringbuf_total_data_sz(rb))
->                 return NULL;
->
->         cons_pos = smp_load_acquire(&rb->consumer_pos);
-> @@ -509,7 +545,7 @@ BPF_CALL_2(bpf_ringbuf_query, struct bpf_map *, map, u64, flags)
->         case BPF_RB_AVAIL_DATA:
->                 return ringbuf_avail_data_sz(rb);
->         case BPF_RB_RING_SIZE:
-> -               return rb->mask + 1;
-> +               return ringbuf_total_data_sz(rb);
->         case BPF_RB_CONS_POS:
->                 return smp_load_acquire(&rb->consumer_pos);
->         case BPF_RB_PROD_POS:
-> @@ -603,3 +639,156 @@ const struct bpf_func_proto bpf_ringbuf_discard_dynptr_proto = {
->         .arg1_type      = ARG_PTR_TO_DYNPTR | DYNPTR_TYPE_RINGBUF | OBJ_RELEASE,
->         .arg2_type      = ARG_ANYTHING,
->  };
-> +
-> +static int __bpf_user_ringbuf_peek(struct bpf_ringbuf *rb, void **sample, u32 *size)
+> +void *user_ring_buffer__reserve_blocking(struct user_ring_buffer *rb, __u32 size, int timeout_ms)
 > +{
-> +       int err, busy = 0;
-> +       u32 hdr_len, sample_len, total_len, flags, *hdr;
-> +       u64 cons_pos, prod_pos;
+> +       int err;
+> +       struct timespec start;
+> +       __u64 ns_per_ms = 1000000, ns_elapsed = 0, timeout_ns;
 > +
-> +       /* If another consumer is already consuming a sample, wait for them to finish. */
-> +       if (!atomic_try_cmpxchg(&rb->busy, &busy, 1))
-> +               return -EBUSY;
+> +       if (timeout_ms < 0 && timeout_ms != -1)
+> +               return errno = EINVAL, NULL;
 > +
-> +       /* Synchronizes with smp_store_release() in user-space producer. */
-> +       prod_pos = smp_load_acquire(&rb->producer_pos);
-> +       if (prod_pos % 8) {
-> +               err = -EINVAL;
-> +               goto err_unlock;
+> +       if (timeout_ms != -1) {
+> +               err = clock_gettime(CLOCK_MONOTONIC, &start);
+> +               if (err)
+> +                       return NULL;
 > +       }
 > +
-> +       /* Synchronizes with smp_store_release() in __bpf_user_ringbuf_sample_release() */
-> +       cons_pos = smp_load_acquire(&rb->consumer_pos);
-> +       if (cons_pos >= prod_pos) {
-> +               err = -ENOSPC;
-
-funny, this one actually feels like -ENODATA (there is no data to peek
-at, right?). It's different from ENOSPC, as we are not trying to
-enqueue anything. I probably missed it before?
-
-> +               goto err_unlock;
-> +       }
-> +
-> +       hdr = (u32 *)((uintptr_t)rb->data + (uintptr_t)(cons_pos & rb->mask));
-> +       /* Synchronizes with smp_store_release() in user-space producer. */
-> +       hdr_len = smp_load_acquire(hdr);
-> +       flags = hdr_len & (BPF_RINGBUF_BUSY_BIT | BPF_RINGBUF_DISCARD_BIT);
-> +       sample_len = hdr_len & ~flags;
-> +       total_len = round_up(sample_len + BPF_RINGBUF_HDR_SZ, 8);
-> +
-> +       /* The sample must fit within the region advertised by the producer position. */
-> +       if (total_len > prod_pos - cons_pos) {
-> +               err = -EINVAL;
-> +               goto err_unlock;
-> +       }
-> +
-> +       /* The sample must fit within the data region of the ring buffer. */
-> +       if (total_len > ringbuf_total_data_sz(rb)) {
-> +               err = -E2BIG;
-> +               goto err_unlock;
-> +       }
-> +
-> +       /* The sample must fit into a struct bpf_dynptr. */
-> +       err = bpf_dynptr_check_size(sample_len);
-> +       if (err) {
-> +               err = -E2BIG;
-> +               goto err_unlock;
-> +       }
-> +
-> +       if (flags & BPF_RINGBUF_DISCARD_BIT) {
-> +               /* If the discard bit is set, the sample should be skipped.
-> +                *
-> +                * Update the consumer pos, and return -EAGAIN so the caller
-> +                * knows to skip this sample and try to read the next one.
-> +                */
-> +               smp_store_release(&rb->consumer_pos, cons_pos + total_len);
-> +               err = -EAGAIN;
-> +               goto err_unlock;
-> +       }
-> +
-> +       if (flags & BPF_RINGBUF_BUSY_BIT) {
-> +               err = -ENOSPC;
-> +               goto err_unlock;
-> +       }
-> +
-> +       *sample = (void *)((uintptr_t)rb->data +
-> +                          (uintptr_t)((cons_pos + BPF_RINGBUF_HDR_SZ) & rb->mask));
-> +       *size = sample_len;
-> +       return 0;
-> +
-> +err_unlock:
-> +       atomic_set(&rb->busy, 0);
-> +       return err;
-> +}
-> +
-> +static void __bpf_user_ringbuf_sample_release(struct bpf_ringbuf *rb, size_t size, u64 flags)
-> +{
-> +       u64 consumer_pos;
-> +       u32 rounded_size = round_up(size + BPF_RINGBUF_HDR_SZ, 8);
-> +
-> +       /* Using smp_load_acquire() is unnecessary here, as the busy-bit
-> +        * prevents another task from writing to consumer_pos after it was read
-> +        * by this task with smp_load_acquire() in __bpf_user_ringbuf_peek().
-> +        */
-> +       consumer_pos = rb->consumer_pos;
-> +        /* Synchronizes with smp_load_acquire() in user-space producer. */
-> +       smp_store_release(&rb->consumer_pos, consumer_pos + rounded_size);
-> +
-> +       /* Prevent the clearing of the busy-bit from being reordered before the
-> +        * storing of the updated rb->consumer_pos value.
-> +        */
-> +       smp_mb__before_atomic();
-> +       atomic_set(&rb->busy, 0);
-> +
-> +       if (flags & BPF_RB_FORCE_WAKEUP)
-> +               irq_work_queue(&rb->work);
-
-I think this part is new, you decided to define that FORCE_WAKEUP
-sends wakeup after every single consumed sample? I have no strong
-opinion on this, tbh, just wonder if it wasn't enough to do it once
-after drain?
-
-> +}
-> +
-> +BPF_CALL_4(bpf_user_ringbuf_drain, struct bpf_map *, map,
-> +          void *, callback_fn, void *, callback_ctx, u64, flags)
-> +{
-> +       struct bpf_ringbuf *rb;
-> +       long samples, discarded_samples = 0, ret = 0;
-> +       bpf_callback_t callback = (bpf_callback_t)callback_fn;
-> +       u64 wakeup_flags = BPF_RB_NO_WAKEUP | BPF_RB_FORCE_WAKEUP;
-> +
-> +       if (unlikely(flags & ~wakeup_flags))
-> +               return -EINVAL;
-> +
-> +       rb = container_of(map, struct bpf_ringbuf_map, map)->rb;
-> +       for (samples = 0; samples < BPF_MAX_USER_RINGBUF_SAMPLES && ret == 0; samples++) {
-> +               int err;
-> +               u32 size;
+> +       timeout_ns = timeout_ms * ns_per_ms;
+> +       do {
+> +               __u64 ns_remaining = timeout_ns - ns_elapsed;
+> +               int cnt, ms_remaining;
 > +               void *sample;
-> +               struct bpf_dynptr_kern dynptr;
+> +               struct timespec curr;
 > +
-> +               err = __bpf_user_ringbuf_peek(rb, &sample, &size);
-
-so I also just realized that ringbuf_peek will keep setting/resetting
-busy flag, and in like all the practical case it's a completely
-useless work as we don't intend to have competing consumers, right? So
-maybe move busy bit handling into drain itself and document that peek
-expect busy taken care of?
-
-This should be noticeable faster when there are multiple records
-consumed in one drain.
-
-
-> +               if (err) {
-> +                       if (err == -ENOSPC) {
-> +                               break;
-> +                       } else if (err == -EAGAIN) {
-> +                               discarded_samples++;
-> +                               continue;
-> +                       } else {
-> +                               ret = err;
-> +                               goto schedule_work_return;
-> +                       }
-> +               }
+> +               sample = user_ring_buffer__reserve(rb, size);
+> +               if (sample)
+> +                       return sample;
+> +               else if (errno != ENOSPC)
+> +                       return NULL;
 > +
+> +               ms_remaining = timeout_ms == -1 ? -1 : ns_remaining / ns_per_ms;
 
-[...]
+ok, so you've special-cased timeout_ms == -1 but still didn't do
+max(0, ns_remaining). Can you prove that ns_elapsed will never be
+bigger than timeout_ns due to various delays in waking up this thread?
+If not, let's please have max(0) otherwise we can accidentally
+epoll_wait(-1).
 
->  static int prepare_func_exit(struct bpf_verifier_env *env, int *insn_idx)
->  {
->         struct bpf_verifier_state *state = env->cur_state;
-> @@ -7343,12 +7386,18 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
->         case BPF_FUNC_dynptr_data:
->                 for (i = 0; i < MAX_BPF_FUNC_REG_ARGS; i++) {
->                         if (arg_type_is_dynptr(fn->arg_type[i])) {
-> +                               struct bpf_reg_state *reg = &regs[BPF_REG_1 + i];
+> +               /* The kernel guarantees at least one event notification
+> +                * delivery whenever at least one sample is drained from the
+> +                * ring buffer in an invocation to bpf_ringbuf_drain(). Other
+> +                * additional events may be delivered at any time, but only one
+> +                * event is guaranteed per bpf_ringbuf_drain() invocation,
+> +                * provided that a sample is drained, and the BPF program did
+> +                * not pass BPF_RB_NO_WAKEUP to bpf_ringbuf_drain().
+> +                */
+> +               cnt = epoll_wait(rb->epoll_fd, &rb->event, 1, ms_remaining);
+> +               if (cnt < 0)
+> +                       return NULL;
 > +
->                                 if (meta.ref_obj_id) {
->                                         verbose(env, "verifier internal error: meta.ref_obj_id already set\n");
->                                         return -EFAULT;
->                                 }
-> -                               /* Find the id of the dynptr we're tracking the reference of */
-> -                               meta.ref_obj_id = stack_slot_get_id(env, &regs[BPF_REG_1 + i]);
+> +               if (timeout_ms == -1)
+> +                       continue;
 > +
-> +                               if (base_type(reg->type) != PTR_TO_DYNPTR)
-> +                                       /* Find the id of the dynptr we're
-> +                                        * tracking the reference of
-> +                                        */
-> +                                       meta.ref_obj_id = stack_slot_get_id(env, reg);
->                                 break;
->                         }
->                 }
+> +               err = clock_gettime(CLOCK_MONOTONIC, &curr);
+> +               if (err)
+> +                       return NULL;
+> +
+> +               ns_elapsed = ns_elapsed_timespec(&start, &curr);
 
-Joanne, I'd appreciate it if you could take a look at dynptr bits and
-ack if it looks good to you, thanks!
+nit: if you move re-calculation of ms_remaining and ns_remaining to
+here, I think overall loop logic will be even more straightforwad. You
+can initialize ms_remaining to -1 if timeout_ms < 0 and never
+recalculate it, right? Note that you can also do ns_elapsed conversion
+to ms right here and then keep everything else in ms (so no need for
+timeout_ns, ns_remaining, etc).
 
-> @@ -7357,6 +7406,10 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
->                         return -EFAULT;
->                 }
->                 break;
-> +       case BPF_FUNC_user_ringbuf_drain:
-> +               err = __check_func_call(env, insn, insn_idx_p, meta.subprogno,
-> +                                       set_user_ringbuf_callback_state);
-> +               break;
->         }
+> +       } while (ns_elapsed <= timeout_ns);
+> +
+> +       errno = ENOSPC;
+> +       return NULL;
+> +}
+> --
+> 2.37.1
 >
->         if (err)
-
-[...]
