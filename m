@@ -2,303 +2,249 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 734365B4057
-	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 22:10:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEA545B406F
+	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 22:21:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230047AbiIIUKk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Sep 2022 16:10:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52684 "EHLO
+        id S232018AbiIIUVY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Sep 2022 16:21:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229774AbiIIUKj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Sep 2022 16:10:39 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A15EBD4DD
-        for <bpf@vger.kernel.org>; Fri,  9 Sep 2022 13:10:37 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id r17so6505215ejy.9
-        for <bpf@vger.kernel.org>; Fri, 09 Sep 2022 13:10:37 -0700 (PDT)
+        with ESMTP id S231715AbiIIUVX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Sep 2022 16:21:23 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D138EAB4F8
+        for <bpf@vger.kernel.org>; Fri,  9 Sep 2022 13:21:18 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id nc14so6623478ejc.4
+        for <bpf@vger.kernel.org>; Fri, 09 Sep 2022 13:21:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date;
-        bh=2UCoxijmaIVD98w4FO3lzepMYkrne9MRBC0y0eyzXYE=;
-        b=Lhr7uc8KgDknCXRPNAfp775SY9DaPh7of2r74S2KxwNM/sm60IAdrvcmXCb6Zvd4JW
-         M6eJUHmzb9NMk6vYpeL+wKKYbJLfYz2XQxMc0lEKkUG1ilZIKakBhagKLOpJdndQ1Tbr
-         MVH1iEQnpvUZdRrgA+j53wpxzR6gaLoswmf4w6l/Zq9WCkCkAuxDrx5m4XpgXWt2AFQ2
-         uGPbj7kTBFokh91OnRCgg77GOv/KKxqoXV8l4hHiDwsMOxB7sORe1aCNj211QEOsyjDB
-         H5wCSOAmKTrjzkddbVmZ3mVgz8J2ZzR5NmH5K0uz/NzVnl+8weCoDP8YzaWuxCjsU/5N
-         PDAw==
+        bh=FmfyeLaW6iwkN7Ovl66Q3HKwoRDNimKGa16jO6Nq+LY=;
+        b=NZSw/cY1GVE5e8EhzBV2HokXx/8jK3aS0TElud89HbVI86od1WMxC14Gu/YG8ccqY+
+         9lqTSttvSRV2DCVZr266JGy2NEpiPd7AP/NcaulBZFMq7f37AY4Nh6Xw4U3DbD4jdpZo
+         degprwuoR3uFrsDoeGpNjMlzWZFjHRqlV539QO0e/mGt8kC8Rd+6AU5ic/igVQ5uIkhG
+         14QETkaMJNPr2jz+xQqYmc7xgclZuUMdG/p5Kk3zcgBABK+Y5NwQeAkZUNaFdssz/x0E
+         nIpbUUjMoPuwSBUvZqXUN6jedJiitvIfB1taT04ikFnQNE44xt7fhPUDkhw7zL670PlE
+         umhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=2UCoxijmaIVD98w4FO3lzepMYkrne9MRBC0y0eyzXYE=;
-        b=hn9WLDercVtckesrd917Kf86zoD7g52XZjRbww/QapqGeuza8APaq/vDbl5D5dC+tw
-         sy80XrVYo6C+J25aSktH0TiXmgtWLItDk9itLG4wueUOi0n8jws+7KaRHDxZG3Pf+Rmv
-         VyrKjIik882B/2kWgehgFLKU6/EWAF1UaEbgvtjFc6xrac6saWxIA73EudKkOl3jwNAE
-         aF4F903n51UVZ3nIlaSDgYW0ll2Rje2QGaojUytAZYFejdJ+VkSW5b7nTqAfIwHeOikc
-         6SqWIAxhz0qG04pJ01gJM77MCjB1lSm+7IBNrXfX8xTx1TVc4FfQMps2HJOjzhlYmIUp
-         XcjA==
-X-Gm-Message-State: ACgBeo2f5PxvQ18scCo2Put48yqzkbqBirn47tde0qcYql+etW1d+jdW
-        k0b0uijuGJrjUn/ne58Dll4IySzdAz0orfAuy//BVG9a
-X-Google-Smtp-Source: AA6agR4nSbb/tACas9W/dJZW1/4NfElaDiaO2vxLIiAuA45tvuqAosgg7zlwH8qwaX2UMd9gy3GZzAWv6/D2n8Z1KHU=
+        bh=FmfyeLaW6iwkN7Ovl66Q3HKwoRDNimKGa16jO6Nq+LY=;
+        b=riuTdtnrjNfY5gdjEz7YW4kyLt7edFaL5k1SGjwGQ5fox2xKJks1hMJoEYtq+ssAuI
+         v+KDp34kz2gC/+4lHffrtVMuOt08JO0Ug08KdpRqqkl8nzMUk2XTY0uuz2Eaf/SsBVuN
+         dTNXUB2f+vIn9lPjCGcuQz9dCMpgXhftklPzrOIkSjRXoc4MYuvFWWuRWylZ/suvh48r
+         icCq39cVXIFzMpshlvFqG3GLxPrm6+SvvI3Mmv65iYkAS1NRsfBscFV14Nd4Gmr75ML7
+         HdbaN3qNI2D+AhOyXdLuw0ihefF89BhFvkf7SnNAjfazsogWwDBEO4jwgfKE/fq/H4xT
+         C0MA==
+X-Gm-Message-State: ACgBeo2aqmSAZS3SmNzv6kE3c88+lkW6msrk1qIKkaNnOmbB2VU9Lk35
+        4qAFqd2LhtPxRMzcpAZ8eBF85rCTMKrK+/AVU1s=
+X-Google-Smtp-Source: AA6agR4XVKfL7J3YrFplJNSxvuHp9sZzbgY3QMGSfWPdXAh82ypdzBf21B/E8xocZZiQaBejMfN6pNl0+NCpYXoSVpo=
 X-Received: by 2002:a17:907:2d12:b0:731:6a4e:ceb0 with SMTP id
- gs18-20020a1709072d1200b007316a4eceb0mr11066339ejc.115.1662754235996; Fri, 09
- Sep 2022 13:10:35 -0700 (PDT)
+ gs18-20020a1709072d1200b007316a4eceb0mr11092072ejc.115.1662754877047; Fri, 09
+ Sep 2022 13:21:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220826024430.84565-1-alexei.starovoitov@gmail.com>
- <CAEf4Bzapz-SNfM+ky7UwnqNZAbJyy4eBHpxuNjW-TMk8C5ba8g@mail.gmail.com>
- <CAP01T76scR191CLFU10iiVn1aP47N+b8UrZtzf0syMd6az-hWA@mail.gmail.com> <20220829154737.zxh5xfsdhnm2nsns@macbook-pro-4.dhcp.thefacebook.com>
-In-Reply-To: <20220829154737.zxh5xfsdhnm2nsns@macbook-pro-4.dhcp.thefacebook.com>
+References: <20220904204145.3089-1-memxor@gmail.com> <20220904204145.3089-22-memxor@gmail.com>
+ <311eb0d0-777a-4240-9fa0-59134344f051@fb.com> <CAP01T76QJOYqk4Lsc=bUjM86my=kg3p6GHxuz3yXiwFMHJtjJA@mail.gmail.com>
+ <CAADnVQJ6-kEE=_kHgyth_O3rUVHzJuNhS2MWhjQQed4wHzPpnA@mail.gmail.com>
+ <CAP01T74-Bc8xLihXcoer8fOoSoQQ1dddJ1FGOVdRPRa92RRPyQ@mail.gmail.com>
+ <CAADnVQLJP8YyYx5+mCBuSyenAfQDyXxDP8wfuDYCoZtO6kpunQ@mail.gmail.com>
+ <CAEf4BzZL9GS0oAfkY1h4C9u1_XCzj-HTnKY9KHj+PX+h66TL3g@mail.gmail.com> <20220909192525.aymuhiprgjwfnlfe@macbook-pro-4.dhcp.thefacebook.com>
+In-Reply-To: <20220909192525.aymuhiprgjwfnlfe@macbook-pro-4.dhcp.thefacebook.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 9 Sep 2022 13:10:24 -0700
-Message-ID: <CAEf4BzZOTxjOK2vxmuwa_b4G9mPci4yxWUAAeb7TUm3H5OoW5A@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 00/15] bpf: BPF specific memory allocator.
+Date:   Fri, 9 Sep 2022 13:21:05 -0700
+Message-ID: <CAEf4BzaoaS8QiPDXuuN1pAiJQ9X6j1WfM+eZhpbRr6ZZ=afZNA@mail.gmail.com>
+Subject: Re: [PATCH RFC bpf-next v1 21/32] bpf: Allow locking bpf_spin_lock
+ global variables
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>, davem@davemloft.net,
-        daniel@iogearbox.net, andrii@kernel.org, tj@kernel.org,
-        delyank@fb.com, linux-mm@kvack.org, bpf@vger.kernel.org,
-        kernel-team@fb.com
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Delyan Kratunov <delyank@fb.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        GUARANTEED_100_PERCENT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 29, 2022 at 8:47 AM Alexei Starovoitov
+On Fri, Sep 9, 2022 at 12:25 PM Alexei Starovoitov
 <alexei.starovoitov@gmail.com> wrote:
 >
-> On Sun, Aug 28, 2022 at 12:53:48AM +0200, Kumar Kartikeya Dwivedi wrote:
-> > On Sat, 27 Aug 2022 at 18:57, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> On Fri, Sep 09, 2022 at 11:32:40AM -0700, Andrii Nakryiko wrote:
+> > On Fri, Sep 9, 2022 at 7:58 AM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
 > > >
-> > > On Thu, Aug 25, 2022 at 7:44 PM Alexei Starovoitov
-> > > <alexei.starovoitov@gmail.com> wrote:
+> > > On Fri, Sep 9, 2022 at 7:51 AM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
 > > > >
-> > > > From: Alexei Starovoitov <ast@kernel.org>
+> > > > On Fri, 9 Sept 2022 at 16:24, Alexei Starovoitov
+> > > > <alexei.starovoitov@gmail.com> wrote:
+> > > > >
+> > > > > On Fri, Sep 9, 2022 at 4:05 AM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+> > > > > >
+> > > > > > On Fri, 9 Sept 2022 at 10:13, Dave Marchevsky <davemarchevsky@fb.com> wrote:
+> > > > > > >
+> > > > > > > On 9/4/22 4:41 PM, Kumar Kartikeya Dwivedi wrote:
+> > > > > > > > Global variables reside in maps accessible using direct_value_addr
+> > > > > > > > callbacks, so giving each load instruction's rewrite a unique reg->id
+> > > > > > > > disallows us from holding locks which are global.
+> > > > > > > >
+> > > > > > > > This is not great, so refactor the active_spin_lock into two separate
+> > > > > > > > fields, active_spin_lock_ptr and active_spin_lock_id, which is generic
+> > > > > > > > enough to allow it for global variables, map lookups, and local kptr
+> > > > > > > > registers at the same time.
+> > > > > > > >
+> > > > > > > > Held vs non-held is indicated by active_spin_lock_ptr, which stores the
+> > > > > > > > reg->map_ptr or reg->btf pointer of the register used for locking spin
+> > > > > > > > lock. But the active_spin_lock_id also needs to be compared to ensure
+> > > > > > > > whether bpf_spin_unlock is for the same register.
+> > > > > > > >
+> > > > > > > > Next, pseudo load instructions are not given a unique reg->id, as they
+> > > > > > > > are doing lookup for the same map value (max_entries is never greater
+> > > > > > > > than 1).
+> > > > > > > >
+> > > > > > >
+> > > > > > > For libbpf-style "internal maps" - like .bss.private further in this series -
+> > > > > > > all the SEC(".bss.private") vars are globbed together into one map_value. e.g.
+> > > > > > >
+> > > > > > >   struct bpf_spin_lock lock1 SEC(".bss.private");
+> > > > > > >   struct bpf_spin_lock lock2 SEC(".bss.private");
+> > > > > > >   ...
+> > > > > > >   spin_lock(&lock1);
+> > > > > > >   ...
+> > > > > > >   spin_lock(&lock2);
+> > > > > > >
+> > > > > > > will result in same map but different offsets for the direct read (and different
+> > > > > > > aux->map_off set in resolve_pseudo_ldimm64 for use in check_ld_imm). Seems like
+> > > > > > > this patch would assign both same (active_spin_lock_ptr, active_spin_lock_id).
+> > > > > > >
+> > > > > >
+> > > > > > That won't be a problem. Two spin locks in a map value or datasec are
+> > > > > > already rejected on BPF_MAP_CREATE,
+> > > > > > so there is no bug. See idx >= info_cnt check in
+> > > > > > btf_find_struct_field, btf_find_datasec_var.
+> > > > > >
+> > > > > > I can include offset as the third part of the tuple. The problem then
+> > > > > > is figuring out which lock protects which bpf_list_head. We need
+> > > > > > another __guarded_by annotation and force users to use that to
+> > > > > > eliminate the ambiguity. So for now I just put it in the commit log
+> > > > > > and left it for the future.
+> > > > >
+> > > > > Let's not go that far yet.
+> > > > > Extra annotations are just as confusing and non-obvious as
+> > > > > putting locks in different sections.
+> > > > > Let's keep one lock per map value limitation for now.
+> > > > > libbpf side needs to allow many non-mappable sections though.
+> > > > > Single bss.private name is too limiting.
 > > > >
-> > > > Introduce any context BPF specific memory allocator.
-> > > >
-> > > > Tracing BPF programs can attach to kprobe and fentry. Hence they
-> > > > run in unknown context where calling plain kmalloc() might not be safe.
-> > > > Front-end kmalloc() with per-cpu cache of free elements.
-> > > > Refill this cache asynchronously from irq_work.
-> > > >
-> > > > Major achievements enabled by bpf_mem_alloc:
-> > > > - Dynamically allocated hash maps used to be 10 times slower than fully preallocated.
-> > > >   With bpf_mem_alloc and subsequent optimizations the speed of dynamic maps is equal to full prealloc.
-> > > > - Tracing bpf programs can use dynamically allocated hash maps.
-> > > >   Potentially saving lots of memory. Typical hash map is sparsely populated.
-> > > > - Sleepable bpf programs can used dynamically allocated hash maps.
-> > > >
-> > > > v3->v4:
-> > > > - fix build issue due to missing local.h on 32-bit arch
-> > > > - add Kumar's ack
-> > > > - proposal for next steps from Delyan:
-> > > > https://lore.kernel.org/bpf/d3f76b27f4e55ec9e400ae8dcaecbb702a4932e8.camel@fb.com/
-> > > >
-> > > > v2->v3:
-> > > > - Rewrote the free_list algorithm based on discussions with Kumar. Patch 1.
-> > > > - Allowed sleepable bpf progs use dynamically allocated maps. Patches 13 and 14.
-> > > > - Added sysctl to force bpf_mem_alloc in hash map even if pre-alloc is
-> > > >   requested to reduce memory consumption. Patch 15.
-> > > > - Fix: zero-fill percpu allocation
-> > > > - Single rcu_barrier at the end instead of each cpu during bpf_mem_alloc destruction
-> > > >
-> > > > v2 thread:
-> > > > https://lore.kernel.org/bpf/20220817210419.95560-1-alexei.starovoitov@gmail.com/
-> > > >
-> > > > v1->v2:
-> > > > - Moved unsafe direct call_rcu() from hash map into safe place inside bpf_mem_alloc. Patches 7 and 9.
-> > > > - Optimized atomic_inc/dec in hash map with percpu_counter. Patch 6.
-> > > > - Tuned watermarks per allocation size. Patch 8
-> > > > - Adopted this approach to per-cpu allocation. Patch 10.
-> > > > - Fully converted hash map to bpf_mem_alloc. Patch 11.
-> > > > - Removed tracing prog restriction on map types. Combination of all patches and final patch 12.
-> > > >
-> > > > v1 thread:
-> > > > https://lore.kernel.org/bpf/20220623003230.37497-1-alexei.starovoitov@gmail.com/
-> > > >
-> > > > LWN article:
-> > > > https://lwn.net/Articles/899274/
-> > > >
-> > > > Future work:
-> > > > - expose bpf_mem_alloc as uapi FD to be used in dynptr_alloc, kptr_alloc
-> > > > - convert lru map to bpf_mem_alloc
-> > > >
-> > > > Alexei Starovoitov (15):
-> > > >   bpf: Introduce any context BPF specific memory allocator.
-> > > >   bpf: Convert hash map to bpf_mem_alloc.
-> > > >   selftests/bpf: Improve test coverage of test_maps
-> > > >   samples/bpf: Reduce syscall overhead in map_perf_test.
-> > > >   bpf: Relax the requirement to use preallocated hash maps in tracing
-> > > >     progs.
-> > > >   bpf: Optimize element count in non-preallocated hash map.
-> > > >   bpf: Optimize call_rcu in non-preallocated hash map.
-> > > >   bpf: Adjust low/high watermarks in bpf_mem_cache
-> > > >   bpf: Batch call_rcu callbacks instead of SLAB_TYPESAFE_BY_RCU.
-> > > >   bpf: Add percpu allocation support to bpf_mem_alloc.
-> > > >   bpf: Convert percpu hash map to per-cpu bpf_mem_alloc.
-> > > >   bpf: Remove tracing program restriction on map types
-> > > >   bpf: Prepare bpf_mem_alloc to be used by sleepable bpf programs.
-> > > >   bpf: Remove prealloc-only restriction for sleepable bpf programs.
-> > > >   bpf: Introduce sysctl kernel.bpf_force_dyn_alloc.
-> > > >
-> > > >  include/linux/bpf_mem_alloc.h             |  26 +
-> > > >  include/linux/filter.h                    |   2 +
-> > > >  kernel/bpf/Makefile                       |   2 +-
-> > > >  kernel/bpf/core.c                         |   2 +
-> > > >  kernel/bpf/hashtab.c                      | 132 +++--
-> > > >  kernel/bpf/memalloc.c                     | 602 ++++++++++++++++++++++
-> > > >  kernel/bpf/syscall.c                      |  14 +-
-> > > >  kernel/bpf/verifier.c                     |  52 --
-> > > >  samples/bpf/map_perf_test_kern.c          |  44 +-
-> > > >  samples/bpf/map_perf_test_user.c          |   2 +-
-> > > >  tools/testing/selftests/bpf/progs/timer.c |  11 -
-> > > >  tools/testing/selftests/bpf/test_maps.c   |  38 +-
-> > > >  12 files changed, 796 insertions(+), 131 deletions(-)
-> > > >  create mode 100644 include/linux/bpf_mem_alloc.h
-> > > >  create mode 100644 kernel/bpf/memalloc.c
-> > > >
-> > > > --
-> > > > 2.30.2
-> > > >
+> > > > In that case,
+> > > > Dave, since the libbpf patch is yours, would you be fine with
+> > > > reworking it to support multiple private maps?
+> > > > Maybe it can just ignore the .XXX part in .bss.private.XXX?
+> > > > Also I think Andrii mentioned once that he wants to eventually merge
+> > > > data and bss, so it might be a good idea to call it .data.private from
+> > > > the start?
 > > >
-> > > It's great to lift all those NMI restrictions on non-prealloc hashmap!
-> > > This should also open up new maps (like qp-trie) that can't be
-> > > pre-sized to the NMI world as well.
+> > > I'd probably make all non-canonical names to be not-mmapable.
+> > > The compiler generates special sections already.
+> > > Thankfully the code doesn't use them, but it will sooner or later.
+> > > So libbpf has to create hidden maps for them eventually.
+> > > They shouldn't be messed up from user space, since it will screw up
+> > > compiler generated code.
 > > >
-> > > But just to clarify, in NMI mode we can exhaust memory in caches (and
-> > > thus if we do a lot of allocation in single BPF program execution we
-> > > can fail some operations). That's unavoidable. But it's not 100% clear
-> > > what's the behavior in IRQ mode and separately from that in "usual"
-> > > less restrictive mode. Is my understanding correct that we shouldn't
-> > > run out of memory (assuming there is memory available, of course)
-> > > because replenishing of caches will interrupt BPF program execution?
+> > > Andrii, what's your take?
 > >
-> > When I was reviewing the code what I understood was as follows:
+> > Ok, a bunch of things to unpack. We've also discussed a lot of this
+> > with Dave few weeks ago, but I have also few questions.
 > >
-> > There are two ways work is queued. On non-RT, it is queued for
-> > execution in hardirq context (raised_list), on RT it will instead be
-> > executed by per-CPU pinned irq_work kthreads (from lazy_list).
+> > First, I'd like to not keep extending ".bss" with any custom ".bss.*"
+> > sections. This is why we have .data.* and .rodata.* and not .bss (bad,
+> > meaningless, historic name).
 > >
-> > We cannot set the IRQ_WORK_HARD_IRQ to force RT to execute them in
-> > hardirq context, as bpf_mem_refill may take sleepable non-raw
-> > spinlocks when calling into kmalloc, which is disallowed.
+> > But I'm totally fine dedicating some other prefix to non-mmapable data
+> > sections that won't be exposed in skeleton and, well, not-mmapable.
+> > What to name it depends on what we anticipate putting in them?
+> >
+> > If it's just for spinlocks, then having something like SEC(".locks")
+> > seems best to me. If it's for more stuff, like global kptrs, rbtrees
+> > and whatnot, then we'd need a bit more generic name (.private, or
+> > whatever, didn't think much on best name). We can also allow .locks.*
+> > or .private.* (i.e., keep it uniform with .data and .rodata handling,
+> > expect for mmapable aspect).
+> >
+> > One benefit for having SEC(".locks") just for spin_locks is that we
+> > can teach libbpf to create a multi-element ARRAY map, where each lock
+> > variable is put into a separate element. From BPF verifier's
+> > perspective, there will be a single BTF type describing spin lock, but
+> > multiple "instances" of lock, one per each element. That seems a bit
+> > magical and I think, generally speaking, it's best to start supporting
+> > multiple lock declarations within single map element (and thus keep
+> > track of their offset within map_value); but at least that's an
+> > option.
 >
-> Correct.
+> ".lock" won't work. We need lock+rb_root or lock+list_head to be
+> in the same section.
+> It should be up to user to name that section with something meaningful.
+> Ideally something like this should be supported:
+> SEC("enqueue") struct bpf_spin_lock enqueue_lock;
+> SEC("enqueue") struct bpf_list_head enqueue_head __contains(foo, node);
+> SEC("dequeue") struct bpf_spin_lock dequeue_lock;
+> SEC("dequeue") struct bpf_list_head dequeue_head __contains(foo, node);
 >
-> > So, to summarize the behavior:
-> > In NMI context:
-> > - for both RT and non-RT, once we deplete the cache we get -ENOMEM.
-> > In IRQ context:
-> > - for RT, it will fill it asynchronously by waking up the irq_work
-> > kthread, so you may still get -ENOMEM (also depends on if bpf prog is
-> > in hardirq or threaded irq context, since hardirq context would be
-> > non-preemptible, delaying refilling from irq_work kthread context).
-> > - for non-RT, it is already inside the interrupt handler hence you
-> > will get -ENOMEM. Interrupt handlers keep interrupts disabled, so IPI
-> > execution is delayed until the handler returns.
-> > In softirq and task context:
-> > - for RT, it will fill it asynchronously by waking up the irq_work
-> > kthread, so you may still get -ENOMEM.
-> > - for non-RT, it will send IPI to local cpu, which will execute the
-> > work synchronously, so you will refill the cache by interrupting the
-> > program. Even when executing softirq inside the exit path of
-> > interrupts, at that point interrupts are enabled so it will refill
-> > synchronously by raising local IPI.
+> > Dave had some concerns about pinning such maps and whatnot, but for
+> > starters we decided to not worry about pinning for now. Dave, please
+> > bring up remaining issues, if you don't mind.
 >
-> Correct.
+> Pinning shouldn't be an issue.
+> Only mmap is the problem. User space access if fine since kernel
+> will mask out special fields on read/write.
 >
-> > For the last case (say task context), the problem of kmalloc
-> > reentrancy comes to mind again, e.g if we are tracing in guts of
-> > kmalloc and send local IPI which eventually calls kmalloc again (which
-> > may deadlock). But remember that such cases are already possible
-> > without BPF, interrupts which allocate may come in at any time, so the
-> > kmalloc code itself will keep IRQs disabled at these places, hence we
-> > are fine from BPF side as well.
+> > So to answer Alexei's specific option. I'm still not in favor of just
+> > saying "anything that's not .data or .rodata is non-mmapable map". I'd
+> > rather carve out naming prefixes with . (which are  reserved for
+> > libbpf's own use) for these special purpose maps. I don't think that
+> > limits anyone, right?
 >
-> Exactly.
+> Is backward compat a concern?
+> Whether to mmap global data is a flag.
+> It can be opt-in or opt-out.
+> I'm proposing make all named section to be 'do not mmap'.
+> If a section needs to be mmaped and appear in skeleton the user can do
+> SEC("my_section.mmap")
 >
-> > Please let me know of any inaccuracies in the above description.
->
-> All looks correct.
+> What you're proposing is to do the other way around:
+> SEC("enqueue.nommap")
+> SEC("dequeue.nommap")
+> in the above example.
+> I guess it's fine, but more verbose.
 
-Yep, very nice summary, thanks Kumar!
+Well, I didn't propose to use suffixes. Currently user can define
+SEC(".data.my_custom_use_case"). So I was proposing that we'll just
+define a different *prefix*, like SEC(".private.enqueue") and
+SEC(".private.dequeue") for your example above, which will be private
+to BPF program, not mmap'ed, not exposed in skeleton.
 
-> I'm hesitant to add such low level details to a bpf documentation though
-> because things will change soon and program writers often don't have
-> control on the execution context. When bpf prog is attached to a kernel
-> function 'foo' that function maybe called out of all possible contexts.
-> Just like rigth now the bpf progs call bpf_map_update_elem (which does
-> some kind of memory allocation inside) and don't think twice.
-> Smarter thresholds are on todo list.
-> When bpf_mem_alloc is exposed to bpf progs directly they will have
-> an ability to prefill the cache to guarantee availability of objects later.
-> Sleepable progs might skip cache altogether or try direct kmalloc and fallback
-> to cache or the other way around.
-> In other words the program writers should not rely on specific
-> implementation details of bpf_mem_alloc, RT or non-RT, IRQs on or off, etc.
->
-> > > Or am I wrong and we can still run out of memory if we don't have
-> > > enough pre-cached memory. I think it would be good to clearly state
-> > > such things (unless I missed them somewhere in patches). I'm trying to
-> > > understand if in non-restrictive mode we can still fail to allocate a
-> > > bunch of hashmap elements in a loop just because of the design of
-> > > bpf_mem_alloc?
->
-> The users shouldn't rely on internal details. bpf_mem_alloc can
-> return NULL. That's all they need to know.
+mmap is a bit orthogonal to exposing in skeleton, you can still
+imagine data section that will be allowed to be initialized from
+user-space before load but never mmaped afterwards. Just to say that
+.nommap doesn't necessarily imply that it shouldn't be in a skeleton.
 
-Not really. Sure, users have to handle failures, it's inevitable. But
-there is a big difference between some update failing because system
-is critically low on memory or we exhausted hashmap capacity vs update
-fails because it's 2nd or 4th or whatever update of almost empty
-hashmap within single BPF program run. Understanding these technical
-limitations are quite important in practice.
+So I still prefer special prefix (.private) and declare that this is
+both non-mmapable and not-exposed in skeleton.
 
-> If it's not acceptable the prog should prefill the cache. Then the prog
-> will have a guaranteed reserve at the time of allocation.
-> That api is work in progress. It's another step after Delyan's work.
->
+As for allowing any section. It just feels unnecessary and long-term
+harmful to allow any section name at this point, tbh.
 
-While I understand that we don't want to make these guarantees as some
-sort of set in stone API, it's still good to describe what are the
-conditions when mem alloc might fail. E.g., knowing that single map
-update is almost 100% guaranteed to succeed, while 100th update within
-single program execution is 100% guaranteed to fail due to exhaustion
-of pre-allocated mem cache would be nice to know. Exact number of
-successful allocs within one program invocation is probably too much
-to specify, but saying that BPF program not running in NMI and hardirq
-on non-RT kernel can do many allocations without risk of exhausting
-this small cache is important to understand. So I'd personally like to
-have Kumar's summary somewhere in docs with explicit disclaimer that
-this is general guidance and not guaranteed to be exactly like that in
-the future kernel versions.
-
-I also just realized that I'm also unclear now about 4K limit, does it
-apply for hashmap use case where all alloc'ed elements are fixed
-sized? I can find it in code when the time comes, but it's just an
-example of questions that users will run into (or they won't think
-about this and will be bitten in production).
-
-But up to you about documenting this. I just wanted to make sure that
-in "normal" context we don't have to be afraid to do multiple hash map
-updates. And 4K limit for fixed-sized elements popped up as I wrote
-this. If we don't, we should probably have selftest with hashmap with
->4KB map value.
-
-But also, behavior in hardirq/NMI (and especially on RT kernels) means
-that that sysctl that you had in v4 to force prealloc hashmaps to be
-non-prealloc is probably too aggressive in general. I still see cases
-when PREALLOC might be important and necessary.
-
-
-> > > But it looks great otherwise. For the series:
-> > >
-> > > Acked-by: Andrii Nakryiko <andrii@kernel.org>
->
-> Thanks for the review!
+> The gut feeling is that the use case for naming section will be specifically
+> for lock+rbtree. Everything else will go into common global .data or .rodata.
+> Same thinking about compiler generated special sections with constants.
+> They shouldn't be mmaped by default, but we're not going to hack llvm
+> to add ".nommap" suffix to such sections.
+> Hence the proposal to avoid mmap by default for all non standard sections.
