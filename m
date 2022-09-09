@@ -2,69 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E4595B2D53
-	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 06:19:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 212B45B2D4E
+	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 06:19:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229598AbiIIETz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Sep 2022 00:19:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52004 "EHLO
+        id S229572AbiIIETd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Sep 2022 00:19:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229670AbiIIETw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Sep 2022 00:19:52 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D777F2A709
-        for <bpf@vger.kernel.org>; Thu,  8 Sep 2022 21:19:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1662697190; x=1694233190;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=VGYZxDtSW+zm4ub5w+hpt4s6GdSARv5ugnqzhFp1DiU=;
-  b=VM/K+cI1Lr/smXGLueWK8S8cVIUhVq4EshJNcAiCPnnq/DXVUx8sncSl
-   LA3fuUA9pe/NxAZrasDt3Xp1euk0s+nRy4jsrFjimPvaKmzPIBPgYh7WH
-   mke8r+uctME7wmCu5/N0FPszXJewEJOT/IiGOt2+jL1qEadFAeJcr2ABI
-   l7KtJnAgdGJ6Tc7GkBoXmsNVFYZgk70gKksvUKIPFJwCaJ3LXHPHsK1U8
-   xc9t/lR0qwiJcdRHmjAPF2zAawaAk2inVPue3j0W9pkc7YQPLHeiiRaNr
-   6qC8dyrPapuWOZRwxxW3JNnVnIsF7lxMmWSiEaYWckLXYezC6EQrIkBZB
-   w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10464"; a="297391861"
-X-IronPort-AV: E=Sophos;i="5.93,302,1654585200"; 
-   d="scan'208";a="297391861"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2022 21:19:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,302,1654585200"; 
-   d="scan'208";a="566230379"
-Received: from lkp-server02.sh.intel.com (HELO b2938d2e5c5a) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 08 Sep 2022 21:19:47 -0700
-Received: from kbuild by b2938d2e5c5a with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1oWVUY-0000i5-1J;
-        Fri, 09 Sep 2022 04:19:46 +0000
-Date:   Fri, 9 Sep 2022 12:19:20 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     kbuild-all@lists.01.org,
-        syzbot+2251879aa068ad9c960d@syzkaller.appspotmail.com,
-        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>
-Subject: Re: [PATCH bpf-next] bpf: Prevent bpf program recursion for raw
- tracepoint probes
-Message-ID: <202209091236.avgRKOSj-lkp@intel.com>
-References: <20220908114659.102775-1-jolsa@kernel.org>
+        with ESMTP id S229456AbiIIETc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Sep 2022 00:19:32 -0400
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F00F62621
+        for <bpf@vger.kernel.org>; Thu,  8 Sep 2022 21:19:25 -0700 (PDT)
+Received: by mail-io1-f72.google.com with SMTP id u23-20020a6be917000000b0069f4854e11eso335913iof.2
+        for <bpf@vger.kernel.org>; Thu, 08 Sep 2022 21:19:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date;
+        bh=JbsBL1c3AkZtVs4/cSEGc5hTtYMUj0g0hX9Fbt9+yjg=;
+        b=lQvd6SyCnSxL5nQFHfR1cX48ZBXzIz8QYkuf/aA2Tq0n2OP6yoOjQ/mAe97nfeVejj
+         KNUDzeQTQD9+1SCNN5gp2WQ8HIY7pq589l0fhF2fTY54H7dKjBOQbMG8TWE9N/5slq8q
+         xGpQIOJ4KA4qS9oig8osyLgKkiNEzjQfYoGNWGOEDtKA808i0/0tf+hApm4Z7qKm4sl/
+         AHmTob0Oxv01Rr8hg6PmxsYLdUNE19aTZzHUY0taGMIc2uCbJUZLYhTjozCAmKhO+j7D
+         FGRn/KMr71kwsHdmocERtSr4m/hFZ0JGWzOsi+siF4px3kiP5Ef3609MjqvGArTw5b7y
+         WXHw==
+X-Gm-Message-State: ACgBeo17iVapIz6Aw1l6bocDXCxqdfS/ecEwByo9tjQh/EYLh1Wr7Wfp
+        JvEsTIYCBVpzl5IHwI4ZmE8RsDyJdBESgYfaqXTgew8IvbEb
+X-Google-Smtp-Source: AA6agR479dFZN40nHgHFqZhh2nj8Ibx3ZY9wf4YJrUbXeDaPLOwtxaKkASsbh6S5hVwVKtnImhn9pRjFGROqLGLqB+iHVcVMZOUr
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220908114659.102775-1-jolsa@kernel.org>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Received: by 2002:a02:b001:0:b0:358:2f68:8a07 with SMTP id
+ p1-20020a02b001000000b003582f688a07mr5056754jah.280.1662697165094; Thu, 08
+ Sep 2022 21:19:25 -0700 (PDT)
+Date:   Thu, 08 Sep 2022 21:19:25 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e506e905e836d9e7@google.com>
+Subject: [syzbot] WARNING in bpf_verifier_vlog
+From:   syzbot <syzbot+8b2a08dfbd25fd933d75@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, haoluo@google.com,
+        hawk@kernel.org, john.fastabend@gmail.com, jolsa@kernel.org,
+        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, martin.lau@linux.dev, nathan@kernel.org,
+        ndesaulniers@google.com, netdev@vger.kernel.org, sdf@google.com,
+        song@kernel.org, syzkaller-bugs@googlegroups.com, trix@redhat.com,
+        yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,62 +59,78 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Jiri,
+Hello,
 
-I love your patch! Yet something to improve:
+syzbot found the following issue on:
 
-[auto build test ERROR on bpf-next/master]
+HEAD commit:    7e18e42e4b28 Linux 6.0-rc4
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=1551da55080000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f4d613baa509128c
+dashboard link: https://syzkaller.appspot.com/bug?extid=8b2a08dfbd25fd933d75
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1798cab7080000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16ccbdc5080000
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Jiri-Olsa/bpf-Prevent-bpf-program-recursion-for-raw-tracepoint-probes/20220908-194832
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-config: arm64-buildonly-randconfig-r002-20220907 (https://download.01.org/0day-ci/archive/20220909/202209091236.avgRKOSj-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 12.1.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/f68b567cfb6572c20e431242a440cc5f01452485
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Jiri-Olsa/bpf-Prevent-bpf-program-recursion-for-raw-tracepoint-probes/20220908-194832
-        git checkout f68b567cfb6572c20e431242a440cc5f01452485
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=arm64 SHELL=/bin/bash
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/da260c675b46/disk-7e18e42e.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/58f7bbbaa6ff/vmlinux-7e18e42e.xz
 
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp@intel.com>
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+8b2a08dfbd25fd933d75@syzkaller.appspotmail.com
 
-All errors (new ones prefixed by >>):
+------------[ cut here ]------------
+verifier log line truncated - local buffer too short
+WARNING: CPU: 1 PID: 3604 at kernel/bpf/verifier.c:300 bpf_verifier_vlog+0x267/0x3c0 kernel/bpf/verifier.c:300
+Modules linked in:
+CPU: 1 PID: 3604 Comm: syz-executor146 Not tainted 6.0.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/26/2022
+RIP: 0010:bpf_verifier_vlog+0x267/0x3c0 kernel/bpf/verifier.c:300
+Code: f5 95 3d 0c 31 ff 89 ee e8 06 07 f0 ff 40 84 ed 75 1a e8 7c 0a f0 ff 48 c7 c7 c0 e7 f3 89 c6 05 d4 95 3d 0c 01 e8 fb 4c ae 07 <0f> 0b e8 62 0a f0 ff 48 89 da 48 b8 00 00 00 00 00 fc ff df 48 c1
+RSP: 0018:ffffc900039bf8a0 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: ffff888017a19210 RCX: 0000000000000000
+RDX: ffff888021fb1d80 RSI: ffffffff8161f408 RDI: fffff52000737f06
+RBP: 0000000000000000 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000080000000 R11: 0000000000000000 R12: ffffffff89f5aba0
+R13: 00000000000003ff R14: ffff888017a19214 R15: ffff888012705800
+FS:  0000555555cba300(0000) GS:ffff8880b9b00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020100000 CR3: 000000001bf9e000 CR4: 0000000000350ee0
+Call Trace:
+ <TASK>
+ __btf_verifier_log+0xbb/0xf0 kernel/bpf/btf.c:1375
+ __btf_verifier_log_type+0x451/0x8f0 kernel/bpf/btf.c:1413
+ btf_func_proto_check_meta+0x117/0x160 kernel/bpf/btf.c:3905
+ btf_check_meta kernel/bpf/btf.c:4588 [inline]
+ btf_check_all_metas+0x3c1/0xa70 kernel/bpf/btf.c:4612
+ btf_parse_type_sec kernel/bpf/btf.c:4748 [inline]
+ btf_parse kernel/bpf/btf.c:5031 [inline]
+ btf_new_fd+0x939/0x1e70 kernel/bpf/btf.c:6710
+ bpf_btf_load kernel/bpf/syscall.c:4314 [inline]
+ __sys_bpf+0x13bd/0x6130 kernel/bpf/syscall.c:4998
+ __do_sys_bpf kernel/bpf/syscall.c:5057 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5055 [inline]
+ __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:5055
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7fb092221c29
+Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fff5b0a6878 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fb092221c29
+RDX: 0000000000000020 RSI: 0000000020000240 RDI: 0000000000000012
+RBP: 00007fb0921e5dd0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007fb0921e5e60
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
 
-   aarch64-linux-ld: Unexpected GOT/PLT entries detected!
-   aarch64-linux-ld: Unexpected run-time procedure linkages detected!
-   aarch64-linux-ld: kernel/trace/bpf_trace.o: in function `__bpf_trace_run':
->> kernel/trace/bpf_trace.c:2046: undefined reference to `bpf_prog_inc_misses_counter'
->> aarch64-linux-ld: kernel/trace/bpf_trace.c:2046: undefined reference to `bpf_prog_inc_misses_counter'
->> aarch64-linux-ld: kernel/trace/bpf_trace.c:2046: undefined reference to `bpf_prog_inc_misses_counter'
->> aarch64-linux-ld: kernel/trace/bpf_trace.c:2046: undefined reference to `bpf_prog_inc_misses_counter'
->> aarch64-linux-ld: kernel/trace/bpf_trace.c:2046: undefined reference to `bpf_prog_inc_misses_counter'
-   aarch64-linux-ld: kernel/trace/bpf_trace.o:kernel/trace/bpf_trace.c:2046: more undefined references to `bpf_prog_inc_misses_counter' follow
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-vim +2046 kernel/trace/bpf_trace.c
-
-  2040	
-  2041	static __always_inline
-  2042	void __bpf_trace_run(struct bpf_prog *prog, u64 *args)
-  2043	{
-  2044		cant_sleep();
-  2045		if (unlikely(this_cpu_inc_return(*(prog->active)) != 1)) {
-> 2046			bpf_prog_inc_misses_counter(prog);
-  2047			goto out;
-  2048		}
-  2049		rcu_read_lock();
-  2050		(void) bpf_prog_run(prog, args);
-  2051		rcu_read_unlock();
-  2052	out:
-  2053		this_cpu_dec(*(prog->active));
-  2054	}
-  2055	
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
