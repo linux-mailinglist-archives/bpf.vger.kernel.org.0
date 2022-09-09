@@ -2,65 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 767AB5B3DC8
-	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 19:16:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02C895B3DD8
+	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 19:19:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231220AbiIIRQd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Sep 2022 13:16:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40984 "EHLO
+        id S230490AbiIIRTq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Sep 2022 13:19:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230401AbiIIRQc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Sep 2022 13:16:32 -0400
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 223D31269F8
-        for <bpf@vger.kernel.org>; Fri,  9 Sep 2022 10:16:31 -0700 (PDT)
-Received: by mail-pj1-x1049.google.com with SMTP id a24-20020a17090a8c1800b0020266349974so3549984pjo.8
-        for <bpf@vger.kernel.org>; Fri, 09 Sep 2022 10:16:31 -0700 (PDT)
+        with ESMTP id S229862AbiIIRTo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Sep 2022 13:19:44 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA506255B5
+        for <bpf@vger.kernel.org>; Fri,  9 Sep 2022 10:19:41 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id o1-20020a170902d4c100b00177f59a9889so1648317plg.13
+        for <bpf@vger.kernel.org>; Fri, 09 Sep 2022 10:19:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date;
-        bh=QFnamYGdcG3RTWVvJqLpNP3EOD8aM2gxJ3g8gRyZ/qk=;
-        b=SZDHTIlVA5bFdnkuLwRHMUF8b0DsCuxNe0fYCWz/xwk8nwWdFc9k+A/WOChKR6ieC3
-         +BW4tKJNm3e1VqUqRMNxLvU8sPPNogaEYK8hCYU4cK0DkN03j7mdOZMMAvviilmuOwQ4
-         kKI8hcgpOsaAk/GzQy2WIxA4gLrfrL3nDQtuIq5fWkzo32K0mtGJvl6lduSquvjr2Ui9
-         4hrw8ugyiAtQK9eJ5o++h7DMHX6voU/NU+SIqLvyeaqmk6hTU6RbeLWsCFkkKlvUgAGD
-         do4tJ0+3JJr9aF6opCBRafTiqUPU1Mpvxf47fQ1eZQTJ+PqcRPb1SYay2obwdigNTsOn
-         V2SA==
+        bh=y+S5AbIHCrepBfZ2rw1p2j+yX8LnWjY6X4hW/K5B26E=;
+        b=FBPCZrVg3A5xkX2OTUS/Lt5/hDbXEhiQzndmF1GMlIGtCP4Bd8a13tQ+23xzbZ0ced
+         v4ss1uefZSpho+Io18qZ+Q7r9x2x9Ef9TtZDBqgdSJT71TiOHKxQ/E5cuNX5/e0ytcrZ
+         6hVEESy8F2bpVXFdLh9X3uCCGCdxvW6hZeK58BRWrYrlp/4dEwNxq/KN+sUvaAEY/pXI
+         CaDnNMgVJzv6jcv674hbQp69SmAcCHSU4Wg615K+yZaI3vOsYdNVNtZGFstnWjB2YnFF
+         wrg7EdS6+aH++GFOG0YRUFiWMFi48S1xF1bfJ9aIvTpirymw0rb4fI/mwkCtE1SNIS8U
+         JMpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date;
-        bh=QFnamYGdcG3RTWVvJqLpNP3EOD8aM2gxJ3g8gRyZ/qk=;
-        b=mu/JndWPgvdYMY2I1Ba011ExL49nh9VmxzHkZu4wJtzzcjUIj646y4Rg/Ps7RKr+Hv
-         0+jpFzyP9TOMOo+L/w2CSz2niVJcGWYlN9lbXjnWygjoHVqrOSHWt8eH0mqntkDNLpje
-         FXqAlgkyrJmrN2YaMNEYBUdl6R+f1o65jtc5E+z3ZysMb6slzT3XHsgSwvPIUMi/UTAz
-         UYi8bVcrcJkdefC3OIxJ0izC9eBtx4/evfg3A6Tmgf2kX/xq3lYtkFPTQKq++72JZ+1H
-         yOhXZnn3lk5XX+1qJcm/XUA0aC2qcGg9X7eVxvTQt+CH0PtokTF0AtIICigPtNRia+ZJ
-         3Rtw==
-X-Gm-Message-State: ACgBeo2WRqWv62KF18JMAkX6BHYNrZAyeFysoKfmnE9E3KwP5eCmOI30
-        nz7iYIsr+ki9wDKmgKMKDRin52U=
-X-Google-Smtp-Source: AA6agR4VgrH7q/84mlNCM//BP7eyC3elYRo8C1BlKXdyJDnVsy4G6helZVU18gXJ3LRp2ozS5hXIPhc=
+        bh=y+S5AbIHCrepBfZ2rw1p2j+yX8LnWjY6X4hW/K5B26E=;
+        b=xUvsqJLUexsFc3gKIFNnq6TTU3rLAGVFGN17oOWbIuk0xLxnI8stN0ErIRnc1enBxo
+         udwfyMzAVdvWt6uT/MelW/Y4EGe4+P22PVt/MVEziNeM9T+mRxvDMvqHffVlqfo0AMAd
+         Pq1sYWGasL9Yz1EbabXWruDTqHBzl/48osuoCAwKlyIJquITgEsaJqTjYPze6Sy1RFZv
+         wNssavbYTO0H4PoGfJZEjfyMvOtVqbfIogJl+E01Dj69bZgX4QgD012GJkFwWzwz7EBM
+         BxGatm1LT53sWZeljhT4iyweaC0DGDVB6Peysa7YABWUpzwKqZN+sHZxseiJDkW6JcWr
+         6agA==
+X-Gm-Message-State: ACgBeo2Zy1Lhb0XPKbYVVkx6RCpYUsGSnoj94u0uuBEYbBEEhIzMV+Oy
+        66qkRLcdYVqtjzQePKw1vdhvcXo=
+X-Google-Smtp-Source: AA6agR6QPX7Uuhl63LLM4hwCHcUgMnHrqQo6D5F1r53w/VYF+DHyPdIuNsRFMuyb9aQzk4M/e7lw57I=
 X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a05:6a00:1252:b0:53a:8943:4b1e with SMTP id
- u18-20020a056a00125200b0053a89434b1emr15344063pfi.2.1662743790577; Fri, 09
- Sep 2022 10:16:30 -0700 (PDT)
-Date:   Fri, 9 Sep 2022 10:16:28 -0700
-In-Reply-To: <1662702346-29665-2-git-send-email-wangyufen@huawei.com>
+ (user=sdf job=sendgmr) by 2002:a17:90b:10a:b0:200:2849:235f with SMTP id
+ p10-20020a17090b010a00b002002849235fmr202016pjz.1.1662743980876; Fri, 09 Sep
+ 2022 10:19:40 -0700 (PDT)
+Date:   Fri, 9 Sep 2022 10:19:39 -0700
+In-Reply-To: <20220909092107.3035-1-oss@lmb.io>
 Mime-Version: 1.0
-References: <1662702346-29665-1-git-send-email-wangyufen@huawei.com> <1662702346-29665-2-git-send-email-wangyufen@huawei.com>
-Message-ID: <Yxt07BE7TOX6dGh2@google.com>
-Subject: Re: [bpf-next 2/2] libbpf: Add pathname_concat() helper
+References: <20220909092107.3035-1-oss@lmb.io>
+Message-ID: <Yxt1q1DZtTklML3l@google.com>
+Subject: Re: [PATCH bpf] bpf: btf: fix truncated last_member_type_id in btf_struct_resolve
 From:   sdf@google.com
-To:     Wang Yufen <wangyufen@huawei.com>
-Cc:     andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
-        jolsa@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, davem@davemloft.net, kuba@kernel.org,
-        hawk@kernel.org, nathan@kernel.org, ndesaulniers@google.com,
-        trix@redhat.com, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, llvm@lists.linux.dev
+To:     Lorenz Bauer <oss@lmb.io>
+Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
@@ -72,181 +73,46 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 09/09, Wang Yufen wrote:
-> Move snprintf and len check to common helper pathname_concat() to make the
-> code simpler.
+On 09/09, Lorenz Bauer wrote:
+> When trying to finish resolving a struct member, btf_struct_resolve
+> saves the member type id in a u16 temporary variable. This truncates
+> the 32 bit type id value if it exceeds UINT16_MAX.
 
-> Signed-off-by: Wang Yufen <wangyufen@huawei.com>
+> As a result, structs that have members with type ids > UINT16_MAX and
+> which need resolution will fail with a message like this:
+
+>      [67414] STRUCT ff_device size=120 vlen=12
+>          effect_owners type_id=67434 bits_offset=960 Member exceeds  
+> struct_size
+
+> Fix this by changing the type of last_member_type_id to u32.
+
+Makes sense to me; I'm surprised the compiler isn't raising a warning on  
+line:
+last_member_type_id = last_member->type;
+
+Reviewed-by: Stanislav Fomichev <sdf@google.com>
+
+> Fixes: eb3f595dab40 ("bpf: btf: Validate type reference")
+> Signed-off-by: Lorenz Bauer <oss@lmb.io>
 > ---
->   tools/lib/bpf/libbpf.c | 74  
-> ++++++++++++++++++--------------------------------
->   1 file changed, 27 insertions(+), 47 deletions(-)
+>   kernel/bpf/btf.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 5854b92..238a03e 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -2096,20 +2096,31 @@ static bool get_map_field_int(const char  
-> *map_name, const struct btf *btf,
->   	return true;
->   }
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index 7e64447659f3..36fd4b509294 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -3128,7 +3128,7 @@ static int btf_struct_resolve(struct  
+> btf_verifier_env *env,
+>   	if (v->next_member) {
+>   		const struct btf_type *last_member_type;
+>   		const struct btf_member *last_member;
+> -		u16 last_member_type_id;
+> +		u32 last_member_type_id;
 
-> -static int build_map_pin_path(struct bpf_map *map, const char *path)
-> +static int pathname_concat(const char *path, const char *name, char *buf)
->   {
-> -	char buf[PATH_MAX];
->   	int len;
-
-> -	if (!path)
-> -		path = "/sys/fs/bpf";
-> -
-> -	len = snprintf(buf, PATH_MAX, "%s/%s", path, bpf_map__name(map));
-> +	len = snprintf(buf, PATH_MAX, "%s/%s", path, name);
->   	if (len < 0)
->   		return -EINVAL;
->   	else if (len >= PATH_MAX)
->   		return -ENAMETOOLONG;
-
-> +	return 0;
-> +}
-> +
-> +static int build_map_pin_path(struct bpf_map *map, const char *path)
-> +{
-> +	char buf[PATH_MAX];
-> +	int err;
-> +
-> +	if (!path)
-> +		path = "/sys/fs/bpf";
-> +
-> +	err = pathname_concat(path, bpf_map__name(map), buf);
-> +	if (err)
-> +		return err;
-> +
->   	return bpf_map__set_pin_path(map, buf);
->   }
-
-> @@ -7959,17 +7970,8 @@ int bpf_object__pin_maps(struct bpf_object *obj,  
-> const char *path)
->   			continue;
-
->   		if (path) {
-> -			int len;
-> -
-> -			len = snprintf(buf, PATH_MAX, "%s/%s", path,
-> -				       bpf_map__name(map));
-> -			if (len < 0) {
-> -				err = -EINVAL;
-> -				goto err_unpin_maps;
-> -			} else if (len >= PATH_MAX) {
-> -				err = -ENAMETOOLONG;
-
-[..]
-
-> +			if (pathname_concat(path, bpf_map__name(map), buf))
->   				goto err_unpin_maps;
-> -			}
-
-You're breaking error reporting here and in a bunch of other places.
-Should be:
-
-err = pathname_concat();
-if (err)
-	goto err_unpin_maps;
-
-I have the same attitude towards this patch as the first one in the
-series: not worth it. Nothing is currently broken, the code as is relatively
-readable, this version is not much simpler, it just looks slightly different
-taste-wise..
-
-How about this: if you really want to push this kind of cleanup, send
-selftests that exercise all these error cases? :-)
-
-
->   			sanitize_pin_path(buf);
->   			pin_path = buf;
->   		} else if (!map->pin_path) {
-> @@ -8007,14 +8009,9 @@ int bpf_object__unpin_maps(struct bpf_object *obj,  
-> const char *path)
->   		char buf[PATH_MAX];
-
->   		if (path) {
-> -			int len;
-> -
-> -			len = snprintf(buf, PATH_MAX, "%s/%s", path,
-> -				       bpf_map__name(map));
-> -			if (len < 0)
-> -				return libbpf_err(-EINVAL);
-> -			else if (len >= PATH_MAX)
-> -				return libbpf_err(-ENAMETOOLONG);
-> +			err = pathname_concat(path, bpf_map__name(map), buf);
-> +			if (err)
-> +				return err;
->   			sanitize_pin_path(buf);
->   			pin_path = buf;
->   		} else if (!map->pin_path) {
-> @@ -8032,6 +8029,7 @@ int bpf_object__unpin_maps(struct bpf_object *obj,  
-> const char *path)
->   int bpf_object__pin_programs(struct bpf_object *obj, const char *path)
->   {
->   	struct bpf_program *prog;
-> +	char buf[PATH_MAX];
->   	int err;
-
->   	if (!obj)
-> @@ -8043,17 +8041,8 @@ int bpf_object__pin_programs(struct bpf_object  
-> *obj, const char *path)
->   	}
-
->   	bpf_object__for_each_program(prog, obj) {
-> -		char buf[PATH_MAX];
-> -		int len;
-> -
-> -		len = snprintf(buf, PATH_MAX, "%s/%s", path, prog->name);
-> -		if (len < 0) {
-> -			err = -EINVAL;
-> +		if (pathname_concat(path, prog->name, buf))
->   			goto err_unpin_programs;
-> -		} else if (len >= PATH_MAX) {
-> -			err = -ENAMETOOLONG;
-> -			goto err_unpin_programs;
-> -		}
-
->   		err = bpf_program__pin(prog, buf);
->   		if (err)
-> @@ -8064,13 +8053,7 @@ int bpf_object__pin_programs(struct bpf_object  
-> *obj, const char *path)
-
->   err_unpin_programs:
->   	while ((prog = bpf_object__prev_program(obj, prog))) {
-> -		char buf[PATH_MAX];
-> -		int len;
-> -
-> -		len = snprintf(buf, PATH_MAX, "%s/%s", path, prog->name);
-> -		if (len < 0)
-> -			continue;
-> -		else if (len >= PATH_MAX)
-> +		if (pathname_concat(path, prog->name, buf))
->   			continue;
-
->   		bpf_program__unpin(prog, buf);
-> @@ -8089,13 +8072,10 @@ int bpf_object__unpin_programs(struct bpf_object  
-> *obj, const char *path)
-
->   	bpf_object__for_each_program(prog, obj) {
->   		char buf[PATH_MAX];
-> -		int len;
-
-> -		len = snprintf(buf, PATH_MAX, "%s/%s", path, prog->name);
-> -		if (len < 0)
-> -			return libbpf_err(-EINVAL);
-> -		else if (len >= PATH_MAX)
-> -			return libbpf_err(-ENAMETOOLONG);
-> +		err = pathname_concat(path, prog->name, buf);
-> +		if (err)
-> +			return libbpf_err(err);
-
->   		err = bpf_program__unpin(prog, buf);
->   		if (err)
+>   		last_member = btf_type_member(v->t) + v->next_member - 1;
+>   		last_member_type_id = last_member->type;
 > --
-> 1.8.3.1
+> 2.34.1
 
