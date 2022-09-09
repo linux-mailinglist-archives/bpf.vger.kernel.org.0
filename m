@@ -2,108 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 165E95B3D34
-	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 18:41:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF5815B3D6F
+	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 18:49:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229582AbiIIQlp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Sep 2022 12:41:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52926 "EHLO
+        id S232085AbiIIQs6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Sep 2022 12:48:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231130AbiIIQln (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Sep 2022 12:41:43 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C8B214343F
-        for <bpf@vger.kernel.org>; Fri,  9 Sep 2022 09:41:42 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id v16so5271434ejr.10
-        for <bpf@vger.kernel.org>; Fri, 09 Sep 2022 09:41:42 -0700 (PDT)
+        with ESMTP id S232125AbiIIQse (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Sep 2022 12:48:34 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69866145FF4
+        for <bpf@vger.kernel.org>; Fri,  9 Sep 2022 09:48:09 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-32a115757b6so19513307b3.13
+        for <bpf@vger.kernel.org>; Fri, 09 Sep 2022 09:48:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date;
-        bh=DRwJfDfUvquGqeEO7uBxCBjC7gdIjwvuPT372cxAYpQ=;
-        b=Uh2A6nB3Je0xjwJkD6HBqRKtVToway5Tp1sUKGqXTXVJmyBsPvDZMAeq3gCZP4XfSb
-         cRocVKPbdc52Vwsu7CFJOmr6iPVYZYYIq4HiOEcOFvXYJu0vw57jwxfa2moGpy5Qgc0B
-         qSXZWP7Xa10m9Ee7dMGxfhD1yXkha92yPTjoA45AUEcqxaXY2Pe/kH1sVJ3aYi3+vjrZ
-         KWWIR5Hnz8j//c4beS854oG6T8GlY6+G15OmqkWrUbNAVO44uuQdpReY0S6TJs6Gm2vw
-         RHGzxgSbOsIOsEkIcYAii9NipGZ+MzCP2Gywdk5iNIE7Yb7YyoIVRofBqiR5oUpArWwc
-         xfKA==
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date;
+        bh=EiWKoBzR0iZJ4t5t4o8KKYQS1ZEBQp5DPZAlqfx7Mbw=;
+        b=KQwKfUkXf85y1dPVwfQ8Qc7MSxQLT9AYU5ZGZvPs+5ppPcywurh+ZJ4JvmKqp13RJF
+         366/1+1wq7kJ4iBC3fym2Y0RRxCoLod6Ygnhy/n2U7mlPpVFOgYn6ZbmoqJZyL7LxQ2Z
+         rHwme73ruJzdXxRJGS9cu07qAtNPJtyb3GXOMbmmzZj34WHQtm9fe2v2QkDS8UVbrdQV
+         xsCsQzZv7It58MNmjAKZMpfX3nNntS2K4PMw/e9l9MPUijKpR3+3g2+Yw8W99Egy0wdy
+         ADLqB6rQ0lkUCci1VU4uKtBM0wLo68D+Vzk/70jgprUpnCJHrVGH4gddrS2YteDyj7q2
+         jbZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date;
-        bh=DRwJfDfUvquGqeEO7uBxCBjC7gdIjwvuPT372cxAYpQ=;
-        b=zB4RatJV3bhIsh8Zs1jEM3umIuLxExT/Vuw8RDVfG2xsYOEEdu9mMYU0w7R6e50DLO
-         8YRaaJYkiFDC+iqvtNGZWLnAkrpwMEXv1kEp9uCLmLBwr7M4clJS1emRuhAIaWCOao2x
-         rCZgaVNU6gO83hXUJFtPbJU1CenmyvLkx6a18EHmxis7B6GYTz6EYBWgGAOJ3+IKoJ+o
-         0wKkeW5k4pUuDd0H8acM0BPm4EUeu5rZdxo2cfLMUWnGD4Cyl4luLe1GYBFLtFI4LvP2
-         nldyER0mv2fFGdgaNQLpdlee2hKk4sTpvm7wxtVef2VQ2DSpROvPdLVrj7nA7920Ty7F
-         /0fA==
-X-Gm-Message-State: ACgBeo3zxt2aCfMfLAwmlmWByd6QO0sJSJ98rJaJhFnQugeF+yTfydRj
-        R1n6YVADwfbVr6iSvvgeg6uoYUYN2wc=
-X-Google-Smtp-Source: AA6agR7N3lZUuwaliPH+memk9kyj/1xPiCtaXAEKj3hdzTwC5boDBNNr5I8leSS7WjZSSpnGsC86oA==
-X-Received: by 2002:a17:906:5d0a:b0:770:23b7:ba9 with SMTP id g10-20020a1709065d0a00b0077023b70ba9mr10636556ejt.404.1662741700827;
-        Fri, 09 Sep 2022 09:41:40 -0700 (PDT)
-Received: from blondie ([141.226.162.95])
-        by smtp.gmail.com with ESMTPSA id g22-20020a170906539600b0076fa6d9d891sm511070ejo.46.2022.09.09.09.41.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Sep 2022 09:41:40 -0700 (PDT)
-Date:   Fri, 9 Sep 2022 19:41:38 +0300
-From:   Shmulik Ladkani <shmulik.ladkani@gmail.com>
-To:     Joanne Koong <joannelkoong@gmail.com>
-Cc:     bpf@vger.kernel.org, daniel@iogearbox.net, martin.lau@kernel.org,
-        andrii@kernel.org, ast@kernel.org, Kernel-team@fb.com,
-        Eyal Birger <eyal.birger@gmail.com>
-Subject: Re: [PATCH bpf-next v1 5/8] bpf: Add bpf_dynptr_clone
-Message-ID: <20220909194138.46aea4cb@blondie>
-In-Reply-To: <20220908000254.3079129-6-joannelkoong@gmail.com>
-References: <20220908000254.3079129-1-joannelkoong@gmail.com>
-        <20220908000254.3079129-6-joannelkoong@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date;
+        bh=EiWKoBzR0iZJ4t5t4o8KKYQS1ZEBQp5DPZAlqfx7Mbw=;
+        b=We3TWuyNENY/ia0SCOENvYj/+SrrmkNtn18US/LcqkibcAWnn+z7qLiwvitJjna/gi
+         AvskILHUbdyvdyKSapVsGnFpiac6skgL2h4ik/fgtJ0dN4T6chsM8LOHOq6bzBhBM5rF
+         6re/+7I057hJCdMOCuh/oDoL3SBjdCladwZu3PpN5p7+xb9q7SmRSlM/TSZe2aOQgn4w
+         vtj7s3ANfxXSfxWgddFDNzipytnMwBNf4lqFJNn9j+XRbfb4lh7RTZj6foxhOskF7Ecl
+         cupLI8N4gPzZDEU1GKNsHOfaK65FHLoTAimZac7ZPqBEF85ecYmEN3V+injS7UpCqGcS
+         zinA==
+X-Gm-Message-State: ACgBeo2vBIDEvrEw7Ro2fQNIgQn/tuxu7hyvfN09cTRBx3s/AJZffNDJ
+        pl1s7nHbsLYfTVLtt4e7zGRg3IU=
+X-Google-Smtp-Source: AA6agR4kYomPbLNUC/WT0027++lNLZfdZRdSZGZCMqTiWLGwnVmGNNXmOYwbsCb7MKr15OhG6+d4jro=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a05:6902:1143:b0:6ad:a593:2612 with SMTP id
+ p3-20020a056902114300b006ada5932612mr11807651ybu.474.1662742088546; Fri, 09
+ Sep 2022 09:48:08 -0700 (PDT)
+Date:   Fri, 9 Sep 2022 09:48:07 -0700
+In-Reply-To: <tencent_6715F3D7DF513D441A835321FAACFFCB0907@qq.com>
+Mime-Version: 1.0
+References: <tencent_6715F3D7DF513D441A835321FAACFFCB0907@qq.com>
+Message-ID: <YxtuR6hWUkGfiWya@google.com>
+Subject: Re: [PATCH bpf RESEND] samples/bpf: Replace blk_account_io_done()
+ with __blk_account_io_done()
+From:   sdf@google.com
+To:     Rong Tao <rtoax@foxmail.com>
+Cc:     bpf@vger.kernel.org, Rong Tao <rongtao@cestc.cn>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed,  7 Sep 2022 17:02:51 -0700 Joanne Koong <joannelkoong@gmail.com> wrote:
+On 09/09, Rong Tao wrote:
+> From: Rong Tao <rongtao@cestc.cn>
 
-> Add a new helper, bpf_dynptr_clone, which clones a dynptr.
-> 
-> The cloned dynptr will point to the same data as its parent dynptr,
-> with the same type, offset, size and read-only properties.
+> Since commit be6bfe36db17 ("block: inline hot paths of  
+> blk_account_io_*()")
+> blk_account_io_*() become inline functions.
 
-[...]
+Thanks for the fix.
 
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 4ca07cf500d2..16973fa4d073 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -5508,6 +5508,29 @@ union bpf_attr {
->   *	Return
->   *		The offset of the dynptr on success, -EINVAL if the dynptr is
->   *		invalid.
-> + *
-> + * long bpf_dynptr_clone(struct bpf_dynptr *ptr, struct bpf_dynptr *clone)
-> + *	Description
-> + *		Clone an initialized dynptr *ptr*. After this call, both *ptr*
-> + *		and *clone* will point to the same underlying data.
-> + *
+Not sure why RESEND. And it should target bpf-next; this doesn't seem like
+an important fix to warrant bpf. For future submissions, if you're targeting
+bpf, try to also add Fixes: tag.
 
-How about adding 'off' and 'len' parameters so that a view ("slice") of
-the dynptr can be created in a single call?
+Not worth another resend though. Assuming it can be pulled in the proper
+subtree by the maintainers.
 
-Otherwise, for a simple slice creation, ebpf user needs to:
-  bpf_dynptr_clone(orig, clone)
-  bpf_dynptr_advance(clone, off)
-  trim_len = bpf_dynptr_get_size(clone) - len
-  bpf_dynptr_trim(clone, trim_len)
+Reviewed-by: Stanislav Fomichev <sdf@google.com>
 
-This fits the usecase described here:
-  https://lore.kernel.org/bpf/20220830231349.46c49c50@blondie/
+> Signed-off-by: Rong Tao <rtoax@foxmail.com>
+> ---
+>   samples/bpf/task_fd_query_kern.c | 2 +-
+>   samples/bpf/task_fd_query_user.c | 2 +-
+>   samples/bpf/tracex3_kern.c       | 2 +-
+>   3 files changed, 3 insertions(+), 3 deletions(-)
+
+> diff --git a/samples/bpf/task_fd_query_kern.c  
+> b/samples/bpf/task_fd_query_kern.c
+> index c821294e1774..186ac0a79c0a 100644
+> --- a/samples/bpf/task_fd_query_kern.c
+> +++ b/samples/bpf/task_fd_query_kern.c
+> @@ -10,7 +10,7 @@ int bpf_prog1(struct pt_regs *ctx)
+>   	return 0;
+>   }
+
+> -SEC("kretprobe/blk_account_io_done")
+> +SEC("kretprobe/__blk_account_io_done")
+>   int bpf_prog2(struct pt_regs *ctx)
+>   {
+>   	return 0;
+> diff --git a/samples/bpf/task_fd_query_user.c  
+> b/samples/bpf/task_fd_query_user.c
+> index 424718c0872c..a33d74bd3a4b 100644
+> --- a/samples/bpf/task_fd_query_user.c
+> +++ b/samples/bpf/task_fd_query_user.c
+> @@ -348,7 +348,7 @@ int main(int argc, char **argv)
+>   	/* test two functions in the corresponding *_kern.c file */
+>   	CHECK_AND_RET(test_debug_fs_kprobe(0, "blk_mq_start_request",
+>   					   BPF_FD_TYPE_KPROBE));
+> -	CHECK_AND_RET(test_debug_fs_kprobe(1, "blk_account_io_done",
+> +	CHECK_AND_RET(test_debug_fs_kprobe(1, "__blk_account_io_done",
+>   					   BPF_FD_TYPE_KRETPROBE));
+
+>   	/* test nondebug fs kprobe */
+> diff --git a/samples/bpf/tracex3_kern.c b/samples/bpf/tracex3_kern.c
+> index 710a4410b2fb..bde6591cb20c 100644
+> --- a/samples/bpf/tracex3_kern.c
+> +++ b/samples/bpf/tracex3_kern.c
+> @@ -49,7 +49,7 @@ struct {
+>   	__uint(max_entries, SLOTS);
+>   } lat_map SEC(".maps");
+
+> -SEC("kprobe/blk_account_io_done")
+> +SEC("kprobe/__blk_account_io_done")
+>   int bpf_prog2(struct pt_regs *ctx)
+>   {
+>   	long rq = PT_REGS_PARM1(ctx);
+> --
+> 2.31.1
+
