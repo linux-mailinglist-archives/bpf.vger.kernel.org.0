@@ -2,62 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3D7E5B3F75
-	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 21:24:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9136E5B3F76
+	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 21:25:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229623AbiIITYt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Sep 2022 15:24:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38442 "EHLO
+        id S229594AbiIITZc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Sep 2022 15:25:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230474AbiIITYr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Sep 2022 15:24:47 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DC792F3BE
-        for <bpf@vger.kernel.org>; Fri,  9 Sep 2022 12:24:46 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id s11so3955697edd.13
-        for <bpf@vger.kernel.org>; Fri, 09 Sep 2022 12:24:46 -0700 (PDT)
+        with ESMTP id S229862AbiIITZa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Sep 2022 15:25:30 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AA1CB5159
+        for <bpf@vger.kernel.org>; Fri,  9 Sep 2022 12:25:29 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id pj10so2398544pjb.2
+        for <bpf@vger.kernel.org>; Fri, 09 Sep 2022 12:25:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=w6UfxCTziW1stFc/lwqMuwG5rqvUjmwGbcvVEYcPsgM=;
-        b=lcx4xoH5ms+KGPJhB5z9Rg22wQe6XTPeB3tlzS8hyiAJj6v/qVry6Q2IYO3vH4b9SS
-         R7RFryql+grn7FR/RvkchnDv9SvQGzXKKu7zAWVWCXSqav06B2dM6grcoSGA6E+30Svg
-         Yi7z3aM8B6HgKqdKa1F/HT9MXqHPXZym1LWHjKXacCiz5T/zcc3Md9PIzuL1rhS5b+wI
-         21fqtuuDOpKzelQL/s0ywigPcI+bY5a97X2pIQT9xpdoqGZLzBSXg8H8DqcUbY0nh5X5
-         LsdCv7nKwcfeGtruIMxLUu3OF20rgR90NXcxVpSeEHsRAWEJSDJ5kdJhjL4EA+hTt46g
-         G2Iw==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date;
+        bh=QHW8ux7wp+zJ3YDV12s9JA4OE1zTUpmqSydS3IuDiTg=;
+        b=eJqzU5Tae+goNacSd+ykMJNW8qpS/+8de/1um6XG/1XsbJb77aKnUc1u5hw5HOA5XX
+         goqtEfxqx08SE/J66DPze+KxDoYLVxNw7IXxE7h9fxyrBEjs8bVTGcp2jCycCQMv8x7M
+         aZap90cYR8ZeLP3dKgtaN16ioSKToHxiNCLTj1ESkG5JdxD0AzUsfzCeiK7EmierqKwq
+         jbTMOftUf68Brc7zYlpZE2OCjy1CY/08t+wvcErQ/DoxRV8p9j/PjhdrpmJtRd2ZtKW/
+         fqB+LN5+/18KdQbHEmTR5RZEX0BUz4EAj4SbV5aHzIhlgy1i3heGe4rskzqqZ0RR6aSc
+         qqbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=w6UfxCTziW1stFc/lwqMuwG5rqvUjmwGbcvVEYcPsgM=;
-        b=XSzY5nBQ7U9YGus+vi23daK9xFFdk7NDJ4Uf0FJidwdvVHOSAk9upm2abh9mBf6PyL
-         hnL07FtM6QqIPMLoIcEoSenTTz8EVcROzw0qYBvuF2PUQFiLSkEnot7wt7Mg9qrBZKP1
-         3VQiLL6qtkMXfbrlD60G/Jam1U/EkEgWNeQSYfsWfvhnmWHKijhXDgm8L2qXuT5npicG
-         IqJVhv+qPp1yfkm5MG2xRxpzXNZJYbIs3iGqgEvv5ra46xataGWLq0zhgvAnxvjdYsf0
-         0VXBmMbKbHtpXb93qJwNH3rwXo24M//71tm42IpHatUXFqKEmKRBZ7oFCPdHbtkni8rc
-         RraA==
-X-Gm-Message-State: ACgBeo3ouWgNGYKJaDsr9mohZ9ugG+xrmMslK0yWWhTVoI43yVzLVs+s
-        Yg9dF+++GfA0jBdxey6ZKwkA5hScb80pEOW8H0Q=
-X-Google-Smtp-Source: AA6agR7QE/LmKxvSMzOKPfGBgd+/0wiHvWJ/KC9z84mbfrjcG7kZ6L+sqQpny39R+2UwQGPZsEkE9mr4pWU8I+6xYXk=
-X-Received: by 2002:a05:6402:1946:b0:44e:a406:5ff5 with SMTP id
- f6-20020a056402194600b0044ea4065ff5mr12959656edz.14.1662751484685; Fri, 09
- Sep 2022 12:24:44 -0700 (PDT)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
+        bh=QHW8ux7wp+zJ3YDV12s9JA4OE1zTUpmqSydS3IuDiTg=;
+        b=rfwKWm4IlOjk0gvk48/LTpC3Lix6zoy+C5aLh7naxUjLISQYFAQBde4HPpH/4zZjbh
+         30IcMrf0EQGLpoPd3iHxmyl0/grrdBk+OcE+vTpW2eR/1xP5Dwqtnuyi4dnCo9Rj3hEy
+         5n2SlFammdmsUml/D6u/T6aY6vNwWuRAwIsZ1FG4foOO39q9JasmFDf2Ix/EfU5cvugk
+         0pvrGwv+kW1I6NV/3pjVGb7OZ9fJ8LNPxMjaV57ER5XRDE30VBqnfZE23v1Q9Trzqzs8
+         GAG7HcwVDmXaChyAjbvLht6L21g84PCt/HdpebBGdP/ZJy37/wQdSGEDv9pP94aoLFUu
+         io/g==
+X-Gm-Message-State: ACgBeo3XcdBPKahU75CaImH8gIZVk2P8OCqGIJgzw/oxNMDLjoq5xjTT
+        hhp241ICrOmUZWJIJkK+QReomwpXoP4=
+X-Google-Smtp-Source: AA6agR7cv/n5gDQvxgbsKLcT+JBBrXNOQI5fKPQAsMujkzjsORAfd0Sg0nnthiwKP+Xbc153FixY4w==
+X-Received: by 2002:a17:902:bc44:b0:176:909f:f636 with SMTP id t4-20020a170902bc4400b00176909ff636mr14841799plz.21.1662751528726;
+        Fri, 09 Sep 2022 12:25:28 -0700 (PDT)
+Received: from macbook-pro-4.dhcp.thefacebook.com ([2620:10d:c090:400::5:5aff])
+        by smtp.gmail.com with ESMTPSA id ij17-20020a170902ab5100b0016dc26c7d30sm818944plb.164.2022.09.09.12.25.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Sep 2022 12:25:28 -0700 (PDT)
+Date:   Fri, 9 Sep 2022 12:25:25 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Delyan Kratunov <delyank@fb.com>
+Subject: Re: [PATCH RFC bpf-next v1 21/32] bpf: Allow locking bpf_spin_lock
+ global variables
+Message-ID: <20220909192525.aymuhiprgjwfnlfe@macbook-pro-4.dhcp.thefacebook.com>
+References: <20220904204145.3089-1-memxor@gmail.com>
+ <20220904204145.3089-22-memxor@gmail.com>
+ <311eb0d0-777a-4240-9fa0-59134344f051@fb.com>
+ <CAP01T76QJOYqk4Lsc=bUjM86my=kg3p6GHxuz3yXiwFMHJtjJA@mail.gmail.com>
+ <CAADnVQJ6-kEE=_kHgyth_O3rUVHzJuNhS2MWhjQQed4wHzPpnA@mail.gmail.com>
+ <CAP01T74-Bc8xLihXcoer8fOoSoQQ1dddJ1FGOVdRPRa92RRPyQ@mail.gmail.com>
+ <CAADnVQLJP8YyYx5+mCBuSyenAfQDyXxDP8wfuDYCoZtO6kpunQ@mail.gmail.com>
+ <CAEf4BzZL9GS0oAfkY1h4C9u1_XCzj-HTnKY9KHj+PX+h66TL3g@mail.gmail.com>
 MIME-Version: 1.0
-References: <20220826231531.1031943-1-andrii@kernel.org> <20220826231531.1031943-4-andrii@kernel.org>
- <CACYkzJ7dNQe58g58qUBQJ3kP86o-vvLoFw+e9_hgH-Ltb9ZAHQ@mail.gmail.com> <a7cae4ad-be07-893f-3923-a64d7fc20cc7@iogearbox.net>
-In-Reply-To: <a7cae4ad-be07-893f-3923-a64d7fc20cc7@iogearbox.net>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 9 Sep 2022 12:24:33 -0700
-Message-ID: <CAEf4BzaKCU+qzX9qVDMYkPBxnzcBHfFMYP-n0uqojh5q_L221Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/3] selftests/bpf: add veristat tool for
- mass-verifying BPF object files
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     KP Singh <kpsingh@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>, bpf@vger.kernel.org,
-        ast@kernel.org, kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzZL9GS0oAfkY1h4C9u1_XCzj-HTnKY9KHj+PX+h66TL3g@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -68,97 +81,155 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 29, 2022 at 7:50 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 8/28/22 1:53 AM, KP Singh wrote:
-> > On Sat, Aug 27, 2022 at 1:15 AM Andrii Nakryiko <andrii@kernel.org> wrote:
-> >>
-> >> Add a small tool, veristat, that allows mass-verification of
-> >> a set of *libbpf-compatible* BPF ELF object files. For each such object
-> >> file, veristat will attempt to verify each BPF program *individually*.
-> >> Regardless of success or failure, it parses BPF verifier stats and
-> >> outputs them in human-readable table format. In the future we can also
-> >> add CSV and JSON output for more scriptable post-processing, if necessary.
-> >>
-> >> veristat allows to specify a set of stats that should be output and
-> >> ordering between multiple objects and files (e.g., so that one can
-> >> easily order by total instructions processed, instead of default file
-> >> name, prog name, verdict, total instructions order).
-> >>
-> >> This tool should be useful for validating various BPF verifier changes
-> >> or even validating different kernel versions for regressions.
+On Fri, Sep 09, 2022 at 11:32:40AM -0700, Andrii Nakryiko wrote:
+> On Fri, Sep 9, 2022 at 7:58 AM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
 > >
-> > Cool stuff!
->
-> +1, out of curiosity, did you try with different kernels to see the deltas?
-
-Nope, not yet, barely got the code to the current state before leaving
-on vacation. But I thought about using this to track regressions and
-improvements over time as we make changes to BPF verifier. I was
-thinking to have not just table human-readable output, but also csv
-and/or json, so that we can build some sort of automation to run this
-periodically (or even in BPF CI for each patch set) and yell about
-significant changes. veristat changes are easy, but someone will need
-to build this sort of automation. There are projects like rustc (Rust
-compiler) that have this sort of thing very nicely formalized, we
-might want to do that for Clang + BPF verifier changes as well.
-
->
-> > I think this would be useful for cases beyond these (i.e. for users to get
-> > stats about the verifier in general) and it's worth thinking if this should
-> > be built into bpftool?
+> > On Fri, Sep 9, 2022 at 7:51 AM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+> > >
+> > > On Fri, 9 Sept 2022 at 16:24, Alexei Starovoitov
+> > > <alexei.starovoitov@gmail.com> wrote:
+> > > >
+> > > > On Fri, Sep 9, 2022 at 4:05 AM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+> > > > >
+> > > > > On Fri, 9 Sept 2022 at 10:13, Dave Marchevsky <davemarchevsky@fb.com> wrote:
+> > > > > >
+> > > > > > On 9/4/22 4:41 PM, Kumar Kartikeya Dwivedi wrote:
+> > > > > > > Global variables reside in maps accessible using direct_value_addr
+> > > > > > > callbacks, so giving each load instruction's rewrite a unique reg->id
+> > > > > > > disallows us from holding locks which are global.
+> > > > > > >
+> > > > > > > This is not great, so refactor the active_spin_lock into two separate
+> > > > > > > fields, active_spin_lock_ptr and active_spin_lock_id, which is generic
+> > > > > > > enough to allow it for global variables, map lookups, and local kptr
+> > > > > > > registers at the same time.
+> > > > > > >
+> > > > > > > Held vs non-held is indicated by active_spin_lock_ptr, which stores the
+> > > > > > > reg->map_ptr or reg->btf pointer of the register used for locking spin
+> > > > > > > lock. But the active_spin_lock_id also needs to be compared to ensure
+> > > > > > > whether bpf_spin_unlock is for the same register.
+> > > > > > >
+> > > > > > > Next, pseudo load instructions are not given a unique reg->id, as they
+> > > > > > > are doing lookup for the same map value (max_entries is never greater
+> > > > > > > than 1).
+> > > > > > >
+> > > > > >
+> > > > > > For libbpf-style "internal maps" - like .bss.private further in this series -
+> > > > > > all the SEC(".bss.private") vars are globbed together into one map_value. e.g.
+> > > > > >
+> > > > > >   struct bpf_spin_lock lock1 SEC(".bss.private");
+> > > > > >   struct bpf_spin_lock lock2 SEC(".bss.private");
+> > > > > >   ...
+> > > > > >   spin_lock(&lock1);
+> > > > > >   ...
+> > > > > >   spin_lock(&lock2);
+> > > > > >
+> > > > > > will result in same map but different offsets for the direct read (and different
+> > > > > > aux->map_off set in resolve_pseudo_ldimm64 for use in check_ld_imm). Seems like
+> > > > > > this patch would assign both same (active_spin_lock_ptr, active_spin_lock_id).
+> > > > > >
+> > > > >
+> > > > > That won't be a problem. Two spin locks in a map value or datasec are
+> > > > > already rejected on BPF_MAP_CREATE,
+> > > > > so there is no bug. See idx >= info_cnt check in
+> > > > > btf_find_struct_field, btf_find_datasec_var.
+> > > > >
+> > > > > I can include offset as the third part of the tuple. The problem then
+> > > > > is figuring out which lock protects which bpf_list_head. We need
+> > > > > another __guarded_by annotation and force users to use that to
+> > > > > eliminate the ambiguity. So for now I just put it in the commit log
+> > > > > and left it for the future.
+> > > >
+> > > > Let's not go that far yet.
+> > > > Extra annotations are just as confusing and non-obvious as
+> > > > putting locks in different sections.
+> > > > Let's keep one lock per map value limitation for now.
+> > > > libbpf side needs to allow many non-mappable sections though.
+> > > > Single bss.private name is too limiting.
+> > >
+> > > In that case,
+> > > Dave, since the libbpf patch is yours, would you be fine with
+> > > reworking it to support multiple private maps?
+> > > Maybe it can just ignore the .XXX part in .bss.private.XXX?
+> > > Also I think Andrii mentioned once that he wants to eventually merge
+> > > data and bss, so it might be a good idea to call it .data.private from
+> > > the start?
 > >
-> >>
-> >> Here's an example for some of the heaviest selftests/bpf BPF object
-> >> files:
-> >>
-> >>    $ sudo ./veristat -s insns,file,prog {pyperf,loop,test_verif_scale,strobemeta,test_cls_redirect,profiler}*.linked3.o
-> >>    File                                  Program                               Verdict  Duration, us  Total insns  Total states  Peak states
-> >>    ------------------------------------  ------------------------------------  -------  ------------  -----------  ------------  -----------
-> >>    loop3.linked3.o                       while_true                            failure        350990      1000001          9663         9663
+> > I'd probably make all non-canonical names to be not-mmapable.
+> > The compiler generates special sections already.
+> > Thankfully the code doesn't use them, but it will sooner or later.
+> > So libbpf has to create hidden maps for them eventually.
+> > They shouldn't be messed up from user space, since it will screw up
+> > compiler generated code.
 > >
-> > [...]
->
-> nit: Looks like CI on gcc is bailing:
->
-> https://github.com/kernel-patches/bpf/runs/8072477251?check_suite_focus=true
->
-> [...]
->      INSTALL /tmp/work/bpf/bpf/tools/testing/selftests/bpf/tools/include/bpf/skel_internal.h
->    In file included from /tmp/work/bpf/bpf/tools/testing/selftests/bpf/tools/include/bpf/libbpf.h:20,
->      INSTALL /tmp/work/bpf/bpf/tools/testing/selftests/bpf/tools/include/bpf/libbpf_version.h
->                     from veristat.c:17:
->    /tmp/work/bpf/bpf/tools/testing/selftests/bpf/tools/include/bpf/libbpf_common.h:13:10: fatal error: libbpf_version.h: No such file or directory
->       13 | #include "libbpf_version.h"
->          |          ^~~~~~~~~~~~~~~~~~
+> > Andrii, what's your take?
+> 
+> Ok, a bunch of things to unpack. We've also discussed a lot of this
+> with Dave few weeks ago, but I have also few questions.
+> 
+> First, I'd like to not keep extending ".bss" with any custom ".bss.*"
+> sections. This is why we have .data.* and .rodata.* and not .bss (bad,
+> meaningless, historic name).
+> 
+> But I'm totally fine dedicating some other prefix to non-mmapable data
+> sections that won't be exposed in skeleton and, well, not-mmapable.
+> What to name it depends on what we anticipate putting in them?
+> 
+> If it's just for spinlocks, then having something like SEC(".locks")
+> seems best to me. If it's for more stuff, like global kptrs, rbtrees
+> and whatnot, then we'd need a bit more generic name (.private, or
+> whatever, didn't think much on best name). We can also allow .locks.*
+> or .private.* (i.e., keep it uniform with .data and .rodata handling,
+> expect for mmapable aspect).
+> 
+> One benefit for having SEC(".locks") just for spin_locks is that we
+> can teach libbpf to create a multi-element ARRAY map, where each lock
+> variable is put into a separate element. From BPF verifier's
+> perspective, there will be a single BTF type describing spin lock, but
+> multiple "instances" of lock, one per each element. That seems a bit
+> magical and I think, generally speaking, it's best to start supporting
+> multiple lock declarations within single map element (and thus keep
+> track of their offset within map_value); but at least that's an
+> option.
 
-hm... Makefile dependencies not correct? I'll check and fix.
+".lock" won't work. We need lock+rb_root or lock+list_head to be
+in the same section.
+It should be up to user to name that section with something meaningful.
+Ideally something like this should be supported:
+SEC("enqueue") struct bpf_spin_lock enqueue_lock;
+SEC("enqueue") struct bpf_list_head enqueue_head __contains(foo, node);
+SEC("dequeue") struct bpf_spin_lock dequeue_lock;
+SEC("dequeue") struct bpf_list_head dequeue_head __contains(foo, node);
 
->    compilation terminated.
->      INSTALL /tmp/work/bpf/bpf/tools/testing/selftests/bpf/tools/include/bpf/usdt.bpf.h
->      HOSTCC  /tmp/work/bpf/bpf/tools/testing/selftests/bpf/tools/build/libbpf/fixdep.o
->    make: *** [Makefile:165: /tmp/work/bpf/bpf/tools/testing/selftests/bpf/veristat.o] Error 1
->    make: *** Waiting for unfinished jobs....
->
-> I wonder, to detect regressions in pruning behavior, could we add a test_progs subtest to load
-> selected obj files and compare before/after 'verified insns' numbers? The workflow probably
-> makes this a bit hard to run with a kernel before this change, but maybe it could be a starting
-> point where we have a checked-in file containing current numbers, and e.g. if the new change
-> crosses a threshold of current +10% then the test could fail?
->
+> Dave had some concerns about pinning such maps and whatnot, but for
+> starters we decided to not worry about pinning for now. Dave, please
+> bring up remaining issues, if you don't mind.
 
-Heh, wrote above before reading this. But yes, if add CSV output and
-add some sort of baseline upload of last stats, we should be able to
-do the diff and yell about major regressions. I also want to add
-test_progs's test/subtest glob selection logic for object/program
-combo so that we can narrow down list of objects and progs within them
-to test. Most of programs are trivial and just pollute output, so
-having shorter list is better. And then we can check in representative
-list into selftests/bpf, just like we do with DENYLIST/ALLOWLIST for
-BPF CI.
+Pinning shouldn't be an issue.
+Only mmap is the problem. User space access if fine since kernel
+will mask out special fields on read/write.
 
-But you know, baby steps :)
+> So to answer Alexei's specific option. I'm still not in favor of just
+> saying "anything that's not .data or .rodata is non-mmapable map". I'd
+> rather carve out naming prefixes with . (which are  reserved for
+> libbpf's own use) for these special purpose maps. I don't think that
+> limits anyone, right?
 
+Is backward compat a concern?
+Whether to mmap global data is a flag.
+It can be opt-in or opt-out.
+I'm proposing make all named section to be 'do not mmap'.
+If a section needs to be mmaped and appear in skeleton the user can do
+SEC("my_section.mmap")
 
-> Thanks,
-> Daniel
+What you're proposing is to do the other way around:
+SEC("enqueue.nommap")
+SEC("dequeue.nommap")
+in the above example.
+I guess it's fine, but more verbose.
+The gut feeling is that the use case for naming section will be specifically
+for lock+rbtree. Everything else will go into common global .data or .rodata.
+Same thinking about compiler generated special sections with constants.
+They shouldn't be mmaped by default, but we're not going to hack llvm
+to add ".nommap" suffix to such sections.
+Hence the proposal to avoid mmap by default for all non standard sections.
