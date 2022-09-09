@@ -2,79 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26AF85B37BD
-	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 14:28:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77B995B37F0
+	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 14:36:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231139AbiIIM0C (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Sep 2022 08:26:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44800 "EHLO
+        id S229550AbiIIMfv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Sep 2022 08:35:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230154AbiIIM0C (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Sep 2022 08:26:02 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B09FA219B
-        for <bpf@vger.kernel.org>; Fri,  9 Sep 2022 05:26:00 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id s11so2216013edd.13
-        for <bpf@vger.kernel.org>; Fri, 09 Sep 2022 05:26:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date;
-        bh=o/izZYVLPCgUyPBcGlrfzek75+4jwN49+Tt4Vg8snrg=;
-        b=Uat5Amzor2NKt3A8vp6K4+DGXWXG6lfRnBcxbI2/dE4QyJDM1zupLeqn9j1oqmO3sv
-         +pOnwB+WIHJaPvE7xptBMPltu0tVqTR3c7QfzFU4aKEzUazIEoQdoXcp93gwie4xEBYZ
-         FecsoCpg6B8NVBXPQBJCnRn3UXJ6GfAFzGG/OqEkRwY39G+2I0RWApNv912YGW34upPw
-         3sVS97lQ5YRFkmPvAu/Wu60OFroDb1ewswHsdZ/C9cWiYUh8qU5sa59Q3c5Te2PZkKSF
-         AjU639R02jYgkI3BXlHRD0JVMDjv8SkLgOFFLcse4lSFJy5CaYAEFle5b85MQ7j5MSgn
-         x04g==
+        with ESMTP id S229789AbiIIMfo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Sep 2022 08:35:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D865A3B1
+        for <bpf@vger.kernel.org>; Fri,  9 Sep 2022 05:35:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1662726942;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pGqx2u62hLKKX3N8RYLvbvUVmBm3+8IM9BjADWlLTPk=;
+        b=PAT9KSoV1v0cZ612R5k2DRr6Tzad+L+kSgV8+yefcJE2hIAPbK9QcNXgH/Ft9NuFC0zAPP
+        Z/ieWM4PYmSb/6Jhzak5c1gLMLy5zYOIDtR512qN3LzJk/qiiHTGwg9vaRWWweatcjyzzk
+        1hf/JtUJCiq1P3EaWnoERASPvI/qSPE=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-352-V0-fIUY4PZmAR6R2ci3V1A-1; Fri, 09 Sep 2022 08:35:41 -0400
+X-MC-Unique: V0-fIUY4PZmAR6R2ci3V1A-1
+Received: by mail-ej1-f72.google.com with SMTP id xh12-20020a170906da8c00b007413144e87fso940898ejb.14
+        for <bpf@vger.kernel.org>; Fri, 09 Sep 2022 05:35:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date;
-        bh=o/izZYVLPCgUyPBcGlrfzek75+4jwN49+Tt4Vg8snrg=;
-        b=RlsgOu2ct38qJQwJnlIT3CAgifk1lBNeBug6+FEEX3ZarsPRK+vKqguagBWWRQ1D/7
-         eSXsGyYu9jYeYqC50KjmK9PqAgowu3KwXGhQaBu4kDqIlMd6txmXXtlbBop5L+TQH9rB
-         Qf9jEB6mGKMw5iWQf/RTVGGmxRPhc2hjo9sCMcOT61FjdFEeXfru7S/Pre6cgPL8UBST
-         smH/YIf0X3ntV1USljdSbeeW+LPjCMorfvDkPWO4yUW8FGvGUAqb5IQe7RIG0swFEG+9
-         tarDxNFKTLlf1D4UQ/zHkbuW4pOtySVoptU4N1TR+4tWREaeltPnPljL2+59WsP/NElw
-         OHyA==
-X-Gm-Message-State: ACgBeo2CJHUbDYjmHs0nikOvb++0QetUQOd7JSiq53Mgm0VAqGe9vyvF
-        Lrk6q+Q4N+xuQbFinxNRnw4=
-X-Google-Smtp-Source: AA6agR59WoPNCqJqqxbhkmvwJL8BIWCxm67g57YBb4hbseaMOyc63Tu3TlHdf/Icu2DNaJ2d48TIKw==
-X-Received: by 2002:aa7:df87:0:b0:44e:2851:7e8d with SMTP id b7-20020aa7df87000000b0044e28517e8dmr11367100edy.106.1662726358866;
-        Fri, 09 Sep 2022 05:25:58 -0700 (PDT)
-Received: from krava ([193.85.244.190])
-        by smtp.gmail.com with ESMTPSA id z25-20020aa7d419000000b0044efc3d4c4csm300330edq.33.2022.09.09.05.25.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Sep 2022 05:25:58 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Fri, 9 Sep 2022 14:25:55 +0200
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martynas Pumputis <m@lambda.lt>, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Subject: Re: [PATCHv3 bpf-next 4/6] bpf: Adjust kprobe_multi entry_ip for
- CONFIG_X86_KERNEL_IBT
-Message-ID: <Yxsw00lIqYmdO4Ir@krava>
-References: <20220909101245.347173-1-jolsa@kernel.org>
- <20220909101245.347173-5-jolsa@kernel.org>
- <YxsoPLVnSjcTqQDf@hirez.programming.kicks-ass.net>
+        h=content-transfer-encoding:in-reply-to:references:to
+         :content-language:subject:cc:user-agent:mime-version:date:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date;
+        bh=pGqx2u62hLKKX3N8RYLvbvUVmBm3+8IM9BjADWlLTPk=;
+        b=gkjYWYy6IbaRbjqt4W+O8J6EjF6z7sRoHdKctJY9h/gVmDYVRVoeKrtgXSLK0yDM9+
+         jEQ42lcgfgf4KNI71v9GdgX6wygB/CRRg6pFrfYTNQkQmcdNHmn7ywqpL7Of4HSRFkLU
+         4MmE20PItJO8em0aA+F1vVd+Hyt2vAK6RcNIPJvLKRAebqAzkUfVDlhim7aFPTVVRIGr
+         q9B0Tml7IhR9PZzJgGqdisbFukxjtaBdGq1TTGDGOG5itYTc3Gyo6V0YiTdZKLPzrO/d
+         HxOroRywAjgkMlBnE40bIgMLO1358+GotCKFvscXTHR4E7Q1s8MTALV8sCM9UPJtTuky
+         PSlw==
+X-Gm-Message-State: ACgBeo0wV4VxFOme61FDEgwG0mKf+9so2jPNErblI/bGUF8jsvZprYrx
+        qVSOBTMscU/EumzXldOeAuGMmNlneEXzB9WpHblE9Umoz/ighCf5vo2fQOx+xC0tvXRQIStZRDM
+        8AX1HNJh0il84
+X-Received: by 2002:a17:906:730d:b0:73d:c8a1:a8ee with SMTP id di13-20020a170906730d00b0073dc8a1a8eemr9657486ejc.661.1662726939925;
+        Fri, 09 Sep 2022 05:35:39 -0700 (PDT)
+X-Google-Smtp-Source: AA6agR7xrdLT+WULchCpcxHkmJP6SFvHuAIXTrdsDzhV2eFGA/BoDIs1Xs3kBZx6e509ipV8zqUVew==
+X-Received: by 2002:a17:906:730d:b0:73d:c8a1:a8ee with SMTP id di13-20020a170906730d00b0073dc8a1a8eemr9657471ejc.661.1662726939652;
+        Fri, 09 Sep 2022 05:35:39 -0700 (PDT)
+Received: from [192.168.41.81] (83-90-141-187-cable.dk.customer.tdc.net. [83.90.141.187])
+        by smtp.gmail.com with ESMTPSA id h22-20020a1709067cd600b0072f112a6ad2sm217729ejp.97.2022.09.09.05.35.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Sep 2022 05:35:39 -0700 (PDT)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Message-ID: <51f40ca1-ccf2-bcc3-d20d-931ad0d22526@redhat.com>
+Date:   Fri, 9 Sep 2022 14:35:37 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YxsoPLVnSjcTqQDf@hirez.programming.kicks-ass.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.1
+Cc:     brouer@redhat.com, Maryam Tahhan <mtahhan@redhat.com>,
+        bpf@vger.kernel.org, netdev@vger.kernel.org,
+        xdp-hints@xdp-project.net, larysa.zaremba@intel.com,
+        memxor@gmail.com, Lorenzo Bianconi <lorenzo@kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        dave@dtucker.co.uk, Magnus Karlsson <magnus.karlsson@intel.com>,
+        bjorn@kernel.org, Alexander Lobakin <alexandr.lobakin@intel.com>
+Subject: Re: [xdp-hints] Re: [PATCH RFCv2 bpf-next 17/18] xsk: AF_XDP
+ xdp-hints support in desc options
+Content-Language: en-US
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Jesper Dangaard Brouer <jbrouer@redhat.com>
+References: <166256538687.1434226.15760041133601409770.stgit@firesoul>
+ <166256558657.1434226.7390735974413846384.stgit@firesoul>
+ <CAJ8uoz3UcC2tnMtG8W6a3HpCKgaYSzSCqowLFQVwCcsr+NKBOQ@mail.gmail.com>
+ <b5f0d10d-2d4e-34d6-1e45-c206cb6f5d26@redhat.com>
+ <9aab9ef1-446d-57ab-5789-afffe27801f4@redhat.com>
+ <CAJ8uoz0CD18RUYU4SMsubB8fhv3uOwp6wi_uKsZSu_aOV5piaA@mail.gmail.com>
+ <e1ab2141-03cc-f97c-3788-59923a029203@redhat.com>
+ <593cc1df-8b65-ae9e-37eb-091b19c4d00e@redhat.com>
+ <CAJ8uoz1omnp888MoZT4AgiPVWo=Ef5nkQApzz7fqnqdcGgR6NA@mail.gmail.com>
+In-Reply-To: <CAJ8uoz1omnp888MoZT4AgiPVWo=Ef5nkQApzz7fqnqdcGgR6NA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,53 +98,110 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 09, 2022 at 01:49:16PM +0200, Peter Zijlstra wrote:
-> On Fri, Sep 09, 2022 at 12:12:43PM +0200, Jiri Olsa wrote:
-> 
-> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> > index 68e5cdd24cef..bcada91b0b3b 100644
-> > --- a/kernel/trace/bpf_trace.c
-> > +++ b/kernel/trace/bpf_trace.c
-> > @@ -2419,6 +2419,10 @@ kprobe_multi_link_handler(struct fprobe *fp, unsigned long entry_ip,
-> >  {
-> >  	struct bpf_kprobe_multi_link *link;
-> >  
-> > +#ifdef CONFIG_X86_KERNEL_IBT
-> > +	if (is_endbr(*((u32 *) entry_ip - 1)))
-> > +		entry_ip -= ENDBR_INSN_SIZE;
-> > +#endif
-> >  	link = container_of(fp, struct bpf_kprobe_multi_link, fp);
-> >  	kprobe_multi_link_prog_run(link, entry_ip, regs);
-> >  }
-> 
-> Strictly speaking this can explode if this function is one without ENDBR
-> and it's on a page-edge and -1 is a guard page or something silly like
-> that (could conceivably happen for a module or so).
 
-ok, as per discussion on irc, we could use get_kernel_nofault() to
-read it safely as you suggested
 
+On 09/09/2022 12.14, Magnus Karlsson wrote:
+> On Fri, Sep 9, 2022 at 11:42 AM Jesper Dangaard Brouer
+> <jbrouer@redhat.com> wrote:
+>>
+>>
+>> On 09/09/2022 10.12, Maryam Tahhan wrote:
+>>> <snip>
+>>>>>>>
+>>>>>>> * Instead encode this information into each metadata entry in the
+>>>>>>> metadata area, in some way so that a flags field is not needed (-1
+>>>>>>> signifies not valid, or whatever happens to make sense). This has the
+>>>>>>> drawback that the user might have to look at a large number of entries
+>>>>>>> just to find out there is nothing valid to read. To alleviate this, it
+>>>>>>> could be combined with the next suggestion.
+>>>>>>>
+>>>>>>> * Dedicate one bit in the options field to indicate that there is at
+>>>>>>> least one valid metadata entry in the metadata area. This could be
+>>>>>>> combined with the two approaches above. However, depending on what
+>>>>>>> metadata you have enabled, this bit might be pointless. If some
+>>>>>>> metadata is always valid, then it serves no purpose. But it might if
+>>>>>>> all enabled metadata is rarely valid, e.g., if you get an Rx timestamp
+>>>>>>> on one packet out of one thousand.
+>>>>>>>
+>>>>>
+>>>>> I like this option better! Except that I have hoped to get 2 bits ;-)
+>>>>
+>>>> I will give you two if you need it Jesper, no problem :-).
+>>>>
+>>>
+>>> Ok I will look at implementing and testing this and post an update.
+>>
+>> Perfect if you Maryam have cycles to work on this.
+>>
+>> Let me explain what I wanted the 2nd bit for.  I simply wanted to also
+>> transfer the XDP_FLAGS_HINTS_COMPAT_COMMON flag.  One could argue that
+>> is it redundant information as userspace AF_XDP will have to BTF decode
+>> all the know XDP-hints. Thus, it could know if a BTF type ID is
+>> compatible with the common struct.   This problem is performance as my
+>> userspace AF_XDP code will have to do more code (switch/jump-table or
+>> table lookup) to map IDs to common compat (to e.g. extract the RX-csum
+>> indication).  Getting this extra "common-compat" bit is actually a
+>> micro-optimization.  It is up to AF_XDP maintainers if they can spare
+>> this bit.
+>>
+>>
+>>> Thanks folks
+>>>
+>>>>> The performance advantage is that the AF_XDP descriptor bits will
+>>>>> already be cache-hot, and if it indicates no-metadata-hints the AF_XDP
+>>>>> application can avoid reading the metadata cache-line :-).
+>>>>
+>>>> Agreed. I prefer if we can keep it simple and fast like this.
+>>>>
+>>
+>> Great, lets proceed this way then.
+>>
+>>> <snip>
+>>>
+>>
+>> Thinking ahead: We will likely need 3 bits.
+>>
+>> The idea is that for TX-side, we set a bit indicating that AF_XDP have
+>> provided a valid XDP-hints layout (incl corresponding BTF ID). (I would
+>> overload and reuse "common-compat" bit if TX gets a common struct).
 > 
-> I'm also thinking this function might be a bit clearer if the argument
-> were called fentry_ip -- that way it would be clearer this is an ftrace
-> __fentry__ ip.
+> I think we should reuse the "Rx metadata valid" flag for this since
+> this will not be used in the Tx case by definition. In the Tx case,
+> this bit would instead mean that the user has provided a valid
+> XDP-hints layout. It has a nice symmetry, on Rx it is set by the
+> kernel when it has put something relevant in the metadata area. On Tx,
+> it is set by user-space if it has put something relevant in the
+> metadata area. 
 
-ok
+I generally like reusing the bit, *BUT* there is the problem of 
+(existing) applications ignoring the desc-options bit and forwarding 
+packets.  This would cause the "Rx metadata valid" flag to be seen as 
+userspace having set the "TX-hints-bit" and kernel would use what is 
+provided in metadata area (leftovers from RX-hints).  IMHO that will be 
+hard to debug for end-users and likely break existing applications.
 
+> We can also reuse this bit when we get a notification
+> in the completion queue to indicate if the kernel has produced some
+> metadata on tx completions. This could be a Tx timestamp for example.
 > 
-> The canonical way to get at +0 would be something like:
-> 
-> 	kallsyms_lookup_size_offset(fentry_ip, &size, &offset);
-> 	entry_ip = fentry_ip - offset;
-> 
-> But I appreciate that might be too expensive here; is this a hot path?
-> 
-> Could you store this information in struct bpf_kprobe_multi_link?
 
-we could use the same way we use when looking for cookies in
-bpf_kprobe_multi_cookie ... having extra array of real entry
-ips.. or some similar approach
+Big YES, reuse "Rx metadata valid" bit when we get a TX notification in 
+completion queue.  This will be okay because it cannot be forgotten and 
+misinterpreted as the kernel will have responsibility to update this bit.
 
-but let's try to read it safely with get_kernel_nofault first
+> So hopefully we could live with only two bits :-).
+> 
 
-jirka
+I still think we need three bits ;-)
+That should be enough to cover the 6 states:
+  - RX hints
+  - RX hints and compat
+  - TX hints
+  - TX hints and compat
+  - TX completion
+  - TX completion and compat
+
+
+>> But lets land RX-side first, but make sure we can easily extend for the
+>> TX-side.
+
