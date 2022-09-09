@@ -2,122 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AEB55B363F
-	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 13:23:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AB565B3665
+	for <lists+bpf@lfdr.de>; Fri,  9 Sep 2022 13:32:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229789AbiIILXM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Sep 2022 07:23:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36606 "EHLO
+        id S229601AbiIILbX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Sep 2022 07:31:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229777AbiIILXL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Sep 2022 07:23:11 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9DC3137786
-        for <bpf@vger.kernel.org>; Fri,  9 Sep 2022 04:23:10 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id i77so1135037ioa.7
-        for <bpf@vger.kernel.org>; Fri, 09 Sep 2022 04:23:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=KTLIpYuBwRifdeX4kFi/pziODJv413mtGyQsFDGEz40=;
-        b=YCrQnX9VhC3+3UAPmRbjGs3ScBQ5YyxjfrOnf1RZHN4MUGt52YGmivkWC2ngXlGYFZ
-         JaB3JDcIIt9gu6EWPGvDKxVX5jGVcdj3mrEUV64UUcPQkEPMYjgVeMhdGZrNCvIG0ntt
-         8YAS/se8+qewodl6EJydnOIwR9XHegv9teAIQDW873mddUaXVZWa8b/RbUJoGziPtjly
-         3RlHOaDEkASg2CEM/3nBfhhDclRZctVwxsiOgBx0H1CeQ6pnJPQVDjbg0IVvlIvYlCI1
-         VkpVmmZulJ5emmG4gz5wZyWkOu2Aa8THGc+LrnSaCWW55o6+xMfpMjlVBg4ykKa74YRG
-         CN3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=KTLIpYuBwRifdeX4kFi/pziODJv413mtGyQsFDGEz40=;
-        b=aLo3kC//6GyS3lgm++K03cTmsfgy8yJIKK7XIZ529VnzYmLGc8wtzz3DzWBjktcqTe
-         5mZBz6NNk3hx7uQhZzBEkCpdPhFYQotG1pbn0KTbuu9GsoWbgn14/MG64q8Hrllgx6sc
-         aG+BE0SsDhwegr9j3Rkbw3agfBB8fArqZLe+oo8DK8qi0pvTxw+I3sgMwb22y4RNDH10
-         ZeVXSY/TuMyN/S7MCeEpzuYsJXbCo5pm6X4rbDRQq27EkvdZ8VTcqrl6TyRgCibcFuBj
-         WJCAs/TbGhtpkCowaXeQ1+HyyYrEsJiMao+zTO49YeSM+kxCAenPouLUDA63Qel1WqC1
-         fJpg==
-X-Gm-Message-State: ACgBeo1w3YREFQar52GgAlimztPALLf57bRkRDcxkMDNh7LMAgw/tJuH
-        HvXCj8izITbxjR3YMmmHjRntOF49O5EOdUmy9Eg=
-X-Google-Smtp-Source: AA6agR7VGT/97E0mxjOekZhw2NagHcuRw4Q/yjrMW9Ctqo0gzqzDS4HvcgLF/3aD/yx3QGzEYhMbJ3XFagqcAKPaUoE=
-X-Received: by 2002:a02:3f63:0:b0:349:cef9:d8c2 with SMTP id
- c35-20020a023f63000000b00349cef9d8c2mr7116105jaf.231.1662722590281; Fri, 09
- Sep 2022 04:23:10 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220904204145.3089-1-memxor@gmail.com> <20220904204145.3089-6-memxor@gmail.com>
- <5f4423cb-76f9-4e30-695d-22b7e8ab6422@linux.dev>
-In-Reply-To: <5f4423cb-76f9-4e30-695d-22b7e8ab6422@linux.dev>
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date:   Fri, 9 Sep 2022 13:22:34 +0200
-Message-ID: <CAP01T74rwFYCAotHO+dKYiFoXvYWQmtZOF9VFzO4o=8T5Wh6FA@mail.gmail.com>
-Subject: Re: [PATCH RFC bpf-next v1 05/32] bpf: Support kptrs in local storage maps
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        with ESMTP id S230392AbiIILbV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Sep 2022 07:31:21 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD35D11B008
+        for <bpf@vger.kernel.org>; Fri,  9 Sep 2022 04:31:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=f8O3JhWQoFYRzQBV86lfB7OAUyXJCpm3sBLXXPrXxWo=; b=iHS2i3v4aSohR7JTiq1Mk9o572
+        PQwbvaIHZyS/SYRMOBVCfW3vkM++v/gpJ4BW1olsYcwP6CdUC/oZcqo0kJRhmHYUzWCpVk9zI73X8
+        wbKoo5WPcci/VpmOr3jiwvF5AtfAC4koapCzOyFMTZyhKmChIyS/ozHBS0URVN0sSiHil4poAQL2/
+        Dlo1kugf1F1rQyklkgIZDq/xMzQBDKJwoF325InhGWt8kLUWIqOkJvL2Vjo7HzgMYVS8qS+aUFnAT
+        2FNrd5wyLr0KT+mA1fKlSwRVDM+bk89sjUW1FqkHxTPTt8ggWuq2sj7Fr4nH0a7YXHNpx/rprAa0C
+        bO1T8x5g==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1oWcDl-00B0lY-UU; Fri, 09 Sep 2022 11:30:54 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8F9B1300023;
+        Fri,  9 Sep 2022 13:30:52 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5463C201AF2DB; Fri,  9 Sep 2022 13:30:52 +0200 (CEST)
+Date:   Fri, 9 Sep 2022 13:30:52 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Delyan Kratunov <delyank@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>,
+        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+        Martynas Pumputis <m@lambda.lt>
+Subject: Re: [PATCHv3 bpf-next 3/6] bpf: Use given function address for
+ trampoline ip arg
+Message-ID: <Yxsj7KUhVYYxJ1l9@hirez.programming.kicks-ass.net>
+References: <20220909101245.347173-1-jolsa@kernel.org>
+ <20220909101245.347173-4-jolsa@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220909101245.347173-4-jolsa@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 9 Sept 2022 at 07:27, Martin KaFai Lau <martin.lau@linux.dev> wrote:
->
-> On 9/4/22 1:41 PM, Kumar Kartikeya Dwivedi wrote:
-> > diff --git a/include/linux/bpf_local_storage.h b/include/linux/bpf_local_storage.h
-> > index 7ea18d4da84b..6786d00f004e 100644
-> > --- a/include/linux/bpf_local_storage.h
-> > +++ b/include/linux/bpf_local_storage.h
-> > @@ -74,7 +74,7 @@ struct bpf_local_storage_elem {
-> >       struct hlist_node snode;        /* Linked to bpf_local_storage */
-> >       struct bpf_local_storage __rcu *local_storage;
-> >       struct rcu_head rcu;
-> > -     /* 8 bytes hole */
-> > +     struct bpf_map *map;            /* Only set for bpf_selem_free_rcu */
->
-> Instead of adding another map ptr and using the last 8 bytes hole,
->
-> >       /* The data is stored in another cacheline to minimize
-> >        * the number of cachelines access during a cache hit.
-> >        */
-> > diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storage.c
-> > index 802fc15b0d73..4a725379d761 100644
-> > --- a/kernel/bpf/bpf_local_storage.c
-> > +++ b/kernel/bpf/bpf_local_storage.c
-> > @@ -74,7 +74,8 @@ bpf_selem_alloc(struct bpf_local_storage_map *smap, void *owner,
-> >                               gfp_flags | __GFP_NOWARN);
-> >       if (selem) {
-> >               if (value)
-> > -                     memcpy(SDATA(selem)->data, value, smap->map.value_size);
-> > +                     copy_map_value(&smap->map, SDATA(selem)->data, value);
-> > +             /* No call to check_and_init_map_value as memory is zero init */
-> >               return selem;
-> >       }
-> >
-> > @@ -92,12 +93,27 @@ void bpf_local_storage_free_rcu(struct rcu_head *rcu)
-> >       kfree_rcu(local_storage, rcu);
-> >   }
-> >
-> > +static void check_and_free_fields(struct bpf_local_storage_elem *selem)
-> > +{
-> > +     if (map_value_has_kptrs(selem->map))
->
-> could SDATA(selem)->smap->map be used here ?
->
+On Fri, Sep 09, 2022 at 12:12:42PM +0200, Jiri Olsa wrote:
+> Using function address given at the generation time as the trampoline
+> ip argument. This way we get directly the function address that we
+> need, so we don't need to:
+>   - read the ip from the stack
+>   - subtract X86_PATCH_SIZE
+>   - subtract ENDBR_INSN_SIZE if CONFIG_X86_KERNEL_IBT is enabled
+>     which is not even implemented yet ;-)
+> 
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  arch/x86/net/bpf_jit_comp.c | 9 ++++-----
+>  1 file changed, 4 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> index ae89f4143eb4..1047686cc545 100644
+> --- a/arch/x86/net/bpf_jit_comp.c
+> +++ b/arch/x86/net/bpf_jit_comp.c
+> @@ -2039,13 +2039,14 @@ static int invoke_bpf_mod_ret(const struct btf_func_model *m, u8 **pprog,
+>  int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *image_end,
+>  				const struct btf_func_model *m, u32 flags,
+>  				struct bpf_tramp_links *tlinks,
+> -				void *orig_call)
+> +				void *func_addr)
+>  {
+>  	int ret, i, nr_args = m->nr_args, extra_nregs = 0;
+>  	int regs_off, ip_off, args_off, stack_size = nr_args * 8, run_ctx_off;
+>  	struct bpf_tramp_links *fentry = &tlinks[BPF_TRAMP_FENTRY];
+>  	struct bpf_tramp_links *fexit = &tlinks[BPF_TRAMP_FEXIT];
+>  	struct bpf_tramp_links *fmod_ret = &tlinks[BPF_TRAMP_MODIFY_RETURN];
+> +	void *orig_call = func_addr;
+>  	u8 **branches = NULL;
+>  	u8 *prog;
+>  	bool save_ret;
+> @@ -2126,12 +2127,10 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+>  
+>  	if (flags & BPF_TRAMP_F_IP_ARG) {
+>  		/* Store IP address of the traced function:
+> -		 * mov rax, QWORD PTR [rbp + 8]
+> -		 * sub rax, X86_PATCH_SIZE
+> +		 * mov rax, func_addr
 
-Yeah, that should work. Thanks Martin.
+Shouldn't that be: movabs? Regular mov can't do 64bit immediates.
 
-> > +             bpf_map_free_kptrs(selem->map, SDATA(selem));
-> > +}
-> > +
-> [...]
+Also curse Intel syntax, this is bloody unreadable.
+
+>  		 * mov QWORD PTR [rbp - ip_off], rax
+>  		 */
+> -		emit_ldx(&prog, BPF_DW, BPF_REG_0, BPF_REG_FP, 8);
+> -		EMIT4(0x48, 0x83, 0xe8, X86_PATCH_SIZE);
+> +		emit_mov_imm64(&prog, BPF_REG_0, (long) func_addr >> 32, (u32) (long) func_addr);
+>  		emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -ip_off);
+>  	}
+>  
+> -- 
+> 2.37.3
+> 
