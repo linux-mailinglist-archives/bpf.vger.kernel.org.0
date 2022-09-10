@@ -2,135 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E54265B47F4
-	for <lists+bpf@lfdr.de>; Sat, 10 Sep 2022 20:44:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFD9C5B4812
+	for <lists+bpf@lfdr.de>; Sat, 10 Sep 2022 21:41:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229437AbiIJSoG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 10 Sep 2022 14:44:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50802 "EHLO
+        id S229459AbiIJTl0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 10 Sep 2022 15:41:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbiIJSoF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 10 Sep 2022 14:44:05 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E7F33CBCB
-        for <bpf@vger.kernel.org>; Sat, 10 Sep 2022 11:44:04 -0700 (PDT)
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 28AEuQRM022290;
-        Sat, 10 Sep 2022 11:43:49 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
- subject : to : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=q6T0X7yhVD4+LqeNWRdu8tJ0avD8EomiYSJkmGK7bso=;
- b=ZK7mM42Efh7kXsP2VitE8IuElL8bU5b6sQLAdzOrIoW7vXY2jeOvNUMYJEhMmXvuGtmr
- G2i+rll7bq1wMgEVw7yzeJQu1YiuAkr+up+GURY2hHFdjnOPLej0I/i8aBJrD+VGE1iy
- 6r4ONvxc+1SsY+7ORtTSBvibw45BSmbeiGA= 
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2173.outbound.protection.outlook.com [104.47.55.173])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3jgrb19fhj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 10 Sep 2022 11:43:49 -0700
+        with ESMTP id S229437AbiIJTlZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 10 Sep 2022 15:41:25 -0400
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2102.outbound.protection.outlook.com [40.107.94.102])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0796422C0
+        for <bpf@vger.kernel.org>; Sat, 10 Sep 2022 12:41:24 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XqknTcsu41t95u3ODGNWDf0GWy8E9nL4YVvCrY4uvER6AiqxYh6+bI+SQSGVCjBi1fYI0LEoXMrNyHXBNG1qUgXNM3evuuQrzparh+nKQK//PSdFzdNd0/8G5oTueN6voFZa1ajFFCFpxOtnyo0PNFZW3jkE2HdfM78wgLXqnDGH6/ZwA/ngTyGyfTg2b7e2HQnnWGhd+fLWgxqnxC5m3Zp6WeFYrIqDdxhRf3EQNT2TCIVrY0tMZ8XTuI0kQO0wPUh3EWcJtg2OELFwW/syvK6bkBckY4uSVmoHtBDNsWZ/OPosrqd+eAS0xHujw8Oa3npq1OBiMsUwertZrszNmg==
+ b=Nu+Hm4NHoPrmYIdfLSBMgOOd0PiPZPTYpBXJeGvOLErtFFkhlzJf2iYw6pl+akmWLg2zZIMgAD3+ePCEU1ZEKpiXfd2gFxxBAzWaGIOFi95iTqlLOWiEhUbd3uYI/Ps5uijGZfv2/yPCNJbaG6tWzBt3lFR1DXAj2RSmkK+l3gE8mNhIupKWW4MRdUfFjncSD1vfiSRTEt2nM1QElICnlsggPQtNH+b/XUcRN192N5MqaqPBcd4hRhZV/xKI92HxkuSDEvAMwGZAaQM0xkAeDRxS2rr8tXC35EjCzS0zlZIw5pxd4//U+d4koS/o3/ojNmUNwrddjLW+BMonjYWkKQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=q6T0X7yhVD4+LqeNWRdu8tJ0avD8EomiYSJkmGK7bso=;
- b=kquoLlHVEy7WsVxIITnXbGAIgaN3gz5eoTKrd8uZomE8PiRq1NylRqxr3LTHy2VB3JxXzjqkI5Uu3hPutnRp+t+0f3kEFdWOB+XkjajleG5gOjrqybPMU9mcXshhdWb7QMHUSquCwEO6Y252RZlhCvlET4rvSXss0yLfwoYAR+lgob80BWkzZ7QvOeZZJRjcLnYeC7BPcl/J63uJwrS9TPl1AI4q75b4Ovt2pNZTyENm8NAh/KLnvztWqfi5nSLDD6TnuV9g34cEewCLtKC8PiUBd709zHvKLW1u4dqMUv3Lnd+yaz1cr/M0ANZqmXkk3o5xDhfDxyIDAoNwfLtGpw==
+ bh=JVRByZLN6Qao4LnEyrfyQb9y2nwnQYlcgKFUmygV2z4=;
+ b=AaSQJUCauJmanrDYbRgL0bw+WuF8X+vT5J5AV7UqKYVoc9UrWwOYrScC108Ji8zgV88YSGW/R9i4hzRmGetRXs9e34ekiPg2ZbaR2aKH2qbS5nMOkbjvl6f1d81cC8t50+O5nQrwqX9A1Vv+D+/Qto5Y9OpKHTYmnCYgJPKPo6UgMNJpmxHXWW7Wwi2L+bAH04E6IwliLASmVv6C53luR2TASwW+01oV0Tp974TBXZl7PDQBGPbWL/VcXITdtdNATB4O9b2BBkUHICnIO/EnRtG9/5GjzCxrn42MBrMDqaL0RaMiy736WE8AvGroekn5SbkOJYQj8U5sY6i6yxscmQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by PH7PR15MB5365.namprd15.prod.outlook.com (2603:10b6:510:1d0::16) with
+ smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
+ dkim=pass header.d=corigine.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JVRByZLN6Qao4LnEyrfyQb9y2nwnQYlcgKFUmygV2z4=;
+ b=cdQQQXnCl9oq4TocqoatzOZfOlQoC8o5uiXGyrjUHUePJRqDzo3SffVKeULudmKxRmCq/42R43aOsP8c2iAegArd0wAsoe3yH1Rf61XwyTHYBdUmWKSI/YbEd6YpiCu0S/A7TJQGhS8UHUp9fMg9mSb+KfWkM0XdMY9FpNmXyWA=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=corigine.com;
+Received: from DM6PR13MB4431.namprd13.prod.outlook.com (2603:10b6:5:1bb::21)
+ by MN2PR13MB3973.namprd13.prod.outlook.com (2603:10b6:208:267::17) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5612.22; Sat, 10 Sep
- 2022 18:43:46 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::cdbe:b85f:3620:2dff]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::cdbe:b85f:3620:2dff%4]) with mapi id 15.20.5612.022; Sat, 10 Sep 2022
- 18:43:46 +0000
-Message-ID: <ae177dde-af36-351f-fa85-6e2d34644956@fb.com>
-Date:   Sat, 10 Sep 2022 11:43:43 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.13.0
-Subject: Re: [PATCH bpf-next v10 1/5] bpf: Parameterize task iterators.
-Content-Language: en-US
-To:     Kui-Feng Lee <kuifeng@fb.com>, bpf@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kernel-team@fb.com
-References: <20220831181039.2680134-1-kuifeng@fb.com>
- <20220831181039.2680134-2-kuifeng@fb.com>
-From:   Yonghong Song <yhs@fb.com>
-In-Reply-To: <20220831181039.2680134-2-kuifeng@fb.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR13CA0239.namprd13.prod.outlook.com
- (2603:10b6:a03:2c1::34) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5632.7; Sat, 10 Sep
+ 2022 19:41:21 +0000
+Received: from DM6PR13MB4431.namprd13.prod.outlook.com
+ ([fe80::2944:20ba:ee80:b9c7]) by DM6PR13MB4431.namprd13.prod.outlook.com
+ ([fe80::2944:20ba:ee80:b9c7%3]) with mapi id 15.20.5612.011; Sat, 10 Sep 2022
+ 19:41:20 +0000
+Date:   Sat, 10 Sep 2022 21:41:14 +0200
+From:   Niklas =?iso-8859-1?Q?S=F6derlund?= 
+        <niklas.soderlund@corigine.com>
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf@vger.kernel.org, Simon Horman <simon.horman@corigine.com>
+Subject: Re: [PATCH bpf-next 0/7] bpftool: Add LLVM as default library for
+ disassembling JIT-ed programs
+Message-ID: <YxzoWn/mbIUD2cTj@oden.dyn.berto.se>
+References: <20220906133613.54928-1-quentin@isovalent.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20220906133613.54928-1-quentin@isovalent.com>
+X-ClientProxiedBy: GV3P280CA0011.SWEP280.PROD.OUTLOOK.COM (2603:10a6:150:b::7)
+ To DM6PR13MB4431.namprd13.prod.outlook.com (2603:10b6:5:1bb::21)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|PH7PR15MB5365:EE_
-X-MS-Office365-Filtering-Correlation-Id: ef5135c1-9440-4080-afae-08da935c649a
-X-FB-Source: Internal
+X-MS-TrafficTypeDiagnostic: DM6PR13MB4431:EE_|MN2PR13MB3973:EE_
+X-MS-Office365-Filtering-Correlation-Id: f97aff60-0e26-4a19-debf-08da93646f7a
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Gq82laKhyFmtHVGxyZrAK/S03x3yYQd77gOsTJ+yLutXkG/RMT7jECxHCMTRuKtqwxDajZoKHQUliPyVWA2fGNDMnUSp2pUQEco0BdZ23Y+2HwYvQ3SXet1DNYABNuybjFgpW31BijsJZHujYM57IJlhKw5i4giaXZd+lRqU4Exq/mpYFkgPUVLTCodw0fPP02Qocpyvhte3/MS0jzPm2w6Iqq/sUeTonc9PL6zGZ2P/hRSuTyX4C/YG2rs1BbRv0WBhdvYE4q89Wk0FlsLUx4tUy0KPw6QD4q6LEIfvu+W6+EYpyZR5ol1ZYK6h4KSpMS2aol2g8qqp04JvK2uyw+EqqmCcy9yEjP7eaM0VJHSXy4O4JUYlgph32WJ9f7eBbiJYivvO10TCzijnb9e2pg/qp3QlChDB0a8t8k6oL6YtTTkJDP+rBb56iRukp0YJ17HdJke5fbudKcsST74hbAkAjQl2MTq42fCUIMJbNEWGjilovG9y6YVtXLHpRaQBNHvkGYOteRbeBpUxUy8tta9OO7cbfrEi9tFrSCAmfbrJeEFTee9/bX1ZUOU0xQeUNHqCwHRlTwM0h+FTa0+jblhw7hJdz/cd84yzawP/tBAki+XfWEUAtzDMtguABfwUcccrCG42EAtCkwUcTgRNgEtMwvz1ztt3eE5SMZVTf+Xdf3XFPuXDKk3sk2QVT4lyylyh9Rs7/6k307twW0xm9S4NbcGS1pCv3zySA5YSOeypqMCjxLD/V98mZXx6AjhY0jbAtfkUDAM72TcI1CSjqGWIPoAYfD4g/pqUdEc8nmk=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(396003)(136003)(376002)(366004)(346002)(39860400002)(6512007)(38100700002)(5660300002)(31696002)(66556008)(86362001)(8676002)(66946007)(66476007)(6636002)(6506007)(6486002)(316002)(2616005)(6666004)(36756003)(8936002)(2906002)(186003)(31686004)(478600001)(83380400001)(53546011)(41300700001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: CPSwveK9j75W9ZTLc2EVdbdhRAdmNTnsKgdmztF3HFFS+fOo/uGCMzNGkG3wgeOQYhoUyG5eUodZDkV0Oa4+kJSYYrxY1dAjaHhikQGEnqVmERoTlNIkviz9r1dUjKjaOxiCemdenIlZvODd53CzouMod6xpjuKWZVJkMiPwex/3lIhBPuHILfN//qFhc6tD/f9/sEPYaqef3Ed/ZZwNDSGfx7jDQuleu4r5eKECEbgI3sQwONiqx4jUKbLzrZJphwsljT86mRHEc/Puo/SDMnvC8bl8ltl8ME1CpHxs6DwSLl8NqQSWxxl+LE3VwfUSVvQYiltIyn4iPFfFw3shMzdoO+eJ7CMEak/6ACde2vT0Kumvd+Rxwj84fmdHiJbDJmjZu+Wc16P19e+AG9hWRZQuQ1wizWZs4WmJq+nn6uF5EHmAGVUNiUBb2qSkDacWxQ41e4r0cEKVNEIR1xQh8QIuQoe5MYJziFbvbre27g4gh6sQjDWzooUt1omcDyKdlIn4JJ57hEWtY27o+ekFZjq35dGYK/eOKXa03yvHAK4Jkf5t4+GkdqPWD4002WnqPko+Mvwk+0nrWoNXotdAu9Cxi6NcFg50DLZPXdHEDjQqR8b4ZyDF0WiaWaRKkfzEIbdB38BIQbBVH6dbTLWVgOb69C6RMS6L5ljtu1QmCycE0FKp1iZ7uRyO8OJmWOBSWBhGUBY/ZBIDkdlhX7gl765XG0WswMCzNiYjIz9VgCc5vS5uA7JGSiH7w60s/EUlfCx4DCOAZnJJmRzyvFnTawJs7CVmHLD2BnSf4gG8BHI=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR13MB4431.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(376002)(39840400004)(396003)(136003)(366004)(346002)(316002)(6916009)(54906003)(8676002)(7416002)(8936002)(5660300002)(38350700002)(4326008)(38100700002)(66476007)(66946007)(83380400001)(66556008)(66574015)(41300700001)(478600001)(9686003)(52116002)(6486002)(26005)(6512007)(6506007)(53546011)(107886003)(186003)(6666004)(2906002)(86362001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?V1FBOHB5akQxckJDZnNWbjh0TDhSS3Y4VzdjS2h3VHNTblZpekdQME1XcHpK?=
- =?utf-8?B?aGpIeXd3VkF1bmFpTngrWHZhcjUzZUdWVUpOWDh4Mm5vNE5paDhnV2VxM2Jk?=
- =?utf-8?B?NGdYRDdSNFI2VGVjd2pEd1dzaUFSS3ZPUE05VTQ2WTk1YUJub3lVVXBNQkFT?=
- =?utf-8?B?S1J6NVNPWUk5U3U1YXE2RTJGWnU0bmM2RUtOZFdsRURIRUl1Z1M5dTVBSmtP?=
- =?utf-8?B?bThaVGdNTytDai85UFVpNEdKSlhNVTljODc3ZGJLM2xkemhkcUpXWkNPdlNN?=
- =?utf-8?B?eC91OVZxUlY3anZDUENJTVRIcTZlZ2FtZG9WTmZXNDNBS0I1OUdBeWtWUHgr?=
- =?utf-8?B?M2lBcWVzVHBaQVJwNGl0aDRCUTYxYlBRKzV3L2YwcGY0dm81V3VwTEsrQm9U?=
- =?utf-8?B?UlIvVzFkS05sM3lKR0xCMzNHQmIzVVhlOXp3eWE1cXdOQzgyM3N3R1h1bXU2?=
- =?utf-8?B?bmhwaEs3QzEyTy9vVm5NbXJ4cU5LWis0ZnhDN1ZxMHA0TXV0cW53dXJEemV2?=
- =?utf-8?B?OTRiNXNwNlp6OXg2bWw3akYrR1EzYmJBT3pFY1podnBZaDg1RnFuVHhDK2p0?=
- =?utf-8?B?VElKdkNEei83akpzYm90ekM5bGVvckZBVmIzUnkxUmdITWQxNTNaY1YzS1la?=
- =?utf-8?B?eS9GN284emIrcHJnVTdQeUJ6dE9rQ0tkSHc4M0I1THJ3UW9pZTFOZk1sRnVT?=
- =?utf-8?B?ZzZwQWpzaUpkL2dEMUR3RUc5bytSdnBGb1Nnd2NqS2NCd0R5S3dlY0c4VnV6?=
- =?utf-8?B?VHdTNkFMUHg1VklwMmYwdU1UZUJzVlFsUWxUUU5ESkg5azljVGlnT2E4VXVI?=
- =?utf-8?B?NS9DTmQvYkRUYlNRRnZzajMxT1VwakNFeExtSWV5Znh3RExVeEdtTXYrcXgx?=
- =?utf-8?B?a3NiY2VDb21abGIvakt0MllUZEFlOFFWYWlrcTlwZjNzVHBJWXlYQU9Pelpy?=
- =?utf-8?B?ajBrclRkOFlSemJxOGJVVlBZcFBMV0JXand5WkZjdFZyYWpIanlLTHdwenQy?=
- =?utf-8?B?ZDJwR0VydHRDVVRSNGU5a3plZ1dFWWM4dWhyRFByREt3bE10MFRzbFhGNFlt?=
- =?utf-8?B?UnhueHlSSEI0ZkR3Q1V6MndoMi9iS3crVlF5UHUvSXRmdzNleWc2ZnlvQkJD?=
- =?utf-8?B?WGpqVmxiYzE5TjVrT3RjeW5HV1FNcUQvYnFyY2VEWWo1NGQwVDQxN3h3ZDJm?=
- =?utf-8?B?YjROM1ZXa1lGN2tIZVRlN3d5MHBYdXk0YUVXVGFjSXU4UDlRaFliWURWME9v?=
- =?utf-8?B?NWs2eVZGcWtERG4yaUZ3VnB4WURLMENLOXhsY3RPMUFMNDZjYlZpK1hJTkZI?=
- =?utf-8?B?Nk0vUHNDcldTY0hxOTc0SHFmN2svVWRyWm16cXM5Q090cnVCLzIvTFlXcXl0?=
- =?utf-8?B?TzhWNWNDTzlFdjlzZktTdU1kY0w0dm0rREt4QmRCeGhZT3pJSnBPQ1p4TDU5?=
- =?utf-8?B?YStnbVQrb2VCc2c5bU5MeEFPODlBTjMvM3p1eEpFRE1hWnBvWWRzclhzdWFv?=
- =?utf-8?B?RFY2WWgxQXVUWmZJTnRnZ2RvQk1Kc21rTGM0MUhaUnY2NnBlS2Urdzk3UjBt?=
- =?utf-8?B?RHJrQjBPSUJRRlNheVExSDc1YjAyczBIYW9HUnRRVEg0Q2dNWTNHMmZtYjlz?=
- =?utf-8?B?UkJxL2VnMXFSRXJXR09hNkt3OTgvZWt4Tk9FRENQRVNiVXRUclp0cER1QWJM?=
- =?utf-8?B?R0xOT05GLzJQaWdtUm9saHl6ZWF6Y0t0SjRPb0xnaDVTdzJEM0pCVG0wVHNN?=
- =?utf-8?B?eWR2OWorV3B3NGRoWmFlazY2VUsxTkpFTWxFSXJLa2VwTDBwd2xYb0xvYTFq?=
- =?utf-8?B?RUl5TmJOdzg2cEhyakp6UHJiR3JlSzhhN3FUTXRNTnpkZjREayt6QjBENW5I?=
- =?utf-8?B?dy9kTGZHY2Y3QmEvVkdzWHJtRDVMdGMyZ2Y5UXVSdlhvWUNXdnVBNkpyMUZN?=
- =?utf-8?B?OHd5dFozVDFOb2dpVUxabzZTWnNmQVNjNHJuWmp2SzVoYlR4bGJXNVBFZGlx?=
- =?utf-8?B?aCt6Rm01NnZZYTd0YTdxK1crdkxXQVVMeEw5QTBZaG0vRFI1NEZ2eHdoZ0Y0?=
- =?utf-8?B?em42SzRsc1cvazVObEVsRUxqZCtXeGJPMWhqSnBNQnpjZlBzT3pGK2NralAz?=
- =?utf-8?Q?uB655q7hMmjbci2K1mBr5+7ZF?=
-X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ef5135c1-9440-4080-afae-08da935c649a
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Sep 2022 18:43:46.2042
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: cI6SsSz4QzFZW8TfocW1xY0/VC+ZpVE3EdiB5WJEzJzNZL1D6RJHkQniqUz0bXmc
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR15MB5365
-X-Proofpoint-ORIG-GUID: hZoOsyX4VMa7COJ-qQflD6nzA2pFOl5L
-X-Proofpoint-GUID: hZoOsyX4VMa7COJ-qQflD6nzA2pFOl5L
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.528,FMLib:17.11.122.1
- definitions=2022-09-10_08,2022-09-09_01,2022-06-22_01
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?etKq8a3gRGH/aqGj+6TFk5lW0OfwOaLjinvDJzurV9I4q1I4lomOQrH1Uo?=
+ =?iso-8859-1?Q?zvwUPvtKGZWFXcDHwATx0M4LZ5LhuM1Lnd3snn9ho/UeTtmO2MuzdqwRHA?=
+ =?iso-8859-1?Q?9u9EDPM0bw2bd7nzSIUQfbXOxxhj1wreCr0P7EYr0o03gsVcpK5CfMkvWn?=
+ =?iso-8859-1?Q?VeeSKlsi1PL87PgvYjzVH+ysEjSksPNdBl8w1hN4VWIS9LmWEy6qgOTiOn?=
+ =?iso-8859-1?Q?KDfVM5TZ02x7bq8BUR5pcADKEYD8cpODsnUPtt18/ZR0MJYE52kp7g0qdj?=
+ =?iso-8859-1?Q?8vwLo12Pdf359r91cayfBYFrR+4lWKLuQIHV4ezk1Es0mnkWYFDb25/PaH?=
+ =?iso-8859-1?Q?sdzbMICqbwHbCqhDRGDIKrwHKmXesFTJMhMmMAkXx5D5CHLl48Nt3orour?=
+ =?iso-8859-1?Q?4pYKyHDSaqv04jFx3vpqIpEiPX5D3+z8x2B/s8w6vhTX9ybshY63OQCFtJ?=
+ =?iso-8859-1?Q?cPVJE+UUC0OplgvGzf/qCc9hgqV61tTI3EASJhTfrAg3FFYDDqDA6IdPA5?=
+ =?iso-8859-1?Q?TsWfzsjzfruo4oFD2zOwsSox0JEBaLuFmAr/TrZFykWImFH8pr3OdbH6r3?=
+ =?iso-8859-1?Q?g+t7qvkTULZYo9G95Jq5EFm04vHUuGryzAQUsicLf1tHY+M9WoajjmnhhI?=
+ =?iso-8859-1?Q?Hw3A5pcHhZe9Jw9v5vcv+fEReWkhE53tvd4LaID5R0oAj0p773XBAKqWBz?=
+ =?iso-8859-1?Q?1iwB+mRdgeUHPMkvnSBwD3ZedllPp7au+zelB5xmbB6qoVA8nwp3suBfIZ?=
+ =?iso-8859-1?Q?oDPPDFriuwLHek7t6thdIWqRwVGzS+rTSTLadthN3Wt50IoyhNMsqItHZz?=
+ =?iso-8859-1?Q?IGgjOQO05QiHmH6jsHofQvdDJgvJCQ80W8pUqfUPr6lrDy29ruD/POv2f9?=
+ =?iso-8859-1?Q?X94LpOPi6/3PkKmizk2rPAjhUMqDq7OtASHEPYgdhXuo9ZVT4AexNDL3m7?=
+ =?iso-8859-1?Q?iJykkI7SKXM9bNzzEivAM6dQ3vQMDD9bIgQCorS4PS3+20EOfmVGPff0oX?=
+ =?iso-8859-1?Q?5/RLmbRIK9DCxKbP3QhEcEyOKjAB5D3Wumxy3Wg72aOf6vBVF0amRlpTaU?=
+ =?iso-8859-1?Q?e3CGwJ2ykLyswAfW29nP/hs501OIjbHA/TGcQAIJ9cE/iGe/JEyxW1gCxO?=
+ =?iso-8859-1?Q?9f51t1Z3JDJrh3ClR4ETsA4Scm5N/C2ZuGiWKDJhb7l4zjYxNrKFt7R4P0?=
+ =?iso-8859-1?Q?Wd7qJqUJ9rDh9W3fYZhsI1KbHrD830RUer6puOKRlhXG9tRFiu/62lwFTM?=
+ =?iso-8859-1?Q?pyVCCnf7NQhJtQyLe8hZorRe6JtfCV6SZ6PN+kyOK8Y79Zaypp9n1HHZWW?=
+ =?iso-8859-1?Q?Je/g/n/PjhgVdqGymhEwO/btwyhIemgKcyuKIfXLUJ97TbvHWGenvATMfL?=
+ =?iso-8859-1?Q?AqRArdxHm8TFexy3M+H5aPTsCQGb//wnTrZcei63CPsdP8UXu4jw/o/zJH?=
+ =?iso-8859-1?Q?p0U9ni7brgpf+2/rB7WFIMMiq0rlsLP0Vp2ZgaSabDXF50f6XGR5oD4Ix3?=
+ =?iso-8859-1?Q?ao5858eP1XTRXX1TmGEAUOCxnncB6sCjnjj7yup5UCT1PolA+fmZJqTXZU?=
+ =?iso-8859-1?Q?l9ajv9pfZvS45VQON66WJJHmYAUs0NBQmiQqSwHYSJJfoQppyUAHJkmAne?=
+ =?iso-8859-1?Q?uFKJa0xVg3W5/962KnsZ8M2Sn6fWwglR5vBQtldsJYV65Oe7zGAmTlbg?=
+ =?iso-8859-1?Q?=3D=3D?=
+X-OriginatorOrg: corigine.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR13MB3973
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -138,269 +115,69 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Hi Quentin,
 
+Thanks for your work.
 
-On 8/31/22 11:10 AM, Kui-Feng Lee wrote:
-> Allow creating an iterator that loops through resources of one
-> thread/process.
+On 2022-09-06 14:36:06 +0100, Quentin Monnet wrote:
+> To disassemble instructions for JIT-ed programs, bpftool has relied on the
+> libbfd library. This has been problematic in the past: libbfd's interface
+> is not meant to be stable and has changed several times, hence the
+> detection of the two related features from the Makefile
+> (disassembler-four-args and disassembler-init-styled). When it comes to
+> shipping bpftool, this has also caused issues with several distribution
+> maintainers unwilling to support the feature (for example, Debian's page
+> for binutils-dev, libbfd's package, says: "Note that building Debian
+> packages which depend on the shared libbfd is Not Allowed.").
 > 
-> People could only create iterators to loop through all resources of
-> files, vma, and tasks in the system, even though they were interested
-> in only the resources of a specific task or process.  Passing the
-> additional parameters, people can now create an iterator to go
-> through all resources or only the resources of a task.
+> This patchset adds support for LLVM as the primary library for
+> disassembling instructions for JIT-ed programs.
 > 
-> Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
-> Acked-by: Yonghong Song <yhs@fb.com>
-> ---
->   include/linux/bpf.h            |  25 +++++
->   include/uapi/linux/bpf.h       |   6 ++
->   kernel/bpf/task_iter.c         | 187 +++++++++++++++++++++++++++++----
->   tools/include/uapi/linux/bpf.h |   6 ++
->   4 files changed, 202 insertions(+), 22 deletions(-)
+> We keep libbfd as a fallback. One reason for this is that currently it
+> works well, we have all we need in terms of features detection in the
+> Makefile, so it provides a fallback for disassembling JIT-ed programs if
+> libbfd is installed but LLVM is not. The other reason is that libbfd
+> supports nfp instruction for Netronome's SmartNICs and can be used to
+> disassemble offloaded programs, something that LLVM cannot do (Niklas
+> confirmed that the feature is still in use). However, if libbfd's interface
+> breaks again in the future, we might reconsider keeping support for it.
+
+I have tested the fallback method for NFP and it works as expected and 
+one can dump the offloaded program. I know there is discussion about the 
+output format of the LLVM path, but for the whole series from a NFP 
+point of view,
+
+Tested-by: Niklas Söderlund <niklas.soderlund@corigine.com>
+
 > 
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 9c1674973e03..31ac2c1181f5 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -1730,6 +1730,27 @@ int bpf_obj_get_user(const char __user *pathname, int flags);
->   	extern int bpf_iter_ ## target(args);			\
->   	int __init bpf_iter_ ## target(args) { return 0; }
->   
-> +/*
-> + * The task type of iterators.
-> + *
-> + * For BPF task iterators, they can be parameterized with various
-> + * parameters to visit only some of tasks.
-> + *
-> + * BPF_TASK_ITER_ALL (default)
-> + *	Iterate over resources of every task.
-> + *
-> + * BPF_TASK_ITER_TID
-> + *	Iterate over resources of a task/tid.
-> + *
-> + * BPF_TASK_ITER_TGID
-> + *	Iterate over resources of every task of a process / task group.
-> + */
-> +enum bpf_iter_task_type {
-> +	BPF_TASK_ITER_ALL = 0,
-> +	BPF_TASK_ITER_TID,
-> +	BPF_TASK_ITER_TGID,
-> +};
-> +
->   struct bpf_iter_aux_info {
->   	/* for map_elem iter */
->   	struct bpf_map *map;
-> @@ -1739,6 +1760,10 @@ struct bpf_iter_aux_info {
->   		struct cgroup *start; /* starting cgroup */
->   		enum bpf_cgroup_iter_order order;
->   	} cgroup;
-> +	struct {
-> +		enum bpf_iter_task_type	type;
-> +		u32 pid;
-> +	} task;
->   };
->   
->   typedef int (*bpf_iter_attach_target_t)(struct bpf_prog *prog,
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 962960a98835..f212a19eda06 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -110,6 +110,12 @@ union bpf_iter_link_info {
->   		__u32	cgroup_fd;
->   		__u64	cgroup_id;
->   	} cgroup;
-> +	/* Parameters of task iterators. */
-> +	struct {
-> +		__u32	tid;
-> +		__u32	pid;
-> +		__u32	pid_fd;
-> +	} task;
->   };
->   
->   /* BPF syscall commands, see bpf(2) man-page for more details. */
-> diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
-> index 8c921799def4..df7bf867e28f 100644
-> --- a/kernel/bpf/task_iter.c
-> +++ b/kernel/bpf/task_iter.c
-> @@ -12,6 +12,9 @@
->   
->   struct bpf_iter_seq_task_common {
->   	struct pid_namespace *ns;
-> +	enum bpf_iter_task_type	type;
-> +	u32 pid;
-> +	u32 pid_visiting;
->   };
->   
->   struct bpf_iter_seq_task_info {
-> @@ -22,18 +25,110 @@ struct bpf_iter_seq_task_info {
->   	u32 tid;
->   };
->   
-> -static struct task_struct *task_seq_get_next(struct pid_namespace *ns,
-> +static struct task_struct *task_group_seq_get_next(struct bpf_iter_seq_task_common *common,
-> +						   u32 *tid,
-> +						   bool skip_if_dup_files)
-> +{
-> +	struct task_struct *task, *next_task;
-> +	struct pid *pid;
-> +	u32 saved_tid;
-> +
-> +	if (!*tid) {
-> +		/* The first time, the iterator calls this function. */
-> +		pid = find_pid_ns(common->pid, common->ns);
-> +		if (!pid)
-> +			return NULL;
-> +
-> +		task = get_pid_task(pid, PIDTYPE_TGID);
-> +		if (!task)
-> +			return NULL;
-> +
-> +		*tid = common->pid;
-> +		common->pid_visiting = common->pid;
-> +
-> +		return task;
-> +	}
-> +
-> +	/* If the control returns to user space and comes back to the
-> +	 * kernel again, *tid and common->pid_visiting should be the
-> +	 * same for task_seq_start() to pick up the correct task.
-> +	 */
-> +	if (*tid == common->pid_visiting) {
-> +		pid = find_pid_ns(common->pid_visiting, common->ns);
-> +		task = get_pid_task(pid, PIDTYPE_PID);
-> +
-> +		return task;
-> +	}
-> +
-> +	pid = find_pid_ns(common->pid_visiting, common->ns);
-> +	if (!pid)
-> +		return NULL;
-> +
-> +	task = get_pid_task(pid, PIDTYPE_PID);
-> +	if (!task)
-> +		return NULL;
-> +
-> +retry:
-> +	next_task = next_thread(task);
+> Quentin Monnet (7):
+>   bpftool: Define _GNU_SOURCE only once
+>   bpftool: Remove asserts from JIT disassembler
+>   bpftool: Split FEATURE_TESTS/FEATURE_DISPLAY definitions in Makefile
+>   bpftool: Group libbfd defs in Makefile, only pass them if we use
+>     libbfd
+>   bpftool: Refactor disassembler for JIT-ed programs
+>   bpftool: Add LLVM as default library for disassembling JIT-ed programs
+>   bpftool: Add llvm feature to "bpftool version"
+> 
+>  .../bpftool/Documentation/common_options.rst  |   8 +-
+>  tools/bpf/bpftool/Makefile                    |  65 +++--
+>  tools/bpf/bpftool/common.c                    |   2 +
+>  tools/bpf/bpftool/iter.c                      |   2 +
+>  tools/bpf/bpftool/jit_disasm.c                | 244 ++++++++++++++----
+>  tools/bpf/bpftool/main.c                      |  10 +
+>  tools/bpf/bpftool/main.h                      |  29 ++-
+>  tools/bpf/bpftool/map.c                       |   1 -
+>  tools/bpf/bpftool/net.c                       |   2 +
+>  tools/bpf/bpftool/perf.c                      |   2 +
+>  tools/bpf/bpftool/prog.c                      |  17 +-
+>  tools/bpf/bpftool/xlated_dumper.c             |   2 +
+>  12 files changed, 291 insertions(+), 93 deletions(-)
+> 
+> -- 
+> 2.34.1
+> 
 
-I checked the func next_tid() in fs/proc/base.c.
-The code looks like,
-
-static struct task_struct *next_tid(struct task_struct *start)
-{
-         struct task_struct *pos = NULL;
-         rcu_read_lock();
-         if (pid_alive(start)) {
-                 pos = next_thread(start);
-                 if (thread_group_leader(pos))
-                         pos = NULL;
-                 else
-                         get_task_struct(pos);
-         }
-         rcu_read_unlock();
-         put_task_struct(start);
-         return pos;
-}
-
-I think we should also check pid_alive(task) here as well.
-Based on comment in pid_alive(start). If pid_alive(start)
-is false, it is possible that pointers inside the 'start' might
-be stale and pointer dereference might cause issues.
-
-The whole task_group_seq_get_next() is protected by rcu_read_lock().
-So the task pointer should be valid for the period of
-rcu_read_lock(). So we need to do something like
-
-retry:
-	if (!pid_alive(task)) {
-		put_task_struct(task);
-		return NULL;
-	}
-	next_task = next_thread(task);
-	...
-
-
-> +	put_task_struct(task);
-> +	if (!next_task)
-> +		return NULL;
-> +
-> +	saved_tid = *tid;
-> +	*tid = __task_pid_nr_ns(next_task, PIDTYPE_PID, common->ns);
-> +	if (*tid == common->pid) {
-> +		/* Run out of tasks of a process.  The tasks of a
-> +		 * thread_group are linked as circular linked list.
-> +		 */
-> +		*tid = saved_tid;
-> +		return NULL;
-> +	}
-> +
-> +	get_task_struct(next_task);
-> +	common->pid_visiting = *tid;
-> +
-> +	if (skip_if_dup_files && task->files == task->group_leader->files) {
-> +		task = next_task;
-> +		goto retry;
-> +	}
-> +
-> +	return next_task;
-> +}
-> +
-> +static struct task_struct *task_seq_get_next(struct bpf_iter_seq_task_common *common,
->   					     u32 *tid,
->   					     bool skip_if_dup_files)
->   {
->   	struct task_struct *task = NULL;
->   	struct pid *pid;
->   
-> +	if (common->type == BPF_TASK_ITER_TID) {
-> +		if (*tid && *tid != common->pid)
-> +			return NULL;
-> +		rcu_read_lock();
-> +		pid = find_pid_ns(common->pid, common->ns);
-> +		if (pid) {
-> +			task = get_pid_task(pid, PIDTYPE_TGID);
-> +			*tid = common->pid;
-> +		}
-> +		rcu_read_unlock();
-> +
-> +		return task;
-> +	}
-> +
-> +	if (common->type == BPF_TASK_ITER_TGID) {
-> +		rcu_read_lock();
-> +		task = task_group_seq_get_next(common, tid, skip_if_dup_files);
-> +		rcu_read_unlock();
-> +
-> +		return task;
-> +	}
-> +
->   	rcu_read_lock();
->   retry:
-> -	pid = find_ge_pid(*tid, ns);
-> +	pid = find_ge_pid(*tid, common->ns);
->   	if (pid) {
-> -		*tid = pid_nr_ns(pid, ns);
-> +		*tid = pid_nr_ns(pid, common->ns);
->   		task = get_pid_task(pid, PIDTYPE_PID);
->   		if (!task) {
->   			++*tid;
-> @@ -56,7 +151,7 @@ static void *task_seq_start(struct seq_file *seq, loff_t *pos)
->   	struct bpf_iter_seq_task_info *info = seq->private;
->   	struct task_struct *task;
->   
-> -	task = task_seq_get_next(info->common.ns, &info->tid, false);
-> +	task = task_seq_get_next(&info->common, &info->tid, false);
->   	if (!task)
->   		return NULL;
->   
-> @@ -73,7 +168,7 @@ static void *task_seq_next(struct seq_file *seq, void *v, loff_t *pos)
->   	++*pos;
->   	++info->tid;
->   	put_task_struct((struct task_struct *)v);
-> -	task = task_seq_get_next(info->common.ns, &info->tid, false);
-> +	task = task_seq_get_next(&info->common, &info->tid, false);
->   	if (!task)
->   		return NULL;
->   
-[...]
+-- 
+Kind Regards,
+Niklas Söderlund
