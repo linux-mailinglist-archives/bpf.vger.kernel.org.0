@@ -2,61 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB5785B4366
-	for <lists+bpf@lfdr.de>; Sat, 10 Sep 2022 02:28:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2ABA5B436E
+	for <lists+bpf@lfdr.de>; Sat, 10 Sep 2022 02:48:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230306AbiIJA2S (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Sep 2022 20:28:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47432 "EHLO
+        id S229748AbiIJAoQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Sep 2022 20:44:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230283AbiIJA2R (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Sep 2022 20:28:17 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 794C8E622B;
-        Fri,  9 Sep 2022 17:28:15 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id 62so2740528iov.5;
-        Fri, 09 Sep 2022 17:28:15 -0700 (PDT)
+        with ESMTP id S229690AbiIJAoO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Sep 2022 20:44:14 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8AC2FC652;
+        Fri,  9 Sep 2022 17:44:12 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id gh9so7814272ejc.8;
+        Fri, 09 Sep 2022 17:44:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date;
-        bh=LHVU+QXiGt07dK7ESmFeMKaxf7KrWiJkDIp3MS3i/HA=;
-        b=Yh7QAXEfHv5nIZFxP53NrXPMw5luZg5JL/pAqwL6379WEmjgn1w0epRFMVOgseoHFy
-         Rl5DtXHyWdXAJCBeT3w6I83CTF9sZXQV7NN+yD8p5MNQGjroKoK0F6pk0+32R+XoRrek
-         2jDpAULtRmdvYgm0Rhr3DvXv6gsqOKqeKnvZmlv02AAU3GRgHKZNG0+LQ9kS/3Wqzie8
-         YmlweZSrKVpATvTs8I/OssEU0k0ovsTecFXID+RgAjNJSaFA/1Xe2ea+zpawRJObyMgu
-         19cztYLUx1NH0JiZHCqMpTvMDeQFFxvfgHIm+IY1C/Mc7G7WmigbnAWE9e4IQ/d5dXCK
-         rR/w==
+        bh=JIgqb5b60C8SmDMIEm+s+7Z4AskuEzxdfRuYH/CGCZE=;
+        b=KjT2/7h4lMbloMYZZWErBlgfsEJzqgWBEH3BP6COYgwI1mG3PsjVp+CvvAs5Cz+fbS
+         OXxEz0jUY3VZm2oZ4Ln5vXloM809c2PDIUI+tt1QraYNHo8jv1tWISzhWUxrosvYE5zZ
+         L6slugx6ZYCXiGwX/eP+DCh1R4nawgR6mIS5sW1AU5aatw03k5VggnzF9F7WnIlSGGDz
+         0tcCVtZ9f3ZoFCayp6vAt/Po0HY36kQhZjhV3PtEv6JnkUNbRGN1piPxlQPrQcv7VzeQ
+         SvArKEoN5SxR9+kAKX14haT6V5dM4KFnOQgktMq66mLNvdsLRU3k+xwGxiMgNN4NjVS0
+         oj9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=LHVU+QXiGt07dK7ESmFeMKaxf7KrWiJkDIp3MS3i/HA=;
-        b=aYRP+5xSBohyHzhZNP0RppOQNsv/zA4x/CjJ7wbkMHcuoZtdcl4Ee0WjRQHkofJVXv
-         6mNvRc0+O5cDUG1jc0KPjFK6YWLdbn57HacgnWq9BCpw+4HDrI47bD1TeYGMSufEbWMR
-         12xB+LZcH6sWx9bnP6tdVnWtGbBY9xme2Uot4blYd7ho8cNDPqfdVjGZqQulos4Q2QLT
-         0GvAK4aPG37fJqGuIU345yDl/Yk/Gyb6HKvmx40s8aWrrANhmFfJTycx1tRC2pE9Vq2I
-         2TUhuIfz0ZhWOwVWpGSzXSt5P6K1gwn5xbYX62hMerQmz2wgfAfhXuL/jvSKGfBuABUN
-         XoUQ==
-X-Gm-Message-State: ACgBeo1iKn3BZWtJs+nbtzs40NKXXTmsv51XJwTlT4nsnHVwOzEzfNzD
-        xeP1xV1s4CeiqjGNhM1t8+Fa/9hF1YS07y4T3LWEt2quBzo=
-X-Google-Smtp-Source: AA6agR4vsOByx7G2EqdM2wGeNdWjrxldUVUoAMh8pyLq9YUoOy40B4L6IfeYpNMlie8KjTBoQ6ZcmmiYLpEtk7rhxtA=
-X-Received: by 2002:a05:6638:2388:b0:34a:e033:396b with SMTP id
- q8-20020a056638238800b0034ae033396bmr8302215jat.93.1662769694877; Fri, 09 Sep
- 2022 17:28:14 -0700 (PDT)
+        bh=JIgqb5b60C8SmDMIEm+s+7Z4AskuEzxdfRuYH/CGCZE=;
+        b=5tvJ8TXOAxmQJ/rYYrReJ1RY/Vi5AA2T64x9QLauyEsRNKadIMk4ql1+g6/iPyGhtl
+         52CRdNUhDSWlpXCHH25zlY3G3nVZs658/OAwiwRxZDiduivExsjdrGXP9vLydfdfGqX2
+         nh0S2vLfzbdExAyMOLMCXaBPT3emIQ4zlu98DUTBvVLCF4PLX03wsctTEBLKTv2FCO8A
+         UOKkcg7mZItmiKR+SpDKFSFs828ivXlsX+PKRGZleqtsKGOE0jvr+10VMgCpgCtxQpeA
+         GWD9T4KykYNa/xEtAMAKWxlDJT1ZtdAkk2qNVMKlx9U4WD3CUXHcKSI+ddkv6YH2zPXP
+         0keQ==
+X-Gm-Message-State: ACgBeo1Aw0OU2LDff8qHv+AiJO1PL59LrAxe9o1Jr4IY5pWic4EQytrA
+        PJARIz5/L+PAIU+6AF4TCBG8V8bMM6ccvEnkqJA=
+X-Google-Smtp-Source: AA6agR7ZqKSHRNZnLs+LbXYkv/LNJ06v615sK2byxFJ6sF/4qxG1bzhnUcSFnWQH09ZZu7cz60xrhxBuVfkxDZuziTI=
+X-Received: by 2002:a17:906:8454:b0:772:7b02:70b5 with SMTP id
+ e20-20020a170906845400b007727b0270b5mr8878137ejy.114.1662770651341; Fri, 09
+ Sep 2022 17:44:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1662568410.git.dxu@dxuuu.xyz>
-In-Reply-To: <cover.1662568410.git.dxu@dxuuu.xyz>
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date:   Sat, 10 Sep 2022 02:27:38 +0200
-Message-ID: <CAP01T77JFBiO84iezH4Jh++vu=EEDf63KepK_jKFmjgjrHPgmw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 0/6] Support direct writes to nf_conn:mark
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, pablo@netfilter.org, fw@strlen.de,
-        toke@kernel.org, martin.lau@linux.dev,
-        netfilter-devel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <94275aa1e5af4efea53f322f91b27380@huawei.com>
+In-Reply-To: <94275aa1e5af4efea53f322f91b27380@huawei.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 9 Sep 2022 17:44:00 -0700
+Message-ID: <CAEf4BzZw8R1UH4R_FmeAVAXAALmh0ETtMVkOKytvDTs_GxqbLg@mail.gmail.com>
+Subject: Re: [PATCH v2] libbpf: Clean up legacy bpf maps declaration in bpf_helpers
+To:     "Liuxin(EulerOS)" <liuxin350@huawei.com>
+Cc:     "andrii@kernel.org" <andrii@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "martin.lau@linux.dev" <martin.lau@linux.dev>,
+        "song@kernel.org" <song@kernel.org>, "yhs@fb.com" <yhs@fb.com>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>,
+        "sdf@google.com" <sdf@google.com>,
+        "haoluo@google.com" <haoluo@google.com>,
+        "jolsa@kernel.org" <jolsa@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "854182924@qq.com" <854182924@qq.com>,
+        "Yanan (Euler)" <yanan@huawei.com>,
+        "Wuchangye (EulerOS)" <wuchangye@huawei.com>,
+        Xiesongyang <xiesongyang@huawei.com>,
+        "zhudi (E)" <zhudi2@huawei.com>,
+        "kongweibin (A)" <kongweibin2@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -68,29 +81,57 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 7 Sept 2022 at 18:41, Daniel Xu <dxu@dxuuu.xyz> wrote:
+On Tue, Sep 6, 2022 at 7:51 PM Liuxin(EulerOS) <liuxin350@huawei.com> wrote:
 >
-> Support direct writes to nf_conn:mark from TC and XDP prog types. This
-> is useful when applications want to store per-connection metadata. This
-> is also particularly useful for applications that run both bpf and
-> iptables/nftables because the latter can trivially access this metadata.
+> Legacy bpf maps declaration were no longer supported in Libbpf 1.0, so it was time to remove the definition of bpf_map_def in bpf_helpers.h.
+
+please make sure that commit log lines are wrapped at <80 characters
 >
-> One example use case would be if a bpf prog is responsible for advanced
-> packet classification and iptables/nftables is later used for routing
-> due to pre-existing/legacy code.
+> LINK:[1] https://github.com/libbpf/libbpf/wiki/Libbpf:-the-road-to-v1.0
+
+don't add "LINK", just two spaces and then [0] and then refer to it
+from the above as "supported in Libbpf 1.0 ([0])"
+
+
+>
+> Acked-by: Song Liu <song@kernel.org>
+> Signed-off-by: Xin Liu<liuxin350@huawei.com>
+
+space after name and before opening < is missing
+
+> ---
+> Changes in v2:
+>     - Fix strange signatures
 >
 
-There are a couple of compile time warnings when conntrack is disabled,
+It looks good overall, but your patch doesn't apply. Please make sure
+you base it on top of bpf-next's master and you use git send-email
+which won't clobber the patch. Thanks.
 
-../net/core/filter.c:8608:1: warning: symbol 'nf_conn_btf_access_lock'
-was not declared. Should it be static?
-../net/core/filter.c:8611:5: warning: symbol 'nfct_bsa' was not
-declared. Should it be static?
-
-Most likely because extern declaration is guarded by ifdefs. So just
-moving those out of ifdef should work.
-I guess you can send that as a follow up fix, or roll it in if you end
-up respinning.
-
-Otherwise, for the series:
-Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> V1: https://lore.kernel.org/bpf/CAPhsuW7Em6q5hqiKWEZpJOaU5DTrZE+BPPHq+Chyz0-+-yQ_ZA@mail.gmail.com/T/#t
+>
+> tools/lib/bpf/bpf_helpers.h | 12 ------------
+> 1 file changed, 12 deletions(-)
+>
+> diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h index 867b73483..9cad13e7f 100644
+> --- a/tools/lib/bpf/bpf_helpers.h
+> +++ b/tools/lib/bpf/bpf_helpers.h
+> @@ -167,18 +167,6 @@ bpf_tail_call_static(void *ctx, const void *map, const __u32 slot) } #endif
+>
+> -/*
+> - * Helper structure used by eBPF C program
+> - * to describe BPF map attributes to libbpf loader
+> - */
+> -struct bpf_map_def {
+> -       unsigned int type;
+> -       unsigned int key_size;
+> -       unsigned int value_size;
+> -       unsigned int max_entries;
+> -       unsigned int map_flags;
+> -} __attribute__((deprecated("use BTF-defined maps in .maps section")));
+> -
+> enum libbpf_pin_type {
+>         LIBBPF_PIN_NONE,
+>         /* PIN_BY_NAME: pin maps by name (in /sys/fs/bpf by default) */
+> --
+> 2.33.0
