@@ -2,55 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B36F25B4B08
-	for <lists+bpf@lfdr.de>; Sun, 11 Sep 2022 02:50:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C7B85B4B2B
+	for <lists+bpf@lfdr.de>; Sun, 11 Sep 2022 03:20:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229716AbiIKAuT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 10 Sep 2022 20:50:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36582 "EHLO
+        id S229809AbiIKBUT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 10 Sep 2022 21:20:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229569AbiIKAuS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 10 Sep 2022 20:50:18 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A009440BD6;
-        Sat, 10 Sep 2022 17:50:17 -0700 (PDT)
+        with ESMTP id S229738AbiIKBUS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 10 Sep 2022 21:20:18 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94403275E2;
+        Sat, 10 Sep 2022 18:20:17 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 0908CCE0B04;
-        Sun, 11 Sep 2022 00:50:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 5ACFDC433D7;
-        Sun, 11 Sep 2022 00:50:14 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 1D9AAB80AFB;
+        Sun, 11 Sep 2022 01:20:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id B313AC433D7;
+        Sun, 11 Sep 2022 01:20:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662857414;
-        bh=Vtm4P8fNdhOzhXWZOLB6CL1Oqs+jwbj3/shDxUT793o=;
+        s=k20201202; t=1662859214;
+        bh=rWDmi4fW+8QiaUIaHPO9PJpi7XbAu+qWF7VNyCjQb1o=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=nQadEecLAHR2pAFnr4z/9tQc+ARlkhX9zIrSL77DAHb0PwVe3S5mlQritepM06kB6
-         J18P9pfggJnMqYtjjgB35RaxGXDrtgpg3Wg/QxHykLI4S7oQrpIDOU/QZHw5h3K6Iu
-         XDgdeceKXCiamyJys86aCDx4IFXdHbZyVOviP0d7s7j41OocXRoKFjFSTSiP+KCufZ
-         m6FxGnnkUyWDfZP/5K7vYGDjKKr1AEyUW43yU6kh0fYjOvP/M7eGZv5V3LlROpRkWs
-         ZO/WkT/YZR0pzTi6bk33ANUpKwLsY1b9TPktLaqMC8a9EWEFpgN6VJiw2RJVJ4z8VB
-         qrdxotiI/fAUw==
+        b=d/ca/W/qRzivihAnXQLNkLbaXbQat52l8m85Vq1/NeeJ6BMp7K4JZL3KVPCGB/vti
+         iqsAXlZybZK9RiwEvZo9jLfNIF58/FSEWVl22VHbr61ZKk9VHG+c2aXgrxFhXimd3T
+         LSqaf51Cmb+BbB3yqbQ2efRUjobTk5QzfoQwgSI4rvhirHkS2HQKNVXy2yvEmZgeXU
+         r0dDQFIJft9QLKg+iM8SEt8S74I9iLEisS8pMHqDo/IA8OkyHjlKGT7CbiIS6fl8Uq
+         yETrmviT2JV8xthTB20Lx1Y/U8aXEWpS6XEt3NGNg4g7c8dlpP+Na7m+UaCM1PE1Wa
+         tOhDeRzMWvHdQ==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 378A3C73FE9;
-        Sun, 11 Sep 2022 00:50:14 +0000 (UTC)
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 926D1C73FE7;
+        Sun, 11 Sep 2022 01:20:14 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 bpf-next] selftests/bpf: fix ct status check in bpf_nf
- selftests
+Subject: Re: [PATCH bpf v2] bpf: btf: fix truncated last_member_type_id in
+ btf_struct_resolve
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <166285741421.23649.1792728113996334824.git-patchwork-notify@kernel.org>
-Date:   Sun, 11 Sep 2022 00:50:14 +0000
-References: <813a5161a71911378dfac8770ec890428e4998aa.1662623574.git.lorenzo@kernel.org>
-In-Reply-To: <813a5161a71911378dfac8770ec890428e4998aa.1662623574.git.lorenzo@kernel.org>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, davem@davemloft.net,
-        kuba@kernel.org, edumazet@google.com, pabeni@redhat.com,
-        pablo@netfilter.org, fw@strlen.de, netfilter-devel@vger.kernel.org,
-        lorenzo.bianconi@redhat.com, brouer@redhat.com, toke@redhat.com,
-        memxor@gmail.com, song@kernel.org
+Message-Id: <166285921459.4256.17072586904568979283.git-patchwork-notify@kernel.org>
+Date:   Sun, 11 Sep 2022 01:20:14 +0000
+References: <20220910110120.339242-1-oss@lmb.io>
+In-Reply-To: <20220910110120.339242-1-oss@lmb.io>
+To:     Lorenz Bauer <oss@lmb.io>
+Cc:     martin.lau@linux.dev, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -63,23 +62,22 @@ X-Mailing-List: bpf@vger.kernel.org
 
 Hello:
 
-This patch was applied to bpf/bpf-next.git (master)
+This patch was applied to bpf/bpf.git (master)
 by Alexei Starovoitov <ast@kernel.org>:
 
-On Thu,  8 Sep 2022 10:06:12 +0200 you wrote:
-> Check properly the connection tracking entry status configured running
-> bpf_ct_change_status kfunc.
-> Remove unnecessary IPS_CONFIRMED status configuration since it is
-> already done during entry allocation.
+On Sat, 10 Sep 2022 11:01:20 +0000 you wrote:
+> When trying to finish resolving a struct member, btf_struct_resolve
+> saves the member type id in a u16 temporary variable. This truncates
+> the 32 bit type id value if it exceeds UINT16_MAX.
 > 
-> Fixes: 6eb7fba007a7 ("selftests/bpf: Add tests for new nf_conntrack kfuncs")
-> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> As a result, structs that have members with type ids > UINT16_MAX and
+> which need resolution will fail with a message like this:
 > 
 > [...]
 
 Here is the summary with links:
-  - [v2,bpf-next] selftests/bpf: fix ct status check in bpf_nf selftests
-    https://git.kernel.org/bpf/bpf-next/c/f7c946f288e3
+  - [bpf,v2] bpf: btf: fix truncated last_member_type_id in btf_struct_resolve
+    https://git.kernel.org/bpf/bpf/c/a37a32583e28
 
 You are awesome, thank you!
 -- 
