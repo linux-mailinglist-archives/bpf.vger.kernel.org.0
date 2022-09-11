@@ -2,67 +2,41 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 876ED5B4E88
-	for <lists+bpf@lfdr.de>; Sun, 11 Sep 2022 13:41:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FCC05B4E95
+	for <lists+bpf@lfdr.de>; Sun, 11 Sep 2022 13:52:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230406AbiIKLlG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 11 Sep 2022 07:41:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33698 "EHLO
+        id S230288AbiIKLvC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 11 Sep 2022 07:51:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230410AbiIKLlE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 11 Sep 2022 07:41:04 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C23BB386BB
-        for <bpf@vger.kernel.org>; Sun, 11 Sep 2022 04:41:01 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 58A8860E9B
-        for <bpf@vger.kernel.org>; Sun, 11 Sep 2022 11:41:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A89F5C43470
-        for <bpf@vger.kernel.org>; Sun, 11 Sep 2022 11:41:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662896460;
-        bh=mfC/DzcLdVbiyBOdkdFzHVkQuK8qpwvJhFQkQNsjoBc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=dO9a1bCjZWZa+j3+YvkaHc7afn0eZ9xJRUUkbpjJwNa/BYKyox7+5L8Yifx9OJPm9
-         xMLqBGhuNZ+T31UE2LZrDlYWarc+dQCNZSHWZad6WxBTvSBYyYtZ0RK3f7KOeCDUSW
-         dlg5T4Shm1GiDFVY9tJY12iLzzPf/o0ThJBjK5PE7R2kMOvLxGDCHCs9IXsF5pjzNQ
-         P/R2OdrYWxNWCDC/URJu5xhtP/D2zLgnoV4xggnx8yVQeLADKs052ntgWzXyw6BZag
-         g+I0CSxGWEleFvbhU93i0yzauY4cAUAveQQI95Y0peM1f0q0ClLTAFlZ+YDCD5WhLk
-         PbF8/UPo+gLQQ==
-Received: by mail-ej1-f49.google.com with SMTP id bj12so14051882ejb.13
-        for <bpf@vger.kernel.org>; Sun, 11 Sep 2022 04:41:00 -0700 (PDT)
-X-Gm-Message-State: ACgBeo0x1ZclRZ1UCytrzPmXWhaV2sCgEq6VnJ2TjK2bq3X4Iy9ahVHw
-        /JRyM3lhHkmFdgBteEPMlz00TYD55dHwsdp++Paufg==
-X-Google-Smtp-Source: AA6agR7gs0xxqnhzhdmlHMESnGLHahKK3mbikc37UgqaUcsvF6ftFAuRZVzQ4u53rO5Up2H7UPABpxSJ5Mh/VrkiE8c=
-X-Received: by 2002:aa7:cd14:0:b0:44e:2335:fb90 with SMTP id
- b20-20020aa7cd14000000b0044e2335fb90mr18029880edw.152.1662896448217; Sun, 11
- Sep 2022 04:40:48 -0700 (PDT)
+        with ESMTP id S230235AbiIKLvB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 11 Sep 2022 07:51:01 -0400
+Received: from smtp.smtpout.orange.fr (smtp09.smtpout.orange.fr [80.12.242.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E92F21E08
+        for <bpf@vger.kernel.org>; Sun, 11 Sep 2022 04:50:56 -0700 (PDT)
+Received: from pop-os.home ([90.11.190.129])
+        by smtp.orange.fr with ESMTPA
+        id XLUDoCHEZJvOZXLUEoFLUg; Sun, 11 Sep 2022 13:50:55 +0200
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 11 Sep 2022 13:50:55 +0200
+X-ME-IP: 90.11.190.129
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH] headers: Remove some left-over license text
+Date:   Sun, 11 Sep 2022 13:50:30 +0200
+Message-Id: <2a15aba72497e78ff08c8b8a8bfe3cf5a3e6ee18.1662897019.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20220909120736.1027040-1-roberto.sassu@huaweicloud.com> <20220909120736.1027040-8-roberto.sassu@huaweicloud.com>
-In-Reply-To: <20220909120736.1027040-8-roberto.sassu@huaweicloud.com>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Sun, 11 Sep 2022 13:40:37 +0200
-X-Gmail-Original-Message-ID: <CACYkzJ6xSk_DHO+3JoCYpGrXjFkk9v-LOSWW0=0KLwAj1Gc0SA@mail.gmail.com>
-Message-ID: <CACYkzJ6xSk_DHO+3JoCYpGrXjFkk9v-LOSWW0=0KLwAj1Gc0SA@mail.gmail.com>
-Subject: Re: [PATCH v17 07/12] bpf: Add bpf_verify_pkcs7_signature() kfunc
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, mykolal@fb.com, dhowells@redhat.com,
-        jarkko@kernel.org, rostedt@goodmis.org, mingo@redhat.com,
-        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
-        shuah@kernel.org, bpf@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        deso@posteo.net, memxor@gmail.com,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,
+        RCVD_IN_BL_SPAMCOP_NET,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,129 +44,111 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 9, 2022 at 2:09 PM Roberto Sassu
-<roberto.sassu@huaweicloud.com> wrote:
->
-> From: Roberto Sassu <roberto.sassu@huawei.com>
->
-> Add the bpf_verify_pkcs7_signature() kfunc, to give eBPF security modules
-> the ability to check the validity of a signature against supplied data, by
-> using user-provided or system-provided keys as trust anchor.
->
-> The new kfunc makes it possible to enforce mandatory policies, as eBPF
-> programs might be allowed to make security decisions only based on data
-> sources the system administrator approves.
->
-> The caller should provide the data to be verified and the signature as eBPF
-> dynamic pointers (to minimize the number of parameters) and a bpf_key
-> structure containing a reference to the keyring with keys trusted for
-> signature verification, obtained from bpf_lookup_user_key() or
-> bpf_lookup_system_key().
->
-> For bpf_key structures obtained from the former lookup function,
-> bpf_verify_pkcs7_signature() completes the permission check deferred by
-> that function by calling key_validate(). key_task_permission() is already
-> called by the PKCS#7 code.
->
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> Acked-by: KP Singh <kpsingh@kernel.org>
-> ---
->  kernel/trace/bpf_trace.c | 45 ++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 45 insertions(+)
->
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index ab183dbaa8d1..9df53c40cffd 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -1294,12 +1294,57 @@ void bpf_key_put(struct bpf_key *bkey)
->         kfree(bkey);
->  }
->
-> +#ifdef CONFIG_SYSTEM_DATA_VERIFICATION
-> +/**
-> + * bpf_verify_pkcs7_signature - verify a PKCS#7 signature
-> + * @data_ptr: data to verify
-> + * @sig_ptr: signature of the data
-> + * @trusted_keyring: keyring with keys trusted for signature verification
-> + *
-> + * Verify the PKCS#7 signature *sig_ptr* against the supplied *data_ptr*
-> + * with keys in a keyring referenced by *trusted_keyring*.
-> + *
-> + * Return: 0 on success, a negative value on error.
-> + */
-> +int bpf_verify_pkcs7_signature(struct bpf_dynptr_kern *data_ptr,
-> +                              struct bpf_dynptr_kern *sig_ptr,
-> +                              struct bpf_key *trusted_keyring)
-> +{
-> +       int ret;
-> +
-> +       if (trusted_keyring->has_ref) {
-> +               /*
-> +                * Do the permission check deferred in bpf_lookup_user_key().
-> +                * See bpf_lookup_user_key() for more details.
-> +                *
-> +                * A call to key_task_permission() here would be redundant, as
-> +                * it is already done by keyring_search() called by
-> +                * find_asymmetric_key().
-> +                */
-> +               ret = key_validate(trusted_keyring->key);
-> +               if (ret < 0)
-> +                       return ret;
-> +       }
-> +
-> +       return verify_pkcs7_signature(data_ptr->data,
-> +                                     bpf_dynptr_get_size(data_ptr),
-> +                                     sig_ptr->data,
-> +                                     bpf_dynptr_get_size(sig_ptr),
-> +                                     trusted_keyring->key,
-> +                                     VERIFYING_UNSPECIFIED_SIGNATURE, NULL,
-> +                                     NULL);
-> +}
+Remove some left-over from commit e2be04c7f995 ("License cleanup: add SPDX
+license identifier to uapi header files with a license")
 
-This seems to work if the data that needs to be verified
-and the signature is allocated onto the map.
+When the SPDX-License-Identifier tag has been added, the corresponding
+license text has not been removed.
 
-For BPF program signing, the signature will be void * pointer (and length)
-in a struct in the kernel
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ include/uapi/linux/tc_act/tc_bpf.h        |  5 -----
+ include/uapi/linux/tc_act/tc_skbedit.h    | 13 -------------
+ include/uapi/linux/tc_act/tc_skbmod.h     |  7 +------
+ include/uapi/linux/tc_act/tc_tunnel_key.h |  5 -----
+ include/uapi/linux/tc_act/tc_vlan.h       |  5 -----
+ 5 files changed, 1 insertion(+), 34 deletions(-)
 
-+++ b/include/uapi/linux/bpf.h
-@@ -1383,6 +1383,8 @@ union bpf_attr {
-                __aligned_u64   fd_array;       /* array of FDs */
-                __aligned_u64   core_relos;
-                __u32           core_relo_rec_size; /* sizeof(struct
-bpf_core_relo) */
-+               __aligned_u64   signature;
-+               __u32           signature_size;
-        };
+diff --git a/include/uapi/linux/tc_act/tc_bpf.h b/include/uapi/linux/tc_act/tc_bpf.h
+index 653c4f94f76e..fe6c8f8f3e8c 100644
+--- a/include/uapi/linux/tc_act/tc_bpf.h
++++ b/include/uapi/linux/tc_act/tc_bpf.h
+@@ -1,11 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0+ WITH Linux-syscall-note */
+ /*
+  * Copyright (c) 2015 Jiri Pirko <jiri@resnulli.us>
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+  */
+ 
+ #ifndef __LINUX_TC_BPF_H
+diff --git a/include/uapi/linux/tc_act/tc_skbedit.h b/include/uapi/linux/tc_act/tc_skbedit.h
+index 6cb6101208d0..64032513cc4c 100644
+--- a/include/uapi/linux/tc_act/tc_skbedit.h
++++ b/include/uapi/linux/tc_act/tc_skbedit.h
+@@ -2,19 +2,6 @@
+ /*
+  * Copyright (c) 2008, Intel Corporation.
+  *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms and conditions of the GNU General Public License,
+- * version 2, as published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope it will be useful, but WITHOUT
+- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+- * more details.
+- *
+- * You should have received a copy of the GNU General Public License along with
+- * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+- * Place - Suite 330, Boston, MA 02111-1307 USA.
+- *
+  * Author: Alexander Duyck <alexander.h.duyck@intel.com>
+  */
+ 
+diff --git a/include/uapi/linux/tc_act/tc_skbmod.h b/include/uapi/linux/tc_act/tc_skbmod.h
+index af6ef2cfbf3d..ac62c9a993ea 100644
+--- a/include/uapi/linux/tc_act/tc_skbmod.h
++++ b/include/uapi/linux/tc_act/tc_skbmod.h
+@@ -1,12 +1,7 @@
+ /* SPDX-License-Identifier: GPL-2.0+ WITH Linux-syscall-note */
+ /*
+  * Copyright (c) 2016, Jamal Hadi Salim
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+-*/
++ */
+ 
+ #ifndef __LINUX_TC_SKBMOD_H
+ #define __LINUX_TC_SKBMOD_H
+diff --git a/include/uapi/linux/tc_act/tc_tunnel_key.h b/include/uapi/linux/tc_act/tc_tunnel_key.h
+index 3f10dc4e7a4b..49ad4033951b 100644
+--- a/include/uapi/linux/tc_act/tc_tunnel_key.h
++++ b/include/uapi/linux/tc_act/tc_tunnel_key.h
+@@ -2,11 +2,6 @@
+ /*
+  * Copyright (c) 2016, Amir Vadai <amir@vadai.me>
+  * Copyright (c) 2016, Mellanox Technologies. All rights reserved.
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+  */
+ 
+ #ifndef __LINUX_TC_TUNNEL_KEY_H
+diff --git a/include/uapi/linux/tc_act/tc_vlan.h b/include/uapi/linux/tc_act/tc_vlan.h
+index 5b306fe815cc..3e1f8e57cdd2 100644
+--- a/include/uapi/linux/tc_act/tc_vlan.h
++++ b/include/uapi/linux/tc_act/tc_vlan.h
+@@ -1,11 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0+ WITH Linux-syscall-note */
+ /*
+  * Copyright (c) 2014 Jiri Pirko <jiri@resnulli.us>
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+  */
+ 
+ #ifndef __LINUX_TC_VLAN_H
+-- 
+2.34.1
 
-Something like this in the bpf_prog_aux struct which is passed to
-security_bpf_prog_alloc.
-
-Now creating a dynptr to use with this kfunc does not work:
-
-   bpf_dynptr_from_mem(aux->signature, aux->signature_size, 0, &sig_ptr);
-
-So one has to copy kernel data into a map and then create dynptrs.
-Would you be able to update
-the dynptr logic to handle this case too? (follow up is okay too).
-
-- KP
-
-
-> +#endif /* CONFIG_SYSTEM_DATA_VERIFICATION */
-> +
->  __diag_pop();
->
->  BTF_SET8_START(key_sig_kfunc_set)
->  BTF_ID_FLAGS(func, bpf_lookup_user_key, KF_ACQUIRE | KF_RET_NULL | KF_SLEEPABLE)
->  BTF_ID_FLAGS(func, bpf_lookup_system_key, KF_ACQUIRE | KF_RET_NULL)
->  BTF_ID_FLAGS(func, bpf_key_put, KF_RELEASE)
-> +#ifdef CONFIG_SYSTEM_DATA_VERIFICATION
-> +BTF_ID_FLAGS(func, bpf_verify_pkcs7_signature, KF_SLEEPABLE)
-> +#endif
->  BTF_SET8_END(key_sig_kfunc_set)
->
->  static const struct btf_kfunc_id_set bpf_key_sig_kfunc_set = {
-> --
-> 2.25.1
->
