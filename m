@@ -2,50 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8010F5B4CAF
-	for <lists+bpf@lfdr.de>; Sun, 11 Sep 2022 10:46:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0D435B4CB1
+	for <lists+bpf@lfdr.de>; Sun, 11 Sep 2022 10:46:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229937AbiIKIqY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 11 Sep 2022 04:46:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56190 "EHLO
+        id S229914AbiIKIq2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 11 Sep 2022 04:46:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229716AbiIKIqU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 11 Sep 2022 04:46:20 -0400
+        with ESMTP id S229955AbiIKIq1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 11 Sep 2022 04:46:27 -0400
 Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EAD931DDC
-        for <bpf@vger.kernel.org>; Sun, 11 Sep 2022 01:46:19 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id r18so13618089eja.11
-        for <bpf@vger.kernel.org>; Sun, 11 Sep 2022 01:46:18 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 431323207C
+        for <bpf@vger.kernel.org>; Sun, 11 Sep 2022 01:46:25 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id nc14so13687520ejc.4
+        for <bpf@vger.kernel.org>; Sun, 11 Sep 2022 01:46:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=metanetworks.com; s=google;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date;
-        bh=dtwQmSt2od+Vhv2Bev3Uvh+v7U3zX32L648E+2IBaMs=;
-        b=MMIkr2jXv9SWq72wuRtd4kAvudyCayj6bp/vCtd3Jdv+e7ruqpcHCoVe18fIjJcBbX
-         06znQWK3/l1kZWA843NlgcurnvShS9R9PZ54n7/+jDoXvAbUAxVf3Jyy9TPyG66eyyPu
-         lN7UZed2ZxLDimks02TQK05u+zMxCoiNHhN34=
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
+        bh=PxBIDlOz/oNNEmNNYrXSw2RO4vH4JKthBQ66hiIBTxw=;
+        b=KWMW/7/XpOgmRjDVVKc10iVmH3hbsocWBHpv0dO+nriso3MJdn+f9FaajmELYRnPes
+         WVF9mgQ+1HTNOM1SQoEIk8d+A8/mMrLj0MYDar/NL40EqphmWOD6rKEOAznoGPHW0Wyj
+         nJZ43Oh4Bh75TPC3mV5JjwZ4SKQ76QtlLMGYY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date;
-        bh=dtwQmSt2od+Vhv2Bev3Uvh+v7U3zX32L648E+2IBaMs=;
-        b=zwSQNDo72MkAv6IqW7T5n3Lyp7wXjIy8mNf/di0Fuzzd6vFz/Ks5RDv9Y3Mprm3o/B
-         WmWvxlBcCj12AJ6SqkCaQwFOy4N551611bgMVjjLV8/WWYWCJ4gFYh3P6OT/OHHbzvuf
-         OLTsmBTugK/SGoqcpoG04YSHKeS9FV+ZWHl1PVfIGrEJj7/Mcf4d6xtndzwowzsIkhVe
-         v5vD/Fdr2Jcg0PQwtJ/+0NqlzE1Ofah1gnGZdLK6RDd1OPQHXMc8MwpA9eExevjjgAWc
-         s904vBgDGHIHxX3VfjBCWSITZBImfS8NMHOjMBUFoYjcWPEOSTih4HGLG9W4Zo9mNiaO
-         /DcQ==
-X-Gm-Message-State: ACgBeo1px8SR4LqUPIe9oKsrqxNA5ryxUEZ7txPvsbIhkdIfEltUK0Q3
-        DF5Hl8UT84Zxf/uyqfx14FqvCf0aehbP2A3XcsMj1U2tPsGWJlNWjcHkqUI09AI5cWdHNLrNLzc
-        jm0EVrjA1Hpey4kYu0QV2tesuTdFVAx7Ymz2Bj746gBC8PG4IH7f+uYIpYlM9PcTy2V6YwBuCPg
-        M=
-X-Google-Smtp-Source: AA6agR5kLriTVQlO63ZRioCfq99antsHyQTGJtJ7xIMqyYcvMMld91cSvLpryXT6QBCqTYrz+QKrGA==
-X-Received: by 2002:a17:906:ef90:b0:77c:280b:93a1 with SMTP id ze16-20020a170906ef9000b0077c280b93a1mr2334752ejb.709.1662885977375;
-        Sun, 11 Sep 2022 01:46:17 -0700 (PDT)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date;
+        bh=PxBIDlOz/oNNEmNNYrXSw2RO4vH4JKthBQ66hiIBTxw=;
+        b=2RXdYkE5WSbfz/CzTt6Q/XERMZvB+H9J9jCyZ52McHq9uGdLNhDBNB3uj0dAyTrNt/
+         OpZgNfBgAt4aPQ/Dpyg6yqwSqt7nePEZlvLZEq6MNShPNZgr5YgVnH9Q1cJoRMpfzhCc
+         cYAsfDNssxQ/BYT6M/+Sq5aX3xdH0X4zpkC/XNhY8Os/OBKIZbsspomdTgNhRGl6+FP7
+         4SpP1H7mJqseM1L6V/a78RmcApC6TJf/HYjjXkIW/nBO8FD/UEfECi/a/TEpslxotIV/
+         EehbMVzWOVsE6JzQYTB9z1v3hb2QysvJVHI38a0xy+WrT+vegf1hZl87MT8ZEsCKxnA0
+         g09Q==
+X-Gm-Message-State: ACgBeo08pgo5Fesu5Kc6GKy4B+7lgeO7sDr4+DIJV8VNaZaEYcGCWWKA
+        hpCe/nsCxQhMbGAyipUXxHyfbQiR6SAwniiDreKMvHMXBb5wjzuK7QcH1ZVsGupm7bBY2KxsqaS
+        zCJv4bcJpCvOX5zv97N3pnkdCz3joSH+GKDBunzE+v/31w314MrTfRzPhNTBmMWlFidoCkzm91Z
+        Q=
+X-Google-Smtp-Source: AA6agR5D+joSmhtU3dTKsQZpZdQEfHyY6hHxnY7QezbKXNygiFSfqp0zNLS1Vt5DKkK/IYgMuDz2VA==
+X-Received: by 2002:a17:906:fd8a:b0:75d:c79a:47c8 with SMTP id xa10-20020a170906fd8a00b0075dc79a47c8mr14694815ejb.389.1662885983510;
+        Sun, 11 Sep 2022 01:46:23 -0700 (PDT)
 Received: from localhost.localdomain ([141.226.162.95])
-        by smtp.gmail.com with ESMTPSA id q10-20020a170906360a00b007309a570bacsm2713591ejb.176.2022.09.11.01.46.16
+        by smtp.gmail.com with ESMTPSA id q10-20020a170906360a00b007309a570bacsm2713591ejb.176.2022.09.11.01.46.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Sep 2022 01:46:17 -0700 (PDT)
+        Sun, 11 Sep 2022 01:46:23 -0700 (PDT)
 From:   Shmulik Ladkani <shmulik@metanetworks.com>
 X-Google-Original-From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
 To:     bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
@@ -55,10 +56,12 @@ To:     bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Paul Chaignon <paul@isovalent.com>,
         Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Subject: [PATCH v6 bpf-next 0/4] bpf: Support setting variable-length tunnel options
-Date:   Sun, 11 Sep 2022 11:46:05 +0300
-Message-Id: <20220911084609.102519-1-shmulik.ladkani@gmail.com>
+Subject: [PATCH v6 bpf-next 1/4] bpf: Export 'bpf_dynptr_get_data, bpf_dynptr_get_size' helpers
+Date:   Sun, 11 Sep 2022 11:46:06 +0300
+Message-Id: <20220911084609.102519-2-shmulik.ladkani@gmail.com>
 X-Mailer: git-send-email 2.37.3
+In-Reply-To: <20220911084609.102519-1-shmulik.ladkani@gmail.com>
+References: <20220911084609.102519-1-shmulik.ladkani@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -71,46 +74,52 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Introduce 'skb_set_tunnel_opt_dynptr' to allow setting tunnel options of
-dynamic length.
+This allows kernel code dealing with dynptrs obtain dynptr's available
+size and current (w. proper offset) data pointer.
 
-v2:
-- Place test_tunnel's local route in a custom table, to ensure the IP
-  isn't considered assigned to a device.
-v3:
-- Avoid 'inline' for the __bpf_skb_set_tunopt helper function
-v4:
-- change API to be based on bpf_dynptr,
-  suggested by John Fastabend <john.fastabend@gmail.com>
+Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+---
 v5:
 - fix bpf_dynptr_get_data's incorrect usage of bpf_dynptr_kern's size
   spotted by Joanne Koong <joannelkoong@gmail.com>
 v6:
 - Simplify bpf_dynptr_get_data's interface and make it inline
   suggested by John Fastabend <john.fastabend@gmail.com>
-- Simplify bpf_skb_set_tunnel_opt_dynptr's interface, removing the
-  superfluous 'len' parameter
-  suggested by Andrii Nakryiko <andrii.nakryiko@gmail.com>
-- Fix missing retcodes in progs/test_tunnel_kern.c
-  spotted by John Fastabend <john.fastabend@gmail.com>
+---
+ include/linux/bpf.h  | 6 ++++++
+ kernel/bpf/helpers.c | 2 +-
+ 2 files changed, 7 insertions(+), 1 deletion(-)
 
-Shmulik Ladkani (4):
-  bpf: Export 'bpf_dynptr_get_data, bpf_dynptr_get_size' helpers
-  bpf: Support setting variable-length tunnel options
-  selftests/bpf: Simplify test_tunnel setup for allowing non-local
-    tunnel traffic
-  selftests/bpf: Add geneve with bpf_skb_set_tunnel_opt_dynptr test-case
-    to test_progs
-
- include/linux/bpf.h                           |   6 +
- include/uapi/linux/bpf.h                      |  11 +
- kernel/bpf/helpers.c                          |   2 +-
- net/core/filter.c                             |  31 ++-
- tools/include/uapi/linux/bpf.h                |  11 +
- .../selftests/bpf/prog_tests/test_tunnel.c    | 131 +++++++++--
- .../selftests/bpf/progs/test_tunnel_kern.c    | 212 ++++++++++++------
- 7 files changed, 318 insertions(+), 86 deletions(-)
-
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 48ae05099f36..e0844f45022f 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -2631,6 +2631,12 @@ void bpf_dynptr_init(struct bpf_dynptr_kern *ptr, void *data,
+ 		     enum bpf_dynptr_type type, u32 offset, u32 size);
+ void bpf_dynptr_set_null(struct bpf_dynptr_kern *ptr);
+ int bpf_dynptr_check_size(u32 size);
++u32 bpf_dynptr_get_size(struct bpf_dynptr_kern *ptr);
++
++static inline void *bpf_dynptr_get_data(struct bpf_dynptr_kern *ptr)
++{
++	return ptr->data ? ptr->data + ptr->offset : NULL;
++}
+ 
+ #ifdef CONFIG_BPF_LSM
+ void bpf_cgroup_atype_get(u32 attach_btf_id, int cgroup_atype);
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index fc08035f14ed..824864ac82d1 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -1408,7 +1408,7 @@ static void bpf_dynptr_set_type(struct bpf_dynptr_kern *ptr, enum bpf_dynptr_typ
+ 	ptr->size |= type << DYNPTR_TYPE_SHIFT;
+ }
+ 
+-static u32 bpf_dynptr_get_size(struct bpf_dynptr_kern *ptr)
++u32 bpf_dynptr_get_size(struct bpf_dynptr_kern *ptr)
+ {
+ 	return ptr->size & DYNPTR_SIZE_MASK;
+ }
 -- 
 2.37.3
 
