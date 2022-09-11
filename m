@@ -2,100 +2,197 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D67C55B4DA4
-	for <lists+bpf@lfdr.de>; Sun, 11 Sep 2022 13:03:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 876ED5B4E88
+	for <lists+bpf@lfdr.de>; Sun, 11 Sep 2022 13:41:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230074AbiIKLDz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 11 Sep 2022 07:03:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51014 "EHLO
+        id S230406AbiIKLlG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 11 Sep 2022 07:41:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230055AbiIKLDz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 11 Sep 2022 07:03:55 -0400
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3768E2B60F
-        for <bpf@vger.kernel.org>; Sun, 11 Sep 2022 04:03:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1662894234; x=1694430234;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=e1MtO28anc7uNUVGi1jIu2XWb/fBZng3fUvzn9nJDj4=;
-  b=GGjFdSVQCnrh/iARFOpQh24dDZApP1hcVrr2H1nJkh7XjWvMDkLwNXWX
-   7SCw3nmgWPQQW3dCdhqfFsz0rGwVzqYkKgFjFItR7R+d4RHgmGK4tOpOm
-   0ieDG0MnowQMex66suip/L8t/PsPAfbY6srue2PRhFqX/VMBUnVguFQsz
-   L1gFp3IyQtPkJ4YrTMFf3ichUi2RAuvc8AhpspfUzgS1noHfb+u304S4G
-   TbC9111ILBLQZeJZHWMYes5aE4HlN1ujrzmbLXxMbdLCaUOseorXfOVrM
-   QRD+7TGoHXcBCPEbZBlgeaN/SieBQi4aNsC48Cc3eNfrMe8EW2ndgyogT
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10466"; a="280733747"
-X-IronPort-AV: E=Sophos;i="5.93,307,1654585200"; 
-   d="scan'208";a="280733747"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Sep 2022 04:03:53 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,307,1654585200"; 
-   d="scan'208";a="860871376"
-Received: from lkp-server02.sh.intel.com (HELO 4011df4f4fd3) ([10.239.97.151])
-  by fmsmga006.fm.intel.com with ESMTP; 11 Sep 2022 04:03:51 -0700
-Received: from kbuild by 4011df4f4fd3 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1oXKkg-0001Ml-1d;
-        Sun, 11 Sep 2022 11:03:50 +0000
-Date:   Sun, 11 Sep 2022 19:03:41 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Shmulik Ladkani <shmulik@metanetworks.com>, bpf@vger.kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     kbuild-all@lists.01.org, Alexei Starovoitov <ast@kernel.org>,
-        Paul Chaignon <paul@isovalent.com>,
-        Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Subject: Re: [PATCH v6 bpf-next 2/4] bpf: Support setting variable-length
- tunnel options
-Message-ID: <202209111828.Bns8KP2S-lkp@intel.com>
-References: <20220911084609.102519-3-shmulik.ladkani@gmail.com>
+        with ESMTP id S230410AbiIKLlE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 11 Sep 2022 07:41:04 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C23BB386BB
+        for <bpf@vger.kernel.org>; Sun, 11 Sep 2022 04:41:01 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 58A8860E9B
+        for <bpf@vger.kernel.org>; Sun, 11 Sep 2022 11:41:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A89F5C43470
+        for <bpf@vger.kernel.org>; Sun, 11 Sep 2022 11:41:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1662896460;
+        bh=mfC/DzcLdVbiyBOdkdFzHVkQuK8qpwvJhFQkQNsjoBc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=dO9a1bCjZWZa+j3+YvkaHc7afn0eZ9xJRUUkbpjJwNa/BYKyox7+5L8Yifx9OJPm9
+         xMLqBGhuNZ+T31UE2LZrDlYWarc+dQCNZSHWZad6WxBTvSBYyYtZ0RK3f7KOeCDUSW
+         dlg5T4Shm1GiDFVY9tJY12iLzzPf/o0ThJBjK5PE7R2kMOvLxGDCHCs9IXsF5pjzNQ
+         P/R2OdrYWxNWCDC/URJu5xhtP/D2zLgnoV4xggnx8yVQeLADKs052ntgWzXyw6BZag
+         g+I0CSxGWEleFvbhU93i0yzauY4cAUAveQQI95Y0peM1f0q0ClLTAFlZ+YDCD5WhLk
+         PbF8/UPo+gLQQ==
+Received: by mail-ej1-f49.google.com with SMTP id bj12so14051882ejb.13
+        for <bpf@vger.kernel.org>; Sun, 11 Sep 2022 04:41:00 -0700 (PDT)
+X-Gm-Message-State: ACgBeo0x1ZclRZ1UCytrzPmXWhaV2sCgEq6VnJ2TjK2bq3X4Iy9ahVHw
+        /JRyM3lhHkmFdgBteEPMlz00TYD55dHwsdp++Paufg==
+X-Google-Smtp-Source: AA6agR7gs0xxqnhzhdmlHMESnGLHahKK3mbikc37UgqaUcsvF6ftFAuRZVzQ4u53rO5Up2H7UPABpxSJ5Mh/VrkiE8c=
+X-Received: by 2002:aa7:cd14:0:b0:44e:2335:fb90 with SMTP id
+ b20-20020aa7cd14000000b0044e2335fb90mr18029880edw.152.1662896448217; Sun, 11
+ Sep 2022 04:40:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220911084609.102519-3-shmulik.ladkani@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20220909120736.1027040-1-roberto.sassu@huaweicloud.com> <20220909120736.1027040-8-roberto.sassu@huaweicloud.com>
+In-Reply-To: <20220909120736.1027040-8-roberto.sassu@huaweicloud.com>
+From:   KP Singh <kpsingh@kernel.org>
+Date:   Sun, 11 Sep 2022 13:40:37 +0200
+X-Gmail-Original-Message-ID: <CACYkzJ6xSk_DHO+3JoCYpGrXjFkk9v-LOSWW0=0KLwAj1Gc0SA@mail.gmail.com>
+Message-ID: <CACYkzJ6xSk_DHO+3JoCYpGrXjFkk9v-LOSWW0=0KLwAj1Gc0SA@mail.gmail.com>
+Subject: Re: [PATCH v17 07/12] bpf: Add bpf_verify_pkcs7_signature() kfunc
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, mykolal@fb.com, dhowells@redhat.com,
+        jarkko@kernel.org, rostedt@goodmis.org, mingo@redhat.com,
+        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+        shuah@kernel.org, bpf@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        deso@posteo.net, memxor@gmail.com,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Shmulik,
+On Fri, Sep 9, 2022 at 2:09 PM Roberto Sassu
+<roberto.sassu@huaweicloud.com> wrote:
+>
+> From: Roberto Sassu <roberto.sassu@huawei.com>
+>
+> Add the bpf_verify_pkcs7_signature() kfunc, to give eBPF security modules
+> the ability to check the validity of a signature against supplied data, by
+> using user-provided or system-provided keys as trust anchor.
+>
+> The new kfunc makes it possible to enforce mandatory policies, as eBPF
+> programs might be allowed to make security decisions only based on data
+> sources the system administrator approves.
+>
+> The caller should provide the data to be verified and the signature as eBPF
+> dynamic pointers (to minimize the number of parameters) and a bpf_key
+> structure containing a reference to the keyring with keys trusted for
+> signature verification, obtained from bpf_lookup_user_key() or
+> bpf_lookup_system_key().
+>
+> For bpf_key structures obtained from the former lookup function,
+> bpf_verify_pkcs7_signature() completes the permission check deferred by
+> that function by calling key_validate(). key_task_permission() is already
+> called by the PKCS#7 code.
+>
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> Acked-by: KP Singh <kpsingh@kernel.org>
+> ---
+>  kernel/trace/bpf_trace.c | 45 ++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 45 insertions(+)
+>
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index ab183dbaa8d1..9df53c40cffd 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -1294,12 +1294,57 @@ void bpf_key_put(struct bpf_key *bkey)
+>         kfree(bkey);
+>  }
+>
+> +#ifdef CONFIG_SYSTEM_DATA_VERIFICATION
+> +/**
+> + * bpf_verify_pkcs7_signature - verify a PKCS#7 signature
+> + * @data_ptr: data to verify
+> + * @sig_ptr: signature of the data
+> + * @trusted_keyring: keyring with keys trusted for signature verification
+> + *
+> + * Verify the PKCS#7 signature *sig_ptr* against the supplied *data_ptr*
+> + * with keys in a keyring referenced by *trusted_keyring*.
+> + *
+> + * Return: 0 on success, a negative value on error.
+> + */
+> +int bpf_verify_pkcs7_signature(struct bpf_dynptr_kern *data_ptr,
+> +                              struct bpf_dynptr_kern *sig_ptr,
+> +                              struct bpf_key *trusted_keyring)
+> +{
+> +       int ret;
+> +
+> +       if (trusted_keyring->has_ref) {
+> +               /*
+> +                * Do the permission check deferred in bpf_lookup_user_key().
+> +                * See bpf_lookup_user_key() for more details.
+> +                *
+> +                * A call to key_task_permission() here would be redundant, as
+> +                * it is already done by keyring_search() called by
+> +                * find_asymmetric_key().
+> +                */
+> +               ret = key_validate(trusted_keyring->key);
+> +               if (ret < 0)
+> +                       return ret;
+> +       }
+> +
+> +       return verify_pkcs7_signature(data_ptr->data,
+> +                                     bpf_dynptr_get_size(data_ptr),
+> +                                     sig_ptr->data,
+> +                                     bpf_dynptr_get_size(sig_ptr),
+> +                                     trusted_keyring->key,
+> +                                     VERIFYING_UNSPECIFIED_SIGNATURE, NULL,
+> +                                     NULL);
+> +}
 
-Thank you for the patch! Yet something to improve:
+This seems to work if the data that needs to be verified
+and the signature is allocated onto the map.
 
-[auto build test ERROR on bpf-next/master]
+For BPF program signing, the signature will be void * pointer (and length)
+in a struct in the kernel
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Shmulik-Ladkani/bpf-Support-setting-variable-length-tunnel-options/20220911-164822
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-config: x86_64-defconfig (https://download.01.org/0day-ci/archive/20220911/202209111828.Bns8KP2S-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-5) 11.3.0
-reproduce (this is a W=1 build):
-        # https://github.com/intel-lab-lkp/linux/commit/caa3b97e327a79cad590d53687cc0e9eb07ecd4b
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Shmulik-Ladkani/bpf-Support-setting-variable-length-tunnel-options/20220911-164822
-        git checkout caa3b97e327a79cad590d53687cc0e9eb07ecd4b
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        make W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash
++++ b/include/uapi/linux/bpf.h
+@@ -1383,6 +1383,8 @@ union bpf_attr {
+                __aligned_u64   fd_array;       /* array of FDs */
+                __aligned_u64   core_relos;
+                __u32           core_relo_rec_size; /* sizeof(struct
+bpf_core_relo) */
++               __aligned_u64   signature;
++               __u32           signature_size;
+        };
 
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp@intel.com>
+Something like this in the bpf_prog_aux struct which is passed to
+security_bpf_prog_alloc.
 
-All errors (new ones prefixed by >>):
+Now creating a dynptr to use with this kfunc does not work:
 
-   ld: net/core/filter.o: in function `bpf_skb_set_tunnel_opt_dynptr':
->> filter.c:(.text+0xdedc): undefined reference to `bpf_dynptr_get_size'
+   bpf_dynptr_from_mem(aux->signature, aux->signature_size, 0, &sig_ptr);
 
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+So one has to copy kernel data into a map and then create dynptrs.
+Would you be able to update
+the dynptr logic to handle this case too? (follow up is okay too).
+
+- KP
+
+
+> +#endif /* CONFIG_SYSTEM_DATA_VERIFICATION */
+> +
+>  __diag_pop();
+>
+>  BTF_SET8_START(key_sig_kfunc_set)
+>  BTF_ID_FLAGS(func, bpf_lookup_user_key, KF_ACQUIRE | KF_RET_NULL | KF_SLEEPABLE)
+>  BTF_ID_FLAGS(func, bpf_lookup_system_key, KF_ACQUIRE | KF_RET_NULL)
+>  BTF_ID_FLAGS(func, bpf_key_put, KF_RELEASE)
+> +#ifdef CONFIG_SYSTEM_DATA_VERIFICATION
+> +BTF_ID_FLAGS(func, bpf_verify_pkcs7_signature, KF_SLEEPABLE)
+> +#endif
+>  BTF_SET8_END(key_sig_kfunc_set)
+>
+>  static const struct btf_kfunc_id_set bpf_key_sig_kfunc_set = {
+> --
+> 2.25.1
+>
