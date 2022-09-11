@@ -2,149 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 106165B511D
-	for <lists+bpf@lfdr.de>; Sun, 11 Sep 2022 22:15:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02A0C5B512A
+	for <lists+bpf@lfdr.de>; Sun, 11 Sep 2022 22:48:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229583AbiIKUP3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 11 Sep 2022 16:15:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39232 "EHLO
+        id S229572AbiIKUs0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 11 Sep 2022 16:48:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbiIKUP3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 11 Sep 2022 16:15:29 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04EDD1C12D
-        for <bpf@vger.kernel.org>; Sun, 11 Sep 2022 13:15:27 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id t7so12257299wrm.10
-        for <bpf@vger.kernel.org>; Sun, 11 Sep 2022 13:15:26 -0700 (PDT)
+        with ESMTP id S229492AbiIKUsZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 11 Sep 2022 16:48:25 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB46622BFC;
+        Sun, 11 Sep 2022 13:48:24 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id l16so3626489ilj.2;
+        Sun, 11 Sep 2022 13:48:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
-        bh=3svs1veSlQXEKs+OzbLdgeJamu/CII4Jy/jB0glIdS8=;
-        b=IYANcLHPfz+UrUk2tl44OKL4nZyE5ZuZShjPqWEfwVhVy7OBUTvX+/1UWaEO8C1XfR
-         MIg7roMfkx83d9QxuOXNG+Qecudpr8/McmleUgwg4pOlSstQNcW9dErj8253laX7uwrb
-         eM+ewyrhkhKGYgNBWA3Qq8ReFsQ/blACsUSu9xaXJgckzBVqkn6kCESkgCe0uIkFNHFe
-         GgtbF0WVmqBl67TuyQy8rZDrPKwad/GqfRgNVxtAB3IX0Kr4OiRtNULCtMcJ0Xo9OqXD
-         xxTfn8T4kTsmdBBrMOX1hEVrULd0xC/F+W+G1g3EtG2uBt1Joz8yavIWM4I44kJtNQMv
-         imug==
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=ZVQHM/37BbrOGPiFeLtiNZICTr76UsNj+DYuPTvsb8Q=;
+        b=RE50kfvR/4MBOCxWXWbyfeWyAOuv3CbuiaLU7BMsyghIreYzCGstvna7nzetMmdNVT
+         Gt0EnZWy+hhZWdPO/qkwuo1IP2xsnPHlAEpWuZmvZ6trJP6d/tnrBtQx7K1AW2CPgIq5
+         5Bj/9wvyD27kxFExBucubc/D8uCzJ9HCh3ndqqKBWAH1jjtfcz/4GVNoB+0GpyKNM2SR
+         MJYikIp66vTwOZ915PwxP5PZZIut6ucG7vZ7AdEbEC6IrdtU7vfewJQko5F91HrvvkDJ
+         jkPcVOAgFzg4tom5e4rFX85P+QjNKecE9ulprVilfILVcUKTiwnLI/m9F0CM0YEbnHkd
+         nrLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date;
-        bh=3svs1veSlQXEKs+OzbLdgeJamu/CII4Jy/jB0glIdS8=;
-        b=TSxgUNl7xtvJpzssOyStBUA5mIo7K4EE7DsMg8fztIx2+y8K1U7LdwVXxV2imSSpOF
-         6txMBXFi0c6JOx1Uecr6dRZNmCKkdLuecktDZ2IsJgmbfF3jfJfI2KJeNVjpSrJcqRfn
-         qYgr6sEICcAc5aBVzeg08bisRkiR93zSS5XJTAlACHKN2UkB0TJOLi/IDGIDwgnkQQyE
-         Ia+FclaGNyEJBrUx5/oK1vuZocznxmtJTCD+PeMrFXh+W0DVXq9hQoa/2SDjIpd4CHgN
-         Q+bzq4WZIbd6Ul6/S+ZT0rIuUD0Riy2YlxgTGVeSiWpRlWA575IjlVlSrBZUHTDnoxxN
-         IGBw==
-X-Gm-Message-State: ACgBeo2jk+A5/jnGh7lAmT6dWZeujpFBevg6Ssxc7aEF0ma0lV1fOSgf
-        bxDxuvz2aL/ZDMOKc7NrA1u02w==
-X-Google-Smtp-Source: AA6agR61bljDVqCAVvY6mMslz2eYM9NtUQbCi0KfvJY5eoWqmtRVeLXdIetqgeEZjUqxoPwMzY8F2w==
-X-Received: by 2002:a5d:6da7:0:b0:226:e081:941a with SMTP id u7-20020a5d6da7000000b00226e081941amr13053639wrs.642.1662927325486;
-        Sun, 11 Sep 2022 13:15:25 -0700 (PDT)
-Received: from harfang.access.network ([185.122.133.20])
-        by smtp.gmail.com with ESMTPSA id bh16-20020a05600c3d1000b003a60ff7c082sm7603789wmb.15.2022.09.11.13.15.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Sep 2022 13:15:23 -0700 (PDT)
-From:   Quentin Monnet <quentin@isovalent.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org,
-        =?UTF-8?q?Niklas=20S=C3=B6derlund?= <niklas.soderlund@corigine.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        Quentin Monnet <quentin@isovalent.com>
-Subject: [PATCH bpf-next v2 8/8] bpftool: Add llvm feature to "bpftool version"
-Date:   Sun, 11 Sep 2022 21:14:51 +0100
-Message-Id: <20220911201451.12368-9-quentin@isovalent.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220911201451.12368-1-quentin@isovalent.com>
-References: <20220911201451.12368-1-quentin@isovalent.com>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=ZVQHM/37BbrOGPiFeLtiNZICTr76UsNj+DYuPTvsb8Q=;
+        b=r/vMRqJ10U+tFhTIsWXAhu3tVUnqpxEcPOYuA5A3UpzJCTK/2dR6TT8L7E2L5D+v1X
+         x9WzNb3bNJhh/BLx4QSA7eV/EzeNU6AxuhuhpMJDF2ntc/tewcoqoauGBPbEIgGQyLu3
+         Iqf4i30Nhf4LjrFoMhWC6B7vxwWlB7DQumL6JM+EAs8YDu6WwXgJHiSipwHZxj9ZQu2K
+         SR4XORAnoQYegQjFQMK7yCSdUk41GcKb3DNTlGf/zkS3jueZ691xStVBDITCQTklUlSn
+         fABSorfMtRngwYilcjZsU958VSLeOywNFmZ5qZtHXQKb1rzcd0MzZL0XJAFtZWhOorkZ
+         PLPg==
+X-Gm-Message-State: ACgBeo0Wie0uJDl7gS3oBGx36YhYwfWJHjY23w83CH4Iq1V2lgEHXu1o
+        p3QuzMc1e/UJ6yBX57XWFZ4PpXNkUZo53AjN6bk=
+X-Google-Smtp-Source: AA6agR71aeFCzogjuFx7JGCncWwFSimJ0ZSs/t1MkvqU4gU1pAfSi8OsmEw+8k+rZI02d0TUsGGR7A74lK4B2C6WBv8=
+X-Received: by 2002:a92:cbcf:0:b0:2f3:b515:92d with SMTP id
+ s15-20020a92cbcf000000b002f3b515092dmr2734086ilq.91.1662929304245; Sun, 11
+ Sep 2022 13:48:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <c4cb11c8ffe732b91c175a0fc80d43b2547ca17e.1662920329.git.dxu@dxuuu.xyz>
+In-Reply-To: <c4cb11c8ffe732b91c175a0fc80d43b2547ca17e.1662920329.git.dxu@dxuuu.xyz>
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date:   Sun, 11 Sep 2022 22:47:46 +0200
+Message-ID: <CAP01T74zOa=3uYJ_3YebAxzZTYRwAhF62Giy9ovuKwk++FpU0g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: Move nf_conn extern declarations to filter.h
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, pablo@netfilter.org, fw@strlen.de,
+        toke@kernel.org, martin.lau@linux.dev,
+        netfilter-devel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Similarly to "libbfd", add a "llvm" feature to the output of command
-"bpftool version" to indicate that LLVM is used for disassembling JIT-ed
-programs. This feature is mutually exclusive with "libbfd".
+On Sun, 11 Sept 2022 at 20:20, Daniel Xu <dxu@dxuuu.xyz> wrote:
+>
+> We're seeing the following new warnings on netdev/build_32bit and
+> netdev/build_allmodconfig_warn CI jobs:
+>
+>     ../net/core/filter.c:8608:1: warning: symbol
+>     'nf_conn_btf_access_lock' was not declared. Should it be static?
+>     ../net/core/filter.c:8611:5: warning: symbol 'nfct_bsa' was not
+>     declared. Should it be static?
+>
+> Fix by ensuring extern declaration is present while compiling filter.o.
+>
+> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> ---
 
-Signed-off-by: Quentin Monnet <quentin@isovalent.com>
-Tested-by: Niklas Söderlund <niklas.soderlund@corigine.com>
----
- tools/bpf/bpftool/Documentation/common_options.rst |  8 ++++----
- tools/bpf/bpftool/main.c                           | 10 ++++++++++
- 2 files changed, 14 insertions(+), 4 deletions(-)
+Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 
-diff --git a/tools/bpf/bpftool/Documentation/common_options.rst b/tools/bpf/bpftool/Documentation/common_options.rst
-index 4107a586b68b..05350a1aadf9 100644
---- a/tools/bpf/bpftool/Documentation/common_options.rst
-+++ b/tools/bpf/bpftool/Documentation/common_options.rst
-@@ -7,10 +7,10 @@
- 	  Print bpftool's version number (similar to **bpftool version**), the
- 	  number of the libbpf version in use, and optional features that were
- 	  included when bpftool was compiled. Optional features include linking
--	  against libbfd to provide the disassembler for JIT-ted programs
--	  (**bpftool prog dump jited**) and usage of BPF skeletons (some
--	  features like **bpftool prog profile** or showing pids associated to
--	  BPF objects may rely on it).
-+	  against LLVM or libbfd to provide the disassembler for JIT-ted
-+	  programs (**bpftool prog dump jited**) and usage of BPF skeletons
-+	  (some features like **bpftool prog profile** or showing pids
-+	  associated to BPF objects may rely on it).
- 
- -j, --json
- 	  Generate JSON output. For commands that cannot produce JSON, this
-diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
-index ccd7457f92bf..7e06ca2c5d42 100644
---- a/tools/bpf/bpftool/main.c
-+++ b/tools/bpf/bpftool/main.c
-@@ -89,6 +89,11 @@ static int do_version(int argc, char **argv)
- #else
- 	const bool has_libbfd = false;
- #endif
-+#ifdef HAVE_LLVM_SUPPORT
-+	const bool has_llvm = true;
-+#else
-+	const bool has_llvm = false;
-+#endif
- #ifdef BPFTOOL_WITHOUT_SKELETONS
- 	const bool has_skeletons = false;
- #else
-@@ -112,6 +117,7 @@ static int do_version(int argc, char **argv)
- 		jsonw_name(json_wtr, "features");
- 		jsonw_start_object(json_wtr);	/* features */
- 		jsonw_bool_field(json_wtr, "libbfd", has_libbfd);
-+		jsonw_bool_field(json_wtr, "llvm", has_llvm);
- 		jsonw_bool_field(json_wtr, "libbpf_strict", !legacy_libbpf);
- 		jsonw_bool_field(json_wtr, "skeletons", has_skeletons);
- 		jsonw_end_object(json_wtr);	/* features */
-@@ -132,6 +138,10 @@ static int do_version(int argc, char **argv)
- 			printf(" libbfd");
- 			nb_features++;
- 		}
-+		if (has_llvm) {
-+			printf(" llvm");
-+			nb_features++;
-+		}
- 		if (!legacy_libbpf) {
- 			printf("%s libbpf_strict", nb_features++ ? "," : "");
- 			nb_features++;
--- 
-2.34.1
-
+>  include/linux/filter.h                   | 6 ++++++
+>  include/net/netfilter/nf_conntrack_bpf.h | 7 +------
+>  2 files changed, 7 insertions(+), 6 deletions(-)
+>
+> diff --git a/include/linux/filter.h b/include/linux/filter.h
+> index 527ae1d64e27..96de256b2c8d 100644
+> --- a/include/linux/filter.h
+> +++ b/include/linux/filter.h
+> @@ -567,6 +567,12 @@ struct sk_filter {
+>
+>  DECLARE_STATIC_KEY_FALSE(bpf_stats_enabled_key);
+>
+> +extern struct mutex nf_conn_btf_access_lock;
+> +extern int (*nfct_bsa)(struct bpf_verifier_log *log, const struct btf *btf,
+> +                      const struct btf_type *t, int off, int size,
+> +                      enum bpf_access_type atype, u32 *next_btf_id,
+> +                      enum bpf_type_flag *flag);
+> +
+>  typedef unsigned int (*bpf_dispatcher_fn)(const void *ctx,
+>                                           const struct bpf_insn *insnsi,
+>                                           unsigned int (*bpf_func)(const void *,
+> diff --git a/include/net/netfilter/nf_conntrack_bpf.h b/include/net/netfilter/nf_conntrack_bpf.h
+> index a61a93d1c6dc..cf2c0423d174 100644
+> --- a/include/net/netfilter/nf_conntrack_bpf.h
+> +++ b/include/net/netfilter/nf_conntrack_bpf.h
+> @@ -5,6 +5,7 @@
+>
+>  #include <linux/bpf.h>
+>  #include <linux/btf.h>
+> +#include <linux/filter.h>
+>  #include <linux/kconfig.h>
+>  #include <linux/mutex.h>
+>
+> @@ -14,12 +15,6 @@
+>  extern int register_nf_conntrack_bpf(void);
+>  extern void cleanup_nf_conntrack_bpf(void);
+>
+> -extern struct mutex nf_conn_btf_access_lock;
+> -extern int (*nfct_bsa)(struct bpf_verifier_log *log, const struct btf *btf,
+> -                      const struct btf_type *t, int off, int size,
+> -                      enum bpf_access_type atype, u32 *next_btf_id,
+> -                      enum bpf_type_flag *flag);
+> -
+>  #else
+>
+>  static inline int register_nf_conntrack_bpf(void)
+> --
+> 2.37.1
+>
