@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0D435B4CB1
+	by mail.lfdr.de (Postfix) with ESMTP id 98D6F5B4CB0
 	for <lists+bpf@lfdr.de>; Sun, 11 Sep 2022 10:46:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229914AbiIKIq2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 11 Sep 2022 04:46:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56446 "EHLO
+        id S229952AbiIKIqg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 11 Sep 2022 04:46:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229955AbiIKIq1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 11 Sep 2022 04:46:27 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 431323207C
-        for <bpf@vger.kernel.org>; Sun, 11 Sep 2022 01:46:25 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id nc14so13687520ejc.4
-        for <bpf@vger.kernel.org>; Sun, 11 Sep 2022 01:46:25 -0700 (PDT)
+        with ESMTP id S229947AbiIKIqf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 11 Sep 2022 04:46:35 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6269D326FC
+        for <bpf@vger.kernel.org>; Sun, 11 Sep 2022 01:46:34 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id go34so13679940ejc.2
+        for <bpf@vger.kernel.org>; Sun, 11 Sep 2022 01:46:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=metanetworks.com; s=google;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
-        bh=PxBIDlOz/oNNEmNNYrXSw2RO4vH4JKthBQ66hiIBTxw=;
-        b=KWMW/7/XpOgmRjDVVKc10iVmH3hbsocWBHpv0dO+nriso3MJdn+f9FaajmELYRnPes
-         WVF9mgQ+1HTNOM1SQoEIk8d+A8/mMrLj0MYDar/NL40EqphmWOD6rKEOAznoGPHW0Wyj
-         nJZ43Oh4Bh75TPC3mV5JjwZ4SKQ76QtlLMGYY=
+        bh=cFumHqq0pLb6AlXpm3FchEhhiFTYVLSEGo+Z3jKzfGY=;
+        b=eekVlLfCLAKr7KAH680LfD+MaG7H7witq3vAK19/h4gqycLB3euaKQEWpusKzMcTZq
+         UXSOF+9GDuY65yflcrI5ZiLOD+f0Txm9hcL/9gRB1MdNlPTKSRUrNG7hUNckWwBGg+V5
+         FgG/qJzzRMbDn/eMFdXw5h+gHmgpXHaWEPg5k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date;
-        bh=PxBIDlOz/oNNEmNNYrXSw2RO4vH4JKthBQ66hiIBTxw=;
-        b=2RXdYkE5WSbfz/CzTt6Q/XERMZvB+H9J9jCyZ52McHq9uGdLNhDBNB3uj0dAyTrNt/
-         OpZgNfBgAt4aPQ/Dpyg6yqwSqt7nePEZlvLZEq6MNShPNZgr5YgVnH9Q1cJoRMpfzhCc
-         cYAsfDNssxQ/BYT6M/+Sq5aX3xdH0X4zpkC/XNhY8Os/OBKIZbsspomdTgNhRGl6+FP7
-         4SpP1H7mJqseM1L6V/a78RmcApC6TJf/HYjjXkIW/nBO8FD/UEfECi/a/TEpslxotIV/
-         EehbMVzWOVsE6JzQYTB9z1v3hb2QysvJVHI38a0xy+WrT+vegf1hZl87MT8ZEsCKxnA0
-         g09Q==
-X-Gm-Message-State: ACgBeo08pgo5Fesu5Kc6GKy4B+7lgeO7sDr4+DIJV8VNaZaEYcGCWWKA
-        hpCe/nsCxQhMbGAyipUXxHyfbQiR6SAwniiDreKMvHMXBb5wjzuK7QcH1ZVsGupm7bBY2KxsqaS
-        zCJv4bcJpCvOX5zv97N3pnkdCz3joSH+GKDBunzE+v/31w314MrTfRzPhNTBmMWlFidoCkzm91Z
-        Q=
-X-Google-Smtp-Source: AA6agR5D+joSmhtU3dTKsQZpZdQEfHyY6hHxnY7QezbKXNygiFSfqp0zNLS1Vt5DKkK/IYgMuDz2VA==
-X-Received: by 2002:a17:906:fd8a:b0:75d:c79a:47c8 with SMTP id xa10-20020a170906fd8a00b0075dc79a47c8mr14694815ejb.389.1662885983510;
-        Sun, 11 Sep 2022 01:46:23 -0700 (PDT)
+        bh=cFumHqq0pLb6AlXpm3FchEhhiFTYVLSEGo+Z3jKzfGY=;
+        b=cpInLRi0HWsgeXSzdA+M7j4KW1nX9uzU/MZYN3M30hPsWiaijsvG5BtIMJXmiTliYr
+         vU3/nxYVB26JsXTffnOrsx+LfZQt4byh4UyOt7VenNOEiR9ZT/K8O5cYj8Y0J/zFB82c
+         adi14U0MC8ZWQq1v1X4lqsmR6FRb1hzfNyQ4abYN+KbIp8xewoemU3JF2sq8sqJTGp8Q
+         8SscBXXDUcL1c7bAQRZ4s1JP96HYJcNP5cJ8aRBxDZjY3TsbHVf/HmJtw2I3KAxMxXm5
+         jEfFjXKr3M2LAUlwab/KPadDa1R8WZuCcHsuCVP3nJQvZp7aObnHKJT9Ubweyqc5rK8k
+         EmUg==
+X-Gm-Message-State: ACgBeo02wNT4zO/ayp1PAyzZ9eHBW8q9fPiAAH8JhAKAbKevbkzmr89a
+        CEHyPD+s8oXwq2+gd04TxZAD1XgXpb5yPT0iz7RUT1tI7Z3jlysroyT+AKZ7697ikVoQiuhxWFd
+        51+tlCbeSLLnRXFrWW9hadvgYIth9yYTnvj4+3D9TBLwABGdQ6Tzk6mrDVImu55B81NC3HPPegI
+        w=
+X-Google-Smtp-Source: AA6agR7xKDGBgs3XbZP61oAPUQ8TxmvzSHJrLMekf3JpU4nP/Wgbad6sxQc2uWSrqsH3qB1eoqsdEA==
+X-Received: by 2002:a17:907:869e:b0:74f:2465:82a8 with SMTP id qa30-20020a170907869e00b0074f246582a8mr15527275ejc.729.1662885992521;
+        Sun, 11 Sep 2022 01:46:32 -0700 (PDT)
 Received: from localhost.localdomain ([141.226.162.95])
-        by smtp.gmail.com with ESMTPSA id q10-20020a170906360a00b007309a570bacsm2713591ejb.176.2022.09.11.01.46.22
+        by smtp.gmail.com with ESMTPSA id q10-20020a170906360a00b007309a570bacsm2713591ejb.176.2022.09.11.01.46.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Sep 2022 01:46:23 -0700 (PDT)
+        Sun, 11 Sep 2022 01:46:32 -0700 (PDT)
 From:   Shmulik Ladkani <shmulik@metanetworks.com>
 X-Google-Original-From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
 To:     bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
@@ -56,9 +56,9 @@ To:     bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Paul Chaignon <paul@isovalent.com>,
         Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Subject: [PATCH v6 bpf-next 1/4] bpf: Export 'bpf_dynptr_get_data, bpf_dynptr_get_size' helpers
-Date:   Sun, 11 Sep 2022 11:46:06 +0300
-Message-Id: <20220911084609.102519-2-shmulik.ladkani@gmail.com>
+Subject: [PATCH v6 bpf-next 2/4] bpf: Support setting variable-length tunnel options
+Date:   Sun, 11 Sep 2022 11:46:07 +0300
+Message-Id: <20220911084609.102519-3-shmulik.ladkani@gmail.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <20220911084609.102519-1-shmulik.ladkani@gmail.com>
 References: <20220911084609.102519-1-shmulik.ladkani@gmail.com>
@@ -74,52 +74,174 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This allows kernel code dealing with dynptrs obtain dynptr's available
-size and current (w. proper offset) data pointer.
+Existing 'bpf_skb_set_tunnel_opt' allows setting tunnel options given
+an option buffer (ARG_PTR_TO_MEM) and the compile-time fixed buffer
+size (ARG_CONST_SIZE).
+
+However, in certain cases we wish to set tunnel options of dynamic
+length.
+
+For example, we have an ebpf program that gets geneve options on
+incoming packets, stores them into a map (using a key representing
+the incoming flow), and later needs to assign *same* options to
+reply packets (belonging to same flow).
+
+This is currently imposssible without knowing sender's exact geneve
+options length, which unfortunately is dymamic.
+
+Introduce 'bpf_skb_set_tunnel_opt_dynptr'.
+
+This is a variant of 'bpf_skb_set_tunnel_opt' which gets a bpf dynamic
+pointer (ARG_PTR_TO_DYNPTR) parameter whose data points to the options
+buffer to set.
 
 Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
 ---
-v5:
-- fix bpf_dynptr_get_data's incorrect usage of bpf_dynptr_kern's size
-  spotted by Joanne Koong <joannelkoong@gmail.com>
-v6:
-- Simplify bpf_dynptr_get_data's interface and make it inline
-  suggested by John Fastabend <john.fastabend@gmail.com>
+v3: Avoid 'inline' for the __bpf_skb_set_tunopt helper function
+v4: change API to be based on bpf_dynptr, suggested by John Fastabend <john.fastabend@gmail.com>
+v6: Remove superfluous 'len' from bpf_skb_set_tunnel_opt_dynptr API
+    (rely on dynptr's internal size), suggested by Andrii Nakryiko <andrii.nakryiko@gmail.com>
 ---
- include/linux/bpf.h  | 6 ++++++
- kernel/bpf/helpers.c | 2 +-
- 2 files changed, 7 insertions(+), 1 deletion(-)
+ include/uapi/linux/bpf.h       | 11 +++++++++++
+ net/core/filter.c              | 31 +++++++++++++++++++++++++++++--
+ tools/include/uapi/linux/bpf.h | 11 +++++++++++
+ 3 files changed, 51 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 48ae05099f36..e0844f45022f 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -2631,6 +2631,12 @@ void bpf_dynptr_init(struct bpf_dynptr_kern *ptr, void *data,
- 		     enum bpf_dynptr_type type, u32 offset, u32 size);
- void bpf_dynptr_set_null(struct bpf_dynptr_kern *ptr);
- int bpf_dynptr_check_size(u32 size);
-+u32 bpf_dynptr_get_size(struct bpf_dynptr_kern *ptr);
-+
-+static inline void *bpf_dynptr_get_data(struct bpf_dynptr_kern *ptr)
-+{
-+	return ptr->data ? ptr->data + ptr->offset : NULL;
-+}
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 3df78c56c1bf..ba12f7e1ccb6 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -5387,6 +5387,16 @@ union bpf_attr {
+  *	Return
+  *		Current *ktime*.
+  *
++ * long bpf_skb_set_tunnel_opt_dynptr(struct sk_buff *skb, struct bpf_dynptr *opt)
++ *	Description
++ *		Set tunnel options metadata for the packet associated to *skb*
++ *		to the option data pointed to by the *opt* dynptr.
++ *
++ *		See also the description of the **bpf_skb_get_tunnel_opt**\ ()
++ *		helper for additional information.
++ *	Return
++ *		0 on success, or a negative error in case of failure.
++ *
+  */
+ #define __BPF_FUNC_MAPPER(FN)		\
+ 	FN(unspec),			\
+@@ -5598,6 +5608,7 @@ union bpf_attr {
+ 	FN(tcp_raw_check_syncookie_ipv4),	\
+ 	FN(tcp_raw_check_syncookie_ipv6),	\
+ 	FN(ktime_get_tai_ns),		\
++	FN(skb_set_tunnel_opt_dynptr),	\
+ 	/* */
  
- #ifdef CONFIG_BPF_LSM
- void bpf_cgroup_atype_get(u32 attach_btf_id, int cgroup_atype);
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index fc08035f14ed..824864ac82d1 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -1408,7 +1408,7 @@ static void bpf_dynptr_set_type(struct bpf_dynptr_kern *ptr, enum bpf_dynptr_typ
- 	ptr->size |= type << DYNPTR_TYPE_SHIFT;
- }
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+diff --git a/net/core/filter.c b/net/core/filter.c
+index e872f45399b0..1c652936ef86 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -4674,8 +4674,7 @@ static const struct bpf_func_proto bpf_skb_set_tunnel_key_proto = {
+ 	.arg4_type	= ARG_ANYTHING,
+ };
  
--static u32 bpf_dynptr_get_size(struct bpf_dynptr_kern *ptr)
-+u32 bpf_dynptr_get_size(struct bpf_dynptr_kern *ptr)
+-BPF_CALL_3(bpf_skb_set_tunnel_opt, struct sk_buff *, skb,
+-	   const u8 *, from, u32, size)
++static u64 __bpf_skb_set_tunopt(struct sk_buff *skb, const u8 *from, u32 size)
  {
- 	return ptr->size & DYNPTR_SIZE_MASK;
+ 	struct ip_tunnel_info *info = skb_tunnel_info(skb);
+ 	const struct metadata_dst *md = this_cpu_ptr(md_dst);
+@@ -4690,6 +4689,22 @@ BPF_CALL_3(bpf_skb_set_tunnel_opt, struct sk_buff *, skb,
+ 	return 0;
  }
+ 
++BPF_CALL_3(bpf_skb_set_tunnel_opt, struct sk_buff *, skb,
++	   const u8 *, from, u32, size)
++{
++	return __bpf_skb_set_tunopt(skb, from, size);
++}
++
++BPF_CALL_2(bpf_skb_set_tunnel_opt_dynptr, struct sk_buff *, skb,
++	   struct bpf_dynptr_kern *, ptr)
++{
++	const u8 *from = bpf_dynptr_get_data(ptr);
++
++	if (unlikely(!from))
++		return -EFAULT;
++	return __bpf_skb_set_tunopt(skb, from, bpf_dynptr_get_size(ptr));
++}
++
+ static const struct bpf_func_proto bpf_skb_set_tunnel_opt_proto = {
+ 	.func		= bpf_skb_set_tunnel_opt,
+ 	.gpl_only	= false,
+@@ -4699,6 +4714,14 @@ static const struct bpf_func_proto bpf_skb_set_tunnel_opt_proto = {
+ 	.arg3_type	= ARG_CONST_SIZE,
+ };
+ 
++static const struct bpf_func_proto bpf_skb_set_tunnel_opt_dynptr_proto = {
++	.func		= bpf_skb_set_tunnel_opt_dynptr,
++	.gpl_only	= false,
++	.ret_type	= RET_INTEGER,
++	.arg1_type	= ARG_PTR_TO_CTX,
++	.arg2_type	= ARG_PTR_TO_DYNPTR | DYNPTR_TYPE_LOCAL,
++};
++
+ static const struct bpf_func_proto *
+ bpf_get_skb_set_tunnel_proto(enum bpf_func_id which)
+ {
+@@ -4719,6 +4742,8 @@ bpf_get_skb_set_tunnel_proto(enum bpf_func_id which)
+ 		return &bpf_skb_set_tunnel_key_proto;
+ 	case BPF_FUNC_skb_set_tunnel_opt:
+ 		return &bpf_skb_set_tunnel_opt_proto;
++	case BPF_FUNC_skb_set_tunnel_opt_dynptr:
++		return &bpf_skb_set_tunnel_opt_dynptr_proto;
+ 	default:
+ 		return NULL;
+ 	}
+@@ -7798,6 +7823,7 @@ tc_cls_act_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 	case BPF_FUNC_skb_get_tunnel_opt:
+ 		return &bpf_skb_get_tunnel_opt_proto;
+ 	case BPF_FUNC_skb_set_tunnel_opt:
++	case BPF_FUNC_skb_set_tunnel_opt_dynptr:
+ 		return bpf_get_skb_set_tunnel_proto(func_id);
+ 	case BPF_FUNC_redirect:
+ 		return &bpf_redirect_proto;
+@@ -8145,6 +8171,7 @@ lwt_xmit_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 	case BPF_FUNC_skb_get_tunnel_opt:
+ 		return &bpf_skb_get_tunnel_opt_proto;
+ 	case BPF_FUNC_skb_set_tunnel_opt:
++	case BPF_FUNC_skb_set_tunnel_opt_dynptr:
+ 		return bpf_get_skb_set_tunnel_proto(func_id);
+ 	case BPF_FUNC_redirect:
+ 		return &bpf_redirect_proto;
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 3df78c56c1bf..ba12f7e1ccb6 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -5387,6 +5387,16 @@ union bpf_attr {
+  *	Return
+  *		Current *ktime*.
+  *
++ * long bpf_skb_set_tunnel_opt_dynptr(struct sk_buff *skb, struct bpf_dynptr *opt)
++ *	Description
++ *		Set tunnel options metadata for the packet associated to *skb*
++ *		to the option data pointed to by the *opt* dynptr.
++ *
++ *		See also the description of the **bpf_skb_get_tunnel_opt**\ ()
++ *		helper for additional information.
++ *	Return
++ *		0 on success, or a negative error in case of failure.
++ *
+  */
+ #define __BPF_FUNC_MAPPER(FN)		\
+ 	FN(unspec),			\
+@@ -5598,6 +5608,7 @@ union bpf_attr {
+ 	FN(tcp_raw_check_syncookie_ipv4),	\
+ 	FN(tcp_raw_check_syncookie_ipv6),	\
+ 	FN(ktime_get_tai_ns),		\
++	FN(skb_set_tunnel_opt_dynptr),	\
+ 	/* */
+ 
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
 -- 
 2.37.3
 
