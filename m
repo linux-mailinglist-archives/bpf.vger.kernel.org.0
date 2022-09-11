@@ -2,41 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FCC05B4E95
-	for <lists+bpf@lfdr.de>; Sun, 11 Sep 2022 13:52:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44E935B4EBC
+	for <lists+bpf@lfdr.de>; Sun, 11 Sep 2022 14:23:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230288AbiIKLvC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 11 Sep 2022 07:51:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45316 "EHLO
+        id S230269AbiIKMXj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 11 Sep 2022 08:23:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230235AbiIKLvB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 11 Sep 2022 07:51:01 -0400
-Received: from smtp.smtpout.orange.fr (smtp09.smtpout.orange.fr [80.12.242.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E92F21E08
-        for <bpf@vger.kernel.org>; Sun, 11 Sep 2022 04:50:56 -0700 (PDT)
-Received: from pop-os.home ([90.11.190.129])
-        by smtp.orange.fr with ESMTPA
-        id XLUDoCHEZJvOZXLUEoFLUg; Sun, 11 Sep 2022 13:50:55 +0200
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 11 Sep 2022 13:50:55 +0200
-X-ME-IP: 90.11.190.129
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH] headers: Remove some left-over license text
-Date:   Sun, 11 Sep 2022 13:50:30 +0200
-Message-Id: <2a15aba72497e78ff08c8b8a8bfe3cf5a3e6ee18.1662897019.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
+        with ESMTP id S230262AbiIKMXi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 11 Sep 2022 08:23:38 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A20DD326EC
+        for <bpf@vger.kernel.org>; Sun, 11 Sep 2022 05:23:37 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id c2-20020a1c3502000000b003b2973dafb7so8945478wma.2
+        for <bpf@vger.kernel.org>; Sun, 11 Sep 2022 05:23:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=metanetworks.com; s=google;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date;
+        bh=fCy47mpYYKDHLo1OcJJS150dw1blb6Ea83EXe2B2GfE=;
+        b=JzBCj+L/guJFgHN1WgGxvb6u3i40foUvBXlq1OWewZhSUSv80rU6HqKcoIshYXPoyE
+         e0uC4VGRzuHnp6ZY6S9yzhsA3olTJcnlaaDP/mMjxvlmaqzi+T+b/iqJ7wVeDEq6taQ6
+         vLGVs8Bw+eKCgOApwc391ZAUrGgk+RgwiJN5I=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date;
+        bh=fCy47mpYYKDHLo1OcJJS150dw1blb6Ea83EXe2B2GfE=;
+        b=bei05qLrXa0QChgKOlNZO4qcWkPtjq53YBFgtoHWzbbOKmdItRv1ByR9PNZPzCzLhb
+         /gpv1L4lc68mJkb6gmIyY1u7dUEcoh5X8fBNbye0LIGzlPy0wA+yOyjog6Y2vlqAk9fP
+         K8YXWkKppFVfd3qGHzKzwJdOEh9EGubadhIARPyjosmUifQww661uqaksCXMHqygPQy8
+         M89SCHe63ztdA8lT5ULILVVJO84feNmhTQMA+TKyhsjyRJOXFMo7w9zS7iiFRAcoVqqj
+         QYl1BKC1fFlTKd8mTEaiMfg79StRpnvHpbFEqCr/M0iFBNRmbOeRWGsChVNMxiz5YmXq
+         i/Fw==
+X-Gm-Message-State: ACgBeo0zsduC3RNT3x0H7Y47GJgumfNnWBGT8yMIP/GWYuWQ6ZREohJU
+        NMOoM4wnek1Sw9BqePjrhWGg/VjFBwMUQKh2/MkKH33Y9G3Bb/7sxVkp/WwEzoMpQLhDSdzBHQK
+        taf4I4lrbXCBeEesnszzsakxluTeplRpYf6ZPTWdbuvwObjHLkumm0zHNW5VzmuUsn40wWW7Y/k
+        A=
+X-Google-Smtp-Source: AA6agR69cd013APA82KMxlpN3JiP7noDCEEy59kJsntHQXI7y/qZ10BpzPmf4xJCyWqrPjllBfR3hQ==
+X-Received: by 2002:a05:600c:190b:b0:3a5:f8a3:7abe with SMTP id j11-20020a05600c190b00b003a5f8a37abemr10950900wmq.81.1662899015865;
+        Sun, 11 Sep 2022 05:23:35 -0700 (PDT)
+Received: from blondie.home ([141.226.162.95])
+        by smtp.gmail.com with ESMTPSA id r15-20020a05600c35cf00b003a4f08495b7sm6538346wmq.34.2022.09.11.05.23.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 11 Sep 2022 05:23:35 -0700 (PDT)
+From:   Shmulik Ladkani <shmulik@metanetworks.com>
+X-Google-Original-From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+To:     bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Joanne Koong <joannelkoong@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Paul Chaignon <paul@isovalent.com>,
+        Shmulik Ladkani <shmulik.ladkani@gmail.com>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH v7 bpf-next 0/4] bpf: Support setting variable-length tunnel options
+Date:   Sun, 11 Sep 2022 15:23:24 +0300
+Message-Id: <20220911122328.306188-1-shmulik.ladkani@gmail.com>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,
-        RCVD_IN_BL_SPAMCOP_NET,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -44,111 +72,50 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Remove some left-over from commit e2be04c7f995 ("License cleanup: add SPDX
-license identifier to uapi header files with a license")
+Introduce 'skb_set_tunnel_opt_dynptr' to allow setting tunnel options of
+dynamic length.
 
-When the SPDX-License-Identifier tag has been added, the corresponding
-license text has not been removed.
+v2:
+- Place test_tunnel's local route in a custom table, to ensure the IP
+  isn't considered assigned to a device.
+v3:
+- Avoid 'inline' for the __bpf_skb_set_tunopt helper function
+v4:
+- change API to be based on bpf_dynptr,
+  suggested by John Fastabend <john.fastabend@gmail.com>
+v5:
+- fix bpf_dynptr_get_data's incorrect usage of bpf_dynptr_kern's size
+  spotted by Joanne Koong <joannelkoong@gmail.com>
+v6:
+- Simplify bpf_dynptr_get_data's interface and make it inline
+  suggested by John Fastabend <john.fastabend@gmail.com>
+- Simplify bpf_skb_set_tunnel_opt_dynptr's interface, removing the
+  superfluous 'len' parameter
+  suggested by Andrii Nakryiko <andrii.nakryiko@gmail.com>
+- Fix missing retcodes in progs/test_tunnel_kern.c
+  spotted by John Fastabend <john.fastabend@gmail.com>
+v7:
+- Fix undefined reference to `bpf_dynptr_get_size' when CONFIG_BPF_SYSCALL
+  is unset,
+Reported-by: kernel test robot <lkp@intel.com>
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- include/uapi/linux/tc_act/tc_bpf.h        |  5 -----
- include/uapi/linux/tc_act/tc_skbedit.h    | 13 -------------
- include/uapi/linux/tc_act/tc_skbmod.h     |  7 +------
- include/uapi/linux/tc_act/tc_tunnel_key.h |  5 -----
- include/uapi/linux/tc_act/tc_vlan.h       |  5 -----
- 5 files changed, 1 insertion(+), 34 deletions(-)
+Shmulik Ladkani (4):
+  bpf: Export 'bpf_dynptr_get_data, bpf_dynptr_get_size' helpers
+  bpf: Support setting variable-length tunnel options
+  selftests/bpf: Simplify test_tunnel setup for allowing non-local
+    tunnel traffic
+  selftests/bpf: Add geneve with bpf_skb_set_tunnel_opt_dynptr test-case
+    to test_progs
 
-diff --git a/include/uapi/linux/tc_act/tc_bpf.h b/include/uapi/linux/tc_act/tc_bpf.h
-index 653c4f94f76e..fe6c8f8f3e8c 100644
---- a/include/uapi/linux/tc_act/tc_bpf.h
-+++ b/include/uapi/linux/tc_act/tc_bpf.h
-@@ -1,11 +1,6 @@
- /* SPDX-License-Identifier: GPL-2.0+ WITH Linux-syscall-note */
- /*
-  * Copyright (c) 2015 Jiri Pirko <jiri@resnulli.us>
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- * (at your option) any later version.
-  */
- 
- #ifndef __LINUX_TC_BPF_H
-diff --git a/include/uapi/linux/tc_act/tc_skbedit.h b/include/uapi/linux/tc_act/tc_skbedit.h
-index 6cb6101208d0..64032513cc4c 100644
---- a/include/uapi/linux/tc_act/tc_skbedit.h
-+++ b/include/uapi/linux/tc_act/tc_skbedit.h
-@@ -2,19 +2,6 @@
- /*
-  * Copyright (c) 2008, Intel Corporation.
-  *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms and conditions of the GNU General Public License,
-- * version 2, as published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope it will be useful, but WITHOUT
-- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-- * more details.
-- *
-- * You should have received a copy of the GNU General Public License along with
-- * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
-- * Place - Suite 330, Boston, MA 02111-1307 USA.
-- *
-  * Author: Alexander Duyck <alexander.h.duyck@intel.com>
-  */
- 
-diff --git a/include/uapi/linux/tc_act/tc_skbmod.h b/include/uapi/linux/tc_act/tc_skbmod.h
-index af6ef2cfbf3d..ac62c9a993ea 100644
---- a/include/uapi/linux/tc_act/tc_skbmod.h
-+++ b/include/uapi/linux/tc_act/tc_skbmod.h
-@@ -1,12 +1,7 @@
- /* SPDX-License-Identifier: GPL-2.0+ WITH Linux-syscall-note */
- /*
-  * Copyright (c) 2016, Jamal Hadi Salim
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- * (at your option) any later version.
--*/
-+ */
- 
- #ifndef __LINUX_TC_SKBMOD_H
- #define __LINUX_TC_SKBMOD_H
-diff --git a/include/uapi/linux/tc_act/tc_tunnel_key.h b/include/uapi/linux/tc_act/tc_tunnel_key.h
-index 3f10dc4e7a4b..49ad4033951b 100644
---- a/include/uapi/linux/tc_act/tc_tunnel_key.h
-+++ b/include/uapi/linux/tc_act/tc_tunnel_key.h
-@@ -2,11 +2,6 @@
- /*
-  * Copyright (c) 2016, Amir Vadai <amir@vadai.me>
-  * Copyright (c) 2016, Mellanox Technologies. All rights reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- * (at your option) any later version.
-  */
- 
- #ifndef __LINUX_TC_TUNNEL_KEY_H
-diff --git a/include/uapi/linux/tc_act/tc_vlan.h b/include/uapi/linux/tc_act/tc_vlan.h
-index 5b306fe815cc..3e1f8e57cdd2 100644
---- a/include/uapi/linux/tc_act/tc_vlan.h
-+++ b/include/uapi/linux/tc_act/tc_vlan.h
-@@ -1,11 +1,6 @@
- /* SPDX-License-Identifier: GPL-2.0+ WITH Linux-syscall-note */
- /*
-  * Copyright (c) 2014 Jiri Pirko <jiri@resnulli.us>
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- * (at your option) any later version.
-  */
- 
- #ifndef __LINUX_TC_VLAN_H
+ include/linux/bpf.h                           |  13 ++
+ include/uapi/linux/bpf.h                      |  11 +
+ kernel/bpf/helpers.c                          |   2 +-
+ net/core/filter.c                             |  31 ++-
+ tools/include/uapi/linux/bpf.h                |  11 +
+ .../selftests/bpf/prog_tests/test_tunnel.c    | 131 +++++++++--
+ .../selftests/bpf/progs/test_tunnel_kern.c    | 212 ++++++++++++------
+ 7 files changed, 325 insertions(+), 86 deletions(-)
+
 -- 
-2.34.1
+2.37.3
 
