@@ -2,69 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5008B5B4ED0
-	for <lists+bpf@lfdr.de>; Sun, 11 Sep 2022 14:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5AE45B4ED8
+	for <lists+bpf@lfdr.de>; Sun, 11 Sep 2022 14:44:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230116AbiIKMl5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 11 Sep 2022 08:41:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47428 "EHLO
+        id S230207AbiIKMoY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 11 Sep 2022 08:44:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230208AbiIKMlz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 11 Sep 2022 08:41:55 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3E7B32EE8
-        for <bpf@vger.kernel.org>; Sun, 11 Sep 2022 05:41:52 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id lc7so14402460ejb.0
-        for <bpf@vger.kernel.org>; Sun, 11 Sep 2022 05:41:52 -0700 (PDT)
+        with ESMTP id S230182AbiIKMoX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 11 Sep 2022 08:44:23 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A56533435
+        for <bpf@vger.kernel.org>; Sun, 11 Sep 2022 05:44:21 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id x10so7543925ljq.4
+        for <bpf@vger.kernel.org>; Sun, 11 Sep 2022 05:44:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=to:subject:message-id:date:from:sender:mime-version:from:to:cc
          :subject:date;
         bh=VXlBS00/GuegNihbP9LSEb4G+N9nTOzbXeMOhsINvjI=;
-        b=qFxBM+4WmE84b9kc42AjML7y/u79qDnKy/I3R05YmDaHugd3sJm0ErbEJibh/jSPji
-         6y1bg0o+pu35H3n2Re5/9Cq+QgAEL22L1Xab1dCakQu6XF/iVZKGbL5N2XXly/eqTnr9
-         JkrloLvEIL0pAPJ1FUx9fhbHlyPMfgq5M7J2bzOlu7WXA+zu9HLvgoiQafb9+8Uf2bDk
-         ovpSEVBiurmmku5vGgI41iMuvBBDkutOwnL0nw7IlmU6f0/PMOueGk+UKgsPulwLQNyq
-         UYfQAY9yWKkeCpWupwq4TcOhrqapeUbZ7J5gltMMKVtMCBOXR0iT93jPs/41qEhHBU6A
-         wJzw==
+        b=XpoArl7ff1h6D0gSVSU/rP94OJvGVV117RL7aC0lFzwT/82bFY0Rp3sLV2aPWEyoWV
+         +kBMt//uXEFJKIsQAVug9jbFK6wbHUZfYBVG2XmxkrJvUAuNLilLQfDM9ObO0vJDn3HP
+         uFh3DiEwN55E9ybN4w+SDX9CLwOe7e40EMpDWA7aVffh5XjRhFAfOuV+7HbyoKw6znVt
+         rKLJDoSsdTROphrV4PM+7ZHIXHSFvCgdnBJOVRXSllAsh8JM+x3h7D0Ou2AOcDjGPi/D
+         vHpTd80+Zwc++L7Q+0oUv7qBJGuysMWf2K/hXvPfawx2n/gcdvo58omvf5AOyhbjZv+A
+         dVKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=to:subject:message-id:date:from:sender:mime-version
          :x-gm-message-state:from:to:cc:subject:date;
         bh=VXlBS00/GuegNihbP9LSEb4G+N9nTOzbXeMOhsINvjI=;
-        b=qDYWeYQ4yYQ+JOOZ1AGCqdM+DS9ZpaVEUlCVX7vnKbveJVvgijKq20HysFKdg2g5Fs
-         qDfGEQi7b59AtStvL5vUPrVDKFsIeY6FRsqPHgUXxiBwBP0LJXLQjRP8Lam0y8RlYCFt
-         20h19EWc9RaeC3GiLGZ/xX2YDkccxoTKyU6uGIri+Rxv7necf8CDs2FBCZE0Wdqh8n/H
-         swS9Yb9n4bu31uWBWW9Rnp1VTpUQ7/0CbqfleqNAJfGYXOk/LWXTIt0CsvmsXYQHXfNK
-         dkzMuse193DqNVhZIEV/001ZIrg2DB3aryhLqGeebpuusJQtQpMmmWmOdFaQODcIngh4
-         /CdQ==
-X-Gm-Message-State: ACgBeo1MxuM3AIAAitp+udXRJGv9vleNeQb7D6qK1/0YLzmhs/f0kcN+
-        M2SO6k2C7AvP8g12BUmhgEkFTtGTa+A9q0dZ9LM=
-X-Google-Smtp-Source: AA6agR4HwaGiVvzSAOcg4mei3ZtJ+TXfr9Q0likya65KAprVU9U15MhWXWOAlk2p7qnWIdCDEWUMbl5oAnUWNDL927c=
-X-Received: by 2002:a17:907:2d14:b0:779:fa1d:1aac with SMTP id
- gs20-20020a1709072d1400b00779fa1d1aacmr7440962ejc.585.1662900110865; Sun, 11
- Sep 2022 05:41:50 -0700 (PDT)
+        b=gKuP/iSfUovAkJIgBEZmyAPh7DdAJweQ4m6MrmioHMKUXUSvWXHSPrJIF2xa6TNw77
+         YOmJiUpHbnoo/3Qq22NFk0Lud5EveZ8l+sqL+FtKTMzV9atheudNGNeHj5Xv0v/U4qqY
+         7MVbgAEBf9QtERSDMhsE3y8Rd4NHucQqqmbNW3nr7aueWECjf+7uWi9UrQdV8qhngYcc
+         OMxkkwjD+5e0z43H+XoD5C0/JcZ7hH49N9EC9yi0FWXPsi7bLtP4iLH+81SzgEViNT04
+         sN56sNCM1ZJsgSOBl4wR3wtHxmKd4UNyCPDA8kazbMZRrjkYBS3lZn8q0eEgRXfbkQGd
+         SNKw==
+X-Gm-Message-State: ACgBeo1CrdgNEO0nrjmN5Izeg+syFuc0e2A9ZEe0CS+t1y3LuCW8lCuT
+        dpKb9yOaE+PKsJbFZdvL5vGbdmTUYUExY0tl5Q==
+X-Google-Smtp-Source: AA6agR77d5mBO13s3Dzm+PerpQco5W1DQHqkbuy03uqkYDXSOzpkZ7ShT0NoyIN3jSCSmY4n3fHtzf4FUq4tY7Jany4=
+X-Received: by 2002:a2e:b8cd:0:b0:261:e189:710 with SMTP id
+ s13-20020a2eb8cd000000b00261e1890710mr6244703ljp.331.1662900258858; Sun, 11
+ Sep 2022 05:44:18 -0700 (PDT)
 MIME-Version: 1.0
-Sender: peppersben3@gmail.com
-Received: by 2002:a05:6402:1d55:b0:451:74ca:49f2 with HTTP; Sun, 11 Sep 2022
- 05:41:50 -0700 (PDT)
+Sender: lyrilhill@gmail.com
+Received: by 2002:a05:651c:1508:0:0:0:0 with HTTP; Sun, 11 Sep 2022 05:44:17
+ -0700 (PDT)
 From:   Mrs Aisha Gaddafi <aishagaddafiaisha20@gmail.com>
-Date:   Sun, 11 Sep 2022 05:41:50 -0700
-X-Google-Sender-Auth: ddOE6hVQREXuYiUVQ-X5lPaQTfo
-Message-ID: <CAF6h66rvkmAjBKqNY8qmimnWPJ+gmWOarcZsvYZvTX7kYTfPyQ@mail.gmail.com>
+Date:   Sun, 11 Sep 2022 05:44:17 -0700
+X-Google-Sender-Auth: 58evqtI_f4UPoeLUgBMxyxSIhKY
+Message-ID: <CAGU6a+3FDPC_L6Umfy2j_MT1z=8G+pfyJwU_5MhfbdawcKrMSQ@mail.gmail.com>
 Subject: GOOD DAY MY DEAR.
 To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=7.6 required=5.0 tests=BAYES_99,BAYES_999,
+X-Spam-Status: Yes, score=7.4 required=5.0 tests=BAYES_99,BAYES_999,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORM_FRAUD_5,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,LOTS_OF_MONEY,MILLION_HUNDRED,
-        MILLION_USD,MONEY_FORM_SHORT,MONEY_FRAUD_5,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,SUBJ_ALL_CAPS,T_FILL_THIS_FORM_SHORT,
-        T_HK_NAME_FM_MR_MRS,T_SCC_BODY_TEXT_LINE,UNDISC_MONEY,URG_BIZ
-        autolearn=no autolearn_force=no version=3.4.6
+        FREEMAIL_FROM,LOTS_OF_MONEY,MILLION_HUNDRED,MILLION_USD,
+        MONEY_FORM_SHORT,MONEY_FRAUD_5,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,SUBJ_ALL_CAPS,T_FILL_THIS_FORM_SHORT,T_HK_NAME_FM_MR_MRS,
+        T_SCC_BODY_TEXT_LINE,UNDISC_MONEY,URG_BIZ autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
         *      https://www.dnswl.org/, no trust
-        *      [2a00:1450:4864:20:0:0:0:629 listed in]
+        *      [2a00:1450:4864:20:0:0:0:22e listed in]
         [list.dnswl.org]
         *  3.5 BAYES_99 BODY: Bayes spam probability is 99 to 100%
         *      [score: 1.0000]
@@ -72,11 +72,8 @@ X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
         *      [score: 1.0000]
         *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
         *      provider
-        *      [peppersben3[at]gmail.com]
+        *      [aishagaddafiaisha20[at]gmail.com]
         *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [peppersben3[at]gmail.com]
         * -0.0 SPF_PASS SPF: sender matches SPF record
         *  0.5 SUBJ_ALL_CAPS Subject is all capitals
         *  0.0 MILLION_USD BODY: Talks about millions of dollars
