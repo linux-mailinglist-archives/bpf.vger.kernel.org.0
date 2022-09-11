@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10B015B4EBE
-	for <lists+bpf@lfdr.de>; Sun, 11 Sep 2022 14:23:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8855C5B4EBF
+	for <lists+bpf@lfdr.de>; Sun, 11 Sep 2022 14:23:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230308AbiIKMXn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 11 Sep 2022 08:23:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55340 "EHLO
+        id S230302AbiIKMXq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 11 Sep 2022 08:23:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230306AbiIKMXm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 11 Sep 2022 08:23:42 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3EFB32A81
-        for <bpf@vger.kernel.org>; Sun, 11 Sep 2022 05:23:40 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id d12-20020a05600c34cc00b003a83d20812fso5262956wmq.1
-        for <bpf@vger.kernel.org>; Sun, 11 Sep 2022 05:23:40 -0700 (PDT)
+        with ESMTP id S230303AbiIKMXn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 11 Sep 2022 08:23:43 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 279A6326EC
+        for <bpf@vger.kernel.org>; Sun, 11 Sep 2022 05:23:42 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id j26so5056951wms.0
+        for <bpf@vger.kernel.org>; Sun, 11 Sep 2022 05:23:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=metanetworks.com; s=google;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
-        bh=67QEI4hXgBMp+c43AShJsHjhmzhws5ssgTSDAznaz3U=;
-        b=Q34IgMRt9g6gizVGVYAetxyTqLpBVIL5Hvcg9Ct4qR0k3XJWlNxSf1vg4ZqTdZ6JdT
-         JhE5ULdHPT4APCh63zvTBoqzmAOscZ8Qkka48TehAoDhUzWkCN0w64N3t6fuz8rkXiVm
-         xwdM6VVAjYyDJrSbYnmucHXywfcpvQ7zrTclA=
+        bh=y4uNF4sn3Kv8XtrqWU5gIv/Ky6u/i6rQku5qMcRWAG0=;
+        b=f6ePVLnf887CS3o5B1ERd2GuMvIt5SlzGUY0+gJJT6GAKz3yiAjDmqF/lyoFXHNf7K
+         LN4jjdNBqiZ7GeUW81BoDORY7JlV4/PcOTXyR6+3LEv0N+r92s6fWUOEYbTmcY8LEdWg
+         f536nBhm16ZRkXiF/bsMnZ1UAuZe25VVt/7BI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date;
-        bh=67QEI4hXgBMp+c43AShJsHjhmzhws5ssgTSDAznaz3U=;
-        b=Jz1hXNu4uSx9GPQFJNeD/cFxCi94n07QrjA3Y1ECjvYv9AZVbsDQav3Vs6emY2+Nmg
-         /4RU9WKj1bzE9rHQTPbsSMiAVozQGSkT8KmZBIM5HIE4cNT2kVKrx2wz4gFihEvAUdua
-         9pgq2Ddtn4c6ipT8wEE+uRxvngact6zSXeoQuD1WenYwRTanv0xzncF4TpA7Wish4/Nb
-         2IhPmr2s37ct4x/FeSBKyvic3P43U/2iv5ah9upE1Q8enolyn8MctBj5JTwdFiFx5Kbj
-         RIowLAHZeC28Hev2OlN0MYw3GjwKZOw6uP4tzsbW3ESYfYL2IsnMU81+NIftALBTa3gP
-         C2Qg==
-X-Gm-Message-State: ACgBeo2pEoi9Ud859W32vZqc1Pzq+e4kfkthCHgZz5HB3D4TnpNpzbf/
-        WWHOu9VnSbHzQkDZ047FFgNhh+ChaI+vB8g74wVdLVOeBaoLOPQN3NOqZTslMl0GDQkKN2xz1xM
-        eRmysTu8GXYhGhNM4n1yZBvkefvxPHqWp5AHzKDArvr7LiAdV2aDrq3VOy8K4nYSz2/PFhqb+fz
+        bh=y4uNF4sn3Kv8XtrqWU5gIv/Ky6u/i6rQku5qMcRWAG0=;
+        b=ZURdnGoC7Em0RyNNOSaPT6I1RSTu2gwnCKogzUo5+NEBcEgLhPoTKCGLymqsFY9qCU
+         mMMRLS9wunlIs/0c38T4iD9pF7Q5MQtOHqr870jN8R1PO36853f/bmTT7//EUdmBWMqP
+         D1Hk1cF0PLWJZbk73JUyEUtB5MTPnop5W+ja/h6oM8pht6TGwVGiS5GR6Z/ipbTxfu8V
+         JHXdXzWmqFSbF7VOKqClQJ6HJhbxwiyvqFMnccQyZZV2xEabgtDVcRTFipxikMhY1j9V
+         Nz28uDtaHogMlUt6dRaGrDh+wlcUwY4cJL5BbSm/rz4eQtBADHLqq5AxlhVZ7iP5TgUg
+         vEbw==
+X-Gm-Message-State: ACgBeo1ulOuV55UbzhnFfJDTs5ttUXBJy/Kujm4VsUJ8tC5lYtBPy1cZ
+        Bmx1FLzalzU1wVWJoSryT7ekN2KW+/wtye4iL0K4StHfB8/Iu5gAxlPVxOEwRULh0CL4BPS3bCz
+        fp3HNrW3GD2ktc8/IF6TxUvgE6UYljjiy9K+115l537gurapMjlf4KtVAL4fS3vpMrMnujzqPn/
         A=
-X-Google-Smtp-Source: AA6agR6J7tccc1fSwUcYooTxmM+jUxoO//nWqufIXn59lnkEymwch3CONLVnKl8FC9g24apbwQ1nkA==
-X-Received: by 2002:a7b:c7d8:0:b0:3b4:5c41:6a6c with SMTP id z24-20020a7bc7d8000000b003b45c416a6cmr6819418wmk.139.1662899018977;
-        Sun, 11 Sep 2022 05:23:38 -0700 (PDT)
+X-Google-Smtp-Source: AA6agR6Eranpvl1vChYnYEaLsdmI38EDg2ov6TT8pQYjY1t3nHFtSj7N4T+HexMrcjjsZGtNlzi3hg==
+X-Received: by 2002:a05:600c:4ed0:b0:3a6:de8:5e7d with SMTP id g16-20020a05600c4ed000b003a60de85e7dmr10691013wmq.181.1662899020164;
+        Sun, 11 Sep 2022 05:23:40 -0700 (PDT)
 Received: from blondie.home ([141.226.162.95])
-        by smtp.gmail.com with ESMTPSA id r15-20020a05600c35cf00b003a4f08495b7sm6538346wmq.34.2022.09.11.05.23.37
+        by smtp.gmail.com with ESMTPSA id r15-20020a05600c35cf00b003a4f08495b7sm6538346wmq.34.2022.09.11.05.23.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Sep 2022 05:23:38 -0700 (PDT)
+        Sun, 11 Sep 2022 05:23:39 -0700 (PDT)
 From:   Shmulik Ladkani <shmulik@metanetworks.com>
 X-Google-Original-From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
 To:     bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
@@ -56,9 +56,9 @@ To:     bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Paul Chaignon <paul@isovalent.com>,
         Shmulik Ladkani <shmulik.ladkani@gmail.com>
-Subject: [PATCH v7 bpf-next 2/4] bpf: Support setting variable-length tunnel options
-Date:   Sun, 11 Sep 2022 15:23:26 +0300
-Message-Id: <20220911122328.306188-3-shmulik.ladkani@gmail.com>
+Subject: [PATCH v7 bpf-next 3/4] selftests/bpf: Simplify test_tunnel setup for allowing non-local tunnel traffic
+Date:   Sun, 11 Sep 2022 15:23:27 +0300
+Message-Id: <20220911122328.306188-4-shmulik.ladkani@gmail.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <20220911122328.306188-1-shmulik.ladkani@gmail.com>
 References: <20220911122328.306188-1-shmulik.ladkani@gmail.com>
@@ -74,175 +74,239 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Existing 'bpf_skb_set_tunnel_opt' allows setting tunnel options given
-an option buffer (ARG_PTR_TO_MEM) and the compile-time fixed buffer
-size (ARG_CONST_SIZE).
+Commit 1115169f47ae ("selftests/bpf: Don't assign outer source IP to host")
+removed the secondary IP (IP4_ADDR2_VETH1) assigned to veth1, in order
+to test bpf_skb_set_tunnel_key's functionality when tunnel destination
+isn't assigned to an interface.
 
-However, in certain cases we wish to set tunnel options of dynamic
-length.
+The chosen setup for testing the "tunnel to unassigned outer IP"
+scenario was rather complex: (1) static ARP entries in order to
+bypass ARP (o/w requests will fail as the target address isn't assigned
+locally), and (2) a BPF program running on veth1 ingress which
+manipulates the IP header's daddr to the actual IP assigned to the
+interface (o/w tunnel traffic won't be accepted locally).
 
-For example, we have an ebpf program that gets geneve options on
-incoming packets, stores them into a map (using a key representing
-the incoming flow), and later needs to assign *same* options to
-reply packets (belonging to same flow).
+This is complex, and adds a dependency on this hidden "dnat"-like eBPF
+program, that needs to be replicated when new tunnel tests are added.
 
-This is currently imposssible without knowing sender's exact geneve
-options length, which unfortunately is dymamic.
+Instead, we can have a much simpler setup: Add the secondary IP as a
+*local route* in a table pointed by a custom fib rule. No static arp
+entries are needed, and the special eBPF program that "dnats" the outer
+destination can be removed.
 
-Introduce 'bpf_skb_set_tunnel_opt_dynptr'.
-
-This is a variant of 'bpf_skb_set_tunnel_opt' which gets a bpf dynamic
-pointer (ARG_PTR_TO_DYNPTR) parameter whose data points to the options
-buffer to set.
+This commit is a revert of 1115169f47ae, with the addition of the local
+route of IP4_ADDR2_VETH1 (instead of the original address assignment).
 
 Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
 
 ---
-v3: Avoid 'inline' for the __bpf_skb_set_tunopt helper function
-v4: change API to be based on bpf_dynptr, suggested by John Fastabend <john.fastabend@gmail.com>
-v6: Remove superfluous 'len' from bpf_skb_set_tunnel_opt_dynptr API
-    (rely on dynptr's internal size), suggested by Andrii Nakryiko <andrii.nakryiko@gmail.com>
+v2: Place the local route for the secondary IP in a custom table
+    pointed by a custom fib rule; this ensures the IP is not considered
+    assigned to a device.
 ---
- include/uapi/linux/bpf.h       | 11 +++++++++++
- net/core/filter.c              | 31 +++++++++++++++++++++++++++++--
- tools/include/uapi/linux/bpf.h | 11 +++++++++++
- 3 files changed, 51 insertions(+), 2 deletions(-)
+ .../selftests/bpf/prog_tests/test_tunnel.c    | 23 ++----
+ .../selftests/bpf/progs/test_tunnel_kern.c    | 80 +++----------------
+ 2 files changed, 17 insertions(+), 86 deletions(-)
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 3df78c56c1bf..ba12f7e1ccb6 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -5387,6 +5387,16 @@ union bpf_attr {
-  *	Return
-  *		Current *ktime*.
-  *
-+ * long bpf_skb_set_tunnel_opt_dynptr(struct sk_buff *skb, struct bpf_dynptr *opt)
-+ *	Description
-+ *		Set tunnel options metadata for the packet associated to *skb*
-+ *		to the option data pointed to by the *opt* dynptr.
-+ *
-+ *		See also the description of the **bpf_skb_get_tunnel_opt**\ ()
-+ *		helper for additional information.
-+ *	Return
-+ *		0 on success, or a negative error in case of failure.
-+ *
-  */
- #define __BPF_FUNC_MAPPER(FN)		\
- 	FN(unspec),			\
-@@ -5598,6 +5608,7 @@ union bpf_attr {
- 	FN(tcp_raw_check_syncookie_ipv4),	\
- 	FN(tcp_raw_check_syncookie_ipv6),	\
- 	FN(ktime_get_tai_ns),		\
-+	FN(skb_set_tunnel_opt_dynptr),	\
- 	/* */
+diff --git a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c b/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
+index eea274110267..852da04ff281 100644
+--- a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
++++ b/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
+@@ -82,7 +82,6 @@
  
- /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-diff --git a/net/core/filter.c b/net/core/filter.c
-index e872f45399b0..1c652936ef86 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -4674,8 +4674,7 @@ static const struct bpf_func_proto bpf_skb_set_tunnel_key_proto = {
- 	.arg4_type	= ARG_ANYTHING,
+ #define MAC_TUNL_DEV0 "52:54:00:d9:01:00"
+ #define MAC_TUNL_DEV1 "52:54:00:d9:02:00"
+-#define MAC_VETH1 "52:54:00:d9:03:00"
+ 
+ #define VXLAN_TUNL_DEV0 "vxlan00"
+ #define VXLAN_TUNL_DEV1 "vxlan11"
+@@ -109,9 +108,15 @@
+ static int config_device(void)
+ {
+ 	SYS("ip netns add at_ns0");
+-	SYS("ip link add veth0 address " MAC_VETH1 " type veth peer name veth1");
++	SYS("ip link add veth0 type veth peer name veth1");
+ 	SYS("ip link set veth0 netns at_ns0");
+ 	SYS("ip addr add " IP4_ADDR1_VETH1 "/24 dev veth1");
++	/* Create a custom rule routing IP4_ADDR2_VETH1 as local.
++	 * Do not place it in "local" table, to avoid this IP being considered
++	 * assigned to a device.
++	 */
++	SYS("ip rule add to " IP4_ADDR2_VETH1 " table 20");
++	SYS("ip route add local " IP4_ADDR2_VETH1 "/32 dev veth1 table 20");
+ 	SYS("ip link set dev veth1 up mtu 1500");
+ 	SYS("ip netns exec at_ns0 ip addr add " IP4_ADDR_VETH0 "/24 dev veth0");
+ 	SYS("ip netns exec at_ns0 ip link set dev veth0 up mtu 1500");
+@@ -125,6 +130,7 @@ static void cleanup(void)
+ {
+ 	SYS_NOFAIL("test -f /var/run/netns/at_ns0 && ip netns delete at_ns0");
+ 	SYS_NOFAIL("ip link del veth1 2> /dev/null");
++	SYS_NOFAIL("ip rule del to %s table 20 2> /dev/null", IP4_ADDR2_VETH1);
+ 	SYS_NOFAIL("ip link del %s 2> /dev/null", VXLAN_TUNL_DEV1);
+ 	SYS_NOFAIL("ip link del %s 2> /dev/null", IP6VXLAN_TUNL_DEV1);
+ }
+@@ -140,8 +146,6 @@ static int add_vxlan_tunnel(void)
+ 	    VXLAN_TUNL_DEV0, IP4_ADDR_TUNL_DEV0);
+ 	SYS("ip netns exec at_ns0 ip neigh add %s lladdr %s dev %s",
+ 	    IP4_ADDR_TUNL_DEV1, MAC_TUNL_DEV1, VXLAN_TUNL_DEV0);
+-	SYS("ip netns exec at_ns0 ip neigh add %s lladdr %s dev veth0",
+-	    IP4_ADDR2_VETH1, MAC_VETH1);
+ 
+ 	/* root namespace */
+ 	SYS("ip link add dev %s type vxlan external gbp dstport 4789",
+@@ -279,17 +283,6 @@ static void test_vxlan_tunnel(void)
+ 	if (attach_tc_prog(&tc_hook, get_src_prog_fd, set_src_prog_fd))
+ 		goto done;
+ 
+-	/* load and attach bpf prog to veth dev tc hook point */
+-	ifindex = if_nametoindex("veth1");
+-	if (!ASSERT_NEQ(ifindex, 0, "veth1 ifindex"))
+-		goto done;
+-	tc_hook.ifindex = ifindex;
+-	set_dst_prog_fd = bpf_program__fd(skel->progs.veth_set_outer_dst);
+-	if (!ASSERT_GE(set_dst_prog_fd, 0, "bpf_program__fd"))
+-		goto done;
+-	if (attach_tc_prog(&tc_hook, set_dst_prog_fd, -1))
+-		goto done;
+-
+ 	/* load and attach prog set_md to tunnel dev tc hook point at_ns0 */
+ 	nstoken = open_netns("at_ns0");
+ 	if (!ASSERT_OK_PTR(nstoken, "setns src"))
+diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+index 98af55f0bcd3..b11f6952b0c8 100644
+--- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
++++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+@@ -15,24 +15,15 @@
+ #include <linux/if_tunnel.h>
+ #include <linux/ip.h>
+ #include <linux/ipv6.h>
+-#include <linux/icmp.h>
+ #include <linux/types.h>
+ #include <linux/socket.h>
+ #include <linux/pkt_cls.h>
+ #include <linux/erspan.h>
+-#include <linux/udp.h>
+ #include <bpf/bpf_helpers.h>
+ #include <bpf/bpf_endian.h>
+ 
+ #define log_err(__ret) bpf_printk("ERROR line:%d ret:%d\n", __LINE__, __ret)
+ 
+-#define VXLAN_UDP_PORT 4789
+-
+-/* Only IPv4 address assigned to veth1.
+- * 172.16.1.200
+- */
+-#define ASSIGNED_ADDR_VETH1 0xac1001c8
+-
+ struct geneve_opt {
+ 	__be16	opt_class;
+ 	__u8	type;
+@@ -43,11 +34,6 @@ struct geneve_opt {
+ 	__u8	opt_data[8]; /* hard-coded to 8 byte */
  };
  
--BPF_CALL_3(bpf_skb_set_tunnel_opt, struct sk_buff *, skb,
--	   const u8 *, from, u32, size)
-+static u64 __bpf_skb_set_tunopt(struct sk_buff *skb, const u8 *from, u32 size)
- {
- 	struct ip_tunnel_info *info = skb_tunnel_info(skb);
- 	const struct metadata_dst *md = this_cpu_ptr(md_dst);
-@@ -4690,6 +4689,22 @@ BPF_CALL_3(bpf_skb_set_tunnel_opt, struct sk_buff *, skb,
- 	return 0;
+-struct vxlanhdr {
+-	__be32 vx_flags;
+-	__be32 vx_vni;
+-} __attribute__((packed));
+-
+ struct vxlan_metadata {
+ 	__u32     gbp;
+ };
+@@ -384,8 +370,14 @@ int vxlan_get_tunnel_src(struct __sk_buff *skb)
+ 	int ret;
+ 	struct bpf_tunnel_key key;
+ 	struct vxlan_metadata md;
+-	__u32 orig_daddr;
+ 	__u32 index = 0;
++	__u32 *local_ip = NULL;
++
++	local_ip = bpf_map_lookup_elem(&local_ip_map, &index);
++	if (!local_ip) {
++		log_err(ret);
++		return TC_ACT_SHOT;
++	}
+ 
+ 	ret = bpf_skb_get_tunnel_key(skb, &key, sizeof(key),
+ 				     BPF_F_TUNINFO_FLAGS);
+@@ -400,13 +392,14 @@ int vxlan_get_tunnel_src(struct __sk_buff *skb)
+ 		return TC_ACT_SHOT;
+ 	}
+ 
+-	if (key.local_ipv4 != ASSIGNED_ADDR_VETH1 || md.gbp != 0x800FF ||
++	if (key.local_ipv4 != *local_ip || md.gbp != 0x800FF ||
+ 	    !(key.tunnel_flags & TUNNEL_KEY) ||
+ 	    (key.tunnel_flags & TUNNEL_CSUM)) {
+ 		bpf_printk("vxlan key %d local ip 0x%x remote ip 0x%x gbp 0x%x flags 0x%x\n",
+ 			   key.tunnel_id, key.local_ipv4,
+ 			   key.remote_ipv4, md.gbp,
+ 			   bpf_ntohs(key.tunnel_flags));
++		bpf_printk("local_ip 0x%x\n", *local_ip);
+ 		log_err(ret);
+ 		return TC_ACT_SHOT;
+ 	}
+@@ -414,61 +407,6 @@ int vxlan_get_tunnel_src(struct __sk_buff *skb)
+ 	return TC_ACT_OK;
  }
  
-+BPF_CALL_3(bpf_skb_set_tunnel_opt, struct sk_buff *, skb,
-+	   const u8 *, from, u32, size)
-+{
-+	return __bpf_skb_set_tunopt(skb, from, size);
-+}
-+
-+BPF_CALL_2(bpf_skb_set_tunnel_opt_dynptr, struct sk_buff *, skb,
-+	   struct bpf_dynptr_kern *, ptr)
-+{
-+	const u8 *from = bpf_dynptr_get_data(ptr);
-+
-+	if (unlikely(!from))
-+		return -EFAULT;
-+	return __bpf_skb_set_tunopt(skb, from, bpf_dynptr_get_size(ptr));
-+}
-+
- static const struct bpf_func_proto bpf_skb_set_tunnel_opt_proto = {
- 	.func		= bpf_skb_set_tunnel_opt,
- 	.gpl_only	= false,
-@@ -4699,6 +4714,14 @@ static const struct bpf_func_proto bpf_skb_set_tunnel_opt_proto = {
- 	.arg3_type	= ARG_CONST_SIZE,
- };
- 
-+static const struct bpf_func_proto bpf_skb_set_tunnel_opt_dynptr_proto = {
-+	.func		= bpf_skb_set_tunnel_opt_dynptr,
-+	.gpl_only	= false,
-+	.ret_type	= RET_INTEGER,
-+	.arg1_type	= ARG_PTR_TO_CTX,
-+	.arg2_type	= ARG_PTR_TO_DYNPTR | DYNPTR_TYPE_LOCAL,
-+};
-+
- static const struct bpf_func_proto *
- bpf_get_skb_set_tunnel_proto(enum bpf_func_id which)
+-SEC("tc")
+-int veth_set_outer_dst(struct __sk_buff *skb)
+-{
+-	struct ethhdr *eth = (struct ethhdr *)(long)skb->data;
+-	__u32 assigned_ip = bpf_htonl(ASSIGNED_ADDR_VETH1);
+-	void *data_end = (void *)(long)skb->data_end;
+-	struct udphdr *udph;
+-	struct iphdr *iph;
+-	__u32 index = 0;
+-	int ret = 0;
+-	int shrink;
+-	__s64 csum;
+-
+-	if ((void *)eth + sizeof(*eth) > data_end) {
+-		log_err(ret);
+-		return TC_ACT_SHOT;
+-	}
+-
+-	if (eth->h_proto != bpf_htons(ETH_P_IP))
+-		return TC_ACT_OK;
+-
+-	iph = (struct iphdr *)(eth + 1);
+-	if ((void *)iph + sizeof(*iph) > data_end) {
+-		log_err(ret);
+-		return TC_ACT_SHOT;
+-	}
+-	if (iph->protocol != IPPROTO_UDP)
+-		return TC_ACT_OK;
+-
+-	udph = (struct udphdr *)(iph + 1);
+-	if ((void *)udph + sizeof(*udph) > data_end) {
+-		log_err(ret);
+-		return TC_ACT_SHOT;
+-	}
+-	if (udph->dest != bpf_htons(VXLAN_UDP_PORT))
+-		return TC_ACT_OK;
+-
+-	if (iph->daddr != assigned_ip) {
+-		csum = bpf_csum_diff(&iph->daddr, sizeof(__u32), &assigned_ip,
+-				     sizeof(__u32), 0);
+-		if (bpf_skb_store_bytes(skb, ETH_HLEN + offsetof(struct iphdr, daddr),
+-					&assigned_ip, sizeof(__u32), 0) < 0) {
+-			log_err(ret);
+-			return TC_ACT_SHOT;
+-		}
+-		if (bpf_l3_csum_replace(skb, ETH_HLEN + offsetof(struct iphdr, check),
+-					0, csum, 0) < 0) {
+-			log_err(ret);
+-			return TC_ACT_SHOT;
+-		}
+-		bpf_skb_change_type(skb, PACKET_HOST);
+-	}
+-	return TC_ACT_OK;
+-}
+-
+ SEC("tc")
+ int ip6vxlan_set_tunnel_dst(struct __sk_buff *skb)
  {
-@@ -4719,6 +4742,8 @@ bpf_get_skb_set_tunnel_proto(enum bpf_func_id which)
- 		return &bpf_skb_set_tunnel_key_proto;
- 	case BPF_FUNC_skb_set_tunnel_opt:
- 		return &bpf_skb_set_tunnel_opt_proto;
-+	case BPF_FUNC_skb_set_tunnel_opt_dynptr:
-+		return &bpf_skb_set_tunnel_opt_dynptr_proto;
- 	default:
- 		return NULL;
- 	}
-@@ -7798,6 +7823,7 @@ tc_cls_act_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 	case BPF_FUNC_skb_get_tunnel_opt:
- 		return &bpf_skb_get_tunnel_opt_proto;
- 	case BPF_FUNC_skb_set_tunnel_opt:
-+	case BPF_FUNC_skb_set_tunnel_opt_dynptr:
- 		return bpf_get_skb_set_tunnel_proto(func_id);
- 	case BPF_FUNC_redirect:
- 		return &bpf_redirect_proto;
-@@ -8145,6 +8171,7 @@ lwt_xmit_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 	case BPF_FUNC_skb_get_tunnel_opt:
- 		return &bpf_skb_get_tunnel_opt_proto;
- 	case BPF_FUNC_skb_set_tunnel_opt:
-+	case BPF_FUNC_skb_set_tunnel_opt_dynptr:
- 		return bpf_get_skb_set_tunnel_proto(func_id);
- 	case BPF_FUNC_redirect:
- 		return &bpf_redirect_proto;
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 3df78c56c1bf..ba12f7e1ccb6 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -5387,6 +5387,16 @@ union bpf_attr {
-  *	Return
-  *		Current *ktime*.
-  *
-+ * long bpf_skb_set_tunnel_opt_dynptr(struct sk_buff *skb, struct bpf_dynptr *opt)
-+ *	Description
-+ *		Set tunnel options metadata for the packet associated to *skb*
-+ *		to the option data pointed to by the *opt* dynptr.
-+ *
-+ *		See also the description of the **bpf_skb_get_tunnel_opt**\ ()
-+ *		helper for additional information.
-+ *	Return
-+ *		0 on success, or a negative error in case of failure.
-+ *
-  */
- #define __BPF_FUNC_MAPPER(FN)		\
- 	FN(unspec),			\
-@@ -5598,6 +5608,7 @@ union bpf_attr {
- 	FN(tcp_raw_check_syncookie_ipv4),	\
- 	FN(tcp_raw_check_syncookie_ipv6),	\
- 	FN(ktime_get_tai_ns),		\
-+	FN(skb_set_tunnel_opt_dynptr),	\
- 	/* */
- 
- /* integer value in 'imm' field of BPF_CALL instruction selects which helper
 -- 
 2.37.3
 
