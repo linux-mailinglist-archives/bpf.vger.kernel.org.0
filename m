@@ -2,50 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44E935B4EBC
-	for <lists+bpf@lfdr.de>; Sun, 11 Sep 2022 14:23:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DD0D5B4EBD
+	for <lists+bpf@lfdr.de>; Sun, 11 Sep 2022 14:23:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230269AbiIKMXj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 11 Sep 2022 08:23:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55312 "EHLO
+        id S230262AbiIKMXm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 11 Sep 2022 08:23:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230262AbiIKMXi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 11 Sep 2022 08:23:38 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A20DD326EC
-        for <bpf@vger.kernel.org>; Sun, 11 Sep 2022 05:23:37 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id c2-20020a1c3502000000b003b2973dafb7so8945478wma.2
-        for <bpf@vger.kernel.org>; Sun, 11 Sep 2022 05:23:37 -0700 (PDT)
+        with ESMTP id S230282AbiIKMXk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 11 Sep 2022 08:23:40 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 706C5326F2
+        for <bpf@vger.kernel.org>; Sun, 11 Sep 2022 05:23:39 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id k6-20020a05600c1c8600b003a54ecc62f6so5235683wms.5
+        for <bpf@vger.kernel.org>; Sun, 11 Sep 2022 05:23:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=metanetworks.com; s=google;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date;
-        bh=fCy47mpYYKDHLo1OcJJS150dw1blb6Ea83EXe2B2GfE=;
-        b=JzBCj+L/guJFgHN1WgGxvb6u3i40foUvBXlq1OWewZhSUSv80rU6HqKcoIshYXPoyE
-         e0uC4VGRzuHnp6ZY6S9yzhsA3olTJcnlaaDP/mMjxvlmaqzi+T+b/iqJ7wVeDEq6taQ6
-         vLGVs8Bw+eKCgOApwc391ZAUrGgk+RgwiJN5I=
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
+        bh=M73OfkfFVV1eq7VuM0JYi91cTVYeC3EwNvXPK37OaiA=;
+        b=HusSO3z7tLLMfP79uaebtzzHKhsho9kQ/AEpP4TOtTfXSiG3iSr/WZj/GaQuHnllZk
+         4ONQKmSEiX1pavmevFS/TPsVYIbTseP8+wawb9ZuQmZJs4hZ4MHd1JL/hsDRxUVz1g3t
+         uBmOdgqEzX+TDt4EGueu6vWZ8Llitw1wVznhY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date;
-        bh=fCy47mpYYKDHLo1OcJJS150dw1blb6Ea83EXe2B2GfE=;
-        b=bei05qLrXa0QChgKOlNZO4qcWkPtjq53YBFgtoHWzbbOKmdItRv1ByR9PNZPzCzLhb
-         /gpv1L4lc68mJkb6gmIyY1u7dUEcoh5X8fBNbye0LIGzlPy0wA+yOyjog6Y2vlqAk9fP
-         K8YXWkKppFVfd3qGHzKzwJdOEh9EGubadhIARPyjosmUifQww661uqaksCXMHqygPQy8
-         M89SCHe63ztdA8lT5ULILVVJO84feNmhTQMA+TKyhsjyRJOXFMo7w9zS7iiFRAcoVqqj
-         QYl1BKC1fFlTKd8mTEaiMfg79StRpnvHpbFEqCr/M0iFBNRmbOeRWGsChVNMxiz5YmXq
-         i/Fw==
-X-Gm-Message-State: ACgBeo0zsduC3RNT3x0H7Y47GJgumfNnWBGT8yMIP/GWYuWQ6ZREohJU
-        NMOoM4wnek1Sw9BqePjrhWGg/VjFBwMUQKh2/MkKH33Y9G3Bb/7sxVkp/WwEzoMpQLhDSdzBHQK
-        taf4I4lrbXCBeEesnszzsakxluTeplRpYf6ZPTWdbuvwObjHLkumm0zHNW5VzmuUsn40wWW7Y/k
-        A=
-X-Google-Smtp-Source: AA6agR69cd013APA82KMxlpN3JiP7noDCEEy59kJsntHQXI7y/qZ10BpzPmf4xJCyWqrPjllBfR3hQ==
-X-Received: by 2002:a05:600c:190b:b0:3a5:f8a3:7abe with SMTP id j11-20020a05600c190b00b003a5f8a37abemr10950900wmq.81.1662899015865;
-        Sun, 11 Sep 2022 05:23:35 -0700 (PDT)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date;
+        bh=M73OfkfFVV1eq7VuM0JYi91cTVYeC3EwNvXPK37OaiA=;
+        b=Enox7Ncrhw7UpXljA2wocX60oPo9lQFiS6Rv9BWEsdGHgntU1LMnNFW7fRiNI3ZhPw
+         VuehmU4Oa/ak8GVQNkJHvzSeElSNTTIGpxS8KxCCx5vgkxOLHtSTrA1pox34jyfwyWX/
+         5/7m3MhlCA+PqE/a1L9tfrYnjTdO0JNbN35n5laPayGcSzejcSlM7U7ZVPrnQuK90KoA
+         4x9+9J18ci0E+ZhcgdawobfqGYekdbQnAUfODijMBiL958ceTBGo1Seex4gV1h7VfijW
+         VzqpZwwxyOdrIMQgGZUY052r8/Ojl4Ivoo4oMNp0jwtr5jtR9cZcQEkp7eKfjkPoy4Tg
+         23Gg==
+X-Gm-Message-State: ACgBeo0jia48JfVtVO2HBp4EA/VfOSIZtpsOWMzcJDbqXyXWmyAVxJjV
+        YemRWxhl5w/Je4nomyZVrJloly4CGp69+fUUDai+9x+kL3X69jGqE+JdLBpvFQOdcBflX3fjIoM
+        gglyh8fFDA1cdf1580XqE4GeHFDpHOz5Nabj1823YQ95UlH4fENx6VFVj0LbTXz9xRu1411ihY3
+        8=
+X-Google-Smtp-Source: AA6agR6JL3hX8EXQ1ydJFw9MadWO0H+1BMgVYVs0ay/gSoTB4wVn+6UoLTqTQj/qlEjfF/WNyIuW3w==
+X-Received: by 2002:a05:600c:5248:b0:3b3:24cb:fde with SMTP id fc8-20020a05600c524800b003b324cb0fdemr10626771wmb.80.1662899017734;
+        Sun, 11 Sep 2022 05:23:37 -0700 (PDT)
 Received: from blondie.home ([141.226.162.95])
-        by smtp.gmail.com with ESMTPSA id r15-20020a05600c35cf00b003a4f08495b7sm6538346wmq.34.2022.09.11.05.23.34
+        by smtp.gmail.com with ESMTPSA id r15-20020a05600c35cf00b003a4f08495b7sm6538346wmq.34.2022.09.11.05.23.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Sep 2022 05:23:35 -0700 (PDT)
+        Sun, 11 Sep 2022 05:23:36 -0700 (PDT)
 From:   Shmulik Ladkani <shmulik@metanetworks.com>
 X-Google-Original-From: Shmulik Ladkani <shmulik.ladkani@gmail.com>
 To:     bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
@@ -56,10 +57,12 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Paul Chaignon <paul@isovalent.com>,
         Shmulik Ladkani <shmulik.ladkani@gmail.com>,
         kernel test robot <lkp@intel.com>
-Subject: [PATCH v7 bpf-next 0/4] bpf: Support setting variable-length tunnel options
-Date:   Sun, 11 Sep 2022 15:23:24 +0300
-Message-Id: <20220911122328.306188-1-shmulik.ladkani@gmail.com>
+Subject: [PATCH v7 bpf-next 1/4] bpf: Export 'bpf_dynptr_get_data, bpf_dynptr_get_size' helpers
+Date:   Sun, 11 Sep 2022 15:23:25 +0300
+Message-Id: <20220911122328.306188-2-shmulik.ladkani@gmail.com>
 X-Mailer: git-send-email 2.37.3
+In-Reply-To: <20220911122328.306188-1-shmulik.ladkani@gmail.com>
+References: <20220911122328.306188-1-shmulik.ladkani@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -72,50 +75,66 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Introduce 'skb_set_tunnel_opt_dynptr' to allow setting tunnel options of
-dynamic length.
+This allows kernel code dealing with dynptrs obtain dynptr's available
+size and current (w. proper offset) data pointer.
 
-v2:
-- Place test_tunnel's local route in a custom table, to ensure the IP
-  isn't considered assigned to a device.
-v3:
-- Avoid 'inline' for the __bpf_skb_set_tunopt helper function
-v4:
-- change API to be based on bpf_dynptr,
-  suggested by John Fastabend <john.fastabend@gmail.com>
+Signed-off-by: Shmulik Ladkani <shmulik.ladkani@gmail.com>
+
+---
 v5:
 - fix bpf_dynptr_get_data's incorrect usage of bpf_dynptr_kern's size
   spotted by Joanne Koong <joannelkoong@gmail.com>
+
 v6:
 - Simplify bpf_dynptr_get_data's interface and make it inline
   suggested by John Fastabend <john.fastabend@gmail.com>
-- Simplify bpf_skb_set_tunnel_opt_dynptr's interface, removing the
-  superfluous 'len' parameter
-  suggested by Andrii Nakryiko <andrii.nakryiko@gmail.com>
-- Fix missing retcodes in progs/test_tunnel_kern.c
-  spotted by John Fastabend <john.fastabend@gmail.com>
+
 v7:
 - Fix undefined reference to `bpf_dynptr_get_size' when CONFIG_BPF_SYSCALL
   is unset,
 Reported-by: kernel test robot <lkp@intel.com>
+---
+ include/linux/bpf.h  | 13 +++++++++++++
+ kernel/bpf/helpers.c |  2 +-
+ 2 files changed, 14 insertions(+), 1 deletion(-)
 
-Shmulik Ladkani (4):
-  bpf: Export 'bpf_dynptr_get_data, bpf_dynptr_get_size' helpers
-  bpf: Support setting variable-length tunnel options
-  selftests/bpf: Simplify test_tunnel setup for allowing non-local
-    tunnel traffic
-  selftests/bpf: Add geneve with bpf_skb_set_tunnel_opt_dynptr test-case
-    to test_progs
-
- include/linux/bpf.h                           |  13 ++
- include/uapi/linux/bpf.h                      |  11 +
- kernel/bpf/helpers.c                          |   2 +-
- net/core/filter.c                             |  31 ++-
- tools/include/uapi/linux/bpf.h                |  11 +
- .../selftests/bpf/prog_tests/test_tunnel.c    | 131 +++++++++--
- .../selftests/bpf/progs/test_tunnel_kern.c    | 212 ++++++++++++------
- 7 files changed, 325 insertions(+), 86 deletions(-)
-
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 48ae05099f36..a2f16e3cb0fa 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -2631,6 +2631,19 @@ void bpf_dynptr_init(struct bpf_dynptr_kern *ptr, void *data,
+ 		     enum bpf_dynptr_type type, u32 offset, u32 size);
+ void bpf_dynptr_set_null(struct bpf_dynptr_kern *ptr);
+ int bpf_dynptr_check_size(u32 size);
++#ifdef CONFIG_BPF_SYSCALL
++u32 bpf_dynptr_get_size(struct bpf_dynptr_kern *ptr);
++#else
++static inline u32 bpf_dynptr_get_size(struct bpf_dynptr_kern *ptr)
++{
++	return 0;
++}
++#endif
++
++static inline void *bpf_dynptr_get_data(struct bpf_dynptr_kern *ptr)
++{
++	return ptr->data ? ptr->data + ptr->offset : NULL;
++}
+ 
+ #ifdef CONFIG_BPF_LSM
+ void bpf_cgroup_atype_get(u32 attach_btf_id, int cgroup_atype);
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index fc08035f14ed..824864ac82d1 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -1408,7 +1408,7 @@ static void bpf_dynptr_set_type(struct bpf_dynptr_kern *ptr, enum bpf_dynptr_typ
+ 	ptr->size |= type << DYNPTR_TYPE_SHIFT;
+ }
+ 
+-static u32 bpf_dynptr_get_size(struct bpf_dynptr_kern *ptr)
++u32 bpf_dynptr_get_size(struct bpf_dynptr_kern *ptr)
+ {
+ 	return ptr->size & DYNPTR_SIZE_MASK;
+ }
 -- 
 2.37.3
 
