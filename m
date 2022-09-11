@@ -2,61 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02A0C5B512A
-	for <lists+bpf@lfdr.de>; Sun, 11 Sep 2022 22:48:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F1D05B5136
+	for <lists+bpf@lfdr.de>; Sun, 11 Sep 2022 23:08:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229572AbiIKUs0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 11 Sep 2022 16:48:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37404 "EHLO
+        id S229631AbiIKVIq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 11 Sep 2022 17:08:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229492AbiIKUsZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 11 Sep 2022 16:48:25 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB46622BFC;
-        Sun, 11 Sep 2022 13:48:24 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id l16so3626489ilj.2;
-        Sun, 11 Sep 2022 13:48:24 -0700 (PDT)
+        with ESMTP id S229492AbiIKVIp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 11 Sep 2022 17:08:45 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5CDD25C5A;
+        Sun, 11 Sep 2022 14:08:43 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id d16so3627433ils.8;
+        Sun, 11 Sep 2022 14:08:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date;
-        bh=ZVQHM/37BbrOGPiFeLtiNZICTr76UsNj+DYuPTvsb8Q=;
-        b=RE50kfvR/4MBOCxWXWbyfeWyAOuv3CbuiaLU7BMsyghIreYzCGstvna7nzetMmdNVT
-         Gt0EnZWy+hhZWdPO/qkwuo1IP2xsnPHlAEpWuZmvZ6trJP6d/tnrBtQx7K1AW2CPgIq5
-         5Bj/9wvyD27kxFExBucubc/D8uCzJ9HCh3ndqqKBWAH1jjtfcz/4GVNoB+0GpyKNM2SR
-         MJYikIp66vTwOZ915PwxP5PZZIut6ucG7vZ7AdEbEC6IrdtU7vfewJQko5F91HrvvkDJ
-         jkPcVOAgFzg4tom5e4rFX85P+QjNKecE9ulprVilfILVcUKTiwnLI/m9F0CM0YEbnHkd
-         nrLQ==
+        bh=dfaSYpOE7cAlOB6lgtNwix6VkGo4PGRDDhlfC3pQXWo=;
+        b=AY+k6a14ANY3j3WHkVqabrzmv706Harc72VI8vN2U1iSDb2xmFmsWTeAMgf9EPOr/Y
+         qSxPhKKd/qVF2g85ofZfa7HVvdCL+Z0qpaXYHfs6dOppeL5xeYM5FYwlHlOBVCzQKy/s
+         IjtrvpJm4ytCo2B/OBUFBejsYwjrDQN8MVTBSYIsti6B2jHp0D9HotWkqsGd230MxWup
+         BGeqiKGV/WPIRdnpuD/Js7ckW0MPzZZ2V6QEqHWUyq94JprSVvd0oK3y7arQSddCoGQ0
+         UVETagiQTnshmmGjzQP4zc90DYOMYmDJKJP9uHrZoz2Pm6tNkKbFbmSD/ESK7Xir0frn
+         PJAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=ZVQHM/37BbrOGPiFeLtiNZICTr76UsNj+DYuPTvsb8Q=;
-        b=r/vMRqJ10U+tFhTIsWXAhu3tVUnqpxEcPOYuA5A3UpzJCTK/2dR6TT8L7E2L5D+v1X
-         x9WzNb3bNJhh/BLx4QSA7eV/EzeNU6AxuhuhpMJDF2ntc/tewcoqoauGBPbEIgGQyLu3
-         Iqf4i30Nhf4LjrFoMhWC6B7vxwWlB7DQumL6JM+EAs8YDu6WwXgJHiSipwHZxj9ZQu2K
-         SR4XORAnoQYegQjFQMK7yCSdUk41GcKb3DNTlGf/zkS3jueZ691xStVBDITCQTklUlSn
-         fABSorfMtRngwYilcjZsU958VSLeOywNFmZ5qZtHXQKb1rzcd0MzZL0XJAFtZWhOorkZ
-         PLPg==
-X-Gm-Message-State: ACgBeo0Wie0uJDl7gS3oBGx36YhYwfWJHjY23w83CH4Iq1V2lgEHXu1o
-        p3QuzMc1e/UJ6yBX57XWFZ4PpXNkUZo53AjN6bk=
-X-Google-Smtp-Source: AA6agR71aeFCzogjuFx7JGCncWwFSimJ0ZSs/t1MkvqU4gU1pAfSi8OsmEw+8k+rZI02d0TUsGGR7A74lK4B2C6WBv8=
+        bh=dfaSYpOE7cAlOB6lgtNwix6VkGo4PGRDDhlfC3pQXWo=;
+        b=yltU7UiczH0W4QAPyFEjJEcf9QnlQEG1ajcuera3Tt20w2psXyxQf60km1lNXdDncO
+         kVGBADnoY0mkm0u1YQsihGwzZaazPc80boukJ5WXFWuj+xnp0aqtG25iIRc64LI9ZG2C
+         wahZGanE4NJ5eP4eNZ2KMFQSjacTlpAR9s38W0tnGtKpF3PlgHsovLO5JH6NVNUW0CB9
+         QQlZxfw1aBkZaLu7pZ9tGy90A4MbLytAMbBKnxdWWykrs/KPcv7IkQJDY3Ll/1tl5aoE
+         dUkapr6Px6JAq9SUGagz868ZVeQhW7AVR5IWCUHwEeGeqtHzv2qA/VbKaquVJGIJyNoJ
+         sWPA==
+X-Gm-Message-State: ACgBeo1MJcI77LNAdC/TRdIOO+5uFe4XtVusK1tW2Ru7TQMQZtGBpjz5
+        FkBIK+AVv8DqRqjWVCNZu10b2O/YRY1h/gN9fP4=
+X-Google-Smtp-Source: AA6agR6i0U3QWYAIfs8bjdq0ijlQt0nrG1HljX2cZF6u26b0IV0RLj1n96MwMPS4EI/xncvz9L2K7LJ8Ws3Hx89kENI=
 X-Received: by 2002:a92:cbcf:0:b0:2f3:b515:92d with SMTP id
- s15-20020a92cbcf000000b002f3b515092dmr2734086ilq.91.1662929304245; Sun, 11
- Sep 2022 13:48:24 -0700 (PDT)
+ s15-20020a92cbcf000000b002f3b515092dmr2755976ilq.91.1662930522984; Sun, 11
+ Sep 2022 14:08:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <c4cb11c8ffe732b91c175a0fc80d43b2547ca17e.1662920329.git.dxu@dxuuu.xyz>
-In-Reply-To: <c4cb11c8ffe732b91c175a0fc80d43b2547ca17e.1662920329.git.dxu@dxuuu.xyz>
+References: <20220909120736.1027040-1-roberto.sassu@huaweicloud.com>
+ <20220909120736.1027040-8-roberto.sassu@huaweicloud.com> <CACYkzJ6xSk_DHO+3JoCYpGrXjFkk9v-LOSWW0=0KLwAj1Gc0SA@mail.gmail.com>
+In-Reply-To: <CACYkzJ6xSk_DHO+3JoCYpGrXjFkk9v-LOSWW0=0KLwAj1Gc0SA@mail.gmail.com>
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date:   Sun, 11 Sep 2022 22:47:46 +0200
-Message-ID: <CAP01T74zOa=3uYJ_3YebAxzZTYRwAhF62Giy9ovuKwk++FpU0g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Move nf_conn extern declarations to filter.h
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, pablo@netfilter.org, fw@strlen.de,
-        toke@kernel.org, martin.lau@linux.dev,
-        netfilter-devel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Date:   Sun, 11 Sep 2022 23:08:05 +0200
+Message-ID: <CAP01T77d-79-1nGUC=i4mgExY+iKs0j2iiB5DitT_cTj7oXYHQ@mail.gmail.com>
+Subject: Re: [PATCH v17 07/12] bpf: Add bpf_verify_pkcs7_signature() kfunc
+To:     KP Singh <kpsingh@kernel.org>
+Cc:     Roberto Sassu <roberto.sassu@huaweicloud.com>, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+        mykolal@fb.com, dhowells@redhat.com, jarkko@kernel.org,
+        rostedt@goodmis.org, mingo@redhat.com, paul@paul-moore.com,
+        jmorris@namei.org, serge@hallyn.com, shuah@kernel.org,
+        bpf@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        deso@posteo.net, Roberto Sassu <roberto.sassu@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -68,69 +75,124 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, 11 Sept 2022 at 20:20, Daniel Xu <dxu@dxuuu.xyz> wrote:
+On Sun, 11 Sept 2022 at 13:41, KP Singh <kpsingh@kernel.org> wrote:
 >
-> We're seeing the following new warnings on netdev/build_32bit and
-> netdev/build_allmodconfig_warn CI jobs:
+> On Fri, Sep 9, 2022 at 2:09 PM Roberto Sassu
+> <roberto.sassu@huaweicloud.com> wrote:
+> >
+> > From: Roberto Sassu <roberto.sassu@huawei.com>
+> >
+> > Add the bpf_verify_pkcs7_signature() kfunc, to give eBPF security modules
+> > the ability to check the validity of a signature against supplied data, by
+> > using user-provided or system-provided keys as trust anchor.
+> >
+> > The new kfunc makes it possible to enforce mandatory policies, as eBPF
+> > programs might be allowed to make security decisions only based on data
+> > sources the system administrator approves.
+> >
+> > The caller should provide the data to be verified and the signature as eBPF
+> > dynamic pointers (to minimize the number of parameters) and a bpf_key
+> > structure containing a reference to the keyring with keys trusted for
+> > signature verification, obtained from bpf_lookup_user_key() or
+> > bpf_lookup_system_key().
+> >
+> > For bpf_key structures obtained from the former lookup function,
+> > bpf_verify_pkcs7_signature() completes the permission check deferred by
+> > that function by calling key_validate(). key_task_permission() is already
+> > called by the PKCS#7 code.
+> >
+> > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> > Acked-by: KP Singh <kpsingh@kernel.org>
+> > ---
+> >  kernel/trace/bpf_trace.c | 45 ++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 45 insertions(+)
+> >
+> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> > index ab183dbaa8d1..9df53c40cffd 100644
+> > --- a/kernel/trace/bpf_trace.c
+> > +++ b/kernel/trace/bpf_trace.c
+> > @@ -1294,12 +1294,57 @@ void bpf_key_put(struct bpf_key *bkey)
+> >         kfree(bkey);
+> >  }
+> >
+> > +#ifdef CONFIG_SYSTEM_DATA_VERIFICATION
+> > +/**
+> > + * bpf_verify_pkcs7_signature - verify a PKCS#7 signature
+> > + * @data_ptr: data to verify
+> > + * @sig_ptr: signature of the data
+> > + * @trusted_keyring: keyring with keys trusted for signature verification
+> > + *
+> > + * Verify the PKCS#7 signature *sig_ptr* against the supplied *data_ptr*
+> > + * with keys in a keyring referenced by *trusted_keyring*.
+> > + *
+> > + * Return: 0 on success, a negative value on error.
+> > + */
+> > +int bpf_verify_pkcs7_signature(struct bpf_dynptr_kern *data_ptr,
+> > +                              struct bpf_dynptr_kern *sig_ptr,
+> > +                              struct bpf_key *trusted_keyring)
+> > +{
+> > +       int ret;
+> > +
+> > +       if (trusted_keyring->has_ref) {
+> > +               /*
+> > +                * Do the permission check deferred in bpf_lookup_user_key().
+> > +                * See bpf_lookup_user_key() for more details.
+> > +                *
+> > +                * A call to key_task_permission() here would be redundant, as
+> > +                * it is already done by keyring_search() called by
+> > +                * find_asymmetric_key().
+> > +                */
+> > +               ret = key_validate(trusted_keyring->key);
+> > +               if (ret < 0)
+> > +                       return ret;
+> > +       }
+> > +
+> > +       return verify_pkcs7_signature(data_ptr->data,
+> > +                                     bpf_dynptr_get_size(data_ptr),
+> > +                                     sig_ptr->data,
+> > +                                     bpf_dynptr_get_size(sig_ptr),
+> > +                                     trusted_keyring->key,
+> > +                                     VERIFYING_UNSPECIFIED_SIGNATURE, NULL,
+> > +                                     NULL);
+> > +}
 >
->     ../net/core/filter.c:8608:1: warning: symbol
->     'nf_conn_btf_access_lock' was not declared. Should it be static?
->     ../net/core/filter.c:8611:5: warning: symbol 'nfct_bsa' was not
->     declared. Should it be static?
+> This seems to work if the data that needs to be verified
+> and the signature is allocated onto the map.
 >
-> Fix by ensuring extern declaration is present while compiling filter.o.
+> For BPF program signing, the signature will be void * pointer (and length)
+> in a struct in the kernel
 >
-> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> ---
+> +++ b/include/uapi/linux/bpf.h
+> @@ -1383,6 +1383,8 @@ union bpf_attr {
+>                 __aligned_u64   fd_array;       /* array of FDs */
+>                 __aligned_u64   core_relos;
+>                 __u32           core_relo_rec_size; /* sizeof(struct
+> bpf_core_relo) */
+> +               __aligned_u64   signature;
+> +               __u32           signature_size;
+>         };
+>
+> Something like this in the bpf_prog_aux struct which is passed to
+> security_bpf_prog_alloc.
+>
+> Now creating a dynptr to use with this kfunc does not work:
+>
+>    bpf_dynptr_from_mem(aux->signature, aux->signature_size, 0, &sig_ptr);
+>
+> So one has to copy kernel data into a map and then create dynptrs.
+> Would you be able to update
+> the dynptr logic to handle this case too? (follow up is okay too).
+>
 
-Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+ISTM it needs the feature first before it can be added.
+To make it work like map_val, value_size(which is a constant) to pass
+to bpf_dynptr_from_mem,
+verifier will have to mark load of aux->signature as PTR_TO_MEM with the known
+constant size, and then mark_reg_known for scalar reg for aux->signature_size.
+Since we need to know that 0 <= r2 <= r1.mem_size.
+This would require some work on the btf_struct_access handling.
 
->  include/linux/filter.h                   | 6 ++++++
->  include/net/netfilter/nf_conntrack_bpf.h | 7 +------
->  2 files changed, 7 insertions(+), 6 deletions(-)
->
-> diff --git a/include/linux/filter.h b/include/linux/filter.h
-> index 527ae1d64e27..96de256b2c8d 100644
-> --- a/include/linux/filter.h
-> +++ b/include/linux/filter.h
-> @@ -567,6 +567,12 @@ struct sk_filter {
->
->  DECLARE_STATIC_KEY_FALSE(bpf_stats_enabled_key);
->
-> +extern struct mutex nf_conn_btf_access_lock;
-> +extern int (*nfct_bsa)(struct bpf_verifier_log *log, const struct btf *btf,
-> +                      const struct btf_type *t, int off, int size,
-> +                      enum bpf_access_type atype, u32 *next_btf_id,
-> +                      enum bpf_type_flag *flag);
-> +
->  typedef unsigned int (*bpf_dispatcher_fn)(const void *ctx,
->                                           const struct bpf_insn *insnsi,
->                                           unsigned int (*bpf_func)(const void *,
-> diff --git a/include/net/netfilter/nf_conntrack_bpf.h b/include/net/netfilter/nf_conntrack_bpf.h
-> index a61a93d1c6dc..cf2c0423d174 100644
-> --- a/include/net/netfilter/nf_conntrack_bpf.h
-> +++ b/include/net/netfilter/nf_conntrack_bpf.h
-> @@ -5,6 +5,7 @@
->
->  #include <linux/bpf.h>
->  #include <linux/btf.h>
-> +#include <linux/filter.h>
->  #include <linux/kconfig.h>
->  #include <linux/mutex.h>
->
-> @@ -14,12 +15,6 @@
->  extern int register_nf_conntrack_bpf(void);
->  extern void cleanup_nf_conntrack_bpf(void);
->
-> -extern struct mutex nf_conn_btf_access_lock;
-> -extern int (*nfct_bsa)(struct bpf_verifier_log *log, const struct btf *btf,
-> -                      const struct btf_type *t, int off, int size,
-> -                      enum bpf_access_type atype, u32 *next_btf_id,
-> -                      enum bpf_type_flag *flag);
-> -
->  #else
->
->  static inline int register_nf_conntrack_bpf(void)
-> --
-> 2.37.1
->
+It cannot be made to work in the general case of void * and len.
+There might also be other better options (like kernel itself preparing
+read only bpf_dynptr struct in bpf_prog_aux for the signature) so you
+can pass its address directly to the kfunc.
