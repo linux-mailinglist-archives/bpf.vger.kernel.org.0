@@ -2,129 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5AE45B4ED8
-	for <lists+bpf@lfdr.de>; Sun, 11 Sep 2022 14:44:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9A4E5B4EF0
+	for <lists+bpf@lfdr.de>; Sun, 11 Sep 2022 15:06:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230207AbiIKMoY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 11 Sep 2022 08:44:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49082 "EHLO
+        id S230011AbiIKNGH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 11 Sep 2022 09:06:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230182AbiIKMoX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 11 Sep 2022 08:44:23 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A56533435
-        for <bpf@vger.kernel.org>; Sun, 11 Sep 2022 05:44:21 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id x10so7543925ljq.4
-        for <bpf@vger.kernel.org>; Sun, 11 Sep 2022 05:44:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:sender:mime-version:from:to:cc
-         :subject:date;
-        bh=VXlBS00/GuegNihbP9LSEb4G+N9nTOzbXeMOhsINvjI=;
-        b=XpoArl7ff1h6D0gSVSU/rP94OJvGVV117RL7aC0lFzwT/82bFY0Rp3sLV2aPWEyoWV
-         +kBMt//uXEFJKIsQAVug9jbFK6wbHUZfYBVG2XmxkrJvUAuNLilLQfDM9ObO0vJDn3HP
-         uFh3DiEwN55E9ybN4w+SDX9CLwOe7e40EMpDWA7aVffh5XjRhFAfOuV+7HbyoKw6znVt
-         rKLJDoSsdTROphrV4PM+7ZHIXHSFvCgdnBJOVRXSllAsh8JM+x3h7D0Ou2AOcDjGPi/D
-         vHpTd80+Zwc++L7Q+0oUv7qBJGuysMWf2K/hXvPfawx2n/gcdvo58omvf5AOyhbjZv+A
-         dVKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:sender:mime-version
-         :x-gm-message-state:from:to:cc:subject:date;
-        bh=VXlBS00/GuegNihbP9LSEb4G+N9nTOzbXeMOhsINvjI=;
-        b=gKuP/iSfUovAkJIgBEZmyAPh7DdAJweQ4m6MrmioHMKUXUSvWXHSPrJIF2xa6TNw77
-         YOmJiUpHbnoo/3Qq22NFk0Lud5EveZ8l+sqL+FtKTMzV9atheudNGNeHj5Xv0v/U4qqY
-         7MVbgAEBf9QtERSDMhsE3y8Rd4NHucQqqmbNW3nr7aueWECjf+7uWi9UrQdV8qhngYcc
-         OMxkkwjD+5e0z43H+XoD5C0/JcZ7hH49N9EC9yi0FWXPsi7bLtP4iLH+81SzgEViNT04
-         sN56sNCM1ZJsgSOBl4wR3wtHxmKd4UNyCPDA8kazbMZRrjkYBS3lZn8q0eEgRXfbkQGd
-         SNKw==
-X-Gm-Message-State: ACgBeo1CrdgNEO0nrjmN5Izeg+syFuc0e2A9ZEe0CS+t1y3LuCW8lCuT
-        dpKb9yOaE+PKsJbFZdvL5vGbdmTUYUExY0tl5Q==
-X-Google-Smtp-Source: AA6agR77d5mBO13s3Dzm+PerpQco5W1DQHqkbuy03uqkYDXSOzpkZ7ShT0NoyIN3jSCSmY4n3fHtzf4FUq4tY7Jany4=
-X-Received: by 2002:a2e:b8cd:0:b0:261:e189:710 with SMTP id
- s13-20020a2eb8cd000000b00261e1890710mr6244703ljp.331.1662900258858; Sun, 11
- Sep 2022 05:44:18 -0700 (PDT)
+        with ESMTP id S229895AbiIKNGH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 11 Sep 2022 09:06:07 -0400
+Received: from out162-62-57-137.mail.qq.com (out162-62-57-137.mail.qq.com [162.62.57.137])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FF11252B8;
+        Sun, 11 Sep 2022 06:06:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+        s=s201512; t=1662901557;
+        bh=isS2ysJweAKK83d4hIdupBj3xtoj8eHTEYjA8Ve6cBk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=VK6TEMU1CyJXCyPg+CUSLWtgsPSRnse7BCQCKeykuoivqnkQ4n9Ez6308+E8ZKmWp
+         r0HgyZhaa3WZusvGyiQYQatGy6inkvzrEpsU4EYJV02Fh/SWlaGaJ83TjVkxtUW3hv
+         6tWcNgfVloD/5WGDtggWfPKL4WSGX0Zotn+QtbiE=
+Received: from localhost.localdomain ([111.199.187.40])
+        by newxmesmtplogicsvrsza7.qq.com (NewEsmtp) with SMTP
+        id 11F112D1; Sun, 11 Sep 2022 21:04:31 +0800
+X-QQ-mid: xmsmtpt1662901471tmdm7m3bc
+Message-ID: <tencent_1CC476835C219FACD84B6715F0D785517E07@qq.com>
+X-QQ-XMAILINFO: Mwn5KFNmdVcm0DwdYrEhaFSfzpCJDZWVLZRdlnv09PRRkcONdL/+d7mQczy8iu
+         r8JxbLGsvOC6Eew/ELcKs4xdnS0ROy0HZ+X5J6N50inmCyXyC02dQF4wVZbb1oVeWvdK5M25tvzA
+         /MtUva7WV6NX0Vwz/ig0PZB3OtubgQJfwbrbaPtNTZXKaGwZf1ExuYZACeuTxVRATvOOUhjCO44B
+         WhtHHIfhk3e56sgTWxIdpkray1acyZf4pmgBcu6fGmt6YQ4vXvdWPs3FNJ/gR/W6m+LPyB6y8jb2
+         uBHQdwSYPYZVGFCheaIz26HIUNB+B1C/H+Wt8B9EwcIAV5E0XxGrGeuB4zDtQEnKbEjhXedZ6Iy6
+         4FDZdYKhbvPd+Wj4znwCpH4lCZipK6hJ8WnD+7nKqdMuSsmRUPjZ39td8xji/Lul/rpZ3ubqpJ/w
+         eUy+GHTrSITbES+mOQmA1yO11DdhKUK0M3Ky49Koe/aDEMWsskFPYcu1tviqGp1a6DQmMmIAS5Lx
+         H1BM29RCIR9CQPLKP/IJ/iAeBfeimJyj6L4haybOn4w+DR7EuaFMnzbXTizyrl1jTQUTkskslqfR
+         XjW63uPeImHESajK7QPPv4cxRwj9qHB764pMBOfTcVhamPx+vQpfijeYtNT/UJrDX9+n7TwxqTMs
+         6WPEXovEU/jzh/0rJp421xaKHPMMevkb6Hobx2BjI/Ld5F7wbARYaVaaYcr6JolfCD/rX8PVK6wp
+         nEbe4YHDkHtycFobq9jkscvGo+N97gPxnI42AQyR4xpgp2LrrwGjmm4QPma+mxo41Vpea9yKCaHL
+         lma9lHxtj5vGfUEAC58uuBW29sJZHH7wGOZHhg2NgmDoIu1YXbjunWZEUjyE9PmIEJulXKv9en3u
+         jXkm2OOxHcCA1CT7wtDiYSGSXSUkhg7qHET8WLwpcHbSt3TzQvnV5/1w5PXIzcRPHWJupEV44PVr
+         TA1LEjsEfW+KH8UBYwdfHcrBy8lp9q
+From:   Rong Tao <rtoax@foxmail.com>
+To:     sdf@google.com
+Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com,
+        jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        martin.lau@linux.dev, rongtao@cestc.cn, rtoax@foxmail.com,
+        song@kernel.org, yhs@fb.com
+Subject: [PATCH bpf-next] samples/bpf: Replace blk_account_io_done() with __blk_account_io_done()
+Date:   Sun, 11 Sep 2022 21:03:30 +0800
+X-OQ-MSGID: <20220911130330.9595-1-rtoax@foxmail.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <YxtuR6hWUkGfiWya@google.com>
+References: <YxtuR6hWUkGfiWya@google.com>
 MIME-Version: 1.0
-Sender: lyrilhill@gmail.com
-Received: by 2002:a05:651c:1508:0:0:0:0 with HTTP; Sun, 11 Sep 2022 05:44:17
- -0700 (PDT)
-From:   Mrs Aisha Gaddafi <aishagaddafiaisha20@gmail.com>
-Date:   Sun, 11 Sep 2022 05:44:17 -0700
-X-Google-Sender-Auth: 58evqtI_f4UPoeLUgBMxyxSIhKY
-Message-ID: <CAGU6a+3FDPC_L6Umfy2j_MT1z=8G+pfyJwU_5MhfbdawcKrMSQ@mail.gmail.com>
-Subject: GOOD DAY MY DEAR.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=7.4 required=5.0 tests=BAYES_99,BAYES_999,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORM_FRAUD_5,
-        FREEMAIL_FROM,LOTS_OF_MONEY,MILLION_HUNDRED,MILLION_USD,
-        MONEY_FORM_SHORT,MONEY_FRAUD_5,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,SUBJ_ALL_CAPS,T_FILL_THIS_FORM_SHORT,T_HK_NAME_FM_MR_MRS,
-        T_SCC_BODY_TEXT_LINE,UNDISC_MONEY,URG_BIZ autolearn=no
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,RDNS_DYNAMIC,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2a00:1450:4864:20:0:0:0:22e listed in]
-        [list.dnswl.org]
-        *  3.5 BAYES_99 BODY: Bayes spam probability is 99 to 100%
-        *      [score: 1.0000]
-        *  0.2 BAYES_999 BODY: Bayes spam probability is 99.9 to 100%
-        *      [score: 1.0000]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [aishagaddafiaisha20[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.5 SUBJ_ALL_CAPS Subject is all capitals
-        *  0.0 MILLION_USD BODY: Talks about millions of dollars
-        *  0.0 MILLION_HUNDRED BODY: Million "One to Nine" Hundred
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        *  0.0 LOTS_OF_MONEY Huge... sums of money
-        *  0.0 T_HK_NAME_FM_MR_MRS No description available.
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  0.6 URG_BIZ Contains urgent matter
-        *  0.0 T_FILL_THIS_FORM_SHORT Fill in a short form with personal
-        *      information
-        *  2.0 MONEY_FORM_SHORT Lots of money if you fill out a short form
-        *  0.0 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-        *  0.0 MONEY_FRAUD_5 Lots of money and many fraud phrases
-        *  0.8 FORM_FRAUD_5 Fill a form and many fraud phrases
-X-Spam-Level: *******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-I'm writing this letter with tears  from my heart. Please let me use
-this medium to create a mutual conversation with you seeking for your
-acceptance towards investing in your country under your management as
-my  business partner, My name is Aisha  Gaddafi and presently living
-in Oman, i am a Widow and single Mother with three Children, the only
-biological Daughter of late Libyan President (Late Colonel Muammar
-Gaddafi) and presently i am under political asylum protection by the
-Omani Government.
+From: Rong Tao <rongtao@cestc.cn>
 
-I have funds worth " Seven Million Five Hundred Thousand United State
-Dollars" [$7.500.000.00 US Dollars] which I want to entrust to you for
-investment projects in your country. If you are willing to handle this
-project on my behalf, kindly reply urgent to enable me provide you
-more details to start the transfer process, I will appreciate your
-urgent response through my private email address below:
+Since commit be6bfe36db17 ("block: inline hot paths of blk_account_io_*()")
+blk_account_io_*() become inline functions.
 
-aishagaddafiaisha20@gmail.com
+Signed-off-by: Rong Tao <rtoax@foxmail.com>
+---
+ samples/bpf/task_fd_query_kern.c | 2 +-
+ samples/bpf/task_fd_query_user.c | 2 +-
+ samples/bpf/tracex3_kern.c       | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-You can know more through the BBC news links below:
+diff --git a/samples/bpf/task_fd_query_kern.c b/samples/bpf/task_fd_query_kern.c
+index c821294e1774..186ac0a79c0a 100644
+--- a/samples/bpf/task_fd_query_kern.c
++++ b/samples/bpf/task_fd_query_kern.c
+@@ -10,7 +10,7 @@ int bpf_prog1(struct pt_regs *ctx)
+ 	return 0;
+ }
+ 
+-SEC("kretprobe/blk_account_io_done")
++SEC("kretprobe/__blk_account_io_done")
+ int bpf_prog2(struct pt_regs *ctx)
+ {
+ 	return 0;
+diff --git a/samples/bpf/task_fd_query_user.c b/samples/bpf/task_fd_query_user.c
+index 424718c0872c..a33d74bd3a4b 100644
+--- a/samples/bpf/task_fd_query_user.c
++++ b/samples/bpf/task_fd_query_user.c
+@@ -348,7 +348,7 @@ int main(int argc, char **argv)
+ 	/* test two functions in the corresponding *_kern.c file */
+ 	CHECK_AND_RET(test_debug_fs_kprobe(0, "blk_mq_start_request",
+ 					   BPF_FD_TYPE_KPROBE));
+-	CHECK_AND_RET(test_debug_fs_kprobe(1, "blk_account_io_done",
++	CHECK_AND_RET(test_debug_fs_kprobe(1, "__blk_account_io_done",
+ 					   BPF_FD_TYPE_KRETPROBE));
+ 
+ 	/* test nondebug fs kprobe */
+diff --git a/samples/bpf/tracex3_kern.c b/samples/bpf/tracex3_kern.c
+index 710a4410b2fb..bde6591cb20c 100644
+--- a/samples/bpf/tracex3_kern.c
++++ b/samples/bpf/tracex3_kern.c
+@@ -49,7 +49,7 @@ struct {
+ 	__uint(max_entries, SLOTS);
+ } lat_map SEC(".maps");
+ 
+-SEC("kprobe/blk_account_io_done")
++SEC("kprobe/__blk_account_io_done")
+ int bpf_prog2(struct pt_regs *ctx)
+ {
+ 	long rq = PT_REGS_PARM1(ctx);
+-- 
+2.31.1
 
-http://www.bbc.com/news/world-africa-19966059
-
-
-Thanks
-Yours Truly Aisha
-aishagaddafiaisha20@gmail.com
