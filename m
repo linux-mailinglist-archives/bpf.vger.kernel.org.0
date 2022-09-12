@@ -2,175 +2,258 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 054215B6301
-	for <lists+bpf@lfdr.de>; Mon, 12 Sep 2022 23:48:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F08E5B63A9
+	for <lists+bpf@lfdr.de>; Tue, 13 Sep 2022 00:27:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229542AbiILVsH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Sep 2022 17:48:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58008 "EHLO
+        id S230249AbiILW1l (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Sep 2022 18:27:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229890AbiILVsD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Sep 2022 17:48:03 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BD461836E;
-        Mon, 12 Sep 2022 14:48:01 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id s18so3894801plr.4;
-        Mon, 12 Sep 2022 14:48:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=ju/BoI0cUOrilm7U0D3lKO4lFOs3ZMMqejXmhw4/Fak=;
-        b=ZpxMuXoij2XD+K0KoIjK2iZBsrCAMF4I2+j5wjiwVv5Es2oov1S88imhutEr5pf/dM
-         Y8XEyC8WtFUW/pWbbjfihJ5o32MV7VMOOFcVSZuLXSTR0Q+EsbmU0StS6ICVQF8QK3ag
-         vCuMmND3BYiWjndK3l/yzFvfn3UsteY699Wa6w2qQ9GoIv77vjTa/d/D/++twbuRIFSQ
-         X5ZGfM5wBlOLo9u6JLWWngKUNAuh7PRSZPfTUo6jLfg8X4i7rBMyzWDx/9XQHIFlUY2S
-         WmpuV2ePb4rra2f/psX2PqPmdBaoMvTc0E8hczDQlk/cldtSP7s0e89NAuTBvXmykz76
-         7SzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=ju/BoI0cUOrilm7U0D3lKO4lFOs3ZMMqejXmhw4/Fak=;
-        b=PmhL09GjPagp3XOs8bm5QbROkFlQHEYq57EWcUGkwbca5woA3iZVPt91nx8YHSFvxF
-         XJ/fsxGyLBaEQFhQ0L8/RYwA5WpOUtfsLFkegkDGeEfhcm4z/KvJeydNpgxZBdpQmLy3
-         9WXd+G+ZRdyl4V1ACxGK6MbWVZu9UOw4ga6iVC+pBvSqE6YRwFW09id8fZoYbBDFLY0D
-         hc1QW8CeA4nbJKF2le73vfNiIHfCzvlQ1XciMXa7Tqzi64+s093VxpTjL3LVNNgfcNdr
-         4h1ztsb0Rc38AdYmAUu9ujoq3fMfE9EiKyXViOsqTa9gi7U/h1lOiS/QqjN8e4v+7qVm
-         hvZQ==
-X-Gm-Message-State: ACgBeo1E2kgPBPjLwUygH6/6z7tP6SLKA1MqnLydiBJTYWTuWEghX1Rq
-        y3N0cTQXS6nZrSVfi7keN3AzzqGdRZTFRaOBLxg=
-X-Google-Smtp-Source: AA6agR4gSCEGGERtYbfMrbUdD055rL9KFSXYCiEsKiEnI3ZsV82VHr/529eXK7hJ5BxmMY8NBYbSxomKComMuUX9EKc=
-X-Received: by 2002:a17:902:e5c1:b0:176:c2b3:6a4c with SMTP id
- u1-20020a170902e5c100b00176c2b36a4cmr28810957plf.87.1663019280658; Mon, 12
- Sep 2022 14:48:00 -0700 (PDT)
+        with ESMTP id S229945AbiILW1j (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Sep 2022 18:27:39 -0400
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C53921E20;
+        Mon, 12 Sep 2022 15:27:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1663021658; x=1694557658;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=EBpU68xsLpcCQoQ5Ydg1RH2aVA+reCYJEVoDTaANPPA=;
+  b=nl9VE//yxBqesvPVzsL245xruckL6l9slG3PmZlQWwB/tjDLNvxwW5Gj
+   Z4+5bwPSUXBK5atrkGz26fKS8FKcorREsRJqPpYW3AQKc8es+xOylulY9
+   xzwyhNCCnjN/G4MrB2ALl5lAuvHiawZXWbthq3sq44+FZpcNS7jmQ5c4z
+   wo1HxmUIp9lZTif6wtBhaqG6epHHpRsQ5f5ZQxpJ2ZEFa09/TRVXk/g2b
+   Cb+AinTRupqjEGY8vsDwFO51VjxPKOSi+a80f7rrnQSiH2MzmMz0DmW4E
+   b8U5hF+iL0KaS4yaTY5S7OXJeFBqFv6xSSuY9S3ykHK5UTuDBIiJmV6EE
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10468"; a="384281027"
+X-IronPort-AV: E=Sophos;i="5.93,310,1654585200"; 
+   d="scan'208";a="384281027"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Sep 2022 15:27:38 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,310,1654585200"; 
+   d="scan'208";a="646659772"
+Received: from lkp-server02.sh.intel.com (HELO 4011df4f4fd3) ([10.239.97.151])
+  by orsmga008.jf.intel.com with ESMTP; 12 Sep 2022 15:27:33 -0700
+Received: from kbuild by 4011df4f4fd3 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1oXrts-0002w5-1D;
+        Mon, 12 Sep 2022 22:27:32 +0000
+Date:   Tue, 13 Sep 2022 06:26:56 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-scsi@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-bluetooth@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        bpf@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        alsa-devel@alsa-project.org,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: [linux-next:master] BUILD REGRESSION
+ 044b771be9c5de9d817dfafb829d2f049c71c3b4
+Message-ID: <631fb230.qcoZqD19biA2J50w%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <000000000000f537cc05ddef88db@google.com> <0000000000007d793405e87350df@google.com>
-In-Reply-To: <0000000000007d793405e87350df@google.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Mon, 12 Sep 2022 14:47:48 -0700
-Message-ID: <CAHbLzkp6BEaM8cFwLsCiYmGaR-LxbG8z-f_bz2ijL+K27zR4GQ@mail.gmail.com>
-Subject: Re: [syzbot] BUG: Bad page map (5)
-To:     syzbot <syzbot+915f3e317adb0e85835f@syzkaller.appspotmail.com>,
-        "Zach O'Keefe" <zokeefe@google.com>
-Cc:     akpm@linux-foundation.org, andrii@kernel.org, ast@kernel.org,
-        bigeasy@linutronix.de, bpf@vger.kernel.org, brauner@kernel.org,
-        daniel@iogearbox.net, david@redhat.com, ebiederm@xmission.com,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, luto@kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Sep 11, 2022 at 9:27 PM syzbot
-<syzbot+915f3e317adb0e85835f@syzkaller.appspotmail.com> wrote:
->
-> syzbot has found a reproducer for the following issue on:
->
-> HEAD commit:    e47eb90a0a9a Add linux-next specific files for 20220901
-> git tree:       linux-next
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=17330430880000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=7933882276523081
-> dashboard link: https://syzkaller.appspot.com/bug?extid=915f3e317adb0e85835f
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13397b77080000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1793564f080000
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+915f3e317adb0e85835f@syzkaller.appspotmail.com
->
-> BUG: Bad page map in process syz-executor198  pte:8000000071c00227 pmd:74b30067
-> addr:0000000020563000 vm_flags:08100077 anon_vma:ffff8880547d2200 mapping:0000000000000000 index:20563
-> file:(null) fault:0x0 mmap:0x0 read_folio:0x0
-> CPU: 1 PID: 3614 Comm: syz-executor198 Not tainted 6.0.0-rc3-next-20220901-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/26/2022
-> Call Trace:
->  <TASK>
->  __dump_stack lib/dump_stack.c:88 [inline]
->  dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
->  print_bad_pte.cold+0x2a7/0x2d0 mm/memory.c:565
->  vm_normal_page+0x10c/0x2a0 mm/memory.c:636
->  hpage_collapse_scan_pmd+0x729/0x1da0 mm/khugepaged.c:1199
->  madvise_collapse+0x481/0x910 mm/khugepaged.c:2433
->  madvise_vma_behavior+0xd0a/0x1cc0 mm/madvise.c:1062
->  madvise_walk_vmas+0x1c7/0x2b0 mm/madvise.c:1236
->  do_madvise.part.0+0x24a/0x340 mm/madvise.c:1415
->  do_madvise mm/madvise.c:1428 [inline]
->  __do_sys_madvise mm/madvise.c:1428 [inline]
->  __se_sys_madvise mm/madvise.c:1426 [inline]
->  __x64_sys_madvise+0x113/0x150 mm/madvise.c:1426
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> RIP: 0033:0x7f770ba87929
-> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 11 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007f770ba18308 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
-> RAX: ffffffffffffffda RBX: 00007f770bb0f3f8 RCX: 00007f770ba87929
-> RDX: 0000000000000019 RSI: 0000000000600003 RDI: 0000000020000000
-> RBP: 00007f770bb0f3f0 R08: 00007f770ba18700 R09: 0000000000000000
-> R10: 00007f770ba18700 R11: 0000000000000246 R12: 00007f770bb0f3fc
-> R13: 00007ffc2d8b62ef R14: 00007f770ba18400 R15: 0000000000022000
->  </TASK>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+branch HEAD: 044b771be9c5de9d817dfafb829d2f049c71c3b4  Add linux-next specific files for 20220912
 
-I think I figured out the problem. The reproducer actually triggered
-the below race in madvise_collapse():
+Error/Warning reports:
 
-             CPU A
-        CPU B
-mmap 0x20000000 - 0x21000000 as anon
+https://lore.kernel.org/linux-media/202209020437.eXEOdmfe-lkp@intel.com
+https://lore.kernel.org/linux-mm/202209042337.FQi69rLV-lkp@intel.com
+https://lore.kernel.org/linux-mm/202209060229.dVuyxjBv-lkp@intel.com
+https://lore.kernel.org/linux-mm/202209080718.y5QmlNKH-lkp@intel.com
 
-       madvise_collapse is called on this area
+Error/Warning: (recently discovered and may have been fixed)
 
-           Retrieve start and end address from the vma (NEVER updated
-later!)
+ERROR: modpost: "ioread64" [drivers/pci/switch/switchtec.ko] undefined!
+drivers/gpu/drm/amd/amdgpu/imu_v11_0_3.c:139:6: warning: no previous prototype for 'imu_v11_0_3_program_rlc_ram' [-Wmissing-prototypes]
+drivers/gpu/drm/drm_atomic_helper.c:802: warning: expecting prototype for drm_atomic_helper_check_wb_connector_state(). Prototype was for drm_atomic_helper_check_wb_encoder_state() instead
+drivers/pinctrl/pinctrl-amd.c:288 amd_gpio_dbg_show() warn: format string contains non-ascii character '\x9a'
+drivers/pinctrl/pinctrl-amd.c:288 amd_gpio_dbg_show() warn: format string contains non-ascii character '\xa1'
+drivers/pinctrl/pinctrl-amd.c:370 amd_gpio_dbg_show() warn: format string contains non-ascii character '\x95'
+drivers/scsi/qla2xxx/qla_os.c:2854:23: warning: assignment to 'struct trace_array *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
+drivers/scsi/qla2xxx/qla_os.c:2854:25: error: implicit declaration of function 'trace_array_get_by_name'; did you mean 'trace_array_set_clr_event'? [-Werror=implicit-function-declaration]
+drivers/scsi/qla2xxx/qla_os.c:2869:9: error: implicit declaration of function 'trace_array_put' [-Werror=implicit-function-declaration]
+kernel/bpf/memalloc.c:499 bpf_mem_alloc_destroy() error: potentially dereferencing uninitialized 'c'.
+sound/soc/codecs/tas2562.c:442:13: warning: variable 'ret' set but not used [-Wunused-but-set-variable]
 
-           Collapsed the first 2M area and dropped mmap_lock
-Acquire mmap_lock
-mmap io_uring file at 0x20563000
-Release mmap_lock
+Error/Warning ids grouped by kconfigs:
 
-            Reacquire mmap_lock
+gcc_recent_errors
+|-- alpha-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-imu_v11_0_3.c:warning:no-previous-prototype-for-imu_v11_0_3_program_rlc_ram
+|   |-- drivers-gpu-drm-drm_atomic_helper.c:warning:expecting-prototype-for-drm_atomic_helper_check_wb_connector_state().-Prototype-was-for-drm_atomic_helper_check_wb_encoder_state()-instead
+|   |-- drivers-scsi-qla2xxx-qla_os.c:error:implicit-declaration-of-function-trace_array_get_by_name
+|   |-- drivers-scsi-qla2xxx-qla_os.c:error:implicit-declaration-of-function-trace_array_put
+|   |-- drivers-scsi-qla2xxx-qla_os.c:warning:assignment-to-struct-trace_array-from-int-makes-pointer-from-integer-without-a-cast
+|   `-- sound-soc-codecs-tas2562.c:warning:variable-ret-set-but-not-used
+|-- alpha-randconfig-r005-20220911
+|   |-- drivers-gpu-drm-amd-amdgpu-imu_v11_0_3.c:warning:no-previous-prototype-for-imu_v11_0_3_program_rlc_ram
+|   `-- drivers-gpu-drm-drm_atomic_helper.c:warning:expecting-prototype-for-drm_atomic_helper_check_wb_connector_state().-Prototype-was-for-drm_atomic_helper_check_wb_encoder_state()-instead
+|-- alpha-randconfig-r033-20220911
+|   |-- drivers-gpu-drm-amd-amdgpu-imu_v11_0_3.c:warning:no-previous-prototype-for-imu_v11_0_3_program_rlc_ram
+|   `-- drivers-gpu-drm-drm_atomic_helper.c:warning:expecting-prototype-for-drm_atomic_helper_check_wb_connector_state().-Prototype-was-for-drm_atomic_helper_check_wb_encoder_state()-instead
+|-- alpha-randconfig-r035-20220911
+|   |-- drivers-gpu-drm-drm_atomic_helper.c:warning:expecting-prototype-for-drm_atomic_helper_check_wb_connector_state().-Prototype-was-for-drm_atomic_helper_check_wb_encoder_state()-instead
+|   `-- sound-soc-codecs-tas2562.c:warning:variable-ret-set-but-not-used
+|-- arc-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-imu_v11_0_3.c:warning:no-previous-prototype-for-imu_v11_0_3_program_rlc_ram
+|   |-- drivers-gpu-drm-drm_atomic_helper.c:warning:expecting-prototype-for-drm_atomic_helper_check_wb_connector_state().-Prototype-was-for-drm_atomic_helper_check_wb_encoder_state()-instead
+|   `-- sound-soc-codecs-tas2562.c:warning:variable-ret-set-but-not-used
+|-- arc-axs101_defconfig
+|   `-- drivers-gpu-drm-drm_atomic_helper.c:warning:expecting-prototype-for-drm_atomic_helper_check_wb_connector_state().-Prototype-was-for-drm_atomic_helper_check_wb_encoder_state()-instead
+|-- arc-randconfig-r016-20220912
+|   |-- drivers-gpu-drm-amd-amdgpu-imu_v11_0_3.c:warning:no-previous-prototype-for-imu_v11_0_3_program_rlc_ram
+|   `-- drivers-gpu-drm-drm_atomic_helper.c:warning:expecting-prototype-for-drm_atomic_helper_check_wb_connector_state().-Prototype-was-for-drm_atomic_helper_check_wb_encoder_state()-instead
+|-- arc-randconfig-r032-20220912
+|   `-- drivers-gpu-drm-drm_atomic_helper.c:warning:expecting-prototype-for-drm_atomic_helper_check_wb_connector_state().-Prototype-was-for-drm_atomic_helper_check_wb_encoder_state()-instead
+|-- arc-randconfig-r043-20220911
+|   `-- drivers-gpu-drm-drm_atomic_helper.c:warning:expecting-prototype-for-drm_atomic_helper_check_wb_connector_state().-Prototype-was-for-drm_atomic_helper_check_wb_encoder_state()-instead
+|-- arc-randconfig-r043-20220912
+|   `-- drivers-gpu-drm-drm_atomic_helper.c:warning:expecting-prototype-for-drm_atomic_helper_check_wb_connector_state().-Prototype-was-for-drm_atomic_helper_check_wb_encoder_state()-instead
+|-- arm-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-imu_v11_0_3.c:warning:no-previous-prototype-for-imu_v11_0_3_program_rlc_ram
+|   |-- drivers-gpu-drm-drm_atomic_helper.c:warning:expecting-prototype-for-drm_atomic_helper_check_wb_connector_state().-Prototype-was-for-drm_atomic_helper_check_wb_encoder_state()-instead
+|   `-- sound-soc-codecs-tas2562.c:warning:variable-ret-set-but-not-used
+|-- arm-defconfig
+|   `-- drivers-gpu-drm-drm_atomic_helper.c:warning:expecting-prototype-for-drm_atomic_helper_check_wb_connector_state().-Prototype-was-for-drm_atomic_helper_check_wb_encoder_state()-instead
+|-- arm-randconfig-c034-20220911
+|   `-- net-bluetooth-mgmt.c:WARNING:kzalloc-should-be-used-for-rp-instead-of-kmalloc-memset
+|-- arm-randconfig-r032-20220911
+|   |-- drivers-gpu-drm-drm_atomic_helper.c:warning:expecting-prototype-for-drm_atomic_helper_check_wb_connector_state().-Prototype-was-for-drm_atomic_helper_check_wb_encoder_state()-instead
+|   `-- sound-soc-codecs-tas2562.c:warning:variable-ret-set-but-not-used
+|-- arm64-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-imu_v11_0_3.c:warning:no-previous-prototype-for-imu_v11_0_3_program_rlc_ram
+|   |-- drivers-gpu-drm-drm_atomic_helper.c:warning:expecting-prototype-for-drm_atomic_helper_check_wb_connector_state().-Prototype-was-for-drm_atomic_helper_check_wb_encoder_state()-instead
+|   `-- sound-soc-codecs-tas2562.c:warning:variable-ret-set-but-not-used
+|-- arm64-buildonly-randconfig-r002-20220912
+|   |-- drivers-gpu-drm-amd-amdgpu-imu_v11_0_3.c:warning:no-previous-prototype-for-imu_v11_0_3_program_rlc_ram
+|   |-- drivers-gpu-drm-drm_atomic_helper.c:warning:expecting-prototype-for-drm_atomic_helper_check_wb_connector_state().-Prototype-was-for-drm_atomic_helper_check_wb_encoder_state()-instead
+|   `-- sound-soc-codecs-tas2562.c:warning:variable-ret-set-but-not-used
+clang_recent_errors
+|-- arm64-randconfig-r011-20220912
+|   `-- drivers-extcon-extcon-usbc-tusb320.c:warning:expecting-prototype-for-drivers-extcon-extcon-tusb320c().-Prototype-was-for-TUSB320_REG8()-instead
+|-- hexagon-allyesconfig
+|   |-- drivers-extcon-extcon-usbc-tusb320.c:warning:expecting-prototype-for-drivers-extcon-extcon-tusb320c().-Prototype-was-for-TUSB320_REG8()-instead
+|   `-- drivers-staging-media-deprecated-cpia2-cpia2_usb.c:warning:variable-frame_count-set-but-not-used
+|-- i386-randconfig-a012-20220912
+|   `-- sound-soc-intel-skylake-skl.c:warning:unused-variable-skl
+|-- i386-randconfig-a015-20220912
+|   `-- drivers-extcon-extcon-usbc-tusb320.c:warning:expecting-prototype-for-drivers-extcon-extcon-tusb320c().-Prototype-was-for-TUSB320_REG8()-instead
+|-- mips-randconfig-r021-20220911
+|   `-- drivers-extcon-extcon-usbc-tusb320.c:warning:expecting-prototype-for-drivers-extcon-extcon-tusb320c().-Prototype-was-for-TUSB320_REG8()-instead
+|-- powerpc-randconfig-r002-20220911
+|   `-- drivers-gpu-drm-amd-amdgpu-imu_v11_0_3.c:warning:no-previous-prototype-for-function-imu_v11_0_3_program_rlc_ram
+|-- riscv-randconfig-r015-20220912
+|   `-- drivers-extcon-extcon-usbc-tusb320.c:warning:expecting-prototype-for-drivers-extcon-extcon-tusb320c().-Prototype-was-for-TUSB320_REG8()-instead
+`-- riscv-randconfig-r042-20220912
+    `-- drivers-extcon-extcon-usbc-tusb320.c:warning:expecting-prototype-for-drivers-extcon-extcon-tusb320c().-Prototype-was-for-TUSB320_REG8()-instead
 
-            revalidate vma pass since 0x20200000 + 0x200000 >
-0x20563000
+elapsed time: 724m
 
-            scan the next 2M (0x20200000 - 0x20400000), but due to
-whatever reason it didn't release mmap_lock
+configs tested: 82
+configs skipped: 2
 
-            scan the 3rd 2M area (start from 0x20400000)
+gcc tested configs:
+um                             i386_defconfig
+um                           x86_64_defconfig
+x86_64                              defconfig
+x86_64               randconfig-a001-20220912
+arc                          axs101_defconfig
+x86_64               randconfig-a002-20220912
+i386                 randconfig-a001-20220912
+x86_64                               rhel-8.3
+x86_64               randconfig-a003-20220912
+x86_64                          rhel-8.3-func
+arm                           stm32_defconfig
+alpha                            allyesconfig
+sh                           se7724_defconfig
+x86_64                           allyesconfig
+arm                                 defconfig
+alpha                             allnoconfig
+i386                 randconfig-a002-20220912
+x86_64                         rhel-8.3-kunit
+riscv                             allnoconfig
+m68k                             allmodconfig
+x86_64                           rhel-8.3-kvm
+x86_64               randconfig-a006-20220912
+i386                 randconfig-a004-20220912
+x86_64               randconfig-a004-20220912
+csky                              allnoconfig
+arc                               allnoconfig
+sh                           se7705_defconfig
+i386                                defconfig
+i386                             allyesconfig
+m68k                            q40_defconfig
+i386                 randconfig-a003-20220912
+arc                              allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                           rhel-8.3-syz
+arm                          iop32x_defconfig
+x86_64               randconfig-a005-20220912
+powerpc                           allnoconfig
+m68k                             allyesconfig
+riscv                randconfig-r042-20220911
+arm                        trizeps4_defconfig
+i386                 randconfig-a006-20220912
+arc                  randconfig-r043-20220912
+mips                             allyesconfig
+sparc64                             defconfig
+i386                 randconfig-a005-20220912
+powerpc                          allmodconfig
+arm64                            allyesconfig
+sh                               allmodconfig
+s390                          debug_defconfig
+arm                              allyesconfig
+arc                  randconfig-r043-20220911
+s390                 randconfig-r044-20220911
+ia64                             allmodconfig
+sh                           sh2007_defconfig
+sh                         ecovec24_defconfig
+sh                               alldefconfig
+sh                          rsk7269_defconfig
 
-              actually scan the new vma created by io_uring since the
-end was never updated
+clang tested configs:
+x86_64               randconfig-a011-20220912
+x86_64               randconfig-a012-20220912
+i386                 randconfig-a013-20220912
+x86_64               randconfig-a013-20220912
+i386                 randconfig-a011-20220912
+x86_64               randconfig-a014-20220912
+mips                           rs90_defconfig
+arm                          pcm027_defconfig
+x86_64               randconfig-a016-20220912
+i386                 randconfig-a012-20220912
+arm                          ixp4xx_defconfig
+x86_64               randconfig-a015-20220912
+i386                 randconfig-a014-20220912
+arm                        vexpress_defconfig
+i386                 randconfig-a015-20220912
+riscv                randconfig-r042-20220912
+hexagon              randconfig-r041-20220912
+i386                 randconfig-a016-20220912
+hexagon              randconfig-r045-20220911
+hexagon              randconfig-r041-20220911
+hexagon              randconfig-r045-20220912
+s390                 randconfig-r044-20220912
+mips                malta_qemu_32r6_defconfig
+powerpc                    gamecube_defconfig
+x86_64                          rhel-8.3-rust
 
-The below patch should be able to fix the problem (untested):
-
-diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-index 5f7c60b8b269..e708c5d62325 100644
---- a/mm/khugepaged.c
-+++ b/mm/khugepaged.c
-@@ -2441,8 +2441,10 @@ int madvise_collapse(struct vm_area_struct
-*vma, struct vm_area_struct **prev,
-                memset(cc->node_load, 0, sizeof(cc->node_load));
-                result = hpage_collapse_scan_pmd(mm, vma, addr, &mmap_locked,
-                                                 cc);
--               if (!mmap_locked)
-+               if (!mmap_locked) {
-                        *prev = NULL;  /* Tell caller we dropped mmap_lock */
-+                       hend = vma->end & HPAGE_PMD_MASK;
-+               }
-
-                switch (result) {
-                case SCAN_SUCCEED:
-
-
->
->
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
