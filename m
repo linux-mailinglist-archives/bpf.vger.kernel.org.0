@@ -2,51 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 045795B53A7
-	for <lists+bpf@lfdr.de>; Mon, 12 Sep 2022 07:53:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8AFC5B53AC
+	for <lists+bpf@lfdr.de>; Mon, 12 Sep 2022 07:53:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229586AbiILFxT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Sep 2022 01:53:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50360 "EHLO
+        id S229546AbiILFxW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Sep 2022 01:53:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbiILFxT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Sep 2022 01:53:19 -0400
+        with ESMTP id S229630AbiILFxV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Sep 2022 01:53:21 -0400
 Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B058252A3;
-        Sun, 11 Sep 2022 22:53:18 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id u132so7581034pfc.6;
-        Sun, 11 Sep 2022 22:53:18 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C6EC252A3;
+        Sun, 11 Sep 2022 22:53:20 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id 65so7624773pfx.0;
+        Sun, 11 Sep 2022 22:53:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date;
-        bh=zioV+Q4Idi0u9Z8VpvEHPcYo6VqqAXDmJIhKmCqBD34=;
-        b=cn3D9OY29lqGt69vIMOfZ0JqRnKkfp92vIIVrexwylgTz4J0W+eeAjysmOBIzVo9WS
-         QmzMl0Bt5046Kmd5fhW+saZuBWe1Lrm9k+LnI++ZyfNlp0KevmRrnaGsAR111ynIb/k/
-         Gey/UaL4wZhonb2/sLx+DWChDY5g3KeIFih23Kgk79oB32ZIn3fuk7vCRSpIvKOTLoF/
-         wWS+PCnjpFXkQAGcwjKeCfIaPK9WeEilOooTamTbxixcHHiGsWQzqR5tBA+0O089+p/y
-         Aw80CP1imfE3S8c6hVgMVFrYGSNr9/Wom/A4tRZOSAvt0qPg732dw+MJH+gLwn58N+32
-         BLFQ==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date;
+        bh=6V7H/cEIprYFtsFgwheCaiJjKxQhc/M9o0PCNmXcjvc=;
+        b=IzOO4rCxyFkI4dQ3X5NFgsAQqvmFiSYd6WXo+2XpI6Ry5ko4HEGW68UlDC0+mEpPOI
+         CFwCyhQFSHrBY+wzCDucU33voaxBM6kLi82DNX11dLeNBV4wEe1qDM8PAUxvxI9301p5
+         mNq8C/lCqqwUoQvinbT1rj6TJxHkb8pRX9mxMgLIUUfv1qkdP5ijCo3Cv9TohpCsx37f
+         f5oesjNHxSytyjMumWkoOv9rEhFRmnYg7k0h2gWqsYhPlz0XjnN389Ns2TfYFm9NnkmG
+         X3rWfKtMaVog5CzDOc6pOEtfL4qBglvMK2IMP8XnVM+6RnZDhskWpygfbuxggI2FQDra
+         bc9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-message-state:from:to:cc:subject:date;
-        bh=zioV+Q4Idi0u9Z8VpvEHPcYo6VqqAXDmJIhKmCqBD34=;
-        b=qpc/i/EVGw/UYsz24FT6F2IyxSaZ/+N88AXEvgIl6Nj+mD8lrxIUQ/zJpbD2a4O9+b
-         1ZxP3n16+hCB5fSns+MshVwVFYEzh7wa336XFTD9GGZQSIv66DzguLCBsTQZ/6OPN8ly
-         5MrShAC9sH3cU4GybUCdN6N/BGqfdIjrS23gn/T2Jqg4wD/Hj4EX8/B9++s1uKQZvbkD
-         frdVSNKOaAFHu+QL/iWQ8h60R0NopiP14D+9vrlnmroEoTgmuVd5Z9BPznZOad9piEol
-         1Taac/fX09TBQtIwZdVzA2JFxFxorohts/rGtHHEbMN/w38IKCpLpATSIhV0WDYd2OB+
-         QCiw==
-X-Gm-Message-State: ACgBeo0zf3cUiL7WK07wdi49I75svQnhIo0E+3NJDbjwV7kvDebOJ8Vx
-        58g0X7Kmnjj0Zzj1wtt1pAYb/bBBwTA=
-X-Google-Smtp-Source: AA6agR4bJDosJnzK1wiZUboz9P/kmQBFxs+BShwhtNVh3ecm+7qiLJt8tN2bweAqCP5CraZWw9cZ7A==
-X-Received: by 2002:a63:5b61:0:b0:41d:3227:37b8 with SMTP id l33-20020a635b61000000b0041d322737b8mr21926914pgm.265.1662961997987;
-        Sun, 11 Sep 2022 22:53:17 -0700 (PDT)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
+         :to:cc:subject:date;
+        bh=6V7H/cEIprYFtsFgwheCaiJjKxQhc/M9o0PCNmXcjvc=;
+        b=TiQ7qU8Jbt1a1bEq4hWQ5v7fji7c/rIQXh5YF6mhoBp+8UfXI0tIbcr2FDE+V194GW
+         +BnPCghNzLA7J86zyj2LHh8hqA4vdpw01r/Jjr3lO04fS9KCbwcgHCMXEbH5nV8RggGI
+         kYZjyspN89kynsdTf/SxcHdVuOutsKGoAlHJcfqjlVOY/7KjFA70zTd8iwNLsMcsiVyP
+         TtND8di9yDfujXbG2GUv4EelbuChVa/XNXyUrm5t8EMqtoK6l8kW2JUD0KWuHKsZznoY
+         To9RKcVYWTzcnlEwx8V56aFrN9HCRt6bVPTrUZ0nLLaFy7WFwPCdxyNr2Nw4SVL0Spdt
+         zKkA==
+X-Gm-Message-State: ACgBeo1FoOf0Bg8OyWcjvLUl+4JMOmN3338jB9dkhCFxfo1mljOpxGcK
+        Ckw6hygdYxXK1SqhM54wIug=
+X-Google-Smtp-Source: AA6agR6OzHXJORf8riDYYg5/qT4envvqvv1wjq2lkwtYwiKuDEHKIgASWZ9TkQvQSLXxSl2Eq2Qxpw==
+X-Received: by 2002:a05:6a00:114c:b0:528:2c7a:6302 with SMTP id b12-20020a056a00114c00b005282c7a6302mr25854146pfm.37.1662961999775;
+        Sun, 11 Sep 2022 22:53:19 -0700 (PDT)
 Received: from youngsil.svl.corp.google.com ([2620:15c:2d4:203:cfe7:8794:a807:6746])
-        by smtp.gmail.com with ESMTPSA id l10-20020a170903244a00b00176b87a697fsm4882736pls.269.2022.09.11.22.53.16
+        by smtp.gmail.com with ESMTPSA id l10-20020a170903244a00b00176b87a697fsm4882736pls.269.2022.09.11.22.53.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Sep 2022 22:53:16 -0700 (PDT)
+        Sun, 11 Sep 2022 22:53:19 -0700 (PDT)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -58,10 +59,12 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         Adrian Hunter <adrian.hunter@intel.com>,
         linux-perf-users@vger.kernel.org, Song Liu <songliubraving@fb.com>,
         bpf@vger.kernel.org
-Subject: [PATCH 0/4] perf lock contention: Improve call stack handling (v2)
-Date:   Sun, 11 Sep 2022 22:53:10 -0700
-Message-Id: <20220912055314.744552-1-namhyung@kernel.org>
+Subject: [PATCH 1/4] perf lock contention: Factor out get_symbol_name_offset()
+Date:   Sun, 11 Sep 2022 22:53:11 -0700
+Message-Id: <20220912055314.744552-2-namhyung@kernel.org>
 X-Mailer: git-send-email 2.37.2.789.g6183377224-goog
+In-Reply-To: <20220912055314.744552-1-namhyung@kernel.org>
+References: <20220912055314.744552-1-namhyung@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -75,50 +78,59 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+It's to convert addr to symbol+offset.
 
-I found that call stack from the lock tracepoint (using bpf_get_stackid)
-can be different on each configuration.  For example it's very different
-when I run it on a VM than on a real machine.
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+---
+ tools/perf/builtin-lock.c | 28 +++++++++++++++++++---------
+ 1 file changed, 19 insertions(+), 9 deletions(-)
 
-v2 changes)
- * rebased to the latest acme/perf/core
- * added a simplified callchain copy
-
-The perf lock contention relies on the stack trace to get the lock
-caller names, this kind of difference can be annoying.  Ideally we could
-skip stack trace entries for internal BPF or lock functions and get the
-correct caller, but it's not the case as of today.  Currently it's hard
-coded to control the behavior of stack traces for the lock contention
-tracepoints.
-
-To handle those differences, add two new options to control the number of
-stack entries and how many it skips.  The default value worked well on
-my VM setup, but I had to use --stack-skip=5 on real machines.
-
-You can get it from 'perf/lock-stack-v2' branch in
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
-
-Thanks,
-Namhyung
-
-
-Namhyung Kim (4):
-  perf lock contention: Factor out get_symbol_name_offset()
-  perf lock contention: Show full callstack with -v option
-  perf lock contention: Allow to change stack depth and skip
-  perf lock contention: Skip stack trace from BPF
-
- tools/perf/Documentation/perf-lock.txt        |  6 ++
- tools/perf/builtin-lock.c                     | 97 +++++++++++++++----
- tools/perf/util/bpf_lock_contention.c         | 21 +++-
- .../perf/util/bpf_skel/lock_contention.bpf.c  |  3 +-
- tools/perf/util/lock-contention.h             |  3 +
- 5 files changed, 107 insertions(+), 23 deletions(-)
-
-
-base-commit: 62e64c9d2fd12839c02f1b3e8b873e7cb34e8720
+diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
+index 52a6a10a610c..eaba6018da69 100644
+--- a/tools/perf/builtin-lock.c
++++ b/tools/perf/builtin-lock.c
+@@ -899,6 +899,23 @@ bool is_lock_function(struct machine *machine, u64 addr)
+ 	return false;
+ }
+ 
++static int get_symbol_name_offset(struct map *map, struct symbol *sym, u64 ip,
++				  char *buf, int size)
++{
++	u64 offset;
++
++	if (map == NULL || sym == NULL) {
++		buf[0] = '\0';
++		return 0;
++	}
++
++	offset = map->map_ip(map, ip) - sym->start;
++
++	if (offset)
++		return scnprintf(buf, size, "%s+%#lx", sym->name, offset);
++	else
++		return strlcpy(buf, sym->name, size);
++}
+ static int lock_contention_caller(struct evsel *evsel, struct perf_sample *sample,
+ 				  char *buf, int size)
+ {
+@@ -941,15 +958,8 @@ static int lock_contention_caller(struct evsel *evsel, struct perf_sample *sampl
+ 
+ 		sym = node->ms.sym;
+ 		if (sym && !is_lock_function(machine, node->ip)) {
+-			struct map *map = node->ms.map;
+-			u64 offset;
+-
+-			offset = map->map_ip(map, node->ip) - sym->start;
+-
+-			if (offset)
+-				scnprintf(buf, size, "%s+%#lx", sym->name, offset);
+-			else
+-				strlcpy(buf, sym->name, size);
++			get_symbol_name_offset(node->ms.map, sym, node->ip,
++					       buf, size);
+ 			return 0;
+ 		}
+ 
 -- 
 2.37.2.789.g6183377224-goog
 
