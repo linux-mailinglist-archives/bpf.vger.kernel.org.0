@@ -2,115 +2,229 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC1BE5B57B8
-	for <lists+bpf@lfdr.de>; Mon, 12 Sep 2022 12:01:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BE145B57ED
+	for <lists+bpf@lfdr.de>; Mon, 12 Sep 2022 12:11:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229510AbiILKBs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Sep 2022 06:01:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36536 "EHLO
+        id S229569AbiILKLT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Sep 2022 06:11:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbiILKBr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Sep 2022 06:01:47 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A09224944;
-        Mon, 12 Sep 2022 03:01:45 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id s206so7804535pgs.3;
-        Mon, 12 Sep 2022 03:01:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=CWfgxJfu1axEfBQtY3XxBDCWMEz1AigX+bc5DbK4j0s=;
-        b=V7PmRKQ41adCaoYLY4ooNSFJtsz1X8mVxz7vgkmeUeWtt5TIE0p0aYmXGFysRiFyya
-         achXGXV+JmHHsw1HJi/ntUX5hGLJIk6cNo4t8pTL3JXaeycvS+c8H7UaN+XQKiRoVtUY
-         LE8oSqwZIept6lI0zqMrVrayoyWMRV8RxfMDipIArP5iwd6nOuhM3qoqmlUlkSKh4LYQ
-         HRGldjKumxhlCp3CnLNJigW1UcWzmJj3j9iigZHsUwCuP9dHLxKKbKG+GYeG7ms7oN0k
-         1kjPHUtbzXTeXYZ6hhG6meRMWH43W7hkNTvOrU8p6iVtQ9VG7EiHCxSEOPZnocYHsKhH
-         AnWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=CWfgxJfu1axEfBQtY3XxBDCWMEz1AigX+bc5DbK4j0s=;
-        b=HzzzQqSHakK2x7QToQGzo0NZJsUYGcFZfdDGftt/CYbqtPg/KCKbOkn42qdMDDR84Z
-         pZOYAAADJ14TtsbHDzZq3kei4jzQjOj2RcSdgDyMRBxgkn3W34rvN0dKBiuhauLdjxjN
-         fK17bstqYncYCNy4k+j6/aNdfK9nQxc7LEVl8fiF1tDiCF5guLss0QTxashTiAuilPs7
-         AbJNF4nY+KLs3xZwwYvPn5784uQYseWyh4BFJs37TLyrvWfzRkPh4RAwqqdWIEE6IIYN
-         CthDgp2+jc7y1Pt6NnVP1VQ9wqa2gfw2RiPrkfkZgd42eQYOeUC1OjmoqcGaV9jlVRJ9
-         uRcQ==
-X-Gm-Message-State: ACgBeo3ZZzhhh4Bc87H+/n4IGKfrwE01vyX8NgN09qxHfTaDZFfyvQ2B
-        RWAMM3C0nHcmCrWjQsy7BD4kQtyP5vhCmCeSB8A8Nh8FHK42wA==
-X-Google-Smtp-Source: AA6agR6ysjHKpwAF2iATJ/BXB1cY5GI62WYWDtJUN56eWdKENwzV0jBNJ/EkUQLu4NqO9r9+dJKjPm0N7IAwYVt4nuo=
-X-Received: by 2002:a63:4e0d:0:b0:430:3d93:a6f8 with SMTP id
- c13-20020a634e0d000000b004303d93a6f8mr23437648pgb.212.1662976904801; Mon, 12
- Sep 2022 03:01:44 -0700 (PDT)
+        with ESMTP id S229498AbiILKLT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Sep 2022 06:11:19 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E71511D0E2
+        for <bpf@vger.kernel.org>; Mon, 12 Sep 2022 03:11:17 -0700 (PDT)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 28C3RxiE004812
+        for <bpf@vger.kernel.org>; Mon, 12 Sep 2022 03:11:17 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=GrI7o9/3/ri+nmbxzBpOB+4deChuDQZ8KLaqT3tZW5U=;
+ b=HR65RM3hZ6GPgowYA94UJTK6IDmphIQuNfuVuToPu5oQtzWCll9/Ac3vZ/80nocMzO2N
+ XFoyK6rFj0E5L+EJU5CrLrwdD8aFNDt3Mk7p1S684iFdwg7qXLOWDQiPGOlyMrqlwE/+
+ Kt3qbIdDgiyHMEMkvW8du0ii5GNCy15SV8o= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3jgsw48asy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 12 Sep 2022 03:11:17 -0700
+Received: from twshared1781.23.frc3.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Mon, 12 Sep 2022 03:11:16 -0700
+Received: by devbig077.ldc1.facebook.com (Postfix, from userid 158236)
+        id BD3E9D59737A; Mon, 12 Sep 2022 03:11:08 -0700 (PDT)
+From:   Dave Marchevsky <davemarchevsky@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Liam Wisehart <liamwisehart@fb.com>,
+        Dave Marchevsky <davemarchevsky@fb.com>
+Subject: [PATCH bpf-next 1/2] bpf: Allow ringbuf memory to be used as map key
+Date:   Mon, 12 Sep 2022 03:11:05 -0700
+Message-ID: <20220912101106.2765921-1-davemarchevsky@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <CABG=zsBEh-P4NXk23eBJw7eajB5YJeRS7oPXnTAzs=yob4EMoQ@mail.gmail.com>
- <20220831230157.7lchomcdxmvq3qqw@kafai-mbp.dhcp.thefacebook.com>
- <CABG=zsCQBVga6Tjcc-Y1x0U=0xAjYHH_j8ncFJPOG2XvxSP2UQ@mail.gmail.com>
- <CAP01T76ry6etJ2Zi02a2+ZtGJxrc=rky5gMqFE7on_fuOe8A8A@mail.gmail.com> <077d56ef-30cb-2d19-6f57-a92fd886b5f2@linux.dev>
-In-Reply-To: <077d56ef-30cb-2d19-6f57-a92fd886b5f2@linux.dev>
-From:   Aditi Ghag <aditivghag@gmail.com>
-Date:   Mon, 12 Sep 2022 11:01:33 +0100
-Message-ID: <CABG=zsAE50K1-W8oo9s8rfbG2NF_ktkJ-JgC3xGgeZNOuKE+dw@mail.gmail.com>
-Subject: Re: [RFC] Socket termination for policy enforcement and load-balancing
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: KW7PPUN8Gl0N2vX9ZIHgHcZRcKqA-_6Y
+X-Proofpoint-GUID: KW7PPUN8Gl0N2vX9ZIHgHcZRcKqA-_6Y
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.528,FMLib:17.11.122.1
+ definitions=2022-09-12_06,2022-09-12_01,2022-06-22_01
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 8, 2022 at 3:26 AM Martin KaFai Lau <martin.lau@linux.dev> wrote:
->
-> On 9/4/22 2:24 PM, Kumar Kartikeya Dwivedi wrote:
-> > On Sun, 4 Sept 2022 at 20:55, Aditi Ghag <aditivghag@gmail.com> wrote:
-> >>
-> >> On Wed, Aug 31, 2022 at 4:02 PM Martin KaFai Lau <kafai@fb.com> wrote:
-> >>>
-> >>> On Wed, Aug 31, 2022 at 09:37:41AM -0700, Aditi Ghag wrote:
->>>> [...]
-> >>
-> >> On a similar note, are there better ways as alternatives to the
-> >> sockets iterator approach.
-> >> Since we have BPF programs executed on cgroup BPF hooks (e.g.,
-> >> connect), we already know what client
-> >> sockets are connected to a backend. Can we somehow store these socket
-> >> pointers in a regular BPF map, and
-> >> when a backend is deleted, use a regular map iterator to invoke
-> >> sock_destroy() for these sockets? Does anyone have
-> >> experience using the "typed pointer support in BPF maps" APIs [0]?
-> >
-> > I am not very familiar with how socket lifetime is managed, it may not
-> > be possible in case lifetime is managed by RCU only,
-> > or due to other limitations.
-> > Martin will probably be able to comment more on that.
-> sk is the usual refcnt+rcu_reader pattern.  afaik, the use case here is
-> the sk should be removed from the map when there is a tcp_close() or
-> udp_lib_close().  There is sock_map and sock_hash to store sk as the
-> map-value.  iirc the sk will be automatically removed from the map
-> during tcp_close() and udp_lib_close().  The sock_map and sock_hash have
-> bpf iterator also.  Meaning a bpf-iter-prog can iterate the sock_map and
-> sock_hash and then do abort on each sk, so it looks like most of the
-> pieces are in place.
->
+This patch adds support for the following pattern:
 
-Yes, I did consider using a sock_hash type map. But for some reason I
-thought it would be
-accessible only from bpf_prog_type_sk_skb or sockops. Looks like the
-regular map helpers
-can be used for update/lookup operations on sock_hash map type. It's
-great to know that sock
-ref counting in sock map/hash types are automatically accounted for,
-so we don't have to add
-additional INET sock_release hooks.
+  struct some_data *data =3D bpf_ringbuf_reserve(&ringbuf, sizeof(struct =
+some_data, 0));
+  bpf_map_lookup_elem(&another_map, &data->some_field);
+  bpf_ringbuf_submit(data);
+
+Currently the verifier does not consider bpf_ringbuf_reserve's
+PTR_TO_MEM ret type a valid key input to bpf_map_lookup_elem. Since
+PTR_TO_MEM is by definition a valid region of memory, it is safe to use
+it as a key for lookups.
+
+Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
+---
+ kernel/bpf/verifier.c                         |  2 +
+ tools/testing/selftests/bpf/Makefile          |  8 ++-
+ .../selftests/bpf/prog_tests/ringbuf.c        | 10 +++
+ .../bpf/progs/test_ringbuf_map_key.c          | 69 +++++++++++++++++++
+ 4 files changed, 86 insertions(+), 3 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/test_ringbuf_map_ke=
+y.c
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index c259d734f863..d093618aed99 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -5626,6 +5626,8 @@ static const struct bpf_reg_types map_key_value_typ=
+es =3D {
+ 		PTR_TO_PACKET_META,
+ 		PTR_TO_MAP_KEY,
+ 		PTR_TO_MAP_VALUE,
++		PTR_TO_MEM,
++		PTR_TO_MEM | MEM_ALLOC,
+ 	},
+ };
+=20
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
+ts/bpf/Makefile
+index 6cd327f1f216..231d9c1364c9 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -351,9 +351,11 @@ LINKED_SKELS :=3D test_static_linked.skel.h linked_f=
+uncs.skel.h		\
+ 		test_subskeleton.skel.h test_subskeleton_lib.skel.h	\
+ 		test_usdt.skel.h
+=20
+-LSKELS :=3D fentry_test.c fexit_test.c fexit_sleep.c \
+-	test_ringbuf.c atomics.c trace_printk.c trace_vprintk.c \
+-	map_ptr_kern.c core_kern.c core_kern_overflow.c
++LSKELS :=3D fentry_test.c fexit_test.c fexit_sleep.c atomics.c 		\
++	trace_printk.c trace_vprintk.c map_ptr_kern.c 			\
++	core_kern.c core_kern_overflow.c test_ringbuf.c			\
++	test_ringbuf_map_key.c
++
+ # Generate both light skeleton and libbpf skeleton for these
+ LSKELS_EXTRA :=3D test_ksyms_module.c test_ksyms_weak.c kfunc_call_test.=
+c \
+ 	kfunc_call_test_subprog.c
+diff --git a/tools/testing/selftests/bpf/prog_tests/ringbuf.c b/tools/tes=
+ting/selftests/bpf/prog_tests/ringbuf.c
+index 9a80fe8a6427..1cf458d1a179 100644
+--- a/tools/testing/selftests/bpf/prog_tests/ringbuf.c
++++ b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
+@@ -13,6 +13,7 @@
+ #include <linux/perf_event.h>
+ #include <linux/ring_buffer.h>
+ #include "test_ringbuf.lskel.h"
++#include "test_ringbuf_map_key.lskel.h"
+=20
+ #define EDONE 7777
+=20
+@@ -297,3 +298,12 @@ void test_ringbuf(void)
+ 	ring_buffer__free(ringbuf);
+ 	test_ringbuf_lskel__destroy(skel);
+ }
++
++void test_ringbuf_map_key(void)
++{
++	struct test_ringbuf_map_key_lskel *skel_map_key;
++
++	skel_map_key =3D test_ringbuf_map_key_lskel__open_and_load();
++	ASSERT_OK_PTR(skel_map_key, "test_ringbuf_map_key_lskel__open_and_load =
+failed");
++	test_ringbuf_map_key_lskel__destroy(skel_map_key);
++}
+diff --git a/tools/testing/selftests/bpf/progs/test_ringbuf_map_key.c b/t=
+ools/testing/selftests/bpf/progs/test_ringbuf_map_key.c
+new file mode 100644
+index 000000000000..96a791a9762e
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_ringbuf_map_key.c
+@@ -0,0 +1,69 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
++
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++#include "bpf_misc.h"
++
++char _license[] SEC("license") =3D "GPL";
++
++struct sample {
++	int pid;
++	int seq;
++	long value;
++	char comm[16];
++};
++
++struct {
++	__uint(type, BPF_MAP_TYPE_RINGBUF);
++	__uint(max_entries, 4096);
++} ringbuf SEC(".maps");
++
++struct {
++	__uint(type, BPF_MAP_TYPE_HASH);
++	__uint(max_entries, 1000);
++	__type(key, struct sample);
++	__type(value, int);
++} hash_map SEC(".maps");
++
++/* inputs */
++int pid =3D 0;
++long value =3D 0;
++long flags =3D 0;
++
++/* outputs */
++long total =3D 0;
++long dropped =3D 0;
++
++/* inner state */
++long seq =3D 0;
++
++SEC("fentry/" SYS_PREFIX "sys_getpgid")
++int test_ringbuf_mem_map_key(void *ctx)
++{
++	int cur_pid =3D bpf_get_current_pid_tgid() >> 32;
++	struct sample *sample;
++	int *lookup_val;
++	int zero =3D 0;
++
++	if (cur_pid !=3D pid)
++		return 0;
++
++	sample =3D bpf_ringbuf_reserve(&ringbuf, sizeof(*sample), 0);
++	if (!sample) {
++		__sync_fetch_and_add(&dropped, 1);
++		return 0;
++	}
++
++	sample->pid =3D pid;
++	bpf_get_current_comm(sample->comm, sizeof(sample->comm));
++	sample->value =3D value;
++	sample->seq =3D seq++;
++
++	/* This prog is never run, successful load w/ below use of sample mem
++	 * as map key is considered success
++	 */
++	lookup_val =3D (int *)bpf_map_lookup_elem(&hash_map, sample);
++	bpf_ringbuf_submit(sample, 0);
++	return 0;
++}
+--=20
+2.30.2
+
