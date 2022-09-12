@@ -2,52 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8AFC5B53AC
+	by mail.lfdr.de (Postfix) with ESMTP id 25F835B53AA
 	for <lists+bpf@lfdr.de>; Mon, 12 Sep 2022 07:53:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229546AbiILFxW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Sep 2022 01:53:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50370 "EHLO
+        id S229630AbiILFxe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Sep 2022 01:53:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229630AbiILFxV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Sep 2022 01:53:21 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C6EC252A3;
-        Sun, 11 Sep 2022 22:53:20 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id 65so7624773pfx.0;
-        Sun, 11 Sep 2022 22:53:20 -0700 (PDT)
+        with ESMTP id S229652AbiILFxX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Sep 2022 01:53:23 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36A542559A;
+        Sun, 11 Sep 2022 22:53:22 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id b75so2339964pfb.7;
+        Sun, 11 Sep 2022 22:53:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date;
-        bh=6V7H/cEIprYFtsFgwheCaiJjKxQhc/M9o0PCNmXcjvc=;
-        b=IzOO4rCxyFkI4dQ3X5NFgsAQqvmFiSYd6WXo+2XpI6Ry5ko4HEGW68UlDC0+mEpPOI
-         CFwCyhQFSHrBY+wzCDucU33voaxBM6kLi82DNX11dLeNBV4wEe1qDM8PAUxvxI9301p5
-         mNq8C/lCqqwUoQvinbT1rj6TJxHkb8pRX9mxMgLIUUfv1qkdP5ijCo3Cv9TohpCsx37f
-         f5oesjNHxSytyjMumWkoOv9rEhFRmnYg7k0h2gWqsYhPlz0XjnN389Ns2TfYFm9NnkmG
-         X3rWfKtMaVog5CzDOc6pOEtfL4qBglvMK2IMP8XnVM+6RnZDhskWpygfbuxggI2FQDra
-         bc9Q==
+        bh=MgnVYvvI9fTf9f50zjOp5guIgv7ykcrcTCcvrW7IcH8=;
+        b=iR0aeSJ8ymUsURCTt57njklvlnaaFLFOdJkSkigwYkQnQDycQk6XpkSilQbCTjDjik
+         +LNNSIShIw5bml1qNUXlMNNuBBUnurh4XXjc87jL/UvTrbCFRlhxPAZ4eeY7vYik48Gq
+         JnBEiPT1fqJzlDX+QkbQ4ApcdSUu1w8PgcHzYje0vosCrilUsXI7SVQGlwc3W3saph/f
+         hw7y9e7zNLZOB8HsaQ9bJg/XPbCPUASCUPKxSBnk9G+jORcKqfhB/yeA0iU2BqYgH4Iz
+         O/0BJQz1EE9O9BA7tF2biEe0ytb3UM/+svGKD4BcjzSkPCSaUzLvVi5xavoCkvkwYZXK
+         3Wxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date;
-        bh=6V7H/cEIprYFtsFgwheCaiJjKxQhc/M9o0PCNmXcjvc=;
-        b=TiQ7qU8Jbt1a1bEq4hWQ5v7fji7c/rIQXh5YF6mhoBp+8UfXI0tIbcr2FDE+V194GW
-         +BnPCghNzLA7J86zyj2LHh8hqA4vdpw01r/Jjr3lO04fS9KCbwcgHCMXEbH5nV8RggGI
-         kYZjyspN89kynsdTf/SxcHdVuOutsKGoAlHJcfqjlVOY/7KjFA70zTd8iwNLsMcsiVyP
-         TtND8di9yDfujXbG2GUv4EelbuChVa/XNXyUrm5t8EMqtoK6l8kW2JUD0KWuHKsZznoY
-         To9RKcVYWTzcnlEwx8V56aFrN9HCRt6bVPTrUZ0nLLaFy7WFwPCdxyNr2Nw4SVL0Spdt
-         zKkA==
-X-Gm-Message-State: ACgBeo1FoOf0Bg8OyWcjvLUl+4JMOmN3338jB9dkhCFxfo1mljOpxGcK
-        Ckw6hygdYxXK1SqhM54wIug=
-X-Google-Smtp-Source: AA6agR6OzHXJORf8riDYYg5/qT4envvqvv1wjq2lkwtYwiKuDEHKIgASWZ9TkQvQSLXxSl2Eq2Qxpw==
-X-Received: by 2002:a05:6a00:114c:b0:528:2c7a:6302 with SMTP id b12-20020a056a00114c00b005282c7a6302mr25854146pfm.37.1662961999775;
-        Sun, 11 Sep 2022 22:53:19 -0700 (PDT)
+        bh=MgnVYvvI9fTf9f50zjOp5guIgv7ykcrcTCcvrW7IcH8=;
+        b=W898GVWQ/X1ZECFBNfRJudh1t8YBTq4+0HoUjUMjYTItWfaTMIs0zIuMntECz1yA2G
+         PPhYDArcM73H33iD884xE1MTgUDgzflknJxd2eJALMDTmryUQhZGxYJAe4lz8ng1i2w1
+         sRhPYf8rZzhJep/TchM1fQLZyuVarOE4HJ74ZxLDI6iBnRO7I59RPxvvKpyH+wLVWeit
+         YLy22jt5OtdORzlaLPc/mHu+AHKMyatVYJtF5MDqR7EdDNiM5ILmBI7wyfF5nJ+A9SwV
+         X6iaFoVNLI91Sse/7zFpGJuBPT+u2SI8ii+f8jKVwtNN8PrgbhC39nPbhY9TSsp4cEKX
+         ztCg==
+X-Gm-Message-State: ACgBeo1F0WVPzs0yJcevxy8geBfu9HksRN/IXvN9QmkdpFrTYoZiMTPq
+        D0y8KSB8DqXnsI06+2odLeU=
+X-Google-Smtp-Source: AA6agR4S9EYqYRzkLxlvN52ukNk+dkfS3W8oA/m3tRt7QLz1ytpGIDxpF00SPyQpkdA0JJiN9qoQPQ==
+X-Received: by 2002:a05:6a00:1aca:b0:52f:55f8:c3ec with SMTP id f10-20020a056a001aca00b0052f55f8c3ecmr25758897pfv.25.1662962001488;
+        Sun, 11 Sep 2022 22:53:21 -0700 (PDT)
 Received: from youngsil.svl.corp.google.com ([2620:15c:2d4:203:cfe7:8794:a807:6746])
-        by smtp.gmail.com with ESMTPSA id l10-20020a170903244a00b00176b87a697fsm4882736pls.269.2022.09.11.22.53.18
+        by smtp.gmail.com with ESMTPSA id l10-20020a170903244a00b00176b87a697fsm4882736pls.269.2022.09.11.22.53.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Sep 2022 22:53:19 -0700 (PDT)
+        Sun, 11 Sep 2022 22:53:20 -0700 (PDT)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -59,9 +59,9 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         Adrian Hunter <adrian.hunter@intel.com>,
         linux-perf-users@vger.kernel.org, Song Liu <songliubraving@fb.com>,
         bpf@vger.kernel.org
-Subject: [PATCH 1/4] perf lock contention: Factor out get_symbol_name_offset()
-Date:   Sun, 11 Sep 2022 22:53:11 -0700
-Message-Id: <20220912055314.744552-2-namhyung@kernel.org>
+Subject: [PATCH 2/4] perf lock contention: Show full callstack with -v option
+Date:   Sun, 11 Sep 2022 22:53:12 -0700
+Message-Id: <20220912055314.744552-3-namhyung@kernel.org>
 X-Mailer: git-send-email 2.37.2.789.g6183377224-goog
 In-Reply-To: <20220912055314.744552-1-namhyung@kernel.org>
 References: <20220912055314.744552-1-namhyung@kernel.org>
@@ -78,59 +78,185 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-It's to convert addr to symbol+offset.
+Currently it shows a caller function for each entry, but users need to see
+the full call stacks sometimes.  Use -v/--verbose option to do that.
+
+  # perf lock con -a -b -v sleep 3
+  Looking at the vmlinux_path (8 entries long)
+  symsrc__init: cannot get elf header.
+  Using /proc/kcore for kernel data
+  Using /proc/kallsyms for symbols
+   contended   total wait     max wait     avg wait         type   caller
+
+           1     10.74 us     10.74 us     10.74 us     spinlock   __bpf_trace_contention_begin+0xb
+                          0xffffffffc03b5c47  bpf_prog_bf07ae9e2cbd02c5_contention_begin+0x117
+                          0xffffffffc03b5c47  bpf_prog_bf07ae9e2cbd02c5_contention_begin+0x117
+                          0xffffffffbb8b8e75  bpf_trace_run2+0x35
+                          0xffffffffbb7eab9b  __bpf_trace_contention_begin+0xb
+                          0xffffffffbb7ebe75  queued_spin_lock_slowpath+0x1f5
+                          0xffffffffbc1c26ff  _raw_spin_lock+0x1f
+                          0xffffffffbb841015  tick_do_update_jiffies64+0x25
+                          0xffffffffbb8409ee  tick_irq_enter+0x9e
+           1      7.70 us      7.70 us      7.70 us     spinlock   __bpf_trace_contention_begin+0xb
+                          0xffffffffc03b5c47  bpf_prog_bf07ae9e2cbd02c5_contention_begin+0x117
+                          0xffffffffc03b5c47  bpf_prog_bf07ae9e2cbd02c5_contention_begin+0x117
+                          0xffffffffbb8b8e75  bpf_trace_run2+0x35
+                          0xffffffffbb7eab9b  __bpf_trace_contention_begin+0xb
+                          0xffffffffbb7ebe75  queued_spin_lock_slowpath+0x1f5
+                          0xffffffffbc1c26ff  _raw_spin_lock+0x1f
+                          0xffffffffbb7bc27e  raw_spin_rq_lock_nested+0xe
+                          0xffffffffbb7cef9c  load_balance+0x66c
 
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/builtin-lock.c | 28 +++++++++++++++++++---------
- 1 file changed, 19 insertions(+), 9 deletions(-)
+ tools/perf/builtin-lock.c             | 51 ++++++++++++++++++++++++---
+ tools/perf/util/bpf_lock_contention.c |  9 +++++
+ tools/perf/util/lock-contention.h     |  1 +
+ 3 files changed, 57 insertions(+), 4 deletions(-)
 
 diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
-index 52a6a10a610c..eaba6018da69 100644
+index eaba6018da69..371539049358 100644
 --- a/tools/perf/builtin-lock.c
 +++ b/tools/perf/builtin-lock.c
-@@ -899,6 +899,23 @@ bool is_lock_function(struct machine *machine, u64 addr)
- 	return false;
+@@ -1014,6 +1014,27 @@ static u64 callchain_id(struct evsel *evsel, struct perf_sample *sample)
+ 	return hash;
  }
  
-+static int get_symbol_name_offset(struct map *map, struct symbol *sym, u64 ip,
-+				  char *buf, int size)
++static u64 *get_callstack(struct perf_sample *sample, int max_stack)
 +{
-+	u64 offset;
++	u64 *callstack;
++	u64 i;
++	int c;
 +
-+	if (map == NULL || sym == NULL) {
-+		buf[0] = '\0';
-+		return 0;
++	callstack = calloc(max_stack, sizeof(*callstack));
++	if (callstack == NULL)
++		return NULL;
++
++	for (i = 0, c = 0; i < sample->callchain->nr && c < max_stack; i++) {
++		u64 ip = sample->callchain->ips[i];
++
++		if (ip >= PERF_CONTEXT_MAX)
++			continue;
++
++		callstack[c++] = ip;
 +	}
-+
-+	offset = map->map_ip(map, ip) - sym->start;
-+
-+	if (offset)
-+		return scnprintf(buf, size, "%s+%#lx", sym->name, offset);
-+	else
-+		return strlcpy(buf, sym->name, size);
++	return callstack;
 +}
- static int lock_contention_caller(struct evsel *evsel, struct perf_sample *sample,
- 				  char *buf, int size)
++
+ static int report_lock_contention_begin_event(struct evsel *evsel,
+ 					      struct perf_sample *sample)
  {
-@@ -941,15 +958,8 @@ static int lock_contention_caller(struct evsel *evsel, struct perf_sample *sampl
+@@ -1040,6 +1061,12 @@ static int report_lock_contention_begin_event(struct evsel *evsel,
+ 		ls = lock_stat_findnew(key, caller, flags);
+ 		if (!ls)
+ 			return -ENOMEM;
++
++		if (aggr_mode == LOCK_AGGR_CALLER && verbose) {
++			ls->callstack = get_callstack(sample, CONTENTION_STACK_DEPTH);
++			if (ls->callstack == NULL)
++				return -ENOMEM;
++		}
+ 	}
  
- 		sym = node->ms.sym;
- 		if (sym && !is_lock_function(machine, node->ip)) {
--			struct map *map = node->ms.map;
--			u64 offset;
--
--			offset = map->map_ip(map, node->ip) - sym->start;
--
--			if (offset)
--				scnprintf(buf, size, "%s+%#lx", sym->name, offset);
--			else
--				strlcpy(buf, sym->name, size);
-+			get_symbol_name_offset(node->ms.map, sym, node->ip,
-+					       buf, size);
- 			return 0;
+ 	ts = thread_stat_findnew(sample->tid);
+@@ -1443,7 +1470,7 @@ static void sort_contention_result(void)
+ 	sort_result();
+ }
+ 
+-static void print_contention_result(void)
++static void print_contention_result(struct lock_contention *con)
+ {
+ 	struct lock_stat *st;
+ 	struct lock_key *key;
+@@ -1482,6 +1509,22 @@ static void print_contention_result(void)
  		}
  
+ 		pr_info("  %10s   %s\n", get_type_str(st), st->name);
++		if (verbose) {
++			struct map *kmap;
++			struct symbol *sym;
++			char buf[128];
++			u64 ip;
++
++			for (int i = 0; i < CONTENTION_STACK_DEPTH; i++) {
++				if (!st->callstack || !st->callstack[i])
++					break;
++
++				ip = st->callstack[i];
++				sym = machine__find_kernel_symbol(con->machine, ip, &kmap);
++				get_symbol_name_offset(kmap, sym, ip, buf, sizeof(buf));
++				pr_info("\t\t\t%#lx  %s\n", (unsigned long)ip, buf);
++			}
++		}
+ 	}
+ 
+ 	print_bad_events(bad, total);
+@@ -1597,6 +1640,8 @@ static int __cmd_contention(int argc, const char **argv)
+ 		return PTR_ERR(session);
+ 	}
+ 
++	con.machine = &session->machines.host;
++
+ 	/* for lock function check */
+ 	symbol_conf.sort_by_name = true;
+ 	symbol__init(&session->header.env);
+@@ -1615,8 +1660,6 @@ static int __cmd_contention(int argc, const char **argv)
+ 		signal(SIGCHLD, sighandler);
+ 		signal(SIGTERM, sighandler);
+ 
+-		con.machine = &session->machines.host;
+-
+ 		con.evlist = evlist__new();
+ 		if (con.evlist == NULL) {
+ 			err = -ENOMEM;
+@@ -1688,7 +1731,7 @@ static int __cmd_contention(int argc, const char **argv)
+ 	setup_pager();
+ 
+ 	sort_contention_result();
+-	print_contention_result();
++	print_contention_result(&con);
+ 
+ out_delete:
+ 	evlist__delete(con.evlist);
+diff --git a/tools/perf/util/bpf_lock_contention.c b/tools/perf/util/bpf_lock_contention.c
+index c591a66733ef..6545bee65347 100644
+--- a/tools/perf/util/bpf_lock_contention.c
++++ b/tools/perf/util/bpf_lock_contention.c
+@@ -8,6 +8,7 @@
+ #include "util/thread_map.h"
+ #include "util/lock-contention.h"
+ #include <linux/zalloc.h>
++#include <linux/string.h>
+ #include <bpf/bpf.h>
+ 
+ #include "bpf_skel/lock_contention.skel.h"
+@@ -171,6 +172,14 @@ int lock_contention_read(struct lock_contention *con)
+ 			return -1;
+ 		}
+ 
++		if (verbose) {
++			st->callstack = memdup(stack_trace, sizeof(stack_trace));
++			if (st->callstack == NULL) {
++				free(st);
++				return -1;
++			}
++		}
++
+ 		hlist_add_head(&st->hash_entry, con->result);
+ 		prev_key = key;
+ 	}
+diff --git a/tools/perf/util/lock-contention.h b/tools/perf/util/lock-contention.h
+index 2146efc33396..bdb6e2a61e5b 100644
+--- a/tools/perf/util/lock-contention.h
++++ b/tools/perf/util/lock-contention.h
+@@ -11,6 +11,7 @@ struct lock_stat {
+ 
+ 	u64			addr;		/* address of lockdep_map, used as ID */
+ 	char			*name;		/* for strcpy(), we cannot use const */
++	u64			*callstack;
+ 
+ 	unsigned int		nr_acquire;
+ 	unsigned int		nr_acquired;
 -- 
 2.37.2.789.g6183377224-goog
 
