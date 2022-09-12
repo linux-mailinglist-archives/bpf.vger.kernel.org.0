@@ -2,107 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FD595B533D
-	for <lists+bpf@lfdr.de>; Mon, 12 Sep 2022 06:27:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 045795B53A7
+	for <lists+bpf@lfdr.de>; Mon, 12 Sep 2022 07:53:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229447AbiILE1f (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Sep 2022 00:27:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56354 "EHLO
+        id S229586AbiILFxT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Sep 2022 01:53:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbiILE1e (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Sep 2022 00:27:34 -0400
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7042B1CB05
-        for <bpf@vger.kernel.org>; Sun, 11 Sep 2022 21:27:33 -0700 (PDT)
-Received: by mail-io1-f72.google.com with SMTP id x22-20020a6bda16000000b006a123cb02beso1294325iob.18
-        for <bpf@vger.kernel.org>; Sun, 11 Sep 2022 21:27:33 -0700 (PDT)
+        with ESMTP id S229447AbiILFxT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Sep 2022 01:53:19 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B058252A3;
+        Sun, 11 Sep 2022 22:53:18 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id u132so7581034pfc.6;
+        Sun, 11 Sep 2022 22:53:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date;
+        bh=zioV+Q4Idi0u9Z8VpvEHPcYo6VqqAXDmJIhKmCqBD34=;
+        b=cn3D9OY29lqGt69vIMOfZ0JqRnKkfp92vIIVrexwylgTz4J0W+eeAjysmOBIzVo9WS
+         QmzMl0Bt5046Kmd5fhW+saZuBWe1Lrm9k+LnI++ZyfNlp0KevmRrnaGsAR111ynIb/k/
+         Gey/UaL4wZhonb2/sLx+DWChDY5g3KeIFih23Kgk79oB32ZIn3fuk7vCRSpIvKOTLoF/
+         wWS+PCnjpFXkQAGcwjKeCfIaPK9WeEilOooTamTbxixcHHiGsWQzqR5tBA+0O089+p/y
+         Aw80CP1imfE3S8c6hVgMVFrYGSNr9/Wom/A4tRZOSAvt0qPg732dw+MJH+gLwn58N+32
+         BLFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date;
-        bh=16yC2ygk9mZoAXYPBA0Bif3TAfj/BVSlCgkYb6seZeU=;
-        b=gnd3TkRfCGBEu3s5MIBKMsRt/kHCbdNi+5ast4zKeqL1oDiWGmsIlBLCYh5hzPRZ1s
-         WGTkrIJRabdT3uGTJJUA/R0JIeMftyqh6VatDzBG2CBhkEqTOgaF7SOL2mq6y0MRig4w
-         oxmzQH9EwpnP8W1ST6Qk37tFC5jivlhP1PX8HtcPAo77QbiEIYcJOxMzXkAVxRTa0W07
-         iRhaSlncGaxKqEWEocuvj2JEKo/sesW1LhJZs3H3XzfCTzCApK08TqSRBa0uPdXznM2z
-         hY62rUkuiFLnlN8KqXmQWxf7HCx3ivps8MJrL448p9vacAASPtyqcFt+UjYbaf7IHvTi
-         vAlg==
-X-Gm-Message-State: ACgBeo3+OSfZcj3oAvLdQuAU6Qh91wk3LbojNnCfh/Cp4Hmz+AU+zlO+
-        zI17Czjr3i4woDXmMGSBYwqwfyrC8H7WisOIMTnPmbMGNC9u
-X-Google-Smtp-Source: AA6agR6Ml96L2V6wdj/4IvzG8ov9MQiDcjCkGDfGFDH3A20lTENPH8EEeIAuxui69fo0IRwAtaY33G8Th6evr85SbIMBxTpFKYNZ
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date;
+        bh=zioV+Q4Idi0u9Z8VpvEHPcYo6VqqAXDmJIhKmCqBD34=;
+        b=qpc/i/EVGw/UYsz24FT6F2IyxSaZ/+N88AXEvgIl6Nj+mD8lrxIUQ/zJpbD2a4O9+b
+         1ZxP3n16+hCB5fSns+MshVwVFYEzh7wa336XFTD9GGZQSIv66DzguLCBsTQZ/6OPN8ly
+         5MrShAC9sH3cU4GybUCdN6N/BGqfdIjrS23gn/T2Jqg4wD/Hj4EX8/B9++s1uKQZvbkD
+         frdVSNKOaAFHu+QL/iWQ8h60R0NopiP14D+9vrlnmroEoTgmuVd5Z9BPznZOad9piEol
+         1Taac/fX09TBQtIwZdVzA2JFxFxorohts/rGtHHEbMN/w38IKCpLpATSIhV0WDYd2OB+
+         QCiw==
+X-Gm-Message-State: ACgBeo0zf3cUiL7WK07wdi49I75svQnhIo0E+3NJDbjwV7kvDebOJ8Vx
+        58g0X7Kmnjj0Zzj1wtt1pAYb/bBBwTA=
+X-Google-Smtp-Source: AA6agR4bJDosJnzK1wiZUboz9P/kmQBFxs+BShwhtNVh3ecm+7qiLJt8tN2bweAqCP5CraZWw9cZ7A==
+X-Received: by 2002:a63:5b61:0:b0:41d:3227:37b8 with SMTP id l33-20020a635b61000000b0041d322737b8mr21926914pgm.265.1662961997987;
+        Sun, 11 Sep 2022 22:53:17 -0700 (PDT)
+Received: from youngsil.svl.corp.google.com ([2620:15c:2d4:203:cfe7:8794:a807:6746])
+        by smtp.gmail.com with ESMTPSA id l10-20020a170903244a00b00176b87a697fsm4882736pls.269.2022.09.11.22.53.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 11 Sep 2022 22:53:16 -0700 (PDT)
+Sender: Namhyung Kim <namhyung@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-perf-users@vger.kernel.org, Song Liu <songliubraving@fb.com>,
+        bpf@vger.kernel.org
+Subject: [PATCH 0/4] perf lock contention: Improve call stack handling (v2)
+Date:   Sun, 11 Sep 2022 22:53:10 -0700
+Message-Id: <20220912055314.744552-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.37.2.789.g6183377224-goog
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1c4a:b0:2ed:c3de:c7c7 with SMTP id
- d10-20020a056e021c4a00b002edc3dec7c7mr9618188ilg.261.1662956852834; Sun, 11
- Sep 2022 21:27:32 -0700 (PDT)
-Date:   Sun, 11 Sep 2022 21:27:32 -0700
-In-Reply-To: <000000000000f537cc05ddef88db@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007d793405e87350df@google.com>
-Subject: Re: [syzbot] BUG: Bad page map (5)
-From:   syzbot <syzbot+915f3e317adb0e85835f@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, andrii@kernel.org, ast@kernel.org,
-        bigeasy@linutronix.de, bpf@vger.kernel.org, brauner@kernel.org,
-        daniel@iogearbox.net, david@redhat.com, ebiederm@xmission.com,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, luto@kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+Hello,
 
-HEAD commit:    e47eb90a0a9a Add linux-next specific files for 20220901
-git tree:       linux-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=17330430880000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7933882276523081
-dashboard link: https://syzkaller.appspot.com/bug?extid=915f3e317adb0e85835f
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13397b77080000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1793564f080000
+I found that call stack from the lock tracepoint (using bpf_get_stackid)
+can be different on each configuration.  For example it's very different
+when I run it on a VM than on a real machine.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+915f3e317adb0e85835f@syzkaller.appspotmail.com
+v2 changes)
+ * rebased to the latest acme/perf/core
+ * added a simplified callchain copy
 
-BUG: Bad page map in process syz-executor198  pte:8000000071c00227 pmd:74b30067
-addr:0000000020563000 vm_flags:08100077 anon_vma:ffff8880547d2200 mapping:0000000000000000 index:20563
-file:(null) fault:0x0 mmap:0x0 read_folio:0x0
-CPU: 1 PID: 3614 Comm: syz-executor198 Not tainted 6.0.0-rc3-next-20220901-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/26/2022
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- print_bad_pte.cold+0x2a7/0x2d0 mm/memory.c:565
- vm_normal_page+0x10c/0x2a0 mm/memory.c:636
- hpage_collapse_scan_pmd+0x729/0x1da0 mm/khugepaged.c:1199
- madvise_collapse+0x481/0x910 mm/khugepaged.c:2433
- madvise_vma_behavior+0xd0a/0x1cc0 mm/madvise.c:1062
- madvise_walk_vmas+0x1c7/0x2b0 mm/madvise.c:1236
- do_madvise.part.0+0x24a/0x340 mm/madvise.c:1415
- do_madvise mm/madvise.c:1428 [inline]
- __do_sys_madvise mm/madvise.c:1428 [inline]
- __se_sys_madvise mm/madvise.c:1426 [inline]
- __x64_sys_madvise+0x113/0x150 mm/madvise.c:1426
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f770ba87929
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 11 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f770ba18308 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
-RAX: ffffffffffffffda RBX: 00007f770bb0f3f8 RCX: 00007f770ba87929
-RDX: 0000000000000019 RSI: 0000000000600003 RDI: 0000000020000000
-RBP: 00007f770bb0f3f0 R08: 00007f770ba18700 R09: 0000000000000000
-R10: 00007f770ba18700 R11: 0000000000000246 R12: 00007f770bb0f3fc
-R13: 00007ffc2d8b62ef R14: 00007f770ba18400 R15: 0000000000022000
- </TASK>
+The perf lock contention relies on the stack trace to get the lock
+caller names, this kind of difference can be annoying.  Ideally we could
+skip stack trace entries for internal BPF or lock functions and get the
+correct caller, but it's not the case as of today.  Currently it's hard
+coded to control the behavior of stack traces for the lock contention
+tracepoints.
+
+To handle those differences, add two new options to control the number of
+stack entries and how many it skips.  The default value worked well on
+my VM setup, but I had to use --stack-skip=5 on real machines.
+
+You can get it from 'perf/lock-stack-v2' branch in
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
+
+Thanks,
+Namhyung
+
+
+Namhyung Kim (4):
+  perf lock contention: Factor out get_symbol_name_offset()
+  perf lock contention: Show full callstack with -v option
+  perf lock contention: Allow to change stack depth and skip
+  perf lock contention: Skip stack trace from BPF
+
+ tools/perf/Documentation/perf-lock.txt        |  6 ++
+ tools/perf/builtin-lock.c                     | 97 +++++++++++++++----
+ tools/perf/util/bpf_lock_contention.c         | 21 +++-
+ .../perf/util/bpf_skel/lock_contention.bpf.c  |  3 +-
+ tools/perf/util/lock-contention.h             |  3 +
+ 5 files changed, 107 insertions(+), 23 deletions(-)
+
+
+base-commit: 62e64c9d2fd12839c02f1b3e8b873e7cb34e8720
+-- 
+2.37.2.789.g6183377224-goog
 
