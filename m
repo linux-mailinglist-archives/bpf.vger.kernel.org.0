@@ -2,149 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9430F5B77C4
-	for <lists+bpf@lfdr.de>; Tue, 13 Sep 2022 19:24:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0CA35B79B8
+	for <lists+bpf@lfdr.de>; Tue, 13 Sep 2022 20:37:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232481AbiIMRXv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Sep 2022 13:23:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46912 "EHLO
+        id S232691AbiIMSgQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Sep 2022 14:36:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232906AbiIMRXY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 13 Sep 2022 13:23:24 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A3ED9A9F9;
-        Tue, 13 Sep 2022 09:10:36 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4MRpL147CnzKHYR;
-        Wed, 14 Sep 2022 00:08:41 +0800 (CST)
-Received: from k01.huawei.com (unknown [10.67.174.197])
-        by APP4 (Coremail) with SMTP id gCh0CgBHB4dxqyBjcEAeAw--.28569S6;
-        Wed, 14 Sep 2022 00:10:33 +0800 (CST)
-From:   Xu Kuohai <xukuohai@huaweicloud.com>
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Florent Revest <revest@chromium.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Marc Zyngier <maz@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [PATCH bpf-next v2 4/4] ftrace: Fix dead loop caused by direct call in ftrace selftest
-Date:   Tue, 13 Sep 2022 12:27:32 -0400
-Message-Id: <20220913162732.163631-5-xukuohai@huaweicloud.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220913162732.163631-1-xukuohai@huaweicloud.com>
-References: <20220913162732.163631-1-xukuohai@huaweicloud.com>
+        with ESMTP id S232374AbiIMSf6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 13 Sep 2022 14:35:58 -0400
+Received: from mail-oa1-x34.google.com (mail-oa1-x34.google.com [IPv6:2001:4860:4864:20::34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C37FBFF2
+        for <bpf@vger.kernel.org>; Tue, 13 Sep 2022 10:58:29 -0700 (PDT)
+Received: by mail-oa1-x34.google.com with SMTP id 586e51a60fabf-11eab59db71so34224800fac.11
+        for <bpf@vger.kernel.org>; Tue, 13 Sep 2022 10:58:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mojatatu-com.20210112.gappssmtp.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=aaNSjGzXhkohc6W2mTDFVgJmx/qcTzuCH14ahIku08Q=;
+        b=b7pgvtF1JtUFn5bp8CblPf6xgylOdA7T3perJnk5Q6cfACJshrDbnvadetUZK+IHJX
+         1L5TUvCRz0oSNydaawjA06b1WFPXNBV/W1qVMQ4/0C9n5PW/6tFcnSCXoGP5YgJbX8gj
+         A4Fi1Np8K+LOGggS3dSODtGJBmR3Buzds3/ZRdBAnjsRDrYcD/k+MTgDa4zgu43xDETe
+         3lVe8SFhd/zCFwzKmGA9VqHSKvL69zhf3wPX1NXkEVug6yUk+SuAyiWu8Vrlg6pEYSzW
+         1lQGUtAipGsE2KhOMBVVwtb58QFX7aU6uDxz6QnYjzJaRtxiyoqEuP5/+iZ0RsGGN2X9
+         lLjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=aaNSjGzXhkohc6W2mTDFVgJmx/qcTzuCH14ahIku08Q=;
+        b=655jE7YPEnJu+BpODl1GGtRkW2tZGUbjsB0K3k+cF5SNkO2gf8JA+zbxUOVuvEGXi0
+         BCsqpcOg5ttRjZRGgzJMG6XYnbmtiiqPyF3cXdnTbVvPK8Whc1nZa7wxB6x/ci6///la
+         zmIrpb+dQTcLCtq7bm5PUKqe40/auj9yVJkwk2c4Zh5OANsSgHs/kUPjqdZ/jWyc3bLr
+         BrlNDwlDbhwv0OA5cE+PEvSIZ+9TpUsUJq1K3ejr1O/InASSsqlyxKYxz9pLadQcoqry
+         jmRX9gVYT+tCjFFJwbv96YItovr65RVUB65rPOH04hcUQ2lfPu/PVa8V5+lwh+ORNGpc
+         hQfA==
+X-Gm-Message-State: ACgBeo1q4cTtD+Pdl+ZKNs5iQZsSb65B4H3G5FlKHpv5Wjz2MuI3QGwx
+        ev7Ugecn9e7KzFIaFbgYiwcqq5BU7pafGDSwBFCCsg==
+X-Google-Smtp-Source: AA6agR5VpOn9d0FVybpX9E/+sqIIHUUH30By06vJRG2inDVxVEuixCPiW5+j0Nu8UM9Yg6pXTDNrK1hPqiXxa8UPTIc=
+X-Received: by 2002:a05:6808:1491:b0:343:7543:1a37 with SMTP id
+ e17-20020a056808149100b0034375431a37mr252213oiw.106.1663091909198; Tue, 13
+ Sep 2022 10:58:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgBHB4dxqyBjcEAeAw--.28569S6
-X-Coremail-Antispam: 1UD129KBjvJXoW7uFy3WrWUXr4fCr43XF47urg_yoW8tFWDpa
-        s3urnrKr15AF4kKas7u3W8CryUAwn8A343Kw1UG3sYvrZ8AryUKrZ2vrn7Z34DJa95C3y3
-        ZF42vr1rGr4UX37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBmb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
-        Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
-        rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267
-        AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVCY1x02
-        67AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F4
-        0Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC
-        6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82
-        IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC2
-        0s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMI
-        IF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l
-        IxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4
-        A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjxUFgAwUUUUU
-X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20220909012936.268433-1-shaozhengchao@huawei.com> <6d627826-94ac-6c44-9a26-2e2662b58ee0@mojatatu.com>
+In-Reply-To: <6d627826-94ac-6c44-9a26-2e2662b58ee0@mojatatu.com>
+From:   Jamal Hadi Salim <jhs@mojatatu.com>
+Date:   Tue, 13 Sep 2022 13:58:18 -0400
+Message-ID: <CAM0EoMkE9vhMOHohCr-0H0ThH0o++4PTSNnaNbx18tYtnjikVg@mail.gmail.com>
+Subject: Re: [PATCH net-next 0/8] add tc-testing test cases
+To:     Victor Nogueira <victor@mojatatu.com>
+Cc:     Zhengchao Shao <shaozhengchao@huawei.com>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        xiyou.wangcong@gmail.com, jiri@resnulli.us, shuah@kernel.org,
+        weiyongjun1@huawei.com, yuehaibing@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Xu Kuohai <xukuohai@huawei.com>
+On Fri, Sep 9, 2022 at 4:04 PM Victor Nogueira <victor@mojatatu.com> wrote:
+>
+> > For this patchset, test cases of the ctinfo, gate, and xt action modules
+> > are added to the tc-testing test suite. Also add deleting test for
+> > connmark, ife, nat, sample and tunnel_key action modules.
+> >
+> > Zhengchao Shao (8):
+> >    selftests/tc-testings: add selftests for ctinfo action
+> >    selftests/tc-testings: add selftests for gate action
+> >    selftests/tc-testings: add selftests for xt action
+> >    selftests/tc-testings: add connmark action deleting test case
+> >    selftests/tc-testings: add ife action deleting test case
+> >    selftests/tc-testings: add nat action deleting test case
+> >    selftests/tc-testings: add sample action deleting test case
+> >    selftests/tc-testings: add tunnel_key action deleting test case
+> >
+> >   .../tc-testing/tc-tests/actions/connmark.json |  50 +++
+> >   .../tc-testing/tc-tests/actions/ctinfo.json   | 316 ++++++++++++++++++
+> >   .../tc-testing/tc-tests/actions/gate.json     | 315 +++++++++++++++++
+> >   .../tc-testing/tc-tests/actions/ife.json      |  50 +++
+> >   .../tc-testing/tc-tests/actions/nat.json      |  50 +++
+> >   .../tc-testing/tc-tests/actions/sample.json   |  50 +++
+> >   .../tc-tests/actions/tunnel_key.json          |  50 +++
+> >   .../tc-testing/tc-tests/actions/xt.json       | 219 ++++++++++++
+> >   8 files changed, 1100 insertions(+)
+> >   create mode 100644 tools/testing/selftests/tc-testing/tc-tests/actions/ctinfo.json
+> >   create mode 100644 tools/testing/selftests/tc-testing/tc-tests/actions/gate.json
+> >   create mode 100644 tools/testing/selftests/tc-testing/tc-tests/actions/xt.json
+> >
+>
+> Reviewed-by: Victor Nogueira <victor@mojatatu.com>
 
-After direct call is enabled for arm64, ftrace selftest enters a
-dead loop:
+For this patchset:
+Tested-by: Jamal Hadi Salim <jhs@mojatatu.com>
+Acked-by: Jamal Hadi Salim <jhs@mojatatu.com>
 
-<trace_selftest_dynamic_test_func>:
-00  bti     c
-01  mov     x9, x30                            <trace_direct_tramp>:
-02  bl      <trace_direct_tramp>    ---------->     ret
-                                                     |
-                                         lr/x30 is 03, return to 03
-                                                     |
-03  mov     w0, #0x0   <-----------------------------|
-     |                                               |
-     |                   dead loop!                  |
-     |                                               |
-04  ret   ---- lr/x30 is still 03, go back to 03 ----|
-
-The reason is that when the direct caller trace_direct_tramp() returns
-to the patched function trace_selftest_dynamic_test_func(), lr is still
-the address after the instrumented instruction in the patched function,
-so when the patched function exits, it returns to itself!
-
-To fix this issue, we need to restore lr before trace_direct_tramp()
-exits, so use a dedicated trace_direct_tramp() for arm64.
-
-Reported-by: Li Huafei <lihuafei1@huawei.com>
-Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
-Acked-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- arch/arm64/include/asm/ftrace.h | 4 ++++
- kernel/trace/trace_selftest.c   | 2 ++
- 2 files changed, 6 insertions(+)
-
-diff --git a/arch/arm64/include/asm/ftrace.h b/arch/arm64/include/asm/ftrace.h
-index b07a3c24f918..15247f73bf54 100644
---- a/arch/arm64/include/asm/ftrace.h
-+++ b/arch/arm64/include/asm/ftrace.h
-@@ -128,6 +128,10 @@ static inline bool arch_syscall_match_sym_name(const char *sym,
- #define ftrace_dummy_tramp ftrace_dummy_tramp
- extern void ftrace_dummy_tramp(void);
- 
-+#ifdef CONFIG_FTRACE_SELFTEST
-+#define trace_direct_tramp ftrace_dummy_tramp
-+#endif /* CONFIG_FTRACE_SELFTEST */
-+
- #endif /* CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS */
- 
- #endif /* ifndef __ASSEMBLY__ */
-diff --git a/kernel/trace/trace_selftest.c b/kernel/trace/trace_selftest.c
-index a2d301f58ced..092239bc373c 100644
---- a/kernel/trace/trace_selftest.c
-+++ b/kernel/trace/trace_selftest.c
-@@ -785,8 +785,10 @@ static struct fgraph_ops fgraph_ops __initdata  = {
- };
- 
- #ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
-+#ifndef trace_direct_tramp
- noinline __noclone static void trace_direct_tramp(void) { }
- #endif
-+#endif
- 
- /*
-  * Pretty much the same than for the function tracer from which the selftest
--- 
-2.30.2
-
+cheers,
+jamal
