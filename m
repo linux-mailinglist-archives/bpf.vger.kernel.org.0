@@ -2,303 +2,206 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16A245B679C
-	for <lists+bpf@lfdr.de>; Tue, 13 Sep 2022 08:05:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C60055B67AD
+	for <lists+bpf@lfdr.de>; Tue, 13 Sep 2022 08:16:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230174AbiIMGFO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Sep 2022 02:05:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48236 "EHLO
+        id S230193AbiIMGQB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Sep 2022 02:16:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229697AbiIMGFM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 13 Sep 2022 02:05:12 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D04DB23163
-        for <bpf@vger.kernel.org>; Mon, 12 Sep 2022 23:05:10 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id b17so5734084ilh.0
-        for <bpf@vger.kernel.org>; Mon, 12 Sep 2022 23:05:10 -0700 (PDT)
+        with ESMTP id S229969AbiIMGQA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 13 Sep 2022 02:16:00 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C845459B0;
+        Mon, 12 Sep 2022 23:15:59 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id u18so18417728lfo.8;
+        Mon, 12 Sep 2022 23:15:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date;
-        bh=88jYKV7igQaRKAMJcSp0mGuxY/bE0FgorkyjjO0srL8=;
-        b=jMDejXSCQ+bDOZStTbaJDPxpZXrH724CoZfBPrnH5Vbk/FNuKpFeeZvMBSgUfNzoIe
-         dKFUHBlDwzMm/yAmR8fRuP/AnFqD5TmTTkWJ12zfQNoih/7iEojgHq21rksdkGRaJMwj
-         R3obRO3pj+hjepSqp5uBCv/6leYWgHUsxp95Y=
+        bh=iL+PSuTvBsgGgVuYBzw23P7DA3wgNTk8Y2M7Kc+r7u8=;
+        b=UXg7Y3VmdYKh0yVQeWq3KV0amIKGmR9oIbm2MDgvqcrlBMbu3Gz0DwJ2d7oTuamu/6
+         MNqFRm+GD3j1yKbm3LDTkdJ4gee9fnjmeQVk7onS2afn0pU1gUPmFp0Ort3ThmUpqA0P
+         BCRjT363Klq15cX5XXoZwn7aC1EW4FZso6vCdIvC6WRpB6PZNTsmNFVUdoVwmhGOrCoN
+         Fd5buTIBvFqWtyxkxWCx+SQ9CXELd4rl/uPSaEFApnVvkLyVB3sAcMwPC0sOajU+oldm
+         D3lKi3nkb3r+0KVHyovGr1Q1S7rQkiFWuDJHhpqPSVfxddUM2JVIAt+djtL61R2yldi+
+         ypcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=88jYKV7igQaRKAMJcSp0mGuxY/bE0FgorkyjjO0srL8=;
-        b=j9eIdkWfJIBxocppqhUV2UPM9M535rHRpxX6sghU82h3B6LGW4mCzSE1j2tRbt3ddv
-         bnUTLijSTLPCWOTC+IaNOSoQQkOfd9Pw1jMjl+Y1cSNYtXd3yLqC4n++++QkAes9QR3E
-         uwFZGigxih3mh7z2yDVCycgY3f4/p+SzVmS+YGA8ByB7HttHPuoZ/cOtxdOad56YqJUK
-         /xzcQyohjFtFtG+evhMmNmVtiDLpOjuVyvnislWKw+ARYWzTJAChMYke7Ztpb5aJi4+i
-         InjZmv/ysJfbu89O+CIHc0yqbMlcuiH71BwG4k/oQQM7sKr52vgqLUrS2wjhYINScvuy
-         uXzg==
-X-Gm-Message-State: ACgBeo2VBev7WUAmc+92VjT/NmM1XK4epu8iL9wTAqP7wwxRlChVMzCS
-        LYWVT3SOm2xT1aHgovTLHrswjSv2Kmz6b/Fe3hnG9g==
-X-Google-Smtp-Source: AA6agR7nSGwJ0B2Sx1bNlAeKKmAbTnuZ9cFI1NdIqt/OD7MOtOhxTJZIpEEyV2WWACSv/YRb6sLw9Vq3W5NK1EmMJvc=
-X-Received: by 2002:a05:6e02:158a:b0:2d3:f1c0:6b68 with SMTP id
- m10-20020a056e02158a00b002d3f1c06b68mr12401276ilu.38.1663049110051; Mon, 12
- Sep 2022 23:05:10 -0700 (PDT)
+        bh=iL+PSuTvBsgGgVuYBzw23P7DA3wgNTk8Y2M7Kc+r7u8=;
+        b=AAq6AeZB1lqZclOI911iPHhqBYzLVT8XcnUPohUEvEFvlwrB0Yhk4ia8OcyDsKNfVN
+         V6tK2J+vaSouw06nbZ+tUuEqjMo7+SSXVN872jIoWmjy1Bll5QbKImZx/flsGz80Qcxu
+         uzD6o+SAUyVwu71LpicVntmPFLJmLp0FpY1iEmkDpVuh7ae/bhpWSzP2Mh1/ImEEgPE/
+         Gi4rc74/28sLfjeC9YQW48bQ3swS97x8u1YobOfNjc+RxDTiCQZqgXTpEQ18CgELpG/c
+         KmVJPQZR0R7T1/60fGaubUAY+IyJEboeIQMf5icSrft0KWBiEOvxKRpbQPMh0R4VLgGD
+         m9wQ==
+X-Gm-Message-State: ACgBeo0fbkVYXW8/6D1bloCJqgkt8gMkjLzCYGtCUqobQ4rR6sqKh7KW
+        ieH99kZfIgt9YhzUAkLZrvro2yo+/4+rVFXvPs0W0ltl9Zg=
+X-Google-Smtp-Source: AA6agR5VmWxfy56PXWZAcwLrkMGS5wp/Ejn6/hngmWDh5knnHYWEpK2RjT7MF2S80VGErukdVML8SxZeKNR+2oc2bAU=
+X-Received: by 2002:a05:6512:308d:b0:499:bd1a:d1bc with SMTP id
+ z13-20020a056512308d00b00499bd1ad1bcmr4830380lfd.274.1663049757320; Mon, 12
+ Sep 2022 23:15:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <CABi2SkUVSMM-+7RzGu0z0nwsWT_2NiUZzTMNKsEc0iOPSiNr9A@mail.gmail.com>
- <1b9e4d2c-34d4-2809-6c91-d14092061581@oracle.com> <CABi2SkVMRtbrzrPeYEhf_zP-9AoUcs10KwJRXXTKPA0K1qY8PQ@mail.gmail.com>
- <CABi2SkXtNOFP1Gg_dDz4bHC=P42iL1DxJ6irfz6T0MeiGkTgCQ@mail.gmail.com> <CAK3+h2y-vk9eE0uNDWAQwjAeO1fNaY4Tf9USMPAxqUVuQ7pBrg@mail.gmail.com>
-In-Reply-To: <CAK3+h2y-vk9eE0uNDWAQwjAeO1fNaY4Tf9USMPAxqUVuQ7pBrg@mail.gmail.com>
-From:   Jeff Xu <jeffxu@chromium.org>
-Date:   Mon, 12 Sep 2022 23:04:59 -0700
-Message-ID: <CABi2SkWKjBMRBdi=C9ePYDO-2ZofsytdLxc0-N3jMx5JeTsS+Q@mail.gmail.com>
-Subject: Re: BTF and libBPF
-To:     Vincent Li <vincent.mc.li@gmail.com>
-Cc:     Alan Maguire <alan.maguire@oracle.com>, bpf@vger.kernel.org
+References: <20220902023003.47124-1-laoar.shao@gmail.com> <Yxi8I4fXXSCi6z9T@slm.duckdns.org>
+ <YxkVq4S1Eoa4edjZ@P9FQF9L96D.corp.robot.car> <CALOAHbAp=g20rL0taUpQmTwymanArhO-u69Xw42s5ap39Esn=A@mail.gmail.com>
+ <YxoUkz05yA0ccGWe@P9FQF9L96D.corp.robot.car>
+In-Reply-To: <YxoUkz05yA0ccGWe@P9FQF9L96D.corp.robot.car>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Tue, 13 Sep 2022 14:15:20 +0800
+Message-ID: <CALOAHbAzi0s3N_5BOkLsnGfwWCDpUksvvhPejjj5jo4G2v3mGg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 00/13] bpf: Introduce selectable memcg for bpf map
+To:     Roman Gushchin <roman.gushchin@linux.dev>
+Cc:     Tejun Heo <tj@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Cgroups <cgroups@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Sep 12, 2022 at 8:41 PM Vincent Li <vincent.mc.li@gmail.com> wrote:
+On Fri, Sep 9, 2022 at 12:13 AM Roman Gushchin <roman.gushchin@linux.dev> wrote:
 >
-> On Mon, Sep 12, 2022 at 5:17 PM Jeff Xu <jeffxu@chromium.org> wrote:
+> On Thu, Sep 08, 2022 at 10:37:02AM +0800, Yafang Shao wrote:
+> > On Thu, Sep 8, 2022 at 6:29 AM Roman Gushchin <roman.gushchin@linux.dev> wrote:
+> > >
+> > > On Wed, Sep 07, 2022 at 05:43:31AM -1000, Tejun Heo wrote:
+> > > > Hello,
+> > > >
+> > > > On Fri, Sep 02, 2022 at 02:29:50AM +0000, Yafang Shao wrote:
+> > > > ...
+> > > > > This patchset tries to resolve the above two issues by introducing a
+> > > > > selectable memcg to limit the bpf memory. Currently we only allow to
+> > > > > select its ancestor to avoid breaking the memcg hierarchy further.
+> > > > > Possible use cases of the selectable memcg as follows,
+> > > >
+> > > > As discussed in the following thread, there are clear downsides to an
+> > > > interface which requires the users to specify the cgroups directly.
+> > > >
+> > > >  https://lkml.kernel.org/r/YwNold0GMOappUxc@slm.duckdns.org
+> > > >
+> > > > So, I don't really think this is an interface we wanna go for. I was hoping
+> > > > to hear more from memcg folks in the above thread. Maybe ping them in that
+> > > > thread and continue there?
+> > >
 > >
-> > On Sun, Sep 11, 2022 at 4:36 PM Jeff Xu <jeffxu@chromium.org> wrote:
-> > >
-> > > Thanks for the quick response.
-> > >
-> > > > > Greeting,
-> > > > >
-> > > > > I have questions related to CONFIG_DEBUG_INFO_BTF, and  libbpf_0.8.1.
-> > > > > Please kindly let me know if this is not the right group to ask, since I'm new.
-> > > > >
-> > > > > To give context of this question:
-> > > > > This system has limited disk size, doesn't need the CO-RE feature,
-> > > > > and has all debug symbols stripped in release build.   Having an extra
-> > > > > btf/vmlinux file might be problematic, disk-wise.
-> > >
-> > > > Thanks for getting in touch - ideally I think we'd like to be
-> > > > able to support BTF even on small systems. It would probably
-> > > > help to understand what space constraints you have - is it just
-> > > > disk space, or are disk space and memory highly constrained? The
-> > > > mechanics of BTF are that it is generated and then embedded in the vmlinux
-> > > > binary in a .BTF section. The BTF info is then exposed at runtime
-> > > > via a /sys/kernel/btf/vmlinux pseudo-file.  So when assessing overhead,
-> > > > there are two questions to ask I think:
-> > >
-> > > > 1. how does BTF inclusion effect disk space?
-> > > > 2. how does BTF inclusion effect memory footprint?
-> > >
-> > > > For 1, on a recent bpf-next kernel, core vmlinux BTF is around 6Mb.
-> > > > However, an important thing to bear in mind is that it is in the
-> > > > vmlinux binary, that on most space-constrained systems is compressed
-> > > > to /boot/vmlinuz-<VERSION>.  When I compress the BTF by hand, it reduces
-> > > > by a factor of around 6, so a ballpark figure is around 1.5Mb of
-> > > > the vmlinuz binary on-disk, which equates to around 10% of the overall
-> > > > binary size in my case. Your results may vary, especially if
-> > > > a lot of CONFIG options are switched off (as they might be on a
-> > > > space-sensitive system).
-> > >
-> > > > For memory footprint, BTF will be extracted from the .BTF section
-> > > > and will then take up around 6Mb.
-> > >
-> > > > Another piece of the puzzle is module BTF - it contains the
-> > > > per-module type info not in the core kernel, but again if modules
-> > > > are compressed, on-disk storage might not be a massive issue.
-> > >
-> > > > Anyway, hopefully the above gives you a sense for the kinds of
-> > > > costs BTF has.
-> > >
-> > > Thank you. This information on disk and memory is really helpful.
-> > > At this moment, I'm only looking at disk-size.
-> > >
-> > > > >
-> > > > > Question 1>
-> > > > > Will libbpf_0.8.1(or later) work with kernel 5.10 (or later),  without
-> > > > > CONFIG_DEBUG_INFO_BTF ?
-> > > > > Or work with kernel compiled with CONFIG_DEBUG_INFO_BTF but have
-> > > > > /sys/kernel/btf/vmlinux removed.
-> > > > >
-> > >
-> > > > It really depends on what you're planning on doing.
-> > >
-> > > > BTF has become central to a lot of aspects of BPF; higher-performance
-> > > > fentry/fexit() BPF programs, CO-RE, and even XDP will be using BTF
-> > > > soon I believe.
-> > >
-> > > > So if you're using BPF without BTF, there are generally ways to make
-> > > things work (using kprobes instead of fentry for example), but you
-> > > > will have less options.  I seem to recall some fixes landed to
-> > > > ensure that absence of BTF shouldn't prevent program loading in
-> > > > cases where BTF is not needed. If you run into any such failures,
-> > > > I'd suggest reporting them and hopefully we can get them fixed.
-> > >
-> > > I have a follow up question on how CO-RE uses BTF: where exactly does
-> > > the relocation happen ?
-> > > It seems, in theory,  it can happens in two places: 1> from libBPF at
-> > > user space 2> from kernel
-> > >
-> > > https://nakryiko.com/posts/bpf-portability-and-co-re/
-> > > " It takes compiled BPF ELF object file, post-processes it as
-> > > necessary, sets up various kernel objects (maps, programs, etc),
-> > > and triggers BPF program loading and verification."
-> > >
-> > > I assume there is a syscall to provide BTF information from kernel to
-> > > user space, and libBPF uses that info to post-processing the ELF file.
-> > >
-> > > Is there a sample BPF code with explanation of a sequence of actions
-> > > done by libBPF (roughly) to look at ?
-> > > And why do maps need to be relocated ?
-> > >
-> > > 2>
-> > > https://nakryiko.com/posts/bpf-core-reference-guide/ BTF-enabled BPF
-> > > program types with direct memory reads
-> > > In this mode, is that kernel doing relocation ? or is that still libBPF?
-> > > For example: how/where vma->vm_start is relocated.
-> > >
-> > > SEC("lsm/file_mprotect")
-> > > int BPF_PROG(mprotect_audit, struct vm_area_struct *vma,
-> > >     unsigned long reqprot, unsigned long prot, int ret)
-> > > {
-> > >    /* .. omit ..*/
-> > > int is_heap;
-> > > is_heap = (vma->vm_start >= vma->vm_mm->start_brk &&
-> > >   vma->vm_end <= vma->vm_mm->brk);
-> > >    /* .. omit .. */
-> > > }
-> > >
-> > > Thanks
-> > > Best Regards,
-> > > Jeff Xu
-> > >
-> > >
-> > > On Fri, Sep 9, 2022 at 8:29 AM Alan Maguire <alan.maguire@oracle.com> wrote:
-> > > >
-> > > > On 09/09/2022 06:22, Jeff Xu wrote:
-> > > > > Greeting,
-> > > > >
-> > > > > I have questions related to CONFIG_DEBUG_INFO_BTF, and  libbpf_0.8.1.
-> > > > > Please kindly let me know if this is not the right group to ask, since I'm new.
-> > > > >
-> > > > > To give context of this question:
-> > > > > This system has limited disk size, doesn't need the CO-RE feature,
-> > > > > and has all debug symbols stripped in release build.   Having an extra
-> > > > > btf/vmlinux file might be problematic, disk-wise.
-> > > >
-> > > > Thanks for getting in touch - ideally I think we'd like to be
-> > > > able to support BTF even on small systems. It would probably
-> > > > help to understand what space constraints you have - is it just
-> > > > disk space, or are disk space and memory highly constrained? The
-> > > > mechanics of BTF are that it is generated and then embedded in the vmlinux
-> > > > binary in a .BTF section. The BTF info is then exposed at runtime
-> > > > via a /sys/kernel/btf/vmlinux pseudo-file.  So when assessing overhead,
-> > > > there are two questions to ask I think:
-> > > >
-> > > > 1. how does BTF inclusion effect disk space?
-> > > > 2. how does BTF inclusion effect memory footprint?
-> > > >
-> > > > For 1, on a recent bpf-next kernel, core vmlinux BTF is around 6Mb.
-> > > > However, an important thing to bear in mind is that it is in the
-> > > > vmlinux binary, that on most space-constrained systems is compressed
-> > > > to /boot/vmlinuz-<VERSION>.  When I compress the BTF by hand, it reduces
-> > > > by a factor of around 6, so a ballpark figure is around 1.5Mb of
-> > > > the vmlinuz binary on-disk, which equates to around 10% of the overall
-> > > > binary size in my case. Your results may vary, especially if
-> > > > a lot of CONFIG options are switched off (as they might be on a
-> > > > space-sensitive system).
-> > > >
-> > > > For memory footprint, BTF will be extracted from the .BTF section
-> > > > and will then take up around 6Mb.
-> > > >
-> > > > Another piece of the puzzle is module BTF - it contains the
-> > > > per-module type info not in the core kernel, but again if modules
-> > > > are compressed, on-disk storage might not be a massive issue.
-> > > >
-> > > > Anyway, hopefully the above gives you a sense for the kinds of
-> > > > costs BTF has.
-> > > >
-> > > > >
-> > > > > Question 1>
-> > > > > Will libbpf_0.8.1(or later) work with kernel 5.10 (or later),  without
-> > > > > CONFIG_DEBUG_INFO_BTF ?
-> > > > > Or work with kernel compiled with CONFIG_DEBUG_INFO_BTF but have
-> > > > > /sys/kernel/btf/vmlinux removed.
-> > > > >
-> > > >
-> > > > It really depends what you're planning on doing.
-> > > >
-> > > > BTF has become central to a lot of aspects of BPF; higher-performance
-> > > > fentry/fexit() BPF programs, CO-RE, and even XDP will be using BTF
-> > > > soon I believe.
-> > > >
-> > > > So if you're using BPF without BTF, there are generally ways to make
-> > > > things work (using kprobes instead of fentry for example), but you
-> > > > will have less options.  I seem to recall some fixes landed to
-> > > > ensure that absence of BTF shouldn't prevent program loading in
-> > > > cases where BTF is not needed. If you run into any such failures,
-> > > > I'd suggest reporting them and hopefully we can get them fixed.
-> > > >
-> > > > >  Question 2: From debug information included at run time point of view,
-> > > > > (1) having btf/vmlinux vs (2) kernel build with
-> > > > > CONFIG_DEBUG_INFO_DWARF5 but not stripped,
-> > > > > are those two contains the same amount of debug information at runtime?
-> > > > >
-> > > >
-> > > > DWARF5 will contain more debug info, but will likely have a larger footprint
-> > > > as a consequence. I'd suggest running the experiment yourself to compare.
-> > > >
-> > > > > Question 3: Will libbpf + btf/vmlinx, break expectation of kernel ASLR
-> > > > > feature ? I assume it shouldn't, but would like to double check.
-> > > > >
-> > > >
-> > > > Nope, no issue here that I'm aware of. I've used KASLR + BTF and haven't seen
-> > > > any problems at least.
-> > > >
-> > > > > Thanks
-> > > > > Best Regards,
-> > > > > Jeff Xu
-> > > > >
+> > Hi Roman,
 > >
-> > Can I understand the BTF usage in this way ?
+> > > As I said previously, I don't like it, because it's an attempt to solve a non
+> > > bpf-specific problem in a bpf-specific way.
+> > >
 > >
-> > When BTF is available in the kernel runtime, it helps in two ways:
-> > 1> By BTF verifier (kernel) to find the offset of a member in struct
-> > (no libbpf modification of BYTE code needed)
-> > The example usage is BTF RAW tracepoint, BFP_LSM.
-> > Typically, those BPF programs will includes "vmlinux.h" , and  uses C
-> > pointer style(vma->vm_start)
-> >
-> > 2> By libbpf (user space) to post-processing BPF bytecode.
-> > Typically, those BPF programs doesn't need to include "vmlinux.h", and
-> > uses bpf_core_read, such as:
-> > BPF_CORE_READ(vma,vm_start)
-> >
-> > Much appreciated to confirm this is right/wrong.
-> >
+> > Why do you still insist that bpf_map->memcg is not a bpf-specific
+> > issue after so many discussions?
+> > Do you charge the bpf-map's memory the same way as you charge the page
+> > caches or slabs ?
+> > No, you don't. You charge it in a bpf-specific way.
 >
-> Does not answer your question directly :) from my limited
-> understanding, could be incorrect, BTF is processed at compile time
-> and load time,  load time is processed  by libbpf
+
+Hi Roman,
+
+Sorry for the late response.
+I've been on vacation in the past few days.
+
+> The only difference is that we charge the cgroup of the processes who
+> created a map, not a process who is doing a specific allocation.
+
+This means the bpf-map can be indepent of process, IOW, the memcg of
+bpf-map can be indepent of the memcg of the processes.
+This is the fundamental difference between bpf-map and page caches, then...
+
+> Your patchset doesn't change this.
+
+We can make this behavior reasonable by introducing an independent
+memcg, as what I did in the previous version.
+
+> There are pros and cons with this approach, we've discussed it back
+> to the times when bpf memcg accounting was developed. If you want
+> to revisit this, it's maybe possible (given there is a really strong and likely
+> new motivation appears), but I haven't seen any complaints yet except from you.
 >
-So even for BTF RAW tracepoint, the relocation is happening at libbpf ?
-According to this post:
-https://mozillazg.com/2022/06/ebpf-libbpf-btf-powered-enabled-raw-tracepoint-common-questions-en.html#hidthe-difference-between-btf-raw-tracepoint-and-raw-tracepoint
 
-// btf enabled
-struct task_struct *task = (struct task_struct *) bpf_get_current_task_btf();
-u32 ppid = task->real_parent->tgid;
+memcg-base bpf accounting is a new feature, which may not be used widely.
 
-"The btf version can access kernel memory directly from within the ebpf program.
-There is no need to use a helper function like bpf_core_read or
-bpf_probe_read_kernel to access the kernel memory as in regular raw
-tracepoint:"
+> >
+> > > Yes, memory cgroups are not great for accounting of shared resources, it's well
+> > > known. This patchset looks like an attempt to "fix" it specifically for bpf maps
+> > > in a particular cgroup setup. Honestly, I don't think it's worth the added
+> > > complexity. Especially because a similar behaviour can be achieved simple
+> > > by placing the task which creates the map into the desired cgroup.
+> >
+> > Are you serious ?
+> > Have you ever read the cgroup doc? Which clearly describe the "No
+> > Internal Process Constraint".[1]
+> > Obviously you can't place the task in the desired cgroup, i.e. the parent memcg.
+>
+> But you can place it into another leaf cgroup. You can delete this leaf cgroup
+> and your memcg will get reparented. You can attach this process and create
+> a bpf map to the parent cgroup before it gets child cgroups.
 
-It talks about accessing kernel memory directly, so I was reading it
-as  the kernel is doing the relocation.
+If the process doesn't exit after it created bpf-map, we have to
+migrate it around memcgs....
+The complexity in deployment can introduce unexpected issues easily.
 
-> > Best Regards
-> > Jeff Xu
+> You can revisit the idea of shared bpf maps and outlive specific cgroups.
+> Lof of options.
+>
+> >
+> > [1] https://www.kernel.org/doc/Documentation/cgroup-v2.txt
+> >
+> > > Beatiful? Not. Neither is the proposed solution.
+> > >
+> >
+> > Is it really hard to admit a fault?
+>
+> Yafang, you posted several versions and so far I haven't seen much of support
+> or excitement from anyone (please, fix me if I'm wrong). It's not like I'm
+> nacking a patchset with many acks, reviews and supporters.
+>
+> Still think you're solving an important problem in a reasonable way?
+> It seems like not many are convinced yet. I'd recommend to focus on this instead
+> of blaming me.
+>
+
+The best way so far is to introduce specific memcg for specific resources.
+Because not only the process owns its memcg, but also specific
+resources own their memcgs, for example bpf-map, or socket.
+
+struct bpf_map {                                 <<<< memcg owner
+    struct memcg_cgroup *memcg;
+};
+
+struct sock {                                       <<<< memcg owner
+    struct mem_cgroup *sk_memcg;
+};
+
+These resources already have their own memcgs, so we should make this
+behavior formal.
+
+The selectable memcg is just a variant of 'echo ${proc} > cgroup.procs'.
+
+-- 
+Regards
+Yafang
