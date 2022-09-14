@@ -2,283 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 253915B8999
-	for <lists+bpf@lfdr.de>; Wed, 14 Sep 2022 15:59:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A60FC5B8AC1
+	for <lists+bpf@lfdr.de>; Wed, 14 Sep 2022 16:37:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229765AbiINN7n (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Sep 2022 09:59:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48254 "EHLO
+        id S230158AbiINOg6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Sep 2022 10:36:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229811AbiINN7i (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Sep 2022 09:59:38 -0400
-Received: from mail-oa1-x30.google.com (mail-oa1-x30.google.com [IPv6:2001:4860:4864:20::30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 788F510A4
-        for <bpf@vger.kernel.org>; Wed, 14 Sep 2022 06:59:30 -0700 (PDT)
-Received: by mail-oa1-x30.google.com with SMTP id 586e51a60fabf-1280590722dso41230235fac.1
-        for <bpf@vger.kernel.org>; Wed, 14 Sep 2022 06:59:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date;
-        bh=ecbcgh2XCDEUm+/ZfRl2Y++otYHA08IMV0flQG/03d0=;
-        b=5Jq5xTvsbatkEnvLYlO8cJCA6nnkbYsZRKMR4rC5ok5aOzmad+yCdJcxNtKR2hI1/7
-         dky3w9E3OyZ0SpWi0TL+Yv0qYQ9p/qljlCf8hK2WAWO3dHdg0uplU5DrSWiHbJIf5oWs
-         q+jZ5lf68Qz0CurUButJscXGCDR29OyE1TunaVjyiG91C81PsHHuKIdz4QwNMA8+oduB
-         +DSeLTh/CwdiAhIKgptyZ6DAVry2zYPmOzxYPSLBkse6wQojfo8W8UJXLbYEi/06BJur
-         TzfymoIdG+jq8TcynA0dLw2J+CG0qfPdAiU52RkBYjTSXXTfeayxArpV0v9LEoeOHkcT
-         ebfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date;
-        bh=ecbcgh2XCDEUm+/ZfRl2Y++otYHA08IMV0flQG/03d0=;
-        b=jsz90fI7E++oKC+XDaOXiDN6nFGBXxgqYMKdR/ZbNE/sJV7KuwOpD9fT80j9DNzQ1M
-         xYt70XC3HjwMpJF1Ovd/VRB71UpXjAxvkZfGvcpnAFHK2iG80SGMH0dw12dRjT+3YRxP
-         ufkHt+vfFGTU6uDLObkT/NojaCSpFmt+/4dWbF965wid6mDtxa4aaH5aDYOjfYcb0i4s
-         Vmzuu5bQa74H+V5AAiMZHWbvTzdsDKo2Rqj3Ws+G81/j2ToBsBkUACqZCNCvTTOyo0mt
-         CuTM2Znz1RfjOIvPXYOMOHPX+zF4X6zAU6/M2sYYiWL85IU007agM+xp04MUyjZcna7C
-         YcfA==
-X-Gm-Message-State: ACgBeo2yvbWdPlECA805u+NUtC61SiL9qu3m5SOtm0/z1SDdvA4EsqBv
-        r34YD8YdyXX9Ms03AgD49Mkebw==
-X-Google-Smtp-Source: AA6agR7uD9WqW+dsmzFhRQ2MR92bHGsF973mlKH8DU0aiXXyzuHoSC5wjKJuYsnSaycraul8nJ93Tw==
-X-Received: by 2002:a05:6808:1985:b0:34f:c592:b8c2 with SMTP id bj5-20020a056808198500b0034fc592b8c2mr2056535oib.3.1663163969556;
-        Wed, 14 Sep 2022 06:59:29 -0700 (PDT)
-Received: from ?IPV6:2804:1b3:7000:d095:41f2:210c:b643:8576? ([2804:1b3:7000:d095:41f2:210c:b643:8576])
-        by smtp.gmail.com with ESMTPSA id c8-20020a056870b28800b001275f056133sm8487765oao.51.2022.09.14.06.59.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Sep 2022 06:59:29 -0700 (PDT)
-Message-ID: <cf1bb615-09b9-a252-01fe-4192461307a9@mojatatu.com>
-Date:   Wed, 14 Sep 2022 10:59:23 -0300
+        with ESMTP id S230170AbiINOgq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 14 Sep 2022 10:36:46 -0400
+X-Greylist: delayed 1628 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 14 Sep 2022 07:36:44 PDT
+Received: from sv12173.xserver.jp (sv12173.xserver.jp [103.3.1.14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A034158B7A
+        for <bpf@vger.kernel.org>; Wed, 14 Sep 2022 07:36:44 -0700 (PDT)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/521/virusgw12001.xserver.jp)
+Received: from webmail.xserver.ne.jp (webmail.xserver.ne.jp [202.226.37.183])
+        by sv12173.xserver.jp (Postfix) with ESMTPA id 61694283F8D42A;
+        Wed, 14 Sep 2022 23:04:05 +0900 (JST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.12.0
-Subject: Re: [PATCH net-next 3/9] selftests/tc-testings: add selftests for bpf
- filter
-Content-Language: en-US
-To:     Zhengchao Shao <shaozhengchao@huawei.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        jhs@mojatatu.com, jiri@resnulli.us, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        shuah@kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, weiyongjun1@huawei.com,
-        yuehaibing@huawei.com
-References: <20220913042135.58342-1-shaozhengchao@huawei.com>
- <20220913042135.58342-4-shaozhengchao@huawei.com>
-From:   Victor Nogueira <victor@mojatatu.com>
-In-Reply-To: <20220913042135.58342-4-shaozhengchao@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Date:   Wed, 14 Sep 2022 22:04:05 +0800
+From:   Marcus Hamper <info@rrr-company.jp>
+To:     undisclosed-recipients:;
+Subject: THIS IS VERY CONFIDENTIAL
+Reply-To: marcushamper147@gmail.com
+Mail-Reply-To: marcushamper147@gmail.com
+Message-ID: <69b2a2d244df709fa3752e9b1a9718dc@rrr-company.jp>
+X-Sender: info@rrr-company.jp
+User-Agent: Roundcube Webmail/1.2.0
+X-Spam-Status: Yes, score=6.1 required=5.0 tests=BAYES_50,
+        FREEMAIL_FORGED_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,ODD_FREEM_REPTO,
+        SPF_HELO_PASS,SPF_PASS,SUBJ_ALL_CAPS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Report: *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.5 SUBJ_ALL_CAPS Subject is all capitals
+        * -0.0 SPF_HELO_PASS SPF: HELO matches SPF record
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [marcushamper147[at]gmail.com]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  2.4 ODD_FREEM_REPTO Has unusual reply-to header
+        *  2.1 FREEMAIL_FORGED_REPLYTO Freemail in Reply-To, but not From
+X-Spam-Level: ******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 13/09/2022 01:21, Zhengchao Shao wrote:
-> Test 23c3: Add cBPF filter with valid bytecode
-> Test 1563: Add cBPF filter with invalid bytecode
-> Test 2334: Add eBPF filter with valid object-file
-> Test 2373: Add eBPF filter with invalid object-file
-> Test 4423: Replace cBPF bytecode
-> Test 5122: Delete cBPF filter
-> Test e0a9: List cBPF filters
-> 
-> Signed-off-by: Zhengchao Shao <shaozhengchao@huawei.com>
-> ---
->   .../tc-testing/tc-tests/filters/bpf.json      | 171 ++++++++++++++++++
->   1 file changed, 171 insertions(+)
->   create mode 100644 tools/testing/selftests/tc-testing/tc-tests/filters/bpf.json
-> 
-> diff --git a/tools/testing/selftests/tc-testing/tc-tests/filters/bpf.json b/tools/testing/selftests/tc-testing/tc-tests/filters/bpf.json
-> new file mode 100644
-> index 000000000000..c679588f65fd
-> --- /dev/null
-> +++ b/tools/testing/selftests/tc-testing/tc-tests/filters/bpf.json
-> @@ -0,0 +1,171 @@
-> +[
-> +    {
-> +        "id": "23c3",
-> +        "name": "Add cBPF filter with valid bytecode",
-> +        "category": [
-> +            "filter",
-> +            "bpf"
-> +        ],
-> +	"plugins": {
 
-Just a nit-pick, there are some places where you are using tabs instead 
-of spaces. Mostly when specifying the plugins, like in the line above.
 
-This goes for the other test patches in this set as well.
+-- 
+Hello,
 
-> +            "requires": "nsPlugin"
-> +        },
-> +        "setup": [
-> +            "$TC qdisc add dev $DEV1 ingress"
-> +        ],
-> +        "cmdUnderTest": "$TC filter add dev $DEV1 parent ffff: handle 1 protocol ip prio 100 bpf bytecode '4,40 0 0 12,21 0 1 2048,6 0 0 262144,6 0 0 0'",
-> +        "expExitCode": "0",
-> +        "verifyCmd": "$TC filter get dev $DEV1 parent ffff: handle 1 protocol ip prio 100 bpf",
-> +        "matchPattern": "filter parent ffff: protocol ip pref 100 bpf chain [0-9]+ handle 0x1.*bytecode '4,40 0 0 12,21 0 1 2048,6 0 0 262144,6 0 0 0'",
-> +        "matchCount": "1",
-> +        "teardown": [
-> +            "$TC qdisc del dev $DEV1 ingress"
-> +        ]
-> +    },
-> +    {
-> +        "id": "1563",
-> +        "name": "Add cBPF filter with invalid bytecode",
-> +        "category": [
-> +            "filter",
-> +            "bpf"
-> +        ],
-> +	"plugins": {
-> +            "requires": "nsPlugin"
-> +        },
-> +        "setup": [
-> +            "$TC qdisc add dev $DEV1 ingress"
-> +	]
-> +        "cmdUnderTest": "$TC filter add dev $DEV1 parent ffff: handle 1 protocol ip prio 100 bpf bytecode '4,40 0 0 12,31 0 1 2048,6 0 0 262144,6 0 0 0'",
-> +        "expExitCode": "2",
-> +        "verifyCmd": "$TC filter get dev $DEV1 parent ffff: handle 1 protocol ip prio 100 bpf",
-> +        "matchPattern": "filter parent ffff: protocol ip pref 100 bpf chain [0-9]+ handle 0x1.*bytecode '4,40 0 0 12,21 0 1 2048,6 0 0 262144,6 0 0 0'",
-> +        "matchCount": "0",
-> +        "teardown": [
-> +            "$TC qdisc del dev $DEV1 ingress"
-> +        ]
-> +    },
-> +    {
-> +        "id": "2334",
-> +        "name": "Add eBPF filter with valid object-file",
-> +        "category": [
-> +            "filter",
-> +            "bpf"
-> +        ],
-> +        "plugins": {
-> +                "requires": "buildebpfPlugin"
-> +        },
-> +        "setup": [
-> +            "$TC qdisc add dev $DEV1 ingress"
-> +	],
-> +        "cmdUnderTest": "$TC filter add dev $DEV1 parent ffff: handle 1 protocol ip prio 100 bpf object-file $EBPFDIR/action.o section action-ok",
-> +        "expExitCode": "0",
-> +        "verifyCmd": "$TC filter get dev $DEV1 parent ffff: handle 1 protocol ip prio 100 bpf",
-> +        "matchPattern": "filter parent ffff: protocol ip pref 100 bpf chain [0-9]+ handle 0x1 action.o:\\[action-ok\\].*tag [0-9a-f]{16}( jited)?",
-> +        "matchCount": "1",
-> +        "teardown": [
-> +            "$TC qdisc del dev $DEV1 ingress"
-> +        ]
-> +    },
-> +    {
-> +        "id": "2373",
-> +        "name": "Add eBPF filter with invalid object-file",
-> +        "category": [
-> +            "filter",
-> +            "bpf"
-> +        ],
-> +        "plugins": {
-> +                "requires": "buildebpfPlugin"
-> +        },
-> +        "setup": [
-> +            "$TC qdisc add dev $DEV1 ingress"
-> +	],
-> +        "cmdUnderTest": "$TC filter add dev $DEV1 parent ffff: handle 1 protocol ip prio 100 bpf object-file $EBPFDIR/action.o section action-ko",
-> +        "expExitCode": "1",
-> +        "verifyCmd": "$TC filter get dev $DEV1 parent ffff: handle 1 protocol ip prio 100 bpf",
-> +        "matchPattern": "filter parent ffff: protocol ip pref 100 bpf chain [0-9]+ handle 0x1 action.o:\\[action-ko\\].*tag [0-9a-f]{16}( jited)?",
-> +        "matchCount": "0",
-> +        "teardown": [
-> +            "$TC qdisc del dev $DEV1 ingress"
-> +	]
-> +    },
-> +    {
-> +        "id": "4423",
-> +        "name": "Replace cBPF bytecode",
-> +        "category": [
-> +            "filter",
-> +            "bpf"
-> +        ],
-> +	"plugins": {
-> +            "requires": "nsPlugin"
-> +        },
-> +        "setup": [
-> +            "$TC qdisc add dev $DEV1 ingress",
-> +            [
-> +                "$TC filter add dev $DEV1 parent ffff: handle 1 protocol ip prio 100 bpf bytecode '4,40 0 0 12,21 0 1 2048,6 0 0 262144,6 0 0 0'",
-> +                0,
-> +                1,
-> +                255
-> +            ]
-> +        ],
-> +        "cmdUnderTest": "$TC filter replace dev $DEV1 parent ffff: handle 1 protocol ip prio 100 bpf bytecode '4,40 0 0 12,21 0 1 2054,6 0 0 262144,6 0 0 0'",
-> +        "expExitCode": "0",
-> +        "verifyCmd": "$TC filter get dev $DEV1 parent ffff: handle 1 protocol ip prio 100 bpf",
-> +        "matchPattern": "filter parent ffff: protocol ip pref 100 bpf chain [0-9]+ handle 0x1.*bytecode '4,40 0 0 12,21 0 1 2054,6 0 0 262144,6 0 0 0'",
-> +        "matchCount": "1",
-> +        "teardown": [
-> +            "$TC qdisc del dev $DEV1 ingress"
-> +	]
-> +    },
-> +    {
-> +        "id": "5122",
-> +        "name": "Delete cBPF filter",
-> +        "category": [
-> +            "filter",
-> +            "bpf"
-> +        ],
-> +	"plugins": {
-> +            "requires": "nsPlugin"
-> +        },
-> +        "setup": [
-> +            "$TC qdisc add dev $DEV1 ingress",
-> +	    [
-> +                "$TC filter add dev $DEV1 parent ffff: handle 1 protocol ip prio 100 bpf bytecode '4,40 0 0 12,21 0 1 2048,6 0 0 262144,6 0 0 0'",
-> +                0,
-> +                1,
-> +                255
-> +            ]
-> +        ],
-> +        "cmdUnderTest": "$TC filter del dev $DEV1 parent ffff: handle 1 protocol ip prio 100 bpf",
-> +        "expExitCode": "0",
-> +        "verifyCmd": "$TC filter get dev $DEV1 parent ffff: handle 1 protocol ip prio 100 bpf",
-> +        "matchPattern": "filter parent ffff: protocol ip pref 100 bpf chain [0-9]+ handle 0x1.*bytecode '4,40 0 0 12,21 0 1 2048,6 0 0 262144,6 0 0 0'",
-> +        "matchCount": "0",
-> +        "teardown": [
-> +            "$TC qdisc del dev $DEV1 ingress"
-> +	]
-> +    },
-> +    {
-> +        "id": "e0a9",
-> +        "name": "List cBPF filters",
-> +        "category": [
-> +            "filter",
-> +            "bpf"
-> +        ],
-> +	"plugins": {
-> +            "requires": "nsPlugin"
-> +        },
-> +        "setup": [
-> +            "$TC qdisc add dev $DEV1 ingress",
-> +	    "$TC filter add dev $DEV1 parent ffff: handle 1 protocol ip prio 100 bpf bytecode '4,40 0 0 12,21 0 1 2048,6 0 0 262144,6 0 0 0'",
-> +            "$TC filter add dev $DEV1 parent ffff: handle 2 protocol ip prio 100 bpf bytecode '4,40 0 0 12,21 0 1 2054,6 0 0 262144,6 0 0 0'",
-> +            "$TC filter add dev $DEV1 parent ffff: handle 100 protocol ip prio 100 bpf bytecode '4,40 0 0 12,21 0 1 33024,6 0 0 262144,6 0 0 0'"
-> +        ],
-> +        "cmdUnderTest": "$TC filter show dev $DEV1 parent ffff:",
-> +        "expExitCode": "0",
-> +        "verifyCmd": "$TC filter show dev $DEV1 parent ffff:",
-> +	"matchPattern": "filter protocol ip pref 100 bpf chain [0-9]+ handle",
-> +        "matchCount": "3",
-> +        "teardown": [
-> +            "$TC qdisc del dev $DEV1 ingress"
-> +        ]
-> +    }
-> +]
+My name is Marcus Hamper
+I apologize to have contacted you this way without a direct 
+relationship. There is an opportunity to collaborate with me in the 
+sourcing of some materials needed by our company for production of the 
+different medicines we are researching.
+
+I'm aware that this might be totally outside your professional 
+specialization, but it will be a great source for generating extra 
+revenue. I  discovered a manufacturer who can supply us at a lower rate 
+than our company's previous purchases. I will give you more specific 
+details when/if I receive feedback from you showing interest.
+
+Warm Regards
+Marcus Hamper
+Production & Control Manager,
+Green Field Laboratories
+Gothic House, Barker Gate,
+Nottingham, NG1 1JU,
+United Kingdom.
