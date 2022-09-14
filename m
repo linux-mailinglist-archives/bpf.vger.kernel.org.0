@@ -2,206 +2,299 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCCB45B8977
-	for <lists+bpf@lfdr.de>; Wed, 14 Sep 2022 15:49:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E1C55B8993
+	for <lists+bpf@lfdr.de>; Wed, 14 Sep 2022 15:59:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229572AbiINNtO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Sep 2022 09:49:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36838 "EHLO
+        id S229671AbiINN7X (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Sep 2022 09:59:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbiINNtM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Sep 2022 09:49:12 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D38EB7333B
-        for <bpf@vger.kernel.org>; Wed, 14 Sep 2022 06:49:11 -0700 (PDT)
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 28E6xn6h027464;
-        Wed, 14 Sep 2022 06:48:57 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=ZQ7TBqqC2x9Z9p3QyxH1MtQZIJHTx5PyICW9DNGBsXo=;
- b=Ly5JfXOUidO12v/nRmz78GqdTptGgxPKa2B0iCTrdJLzz7S61+rtiq3Xn8HIVEibsJbK
- DbpvPQGgtHcaY++lhyNULWV2bKgsNYDQObxbzvGe/Ak6uqUTxbbD4cZQXZPQx8w1c8OO
- dvjVumxTWeOdoqsvNk8wVrmsL1mBsr3cxa8= 
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2169.outbound.protection.outlook.com [104.47.58.169])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3jjy09dmse-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 14 Sep 2022 06:48:56 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jeEqlIKVd7FGwUFGAeb/17d859FEisanGAlCjVMmekj5v8O2Ri8nuxQlxZpFzUwNXN9UP2DjFt20RlHe+PSx8wJXSID/n2aYDJR1cGrcbGabKW9pk7p9qlz6xCCCqn7+1piuMm7GDwXa36eR52FXOHbKFgo8NsTUlF/AWhORKOm1rnWdvZ0RXTU8zQ3fcA7FYnh9w7Efz/I9+mn9VlotnPyClvCE0sxdrjHD6kVdVngx71UEkfL6nAWhGId7eC4TChEgoskcQxRalskxel1V2mfEnnN9SMw3DZ+stJ+HVRlQ6xY7f6RdEPyXYQXUWo2+aEdsYveJJjT3WMleWFaccw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZQ7TBqqC2x9Z9p3QyxH1MtQZIJHTx5PyICW9DNGBsXo=;
- b=j+Ujkh12aBCSHYCvvCk49dr661LvZW2C36sfrhCVfdF9gVoSmF4ietsOn0me4STuZ9/lw1xvvpzJzIzd8SfDQ1NIaJLqWdYrdyROQRhEHe3+d5fPnwDaxj0IS5gANu15Fgx7L7EJ0zSE5yk2s/O4JAmgrjq42H5/cwug49G3QqYVddDFOH8gRrkFoWjgbkC+MBZg43tJcDjo0efpFPPB7D+nnIHtkS5XotXeWXqEpUfoRWxh0kkELT6PuS6hg/ZfiinY8rvvuAd0s8j4lgPbMaYxblTsmUIIMm30KblSp027pxW9fzX4ZBFQBNM2TkvS1K7qhGMWfKf5LOCha2sG+w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from DM6PR15MB4039.namprd15.prod.outlook.com (2603:10b6:5:2b2::20)
- by SA0PR15MB4013.namprd15.prod.outlook.com (2603:10b6:806:8b::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5612.22; Wed, 14 Sep
- 2022 13:48:54 +0000
-Received: from DM6PR15MB4039.namprd15.prod.outlook.com
- ([fe80::71bc:e86e:4920:407b]) by DM6PR15MB4039.namprd15.prod.outlook.com
- ([fe80::71bc:e86e:4920:407b%8]) with mapi id 15.20.5612.022; Wed, 14 Sep 2022
- 13:48:54 +0000
-Message-ID: <47644903-156a-d244-9b9a-502de20fea4c@fb.com>
-Date:   Wed, 14 Sep 2022 14:48:48 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.2.2
-Subject: Re: [PATCH bpf-next 2/2] bpf: Consider all mem_types compatible for
- map_{key,value} args
-Content-Language: en-US
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Liam Wisehart <liamwisehart@fb.com>
-References: <20220912101106.2765921-1-davemarchevsky@fb.com>
- <20220912101106.2765921-2-davemarchevsky@fb.com>
- <CAP01T76YeOQLfYBX+63Z+cbF+xZUH-4FYG3MyNTiKtP8fLPGtw@mail.gmail.com>
- <CAP01T75Ldqze_sgiDCpvwLN262pEDRJpM2zs46FBW68yxiVBTA@mail.gmail.com>
-From:   Dave Marchevsky <davemarchevsky@fb.com>
-In-Reply-To: <CAP01T75Ldqze_sgiDCpvwLN262pEDRJpM2zs46FBW68yxiVBTA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LO2P123CA0108.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:139::23) To DM6PR15MB4039.namprd15.prod.outlook.com
- (2603:10b6:5:2b2::20)
+        with ESMTP id S229577AbiINN7V (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 14 Sep 2022 09:59:21 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B9787755B
+        for <bpf@vger.kernel.org>; Wed, 14 Sep 2022 06:59:20 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id x23-20020a056830409700b00655c6dace73so8104650ott.11
+        for <bpf@vger.kernel.org>; Wed, 14 Sep 2022 06:59:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mojatatu-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date;
+        bh=vnjVAiOJlnLZLBilwSL/TnGg0RD1DfF2pxGdoWNw/sU=;
+        b=ITBYoTVr3FDGckJJJs/b8pmmofQ1zcncZiinppHGTkbRrqtfZFSJ/NccGWoaFpr5cP
+         azIVz5XL4xW9j/4gihvmBDY0PuUG+U8jBRGLaqIVLL/zI2i0/Ue+wqePDZ4nEzCnjnez
+         6tVG0NJcVL6M3XDP1V+1m4kCHaD24RO1xAS8F5ubb8ts2I83ljAq3CVFyYOqu+AWKJ+k
+         5AWBbYsh9N3C1XlVceOutwiSV4lSAoFQOoIRr2ikGcTyCfAmARCGR1oTZsERUol1jO/F
+         +uCcpxt4ZhGtN5YErRjv3XGrixgMIClI7GNuVzmIEAJvKVv0QQ40+zukbu6QU/rBBrK6
+         eCJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date;
+        bh=vnjVAiOJlnLZLBilwSL/TnGg0RD1DfF2pxGdoWNw/sU=;
+        b=YkLxtPqS3f8IIEGuydzZQ1D43WRxc7cfz/T1YYdf+M7CTypKUpxIaY1b8f8b1eTgLo
+         GKk08/ifTLYC2pY8w0tDkevF31WVnmr1WP4HbJUJWARJjD2MEKaHgcQEzpX5rD1FtdO0
+         j0po+qOviIwtmc1AJctY2WYhJcJWq+SnQ06UUQWlJrC8Bi3eKqPzAgWNGQ0B6Jb1k2vu
+         9qKvQaJ4BRvOjrMQq7+QoheWde+PvC32GY5hVX6OglP4h2PzlRczkno0/Kd4IPkw0qsK
+         3LxNjp8C3wEMdFvTTM4kjVnZIC6pApyrfqv5g9sAj8Xp1RKtQUzbKtYCwwjiX6Ly16Yz
+         wYVA==
+X-Gm-Message-State: ACgBeo0DTB1nyfEjQcu3I1x358MJ6PRaoZNp7wITNOhHWLEF4NvDLdoR
+        Ba7VCUmItDrMH3OzuJrwfCjlow==
+X-Google-Smtp-Source: AA6agR7A6KDWhzFrDbk4Z9NcKexHJ5YoQOinjjH5LpWjyN29gejiuDQAKQOonGXS9znnZdc70bHrog==
+X-Received: by 2002:a05:6830:6104:b0:654:fb1:faba with SMTP id ca4-20020a056830610400b006540fb1fabamr10815474otb.183.1663163959517;
+        Wed, 14 Sep 2022 06:59:19 -0700 (PDT)
+Received: from ?IPV6:2804:1b3:7000:d095:41f2:210c:b643:8576? ([2804:1b3:7000:d095:41f2:210c:b643:8576])
+        by smtp.gmail.com with ESMTPSA id v66-20020acade45000000b00344a22e71a9sm6449366oig.9.2022.09.14.06.59.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Sep 2022 06:59:19 -0700 (PDT)
+Message-ID: <24f4feb8-7ca1-eae3-570e-5ece870dee47@mojatatu.com>
+Date:   Wed, 14 Sep 2022 10:59:12 -0300
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR15MB4039:EE_|SA0PR15MB4013:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2f9a9c00-180f-4c90-d8a4-08da9657dcec
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 5tIwKBvYjIhA/jLW6Jpq2gp23bomzWPKSBCwGLqmrj1ck0cQMewVaJKN8wkhu+C4zpKacqza3QJD0DioTDyPmBmyZNp0yhvdQrXNkSPX49fgnfRYxXTmmsaLHjhZCy+ivWta4enq+9bi15MlH0OGy+eWth37/vfJy7uQkPik30UV+UnvSpHrX53oTzTtPjSc4Z3Fch+a+hknPB0iuLuEyA6QGe3JtEUd/iKi09b1iiwQ83sLflekCV7/J7Yz3xlWC/X9LrYkuHQUWWMORpI8xXlLjhaHpvcCOag4XuB/gchwTY0ZaP58Vz9qoMw1oAAANhb3tQTdT3RqxITsPa4c8yodpHfrd1Qr71XyYdHnfvZMMZej7I08xR6bNVPhylZC3MIPNDwtz5jIlzrbtF1ZkcUa7VRroeqULnfuBsQV2JakNL/7TtuV4xsStZc10tdBemMZtxyulyGEjGo5cnEnkqcqknatYu/E4JZ+k5Uf1crSZN4bfNMTC5+ClQSA3R7cM3kHSdZjPIPsP5EWqkELMXno4GTWN1oUVkQ/vSPUHgVef9s2VnHAD6Q3vioAHL9aalzrny5EmEW0+600m3PPeSVOGiLqVTN3rNe8c0346ySsKegN68NgZ0DEzNrkZ03VkqRrh2eZkW4INyoY6u6IKDO8v+d82Y2zV/PDuDK79OwjiO/oqaPn2nLzg1AqnXxh/quLLjrX7/JDb5HYaOf8t4iExujgwigvd7ljF2l3vRXcBmrn5QUNAA2OymSpW1buta+qR3HfUTcUKAN5HdxGsFXk/uVYTP142UzlVMaZjGs=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR15MB4039.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(136003)(376002)(346002)(396003)(39860400002)(366004)(451199015)(6916009)(66476007)(316002)(41300700001)(54906003)(36756003)(66946007)(6486002)(2616005)(6666004)(8936002)(6512007)(186003)(53546011)(31696002)(478600001)(5660300002)(86362001)(66556008)(38100700002)(4326008)(8676002)(2906002)(83380400001)(31686004)(6506007)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Tjh1Nm5DZDAybzlLanFzRmhQT0dtaUZOaGpWVDBIQ3I5c3k1OFlZYWtkNjg3?=
- =?utf-8?B?VWd2VGdva21CWmlSaHpZdnh3dXlxZVhzWThla28zTWd2T2xDMG9NTW1SVmRV?=
- =?utf-8?B?UU14aDB1VW5SbnFnaVVpQnFQN3A4ajc0R3VkVlpMbEtSQ2tQU1BWeXVIR1FM?=
- =?utf-8?B?c3laVDJ5WTBBOFNXenp1RjZpUmFDOXNUSmxmenVTci95TlgraW1iL0tvbW9p?=
- =?utf-8?B?V0JRRzIySElyRDBIWlN0NmpTMjgrOGVPaERnNlZHcnU3QzRjZlk1QkM3V3Jh?=
- =?utf-8?B?dGxLdXlPd0dWa0NwUTBRVHhpWFFYaS81NSsyQVB6K09RVnRneVVNV00zUWVB?=
- =?utf-8?B?c2NtWDl6UXpVSFhGRDRqWGV3QTFvZHhPYmMwelRnNDRueURXWjFzOFk3K0o2?=
- =?utf-8?B?ZlVSdDc5Ujk5SWFNeWlob082cUxiZWlsWmNETHpteEFJMXMvSWZZdU96Wk1X?=
- =?utf-8?B?NTE0SHlyTXR4WjYrTkRNYVdFcUpYTURrSWExbnNOYnRzTVpDTVoyUkR1YWpC?=
- =?utf-8?B?MUhSbzhqbnZtOHVlZGJsR1IyTWF3dEZ6Wmd1Zkd4Nmc0RzJiL1ZaV0tkZWpY?=
- =?utf-8?B?dmJnL0RxMUpVeFd6TWlzamxmb3ZpeC9EbW9ja0I1WnZmTHpJTW56dzR4VTNQ?=
- =?utf-8?B?d0U4NkJrZUJzbFA4aWRzVGJiSTZiZEJPb2h1TDJyOFdGU040cDBxTHJYcjh5?=
- =?utf-8?B?S2lqZ2x5Zmw3M3lTRzl4Y1BoVFBFS051ellLWFZMOVpTQ0U0MU1LMitvSGwv?=
- =?utf-8?B?NjVSZ1U5UXFmQXlJN2xEbVFQei95d3IzREFwT3FzVUZPMlZoOUo1ZCtxS3Fj?=
- =?utf-8?B?VTN1dENvQXVFMHhYL3pabmxLa2Z5cTVESFpnbW9uVGxCZTV0WEJ2anhYa1JB?=
- =?utf-8?B?UE9hRHBkWWo2VGhnQ2VBR29aS00wS3dtemUwaEhSQTJ3a0M5U0FkeStVdGlB?=
- =?utf-8?B?WnMvcTl6U0taZS9OTFZIeTM4RHpQLy90R3QwWTdkaXpxelZkL0IyR3IzWVcr?=
- =?utf-8?B?SmZyc1VabDRabTFqWCtHWE5jZ2VwRzlPbG1XSFJNUUtJVitYa0I4VFZ6YzZI?=
- =?utf-8?B?TlFScXlRdWZ4R2NISXR6YTFKQzBuZGtLWjBNa2d4WWZyZW1kcjJkYktxcTdo?=
- =?utf-8?B?cHNJQ3N3ZDVCTzcwS1IySEhXQmZVZTdPbjRaVDRhYzFzOTNmTWZ2MzZha2ls?=
- =?utf-8?B?UWJncVRaSW9hTUtUZ2JGUno3enBXWUg2cFMvMHlLbm9EeFFJUWUwdmtTZmdi?=
- =?utf-8?B?eFg1OHduN2JqNXkrZHEwT1R2NTJWanRKR0QvZURVRjFxRzR4OG5GTkVQaWtH?=
- =?utf-8?B?K21naTdsVmlWZHUxaEpWRHIvbGJ6bzlqaTNDLzEvb0VtUHIvNnpIb2QrUW5y?=
- =?utf-8?B?dDVhV05ZVmYwOTFTYWluamNhR215cUZub2ZHWU5La2xCOHFGY1g1N1NYT1dZ?=
- =?utf-8?B?aWY1cVlEd0tEclR5eTNmVXhlUlFFVWtUbGV4OGdNbFVUcnBwbkxBMEpKQWtn?=
- =?utf-8?B?UG5KK1g5YllkaWNEdmYzWDFOV1JIZkZ4QmJiTHRzMTVPOS9jQVJSaHl1ZzRq?=
- =?utf-8?B?OG1VSEhDN3VmMmN4clZpY21ncUpzYkJrdG1vdEdtRUEzTHNtS2g3MVVEdzkw?=
- =?utf-8?B?bHVMSVgrSFdOZzJwSm1BdTBVVDQvcVFvcGRoeVFtcGo5UFcvRXBDVXl5THhj?=
- =?utf-8?B?MzMxWmdCZEE5cXJGTVFYNzkzRElCT3JUeFBrdlYrWXdNOGRGQTRMbTl1VUZX?=
- =?utf-8?B?bm5zb1VwUC9kYlJmM3lrWnQ2MUo4UnFQWHlHWTVzWWZGNjZubTVlSzQzQzdS?=
- =?utf-8?B?TTJqeXg3a3NveTZvTmRidjFlZFdCeGc0VTNTVm85TDNXVHpCcGtERm91M3ls?=
- =?utf-8?B?d2pSNXVFa2U5VmdVY1hkSm0xYjlsa2pxeWNnN2M5eU5yUGtlUGRCZ3FmaVI1?=
- =?utf-8?B?ZzNZS1hEZ3NteUczZXJBYU1Iak90Vnk4TU5JOGwyNUVIZ2NidWJ3bTZPVlQ4?=
- =?utf-8?B?VmFIZTRwOWZFZUthY3NraXJZc3k1Vm84OEFFTlk1Vlh1K3RmbU1XN1B6cGdR?=
- =?utf-8?B?c1FHbzRuVUxWTG53ZmpsbHV1SmFJL214MlZ1amFwMDMwRW5wdXUyWnhrWnA5?=
- =?utf-8?B?WlFzUm5mNGs0Mnk4U1VXSTdCQjhOL0dQaG9qNjNqcTArVTJJUThsRDA5VjMr?=
- =?utf-8?Q?eL5j7W8QBPnTOOSFpcQ8yc0=3D?=
-X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2f9a9c00-180f-4c90-d8a4-08da9657dcec
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR15MB4039.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2022 13:48:54.5738
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: fpQEhenh+qfn/k1DF7hYpJ8q+0RQ6X73IIi6Aw8CQslMoEpa22hKs9zxdfuoa5J9eR3tJ52Ol4MMELpb/YilZg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR15MB4013
-X-Proofpoint-GUID: N8iKqAuh-OPXzEr7YgQqhh6Biktmglt6
-X-Proofpoint-ORIG-GUID: N8iKqAuh-OPXzEr7YgQqhh6Biktmglt6
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.528,FMLib:17.11.122.1
- definitions=2022-09-14_06,2022-09-14_04,2022-06-22_01
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.12.0
+Subject: Re: [PATCH net-next 0/9] refactor duplicate codes in the tc cls walk
+ function
+Content-Language: en-US
+To:     Zhengchao Shao <shaozhengchao@huawei.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        jhs@mojatatu.com, jiri@resnulli.us, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        shuah@kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, weiyongjun1@huawei.com,
+        yuehaibing@huawei.com
+References: <20220913042135.58342-1-shaozhengchao@huawei.com>
+From:   Victor Nogueira <victor@mojatatu.com>
+In-Reply-To: <20220913042135.58342-1-shaozhengchao@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 9/12/22 3:34 PM, Kumar Kartikeya Dwivedi wrote:
-> On Mon, 12 Sept 2022 at 16:34, Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
->>
->> On Mon, 12 Sept 2022 at 12:24, Dave Marchevsky <davemarchevsky@fb.com> wrote:
->>>
->>> After the previous patch, which added PTR_TO_MEM types to
->>> map_key_value_types, the only difference between map_key_value_types and
->>> mem_types sets is PTR_TO_BUF, which is in the latter set but not the
->>> former.
->>>
->>> Helpers which expect ARG_PTR_TO_MAP_KEY or ARG_PTR_TO_MAP_VALUE
->>> already effectively expect a valid blob of arbitrary memory that isn't
->>> necessarily explicitly associated with a map. When validating a
->>> PTR_TO_MAP_{KEY,VALUE} arg, the verifier expects meta->map_ptr to have
->>> already been set, either by an earlier ARG_CONST_MAP_PTR arg, or custom
->>> logic like that in process_timer_func or process_kptr_func.
->>>
->>> So let's get rid of map_key_value_types and just use mem_types for those
->>> args.
->>>
->>> This has the effect of adding PTR_TO_BUF to the set of compatible types
->>> for ARG_PTR_TO_MAP_KEY and ARG_PTR_TO_MAP_VALUE.
->>>
->>> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
->>> ---
->>
->> I'm wondering how it is safe when PTR_TO_BUF aliases map_value we are updating.
->>
->> User can now do e.g. in array map:
->> map_iter(ctx)
->>   bpf_map_update_elem(map, ctx->key, ctx->value, 0);
->>
->> Technically such overlapping memcpy is UB.
+On 13/09/2022 01:21, Zhengchao Shao wrote:
+> The walk implementation of most tc cls modules is basically the same.
+> That is, the values of count and skip are checked first. If count is
+> greater than or equal to skip, the registered fn function is executed.
+> Otherwise, increase the value of count. So the code can be refactored.
+> Then use helper function to replace the code of each cls module in
+> alphabetical order.
 > 
-> Hit send too early.
-> To be fair they can already do this using PTR_TO_MAP_VALUE, so it's
-> not a new problem.
+> The walk function is invoked during dump. Therefore, test cases related
+>   to the tdc filter need to be added.
+> 
+> Add test cases locally and perform the test. The test results are listed
+> below:
+> 
+> ./tdc.py -e 0811
+> ok 1 0811 - Add multiple basic filter with cmp ematch u8/link layer and
+> default action and dump them
+> 
+> ./tdc.py -e 5129
+> ok 1 5129 - List basic filters
+> 
+> ./tdc.py -c filters bpf
+> ok 13 23c3 - Add cBPF filter with valid bytecode
+> ok 14 1563 - Add cBPF filter with invalid bytecode
+> ok 15 2334 - Add eBPF filter with valid object-file
+> ok 16 2373 - Add eBPF filter with invalid object-file
+> ok 17 4423 - Replace cBPF bytecode
+> ok 18 5122 - Delete cBPF filter
+> ok 19 e0a9 - List cBPF filters
+> 
+> ./tdc.py -c filters cgroup
+> ok 1 6273 - Add cgroup filter with cmp ematch u8/link layer and drop
+> action
+> ok 2 4721 - Add cgroup filter with cmp ematch u8/link layer with trans
+> flag and pass action
+> ok 3 d392 - Add cgroup filter with cmp ematch u16/link layer and pipe
+> action
+> ok 4 0234 - Add cgroup filter with cmp ematch u32/link layer and miltiple
+> actions
+> ok 5 8499 - Add cgroup filter with cmp ematch u8/network layer and pass
+> action
+> ok 6 b273 - Add cgroup filter with cmp ematch u8/network layer with trans
+> flag and drop action
+> ok 7 1934 - Add cgroup filter with cmp ematch u16/network layer and pipe
+> action
+> ok 8 2733 - Add cgroup filter with cmp ematch u32/network layer and
+> miltiple actions
+> ok 9 3271 - Add cgroup filter with NOT cmp ematch rule and pass action
+> ok 10 2362 - Add cgroup filter with two ANDed cmp ematch rules and single
+> action
+> ok 11 9993 - Add cgroup filter with two ORed cmp ematch rules and single
+> action
+> ok 12 2331 - Add cgroup filter with two ANDed cmp ematch rules and one
+> ORed ematch rule and single action
+> ok 13 3645 - Add cgroup filter with two ANDed cmp ematch rules and one
+> NOT ORed ematch rule and single action
+> ok 14 b124 - Add cgroup filter with u32 ematch u8/zero offset and drop
+> action
+> ok 15 7381 - Add cgroup filter with u32 ematch u8/zero offset and invalid
+> value >0xFF
+> ok 16 2231 - Add cgroup filter with u32 ematch u8/positive offset and
+> drop action
+> ok 17 1882 - Add cgroup filter with u32 ematch u8/invalid mask >0xFF
+> ok 18 1237 - Add cgroup filter with u32 ematch u8/missing offset
+> ok 19 3812 - Add cgroup filter with u32 ematch u8/missing AT keyword
+> ok 20 1112 - Add cgroup filter with u32 ematch u8/missing value
+> ok 21 3241 - Add cgroup filter with u32 ematch u8/non-numeric value
+> ok 22 e231 - Add cgroup filter with u32 ematch u8/non-numeric mask
+> ok 23 4652 - Add cgroup filter with u32 ematch u8/negative offset and
+> pass action
+> ok 24 1331 - Add cgroup filter with u32 ematch u16/zero offset and pipe
+> action
+> ok 25 e354 - Add cgroup filter with u32 ematch u16/zero offset and
+> invalid value >0xFFFF
+> ok 26 3538 - Add cgroup filter with u32 ematch u16/positive offset and
+> drop action
+> ok 27 4576 - Add cgroup filter with u32 ematch u16/invalid mask >0xFFFF
+> ok 28 b842 - Add cgroup filter with u32 ematch u16/missing offset
+> ok 29 c924 - Add cgroup filter with u32 ematch u16/missing AT keyword
+> ok 30 cc93 - Add cgroup filter with u32 ematch u16/missing value
+> ok 31 123c - Add cgroup filter with u32 ematch u16/non-numeric value
+> ok 32 3675 - Add cgroup filter with u32 ematch u16/non-numeric mask
+> ok 33 1123 - Add cgroup filter with u32 ematch u16/negative offset and
+> drop action
+> ok 34 4234 - Add cgroup filter with u32 ematch u16/nexthdr+ offset and
+> pass action
+> ok 35 e912 - Add cgroup filter with u32 ematch u32/zero offset and pipe
+> action
+> ok 36 1435 - Add cgroup filter with u32 ematch u32/positive offset and
+> drop action
+> ok 37 1282 - Add cgroup filter with u32 ematch u32/missing offset
+> ok 38 6456 - Add cgroup filter with u32 ematch u32/missing AT keyword
+> ok 39 4231 - Add cgroup filter with u32 ematch u32/missing value
+> ok 40 2131 - Add cgroup filter with u32 ematch u32/non-numeric value
+> ok 41 f125 - Add cgroup filter with u32 ematch u32/non-numeric mask
+> ok 42 4316 - Add cgroup filter with u32 ematch u32/negative offset and
+> drop action
+> ok 43 23ae - Add cgroup filter with u32 ematch u32/nexthdr+ offset and
+> pipe action
+> ok 44 23a1 - Add cgroup filter with canid ematch and single SFF
+> ok 45 324f - Add cgroup filter with canid ematch and single SFF with mask
+> ok 46 2576 - Add cgroup filter with canid ematch and multiple SFF
+> ok 47 4839 - Add cgroup filter with canid ematch and multiple SFF with
+> masks
+> ok 48 6713 - Add cgroup filter with canid ematch and single EFF
+> ok 49 4572 - Add cgroup filter with canid ematch and single EFF with mask
+> ok 50 8031 - Add cgroup filter with canid ematch and multiple EFF
+> ok 51 ab9d - Add cgroup filter with canid ematch and multiple EFF with
+> masks
+> ok 52 5349 - Add cgroup filter with canid ematch and a combination of
+> SFF/EFF
+> ok 53 c934 - Add cgroup filter with canid ematch and a combination of
+> SFF/EFF with masks
+> ok 54 4319 - Replace cgroup filter with diffferent match
+> ok 55 4636 - Detele cgroup filter
+> 
+> ./tdc.py -c filters flow
+> ok 1 5294 - Add flow filter with map key and ops
+> ok 2 3514 - Add flow filter with map key or ops
+> ok 3 7534 - Add flow filter with map key xor ops
+> ok 4 4524 - Add flow filter with map key rshift ops
+> ok 5 0230 - Add flow filter with map key addend ops
+> ok 6 2344 - Add flow filter with src map key
+> ok 7 9304 - Add flow filter with proto map key
+> ok 8 9038 - Add flow filter with proto-src map key
+> ok 9 2a03 - Add flow filter with proto-dst map key
+> ok 10 a073 - Add flow filter with iif map key
+> ok 11 3b20 - Add flow filter with priority map key
+> ok 12 8945 - Add flow filter with mark map key
+> ok 13 c034 - Add flow filter with nfct map key
+> ok 14 0205 - Add flow filter with nfct-src map key
+> ok 15 5315 - Add flow filter with nfct-src map key
+> ok 16 7849 - Add flow filter with nfct-proto-src map key
+> ok 17 9902 - Add flow filter with nfct-proto-dst map key
+> ok 18 6742 - Add flow filter with rt-classid map key
+> ok 19 5432 - Add flow filter with sk-uid map key
+> ok 20 4234 - Add flow filter with sk-gid map key
+> ok 21 4522 - Add flow filter with vlan-tag map key
+> ok 22 4253 - Add flow filter with rxhash map key
+> ok 23 4452 - Add flow filter with hash key list
+> ok 24 4341 - Add flow filter with muliple ops
+> ok 25 4322 - List flow filters
+> ok 26 2320 - Replace flow filter with map key num
+> ok 27 3213 - Delete flow filter with map key num
+> 
+> ./tdc.py -c filters route
+> ok 1 e122 - Add route filter with from and to tag
+> ok 2 6573 - Add route filter with fromif and to tag
+> ok 3 1362 - Add route filter with to flag and reclassify action
+> ok 4 4720 - Add route filter with from flag and continue actions
+> ok 5 2812 - Add route filter with form tag and pipe action
+> ok 6 7994 - Add route filter with miltiple actions
+> ok 7 4312 - List route filters
+> ok 8 2634 - Delete route filters with pipe action
+> 
+> ./tdc.py -c filters rsvp
+> ok 1 2141 - Add rsvp filter with tcp proto and specific IP address
+> ok 2 5267 - Add rsvp filter with udp proto and specific IP address
+> ok 3 2819 - Add rsvp filter with src ip and src port
+> ok 4 c967 - Add rsvp filter with tunnelid and continue action
+> ok 5 5463 - Add rsvp filter with tunnel and pipe action
+> ok 6 2332 - Add rsvp filter with miltiple actions
+> ok 7 8879 - Add rsvp filter with tunnel and skp flag
+> ok 8 8261 - List rsvp filters
+> ok 9 8989 - Delete rsvp filters
+> 
+> ./tdc.py -c filters tcindex
+> ok 1 8293 - Add tcindex filter with default action
+> ok 2 7281 - Add tcindex filter with hash size and pass action
+> ok 3 b294 - Add tcindex filter with mask shift and reclassify action
+> ok 4 0532 - Add tcindex filter with pass_on and continue actions
+> ok 5 d473 - Add tcindex filter with pipe action
+> ok 6 2940 - Add tcindex filter with miltiple actions
+> ok 7 1893 - List tcindex filters
+> ok 8 2041 - Change tcindex filters with pass action
+> ok 9 9203 - Replace tcindex filters with pass action
+> ok 10 7957 - Delete tcindex filters with drop action
+> 
+> Zhengchao Shao (9):
+>    net/sched: cls_api: add helper for tc cls walker stats updating
+>    net/sched: use tc_cls_stats_update() in filter
+>    selftests/tc-testings: add selftests for bpf filter
+>    selftests/tc-testings: add selftests for cgroup filter
+>    selftests/tc-testings: add selftests for flow filter
+>    selftests/tc-testings: add selftests for route filter
+>    selftests/tc-testings: add selftests for rsvp filter
+>    selftests/tc-testings: add selftests for tcindex filter
+>    selftests/tc-testings: add list case for basic filter
+> 
+>   include/net/pkt_cls.h                         |   13 +
+>   net/sched/cls_basic.c                         |    9 +-
+>   net/sched/cls_bpf.c                           |    8 +-
+>   net/sched/cls_flow.c                          |    8 +-
+>   net/sched/cls_fw.c                            |    9 +-
+>   net/sched/cls_route.c                         |    9 +-
+>   net/sched/cls_rsvp.h                          |    9 +-
+>   net/sched/cls_tcindex.c                       |   18 +-
+>   net/sched/cls_u32.c                           |   20 +-
+>   .../tc-testing/tc-tests/filters/basic.json    |   47 +
+>   .../tc-testing/tc-tests/filters/bpf.json      |  171 +++
+>   .../tc-testing/tc-tests/filters/cgroup.json   | 1236 +++++++++++++++++
+>   .../tc-testing/tc-tests/filters/flow.json     |  623 +++++++++
+>   .../tc-testing/tc-tests/filters/route.json    |  181 +++
+>   .../tc-testing/tc-tests/filters/rsvp.json     |  203 +++
+>   .../tc-testing/tc-tests/filters/tcindex.json  |  227 +++
+>   16 files changed, 2716 insertions(+), 75 deletions(-)
+>   create mode 100644 tools/testing/selftests/tc-testing/tc-tests/filters/bpf.json
+>   create mode 100644 tools/testing/selftests/tc-testing/tc-tests/filters/cgroup.json
+>   create mode 100644 tools/testing/selftests/tc-testing/tc-tests/filters/flow.json
+>   create mode 100644 tools/testing/selftests/tc-testing/tc-tests/filters/route.json
+>   create mode 100644 tools/testing/selftests/tc-testing/tc-tests/filters/rsvp.json
+>   create mode 100644 tools/testing/selftests/tc-testing/tc-tests/filters/tcindex.json
 > 
 
-Yeah, I see what you mean and agree that it's a bug. But as you concluded it's a
-preexisting issue, so I didn't attempt to address it in the v2 series I sent out
-today.
-
-I agree with all other comments and addressed them.
-
->>
->> Looks like for this particular case, overlap will always be exact.
->> Such aliasing pointers always have fixed size memory.
->> If offset was added for partial overlap, it would not satisfy
->> value_size requirement and users won't be able to pass the pointer.
->> dynptr_from_mem may be a problem, but even there you need to obtain a
->> data slice of at least value_size, if an offset is added
->> slice will always be < value_size.
->>
->> So it seems we only need to care about dst == src, and should be using
->> memmove when dst == src?
->>
->> PS: Also it would be better to split verifier and selftest changes in
->> patch 1 into separate patches.
+Aside from tabs vs spaces nit-picking, the test patches in this set look 
+good.
