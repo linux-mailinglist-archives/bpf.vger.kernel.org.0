@@ -2,80 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDA685B8723
-	for <lists+bpf@lfdr.de>; Wed, 14 Sep 2022 13:20:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B10D5B878E
+	for <lists+bpf@lfdr.de>; Wed, 14 Sep 2022 13:52:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229764AbiINLUM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Sep 2022 07:20:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55598 "EHLO
+        id S229814AbiINLwk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Sep 2022 07:52:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229766AbiINLUI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Sep 2022 07:20:08 -0400
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D104A2FFF3;
-        Wed, 14 Sep 2022 04:20:06 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id D4C875C016D;
-        Wed, 14 Sep 2022 07:20:05 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Wed, 14 Sep 2022 07:20:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lmb.io; h=cc:cc
-        :content-transfer-encoding:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm1; t=1663154405; x=1663240805; bh=g5
-        nrhku7XzOq1sKHPJflx7TIWuD1FqVOgdP2P6w9enc=; b=WsybmA4GEiX2AoM+AQ
-        SMLx9NbIM2YpucB2Gyf6h+yyPAoaT+NquJaqqm60VxCsYNFd5numGa98kIIYkN9R
-        j4BCw8hBqTUsOT7b7sBZCKU94oSc96qcekYNaGQpDG6UOuxKUS5xB8XNZMjbhgzB
-        +jrHH3oDZnJM+WPw22x6Kgvc/r3+tk3qXJCBKITAzskEsNArLR7W+i2SujyRuNdn
-        X7MWbINNyL/ECmg0pUGJ3zL4xpwsXT4C2JBMV5U1sj660AxkMVH58qgHwYxRcFqY
-        ongOnEZFCMEh/5jSKyId6oSx7e9EwDAo+ff/YQhP+UcMUcZhh/1GvaWUGwUPrV2G
-        9XNw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1663154405; x=1663240805; bh=g5nrhku7XzOq1
-        sKHPJflx7TIWuD1FqVOgdP2P6w9enc=; b=boZ1l8ntoCcSTeNPdTmksFTkU15Nq
-        meXMrwqbtUlWftVSVsrdsvUKw3OMvGJY6bkD9+9Fni/VFqh0YIZ0/cKw7+JUI61y
-        WHK9li6/mp6tbV3F7PKrulAKhxhWx1ENgzEFpFozUpZVc8lXKROIxhPvhzCOGmU6
-        rx7myiUIbp18YCR/2yjRzIh82U+CihyJCZqYwTPAXrFNeZl4q0xZzn/0fc5///6F
-        KjcUQ0zQDatAKhg68iWrcnEa4iMveqmk2gp2dpBF4nNxKIvhYjFlo3Hes+5W5EUV
-        k78N7GTo98aN9aPd3EDmZY2kBU+m9meFgDUAMqDm/cOSI38r5C3MipFwA==
-X-ME-Sender: <xms:5bghY8DACsSbbx70DWxK1UC8tlBGzBMkUeqy7iba569P3XadnhXqPg>
-    <xme:5bghY-ittppfDZYHnnvW6MwMQ_aoZe1DCqaNl7vE4Tg4zdzB_LzhGC5dL1EZwapad
-    dUm7NOrr60QbuDTpg>
-X-ME-Received: <xmr:5bghY_nTRnnObcxBRCKViDnrmWft9GOBV9qeevzHLZj4WzGT5elzjHyvjJK__MaUuoLrAj29>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrfeduiedggedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffojghfggfgsedtke
-    ertdertddtnecuhfhrohhmpefnohhrvghniicuuegruhgvrhcuoehoshhssehlmhgsrdhi
-    oheqnecuggftrfgrthhtvghrnhepfeegledtgeehgeekgfffteeihfevieejhedvudeuie
-    euhefgvdevudevteefvdetnecuffhomhgrihhnpehgihhthhhusgdrtghomhenucevlhhu
-    shhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoshhssehlmhgsrd
-    hioh
-X-ME-Proxy: <xmx:5bghYyxjCeL_4v9xPOjUS7y0sne7BoixouJJkXX4dE6IPkrIfX9PRQ>
-    <xmx:5bghYxSG7H3TPQFOd4_kFJsB_t90kx6eSwesf66cQWA728iIcjybkg>
-    <xmx:5bghY9aqgZGQitDD_qROBSv-W3G2AQt1-RqXUgKEpFTCTGJ9Gw0s6w>
-    <xmx:5bghYwHWqd5fFEF-DhdZ53hBWC_TMJzIi4jO-wMOsCJdq-Jc_ul8Rw>
-Feedback-ID: icd3146c6:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 14 Sep 2022 07:20:03 -0400 (EDT)
-From:   Lorenz Bauer <oss@lmb.io>
-To:     shaozhengchao@huawei.com, ast@kernel.org, daniel@iogearbox.net
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org, sdf@google.com,
-        yuehaibing@huawei.com, Lorenz Bauer <oss@lmb.io>
-Subject: Re: [PATCH v4,bpf-next] bpf: Don't redirect packets with invalid pkt_len
-Date:   Wed, 14 Sep 2022 11:19:36 +0000
-Message-Id: <20220914111936.19881-1-oss@lmb.io>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220715115559.139691-1-shaozhengchao@huawei.com>
-References: <20220715115559.139691-1-shaozhengchao@huawei.com>
+        with ESMTP id S229550AbiINLwj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 14 Sep 2022 07:52:39 -0400
+Received: from mail-oa1-x2f.google.com (mail-oa1-x2f.google.com [IPv6:2001:4860:4864:20::2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD1477AC0C
+        for <bpf@vger.kernel.org>; Wed, 14 Sep 2022 04:52:37 -0700 (PDT)
+Received: by mail-oa1-x2f.google.com with SMTP id 586e51a60fabf-127ba06d03fso40255568fac.3
+        for <bpf@vger.kernel.org>; Wed, 14 Sep 2022 04:52:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=ndUOLxOaGlFRGIa+IUCqchYoYX0ob/eqM4B2Su7aOP0=;
+        b=EYX698uwfmKMSXh/ILCEGi20kLHVC2QuF0Wcs243ekp242ONMvwY1QBX2Wui6PGcDI
+         CStw08eCxFr2759UFNnBa8qHHa4Win2S11Vurdt3ZiGKFm99xL6z796AH36DFexOXHDP
+         zceFKtA8ZYKgFgi2lYpPZ4YFgTfHW75lvh0G4BuwOq1lyzddQzX9zqz0gVeu016zV1zD
+         p7pXrSD4aLmWaQ02ILxqsWj/iVqXRyGwtUm79+trpdTViGk3qIKqq7Db2TJdO+s7ryjY
+         6ehpS2yC1VWqMsZ7CzGOU4R+6lla4NmIAE5RKYGCXbWJFKfbJy5VfKDaamgKn3aZsgRm
+         A9Hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=ndUOLxOaGlFRGIa+IUCqchYoYX0ob/eqM4B2Su7aOP0=;
+        b=ZZ2CzdUjfo7NNACK4Pu71iE/ognTOnAeDVfeoEK8LIguVGSao/gHtIp9oD1sqeqH5w
+         ETZ0w1bs7wf/u89216yPTroFYoLSNooLj0lC3GJZbzMIp7mGY1ve1lzfrTGlR8v40ARW
+         NVYXVPDEYKRWiW7AZtqP1nt7DJeNGDafP961QGpb0MPZo2XVZxrMwtI94ocW7eWrdEMI
+         hD9Y8hjeiDJ/an3LqvWmiV2sSLjC/sCrJNbxoLjfNYRiLJVrJj9SCf9MEHdEHdlH2kgx
+         A2Zq3RFXYRljNyif9dzSJqLHVVayMFqWy+wvzfGuvp1pk+KwJqHzXUPVIBHsdYCP7P18
+         /NNA==
+X-Gm-Message-State: ACgBeo1Rp1bg6RED3lULw7F9RVb+5gyE11C/SdAZ2in6MJvM8PtdT+aT
+        x5WzIqtGgqNHxkKYAuekB70P+ii69WCP3NTvC9fe
+X-Google-Smtp-Source: AA6agR6NuCDcdGmTw2CRi4kDEce0q6x+ZkxaJ0aByIguJ13AxbD6awMbL0ptxfjdNAPNp3SxBD/Oa58zKL17FN8ONQ4=
+X-Received: by 2002:a05:6808:1a18:b0:34f:ff74:8303 with SMTP id
+ bk24-20020a0568081a1800b0034fff748303mr1737508oib.41.1663156357118; Wed, 14
+ Sep 2022 04:52:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+References: <20220912091718.18053-1-xu.panda@zte.com.cn>
+In-Reply-To: <20220912091718.18053-1-xu.panda@zte.com.cn>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Wed, 14 Sep 2022 07:52:26 -0400
+Message-ID: <CAHC9VhSnzZ-75EVyOx6SO1_61y7HT-oGHisCwNSeM+VpjzhaDQ@mail.gmail.com>
+Subject: Re: [PATCH linux-next] selinux/hooks: remove the unneeded result variable
+To:     cgel.zte@gmail.com
+Cc:     stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        keescook@chromium.org, anton@enomsg.org, ccross@android.com,
+        tony.luck@intel.com, selinux@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        Xu Panda <xu.panda@zte.com.cn>, Zeal Robot <zealci@zte.com.cn>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,16 +68,19 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+On Mon, Sep 12, 2022 at 5:24 AM <cgel.zte@gmail.com> wrote:
+> From: Xu Panda <xu.panda@zte.com.cn>
+>
+> Return the value avc_has_perm() directly instead of storing it in
+> another redundant variable.
+>
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: Xu Panda <xu.panda@zte.com.cn>
+> ---
+>  security/selinux/hooks.c | 24 +++++++++---------------
+>  1 file changed, 9 insertions(+), 15 deletions(-)
 
-I think this patch is causing user-space breakage, see [0].
+Merged into selinux/next, thanks.
 
-The gist is that we do BPF_PROG_RUN of a socket filter with 14 byte input to determine whether
-BPF_PROG_RUN is available or not. I'll fix this in cilium/ebpf, but I think this patch
-needs more work since users may be doing the same thing in their code.
-
-
-Thanks,
-Lorenz
-
-0: https://github.com/cilium/ebpf/pull/788
+-- 
+paul-moore.com
