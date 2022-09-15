@@ -2,202 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7009B5B98B6
-	for <lists+bpf@lfdr.de>; Thu, 15 Sep 2022 12:25:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 172395B98CC
+	for <lists+bpf@lfdr.de>; Thu, 15 Sep 2022 12:31:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229967AbiIOKZ0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Sep 2022 06:25:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55218 "EHLO
+        id S229751AbiIOKbX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Sep 2022 06:31:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230021AbiIOKZQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 15 Sep 2022 06:25:16 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 510F054641
-        for <bpf@vger.kernel.org>; Thu, 15 Sep 2022 03:25:12 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a26so12317922ejc.4
-        for <bpf@vger.kernel.org>; Thu, 15 Sep 2022 03:25:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=etKZlwy+ld3iqkbiUEH5Xp8bHHPeh6BWFIUYYtxfAas=;
-        b=N4NVU4P2aigYa1gxlbny0iClBdvscp3m52ts8ZFjMiWR1Xq/wPraqe6CNLp0EjFb6e
-         n4tHZReKL6k8MV9985AvCzSXBsLy5K4Zgmgo2x8eNmTbq275PR/n+9yLpcZlMmiXPjio
-         4052S+OvnxaCl6+/xMHiOG18vT6KtzSZ6HHf1bxGLEHJpKXyOJcvQXylrvhpDewbfofC
-         MqSJ1T8ZNOUWdMge1Yl8xpBdVDh3xpdwhWKcvTbiktQD9NNyoBgJ8sF7UJBFOC/9J/2F
-         LXqal6qJbqvzDU5zkBWRhdFTU1LPaNGvmq0xY5fElLRa22Pnm3vZNj8fZ+lcw4r3zhns
-         Qubg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=etKZlwy+ld3iqkbiUEH5Xp8bHHPeh6BWFIUYYtxfAas=;
-        b=V53Qy3FKcptQnZlmpfjcB2bm9So5/J9Xp72kWL7WJMAEEmecNb0jHZRNuzD3+mon4T
-         Yu19QoAZapAPQO81168Wtld2N960dULVvAv3fIMksIeEzCrhYMtk5uAROEqZnN0anLNd
-         IigsbU7OJf6+Px0VpoQ4WncdW48DcOkuNPJgzeoJzOvyMvrykfSjP5BeGF3DsiFjQig8
-         8U5XrNgfYhdMzPTzxydu0I4+nfC/DDRno4RcckgrRz6pNacZw7jO/ywk78eN1/0i1Dkj
-         5z8weaZSZGLgMQm0mHyKf0xv/pd4klZbDb22VlQ29y5vSptVA8bTwbFEjEIkEkIvE9gE
-         TlUw==
-X-Gm-Message-State: ACgBeo1OJSlWy6cN7cZAUYD4AnYCSgwNrpWw+NQpxFEC7LmqykMD1F5v
-        L0rIrx6GZugLuOpj/+rpRu8D9yajDIzM3ngCJ7w=
-X-Google-Smtp-Source: AA6agR7lccoMKukO2itm+gP1SxnkEWObkyMWjam9Y7I+2CDG5q987D07koosmXJSGyTwdDL3pECvOXLTEOwyquoLDK8=
-X-Received: by 2002:a17:907:e93:b0:77b:e7a8:2f63 with SMTP id
- ho19-20020a1709070e9300b0077be7a82f63mr15528848ejc.94.1663237510707; Thu, 15
- Sep 2022 03:25:10 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220914123600.927632-1-davemarchevsky@fb.com> <20220914123600.927632-2-davemarchevsky@fb.com>
-In-Reply-To: <20220914123600.927632-2-davemarchevsky@fb.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 15 Sep 2022 11:24:59 +0100
-Message-ID: <CAADnVQJ1zzunbU_KqmdMJTBCmHSh6CkOuOcXYhkC5Z5eOQ-hag@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 2/2] selftests/bpf: Add test verifying
- bpf_ringbuf_reserve retval use in map ops
-To:     Dave Marchevsky <davemarchevsky@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S229512AbiIOKbW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 15 Sep 2022 06:31:22 -0400
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFF7C895C1
+        for <bpf@vger.kernel.org>; Thu, 15 Sep 2022 03:31:20 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id A327E5C006D;
+        Thu, 15 Sep 2022 06:31:17 -0400 (EDT)
+Received: from imap49 ([10.202.2.99])
+  by compute5.internal (MEProxy); Thu, 15 Sep 2022 06:31:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lmb.io; h=cc:cc
+        :content-type:date:date:from:from:in-reply-to:message-id
+        :mime-version:reply-to:sender:subject:subject:to:to; s=fm1; t=
+        1663237877; x=1663324277; bh=NFNg93cumQ6GotlPF6eXabO9jiXMH/FvtO9
+        yjxTzR74=; b=b+ahCT0ea+H5fONX5h0ZkDFFL4jXMrGbZW5A+4e05fnPvxr6gis
+        41vtkZYFLedu1GSYqFA1ANrBZ8mSPjpT65olKcHc8Z0woyM615PB2SfL6l4ewzcc
+        9x2SoKm14WCxjCNKs9VnmiyVuOvSEbT//HrKDGNCqS6qd3t9chUYDmx753AnEAPv
+        UwImZ7bmXod5ZDGe2G7w+5w46tdaqyrxJKuLFe9dmeeFJFKQf0VSWWCvoVEr7oJZ
+        US0GIg+7nZrJT8Qre7o3YGLft0BlYOAh8OaSoTZeRqkV/E47V/rHfYg/BTSsPZUD
+        breyCm40Vwk4zoDdqEep2HewPVAXes3ULlw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+        :feedback-id:from:from:in-reply-to:message-id:mime-version
+        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1663237877; x=
+        1663324277; bh=NFNg93cumQ6GotlPF6eXabO9jiXMH/FvtO9yjxTzR74=; b=A
+        rZVT6BYVL0ZalOwS2EeTAoJaRW1K1UDgmwDeMdcI+GiGA8kJXtLfEFpAtWpncShR
+        VGCZPrlgKxb6FTHt0CUB9oyQevjlocwouY7dpfcJUYXLTPD+jy3XSgmeaa0+4x5W
+        KO1XTX8ZZxhQSIK441vhzDOKtxPVLS6/5aGJMrAS0GQjtDW3a0B9teACciazpAYR
+        +tD8VxCh2XDUuVWEfF4I7GjOpFzTJ+A8sBK4bvtTf/lPD/jWX/O3vLrzHOTGxp2k
+        SVKE+/N5CDjPmeLxL2DEFbaU3QDam7oVIpydG/Zk1dKnK5Al633ksNRf51qSEaYE
+        IeDlt+pTIBJ7YgI73CZOQ==
+X-ME-Sender: <xms:9P4iY3J1DdUVMnq2GlVHOgkAPEDJFzwP8ClS6g0bOEZnrXGFtDV--Q>
+    <xme:9P4iY7KJTTf2l8Dr1UUt9kcLpycWtWRGDeo1Twbpta80bF2M6ysGatrHt4qRmADc0
+    -At4PPpZFtS0V5kOw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrfedukedgfedtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkfffhvfevufgtsehttdertderredtnecuhfhrohhmpedfnfhorhgv
+    nhiiuceurghuvghrfdcuoehoshhssehlmhgsrdhioheqnecuggftrfgrthhtvghrnhepke
+    ehuefgfffgueduueeuhffhvdeuvdffueelheegtdegtddtvdekueetgeehheetnecuffho
+    mhgrihhnpehlphgtrdgvvhgvnhhtshdpsghoohhtlhhinhdrtghomhdpkhgvrhhnvghlrd
+    horhhgpdhgihhthhhusgdrtghomhenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgr
+    mhepmhgrihhlfhhrohhmpehoshhssehlmhgsrdhioh
+X-ME-Proxy: <xmx:9P4iY_vkMXmZf56Ie3eNItbBkRUCt9mCTyWMphJ-g1wZorDrzqybDg>
+    <xmx:9P4iYwZtP3T9cPZsudRuKwsb4YuKifsyPg6HrYF2XHjo6haiziGdUg>
+    <xmx:9P4iY-aTwGx_OTbp8RIXEPMenSkfwS5CCXpiAtZA4e2rvnNWyOnb2w>
+    <xmx:9f4iY1Uzg5Md3kOh2Lka7PVS7bHfPjfvGux9RQcngumHMkqi8KzFuA>
+Feedback-ID: icd3146c6:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id D524F15A0087; Thu, 15 Sep 2022 06:31:16 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.7.0-alpha0-935-ge4ccd4c47b-fm-20220914.001-ge4ccd4c4
+Mime-Version: 1.0
+Message-Id: <a6c0bb85-6eeb-407e-a515-06f67e70db57@www.fastmail.com>
+Date:   Thu, 15 Sep 2022 11:30:12 +0100
+From:   "Lorenz Bauer" <oss@lmb.io>
+To:     "Alexei Starovoitov" <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        "Andrii Nakryiko" <andrii@kernel.org>,
+        "Martin KaFai Lau" <martin.lau@linux.dev>,
+        "KP Singh" <kpsingh@kernel.org>,
+        "Stanislav Fomichev" <sdf@google.com>
+Cc:     bpf@vger.kernel.org
+Subject: Closing the BPF map permission loophole
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 14, 2022 at 1:36 PM Dave Marchevsky <davemarchevsky@fb.com> wrote:
->
-> Add a test_ringbuf_map_key test prog, borrowing heavily from extant
-> test_ringbuf.c. The program tries to use the result of
-> bpf_ringbuf_reserve as map_key, which was not possible before previouis
-> commits in this series. The test runner added to prog_tests/ringbuf.c
-> verifies that the program loads and does basic sanity checks to confirm
-> that it runs as expected.
->
-> Also, refactor test_ringbuf such that runners for existing test_ringbuf
-> and newly-added test_ringbuf_map_key are subtests of 'ringbuf' top-level
-> test.
->
-> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
-> ---
-> v1->v2: lore.kernel.org/bpf/20220912101106.2765921-1-davemarchevsky@fb.com
->
-> * Actually run the program instead of just loading (Yonghong)
-> * Add a bpf_map_update_elem call to the test (Yonghong)
-> * Refactor runner such that existing test and newly-added test are
->   subtests of 'ringbuf' top-level test (Yonghong)
-> * Remove unused globals in test prog (Yonghong)
->
->  tools/testing/selftests/bpf/Makefile          |  8 ++-
->  .../selftests/bpf/prog_tests/ringbuf.c        | 63 ++++++++++++++++-
->  .../bpf/progs/test_ringbuf_map_key.c          | 70 +++++++++++++++++++
->  3 files changed, 137 insertions(+), 4 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/progs/test_ringbuf_map_key.c
->
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> index 6cd327f1f216..231d9c1364c9 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -351,9 +351,11 @@ LINKED_SKELS := test_static_linked.skel.h linked_funcs.skel.h              \
->                 test_subskeleton.skel.h test_subskeleton_lib.skel.h     \
->                 test_usdt.skel.h
->
-> -LSKELS := fentry_test.c fexit_test.c fexit_sleep.c \
-> -       test_ringbuf.c atomics.c trace_printk.c trace_vprintk.c \
-> -       map_ptr_kern.c core_kern.c core_kern_overflow.c
-> +LSKELS := fentry_test.c fexit_test.c fexit_sleep.c atomics.c           \
-> +       trace_printk.c trace_vprintk.c map_ptr_kern.c                   \
-> +       core_kern.c core_kern_overflow.c test_ringbuf.c                 \
-> +       test_ringbuf_map_key.c
-> +
->  # Generate both light skeleton and libbpf skeleton for these
->  LSKELS_EXTRA := test_ksyms_module.c test_ksyms_weak.c kfunc_call_test.c \
->         kfunc_call_test_subprog.c
-> diff --git a/tools/testing/selftests/bpf/prog_tests/ringbuf.c b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
-> index 9a80fe8a6427..e0f8db69cb77 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/ringbuf.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
-> @@ -13,6 +13,7 @@
->  #include <linux/perf_event.h>
->  #include <linux/ring_buffer.h>
->  #include "test_ringbuf.lskel.h"
-> +#include "test_ringbuf_map_key.lskel.h"
->
->  #define EDONE 7777
->
-> @@ -58,6 +59,7 @@ static int process_sample(void *ctx, void *data, size_t len)
->         }
->  }
->
-> +static struct test_ringbuf_map_key_lskel *skel_map_key;
->  static struct test_ringbuf_lskel *skel;
->  static struct ring_buffer *ringbuf;
->
-> @@ -81,7 +83,7 @@ static void *poll_thread(void *input)
->         return (void *)(long)ring_buffer__poll(ringbuf, timeout);
->  }
->
-> -void test_ringbuf(void)
-> +void ringbuf_subtest(void)
->  {
->         const size_t rec_sz = BPF_RINGBUF_HDR_SZ + sizeof(struct sample);
->         pthread_t thread;
-> @@ -297,3 +299,62 @@ void test_ringbuf(void)
->         ring_buffer__free(ringbuf);
->         test_ringbuf_lskel__destroy(skel);
->  }
-> +
-> +static int process_map_key_sample(void *ctx, void *data, size_t len)
-> +{
-> +       struct sample *s;
-> +       int err, val;
-> +
-> +       s = data;
-> +       switch (s->seq) {
-> +       case 1:
-> +               ASSERT_EQ(s->value, 42, "sample_value");
-> +               err = bpf_map_lookup_elem(skel_map_key->maps.hash_map.map_fd,
-> +                                         s, &val);
-> +               ASSERT_OK(err, "hash_map bpf_map_lookup_elem");
-> +               ASSERT_EQ(val, 1, "hash_map val");
-> +               return -EDONE;
-> +       default:
-> +               return 0;
-> +       }
-> +}
-> +
-> +void ringbuf_map_key_subtest(void)
-> +{
-> +       int err;
-> +
-> +       skel_map_key = test_ringbuf_map_key_lskel__open();
-> +       if (!ASSERT_OK_PTR(skel_map_key, "test_ringbuf_map_key_lskel__open"))
-> +               return;
-> +
-> +       skel_map_key->maps.ringbuf.max_entries = getpagesize();
-> +       skel_map_key->bss->pid = getpid();
-> +
-> +       err = test_ringbuf_map_key_lskel__load(skel_map_key);
-> +       if (!ASSERT_OK(err, "test_ringbuf_map_key_lskel__load"))
-> +               goto cleanup;
-> +
-> +       ringbuf = ring_buffer__new(skel_map_key->maps.ringbuf.map_fd,
-> +                                  process_map_key_sample, NULL, NULL);
-> +
-> +       err = test_ringbuf_map_key_lskel__attach(skel_map_key);
-> +       if (!ASSERT_OK(err, "test_ringbuf_map_key_lskel__attach"))
-> +               goto cleanup_ringbuf;
-> +
-> +       syscall(__NR_getpgid);
-> +       ASSERT_EQ(skel_map_key->bss->seq, 1, "skel_map_key->bss->seq");
-> +       ring_buffer__poll(ringbuf, -1);
+Hi list,
 
-Why is there no err == EDONE check here?
-Without the check the prog could have skipped
-ringbuf_submit and process_map_key_sample() above would not
-be called.
+Here is a summary of the talk I gave at LPC '22 titled "Closing the BPF map permission loophole", with slides at [0].
+
+Problem #1: Read-only fds can be modified via a BPF program
+
+1. Craft a BPF program that executes bpf_map_update_elem(read-only fd, ...)
+2. Load the program & execute it
+
+The reason is that the verifier only checks bpf_map->map_flags in resolve_pseudo_ldimm64, but ignores fd->f_mode.
+
+Fixing this problem is complicated by the fact that a user may use several distinct fds with differing permissions to refer to the same map, but that the verifier internally only tracks unique struct bpf_map. See [1].
+
+Problem #2: Read-only fds can be "transmuted" into read-write fds via map in map
+
+1. BPF_MAP_UPDATE_ELEM(map in map fd, read-only fd)
+2. BPF_MAP_LOOKUP_ELEM(map in map fd) = read-write fd
+
+This was pointed out by Stanislav Fomichev during the LPC session. I've not yet tried this myself.
+
+Problem #3: Read-only fds can be transmuted into read-write fds via object pinning
+
+1. BPF_OBJ_PIN(read-only fd, /sys/fs/bpf/foo)
+2. BPF_OBJ_GET(/sys/fs/bpf/foo) = read-write fd
+
+The problem is with BPF_OBJ_PIN semantics: regardless of fd->f_mode, pinning creates an inode that is owned by the current user, with mode o=rw. Even if we made the inode o=r, a user / attacker can still use chmod(2) to change it back to o=rw.
+
+On older kernels, this requires either unprivileged BPF or CAP_BPF, but recently BPF_OBJ_PIN has been made available without CAP_BPF.
+
+This problem also applies to other BPF objects: links, programs, maybe iterators? Since we don't have BPF_F_RDONLY semantics for those the issue is maybe less urgent, but see [2] for some more fun.
+
+A number of ideas were explored during the session:
+
+* In OBJ_PIN, create the inode owned by the user that executed MAP_CREATE, not the user that
+  invoked OBJ_PIN. This would allow unprivileged users to create files as another user, which
+  seems like a bad idea.
+* In OBJ_GET, refuse a read-write fd if the fd passed to OBJ_PIN wasn't read-write. This is not
+  possible since we store struct bpf_map * in the inode, so we don't have access to fd->f_mode
+  anymore.
+* In OBJ_PIN, adjust the mode of the created inode to match fd->f_mode, and later refuse attempts
+  to chmod(2). After a cursory glance at the source code it seems like there are no hooks for
+  filesystems to influence chmod.
+
+My gut feeling is that the root of the problem is that OBJ_PIN is too permissive. Once an inode exists that is owned by the current user the cat is out of the box.
+
+BPF_F_RDONLY and BPF_F_WRONLY were introduced in 4.15 [3]. If we want to fix this properly, aka relying on BPF_R_RDONLY doesn't introduce a gaping hole, we'll have to do quite a bit of backporting.
+
+I plan on submitting a sledgehammer approach fix for #1 and #2 as discussed with Daniel after my presentation.
+
+#3 is in sore need of further discussion and creativity. One avenue I want to explore is whether we can refuse OBJ_PIN if:
+- the current user is not the map creator
+- and the fd is not r/w
+- and the current user has no CAP_DAC_OVERRIDE (or similar)
+
+Thanks
+Lorenz
+
+0: https://lpc.events/event/16/contributions/1372/attachments/977/2059/Plumbers%2022%20Closing%20the%20BPF%20map%20permission%20loophole.pdf
+1: https://elixir.bootlin.com/linux/v6.0-rc5/source/kernel/bpf/verifier.c#L12839
+2: https://lore.kernel.org/bpf/20210618105526.265003-1-zenczykowski@gmail.com/
+3: https://github.com/torvalds/linux/commit/6e71b04a8224
