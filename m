@@ -2,75 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E9865B9913
-	for <lists+bpf@lfdr.de>; Thu, 15 Sep 2022 12:48:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A80395B9B17
+	for <lists+bpf@lfdr.de>; Thu, 15 Sep 2022 14:41:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229962AbiIOKsR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Sep 2022 06:48:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56578 "EHLO
+        id S229635AbiIOMlq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Sep 2022 08:41:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbiIOKsQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 15 Sep 2022 06:48:16 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B007071BE9
-        for <bpf@vger.kernel.org>; Thu, 15 Sep 2022 03:48:15 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id y136so17664304pfb.3
-        for <bpf@vger.kernel.org>; Thu, 15 Sep 2022 03:48:15 -0700 (PDT)
+        with ESMTP id S229780AbiIOMlq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 15 Sep 2022 08:41:46 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43816BE8;
+        Thu, 15 Sep 2022 05:41:45 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id bj12so41771271ejb.13;
+        Thu, 15 Sep 2022 05:41:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:sender:mime-version:from:to:cc
-         :subject:date;
-        bh=tOzsb0wsleSC7D446UOdhMDMVHYTzuFRamlibx9jOVA=;
-        b=Lalxk+0C1ITvdkdFZ+w+1Qu4dI/ga+bNpF6ki8f3EMObLyg/3cn/JXSV8glNDYtaHO
-         B8dmYHHnlEER05+HcYAoIHt9NNb3qWaejvwwLFFkNUT/+eCuqryuAXiBmskD1vSg/VNI
-         y/p5eOV6alaMPy2JlwtBOt/0DkfW0tl00ZOkr64QqNbqUpyt5b8D2hdF/I5E0371my+S
-         f6XhlhdMhdMJuTZaiW/fXL9IUyZJ7GFcd3hKiPZit5M613iIX2/bojaN1ZaYCkiAOtcT
-         oQHu1hJl9PFy91oG3zT7OENTq+L51jnwcc6v3QkxGnUZQSK2qMaV32tGz/VArPjjFSEW
-         3gYA==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date;
+        bh=tzmtfB02Kll9bwoDnqvoio0j7mPs1ux70CIafG7WcfU=;
+        b=atzRGS0IEVvnd6WXWC1rlccaFpBQ2yFXqBqZ0xtSuNwYZbyh6YLVXuYzo5VlCf3iMP
+         BXWfOqj/F/1zmWoyB2Ve1b4rG8wV4V0nXNPRF2ttYQZHs5S+vgVt5aY8tk9kzZEKkCGp
+         99SPE2OCnrsp7ChpLRX6eFj/7iiUngJWcWymqH8Vf3Qh5/8epbpknxNhTWsZD+pPH0kl
+         8q57dvY2+qmbkMehptiFXjeo8CWidirKYdwZ1kovxRZGLbsHsxjaOqqcaSrGOvJCGK+R
+         RYD31Gyww66Ch62fGeb1WerCHHiTxFWaTjfIwREbvvYEBrsMvYShWfKyvxogNPSQVbAY
+         U1LQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:sender:mime-version
-         :x-gm-message-state:from:to:cc:subject:date;
-        bh=tOzsb0wsleSC7D446UOdhMDMVHYTzuFRamlibx9jOVA=;
-        b=fDZGi24ZCA0VfgTpx3qFpNQiiDtzvekEisuUTp96nev2unO/XD85Fo3Io20FU65hVo
-         iZN6su8udJjNdBENaRxWvj2y5i1KASzLt9o6J52o4i9ftAb2UMCySw1c4ho6cTis6cE6
-         Q6bca6kPCVbOjnWTbI4HMMGKhQT9SHIwkywPb7N6FldIpr8GaEL9b615UtjDUX7OFW34
-         lagZzm9wsEKRDCbxuhIwpbioQ5mmxzhIPJ9G7eM4AcP5YlFUuXW/t6z9oAr5umI/EOMM
-         neF7/x/i22YciHs5abYYbemcl8PhVBuGV3SfjEMPJajs48cyNCEVfxEWG0eGUeKu9zfe
-         MVGg==
-X-Gm-Message-State: ACgBeo1KHEDrwLPj7b81bY7IYWRu+v2G4+PX0viQZTqUaUhIDt0mE/CL
-        VCYzl1F0s8P8pk5wl7EZGbfQtFLmb4kX3qPJ7lo=
-X-Google-Smtp-Source: AA6agR5yZhOdbEk4aFT2ZGyr/xIEI2FhBR5V5hU2bzGyQ+jrvYOkLPU4cqTSl/hqriweYa9DLRg37VG4/5Ko5MM9qwY=
-X-Received: by 2002:a05:6a00:21d1:b0:542:b916:c48f with SMTP id
- t17-20020a056a0021d100b00542b916c48fmr22451339pfj.56.1663238894879; Thu, 15
- Sep 2022 03:48:14 -0700 (PDT)
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date;
+        bh=tzmtfB02Kll9bwoDnqvoio0j7mPs1ux70CIafG7WcfU=;
+        b=EpH8uQyQN5mFFxV3qACj/16IvD18Q/SDl0XbLhwwDUm/qcxszHX985oAGWqtLCGava
+         VXOLU8lXvxqFg70DLabKcpG8YHZ2XgTvMsvwATJDZKsXK1AUm+uNO3D/PjKJwYNtCJgH
+         3To0GreZT5yI+xEQe7BJpiNerhMSapEiqrLJFD/1weuiloPs12k1B8m5dCuaYBrAkacL
+         Ci3SaWA2uZ2Tvsk0TSPu7LAqWdVGfr2T6eoirayqVGRIBZO2JJeZGneGE9oN91nMhX8w
+         s03iixLhiXqPhyBBwZj7KmJBYQZl1ZAKtFJ2HMpnQv9PFI7mqZEz1+V5DYmSgE0C61IM
+         Ijag==
+X-Gm-Message-State: ACgBeo3txzsJrCfP+aP6f1zM7QWvphCjRbFAVBz1exKMJKTTMnAJgWbt
+        3sBWTfhy3rCB2m/zGXg88GI=
+X-Google-Smtp-Source: AA6agR6OETBFpaXizZkBzwGuLb/nSX3ng6zwpvWStvpMjub1lzTuDLEeGZHPr04IhJAIRKoFkOF22g==
+X-Received: by 2002:a17:906:8c7:b0:730:c1a9:e187 with SMTP id o7-20020a17090608c700b00730c1a9e187mr29400332eje.55.1663245703722;
+        Thu, 15 Sep 2022 05:41:43 -0700 (PDT)
+Received: from localhost.localdomain (host-95-251-45-225.retail.telecomitalia.it. [95.251.45.225])
+        by smtp.gmail.com with ESMTPSA id b18-20020a1709063cb200b007778c9b7629sm9056305ejh.34.2022.09.15.05.41.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Sep 2022 05:41:42 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-hwmon@vger.kernel.org
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Gurucharan <gurucharanx.g@intel.com>
+Subject: [RESEND PATCH] ixgbe: Don't call kmap() on page allocated with GFP_ATOMIC
+Date:   Thu, 15 Sep 2022 14:40:12 +0200
+Message-Id: <20220915124012.28811-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
-Sender: khalissylvester411@gmail.com
-Received: by 2002:a17:902:d486:b0:178:1f74:e5a0 with HTTP; Thu, 15 Sep 2022
- 03:48:14 -0700 (PDT)
-From:   "Mrs. Jacinta Kwakeso" <kwakesojacinta1975@gmail.com>
-Date:   Thu, 15 Sep 2022 03:48:14 -0700
-X-Google-Sender-Auth: KZSU6WRUJOgvie6p7c-9TfqxLWg
-Message-ID: <CAKixAHAGnm29iTVswMSQKtOq5brtVm=oVwRJq4_f1xVp6JP0Mw@mail.gmail.com>
-Subject: PLEASE CONFIRM YOUR INTEREST FOR MORE DETAILS.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=2.1 required=5.0 tests=BAYES_60,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,SUBJ_ALL_CAPS,
-        T_HK_NAME_FM_MR_MRS,UNDISC_MONEY autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: **
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+Pages allocated with GFP_ATOMIC cannot come from Highmem. This is why
+there is no need to call kmap() on them.
 
-Greetings my dear how are you doing today? My name is Mrs. Jacinta
-Kwakeso, I am from South Africa but I am working with Banque
-Atlantique in Lome. I brought you a business from our Bank for our
-mutual benefit, so please do response if interested for more details
-to proceed.
+Therefore, don't call kmap() on rx_buffer->page() and instead use a
+plain page_address() to get the kernel address.
+
+Suggested-by: Ira Weiny <ira.weiny@intel.com>
+Suggested-by: Alexander Duyck <alexander.duyck@gmail.com>
+Reviewed-by: Ira Weiny <ira.weiny@intel.com>
+Reviewed-by: Alexander Duyck <alexander.duyck@gmail.com>
+Tested-by: Gurucharan <gurucharanx.g@intel.com>
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+---
+
+I send again this patch because it was submitted more than two months ago,
+Monday 4th July 2022, but for one or more (good?) reasons it has not yet
+reached Linus' tree. In the meantime I am also forwarding two "Reviewed-by"
+and one "Tested-by" tags (thanks a lot to Ira, Alexander, Gurucharan).
+Obviously I have not made any changes to the code.
+
+ drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c
+index 04f453eabef6..cb5c707538a5 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c
+@@ -1964,15 +1964,13 @@ static bool ixgbe_check_lbtest_frame(struct ixgbe_rx_buffer *rx_buffer,
+ 
+ 	frame_size >>= 1;
+ 
+-	data = kmap(rx_buffer->page) + rx_buffer->page_offset;
++	data = page_address(rx_buffer->page) + rx_buffer->page_offset;
+ 
+ 	if (data[3] != 0xFF ||
+ 	    data[frame_size + 10] != 0xBE ||
+ 	    data[frame_size + 12] != 0xAF)
+ 		match = false;
+ 
+-	kunmap(rx_buffer->page);
+-
+ 	return match;
+ }
+ 
+-- 
+2.37.2
+
