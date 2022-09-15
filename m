@@ -2,289 +2,366 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEC825B92F0
-	for <lists+bpf@lfdr.de>; Thu, 15 Sep 2022 05:14:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7E745B93B9
+	for <lists+bpf@lfdr.de>; Thu, 15 Sep 2022 06:44:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230161AbiIODN4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Sep 2022 23:13:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50572 "EHLO
+        id S229554AbiIOEod (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Sep 2022 00:44:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229804AbiIODNy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Sep 2022 23:13:54 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86BFD910B6;
-        Wed, 14 Sep 2022 20:13:50 -0700 (PDT)
-Received: from dggpeml500026.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4MShyP5GrLzlVml;
-        Thu, 15 Sep 2022 11:09:49 +0800 (CST)
-Received: from [10.174.178.66] (10.174.178.66) by
- dggpeml500026.china.huawei.com (7.185.36.106) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 15 Sep 2022 11:13:47 +0800
-Message-ID: <02634506-8aa2-af44-38d6-3bd656b866cf@huawei.com>
-Date:   Thu, 15 Sep 2022 11:13:47 +0800
+        with ESMTP id S229587AbiIOEoa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 15 Sep 2022 00:44:30 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8E8DDA8
+        for <bpf@vger.kernel.org>; Wed, 14 Sep 2022 21:44:27 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id n81so13581441iod.6
+        for <bpf@vger.kernel.org>; Wed, 14 Sep 2022 21:44:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=vwQH+FaO6ZKRxhBlRk5DdxjC5gTHQSdTfmGJbrZGEkc=;
+        b=iGyDWFlIC6T3wN8q4K9fMckpM0ibtMIW9Tv0TYp7dzzZO/fE3PXTqbknzUzjZhqNtX
+         3f1FG4RohtmfCbvnvJvWx2I2c2qb64kfGuMVN0ugiPTWizTPKFiZyJH9Fc2O6uie8WwG
+         SWUOhAvd0eVD3jFXPzzt95of/UdWa/F3SQA9g=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=vwQH+FaO6ZKRxhBlRk5DdxjC5gTHQSdTfmGJbrZGEkc=;
+        b=jOWUQBv3+zUiAV1hAEOpwy2PP3ik7rpz5IaValqlhMteTz87JE6u4INJDmBN9RaA0V
+         E8OoRY6K2yS7UZWrWDp+pCUvd0LDhJuJ8FQWpoSm3mRFdy2O3FY6dHS6Jht0pML/YZ8t
+         dF4dDzEyLTY6gRAGkupH3G5qnJdbtnk+EbRiPQBeQsp6Ri3sHvhIGw8UkVmECJ+sw+FH
+         QjWl6lEVGjcKJtg3K7EKIVLK55vRgPW2Syh+qVxeupS5m81W+0Y4wXUcHk6uJWuiQ92h
+         hDmJ7XaiCuKVSURaNB8nmlNlgCGbjZEvyaErq5dXAJT2aTCEI6w82/qRnlF926nwZNUv
+         W9Kw==
+X-Gm-Message-State: ACgBeo1vgbn9dGVicaDmjIVs+E1u+9xhAJ/oQZXaWVE2Eev93rMsEC7w
+        ouos+s9M0fDq531Gbyln0E/VS06n8NzicXME03npvuQB3zJd6A==
+X-Google-Smtp-Source: AA6agR6cv3LNOZP/L93dmi/9AnidcqmF/GmuSveUjshBNfZNnALUOQ2oICy4pFL+nlaprfpdmBymx6W6EHDaa87G3kk=
+X-Received: by 2002:a6b:2a83:0:b0:6a1:821a:9d61 with SMTP id
+ q125-20020a6b2a83000000b006a1821a9d61mr5353548ioq.25.1663217066913; Wed, 14
+ Sep 2022 21:44:26 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.0.2
-Subject: Re: [PATCH net-next 0/9] refactor duplicate codes in the tc cls walk
- function
-To:     Victor Nogueira <victor@mojatatu.com>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <jhs@mojatatu.com>, <jiri@resnulli.us>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <shuah@kernel.org>
-CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-        <martin.lau@linux.dev>, <song@kernel.org>, <yhs@fb.com>,
-        <john.fastabend@gmail.com>, <kpsingh@kernel.org>, <sdf@google.com>,
-        <haoluo@google.com>, <jolsa@kernel.org>, <weiyongjun1@huawei.com>,
-        <yuehaibing@huawei.com>
-References: <20220913042135.58342-1-shaozhengchao@huawei.com>
- <24f4feb8-7ca1-eae3-570e-5ece870dee47@mojatatu.com>
-From:   shaozhengchao <shaozhengchao@huawei.com>
-In-Reply-To: <24f4feb8-7ca1-eae3-570e-5ece870dee47@mojatatu.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.66]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml500026.china.huawei.com (7.185.36.106)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <CABi2SkUVSMM-+7RzGu0z0nwsWT_2NiUZzTMNKsEc0iOPSiNr9A@mail.gmail.com>
+ <1b9e4d2c-34d4-2809-6c91-d14092061581@oracle.com> <CABi2SkVMRtbrzrPeYEhf_zP-9AoUcs10KwJRXXTKPA0K1qY8PQ@mail.gmail.com>
+ <CABi2SkXtNOFP1Gg_dDz4bHC=P42iL1DxJ6irfz6T0MeiGkTgCQ@mail.gmail.com>
+ <CAK3+h2y-vk9eE0uNDWAQwjAeO1fNaY4Tf9USMPAxqUVuQ7pBrg@mail.gmail.com>
+ <CABi2SkWKjBMRBdi=C9ePYDO-2ZofsytdLxc0-N3jMx5JeTsS+Q@mail.gmail.com> <CAK3+h2zp6p=iEGJ0Z8Z=LcsTM19DoxT5cS5cq=Dgspeo=MQgrA@mail.gmail.com>
+In-Reply-To: <CAK3+h2zp6p=iEGJ0Z8Z=LcsTM19DoxT5cS5cq=Dgspeo=MQgrA@mail.gmail.com>
+From:   Jeff Xu <jeffxu@chromium.org>
+Date:   Wed, 14 Sep 2022 21:44:16 -0700
+Message-ID: <CABi2SkUR8qWB=gb_6Hi7ngePHzWAGt2LCVkjwhqV4EYh0hCtvA@mail.gmail.com>
+Subject: Re: BTF and libBPF
+To:     Vincent Li <vincent.mc.li@gmail.com>
+Cc:     Alan Maguire <alan.maguire@oracle.com>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Tue, Sep 13, 2022 at 10:05 PM Vincent Li <vincent.mc.li@gmail.com> wrote:
+>
+> On Mon, Sep 12, 2022 at 11:05 PM Jeff Xu <jeffxu@chromium.org> wrote:
+> >
+> > On Mon, Sep 12, 2022 at 8:41 PM Vincent Li <vincent.mc.li@gmail.com> wrote:
+> > >
+> > > On Mon, Sep 12, 2022 at 5:17 PM Jeff Xu <jeffxu@chromium.org> wrote:
+> > > >
+> > > > On Sun, Sep 11, 2022 at 4:36 PM Jeff Xu <jeffxu@chromium.org> wrote:
+> > > > >
+> > > > > Thanks for the quick response.
+> > > > >
+> > > > > > > Greeting,
+> > > > > > >
+> > > > > > > I have questions related to CONFIG_DEBUG_INFO_BTF, and  libbpf_0.8.1.
+> > > > > > > Please kindly let me know if this is not the right group to ask, since I'm new.
+> > > > > > >
+> > > > > > > To give context of this question:
+> > > > > > > This system has limited disk size, doesn't need the CO-RE feature,
+> > > > > > > and has all debug symbols stripped in release build.   Having an extra
+> > > > > > > btf/vmlinux file might be problematic, disk-wise.
+> > > > >
+> > > > > > Thanks for getting in touch - ideally I think we'd like to be
+> > > > > > able to support BTF even on small systems. It would probably
+> > > > > > help to understand what space constraints you have - is it just
+> > > > > > disk space, or are disk space and memory highly constrained? The
+> > > > > > mechanics of BTF are that it is generated and then embedded in the vmlinux
+> > > > > > binary in a .BTF section. The BTF info is then exposed at runtime
+> > > > > > via a /sys/kernel/btf/vmlinux pseudo-file.  So when assessing overhead,
+> > > > > > there are two questions to ask I think:
+> > > > >
+> > > > > > 1. how does BTF inclusion effect disk space?
+> > > > > > 2. how does BTF inclusion effect memory footprint?
+> > > > >
+> > > > > > For 1, on a recent bpf-next kernel, core vmlinux BTF is around 6Mb.
+> > > > > > However, an important thing to bear in mind is that it is in the
+> > > > > > vmlinux binary, that on most space-constrained systems is compressed
+> > > > > > to /boot/vmlinuz-<VERSION>.  When I compress the BTF by hand, it reduces
+> > > > > > by a factor of around 6, so a ballpark figure is around 1.5Mb of
+> > > > > > the vmlinuz binary on-disk, which equates to around 10% of the overall
+> > > > > > binary size in my case. Your results may vary, especially if
+> > > > > > a lot of CONFIG options are switched off (as they might be on a
+> > > > > > space-sensitive system).
+> > > > >
+> > > > > > For memory footprint, BTF will be extracted from the .BTF section
+> > > > > > and will then take up around 6Mb.
+> > > > >
+> > > > > > Another piece of the puzzle is module BTF - it contains the
+> > > > > > per-module type info not in the core kernel, but again if modules
+> > > > > > are compressed, on-disk storage might not be a massive issue.
+> > > > >
+> > > > > > Anyway, hopefully the above gives you a sense for the kinds of
+> > > > > > costs BTF has.
+> > > > >
+> > > > > Thank you. This information on disk and memory is really helpful.
+> > > > > At this moment, I'm only looking at disk-size.
+> > > > >
+> > > > > > >
+> > > > > > > Question 1>
+> > > > > > > Will libbpf_0.8.1(or later) work with kernel 5.10 (or later),  without
+> > > > > > > CONFIG_DEBUG_INFO_BTF ?
+> > > > > > > Or work with kernel compiled with CONFIG_DEBUG_INFO_BTF but have
+> > > > > > > /sys/kernel/btf/vmlinux removed.
+> > > > > > >
+> > > > >
+> > > > > > It really depends on what you're planning on doing.
+> > > > >
+> > > > > > BTF has become central to a lot of aspects of BPF; higher-performance
+> > > > > > fentry/fexit() BPF programs, CO-RE, and even XDP will be using BTF
+> > > > > > soon I believe.
+> > > > >
+> > > > > > So if you're using BPF without BTF, there are generally ways to make
+> > > > > things work (using kprobes instead of fentry for example), but you
+> > > > > > will have less options.  I seem to recall some fixes landed to
+> > > > > > ensure that absence of BTF shouldn't prevent program loading in
+> > > > > > cases where BTF is not needed. If you run into any such failures,
+> > > > > > I'd suggest reporting them and hopefully we can get them fixed.
+> > > > >
+> > > > > I have a follow up question on how CO-RE uses BTF: where exactly does
+> > > > > the relocation happen ?
+> > > > > It seems, in theory,  it can happens in two places: 1> from libBPF at
+> > > > > user space 2> from kernel
+> > > > >
+> > > > > https://nakryiko.com/posts/bpf-portability-and-co-re/
+> > > > > " It takes compiled BPF ELF object file, post-processes it as
+> > > > > necessary, sets up various kernel objects (maps, programs, etc),
+> > > > > and triggers BPF program loading and verification."
+> > > > >
+> > > > > I assume there is a syscall to provide BTF information from kernel to
+> > > > > user space, and libBPF uses that info to post-processing the ELF file.
+> > > > >
+> > > > > Is there a sample BPF code with explanation of a sequence of actions
+> > > > > done by libBPF (roughly) to look at ?
+> > > > > And why do maps need to be relocated ?
+> > > > >
+> > > > > 2>
+> > > > > https://nakryiko.com/posts/bpf-core-reference-guide/ BTF-enabled BPF
+> > > > > program types with direct memory reads
+> > > > > In this mode, is that kernel doing relocation ? or is that still libBPF?
+> > > > > For example: how/where vma->vm_start is relocated.
+> > > > >
+> > > > > SEC("lsm/file_mprotect")
+> > > > > int BPF_PROG(mprotect_audit, struct vm_area_struct *vma,
+> > > > >     unsigned long reqprot, unsigned long prot, int ret)
+> > > > > {
+> > > > >    /* .. omit ..*/
+> > > > > int is_heap;
+> > > > > is_heap = (vma->vm_start >= vma->vm_mm->start_brk &&
+> > > > >   vma->vm_end <= vma->vm_mm->brk);
+> > > > >    /* .. omit .. */
+> > > > > }
+> > > > >
+> > > > > Thanks
+> > > > > Best Regards,
+> > > > > Jeff Xu
+> > > > >
+> > > > >
+> > > > > On Fri, Sep 9, 2022 at 8:29 AM Alan Maguire <alan.maguire@oracle.com> wrote:
+> > > > > >
+> > > > > > On 09/09/2022 06:22, Jeff Xu wrote:
+> > > > > > > Greeting,
+> > > > > > >
+> > > > > > > I have questions related to CONFIG_DEBUG_INFO_BTF, and  libbpf_0.8.1.
+> > > > > > > Please kindly let me know if this is not the right group to ask, since I'm new.
+> > > > > > >
+> > > > > > > To give context of this question:
+> > > > > > > This system has limited disk size, doesn't need the CO-RE feature,
+> > > > > > > and has all debug symbols stripped in release build.   Having an extra
+> > > > > > > btf/vmlinux file might be problematic, disk-wise.
+> > > > > >
+> > > > > > Thanks for getting in touch - ideally I think we'd like to be
+> > > > > > able to support BTF even on small systems. It would probably
+> > > > > > help to understand what space constraints you have - is it just
+> > > > > > disk space, or are disk space and memory highly constrained? The
+> > > > > > mechanics of BTF are that it is generated and then embedded in the vmlinux
+> > > > > > binary in a .BTF section. The BTF info is then exposed at runtime
+> > > > > > via a /sys/kernel/btf/vmlinux pseudo-file.  So when assessing overhead,
+> > > > > > there are two questions to ask I think:
+> > > > > >
+> > > > > > 1. how does BTF inclusion effect disk space?
+> > > > > > 2. how does BTF inclusion effect memory footprint?
+> > > > > >
+> > > > > > For 1, on a recent bpf-next kernel, core vmlinux BTF is around 6Mb.
+> > > > > > However, an important thing to bear in mind is that it is in the
+> > > > > > vmlinux binary, that on most space-constrained systems is compressed
+> > > > > > to /boot/vmlinuz-<VERSION>.  When I compress the BTF by hand, it reduces
+> > > > > > by a factor of around 6, so a ballpark figure is around 1.5Mb of
+> > > > > > the vmlinuz binary on-disk, which equates to around 10% of the overall
+> > > > > > binary size in my case. Your results may vary, especially if
+> > > > > > a lot of CONFIG options are switched off (as they might be on a
+> > > > > > space-sensitive system).
+> > > > > >
+> > > > > > For memory footprint, BTF will be extracted from the .BTF section
+> > > > > > and will then take up around 6Mb.
+> > > > > >
+> > > > > > Another piece of the puzzle is module BTF - it contains the
+> > > > > > per-module type info not in the core kernel, but again if modules
+> > > > > > are compressed, on-disk storage might not be a massive issue.
+> > > > > >
+> > > > > > Anyway, hopefully the above gives you a sense for the kinds of
+> > > > > > costs BTF has.
+> > > > > >
+> > > > > > >
+> > > > > > > Question 1>
+> > > > > > > Will libbpf_0.8.1(or later) work with kernel 5.10 (or later),  without
+> > > > > > > CONFIG_DEBUG_INFO_BTF ?
+> > > > > > > Or work with kernel compiled with CONFIG_DEBUG_INFO_BTF but have
+> > > > > > > /sys/kernel/btf/vmlinux removed.
+> > > > > > >
+> > > > > >
+> > > > > > It really depends what you're planning on doing.
+> > > > > >
+> > > > > > BTF has become central to a lot of aspects of BPF; higher-performance
+> > > > > > fentry/fexit() BPF programs, CO-RE, and even XDP will be using BTF
+> > > > > > soon I believe.
+> > > > > >
+> > > > > > So if you're using BPF without BTF, there are generally ways to make
+> > > > > > things work (using kprobes instead of fentry for example), but you
+> > > > > > will have less options.  I seem to recall some fixes landed to
+> > > > > > ensure that absence of BTF shouldn't prevent program loading in
+> > > > > > cases where BTF is not needed. If you run into any such failures,
+> > > > > > I'd suggest reporting them and hopefully we can get them fixed.
+> > > > > >
+> > > > > > >  Question 2: From debug information included at run time point of view,
+> > > > > > > (1) having btf/vmlinux vs (2) kernel build with
+> > > > > > > CONFIG_DEBUG_INFO_DWARF5 but not stripped,
+> > > > > > > are those two contains the same amount of debug information at runtime?
+> > > > > > >
+> > > > > >
+> > > > > > DWARF5 will contain more debug info, but will likely have a larger footprint
+> > > > > > as a consequence. I'd suggest running the experiment yourself to compare.
+> > > > > >
+> > > > > > > Question 3: Will libbpf + btf/vmlinx, break expectation of kernel ASLR
+> > > > > > > feature ? I assume it shouldn't, but would like to double check.
+> > > > > > >
+> > > > > >
+> > > > > > Nope, no issue here that I'm aware of. I've used KASLR + BTF and haven't seen
+> > > > > > any problems at least.
+> > > > > >
+> > > > > > > Thanks
+> > > > > > > Best Regards,
+> > > > > > > Jeff Xu
+> > > > > > >
+> > > >
+> > > > Can I understand the BTF usage in this way ?
+> > > >
+> > > > When BTF is available in the kernel runtime, it helps in two ways:
+> > > > 1> By BTF verifier (kernel) to find the offset of a member in struct
+> > > > (no libbpf modification of BYTE code needed)
+> > > > The example usage is BTF RAW tracepoint, BFP_LSM.
+> > > > Typically, those BPF programs will includes "vmlinux.h" , and  uses C
+> > > > pointer style(vma->vm_start)
+> > > >
+> > > > 2> By libbpf (user space) to post-processing BPF bytecode.
+> > > > Typically, those BPF programs doesn't need to include "vmlinux.h", and
+> > > > uses bpf_core_read, such as:
+> > > > BPF_CORE_READ(vma,vm_start)
+> > > >
+> > > > Much appreciated to confirm this is right/wrong.
+> > > >
+> > >
+> > > Does not answer your question directly :) from my limited
+> > > understanding, could be incorrect, BTF is processed at compile time
+> > > and load time,  load time is processed  by libbpf
+> > >
+> > So even for BTF RAW tracepoint, the relocation is happening at libbpf ?
+> > According to this post:
+> > https://mozillazg.com/2022/06/ebpf-libbpf-btf-powered-enabled-raw-tracepoint-common-questions-en.html#hidthe-difference-between-btf-raw-tracepoint-and-raw-tracepoint
+> >
+> > // btf enabled
+> > struct task_struct *task = (struct task_struct *) bpf_get_current_task_btf();
+> > u32 ppid = task->real_parent->tgid;
+> >
+> > "The btf version can access kernel memory directly from within the ebpf program.
+> > There is no need to use a helper function like bpf_core_read or
+> > bpf_probe_read_kernel to access the kernel memory as in regular raw
+> > tracepoint:"
+> >
+> > It talks about accessing kernel memory directly, so I was reading it
+> > as  the kernel is doing the relocation.
+> >
+>
+> Would this help ?
+> https://lore.kernel.org/bpf/20191016032505.2089704-6-ast@kernel.org/
+>
+I'm not sure. But thanks.
 
+Another way to look is through  objdump of the BPF bytecode
+1> direct memory read.
+SEC("lsm/bprm_committed_creds")
+int BPF_PROG(handle_committed_creds, struct linux_binprm* binprm) {
+  struct task_struct* task;
+  task = (struct task_struct*)bpf_get_current_task_btf();
+  return task->real_parent->tgid;
+}
 
-On 2022/9/14 21:59, Victor Nogueira wrote:
-> On 13/09/2022 01:21, Zhengchao Shao wrote:
->> The walk implementation of most tc cls modules is basically the same.
->> That is, the values of count and skip are checked first. If count is
->> greater than or equal to skip, the registered fn function is executed.
->> Otherwise, increase the value of count. So the code can be refactored.
->> Then use helper function to replace the code of each cls module in
->> alphabetical order.
->>
->> The walk function is invoked during dump. Therefore, test cases related
->>   to the tdc filter need to be added.
->>
->> Add test cases locally and perform the test. The test results are listed
->> below:
->>
->> ./tdc.py -e 0811
->> ok 1 0811 - Add multiple basic filter with cmp ematch u8/link layer and
->> default action and dump them
->>
->> ./tdc.py -e 5129
->> ok 1 5129 - List basic filters
->>
->> ./tdc.py -c filters bpf
->> ok 13 23c3 - Add cBPF filter with valid bytecode
->> ok 14 1563 - Add cBPF filter with invalid bytecode
->> ok 15 2334 - Add eBPF filter with valid object-file
->> ok 16 2373 - Add eBPF filter with invalid object-file
->> ok 17 4423 - Replace cBPF bytecode
->> ok 18 5122 - Delete cBPF filter
->> ok 19 e0a9 - List cBPF filters
->>
->> ./tdc.py -c filters cgroup
->> ok 1 6273 - Add cgroup filter with cmp ematch u8/link layer and drop
->> action
->> ok 2 4721 - Add cgroup filter with cmp ematch u8/link layer with trans
->> flag and pass action
->> ok 3 d392 - Add cgroup filter with cmp ematch u16/link layer and pipe
->> action
->> ok 4 0234 - Add cgroup filter with cmp ematch u32/link layer and miltiple
->> actions
->> ok 5 8499 - Add cgroup filter with cmp ematch u8/network layer and pass
->> action
->> ok 6 b273 - Add cgroup filter with cmp ematch u8/network layer with trans
->> flag and drop action
->> ok 7 1934 - Add cgroup filter with cmp ematch u16/network layer and pipe
->> action
->> ok 8 2733 - Add cgroup filter with cmp ematch u32/network layer and
->> miltiple actions
->> ok 9 3271 - Add cgroup filter with NOT cmp ematch rule and pass action
->> ok 10 2362 - Add cgroup filter with two ANDed cmp ematch rules and single
->> action
->> ok 11 9993 - Add cgroup filter with two ORed cmp ematch rules and single
->> action
->> ok 12 2331 - Add cgroup filter with two ANDed cmp ematch rules and one
->> ORed ematch rule and single action
->> ok 13 3645 - Add cgroup filter with two ANDed cmp ematch rules and one
->> NOT ORed ematch rule and single action
->> ok 14 b124 - Add cgroup filter with u32 ematch u8/zero offset and drop
->> action
->> ok 15 7381 - Add cgroup filter with u32 ematch u8/zero offset and invalid
->> value >0xFF
->> ok 16 2231 - Add cgroup filter with u32 ematch u8/positive offset and
->> drop action
->> ok 17 1882 - Add cgroup filter with u32 ematch u8/invalid mask >0xFF
->> ok 18 1237 - Add cgroup filter with u32 ematch u8/missing offset
->> ok 19 3812 - Add cgroup filter with u32 ematch u8/missing AT keyword
->> ok 20 1112 - Add cgroup filter with u32 ematch u8/missing value
->> ok 21 3241 - Add cgroup filter with u32 ematch u8/non-numeric value
->> ok 22 e231 - Add cgroup filter with u32 ematch u8/non-numeric mask
->> ok 23 4652 - Add cgroup filter with u32 ematch u8/negative offset and
->> pass action
->> ok 24 1331 - Add cgroup filter with u32 ematch u16/zero offset and pipe
->> action
->> ok 25 e354 - Add cgroup filter with u32 ematch u16/zero offset and
->> invalid value >0xFFFF
->> ok 26 3538 - Add cgroup filter with u32 ematch u16/positive offset and
->> drop action
->> ok 27 4576 - Add cgroup filter with u32 ematch u16/invalid mask >0xFFFF
->> ok 28 b842 - Add cgroup filter with u32 ematch u16/missing offset
->> ok 29 c924 - Add cgroup filter with u32 ematch u16/missing AT keyword
->> ok 30 cc93 - Add cgroup filter with u32 ematch u16/missing value
->> ok 31 123c - Add cgroup filter with u32 ematch u16/non-numeric value
->> ok 32 3675 - Add cgroup filter with u32 ematch u16/non-numeric mask
->> ok 33 1123 - Add cgroup filter with u32 ematch u16/negative offset and
->> drop action
->> ok 34 4234 - Add cgroup filter with u32 ematch u16/nexthdr+ offset and
->> pass action
->> ok 35 e912 - Add cgroup filter with u32 ematch u32/zero offset and pipe
->> action
->> ok 36 1435 - Add cgroup filter with u32 ematch u32/positive offset and
->> drop action
->> ok 37 1282 - Add cgroup filter with u32 ematch u32/missing offset
->> ok 38 6456 - Add cgroup filter with u32 ematch u32/missing AT keyword
->> ok 39 4231 - Add cgroup filter with u32 ematch u32/missing value
->> ok 40 2131 - Add cgroup filter with u32 ematch u32/non-numeric value
->> ok 41 f125 - Add cgroup filter with u32 ematch u32/non-numeric mask
->> ok 42 4316 - Add cgroup filter with u32 ematch u32/negative offset and
->> drop action
->> ok 43 23ae - Add cgroup filter with u32 ematch u32/nexthdr+ offset and
->> pipe action
->> ok 44 23a1 - Add cgroup filter with canid ematch and single SFF
->> ok 45 324f - Add cgroup filter with canid ematch and single SFF with mask
->> ok 46 2576 - Add cgroup filter with canid ematch and multiple SFF
->> ok 47 4839 - Add cgroup filter with canid ematch and multiple SFF with
->> masks
->> ok 48 6713 - Add cgroup filter with canid ematch and single EFF
->> ok 49 4572 - Add cgroup filter with canid ematch and single EFF with mask
->> ok 50 8031 - Add cgroup filter with canid ematch and multiple EFF
->> ok 51 ab9d - Add cgroup filter with canid ematch and multiple EFF with
->> masks
->> ok 52 5349 - Add cgroup filter with canid ematch and a combination of
->> SFF/EFF
->> ok 53 c934 - Add cgroup filter with canid ematch and a combination of
->> SFF/EFF with masks
->> ok 54 4319 - Replace cgroup filter with diffferent match
->> ok 55 4636 - Detele cgroup filter
->>
->> ./tdc.py -c filters flow
->> ok 1 5294 - Add flow filter with map key and ops
->> ok 2 3514 - Add flow filter with map key or ops
->> ok 3 7534 - Add flow filter with map key xor ops
->> ok 4 4524 - Add flow filter with map key rshift ops
->> ok 5 0230 - Add flow filter with map key addend ops
->> ok 6 2344 - Add flow filter with src map key
->> ok 7 9304 - Add flow filter with proto map key
->> ok 8 9038 - Add flow filter with proto-src map key
->> ok 9 2a03 - Add flow filter with proto-dst map key
->> ok 10 a073 - Add flow filter with iif map key
->> ok 11 3b20 - Add flow filter with priority map key
->> ok 12 8945 - Add flow filter with mark map key
->> ok 13 c034 - Add flow filter with nfct map key
->> ok 14 0205 - Add flow filter with nfct-src map key
->> ok 15 5315 - Add flow filter with nfct-src map key
->> ok 16 7849 - Add flow filter with nfct-proto-src map key
->> ok 17 9902 - Add flow filter with nfct-proto-dst map key
->> ok 18 6742 - Add flow filter with rt-classid map key
->> ok 19 5432 - Add flow filter with sk-uid map key
->> ok 20 4234 - Add flow filter with sk-gid map key
->> ok 21 4522 - Add flow filter with vlan-tag map key
->> ok 22 4253 - Add flow filter with rxhash map key
->> ok 23 4452 - Add flow filter with hash key list
->> ok 24 4341 - Add flow filter with muliple ops
->> ok 25 4322 - List flow filters
->> ok 26 2320 - Replace flow filter with map key num
->> ok 27 3213 - Delete flow filter with map key num
->>
->> ./tdc.py -c filters route
->> ok 1 e122 - Add route filter with from and to tag
->> ok 2 6573 - Add route filter with fromif and to tag
->> ok 3 1362 - Add route filter with to flag and reclassify action
->> ok 4 4720 - Add route filter with from flag and continue actions
->> ok 5 2812 - Add route filter with form tag and pipe action
->> ok 6 7994 - Add route filter with miltiple actions
->> ok 7 4312 - List route filters
->> ok 8 2634 - Delete route filters with pipe action
->>
->> ./tdc.py -c filters rsvp
->> ok 1 2141 - Add rsvp filter with tcp proto and specific IP address
->> ok 2 5267 - Add rsvp filter with udp proto and specific IP address
->> ok 3 2819 - Add rsvp filter with src ip and src port
->> ok 4 c967 - Add rsvp filter with tunnelid and continue action
->> ok 5 5463 - Add rsvp filter with tunnel and pipe action
->> ok 6 2332 - Add rsvp filter with miltiple actions
->> ok 7 8879 - Add rsvp filter with tunnel and skp flag
->> ok 8 8261 - List rsvp filters
->> ok 9 8989 - Delete rsvp filters
->>
->> ./tdc.py -c filters tcindex
->> ok 1 8293 - Add tcindex filter with default action
->> ok 2 7281 - Add tcindex filter with hash size and pass action
->> ok 3 b294 - Add tcindex filter with mask shift and reclassify action
->> ok 4 0532 - Add tcindex filter with pass_on and continue actions
->> ok 5 d473 - Add tcindex filter with pipe action
->> ok 6 2940 - Add tcindex filter with miltiple actions
->> ok 7 1893 - List tcindex filters
->> ok 8 2041 - Change tcindex filters with pass action
->> ok 9 9203 - Replace tcindex filters with pass action
->> ok 10 7957 - Delete tcindex filters with drop action
->>
->> Zhengchao Shao (9):
->>    net/sched: cls_api: add helper for tc cls walker stats updating
->>    net/sched: use tc_cls_stats_update() in filter
->>    selftests/tc-testings: add selftests for bpf filter
->>    selftests/tc-testings: add selftests for cgroup filter
->>    selftests/tc-testings: add selftests for flow filter
->>    selftests/tc-testings: add selftests for route filter
->>    selftests/tc-testings: add selftests for rsvp filter
->>    selftests/tc-testings: add selftests for tcindex filter
->>    selftests/tc-testings: add list case for basic filter
->>
->>   include/net/pkt_cls.h                         |   13 +
->>   net/sched/cls_basic.c                         |    9 +-
->>   net/sched/cls_bpf.c                           |    8 +-
->>   net/sched/cls_flow.c                          |    8 +-
->>   net/sched/cls_fw.c                            |    9 +-
->>   net/sched/cls_route.c                         |    9 +-
->>   net/sched/cls_rsvp.h                          |    9 +-
->>   net/sched/cls_tcindex.c                       |   18 +-
->>   net/sched/cls_u32.c                           |   20 +-
->>   .../tc-testing/tc-tests/filters/basic.json    |   47 +
->>   .../tc-testing/tc-tests/filters/bpf.json      |  171 +++
->>   .../tc-testing/tc-tests/filters/cgroup.json   | 1236 +++++++++++++++++
->>   .../tc-testing/tc-tests/filters/flow.json     |  623 +++++++++
->>   .../tc-testing/tc-tests/filters/route.json    |  181 +++
->>   .../tc-testing/tc-tests/filters/rsvp.json     |  203 +++
->>   .../tc-testing/tc-tests/filters/tcindex.json  |  227 +++
->>   16 files changed, 2716 insertions(+), 75 deletions(-)
->>   create mode 100644 
->> tools/testing/selftests/tc-testing/tc-tests/filters/bpf.json
->>   create mode 100644 
->> tools/testing/selftests/tc-testing/tc-tests/filters/cgroup.json
->>   create mode 100644 
->> tools/testing/selftests/tc-testing/tc-tests/filters/flow.json
->>   create mode 100644 
->> tools/testing/selftests/tc-testing/tc-tests/filters/route.json
->>   create mode 100644 
->> tools/testing/selftests/tc-testing/tc-tests/filters/rsvp.json
->>   create mode 100644 
->> tools/testing/selftests/tc-testing/tc-tests/filters/tcindex.json
->>
-> 
-> Aside from tabs vs spaces nit-picking, the test patches in this set look 
-> good.
+0000000000000000 <handle_committed_creds>:
+       0: 85 00 00 00 9e 00 00 00 call 158
+       1: 79 01 b0 05 00 00 00 00 r1 = *(u64 *)(r0 + 1456)
+       2: 61 10 a4 05 00 00 00 00 r0 = *(u32 *)(r1 + 1444)
+       3: 95 00 00 00 00 00 00 00 exit
 
-Hi Victor and Jamal:
-	Thank you for your review. I will change them in V3.
+2> relocate by libbpf.
+SEC("lsm/bprm_committed_creds")
+int BPF_PROG(handle_committed_creds, struct linux_binprm* binprm) {
+  struct task_struct* task;
+  task = (struct task_struct*)bpf_get_current_task();
+  return BPF_CORE_READ(task,real_parent,tgid);
+}
 
-Zhengchao Shao
+0000000000000000 <handle_committed_creds>:
+       0: 85 00 00 00 23 00 00 00 call 35
+       1: b7 01 00 00 b0 05 00 00 r1 = 1456
+       2: 0f 10 00 00 00 00 00 00 r0 += r1
+       3: bf a1 00 00 00 00 00 00 r1 = r10
+       4: 07 01 00 00 f0 ff ff ff r1 += -16
+       5: b7 02 00 00 08 00 00 00 r2 = 8
+       6: bf 03 00 00 00 00 00 00 r3 = r0
+       7: 85 00 00 00 71 00 00 00 call 113    <-------- (probably
+bpf_probe_read_kernel ?)
+       8: b7 01 00 00 a4 05 00 00 r1 = 1444
+       9: 79 a3 f0 ff 00 00 00 00 r3 = *(u64 *)(r10 - 16)
+      10: 0f 13 00 00 00 00 00 00 r3 += r1
+      11: bf a1 00 00 00 00 00 00 r1 = r10
+      12: 07 01 00 00 fc ff ff ff r1 += -4
+      13: b7 02 00 00 04 00 00 00 r2 = 4
+      14: 85 00 00 00 71 00 00 00 call 113. <----------
+      15: 61 a0 fc ff 00 00 00 00 r0 = *(u32 *)(r10 - 4)
+      16: 95 00 00 00 00 00 00 00 exit
+
+For 1> (direct address read)
+the member offset is already in the code, I assume no relocation needed.
+
+For 2> (bfp_core_read)
+My guess is that libbpf will relocate/change this code, for example,
+when offset "real_parent" changes within the task struct, and libbpf
+did this using some information from the elf section.
+
+Thanks
+Jeff.
