@@ -2,209 +2,311 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F40B5BB158
-	for <lists+bpf@lfdr.de>; Fri, 16 Sep 2022 18:54:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10FC95BB15F
+	for <lists+bpf@lfdr.de>; Fri, 16 Sep 2022 18:56:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229827AbiIPQyG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Sep 2022 12:54:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45746 "EHLO
+        id S229777AbiIPQ4W (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Sep 2022 12:56:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229803AbiIPQyE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 16 Sep 2022 12:54:04 -0400
-Received: from out0.migadu.com (out0.migadu.com [94.23.1.103])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEF81419AC;
-        Fri, 16 Sep 2022 09:54:01 -0700 (PDT)
-Date:   Fri, 16 Sep 2022 09:53:42 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1663347239;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=n4n2Nl5n36ivDDzzulJcSocyaueMbQPCwKCdGSryOBA=;
-        b=Qh7ukVIG7RM4JQZ8n9VG8j81pE0NbVZzhJHb4JSHeRuv7mjQK6YWmFpBaazsx7AbjUZYQn
-        jxCFNdSW8gJbrof9IJB+KlWpdMH/FQ/bWtfM/5K739UvGjQ21mFg93ADNQ4xWpTf+mSv1i
-        EVp1/xldYfY34EGjzz2J7/KRzvPktZw=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Roman Gushchin <roman.gushchin@linux.dev>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     Tejun Heo <tj@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Cgroups <cgroups@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
-Subject: Re: [PATCH bpf-next v3 00/13] bpf: Introduce selectable memcg for
- bpf map
-Message-ID: <YySqFtU9skPaJipV@P9FQF9L96D.corp.robot.car>
-References: <20220902023003.47124-1-laoar.shao@gmail.com>
- <Yxi8I4fXXSCi6z9T@slm.duckdns.org>
- <YxkVq4S1Eoa4edjZ@P9FQF9L96D.corp.robot.car>
- <CALOAHbAp=g20rL0taUpQmTwymanArhO-u69Xw42s5ap39Esn=A@mail.gmail.com>
- <YxoUkz05yA0ccGWe@P9FQF9L96D.corp.robot.car>
- <CALOAHbAzi0s3N_5BOkLsnGfwWCDpUksvvhPejjj5jo4G2v3mGg@mail.gmail.com>
+        with ESMTP id S229509AbiIPQ4O (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 16 Sep 2022 12:56:14 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C009ABD5F
+        for <bpf@vger.kernel.org>; Fri, 16 Sep 2022 09:56:13 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id w22-20020a056830061600b006546deda3f9so15244629oti.4
+        for <bpf@vger.kernel.org>; Fri, 16 Sep 2022 09:56:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mojatatu-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date;
+        bh=YNaYuOOmFHI2Yz2Gd6/GwPSAug2OW9NMCIjxVKbN/u0=;
+        b=26/a9oeh4HQuQ+d2ufKFxps9+Vfq5hOhqC5m8So8xBeKLY+PzzKzeUEzZ2qDBdKSyq
+         f8WLyb5X3sl/AcePxgPlSM310CRrUIY8Kvl1jU8J7ctJyXXREyrJD5ZhKgokzIgArksS
+         XPeGi0/5yS6yp0W0mXQu3ytVHmF1zr0QK2IiuevncBato/Jbpgi7sHpAF1QMAWZmdGBj
+         7D3pUQNpGeBapygpleSKl5btaKnOHkcbju95PFzBbb7K2LcABJs3fFAahr9NPbpa3rqm
+         Rg+Z0Qm7xxkzDo/xZmmZCEr/Hb6jlNz86QLm3uLGrkQUcIhBu+8BcadFzc3+EDdF8I8a
+         fE9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date;
+        bh=YNaYuOOmFHI2Yz2Gd6/GwPSAug2OW9NMCIjxVKbN/u0=;
+        b=CgaVaglMew2u0VUktL3vX4HQ4PIADI81n/0wCxe1eeJ8BVIq5Y/BuSrKBXF43A8HVz
+         co2eBaK/e4lhH29TRew6gYDR0Cgk5EqHnK4Ll61psvdfukrIbnCt75UnLIPE46DYyoJ9
+         DSetuW3g10j5RbCkEshMP2qvHxncEHSkRXvhhbGLchS0GsJl7+lRqrR46Ihq7f6kMQip
+         kgfdszuOhv5ALpX9KXDXbPKyxiFb+EoxXvc3En2uJULH87F9HMp2tb18+FYDuVuF10gY
+         XNm2aBuoMeOIWHGokgvEJZ2Xo0Gg09Xi98J2O2CF1NVhlwMiEOYd0f9yB7qC5PyRpRn/
+         N6SQ==
+X-Gm-Message-State: ACrzQf0xSLoCOtG/H66+hfs4FEp89APHt5Lww8fU73vxqA0DVuEVvnLC
+        3fP9SXjDCfGwg3ZS0ld9dJAhEGwIAnhDaakr
+X-Google-Smtp-Source: AMsMyM4XKacNv14jUjMk05R2uWttyg3ZNWSFGVjQRfz4CDAFLnTq21XdDMEz+3HDGs6Xoh3uwYAOug==
+X-Received: by 2002:a9d:48a:0:b0:656:7d8:c37e with SMTP id 10-20020a9d048a000000b0065607d8c37emr2696983otm.163.1663347372011;
+        Fri, 16 Sep 2022 09:56:12 -0700 (PDT)
+Received: from ?IPV6:2804:1b3:7001:2c5:8b07:2c04:e4b7:4d82? ([2804:1b3:7001:2c5:8b07:2c04:e4b7:4d82])
+        by smtp.gmail.com with ESMTPSA id i4-20020a9d53c4000000b00654625c0c4dsm10032039oth.17.2022.09.16.09.56.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Sep 2022 09:56:11 -0700 (PDT)
+Message-ID: <f0fa2b91-cebf-0997-1074-d1ba35bf77a9@mojatatu.com>
+Date:   Fri, 16 Sep 2022 13:56:05 -0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALOAHbAzi0s3N_5BOkLsnGfwWCDpUksvvhPejjj5jo4G2v3mGg@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: linux.dev
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.2
+Subject: Re: [PATCH net-next,v4 0/9] refactor duplicate codes in the tc cls
+ walk function
+To:     Zhengchao Shao <shaozhengchao@huawei.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        jhs@mojatatu.com, xiyou.wangcong@gmail.com, jiri@resnulli.us,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, shuah@kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, weiyongjun1@huawei.com,
+        yuehaibing@huawei.com
+References: <20220916020251.190097-1-shaozhengchao@huawei.com>
+Content-Language: en-US
+From:   Victor Nogueira <victor@mojatatu.com>
+In-Reply-To: <20220916020251.190097-1-shaozhengchao@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 13, 2022 at 02:15:20PM +0800, Yafang Shao wrote:
-> On Fri, Sep 9, 2022 at 12:13 AM Roman Gushchin <roman.gushchin@linux.dev> wrote:
-> >
-> > On Thu, Sep 08, 2022 at 10:37:02AM +0800, Yafang Shao wrote:
-> > > On Thu, Sep 8, 2022 at 6:29 AM Roman Gushchin <roman.gushchin@linux.dev> wrote:
-> > > >
-> > > > On Wed, Sep 07, 2022 at 05:43:31AM -1000, Tejun Heo wrote:
-> > > > > Hello,
-> > > > >
-> > > > > On Fri, Sep 02, 2022 at 02:29:50AM +0000, Yafang Shao wrote:
-> > > > > ...
-> > > > > > This patchset tries to resolve the above two issues by introducing a
-> > > > > > selectable memcg to limit the bpf memory. Currently we only allow to
-> > > > > > select its ancestor to avoid breaking the memcg hierarchy further.
-> > > > > > Possible use cases of the selectable memcg as follows,
-> > > > >
-> > > > > As discussed in the following thread, there are clear downsides to an
-> > > > > interface which requires the users to specify the cgroups directly.
-> > > > >
-> > > > >  https://lkml.kernel.org/r/YwNold0GMOappUxc@slm.duckdns.org
-> > > > >
-> > > > > So, I don't really think this is an interface we wanna go for. I was hoping
-> > > > > to hear more from memcg folks in the above thread. Maybe ping them in that
-> > > > > thread and continue there?
-> > > >
-> > >
-> > > Hi Roman,
-> > >
-> > > > As I said previously, I don't like it, because it's an attempt to solve a non
-> > > > bpf-specific problem in a bpf-specific way.
-> > > >
-> > >
-> > > Why do you still insist that bpf_map->memcg is not a bpf-specific
-> > > issue after so many discussions?
-> > > Do you charge the bpf-map's memory the same way as you charge the page
-> > > caches or slabs ?
-> > > No, you don't. You charge it in a bpf-specific way.
-> >
-> 
-> Hi Roman,
-> 
-> Sorry for the late response.
-> I've been on vacation in the past few days.
-> 
-> > The only difference is that we charge the cgroup of the processes who
-> > created a map, not a process who is doing a specific allocation.
-> 
-> This means the bpf-map can be indepent of process, IOW, the memcg of
-> bpf-map can be indepent of the memcg of the processes.
-> This is the fundamental difference between bpf-map and page caches, then...
-> 
-> > Your patchset doesn't change this.
-> 
-> We can make this behavior reasonable by introducing an independent
-> memcg, as what I did in the previous version.
-> 
-> > There are pros and cons with this approach, we've discussed it back
-> > to the times when bpf memcg accounting was developed. If you want
-> > to revisit this, it's maybe possible (given there is a really strong and likely
-> > new motivation appears), but I haven't seen any complaints yet except from you.
-> >
-> 
-> memcg-base bpf accounting is a new feature, which may not be used widely.
-> 
-> > >
-> > > > Yes, memory cgroups are not great for accounting of shared resources, it's well
-> > > > known. This patchset looks like an attempt to "fix" it specifically for bpf maps
-> > > > in a particular cgroup setup. Honestly, I don't think it's worth the added
-> > > > complexity. Especially because a similar behaviour can be achieved simple
-> > > > by placing the task which creates the map into the desired cgroup.
-> > >
-> > > Are you serious ?
-> > > Have you ever read the cgroup doc? Which clearly describe the "No
-> > > Internal Process Constraint".[1]
-> > > Obviously you can't place the task in the desired cgroup, i.e. the parent memcg.
-> >
-> > But you can place it into another leaf cgroup. You can delete this leaf cgroup
-> > and your memcg will get reparented. You can attach this process and create
-> > a bpf map to the parent cgroup before it gets child cgroups.
-> 
-> If the process doesn't exit after it created bpf-map, we have to
-> migrate it around memcgs....
-> The complexity in deployment can introduce unexpected issues easily.
-> 
-> > You can revisit the idea of shared bpf maps and outlive specific cgroups.
-> > Lof of options.
-> >
-> > >
-> > > [1] https://www.kernel.org/doc/Documentation/cgroup-v2.txt
-> > >
-> > > > Beatiful? Not. Neither is the proposed solution.
-> > > >
-> > >
-> > > Is it really hard to admit a fault?
-> >
-> > Yafang, you posted several versions and so far I haven't seen much of support
-> > or excitement from anyone (please, fix me if I'm wrong). It's not like I'm
-> > nacking a patchset with many acks, reviews and supporters.
-> >
-> > Still think you're solving an important problem in a reasonable way?
-> > It seems like not many are convinced yet. I'd recommend to focus on this instead
-> > of blaming me.
-> >
-> 
-> The best way so far is to introduce specific memcg for specific resources.
-> Because not only the process owns its memcg, but also specific
-> resources own their memcgs, for example bpf-map, or socket.
-> 
-> struct bpf_map {                                 <<<< memcg owner
->     struct memcg_cgroup *memcg;
-> };
-> 
-> struct sock {                                       <<<< memcg owner
->     struct mem_cgroup *sk_memcg;
-> };
-> 
-> These resources already have their own memcgs, so we should make this
-> behavior formal.
-> 
-> The selectable memcg is just a variant of 'echo ${proc} > cgroup.procs'.
 
-This is a fundamental change: cgroups were always hierarchical groups
-of processes/threads. You're basically suggesting to extend it to
-hierarchical groups of processes and some other objects (what's a good
-definition?). It's a huge change and it's scope is definetely larger
-than bpf and even memory cgroups. It will raise a lot of questions:
-e.g. what does it mean for other controllers (cpu, io, etc)?
-Which objects can have dedicated cgroups and which not? How the interface will
-look like? How the oom handling will work? Etc.
+On 15/09/2022 23:02, Zhengchao Shao wrote:
+> The walk implementation of most tc cls modules is basically the same.
+> That is, the values of count and skip are checked first. If count is
+> greater than or equal to skip, the registered fn function is executed.
+> Otherwise, increase the value of count. So the code can be refactored.
+> Then use helper function to replace the code of each cls module in
+> alphabetical order.
+>
+> The walk function is invoked during dump. Therefore, test cases related
+>   to the tdc filter need to be added.
+>
+> Last, thanks to Jamal, Victor and Wang for their review.
+>
+> Add test cases locally and perform the test. The test results are listed
+> below:
+>
+> ./tdc.py -e 0811
+> ok 1 0811 - Add multiple basic filter with cmp ematch u8/link layer and
+> default action and dump them
+>
+> ./tdc.py -e 5129
+> ok 1 5129 - List basic filters
+>
+> ./tdc.py -c bpf-filter
+> ok 1 23c3 - Add cBPF filter with valid bytecode
+> ok 2 1563 - Add cBPF filter with invalid bytecode
+> ok 3 2334 - Add eBPF filter with valid object-file
+> ok 4 2373 - Add eBPF filter with invalid object-file
+> ok 5 4423 - Replace cBPF bytecode
+> ok 6 5122 - Delete cBPF filter
+> ok 7 e0a9 - List cBPF filters
+>
+> ./tdc.py -c cgroup
+> ok 1 6273 - Add cgroup filter with cmp ematch u8/link layer and drop
+> action
+> ok 2 4721 - Add cgroup filter with cmp ematch u8/link layer with trans
+> flag and pass action
+> ok 3 d392 - Add cgroup filter with cmp ematch u16/link layer and pipe
+> action
+> ok 4 0234 - Add cgroup filter with cmp ematch u32/link layer and miltiple
+> actions
+> ok 5 8499 - Add cgroup filter with cmp ematch u8/network layer and pass
+> action
+> ok 6 b273 - Add cgroup filter with cmp ematch u8/network layer with trans
+> flag and drop action
+> ok 7 1934 - Add cgroup filter with cmp ematch u16/network layer and pipe
+> action
+> ok 8 2733 - Add cgroup filter with cmp ematch u32/network layer and
+> miltiple actions
+> ok 9 3271 - Add cgroup filter with NOT cmp ematch rule and pass action
+> ok 10 2362 - Add cgroup filter with two ANDed cmp ematch rules and single
+> action
+> ok 11 9993 - Add cgroup filter with two ORed cmp ematch rules and single
+> action
+> ok 12 2331 - Add cgroup filter with two ANDed cmp ematch rules and one
+> ORed ematch rule and single action
+> ok 13 3645 - Add cgroup filter with two ANDed cmp ematch rules and one
+> NOT ORed ematch rule and single action
+> ok 14 b124 - Add cgroup filter with u32 ematch u8/zero offset and drop
+> action
+> ok 15 7381 - Add cgroup filter with u32 ematch u8/zero offset and invalid
+> value >0xFF
+> ok 16 2231 - Add cgroup filter with u32 ematch u8/positive offset and
+> drop action
+> ok 17 1882 - Add cgroup filter with u32 ematch u8/invalid mask >0xFF
+> ok 18 1237 - Add cgroup filter with u32 ematch u8/missing offset
+> ok 19 3812 - Add cgroup filter with u32 ematch u8/missing AT keyword
+> ok 20 1112 - Add cgroup filter with u32 ematch u8/missing value
+> ok 21 3241 - Add cgroup filter with u32 ematch u8/non-numeric value
+> ok 22 e231 - Add cgroup filter with u32 ematch u8/non-numeric mask
+> ok 23 4652 - Add cgroup filter with u32 ematch u8/negative offset and
+> pass action
+> ok 24 1331 - Add cgroup filter with u32 ematch u16/zero offset and pipe
+> action
+> ok 25 e354 - Add cgroup filter with u32 ematch u16/zero offset and
+> invalid value >0xFFFF
+> ok 26 3538 - Add cgroup filter with u32 ematch u16/positive offset and
+> drop action
+> ok 27 4576 - Add cgroup filter with u32 ematch u16/invalid mask >0xFFFF
+> ok 28 b842 - Add cgroup filter with u32 ematch u16/missing offset
+> ok 29 c924 - Add cgroup filter with u32 ematch u16/missing AT keyword
+> ok 30 cc93 - Add cgroup filter with u32 ematch u16/missing value
+> ok 31 123c - Add cgroup filter with u32 ematch u16/non-numeric value
+> ok 32 3675 - Add cgroup filter with u32 ematch u16/non-numeric mask
+> ok 33 1123 - Add cgroup filter with u32 ematch u16/negative offset and
+> drop action
+> ok 34 4234 - Add cgroup filter with u32 ematch u16/nexthdr+ offset and
+> pass action
+> ok 35 e912 - Add cgroup filter with u32 ematch u32/zero offset and pipe
+> action
+> ok 36 1435 - Add cgroup filter with u32 ematch u32/positive offset and
+> drop action
+> ok 37 1282 - Add cgroup filter with u32 ematch u32/missing offset
+> ok 38 6456 - Add cgroup filter with u32 ematch u32/missing AT keyword
+> ok 39 4231 - Add cgroup filter with u32 ematch u32/missing value
+> ok 40 2131 - Add cgroup filter with u32 ematch u32/non-numeric value
+> ok 41 f125 - Add cgroup filter with u32 ematch u32/non-numeric mask
+> ok 42 4316 - Add cgroup filter with u32 ematch u32/negative offset and
+> drop action
+> ok 43 23ae - Add cgroup filter with u32 ematch u32/nexthdr+ offset and
+> pipe action
+> ok 44 23a1 - Add cgroup filter with canid ematch and single SFF
+> ok 45 324f - Add cgroup filter with canid ematch and single SFF with mask
+> ok 46 2576 - Add cgroup filter with canid ematch and multiple SFF
+> ok 47 4839 - Add cgroup filter with canid ematch and multiple SFF with
+> masks
+> ok 48 6713 - Add cgroup filter with canid ematch and single EFF
+> ok 49 4572 - Add cgroup filter with canid ematch and single EFF with mask
+> ok 50 8031 - Add cgroup filter with canid ematch and multiple EFF
+> ok 51 ab9d - Add cgroup filter with canid ematch and multiple EFF with
+> masks
+> ok 52 5349 - Add cgroup filter with canid ematch and a combination of
+> SFF/EFF
+> ok 53 c934 - Add cgroup filter with canid ematch and a combination of
+> SFF/EFF with masks
+> ok 54 4319 - Replace cgroup filter with diffferent match
+> ok 55 4636 - Detele cgroup filter
+>
+> ./tdc.py -c flow
+> ok 1 5294 - Add flow filter with map key and ops
+> ok 2 3514 - Add flow filter with map key or ops
+> ok 3 7534 - Add flow filter with map key xor ops
+> ok 4 4524 - Add flow filter with map key rshift ops
+> ok 5 0230 - Add flow filter with map key addend ops
+> ok 6 2344 - Add flow filter with src map key
+> ok 7 9304 - Add flow filter with proto map key
+> ok 8 9038 - Add flow filter with proto-src map key
+> ok 9 2a03 - Add flow filter with proto-dst map key
+> ok 10 a073 - Add flow filter with iif map key
+> ok 11 3b20 - Add flow filter with priority map key
+> ok 12 8945 - Add flow filter with mark map key
+> ok 13 c034 - Add flow filter with nfct map key
+> ok 14 0205 - Add flow filter with nfct-src map key
+> ok 15 5315 - Add flow filter with nfct-src map key
+> ok 16 7849 - Add flow filter with nfct-proto-src map key
+> ok 17 9902 - Add flow filter with nfct-proto-dst map key
+> ok 18 6742 - Add flow filter with rt-classid map key
+> ok 19 5432 - Add flow filter with sk-uid map key
+> ok 20 4234 - Add flow filter with sk-gid map key
+> ok 21 4522 - Add flow filter with vlan-tag map key
+> ok 22 4253 - Add flow filter with rxhash map key
+> ok 23 4452 - Add flow filter with hash key list
+> ok 24 4341 - Add flow filter with muliple ops
+> ok 25 4392 - List flow filters
+> ok 26 4322 - Change flow filter with map key num
+> ok 27 2320 - Replace flow filter with map key num
+> ok 28 3213 - Delete flow filter with map key num
+>
+> ./tdc.py -c route
+> ok 1 e122 - Add route filter with from and to tag
+> ok 2 6573 - Add route filter with fromif and to tag
+> ok 3 1362 - Add route filter with to flag and reclassify action
+> ok 4 4720 - Add route filter with from flag and continue actions
+> ok 5 2812 - Add route filter with form tag and pipe action
+> ok 6 7994 - Add route filter with miltiple actions
+> ok 7 4312 - List route filters
+> ok 8 2634 - Delete route filter with pipe action
+>
+> ./tdc.py -c rsvp
+> ok 1 2141 - Add rsvp filter with tcp proto and specific IP address
+> ok 2 5267 - Add rsvp filter with udp proto and specific IP address
+> ok 3 2819 - Add rsvp filter with src ip and src port
+> ok 4 c967 - Add rsvp filter with tunnelid and continue action
+> ok 5 5463 - Add rsvp filter with tunnel and pipe action
+> ok 6 2332 - Add rsvp filter with miltiple actions
+> ok 7 8879 - Add rsvp filter with tunnel and skp flag
+> ok 8 8261 - List rsvp filters
+> ok 9 8989 - Delete rsvp filter
+>
+> ./tdc.py -c tcindex
+> ok 1 8293 - Add tcindex filter with default action
+> ok 2 7281 - Add tcindex filter with hash size and pass action
+> ok 3 b294 - Add tcindex filter with mask shift and reclassify action
+> ok 4 0532 - Add tcindex filter with pass_on and continue actions
+> ok 5 d473 - Add tcindex filter with pipe action
+> ok 6 2940 - Add tcindex filter with miltiple actions
+> ok 7 1893 - List tcindex filters
+> ok 8 2041 - Change tcindex filter with pass action
+> ok 9 9203 - Replace tcindex filter with pass action
+> ok 10 7957 - Delete tcindex filter with drop action
+>
+> ---
+> v4: rename tc_cls_stats_update to tc_cls_stats_dump and modify the
+>      test case format alignment
+> v3: modify the test case format alignment
+> v2: rectify spelling error; The category name bpf in filters file
+>      is renamed to bpf-filter
+> ---
+>
+> Zhengchao Shao (9):
+>    net/sched: cls_api: add helper for tc cls walker stats dump
+>    net/sched: use tc_cls_stats_dump() in filter
+>    selftests/tc-testings: add selftests for bpf filter
+>    selftests/tc-testings: add selftests for cgroup filter
+>    selftests/tc-testings: add selftests for flow filter
+>    selftests/tc-testings: add selftests for route filter
+>    selftests/tc-testings: add selftests for rsvp filter
+>    selftests/tc-testings: add selftests for tcindex filter
+>    selftests/tc-testings: add list case for basic filter
+>
+>   include/net/pkt_cls.h                         |   13 +
+>   net/sched/cls_basic.c                         |    9 +-
+>   net/sched/cls_bpf.c                           |    8 +-
+>   net/sched/cls_flow.c                          |    8 +-
+>   net/sched/cls_fw.c                            |    9 +-
+>   net/sched/cls_route.c                         |    9 +-
+>   net/sched/cls_rsvp.h                          |    9 +-
+>   net/sched/cls_tcindex.c                       |   18 +-
+>   net/sched/cls_u32.c                           |   20 +-
+>   .../tc-testing/tc-tests/filters/basic.json    |   47 +
+>   .../tc-testing/tc-tests/filters/bpf.json      |  171 +++
+>   .../tc-testing/tc-tests/filters/cgroup.json   | 1236 +++++++++++++++++
+>   .../tc-testing/tc-tests/filters/flow.json     |  623 +++++++++
+>   .../tc-testing/tc-tests/filters/route.json    |  181 +++
+>   .../tc-testing/tc-tests/filters/rsvp.json     |  203 +++
+>   .../tc-testing/tc-tests/filters/tcindex.json  |  227 +++
+>   16 files changed, 2716 insertions(+), 75 deletions(-)
+>   create mode 100644 tools/testing/selftests/tc-testing/tc-tests/filters/bpf.json
+>   create mode 100644 tools/testing/selftests/tc-testing/tc-tests/filters/cgroup.json
+>   create mode 100644 tools/testing/selftests/tc-testing/tc-tests/filters/flow.json
+>   create mode 100644 tools/testing/selftests/tc-testing/tc-tests/filters/route.json
+>   create mode 100644 tools/testing/selftests/tc-testing/tc-tests/filters/rsvp.json
+>   create mode 100644 tools/testing/selftests/tc-testing/tc-tests/filters/tcindex.json
 
-The history showed that starting small with one controller and/or specific
-use case isn't working well for cgroups, because different resources and
-controllers are not living independently. So if you really want to go this way
-you need to present the whole picture and convince many people that it's worth
-it. I doubt this specific bpf map accounting thing can justify it.
 
-Personally I know some examples where such functionality could be useful,
-but I'm not yet convinced it's worth the effort and potential problems.
+Reviewed-by: Victor Nogueira <victor@mojatatu.com>
+Tested-by: Victor Nogueira <victor@mojatatu.com>
 
-Thanks!
