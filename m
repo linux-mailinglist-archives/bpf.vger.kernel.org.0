@@ -2,71 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 822385BA3B6
-	for <lists+bpf@lfdr.de>; Fri, 16 Sep 2022 03:10:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B7E25BA440
+	for <lists+bpf@lfdr.de>; Fri, 16 Sep 2022 03:58:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229708AbiIPBK0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Sep 2022 21:10:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54130 "EHLO
+        id S229759AbiIPB6m (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Sep 2022 21:58:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229538AbiIPBKX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 15 Sep 2022 21:10:23 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F16334D256
-        for <bpf@vger.kernel.org>; Thu, 15 Sep 2022 18:10:21 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id w22-20020a056830061600b006546deda3f9so13794027oti.4
-        for <bpf@vger.kernel.org>; Thu, 15 Sep 2022 18:10:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date;
-        bh=6nehn4SZ+N5DitBflpC+8AB9tkDm5FI3qla1CH9afZQ=;
-        b=np4RaCUtWX8kie5xR3+NYRsf86Lvh7VeIAMxOuIq718CXvBEpzkcQxvmj9NFJbbq6S
-         rB/KC14woUsMii5QWF8gKo11UarH7mCNVB+g4RJwC535+AKQow90KfkgMhuaMWXgbP11
-         DgDbOqunTyDTmVVwvrVuZEPV6eVd3I+2j657yHv3/HRNvKL9Pn8d4NjU5G0YxDKpCZ7i
-         dOoR26svVf91E2XQHe55THbDma6dsOKMZ+B3IzFmpZrO077svkYkBTCsQq9RlI2IaExA
-         RxixVRRIMS+s/o1vUzPVc3r+BqjLTesNL+87vTP6SaKdWJe3/zbEiv8G6UT05U3iFOht
-         +9NA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date;
-        bh=6nehn4SZ+N5DitBflpC+8AB9tkDm5FI3qla1CH9afZQ=;
-        b=7iLNgWpP02tWTsO2iXme8FPWvhAtBnDl0LwJN8aqpizJc3arBZUzMMl8OAdofDCosw
-         j5EXiAot63kOtkDeOyFV4DNeqwfrBOUiFjeJruJvqgw44btsrD2LtD9+LfSP1OSj0OG/
-         W3WRrKrfWqO4ycb9nq4aaYQp1ByyPVZhQ3a4K9rcto3vg0Wzt0bY7yugI8hSPLT067iZ
-         P4VlnnirWFhVAvH12nct9xVPypHAZk5QJHMxUMi53p9CsR3Q8XVE0cH0OfFDj39B5i9Q
-         HfIIjz3QdzZ31DCxpl9qDoWerrm5cvv74DZpo7cEQJuB2cVgaOyel0ERU3St2CRzJKXN
-         uTJA==
-X-Gm-Message-State: ACrzQf0jGdkbaqeF76bN9HCbvl1bqL6/yLYDSitqppby74tgaG4BCRip
-        DnLz+yY+ZBcT/hxDkg+ZfHU1PhfZmvVxc5oVvQ==
-X-Google-Smtp-Source: AMsMyM6Ip9eJ7x168CMGYhYckHP8WIm7hEZDQ0vUIDP7Xb5FYoinF0pKq2hsipyTSj1ypuXP/4z64t1g9QETj1D31sc=
-X-Received: by 2002:a9d:75d8:0:b0:658:fff4:371a with SMTP id
- c24-20020a9d75d8000000b00658fff4371amr1186676otl.314.1663290620391; Thu, 15
- Sep 2022 18:10:20 -0700 (PDT)
+        with ESMTP id S229696AbiIPB6l (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 15 Sep 2022 21:58:41 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56B7E82848;
+        Thu, 15 Sep 2022 18:58:22 -0700 (PDT)
+Received: from dggpeml500026.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4MTHG925pHznVJ0;
+        Fri, 16 Sep 2022 09:55:29 +0800 (CST)
+Received: from [10.174.178.66] (10.174.178.66) by
+ dggpeml500026.china.huawei.com (7.185.36.106) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Fri, 16 Sep 2022 09:58:11 +0800
+Message-ID: <82fde04f-5f49-525c-dcf5-f5ab8a0d3ec4@huawei.com>
+Date:   Fri, 16 Sep 2022 09:58:11 +0800
 MIME-Version: 1.0
-Received: by 2002:a4a:d001:0:0:0:0:0 with HTTP; Thu, 15 Sep 2022 18:10:19
- -0700 (PDT)
-Reply-To: un.loan@unpayloan.com
-From:   Tracy Vornan <graceali1977@gmail.com>
-Date:   Thu, 15 Sep 2022 18:10:19 -0700
-Message-ID: <CAFbUGG8L+5-JUQFZqozCNRsazdebrJoCYaWtFMUsLpK3uABzGQ@mail.gmail.com>
-Subject: Apply for Loan
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.0.2
+Subject: Re: [PATCH net-next,v3 1/9] net/sched: cls_api: add helper for tc cls
+ walker stats updating
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>, <jhs@mojatatu.com>,
+        <jiri@resnulli.us>, <davem@davemloft.net>, <edumazet@google.com>,
+        <kuba@kernel.org>, <pabeni@redhat.com>, <shuah@kernel.org>,
+        <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <martin.lau@linux.dev>, <song@kernel.org>, <yhs@fb.com>,
+        <john.fastabend@gmail.com>, <kpsingh@kernel.org>, <sdf@google.com>,
+        <haoluo@google.com>, <jolsa@kernel.org>, <weiyongjun1@huawei.com>,
+        <yuehaibing@huawei.com>
+References: <20220915063038.20010-1-shaozhengchao@huawei.com>
+ <20220915063038.20010-2-shaozhengchao@huawei.com>
+ <YyOz3qLWTS3raNpe@pop-os.localdomain>
+From:   shaozhengchao <shaozhengchao@huawei.com>
+In-Reply-To: <YyOz3qLWTS3raNpe@pop-os.localdomain>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.178.66]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500026.china.huawei.com (7.185.36.106)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
--- 
-The United Nations in partnership with various financial bodies is
-giving out loan grants to help qualified individuals and organizations
-reimburse their businesses. This offer is available to everyone across
-the globe and is targeted at helping economies that has been downed by
-the pandemic.
+
+
+On 2022/9/16 7:23, Cong Wang wrote:
+> On Thu, Sep 15, 2022 at 02:30:30PM +0800, Zhengchao Shao wrote:
+>> The walk implementation of most tc cls modules is basically the same.
+>> That is, the values of count and skip are checked first. If count is
+>> greater than or equal to skip, the registered fn function is executed.
+>> Otherwise, increase the value of count. So we can reconstruct them.
+>>
+>> Signed-off-by: Zhengchao Shao <shaozhengchao@huawei.com>
+>> Reviewed-by: Jamal Hadi Salim <jhs@mojatatu.com>
+>> ---
+>>   include/net/pkt_cls.h | 13 +++++++++++++
+>>   1 file changed, 13 insertions(+)
+>>
+>> diff --git a/include/net/pkt_cls.h b/include/net/pkt_cls.h
+>> index d9d90e6925e1..d3cbbabf7592 100644
+>> --- a/include/net/pkt_cls.h
+>> +++ b/include/net/pkt_cls.h
+>> @@ -81,6 +81,19 @@ int tcf_classify(struct sk_buff *skb,
+>>   		 const struct tcf_proto *tp, struct tcf_result *res,
+>>   		 bool compat_mode);
+>>   
+>> +static inline bool tc_cls_stats_update(struct tcf_proto *tp,
+> 
+> This function name is confusing, I don't think it updates anything,
+> probably we only dump stats when calling ->walk(). Please use a better
+> name here, like tc_cls_stats_dump().
+> 
+> Thanks.
+Hi Wang：
+	Thank you for your review. I will send V4.
+
+Zhengchao Shao
