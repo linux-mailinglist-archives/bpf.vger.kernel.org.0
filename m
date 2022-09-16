@@ -2,212 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 258BF5BAEC3
-	for <lists+bpf@lfdr.de>; Fri, 16 Sep 2022 16:01:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7903F5BB091
+	for <lists+bpf@lfdr.de>; Fri, 16 Sep 2022 17:54:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230514AbiIPOBt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Sep 2022 10:01:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34566 "EHLO
+        id S229906AbiIPPyX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Sep 2022 11:54:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231131AbiIPOBq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 16 Sep 2022 10:01:46 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34173AB1A0
-        for <bpf@vger.kernel.org>; Fri, 16 Sep 2022 07:01:43 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id i19so17180643pgi.1
-        for <bpf@vger.kernel.org>; Fri, 16 Sep 2022 07:01:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
-        bh=pZ5QW8+FbrHaACMXwsrZ3rO+2GQoZC7Xs+YDX+18qPg=;
-        b=dApn8A/ndkN474hPDvEKuWQp/GaiW0SglUGPjtKldcidaNpFyn8EO43danXo3TnNvM
-         HWDlvUcNWMyF7tJuGW/HNMy8NTScvTpl5ATgqNE2TvwiIAO0s0d92/JDB2xxTBCk0qVA
-         Smp0x+7SeMPrySaeAjioon6OaEp1jI+D86fe4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date;
-        bh=pZ5QW8+FbrHaACMXwsrZ3rO+2GQoZC7Xs+YDX+18qPg=;
-        b=GAM9CIUKqpgFndb4bxXFarHa1+zTEQEWlyssUbpDL8Brin4GgxQRpbyFWWgVFTDBGM
-         Tqw4VSxnykRYOMtAMufKvZVwbgt5jt6H+h35em6Y4ZqGesaqHpE7nGle1HMc/F8r+318
-         XLiws2yOVGWiVgDuAbW2xAk6LZU8ZLXULzzaWgtXMsZt1/JftudVYLOK//kPKeJd7zVG
-         SHgNd07nqIiI0Pec3ezDE/Ha3vHOlJmU5+trXqDB2++2VI12u102vDWN0QLDU5ld//gS
-         m6G5G/rvbxc+10gycRXsnnsLNz/Eysg1shg3GWjhUB9qQhYUKB/Jz0uNmseDfi72hw8E
-         PqgQ==
-X-Gm-Message-State: ACrzQf3CZd2IkqG6tH+kBKah4+Kuq7r9SX66Yi8KHRXrCe74G3zG3Jf6
-        j2QlODLYl4nMG/K8PeCxJqDSow==
-X-Google-Smtp-Source: AMsMyM4ojRXwvb2FpFeNlR4/l+I5DQD0qvf8IIChM4yYleDmUiwgwT4v7QLKu/CTj7OS6YrllLZisg==
-X-Received: by 2002:a65:6a05:0:b0:42c:87a0:ea77 with SMTP id m5-20020a656a05000000b0042c87a0ea77mr4674038pgu.75.1663336902698;
-        Fri, 16 Sep 2022 07:01:42 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id k5-20020aa79985000000b00535d3caa66fsm14281585pfh.197.2022.09.16.07.01.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Sep 2022 07:01:40 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, linux-perf-users@vger.kernel.org,
-        bpf@vger.kernel.org, Yu Zhao <yuzhao@google.com>, dev@der-flo.net,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-hardening@vger.kernel.org, linux-arch@vger.kernel.org
-Subject: [PATCH 1/3] x86/uaccess: Move nmi_uaccess_okay() into uaccess.h
-Date:   Fri, 16 Sep 2022 06:59:53 -0700
-Message-Id: <20220916135953.1320601-2-keescook@chromium.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220916135953.1320601-1-keescook@chromium.org>
-References: <20220916135953.1320601-1-keescook@chromium.org>
+        with ESMTP id S229890AbiIPPyW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 16 Sep 2022 11:54:22 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DBCBAE872;
+        Fri, 16 Sep 2022 08:54:21 -0700 (PDT)
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1oZDf9-000Dui-3t; Fri, 16 Sep 2022 17:53:55 +0200
+Received: from [2a02:168:f656:0:d16a:7287:ccf0:4fff] (helo=localhost.localdomain)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1oZDf8-0008AZ-HO; Fri, 16 Sep 2022 17:53:54 +0200
+Subject: Re: [bpf-next v2 1/2] libbpf: Add pathname_concat() helper
+To:     Wang Yufen <wangyufen@huawei.com>, andrii@kernel.org,
+        ast@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu, davem@davemloft.net,
+        kuba@kernel.org, hawk@kernel.org, nathan@kernel.org,
+        ndesaulniers@google.com, trix@redhat.com
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, llvm@lists.linux.dev
+References: <1663313820-29918-1-git-send-email-wangyufen@huawei.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <8011ae39-d6ba-3dfa-07f1-1a548fd24560@iogearbox.net>
+Date:   Fri, 16 Sep 2022 17:53:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4246; h=from:subject; bh=lKu8W3jwyjlnI0U4MB0YhFyFdBPkVe2IDcNCcwDBY7I=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBjJIFYUoqiqZEs8RDF39N7dCwCH6XhD4rW0rrrXDR8 VVu38x6JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYySBWAAKCRCJcvTf3G3AJoeqEA CvoFJqlgQd4sdMO6jBx4c9P8V9cux0og6S3xgwGUvzsj157wrdM9YElT5S8N3/efD2N33UUrs3DdjN 7dUmfnZ49lXi9gZzj+QpU+5VLgn02RvTUR7qYBnuF3+sjGtmHzU67MDMmo9pTgYGv8dHS7j+dkpDn0 bXMp5/oFRA9YvcxEjxLh14V2cvE/WfUBfYCYNZYnDCtikveBJ6o9PnSnxasQwLmFRkQp0c1Bfpuef/ MpVlQJC35U1pA/t1fUHM+qyDr+rJtbRnZqjS/HKaRI5rCTJHhLCC/m6Ko62wVq3+xO9GGiocL+Ss2I 8zc1+4TtvcMTVn67UzQMUu86xwtYS0cFXYNElo7zTZD25B+2wa6Jgrn6YDD69pMkZ6IpuVOjEijoD8 O3mUEbHIj40t8jHYziOzUPH/uZD+2jfmGzOoeSzcOzNQr9yT0IEyXaiHnSmritmz2hvhzcDeu//T5H fvM8K3g0Lb7uudTadKfSu0Edo2vH1cjdSIRC4kiIbY0HlXNhNhJgHtNGBhv5KaEkp2aI+bsTubq8mk EOrZu4qxbg0BkTPhPnp4PF0nrzC8KyBssLQdoq+/RhExRImyWug4ZNfaF960FRjcIoZ8b2HNnSo+c7 3i29D20rhYAFmb6qszl6E8K71UcFR6j4wAEF4B3gJjPY5xAY6q6urTlDCRxQ==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <1663313820-29918-1-git-send-email-wangyufen@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.6/26660/Fri Sep 16 09:57:04 2022)
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In preparation for inlining copy_from_user_in_nmi(), move the
-nmi_uaccess_okay() declaration into uaccess.h, which makes a bit more
-sense anyway. Additionally update all callers to remove the no longer
-needed tlbflush.h include, which was only for the declaration of
-nmi_uaccess_okay().
+On 9/16/22 9:36 AM, Wang Yufen wrote:
+> Move snprintf and len check to common helper pathname_concat() to make the
+> code simpler.
+> 
+> Signed-off-by: Wang Yufen <wangyufen@huawei.com>
+> ---
+>   tools/lib/bpf/libbpf.c | 76 +++++++++++++++++++-------------------------------
+>   1 file changed, 29 insertions(+), 47 deletions(-)
+> 
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 3ad1392..7ab977c 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -2096,19 +2096,30 @@ static bool get_map_field_int(const char *map_name, const struct btf *btf,
+>   	return true;
+>   }
+>   
+> +static int pathname_concat(const char *path, const char *name, char *buf)
+> +{
+> +	int len;
+> +
+> +	len = snprintf(buf, PATH_MAX, "%s/%s", path, name);
+> +	if (len < 0)
+> +		return -EINVAL;
+> +	if (len >= PATH_MAX)
+> +		return -ENAMETOOLONG;
+> +
+> +	return 0;
+> +}
+> +
+>   static int build_map_pin_path(struct bpf_map *map, const char *path)
+>   {
+>   	char buf[PATH_MAX];
+> -	int len;
+> +	int err;
+>   
+>   	if (!path)
+>   		path = "/sys/fs/bpf";
+>   
+> -	len = snprintf(buf, PATH_MAX, "%s/%s", path, bpf_map__name(map));
+> -	if (len < 0)
+> -		return -EINVAL;
+> -	else if (len >= PATH_MAX)
+> -		return -ENAMETOOLONG;
+> +	err = pathname_concat(path, bpf_map__name(map), buf);
 
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: x86@kernel.org
-Cc: linux-perf-users@vger.kernel.org
-Cc: bpf@vger.kernel.org
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Yu Zhao <yuzhao@google.com>
-Cc: dev@der-flo.net
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- arch/x86/events/core.c          | 1 -
- arch/x86/include/asm/tlbflush.h | 3 ---
- arch/x86/include/asm/uaccess.h  | 3 +++
- arch/x86/lib/usercopy.c         | 2 --
- include/asm-generic/tlb.h       | 9 ---------
- include/linux/uaccess.h         | 9 +++++++++
- kernel/trace/bpf_trace.c        | 2 --
- 7 files changed, 12 insertions(+), 17 deletions(-)
+Small nit, but would be good to not make the assumption that buf is always
+PATH_MAX so lets add size_t len to pathname_concat().
 
-diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-index f969410d0c90..3e2bb6324ca3 100644
---- a/arch/x86/events/core.c
-+++ b/arch/x86/events/core.c
-@@ -36,7 +36,6 @@
- #include <asm/smp.h>
- #include <asm/alternative.h>
- #include <asm/mmu_context.h>
--#include <asm/tlbflush.h>
- #include <asm/timer.h>
- #include <asm/desc.h>
- #include <asm/ldt.h>
-diff --git a/arch/x86/include/asm/tlbflush.h b/arch/x86/include/asm/tlbflush.h
-index cda3118f3b27..233818bb72c6 100644
---- a/arch/x86/include/asm/tlbflush.h
-+++ b/arch/x86/include/asm/tlbflush.h
-@@ -157,9 +157,6 @@ struct tlb_state_shared {
- };
- DECLARE_PER_CPU_SHARED_ALIGNED(struct tlb_state_shared, cpu_tlbstate_shared);
- 
--bool nmi_uaccess_okay(void);
--#define nmi_uaccess_okay nmi_uaccess_okay
--
- /* Initialize cr4 shadow for this CPU. */
- static inline void cr4_init_shadow(void)
- {
-diff --git a/arch/x86/include/asm/uaccess.h b/arch/x86/include/asm/uaccess.h
-index 913e593a3b45..e9390eea861b 100644
---- a/arch/x86/include/asm/uaccess.h
-+++ b/arch/x86/include/asm/uaccess.h
-@@ -20,6 +20,9 @@ static inline bool pagefault_disabled(void);
- # define WARN_ON_IN_IRQ()
- #endif
- 
-+bool nmi_uaccess_okay(void);
-+#define nmi_uaccess_okay nmi_uaccess_okay
-+
- /**
-  * access_ok - Checks if a user space pointer is valid
-  * @addr: User space pointer to start of block to check
-diff --git a/arch/x86/lib/usercopy.c b/arch/x86/lib/usercopy.c
-index ad0139d25401..959489f2f814 100644
---- a/arch/x86/lib/usercopy.c
-+++ b/arch/x86/lib/usercopy.c
-@@ -7,8 +7,6 @@
- #include <linux/uaccess.h>
- #include <linux/export.h>
- 
--#include <asm/tlbflush.h>
--
- /**
-  * copy_from_user_nmi - NMI safe copy from user
-  * @to:		Pointer to the destination buffer
-diff --git a/include/asm-generic/tlb.h b/include/asm-generic/tlb.h
-index 492dce43236e..14efd74f3e70 100644
---- a/include/asm-generic/tlb.h
-+++ b/include/asm-generic/tlb.h
-@@ -17,15 +17,6 @@
- #include <asm/tlbflush.h>
- #include <asm/cacheflush.h>
- 
--/*
-- * Blindly accessing user memory from NMI context can be dangerous
-- * if we're in the middle of switching the current user task or switching
-- * the loaded mm.
-- */
--#ifndef nmi_uaccess_okay
--# define nmi_uaccess_okay() true
--#endif
--
- #ifdef CONFIG_MMU
- 
- /*
-diff --git a/include/linux/uaccess.h b/include/linux/uaccess.h
-index 47e5d374c7eb..065e121d2a86 100644
---- a/include/linux/uaccess.h
-+++ b/include/linux/uaccess.h
-@@ -10,6 +10,15 @@
- 
- #include <asm/uaccess.h>
- 
-+/*
-+ * Blindly accessing user memory from NMI context can be dangerous
-+ * if we're in the middle of switching the current user task or switching
-+ * the loaded mm.
-+ */
-+#ifndef nmi_uaccess_okay
-+# define nmi_uaccess_okay() true
-+#endif
-+
- /*
-  * Architectures should provide two primitives (raw_copy_{to,from}_user())
-  * and get rid of their private instances of copy_{to,from}_user() and
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 68e5cdd24cef..0fd185c3d174 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -26,8 +26,6 @@
- #include <uapi/linux/bpf.h>
- #include <uapi/linux/btf.h>
- 
--#include <asm/tlb.h>
--
- #include "trace_probe.h"
- #include "trace.h"
- 
--- 
-2.34.1
-
+> +	if (err)
+> +		return err;
+>   
+>   	return bpf_map__set_pin_path(map, buf);
+>   }
