@@ -2,48 +2,45 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6BD65BB3A5
-	for <lists+bpf@lfdr.de>; Fri, 16 Sep 2022 22:47:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7B0A5BB3AB
+	for <lists+bpf@lfdr.de>; Fri, 16 Sep 2022 22:50:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229652AbiIPUrZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Sep 2022 16:47:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33060 "EHLO
+        id S229973AbiIPUuG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Sep 2022 16:50:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229861AbiIPUrY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 16 Sep 2022 16:47:24 -0400
+        with ESMTP id S229861AbiIPUuE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 16 Sep 2022 16:50:04 -0400
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2597B9F99;
-        Fri, 16 Sep 2022 13:47:22 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20A6A2EF0F
+        for <bpf@vger.kernel.org>; Fri, 16 Sep 2022 13:50:03 -0700 (PDT)
 Received: from sslproxy03.your-server.de ([88.198.220.132])
         by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92.3)
         (envelope-from <daniel@iogearbox.net>)
-        id 1oZIF0-000Bpl-6v; Fri, 16 Sep 2022 22:47:14 +0200
+        id 1oZIHh-000C6o-82; Fri, 16 Sep 2022 22:50:01 +0200
 Received: from [85.1.206.226] (helo=linux.home)
         by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <daniel@iogearbox.net>)
-        id 1oZIEz-0000BB-UG; Fri, 16 Sep 2022 22:47:13 +0200
-Subject: Re: [PATCH bpf-next v2 0/3] A couple of small refactorings of BPF
- program call sites
-To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
-References: <20220905193359.969347-1-toke@redhat.com>
+        id 1oZIHh-000EGl-2G; Fri, 16 Sep 2022 22:50:01 +0200
+Subject: Re: [PATCH v2 bpf-next 3/3] selftests/bpf: add veristat tool for
+ mass-verifying BPF object files
+To:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        ast@kernel.org
+Cc:     kernel-team@fb.com
+References: <20220909193053.577111-1-andrii@kernel.org>
+ <20220909193053.577111-4-andrii@kernel.org>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <5e97c1e8-e7e4-27c4-aee7-ffa5958c6144@iogearbox.net>
-Date:   Fri, 16 Sep 2022 22:47:13 +0200
+Message-ID: <eec6aefd-00a5-b9c5-18df-2a52eefc89b3@iogearbox.net>
+Date:   Fri, 16 Sep 2022 22:50:00 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20220905193359.969347-1-toke@redhat.com>
+In-Reply-To: <20220909193053.577111-4-andrii@kernel.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Authenticated-Sender: daniel@iogearbox.net
 X-Virus-Scanned: Clear (ClamAV 0.103.6/26660/Fri Sep 16 09:57:04 2022)
 X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
@@ -55,41 +52,22 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 9/5/22 9:33 PM, Toke Høiland-Jørgensen wrote:
-> Stanislav suggested[0] that these small refactorings could be split out from the
-> XDP queueing RFC series and merged separately. The first change is a small
-> repacking of struct softnet_data, the others change the BPF call sites to
-> support full 64-bit values as arguments to bpf_redirect_map() and as the return
-> value of a BPF program, relying on the fact that BPF registers are always 64-bit
-> wide to maintain backwards compatibility.
+On 9/9/22 9:30 PM, Andrii Nakryiko wrote:
+> Add a small tool, veristat, that allows mass-verification of
+> a set of *libbpf-compatible* BPF ELF object files. For each such object
+> file, veristat will attempt to verify each BPF program *individually*.
+> Regardless of success or failure, it parses BPF verifier stats and
+> outputs them in human-readable table format. In the future we can also
+> add CSV and JSON output for more scriptable post-processing, if necessary.
+> 
+> veristat allows to specify a set of stats that should be output and
+> ordering between multiple objects and files (e.g., so that one can
+> easily order by total instructions processed, instead of default file
+> name, prog name, verdict, total instructions order).
+> 
+> This tool should be useful for validating various BPF verifier changes
+> or even validating different kernel versions for regressions.
+[...]
 
-Looks like might still be issues on s390 [0] around retval checking, e.g.:
-
-   [...]
-   #122     pe_preserve_elems:FAIL
-   test_raw_tp_test_run:PASS:parse_cpu_mask_file 0 nsec
-   test_raw_tp_test_run:PASS:skel_open 0 nsec
-   test_raw_tp_test_run:PASS:skel_attach 0 nsec
-   test_raw_tp_test_run:PASS:open /proc/self/comm 0 nsec
-   test_raw_tp_test_run:PASS:task rename 0 nsec
-   test_raw_tp_test_run:PASS:check_count 0 nsec
-   test_raw_tp_test_run:PASS:check_on_cpu 0 nsec
-   test_raw_tp_test_run:PASS:test_run should fail for too small ctx 0 nsec
-   test_raw_tp_test_run:PASS:test_run 0 nsec
-   test_raw_tp_test_run:FAIL:check_retval unexpected check_retval: actual 0 != expected 26796
-   test_raw_tp_test_run:PASS:test_run_opts 0 nsec
-   test_raw_tp_test_run:PASS:check_on_cpu 0 nsec
-   test_raw_tp_test_run:FAIL:check_retval unexpected check_retval: actual 0 != expected 26796
-   test_raw_tp_test_run:PASS:test_run_opts 0 nsec
-   test_raw_tp_test_run:PASS:check_on_cpu 0 nsec
-   test_raw_tp_test_run:FAIL:check_retval unexpected check_retval: actual 0 != expected 26796
-   test_raw_tp_test_run:PASS:test_run_opts should fail with ENXIO 0 nsec
-   test_raw_tp_test_run:PASS:test_run_opts_fail 0 nsec
-   test_raw_tp_test_run:PASS:test_run_opts should fail with EINVAL 0 nsec
-   test_raw_tp_test_run:PASS:test_run_opts_fail 0 nsec
-   [...]
-
-Thanks,
-Daniel
-
-   [0] https://github.com/kernel-patches/bpf/actions/runs/3059535631/jobs/4939404438
+Git was complaining about two locations w/ whitespace issues, so fixed up
+while applying. Thanks!
