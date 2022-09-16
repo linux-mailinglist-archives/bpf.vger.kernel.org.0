@@ -2,52 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E643E5BB250
-	for <lists+bpf@lfdr.de>; Fri, 16 Sep 2022 20:41:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB3725BB251
+	for <lists+bpf@lfdr.de>; Fri, 16 Sep 2022 20:41:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230088AbiIPSlr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Sep 2022 14:41:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39542 "EHLO
+        id S230194AbiIPSlv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Sep 2022 14:41:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230198AbiIPSlp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 16 Sep 2022 14:41:45 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13D55B8A61;
-        Fri, 16 Sep 2022 11:41:40 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id a5-20020a17090aa50500b002008eeb040eso1949576pjq.1;
-        Fri, 16 Sep 2022 11:41:40 -0700 (PDT)
+        with ESMTP id S230212AbiIPSlq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 16 Sep 2022 14:41:46 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A383CB8A52;
+        Fri, 16 Sep 2022 11:41:41 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id ge9so10362528pjb.1;
+        Fri, 16 Sep 2022 11:41:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date;
-        bh=S51SKuYdeuTsRRYFc57qnPOm5scEn4uyaX1X5OZJqXg=;
-        b=SUYSa3v/Hh/ODahaeWcAlNfsoFCjpIsVcDK/QlgdMmhdeJzHWNalekeCrrX1ajoPFG
-         mkufsAHSMQBEV1/7qTzRwYlH+Bwb4Jow22v9+3iF1ZoSmjsrP+9PxzU8I/ZNC0zsqC47
-         wA1v0PeCNGAJT/3CNVRw8PZ0AQJtOpRlyFLNxSeA4LvqUHNE+w2fLFgge75vMV7193mv
-         8XQsyT4M2Q5PN97qsP30rxuKJukUOehTLOu6Jnq4Yj9ega25UM3KzOIG/k95ydiXwzs0
-         t5VXhh7AR33RbjnpMubpKhfIOmmQgaVO9RBenBYJrPSUjUCEt6cpk88yl/ituZkNgtSt
-         oRXQ==
+        bh=0/bkNBIX3FOAe3t6O/p7ZuS8G0HQozWMCrCw3+mytvI=;
+        b=GvEkctg++Q6fJds7LzttNVl0aKX4dNXXNkoMO0dhUrNIjoZ9wvpwE+Hd9/C1fZiJXL
+         bDXHvObELfjOqhy9FrzfJE730SLk9vD2A2m5uvjZo93kZixkWCrgBTFdg8V6EqUDv/a2
+         0pLvmgGeWMYD5KmbPTR5IzfOGw6wsoZUPgzLe4ZQyS7vYuwOuzeJPaf4WyzyQYD6n9xM
+         m8WLYBFjQampXy0PM7+SO7gV2ECyPCHx4LmSMam3RwNBJ20+0ZoeDJBS2bXBM4jsaiph
+         JGbTS+47OTz1mnCyc62iCu29Mkj7bf3JtS3Q9egCkhIA4kwpwTy8ZW+lHhgVLAEwmmXC
+         KQhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date;
-        bh=S51SKuYdeuTsRRYFc57qnPOm5scEn4uyaX1X5OZJqXg=;
-        b=sb9KRi1a5eJMroVRjsjLWjIQv8VG/sia2xkDJkcYfalFA6lqAu8y7nJy6Vh1/mIhEM
-         tjfD+ej4s5TlUsaPv4Kz9f3Sj4XAJ5nQQszQF65kxyXnxNxG4xfnhTCZp0SbIw3B+HbH
-         dbU6HYXP6mgR+txuwdtFLkkT8pebhb5FjLyTFVie2VbSsvL51HmT58biDI+Vi/uXA3ry
-         9MmsKAK4MnSrFFry7c3aIB6UIQCOro07cS6i2uMdwuDDPnm+Wq4wpWjOq9hYjfBVB/w8
-         enpeW2COgpY9H8K8jemR5wvgwA8Oe12S16xmolFAr96pQUopxPIdnZtNwrEsQnOKbdvN
-         rENg==
-X-Gm-Message-State: ACrzQf111DvAiX03svxiiQLdQaup1Ijcks4wS+AgDrNSSmwxwL5vGdBl
-        fIL6EEMQukoAbXHf1dcmxq8=
-X-Google-Smtp-Source: AMsMyM6Gim4Anfc/fLrNawDc8gKVSjDMZThysib63c8gE8xSEIqrZDwsy1tAsMby93CkY4RxPz2QIw==
-X-Received: by 2002:a17:902:e844:b0:178:4930:8aa5 with SMTP id t4-20020a170902e84400b0017849308aa5mr1154677plg.69.1663353699408;
-        Fri, 16 Sep 2022 11:41:39 -0700 (PDT)
+        bh=0/bkNBIX3FOAe3t6O/p7ZuS8G0HQozWMCrCw3+mytvI=;
+        b=jxOMmMxMSIkKC0j3L1UADTb0m4knNptCB/YOwOcFvSi4Zk4EcsARbcxLFYDdNgeWII
+         coJcLdBuV373oNJDrQMpVeibeN2rNiFRoDwVpSpGTYFLRxpWHUsEBgbg5DTf3OCB+dmF
+         +cQooU5mMkgkpWPFrMWrCWYLmiiYTtaiHE9omq/Miy+NEXUvPpAfcVXckMHDM68xFRVA
+         dqWN5qePXgqR6eWrjg0OcCCFnBKNpoDDujVrJ6dD40NwWzbZmijKWwAEaen514GVJLDX
+         a4ehg2/tqiytuLUQi5rkaEqSB0+aiqxR4OWsNa+xSbnY4dABjhmP3m3kmRCRFi6zTMtw
+         kLgA==
+X-Gm-Message-State: ACrzQf1nPUH7q1SPrFSfvhCvkcOKf3KXUPbcKUDVFPrlU45V3e1LVGC1
+        +4AiHw1yeLxFNkxgvIY1g2Gzc3Mxm9k=
+X-Google-Smtp-Source: AMsMyM7jcgvmzEsZVo12t0OpJ0R1AciFz3zwCi5TRJg0s+6ib/GU+qgvBWSJXeDOaB7b7chBonw2uw==
+X-Received: by 2002:a17:90b:4c45:b0:202:6308:d9c4 with SMTP id np5-20020a17090b4c4500b002026308d9c4mr6982509pjb.40.1663353700675;
+        Fri, 16 Sep 2022 11:41:40 -0700 (PDT)
 Received: from youngsil.svl.corp.google.com ([2620:15c:2d4:203:2952:dee7:a35e:6428])
-        by smtp.gmail.com with ESMTPSA id y18-20020a170902b49200b0016dcbdf9492sm15093004plr.92.2022.09.16.11.41.38
+        by smtp.gmail.com with ESMTPSA id y18-20020a170902b49200b0016dcbdf9492sm15093004plr.92.2022.09.16.11.41.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Sep 2022 11:41:39 -0700 (PDT)
+        Fri, 16 Sep 2022 11:41:40 -0700 (PDT)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -59,9 +59,9 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         Adrian Hunter <adrian.hunter@intel.com>,
         linux-perf-users@vger.kernel.org, Song Liu <songliubraving@fb.com>,
         bpf@vger.kernel.org
-Subject: [PATCH 3/4] perf stat: Use evsel->core.cpus to iterate cpus in BPF cgroup counters
-Date:   Fri, 16 Sep 2022 11:41:31 -0700
-Message-Id: <20220916184132.1161506-4-namhyung@kernel.org>
+Subject: [PATCH 4/4] perf test: Add a new test for perf stat cgroup BPF counter
+Date:   Fri, 16 Sep 2022 11:41:32 -0700
+Message-Id: <20220916184132.1161506-5-namhyung@kernel.org>
 X-Mailer: git-send-email 2.37.3.968.ga6b4b080e4-goog
 In-Reply-To: <20220916184132.1161506-1-namhyung@kernel.org>
 References: <20220916184132.1161506-1-namhyung@kernel.org>
@@ -77,51 +77,109 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-If it mixes core and uncore events, each evsel would have different cpu map.
-But it assumed they are same with evlist's all_cpus and accessed by the same
-index.  This resulted in a crash like below.
-
-  $ perf stat -a --bpf-counters --for-each_cgroup ^. -e cycles,imc/cas_count_read/ sleep 1
-  Segmentation fault
-
-While it's not recommended to use uncore events for cgroup aggregation, it
-should not crash.
+  $ sudo ./perf test -v each-cgroup
+   96: perf stat --bpf-counters --for-each-cgroup test                 :
+  --- start ---
+  test child forked, pid 79600
+  test child finished with 0
+  ---- end ----
+  perf stat --bpf-counters --for-each-cgroup test: Ok
 
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/util/bpf_counter_cgroup.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ .../tests/shell/stat_bpf_counters_cgrp.sh     | 83 +++++++++++++++++++
+ 1 file changed, 83 insertions(+)
+ create mode 100755 tools/perf/tests/shell/stat_bpf_counters_cgrp.sh
 
-diff --git a/tools/perf/util/bpf_counter_cgroup.c b/tools/perf/util/bpf_counter_cgroup.c
-index 97c69a249c6e..3c2df7522f6f 100644
---- a/tools/perf/util/bpf_counter_cgroup.c
-+++ b/tools/perf/util/bpf_counter_cgroup.c
-@@ -115,14 +115,14 @@ static int bperf_load_program(struct evlist *evlist)
- 			evsel->cgrp = NULL;
- 
- 			/* open single copy of the events w/o cgroup */
--			err = evsel__open_per_cpu(evsel, evlist->core.all_cpus, -1);
-+			err = evsel__open_per_cpu(evsel, evsel->core.cpus, -1);
- 			if (err) {
- 				pr_err("Failed to open first cgroup events\n");
- 				goto out;
- 			}
- 
- 			map_fd = bpf_map__fd(skel->maps.events);
--			perf_cpu_map__for_each_cpu(cpu, j, evlist->core.all_cpus) {
-+			perf_cpu_map__for_each_cpu(cpu, j, evsel->core.cpus) {
- 				int fd = FD(evsel, j);
- 				__u32 idx = evsel->core.idx * total_cpus + cpu.cpu;
- 
-@@ -269,7 +269,7 @@ static int bperf_cgrp__read(struct evsel *evsel)
- 			goto out;
- 		}
- 
--		perf_cpu_map__for_each_cpu(cpu, i, evlist->core.all_cpus) {
-+		perf_cpu_map__for_each_cpu(cpu, i, evsel->core.cpus) {
- 			counts = perf_counts(evsel->counts, i, 0);
- 			counts->val = values[cpu.cpu].counter;
- 			counts->ena = values[cpu.cpu].enabled;
+diff --git a/tools/perf/tests/shell/stat_bpf_counters_cgrp.sh b/tools/perf/tests/shell/stat_bpf_counters_cgrp.sh
+new file mode 100755
+index 000000000000..d724855d097c
+--- /dev/null
++++ b/tools/perf/tests/shell/stat_bpf_counters_cgrp.sh
+@@ -0,0 +1,83 @@
++#!/bin/sh
++# perf stat --bpf-counters --for-each-cgroup test
++# SPDX-License-Identifier: GPL-2.0
++
++set -e
++
++test_cgroups=
++if [ "$1" = "-v" ]; then
++	verbose="1"
++fi
++
++# skip if --bpf-counters --for-each-cgroup is not supported
++check_bpf_counter()
++{
++	if ! perf stat -a --bpf-counters --for-each-cgroup / true > /dev/null 2>&1; then
++		if [ "${verbose}" = "1" ]; then
++			echo "Skipping: --bpf-counters --for-each-cgroup not supported"
++			perf --no-pager stat -a --bpf-counters --for-each-cgroup / true || true
++		fi
++		exit 2
++	fi
++}
++
++# find two cgroups to measure
++find_cgroups()
++{
++	# try usual systemd slices first
++	if [ -d /sys/fs/cgroup/system.slice -a -d /sys/fs/cgroup/user.slice ]; then
++		test_cgroups="system.slice,user.slice"
++		return
++	fi
++
++	# try root and self cgroups
++	local self_cgrp=$(grep perf_event /proc/self/cgroup | cut -d: -f3)
++	if [ -z ${self_cgrp} ]; then
++		# cgroup v2 doesn't specify perf_event
++		self_cgrp=$(grep ^0: /proc/self/cgroup | cut -d: -f3)
++	fi
++
++	if [ -z ${self_cgrp} ]; then
++		test_cgroups="/"
++	else
++		test_cgroups="/,${self_cgrp}"
++	fi
++}
++
++# As cgroup events are cpu-wide, we cannot simply compare the result.
++# Just check if it runs without failure and has non-zero results.
++check_system_wide_counted()
++{
++	local output
++
++	output=$(perf stat -a --bpf-counters --for-each-cgroup ${test_cgroups} -e cpu-clock -x, sleep 1  2>&1)
++	if echo ${output} | grep -q -F "<not "; then
++		echo "Some system-wide events are not counted"
++		if [ "${verbose}" = "1" ]; then
++			echo ${output}
++		fi
++		exit 1
++	fi
++}
++
++check_cpu_list_counted()
++{
++	local output
++
++	output=$(perf stat -C 1 --bpf-counters --for-each-cgroup ${test_cgroups} -e cpu-clock -x, taskset -c 1 sleep 1  2>&1)
++	if echo ${output} | grep -q -F "<not "; then
++		echo "Some CPU events are not counted"
++		if [ "${verbose}" = "1" ]; then
++			echo ${output}
++		fi
++		exit 1
++	fi
++}
++
++check_bpf_counter
++find_cgroups
++
++check_system_wide_counted
++check_cpu_list_counted
++
++exit 0
 -- 
 2.37.3.968.ga6b4b080e4-goog
 
