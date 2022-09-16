@@ -2,167 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE0AD5BB3D6
-	for <lists+bpf@lfdr.de>; Fri, 16 Sep 2022 23:10:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE6B95BB3EE
+	for <lists+bpf@lfdr.de>; Fri, 16 Sep 2022 23:31:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229783AbiIPVKE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Sep 2022 17:10:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59884 "EHLO
+        id S229540AbiIPVbo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Sep 2022 17:31:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbiIPVKE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 16 Sep 2022 17:10:04 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86FD930541
-        for <bpf@vger.kernel.org>; Fri, 16 Sep 2022 14:10:02 -0700 (PDT)
-Received: from sslproxy04.your-server.de ([78.46.152.42])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1oZIax-000EUA-Pu; Fri, 16 Sep 2022 23:09:55 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy04.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1oZIax-000OJW-Cy; Fri, 16 Sep 2022 23:09:55 +0200
-Subject: Re: [PATCH bpf-next v2 6/8] bpftool: Add LLVM as default library for
- disassembling JIT-ed programs
-To:     Quentin Monnet <quentin@isovalent.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org,
-        =?UTF-8?Q?Niklas_S=c3=b6derlund?= <niklas.soderlund@corigine.com>,
-        Simon Horman <simon.horman@corigine.com>
-References: <20220911201451.12368-1-quentin@isovalent.com>
- <20220911201451.12368-7-quentin@isovalent.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <00d4de2e-c7ac-7aa5-9d31-868d73af4fe2@iogearbox.net>
-Date:   Fri, 16 Sep 2022 23:09:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S229570AbiIPVbn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 16 Sep 2022 17:31:43 -0400
+Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA54ABB02C;
+        Fri, 16 Sep 2022 14:31:38 -0700 (PDT)
+Message-ID: <a774a513-284c-eb1f-7578-bb6d475b0509@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1663363896;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aUusDOzWHis+2UidmSCMnHqSklJAdLsrWVsXfECqtNY=;
+        b=lYsuwfgmyLGn2XjImpB5vaLtD4AB1q+UrezIaQ0GKOgaOkdxm3boMHN3iUPQze3ccbED6y
+        4WUW/rKFNqS0sNy2YL/JSoshVWp0CkTvIWHzlzohUxPUjCNo7pSBsaUi1w+fO95jrSP7WT
+        271VolouyUTVNjdHfEroAJd1Xzco07A=
+Date:   Fri, 16 Sep 2022 14:31:25 -0700
 MIME-Version: 1.0
-In-Reply-To: <20220911201451.12368-7-quentin@isovalent.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Subject: Re: [PATCH bpf-next] bpf: Move nf_conn extern declarations to
+ filter.h
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.6/26660/Fri Sep 16 09:57:04 2022)
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     Daniel Xu <dxu@dxuuu.xyz>, pablo@netfilter.org, fw@strlen.de,
+        toke@kernel.org, netfilter-devel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org
+References: <c4cb11c8ffe732b91c175a0fc80d43b2547ca17e.1662920329.git.dxu@dxuuu.xyz>
+ <ada17021-83c9-3dad-5992-4885e824ecac@linux.dev>
+ <CAP01T74=btUEPDrz0EVm9wNuMmbbqc2wRvtpJ-Qq45OtasMBZQ@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <CAP01T74=btUEPDrz0EVm9wNuMmbbqc2wRvtpJ-Qq45OtasMBZQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: linux.dev
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 9/11/22 10:14 PM, Quentin Monnet wrote:
-> To disassemble instructions for JIT-ed programs, bpftool has relied on
-> the libbfd library. This has been problematic in the past: libbfd's
-> interface is not meant to be stable and has changed several times. For
-> building bpftool, we have to detect how the libbfd version on the system
-> behaves, which is why we have to handle features disassembler-four-args
-> and disassembler-init-styled in the Makefile. When it comes to shipping
-> bpftool, this has also caused issues with several distribution
-> maintainers unwilling to support the feature (see for example Debian's
-> page for binutils-dev, which ships libbfd: "Note that building Debian
-> packages which depend on the shared libbfd is Not Allowed." [0]).
+On 9/16/22 1:35 PM, Kumar Kartikeya Dwivedi wrote:
+> On Fri, 16 Sept 2022 at 22:20, Martin KaFai Lau <martin.lau@linux.dev> wrote:
+>>
+>> On 9/11/22 11:19 AM, Daniel Xu wrote:
+>>> We're seeing the following new warnings on netdev/build_32bit and
+>>> netdev/build_allmodconfig_warn CI jobs:
+>>>
+>>>       ../net/core/filter.c:8608:1: warning: symbol
+>>>       'nf_conn_btf_access_lock' was not declared. Should it be static?
+>>>       ../net/core/filter.c:8611:5: warning: symbol 'nfct_bsa' was not
+>>>       declared. Should it be static?
+>>>
+>>> Fix by ensuring extern declaration is present while compiling filter.o.
+>>>
+>>> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+>>> ---
+>>>    include/linux/filter.h                   | 6 ++++++
+>>>    include/net/netfilter/nf_conntrack_bpf.h | 7 +------
+>>>    2 files changed, 7 insertions(+), 6 deletions(-)
+>>>
+>>> diff --git a/include/linux/filter.h b/include/linux/filter.h
+>>> index 527ae1d64e27..96de256b2c8d 100644
+>>> --- a/include/linux/filter.h
+>>> +++ b/include/linux/filter.h
+>>> @@ -567,6 +567,12 @@ struct sk_filter {
+>>>
+>>>    DECLARE_STATIC_KEY_FALSE(bpf_stats_enabled_key);
+>>>
+>>> +extern struct mutex nf_conn_btf_access_lock;
+>>> +extern int (*nfct_bsa)(struct bpf_verifier_log *log, const struct btf *btf,
+>>> +                    const struct btf_type *t, int off, int size,
+>>> +                    enum bpf_access_type atype, u32 *next_btf_id,
+>>> +                    enum bpf_type_flag *flag);
+>>
+>> Can it avoid leaking the nfct specific details like
+>> 'nf_conn_btf_access_lock' and the null checking on 'nfct_bsa' to
+>> filter.c?  In particular, this code snippet in filter.c:
+>>
+>>           mutex_lock(&nf_conn_btf_access_lock);
+>>           if (nfct_bsa)
+>>                   ret = nfct_bsa(log, btf, ....);
+>>          mutex_unlock(&nf_conn_btf_access_lock);
+>>
+>>
+>> Can the lock and null check be done as one function (eg.
+>> nfct_btf_struct_access()) in nf_conntrack_bpf.c and use it in filter.c
+>> instead?
 > 
-> For these reasons, we add support for LLVM as an alternative to libbfd
-> for disassembling instructions of JIT-ed programs. Thanks to the
-> preparation work in the previous commits, it's easy to add the library
-> by passing the relevant compilation options in the Makefile, and by
-> adding the functions for setting up the LLVM disassembler in file
-> jit_disasm.c.
+> Don't think so, no. Because we want nf_conntrack to work as a module as well.
+Ah, got it.
 
-Could you add more context around the LLVM lib? The motivation is that libbfd's
-interface is not meant to be stable and has changed several times. How does this
-look on the LLVM's library side? Also, for the 2nd part, what is Debian's stance
-related to the LLVM lib? Would be good if both is explained in the commit message.
-Right now it mainly reads 'that libbfd has all these issues, so we're moving to
-something else', so would be good to provide more context to the ready why the
-'something else' is better than current one.
+I don't see nf_conntrack_btf_struct_access() in nf_conntrack_bpf.h is 
+used anywhere.  Can be removed?
 
-> Naturally, the display of disassembled instructions comes with a few
-> minor differences. Here is a sample output with libbfd (already
-> supported before this patch):
-> 
->      # bpftool prog dump jited id 56
->      bpf_prog_6deef7357e7b4530:
->         0:   nopl   0x0(%rax,%rax,1)
->         5:   xchg   %ax,%ax
->         7:   push   %rbp
->         8:   mov    %rsp,%rbp
->         b:   push   %rbx
->         c:   push   %r13
->         e:   push   %r14
->        10:   mov    %rdi,%rbx
->        13:   movzwq 0xb4(%rbx),%r13
->        1b:   xor    %r14d,%r14d
->        1e:   or     $0x2,%r14d
->        22:   mov    $0x1,%eax
->        27:   cmp    $0x2,%r14
->        2b:   jne    0x000000000000002f
->        2d:   xor    %eax,%eax
->        2f:   pop    %r14
->        31:   pop    %r13
->        33:   pop    %rbx
->        34:   leave
->        35:   ret
-> 
-> LLVM supports several variants that we could set when initialising the
-> disassembler, for example with:
-> 
->      LLVMSetDisasmOptions(*ctx,
->                           LLVMDisassembler_Option_AsmPrinterVariant);
-> 
-> but the default printer is used for now. Here is the output with LLVM:
-> 
->      # bpftool prog dump jited id 56
->      bpf_prog_6deef7357e7b4530:
->         0:   nopl    (%rax,%rax)
->         5:   nop
->         7:   pushq   %rbp
->         8:   movq    %rsp, %rbp
->         b:   pushq   %rbx
->         c:   pushq   %r13
->         e:   pushq   %r14
->        10:   movq    %rdi, %rbx
->        13:   movzwq  180(%rbx), %r13
->        1b:   xorl    %r14d, %r14d
->        1e:   orl     $2, %r14d
->        22:   movl    $1, %eax
->        27:   cmpq    $2, %r14
->        2b:   jne     0x2f
->        2d:   xorl    %eax, %eax
->        2f:   popq    %r14
->        31:   popq    %r13
->        33:   popq    %rbx
->        34:   leave
->        35:   retq
-> 
-> The LLVM disassembler comes as the default choice, with libbfd as a
-> fall-back.
-> 
-> Of course, we could replace libbfd entirely and avoid supporting two
-> different libraries. One reason for keeping libbfd is that, right now,
-> it works well, we have all we need in terms of features detection in the
-> Makefile, so it provides a fallback for disassembling JIT-ed programs if
-> libbfd is installed but LLVM is not. The other motivation is that libbfd
-> supports nfp instruction for Netronome's SmartNICs and can be used to
-> disassemble offloaded programs, something that LLVM cannot do. If
-> libbfd's interface breaks again in the future, we might reconsider
-> keeping support for it.
-> 
-> [0] https://packages.debian.org/buster/binutils-dev
-> 
-> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
-> Tested-by: Niklas Söderlund <niklas.soderlund@corigine.com>
+> I was the one who suggested nf_conn specific names for now. There is
+> no other user of such module supplied
+> btf_struct_access callbacks yet, when one appears, we should instead
+> make registration of such callbacks properly generic (i.e. also
+> enforce it is only for module BTF ID etc.).
+> But that would be a lot of code without any users right now.
 
-Thanks,
-Daniel
+The lock is the only one needed to be in btf.c and 
+nfct_btf_struct_access() can be an inline in nf_conntrack_bpf.h instead?
+
