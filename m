@@ -2,84 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6E805BB360
-	for <lists+bpf@lfdr.de>; Fri, 16 Sep 2022 22:20:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6781F5BB363
+	for <lists+bpf@lfdr.de>; Fri, 16 Sep 2022 22:21:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229934AbiIPUUT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Sep 2022 16:20:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56340 "EHLO
+        id S229782AbiIPUU5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Sep 2022 16:20:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229782AbiIPUUS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 16 Sep 2022 16:20:18 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1438B580A0;
-        Fri, 16 Sep 2022 13:20:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A46B962D91;
-        Fri, 16 Sep 2022 20:20:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 0980DC433B5;
-        Fri, 16 Sep 2022 20:20:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1663359616;
-        bh=nRLV12Mb0YiipccVdbD4fD+/s41J01u+MTPMkL8uEHw=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=rNow7IWEtKu45jLz8tknCNlcqG+XDyoqf8ccLCDHisIV2O9YQaVkLiWhlL0oS50ME
-         QO1MjiIH7l9axIHErFpRLeKG8g01Gm1oP1rbz4co9sLO1Oqrcm0JF2+wzGKy9B7IjH
-         C3X7PBlnTQ7kDlnAATiowhE4CBlYonhmm71CLZpBKyCrVPZiXwhSerqimzVJ+TdIUy
-         fPLNJJFjC3TRiIX8n0kFx5QzpYKMAzMXBi6ye4JgN1yHXoeT7Edv4vxjzUCXcxoD5o
-         4OL/8IMz35IfYe8nDb7Vu6+Htidzg5AZuna2RHZpiPq8wo1acAY3DlBrr5FamcXvmq
-         FiJ15jEtmIDNg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D98EAC73FFD;
-        Fri, 16 Sep 2022 20:20:15 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229484AbiIPUU5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 16 Sep 2022 16:20:57 -0400
+Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB07FA722A;
+        Fri, 16 Sep 2022 13:20:54 -0700 (PDT)
+Message-ID: <ada17021-83c9-3dad-5992-4885e824ecac@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1663359652;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TdFPJ/E73gfYJJ71FfMTa2muu9d+Trfydz6NY8WdwhU=;
+        b=G8MmkhFSmV3qP2EPiZtkTIjy70MCOmQV3emF9RFbLEOlAT0ii1FP9VsV60b0i32ccZ3WFM
+        R8R8wDhxE5MmVK3QAbzkKgZmVwVOvf5vX1rOaCq7y1NE2wVwaNtwdvflhHgHrg8qu0e6sh
+        G4GUqGqKuYiQxGTCvwz/6N5tUgdX1GA=
+Date:   Fri, 16 Sep 2022 13:20:41 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] bpf: use bpf_capable() instead of CAP_SYS_ADMIN for
- blinding decision
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <166335961587.27465.6441988777317672518.git-patchwork-notify@kernel.org>
-Date:   Fri, 16 Sep 2022 20:20:15 +0000
-References: <20220905090149.61221-1-ykaliuta@redhat.com>
-In-Reply-To: <20220905090149.61221-1-ykaliuta@redhat.com>
-To:     Yauheni Kaliuta <ykaliuta@redhat.com>
-Cc:     bpf@vger.kernel.org, andrii@kernel.org,
-        alexei.starovoitov@gmail.com, jbenc@redhat.com,
-        daniel@iogearbox.net, serge@hallyn.com,
-        linux-security-module@vger.kernel.org
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH bpf-next] bpf: Move nf_conn extern declarations to
+ filter.h
+Content-Language: en-US
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     pablo@netfilter.org, fw@strlen.de, toke@kernel.org,
+        netfilter-devel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, memxor@gmail.com
+References: <c4cb11c8ffe732b91c175a0fc80d43b2547ca17e.1662920329.git.dxu@dxuuu.xyz>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <c4cb11c8ffe732b91c175a0fc80d43b2547ca17e.1662920329.git.dxu@dxuuu.xyz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: linux.dev
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This patch was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
-
-On Mon,  5 Sep 2022 12:01:49 +0300 you wrote:
-> The full CAP_SYS_ADMIN requirement for blining looks too strict
-> nowadays. These days given unpriv eBPF is disabled by default, the
-> main users for constant blinding coming from unpriv in particular
-> via cBPF -> eBPF migration (e.g. old-style socket filters).
+On 9/11/22 11:19 AM, Daniel Xu wrote:
+> We're seeing the following new warnings on netdev/build_32bit and
+> netdev/build_allmodconfig_warn CI jobs:
 > 
-> Discussion: https://lore.kernel.org/bpf/20220831090655.156434-1-ykaliuta@redhat.com/
+>      ../net/core/filter.c:8608:1: warning: symbol
+>      'nf_conn_btf_access_lock' was not declared. Should it be static?
+>      ../net/core/filter.c:8611:5: warning: symbol 'nfct_bsa' was not
+>      declared. Should it be static?
 > 
-> [...]
+> Fix by ensuring extern declaration is present while compiling filter.o.
+> 
+> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> ---
+>   include/linux/filter.h                   | 6 ++++++
+>   include/net/netfilter/nf_conntrack_bpf.h | 7 +------
+>   2 files changed, 7 insertions(+), 6 deletions(-)
+> 
+> diff --git a/include/linux/filter.h b/include/linux/filter.h
+> index 527ae1d64e27..96de256b2c8d 100644
+> --- a/include/linux/filter.h
+> +++ b/include/linux/filter.h
+> @@ -567,6 +567,12 @@ struct sk_filter {
+>   
+>   DECLARE_STATIC_KEY_FALSE(bpf_stats_enabled_key);
+>   
+> +extern struct mutex nf_conn_btf_access_lock;
+> +extern int (*nfct_bsa)(struct bpf_verifier_log *log, const struct btf *btf,
+> +		       const struct btf_type *t, int off, int size,
+> +		       enum bpf_access_type atype, u32 *next_btf_id,
+> +		       enum bpf_type_flag *flag);
 
-Here is the summary with links:
-  - [bpf-next] bpf: use bpf_capable() instead of CAP_SYS_ADMIN for blinding decision
-    https://git.kernel.org/bpf/bpf-next/c/bfeb7e399bac
+Can it avoid leaking the nfct specific details like 
+'nf_conn_btf_access_lock' and the null checking on 'nfct_bsa' to 
+filter.c?  In particular, this code snippet in filter.c:
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+         mutex_lock(&nf_conn_btf_access_lock);
+         if (nfct_bsa)
+                 ret = nfct_bsa(log, btf, ....);
+	mutex_unlock(&nf_conn_btf_access_lock);
 
+
+Can the lock and null check be done as one function (eg. 
+nfct_btf_struct_access()) in nf_conntrack_bpf.c and use it in filter.c 
+instead?
+
+btw, 'bsa' stands for btf_struct_access? It is a bit too short to guess ;)
+
+Also, please add a Fixes tag.
 
