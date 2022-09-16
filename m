@@ -2,99 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E19825BB0EB
-	for <lists+bpf@lfdr.de>; Fri, 16 Sep 2022 18:10:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64B395BB12D
+	for <lists+bpf@lfdr.de>; Fri, 16 Sep 2022 18:43:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230021AbiIPQKT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Sep 2022 12:10:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51442 "EHLO
+        id S229579AbiIPQnF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Sep 2022 12:43:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229606AbiIPQKR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 16 Sep 2022 12:10:17 -0400
+        with ESMTP id S229454AbiIPQnE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 16 Sep 2022 12:43:04 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A93445280A;
-        Fri, 16 Sep 2022 09:10:16 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E59915FD0;
+        Fri, 16 Sep 2022 09:43:04 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1939B62CB7;
-        Fri, 16 Sep 2022 16:10:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 6BA71C433D6;
-        Fri, 16 Sep 2022 16:10:15 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B06AE62C22;
+        Fri, 16 Sep 2022 16:43:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A0A9C433D7;
+        Fri, 16 Sep 2022 16:43:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1663344615;
-        bh=zHFqHcpj99SbBD9DNjn6APuy0ETml3NbJpfAONyVi8Y=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=f6vJptmp3xyAO67pkzYDp9lnjmxl0Cq9EGnokKnXb122dzgyknUHySsg9d75pJJ6x
-         OrprMreu8WxeEkdAfh6ZjA2oIlM66NYnab10tfy+XnR4O5hpIlNeKGoyGezC/AuQAN
-         GIBUg4t/WV4j15hcnPtr/FVJh8Uoeig5JH3roEyMmDipt1XheijdVsJCaW6n1FMhEK
-         ij62T0W74MKnw5V9NNRFOXN8T3U1myu+hdF+rfB/OwpFloKEREFoyLp0FXue9YJJY5
-         yJvHfWJzgUnF9WnS0UC+JFsTm3Tj3S+jqTPYrUYV0kazuW1Zf0x+w388ND1lz0xONN
-         DN5Wt6PU35P7g==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 46006C59A58;
-        Fri, 16 Sep 2022 16:10:15 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1663346583;
+        bh=UmsHj7RKIsPQ6Gwcuw/nAlwsZUANyOdOwRkhC5DlIlA=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=Q+MvSDJNvYsAGXBuFUlrG09/stqFoapplIlPRQgFQVvJgfC6rMy5NLwQB77CQxul4
+         qYB640QLfxErr8XyvX5D5Qp3xIUAbqEAYOnsS13/oqpie38U9F/4SLT1HD8AkHH+o9
+         It5PVx1zS9qRi6Gr3t0UzhtbAypW1Z4T6uS/aBcrp9ji1iNmnfd120OhHYaI04+pGj
+         KeipG5t8Eus87efmYVmlp2qvLEh1GHKF3dnrKSDg0w+7aoEykM3zTVB/CeWwUMkLN3
+         HkWLSeOmV25HJtnfqZNSX0d7CVG1syTqh7QfXcNq9BdyajzQGGD47bjRMYeniUNPMV
+         s60eUtxyA/ZcA==
+Message-ID: <75585c26-b4bc-8004-dc45-cedba6b8b392@kernel.org>
+Date:   Fri, 16 Sep 2022 10:43:01 -0600
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v3 1/1] bpf: Ensure correct locking around vulnerable function
- find_vpid()
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <166334461526.1576.4486084011252530218.git-patchwork-notify@kernel.org>
-Date:   Fri, 16 Sep 2022 16:10:15 +0000
-References: <20220912133855.1218900-1-lee@kernel.org>
-In-Reply-To: <20220912133855.1218900-1-lee@kernel.org>
-To:     Lee Jones <lee@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, jolsa@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, john.fastabend@gmail.com, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.13.0
+Subject: Re: [net-next v2 1/3] seg6: add netlink_ext_ack support in parsing
+ SRv6 behavior attributes
+Content-Language: en-US
+To:     Andrea Mayer <andrea.mayer@uniroma2.it>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
         bpf@vger.kernel.org
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Cc:     Stefano Salsano <stefano.salsano@uniroma2.it>,
+        Paolo Lungaroni <paolo.lungaroni@uniroma2.it>,
+        Ahmed Abdelsalam <ahabdels.dev@gmail.com>
+References: <20220912171619.16943-1-andrea.mayer@uniroma2.it>
+ <20220912171619.16943-2-andrea.mayer@uniroma2.it>
+From:   David Ahern <dsahern@kernel.org>
+In-Reply-To: <20220912171619.16943-2-andrea.mayer@uniroma2.it>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-8.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This patch was applied to bpf/bpf.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
-
-On Mon, 12 Sep 2022 14:38:55 +0100 you wrote:
-> The documentation for find_vpid() clearly states:
+On 9/12/22 11:16 AM, Andrea Mayer wrote:
+> An SRv6 behavior instance can be set up using mandatory and/or optional
+> attributes.
+> In the setup phase, each supplied attribute is parsed and processed. If
+> the parsing operation fails, the creation of the behavior instance stops
+> and an error number/code is reported to the user.  In many cases, it is
+> challenging for the user to figure out exactly what happened by relying
+> only on the error code.
 > 
->   "Must be called with the tasklist_lock or rcu_read_lock() held."
+> For this reason, we add the support for netlink_ext_ack in parsing SRv6
+> behavior attributes. In this way, when an SRv6 behavior attribute is
+> parsed and an error occurs, the kernel can send a message to the
+> userspace describing the error through a meaningful text message in
+> addition to the classic error code.
 > 
-> Presently we do neither.
+> Signed-off-by: Andrea Mayer <andrea.mayer@uniroma2.it>
+> ---
+>  net/ipv6/seg6_local.c | 44 +++++++++++++++++++++++++++----------------
+>  1 file changed, 28 insertions(+), 16 deletions(-)
 > 
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: Andrii Nakryiko <andrii@kernel.org>
-> Cc: Martin KaFai Lau <martin.lau@linux.dev>
-> Cc: Song Liu <song@kernel.org>
-> Cc: Yonghong Song <yhs@fb.com>
-> Cc: KP Singh <kpsingh@kernel.org>
-> Cc: Stanislav Fomichev <sdf@google.com>
-> Cc: Hao Luo <haoluo@google.com>
-> Cc: bpf@vger.kernel.org
-> Fixes: 41bdc4b40ed6f ("bpf: introduce bpf subcommand BPF_TASK_FD_QUERY")
-> Signed-off-by: Lee Jones <lee@kernel.org>
-> 
-> [...]
 
-Here is the summary with links:
-  - [v3,1/1] bpf: Ensure correct locking around vulnerable function find_vpid()
-    https://git.kernel.org/bpf/bpf/c/83c10cc362d9
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Reviewed-by: David Ahern <dsahern@kernel.org>
 
 
