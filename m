@@ -2,66 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88BC25BB92E
-	for <lists+bpf@lfdr.de>; Sat, 17 Sep 2022 17:43:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C359F5BB930
+	for <lists+bpf@lfdr.de>; Sat, 17 Sep 2022 17:46:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229528AbiIQPnI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 17 Sep 2022 11:43:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39404 "EHLO
+        id S229553AbiIQPqz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 17 Sep 2022 11:46:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229581AbiIQPnG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 17 Sep 2022 11:43:06 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1463932AAE
-        for <bpf@vger.kernel.org>; Sat, 17 Sep 2022 08:43:03 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id 138so18748776iou.9
-        for <bpf@vger.kernel.org>; Sat, 17 Sep 2022 08:43:03 -0700 (PDT)
+        with ESMTP id S229492AbiIQPqy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 17 Sep 2022 11:46:54 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 600952ED78
+        for <bpf@vger.kernel.org>; Sat, 17 Sep 2022 08:46:53 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id c4so19778495iof.3
+        for <bpf@vger.kernel.org>; Sat, 17 Sep 2022 08:46:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date;
-        bh=Rctxp8ISFZSXim/XgDc87NGqTNK31fos2U0MpRy61NM=;
-        b=kIWzl0n4yJ3qpzCjDmiXvHfOQund1pt+y12jFY8QUhHJIlgSThXUkN85v7oy7iyTpD
-         AgRBuZRXOCGvVMqLn7oh42Xrl9cEg1dE5kMH93CHpQX3DBlFuDIunosppHN7w48p2ZfM
-         0QfLS+u+t7b+09Wtr7VvgcAChLlmEjYTY9633QY6ybsc9Okzxq+RGDZAqxbDZnVOL2vD
-         4NOOE8350Jn1WZ+n0yymO1sjIf5XqiF7Hgm3mWizc7ixxa06haf/Bkj5RWjYIKFqmZzB
-         7LvJtTScfrWqXn/VcpSEOt9PLSqxRzSzk82qafxkKnAbk/E9A4vxtdMlnQVxe99JkUe4
-         lNiA==
+        bh=76LNLWl97VBxvuOLqnfHoaJ1C5wpIf0pCDajDj3WnPs=;
+        b=kM476BpCsVFVzdG+B04n8LyO3+t/pSGr8pkMVKDgjLiNmfasFm19tYHK78AGJcknZ4
+         +kHMj3Mbmr1VxvhtT/uSNa3JjbfZoVi4s1oTLt+ag28l4UXris4QE2wyMEDrHeHvM1RO
+         ivErMU34C11GpdAdTuKLCsPadb7W4l+qdkS9CK8N9UrMNPfJUoSmjDoKCCYjzTVNA5Zt
+         C5N1JDiz2HYTXq4DJDQrig4PM5te7wdzCUXpk9v/DfrbZhX7ahTNXBdLLkJ49ZolpR95
+         aFD+OBYefx8Z8sC0z4QTwQVMDwa38Wun5Ho/p0silav03IL40sgGBG191gUS9THcnBYe
+         pTdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=Rctxp8ISFZSXim/XgDc87NGqTNK31fos2U0MpRy61NM=;
-        b=eoH/ncgzxTca7ICOLmtOrzd81WS8Y+jU8mMRCSzAXKYHFothzT+5oW8AezV2+kd/g/
-         khdYMvB1pjheGdS0f1RVc4ZzR81lBpHi2loysqvxnQdFI1Q6jLERSZR31gICiR5Ir1JG
-         T3Rd7E00IFiQ2G+TBc+k6PVRvLu6R+muL7OqhA4r1b11t7HVx6mC5Xv/e6GUSzYX7XVY
-         p1IcCSld0ujWHq/FniY7+E3gvmL1Nc+Ggz7zXFeL0u34i4ylM9k8BgXfUgC/X1Ier6uq
-         H0nNvrRtZTatC6xatkKXOLYU2FVZrTmm2TfttCsrhiM0dFB4lFm5qkmAWukODu7Ho1P9
-         Z/vg==
-X-Gm-Message-State: ACrzQf1WiEz4F63kv68rQm8LAihe3nzjD1lpMswnfqGiDkSUr38ufBzd
-        VvgNKFHpjbYL/0StkiuGA12+ouvjjJHy13Or/EAzHliujmkQMw==
-X-Google-Smtp-Source: AMsMyM4AGloMKVbNSF8wYOY9UYuht3tPeD2cDoMSXL+6wyPXQTLq7aRGrkyHGVdCdwpNqzLdkFKnNpPjXVeGjypkmkQ=
-X-Received: by 2002:a5d:9257:0:b0:6a1:2052:bf0a with SMTP id
- e23-20020a5d9257000000b006a12052bf0amr3841486iol.186.1663429382347; Sat, 17
- Sep 2022 08:43:02 -0700 (PDT)
+        bh=76LNLWl97VBxvuOLqnfHoaJ1C5wpIf0pCDajDj3WnPs=;
+        b=G7BSSbvdsRD46ClMVTNVEGUG90rbWh+4c44XjK0rX5Vj8oIqtfmQJMhE7NK37CIcPU
+         pporIXhIvlHfn7VocQnUx4gmsNzPx/+yfMiOoq3I3dz04G9xyIfDNjvFILKd/lzyKqIR
+         Z93VNd0S0cxmf32t0vkw4Nf4rBl35wOcV6QII/++tgbiWX8evebu7Fet4wEHJy/LhU4O
+         +zijP344BUuFDvsp2zexTvlI2BIwf4mNf8pb+vdTvViCju9TEKYY+pTJoYO8H0SHLm5e
+         YLmWsA2ymq+TPzaHYjgMUhZUsVkv+FpIIZheKfjLW/DBL0dd2NCPEzQh+0buh8VmNyRH
+         FziQ==
+X-Gm-Message-State: ACrzQf3Lj9DmlBs2JCQs8I9oWykPOVSzJrqb8yPOQ6fJdW/xcVqmFy4g
+        zkPrZ8A2KQ6BqFtbVCiG/n8bND+DzZ3V0Tlz9y2dPA==
+X-Google-Smtp-Source: AMsMyM7muT0ex5SM+GpL9y0fIVqBf6fc9stAJzeskXt9Fpjsyqh8gABNtknz+Im45nVSucKhz9QMLR56YDuszWdWJoI=
+X-Received: by 2002:a05:6602:1554:b0:6a1:de25:9ce8 with SMTP id
+ h20-20020a056602155400b006a1de259ce8mr3928023iow.202.1663429612687; Sat, 17
+ Sep 2022 08:46:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <a6c0bb85-6eeb-407e-a515-06f67e70db57@www.fastmail.com>
-In-Reply-To: <a6c0bb85-6eeb-407e-a515-06f67e70db57@www.fastmail.com>
+References: <20220715115559.139691-1-shaozhengchao@huawei.com> <20220914111936.19881-1-oss@lmb.io>
+In-Reply-To: <20220914111936.19881-1-oss@lmb.io>
 From:   Stanislav Fomichev <sdf@google.com>
-Date:   Sat, 17 Sep 2022 08:42:46 -0700
-Message-ID: <CAKH8qBtcgdWgJ8JcefFyQPG1FVcLF9hdXKbgf1xhm0nLEVVy3A@mail.gmail.com>
-Subject: Re: Closing the BPF map permission loophole
+Date:   Sat, 17 Sep 2022 08:46:36 -0700
+Message-ID: <CAKH8qBujKnFh8_g+npxHpo7RGFshus3N0iysmVBohTtG1X2yow@mail.gmail.com>
+Subject: Re: [PATCH v4,bpf-next] bpf: Don't redirect packets with invalid pkt_len
 To:     Lorenz Bauer <oss@lmb.io>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org
+Cc:     shaozhengchao@huawei.com, ast@kernel.org, daniel@iogearbox.net,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yuehaibing@huawei.com
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,79 +67,24 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 15, 2022 at 3:31 AM Lorenz Bauer <oss@lmb.io> wrote:
+On Wed, Sep 14, 2022 at 4:20 AM Lorenz Bauer <oss@lmb.io> wrote:
 >
-> Hi list,
+> Hi,
 >
-> Here is a summary of the talk I gave at LPC '22 titled "Closing the BPF map permission loophole", with slides at [0].
+> I think this patch is causing user-space breakage, see [0].
 >
-> Problem #1: Read-only fds can be modified via a BPF program
->
-> 1. Craft a BPF program that executes bpf_map_update_elem(read-only fd, ...)
-> 2. Load the program & execute it
->
-> The reason is that the verifier only checks bpf_map->map_flags in resolve_pseudo_ldimm64, but ignores fd->f_mode.
->
-> Fixing this problem is complicated by the fact that a user may use several distinct fds with differing permissions to refer to the same map, but that the verifier internally only tracks unique struct bpf_map. See [1].
->
-> Problem #2: Read-only fds can be "transmuted" into read-write fds via map in map
->
-> 1. BPF_MAP_UPDATE_ELEM(map in map fd, read-only fd)
-> 2. BPF_MAP_LOOKUP_ELEM(map in map fd) = read-write fd
->
-> This was pointed out by Stanislav Fomichev during the LPC session. I've not yet tried this myself.
->
-> Problem #3: Read-only fds can be transmuted into read-write fds via object pinning
->
-> 1. BPF_OBJ_PIN(read-only fd, /sys/fs/bpf/foo)
-> 2. BPF_OBJ_GET(/sys/fs/bpf/foo) = read-write fd
->
-> The problem is with BPF_OBJ_PIN semantics: regardless of fd->f_mode, pinning creates an inode that is owned by the current user, with mode o=rw. Even if we made the inode o=r, a user / attacker can still use chmod(2) to change it back to o=rw.
->
-> On older kernels, this requires either unprivileged BPF or CAP_BPF, but recently BPF_OBJ_PIN has been made available without CAP_BPF.
->
-> This problem also applies to other BPF objects: links, programs, maybe iterators? Since we don't have BPF_F_RDONLY semantics for those the issue is maybe less urgent, but see [2] for some more fun.
->
-> A number of ideas were explored during the session:
->
-> * In OBJ_PIN, create the inode owned by the user that executed MAP_CREATE, not the user that
->   invoked OBJ_PIN. This would allow unprivileged users to create files as another user, which
->   seems like a bad idea.
-> * In OBJ_GET, refuse a read-write fd if the fd passed to OBJ_PIN wasn't read-write. This is not
->   possible since we store struct bpf_map * in the inode, so we don't have access to fd->f_mode
->   anymore.
-> * In OBJ_PIN, adjust the mode of the created inode to match fd->f_mode, and later refuse attempts
->   to chmod(2). After a cursory glance at the source code it seems like there are no hooks for
->   filesystems to influence chmod.
->
-> My gut feeling is that the root of the problem is that OBJ_PIN is too permissive. Once an inode exists that is owned by the current user the cat is out of the box.
->
-> BPF_F_RDONLY and BPF_F_WRONLY were introduced in 4.15 [3]. If we want to fix this properly, aka relying on BPF_R_RDONLY doesn't introduce a gaping hole, we'll have to do quite a bit of backporting.
->
-> I plan on submitting a sledgehammer approach fix for #1 and #2 as discussed with Daniel after my presentation.
->
+> The gist is that we do BPF_PROG_RUN of a socket filter with 14 byte input to determine whether
+> BPF_PROG_RUN is available or not. I'll fix this in cilium/ebpf, but I think this patch
+> needs more work since users may be doing the same thing in their code.
 
-[..]
+Ooops, sorry about that.
 
-> #3 is in sore need of further discussion and creativity. One avenue I want to explore is whether we can refuse OBJ_PIN if:
-> - the current user is not the map creator
-> - and the fd is not r/w
-> - and the current user has no CAP_DAC_OVERRIDE (or similar)
+Instead of rejecting len=0 data, we might accept the packet but add
+some safe header? I think that should be more backwards compatible?
+Zhengchao, something you can look into?
 
-Thank you, Lorenz, for a nice summary!
 
-We might start by plugging the hole by requiring CAP_BPF for OBJ_PIN
-and then discussing a better way forward (unless somebody has better
-ideas). I'm traveling so I don't have time to think this through yet
-:-(
-
-Our use-case for unpriv so far is for some CAP_BPF process to pin a
-read-only map and chmod it to 0755 for unpriv programs to read.
-
-> Thanks
+> Thanks,
 > Lorenz
 >
-> 0: https://lpc.events/event/16/contributions/1372/attachments/977/2059/Plumbers%2022%20Closing%20the%20BPF%20map%20permission%20loophole.pdf
-> 1: https://elixir.bootlin.com/linux/v6.0-rc5/source/kernel/bpf/verifier.c#L12839
-> 2: https://lore.kernel.org/bpf/20210618105526.265003-1-zenczykowski@gmail.com/
-> 3: https://github.com/torvalds/linux/commit/6e71b04a8224
+> 0: https://github.com/cilium/ebpf/pull/788
