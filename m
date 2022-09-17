@@ -2,84 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F41C15BB505
-	for <lists+bpf@lfdr.de>; Sat, 17 Sep 2022 02:30:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29BB75BB562
+	for <lists+bpf@lfdr.de>; Sat, 17 Sep 2022 03:48:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229609AbiIQAaS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Sep 2022 20:30:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54704 "EHLO
+        id S229501AbiIQBsX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Sep 2022 21:48:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbiIQAaR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 16 Sep 2022 20:30:17 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 983A27A52D;
-        Fri, 16 Sep 2022 17:30:16 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0E8D362DD1;
-        Sat, 17 Sep 2022 00:30:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 54DFAC433C1;
-        Sat, 17 Sep 2022 00:30:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1663374615;
-        bh=qyTbOVBRLn1Ohw1NH3eeV8IiuE2MnxAZbyVK1Z/cGp4=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=RadtOxCRUzi7jG7dbVPr8DC0hXZ3etp7hWka1roVSliUIVB4F3S2NkfN7AY6yvKck
-         rR/AW75KlF0PgWDMFvHc8o9RhFDOT6Zi53XFfxqkH3OtvXuMaaUh1pjHhAtZFp2mKl
-         yVA22n6MOD7zv5enWh7v5Z39wNco9eNpMqZFLGLTnDoNb+ow17al3ABAOkETHLYxtn
-         iPVaGrpfALd3p4XneZ20pt2rWVKGjNStx2KEJBNrPqKqxGfwZ75FwLlg7hATZ/EcVE
-         KiGdjfEfntzRUJEtIULNmgNYxkEyrT23H4D1Yaf379wzWTMlORIMvxBrxLpxoxsqew
-         YuALbXIU/di6Q==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 372A2C73FEF;
-        Sat, 17 Sep 2022 00:30:15 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229851AbiIQBsO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 16 Sep 2022 21:48:14 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13E14AE23F;
+        Fri, 16 Sep 2022 18:48:10 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id s18so17038918plr.4;
+        Fri, 16 Sep 2022 18:48:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date;
+        bh=Xlm3IEiv0QUQAA+pAhB6W56+eUuQAk/ZKcHmJT3d2iI=;
+        b=WUFhdrju3oCC2ZIYRNQeYXdQrNpq+G6g/uZ4r+gWofnMWMTmRk/FyTD8VDr6u3qPWR
+         +rvB9hUPYXvVQpA49zlXfrJkuSo/DRE+vgr7K3E0hqB1zWEnIdTY8//qRWlZGTNExNCL
+         90G27MiG/C9vOCozrz+ICZ1bxaYSQdZ6lU3mKGFs/sjPh57y8+QoY/0RBYuIi8OHZiq7
+         PcVAup9KumXxYKamx1mTGVB/krZn2CdQMlNab7G0Pa8foF4Z2fVENl2vK7o0xqhcHP/F
+         bTdbRPUj7Hj1sJBb2mgBA+jWfq3VejAEfiyivrM7Bqg3CMjJEr57JqtUPEr3w11Ta3mV
+         QG/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date;
+        bh=Xlm3IEiv0QUQAA+pAhB6W56+eUuQAk/ZKcHmJT3d2iI=;
+        b=7CS8x5CS23nBaBn51EcD8mD79m6PRWEhu4C5iXpoygQhdanU2ai1VMDP3tsglmr2gP
+         6cf5lWHslBg+jHuMDKoHiicMzsbeiUZ1ah9NCBc1OAMH1tk3Zz2z98BK+tbw2ymWpVTa
+         9X0tseZQDM8AHM9jWECPeSuUtwgwNrV9SOxGEEW0yHx2vJo8a3/B7jr8l7St09kQaLKE
+         Yb4zz8qONXlTgfep54SKFgQb12Gdv/YVp7X7S+9TK2YjoSzPgBLd+rLw2mUBTPiuQd3A
+         azVPoB08PO5aflnDuKejy/71g8zTpv3+SFKL987xastK7aFgbHIquVcDXS/VaYe9+jJs
+         uicQ==
+X-Gm-Message-State: ACrzQf0PRvUu9s8AnDJtdNHV5dmnkPWReNdLT1lCrA94vsgtu40aQtw0
+        1GbZk9PRc0UZsaeZwsCrWdAkG1BhV//PMw==
+X-Google-Smtp-Source: AMsMyM71xMgaiF/8/lbKBPDtmeqx0ps4MzQRwy8FzckWsZE2Y4/DPMbQNUVQZwvjoTyKyWgp+9+X9Q==
+X-Received: by 2002:a17:90b:4a06:b0:202:c03b:eb5c with SMTP id kk6-20020a17090b4a0600b00202c03beb5cmr8636550pjb.6.1663379289294;
+        Fri, 16 Sep 2022 18:48:09 -0700 (PDT)
+Received: from localhost.localdomain (lily-optiplex-3070.dynamic.ucsd.edu. [2607:f720:1300:3033::1:4dd])
+        by smtp.googlemail.com with ESMTPSA id g3-20020aa79f03000000b005465ffaa89dsm8972011pfr.184.2022.09.16.18.48.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Sep 2022 18:48:08 -0700 (PDT)
+From:   Li Zhong <floridsleeves@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     namhyung@kernel.org, jolsa@kernel.org,
+        alexander.shishkin@linux.intel.com, mark.rutland@arm.com,
+        acme@kernel.org, mingo@redhat.com, peterz@infradead.org,
+        Li Zhong <floridsleeves@gmail.com>
+Subject: [PATCH v1] kernel/events/core: check return value of task_function_call()
+Date:   Fri, 16 Sep 2022 18:47:46 -0700
+Message-Id: <20220917014746.3828349-1-floridsleeves@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v2] bpf/btf: Use btf_type_str() whenever possible
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <166337461521.10363.5012920273929105256.git-patchwork-notify@kernel.org>
-Date:   Sat, 17 Sep 2022 00:30:15 +0000
-References: <20220916202800.31421-1-yepeilin.cs@gmail.com>
-In-Reply-To: <20220916202800.31421-1-yepeilin.cs@gmail.com>
-To:     Peilin Ye <yepeilin.cs@gmail.com>
-Cc:     martin.lau@linux.dev, peilin.ye@bytedance.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+Check the return value of task_function_call(), which could be error
+code when the execution fails.
 
-This patch was applied to bpf/bpf-next.git (master)
-by Martin KaFai Lau <martin.lau@kernel.org>:
+Signed-off-by: Li Zhong <floridsleeves@gmail.com>
+---
+ kernel/events/core.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-On Fri, 16 Sep 2022 13:28:00 -0700 you wrote:
-> From: Peilin Ye <peilin.ye@bytedance.com>
-> 
-> We have btf_type_str().  Use it whenever possible in btf.c, instead of
-> "btf_kind_str[BTF_INFO_KIND(t->info)]".
-> 
-> Signed-off-by: Peilin Ye <peilin.ye@bytedance.com>
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf-next,v2] bpf/btf: Use btf_type_str() whenever possible
-    https://git.kernel.org/bpf/bpf-next/c/571f9738bfb3
-
-You are awesome, thank you!
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 2621fd24ad26..ac0cf611b12a 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -13520,7 +13520,8 @@ static void perf_cgroup_attach(struct cgroup_taskset *tset)
+ 	struct cgroup_subsys_state *css;
+ 
+ 	cgroup_taskset_for_each(task, css, tset)
+-		task_function_call(task, __perf_cgroup_move, task);
++		if (!task_function_call(task, __perf_cgroup_move, task))
++			return;
+ }
+ 
+ struct cgroup_subsys perf_event_cgrp_subsys = {
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.25.1
 
