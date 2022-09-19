@@ -2,149 +2,216 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B38C85BD821
-	for <lists+bpf@lfdr.de>; Tue, 20 Sep 2022 01:19:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19E415BD830
+	for <lists+bpf@lfdr.de>; Tue, 20 Sep 2022 01:22:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229597AbiISXT2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Sep 2022 19:19:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45266 "EHLO
+        id S229540AbiISXWn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Sep 2022 19:22:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbiISXTM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 19 Sep 2022 19:19:12 -0400
-Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 541EE50198;
-        Mon, 19 Sep 2022 16:19:11 -0700 (PDT)
-Received: by mail-qt1-f179.google.com with SMTP id y2so647161qtv.5;
-        Mon, 19 Sep 2022 16:19:11 -0700 (PDT)
+        with ESMTP id S229559AbiISXWn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Sep 2022 19:22:43 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D5306155
+        for <bpf@vger.kernel.org>; Mon, 19 Sep 2022 16:22:41 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id 63so997175ybq.4
+        for <bpf@vger.kernel.org>; Mon, 19 Sep 2022 16:22:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=1w1eB9JyeaLxtzm/tdeOCWCjZuh/yvFNSAuKfwrEdjQ=;
+        b=jpAKeA2QRcgK4RXOEiEq/QikbutUZKgb5rTg+9Le7W+44WV4evB6E733M4Dg/OExlP
+         EyeoX0RaRdguTBuEc5xIGgIvCLTY03fzl3F9zochPolmJ3OKvHaSegDGQ6BBQyMfn3Bv
+         eG1bF84DiJc3xYiODk6odvjjJEOdZtGukrqO48TIOOHulJYMuaKaQd8GQ6Pis0l73U1E
+         INIDtTBORL3Nj+lTGoXCOlwROOf+Unrck2B2LLb2fzdMVf4jBJda6ulIazbqWjErydt2
+         Cv3UFMF3gDwVrfJvN+MXVWidd7YrBE08Ro5MDf0INc+LswcOb/5f8dyyOsqsk9h+dpx9
+         IuBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date;
-        bh=ZXtqtJ/ea5WuAK5JJBouQcp3rbN8LV4upygNznVncj8=;
-        b=QHr+dm/tg7dJtT/HqbaBjTZSOTteeFctsy7LIJ5exUMIf/gylnr9Yjz+OD85PXAuQF
-         LXNHSijVMEkOZh+Xez52tnZjR/CkQ2h4NdZATP8AgSXRPrAizfWWPRMltOgbJzhp9f3T
-         CHLjtyNdTQOHGq5P5mjeHnkydbHk6UX9RXidGpt0z2mmlR+mTtdVIsNJZgbcB6NTC/pI
-         NatDbekr59je2Nq43XRRqGxKZc9FwXmCmBLw8MReHJUQUO/4qoYshPoUkzzIwX1J1tk0
-         d+j7wb7xvMKPDwwFhnBrCcqV1Vo3dzvYTxFwiSZLT61l7AZj0dVi73NRdiDF9njuuDIR
-         vCNg==
-X-Gm-Message-State: ACrzQf30TMb5+4fUOXTB4GuylKpXUpA6mmjRKcVWSO1+amU0FtRC0Wl9
-        M8Xbd1VoSrjSt/7WZLJHXfI=
-X-Google-Smtp-Source: AMsMyM7NFBScQzKm4DLElxBX0PkeMlBAsh8SvSjEqdrqhH/K8AWn19bUk/Kzg6NwLQGV2SQ7Nys+8g==
-X-Received: by 2002:a05:622a:351:b0:35c:e183:69a2 with SMTP id r17-20020a05622a035100b0035ce18369a2mr9376235qtw.298.1663629550296;
-        Mon, 19 Sep 2022 16:19:10 -0700 (PDT)
-Received: from maniforge.dhcp.thefacebook.com ([2620:10d:c091:480::148f])
-        by smtp.gmail.com with ESMTPSA id r18-20020a05620a299200b006ce7cd81359sm14650477qkp.110.2022.09.19.16.19.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Sep 2022 16:19:10 -0700 (PDT)
-Date:   Mon, 19 Sep 2022 18:19:08 -0500
-From:   David Vernet <void@manifault.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Joanne Koong <joannelkoong@gmail.com>, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-        bpf@vger.kernel.org, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, tj@kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v5 2/4] bpf: Add bpf_user_ringbuf_drain() helper
-Message-ID: <Yyj47Bc01MvJyU9n@maniforge.dhcp.thefacebook.com>
-References: <20220902234317.2518808-1-void@manifault.com>
- <20220902234317.2518808-3-void@manifault.com>
- <CAEf4BzZgv7W=OBi+PogxrvuM1c8QRoZ8O4s347MfKdm-p=qY0w@mail.gmail.com>
- <YyjO2LspZ3GDELDw@maniforge.dhcp.thefacebook.com>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=1w1eB9JyeaLxtzm/tdeOCWCjZuh/yvFNSAuKfwrEdjQ=;
+        b=m4H6jinYISdB7IPsahiD08Gc+96Wu7XBVjzlFqLb2HEy3+rlysZDgorg8QxH/TUFmq
+         aKabw9o/QHztcpZ9EH43PfYuNfWPKGN7OQXrXIqKHG0LBK/CP2bCB6hhF6NNhUB7lQ02
+         5jOGoVDw8hWczoNDrNpsF9uX7K6J5Bhyue1T6L9kYGnz9XcqI90rXNBn8OENDJAYReNe
+         kCY3iwbt6oX2amxycEexThWc1lGBnsbqEPgda9399Eu2JkJEIqJDfzUm4RYtZ6eRHWbM
+         lEW4LFssvB9XU9SPr0TBILhkJqo5pfT+44LRWxCA6p0Ina1idRR+c6FA8hDY6LkXkp33
+         K/yw==
+X-Gm-Message-State: ACrzQf29bf4dFGz9o6a3subFLzzDMZQkFre/Xf0OEE91YD/K+86bhmzr
+        i2xDg6R9gdCZByaFB79gMXCPEkhGNM4VWfVCl8E=
+X-Google-Smtp-Source: AMsMyM5MFRIvaF0X1qL0mFWmkvb/4rC29ql4XgW8nAjhr2uqZfLuipEfl8RcfZLC7VAxftrTkDW6rezi8WpQtJZHdqY=
+X-Received: by 2002:a25:b44a:0:b0:695:bd50:9c2d with SMTP id
+ c10-20020a25b44a000000b00695bd509c2dmr16964500ybg.495.1663629760647; Mon, 19
+ Sep 2022 16:22:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YyjO2LspZ3GDELDw@maniforge.dhcp.thefacebook.com>
-User-Agent: Mutt/2.2.7 (2022-08-07)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <20220914123600.927632-1-davemarchevsky@fb.com>
+ <20220914123600.927632-2-davemarchevsky@fb.com> <26e3f391-076e-49ce-89d6-21aa16f3c054@fb.com>
+In-Reply-To: <26e3f391-076e-49ce-89d6-21aa16f3c054@fb.com>
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date:   Tue, 20 Sep 2022 01:22:04 +0200
+Message-ID: <CAP01T75E9sp5Aq159Zjmrpmaue+gYkN66qjA06opDhLhbuUzAw@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 2/2] selftests/bpf: Add test verifying
+ bpf_ringbuf_reserve retval use in map ops
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Dave Marchevsky <davemarchevsky@fb.com>, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Sep 19, 2022 at 03:19:36PM -0500, David Vernet wrote:
-> > > +static void __bpf_user_ringbuf_sample_release(struct bpf_ringbuf *rb, size_t size, u64 flags)
-> > > +{
-> > > +       u64 consumer_pos;
-> > > +       u32 rounded_size = round_up(size + BPF_RINGBUF_HDR_SZ, 8);
-> > > +
-> > > +       /* Using smp_load_acquire() is unnecessary here, as the busy-bit
-> > > +        * prevents another task from writing to consumer_pos after it was read
-> > > +        * by this task with smp_load_acquire() in __bpf_user_ringbuf_peek().
-> > > +        */
-> > > +       consumer_pos = rb->consumer_pos;
-> > > +        /* Synchronizes with smp_load_acquire() in user-space producer. */
-> > > +       smp_store_release(&rb->consumer_pos, consumer_pos + rounded_size);
-> > > +
-> > > +       /* Prevent the clearing of the busy-bit from being reordered before the
-> > > +        * storing of the updated rb->consumer_pos value.
-> > > +        */
-> > > +       smp_mb__before_atomic();
-> > > +       atomic_set(&rb->busy, 0);
-> > > +
-> > > +       if (flags & BPF_RB_FORCE_WAKEUP)
-> > > +               irq_work_queue(&rb->work);
-> > 
-> > I think this part is new, you decided to define that FORCE_WAKEUP
-> > sends wakeup after every single consumed sample? I have no strong
-> > opinion on this, tbh, just wonder if it wasn't enough to do it once
-> > after drain?
-> 
-> I didn't have a strong reason for doing this other than that I think it
-> more closely matches the behavior for BPF_MAP_TYPE_RINGBUF (which invokes
-> irq_work_queue() after every call to bpf_ringbuf_commit() if
-> BPF_RB_FORCE_WAKEUP is passed). Let's just match that behavior unless we
-> have a good reason not to? I think that will be more intuitive for users.
+On Tue, 20 Sept 2022 at 00:53, Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 9/14/22 5:36 AM, Dave Marchevsky wrote:
+> > Add a test_ringbuf_map_key test prog, borrowing heavily from extant
+> > test_ringbuf.c. The program tries to use the result of
+> > bpf_ringbuf_reserve as map_key, which was not possible before previouis
+> > commits in this series. The test runner added to prog_tests/ringbuf.c
+> > verifies that the program loads and does basic sanity checks to confirm
+> > that it runs as expected.
+> >
+> > Also, refactor test_ringbuf such that runners for existing test_ringbuf
+> > and newly-added test_ringbuf_map_key are subtests of 'ringbuf' top-level
+> > test.
+> >
+> > Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
+> > ---
+> > v1->v2: lore.kernel.org/bpf/20220912101106.2765921-1-davemarchevsky@fb.com
+> >
+> > * Actually run the program instead of just loading (Yonghong)
+> > * Add a bpf_map_update_elem call to the test (Yonghong)
+> > * Refactor runner such that existing test and newly-added test are
+> >    subtests of 'ringbuf' top-level test (Yonghong)
+> > * Remove unused globals in test prog (Yonghong)
+> >
+> >   tools/testing/selftests/bpf/Makefile          |  8 ++-
+> >   .../selftests/bpf/prog_tests/ringbuf.c        | 63 ++++++++++++++++-
+> >   .../bpf/progs/test_ringbuf_map_key.c          | 70 +++++++++++++++++++
+> >   3 files changed, 137 insertions(+), 4 deletions(-)
+> >   create mode 100644 tools/testing/selftests/bpf/progs/test_ringbuf_map_key.c
+> >
+> [...]
+> > diff --git a/tools/testing/selftests/bpf/progs/test_ringbuf_map_key.c b/tools/testing/selftests/bpf/progs/test_ringbuf_map_key.c
+> > new file mode 100644
+> > index 000000000000..495f85c6e120
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/progs/test_ringbuf_map_key.c
+> > @@ -0,0 +1,70 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
+> > +
+> > +#include <linux/bpf.h>
+> > +#include <bpf/bpf_helpers.h>
+> > +#include "bpf_misc.h"
+> > +
+> > +char _license[] SEC("license") = "GPL";
+> > +
+> > +struct sample {
+> > +     int pid;
+> > +     int seq;
+> > +     long value;
+> > +     char comm[16];
+> > +};
+> > +
+> > +struct {
+> > +     __uint(type, BPF_MAP_TYPE_RINGBUF);
+> > +     __uint(max_entries, 4096);
+> > +} ringbuf SEC(".maps");
+> > +
+> > +struct {
+> > +     __uint(type, BPF_MAP_TYPE_HASH);
+> > +     __uint(max_entries, 1000);
+> > +     __type(key, struct sample);
+> > +     __type(value, int);
+> > +} hash_map SEC(".maps");
+> > +
+> > +/* inputs */
+> > +int pid = 0;
+> > +
+> > +/* inner state */
+> > +long seq = 0;
+> > +
+> > +SEC("fentry/" SYS_PREFIX "sys_getpgid")
+> > +int test_ringbuf_mem_map_key(void *ctx)
+> > +{
+> > +     int cur_pid = bpf_get_current_pid_tgid() >> 32;
+> > +     struct sample *sample, sample_copy;
+> > +     int *lookup_val;
+> > +
+> > +     if (cur_pid != pid)
+> > +             return 0;
+> > +
+> > +     sample = bpf_ringbuf_reserve(&ringbuf, sizeof(*sample), 0);
+> > +     if (!sample)
+> > +             return 0;
+> > +
+> > +     sample->pid = pid;
+> > +     bpf_get_current_comm(sample->comm, sizeof(sample->comm));
+> > +     sample->seq = ++seq;
+> > +     sample->value = 42;
+> > +
+> > +     /* test using 'sample' (PTR_TO_MEM | MEM_ALLOC) as map key arg
+> > +      */
+> > +     lookup_val = (int *)bpf_map_lookup_elem(&hash_map, sample);
+> > +
+> > +     /* memcpy is necessary so that verifier doesn't complain with:
+> > +      *   verifier internal error: more than one arg with ref_obj_id R3
+> > +      * when trying to do bpf_map_update_elem(&hash_map, sample, &sample->seq, BPF_ANY);
+> > +      *
+> > +      * Since bpf_map_lookup_elem above uses 'sample' as key, test using
+> > +      * sample field as value below
+> > +      */
+>
+> If I understand correctly, the above error is due to the following
+> verifier code:
+>
+>          if (reg->ref_obj_id) {
+>                  if (meta->ref_obj_id) {
+>                          verbose(env, "verifier internal error: more
+> than one arg with ref_obj_id R%d %u %u\n",
+>                                  regno, reg->ref_obj_id,
+>                                  meta->ref_obj_id);
+>                          return -EFAULT;
+>                  }
+>                  meta->ref_obj_id = reg->ref_obj_id;
+>          }
+>
+> So this is an internal error. So normally this should not happen.
+> Could you investigate and fix the issue?
+>
 
-Hmm, something else to consider is that if we move the busy-bit setting
-into bpf_user_ringbuf_drain() per your suggestion below, the critical
-section is now the the whole sample drain loop. That's of course _not_ the
-case for BPF_MAP_TYPE_RINGBUF, which just holds the spinlock while
-reserving the sample. It seems excessive to invoke irq_work_queue() while
-the busy bit is held, so I think we should just have the behavior be to
-only have BPF_RB_FORCE_WAKEUP imply that a wakeup will always be sent, even
-if no sample was drained.
+Technically it's not an "internal" error, it's totally possible to
+pass two referenced registers from a program (which the verifier
+rejects). So a bad log message I guess.
 
-Let me know if you disagree, but for now I'll work on spinning up a v6 that
-only issues the forced wakeup event once after drain.
+We probably need to update the verifier to properly recognize the
+ref_obj_id for certain functions. For release arguments we already
+have meta.release_regno/OBJ_RELEASE for. It can already find the
+ref_obj_id from release_regno instead of meta.ref_obj_id.
 
-> > > +}
-> > > +
-> > > +BPF_CALL_4(bpf_user_ringbuf_drain, struct bpf_map *, map,
-> > > +          void *, callback_fn, void *, callback_ctx, u64, flags)
-> > > +{
-> > > +       struct bpf_ringbuf *rb;
-> > > +       long samples, discarded_samples = 0, ret = 0;
-> > > +       bpf_callback_t callback = (bpf_callback_t)callback_fn;
-> > > +       u64 wakeup_flags = BPF_RB_NO_WAKEUP | BPF_RB_FORCE_WAKEUP;
-> > > +
-> > > +       if (unlikely(flags & ~wakeup_flags))
-> > > +               return -EINVAL;
-> > > +
-> > > +       rb = container_of(map, struct bpf_ringbuf_map, map)->rb;
-> > > +       for (samples = 0; samples < BPF_MAX_USER_RINGBUF_SAMPLES && ret == 0; samples++) {
-> > > +               int err;
-> > > +               u32 size;
-> > > +               void *sample;
-> > > +               struct bpf_dynptr_kern dynptr;
-> > > +
-> > > +               err = __bpf_user_ringbuf_peek(rb, &sample, &size);
-> > 
-> > so I also just realized that ringbuf_peek will keep setting/resetting
-> > busy flag, and in like all the practical case it's a completely
-> > useless work as we don't intend to have competing consumers, right? So
-> > maybe move busy bit handling into drain itself and document that peek
-> > expect busy taken care of?
-> > 
-> > This should be noticeable faster when there are multiple records
-> > consumed in one drain.
-> 
-> Great idea, I'll do this in v6.
+For dynptr_ref or ptr_cast, simply store meta.ref_obj_id by capturing
+the regno and then setting it before r1-r5 is cleared.
+Since that is passed to r0 it will be done later after clearing of
+caller saved regs.
+ptr_cast and dynptr_ref functions are already exclusive (due to
+helper_multiple_ref_obj_use) so they can share the same regno field in
+meta.
 
-Thanks,
-David
+Then remove this check on seeing more than one reg->ref_obj_id, so it
+isn't a problem to allow more than one refcounted registers for all
+other arguments, as long as we correctly remember the ones for the
+cases we care about.
+
+But it can probably be a separate change from this.
