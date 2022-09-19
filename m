@@ -2,151 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C48D15BCC97
-	for <lists+bpf@lfdr.de>; Mon, 19 Sep 2022 15:10:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00E9A5BCD48
+	for <lists+bpf@lfdr.de>; Mon, 19 Sep 2022 15:32:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229783AbiISNKa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Sep 2022 09:10:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59744 "EHLO
+        id S229690AbiISNcM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Sep 2022 09:32:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229732AbiISNK0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 19 Sep 2022 09:10:26 -0400
-Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 009C217061;
-        Mon, 19 Sep 2022 06:10:22 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.229])
-        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4MWPyn1jNKz9v7gP;
-        Mon, 19 Sep 2022 21:04:33 +0800 (CST)
-Received: from roberto-ThinkStation-P620 (unknown [10.204.63.22])
-        by APP2 (Coremail) with SMTP id GxC2BwCHA14TaihjId9cAA--.3S2;
-        Mon, 19 Sep 2022 14:09:53 +0100 (CET)
-Message-ID: <64e8ef59363bcd0f314d4e1eb7483f4dd2b7dbcf.camel@huaweicloud.com>
-Subject: Re: [PATCH v17 11/12] selftests/bpf: Add test for
- bpf_verify_pkcs7_signature() kfunc
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     KP Singh <kpsingh@kernel.org>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, mykolal@fb.com, dhowells@redhat.com,
-        jarkko@kernel.org, rostedt@goodmis.org, mingo@redhat.com,
-        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
-        shuah@kernel.org, bpf@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        deso@posteo.net, memxor@gmail.com,
-        Roberto Sassu <roberto.sassu@huawei.com>,
-        Joanne Koong <joannelkoong@gmail.com>
-Date:   Mon, 19 Sep 2022 15:09:37 +0200
-In-Reply-To: <045a177ebb15bbf406c4c4d75f48dd45e810be8e.camel@huaweicloud.com>
-References: <20220909120736.1027040-1-roberto.sassu@huaweicloud.com>
-         <20220909120736.1027040-12-roberto.sassu@huaweicloud.com>
-         <CACYkzJ7uraUdmGV9gMmTZs1OMb_3Q2DttoaxU-irmrXFudOweQ@mail.gmail.com>
-         <045a177ebb15bbf406c4c4d75f48dd45e810be8e.camel@huaweicloud.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        with ESMTP id S229606AbiISNcL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Sep 2022 09:32:11 -0400
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A78901BEBF;
+        Mon, 19 Sep 2022 06:32:08 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4MWQXL19S5z6S2nV;
+        Mon, 19 Sep 2022 21:30:10 +0800 (CST)
+Received: from [10.67.109.184] (unknown [10.67.109.184])
+        by APP2 (Coremail) with SMTP id Syh0CgDHYWtSbyhjnodSBA--.50647S2;
+        Mon, 19 Sep 2022 21:32:06 +0800 (CST)
+Subject: Re: [PATCH bpf-next v3 1/2] bpf, cgroup: Don't populate
+ prog_attach_flags array when effective query
+To:     Martin KaFai Lau <martin.lau@linux.dev>,
+        Stanislav Fomichev <sdf@google.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Pu Lehui <pulehui@huawei.com>,
+        Pu Lehui <pulehui@huaweicloud.com>
+References: <20220914161742.3180731-1-pulehui@huaweicloud.com>
+ <20220914161742.3180731-2-pulehui@huaweicloud.com>
+ <9b66564e-2582-03b2-56f1-8037f8aca886@linux.dev>
+From:   Pu Lehui <pulehui@huaweicloud.com>
+Message-ID: <037a6a32-5143-ddad-4a43-bd815280a0ef@huaweicloud.com>
+Date:   Mon, 19 Sep 2022 21:32:02 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: GxC2BwCHA14TaihjId9cAA--.3S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7WFy7Xw4ftw1UJFWUuF1UAwb_yoW8ZFW3pF
-        18Ga1DGr48tr17Gw1Iv3WYqrWxt395Xr1UWr1UX34j9r92qr9rCr4xKrW5ur9IqrZYkr4Y
-        v3y2g3ya9rn5u3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UAkuxUUUUU=
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAABF1jj4M3uwAAs7
+In-Reply-To: <9b66564e-2582-03b2-56f1-8037f8aca886@linux.dev>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: Syh0CgDHYWtSbyhjnodSBA--.50647S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7uFyfJFykJry5Jr4xCr43GFg_yoW8ury7pF
+        WxZFy7GF1DX3y2gas2v3s5XayIqan5JF45Cr93Jry5uFWqgr109r4xAayF9F15XFWjyw10
+        vw4Yvr1DWF9ruFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
+        c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
+        AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
+        17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
+        IF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq
+        3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
+        nIWIevJa73UjIFyTuYvjfUF9a9DUUUU
+X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 2022-09-19 at 13:17 +0200, Roberto Sassu wrote:
-> On Thu, 2022-09-15 at 17:11 +0100, KP Singh wrote:
-> > On Fri, Sep 9, 2022 at 1:10 PM Roberto Sassu
-> > <roberto.sassu@huaweicloud.com> wrote:
-> > > From: Roberto Sassu <roberto.sassu@huawei.com>
-> > > 
-> > 
-> > [...]
-> > 
-> > > +}
-> > > diff --git
-> > > a/tools/testing/selftests/bpf/progs/test_verify_pkcs7_sig.c
-> > > b/tools/testing/selftests/bpf/progs/test_verify_pkcs7_sig.c
-> > > new file mode 100644
-> > > index 000000000000..4ceab545d99a
-> > > --- /dev/null
-> > > +++ b/tools/testing/selftests/bpf/progs/test_verify_pkcs7_sig.c
-> > > @@ -0,0 +1,100 @@
-> > > +// SPDX-License-Identifier: GPL-2.0
-> > > +
-> > > +/*
-> > > + * Copyright (C) 2022 Huawei Technologies Duesseldorf GmbH
-> > > + *
-> > > + * Author: Roberto Sassu <roberto.sassu@huawei.com>
-> > > + */
-> > > +
-> > > +#include "vmlinux.h"
-> > > +#include <errno.h>
-> > > +#include <bpf/bpf_helpers.h>
-> > > +#include <bpf/bpf_tracing.h>
-> > > +
-> > > +#define MAX_DATA_SIZE (1024 * 1024)
-> > > +#define MAX_SIG_SIZE 1024
-> > > +
-> > > +typedef __u8 u8;
-> > > +typedef __u16 u16;
-> > > +typedef __u32 u32;
-> > > +typedef __u64 u64;
-> > 
-> > I think you can avoid this and just use u32 and u64 directly.
+
+
+On 2022/9/17 8:03, Martin KaFai Lau wrote:
+> On 9/14/22 9:17 AM, Pu Lehui wrote:
+>> From: Pu Lehui <pulehui@huawei.com>
+>>
+>> Attach flags is only valid for attached progs of this layer cgroup,
+>> but not for effective progs. For querying with EFFECTIVE flags,
+>> exporting attach flags does not make sense. so we don't need to
+>> populate prog_attach_flags array when effective query.
 > 
-> Thanks, yes.
+> prog_attach_flags has been added to 6.0 which is in rc5.  It is still 
+> doable (and cleaner) to reject prog_attach_flags when it is an 
+> effective_query.  This should be done regardless of 'type == 
+> BPF_LSM_CGROUP' or not.  Something like:
 > 
-> > +
-> > > +struct bpf_dynptr {
-> > > +       __u64 :64;
-> > > +       __u64 :64;
-> > > +} __attribute__((aligned(8)));
-> > > +
-> > 
-> > I think you are doing this because including the uapi headers
-> > causes
-> > type conflicts.
-> > This does happen quite often. What do other folks think about doing
-> > something like
-> > 
-> > #define DYNPTR(x) ((void *)x)
-> > 
-> > It seems like this will be an issue anytime we use the helpers with
-> > vmlinux.h and users
-> > will always have to define this type in their tests.
+> if (effective_query && prog_attach_flags)
+>      return -EINVAL;
 > 
-> It seems it is sufficient to use struct bpf_dynptr somehow in the
-> kernel code. That causes the definition to be exported with BTF. Not
-> sure what would be the proper place to do that. When I tried, I
-> declared a unused variable.
+> Otherwise, the whole prog_attach_flags needs to be set to 0 during 
+> effective_query.  Please target the change to the bpf tree instead of 
+> bpf-next such that this uapi bit can be fixed before 6.0.
+> 
 
-Easier:
+Okay, will handle in next version.
 
-BTF_TYPE_EMIT(struct bpf_dynptr);
+> Also, the effective_query issue is not limited to the prog_attach_flags? 
+> For the older uattr->query.attach_flags, it should be set to 0 also when 
+> it is an effective_query, right?
 
-I added it in bpf_dynptr_from_mem(), right?
+For output uattr->query.attach_flags, we certainly don't need to copy it 
+to userspace when effective query. Since we do not utilize 
+uattr->query.attach_flags in the cgroup query function, should we need 
+to take it as input and reject when it is non-zero in effective query? 
+Something like:
+if (effective_query && (prog_attach_flags || attr->query.attach_flags))
 
-Thanks
+For both output and input scenarios, we are faced with the problem that 
+there is a ambiguity in attach_flags being 0. When we do not copy to the 
+userspace, libbpf will set it to 0 by default, and 0 can mean NONE flag 
+attach, or no attach prog. The same is true for input scenarios.
 
-Roberto
+So should we need to define NONE attach flag and redefine the others? 
+Such as follow:
+#define BPF_F_ALLOW_NONE    	(1U << 0)
+#define BPF_F_ALLOW_OVERRIDE    (1U << 1)
+#define BPF_F_ALLOW_MULTI       (1U << 2)
+#define BPF_F_REPLACE           (1U << 3)
+
+And then attach flags being 0 certainly means no attach any prog.
 
