@@ -2,111 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 335605BCDBE
-	for <lists+bpf@lfdr.de>; Mon, 19 Sep 2022 15:58:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C967B5BCEBA
+	for <lists+bpf@lfdr.de>; Mon, 19 Sep 2022 16:28:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230374AbiISN55 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Sep 2022 09:57:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41344 "EHLO
+        id S229772AbiISO2v (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Sep 2022 10:28:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229750AbiISN5z (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 19 Sep 2022 09:57:55 -0400
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A6C92A70A;
-        Mon, 19 Sep 2022 06:57:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1663595874; x=1695131874;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=rVLwnepZShLYi0CxrPl67f1ZjluOas+qgi/tbAoa+DM=;
-  b=QsODZRDhEmbnPLDuHuYJO8Z7MCPXj2O2fPHdotIMhQPQ+OkMwi+OB0kr
-   UbQq857x09Cq2uHWgNF7RLYPpTfUKNzPsCz5oezoQAiFqfD5+GuqPK51t
-   dNGQOjq1DvjWnbNOkYHqQU5mDdditILdhixFai/D6Wde8GJcFdMc36kRt
-   FzJ/kJkda8asXk8rbqGU0Dwn9FYtO6+W3RCTUQfsI8RfAL4f5BFlilZJK
-   Hex3IyrvG6p3PsSpyC32gkc3eENocfOLYb9oxWYleQ8dTvqm9tDLjmP3z
-   Ci2YrXYqNMJ17Oxt7E9mcPviqJyHxOMoi1pKmRDW3T+Wb+AF7esbwt5NV
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10475"; a="279786502"
-X-IronPort-AV: E=Sophos;i="5.93,327,1654585200"; 
-   d="scan'208";a="279786502"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2022 06:57:54 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,327,1654585200"; 
-   d="scan'208";a="722306733"
-Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by fmsmga002.fm.intel.com with ESMTP; 19 Sep 2022 06:57:46 -0700
-Received: from lincoln.igk.intel.com (lincoln.igk.intel.com [10.102.21.235])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 28JDvi5X023980;
-        Mon, 19 Sep 2022 14:57:44 +0100
-From:   Larysa Zaremba <larysa.zaremba@intel.com>
-To:     intel-wired-lan@lists.osuosl.org
-Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, Larysa Zaremba <larysa.zaremba@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>
-Subject: [PATCH net] ice: Fix ice_xdp_xmit() when XDP TX queue number is not sufficient
-Date:   Mon, 19 Sep 2022 15:43:46 +0200
-Message-Id: <20220919134346.25030-1-larysa.zaremba@intel.com>
-X-Mailer: git-send-email 2.35.3
+        with ESMTP id S229887AbiISO2s (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Sep 2022 10:28:48 -0400
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 572B326555;
+        Mon, 19 Sep 2022 07:28:43 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.227])
+        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4MWRj93TCkz9v7gQ;
+        Mon, 19 Sep 2022 22:22:53 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.204.63.22])
+        by APP2 (Coremail) with SMTP id GxC2BwD3cl1vfChjLSJdAA--.62071S2;
+        Mon, 19 Sep 2022 15:28:13 +0100 (CET)
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     roberto.sassu@huaweicloud.com
+Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, deso@posteo.net, dhowells@redhat.com,
+        haoluo@google.com, jarkko@kernel.org, jmorris@namei.org,
+        joannelkoong@gmail.com, john.fastabend@gmail.com, jolsa@kernel.org,
+        keyrings@vger.kernel.org, kpsingh@kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-security-module@vger.kernel.org, martin.lau@linux.dev,
+        memxor@gmail.com, mingo@redhat.com, mykolal@fb.com,
+        paul@paul-moore.com, roberto.sassu@huawei.com, rostedt@goodmis.org,
+        sdf@google.com, serge@hallyn.com, shuah@kernel.org,
+        song@kernel.org, yhs@fb.com
+Subject: [PATCH v18 02/13] btf: Export bpf_dynptr definition
+Date:   Mon, 19 Sep 2022 16:27:54 +0200
+Message-Id: <20220919142754.626564-1-roberto.sassu@huaweicloud.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <64e8ef59363bcd0f314d4e1eb7483f4dd2b7dbcf.camel@huaweicloud.com>
+References: <64e8ef59363bcd0f314d4e1eb7483f4dd2b7dbcf.camel@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-CM-TRANSID: GxC2BwD3cl1vfChjLSJdAA--.62071S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7tw47JF4UCFy5JFyxurWUCFg_yoW8Zr1rpa
+        1rG39Fyr4vqFyI9w1UAr4093ySyw4kX347CFyvv3yYvrsIqFyqvF4jkr43Wr95trWDWFWY
+        kF4agr4Yva4UZFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9a14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4UJV
+        WxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+        Y2ka0xkIwI1lc7CjxVAaw2AFwI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x
+        0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2
+        zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF
+        4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_
+        WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJr
+        UvcSsGvfC2KfnxnUUI43ZEXa7VUUbAw7UUUUU==
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAABF1jj4M4lgADsa
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The original patch added the static branch to handle the situation,
-when assigning an XDP TX queue to every CPU is not possible,
-so they have to be shared.
+From: Roberto Sassu <roberto.sassu@huawei.com>
 
-However, in the XDP transmit handler ice_xdp_xmit(), an error was
-returned in such cases even before static condition was checked,
-thus making queue sharing still impossible.
+eBPF dynamic pointers is a new feature recently added to upstream. It binds
+together a pointer to a memory area and its size. The internal kernel
+structure bpf_dynptr_kern is not accessible by eBPF programs in user space.
+They instead see bpf_dynptr, which is then translated to the internal
+kernel structure by the eBPF verifier.
 
-Fixes: 22bf877e528f ("ice: introduce XDP_TX fallback path")
-Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
-Reviewed-by: Alexander Lobakin <alexandr.lobakin@intel.com>
+The problem is that it is not possible to include at the same time the uapi
+include linux/bpf.h and the vmlinux BTF vmlinux.h, as they both contain the
+definition of some structures/enums. The compiler complains saying that the
+structures/enums are redefined.
+
+As bpf_dynptr is defined in the uapi include linux/bpf.h, this makes it
+impossible to include vmlinux.h. However, in some cases, e.g. when using
+kfuncs, vmlinux.h has to be included. The only option until now was to
+include vmlinux.h and add the definition of bpf_dynptr directly in the eBPF
+program source code from linux/bpf.h.
+
+Solve the problem by using the same approach as for bpf_timer (which also
+follows the same scheme with the _kern suffix for the internal kernel
+structure).
+
+Add the following line in one of the dynamic pointer helpers,
+bpf_dynptr_from_mem():
+
+BTF_TYPE_EMIT(struct bpf_dynptr);
+
+Cc: stable@vger.kernel.org
+Cc: Joanne Koong <joannelkoong@gmail.com>
+Fixes: 97e03f521050c ("bpf: Add verifier support for dynptrs")
+Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
 ---
- drivers/net/ethernet/intel/ice/ice_txrx.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ kernel/bpf/helpers.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.c b/drivers/net/ethernet/intel/ice/ice_txrx.c
-index 42b42f4b21ef..a5a0c9706b5a 100644
---- a/drivers/net/ethernet/intel/ice/ice_txrx.c
-+++ b/drivers/net/ethernet/intel/ice/ice_txrx.c
-@@ -610,7 +610,7 @@ ice_xdp_xmit(struct net_device *dev, int n, struct xdp_frame **frames,
- 	if (test_bit(ICE_VSI_DOWN, vsi->state))
- 		return -ENETDOWN;
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index 41aeaf3862ec..7ce1f583b929 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -1446,6 +1446,8 @@ BPF_CALL_4(bpf_dynptr_from_mem, void *, data, u32, size, u64, flags, struct bpf_
+ {
+ 	int err;
  
--	if (!ice_is_xdp_ena_vsi(vsi) || queue_index >= vsi->num_xdp_txq)
-+	if (!ice_is_xdp_ena_vsi(vsi))
- 		return -ENXIO;
- 
- 	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK))
-@@ -621,6 +621,9 @@ ice_xdp_xmit(struct net_device *dev, int n, struct xdp_frame **frames,
- 		xdp_ring = vsi->xdp_rings[queue_index];
- 		spin_lock(&xdp_ring->tx_lock);
- 	} else {
-+		/* Generally, should not happen */
-+		if (unlikely(queue_index >= vsi->num_xdp_txq))
-+			return -ENXIO;
- 		xdp_ring = vsi->xdp_rings[queue_index];
- 	}
- 
++	BTF_TYPE_EMIT(struct bpf_dynptr);
++
+ 	err = bpf_dynptr_check_size(size);
+ 	if (err)
+ 		goto error;
 -- 
-2.35.3
+2.25.1
 
