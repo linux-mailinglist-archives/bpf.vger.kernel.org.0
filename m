@@ -2,71 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0BBF5BD339
-	for <lists+bpf@lfdr.de>; Mon, 19 Sep 2022 19:06:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C16075BD3AD
+	for <lists+bpf@lfdr.de>; Mon, 19 Sep 2022 19:28:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231195AbiISRGY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Sep 2022 13:06:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57928 "EHLO
+        id S230347AbiISR2g (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Sep 2022 13:28:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231193AbiISRFp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 19 Sep 2022 13:05:45 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A478541D0D
-        for <bpf@vger.kernel.org>; Mon, 19 Sep 2022 10:04:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ZKExie7cc2776dnzOmIqC0+KqvbyLjYZ/uSxppzeE0w=; b=rcGbw7jr/sXX8jHAKTPG+MoP36
-        TOpfrZGxdF1Fun1n9YK1knjrKgP+i1LuBIDXzBcVWWbK0RY8pFPaL95NijUGJ1HAAFscSIFJSP0fW
-        T0jhw9Lq9aUEwQRUaCbk8yI4t+PXxZe2iIhAGtmPJ4nmlZSS5+HjvnEt2lGi1P2WNvr/XKS4nx05u
-        l4JtpckrLV4ahppRF/UNQYcAJnNG0UWyfabtTE/aWWhILSLsxavGW8+IHUGcPTKB4WAFoauMbdsA1
-        eGG0d1EbrgBDoN7cOP3vxaMiAXh7+VLGRogFtV5fZicnjAN6h8KZe2K4JvLzhBsuAfE057L2PKkpm
-        q8W9JlJw==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1oaKBw-00D7QY-Gs; Mon, 19 Sep 2022 17:04:20 +0000
-Date:   Mon, 19 Sep 2022 10:04:20 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Shung-Hsi Yu <shung-hsi.yu@suse.com>
-Cc:     Dave Thaler <dthaler@microsoft.com>, bpf <bpf@vger.kernel.org>
-Subject: Re: FW: ebpf-docs: draft of ISA doc updates in progress
-Message-ID: <YyihFIOt6xGWrXdC@infradead.org>
-References: <CY5PR21MB377000AC95B475C47B702293A3439@CY5PR21MB3770.namprd21.prod.outlook.com>
- <DM4PR21MB34401314FC9285A9F5A338E0A3479@DM4PR21MB3440.namprd21.prod.outlook.com>
- <YyFzO205ZZPieCav@syu-laptop>
+        with ESMTP id S229940AbiISR2f (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Sep 2022 13:28:35 -0400
+Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16EB3222B0;
+        Mon, 19 Sep 2022 10:28:34 -0700 (PDT)
+Message-ID: <783eb0b0-adce-ba31-0b2a-dbc93ea86b23@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1663608512;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mzsyDUbKLp8t5bBv48E8iUXBg//fLeG88S+gA9efcu4=;
+        b=sM0T4N5jV0UHdyNcbNBPtxcn7iB2dRvR+bcUvCS7BmGnmZzYJysFPyXnanGP/yN7VwZP3u
+        KsaVdTtlb46Z+cdinMBhy+b0sZOkYLVRMIfAAbxXnWEevI7Dy9gk4Fn8qPEpVPGUfTmYJh
+        a8imSdrAu2/JeGc0HpLdLyLpGIZTcMc=
+Date:   Mon, 19 Sep 2022 10:28:25 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YyFzO205ZZPieCav@syu-laptop>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH bpf-next v3 1/2] bpf, cgroup: Don't populate
+ prog_attach_flags array when effective query
+Content-Language: en-US
+To:     Pu Lehui <pulehui@huaweicloud.com>,
+        Stanislav Fomichev <sdf@google.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Pu Lehui <pulehui@huawei.com>
+References: <20220914161742.3180731-1-pulehui@huaweicloud.com>
+ <20220914161742.3180731-2-pulehui@huaweicloud.com>
+ <9b66564e-2582-03b2-56f1-8037f8aca886@linux.dev>
+ <037a6a32-5143-ddad-4a43-bd815280a0ef@huaweicloud.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <037a6a32-5143-ddad-4a43-bd815280a0ef@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: linux.dev
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 14, 2022 at 02:22:51PM +0800, Shung-Hsi Yu wrote:
-> As discussed in yesterday's session, there's no graceful abortion on
-> division by zero, instead, the BPF verifier in Linux prevents division by
-> zero from happening. Here a few additional notes:
-
-Hmm, I thought Alexei pointed out a while ago that divide by zero is
-now defined to return 0 following.  Ok, reading further along I think
-that is what you describe with the pseudo-code below. 
-
-> While BPF ISA only supports direct call BPF_CALL[1], technically there is an
-> opcode 0x8d (BPF_JUMP | BPF_CALL | BPF_X) that has the indirect call
-> semantic, and Clang emit such indirect call instruction if user attempt to
-> compile with -O0.
+On 9/19/22 6:32 AM, Pu Lehui wrote:
 > 
-> I think it worth mentioning in this document for better clarity, perhaps
-> simply saying that indirect call is not part of BPF ISA is enough.
+> 
+> On 2022/9/17 8:03, Martin KaFai Lau wrote:
+>> On 9/14/22 9:17 AM, Pu Lehui wrote:
+>>> From: Pu Lehui <pulehui@huawei.com>
+>>>
+>>> Attach flags is only valid for attached progs of this layer cgroup,
+>>> but not for effective progs. For querying with EFFECTIVE flags,
+>>> exporting attach flags does not make sense. so we don't need to
+>>> populate prog_attach_flags array when effective query.
+>>
+>> prog_attach_flags has been added to 6.0 which is in rc5.  It is still 
+>> doable (and cleaner) to reject prog_attach_flags when it is an 
+>> effective_query.  This should be done regardless of 'type == 
+>> BPF_LSM_CGROUP' or not.  Something like:
+>>
+>> if (effective_query && prog_attach_flags)
+>>      return -EINVAL;
+>>
+>> Otherwise, the whole prog_attach_flags needs to be set to 0 during 
+>> effective_query.  Please target the change to the bpf tree instead of 
+>> bpf-next such that this uapi bit can be fixed before 6.0.
+>>
+> 
+> Okay, will handle in next version.
 
-Which brings up another question:  Do we need a list of opcodes
-that someone else defined somewhere that are not considered valid
-eBPF?  Or how do we get clang and gcc to stop producing invalid
-eBPF might be the better question.
+Thanks.  It will also be useful to comment the uapi's bpf.h and mention
+prog_attach_flags should not be set during effective_query.
+
+> 
+>> Also, the effective_query issue is not limited to the 
+>> prog_attach_flags? For the older uattr->query.attach_flags, it should 
+>> be set to 0 also when it is an effective_query, right?
+> 
+> For output uattr->query.attach_flags, we certainly don't need to copy it 
+> to userspace when effective query. Since we do not utilize 
+> uattr->query.attach_flags in the cgroup query function, should we need 
+> to take it as input and reject when it is non-zero in effective query? 
+> Something like:
+> if (effective_query && (prog_attach_flags || attr->query.attach_flags))
+
+No.  I don't think the zero attr->query.attach_flags can be enforced 
+now.  It is used as an output value only and its input value has never 
+been checked.  Although the bpftool always sets it to 0 before the 
+query, checking zero now does not gain much while there is a slight 
+chance of breaking other users.
+
+Only need to set/output uattr->query.attach_flags as 0 during 
+effective_query.
+
+> 
+> For both output and input scenarios, we are faced with the problem that 
+> there is a ambiguity in attach_flags being 0. When we do not copy to the 
+> userspace, libbpf will set it to 0 by default, and 0 can mean NONE flag 
+> attach, or no attach prog. The same is true for input scenarios.
+> 
+> So should we need to define NONE attach flag and redefine the others? 
+> Such as follow:
+> #define BPF_F_ALLOW_NONE        (1U << 0)
+
+I would not change the uapi for this.  0 implicitly means no flags or 
+none.  Regardless, this change does not belong to the bpf tree where 
+this fix will be landing.
+
+> #define BPF_F_ALLOW_OVERRIDE    (1U << 1)
+> #define BPF_F_ALLOW_MULTI       (1U << 2)
+> #define BPF_F_REPLACE           (1U << 3)
+> 
+> And then attach flags being 0 certainly means no attach any prog.
+> 
+
