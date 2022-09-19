@@ -2,102 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BF5E5BC0E5
-	for <lists+bpf@lfdr.de>; Mon, 19 Sep 2022 03:05:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 021705BC179
+	for <lists+bpf@lfdr.de>; Mon, 19 Sep 2022 04:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229566AbiISBFn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 18 Sep 2022 21:05:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42956 "EHLO
+        id S229697AbiISCpU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 18 Sep 2022 22:45:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbiISBFm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 18 Sep 2022 21:05:42 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34C6913E0B
-        for <bpf@vger.kernel.org>; Sun, 18 Sep 2022 18:05:41 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id r22-20020a9d7516000000b00659ef017e34so3294574otk.13
-        for <bpf@vger.kernel.org>; Sun, 18 Sep 2022 18:05:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20210112.gappssmtp.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=7Nln9o8+KgWXh20eCVhrCs8ZRIFITlFWDCJFyQHKKl4=;
-        b=HZ5JQstOdyCuVV963ZooQpoyIaPxFimUQrEC+R/gZH/lIHi1rSMy4XixtpzdjH8IVN
-         IVkMMP2OO0H5Buf8+jWiOlDZuJ9yy/8qCB66kindOVf71hZ6Yo8R9QQYGY1iQm+ZGU81
-         FqHdC+XWokAbMRaxDHY2l1b6vmGUV+dDxIeFYHKTRqj75hJKEeomm66Vy7FW3eM/p9Ff
-         wtJFjVqIbQLRnJrBdqirW73gj7lV4wzfrScnVjxYnhiLqduhq0zYWVH2pTJ12lkpcweD
-         qK/IWwvrYrL9gfVbcXH/IhdeQEtoIqODDuMh0QVqBjzHT7gpyDBoB4P/HvOalDqRlLC7
-         1n6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=7Nln9o8+KgWXh20eCVhrCs8ZRIFITlFWDCJFyQHKKl4=;
-        b=6OjSGCHzJ1A+hANrMPiLcA+1K/KBuUJlE2spLmmKPP22GkaL9QkktUCg+qmVn0bx+Y
-         A9gYg+/Y9juTwxGxj45q/4Al1UhSBeaBefl6b1JzqLYCxwNXg4asAlxzBIKhkAW5xjNY
-         vSCrtNWdwdsJxEtv1/7RZsc+UQj0ZSSx/gammgU5re5h7TU00cHk8clkLz31d02ghqVv
-         40YMmdxRAGno80ZC8+loWicVSgVsq6kN8w35sUnpyGxWbHEsvBRGcFcBcuS4WsPByK5p
-         RrJgMdnKtJgqD3RHKnUZkouajTyENtBxMApIjjoywckV0wfJ8xhguQS9KfwkkcBynGVC
-         OgrQ==
-X-Gm-Message-State: ACrzQf1rhiQ3TCiaVdXWMaz70sdjsJm4fOY49o2uf/avMtm/Z/FCR3UC
-        JtqyMCEktHxxS6X4EG2IfWENz95pvipwJluB77Exow==
-X-Google-Smtp-Source: AMsMyM6OazjHldIhOvSyzPAGt9W76ixoFWTADxVnkP4jasV5XE9fsHajWSzioFh5T2jypjokFzRcCm/zA1Bu6QNAlv8=
-X-Received: by 2002:a9d:1b70:0:b0:658:cfeb:d221 with SMTP id
- l103-20020a9d1b70000000b00658cfebd221mr6955321otl.34.1663549540604; Sun, 18
- Sep 2022 18:05:40 -0700 (PDT)
+        with ESMTP id S229750AbiISCpR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 18 Sep 2022 22:45:17 -0400
+X-Greylist: delayed 727 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 18 Sep 2022 19:45:12 PDT
+Received: from mailserver.astranet.ru (mailserver.astranet.ru [62.183.109.36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 74ECA11168;
+        Sun, 18 Sep 2022 19:45:12 -0700 (PDT)
+Received: by mailserver.astranet.ru (Postfix, from userid 33)
+        id 70457901A69; Mon, 19 Sep 2022 06:31:18 +0400 (+04)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=astranet.ru; s=mail;
+        t=1663554678; bh=8U4kVQ9MaDdmTFvWLQWQOeffea76A7LfBrqduaHb4h8=;
+        h=To:Subject:Date:From:Reply-To:From;
+        b=VRRFNEvtoCxi1x6B5sPGDdRwSFibOU+RM2SGzlwoTKhI9hPQYkrDEvGdwdAbJqxgy
+         PymIWcu4LNYftOuA5QJBPSZOKCMwvOMccHtXxCkIMubq6esRlG1O+tG4L8WY/lWfsT
+         G+MRnmKWPnKaxztDH7ghvtnmAnn1Ff5Skgmk9CK0=
+To:     undisclosed-recipients:;
+Subject: AW: Darlehensangebot 1,5 %.
+X-PHP-Originating-Script: 0:rcube.php
 MIME-Version: 1.0
-References: <20220916020251.190097-1-shaozhengchao@huawei.com> <f0fa2b91-cebf-0997-1074-d1ba35bf77a9@mojatatu.com>
-In-Reply-To: <f0fa2b91-cebf-0997-1074-d1ba35bf77a9@mojatatu.com>
-From:   Jamal Hadi Salim <jhs@mojatatu.com>
-Date:   Sun, 18 Sep 2022 21:05:29 -0400
-Message-ID: <CAM0EoMmcjfjg+7RsMtW_4YWb+4ewACGW=YVtzOU0Xqh=Kk_K-g@mail.gmail.com>
-Subject: Re: [PATCH net-next,v4 0/9] refactor duplicate codes in the tc cls
- walk function
-To:     Victor Nogueira <victor@mojatatu.com>
-Cc:     Zhengchao Shao <shaozhengchao@huawei.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        xiyou.wangcong@gmail.com, jiri@resnulli.us, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        shuah@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
-        weiyongjun1@huawei.com, yuehaibing@huawei.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Mon, 19 Sep 2022 03:31:18 +0100
+From:   PREMIER SOLUTION <instrument@astranet.ru>
+Organization: PREMIER SOLUTION
+Reply-To: premiersolutions.inc@hotmail.com
+Mail-Reply-To: premiersolutions.inc@hotmail.com
+Message-ID: <ede3a115bdf6b0a8013a17453b6d44ac@astranet.ru>
+X-Sender: instrument@astranet.ru
+User-Agent: Roundcube Webmail/1.2-beta
+X-Spam-Status: Yes, score=5.7 required=5.0 tests=BAYES_60,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FORGED_REPLYTO,
+        ODD_FREEM_REPTO,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Report: *  1.5 BAYES_60 BODY: Bayes spam probability is 60 to 80%
+        *      [score: 0.6346]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  2.3 ODD_FREEM_REPTO Has unusual reply-to header
+        *  2.1 FREEMAIL_FORGED_REPLYTO Freemail in Reply-To, but not From
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 16, 2022 at 12:56 PM Victor Nogueira <victor@mojatatu.com> wrote:
->
->
-> On 15/09/2022 23:02, Zhengchao Shao wrote:
-> > The walk implementation of most tc cls modules is basically the same.
-> > That is, the values of count and skip are checked first. If count is
-> > greater than or equal to skip, the registered fn function is executed.
-> > Otherwise, increase the value of count. So the code can be refactored.
-> > Then use helper function to replace the code of each cls module in
-> > alphabetical order.
-> >
-> > The walk function is invoked during dump. Therefore, test cases related
-> >   to the tdc filter need to be added.
-> >
-> > Last, thanks to Jamal, Victor and Wang for their review.
-> >
-> > Add test cases locally and perform the test. The test results are listed
-> > below:
-> >
 
->
-> Reviewed-by: Victor Nogueira <victor@mojatatu.com>
-> Tested-by: Victor Nogueira <victor@mojatatu.com>
 
-For the series:
-Acked-by: Jamal Hadi Salim <jhs@mojatatu.com>
+-- 
+Grüße,
 
-cheers,
-jamal
+Brauchen Sie einen Kredit?
+
+Machen Sie sich finanziell stabil, indem Sie einen Kredit bei PREMIER 
+aufnehmen
+SOLUTION ist das zuverlässigste Kreditunternehmen.
+Das Unternehmen PREMIER SOLUTION gewährt Darlehen zu einem niedrigen 
+Zinssatz von 1,5 %
+Wir bieten verschiedene Arten von Darlehen für Unternehmen und 
+Einzelpersonen an, einschließlich Projektdarlehen (kurz- und 
+langfristige Darlehen, Privatdarlehen, Investitionsdarlehen und 
+Geschäftsdarlehen usw.)
+
+Wenn Sie an weiteren Details interessiert sind, füllen Sie bitte die 
+folgenden Details aus
+
+Bitte füllen Sie folgende Angaben aus:
+
+Vollständiger Name :
+Darlehensbetrag:
+Mietzeitraum :
+Darlehen Zweck :
+Telefon :
+
+Hinweis: Wir bieten Kredite in verschiedenen Währungen EUR, CHF, DOLLAR 
+an
+und Pfund usw.
+
+Wir erwarten Ihre dringende Antwort, um fortzufahren
+
+Grüße
