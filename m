@@ -2,119 +2,157 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E00655BCEC7
-	for <lists+bpf@lfdr.de>; Mon, 19 Sep 2022 16:30:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D99F5BD0D6
+	for <lists+bpf@lfdr.de>; Mon, 19 Sep 2022 17:26:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229896AbiISOa2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Sep 2022 10:30:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55810 "EHLO
+        id S229456AbiISPZ6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Sep 2022 11:25:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229885AbiISOaX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 19 Sep 2022 10:30:23 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAE942C109
-        for <bpf@vger.kernel.org>; Mon, 19 Sep 2022 07:30:09 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4MWRqb20VszlJJJ
-        for <bpf@vger.kernel.org>; Mon, 19 Sep 2022 22:28:27 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP2 (Coremail) with SMTP id Syh0CgAnenPtfChj541UBA--.48026S4;
-        Mon, 19 Sep 2022 22:30:07 +0800 (CST)
-From:   Hou Tao <houtao@huaweicloud.com>
-To:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>
-Cc:     Martin KaFai Lau <kafai@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Lorenz Bauer <oss@lmb.io>, houtao1@huawei.com
-Subject: [PATCH bpf-next] bpf: Check whether or not node is NULL before free it in free_bulk
-Date:   Mon, 19 Sep 2022 22:48:11 +0800
-Message-Id: <20220919144811.3570825-1-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
+        with ESMTP id S230104AbiISPZd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Sep 2022 11:25:33 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88B4138698
+        for <bpf@vger.kernel.org>; Mon, 19 Sep 2022 08:25:16 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id b5so48045352wrr.5
+        for <bpf@vger.kernel.org>; Mon, 19 Sep 2022 08:25:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=n45E9SMZgH+mX1PWjYiZMymKuV6YbCkP9GERockComU=;
+        b=dNQHSDyQ6K4k42wEqk+38fCzWID6a69lv0oPocPWguYAS6aIJMpef0hvGXvvNYWV4i
+         mQdb48nMtIZvfL025qkNpYsITe82S6tqb3WAFEQSJy5cX3e9b5yb77psLPh8AYySCgoH
+         CFCjoK0Mr7CtakzujfzCNpibES7Y00oOc4hH6KMCeNkomKqsc0pJVWJ/bHy6mgoE8B1L
+         U/y/nnC9ZY3wOLmLFZVkhEtniaDFUKyeJUvJA3mhmmAItupbH83QsXSeGR8oXQqyaK9K
+         ZlJYvBEGrc6gqchld+92Fv9EtuJY4UrKlyF6ZMLMcUb8NlOFwjWVUpPRESekg6kbm7ku
+         LPJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=n45E9SMZgH+mX1PWjYiZMymKuV6YbCkP9GERockComU=;
+        b=S7yqTx8w407x7T938urDis48XYt9lk4jcOeqVrUoglAh8bR6/2p2CAY6KktoB5pul8
+         7QCnlKwieqXdsNVYa553XUBIw8B8lEYOaVUrfAitaLLejQ+IYhF7qkOScSZgiylx89zM
+         dEXQQ5MRhuupEcBW4zXxubZjyYAOr3AOUybf5uCPecTKBx9WpaahismhPqa8NMR77XiC
+         9GeAwots8X5yvDpvyouKDa8KohV4q55RUvWXlanlQrUj8jZn9yliSsIcabpGkVSuA7rC
+         CQ44D6DLpvdnqsj75CK8Qg5g019yYOBtWsDmE9F8tFkFVOfvhMkQWZLgPR/M1VXqy6qM
+         WqHQ==
+X-Gm-Message-State: ACrzQf2wgKbqtCc/vjP+73VwmGzobyEq2I63pFvLDI6c6PXFPRpqrFMC
+        XZXu/3ePIRPUzpPjoPPyxp+pSxX3ixB1VcoJWmnTeA==
+X-Google-Smtp-Source: AMsMyM7uoYYkjuWNMuec+kN6ZoFWa20saTu272aPCAqIPbKRj31DaNi5SJEl/KC7+Mzk7mgFGaGwxJyqvxJLpNyQK7c=
+X-Received: by 2002:a5d:64e8:0:b0:22a:bbb0:fa with SMTP id g8-20020a5d64e8000000b0022abbb000famr11506842wri.372.1663601114664;
+ Mon, 19 Sep 2022 08:25:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgAnenPtfChj541UBA--.48026S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7uF18Gr1kXw4xKrWDGrWfZrb_yoW8AF4UpF
-        WrJr18Gr4kZF1Iva1jvw1xCFWDZayrKa13GayxZ34SyF1rJr9Ig34DtFyYqFya9rs5trWx
-        AFsFkF4FqayUZ3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUk2b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28I
-        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
-        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI
-        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42
-        IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
-        87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFDGOUUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20220826230639.1249436-1-yosryahmed@google.com>
+ <CA+khW7iN6hyyBBR+4ey+9pNmEyKPZS82-C9kZ2NRXKMEOXHrng@mail.gmail.com>
+ <CAJD7tkYKYv+SKhCJs2281==55sALTX_DXifaWPv1w5=xrJjqQA@mail.gmail.com>
+ <CAJD7tkZg2jzDDR6vn5=-TS93Tm3P-YEQ+06KDsjg=Mzkt5LqsA@mail.gmail.com>
+ <CA+khW7g-jeiXMM-K+KK7L3tzG0catFSM+x5vHKMs=PF=s+=Pag@mail.gmail.com>
+ <CAJD7tkZ77JDt62CMw2AmpvTJ5fpVs0mkPdVqMJm8X8zCBq=LhA@mail.gmail.com>
+ <CAJD7tkZz52GkTr+TuZnArEOsyxxMPnE5A1AKZfY-gjx0tUW6dQ@mail.gmail.com> <CAEf4BzaH7xgoDfKstCmQzVY5HJpE8Hn8WFfyUU7PH64QpQcwsg@mail.gmail.com>
+In-Reply-To: <CAEf4BzaH7xgoDfKstCmQzVY5HJpE8Hn8WFfyUU7PH64QpQcwsg@mail.gmail.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Mon, 19 Sep 2022 08:24:38 -0700
+Message-ID: <CAJD7tkY24bKh7OQ3bNp42djsi6eGrs7yPNC_t9zsWz5DpGjEYA@mail.gmail.com>
+Subject: Re: [PATCH] selftests/bpf: simplify cgroup_hierarchical_stats selftest
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Hao Luo <haoluo@google.com>, Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Mykola Lysenko <mykolal@fb.com>, Song Liu <song@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Hou Tao <houtao1@huawei.com>
+On Fri, Sep 9, 2022 at 5:50 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Tue, Sep 6, 2022 at 2:35 PM Yosry Ahmed <yosryahmed@google.com> wrote:
+> >
+> > On Mon, Aug 29, 2022 at 6:50 PM Yosry Ahmed <yosryahmed@google.com> wrote:
+> > >
+> > > On Mon, Aug 29, 2022 at 6:42 PM Hao Luo <haoluo@google.com> wrote:
+> > > >
+> > > > On Mon, Aug 29, 2022 at 6:07 PM Yosry Ahmed <yosryahmed@google.com> wrote:
+> > > > >
+> > > > > On Mon, Aug 29, 2022 at 3:15 PM Yosry Ahmed <yosryahmed@google.com> wrote:
+> > > > > >
+> > > > > > On Mon, Aug 29, 2022 at 1:08 PM Hao Luo <haoluo@google.com> wrote:
+> > > > > > >
+> > > > > > > On Fri, Aug 26, 2022 at 4:06 PM Yosry Ahmed <yosryahmed@google.com> wrote:
+> > > > > > > >
+> > > > [...]
+> > > > > > > >
+> > > > > > > > -SEC("tp_btf/mm_vmscan_memcg_reclaim_begin")
+> > > > > > > > -int BPF_PROG(vmscan_start, int order, gfp_t gfp_flags)
+> > > > > > > > +SEC("fentry/cgroup_attach_task")
+> > > > > > >
+> > > > > > > Can we select an attachpoint that is more stable? It seems
+> > > > > > > 'cgroup_attach_task' is an internal helper function in cgroup, and its
+> > > > > > > signature can change. I'd prefer using those commonly used tracepoints
+> > > > > > > and EXPORT'ed functions. IMHO their interfaces are more stable.
+> > > > > > >
+> > > > > >
+> > > > > > Will try to find a more stable attach point. Thanks!
+> > > > >
+> > > > > Hey Hao,
+> > > > >
+> > > > > I couldn't find any suitable stable attach points under kernel/cgroup.
+> > > > > Most tracepoints are created using TRACE_CGROUP_PATH which only
+> > > > > invokes the tracepoint if the trace event is enabled, which I assume
+> > > > > is not something we can rely on. Otherwise, there is only
+> > > >
+> > > > Can we explicitly enable the cgroup_attach_task event, just for this
+> > > > test? If it's not easy, I am fine with using fentry.
+> > >
+> > > I see a couple of tests that read from /sys/kernel/debug/tracing, but
+> > > they are mostly reading event ids, I don't see any tests enabling or
+> > > disabling a tracing event, so I am not sure if that's an accepted
+> > > pattern. Also I am not sure if we can rely on tracefs being in that
+> > > path. Andrii, is this considered acceptable?
+> > >
+> >
+> > Anyone with thoughts here? Is it acceptable to explicitly enable a
+> > trace event in a BPF selftest to attach to a tracepoint that is only
+> > invoked if the trace event is enabled (e.g. cgroup_attach_task) ?
+> > Otherwise the test program would attach to the fentry of an internal
+> > function, which is more vulnerable to being changed and breaking the
+> > test (until someone updates the test with the new signature).
+> >
+>
+> IMO it's fine to use fentry. If something changes about signature,
+> we'll detect it soon enough and adjust selftests.
+>
+> Messing with global tracefs in selftests is less desirable. It will
+> also potentially force tests to be sequential.
+>
 
-llnode could be NULL if there are new allocations after the checking of
-c-free_cnt > c->high_watermark in bpf_mem_refill() and before the
-calling of __llist_del_first() in free_bulk (e.g. a PREEMPT_RT kernel
-or allocation in NMI context). And it will incur oops as shown below:
+Undestood. Thanks Andrii.
+Will send v2 with other comments from KP and Hao.
 
- BUG: kernel NULL pointer dereference, address: 0000000000000000
- #PF: supervisor write access in kernel mode
- #PF: error_code(0x0002) - not-present page
- PGD 0 P4D 0
- Oops: 0002 [#1] PREEMPT_RT SMP
- CPU: 39 PID: 373 Comm: irq_work/39 Tainted: G        W          6.0.0-rc6-rt9+ #1
- Hardware name: QEMU Standard PC (i440FX + PIIX, 1996)
- RIP: 0010:bpf_mem_refill+0x66/0x130
- ......
- Call Trace:
-  <TASK>
-  irq_work_single+0x24/0x60
-  irq_work_run_list+0x24/0x30
-  run_irq_workd+0x18/0x20
-  smpboot_thread_fn+0x13f/0x2c0
-  kthread+0x121/0x140
-  ? kthread_complete_and_exit+0x20/0x20
-  ret_from_fork+0x1f/0x30
-  </TASK>
-
-Simply fixing it by checking whether or not llnode is NULL in free_bulk().
-
-Fixes: 1376b7c57624 ("bpf: Introduce any context BPF specific memory allocator.")
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- kernel/bpf/memalloc.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
-index 20621f5407d8..5f83be1d2018 100644
---- a/kernel/bpf/memalloc.c
-+++ b/kernel/bpf/memalloc.c
-@@ -277,7 +277,8 @@ static void free_bulk(struct bpf_mem_cache *c)
- 		local_dec(&c->active);
- 		if (IS_ENABLED(CONFIG_PREEMPT_RT))
- 			local_irq_restore(flags);
--		enque_to_free(c, llnode);
-+		if (llnode)
-+			enque_to_free(c, llnode);
- 	} while (cnt > (c->high_watermark + c->low_watermark) / 2);
- 
- 	/* and drain free_llist_extra */
--- 
-2.29.2
-
+> > > >
+> > > > > trace_cgroup_setup_root() and trace_cgroup_destroy_root() which are
+> > > > > irrelevant here. A lot of EXPORT'ed functions are not called in the
+> > > > > kernel, or cannot be invoked from userspace (the test) in a
+> > > > > straightforward way. Even if they did, future changes to such code
+> > > > > paths can also change in the future, so I don't think there is really
+> > > > > a way to guarantee that future changes don't break the test.
+> > > > >
+> > > > > Let me know what you think.
+> > > > >
