@@ -2,280 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6D455BC4F1
-	for <lists+bpf@lfdr.de>; Mon, 19 Sep 2022 11:04:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C10CA5BCA25
+	for <lists+bpf@lfdr.de>; Mon, 19 Sep 2022 12:58:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229966AbiISJEj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Sep 2022 05:04:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39934 "EHLO
+        id S229496AbiISK6r (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Sep 2022 06:58:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbiISJEi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 19 Sep 2022 05:04:38 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A74DC36;
-        Mon, 19 Sep 2022 02:04:34 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4MWJbw5vwmzlC99;
-        Mon, 19 Sep 2022 17:02:52 +0800 (CST)
-Received: from k01.huawei.com (unknown [10.67.174.197])
-        by APP2 (Coremail) with SMTP id Syh0CgDHY22cMChjI49JBA--.48437S4;
-        Mon, 19 Sep 2022 17:04:32 +0800 (CST)
-From:   Xu Kuohai <xukuohai@huaweicloud.com>
-To:     bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Subject: [RESEND PATCH bpf-next 2/2] bpf, arm64: Eliminate false -EFBIG error in bpf trampoline
-Date:   Mon, 19 Sep 2022 05:21:38 -0400
-Message-Id: <20220919092138.1027353-3-xukuohai@huaweicloud.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220919092138.1027353-1-xukuohai@huaweicloud.com>
-References: <20220919092138.1027353-1-xukuohai@huaweicloud.com>
+        with ESMTP id S229998AbiISK62 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Sep 2022 06:58:28 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF1DD2A24B;
+        Mon, 19 Sep 2022 03:55:37 -0700 (PDT)
+Received: from dggpeml500026.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4MWM1W3QdczmVVN;
+        Mon, 19 Sep 2022 18:51:43 +0800 (CST)
+Received: from [10.174.178.66] (10.174.178.66) by
+ dggpeml500026.china.huawei.com (7.185.36.106) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Mon, 19 Sep 2022 18:55:35 +0800
+Message-ID: <5a3c5ea9-d557-6070-d778-1092f3c51257@huawei.com>
+Date:   Mon, 19 Sep 2022 18:55:35 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgDHY22cMChjI49JBA--.48437S4
-X-Coremail-Antispam: 1UD129KBjvJXoW3Jr4UGw18CF15ZFyfJF48Crg_yoWxCFyUpa
-        yDGw4jyFW8Xrs8WaykXFWUAF1ak3Wqgry7CrWUG3yS9a4YqryDG3WUGFyYvrWYkrZYyr1x
-        ZF4qyas8urWxGwUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBYb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
-        A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-        Ij6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
-        Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64
-        vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
-        jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2I
-        x0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY6xAI
-        w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
-        0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IUbp6wtUUUUU==
-X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.0.2
+Subject: Re: [PATCH v4,bpf-next] bpf: Don't redirect packets with invalid
+ pkt_len
+To:     Stanislav Fomichev <sdf@google.com>, Lorenz Bauer <oss@lmb.io>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <bpf@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yuehaibing@huawei.com>
+References: <20220715115559.139691-1-shaozhengchao@huawei.com>
+ <20220914111936.19881-1-oss@lmb.io>
+ <CAKH8qBujKnFh8_g+npxHpo7RGFshus3N0iysmVBohTtG1X2yow@mail.gmail.com>
+From:   shaozhengchao <shaozhengchao@huawei.com>
+In-Reply-To: <CAKH8qBujKnFh8_g+npxHpo7RGFshus3N0iysmVBohTtG1X2yow@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.66]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500026.china.huawei.com (7.185.36.106)
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Xu Kuohai <xukuohai@huawei.com>
 
-With jiting BPF_CALL to indirect call or direct call based on the jump
-distance, the bpf trampoline size calculated with NULL image address
-may be larger than the actual size needed, resulting in a fake -EFBIG
-error.
 
-So remove the estimate of the bpf trampoline size based on NULL image
-address, and check if there is enough space when emitting instructions.
+On 2022/9/17 23:46, Stanislav Fomichev wrote:
+> On Wed, Sep 14, 2022 at 4:20 AM Lorenz Bauer <oss@lmb.io> wrote:
+>>
+>> Hi,
+>>
+>> I think this patch is causing user-space breakage, see [0].
+>>
+>> The gist is that we do BPF_PROG_RUN of a socket filter with 14 byte input to determine whether
+>> BPF_PROG_RUN is available or not. I'll fix this in cilium/ebpf, but I think this patch
+>> needs more work since users may be doing the same thing in their code.
+> 
+> Ooops, sorry about that.
+> 
+> Instead of rejecting len=0 data, we might accept the packet but add
+> some safe header? I think that should be more backwards compatible?
+> Zhengchao, something you can look into?
+> 
+> 
+Sorry for the delay. I'm busy testing the TC module recently. I'm very 
+sorry for the user-space breakage.
 
-Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
----
- arch/arm64/net/bpf_jit_comp.c | 67 ++++++++++++++++-------------------
- 1 file changed, 30 insertions(+), 37 deletions(-)
+The root cause of this problem is that eth_type_trans() is called when
+the protocol type of the SKB is parsed. The len value of the SKB is
+reduced to 0. If the user mode requires that the forwarding succeed, or
+  if the MAC header is added again after the MAC header is subtracted, 
+is this appropriate?
 
-diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index 06437e34614b..a07742ee7860 100644
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -73,6 +73,7 @@ struct jit_ctx {
- 	const struct bpf_prog *prog;
- 	int idx;
- 	bool write;
-+	int max_insns;
- 	int epilogue_offset;
- 	int *offset;
- 	int exentry_idx;
-@@ -90,11 +91,15 @@ struct bpf_plt {
- #define PLT_TARGET_SIZE   sizeof_field(struct bpf_plt, target)
- #define PLT_TARGET_OFFSET offsetof(struct bpf_plt, target)
- 
--static inline void emit(const u32 insn, struct jit_ctx *ctx)
-+static inline void __emit(u32 insn, struct jit_ctx *ctx, int idx)
- {
--	if (ctx->image != NULL && ctx->write)
--		ctx->image[ctx->idx] = cpu_to_le32(insn);
-+	if (ctx->image != NULL && ctx->write && idx < ctx->max_insns)
-+		ctx->image[idx] = cpu_to_le32(insn);
-+}
- 
-+static inline void emit(u32 insn, struct jit_ctx *ctx)
-+{
-+	__emit(insn, ctx, ctx->idx);
- 	ctx->idx++;
- }
- 
-@@ -1544,6 +1549,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 	build_epilogue(&ctx);
- 	build_plt(&ctx);
- 
-+	ctx.max_insns = ctx.idx;
- 	extable_align = __alignof__(struct exception_table_entry);
- 	extable_size = prog->aux->num_exentries *
- 		sizeof(struct exception_table_entry);
-@@ -1603,7 +1609,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 	build_plt(&ctx);
- 
- 	/* 3. Extra pass to validate JITed code. */
--	if (validate_ctx(&ctx)) {
-+	if (WARN_ON_ONCE(ctx.idx > ctx.max_insns) || validate_ctx(&ctx)) {
- 		bpf_jit_binary_free(header);
- 		prog = orig_prog;
- 		goto out_off;
-@@ -1687,7 +1693,7 @@ static void invoke_bpf_prog(struct jit_ctx *ctx, struct bpf_tramp_link *l,
- 			    int args_off, int retval_off, int run_ctx_off,
- 			    bool save_ret)
- {
--	__le32 *branch;
-+	int br_idx;
- 	u64 enter_prog;
- 	u64 exit_prog;
- 	struct bpf_prog *p = l->link.prog;
-@@ -1725,7 +1731,7 @@ static void invoke_bpf_prog(struct jit_ctx *ctx, struct bpf_tramp_link *l,
- 	/* if (__bpf_prog_enter(prog) == 0)
- 	 *         goto skip_exec_of_prog;
- 	 */
--	branch = ctx->image + ctx->idx;
-+	br_idx = ctx->idx;
- 	emit(A64_NOP, ctx);
- 
- 	/* save return value to callee saved register x20 */
-@@ -1740,10 +1746,7 @@ static void invoke_bpf_prog(struct jit_ctx *ctx, struct bpf_tramp_link *l,
- 	if (save_ret)
- 		emit(A64_STR64I(A64_R(0), A64_SP, retval_off), ctx);
- 
--	if (ctx->image) {
--		int offset = &ctx->image[ctx->idx] - branch;
--		*branch = cpu_to_le32(A64_CBZ(1, A64_R(0), offset));
--	}
-+	__emit(A64_CBZ(1, A64_R(0), ctx->idx - br_idx), ctx, br_idx);
- 
- 	/* arg1: prog */
- 	emit(A64_MOV(1, A64_R(0), A64_R(19)), ctx);
-@@ -1757,7 +1760,7 @@ static void invoke_bpf_prog(struct jit_ctx *ctx, struct bpf_tramp_link *l,
- 
- static void invoke_bpf_mod_ret(struct jit_ctx *ctx, struct bpf_tramp_links *tl,
- 			       int args_off, int retval_off, int run_ctx_off,
--			       __le32 **branches)
-+			       int *br_idxes)
- {
- 	int i;
- 
-@@ -1775,7 +1778,7 @@ static void invoke_bpf_mod_ret(struct jit_ctx *ctx, struct bpf_tramp_links *tl,
- 		/* Save the location of branch, and generate a nop.
- 		 * This nop will be replaced with a cbnz later.
- 		 */
--		branches[i] = ctx->image + ctx->idx;
-+		br_idxes[i] = ctx->idx;
- 		emit(A64_NOP, ctx);
- 	}
- }
-@@ -1828,7 +1831,7 @@ static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
- 	struct bpf_tramp_links *fexit = &tlinks[BPF_TRAMP_FEXIT];
- 	struct bpf_tramp_links *fmod_ret = &tlinks[BPF_TRAMP_MODIFY_RETURN];
- 	bool save_ret;
--	__le32 **branches = NULL;
-+	int *br_idxes = NULL;
- 
- 	/* trampoline stack layout:
- 	 *                  [ parent ip         ]
-@@ -1936,13 +1939,12 @@ static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
- 				flags & BPF_TRAMP_F_RET_FENTRY_RET);
- 
- 	if (fmod_ret->nr_links) {
--		branches = kcalloc(fmod_ret->nr_links, sizeof(__le32 *),
--				   GFP_KERNEL);
--		if (!branches)
-+		br_idxes = kcalloc(fmod_ret->nr_links, sizeof(int), GFP_KERNEL);
-+		if (!br_idxes)
- 			return -ENOMEM;
- 
- 		invoke_bpf_mod_ret(ctx, fmod_ret, args_off, retval_off,
--				   run_ctx_off, branches);
-+				   run_ctx_off, br_idxes);
- 	}
- 
- 	if (flags & BPF_TRAMP_F_CALL_ORIG) {
-@@ -1957,11 +1959,10 @@ static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
- 		emit(A64_NOP, ctx);
- 	}
- 
--	/* update the branches saved in invoke_bpf_mod_ret with cbnz */
--	for (i = 0; i < fmod_ret->nr_links && ctx->image != NULL; i++) {
--		int offset = &ctx->image[ctx->idx] - branches[i];
--		*branches[i] = cpu_to_le32(A64_CBNZ(1, A64_R(10), offset));
--	}
-+	/* update the bridx saved in invoke_bpf_mod_ret with cbnz */
-+	for (i = 0; i < fmod_ret->nr_links; i++)
-+		__emit(A64_CBNZ(1, A64_R(10), ctx->idx - br_idxes[i]), ctx,
-+		       br_idxes[i]);
- 
- 	for (i = 0; i < fexit->nr_links; i++)
- 		invoke_bpf_prog(ctx, fexit->links[i], args_off, retval_off,
-@@ -2004,7 +2005,7 @@ static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
- 	if (ctx->image)
- 		bpf_flush_icache(ctx->image, ctx->image + ctx->idx);
- 
--	kfree(branches);
-+	kfree(br_idxes);
- 
- 	return ctx->idx;
- }
-@@ -2018,9 +2019,10 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image,
- 	int nargs = m->nr_args;
- 	int max_insns = ((long)image_end - (long)image) / AARCH64_INSN_SIZE;
- 	struct jit_ctx ctx = {
--		.image = NULL,
-+		.image = image,
- 		.idx = 0,
- 		.write = true,
-+		.max_insns = max_insns,
- 	};
- 
- 	/* the first 8 arguments are passed by registers */
-@@ -2033,26 +2035,17 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image,
- 			return -ENOTSUPP;
- 	}
- 
-+	jit_fill_hole(image, (unsigned int)(image_end - image));
-+
- 	ret = prepare_trampoline(&ctx, im, tlinks, orig_call, nargs, flags);
-+
- 	if (ret < 0)
- 		return ret;
- 
- 	if (ret > max_insns)
- 		return -EFBIG;
- 
--	ctx.image = image;
--	ctx.idx = 0;
--
--	jit_fill_hole(image, (unsigned int)(image_end - image));
--	ret = prepare_trampoline(&ctx, im, tlinks, orig_call, nargs, flags);
--
--	if (ret > 0 && validate_code(&ctx) < 0)
--		ret = -EINVAL;
--
--	if (ret > 0)
--		ret *= AARCH64_INSN_SIZE;
--
--	return ret;
-+	return validate_code(&ctx) < 0 ? -EINVAL : ret * AARCH64_INSN_SIZE;
- }
- 
- static bool is_long_jump(void *ip, void *target)
--- 
-2.30.2
-
+Zhengchao Shao
+>> Thanks,
+>> Lorenz
+>>
+>> 0: https://github.com/cilium/ebpf/pull/788
