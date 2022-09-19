@@ -1,189 +1,141 @@
 Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from out1.vger.email (unknown [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A4885BC15B
-	for <lists+bpf@lfdr.de>; Mon, 19 Sep 2022 04:28:15 +0200 (CEST)
+Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
+	by mail.lfdr.de (Postfix) with ESMTP id 16D875BC1C3
+	for <lists+bpf@lfdr.de>; Mon, 19 Sep 2022 05:39:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229703AbiISC2N (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 18 Sep 2022 22:28:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48804 "EHLO
+        id S229629AbiISDjO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 18 Sep 2022 23:39:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229613AbiISC2M (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 18 Sep 2022 22:28:12 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F6C914D36;
-        Sun, 18 Sep 2022 19:28:09 -0700 (PDT)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4MW7ll2ZRDz14QMJ;
-        Mon, 19 Sep 2022 10:24:03 +0800 (CST)
-Received: from localhost.localdomain (10.175.112.70) by
- canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Mon, 19 Sep 2022 10:28:06 +0800
-From:   Wang Yufen <wangyufen@huawei.com>
-To:     <andrii@kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <martin.lau@linux.dev>, <song@kernel.org>, <yhs@fb.com>,
-        <john.fastabend@gmail.com>, <kpsingh@kernel.org>, <sdf@google.com>,
-        <haoluo@google.com>, <jolsa@kernel.org>,
-        <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
-        <aou@eecs.berkeley.edu>, <davem@davemloft.net>, <kuba@kernel.org>,
-        <hawk@kernel.org>, <nathan@kernel.org>, <ndesaulniers@google.com>,
-        <trix@redhat.com>
-CC:     <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <llvm@lists.linux.dev>
-Subject: [bpf-next v3 2/2] selftests/bpf: Add testcases for pinning to errpath
-Date:   Mon, 19 Sep 2022 10:48:45 +0800
-Message-ID: <1663555725-17016-2-git-send-email-wangyufen@huawei.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1663555725-17016-1-git-send-email-wangyufen@huawei.com>
-References: <1663555725-17016-1-git-send-email-wangyufen@huawei.com>
+        with ESMTP id S229555AbiISDjN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 18 Sep 2022 23:39:13 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C56014D2F
+        for <bpf@vger.kernel.org>; Sun, 18 Sep 2022 20:39:11 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4MW9N84JvwzKK6p
+        for <bpf@vger.kernel.org>; Mon, 19 Sep 2022 11:37:12 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+        by APP2 (Coremail) with SMTP id Syh0CgAnenNb5CdjTlU+BA--.58423S4;
+        Mon, 19 Sep 2022 11:39:09 +0800 (CST)
+From:   Hou Tao <houtao@huaweicloud.com>
+To:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Lorenz Bauer <oss@lmb.io>, houtao1@huawei.com
+Subject: [PATCH bpf-next] selftests/bpf: Add test result messages for test_task_storage_map_stress_lookup
+Date:   Mon, 19 Sep 2022 11:57:14 +0800
+Message-Id: <20220919035714.2195144-1-houtao@huaweicloud.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.112.70]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- canpemm500010.china.huawei.com (7.192.105.118)
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: Syh0CgAnenNb5CdjTlU+BA--.58423S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxCr4UZr4rZrW8Xry7Jw45GFg_yoW5Gr4Dpa
+        yxA3WjkF1xt3Waqr1UGanruFWFg3Z3Z3y8Kr4qqrWayr4kJr92qr1xKF1UXr9xWrWFqan3
+        ZwnagF1rur1kJaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUk2b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28I
+        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
+        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI
+        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42
+        IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
+        87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFDGOUUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add testcases for map and prog pin to errpath.
+From: Hou Tao <houtao1@huawei.com>
 
-Signed-off-by: Wang Yufen <wangyufen@huawei.com>
+Add test result message when test_task_storage_map_stress_lookup()
+succeeds or is skipped. The test case can be skipped due to the choose
+of preemption model in kernel config, so export skips in test_maps.c and
+increase it when needed.
+
+The following is the output of test_maps when the test case succeeds or
+is skipped:
+
+  test_task_storage_map_stress_lookup:PASS
+  test_maps: OK, 0 SKIPPED
+
+  test_task_storage_map_stress_lookup SKIP (no CONFIG_PREEMPT)
+  test_maps: OK, 1 SKIPPED
+
+Signed-off-by: Hou Tao <houtao1@huawei.com>
 ---
- tools/testing/selftests/bpf/prog_tests/pinning.c   | 67 ++++++++++++++++++++++
- .../selftests/bpf/progs/test_pinning_path.c        | 19 ++++++
- 2 files changed, 86 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/test_pinning_path.c
+ tools/testing/selftests/bpf/map_tests/task_storage_map.c | 6 +++++-
+ tools/testing/selftests/bpf/test_maps.c                  | 2 +-
+ tools/testing/selftests/bpf/test_maps.h                  | 2 ++
+ 3 files changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/pinning.c b/tools/testing/selftests/bpf/prog_tests/pinning.c
-index d95cee5..ab7780f 100644
---- a/tools/testing/selftests/bpf/prog_tests/pinning.c
-+++ b/tools/testing/selftests/bpf/prog_tests/pinning.c
-@@ -24,6 +24,61 @@ __u32 get_map_id(struct bpf_object *obj, const char *name)
- 	return map_info.id;
- }
+diff --git a/tools/testing/selftests/bpf/map_tests/task_storage_map.c b/tools/testing/selftests/bpf/map_tests/task_storage_map.c
+index 1adc9c292eb2..aac08c85240b 100644
+--- a/tools/testing/selftests/bpf/map_tests/task_storage_map.c
++++ b/tools/testing/selftests/bpf/map_tests/task_storage_map.c
+@@ -77,8 +77,11 @@ void test_task_storage_map_stress_lookup(void)
+ 	CHECK(err, "open_and_load", "error %d\n", err);
  
-+static void test_pin_path(void)
-+{
-+	const char *progfile = "./test_pinning_path.bpf.o";
-+	const char *progpinpath = "/sys/fs/bpf/test_pinpath";
-+	char errpath[PATH_MAX + 1];
-+	char command[64];
-+	int prog_fd, err;
-+	struct bpf_object *obj;
-+	__u32 duration = 0;
-+
-+	/* Use libbpf 1.0 API mode */
-+	libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
-+
-+	err = bpf_prog_test_load(progfile, BPF_PROG_TYPE_SOCK_OPS, &obj,
-+				 &prog_fd);
-+	CHECK(err, "bpf_prog_test_load", "err %d errno %d\n", err, errno);
-+
-+	memset(&errpath, 't', PATH_MAX);
-+	err = bpf_object__pin_maps(obj, errpath);
-+	if (CHECK(err != -ENAMETOOLONG, "pin maps errpath", "err %d errno %d\n", err, errno))
-+		goto out;
-+
-+	err = bpf_object__pin_maps(obj, progpinpath);
-+	if (CHECK(err, "pin maps", "err %d errno %d\n", err, errno))
-+		goto out;
-+
-+	err = bpf_object__pin_programs(obj, errpath);
-+	if (CHECK(err != -ENAMETOOLONG, "pin progs errpath", "err %d errno %d\n", err, errno))
-+		goto out;
-+
-+	err = bpf_object__pin_programs(obj, progpinpath);
-+	if (CHECK(err, "pin prog", "err %d errno %d\n", err, errno))
-+		goto out;
-+
-+	err = bpf_object__unpin_programs(obj, errpath);
-+	if (CHECK(err != -ENAMETOOLONG, "pin progs errpath", "err %d errno %d\n", err, errno))
-+		goto out;
-+
-+	err = bpf_object__unpin_programs(obj, progpinpath);
-+	if (CHECK(err, "pin prog", "err %d errno %d\n", err, errno))
-+		goto out;
-+
-+	err = bpf_object__unpin_maps(obj, errpath);
-+	if (CHECK(err != -ENAMETOOLONG, "pin maps errpath", "err %d errno %d\n", err, errno))
-+		goto out;
-+
-+	err = bpf_object__unpin_maps(obj, progpinpath);
-+	if (CHECK(err, "pin maps", "err %d errno %d\n", err, errno))
-+		goto out;
-+out:
-+	bpf_object__close(obj);
-+	sprintf(command, "rm -r %s", progpinpath);
-+	system(command);
-+}
-+
- void test_pinning(void)
- {
- 	const char *file_invalid = "./test_pinning_invalid.bpf.o";
-@@ -32,6 +87,7 @@ void test_pinning(void)
- 	const char *nopinpath2 = "/sys/fs/bpf/nopinmap2";
- 	const char *custpath = "/sys/fs/bpf/custom";
- 	const char *pinpath = "/sys/fs/bpf/pinmap";
-+	char errpath[PATH_MAX + 1];
- 	const char *file = "./test_pinning.bpf.o";
- 	__u32 map_id, map_id2, duration = 0;
- 	struct stat statbuf = {};
-@@ -206,7 +262,17 @@ void test_pinning(void)
- 
- 	bpf_object__close(obj);
- 
-+	/* test auto-pinning at err path with open opt */
-+	memset(&errpath, 't', PATH_MAX);
-+	opts.pin_root_path = errpath;
-+	obj = bpf_object__open_file(file, &opts);
-+	if (CHECK_FAIL(libbpf_get_error(obj) != -ENAMETOOLONG)) {
-+		obj = NULL;
-+		goto out;
+ 	/* Only for a fully preemptible kernel */
+-	if (!skel->kconfig->CONFIG_PREEMPT)
++	if (!skel->kconfig->CONFIG_PREEMPT) {
++		printf("%s SKIP (no CONFIG_PREEMPT)\n", __func__);
++		skips++;
+ 		return;
 +	}
-+
- 	/* test auto-pinning at custom path with open opt */
-+	opts.pin_root_path = custpath;
- 	obj = bpf_object__open_file(file, &opts);
- 	if (CHECK_FAIL(libbpf_get_error(obj))) {
- 		obj = NULL;
-@@ -277,4 +343,5 @@ void test_pinning(void)
- 	rmdir(custpath);
- 	if (obj)
- 		bpf_object__close(obj);
-+	test_pin_path();
+ 
+ 	/* Save the old affinity setting */
+ 	sched_getaffinity(getpid(), sizeof(old), &old);
+@@ -119,4 +122,5 @@ void test_task_storage_map_stress_lookup(void)
+ 	read_bpf_task_storage_busy__destroy(skel);
+ 	/* Restore affinity setting */
+ 	sched_setaffinity(getpid(), sizeof(old), &old);
++	printf("%s:PASS\n", __func__);
  }
-diff --git a/tools/testing/selftests/bpf/progs/test_pinning_path.c b/tools/testing/selftests/bpf/progs/test_pinning_path.c
-new file mode 100644
-index 0000000..b4e2099
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_pinning_path.c
-@@ -0,0 +1,19 @@
-+// SPDX-License-Identifier: GPL-2.0
+diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
+index 1581a33b3f70..127c5c438a16 100644
+--- a/tools/testing/selftests/bpf/test_maps.c
++++ b/tools/testing/selftests/bpf/test_maps.c
+@@ -30,7 +30,7 @@
+ #define ENOTSUPP 524
+ #endif
+ 
+-static int skips;
++int skips;
+ 
+ static struct bpf_map_create_opts map_opts = { .sz = sizeof(map_opts) };
+ 
+diff --git a/tools/testing/selftests/bpf/test_maps.h b/tools/testing/selftests/bpf/test_maps.h
+index 77d8587ac4ed..f6fbca761732 100644
+--- a/tools/testing/selftests/bpf/test_maps.h
++++ b/tools/testing/selftests/bpf/test_maps.h
+@@ -14,4 +14,6 @@
+ 	}								\
+ })
+ 
++extern int skips;
 +
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_SOCKHASH);
-+	__uint(max_entries, 64);
-+	__type(key, __u32);
-+	__type(value, __u64);
-+} sock_ops_map SEC(".maps");
-+
-+SEC("sockops")
-+int bpf_sockmap(struct bpf_sock_ops *skops)
-+{
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
+ #endif
 -- 
-1.8.3.1
+2.29.2
 
