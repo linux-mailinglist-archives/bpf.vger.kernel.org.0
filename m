@@ -2,103 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CF775BD299
-	for <lists+bpf@lfdr.de>; Mon, 19 Sep 2022 18:52:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 424505BD2C0
+	for <lists+bpf@lfdr.de>; Mon, 19 Sep 2022 18:58:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230221AbiISQw2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Sep 2022 12:52:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56456 "EHLO
+        id S229879AbiISQ6Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Sep 2022 12:58:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230165AbiISQwK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 19 Sep 2022 12:52:10 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1450D3F1CE;
-        Mon, 19 Sep 2022 09:50:55 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id f26so18515835qto.11;
-        Mon, 19 Sep 2022 09:50:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date;
-        bh=Lz3atA4R6nrrhHxQaJkqKicvJYlqVdz63cFPHxCu8cU=;
-        b=MX2pwRJHfiLEYqBS2dDaFne/3FPSIXvw2l1ZPsaGXq2onXv2PgJ0UZi1iS+VlQmh7F
-         Z0Nois/yz/CucFDk/wf99qd3/sekx9RWLWoIFmNjTqWYlYg/sejsDgnOdeRdWTA1dAke
-         cDgVreRHs5ikg1ER3wFNdtCzBXfG5W7JCec62KdFznLDChTnroak8fha9Aua2MrSvjip
-         VFvM9KXuxQ/fMdwW7fYyyRMqKcv3rHwIpzZ0aXIUMPTriJILlmiMX2h1aNi1h5x6grXX
-         QZU0KWmy7Zf4efAaS8Ul80alaK73z/olCFRJP62v5eX6e8GHLu+qQZbNilSeEcA0QNJz
-         hp2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
-        bh=Lz3atA4R6nrrhHxQaJkqKicvJYlqVdz63cFPHxCu8cU=;
-        b=opvXYgK0Rk3Qt7j5NtBSieaWQ6zPzWt1lSu9q4ExKR7rmwWst/vEcuqDjuLWvo8FXQ
-         4DGZUrtbjG5Ljmjj2VQGWVkKKhYfZ4YXwKBInZ+MYW1u2xDL+WSdzdNALrWFAEKkyZfD
-         mviK5FrfSGX9mYrt3BmzSWWYnicj04I6ZlwfSzPogWMdc7ioaTkJ5rziGUgJwum56mJP
-         +98X1YKvMy7MzPe1TMqbuGy/mbgAmdMYyy1l8upGVrSCzvy5X6LL7MHmlT04Xn9IocCA
-         23nUs2P6mMT4vnumIRrf5u+RNn/f+QwKEcaX4bosHRHXN6TiSdhmM/eZW9BwM34vcFLG
-         gkFw==
-X-Gm-Message-State: ACrzQf1uMZm60YM9eGu57gLWWUKJkOerChQN2o4OTDdD1hsZeHkpJbwr
-        txfBDEj3AoSOL1HqU5NcF3Kf+OqpLvk=
-X-Google-Smtp-Source: AMsMyM6we4T9efqZbXB/OAr2oporYksGZawdmkHHa/g6sQp4LxBARTXi9G6WvZDZgotQnFtEFPjymA==
-X-Received: by 2002:ac8:4e4b:0:b0:35c:f64d:ea3e with SMTP id e11-20020ac84e4b000000b0035cf64dea3emr523665qtw.251.1663606241248;
-        Mon, 19 Sep 2022 09:50:41 -0700 (PDT)
-Received: from localhost ([2600:1700:65a0:ab60:e599:ec9f:997f:2930])
-        by smtp.gmail.com with ESMTPSA id l3-20020ac84a83000000b00342fc6a8e25sm10738753qtq.50.2022.09.19.09.50.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Sep 2022 09:50:40 -0700 (PDT)
-Date:   Mon, 19 Sep 2022 09:50:39 -0700
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-To:     shaozhengchao <shaozhengchao@huawei.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        jhs@mojatatu.com, jiri@resnulli.us, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, weiyongjun1@huawei.com, yuehaibing@huawei.com
-Subject: Re: [RFC PATCH net-next 1/2] net: sched: act_api: add helper macro
- for tcf_action in module and net init/exit
-Message-ID: <Yyid37e8ddqU1NrG@pop-os.localdomain>
-References: <20220916085155.33750-1-shaozhengchao@huawei.com>
- <20220916085155.33750-2-shaozhengchao@huawei.com>
- <YyYZ5cKm5TiuKBgv@pop-os.localdomain>
- <6524401a-4e1f-61bf-5b8d-e56b4fcdc67d@huawei.com>
+        with ESMTP id S229842AbiISQ6P (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Sep 2022 12:58:15 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D96193A14B
+        for <bpf@vger.kernel.org>; Mon, 19 Sep 2022 09:58:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Transfer-Encoding
+        :Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=KO6mvc6wvq3xmKN8BDxSKfp1XgKzZyb0SPWgE9GVBic=; b=rS7jP5usS03ylHa9MpNy2+nBnN
+        zrdbY4hwBAJzjoEm+PsB0+duWNXZWJ5Oix1B819x+eVRWbM1RSNmu3U4g5Cl7ktL/FZYCayEkWdNI
+        TVA7cqvY9gyrlmyVgvY2oA+7wCJVx+7Fw28diwBhf59Vx5hFSvR0oQUhRXxTpye+xvTQg4Yl2PWFG
+        E9buZN2DClpN/YMJg8duoahvZlOtHpDpGfX3W4Tizo7l2NwvOybiL0Jn/bIfZaXHDycTtxPHpQWNy
+        UILZOQ2AlC/YHBnGhiQjDh9Bu4DvDIEqqS6xJnHiciCtnTGfzz3kCZEhHXwl18QrQLnr+4IVjA9Tq
+        t0VPOVPA==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1oaK60-00D3fC-SV; Mon, 19 Sep 2022 16:58:12 +0000
+Date:   Mon, 19 Sep 2022 09:58:12 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Dave Thaler <dthaler@microsoft.com>
+Cc:     bpf <bpf@vger.kernel.org>
+Subject: Re: FW: ebpf-docs: draft of ISA doc updates in progress
+Message-ID: <YyifpJR4uwZwvpkc@infradead.org>
+References: <CY5PR21MB377000AC95B475C47B702293A3439@CY5PR21MB3770.namprd21.prod.outlook.com>
+ <DM4PR21MB34401314FC9285A9F5A338E0A3479@DM4PR21MB3440.namprd21.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <6524401a-4e1f-61bf-5b8d-e56b4fcdc67d@huawei.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <DM4PR21MB34401314FC9285A9F5A338E0A3479@DM4PR21MB3440.namprd21.prod.outlook.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Sep 19, 2022 at 07:07:22PM +0800, shaozhengchao wrote:
-> 
-> 
-> On 2022/9/18 3:03, Cong Wang wrote:
-> > On Fri, Sep 16, 2022 at 04:51:54PM +0800, Zhengchao Shao wrote:
-> > > Helper macro for tcf_action that don't do anything special in module
-> > > and net init/exit. This eliminates a lot of boilerplate. Each module
-> > > may only use this macro once, and calling it replaces module/net_init()
-> > > and module/net_exit().
-> > > 
-> > 
-> > This looks over engineering to me. I don't think this reduces any code
-> > size or help any readability.
-> > 
-> > Thanks.
-> Hi Wang:
-> 	Thank you for your review. I think this macro can simplify
-> repeated code when adding action modules later.
-> 
+Hi Dave,
 
-I don't think so, it hides the actual code in a less readable way. I'd
-like to read the non-macro code.
+there is a lot of good thing in here, but it is a bit hard to review,
+mostly because it is a giant patch instead of a single well-documented
+patch per logical thing to change.
 
-Thanks.
+A bunch of nitpicks below, mostly style or organizational:
+
+
+> +The current Instruction Set Architecture (ISA) version, sometimes referred to in other documents
+> +as a "CPU" version, is 3.  This document also covers older versions of the ISA.
+
+Hmm, I thought the versioning was a bit more complicated based on
+the mailing list interactions and the call.  Especially with things
+like the full atomics not even supported by all gits.
+
+> +   **Note**
+> +
+> +   *Linux implementation*: In the Linux kernel, the exit value for eBPF
+> +   programs is passed as a 32 bit value.
+
+Is this Linux, a specific program type, or the ISA?
+
+> +   *Linux implementation*: In the Linux kernel, all program types only use
+> +   R1 which contains the "context", which is typically a structure containing all
+> +   the inputs needed.  
+
+I also think these Linux notes do not belong into the main instruction
+set document, which tries to really just describe the ISA.
+
+> - * the basic instruction encoding, which uses 64 bits to encode an instruction
+> - * the wide instruction encoding, which appends a second 64-bit immediate value
+> -   (imm64) after the basic instruction for a total of 128 bits.
+> +* the basic instruction encoding, which uses 64 bits to encode an instruction
+> +* the wide instruction encoding, which appends a second 64-bit immediate (i.e.,
+
+Btw, can you explain why you de-indent these?  I picked the space before
+the * because that seems to be what most Linux RST documents do.
+
+> +   For ISA versions prior to 3, Clang v7.0 and later can enable ``BPF_ALU`` support with
+> +   ``-Xclang -target-feature -Xclang +alu32``.
+
+I also suspect the clang notes would be better off in a separate
+document from the main ISA.
+
+> -BPF_XOR | BPF_K | BPF_ALU means::
+> +   *Linux implementation*: In the Linux kernel, uint32_t is expressed as u32,
+> +   uint64_t is expressed as u64, etc.  This document uses the standard C terminology
+> +   as the cross-platform specification.
+
+I don't think this makes sense in the document.  Instead we probably
+need a "Conventions" section that defines the type and syntax we use.
+
