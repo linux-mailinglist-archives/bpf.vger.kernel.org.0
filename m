@@ -2,143 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C35E5BD529
-	for <lists+bpf@lfdr.de>; Mon, 19 Sep 2022 21:25:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BBF35BD54B
+	for <lists+bpf@lfdr.de>; Mon, 19 Sep 2022 21:44:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229566AbiISTZA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Sep 2022 15:25:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53232 "EHLO
+        id S229499AbiISTox (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Sep 2022 15:44:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229551AbiISTY7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 19 Sep 2022 15:24:59 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FAC23DBF0;
-        Mon, 19 Sep 2022 12:24:58 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id cc5so698996wrb.6;
-        Mon, 19 Sep 2022 12:24:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date;
-        bh=HljAIKGtMQmfvAqznIx3yiXSbVfexClUKVuIvpvyrF8=;
-        b=NdjSmvmQzcplTGPjAEx+szn88cq+bNkW8nnAeZYHBbgD8xBqF0K5xKIIZa1jWGzNQI
-         xdhT+hejxrFCi/g1RpVGWs+OyxiNpM+qu4mohac3DtjeK8/V8gqKUXBqhaBiwluNLIfm
-         K4WocriVsITER/qX8AtUokGDftvs0MkmEUJWXAcMhHOuqPRS16/jc0wNbvDG4TDtHs3C
-         XUir/A+aQI0aqWkbSyeNWzMfhWS0c++XDvduR6Ikp7OjN4IyVtspMOzPoEpkksXMq761
-         wNmtdtABFzutMNcxf2K7zUm8yuQ02Q89zK8YZta4nbAxAvK8lL+QH33kiRU04zkQddhT
-         uLhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date;
-        bh=HljAIKGtMQmfvAqznIx3yiXSbVfexClUKVuIvpvyrF8=;
-        b=Kizv+JHUkgs5oVqOVGiuYqJHADkBodIt0YtPOd/gM5YZDDgdkQvVt7cjCUElR//dR/
-         f4qMnGFneCDF5MMj8thMlneEEVI87PKnE9Gdh/YuAmNRpof1QAXPGOeQb9D8CnU276sh
-         3sRHfPvmMUURpAeYjgekfJvrPeYT/Su8nlME9m+H0K/A3quHUM+CiKJTJkWDiLKXZa15
-         ycnMUwHyWEbmAPE6asHO0BHTvB/8dJ4nl57pLTZOpU2tZMGVP1LfxXCjcjbA7HyYX48P
-         WiORzIZlEtI/Rppb4vnDAj9XDauJOwqFKjyvmBUqyKXAn1knAcH3vZ+a6E7/scqjY6Lp
-         by2A==
-X-Gm-Message-State: ACrzQf3tprXli17YVV6Khif46cTy86a/rOnDOfY+8V6smAeOoMpCyrFs
-        Mo8e54D8vQMmXfxlh0Q0pV0p1iPnGhs=
-X-Google-Smtp-Source: AMsMyM68DAEz1yCZXsAtQba6B2YakppXofRc8UMUP6D8Ka0X/PvqeseuArKrhtvrTGA/sC5yBAnvuA==
-X-Received: by 2002:a05:6000:1e01:b0:22b:cee:e927 with SMTP id bj1-20020a0560001e0100b0022b0ceee927mr1668039wrb.133.1663615496713;
-        Mon, 19 Sep 2022 12:24:56 -0700 (PDT)
-Received: from ipe420-102 ([2a00:1398:4:ac00:ec4:7aff:fe32:721b])
-        by smtp.gmail.com with ESMTPSA id m2-20020a7bce02000000b003b483000583sm14060955wmc.48.2022.09.19.12.24.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Sep 2022 12:24:55 -0700 (PDT)
-Date:   Mon, 19 Sep 2022 19:24:54 +0000
-From:   Jalal Mostafa <jalal.a.mostapha@gmail.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     bjorn@kernel.org, magnus.karlsson@intel.com,
-        maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
-        hawk@kernel.org, john.fastabend@gmail.com,
-        linux-kernel@vger.kernel.org, jalal.a.mostapha@gmail.com,
-        jalal.mostafa@kit.edu
-Subject: [PATCH bpf] xsk: inherit need_wakeup flag for shared sockets
-Message-ID: <YyjCBjJch24OT+Ia@ipe420-102>
+        with ESMTP id S229492AbiISTox (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Sep 2022 15:44:53 -0400
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2298F59B;
+        Mon, 19 Sep 2022 12:44:51 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id D89645C045B;
+        Mon, 19 Sep 2022 15:44:50 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Mon, 19 Sep 2022 15:44:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+        :cc:content-transfer-encoding:date:date:from:from:in-reply-to
+        :message-id:mime-version:reply-to:sender:subject:subject:to:to;
+         s=fm1; t=1663616690; x=1663703090; bh=bM8Zv6hDKlzVWonZNm31Q3HGM
+        Y4j+0tQ5jhkGQLKvN4=; b=Ypl1eQ7zC7pAdxthoD4SmQJhLAff8mrlhtjheqk5s
+        2RpRopEZINHVvvp74JTxDhqXtS/jrrWtaDIf0Fm+P+LDP3niRbV6eaevOcvxhPXI
+        vuapgYto0AB0D77J0hV2c+hEJyy4eE1ldD166K3EqEAVL91c9lHePlRamlHkTyd/
+        qvvXJD9cggQ4w6xz83I1rGTiyG9EU8/KcFC6lZainuALBxokUONsK22RywQJ5iyx
+        hbtdX1P44FEjaPrgLzDP5jH8gs014wBqHDeptCcj2qc5/D66ROt1vc2/8nWaIiYW
+        yars2vfZNSCbz1Zt+840cReFq4Ixx/MEkLitYOPUsC7qA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:message-id
+        :mime-version:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+        1663616690; x=1663703090; bh=bM8Zv6hDKlzVWonZNm31Q3HGMY4j+0tQ5jh
+        kGQLKvN4=; b=o/pEr9PSoAI3zuSwTIk5AGfi3UDJVmOlIfxTBse9QmtgP6z1NCx
+        dQILFN4UHWzsnuAirWFPb3oqsdZ9QjnUp4GYf16OLoXHP/GApzTWtRZLFf02RJam
+        RHztbuUuzbJhH4ngyfY9YCTToArrdOgl396ZDVx3JUNXahD90jRQffQr+hv8/h4h
+        SHMER67OeMmwghtmJsIjbAb9U95355dLl3TBB+BHUJSgwdgZL7aqD/is4DRTsbmM
+        0VfzbQLkWopudSk25EbFbSAJtqOWIi9peBZ8GweGOrkmPkK4XOzXnFc78RSYjC3N
+        PkrVWx6liLFarmhzUlTgpVKMITHlNGYCYFA==
+X-ME-Sender: <xms:ssYoY9PhwNpv26htwiPN5bI9LTxKkyJOaERPkNzGqJoKvdHoUzcQ9g>
+    <xme:ssYoY__Ufd9JEo0Ain67Ht5ZIZ0oj9tMrl7FKm-sWqKm9I1JbsOE4BwqfITfxjOnJ
+    9rQtegUJjHxDa4wnQ>
+X-ME-Received: <xmr:ssYoY8QiZaqNAyI5YLmG3Vmbi2uF4HOiS9WY855kYVlZYMhKVxsm81RrTtm9K9QGmLT0EaJdAHiI7mS_mv0ge2YBjW1v_NSAowrMj_s>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrfedvjedgudegfecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecufghrlhcuvffnffculdejtddmnecujfgurhephf
+    fvvefufffkofgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcuoegu
+    gihusegugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpedvgefgtefgleehhfeufe
+    ekuddvgfeuvdfhgeeljeduudfffffgteeuudeiieekjeenucevlhhushhtvghrufhiiigv
+    pedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:ssYoY5tR37McFCjHOGv6xYxgLLYhbRgdij9yL2X3N-B5q7m6edzdeA>
+    <xmx:ssYoY1fFjhp_NUMo0iav5w3fvZVQxFw1vI9Ouw6eV6DONG3hC1Ss7Q>
+    <xmx:ssYoY13MMHN1hbqYqMk8Zp4b5YqrzA7TGxpvuV3K1dqo11tFRmh5Jg>
+    <xmx:ssYoY12wtllVljZx7MLBzEv4Dm1HaSK7EjZ6ecSO0TXura2rfTPNag>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 19 Sep 2022 15:44:49 -0400 (EDT)
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, memxor@gmail.com, martin.lau@linux.dev
+Cc:     Daniel Xu <dxu@dxuuu.xyz>, pablo@netfilter.org, fw@strlen.de,
+        toke@kernel.org, netfilter-devel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next v2 0/3] bpf: Small nf_conn cleanups
+Date:   Mon, 19 Sep 2022 13:44:34 -0600
+Message-Id: <cover.1663616584.git.dxu@dxuuu.xyz>
+X-Mailer: git-send-email 2.37.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_SUSPICIOUS_NTLD,
+        FROM_SUSPICIOUS_NTLD_FP,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,SPF_PASS,
+        T_PDS_OTHER_BAD_TLD autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The flag for need_wakeup is not set for xsks with `XDP_SHARED_UMEM`
-flag and of different queue ids and/or devices. They should inherit
-the flag from the first socket buffer pool since no flags can be
-specified once `XDP_SHARED_UMEM` is specified. The issue is fixed
-by creating a new function `xp_create_and_assign_umem_shared` to
-create xsk_buff_pool for xsks with the shared umem flag set.
+This patchset cleans up a few small things:
 
-Signed-off-by: Jalal Mostafa <jalal.a.mostapha@gmail.com>
----
- include/net/xsk_buff_pool.h |  2 ++
- net/xdp/xsk.c               |  3 +--
- net/xdp/xsk_buff_pool.c     | 15 +++++++++++++++
- 3 files changed, 18 insertions(+), 2 deletions(-)
+* Delete unused stub
+* Rename variable to be more descriptive
+* Fix some `extern` declaration warnings
 
-diff --git a/include/net/xsk_buff_pool.h b/include/net/xsk_buff_pool.h
-index 647722e847b4..917cfef9d355 100644
---- a/include/net/xsk_buff_pool.h
-+++ b/include/net/xsk_buff_pool.h
-@@ -93,6 +93,8 @@ struct xsk_buff_pool {
- /* AF_XDP core. */
- struct xsk_buff_pool *xp_create_and_assign_umem(struct xdp_sock *xs,
- 						struct xdp_umem *umem);
-+struct xsk_buff_pool *xp_create_and_assign_umem_shared(struct xdp_sock *xs,
-+						       struct xdp_sock *umem_xs);
- int xp_assign_dev(struct xsk_buff_pool *pool, struct net_device *dev,
- 		  u16 queue_id, u16 flags);
- int xp_assign_dev_shared(struct xsk_buff_pool *pool, struct xdp_umem *umem,
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index 5b4ce6ba1bc7..a415db88e8e5 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -946,8 +946,7 @@ static int xsk_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
- 			/* Share the umem with another socket on another qid
- 			 * and/or device.
- 			 */
--			xs->pool = xp_create_and_assign_umem(xs,
--							     umem_xs->umem);
-+			xs->pool = xp_create_and_assign_umem_shared(xs, umem_xs);
- 			if (!xs->pool) {
- 				err = -ENOMEM;
- 				sockfd_put(sock);
-diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
-index a71a8c6edf55..7d5b0bd8d953 100644
---- a/net/xdp/xsk_buff_pool.c
-+++ b/net/xdp/xsk_buff_pool.c
-@@ -112,6 +112,21 @@ struct xsk_buff_pool *xp_create_and_assign_umem(struct xdp_sock *xs,
- 	return NULL;
- }
- 
-+struct xsk_buff_pool *xp_create_and_assign_umem_shared(struct xdp_sock *xs,
-+						       struct xdp_sock *umem_xs)
-+{
-+	struct xdp_umem *umem = umem_xs->umem;
-+	struct xsk_buff_pool *pool = xp_create_and_assign_umem(xs, umem);
-+
-+	if (!pool)
-+		goto out;
-+
-+	pool->uses_need_wakeup = umem_xs->pool->uses_need_wakeup;
-+
-+out:
-+	return pool;
-+}
-+
- void xp_set_rxq_info(struct xsk_buff_pool *pool, struct xdp_rxq_info *rxq)
- {
- 	u32 i;
+Daniel Xu (3):
+  bpf: Remove unused btf_struct_access stub
+  bpf: Rename nfct_bsa to nfct_btf_struct_access
+  bpf: Move nf_conn extern declarations to filter.h
+
+ include/linux/filter.h                   |  6 ++++++
+ include/net/netfilter/nf_conntrack_bpf.h | 17 +----------------
+ net/core/filter.c                        | 18 +++++++++---------
+ net/netfilter/nf_conntrack_bpf.c         |  4 ++--
+ 4 files changed, 18 insertions(+), 27 deletions(-)
+
 -- 
-2.34.1
+2.37.1
 
