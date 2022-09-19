@@ -2,140 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16D875BC1C3
-	for <lists+bpf@lfdr.de>; Mon, 19 Sep 2022 05:39:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB4085BC4EF
+	for <lists+bpf@lfdr.de>; Mon, 19 Sep 2022 11:04:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229629AbiISDjO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 18 Sep 2022 23:39:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52864 "EHLO
+        id S229619AbiISJEi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Sep 2022 05:04:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbiISDjN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 18 Sep 2022 23:39:13 -0400
+        with ESMTP id S229667AbiISJEg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Sep 2022 05:04:36 -0400
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C56014D2F
-        for <bpf@vger.kernel.org>; Sun, 18 Sep 2022 20:39:11 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D22AB67;
+        Mon, 19 Sep 2022 02:04:31 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4MW9N84JvwzKK6p
-        for <bpf@vger.kernel.org>; Mon, 19 Sep 2022 11:37:12 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP2 (Coremail) with SMTP id Syh0CgAnenNb5CdjTlU+BA--.58423S4;
-        Mon, 19 Sep 2022 11:39:09 +0800 (CST)
-From:   Hou Tao <houtao@huaweicloud.com>
-To:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4MWJbt0ckPzl6GL;
+        Mon, 19 Sep 2022 17:02:50 +0800 (CST)
+Received: from k01.huawei.com (unknown [10.67.174.197])
+        by APP2 (Coremail) with SMTP id Syh0CgDHY22cMChjI49JBA--.48437S2;
+        Mon, 19 Sep 2022 17:04:29 +0800 (CST)
+From:   Xu Kuohai <xukuohai@huaweicloud.com>
+To:     bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Lorenz Bauer <oss@lmb.io>, houtao1@huawei.com
-Subject: [PATCH bpf-next] selftests/bpf: Add test result messages for test_task_storage_map_stress_lookup
-Date:   Mon, 19 Sep 2022 11:57:14 +0800
-Message-Id: <20220919035714.2195144-1-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Subject: [RESEND PATCH bpf-next 0/2] Jit BPF_CALL to direct call when possible
+Date:   Mon, 19 Sep 2022 05:21:36 -0400
+Message-Id: <20220919092138.1027353-1-xukuohai@huaweicloud.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgAnenNb5CdjTlU+BA--.58423S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxCr4UZr4rZrW8Xry7Jw45GFg_yoW5Gr4Dpa
-        yxA3WjkF1xt3Waqr1UGanruFWFg3Z3Z3y8Kr4qqrWayr4kJr92qr1xKF1UXr9xWrWFqan3
-        ZwnagF1rur1kJaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUk2b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28I
-        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
-        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI
-        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42
-        IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
-        87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFDGOUUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CM-TRANSID: Syh0CgDHY22cMChjI49JBA--.48437S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrtrW3ZF15KFW7Kr1ftr13urg_yoW3Jrb_GF
+        WxAFy7A343ZFyUAasYya97AFy8KrWDtr18AFn0qrZ7t34ftw4DAry8XFWkX3WUXrWjkFyr
+        Cwsrur48tr1Y9jkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb2xYFVCjjxCrM7AC8VAFwI0_Xr0_Wr1l1xkIjI8I6I8E6xAIw20E
+        Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+        A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
+        67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
+        c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
+        026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF
+        0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0x
+        vE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
+        87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUo0eHDUUUU
+X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Hou Tao <houtao1@huawei.com>
+Currently BPF_CALL is always jited to indirect call, but when target is
+in the range of direct call, a BPF_CALL can be jited to direct call.
 
-Add test result message when test_task_storage_map_stress_lookup()
-succeeds or is skipped. The test case can be skipped due to the choose
-of preemption model in kernel config, so export skips in test_maps.c and
-increase it when needed.
+For example, the following BPF_CALL
 
-The following is the output of test_maps when the test case succeeds or
-is skipped:
+    call __htab_map_lookup_elem
 
-  test_task_storage_map_stress_lookup:PASS
-  test_maps: OK, 0 SKIPPED
+is always jited to an indirect call:
 
-  test_task_storage_map_stress_lookup SKIP (no CONFIG_PREEMPT)
-  test_maps: OK, 1 SKIPPED
+    mov     x10, #0xffffffffffff18f4
+    movk    x10, #0x821, lsl #16
+    movk    x10, #0x8000, lsl #32
+    blr     x10
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- tools/testing/selftests/bpf/map_tests/task_storage_map.c | 6 +++++-
- tools/testing/selftests/bpf/test_maps.c                  | 2 +-
- tools/testing/selftests/bpf/test_maps.h                  | 2 ++
- 3 files changed, 8 insertions(+), 2 deletions(-)
+When the target is in the range of a direct call, it can be jited to:
 
-diff --git a/tools/testing/selftests/bpf/map_tests/task_storage_map.c b/tools/testing/selftests/bpf/map_tests/task_storage_map.c
-index 1adc9c292eb2..aac08c85240b 100644
---- a/tools/testing/selftests/bpf/map_tests/task_storage_map.c
-+++ b/tools/testing/selftests/bpf/map_tests/task_storage_map.c
-@@ -77,8 +77,11 @@ void test_task_storage_map_stress_lookup(void)
- 	CHECK(err, "open_and_load", "error %d\n", err);
- 
- 	/* Only for a fully preemptible kernel */
--	if (!skel->kconfig->CONFIG_PREEMPT)
-+	if (!skel->kconfig->CONFIG_PREEMPT) {
-+		printf("%s SKIP (no CONFIG_PREEMPT)\n", __func__);
-+		skips++;
- 		return;
-+	}
- 
- 	/* Save the old affinity setting */
- 	sched_getaffinity(getpid(), sizeof(old), &old);
-@@ -119,4 +122,5 @@ void test_task_storage_map_stress_lookup(void)
- 	read_bpf_task_storage_busy__destroy(skel);
- 	/* Restore affinity setting */
- 	sched_setaffinity(getpid(), sizeof(old), &old);
-+	printf("%s:PASS\n", __func__);
- }
-diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
-index 1581a33b3f70..127c5c438a16 100644
---- a/tools/testing/selftests/bpf/test_maps.c
-+++ b/tools/testing/selftests/bpf/test_maps.c
-@@ -30,7 +30,7 @@
- #define ENOTSUPP 524
- #endif
- 
--static int skips;
-+int skips;
- 
- static struct bpf_map_create_opts map_opts = { .sz = sizeof(map_opts) };
- 
-diff --git a/tools/testing/selftests/bpf/test_maps.h b/tools/testing/selftests/bpf/test_maps.h
-index 77d8587ac4ed..f6fbca761732 100644
---- a/tools/testing/selftests/bpf/test_maps.h
-+++ b/tools/testing/selftests/bpf/test_maps.h
-@@ -14,4 +14,6 @@
- 	}								\
- })
- 
-+extern int skips;
-+
- #endif
+    bl      0xfffffffffd33bc98
+
+This patchset does such jit.
+
+Xu Kuohai (2):
+  bpf, arm64: Jit BPF_CALL to direct call when possible
+  bpf, arm64: Eliminate false -EFBIG error in bpf trampoline
+
+ arch/arm64/net/bpf_jit_comp.c | 136 ++++++++++++++++++++++------------
+ 1 file changed, 87 insertions(+), 49 deletions(-)
+
 -- 
-2.29.2
+2.30.2
 
