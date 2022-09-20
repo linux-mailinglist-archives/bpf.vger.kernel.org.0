@@ -2,371 +2,234 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A36695BDF48
-	for <lists+bpf@lfdr.de>; Tue, 20 Sep 2022 10:06:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6EB15BE39B
+	for <lists+bpf@lfdr.de>; Tue, 20 Sep 2022 12:44:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231276AbiITIGx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Sep 2022 04:06:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60334 "EHLO
+        id S230129AbiITKos (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Sep 2022 06:44:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230480AbiITIFe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Sep 2022 04:05:34 -0400
-Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C5C163F0F;
-        Tue, 20 Sep 2022 01:03:11 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.228])
-        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4MWv7N56smz9xHMF;
-        Tue, 20 Sep 2022 15:58:40 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.204.63.22])
-        by APP2 (Coremail) with SMTP id GxC2BwAno13_ciljaChgAA--.64537S15;
-        Tue, 20 Sep 2022 09:02:43 +0100 (CET)
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
-        dhowells@redhat.com, jarkko@kernel.org, rostedt@goodmis.org,
-        mingo@redhat.com, paul@paul-moore.com, jmorris@namei.org,
-        serge@hallyn.com, shuah@kernel.org
-Cc:     bpf@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        deso@posteo.net, memxor@gmail.com,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Subject: [PATCH v18 13/13] selftests/bpf: Add tests for dynamic pointers parameters in kfuncs
-Date:   Tue, 20 Sep 2022 09:59:51 +0200
-Message-Id: <20220920075951.929132-14-roberto.sassu@huaweicloud.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220920075951.929132-1-roberto.sassu@huaweicloud.com>
-References: <20220920075951.929132-1-roberto.sassu@huaweicloud.com>
+        with ESMTP id S229866AbiITKo3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Sep 2022 06:44:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28D8833432
+        for <bpf@vger.kernel.org>; Tue, 20 Sep 2022 03:44:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1663670640;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Bryd/YqvBscp2y8ehsVjCoNVOvUucCenOquY6lmdqLE=;
+        b=UPlzEJJf4gFrlhTDrmO3sq2WxICbnWc9HtDAZN0pnND6VuujN4IAQwDRCOlcgwRDLsfOwj
+        3TJeHDupKS0DM1/BIwbSNCL0Fkwaa9j5nNfDS4/iGQM2VwLtLaLp3h0tkaiUNk7BOTPWOt
+        lj/cqftEqv5Ada1SMskX8IU/T9VOKkU=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-609-IJqCPYnwPGKs7zLnd2HmxQ-1; Tue, 20 Sep 2022 06:43:59 -0400
+X-MC-Unique: IJqCPYnwPGKs7zLnd2HmxQ-1
+Received: by mail-qv1-f69.google.com with SMTP id i10-20020ad45c6a000000b004a25d0fea96so1708484qvh.3
+        for <bpf@vger.kernel.org>; Tue, 20 Sep 2022 03:43:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date;
+        bh=Bryd/YqvBscp2y8ehsVjCoNVOvUucCenOquY6lmdqLE=;
+        b=BsFAlAo0/6pJ0U0nPk63titiSue690Y3IS1R219uiQU/AZy2OQ+TuV4j7qpZwuOycO
+         D+Ptaey7LUWMwCGVBkTgKD8u9L+821q6bN9gP7yU92SOO9OzIIfnEl0xh/yDPkMcVX+1
+         hsg99h6q5yab/NBLywVwar4jqwaxBtBJ0l91sCqbFYJYu2e7nWp5c/B2QEDoz+whHl3b
+         HLpIStWn6zVY+wImkuDQ5gelLeVi7PT98mx72sYyUq7Qmt36uarDT+9q/YvS6kl1DRlj
+         QyoX4IoANrg3FmYwWyk+ec8Sb4nAayhwmW7FU40t3N5X8boGT9jMi9KSSZE4CtwRuu/J
+         QZEA==
+X-Gm-Message-State: ACrzQf34iwrvGaOVcidF1fouTOKbz/GkugcelHHYmx+UfAsVYTYwWlON
+        EDLQTcqeSZLDrgsmhU1DZePnpiZ9EqCBWt6YNf44fqmMGF6gs094Tv76tPIqPxqcnll7xGiii5j
+        h9tYKUzeQ99N6
+X-Received: by 2002:ad4:5ca2:0:b0:4aa:9d05:2424 with SMTP id q2-20020ad45ca2000000b004aa9d052424mr17937142qvh.71.1663670638670;
+        Tue, 20 Sep 2022 03:43:58 -0700 (PDT)
+X-Google-Smtp-Source: AMsMyM6Ksp+8em66xjCysoFTBRD+jUUAtxdjlfisN2fuwcZNehJY+I7UeG3BcQTd8r72XLhFC4WzSQ==
+X-Received: by 2002:ad4:5ca2:0:b0:4aa:9d05:2424 with SMTP id q2-20020ad45ca2000000b004aa9d052424mr17937131qvh.71.1663670638406;
+        Tue, 20 Sep 2022 03:43:58 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-114-90.dyn.eolo.it. [146.241.114.90])
+        by smtp.gmail.com with ESMTPSA id y8-20020a05620a44c800b006ce16588056sm805177qkp.89.2022.09.20.03.43.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Sep 2022 03:43:57 -0700 (PDT)
+Message-ID: <cc46d6ae3bba9dfcc602ac23a32fad9860cb8064.camel@redhat.com>
+Subject: Re: [net-next v2 2/3] seg6: add NEXT-C-SID support for SRv6 End
+ behavior
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Andrea Mayer <andrea.mayer@uniroma2.it>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     Stefano Salsano <stefano.salsano@uniroma2.it>,
+        Paolo Lungaroni <paolo.lungaroni@uniroma2.it>,
+        Ahmed Abdelsalam <ahabdels.dev@gmail.com>
+Date:   Tue, 20 Sep 2022 12:43:53 +0200
+In-Reply-To: <20220912171619.16943-3-andrea.mayer@uniroma2.it>
+References: <20220912171619.16943-1-andrea.mayer@uniroma2.it>
+         <20220912171619.16943-3-andrea.mayer@uniroma2.it>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.4 (3.42.4-2.fc35) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: GxC2BwAno13_ciljaChgAA--.64537S15
-X-Coremail-Antispam: 1UD129KBjvJXoW3JryUJryxurWUCFy5Gw13XFb_yoWfuFWxpa
-        yrWryj9r40q3W3Xr98JFs7ur4fKr48Zw17CrZI9FyxZr1DXFZ3XF18Kry3t3Z8K395Xw45
-        Z3ySvFWruw4UJa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBvb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
-        Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
-        rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267
-        AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I0E
-        14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrV
-        C2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE
-        7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kIc2xKxwCF04k20x
-        vY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I
-        3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIx
-        AIcVC0I7IYx2IY67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwCI
-        42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z2
-        80aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07UdfHUUUUUU=
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQABBF1jj4M-ygAAsD
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Roberto Sassu <roberto.sassu@huawei.com>
+On Mon, 2022-09-12 at 19:16 +0200, Andrea Mayer wrote:
+> The NEXT-C-SID mechanism described in [1] offers the possibility of
+> encoding several SRv6 segments within a single 128 bit SID address. Such
+> a SID address is called a Compressed SID (C-SID) container. In this way,
+> the length of the SID List can be drastically reduced.
+> 
+> A SID instantiated with the NEXT-C-SID flavor considers an IPv6 address
+> logically structured in three main blocks: i) Locator-Block; ii)
+> Locator-Node Function; iii) Argument.
+> 
+>                         C-SID container
+> +------------------------------------------------------------------+
+> >     Locator-Block      |Loc-Node|            Argument            |
+> >                        |Function|                                |
+> +------------------------------------------------------------------+
+> <--------- B -----------> <- NF -> <------------- A --------------->
+> 
+>    (i) The Locator-Block can be any IPv6 prefix available to the provider;
+> 
+>   (ii) The Locator-Node Function represents the node and the function to
+>        be triggered when a packet is received on the node;
+> 
+>  (iii) The Argument carries the remaining C-SIDs in the current C-SID
+>        container.
+> 
+> The NEXT-C-SID mechanism relies on the "flavors" framework defined in
+> [2]. The flavors represent additional operations that can modify or
+> extend a subset of the existing behaviors.
+> 
+> This patch introduces the support for flavors in SRv6 End behavior
+> implementing the NEXT-C-SID one. An SRv6 End behavior with NEXT-C-SID
+> flavor works as an End behavior but it is capable of processing the
+> compressed SID List encoded in C-SID containers.
+> 
+> An SRv6 End behavior with NEXT-C-SID flavor can be configured to support
+> user-provided Locator-Block and Locator-Node Function lengths. In this
+> implementation, such lengths must be evenly divisible by 8 (i.e. must be
+> byte-aligned), otherwise the kernel informs the user about invalid
+> values with a meaningful error code and message through netlink_ext_ack.
+> 
+> If Locator-Block and/or Locator-Node Function lengths are not provided
+> by the user during configuration of an SRv6 End behavior instance with
+> NEXT-C-SID flavor, the kernel will choose their default values i.e.,
+> 32-bit Locator-Block and 16-bit Locator-Node Function.
+> 
+> [1] - https://datatracker.ietf.org/doc/html/draft-ietf-spring-srv6-srh-compression
+> [2] - https://datatracker.ietf.org/doc/html/rfc8986
+> 
+> Signed-off-by: Andrea Mayer <andrea.mayer@uniroma2.it>
+> ---
+>  include/uapi/linux/seg6_local.h |  24 +++
+>  net/ipv6/seg6_local.c           | 335 +++++++++++++++++++++++++++++++-
+>  2 files changed, 356 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/uapi/linux/seg6_local.h b/include/uapi/linux/seg6_local.h
+> index 332b18f318f8..4fdc424c9cb3 100644
+> --- a/include/uapi/linux/seg6_local.h
+> +++ b/include/uapi/linux/seg6_local.h
+> @@ -28,6 +28,7 @@ enum {
+>  	SEG6_LOCAL_BPF,
+>  	SEG6_LOCAL_VRFTABLE,
+>  	SEG6_LOCAL_COUNTERS,
+> +	SEG6_LOCAL_FLAVORS,
+>  	__SEG6_LOCAL_MAX,
+>  };
+>  #define SEG6_LOCAL_MAX (__SEG6_LOCAL_MAX - 1)
+> @@ -110,4 +111,27 @@ enum {
+>  
+>  #define SEG6_LOCAL_CNT_MAX (__SEG6_LOCAL_CNT_MAX - 1)
+>  
+> +/* SRv6 End* Flavor attributes */
+> +enum {
+> +	SEG6_LOCAL_FLV_UNSPEC,
+> +	SEG6_LOCAL_FLV_OPERATION,
+> +	SEG6_LOCAL_FLV_LCBLOCK_BITS,
+> +	SEG6_LOCAL_FLV_LCNODE_FN_BITS,
+> +	__SEG6_LOCAL_FLV_MAX,
+> +};
+> +
+> +#define SEG6_LOCAL_FLV_MAX (__SEG6_LOCAL_FLV_MAX - 1)
+> +
+> +/* Designed flavor operations for SRv6 End* Behavior */
+> +enum {
+> +	SEG6_LOCAL_FLV_OP_UNSPEC,
+> +	SEG6_LOCAL_FLV_OP_PSP,
+> +	SEG6_LOCAL_FLV_OP_USP,
+> +	SEG6_LOCAL_FLV_OP_USD,
+> +	SEG6_LOCAL_FLV_OP_NEXT_CSID,
+> +	__SEG6_LOCAL_FLV_OP_MAX
+> +};
+> +
+> +#define SEG6_LOCAL_FLV_OP_MAX (__SEG6_LOCAL_FLV_OP_MAX - 1)
+> +
+>  #endif
+> diff --git a/net/ipv6/seg6_local.c b/net/ipv6/seg6_local.c
+> index f43e6f0baac1..8370726ae7bf 100644
+> --- a/net/ipv6/seg6_local.c
+> +++ b/net/ipv6/seg6_local.c
+> @@ -73,6 +73,55 @@ struct bpf_lwt_prog {
+>  	char *name;
+>  };
+>  
+> +/* default length values (expressed in bits) for both Locator-Block and
+> + * Locator-Node Function.
+> + *
+> + * Both SEG6_LOCAL_LCBLOCK_DBITS and SEG6_LOCAL_LCNODE_FN_DBITS *must* be:
+> + *    i) greater than 0;
+> + *   ii) evenly divisible by 8. In other terms, the lengths of the
+> + *	 Locator-Block and Locator-Node Function must be byte-aligned (we can
+> + *	 relax this constraint in the future if really needed).
+> + *
+> + * Moreover, a third condition must hold:
+> + *  iii) SEG6_LOCAL_LCBLOCK_DBITS + SEG6_LOCAL_LCNODE_FN_DBITS <= 128.
+> + *
+> + * The correctness of SEG6_LOCAL_LCBLOCK_DBITS and SEG6_LOCAL_LCNODE_FN_DBITS
+> + * values are checked during the kernel compilation. If the compilation stops,
+> + * check the value of these parameters to see if they meet conditions (i), (ii)
+> + * and (iii).
+> + */
+> +#define SEG6_LOCAL_LCBLOCK_DBITS	32
+> +#define SEG6_LOCAL_LCNODE_FN_DBITS	16
+> +
+> +/* The following next_csid_chk_{cntr,lcblock,lcblock_fn}_bits macros can be
+> + * used directly to check whether the lengths (in bits) of Locator-Block and
+> + * Locator-Node Function are valid according to (i), (ii), (iii).
+> + */
+> +#define next_csid_chk_cntr_bits(blen, flen)		\
+> +	((blen) + (flen) > 128)
+> +
+> +#define next_csid_chk_lcblock_bits(blen)		\
+> +({							\
+> +	typeof(blen) __tmp = blen;			\
+> +	(!__tmp || __tmp > 120 || (__tmp & 0x07));	\
 
-Add tests to ensure that only supported dynamic pointer types are accepted,
-that the passed argument is actually a dynamic pointer, that the passed
-argument is a pointer to the stack, and that bpf_verify_pkcs7_signature()
-correctly handles dynamic pointers with data set to NULL.
+Just a note to mention that in theory a caller could pass a signed
+argument, so the above check does not ensure that __tmp is acutally >=
+8.
 
-The tests are currently in the deny list for s390x (JIT does not support
-calling kernel function).
+All the current callers use unsigned arguements, so it still looks
+safe. 
 
-Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
----
- tools/testing/selftests/bpf/DENYLIST.s390x    |   1 +
- .../bpf/prog_tests/kfunc_dynptr_param.c       | 164 ++++++++++++++++++
- .../bpf/progs/test_kfunc_dynptr_param.c       |  94 ++++++++++
- 3 files changed, 259 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/kfunc_dynptr_param.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c
+Cheers,
 
-diff --git a/tools/testing/selftests/bpf/DENYLIST.s390x b/tools/testing/selftests/bpf/DENYLIST.s390x
-index 759b2bb53b53..5fc7d0de19f3 100644
---- a/tools/testing/selftests/bpf/DENYLIST.s390x
-+++ b/tools/testing/selftests/bpf/DENYLIST.s390x
-@@ -73,3 +73,4 @@ htab_update                              # failed to attach: ERROR: strerror_r(-
- tracing_struct                           # failed to auto-attach: -524                                                 (trampoline)
- lookup_key                               # JIT does not support calling kernel function                                (kfunc)
- verify_pkcs7_sig                         # JIT does not support calling kernel function                                (kfunc)
-+kfunc_dynptr_param                       # JIT does not support calling kernel function                                (kfunc)
-diff --git a/tools/testing/selftests/bpf/prog_tests/kfunc_dynptr_param.c b/tools/testing/selftests/bpf/prog_tests/kfunc_dynptr_param.c
-new file mode 100644
-index 000000000000..c210657d4d0a
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/kfunc_dynptr_param.c
-@@ -0,0 +1,164 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/*
-+ * Copyright (c) 2022 Facebook
-+ * Copyright (C) 2022 Huawei Technologies Duesseldorf GmbH
-+ *
-+ * Author: Roberto Sassu <roberto.sassu@huawei.com>
-+ */
-+
-+#include <test_progs.h>
-+#include "test_kfunc_dynptr_param.skel.h"
-+
-+static size_t log_buf_sz = 1048576; /* 1 MB */
-+static char obj_log_buf[1048576];
-+
-+static struct {
-+	const char *prog_name;
-+	const char *expected_verifier_err_msg;
-+	int expected_runtime_err;
-+} kfunc_dynptr_tests[] = {
-+	{"dynptr_type_not_supp",
-+	 "arg#0 pointer type STRUCT bpf_dynptr_kern points to unsupported dynamic pointer type", 0},
-+	{"not_valid_dynptr",
-+	 "arg#0 pointer type STRUCT bpf_dynptr_kern must be valid and initialized", 0},
-+	{"not_ptr_to_stack", "arg#0 pointer type STRUCT bpf_dynptr_kern not to stack", 0},
-+	{"dynptr_data_null", NULL, -EBADMSG},
-+};
-+
-+static bool kfunc_not_supported;
-+
-+static int libbpf_print_cb(enum libbpf_print_level level, const char *fmt,
-+			   va_list args)
-+{
-+	if (strcmp(fmt, "libbpf: extern (func ksym) '%s': not found in kernel or module BTFs\n"))
-+		return 0;
-+
-+	if (strcmp(va_arg(args, char *), "bpf_verify_pkcs7_signature"))
-+		return 0;
-+
-+	kfunc_not_supported = true;
-+	return 0;
-+}
-+
-+static void verify_fail(const char *prog_name, const char *expected_err_msg)
-+{
-+	struct test_kfunc_dynptr_param *skel;
-+	LIBBPF_OPTS(bpf_object_open_opts, opts);
-+	libbpf_print_fn_t old_print_cb;
-+	struct bpf_program *prog;
-+	int err;
-+
-+	opts.kernel_log_buf = obj_log_buf;
-+	opts.kernel_log_size = log_buf_sz;
-+	opts.kernel_log_level = 1;
-+
-+	skel = test_kfunc_dynptr_param__open_opts(&opts);
-+	if (!ASSERT_OK_PTR(skel, "test_kfunc_dynptr_param__open_opts"))
-+		goto cleanup;
-+
-+	prog = bpf_object__find_program_by_name(skel->obj, prog_name);
-+	if (!ASSERT_OK_PTR(prog, "bpf_object__find_program_by_name"))
-+		goto cleanup;
-+
-+	bpf_program__set_autoload(prog, true);
-+
-+	bpf_map__set_max_entries(skel->maps.ringbuf, getpagesize());
-+
-+	kfunc_not_supported = false;
-+
-+	old_print_cb = libbpf_set_print(libbpf_print_cb);
-+	err = test_kfunc_dynptr_param__load(skel);
-+	libbpf_set_print(old_print_cb);
-+
-+	if (err < 0 && kfunc_not_supported) {
-+		fprintf(stderr,
-+		  "%s:SKIP:bpf_verify_pkcs7_signature() kfunc not supported\n",
-+		  __func__);
-+		test__skip();
-+		goto cleanup;
-+	}
-+
-+	if (!ASSERT_ERR(err, "unexpected load success"))
-+		goto cleanup;
-+
-+	if (!ASSERT_OK_PTR(strstr(obj_log_buf, expected_err_msg), "expected_err_msg")) {
-+		fprintf(stderr, "Expected err_msg: %s\n", expected_err_msg);
-+		fprintf(stderr, "Verifier output: %s\n", obj_log_buf);
-+	}
-+
-+cleanup:
-+	test_kfunc_dynptr_param__destroy(skel);
-+}
-+
-+static void verify_success(const char *prog_name, int expected_runtime_err)
-+{
-+	struct test_kfunc_dynptr_param *skel;
-+	libbpf_print_fn_t old_print_cb;
-+	struct bpf_program *prog;
-+	struct bpf_link *link;
-+	__u32 next_id;
-+	int err;
-+
-+	skel = test_kfunc_dynptr_param__open();
-+	if (!ASSERT_OK_PTR(skel, "test_kfunc_dynptr_param__open"))
-+		return;
-+
-+	skel->bss->pid = getpid();
-+
-+	bpf_map__set_max_entries(skel->maps.ringbuf, getpagesize());
-+
-+	kfunc_not_supported = false;
-+
-+	old_print_cb = libbpf_set_print(libbpf_print_cb);
-+	err = test_kfunc_dynptr_param__load(skel);
-+	libbpf_set_print(old_print_cb);
-+
-+	if (err < 0 && kfunc_not_supported) {
-+		fprintf(stderr,
-+		  "%s:SKIP:bpf_verify_pkcs7_signature() kfunc not supported\n",
-+		  __func__);
-+		test__skip();
-+		goto cleanup;
-+	}
-+
-+	if (!ASSERT_OK(err, "test_kfunc_dynptr_param__load"))
-+		goto cleanup;
-+
-+	prog = bpf_object__find_program_by_name(skel->obj, prog_name);
-+	if (!ASSERT_OK_PTR(prog, "bpf_object__find_program_by_name"))
-+		goto cleanup;
-+
-+	link = bpf_program__attach(prog);
-+	if (!ASSERT_OK_PTR(link, "bpf_program__attach"))
-+		goto cleanup;
-+
-+	err = bpf_prog_get_next_id(0, &next_id);
-+
-+	bpf_link__destroy(link);
-+
-+	if (!ASSERT_OK(err, "bpf_prog_get_next_id"))
-+		goto cleanup;
-+
-+	ASSERT_EQ(skel->bss->err, expected_runtime_err, "err");
-+
-+cleanup:
-+	test_kfunc_dynptr_param__destroy(skel);
-+}
-+
-+void test_kfunc_dynptr_param(void)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(kfunc_dynptr_tests); i++) {
-+		if (!test__start_subtest(kfunc_dynptr_tests[i].prog_name))
-+			continue;
-+
-+		if (kfunc_dynptr_tests[i].expected_verifier_err_msg)
-+			verify_fail(kfunc_dynptr_tests[i].prog_name,
-+			  kfunc_dynptr_tests[i].expected_verifier_err_msg);
-+		else
-+			verify_success(kfunc_dynptr_tests[i].prog_name,
-+				kfunc_dynptr_tests[i].expected_runtime_err);
-+	}
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c b/tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c
-new file mode 100644
-index 000000000000..ce39d096bba3
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c
-@@ -0,0 +1,94 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/*
-+ * Copyright (C) 2022 Huawei Technologies Duesseldorf GmbH
-+ *
-+ * Author: Roberto Sassu <roberto.sassu@huawei.com>
-+ */
-+
-+#include "vmlinux.h"
-+#include <errno.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+extern struct bpf_key *bpf_lookup_system_key(__u64 id) __ksym;
-+extern void bpf_key_put(struct bpf_key *key) __ksym;
-+extern int bpf_verify_pkcs7_signature(struct bpf_dynptr *data_ptr,
-+				      struct bpf_dynptr *sig_ptr,
-+				      struct bpf_key *trusted_keyring) __ksym;
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_RINGBUF);
-+} ringbuf SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__type(value, __u32);
-+} array_map SEC(".maps");
-+
-+int err, pid;
-+
-+char _license[] SEC("license") = "GPL";
-+
-+SEC("?lsm.s/bpf")
-+int BPF_PROG(dynptr_type_not_supp, int cmd, union bpf_attr *attr,
-+	     unsigned int size)
-+{
-+	char write_data[64] = "hello there, world!!";
-+	struct bpf_dynptr ptr;
-+
-+	bpf_ringbuf_reserve_dynptr(&ringbuf, sizeof(write_data), 0, &ptr);
-+
-+	return bpf_verify_pkcs7_signature(&ptr, &ptr, NULL);
-+}
-+
-+SEC("?lsm.s/bpf")
-+int BPF_PROG(not_valid_dynptr, int cmd, union bpf_attr *attr, unsigned int size)
-+{
-+	unsigned long val;
-+
-+	return bpf_verify_pkcs7_signature((struct bpf_dynptr *)&val,
-+					  (struct bpf_dynptr *)&val, NULL);
-+}
-+
-+SEC("?lsm.s/bpf")
-+int BPF_PROG(not_ptr_to_stack, int cmd, union bpf_attr *attr, unsigned int size)
-+{
-+	unsigned long val;
-+
-+	return bpf_verify_pkcs7_signature((struct bpf_dynptr *)val,
-+					  (struct bpf_dynptr *)val, NULL);
-+}
-+
-+SEC("lsm.s/bpf")
-+int BPF_PROG(dynptr_data_null, int cmd, union bpf_attr *attr, unsigned int size)
-+{
-+	struct bpf_key *trusted_keyring;
-+	struct bpf_dynptr ptr;
-+	__u32 *value;
-+	int ret, zero = 0;
-+
-+	if (bpf_get_current_pid_tgid() >> 32 != pid)
-+		return 0;
-+
-+	value = bpf_map_lookup_elem(&array_map, &zero);
-+	if (!value)
-+		return 0;
-+
-+	/* Pass invalid flags. */
-+	ret = bpf_dynptr_from_mem(value, sizeof(*value), ((__u64)~0ULL), &ptr);
-+	if (ret != -EINVAL)
-+		return 0;
-+
-+	trusted_keyring = bpf_lookup_system_key(0);
-+	if (!trusted_keyring)
-+		return 0;
-+
-+	err = bpf_verify_pkcs7_signature(&ptr, &ptr, trusted_keyring);
-+
-+	bpf_key_put(trusted_keyring);
-+
-+	return 0;
-+}
--- 
-2.25.1
+Paolo
 
