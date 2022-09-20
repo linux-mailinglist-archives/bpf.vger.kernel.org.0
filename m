@@ -2,340 +2,241 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 710345BE61B
-	for <lists+bpf@lfdr.de>; Tue, 20 Sep 2022 14:43:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 372F65BE671
+	for <lists+bpf@lfdr.de>; Tue, 20 Sep 2022 14:54:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231284AbiITMnY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Sep 2022 08:43:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36484 "EHLO
+        id S231388AbiITMyW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Sep 2022 08:54:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231288AbiITMnV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Sep 2022 08:43:21 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CF3174CDC;
-        Tue, 20 Sep 2022 05:43:14 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id f14so3575924lfg.5;
-        Tue, 20 Sep 2022 05:43:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=zs9lyhx1mfjAFlS/mBeyhjLjOL7dZ+dJLjskU8EXRfk=;
-        b=G7ESa2D4SPXF7MxNRP4dA331iIxWF80kVrOlQw1Q0zuiMQ/3c7qtBzzhyMJw7ZGTI+
-         X+2aG5eNYwipyIBD9gfCaW+XgRMdIJTjAXyKHQVAt/Egl4PJlz6oYfrCPkcGqYNDZ+ZA
-         JcShuqhlEdNZOdjeib6US9uzPneDKKZCp0T88u3txNktiCC6XVnxeJKKflLhdp2mZnZm
-         VBW1TzMBu97MDKwc9gun48rq7/EBAOfpW7GEsHn3heV+k0/L9myYAbWYbpd6FOyfZSSc
-         10pFlCACgHsBh28Rlu9Ue5axQjjd6iHNfSP8N889Qu9b8l9HgRCYc4cSFlLD/fOlzHSM
-         UVuw==
+        with ESMTP id S231406AbiITMxw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Sep 2022 08:53:52 -0400
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E81EF75FCB
+        for <bpf@vger.kernel.org>; Tue, 20 Sep 2022 05:53:34 -0700 (PDT)
+Received: by mail-il1-f197.google.com with SMTP id i13-20020a056e02152d00b002f58aea654fso1515162ilu.20
+        for <bpf@vger.kernel.org>; Tue, 20 Sep 2022 05:53:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=zs9lyhx1mfjAFlS/mBeyhjLjOL7dZ+dJLjskU8EXRfk=;
-        b=E8OlccHmtgSSxSMlDbqraenHq0689T+2LRJAZZcj8qS7EKf/J+6pE/oddxHGVDM6Un
-         j3FHq5PJ65kREPEIK040n/vQAHjN1AbE9Q5dn7yFLF2cZMNfuGWWbXmvStf6WpMAEa/1
-         nqVJH48nr1AGrMVvEezp8H1msVqAUA6bVqKV42eAdZ/1UECMLUfc3zPD5jJETF03naIE
-         yNce68Rg1yxmIeV4hpGELc0RxSZCDDBktKg+kYIRl5VUro/KgQrwK6nmZ9Uvy3WWtNCz
-         f6UD++/h0NLjPp/zsysxJNx2m8hLjYAtceZTAx3zuzzISN6Xlw/3e11ElHTamN7UyPQn
-         YbJg==
-X-Gm-Message-State: ACrzQf3V33aIT4lu1iv4PKLbUGr2DRjd5cbbdHLFmB8Jw66+bl/SWCz0
-        sAr6WM1yOePklY7ZZQps1L4ikC8wLesVKR5sdIk=
-X-Google-Smtp-Source: AMsMyM6/rC1+AQCI69KOc9XZtM1L0HXdcWEePWaBz2MZ+Z1XkbeEgRmVzABlmzg130XiuObulm9tbDJgqyLxoYCfDvQ=
-X-Received: by 2002:a05:6512:1395:b0:48d:81b:4955 with SMTP id
- p21-20020a056512139500b0048d081b4955mr7703393lfa.307.1663677792578; Tue, 20
- Sep 2022 05:43:12 -0700 (PDT)
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date;
+        bh=jQJm8Z+up347I13dxWYRPWK1SdivX1s8IHwB5EA/8gk=;
+        b=0k6am7aMgG57zEa/Nhf1OwWotHVmmG4Q0lQTPYdeD7JYEJMhgrKyLeWFnIBbah6i7F
+         RQilOf7ix44ifd3dVYifcBrAOD1fjb/CXG4ci4VuACZVKpd1U4wr77y4pNP4904A+EyX
+         7aPGcPZ3q+CvOv3ukWzGAmMSDC8r+sRwGZc7Y+7Y+WWG6DfqZM1MBJpNEJgnY4KjPSG/
+         Hs71vzaYGM7a5qXKVjhU6LxAX/1OdcYIG2xYMV6rMB4do1SoJUVvs/ChfU3VJWww8rlH
+         Uvm1HljrdeOBVppRr1GiD9KPqf033UL+WX7+Jna7knoOwIQb27/0aRwz7AaGNHH90RvB
+         bAQA==
+X-Gm-Message-State: ACrzQf2+FRdTdQnoq+0Ywa+/fdk8mGSOHhzJ6NsxlZPuRLDhnEPyFySb
+        YdOx7akf16wirBHgZLarbKqHTSwX9Xkhng7OV2C/dUs8wRaR
+X-Google-Smtp-Source: AMsMyM6l6LLo4LWGKy1iezG8GllPNubQqkEn/HEBaG5rq+mYVV3f7Bc8lO3y7PQiTnHuHMq2nyIulejtxAPn4IVQmHIUWDcBul4c
 MIME-Version: 1.0
-References: <20220902023003.47124-1-laoar.shao@gmail.com> <Yxi8I4fXXSCi6z9T@slm.duckdns.org>
- <YxkVq4S1Eoa4edjZ@P9FQF9L96D.corp.robot.car> <CALOAHbAp=g20rL0taUpQmTwymanArhO-u69Xw42s5ap39Esn=A@mail.gmail.com>
- <YxoUkz05yA0ccGWe@P9FQF9L96D.corp.robot.car> <CALOAHbAzi0s3N_5BOkLsnGfwWCDpUksvvhPejjj5jo4G2v3mGg@mail.gmail.com>
- <YySqFtU9skPaJipV@P9FQF9L96D.corp.robot.car> <CALOAHbAYx1=uu7AP=5Gbs6-eggXTKmkhzc-MhROezxqkbVQRiQ@mail.gmail.com>
- <YykoDeoqz6VYe2I4@P9FQF9L96D>
-In-Reply-To: <YykoDeoqz6VYe2I4@P9FQF9L96D>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Tue, 20 Sep 2022 20:42:36 +0800
-Message-ID: <CALOAHbDU3ujQc4EWmeogAkkQAmxTHxqRkxfiLBubJc6w-oqxmA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 00/13] bpf: Introduce selectable memcg for bpf map
-To:     Roman Gushchin <roman.gushchin@linux.dev>
-Cc:     Tejun Heo <tj@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Cgroups <cgroups@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
+X-Received: by 2002:a05:6638:150c:b0:35a:f7a9:c3d8 with SMTP id
+ b12-20020a056638150c00b0035af7a9c3d8mr1916588jat.38.1663678413730; Tue, 20
+ Sep 2022 05:53:33 -0700 (PDT)
+Date:   Tue, 20 Sep 2022 05:53:33 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000def90305e91b5016@google.com>
+Subject: [syzbot] possible deadlock in skb_queue_tail (4)
+From:   syzbot <syzbot+44b38bcb874d81a15a57@syzkaller.appspotmail.com>
+To:     bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, kuniyu@amazon.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, pabeni@redhat.com,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 20, 2022 at 10:40 AM Roman Gushchin
-<roman.gushchin@linux.dev> wrote:
->
-> On Sun, Sep 18, 2022 at 11:44:48AM +0800, Yafang Shao wrote:
-> > On Sat, Sep 17, 2022 at 12:53 AM Roman Gushchin
-> > <roman.gushchin@linux.dev> wrote:
-> > >
-> > > On Tue, Sep 13, 2022 at 02:15:20PM +0800, Yafang Shao wrote:
-> > > > On Fri, Sep 9, 2022 at 12:13 AM Roman Gushchin <roman.gushchin@linux.dev> wrote:
-> > > > >
-> > > > > On Thu, Sep 08, 2022 at 10:37:02AM +0800, Yafang Shao wrote:
-> > > > > > On Thu, Sep 8, 2022 at 6:29 AM Roman Gushchin <roman.gushchin@linux.dev> wrote:
-> > > > > > >
-> > > > > > > On Wed, Sep 07, 2022 at 05:43:31AM -1000, Tejun Heo wrote:
-> > > > > > > > Hello,
-> > > > > > > >
-> > > > > > > > On Fri, Sep 02, 2022 at 02:29:50AM +0000, Yafang Shao wrote:
-> > > > > > > > ...
-> > > > > > > > > This patchset tries to resolve the above two issues by introducing a
-> > > > > > > > > selectable memcg to limit the bpf memory. Currently we only allow to
-> > > > > > > > > select its ancestor to avoid breaking the memcg hierarchy further.
-> > > > > > > > > Possible use cases of the selectable memcg as follows,
-> > > > > > > >
-> > > > > > > > As discussed in the following thread, there are clear downsides to an
-> > > > > > > > interface which requires the users to specify the cgroups directly.
-> > > > > > > >
-> > > > > > > >  https://lkml.kernel.org/r/YwNold0GMOappUxc@slm.duckdns.org
-> > > > > > > >
-> > > > > > > > So, I don't really think this is an interface we wanna go for. I was hoping
-> > > > > > > > to hear more from memcg folks in the above thread. Maybe ping them in that
-> > > > > > > > thread and continue there?
-> > > > > > >
-> > > > > >
-> > > > > > Hi Roman,
-> > > > > >
-> > > > > > > As I said previously, I don't like it, because it's an attempt to solve a non
-> > > > > > > bpf-specific problem in a bpf-specific way.
-> > > > > > >
-> > > > > >
-> > > > > > Why do you still insist that bpf_map->memcg is not a bpf-specific
-> > > > > > issue after so many discussions?
-> > > > > > Do you charge the bpf-map's memory the same way as you charge the page
-> > > > > > caches or slabs ?
-> > > > > > No, you don't. You charge it in a bpf-specific way.
-> > > > >
-> > > >
-> > > > Hi Roman,
-> > > >
-> > > > Sorry for the late response.
-> > > > I've been on vacation in the past few days.
-> > > >
-> > > > > The only difference is that we charge the cgroup of the processes who
-> > > > > created a map, not a process who is doing a specific allocation.
-> > > >
-> > > > This means the bpf-map can be indepent of process, IOW, the memcg of
-> > > > bpf-map can be indepent of the memcg of the processes.
-> > > > This is the fundamental difference between bpf-map and page caches, then...
-> > > >
-> > > > > Your patchset doesn't change this.
-> > > >
-> > > > We can make this behavior reasonable by introducing an independent
-> > > > memcg, as what I did in the previous version.
-> > > >
-> > > > > There are pros and cons with this approach, we've discussed it back
-> > > > > to the times when bpf memcg accounting was developed. If you want
-> > > > > to revisit this, it's maybe possible (given there is a really strong and likely
-> > > > > new motivation appears), but I haven't seen any complaints yet except from you.
-> > > > >
-> > > >
-> > > > memcg-base bpf accounting is a new feature, which may not be used widely.
-> > > >
-> > > > > >
-> > > > > > > Yes, memory cgroups are not great for accounting of shared resources, it's well
-> > > > > > > known. This patchset looks like an attempt to "fix" it specifically for bpf maps
-> > > > > > > in a particular cgroup setup. Honestly, I don't think it's worth the added
-> > > > > > > complexity. Especially because a similar behaviour can be achieved simple
-> > > > > > > by placing the task which creates the map into the desired cgroup.
-> > > > > >
-> > > > > > Are you serious ?
-> > > > > > Have you ever read the cgroup doc? Which clearly describe the "No
-> > > > > > Internal Process Constraint".[1]
-> > > > > > Obviously you can't place the task in the desired cgroup, i.e. the parent memcg.
-> > > > >
-> > > > > But you can place it into another leaf cgroup. You can delete this leaf cgroup
-> > > > > and your memcg will get reparented. You can attach this process and create
-> > > > > a bpf map to the parent cgroup before it gets child cgroups.
-> > > >
-> > > > If the process doesn't exit after it created bpf-map, we have to
-> > > > migrate it around memcgs....
-> > > > The complexity in deployment can introduce unexpected issues easily.
-> > > >
-> > > > > You can revisit the idea of shared bpf maps and outlive specific cgroups.
-> > > > > Lof of options.
-> > > > >
-> > > > > >
-> > > > > > [1] https://www.kernel.org/doc/Documentation/cgroup-v2.txt
-> > > > > >
-> > > > > > > Beatiful? Not. Neither is the proposed solution.
-> > > > > > >
-> > > > > >
-> > > > > > Is it really hard to admit a fault?
-> > > > >
-> > > > > Yafang, you posted several versions and so far I haven't seen much of support
-> > > > > or excitement from anyone (please, fix me if I'm wrong). It's not like I'm
-> > > > > nacking a patchset with many acks, reviews and supporters.
-> > > > >
-> > > > > Still think you're solving an important problem in a reasonable way?
-> > > > > It seems like not many are convinced yet. I'd recommend to focus on this instead
-> > > > > of blaming me.
-> > > > >
-> > > >
-> > > > The best way so far is to introduce specific memcg for specific resources.
-> > > > Because not only the process owns its memcg, but also specific
-> > > > resources own their memcgs, for example bpf-map, or socket.
-> > > >
-> > > > struct bpf_map {                                 <<<< memcg owner
-> > > >     struct memcg_cgroup *memcg;
-> > > > };
-> > > >
-> > > > struct sock {                                       <<<< memcg owner
-> > > >     struct mem_cgroup *sk_memcg;
-> > > > };
-> > > >
-> > > > These resources already have their own memcgs, so we should make this
-> > > > behavior formal.
-> > > >
-> > > > The selectable memcg is just a variant of 'echo ${proc} > cgroup.procs'.
-> > >
-> > > This is a fundamental change: cgroups were always hierarchical groups
-> > > of processes/threads. You're basically suggesting to extend it to
-> > > hierarchical groups of processes and some other objects (what's a good
-> > > definition?).
-> >
-> > Kind of, but not exactly.
-> > We can do it without breaking the cgroup hierarchy. Under current
-> > cgroup hierarchy, the user can only echo processes/threads into a
-> > cgroup, that won't be changed in the future. The specific resources
-> > are not exposed to the user, the user can only control these specific
-> > resources by controlling their associated processes/threads.
-> > For example,
-> >
-> >                 Memcg-A
-> >                        |---- Memcg-A1
-> >                        |---- Memcg-A2
-> >
-> > We can introduce a new file memory.owner into each memcg. Each bit of
-> > memory.owner represents a specific resources,
-> >
-> >  memory.owner: | bit31 | bitN | ... | bit1 | bit0 |
-> >                                          |               |
-> > |------ bit0: bpf memory
-> >                                          |
-> > |-------------- bit1: socket memory
-> >                                          |
-> >                                          |---------------------------
-> > bitN: a specific resource
-> >
-> > There won't be too many specific resources which have to own their
-> > memcgs, so I think 32bits is enough.
-> >
-> >                 Memcg-A : memory.owner == 0x1
-> >                        |---- Memcg-A1 : memory.owner == 0
-> >                        |---- Memcg-A2 : memory.owner == 0x1
-> >
-> > Then the bpf created by processes in Memcg-A1 will be charged into
-> > Memcg-A directly without charging into Memcg-A1.
-> > But the bpf created by processes in Memcg-A2 will be charged into
-> > Memcg-A2 as its memory.owner is 0x1.
-> > That said, these specific resources are not fully independent of
-> > process, while they are still associated with the processes which
-> > create them.
-> > Luckily memory.move_charge_at_immigrate is disabled in cgroup2, so we
-> > don't need to care about the possible migration issue.
-> >
-> > I think we may also apply it to shared page caches.  For example,
-> >       struct inode {
-> >           struct mem_cgroup *memcg;          <<<< add a new member
-> >       };
-> >
-> > We define struct inode as a memcg owner, and use scope-based charge to
-> > charge its pages into inode->memcg.
-> > And then put all memcgs which shared these resources under the same
-> > parent. The page caches of this inode will be charged into the parent
-> > directly.
->
-> Ok, so it's something like premature selective reparenting.
->
+Hello,
 
-Right. I think it  may be a good way to handle the resources which may
-outlive the process.
+syzbot found the following issue on:
 
-> > The shared page cache is more complicated than bpf memory, so I'm not
-> > quite sure if it can apply to shared page cache, but it can work well
-> > for bpf memory.
->
-> Yeah, this is the problem. It feels like it's a problem very specific
-> to bpf maps and an exact way you use them. I don't think you can successfully
-> advocate for changes of these calibre without a more generic problem. I might
-> be wrong.
->
+HEAD commit:    3245cb65fd91 Merge tag 'devicetree-fixes-for-6.0-2' of git..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=12b0c487080000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=98a30118ec9215e9
+dashboard link: https://syzkaller.appspot.com/bug?extid=44b38bcb874d81a15a57
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+userspace arch: i386
 
-What is your concern about this method? Are there any potential issues?
+Unfortunately, I don't have any reproducer for this issue yet.
 
-> >
-> > Regarding the observability, we can introduce a specific item into
-> > memory.stat for this specific memory. For example a new item 'bpf' for
-> > bpf memory.
-> > That can be accounted/unaccounted for in the same way as we do in
-> > set_active_memcg(). for example,
-> >
-> >     struct task_struct {
-> >         struct mem_cgroup  *active_memcg;
-> >         int                             active_memcg_item;   <<<<
-> > introduce a new member
-> >     };
-> >
-> >     bpf_memory_alloc()
-> >     {
-> >              old_memcg = set_active_memcg(memcg);
-> >              old_item = set_active_memcg_item(MEMCG_BPF);
->
-> I thought about something like this but for a different purpose:
-> to track the amount of memory consumed by bpf.
->
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+44b38bcb874d81a15a57@syzkaller.appspotmail.com
 
-Right, we can use it to track bpf memory consumption.
+======================================================
+WARNING: possible circular locking dependency detected
+6.0.0-rc5-syzkaller-00025-g3245cb65fd91 #0 Not tainted
+------------------------------------------------------
+syz-executor.4/21149 is trying to acquire lock:
+ffff8880178441e8 (rlock-AF_UNIX){+.+.}-{2:2}, at: skb_queue_tail+0x21/0x140 net/core/skbuff.c:3400
 
-> >              alloc();
-> >              set_active_memcg_item(old_item);
-> >              set_active_memcg(old_memcg);
-> >     }
-> >
-> >     bpf_memory_free()
-> >     {
-> >              old = set_active_memcg_item(MEMCG_BPF);
-> >              free();
-> >              set_active_memcg_item(old);
-> >     }
->
-> But the problem is that we shoud very carefully mark all allocations and
-> releases, which is very error-prone. Interfaces which don't require annotating
-> releases are generally better, but require additional memory.
->
+but task is already holding lock:
+ffff888017844670 (&u->lock/1){+.+.}-{2:2}, at: unix_state_double_lock net/unix/af_unix.c:1298 [inline]
+ffff888017844670 (&u->lock/1){+.+.}-{2:2}, at: unix_state_double_lock+0x77/0xa0 net/unix/af_unix.c:1290
 
-If we don't annotate the releases, we have to add something into the
-struct page, which may not be worth it.
-It is clear how the bpf memory is allocated and freed, so I think we
-can start it with bpf memory.
-If in the future we can figure out a lightweight way to avoid
-annotating the releases, then we can remove the annotations in the bpf
-memory releases.
+which lock already depends on the new lock.
 
--- 
-Regards
-Yafang
+
+the existing dependency chain (in reverse order) is:
+
+-> #1 (&u->lock/1){+.+.}-{2:2}:
+       _raw_spin_lock_nested+0x30/0x40 kernel/locking/spinlock.c:378
+       sk_diag_dump_icons net/unix/diag.c:87 [inline]
+       sk_diag_fill+0xaaf/0x10d0 net/unix/diag.c:155
+       sk_diag_dump net/unix/diag.c:193 [inline]
+       unix_diag_dump+0x3a9/0x640 net/unix/diag.c:217
+       netlink_dump+0x541/0xc20 net/netlink/af_netlink.c:2275
+       __netlink_dump_start+0x647/0x900 net/netlink/af_netlink.c:2380
+       netlink_dump_start include/linux/netlink.h:245 [inline]
+       unix_diag_handler_dump net/unix/diag.c:315 [inline]
+       unix_diag_handler_dump+0x5c2/0x830 net/unix/diag.c:304
+       __sock_diag_cmd net/core/sock_diag.c:235 [inline]
+       sock_diag_rcv_msg+0x31a/0x440 net/core/sock_diag.c:266
+       netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2501
+       sock_diag_rcv+0x26/0x40 net/core/sock_diag.c:277
+       netlink_unicast_kernel net/netlink/af_netlink.c:1319 [inline]
+       netlink_unicast+0x543/0x7f0 net/netlink/af_netlink.c:1345
+       netlink_sendmsg+0x917/0xe10 net/netlink/af_netlink.c:1921
+       sock_sendmsg_nosec net/socket.c:714 [inline]
+       sock_sendmsg+0xcf/0x120 net/socket.c:734
+       sock_write_iter+0x291/0x3d0 net/socket.c:1108
+       call_write_iter include/linux/fs.h:2187 [inline]
+       do_iter_readv_writev+0x20b/0x3b0 fs/read_write.c:729
+       do_iter_write+0x182/0x700 fs/read_write.c:855
+       vfs_writev+0x1aa/0x630 fs/read_write.c:928
+       do_writev+0x279/0x2f0 fs/read_write.c:971
+       do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
+       __do_fast_syscall_32+0x65/0xf0 arch/x86/entry/common.c:178
+       do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:203
+       entry_SYSENTER_compat_after_hwframe+0x70/0x82
+
+-> #0 (rlock-AF_UNIX){+.+.}-{2:2}:
+       check_prev_add kernel/locking/lockdep.c:3095 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3214 [inline]
+       validate_chain kernel/locking/lockdep.c:3829 [inline]
+       __lock_acquire+0x2a43/0x56d0 kernel/locking/lockdep.c:5053
+       lock_acquire kernel/locking/lockdep.c:5666 [inline]
+       lock_acquire+0x1ab/0x570 kernel/locking/lockdep.c:5631
+       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+       _raw_spin_lock_irqsave+0x39/0x50 kernel/locking/spinlock.c:162
+       skb_queue_tail+0x21/0x140 net/core/skbuff.c:3400
+       unix_dgram_sendmsg+0xf41/0x1b50 net/unix/af_unix.c:2043
+       sock_sendmsg_nosec net/socket.c:714 [inline]
+       sock_sendmsg+0xcf/0x120 net/socket.c:734
+       ____sys_sendmsg+0x6eb/0x810 net/socket.c:2482
+       __sys_sendmsg_sock+0x26/0x30 net/socket.c:2548
+       io_sendmsg+0x246/0x7d0 io_uring/net.c:289
+       io_issue_sqe+0x6b6/0xd20 io_uring/io_uring.c:1577
+       io_queue_sqe io_uring/io_uring.c:1755 [inline]
+       io_submit_sqe io_uring/io_uring.c:2013 [inline]
+       io_submit_sqes+0x94e/0x1d30 io_uring/io_uring.c:2124
+       __do_sys_io_uring_enter+0xb85/0x1ea0 io_uring/io_uring.c:3054
+       do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
+       __do_fast_syscall_32+0x65/0xf0 arch/x86/entry/common.c:178
+       do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:203
+       entry_SYSENTER_compat_after_hwframe+0x70/0x82
+
+other info that might help us debug this:
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&u->lock/1);
+                               lock(rlock-AF_UNIX);
+                               lock(&u->lock/1);
+  lock(rlock-AF_UNIX);
+
+ *** DEADLOCK ***
+
+2 locks held by syz-executor.4/21149:
+ #0: ffff88807dcb40a8 (&ctx->uring_lock){+.+.}-{3:3}, at: __do_sys_io_uring_enter+0xb7a/0x1ea0 io_uring/io_uring.c:3053
+ #1: ffff888017844670 (&u->lock/1){+.+.}-{2:2}, at: unix_state_double_lock net/unix/af_unix.c:1298 [inline]
+ #1: ffff888017844670 (&u->lock/1){+.+.}-{2:2}, at: unix_state_double_lock+0x77/0xa0 net/unix/af_unix.c:1290
+
+stack backtrace:
+CPU: 0 PID: 21149 Comm: syz-executor.4 Not tainted 6.0.0-rc5-syzkaller-00025-g3245cb65fd91 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/26/2022
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2175
+ check_prev_add kernel/locking/lockdep.c:3095 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3214 [inline]
+ validate_chain kernel/locking/lockdep.c:3829 [inline]
+ __lock_acquire+0x2a43/0x56d0 kernel/locking/lockdep.c:5053
+ lock_acquire kernel/locking/lockdep.c:5666 [inline]
+ lock_acquire+0x1ab/0x570 kernel/locking/lockdep.c:5631
+ __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+ _raw_spin_lock_irqsave+0x39/0x50 kernel/locking/spinlock.c:162
+ skb_queue_tail+0x21/0x140 net/core/skbuff.c:3400
+ unix_dgram_sendmsg+0xf41/0x1b50 net/unix/af_unix.c:2043
+ sock_sendmsg_nosec net/socket.c:714 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:734
+ ____sys_sendmsg+0x6eb/0x810 net/socket.c:2482
+ __sys_sendmsg_sock+0x26/0x30 net/socket.c:2548
+ io_sendmsg+0x246/0x7d0 io_uring/net.c:289
+ io_issue_sqe+0x6b6/0xd20 io_uring/io_uring.c:1577
+ io_queue_sqe io_uring/io_uring.c:1755 [inline]
+ io_submit_sqe io_uring/io_uring.c:2013 [inline]
+ io_submit_sqes+0x94e/0x1d30 io_uring/io_uring.c:2124
+ __do_sys_io_uring_enter+0xb85/0x1ea0 io_uring/io_uring.c:3054
+ do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
+ __do_fast_syscall_32+0x65/0xf0 arch/x86/entry/common.c:178
+ do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:203
+ entry_SYSENTER_compat_after_hwframe+0x70/0x82
+RIP: 0023:0xf7faf549
+Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
+RSP: 002b:00000000f7f895cc EFLAGS: 00000296 ORIG_RAX: 00000000000001aa
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000002a6e
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
+----------------
+Code disassembly (best guess):
+   0:	03 74 c0 01          	add    0x1(%rax,%rax,8),%esi
+   4:	10 05 03 74 b8 01    	adc    %al,0x1b87403(%rip)        # 0x1b8740d
+   a:	10 06                	adc    %al,(%rsi)
+   c:	03 74 b4 01          	add    0x1(%rsp,%rsi,4),%esi
+  10:	10 07                	adc    %al,(%rdi)
+  12:	03 74 b0 01          	add    0x1(%rax,%rsi,4),%esi
+  16:	10 08                	adc    %cl,(%rax)
+  18:	03 74 d8 01          	add    0x1(%rax,%rbx,8),%esi
+  1c:	00 00                	add    %al,(%rax)
+  1e:	00 00                	add    %al,(%rax)
+  20:	00 51 52             	add    %dl,0x52(%rcx)
+  23:	55                   	push   %rbp
+  24:	89 e5                	mov    %esp,%ebp
+  26:	0f 34                	sysenter
+  28:	cd 80                	int    $0x80
+* 2a:	5d                   	pop    %rbp <-- trapping instruction
+  2b:	5a                   	pop    %rdx
+  2c:	59                   	pop    %rcx
+  2d:	c3                   	retq
+  2e:	90                   	nop
+  2f:	90                   	nop
+  30:	90                   	nop
+  31:	90                   	nop
+  32:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
+  39:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
