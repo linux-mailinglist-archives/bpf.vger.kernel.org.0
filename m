@@ -2,101 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CBCF5BE937
-	for <lists+bpf@lfdr.de>; Tue, 20 Sep 2022 16:43:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 400555BE9B2
+	for <lists+bpf@lfdr.de>; Tue, 20 Sep 2022 17:09:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229973AbiITOnM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Sep 2022 10:43:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44294 "EHLO
+        id S229902AbiITPJ2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Sep 2022 11:09:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229982AbiITOnK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Sep 2022 10:43:10 -0400
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB8A2543ED;
-        Tue, 20 Sep 2022 07:43:08 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id E0C843200A9B;
-        Tue, 20 Sep 2022 10:43:06 -0400 (EDT)
-Received: from imap49 ([10.202.2.99])
-  by compute5.internal (MEProxy); Tue, 20 Sep 2022 10:43:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lmb.io; h=cc:cc
-        :content-type:date:date:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to; s=fm1; t=1663684986; x=1663771386; bh=b2NLgxbKTa
-        U2l5yP5VXesj/Hv+T6knC6w277DZ3PdJA=; b=ih9ZoJHo9YEylOAnCcyOV5AWOK
-        aKbXcUNOo4djhqP0JssSm9mFG1oJsWVSzqXSYsnq+luS4swJhxOMCM2zxsDQFgiS
-        ncFdCXyR25YNVP/x3ImcAhGJKyIi/LqcYsB8jUB9sbC7iyWe4lstGu/5SsrYfAg1
-        YIddBpOXXW1JsMQIWXe7BQkABkzU6hBJKX9xhSUKSJxwu6oOc1t+kkZGrQStFe/z
-        wwb0t4cenVjDY/C6Mfke/3ZNnOjjN6ss5kfcafuvoK7s5DJuJcvJ5Sz+GQ8xJy2c
-        6oGqrIBkDIf6+laRqhexs/ZLAOOE/vdBy4ebyiqwR2CPWdJKZK8FgQAhAbyw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; t=1663684986; x=1663771386; bh=b2NLgxbKTaU2l5yP5VXesj/Hv+T6
-        knC6w277DZ3PdJA=; b=vtKXxz+TRdNO6vZUGcoMywyPDZVHvxLVbR4ALCX+kNyk
-        zt7L04kMWLLX6Q+BfKZF0ftn8Ihaj5SO1v0UqJKqk+GVTEAKnb4wCl9YX0KtTr1l
-        /1GnvkjnzUvOprS+88gwuR/sg31hcqwjXS986lxrlN3kL8gwhf5eN/BBBYJxoQL9
-        5TPLbZ4UUBoajIwxuyReLl+4ADXGnEayoZcNoIca8KVVETTBFNAeK8z6gsmupk6s
-        pfKbvkwHNz4HsKGoEFNxYmVaO23YHQ/JnSza0pMpXOv4umOKxiHd7cFRFYwlIDIq
-        MjUKoOG9cap8nhtrf71IUUEFGeMVqfWtT2v4BoQZfA==
-X-ME-Sender: <xms:edEpY9UCEJtBUUVB0GO6X2RNy54fsRdl_zx21xd-w9QEKxTf7Why4w>
-    <xme:edEpY9murgI72Nfu6q-H-iwLaeY397XZwQFlHixqw83SA5LNAdL9ZWhOEezSnIH5N
-    WDwc4tU9zm7paZoPA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrfedvledgkedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefofgggkfgjfhffhffvvefutgesth
-    dtredtreertdenucfhrhhomhepfdfnohhrvghniicuuegruhgvrhdfuceoohhssheslhhm
-    sgdrihhoqeenucggtffrrghtthgvrhhnpeffteegfffgffffueduiefhffeufffgleehge
-    dtleelgefgfffgveefkeeftdffleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgr
-    mhepmhgrihhlfhhrohhmpehoshhssehlmhgsrdhioh
-X-ME-Proxy: <xmx:edEpY5bA42ppEheW6rRmDymHpc7ZB5Uui1Wxt8epQrme9N1jCo9qkA>
-    <xmx:edEpYwUwKwXT-fm8LaQIpU8sY0u8O9mmCdY-FxpwhqjSpIb8ngpYBA>
-    <xmx:edEpY3m0Z9cit3h2KbooAVlM_2UniBxt1AC6wlFEZ-AGVfWaUSfIGA>
-    <xmx:etEpYwAs5EotP83TNIuRrq_nhIHuFzHDsDgx1rXS9gjdPasni_pV2A>
-Feedback-ID: icd3146c6:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 8C06415A0087; Tue, 20 Sep 2022 10:43:05 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.7.0-alpha0-935-ge4ccd4c47b-fm-20220914.001-ge4ccd4c4
-Mime-Version: 1.0
-Message-Id: <aec8ef40-260c-4ded-b806-d381a3075ff0@www.fastmail.com>
-In-Reply-To: <5a3c5ea9-d557-6070-d778-1092f3c51257@huawei.com>
-References: <20220715115559.139691-1-shaozhengchao@huawei.com>
- <20220914111936.19881-1-oss@lmb.io>
- <CAKH8qBujKnFh8_g+npxHpo7RGFshus3N0iysmVBohTtG1X2yow@mail.gmail.com>
- <5a3c5ea9-d557-6070-d778-1092f3c51257@huawei.com>
-Date:   Tue, 20 Sep 2022 15:42:31 +0100
-From:   "Lorenz Bauer" <oss@lmb.io>
-To:     shaozhengchao <shaozhengchao@huawei.com>,
-        "Stanislav Fomichev" <sdf@google.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yuehaibing@huawei.com
-Subject: Re: [PATCH v4,bpf-next] bpf: Don't redirect packets with invalid pkt_len
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229812AbiITPJ1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Sep 2022 11:09:27 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58E9A29CB5
+        for <bpf@vger.kernel.org>; Tue, 20 Sep 2022 08:09:24 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id bq9so4810759wrb.4
+        for <bpf@vger.kernel.org>; Tue, 20 Sep 2022 08:09:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date;
+        bh=Ka7EPG5Xut0v8+2/48BohUWIHUgDtwFwJB88xgoGnyk=;
+        b=b6bsp1ACrwaFLHldPV1fKgPrq7g4nwegTR+Ny/0mVucro9R943onenV3BEN2H5E5ur
+         wDTiNHJRyAcgYah8sYTnvpiIJDfCDLukWeKqDlB2te9MThRNrRmhuNBaitBvzqsItj2t
+         PJoEVgwx8G6wb/2B9vrfFYHMUbokY4ZtORyTDkTLrGfWgMauripCLTo2jATXxj8GeINq
+         n6WMrjDe3v2hKJWiVZlWzh8dCAb8dqQow6yPMKcDRKKs6MfP1qgj+knNnhZ4XL9igB/E
+         xs2a+VEjo79ke9xENnOyRcnveyQnlIRvgWqpNjJ1s/Z/OJdlJc5CN4l0CPQnPht91giZ
+         hIfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date;
+        bh=Ka7EPG5Xut0v8+2/48BohUWIHUgDtwFwJB88xgoGnyk=;
+        b=KgMJcARLneTuQtSDI6gdNAVVwmbt/j3X/IrVnXfP0yLV7pYZkbefjIvOLwQPZnwnA2
+         K8HAm7+9k9Hfh9kPMc9MpCiNXtEROngD3oioZ1SFXmabgF/RVUAxzARJ1MzzWx+oIzdq
+         +Fi/4LVFhi2NXzDBFqrgNM9beJJHNBe1MJleh/arBs+tXJAookEJGI6zz09G8IVefiyb
+         H11Ra4i59yARWR0wHfhkAzpljfhoxHtlXoi114DTNK1GDCTom2b6c6oH2eyVP4dNwfJ/
+         Hy4G2oDlVFRbG8OgRI+ZOjhIswlI7PaI0c3/PXCVtgp/AGA8f0lBMAXUoxM7zWabFOKd
+         6C4g==
+X-Gm-Message-State: ACrzQf0hCYvmBKYFTZsQE+B8g5TvTDMglQK/FOOq13DiIhxccR4UW0jU
+        xLeiIV05faJq5PjVBbLwG5FBgw==
+X-Google-Smtp-Source: AMsMyM5Ah4BP1hEXKyWVmR/bZ3Gv1JyrxqPKL6ZiXk9zNi2Ku0QZsVu7HE6AbEQTDFEjBBOiqiD5fg==
+X-Received: by 2002:adf:e10c:0:b0:225:3168:c261 with SMTP id t12-20020adfe10c000000b002253168c261mr14090730wrz.159.1663686562838;
+        Tue, 20 Sep 2022 08:09:22 -0700 (PDT)
+Received: from [192.168.178.32] ([51.155.200.13])
+        by smtp.gmail.com with ESMTPSA id t13-20020a5d6a4d000000b00228da845d4dsm226170wrw.94.2022.09.20.08.09.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Sep 2022 08:09:21 -0700 (PDT)
+Message-ID: <7db01da4-3aa0-6b40-7816-5f5ea3bc157b@isovalent.com>
+Date:   Tue, 20 Sep 2022 16:09:20 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.2
+Subject: Re: [bpf-next v4 1/3] bpftool: Add auto_attach for bpf prog
+ load|loadall
+Content-Language: en-GB
+To:     Wang Yufen <wangyufen@huawei.com>, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        hawk@kernel.org, nathan@kernel.org, ndesaulniers@google.com,
+        trix@redhat.com
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, llvm@lists.linux.dev
+References: <1663037687-26006-1-git-send-email-wangyufen@huawei.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <1663037687-26006-1-git-send-email-wangyufen@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 19 Sep 2022, at 11:55, shaozhengchao wrote:
-> Sorry for the delay. I'm busy testing the TC module recently. I'm very 
-> sorry for the user-space breakage.
->
-> The root cause of this problem is that eth_type_trans() is called when
-> the protocol type of the SKB is parsed. The len value of the SKB is
-> reduced to 0. If the user mode requires that the forwarding succeed, or
->   if the MAC header is added again after the MAC header is subtracted, 
-> is this appropriate?
+Tue Sep 13 2022 03:54:45 GMT+0100 (British Summer Time) ~ Wang Yufen
+<wangyufen@huawei.com>
+> Add auto_attach optional to support one-step load-attach-pin_link.
+> 
+> For example,
+>    $ bpftool prog loadall test.o /sys/fs/bpf/test auto_attach
+> 
+>    $ bpftool link
+>    26: tracing  name test1  tag f0da7d0058c00236  gpl
+>    	loaded_at 2022-09-09T21:39:49+0800  uid 0
+>    	xlated 88B  jited 55B  memlock 4096B  map_ids 3
+>    	btf_id 55
+>    28: kprobe  name test3  tag 002ef1bef0723833  gpl
+>    	loaded_at 2022-09-09T21:39:49+0800  uid 0
+>    	xlated 88B  jited 56B  memlock 4096B  map_ids 3
+>    	btf_id 55
+>    57: tracepoint  name oncpu  tag 7aa55dfbdcb78941  gpl
+>    	loaded_at 2022-09-09T21:41:32+0800  uid 0
+>    	xlated 456B  jited 265B  memlock 4096B  map_ids 17,13,14,15
+>    	btf_id 82
+> 
+>    $ bpftool link
+>    1: tracing  prog 26
+>    	prog_type tracing  attach_type trace_fentry
+>    3: perf_event  prog 28
+>    10: perf_event  prog 57
+> 
+> The auto_attach optional can support tracepoints, k(ret)probes,
+> u(ret)probes.
+> 
+> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+> Signed-off-by: Wang Yufen <wangyufen@huawei.com>
 
-We don't require forwarding to succeed with a 14 byte input buffer. We also don't look at the MAC header.
+Looks good to me, thank you
 
-I think refusing to forward 0 length packets would be OK. Not 100% certain I understood you correctly, let me know if this helps.
+Reviewed-by: Quentin Monnet <quentin@isovalent.com>
 
-Best
-Lorenz
