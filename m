@@ -2,241 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 372F65BE671
-	for <lists+bpf@lfdr.de>; Tue, 20 Sep 2022 14:54:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26D225BE72B
+	for <lists+bpf@lfdr.de>; Tue, 20 Sep 2022 15:34:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231388AbiITMyW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Sep 2022 08:54:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49960 "EHLO
+        id S230150AbiITNeh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Sep 2022 09:34:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231406AbiITMxw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Sep 2022 08:53:52 -0400
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E81EF75FCB
-        for <bpf@vger.kernel.org>; Tue, 20 Sep 2022 05:53:34 -0700 (PDT)
-Received: by mail-il1-f197.google.com with SMTP id i13-20020a056e02152d00b002f58aea654fso1515162ilu.20
-        for <bpf@vger.kernel.org>; Tue, 20 Sep 2022 05:53:34 -0700 (PDT)
+        with ESMTP id S230055AbiITNef (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Sep 2022 09:34:35 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D746DCD4;
+        Tue, 20 Sep 2022 06:34:30 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id o70-20020a17090a0a4c00b00202f898fa86so2500611pjo.2;
+        Tue, 20 Sep 2022 06:34:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=Ud1zLgXH9AoOTKaYWX8ixkpv9cvGKhiKEy3m7R2TJr0=;
+        b=WmGMJacRaa9mKwkL/FSCqBD9WAcWHIA5mGjDhAoJiZpWncEvQivRiD6ahlCswCWTUZ
+         U54lVxtiFuoQBn9t59ANs9QkriEcbNFYaqIm08Pup2x8i7b7emBxog5ODGweq/EpXfQM
+         yNE2AVwS63/au95MYlXofk8aiTkYOtgUjF//YJRxLXjSdVcVDYNkkk2WZt6/O0MrQ4Ui
+         p3NmZ8bGWEWkTNLZdqSpenux7bC9RGFRC3Dox+4WpGrkmpN6er2FJozi59IC8xv+ulHB
+         OIo2IRe5e6OlBxpDLgGfkpKMxz78H5I5P392Vu6ZTJbgnphl4Oq6W9UWMxCP42se1aWQ
+         574Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date;
-        bh=jQJm8Z+up347I13dxWYRPWK1SdivX1s8IHwB5EA/8gk=;
-        b=0k6am7aMgG57zEa/Nhf1OwWotHVmmG4Q0lQTPYdeD7JYEJMhgrKyLeWFnIBbah6i7F
-         RQilOf7ix44ifd3dVYifcBrAOD1fjb/CXG4ci4VuACZVKpd1U4wr77y4pNP4904A+EyX
-         7aPGcPZ3q+CvOv3ukWzGAmMSDC8r+sRwGZc7Y+7Y+WWG6DfqZM1MBJpNEJgnY4KjPSG/
-         Hs71vzaYGM7a5qXKVjhU6LxAX/1OdcYIG2xYMV6rMB4do1SoJUVvs/ChfU3VJWww8rlH
-         Uvm1HljrdeOBVppRr1GiD9KPqf033UL+WX7+Jna7knoOwIQb27/0aRwz7AaGNHH90RvB
-         bAQA==
-X-Gm-Message-State: ACrzQf2+FRdTdQnoq+0Ywa+/fdk8mGSOHhzJ6NsxlZPuRLDhnEPyFySb
-        YdOx7akf16wirBHgZLarbKqHTSwX9Xkhng7OV2C/dUs8wRaR
-X-Google-Smtp-Source: AMsMyM6l6LLo4LWGKy1iezG8GllPNubQqkEn/HEBaG5rq+mYVV3f7Bc8lO3y7PQiTnHuHMq2nyIulejtxAPn4IVQmHIUWDcBul4c
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=Ud1zLgXH9AoOTKaYWX8ixkpv9cvGKhiKEy3m7R2TJr0=;
+        b=IttLIa37k6bRZQnXSHFWk3gG1E0nFtOZw4bP35CXL3IqFvok305WmqU0rw8YPK4dqD
+         Df+bsg1EH/eTkKEykpEaWYAZ9CgcnssCz3YFBsCLnnyLyMvmgRHPC9WIUqLY+NWl/+Nm
+         l/fgS6E9a+tzlQQ10e00Sxczf0CTMJm1jp1bkJNFJc2O8JQVPwyWED27JaB1j0g5Kf9A
+         qp2lR7DPy800lGV0K9QusA2VQCWlMUmOnigt3oJQX24t9z+Ki/SQQrialsdcjzZjqgMb
+         HYJikhEYj2nurQn0OeJNjX8tae7P06R7+7s7Zfok5O7fZIosz+AD7iV9dS48JsC99HOk
+         eDog==
+X-Gm-Message-State: ACrzQf2H5P3T0jNNT9TSRnTPoSNxIBTO0RR0x83938/08XarZuW7dMyu
+        aerLUW1Ndmp7YVAUYsvHBuZgpcC8SwSTwm5ksjfBEbMpAc/k+mDy
+X-Google-Smtp-Source: AMsMyM6E2HA8/leiFEFaY65VyvtF6eRZ91zeoQsTy0Ppg6zZHbNuIAQVLLwESFu05DhZpCyeFbQBE9tu9E+Ha1VFluA=
+X-Received: by 2002:a17:903:32cf:b0:178:3d49:45b0 with SMTP id
+ i15-20020a17090332cf00b001783d4945b0mr4853354plr.5.1663680870272; Tue, 20 Sep
+ 2022 06:34:30 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:150c:b0:35a:f7a9:c3d8 with SMTP id
- b12-20020a056638150c00b0035af7a9c3d8mr1916588jat.38.1663678413730; Tue, 20
- Sep 2022 05:53:33 -0700 (PDT)
-Date:   Tue, 20 Sep 2022 05:53:33 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000def90305e91b5016@google.com>
-Subject: [syzbot] possible deadlock in skb_queue_tail (4)
-From:   syzbot <syzbot+44b38bcb874d81a15a57@syzkaller.appspotmail.com>
-To:     bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, kuniyu@amazon.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, pabeni@redhat.com,
-        syzkaller-bugs@googlegroups.com
+References: <Yymq2WLA6q6TxnNq@ipe420-102>
+In-Reply-To: <Yymq2WLA6q6TxnNq@ipe420-102>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Tue, 20 Sep 2022 15:34:19 +0200
+Message-ID: <CAJ8uoz2D9mGjZzo6SmAWtgbb0A3AB_Nk4eYXajenv3VDBA11=A@mail.gmail.com>
+Subject: Re: [PATCH bpf v2] xsk: inherit need_wakeup flag for shared sockets
+To:     Jalal Mostafa <jalal.a.mostapha@gmail.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, bjorn@kernel.org,
+        magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
+        jonathan.lemon@gmail.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, daniel@iogearbox.net,
+        linux-kernel@vger.kernel.org, jalal.mostafa@kit.edu
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On Tue, Sep 20, 2022 at 1:58 PM Jalal Mostafa
+<jalal.a.mostapha@gmail.com> wrote:
+>
+> The flag for need_wakeup is not set for xsks with `XDP_SHARED_UMEM`
+> flag and of different queue ids and/or devices. They should inherit
+> the flag from the first socket buffer pool since no flags can be
+> specified once `XDP_SHARED_UMEM` is specified. The issue is fixed
+> by creating a new function `xp_create_and_assign_umem_shared` to
+> create xsk_buff_pool for xsks with the shared umem flag set.
 
-syzbot found the following issue on:
+Thanks!
 
-HEAD commit:    3245cb65fd91 Merge tag 'devicetree-fixes-for-6.0-2' of git..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12b0c487080000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=98a30118ec9215e9
-dashboard link: https://syzkaller.appspot.com/bug?extid=44b38bcb874d81a15a57
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-userspace arch: i386
+Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+44b38bcb874d81a15a57@syzkaller.appspotmail.com
-
-======================================================
-WARNING: possible circular locking dependency detected
-6.0.0-rc5-syzkaller-00025-g3245cb65fd91 #0 Not tainted
-------------------------------------------------------
-syz-executor.4/21149 is trying to acquire lock:
-ffff8880178441e8 (rlock-AF_UNIX){+.+.}-{2:2}, at: skb_queue_tail+0x21/0x140 net/core/skbuff.c:3400
-
-but task is already holding lock:
-ffff888017844670 (&u->lock/1){+.+.}-{2:2}, at: unix_state_double_lock net/unix/af_unix.c:1298 [inline]
-ffff888017844670 (&u->lock/1){+.+.}-{2:2}, at: unix_state_double_lock+0x77/0xa0 net/unix/af_unix.c:1290
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #1 (&u->lock/1){+.+.}-{2:2}:
-       _raw_spin_lock_nested+0x30/0x40 kernel/locking/spinlock.c:378
-       sk_diag_dump_icons net/unix/diag.c:87 [inline]
-       sk_diag_fill+0xaaf/0x10d0 net/unix/diag.c:155
-       sk_diag_dump net/unix/diag.c:193 [inline]
-       unix_diag_dump+0x3a9/0x640 net/unix/diag.c:217
-       netlink_dump+0x541/0xc20 net/netlink/af_netlink.c:2275
-       __netlink_dump_start+0x647/0x900 net/netlink/af_netlink.c:2380
-       netlink_dump_start include/linux/netlink.h:245 [inline]
-       unix_diag_handler_dump net/unix/diag.c:315 [inline]
-       unix_diag_handler_dump+0x5c2/0x830 net/unix/diag.c:304
-       __sock_diag_cmd net/core/sock_diag.c:235 [inline]
-       sock_diag_rcv_msg+0x31a/0x440 net/core/sock_diag.c:266
-       netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2501
-       sock_diag_rcv+0x26/0x40 net/core/sock_diag.c:277
-       netlink_unicast_kernel net/netlink/af_netlink.c:1319 [inline]
-       netlink_unicast+0x543/0x7f0 net/netlink/af_netlink.c:1345
-       netlink_sendmsg+0x917/0xe10 net/netlink/af_netlink.c:1921
-       sock_sendmsg_nosec net/socket.c:714 [inline]
-       sock_sendmsg+0xcf/0x120 net/socket.c:734
-       sock_write_iter+0x291/0x3d0 net/socket.c:1108
-       call_write_iter include/linux/fs.h:2187 [inline]
-       do_iter_readv_writev+0x20b/0x3b0 fs/read_write.c:729
-       do_iter_write+0x182/0x700 fs/read_write.c:855
-       vfs_writev+0x1aa/0x630 fs/read_write.c:928
-       do_writev+0x279/0x2f0 fs/read_write.c:971
-       do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
-       __do_fast_syscall_32+0x65/0xf0 arch/x86/entry/common.c:178
-       do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:203
-       entry_SYSENTER_compat_after_hwframe+0x70/0x82
-
--> #0 (rlock-AF_UNIX){+.+.}-{2:2}:
-       check_prev_add kernel/locking/lockdep.c:3095 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3214 [inline]
-       validate_chain kernel/locking/lockdep.c:3829 [inline]
-       __lock_acquire+0x2a43/0x56d0 kernel/locking/lockdep.c:5053
-       lock_acquire kernel/locking/lockdep.c:5666 [inline]
-       lock_acquire+0x1ab/0x570 kernel/locking/lockdep.c:5631
-       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-       _raw_spin_lock_irqsave+0x39/0x50 kernel/locking/spinlock.c:162
-       skb_queue_tail+0x21/0x140 net/core/skbuff.c:3400
-       unix_dgram_sendmsg+0xf41/0x1b50 net/unix/af_unix.c:2043
-       sock_sendmsg_nosec net/socket.c:714 [inline]
-       sock_sendmsg+0xcf/0x120 net/socket.c:734
-       ____sys_sendmsg+0x6eb/0x810 net/socket.c:2482
-       __sys_sendmsg_sock+0x26/0x30 net/socket.c:2548
-       io_sendmsg+0x246/0x7d0 io_uring/net.c:289
-       io_issue_sqe+0x6b6/0xd20 io_uring/io_uring.c:1577
-       io_queue_sqe io_uring/io_uring.c:1755 [inline]
-       io_submit_sqe io_uring/io_uring.c:2013 [inline]
-       io_submit_sqes+0x94e/0x1d30 io_uring/io_uring.c:2124
-       __do_sys_io_uring_enter+0xb85/0x1ea0 io_uring/io_uring.c:3054
-       do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
-       __do_fast_syscall_32+0x65/0xf0 arch/x86/entry/common.c:178
-       do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:203
-       entry_SYSENTER_compat_after_hwframe+0x70/0x82
-
-other info that might help us debug this:
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&u->lock/1);
-                               lock(rlock-AF_UNIX);
-                               lock(&u->lock/1);
-  lock(rlock-AF_UNIX);
-
- *** DEADLOCK ***
-
-2 locks held by syz-executor.4/21149:
- #0: ffff88807dcb40a8 (&ctx->uring_lock){+.+.}-{3:3}, at: __do_sys_io_uring_enter+0xb7a/0x1ea0 io_uring/io_uring.c:3053
- #1: ffff888017844670 (&u->lock/1){+.+.}-{2:2}, at: unix_state_double_lock net/unix/af_unix.c:1298 [inline]
- #1: ffff888017844670 (&u->lock/1){+.+.}-{2:2}, at: unix_state_double_lock+0x77/0xa0 net/unix/af_unix.c:1290
-
-stack backtrace:
-CPU: 0 PID: 21149 Comm: syz-executor.4 Not tainted 6.0.0-rc5-syzkaller-00025-g3245cb65fd91 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/26/2022
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2175
- check_prev_add kernel/locking/lockdep.c:3095 [inline]
- check_prevs_add kernel/locking/lockdep.c:3214 [inline]
- validate_chain kernel/locking/lockdep.c:3829 [inline]
- __lock_acquire+0x2a43/0x56d0 kernel/locking/lockdep.c:5053
- lock_acquire kernel/locking/lockdep.c:5666 [inline]
- lock_acquire+0x1ab/0x570 kernel/locking/lockdep.c:5631
- __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
- _raw_spin_lock_irqsave+0x39/0x50 kernel/locking/spinlock.c:162
- skb_queue_tail+0x21/0x140 net/core/skbuff.c:3400
- unix_dgram_sendmsg+0xf41/0x1b50 net/unix/af_unix.c:2043
- sock_sendmsg_nosec net/socket.c:714 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:734
- ____sys_sendmsg+0x6eb/0x810 net/socket.c:2482
- __sys_sendmsg_sock+0x26/0x30 net/socket.c:2548
- io_sendmsg+0x246/0x7d0 io_uring/net.c:289
- io_issue_sqe+0x6b6/0xd20 io_uring/io_uring.c:1577
- io_queue_sqe io_uring/io_uring.c:1755 [inline]
- io_submit_sqe io_uring/io_uring.c:2013 [inline]
- io_submit_sqes+0x94e/0x1d30 io_uring/io_uring.c:2124
- __do_sys_io_uring_enter+0xb85/0x1ea0 io_uring/io_uring.c:3054
- do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
- __do_fast_syscall_32+0x65/0xf0 arch/x86/entry/common.c:178
- do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:203
- entry_SYSENTER_compat_after_hwframe+0x70/0x82
-RIP: 0023:0xf7faf549
-Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
-RSP: 002b:00000000f7f895cc EFLAGS: 00000296 ORIG_RAX: 00000000000001aa
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000002a6e
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
- </TASK>
-----------------
-Code disassembly (best guess):
-   0:	03 74 c0 01          	add    0x1(%rax,%rax,8),%esi
-   4:	10 05 03 74 b8 01    	adc    %al,0x1b87403(%rip)        # 0x1b8740d
-   a:	10 06                	adc    %al,(%rsi)
-   c:	03 74 b4 01          	add    0x1(%rsp,%rsi,4),%esi
-  10:	10 07                	adc    %al,(%rdi)
-  12:	03 74 b0 01          	add    0x1(%rax,%rsi,4),%esi
-  16:	10 08                	adc    %cl,(%rax)
-  18:	03 74 d8 01          	add    0x1(%rax,%rbx,8),%esi
-  1c:	00 00                	add    %al,(%rax)
-  1e:	00 00                	add    %al,(%rax)
-  20:	00 51 52             	add    %dl,0x52(%rcx)
-  23:	55                   	push   %rbp
-  24:	89 e5                	mov    %esp,%ebp
-  26:	0f 34                	sysenter
-  28:	cd 80                	int    $0x80
-* 2a:	5d                   	pop    %rbp <-- trapping instruction
-  2b:	5a                   	pop    %rdx
-  2c:	59                   	pop    %rcx
-  2d:	c3                   	retq
-  2e:	90                   	nop
-  2f:	90                   	nop
-  30:	90                   	nop
-  31:	90                   	nop
-  32:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
-  39:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> Fixes: b5aea28dca134 ("xsk: Add shared umem support between queue ids")
+> Signed-off-by: Jalal Mostafa <jalal.a.mostapha@gmail.com>
+> ---
+>  include/net/xsk_buff_pool.h | 2 +-
+>  net/xdp/xsk.c               | 4 ++--
+>  net/xdp/xsk_buff_pool.c     | 5 +++--
+>  3 files changed, 6 insertions(+), 5 deletions(-)
+>
+> diff --git a/include/net/xsk_buff_pool.h b/include/net/xsk_buff_pool.h
+> index 647722e847b4..f787c3f524b0 100644
+> --- a/include/net/xsk_buff_pool.h
+> +++ b/include/net/xsk_buff_pool.h
+> @@ -95,7 +95,7 @@ struct xsk_buff_pool *xp_create_and_assign_umem(struct xdp_sock *xs,
+>                                                 struct xdp_umem *umem);
+>  int xp_assign_dev(struct xsk_buff_pool *pool, struct net_device *dev,
+>                   u16 queue_id, u16 flags);
+> -int xp_assign_dev_shared(struct xsk_buff_pool *pool, struct xdp_umem *umem,
+> +int xp_assign_dev_shared(struct xsk_buff_pool *pool, struct xdp_sock *umem_xs,
+>                          struct net_device *dev, u16 queue_id);
+>  int xp_alloc_tx_descs(struct xsk_buff_pool *pool, struct xdp_sock *xs);
+>  void xp_destroy(struct xsk_buff_pool *pool);
+> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> index 5b4ce6ba1bc7..7bada4e8460b 100644
+> --- a/net/xdp/xsk.c
+> +++ b/net/xdp/xsk.c
+> @@ -954,8 +954,8 @@ static int xsk_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
+>                                 goto out_unlock;
+>                         }
+>
+> -                       err = xp_assign_dev_shared(xs->pool, umem_xs->umem,
+> -                                                  dev, qid);
+> +                       err = xp_assign_dev_shared(xs->pool, umem_xs, dev,
+> +                                                  qid);
+>                         if (err) {
+>                                 xp_destroy(xs->pool);
+>                                 xs->pool = NULL;
+> diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
+> index a71a8c6edf55..ed6c71826d31 100644
+> --- a/net/xdp/xsk_buff_pool.c
+> +++ b/net/xdp/xsk_buff_pool.c
+> @@ -212,17 +212,18 @@ int xp_assign_dev(struct xsk_buff_pool *pool,
+>         return err;
+>  }
+>
+> -int xp_assign_dev_shared(struct xsk_buff_pool *pool, struct xdp_umem *umem,
+> +int xp_assign_dev_shared(struct xsk_buff_pool *pool, struct xdp_sock *umem_xs,
+>                          struct net_device *dev, u16 queue_id)
+>  {
+>         u16 flags;
+> +       struct xdp_umem *umem = umem_xs->umem;
+>
+>         /* One fill and completion ring required for each queue id. */
+>         if (!pool->fq || !pool->cq)
+>                 return -EINVAL;
+>
+>         flags = umem->zc ? XDP_ZEROCOPY : XDP_COPY;
+> -       if (pool->uses_need_wakeup)
+> +       if (umem_xs->pool->uses_need_wakeup)
+>                 flags |= XDP_USE_NEED_WAKEUP;
+>
+>         return xp_assign_dev(pool, dev, queue_id, flags);
+> --
+> 2.34.1
+>
