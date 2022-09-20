@@ -2,105 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBF365BF0FE
-	for <lists+bpf@lfdr.de>; Wed, 21 Sep 2022 01:20:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9145E5BF165
+	for <lists+bpf@lfdr.de>; Wed, 21 Sep 2022 01:42:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230397AbiITXUX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Sep 2022 19:20:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35320 "EHLO
+        id S231321AbiITXm3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Sep 2022 19:42:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230366AbiITXUW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Sep 2022 19:20:22 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2D956FA04;
-        Tue, 20 Sep 2022 16:20:20 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 804A8B82D81;
-        Tue, 20 Sep 2022 23:20:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 3EE19C433B5;
-        Tue, 20 Sep 2022 23:20:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1663716018;
-        bh=jSDU7z+DfMk994+rWCGyS11qd9s+VKIKfL5H3gFC1+s=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=rxkNtW+4kOozbxITd0msNqPliRKpY00SFmcsLlHmPlThOFfMmtArcd1gaJvAYx7kl
-         DLavtX146xPwd554SXe19t/X5UBVrH4CwwUPUU8JsD2mSPOj+VxmzJqVhzPPrTKECB
-         0FwliItjCBDpBahT/5i4J+Wwdu3giRnwa+NoMS8yd0M1DHirLhc/3HC3cvxQsm0PFq
-         m0LkNCo/osTjuTflucm74uWxNtYBo1uiPEFX3EcZ4xxcGHEVXRnl0o3cev5vTKiAJA
-         08HiZ9Ev07ZEP/wYg/BOiFrg8nKSqxK0GS5Qw1yR20cGEnCIIJtoDdYkm2/FvsKOld
-         RRfH8eCLKsLCQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1BE50E21EE2;
-        Tue, 20 Sep 2022 23:20:18 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S231307AbiITXmK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Sep 2022 19:42:10 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7CF067144
+        for <bpf@vger.kernel.org>; Tue, 20 Sep 2022 16:40:04 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id r18so9821887eja.11
+        for <bpf@vger.kernel.org>; Tue, 20 Sep 2022 16:40:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=sBvvo1075jmRAUVT4RTpdkKYu5ofw6jTWvXU5oY15rM=;
+        b=A5LyEwNZB27ihqCA2MmM7UvodZEMEu01kZ1q1xqNZjte0bT5Cp8whi3/N7koPvEWAg
+         r6o5Y8R2qvunux1r17gNmxeyYaW5Tf9+TWOMlGhnTl5PjdgMQs7Fl03+hsDnnojKu/Lq
+         QDk9TxK4Hck6hpCNkWKockR3DIOFkEXJkJcBp4pJgw3ksddvtbldJftWEH8Tm8ere4nN
+         WoLA4g0LFG2OeSZsyL6oTJlqb9Xr683pmC1gPKYPOGcROWPwvIQ5OY4dHLFR5mUFIjjf
+         LxcVOTEfEnN0+/p3yFQaGTnG1eZLvjueHVLSrOQ6bpZp5fqgeP9D+8bqA3CuRYNwmEIf
+         r99g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=sBvvo1075jmRAUVT4RTpdkKYu5ofw6jTWvXU5oY15rM=;
+        b=cEvTC2OHf/2pxJ3Cz2u0amAW54cicanLKXT3EqR9yXEUqDJJO3CMcxpBGdJvaTY1qI
+         vRcDR72AFJzXhzFUHfpqi81UiXGUMkAGBosCix0dGgVzEH5l6Fvo31rZhzihTJUzfa/o
+         aDskqYXDr2AIjT+S5tNqa7Gct0R4MHdzC55RCM/QVlnFjj5aFHiNOZTvgOhvrz00+hxF
+         zxujg66rJLZJ/prqxUrhM+QrhlC470vEL+V6HFsX5O1N7ofNfdGaPO31WpHkJEkrJB3Y
+         F+jJ8mzT/nVsgi0u80kr85YUe5BG7cGHT9EN61rEkoQO2yrIfor4/YNeSUOymaR4P5YQ
+         zQIA==
+X-Gm-Message-State: ACrzQf3qn9e5vgdaEQ9nPSS2KTAUiCzGCt+e7+NXZCo1xr5ALinfP3aq
+        ht5vSjE7rxPUMcB6noSkybKZn/Dv6//Ey+2qHd8+wTLC
+X-Google-Smtp-Source: AMsMyM4UEk0PHGrZUvzkLG/KHibdnKs16l6m8pPpmhHt31dVrI0wYAo14IWMII5jMu6WE5ABrvVGMPIeGAaZDFZY8+g=
+X-Received: by 2002:a17:907:2d21:b0:77d:4f86:2e65 with SMTP id
+ gs33-20020a1709072d2100b0077d4f862e65mr18341333ejc.58.1663717203238; Tue, 20
+ Sep 2022 16:40:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next,v4 0/9] refactor duplicate codes in the tc cls walk
- function
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <166371601810.30252.3169134367339015145.git-patchwork-notify@kernel.org>
-Date:   Tue, 20 Sep 2022 23:20:18 +0000
-References: <20220916020251.190097-1-shaozhengchao@huawei.com>
-In-Reply-To: <20220916020251.190097-1-shaozhengchao@huawei.com>
-To:     shaozhengchao <shaozhengchao@huawei.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, jhs@mojatatu.com,
-        xiyou.wangcong@gmail.com, jiri@resnulli.us, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        shuah@kernel.org, victor@mojatatu.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, weiyongjun1@huawei.com, yuehaibing@huawei.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <CY5PR21MB377000AC95B475C47B702293A3439@CY5PR21MB3770.namprd21.prod.outlook.com>
+ <DM4PR21MB34401314FC9285A9F5A338E0A3479@DM4PR21MB3440.namprd21.prod.outlook.com>
+ <YyFzO205ZZPieCav@syu-laptop> <YyihFIOt6xGWrXdC@infradead.org> <DM4PR21MB344020798F08A9D967E70719A34C9@DM4PR21MB3440.namprd21.prod.outlook.com>
+In-Reply-To: <DM4PR21MB344020798F08A9D967E70719A34C9@DM4PR21MB3440.namprd21.prod.outlook.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 20 Sep 2022 16:39:52 -0700
+Message-ID: <CAADnVQ+bRxDkSWnx27KRm4mC3QrmPO+UyiA5VrjHNMQqeVYcNA@mail.gmail.com>
+Subject: Re: FW: ebpf-docs: draft of ISA doc updates in progress
+To:     Dave Thaler <dthaler@microsoft.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Shung-Hsi Yu <shung-hsi.yu@suse.com>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Tue, Sep 20, 2022 at 12:51 PM Dave Thaler <dthaler@microsoft.com> wrote:
+>
+> > -----Original Message-----
+> > From: Christoph Hellwig <hch@infradead.org>
+> > Sent: Monday, September 19, 2022 10:04 AM
+> > To: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+> > Cc: Dave Thaler <dthaler@microsoft.com>; bpf <bpf@vger.kernel.org>
+> > Subject: Re: FW: ebpf-docs: draft of ISA doc updates in progress
+> >
+> > On Wed, Sep 14, 2022 at 02:22:51PM +0800, Shung-Hsi Yu wrote:
+> > > As discussed in yesterday's session, there's no graceful abortion on
+> > > division by zero, instead, the BPF verifier in Linux prevents division
+> > > by zero from happening. Here a few additional notes:
+> >
+> > Hmm, I thought Alexei pointed out a while ago that divide by zero is now
+> > defined to return 0 following.  Ok, reading further along I think that is what
+> > you describe with the pseudo-code below.
+>
+> Based on the discussion at LPC, and the fact that older implementations,
+> as well as uBPF and rbpf still terminate the program, I've added this text
+> to permit both behaviors:
 
-This series was applied to netdev/net-next.git (master)
-by Jakub Kicinski <kuba@kernel.org>:
+That's not right. ubpf and rbpf are broken.
+We shouldn't be adding descriptions of broken implementations
+to the standard.
+There is no way to 'gracefully abort' in eBPF.
+There is a way to 'return 0' in cBPF, but that's different. See below.
 
-On Fri, 16 Sep 2022 10:02:42 +0800 you wrote:
-> The walk implementation of most tc cls modules is basically the same.
-> That is, the values of count and skip are checked first. If count is
-> greater than or equal to skip, the registered fn function is executed.
-> Otherwise, increase the value of count. So the code can be refactored.
-> Then use helper function to replace the code of each cls module in
-> alphabetical order.
-> 
-> [...]
+>
+> > If eBPF program execution would result in division by zero,
+> > the destination register SHOULD instead be set to zero, but
+> > program execution MAY be gracefully aborted instead.
+> > Similarly, if execution would result in modulo by zero,
+> > the destination register SHOULD instead be set to the source value,
+> > but program execution MAY be gracefully aborted instead.
+>
+> And elsewhere in the doc defined gracefully aborted as:
+>
+> > After execution of an eBPF program, register R0 contains the exit code
+> > whose meaning is defined by the program type, except that an exit code
+> > of -1 means the program was gracefully aborted.  That is, if a program
+> > is gracefully aborted for any reason, it means that no further instructions
+> > are executed, and a value of -1 is returned in register R0 to the caller of
+> > the program.
+>
+> The problem with that, as Quentin pointed out, is that -1 is a valid return
+> code from some program types like TC.  Do we suddenly declare
+> uBPF etc as being non-compliant?
 
-Here is the summary with links:
-  - [net-next,v4,1/9] net/sched: cls_api: add helper for tc cls walker stats dump
-    https://git.kernel.org/netdev/net-next/c/fe0df81df51e
-  - [net-next,v4,2/9] net/sched: use tc_cls_stats_dump() in filter
-    https://git.kernel.org/netdev/net-next/c/5508ff7cf375
-  - [net-next,v4,3/9] selftests/tc-testings: add selftests for bpf filter
-    https://git.kernel.org/netdev/net-next/c/93f3f2eaa4c9
-  - [net-next,v4,4/9] selftests/tc-testings: add selftests for cgroup filter
-    https://git.kernel.org/netdev/net-next/c/33c411927615
-  - [net-next,v4,5/9] selftests/tc-testings: add selftests for flow filter
-    https://git.kernel.org/netdev/net-next/c/58f82b3a0b05
-  - [net-next,v4,6/9] selftests/tc-testings: add selftests for route filter
-    https://git.kernel.org/netdev/net-next/c/67107e7fcfbe
-  - [net-next,v4,7/9] selftests/tc-testings: add selftests for rsvp filter
-    https://git.kernel.org/netdev/net-next/c/23020350eb6a
-  - [net-next,v4,8/9] selftests/tc-testings: add selftests for tcindex filter
-    https://git.kernel.org/netdev/net-next/c/fa8dfba59e78
-  - [net-next,v4,9/9] selftests/tc-testings: add list case for basic filter
-    https://git.kernel.org/netdev/net-next/c/972e88611240
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+yes. ubpf is non-compliant.
+-1 is just a radom number that ubpf picked.
+Classic BPF defines a certain situation for obsolete LD_ABS
+as 'return 0'.
+We had to keep it this way due to classic baggage,
+but, as we agreed, we're not going to define these two classic insns
+in the standard doc.
+So there should be no 'graceful abort' paragraph anywhere
+in the standard.
 
 
+> My preference is just to document
+> the issue, since such runtimes might choose to make -1 be a reserved
+> value for all program types they support.  After all the ISA does not
+> define program type details so they can use the ISA without TC etc.
+
+We can document with certainty the returns codes of XDP prog type
+and stress that they should be the same across all run-times.
+There is no reason for windows to be different from linux in XDP progs.
+What to do with TC and other returns codes is a different matter.
