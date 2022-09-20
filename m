@@ -2,110 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BAD25BDC4C
-	for <lists+bpf@lfdr.de>; Tue, 20 Sep 2022 07:21:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE44D5BDC3E
+	for <lists+bpf@lfdr.de>; Tue, 20 Sep 2022 07:21:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230195AbiITFVS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Sep 2022 01:21:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38184 "EHLO
+        id S230156AbiITFVF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Sep 2022 01:21:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230149AbiITFVE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Sep 2022 01:21:04 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5AC7558C8
-        for <bpf@vger.kernel.org>; Mon, 19 Sep 2022 22:21:00 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id l8so1053728wmi.2
-        for <bpf@vger.kernel.org>; Mon, 19 Sep 2022 22:21:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date;
-        bh=a8YXF4FkoK4BVn3ip9rlUtWQPJoXHaS5Sh7vR1MqvPE=;
-        b=WQmhzGMxqT4k0MzVa39wjOjN6R1nS4Ob/3kNG8TNGLSXt9PSeb2c6blJWFgxQBWMEE
-         C23t1U2Ydi8xpeQd79xyj1NUKN159B4wlJ0uql9e2c1y40fAoftHrIB4P9nJiAzIVpEc
-         7KIA6DDvj+g/2roQOyKEVsyV7TlelJzIbRSk6VdPWqmoqXMfhWm+sQJbsIOAlZ52A6TK
-         jXJGpUp6Cj/yQuc7aLBdKwq/c1nHMFHqnRUyvjANVydqd1waFKYVClY2XDHkhnRFCUpI
-         4mewNeL/RCaxFggAbnK/UfVspoTujKPYBB0HUdCmdO9TLqeLGv9Op2btNtAN5yn6WX1/
-         o9Yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date;
-        bh=a8YXF4FkoK4BVn3ip9rlUtWQPJoXHaS5Sh7vR1MqvPE=;
-        b=bdK0DZCYgh4/oq/pnt9MRB0eGUZaZ32Ualx1tDDTyzJ26hWfaVkKIa6+gHw3zNEiKv
-         kI2M9i4TPkrhrlRASqdWJ8sQM1oCubBl3d5poSGZaayOfswjAHoz3QzecCO5dM6iSQL1
-         HzUx9JhwIvgR9TJi2sL+cc/HwtWpBW5uCtAO2G6bE4brTbMmuzwo0rweH3F/kile4n1o
-         DoLdIOHToa1/4a2DalnmzBdby/uQr2f18Kb4TDL0Gfm+vW/L0BdZeRuhk50U4qIgI3M0
-         ddALYC53hk6fQKULZ2yV8SPnA7MRNyc86fv/7KAVq7ZmMNvoiELb0wSv80CsCo6omuAZ
-         WRHQ==
-X-Gm-Message-State: ACrzQf29d1sqkROwp9PM6WZ13oVATfBCd4y09Tuk58kkBey0JGissIGN
-        rzT8X2/wyqWQaMNowK0BG0291nFvypY=
-X-Google-Smtp-Source: AMsMyM4tMNmk9qzQ0VFB9tQwZPblgL5ica1PQNeJhq5B5Pi13OBZ1UM1aYqDsZQrO91xFDkbaF/Hmw==
-X-Received: by 2002:a05:600c:42d4:b0:3b3:3de1:7564 with SMTP id j20-20020a05600c42d400b003b33de17564mr969875wme.152.1663651260066;
-        Mon, 19 Sep 2022 22:21:00 -0700 (PDT)
-Received: from localhost.localdomain ([2a0d:6fc2:4af0:cc00:f99d:5d19:6e17:dc3a])
-        by smtp.gmail.com with ESMTPSA id n33-20020a05600c3ba100b003b3401f1e24sm827063wms.28.2022.09.19.22.20.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Sep 2022 22:20:59 -0700 (PDT)
-From:   Jon Doron <arilou@gmail.com>
-To:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org
-Cc:     Jon Doron <jond@wiz.io>
-Subject: [PATCH bpf v1] Fix the case of running rootless with capabilities
-Date:   Tue, 20 Sep 2022 08:20:45 +0300
-Message-Id: <20220920052045.3248976-1-arilou@gmail.com>
-X-Mailer: git-send-email 2.37.3
+        with ESMTP id S230137AbiITFU7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Sep 2022 01:20:59 -0400
+Received: from out0.migadu.com (out0.migadu.com [94.23.1.103])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 731C54DF11;
+        Mon, 19 Sep 2022 22:20:57 -0700 (PDT)
+Message-ID: <dc251395-78af-2ea3-9049-3b44cb831783@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1663651255;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TVGJXeiSIPnNsdrflC1unlY5vaATUQ/jFuJkzfR1pHQ=;
+        b=btCPPae5EarmsG+9BOWEXhsgz/o3rsduU6OAewWB05fiEuDmdEhsg9roxgZbXBLYSYJRy5
+        2rQCzo2ZzUTF5ybbnrwlc5XkMXQw1JpZOtvFMSOFp+oAlA1BYvBeBIMpIgy0uOhE/w8RaP
+        /m73rDUTqIEKHTLRGoCZd4VMdBtnEPk=
+Date:   Mon, 19 Sep 2022 22:20:47 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH bpf-next v2 3/3] bpf: Move nf_conn extern declarations to
+ filter.h
+Content-Language: en-US
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     pablo@netfilter.org, fw@strlen.de, toke@kernel.org,
+        netfilter-devel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, memxor@gmail.com
+References: <cover.1663616584.git.dxu@dxuuu.xyz>
+ <3c00fb8d15d543ae3b5df928c191047145c6b5fe.1663616584.git.dxu@dxuuu.xyz>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <3c00fb8d15d543ae3b5df928c191047145c6b5fe.1663616584.git.dxu@dxuuu.xyz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: linux.dev
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Jon Doron <jond@wiz.io>
+On 9/19/22 12:44 PM, Daniel Xu wrote:
+> We're seeing the following new warnings on netdev/build_32bit and
+> netdev/build_allmodconfig_warn CI jobs:
+> 
+>      ../net/core/filter.c:8608:1: warning: symbol
+>      'nf_conn_btf_access_lock' was not declared. Should it be static?
+>      ../net/core/filter.c:8611:5: warning: symbol 'nfct_bsa' was not
+>      declared. Should it be static?
+> 
+> Fix by ensuring extern declaration is present while compiling filter.o.
+> 
+> Fixes: 864b656f82cc ("bpf: Add support for writing to nf_conn:mark")
+> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> ---
+>   include/linux/filter.h                   | 6 ++++++
+>   include/net/netfilter/nf_conntrack_bpf.h | 7 +------
+>   2 files changed, 7 insertions(+), 6 deletions(-)
+> 
+> diff --git a/include/linux/filter.h b/include/linux/filter.h
+> index 75335432fcbc..98e28126c24b 100644
+> --- a/include/linux/filter.h
+> +++ b/include/linux/filter.h
+> @@ -567,6 +567,12 @@ struct sk_filter {
+>   
+>   DECLARE_STATIC_KEY_FALSE(bpf_stats_enabled_key);
+>   
+> +extern struct mutex nf_conn_btf_access_lock;
+> +extern int (*nfct_btf_struct_access)(struct bpf_verifier_log *log, const struct btf *btf,
+> +				     const struct btf_type *t, int off, int size,
+> +				     enum bpf_access_type atype, u32 *next_btf_id,
+> +				     enum bpf_type_flag *flag);
+> +
+>   typedef unsigned int (*bpf_dispatcher_fn)(const void *ctx,
+>   					  const struct bpf_insn *insnsi,
+>   					  unsigned int (*bpf_func)(const void *,
+> diff --git a/include/net/netfilter/nf_conntrack_bpf.h b/include/net/netfilter/nf_conntrack_bpf.h
+> index d1087e4da440..24d1ccc1f8df 100644
+> --- a/include/net/netfilter/nf_conntrack_bpf.h
+> +++ b/include/net/netfilter/nf_conntrack_bpf.h
+> @@ -5,6 +5,7 @@
+>   
+>   #include <linux/bpf.h>
+>   #include <linux/btf.h>
+> +#include <linux/filter.h>
 
-When running rootless with special capabilities like:
-FOWNER / DAC_OVERRIDE / DAC_READ_SEARCH
+The filter.h is only needed by nf_conntrack_bpf.c?  How about moving 
+this include to nf_conntrack_bpf.c.  nf_conntrack_bpf.h is included by 
+other conntrack core codes.  I would prefer not to spill over 
+unnecessary bpf headers to them.  The same goes for the above bpf.h and 
+btf.h which are only needed in nf_conntrack_bpf.c also?
 
-The access API will not make the proper check if there is really
-access to a file or not.
+>   #include <linux/kconfig.h>
+>   #include <linux/mutex.h>
 
-Signed-off-by: Jon Doron <jond@wiz.io>
----
- tools/lib/bpf/libbpf.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Also, is mutex.h still needed?
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 50d41815f431..df804fd65493 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -875,8 +875,9 @@ __u32 get_kernel_version(void)
- 	const char *ubuntu_kver_file = "/proc/version_signature";
- 	__u32 major, minor, patch;
- 	struct utsname info;
-+	struct stat sb;
- 
--	if (access(ubuntu_kver_file, R_OK) == 0) {
-+	if (stat(ubuntu_kver_file, &sb) == 0) {
- 		FILE *f;
- 
- 		f = fopen(ubuntu_kver_file, "r");
-@@ -9877,9 +9878,10 @@ static int append_to_file(const char *file, const char *fmt, ...)
- static bool use_debugfs(void)
- {
- 	static int has_debugfs = -1;
-+	struct stat sb;
- 
- 	if (has_debugfs < 0)
--		has_debugfs = access(DEBUGFS, F_OK) == 0;
-+		has_debugfs = stat(DEBUGFS, &sb) == 0;
- 
- 	return has_debugfs == 1;
- }
--- 
-2.37.3
+>   
+> @@ -14,12 +15,6 @@
+>   extern int register_nf_conntrack_bpf(void);
+>   extern void cleanup_nf_conntrack_bpf(void);
+>   
+> -extern struct mutex nf_conn_btf_access_lock;
+> -extern int (*nfct_btf_struct_access)(struct bpf_verifier_log *log, const struct btf *btf,
+> -				     const struct btf_type *t, int off, int size,
+> -				     enum bpf_access_type atype, u32 *next_btf_id,
+> -				     enum bpf_type_flag *flag);
+> -
+>   #else
+>   
+>   static inline int register_nf_conntrack_bpf(void)
 
