@@ -2,57 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78F375BF191
-	for <lists+bpf@lfdr.de>; Wed, 21 Sep 2022 01:59:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 084275BF192
+	for <lists+bpf@lfdr.de>; Wed, 21 Sep 2022 01:59:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229896AbiITX7V (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Sep 2022 19:59:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54986 "EHLO
+        id S229871AbiITX7y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Sep 2022 19:59:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229751AbiITX7U (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Sep 2022 19:59:20 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17E7749B79
-        for <bpf@vger.kernel.org>; Tue, 20 Sep 2022 16:59:19 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id y3so10011970ejc.1
-        for <bpf@vger.kernel.org>; Tue, 20 Sep 2022 16:59:19 -0700 (PDT)
+        with ESMTP id S229926AbiITX7v (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Sep 2022 19:59:51 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74B1D10563
+        for <bpf@vger.kernel.org>; Tue, 20 Sep 2022 16:59:50 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id z13so6158061edb.13
+        for <bpf@vger.kernel.org>; Tue, 20 Sep 2022 16:59:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date;
-        bh=nWLqMmZDAsLPmXOe6xSzAq7bwAEIJYvjklD6Q1tPm0E=;
-        b=SdTdm91OQQ5uBPcknDetdkKD79Stu43JrKIpC+k+RB+TO1xckSg8iZks/KDST1zzKX
-         5g59wanfWKgdq1BfevJQ369XNfIeESstulDmydkx6uyIRthhrsSmuWF2c+ueVRWtughR
-         4KYKKEWfa97N0rOts+FhH4Kn8TnC5kHU6opNpZtzs8l4dsyL552mY55eMqOKV4SwO73N
-         PklAyQQiVl/csfbDjTlpxz3zP4FnJkQIwWp4ues9vPlfHzX7UGo+qy8JvbKSZHSO3TSI
-         1W6h7BDQ/VLAycBJ7+SVbshZOTXa574tPJLB/Kw4Ovu4CbckVaWxvP0CNaGkasPmOjU4
-         rKGg==
+        bh=PSajSV60P78/BiS/vMLg4RuhUfDb1pf8NBY6rBcdlPk=;
+        b=UlSN052oAdF6otPBqRPDTBO3F/orM+X5MfFAzlYFuqFuGliUIKcunfqKxXd9FgPgxX
+         850VC4EAfjYOJn5twcZus6ZWbfa7Q/3blreflR5a9P5RKAMLXKXxXnAnxO1Fd+QFq+b9
+         YNlXr8GE5Q9EeawcPx7I3Wo0SzXNTfRj8FCIP6Gf+Z0nV6hbldqHKLd+afvzT/riGl0u
+         JwT+EXa864jsQbiro+0d0eK9/slsBxWgcMuwGL17T9cJxO7xZFMCA4ZJRWPo8OPrcSJt
+         zT09lrT6aJnVerZNcWnd6bN/pXSTn1XE/D0qyx9EAv0WGPYbSXCGXjhs4O9aXTameE7m
+         +4ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=nWLqMmZDAsLPmXOe6xSzAq7bwAEIJYvjklD6Q1tPm0E=;
-        b=P0+O3iRXcRfI+ki4U+7ls4dXTf2/mUFGGBQtXNC/kUrMm9PYxYQNu60t8E/ID7lAgj
-         Sp0O8ci9B6TRHg/EW0KufJqUQT720WPBGTxCbRAN9E91GfQ8SnTI0uhoEfN2CnhXamuK
-         SC2uxPkGauvmVdR69GOuIuL9+ro0AuGzaDalGm9w76eMYOL1WDDHenl8WBlJ2gALz17O
-         lmIBwskYVti6UP1uDrQh0TVvyAzv2cpOE+oq/b0c9V299tMrTujWWDncDLhl/tagCPau
-         xftppOckSY/+7jP2jxw2/0FdwbjUZPUoVnCPpDh/YSbSi9IG2RDS8I2Y06LkQuwMY+mI
-         69AA==
-X-Gm-Message-State: ACrzQf2cVOuSF9an8smVjUbfwVQIjOXQGwcBlb+gkrCYpPsX8pM8GhL+
-        zuuaqOODYwgxGVWcNHcLn7KSi7F9eUNKiXqXk1tPFpgd
-X-Google-Smtp-Source: AMsMyM7htBXoF3AqFOnbke/Cf8W9qB4HOiNzXaKwN3o9KkysDY2Fuy08Ls+S9zz5C1Vzx+4QIaRF6A6Gy6gpjrf5JRs=
-X-Received: by 2002:a17:907:3d86:b0:782:1175:153f with SMTP id
- he6-20020a1709073d8600b007821175153fmr342637ejc.226.1663718356328; Tue, 20
- Sep 2022 16:59:16 -0700 (PDT)
+        bh=PSajSV60P78/BiS/vMLg4RuhUfDb1pf8NBY6rBcdlPk=;
+        b=oJUesD0TChDYlCSVan1iqgqHaVYgkTwS/FgFE1bG7CVY+pEeBBsSLO3x8pWvDVuyTq
+         /Qam24P9cf5bGuxoUcdUXszWx8eUzHkVoBCBbNekzzETQVxER3iGDOj19QMXQmbBb0BB
+         ksXbV7mU6qN5RHgX4a3cDJfQvixXaQCo/UxMnk8bxNLTu1SpSJRL3qmB6fzxWOwtSb/X
+         T+Ne0tlbjDnxG65fmogWpvQnHXcSpfWD+b8xEyD8bLBY7bLRkevMPHAM+lk6tjG5eFrt
+         m0A71RQR1njB57Pla2bEkMOSix2oFoO+33lkApm4w2QtWEy1kbswdFmnGbhatFuw8FxC
+         Ui0g==
+X-Gm-Message-State: ACrzQf3j8Neahhe1y0o/i7eedhy/othsdQJiJXq77IctrFTfnlM3wT5g
+        tyxwEcyrzgt1eA+0aAA2V6zAlu4y/U9Y47+dG9A=
+X-Google-Smtp-Source: AMsMyM5yNtORXXTzHnkizg0kmwZUnrI4x8LtylJkel0FO7Iqek0bRQkONiCrX8VWqG7xXRep7xGX7pSIW7QIm4k5iYY=
+X-Received: by 2002:a05:6402:5406:b0:452:1560:f9d4 with SMTP id
+ ev6-20020a056402540600b004521560f9d4mr22465243edb.333.1663718388932; Tue, 20
+ Sep 2022 16:59:48 -0700 (PDT)
 MIME-Version: 1.0
 References: <20220920040736.342025-1-andrii@kernel.org> <20220920040736.342025-2-andrii@kernel.org>
- <7a882d19-f49e-1255-6a27-b1f3d935bd63@fb.com>
-In-Reply-To: <7a882d19-f49e-1255-6a27-b1f3d935bd63@fb.com>
+ <b0215eb8-1c1b-5321-6c94-fefd214a7138@isovalent.com>
+In-Reply-To: <b0215eb8-1c1b-5321-6c94-fefd214a7138@isovalent.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 20 Sep 2022 16:59:05 -0700
-Message-ID: <CAEf4BzbY6NKaTVWBftGZpGgtYvS=9aJLK=dEimdF++jVCtmgcQ@mail.gmail.com>
+Date:   Tue, 20 Sep 2022 16:59:37 -0700
+Message-ID: <CAEf4BzZLxQAhU8jGab3_CU6-pHq_=P3DAF126zaXZ6G9Bd3Y-w@mail.gmail.com>
 Subject: Re: [PATCH bpf-next 1/3] selftests/bpf: add CSV output mode for veristat
-To:     Yonghong Song <yhs@fb.com>
+To:     Quentin Monnet <quentin@isovalent.com>
 Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
         ast@kernel.org, daniel@iogearbox.net, kernel-team@fb.com
 Content-Type: text/plain; charset="UTF-8"
@@ -66,11 +66,10 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 20, 2022 at 8:53 AM Yonghong Song <yhs@fb.com> wrote:
+On Tue, Sep 20, 2022 at 9:23 AM Quentin Monnet <quentin@isovalent.com> wrote:
 >
->
->
-> On 9/19/22 9:07 PM, Andrii Nakryiko wrote:
+> Tue Sep 20 2022 05:07:34 GMT+0100 (British Summer Time) ~ Andrii
+> Nakryiko <andrii@kernel.org>
 > > Teach veristat to output results as CSV table for easier programmatic
 > > processing. Change what was --output/-o argument to now be --emit/-e.
 > > And then use --output-format/-o <fmt> to specify output format.
@@ -87,28 +86,44 @@ On Tue, Sep 20, 2022 at 8:53 AM Yonghong Song <yhs@fb.com> wrote:
 > >
 > > Also fix double-free of bpf_object in process_prog, which didn't feel
 > > important enough to have a separate patch for.
->
-> Without this patch set, I do see the following failure:
->
-> [$ ~/work/bpf-next/tools/testing/selftests/bpf] ./veristat -s
-> insns,file,prog
-> {pyperf,loop,test_verif_scale,strobemeta,test_cls_redirect,profiler}*.linked3.o
->
-> double free or corruption (!prev)
->
->
-> Aborted (core dumped)
->
-> This patch set fixed the double free problem.
->
-
-Bad wording on my part about "important enough". I'll split it out
-into a separate patch with Fixes tag, I shouldn't have been lazy :)
-
 > >
 > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 > > ---
-> >   tools/testing/selftests/bpf/veristat.c | 114 ++++++++++++++++---------
-> >   1 file changed, 76 insertions(+), 38 deletions(-)
+> >  tools/testing/selftests/bpf/veristat.c | 114 ++++++++++++++++---------
+> >  1 file changed, 76 insertions(+), 38 deletions(-)
 > >
-> [...]
+> > diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/selftests/bpf/veristat.c
+> > index 39e6dc41e504..317f7736dd59 100644
+> > --- a/tools/testing/selftests/bpf/veristat.c
+> > +++ b/tools/testing/selftests/bpf/veristat.c
+> > @@ -46,10 +46,17 @@ struct stat_specs {
+> >       int lens[ALL_STATS_CNT];
+> >  };
+> >
+> > +enum resfmt {
+> > +     RESFMT_TABLE,
+> > +     RESFMT_TABLE_CALCLEN, /* fake format to pre-calculate table's column widths */
+> > +     RESFMT_CSV,
+> > +};
+> > +
+> >  static struct env {
+> >       char **filenames;
+> >       int filename_cnt;
+> >       bool verbose;
+> > +     enum resfmt out_fmt;
+> >
+> >       struct verif_stats *prog_stats;
+> >       int prog_stat_cnt;
+> > @@ -77,9 +84,10 @@ const char argp_program_doc[] =
+> >
+> >  static const struct argp_option opts[] = {
+> >       { NULL, 'h', NULL, OPTION_HIDDEN, "Show the full help" },
+> > -     { "verbose", 'v', NULL, 0, "Verbose mode" },
+> > -     { "output", 'o', "SPEC", 0, "Specify output stats" },
+> > +     { "vereose", 'v', NULL, 0, "Verbose mode" },
+>
+> "vereose" -> looks like this line was changed by mistake
+
+yep, fat-fingered, will fix
+
+>
