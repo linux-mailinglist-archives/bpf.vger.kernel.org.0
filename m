@@ -2,101 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A13735BEEF2
-	for <lists+bpf@lfdr.de>; Tue, 20 Sep 2022 23:05:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E1F45BEF5E
+	for <lists+bpf@lfdr.de>; Tue, 20 Sep 2022 23:50:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230391AbiITVFU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Sep 2022 17:05:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38302 "EHLO
+        id S230379AbiITVuS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Sep 2022 17:50:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230414AbiITVFD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Sep 2022 17:05:03 -0400
-Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E42413ED52;
-        Tue, 20 Sep 2022 14:04:59 -0700 (PDT)
-Received: by mail-ot1-f46.google.com with SMTP id f20-20020a9d7b54000000b006574e21f1b6so2614536oto.5;
-        Tue, 20 Sep 2022 14:04:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=h+5c+YAd8qnEXFc7fGMxvZO7wvFtjw5sICYJeM59wF0=;
-        b=LQ2wiIdemgCzdLZ6gdFfOBUGjdvJG/MpUg0o7T1m1ONLwGbpT2jhPCzpNjIzmVRMUv
-         gtY0ZaqkU+/5JUW3pqd16Y5dpaXYdPdRQEbQItkTvVGVjmPcE9wGzmWvWBriGIsRX5Jq
-         Q2sErO/V7NogKi7UByBl/8zHxhktIL3XilTA/eaNALZ9ARRbuy6ksdM5MjgO6g/Dd95U
-         8M5FdniifnjZOow/q79H3plCvHflKjVO85hziCBcO69sgJ8lgGF8y3nr2f483NdwA39h
-         MrZHVrPOsoqyVMAkDcTTk8t7oed0/UVN+v55dMbxZfSrE/HJJak3TWQCE/n56s0zQEWO
-         ClXA==
-X-Gm-Message-State: ACrzQf1QIWKxg7Q3gd4Kew0E2AcCQSi2mAlWv+MSIW0cMrRPCqsZtxGA
-        7nHb+2C4hlUST3PFcc8KiASICLSs7Dp4uO3P4pU=
-X-Google-Smtp-Source: AMsMyM5nGKKKGoptudRJdUoFlMuenxndpYAOpTPmBbm79CYxd+RQ5I9/R5KyzB/IngkAoSDOPicGHKV5ecsxRnSzWzg=
-X-Received: by 2002:a9d:805:0:b0:63b:1981:588 with SMTP id 5-20020a9d0805000000b0063b19810588mr10974504oty.190.1663707898592;
- Tue, 20 Sep 2022 14:04:58 -0700 (PDT)
+        with ESMTP id S229865AbiITVuR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Sep 2022 17:50:17 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BB7F63E7;
+        Tue, 20 Sep 2022 14:50:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1CCEE62E49;
+        Tue, 20 Sep 2022 21:50:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 68153C433C1;
+        Tue, 20 Sep 2022 21:50:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1663710615;
+        bh=ARRvbxIcJ7M+YQg21nn//eBVp6Y44LRwd1TWR31zn+Q=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=FnKCuiZ5NHYpjX+lYO5LMGY8SePJ5m/2JLRCkM1WZTygn+cHDqUfpZS5IMr6jDa2z
+         B2aDLhpOh/0XGYbf5US4LJdWx4njvmQoooV5hEMlf19M7Lyn31CqdqzPI0Pb5SY607
+         k+tI7o27j3Tte2lLTyMwPBlgNcu9hmOkTtscFijh1i8VvRJKWH/l7rJOJ8R7pyIqlH
+         JQqrOF/WnEeJQlK7RSzdWUguUGh4bMMkuMtnv0KEYisLyYVt3Rh6iWF7BKnHAaqDtJ
+         Oj5xcsRrbW6JF/R5vwSfffaQrvkTPtnkfZvnhV3nwuUA2xDstbSONxsR2OT/97IifB
+         xErHn650daP5Q==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 46273E21EE0;
+        Tue, 20 Sep 2022 21:50:15 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20220908063754.1369709-1-namhyung@kernel.org> <Yxo32kpxsl9Mr7Mt@kernel.org>
- <CAM9d7cgOPUoGr96yc=M=bBTQG-jkW269Lc7-uEYTWGURiCAjyQ@mail.gmail.com> <YyohGGdnX88YOXtR@kernel.org>
-In-Reply-To: <YyohGGdnX88YOXtR@kernel.org>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 20 Sep 2022 14:04:47 -0700
-Message-ID: <CAM9d7ch7owDKkn9a89qkZ-KpSf02+OVJd01_76xMadA+vv3owQ@mail.gmail.com>
-Subject: Re: [PATCH 0/4] perf lock contention: Improve call stack handling (v1)
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v3 0/3] bpf: Small nf_conn cleanups
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166371061528.14033.10203496581444033110.git-patchwork-notify@kernel.org>
+Date:   Tue, 20 Sep 2022 21:50:15 +0000
+References: <cover.1663683114.git.dxu@dxuuu.xyz>
+In-Reply-To: <cover.1663683114.git.dxu@dxuuu.xyz>
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, memxor@gmail.com, martin.lau@linux.dev,
+        pablo@netfilter.org, fw@strlen.de, toke@kernel.org,
+        netfilter-devel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 20, 2022 at 1:22 PM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> Em Thu, Sep 08, 2022 at 04:44:15PM -0700, Namhyung Kim escreveu:
-> > Hi Arnaldo,
-> >
-> > On Thu, Sep 8, 2022 at 11:43 AM Arnaldo Carvalho de Melo
-> > <acme@kernel.org> wrote:
-> > >
-> > > Em Wed, Sep 07, 2022 at 11:37:50PM -0700, Namhyung Kim escreveu:
-> > > > Hello,
-> > > >
-> > > > I found that call stack from the lock tracepoint (using bpf_get_stackid)
-> > > > can be different on each configuration.  For example it's very different
-> > > > when I run it on a VM than on a real machine.
-> > > >
-> > > > The perf lock contention relies on the stack trace to get the lock
-> > > > caller names, this kind of difference can be annoying.  Ideally we could
-> > > > skip stack trace entries for internal BPF or lock functions and get the
-> > > > correct caller, but it's not the case as of today.  Currently it's hard
-> > > > coded to control the behavior of stack traces for the lock contention
-> > > > tracepoints.
-> > > >
-> > > > To handle those differences, add two new options to control the number of
-> > > > stack entries and how many it skips.  The default value worked well on
-> > > > my VM setup, but I had to use --stack-skip=5 on real machines.
-> > > >
-> > > > You can get it from 'perf/lock-stack-v1' branch in
-> > > >
-> > > >   git://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
-> > >
-> > > This clashed with a patch you Acked earlier, so lets see if someone has
-> > > extra review comments and a v2 become needed for other reason, when you
-> > > can refresh it, ok?
-> >
-> > Sounds good!
->
-> Have you resubmitted this? /me goes on the backlog...
+Hello:
 
-Yep :)
+This series was applied to bpf/bpf-next.git (master)
+by Martin KaFai Lau <martin.lau@kernel.org>:
 
-https://lore.kernel.org/r/20220912055314.744552-1-namhyung@kernel.org
+On Tue, 20 Sep 2022 08:15:21 -0600 you wrote:
+> This patchset cleans up a few small things:
+> 
+> * Delete unused stub
+> * Rename variable to be more descriptive
+> * Fix some `extern` declaration warnings
+> 
+> Past discussion:
+> - v2: https://lore.kernel.org/bpf/cover.1663616584.git.dxu@dxuuu.xyz/
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next,v3,1/3] bpf: Remove unused btf_struct_access stub
+    https://git.kernel.org/bpf/bpf-next/c/52bdae37c92a
+  - [bpf-next,v3,2/3] bpf: Rename nfct_bsa to nfct_btf_struct_access
+    https://git.kernel.org/bpf/bpf-next/c/5a090aa35038
+  - [bpf-next,v3,3/3] bpf: Move nf_conn extern declarations to filter.h
+    https://git.kernel.org/bpf/bpf-next/c/fdf214978a71
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
