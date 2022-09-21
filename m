@@ -2,257 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1B7A5BF68B
-	for <lists+bpf@lfdr.de>; Wed, 21 Sep 2022 08:42:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C4985BF75E
+	for <lists+bpf@lfdr.de>; Wed, 21 Sep 2022 09:15:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229721AbiIUGmo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Sep 2022 02:42:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43522 "EHLO
+        id S229919AbiIUHPP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Sep 2022 03:15:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230004AbiIUGmj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Sep 2022 02:42:39 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E55F680F54
-        for <bpf@vger.kernel.org>; Tue, 20 Sep 2022 23:42:37 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4MXTLs1zkkzKL8p
-        for <bpf@vger.kernel.org>; Wed, 21 Sep 2022 14:40:37 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP2 (Coremail) with SMTP id Syh0CgDXKXNVsipjY1ynBA--.6480S6;
-        Wed, 21 Sep 2022 14:42:35 +0800 (CST)
-From:   Hou Tao <houtao@huaweicloud.com>
-To:     bpf@vger.kernel.org
-Cc:     Martin KaFai Lau <kafai@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Lorenz Bauer <oss@lmb.io>, houtao1@huawei.com
-Subject: [PATCH bpf-next v2 2/2] selftests/bpf: Free the allocated resources after test case succeeds
-Date:   Wed, 21 Sep 2022 15:00:35 +0800
-Message-Id: <20220921070035.2016413-3-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20220921070035.2016413-1-houtao@huaweicloud.com>
-References: <20220921070035.2016413-1-houtao@huaweicloud.com>
+        with ESMTP id S229640AbiIUHPM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 21 Sep 2022 03:15:12 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A3733B976;
+        Wed, 21 Sep 2022 00:15:05 -0700 (PDT)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4MXV1r50cKz14RVq;
+        Wed, 21 Sep 2022 15:10:56 +0800 (CST)
+Received: from [10.174.179.191] (10.174.179.191) by
+ canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Wed, 21 Sep 2022 15:15:02 +0800
+Message-ID: <d937796a-48da-50b1-52ce-23aa3d022bf2@huawei.com>
+Date:   Wed, 21 Sep 2022 15:15:01 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.0
+Subject: Re: [bpf-next v4 2/3] bpftool: Update doc (add auto_attach to prog
+ load)
+To:     Quentin Monnet <quentin@isovalent.com>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <martin.lau@linux.dev>, <song@kernel.org>, <yhs@fb.com>,
+        <john.fastabend@gmail.com>, <kpsingh@kernel.org>, <sdf@google.com>,
+        <haoluo@google.com>, <jolsa@kernel.org>, <davem@davemloft.net>,
+        <kuba@kernel.org>, <hawk@kernel.org>, <nathan@kernel.org>,
+        <ndesaulniers@google.com>, <trix@redhat.com>
+CC:     <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <llvm@lists.linux.dev>
+References: <1663037687-26006-1-git-send-email-wangyufen@huawei.com>
+ <1663037687-26006-2-git-send-email-wangyufen@huawei.com>
+ <6bed1b34-3e92-2deb-94b5-9c194c6c7e6c@isovalent.com>
+From:   wangyufen <wangyufen@huawei.com>
+In-Reply-To: <6bed1b34-3e92-2deb-94b5-9c194c6c7e6c@isovalent.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgDXKXNVsipjY1ynBA--.6480S6
-X-Coremail-Antispam: 1UD129KBjvJXoWxtw13KFyfAF1UWrWDtryrZwb_yoWxXr1kpF
-        yDAw1jkFWvva12qFW3ZasFgFWSgr1DX3yYk3Z8Awn0yr1xXr1fJr4xKFyDKFn5W3ySqF4Y
-        vas7Cr1fXa9rJaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBYb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
-        A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-        Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
-        Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64
-        vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
-        jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2I
-        x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK
-        8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
-        0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7IU1sa9DUUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-Originating-IP: [10.174.179.191]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ canpemm500010.china.huawei.com (7.192.105.118)
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-6.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Hou Tao <houtao1@huawei.com>
 
-Free the created fd or allocated bpf_object after test case succeeds,
-else there will be resource leaks.
-
-Spotted by using address sanitizer and checking the content of
-/proc/$pid/fd directory.
-
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- .../bpf/map_tests/array_map_batch_ops.c       |  2 ++
- .../bpf/map_tests/htab_map_batch_ops.c        |  2 ++
- .../bpf/map_tests/lpm_trie_map_batch_ops.c    |  2 ++
- tools/testing/selftests/bpf/test_maps.c       | 24 ++++++++++++-------
- 4 files changed, 21 insertions(+), 9 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/map_tests/array_map_batch_ops.c b/tools/testing/selftests/bpf/map_tests/array_map_batch_ops.c
-index 78c76496b14a..b595556315bc 100644
---- a/tools/testing/selftests/bpf/map_tests/array_map_batch_ops.c
-+++ b/tools/testing/selftests/bpf/map_tests/array_map_batch_ops.c
-@@ -3,6 +3,7 @@
- #include <stdio.h>
- #include <errno.h>
- #include <string.h>
-+#include <unistd.h>
- 
- #include <bpf/bpf.h>
- #include <bpf/libbpf.h>
-@@ -137,6 +138,7 @@ static void __test_map_lookup_and_update_batch(bool is_pcpu)
- 	free(keys);
- 	free(values);
- 	free(visited);
-+	close(map_fd);
- }
- 
- static void array_map_batch_ops(void)
-diff --git a/tools/testing/selftests/bpf/map_tests/htab_map_batch_ops.c b/tools/testing/selftests/bpf/map_tests/htab_map_batch_ops.c
-index f807d53fd8dd..1230ccf90128 100644
---- a/tools/testing/selftests/bpf/map_tests/htab_map_batch_ops.c
-+++ b/tools/testing/selftests/bpf/map_tests/htab_map_batch_ops.c
-@@ -3,6 +3,7 @@
- #include <stdio.h>
- #include <errno.h>
- #include <string.h>
-+#include <unistd.h>
- 
- #include <bpf/bpf.h>
- #include <bpf/libbpf.h>
-@@ -255,6 +256,7 @@ void __test_map_lookup_and_delete_batch(bool is_pcpu)
- 	free(visited);
- 	if (!is_pcpu)
- 		free(values);
-+	close(map_fd);
- }
- 
- void htab_map_batch_ops(void)
-diff --git a/tools/testing/selftests/bpf/map_tests/lpm_trie_map_batch_ops.c b/tools/testing/selftests/bpf/map_tests/lpm_trie_map_batch_ops.c
-index 87d07b596e17..b66d56ddb7ef 100644
---- a/tools/testing/selftests/bpf/map_tests/lpm_trie_map_batch_ops.c
-+++ b/tools/testing/selftests/bpf/map_tests/lpm_trie_map_batch_ops.c
-@@ -7,6 +7,7 @@
- #include <errno.h>
- #include <string.h>
- #include <stdlib.h>
-+#include <unistd.h>
- 
- #include <bpf/bpf.h>
- #include <bpf/libbpf.h>
-@@ -150,4 +151,5 @@ void test_lpm_trie_map_batch_ops(void)
- 	free(keys);
- 	free(values);
- 	free(visited);
-+	close(map_fd);
- }
-diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
-index f0b830f3d7b8..ba7b2e0f9bf4 100644
---- a/tools/testing/selftests/bpf/test_maps.c
-+++ b/tools/testing/selftests/bpf/test_maps.c
-@@ -659,13 +659,13 @@ static void test_sockmap(unsigned int tasks, void *data)
- {
- 	struct bpf_map *bpf_map_rx, *bpf_map_tx, *bpf_map_msg, *bpf_map_break;
- 	int map_fd_msg = 0, map_fd_rx = 0, map_fd_tx = 0, map_fd_break;
-+	struct bpf_object *parse_obj, *verdict_obj, *msg_obj;
- 	int ports[] = {50200, 50201, 50202, 50204};
- 	int err, i, fd, udp, sfd[6] = {0xdeadbeef};
- 	u8 buf[20] = {0x0, 0x5, 0x3, 0x2, 0x1, 0x0};
- 	int parse_prog, verdict_prog, msg_prog;
- 	struct sockaddr_in addr;
- 	int one = 1, s, sc, rc;
--	struct bpf_object *obj;
- 	struct timeval to;
- 	__u32 key, value;
- 	pid_t pid[tasks];
-@@ -761,6 +761,7 @@ static void test_sockmap(unsigned int tasks, void *data)
- 		       i, udp);
- 		goto out_sockmap;
- 	}
-+	close(udp);
- 
- 	/* Test update without programs */
- 	for (i = 0; i < 6; i++) {
-@@ -823,27 +824,27 @@ static void test_sockmap(unsigned int tasks, void *data)
- 
- 	/* Load SK_SKB program and Attach */
- 	err = bpf_prog_test_load(SOCKMAP_PARSE_PROG,
--			    BPF_PROG_TYPE_SK_SKB, &obj, &parse_prog);
-+			    BPF_PROG_TYPE_SK_SKB, &parse_obj, &parse_prog);
- 	if (err) {
- 		printf("Failed to load SK_SKB parse prog\n");
- 		goto out_sockmap;
- 	}
- 
- 	err = bpf_prog_test_load(SOCKMAP_TCP_MSG_PROG,
--			    BPF_PROG_TYPE_SK_MSG, &obj, &msg_prog);
-+			    BPF_PROG_TYPE_SK_MSG, &msg_obj, &msg_prog);
- 	if (err) {
- 		printf("Failed to load SK_SKB msg prog\n");
- 		goto out_sockmap;
- 	}
- 
- 	err = bpf_prog_test_load(SOCKMAP_VERDICT_PROG,
--			    BPF_PROG_TYPE_SK_SKB, &obj, &verdict_prog);
-+			    BPF_PROG_TYPE_SK_SKB, &verdict_obj, &verdict_prog);
- 	if (err) {
- 		printf("Failed to load SK_SKB verdict prog\n");
- 		goto out_sockmap;
- 	}
- 
--	bpf_map_rx = bpf_object__find_map_by_name(obj, "sock_map_rx");
-+	bpf_map_rx = bpf_object__find_map_by_name(verdict_obj, "sock_map_rx");
- 	if (!bpf_map_rx) {
- 		printf("Failed to load map rx from verdict prog\n");
- 		goto out_sockmap;
-@@ -855,7 +856,7 @@ static void test_sockmap(unsigned int tasks, void *data)
- 		goto out_sockmap;
- 	}
- 
--	bpf_map_tx = bpf_object__find_map_by_name(obj, "sock_map_tx");
-+	bpf_map_tx = bpf_object__find_map_by_name(verdict_obj, "sock_map_tx");
- 	if (!bpf_map_tx) {
- 		printf("Failed to load map tx from verdict prog\n");
- 		goto out_sockmap;
-@@ -867,7 +868,7 @@ static void test_sockmap(unsigned int tasks, void *data)
- 		goto out_sockmap;
- 	}
- 
--	bpf_map_msg = bpf_object__find_map_by_name(obj, "sock_map_msg");
-+	bpf_map_msg = bpf_object__find_map_by_name(verdict_obj, "sock_map_msg");
- 	if (!bpf_map_msg) {
- 		printf("Failed to load map msg from msg_verdict prog\n");
- 		goto out_sockmap;
-@@ -879,7 +880,7 @@ static void test_sockmap(unsigned int tasks, void *data)
- 		goto out_sockmap;
- 	}
- 
--	bpf_map_break = bpf_object__find_map_by_name(obj, "sock_map_break");
-+	bpf_map_break = bpf_object__find_map_by_name(verdict_obj, "sock_map_break");
- 	if (!bpf_map_break) {
- 		printf("Failed to load map tx from verdict prog\n");
- 		goto out_sockmap;
-@@ -1125,7 +1126,9 @@ static void test_sockmap(unsigned int tasks, void *data)
- 	}
- 	close(fd);
- 	close(map_fd_rx);
--	bpf_object__close(obj);
-+	bpf_object__close(parse_obj);
-+	bpf_object__close(msg_obj);
-+	bpf_object__close(verdict_obj);
- 	return;
- out:
- 	for (i = 0; i < 6; i++)
-@@ -1283,8 +1286,11 @@ static void test_map_in_map(void)
- 			printf("Inner map mim.inner was not destroyed\n");
- 			goto out_map_in_map;
- 		}
-+
-+		close(fd);
- 	}
- 
-+	bpf_object__close(obj);
- 	return;
- 
- out_map_in_map:
--- 
-2.29.2
-
+在 2022/9/20 23:12, Quentin Monnet 写道:
+> Tue Sep 13 2022 03:54:46 GMT+0100 (British Summer Time) ~ Wang Yufen
+> <wangyufen@huawei.com>
+>> Add auto_attach optional to prog load|loadall for supporting
+>> one-step load-attach-pin_link.
+>>
+>> Signed-off-by: Wang Yufen <wangyufen@huawei.com>
+>> ---
+>>   tools/bpf/bpftool/Documentation/bpftool-prog.rst | 12 ++++++++++--
+>>   1 file changed, 10 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/tools/bpf/bpftool/Documentation/bpftool-prog.rst b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
+>> index eb1b2a2..463f895 100644
+>> --- a/tools/bpf/bpftool/Documentation/bpftool-prog.rst
+>> +++ b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
+>> @@ -31,7 +31,7 @@ PROG COMMANDS
+>>   |	**bpftool** **prog dump xlated** *PROG* [{**file** *FILE* | **opcodes** | **visual** | **linum**}]
+>>   |	**bpftool** **prog dump jited**  *PROG* [{**file** *FILE* | **opcodes** | **linum**}]
+>>   |	**bpftool** **prog pin** *PROG* *FILE*
+>> -|	**bpftool** **prog** { **load** | **loadall** } *OBJ* *PATH* [**type** *TYPE*] [**map** {**idx** *IDX* | **name** *NAME*} *MAP*] [**dev** *NAME*] [**pinmaps** *MAP_DIR*]
+>> +|	**bpftool** **prog** { **load** | **loadall** } *OBJ* *PATH* [**type** *TYPE*] [**map** {**idx** *IDX* | **name** *NAME*} *MAP*] [**dev** *NAME*] [**pinmaps** *MAP_DIR*] [**auto_attach**]
+>>   |	**bpftool** **prog attach** *PROG* *ATTACH_TYPE* [*MAP*]
+>>   |	**bpftool** **prog detach** *PROG* *ATTACH_TYPE* [*MAP*]
+>>   |	**bpftool** **prog tracelog**
+>> @@ -131,7 +131,7 @@ DESCRIPTION
+>>   		  contain a dot character ('.'), which is reserved for future
+>>   		  extensions of *bpffs*.
+>>   
+>> -	**bpftool prog { load | loadall }** *OBJ* *PATH* [**type** *TYPE*] [**map** {**idx** *IDX* | **name** *NAME*} *MAP*] [**dev** *NAME*] [**pinmaps** *MAP_DIR*]
+>> +	**bpftool prog { load | loadall }** *OBJ* *PATH* [**type** *TYPE*] [**map** {**idx** *IDX* | **name** *NAME*} *MAP*] [**dev** *NAME*] [**pinmaps** *MAP_DIR*] [**auto_attach**]
+>>   		  Load bpf program(s) from binary *OBJ* and pin as *PATH*.
+>>   		  **bpftool prog load** pins only the first program from the
+>>   		  *OBJ* as *PATH*. **bpftool prog loadall** pins all programs
+>> @@ -150,6 +150,14 @@ DESCRIPTION
+>>   		  Optional **pinmaps** argument can be provided to pin all
+>>   		  maps under *MAP_DIR* directory.
+>>   
+>> +		  If **auto_attach** is specified program will be attached
+>> +		  before pin. 1)in that case, only the link (representing the program
+> "1)in" -> "In"
+>
+>> +		  attached to its hook) is pinned, not the program as such, so the
+>> +		  path won't show in "bpftool prog show -f", only show in
+> Let's use markup instead of quotes around the commands please, **bpftool
+> prog show -f** and **bpftool link show -f** (below).
+>
+>> +		  "bpftool link show -f", and 2)this only works when bpftool (libbpf)
+> ", and 2)this..." -> ". Also, this..."
+>
+>> +		  is able to infer all necessary information from the object file,
+>> +		  in particular, it's not supported for all program types.
+>> +
+>>   		  Note: *PATH* must be located in *bpffs* mount. It must not
+>>   		  contain a dot character ('.'), which is reserved for future
+>>   		  extensions of *bpffs*.
+> Apart from the formatting nits above, looks good, thank you.
+Thanks， will send v5
