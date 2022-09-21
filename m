@@ -2,233 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E0975BF39E
-	for <lists+bpf@lfdr.de>; Wed, 21 Sep 2022 04:41:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 353F35BF3AD
+	for <lists+bpf@lfdr.de>; Wed, 21 Sep 2022 04:45:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229970AbiIUClF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Sep 2022 22:41:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34318 "EHLO
+        id S230326AbiIUCoN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Sep 2022 22:44:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230217AbiIUCk5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Sep 2022 22:40:57 -0400
+        with ESMTP id S229862AbiIUCoM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Sep 2022 22:44:12 -0400
 Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7538F52E52
-        for <bpf@vger.kernel.org>; Tue, 20 Sep 2022 19:40:54 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4MXN0H4X3LzlRl9
-        for <bpf@vger.kernel.org>; Wed, 21 Sep 2022 10:39:11 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP2 (Coremail) with SMTP id Syh0CgBH53CxeSpj9UifBA--.10379S6;
-        Wed, 21 Sep 2022 10:40:52 +0800 (CST)
-From:   Hou Tao <houtao@huaweicloud.com>
-To:     bpf@vger.kernel.org
-Cc:     Martin KaFai Lau <kafai@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0A6F7D1F0;
+        Tue, 20 Sep 2022 19:44:10 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4MXN3k3NWWzKLKs;
+        Wed, 21 Sep 2022 10:42:10 +0800 (CST)
+Received: from localhost.localdomain (unknown [10.67.175.61])
+        by APP1 (Coremail) with SMTP id cCh0CgD3xCh3eipjRFhmBA--.50399S2;
+        Wed, 21 Sep 2022 10:44:09 +0800 (CST)
+From:   Pu Lehui <pulehui@huaweicloud.com>
+To:     Martin KaFai Lau <martin.lau@linux.dev>,
+        Stanislav Fomichev <sdf@google.com>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Lorenz Bauer <oss@lmb.io>, houtao1@huawei.com
-Subject: [PATCH bpf-next 2/2] selftests/bpf: Free the allocated resources after test case succeeds
-Date:   Wed, 21 Sep 2022 10:58:55 +0800
-Message-Id: <20220921025855.115463-3-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20220921025855.115463-1-houtao@huaweicloud.com>
-References: <20220921025855.115463-1-houtao@huaweicloud.com>
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, Pu Lehui <pulehui@huawei.com>,
+        Pu Lehui <pulehui@huaweicloud.com>
+Subject: [PATCH bpf v5 0/3] Fix wrong cgroup attach flags being assigned to effective progs
+Date:   Wed, 21 Sep 2022 10:46:01 +0000
+Message-Id: <20220921104604.2340580-1-pulehui@huaweicloud.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgBH53CxeSpj9UifBA--.10379S6
-X-Coremail-Antispam: 1UD129KBjvJXoW3Wry3JFyktr4UGF1ktrykGrg_yoW7trWrpF
-        yrAw1jkFZ2vF42qrW3Xa4kWFWSgrnrX3yYk3ZYyw15Ar18Xr1fJr1xKa4DKFn5WrWSqF4a
-        vas2kryfuayDJaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUB0b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
-        A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-        Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
-        Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64
-        vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
-        jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2I
-        x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK
-        8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
-        0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFa9-UUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CM-TRANSID: cCh0CgD3xCh3eipjRFhmBA--.50399S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxAFW7KrWktFy3Aw43Xr45Awb_yoW5GF4kpF
+        WkZ3W5Jwn8Wr93JrWSk34jga4rtw48Aw1jy3ZrXr48uFyxtryqyrWIk3yFkr17XFsrKw4x
+        Zw15ZF98G3y5taDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9a14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2jI8I6cxK62vIxIIY0VWUZVW8XwA2ocxC64kIII
+        0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xv
+        wVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4
+        x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG
+        64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r
+        1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAq
+        YI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4I
+        kC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWU
+        WwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr
+        0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVW3
+        JVWrJr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8Jr
+        UvcSsGvfC2KfnxnUUI43ZEXa7sRiPl1DUUUUU==
+X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
+        KHOP_HELO_FCRDNS,SPF_HELO_NONE,SPF_NONE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Hou Tao <houtao1@huawei.com>
+From: Pu Lehui <pulehui@huawei.com>
 
-Free the created fd or allocated bpf_object after test case succeeds,
-else there will be resource leaks.
+When root-cgroup attach multi progs and sub-cgroup attach a
+override prog, bpftool will display incorrectly for the attach
+flags of the sub-cgroup’s effective progs:
 
-Spotted by using address sanitizer and checking the content of
-/proc/$pid/fd directory.
+$ bpftool cgroup tree /sys/fs/cgroup effective
+CgroupPath
+ID       AttachType      AttachFlags     Name
+/sys/fs/cgroup
+6        cgroup_sysctl   multi           sysctl_tcp_mem
+13       cgroup_sysctl   multi           sysctl_tcp_mem
+/sys/fs/cgroup/cg1
+20       cgroup_sysctl   override        sysctl_tcp_mem
+6        cgroup_sysctl   override        sysctl_tcp_mem <- wrong
+13       cgroup_sysctl   override        sysctl_tcp_mem <- wrong
+/sys/fs/cgroup/cg1/cg2
+20       cgroup_sysctl                   sysctl_tcp_mem
+6        cgroup_sysctl                   sysctl_tcp_mem
+13       cgroup_sysctl                   sysctl_tcp_mem
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- .../bpf/map_tests/array_map_batch_ops.c       |  1 +
- .../bpf/map_tests/htab_map_batch_ops.c        |  1 +
- .../bpf/map_tests/lpm_trie_map_batch_ops.c    |  1 +
- tools/testing/selftests/bpf/test_maps.c       | 24 ++++++++++++-------
- 4 files changed, 18 insertions(+), 9 deletions(-)
+For cg1, obviously, the attach flags of prog6 and prog13 can not be
+OVERRIDE. And for query with EFFECTIVE flags, exporting attach flags
+does not make sense. So let's remove the AttachFlags field and the
+associated logic. After these patches, the above effective cgroup
+tree will show as bellow:
 
-diff --git a/tools/testing/selftests/bpf/map_tests/array_map_batch_ops.c b/tools/testing/selftests/bpf/map_tests/array_map_batch_ops.c
-index 78c76496b14a..cc95aafbd721 100644
---- a/tools/testing/selftests/bpf/map_tests/array_map_batch_ops.c
-+++ b/tools/testing/selftests/bpf/map_tests/array_map_batch_ops.c
-@@ -137,6 +137,7 @@ static void __test_map_lookup_and_update_batch(bool is_pcpu)
- 	free(keys);
- 	free(values);
- 	free(visited);
-+	close(map_fd);
- }
- 
- static void array_map_batch_ops(void)
-diff --git a/tools/testing/selftests/bpf/map_tests/htab_map_batch_ops.c b/tools/testing/selftests/bpf/map_tests/htab_map_batch_ops.c
-index f807d53fd8dd..dbd680100e50 100644
---- a/tools/testing/selftests/bpf/map_tests/htab_map_batch_ops.c
-+++ b/tools/testing/selftests/bpf/map_tests/htab_map_batch_ops.c
-@@ -255,6 +255,7 @@ void __test_map_lookup_and_delete_batch(bool is_pcpu)
- 	free(visited);
- 	if (!is_pcpu)
- 		free(values);
-+	close(map_fd);
- }
- 
- void htab_map_batch_ops(void)
-diff --git a/tools/testing/selftests/bpf/map_tests/lpm_trie_map_batch_ops.c b/tools/testing/selftests/bpf/map_tests/lpm_trie_map_batch_ops.c
-index 87d07b596e17..874688c6d221 100644
---- a/tools/testing/selftests/bpf/map_tests/lpm_trie_map_batch_ops.c
-+++ b/tools/testing/selftests/bpf/map_tests/lpm_trie_map_batch_ops.c
-@@ -150,4 +150,5 @@ void test_lpm_trie_map_batch_ops(void)
- 	free(keys);
- 	free(values);
- 	free(visited);
-+	close(map_fd);
- }
-diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
-index f0b830f3d7b8..ba7b2e0f9bf4 100644
---- a/tools/testing/selftests/bpf/test_maps.c
-+++ b/tools/testing/selftests/bpf/test_maps.c
-@@ -659,13 +659,13 @@ static void test_sockmap(unsigned int tasks, void *data)
- {
- 	struct bpf_map *bpf_map_rx, *bpf_map_tx, *bpf_map_msg, *bpf_map_break;
- 	int map_fd_msg = 0, map_fd_rx = 0, map_fd_tx = 0, map_fd_break;
-+	struct bpf_object *parse_obj, *verdict_obj, *msg_obj;
- 	int ports[] = {50200, 50201, 50202, 50204};
- 	int err, i, fd, udp, sfd[6] = {0xdeadbeef};
- 	u8 buf[20] = {0x0, 0x5, 0x3, 0x2, 0x1, 0x0};
- 	int parse_prog, verdict_prog, msg_prog;
- 	struct sockaddr_in addr;
- 	int one = 1, s, sc, rc;
--	struct bpf_object *obj;
- 	struct timeval to;
- 	__u32 key, value;
- 	pid_t pid[tasks];
-@@ -761,6 +761,7 @@ static void test_sockmap(unsigned int tasks, void *data)
- 		       i, udp);
- 		goto out_sockmap;
- 	}
-+	close(udp);
- 
- 	/* Test update without programs */
- 	for (i = 0; i < 6; i++) {
-@@ -823,27 +824,27 @@ static void test_sockmap(unsigned int tasks, void *data)
- 
- 	/* Load SK_SKB program and Attach */
- 	err = bpf_prog_test_load(SOCKMAP_PARSE_PROG,
--			    BPF_PROG_TYPE_SK_SKB, &obj, &parse_prog);
-+			    BPF_PROG_TYPE_SK_SKB, &parse_obj, &parse_prog);
- 	if (err) {
- 		printf("Failed to load SK_SKB parse prog\n");
- 		goto out_sockmap;
- 	}
- 
- 	err = bpf_prog_test_load(SOCKMAP_TCP_MSG_PROG,
--			    BPF_PROG_TYPE_SK_MSG, &obj, &msg_prog);
-+			    BPF_PROG_TYPE_SK_MSG, &msg_obj, &msg_prog);
- 	if (err) {
- 		printf("Failed to load SK_SKB msg prog\n");
- 		goto out_sockmap;
- 	}
- 
- 	err = bpf_prog_test_load(SOCKMAP_VERDICT_PROG,
--			    BPF_PROG_TYPE_SK_SKB, &obj, &verdict_prog);
-+			    BPF_PROG_TYPE_SK_SKB, &verdict_obj, &verdict_prog);
- 	if (err) {
- 		printf("Failed to load SK_SKB verdict prog\n");
- 		goto out_sockmap;
- 	}
- 
--	bpf_map_rx = bpf_object__find_map_by_name(obj, "sock_map_rx");
-+	bpf_map_rx = bpf_object__find_map_by_name(verdict_obj, "sock_map_rx");
- 	if (!bpf_map_rx) {
- 		printf("Failed to load map rx from verdict prog\n");
- 		goto out_sockmap;
-@@ -855,7 +856,7 @@ static void test_sockmap(unsigned int tasks, void *data)
- 		goto out_sockmap;
- 	}
- 
--	bpf_map_tx = bpf_object__find_map_by_name(obj, "sock_map_tx");
-+	bpf_map_tx = bpf_object__find_map_by_name(verdict_obj, "sock_map_tx");
- 	if (!bpf_map_tx) {
- 		printf("Failed to load map tx from verdict prog\n");
- 		goto out_sockmap;
-@@ -867,7 +868,7 @@ static void test_sockmap(unsigned int tasks, void *data)
- 		goto out_sockmap;
- 	}
- 
--	bpf_map_msg = bpf_object__find_map_by_name(obj, "sock_map_msg");
-+	bpf_map_msg = bpf_object__find_map_by_name(verdict_obj, "sock_map_msg");
- 	if (!bpf_map_msg) {
- 		printf("Failed to load map msg from msg_verdict prog\n");
- 		goto out_sockmap;
-@@ -879,7 +880,7 @@ static void test_sockmap(unsigned int tasks, void *data)
- 		goto out_sockmap;
- 	}
- 
--	bpf_map_break = bpf_object__find_map_by_name(obj, "sock_map_break");
-+	bpf_map_break = bpf_object__find_map_by_name(verdict_obj, "sock_map_break");
- 	if (!bpf_map_break) {
- 		printf("Failed to load map tx from verdict prog\n");
- 		goto out_sockmap;
-@@ -1125,7 +1126,9 @@ static void test_sockmap(unsigned int tasks, void *data)
- 	}
- 	close(fd);
- 	close(map_fd_rx);
--	bpf_object__close(obj);
-+	bpf_object__close(parse_obj);
-+	bpf_object__close(msg_obj);
-+	bpf_object__close(verdict_obj);
- 	return;
- out:
- 	for (i = 0; i < 6; i++)
-@@ -1283,8 +1286,11 @@ static void test_map_in_map(void)
- 			printf("Inner map mim.inner was not destroyed\n");
- 			goto out_map_in_map;
- 		}
-+
-+		close(fd);
- 	}
- 
-+	bpf_object__close(obj);
- 	return;
- 
- out_map_in_map:
+# bpftool cgroup tree /sys/fs/cgroup effective
+CgroupPath
+ID       AttachType      Name
+/sys/fs/cgroup
+6        cgroup_sysctl   sysctl_tcp_mem
+13       cgroup_sysctl   sysctl_tcp_mem
+/sys/fs/cgroup/cg1
+20       cgroup_sysctl   sysctl_tcp_mem
+6        cgroup_sysctl   sysctl_tcp_mem
+13       cgroup_sysctl   sysctl_tcp_mem
+/sys/fs/cgroup/cg1/cg2
+20       cgroup_sysctl   sysctl_tcp_mem
+6        cgroup_sysctl   sysctl_tcp_mem
+13       cgroup_sysctl   sysctl_tcp_mem
+
+v5:
+- Adapt selftests for effective query uapi change.
+
+v4:
+https://lore.kernel.org/bpf/20220920154233.1494352-1-pulehui@huaweicloud.com
+- Reject prog_attach_flags array when effective query. (Martin)
+- Target to bpf tree. (Martin)
+
+v3:
+https://lore.kernel.org/bpf/20220914161742.3180731-1-pulehui@huaweicloud.com
+- Don't show attach flags when effective query. (John, sdf, Martin)
+
+v2:
+https://lore.kernel.org/bpf/20220908145304.3436139-1-pulehui@huaweicloud.com
+- Limit prog_cnt to avoid overflow. (John)
+- Add more detail message.
+
+v1:
+https://lore.kernel.org/bpf/20220820120234.2121044-1-pulehui@huawei.com
+
+Pu Lehui (3):
+  bpf, cgroup: Reject prog_attach_flags array when effective query
+  bpftool: Fix wrong cgroup attach flags being assigned to effective
+    progs
+  selftests/bpf: Adapt cgroup effective query uapi change
+
+ include/uapi/linux/bpf.h                      |  7 ++-
+ kernel/bpf/cgroup.c                           | 28 ++++++----
+ tools/bpf/bpftool/cgroup.c                    | 54 +++++++++++++++++--
+ tools/include/uapi/linux/bpf.h                |  7 ++-
+ .../selftests/bpf/prog_tests/cgroup_link.c    | 11 ++--
+ 5 files changed, 81 insertions(+), 26 deletions(-)
+
 -- 
-2.29.2
+2.25.1
 
