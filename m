@@ -2,69 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8130A5BF933
-	for <lists+bpf@lfdr.de>; Wed, 21 Sep 2022 10:28:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE6D95BF95B
+	for <lists+bpf@lfdr.de>; Wed, 21 Sep 2022 10:35:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229607AbiIUI2I (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Sep 2022 04:28:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51446 "EHLO
+        id S230160AbiIUIfC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Sep 2022 04:35:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229825AbiIUI1x (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Sep 2022 04:27:53 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7055B8307A;
-        Wed, 21 Sep 2022 01:27:42 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id lc7so12041924ejb.0;
-        Wed, 21 Sep 2022 01:27:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date;
-        bh=7heNxsmzeCJMCboW48gJRU3lnBaNyKK1ZKFS0gVn9ig=;
-        b=arZwDiUxQVi/fGwGijH/ZarWMhsOVcu0w3XVgeXboS5WqHpRqZG9NuGCasNoSXgHmC
-         /+dK1wqAXgKr8YJWCb1rEHU69VA+IvZzyBCqzBDob+P16PpsefR/vagip1beUkE2OLoc
-         z6WeCQFZ1ToLfjpg9EqTA25iFJRebWUKO7aoIRCOqA6Y5T6ATTptL7akffSQOHfnV6Qb
-         kYmq5x9bfZMXhOWkilm17aBup2nPqArAykkoJc0FS03OxCcdFGnPfJe94NmrNEilDL/9
-         e6KOsZGCl1ZLk5ToIwV0lhIuecRHBQRnSzk3cT87TaClgvFIoiEfCYyf2Lf1IO/2bNHH
-         cZOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date;
-        bh=7heNxsmzeCJMCboW48gJRU3lnBaNyKK1ZKFS0gVn9ig=;
-        b=RGV4uJo1kNvIh5UpkK3CFuTdBZLWACRmzndHE8Fq8svaUVcRvPD+UQMFwWVkYorvPF
-         ELGQ45G8ltz/m3/NdLuirGp1LTPBXF08ZbaDuHi2JewDx8morumBfYowjrWIMKDTBirg
-         VEB/Rb3cDgyWjdEP5GCWD5kvwvDihmdm/sdam3r1Guc9qMgauY4VFOHO/5BKYDNvRqPf
-         macy/apqAjo0+pZX0AN7hhXCho8Xcx1FWMr3RHBwHpuDBTE70N3PjKqzmXnDY9pAsQvi
-         dd7AM1zfcMwBs06XmGYKzeUlm1Vrif5MvuYXIcybURqsLctp8+8BXF12DEpPYkpOEkxW
-         8SOA==
-X-Gm-Message-State: ACrzQf3ja7FDtqdZWaAY3XmAkkXQ1Z5p+fisMxQIjNhjtEqyvA86ig7A
-        tITj8kyot7nLqaRKdBG3KOZAwPXQTrs=
-X-Google-Smtp-Source: AMsMyM7I/KS1GvOaN+r07SgivcB9KHzApPg7eWvpRorPUgnciuXPb8/PrYFEGBxgN42fIT1LmhqMYg==
-X-Received: by 2002:a17:906:4548:b0:77d:3c16:2e9b with SMTP id s8-20020a170906454800b0077d3c162e9bmr20331873ejq.757.1663748860419;
-        Wed, 21 Sep 2022 01:27:40 -0700 (PDT)
-Received: from localhost (212.191.202.62.dynamic.cgnat.res.cust.swisscom.ch. [62.202.191.212])
-        by smtp.gmail.com with ESMTPSA id b1-20020a1709063ca100b0077fbef08212sm1015635ejh.22.2022.09.21.01.27.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Sep 2022 01:27:39 -0700 (PDT)
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     stable@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH bpf] bpf: Gate dynptr API behind CAP_BPF
-Date:   Wed, 21 Sep 2022 10:27:38 +0200
-Message-Id: <20220921082738.7938-1-memxor@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        with ESMTP id S230308AbiIUIez (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 21 Sep 2022 04:34:55 -0400
+Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on2060.outbound.protection.outlook.com [40.107.105.60])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 905134363E
+        for <bpf@vger.kernel.org>; Wed, 21 Sep 2022 01:34:52 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Mi2jhpdvwZogoHwbZDWYb3EdAcyBGeFlDbVICrfuAxEyurtHSeqipUHManIZAlb2BfnG61H741AQ+MChkecuHCzBHK7nPWHZykJQMPSpvCj5BGkY3u7IK5n6Ley+AUKLhdhUm9FhDkxW+suscCdfNnxyYukOZkXTVxke2FuW1dnYYB9Ne6a7TAs6agAYdQkws5t0H5cBm2FbaT0xV+hVJMC1840SrscB2y9v/POZm6ArJV+sdQQd0B0OtrgukuJIdW+Sp66JJiD48lCuwE61kZ3kNNcxWO+Qc5rl6bXjhV5txhyAUb5lIyuqKIsU/qT6GlT0bdsCtWw8W3R1Y2opcw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=83S3ozagbOip0TjtHik479LqaVn+1fricxLQMUgoSWg=;
+ b=Aw5c4QDoRmvnLtk3FmFMV+l5UyQzdkWCsyd6uUyfcFyWNtwCVgPgLcdaHFez8CP7UZueJnqG1BG10nn2i2srbvxGXq9A1W/UqTVJmvUscKTknqiWsDIBOG5MV/Q/XRS5q84d8Lk5390toi1VwiDgHxSpomO/JkFFB9TzU416KD5GCGsMmYdM7VkJa5nNuSkPbQu1OxjJw4rf4Ibj5IUfVSlZZlR1g1oBPbcAluny3Uxu90xq0EG47f8pDd7TyuhBZ9EhnTHzBC2LngPTPzFV3KS6CzcKQ5H6DbFv3sxmLrM0xa1ACfgii9G8g8kgg6wytIa2oVWQvEIGBIvHiWcFfQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=83S3ozagbOip0TjtHik479LqaVn+1fricxLQMUgoSWg=;
+ b=U4tPPKdjDV4+VqZGsnfnsaswt3CxW34itBxx7rim7GSwg3PTlEO0T0d22+CxpAEZpgWYirq6D9q19n9VKTvgVbe5mDXvnYP+87fK4j63jQ/jsB/2nH6VTAyNRfngCu7bGv4DmDK3YAx4UJ3PTAqagQuxe7akJUl7FE6v7TBpIMSFHQK7Pm5CLT6QsB6xoCTVuD7DX3PTO5xA1qB4YAgz8j0rzfD+TMggczd73gThF2Sk5BGfhTc6MWMjlFVs8AJ1Wg3MHRRkUFnI0cJ5ArI5cgw5GwQQi0TU5w2lOK4BMutr/NRjS1COEZatFXyz1T1XUrwUtbjK4DUrukJ19cpGaQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from DB9PR04MB8107.eurprd04.prod.outlook.com (2603:10a6:10:243::20)
+ by AS8PR04MB8038.eurprd04.prod.outlook.com (2603:10a6:20b:2aa::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5654.16; Wed, 21 Sep
+ 2022 08:34:50 +0000
+Received: from DB9PR04MB8107.eurprd04.prod.outlook.com
+ ([fe80::50ef:4600:41bf:b51a]) by DB9PR04MB8107.eurprd04.prod.outlook.com
+ ([fe80::50ef:4600:41bf:b51a%7]) with mapi id 15.20.5654.016; Wed, 21 Sep 2022
+ 08:34:50 +0000
+Date:   Wed, 21 Sep 2022 16:34:44 +0800
+From:   Shung-Hsi Yu <shung-hsi.yu@suse.com>
+To:     bpf <bpf@vger.kernel.org>
+Cc:     Dave Thaler <dthaler@microsoft.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Subject: Rethink how to deal with division/modulo-on-zero (was Re: FW:
+ ebpf-docs: draft of ISA doc updates in progress)
+Message-ID: <YyrMpAPJrP851vE1@syu-laptop>
+References: <CY5PR21MB377000AC95B475C47B702293A3439@CY5PR21MB3770.namprd21.prod.outlook.com>
+ <DM4PR21MB34401314FC9285A9F5A338E0A3479@DM4PR21MB3440.namprd21.prod.outlook.com>
+ <YyFzO205ZZPieCav@syu-laptop>
+ <YyihFIOt6xGWrXdC@infradead.org>
+ <DM4PR21MB344020798F08A9D967E70719A34C9@DM4PR21MB3440.namprd21.prod.outlook.com>
+ <CAADnVQ+bRxDkSWnx27KRm4mC3QrmPO+UyiA5VrjHNMQqeVYcNA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAADnVQ+bRxDkSWnx27KRm4mC3QrmPO+UyiA5VrjHNMQqeVYcNA@mail.gmail.com>
+X-ClientProxiedBy: FR3P281CA0038.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:4a::14) To DB9PR04MB8107.eurprd04.prod.outlook.com
+ (2603:10a6:10:243::20)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2632; i=memxor@gmail.com; h=from:subject; bh=DCkrIGzoXk6j2Jta3oGROnjii8WwNZfXOBF07njClLc=; b=owEBbQKS/ZANAwAKAUzgyIZIvxHKAcsmYgBjKsqJf/tZiyCRF/E4lP3QXyRX4+O9TJAmmqJUL/Si ftl9+t+JAjMEAAEKAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYyrKiQAKCRBM4MiGSL8RyjlmD/ sHY0q/AkIs/YYZqRk3Uu2E1qJ2RRe1amJ2+cI8/EiPIw2dm4wKwkkJJJxBiKUekK2kHIc47U2xW/w2 OdZ0g/a1j4ke+05+DM3mE9N9vbL5JYSn8CIx4WywLKpT6HKCsFnr43B0DCiAXBLM9+6xCpFA/Bu+ww GHWb/khTEZ9ashht8G61U81Kh8plRbrexxjzbRIftlkSg5z+au7fsOeICzA88Oj098eQFH8LmaaKUT AMRNKl2YzIVnsobA1uFJdqxeusDKH6E0gRQR1beXVNIxDjuNLrivXQhFZ+K7mxh3wDmFkKs/r8xdvV gZcshoQhRRLErX0aXXx+QeplhS/ov+5DhVNEy0/Hves9SDEMVuAKGI1Fu9/o8RECBtAw3boB6SAk3r BOOnxZXK+qJDsULvKIys6NMKsBD+j6POnWQoopMF0GxGRRUXCYz8pYU+gQw8rw5V5MraovuBOOtkhe qRyWU/soOdQ3IUPFV03T68pOkpXqFn0mWts3cRgRYoveknI+V4yQ372d7yTZnPbGVS4CmMRWkhyEg4 ALOVzInIawfASh08H+1oekxNdRKpKT73xdJiZxQKh4qmHDgXp7XdTx/3SRb1MIAWrV5XkRsy/wBuT8 pezthitU+rVrjdPddwWaeR8C3S5LAiBh0Yd4XGH6lW3YANj7SSf3zmqazKmg==
-X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DB9PR04MB8107:EE_|AS8PR04MB8038:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6fe156b7-f0e1-42c8-47c2-08da9bac2606
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: epSoHX21bFnwYOhrTboyTOM0kCPzlUdijJXJQWmfHp+KhqOWGG26ZAZ1dS2XbPNgpGMaKDit+kQ7b2mO7rXS4f5l2PVrM1uYf715nL9twTQVP/fh79zLvhYSw02cuETKYL4MY+DslO7pV3QT0tEXUT1CE98BhxNOKiuIGRerGVNCPTm6NDpC9e2eORKMX9KEfSZBAV+uvyGDWJfIxPWLBGTMfAiA7BnUoSCak9K/97SZTOnecNm6FHqKEHM0QJ27CT0e0K0noLlfa7zPZABjDqStYdgCL5CTIOeue0fiS6JfP6TvRtDfEfg3CDDXhznuStNtIWNOnM9w+cqeAXLRyItA4p2x3eVlwbv47K9o+LpFBzsFyR7lWIzx/MBJ10RhM/pYY1LK9sM7pxB6JpetpFYOs9XF9UqJVbWOcdIw2j7DbM1HfvvAJdL/Coxeq77aiQ1NY5HYYQFkQTamQby9NQ0Nl6bdi0pAV990scKTKiaznoLDIfOebbbUaAhWQxfvb0nF2CnWuroB2PI0K/WSghtr4wQ5TaOY+PWFFXlYy4oLkNs6ZOxVTlYzBq3McQZr6/cgq3XwJCx8Arxqdav7X4NWggtoX1cCZaaJrcdxaecYBYjFkDN2ttywCjkMCPqy6D3tO7PzAWZzJnGjY8V2THKXDT1wziABWr0bNuB/sHppgSeSWevpyGaoTk0yocbLnoFEA1q67MOTJm9Vl/AJzA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR04MB8107.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(7916004)(366004)(346002)(136003)(376002)(39860400002)(396003)(451199015)(186003)(83380400001)(41300700001)(15650500001)(6666004)(2906002)(86362001)(53546011)(66899012)(38100700002)(8676002)(33716001)(9686003)(6916009)(54906003)(6506007)(6512007)(26005)(4326008)(45080400002)(316002)(478600001)(8936002)(5660300002)(66556008)(66476007)(66946007)(6486002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dlUvcjcwb3pNbDR3eGN3VFVxZzdMZGI0TDBsYTU2NWxhRVFhaHMya3M2TkRs?=
+ =?utf-8?B?RjJyYjVLVFBTcGNhNzE2N2tiTnRZUW56TS9DK1M5UGs2ZzBXR3p3VWZLVjlS?=
+ =?utf-8?B?NXJBRkVvNGJ2cjh0aVJCV1RrUjdEK2l1MzJvZ0pibForZkxnS21PaGNLRVdo?=
+ =?utf-8?B?UjI0N1dVVnpWQzQ2dERzdXhXRFRLd1RnbE1Da0lTb0Frd3hORG95ZUJLcWth?=
+ =?utf-8?B?OTI0OWgwU2RUTUptdFU1RjlUWDFEOGgweE84ZGJhVHFqUmI0aDFJdTN4eGtz?=
+ =?utf-8?B?U0dCUnVRZU0wcXdMRmVHeUpObFdSZ2owRnhQcjRKQmZBd05LbHJzczJaLzhH?=
+ =?utf-8?B?YmZIL3NxZm4wMlVZZ0ZEK3dIMmNQdlRNeWhrY3dZeWFaRmxBcy82Z1dZZ29M?=
+ =?utf-8?B?ei9WOTFSODNwS3JkbW1oTWg4ekRJNHRtT0hBUFBXVUlnUUxvdWRDcmc4djBz?=
+ =?utf-8?B?RHU4MkpGVW5Ha3NmcGtlZXZvVmd6K0hTYnhma0pYY1pEdU91RmhkejlwSVZk?=
+ =?utf-8?B?VXQ0amFPd2FnUmtGTWFuUFlIWXFvSXpyMFJyN1NmZmhZY0NPUnRxcFh2VzB0?=
+ =?utf-8?B?cHlPTm5KMitsTDhLOGhRUm1PTk8za0l0SG1MNlZONGdLOU53QzdBVjMyQXUw?=
+ =?utf-8?B?VjRocVhnV3VubVJmQ3EzaTNvTGJDa0tLWWxwMkp6VzRNRWxqKzJaWXE1VGo5?=
+ =?utf-8?B?eFR3V2o5Qm5BUCtnZDNReVRBNkthRm5pOSsyK2s3UUo3ZWVDS0dLYVA5MXg4?=
+ =?utf-8?B?dmE0dUc2blU5bXFnQUNSeFZnbzZlMWY4RGlkSW83VVJINE5ESEtmNmQ5YVUv?=
+ =?utf-8?B?N1VOakVhcDVrbStKczcxOERCd2hjVXA3MjMyM3pKa010cDMyaU84NnFXSjJw?=
+ =?utf-8?B?V3JCcVkveGFncURNVDliVUhockM0czl4TlFSWDBCa2hmMHljWmR3Z3ZCQ3FL?=
+ =?utf-8?B?cXJMOTFBYWNrdWoxMTVEdzNHdUxYbW80cFhucXUwMS9ubVF2ZXFrS0U1ZFQ3?=
+ =?utf-8?B?dEk4ekFuS3lxSTRCZ1ZuT3hXazNQT3A2YWMwaDAyMms2WDM3eHdZT25yS3h4?=
+ =?utf-8?B?ekh2Q3dMSmVDb1dxQ3NtN0ZuUU9kL0tjWDZ5dUFJTVNSY0xxTEtHcU1DUEFV?=
+ =?utf-8?B?bGcxTzgzdXdRMElTWXNtR1lkVlFxa0tORGFSc0VZclFhRVIvdDBWdElvd3Ux?=
+ =?utf-8?B?N21oeENpS3ZFNVcxMmF4TUpYWG9rMkJhWU40OXc5b2l0b0dZNUtOOG1qb1cr?=
+ =?utf-8?B?b0FqZEcxUmQ1R0pBRDZMcWpXMU1WaWdnTWI0QnVVc0NqK2FUR2Z4SitLMjd6?=
+ =?utf-8?B?cEFqZHhocnRHU240bC9hcko1dWpRRUxxeUZrN0ZoaW0zQ0hvVkNoZzB3TTJC?=
+ =?utf-8?B?Z0lXcXN5RFRrZEhjRU9iY0NtTHVwVDcyZmJpU0hpR08yam5hYTNqdkRwdmRC?=
+ =?utf-8?B?U1hPbCtLNElsTSttUlY3dmJROVkyUE1sblJ6UUxhcG1nSXJEZHJKYW0vSS90?=
+ =?utf-8?B?S09Bc0xZQ0FpWFR0cjQvQ2QyWVcwaG9oQzdjVmJOU1FPUHRYZFZDbzZBVk4r?=
+ =?utf-8?B?Uk95WE9hTmYwUFdaSHhyd0NxWXhRQng4eG9kYWE5QW1wYWZBV3pRcnFkdmhU?=
+ =?utf-8?B?eHczY0RJUUdMb3BkWCtKRVJOU1BwWjJiNldmQkpqakZuek5PQWRKUjFJaTJa?=
+ =?utf-8?B?Zk5RZTB2bFFpUlJQWHQ5OE9TNXpNam1DTkk2d2tHdWtHWVJQNVZmc2E2RzA4?=
+ =?utf-8?B?Y1Y0UFBMWm9EZnNTcTFMbjJzcDdJeTAyTDUzZW05QjdaaGdueUVyeC9OUVp0?=
+ =?utf-8?B?ZGhybjkrdGpVaGdDQldZbTNXd1k3ZFNDZWkvVnV0WllkVEtWOHRXM002UkNj?=
+ =?utf-8?B?SnFBYy93ZkNZM0dhSnU0dTU4M2krZlJob2lTQmoyUVZCeFhNQkVva2NPL0E4?=
+ =?utf-8?B?WC96OTA4ei94a29qRHZuRkpvdlB6L3JwVmh1MkNRak1LUkJhNDNRck9PbGw3?=
+ =?utf-8?B?RytsMFhJYnkyZDhWc0c4ZTBUMGgwdG5BcTQwamlWQ01MN2lmODROSEhuRVRS?=
+ =?utf-8?B?VzAvS2JZd3VGb0JPUXJvWmczY0J6VnNZVGZyYlc3QzBTM3FTaS9RV21SNzZT?=
+ =?utf-8?Q?v23QukLWwKGqNsVyVCqR3ZWZi?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6fe156b7-f0e1-42c8-47c2-08da9bac2606
+X-MS-Exchange-CrossTenant-AuthSource: DB9PR04MB8107.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Sep 2022 08:34:50.2847
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: nZLyUcOKy+cjVe+FVzsA5ti2+VKa0oiSVKUjPjXCwI+1gUgx/FYlEsL1WJ+f6PQUUSfGMTWiqp40zvNmn5FP3w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8038
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,76 +128,70 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This has been enabled for unprivileged programs for only one kernel
-release, hence the expected annoyances due to this move are low. Users
-using ringbuf can stick to non-dynptr APIs. The actual use cases dynptr
-is meant to serve may not make sense in unprivileged BPF programs.
+Subject changed to reflect this reply is out of scope of the original topic
+(ISA doc).
 
-Hence, gate these helpers behind CAP_BPF and limit use to privileged
-BPF programs.
+On Tue, Sep 20, 2022 at 04:39:52PM -0700, Alexei Starovoitov wrote:
+> On Tue, Sep 20, 2022 at 12:51 PM Dave Thaler <dthaler@microsoft.com> wrote:
+> > > -----Original Message-----
+> > > From: Christoph Hellwig <hch@infradead.org>
+> > > Sent: Monday, September 19, 2022 10:04 AM
+> > > To: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+> > > Cc: Dave Thaler <dthaler@microsoft.com>; bpf <bpf@vger.kernel.org>
+> > > Subject: Re: FW: ebpf-docs: draft of ISA doc updates in progress
+> > >
+> > > On Wed, Sep 14, 2022 at 02:22:51PM +0800, Shung-Hsi Yu wrote:
+> > > > As discussed in yesterday's session, there's no graceful abortion on
+> > > > division by zero, instead, the BPF verifier in Linux prevents division
+> > > > by zero from happening. Here a few additional notes:
+> > >
+> > > Hmm, I thought Alexei pointed out a while ago that divide by zero is now
+> > > defined to return 0 following.  Ok, reading further along I think that is what
+> > > you describe with the pseudo-code below.
+> >
+> > Based on the discussion at LPC, and the fact that older implementations,
+> > as well as uBPF and rbpf still terminate the program, I've added this text
+> > to permit both behaviors:
+> 
+> That's not right. ubpf and rbpf are broken.
+> We shouldn't be adding descriptions of broken implementations
+> to the standard.
+> There is no way to 'gracefully abort' in eBPF.
+> There is a way to 'return 0' in cBPF, but that's different. See below.
+> 
+> > > If eBPF program execution would result in division by zero,
+> > > the destination register SHOULD instead be set to zero, but
+> > > program execution MAY be gracefully aborted instead.
+> > > Similarly, if execution would result in modulo by zero,
+> > > the destination register SHOULD instead be set to the source value,
+> > > but program execution MAY be gracefully aborted instead.
 
-Fixes: 263ae152e962 ("bpf: Add bpf_dynptr_from_mem for local dynptrs")
-Fixes: bc34dee65a65 ("bpf: Dynptr support for ring buffers")
-Fixes: 13bbbfbea759 ("bpf: Add bpf_dynptr_read and bpf_dynptr_write")
-Fixes: 34d4ef5775f7 ("bpf: Add dynptr data slices")
-Cc: stable@vger.kernel.org # v5.19+
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
----
- kernel/bpf/helpers.c | 28 ++++++++++++++--------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+While this makes implementation a lot easier, come to think of it though,
+this behavior actually is more like a hack around having to deal with
+division/modulo-on-zero at runtime. User doing statistic calculations with
+BPF will get bit by this sooner or later, arriving at the wrong calculation
+(fast-math comes to mind).
 
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 41aeaf3862ec..f57a08b6dddb 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -1607,26 +1607,12 @@ bpf_base_func_proto(enum bpf_func_id func_id)
- 		return &bpf_ringbuf_discard_proto;
- 	case BPF_FUNC_ringbuf_query:
- 		return &bpf_ringbuf_query_proto;
--	case BPF_FUNC_ringbuf_reserve_dynptr:
--		return &bpf_ringbuf_reserve_dynptr_proto;
--	case BPF_FUNC_ringbuf_submit_dynptr:
--		return &bpf_ringbuf_submit_dynptr_proto;
--	case BPF_FUNC_ringbuf_discard_dynptr:
--		return &bpf_ringbuf_discard_dynptr_proto;
- 	case BPF_FUNC_strncmp:
- 		return &bpf_strncmp_proto;
- 	case BPF_FUNC_strtol:
- 		return &bpf_strtol_proto;
- 	case BPF_FUNC_strtoul:
- 		return &bpf_strtoul_proto;
--	case BPF_FUNC_dynptr_from_mem:
--		return &bpf_dynptr_from_mem_proto;
--	case BPF_FUNC_dynptr_read:
--		return &bpf_dynptr_read_proto;
--	case BPF_FUNC_dynptr_write:
--		return &bpf_dynptr_write_proto;
--	case BPF_FUNC_dynptr_data:
--		return &bpf_dynptr_data_proto;
- 	default:
- 		break;
- 	}
-@@ -1659,6 +1645,20 @@ bpf_base_func_proto(enum bpf_func_id func_id)
- 		return &bpf_for_each_map_elem_proto;
- 	case BPF_FUNC_loop:
- 		return &bpf_loop_proto;
-+	case BPF_FUNC_ringbuf_reserve_dynptr:
-+		return &bpf_ringbuf_reserve_dynptr_proto;
-+	case BPF_FUNC_ringbuf_submit_dynptr:
-+		return &bpf_ringbuf_submit_dynptr_proto;
-+	case BPF_FUNC_ringbuf_discard_dynptr:
-+		return &bpf_ringbuf_discard_dynptr_proto;
-+	case BPF_FUNC_dynptr_from_mem:
-+		return &bpf_dynptr_from_mem_proto;
-+	case BPF_FUNC_dynptr_read:
-+		return &bpf_dynptr_read_proto;
-+	case BPF_FUNC_dynptr_write:
-+		return &bpf_dynptr_write_proto;
-+	case BPF_FUNC_dynptr_data:
-+		return &bpf_dynptr_data_proto;
- 	default:
- 		break;
- 	}
---
-2.34.1
+This seems to go against some general BPF principle[1] of preventing the
+users from shooting themselves in the foot.
 
+Just like how BPF verifier prevents a _possible_ out-of-bound memory access,
+e.g. arr[i] when `i` is not bound-checked. Ideally I'd expect a coherent
+approach toward division/modulo-on-zero as well; the verifier should prevent
+program that _might_ do division-on-zero from loading in the first place.
+(Maybe possible to achieve if we introduce something like SCALAR_OR_NULL
+composed type, but that's definitely not easy)
+
+Admittedly even if achievable, this is a radical approach that is not
+backward compatible. If such check is implemented, programs that used to
+load may now be rejected. (Usually new BPF verifier feature allows more BPF
+program to pass the verifier, rather then the other way around)
+
+So, I don't have a good proposal at the moment. The purpose to this email is
+to point what I see as an issue out and hope to start a discussion.
+
+1: Okay, I'm making this up a bit, strictly speaking the BPF foundation is
+safe program (one of Alexei's talk) rather than preventing users from
+shooting themselves in the foot.
+
+[...]
