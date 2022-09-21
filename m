@@ -2,269 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDC465E5614
-	for <lists+bpf@lfdr.de>; Thu, 22 Sep 2022 00:09:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7DB85E5629
+	for <lists+bpf@lfdr.de>; Thu, 22 Sep 2022 00:16:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230489AbiIUWJw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Sep 2022 18:09:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51864 "EHLO
+        id S230496AbiIUWQK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Sep 2022 18:16:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbiIUWJv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Sep 2022 18:09:51 -0400
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7014665551;
-        Wed, 21 Sep 2022 15:09:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1663798188; x=1695334188;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=R3CpDz+xL1Orecl3r244JO/sBWMMsfvYdEmeOk70BlE=;
-  b=C12UoqBnYvsW1c/X3Rm38o8gamGjJWilueGRW2lQ4s3iYq3DtfGTCMcb
-   5jftulS8M6M8zuvoelUBR76c2bejqf29Cs8e2ExNH9nETCx9WVZCX8eEV
-   AvjecWChpBVXQiHHXTlK/p+y/IIk1CMIjGT+MYsnIYqk7Geq/K6NNbqmh
-   Gv+RMwfgCJXU+E0z4ywA8xEnbI6PQlP9ZN8S/JosxdGr0sluw9Ws/IaZQ
-   v8q4y6PwXSqfyPG7NzQ1b9cRsOKz/yk5i95pSvry2KxJTbmO5TIjD6wFC
-   /9Qyk4YPZ680K9Ox1CwmLTm7u30o3tt8wpJ2jZvrfxUV7b0fca9Nz5GF0
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10477"; a="283185948"
-X-IronPort-AV: E=Sophos;i="5.93,334,1654585200"; 
-   d="scan'208";a="283185948"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2022 15:09:48 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,334,1654585200"; 
-   d="scan'208";a="652717033"
-Received: from lkp-server01.sh.intel.com (HELO c0a60f19fe7e) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 21 Sep 2022 15:09:44 -0700
-Received: from kbuild by c0a60f19fe7e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1ob7ua-00041Y-0D;
-        Wed, 21 Sep 2022 22:09:44 +0000
-Date:   Thu, 22 Sep 2022 06:09:29 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-scsi@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-mm@kvack.org,
-        linux-ia64@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, bpf@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: [linux-next:master] BUILD REGRESSION
- 483fed3b5dc8ce3644c83d24240cf5756fb0993e
-Message-ID: <632b8b99.vfbuiC8J3oDCVZh4%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S230289AbiIUWQK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 21 Sep 2022 18:16:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF859A74FB
+        for <bpf@vger.kernel.org>; Wed, 21 Sep 2022 15:16:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1663798568;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7ZRGiWjzNsukpIy4rJrNhhNAZ8Z3hkyqCLJbxu1V8pM=;
+        b=JSBO/cyQJVErmAIwY1k9jLZ1MA5zgCY8/1x2w8HAHJqwdG4x1uaeXs2/0iH3fYra7PkAwP
+        NsiJoK0l5iuOp7SjmzApaMTALp2IRe6+M35Gy+I+tEFsRUBsVpy4J6t9HUysJqXQVgzE/a
+        +hL7EgAFaEE5SeHA2rz6qd5k9C0/6+o=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-624-y9q0mOSpMiyddoIl0gRLaw-1; Wed, 21 Sep 2022 18:16:06 -0400
+X-MC-Unique: y9q0mOSpMiyddoIl0gRLaw-1
+Received: by mail-ej1-f69.google.com with SMTP id hr12-20020a1709073f8c00b0077e8371f847so3749027ejc.20
+        for <bpf@vger.kernel.org>; Wed, 21 Sep 2022 15:16:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date;
+        bh=7ZRGiWjzNsukpIy4rJrNhhNAZ8Z3hkyqCLJbxu1V8pM=;
+        b=tBFaIAuHXvEotelDP6DWx2V1pyTbcqbPgmRAuQ89/E3ofJiSUHXmRRxm6lTvqnGIbr
+         PA3yOI5BQGD6uRSvqhCeJeG1zv968/+wugK5bdI42/qF2ZtwSCwr/nd8d6X3tIZ3MMBQ
+         o44i3rUPBg4cIhOAua2T2JFeAyIQHI+l2O34vJ2zQLkPeGNneovVcQ4I7wfYkJo9cNXf
+         rzF8GqGj/t+BbJ5gMgjEgbfhzcza8lPyb71S0R1W0M/b5d9kEi36hZ8b6pwKaFslGfWE
+         nfqYivwAzJs9IhzIyjCHRwyR2Y6M/0X4EQ2k/2GNLNjIDYlw9h4p8YqfnarDm3FzpdAy
+         DpGw==
+X-Gm-Message-State: ACrzQf3h6fsHEMkNCb9SBMWD1nKahntGp6nmVo+HPCOFSzJyInPByxZ2
+        E1OpXyzkl5wtTHN4/FUtjs1Tk/E/gH9NQSZffxKYpyafkFpMfa5DEAwTLvE9FYVH9KmSgiDHpTa
+        M4ZyDLcBKyOVE
+X-Received: by 2002:a05:6402:3486:b0:451:b8d3:c52c with SMTP id v6-20020a056402348600b00451b8d3c52cmr260520edc.406.1663798565050;
+        Wed, 21 Sep 2022 15:16:05 -0700 (PDT)
+X-Google-Smtp-Source: AMsMyM4KK6qJt+QCAEnmFM3fpiRKiITb7AsV70ttximoQ8OLk9eZKgy+daUivYutQXzjpoiAK8nURA==
+X-Received: by 2002:a05:6402:3486:b0:451:b8d3:c52c with SMTP id v6-20020a056402348600b00451b8d3c52cmr260454edc.406.1663798564188;
+        Wed, 21 Sep 2022 15:16:04 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id i18-20020a056402055200b0044841a78c70sm2439770edx.93.2022.09.21.15.16.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Sep 2022 15:16:03 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 07BA461C5A7; Thu, 22 Sep 2022 00:16:03 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        netdev@vger.kernel.org
+Cc:     bpf@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>,
+        mtahhan@redhat.com, mcroce@microsoft.com
+Subject: Re: [PATCH net-next] xdp: improve page_pool xdp_return performance
+In-Reply-To: <166377993287.1737053.10258297257583703949.stgit@firesoul>
+References: <166377993287.1737053.10258297257583703949.stgit@firesoul>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 22 Sep 2022 00:16:02 +0200
+Message-ID: <87v8pgv0f1.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-branch HEAD: 483fed3b5dc8ce3644c83d24240cf5756fb0993e  Add linux-next specific files for 20220921
+Jesper Dangaard Brouer <brouer@redhat.com> writes:
 
-Error/Warning reports:
+> During LPC2022 I meetup with my page_pool co-maintainer Ilias. When
+> discussing page_pool code we realised/remembered certain optimizations
+> had not been fully utilised.
+>
+> Since commit c07aea3ef4d4 ("mm: add a signature in struct page") struct
+> page have a direct pointer to the page_pool object this page was
+> allocated from.
+>
+> Thus, with this info it is possible to skip the rhashtable_lookup to
+> find the page_pool object in __xdp_return().
+>
+> The rcu_read_lock can be removed as it was tied to xdp_mem_allocator.
+> The page_pool object is still safe to access as it tracks inflight pages
+> and (potentially) schedules final release from a work queue.
+>
+> Created a micro benchmark of XDP redirecting from mlx5 into veth with
+> XDP_DROP bpf-prog on the peer veth device. This increased performance
+> 6.5% from approx 8.45Mpps to 9Mpps corresponding to using 7 nanosec
+> (27 cycles at 3.8GHz) less per packet.
+>
+> Suggested-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
 
-https://lore.kernel.org/linux-mm/202209042337.FQi69rLV-lkp@intel.com
-https://lore.kernel.org/linux-mm/202209060229.dVuyxjBv-lkp@intel.com
-https://lore.kernel.org/linux-mm/202209150141.WgbAKqmX-lkp@intel.com
-https://lore.kernel.org/linux-mm/202209160607.sE3qvgTy-lkp@intel.com
-https://lore.kernel.org/linux-mm/202209200603.Hpvoa8Ii-lkp@intel.com
-https://lore.kernel.org/linux-mm/202209200949.Vl3xrUYD-lkp@intel.com
-https://lore.kernel.org/llvm/202209220009.8nYpIPST-lkp@intel.com
-https://lore.kernel.org/llvm/202209220019.Yr2VuXhg-lkp@intel.com
+Nice! The two of you should get together in person more often ;)
 
-Error/Warning: (recently discovered and may have been fixed)
+Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 
-ERROR: modpost: "devm_ioremap_resource" [drivers/dma/fsl-edma.ko] undefined!
-ERROR: modpost: "devm_ioremap_resource" [drivers/dma/idma64.ko] undefined!
-ERROR: modpost: "devm_ioremap_resource" [drivers/dma/qcom/hdma.ko] undefined!
-ERROR: modpost: "devm_memremap" [drivers/misc/open-dice.ko] undefined!
-ERROR: modpost: "devm_memunmap" [drivers/misc/open-dice.ko] undefined!
-ERROR: modpost: "devm_platform_ioremap_resource" [drivers/char/xillybus/xillybus_of.ko] undefined!
-ERROR: modpost: "devm_platform_ioremap_resource" [drivers/clk/xilinx/clk-xlnx-clock-wizard.ko] undefined!
-ERROR: modpost: "ioremap" [drivers/tty/ipwireless/ipwireless.ko] undefined!
-ERROR: modpost: "iounmap" [drivers/net/ethernet/8390/pcnet_cs.ko] undefined!
-ERROR: modpost: "iounmap" [drivers/tty/ipwireless/ipwireless.ko] undefined!
-arch/arm64/kernel/alternative.c:199:6: warning: no previous prototype for 'apply_alternatives_vdso' [-Wmissing-prototypes]
-arch/arm64/kernel/alternative.c:295:14: warning: no previous prototype for 'alt_cb_patch_nops' [-Wmissing-prototypes]
-arch/ia64/kernel/sys_ia64.c:188:17: sparse: sparse: typename in expression
-arch/ia64/kernel/sys_ia64.c:188:31: sparse: sparse: Trying to use reserved word 'typeof' as identifier
-arch/ia64/kernel/sys_ia64.c:188:31: sparse: sparse: Trying to use reserved word 'void' as identifier
-arch/ia64/kernel/sys_ia64.c:189:60: sparse: sparse: invalid initializer
-arch/ia64/kernel/sys_ia64.c:190:17: sparse: sparse: Trying to use reserved word 'return' as identifier
-arch/parisc/lib/iomap.c:363:5: warning: no previous prototype for 'ioread64_lo_hi' [-Wmissing-prototypes]
-arch/parisc/lib/iomap.c:373:5: warning: no previous prototype for 'ioread64_hi_lo' [-Wmissing-prototypes]
-arch/parisc/lib/iomap.c:448:6: warning: no previous prototype for 'iowrite64_lo_hi' [-Wmissing-prototypes]
-arch/parisc/lib/iomap.c:454:6: warning: no previous prototype for 'iowrite64_hi_lo' [-Wmissing-prototypes]
-drivers/scsi/qla2xxx/qla_os.c:2854:23: warning: assignment to 'struct trace_array *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-drivers/scsi/qla2xxx/qla_os.c:2854:25: error: implicit declaration of function 'trace_array_get_by_name'; did you mean 'trace_array_set_clr_event'? [-Werror=implicit-function-declaration]
-drivers/scsi/qla2xxx/qla_os.c:2869:9: error: implicit declaration of function 'trace_array_put' [-Werror=implicit-function-declaration]
-mm/hugetlb.c:5539:14: warning: variable 'reserve_alloc' set but not used [-Wunused-but-set-variable]
-
-Error/Warning ids grouped by kconfigs:
-
-gcc_recent_errors
-|-- alpha-allyesconfig
-|   |-- drivers-scsi-qla2xxx-qla_os.c:error:implicit-declaration-of-function-trace_array_get_by_name
-|   |-- drivers-scsi-qla2xxx-qla_os.c:error:implicit-declaration-of-function-trace_array_put
-|   `-- drivers-scsi-qla2xxx-qla_os.c:warning:assignment-to-struct-trace_array-from-int-makes-pointer-from-integer-without-a-cast
-|-- alpha-randconfig-s033-20220921
-|   `-- kernel-exit.c:sparse:sparse:incorrect-type-in-initializer-(different-address-spaces)-expected-struct-sighand_struct-sighand-got-struct-sighand_struct-noderef-__rcu-sighand
-|-- arm64-allyesconfig
-|   |-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-alt_cb_patch_nops
-|   |-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-apply_alternatives_vdso
-|   `-- mm-hugetlb.c:warning:variable-reserve_alloc-set-but-not-used
-|-- arm64-randconfig-r013-20220921
-|   |-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-alt_cb_patch_nops
-|   `-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-apply_alternatives_vdso
-|-- i386-allyesconfig
-|   `-- mm-hugetlb.c:warning:variable-reserve_alloc-set-but-not-used
-|-- i386-defconfig
-|   `-- mm-hugetlb.c:warning:variable-reserve_alloc-set-but-not-used
-|-- i386-randconfig-c021
-|   `-- mm-hugetlb.c:warning:variable-reserve_alloc-set-but-not-used
-|-- i386-randconfig-m021
-|   `-- drivers-gpu-drm-display-drm_dp_helper.c-drm_dp_phy_name()-warn:unsigned-dp_phy-is-never-less-than-zero.
-|-- i386-randconfig-s001
-|   |-- arch-x86-kernel-signal.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-noderef-__user-to-got-unsigned-long-long-usertype
-|   |-- drivers-gpu-drm-tiny-simpledrm.c:sparse:sparse:incorrect-type-in-initializer-(different-address-spaces)-expected-void-vaddr-got-void-noderef-__iomem-screen_base
-|   |-- drivers-gpu-drm-vkms-vkms_formats.c:sparse:sparse:cast-to-restricted-__le16
-|   |-- drivers-gpu-drm-vkms-vkms_formats.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-unsigned-short-usertype-got-restricted-__le16-usertype
-|   `-- kernel-exit.c:sparse:sparse:incorrect-type-in-initializer-(different-address-spaces)-expected-struct-sighand_struct-sighand-got-struct-sighand_struct-noderef-__rcu-sighand
-|-- i386-randconfig-s002
-|   |-- arch-x86-kernel-signal.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-noderef-__user-to-got-unsigned-long-long-usertype
-|   |-- drivers-gpu-drm-tiny-simpledrm.c:sparse:sparse:incorrect-type-in-initializer-(different-address-spaces)-expected-void-vaddr-got-void-noderef-__iomem-screen_base
-|   |-- kernel-exit.c:sparse:sparse:incorrect-type-in-initializer-(different-address-spaces)-expected-struct-sighand_struct-sighand-got-struct-sighand_struct-noderef-__rcu-sighand
-|   `-- mm-hugetlb.c:warning:variable-reserve_alloc-set-but-not-used
-|-- i386-randconfig-s003
-|   |-- arch-x86-kernel-signal.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-noderef-__user-to-got-unsigned-long-long-usertype
-|   |-- drivers-gpu-drm-tiny-simpledrm.c:sparse:sparse:incorrect-type-in-initializer-(different-address-spaces)-expected-void-vaddr-got-void-noderef-__iomem-screen_base
-|   |-- kernel-exit.c:sparse:sparse:incorrect-type-in-initializer-(different-address-spaces)-expected-struct-sighand_struct-sighand-got-struct-sighand_struct-noderef-__rcu-sighand
-|   |-- mm-hugetlb.c:warning:variable-reserve_alloc-set-but-not-used
-|   `-- sound-soc-generic-simple-card-utils.c:sparse:sparse:incorrect-type-in-initializer-(different-base-types)-expected-unsigned-int-usertype-val-got-restricted-snd_pcm_format_t-usertype
-|-- ia64-allmodconfig
-|   |-- drivers-scsi-qla2xxx-qla_os.c:error:implicit-declaration-of-function-trace_array_get_by_name
-|   |-- drivers-scsi-qla2xxx-qla_os.c:error:implicit-declaration-of-function-trace_array_put
-|   |-- drivers-scsi-qla2xxx-qla_os.c:warning:assignment-to-struct-trace_array-from-int-makes-pointer-from-integer-without-a-cast
-|   `-- mm-hugetlb.c:warning:variable-reserve_alloc-set-but-not-used
-|-- ia64-randconfig-s052-20220921
-|   |-- arch-ia64-kernel-sys_ia64.c:sparse:sparse:Trying-to-use-reserved-word-return-as-identifier
-|   |-- arch-ia64-kernel-sys_ia64.c:sparse:sparse:Trying-to-use-reserved-word-typeof-as-identifier
-|   |-- arch-ia64-kernel-sys_ia64.c:sparse:sparse:Trying-to-use-reserved-word-void-as-identifier
-|   |-- arch-ia64-kernel-sys_ia64.c:sparse:sparse:invalid-initializer
-|   |-- arch-ia64-kernel-sys_ia64.c:sparse:sparse:typename-in-expression
-|   |-- kernel-bpf-hashtab.c:sparse:sparse:cast-removes-address-space-__percpu-of-expression
-clang_recent_errors
-|-- arm-randconfig-r014-20220921
-|   `-- make:No-rule-to-make-target-drivers-crypto-aspeed-aspeed_crypto.o-needed-by-drivers-crypto-aspeed-built-in.a-.
-|-- arm-randconfig-r026-20220921
-|   |-- drivers-scsi-qla2xxx-qla_os.c:error:call-to-undeclared-function-trace_array_get_by_name-ISO-C99-and-later-do-not-support-implicit-function-declarations
-|   |-- drivers-scsi-qla2xxx-qla_os.c:error:call-to-undeclared-function-trace_array_put-ISO-C99-and-later-do-not-support-implicit-function-declarations
-|   `-- drivers-scsi-qla2xxx-qla_os.c:error:incompatible-integer-to-pointer-conversion-assigning-to-struct-trace_array-from-int
-|-- i386-randconfig-a015
-|   |-- ERROR:__cpuhp_remove_state-arch-x86-events-intel-intel-cstate.ko-undefined
-|   |-- ERROR:__cpuhp_setup_state-arch-x86-events-intel-intel-cstate.ko-undefined
-|   |-- ERROR:_printk-arch-x86-events-intel-intel-cstate.ko-undefined
-|   |-- ERROR:boot_cpu_data-arch-x86-events-intel-intel-cstate.ko-undefined
-|   |-- ERROR:cpu_bit_bitmap-arch-x86-events-intel-intel-cstate.ko-undefined
-|   |-- ERROR:perf_msr_probe-arch-x86-events-intel-intel-cstate.ko-undefined
-|   |-- ERROR:perf_pmu_register-arch-x86-events-intel-intel-cstate.ko-undefined
-|   |-- ERROR:perf_pmu_unregister-arch-x86-events-intel-intel-cstate.ko-undefined
-|   |-- ERROR:x86_match_cpu-arch-x86-events-intel-intel-cstate.ko-undefined
-|   `-- drivers-extcon-extcon-usbc-tusb320.c:warning:expecting-prototype-for-drivers-extcon-extcon-tusb320c().-Prototype-was-for-TUSB320_REG8()-instead
-|-- powerpc-randconfig-r006-20220921
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-virtual-virtual_link_hwss.c:warning:no-previous-prototype-for-function-virtual_disable_link_output
-|   `-- ld.lld:error:undefined-symbol:__udivdi3
-|-- x86_64-allyesconfig
-|   |-- drivers-extcon-extcon-usbc-tusb320.c:warning:expecting-prototype-for-drivers-extcon-extcon-tusb320c().-Prototype-was-for-TUSB320_REG8()-instead
-|   `-- mm-hugetlb.c:warning:variable-reserve_alloc-set-but-not-used
-`-- x86_64-randconfig-a016
-    `-- drivers-extcon-extcon-usbc-tusb320.c:warning:expecting-prototype-for-drivers-extcon-extcon-tusb320c().-Prototype-was-for-TUSB320_REG8()-instead
-
-elapsed time: 728m
-
-configs tested: 67
-configs skipped: 2
-
-gcc tested configs:
-um                             i386_defconfig
-um                           x86_64_defconfig
-i386                                defconfig
-arm                                 defconfig
-x86_64                        randconfig-a004
-x86_64                        randconfig-a002
-arc                      axs103_smp_defconfig
-arc                  randconfig-r043-20220921
-arc                                 defconfig
-x86_64                              defconfig
-m68k                             allmodconfig
-powerpc                          allmodconfig
-loongarch                         allnoconfig
-riscv                randconfig-r042-20220921
-sh                               allmodconfig
-x86_64                           rhel-8.3-kvm
-x86_64                    rhel-8.3-kselftests
-s390                 randconfig-r044-20220921
-x86_64                           rhel-8.3-syz
-x86_64                          rhel-8.3-func
-x86_64                         rhel-8.3-kunit
-arc                               allnoconfig
-arm                           viper_defconfig
-alpha                             allnoconfig
-arm                          lpd270_defconfig
-riscv                             allnoconfig
-csky                              allnoconfig
-m68k                          sun3x_defconfig
-sh                          sdk7780_defconfig
-sh                             sh03_defconfig
-sh                              ul2_defconfig
-i386                          randconfig-a016
-powerpc                      ppc6xx_defconfig
-powerpc                    klondike_defconfig
-powerpc                 mpc837x_mds_defconfig
-arm                        trizeps4_defconfig
-sh                        dreamcast_defconfig
-riscv             nommu_k210_sdcard_defconfig
-powerpc                    sam440ep_defconfig
-powerpc                      pcm030_defconfig
-sh                           se7780_defconfig
-i386                          randconfig-c001
-powerpc                         wii_defconfig
-powerpc                           allnoconfig
-alpha                               defconfig
-x86_64                               rhel-8.3
-m68k                             allyesconfig
-s390                                defconfig
-x86_64                           allyesconfig
-s390                             allmodconfig
-arc                              allyesconfig
-alpha                            allyesconfig
-s390                             allyesconfig
-mips                             allyesconfig
-i386                             allyesconfig
-ia64                             allmodconfig
-arm64                            allyesconfig
-arm                              allyesconfig
-
-clang tested configs:
-hexagon              randconfig-r041-20220921
-hexagon              randconfig-r045-20220921
-arm                         hackkit_defconfig
-s390                             alldefconfig
-x86_64                        randconfig-a016
-i386                          randconfig-a015
-powerpc                      katmai_defconfig
-arm                        mvebu_v5_defconfig
-x86_64                        randconfig-k001
-x86_64                           allyesconfig
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
