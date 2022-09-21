@@ -2,55 +2,47 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 944135E56C4
-	for <lists+bpf@lfdr.de>; Thu, 22 Sep 2022 01:33:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 446C95E56C9
+	for <lists+bpf@lfdr.de>; Thu, 22 Sep 2022 01:40:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229687AbiIUXde (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Sep 2022 19:33:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45468 "EHLO
+        id S229604AbiIUXkW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Sep 2022 19:40:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbiIUXdd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Sep 2022 19:33:33 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1529A5980;
-        Wed, 21 Sep 2022 16:33:31 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id y17so17236519ejo.6;
-        Wed, 21 Sep 2022 16:33:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=wcBwRfOcQ0aBAEAgR2fCpIMAURfzSlApHm2GvjuJp+I=;
-        b=QiG5+P5UyRh+xcWeHuWwWXVwsmEl3xKYP0TkikiZvurzaYzDbNmEEVLI5FmB0MIfgt
-         pag5jJepynQEHN/+t3aUVs8GmXMtDDoUIyRovTtXxTof7TqA13a95FH2Lg7xUDuxM/2A
-         jvbbKgQ5dTvOGhDsMsJgIwtvNCpiRKLheP9tYl3q/i3lXbHqNiXNm7IWceL+AlyE3sCt
-         dcnPBkaIMA8I6M0gJN8+1/2LoNCO9GpbQE+tptun9J+iwWlrcUZWjIH+s9iRKRnh/3l3
-         JsjLxEIOk5lvQQ+uWgbaDiv6ha8angSfIc8MqQZ1gVA1YmsZN/GJ771kyqelJPqwDDZV
-         adRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=wcBwRfOcQ0aBAEAgR2fCpIMAURfzSlApHm2GvjuJp+I=;
-        b=pMypRiL1wX1XzOFNbID3R1jti4nxHDHmfDKQso3d+pxi3f1O9a3XpGSxbckyu8lLg6
-         R4K1P8iYQDX5I2guiVuZvrBcHZk0jPv2KfL/KV+tH3Qz2x3txiNamponG7yn/GgbHG2Y
-         kgvvxcrH/qNMCqf0GQNTC0NkjUsCigRfpg5tKMmPwvVogyv1NIpJXPxRWShotBHqKI+j
-         4pF6zwjasJbvZW6PZNur7gMNeccHx8VwdYHSj4QjwdmsCw6cqu8BhBpNiTy/TZW4n2Fz
-         u+DgTba/bib5MgkHnaH6LHmH06k8JHo+/RfPTzhe9kOQWCg612ou0Omdpgh57/Yu+kdP
-         WxSA==
-X-Gm-Message-State: ACrzQf2ajeVNFAgq2uR1fAEf4pXqSGz9/lW3JiBgymKFLgZ2QBKs0YQ4
-        nxWHfK5j7/6xfQ8u4J4VUVys6LSOlggj9ydHLuk=
-X-Google-Smtp-Source: AMsMyM6+QFIVTHOS3tuB+2McWRGJl9t/4olnCXq9ndUaWJsvK03ifHsJOjfhEbmrLu4hk1RTx4Bbe8/G2z1OgAYZJC4=
-X-Received: by 2002:a17:906:99c5:b0:73d:70c5:1a4f with SMTP id
- s5-20020a17090699c500b0073d70c51a4fmr529596ejn.302.1663803210145; Wed, 21 Sep
- 2022 16:33:30 -0700 (PDT)
+        with ESMTP id S229551AbiIUXkU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 21 Sep 2022 19:40:20 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2388F67141;
+        Wed, 21 Sep 2022 16:40:19 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id CC31EB8336D;
+        Wed, 21 Sep 2022 23:40:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 67A7CC433D7;
+        Wed, 21 Sep 2022 23:40:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1663803616;
+        bh=gx8WMZqzq0+H7zdC8DGV7XVEwgg9fq7Lx1nSTcqWSL8=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=O2b7qP8QFLVI7Or467AX5aZXnXOIwz3mEI0cEpKuGBkDDl0RGaUDm3O8tVF8srRnr
+         JkhzhswZAAHVr7p7n4EkfHvypauoEV9qT1L7TOgIMs1aw3tvA4c49hfgjr581iPgfp
+         JMvfnbjSj9Y2p0MzpCkQeIEzs6JSgQLp7tdyvcvnfjdNsGuDmQyI8wDpCHJwxzBsyw
+         ZMdkSGvxXpJDgeIkOKfj3PyLL206I7+s8qaI+LyF/XU/ihVNkhoxtp/FfDhYChyLJZ
+         ojAitAoIba+scr/muk7G2CXMTT3PirmpSC9rJpluhLDo/9mavYHOMTOf8us+0j/ugL
+         9Op54QyyjSBnA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 460D7E4D03D;
+        Wed, 21 Sep 2022 23:40:16 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20220920000100.477320-1-void@manifault.com> <20220920000100.477320-3-void@manifault.com>
-In-Reply-To: <20220920000100.477320-3-void@manifault.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 21 Sep 2022 16:33:18 -0700
-Message-ID: <CAEf4Bzb1AHvn1=P=1_P84r35NyFtAN1B=zNtJ13po_JORjqBvA@mail.gmail.com>
-Subject: Re: [PATCH v6 2/4] bpf: Add bpf_user_ringbuf_drain() helper
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v6 0/4] bpf: Add user-space-publisher ring buffer map type
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166380361628.10161.4038336755255982198.git-patchwork-notify@kernel.org>
+Date:   Wed, 21 Sep 2022 23:40:16 +0000
+References: <20220920000100.477320-1-void@manifault.com>
+In-Reply-To: <20220920000100.477320-1-void@manifault.com>
 To:     David Vernet <void@manifault.com>
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         martin.lau@linux.dev, kernel-team@fb.com, song@kernel.org,
@@ -58,97 +50,43 @@ Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         sdf@google.com, haoluo@google.com, jolsa@kernel.org,
         bpf@vger.kernel.org, linux-kernel@vger.kernel.org, tj@kernel.org,
         brho@google.com, joshdon@google.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Sep 19, 2022 at 5:01 PM David Vernet <void@manifault.com> wrote:
->
-> In a prior change, we added a new BPF_MAP_TYPE_USER_RINGBUF map type which
-> will allow user-space applications to publish messages to a ring buffer
-> that is consumed by a BPF program in kernel-space. In order for this
-> map-type to be useful, it will require a BPF helper function that BPF
-> programs can invoke to drain samples from the ring buffer, and invoke
-> callbacks on those samples. This change adds that capability via a new BPF
-> helper function:
->
-> bpf_user_ringbuf_drain(struct bpf_map *map, void *callback_fn, void *ctx,
->                        u64 flags)
->
-> BPF programs may invoke this function to run callback_fn() on a series of
-> samples in the ring buffer. callback_fn() has the following signature:
->
-> long callback_fn(struct bpf_dynptr *dynptr, void *context);
->
-> Samples are provided to the callback in the form of struct bpf_dynptr *'s,
-> which the program can read using BPF helper functions for querying
-> struct bpf_dynptr's.
->
-> In order to support bpf_ringbuf_drain(), a new PTR_TO_DYNPTR register
-> type is added to the verifier to reflect a dynptr that was allocated by
-> a helper function and passed to a BPF program. Unlike PTR_TO_STACK
-> dynptrs which are allocated on the stack by a BPF program, PTR_TO_DYNPTR
-> dynptrs need not use reference tracking, as the BPF helper is trusted to
-> properly free the dynptr before returning. The verifier currently only
-> supports PTR_TO_DYNPTR registers that are also DYNPTR_TYPE_LOCAL.
->
-> Note that while the corresponding user-space libbpf logic will be added
-> in a subsequent patch, this patch does contain an implementation of the
-> .map_poll() callback for BPF_MAP_TYPE_USER_RINGBUF maps. This
-> .map_poll() callback guarantees that an epoll-waiting user-space
-> producer will receive at least one event notification whenever at least
-> one sample is drained in an invocation of bpf_user_ringbuf_drain(),
-> provided that the function is not invoked with the BPF_RB_NO_WAKEUP
-> flag. If the BPF_RB_FORCE_WAKEUP flag is provided, a wakeup
-> notification is sent even if no sample was drained.
->
-> Signed-off-by: David Vernet <void@manifault.com>
-> ---
->  include/linux/bpf.h            |  11 +-
->  include/uapi/linux/bpf.h       |  38 +++++++
->  kernel/bpf/helpers.c           |   2 +
->  kernel/bpf/ringbuf.c           | 181 ++++++++++++++++++++++++++++++++-
->  kernel/bpf/verifier.c          |  61 ++++++++++-
->  tools/include/uapi/linux/bpf.h |  38 +++++++
->  6 files changed, 320 insertions(+), 11 deletions(-)
+Hello:
 
-[...]
+This series was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
 
->  #define __BPF_FUNC_MAPPER(FN)          \
->         FN(unspec),                     \
-> @@ -5599,6 +5636,7 @@ union bpf_attr {
->         FN(tcp_raw_check_syncookie_ipv4),       \
->         FN(tcp_raw_check_syncookie_ipv6),       \
->         FN(ktime_get_tai_ns),           \
-> +       FN(user_ringbuf_drain),         \
->         /* */
->
->  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index 41aeaf3862ec..66217b1857ca 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -1627,6 +1627,8 @@ bpf_base_func_proto(enum bpf_func_id func_id)
->                 return &bpf_dynptr_write_proto;
->         case BPF_FUNC_dynptr_data:
->                 return &bpf_dynptr_data_proto;
-> +       case BPF_FUNC_user_ringbuf_drain:
-> +               return &bpf_user_ringbuf_drain_proto;
+On Mon, 19 Sep 2022 19:00:56 -0500 you wrote:
+> This patch set defines a new map type, BPF_MAP_TYPE_USER_RINGBUF, which
+> provides single-user-space-producer / single-kernel-consumer semantics over
+> a ring buffer.  Along with the new map type, a helper function called
+> bpf_user_ringbuf_drain() is added which allows a BPF program to specify a
+> callback with the following signature, to which samples are posted by the
+> helper:
+> 
+> [...]
 
-In light of [0], where we now allow dynptr only with CAP_BPF, I've
-moved this lower behind CAP_BPF check while applying. Thanks!
+Here is the summary with links:
+  - [v6,1/4] bpf: Define new BPF_MAP_TYPE_USER_RINGBUF map type
+    https://git.kernel.org/bpf/bpf-next/c/583c1f420173
+  - [v6,2/4] bpf: Add bpf_user_ringbuf_drain() helper
+    https://git.kernel.org/bpf/bpf-next/c/205715673844
+  - [v6,3/4] bpf: Add libbpf logic for user-space ring buffer
+    https://git.kernel.org/bpf/bpf-next/c/b66ccae01f1d
+  - [v6,4/4] selftests/bpf: Add selftests validating the user ringbuf
+    https://git.kernel.org/bpf/bpf-next/c/e5a9df51c746
 
-  [0] https://patchwork.kernel.org/project/netdevbpf/patch/20220921143550.30247-1-memxor@gmail.com/
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
->         default:
->                 break;
->         }
 
-[...]
