@@ -2,24 +2,24 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E5E65BF775
-	for <lists+bpf@lfdr.de>; Wed, 21 Sep 2022 09:18:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76CE65BF781
+	for <lists+bpf@lfdr.de>; Wed, 21 Sep 2022 09:20:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229666AbiIUHSG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Sep 2022 03:18:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34668 "EHLO
+        id S229523AbiIUHU0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Sep 2022 03:20:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229789AbiIUHSE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Sep 2022 03:18:04 -0400
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1B477B7A3
-        for <bpf@vger.kernel.org>; Wed, 21 Sep 2022 00:18:01 -0700 (PDT)
+        with ESMTP id S229677AbiIUHUZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 21 Sep 2022 03:20:25 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82E9C7CB79
+        for <bpf@vger.kernel.org>; Wed, 21 Sep 2022 00:20:23 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4MXV7j5SVcz6T7g5
-        for <bpf@vger.kernel.org>; Wed, 21 Sep 2022 15:16:01 +0800 (CST)
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4MXVBm0JbRzlJJJ
+        for <bpf@vger.kernel.org>; Wed, 21 Sep 2022 15:18:40 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP2 (Coremail) with SMTP id Syh0CgD3SXOluipjCo+oBA--.1747S4;
-        Wed, 21 Sep 2022 15:17:59 +0800 (CST)
+        by APP2 (Coremail) with SMTP id Syh0CgDXKXM0uypjR6SoBA--.9748S4;
+        Wed, 21 Sep 2022 15:20:21 +0800 (CST)
 From:   Hou Tao <houtao@huaweicloud.com>
 To:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>
 Cc:     Martin KaFai Lau <kafai@fb.com>,
@@ -34,32 +34,32 @@ Cc:     Martin KaFai Lau <kafai@fb.com>,
         Jiri Olsa <jolsa@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
         Thomas Gleixner <tglx@linutronix.de>, houtao1@huawei.com
-Subject: [PATCH] bpf: Always use raw spinlock for hash bucket lock
-Date:   Wed, 21 Sep 2022 15:36:03 +0800
-Message-Id: <20220921073603.2354855-1-houtao@huaweicloud.com>
+Subject: [PATCH bpf-next RESEND] bpf: Always use raw spinlock for hash bucket lock
+Date:   Wed, 21 Sep 2022 15:38:26 +0800
+Message-Id: <20220921073826.2365800-1-houtao@huaweicloud.com>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgD3SXOluipjCo+oBA--.1747S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxXw13GFW8CF13Aw45JFW5KFg_yoWrtFWxpF
-        WfKasayr18ZF1S93yDXw4Igr15Cw4Ig3yUA3ykW348Aa45Zrnagrn2qryIvFyjvr97AF90
-        vr42g3WYkryUZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkab4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+X-CM-TRANSID: Syh0CgDXKXM0uypjR6SoBA--.9748S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxXw13GFW8CF13Aw45Wr1xKrg_yoWrKryfpF
+        WfKasayr18ZF1S93yDXw10gr15Gw4Ig3yUA3ykW348Aa45Zrnagrn2qryIvFy0vryxAFn0
+        vF42gF1YkryUZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUk2b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
         6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
         vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
         xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
         0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
         Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28I
         cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
         IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI
         42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42
-        IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
-        z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07UZ18PUUUUU=
+        IY6xAIw20EY4v20xvaj40_Zr0_Wr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
+        jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjxUo0eHDUUUU
 X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -81,6 +81,8 @@ accordingly.
 
 Signed-off-by: Hou Tao <houtao1@huawei.com>
 ---
+ * Forget to add bpf-next for the previous send, so send it again
+
  kernel/bpf/hashtab.c | 66 ++++++++++----------------------------------
  1 file changed, 14 insertions(+), 52 deletions(-)
 
