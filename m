@@ -2,109 +2,215 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBA9E5BF81A
-	for <lists+bpf@lfdr.de>; Wed, 21 Sep 2022 09:46:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34B815BF7E8
+	for <lists+bpf@lfdr.de>; Wed, 21 Sep 2022 09:40:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230055AbiIUHqu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Sep 2022 03:46:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45914 "EHLO
+        id S230328AbiIUHkF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Sep 2022 03:40:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230368AbiIUHqr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Sep 2022 03:46:47 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D1AF75CE0;
-        Wed, 21 Sep 2022 00:46:45 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id bj12so11587104ejb.13;
-        Wed, 21 Sep 2022 00:46:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date;
-        bh=Jvswl6qPZOcAXOYK+YaACZfbIZSk41zN4O+biBvkXG0=;
-        b=YaRXBHJPol1fGJedZAViFdap5ub5A1LUkNMA7njQyXZrRZjoHQt2NhuGJNAwLA3/N6
-         eMX8JQjcigJ+P+X0ZNVkZv3IMd2OeoJzZv5kZ0TSe6A9IuEm5WSNwPTPVZCdHgnpu2BA
-         ZEQLJsbH9GptoGHCKH65NQyaqavJHZKYNNnIdMDUsOhMDCaAl3hKybZlme+f61t55MWR
-         MZl7AjazZAdbHkD0NimC/TxK+g2kW0WNEBpzDs3jXf4akHF048JoJlWm+DithTsi16XB
-         IZs8I0wYBzRZTBKK3hERcY/SZ6ST9irLlcGGVSuy/4mYm07ryjg2PT3uXChek+QG4JBe
-         vIkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date;
-        bh=Jvswl6qPZOcAXOYK+YaACZfbIZSk41zN4O+biBvkXG0=;
-        b=UrtsuI6kFHAUs0wQBVtJbrbR1gbDuGTCwwqLVeYcYxEZ/KAmxa5p3/PJWFLkWPI1IC
-         nZIOw/mbw+P2q6lYnWCZCCMhCdJu/M6nLDJtS+7YXYT7hJ9Qf2aHLMQOZtOw1QcjuWpZ
-         LBD1Z2jXnr9BmCcJb48+HzW8/utGsM7ofuUr0Hj5O1D+Fi1IG98PQ4dul0uIhJVSuPyQ
-         9Q2xWLWlD0jGf3Aa286EBjTmFqLUqtOv98fGNRM0wb/AUe898OBB94SEjd5SS9CuO1jN
-         dSi19xb3zzR53YZdSo6A3tuYcOpnOx1Md4eh5Rb+EwVQvI4VaXpLz+vxOQF6pcqyl21G
-         m6UQ==
-X-Gm-Message-State: ACrzQf3SLLkqMxpKFkw9GPbKvR6xxT7kp70x4VkVcGb88Y0O8BOZWkqa
-        yKNhASeUGF7sYLtzSMwJwLW/RczptHs=
-X-Google-Smtp-Source: AMsMyM6i4J03MIvteEA1fiiRTP1mwoK51vO3ZiRjvim80xL0CQ2Wl+8A3wdnT2O/PqGP9v1ZjUZCrw==
-X-Received: by 2002:a17:906:9b92:b0:780:1f91:30fc with SMTP id dd18-20020a1709069b9200b007801f9130fcmr20501508ejc.142.1663746403733;
-        Wed, 21 Sep 2022 00:46:43 -0700 (PDT)
-Received: from gmail.com (1F2EF035.nat.pool.telekom.hu. [31.46.240.53])
-        by smtp.gmail.com with ESMTPSA id r2-20020a170906a20200b0078020ae040csm869564ejy.219.2022.09.21.00.46.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Sep 2022 00:46:43 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Wed, 21 Sep 2022 09:46:40 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Li Zhong <floridsleeves@gmail.com>
-Cc:     linux-perf-users@vger.kernel.org, bpf@vger.kernel.org,
-        namhyung@kernel.org, jolsa@kernel.org,
-        alexander.shishkin@linux.intel.com, mark.rutland@arm.com,
-        acme@kernel.org, mingo@redhat.com, peterz@infradead.org
-Subject: Re: [PATCH v2] kernel/events/core: check return value of
- task_function_call()
-Message-ID: <YyrBYE4iMvei/nNC@gmail.com>
-References: <20220919191611.1589661-1-floridsleeves@gmail.com>
+        with ESMTP id S230315AbiIUHkE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 21 Sep 2022 03:40:04 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0644F275CE;
+        Wed, 21 Sep 2022 00:40:00 -0700 (PDT)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4MXVcs0hlGzHpmT;
+        Wed, 21 Sep 2022 15:37:49 +0800 (CST)
+Received: from localhost.localdomain (10.175.112.70) by
+ canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Wed, 21 Sep 2022 15:39:57 +0800
+From:   Wang Yufen <wangyufen@huawei.com>
+To:     <quentin@isovalent.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <andrii@kernel.org>, <martin.lau@linux.dev>, <song@kernel.org>,
+        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <sdf@google.com>, <haoluo@google.com>, <jolsa@kernel.org>,
+        <davem@davemloft.net>, <kuba@kernel.org>, <hawk@kernel.org>,
+        <nathan@kernel.org>, <ndesaulniers@google.com>, <trix@redhat.com>
+CC:     <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <llvm@lists.linux.dev>
+Subject: [bpf-next v5 1/3] bpftool: Add auto_attach for bpf prog load|loadall
+Date:   Wed, 21 Sep 2022 16:00:38 +0800
+Message-ID: <1663747240-31210-1-git-send-email-wangyufen@huawei.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220919191611.1589661-1-floridsleeves@gmail.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.175.112.70]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ canpemm500010.china.huawei.com (7.192.105.118)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,HEXHASH_WORD,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Add auto_attach optional to support one-step load-attach-pin_link.
 
-* Li Zhong <floridsleeves@gmail.com> wrote:
+For example,
+   $ bpftool prog loadall test.o /sys/fs/bpf/test auto_attach
 
-> From: lily <floridsleeves@gmail.com>
-> 
-> Check the return value of task_function_call(), which could be error
-> code when the execution fails. We log this on info level.
-> 
-> Signed-off-by: Li Zhong <floridsleeves@gmail.com>
-> ---
->  kernel/events/core.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/events/core.c b/kernel/events/core.c
-> index 2621fd24ad26..3848631b009c 100644
-> --- a/kernel/events/core.c
-> +++ b/kernel/events/core.c
-> @@ -13520,7 +13520,10 @@ static void perf_cgroup_attach(struct cgroup_taskset *tset)
->  	struct cgroup_subsys_state *css;
->  
->  	cgroup_taskset_for_each(task, css, tset)
-> -		task_function_call(task, __perf_cgroup_move, task);
-> +		if (!task_function_call(task, __perf_cgroup_move, task)) {
-> +			printk(KERN_INFO "perf: this process isn't running!\n");
-> +			continue;
+   $ bpftool link
+   26: tracing  name test1  tag f0da7d0058c00236  gpl
+   	loaded_at 2022-09-09T21:39:49+0800  uid 0
+   	xlated 88B  jited 55B  memlock 4096B  map_ids 3
+   	btf_id 55
+   28: kprobe  name test3  tag 002ef1bef0723833  gpl
+   	loaded_at 2022-09-09T21:39:49+0800  uid 0
+   	xlated 88B  jited 56B  memlock 4096B  map_ids 3
+   	btf_id 55
+   57: tracepoint  name oncpu  tag 7aa55dfbdcb78941  gpl
+   	loaded_at 2022-09-09T21:41:32+0800  uid 0
+   	xlated 456B  jited 265B  memlock 4096B  map_ids 17,13,14,15
+   	btf_id 82
 
-If this is a 'should never happen' condition, then this should really be 
-WARN_ON_ONCE().
+   $ bpftool link
+   1: tracing  prog 26
+   	prog_type tracing  attach_type trace_fentry
+   3: perf_event  prog 28
+   10: perf_event  prog 57
 
-(If it can happen, then polluting the syslog is wrong.)
+The auto_attach optional can support tracepoints, k(ret)probes,
+u(ret)probes.
 
-Thanks,
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Signed-off-by: Wang Yufen <wangyufen@huawei.com>
+Reviewed-by: Quentin Monnet <quentin@isovalent.com>
+---
+v4 -> v5: some formatting nits of doc
+v3 -> v4: rename functions, update doc, bash and do_help()
+v2 -> v3: switch to extend prog load command instead of extend perf
+v2: https://patchwork.kernel.org/project/netdevbpf/patch/20220824033837.458197-1-weiyongjun1@huawei.com/
+v1: https://patchwork.kernel.org/project/netdevbpf/patch/20220816151725.153343-1-weiyongjun1@huawei.com/
+ tools/bpf/bpftool/prog.c | 77 ++++++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 75 insertions(+), 2 deletions(-)
 
-	Ingo
+diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+index c81362a..aea0b57 100644
+--- a/tools/bpf/bpftool/prog.c
++++ b/tools/bpf/bpftool/prog.c
+@@ -1453,6 +1453,68 @@ static int do_run(int argc, char **argv)
+ 	return ret;
+ }
+ 
++static int
++auto_attach_program(struct bpf_program *prog, const char *path)
++{
++	struct bpf_link *link;
++	int err;
++
++	link = bpf_program__attach(prog);
++	err = libbpf_get_error(link);
++	if (err)
++		return err;
++
++	err = bpf_link__pin(link, path);
++	if (err) {
++		bpf_link__destroy(link);
++		return err;
++	}
++	return 0;
++}
++
++static int pathname_concat(const char *path, const char *name, char *buf)
++{
++	int len;
++
++	len = snprintf(buf, PATH_MAX, "%s/%s", path, name);
++	if (len < 0)
++		return -EINVAL;
++	if (len >= PATH_MAX)
++		return -ENAMETOOLONG;
++
++	return 0;
++}
++
++static int
++auto_attach_programs(struct bpf_object *obj, const char *path)
++{
++	struct bpf_program *prog;
++	char buf[PATH_MAX];
++	int err;
++
++	bpf_object__for_each_program(prog, obj) {
++		err = pathname_concat(path, bpf_program__name(prog), buf);
++		if (err)
++			goto err_unpin_programs;
++
++		err = auto_attach_program(prog, buf);
++		if (err)
++			goto err_unpin_programs;
++	}
++
++	return 0;
++
++err_unpin_programs:
++	while ((prog = bpf_object__prev_program(obj, prog))) {
++		if (pathname_concat(path, bpf_program__name(prog), buf))
++			continue;
++
++		bpf_program__unpin(prog, buf);
++	}
++
++	return err;
++}
++
+ static int load_with_options(int argc, char **argv, bool first_prog_only)
+ {
+ 	enum bpf_prog_type common_prog_type = BPF_PROG_TYPE_UNSPEC;
+@@ -1464,6 +1526,7 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
+ 	struct bpf_program *prog = NULL, *pos;
+ 	unsigned int old_map_fds = 0;
+ 	const char *pinmaps = NULL;
++	bool auto_attach = false;
+ 	struct bpf_object *obj;
+ 	struct bpf_map *map;
+ 	const char *pinfile;
+@@ -1583,6 +1646,9 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
+ 				goto err_free_reuse_maps;
+ 
+ 			pinmaps = GET_ARG();
++		} else if (is_prefix(*argv, "auto_attach")) {
++			auto_attach = true;
++			NEXT_ARG();
+ 		} else {
+ 			p_err("expected no more arguments, 'type', 'map' or 'dev', got: '%s'?",
+ 			      *argv);
+@@ -1692,14 +1758,20 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
+ 			goto err_close_obj;
+ 		}
+ 
+-		err = bpf_obj_pin(bpf_program__fd(prog), pinfile);
++		if (auto_attach)
++			err = auto_attach_program(prog, pinfile);
++		else
++			err = bpf_obj_pin(bpf_program__fd(prog), pinfile);
+ 		if (err) {
+ 			p_err("failed to pin program %s",
+ 			      bpf_program__section_name(prog));
+ 			goto err_close_obj;
+ 		}
+ 	} else {
+-		err = bpf_object__pin_programs(obj, pinfile);
++		if (auto_attach)
++			err = auto_attach_programs(obj, pinfile);
++		else
++			err = bpf_object__pin_programs(obj, pinfile);
+ 		if (err) {
+ 			p_err("failed to pin all programs");
+ 			goto err_close_obj;
+@@ -2338,6 +2410,7 @@ static int do_help(int argc, char **argv)
+ 		"                         [type TYPE] [dev NAME] \\\n"
+ 		"                         [map { idx IDX | name NAME } MAP]\\\n"
+ 		"                         [pinmaps MAP_DIR]\n"
++		"                         [auto_attach]\n"
+ 		"       %1$s %2$s attach PROG ATTACH_TYPE [MAP]\n"
+ 		"       %1$s %2$s detach PROG ATTACH_TYPE [MAP]\n"
+ 		"       %1$s %2$s run PROG \\\n"
+-- 
+1.8.3.1
+
