@@ -2,432 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 865465C049B
-	for <lists+bpf@lfdr.de>; Wed, 21 Sep 2022 18:49:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F19255C04B7
+	for <lists+bpf@lfdr.de>; Wed, 21 Sep 2022 18:53:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231533AbiIUQt4 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 21 Sep 2022 12:49:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50878 "EHLO
+        id S232143AbiIUQxD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Sep 2022 12:53:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231553AbiIUQtd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Sep 2022 12:49:33 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F8AE9AF9D
-        for <bpf@vger.kernel.org>; Wed, 21 Sep 2022 09:43:43 -0700 (PDT)
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 28LFUjZJ015200
-        for <bpf@vger.kernel.org>; Wed, 21 Sep 2022 09:43:42 -0700
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3jqbbub3q6-10
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 21 Sep 2022 09:43:42 -0700
-Received: from snc-exhub201.TheFacebook.com (2620:10d:c085:21d::7) by
- snc-exhub103.TheFacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 21 Sep 2022 09:43:37 -0700
-Received: from twshared15978.04.prn5.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 21 Sep 2022 09:43:07 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 3464E1F2B4FA7; Wed, 21 Sep 2022 09:43:03 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH v2 bpf-next 4/4] selftests/bpf: add ability to filter programs in veristat
-Date:   Wed, 21 Sep 2022 09:42:54 -0700
-Message-ID: <20220921164254.3630690-5-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220921164254.3630690-1-andrii@kernel.org>
-References: <20220921164254.3630690-1-andrii@kernel.org>
+        with ESMTP id S232154AbiIUQwk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 21 Sep 2022 12:52:40 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65CECDF93;
+        Wed, 21 Sep 2022 09:49:01 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6E51A6321C;
+        Wed, 21 Sep 2022 16:49:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5333AC433D6;
+        Wed, 21 Sep 2022 16:48:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1663778939;
+        bh=81mWQ998LxO0FArc0H1G2FjJmMbDnM+S1neGgiGa8v8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=NZPmZ11RyAThZrXkuPV5BeojdSXkS22RcgRE1PxvFFkAB2vuUBq7mEZNtOto+9hGA
+         6SQCNuIPN+iYv54QH8zXA+/ROupA1gnHO1SZ3TYJ4g5x22uYR3+AU7EpaIFyHmGdf8
+         9xJpbIXb/cvE3MeY9gt80/d60qJ0gEuo6u1BEtOJ0KF1RPBLTZao2JUOOH1ePFHoD1
+         UAG7TS0IwRBpbMarfq50vtxk3qKiiDFXLPru28Iv88WC4coyw4CXAGaFADhKRO2QUY
+         lkdoGRZ4yA84mrfegVxAqlzZjbN6yZfqQfb0BS0WPlswipiC7ggCRw+K9caYBJtgK3
+         Ml5RD+mUBiS3A==
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        edumazet@google.com, pabeni@redhat.com, pablo@netfilter.org,
+        fw@strlen.de, netfilter-devel@vger.kernel.org,
+        lorenzo.bianconi@redhat.com, brouer@redhat.com, toke@redhat.com,
+        memxor@gmail.com
+Subject: [PATCH v3 bpf-next 0/3] Introduce bpf_ct_set_nat_info kfunc helper
+Date:   Wed, 21 Sep 2022 18:48:24 +0200
+Message-Id: <cover.1663778601.git.lorenzo@kernel.org>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: SzJN1qZQOHn1y-lMuutnw4OfKQlJRe6S
-X-Proofpoint-GUID: SzJN1qZQOHn1y-lMuutnw4OfKQlJRe6S
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.528,FMLib:17.11.122.1
- definitions=2022-09-21_09,2022-09-20_02,2022-06-22_01
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add -f (--filter) argument which accepts glob-based filters for
-narrowing down what BPF object files and programs within them should be
-processed by veristat. This filtering applies both to comparison and
-main (verification) mode.
+Introduce bpf_ct_set_nat_info kfunc helper in order to set source and
+destination nat addresses/ports in a new allocated ct entry not inserted
+in the connection tracking table yet.
+Introduce support for per-parameter trusted args.
 
-Filter can be of two forms:
-  - file (object) filter: 'strobemeta*'; in this case all the programs
-    within matching files are implicitly allowed (or denied, depending
-    if it's positive or negative rule, see below);
-  - file and prog filter: 'strobemeta*/*unroll*' will further filter
-    programs within matching files to only allow those program names that
-    match '*unroll*' glob.
+Changes since v2:
+- use int instead of a pointer for port in bpf_ct_set_nat_info signature
+- modify KF_TRUSTED_ARGS definition in order to referenced pointer constraint
+  just for PTR_TO_BTF_ID
+- drop patch 2/4
 
-As mentioned, filters can be positive (allowlisting) and negative
-(denylisting). Negative filters should start with '!': '!strobemeta*'
-will deny any filename which basename starts with "strobemeta".
+Changes since v1:
+- enable CONFIG_NF_NAT in tools/testing/selftests/bpf/config
 
-Further, one extra special syntax is supported to allow more convenient
-use in practice. Instead of specifying rule on the command line,
-veristat allows to specify file that contains rules, both positive and
-negative, one line per one filter. This is achieved with -f @<filepath>
-use, where <filepath> points to a text file containing rules (negative
-and positive rules can be mixed). For convenience empty lines and lines
-starting with '#' are ignored. This feature is useful to have some
-pre-canned list of object files and program names that are tested
-repeatedly, allowing to check in a list of rules and quickly specify
-them on the command line.
+Kumar Kartikeya Dwivedi (1):
+  bpf: Tweak definition of KF_TRUSTED_ARGS
 
-As a demonstration (and a short cut for nearest future), create a small
-list of "interesting" BPF object files from selftests/bpf and commit it
-as veristat.cfg. It currently includes 73 programs, most of which are
-the most complex and largest BPF programs in selftests, as judged by
-total verified instruction count and verifier states total.
+Lorenzo Bianconi (2):
+  net: netfilter: add bpf_ct_set_nat_info kfunc helper
+  selftests/bpf: add tests for bpf_ct_set_nat_info kfunc
 
-If there is overlap between positive or negative filters, negative
-filter takes precedence (denylisting is stronger than allowlisting). If
-no allow filter is specified, veristat implicitly assumes '*/*' rule. If
-no deny rule is specified, veristat (logically) assumes no negative
-filters.
+ Documentation/bpf/kfuncs.rst                  | 24 ++++++----
+ kernel/bpf/btf.c                              | 18 +++++--
+ net/netfilter/nf_conntrack_bpf.c              | 47 ++++++++++++++++++-
+ tools/testing/selftests/bpf/config            |  1 +
+ .../testing/selftests/bpf/prog_tests/bpf_nf.c | 10 ++--
+ .../testing/selftests/bpf/progs/test_bpf_nf.c | 27 +++++++++++
+ 6 files changed, 110 insertions(+), 17 deletions(-)
 
-Also note that -f (just like -e and -s) can be specified multiple times
-and their effect is cumulative.
-
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/testing/selftests/bpf/veristat.c   | 212 ++++++++++++++++++++++-
- tools/testing/selftests/bpf/veristat.cfg |  17 ++
- 2 files changed, 227 insertions(+), 2 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/veristat.cfg
-
-diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/selftests/bpf/veristat.c
-index c6837bac357f..51030234b60a 100644
---- a/tools/testing/selftests/bpf/veristat.c
-+++ b/tools/testing/selftests/bpf/veristat.c
-@@ -52,6 +52,11 @@ enum resfmt {
- 	RESFMT_CSV,
- };
- 
-+struct filter {
-+	char *file_glob;
-+	char *prog_glob;
-+};
-+
- static struct env {
- 	char **filenames;
- 	int filename_cnt;
-@@ -68,6 +73,11 @@ static struct env {
- 
- 	struct stat_specs output_spec;
- 	struct stat_specs sort_spec;
-+
-+	struct filter *allow_filters;
-+	struct filter *deny_filters;
-+	int allow_filter_cnt;
-+	int deny_filter_cnt;
- } env;
- 
- static int libbpf_print_fn(enum libbpf_print_level level, const char *format, va_list args)
-@@ -94,10 +104,13 @@ static const struct argp_option opts[] = {
- 	{ "sort", 's', "SPEC", 0, "Specify sort order" },
- 	{ "output-format", 'o', "FMT", 0, "Result output format (table, csv), default is table." },
- 	{ "compare", 'C', NULL, 0, "Comparison mode" },
-+	{ "filter", 'f', "FILTER", 0, "Filter expressions (or @filename for file with expressions)." },
- 	{},
- };
- 
- static int parse_stats(const char *stats_str, struct stat_specs *specs);
-+static int append_filter(struct filter **filters, int *cnt, const char *str);
-+static int append_filter_file(const char *path);
- 
- static error_t parse_arg(int key, char *arg, struct argp_state *state)
- {
-@@ -134,6 +147,18 @@ static error_t parse_arg(int key, char *arg, struct argp_state *state)
- 	case 'C':
- 		env.comparison_mode = true;
- 		break;
-+	case 'f':
-+		if (arg[0] == '@')
-+			err = append_filter_file(arg + 1);
-+		else if (arg[0] == '!')
-+			err = append_filter(&env.deny_filters, &env.deny_filter_cnt, arg + 1);
-+		else
-+			err = append_filter(&env.allow_filters, &env.allow_filter_cnt, arg);
-+		if (err) {
-+			fprintf(stderr, "Failed to collect program filter expressions: %d\n", err);
-+			return err;
-+		}
-+		break;
- 	case ARGP_KEY_ARG:
- 		tmp = realloc(env.filenames, (env.filename_cnt + 1) * sizeof(*env.filenames));
- 		if (!tmp)
-@@ -156,6 +181,150 @@ static const struct argp argp = {
- 	.doc = argp_program_doc,
- };
- 
-+
-+/* Adapted from perf/util/string.c */
-+static bool glob_matches(const char *str, const char *pat)
-+{
-+	while (*str && *pat && *pat != '*') {
-+		if (*str != *pat)
-+			return false;
-+		str++;
-+		pat++;
-+	}
-+	/* Check wild card */
-+	if (*pat == '*') {
-+		while (*pat == '*')
-+			pat++;
-+		if (!*pat) /* Tail wild card matches all */
-+			return true;
-+		while (*str)
-+			if (glob_matches(str++, pat))
-+				return true;
-+	}
-+	return !*str && !*pat;
-+}
-+
-+static bool should_process_file(const char *filename)
-+{
-+	int i;
-+
-+	if (env.deny_filter_cnt > 0) {
-+		for (i = 0; i < env.deny_filter_cnt; i++) {
-+			if (glob_matches(filename, env.deny_filters[i].file_glob))
-+				return false;
-+		}
-+	}
-+
-+	if (env.allow_filter_cnt == 0)
-+		return true;
-+
-+	for (i = 0; i < env.allow_filter_cnt; i++) {
-+		if (glob_matches(filename, env.allow_filters[i].file_glob))
-+			return true;
-+	}
-+
-+	return false;
-+}
-+
-+static bool should_process_prog(const char *filename, const char *prog_name)
-+{
-+	int i;
-+
-+	if (env.deny_filter_cnt > 0) {
-+		for (i = 0; i < env.deny_filter_cnt; i++) {
-+			if (glob_matches(filename, env.deny_filters[i].file_glob))
-+				return false;
-+			if (!env.deny_filters[i].prog_glob)
-+				continue;
-+			if (glob_matches(prog_name, env.deny_filters[i].prog_glob))
-+				return false;
-+		}
-+	}
-+
-+	if (env.allow_filter_cnt == 0)
-+		return true;
-+
-+	for (i = 0; i < env.allow_filter_cnt; i++) {
-+		if (!glob_matches(filename, env.allow_filters[i].file_glob))
-+			continue;
-+		/* if filter specifies only filename glob part, it implicitly
-+		 * allows all progs within that file
-+		 */
-+		if (!env.allow_filters[i].prog_glob)
-+			return true;
-+		if (glob_matches(prog_name, env.allow_filters[i].prog_glob))
-+			return true;
-+	}
-+
-+	return false;
-+}
-+
-+static int append_filter(struct filter **filters, int *cnt, const char *str)
-+{
-+	struct filter *f;
-+	void *tmp;
-+	const char *p;
-+
-+	tmp = realloc(*filters, (*cnt + 1) * sizeof(**filters));
-+	if (!tmp)
-+		return -ENOMEM;
-+	*filters = tmp;
-+
-+	f = &(*filters)[*cnt];
-+	f->file_glob = f->prog_glob = NULL;
-+
-+	/* filter can be specified either as "<obj-glob>" or "<obj-glob>/<prog-glob>" */
-+	p = strchr(str, '/');
-+	if (!p) {
-+		f->file_glob = strdup(str);
-+		if (!f->file_glob)
-+			return -ENOMEM;
-+	} else {
-+		f->file_glob = strndup(str, p - str);
-+		f->prog_glob = strdup(p + 1);
-+		if (!f->file_glob || !f->prog_glob) {
-+			free(f->file_glob);
-+			free(f->prog_glob);
-+			f->file_glob = f->prog_glob = NULL;
-+			return -ENOMEM;
-+		}
-+	}
-+
-+	*cnt = *cnt + 1;
-+	return 0;
-+}
-+
-+static int append_filter_file(const char *path)
-+{
-+	char buf[1024];
-+	FILE *f;
-+	int err = 0;
-+
-+	f = fopen(path, "r");
-+	if (!f) {
-+		err = -errno;
-+		fprintf(stderr, "Failed to open '%s': %d\n", path, err);
-+		return err;
-+	}
-+
-+	while (fscanf(f, " %1023[^\n]\n", buf) == 1) {
-+		/* lines starting with # are comments, skip them */
-+		if (buf[0] == '\0' || buf[0] == '#')
-+			continue;
-+		/* lines starting with ! are negative match filters */
-+		if (buf[0] == '!')
-+			err = append_filter(&env.deny_filters, &env.deny_filter_cnt, buf + 1);
-+		else
-+			err = append_filter(&env.allow_filters, &env.allow_filter_cnt, buf);
-+		if (err)
-+			goto cleanup;
-+	}
-+
-+cleanup:
-+	fclose(f);
-+	return err;
-+}
-+
- static const struct stat_specs default_output_spec = {
- 	.spec_cnt = 7,
- 	.ids = {
-@@ -283,6 +452,9 @@ static int process_prog(const char *filename, struct bpf_object *obj, struct bpf
- 	int err = 0;
- 	void *tmp;
- 
-+	if (!should_process_prog(basename(filename), bpf_program__name(prog)))
-+		return 0;
-+
- 	tmp = realloc(env.prog_stats, (env.prog_stat_cnt + 1) * sizeof(*env.prog_stats));
- 	if (!tmp)
- 		return -ENOMEM;
-@@ -330,6 +502,9 @@ static int process_obj(const char *filename)
- 	LIBBPF_OPTS(bpf_object_open_opts, opts);
- 	int err = 0, prog_cnt = 0;
- 
-+	if (!should_process_file(basename(filename)))
-+		return 0;
-+
- 	old_libbpf_print_fn = libbpf_set_print(libbpf_print_fn);
- 
- 	obj = bpf_object__open_file(filename, &opts);
-@@ -666,7 +841,10 @@ static int parse_stats_csv(const char *filename, struct stat_specs *specs,
- 				goto cleanup;
- 			}
- 			*statsp = tmp;
-+
- 			st = &(*statsp)[*stat_cntp];
-+			memset(st, 0, sizeof(*st));
-+
- 			*stat_cntp += 1;
- 		}
- 
-@@ -692,14 +870,34 @@ static int parse_stats_csv(const char *filename, struct stat_specs *specs,
- 			col++;
- 		}
- 
--		if (!header && col < specs->spec_cnt) {
-+		if (header) {
-+			header = false;
-+			continue;
-+		}
-+
-+		if (col < specs->spec_cnt) {
- 			fprintf(stderr, "Not enough columns in row #%d in '%s'\n",
- 				*stat_cntp, filename);
- 			err = -EINVAL;
- 			goto cleanup;
- 		}
- 
--		header = false;
-+		if (!st->file_name || !st->prog_name) {
-+			fprintf(stderr, "Row #%d in '%s' is missing file and/or program name\n",
-+				*stat_cntp, filename);
-+			err = -EINVAL;
-+			goto cleanup;
-+		}
-+
-+		/* in comparison mode we can only check filters after we
-+		 * parsed entire line; if row should be ignored we pretend we
-+		 * never parsed it
-+		 */
-+		if (!should_process_prog(st->file_name, st->prog_name)) {
-+			free(st->file_name);
-+			free(st->prog_name);
-+			*stat_cntp -= 1;
-+		}
- 	}
- 
- 	if (!feof(f)) {
-@@ -1012,5 +1210,15 @@ int main(int argc, char **argv)
- 	for (i = 0; i < env.filename_cnt; i++)
- 		free(env.filenames[i]);
- 	free(env.filenames);
-+	for (i = 0; i < env.allow_filter_cnt; i++) {
-+		free(env.allow_filters[i].file_glob);
-+		free(env.allow_filters[i].prog_glob);
-+	}
-+	free(env.allow_filters);
-+	for (i = 0; i < env.deny_filter_cnt; i++) {
-+		free(env.deny_filters[i].file_glob);
-+		free(env.deny_filters[i].prog_glob);
-+	}
-+	free(env.deny_filters);
- 	return -err;
- }
-diff --git a/tools/testing/selftests/bpf/veristat.cfg b/tools/testing/selftests/bpf/veristat.cfg
-new file mode 100644
-index 000000000000..1a385061618d
---- /dev/null
-+++ b/tools/testing/selftests/bpf/veristat.cfg
-@@ -0,0 +1,17 @@
-+# pre-canned list of rather complex selftests/bpf BPF object files to monitor
-+# BPF verifier's performance on
-+bpf_flow*
-+bpf_loop_bench*
-+loop*
-+netif_receive_skb*
-+profiler*
-+pyperf*
-+strobemeta*
-+test_cls_redirect*
-+test_l4lb
-+test_sysctl*
-+test_tcp_hdr_*
-+test_usdt*
-+test_verif_scale*
-+test_xdp_noinline*
-+xdp_synproxy*
 -- 
-2.30.2
+2.37.3
 
