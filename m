@@ -2,63 +2,50 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E87C85BF97F
-	for <lists+bpf@lfdr.de>; Wed, 21 Sep 2022 10:40:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A43965BF9B1
+	for <lists+bpf@lfdr.de>; Wed, 21 Sep 2022 10:48:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231173AbiIUIkh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Sep 2022 04:40:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49004 "EHLO
+        id S229599AbiIUIsZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Sep 2022 04:48:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230389AbiIUIkh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Sep 2022 04:40:37 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBB7C67CB9
-        for <bpf@vger.kernel.org>; Wed, 21 Sep 2022 01:40:32 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id fn7-20020a05600c688700b003b4fb113b86so424616wmb.0
-        for <bpf@vger.kernel.org>; Wed, 21 Sep 2022 01:40:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date;
-        bh=qmpXKhIhcCGexLcp9f7CsO1I3cqDQestLKbYnaygb2E=;
-        b=ZYw9gv44D2mrrAfIOrHF/2OaWzyTGhhL2Ksz06146xgbb2EjCw1ayD8GJdqhkccZ5I
-         NLars0z+1VOLP/KjdvBuZD6WPcIQzI9almSci5O8Cdi/7pSE5+o6nW2TBe/EH5vIiwyq
-         8yfHomZGeFDDR7CVfihWgC4vRt+FfY9s+vgetClR9S7iMsP6PJQLTFQG8K0lnQhZX2X+
-         oIC9AMVvN1VZjl41o8l9r1rlz7ggdRILJa/AfGI4zOchiag4VO4ZRiSDWToauAsQidv5
-         PrEW3sYcogleOzDtT2QkUzPrpSfDlhh8dYjvjc3VtKLiyGF03nud2rooCIWcJ4Q03URX
-         QoHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date;
-        bh=qmpXKhIhcCGexLcp9f7CsO1I3cqDQestLKbYnaygb2E=;
-        b=XSgHsaOuCPy4CavEvUyEfNJyhg0WUSDTyr6hyu+i57a99Mm51IrU+H9qXApA5bRQph
-         uzHGWLIpqj6Ivr9vhxnk4naUBHp7Q/duVvwEfzqlQMIxDEIrweCL6VBXnWp49dPWgUCQ
-         9ZToMTC8odghbyVmfr6mYx244L5LY3XHv/+ggdAe3xk045SLE0IsFZpfmZUQPx/dGqty
-         e+a7v7UGVIJ9qJ8gGaKOi4sqUbCzIbwswoxiHIVWM84M7hxG5I/87RCDLWPkNISP6cLj
-         cQny67EtHr08sfFJPUZpm/HzGKh44C5EBFp/DmOS6cudovTYjXfF5Xfw8vBYMqz8SD29
-         5Gxw==
-X-Gm-Message-State: ACrzQf2djf7Bo9npwa/MyPDpZLLrDuq07F1fW7+j4Uect8NUVZZmtrXz
-        V4vMReDwAZ7s5ZGRHzj/I6rXuhh7FWk=
-X-Google-Smtp-Source: AMsMyM5HyEetWiAWkZhSUEMITNdVPeX9iKJsGgZct/qglz+74cY7ddbn7YtZyUdOGeRYx3q5TQRoIQ==
-X-Received: by 2002:a05:600c:3ba0:b0:3b4:8ad0:6c with SMTP id n32-20020a05600c3ba000b003b48ad0006cmr4991885wms.186.1663749630833;
-        Wed, 21 Sep 2022 01:40:30 -0700 (PDT)
-Received: from localhost.localdomain ([2a0d:6fc2:4af0:cc00:f99d:5d19:6e17:dc3a])
-        by smtp.gmail.com with ESMTPSA id m18-20020a5d56d2000000b0022878c0cc5esm1867268wrw.69.2022.09.21.01.40.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Sep 2022 01:40:29 -0700 (PDT)
-From:   Jon Doron <arilou@gmail.com>
-To:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org
-Cc:     Jon Doron <jond@wiz.io>
-Subject: [PATCH bpf-next v2] libbpf: Fix the case of running as non-root with capabilities
-Date:   Wed, 21 Sep 2022 11:40:14 +0300
-Message-Id: <20220921084014.3744312-1-arilou@gmail.com>
-X-Mailer: git-send-email 2.37.3
+        with ESMTP id S230330AbiIUIsQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 21 Sep 2022 04:48:16 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9373B7B78D;
+        Wed, 21 Sep 2022 01:48:15 -0700 (PDT)
+Received: from dggpeml500026.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4MXX5L6wcmzlVjg;
+        Wed, 21 Sep 2022 16:44:06 +0800 (CST)
+Received: from [10.174.178.66] (10.174.178.66) by
+ dggpeml500026.china.huawei.com (7.185.36.106) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Wed, 21 Sep 2022 16:48:13 +0800
+Message-ID: <c416473b-af8b-3bf6-7ede-e1198b3496f5@huawei.com>
+Date:   Wed, 21 Sep 2022 16:48:13 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.0.2
+Subject: Re: [PATCH v4,bpf-next] bpf: Don't redirect packets with invalid
+ pkt_len
+To:     Lorenz Bauer <oss@lmb.io>, Stanislav Fomichev <sdf@google.com>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <bpf@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yuehaibing@huawei.com>
+References: <20220715115559.139691-1-shaozhengchao@huawei.com>
+ <20220914111936.19881-1-oss@lmb.io>
+ <CAKH8qBujKnFh8_g+npxHpo7RGFshus3N0iysmVBohTtG1X2yow@mail.gmail.com>
+ <5a3c5ea9-d557-6070-d778-1092f3c51257@huawei.com>
+ <aec8ef40-260c-4ded-b806-d381a3075ff0@www.fastmail.com>
+From:   shaozhengchao <shaozhengchao@huawei.com>
+In-Reply-To: <aec8ef40-260c-4ded-b806-d381a3075ff0@www.fastmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.66]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500026.china.huawei.com (7.185.36.106)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-7.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,131 +53,28 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Jon Doron <jond@wiz.io>
 
-When running rootless with special capabilities like:
-FOWNER / DAC_OVERRIDE / DAC_READ_SEARCH
 
-The "access" API will not make the proper check if there is really
-access to a file or not.
+On 2022/9/20 22:42, Lorenz Bauer wrote:
+> On Mon, 19 Sep 2022, at 11:55, shaozhengchao wrote:
+>> Sorry for the delay. I'm busy testing the TC module recently. I'm very
+>> sorry for the user-space breakage.
+>>
+>> The root cause of this problem is that eth_type_trans() is called when
+>> the protocol type of the SKB is parsed. The len value of the SKB is
+>> reduced to 0. If the user mode requires that the forwarding succeed, or
+>>    if the MAC header is added again after the MAC header is subtracted,
+>> is this appropriate?
+> 
+> We don't require forwarding to succeed with a 14 byte input buffer. We also don't look at the MAC header.
+> 
+> I think refusing to forward 0 length packets would be OK. Not 100% certain I understood you correctly, let me know if this helps.
+> 
+> Best
+> Lorenz
+Hi Lorenz
+	Sorry. But how does the rejection of the 0 length affect the
+test case? Is the return value abnormal, send packet failure or some
+others?
 
-From the access man page:
-"
-The check is done using the calling process's real UID and GID, rather
-than the effective IDs as is done when actually attempting an operation
-(e.g., open(2)) on the file.  Similarly, for the root user, the check
-uses the set of permitted capabilities  rather than the set of effective
-capabilities; ***and for non-root users, the check uses an empty set of
-capabilities.***
-"
-
-What that means is that for non-root user the access API will not do the
-proper validation if the process really has permission to a file or not.
-
-To resolve this this patch replaces all the access API calls with stat.
-
-Signed-off-by: Jon Doron <jond@wiz.io>
----
- tools/lib/bpf/btf.c    |  3 ++-
- tools/lib/bpf/libbpf.c | 11 ++++++++---
- tools/lib/bpf/usdt.c   |  4 +++-
- 3 files changed, 13 insertions(+), 5 deletions(-)
-
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index 2d14f1a52d7a..33ad4792d9e8 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -4663,13 +4663,14 @@ struct btf *btf__load_vmlinux_btf(void)
- 	struct utsname buf;
- 	struct btf *btf;
- 	int i, err;
-+	struct stat sb;
- 
- 	uname(&buf);
- 
- 	for (i = 0; i < ARRAY_SIZE(locations); i++) {
- 		snprintf(path, PATH_MAX, locations[i].path_fmt, buf.release);
- 
--		if (access(path, R_OK))
-+		if (stat(path, &sb))
- 			continue;
- 
- 		if (locations[i].raw_btf)
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 50d41815f431..c7fbce4225b5 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -875,8 +875,9 @@ __u32 get_kernel_version(void)
- 	const char *ubuntu_kver_file = "/proc/version_signature";
- 	__u32 major, minor, patch;
- 	struct utsname info;
-+	struct stat sb;
- 
--	if (access(ubuntu_kver_file, R_OK) == 0) {
-+	if (stat(ubuntu_kver_file, &sb) == 0) {
- 		FILE *f;
- 
- 		f = fopen(ubuntu_kver_file, "r");
-@@ -9877,9 +9878,10 @@ static int append_to_file(const char *file, const char *fmt, ...)
- static bool use_debugfs(void)
- {
- 	static int has_debugfs = -1;
-+	struct stat sb;
- 
- 	if (has_debugfs < 0)
--		has_debugfs = access(DEBUGFS, F_OK) == 0;
-+		has_debugfs = stat(DEBUGFS, &sb) == 0;
- 
- 	return has_debugfs == 1;
- }
-@@ -10681,6 +10683,7 @@ static int resolve_full_path(const char *file, char *result, size_t result_sz)
- 		for (s = search_paths[i]; s != NULL; s = strchr(s, ':')) {
- 			char *next_path;
- 			int seg_len;
-+			struct stat sb;
- 
- 			if (s[0] == ':')
- 				s++;
-@@ -10690,7 +10693,9 @@ static int resolve_full_path(const char *file, char *result, size_t result_sz)
- 				continue;
- 			snprintf(result, result_sz, "%.*s/%s", seg_len, s, file);
- 			/* ensure it is an executable file/link */
--			if (access(result, R_OK | X_OK) < 0)
-+			if (stat(result, &sb) < 0)
-+				continue;
-+			if ((sb.st_mode & (S_IROTH | S_IXOTH)) != (S_IROTH | S_IXOTH))
- 				continue;
- 			pr_debug("resolved '%s' to '%s'\n", file, result);
- 			return 0;
-diff --git a/tools/lib/bpf/usdt.c b/tools/lib/bpf/usdt.c
-index d18e37982344..19a6fbcfe9c0 100644
---- a/tools/lib/bpf/usdt.c
-+++ b/tools/lib/bpf/usdt.c
-@@ -7,6 +7,7 @@
- #include <libelf.h>
- #include <gelf.h>
- #include <unistd.h>
-+#include <sys/stat.h>
- #include <linux/ptrace.h>
- #include <linux/kernel.h>
- 
-@@ -257,6 +258,7 @@ struct usdt_manager *usdt_manager_new(struct bpf_object *obj)
- 	static const char *ref_ctr_sysfs_path = "/sys/bus/event_source/devices/uprobe/format/ref_ctr_offset";
- 	struct usdt_manager *man;
- 	struct bpf_map *specs_map, *ip_to_spec_id_map;
-+	struct stat sb;
- 
- 	specs_map = bpf_object__find_map_by_name(obj, "__bpf_usdt_specs");
- 	ip_to_spec_id_map = bpf_object__find_map_by_name(obj, "__bpf_usdt_ip_to_spec_id");
-@@ -282,7 +284,7 @@ struct usdt_manager *usdt_manager_new(struct bpf_object *obj)
- 	 * If this is not supported, USDTs with semaphores will not be supported.
- 	 * Added in: a6ca88b241d5 ("trace_uprobe: support reference counter in fd-based uprobe")
- 	 */
--	man->has_sema_refcnt = access(ref_ctr_sysfs_path, F_OK) == 0;
-+	man->has_sema_refcnt = stat(ref_ctr_sysfs_path, &sb) == 0;
- 
- 	return man;
- }
--- 
-2.37.3
-
+Zhengchao Shao
