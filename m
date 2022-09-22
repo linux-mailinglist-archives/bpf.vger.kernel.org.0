@@ -2,54 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D91E5E5840
-	for <lists+bpf@lfdr.de>; Thu, 22 Sep 2022 03:51:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB4ED5E58AE
+	for <lists+bpf@lfdr.de>; Thu, 22 Sep 2022 04:40:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229789AbiIVBvC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Sep 2022 21:51:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49906 "EHLO
+        id S229895AbiIVCj6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Sep 2022 22:39:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229745AbiIVBvB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Sep 2022 21:51:01 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE95AA99E2;
-        Wed, 21 Sep 2022 18:50:57 -0700 (PDT)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4MXynM6xDyz14QPC;
-        Thu, 22 Sep 2022 09:46:47 +0800 (CST)
-Received: from [10.174.179.191] (10.174.179.191) by
- canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 22 Sep 2022 09:50:54 +0800
-Message-ID: <e5a553e3-4138-f8a0-c4d7-ec3d9d46732e@huawei.com>
-Date:   Thu, 22 Sep 2022 09:50:54 +0800
+        with ESMTP id S229554AbiIVCj5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 21 Sep 2022 22:39:57 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14ECA3C172;
+        Wed, 21 Sep 2022 19:39:56 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id dv25so17886823ejb.12;
+        Wed, 21 Sep 2022 19:39:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=gsBxAjq+sNnP4QJ7G4N2iIhID6Ufd6zDUzv3gwJB1Bs=;
+        b=c2cVjeay+TzCLWc435vo0HYdnFs6Jy2a0UGnv4x1UrT9TdVtUtnPosPnwOyhyfwvR5
+         DFJ0o27opBuI1q6whHffLMvsAcNgrc1ms6SxNVNXaYZhUIA2FAsbT6ujVYnbZniSBuQ+
+         0hl/WG+bEoUG8Bi6gJxkuJlws36AkJCIV9kYVEYIK+ZghI0mWtlMYdXJbKcnUPp1mZIq
+         HfAxuz054qK1/+YJvdW9qVhHdwMA14gg7ca/3anBO2MhFLQaM7AOeznuy8MldJJQyqWm
+         yO0gftA/jE/5UdlUuql7MS+geC145bL3ky3b1xNapLmjeoDwW0H7C5CfSJuis0QIOjNc
+         vnRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=gsBxAjq+sNnP4QJ7G4N2iIhID6Ufd6zDUzv3gwJB1Bs=;
+        b=bxbe14ZBusG7/9qF+u27KU6458JyeSFsGcWD4VuXgRoyFuyVEQf5AFCy3CuWb6tmGo
+         rglOzIh/fDPyltfr2yKdSeT88oqGiv5skmMk49zAP5d8po77NNK3DGrqXOrCXlo6xaAg
+         tBqd1Oxqw+Pxjhj9r+sidMS7+nDt8ZpuhNJg0aV/vp1qb1NOX3PGneYA915CORgfojqh
+         dbUFXy7o69eH4ujhzaEDTk67HdkPmMGLzNemH3f/GkfUO3upQEVCIqxKFnD0a1/Cmg1Z
+         hRENxPm+PkH2bTouSOjzRfNkLyyqkdgnrZeePexTWWe8guvYcxYp8rqBUyThIS+UUHx2
+         VSQA==
+X-Gm-Message-State: ACrzQf2dpiyIFTIkpj/F/QKOh8HZKU7EiTv3SmO8iRDzya4aMDZxgHnO
+        8Iir6R1cEcFYae1+Xf+FCESJloGNQG76fZX2qM8=
+X-Google-Smtp-Source: AMsMyM4wkVet+roNLlHBLuDvGdKnXazOo9PvLJxjV1NYqg+erHRgIoNRlkc/l82TyO87uxJyP3xoYiyOkoAxYcCklcI=
+X-Received: by 2002:a17:907:6e87:b0:782:2d55:f996 with SMTP id
+ sh7-20020a1709076e8700b007822d55f996mr966379ejc.502.1663814394452; Wed, 21
+ Sep 2022 19:39:54 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.0
-Subject: Re: [bpf-next v3 1/2] libbpf: Add pathname_concat() helper
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     <andrii@kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <martin.lau@linux.dev>, <song@kernel.org>, <yhs@fb.com>,
-        <john.fastabend@gmail.com>, <kpsingh@kernel.org>, <sdf@google.com>,
-        <haoluo@google.com>, <jolsa@kernel.org>,
-        <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
-        <aou@eecs.berkeley.edu>, <davem@davemloft.net>, <kuba@kernel.org>,
-        <hawk@kernel.org>, <nathan@kernel.org>, <ndesaulniers@google.com>,
-        <trix@redhat.com>, <bpf@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <llvm@lists.linux.dev>
-References: <1663555725-17016-1-git-send-email-wangyufen@huawei.com>
- <CAEf4BzbacgBeBrJcutGrpMceD2ipYyvRgrwyKdATN0K39adg5Q@mail.gmail.com>
-From:   wangyufen <wangyufen@huawei.com>
-In-Reply-To: <CAEf4BzbacgBeBrJcutGrpMceD2ipYyvRgrwyKdATN0K39adg5Q@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.191]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- canpemm500010.china.huawei.com (7.192.105.118)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-7.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <cover.1663778601.git.lorenzo@kernel.org> <cdede0043c47ed7a357f0a915d16f9ce06a1d589.1663778601.git.lorenzo@kernel.org>
+In-Reply-To: <cdede0043c47ed7a357f0a915d16f9ce06a1d589.1663778601.git.lorenzo@kernel.org>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 21 Sep 2022 19:39:43 -0700
+Message-ID: <CAADnVQJY4pibr5PkoTFhpYDj8pBJ1mTPuR9VSeKQXuJqeh6d3Q@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 1/3] bpf: Tweak definition of KF_TRUSTED_ARGS
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        netfilter-devel <netfilter-devel@vger.kernel.org>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,50 +79,34 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-在 2022/9/22 8:41, Andrii Nakryiko 写道:
-> On Sun, Sep 18, 2022 at 7:28 PM Wang Yufen <wangyufen@huawei.com> wrote:
->> Move snprintf and len check to common helper pathname_concat() to make the
->> code simpler.
->>
->> Signed-off-by: Wang Yufen <wangyufen@huawei.com>
->> ---
->>   tools/lib/bpf/libbpf.c | 76 +++++++++++++++++++-------------------------------
->>   1 file changed, 29 insertions(+), 47 deletions(-)
->>
-> [...]
+On Wed, Sep 21, 2022 at 9:49 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
 >
->> @@ -8009,14 +8012,9 @@ int bpf_object__unpin_maps(struct bpf_object *obj, const char *path)
->>                  char buf[PATH_MAX];
->>
->>                  if (path) {
->> -                       int len;
->> -
->> -                       len = snprintf(buf, PATH_MAX, "%s/%s", path,
->> -                                      bpf_map__name(map));
->> -                       if (len < 0)
->> -                               return libbpf_err(-EINVAL);
->> -                       else if (len >= PATH_MAX)
->> -                               return libbpf_err(-ENAMETOOLONG);
->> +                       err = pathname_concat(path, bpf_map__name(map), buf, PATH_MAX);
->> +                       if (err)
->> +                               return err;
-> also keep libbpf_err() as well, it sets errno properly
->
->>                          sanitize_pin_path(buf);
->>                          pin_path = buf;
->>                  } else if (!map->pin_path) {
->> @@ -8034,6 +8032,7 @@ int bpf_object__unpin_maps(struct bpf_object *obj, const char *path)
->>   int bpf_object__pin_programs(struct bpf_object *obj, const char *path)
->>   {
->>          struct bpf_program *prog;
->> +       char buf[PATH_MAX];
->>          int err;
->>
->>          if (!obj)
-> [...]
+> +               /* These register types have special constraints wrt ref_obj_id
+> +                * and offset checks. The rest of trusted args don't.
+> +                */
+> +               obj_ptr = reg->type == PTR_TO_CTX || reg->type == PTR_TO_BTF_ID ||
+> +                         reg2btf_ids[base_type(reg->type)];
+> +
 
+..
 
-Thanks for your comments， will send v4.
+>                 /* Check if argument must be a referenced pointer, args + i has
+>                  * been verified to be a pointer (after skipping modifiers).
+> +                * PTR_TO_CTX is ok without having non-zero ref_obj_id.
+>                  */
 
+Kumar,
 
+Looking forward to your subsequent patch to split this function.
+It's definitely getting unwieldy.
+
+The comment above is double confusing.
+1. I think you meant to say "PTR_TO_CTX is ok with zero ref_obj_id",
+right? That double negate is not easy to parse.
+
+2.
+PTR_TO_CTX cannot have ref_obj_id != 0.
+At least I don't think it's possible, but the comment implies
+that such a case may exist.
+
+I applied anyway, since big refactoring is coming shortly, right?
