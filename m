@@ -2,135 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58DC65E5F24
-	for <lists+bpf@lfdr.de>; Thu, 22 Sep 2022 11:58:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F6F25E5F6D
+	for <lists+bpf@lfdr.de>; Thu, 22 Sep 2022 12:09:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231173AbiIVJ6F (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Sep 2022 05:58:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49010 "EHLO
+        id S231352AbiIVKJ2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Sep 2022 06:09:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231251AbiIVJ5h (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Sep 2022 05:57:37 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F185D62D1
-        for <bpf@vger.kernel.org>; Thu, 22 Sep 2022 02:57:01 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id k3-20020a05600c1c8300b003b4fa1a85f8so972089wms.3
-        for <bpf@vger.kernel.org>; Thu, 22 Sep 2022 02:57:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date;
-        bh=TX+dZFKc01rzMEgsWJ5WshpFDtmg9ORNYvjpFUtfE7U=;
-        b=wrbiuc31HYkBNQTsgI2G+/Oy6SygApb1Gh45M7m6bKMrSjJ2jz03iPH4gGLoc/KH4R
-         JeLNtg6Glds/tAa/5pHssmv9X/lwD/04j12/cLOYi6SpG3+qU8HG1XKJcZoZokg9lWSl
-         jyaVgjkTw2MGlx97EuyxqeolFlRCkSA3xhhbzT1auFqu9TbuHDVsTE7bjOdgz1kjCATt
-         5VXu0CIMpN2Qy5w/1u27Axoo/vwnosicUW5x69YtPRVEv4g+3P/ePsxy6Ib8byTGg7RV
-         ItjUHqFN5lbmChFkLX8UqlRPoIiFboAzcIYGJNcB2xyiuKzWfbWAVCxOCwkasH45/oQ5
-         kQSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
-        bh=TX+dZFKc01rzMEgsWJ5WshpFDtmg9ORNYvjpFUtfE7U=;
-        b=jy6F63cPSRD2W/Qi7omvvBB9mEkRCcqVH/HDswOJSyT0F62IxA+FlvmQ9bojoWMpII
-         /4v/aCavUqT6pMXJe++LkRAyAAx3zuJfV2MJkOfBknHBuaGVHB+Lh6I1FDing8ZMHiXc
-         kWzHJpEzhPsjLJ62OXYf11Glg7EpfdCW4VDAShaKpLVeUUc4XxPJkoCE1mGpXns/Qbor
-         StMhBr2OSi+9JdulOyNfkU3p3kPsb24bc1D86m7UEnTkKZ9BrDPg2FSXlMQQhYuqcDCG
-         RQcgF4Jo1EQZveBnoMYHGLnzIosIDg74N0sqFuLIt6s2ZQF9x7noHToVVm2KN1lgogJm
-         j90Q==
-X-Gm-Message-State: ACrzQf2X7sVN5970+nA7Z44yyNo7YqdFjNdZzMsOMRscM0eUU/bsPrSB
-        auoSTgU2oGDfnIXNjTdysOzBtfVIuGKvXc0H
-X-Google-Smtp-Source: AMsMyM6i6UfcSL8Kwei3PzQZYMd+09H2UCH5uPAZ58h/kYqOTqoT/Xto/7pTCxlRgy/goVe7ATBGYA==
-X-Received: by 2002:a1c:4b03:0:b0:3b4:74d3:b4c5 with SMTP id y3-20020a1c4b03000000b003b474d3b4c5mr1721728wma.96.1663840619776;
-        Thu, 22 Sep 2022 02:56:59 -0700 (PDT)
-Received: from hades ([46.103.15.185])
-        by smtp.gmail.com with ESMTPSA id l30-20020a05600c1d1e00b003a62400724bsm6408472wms.0.2022.09.22.02.56.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Sep 2022 02:56:58 -0700 (PDT)
-Date:   Thu, 22 Sep 2022 12:56:56 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Lorenzo Bianconi <lorenzo@kernel.org>, mtahhan@redhat.com,
-        mcroce@microsoft.com
-Subject: Re: [PATCH net-next] xdp: improve page_pool xdp_return performance
-Message-ID: <YywxaOL0G9QAMzjA@hades>
-References: <166377993287.1737053.10258297257583703949.stgit@firesoul>
+        with ESMTP id S231405AbiIVKJK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 22 Sep 2022 06:09:10 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26309D58A6;
+        Thu, 22 Sep 2022 03:08:42 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B72AD62ADB;
+        Thu, 22 Sep 2022 10:08:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 957EDC433C1;
+        Thu, 22 Sep 2022 10:08:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1663841321;
+        bh=DQD5bY7rmYscssK562jPhzpbowUB46DFrAfdGq6qZ3w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=i2TNQKgtrEU+Yf7g9o2GRe9ffvaoTrWTjnm2fRwGEVnIxgUvoSRkXmb4Kb5NflwAX
+         FPLN2A7ja6KyLFWVYAT0WXvjtqBincyJRxVOlvlhklcnX7zgzi0Mi13LwxHr65w07u
+         XBd9lX+BeASwwRT9eGEbdNV+2tRDvvNtOHxe6Avk=
+Date:   Thu, 22 Sep 2022 12:08:38 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     cgel.zte@gmail.com
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xu Panda <xu.panda@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: Re: [PATCH linu-next] samples/bpf: use absolute path for dd
+Message-ID: <Yyw0JskGMbGE1lHK@kroah.com>
+References: <20220922090231.236152-1-xu.panda@zte.com.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <166377993287.1737053.10258297257583703949.stgit@firesoul>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20220922090231.236152-1-xu.panda@zte.com.cn>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Jesper,
-
-On Wed, Sep 21, 2022 at 07:05:32PM +0200, Jesper Dangaard Brouer wrote:
-> During LPC2022 I meetup with my page_pool co-maintainer Ilias. When
-> discussing page_pool code we realised/remembered certain optimizations
-> had not been fully utilised.
+On Thu, Sep 22, 2022 at 09:02:31AM +0000, cgel.zte@gmail.com wrote:
+> From: Xu Panda <xu.panda@zte.com.cn>
 > 
-> Since commit c07aea3ef4d4 ("mm: add a signature in struct page") struct
-> page have a direct pointer to the page_pool object this page was
-> allocated from.
+> Not using absolute path when invoking dd can lead to serious security
+> issues.
 > 
-> Thus, with this info it is possible to skip the rhashtable_lookup to
-> find the page_pool object in __xdp_return().
-> 
-> The rcu_read_lock can be removed as it was tied to xdp_mem_allocator.
-> The page_pool object is still safe to access as it tracks inflight pages
-> and (potentially) schedules final release from a work queue.
-> 
-> Created a micro benchmark of XDP redirecting from mlx5 into veth with
-> XDP_DROP bpf-prog on the peer veth device. This increased performance
-> 6.5% from approx 8.45Mpps to 9Mpps corresponding to using 7 nanosec
-> (27 cycles at 3.8GHz) less per packet.
-
-Thanks for the detailed testing
-
-> 
-> Suggested-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: Xu Panda <xu.panda@zte.com.cn>
 > ---
->  net/core/xdp.c |   10 ++++------
->  1 file changed, 4 insertions(+), 6 deletions(-)
+>  samples/bpf/trace_event_user.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/net/core/xdp.c b/net/core/xdp.c
-> index 24420209bf0e..844c9d99dc0e 100644
-> --- a/net/core/xdp.c
-> +++ b/net/core/xdp.c
-> @@ -375,19 +375,17 @@ EXPORT_SYMBOL_GPL(xdp_rxq_info_reg_mem_model);
->  void __xdp_return(void *data, struct xdp_mem_info *mem, bool napi_direct,
->  		  struct xdp_buff *xdp)
+> diff --git a/samples/bpf/trace_event_user.c b/samples/bpf/trace_event_user.c
+> index 9664749bf618..d841918accc9 100644
+> --- a/samples/bpf/trace_event_user.c
+> +++ b/samples/bpf/trace_event_user.c
+> @@ -126,7 +126,7 @@ static void print_stacks(void)
+> 
+>  static inline int generate_load(void)
 >  {
-> -	struct xdp_mem_allocator *xa;
->  	struct page *page;
->  
->  	switch (mem->type) {
->  	case MEM_TYPE_PAGE_POOL:
-> -		rcu_read_lock();
-> -		/* mem->id is valid, checked in xdp_rxq_info_reg_mem_model() */
-> -		xa = rhashtable_lookup(mem_id_ht, &mem->id, mem_id_rht_params);
->  		page = virt_to_head_page(data);
->  		if (napi_direct && xdp_return_frame_no_direct())
->  			napi_direct = false;
-> -		page_pool_put_full_page(xa->page_pool, page, napi_direct);
-> -		rcu_read_unlock();
-> +		/* No need to check ((page->pp_magic & ~0x3UL) == PP_SIGNATURE)
-> +		 * as mem->type knows this a page_pool page
-> +		 */
-> +		page_pool_put_full_page(page->pp, page, napi_direct);
->  		break;
->  	case MEM_TYPE_PAGE_SHARED:
->  		page_frag_free(data);
-> 
-> 
+> -       if (system("dd if=/dev/zero of=/dev/null count=5000k status=none") < 0) {
+> +       if (system("/usr/bin/dd if=/dev/zero of=/dev/null count=5000k status=none") < 0) {
+>                 printf("failed to generate some load with dd: %s\n", strerror(errno));
+>                 return -1;
+>         }
+> -- 
+> 2.15.2
 
-Reviewed-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Again, please stop submitting patches for Linux kernel development at
+this point in time until your company has fixed their development
+process.
+
+You have been warned many times about this, and we have heard nothing
+back from you at all.  I'll go ask for your email address to now be
+banned from our lists, sorry.
+
+greg k-h
