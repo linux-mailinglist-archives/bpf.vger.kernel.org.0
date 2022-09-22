@@ -2,168 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC80F5E6673
-	for <lists+bpf@lfdr.de>; Thu, 22 Sep 2022 17:07:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 364E25E66E2
+	for <lists+bpf@lfdr.de>; Thu, 22 Sep 2022 17:20:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230304AbiIVPHb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Sep 2022 11:07:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54766 "EHLO
+        id S229622AbiIVPUm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Sep 2022 11:20:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230076AbiIVPHa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Sep 2022 11:07:30 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CCFEE118A
-        for <bpf@vger.kernel.org>; Thu, 22 Sep 2022 08:07:29 -0700 (PDT)
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1obNnT-0005tN-E9; Thu, 22 Sep 2022 17:07:27 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1obNnT-0008Ff-9B; Thu, 22 Sep 2022 17:07:27 +0200
-Subject: Re: [PATCH bpf-next] bpf,x64: use shrx/sarx/shlx when available
-To:     Jie Meng <jmeng@fb.com>, bpf@vger.kernel.org, ast@kernel.org,
-        andrii@kernel.org
-References: <20220921022143.1405126-1-jmeng@fb.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <a6d54d1e-f525-0351-18bd-647ea3d4814f@iogearbox.net>
-Date:   Thu, 22 Sep 2022 17:07:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S230166AbiIVPUR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 22 Sep 2022 11:20:17 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 919C07C777;
+        Thu, 22 Sep 2022 08:20:15 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2E6F561388;
+        Thu, 22 Sep 2022 15:20:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 8766AC433D7;
+        Thu, 22 Sep 2022 15:20:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1663860014;
+        bh=Y/UYpzSr1GDE1c2TA1atoaallVLMUhHYl0REHUJdcTY=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Eop5zedDRJJAQd6MUsKKPvVths6VaEw+SnkkVXHClXyiuYDQ2kH89N/EbgIvD7QEM
+         rlzSS1JYWkKpKkWNCOzOrgR6tM8oc1z/uU//aumUHA+JNxFgw61qdxIJhr49m7Bdl3
+         DI9P2Qo+BwQVdqQUBlM6FCpYalU1T/RXw8LG+S04sW/xoBzBW2xVtSXsl4d+lNitjw
+         l264DWja94UtiDOUFqSEnW/k9jLlt1thvA/0SXAzOn+4ObQpBVXp2iOjrZm7YfeFQM
+         3BUt2Xkb6QFPCpxUUWSh2CPWo3ouXIhCWWDJ/8z3fKxWQL1TsEsH4dGSE6XpukhUHz
+         Nwx77PCQVHTgw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 6A0BCE21ED1;
+        Thu, 22 Sep 2022 15:20:14 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20220921022143.1405126-1-jmeng@fb.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.6/26666/Thu Sep 22 09:54:12 2022)
-X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf v3] xsk: inherit need_wakeup flag for shared sockets
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166386001443.15287.1242641673670233629.git-patchwork-notify@kernel.org>
+Date:   Thu, 22 Sep 2022 15:20:14 +0000
+References: <20220921135701.10199-1-jalal.a.mostapha@gmail.com>
+In-Reply-To: <20220921135701.10199-1-jalal.a.mostapha@gmail.com>
+To:     Jalal Mostafa <jalal.a.mostapha@gmail.com>
+Cc:     maciej.fijalkowski@intel.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, bjorn@kernel.org, magnus.karlsson@intel.com,
+        jonathan.lemon@gmail.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, daniel@iogearbox.net,
+        john.fastabend@gmail.com, hawk@kernel.org, ast@kernel.org,
+        linux-kernel@vger.kernel.org, jalal.mostafa@kit.edu
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 9/21/22 4:21 AM, Jie Meng wrote:
-> Instead of shr/sar/shl that implicitly use %cl, emit their more flexible
-> alternatives provided in BMI2
+Hello:
+
+This patch was applied to bpf/bpf.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
+
+On Wed, 21 Sep 2022 13:57:01 +0000 you wrote:
+> The flag for need_wakeup is not set for xsks with `XDP_SHARED_UMEM`
+> flag and of different queue ids and/or devices. They should inherit
+> the flag from the first socket buffer pool since no flags can be
+> specified once `XDP_SHARED_UMEM` is specified.
 > 
-> Signed-off-by: Jie Meng <jmeng@fb.com>
-> ---
->   arch/x86/net/bpf_jit_comp.c                | 53 ++++++++++++++++++++++
->   tools/testing/selftests/bpf/verifier/jit.c |  7 +--
->   2 files changed, 57 insertions(+), 3 deletions(-)
+> Fixes: b5aea28dca134 ("xsk: Add shared umem support between queue ids")
 > 
-> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> index ae89f4143eb4..81a3b34327ae 100644
-> --- a/arch/x86/net/bpf_jit_comp.c
-> +++ b/arch/x86/net/bpf_jit_comp.c
-> @@ -889,6 +889,35 @@ static void emit_nops(u8 **pprog, int len)
->   	*pprog = prog;
->   }
->   
-> +static void emit_3vex(u8 **pprog, bool r, bool x, bool b, u8 m,
-> +		      bool w, u8 src_reg2, bool l, u8 p)
-> +{
-> +	u8 *prog = *pprog;
-> +	u8 b0 = 0xc4, b1, b2;
-> +	u8 src2 = reg2hex[src_reg2];
-> +
-> +	if (is_ereg(src_reg2))
-> +		src2 |= 1 << 3;
-> +
-> +	/*
-> +	 *    7                           0
-> +	 *  +---+---+---+---+---+---+---+---+
-> +	 *  |~R |~X |~B |         m         |
-> +	 *  +---+---+---+---+---+---+---+---+
-> +	 */
-> +	b1 = (!r << 7) | (!x << 6) | (!b << 5) | (m & 0x1f);
-> +	/*
-> +	 *    7                           0
-> +	 *  +---+---+---+---+---+---+---+---+
-> +	 *  | W |     ~vvvv     | L |   pp  |
-> +	 *  +---+---+---+---+---+---+---+---+
-> +	 */
-> +	b2 = (w << 7) | ((~src2 & 0xf) << 3) | (l << 2) | (p & 3);
-> +
-> +	EMIT3(b0, b1, b2);
-> +	*pprog = prog;
-> +}
-> +
->   #define INSN_SZ_DIFF (((addrs[i] - addrs[i - 1]) - (prog - temp)))
->   
->   static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image, u8 *rw_image,
-> @@ -1135,7 +1164,31 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image, u8 *rw_image
->   		case BPF_ALU64 | BPF_LSH | BPF_X:
->   		case BPF_ALU64 | BPF_RSH | BPF_X:
->   		case BPF_ALU64 | BPF_ARSH | BPF_X:
-> +			if (boot_cpu_has(X86_FEATURE_BMI2)) {
-> +				/* shrx/sarx/shlx dst_reg, dst_reg, src_reg */
-> +				bool r = is_ereg(dst_reg);
-> +				u8 m = 2; /* escape code 0f38 */
-> +				bool w = (BPF_CLASS(insn->code) == BPF_ALU64);
-> +				u8 p;
-> +
-> +				switch (BPF_OP(insn->code)) {
-> +				case BPF_LSH:
-> +					p = 1; /* prefix 0x66 */
-> +					break;
-> +				case BPF_RSH:
-> +					p = 3; /* prefix 0xf2 */
-> +					break;
-> +				case BPF_ARSH:
-> +					p = 2; /* prefix 0xf3 */
-> +					break;
-> +				}
-> +
-> +				emit_3vex(&prog, r, false, r, m,
-> +					  w, src_reg, false, p);
-> +				EMIT2(0xf7, add_2reg(0xC0, dst_reg, dst_reg));
->   
-> +				break;
-> +			}
->   			/* Check for bad case when dst_reg == rcx */
->   			if (dst_reg == BPF_REG_4) {
->   				/* mov r11, dst_reg */
+> [...]
 
-Nice!
+Here is the summary with links:
+  - [bpf,v3] xsk: inherit need_wakeup flag for shared sockets
+    https://git.kernel.org/bpf/bpf/c/60240bc26114
 
-> diff --git a/tools/testing/selftests/bpf/verifier/jit.c b/tools/testing/selftests/bpf/verifier/jit.c
-> index 79021c30e51e..3323b93f0972 100644
-> --- a/tools/testing/selftests/bpf/verifier/jit.c
-> +++ b/tools/testing/selftests/bpf/verifier/jit.c
-> @@ -4,15 +4,16 @@
->   	BPF_MOV64_IMM(BPF_REG_0, 1),
->   	BPF_MOV64_IMM(BPF_REG_1, 0xff),
->   	BPF_ALU64_IMM(BPF_LSH, BPF_REG_1, 1),
-> -	BPF_ALU32_IMM(BPF_LSH, BPF_REG_1, 1),
-> +	BPF_ALU32_REG(BPF_LSH, BPF_REG_1, BPF_REG_0),
->   	BPF_JMP_IMM(BPF_JEQ, BPF_REG_1, 0x3fc, 1),
->   	BPF_EXIT_INSN(),
-> -	BPF_ALU64_IMM(BPF_RSH, BPF_REG_1, 1),
-> +	BPF_ALU64_REG(BPF_RSH, BPF_REG_1, BPF_REG_0),
->   	BPF_ALU32_IMM(BPF_RSH, BPF_REG_1, 1),
->   	BPF_JMP_IMM(BPF_JEQ, BPF_REG_1, 0xff, 1),
->   	BPF_EXIT_INSN(),
->   	BPF_ALU64_IMM(BPF_ARSH, BPF_REG_1, 1),
-> -	BPF_JMP_IMM(BPF_JEQ, BPF_REG_1, 0x7f, 1),
-> +	BPF_ALU32_REG(BPF_ARSH, BPF_REG_1, BPF_REG_0),
-> +	BPF_JMP_IMM(BPF_JEQ, BPF_REG_1, 0x3f, 1),
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Could you add this as separate commit with adding tests rather than changing
-existing ones?
-
-Would also be great to include lib/test_bpf.ko test results into above commit
-message given it has more extensive JIT tests than test_verifier.
-
->   	BPF_EXIT_INSN(),
->   	BPF_MOV64_IMM(BPF_REG_0, 2),
->   	BPF_EXIT_INSN(),
-> 
 
