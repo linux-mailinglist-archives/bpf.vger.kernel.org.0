@@ -2,87 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7498F5E5E48
-	for <lists+bpf@lfdr.de>; Thu, 22 Sep 2022 11:17:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58DC65E5F24
+	for <lists+bpf@lfdr.de>; Thu, 22 Sep 2022 11:58:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230315AbiIVJRW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Sep 2022 05:17:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55366 "EHLO
+        id S231173AbiIVJ6F (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Sep 2022 05:58:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230196AbiIVJRO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Sep 2022 05:17:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0016D01FB
-        for <bpf@vger.kernel.org>; Thu, 22 Sep 2022 02:17:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1663838232;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kQfJsNBklEQnlLpVZNYjFz1njaLl7T8B+cRrquogK3o=;
-        b=MQuMr1Msbygvu9jvS13AdWjOLEv46trP1DZ+JQfLRfFH705N3f9huXwv15tiLfoip1Ca5J
-        ZLp1IB6F9l5Klc+/rIwbJe6eZwLrIYmSyRFZqek5dJRMHFv1ZYDkOH52Z0u5Qm1RF2Ukpq
-        e+8EToPxPMYngYUMa1bG0ENFL2Nd1SE=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-438-DOVI1nfwPNKJnjLw30nUNg-1; Thu, 22 Sep 2022 05:17:09 -0400
-X-MC-Unique: DOVI1nfwPNKJnjLw30nUNg-1
-Received: by mail-ed1-f71.google.com with SMTP id y14-20020a056402440e00b0044301c7ccd9so6209312eda.19
-        for <bpf@vger.kernel.org>; Thu, 22 Sep 2022 02:17:09 -0700 (PDT)
+        with ESMTP id S231251AbiIVJ5h (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 22 Sep 2022 05:57:37 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F185D62D1
+        for <bpf@vger.kernel.org>; Thu, 22 Sep 2022 02:57:01 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id k3-20020a05600c1c8300b003b4fa1a85f8so972089wms.3
+        for <bpf@vger.kernel.org>; Thu, 22 Sep 2022 02:57:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date;
+        bh=TX+dZFKc01rzMEgsWJ5WshpFDtmg9ORNYvjpFUtfE7U=;
+        b=wrbiuc31HYkBNQTsgI2G+/Oy6SygApb1Gh45M7m6bKMrSjJ2jz03iPH4gGLoc/KH4R
+         JeLNtg6Glds/tAa/5pHssmv9X/lwD/04j12/cLOYi6SpG3+qU8HG1XKJcZoZokg9lWSl
+         jyaVgjkTw2MGlx97EuyxqeolFlRCkSA3xhhbzT1auFqu9TbuHDVsTE7bjOdgz1kjCATt
+         5VXu0CIMpN2Qy5w/1u27Axoo/vwnosicUW5x69YtPRVEv4g+3P/ePsxy6Ib8byTGg7RV
+         ItjUHqFN5lbmChFkLX8UqlRPoIiFboAzcIYGJNcB2xyiuKzWfbWAVCxOCwkasH45/oQ5
+         kQSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date;
-        bh=kQfJsNBklEQnlLpVZNYjFz1njaLl7T8B+cRrquogK3o=;
-        b=BUW6QX4dj499+t56lMce0Mkg1dEt+Jq8zD9Lv1gcbhm6Jse38bHRn9UiFyU1gXMglS
-         TQkW0WN8lahbFvLUo/iNdaLcUoq2Y0noGSBL+aq7eFIRNJrfIG0O2/IxCm5tA+YpucoO
-         UCg0mHHAChoiwoNUnAuTPCjAR8YHOXmtOmiJpKb9vkn2JayyDNjDi3AUfUGaeC6rilLx
-         bk9y5eRXmL4EmjRThY8K5yzbn3OaprmO+JKGSONKF0hEHmTE4HP7qSHnt8slpXRF3COx
-         SKFYm1Rzv2ZRTjnGyL6Hql9OK+6Kc9z74LUpRHyTKQY8cS1wVDjyWR3SyYHwGUGyxCcf
-         sTMg==
-X-Gm-Message-State: ACrzQf2IpSQ6kT/3Ej2CTk97AFFlz4XLdeZaxvBIGVDhw5kzy5mUOl99
-        ckP0fVX1WQAvDjeLOHPchCugepxIefhv521MpMucM87nGmt+1Ps2HnYkoucUsb+S802Ykl8AUce
-        9ji6T/lXci5dA
-X-Received: by 2002:a17:907:d07:b0:72e:ec79:ad0f with SMTP id gn7-20020a1709070d0700b0072eec79ad0fmr2019350ejc.296.1663838228508;
-        Thu, 22 Sep 2022 02:17:08 -0700 (PDT)
-X-Google-Smtp-Source: AMsMyM6aWYk2gLkly55RZes2gWKaV2mpYmlQSmVpIR2XSzCn6t3IkeaTpYNPXd0NwzuX13AYtWwYqg==
-X-Received: by 2002:a17:907:d07:b0:72e:ec79:ad0f with SMTP id gn7-20020a1709070d0700b0072eec79ad0fmr2019336ejc.296.1663838228336;
-        Thu, 22 Sep 2022 02:17:08 -0700 (PDT)
-Received: from redhat.com ([2.55.16.18])
-        by smtp.gmail.com with ESMTPSA id d14-20020a170906304e00b0073bf84be798sm2374187ejd.142.2022.09.22.02.17.05
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
+        bh=TX+dZFKc01rzMEgsWJ5WshpFDtmg9ORNYvjpFUtfE7U=;
+        b=jy6F63cPSRD2W/Qi7omvvBB9mEkRCcqVH/HDswOJSyT0F62IxA+FlvmQ9bojoWMpII
+         /4v/aCavUqT6pMXJe++LkRAyAAx3zuJfV2MJkOfBknHBuaGVHB+Lh6I1FDing8ZMHiXc
+         kWzHJpEzhPsjLJ62OXYf11Glg7EpfdCW4VDAShaKpLVeUUc4XxPJkoCE1mGpXns/Qbor
+         StMhBr2OSi+9JdulOyNfkU3p3kPsb24bc1D86m7UEnTkKZ9BrDPg2FSXlMQQhYuqcDCG
+         RQcgF4Jo1EQZveBnoMYHGLnzIosIDg74N0sqFuLIt6s2ZQF9x7noHToVVm2KN1lgogJm
+         j90Q==
+X-Gm-Message-State: ACrzQf2X7sVN5970+nA7Z44yyNo7YqdFjNdZzMsOMRscM0eUU/bsPrSB
+        auoSTgU2oGDfnIXNjTdysOzBtfVIuGKvXc0H
+X-Google-Smtp-Source: AMsMyM6i6UfcSL8Kwei3PzQZYMd+09H2UCH5uPAZ58h/kYqOTqoT/Xto/7pTCxlRgy/goVe7ATBGYA==
+X-Received: by 2002:a1c:4b03:0:b0:3b4:74d3:b4c5 with SMTP id y3-20020a1c4b03000000b003b474d3b4c5mr1721728wma.96.1663840619776;
+        Thu, 22 Sep 2022 02:56:59 -0700 (PDT)
+Received: from hades ([46.103.15.185])
+        by smtp.gmail.com with ESMTPSA id l30-20020a05600c1d1e00b003a62400724bsm6408472wms.0.2022.09.22.02.56.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Sep 2022 02:17:07 -0700 (PDT)
-Date:   Thu, 22 Sep 2022 05:17:03 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Paolo Abeni <pabeni@redhat.com>
-Cc:     Junbo <junbo4242@gmail.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
-        John Fastabend <john.fastabend@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>, bpf@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Do not name control queue for virtio-net
-Message-ID: <20220922051613-mutt-send-email-mst@kernel.org>
-References: <20220917092857.3752357-1-junbo4242@gmail.com>
- <20220918025033-mutt-send-email-mst@kernel.org>
- <CACvn-oGUj0mDxBO2yV1mwvz4PzhN3rDnVpUh12NA5jLKTqRT3A@mail.gmail.com>
- <20220918081713-mutt-send-email-mst@kernel.org>
- <f3ad0de40b424413ede30abd3517c8fad0c3caca.camel@redhat.com>
+        Thu, 22 Sep 2022 02:56:58 -0700 (PDT)
+Date:   Thu, 22 Sep 2022 12:56:56 +0300
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Lorenzo Bianconi <lorenzo@kernel.org>, mtahhan@redhat.com,
+        mcroce@microsoft.com
+Subject: Re: [PATCH net-next] xdp: improve page_pool xdp_return performance
+Message-ID: <YywxaOL0G9QAMzjA@hades>
+References: <166377993287.1737053.10258297257583703949.stgit@firesoul>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f3ad0de40b424413ede30abd3517c8fad0c3caca.camel@redhat.com>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+In-Reply-To: <166377993287.1737053.10258297257583703949.stgit@firesoul>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -90,35 +70,67 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 22, 2022 at 11:10:37AM +0200, Paolo Abeni wrote:
-> On Sun, 2022-09-18 at 08:17 -0400, Michael S. Tsirkin wrote:
-> > On Sun, Sep 18, 2022 at 05:00:20PM +0800, Junbo wrote:
-> > > hi Michael
-> > > 
-> > > in virtio-net.c
-> > >     /* Parameters for control virtqueue, if any */
-> > >     if (vi->has_cvq) {
-> > >         callbacks[total_vqs - 1] = NULL;
-> > >         names[total_vqs - 1] = "control";
-> > >     }
-> > > 
-> > > I think the Author who write the code
-> > 
-> > wait, that was not you?
+Hi Jesper,
+
+On Wed, Sep 21, 2022 at 07:05:32PM +0200, Jesper Dangaard Brouer wrote:
+> During LPC2022 I meetup with my page_pool co-maintainer Ilias. When
+> discussing page_pool code we realised/remembered certain optimizations
+> had not been fully utilised.
 > 
-> I believe 'the Author' refers to the author of the current code, not to
-> the author of the patch.
-
-Oh I see. Responded.
-
-> @Junbo: the control queue is created only if the VIRTIO_NET_F_CTRL_VQ
-> feature is set, please check that in your setup.
+> Since commit c07aea3ef4d4 ("mm: add a signature in struct page") struct
+> page have a direct pointer to the page_pool object this page was
+> allocated from.
 > 
-> Thanks
+> Thus, with this info it is possible to skip the rhashtable_lookup to
+> find the page_pool object in __xdp_return().
 > 
-> Paolo
+> The rcu_read_lock can be removed as it was tied to xdp_mem_allocator.
+> The page_pool object is still safe to access as it tracks inflight pages
+> and (potentially) schedules final release from a work queue.
+> 
+> Created a micro benchmark of XDP redirecting from mlx5 into veth with
+> XDP_DROP bpf-prog on the peer veth device. This increased performance
+> 6.5% from approx 8.45Mpps to 9Mpps corresponding to using 7 nanosec
+> (27 cycles at 3.8GHz) less per packet.
 
+Thanks for the detailed testing
 
--- 
-MST
+> 
+> Suggested-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> ---
+>  net/core/xdp.c |   10 ++++------
+>  1 file changed, 4 insertions(+), 6 deletions(-)
+> 
+> diff --git a/net/core/xdp.c b/net/core/xdp.c
+> index 24420209bf0e..844c9d99dc0e 100644
+> --- a/net/core/xdp.c
+> +++ b/net/core/xdp.c
+> @@ -375,19 +375,17 @@ EXPORT_SYMBOL_GPL(xdp_rxq_info_reg_mem_model);
+>  void __xdp_return(void *data, struct xdp_mem_info *mem, bool napi_direct,
+>  		  struct xdp_buff *xdp)
+>  {
+> -	struct xdp_mem_allocator *xa;
+>  	struct page *page;
+>  
+>  	switch (mem->type) {
+>  	case MEM_TYPE_PAGE_POOL:
+> -		rcu_read_lock();
+> -		/* mem->id is valid, checked in xdp_rxq_info_reg_mem_model() */
+> -		xa = rhashtable_lookup(mem_id_ht, &mem->id, mem_id_rht_params);
+>  		page = virt_to_head_page(data);
+>  		if (napi_direct && xdp_return_frame_no_direct())
+>  			napi_direct = false;
+> -		page_pool_put_full_page(xa->page_pool, page, napi_direct);
+> -		rcu_read_unlock();
+> +		/* No need to check ((page->pp_magic & ~0x3UL) == PP_SIGNATURE)
+> +		 * as mem->type knows this a page_pool page
+> +		 */
+> +		page_pool_put_full_page(page->pp, page, napi_direct);
+>  		break;
+>  	case MEM_TYPE_PAGE_SHARED:
+>  		page_frag_free(data);
+> 
+> 
 
+Reviewed-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
