@@ -2,95 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D9285E576D
-	for <lists+bpf@lfdr.de>; Thu, 22 Sep 2022 02:38:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A84A85E5773
+	for <lists+bpf@lfdr.de>; Thu, 22 Sep 2022 02:40:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229909AbiIVAi1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Sep 2022 20:38:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48840 "EHLO
+        id S230127AbiIVAkT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Sep 2022 20:40:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229745AbiIVAiZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Sep 2022 20:38:25 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FCBEA98C2;
-        Wed, 21 Sep 2022 17:38:23 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id l14so17498665eja.7;
-        Wed, 21 Sep 2022 17:38:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=36Uxd9fzOtQXdUTgT2x6xrnFj/OP6ll4rq+xlPqT6zs=;
-        b=I5VK0kFYpdJq7uuW/my6/s1qq5Iyk5Bid9V1MLGMfcqCQWztkAuk9NwGH236IdPw0t
-         aSpjgBiqC/nGZwjYEvfyXWTdEcKTcw0+alOVgKlPJp0QxZ51FAjaVDzR72eVHRH3bbvy
-         gvkVll0e0g0VmQ4F+5N6/s2DIzf/I27kP/bz1CeUqjpjHLzE3nXgrjkQ/KYJ7YpMHAkl
-         X4LL9WElTtiK3lEKN88AvhLMEYbUQuFbdHgajFCsib9S8OAsKjAJ2hwQaDr7Ll+KkdP+
-         xKM1XMVuJO2zuGtJCha8Q5jPSh1fIwYoh4vH+EI9GVYm3sM0OCx6oEhE0nGmVgeLFMUN
-         dZzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=36Uxd9fzOtQXdUTgT2x6xrnFj/OP6ll4rq+xlPqT6zs=;
-        b=X5oKQdcaS+92tvbcFjs9npwpXeTaqe10vpffAfvYuTwx+lwTZ6ffupPk5ioGAdk5ZB
-         PUJrBmwGszcqCEd6ln+qMxVCyvOdmO6cgLGdEyCHIz0eL9ilSpuKvNLEq94AVvd/Fy2G
-         9V2dHy6K/P7l2zj2jNZHJ+tMWXSfvfTNVIfWVevMlYeAZVHGrRfFRLa92Uw30wk91yds
-         OfSRiMwFY1VJLC2wjTE6AuKka8L+bX0RQSd8ZNu1pBfXS/zTRMC+G8dDMwKjHm61dw+W
-         tIafHJ8k9tgZIiDiEokBvgVOI9OymCtL6mXJIlDrgkw2RX4xQNetWUuhUJaB/Lu2DPPw
-         O23g==
-X-Gm-Message-State: ACrzQf3UDtUQzpqiTl1fiqxkir4c0nFXLBRgf2b9a8hwbPDUqjEse2Iq
-        2agh+zbH/Za2O8iw/rZbuUwQTH9yaF+I/rw1FRY=
-X-Google-Smtp-Source: AMsMyM6Ry07M/XiRvs8DE4XwyxTLWwVw+IwMzGuWJO2lBy5NVGAojN78DUAFSefFqfeYCg1fyKNfsWUJO9lS/CKlptk=
-X-Received: by 2002:a17:907:3d86:b0:782:1175:153f with SMTP id
- he6-20020a1709073d8600b007821175153fmr692120ejc.226.1663807101634; Wed, 21
- Sep 2022 17:38:21 -0700 (PDT)
+        with ESMTP id S230126AbiIVAkS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 21 Sep 2022 20:40:18 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F3C567CBB;
+        Wed, 21 Sep 2022 17:40:17 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id E61ADB8338B;
+        Thu, 22 Sep 2022 00:40:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 8EE27C433B5;
+        Thu, 22 Sep 2022 00:40:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1663807214;
+        bh=dDXS6E9mDuwjouF994xVa3KdzW2QLTRlr9y2ZHE9RXU=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=N5Pp7+4MD738kgNDgLorAnoNSmmLAd/B+XIg76NKVXGe+mlDOEQDsyV+9u5nvhqY8
+         WGMVEDkkWhkfRdRmexCA/8dooUHHIimLqubAOen0A99JYRY5EJgJiaBdSGymb6nRkg
+         RA4DxwddQQaLvuyRkrsCNBf8Xkj1qgjQVBCb+G8PElGz9EKAoYg2ntwXT1AA4iQ6wy
+         wzm28Yfw5q7+rsOMOuAx6WPt39MbgJpbxbY0uBLt44o32Fq34hWc4t/I9Wo44lfDL5
+         URAc4ybNcUhuwjXLLE9HQo8HOylAANEncaVfQDGfkzlWuU+F01VdwdXS03hAb/6J45
+         wTSyKTPcEYPDg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 6DBC8E4D03D;
+        Thu, 22 Sep 2022 00:40:14 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <1663555725-17016-1-git-send-email-wangyufen@huawei.com> <1663555725-17016-2-git-send-email-wangyufen@huawei.com>
-In-Reply-To: <1663555725-17016-2-git-send-email-wangyufen@huawei.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 21 Sep 2022 17:38:10 -0700
-Message-ID: <CAEf4BzabFB-__1bcYTb8E0ixS0dNZNcp9XNB-McWvQQ98sBR-Q@mail.gmail.com>
-Subject: Re: [bpf-next v3 2/2] selftests/bpf: Add testcases for pinning to errpath
-To:     Wang Yufen <wangyufen@huawei.com>
-Cc:     andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, paul.walmsley@sifive.com,
-        palmer@dabbelt.com, aou@eecs.berkeley.edu, davem@davemloft.net,
-        kuba@kernel.org, hawk@kernel.org, nathan@kernel.org,
-        ndesaulniers@google.com, trix@redhat.com, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2] libbpf: Support raw btf placed in the default path
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166380721444.7808.9756811358401247254.git-patchwork-notify@kernel.org>
+Date:   Thu, 22 Sep 2022 00:40:14 +0000
+References: <3f59fb5a345d2e4f10e16fe9e35fbc4c03ecaa3e.1662999860.git.chentao.kernel@linux.alibaba.com>
+In-Reply-To: <3f59fb5a345d2e4f10e16fe9e35fbc4c03ecaa3e.1662999860.git.chentao.kernel@linux.alibaba.com>
+To:     Tao Chen <chentao.kernel@linux.alibaba.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, yhs@fb.com, songliubraving@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Sep 18, 2022 at 7:28 PM Wang Yufen <wangyufen@huawei.com> wrote:
->
-> Add testcases for map and prog pin to errpath.
->
-> Signed-off-by: Wang Yufen <wangyufen@huawei.com>
+Hello:
+
+This patch was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
+
+On Tue, 13 Sep 2022 00:43:00 +0800 you wrote:
+> Now only elf btf can be placed in the default path(/boot), raw
+> btf should also can be there.
+> 
+> Signed-off-by: Tao Chen <chentao.kernel@linux.alibaba.com>
 > ---
+> v2->v1: Remove the locations[i].raw_btf check
+> 
+> [...]
 
-let's drop this selftest, it does global system manipulations just to
-check those two if conditions inside pathname_concat(), probably not
-worth it.
+Here is the summary with links:
+  - [v2] libbpf: Support raw btf placed in the default path
+    https://git.kernel.org/bpf/bpf-next/c/01f2e36c959c
 
-Also for the future, we shouldn't use CHECK() in new selftests (we
-still have CHECK()s because there are like 2 thousand of them in old
-selftest, so clean up is not trivial).
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
->  tools/testing/selftests/bpf/prog_tests/pinning.c   | 67 ++++++++++++++++++++++
->  .../selftests/bpf/progs/test_pinning_path.c        | 19 ++++++
->  2 files changed, 86 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/progs/test_pinning_path.c
->
 
-[...]
