@@ -2,124 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B47D15E684C
-	for <lists+bpf@lfdr.de>; Thu, 22 Sep 2022 18:21:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FD975E6861
+	for <lists+bpf@lfdr.de>; Thu, 22 Sep 2022 18:29:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231882AbiIVQVp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Sep 2022 12:21:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53556 "EHLO
+        id S231946AbiIVQ33 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Sep 2022 12:29:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231625AbiIVQVo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Sep 2022 12:21:44 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD630E21D0
-        for <bpf@vger.kernel.org>; Thu, 22 Sep 2022 09:21:42 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id z13so3013649ejp.6
-        for <bpf@vger.kernel.org>; Thu, 22 Sep 2022 09:21:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=svyigr/4pQFgIA5xvhCZ4KlvmSb8/kEuQzuv4/Xh8g0=;
-        b=Lk12qa9Q02RI/QER7YXZGzGUUzsXWGg+5CBYkZ4XASADk0loV5OvpxDw21TTt6CScV
-         KCFkALPT2xRnbqzIcGiy3s1H3R/cIgAHoCdjoLqUw1XAcOTpLpfeOV7dW95AWY6rxkJk
-         KLG0cGP6LY5oXsuS64SVHFollQNKOAx2RNDhSN8fH3zZF/wP3yUOq/DcQB5ZXudyEhE4
-         n86CCVbVEwJzlkKsCFcHVQ/L6aO6ETzdEvC4LDfR/2Xt2PeNl4DmmCMo2Ra/HJCxYSjc
-         7/NBDlX6W9LXtIN9CcyKSOydK9snUyG2Q5S6czmAPvUuUrz/J4jnXZm1yray9adyZCWS
-         gD7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=svyigr/4pQFgIA5xvhCZ4KlvmSb8/kEuQzuv4/Xh8g0=;
-        b=m52FcVOFLDYu2znhU9a5d0L9/sLfPpcSBxdkjh5mFeykaYt3GVrF0jXr/nkb3joyIM
-         satvIOiSVbKwcnsE/i/+QVkDWhLUTuiADmPjbnOWItARGGcMKdKxYTJEwhpOEvpgAopi
-         4U9GCSQGPLU/QN0f0IghqjNSS/jVvzB8vHAfFqaFelnb4aXB5IGmUq89/CvrQP97u4Wp
-         VyptKAG+WoR79WL05etuQFKw3C/8mgdMDaysSUZBhzzQJkNgghZtQDxpPbCJ8zvWc902
-         +UzyiwuBnKyBiJRuH8K+dABsWM+ZYUPHXHe5ur8960DYTgruEwSzGEcyrI2CDeEr9Ehq
-         GNwA==
-X-Gm-Message-State: ACrzQf0gje6NqQBtCGmeMyZuI44tXge+LgqCSESAiiWm8rOWFuKkLPwF
-        YdgZHehsPBbHjbyLA6SnXIwjESzXIUox/9GZ12A=
-X-Google-Smtp-Source: AMsMyM6Sn8y305CxzLifCpHl/RbzPRv3i4OGDVsI+GcXZ84saMBSuh4L/eKK4V7euzpr2JvlPzdhh5VMbv77IXXoBGw=
-X-Received: by 2002:a17:906:8454:b0:772:7b02:70b5 with SMTP id
- e20-20020a170906845400b007727b0270b5mr3549488ejy.114.1663863701309; Thu, 22
- Sep 2022 09:21:41 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220921164254.3630690-1-andrii@kernel.org> <CAADnVQ+ZDFe6brZJ4dPWnEWwxUtZnL=MuXOzoyNNfY7oxXZZ-w@mail.gmail.com>
-In-Reply-To: <CAADnVQ+ZDFe6brZJ4dPWnEWwxUtZnL=MuXOzoyNNfY7oxXZZ-w@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 22 Sep 2022 09:21:30 -0700
-Message-ID: <CAEf4BzZXy6BG1OE6L1tGzeqFMNqe2p=B4x8c0yH-Jo9-XUrGaA@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 0/4] veristat: CSV output, comparison mode, filtering
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        =?UTF-8?Q?Daniel_M=C3=BCller?= <deso@posteo.net>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S231965AbiIVQ30 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 22 Sep 2022 12:29:26 -0400
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C885EE99AC
+        for <bpf@vger.kernel.org>; Thu, 22 Sep 2022 09:29:23 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 6C1433200914;
+        Thu, 22 Sep 2022 12:29:22 -0400 (EDT)
+Received: from imap49 ([10.202.2.99])
+  by compute5.internal (MEProxy); Thu, 22 Sep 2022 12:29:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lmb.io; h=cc:cc
+        :content-type:date:date:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to; s=fm1; t=1663864161; x=1663950561; bh=Ls4S0Tz98v
+        3lAbaZgRInk3TZOEGIbEC9AZNUZNgnaHk=; b=m6fpdaKyQ/j3rQ8aeSgEwovBuB
+        mKQbXtimIUL6Fgm4PFKryF1prQnhnp4P1g7P49Bc2oS6G6oLBH2//8Nva1abW/1V
+        wVairHJxF5rfTENFWBjUnTspIulqXM2MXYWH5/I85BHj4/6JLWf+LqZF4ivRT8ql
+        CuEy8HmjoyjvGllGmkrVgfGL1oGRFRHkuXb/flPglvkp6zsezUZFsN7FcdVil6qx
+        msKCEjP6ryFsy1nFnGleBiKpcVBnImuzBv/0euT8Umse0ukBispkBOacbDM9CGC7
+        BOHStDnzaBnDhgtNwSTfmFP6UeCgA0eFU8iVmqIX2ic5DLIJeunmlJ+u/efQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
+        :mime-version:references:reply-to:sender:subject:subject:to:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm2; t=1663864161; x=1663950561; bh=Ls4S0Tz98v3lAbaZgRInk3TZOEGI
+        bEC9AZNUZNgnaHk=; b=k0z0huR3YdLYFic2Nu1u1WDmoGLSQMHe6dYZTjQmZ+dk
+        9rxIul42uNnkO+W7Z7AcbJxezUTCo8avzkhXQMWNxf0md5LuaiPKSVsv3nbNN0Zf
+        RoOGqRce/SzCiDAg6t9HDoKg6jQUpL8fUDGciIjlzJX9UpVpGQqDFQfLYpyMDkoV
+        qcjnyeNNi72nLpvFgSbE5McIFmb9Ib8M8fqdjELcfqxpKaisQsBQEngFXKqb4PuY
+        vFpet7CfivYXTfrOc1QZxf5VN3xObhJnOXIcgkQHSRbK3rCesQyDT4sd0D6dmA3b
+        6xH9sZ6FENhjWfOjb+QAM/MrsmrWbwHh2e/FH4DdxQ==
+X-ME-Sender: <xms:YY0sYz51oNQc2gQGYQVZOxMK7YEDQcKHNrZnmUZGsMxv-ksTKvauBQ>
+    <xme:YY0sY467xdITZyVReBII0LPxuLBiz_VXJ34BBmSMCPU5AuxJubCEShHlLMOv16mu5
+    07Hr7_UmQbImBitEQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrfeefgedggedvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedfnfho
+    rhgvnhiiuceurghuvghrfdcuoehoshhssehlmhgsrdhioheqnecuggftrfgrthhtvghrnh
+    epjeekveeutdejtdefueffgfetgeehvdeileffgeevtddvuddtteejvdduhfdtvdefnecu
+    ffhomhgrihhnpehgihhthhhusgdrtghomhdpkhgvrhhnvghlrdhorhhgnecuvehluhhsth
+    gvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepohhssheslhhmsgdrihho
+X-ME-Proxy: <xmx:YY0sY6fH-mZeY6kU_t4D4PhEJMYHdAmzZ3JWcj6mYW63JgEVf-fIoA>
+    <xmx:YY0sY0J4_kwKBfMnOqxHxS4Wq53h7HrsnHMLbFb66H9_UHQEnbDTHQ>
+    <xmx:YY0sY3JEgL2K49p6WbVtYYg6itIqQZNC2OJKDZWrWJGBoq5wp2J0Jg>
+    <xmx:YY0sY0FWwoSCrnsxOwHRl9xZ86dtaf2F20QzycfPa6hrqV6SOc8r9Q>
+Feedback-ID: icd3146c6:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 8E76A15A0087; Thu, 22 Sep 2022 12:29:21 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.7.0-alpha0-935-ge4ccd4c47b-fm-20220914.001-ge4ccd4c4
+Mime-Version: 1.0
+Message-Id: <4e66ca38-e99d-4fe5-b224-e36fb946878f@www.fastmail.com>
+In-Reply-To: <a6c0bb85-6eeb-407e-a515-06f67e70db57@www.fastmail.com>
+References: <a6c0bb85-6eeb-407e-a515-06f67e70db57@www.fastmail.com>
+Date:   Thu, 22 Sep 2022 17:29:01 +0100
+From:   "Lorenz Bauer" <oss@lmb.io>
+To:     "Alexei Starovoitov" <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        "Andrii Nakryiko" <andrii@kernel.org>,
+        "Martin KaFai Lau" <martin.lau@linux.dev>,
+        "KP Singh" <kpsingh@kernel.org>,
+        "Stanislav Fomichev" <sdf@google.com>
+Cc:     bpf@vger.kernel.org
+Subject: Re: Closing the BPF map permission loophole
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 21, 2022 at 7:52 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Thu, 15 Sep 2022, at 11:30, Lorenz Bauer wrote:
+> Hi list,
 >
-> On Wed, Sep 21, 2022 at 9:43 AM Andrii Nakryiko <andrii@kernel.org> wrote:
-> >
-> > Add three more critical features to veristat tool, which make it sufficient
-> > for a practical work on BPF verifier:
+> Here is a summary of the talk I gave at LPC '22 titled "Closing the BPF 
+> map permission loophole", with slides at [0].
+
+A timeline of the most important commits in this sorry affair. TL;DR: >= 4.15 is really broken.
+
+v4.4 commit b2197755b263 ("bpf: add support for persistent maps/progs") 
+https://github.com/torvalds/linux/commit/b2197755b263
+
+Introduces BPF_OBJ_PIN and OBJ_GET. Map fds are always read-write and all is fine.
+
+v4.12 commit 56f668dfe00d ("bpf: Add array of maps support")
+https://github.com/torvalds/linux/commit/56f668dfe00d
+
+Map fds are always read-write. Inner map map_flags are compared to the outer map via bpf_map_meta_equal, which prevents stripping BPF_F_RDONLY_PROG, etc. later on.
+
+v4.15 commit 6e71b04a8224 ("bpf: Add file mode configuration into bpf maps")
+https://github.com/torvalds/linux/commit/6e71b04a8224
+
+Introduces BPF_F_RDONLY / WRONLY. Doesn't take into account that BPF programs can modify maps (unprivileged BPF is enabled since v4.3). Also doesn't take into account that BPF_OBJ_PIN can be used to turn r/o into r/w maps. This is the start of our problems, and IMO it's completely broken.
+
+v5.2 commit 591fe9888d78 ("bpf: add program side {rd, wr}only support for maps")
+https://github.com/torvalds/linux/commit/591fe9888d78
+
+Introduces BPF_F_RDONLY_PROG, etc. Using sourcegraph.com I found a BPF ELF that creates a map with BPF_F_RDONLY | BPF_F_RDONLY_PROG flags [0]. This would be broken by refusing non-RW fds in the verifier, which is my preferred brute fix. Those flags came about because of a misunderstanding of what BPF_F_RDONLY does, which makes me worry might be other cases out there.
+
+Based on my research, we can do the following:
+
+> Problem #1: Read-only fds can be modified via a BPF program
+
+Up until 591fe9888d78 BPF_F_RDONLY_PROG we'd probably be OK with just refusing !rw fds. The only kernel.org version that this applies to is 4.19. 5.4, 5.10, 5.15 need the fix Roberto suggested.
+
+> Problem #2: Read-only fds can be "transmuted" into read-write fds via map in map
+
+This is not as big a problem as I initially thought. First, lookup in a nested map from userspace returns an ID, not a fd. Going from ID to fd requires CAP_SYS_ADMIN. On the program side, it's possible to retrieve the inner map and modify it.
+
+I think it's possible to fix this by refusing to insert !rw inner maps, by patching bpf_map_fd_get_ptr(). That function hasn't changed in a long time either. 4.19, 5.4, 5.10, 5.15.
+
+> Problem #3: Read-only fds can be transmuted into read-write fds via 
+> object pinning
 >
-> Nice tool!
+> 1. BPF_OBJ_PIN(read-only fd, /sys/fs/bpf/foo)
+> 2. BPF_OBJ_GET(/sys/fs/bpf/foo) = read-write fd
 
-Thanks!
+bpf_map doesn't have a concept of an owning user, so the only solution I can come up with is to refuse OBJ_PIN if !rw and !capable(CAP_DAC_OVERRIDE). Replace CAP_DAC_OVERRIDE with another capability of your choice, the idea being that this allows programs that run as root (probably a lot?) to continue functioning.
 
-> Few requests:
->
-> 1.
-> Please fix -v mode, since
-> veristat -v loop1.bpf.linked3.o
-> hangs forever. Maybe not forever, but I didn't have that much
-> time to find out whether it will finish eventually.
->
+Again 4.19, 5.4, 5.10, 5.15.
 
-[vmuser@archvm bpf]$ sudo ./veristat -v loop1.bpf.linked3.o
-libbpf: prog 'nested_loops': BPF program load failed: No space left on device
-libbpf: prog 'nested_loops': failed to load: -28
-libbpf: failed to load object 'loop1.bpf.linked3.o'
-...<hangs>...
+Daniel, Alexei, Andrii: any thoughts? This is a pretty deep rabbit hole, and I don't want to waste my time on the wrong approach.
 
-Yep, some bug if the program fails to validate due to -ENOSPC. I'll fix it.
-
-BTW, I also want to extend this verbose capability to allow specifying
-log_level = 2 for BPF verifier, because for successfully validated BPF
-programs log_level = 1 is empty (except for stats).
-
-> 2.
-> Please add some sort of progress indicator to
-> veristat *.linked3.o
-> otherwise it's not clear when it will be done and
-> -v cannot be used to find out because of bug 1.
-
-just dumping every entry to console would be too verbose, so I was
-thinking to overwrite single line with updated progress, if output is
-a console. I'll look up how to do it.
-
->
-> 3.
-> could you make it ignore non bpf elf files?
-> So it can be used just with veristat *.o ?
-
-Yep, I can, will add that as a convenience.
-
-Note that for now you probably want to do '*.bpf.linked3.o'. Daniel
-added .bpf.o suffix which helped greatly, but I think we might want to
-tweak this a bit more to make sure that what we have as .bpf.linked3.o
-is just .bpf.o, and initial .bpf.o (which might require further static
-linking to be complete) will be called something else.
+0: https://github.com/willfindlay/bpfcontain-rs/blob/eb2cd826b609e165d63d784c0f562b7a278171d2/src/bpf/include/allocator.h#L16
