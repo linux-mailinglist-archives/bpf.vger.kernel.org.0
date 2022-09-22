@@ -2,201 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC5125E5B11
-	for <lists+bpf@lfdr.de>; Thu, 22 Sep 2022 08:08:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 139575E5CCD
+	for <lists+bpf@lfdr.de>; Thu, 22 Sep 2022 10:01:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229637AbiIVGIK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Sep 2022 02:08:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60698 "EHLO
+        id S229762AbiIVIBT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Sep 2022 04:01:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbiIVGIJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Sep 2022 02:08:09 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27C10A74DB;
-        Wed, 21 Sep 2022 23:08:08 -0700 (PDT)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4MY4V55SKnz14S0y;
-        Thu, 22 Sep 2022 14:03:57 +0800 (CST)
-Received: from localhost.localdomain (10.175.112.70) by
- canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 22 Sep 2022 14:08:04 +0800
-From:   Wang Yufen <wangyufen@huawei.com>
-To:     <andrii@kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <martin.lau@linux.dev>, <song@kernel.org>, <yhs@fb.com>,
-        <john.fastabend@gmail.com>, <kpsingh@kernel.org>, <sdf@google.com>,
-        <haoluo@google.com>, <jolsa@kernel.org>,
-        <paul.walmsley@sifive.com>, <palmer@dabbelt.com>,
-        <aou@eecs.berkeley.edu>, <davem@davemloft.net>, <kuba@kernel.org>,
-        <hawk@kernel.org>, <nathan@kernel.org>, <ndesaulniers@google.com>,
-        <trix@redhat.com>
-CC:     <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <llvm@lists.linux.dev>
-Subject: [bpf-next v4] libbpf: Add pathname_concat() helper
-Date:   Thu, 22 Sep 2022 14:28:44 +0800
-Message-ID: <1663828124-10437-1-git-send-email-wangyufen@huawei.com>
-X-Mailer: git-send-email 1.8.3.1
+        with ESMTP id S231164AbiIVIA7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 22 Sep 2022 04:00:59 -0400
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BCF685AB7;
+        Thu, 22 Sep 2022 01:00:58 -0700 (PDT)
+Received: by mail-yb1-xb41.google.com with SMTP id a67so11607638ybb.3;
+        Thu, 22 Sep 2022 01:00:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=3oP1QkyQogUqbd7txk3r32kAVm+/kI9pBniGW5zsUYs=;
+        b=mzKY9rZ+m6Q5r/D86LDMWGiqX0e9nCWM0o0tycTO9slkQ5yRuMeU0j+p2OY9jE/Pl7
+         1eNpt78zEVPGYaOFMwMMjcpkTN1ZkEKJF2n8hj3x3S4erU9UTwnrrWJc7JeW4m07ibWa
+         1Qq3q01UGJ3iikkxgCvBM/AtejFeqBk7eA/l29YkYcitljKAIwZ8pf9CkoQTR4vyeVg6
+         7BSCxBWZr/Wv3vb8ODNgpn54Wu46UhoD+Ufjht7Xg1TOo9xoFxIYZEWoHVA/yKnPHmtv
+         HMvkflC8XbCP3eDkm3L6i86OrYZ3LM0iD+bPmfi0KEPZzxhH0SHAjHTQDFD8HZ1cIzIy
+         D/8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=3oP1QkyQogUqbd7txk3r32kAVm+/kI9pBniGW5zsUYs=;
+        b=jxDqlRCDnZAwFKfXAotWV6C1jge6m5OZF0546blycGR4cOr6KCr/DvUB9Dat8B5iSL
+         P/1tFg40C/qL1YjvDEotZFTQeNyF9rNGt03L8cLL6lM3XUrYjgTnpbB3ersb2HJplqAc
+         m125hd4WAB9sheEfrr0EelWPeyF680Jklf5NMdK/FFnoMw9wNECT//RGLMcVJLPjFnqD
+         pWKUYVDpRPPT7Vov7JUUUJ/PuF50U6G2eoPOPUZILCQ0MA9zs1hip6IM1wpJIUZMDAXV
+         qA1ltDdpLlSE5oQUUsUywdzSIxJ+szStmUphOTL2CzcfWv+xykSMA3uz9+g0qqjf5x02
+         3mlA==
+X-Gm-Message-State: ACrzQf1BdvFqZ9MqBh7+JIcdNE8hRVRuY9+zRJSW9cRBZuouQ95BkNcG
+        wsic0tDTlAmbFuqWIwQJUfE5mBYIzmpPRJjemBK6/bhS
+X-Google-Smtp-Source: AMsMyM5xiGeHeRSkmgFgjjAuDOrPNwavgO+if4Gw//dbT7EY5oQm8PPWL2ADWaAJNsyoRDXfNSJnL9JAbKwe8td9j9w=
+X-Received: by 2002:a25:b44a:0:b0:695:bd50:9c2d with SMTP id
+ c10-20020a25b44a000000b00695bd509c2dmr2324792ybg.495.1663833657534; Thu, 22
+ Sep 2022 01:00:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.112.70]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- canpemm500010.china.huawei.com (7.192.105.118)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <cover.1663778601.git.lorenzo@kernel.org> <cdede0043c47ed7a357f0a915d16f9ce06a1d589.1663778601.git.lorenzo@kernel.org>
+ <CAADnVQJY4pibr5PkoTFhpYDj8pBJ1mTPuR9VSeKQXuJqeh6d3Q@mail.gmail.com>
+In-Reply-To: <CAADnVQJY4pibr5PkoTFhpYDj8pBJ1mTPuR9VSeKQXuJqeh6d3Q@mail.gmail.com>
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date:   Thu, 22 Sep 2022 10:00:20 +0200
+Message-ID: <CAP01T76Vsbo-8zO=K4EGNR-iJutqPSVV0trgMVYXbEtV=f_19w@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 1/3] bpf: Tweak definition of KF_TRUSTED_ARGS
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        netfilter-devel <netfilter-devel@vger.kernel.org>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Move snprintf and len check to common helper pathname_concat() to make the
-code simpler.
+On Thu, 22 Sept 2022 at 04:39, Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Wed, Sep 21, 2022 at 9:49 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
+> >
+> > +               /* These register types have special constraints wrt ref_obj_id
+> > +                * and offset checks. The rest of trusted args don't.
+> > +                */
+> > +               obj_ptr = reg->type == PTR_TO_CTX || reg->type == PTR_TO_BTF_ID ||
+> > +                         reg2btf_ids[base_type(reg->type)];
+> > +
+>
+> ..
+>
+> >                 /* Check if argument must be a referenced pointer, args + i has
+> >                  * been verified to be a pointer (after skipping modifiers).
+> > +                * PTR_TO_CTX is ok without having non-zero ref_obj_id.
+> >                  */
+>
+> Kumar,
+>
+> Looking forward to your subsequent patch to split this function.
+> It's definitely getting unwieldy.
+>
+> The comment above is double confusing.
+> 1. I think you meant to say "PTR_TO_CTX is ok with zero ref_obj_id",
+> right? That double negate is not easy to parse.
+>
 
-Signed-off-by: Wang Yufen <wangyufen@huawei.com>
----
- tools/lib/bpf/libbpf.c | 76 +++++++++++++++++++-------------------------------
- 1 file changed, 29 insertions(+), 47 deletions(-)
+Yes.
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 2ca30cc..2d8b195 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -2096,19 +2096,30 @@ static bool get_map_field_int(const char *map_name, const struct btf *btf,
- 	return true;
- }
- 
-+static int pathname_concat(const char *path, const char *name, char *buf, size_t buflen)
-+{
-+	int len;
-+
-+	len = snprintf(buf, buflen, "%s/%s", path, name);
-+	if (len < 0)
-+		return libbpf_err(-EINVAL);
-+	if (len >= buflen)
-+		return libbpf_err(-ENAMETOOLONG);
-+
-+	return 0;
-+}
-+
- static int build_map_pin_path(struct bpf_map *map, const char *path)
- {
- 	char buf[PATH_MAX];
--	int len;
-+	int err;
- 
- 	if (!path)
- 		path = "/sys/fs/bpf";
- 
--	len = snprintf(buf, PATH_MAX, "%s/%s", path, bpf_map__name(map));
--	if (len < 0)
--		return -EINVAL;
--	else if (len >= PATH_MAX)
--		return -ENAMETOOLONG;
-+	err = pathname_concat(path, bpf_map__name(map), buf, sizeof(buf));
-+	if (err)
-+		return libbpf_err(err);
- 
- 	return bpf_map__set_pin_path(map, buf);
- }
-@@ -7961,17 +7972,9 @@ int bpf_object__pin_maps(struct bpf_object *obj, const char *path)
- 			continue;
- 
- 		if (path) {
--			int len;
--
--			len = snprintf(buf, PATH_MAX, "%s/%s", path,
--				       bpf_map__name(map));
--			if (len < 0) {
--				err = -EINVAL;
--				goto err_unpin_maps;
--			} else if (len >= PATH_MAX) {
--				err = -ENAMETOOLONG;
-+			err = pathname_concat(path, bpf_map__name(map), buf, sizeof(buf));
-+			if (err)
- 				goto err_unpin_maps;
--			}
- 			sanitize_pin_path(buf);
- 			pin_path = buf;
- 		} else if (!map->pin_path) {
-@@ -8009,14 +8012,9 @@ int bpf_object__unpin_maps(struct bpf_object *obj, const char *path)
- 		char buf[PATH_MAX];
- 
- 		if (path) {
--			int len;
--
--			len = snprintf(buf, PATH_MAX, "%s/%s", path,
--				       bpf_map__name(map));
--			if (len < 0)
--				return libbpf_err(-EINVAL);
--			else if (len >= PATH_MAX)
--				return libbpf_err(-ENAMETOOLONG);
-+			err = pathname_concat(path, bpf_map__name(map), buf, sizeof(buf));
-+			if (err)
-+				return libbpf_err(err);
- 			sanitize_pin_path(buf);
- 			pin_path = buf;
- 		} else if (!map->pin_path) {
-@@ -8034,6 +8032,7 @@ int bpf_object__unpin_maps(struct bpf_object *obj, const char *path)
- int bpf_object__pin_programs(struct bpf_object *obj, const char *path)
- {
- 	struct bpf_program *prog;
-+	char buf[PATH_MAX];
- 	int err;
- 
- 	if (!obj)
-@@ -8045,17 +8044,9 @@ int bpf_object__pin_programs(struct bpf_object *obj, const char *path)
- 	}
- 
- 	bpf_object__for_each_program(prog, obj) {
--		char buf[PATH_MAX];
--		int len;
--
--		len = snprintf(buf, PATH_MAX, "%s/%s", path, prog->name);
--		if (len < 0) {
--			err = -EINVAL;
--			goto err_unpin_programs;
--		} else if (len >= PATH_MAX) {
--			err = -ENAMETOOLONG;
-+		err = pathname_concat(path, prog->name, buf, sizeof(buf));
-+		if (err)
- 			goto err_unpin_programs;
--		}
- 
- 		err = bpf_program__pin(prog, buf);
- 		if (err)
-@@ -8066,13 +8057,7 @@ int bpf_object__pin_programs(struct bpf_object *obj, const char *path)
- 
- err_unpin_programs:
- 	while ((prog = bpf_object__prev_program(obj, prog))) {
--		char buf[PATH_MAX];
--		int len;
--
--		len = snprintf(buf, PATH_MAX, "%s/%s", path, prog->name);
--		if (len < 0)
--			continue;
--		else if (len >= PATH_MAX)
-+		if (pathname_concat(path, prog->name, buf, sizeof(buf)))
- 			continue;
- 
- 		bpf_program__unpin(prog, buf);
-@@ -8091,13 +8076,10 @@ int bpf_object__unpin_programs(struct bpf_object *obj, const char *path)
- 
- 	bpf_object__for_each_program(prog, obj) {
- 		char buf[PATH_MAX];
--		int len;
- 
--		len = snprintf(buf, PATH_MAX, "%s/%s", path, prog->name);
--		if (len < 0)
--			return libbpf_err(-EINVAL);
--		else if (len >= PATH_MAX)
--			return libbpf_err(-ENAMETOOLONG);
-+		err = pathname_concat(path, prog->name, buf, sizeof(buf));
-+		if (err)
-+			return libbpf_err(err);
- 
- 		err = bpf_program__unpin(prog, buf);
- 		if (err)
--- 
-1.8.3.1
+> 2.
+> PTR_TO_CTX cannot have ref_obj_id != 0.
+> At least I don't think it's possible, but the comment implies
+> that such a case may exist.
+>
 
+Yes, but we are checking for that later, which is why we skip it for PTR_TO_CTX.
+
+> I applied anyway, since big refactoring is coming shortly, right?
+
+Yes, which is why I tacked it on like this for now. I will be
+reposting later this week.
+
+Thanks!
