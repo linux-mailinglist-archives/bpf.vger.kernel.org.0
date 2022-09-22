@@ -2,83 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C5B95E5E3A
-	for <lists+bpf@lfdr.de>; Thu, 22 Sep 2022 11:16:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7498F5E5E48
+	for <lists+bpf@lfdr.de>; Thu, 22 Sep 2022 11:17:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229624AbiIVJQP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Sep 2022 05:16:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54668 "EHLO
+        id S230315AbiIVJRW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Sep 2022 05:17:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229891AbiIVJQO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Sep 2022 05:16:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 505B0D01E0
-        for <bpf@vger.kernel.org>; Thu, 22 Sep 2022 02:16:13 -0700 (PDT)
+        with ESMTP id S230196AbiIVJRO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 22 Sep 2022 05:17:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0016D01FB
+        for <bpf@vger.kernel.org>; Thu, 22 Sep 2022 02:17:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1663838172;
+        s=mimecast20190719; t=1663838232;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=PhZLFn1R5tarTTTxU9XzOLKoFe4nPWuQCWD3fmeWO70=;
-        b=R5a4MQCIPjorIOui5cPHj9jBJjqwliSIYFWDW77TJcXy6jP/KTQeT2qxz717bYWltff+xP
-        QXykeHyS4PnnCySzRiKm4HwkNZKZdNJEFkT1YWR9pvVYVIxh4/K8d46z66YZh54X63PbYe
-        sIXwbqPgcEeH3HZaE0dzvHbPAz9Hlc4=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=kQfJsNBklEQnlLpVZNYjFz1njaLl7T8B+cRrquogK3o=;
+        b=MQuMr1Msbygvu9jvS13AdWjOLEv46trP1DZ+JQfLRfFH705N3f9huXwv15tiLfoip1Ca5J
+        ZLp1IB6F9l5Klc+/rIwbJe6eZwLrIYmSyRFZqek5dJRMHFv1ZYDkOH52Z0u5Qm1RF2Ukpq
+        e+8EToPxPMYngYUMa1bG0ENFL2Nd1SE=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-277-2udZBya6P_m38DvePFvCvQ-1; Thu, 22 Sep 2022 05:16:10 -0400
-X-MC-Unique: 2udZBya6P_m38DvePFvCvQ-1
-Received: by mail-ed1-f72.google.com with SMTP id y9-20020a056402270900b00451dfbbc9b2so6203089edd.12
-        for <bpf@vger.kernel.org>; Thu, 22 Sep 2022 02:16:10 -0700 (PDT)
+ us-mta-438-DOVI1nfwPNKJnjLw30nUNg-1; Thu, 22 Sep 2022 05:17:09 -0400
+X-MC-Unique: DOVI1nfwPNKJnjLw30nUNg-1
+Received: by mail-ed1-f71.google.com with SMTP id y14-20020a056402440e00b0044301c7ccd9so6209312eda.19
+        for <bpf@vger.kernel.org>; Thu, 22 Sep 2022 02:17:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date;
-        bh=PhZLFn1R5tarTTTxU9XzOLKoFe4nPWuQCWD3fmeWO70=;
-        b=6Ivhuf7SZHtS4EKOu7vDUGnr4Ldqd5ErMh6z99V1PqDO8YiIjwexgFsOm2W7ZQerBR
-         sILVseobH0NgZHXR4arobrYAk1OyvZwWRfAdkymRyDfTFd11ykI+kva8qIKn2fI+YVgG
-         ga2d84XpGsM8i72bs7LY8L0kG8I1oW0bxrDTJzg9HJtcWENlZhW04/x7PPoh1R94KVOH
-         q0N/nZ5IBc/jpZbKe8JJIfARVI2KVHoqQ9jQfWm54jEL4W85scklI1lZl6UJqBl0izm3
-         bdDszS1wV5HpYHUy7laLDtYeZLwkBhIgR8cLfup0GffgRikxbx9USooSNghfK8IrtirE
-         gWbQ==
-X-Gm-Message-State: ACrzQf3R90BSZcuGi7LqpEflXrVQLEKMOfvn4enAP/vxO03aDgEbzCIh
-        kekfANosXe3dEjZAkYhxDV5ta8yZbHFwva+12Sp2khL3voYxlupOL7V+UTlEX5yjZOdW2I+1qer
-        IIDk1sW+egd+9
-X-Received: by 2002:a05:6402:2547:b0:450:668c:9d93 with SMTP id l7-20020a056402254700b00450668c9d93mr2326112edb.92.1663838169833;
-        Thu, 22 Sep 2022 02:16:09 -0700 (PDT)
-X-Google-Smtp-Source: AMsMyM5vmhrBTquuS4qjnEl33Y44GZJ0NDrRa7TS8jjlctqoihmeU+ZSkFouVEz2/vb+MFGYkN4DUw==
-X-Received: by 2002:a05:6402:2547:b0:450:668c:9d93 with SMTP id l7-20020a056402254700b00450668c9d93mr2326091edb.92.1663838169658;
-        Thu, 22 Sep 2022 02:16:09 -0700 (PDT)
+        bh=kQfJsNBklEQnlLpVZNYjFz1njaLl7T8B+cRrquogK3o=;
+        b=BUW6QX4dj499+t56lMce0Mkg1dEt+Jq8zD9Lv1gcbhm6Jse38bHRn9UiFyU1gXMglS
+         TQkW0WN8lahbFvLUo/iNdaLcUoq2Y0noGSBL+aq7eFIRNJrfIG0O2/IxCm5tA+YpucoO
+         UCg0mHHAChoiwoNUnAuTPCjAR8YHOXmtOmiJpKb9vkn2JayyDNjDi3AUfUGaeC6rilLx
+         bk9y5eRXmL4EmjRThY8K5yzbn3OaprmO+JKGSONKF0hEHmTE4HP7qSHnt8slpXRF3COx
+         SKFYm1Rzv2ZRTjnGyL6Hql9OK+6Kc9z74LUpRHyTKQY8cS1wVDjyWR3SyYHwGUGyxCcf
+         sTMg==
+X-Gm-Message-State: ACrzQf2IpSQ6kT/3Ej2CTk97AFFlz4XLdeZaxvBIGVDhw5kzy5mUOl99
+        ckP0fVX1WQAvDjeLOHPchCugepxIefhv521MpMucM87nGmt+1Ps2HnYkoucUsb+S802Ykl8AUce
+        9ji6T/lXci5dA
+X-Received: by 2002:a17:907:d07:b0:72e:ec79:ad0f with SMTP id gn7-20020a1709070d0700b0072eec79ad0fmr2019350ejc.296.1663838228508;
+        Thu, 22 Sep 2022 02:17:08 -0700 (PDT)
+X-Google-Smtp-Source: AMsMyM6aWYk2gLkly55RZes2gWKaV2mpYmlQSmVpIR2XSzCn6t3IkeaTpYNPXd0NwzuX13AYtWwYqg==
+X-Received: by 2002:a17:907:d07:b0:72e:ec79:ad0f with SMTP id gn7-20020a1709070d0700b0072eec79ad0fmr2019336ejc.296.1663838228336;
+        Thu, 22 Sep 2022 02:17:08 -0700 (PDT)
 Received: from redhat.com ([2.55.16.18])
-        by smtp.gmail.com with ESMTPSA id 11-20020a170906300b00b0073d6093ac93sm2417360ejz.16.2022.09.22.02.16.06
+        by smtp.gmail.com with ESMTPSA id d14-20020a170906304e00b0073bf84be798sm2374187ejd.142.2022.09.22.02.17.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Sep 2022 02:16:09 -0700 (PDT)
-Date:   Thu, 22 Sep 2022 05:16:03 -0400
+        Thu, 22 Sep 2022 02:17:07 -0700 (PDT)
+Date:   Thu, 22 Sep 2022 05:17:03 -0400
 From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Junbo <junbo4242@gmail.com>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+To:     Paolo Abeni <pabeni@redhat.com>
+Cc:     Junbo <junbo4242@gmail.com>,
         Jesper Dangaard Brouer <hawk@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
         John Fastabend <john.fastabend@gmail.com>,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+        Alexei Starovoitov <ast@kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>, bpf@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org
 Subject: Re: [PATCH] Do not name control queue for virtio-net
-Message-ID: <20220922051317-mutt-send-email-mst@kernel.org>
+Message-ID: <20220922051613-mutt-send-email-mst@kernel.org>
 References: <20220917092857.3752357-1-junbo4242@gmail.com>
  <20220918025033-mutt-send-email-mst@kernel.org>
  <CACvn-oGUj0mDxBO2yV1mwvz4PzhN3rDnVpUh12NA5jLKTqRT3A@mail.gmail.com>
+ <20220918081713-mutt-send-email-mst@kernel.org>
+ <f3ad0de40b424413ede30abd3517c8fad0c3caca.camel@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACvn-oGUj0mDxBO2yV1mwvz4PzhN3rDnVpUh12NA5jLKTqRT3A@mail.gmail.com>
+In-Reply-To: <f3ad0de40b424413ede30abd3517c8fad0c3caca.camel@redhat.com>
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
         SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
@@ -89,52 +90,35 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Sep 18, 2022 at 05:00:20PM +0800, Junbo wrote:
-> hi Michael
+On Thu, Sep 22, 2022 at 11:10:37AM +0200, Paolo Abeni wrote:
+> On Sun, 2022-09-18 at 08:17 -0400, Michael S. Tsirkin wrote:
+> > On Sun, Sep 18, 2022 at 05:00:20PM +0800, Junbo wrote:
+> > > hi Michael
+> > > 
+> > > in virtio-net.c
+> > >     /* Parameters for control virtqueue, if any */
+> > >     if (vi->has_cvq) {
+> > >         callbacks[total_vqs - 1] = NULL;
+> > >         names[total_vqs - 1] = "control";
+> > >     }
+> > > 
+> > > I think the Author who write the code
+> > 
+> > wait, that was not you?
 > 
-> in virtio-net.c
->     /* Parameters for control virtqueue, if any */
->     if (vi->has_cvq) {
->         callbacks[total_vqs - 1] = NULL;
->         names[total_vqs - 1] = "control";
->     }
+> I believe 'the Author' refers to the author of the current code, not to
+> the author of the patch.
+
+Oh I see. Responded.
+
+> @Junbo: the control queue is created only if the VIRTIO_NET_F_CTRL_VQ
+> feature is set, please check that in your setup.
 > 
-> I think the Author who write the code maybe want to name the control queue to
-> 'virtioX-control',
-
-That would be me I suspect ;)
-
-> but it never worked, we can see the name still be
-> 'virtioX-config' in /proc/interrupts,
-
-Nope, what you see in /proc/interrupts are the interrupts, not the queue
-name.
-
-> for example 
->  43:          0          0          0          0          0          0        
->  0          0   PCI-MSI-edge      virtio0-config
->  44:         64          0          0          0          0          0      
-> 1845          0   PCI-MSI-edge      virtio0-input.0
->  45:          1          0          0          0          0          0        
->  0          0   PCI-MSI-edge      virtio0-output.0
+> Thanks
 > 
-> Because in function vp_request_msix_vectors, it just allocate 'xxxx-config' to
-> every virtio devices, even the virtio device do not need it.
-
-Oh yes, we can fix that. The result will be this line disappearing for
-devices without a config interrupt. Not for net though, that
-generally uses a config interrupt for things like link
-state detection.
+> Paolo
 
 
-> in /proc/
-> interrupts, we can see that each virtio device's first interrupt always named
-> 'virtioX-config'.
-> 
-> So I think it's better to not explicitly give the "control" here, it's
-> useless...  
-
-
-it's used for debugging.
-
+-- 
+MST
 
