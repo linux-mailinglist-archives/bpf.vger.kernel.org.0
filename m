@@ -2,117 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D48B5E6D73
-	for <lists+bpf@lfdr.de>; Thu, 22 Sep 2022 22:59:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2FAA5E6D7E
+	for <lists+bpf@lfdr.de>; Thu, 22 Sep 2022 23:00:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229606AbiIVU7F (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Sep 2022 16:59:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38362 "EHLO
+        id S229885AbiIVVA0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Sep 2022 17:00:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbiIVU7E (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Sep 2022 16:59:04 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EF1DD69C0;
-        Thu, 22 Sep 2022 13:59:02 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id p1-20020a17090a2d8100b0020040a3f75eso3409013pjd.4;
-        Thu, 22 Sep 2022 13:59:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=U3NGbjctdNtYZUAw53yWij8HwInl1GKHMSlSeRHwL2A=;
-        b=O94ciy7HakFm25cgL9FxzuFEvodLFGdVNX4xWMGxwhnQ9kRVsEdnU9538O5Z6Y/zRM
-         ICn2RYFoam+WVao99bv2zTAsu6If+eHCcUwdNR9e6QyjVNjif/fi0Y2Ww202HB7rPUzT
-         0OPBqhJK/p0JiJhAso96iAiGciuZLso6k1kwtZ1mHSHGqteBCxja3tlHDKWICjNWm62o
-         k/2hRRnLCPl44cW/dPQqlJQKSWf4sgDTael/1STTxuhKVM2wmA72AziOr1vaq2umKCmt
-         Sp9PyEXx5QrTBb35iqpqrkVcvFibgp8Tj4onsnkM2heTUouvjOyw+28ib2oiiHgIiEXV
-         SXog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=U3NGbjctdNtYZUAw53yWij8HwInl1GKHMSlSeRHwL2A=;
-        b=4lSK9l84I9syvKF6YEtOkFfnr8cLnvcWQAZ850OmBZ2cUEcv2trGSrZMb3i0vQdkEn
-         WEzAJjOsDtiZrT/XSgBdu1uDQFlbAc0KLJMgHLia1kEFeM50Xt7bfe5nnyLa5JGPqPyT
-         YmPydO0x0dk0NsfgbXFRjbiIgdw6fyHjVyi8tXAz/N3u1yRkwCy3s0XoeUwdq/T6ZtJ1
-         oxmpC77kZOXlP2oxi9QQujZmqL4zl3FycoImGvDn2jfQRZG8eIOBrnMlMZA1lUxK3Uq9
-         VfvpTLrhsZwnamNqVkkS1n8uiYSKtMg18UMPxuXQNnqLc1aSS1PQA3dtFNW3W7gYvtM5
-         ZYHw==
-X-Gm-Message-State: ACrzQf0GLN0DxpxTmtYWPuHL/xDB0rohU98nlP5zAx7FlcjByZNcaBYS
-        Fw69lQix/hPAbyte6SI1UOPQ2KnKYx3BPWXYZ9k=
-X-Google-Smtp-Source: AMsMyM6oJjIZZLJOip9RU/PURA1Apfde1gyOXQdWAhXUo+O1vvKxwVKmxa5bDasXL2u3+HXcXog35fGDjELw4SR2P7I=
-X-Received: by 2002:a17:90b:3912:b0:203:c0a0:f582 with SMTP id
- ob18-20020a17090b391200b00203c0a0f582mr12014942pjb.141.1663880342080; Thu, 22
- Sep 2022 13:59:02 -0700 (PDT)
+        with ESMTP id S230261AbiIVVAX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 22 Sep 2022 17:00:23 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAAB0B2DA8
+        for <bpf@vger.kernel.org>; Thu, 22 Sep 2022 14:00:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 107F262EAB
+        for <bpf@vger.kernel.org>; Thu, 22 Sep 2022 21:00:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 65268C433B5;
+        Thu, 22 Sep 2022 21:00:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1663880417;
+        bh=92aKVlAiPt5ykpe91j8t+fg56O/8PDu1b/aseKR94cw=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=ecd+wMEZi1MQOX6duraf1YvFRFs6mlXdb1hr7QLnCxOFnk5QUnST71vzUuGBrvNG3
+         30zvNSgBKzV8JEFJmTl3j5bc6LdXLH6iL6amGGYF0brNDubb0YfZ9AHjUAmqTOPHhE
+         Heti5XNtyoeC2Jvbpxkr6a0u4Zq3eyORIb/XvQi1JjymayqYolUjFrrrY66AdnIC8a
+         1yyI9J7FYD1z6hItldZh61BX2ql8MEQbWOsoOh2jkA/P9efRoZYDp0iq1LXPy2QYPC
+         QA62VgPqfq9SUl/gPAdhTJsqK7f6IecrJR54j8mYSCpfUl+NnXzG/vvHv1EdAOUe3k
+         OZJYM5/u6firQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 46320E4D03E;
+        Thu, 22 Sep 2022 21:00:17 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20220629085836.18042-1-fmdefrancesco@gmail.com>
- <2254584.ElGaqSPkdT@opensuse> <CAKgT0UfThk3MLcE38wQu5+2Qy7Ld2px-2WJgnD+2xbDsA8iEEw@mail.gmail.com>
- <2834855.e9J7NaK4W3@opensuse> <d4e33ca3-92e5-ba30-f103-09d028526ea2@intel.com>
-In-Reply-To: <d4e33ca3-92e5-ba30-f103-09d028526ea2@intel.com>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Thu, 22 Sep 2022 13:58:50 -0700
-Message-ID: <CAKgT0Uf1o+i0qKf7J_xqC3SACRFhiYqyhBeQydgUafB5uFkAvg@mail.gmail.com>
-Subject: Re: [Intel-wired-lan] [PATCH] ixgbe: Use kmap_local_page in ixgbe_check_lbtest_frame()
-To:     Anirudh Venkataramanan <anirudh.venkataramanan@intel.com>
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Netdev <netdev@vger.kernel.org>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] selftests/bpf: Add liburandom_read.so to
+ TEST_GEN_FILES
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166388041727.16958.5249979566996384705.git-patchwork-notify@kernel.org>
+Date:   Thu, 22 Sep 2022 21:00:17 +0000
+References: <20220920161409.129953-1-ykaliuta@redhat.com>
+In-Reply-To: <20220920161409.129953-1-ykaliuta@redhat.com>
+To:     Yauheni Kaliuta <ykaliuta@redhat.com>
+Cc:     bpf@vger.kernel.org, andrii@kernel.org,
+        alexei.starovoitov@gmail.com, daniel@iogearbox.net,
+        vkabatov@redhat.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 22, 2022 at 1:07 PM Anirudh Venkataramanan
-<anirudh.venkataramanan@intel.com> wrote:
->
->
-> Following Fabio's patches, I made similar changes for e1000/e1000e and
-> submitted them to IWL [1].
->
-> Yesterday, Ira Weiny pointed me to some feedback from Dave Hansen on the
-> use of page_address() [2]. My understanding of this feedback is that
-> it's safer to use kmap_local_page() instead of page_address(), because
-> you don't always know how the underlying page was allocated.
->
-> This approach (of using kmap_local_page() instead of page_address())
-> makes sense to me. Any reason not to go this way?
->
-> [1]
->
-> https://patchwork.ozlabs.org/project/intel-wired-lan/patch/20220919180949.388785-1-anirudh.venkataramanan@intel.com/
->
-> https://patchwork.ozlabs.org/project/intel-wired-lan/patch/20220919180949.388785-2-anirudh.venkataramanan@intel.com/
->
-> [2]
-> https://lore.kernel.org/lkml/5d667258-b58b-3d28-3609-e7914c99b31b@intel.com/
->
-> Ani
+Hello:
 
-For the two patches you referenced the driver is the one allocating
-the pages. So in such a case the page_address should be acceptable.
-Specifically we are falling into alloc_page(GFP_ATOMIC) which should
-fall into the first case that Dave Hansen called out.
+This patch was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
 
-If it was the Tx path that would be another matter, however these are
-Rx only pages so they are allocated by the driver directly and won't
-be allocated from HIGHMEM.
+On Tue, 20 Sep 2022 19:14:09 +0300 you wrote:
+> Added urandom_read shared lib is missing from the list of installed
+> files what makes urandom_read test after `make install` or `make
+> gen_tar` broken.
+> 
+> Add the library to TEST_GEN_FILES. The names in the list do not
+> contain $(OUTPUT) since it's added by lib.mk code.
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next] selftests/bpf: Add liburandom_read.so to TEST_GEN_FILES
+    https://git.kernel.org/bpf/bpf-next/c/b780d1671cf9
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
