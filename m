@@ -2,312 +2,182 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B4C35E6CAF
-	for <lists+bpf@lfdr.de>; Thu, 22 Sep 2022 22:07:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77E4B5E6CED
+	for <lists+bpf@lfdr.de>; Thu, 22 Sep 2022 22:19:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232180AbiIVUHv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Sep 2022 16:07:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52668 "EHLO
+        id S229537AbiIVUTW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Sep 2022 16:19:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232198AbiIVUHu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Sep 2022 16:07:50 -0400
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF635E6A1E;
-        Thu, 22 Sep 2022 13:07:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1663877268; x=1695413268;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=U5GnEsZWXn7ptu7CNAt9Bd6335O8LBPub3wp7Gfjy4E=;
-  b=CAVerdI0kKWiiEt/2zgwJM7Ojny/parVAd/IIuuCATx75tF63/JdH1D/
-   vRXaDGhhNDI/mC4+uETqrqEMvlBVuMoCbe0kldG/Xrj8geV8AIdJ6eyd4
-   otICjpta5vA/jOwMKn77UEoFG42e0jejKMKbISgdDcElF1PABjKnhYQcX
-   98pdJIhA80HUVIcVMgJVcm0mMNlGGGbKXQOSyt5L+0nKoGBlg8AOMFyKV
-   dnxV+AVttv3h9chUAmtFUSoxhkz1+VrsWCLb3qH2MIM/4eWcPLtMYOJuu
-   Qjo2PriSGYUMIyvR7y0pYeEWbs2daxQ0zd8rI1Oyyk8UO2BeYhHpOaMxi
-   A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10478"; a="326743159"
-X-IronPort-AV: E=Sophos;i="5.93,337,1654585200"; 
-   d="scan'208";a="326743159"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Sep 2022 13:07:29 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,337,1654585200"; 
-   d="scan'208";a="865018984"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmsmga006.fm.intel.com with ESMTP; 22 Sep 2022 13:07:29 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 22 Sep 2022 13:07:28 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 22 Sep 2022 13:07:28 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31 via Frontend Transport; Thu, 22 Sep 2022 13:07:28 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.172)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2375.31; Thu, 22 Sep 2022 13:07:27 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LnVsO/wwHshWzQOX/iJUTjQFdHpRCe8QMEldZg07S+jtVtMbSVZkvQs3tJknIWBvLZcK2GJ/gWn+Faaq/iOnm+grgMVLt0TuTG8//4WOLHTs/5vE/FY7Gch4TEt+/g69I8BuYM7A01Loc9c6uES7uhR4L3uIDtXmQXt8s4fd5CPRWsFo8+oKvt78fAcCWPVm0cjkPMUCFW5XesletlxCMZzrOo3FaSS5ay4rRIx8eRNaIRQyi/ehHJkNMM45xbSCRb+p9n7hYlkwt7l/XisMKhdX59vmMQh0t4PlC3IhJC2WTSP2w59dUUg/suWQer3cr0EO//wq9v18l/F8ZUaBmQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=68MWHITrm4Jn6U8XFWdW8K/4mQFdALH7xAiQ7zw0dl4=;
- b=ba0e1G3wEQOCFUIkq7LfD2DwWDfZtlszErROoWbbvx5hA8Nk7SutBP+ChwAFhtCk2+ivnywbEaNLsxSy0jIIj0EFFZ5HLrMypoN+T0n3xcVw0mJIIP771l/sgj+g687809rLfoVLkpxhdc0ukIjb50UKnbNCbFA80sNEvRD93pBxh9uqo9ID1bGhsQ9IxPVO1LGDz5m1S7hkXnWDkpnohYvzz6Pzhh5YsX9P4faAUjvtog+BU11bPZ7sB7Wyq9V1hXQewfrBlBrfhije1mvmWidqGWPr3xP+DGAeysoRf6Bo00elmCu7w6oC4nVP6XaH+0EtLlgOH1PzfXJUrsrOBg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from MW3PR11MB4764.namprd11.prod.outlook.com (2603:10b6:303:5a::16)
- by CH0PR11MB5348.namprd11.prod.outlook.com (2603:10b6:610:bb::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5654.18; Thu, 22 Sep
- 2022 20:07:26 +0000
-Received: from MW3PR11MB4764.namprd11.prod.outlook.com
- ([fe80::e82e:c89f:d355:5101]) by MW3PR11MB4764.namprd11.prod.outlook.com
- ([fe80::e82e:c89f:d355:5101%6]) with mapi id 15.20.5654.018; Thu, 22 Sep 2022
- 20:07:26 +0000
-Message-ID: <d4e33ca3-92e5-ba30-f103-09d028526ea2@intel.com>
-Date:   Thu, 22 Sep 2022 13:07:22 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.0
-Subject: Re: [Intel-wired-lan] [PATCH] ixgbe: Use kmap_local_page in
- ixgbe_check_lbtest_frame()
-Content-Language: en-US
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Netdev <netdev@vger.kernel.org>
-CC:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>
-References: <20220629085836.18042-1-fmdefrancesco@gmail.com>
- <2254584.ElGaqSPkdT@opensuse>
- <CAKgT0UfThk3MLcE38wQu5+2Qy7Ld2px-2WJgnD+2xbDsA8iEEw@mail.gmail.com>
- <2834855.e9J7NaK4W3@opensuse>
-From:   Anirudh Venkataramanan <anirudh.venkataramanan@intel.com>
-In-Reply-To: <2834855.e9J7NaK4W3@opensuse>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SJ0PR05CA0015.namprd05.prod.outlook.com
- (2603:10b6:a03:33b::20) To MW3PR11MB4764.namprd11.prod.outlook.com
- (2603:10b6:303:5a::16)
+        with ESMTP id S232836AbiIVUTO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 22 Sep 2022 16:19:14 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 215A7110B2F;
+        Thu, 22 Sep 2022 13:19:13 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id A96ACB80D3A;
+        Thu, 22 Sep 2022 20:19:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62DA0C433D6;
+        Thu, 22 Sep 2022 20:19:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1663877950;
+        bh=S1K7C25yLEOnIGEyi9bQtPFbKSPJ0EOaQQwxblra/SI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=rUI+qlHiB6DubkBJaFFHPlgm/El22Ud+jzBdwQDamBuyLsQuSeBAzCNfSttOZzNIX
+         /eakO0FaiJDN+ND3jATB5jwpLTRw9xjewanXadFLUJX9tC7MExa2p9fK4aaXAMv/Vo
+         RagAJP4fhdp930+VsaypRG7wH+8FHAejm32MG8DSyW0PJ9y0p87txyw8C3gvhr1bu6
+         pJ4NVzt53kSa/HS5N3GvGnYED5O5dzhu9edchcg9MAcGUtMPCXxF4M1hKh66ILw5RQ
+         d9/Gdt2tfy2IFdBzPs5euWu8qxK0l1QhB9o08Sy+7XNIsRv/Z3Rtv7I0HaDxbAjR+x
+         Qlc9dUNGJ9P+g==
+Received: by mail-ej1-f54.google.com with SMTP id sb3so23531159ejb.9;
+        Thu, 22 Sep 2022 13:19:10 -0700 (PDT)
+X-Gm-Message-State: ACrzQf0R0z0qsnaVNhkP70NppI2ctQxpOUoOQVfGzLAtwf8IXNN+VJJF
+        DFf2OGAhdRyIK40qw55wHz9lkOX87Nap+X53kZg=
+X-Google-Smtp-Source: AMsMyM4WpEGQuFtwK7W9Js2rxz7XA9W2dHzy+IOaT8Z2/M5EeuJVwM1EV8IDt1FmQB6YIVTfv2OCJ/YobBIryubQkDk=
+X-Received: by 2002:a17:906:974d:b0:780:2c07:7617 with SMTP id
+ o13-20020a170906974d00b007802c077617mr4263119ejy.707.1663877948486; Thu, 22
+ Sep 2022 13:19:08 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW3PR11MB4764:EE_|CH0PR11MB5348:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2a66ed2f-639c-43ea-20b9-08da9cd61189
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: gaHtvrdBLAGl5YAVxmpgeGVBVpcvENAH/5MZu6J3ZSE6jq5g1p2HTIox/n12Gn0w4+/25/7xpbX1q+vPly2bHRIWCov+Lud2me6Lus7X/i+a3DN4MVGv+FG+bjukkW34rx1D0Z0XbQdgyMpbZbTXzFvRhryu80KXPLHuGOQGB/7YNGf2AYb+l26J2Tp0wN/j8OAiawHo/h9rZUhP97ZRLcswNheeAtTYXuHm01wmVmvfieKReGTvuI6q7AZxUMLHKKync7T8eRLvFArP4XqPZYOSIvdXl628vUZhh3JZM8g1S6pogzbP+IMVzUMgkBi19wM+N77Y8/Hbnen27r+i+iupFSJYZRzS4OooYKobUV7RB5Kdsau8+tT/Ih9/78nyQu5LYziIh7B2l/Q7J/+a1cLFLtA+MYRKFIX4SJ/Axk8L3KxyttglosXl7S6EnDM/4KCBHUSqXc0/hvizUqtOM4ujS3nio4cFSwvBQDY6EEgdShg6BEQUlgafmh2CsgFC0deqZcPem4uyZHbQvmz05C8ZY6IDhxiLayKEtJ21uO7vU9HKxHaxYr/E844le7oXRNdKz5iWUBaXrROoIP9MCP6ECpnQuxXoXPQr5v9YiusmMEjwR5+7KTmvADD+EDu9sX4RDCjdR4iyDoAa8E23X7XsLp9vEfSTG/T5vsHuKRb0FGmhHbMdxRm/f5TQmKKVYdbeS2b6jsiGoTi9qbBaO7KexnpfdHFsXS3N1urTjq48g9Lc9i3SdiXRd9MR7eVKaVQu4pzJanyZnH8uIpV7xVQ9p2WA3Cb2ipRnxWpWuNUy3Xpur4QTeqUxZuyjnIyyEZ0nWROGkzbwHw7zCVYH25/YJ7bYDllti6SopZUruaSyejaTEclsllHZJt4XEioi
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR11MB4764.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(376002)(39860400002)(366004)(396003)(346002)(136003)(451199015)(31686004)(2906002)(36756003)(8676002)(4326008)(31696002)(82960400001)(38100700002)(83380400001)(186003)(7416002)(44832011)(8936002)(66476007)(66946007)(66556008)(316002)(54906003)(110136005)(86362001)(5660300002)(6486002)(2616005)(478600001)(26005)(6512007)(6666004)(107886003)(966005)(41300700001)(6506007)(53546011)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RmhNaUczRVpZZFAyWnNRbmJpa1U4TC9hUGhqeW91R1hRMFovelBVcEpxUTFn?=
- =?utf-8?B?cEdUMHFKSkNQY204QXpTVXdMUXl6dldzTk5TWW9mMFFJRGZjODduYUlsQm1v?=
- =?utf-8?B?V3BEQXAvTzFPUUlBcUpGdTlkcnA2MFdIMmt6OU1vMzU4OUhtMGFaSUhqUHlv?=
- =?utf-8?B?VnRVSGN1WEdjRVJZQWY2akZ3ZndjejRRTWVLZkY0OWwvcExBNm1YQ042RURL?=
- =?utf-8?B?TDM3RTdtdkZFZUFLaVVuNVZ6Qkw4cks2aUVBSkFjNlpzbmY3ZVRMSVZIWVVw?=
- =?utf-8?B?N2dIckdlYzRvdTduRWlPd3k1eGtwNDBEQTh1U2VzYmFQM1k1YUxCTkxQeGhk?=
- =?utf-8?B?eXBRaXFBRlRXZWNWQUR3ZXRkb2tqZDVtSXQwM2NxUGhKMHpWdFRVK0VoNHM1?=
- =?utf-8?B?a3l2WXlNcEM3SXJXVXcxaXc1d2M1NXRTbjBXVjFCK0ZSb3BsWG1WTXY3TGhE?=
- =?utf-8?B?cGU1d2xMVjNldGg1c1dwV0FHM1VSSHU2VW5kNGlvZVlMdEVMVHhEVURNWlp6?=
- =?utf-8?B?NkpGTUVubmJsUVk1VzNlZG9lb3ppd2oxQ3N2YmJDRnFwWnh5RW95T3FnQmJV?=
- =?utf-8?B?UHhSR1lBdy9uTlkxYzBSY2t3SElCMmc4WmNJNTZadkYzaDJDWGYvM2JSMnR0?=
- =?utf-8?B?Z01CSEM0V2phUWZDVVcxLytiak02ZS9jWWtKcE5pYXQ3NnN3OWFXTnd2TXoy?=
- =?utf-8?B?bmwydzBrSG92T2NhMGJIeU9lRlJQdWdWenRiT0ZSYmFaSDVETVFjeXV4UHFv?=
- =?utf-8?B?STN5aU9VZ1locEtwR1JvbTNBTUg3VnZnZVZrNjU3YTdrSy9hUWJUZCszRHI4?=
- =?utf-8?B?Q1EySE8xN1hOQmJBM1BpRFUxdGVkWFlxUmgyQXhCTDVLNHZROEIwbmEvajNr?=
- =?utf-8?B?YmZNOWt3dDduSHRvTmlsM2dGR3krK2ZvMXNVNFJza0dYMWxlVjZsOVQ2aE5x?=
- =?utf-8?B?V29jQmtFYXlaZW1xSUczOVVuR2ptN0hhalRsM1E2d2JWMDhmbmg0cmNNQVE5?=
- =?utf-8?B?QStMNnZONkQ1a21rcmplWldpT3UxenFMMXdIRU9YRUhXWEVRNW5EOVVjL0hT?=
- =?utf-8?B?TXR4VjJaU1hPK05FSkFPTTBMT2U2WWhKL2tjRGhibU9NRHhXc0V6SllMbTlC?=
- =?utf-8?B?QlBXSTlwNitZNWM3WnlaRHBUTWJ2NVJIRzJOSGh6Y3lGTzBaampkWjhUM0dK?=
- =?utf-8?B?WUZXZVZjZGZLWHpKbHdvUXVieVZkVzBsR2NyWU8ySHZ0cStpdFRlZklQL0Rr?=
- =?utf-8?B?WUVKN3VtWG4vNk12WTltdU1sN0pJTXJDU1NZV0xQbit3c3h1bWdhaW54S1Uv?=
- =?utf-8?B?RzR5clBIdmhjQWxwSndnZWcyUFp5ckY1RGtreFRqQU1HaVNSUFNBeUNHdjFi?=
- =?utf-8?B?L2J5WDFnTWVwNVg0c0hpd1hWT3lVK2NGdFprMzhjUFVIV0pIWHRSR25xT1FF?=
- =?utf-8?B?bWZ4NzdJTXJjTFc1UzRQUXYyZFcxb3N2MmhRdWdEQlI4WGlqcG5oYTR0Y0VB?=
- =?utf-8?B?UnJrb0xnZ2MrV2F6aFVPcEJRampncCtpQzVhWTNVUE5TZ2xrT2F3VUFjb29C?=
- =?utf-8?B?bDVCQUFSS3VYZE92c0pHemFud1EvNTBLcjdKU2hxUWNsN3BCTVVONHFsSVgw?=
- =?utf-8?B?Wk5tT3JRY0lYOWdoaDQvRG5VNHhIc3lrZGdwNEhiY2hPOWdnT05COUx4T1U1?=
- =?utf-8?B?aCtvNXMveHJqNjVRT1lGWTlwakkrYWdnUEdYTkVwS3BxeUJJTU01VHNCNnAv?=
- =?utf-8?B?SlYyVnkwLzQ1M0xaUlV5aHVUNWQzR00xOFlQNFQ3K0I0YnV1QXVlbVhzWGhD?=
- =?utf-8?B?MVEzK05BMndMcUZKTUlYamh2MWlVUmRWRGgxUmt0d1NSa2FkbE52bWlLdzhW?=
- =?utf-8?B?dmZDRjBvcitaVzFKckc0TEpwS3BXM2xod2xrd1RMd0lmY0pER0dVSFYxRVJX?=
- =?utf-8?B?RmtaM3h4ckd2YzNRWUdDNUNSTUVUam92eU9QQURFbDVha0NLVXU2UjA0UmJs?=
- =?utf-8?B?N0xmUk40SXBPSjNKREJ3eGwyZmQzWHMrbWhDNDNrbGViS0lGUG9uRFpGejF1?=
- =?utf-8?B?ZW5sdGxjMFJTa1JmdlQ3ZDlSbmtsT2UyTGNIYUtKNDJxZmp4YU1SN2ZCUHNu?=
- =?utf-8?B?VFB2WUY3UndaYkd0Tjl6cXRWR1Uzbk55SXhvTUl1b0lmdUhNSk4vdkNQQXk5?=
- =?utf-8?Q?p5wl5j1VOze0PEmUjfmzai0=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2a66ed2f-639c-43ea-20b9-08da9cd61189
-X-MS-Exchange-CrossTenant-AuthSource: MW3PR11MB4764.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2022 20:07:25.8886
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: bY48JKjcm4t+W6WzZR+ZAez42ND5WLtUi+A40bEzlD1GYWPjdWwGUdpFSyb2khBmH1Z73nwNqoiQ2w3UNF67G4hm36iEb0aKjiof6k4Uj+uYSIQzAB2LxHZtLMcABozX
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR11MB5348
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-9.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <c84cc27c1a5031a003039748c3c099732a718aec.camel@kernel.org>
+In-Reply-To: <c84cc27c1a5031a003039748c3c099732a718aec.camel@kernel.org>
+From:   Song Liu <song@kernel.org>
+Date:   Thu, 22 Sep 2022 13:18:55 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW7+CQV69KhmqfSyB5Gme7wRJSHBozDxhtBM=ggPM=5o2A@mail.gmail.com>
+Message-ID: <CAPhsuW7+CQV69KhmqfSyB5Gme7wRJSHBozDxhtBM=ggPM=5o2A@mail.gmail.com>
+Subject: Re: CPA refuse W^X violation in linux-next kernel
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 7/1/2022 8:36 AM, Fabio M. De Francesco wrote:
-> On giovedì 30 giugno 2022 23:59:23 CEST Alexander Duyck wrote:
->> On Thu, Jun 30, 2022 at 11:18 AM Fabio M. De Francesco
->> <fmdefrancesco@gmail.com> wrote:
->>>
->>> On giovedì 30 giugno 2022 18:09:18 CEST Alexander Duyck wrote:
->>>> On Thu, Jun 30, 2022 at 8:25 AM Eric Dumazet <edumazet@google.com>
-> wrote:
->>>>>
->>>>> On Thu, Jun 30, 2022 at 5:17 PM Alexander Duyck
->>>>> <alexander.duyck@gmail.com> wrote:
->>>>>>
->>>>>> On Thu, Jun 30, 2022 at 3:10 AM Maciej Fijalkowski
->>>>>> <maciej.fijalkowski@intel.com> wrote:
->>>>>>>
->>>>>>> On Wed, Jun 29, 2022 at 10:58:36AM +0200, Fabio M. De Francesco
->>> wrote:
->>>>>>>> The use of kmap() is being deprecated in favor of
->>> kmap_local_page().
->>>>>>>>
->>>>>>>> With kmap_local_page(), the mapping is per thread, CPU local
-> and
->>> not
->>>>>>>> globally visible. Furthermore, the mapping can be acquired
-> from
->>> any context
->>>>>>>> (including interrupts).
->>>>>>>>
->>>>>>>> Therefore, use kmap_local_page() in
-> ixgbe_check_lbtest_frame()
->>> because
->>>>>>>> this mapping is per thread, CPU local, and not globally
-> visible.
->>>>>>>
->>>>>>> Hi,
->>>>>>>
->>>>>>> I'd like to ask why kmap was there in the first place and not
-> plain
->>>>>>> page_address() ?
->>>>>>>
->>>>>>> Alex?
->>>>>>
->>>>>> The page_address function only works on architectures that have
->>> access
->>>>>> to all of physical memory via virtual memory addresses. The kmap
->>>>>> function is meant to take care of highmem which will need to be
->>> mapped
->>>>>> before it can be accessed.
->>>>>>
->>>>>> For non-highmem pages kmap just calls the page_address function.
->>>>>> https://elixir.bootlin.com/linux/latest/source/include/linux/
-> highmem-internal.h#L40
->>>>>
->>>>>
->>>>> Sure, but drivers/net/ethernet/intel/ixgbe/ixgbe_main.c is
-> allocating
->>>>> pages that are not highmem ?
->>>>>
->>>>> This kmap() does not seem needed.
->>>>
->>>> Good point. So odds are page_address is fine to use. Actually there
-> is
->>>> a note to that effect in ixgbe_pull_tail.
->>>>
->>>> As such we could probably go through and update igb, and several of
->>>> the other Intel drivers as well.
->>>>
->>>> - Alex
->>>>
->>> I don't know this code, however I know kmap*().
->>>
->>> I assumed that, if author used kmap(), there was possibility that the
-> page
->>> came from highmem.
->>>
->>> In that case kmap_local_page() looks correct here.
->>>
->>> However, now I read that that page _cannot_ come from highmem.
-> Therefore,
->>> page_address() would suffice.
->>>
->>> If you all want I can replace kmap() / kunmap() with a "plain"
->>> page_address(). Please let me know.
->>>
->>> Thanks,
->>>
->>> Fabio
->>
->> Replacing it with just page_address() should be fine. Back when I
->> wrote the code I didn't realize that GFP_ATOMIC pages weren't
->> allocated from highmem so I suspect I just used kmap since it was the
->> way to cover all the bases.
->>
->> Thanks,
->>
->> - Alex
->>
-> 
-> OK, I'm about to prepare another patch with page_address() (obviously, this
-> should be discarded).
-> 
-> Last thing... Is that page allocated with dma_pool_alloc() at
-> ixgbe/ixgbe_fcoe.c:196? Somewhere else?
-> 
-> Thanks,
-> 
-> Fabio
-> 
-> P.S.: Can you say something about how pages are allocated in intel/e1000
-> and in intel/e1000e? I see that those drivers use kmap_atomic().
+Hi Jeff,
 
-Following Fabio's patches, I made similar changes for e1000/e1000e and 
-submitted them to IWL [1].
+On Thu, Sep 22, 2022 at 5:19 AM Jeff Layton <jlayton@kernel.org> wrote:
+>
+> (sorry for the resend, but I missed the subject line and I wanted to
+> make sure this was seen)
+>
+> Got a reproducible panic at boot today with a linux-next kernel. I have
+> some patches on top linux-next, but nothing that should affect things at this
+> level. The host is a QEMU/KVM VM running Fedora 36. Kconfig is attached:
 
-Yesterday, Ira Weiny pointed me to some feedback from Dave Hansen on the 
-use of page_address() [2]. My understanding of this feedback is that 
-it's safer to use kmap_local_page() instead of page_address(), because 
-you don't always know how the underlying page was allocated.
+Thanks for the report! I am able to reproduce the issue.
 
-This approach (of using kmap_local_page() instead of page_address()) 
-makes sense to me. Any reason not to go this way?
+I am working on a fix. I will try to send v1 of the fix by EOD tomorrow.
 
-[1]
+Song
 
-https://patchwork.ozlabs.org/project/intel-wired-lan/patch/20220919180949.388785-1-anirudh.venkataramanan@intel.com/
-
-https://patchwork.ozlabs.org/project/intel-wired-lan/patch/20220919180949.388785-2-anirudh.venkataramanan@intel.com/
-
-[2] 
-https://lore.kernel.org/lkml/5d667258-b58b-3d28-3609-e7914c99b31b@intel.com/
-
-Ani
-
+>
+> [    2.353769] systemd[1]: Hostname set to <iversion>.
+> [    2.413012] ------------[ cut here ]------------
+> [    2.413761] CPA refuse W^X violation: 8000000000000163 -> 0000000000000163 range: 0xffffffffc04ff000 - 0xffffffffc04fffff PFN 108686
+> [    2.415382] WARNING: CPU: 2 PID: 1 at arch/x86/mm/pat/set_memory.c:600 __change_page_attr_set_clr+0x100b/0x1050
+> [    2.416838] Modules linked in:
+> [    2.417349] CPU: 2 PID: 1 Comm: systemd Not tainted 6.0.0-rc6-next-20220921+ #26
+> [    2.418430] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.0-1.fc36 04/01/2014
+> [    2.419671] RIP: 0010:__change_page_attr_set_clr+0x100b/0x1050
+> [    2.420503] Code: 8b 44 24 20 48 89 f2 4d 89 f1 48 89 ee 48 c7 c7 f8 14 3a b1 c6 05 ed 22 c1 01 01 4c 8d 80 ff 0f 00 00 48 89 c1 e8 65 1f a8 00 <0f> 0b e9 f6 fc ff ff 80 3d d1 22 c1 01 00 0f 85 6e f8 ff ff 48 89
+> [    2.422998] RSP: 0018:ffffb94ec0013b20 EFLAGS: 00010282
+> [    2.423762] RAX: 0000000000000078 RBX: 0000000108686163 RCX: 0000000000000000
+> [    2.424745] RDX: 0000000000000002 RSI: 00000000ffffdfff RDI: 00000000ffffffff
+> [    2.425729] RBP: 8000000000000163 R08: 0000000000000000 R09: ffffb94ec00139d8
+> [    2.426731] R10: 0000000000000003 R11: ffffffffb1b45448 R12: 8000000108686163
+> [    2.427731] R13: 0000000000000000 R14: 0000000000108686 R15: 8000000000000000
+> [    2.428730] FS:  00007f85928f0b40(0000) GS:ffff968f37c80000(0000) knlGS:0000000000000000
+> [    2.431729] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [    2.432555] CR2: 00007f85923ed000 CR3: 000000010095e000 CR4: 00000000003506e0
+> [    2.433572] Call Trace:
+> [    2.434060]  <TASK>
+> [    2.434461]  ? __purge_vmap_area_lazy+0x34e/0x700
+> [    2.435177]  ? _vm_unmap_aliases.part.0+0xff/0x130
+> [    2.435907]  change_page_attr_set_clr+0x10f/0x190
+> [    2.436625]  set_memory_x+0x37/0x50
+> [    2.437190]  bpf_trampoline_update+0x23c/0x5b0
+> [    2.437866]  __bpf_trampoline_link_prog+0xd0/0x1b0
+> [    2.438594]  bpf_trampoline_link_prog+0x26/0x40
+> [    2.439312]  bpf_tracing_prog_attach+0x31e/0x4b0
+> [    2.440017]  __sys_bpf+0x171/0x2c20
+> [    2.440577]  ? ttwu_queue_wakelist+0xbf/0x110
+> [    2.441246]  ? _raw_spin_unlock_irqrestore+0x23/0x40
+> [    2.441990]  ? try_to_wake_up+0x83/0x570
+> [    2.442677]  ? insert_work+0x46/0xc0
+> [    2.443579]  ? _raw_spin_unlock+0x15/0x30
+> [    2.444455]  __x64_sys_bpf+0x1a/0x30
+> [    2.445041]  do_syscall_64+0x3a/0x90
+> [    2.447104]  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> [    2.447842] RIP: 0033:0x7f859340ef3d
+> [    2.448411] Code: 5d c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d b3 ce 0e 00 f7 d8 64 89 01 48
+> [    2.451106] RSP: 002b:00007ffe34d26688 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+> [    2.452405] RAX: ffffffffffffffda RBX: 0000556f6d038600 RCX: 00007f859340ef3d
+> [    2.453567] RDX: 0000000000000090 RSI: 00007ffe34d26690 RDI: 0000000000000011
+> [    2.454560] RBP: 000000000000000e R08: 00007ffe34d2659c R09: 0000000000000000
+> [    2.455549] R10: 0000000000000000 R11: 0000000000000246 R12: 0000556f6d03c4b0
+> [    2.456539] R13: 00007ffe34d26840 R14: 0000556f6c5f2e8f R15: 0000556f6c5d407b
+> [    2.457528]  </TASK>
+> [    2.457935] ---[ end trace 0000000000000000 ]---
+> [    2.718704] systemd[1]: LSM BPF program attached
+> [    2.719654] kernel tried to execute NX-protected page - exploit attempt? (uid: 0)
+> [    2.722000] BUG: unable to handle page fault for address: ffffffffc0501000
+> [    2.724425] #PF: supervisor instruction fetch in kernel mode
+> [    2.726420] #PF: error_code(0x0011) - permissions violation
+> [    2.728392] PGD 7a15067 P4D 7a15067 PUD 7a17067 PMD 100c40067 PTE 80000001086ae163
+> [    2.731936] Oops: 0011 [#1] PREEMPT SMP NOPTI
+> [    2.733243] CPU: 2 PID: 1 Comm: systemd Tainted: G        W          6.0.0-rc6-next-20220921+ #26
+> [    2.736361] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.0-1.fc36 04/01/2014
+> [    2.739401] RIP: 0010:bpf_trampoline_6442483261_0+0x0/0x1000
+> [    2.741421] Code: Unable to access opcode bytes at RIP 0xffffffffc0500fd6.
+> [    2.743635] RSP: 0018:ffffb94ec0013cd8 EFLAGS: 00010282
+> [    2.745434] RAX: ffffffffb0291390 RBX: ffffffffb14ba010 RCX: ffff968dc0218f78
+> [    2.747998] RDX: 0000000000000000 RSI: 0000000000000001 RDI: ffff968dc0960f00
+> [    2.750765] RBP: ffff968dc0960f00 R08: ffffffffb26670c0 R09: 0000000000000000
+> [    2.753079] R10: 0000000000000007 R11: 0000000000000000 R12: ffffb94ec0013eec
+> [    2.755455] R13: 0000000000000000 R14: ffff968dc0960f10 R15: ffff968dc0960f00
+> [    2.758095] FS:  00007f85928f0b40(0000) GS:ffff968f37c80000(0000) knlGS:0000000000000000
+> [    2.761972] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [    2.763221] CR2: ffffffffc0500fd6 CR3: 000000010095e000 CR4: 00000000003506e0
+> [    2.764564] Call Trace:
+> [    2.765146]  <TASK>
+> [    2.765664]  ? bpf_lsm_file_open+0x5/0x10
+> [    2.766513]  ? security_file_open+0x2c/0x50
+> [    2.767451]  ? do_dentry_open+0xf8/0x410
+> [    2.768183]  ? path_openat+0xc43/0x1360
+> [    2.768889]  ? __cgroup_account_cputime+0x4c/0x70
+> [    2.769723]  ? do_filp_open+0xa1/0x130
+> [    2.770452]  ? __check_object_size+0x1e6/0x200
+> [    2.771287]  ? _raw_spin_unlock+0x15/0x30
+> [    2.772064]  ? do_sys_openat2+0x7c/0x130
+> [    2.772782]  ? __x64_sys_openat+0x5c/0x80
+> [    2.773537]  ? do_syscall_64+0x3a/0x90
+> [    2.774251]  ? entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> [    2.775193]  </TASK>
+> [    2.775668] Modules linked in:
+> [    2.776288] CR2: ffffffffc0501000
+> [    2.776924] ---[ end trace 0000000000000000 ]---
+> [    2.777750] RIP: 0010:bpf_trampoline_6442483261_0+0x0/0x1000
+> [    2.778748] Code: Unable to access opcode bytes at RIP 0xffffffffc0500fd6.
+> [    2.779889] RSP: 0018:ffffb94ec0013cd8 EFLAGS: 00010282
+> [    2.780807] RAX: ffffffffb0291390 RBX: ffffffffb14ba010 RCX: ffff968dc0218f78
+> [    2.782093] RDX: 0000000000000000 RSI: 0000000000000001 RDI: ffff968dc0960f00
+> [    2.783321] RBP: ffff968dc0960f00 R08: ffffffffb26670c0 R09: 0000000000000000
+> [    2.784537] R10: 0000000000000007 R11: 0000000000000000 R12: ffffb94ec0013eec
+> [    2.785731] R13: 0000000000000000 R14: ffff968dc0960f10 R15: ffff968dc0960f00
+> [    2.786762] FS:  00007f85928f0b40(0000) GS:ffff968f37c80000(0000) knlGS:0000000000000000
+> [    2.787918] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [    2.788744] CR2: ffffffffc0500fd6 CR3: 000000010095e000 CR4: 00000000003506e0
+> [    2.789843] Kernel panic - not syncing: Attempted to kill init! exitcode=0x00000009
+> [    2.792032] Kernel Offset: 0x2f000000 from 0xffffffff81000000 (relocation range: 0xffffffff80000000-0xffffffffbfffffff)
+> [    2.793568] ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x00000009 ]---
+>
+>
+> --
+> Jeff Layton <jlayton@kernel.org>
