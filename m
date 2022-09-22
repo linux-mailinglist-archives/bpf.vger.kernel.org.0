@@ -2,138 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D7E95E68F8
-	for <lists+bpf@lfdr.de>; Thu, 22 Sep 2022 19:00:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D76E25E695C
+	for <lists+bpf@lfdr.de>; Thu, 22 Sep 2022 19:14:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229710AbiIVRAo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Sep 2022 13:00:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50250 "EHLO
+        id S232122AbiIVROI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Sep 2022 13:14:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229673AbiIVRAn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Sep 2022 13:00:43 -0400
+        with ESMTP id S232294AbiIVRNr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 22 Sep 2022 13:13:47 -0400
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B55B730F6F
-        for <bpf@vger.kernel.org>; Thu, 22 Sep 2022 10:00:39 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A861103FDF
+        for <bpf@vger.kernel.org>; Thu, 22 Sep 2022 10:13:37 -0700 (PDT)
 Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 28MH0IYk032062;
-        Thu, 22 Sep 2022 10:00:24 -0700
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 28MH09Xc031622;
+        Thu, 22 Sep 2022 10:13:21 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
  subject : to : cc : references : from : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=oe2cXpICruVv5giRUEt9Lzgk/bIjXExcl5bShNaaC7M=;
- b=nBqsk0vNAFq2JLGCn7EjJg5UPEs0boEMZp7zRwEwedJOrJiC1fgQqsMseFhRggpqb2qw
- OOjvy6DF3btubXyHBsN6bNv6zQYxTTzjCpejRx/Yk1UCkIX6VNdqdcPpVop9zPkCXzxO
- I0u8dLIpP5NIHUVvRvAmJWPajMKTGnfE+HY= 
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2173.outbound.protection.outlook.com [104.47.59.173])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3jrenwcwj5-1
+ bh=J3Sc+DTnXBxDVGPRDApp1FgTU0An3z/YXjIS/bq+Hkg=;
+ b=YSyD6HY2zBOrYoFsMoXiH/6xEXhY67VAlLllTj1LC/uVl4/Tm3ngYnV2jBrPEyF2pkeg
+ QAQ3b6ogZYH/euALAfeawPphp5tGYJ8wRi/ca4z2nlDyTAAwOqUXS6aFLSBYByNAoJmM
+ YLKtIbkpE9PflsS08PP46szN03J+a+Xgoag= 
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2169.outbound.protection.outlook.com [104.47.58.169])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3jrenwd298-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 22 Sep 2022 10:00:21 -0700
+        Thu, 22 Sep 2022 10:13:21 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SObnB2EwnMb0bHHuVqL/HI1LQUgHcGb3B3dxgjJtJGH4CD1o92zd18HL7LDA/J2D3dKYlTa0j3LPJpeapI+Eu8c5+7bH8EyiJsk2lP/GPXmGFbhvER0aLJD4lNp378bJJ33mQDoT/nUFShGiZ9O1ydH2+A/gyD5v56+0+W9DJqQyl1sS3AE8mC+fE75nbOi2XK5TqTtrVwRQjHRz2HZ8qA31p5DeSlu+oBNVnWSqovRcyUSk+RgLJ2vjz1bDbUcCR/Ga1GqrZ347svH/oDA3Pn5LknQhrdsF1PH4HS73iZ7icUNuq+iwC7K03JHHekaoQOTIjX41NpFBnUT8Obj+yA==
+ b=mvd8jOIw9aQRqZ7jnzI8y6UFIMANyejOA+bvHEvHcaO6L/h1P9ocRJrxc65rB6V17b9he9/b1QcQdIHBbHCbwb5LE9kFUKDKZ2FfKJJ0f+gUuzBwWwso3AdRPuuVVziRycNZ73ZVgiT/JIYLc+PgBGTgCQ2NjtAscCvqN4pts4c7dSMFOmGrz3MASrTwBPJHbd7yC7KOiZCpv8Djkd05KKyBsBj0J+WPz65QxfFaN6xCDStCf+Ysn6FlGl3bP0qDiCoBHaV5bs1r2ku0zMtFT3IJSsGXQyWn/ZjL6UNO0oEDNAACnB4nd2gTfNTtP7na+jV8LyJtiHAkyShBMVQwFg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=oe2cXpICruVv5giRUEt9Lzgk/bIjXExcl5bShNaaC7M=;
- b=eD/kZkukblqhHzMrM0i/P77uJBNnl3oLV/e/jhK+3e7UuFuMBtMotUYBztB8iEuF8Xme0fEiEiUgxXuP0vKAHgaQOA6mZ7bEWhn8zjRx5EtWxZ1PO8WkHFnODhfGcRL+jXBbnnJsN/IZy1wmZfQ++DA5DLcL0RarzqRlULnfG2e97INphqhVAyRqkD8UOSJeIQGRRnnVgdIezi2taoFTqXZP5GZ+FBAqpgxFmT6c9f34oXpb0k0BNMgQD3fAH5bDiWdpViKy+cJyAANPYJuTP82lCgp5B3Q+l7odoinVGZoxyFo8EAtykCP7tuXpU54M4EjryuuV/I9XcZjOcqGKTw==
+ bh=J3Sc+DTnXBxDVGPRDApp1FgTU0An3z/YXjIS/bq+Hkg=;
+ b=DT3yK75GMpS5ZRHDSHb+F/6xNOP3uy+4F0Q5cJE5efjXsvWgPTzF3mdAbvRzXdoHT+qdu/by3FDaWARbkvEaUN5w1Nf/FBuYYqIjNsDX3mjDsG8COc9Q1+rSlylZQvxNhNUzZPABhTQGbCT0MPyq5D7QTF4t8J4hTjHvHcG+iiLlHavAx5xC/v/9whXRc18ISXWonoNEG6qDbQJ9deUfC4o8h88usMGh4wjafIdW2r37ZvNN9cOlPLHV9NFn/qWcdWUXo2lODCaEALR+LYd99z+vh5tmowyMFggidD94TajowgCtDNawq1+8/04m1bcg1zI0S3rXwcC2dxRvNkf76Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by CO1PR15MB4955.namprd15.prod.outlook.com (2603:10b6:303:e6::16) with
+ by BY3PR15MB5108.namprd15.prod.outlook.com (2603:10b6:a03:3cf::12) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5654.19; Thu, 22 Sep
- 2022 16:59:34 +0000
+ 2022 17:13:18 +0000
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::cdbe:b85f:3620:2dff]) by SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::cdbe:b85f:3620:2dff%4]) with mapi id 15.20.5654.014; Thu, 22 Sep 2022
- 16:59:33 +0000
-Message-ID: <d77de53f-3dfa-b150-55e4-e03a97b193f7@fb.com>
-Date:   Thu, 22 Sep 2022 09:59:30 -0700
+ 17:13:18 +0000
+Message-ID: <6b39c7e2-6526-7c27-620d-f0e7c781140d@fb.com>
+Date:   Thu, 22 Sep 2022 10:13:15 -0700
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
  Gecko/20100101 Thunderbird/102.3.0
-Subject: Re: [PATCH v2 bpf-next 2/2] selftests/bpf: Add test verifying
+Subject: Re: [PATCH v3 bpf-next 2/2] selftests/bpf: Add test verifying
  bpf_ringbuf_reserve retval use in map ops
-To:     Dave Marchevsky <davemarchevsky@meta.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     Dave Marchevsky <davemarchevsky@fb.com>, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
+Content-Language: en-US
+To:     Dave Marchevsky <davemarchevsky@fb.com>, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-References: <20220914123600.927632-1-davemarchevsky@fb.com>
- <20220914123600.927632-2-davemarchevsky@fb.com>
- <26e3f391-076e-49ce-89d6-21aa16f3c054@fb.com>
- <CAP01T75E9sp5Aq159Zjmrpmaue+gYkN66qjA06opDhLhbuUzAw@mail.gmail.com>
- <55e96fb0-6a3a-8162-5c3e-41b10dd6a292@fb.com>
- <c6d6a452-0ee9-ee90-6415-1066bbfcfc82@meta.com>
-Content-Language: en-US
+        Kernel Team <kernel-team@fb.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>
+References: <20220922142208.3009672-1-davemarchevsky@fb.com>
+ <20220922142208.3009672-2-davemarchevsky@fb.com>
 From:   Yonghong Song <yhs@fb.com>
-In-Reply-To: <c6d6a452-0ee9-ee90-6415-1066bbfcfc82@meta.com>
+In-Reply-To: <20220922142208.3009672-2-davemarchevsky@fb.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: MW3PR06CA0017.namprd06.prod.outlook.com
- (2603:10b6:303:2a::22) To SN6PR1501MB2064.namprd15.prod.outlook.com
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SJ0PR13CA0003.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c0::8) To SN6PR1501MB2064.namprd15.prod.outlook.com
  (2603:10b6:805:d::27)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|CO1PR15MB4955:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2cd51d22-14d3-4211-8e2a-08da9cbbd299
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|BY3PR15MB5108:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3db45c12-04e1-4899-584f-08da9cbdbe6d
 X-FB-Source: Internal
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 3gyVtu/o6RWPJAhuVqA9YMpIOd/cERhZA7Z/VH8CgmXnUfJXLjx0bnfCuvAL1gbUp5ZsLza/hNMesOfJhQsbkZqL8iTOpflO7V2fN09L2Uziye2T5q3RNW6EJaP5BPfC7b0JAv2eiyDZn+UtbnxNscxr6V3JSb7TYoojrb/VmHMPaskLopuqQatve71gYqjMVdKpt3puNnhL/1Y78pRL+3Y2Ol/XDqAJZ7mLh4PFeFb/RxjhNPRKR0R3XToE/TCqCoBnMUsY1ldZ9NMKvcgsViR5X/CXOl6lR0Ye6MY5gugjkjzbWXv2SKETG0xgfILX5YLkQDx+G8ZZe3IOficHf31QTlsJkwez27yjIrG76zKdT3Qg/t+PWtwgc6hOflIxXywYpTAJYubi/iGsD9eS52hTwsmHgjpgjTZUa3LmzuFmFcHQpgKTpqre6nOgKOXD9TQQc73wp1S/Y2KljrITEF9g5RLW3um+Jr7RJHRRPoCuAzKfB0zswDFyc0tXQ+XYZ2N+eZIfArsM27nTVIT7oTo2MrX28V3JN/t1bN/r852zSDc7C8Ae2lUZO1kBeGo7imvsXLxySeLfoFBoM4+F20oqTGacJOpnwfMYu0PIvDa42fZOCW41D9bIMWY7ZTfqibOIdhv0THzEWh+clnS6nkuXMmwJz/3ZHb91aygV3DlNC2v0WdesIztMAOSSaSaLIAMRMtXD9jP0OTeZZqsMgvdHwshyvjMe8OfnBiRwlBFzH0JNPTSEzBnGp1gg9fwz6dD8qfttFg3huSsc3cusuCS0LeyfC0uK3lk3D0dBVCSp8x77BXbP+Nh/6qzJTt8c2EVkd02dedGT5A37u1l5QQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(346002)(376002)(366004)(39860400002)(136003)(396003)(451199015)(54906003)(38100700002)(110136005)(84970400001)(66556008)(41300700001)(66476007)(66946007)(316002)(186003)(15650500001)(83380400001)(8676002)(8936002)(36756003)(6506007)(31696002)(4326008)(86362001)(6512007)(2616005)(5660300002)(2906002)(53546011)(478600001)(31686004)(6486002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: b4NiXWQdrBNaaq2GHFWAuOH1/v176MrmrysQnIglJZVx6AACNZlkq+NudXDCvdwclQaFoXYuaKoUlT+9lJ7kMMzKml6opliHqwBSbDGJ6nAxaZhqSgtsVaMlZacPNSD3weYrGkykBC17SZLHhg0rLlQo0QwN1cFg4Sd8Vf0P4EU7WctZ0mDvf28HWaVsdZyqj0oSHU3CkDYwutIfUmNkKZr1TbzDVccYuYzpUsINV7Yg6aUBFOROFi+B2tC47yZA5J+DCsWRnxag82XKDtxUA05LqjiDuh+Pt+y7IS6+LrWlFD8f9RWRhjrV+GidHjJTyvePL1PN1l+TwlQ4dBiYqRmpmltZ3y5rXwRdl8CqNOUYedsITxIeoMgakSIB2qLYrOhmTRs+etgtv5rwh6dm2cpQQKFkm4qfFaPuqt7jANcg1Slr0033RuDqk6rs3ovZtTk/+tS91HNrjbgzwJ7wudh3YrMRMk5CnpKPjcYxHcXmSOAQFSUAsKFL5viDoVkTOlTXNgN70flU6TGY/Wa1n+IVgsk3v+sjXzD7CsI3otcLtD56E/jOFS+eB8GFXnMguX8LC397w1hzeC5FVRvhhlQgN6FvJhBMp87SIaXUAtrWAqRhznekSC4ft2ZGCdRFAtZiLLxBQBNUu/6QQR0LKVi5KgoZSomd7yIYdqRd8FCvRpPPha5xnSe16S/oAzaQ48/2PdF0iets6V88nW76iFvc/+pv95OVbtReRvA6AOyp50/TR2kzfjcpErtMQWJsIXNF6Qo/bVtpafy68yy8rpsijeblBbR2hYll7+foc1vDbINJKLn+yNOTl264Y9m20/WSgG0NHBFEbED5L9ZweeWZsZwEVBTvmKwspPm44mp8JfGi8QJEq9J1b42dM6Po
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(376002)(346002)(39860400002)(136003)(396003)(366004)(451199015)(186003)(53546011)(84970400001)(6666004)(2616005)(6512007)(8936002)(6506007)(83380400001)(2906002)(5660300002)(6486002)(478600001)(54906003)(66556008)(8676002)(66476007)(4326008)(66946007)(41300700001)(316002)(36756003)(38100700002)(31686004)(31696002)(86362001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SXlmelVQbGpFTUlDQTNiTHhBYk11RTV0MDBCWHprRTRlMDgxZVY2bDdNN0JR?=
- =?utf-8?B?RjVsTEtWSjB4c3pLeXFkaHIyaEY5RXYyZm5QL1VHRjhDeENmemhlSnZWa0NU?=
- =?utf-8?B?cGpLTVVUQkljNk1JU0VRWnZuVGIzbHBzTkI3TnRwMW1QMHM3bHBDM1Z0NGhk?=
- =?utf-8?B?UitoYmU0Z2FoLzNKZWRZNE1vSGF6VnM2NEltMXRzbEx6VWFEZVZiWHliL2VN?=
- =?utf-8?B?NFlhMStYb1JRMUNRamhacjg1ZFJCU0dOS1BlTDZ3c1NXTjFNbmJ5bWpGaUk1?=
- =?utf-8?B?YkpjUkpvd2JSeHdiRE1RV05LK1BJRFNvZ0FCYmJsYUQ5bUUyMUR4eEFBWlV2?=
- =?utf-8?B?WXR1SHc1MU5kWGhVMjRkdjJoOWUvdzdEZENEUEw2K0xROXgyaWNjd0RvNXhN?=
- =?utf-8?B?RWJzcVo2WVFtMFEwaWFPV3hUZXlLWkdIWFJCS293dFB5TFlQblZIL2YrNDh1?=
- =?utf-8?B?dEJiNytDbWtTRDZQTHpjcDdHQnpna1pmcjByVlh0ZHVkR0VwWHZLeUJnMzh2?=
- =?utf-8?B?UDd5ekg3Y1VWS0RtMTA4eWNaRGdKbUsxR29MdDJjWTBsODBBdTE5OUVFZlpW?=
- =?utf-8?B?ME5lL2hMbmlzTlJZQ3NWajdUOHdPSVVJNzBHS3oyc1ZjR1BHU2FvbzdDK0Zx?=
- =?utf-8?B?SSswUEc5OUZYWU9BUDUrRDl3K3ZyUTl4ZDFtOUU2Y2NzY2g3R0QralEraWVP?=
- =?utf-8?B?SWgraVRiY0tRUFlkN0V3aVVLMHg0c2xDME5oMmE2dGhFczB6eGFqVmxhS2ox?=
- =?utf-8?B?Ym03ZmVQTG9DdDVYYXpnUlhCdzhMMUg2cGl6NTBYMUtyaUZPdVM0cU5jTkNp?=
- =?utf-8?B?KythNkRybWtwM1Vmc2I2aWNTV29zZm1QRm9Za05wNFVhNTVwNWtFWmxBTkJy?=
- =?utf-8?B?cjFydHJxeFZxc1dtcmNnWFNJamdLOGRwQ3pPTEwvZ1hiM2xvRy9LSmF1ZFlh?=
- =?utf-8?B?L0kvUHZCNFdNT0ppR0l5bUE0L0RsSHpQaXkrd2FsOUlYV2FzYXVraDJYRHBo?=
- =?utf-8?B?OW1UUi80SnlCS2x5VkdpSWFNUDdCK2VHNWM0b2JxWkIycG9zUnRHUHQvd1Y3?=
- =?utf-8?B?MVhPdjIzOTFkdFZORy9KNC95cUUwaytrV0ZMRnh0VkRCTklsWGV0cjM3NHJq?=
- =?utf-8?B?ZVAvRm9MUG9BSE9JN0JsLzhBbSt2eUFaTHFPV1RFdjVaVDFKRmY4cVhxYVY4?=
- =?utf-8?B?K3h6eGoyeDl0SnpYRWlJakNia01NSmNQUy9TMGdWN1V1VXVRb0Zjc2M5cnB4?=
- =?utf-8?B?OUg3cHo4cXB3a3gvSEFRSmNEa1N6VmZXekJ3cGZoNmlYOUxMdGR1OXVacUdX?=
- =?utf-8?B?MFdlN0lTK3cwdmliWWtFMDIwWGp6L016end2OHVvYU9Cd1hhLzBVNmZSejR2?=
- =?utf-8?B?MmYybCtvS25leFMraHdKOXpjZW5jbG90M1BERGVQb3RnL0dnZlE0UG1aYk1j?=
- =?utf-8?B?bnAvZkVvWEd4QkFhVDBZMlFDU05JMzdud082SHpkS3lTQ2VwVW03N3VBSlJB?=
- =?utf-8?B?cVRyYnEzblZQS2dxWGEveXkrck1tSWJScjlVVEwxcVkxaWFTbmp4NURxdkRD?=
- =?utf-8?B?VmRvQ0NXS0RLQUhQTHVEdjhKYlprZU9XbkNsVEVSWFE0QzVZMnRjRjlkczE1?=
- =?utf-8?B?UTV0YUcvRHZaQWhydDNWUnF1ZnNaUHFWd3dWaTV4RVZrL21MN1phWUJ5WEIy?=
- =?utf-8?B?MUJXNUM0WWJKQkhWS05YZzNxTFRTK2JlaGpGMXhwMVdTTE9MdXVwZCtORGFM?=
- =?utf-8?B?anM2a1FoZzErWDczZlU0YkZ3dFFrVGRqRno1Rml3L3ZkQWNsTFdlSmxVNStS?=
- =?utf-8?B?Y1JUblhhd0NnNm8vUVgzN0x3YjFRaEIrVjk3aDcwcFZkOHFpOHU5c05PeWhB?=
- =?utf-8?B?UytrYWw1a1luV0FJM1ZBdW95YkhJKzcrWUZvRmxVSlFIRHBWZEVXY1RSYWtW?=
- =?utf-8?B?TUlOdFlNU25FREEycWpUUGNVSVQrNWlQUzRSWkxxa2tha2twUy9TekRhYkdv?=
- =?utf-8?B?MTk0VGh4cmtQbzlBK0NtRWh0THpQK1ptaHZSaG1GRHNLWkNiaFlZU1JIQzNR?=
- =?utf-8?B?Umh1UkpldW1zamNtckpOL0s5bitMYXlTZmRxWGYvS3ZYeWxJTEV0WlBrRFR0?=
- =?utf-8?Q?b0d2xn/GSI6NuXzDyCppxWCW6?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MkY3YUxqa2lVZTFSSFJFKzl6eGh1S2hkUDdYUUI3RldNUTM5MEFoL2ZXeklp?=
+ =?utf-8?B?cndJaldTNFI1cTNPL2tBVlYwQmRiSHZOZWRaUFU4MUFBVWdqWlplanFHb1dN?=
+ =?utf-8?B?RjVhOVNDMFB1dGdnT2RyL0JtdzlkU2NHbkF3NnpjQjBFWkdTaFUvb0p5VGk3?=
+ =?utf-8?B?eVpHanlMSkdqYWNEK2RGUUVyWjB4SWtRYlMyRU1JVjYyeUhJSXpXRjdlUjFL?=
+ =?utf-8?B?TGV2RFE3Ti96SzFib3VXTUtjSzJlZGl4UjRsNnBFTStEcGdmcmpCUzZscUlL?=
+ =?utf-8?B?SEVIUHZ1WnRhb25SckpvMjJIaW5leUJjS0VBRUhlaHN0anNXZjZzNmwyVU5J?=
+ =?utf-8?B?LzRVVTFqL2xLbkxVWEgxTlVaTGNpTHQ3S3FHQk4ySW00Qk0yOGNicGZQTlV6?=
+ =?utf-8?B?LzNLWGZqM2FaVHRXdHVIMDRHdWlnNDJDQnVUZkFtRzk2c2hGaDBTUlhQdUo2?=
+ =?utf-8?B?NHF4L3k2cFBIenpoNnJCRDNEL1pRKzFjOTd1WXE1ZmVKVXFBaTlOcGpwcHJW?=
+ =?utf-8?B?dnRTeERWR09FQ0lzRGcwRlZ6OXhUK2JjSzFDQ1QzZCs3NEJaS3NJbGloa0dV?=
+ =?utf-8?B?emR4UjhINVd3d3hjWDZxM3JKRnRmK2lLdXJwdHJrQTd4Y0tibnB2UEpYN2RE?=
+ =?utf-8?B?SW81NjhQTElhcUt0L0NLazlpb3ZWUkx4NE9WK2wwYjlncmh4dzRuckNTaG1s?=
+ =?utf-8?B?YVZBT0FoV0VuTWtQOXpIYmEyRzlXYjdJMDVIc0tWUEpHWjAyMXZ2bDBqMmkx?=
+ =?utf-8?B?bmdmNGFISzdoUUgwVG8vbWg2TXp0cklhTTF1U1BpdGVHMlJlVEppbGZWWlll?=
+ =?utf-8?B?UXJJZ0E0MyszL29RUDZmRzVZVVJPRzVmWG5nNnp0QjBzdGxtR0lxNU1Zc3Zm?=
+ =?utf-8?B?cUllWDIvZkJVNk5sako4aTR6VG11bXZMQ3UwcDRNMnYwRXo1MFFFMXlUYUg5?=
+ =?utf-8?B?UGdHY0NBMCtVeE1TNjZPMFJBenpSUzJHbDV0M01WRDNNVUduQlB0UEI4ajZD?=
+ =?utf-8?B?ODFTOTB6cUZGMjY2dGlMdFZ5RncxTmVmTGNCU0l0bm1GNzdiaHVTQ09hTVBz?=
+ =?utf-8?B?NUFkYUFuR2FYcmlIc0VFcFJUQTduYU1jUldhc2JPeEVkak82YWt2ZUFNY3Js?=
+ =?utf-8?B?V1ppU3JjMFp3dDZSR3pxTVNEbnQwMXFyNnNZTXZCOTVWRlRHVm44RE80N3BO?=
+ =?utf-8?B?aHJGU3k5STg0UHdwQndaT0lwK3dkWWtxQXowVGcwaDM2MkJ3RmdDWDdnL0pU?=
+ =?utf-8?B?RXd1d1RwYjhVbTNRM3YyYWkyOEZCd3RMQ1BqZnJNdWZoZVZPdU1mNmpiQnhs?=
+ =?utf-8?B?U2hnWlpWb0xFakczcnJlQysvUVFRcjhiaU1jang4cGFaSmNlbktzNnliMEFC?=
+ =?utf-8?B?K2Z1eTNPS29lY085L1ZPa2JXazBDeld4YlNjcVJwemdta09YT1RoMWpaK0Ur?=
+ =?utf-8?B?NjRTSkFRa1FuZ3o4UE1nS2RnaHlzYSs3ckpCUlZpNk4vUmpyVzlQQTB5aElo?=
+ =?utf-8?B?VU1CZ1M1UlRhempCaGJ0THNjdHZpamY5U29LS1l2TkZrZWl6eTFRM1oxVWlD?=
+ =?utf-8?B?ci9UZEVIRi9ZRmZJYUFvR21Mc3VER3Z3L256bmZmN0NvN3I0OFlsaEFxblda?=
+ =?utf-8?B?aFp2R0dETldBSXZ1T3E1U2RpaDM2MHloRDlRV1dEb1FUclRXSSsxWkV3aDRt?=
+ =?utf-8?B?cDZXOEJjczdsTjFVdXJCNnQ4MHhjcWhUUjhRSXZwcXliRzZ1QTZCVzVtTGFT?=
+ =?utf-8?B?UzAzcHZiT0ZvU3ZLeHhobzVSaEZjcWY1UWtzN3Z0MksxU0hrNXRDK09SRURT?=
+ =?utf-8?B?OUU1NUp0RXRZV0tSUmluZ1l4Z1lzMEtXOXFRMVI0a295N2ZlbDdhQlAyRVhr?=
+ =?utf-8?B?WlQxbllieEg3WkFTLzJ1cWdLbjRPMWtkRnpQU1ZUYnhrSlQzeVd6ZlZkb0hq?=
+ =?utf-8?B?VHhwTkx2NUJqK3lvTERaSG5Ielk1MVdwSnliTFFGQ0wyL0dJaXRzVzY2NDRZ?=
+ =?utf-8?B?alNxQXZaTFo2d05Ld2lVYTc2UjJHM2xwTFR6cWhRd3pOc05SeFFkQWtiV1RY?=
+ =?utf-8?B?YjFBZ3BDOUc1UEtxRTljazNRNFVpZzFDdmNiM3dsREwxR2RhZzZTS2dZT3V1?=
+ =?utf-8?B?YkZHOENOSWlwWnBUVUFYaFF5U1d0YVhzcHE3bFJ5ZEEwY1RPNWI1b0lQdU1q?=
+ =?utf-8?B?Y0E9PQ==?=
 X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2cd51d22-14d3-4211-8e2a-08da9cbbd299
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3db45c12-04e1-4899-584f-08da9cbdbe6d
 X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2022 16:59:33.4005
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2022 17:13:18.5185
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: uZvpC1xLh8TC3zI0d/yp0z/Ja62b6xQqHSX6Uj+648YlPRrgCDo6VXvagq3Ibv6d
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR15MB4955
-X-Proofpoint-GUID: 5UDC9wpMZOczki5EnU38PPK8gWXwKkKb
-X-Proofpoint-ORIG-GUID: 5UDC9wpMZOczki5EnU38PPK8gWXwKkKb
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0yUObWgfhJas0UDOSzK3F7kNSQqI+CQl/22gWhp+JJS9zpImNrjqAqyx55LiIJil
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY3PR15MB5108
+X-Proofpoint-GUID: bWjtCZCFE4ibfj1_ZLkFvsDhb_Tumx_M
+X-Proofpoint-ORIG-GUID: bWjtCZCFE4ibfj1_ZLkFvsDhb_Tumx_M
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.528,FMLib:17.11.122.1
  definitions=2022-09-22_12,2022-09-22_01,2022-06-22_01
@@ -149,170 +145,242 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 9/22/22 7:27 AM, Dave Marchevsky wrote:
-> On 9/20/22 1:50 AM, Yonghong Song wrote:
->>
->>
->> On 9/19/22 4:22 PM, Kumar Kartikeya Dwivedi wrote:
->>> On Tue, 20 Sept 2022 at 00:53, Yonghong Song <yhs@fb.com> wrote:
->>>>
->>>>
->>>>
->>>> On 9/14/22 5:36 AM, Dave Marchevsky wrote:
->>>>> Add a test_ringbuf_map_key test prog, borrowing heavily from extant
->>>>> test_ringbuf.c. The program tries to use the result of
->>>>> bpf_ringbuf_reserve as map_key, which was not possible before previouis
->>>>> commits in this series. The test runner added to prog_tests/ringbuf.c
->>>>> verifies that the program loads and does basic sanity checks to confirm
->>>>> that it runs as expected.
->>>>>
->>>>> Also, refactor test_ringbuf such that runners for existing test_ringbuf
->>>>> and newly-added test_ringbuf_map_key are subtests of 'ringbuf' top-level
->>>>> test.
->>>>>
->>>>> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
->>>>> ---
->>>>> v1->v2: lore.kernel.org/bpf/20220912101106.2765921-1-davemarchevsky@fb.com
->>>>>
->>>>> * Actually run the program instead of just loading (Yonghong)
->>>>> * Add a bpf_map_update_elem call to the test (Yonghong)
->>>>> * Refactor runner such that existing test and newly-added test are
->>>>>      subtests of 'ringbuf' top-level test (Yonghong)
->>>>> * Remove unused globals in test prog (Yonghong)
->>>>>
->>>>>     tools/testing/selftests/bpf/Makefile          |  8 ++-
->>>>>     .../selftests/bpf/prog_tests/ringbuf.c        | 63 ++++++++++++++++-
->>>>>     .../bpf/progs/test_ringbuf_map_key.c          | 70 +++++++++++++++++++
->>>>>     3 files changed, 137 insertions(+), 4 deletions(-)
->>>>>     create mode 100644 tools/testing/selftests/bpf/progs/test_ringbuf_map_key.c
->>>>>
->>>> [...]
->>>>> diff --git a/tools/testing/selftests/bpf/progs/test_ringbuf_map_key.c b/tools/testing/selftests/bpf/progs/test_ringbuf_map_key.c
->>>>> new file mode 100644
->>>>> index 000000000000..495f85c6e120
->>>>> --- /dev/null
->>>>> +++ b/tools/testing/selftests/bpf/progs/test_ringbuf_map_key.c
->>>>> @@ -0,0 +1,70 @@
->>>>> +// SPDX-License-Identifier: GPL-2.0
->>>>> +/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
->>>>> +
->>>>> +#include <linux/bpf.h>
->>>>> +#include <bpf/bpf_helpers.h>
->>>>> +#include "bpf_misc.h"
->>>>> +
->>>>> +char _license[] SEC("license") = "GPL";
->>>>> +
->>>>> +struct sample {
->>>>> +     int pid;
->>>>> +     int seq;
->>>>> +     long value;
->>>>> +     char comm[16];
->>>>> +};
->>>>> +
->>>>> +struct {
->>>>> +     __uint(type, BPF_MAP_TYPE_RINGBUF);
->>>>> +     __uint(max_entries, 4096);
->>>>> +} ringbuf SEC(".maps");
->>>>> +
->>>>> +struct {
->>>>> +     __uint(type, BPF_MAP_TYPE_HASH);
->>>>> +     __uint(max_entries, 1000);
->>>>> +     __type(key, struct sample);
->>>>> +     __type(value, int);
->>>>> +} hash_map SEC(".maps");
->>>>> +
->>>>> +/* inputs */
->>>>> +int pid = 0;
->>>>> +
->>>>> +/* inner state */
->>>>> +long seq = 0;
->>>>> +
->>>>> +SEC("fentry/" SYS_PREFIX "sys_getpgid")
->>>>> +int test_ringbuf_mem_map_key(void *ctx)
->>>>> +{
->>>>> +     int cur_pid = bpf_get_current_pid_tgid() >> 32;
->>>>> +     struct sample *sample, sample_copy;
->>>>> +     int *lookup_val;
->>>>> +
->>>>> +     if (cur_pid != pid)
->>>>> +             return 0;
->>>>> +
->>>>> +     sample = bpf_ringbuf_reserve(&ringbuf, sizeof(*sample), 0);
->>>>> +     if (!sample)
->>>>> +             return 0;
->>>>> +
->>>>> +     sample->pid = pid;
->>>>> +     bpf_get_current_comm(sample->comm, sizeof(sample->comm));
->>>>> +     sample->seq = ++seq;
->>>>> +     sample->value = 42;
->>>>> +
->>>>> +     /* test using 'sample' (PTR_TO_MEM | MEM_ALLOC) as map key arg
->>>>> +      */
->>>>> +     lookup_val = (int *)bpf_map_lookup_elem(&hash_map, sample);
->>>>> +
->>>>> +     /* memcpy is necessary so that verifier doesn't complain with:
->>>>> +      *   verifier internal error: more than one arg with ref_obj_id R3
->>>>> +      * when trying to do bpf_map_update_elem(&hash_map, sample, &sample->seq, BPF_ANY);
->>>>> +      *
->>>>> +      * Since bpf_map_lookup_elem above uses 'sample' as key, test using
->>>>> +      * sample field as value below
->>>>> +      */
->>>>
->>>> If I understand correctly, the above error is due to the following
->>>> verifier code:
->>>>
->>>>            if (reg->ref_obj_id) {
->>>>                    if (meta->ref_obj_id) {
->>>>                            verbose(env, "verifier internal error: more
->>>> than one arg with ref_obj_id R%d %u %u\n",
->>>>                                    regno, reg->ref_obj_id,
->>>>                                    meta->ref_obj_id);
->>>>                            return -EFAULT;
->>>>                    }
->>>>                    meta->ref_obj_id = reg->ref_obj_id;
->>>>            }
->>>>
->>>> So this is an internal error. So normally this should not happen.
->>>> Could you investigate and fix the issue?
->>>>
->>>
->>> Technically it's not an "internal" error, it's totally possible to
->>> pass two referenced registers from a program (which the verifier
->>> rejects). So a bad log message I guess.
->>>
->>> We probably need to update the verifier to properly recognize the
->>> ref_obj_id for certain functions. For release arguments we already
->>> have meta.release_regno/OBJ_RELEASE for. It can already find the
->>> ref_obj_id from release_regno instead of meta.ref_obj_id.
->>>
->>> For dynptr_ref or ptr_cast, simply store meta.ref_obj_id by capturing
->>> the regno and then setting it before r1-r5 is cleared.
->>> Since that is passed to r0 it will be done later after clearing of
->>> caller saved regs.
->>> ptr_cast and dynptr_ref functions are already exclusive (due to
->>> helper_multiple_ref_obj_use) so they can share the same regno field in
->>> meta.
->>>
->>> Then remove this check on seeing more than one reg->ref_obj_id, so it
->>> isn't a problem to allow more than one refcounted registers for all
->>> other arguments, as long as we correctly remember the ones for the
->>> cases we care about.
->>
->> Thanks for the explanation!
->>
->>>
->>> But it can probably be a separate change from this.
->>
->> if the use case this patch set tried to address is using
->> bpf_map_update_elem(), we should fix the double
->> ref_obj_id in the current patch set. If only
->> bpf_map_lookup_elem() is needed. Then we can delay
->> the verifier change for the followup patch.
->>
+On 9/22/22 7:22 AM, Dave Marchevsky wrote:
+> Add a test_ringbuf_map_key test prog, borrowing heavily from extant
+> test_ringbuf.c. The program tries to use the result of
+> bpf_ringbuf_reserve as map_key, which was not possible before previouis
+> commits in this series. The test runner added to prog_tests/ringbuf.c
+> verifies that the program loads and does basic sanity checks to confirm
+> that it runs as expected.
 > 
-> The bpf_map_lookup_elem() usecase is the only one critical for me, so I've
-> submitted v3 without ref_obj_id fix. I agree that it should be fixed, but feels
-> orthogonal to this change, and is probably best addressed as a verifier-wide
-> fix affecting all functions as per Kumar's suggestion.
+> Also, refactor test_ringbuf such that runners for existing test_ringbuf
+> and newly-added test_ringbuf_map_key are subtests of 'ringbuf' top-level
+> test.
+> 
+> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
 
-Okay. This works for me. The ref_obj_id fix can be a followup.
+Ack with a few nits below.
+
+Acked-by: Yonghong Song <yhs@fb.com>
+
+> ---
+> v2->v3: lore.kernel.org/bpf/20220914123600.927632-2-davemarchevsky@fb.com
+> 
+> * Test that ring_buffer__poll returns -EDONE (Alexei)
+> 
+> v1->v2: lore.kernel.org/bpf/20220912101106.2765921-1-davemarchevsky@fb.com
+> 
+> * Actually run the program instead of just loading (Yonghong)
+> * Add a bpf_map_update_elem call to the test (Yonghong)
+> * Refactor runner such that existing test and newly-added test are
+>    subtests of 'ringbuf' top-level test (Yonghong)
+> * Remove unused globals in test prog (Yonghong)
+> 
+>   tools/testing/selftests/bpf/Makefile          |  8 ++-
+>   .../selftests/bpf/prog_tests/ringbuf.c        | 65 ++++++++++++++++-
+>   .../bpf/progs/test_ringbuf_map_key.c          | 70 +++++++++++++++++++
+>   3 files changed, 139 insertions(+), 4 deletions(-)
+>   create mode 100644 tools/testing/selftests/bpf/progs/test_ringbuf_map_key.c
+> 
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> index 5898d3828b82..28bd482f34a1 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -358,9 +358,11 @@ LINKED_SKELS := test_static_linked.skel.h linked_funcs.skel.h		\
+>   		test_subskeleton.skel.h test_subskeleton_lib.skel.h	\
+>   		test_usdt.skel.h
+>   
+> -LSKELS := fentry_test.c fexit_test.c fexit_sleep.c \
+> -	test_ringbuf.c atomics.c trace_printk.c trace_vprintk.c \
+> -	map_ptr_kern.c core_kern.c core_kern_overflow.c
+> +LSKELS := fentry_test.c fexit_test.c fexit_sleep.c atomics.c 		\
+> +	trace_printk.c trace_vprintk.c map_ptr_kern.c 			\
+> +	core_kern.c core_kern_overflow.c test_ringbuf.c			\
+> +	test_ringbuf_map_key.c
+> +
+>   # Generate both light skeleton and libbpf skeleton for these
+>   LSKELS_EXTRA := test_ksyms_module.c test_ksyms_weak.c kfunc_call_test.c \
+>   	kfunc_call_test_subprog.c
+> diff --git a/tools/testing/selftests/bpf/prog_tests/ringbuf.c b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
+> index 9a80fe8a6427..2d54ceac9417 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/ringbuf.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
+> @@ -13,6 +13,7 @@
+>   #include <linux/perf_event.h>
+>   #include <linux/ring_buffer.h>
+>   #include "test_ringbuf.lskel.h"
+> +#include "test_ringbuf_map_key.lskel.h"
+>   
+>   #define EDONE 7777
+>   
+> @@ -58,6 +59,7 @@ static int process_sample(void *ctx, void *data, size_t len)
+>   	}
+>   }
+>   
+> +static struct test_ringbuf_map_key_lskel *skel_map_key;
+>   static struct test_ringbuf_lskel *skel;
+>   static struct ring_buffer *ringbuf;
+>   
+> @@ -81,7 +83,7 @@ static void *poll_thread(void *input)
+>   	return (void *)(long)ring_buffer__poll(ringbuf, timeout);
+>   }
+>   
+> -void test_ringbuf(void)
+> +void ringbuf_subtest(void)
+
+static?
+
+>   {
+>   	const size_t rec_sz = BPF_RINGBUF_HDR_SZ + sizeof(struct sample);
+>   	pthread_t thread;
+> @@ -297,3 +299,64 @@ void test_ringbuf(void)
+>   	ring_buffer__free(ringbuf);
+>   	test_ringbuf_lskel__destroy(skel);
+>   }
+> +
+> +static int process_map_key_sample(void *ctx, void *data, size_t len)
+> +{
+> +	struct sample *s;
+> +	int err, val;
+> +
+> +	s = data;
+> +	switch (s->seq) {
+> +	case 1:
+> +		ASSERT_EQ(s->value, 42, "sample_value");
+> +		err = bpf_map_lookup_elem(skel_map_key->maps.hash_map.map_fd,
+> +					  s, &val);
+> +		ASSERT_OK(err, "hash_map bpf_map_lookup_elem");
+> +		ASSERT_EQ(val, 1, "hash_map val");
+> +		return -EDONE;
+> +	default:
+> +		return 0;
+> +	}
+> +}
+> +
+> +void ringbuf_map_key_subtest(void)
+
+static?
+
+> +{
+> +	int err;
+> +
+> +	skel_map_key = test_ringbuf_map_key_lskel__open();
+> +	if (!ASSERT_OK_PTR(skel_map_key, "test_ringbuf_map_key_lskel__open"))
+> +		return;
+> +
+> +	skel_map_key->maps.ringbuf.max_entries = getpagesize();
+> +	skel_map_key->bss->pid = getpid();
+> +
+> +	err = test_ringbuf_map_key_lskel__load(skel_map_key);
+> +	if (!ASSERT_OK(err, "test_ringbuf_map_key_lskel__load"))
+> +		goto cleanup;
+> +
+> +	ringbuf = ring_buffer__new(skel_map_key->maps.ringbuf.map_fd,
+> +				   process_map_key_sample, NULL, NULL);
+> +
+> +	err = test_ringbuf_map_key_lskel__attach(skel_map_key);
+> +	if (!ASSERT_OK(err, "test_ringbuf_map_key_lskel__attach"))
+> +		goto cleanup_ringbuf;
+> +
+> +	syscall(__NR_getpgid);
+> +	ASSERT_EQ(skel_map_key->bss->seq, 1, "skel_map_key->bss->seq");
+> +	err = ring_buffer__poll(ringbuf, -1);
+> +	if (!ASSERT_EQ(err, -EDONE, "ring_buffer__poll"))
+> +		goto cleanup_ringbuf;
+
+there is no need for 'goto' above.
+
+> +
+> +cleanup_ringbuf:
+> +	ring_buffer__free(ringbuf);
+> +cleanup:
+> +	test_ringbuf_map_key_lskel__destroy(skel_map_key);
+> +}
+> +
+> +void test_ringbuf(void)
+> +{
+> +	if (test__start_subtest("ringbuf"))
+> +		ringbuf_subtest();
+> +	if (test__start_subtest("ringbuf_map_key"))
+> +		ringbuf_map_key_subtest();
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/test_ringbuf_map_key.c b/tools/testing/selftests/bpf/progs/test_ringbuf_map_key.c
+> new file mode 100644
+> index 000000000000..495f85c6e120
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/test_ringbuf_map_key.c
+> @@ -0,0 +1,70 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
+> +
+> +#include <linux/bpf.h>
+> +#include <bpf/bpf_helpers.h>
+> +#include "bpf_misc.h"
+> +
+> +char _license[] SEC("license") = "GPL";
+> +
+> +struct sample {
+> +	int pid;
+> +	int seq;
+> +	long value;
+> +	char comm[16];
+> +};
+> +
+> +struct {
+> +	__uint(type, BPF_MAP_TYPE_RINGBUF);
+> +	__uint(max_entries, 4096);
+> +} ringbuf SEC(".maps");
+> +
+> +struct {
+> +	__uint(type, BPF_MAP_TYPE_HASH);
+> +	__uint(max_entries, 1000);
+> +	__type(key, struct sample);
+> +	__type(value, int);
+> +} hash_map SEC(".maps");
+> +
+> +/* inputs */
+> +int pid = 0;
+> +
+> +/* inner state */
+> +long seq = 0;
+> +
+> +SEC("fentry/" SYS_PREFIX "sys_getpgid")
+> +int test_ringbuf_mem_map_key(void *ctx)
+> +{
+> +	int cur_pid = bpf_get_current_pid_tgid() >> 32;
+> +	struct sample *sample, sample_copy;
+> +	int *lookup_val;
+> +
+> +	if (cur_pid != pid)
+> +		return 0;
+> +
+> +	sample = bpf_ringbuf_reserve(&ringbuf, sizeof(*sample), 0);
+> +	if (!sample)
+> +		return 0;
+> +
+> +	sample->pid = pid;
+> +	bpf_get_current_comm(sample->comm, sizeof(sample->comm));
+> +	sample->seq = ++seq;
+> +	sample->value = 42;
+> +
+> +	/* test using 'sample' (PTR_TO_MEM | MEM_ALLOC) as map key arg
+> +	 */
+> +	lookup_val = (int *)bpf_map_lookup_elem(&hash_map, sample);
+> +
+> +	/* memcpy is necessary so that verifier doesn't complain with:
+
+could you add a keyword 'workaround' so it can be easily searchable if
+we forgot to make this enhancement in the future?
+
+> +	 *   verifier internal error: more than one arg with ref_obj_id R3
+> +	 * when trying to do bpf_map_update_elem(&hash_map, sample, &sample->seq, BPF_ANY);
+> +	 *
+> +	 * Since bpf_map_lookup_elem above uses 'sample' as key, test using
+> +	 * sample field as value below
+> +	 */
+> +	__builtin_memcpy(&sample_copy, sample, sizeof(struct sample));
+> +	bpf_map_update_elem(&hash_map, &sample_copy, &sample->seq, BPF_ANY);
+> +
+> +	bpf_ringbuf_submit(sample, 0);
+> +	return 0;
+> +}
