@@ -2,152 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE1A35E6FFB
-	for <lists+bpf@lfdr.de>; Fri, 23 Sep 2022 00:59:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D31475E7013
+	for <lists+bpf@lfdr.de>; Fri, 23 Sep 2022 01:08:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230522AbiIVW5I (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Sep 2022 18:57:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56342 "EHLO
+        id S230308AbiIVXHx convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 22 Sep 2022 19:07:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231143AbiIVW4y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Sep 2022 18:56:54 -0400
+        with ESMTP id S230468AbiIVXHv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 22 Sep 2022 19:07:51 -0400
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7C5C10F734
-        for <bpf@vger.kernel.org>; Thu, 22 Sep 2022 15:56:52 -0700 (PDT)
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 28MKipSa027732
-        for <bpf@vger.kernel.org>; Thu, 22 Sep 2022 15:56:52 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=sVRCkHaTLXKWBf27vtVaiDWC3DjrTAzIxcUmFd0K0e4=;
- b=W7Tma40SNJYqbSkMIWQoKGfvRlRPjSG4I9w9Q1EItUTKHNaYQdX0Kh7PHGkJ0CPxwSwF
- RzslopLDX7lTjAg6VkqdV+9kD7cez/47MvmgyTUzDIgG10eK1R4t2iTNqSNbQNfVue2q
- X0VbRmxdPA7+GnvdzxVQj9IT+LGb8SC/fL0= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3jrpfvw9s9-3
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 746021138FF
+        for <bpf@vger.kernel.org>; Thu, 22 Sep 2022 16:07:48 -0700 (PDT)
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 28MKiMai015075
+        for <bpf@vger.kernel.org>; Thu, 22 Sep 2022 16:07:48 -0700
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3jrayp8xdt-4
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 22 Sep 2022 15:56:51 -0700
-Received: from twshared17341.24.frc3.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Thu, 22 Sep 2022 16:07:48 -0700
+Received: from twshared22593.02.prn5.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 22 Sep 2022 15:56:51 -0700
-Received: by devbig933.frc1.facebook.com (Postfix, from userid 6611)
-        id 187C5999DEAB; Thu, 22 Sep 2022 15:56:49 -0700 (PDT)
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        <netdev@vger.kernel.org>, Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf-next 5/5] selftests/bpf: Check -EBUSY for the recurred bpf_setsockopt(TCP_CONGESTION)
-Date:   Thu, 22 Sep 2022 15:56:49 -0700
-Message-ID: <20220922225649.3058534-1-kafai@fb.com>
+ 15.1.2375.31; Thu, 22 Sep 2022 16:07:45 -0700
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+        id CDEB11F384455; Thu, 22 Sep 2022 16:07:40 -0700 (PDT)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>
+Subject: [PATCH bpf-next 0/5] veristat: further usability improvements
+Date:   Thu, 22 Sep 2022 16:07:34 -0700
+Message-ID: <20220922230739.1288536-1-andrii@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220922225616.3054840-1-kafai@fb.com>
-References: <20220922225616.3054840-1-kafai@fb.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: H6aoQd4q4RmIcxASwDKoN6sfkyWcI-vf
-X-Proofpoint-ORIG-GUID: H6aoQd4q4RmIcxASwDKoN6sfkyWcI-vf
+X-Proofpoint-GUID: lbxWBRHWmBjKTP0VPl46bBCZhcfzIr4e
+X-Proofpoint-ORIG-GUID: lbxWBRHWmBjKTP0VPl46bBCZhcfzIr4e
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.528,FMLib:17.11.122.1
  definitions=2022-09-22_15,2022-09-22_02,2022-06-22_01
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Martin KaFai Lau <martin.lau@kernel.org>
+A small patch set adding few usability improvements and features making
+veristat a more convenient tool to be used for work on BPF verifier:
 
-This patch changes the bpf_dctcp test to ensure the recurred
-bpf_setsockopt(TCP_CONGESTION) returns -EBUSY.
+  - patch #2 speeds up and makes stats parsing from BPF verifier log more
+    robust;
 
-Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
----
- .../selftests/bpf/prog_tests/bpf_tcp_ca.c     |  4 ++++
- tools/testing/selftests/bpf/progs/bpf_dctcp.c | 23 ++++++++++++++-----
- 2 files changed, 21 insertions(+), 6 deletions(-)
+  - patch #3 makes veristat less strict about input object files; veristat
+    will ignore non-BPF ELF files;
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c b/tools/=
-testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-index 2959a52ced06..930d2e6b3d5e 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-@@ -290,6 +290,10 @@ static void test_dctcp_fallback(void)
- 		goto done;
- 	ASSERT_STREQ(dctcp_skel->bss->cc_res, "cubic", "cc_res");
- 	ASSERT_EQ(dctcp_skel->bss->tcp_cdg_res, -ENOTSUPP, "tcp_cdg_res");
-+	/* All setsockopt(TCP_CONGESTION) in the recurred
-+	 * bpf_dctcp->init() should fail with -EBUSY.
-+	 */
-+	ASSERT_EQ(dctcp_skel->bss->ebusy_cnt, 4, "ebusy_cnt");
-=20
- 	err =3D getsockopt(srv_fd, SOL_TCP, TCP_CONGESTION, srv_cc, &cc_len);
- 	if (!ASSERT_OK(err, "getsockopt(srv_fd, TCP_CONGESTION)"))
-diff --git a/tools/testing/selftests/bpf/progs/bpf_dctcp.c b/tools/testin=
-g/selftests/bpf/progs/bpf_dctcp.c
-index 9573be6122be..0cab241c33b5 100644
---- a/tools/testing/selftests/bpf/progs/bpf_dctcp.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_dctcp.c
-@@ -11,6 +11,7 @@
- #include <linux/types.h>
- #include <linux/stddef.h>
- #include <linux/tcp.h>
-+#include <errno.h>
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_tracing.h>
- #include "bpf_tcp_helpers.h"
-@@ -23,6 +24,7 @@ const char tcp_cdg[] =3D "cdg";
- char cc_res[TCP_CA_NAME_MAX];
- int tcp_cdg_res =3D 0;
- int stg_result =3D 0;
-+int ebusy_cnt =3D 0;
-=20
- struct {
- 	__uint(type, BPF_MAP_TYPE_SK_STORAGE);
-@@ -64,19 +66,28 @@ void BPF_PROG(dctcp_init, struct sock *sk)
-=20
- 	if (!(tp->ecn_flags & TCP_ECN_OK) && fallback[0]) {
- 		/* Switch to fallback */
--		bpf_setsockopt(sk, SOL_TCP, TCP_CONGESTION,
--			       (void *)fallback, sizeof(fallback));
-+		if (bpf_setsockopt(sk, SOL_TCP, TCP_CONGESTION,
-+				   (void *)fallback, sizeof(fallback)) =3D=3D -EBUSY)
-+			ebusy_cnt++;
-+
- 		/* Switch back to myself which the bpf trampoline
- 		 * stopped calling dctcp_init recursively.
- 		 */
--		bpf_setsockopt(sk, SOL_TCP, TCP_CONGESTION,
--			       (void *)bpf_dctcp, sizeof(bpf_dctcp));
-+		if (bpf_setsockopt(sk, SOL_TCP, TCP_CONGESTION,
-+				   (void *)bpf_dctcp, sizeof(bpf_dctcp)) =3D=3D -EBUSY)
-+			ebusy_cnt++;
-+
- 		/* Switch back to fallback */
--		bpf_setsockopt(sk, SOL_TCP, TCP_CONGESTION,
--			       (void *)fallback, sizeof(fallback));
-+		if (bpf_setsockopt(sk, SOL_TCP, TCP_CONGESTION,
-+				   (void *)fallback, sizeof(fallback)) =3D=3D -EBUSY)
-+			ebusy_cnt++;
-+
- 		/* Expecting -ENOTSUPP for tcp_cdg_res */
- 		tcp_cdg_res =3D bpf_setsockopt(sk, SOL_TCP, TCP_CONGESTION,
- 					     (void *)tcp_cdg, sizeof(tcp_cdg));
-+		if (tcp_cdg_res =3D=3D -EBUSY)
-+			ebusy_cnt++;
-+
- 		bpf_getsockopt(sk, SOL_TCP, TCP_CONGESTION,
- 			       (void *)cc_res, sizeof(cc_res));
- 		return;
---=20
+  - patch #4 adds progress log, by default, so that user doing
+    mass-verification is aware that veristat is not stuck;
+
+  - patch #5 allows to tune requested BPF verifier log level, which makes
+    veristat a simplest way to get BPF verifier log, especially successfully
+    verified ones.
+
+Andrii Nakryiko (5):
+  selftests/bpf: add sign-file to .gitignore
+  selftests/bpf: make veristat's verifier log parsing faster and more
+    robust
+  selftests/bpf: make veristat skip non-BPF and failing-to-open BPF
+    objects
+  selftests/bpf: emit processing progress and add quiet mode to veristat
+  selftests/bpf: allow to adjust BPF verifier log level in veristat
+
+ tools/testing/selftests/bpf/.gitignore |   1 +
+ tools/testing/selftests/bpf/veristat.c | 136 +++++++++++++++++++++----
+ 2 files changed, 118 insertions(+), 19 deletions(-)
+
+-- 
 2.30.2
 
