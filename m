@@ -2,162 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAD335E71AA
-	for <lists+bpf@lfdr.de>; Fri, 23 Sep 2022 03:59:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59D565E73AA
+	for <lists+bpf@lfdr.de>; Fri, 23 Sep 2022 08:06:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231984AbiIWB7z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Sep 2022 21:59:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33896 "EHLO
+        id S229744AbiIWGGY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 23 Sep 2022 02:06:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231177AbiIWB7y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Sep 2022 21:59:54 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E493814ED
-        for <bpf@vger.kernel.org>; Thu, 22 Sep 2022 18:59:52 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id j7so5298090ybb.8
-        for <bpf@vger.kernel.org>; Thu, 22 Sep 2022 18:59:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=DyJ5vyws2ZLZ8hWhmSaGs9IbqDPq0Ui75fNEM2wPyVg=;
-        b=Tvy5mUlG6Xj1zHxJPqw3ORpCL/8KJ2GGzqeZ2yNK8nQd9JEgRhQ+l0lBNNV3IVv1p6
-         ADQ01SZR2XB42VxSebniM7pmw1znrLJFXKxmyi0QVedornAU8hjxlAJNJUw2/s+3NeyI
-         b74dkXaWxeIChX6LNTqk/V9YF9F4ayjwUyEIWB+nJsbKaETgycHwHyVamfmH75oKfb4e
-         F9gLa5uePGc/0bipWuI7P244rZKVLqMtpPQniChSpfPpSi9LCEBFLDW1TL1Iwn0Jz0zM
-         SaLrphn3JUDLRu6Xy2hRr00oqTW7Dc+ghUw09Wa4Shw87LHfas0FV9W5+GoJdYPtQvk5
-         5mLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=DyJ5vyws2ZLZ8hWhmSaGs9IbqDPq0Ui75fNEM2wPyVg=;
-        b=zISd7b55hdv5XoqFLld/ewYFOCw5sG7NiWg6tvLbd8ShnedhTN3fiDJtaeUOxQ7kUY
-         hS/5Ya+fqPMbXKx29p3RfoeYlDTPxUJg6/WQAgB3k9gisNzAaUSajYqwvTQi7G1QSqiV
-         UDtSqnUwTXKTeGe1KuKG70nQo2ktqtXlmkq3C8a8UrQdIAcbtfCSrgGjub3Tg6cWEeuX
-         laFmhANwpLojFe2nA/yE/dac95Jq60M2UNwRb1AR9aNMgldIqshO4mmBhfTulsvTyhDO
-         c/QMgjUJMsDaVWZcmBAMRHb1jJmREcrB5y5et1vDXJ/PhzqdV12d1zwlUGbxnoNd48+P
-         Ar6Q==
-X-Gm-Message-State: ACrzQf2CLKSSbKukXAZCb9c0AGkocWBpfBtRZI/6druMTuDYnutWpGIc
-        UCBHBRS18583JhXytlygTWU7Opz8m6TAa6voeYvbTQ==
-X-Google-Smtp-Source: AMsMyM6F+LBgR9yjQn2ljA3KeuTKOpSxCXc+A5EDlhcoy5W2yqxDd2OedKUidF2dASw2HBrzSsVS8WeuJO3Uur7SK2Y=
-X-Received: by 2002:a25:c704:0:b0:6b0:3b4d:2d32 with SMTP id
- w4-20020a25c704000000b006b03b4d2d32mr7235707ybe.2.1663898391278; Thu, 22 Sep
- 2022 18:59:51 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220922225616.3054840-1-kafai@fb.com> <20220922225642.3058176-1-kafai@fb.com>
- <CAADnVQK4fVZ0KdWkV7MfP_F3As7cme46SoR30YU0bk0zAfpOrA@mail.gmail.com> <99e23c92-b1dc-db45-73f7-c210eb1debc8@linux.dev>
-In-Reply-To: <99e23c92-b1dc-db45-73f7-c210eb1debc8@linux.dev>
-From:   Hao Luo <haoluo@google.com>
-Date:   Thu, 22 Sep 2022 18:59:40 -0700
-Message-ID: <CA+khW7hsDgDRevwLsataPMDUMq-R5jaYfKZwxgm+EaocZjxxGA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 4/5] bpf: Stop bpf_setsockopt(TCP_CONGESTION) in
- init ops to recur itself
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        with ESMTP id S229900AbiIWGGW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 23 Sep 2022 02:06:22 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DECA4115F4F
+        for <bpf@vger.kernel.org>; Thu, 22 Sep 2022 23:06:21 -0700 (PDT)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 28MKiQlg001103
+        for <bpf@vger.kernel.org>; Thu, 22 Sep 2022 23:06:21 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=FIa3Yq6n+zpZVVx7wdnOb8Y0bW8rXKBDQLxFsBYeCqg=;
+ b=EO9ZkImL2kJ4DTybOli8pC8OLWn6UnpFVBNticCXKjWf2HVrVVgstrTEdQnhg8GbNVqz
+ fYSgziTO0c64MdtigkKQui3oGIh0Z4dC5+XweVBDVALBYc9ji8OCwL8hslLhv7lrrFMB
+ BxU3m+7r+ke7I7LQHZCpEhSxaqoIvNhY8Y4= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3jrhjgrj85-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 22 Sep 2022 23:06:21 -0700
+Received: from twshared3888.09.ash9.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Thu, 22 Sep 2022 23:06:18 -0700
+Received: by devbig077.ldc1.facebook.com (Postfix, from userid 158236)
+        id B495DDE1C3D6; Thu, 22 Sep 2022 23:06:16 -0700 (PDT)
+From:   Dave Marchevsky <davemarchevsky@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Kernel Team <kernel-team@fb.com>,
-        Network Development <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Yonghong Song <yhs@fb.com>,
+        Dave Marchevsky <davemarchevsky@fb.com>
+Subject: [PATCH v4 bpf-next 1/2] bpf: Allow ringbuf memory to be used as map key
+Date:   Thu, 22 Sep 2022 23:06:13 -0700
+Message-ID: <20220923060614.4025371-1-davemarchevsky@fb.com>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: OlcdaPvLOjBCDFEfZBlBqNtnrt9Z0qg9
+X-Proofpoint-ORIG-GUID: OlcdaPvLOjBCDFEfZBlBqNtnrt9Z0qg9
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.528,FMLib:17.11.122.1
+ definitions=2022-09-23_02,2022-09-22_02,2022-06-22_01
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 22, 2022 at 6:12 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
->
-> On 9/22/22 5:12 PM, Alexei Starovoitov wrote:
-[...]
-> > Instead of adding 4 bytes for enum in patch 3
-> > (which will be 8 bytes due to alignment)
-> > and abusing bpf_cookie here
-> > (which struct_ops bpf prog might eventually read and be surprised
-> > to find sk pointer in there)
-> > how about adding 'struct task_struct *saved_current' as another arg
-> > to bpf_tramp_run_ctx ?
-> > Always store the current task in there in prog_entry_struct_ops
-> > and then compare it here in this specialized bpf_init_ops_setsockopt?
-> >
-> > Or maybe always check in enter_prog_struct_ops:
-> > if (container_of(current->bpf_ctx, struct bpf_tramp_run_ctx,
-> > run_ctx)->saved_current == current) // goto out since recursion?
-> > it will prevent issues in case we don't know about and will
-> > address the good recursion case as explained in patch 1?
-> > I'm assuming 2nd ssthresh runs in a different task..
-> > Or is it actually the same task?
->
-> The 2nd ssthresh() should run in the same task but different sk.  The
-> first ssthresh(sk[1]) was run in_task() context and then got
-> interrupted.  The softirq then handles the rcv path which just happens
-> to also call ssthresh(sk[2]) in the unlikely pkt-loss case. It is like
-> ssthresh(sk[1]) => softirq => ssthresh(sk[2]).
->
-> The tcp-cc ops can recur but cannot recur on the same sk because it
-> requires to hold the sk lock, so the patch remembers what was the
-> previous sk to ensure it does not recur on the same sk.  Then it needs
-> to peek into the previous run ctx which may not always be
-> bpf_trump_run_ctx.  eg. a cg bpf prog (with bpf_cg_run_ctx) can call
-> bpf_setsockopt(TCP_CONGESTION, "a_bpf_tcp_cc") which then will call the
-> a_bpf_tcp_cc->init().  It needs a bpf_run_ctx_type so it can safely peek
-> the previous bpf_run_ctx.
->
-> Since struct_ops is the only one that needs to peek into the previous
-> run_ctx (through tramp_run_ctx->saved_run_ctx),  instead of adding 4
-> bytes to the bpf_run_ctx, one idea just came to my mind is to use one
-> bit in the tramp_run_ctx->saved_run_ctx pointer itsef.  Something like
-> this if it reuses the bpf_cookie (probably missed some int/ptr type
-> casting):
->
-> #define BPF_RUN_CTX_STRUCT_OPS_BIT 1UL
->
-> u64 notrace __bpf_prog_enter_struct_ops(struct bpf_prog *prog,
->                                      struct bpf_tramp_run_ctx *run_ctx)
->          __acquires(RCU)
-> {
->         rcu_read_lock();
->         migrate_disable();
->
->         run_ctx->saved_run_ctx = bpf_set_run_ctx((&run_ctx->run_ctx) |
->                                         BPF_RUN_CTX_STRUCT_OPS_BIT);
->
->          return bpf_prog_start_time();
-> }
->
-> BPF_CALL_5(bpf_init_ops_setsockopt, struct sock *, sk, int, level,
->             int, optname, char *, optval, int, optlen)
-> {
->         /* ... */
->         if (unlikely((run_ctx->saved_run_ctx &
->                         BPF_RUN_CTX_STRUCT_OPS_BIT) && ...) {
->                 /* ... */
->                 if (bpf_cookie == (uintptr_t)sk)
->                         return -EBUSY;
->         }
->
-> }
+This patch adds support for the following pattern:
 
-If I understand correctly, the purpose of adding a field in run_ctx is
-to tell the enclosing type from a generic bpf_run_ctx.
+  struct some_data *data =3D bpf_ringbuf_reserve(&ringbuf, sizeof(struct =
+some_data, 0));
+  if (!data)
+    return;
+  bpf_map_lookup_elem(&another_map, &data->some_field);
+  bpf_ringbuf_submit(data);
 
-In the following lines:
+Currently the verifier does not consider bpf_ringbuf_reserve's
+PTR_TO_MEM | MEM_ALLOC ret type a valid key input to bpf_map_lookup_elem.
+Since PTR_TO_MEM is by definition a valid region of memory, it is safe
+to use it as a key for lookups.
 
-> >> +       if (unlikely(run_ctx->saved_run_ctx &&
-> >> +                    run_ctx->saved_run_ctx->type == BPF_RUN_CTX_TYPE_STRUCT_OPS)) {
-> >> +               saved_run_ctx = (struct bpf_tramp_run_ctx *)run_ctx->saved_run_ctx;
+Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
+Acked-by: Yonghong Song <yhs@fb.com>
+---
+v2->v3: lore.kernel.org/bpf/20220914123600.927632-1-davemarchevsky@fb.com
 
-the enclosing type of run_ctx->saved_run_ctx is a bpf_tramp_run_ctx,
-so we can safely type cast it and further check sk.
+  * Add Yonghong ack, rebase
 
-The best way I can come up with is also what Martin thinks, maybe
-encoding the type information in the lower bits of the saved_run_ctx
-field.
+v1->v2: lore.kernel.org/bpf/20220912101106.2765921-1-davemarchevsky@fb.co=
+m
 
-Hao
+  * Move test changes into separate patch - patch 2 in this series.
+    (Kumar, Yonghong). That patch's changelog enumerates specific
+    changes from v1
+  * Remove PTR_TO_MEM addition from this patch - patch 1 (Yonghong)
+    * I don't have a usecase for PTR_TO_MEM w/o MEM_ALLOC
+  * Add "if (!data)" error check to example pattern in this patch
+    (Yonghong)
+  * Remove patch 2 from v1's series, which removed map_key_value_types
+    as it was more-or-less duplicate of mem_types
+    * Now that PTR_TO_MEM isn't added here, more differences between
+      map_key_value_types and mem_types, and no usecase for PTR_TO_BUF,
+      so drop for now.
+
+ kernel/bpf/verifier.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 6f6d2d511c06..97351ae3e7a7 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -5641,6 +5641,7 @@ static const struct bpf_reg_types map_key_value_typ=
+es =3D {
+ 		PTR_TO_PACKET_META,
+ 		PTR_TO_MAP_KEY,
+ 		PTR_TO_MAP_VALUE,
++		PTR_TO_MEM | MEM_ALLOC,
+ 	},
+ };
+=20
+--=20
+2.30.2
+
