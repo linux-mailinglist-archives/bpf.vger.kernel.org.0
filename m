@@ -2,172 +2,255 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47C495E801F
-	for <lists+bpf@lfdr.de>; Fri, 23 Sep 2022 18:45:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25C735E810E
+	for <lists+bpf@lfdr.de>; Fri, 23 Sep 2022 19:46:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229963AbiIWQpi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 23 Sep 2022 12:45:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40266 "EHLO
+        id S230089AbiIWRqv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 23 Sep 2022 13:46:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231277AbiIWQpg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 23 Sep 2022 12:45:36 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DBBE127555
-        for <bpf@vger.kernel.org>; Fri, 23 Sep 2022 09:45:33 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id r133-20020a1c448b000000b003b494ffc00bso3694501wma.0
-        for <bpf@vger.kernel.org>; Fri, 23 Sep 2022 09:45:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=mOJBFjRRTQOLMhXeuWiEa3iVJxoMFGP8tXYc65hDHv4=;
-        b=KI6qxW+rqSa88pnT9BHcMzTYQ/EPlGQMkmepwufMnKjb8Grb092QhNVKTREgMoHF0E
-         P7Ik7btej3gGALjuaMQWArzO95vir14IXvpdNcv1xz8skHm2QXjJrQNKPGPEWoIGEAKd
-         xy7+wjI1etv80s9EENeAbcPEV/r9aWfJ9LXdCmxp3gI1/aNq0NR5jQfGbA40Yc26l/Ku
-         dNwDh2vY5boD9JqtqAuH708KBq+GBDWbXt147hWRI1kF9ARpcvk7DuCH3LPbjfrheF1l
-         dOOFPypylFxe1f0fKBO+Vo9jtrzArO5bEC911Q7HsvzaIPIOm6vEdVQvKg1jbnQpWCl0
-         CuLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=mOJBFjRRTQOLMhXeuWiEa3iVJxoMFGP8tXYc65hDHv4=;
-        b=IzwSEFfS8dbpuoe8DH86ET3HXxi7Ije4GwVaz88s76PGVDmVmJUhfe/kH/LMk2KGFc
-         Sb6Nq79fCf5044P5hxBEaxVOouXNFjUjTDq896BY9/pbu5aqwTyiq0k9pUeh8FQPOEzi
-         /iSc0RkL1pwpeR7Pa5Wt4UunrmgxP+8MzE5JBvTnhrM1OENsUZ/b1YYPI3Y+bNykIAMf
-         yDMlXjAdwKoLvXsavs+ZfQjW6oJciU02RzRaR7yfgSYVS8LUQrwCdxigzu2nWF+ENYZ+
-         M8SRNyQWl3J25RIWs3z0ecNGH3GQZ8P2lNmecDJB5xebgMreGneMaq1D8rJo267efLx+
-         Olfg==
-X-Gm-Message-State: ACrzQf31nIrzBkRo4ml5t5FlpDzvXxufkO7xCM+PPk+224VoUfKIuPbB
-        7VoMb9Hzyi6L+1c5mQ61DPu1xw8BGvX0LfTkOZAAVA==
-X-Google-Smtp-Source: AMsMyM5/YN20pETls7iMs8r2+NepnIOp044ol2iYCi6uj3oVv5XELolt3qWypHDMCWdVyZbTE4EhOYkJjAxzgEc8d5Q=
-X-Received: by 2002:a05:600c:2181:b0:3b4:74e4:16f8 with SMTP id
- e1-20020a05600c218100b003b474e416f8mr6312587wme.174.1663951531528; Fri, 23
- Sep 2022 09:45:31 -0700 (PDT)
+        with ESMTP id S229666AbiIWRqv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 23 Sep 2022 13:46:51 -0400
+Received: from out0.migadu.com (out0.migadu.com [IPv6:2001:41d0:2:267::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A33C14F826;
+        Fri, 23 Sep 2022 10:46:48 -0700 (PDT)
+Message-ID: <27c7725a-738a-2227-5e47-ab2afab29348@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1663955206;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SddOAd9zk3MaEnWuwIerAvF3FtWp8m9E+WXbB0t9ITg=;
+        b=hk9pyW7YRWXdY8tq3RhYF1qlBtX7tHAewn6CRjjpQ+71ghZtluqzBRvYW+frXX35PSA5/Z
+        9go/mpH5zzgc/n/VYARdnUf9Wii4n+R9qGp0YRKvUiWvua2A3P1a/BzyxrgNTa6jwtICJW
+        dT/WdcPgXsSJ7t8zq+FwtzH3MMICaDE=
+Date:   Fri, 23 Sep 2022 10:46:43 -0700
 MIME-Version: 1.0
-References: <20220923063205.772936-1-namhyung@kernel.org>
-In-Reply-To: <20220923063205.772936-1-namhyung@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Fri, 23 Sep 2022 09:45:19 -0700
-Message-ID: <CAP-5=fWwNwtocMR3s1Su2k2vZAwL4yhX19UGZ4i0dMXFDFFBJA@mail.gmail.com>
-Subject: Re: [PATCH v4] perf tools: Get a perf cgroup more portably in BPF
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-perf-users@vger.kernel.org, Song Liu <songliubraving@fb.com>,
-        Hao Luo <haoluo@google.com>, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH bpf-next 4/5] bpf: Stop bpf_setsockopt(TCP_CONGESTION) in
+ init ops to recur itself
+Content-Language: en-US
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Network Development <netdev@vger.kernel.org>
+References: <20220922225616.3054840-1-kafai@fb.com>
+ <20220922225642.3058176-1-kafai@fb.com>
+ <CAADnVQK4fVZ0KdWkV7MfP_F3As7cme46SoR30YU0bk0zAfpOrA@mail.gmail.com>
+ <99e23c92-b1dc-db45-73f7-c210eb1debc8@linux.dev>
+ <CAADnVQKFdpiQFxgF253V5XmtjnrVXcZ14sxT_Q3vOQ97WxScMQ@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <CAADnVQKFdpiQFxgF253V5XmtjnrVXcZ14sxT_Q3vOQ97WxScMQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: linux.dev
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 22, 2022 at 11:32 PM Namhyung Kim <namhyung@kernel.org> wrote:
->
-> The perf_event_cgrp_id can be different on other configurations.
-> To be more portable as CO-RE, it needs to get the cgroup subsys id
-> using the bpf_core_enum_value() helper.
->
-> Suggested-by: Ian Rogers <irogers@google.com>
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+On 9/23/22 8:26 AM, Alexei Starovoitov wrote:
+> On Thu, Sep 22, 2022 at 6:11 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
+>>
+>> On 9/22/22 5:12 PM, Alexei Starovoitov wrote:
+>>> On Thu, Sep 22, 2022 at 3:56 PM Martin KaFai Lau <kafai@fb.com> wrote:
+>>>>
+>>>> From: Martin KaFai Lau <martin.lau@kernel.org>
+>>>>
+>>>> When a bad bpf prog '.init' calls
+>>>> bpf_setsockopt(TCP_CONGESTION, "itself"), it will trigger this loop:
+>>>>
+>>>> .init => bpf_setsockopt(tcp_cc) => .init => bpf_setsockopt(tcp_cc) ...
+>>>> ... => .init => bpf_setsockopt(tcp_cc).
+>>>>
+>>>> It was prevented by the prog->active counter before but the prog->active
+>>>> detection cannot be used in struct_ops as explained in the earlier
+>>>> patch of the set.
+>>>>
+>>>> In this patch, the second bpf_setsockopt(tcp_cc) is not allowed
+>>>> in order to break the loop.  This is done by checking the
+>>>> previous bpf_run_ctx has saved the same sk pointer in the
+>>>> bpf_cookie.
+>>>>
+>>>> Note that this essentially limits only the first '.init' can
+>>>> call bpf_setsockopt(TCP_CONGESTION) to pick a fallback cc (eg. peer
+>>>> does not support ECN) and the second '.init' cannot fallback to
+>>>> another cc.  This applies even the second
+>>>> bpf_setsockopt(TCP_CONGESTION) will not cause a loop.
+>>>>
+>>>> Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
+>>>> ---
+>>>>    include/linux/filter.h |  3 +++
+>>>>    net/core/filter.c      |  4 ++--
+>>>>    net/ipv4/bpf_tcp_ca.c  | 54 ++++++++++++++++++++++++++++++++++++++++++
+>>>>    3 files changed, 59 insertions(+), 2 deletions(-)
+>>>>
+>>>> diff --git a/include/linux/filter.h b/include/linux/filter.h
+>>>> index 98e28126c24b..9942ecc68a45 100644
+>>>> --- a/include/linux/filter.h
+>>>> +++ b/include/linux/filter.h
+>>>> @@ -911,6 +911,9 @@ int sk_get_filter(struct sock *sk, sockptr_t optval, unsigned int len);
+>>>>    bool sk_filter_charge(struct sock *sk, struct sk_filter *fp);
+>>>>    void sk_filter_uncharge(struct sock *sk, struct sk_filter *fp);
+>>>>
+>>>> +int _bpf_setsockopt(struct sock *sk, int level, int optname,
+>>>> +                   char *optval, int optlen);
+>>>> +
+>>>>    u64 __bpf_call_base(u64 r1, u64 r2, u64 r3, u64 r4, u64 r5);
+>>>>    #define __bpf_call_base_args \
+>>>>           ((u64 (*)(u64, u64, u64, u64, u64, const struct bpf_insn *)) \
+>>>> diff --git a/net/core/filter.c b/net/core/filter.c
+>>>> index f4cea3ff994a..e56a1ebcf1bc 100644
+>>>> --- a/net/core/filter.c
+>>>> +++ b/net/core/filter.c
+>>>> @@ -5244,8 +5244,8 @@ static int __bpf_setsockopt(struct sock *sk, int level, int optname,
+>>>>           return -EINVAL;
+>>>>    }
+>>>>
+>>>> -static int _bpf_setsockopt(struct sock *sk, int level, int optname,
+>>>> -                          char *optval, int optlen)
+>>>> +int _bpf_setsockopt(struct sock *sk, int level, int optname,
+>>>> +                   char *optval, int optlen)
+>>>>    {
+>>>>           if (sk_fullsock(sk))
+>>>>                   sock_owned_by_me(sk);
+>>>> diff --git a/net/ipv4/bpf_tcp_ca.c b/net/ipv4/bpf_tcp_ca.c
+>>>> index 6da16ae6a962..a9f2cab5ffbc 100644
+>>>> --- a/net/ipv4/bpf_tcp_ca.c
+>>>> +++ b/net/ipv4/bpf_tcp_ca.c
+>>>> @@ -144,6 +144,57 @@ static const struct bpf_func_proto bpf_tcp_send_ack_proto = {
+>>>>           .arg2_type      = ARG_ANYTHING,
+>>>>    };
+>>>>
+>>>> +BPF_CALL_5(bpf_init_ops_setsockopt, struct sock *, sk, int, level,
+>>>> +          int, optname, char *, optval, int, optlen)
+>>>> +{
+>>>> +       struct bpf_tramp_run_ctx *run_ctx, *saved_run_ctx;
+>>>> +       int ret;
+>>>> +
+>>>> +       if (optname != TCP_CONGESTION)
+>>>> +               return _bpf_setsockopt(sk, level, optname, optval, optlen);
+>>>> +
+>>>> +       run_ctx = (struct bpf_tramp_run_ctx *)current->bpf_ctx;
+>>>> +       if (unlikely(run_ctx->saved_run_ctx &&
+>>>> +                    run_ctx->saved_run_ctx->type == BPF_RUN_CTX_TYPE_STRUCT_OPS)) {
+>>>> +               saved_run_ctx = (struct bpf_tramp_run_ctx *)run_ctx->saved_run_ctx;
+>>>> +               /* It stops this looping
+>>>> +                *
+>>>> +                * .init => bpf_setsockopt(tcp_cc) => .init =>
+>>>> +                * bpf_setsockopt(tcp_cc)" => .init => ....
+>>>> +                *
+>>>> +                * The second bpf_setsockopt(tcp_cc) is not allowed
+>>>> +                * in order to break the loop when both .init
+>>>> +                * are the same bpf prog.
+>>>> +                *
+>>>> +                * This applies even the second bpf_setsockopt(tcp_cc)
+>>>> +                * does not cause a loop.  This limits only the first
+>>>> +                * '.init' can call bpf_setsockopt(TCP_CONGESTION) to
+>>>> +                * pick a fallback cc (eg. peer does not support ECN)
+>>>> +                * and the second '.init' cannot fallback to
+>>>> +                * another cc.
+>>>> +                */
+>>>> +               if (saved_run_ctx->bpf_cookie == (uintptr_t)sk)
+>>>> +                       return -EBUSY;
+>>>> +       }
+>>>> +
+>>>> +       run_ctx->bpf_cookie = (uintptr_t)sk;
+>>>> +       ret = _bpf_setsockopt(sk, level, optname, optval, optlen);
+>>>> +       run_ctx->bpf_cookie = 0;
+>>>
+>>> Instead of adding 4 bytes for enum in patch 3
+>>> (which will be 8 bytes due to alignment)
+>>> and abusing bpf_cookie here
+>>> (which struct_ops bpf prog might eventually read and be surprised
+>>> to find sk pointer in there)
+>>> how about adding 'struct task_struct *saved_current' as another arg
+>>> to bpf_tramp_run_ctx ?
+>>> Always store the current task in there in prog_entry_struct_ops
+>>> and then compare it here in this specialized bpf_init_ops_setsockopt?
+>>>
+>>> Or maybe always check in enter_prog_struct_ops:
+>>> if (container_of(current->bpf_ctx, struct bpf_tramp_run_ctx,
+>>> run_ctx)->saved_current == current) // goto out since recursion?
+>>> it will prevent issues in case we don't know about and will
+>>> address the good recursion case as explained in patch 1?
+>>> I'm assuming 2nd ssthresh runs in a different task..
+>>> Or is it actually the same task?
+>>
+>> The 2nd ssthresh() should run in the same task but different sk.  The
+>> first ssthresh(sk[1]) was run in_task() context and then got
+>> interrupted.  The softirq then handles the rcv path which just happens
+>> to also call ssthresh(sk[2]) in the unlikely pkt-loss case. It is like
+>> ssthresh(sk[1]) => softirq => ssthresh(sk[2]).
+>>
+>> The tcp-cc ops can recur but cannot recur on the same sk because it
+>> requires to hold the sk lock, so the patch remembers what was the
+>> previous sk to ensure it does not recur on the same sk.  Then it needs
+>> to peek into the previous run ctx which may not always be
+>> bpf_trump_run_ctx.  eg. a cg bpf prog (with bpf_cg_run_ctx) can call
+>> bpf_setsockopt(TCP_CONGESTION, "a_bpf_tcp_cc") which then will call the
+>> a_bpf_tcp_cc->init().  It needs a bpf_run_ctx_type so it can safely peek
+>> the previous bpf_run_ctx.
+> 
+> got it.
+> 
+>>
+>> Since struct_ops is the only one that needs to peek into the previous
+>> run_ctx (through tramp_run_ctx->saved_run_ctx),  instead of adding 4
+>> bytes to the bpf_run_ctx, one idea just came to my mind is to use one
+>> bit in the tramp_run_ctx->saved_run_ctx pointer itsef.  Something like
+>> this if it reuses the bpf_cookie (probably missed some int/ptr type
+>> casting):
+>>
+>> #define BPF_RUN_CTX_STRUCT_OPS_BIT 1UL
+>>
+>> u64 notrace __bpf_prog_enter_struct_ops(struct bpf_prog *prog,
+>>                                       struct bpf_tramp_run_ctx *run_ctx)
+>>           __acquires(RCU)
+>> {
+>>          rcu_read_lock();
+>>          migrate_disable();
+>>
+>>          run_ctx->saved_run_ctx = bpf_set_run_ctx((&run_ctx->run_ctx) |
+>>                                          BPF_RUN_CTX_STRUCT_OPS_BIT);
+>>
+>>           return bpf_prog_start_time();
+>> }
+>>
+>> BPF_CALL_5(bpf_init_ops_setsockopt, struct sock *, sk, int, level,
+>>              int, optname, char *, optval, int, optlen)
+>> {
+>>          /* ... */
+>>          if (unlikely((run_ctx->saved_run_ctx &
+>>                          BPF_RUN_CTX_STRUCT_OPS_BIT) && ...) {
+>>                  /* ... */
+>>                  if (bpf_cookie == (uintptr_t)sk)
+>>                          return -EBUSY;
+>>          }
+>>
+>> }
+> 
+> that should work, but don't you need to loop through all previous
+> run_ctx and check all with BPF_RUN_CTX_STRUCT_OPS_BIT type ?
+> Since run_ctx is saved in the task and we have preemptible
+> rpgos there could be tracing prog in the chain:
+> struct_ops_run_ctx->tracing_run_ctx->struct_ops_run_ctx
+> where 1st and last have the same 'sk'.
 
-Reviewed-by: Ian Rogers <irogers@google.com>
 
-Would be good to get this into perf/urgent, does it need Fixes tags for that?
-
-Thanks,
-Ian
-
-> ---
-> v4 changes)
->  * add a missing check in the off_cpu
->
-> v3 changes)
->  * check compiler features for enum value
->
-> v2 changes)
->  * fix off_cpu.bpf.c too
->  * get perf_subsys_id only once
->
->  tools/perf/util/bpf_skel/bperf_cgroup.bpf.c | 11 ++++++++++-
->  tools/perf/util/bpf_skel/off_cpu.bpf.c      | 18 ++++++++++++++----
->  2 files changed, 24 insertions(+), 5 deletions(-)
->
-> diff --git a/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c b/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
-> index 292c430768b5..8e7520e273db 100644
-> --- a/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
-> +++ b/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
-> @@ -48,6 +48,7 @@ const volatile __u32 num_cpus = 1;
->
->  int enabled = 0;
->  int use_cgroup_v2 = 0;
-> +int perf_subsys_id = -1;
->
->  static inline int get_cgroup_v1_idx(__u32 *cgrps, int size)
->  {
-> @@ -58,7 +59,15 @@ static inline int get_cgroup_v1_idx(__u32 *cgrps, int size)
->         int level;
->         int cnt;
->
-> -       cgrp = BPF_CORE_READ(p, cgroups, subsys[perf_event_cgrp_id], cgroup);
-> +       if (perf_subsys_id == -1) {
-> +#if __has_builtin(__builtin_preserve_enum_value)
-> +               perf_subsys_id = bpf_core_enum_value(enum cgroup_subsys_id,
-> +                                                    perf_event_cgrp_id);
-> +#else
-> +               perf_subsys_id = perf_event_cgrp_id;
-> +#endif
-> +       }
-> +       cgrp = BPF_CORE_READ(p, cgroups, subsys[perf_subsys_id], cgroup);
->         level = BPF_CORE_READ(cgrp, level);
->
->         for (cnt = 0; i < MAX_LEVELS; i++) {
-> diff --git a/tools/perf/util/bpf_skel/off_cpu.bpf.c b/tools/perf/util/bpf_skel/off_cpu.bpf.c
-> index c4ba2bcf179f..38e3b287dbb2 100644
-> --- a/tools/perf/util/bpf_skel/off_cpu.bpf.c
-> +++ b/tools/perf/util/bpf_skel/off_cpu.bpf.c
-> @@ -94,6 +94,8 @@ const volatile bool has_prev_state = false;
->  const volatile bool needs_cgroup = false;
->  const volatile bool uses_cgroup_v1 = false;
->
-> +int perf_subsys_id = -1;
-> +
->  /*
->   * Old kernel used to call it task_struct->state and now it's '__state'.
->   * Use BPF CO-RE "ignored suffix rule" to deal with it like below:
-> @@ -119,11 +121,19 @@ static inline __u64 get_cgroup_id(struct task_struct *t)
->  {
->         struct cgroup *cgrp;
->
-> -       if (uses_cgroup_v1)
-> -               cgrp = BPF_CORE_READ(t, cgroups, subsys[perf_event_cgrp_id], cgroup);
-> -       else
-> -               cgrp = BPF_CORE_READ(t, cgroups, dfl_cgrp);
-> +       if (!uses_cgroup_v1)
-> +               return BPF_CORE_READ(t, cgroups, dfl_cgrp, kn, id);
-> +
-> +       if (perf_subsys_id == -1) {
-> +#if __has_builtin(__builtin_preserve_enum_value)
-> +               perf_subsys_id = bpf_core_enum_value(enum cgroup_subsys_id,
-> +                                                    perf_event_cgrp_id);
-> +#else
-> +               perf_subsys_id = perf_event_cgrp_id;
-> +#endif
-> +       }
->
-> +       cgrp = BPF_CORE_READ(t, cgroups, subsys[perf_subsys_id], cgroup);
->         return BPF_CORE_READ(cgrp, kn, id);
->  }
->
-> --
-> 2.37.3.998.g577e59143f-goog
->
+This interleave of different run_ctx could happen.  My understanding is 
+the 'struct_ops_run_ctx' can only be created when the tcp stack is 
+calling the 'bpf_tcp_cc->init()' (or other cc ops).  In the above case, 
+the first and second struct_ops_run_ctx are interleaved with a 
+tracing_run_ctx.  Each of these two struct_ops_run_ctx was created from 
+a different 'bpf_tcp_cc->init()' call by the kernel tcp stack.  They 
+cannot be called with the same sk and changing that sk at the same time 
+like this.  Otherwise, the kernel stack has a bug.
