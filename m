@@ -2,57 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C44715E85DB
-	for <lists+bpf@lfdr.de>; Sat, 24 Sep 2022 00:25:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94E445E85E7
+	for <lists+bpf@lfdr.de>; Sat, 24 Sep 2022 00:32:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232204AbiIWWZB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 23 Sep 2022 18:25:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60166 "EHLO
+        id S230113AbiIWWcy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 23 Sep 2022 18:32:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231517AbiIWWZA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 23 Sep 2022 18:25:00 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D28512B195
-        for <bpf@vger.kernel.org>; Fri, 23 Sep 2022 15:24:57 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id z13so3400155ejp.6
-        for <bpf@vger.kernel.org>; Fri, 23 Sep 2022 15:24:57 -0700 (PDT)
+        with ESMTP id S229511AbiIWWcx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 23 Sep 2022 18:32:53 -0400
+Received: from mail-yw1-x1144.google.com (mail-yw1-x1144.google.com [IPv6:2607:f8b0:4864:20::1144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DF0D121127
+        for <bpf@vger.kernel.org>; Fri, 23 Sep 2022 15:32:53 -0700 (PDT)
+Received: by mail-yw1-x1144.google.com with SMTP id 00721157ae682-3452214cec6so13653287b3.1
+        for <bpf@vger.kernel.org>; Fri, 23 Sep 2022 15:32:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=qmVDg6A0N81/7iCKY+RRgmqln1tMG5pJfnGY7finnE8=;
-        b=gmthGHoj8qsVdo8OhAxmkyJEVNJ/oWIOE6y+vbfIdKaLhqaO+PgdT/uqL8DbfZy6qN
-         sPvAttLNY6AtjR8dGy1kHP9184rxOTlMJ/oL1VUCbOB+uoWvTOGgsml+HOU/89nXbrzc
-         fr7N5ZNg3VEfqDSGekV5zrvv2W7naL621rw/By0fr3l/NSKnM21mn3agGEw4ME9LAoYA
-         Uhqrv55zWVOtxrXel1F0vPwtAk1+biD19BBqktVp20Ir5EcOZBemd0cV70TjNWPDUenH
-         W21BUA4b22z25BW8vUw6EuHrU9ZaQIF3Fuoh53/zD3+9+Xq+H3/jb1B6EoVHH18GSQOP
-         5RgA==
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date;
+        bh=InBjFEKTHbPX5Dd0F3o2or/MjP7qgqX5pNvRGqdx+Wg=;
+        b=B7x+sso47zGlP2GGaHE7jontTQM32XayNvwH1YxH1L093GTlvG3ocxrXAcfVr9CLPH
+         FnYriyrlw1omytZe4ldaM29CEuWPr/OMjplCZwLQZqSr4KQGHyG4hYeK5JMvnuTL6rzW
+         YSY6jLyqv7gqtTVmky2ixY2Bo23zYRx8gJ0X4R+E7I+bDn4yBMGrM89ritjq8bw7Ct9Z
+         TBai97o2yJi+2eGxs9nRdHrWuX48s0wJk7qq1T2n7H61PdjPCPlsX8pvPE71JLHyxglx
+         4eqvN+I1CC+tkWz2oj0o8HvmY5O8cbai5j9IloLQGWgGCA/nZMUoZS1ASIrSpr35BCwD
+         4DvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=qmVDg6A0N81/7iCKY+RRgmqln1tMG5pJfnGY7finnE8=;
-        b=Gxoni7VbCTjuKuYgqrY+8LI4+nBjVYbFq0LWZ+yUQN6hkepx1i4yz5eLaNBm8D26jG
-         jAbXpjelg1wwn8sY/GdXU7JBsbjUnXkakZYVQJHvI9t3jpb36LOwy2+00vI0eg9tXhvQ
-         cicQomUP3GjMFQtey8UA5hRwdHhK1/Xfdo49DhGUvFo/6gIPDoVip93yUTI9ui1OvSBV
-         S5aqLZ5Pt6P+MDKfwJHItiDdFc1dTP94ZJFlmsN4LNvvi0cI8C/RKEawR8ycQ84hXhQy
-         XzBBmg/cyKn985Ykoyr4lgVNZsu638aLAI/RDCzAZBOFQ+9iUqNZsqnnGCkqOWSOT+YO
-         L1Dw==
-X-Gm-Message-State: ACrzQf3gMkmFn/7CEXbzIkBmC1NGPyEVpkqS5dZ4D+i8nSEYGkReNNgj
-        yUKVn7ZaRJw7R8LuDDelMIKMVxPRqA423aqTAyw=
-X-Google-Smtp-Source: AMsMyM4BSbFrQsfXbG3m15vt3IAxDSgjg7/J/uM3YtfghzFXxI3BS/bgBDBwAN4yU0Aw4uzRZkGi8aRzmqNE5QmdSu0=
-X-Received: by 2002:a17:906:99c5:b0:73d:70c5:1a4f with SMTP id
- s5-20020a17090699c500b0073d70c51a4fmr8620594ejn.302.1663971896254; Fri, 23
- Sep 2022 15:24:56 -0700 (PDT)
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date;
+        bh=InBjFEKTHbPX5Dd0F3o2or/MjP7qgqX5pNvRGqdx+Wg=;
+        b=h2qzJbXHMxLUYK/GDF/rTXOflyt2tEvwIBOcsRr9aqsSc8J7BKMObIAVmw6JJpClGT
+         8RXaH+q638j7HZvPmq7anPFBZAlq5k+FcIH0wsMe0RilIl5iT/A9lASrusCsfHuQpkCq
+         v5FuxTJ+ObI+wpCocGvSqHJ55v5NkoqyIyEO3mcmkEHJ70Ip0gY6mbzqiVo+gHVMYz1Q
+         AvkHjeMBtWH3QUNdU9hc1npZniR3J03wzKO2JI/57tp7IzSyYzAEnYqnUAklCtJmxr/z
+         EsXuy1sh/WyEOxLQAVlwLr5xCINT3gbEUSVPcJRL7rB5dzgzNXu8eAQ8RM/zt0o1CD+D
+         +MSg==
+X-Gm-Message-State: ACrzQf2L0YxmzQvEZd5ZNTz+Q53nO3CmYckE/Hv7RmJ6mI/xAlRnrKzl
+        uKuBbCUPBXjHDaXAVftDy0qpy1sl3YgNLFPxD+wGeYlfDws=
+X-Google-Smtp-Source: AMsMyM7Asc5SVpw4jRF4Vhfg23jKsi1PWLjV83nREAJjgtGsD5pgoIQXASc0WNExGMbffUYDB/IQH0LUgAP0mo0LQBk=
+X-Received: by 2002:a81:3844:0:b0:344:bbce:3e23 with SMTP id
+ f65-20020a813844000000b00344bbce3e23mr10376992ywa.8.1663972372137; Fri, 23
+ Sep 2022 15:32:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAO658oWgicsACo3DUripSBkU6_bjJCScMUHKqLww7O+xY8CiUw@mail.gmail.com>
-In-Reply-To: <CAO658oWgicsACo3DUripSBkU6_bjJCScMUHKqLww7O+xY8CiUw@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 23 Sep 2022 15:24:44 -0700
-Message-ID: <CAEf4BzaMNWySHvbPWa-yU5DPL0zu+kMr29iRUTkmPLciKyGGew@mail.gmail.com>
-Subject: Re: Interesting data corruption in bpf_object_open_opts
-To:     Grant Seltzer Richman <grantseltzer@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date:   Sat, 24 Sep 2022 00:32:16 +0200
+Message-ID: <CAP01T752ZOX68V0hnCDAXT0tso7+i0BV0kDbXdvjYHNGM18Y2g@mail.gmail.com>
+Subject: Possible bugs in generated DATASEC BTF
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, "yhs@fb.com" <yhs@fb.com>, andrii@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -64,39 +62,52 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 13, 2022 at 6:23 PM Grant Seltzer Richman
-<grantseltzer@gmail.com> wrote:
->
-> Hi all, I'm experiencing an issue that I want to discuss, though I'm
-> not sure libbpf code is at fault. Any guidance is much appreciated.
->
-> The behavior I'm seeing is that I have a `struct bpf_object_open_opts`
-> where I properly set each of the `btf_custom_path` and `kconfig`
-> fields. I then call `bpf_object__open_mem` with this opts struct and
-> get this error:
->
-> libbpf: failed to get EHDR from /proc/config.gz
->
-> The very important thing to note here is that I'm setting the fields
-> and calling bpf_object__open_mem from Go code using CGO (this is in
-> libbpfgo). I do believe it's likely to be a CGO issue and not libbpf
-> itself, but here's why:
->
-> I've `git bisect`'ed the issue to be caused by commit `d8454ba8`,
-> which leads me to believe that CGO is failing to adjust offsets for
-> whatever having `long :0` in bpf_object_open_opts does. I can't figure
-> out why this was added, what exactly does that do? Is it some type of
-> added padding? Is it possible this isn't CGO?
+Hi,
+For the following example:
 
-Yes, the intent was to have a hole between pin_root_path and kconfig.
-But this is a bug, my commit actually changed the layout of
-bpf_object_open_opts, unintentionally, because if long: 0 is already
-at long-aligned offset (which it is in this case) it does nothing,
-instead of shifting next field to next long-aligned offset. So
-bpf_object_open_opts is basically broken in libbpf 1.0. Thanks for the
-report! I'll send a fix shortly and we'll need to release 1.0.1 bug
-fix release.
+kkd@Legion ~/src/linux
+ ; cat bpf.c
+#define tag __attribute__((btf_decl_tag("tag")))
 
->
-> Thanks for any help,
-> Grant
+int a tag;
+int b tag;
+
+int main() {
+        return a + b;
+}
+
+--
+
+When I compile using:
+clang -target bpf -O2 -g -c bpf.c
+
+For the BTF dump, I see:
+[1] FUNC_PROTO '(anon)' ret_type_id=2 vlen=0
+[2] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
+[3] FUNC 'main' type_id=1 linkage=global
+[4] VAR 'a' type_id=2, linkage=global
+[5] DECL_TAG 'tag' type_id=4 component_idx=-1
+[6] VAR 'b' type_id=2, linkage=global
+[7] DECL_TAG 'tag' type_id=6 component_idx=-1
+[8] DATASEC '.bss' size=0 vlen=2
+        type_id=4 offset=0 size=4 (VAR 'a')
+        type_id=6 offset=0 size=4 (VAR 'b')
+
+There are two issues that I hit:
+
+1. The component_idx=-1 makes it a little inconvenient to correlate
+the tag applied to a VAR in a DATASEC. In case of structs the index
+can be matched with component_idx, in case of DATASEC we have to match
+VAR's type_id. So the code has to be different. If it also had
+component_idx set it would be possible to make the code same for both
+inside the kernel's field parsing routine.
+
+2. The second issue is that the offset is always 0 for DATASEC VARs.
+That makes it difficult to ensure proper alignment of the variables.
+
+I would like to know if these are expected behaviors or bugs?
+Thanks
+--
+ ; clang --version
+Ubuntu clang version
+16.0.0-++20220813052912+eaf0aa1f1fbd-1~exp1~20220813173018.344
