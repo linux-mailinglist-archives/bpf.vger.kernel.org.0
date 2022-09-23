@@ -2,266 +2,246 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F25305E8212
-	for <lists+bpf@lfdr.de>; Fri, 23 Sep 2022 20:52:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 229AD5E840B
+	for <lists+bpf@lfdr.de>; Fri, 23 Sep 2022 22:39:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231935AbiIWSu4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 23 Sep 2022 14:50:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54228 "EHLO
+        id S233249AbiIWUfC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 23 Sep 2022 16:35:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232100AbiIWSuq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 23 Sep 2022 14:50:46 -0400
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 664A612110A;
-        Fri, 23 Sep 2022 11:50:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1663959045; x=1695495045;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=NMJXdnHfq/UMbmj1GO4LJnlU9J+0sP/ic5VMH5Hdm3M=;
-  b=lzvnIzi/TgYgbDwBAL7IvXewZfMl+QKehj3g4YkJrCimO/wb7kS6iWiE
-   0Dx7RP2JZCGcmuoJY7vH1PsmneAfEqf5rv6hHIHWqUfL6x0DGtrCs+UJc
-   OqgwBwxuvDI3DdczxK/pxz7jxiH0ntLGZBORjoG/C+tcLxdLJjNBhpIfv
-   NsKLfJE1yjf3iwUAq1sjuatNVnE+Npqj84aFMdpMMy/YOTfd3M7XfR4Es
-   kRYH3g6FphFQCFhNgm4gBW3QD78B98LuqjzBFsCiQnI7+e/nXLUj2CHX0
-   0wOTYdNcKjUBluVCxfdlIwBq/gM0bBxdSfoJc5T0WmqFjSfcyzn/fggmu
-   w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10479"; a="302116958"
-X-IronPort-AV: E=Sophos;i="5.93,339,1654585200"; 
-   d="scan'208";a="302116958"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2022 11:50:44 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,339,1654585200"; 
-   d="scan'208";a="724239248"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by fmsmga002.fm.intel.com with ESMTP; 23 Sep 2022 11:50:43 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Fri, 23 Sep 2022 11:50:43 -0700
-Received: from orsmsx609.amr.corp.intel.com (10.22.229.22) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Fri, 23 Sep 2022 11:50:43 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx609.amr.corp.intel.com (10.22.229.22) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31 via Frontend Transport; Fri, 23 Sep 2022 11:50:43 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.102)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2375.31; Fri, 23 Sep 2022 11:50:42 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XkykgaqFmjIg2QATWkHOUfG7vUSJHMEWpcX9hRVzSd3yLV5iYJp3/WuyOxvZJG76gzQMuAEWh4er7pTIfxTTbva6DIWI3cRzEnIjO6z7IBvBU+Higpi6jWV2WXGM2Mfecb4WWG5QhQwOAzZfYZ2W0tumYpIxqblBv8FtrovpEetlR0jf53OnLwRrXlobrZp8F6U9NLeFzzpnBUp1sfG/FFczEbgRSQPljCPRLi6AXEj7knimbiBGd8Y/3AaayTumsz7Tc+unDM1vF0AdaMkkxuXqOVsKPXOU3c+FgeKjTive0REUhNJ5FqImW3lyKs1G3AQQQybU8xzMvrYxiXeEzg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZoOl9SAdlofJWvzmhdJK0sxe0awxgMfNoA9HePshiV0=;
- b=UsFOBWi3McYYe6oQDaAxHUgjiNW3pkyQFpEQDcInJ4y9x/k/MsAApuSvGx9sz+eVFNjJgMQaCuNvuMJM6fyzlwEjVdA57zd+exGJh3oTYR5hofsJ9RC4hrQKdwvh4ATS+Lu0M+sKV6c28bnKBvdvLg4cwHU7X4mwSLleAIf70m7jLAf89ocIj+O8Iitt0ZMOkG7f39OIEs/9SPFL0QY2E+wsouSWNjt1VZyBjX20CwuavGCT00lOmCk41SShUZ+3yCEOinpyB3f/JyUcAvsmTQ4K72StvQxUZVi+8/2bM3vwLy4bOWRV2cDyruYURG65SZ3NGnCqbYi4QPlvUnp/IQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from MW3PR11MB4764.namprd11.prod.outlook.com (2603:10b6:303:5a::16)
- by SJ0PR11MB4830.namprd11.prod.outlook.com (2603:10b6:a03:2d7::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5654.20; Fri, 23 Sep
- 2022 18:50:40 +0000
-Received: from MW3PR11MB4764.namprd11.prod.outlook.com
- ([fe80::e82e:c89f:d355:5101]) by MW3PR11MB4764.namprd11.prod.outlook.com
- ([fe80::e82e:c89f:d355:5101%6]) with mapi id 15.20.5654.020; Fri, 23 Sep 2022
- 18:50:40 +0000
-Message-ID: <f32338c8-db1a-ba0c-9254-922d96f2e601@intel.com>
-Date:   Fri, 23 Sep 2022 11:50:36 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.1
-Subject: Re: [Intel-wired-lan] [PATCH] ixgbe: Use kmap_local_page in
- ixgbe_check_lbtest_frame()
-Content-Language: en-US
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-CC:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        with ESMTP id S233108AbiIWUct (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 23 Sep 2022 16:32:49 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 290DA14C076
+        for <bpf@vger.kernel.org>; Fri, 23 Sep 2022 13:28:35 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id l10so1152815plb.10
+        for <bpf@vger.kernel.org>; Fri, 23 Sep 2022 13:28:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
+        bh=09XDqhCmbOxMmk4st3n1VevKxFvu8TBGt9LJYr24nIA=;
+        b=C8a8bBwBCPpYqJC0ttlBfkppX2uMw5viHVMSx4NSUdlu6Mk2tJYnIkpj1O3sRUaf2n
+         YvaKYhZaGs/8xWczPFhL4W6+saiCUf5KQGmW47sQE/VjI9iBzvPK3eyEePf3h3djFnDv
+         4Xw5J5dvAI2eSiF2SIboitvBfMPVts9ASzBRc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date;
+        bh=09XDqhCmbOxMmk4st3n1VevKxFvu8TBGt9LJYr24nIA=;
+        b=coNDpcPa/S1fSJMMgBUrZektGU2VidiQL675NuNIfmZdh7cPXr6dY0F7Ftejabp4Gq
+         SEFAiZ1qrlzFtb/bqqjde7wekw36rk95w3fHq/eYTzuSnzuZohR7kpnux9w4Gtx+eQPy
+         L38t+0wzskmYvIYInLNazi9TS7HLIEzOxrDmLqJyZ/lWhfIFdJx86JPQsEFZ+CC/rn9A
+         jPrMbcV9pTr9sz1FIutKie4KznZIRS1g61eUC8mdJTO6w7yxKWYR8OYLSuGXSqyDGpoJ
+         mTO9CfMDOveUoeBJKZ8zw+8+cLe4wzK3n2hGJcQm3xFk+2K7dbcG25SHjeoc+ZF8mkg/
+         E9kw==
+X-Gm-Message-State: ACrzQf1HTRammTd1vESlXB7BkHXbfOocp0HOZSHbogKd602K9OQVNroh
+        4/t8pNCh2+1zkwV8nQfIaLYjXA==
+X-Google-Smtp-Source: AMsMyM7DXBOfv6ahzpoYpFJ1XA+uXLlf1m80ImgaNTw1lXpXdBLHWAXCKtzP0wavX+dE1aJb2tOr4Q==
+X-Received: by 2002:a17:903:2015:b0:178:8022:ff1 with SMTP id s21-20020a170903201500b0017880220ff1mr10285638pla.18.1663964913651;
+        Fri, 23 Sep 2022 13:28:33 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id i3-20020aa796e3000000b00535da15a252sm6765031pfq.165.2022.09.23.13.28.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Sep 2022 13:28:32 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf@vger.kernel.org, "Ruhl, Michael J" <michael.j.ruhl@intel.com>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
-        Netdev <netdev@vger.kernel.org>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>
-References: <20220629085836.18042-1-fmdefrancesco@gmail.com>
- <2254584.ElGaqSPkdT@opensuse>
- <CAKgT0UfThk3MLcE38wQu5+2Qy7Ld2px-2WJgnD+2xbDsA8iEEw@mail.gmail.com>
- <2834855.e9J7NaK4W3@opensuse>
- <d4e33ca3-92e5-ba30-f103-09d028526ea2@intel.com>
- <CAKgT0Uf1o+i0qKf7J_xqC3SACRFhiYqyhBeQydgUafB5uFkAvg@mail.gmail.com>
- <22aa8568-7f6e-605e-7219-325795b218b7@intel.com>
- <CAKgT0UfU6Hu3XtuJS_vvmeOMDdFcVanieGXRLyVRmPF7+eRjvg@mail.gmail.com>
-From:   Anirudh Venkataramanan <anirudh.venkataramanan@intel.com>
-In-Reply-To: <CAKgT0UfU6Hu3XtuJS_vvmeOMDdFcVanieGXRLyVRmPF7+eRjvg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR03CA0160.namprd03.prod.outlook.com
- (2603:10b6:a03:338::15) To MW3PR11MB4764.namprd11.prod.outlook.com
- (2603:10b6:303:5a::16)
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Alex Elder <elder@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Daniel Micay <danielmicay@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, netdev@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        linux-fsdevel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        dev@openvswitch.org, x86@kernel.org, llvm@lists.linux.dev,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH v2 11/16] bpf: Use kmalloc_size_roundup() to match ksize() usage
+Date:   Fri, 23 Sep 2022 13:28:17 -0700
+Message-Id: <20220923202822.2667581-12-keescook@chromium.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220923202822.2667581-1-keescook@chromium.org>
+References: <20220923202822.2667581-1-keescook@chromium.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW3PR11MB4764:EE_|SJ0PR11MB4830:EE_
-X-MS-Office365-Filtering-Correlation-Id: a8af877e-9ffc-44e7-07f3-08da9d9482cd
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0mZQz50oDDPfQ7lPb1k51JjwapGlfXhtx6VMgNKuE3UDx93SkRHFMtK/QssRkmIErvjoOkQKEzGrYveytHIGDEwoKyT7W1NUsJ1mfoofGavRTfA4JH2zotcMdZ7WpQDTHIVA3JiP6C8QhyGpUFYYriiZtEiPAGY7liyt49y9S5x3FT8whTS3ughg3MaNfon17VBUzS7vEUPawpPSUCeufBeB3usR74kWNwe87xmPJaXRu++G+kGU6DjS4mTiQI15eQ4SHxcDJXYs1D/veSzU1UtehiwjtGcPvsJJ2QV/wiSTTNS1q3g+T+gN/pZ52aam9K7T6YuQL9qNDGBmvtIUDytsn5zLBKfHfn0OTTt3l1KCfm9TBXnyBRFeFVYYYEMpEqL/8QxWrRBfrDeMcczfrHMcF+1DDeJX7U98DGEMyiekwDvuuc5feDWKUoesqmhJdsGCdAGtExil3ToGmnyiugpXI2t2bf18LnddnsgH2oVjtxslOdd9QbD7r3iMkmmw3u/V31gkC3kEZFfsJvSggunXn9rD0Euvg09A5wf2ptNacwXapHimJkJeh+GYVQtFhAkVeAl9HUyqSNOWKaz23MGa2Qs+QV1930q+4pO3/+3j0jYCYDmsCObCcBUBn/nd1pGuhTQd8m38+dRW9K9ZIIg4w8Ay/89VBdbHS0SOAwiCxdt5Oxp51A44vIdvqV/AvIp7uK2C6fRRVTOW2OlnA6Iv3oDDkPrMvbV2kxN2CXCOoCO6XwSuPh5TmpM0jOEOESIosn6wTQNa8EStIe9dGkKAaz1xb1mn2BC8qdrgwxD/c2053vzPb8bUs+8HxrRHt7duh1YXZk8uEey1gFMSHGapvGRImlj/VrQ8nAwUuv8=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR11MB4764.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(376002)(346002)(136003)(39860400002)(366004)(396003)(451199015)(31686004)(36756003)(6666004)(41300700001)(6506007)(53546011)(186003)(2616005)(107886003)(86362001)(4326008)(66476007)(7416002)(6512007)(8676002)(66946007)(54906003)(66556008)(8936002)(5660300002)(31696002)(44832011)(2906002)(82960400001)(6486002)(966005)(478600001)(38100700002)(316002)(26005)(6916009)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ODRTQzY2RzJOSkhkNDgzTE1mRW1BMFBMQlEwbit3ZHNRbXJzQnE1Y3RxWGVS?=
- =?utf-8?B?a1JEdGtsK3cxZE16TDhUUEpjMU1OTkVRd1lDdDFlS0Y5NDJNTnFCdEtBQmFU?=
- =?utf-8?B?ZFpkQm1vcFp2MU1FWHZ4T09XVkxVdzVhaTBLN1d0eXJxNlVKOWNaQ091c2Ux?=
- =?utf-8?B?ZWxzQ1cyWlJvV3dmMktmS2lxRDUvTnc5OXg1WmE5MHNTZzZDK3dUNlFGUXVC?=
- =?utf-8?B?bG8xUTJFbGgvUzdWem1RVkk5cXk3MEl2MEcrQmI2RHRHaGxSOWk4SmF6cUJF?=
- =?utf-8?B?RDFTai9BMjkrKzJ4RlllUk9zRkVZVTUycXdkaWxOdndkcDFWOEF2Q0NlL09Q?=
- =?utf-8?B?dWxwb1o2dE9jTzdJaE1DTDk4SXBHNWRuNFZ6bjRnQ3pJZC9tbDg3YkhhWHVs?=
- =?utf-8?B?QVV2ZGRUQmh6T3ZZSzArMEY1YmJpMEdOQ3pvSjFORUh6RnhPa1lySGJDVG9Z?=
- =?utf-8?B?UStOV05XaklvSFlZR1NDeUFNMyt5MkZROGdqcndhN1gxbzR2M3dubHZHbWxz?=
- =?utf-8?B?MGFHR085RjZCNzAxNzYvdno1OXFHNUt0NkEwak1MQkhidmp0NWk3dEJBVWFM?=
- =?utf-8?B?NnV2Z0x5TG90WGM1VXF2blhLaTk0bEJ2dXRiMkpadzJFQnJET0U4T1MwZ3hw?=
- =?utf-8?B?RXMwZm1aRU9hUm1Uczhtd2VteVBycHJzUTZwc2xmRXVRZFRpSUNPRG5wU25X?=
- =?utf-8?B?cFNHTm45a0s3YlJBTW90L2VoSTBZSDFPcXZ2QldmQWR5QmhhN1ptdUt6TU1p?=
- =?utf-8?B?U2dSQ09DTlRWc1AveE1zZ2czWDM0bnpxMEVRM0pGRGR1L2RMVUU5ckZSY2ZP?=
- =?utf-8?B?Nk4yMnczeVQvMXY1dit6Sldkd2xqTGVaa2JnWG1sRHpUcmV6S1J2SllMVWly?=
- =?utf-8?B?Wk8rc1dzNXFyTENtMFJucEZGVlYveU1zR2ZFMC9xUDlMRFpKSGd1bDlFUnNZ?=
- =?utf-8?B?aWpQZThlQ3VXWTVrbFBvQXc5MnhQTlJ0RlFsY0FkSStnZHNwVEZDa2NnZW9q?=
- =?utf-8?B?Uy9HZ3RBWWgvNjdWUzRicEQ4bUVsazQ2YkpkbXpPMjdnR1R2bnZyMURJY214?=
- =?utf-8?B?dXlvQXhleGZ5SkZrQW1BVFhsOEVOT1hSRTQ4Tk42SW52cE9vK1h0emJLNktx?=
- =?utf-8?B?K0lwc0tnOEtXZURYMERtRmhGSHFkMUE3cnByUnlWbXhvaXpzR3RhTllrcnJp?=
- =?utf-8?B?S1FBUDFkejZva0k0K0NiRVJsMVVLUVZnZVdkNFk1Q0hUS21EVnBSOFh2dG51?=
- =?utf-8?B?YzRRak9iZHlDZ1IvNm13c3dWK0JTdUY5RzFpeGdaR3VGeHI0Q1RRRXNSVndz?=
- =?utf-8?B?dkZrZittRitLMFphS3NuSldOSGhBZnc4WWF1a3lFdVR5UXd4NnJobEx0Vkdo?=
- =?utf-8?B?bXgwdjhkbTU1MnZOVFdWMU8rSlVhOUF2TzFGVkxua0JqRkdqamdidEN3OVFM?=
- =?utf-8?B?YWhTQmwwVUltazJBYjhkVUVNN29RMm82Q1EvNkd1STN5ZVRvbDlmNXVPSE5M?=
- =?utf-8?B?Wkt4ZFdJRWY3OTlaL3pLZmQ4QjUzY2NrdUVCbDFLUzdvM3M3aE4vUEdkTGRj?=
- =?utf-8?B?Z2FxeDVYRXlqcDNBcXo5Y0pZUSsyNUkwb0pFQ2NrUUtLTC9sbXBPZkM1MTlv?=
- =?utf-8?B?L2crVjdUMEc1NExuQXhEd2xKZG5GTkM0dlpOeXA0c0VjZkdHTWM0RVVLMlVv?=
- =?utf-8?B?aGJGTVRiQ2xDY1YzMnRSTmZpYTFuVXo4SVM3QS9oNlRQc0s5LzZ3SHBxWGkx?=
- =?utf-8?B?UHlvOHBzbDRpRE9vQnVlYUxPY3c1SUdDRG9kR1VQYmRNcVFUQVBCSWJBMVgy?=
- =?utf-8?B?WFFUYlI0bkZNVXpwVEZMYitKcDBWYnR3MjYxRHNzZTU3TTVrUk9VYWdvRnhi?=
- =?utf-8?B?Y0VkR2ZQMitta1JiQVdseGxDRU1NMzZ1d3dyMjM0ZXhDZy9pT0JyZ3hwRVh4?=
- =?utf-8?B?YWRkY1ZYZ3BXS0QwYlJjRHdRN3oxOWRHSXowZVNDYkRTdjhVeUhsWDI0ZkJv?=
- =?utf-8?B?RmRIVVBRWkMwQ1dpdGloSmNLZlVLT2Zac21udTF1VEtsVWN4bCs1N2hPakxY?=
- =?utf-8?B?cC9EcllPbDc0cW8weDRVYzNYM1ppVVdsVk4rMTRsZW1aN1E1MWU3UlpsR0I3?=
- =?utf-8?B?MFl5NmhqK1NhMzVxSjVQRjhhR2toMjlSa052V1dxSVN4V1ZYeE14RzF3ZG1X?=
- =?utf-8?Q?EokZIbd6HiB3CzwI4GFcN6E=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: a8af877e-9ffc-44e7-07f3-08da9d9482cd
-X-MS-Exchange-CrossTenant-AuthSource: MW3PR11MB4764.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Sep 2022 18:50:40.2635
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: WjLTkC/HdXRdndibuhYx3G4YKNUYw/qLgoSuXyawzVIqs2YgC5QmEZE6efhoCxMxOrwGduFaCzd/aqBPwUzVQbNZJBc0o+tnC7cfQC8jI9QaNyfOUiJJWELloHytX0dA
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB4830
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4987; h=from:subject; bh=+umEDwGyJCv3Ovyx4Pj2CYIL4lHo8xavtPhh0E8bcL8=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBjLhblZrOjZBzDi2GSWosP6rXkUyCU3IxBEiC+Kuw9 wTqv/j+JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYy4W5QAKCRCJcvTf3G3AJjMAEA CfzaZuEjLR7HquBXo8+EM4GS8NWzszH99hX9xWPHebOuW16pmhNIEq+Aju+xJdnrhZANxwQ9Vh+iy8 ymNAeDJdi1cPUvm/XvEjIQdHYJrutoIiSKB2d0AEqLwbsec1LjBhbvhDu0LI7jqNxIfIv2/9Wt0lw+ FLC6qE+PRYixT6MQix4PHQQlKlYq57pj+xWZMmEn7EdqoqjCDsI3K/t90ikcx3WVUqhltKxdMQKBBV x5co1XdfKAeNPVoBf0Q4pGe8YOFn/SbYAQ3SUpg9WyQETPSbnLumwlf27mINUyCKWF27Tg53zEYExy CL2Y77JbZEY8nCSjb5ET/WZ4BJLz8w55BmqKLuG+LHoVxmG9As/KzYhd4wNeF/dVm0OLi7gOh89qzi GEU1kcMn/xDpv1MQ2jDoG8VufwjUDPawkqASsD3lyfggklYm5al7OV0DrKzqFXHwaeBjaWHmM6KLKe 37QfdNfUsWdCuBvcEjoUX7Za+u901T3eO2SKiBvJCpX2sc6vi67INLI4syc1DeZAWI+wioCztNVLto FEw2RcZEC86T5zincgBp5Ofm7ehCRUPa/wet1Ayqkgvsrtnt1X+1xS1o6I1ntxzju/C/TzBCm6nHcb R4gLY+rvdc1IBBznpLWzmV3Cz3ue47gmjjlvg+BX0gGRJVy0rhqVwTrXOpsA==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 9/23/2022 8:31 AM, Alexander Duyck wrote:
-> On Thu, Sep 22, 2022 at 3:38 PM Anirudh Venkataramanan
-> <anirudh.venkataramanan@intel.com> wrote:
->>
->> On 9/22/2022 1:58 PM, Alexander Duyck wrote:
->>> On Thu, Sep 22, 2022 at 1:07 PM Anirudh Venkataramanan
->>> <anirudh.venkataramanan@intel.com> wrote:
->>>>
->>>>
->>>> Following Fabio's patches, I made similar changes for e1000/e1000e and
->>>> submitted them to IWL [1].
->>>>
->>>> Yesterday, Ira Weiny pointed me to some feedback from Dave Hansen on the
->>>> use of page_address() [2]. My understanding of this feedback is that
->>>> it's safer to use kmap_local_page() instead of page_address(), because
->>>> you don't always know how the underlying page was allocated.
->>>>
->>>> This approach (of using kmap_local_page() instead of page_address())
->>>> makes sense to me. Any reason not to go this way?
->>>>
->>>> [1]
->>>>
->>>> https://patchwork.ozlabs.org/project/intel-wired-lan/patch/20220919180949.388785-1-anirudh.venkataramanan@intel.com/
->>>>
->>>> https://patchwork.ozlabs.org/project/intel-wired-lan/patch/20220919180949.388785-2-anirudh.venkataramanan@intel.com/
->>>>
->>>> [2]
->>>> https://lore.kernel.org/lkml/5d667258-b58b-3d28-3609-e7914c99b31b@intel.com/
->>>>
->>>> Ani
->>>
->>> For the two patches you referenced the driver is the one allocating
->>> the pages. So in such a case the page_address should be acceptable.
->>> Specifically we are falling into alloc_page(GFP_ATOMIC) which should
->>> fall into the first case that Dave Hansen called out.
->>
->> Right. However, I did run into a case in the chelsio inline crypto
->> driver where it seems like the pages are allocated outside the driver.
->> In such cases, kmap_local_page() would be the right approach, as the
->> driver can't make assumptions on how the page was allocated.
-> 
-> Right, but that is comparing apples and oranges. As I said for Tx it
-> would make sense, but since we are doing the allocations for Rx that
-> isn't the case so we don't need it.
-> 
->> ... and this makes me wonder why not just use kmap_local_page() even in
->> cases where the page allocation was done in the driver. IMO, this is
->> simpler because
->>
->> a) you don't have to care how a page was allocated. kmap_local_page()
->> will create a temporary mapping if required, if not it just becomes a
->> wrapper to page_address().
->>
->> b) should a future patch change the allocation to be from highmem, you
->> don't have to change a bunch of page_address() calls to be
->> kmap_local_page().
->>
->> Is using page_address() directly beneficial in some way?
-> 
-> By that argument why don't we just leave the code alone and keep using
-> kmap? I am pretty certain that is the logic that had us using kmap in
-> the first place since it also dumps us with page_address in most cases
-> and we didn't care much about the other architectures.
+Round up allocations with kmalloc_size_roundup() so that the verifier's
+use of ksize() is always accurate and no special handling of the memory
+is needed by KASAN, UBSAN_BOUNDS, nor FORTIFY_SOURCE. Pass the new size
+information back up to callers so they can use the space immediately,
+so array resizing to happen less frequently as well. Explicitly zero
+any trailing bytes in new allocations.
 
-Well, my understanding is that kmap_local_page() doesn't have the 
-overheads kmap() has, and that alone is reason enough to replace kmap() 
-and kmap_atomic() with kmap_local_page() where possible.
+Additionally fix a memory allocation leak: if krealloc() fails, "arr"
+wasn't freed, but NULL was return to the caller of realloc_array() would
+be writing NULL to the lvalue, losing the reference to the original
+memory.
 
-> If you look at
-> the kmap_local_page() it just adds an extra step or two to calling
-> page_address(). In this case it is adding extra complication to
-> something that isn't needed which is the reason why we are going
-> through this in the first place. If we are going to pull the bandage I
-> suggest we might as well just go all the way and not take a half-step
-> since we don't actually need kmap or its related calls for this.
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Song Liu <song@kernel.org>
+Cc: Yonghong Song <yhs@fb.com>
+Cc: KP Singh <kpsingh@kernel.org>
+Cc: Stanislav Fomichev <sdf@google.com>
+Cc: Hao Luo <haoluo@google.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: bpf@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ kernel/bpf/verifier.c | 49 +++++++++++++++++++++++++++----------------
+ 1 file changed, 31 insertions(+), 18 deletions(-)
 
-I don't really see this as "pulling the kmap() bandage", but a "use a 
-more appropriate kmap function if you can" type situation.
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 096fdac70165..80531f8f0d36 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -978,42 +978,53 @@ static void print_insn_state(struct bpf_verifier_env *env,
+  */
+ static void *copy_array(void *dst, const void *src, size_t n, size_t size, gfp_t flags)
+ {
+-	size_t bytes;
++	size_t src_bytes, dst_bytes;
+ 
+ 	if (ZERO_OR_NULL_PTR(src))
+ 		goto out;
+ 
+-	if (unlikely(check_mul_overflow(n, size, &bytes)))
++	if (unlikely(check_mul_overflow(n, size, &src_bytes)))
+ 		return NULL;
+ 
+-	if (ksize(dst) < bytes) {
++	dst_bytes = kmalloc_size_roundup(src_bytes);
++	if (ksize(dst) < dst_bytes) {
+ 		kfree(dst);
+-		dst = kmalloc_track_caller(bytes, flags);
++		dst = kmalloc_track_caller(dst_bytes, flags);
+ 		if (!dst)
+ 			return NULL;
+ 	}
+ 
+-	memcpy(dst, src, bytes);
++	memcpy(dst, src, src_bytes);
++	memset(dst + src_bytes, 0, dst_bytes - src_bytes);
+ out:
+ 	return dst ? dst : ZERO_SIZE_PTR;
+ }
+ 
+-/* resize an array from old_n items to new_n items. the array is reallocated if it's too
+- * small to hold new_n items. new items are zeroed out if the array grows.
++/* Resize an array from old_n items to *new_n items. The array is reallocated if it's too
++ * small to hold *new_n items. New items are zeroed out if the array grows. Allocation
++ * is rounded up to next kmalloc bucket size to reduce frequency of resizing. *new_n
++ * contains the new total number of items that will fit.
+  *
+- * Contrary to krealloc_array, does not free arr if new_n is zero.
++ * Contrary to krealloc, does not free arr if new_n is zero.
+  */
+-static void *realloc_array(void *arr, size_t old_n, size_t new_n, size_t size)
++static void *realloc_array(void *arr, size_t old_n, size_t *new_n, size_t size)
+ {
+-	if (!new_n || old_n == new_n)
++	void *old_arr = arr;
++	size_t alloc_size;
++
++	if (!new_n || !*new_n || old_n == *new_n)
+ 		goto out;
+ 
+-	arr = krealloc_array(arr, new_n, size, GFP_KERNEL);
+-	if (!arr)
++	alloc_size = kmalloc_size_roundup(size_mul(*new_n, size));
++	arr = krealloc(old_arr, alloc_size, GFP_KERNEL);
++	if (!arr) {
++		kfree(old_arr);
+ 		return NULL;
++	}
+ 
+-	if (new_n > old_n)
+-		memset(arr + old_n * size, 0, (new_n - old_n) * size);
++	*new_n = alloc_size / size;
++	if (*new_n > old_n)
++		memset(arr + old_n * size, 0, (*new_n - old_n) * size);
+ 
+ out:
+ 	return arr ? arr : ZERO_SIZE_PTR;
+@@ -1045,7 +1056,7 @@ static int copy_stack_state(struct bpf_func_state *dst, const struct bpf_func_st
+ 
+ static int resize_reference_state(struct bpf_func_state *state, size_t n)
+ {
+-	state->refs = realloc_array(state->refs, state->acquired_refs, n,
++	state->refs = realloc_array(state->refs, state->acquired_refs, &n,
+ 				    sizeof(struct bpf_reference_state));
+ 	if (!state->refs)
+ 		return -ENOMEM;
+@@ -1061,11 +1072,11 @@ static int grow_stack_state(struct bpf_func_state *state, int size)
+ 	if (old_n >= n)
+ 		return 0;
+ 
+-	state->stack = realloc_array(state->stack, old_n, n, sizeof(struct bpf_stack_state));
++	state->stack = realloc_array(state->stack, old_n, &n, sizeof(struct bpf_stack_state));
+ 	if (!state->stack)
+ 		return -ENOMEM;
+ 
+-	state->allocated_stack = size;
++	state->allocated_stack = n * BPF_REG_SIZE;
+ 	return 0;
+ }
+ 
+@@ -2472,9 +2483,11 @@ static int push_jmp_history(struct bpf_verifier_env *env,
+ {
+ 	u32 cnt = cur->jmp_history_cnt;
+ 	struct bpf_idx_pair *p;
++	size_t size;
+ 
+ 	cnt++;
+-	p = krealloc(cur->jmp_history, cnt * sizeof(*p), GFP_USER);
++	size = kmalloc_size_roundup(size_mul(cnt, sizeof(*p)));
++	p = krealloc(cur->jmp_history, size, GFP_USER);
+ 	if (!p)
+ 		return -ENOMEM;
+ 	p[cnt - 1].idx = env->insn_idx;
+-- 
+2.34.1
 
-FWIW, I am not against using page_address(). Just wanted to hash this 
-out and get to a conclusion before I made new changes.
-
-Ani
