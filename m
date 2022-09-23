@@ -2,67 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA1E75E7D1A
-	for <lists+bpf@lfdr.de>; Fri, 23 Sep 2022 16:32:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC8E65E7DE0
+	for <lists+bpf@lfdr.de>; Fri, 23 Sep 2022 17:05:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230328AbiIWObr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 23 Sep 2022 10:31:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45488 "EHLO
+        id S229461AbiIWPFx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 23 Sep 2022 11:05:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231856AbiIWObq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 23 Sep 2022 10:31:46 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EA9813EE9C
-        for <bpf@vger.kernel.org>; Fri, 23 Sep 2022 07:31:45 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id y8so453042edc.10
-        for <bpf@vger.kernel.org>; Fri, 23 Sep 2022 07:31:45 -0700 (PDT)
+        with ESMTP id S232169AbiIWPFs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 23 Sep 2022 11:05:48 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93950DF066;
+        Fri, 23 Sep 2022 08:05:46 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id z13-20020a7bc7cd000000b003b5054c6f9bso2973344wmk.2;
+        Fri, 23 Sep 2022 08:05:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=1iIymZ4MsZ/27tgz86xKFO23iLkkp8G2o3rlhiFK85o=;
-        b=SlhIreW+icqtSYIyLitsWbUql6E/9SSLdSAaIUCuwZHZ7PkA87Fi6NLGtwvqcxbjtP
-         eqGvedRTQS4q9MISRCuHS9c1+13jjH148o4akCK9aYOC2N71rXz3WQj3J5E+Q5BlUKN5
-         MjkGu3dMJPMJAOV+cS2cGk6sD728FEloFK5f+MCmouEZHa2M1sf/RrDWSB3f78DrDFFh
-         zuh4LCCPrsXX6VNT0CRDzDp1Xj7aSyExjw0CtMS8Yipj911jpsMnfvEVeDdHhO3sBenr
-         Hk1e/MyXXK771tjyEYOaQls0hzlrwgen+cWTqhpgrmp4rwYO0OXiwfol13XhP4oMwcal
-         4TCg==
+        h=mime-version:user-agent:references:message-id:date:in-reply-to
+         :subject:cc:to:from:from:to:cc:subject:date;
+        bh=S1qtkZsCimc0bFiQuX5IHvT9C5pm95R4wJmpj4GAnEc=;
+        b=hG1mpQSA/nM+t1cRg2a6BFYyZL1Y+evNVWLWctb9VVbOh5hlFufcid5iEOwCf8wsh1
+         xz3cAfXMAVBhQcjWRt+leXtIONtQ2aYsZqRdweRvGVmXlfJc7d0v9a8/1aLyRP8LStiX
+         XJes9wq6L2Gj0EJ8G+zXSwY6fBVb+c6pKdH2Kv7FXbpSIg+C4YklOT3TvQkv5KyTc0Kk
+         Z+jo7VR8J5JMw5omYUxBQrfWA1Kj4PH/6PP6y5UwC6jncYcbUArq6EJF967k+0qOoST9
+         6My/tGvtL5bGaNfBSuWMvYj1nFoOxIE07dyy7SImZfZ3UHlEnue0mc+6PPOTBz8iOydj
+         kn8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=1iIymZ4MsZ/27tgz86xKFO23iLkkp8G2o3rlhiFK85o=;
-        b=r6w0s1o3wbEz98BlufknRWayjNQvWFAX39ar29Dxxkb62mAWWfQ2Ttg4+X+jzRwhk5
-         G7+qNToY4is22YnQQ1Cr4cg1HorGTKuZVN6QxC2kze6Mpn0+FNOALLbxmssYss1ESD08
-         RgQ8vHkunwESsVv6UNmtmYpZ1ThRJgeN8VjYjLB2jTxHOZMSfIOHtFr2yuf6c+wZURXX
-         78i0tS6Rat2sYJKOg7kT/BYJFvpUUWz+bdY9pShY/UxJyfYG5KulLkXy5zQ25AUJtCCb
-         q0mTnA6DAc1WZtCqqfFSwOuNHBiNzwW0er5Um6d8XEZuPJqGd+ZhmsJ1QGUB5oBaBBRY
-         Kzgw==
-X-Gm-Message-State: ACrzQf0Dq+D3kELkxtosWqtMbssvYa6j7JgFtW5t+YmaTaU03gwQqhy6
-        1l6r7jBD76aoZWNC3a7F/BvB0+TWNDJwzID1TdE=
-X-Google-Smtp-Source: AMsMyM6DR0Rmr2EWU1uIWHOurl0sOYF0kqjL/JQmkgvsGS47JqVcXfLb5K4mIyKGrTJUegiiGEGskErb1/UFO+GKCNk=
-X-Received: by 2002:aa7:c619:0:b0:454:2cca:6c0d with SMTP id
- h25-20020aa7c619000000b004542cca6c0dmr8780673edq.6.1663943503981; Fri, 23 Sep
- 2022 07:31:43 -0700 (PDT)
+        h=mime-version:user-agent:references:message-id:date:in-reply-to
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date;
+        bh=S1qtkZsCimc0bFiQuX5IHvT9C5pm95R4wJmpj4GAnEc=;
+        b=ICgn2nlVPvxx7uDXgzV6yTiQqrA0QVqbM+v2eI9zWgIFo2e3+KNk9bCYd65y7Bag1R
+         wgvhROUSZgdXZQ9qUijSw1legEOEp1Eb8lP12PHBF5F/JF3XT+gTs+gpPS99s70Gq2Ig
+         wtGH3nPHuwG6casPj8vw7FnuLwmuMve4TXnhJpQim5p8i/pTWTfLfSlDwVmMgp0qF3vM
+         qQz7ZqFefrNnANgVAOjskHuBBR2DovU6+ni1JTF5R0JG0gIjBi9sOb9EgTKYwgceda8u
+         TPJyhcF4VXDzoGi+jV7TPCwJfVhu2MIMw6TqIvIWEatvHsJmJhNmedcaDm5XabqR2kir
+         39KA==
+X-Gm-Message-State: ACrzQf2vMTa30u94cI8Ty/8hE9JYLQqScviaiTZHvd+WRek7DmDJ8sIc
+        Zsh8rEhLusYF61kkMIb7kMQ=
+X-Google-Smtp-Source: AMsMyM7hGGK8RuhEr/O6ilSvhFpIs40LQmejWASmZUnptTjT8Oyx3IJEWG4DGLk86lVY90iwldIMQg==
+X-Received: by 2002:a05:600c:198d:b0:3b4:b6b6:6fa with SMTP id t13-20020a05600c198d00b003b4b6b606famr13426430wmq.110.1663945544966;
+        Fri, 23 Sep 2022 08:05:44 -0700 (PDT)
+Received: from imac ([88.97.103.74])
+        by smtp.gmail.com with ESMTPSA id r8-20020a05600c35c800b003a84375d0d1sm2932506wmq.44.2022.09.23.08.05.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Sep 2022 08:05:44 -0700 (PDT)
+From:   Donald Hunter <donald.hunter@gmail.com>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     bpf@vger.kernel.org, linux-doc@vger.kernel.org,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: Re: [PATCH bpf-next v4 1/2] Add subdir support to Documentation
+ makefile
+In-Reply-To: <87tu4zsfse.fsf@meer.lwn.net> (Jonathan Corbet's message of "Thu,
+        22 Sep 2022 07:24:33 -0600")
+Date:   Fri, 23 Sep 2022 15:58:14 +0100
+Message-ID: <m2h70y87eh.fsf@gmail.com>
+References: <20220922115257.99815-1-donald.hunter@gmail.com>
+        <20220922115257.99815-2-donald.hunter@gmail.com>
+        <87tu4zsfse.fsf@meer.lwn.net>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.1 (darwin)
 MIME-Version: 1.0
-References: <20220923093509.521560-1-cuigaosheng1@huawei.com>
-In-Reply-To: <20220923093509.521560-1-cuigaosheng1@huawei.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 23 Sep 2022 07:31:32 -0700
-Message-ID: <CAADnVQJu0tRMX1==kbDvmddhXsj5i4BB=WdX+CpmtmVtS5N2Ug@mail.gmail.com>
-Subject: Re: [PATCH] bpf: Remove obsolete iterators_bpf__open_and_load()
-To:     Gaosheng Cui <cuigaosheng1@huawei.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -73,42 +73,44 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 23, 2022 at 2:35 AM Gaosheng Cui <cuigaosheng1@huawei.com> wrote:
->
-> Commit cb80ddc67152 ("bpf: Convert bpf_preload.ko to use light
-> skeleton.") drops the last caller of generic_free_nodedata(),
-> it is useless, so remove it.
->
-> Signed-off-by: Gaosheng Cui <cuigaosheng1@huawei.com>
-> ---
->  kernel/bpf/preload/iterators/iterators.lskel.h | 15 ---------------
->  1 file changed, 15 deletions(-)
->
-> diff --git a/kernel/bpf/preload/iterators/iterators.lskel.h b/kernel/bpf/preload/iterators/iterators.lskel.h
-> index 70f236a82fe1..e5f9c608f7f7 100644
-> --- a/kernel/bpf/preload/iterators/iterators.lskel.h
-> +++ b/kernel/bpf/preload/iterators/iterators.lskel.h
-> @@ -407,19 +407,4 @@ iterators_bpf__load(struct iterators_bpf *skel)
->         return 0;
->  }
->
-> -static inline struct iterators_bpf *
-> -iterators_bpf__open_and_load(void)
-> -{
-> -       struct iterators_bpf *skel;
-> -
-> -       skel = iterators_bpf__open();
-> -       if (!skel)
-> -               return NULL;
-> -       if (iterators_bpf__load(skel)) {
-> -               iterators_bpf__destroy(skel);
-> -               return NULL;
-> -       }
-> -       return skel;
-> -}
-> -
+Jonathan Corbet <corbet@lwn.net> writes:
 
-Top of this file says:
-/* THIS FILE IS AUTOGENERATED! */
+> Donald Hunter <donald.hunter@gmail.com> writes:
+>
+>> Run make in list of subdirs to build generated sources and migrate
+>> userspace-api/media to use this instead of being a special case.
+>>
+>> Signed-off-by: Donald Hunter <donald.hunter@gmail.com>
+>
+> This could really use a bit more information on exactly what you're
+> doing and why you want to do it.
 
-Please do NOT send such patches for it.
+What would you like me to add? Something like:
+
+"... in preparation for running a generator script to produce .csv data
+used by bpf documentation"
+
+> Beyond that, I would *really* like to see more use of Sphinx extensions
+> for this kind of special-case build rather than hacking in more
+> special-purpose scripts.  Is there a reason why it couldn't be done that
+> way?
+
+I looked at writing the BPF program types as a Sphinx extension but
+found that approach problematic for the following reasons:
+
+- This needs to run both in the kernel tree and the libbpf Github
+  project. The tree layouts are different so the relative paths to
+  source files are different. I don't see an elegant way to handle this
+  inline in a .rst file. This can easily be handled in Makefiles
+  that are specific to each project.
+
+- It makes use of csv-table which does all the heavy lifting to produce
+  the desired output.
+
+- I have zero experience of extending Sphinx.
+
+I thought about submitting this directly to the libbpf Github project
+and then just linking from the kernel docs to the page about program
+types in the libbpf project docs. But I think it is preferable to master
+the gen-bpf-progtypes.sh script in the kernel tree where it can be
+maintained in the same repo as the libbpf.c source file it parses.
