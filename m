@@ -2,63 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A86015E7E58
-	for <lists+bpf@lfdr.de>; Fri, 23 Sep 2022 17:27:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 225D35E7E71
+	for <lists+bpf@lfdr.de>; Fri, 23 Sep 2022 17:32:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231991AbiIWP1K (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 23 Sep 2022 11:27:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47694 "EHLO
+        id S232640AbiIWPcL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 23 Sep 2022 11:32:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229810AbiIWP1J (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 23 Sep 2022 11:27:09 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CC7F13EAFA;
-        Fri, 23 Sep 2022 08:27:08 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id z97so685901ede.8;
-        Fri, 23 Sep 2022 08:27:08 -0700 (PDT)
+        with ESMTP id S232568AbiIWPcK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 23 Sep 2022 11:32:10 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4F66143540;
+        Fri, 23 Sep 2022 08:32:09 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id s14-20020a17090a6e4e00b0020057c70943so6205532pjm.1;
+        Fri, 23 Sep 2022 08:32:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date;
-        bh=6JMTEY2lWNmisu5wgCvIjJuHrDPad0gYhdclOkvEFOA=;
-        b=beW9ZPMZQWdJyVN9Zk2lZ2G6V9ZvIQ2LZlK2vGUP7EUOQcT7WkoxWFhmuMZQRulX9a
-         X79LhL2CorE4QouVUv/A1cEmTuhUDV0bV+TQzZMMAHpVy6P2icyjPt+Vh1Z6QAyIPF7Q
-         JP9obE5mEVtLttGNiaDxIoIAX+S60nwK4xN084pLXGReSpB5ZJt/TPOnDEBlihtGuWKQ
-         1XCMNnkFpV4OTcyxZXS0/tHeQiIsPyv7ui0zDAQr+umvaS3DzR0a/gFLxKe3OZbemiRw
-         Ky7cMiyE8+0B44bja1YdqVjFKzVva047QkNJVbLS5Jfw/b1N0WwZsRTe+s4GIrjzECW4
-         kM6g==
+        bh=Xe3XyWrqsUpCuai4jbPz6/cvFb16oXvZzjUKpqqt2d4=;
+        b=pdNyL0WG+TM+D2OmwmHa3lgy/2qVjYEs4ma7S6GPiljI/h7J9uxrTXIshJRZpTLyuJ
+         ADWNh/ennmmb5VuiZpuAjpfHrNtRXWUOPRTPO86XNjnUG9DHyQUULWRMgqXv+2WL82Cg
+         A56cuv7CO7EIUZzobvZrcVWFv+oDKnO3hsEAHT8bCA3/yerqPfI3FfKHgSkQuIoMnQGs
+         tICn+DKO3AjWeYOTBD1eOiYb8r6HQXJzF8g1Q9AU2n+SzCRG9OdMigh3MHDFApr7WSi0
+         ifOEgu5qyTNdiMGfQbnSlqDBSOJsbnsJwzt58BwC7CAo461hl7d8VvcDiTIP2/1fOHFX
+         EgGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=6JMTEY2lWNmisu5wgCvIjJuHrDPad0gYhdclOkvEFOA=;
-        b=a8hUPxLrMsCm4jCLVee7ur292labRepMArL58hegY79U89YK86mFdzn/L1mOLVr8/K
-         6LFNLTt/UmzEK5vfQJOms6GM+c7ccyhS7xQVh6478v5BJFDSvJdEGqgOw5155PwaFRHU
-         ZYQl6Mw7og3J876ShKUuD5pn16dlkj+R6j1fSm97BrV5hAZ9y7QCqHEfwwAvvJwiYA50
-         glfQ2tJSxbCM3F+kmsy/ZJqmfZqeVT7fWy0pS8IKO7FKRpjPw9Gi2rkPKZKjhN6msdBJ
-         t4ePzbRitjWPy4TvzYPt3SjNjnmZPLcrb/5UA4yQDjDUrYIbql8ydaxNiBme+tHEkqKH
-         GCjg==
-X-Gm-Message-State: ACrzQf2aCYsonlpQlZcbTifqonCTT6zJm8YXIWtiAskRFRwhLY9da2yH
-        P9/c+2kL3xKQJE4MUC7RA7Q3XkokcGwX2kLMw90=
-X-Google-Smtp-Source: AMsMyM583AbFhoKMPu2EiMn+8gyvG7HHbuqkgOw/xOzPLYemM5WW+8nUN8sCYp0WwAqW/Md2eL1UJRfB3qgMwVEk5vo=
-X-Received: by 2002:aa7:c619:0:b0:454:2cca:6c0d with SMTP id
- h25-20020aa7c619000000b004542cca6c0dmr9062655edq.6.1663946826562; Fri, 23 Sep
- 2022 08:27:06 -0700 (PDT)
+        bh=Xe3XyWrqsUpCuai4jbPz6/cvFb16oXvZzjUKpqqt2d4=;
+        b=lNXnufxcrQ08zb+ma9TyyfdFXxvRA+jvUvHraw2fiJ4mfZAwc8GXhzQMPB37/R77Kp
+         si9nqrKn55yhaPguvaTi8/C8OYKsMu2ZTTeEi4haESZLmNZBc01wJPE0mvFKhO3Ydx7z
+         XjelbvBcsSjvbQlkd9xTEh4YvRflwAXcLGc5xvvMiFFH0N3nsMf3cjqFw7vNc7RjVr8T
+         J+/yuJ6ubQbhPEDy4nhJ7EZy8hR3lOLlu2WN9MQ79x24Wz4RvFIpz1pGVQQbgj3MPOQ1
+         jLvFa5jn9gw6Zqz0ZJEksNi2sUIGDX3YHWlaMIjRdAYXS9lnGPcNiPfbUQtQ+/8t7KAX
+         6WfQ==
+X-Gm-Message-State: ACrzQf3IvetCVuHBRj6S++WF66t/Iz/4VU+UymMK+UvCQp+IV86cQAz0
+        BtCiePtP2DdVFK8iKa9mb0XsYyUjXG3HXgw1KYc=
+X-Google-Smtp-Source: AMsMyM4V+bhhAoWZQIUJnhCP5giOH+OiPQjy4oITXZkTIW3Z+rg7BhstdaANxGeUkZeDky5gUJezn1i+Zyp4KsdGQ94=
+X-Received: by 2002:a17:902:e353:b0:178:77ca:a577 with SMTP id
+ p19-20020a170902e35300b0017877caa577mr8883901plc.93.1663947129142; Fri, 23
+ Sep 2022 08:32:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220922225616.3054840-1-kafai@fb.com> <20220922225642.3058176-1-kafai@fb.com>
- <CAADnVQK4fVZ0KdWkV7MfP_F3As7cme46SoR30YU0bk0zAfpOrA@mail.gmail.com> <99e23c92-b1dc-db45-73f7-c210eb1debc8@linux.dev>
-In-Reply-To: <99e23c92-b1dc-db45-73f7-c210eb1debc8@linux.dev>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 23 Sep 2022 08:26:55 -0700
-Message-ID: <CAADnVQKFdpiQFxgF253V5XmtjnrVXcZ14sxT_Q3vOQ97WxScMQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 4/5] bpf: Stop bpf_setsockopt(TCP_CONGESTION) in
- init ops to recur itself
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+References: <20220629085836.18042-1-fmdefrancesco@gmail.com>
+ <2254584.ElGaqSPkdT@opensuse> <CAKgT0UfThk3MLcE38wQu5+2Qy7Ld2px-2WJgnD+2xbDsA8iEEw@mail.gmail.com>
+ <2834855.e9J7NaK4W3@opensuse> <d4e33ca3-92e5-ba30-f103-09d028526ea2@intel.com>
+ <CAKgT0Uf1o+i0qKf7J_xqC3SACRFhiYqyhBeQydgUafB5uFkAvg@mail.gmail.com> <22aa8568-7f6e-605e-7219-325795b218b7@intel.com>
+In-Reply-To: <22aa8568-7f6e-605e-7219-325795b218b7@intel.com>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Fri, 23 Sep 2022 08:31:57 -0700
+Message-ID: <CAKgT0UfU6Hu3XtuJS_vvmeOMDdFcVanieGXRLyVRmPF7+eRjvg@mail.gmail.com>
+Subject: Re: [Intel-wired-lan] [PATCH] ixgbe: Use kmap_local_page in ixgbe_check_lbtest_frame()
+To:     Anirudh Venkataramanan <anirudh.venkataramanan@intel.com>
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Netdev <netdev@vger.kernel.org>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Network Development <netdev@vger.kernel.org>
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -70,189 +83,71 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 22, 2022 at 6:11 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
+On Thu, Sep 22, 2022 at 3:38 PM Anirudh Venkataramanan
+<anirudh.venkataramanan@intel.com> wrote:
 >
-> On 9/22/22 5:12 PM, Alexei Starovoitov wrote:
-> > On Thu, Sep 22, 2022 at 3:56 PM Martin KaFai Lau <kafai@fb.com> wrote:
+> On 9/22/2022 1:58 PM, Alexander Duyck wrote:
+> > On Thu, Sep 22, 2022 at 1:07 PM Anirudh Venkataramanan
+> > <anirudh.venkataramanan@intel.com> wrote:
 > >>
-> >> From: Martin KaFai Lau <martin.lau@kernel.org>
 > >>
-> >> When a bad bpf prog '.init' calls
-> >> bpf_setsockopt(TCP_CONGESTION, "itself"), it will trigger this loop:
+> >> Following Fabio's patches, I made similar changes for e1000/e1000e and
+> >> submitted them to IWL [1].
 > >>
-> >> .init => bpf_setsockopt(tcp_cc) => .init => bpf_setsockopt(tcp_cc) ...
-> >> ... => .init => bpf_setsockopt(tcp_cc).
+> >> Yesterday, Ira Weiny pointed me to some feedback from Dave Hansen on the
+> >> use of page_address() [2]. My understanding of this feedback is that
+> >> it's safer to use kmap_local_page() instead of page_address(), because
+> >> you don't always know how the underlying page was allocated.
 > >>
-> >> It was prevented by the prog->active counter before but the prog->active
-> >> detection cannot be used in struct_ops as explained in the earlier
-> >> patch of the set.
+> >> This approach (of using kmap_local_page() instead of page_address())
+> >> makes sense to me. Any reason not to go this way?
 > >>
-> >> In this patch, the second bpf_setsockopt(tcp_cc) is not allowed
-> >> in order to break the loop.  This is done by checking the
-> >> previous bpf_run_ctx has saved the same sk pointer in the
-> >> bpf_cookie.
+> >> [1]
 > >>
-> >> Note that this essentially limits only the first '.init' can
-> >> call bpf_setsockopt(TCP_CONGESTION) to pick a fallback cc (eg. peer
-> >> does not support ECN) and the second '.init' cannot fallback to
-> >> another cc.  This applies even the second
-> >> bpf_setsockopt(TCP_CONGESTION) will not cause a loop.
+> >> https://patchwork.ozlabs.org/project/intel-wired-lan/patch/20220919180949.388785-1-anirudh.venkataramanan@intel.com/
 > >>
-> >> Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
-> >> ---
-> >>   include/linux/filter.h |  3 +++
-> >>   net/core/filter.c      |  4 ++--
-> >>   net/ipv4/bpf_tcp_ca.c  | 54 ++++++++++++++++++++++++++++++++++++++++++
-> >>   3 files changed, 59 insertions(+), 2 deletions(-)
+> >> https://patchwork.ozlabs.org/project/intel-wired-lan/patch/20220919180949.388785-2-anirudh.venkataramanan@intel.com/
 > >>
-> >> diff --git a/include/linux/filter.h b/include/linux/filter.h
-> >> index 98e28126c24b..9942ecc68a45 100644
-> >> --- a/include/linux/filter.h
-> >> +++ b/include/linux/filter.h
-> >> @@ -911,6 +911,9 @@ int sk_get_filter(struct sock *sk, sockptr_t optval, unsigned int len);
-> >>   bool sk_filter_charge(struct sock *sk, struct sk_filter *fp);
-> >>   void sk_filter_uncharge(struct sock *sk, struct sk_filter *fp);
+> >> [2]
+> >> https://lore.kernel.org/lkml/5d667258-b58b-3d28-3609-e7914c99b31b@intel.com/
 > >>
-> >> +int _bpf_setsockopt(struct sock *sk, int level, int optname,
-> >> +                   char *optval, int optlen);
-> >> +
-> >>   u64 __bpf_call_base(u64 r1, u64 r2, u64 r3, u64 r4, u64 r5);
-> >>   #define __bpf_call_base_args \
-> >>          ((u64 (*)(u64, u64, u64, u64, u64, const struct bpf_insn *)) \
-> >> diff --git a/net/core/filter.c b/net/core/filter.c
-> >> index f4cea3ff994a..e56a1ebcf1bc 100644
-> >> --- a/net/core/filter.c
-> >> +++ b/net/core/filter.c
-> >> @@ -5244,8 +5244,8 @@ static int __bpf_setsockopt(struct sock *sk, int level, int optname,
-> >>          return -EINVAL;
-> >>   }
-> >>
-> >> -static int _bpf_setsockopt(struct sock *sk, int level, int optname,
-> >> -                          char *optval, int optlen)
-> >> +int _bpf_setsockopt(struct sock *sk, int level, int optname,
-> >> +                   char *optval, int optlen)
-> >>   {
-> >>          if (sk_fullsock(sk))
-> >>                  sock_owned_by_me(sk);
-> >> diff --git a/net/ipv4/bpf_tcp_ca.c b/net/ipv4/bpf_tcp_ca.c
-> >> index 6da16ae6a962..a9f2cab5ffbc 100644
-> >> --- a/net/ipv4/bpf_tcp_ca.c
-> >> +++ b/net/ipv4/bpf_tcp_ca.c
-> >> @@ -144,6 +144,57 @@ static const struct bpf_func_proto bpf_tcp_send_ack_proto = {
-> >>          .arg2_type      = ARG_ANYTHING,
-> >>   };
-> >>
-> >> +BPF_CALL_5(bpf_init_ops_setsockopt, struct sock *, sk, int, level,
-> >> +          int, optname, char *, optval, int, optlen)
-> >> +{
-> >> +       struct bpf_tramp_run_ctx *run_ctx, *saved_run_ctx;
-> >> +       int ret;
-> >> +
-> >> +       if (optname != TCP_CONGESTION)
-> >> +               return _bpf_setsockopt(sk, level, optname, optval, optlen);
-> >> +
-> >> +       run_ctx = (struct bpf_tramp_run_ctx *)current->bpf_ctx;
-> >> +       if (unlikely(run_ctx->saved_run_ctx &&
-> >> +                    run_ctx->saved_run_ctx->type == BPF_RUN_CTX_TYPE_STRUCT_OPS)) {
-> >> +               saved_run_ctx = (struct bpf_tramp_run_ctx *)run_ctx->saved_run_ctx;
-> >> +               /* It stops this looping
-> >> +                *
-> >> +                * .init => bpf_setsockopt(tcp_cc) => .init =>
-> >> +                * bpf_setsockopt(tcp_cc)" => .init => ....
-> >> +                *
-> >> +                * The second bpf_setsockopt(tcp_cc) is not allowed
-> >> +                * in order to break the loop when both .init
-> >> +                * are the same bpf prog.
-> >> +                *
-> >> +                * This applies even the second bpf_setsockopt(tcp_cc)
-> >> +                * does not cause a loop.  This limits only the first
-> >> +                * '.init' can call bpf_setsockopt(TCP_CONGESTION) to
-> >> +                * pick a fallback cc (eg. peer does not support ECN)
-> >> +                * and the second '.init' cannot fallback to
-> >> +                * another cc.
-> >> +                */
-> >> +               if (saved_run_ctx->bpf_cookie == (uintptr_t)sk)
-> >> +                       return -EBUSY;
-> >> +       }
-> >> +
-> >> +       run_ctx->bpf_cookie = (uintptr_t)sk;
-> >> +       ret = _bpf_setsockopt(sk, level, optname, optval, optlen);
-> >> +       run_ctx->bpf_cookie = 0;
+> >> Ani
 > >
-> > Instead of adding 4 bytes for enum in patch 3
-> > (which will be 8 bytes due to alignment)
-> > and abusing bpf_cookie here
-> > (which struct_ops bpf prog might eventually read and be surprised
-> > to find sk pointer in there)
-> > how about adding 'struct task_struct *saved_current' as another arg
-> > to bpf_tramp_run_ctx ?
-> > Always store the current task in there in prog_entry_struct_ops
-> > and then compare it here in this specialized bpf_init_ops_setsockopt?
-> >
-> > Or maybe always check in enter_prog_struct_ops:
-> > if (container_of(current->bpf_ctx, struct bpf_tramp_run_ctx,
-> > run_ctx)->saved_current == current) // goto out since recursion?
-> > it will prevent issues in case we don't know about and will
-> > address the good recursion case as explained in patch 1?
-> > I'm assuming 2nd ssthresh runs in a different task..
-> > Or is it actually the same task?
+> > For the two patches you referenced the driver is the one allocating
+> > the pages. So in such a case the page_address should be acceptable.
+> > Specifically we are falling into alloc_page(GFP_ATOMIC) which should
+> > fall into the first case that Dave Hansen called out.
 >
-> The 2nd ssthresh() should run in the same task but different sk.  The
-> first ssthresh(sk[1]) was run in_task() context and then got
-> interrupted.  The softirq then handles the rcv path which just happens
-> to also call ssthresh(sk[2]) in the unlikely pkt-loss case. It is like
-> ssthresh(sk[1]) => softirq => ssthresh(sk[2]).
->
-> The tcp-cc ops can recur but cannot recur on the same sk because it
-> requires to hold the sk lock, so the patch remembers what was the
-> previous sk to ensure it does not recur on the same sk.  Then it needs
-> to peek into the previous run ctx which may not always be
-> bpf_trump_run_ctx.  eg. a cg bpf prog (with bpf_cg_run_ctx) can call
-> bpf_setsockopt(TCP_CONGESTION, "a_bpf_tcp_cc") which then will call the
-> a_bpf_tcp_cc->init().  It needs a bpf_run_ctx_type so it can safely peek
-> the previous bpf_run_ctx.
+> Right. However, I did run into a case in the chelsio inline crypto
+> driver where it seems like the pages are allocated outside the driver.
+> In such cases, kmap_local_page() would be the right approach, as the
+> driver can't make assumptions on how the page was allocated.
 
-got it.
+Right, but that is comparing apples and oranges. As I said for Tx it
+would make sense, but since we are doing the allocations for Rx that
+isn't the case so we don't need it.
 
+> ... and this makes me wonder why not just use kmap_local_page() even in
+> cases where the page allocation was done in the driver. IMO, this is
+> simpler because
 >
-> Since struct_ops is the only one that needs to peek into the previous
-> run_ctx (through tramp_run_ctx->saved_run_ctx),  instead of adding 4
-> bytes to the bpf_run_ctx, one idea just came to my mind is to use one
-> bit in the tramp_run_ctx->saved_run_ctx pointer itsef.  Something like
-> this if it reuses the bpf_cookie (probably missed some int/ptr type
-> casting):
+> a) you don't have to care how a page was allocated. kmap_local_page()
+> will create a temporary mapping if required, if not it just becomes a
+> wrapper to page_address().
 >
-> #define BPF_RUN_CTX_STRUCT_OPS_BIT 1UL
+> b) should a future patch change the allocation to be from highmem, you
+> don't have to change a bunch of page_address() calls to be
+> kmap_local_page().
 >
-> u64 notrace __bpf_prog_enter_struct_ops(struct bpf_prog *prog,
->                                      struct bpf_tramp_run_ctx *run_ctx)
->          __acquires(RCU)
-> {
->         rcu_read_lock();
->         migrate_disable();
->
->         run_ctx->saved_run_ctx = bpf_set_run_ctx((&run_ctx->run_ctx) |
->                                         BPF_RUN_CTX_STRUCT_OPS_BIT);
->
->          return bpf_prog_start_time();
-> }
->
-> BPF_CALL_5(bpf_init_ops_setsockopt, struct sock *, sk, int, level,
->             int, optname, char *, optval, int, optlen)
-> {
->         /* ... */
->         if (unlikely((run_ctx->saved_run_ctx &
->                         BPF_RUN_CTX_STRUCT_OPS_BIT) && ...) {
->                 /* ... */
->                 if (bpf_cookie == (uintptr_t)sk)
->                         return -EBUSY;
->         }
->
-> }
+> Is using page_address() directly beneficial in some way?
 
-that should work, but don't you need to loop through all previous
-run_ctx and check all with BPF_RUN_CTX_STRUCT_OPS_BIT type ?
-Since run_ctx is saved in the task and we have preemptible
-rpgos there could be tracing prog in the chain:
-struct_ops_run_ctx->tracing_run_ctx->struct_ops_run_ctx
-where 1st and last have the same 'sk'.
+By that argument why don't we just leave the code alone and keep using
+kmap? I am pretty certain that is the logic that had us using kmap in
+the first place since it also dumps us with page_address in most cases
+and we didn't care much about the other architectures. If you look at
+the kmap_local_page() it just adds an extra step or two to calling
+page_address(). In this case it is adding extra complication to
+something that isn't needed which is the reason why we are going
+through this in the first place. If we are going to pull the bandage I
+suggest we might as well just go all the way and not take a half-step
+since we don't actually need kmap or its related calls for this.
