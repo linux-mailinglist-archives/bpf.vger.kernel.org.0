@@ -2,64 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC8E65E7DE0
-	for <lists+bpf@lfdr.de>; Fri, 23 Sep 2022 17:05:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47BA05E7DE4
+	for <lists+bpf@lfdr.de>; Fri, 23 Sep 2022 17:05:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229461AbiIWPFx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 23 Sep 2022 11:05:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38428 "EHLO
+        id S232187AbiIWPFz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 23 Sep 2022 11:05:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232169AbiIWPFs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 23 Sep 2022 11:05:48 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93950DF066;
-        Fri, 23 Sep 2022 08:05:46 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id z13-20020a7bc7cd000000b003b5054c6f9bso2973344wmk.2;
-        Fri, 23 Sep 2022 08:05:46 -0700 (PDT)
+        with ESMTP id S232180AbiIWPFt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 23 Sep 2022 11:05:49 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EC4EDF688;
+        Fri, 23 Sep 2022 08:05:48 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id r7so469873wrm.2;
+        Fri, 23 Sep 2022 08:05:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:user-agent:references:message-id:date:in-reply-to
          :subject:cc:to:from:from:to:cc:subject:date;
-        bh=S1qtkZsCimc0bFiQuX5IHvT9C5pm95R4wJmpj4GAnEc=;
-        b=hG1mpQSA/nM+t1cRg2a6BFYyZL1Y+evNVWLWctb9VVbOh5hlFufcid5iEOwCf8wsh1
-         xz3cAfXMAVBhQcjWRt+leXtIONtQ2aYsZqRdweRvGVmXlfJc7d0v9a8/1aLyRP8LStiX
-         XJes9wq6L2Gj0EJ8G+zXSwY6fBVb+c6pKdH2Kv7FXbpSIg+C4YklOT3TvQkv5KyTc0Kk
-         Z+jo7VR8J5JMw5omYUxBQrfWA1Kj4PH/6PP6y5UwC6jncYcbUArq6EJF967k+0qOoST9
-         6My/tGvtL5bGaNfBSuWMvYj1nFoOxIE07dyy7SImZfZ3UHlEnue0mc+6PPOTBz8iOydj
-         kn8Q==
+        bh=1k/Im0a6/2zJIZF5Uvpl9nL2Zd7ZEhVf1xGnML7mQiY=;
+        b=fwvD8x9ikvaFa2JHRm3xmN6XKNW4Cqwc4zSMWm3ljNVL3uDPfsqUwBUpfRJ8Qg6qks
+         pEZHwQnpYt3wBLZ7P43se/UO1By3C2nqrPO2dPtAn9sXxnEpa+wQZNgsT8wlWQXY3TfF
+         ynCJ07Pq+bKlXpZwmhSRW9R991Pdx911pIVip/BOmpPRXFlOVq88yuXLozEvb76Jw4ge
+         SVWiCCEZv/fBCRG64G5VdsNy7t8lBUqm17kyuLjuJDlgjc7vGKCmsSiUcReGjwVKPjgk
+         gUiYEyWFA8a97kYqjBaMsmVb/0PNk4wxE9V0LH2adLuTXEF5WszG+J4ohTM+7U15Ub4L
+         F28Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=mime-version:user-agent:references:message-id:date:in-reply-to
          :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date;
-        bh=S1qtkZsCimc0bFiQuX5IHvT9C5pm95R4wJmpj4GAnEc=;
-        b=ICgn2nlVPvxx7uDXgzV6yTiQqrA0QVqbM+v2eI9zWgIFo2e3+KNk9bCYd65y7Bag1R
-         wgvhROUSZgdXZQ9qUijSw1legEOEp1Eb8lP12PHBF5F/JF3XT+gTs+gpPS99s70Gq2Ig
-         wtGH3nPHuwG6casPj8vw7FnuLwmuMve4TXnhJpQim5p8i/pTWTfLfSlDwVmMgp0qF3vM
-         qQz7ZqFefrNnANgVAOjskHuBBR2DovU6+ni1JTF5R0JG0gIjBi9sOb9EgTKYwgceda8u
-         TPJyhcF4VXDzoGi+jV7TPCwJfVhu2MIMw6TqIvIWEatvHsJmJhNmedcaDm5XabqR2kir
-         39KA==
-X-Gm-Message-State: ACrzQf2vMTa30u94cI8Ty/8hE9JYLQqScviaiTZHvd+WRek7DmDJ8sIc
-        Zsh8rEhLusYF61kkMIb7kMQ=
-X-Google-Smtp-Source: AMsMyM7hGGK8RuhEr/O6ilSvhFpIs40LQmejWASmZUnptTjT8Oyx3IJEWG4DGLk86lVY90iwldIMQg==
-X-Received: by 2002:a05:600c:198d:b0:3b4:b6b6:6fa with SMTP id t13-20020a05600c198d00b003b4b6b606famr13426430wmq.110.1663945544966;
-        Fri, 23 Sep 2022 08:05:44 -0700 (PDT)
+        bh=1k/Im0a6/2zJIZF5Uvpl9nL2Zd7ZEhVf1xGnML7mQiY=;
+        b=WCRjGkcgsCKwh643Dr7944mTQ/gDdU/2Ul8FrIxNH3DLWAAvRhczBwESLa7DfraoyQ
+         mpP6Q9kwRpmwWV+MWy2szDpbimHByHsglCJgdHFB7quxRWEPBoq5SP2HHTpD9ZXvqV9R
+         6MrAl50GR+86SGcw88qdddaTXvOLrhnYpY2ilIvh0WacniTVvi+JCBIiIgh+zAnqJtDj
+         qJrGICB+uKQl2OsICaUMU0dgjBTBw+51V3FLEzaBXnmodE8FcoDxw76VVGqMMyHfzaWy
+         CxQ+/enmgcohKVWQW0SzV/a3BsjhsNuFosR2JmHsYp/ZpjOUAiGGsvobrtBwo3EWmD3m
+         V3lg==
+X-Gm-Message-State: ACrzQf1q0W2vBYAkyPF0u5bzePjzD7DffygdBq2ppgt+gjMcmE574b5V
+        a9MotiTJTQ68xmbbu6mxQUXhXmUV2bZwRA==
+X-Google-Smtp-Source: AMsMyM5D3niELpKni0WfW68gWeRMJyv0hMsxrtzmrNE0ODyW7ZPISv+Hw3GWMHBOFyqAMGQpC2/prQ==
+X-Received: by 2002:adf:f5d0:0:b0:228:6ca8:21f2 with SMTP id k16-20020adff5d0000000b002286ca821f2mr5851709wrp.271.1663945546478;
+        Fri, 23 Sep 2022 08:05:46 -0700 (PDT)
 Received: from imac ([88.97.103.74])
-        by smtp.gmail.com with ESMTPSA id r8-20020a05600c35c800b003a84375d0d1sm2932506wmq.44.2022.09.23.08.05.43
+        by smtp.gmail.com with ESMTPSA id g11-20020a05600c310b00b003b4fe03c881sm2831391wmo.48.2022.09.23.08.05.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Sep 2022 08:05:44 -0700 (PDT)
+        Fri, 23 Sep 2022 08:05:45 -0700 (PDT)
 From:   Donald Hunter <donald.hunter@gmail.com>
-To:     Jonathan Corbet <corbet@lwn.net>
+To:     Bagas Sanjaya <bagasdotme@gmail.com>
 Cc:     bpf@vger.kernel.org, linux-doc@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>,
         Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: Re: [PATCH bpf-next v4 1/2] Add subdir support to Documentation
- makefile
-In-Reply-To: <87tu4zsfse.fsf@meer.lwn.net> (Jonathan Corbet's message of "Thu,
-        22 Sep 2022 07:24:33 -0600")
-Date:   Fri, 23 Sep 2022 15:58:14 +0100
-Message-ID: <m2h70y87eh.fsf@gmail.com>
+Subject: Re: [PATCH bpf-next v4 2/2] Add table of BPF program types to
+ libbpf docs
+In-Reply-To: <Yy2zBAIFGGBMe4k1@debian.me> (Bagas Sanjaya's message of "Fri, 23
+        Sep 2022 20:22:12 +0700")
+Date:   Fri, 23 Sep 2022 16:05:11 +0100
+Message-ID: <m2czbm872w.fsf@gmail.com>
 References: <20220922115257.99815-1-donald.hunter@gmail.com>
-        <20220922115257.99815-2-donald.hunter@gmail.com>
-        <87tu4zsfse.fsf@meer.lwn.net>
+        <20220922115257.99815-3-donald.hunter@gmail.com>
+        <Yy2zBAIFGGBMe4k1@debian.me>
 User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.1 (darwin)
 MIME-Version: 1.0
 Content-Type: text/plain
@@ -73,44 +74,62 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Jonathan Corbet <corbet@lwn.net> writes:
+Bagas Sanjaya <bagasdotme@gmail.com> writes:
 
-> Donald Hunter <donald.hunter@gmail.com> writes:
+> On Thu, Sep 22, 2022 at 12:52:57PM +0100, Donald Hunter wrote:
+>> +..
+>> +  program_types.csv is generated from tools/lib/bpf/libbpf.c and is formatted like this:
+>> +    Program Type,Attach Type,ELF Section Name,Sleepable
+>> +    ``BPF_PROG_TYPE_SOCKET_FILTER``,,``socket``,
+>> +    ``BPF_PROG_TYPE_SK_REUSEPORT``,``BPF_SK_REUSEPORT_SELECT_OR_MIGRATE``,``sk_reuseport/migrate``,
+>> +    ``BPF_PROG_TYPE_SK_REUSEPORT``,``BPF_SK_REUSEPORT_SELECT``,``sk_reuseport``,
+>> +    ``BPF_PROG_TYPE_KPROBE``,,``kprobe+``,
+>> +    ``BPF_PROG_TYPE_KPROBE``,,``uprobe+``,
+>> +    ``BPF_PROG_TYPE_KPROBE``,,``uprobe.s+``,Yes
 >
->> Run make in list of subdirs to build generated sources and migrate
->> userspace-api/media to use this instead of being a special case.
->>
->> Signed-off-by: Donald Hunter <donald.hunter@gmail.com>
+> The note above doesn't get rendered on htmldocs output, so I have applied
+> the fixup:
+
+It was intended to be a comment to the reader of program_types.rst that
+this is the format of the .csv file that will be rendered. It was not
+meant to be a note on the rendered page.
+
+The rendered page will show the table that is produced by the csv-table
+directive which is self explanatory.
+
 >
-> This could really use a bit more information on exactly what you're
-> doing and why you want to do it.
-
-What would you like me to add? Something like:
-
-"... in preparation for running a generator script to produce .csv data
-used by bpf documentation"
-
-> Beyond that, I would *really* like to see more use of Sphinx extensions
-> for this kind of special-case build rather than hacking in more
-> special-purpose scripts.  Is there a reason why it couldn't be done that
-> way?
-
-I looked at writing the BPF program types as a Sphinx extension but
-found that approach problematic for the following reasons:
-
-- This needs to run both in the kernel tree and the libbpf Github
-  project. The tree layouts are different so the relative paths to
-  source files are different. I don't see an elegant way to handle this
-  inline in a .rst file. This can easily be handled in Makefiles
-  that are specific to each project.
-
-- It makes use of csv-table which does all the heavy lifting to produce
-  the desired output.
-
-- I have zero experience of extending Sphinx.
-
-I thought about submitting this directly to the libbpf Github project
-and then just linking from the kernel docs to the page about program
-types in the libbpf project docs. But I think it is preferable to master
-the gen-bpf-progtypes.sh script in the kernel tree where it can be
-maintained in the same repo as the libbpf.c source file it parses.
+> ---- >8 ----
+>
+> diff --git a/Documentation/bpf/libbpf/program_types.rst b/Documentation/bpf/libbpf/program_types.rst
+> index b74fbf3363dd6c..3ce0ec94b399b4 100644
+> --- a/Documentation/bpf/libbpf/program_types.rst
+> +++ b/Documentation/bpf/libbpf/program_types.rst
+> @@ -16,15 +16,17 @@ When ``extras`` are specified, they provide details of how to auto-attach the BP
+>  The format of ``extras`` depends on the program type, e.g. ``SEC("tracepoint/<category>/<name>")``
+>  for tracepoints or ``SEC("usdt/<path-to-binary>:<usdt_provider>:<usdt_name>")`` for USDT probes.
+>  
+> -..
+> -  program_types.csv is generated from tools/lib/bpf/libbpf.c and is formatted like this:
+> -    Program Type,Attach Type,ELF Section Name,Sleepable
+> -    ``BPF_PROG_TYPE_SOCKET_FILTER``,,``socket``,
+> -    ``BPF_PROG_TYPE_SK_REUSEPORT``,``BPF_SK_REUSEPORT_SELECT_OR_MIGRATE``,``sk_reuseport/migrate``,
+> -    ``BPF_PROG_TYPE_SK_REUSEPORT``,``BPF_SK_REUSEPORT_SELECT``,``sk_reuseport``,
+> -    ``BPF_PROG_TYPE_KPROBE``,,``kprobe+``,
+> -    ``BPF_PROG_TYPE_KPROBE``,,``uprobe+``,
+> -    ``BPF_PROG_TYPE_KPROBE``,,``uprobe.s+``,Yes
+> +.. note::
+> +   The table below is generated from ``tools/lib/bpf/libbpf.c`` and is
+> +   formatted like this (in CSV format)::
+> +
+> +     Program Type,Attach Type,ELF Section Name,Sleepable
+> +     BPF_PROG_TYPE_SOCKET_FILTER,,socket,
+> +     BPF_PROG_TYPE_SK_REUSEPORT,BPF_SK_REUSEPORT_SELECT_OR_MIGRATE,sk_reuseport/migrate,
+> +     BPF_PROG_TYPE_SK_REUSEPORT,BPF_SK_REUSEPORT_SELECT,sk_reuseport,
+> +     BPF_PROG_TYPE_KPROBE,,kprobe+,
+> +     BPF_PROG_TYPE_KPROBE,,uprobe+,
+> +     BPF_PROG_TYPE_KPROBE,,uprobe.s+,Yes
+>  
+>  .. csv-table:: Program Types and Their ELF Section Names
+>     :file: program_types.csv
+>  
+> Thanks.
