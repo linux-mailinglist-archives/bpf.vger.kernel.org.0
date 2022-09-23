@@ -2,63 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A23495E8638
-	for <lists+bpf@lfdr.de>; Sat, 24 Sep 2022 01:13:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 790645E863D
+	for <lists+bpf@lfdr.de>; Sat, 24 Sep 2022 01:15:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231387AbiIWXNn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 23 Sep 2022 19:13:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58288 "EHLO
+        id S231833AbiIWXPa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 23 Sep 2022 19:15:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230495AbiIWXNm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 23 Sep 2022 19:13:42 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E661E12C68A
-        for <bpf@vger.kernel.org>; Fri, 23 Sep 2022 16:13:40 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id v2so1186187edc.7
-        for <bpf@vger.kernel.org>; Fri, 23 Sep 2022 16:13:40 -0700 (PDT)
+        with ESMTP id S230495AbiIWXP3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 23 Sep 2022 19:15:29 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F1DF4661F
+        for <bpf@vger.kernel.org>; Fri, 23 Sep 2022 16:15:27 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id z13so3559481ejp.6
+        for <bpf@vger.kernel.org>; Fri, 23 Sep 2022 16:15:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date;
-        bh=vQpDZ7BF1iPRlh4qDmYykHu6jmw79cegXaRSauAQe8o=;
-        b=K+AMYcgYBS5dnszOMRiG5S1DLGErcg7W9rMyg+aYuLAwuob8AZQR7FkT2h9Rt+sqJ+
-         OHiNkBiF1hqOQ7UjwE0i42S2nav8Eysq2J6iknI8WMVulyXlRqHLFo36EqymWgN3Lyod
-         W7nZqJcx7pKahB60DNzoMraw3axTWJree1+u1Fp5Uth6EwU3JLEUuPdYX7dZW3JDhe5w
-         KKwY3Y7aEgX/p5JRDOCZzkxiAKlchGytK8PudKiwyZ2oUI7yPp34JWMWKpiGMEFJGYgQ
-         RnkQ8kUZ0li5BNrCAaTJPzAdXkq9+gyPbHuHohxpHQc0qGyrHYHPdH66UKgSZR9mVdFa
-         15Mg==
+        bh=kP3vb1VULbbUUEjMlGxEP71rAshyWWplwKuOhDlkq6g=;
+        b=HspDlGpmgAIP7R7XG0+s5SMeeOjgTt8YYNoCjDOqX4UTOp146xdHG6+TPlpp0c8P/q
+         A4vv4OHtOBTwEJ1lVlcDpNbxtUxlTFju0xTeIBmcKJG1Dhlqvcw4R6tOMvk5NsGvNV9i
+         sT3hOUpNropRsEXhkezaeFwTMaQEkGoPiSCSh/t6xYWmcGWAXt5Iu6EnVVlWGaP7y6i+
+         o6hUaBHkoEUcUuCSlav80fFcd0ftCo7Nbc14d3gYNgTBdNU2CtIySntvqsW2APt+K/2U
+         A4lgR3GQyiEQRVIVNRxSXFLj+yrKRv8uGqeWIaVVC0SL6UxqcDJKPY+5tNnS6T6k9XF2
+         n7HA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=vQpDZ7BF1iPRlh4qDmYykHu6jmw79cegXaRSauAQe8o=;
-        b=eYaWjGxNp/lCFxNnwrfhtaCbY796ogdhFxzWVPa6z28/3aXSs56rshUqh76Hha8YAI
-         Lx65tn/wGty+DmNeUk1bPipcd2JjUnLtgRc405YAt3H3mUjxjJfye5uwuuFtAsGZkBsv
-         RkHY4yIrCQG/wMWUaoWC2gREPQbkXC5rrOz6xxdZZdJyC+uVs3I6gmLn1joIsLpXdygC
-         o3jiVgrHh2u8LYV30RcpGsTaDGtaJXJHZdsAiHTxUF7iQj3/J8UG3uKpA/VxFDZUL2l7
-         kh/5cfGV3HkytFeZ1YFL/IedjIOpX62GOA7/K3S+jD7pc0jjCh7Bi2YIDdSXsmFN0lX4
-         VQWg==
-X-Gm-Message-State: ACrzQf1geNhl3yrQDb+rjPWjcvDa33wE1Hue58YuazedKrSAwUBq2wE6
-        IsLTFF/lEZ/wfwW7ZQL+XkazrQJ2IZDQ3PrKUyk=
-X-Google-Smtp-Source: AMsMyM5dxYXJX3OaaR0oSbWLWc0LITb2c5IROMih8ig3yFIIqokx8H9Cd6ER+XOW8m9mFDVlztQmCvct4vu+iT8f0Y0=
-X-Received: by 2002:a05:6402:3603:b0:451:fdda:dddd with SMTP id
- el3-20020a056402360300b00451fddaddddmr10557700edb.81.1663974819480; Fri, 23
- Sep 2022 16:13:39 -0700 (PDT)
+        bh=kP3vb1VULbbUUEjMlGxEP71rAshyWWplwKuOhDlkq6g=;
+        b=kkk348uMMcvkmC9epUI7cVnhC5NELHta4dbLrcI5kUD7phPOk4gZd0nmArYv0kE3Ey
+         xKx6Gz2v2tJA9RVO9S47bC7RN3hGqivJWW3cfcV/SkDReCc7UsksHoLd0+/Gna0rM26m
+         jgv7eG2eNr1R+7qNOashs9cz1xdFVNi+ejPMybe2iS8GYOoqdAx7NAxAr5EMUe6xRkY7
+         KWK2JpvOwCR2/vfTideO2tzNIZNYLByxwxRhyh3674VmpUlbU5DZtny2KkOCr4CFrXP2
+         bny3zZ59CThqV2x0kjQ2H9maWIHqwK/1pkW49wLWGCTTgnk7JtDtat2KZ2M/EFhVLi5x
+         fA2A==
+X-Gm-Message-State: ACrzQf14J2qT6V9qflHd1xpF8+ZNm7f27+4PPS2ahHVOlTRDylflX6dA
+        kbksmw1R4Io4GOOzyh0kKZUv8x9Dhf+H/tjBfHg=
+X-Google-Smtp-Source: AMsMyM7WVas5UJ0SAZNuHyzp4o/Vi+thP3mKEvR/n1ySixMpqS85JR2QHVakXpC08mGZzUIUMP2YSbEwRZqDTHSst/o=
+X-Received: by 2002:a17:907:7b94:b0:731:1b11:c241 with SMTP id
+ ne20-20020a1709077b9400b007311b11c241mr9200771ejc.676.1663974925941; Fri, 23
+ Sep 2022 16:15:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220923060614.4025371-1-davemarchevsky@fb.com>
- <CAEf4BzY9Ta5aiw6n2AHTYxENpYTAdYbVdN=ZiW8dimdM9QqbyQ@mail.gmail.com> <CAP01T77XsmCz0n+GoO4JX_+pq_g2jcTqT8Oboh5Zs5LT_DezEA@mail.gmail.com>
-In-Reply-To: <CAP01T77XsmCz0n+GoO4JX_+pq_g2jcTqT8Oboh5Zs5LT_DezEA@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 23 Sep 2022 16:13:28 -0700
-Message-ID: <CAEf4BzYs+Wtm38vLvJOjxDLEqY_EptVQBfybya4w7ozRoFPX1Q@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 1/2] bpf: Allow ringbuf memory to be used as
- map key
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     Dave Marchevsky <davemarchevsky@fb.com>, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>
+References: <CY5PR21MB377000AC95B475C47B702293A3439@CY5PR21MB3770.namprd21.prod.outlook.com>
+ <DM4PR21MB34401314FC9285A9F5A338E0A3479@DM4PR21MB3440.namprd21.prod.outlook.com>
+ <YyFzO205ZZPieCav@syu-laptop> <YyihFIOt6xGWrXdC@infradead.org>
+ <DM4PR21MB344020798F08A9D967E70719A34C9@DM4PR21MB3440.namprd21.prod.outlook.com>
+ <CAADnVQ+bRxDkSWnx27KRm4mC3QrmPO+UyiA5VrjHNMQqeVYcNA@mail.gmail.com>
+ <YyrMpAPJrP851vE1@syu-laptop> <CAADnVQJAJaBaU_bsGZNqq8pRso4pNceXBprUwSENJSomq8UDaQ@mail.gmail.com>
+ <Yyvr3v5yFXcq/wK0@syu-laptop>
+In-Reply-To: <Yyvr3v5yFXcq/wK0@syu-laptop>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 23 Sep 2022 16:15:14 -0700
+Message-ID: <CAADnVQJfcFOEi0MHSSR8DExREKV-7V7g-3TYo3OLy1OgGe6cAg@mail.gmail.com>
+Subject: Re: Rethink how to deal with division/modulo-on-zero (was Re: FW:
+ ebpf-docs: draft of ISA doc updates in progress)
+To:     Shung-Hsi Yu <shung-hsi.yu@suse.com>
+Cc:     bpf <bpf@vger.kernel.org>, Dave Thaler <dthaler@microsoft.com>,
+        Christoph Hellwig <hch@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -70,85 +72,110 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 23, 2022 at 3:39 PM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
+On Wed, Sep 21, 2022 at 10:00 PM Shung-Hsi Yu <shung-hsi.yu@suse.com> wrote:
 >
-> On Sat, 24 Sept 2022 at 00:14, Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
+> On Wed, Sep 21, 2022 at 06:50:54AM -0700, Alexei Starovoitov wrote:
+> > On Wed, Sep 21, 2022 at 1:34 AM Shung-Hsi Yu <shung-hsi.yu@suse.com> wrote:
+> > >
+> > > Subject changed to reflect this reply is out of scope of the original topic
+> > > (ISA doc).
+> > >
+> > > On Tue, Sep 20, 2022 at 04:39:52PM -0700, Alexei Starovoitov wrote:
+> > > > On Tue, Sep 20, 2022 at 12:51 PM Dave Thaler <dthaler@microsoft.com> wrote:
+> > > > > > -----Original Message-----
+> > > > > > From: Christoph Hellwig <hch@infradead.org>
+> > > > > > Sent: Monday, September 19, 2022 10:04 AM
+> > > > > > To: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+> > > > > > Cc: Dave Thaler <dthaler@microsoft.com>; bpf <bpf@vger.kernel.org>
+> > > > > > Subject: Re: FW: ebpf-docs: draft of ISA doc updates in progress
+> > > > > >
+> > > > > > On Wed, Sep 14, 2022 at 02:22:51PM +0800, Shung-Hsi Yu wrote:
+> > > > > > > As discussed in yesterday's session, there's no graceful abortion on
+> > > > > > > division by zero, instead, the BPF verifier in Linux prevents division
+> > > > > > > by zero from happening. Here a few additional notes:
+> > > > > >
+> > > > > > Hmm, I thought Alexei pointed out a while ago that divide by zero is now
+> > > > > > defined to return 0 following.  Ok, reading further along I think that is what
+> > > > > > you describe with the pseudo-code below.
+> > > > >
+> > > > > Based on the discussion at LPC, and the fact that older implementations,
+> > > > > as well as uBPF and rbpf still terminate the program, I've added this text
+> > > > > to permit both behaviors:
+> > > >
+> > > > That's not right. ubpf and rbpf are broken.
+> > > > We shouldn't be adding descriptions of broken implementations
+> > > > to the standard.
+> > > > There is no way to 'gracefully abort' in eBPF.
+> > > > There is a way to 'return 0' in cBPF, but that's different. See below.
+> > > >
+> > > > > > If eBPF program execution would result in division by zero,
+> > > > > > the destination register SHOULD instead be set to zero, but
+> > > > > > program execution MAY be gracefully aborted instead.
+> > > > > > Similarly, if execution would result in modulo by zero,
+> > > > > > the destination register SHOULD instead be set to the source value,
+> > > > > > but program execution MAY be gracefully aborted instead.
+> > >
+> > > While this makes implementation a lot easier, come to think of it though,
+> > > this behavior actually is more like a hack around having to deal with
+> > > division/modulo-on-zero at runtime. User doing statistic calculations with
+> > > BPF will get bit by this sooner or later, arriving at the wrong calculation
+> > > (fast-math comes to mind).
 > >
-> > On Thu, Sep 22, 2022 at 11:06 PM Dave Marchevsky <davemarchevsky@fb.com> wrote:
-> > >
-> > > This patch adds support for the following pattern:
-> > >
-> > >   struct some_data *data = bpf_ringbuf_reserve(&ringbuf, sizeof(struct some_data, 0));
-> > >   if (!data)
-> > >     return;
-> > >   bpf_map_lookup_elem(&another_map, &data->some_field);
-> > >   bpf_ringbuf_submit(data);
-> > >
-> > > Currently the verifier does not consider bpf_ringbuf_reserve's
-> > > PTR_TO_MEM | MEM_ALLOC ret type a valid key input to bpf_map_lookup_elem.
-> > > Since PTR_TO_MEM is by definition a valid region of memory, it is safe
-> > > to use it as a key for lookups.
-> > >
-> > > Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
-> > > Acked-by: Yonghong Song <yhs@fb.com>
-> > > ---
-> > > v2->v3: lore.kernel.org/bpf/20220914123600.927632-1-davemarchevsky@fb.com
-> > >
-> > >   * Add Yonghong ack, rebase
-> > >
-> > > v1->v2: lore.kernel.org/bpf/20220912101106.2765921-1-davemarchevsky@fb.com
-> > >
-> > >   * Move test changes into separate patch - patch 2 in this series.
-> > >     (Kumar, Yonghong). That patch's changelog enumerates specific
-> > >     changes from v1
-> > >   * Remove PTR_TO_MEM addition from this patch - patch 1 (Yonghong)
-> > >     * I don't have a usecase for PTR_TO_MEM w/o MEM_ALLOC
-> > >   * Add "if (!data)" error check to example pattern in this patch
-> > >     (Yonghong)
-> > >   * Remove patch 2 from v1's series, which removed map_key_value_types
-> > >     as it was more-or-less duplicate of mem_types
-> > >     * Now that PTR_TO_MEM isn't added here, more differences between
-> > >       map_key_value_types and mem_types, and no usecase for PTR_TO_BUF,
-> > >       so drop for now.
-> > >
-> > >  kernel/bpf/verifier.c | 1 +
-> > >  1 file changed, 1 insertion(+)
-> > >
-> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > > index 6f6d2d511c06..97351ae3e7a7 100644
-> > > --- a/kernel/bpf/verifier.c
-> > > +++ b/kernel/bpf/verifier.c
-> > > @@ -5641,6 +5641,7 @@ static const struct bpf_reg_types map_key_value_types = {
-> > >                 PTR_TO_PACKET_META,
-> > >                 PTR_TO_MAP_KEY,
-> > >                 PTR_TO_MAP_VALUE,
-> > > +               PTR_TO_MEM | MEM_ALLOC,
-> >
-> > are there any differences between mem_types and map_key_value_types?
-> > If not, should we just drop map_key_value_types? mem_types also alloc
-> > any PTR_TO_MEM (not just ringbuf's MEM_ALLOC) and PTR_TO_BUF
-> > (tracepoint context structs, I think?)
-> >
+> > lol. If that was the case arm64 would be on fire long ago
+> > and users would complain in masses.
+> > Same with risc-v.
 >
-> This was discussed here:
-> https://lore.kernel.org/bpf/CAP01T76YeOQLfYBX+63Z+cbF+xZUH-4FYG3MyNTiKtP8fLPGtw@mail.gmail.com
+> whoa, I had no idea.
+>
+> And looking around I don't see complains. Taking what I said back and +1 for
+> using the current division/modulo-by-zero behavior as standard.
+>
+> > > This seems to go against some general BPF principle[1] of preventing the
+> > > users from shooting themselves in the foot.
+> > >
+> > > Just like how BPF verifier prevents a _possible_ out-of-bound memory access,
+> > > e.g. arr[i] when `i` is not bound-checked. Ideally I'd expect a coherent
+> > > approach toward division/modulo-on-zero as well; the verifier should prevent
+> > > program that _might_ do division-on-zero from loading in the first place.
+> > > (Maybe possible to achieve if we introduce something like SCALAR_OR_NULL
+> > > composed type, but that's definitely not easy)
+> > >
+> > > Admittedly even if achievable, this is a radical approach that is not
+> > > backward compatible. If such check is implemented, programs that used to
+> > > load may now be rejected. (Usually new BPF verifier feature allows more BPF
+> > > program to pass the verifier, rather then the other way around)
+> > >
+> > > So, I don't have a good proposal at the moment. The purpose to this email is
+> > > to point what I see as an issue out and hope to start a discussion.
+> > >
+> > > 1: Okay, I'm making this up a bit, strictly speaking the BPF foundation is
+> > > safe program (one of Alexei's talk) rather than preventing users from
+> > > shooting themselves in the foot.
+> >
+> > Safe != invalid.
+> > BPF doesn't prevent invalid programs.
+> > BPF ensures safety only, not crashing the kernel, not leaking data, etc.
+> > For example: under speculation arr[i] can go out of bounds
+> > and to prevent data leaks we insert masking operations.
+>
+> Point taken, thanks for clarifying the difference between safe and invalid.
+>
+> > Similar with div_by_0. If the verifier can detect that it will reject
+> > the prog, otherwise it will insert if(==0) xor, because not
+> > all architectures behave like arm64.
+>
+> Speaking of which, should the "if(==0) xor" patching in do_misc_fixups() be
+> moved into JIT implementations and the interpretor?
+>
+> Given that the standard now mandates BPF_DIV with divisor of zero to return
+> zero, it would be rather confusing to see the output of `bpftool prog dump
+> xlated` contains the extra "if(==0) xor" instruction that's inserted by the
+> verifier.
+>
+> Also, maybe there'll be performance benefit for arm64 and riscv where
+> "if(==0) xor" is not needed.
 
-My bad, I skipped previous revisions and didn't see this suggestion.
-
->
-> I guess we can do it, since it may already be triggered using PTR_TO_MAP_VALUE.
->
-> Based on my reading that day, it looked as if passing with offset != 0
-> would fail in all other cases, but I might be missing some other
-> corner case. I later realised that memcpy does fallback to memmove
-> when it detects overlap, so it wouldn't lead to any corruption, just a
-> warning at runtime.
->
-> > >         },
-> > >  };
-> > >
-> > > --
-> > > 2.30.2
-> > >
+Tiny perf gain is not worth extra complexity in JITs.
+Integer divide is the slowest operation in a CPU.
+We're trying to do everything in the verifier and as little
+as possible in JITs.
