@@ -2,68 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47BA05E7DE4
-	for <lists+bpf@lfdr.de>; Fri, 23 Sep 2022 17:05:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13D025E7DE6
+	for <lists+bpf@lfdr.de>; Fri, 23 Sep 2022 17:06:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232187AbiIWPFz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 23 Sep 2022 11:05:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38560 "EHLO
+        id S232180AbiIWPF5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 23 Sep 2022 11:05:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232180AbiIWPFt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 23 Sep 2022 11:05:49 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EC4EDF688;
-        Fri, 23 Sep 2022 08:05:48 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id r7so469873wrm.2;
+        with ESMTP id S232185AbiIWPFu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 23 Sep 2022 11:05:50 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1274EB6015;
+        Fri, 23 Sep 2022 08:05:49 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id n10so385845wrw.12;
         Fri, 23 Sep 2022 08:05:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:user-agent:references:message-id:date:in-reply-to
-         :subject:cc:to:from:from:to:cc:subject:date;
-        bh=1k/Im0a6/2zJIZF5Uvpl9nL2Zd7ZEhVf1xGnML7mQiY=;
-        b=fwvD8x9ikvaFa2JHRm3xmN6XKNW4Cqwc4zSMWm3ljNVL3uDPfsqUwBUpfRJ8Qg6qks
-         pEZHwQnpYt3wBLZ7P43se/UO1By3C2nqrPO2dPtAn9sXxnEpa+wQZNgsT8wlWQXY3TfF
-         ynCJ07Pq+bKlXpZwmhSRW9R991Pdx911pIVip/BOmpPRXFlOVq88yuXLozEvb76Jw4ge
-         SVWiCCEZv/fBCRG64G5VdsNy7t8lBUqm17kyuLjuJDlgjc7vGKCmsSiUcReGjwVKPjgk
-         gUiYEyWFA8a97kYqjBaMsmVb/0PNk4wxE9V0LH2adLuTXEF5WszG+J4ohTM+7U15Ub4L
-         F28Q==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
+        bh=IbrAq0owyuBI2vDk7UuHuInHGIm6YEu/yGe6vOTOGVE=;
+        b=YX51EvCicYLzsulTEP+TH4axgTjVnMmSsyVPa+FXuodPd6MQGGx9arVG+4ivuuELXZ
+         uORO/ruHsPkcE+pKMLy42QhjFDrZkbMxhY1chRB3sqVO1n4kLje/IZ25T/2nwamTHjoh
+         SzhM9Xz+6mr7tounkShKfyJZVvzooFBTUcOhz8811BPjwBIt+W9qrbk5eT3OyLF+7PM5
+         Ct1cH5ihg9w0uCGMyQ8Mms/+2/cTarUB3+RF04TXLByxsAexBHUAzlnUf/WWdgf+h8+Y
+         MwV7ClhMs/0cxAxZ4O65oVTYx9VaLbVAHSAkHVxK+6BfXypTycz8ODgUFs+8+DH0ATpP
+         PpXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=mime-version:user-agent:references:message-id:date:in-reply-to
-         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date;
-        bh=1k/Im0a6/2zJIZF5Uvpl9nL2Zd7ZEhVf1xGnML7mQiY=;
-        b=WCRjGkcgsCKwh643Dr7944mTQ/gDdU/2Ul8FrIxNH3DLWAAvRhczBwESLa7DfraoyQ
-         mpP6Q9kwRpmwWV+MWy2szDpbimHByHsglCJgdHFB7quxRWEPBoq5SP2HHTpD9ZXvqV9R
-         6MrAl50GR+86SGcw88qdddaTXvOLrhnYpY2ilIvh0WacniTVvi+JCBIiIgh+zAnqJtDj
-         qJrGICB+uKQl2OsICaUMU0dgjBTBw+51V3FLEzaBXnmodE8FcoDxw76VVGqMMyHfzaWy
-         CxQ+/enmgcohKVWQW0SzV/a3BsjhsNuFosR2JmHsYp/ZpjOUAiGGsvobrtBwo3EWmD3m
-         V3lg==
-X-Gm-Message-State: ACrzQf1q0W2vBYAkyPF0u5bzePjzD7DffygdBq2ppgt+gjMcmE574b5V
-        a9MotiTJTQ68xmbbu6mxQUXhXmUV2bZwRA==
-X-Google-Smtp-Source: AMsMyM5D3niELpKni0WfW68gWeRMJyv0hMsxrtzmrNE0ODyW7ZPISv+Hw3GWMHBOFyqAMGQpC2/prQ==
-X-Received: by 2002:adf:f5d0:0:b0:228:6ca8:21f2 with SMTP id k16-20020adff5d0000000b002286ca821f2mr5851709wrp.271.1663945546478;
-        Fri, 23 Sep 2022 08:05:46 -0700 (PDT)
-Received: from imac ([88.97.103.74])
-        by smtp.gmail.com with ESMTPSA id g11-20020a05600c310b00b003b4fe03c881sm2831391wmo.48.2022.09.23.08.05.45
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date;
+        bh=IbrAq0owyuBI2vDk7UuHuInHGIm6YEu/yGe6vOTOGVE=;
+        b=5rgrIqFosS/c3xb0eqSu7RT5nYRHM04RnW4crFAeixBuj41B0KB/F/qAazCWfpW7Lj
+         wcaMuFxmKgelIRzJ5MdTZRUfbnQoDp559iDnK1XoierjFcF4KGKGCq/yeAL7qORPpjov
+         BBMrMc30OQWCu0IiSQYNDGadWZuyOYfTnbJPO1UpHaCpCKKW9mtwUJxnlcWTQDdrRvDj
+         kfHfSn/3JNY5YFzHIf1Ro1GVGAuwxNTvYo8bAZyjA7NAEMLzqbyRhsXczw78OLS49Wyh
+         WUKadQOKGbHFqn0iXPRG/ryyIicdthR569Ew34gebVzFvSW6jUiuTQcdXWT/tsvZz2s0
+         OFbA==
+X-Gm-Message-State: ACrzQf1pnV162FBh1SQwwTLtPQD324CTKFIYWgUG56UYcAlXWzgxVMRX
+        dpGBBzU4UKGC0M/zlYrLmyI=
+X-Google-Smtp-Source: AMsMyM7vxshdv9NcCk1eQtMtBrLoSSkn6Iwj/Y3O/y/lDxIl1BYy0YkD1UzgB9nDCy+zd1CmfS/6wA==
+X-Received: by 2002:a05:6000:124f:b0:228:8713:ced9 with SMTP id j15-20020a056000124f00b002288713ced9mr5630819wrx.198.1663945547426;
+        Fri, 23 Sep 2022 08:05:47 -0700 (PDT)
+Received: from localhost.localdomain (host-79-34-226-61.business.telecomitalia.it. [79.34.226.61])
+        by smtp.gmail.com with ESMTPSA id z19-20020a1cf413000000b003a541d893desm2518606wma.38.2022.09.23.08.05.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Sep 2022 08:05:45 -0700 (PDT)
-From:   Donald Hunter <donald.hunter@gmail.com>
-To:     Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     bpf@vger.kernel.org, linux-doc@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: Re: [PATCH bpf-next v4 2/2] Add table of BPF program types to
- libbpf docs
-In-Reply-To: <Yy2zBAIFGGBMe4k1@debian.me> (Bagas Sanjaya's message of "Fri, 23
-        Sep 2022 20:22:12 +0700")
-Date:   Fri, 23 Sep 2022 16:05:11 +0100
-Message-ID: <m2czbm872w.fsf@gmail.com>
-References: <20220922115257.99815-1-donald.hunter@gmail.com>
-        <20220922115257.99815-3-donald.hunter@gmail.com>
-        <Yy2zBAIFGGBMe4k1@debian.me>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.1 (darwin)
+        Fri, 23 Sep 2022 08:05:46 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Anirudh Venkataramanan <anirudh.venkataramanan@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>
+Cc:     Alexander Duyck <alexander.duyck@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Netdev <netdev@vger.kernel.org>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>
+Subject: Re: [Intel-wired-lan] [PATCH] ixgbe: Use kmap_local_page in ixgbe_check_lbtest_frame()
+Date:   Fri, 23 Sep 2022 17:05:43 +0200
+Message-ID: <27280395.gRfpFWEtPU@localhost.localdomain>
+In-Reply-To: <22aa8568-7f6e-605e-7219-325795b218b7@intel.com>
+References: <20220629085836.18042-1-fmdefrancesco@gmail.com> <CAKgT0Uf1o+i0qKf7J_xqC3SACRFhiYqyhBeQydgUafB5uFkAvg@mail.gmail.com> <22aa8568-7f6e-605e-7219-325795b218b7@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -74,62 +85,175 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Bagas Sanjaya <bagasdotme@gmail.com> writes:
+Hi Anirudh,
 
-> On Thu, Sep 22, 2022 at 12:52:57PM +0100, Donald Hunter wrote:
->> +..
->> +  program_types.csv is generated from tools/lib/bpf/libbpf.c and is formatted like this:
->> +    Program Type,Attach Type,ELF Section Name,Sleepable
->> +    ``BPF_PROG_TYPE_SOCKET_FILTER``,,``socket``,
->> +    ``BPF_PROG_TYPE_SK_REUSEPORT``,``BPF_SK_REUSEPORT_SELECT_OR_MIGRATE``,``sk_reuseport/migrate``,
->> +    ``BPF_PROG_TYPE_SK_REUSEPORT``,``BPF_SK_REUSEPORT_SELECT``,``sk_reuseport``,
->> +    ``BPF_PROG_TYPE_KPROBE``,,``kprobe+``,
->> +    ``BPF_PROG_TYPE_KPROBE``,,``uprobe+``,
->> +    ``BPF_PROG_TYPE_KPROBE``,,``uprobe.s+``,Yes
->
-> The note above doesn't get rendered on htmldocs output, so I have applied
-> the fixup:
+On Friday, September 23, 2022 12:38:02 AM CEST Anirudh Venkataramanan wrote:
+> On 9/22/2022 1:58 PM, Alexander Duyck wrote:
+> > On Thu, Sep 22, 2022 at 1:07 PM Anirudh Venkataramanan
+> > <anirudh.venkataramanan@intel.com> wrote:
+> >>
+> >>
+> >> Following Fabio's patches, I made similar changes for e1000/e1000e and
+> >> submitted them to IWL [1].
 
-It was intended to be a comment to the reader of program_types.rst that
-this is the format of the .csv file that will be rendered. It was not
-meant to be a note on the rendered page.
+I saw your patches and they look good to me. I might comment and probably 
+review them, however I prefer to wait for Ira to do that. Furthermore, looking 
+again at your patches made me recall that I need to talk with him about 
+something that is only indirectly related with you work.
 
-The rendered page will show the table that is produced by the csv-table
-directive which is self explanatory.
+Please don't rely on older patches of mine as models for your next patches. In 
+the last months I changed many things in the way I handle the removal of 
+kmap() in favour of a plain page_address() or decide to convert to 
+kmap_local_page(). Obviously I'm talking about pages which cannot come from 
+ZONE_HIGHMEM.
 
->
-> ---- >8 ----
->
-> diff --git a/Documentation/bpf/libbpf/program_types.rst b/Documentation/bpf/libbpf/program_types.rst
-> index b74fbf3363dd6c..3ce0ec94b399b4 100644
-> --- a/Documentation/bpf/libbpf/program_types.rst
-> +++ b/Documentation/bpf/libbpf/program_types.rst
-> @@ -16,15 +16,17 @@ When ``extras`` are specified, they provide details of how to auto-attach the BP
->  The format of ``extras`` depends on the program type, e.g. ``SEC("tracepoint/<category>/<name>")``
->  for tracepoints or ``SEC("usdt/<path-to-binary>:<usdt_provider>:<usdt_name>")`` for USDT probes.
->  
-> -..
-> -  program_types.csv is generated from tools/lib/bpf/libbpf.c and is formatted like this:
-> -    Program Type,Attach Type,ELF Section Name,Sleepable
-> -    ``BPF_PROG_TYPE_SOCKET_FILTER``,,``socket``,
-> -    ``BPF_PROG_TYPE_SK_REUSEPORT``,``BPF_SK_REUSEPORT_SELECT_OR_MIGRATE``,``sk_reuseport/migrate``,
-> -    ``BPF_PROG_TYPE_SK_REUSEPORT``,``BPF_SK_REUSEPORT_SELECT``,``sk_reuseport``,
-> -    ``BPF_PROG_TYPE_KPROBE``,,``kprobe+``,
-> -    ``BPF_PROG_TYPE_KPROBE``,,``uprobe+``,
-> -    ``BPF_PROG_TYPE_KPROBE``,,``uprobe.s+``,Yes
-> +.. note::
-> +   The table below is generated from ``tools/lib/bpf/libbpf.c`` and is
-> +   formatted like this (in CSV format)::
-> +
-> +     Program Type,Attach Type,ELF Section Name,Sleepable
-> +     BPF_PROG_TYPE_SOCKET_FILTER,,socket,
-> +     BPF_PROG_TYPE_SK_REUSEPORT,BPF_SK_REUSEPORT_SELECT_OR_MIGRATE,sk_reuseport/migrate,
-> +     BPF_PROG_TYPE_SK_REUSEPORT,BPF_SK_REUSEPORT_SELECT,sk_reuseport,
-> +     BPF_PROG_TYPE_KPROBE,,kprobe+,
-> +     BPF_PROG_TYPE_KPROBE,,uprobe+,
-> +     BPF_PROG_TYPE_KPROBE,,uprobe.s+,Yes
->  
->  .. csv-table:: Program Types and Their ELF Section Names
->     :file: program_types.csv
->  
-> Thanks.
+> >> Yesterday, Ira Weiny pointed me to some feedback from Dave Hansen on the
+> >> use of page_address() [2]. My understanding of this feedback is that
+> >> it's safer to use kmap_local_page() instead of page_address(), because
+> >> you don't always know how the underlying page was allocated.
+
+Your understanding of Dave's message is absolutely correct.
+
+> >> This approach (of using kmap_local_page() instead of page_address())
+> >> makes sense to me. Any reason not to go this way?
+
+> >> [1]
+> >>
+> >> https://patchwork.ozlabs.org/project/intel-wired-lan/patch/
+20220919180949.388785-1-anirudh.venkataramanan@intel.com/
+> >>
+> >> https://patchwork.ozlabs.org/project/intel-wired-lan/patch/
+20220919180949.388785-2-anirudh.venkataramanan@intel.com/
+> >>
+> >> [2]
+> >> https://lore.kernel.org/lkml/5d667258-b58b-3d28-3609-e7914c99b31b@intel.com/
+> >>
+> >> Ani
+> > 
+> > For the two patches you referenced the driver is the one allocating
+> > the pages. So in such a case the page_address should be acceptable.
+> > Specifically we are falling into alloc_page(GFP_ATOMIC) which should
+> > fall into the first case that Dave Hansen called out.
+> 
+> Right. However, I did run into a case in the chelsio inline crypto 
+> driver where it seems like the pages are allocated outside the driver. 
+> In such cases, kmap_local_page() would be the right approach, as the 
+> driver can't make assumptions on how the page was allocated.
+
+The mere fact that we are still discussing this particular topic is my only 
+fault. I mean that the guidelines about what to do with ZONE_NORMAL or lower 
+pages is not enough clear. I'll have to improve that paragraph.
+
+For now let me tell you what I'm doing whenever I have to decide between a 
+conversion  from kmap{,_atomic}() to kmap_local_page() or a kmap() removal  in 
+favour of page_address() use.
+
+> ... and this makes me wonder why not just use kmap_local_page() even in 
+> cases where the page allocation was done in the driver. IMO, this is 
+> simpler because
+> 
+> a) you don't have to care how a page was allocated. kmap_local_page() 
+> will create a temporary mapping if required, if not it just becomes a 
+> wrapper to page_address().
+> 
+> b) should a future patch change the allocation to be from highmem, you 
+> don't have to change a bunch of page_address() calls to be 
+> kmap_local_page().
+
+"a" and "b" are good arguments with sound logic. However there are a couple of 
+cases that you are not yet considering.
+
+As my main rule I prefer the use of kmap_local_page() whenever tracking if 
+pages can't come from Highmem is complex, especially when allocation is 
+performed in other translation units of the same driver or, worse, pages come 
+from different subsystems.
+
+Instead, I don't like to use kmap_local_page() when the allocation is in the 
+same function and you see immediately that it cannot come from ZONE_HIGHMEM.
+
+Sometimes it's so clear that using kmap_local_page() looks silly to me :-)
+For example...
+
+void *silly_alloc_and_map() {
+         	struct *page;
+	
+	page = alloc_page(GFP_KERNEL);
+	return kmap_local_page(page);
+}
+
+In this case you know without any effort that the page cannot come from 
+ZONE_HIGHMEM. Therefore, why bother with mapping and unmapping (and perhaps 
+write a function for unmapping).
+
+While working on the removals or the conversions of kmap(), I noticed that 
+people tend to forget to call kunmap(). We have a limited amount of kmap() 
+slots. If the mapping space is fully utilized we'll have the next slot 
+available only after reboot or unloading and reloading a module.
+
+If I recall correctly, with kmap_local_page() we can map a maximum of 16 pages 
+per task_struct. Therefore, limits are everywhere and people tend to leak 
+resources.
+
+To summarize: whenever allocation is easily trackable, and pages cannot come 
+from ZONE_HIGHMEM, I prefer page_address().
+
+Honestly, if code is well designed I don't care whether or not within 5 days 
+or 10 years decide to change the allocation. I think it's like to refrain from 
+deleting unreachable code, variables, partially implemented functions, and so 
+on just because one day someone may think to make something useful from those 
+things. 
+
+Greg K-H taught me that I must see the code as is now and don't speculate 
+about possible future scenarios. I agree with him in full :-)
+
+Very different case where I _need_ page_address() are due to the strict rules 
+of nesting mapping and unmapping-mapping. I recall that I spent days on a 
+function in Btrfs because I could not map and unmap with the usual Last In - 
+First Out (LIFO) rule. 
+
+A function was so complex and convoluted that nobody could know in advance the 
+order of execution of the mappings of two pages. Lots of goto, breaks, loops 
+made impossible to unmap in the correct order at the "clean and exit" label.
+
+I made a first attempt using a two element array as a stack which registered 
+the mappings and then I used it to unmap in the correct order at exit.
+
+It was intentionally a means to draw the attention of the maintainers. One of 
+them proposed to split that very complex function in several helpers, and 
+isolate the mappings one by one. It was OK to me.
+
+After weeks, David Sterba noticed that he knew that one of the pages came from 
+the page cache and we had to map it, but the second page was allocated inside 
+Btrfs with GFP_KERNEL. Therefore, the better suited solution was to use 
+kmap_local_page() for the first and page address() for the second.
+
+My stack based solution was working but nobody should write such an ugly code 
+just to enforce local mapping :-) 
+
+> Is using page_address() directly beneficial in some way?
+
+A possible call chain on 32 bits kernels is the following:
+
+kmap_local_page() ->
+ __kmap_local_page_prot() { 
+	if (!IS_ENABLED(CONFIG_DEBUG_KMAP_LOCAL_FORCE_MAP) && |
+PageHighMem(page))
+		return page_address(page);
+
+....
+}
+
+How many instructions can you save calling page_address() directly?
+If you don't know, look at the assembly.
+
+Thanks,
+
+Fabio		
+
+> Ani
+> 
+> 
+
+
+
+
