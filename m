@@ -2,132 +2,312 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94CE35E85A5
-	for <lists+bpf@lfdr.de>; Sat, 24 Sep 2022 00:14:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C1BB5E85AF
+	for <lists+bpf@lfdr.de>; Sat, 24 Sep 2022 00:16:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230421AbiIWWOS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 23 Sep 2022 18:14:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46294 "EHLO
+        id S231239AbiIWWQQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 23 Sep 2022 18:16:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230089AbiIWWOR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 23 Sep 2022 18:14:17 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BD6F115A77
-        for <bpf@vger.kernel.org>; Fri, 23 Sep 2022 15:14:16 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id z13so1897220edb.13
-        for <bpf@vger.kernel.org>; Fri, 23 Sep 2022 15:14:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=usRcIh7kBKC8VCCor3m8Pw49lz/tKKZrVix/e5fniJQ=;
-        b=e/XZKzbHIt2XsdXtbdws6+66VFnkXUgfj2wcpGSj30hgiQVk+38geFm4LHebmSjXWU
-         MJ5vLWbnlEU8Pu/zhdYWwbMUhvJGku12l4orjbafBegc+nXqA0Ri7d2BctAKKrE8pBKF
-         mSwv94YsOoLyKx0Ztg76mALveQP5kbORtFWhyxco0RXKK6O1q4WWEMtufgzczU+P7+Uv
-         WMgaiSGoOnpcW061Lz5yTqOHuqz5a9AYC6eo14rb3Ijb8lc7hIR2Pz/lWcf/304FOKjL
-         pDTynBiuz4d4fBrmnToiqdObK4Toi4OotTVfyTKcysXB4/0clw4Cv9yc93WMXZknYBrK
-         L+BA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=usRcIh7kBKC8VCCor3m8Pw49lz/tKKZrVix/e5fniJQ=;
-        b=6W2m+fldQ4x3RwraIQejEdXlZHNNu+yOlzsgufaT6loSgQi29r4lOFmLYHYsNR/qcj
-         7R7vOcEJWo2qkOVTFf+qdj93+D66Rb+wTAP1aT1wFPGFR8okuKj/3jPqARW3BqbRHy4x
-         PJvJg4N5GXucn/VT5Kc+6CMz4YkINfOgIsVoYtQ3Do9SGrLcke7bNA/IF0SXuZwgxT4B
-         bAGGx+aKxYe2qysFVu+Ewov20g73GiY3o+vDJeJVHpx2dwyPjd27nYKuFC3IHHRFay4v
-         XLhViUITbPTajCEs24EYWcpoSr4WrZUrqbIDTI0hTgJomcd3G9LxPJhmVMBZpOvgJE2f
-         CT9A==
-X-Gm-Message-State: ACrzQf2irdTU94kgaGcEL3X6LL1K5hRUSZAIMVFkHeOlRRdVRauAO02d
-        RKiZXfYmLeeWL4p2KkXUImJZ35602IRkOChPwjzgl3AMVpo=
-X-Google-Smtp-Source: AMsMyM4UAlQa7kksG+BfVO5fTuD1Q9/9VojJ1RRmKAPcaR3PYsKBj4L2zuYxpra8EiuW2vN6nFA6vgoSNRvHH6PLvlU=
-X-Received: by 2002:a05:6402:1a35:b0:455:32da:551b with SMTP id
- be21-20020a0564021a3500b0045532da551bmr8988242edb.14.1663971254589; Fri, 23
- Sep 2022 15:14:14 -0700 (PDT)
+        with ESMTP id S230415AbiIWWQN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 23 Sep 2022 18:16:13 -0400
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0872F11BCF1;
+        Fri, 23 Sep 2022 15:16:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1663971372; x=1695507372;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=HnHny9mH/Tc9Mi+8kDkl+OHLMRjchuCS0knbbnNoCE4=;
+  b=elz2wTo7va1NY5sHCH89Ek+w92+muK4YHQH3Hu8gPLE5T79y3ujgyT8Y
+   KyfDZ+TMoxabR/iNTw/wBmLcLML0bDBxexlLNeYlAfV2jFL0PQGp9g92C
+   WwF/3JRQAnxilakGpFpYz3599jrBncsHo8IJqwtSL281stGwRS2z4UPo/
+   RKASCEH6svfM4Cu8OIHTgX4n9cNUCCOpAl9TL67eO6qMmRVA1rrh/ISk/
+   woI8Wu/wdtzK1NmiEc3s5bB2c91Qbh4CQvSEDI+D1JT1P0I12eea7wV1m
+   18dV2N7W1UATED4fVROujZsGHJjfyV88+EjgoL9GuBUEww8Tqtm7J+aAM
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10479"; a="299430963"
+X-IronPort-AV: E=Sophos;i="5.93,340,1654585200"; 
+   d="scan'208";a="299430963"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2022 15:16:11 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,340,1654585200"; 
+   d="scan'208";a="688887263"
+Received: from lkp-server01.sh.intel.com (HELO c0a60f19fe7e) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 23 Sep 2022 15:16:08 -0700
+Received: from kbuild by c0a60f19fe7e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1obqxr-0005yu-32;
+        Fri, 23 Sep 2022 22:16:07 +0000
+Date:   Sat, 24 Sep 2022 06:15:33 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-scsi@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org, bpf@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: [linux-next:master] BUILD REGRESSION
+ aaa11ce2ffc84166d11c4d2ac88c3fcf75425fbd
+Message-ID: <632e3005.ZYJJ6QtZHKiRIgTH%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20220923060614.4025371-1-davemarchevsky@fb.com>
-In-Reply-To: <20220923060614.4025371-1-davemarchevsky@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 23 Sep 2022 15:14:02 -0700
-Message-ID: <CAEf4BzY9Ta5aiw6n2AHTYxENpYTAdYbVdN=ZiW8dimdM9QqbyQ@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 1/2] bpf: Allow ringbuf memory to be used as
- map key
-To:     Dave Marchevsky <davemarchevsky@fb.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 22, 2022 at 11:06 PM Dave Marchevsky <davemarchevsky@fb.com> wrote:
->
-> This patch adds support for the following pattern:
->
->   struct some_data *data = bpf_ringbuf_reserve(&ringbuf, sizeof(struct some_data, 0));
->   if (!data)
->     return;
->   bpf_map_lookup_elem(&another_map, &data->some_field);
->   bpf_ringbuf_submit(data);
->
-> Currently the verifier does not consider bpf_ringbuf_reserve's
-> PTR_TO_MEM | MEM_ALLOC ret type a valid key input to bpf_map_lookup_elem.
-> Since PTR_TO_MEM is by definition a valid region of memory, it is safe
-> to use it as a key for lookups.
->
-> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
-> Acked-by: Yonghong Song <yhs@fb.com>
-> ---
-> v2->v3: lore.kernel.org/bpf/20220914123600.927632-1-davemarchevsky@fb.com
->
->   * Add Yonghong ack, rebase
->
-> v1->v2: lore.kernel.org/bpf/20220912101106.2765921-1-davemarchevsky@fb.com
->
->   * Move test changes into separate patch - patch 2 in this series.
->     (Kumar, Yonghong). That patch's changelog enumerates specific
->     changes from v1
->   * Remove PTR_TO_MEM addition from this patch - patch 1 (Yonghong)
->     * I don't have a usecase for PTR_TO_MEM w/o MEM_ALLOC
->   * Add "if (!data)" error check to example pattern in this patch
->     (Yonghong)
->   * Remove patch 2 from v1's series, which removed map_key_value_types
->     as it was more-or-less duplicate of mem_types
->     * Now that PTR_TO_MEM isn't added here, more differences between
->       map_key_value_types and mem_types, and no usecase for PTR_TO_BUF,
->       so drop for now.
->
->  kernel/bpf/verifier.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 6f6d2d511c06..97351ae3e7a7 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -5641,6 +5641,7 @@ static const struct bpf_reg_types map_key_value_types = {
->                 PTR_TO_PACKET_META,
->                 PTR_TO_MAP_KEY,
->                 PTR_TO_MAP_VALUE,
-> +               PTR_TO_MEM | MEM_ALLOC,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+branch HEAD: aaa11ce2ffc84166d11c4d2ac88c3fcf75425fbd  Add linux-next specific files for 20220923
 
-are there any differences between mem_types and map_key_value_types?
-If not, should we just drop map_key_value_types? mem_types also alloc
-any PTR_TO_MEM (not just ringbuf's MEM_ALLOC) and PTR_TO_BUF
-(tracepoint context structs, I think?)
+Error/Warning reports:
 
->         },
->  };
->
-> --
-> 2.30.2
->
+https://lore.kernel.org/linux-doc/202209231933.vcyETtUl-lkp@intel.com
+https://lore.kernel.org/linux-mm/202209042337.FQi69rLV-lkp@intel.com
+https://lore.kernel.org/linux-mm/202209060229.dVuyxjBv-lkp@intel.com
+https://lore.kernel.org/linux-mm/202209150141.WgbAKqmX-lkp@intel.com
+https://lore.kernel.org/linux-mm/202209200603.Hpvoa8Ii-lkp@intel.com
+https://lore.kernel.org/linux-mm/202209200949.Vl3xrUYD-lkp@intel.com
+https://lore.kernel.org/llvm/202209220019.Yr2VuXhg-lkp@intel.com
+
+Error/Warning: (recently discovered and may have been fixed)
+
+ERROR: modpost: "devm_ioremap_resource" [drivers/dma/fsl-edma.ko] undefined!
+ERROR: modpost: "devm_ioremap_resource" [drivers/dma/idma64.ko] undefined!
+ERROR: modpost: "devm_ioremap_resource" [drivers/dma/qcom/hdma.ko] undefined!
+ERROR: modpost: "devm_memremap" [drivers/misc/open-dice.ko] undefined!
+ERROR: modpost: "devm_memunmap" [drivers/misc/open-dice.ko] undefined!
+ERROR: modpost: "devm_platform_ioremap_resource" [drivers/char/xillybus/xillybus_of.ko] undefined!
+ERROR: modpost: "devm_platform_ioremap_resource" [drivers/clk/xilinx/clk-xlnx-clock-wizard.ko] undefined!
+ERROR: modpost: "ioremap" [drivers/net/ethernet/8390/pcnet_cs.ko] undefined!
+ERROR: modpost: "ioremap" [drivers/tty/ipwireless/ipwireless.ko] undefined!
+ERROR: modpost: "iounmap" [drivers/net/ethernet/8390/pcnet_cs.ko] undefined!
+ERROR: modpost: "iounmap" [drivers/tty/ipwireless/ipwireless.ko] undefined!
+Warning: Documentation/translations/zh_CN/devicetree/kernel-api.rst references a file that doesn't exist: Documentation/Devicetree/kernel-api.rst
+arch/arm64/kernel/alternative.c:199:6: warning: no previous prototype for 'apply_alternatives_vdso' [-Wmissing-prototypes]
+arch/arm64/kernel/alternative.c:295:14: warning: no previous prototype for 'alt_cb_patch_nops' [-Wmissing-prototypes]
+arch/parisc/lib/iomap.c:363:5: warning: no previous prototype for 'ioread64_lo_hi' [-Wmissing-prototypes]
+arch/parisc/lib/iomap.c:373:5: warning: no previous prototype for 'ioread64_hi_lo' [-Wmissing-prototypes]
+arch/parisc/lib/iomap.c:448:6: warning: no previous prototype for 'iowrite64_lo_hi' [-Wmissing-prototypes]
+arch/parisc/lib/iomap.c:454:6: warning: no previous prototype for 'iowrite64_hi_lo' [-Wmissing-prototypes]
+drivers/scsi/qla2xxx/qla_os.c:2854:23: warning: assignment to 'struct trace_array *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
+drivers/scsi/qla2xxx/qla_os.c:2854:25: error: implicit declaration of function 'trace_array_get_by_name'; did you mean 'trace_array_set_clr_event'? [-Werror=implicit-function-declaration]
+drivers/scsi/qla2xxx/qla_os.c:2869:9: error: implicit declaration of function 'trace_array_put' [-Werror=implicit-function-declaration]
+grep: smatch_trinity_*: No such file or directory
+make[5]: *** No rule to make target 'drivers/crypto/aspeed/aspeed_crypto.o', needed by 'drivers/crypto/aspeed/'.
+mm/hugetlb.c:5539:14: warning: variable 'reserve_alloc' set but not used [-Wunused-but-set-variable]
+
+Error/Warning ids grouped by kconfigs:
+
+gcc_recent_errors
+|-- alpha-allyesconfig
+|   |-- drivers-scsi-qla2xxx-qla_os.c:error:implicit-declaration-of-function-trace_array_get_by_name
+|   |-- drivers-scsi-qla2xxx-qla_os.c:error:implicit-declaration-of-function-trace_array_put
+|   `-- drivers-scsi-qla2xxx-qla_os.c:warning:assignment-to-struct-trace_array-from-int-makes-pointer-from-integer-without-a-cast
+|-- alpha-randconfig-c042-20220923
+|   `-- make:No-rule-to-make-target-drivers-crypto-aspeed-aspeed_crypto.o-needed-by-drivers-crypto-aspeed-.
+|-- arc-randconfig-s031-20220923
+|   |-- drivers-gpu-drm-vkms-vkms_formats.c:sparse:sparse:cast-to-restricted-__le16
+|   |-- drivers-gpu-drm-vkms-vkms_formats.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-unsigned-short-usertype-got-restricted-__le16-usertype
+|   |-- kernel-exit.c:sparse:sparse:incorrect-type-in-initializer-(different-address-spaces)-expected-struct-sighand_struct-sighand-got-struct-sighand_struct-noderef-__rcu-sighand
+|   `-- sound-soc-generic-simple-card-utils.c:sparse:sparse:incorrect-type-in-initializer-(different-base-types)-expected-unsigned-int-usertype-val-got-restricted-snd_pcm_format_t-usertype
+|-- arm64-allnoconfig
+|   |-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-alt_cb_patch_nops
+|   `-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-apply_alternatives_vdso
+|-- arm64-allyesconfig
+|   |-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-alt_cb_patch_nops
+|   |-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-apply_alternatives_vdso
+|   `-- mm-hugetlb.c:warning:variable-reserve_alloc-set-but-not-used
+|-- arm64-randconfig-s043-20220923
+|   |-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-alt_cb_patch_nops
+|   |-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-apply_alternatives_vdso
+|   |-- drivers-gpu-drm-tiny-simpledrm.c:sparse:sparse:incorrect-type-in-initializer-(different-address-spaces)-expected-void-vaddr-got-void-noderef-__iomem-screen_base
+|   |-- drivers-gpu-drm-vkms-vkms_formats.c:sparse:sparse:cast-to-restricted-__le16
+|   |-- drivers-gpu-drm-vkms-vkms_formats.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-unsigned-short-usertype-got-restricted-__le16-usertype
+|   |-- drivers-thermal-broadcom-ns-thermal.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-data-got-void-noderef-__iomem-assigned-pvtmon
+|   |-- drivers-thermal-broadcom-ns-thermal.c:sparse:sparse:incorrect-type-in-initializer-(different-address-spaces)-expected-void-noderef-__iomem-pvtmon-got-void
+|   |-- drivers-thermal-broadcom-ns-thermal.c:sparse:sparse:incorrect-type-in-initializer-(different-address-spaces)-expected-void-noderef-__iomem-pvtmon-got-void-devdata
+|   |-- kernel-exit.c:sparse:sparse:incorrect-type-in-initializer-(different-address-spaces)-expected-struct-sighand_struct-sighand-got-struct-sighand_struct-noderef-__rcu-sighand
+|   `-- sound-soc-generic-simple-card-utils.c:sparse:sparse:incorrect-type-in-initializer-(different-base-types)-expected-unsigned-int-usertype-val-got-restricted-snd_pcm_format_t-usertype
+|-- arm64-randconfig-s053-20220923
+|   |-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-alt_cb_patch_nops
+|   |-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-apply_alternatives_vdso
+|   |-- drivers-gpu-drm-tiny-simpledrm.c:sparse:sparse:incorrect-type-in-initializer-(different-address-spaces)-expected-void-vaddr-got-void-noderef-__iomem-screen_base
+|   |-- drivers-gpu-drm-vkms-vkms_formats.c:sparse:sparse:cast-to-restricted-__le16
+|   |-- drivers-gpu-drm-vkms-vkms_formats.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-unsigned-short-usertype-got-restricted-__le16-usertype
+|   |-- kernel-bpf-hashtab.c:sparse:sparse:cast-removes-address-space-__percpu-of-expression
+|   |-- kernel-bpf-hashtab.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-void-noderef-__percpu-assigned-pptr-got-void
+|   |-- kernel-bpf-hashtab.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-void-ptr_to_pptr-got-void-noderef-__percpu-assigned-pptr
+|   |-- kernel-bpf-memalloc.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-noderef-__percpu-__pdata-got-void
+|   |-- kernel-bpf-memalloc.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-noderef-__percpu-__pdata-got-void-pptr
+|   |-- kernel-bpf-memalloc.c:sparse:sparse:incorrect-type-in-initializer-(different-address-spaces)-expected-void-pptr-got-void-noderef-__percpu
+|   |-- kernel-exit.c:sparse:sparse:incorrect-type-in-initializer-(different-address-spaces)-expected-struct-sighand_struct-sighand-got-struct-sighand_struct-noderef-__rcu-sighand
+|   `-- sound-soc-generic-simple-card-utils.c:sparse:sparse:incorrect-type-in-initializer-(different-base-types)-expected-unsigned-int-usertype-val-got-restricted-snd_pcm_format_t-usertype
+|-- csky-randconfig-s051-20220923
+|   `-- kernel-exit.c:sparse:sparse:incorrect-type-in-initializer-(different-address-spaces)-expected-struct-sighand_struct-sighand-got-struct-sighand_struct-noderef-__rcu-sighand
+|-- i386-allyesconfig
+|   `-- mm-hugetlb.c:warning:variable-reserve_alloc-set-but-not-used
+|-- i386-defconfig
+|   `-- mm-hugetlb.c:warning:variable-reserve_alloc-set-but-not-used
+|-- i386-randconfig-a005
+clang_recent_errors
+|-- hexagon-buildonly-randconfig-r006-20220923
+|   |-- drivers-extcon-extcon-usbc-tusb320.c:warning:expecting-prototype-for-drivers-extcon-extcon-tusb320c().-Prototype-was-for-TUSB320_REG8()-instead
+|   |-- ld.lld:error:vmlinux.a(arch-hexagon-kernel-head.o):(.init.text):relocation-R_HEX_B22_PCREL-out-of-range:is-not-in-references-__vmnewmap
+|   |-- ld.lld:error:vmlinux.a(arch-hexagon-kernel-head.o):(.init.text):relocation-R_HEX_B22_PCREL-out-of-range:is-not-in-references-__vmsetvec
+|   `-- ld.lld:error:vmlinux.a(arch-hexagon-kernel-head.o):(.init.text):relocation-R_HEX_B22_PCREL-out-of-range:is-not-in-references-memset
+|-- i386-randconfig-a002
+|   |-- drivers-extcon-extcon-usbc-tusb320.c:warning:expecting-prototype-for-drivers-extcon-extcon-tusb320c().-Prototype-was-for-TUSB320_REG8()-instead
+|   `-- mm-hugetlb.c:warning:variable-reserve_alloc-set-but-not-used
+|-- i386-randconfig-a004
+|   `-- mm-hugetlb.c:warning:variable-reserve_alloc-set-but-not-used
+|-- i386-randconfig-a006
+|   `-- mm-hugetlb.c:warning:variable-reserve_alloc-set-but-not-used
+|-- i386-randconfig-a013
+|   `-- mm-hugetlb.c:warning:variable-reserve_alloc-set-but-not-used
+|-- powerpc-mpc885_ads_defconfig
+|   |-- arch-powerpc-math-emu-fcmpu.c:error:variable-A_c-set-but-not-used-Werror-Wunused-but-set-variable
+|   |-- arch-powerpc-math-emu-fcmpu.c:error:variable-B_c-set-but-not-used-Werror-Wunused-but-set-variable
+|   |-- arch-powerpc-math-emu-fcmpu.c:error:variable-_fex-set-but-not-used-Werror-Wunused-but-set-variable
+|   |-- arch-powerpc-math-emu-fctiw.c:error:variable-_fex-set-but-not-used-Werror-Wunused-but-set-variable
+|   |-- arch-powerpc-math-emu-fctiwz.c:error:variable-_fex-set-but-not-used-Werror-Wunused-but-set-variable
+|   |-- arch-powerpc-math-emu-fsel.c:error:variable-_fex-set-but-not-used-Werror-Wunused-but-set-variable
+|   `-- mm-hugetlb.c:warning:variable-reserve_alloc-set-but-not-used
+|-- powerpc-randconfig-r035-20220923
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-virtual-virtual_link_hwss.c:warning:no-previous-prototype-for-function-virtual_disable_link_output
+|-- powerpc-tqm8540_defconfig
+|   |-- arch-powerpc-math-emu-fcmpu.c:error:variable-A_c-set-but-not-used-Werror-Wunused-but-set-variable
+|   |-- arch-powerpc-math-emu-fcmpu.c:error:variable-B_c-set-but-not-used-Werror-Wunused-but-set-variable
+|   |-- arch-powerpc-math-emu-fcmpu.c:error:variable-_fex-set-but-not-used-Werror-Wunused-but-set-variable
+|   |-- arch-powerpc-math-emu-fctiw.c:error:variable-_fex-set-but-not-used-Werror-Wunused-but-set-variable
+|   |-- arch-powerpc-math-emu-fctiwz.c:error:variable-_fex-set-but-not-used-Werror-Wunused-but-set-variable
+|   `-- arch-powerpc-math-emu-fsel.c:error:variable-_fex-set-but-not-used-Werror-Wunused-but-set-variable
+|-- powerpc-xes_mpc85xx_defconfig
+|   |-- arch-powerpc-math-emu-fcmpu.c:error:variable-A_c-set-but-not-used-Werror-Wunused-but-set-variable
+|   |-- arch-powerpc-math-emu-fcmpu.c:error:variable-B_c-set-but-not-used-Werror-Wunused-but-set-variable
+|   |-- arch-powerpc-math-emu-fcmpu.c:error:variable-_fex-set-but-not-used-Werror-Wunused-but-set-variable
+|   |-- arch-powerpc-math-emu-fctiw.c:error:variable-_fex-set-but-not-used-Werror-Wunused-but-set-variable
+|   |-- arch-powerpc-math-emu-fctiwz.c:error:variable-_fex-set-but-not-used-Werror-Wunused-but-set-variable
+|   `-- arch-powerpc-math-emu-fsel.c:error:variable-_fex-set-but-not-used-Werror-Wunused-but-set-variable
+|-- riscv-randconfig-r015-20220922
+|   |-- ld.lld:error:vmlinux.a(kernel-kallsyms.o):(function-get_symbol_offset:.text):relocation-R_RISCV_PCREL_HI20-out-of-range:is-not-in-references-kallsyms_markers
+|   |-- ld.lld:error:vmlinux.a(kernel-kallsyms.o):(function-get_symbol_offset:.text):relocation-R_RISCV_PCREL_HI20-out-of-range:is-not-in-references-kallsyms_names
+|   |-- ld.lld:error:vmlinux.a(kernel-kallsyms.o):(function-update_iter:.text):relocation-R_RISCV_PCREL_HI20-out-of-range:is-not-in-references-kallsyms_names
+|   |-- ld.lld:error:vmlinux.a(kernel-kallsyms.o):(function-update_iter:.text):relocation-R_RISCV_PCREL_HI20-out-of-range:is-not-in-references-kallsyms_offsets
+|   |-- ld.lld:error:vmlinux.a(kernel-kallsyms.o):(function-update_iter:.text):relocation-R_RISCV_PCREL_HI20-out-of-range:is-not-in-references-kallsyms_relative_base
+|   `-- ld.lld:error:vmlinux.a(kernel-kallsyms.o):(function-update_iter:.text):relocation-R_RISCV_PCREL_HI20-out-of-range:is-not-in-references-kallsyms_token_index
+|-- x86_64-randconfig-a001
+|   `-- mm-hugetlb.c:warning:variable-reserve_alloc-set-but-not-used
+|-- x86_64-randconfig-a003
+|   `-- drivers-extcon-extcon-usbc-tusb320.c:warning:expecting-prototype-for-drivers-extcon-extcon-tusb320c().-Prototype-was-for-TUSB320_REG8()-instead
+|-- x86_64-randconfig-a005
+
+elapsed time: 726m
+
+configs tested: 88
+configs skipped: 3
+
+gcc tested configs:
+um                             i386_defconfig
+um                           x86_64_defconfig
+x86_64                              defconfig
+arc                  randconfig-r043-20220922
+i386                                defconfig
+i386                          randconfig-a001
+x86_64                        randconfig-a002
+i386                          randconfig-a003
+arm                                 defconfig
+x86_64                        randconfig-a006
+x86_64                        randconfig-a013
+i386                          randconfig-a005
+x86_64                               rhel-8.3
+x86_64                        randconfig-a004
+x86_64                        randconfig-a011
+i386                             allyesconfig
+arc                                 defconfig
+x86_64                           rhel-8.3-kvm
+x86_64                    rhel-8.3-kselftests
+s390                             allmodconfig
+csky                             alldefconfig
+x86_64                        randconfig-a015
+x86_64                           rhel-8.3-syz
+xtensa                    smp_lx200_defconfig
+sh                           se7705_defconfig
+ia64                             allmodconfig
+x86_64                          rhel-8.3-func
+powerpc                      tqm8xx_defconfig
+arc                               allnoconfig
+alpha                             allnoconfig
+riscv                             allnoconfig
+csky                              allnoconfig
+sh                        sh7757lcr_defconfig
+mips                         rt305x_defconfig
+sh                   sh7770_generic_defconfig
+m68k                          hp300_defconfig
+arm                          lpd270_defconfig
+sh                               allmodconfig
+i386                          randconfig-c001
+mips                          rb532_defconfig
+ia64                        generic_defconfig
+arm                          exynos_defconfig
+mips                            ar7_defconfig
+sh                          lboxre2_defconfig
+powerpc                     pq2fads_defconfig
+arm                        mini2440_defconfig
+powerpc                  iss476-smp_defconfig
+ia64                          tiger_defconfig
+sh                        edosk7760_defconfig
+nios2                               defconfig
+parisc                              defconfig
+powerpc                           allnoconfig
+alpha                               defconfig
+m68k                             allmodconfig
+arc                              allyesconfig
+x86_64                           allyesconfig
+x86_64                         rhel-8.3-kunit
+alpha                            allyesconfig
+m68k                             allyesconfig
+mips                             allyesconfig
+powerpc                          allmodconfig
+s390                                defconfig
+arm                              allyesconfig
+arm64                            allyesconfig
+s390                             allyesconfig
+arm                  randconfig-c002-20220924
+
+clang tested configs:
+hexagon              randconfig-r041-20220922
+x86_64                        randconfig-a001
+i386                          randconfig-a002
+riscv                randconfig-r042-20220922
+x86_64                        randconfig-a003
+hexagon              randconfig-r045-20220922
+i386                          randconfig-a006
+x86_64                        randconfig-a005
+x86_64                        randconfig-a016
+i386                          randconfig-a004
+s390                 randconfig-r044-20220922
+mips                     loongson1c_defconfig
+x86_64                        randconfig-a012
+powerpc                  mpc885_ads_defconfig
+x86_64                        randconfig-a014
+i386                          randconfig-a013
+mips                        maltaup_defconfig
+arm                       versatile_defconfig
+riscv                            alldefconfig
+powerpc                 xes_mpc85xx_defconfig
+powerpc                     tqm8540_defconfig
+powerpc                 mpc8272_ads_defconfig
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
