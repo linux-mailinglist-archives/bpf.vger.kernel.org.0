@@ -2,67 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D623F5E865B
-	for <lists+bpf@lfdr.de>; Sat, 24 Sep 2022 01:39:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 013B15E8660
+	for <lists+bpf@lfdr.de>; Sat, 24 Sep 2022 01:49:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232941AbiIWXjP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 23 Sep 2022 19:39:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57146 "EHLO
+        id S232202AbiIWXtJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 23 Sep 2022 19:49:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232939AbiIWXjO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 23 Sep 2022 19:39:14 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01E13120BF2;
-        Fri, 23 Sep 2022 16:39:13 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id l14so3623346eja.7;
-        Fri, 23 Sep 2022 16:39:12 -0700 (PDT)
+        with ESMTP id S231387AbiIWXtH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 23 Sep 2022 19:49:07 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B99F124763
+        for <bpf@vger.kernel.org>; Fri, 23 Sep 2022 16:49:06 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id sb3so3626351ejb.9
+        for <bpf@vger.kernel.org>; Fri, 23 Sep 2022 16:49:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date;
-        bh=O2WS419477RItHrjYJA066CK5ec0ER13Ochk3uWzcRw=;
-        b=YtDNWo8aa2e8EPr0eQx490+jhBz3mbtQYz8NiyRRatYXl7k0Wq4xk8CeMtW3ERnHoy
-         6rfqmphNYr2PU5hreqrDBrOBvbhNQayGvC2bILAwjTu0sTvkAHrHZ5TjvqcuMQLvoAkm
-         w8X90awComo5FeBolI9Dhyiao1dhrKYu+rutmywQFF3B+L57VhDE43X6HRrD/bH/WsPx
-         2305yT+PU0tssuAaSs1+77DkApop9cQbGvCNUzL6zjv9dvf9ZPXPWqPuNZEeCZHxHgqf
-         dPssdBt4YkfsSzuXDZ8J70mkcSOf1oRxN/dstBWrHD1/w1jMQjSlm9KEIS2ZZ7T35GSU
-         LJbw==
+        bh=9XaEcMmmhuVya/w+hpYgBs9G+515XKwQejwu4llp9Pk=;
+        b=ThVeSOvYro469K3LQj3r4L5svmmvbAr8dpizf8sD9RoVbN9Uou6S3OwXV3iqeqFsTt
+         DyCkzNaO3JO+NuWrNFYDGY3g5o7CZdFl6K1Gqy25//Cj87zuUvKM5qxLo3lBLmpCQ+3o
+         L0I2lxVRGVSg+83LipU+woLmE7Fh5wp9foy5/ytGFeWPsEJGUirhXLsVxCawMm1obqf2
+         MzcX5EReZulnMZkk/zcw4F6o/lKR95ALaV1+aoPnx+bj688rk0hJVk8/2zEv/QwjIu7k
+         B4fxkIbmr+0+yKKcDRcKvxnCGDzE/5MGcuQfx7dHdVT0ge9kBBD7u5mHP82m9cx+FmB5
+         emBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=O2WS419477RItHrjYJA066CK5ec0ER13Ochk3uWzcRw=;
-        b=Wv/fr9pfeyvlOL/Cj3V9NUzrRK4EV4NNNlWeN9miOmPXAF0K/TtwUwCLd3mQOi4QeH
-         fIxO40tbPB7lJcT0qcbK2Onho31IhAKPHqVaTJRRKbck62e2/EIYhu3Tqb4PN+moAtI7
-         7lH1Kvys1xm0BpPrVj4ebG7UX5dI0LCKJs1KqcGIELRrjqAeARRW0Oeqtoiia4W/13R3
-         zSaff4CBE5IJHT97KPfXQ8manyDaumBz0cBxNEXdCbFlJm94SplS07liudkg/MXJw1w7
-         65cNxv0SC2NHoiaN1fa/szXeRzeMQ97K1hieboUaQiPtb8qYkIvSeuMmsnjHFYtr9ofG
-         9yqA==
-X-Gm-Message-State: ACrzQf3GUY7KJBvgcTZy0nZ7q36UB2ntA0Q4U7gw0lyQ89OwyeFFgfPo
-        1h4eUNedgJRuMcrQxqEqTz9/gdSSzRi/3O0iNFCPwmDG
-X-Google-Smtp-Source: AMsMyM7OLyR4LnIvYk7o59+lejA7K4po6/bsGPZRTtaJhoSZDyjJYvAqsJQrs2o7GvfckC0lC8AIN3SRnCTQLQ58RuY=
-X-Received: by 2002:a17:907:3fa9:b0:782:ed33:df8d with SMTP id
- hr41-20020a1709073fa900b00782ed33df8dmr904241ejc.745.1663976351222; Fri, 23
- Sep 2022 16:39:11 -0700 (PDT)
+        bh=9XaEcMmmhuVya/w+hpYgBs9G+515XKwQejwu4llp9Pk=;
+        b=4C7A6GX9d7SIVVcfk0wCyJV8YIRGBtWcF6/VEVEPGb0SBXvIyco2WpJP0T+zLsRRiA
+         Af+DDvD9ct+mnMdpDmf6UKWLRKXjCyAGVwNVsTx3Ccq3VypBhzTdJopjBcOpe6YRKQMj
+         8xd3PJQjVJcwOE2Hl3oBEzX1/KDT1NeqteGt5UHnpCcCcfRRAsm49oaCvex9IzVZHMm0
+         3zn8DY9GK3tJn24CmOUj0Zzl7zmZ4w2QIfIMut/iJFIxTyEJSGmKsYXwVPVUnAffctGV
+         /YPxYMx78+lobMMjwtR5m2ZNGmDhlhxYLzbyJbOdB+w6belJTKeOv7UoWqQwnW40pIea
+         pVKQ==
+X-Gm-Message-State: ACrzQf0F6r4XHsvwbP6Lpv5Utp4o8/WQFmIfXISrbP0E2hpYpTKdcaKe
+        obgDK7agS58r+2dkHYQsrwENwgU65IGVc30t+yY=
+X-Google-Smtp-Source: AMsMyM448G29ScUj+m607D+daDifgAJ6WQAvfHb1jIn3PEgmeTBgXRq48PaiuWqim4fQQ0hOGnXMJAvJH0PrvXuMf3k=
+X-Received: by 2002:a17:907:984:b0:77f:4d95:9e2f with SMTP id
+ bf4-20020a170907098400b0077f4d959e2fmr9455034ejc.176.1663976945051; Fri, 23
+ Sep 2022 16:49:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220826184911.168442-1-stephen.s.brennan@oracle.com>
- <CAADnVQKbK__y8GOD4LqaX0aCgT+rtC5aw54-02mSZj1-U6_mgw@mail.gmail.com>
- <87sfl3j966.fsf@oracle.com> <CAADnVQKbf5nEBnuSLmfZ_kGLmUzeD5htc1ezbJsVg72adF4bLw@mail.gmail.com>
- <87v8pylukf.fsf@oracle.com> <CAADnVQJCQdL4j1FFdSE=K6mUaoVGJkcVK-xzgJ_5MSvb2tEkFw@mail.gmail.com>
- <87sfl0l4z7.fsf@oracle.com>
-In-Reply-To: <87sfl0l4z7.fsf@oracle.com>
+References: <CAP01T752ZOX68V0hnCDAXT0tso7+i0BV0kDbXdvjYHNGM18Y2g@mail.gmail.com>
+ <CAEf4BzZ1xxoibbdZ1c3cvv_E7y0T8UASoH4W=XiSfEJ5VZstQg@mail.gmail.com> <CAP01T76zowA75yGxdZqPT3ePTtkTsYEnL_+NNr-U5c+5p2eVAQ@mail.gmail.com>
+In-Reply-To: <CAP01T76zowA75yGxdZqPT3ePTtkTsYEnL_+NNr-U5c+5p2eVAQ@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 23 Sep 2022 16:38:59 -0700
-Message-ID: <CAEf4Bzac5H0hfTCLa+hDP=ct_7fEOfUfyuC5TQ5mUk0xK3_DDw@mail.gmail.com>
-Subject: Re: [PATCH dwarves 0/7] Add support for generating BTF for all variables
-To:     Stephen Brennan <stephen.s.brennan@oracle.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alan Maguire <alan.maguire@oracle.com>
+Date:   Fri, 23 Sep 2022 16:48:53 -0700
+Message-ID: <CAEf4BzZZb70X8GXBRgS+0=9b5h=A59bw8s0x7Gra_-rC=xVvEw@mail.gmail.com>
+Subject: Re: Possible bugs in generated DATASEC BTF
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, "yhs@fb.com" <yhs@fb.com>,
+        andrii@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -74,142 +66,120 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 9, 2022 at 12:31 PM Stephen Brennan
-<stephen.s.brennan@oracle.com> wrote:
+On Fri, Sep 23, 2022 at 4:38 PM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
 >
-> >> (a) While we save space on vmlinux BTF, each module will have a bit of
-> >>     extra data for variable types. On my laptop (5.15 based) I have 9.8
-> >>     MB of BTF, and if you deduct vmlinux, you're still left with 4.7 MB.
-> >>     If we assume the same overhead of 23.7%, that would be 1.1 MB of
-> >>     extra module BTF for my particular use case.
-> >>
-> >>     $ ls -l /sys/kernel/btf | awk '{sum += $5} END {print(sum)}'
-> >>     9876871
-> >>     $ ls -l /sys/kernel/btf/vmlinux
-> >>     -r--r--r-- 1 root root 5174406 Sep  7 14:20 /sys/kernel/btf/vmlinux
-> >>
-> >> (b) It's possible for "vmlinux-btf-extras" and "$MODULE" to contain
-> >>     duplicate type definitions, wasting additional space. However, as
-> >>     far as I understand it, this was already a possibility, e.g.
-> >>     $MODULE1 and $MODULE2 could already contain duplicate types. So I
-> >>     think this downside is no more.
+> On Sat, 24 Sept 2022 at 01:20, Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
 > >
-> > Both concerns are valid, but I'm a bit puzzled with (a).
-> > At least in the networking drivers the number of global vars is very small.
-> > I expected other drivers to be similar.
-> > So having "functions and all vars" in ko-s should not add
-> > that much overhead.
+> > On Fri, Sep 23, 2022 at 3:32 PM Kumar Kartikeya Dwivedi
+> > <memxor@gmail.com> wrote:
+> > >
+> > > Hi,
+> > > For the following example:
+> > >
+> > > kkd@Legion ~/src/linux
+> > >  ; cat bpf.c
+> > > #define tag __attribute__((btf_decl_tag("tag")))
+> > >
+> > > int a tag;
+> > > int b tag;
+> > >
+> > > int main() {
+> > >         return a + b;
+> > > }
+> > >
+> > > --
+> > >
+> > > When I compile using:
+> > > clang -target bpf -O2 -g -c bpf.c
+> > >
+> > > For the BTF dump, I see:
+> > > [1] FUNC_PROTO '(anon)' ret_type_id=2 vlen=0
+> > > [2] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
+> > > [3] FUNC 'main' type_id=1 linkage=global
+> > > [4] VAR 'a' type_id=2, linkage=global
+> > > [5] DECL_TAG 'tag' type_id=4 component_idx=-1
+> > > [6] VAR 'b' type_id=2, linkage=global
+> > > [7] DECL_TAG 'tag' type_id=6 component_idx=-1
+> > > [8] DATASEC '.bss' size=0 vlen=2
+> > >         type_id=4 offset=0 size=4 (VAR 'a')
+> > >         type_id=6 offset=0 size=4 (VAR 'b')
+> > >
+> > > There are two issues that I hit:
+> > >
+> > > 1. The component_idx=-1 makes it a little inconvenient to correlate
+> > > the tag applied to a VAR in a DATASEC. In case of structs the index
+> > > can be matched with component_idx, in case of DATASEC we have to match
+> > > VAR's type_id. So the code has to be different. If it also had
+> > > component_idx set it would be possible to make the code same for both
+> > > inside the kernel's field parsing routine.
 > >
-> > Maybe you're seeing this overhead because pahole is adding
-> > all declared vars and not only the vars that are actually present?
-> > That would explain the discrepancy.
-> > (b) with a bunch of duplicates is a sign that something is off as well.
->
-> Sorry, I didn't actually have an analysis for module BTF, I was just
-> extrapolating the result I had seen for vmlinux. I went ahead and did a
-> proper test, generating BTF for a distribution kernel from Oracle Linux
-> (kernel-uek-5.15.0-1.43.4.1.el9uek.x86_64) - something that I easily had
-> on hand and could regenerate the BTF for quickly.
->
-> Basically, the steps were:
->
->     pahole -J vmlinux --btf_encode_detached=vmlinux.btf
->     pahole -J vmlinux --btf_encode_detached=vmlinux.btf.all \
->            --encode_all_btf_vars
->
->     # For each module
->     pahole -J $MODULE --btf_encode_detached=$MODULE.btf \
->            --btf_base=vmlinux.btf
->     pahole -J $MODULE --btf_encode_detached=$MODULE.btf.all \
->            --btf_base=vmlinux.btf --encode_all_btf_vars
->
->     # what if we based the module BTF on the "vmlinux.btf.all" instead?
->     pahole -J $MODULE --btf_encode_detached=$MODULE.btf.all.all \
->            --btf_base=vmlinux.btf.all --encode_all_btf_vars
->
-> And then using ls/awk to sum up the bytes of each BTF file. Results are:
->
-> vmlinux:
->
-> -rw-r-----. 1 opc opc 4904193 Sep  9 18:58 vmlinux.btf
-> -rw-r-----. 1 opc opc 6534684 Sep  9 18:58 vmlinux.btf.all
->
-> In this case there's a 33% increase in BTF size.
->
-> modules:
->
-> $ ls -l *.btf | awk '{sum += $5} END {print(sum)}'
-> 43979532
-> $ ls -l *.btf.all | awk '{sum += $5} END {print(sum)}'
-> 44757792
-> $ ls -l *.btf.all.all | awk '{sum += $5} END {print(sum)}'
-> 44696639
->
-> So the "*.btf.all.all" modules were just an experiment to see if the
-> extra data inside "vmlinux.btf.all" could reduce some duplication in
-> module BTF. The answer was yes, but not enough to make up for the
-> increase in the vmlinux BTF size.
->
-> The "*.btf.all" modules are the ones we would actually expect to use in
-> Option #1, where we have a vmlinux-btf-extras and the rest of the
-> modules include their globals in their BTF sections directly, and are
-> based off of the vmlinux BTF. This test shows on average, that the
-> module BTF size would grow by 1.6% with Option #1. Of course the exact
-> memory size that accounts for will vary by workload, depending on how
-> many modules are loaded. But I'd imagine, assuming you have around 5MB
-> of module BTF *actually loaded*, then the overhead would be around 85k
-> bytes.  I don't know about how you feel, but I think that sounds
-> acceptable, it's just 22 pages at 4k size :)
->
-> Let me know how it sounds to you.
->
-> Thanks,
-> Stephen
->
-> >>
-> >>
-> >> Option #2
-> >> ---------
-> >>
-> >> * The vmlinux-btf-extra module is still added as in Option #1.
-> >>
-> >> * Further, each module would have its own "$MODULE-btf-extra" module to
-> >>   add in extra BTF. These would be built with a --btf_base=$MODULE.ko
-> >>   and of course that BTF is based on vmlinux, so we would have:
-> >>
-> >>   vmlinux_btf              [ functions and percpu vars only ]
-> >>   |- vmlinux-btf-extras    [ all other vars for vmlinux ]
-> >>   |- $MODULE               [ functions and percpu vars only ]
-> >>      |- $MODULE-btf-extra  [ all  other vars for $MODULE ]
-> >>
-> >> This is much more complex, pahole must be extended to support a
-> >> hierarchy of --btf_base files. The kernel itself may not need to
-> >> understand multi-level BTF since there's no requirement that it actually
-> >> understand $MODULE-btf-extra, so long as it exposes it via
-> >> /sys/kernel/btf/$MODULE-btf-extra. I'd also like to see some sort of
-> >> mechanism to allow an administrator to say "please always load
-> >> $MODULE-btf-extras alongside $MODULE", but I think that would be a
-> >> userspace problem.
-> >>
-> >> This resolves issue (a) from option #1, of course at implementation
-> >> cost.
-> >>
-> >> Regardless of Option #1 or #2, I'd propose that we implement this as a
-> >> tristate, similar to what Alan proposed [2]. When set to "m" we use the
-> >> solutions described above, and when set to "y", we don't bother with it,
-> >> instead using --encode_all_btf_vars for all generation.
-> >>
-> >> If we go with Option #1, no changes to this series should be necessary.
-> >> If we go with Option #2, I'll need to extend pahole to support at least
-> >> two BTF base files. Please let me know your thoughts.
+> > This is expected and documented in UAPI:
 > >
-> > Completely agree that two level btf-extra needs quite a bit more work.
-> > Before we proceed with option 2 let's figure out
-> > the reason for extra space in option 1.
+> >   "If component_idx == -1, the tag is applied to a struct, union,
+> > variable or function."
+> >
+> > Variable is an independent entity and tag applies to it. I don't
+> > know/remember why we did it this way, but it's probably easier for
+> > Clang to generate it this way. And it probably is easier for BPF
+> > static linker as well. Note that you don't merge two structs together,
+> > while static linker does merge variables between DATASECs.
+> >
+> > In short, DATASEC+VAR is sufficiently different from STRUCT+fields, so
+> > is treated differently.
+> >
+>
+> I see, thanks. In that case I'll add this description as a comment
+> where the code matches the tag to the VAR.
+>
+> > >
+> > > 2. The second issue is that the offset is always 0 for DATASEC VARs.
+> > > That makes it difficult to ensure proper alignment of the variables.
+> >
+> > That's also expected (even if unfortunate) behavior of Clang. Good
+> > news is that libbpf's static linker API is normalizing this. Libbpf
+> > itself also normalizes it internally if passed .bpf.o file straight
+> > from Clang's output.
+> >
+> > In short, if you run `bpftool gen object my_normalized.bpf.o
+> > my_clang.bpf.o` you'll get offsets in my_normalized.bpf.o's BTF.
+> >
+>
+> I see. It would be better if this was fixed up by clang itself, but I
+> don't know enough about the BPF backend to comment whether that would
+> make sense.
+>
+> It's unlikely people will run it through libbpf's linker when they're
+> not statically linking more than one object (or even be using libbpf,
+> but that's a separate thing), and it's very hard to correlate the
+> errors to their cause when failure happens during MAP_CREATE (I guess
+> eventually it should support a log buffer like btf load and prog
+> load), so in the end it would be confusing for users.
+>
+> However we do need to ensure the offsets are correct to detect proper
+> alignment. So adding some checks looks inevitable.
+> I guess for the first VAR, we can assume offset==0 is fine, but from
+> the next VAR, we should return an error if we see offset==0 again?
+> This should catch the not normalized case in case of DATASEC vlen > 1
+> (== 1 should still be ok). wdyt?
+>
 
-I don't think an extra module for each module just for keeping those
-all-var-BTFs is acceptable, so Option #2 doesn't even seem like an
-option.
+It's unclear who's "we", who's loading what, when and where, tbh. So
+please provide a bit of a context. We started from a simple isolated C
+example and two questions about BTF, and now I'm not sure what we are
+talking about at all.
 
-But given a very small increase in size of BTF for modules when
-including variables, I think Option #1 is quite reasonable.
+Libbpf patches BTF and assigns correct offsets before loading BTF into
+the kernel. But I assume whatever you are doing doesn't use libbpf?
+
+> > >
+> > > I would like to know if these are expected behaviors or bugs?
+> >
+> > Features ;)
+> >
+> > > Thanks
+> > > --
+> > >  ; clang --version
+> > > Ubuntu clang version
+> > > 16.0.0-++20220813052912+eaf0aa1f1fbd-1~exp1~20220813173018.344
