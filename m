@@ -2,148 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B0D55E8D4E
-	for <lists+bpf@lfdr.de>; Sat, 24 Sep 2022 16:25:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 831DB5E8D8C
+	for <lists+bpf@lfdr.de>; Sat, 24 Sep 2022 16:51:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229633AbiIXOZe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 24 Sep 2022 10:25:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37756 "EHLO
+        id S233516AbiIXOvP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 24 Sep 2022 10:51:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230248AbiIXOZd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 24 Sep 2022 10:25:33 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B0323846C;
-        Sat, 24 Sep 2022 07:25:31 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id z25so4440215lfr.2;
-        Sat, 24 Sep 2022 07:25:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=jRKeU7D5aZgqxcjhpKNi6s8l4B1Pu/W+vLp64/SXJ2k=;
-        b=UpNAHeRltGJnNUYU6IN+U1QlRe0AbcVc4toc+QBqstl7xLFBtoVNVlln1qx7x6FHxq
-         rzY/D8LfF8p4hcesvrFXHhGlDSwavN4UvN0Wf7LEkbN6RSQ4f3v1Spc+hnP3SMOd28s3
-         lnPp5Fie6yB/oSzot5F4zNN7C871LEqZ5grBwldPWgx3HhBMNzb+f6edYQXL1ri9oZ0S
-         Go4e9VTTw0+XaHP7aG0MvZJjlbheySZtr3aSZogGWCrLGK0YX5Eeil5Dasn8Sf6dIobv
-         FKQG9KNOV2QdrzCjAv9xJCHfHZdSwEXrmDHKT2LfmqnahX+L+U2ulngUzqfy0WZSoING
-         bk+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=jRKeU7D5aZgqxcjhpKNi6s8l4B1Pu/W+vLp64/SXJ2k=;
-        b=tPpqwUndzrcOGpreC0ceRv/VfRgZwbtcnAYVrGZkDUR/i3KXtoRDueN0TyCwXwKB30
-         RIpQ4+GwypnZmJXDuei3M6KvIkLAVpuydQ+t5AsJEVhsjIj76+Gz7hz+Ok3xjfMXPoiS
-         Hd9d+jQ2iqEpfLRJH3pdpt1zzlhFkwRm+wclyriMPIvSmUjcs2OUK41u2y8B29KefNge
-         1uKDuyQLBS7+RET+Cu3lDH8H3PnLVgDkUZl9ffMTXbtD3MtZZGRNXpPwcjCeYwYElwHj
-         Xj+Qank0OJIvfKoP9Jc548DaWmbNmzUWeRX8jYsEAnRJUXjItnjZx9OlCshuvt9wr/Dl
-         dQ/Q==
-X-Gm-Message-State: ACrzQf2ZfhD302JVGlat297jBdmdU6tDorVVuaLagAz1dYL3QOt6CNJR
-        fT+Kh54+R7geWJnXWQEmqq2xAkLoFzzJDS5htHo=
-X-Google-Smtp-Source: AMsMyM5mi/XOOzWUJh5158inAtWdLBfxcxDHHgcvsLaTz0IhKhNVd6IYu367qB1zcyRs2jUK93uUOFjSKv49EhHqRbE=
-X-Received: by 2002:a05:6512:2254:b0:498:f454:ec9a with SMTP id
- i20-20020a056512225400b00498f454ec9amr5457526lfu.58.1664029529792; Sat, 24
- Sep 2022 07:25:29 -0700 (PDT)
+        with ESMTP id S232138AbiIXOvM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 24 Sep 2022 10:51:12 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB1293B700;
+        Sat, 24 Sep 2022 07:51:11 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 582E961261;
+        Sat, 24 Sep 2022 14:51:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF485C433D7;
+        Sat, 24 Sep 2022 14:51:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1664031070;
+        bh=V+z2ZxfJa/HIqj8ztFdh4ZNMoVb/OXAUUcB9+H7UUKY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rut2W+r4XjkruOkNGAm10IlL0euxcwI6NDQx6Wcwn9DVztzLLNXSKs0gYBuYYRcTI
+         LG4HfKa/Ywam38bRhtFnDsMy2HEhxy9S2JSemPIKNzg+YYW8Ef1UnjcCjGChdWEnYU
+         7w5ue5Z1nDXaUbKh8O8l82to6pmfdKw8BzGjm25zDTED9Lg9QT/qxNWcuzaTABZhqo
+         P1ShpNwfAQsEIy46FOeoAx9lzoWIN2NKGk63oyRN6Jknmr8+N+z3rUnmEaHHRRaBfb
+         Y4/pj/xejSANlC36FmYey4Po3uUbKAa01020ySYgaCxQOvst1IC7BGIR/zuHSBIVsu
+         qMC4KBxvnt1QQ==
+Date:   Sat, 24 Sep 2022 07:51:08 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, davem@davemloft.net,
+        kuba@kernel.org, edumazet@google.com, pabeni@redhat.com,
+        pablo@netfilter.org, fw@strlen.de, netfilter-devel@vger.kernel.org,
+        lorenzo.bianconi@redhat.com, brouer@redhat.com, toke@redhat.com,
+        memxor@gmail.com
+Subject: Re: [PATCH v3 bpf-next 2/3] net: netfilter: add bpf_ct_set_nat_info
+ kfunc helper
+Message-ID: <Yy8ZXFoWYIE0qpWp@dev-arch.thelio-3990X>
+References: <cover.1663778601.git.lorenzo@kernel.org>
+ <9567db2fdfa5bebe7b7cc5870f7a34549418b4fc.1663778601.git.lorenzo@kernel.org>
+ <Yy4mVv+4X/Tm3TK4@dev-arch.thelio-3990X>
+ <Yy4xGT7XGGredCB2@lore-desk>
+ <Yy7ltMthyiWn/cYM@lore-desk>
 MIME-Version: 1.0
-References: <20220921170002.29557-1-laoar.shao@gmail.com> <20220921170002.29557-11-laoar.shao@gmail.com>
- <Yy53cgcwx+hTll4R@slm.duckdns.org>
-In-Reply-To: <Yy53cgcwx+hTll4R@slm.duckdns.org>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Sat, 24 Sep 2022 22:24:52 +0800
-Message-ID: <CALOAHbBHXALOZaqxJfpmE8KFsuwBuZ3BVpQhrtUZ=m7FFpWkVA@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 10/10] bpf, memcg: Add new item bpf into memory.stat
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Cgroups <cgroups@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Yy7ltMthyiWn/cYM@lore-desk>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Sep 24, 2022 at 11:20 AM Tejun Heo <tj@kernel.org> wrote:
->
-> Hello,
->
-> On Wed, Sep 21, 2022 at 05:00:02PM +0000, Yafang Shao wrote:
-> > A new item 'bpf' is introduced into memory.stat, then we can get the memory
-> > consumed by bpf. Currently only the memory of bpf-map is accounted.
-> > The accouting of this new item is implemented with scope-based accouting,
-> > which is similar to set_active_memcg(). In this scope, the memory allocated
-> > will be accounted or unaccounted to a specific item, which is specified by
-> > set_active_memcg_item().
->
-> Imma let memcg folks comment on the implementation. Hmm... I wonder how this
-> would tie in with the BPF memory allocator Alexei is working on.
->
+On Sat, Sep 24, 2022 at 01:10:44PM +0200, Lorenzo Bianconi wrote:
+> > > Hi Lorenzo,
+> > 
+> > Hi Nathan,
+> > 
+> > > 
+> > > On Wed, Sep 21, 2022 at 06:48:26PM +0200, Lorenzo Bianconi wrote:
+> > > > Introduce bpf_ct_set_nat_info kfunc helper in order to set source and
+> > > > destination nat addresses/ports in a new allocated ct entry not inserted
+> > > > in the connection tracking table yet.
+> > > > 
+> > > > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> > > 
+> > > This commit is now in -next as commit 0fabd2aa199f ("net: netfilter: add
+> > > bpf_ct_set_nat_info kfunc helper"). Unfortunately, it introduces a
+> > > circular dependency when I build with my distribution's (Arch Linux)
+> > > configuration:
+> > > 
+> > > $ curl -LSso .config https://github.com/archlinux/svntogit-packages/raw/packages/linux/trunk/config
+> > > 
+> > > $ make -skj"$(nproc)" INSTALL_MOD_PATH=rootfs INSTALL_MOD_STRIP=1 olddefconfig all modules_install
+> > > ...
+> > > WARN: multiple IDs found for 'nf_conn': 99333, 114119 - using 99333
+> > > WARN: multiple IDs found for 'nf_conn': 99333, 115663 - using 99333
+> > > WARN: multiple IDs found for 'nf_conn': 99333, 117330 - using 99333
+> > > WARN: multiple IDs found for 'nf_conn': 99333, 119583 - using 99333
+> > > depmod: ERROR: Cycle detected: nf_conntrack -> nf_nat -> nf_conntrack
+> > > depmod: ERROR: Found 2 modules in dependency cycles!
+> > 
+> > I guess the issue occurs when we compile both nf_conntrack and nf_nat as module
+> > since now we introduced the dependency "nf_conntrack -> nf_nat".
+> > Discussing with Kumar, in order to fix it, we can move bpf_ct_set_nat_info() in
+> > nf_nat module (with some required registration code similar to register_nf_conntrack_bpf()).
+> > What do you think?
+> > Sorry for the inconvenience.
+> 
+> Hi Nathan,
+> 
+> this is a PoC of what I described above:
+> https://github.com/LorenzoBianconi/bpf-next/commit/765d32dd08e56f5059532845e70d0bbfe4badda1
 
-BPF memory allocator is already in bpf-next [1].
-It uses the same way to charge bpf memory into memcg, see also
-get_memcg() in the BPF memory allocator, so it has been supported in
-this patchset.
+Thanks, that appears to resolve the error for me!
 
-[1]. https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=274052a2b0ab9f380ce22b19ff80a99b99ecb198
+Tested-by: Nathan Chancellor <nathan@kernel.org>
 
-> > The result in cgroup v1 as follows,
-> >       $ cat /sys/fs/cgroup/memory/foo/memory.stat | grep bpf
-> >       bpf 109056000
-> >       total_bpf 109056000
-> > After the map is removed, the counter will become zero again.
-> >         $ cat /sys/fs/cgroup/memory/foo/memory.stat | grep bpf
-> >         bpf 0
-> >         total_bpf 0
-> >
-> > The 'bpf' may not be 0 after the bpf-map is destroyed, because there may be
-> > cached objects.
->
-> What's the difference between bpf and total_bpf? Where's total_bpf
-> implemented?
+> Regards,
+> Lorenzo
+> 
+> > 
+> > Regards,
+> > Lorenzo
+> > 
+> > 
+> > > ...
+> > > 
+> > > The WARN lines are there before this change but I figured they were
+> > > worth including anyways, in case they factor in here.
+> > > 
+> > > If there is any more information I can provide or patches I can test,
+> > > please let me know!
+> > > 
+> > > Cheers,
+> > > Nathan
+> 
+> 
 
-Ah, the total_* items are cgroup1-specific items. They also include
-the descendants' memory.
-This patchset supports both cgroup1 and cgroup2.
 
-> It doesn't seem to be anywhere. Please also update
-> Documentation/admin-guide/cgroup-v2.rst.
->
-
-Sure, I will update the Document.
-
-> > Note that there's no kmemcg in root memory cgroup, so the item 'bpf' will
-> > be always 0 in root memory cgroup. If a bpf-map is charged into root memcg
-> > directly, its memory size will not be accounted, so the 'total_bpf' can't
-> > be used to monitor system-wide bpf memory consumption yet.
->
-> So, system-level accounting is usually handled separately as it's most
-> likely that we'd want the same stat at the system level even when cgroup is
-> not implemented. Here, too, it'd make sense to first implement system level
-> bpf memory usage accounting, expose that through /proc/meminfo and then use
-> the same source for root level cgroup stat.
->
-
-Sure, I will do it first. Thanks for your suggestion.
-
--- 
-Regards
-Yafang
