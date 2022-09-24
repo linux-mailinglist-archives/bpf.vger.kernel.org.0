@@ -2,1305 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F37775E8D0C
-	for <lists+bpf@lfdr.de>; Sat, 24 Sep 2022 15:18:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B0D55E8D4E
+	for <lists+bpf@lfdr.de>; Sat, 24 Sep 2022 16:25:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230048AbiIXNSq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 24 Sep 2022 09:18:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57386 "EHLO
+        id S229633AbiIXOZe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 24 Sep 2022 10:25:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230293AbiIXNSb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 24 Sep 2022 09:18:31 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2D41B5E7F
-        for <bpf@vger.kernel.org>; Sat, 24 Sep 2022 06:18:27 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4MZV0V3WTLzl8r0
-        for <bpf@vger.kernel.org>; Sat, 24 Sep 2022 21:16:42 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP2 (Coremail) with SMTP id Syh0CgDXKXOXAy9jXzpPBQ--.3282S17;
-        Sat, 24 Sep 2022 21:18:25 +0800 (CST)
-From:   Hou Tao <houtao@huaweicloud.com>
-To:     bpf@vger.kernel.org
-Cc:     Martin KaFai Lau <kafai@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, houtao1@huawei.com
-Subject: [PATCH bpf-next v2 13/13] selftests/bpf: Add map tests for qp-trie by using bpf syscall
-Date:   Sat, 24 Sep 2022 21:36:20 +0800
-Message-Id: <20220924133620.4147153-14-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20220924133620.4147153-1-houtao@huaweicloud.com>
-References: <20220924133620.4147153-1-houtao@huaweicloud.com>
+        with ESMTP id S230248AbiIXOZd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 24 Sep 2022 10:25:33 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B0323846C;
+        Sat, 24 Sep 2022 07:25:31 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id z25so4440215lfr.2;
+        Sat, 24 Sep 2022 07:25:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=jRKeU7D5aZgqxcjhpKNi6s8l4B1Pu/W+vLp64/SXJ2k=;
+        b=UpNAHeRltGJnNUYU6IN+U1QlRe0AbcVc4toc+QBqstl7xLFBtoVNVlln1qx7x6FHxq
+         rzY/D8LfF8p4hcesvrFXHhGlDSwavN4UvN0Wf7LEkbN6RSQ4f3v1Spc+hnP3SMOd28s3
+         lnPp5Fie6yB/oSzot5F4zNN7C871LEqZ5grBwldPWgx3HhBMNzb+f6edYQXL1ri9oZ0S
+         Go4e9VTTw0+XaHP7aG0MvZJjlbheySZtr3aSZogGWCrLGK0YX5Eeil5Dasn8Sf6dIobv
+         FKQG9KNOV2QdrzCjAv9xJCHfHZdSwEXrmDHKT2LfmqnahX+L+U2ulngUzqfy0WZSoING
+         bk+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=jRKeU7D5aZgqxcjhpKNi6s8l4B1Pu/W+vLp64/SXJ2k=;
+        b=tPpqwUndzrcOGpreC0ceRv/VfRgZwbtcnAYVrGZkDUR/i3KXtoRDueN0TyCwXwKB30
+         RIpQ4+GwypnZmJXDuei3M6KvIkLAVpuydQ+t5AsJEVhsjIj76+Gz7hz+Ok3xjfMXPoiS
+         Hd9d+jQ2iqEpfLRJH3pdpt1zzlhFkwRm+wclyriMPIvSmUjcs2OUK41u2y8B29KefNge
+         1uKDuyQLBS7+RET+Cu3lDH8H3PnLVgDkUZl9ffMTXbtD3MtZZGRNXpPwcjCeYwYElwHj
+         Xj+Qank0OJIvfKoP9Jc548DaWmbNmzUWeRX8jYsEAnRJUXjItnjZx9OlCshuvt9wr/Dl
+         dQ/Q==
+X-Gm-Message-State: ACrzQf2ZfhD302JVGlat297jBdmdU6tDorVVuaLagAz1dYL3QOt6CNJR
+        fT+Kh54+R7geWJnXWQEmqq2xAkLoFzzJDS5htHo=
+X-Google-Smtp-Source: AMsMyM5mi/XOOzWUJh5158inAtWdLBfxcxDHHgcvsLaTz0IhKhNVd6IYu367qB1zcyRs2jUK93uUOFjSKv49EhHqRbE=
+X-Received: by 2002:a05:6512:2254:b0:498:f454:ec9a with SMTP id
+ i20-20020a056512225400b00498f454ec9amr5457526lfu.58.1664029529792; Sat, 24
+ Sep 2022 07:25:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgDXKXOXAy9jXzpPBQ--.3282S17
-X-Coremail-Antispam: 1UD129KBjvAXoWfuF47ZFWkuw4rKr17Ar18Krg_yoW5KF4DZo
-        WfWrs0y3s5Gr1kAa4jgr1kuayrWrW8Z3yDAr4Svwn8tF4DJry5ZayUGa13Ca1jga13Kr97
-        X343Zw1fWr9Ykr4fn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
-        AaLaJ3UjIYCTnIWjp_UUUYu7kC6x804xWl14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK
-        8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF
-        0E3s1l82xGYIkIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vE
-        j48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxV
-        AFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x02
-        67AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I
-        80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCj
-        c4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28Icx
-        kI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2Iq
-        xVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42
-        IY6xIIjxv20xvE14v26r4j6ryUMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UMIIF
-        0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87
-        Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7IUbGXdUUUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20220921170002.29557-1-laoar.shao@gmail.com> <20220921170002.29557-11-laoar.shao@gmail.com>
+ <Yy53cgcwx+hTll4R@slm.duckdns.org>
+In-Reply-To: <Yy53cgcwx+hTll4R@slm.duckdns.org>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Sat, 24 Sep 2022 22:24:52 +0800
+Message-ID: <CALOAHbBHXALOZaqxJfpmE8KFsuwBuZ3BVpQhrtUZ=m7FFpWkVA@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 10/10] bpf, memcg: Add new item bpf into memory.stat
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Cgroups <cgroups@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Hou Tao <houtao1@huawei.com>
+On Sat, Sep 24, 2022 at 11:20 AM Tejun Heo <tj@kernel.org> wrote:
+>
+> Hello,
+>
+> On Wed, Sep 21, 2022 at 05:00:02PM +0000, Yafang Shao wrote:
+> > A new item 'bpf' is introduced into memory.stat, then we can get the memory
+> > consumed by bpf. Currently only the memory of bpf-map is accounted.
+> > The accouting of this new item is implemented with scope-based accouting,
+> > which is similar to set_active_memcg(). In this scope, the memory allocated
+> > will be accounted or unaccounted to a specific item, which is specified by
+> > set_active_memcg_item().
+>
+> Imma let memcg folks comment on the implementation. Hmm... I wonder how this
+> would tie in with the BPF memory allocator Alexei is working on.
+>
 
-For creation operations, add test cases to check the invalid and valid
-configurations are handled correctly. For lookup/delete/update, add test
-cases to ensure the invalid key is reject and both the returned value and
-the output value are expected. For iteration operations, add test cases to
-ensure the returned keys during iteration are always ordered.
+BPF memory allocator is already in bpf-next [1].
+It uses the same way to charge bpf memory into memcg, see also
+get_memcg() in the BPF memory allocator, so it has been supported in
+this patchset.
 
-Also add a stress test for the concurrent operations on qp-trie.
+[1]. https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=274052a2b0ab9f380ce22b19ff80a99b99ecb198
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- .../selftests/bpf/map_tests/qp_trie_map.c     | 1209 +++++++++++++++++
- 1 file changed, 1209 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/map_tests/qp_trie_map.c
+> > The result in cgroup v1 as follows,
+> >       $ cat /sys/fs/cgroup/memory/foo/memory.stat | grep bpf
+> >       bpf 109056000
+> >       total_bpf 109056000
+> > After the map is removed, the counter will become zero again.
+> >         $ cat /sys/fs/cgroup/memory/foo/memory.stat | grep bpf
+> >         bpf 0
+> >         total_bpf 0
+> >
+> > The 'bpf' may not be 0 after the bpf-map is destroyed, because there may be
+> > cached objects.
+>
+> What's the difference between bpf and total_bpf? Where's total_bpf
+> implemented?
 
-diff --git a/tools/testing/selftests/bpf/map_tests/qp_trie_map.c b/tools/testing/selftests/bpf/map_tests/qp_trie_map.c
-new file mode 100644
-index 000000000000..1a353e66e3cc
---- /dev/null
-+++ b/tools/testing/selftests/bpf/map_tests/qp_trie_map.c
-@@ -0,0 +1,1209 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (C) 2022. Huawei Technologies Co., Ltd */
-+#include <unistd.h>
-+#include <errno.h>
-+#include <stdlib.h>
-+#include <endian.h>
-+#include <limits.h>
-+#include <time.h>
-+#include <pthread.h>
-+#include <linux/btf.h>
-+
-+#include <bpf/bpf.h>
-+#include <bpf/libbpf.h>
-+
-+#include <test_btf.h>
-+#include <test_maps.h>
-+
-+#include "bpf_util.h"
-+
-+#define QP_TRIE_KEY_SIZE sizeof(struct bpf_dynptr)
-+#define QP_TRIE_DFT_MAX_KEY_LEN 4
-+#define QP_TRIE_DFT_VAL_SIZE 4
-+#define QP_TRIE_DFT_MAP_FLAGS BPF_F_NO_PREALLOC
-+
-+#define QP_TRIE_DFT_BTF_KEY_ID 1
-+#define QP_TRIE_DFT_BTF_VAL_ID 2
-+
-+struct qp_trie_create_case {
-+	const char *name;
-+	int error;
-+	unsigned int map_flags;
-+	unsigned int max_key_len;
-+	unsigned int value_size;
-+	unsigned int max_entries;
-+	unsigned int btf_key_type_id;
-+	unsigned int btf_value_type_id;
-+};
-+
-+struct qp_trie_bytes_key {
-+	unsigned int len;
-+	unsigned char data[4];
-+};
-+
-+struct qp_trie_int_key {
-+	unsigned int len;
-+	unsigned int data;
-+};
-+
-+enum {
-+	UPDATE_OP = 0,
-+	DELETE_OP,
-+	LOOKUP_OP,
-+	ITERATE_OP,
-+	MAX_OP,
-+};
-+
-+struct stress_conf {
-+	unsigned int threads[MAX_OP];
-+	unsigned int max_key_len;
-+	unsigned int loop;
-+	unsigned int nr;
-+};
-+
-+struct qp_trie_rw_ctx {
-+	unsigned int nr;
-+	unsigned int max_key_len;
-+	int fd;
-+	struct bpf_dynptr_user *set;
-+	unsigned int loop;
-+	unsigned int nr_delete;
-+};
-+
-+static int qp_trie_load_btf(void)
-+{
-+	char btf_str_sec[] = "\0bpf_dynptr\0qp_test_key";
-+	__u32 btf_raw_types[] = {
-+		/* struct bpf_dynptr */				/* [1] */
-+		BTF_TYPE_ENC(1, BTF_INFO_ENC(BTF_KIND_STRUCT, 0, 0), 16),
-+		/* unsigned int */				/* [2] */
-+		BTF_TYPE_INT_ENC(0, 0, 0, 32, 4),
-+		/* struct qp_test_key */			/* [3] */
-+		BTF_TYPE_ENC(12, BTF_INFO_ENC(BTF_KIND_STRUCT, 0, 0), 16),
-+	};
-+	struct btf_header btf_hdr = {
-+		.magic = BTF_MAGIC,
-+		.version = BTF_VERSION,
-+		.hdr_len = sizeof(struct btf_header),
-+		.type_len = sizeof(btf_raw_types),
-+		.str_off = sizeof(btf_raw_types),
-+		.str_len = sizeof(btf_str_sec),
-+	};
-+	__u8 raw_btf[sizeof(struct btf_header) + sizeof(btf_raw_types) +
-+		     sizeof(btf_str_sec)];
-+
-+	memcpy(raw_btf, &btf_hdr, sizeof(btf_hdr));
-+	memcpy(raw_btf + sizeof(btf_hdr), btf_raw_types, sizeof(btf_raw_types));
-+	memcpy(raw_btf + sizeof(btf_hdr) + sizeof(btf_raw_types),
-+	       btf_str_sec, sizeof(btf_str_sec));
-+
-+	return bpf_btf_load(raw_btf, sizeof(raw_btf), NULL);
-+}
-+
-+struct qp_trie_create_case create_cases[] = {
-+	{
-+		.name = "tiny qp-trie",
-+		.error = 0,
-+		.map_flags = QP_TRIE_DFT_MAP_FLAGS,
-+		.max_key_len = QP_TRIE_DFT_MAX_KEY_LEN,
-+		.value_size = QP_TRIE_DFT_VAL_SIZE,
-+		.max_entries = 1,
-+		.btf_key_type_id = QP_TRIE_DFT_BTF_KEY_ID,
-+		.btf_value_type_id = QP_TRIE_DFT_BTF_VAL_ID,
-+	},
-+	{
-+		.name = "empty qp-trie",
-+		.error = -EINVAL,
-+		.map_flags = QP_TRIE_DFT_MAP_FLAGS,
-+		.max_key_len = QP_TRIE_DFT_MAX_KEY_LEN,
-+		.value_size = QP_TRIE_DFT_VAL_SIZE,
-+		.max_entries = 0,
-+		.btf_key_type_id = QP_TRIE_DFT_BTF_KEY_ID,
-+		.btf_value_type_id = QP_TRIE_DFT_BTF_VAL_ID,
-+	},
-+	{
-+		.name = "preallocated qp-trie",
-+		.error = -EINVAL,
-+		.map_flags = 0,
-+		.max_key_len = QP_TRIE_DFT_MAX_KEY_LEN,
-+		.value_size = QP_TRIE_DFT_VAL_SIZE,
-+		.max_entries = 1,
-+		.btf_key_type_id = QP_TRIE_DFT_BTF_KEY_ID,
-+		.btf_value_type_id = QP_TRIE_DFT_BTF_VAL_ID,
-+	},
-+	{
-+		.name = "mmapable qp-trie",
-+		.error = -EINVAL,
-+		.map_flags = QP_TRIE_DFT_MAP_FLAGS | BPF_F_MMAPABLE,
-+		.max_key_len = QP_TRIE_DFT_MAX_KEY_LEN,
-+		.value_size = QP_TRIE_DFT_VAL_SIZE,
-+		.max_entries = 1,
-+		.btf_key_type_id = QP_TRIE_DFT_BTF_KEY_ID,
-+		.btf_value_type_id = QP_TRIE_DFT_BTF_VAL_ID,
-+	},
-+	{
-+		.name = "no btf qp-trie",
-+		.error = -EINVAL,
-+		.map_flags = QP_TRIE_DFT_MAP_FLAGS,
-+		.max_key_len = QP_TRIE_DFT_MAX_KEY_LEN,
-+		.value_size = QP_TRIE_DFT_VAL_SIZE,
-+		.max_entries = 1,
-+		.btf_key_type_id = 0,
-+		.btf_value_type_id = 0,
-+	},
-+	{
-+		.name = "qp_test_key qp-trie",
-+		.error = -EINVAL,
-+		.map_flags = QP_TRIE_DFT_MAP_FLAGS,
-+		.max_key_len = QP_TRIE_DFT_MAX_KEY_LEN,
-+		.value_size = QP_TRIE_DFT_VAL_SIZE,
-+		.max_entries = 1,
-+		.btf_key_type_id = 3,
-+		.btf_value_type_id = QP_TRIE_DFT_BTF_VAL_ID,
-+	},
-+	{
-+		.name = "zero max key len qp-trie",
-+		.error = -EINVAL,
-+		.map_flags = QP_TRIE_DFT_MAP_FLAGS,
-+		.max_key_len = 0,
-+		.value_size = QP_TRIE_DFT_VAL_SIZE,
-+		.max_entries = 1,
-+		.btf_key_type_id = QP_TRIE_DFT_BTF_KEY_ID,
-+		.btf_value_type_id = QP_TRIE_DFT_BTF_VAL_ID,
-+	},
-+	{
-+		.name = "big k-v size qp-trie",
-+		.error = -E2BIG,
-+		.map_flags = QP_TRIE_DFT_MAP_FLAGS,
-+		.max_key_len = QP_TRIE_DFT_MAX_KEY_LEN,
-+		.value_size = 1U << 30,
-+		.max_entries = 1,
-+		.btf_key_type_id = QP_TRIE_DFT_BTF_KEY_ID,
-+		.btf_value_type_id = QP_TRIE_DFT_BTF_VAL_ID,
-+	},
-+};
-+
-+static void test_qp_trie_create(void)
-+{
-+	unsigned int i;
-+	int btf_fd;
-+
-+	btf_fd = qp_trie_load_btf();
-+	CHECK(btf_fd < 0, "load btf", "error %d\n", btf_fd);
-+
-+	for (i = 0; i < ARRAY_SIZE(create_cases); i++) {
-+		LIBBPF_OPTS(bpf_map_create_opts, opts);
-+		int fd;
-+
-+		opts.map_flags = create_cases[i].map_flags;
-+		opts.btf_fd = btf_fd;
-+		opts.btf_key_type_id = create_cases[i].btf_key_type_id;
-+		opts.btf_value_type_id = create_cases[i].btf_value_type_id;
-+		opts.map_extra = create_cases[i].max_key_len;
-+		fd = bpf_map_create(BPF_MAP_TYPE_QP_TRIE, "qp_trie", QP_TRIE_KEY_SIZE,
-+				    create_cases[i].value_size, create_cases[i].max_entries, &opts);
-+		if (!create_cases[i].error) {
-+			CHECK(fd < 0, create_cases[i].name, "error %d\n", fd);
-+			close(fd);
-+		} else {
-+			CHECK(fd != create_cases[i].error, create_cases[i].name,
-+			      "expect error %d got %d\n", create_cases[i].error, fd);
-+		}
-+	}
-+
-+	close(btf_fd);
-+}
-+
-+static int qp_trie_create(unsigned int max_key_len, unsigned int value_size,
-+			  unsigned int max_entries)
-+{
-+	LIBBPF_OPTS(bpf_map_create_opts, opts);
-+	int btf_fd, map_fd;
-+
-+	btf_fd = qp_trie_load_btf();
-+	CHECK(btf_fd < 0, "load btf", "error %d\n", btf_fd);
-+
-+	opts.map_flags = QP_TRIE_DFT_MAP_FLAGS;
-+	opts.btf_fd = btf_fd;
-+	opts.btf_key_type_id = QP_TRIE_DFT_BTF_KEY_ID;
-+	opts.btf_value_type_id = QP_TRIE_DFT_BTF_VAL_ID;
-+	opts.map_extra = max_key_len;
-+	map_fd = bpf_map_create(BPF_MAP_TYPE_QP_TRIE, "qp_trie", QP_TRIE_KEY_SIZE, value_size,
-+				max_entries, &opts);
-+	CHECK(map_fd < 0, "bpf_map_create", "error %d\n", map_fd);
-+
-+	close(btf_fd);
-+
-+	return map_fd;
-+}
-+
-+static void test_qp_trie_unsupported_op(void)
-+{
-+	unsigned int key, value, cnt, out_batch;
-+	struct bpf_dynptr_user dynptr;
-+	int fd, err;
-+
-+	fd = qp_trie_create(sizeof(key), sizeof(value), 2);
-+
-+	key = 0;
-+	bpf_dynptr_user_init(&key, sizeof(key), &dynptr);
-+	err = bpf_map_lookup_and_delete_elem(fd, &dynptr, &value);
-+	CHECK(err != -ENOTSUPP, "unsupported lookup_and_delete", "got %d\n", err);
-+
-+	cnt = 1;
-+	key = 1;
-+	bpf_dynptr_user_init(&key, sizeof(key), &dynptr);
-+	err = bpf_map_lookup_batch(fd, NULL, &out_batch, &dynptr, &value, &cnt, NULL);
-+	CHECK(err != -ENOTSUPP, "unsupported lookup batch", "got %d\n", err);
-+
-+	cnt = 1;
-+	key = 2;
-+	bpf_dynptr_user_init(&key, sizeof(key), &dynptr);
-+	err = bpf_map_lookup_and_delete_batch(fd, NULL, &out_batch, &dynptr, &value, &cnt, NULL);
-+	CHECK(err != -ENOTSUPP, "unsupported lookup_and_delete batch", "got %d\n", err);
-+
-+	cnt = 1;
-+	key = 3;
-+	value = 3;
-+	bpf_dynptr_user_init(&key, sizeof(key), &dynptr);
-+	err = bpf_map_update_batch(fd, &dynptr, &value, &cnt, NULL);
-+	CHECK(err != -ENOTSUPP, "unsupported update_batch", "got %d\n", err);
-+
-+	cnt = 1;
-+	key = 4;
-+	bpf_dynptr_user_init(&key, sizeof(key), &dynptr);
-+	err = bpf_map_delete_batch(fd, &dynptr, &cnt, NULL);
-+	CHECK(err != -ENOTSUPP, "unsupported delete_batch", "got %d\n", err);
-+
-+	close(fd);
-+}
-+
-+static void test_qp_trie_bad_update(void)
-+{
-+	struct bpf_dynptr_user dynptr;
-+	unsigned int key, value;
-+	u64 big_key;
-+	int fd, err;
-+
-+	fd = qp_trie_create(sizeof(key), sizeof(value), 1);
-+
-+	/* Invalid flags (Error) */
-+	key = 0;
-+	value = 0;
-+	bpf_dynptr_user_init(&key, sizeof(key), &dynptr);
-+	err = bpf_map_update_elem(fd, &dynptr, &value, BPF_NOEXIST | BPF_EXIST);
-+	CHECK(err != -EINVAL, "invalid update flag", "error %d\n", err);
-+
-+	/* Invalid key len (Error) */
-+	big_key = 1;
-+	value = 1;
-+	bpf_dynptr_user_init(&big_key, sizeof(big_key), &dynptr);
-+	err = bpf_map_update_elem(fd, &dynptr, &value, 0);
-+	CHECK(err != -EINVAL, "invalid data len", "error %d\n", err);
-+
-+	/* Invalid key (Error) */
-+	value = 0;
-+	bpf_dynptr_user_init(NULL, 1, &dynptr);
-+	err = bpf_map_update_elem(fd, &dynptr, &value, 0);
-+	CHECK(err != -EFAULT, "invalid data addr", "error %d\n", err);
-+
-+	/* Iterate an empty qp-trie (Error) */
-+	bpf_dynptr_user_init(&key, sizeof(key), &dynptr);
-+	err = bpf_map_get_next_key(fd, NULL, &dynptr);
-+	CHECK(err != -ENOENT, "non-empty qp-trie", "error %d\n", err);
-+
-+	/* Overwrite an empty qp-trie (Error) */
-+	key = 2;
-+	value = 2;
-+	bpf_dynptr_user_init(&key, sizeof(key), &dynptr);
-+	err = bpf_map_update_elem(fd, &dynptr, &value, BPF_EXIST);
-+	CHECK(err != -ENOENT, "overwrite empty qp-trie", "error %d\n", err);
-+
-+	/* Iterate an empty qp-trie (Error) */
-+	bpf_dynptr_user_init(&key, sizeof(key), &dynptr);
-+	err = bpf_map_get_next_key(fd, NULL, &dynptr);
-+	CHECK(err != -ENOENT, "non-empty qp-trie", "error %d\n", err);
-+
-+	close(fd);
-+}
-+
-+static void test_qp_trie_bad_lookup_delete(void)
-+{
-+	struct bpf_dynptr_user dynptr;
-+	unsigned int key, value;
-+	int fd, err;
-+
-+	fd = qp_trie_create(sizeof(key), sizeof(value), 2);
-+
-+	/* Lookup/Delete non-existent key (Error) */
-+	key = 0;
-+	bpf_dynptr_user_init(&key, sizeof(key), &dynptr);
-+	err = bpf_map_delete_elem(fd, &dynptr);
-+	CHECK(err != -ENOENT, "del non-existent key", "error %d\n", err);
-+	err = bpf_map_lookup_elem(fd, &dynptr, &value);
-+	CHECK(err != -ENOENT, "lookup non-existent key", "error %d\n", err);
-+
-+	key = 0;
-+	value = 2;
-+	bpf_dynptr_user_init(&key, 2, &dynptr);
-+	err = bpf_map_update_elem(fd, &dynptr, &value, BPF_NOEXIST);
-+	CHECK(err, "add elem", "error %d\n", err);
-+
-+	key = 0;
-+	value = 4;
-+	bpf_dynptr_user_init(&key, sizeof(key), &dynptr);
-+	err = bpf_map_update_elem(fd, &dynptr, &value, BPF_NOEXIST);
-+	CHECK(err, "add elem", "error %d\n", err);
-+
-+	/*
-+	 * Lookup/Delete non-existent key, although it is the prefix of
-+	 * existent keys (Error)
-+	 */
-+	key = 0;
-+	bpf_dynptr_user_init(&key, 1, &dynptr);
-+	err = bpf_map_delete_elem(fd, &dynptr);
-+	CHECK(err != -ENOENT, "del non-existent key", "error %d\n", err);
-+	err = bpf_map_lookup_elem(fd, &dynptr, &value);
-+	CHECK(err != -ENOENT, "lookup non-existent key", "error %d\n", err);
-+
-+	/* Lookup/Delete non-existent key, although its prefix exists (Error) */
-+	key = 0;
-+	bpf_dynptr_user_init(&key, 3, &dynptr);
-+	err = bpf_map_delete_elem(fd, &dynptr);
-+	CHECK(err != -ENOENT, "del non-existent key", "error %d\n", err);
-+	err = bpf_map_lookup_elem(fd, &dynptr, &value);
-+	CHECK(err != -ENOENT, "lookup non-existent key", "error %d\n", err);
-+
-+	close(fd);
-+}
-+
-+static int cmp_str(const void *a, const void *b)
-+{
-+	const char *str_a = *(const char **)a, *str_b = *(const char **)b;
-+
-+	return strcmp(str_a, str_b);
-+}
-+
-+static void test_qp_trie_one_subtree_update(void)
-+{
-+	const char *keys[] = {
-+		"ab", "abc", "abo", "abS", "abcd",
-+	};
-+	const char *sorted_keys[ARRAY_SIZE(keys)];
-+	unsigned int value, got, i, j;
-+	struct bpf_dynptr_user dynptr;
-+	struct bpf_dynptr_user *cur;
-+	char data[4];
-+	int fd, err;
-+
-+	fd = qp_trie_create(4, sizeof(value), ARRAY_SIZE(keys));
-+
-+	for (i = 0; i < ARRAY_SIZE(keys); i++) {
-+		unsigned int flags;
-+
-+		/* Add i-th element */
-+		flags = i % 2 ? BPF_NOEXIST : 0;
-+		bpf_dynptr_user_init((void *)keys[i], strlen(keys[i]), &dynptr);
-+		value = i + 100;
-+		err = bpf_map_update_elem(fd, &dynptr, &value, flags);
-+		CHECK(err, "add elem", "#%u error %d\n", i, err);
-+
-+		err = bpf_map_lookup_elem(fd, &dynptr, &got);
-+		CHECK(err, "lookup elem", "#%u error %d\n", i, err);
-+		CHECK(got != value, "lookup elem", "#%u expect %u got %u\n", i, value, got);
-+
-+		/* Re-add i-th element (Error) */
-+		err = bpf_map_update_elem(fd, &dynptr, &value, BPF_NOEXIST);
-+		CHECK(err != -EEXIST, "re-add elem", "#%u error %d\n", i, err);
-+
-+		/* Overwrite i-th element */
-+		flags = i % 2 ? 0 : BPF_EXIST;
-+		value = i;
-+		err = bpf_map_update_elem(fd, &dynptr, &value, flags);
-+		CHECK(err, "update elem", "error %d\n", err);
-+
-+		/* Lookup #[0~i] elements */
-+		for (j = 0; j <= i; j++) {
-+			bpf_dynptr_user_init((void *)keys[j], strlen(keys[j]), &dynptr);
-+			err = bpf_map_lookup_elem(fd, &dynptr, &got);
-+			CHECK(err, "lookup elem", "#%u/%u error %d\n", i, j, err);
-+			CHECK(got != j, "lookup elem", "#%u/%u expect %u got %u\n",
-+			      i, j, value, got);
-+		}
-+	}
-+
-+	/* Add element to a full qp-trie (Error) */
-+	memset(data, 0, sizeof(data));
-+	bpf_dynptr_user_init(&data, sizeof(data), &dynptr);
-+	value = 0;
-+	err = bpf_map_update_elem(fd, &dynptr, &value, 0);
-+	CHECK(err != -ENOSPC, "add to full qp-trie", "error %d\n", err);
-+
-+	/* Iterate sorted elements */
-+	cur = NULL;
-+	memcpy(sorted_keys, keys, sizeof(keys));
-+	qsort(sorted_keys, ARRAY_SIZE(sorted_keys), sizeof(sorted_keys[0]), cmp_str);
-+	bpf_dynptr_user_init(data, sizeof(data), &dynptr);
-+	for (i = 0; i < ARRAY_SIZE(sorted_keys); i++) {
-+		unsigned int len;
-+		char *got;
-+
-+		len = strlen(sorted_keys[i]);
-+		err = bpf_map_get_next_key(fd, cur, &dynptr);
-+		CHECK(err, "iterate", "#%u error %d\n", i, err);
-+		CHECK(bpf_dynptr_user_get_size(&dynptr) != len, "iterate",
-+		      "#%u invalid len %u expect %u\n",
-+		      i, bpf_dynptr_user_get_size(&dynptr), len);
-+		got = bpf_dynptr_user_get_data(&dynptr);
-+		CHECK(memcmp(sorted_keys[i], got, len), "iterate",
-+		      "#%u got %.*s exp %.*s\n", i, len, got, len, sorted_keys[i]);
-+
-+		if (!cur)
-+			cur = &dynptr;
-+	}
-+	err = bpf_map_get_next_key(fd, cur, &dynptr);
-+	CHECK(err != -ENOENT, "more element", "error %d\n", err);
-+
-+	/* Delete all elements */
-+	for (i = 0; i < ARRAY_SIZE(keys); i++) {
-+		bpf_dynptr_user_init((void *)keys[i], strlen(keys[i]), &dynptr);
-+		err = bpf_map_delete_elem(fd, &dynptr);
-+		CHECK(err, "del elem", "#%u elem error %d\n", i, err);
-+
-+		/* Lookup deleted element (Error) */
-+		err = bpf_map_lookup_elem(fd, &dynptr, &got);
-+		CHECK(err != -ENOENT, "lookup elem", "#%u error %d\n", i, err);
-+
-+		/* Lookup #(i~N] elements */
-+		for (j = i + 1; j < ARRAY_SIZE(keys); j++) {
-+			bpf_dynptr_user_init((void *)keys[j], strlen(keys[j]), &dynptr);
-+			err = bpf_map_lookup_elem(fd, &dynptr, &got);
-+			CHECK(err, "lookup elem", "#%u/%u error %d\n", i, j, err);
-+			CHECK(got != j, "lookup elem", "#%u/%u expect %u got %u\n",
-+			      i, j, value, got);
-+		}
-+	}
-+
-+	memset(data, 0, sizeof(data));
-+	bpf_dynptr_user_init(&data, sizeof(data), &dynptr);
-+	err = bpf_map_get_next_key(fd, NULL, &dynptr);
-+	CHECK(err != -ENOENT, "non-empty qp-trie", "error %d\n", err);
-+
-+	close(fd);
-+}
-+
-+static void test_qp_trie_all_subtree_update(void)
-+{
-+	unsigned int i, max_entries, key, value, got;
-+	struct bpf_dynptr_user dynptr;
-+	struct bpf_dynptr_user *cur;
-+	int fd, err;
-+
-+	/* 16 elements per subtree */
-+	max_entries = 256 * 16;
-+	fd = qp_trie_create(sizeof(key), sizeof(value), max_entries);
-+
-+	for (i = 0; i < max_entries; i++) {
-+		key = htole32(i);
-+		bpf_dynptr_user_init(&key, sizeof(key), &dynptr);
-+		value = i;
-+		err = bpf_map_update_elem(fd, &dynptr, &value, BPF_NOEXIST);
-+		CHECK(err, "add elem", "#%u error %d\n", i, err);
-+
-+		err = bpf_map_lookup_elem(fd, &dynptr, &got);
-+		CHECK(err, "lookup elem", "#%u elem error %d\n", i, err);
-+		CHECK(got != value, "lookup elem", "#%u expect %u got %u\n", i, value, got);
-+	}
-+
-+	/* Add element to a full qp-trie (Error) */
-+	key = htole32(max_entries + 1);
-+	bpf_dynptr_user_init(&key, sizeof(key), &dynptr);
-+	value = 0;
-+	err = bpf_map_update_elem(fd, &dynptr, &value, 0);
-+	CHECK(err != -ENOSPC, "add to full qp-trie", "error %d\n", err);
-+
-+	/* Iterate all elements */
-+	cur = NULL;
-+	bpf_dynptr_user_init(&key, sizeof(key), &dynptr);
-+	for (i = 0; i < max_entries; i++) {
-+		unsigned int *data;
-+		unsigned int exp;
-+
-+		exp = htole32((i / 16) | ((i & 0xf) << 8));
-+		err = bpf_map_get_next_key(fd, cur, &dynptr);
-+		CHECK(err, "iterate", "#%u error %d\n", i, err);
-+		CHECK(bpf_dynptr_user_get_size(&dynptr) != 4, "iterate",
-+		      "#%u invalid len %u\n", i, bpf_dynptr_user_get_size(&dynptr));
-+		data = bpf_dynptr_user_get_data(&dynptr);
-+		CHECK(data != &key, "dynptr data", "#%u got %p exp %p\n", i, data, &key);
-+		CHECK(key != exp, "iterate", "#%u got %u exp %u\n", i, key, exp);
-+
-+		if (!cur)
-+			cur = &dynptr;
-+	}
-+	err = bpf_map_get_next_key(fd, cur, &dynptr);
-+	CHECK(err != -ENOENT, "more element", "error %d\n", err);
-+
-+	/* Delete all elements */
-+	i = max_entries;
-+	while (i-- > 0) {
-+		key = i;
-+		bpf_dynptr_user_init(&key, sizeof(key), &dynptr);
-+		err = bpf_map_delete_elem(fd, &dynptr);
-+		CHECK(err, "del elem", "#%u error %d\n", i, err);
-+
-+		/* Lookup deleted element (Error) */
-+		err = bpf_map_lookup_elem(fd, &dynptr, &got);
-+		CHECK(err != -ENOENT, "lookup elem", "#%u error %d\n", i, err);
-+	}
-+
-+	bpf_dynptr_user_init(&key, sizeof(key), &dynptr);
-+	err = bpf_map_get_next_key(fd, NULL, &dynptr);
-+	CHECK(err != -ENOENT, "non-empty qp-trie", "error %d\n", err);
-+
-+	close(fd);
-+}
-+
-+static int binary_insert_data(unsigned int *set, unsigned int nr, unsigned int data)
-+{
-+	int begin = 0, end = nr - 1, mid, i;
-+
-+	while (begin <= end) {
-+		mid = begin + (end - begin) / 2;
-+		if (data == set[mid])
-+			return -1;
-+		if (data > set[mid])
-+			begin = mid + 1;
-+		else
-+			end = mid - 1;
-+	}
-+
-+	/* Move [begin, nr) backwards and insert new item at begin */
-+	i = nr - 1;
-+	while (i >= begin) {
-+		set[i + 1] = set[i];
-+		i--;
-+	}
-+	set[begin] = data;
-+
-+	return 0;
-+}
-+
-+/* UINT_MAX will not be in the returned data set */
-+static unsigned int *gen_random_unique_data_set(unsigned int max_entries)
-+{
-+	unsigned int *data_set;
-+	unsigned int i, data;
-+
-+	data_set = malloc(sizeof(*data_set) * max_entries);
-+	CHECK(!data_set, "malloc", "no mem");
-+
-+	for (i = 0; i < max_entries; i++) {
-+		while (true) {
-+			data = random() % UINT_MAX;
-+			if (!binary_insert_data(data_set, i, data))
-+				break;
-+		}
-+	}
-+
-+	return data_set;
-+}
-+
-+static int cmp_be32(const void *l, const void *r)
-+{
-+	unsigned int a = htobe32(*(unsigned int *)l), b = htobe32(*(unsigned int *)r);
-+
-+	if (a < b)
-+		return -1;
-+	if (a > b)
-+		return 1;
-+	return 0;
-+}
-+
-+static void test_qp_trie_rdonly_iterate(void)
-+{
-+	unsigned int i, max_entries, value, data, len;
-+	struct bpf_dynptr_user dynptr;
-+	struct bpf_dynptr_user *cur;
-+	unsigned int *data_set;
-+	int fd, err;
-+
-+	max_entries = 4096;
-+	data_set = gen_random_unique_data_set(max_entries);
-+	qsort(data_set, max_entries, sizeof(*data_set), cmp_be32);
-+
-+	fd = qp_trie_create(sizeof(*data_set), sizeof(value), max_entries);
-+	value = 1;
-+	for (i = 0; i < max_entries; i++) {
-+		bpf_dynptr_user_init(&data_set[i], sizeof(data_set[i]), &dynptr);
-+		err = bpf_map_update_elem(fd, &dynptr, &value, 0);
-+		CHECK(err, "add elem", "#%u error %d\n", i, err);
-+	}
-+
-+	/* Iteration results are big-endian ordered */
-+	cur = NULL;
-+	bpf_dynptr_user_init(&data, sizeof(data), &dynptr);
-+	for (i = 0; i < max_entries; i++) {
-+		unsigned int *got;
-+
-+		err = bpf_map_get_next_key(fd, cur, &dynptr);
-+		CHECK(err, "iterate", "#%u error %d\n", i, err);
-+
-+		got = bpf_dynptr_user_get_data(&dynptr);
-+		len = bpf_dynptr_user_get_size(&dynptr);
-+		CHECK(len != 4, "iterate", "#%u invalid len %u\n", i, len);
-+		CHECK(got != &data, "iterate", "#%u invalid dynptr got %p exp %p\n", i, got, &data);
-+		CHECK(*got != data_set[i], "iterate", "#%u got 0x%x exp 0x%x\n",
-+		      i, *got, data_set[i]);
-+		cur = &dynptr;
-+	}
-+	err = bpf_map_get_next_key(fd, cur, &dynptr);
-+	CHECK(err != -ENOENT, "more element", "error %d\n", err);
-+
-+	/* Iterate from non-existent key */
-+	data = htobe32(UINT_MAX);
-+	bpf_dynptr_user_init(&data, sizeof(data), &dynptr);
-+	err = bpf_map_get_next_key(fd, &dynptr, &dynptr);
-+	CHECK(err, "iterate from non-existent", "error %d\n", err);
-+	len = bpf_dynptr_user_get_size(&dynptr);
-+	CHECK(len != 4, "iterate", "invalid len %u\n", len);
-+	CHECK(data != data_set[0], "iterate", "got 0x%x exp 0x%x\n",
-+	      data, data_set[0]);
-+
-+	free(data_set);
-+
-+	close(fd);
-+}
-+
-+/*
-+ * Delete current key (also the smallest key) after iteration, the next
-+ * iteration will return the second smallest key, so the iteration result
-+ * is still ordered.
-+ */
-+static void test_qp_trie_iterate_then_delete(void)
-+{
-+	unsigned int i, max_entries, value, data, len;
-+	struct bpf_dynptr_user dynptr;
-+	struct bpf_dynptr_user *cur;
-+	unsigned int *data_set;
-+	int fd, err;
-+
-+	max_entries = 4096;
-+	data_set = gen_random_unique_data_set(max_entries);
-+	qsort(data_set, max_entries, sizeof(*data_set), cmp_be32);
-+
-+	fd = qp_trie_create(sizeof(*data_set), sizeof(value), max_entries);
-+	value = 1;
-+	for (i = 0; i < max_entries; i++) {
-+		bpf_dynptr_user_init(&data_set[i], sizeof(data_set[i]), &dynptr);
-+		err = bpf_map_update_elem(fd, &dynptr, &value, BPF_NOEXIST);
-+		CHECK(err, "add elem", "#%u error %d\n", i, err);
-+	}
-+
-+	/* Iteration results are big-endian ordered */
-+	cur = NULL;
-+	bpf_dynptr_user_init(&data, sizeof(data), &dynptr);
-+	for (i = 0; i < max_entries; i++) {
-+		err = bpf_map_get_next_key(fd, cur, &dynptr);
-+		CHECK(err, "iterate", "#%u error %d\n", i, err);
-+
-+		len = bpf_dynptr_user_get_size(&dynptr);
-+		CHECK(len != 4, "iterate", "#%u invalid len %u\n", i, len);
-+		CHECK(data != data_set[i], "iterate", "#%u got 0x%x exp 0x%x\n",
-+		      i, data, data_set[i]);
-+		cur = &dynptr;
-+
-+		/*
-+		 * Delete the mininal key, next call of bpf_get_next_key() will
-+		 * return the second minimal key.
-+		 */
-+		err = bpf_map_delete_elem(fd, &dynptr);
-+		CHECK(err, "del elem", "#%u elem error %d\n", i, err);
-+	}
-+	err = bpf_map_get_next_key(fd, cur, &dynptr);
-+	CHECK(err != -ENOENT, "more element", "error %d\n", err);
-+
-+	err = bpf_map_get_next_key(fd, NULL, &dynptr);
-+	CHECK(err != -ENOENT, "no-empty qp-trie", "error %d\n", err);
-+
-+	free(data_set);
-+
-+	close(fd);
-+}
-+
-+/* The range is half-closed: [from, to) */
-+static void delete_random_keys_in_range(int fd, unsigned int *data_set,
-+					unsigned int from, unsigned int to)
-+{
-+	unsigned int del_from, del_to;
-+
-+	if (from >= to)
-+		return;
-+
-+	del_from = random() % (to - from) + from;
-+	del_to = random() % (to - del_from) + del_from;
-+	for (; del_from <= del_to; del_from++) {
-+		struct bpf_dynptr_user dynptr;
-+		int err;
-+
-+		/* Skip deleted keys */
-+		if (data_set[del_from] == UINT_MAX)
-+			continue;
-+
-+		bpf_dynptr_user_init(&data_set[del_from], sizeof(data_set[del_from]), &dynptr);
-+		err = bpf_map_delete_elem(fd, &dynptr);
-+		CHECK(err, "del elem", "#%u range %u-%u error %d\n", del_from, from, to, err);
-+		data_set[del_from] = UINT_MAX;
-+	}
-+}
-+
-+/* Delete keys randomly and ensure the iteration returns the expected data */
-+static void test_qp_trie_iterate_then_batch_delete(void)
-+{
-+	unsigned int i, max_entries, value, data, len;
-+	struct bpf_dynptr_user dynptr;
-+	struct bpf_dynptr_user *cur;
-+	unsigned int *data_set;
-+	int fd, err;
-+
-+	max_entries = 8192;
-+	data_set = gen_random_unique_data_set(max_entries);
-+	qsort(data_set, max_entries, sizeof(*data_set), cmp_be32);
-+
-+	fd = qp_trie_create(sizeof(*data_set), sizeof(value), max_entries);
-+	value = 1;
-+	for (i = 0; i < max_entries; i++) {
-+		bpf_dynptr_user_init(&data_set[i], sizeof(data_set[i]), &dynptr);
-+		err = bpf_map_update_elem(fd, &dynptr, &value, BPF_NOEXIST);
-+		CHECK(err, "add elem", "#%u error %d\n", i, err);
-+	}
-+
-+	cur = NULL;
-+	bpf_dynptr_user_init(&data, sizeof(data), &dynptr);
-+	for (i = 0; i < max_entries; i++) {
-+		err = bpf_map_get_next_key(fd, cur, &dynptr);
-+		CHECK(err, "iterate", "#%u error %d\n", i, err);
-+
-+		len = bpf_dynptr_user_get_size(&dynptr);
-+		CHECK(len != 4, "iterate", "#%u invalid len %u\n", i, len);
-+		CHECK(data != data_set[i], "iterate", "#%u got 0x%x exp 0x%x\n",
-+		      i, data, data_set[i]);
-+		cur = &dynptr;
-+
-+		/* Delete some keys from iterated keys */
-+		delete_random_keys_in_range(fd, data_set, 0, i);
-+
-+		/* Skip deleted keys */
-+		while (i + 1 < max_entries) {
-+			if (data_set[i + 1] != UINT_MAX)
-+				break;
-+			i++;
-+		}
-+
-+		/* Delete some keys from to-iterate keys */
-+		delete_random_keys_in_range(fd, data_set, i + 1, max_entries);
-+
-+		/* Skip deleted keys */
-+		while (i + 1 < max_entries) {
-+			if (data_set[i + 1] != UINT_MAX)
-+				break;
-+			i++;
-+		}
-+	}
-+	err = bpf_map_get_next_key(fd, cur, &dynptr);
-+	CHECK(err != -ENOENT, "more element", "error %d\n", err);
-+
-+	free(data_set);
-+
-+	close(fd);
-+}
-+
-+/*
-+ * Add keys with odd index first and add keys with even index during iteration.
-+ * Check whether or not the whole key set is returned by iteration procedure.
-+ */
-+static void test_qp_trie_iterate_then_add(void)
-+{
-+	unsigned int i, max_entries, value, data, len;
-+	struct bpf_dynptr_user dynptr, next_key;
-+	struct bpf_dynptr_user *cur;
-+	unsigned int *data_set;
-+	int fd, err;
-+
-+	max_entries = 8192;
-+	data_set = gen_random_unique_data_set(max_entries);
-+	qsort(data_set, max_entries, sizeof(*data_set), cmp_be32);
-+
-+	fd = qp_trie_create(sizeof(*data_set), sizeof(value), max_entries);
-+	value = 1;
-+	for (i = 0; i < max_entries; i++) {
-+		if (i & 1)
-+			continue;
-+
-+		bpf_dynptr_user_init(&data_set[i], sizeof(data_set[i]), &dynptr);
-+		err = bpf_map_update_elem(fd, &dynptr, &value, BPF_NOEXIST);
-+		CHECK(err, "add elem", "#%u error %d\n", i, err);
-+	}
-+
-+	/* Iteration results are big-endian ordered */
-+	cur = NULL;
-+	bpf_dynptr_user_init(&data, sizeof(data), &next_key);
-+	for (i = 0; i < max_entries; i++) {
-+		err = bpf_map_get_next_key(fd, cur, &next_key);
-+		CHECK(err, "iterate", "#%u error %d\n", i, err);
-+
-+		len = bpf_dynptr_user_get_size(&next_key);
-+		CHECK(len != 4, "iterate", "#%u invalid len %u\n", i, len);
-+		CHECK(data != data_set[i], "iterate", "#%u got 0x%x exp 0x%x\n",
-+		      i, data, data_set[i]);
-+		cur = &next_key;
-+
-+		if ((i & 1) || i + 1 >= max_entries)
-+			continue;
-+
-+		/* Add key with odd index which be returned in next iteration */
-+		bpf_dynptr_user_init(&data_set[i + 1], sizeof(data_set[i + 1]), &dynptr);
-+		err = bpf_map_update_elem(fd, &dynptr, &value, BPF_NOEXIST);
-+		CHECK(err, "add elem", "#%u error %d\n", i + 1, err);
-+	}
-+	err = bpf_map_get_next_key(fd, cur, &next_key);
-+	CHECK(err != -ENOENT, "more element", "error %d\n", err);
-+
-+	free(data_set);
-+
-+	close(fd);
-+}
-+
-+static int get_int_from_env(const char *key, int dft)
-+{
-+	const char *value = getenv(key);
-+
-+	if (!value)
-+		return dft;
-+	return atoi(value);
-+}
-+
-+static void free_bytes_set(struct bpf_dynptr_user *set, unsigned int nr)
-+{
-+	unsigned int i;
-+
-+	for (i = 0; i < nr; i++)
-+		free(bpf_dynptr_user_get_data(&set[i]));
-+	free(set);
-+}
-+
-+struct bpf_dynptr_user *generate_random_bytes_set(unsigned int max_key_len, unsigned int nr)
-+{
-+	struct bpf_dynptr_user *set;
-+	unsigned int i;
-+
-+	set = malloc(nr * sizeof(*set));
-+	CHECK(!set, "malloc", "no mem for set");
-+
-+	for (i = 0; i < nr; i++) {
-+		unsigned char *data;
-+		unsigned int len, j;
-+
-+		len = random() % max_key_len + 1;
-+		data = malloc(len);
-+		CHECK(!data, "maloc", "no mem for data");
-+
-+		j = 0;
-+		while (j + 4 <= len) {
-+			unsigned int rnd = random();
-+
-+			memcpy(&data[j], &rnd, sizeof(rnd));
-+			j += 4;
-+		}
-+		while (j < len)
-+			data[j++] = random();
-+
-+		bpf_dynptr_user_init(data, len, &set[i]);
-+	}
-+
-+	return set;
-+}
-+
-+static struct bpf_dynptr_user *alloc_dynptr_user(unsigned int len)
-+{
-+	struct bpf_dynptr_user *dynptr;
-+
-+	dynptr = malloc(sizeof(*dynptr) + len);
-+	if (!dynptr)
-+		return NULL;
-+
-+	bpf_dynptr_user_init(&dynptr[1], len, dynptr);
-+
-+	return dynptr;
-+}
-+
-+static int cmp_dynptr_user(const struct bpf_dynptr_user *a, const struct bpf_dynptr_user *b)
-+{
-+	unsigned int a_len = bpf_dynptr_user_get_size(a), b_len = bpf_dynptr_user_get_size(b);
-+	unsigned int cmp = a_len < b_len ? a_len : b_len;
-+	int ret;
-+
-+	ret = memcmp(bpf_dynptr_user_get_data(a), bpf_dynptr_user_get_data(b), cmp);
-+	if (ret)
-+		return ret;
-+	return a_len - b_len;
-+}
-+
-+static void dump_dynptr_user(const char *name, const struct bpf_dynptr_user *ptr)
-+{
-+	unsigned char *data = bpf_dynptr_user_get_data(ptr);
-+	unsigned int i, len = bpf_dynptr_user_get_size(ptr);
-+
-+	fprintf(stderr, "%s dynptr len %u data %p\n", name, len, data);
-+
-+	for (i = 0; i < len; i++) {
-+		fprintf(stderr, "%02x ", data[i]);
-+		if (i % 16 == 15)
-+			fprintf(stderr, "\n");
-+	}
-+	fprintf(stderr, "\n");
-+}
-+
-+static void copy_and_reset_dynptr_user(struct bpf_dynptr_user *dst_ptr,
-+				       struct bpf_dynptr_user *src_ptr, unsigned int reset_len)
-+{
-+	unsigned char *dst = bpf_dynptr_user_get_data(dst_ptr);
-+	unsigned char *src = bpf_dynptr_user_get_data(src_ptr);
-+	unsigned int src_len = bpf_dynptr_user_get_size(src_ptr);
-+
-+	memcpy(dst, src, src_len);
-+	bpf_dynptr_user_init(dst, src_len, dst_ptr);
-+	bpf_dynptr_user_init(src, reset_len, src_ptr);
-+}
-+
-+static void *update_fn(void *arg)
-+{
-+	const struct qp_trie_rw_ctx *ctx = arg;
-+	unsigned int i, j;
-+
-+	for (i = 0; i < ctx->loop; i++) {
-+		for (j = 0; j < ctx->nr; j++) {
-+			unsigned int value;
-+			int err;
-+
-+			value = bpf_dynptr_user_get_size(&ctx->set[i]);
-+			err = bpf_map_update_elem(ctx->fd, &ctx->set[i], &value, BPF_ANY);
-+			if (err) {
-+				fprintf(stderr, "update #%u element error %d\n", j, err);
-+				return (void *)(long)err;
-+			}
-+		}
-+	}
-+
-+	return NULL;
-+}
-+
-+static void *delete_fn(void *arg)
-+{
-+	const struct qp_trie_rw_ctx *ctx = arg;
-+	unsigned int i, j;
-+
-+	for (i = 0; i < ctx->loop; i++) {
-+		for (j = 0; j < ctx->nr; j++) {
-+			int err;
-+
-+			err = bpf_map_delete_elem(ctx->fd, &ctx->set[i]);
-+			if (err && err != -ENOENT) {
-+				fprintf(stderr, "delete #%u element error %d\n", j, err);
-+				return (void *)(long)err;
-+			}
-+		}
-+	}
-+
-+	return NULL;
-+}
-+
-+static void *lookup_fn(void *arg)
-+{
-+	const struct qp_trie_rw_ctx *ctx = arg;
-+	unsigned int i, j;
-+
-+	for (i = 0; i < ctx->loop; i++) {
-+		for (j = 0; j < ctx->nr; j++) {
-+			unsigned int got, value;
-+			int err;
-+
-+			got = 0;
-+			value = bpf_dynptr_user_get_size(&ctx->set[i]);
-+			err = bpf_map_lookup_elem(ctx->fd, &ctx->set[i], &got);
-+			if (!err && got != value) {
-+				fprintf(stderr, "lookup #%u element got %u expected %u\n",
-+					j, got, value);
-+				return (void *)(long)-EINVAL;
-+			} else if (err && err != -ENOENT) {
-+				fprintf(stderr, "lookup #%u element error %d\n", j, err);
-+				return (void *)(long)err;
-+			}
-+		}
-+	}
-+
-+	return NULL;
-+}
-+
-+static void *iterate_fn(void *arg)
-+{
-+	const struct qp_trie_rw_ctx *ctx = arg;
-+	struct bpf_dynptr_user *key, *next_key;
-+	unsigned int i;
-+	int err;
-+
-+	key = NULL;
-+	next_key = alloc_dynptr_user(ctx->max_key_len);
-+	if (!next_key)
-+		return (void *)(long)-ENOMEM;
-+
-+	err = 0;
-+	for (i = 0; i < ctx->loop; i++) {
-+		while (true) {
-+			err = bpf_map_get_next_key(ctx->fd, key, next_key);
-+			if (err < 0) {
-+				if (err != -ENOENT) {
-+					fprintf(stderr, "get key error %d\n", err);
-+					goto out;
-+				}
-+				err = 0;
-+				break;
-+			}
-+
-+			/* If no deletion, next key should be greater than key */
-+			if (!ctx->nr_delete && key && cmp_dynptr_user(key, next_key) >= 0) {
-+				fprintf(stderr, "unordered iteration result\n");
-+				dump_dynptr_user("previous key", key);
-+				dump_dynptr_user("cur key", next_key);
-+				err = -EINVAL;
-+				goto out;
-+			}
-+
-+			if (!key) {
-+				key = alloc_dynptr_user(ctx->max_key_len);
-+				if (!key) {
-+					err = -ENOMEM;
-+					goto out;
-+				}
-+			}
-+
-+			/* Copy next_key to key, and reset next_key */
-+			copy_and_reset_dynptr_user(key, next_key, ctx->max_key_len);
-+		}
-+
-+		free(key);
-+		key = NULL;
-+	}
-+
-+out:
-+	free(key);
-+	free(next_key);
-+	return (void *)(long)err;
-+}
-+
-+static void do_qp_trie_stress_test(const struct stress_conf *conf)
-+{
-+	void *(*fns[MAX_OP])(void *arg) = {
-+		update_fn, delete_fn, lookup_fn, iterate_fn,
-+	};
-+	unsigned int created[MAX_OP];
-+	struct qp_trie_rw_ctx ctx;
-+	pthread_t *tids[MAX_OP];
-+	unsigned int op, i, err;
-+
-+	ctx.nr = conf->nr;
-+	ctx.max_key_len = conf->max_key_len;
-+	ctx.fd = qp_trie_create(ctx.max_key_len, sizeof(unsigned int), ctx.nr);
-+	ctx.set = generate_random_bytes_set(ctx.max_key_len, ctx.nr);
-+	ctx.loop = conf->loop;
-+	ctx.nr_delete = conf->threads[DELETE_OP];
-+
-+	/* Create threads */
-+	for (op = 0; op < ARRAY_SIZE(tids); op++) {
-+		if (!conf->threads[op]) {
-+			tids[op] = NULL;
-+			continue;
-+		}
-+
-+		tids[op] = malloc(conf->threads[op] * sizeof(*tids[op]));
-+		CHECK(!tids[op], "malloc", "no mem for op %u threads %u\n", op, conf->threads[op]);
-+	}
-+
-+	for (op = 0; op < ARRAY_SIZE(tids); op++) {
-+		for (i = 0; i < conf->threads[op]; i++) {
-+			err = pthread_create(&tids[op][i], NULL, fns[op], &ctx);
-+			if (err) {
-+				fprintf(stderr, "create #%u thread for op %u error %d\n",
-+					i, op, err);
-+				break;
-+			}
-+		}
-+		created[op] = i;
-+	}
-+
-+	err = 0;
-+	for (op = 0; op < ARRAY_SIZE(tids); op++) {
-+		for (i = 0; i < created[op]; i++) {
-+			void *thread_err = NULL;
-+
-+			pthread_join(tids[op][i], &thread_err);
-+			if (thread_err)
-+				err |= 1 << op;
-+		}
-+	}
-+	CHECK(err, "stress operation", "err %u\n", err);
-+
-+	for (op = 0; op < ARRAY_SIZE(tids); op++)
-+		free(tids[op]);
-+	free_bytes_set(ctx.set, ctx.nr);
-+	close(ctx.fd);
-+}
-+
-+static void test_qp_trie_stress(void)
-+{
-+	struct stress_conf conf;
-+
-+	memset(&conf, 0, sizeof(conf));
-+
-+	/* Test concurrently update, lookup and iterate operations. There is
-+	 * no deletion, so iteration can check the order of returned keys.
-+	 */
-+	conf.threads[UPDATE_OP] = get_int_from_env("QP_TRIE_NR_UPDATE", 8);
-+	conf.threads[LOOKUP_OP] = get_int_from_env("QP_TRIE_NR_LOOKUP", 8);
-+	conf.threads[ITERATE_OP] = get_int_from_env("QP_TRIE_NR_ITERATE", 8);
-+	conf.max_key_len = get_int_from_env("QP_TRIE_MAX_KEY_LEN", 256);
-+	conf.loop = get_int_from_env("QP_TRIE_NR_LOOP", 8);
-+	conf.nr = get_int_from_env("QP_TRIE_NR_DATA", 8192);
-+	do_qp_trie_stress_test(&conf);
-+
-+	/* Add delete operation */
-+	conf.threads[DELETE_OP] = get_int_from_env("QP_TRIE_NR_DELETE", 8);
-+	do_qp_trie_stress_test(&conf);
-+}
-+
-+void test_qp_trie_map(void)
-+{
-+	test_qp_trie_create();
-+
-+	test_qp_trie_unsupported_op();
-+
-+	test_qp_trie_bad_update();
-+
-+	test_qp_trie_bad_lookup_delete();
-+
-+	test_qp_trie_one_subtree_update();
-+
-+	test_qp_trie_all_subtree_update();
-+
-+	test_qp_trie_rdonly_iterate();
-+
-+	test_qp_trie_iterate_then_delete();
-+
-+	test_qp_trie_iterate_then_batch_delete();
-+
-+	test_qp_trie_iterate_then_add();
-+
-+	test_qp_trie_stress();
-+
-+	printf("%s:PASS\n", __func__);
-+}
+Ah, the total_* items are cgroup1-specific items. They also include
+the descendants' memory.
+This patchset supports both cgroup1 and cgroup2.
+
+> It doesn't seem to be anywhere. Please also update
+> Documentation/admin-guide/cgroup-v2.rst.
+>
+
+Sure, I will update the Document.
+
+> > Note that there's no kmemcg in root memory cgroup, so the item 'bpf' will
+> > be always 0 in root memory cgroup. If a bpf-map is charged into root memcg
+> > directly, its memory size will not be accounted, so the 'total_bpf' can't
+> > be used to monitor system-wide bpf memory consumption yet.
+>
+> So, system-level accounting is usually handled separately as it's most
+> likely that we'd want the same stat at the system level even when cgroup is
+> not implemented. Here, too, it'd make sense to first implement system level
+> bpf memory usage accounting, expose that through /proc/meminfo and then use
+> the same source for root level cgroup stat.
+>
+
+Sure, I will do it first. Thanks for your suggestion.
+
 -- 
-2.29.2
-
+Regards
+Yafang
