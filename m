@@ -2,91 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 250645E8700
-	for <lists+bpf@lfdr.de>; Sat, 24 Sep 2022 03:30:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 683A65E87E6
+	for <lists+bpf@lfdr.de>; Sat, 24 Sep 2022 05:20:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231864AbiIXBaS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 23 Sep 2022 21:30:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42448 "EHLO
+        id S232941AbiIXDUY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 23 Sep 2022 23:20:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232678AbiIXBaR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 23 Sep 2022 21:30:17 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1C5CA50DD
-        for <bpf@vger.kernel.org>; Fri, 23 Sep 2022 18:30:16 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6D9C460B2C
-        for <bpf@vger.kernel.org>; Sat, 24 Sep 2022 01:30:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id BEB10C433D7;
-        Sat, 24 Sep 2022 01:30:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1663983015;
-        bh=jY1Y5EXF5BIwtWytMffzn5MhkcOmRzBBJvvBHxNzfjI=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=PN2zG4ACTn5z8Qow8euyujVq4qKFKlS1lJ5g2w/ErjX3cORKC62zmutkfmhEcrfbY
-         ezhbZsGdVa9ncX3AbIPb95EaeGdWboBFomZeWsAP7f2QFScdUEmMCOYoh9gXzs0sCI
-         jDgKa4293Ivv9sqTbbozYv/+NneEN4O89OeHDt/AImMpm+9ktvOXgAorsvdBQxQ9eN
-         5fVFoAnc7FoU2eUk5rmKwhlovHmSAV302LTFZU6fnlVTKSALcD6RRFvpX65B5c6EU9
-         PkaJLWV4Px6wWGxOsbaSjaxS1r6Hz4wCFuJuAJI5L1o8Jp5eVDtC7q0vBLA008DtEb
-         O62MP2oevPDLg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A00BAE4D03A;
-        Sat, 24 Sep 2022 01:30:15 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S232776AbiIXDUW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 23 Sep 2022 23:20:22 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F2D91A399;
+        Fri, 23 Sep 2022 20:20:20 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id l10so1717097plb.10;
+        Fri, 23 Sep 2022 20:20:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date;
+        bh=zdaZUg3/Ml2ij6XPZD2qg9IOy8atuUvae1lDmHhGEaU=;
+        b=UnG1HqbKS/mgMg2dkwoqyo9cxa/2p7p+q8MDbzDOgljy0JmBKN0AWL+/mahBJ/oE4b
+         /9QD89ZRZ9yccoJzfPy1SQYt46FZAHzGDAXYLKiMDDVay1UH7uAAzk0Pnp4PMrM/DYFA
+         qct+9CeD/c4KcYv4qvhJlG7CUUdSyifL0o4iXE3JixbsRu10MtIcZU1pnh/dg3IaJDGW
+         l/o4f/rGLnfGtadyK68xaOvEpWZxNrSqawqgdBi7N/MUUR7Q7HiQSxZMg6C29UfLCrcf
+         Cc6YLDBbmkNwdTZc1eALtudTSBzGRjfP7tPAUl52zchsEqh82XFo68pJm7Ob1HOBZZ7b
+         +ttA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date;
+        bh=zdaZUg3/Ml2ij6XPZD2qg9IOy8atuUvae1lDmHhGEaU=;
+        b=f/uXecO7C25VG6UFoogqSScDLMKiKV09tIurppSCAlMrKksQl6sij36gIbKzfEfL4N
+         DfUTUE4PFR+ZY/NjwbntGGA9pdakB/rWIFMREX14TQr0Un5d8SE9sI+8T7xAdsvqpMRF
+         pPwvz0B/DU0nP3USeXHza9jh1zhsisw8o0Zlishei3xKXu4l7Km0PkTPOp87sHqUbiGr
+         mLiNZy/Z9TvAh2q9R139GYNHiLVx9Y+OjKIMrIztYxq+ZFWqPjHdhTTOrHeLV1jnP8sM
+         rLQdcpdRgXXiv5ND0wVG2h8M1YKgthYAXKBL8UY1JAvQNtceLIYSkga0H0Jm1xn6BXZb
+         GwEw==
+X-Gm-Message-State: ACrzQf1iUhQm/ts0uILeI+LFAEg9cC4IOBvQLJgce2zAHbt25pzAs+cW
+        1M4KR8esVjFDS5MInP1ILY0=
+X-Google-Smtp-Source: AMsMyM5q0D4IBPE+GYfOG2nQqyklGERs9XUlFfWm9EZr1G063EsXvtnS95wpHmmMGpSeA2bakubf+g==
+X-Received: by 2002:a17:903:22c2:b0:178:3c7c:18af with SMTP id y2-20020a17090322c200b001783c7c18afmr11513864plg.134.1663989619818;
+        Fri, 23 Sep 2022 20:20:19 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
+        by smtp.gmail.com with ESMTPSA id y10-20020a17090a2b4a00b001fab208523esm2302079pjc.3.2022.09.23.20.20.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Sep 2022 20:20:19 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Fri, 23 Sep 2022 17:20:18 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, hannes@cmpxchg.org,
+        mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
+        songmuchun@bytedance.com, akpm@linux-foundation.org,
+        lizefan.x@bytedance.com, cgroups@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [RFC PATCH bpf-next 10/10] bpf, memcg: Add new item bpf into
+ memory.stat
+Message-ID: <Yy53cgcwx+hTll4R@slm.duckdns.org>
+References: <20220921170002.29557-1-laoar.shao@gmail.com>
+ <20220921170002.29557-11-laoar.shao@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 bpf-next 0/5] veristat: further usability improvements
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <166398301565.30254.11053885434889690149.git-patchwork-notify@kernel.org>
-Date:   Sat, 24 Sep 2022 01:30:15 +0000
-References: <20220923175913.3272430-1-andrii@kernel.org>
-In-Reply-To: <20220923175913.3272430-1-andrii@kernel.org>
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kernel-team@fb.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220921170002.29557-11-laoar.shao@gmail.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+Hello,
 
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+On Wed, Sep 21, 2022 at 05:00:02PM +0000, Yafang Shao wrote:
+> A new item 'bpf' is introduced into memory.stat, then we can get the memory
+> consumed by bpf. Currently only the memory of bpf-map is accounted.
+> The accouting of this new item is implemented with scope-based accouting,
+> which is similar to set_active_memcg(). In this scope, the memory allocated
+> will be accounted or unaccounted to a specific item, which is specified by
+> set_active_memcg_item().
 
-On Fri, 23 Sep 2022 10:59:08 -0700 you wrote:
-> A small patch set adding few usability improvements and features making
-> veristat a more convenient tool to be used for work on BPF verifier:
+Imma let memcg folks comment on the implementation. Hmm... I wonder how this
+would tie in with the BPF memory allocator Alexei is working on.
+
+> The result in cgroup v1 as follows,
+> 	$ cat /sys/fs/cgroup/memory/foo/memory.stat | grep bpf
+> 	bpf 109056000
+> 	total_bpf 109056000
+> After the map is removed, the counter will become zero again.
+>         $ cat /sys/fs/cgroup/memory/foo/memory.stat | grep bpf
+>         bpf 0
+>         total_bpf 0
 > 
->   - patch #2 speeds up and makes stats parsing from BPF verifier log more
->     robust;
-> 
->   - patch #3 makes veristat less strict about input object files; veristat
->     will ignore non-BPF ELF files;
-> 
-> [...]
+> The 'bpf' may not be 0 after the bpf-map is destroyed, because there may be
+> cached objects.
 
-Here is the summary with links:
-  - [v2,bpf-next,1/5] selftests/bpf: add sign-file to .gitignore
-    https://git.kernel.org/bpf/bpf-next/c/067f4f291c20
-  - [v2,bpf-next,2/5] selftests/bpf: make veristat's verifier log parsing faster and more robust
-    https://git.kernel.org/bpf/bpf-next/c/c2488d70ceee
-  - [v2,bpf-next,3/5] selftests/bpf: make veristat skip non-BPF and failing-to-open BPF objects
-    https://git.kernel.org/bpf/bpf-next/c/518fee8bfaf2
-  - [v2,bpf-next,4/5] selftests/bpf: emit processing progress and add quiet mode to veristat
-    https://git.kernel.org/bpf/bpf-next/c/c511d009ceb8
-  - [v2,bpf-next,5/5] selftests/bpf: allow to adjust BPF verifier log level in veristat
-    https://git.kernel.org/bpf/bpf-next/c/e310efc5ddde
+What's the difference between bpf and total_bpf? Where's total_bpf
+implemented? It doesn't seem to be anywhere. Please also update
+Documentation/admin-guide/cgroup-v2.rst.
 
-You are awesome, thank you!
+> Note that there's no kmemcg in root memory cgroup, so the item 'bpf' will
+> be always 0 in root memory cgroup. If a bpf-map is charged into root memcg
+> directly, its memory size will not be accounted, so the 'total_bpf' can't
+> be used to monitor system-wide bpf memory consumption yet.
+
+So, system-level accounting is usually handled separately as it's most
+likely that we'd want the same stat at the system level even when cgroup is
+not implemented. Here, too, it'd make sense to first implement system level
+bpf memory usage accounting, expose that through /proc/meminfo and then use
+the same source for root level cgroup stat.
+
+Thanks.
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+tejun
