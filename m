@@ -2,99 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AA175E87ED
-	for <lists+bpf@lfdr.de>; Sat, 24 Sep 2022 05:23:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC0045E8953
+	for <lists+bpf@lfdr.de>; Sat, 24 Sep 2022 09:59:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232984AbiIXDW6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 23 Sep 2022 23:22:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36852 "EHLO
+        id S232392AbiIXH7T convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Sat, 24 Sep 2022 03:59:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233180AbiIXDWz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 23 Sep 2022 23:22:55 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B21C120BEB;
-        Fri, 23 Sep 2022 20:22:54 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id c7so1842825pgt.11;
-        Fri, 23 Sep 2022 20:22:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date;
-        bh=pVZ/vufAufJqpHyXPbOtKj2Be+zfIdhN74kmWcGVahk=;
-        b=MDlwjG16Co36ivQru9yTmqGAh8rRKn57/5yL7cl6/Y4KJK6KlPGTOSgnHKufNpTyTJ
-         HF5+9/Z9psnwV/TYIRz/lPeiWCNFTZw855a8Iatejwa1KbFJAHciym7KrtWwGG26cNtY
-         PI/gg4xkwmVdcKyQYpPyI4tSlUHbMk09fG4urMx6Re4sEiTKYhrGZECV1fvWiphnkhZm
-         H+pGIlsXbC8b5GmdnHLAT+PzIbOjlqYq8fLlS67nIxlM88VwXqBLAIG3ETpkei8oLi2o
-         vuKEnO5bqgThdWimNby2WYiK3CYiXc6sWGoV9N2dre373lqDLVb57wP5LhEn21nD1pBL
-         8sNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date;
-        bh=pVZ/vufAufJqpHyXPbOtKj2Be+zfIdhN74kmWcGVahk=;
-        b=Si2U3zoRZqS7qN4MISwqIITqIZYu07BsnXOm8BOcG3sHxI4mWNHQLGVQG2k28cE+hf
-         oZK9LGpume4F3dtMY8ejov1PW9mtcO60FcwHPKh2DCgvYYSg87z1bluw4dD8HnGCNCCF
-         wNoHZSaq3s4HoTyW32KSaafha947trvQijWnTXbNeBLHV+NwuSQ/dVcPyCY1w6lMqE66
-         nQ2A6V5w9Ne2jcBZIqfuLMHy9mqPoO4kTTVywGXUI5fuh+IV6XwexnwAFLd3TwxxLnjI
-         LGWefKWKmkGMdicJP+0oE6jVpJO1XrGvMyHTprnv262RDds08Og8ZywpNFSpL4Z8/7bM
-         GmQQ==
-X-Gm-Message-State: ACrzQf2gXIb/waGTp4OyXzL+UUJMMJffsowLuV6M3s+KX3Yed3en1dr2
-        6Seb8blgMOjXeI9j4n+y348=
-X-Google-Smtp-Source: AMsMyM6X+wN7/ZBRv0sTQmop149LiBp1WYBiaO2r2ePMExDhqoSB4rvpsaaYTdFLfg6NoqVsR7jz2g==
-X-Received: by 2002:a05:6a00:bea:b0:53e:d0c0:faed with SMTP id x42-20020a056a000bea00b0053ed0c0faedmr12294958pfu.30.1663989773546;
-        Fri, 23 Sep 2022 20:22:53 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id j10-20020a170902da8a00b0016ef87334aesm6860953plx.162.2022.09.23.20.22.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Sep 2022 20:22:52 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 23 Sep 2022 17:22:51 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org, Song Liu <songliubraving@fb.com>,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH] perf stat: Support old kernels for bperf cgroup counting
-Message-ID: <Yy54CwK84JY/o+Ci@slm.duckdns.org>
-References: <CAM9d7cjQ20a01YoZi=o-_7HT6TzR0TZgtpscKNvRrMq2yqV1Og@mail.gmail.com>
- <20220922041435.709119-1-namhyung@kernel.org>
+        with ESMTP id S229573AbiIXH7S (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 24 Sep 2022 03:59:18 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B19F14D48E;
+        Sat, 24 Sep 2022 00:59:17 -0700 (PDT)
+Received: from canpemm100010.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4MZLsb6PynzWgvF;
+        Sat, 24 Sep 2022 15:55:15 +0800 (CST)
+Received: from canpemm500010.china.huawei.com (7.192.105.118) by
+ canpemm100010.china.huawei.com (7.192.104.38) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Sat, 24 Sep 2022 15:59:15 +0800
+Received: from canpemm500010.china.huawei.com ([7.192.105.118]) by
+ canpemm500010.china.huawei.com ([7.192.105.118]) with mapi id 15.01.2375.031;
+ Sat, 24 Sep 2022 15:59:15 +0800
+From:   "liujian (CE)" <liujian56@huawei.com>
+To:     John Fastabend <john.fastabend@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Eric Dumazet <edumazet@google.com>,
+        davem <davem@davemloft.net>,
+        "yoshfuji@linux-ipv6.org" <yoshfuji@linux-ipv6.org>,
+        "dsahern@kernel.org" <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+CC:     netdev <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: [bug report] one possible out-of-order issue in sockmap
+Thread-Topic: [bug report] one possible out-of-order issue in sockmap
+Thread-Index: AdjPzwrK0RHLCS69QbyGLr5ej4bpUw==
+Date:   Sat, 24 Sep 2022 07:59:15 +0000
+Message-ID: <061d068ccd6f4db899d095cd61f52114@huawei.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.176.93]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220922041435.709119-1-namhyung@kernel.org>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 21, 2022 at 09:14:35PM -0700, Namhyung Kim wrote:
-> The recent change in the cgroup will break the backward compatiblity in
-> the BPF program.  It should support both old and new kernels using BPF
-> CO-RE technique.
-> 
-> Like the task_struct->__state handling in the offcpu analysis, we can
-> check the field name in the cgroup struct.
-> 
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> ---
-> Arnaldo, I think this should go through the cgroup tree since it depends
-> on the earlier change there.  I don't think it'd conflict with other
-> perf changes but please let me know if you see any trouble, thanks!
+Hello,
 
-FWIW, looks fine to me and I'd be happy to route this through the cgroup
-tree once it gets acked.
+I had a scp failure problem here. I analyze the code, and the reasons may be as follows:
 
-Thanks.
+From commit e7a5f1f1cd00 ("bpf/sockmap: Read psock ingress_msg before
+ sk_receive_queue", if we use sockops (BPF_SOCK_OPS_ACTIVE_ESTABLISHED_CB
+and BPF_SOCK_OPS_PASSIVE_ESTABLISHED_CB) to enable socket's sockmap
+function, and don't enable strparse and verdict function, the out-of-order
+problem may occur in the following process.
 
--- 
-tejun
+client SK                                   server SK
+--------------------------------------------------------------------------
+tcp_rcv_synsent_state_process
+  tcp_finish_connect
+    tcp_init_transfer
+      tcp_set_state(sk, TCP_ESTABLISHED);
+      // insert SK to sockmap
+    wake up waitter
+    tcp_send_ack
+
+tcp_bpf_sendmsg(msgA)
+// msgA will go tcp stack
+                                            tcp_rcv_state_process
+                                              tcp_init_transfer
+                                                //insert SK to sockmap
+                                              tcp_set_state(sk,
+                                                     TCP_ESTABLISHED)
+                                              wake up waitter
+tcp_bpf_sendmsg(msgB)
+// msgB go sockmap
+                                              tcp_bpf_recvmsg
+                                                //msgB, out-of-order
+                                              tcp_bpf_recvmsg
+                                                //msgA, out-of-order
+
+
+Even if msgA arrives earlier than msgB (in most cases), tcp_bpf_recvmsg receives msg from the psock queue first.
+The worst case is that msgA waits for serverSK to change to TCP_ESTABLISHED in the protocol stack. msgA may arrive at the serverSK receive queue later than msgB.
+If msgA befor than msgB, 
+
+If the ACK packets of the three-way TCP handshake are dropped for a period of time, the OOO problem is easily reproduced.
+
+iptables -A INPUT -p tcp -m tcp --dport 5006 --tcp-flags SYN,RST,ACK,FIN ACK -j DROP
+...
+iptables -D INPUT -p tcp -m tcp --dport 5006 --tcp-flags SYN,RST,ACK,FIN ACK -j DROP
+
+Best Wishes
+Liu Jian
