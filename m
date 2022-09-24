@@ -2,24 +2,24 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 744E85E8D02
+	by mail.lfdr.de (Postfix) with ESMTP id CB2115E8D03
 	for <lists+bpf@lfdr.de>; Sat, 24 Sep 2022 15:18:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230134AbiIXNS0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 24 Sep 2022 09:18:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57284 "EHLO
+        id S229929AbiIXNS1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 24 Sep 2022 09:18:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230017AbiIXNSX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S230050AbiIXNSX (ORCPT <rfc822;bpf@vger.kernel.org>);
         Sat, 24 Sep 2022 09:18:23 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14C11B6555
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A236BB6D14
         for <bpf@vger.kernel.org>; Sat, 24 Sep 2022 06:18:22 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4MZV0P01q5zl8rr
-        for <bpf@vger.kernel.org>; Sat, 24 Sep 2022 21:16:37 +0800 (CST)
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4MZV0429CVz6S2y2
+        for <bpf@vger.kernel.org>; Sat, 24 Sep 2022 21:16:20 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP2 (Coremail) with SMTP id Syh0CgDXKXOXAy9jXzpPBQ--.3282S8;
-        Sat, 24 Sep 2022 21:18:20 +0800 (CST)
+        by APP2 (Coremail) with SMTP id Syh0CgDXKXOXAy9jXzpPBQ--.3282S9;
+        Sat, 24 Sep 2022 21:18:21 +0800 (CST)
 From:   Hou Tao <houtao@huaweicloud.com>
 To:     bpf@vger.kernel.org
 Cc:     Martin KaFai Lau <kafai@fb.com>,
@@ -35,18 +35,18 @@ Cc:     Martin KaFai Lau <kafai@fb.com>,
         Jiri Olsa <jolsa@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
         "Paul E . McKenney" <paulmck@kernel.org>, houtao1@huawei.com
-Subject: [PATCH bpf-next v2 04/13] bpf: Support bpf_dynptr-typed map key in verifier
-Date:   Sat, 24 Sep 2022 21:36:11 +0800
-Message-Id: <20220924133620.4147153-5-houtao@huaweicloud.com>
+Subject: [PATCH bpf-next v2 05/13] libbpf: Add helpers for bpf_dynptr_user
+Date:   Sat, 24 Sep 2022 21:36:12 +0800
+Message-Id: <20220924133620.4147153-6-houtao@huaweicloud.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20220924133620.4147153-1-houtao@huaweicloud.com>
 References: <20220924133620.4147153-1-houtao@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgDXKXOXAy9jXzpPBQ--.3282S8
-X-Coremail-Antispam: 1UD129KBjvJXoW7Cr4fKw1rArW3Xr4kZryfCrg_yoW8JFyDpF
-        1kGry2qr48KFsI93W3ZFs7ArW5Jw10g3y7C3ySy3ySvF17Xr98urWFkF13Wry5trWkt34F
-        yr42vFWFv34UCFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID: Syh0CgDXKXOXAy9jXzpPBQ--.3282S9
+X-Coremail-Antispam: 1UD129KBjvJXoW7Zr4fCr45Kryftw15Kw15Arb_yoW8Ary3pa
+        yxKrW3Zr4rXFW2krsxJF4Sy3y5uF4xXr1UKrWxt34rAF4aqFy5ZF1j9347Krn0yrWkWr4I
+        vrZrKrWrGr18Jr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
         9KBjDU0xBIdaVrnRJUUUBIb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
         6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
         Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
@@ -57,7 +57,7 @@ X-Coremail-Antispam: 1UD129KBjvJXoW7Cr4fKw1rArW3Xr4kZryfCrg_yoW8JFyDpF
         z7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2
         Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
         6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0x
-        vE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY
+        vE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY
         6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aV
         CY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IUbGXdUUUUUU==
 X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
@@ -72,42 +72,58 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Hou Tao <houtao1@huawei.com>
 
-For map with dynptr key, only allow a bpf_dynptr on stack to be used as
-a map key.
+Add bpf_dynptr_user_init() to initialize a bpf_dynptr,
+bpf_dynptr_user_get_{data,size}() to get the address and length of
+dynptr, and bpf_dynptr_user_trim() to trim size of dynptr.
+
+Instead of exporting these symbols, simply adding these helpers as
+inline functions in bpf.h.
 
 Signed-off-by: Hou Tao <houtao1@huawei.com>
 ---
- kernel/bpf/verifier.c | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+ tools/lib/bpf/bpf.h | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 6f6d2d511c06..5d2868a798d6 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -6020,9 +6020,20 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
- 			verbose(env, "invalid map_ptr to access map->key\n");
- 			return -EACCES;
- 		}
--		err = check_helper_mem_access(env, regno,
--					      meta->map_ptr->key_size, false,
--					      NULL);
-+		/* Allow bpf_dynptr to be used as map key */
-+		if (map_key_has_dynptr(meta->map_ptr)) {
-+			if (base_type(reg->type) != PTR_TO_STACK ||
-+			    !is_dynptr_reg_valid_init(env, reg) ||
-+			    !is_dynptr_type_expected(env, reg, ARG_PTR_TO_DYNPTR)) {
-+				verbose(env, "expect R%d to be dynptr instead of %s\n",
-+					regno, reg_type_str(env, reg->type));
-+				return -EACCES;
-+			}
-+		} else {
-+			err = check_helper_mem_access(env, regno,
-+						      meta->map_ptr->key_size, false,
-+						      NULL);
-+		}
- 		break;
- 	case ARG_PTR_TO_MAP_VALUE:
- 		if (type_may_be_null(arg_type) && register_is_null(reg))
+diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
+index 9c50beabdd14..6b91a8c2b2ae 100644
+--- a/tools/lib/bpf/bpf.h
++++ b/tools/lib/bpf/bpf.h
+@@ -371,6 +371,35 @@ LIBBPF_API int bpf_btf_get_fd_by_id(__u32 id);
+ LIBBPF_API int bpf_link_get_fd_by_id(__u32 id);
+ LIBBPF_API int bpf_obj_get_info_by_fd(int bpf_fd, void *info, __u32 *info_len);
+ 
++/* sys_bpf() will check the validity of size */
++static inline void bpf_dynptr_user_init(void *data, __u32 size,
++					struct bpf_dynptr_user *dynptr)
++{
++	/* Zero padding bytes */
++	memset(dynptr, 0, sizeof(*dynptr));
++	dynptr->data = (__u64)(unsigned long)data;
++	dynptr->size = size;
++}
++
++static inline __u32
++bpf_dynptr_user_get_size(const struct bpf_dynptr_user *dynptr)
++{
++	return dynptr->size;
++}
++
++static inline void *
++bpf_dynptr_user_get_data(const struct bpf_dynptr_user *dynptr)
++{
++	return (void *)(unsigned long)dynptr->data;
++}
++
++static inline void bpf_dynptr_user_trim(struct bpf_dynptr_user *dynptr,
++					__u32 new_size)
++{
++	if (new_size < dynptr->size)
++		dynptr->size = new_size;
++}
++
+ struct bpf_prog_query_opts {
+ 	size_t sz; /* size of this struct for forward/backward compatibility */
+ 	__u32 query_flags;
 -- 
 2.29.2
 
