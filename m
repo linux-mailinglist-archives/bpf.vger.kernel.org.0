@@ -2,104 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7A335E86F7
-	for <lists+bpf@lfdr.de>; Sat, 24 Sep 2022 03:17:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 250645E8700
+	for <lists+bpf@lfdr.de>; Sat, 24 Sep 2022 03:30:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230079AbiIXBRo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 23 Sep 2022 21:17:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59388 "EHLO
+        id S231864AbiIXBaS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 23 Sep 2022 21:30:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbiIXBRn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 23 Sep 2022 21:17:43 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B43413D865
-        for <bpf@vger.kernel.org>; Fri, 23 Sep 2022 18:17:38 -0700 (PDT)
-Received: from kwepemi500012.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4MZ9y83wbFzWh6G;
-        Sat, 24 Sep 2022 09:13:36 +0800 (CST)
-Received: from [10.67.110.176] (10.67.110.176) by
- kwepemi500012.china.huawei.com (7.221.188.12) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Sat, 24 Sep 2022 09:17:35 +0800
-Subject: Re: [PATCH] bpf: Remove obsolete iterators_bpf__open_and_load()
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf <bpf@vger.kernel.org>
-References: <20220923093509.521560-1-cuigaosheng1@huawei.com>
- <CAADnVQJu0tRMX1==kbDvmddhXsj5i4BB=WdX+CpmtmVtS5N2Ug@mail.gmail.com>
-From:   cuigaosheng <cuigaosheng1@huawei.com>
-Message-ID: <d59351e2-b202-d5a6-799c-35270e14fce2@huawei.com>
-Date:   Sat, 24 Sep 2022 09:17:34 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        with ESMTP id S232678AbiIXBaR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 23 Sep 2022 21:30:17 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1C5CA50DD
+        for <bpf@vger.kernel.org>; Fri, 23 Sep 2022 18:30:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6D9C460B2C
+        for <bpf@vger.kernel.org>; Sat, 24 Sep 2022 01:30:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id BEB10C433D7;
+        Sat, 24 Sep 2022 01:30:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1663983015;
+        bh=jY1Y5EXF5BIwtWytMffzn5MhkcOmRzBBJvvBHxNzfjI=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=PN2zG4ACTn5z8Qow8euyujVq4qKFKlS1lJ5g2w/ErjX3cORKC62zmutkfmhEcrfbY
+         ezhbZsGdVa9ncX3AbIPb95EaeGdWboBFomZeWsAP7f2QFScdUEmMCOYoh9gXzs0sCI
+         jDgKa4293Ivv9sqTbbozYv/+NneEN4O89OeHDt/AImMpm+9ktvOXgAorsvdBQxQ9eN
+         5fVFoAnc7FoU2eUk5rmKwhlovHmSAV302LTFZU6fnlVTKSALcD6RRFvpX65B5c6EU9
+         PkaJLWV4Px6wWGxOsbaSjaxS1r6Hz4wCFuJuAJI5L1o8Jp5eVDtC7q0vBLA008DtEb
+         O62MP2oevPDLg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A00BAE4D03A;
+        Sat, 24 Sep 2022 01:30:15 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <CAADnVQJu0tRMX1==kbDvmddhXsj5i4BB=WdX+CpmtmVtS5N2Ug@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.110.176]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemi500012.china.huawei.com (7.221.188.12)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v2 bpf-next 0/5] veristat: further usability improvements
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166398301565.30254.11053885434889690149.git-patchwork-notify@kernel.org>
+Date:   Sat, 24 Sep 2022 01:30:15 +0000
+References: <20220923175913.3272430-1-andrii@kernel.org>
+In-Reply-To: <20220923175913.3272430-1-andrii@kernel.org>
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        kernel-team@fb.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> Top of this file says:
-> /* THIS FILE IS AUTOGENERATED! */
->
-> Please do NOT send such patches for it.
+Hello:
 
-It's my negligence，thanks for taking the time to review this patch!
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-On 2022/9/23 22:31, Alexei Starovoitov wrote:
-> On Fri, Sep 23, 2022 at 2:35 AM Gaosheng Cui <cuigaosheng1@huawei.com> wrote:
->> Commit cb80ddc67152 ("bpf: Convert bpf_preload.ko to use light
->> skeleton.") drops the last caller of generic_free_nodedata(),
->> it is useless, so remove it.
->>
->> Signed-off-by: Gaosheng Cui <cuigaosheng1@huawei.com>
->> ---
->>   kernel/bpf/preload/iterators/iterators.lskel.h | 15 ---------------
->>   1 file changed, 15 deletions(-)
->>
->> diff --git a/kernel/bpf/preload/iterators/iterators.lskel.h b/kernel/bpf/preload/iterators/iterators.lskel.h
->> index 70f236a82fe1..e5f9c608f7f7 100644
->> --- a/kernel/bpf/preload/iterators/iterators.lskel.h
->> +++ b/kernel/bpf/preload/iterators/iterators.lskel.h
->> @@ -407,19 +407,4 @@ iterators_bpf__load(struct iterators_bpf *skel)
->>          return 0;
->>   }
->>
->> -static inline struct iterators_bpf *
->> -iterators_bpf__open_and_load(void)
->> -{
->> -       struct iterators_bpf *skel;
->> -
->> -       skel = iterators_bpf__open();
->> -       if (!skel)
->> -               return NULL;
->> -       if (iterators_bpf__load(skel)) {
->> -               iterators_bpf__destroy(skel);
->> -               return NULL;
->> -       }
->> -       return skel;
->> -}
->> -
-> Top of this file says:
-> /* THIS FILE IS AUTOGENERATED! */
->
-> Please do NOT send such patches for it.
-> .
+On Fri, 23 Sep 2022 10:59:08 -0700 you wrote:
+> A small patch set adding few usability improvements and features making
+> veristat a more convenient tool to be used for work on BPF verifier:
+> 
+>   - patch #2 speeds up and makes stats parsing from BPF verifier log more
+>     robust;
+> 
+>   - patch #3 makes veristat less strict about input object files; veristat
+>     will ignore non-BPF ELF files;
+> 
+> [...]
+
+Here is the summary with links:
+  - [v2,bpf-next,1/5] selftests/bpf: add sign-file to .gitignore
+    https://git.kernel.org/bpf/bpf-next/c/067f4f291c20
+  - [v2,bpf-next,2/5] selftests/bpf: make veristat's verifier log parsing faster and more robust
+    https://git.kernel.org/bpf/bpf-next/c/c2488d70ceee
+  - [v2,bpf-next,3/5] selftests/bpf: make veristat skip non-BPF and failing-to-open BPF objects
+    https://git.kernel.org/bpf/bpf-next/c/518fee8bfaf2
+  - [v2,bpf-next,4/5] selftests/bpf: emit processing progress and add quiet mode to veristat
+    https://git.kernel.org/bpf/bpf-next/c/c511d009ceb8
+  - [v2,bpf-next,5/5] selftests/bpf: allow to adjust BPF verifier log level in veristat
+    https://git.kernel.org/bpf/bpf-next/c/e310efc5ddde
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
