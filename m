@@ -2,138 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C09E95E9126
-	for <lists+bpf@lfdr.de>; Sun, 25 Sep 2022 07:43:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 024665E9150
+	for <lists+bpf@lfdr.de>; Sun, 25 Sep 2022 09:04:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229672AbiIYFnC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 25 Sep 2022 01:43:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53886 "EHLO
+        id S229539AbiIYHEt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 25 Sep 2022 03:04:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbiIYFnB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 25 Sep 2022 01:43:01 -0400
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57ED7371AB
-        for <bpf@vger.kernel.org>; Sat, 24 Sep 2022 22:42:58 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id 7E83932002FB;
-        Sun, 25 Sep 2022 01:42:54 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Sun, 25 Sep 2022 01:42:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1664084574; x=
-        1664170974; bh=gYryFmyVF7gCXfKNyj9KELei4TL2jsft5OoKQKaEgW4=; b=l
-        J9GwGxrZ8ouTR1IZvV3X7qYo8BRn/UNopck6lyzHxSMivwp63hlvCjZk2S0n01iR
-        PCZNUdpYcYaQtQxVrvi9KDt0e1qsAhcve8ZFDfdBwPTaE7iPLaFEiGxBHfTTSqQj
-        epu2MiC6mFULC/ku1CKa+iOWk0gF0tDB6X+z51nVVhuZ/fxZqLExVxe7pege6/0v
-        5As3RiNAsbpf1CQ9vZL4ExWxFW4CRuzcISL3DLU3LAB54mDyyPLyYHEft+1xqeYl
-        wG3lycShp/PRbn4kMrvoiOkMCUJuY7PHee+wLS269AKxLkBZhMFptBDP9aeuD6Na
-        nE4bxrpCIJbl8CUbbF1eQ==
-X-ME-Sender: <xms:XOovY5evGGduE7JRA_FxWo_5G0txkPPT1K4VbiblP9pPs2Tdl2HuiA>
-    <xme:XOovY3OJbixFBfTliQEKXDIr7ynM-9XOs6mAjpKUXYRImi7MgcARJKssf0aLnDfvT
-    Fml8ZPPT8fS5PdE_TA>
-X-ME-Received: <xmr:XOovYygw8qG4uKStAC4y9MyrpthOiPWpImRVPDJ9igOg_dV-dCJ7tqYTPbz6JhbiKOM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrfeefledgleekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtjeertddtfeejnecuhfhrohhmpeforghr
-    thihnhgrshcurfhumhhpuhhtihhsuceomheslhgrmhgsuggrrdhltheqnecuggftrfgrth
-    htvghrnhepvdevledtteevfeehleetteelvdehteegjefhvdefgfdukeejfeefffeigeeh
-    veetnecuffhomhgrihhnpehgihhthhhusgdrtghomhenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmsehlrghmsggurgdrlhht
-X-ME-Proxy: <xmx:XeovYy_dJeU7OWeytt0JggYCoIO3xaRsWjBxMI0SMLXcZgQLJkV-Ig>
-    <xmx:XeovY1srb3slTHhjRWafrIeN9XfUXHaBuZ_D8Z-gbUX_VvoIUVsuJA>
-    <xmx:XeovYxHUE9LYmZmJzqq4TFmitwpKnam5ZiLsizd71ug8Vp80_A6jGQ>
-    <xmx:XuovYxEN-zSGfiEqonpiSIAYptrwENdNzoY6tk8Jxu5J9tA0XC03VQ>
-Feedback-ID: i215944fb:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 25 Sep 2022 01:42:50 -0400 (EDT)
-Message-ID: <0e1742f8-06ea-1c69-d245-e3202a751f42@lambda.lt>
-Date:   Sun, 25 Sep 2022 07:42:48 +0200
+        with ESMTP id S229525AbiIYHEr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 25 Sep 2022 03:04:47 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DAFB13F5E
+        for <bpf@vger.kernel.org>; Sun, 25 Sep 2022 00:04:46 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id z6so5864765wrq.1
+        for <bpf@vger.kernel.org>; Sun, 25 Sep 2022 00:04:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date;
+        bh=7qy4eyTtycg4Lj6NX8cEGFTWtc//JOsv8rqbt6B4C1E=;
+        b=JOU8UoemVO/+IRVTJ5UsANwTu3ujY6JSWB4UWZ5CmUqiS9iVHz8liwHBFVp9/nf7WI
+         H/jguB6qM+pNTK7zBQ+Mf7ZTf0nF+0xgoqfcz736NalLIdf+yz5X1jbn8waoPVTn1/TW
+         PSW4RdF3HoD5q7qcvpg2lyPZQqu8PLOBMyPod9X38zUAJ7kGYg3ZS9VBopvrgtA6wq5C
+         eSQy6TGsjxtLV7xZZGtiC0+vK1UB67sTsMsghjbzZIVVZ2VL/b4+jWHzsxw+zzjBricJ
+         0yZUdQrJUFkIJSN/MX/+nHvzVrzpd2Z/sxtvxNK5ZAe3e6f9GmV9BbsH/sz62s/u0csK
+         rCgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date;
+        bh=7qy4eyTtycg4Lj6NX8cEGFTWtc//JOsv8rqbt6B4C1E=;
+        b=x30SnYSLH5h+O90iCSJjyeGppEAvOgs/QBn8BF/U7o4AatNVsIFUUKOe/VpJgz6iCt
+         5cB6fusflgLDvu2OgLaMeDT7KUBnhguD+DXISgpg8zZRo9Z78t6ppZmup03WB9VfQT99
+         1jEm4yH/xpT9eDNH2gn5FkHtuzrZAbF6IGxsfm2gbYU/Ain0iBW8dVYmfEq+wlZPgWHA
+         V6NXpRH6r94CcfplMi789RIp1J9DPEz00GGg3fMBRQJ1RB+/7GfpvB5W9lU7AGh5baj6
+         xWGJpNUsiFZFP7DLqnhShCm1zaLqejyeAUU5PagjW+rE7udDcGqdftdnX79RJBkFmjL4
+         icGQ==
+X-Gm-Message-State: ACrzQf1k9cFnZgkkJBTW18qafmZKEiRcGxRmUfobVIGW9/xfMMP8MzDb
+        fDhC4Y7CFu/qTaAaqu5NOvG4uBkaSWk=
+X-Google-Smtp-Source: AMsMyM7uIuiin6rZcK1BzK6ssPzxBj7gWCKCXjpsKV8jvG0JuqDB4u15g5WCDngaGPWUljdfysNjWQ==
+X-Received: by 2002:a05:6000:1882:b0:22a:f402:c975 with SMTP id a2-20020a056000188200b0022af402c975mr9910270wri.532.1664089484045;
+        Sun, 25 Sep 2022 00:04:44 -0700 (PDT)
+Received: from localhost.localdomain ([2a0d:6fc2:4af0:cc00:f99d:5d19:6e17:dc3a])
+        by smtp.gmail.com with ESMTPSA id e10-20020a5d6d0a000000b0022aeba020casm13115495wrq.83.2022.09.25.00.04.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 25 Sep 2022 00:04:43 -0700 (PDT)
+From:   Jon Doron <arilou@gmail.com>
+To:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org
+Cc:     Jon Doron <jond@wiz.io>
+Subject: [PATCH bpf-next v3] libbpf: Fix the case of running as non-root with capabilities
+Date:   Sun, 25 Sep 2022 10:04:31 +0300
+Message-Id: <20220925070431.1313680-1-arilou@gmail.com>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.0
-Subject: Re: [PATCHv4 bpf-next 5/6] bpf: Return value in kprobe get_func_ip
- only for entry address
-Content-Language: en-US
-To:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <20220922210320.1076658-1-jolsa@kernel.org>
- <20220922210320.1076658-6-jolsa@kernel.org>
-From:   Martynas Pumputis <m@lambda.lt>
-In-Reply-To: <20220922210320.1076658-6-jolsa@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 9/22/22 23:03, Jiri Olsa wrote:
-> Changing return value of kprobe's version of bpf_get_func_ip
-> to return zero if the attach address is not on the function's
-> entry point.
-> 
-> For kprobes attached in the middle of the function we can't easily
-> get to the function address especially now with the CONFIG_X86_KERNEL_IBT
-> support.
-> 
-> If user cares about current IP for kprobes attached within the
-> function body, they can get it with PT_REGS_IP(ctx).
-> 
-> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+From: Jon Doron <jond@wiz.io>
 
-Tested the patches with "pwru --filter-func='.*skb.*' 
---filter-dst-ip=1.1.1.1" from [1] - the symbol name resolution works, 
-thanks!
+When running rootless with special capabilities like:
+FOWNER / DAC_OVERRIDE / DAC_READ_SEARCH
 
-Without your patches:
+The "access" API will not make the proper check if there is really
+access to a file or not.
 
-                SKB    CPU          PROCESS                     FUNC
-0xffff8989c159b4e8      0           [curl]       0xffffffffbbb06164
-0xffff8989c223f000      0           [curl]       0xffffffffbbb07534
-0xffff8989c223f000      0           [curl]       0xffffffffbbb04934
-0xffff8989c223f000      0           [curl]         skb_release_data
-0xffff8989c223f000      0           [curl]             kfree_skbmem
-0xffff8989c159b4e8      0           [curl]       0xffffffffbbb00db4
-[..]
+From the access man page:
+"
+The check is done using the calling process's real UID and GID, rather
+than the effective IDs as is done when actually attempting an operation
+(e.g., open(2)) on the file.  Similarly, for the root user, the check
+uses the set of permitted capabilities  rather than the set of effective
+capabilities; ***and for non-root users, the check uses an empty set of
+capabilities.***
+"
 
-With patches:
+What that means is that for non-root user the access API will not do the
+proper validation if the process really has permission to a file or not.
 
-                SKB    CPU          PROCESS                     FUNC
-0xffffa4564159b4e8      0           [curl]   validate_xmit_skb_list
-0xffffa4564159b4e8      0           [curl]       netif_skb_features
-0xffffa4564159b4e8      0           [curl]     skb_network_protocol
-0xffffa4564159b4e8      0           [curl]  skb_csum_hwoffload_help
-0xffffa4564159b4e8      0           [curl]        skb_checksum_help
-0xffffa4564159b4e8      0           [curl]      skb_ensure_writable
-0xffffa4564159b4e8      0           [curl]             skb_to_sgvec
-[..]
+To resolve this this patch replaces all the access API calls with
+faccessat with AT_EACCESS flag.
 
-[1]: https://github.com/cilium/pwru/tree/test-ibt-kernel-fix
+Signed-off-by: Jon Doron <jond@wiz.io>
+---
+ tools/lib/bpf/btf.c    | 2 +-
+ tools/lib/bpf/libbpf.c | 6 +++---
+ tools/lib/bpf/usdt.c   | 2 +-
+ 3 files changed, 5 insertions(+), 5 deletions(-)
 
-Acked-by: Martynas Pumputis <m@lambda.lt>
+diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+index b4d9a96c3c1b..d88647da2c7f 100644
+--- a/tools/lib/bpf/btf.c
++++ b/tools/lib/bpf/btf.c
+@@ -4664,7 +4664,7 @@ struct btf *btf__load_vmlinux_btf(void)
+ 	for (i = 0; i < ARRAY_SIZE(locations); i++) {
+ 		snprintf(path, PATH_MAX, locations[i], buf.release);
+ 
+-		if (access(path, R_OK))
++		if (faccessat(AT_FDCWD, path, R_OK, AT_EACCESS))
+ 			continue;
+ 
+ 		btf = btf__parse(path, NULL);
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index e691f08a297f..184ce1684dcd 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -884,7 +884,7 @@ __u32 get_kernel_version(void)
+ 	__u32 major, minor, patch;
+ 	struct utsname info;
+ 
+-	if (access(ubuntu_kver_file, R_OK) == 0) {
++	if (faccessat(AT_FDCWD, ubuntu_kver_file, R_OK, AT_EACCESS) == 0) {
+ 		FILE *f;
+ 
+ 		f = fopen(ubuntu_kver_file, "r");
+@@ -9904,7 +9904,7 @@ static bool use_debugfs(void)
+ 	static int has_debugfs = -1;
+ 
+ 	if (has_debugfs < 0)
+-		has_debugfs = access(DEBUGFS, F_OK) == 0;
++		has_debugfs = faccessat(AT_FDCWD, DEBUGFS, F_OK, AT_EACCESS) == 0;
+ 
+ 	return has_debugfs == 1;
+ }
+@@ -10721,7 +10721,7 @@ static int resolve_full_path(const char *file, char *result, size_t result_sz)
+ 				continue;
+ 			snprintf(result, result_sz, "%.*s/%s", seg_len, s, file);
+ 			/* ensure it has required permissions */
+-			if (access(result, perm) < 0)
++			if (faccessat(AT_FDCWD, result, perm, AT_EACCESS) < 0)
+ 				continue;
+ 			pr_debug("resolved '%s' to '%s'\n", file, result);
+ 			return 0;
+diff --git a/tools/lib/bpf/usdt.c b/tools/lib/bpf/usdt.c
+index d18e37982344..e83b497c2245 100644
+--- a/tools/lib/bpf/usdt.c
++++ b/tools/lib/bpf/usdt.c
+@@ -282,7 +282,7 @@ struct usdt_manager *usdt_manager_new(struct bpf_object *obj)
+ 	 * If this is not supported, USDTs with semaphores will not be supported.
+ 	 * Added in: a6ca88b241d5 ("trace_uprobe: support reference counter in fd-based uprobe")
+ 	 */
+-	man->has_sema_refcnt = access(ref_ctr_sysfs_path, F_OK) == 0;
++	man->has_sema_refcnt = faccessat(AT_FDCWD, ref_ctr_sysfs_path, F_OK, AT_EACCESS) == 0;
+ 
+ 	return man;
+ }
+-- 
+2.37.3
 
-> ---
->   kernel/trace/bpf_trace.c                             | 5 ++++-
->   tools/testing/selftests/bpf/progs/get_func_ip_test.c | 4 ++--
->   2 files changed, 6 insertions(+), 3 deletions(-)
-
-[..]
