@@ -2,312 +2,193 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 796A95E935A
-	for <lists+bpf@lfdr.de>; Sun, 25 Sep 2022 15:26:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B53295E9450
+	for <lists+bpf@lfdr.de>; Sun, 25 Sep 2022 18:19:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229850AbiIYN00 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 25 Sep 2022 09:26:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36118 "EHLO
+        id S232779AbiIYQTd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 25 Sep 2022 12:19:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229589AbiIYN00 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 25 Sep 2022 09:26:26 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B68D92F03F;
-        Sun, 25 Sep 2022 06:26:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 61A0DB8010F;
-        Sun, 25 Sep 2022 13:26:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C2ECC433D6;
-        Sun, 25 Sep 2022 13:26:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1664112382;
-        bh=RqRzawPrzxIpU09rt8ECwEplXzcYl+Pry0JvNgCCkTE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=qICDQpZDED7S3nlvd7HpvJfsWSZur+NrEMsRrgG/VjuMRSpmdDyful+lb1Xg45USl
-         ueEI6Qv4zp5ouw3k4w255a64m4bJFuB4eCHCTPiJwlvyIsfV/1fZtUDyYsa1WQ6TkZ
-         9vno9P+l3wq4a5sp8Q7CgYF5RtH2JBQ+d3n46hm03sWNkPHtnMvrSl0va+S5XwVT1d
-         WEajkP085pRit+ZGjT/yuS8eYRYtkbZZNLvXmDHrIuN4uwZoiQxSUZ+J/q24Th9oiP
-         P7N5ezrd3ilvgZHk38hAtEcMdjdTMkLBi9W1/My56pNiLTOLGzleI/X5m3aDAU3F5w
-         /4dlaT3GAOc2Q==
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        edumazet@google.com, pabeni@redhat.com, pablo@netfilter.org,
-        fw@strlen.de, netfilter-devel@vger.kernel.org,
-        lorenzo.bianconi@redhat.com, brouer@redhat.com, toke@redhat.com,
-        memxor@gmail.com, nathan@kernel.org
-Subject: [PATCH bpf-next] net: netfilter: move bpf_ct_set_nat_info kfunc in nf_nat_bpf.c
-Date:   Sun, 25 Sep 2022 15:26:12 +0200
-Message-Id: <ddd17d808fe25917893eb035b20146479810124c.1664111646.git.lorenzo@kernel.org>
+        with ESMTP id S230465AbiIYQTb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 25 Sep 2022 12:19:31 -0400
+Received: from AUS01-SY4-obe.outbound.protection.outlook.com (mail-sy4aus01olkn2155.outbound.protection.outlook.com [40.92.62.155])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF5202CDE1
+        for <bpf@vger.kernel.org>; Sun, 25 Sep 2022 09:19:28 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eq75c/AyEA136CQiTm7Wc0sYuJ6EkP8WBc7Y7kJh8uui06zartjlPqV3QPPQztiytR4g0e7gzcV2JVZxl4mOif7O/g2RvW4uhzrbwc76IiXk+zs0Ge0+0xvpVmrI6+fDqdIqkRjys3E5kcgXZjsYc7ZJB5at/oyw5A1mqy++kodHjjzU0rDdp6qWQeTx0W++49NH6RckX8zPFzCCk6F2+2VWHlL4KLY9sTsRz/AF4DoLWAh35z4jf7fXYwqFYqRuSgB1oo7z/Nqg5/yzuxsYlEVoJ9YIsoAfFYVRqSTqFUN4YQgpwemxGd7bBDrJPZQe+lmSWJ6Rj+nAuPHsr7DPeQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=kxltH0MFHN0yv1rtGpfijsCqddouXP8UoSbs5Ejq35o=;
+ b=J5GfZvR/YBCFhUyRKiuWIKZd4ojpyDb1Fq8de4/3Rmix5sq2jlsEdb4ffNFO7tYRSHnNgJFEzpnYK9WcklQFKlZe0HHUgg3BpW6miQ6kgYwkgOVat81ZWIdWED5O6IagBoMFSqvgvkO1WjXt1wjuokMIICJA/wAH8nPwjGdf+LaPYFFOXkrIDWv1WQsImhFfH0mqMPB3KhsEo4+okFpeXt9XOHb4ZNw+E/0Mg3DVsL2VQMP/88JEaCstNTrav8RhgMNEkL6M/FvBFhjt2sxnMGsuqb98o20v+nV+aJCvzW5GJ2RMjBVdjb1iXq6oY4LvskUWeS2r6JwbYa7YUFVrNA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kxltH0MFHN0yv1rtGpfijsCqddouXP8UoSbs5Ejq35o=;
+ b=grhoNPbyJlxM+uEm2g1XnRHiMH3V7jVtdbVV14QAHi+TiRTOufxM0cbQNAARnlvURM5VeVhkregOYK8uA0UxHKHwEP2nGnLuPgNysNXWDWb0znd/+g6+b4v85TbNg7ssRVBUBG1xHrELJmnVlNxD+p++LvG/ZkMh2StZRph4qe9hd55eVogpG4v0/A2oUmqASlm7xnZtQkwyJ3S4IBxbyyZtDMuWmD38R+FobVSU8DXXy4B0XYJw20PnvP0bp7Pu55qCqR5G7fQkeNhbCtx0mCkqZ/855oo+gRiuG+g4Avw5A854mF+Fulk0DoWSQMNcLtv0izhy4/JZaFwinBN0jg==
+Received: from SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM (2603:10c6:10:ac::13) by
+ SYBP282MB2462.AUSP282.PROD.OUTLOOK.COM (2603:10c6:10:11a::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.5654.15; Sun, 25 Sep 2022 16:19:25 +0000
+Received: from SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM
+ ([fe80::549a:65d7:eae8:3983]) by SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM
+ ([fe80::549a:65d7:eae8:3983%7]) with mapi id 15.20.5654.024; Sun, 25 Sep 2022
+ 16:19:25 +0000
+From:   Tianyi Liu <i.pear@outlook.com>
+To:     quentin@isovalent.com
+Cc:     bpf@vger.kernel.org, Tianyi Liu <i.pear@outlook.com>
+Subject: [PATCH] bpftool: Fix error prompt of strerror
+Date:   Mon, 26 Sep 2022 00:18:32 +0800
+Message-ID: <SY4P282MB1084B61CD8671DFA395AA8579D539@SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM>
 X-Mailer: git-send-email 2.37.3
-MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-TMN:  [cAYRFQl6/BhKkP4L3/e+mocWHw6iFLIa0UceDIUmLuSzOUcgWnh0jQ==]
+X-ClientProxiedBy: SI2PR04CA0015.apcprd04.prod.outlook.com
+ (2603:1096:4:197::21) To SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM
+ (2603:10c6:10:ac::13)
+X-Microsoft-Original-Message-ID: <20220925161832.1516141-1-i.pear@outlook.com>
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SY4P282MB1084:EE_|SYBP282MB2462:EE_
+X-MS-Office365-Filtering-Correlation-Id: 16441a9f-e0a5-4535-3732-08da9f11b65a
+X-MS-Exchange-SLBlob-MailProps: C/ir7cSdGlsxpxllHOv5HbamrC1c36SANxPm11wguevW9SP54lG6MYWpJ9xk5LyRBHWHqFIDN6H2tl909m5T8LNEMI+0WpCpaTEtjVX5Ffnctk2CwQsdIaTAToMrBYJZA6TnSOEZ48GShCbiLHry1/34Td2ebsnyBAAPZQuE2EWjFHQsCp9hnnXFTKSg+nahhFToQq9o2AgVPCsfBVe2EnGGJdPGDf/zdGDHPShIZx5wSYG5GZ/UQZEXWBmc/O3ipw5ahBv8cuYI4nk7KH9UpVx/khPZhYEi5PacMJNgjJ9HNLwI5meXF5m80lXw+hwwaJGBO3I1yJBQgoShl8VZyhGa27GBectx6En3YWBryn8fNxoVoYxGlAPa3f6L5dyeFuS4R+cgC+wGNuaol3m+Ko19XD0jELJ458KvC5IPQOE5sbpqmTakjE5BU74F/6RmF+VhqLIsK+nszamsbRRnM2PZKqslIRWv2V5oisnjKKjt+ERTPyvR0lrSETM0KK8PyaOtwx+0hCV+MWNWd7QRBIaXEUgIqB4wZnHySRcQgJV1KcCvnQo9qQUuAut9Yam2bvZt36IIJbTqDoVindl4k3pX8jdU9yRpv0iA9Jx37F/aZxPTD9CHON8F61QHaCAboM9jRgkVBz4q7DUziYA7A7yw43z0ld5uOY8heoOkXbZMbSelFR3rOE9Cqwe6qYA/A0KgEwSEriQRWrkycci9KK4z1yihsTg6hsRcuyQbYTMoPPwwe7CP1Lk3Vr+2smfP
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ysXR3jkfCvNCkeow6OgusRBK5N1pvOdtRzhf8Bx9yZn4K/5TXLoHPpT5GFCMxoHIR9qP/3nWXzVfaYrQicDbL6S80pkmlzvIqXez+uT6z11q22BH46+fM/K/fLrSfJ+bpAPSHCPJXDyWCX+zMp0IwZimsbiCt9oPHTKM8HOggSa4FLUrSGnNhK/UqdGIagYzhI1N5oKcELiuNMjPlUevLljJmc6vqD+rBWmXuhHVR9o6Sl3YrZdDqI3CgNl/+ooBJROn5uWZ6AFtAskYMD4Ozq+hXlsWY2D7t3K6sx4iVUFk/Zl9FjZreJI829XSODVN6Hr/zWlS9pVVU6kEJBwJV/BIfjVfeYseNnjvrcujxA6G3qjNpC/YLNfMckJhyE/KDexA16bxCVZtun9wpyvd0Dpuwm8dbZT1G9gwaZIltQhLP6Vvny5yy2y76BLFkrOdgto9DLUs7YNEJbX3+NFLDaIO1inaxWhoaUfWrRv4+VxJtHHDPNv66AUKKqi4PPereLcXscGpZN6hGNvgYkIXuqqkxNK6YpH7XCYKh+q/kb7xeIWrkclsTFih8wEfQuiPpWJerXBjWUinaqfGRrB+QKo+DEGuOWik5iLE9iquqdliR1DX/Pz1bemxQxiyYKHxQJbJ0vZTcduP7YYyqaRx7g==
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?jHmUkWa4og+UUeGKh16Ex/GSXW2R4llNba2CQJIEcGutzLvpsdC14nz7fSoa?=
+ =?us-ascii?Q?Tu9D8OiyciQKuCvYiGIhU1t5dN9I3q/l7OvJmGKnIw/7YhR8wcxoS4NhFbta?=
+ =?us-ascii?Q?yzfw7qMe0JPbrFNdOsCXlF3KVEq29I42WYwL8UtN1CwVmWp+xQ+Dki4vady9?=
+ =?us-ascii?Q?8XFtg9Rm4UxpuiGKnTei7vv/jcbKk9KXpe5kEmni8KnhyYtFJweTtby6n6YX?=
+ =?us-ascii?Q?l/8XlyWV61SDIrNcPJFLSQLLtOiurm4n3u/9JExaafXC3TiffFTc5VzHId/k?=
+ =?us-ascii?Q?u1OLnqsmwAKpgEdv4TF4vDcTUTBua1qqb2eT0SBRxLVMUX+gBgFnVXf8GDCq?=
+ =?us-ascii?Q?W/U0heOkLBBeGL0864PAVQ0WJvhUWssZUiVEDbSdRlVsIUO3QquBz2UT0O61?=
+ =?us-ascii?Q?+t5LCVdBZ0U/em/itCM4xiGIqXVBk8ColKW0d8lnzjkxr4N2dGD1GUMdupr2?=
+ =?us-ascii?Q?tSvlj0x6LcJ3J+kY0wME4PuPoFVhdCSfYs9DRhEhMHDfI4qAtPwT0qljTaC5?=
+ =?us-ascii?Q?/B2zfsM+8n7p+mmqpTZlCuaAg1po8ggUPIqn6GTd5i+tuOqHdR4hZ4huljtC?=
+ =?us-ascii?Q?6A6C4OVXVKyY5a17Q9l8rZqghU4hjEHvvEL92SN+g81/CGW2BweWkVrJbSwu?=
+ =?us-ascii?Q?EOgMHR19tRD8XnY4KzsOF+og8JzXPG1vRodRUiuHtFAjzLQiZ6IFv8+BqXwf?=
+ =?us-ascii?Q?Bs/tcTiOpmERH3TaqwE61imUfvkIQMbmbNZydkbO6H0SirQfK6Z1C09csGI5?=
+ =?us-ascii?Q?mi9FC73hVcbynvO4RPJK8DpoLfaD0TbiSewxeF96tQzPuJA3PjZcvX+XM8pD?=
+ =?us-ascii?Q?910bE0gpp66eP+qwqc7q0WWYATSSCLkozdDPOtULnni3tBFHiJhXF4Wn/uGC?=
+ =?us-ascii?Q?/v1MK2FLQdt/M6GK0yp8CJvotKNJe5VNsU+VXWXwxEcH151A0819XOqYs2Xm?=
+ =?us-ascii?Q?r54v20wFPZl9W8RZhwk3zzhQhyKK/WpEkEjM+u4AOsBkP4/1FeWF71NrjT3q?=
+ =?us-ascii?Q?jI/tCVR4ZuWdooPaa110jeigPlw3je11xaRc540RVSMdRwktVcT7+57tyFGR?=
+ =?us-ascii?Q?miodS9FyJgeQD8AZwB8PYOMLP/b9e0DwHkirwNYVd4gl5sjYYOptk0kFTiV5?=
+ =?us-ascii?Q?IWg58MpECQCQQXwhlWt0QaiurXKdo/iAvzZXcsKP4q9OsXZoJUntCY1JDQ7T?=
+ =?us-ascii?Q?3frgvVWLWNvH7EIv1so81wE7V8yYJwyeuYbCLDm75mAYbG58YRzgpUpcTqgM?=
+ =?us-ascii?Q?ZCxyVk/6vsyBJlXa7WzlnHfdb+gH/TZTXv2O9YpY1KDO+gsQ+jpkCViyVnbL?=
+ =?us-ascii?Q?B0I=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 16441a9f-e0a5-4535-3732-08da9f11b65a
+X-MS-Exchange-CrossTenant-AuthSource: SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2022 16:19:25.3503
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SYBP282MB2462
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Remove circular dependency between nf_nat module and nf_conntrack one
-moving bpf_ct_set_nat_info kfunc in nf_nat_bpf.c
+strerror() excepts a posivite errno, however libbpf_get_error()
+or variable err will never be positive when an error occurs.
+This causes bpftool to output too many "unknown error", even a simple
+"file not exist" error can't get an accurate prompt.
+This patch fixed all "strerror(err)" patten in bpftool.
 
-Fixes: 0fabd2aa199f ("net: netfilter: add bpf_ct_set_nat_info kfunc helper")
-Suggested-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Tested-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+Signed-off-by: Tianyi Liu <i.pear@outlook.com>
 ---
- include/net/netfilter/nf_conntrack_bpf.h |  5 ++
- include/net/netfilter/nf_nat.h           | 14 +++++
- net/netfilter/Makefile                   |  6 ++
- net/netfilter/nf_conntrack_bpf.c         | 49 ---------------
- net/netfilter/nf_nat_bpf.c               | 79 ++++++++++++++++++++++++
- net/netfilter/nf_nat_core.c              |  2 +-
- 6 files changed, 105 insertions(+), 50 deletions(-)
- create mode 100644 net/netfilter/nf_nat_bpf.c
+ tools/bpf/bpftool/btf.c           | 6 +++---
+ tools/bpf/bpftool/gen.c           | 4 ++--
+ tools/bpf/bpftool/map_perf_ring.c | 4 ++--
+ 3 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/include/net/netfilter/nf_conntrack_bpf.h b/include/net/netfilter/nf_conntrack_bpf.h
-index c8b80add1142..1ce46e406062 100644
---- a/include/net/netfilter/nf_conntrack_bpf.h
-+++ b/include/net/netfilter/nf_conntrack_bpf.h
-@@ -4,6 +4,11 @@
- #define _NF_CONNTRACK_BPF_H
+diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
+index 0744bd115..ac586c0e5 100644
+--- a/tools/bpf/bpftool/btf.c
++++ b/tools/bpf/bpftool/btf.c
+@@ -643,7 +643,7 @@ static int do_dump(int argc, char **argv)
+ 		if (err) {
+ 			btf = NULL;
+ 			p_err("failed to load BTF from %s: %s",
+-			      *argv, strerror(err));
++			      *argv, strerror(errno));
+ 			goto done;
+ 		}
+ 		NEXT_ARG();
+@@ -689,7 +689,7 @@ static int do_dump(int argc, char **argv)
+ 		btf = btf__load_from_kernel_by_id_split(btf_id, base_btf);
+ 		err = libbpf_get_error(btf);
+ 		if (err) {
+-			p_err("get btf by id (%u): %s", btf_id, strerror(err));
++			p_err("get btf by id (%u): %s", btf_id, strerror(errno));
+ 			goto done;
+ 		}
+ 	}
+@@ -825,7 +825,7 @@ build_btf_type_table(struct hashmap *tab, enum bpf_obj_type type,
+ 				      u32_as_hash_field(id));
+ 		if (err) {
+ 			p_err("failed to append entry to hashmap for BTF ID %u, object ID %u: %s",
+-			      btf_id, id, strerror(errno));
++			      btf_id, id, strerror(-err));
+ 			goto err_free;
+ 		}
+ 	}
+diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+index 7070dcffa..0783069f6 100644
+--- a/tools/bpf/bpftool/gen.c
++++ b/tools/bpf/bpftool/gen.c
+@@ -1594,14 +1594,14 @@ static int do_object(int argc, char **argv)
  
- #include <linux/kconfig.h>
-+#include <net/netfilter/nf_conntrack.h>
-+
-+struct nf_conn___init {
-+	struct nf_conn ct;
-+};
+ 		err = bpf_linker__add_file(linker, file, NULL);
+ 		if (err) {
+-			p_err("failed to link '%s': %s (%d)", file, strerror(err), err);
++			p_err("failed to link '%s': %s (%d)", file, strerror(errno), err);
+ 			goto out;
+ 		}
+ 	}
  
- #if (IS_BUILTIN(CONFIG_NF_CONNTRACK) && IS_ENABLED(CONFIG_DEBUG_INFO_BTF)) || \
-     (IS_MODULE(CONFIG_NF_CONNTRACK) && IS_ENABLED(CONFIG_DEBUG_INFO_BTF_MODULES))
-diff --git a/include/net/netfilter/nf_nat.h b/include/net/netfilter/nf_nat.h
-index e9eb01e99d2f..cd084059a953 100644
---- a/include/net/netfilter/nf_nat.h
-+++ b/include/net/netfilter/nf_nat.h
-@@ -68,6 +68,20 @@ static inline bool nf_nat_oif_changed(unsigned int hooknum,
- #endif
- }
+ 	err = bpf_linker__finalize(linker);
+ 	if (err) {
+-		p_err("failed to finalize ELF file: %s (%d)", strerror(err), err);
++		p_err("failed to finalize ELF file: %s (%d)", strerror(errno), err);
+ 		goto out;
+ 	}
  
-+#if (IS_BUILTIN(CONFIG_NF_NAT) && IS_ENABLED(CONFIG_DEBUG_INFO_BTF)) || \
-+    (IS_MODULE(CONFIG_NF_NAT) && IS_ENABLED(CONFIG_DEBUG_INFO_BTF_MODULES))
-+
-+extern int register_nf_nat_bpf(void);
-+
-+#else
-+
-+static inline int register_nf_nat_bpf(void)
-+{
-+	return 0;
-+}
-+
-+#endif
-+
- int nf_nat_register_fn(struct net *net, u8 pf, const struct nf_hook_ops *ops,
- 		       const struct nf_hook_ops *nat_ops, unsigned int ops_count);
- void nf_nat_unregister_fn(struct net *net, u8 pf, const struct nf_hook_ops *ops,
-diff --git a/net/netfilter/Makefile b/net/netfilter/Makefile
-index 06df49ea6329..0f060d100880 100644
---- a/net/netfilter/Makefile
-+++ b/net/netfilter/Makefile
-@@ -60,6 +60,12 @@ obj-$(CONFIG_NF_NAT) += nf_nat.o
- nf_nat-$(CONFIG_NF_NAT_REDIRECT) += nf_nat_redirect.o
- nf_nat-$(CONFIG_NF_NAT_MASQUERADE) += nf_nat_masquerade.o
+diff --git a/tools/bpf/bpftool/map_perf_ring.c b/tools/bpf/bpftool/map_perf_ring.c
+index 6b0c41015..1650b7127 100644
+--- a/tools/bpf/bpftool/map_perf_ring.c
++++ b/tools/bpf/bpftool/map_perf_ring.c
+@@ -198,7 +198,7 @@ int do_event_pipe(int argc, char **argv)
+ 	err = libbpf_get_error(pb);
+ 	if (err) {
+ 		p_err("failed to create perf buffer: %s (%d)",
+-		      strerror(err), err);
++		      strerror(errno), err);
+ 		goto err_close_map;
+ 	}
  
-+ifeq ($(CONFIG_NF_NAT),m)
-+nf_nat-$(CONFIG_DEBUG_INFO_BTF_MODULES) += nf_nat_bpf.o
-+else ifeq ($(CONFIG_NF_NAT),y)
-+nf_nat-$(CONFIG_DEBUG_INFO_BTF) += nf_nat_bpf.o
-+endif
-+
- # NAT helpers
- obj-$(CONFIG_NF_NAT_AMANDA) += nf_nat_amanda.o
- obj-$(CONFIG_NF_NAT_FTP) += nf_nat_ftp.o
-diff --git a/net/netfilter/nf_conntrack_bpf.c b/net/netfilter/nf_conntrack_bpf.c
-index 756ea818574e..f4ba4ff3a63b 100644
---- a/net/netfilter/nf_conntrack_bpf.c
-+++ b/net/netfilter/nf_conntrack_bpf.c
-@@ -14,7 +14,6 @@
- #include <linux/types.h>
- #include <linux/btf_ids.h>
- #include <linux/net_namespace.h>
--#include <net/netfilter/nf_conntrack.h>
- #include <net/netfilter/nf_conntrack_bpf.h>
- #include <net/netfilter/nf_conntrack_core.h>
- #include <net/netfilter/nf_nat.h>
-@@ -239,10 +238,6 @@ __diag_push();
- __diag_ignore_all("-Wmissing-prototypes",
- 		  "Global functions as their definitions will be in nf_conntrack BTF");
- 
--struct nf_conn___init {
--	struct nf_conn ct;
--};
--
- /* bpf_xdp_ct_alloc - Allocate a new CT entry
-  *
-  * Parameters:
-@@ -476,49 +471,6 @@ int bpf_ct_change_status(struct nf_conn *nfct, u32 status)
- 	return nf_ct_change_status_common(nfct, status);
- }
- 
--/* bpf_ct_set_nat_info - Set source or destination nat address
-- *
-- * Set source or destination nat address of the newly allocated
-- * nf_conn before insertion. This must be invoked for referenced
-- * PTR_TO_BTF_ID to nf_conn___init.
-- *
-- * Parameters:
-- * @nfct	- Pointer to referenced nf_conn object, obtained using
-- *		  bpf_xdp_ct_alloc or bpf_skb_ct_alloc.
-- * @addr	- Nat source/destination address
-- * @port	- Nat source/destination port. Non-positive values are
-- *		  interpreted as select a random port.
-- * @manip	- NF_NAT_MANIP_SRC or NF_NAT_MANIP_DST
-- */
--int bpf_ct_set_nat_info(struct nf_conn___init *nfct,
--			union nf_inet_addr *addr, int port,
--			enum nf_nat_manip_type manip)
--{
--#if ((IS_MODULE(CONFIG_NF_NAT) && IS_MODULE(CONFIG_NF_CONNTRACK)) || \
--     IS_BUILTIN(CONFIG_NF_NAT))
--	struct nf_conn *ct = (struct nf_conn *)nfct;
--	u16 proto = nf_ct_l3num(ct);
--	struct nf_nat_range2 range;
--
--	if (proto != NFPROTO_IPV4 && proto != NFPROTO_IPV6)
--		return -EINVAL;
--
--	memset(&range, 0, sizeof(struct nf_nat_range2));
--	range.flags = NF_NAT_RANGE_MAP_IPS;
--	range.min_addr = *addr;
--	range.max_addr = range.min_addr;
--	if (port > 0) {
--		range.flags |= NF_NAT_RANGE_PROTO_SPECIFIED;
--		range.min_proto.all = cpu_to_be16(port);
--		range.max_proto.all = range.min_proto.all;
--	}
--
--	return nf_nat_setup_info(ct, &range, manip) == NF_DROP ? -ENOMEM : 0;
--#else
--	return -EOPNOTSUPP;
--#endif
--}
--
- __diag_pop()
- 
- BTF_SET8_START(nf_ct_kfunc_set)
-@@ -532,7 +484,6 @@ BTF_ID_FLAGS(func, bpf_ct_set_timeout, KF_TRUSTED_ARGS)
- BTF_ID_FLAGS(func, bpf_ct_change_timeout, KF_TRUSTED_ARGS)
- BTF_ID_FLAGS(func, bpf_ct_set_status, KF_TRUSTED_ARGS)
- BTF_ID_FLAGS(func, bpf_ct_change_status, KF_TRUSTED_ARGS)
--BTF_ID_FLAGS(func, bpf_ct_set_nat_info, KF_TRUSTED_ARGS)
- BTF_SET8_END(nf_ct_kfunc_set)
- 
- static const struct btf_kfunc_id_set nf_conntrack_kfunc_set = {
-diff --git a/net/netfilter/nf_nat_bpf.c b/net/netfilter/nf_nat_bpf.c
-new file mode 100644
-index 000000000000..0fa5a0bbb0ff
---- /dev/null
-+++ b/net/netfilter/nf_nat_bpf.c
-@@ -0,0 +1,79 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/* Unstable NAT Helpers for XDP and TC-BPF hook
-+ *
-+ * These are called from the XDP and SCHED_CLS BPF programs. Note that it is
-+ * allowed to break compatibility for these functions since the interface they
-+ * are exposed through to BPF programs is explicitly unstable.
-+ */
-+
-+#include <linux/bpf.h>
-+#include <linux/btf_ids.h>
-+#include <net/netfilter/nf_conntrack_bpf.h>
-+#include <net/netfilter/nf_conntrack_core.h>
-+#include <net/netfilter/nf_nat.h>
-+
-+__diag_push();
-+__diag_ignore_all("-Wmissing-prototypes",
-+		  "Global functions as their definitions will be in nf_nat BTF");
-+
-+/* bpf_ct_set_nat_info - Set source or destination nat address
-+ *
-+ * Set source or destination nat address of the newly allocated
-+ * nf_conn before insertion. This must be invoked for referenced
-+ * PTR_TO_BTF_ID to nf_conn___init.
-+ *
-+ * Parameters:
-+ * @nfct	- Pointer to referenced nf_conn object, obtained using
-+ *		  bpf_xdp_ct_alloc or bpf_skb_ct_alloc.
-+ * @addr	- Nat source/destination address
-+ * @port	- Nat source/destination port. Non-positive values are
-+ *		  interpreted as select a random port.
-+ * @manip	- NF_NAT_MANIP_SRC or NF_NAT_MANIP_DST
-+ */
-+int bpf_ct_set_nat_info(struct nf_conn___init *nfct,
-+			union nf_inet_addr *addr, int port,
-+			enum nf_nat_manip_type manip)
-+{
-+	struct nf_conn *ct = (struct nf_conn *)nfct;
-+	u16 proto = nf_ct_l3num(ct);
-+	struct nf_nat_range2 range;
-+
-+	if (proto != NFPROTO_IPV4 && proto != NFPROTO_IPV6)
-+		return -EINVAL;
-+
-+	memset(&range, 0, sizeof(struct nf_nat_range2));
-+	range.flags = NF_NAT_RANGE_MAP_IPS;
-+	range.min_addr = *addr;
-+	range.max_addr = range.min_addr;
-+	if (port > 0) {
-+		range.flags |= NF_NAT_RANGE_PROTO_SPECIFIED;
-+		range.min_proto.all = cpu_to_be16(port);
-+		range.max_proto.all = range.min_proto.all;
-+	}
-+
-+	return nf_nat_setup_info(ct, &range, manip) == NF_DROP ? -ENOMEM : 0;
-+}
-+
-+__diag_pop()
-+
-+BTF_SET8_START(nf_nat_kfunc_set)
-+BTF_ID_FLAGS(func, bpf_ct_set_nat_info, KF_TRUSTED_ARGS)
-+BTF_SET8_END(nf_nat_kfunc_set)
-+
-+static const struct btf_kfunc_id_set nf_bpf_nat_kfunc_set = {
-+	.owner = THIS_MODULE,
-+	.set   = &nf_nat_kfunc_set,
-+};
-+
-+int register_nf_nat_bpf(void)
-+{
-+	int ret;
-+
-+	ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_XDP,
-+					&nf_bpf_nat_kfunc_set);
-+	if (ret)
-+		return ret;
-+
-+	return register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS,
-+					 &nf_bpf_nat_kfunc_set);
-+}
-diff --git a/net/netfilter/nf_nat_core.c b/net/netfilter/nf_nat_core.c
-index 7981be526f26..1ed09c9af5e5 100644
---- a/net/netfilter/nf_nat_core.c
-+++ b/net/netfilter/nf_nat_core.c
-@@ -1152,7 +1152,7 @@ static int __init nf_nat_init(void)
- 	WARN_ON(nf_nat_hook != NULL);
- 	RCU_INIT_POINTER(nf_nat_hook, &nat_hook);
- 
--	return 0;
-+	return register_nf_nat_bpf();
- }
- 
- static void __exit nf_nat_cleanup(void)
+@@ -213,7 +213,7 @@ int do_event_pipe(int argc, char **argv)
+ 		err = perf_buffer__poll(pb, 200);
+ 		if (err < 0 && err != -EINTR) {
+ 			p_err("perf buffer polling failed: %s (%d)",
+-			      strerror(err), err);
++			      strerror(errno), err);
+ 			goto err_close_pb;
+ 		}
+ 	}
 -- 
 2.37.3
 
