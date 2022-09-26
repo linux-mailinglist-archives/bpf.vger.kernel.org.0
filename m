@@ -2,152 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55FF55EA954
-	for <lists+bpf@lfdr.de>; Mon, 26 Sep 2022 16:57:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AA4C5EAA05
+	for <lists+bpf@lfdr.de>; Mon, 26 Sep 2022 17:15:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235436AbiIZO5T convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Mon, 26 Sep 2022 10:57:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45780 "EHLO
+        id S235866AbiIZPPc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 26 Sep 2022 11:15:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235064AbiIZO4j (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 26 Sep 2022 10:56:39 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C142857205;
-        Mon, 26 Sep 2022 06:27:41 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 23BE4CE115A;
-        Mon, 26 Sep 2022 13:27:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3A53C433D6;
-        Mon, 26 Sep 2022 13:27:35 +0000 (UTC)
-Date:   Mon, 26 Sep 2022 09:28:43 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        tech-board@lists.linuxfoundation.org,
-        Song Liu <songliubraving@fb.com>,
-        Kernel Team <Kernel-team@fb.com>, jane.chu@oracle.com,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        X86 ML <x86@kernel.org>, brijesh.singh@amd.com,
-        "open list:BPF \(Safe dynamic programs and tools\)" 
-        <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
-        Peter Zijlstra <peterz@infradead.org>, seanjc@google.com,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
+        with ESMTP id S235877AbiIZPOj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 26 Sep 2022 11:14:39 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCFFEBE4
+        for <bpf@vger.kernel.org>; Mon, 26 Sep 2022 06:58:13 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id y8so9123758edc.10
+        for <bpf@vger.kernel.org>; Mon, 26 Sep 2022 06:58:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date;
+        bh=YGGpKyh9ea6QVpsV3ythX9W10IeF68hCtLrbkLYrbcU=;
+        b=qsBaoWuVqNGVHOvt1rQ9Kv6sC6QNN3/uGcA0b5crilcTGyY9yufqt3oUH+8YmWPFDJ
+         dNqZx16PymMscK9v3Q3si0p6fXTVf/vxKbbt7GxDvd6Jr9vA0IOzz78q8EL1duq2Hugp
+         zNnI2EPzaLjO9AMGkyot2VHrLS6LcxNwVcW/Rwf5PByt/FjEaCP7j4om89NMNip79Wrl
+         Mhedgs9wHupP05JiFjH0NMHUbO76VXQHEW+ZUezz5ggyAfgfnyDCDAXYvhhynv0t5zTM
+         Ur8aF/OeNuZH6flFuNmzJCbE1q8Ju/oEPdG7eG8TJNj4cKuFhBpU771PXgVsSbzuw32Y
+         Axwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date;
+        bh=YGGpKyh9ea6QVpsV3ythX9W10IeF68hCtLrbkLYrbcU=;
+        b=XCRlxDIPUlTTz29oegkdzot9X8tMP+dESbayJsqIIwpM6sXEUQP9xDTOxw5ltkttl/
+         S8xrXI2o2bJGyUKyS3TSWN/0HB4y0SyxfspOIWovm3IlEOOwMX7JWSq5CJKht9egghAt
+         HtrZPRRefV64Yu6yOyFym2C5+QwNSJ96Otbaw53wJNGJkGi2VY8Pof9uP8mcOZDolcQ1
+         oweYFgRweVv2FsnmL5mPKq7QUTf1bURDfwLWIp3UUAJoN64NBcnUvz9BDtJ8q8a3Rb3G
+         JTsxGbIKdJCDNxFNwW132y6WfYqjoUcedgnD0iYmcRe+GK9AYh/rIYgoxuzwYJ1y3kva
+         xcig==
+X-Gm-Message-State: ACrzQf3VpHU5pp00SJxAEtLTvJ99YOfP/0Xga4OYdN7FVBWxSiFQ5FhQ
+        cVsGBPtof+8NDNn8VB6+XHc=
+X-Google-Smtp-Source: AMsMyM4FPeGVkogVk05hRb568RxYDm3S+TB7ODT9cWiIEP3VISQW8TvlaY6b8HGwIe7ftCAHHZUsAA==
+X-Received: by 2002:a05:6402:1909:b0:451:ace7:ccbd with SMTP id e9-20020a056402190900b00451ace7ccbdmr22321989edz.276.1664200692230;
+        Mon, 26 Sep 2022 06:58:12 -0700 (PDT)
+Received: from krava ([83.240.61.46])
+        by smtp.gmail.com with ESMTPSA id s21-20020a1709062ed500b0077077b59085sm8254921eji.184.2022.09.26.06.58.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Sep 2022 06:58:11 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Mon, 26 Sep 2022 15:58:09 +0200
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [Tech-board] [syzbot] WARNING in __change_page_attr_set_clr
-Message-ID: <20220926092843.75a4b751@gandalf.local.home>
-In-Reply-To: <CAADnVQ+SpNuUSRFte2Lm13QZiTXcWfn2eZw5Q+MP0SKwuJEXFg@mail.gmail.com>
-References: <00000000000076f3a305e97e9229@google.com>
-        <a68d118d-ee03-399c-df02-82848e2197a2@intel.com>
-        <CAADnVQ+SpNuUSRFte2Lm13QZiTXcWfn2eZw5Q+MP0SKwuJEXFg@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>,
+        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Martynas Pumputis <m@lambda.lt>
+Subject: Re: [PATCHv4 bpf-next 5/6] bpf: Return value in kprobe get_func_ip
+ only for entry address
+Message-ID: <YzGv8XOiRv9INCkI@krava>
+References: <20220922210320.1076658-1-jolsa@kernel.org>
+ <20220922210320.1076658-6-jolsa@kernel.org>
+ <CAEf4BzbuWK3Ud=dwSv9-gDDsqX=ZWpZaFS=YL_SRiYsSBr+W2w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzbuWK3Ud=dwSv9-gDDsqX=ZWpZaFS=YL_SRiYsSBr+W2w@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, 25 Sep 2022 14:55:46 -0700
-Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-
-> On Sun, Sep 25, 2022 at 9:44 AM Dave Hansen <dave.hansen@intel.com> wrote:
+On Fri, Sep 23, 2022 at 02:42:07PM -0700, Andrii Nakryiko wrote:
+> On Thu, Sep 22, 2022 at 2:04 PM Jiri Olsa <jolsa@kernel.org> wrote:
 > >
-> > On 9/25/22 04:18, syzbot wrote:  
-> > > ------------[ cut here ]------------
-> > > CPA refuse W^X violation: 8000000000000163 -> 0000000000000163 range: 0xffffffffa0401000 - 0xffffffffa0401fff PFN 7d8d5
-> > > WARNING: CPU: 0 PID: 3607 at arch/x86/mm/pat/set_memory.c:600 verify_rwx arch/x86/mm/pat/set_memory.c:600 [inline]
-> > > WARNING: CPU: 0 PID: 3607 at arch/x86/mm/pat/set_memory.c:600 __change_page_attr arch/x86/mm/pat/set_memory.c:1569 [inline]
-> > > WARNING: CPU: 0 PID: 3607 at arch/x86/mm/pat/set_memory.c:600 __change_page_attr_set_clr+0x1f40/0x2020 arch/x86/mm/pat/set_memory.c:1691
-> > > Modules linked in:  
+> > Changing return value of kprobe's version of bpf_get_func_ip
+> > to return zero if the attach address is not on the function's
+> > entry point.
 > >
-> > Yay, one of these that isn't due to wonky 32-bit kernels!
+> > For kprobes attached in the middle of the function we can't easily
+> > get to the function address especially now with the CONFIG_X86_KERNEL_IBT
+> > support.
 > >
-> > This one looks to be naughty intentionally:
-> >  
-> > > void *bpf_jit_alloc_exec_page(void)
-> > > {  
-> > ...  
-> > >         /* Keep image as writeable. The alternative is to keep flipping ro/rw
-> > >          * every time new program is attached or detached.
-> > >          */
-> > >         set_memory_x((long)image, 1);
-> > >         return image;
-> > > }  
+> > If user cares about current IP for kprobes attached within the
+> > function body, they can get it with PT_REGS_IP(ctx).
 > >
-> > For STRICT_KERNEL_RWX kernels, I think we would really rather that this
-> > code *did* flip ro/rw every time a new BPF program is attached or detached.  
+> > Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  kernel/trace/bpf_trace.c                             | 5 ++++-
+> >  tools/testing/selftests/bpf/progs/get_func_ip_test.c | 4 ++--
+> >  2 files changed, 6 insertions(+), 3 deletions(-)
+> >
 > 
-> Steven Rostedt noticed that comment around the middle of August
-> and told you and Peter about it.
-> Then Peter added a WARN_ONCE in commit
-> https://lore.kernel.org/all/YwySW3ROc21hN7g9@hirez.programming.kicks-ass.net/
-> to explicitly trigger that known issue.
-> Sure enough the fedora fails to boot on linux-next since then,
-> because systemd is loading bpf programs that use bpf trampoline.
-> The boot issue was was reported 3 days ago:
-> https://lore.kernel.org/bpf/c84cc27c1a5031a003039748c3c099732a718aec.camel@kernel.org/T/#u
-> Now we're trying to urgently address it with:
-> https://lore.kernel.org/bpf/20220923211837.3044723-1-song@kernel.org/
+> Can you please add a note in bpf_get_func_ip() description in
+> uapi/linux/bpf.h that this function returns zero for kprobes in the
+> middle of the function?
+
+yep, will do that
+
+thanks,
+jirka
+
 > 
-> So instead of pinging us with your w^x concern you've decided
-> to fail hard in -next to force the issue and
-> now acting like this is something surprising to you?!
+> With that:
 > 
-> This is Code of Conduct "worthy" behavior demonstrated
-
-Here's the link to the Code of Conduct:
-
-https://www.kernel.org/doc/html/latest/process/code-of-conduct.html
-
-Which states:
-
-  Examples of behavior that contributes to creating a positive environment include:
-
-    - Using welcoming and inclusive language
-    - Being respectful of differing viewpoints and experiences
-    - Gracefully accepting constructive criticism
-    - Focusing on what is best for the community
-    - Showing empathy towards other community members
-
-  Examples of unacceptable behavior by participants include:
-
-    - The use of sexualized language or imagery and unwelcome sexual attention or advances
-    - Trolling, insulting/derogatory comments, and personal or political attacks
-    - Public or private harassment
-    - Publishing others’ private information, such as a physical or electronic address, without explicit permission
-    - Other conduct which could reasonably be considered inappropriate in a professional setting
-
-I do not see how Dave's response is a violation of any of the above.
-
-
-> by a newly elected member of the Technical Advisory Board.
-> Please consider resigning.
-
-Asking someone to resign is a personal attack, and that can be construed as
-a violation of the Code of Conduct.
-
-> A TAB member should be better than this.
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
 > 
-
-Let's please keep this on a technical level, as there appears to be a fix
-we all can agree on, and let's move forward on that.
-
-Thanks,
-
--- Steve
+> 
+> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> > index ebd1b348beb3..688552df95ca 100644
+> > --- a/kernel/trace/bpf_trace.c
+> > +++ b/kernel/trace/bpf_trace.c
+> > @@ -1048,7 +1048,10 @@ BPF_CALL_1(bpf_get_func_ip_kprobe, struct pt_regs *, regs)
+> >  {
+> >         struct kprobe *kp = kprobe_running();
+> >
+> > -       return kp ? (uintptr_t)kp->addr : 0;
+> > +       if (!kp || !(kp->flags & KPROBE_FLAG_ON_FUNC_ENTRY))
+> > +               return 0;
+> > +
+> > +       return get_entry_ip((uintptr_t)kp->addr);
+> >  }
+> 
+> [...]
