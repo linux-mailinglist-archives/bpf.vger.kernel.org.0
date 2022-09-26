@@ -2,25 +2,25 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 121115E988C
-	for <lists+bpf@lfdr.de>; Mon, 26 Sep 2022 06:51:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 074685E988D
+	for <lists+bpf@lfdr.de>; Mon, 26 Sep 2022 06:52:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233208AbiIZEvz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Sep 2022 00:51:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43996 "EHLO
+        id S233108AbiIZEv4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 26 Sep 2022 00:51:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233178AbiIZEvx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 26 Sep 2022 00:51:53 -0400
+        with ESMTP id S233151AbiIZEvy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 26 Sep 2022 00:51:54 -0400
 Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FC2B2AE2E
-        for <bpf@vger.kernel.org>; Sun, 25 Sep 2022 21:51:51 -0700 (PDT)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4MbVdg3mgxzpVRf;
-        Mon, 26 Sep 2022 12:48:55 +0800 (CST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 615E32B25D
+        for <bpf@vger.kernel.org>; Sun, 25 Sep 2022 21:51:52 -0700 (PDT)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4MbVdh3gMwzpVS4;
+        Mon, 26 Sep 2022 12:48:56 +0800 (CST)
 Received: from localhost.localdomain (10.175.112.70) by
  canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Mon, 26 Sep 2022 12:51:48 +0800
+ 15.1.2375.31; Mon, 26 Sep 2022 12:51:49 +0800
 From:   Wang Yufen <wangyufen@huawei.com>
 To:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
         <martin.lau@linux.dev>, <song@kernel.org>, <yhs@fb.com>,
@@ -30,9 +30,9 @@ To:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
         <jakub@cloudflare.com>, <kuba@kernel.org>, <kuifeng@fb.com>,
         <deso@posteo.net>, <zhuyifei@google.com>, <hengqi.chen@gmail.com>
 CC:     <bpf@vger.kernel.org>
-Subject: [bpf-next 09/11] bpf/selftests: convert tcp_rtt test to ASSERT_* macros
-Date:   Mon, 26 Sep 2022 13:12:09 +0800
-Message-ID: <1664169131-32405-10-git-send-email-wangyufen@huawei.com>
+Subject: [bpf-next 10/11] bpf/selftests: convert tcpbpf_user test to ASSERT_* macros
+Date:   Mon, 26 Sep 2022 13:12:10 +0800
+Message-ID: <1664169131-32405-11-git-send-email-wangyufen@huawei.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1664169131-32405-1-git-send-email-wangyufen@huawei.com>
 References: <1664169131-32405-1-git-send-email-wangyufen@huawei.com>
@@ -55,53 +55,113 @@ deprecated CHECK().
 
 Signed-off-by: Wang Yufen <wangyufen@huawei.com>
 ---
- tools/testing/selftests/bpf/prog_tests/tcp_rtt.c | 13 +++++--------
- 1 file changed, 5 insertions(+), 8 deletions(-)
+ .../testing/selftests/bpf/prog_tests/tcpbpf_user.c | 32 ++++++++--------------
+ 1 file changed, 12 insertions(+), 20 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/tcp_rtt.c b/tools/testing/selftests/bpf/prog_tests/tcp_rtt.c
-index 96ff2c2..8fe84da1 100644
---- a/tools/testing/selftests/bpf/prog_tests/tcp_rtt.c
-+++ b/tools/testing/selftests/bpf/prog_tests/tcp_rtt.c
-@@ -16,8 +16,7 @@ static void send_byte(int fd)
+diff --git a/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c b/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c
+index 87923d2..7e8fe1b 100644
+--- a/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c
++++ b/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c
+@@ -8,8 +8,6 @@
+ #define LO_ADDR6 "::1"
+ #define CG_NAME "/tcpbpf-user-test"
+ 
+-static __u32 duration;
+-
+ static void verify_result(struct tcpbpf_globals *result)
  {
- 	char b = 0x55;
+ 	__u32 expected_events = ((1 << BPF_SOCK_OPS_TIMEOUT_INIT) |
+@@ -22,9 +20,7 @@ static void verify_result(struct tcpbpf_globals *result)
+ 				 (1 << BPF_SOCK_OPS_TCP_LISTEN_CB));
  
--	if (CHECK_FAIL(write(fd, &b, sizeof(b)) != 1))
--		perror("Failed to send single byte");
-+	ASSERT_EQ(write(fd, &b, sizeof(b)), 1, "send single byte");
- }
+ 	/* check global map */
+-	CHECK(expected_events != result->event_map, "event_map",
+-	      "unexpected event_map: actual 0x%08x != expected 0x%08x\n",
+-	      result->event_map, expected_events);
++	ASSERT_EQ(expected_events, result->event_map, "event_map");
  
- static int wait_for_ack(int fd, int retries)
-@@ -51,10 +50,8 @@ static int verify_sk(int map_fd, int client_fd, const char *msg, __u32 invoked,
- 	int err = 0;
- 	struct tcp_rtt_storage val;
+ 	ASSERT_EQ(result->bytes_received, 501, "bytes_received");
+ 	ASSERT_EQ(result->bytes_acked, 1002, "bytes_acked");
+@@ -56,18 +52,15 @@ static void run_test(struct tcpbpf_globals *result)
+ 	int i, rv;
  
--	if (CHECK_FAIL(bpf_map_lookup_elem(map_fd, &client_fd, &val) < 0)) {
--		perror("Failed to read socket storage");
-+	if (!ASSERT_GE(bpf_map_lookup_elem(map_fd, &client_fd, &val), 0, "read socket storage"))
- 		return -1;
--	}
+ 	listen_fd = start_server(AF_INET6, SOCK_STREAM, LO_ADDR6, 0, 0);
+-	if (CHECK(listen_fd == -1, "start_server", "listen_fd:%d errno:%d\n",
+-		  listen_fd, errno))
++	if (!ASSERT_NEQ(listen_fd, -1, "start_server"))
+ 		goto done;
  
- 	if (val.invoked != invoked) {
- 		log_err("%s: unexpected bpf_tcp_sock.invoked %d != %d",
-@@ -151,14 +148,14 @@ void test_tcp_rtt(void)
- 	int server_fd, cgroup_fd;
+ 	cli_fd = connect_to_fd(listen_fd, 0);
+-	if (CHECK(cli_fd == -1, "connect_to_fd(listen_fd)",
+-		  "cli_fd:%d errno:%d\n", cli_fd, errno))
++	if (!ASSERT_NEQ(cli_fd, -1, "connect_to_fd(listen_fd)"))
+ 		goto done;
  
- 	cgroup_fd = test__join_cgroup("/tcp_rtt");
--	if (CHECK_FAIL(cgroup_fd < 0))
-+	if (!ASSERT_GE(cgroup_fd, 0, "join_cgroup /tcp_rtt"))
+ 	accept_fd = accept(listen_fd, NULL, NULL);
+-	if (CHECK(accept_fd == -1, "accept(listen_fd)",
+-		  "accept_fd:%d errno:%d\n", accept_fd, errno))
++	if (!ASSERT_NEQ(accept_fd, -1, "accept(listen_fd)"))
+ 		goto done;
+ 
+ 	/* Send 1000B of '+'s from cli_fd -> accept_fd */
+@@ -75,11 +68,11 @@ static void run_test(struct tcpbpf_globals *result)
+ 		buf[i] = '+';
+ 
+ 	rv = send(cli_fd, buf, 1000, 0);
+-	if (CHECK(rv != 1000, "send(cli_fd)", "rv:%d errno:%d\n", rv, errno))
++	if (!ASSERT_EQ(rv, 1000, "send(cli_fd)"))
+ 		goto done;
+ 
+ 	rv = recv(accept_fd, buf, 1000, 0);
+-	if (CHECK(rv != 1000, "recv(accept_fd)", "rv:%d errno:%d\n", rv, errno))
++	if (!ASSERT_EQ(rv, 1000, "recv(accept_fd)"))
+ 		goto done;
+ 
+ 	/* Send 500B of '.'s from accept_fd ->cli_fd */
+@@ -87,11 +80,11 @@ static void run_test(struct tcpbpf_globals *result)
+ 		buf[i] = '.';
+ 
+ 	rv = send(accept_fd, buf, 500, 0);
+-	if (CHECK(rv != 500, "send(accept_fd)", "rv:%d errno:%d\n", rv, errno))
++	if (!ASSERT_EQ(rv, 500, "send(accept_fd)"))
+ 		goto done;
+ 
+ 	rv = recv(cli_fd, buf, 500, 0);
+-	if (CHECK(rv != 500, "recv(cli_fd)", "rv:%d errno:%d\n", rv, errno))
++	if (!ASSERT_EQ(rv, 500, "recv(cli_fd)"))
+ 		goto done;
+ 
+ 	/*
+@@ -100,12 +93,12 @@ static void run_test(struct tcpbpf_globals *result)
+ 	 */
+ 	shutdown(accept_fd, SHUT_WR);
+ 	err = recv(cli_fd, buf, 1, 0);
+-	if (CHECK(err, "recv(cli_fd) for fin", "err:%d errno:%d\n", err, errno))
++	if (!ASSERT_OK(err, "recv(cli_fd) for fin"))
+ 		goto done;
+ 
+ 	shutdown(cli_fd, SHUT_WR);
+ 	err = recv(accept_fd, buf, 1, 0);
+-	CHECK(err, "recv(accept_fd) for fin", "err:%d errno:%d\n", err, errno);
++	ASSERT_OK(err, "recv(accept_fd) for fin");
+ done:
+ 	if (accept_fd != -1)
+ 		close(accept_fd);
+@@ -124,12 +117,11 @@ void test_tcpbpf_user(void)
+ 	int cg_fd = -1;
+ 
+ 	skel = test_tcpbpf_kern__open_and_load();
+-	if (CHECK(!skel, "open and load skel", "failed"))
++	if (!ASSERT_OK_PTR(skel, "open and load skel"))
  		return;
  
- 	server_fd = start_server(AF_INET, SOCK_STREAM, NULL, 0, 0);
--	if (CHECK_FAIL(server_fd < 0))
-+	if (!ASSERT_GE(server_fd, 0, "start_server"))
- 		goto close_cgroup_fd;
+ 	cg_fd = test__join_cgroup(CG_NAME);
+-	if (CHECK(cg_fd < 0, "test__join_cgroup(" CG_NAME ")",
+-		  "cg_fd:%d errno:%d", cg_fd, errno))
++	if (!ASSERT_GE(cg_fd, 0, "test__join_cgroup(" CG_NAME ")"))
+ 		goto err;
  
--	CHECK_FAIL(run_test(cgroup_fd, server_fd));
-+	ASSERT_OK(run_test(cgroup_fd, server_fd), "run_test");
- 
- 	close(server_fd);
- 
+ 	skel->links.bpf_testcb = bpf_program__attach_cgroup(skel->progs.bpf_testcb, cg_fd);
 -- 
 1.8.3.1
 
