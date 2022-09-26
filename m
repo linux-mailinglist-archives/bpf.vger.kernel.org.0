@@ -2,109 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 597D85EAF01
-	for <lists+bpf@lfdr.de>; Mon, 26 Sep 2022 20:03:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78E995EAFE0
+	for <lists+bpf@lfdr.de>; Mon, 26 Sep 2022 20:28:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229522AbiIZSDy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Sep 2022 14:03:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35214 "EHLO
+        id S229494AbiIZS2s (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 26 Sep 2022 14:28:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229868AbiIZSDI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 26 Sep 2022 14:03:08 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3133CDF7A;
-        Mon, 26 Sep 2022 10:44:02 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4F7921CE2;
-        Mon, 26 Sep 2022 10:44:08 -0700 (PDT)
-Received: from FVFF77S0Q05N (unknown [10.57.81.104])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9DA163F73B;
-        Mon, 26 Sep 2022 10:43:57 -0700 (PDT)
-Date:   Mon, 26 Sep 2022 18:43:51 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Xu Kuohai <xukuohai@huaweicloud.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, Florent Revest <revest@chromium.org>,
-        Will Deacon <will@kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        with ESMTP id S230167AbiIZS2a (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 26 Sep 2022 14:28:30 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 446ACD41
+        for <bpf@vger.kernel.org>; Mon, 26 Sep 2022 11:28:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=4ILHim2Y7dvs3bjhrdzIIjeoCWpEtTqH2OroRAw/UkQ=; b=J1rt2UFS/wt8vBa7/8GodB65HO
+        4NZs7cUTXLYhi1JUZv+H9WmnW5sd7+J69l4uZqu2O+8LS7CNaorFKTNTv3hJaIz9aJdyvpPBcl4NT
+        rh6wDH9Uf2mwLXeDpjkTj3vdn4UVzpq7fRYjuZu3lP9qJyripQe7WEL4SJRbSi1Mmc6T8NgkYUsLa
+        cpa6CI0K2Rj46oIz1KTDqrEEiLXLqm6lAqPQqC8DcYvTlyStT8sjzO4ypn7KH/2BXz118auiGCxPW
+        JeIsSLue3E5109hc3b1LtKj8ZiT7jMTW4PkwARzGIJDfHyYHXvmGgLE0oQx3zXAGYs+BsUk50UvOZ
+        cnfL+tXQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1ocsq4-00AjW0-Ad; Mon, 26 Sep 2022 18:28:20 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AC0623002F1;
+        Mon, 26 Sep 2022 20:28:16 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8C08F2B6C1E54; Mon, 26 Sep 2022 20:28:16 +0200 (CEST)
+Date:   Mon, 26 Sep 2022 20:28:16 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
+        KP Singh <kpsingh@chromium.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Marc Zyngier <maz@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: [PATCH bpf-next v2 0/4] Add ftrace direct call for arm64
-Message-ID: <YzHk1zRf1Dp8YTEe@FVFF77S0Q05N>
-References: <20220913162732.163631-1-xukuohai@huaweicloud.com>
- <f1e14934-dc54-9bf7-501a-89affdb7371e@iogearbox.net>
- <YzG51Jyd5zhvygtK@arm.com>
+        Hao Luo <haoluo@google.com>,
+        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+        Martynas Pumputis <m@lambda.lt>
+Subject: Re: [PATCHv5 bpf-next 0/6] bpf: Fixes for CONFIG_X86_KERNEL_IBT
+Message-ID: <YzHvQCIaJa3K/b3D@hirez.programming.kicks-ass.net>
+References: <20220926153340.1621984-1-jolsa@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YzG51Jyd5zhvygtK@arm.com>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20220926153340.1621984-1-jolsa@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Sep 26, 2022 at 03:40:20PM +0100, Catalin Marinas wrote:
-> On Thu, Sep 22, 2022 at 08:01:16PM +0200, Daniel Borkmann wrote:
-> > On 9/13/22 6:27 PM, Xu Kuohai wrote:
-> > > This series adds ftrace direct call for arm64, which is required to attach
-> > > bpf trampoline to fentry.
-> > > 
-> > > Although there is no agreement on how to support ftrace direct call on arm64,
-> > > no patch has been posted except the one I posted in [1], so this series
-> > > continues the work of [1] with the addition of long jump support. Now ftrace
-> > > direct call works regardless of the distance between the callsite and custom
-> > > trampoline.
-> > > 
-> > > [1] https://lore.kernel.org/bpf/20220518131638.3401509-2-xukuohai@huawei.com/
-> > > 
-> > > v2:
-> > > - Fix compile and runtime errors caused by ftrace_rec_arch_init
-> > > 
-> > > v1: https://lore.kernel.org/bpf/20220913063146.74750-1-xukuohai@huaweicloud.com/
-> > > 
-> > > Xu Kuohai (4):
-> > >    ftrace: Allow users to disable ftrace direct call
-> > >    arm64: ftrace: Support long jump for ftrace direct call
-> > >    arm64: ftrace: Add ftrace direct call support
-> > >    ftrace: Fix dead loop caused by direct call in ftrace selftest
-> > 
-> > Given there's just a tiny fraction touching BPF JIT and most are around core arm64,
-> > it probably makes sense that this series goes via Catalin/Will through arm64 tree
-> > instead of bpf-next if it looks good to them. Catalin/Will, thoughts (Ack + bpf-next
-> > could work too, but I'd presume this just results in merge conflicts)?
-> 
-> I think it makes sense for the series to go via the arm64 tree but I'd
-> like Mark to have a look at the ftrace changes first.
+On Mon, Sep 26, 2022 at 05:33:34PM +0200, Jiri Olsa wrote:
+> Jiri Olsa (6):
+>       kprobes: Add new KPROBE_FLAG_ON_FUNC_ENTRY kprobe flag
+>       ftrace: Keep the resolved addr in kallsyms_callback
+>       bpf: Use given function address for trampoline ip arg
+>       bpf: Adjust kprobe_multi entry_ip for CONFIG_X86_KERNEL_IBT
+>       bpf: Return value in kprobe get_func_ip only for entry address
 
-From a quick scan, I still don't think this is quite right, and as it stands I
-believe this will break backtracing (as the instructions before the function
-entry point will not be symbolized correctly, getting in the way of
-RELIABLE_STACKTRACE). I think I was insufficiently clear with my earlier
-feedback there, as I have a mechanism in mind that wa a little simpler.
-
-I'll try to reply with some more detail tomorrow, but I don't think this is the
-right approach, and as mentioned previously (and e.g. at LPC) I'd strongly
-prefer to *not* implement direct calls, so that we can have more consistent
-entry/exit handling.
-
-Thanks,
-Mark.
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
