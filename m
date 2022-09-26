@@ -2,67 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 587365EA1DE
-	for <lists+bpf@lfdr.de>; Mon, 26 Sep 2022 12:59:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E7545EA4A7
+	for <lists+bpf@lfdr.de>; Mon, 26 Sep 2022 13:49:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236886AbiIZK7v (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Sep 2022 06:59:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34502 "EHLO
+        id S238421AbiIZLt0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 26 Sep 2022 07:49:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237036AbiIZK6h (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 26 Sep 2022 06:58:37 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44EA85005C
-        for <bpf@vger.kernel.org>; Mon, 26 Sep 2022 03:30:18 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id cc5so9490936wrb.6
-        for <bpf@vger.kernel.org>; Mon, 26 Sep 2022 03:30:18 -0700 (PDT)
+        with ESMTP id S238513AbiIZLrs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 26 Sep 2022 07:47:48 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D781074DD0
+        for <bpf@vger.kernel.org>; Mon, 26 Sep 2022 03:47:56 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id c11so9513105wrp.11
+        for <bpf@vger.kernel.org>; Mon, 26 Sep 2022 03:47:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=isovalent-com.20210112.gappssmtp.com; s=20210112;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date;
-        bh=/qpA/s9So4CQym0XN6SnVSyJUxmnB/g87o+5oKKKYAE=;
-        b=Djoce0K1Val6lrU3JnXu7eoz7V3AO4okZ9E8UAFwyrH5W0kq/vMN/fUcTUlg8aZhNk
-         k8EjCwZw5P5cGoimHtn0fHYegpf8sCWCwlNMCitvKe1jeAbqpaEK7Ft1nJw9y2fs8dk3
-         UEljwXGJ9Jud53F1mIfsRjhfNWdaDRWfHoWZARnym+WVXHLxFWnogWViwqqvANMM3CJ5
-         //i9OFW8FjfVEtOxJsqjf2KkEXr70rCUrq0zkqJ7JKYbwNL9Jglr2qcb/FOgW9Huma8W
-         78kTBHR2ltVI0Qmn5ZMu5grEt/GrRJ16vxmkahgsg2oCkjtzDKBh8swvVdjrv09QwNzV
-         BfTQ==
+        bh=TkeJ6Fx1YX+DJ9RAwA8Kk9or3Gugtl5q1hK17knU0BA=;
+        b=B9y43+TNPHZ/59uqH8nEbojremxQKTaJQoSInS8tVxC5USe5fb7hsS6Fmf7GLEGT9/
+         NyXf6VhkDRrA2UJtKiQhl8Ohykck1m3tVA1GPk/7225r4haIcXNCsqRsPo4aagC270aZ
+         dbxRA+/qHW9FQo6YhvNoVVYTjDwHIyKc3S5+p3tA5q1T57CpRhEmUiPEbUFnloMvqsVl
+         iB8o0kiYLyA006xg3KXZK1hg73bLmKKZXqbG/w7vFrFAn9Fjwvxz2K3EowWuxfISeh0x
+         LMYNZLRN11tRP0zy2n3Xt69VIHZCigxfqusfn+MUmdzreBZM5ZT81rNRcZY6w9typ4Rx
+         v2OQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date;
-        bh=/qpA/s9So4CQym0XN6SnVSyJUxmnB/g87o+5oKKKYAE=;
-        b=Zrn5xSUGQx3c3KHsmjqk7utijmMXgbhe2sXScdd0BkhsaQNtQRn/ZSYKvk8uWgNOxL
-         7ki53rfDxJBMe6YqxdEjImpZlaenP+mOPNHZpvs8qHNEQ1Hy+aioOQZKN9uETBTTvoJT
-         iViXyYGhQ7k5D43Y8GPM88SgIOyZl/jr8Kk9XnIFRYvpRdV7Sp2bCVW+yzJHje65fRk7
-         yyJ5FKyGCZa5AcWUr/hnxGXTLzpu6701X7QfMlLAyzvK8G7S8BtNUKlKTs4mvkxsZ71w
-         TcADHQP/ZVT79E7OKEIfxMrDmXtN4WBA1v/tdhgABPE4utwJvjL46mCfT31Nw82EYU0F
-         XW+A==
-X-Gm-Message-State: ACrzQf0XtVD+zKBmschB+EuSHQof0MavLd+zq6WUO6t1BUy6qmDCb9Y7
-        s1Dg/XGJxgp+0jYwgMflQVAf6xrh3p+SzQ==
-X-Google-Smtp-Source: AMsMyM4v6QhxR4DmvYmx3ZtP8/RN/ddZiv2aKJCzYQIFSx69j8OmxeuHOVKdW/HxPGmLijbFIzLyTg==
-X-Received: by 2002:a05:6000:1ac9:b0:22a:cc07:9cfe with SMTP id i9-20020a0560001ac900b0022acc079cfemr12703558wry.186.1664188130374;
-        Mon, 26 Sep 2022 03:28:50 -0700 (PDT)
+        bh=TkeJ6Fx1YX+DJ9RAwA8Kk9or3Gugtl5q1hK17knU0BA=;
+        b=02n2NZrnRuSKHiAbTbgQH+f/a5XZcXGQIvbsKXJWAjhk+HFhv3cEg62JXZ4ZsgatWV
+         0SNhxlFN4W2rIAYs8pPsTkvpJG0EHiUOZeJKtgbu4JkP+LOA+bQz/evgU6S5u4DOgFIV
+         XeujG8aDJtIheTVexj9qqFjfUUmoQuSUXmXkPPdJtog5kXii/4/WjT9M+46Qju+ikejD
+         oFS9eLaF5/dhxUsPOpagNm0tHhcIebOvsP6CVsxAOhi9SoXKm8Yw5obkixGZbGfLHlyh
+         k5cPQ0HYiLmlMvlJYZ1bCfRE3OtOdZfiXEMeN0lYQdpbP1arp/YBseCyk2dcFbLG1XeY
+         L+Vw==
+X-Gm-Message-State: ACrzQf2z8zidnxnlHfeAtXPlqbftpUx5nrDx26TRL22ot8XblQhTIBWr
+        90SBrumVVHFgty56VMEpAalJ8A==
+X-Google-Smtp-Source: AMsMyM4rI/LVbjbcwOi+ZBasDlj+u6afWRFcKSFN0LE8DC93MLu9289n4JIYLawB9nsOT0+CPltxSA==
+X-Received: by 2002:a05:6000:1887:b0:22a:3c3d:75ea with SMTP id a7-20020a056000188700b0022a3c3d75eamr12324657wri.669.1664189191814;
+        Mon, 26 Sep 2022 03:46:31 -0700 (PDT)
 Received: from [192.168.178.32] ([51.155.200.13])
-        by smtp.gmail.com with ESMTPSA id z21-20020a05600c0a1500b003b47a99d928sm10887566wmp.18.2022.09.26.03.28.49
+        by smtp.gmail.com with ESMTPSA id x8-20020adfdcc8000000b0022a2dbc80fdsm13971613wrm.10.2022.09.26.03.46.30
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Sep 2022 03:28:49 -0700 (PDT)
-Message-ID: <b093e394-b655-bac2-f2a6-bcf2f3846b21@isovalent.com>
-Date:   Mon, 26 Sep 2022 11:28:48 +0100
+        Mon, 26 Sep 2022 03:46:31 -0700 (PDT)
+Message-ID: <2f670f3f-4d91-9b74-4fbe-8ea1351444cb@isovalent.com>
+Date:   Mon, 26 Sep 2022 11:46:29 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.3.0
-Subject: Re: [PATCH] bpftool: Fix error prompt of strerror
+Subject: Re: [bpf-next v6 1/3] bpftool: Add auto_attach for bpf prog
+ load|loadall
 Content-Language: en-GB
-To:     Tianyi Liu <i.pear@outlook.com>
-Cc:     bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>
-References: <SY4P282MB1084B61CD8671DFA395AA8579D539@SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM>
+To:     Wang Yufen <wangyufen@huawei.com>, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        hawk@kernel.org, nathan@kernel.org, ndesaulniers@google.com,
+        trix@redhat.com
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, llvm@lists.linux.dev
+References: <1664014430-5286-1-git-send-email-wangyufen@huawei.com>
 From:   Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <SY4P282MB1084B61CD8671DFA395AA8579D539@SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM>
+In-Reply-To: <1664014430-5286-1-git-send-email-wangyufen@huawei.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
@@ -72,115 +80,122 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Sun Sep 25 2022 17:18:32 GMT+0100 ~ Tianyi Liu <i.pear@outlook.com>
-> strerror() excepts a posivite errno, however libbpf_get_error()
-
-s/excepts/expects/
-
-> or variable err will never be positive when an error occurs.
-> This causes bpftool to output too many "unknown error", even a simple
-> "file not exist" error can't get an accurate prompt.
-
-“prompt” (here and in commit title) sounds a bit odd to me in that
-context, I'd say error string/message.
-
-> This patch fixed all "strerror(err)" patten in bpftool.
-
-s/patten/patterns/
-
+Sat Sep 24 2022 11:13:48 GMT+0100 (British Summer Time) ~ Wang Yufen
+<wangyufen@huawei.com>
+> Add auto_attach optional to support one-step load-attach-pin_link.
 > 
-> Signed-off-by: Tianyi Liu <i.pear@outlook.com>
+> For example,
+>    $ bpftool prog loadall test.o /sys/fs/bpf/test autoattach
+> 
+>    $ bpftool link
+>    26: tracing  name test1  tag f0da7d0058c00236  gpl
+>    	loaded_at 2022-09-09T21:39:49+0800  uid 0
+>    	xlated 88B  jited 55B  memlock 4096B  map_ids 3
+>    	btf_id 55
+>    28: kprobe  name test3  tag 002ef1bef0723833  gpl
+>    	loaded_at 2022-09-09T21:39:49+0800  uid 0
+>    	xlated 88B  jited 56B  memlock 4096B  map_ids 3
+>    	btf_id 55
+>    57: tracepoint  name oncpu  tag 7aa55dfbdcb78941  gpl
+>    	loaded_at 2022-09-09T21:41:32+0800  uid 0
+>    	xlated 456B  jited 265B  memlock 4096B  map_ids 17,13,14,15
+>    	btf_id 82
+> 
+>    $ bpftool link
+>    1: tracing  prog 26
+>    	prog_type tracing  attach_type trace_fentry
+>    3: perf_event  prog 28
+>    10: perf_event  prog 57
+> 
+> The autoattach optional can support tracepoints, k(ret)probes,
+> u(ret)probes.
+> 
+> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+> Signed-off-by: Wang Yufen <wangyufen@huawei.com>
 > ---
->  tools/bpf/bpftool/btf.c           | 6 +++---
->  tools/bpf/bpftool/gen.c           | 4 ++--
->  tools/bpf/bpftool/map_perf_ring.c | 4 ++--
->  3 files changed, 7 insertions(+), 7 deletions(-)
+> v5 -> v6: skip the programs not supporting auto-attach,
+> 	  and change optional name from "auto_attach" to "autoattach"
+> v4 -> v5: some formatting nits of doc
+> v3 -> v4: rename functions, update doc, bash and do_help()
+> v2 -> v3: switch to extend prog load command instead of extend perf
+> v2: https://patchwork.kernel.org/project/netdevbpf/patch/20220824033837.458197-1-weiyongjun1@huawei.com/
+> v1: https://patchwork.kernel.org/project/netdevbpf/patch/20220816151725.153343-1-weiyongjun1@huawei.com/
+>  tools/bpf/bpftool/prog.c | 76 ++++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 74 insertions(+), 2 deletions(-)
 > 
-> diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
-> index 0744bd115..ac586c0e5 100644
-> --- a/tools/bpf/bpftool/btf.c
-> +++ b/tools/bpf/bpftool/btf.c
-> @@ -643,7 +643,7 @@ static int do_dump(int argc, char **argv)
->  		if (err) {
->  			btf = NULL;
->  			p_err("failed to load BTF from %s: %s",
-> -			      *argv, strerror(err));
-> +			      *argv, strerror(errno));
->  			goto done;
->  		}
->  		NEXT_ARG();
-> @@ -689,7 +689,7 @@ static int do_dump(int argc, char **argv)
->  		btf = btf__load_from_kernel_by_id_split(btf_id, base_btf);
->  		err = libbpf_get_error(btf);
->  		if (err) {
-> -			p_err("get btf by id (%u): %s", btf_id, strerror(err));
-> +			p_err("get btf by id (%u): %s", btf_id, strerror(errno));
->  			goto done;
->  		}
->  	}
-> @@ -825,7 +825,7 @@ build_btf_type_table(struct hashmap *tab, enum bpf_obj_type type,
->  				      u32_as_hash_field(id));
->  		if (err) {
->  			p_err("failed to append entry to hashmap for BTF ID %u, object ID %u: %s",
-> -			      btf_id, id, strerror(errno));
-> +			      btf_id, id, strerror(-err));
->  			goto err_free;
->  		}
->  	}
-> diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-> index 7070dcffa..0783069f6 100644
-> --- a/tools/bpf/bpftool/gen.c
-> +++ b/tools/bpf/bpftool/gen.c
-> @@ -1594,14 +1594,14 @@ static int do_object(int argc, char **argv)
+> diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+> index c81362a001ba..b1cbd06dee19 100644
+> --- a/tools/bpf/bpftool/prog.c
+> +++ b/tools/bpf/bpftool/prog.c
+> @@ -1453,6 +1453,67 @@ get_prog_type_by_name(const char *name, enum bpf_prog_type *prog_type,
+>  	return ret;
+>  }
 >  
->  		err = bpf_linker__add_file(linker, file, NULL);
->  		if (err) {
-> -			p_err("failed to link '%s': %s (%d)", file, strerror(err), err);
-> +			p_err("failed to link '%s': %s (%d)", file, strerror(errno), err);
+> +static int
+> +auto_attach_program(struct bpf_program *prog, const char *path)
+> +{
+> +	struct bpf_link *link;
+> +	int err;
+> +
+> +	link = bpf_program__attach(prog);
+> +	if (!link)
+> +		return -1;
+> +
+> +	err = bpf_link__pin(link, path);
+> +	if (err) {
+> +		bpf_link__destroy(link);
+> +		return err;
+> +	}
+> +	return 0;
+> +}
+> +
+> +static int pathname_concat(const char *path, const char *name, char *buf)
+> +{
+> +	int len;
+> +
+> +	len = snprintf(buf, PATH_MAX, "%s/%s", path, name);
+> +	if (len < 0)
+> +		return -EINVAL;
+> +	if (len >= PATH_MAX)
+> +		return -ENAMETOOLONG;
+> +
+> +	return 0;
+> +}
+> +
+> +static int
+> +auto_attach_programs(struct bpf_object *obj, const char *path)
+> +{
+> +	struct bpf_program *prog;
+> +	char buf[PATH_MAX];
+> +	int err;
+> +
+> +	bpf_object__for_each_program(prog, obj) {
+> +		err = pathname_concat(path, bpf_program__name(prog), buf);
+> +		if (err)
+> +			goto err_unpin_programs;
+> +
+> +		err = auto_attach_program(prog, buf);
+> +		if (err && errno != EOPNOTSUPP)
+> +			goto err_unpin_programs;
 
-Here and below, it would look more consistent to me to pass "errno" as
-the last argument as well.
+If I read the above correctly, we skip entirely programs that couldn't
+be auto-attached. I'm not sure what Andrii had in mind exactly, but it
+would make sense to me to fallback to regular program pinning if the
+program couldn't be attached/linked, so we still keep it loaded in the
+kernel after bpftool exits. Probably with a p_info() message to let
+users know?
 
->  			goto out;
->  		}
->  	}
->  
->  	err = bpf_linker__finalize(linker);
->  	if (err) {
-> -		p_err("failed to finalize ELF file: %s (%d)", strerror(err), err);
-> +		p_err("failed to finalize ELF file: %s (%d)", strerror(errno), err);
->  		goto out;
->  	}
->  
-> diff --git a/tools/bpf/bpftool/map_perf_ring.c b/tools/bpf/bpftool/map_perf_ring.c
-> index 6b0c41015..1650b7127 100644
-> --- a/tools/bpf/bpftool/map_perf_ring.c
-> +++ b/tools/bpf/bpftool/map_perf_ring.c
-> @@ -198,7 +198,7 @@ int do_event_pipe(int argc, char **argv)
->  	err = libbpf_get_error(pb);
->  	if (err) {
->  		p_err("failed to create perf buffer: %s (%d)",
-> -		      strerror(err), err);
-> +		      strerror(errno), err);
->  		goto err_close_map;
->  	}
->  
-> @@ -213,7 +213,7 @@ int do_event_pipe(int argc, char **argv)
->  		err = perf_buffer__poll(pb, 200);
->  		if (err < 0 && err != -EINTR) {
->  			p_err("perf buffer polling failed: %s (%d)",
-> -			      strerror(err), err);
-> +			      strerror(errno), err);
->  			goto err_close_pb;
->  		}
->  	}
-
-Thanks a lot for the fix, but please see Andrii's comment on the other
-thread [0]: now that bpftool relies on libbpf 1.0, the correct update
-for these error checks would be to remove the calls to
-libbpf_get_error() and to check directly for NULL values/errno, so we
-won't need to check "err" and won't get the confusion about what
-variable to use for the error messages.
-
-[0]:
-https://lore.kernel.org/bpf/CAEf4Bzaskw74UeufRgKSbGtk5eybD9J+4keAPYb-u=jb5myLjw@mail.gmail.com/
+> +	}
+> +
+> +	return 0;
+> +
+> +err_unpin_programs:
+> +	while ((prog = bpf_object__prev_program(obj, prog))) {
+> +		if (pathname_concat(path, bpf_program__name(prog), buf))
+> +			continue;
+> +
+> +		bpf_program__unpin(prog, buf);
+> +	}
+> +
+> +	return err;
+> +}
