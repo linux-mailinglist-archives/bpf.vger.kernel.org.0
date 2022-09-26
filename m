@@ -2,146 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CA485EADB1
-	for <lists+bpf@lfdr.de>; Mon, 26 Sep 2022 19:10:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0143F5EADBA
+	for <lists+bpf@lfdr.de>; Mon, 26 Sep 2022 19:12:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230261AbiIZRKr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Sep 2022 13:10:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38610 "EHLO
+        id S230253AbiIZRME (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 26 Sep 2022 13:12:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230235AbiIZRK3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 26 Sep 2022 13:10:29 -0400
-Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00EA02610F
-        for <bpf@vger.kernel.org>; Mon, 26 Sep 2022 09:18:53 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.227])
-        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4MbnrM14glz9xGYl
-        for <bpf@vger.kernel.org>; Tue, 27 Sep 2022 00:14:11 +0800 (CST)
-Received: from roberto-ThinkStation-P620 (unknown [10.204.63.22])
-        by APP1 (Coremail) with SMTP id LxC2BwCnnpLW0DFjcXB5AA--.28389S2;
-        Mon, 26 Sep 2022 17:18:37 +0100 (CET)
-Message-ID: <06a47f11778ca9d074c815e57dc1c75d073b3a85.camel@huaweicloud.com>
-Subject: Re: Closing the BPF map permission loophole
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     Lorenz Bauer <oss@lmb.io>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>
-Cc:     bpf@vger.kernel.org
-Date:   Mon, 26 Sep 2022 18:18:27 +0200
-In-Reply-To: <98a26e5c-d44f-4e65-8186-c4e94918daa1@www.fastmail.com>
-References: <a6c0bb85-6eeb-407e-a515-06f67e70db57@www.fastmail.com>
-         <8e243ad132ecf2885fc65c33c7793f0703937890.camel@huaweicloud.com>
-         <7f7c3337-74f1-424e-a14d-578c4c7ee2fe@www.fastmail.com>
-         <65546f56be138ab326544b7b2e59bb3175ec884a.camel@huaweicloud.com>
-         <b0c00f80-c11e-4f5d-ba63-2e9fb7cad561@www.fastmail.com>
-         <9aba20351924aa0d82d258205030ad4f2c404de2.camel@huaweicloud.com>
-         <98a26e5c-d44f-4e65-8186-c4e94918daa1@www.fastmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        with ESMTP id S230257AbiIZRLi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 26 Sep 2022 13:11:38 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FE5063F03;
+        Mon, 26 Sep 2022 09:20:55 -0700 (PDT)
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1ocqqT-0003m5-43; Mon, 26 Sep 2022 18:20:37 +0200
+Received: from [85.1.206.226] (helo=linux-4.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1ocqqS-0002Aw-J8; Mon, 26 Sep 2022 18:20:36 +0200
+Subject: Re: [bpf-next v6 2/3] bpftool: Update doc (add autoattach to prog
+ load)
+To:     Wang Yufen <wangyufen@huawei.com>, quentin@isovalent.com,
+        ast@kernel.org, andrii@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        hawk@kernel.org, nathan@kernel.org, ndesaulniers@google.com,
+        trix@redhat.com
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, llvm@lists.linux.dev
+References: <1664014430-5286-1-git-send-email-wangyufen@huawei.com>
+ <1664014430-5286-2-git-send-email-wangyufen@huawei.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <2b001fcb-4340-e1ba-4b84-a69c670cf09a@iogearbox.net>
+Date:   Mon, 26 Sep 2022 18:20:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
+In-Reply-To: <1664014430-5286-2-git-send-email-wangyufen@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LxC2BwCnnpLW0DFjcXB5AA--.28389S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Kw18Zr4kAFyrZFW7KFWktFb_yoW8Kr4DpF
-        WrJF42kr4kJ342kFZYgFWxt3W0vws8WryUXFySq345Aw1Y9Fn8WFWIkFWF9FW7Crsa93yY
-        vrZ0v3s8JF90va7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUgKb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-        AFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY
-        6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17
-        CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF
-        0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr
-        1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBI
-        daVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAHBF1jj4N4HAACsW
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.6/26670/Mon Sep 26 10:00:52 2022)
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 2022-09-26 at 16:35 +0100, Lorenz Bauer wrote:
+On 9/24/22 12:13 PM, Wang Yufen wrote:
+> Add autoattach optional to prog load|loadall for supporting
+> one-step load-attach-pin_link.
 > 
-> On Fri, 23 Sep 2022, at 08:39, Roberto Sassu wrote:
-> > > Yes please, I have also have a WIP patch that seems to work, but
-> > > I'm
-> > > curious what you came up with. Tests would also be great, mine
-> > > are
-> > > kinda janky.
-> > 
-> > Ok.
+> Signed-off-by: Wang Yufen <wangyufen@huawei.com>
+> ---
+>   tools/bpf/bpftool/Documentation/bpftool-prog.rst | 13 +++++++++++--
+>   1 file changed, 11 insertions(+), 2 deletions(-)
 > 
-> Hi Roberto,
+> diff --git a/tools/bpf/bpftool/Documentation/bpftool-prog.rst b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
+> index eb1b2a254eb1..2d9f27a0120f 100644
+> --- a/tools/bpf/bpftool/Documentation/bpftool-prog.rst
+> +++ b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
+> @@ -31,7 +31,7 @@ PROG COMMANDS
+>   |	**bpftool** **prog dump xlated** *PROG* [{**file** *FILE* | **opcodes** | **visual** | **linum**}]
+>   |	**bpftool** **prog dump jited**  *PROG* [{**file** *FILE* | **opcodes** | **linum**}]
+>   |	**bpftool** **prog pin** *PROG* *FILE*
+> -|	**bpftool** **prog** { **load** | **loadall** } *OBJ* *PATH* [**type** *TYPE*] [**map** {**idx** *IDX* | **name** *NAME*} *MAP*] [**dev** *NAME*] [**pinmaps** *MAP_DIR*]
+> +|	**bpftool** **prog** { **load** | **loadall** } *OBJ* *PATH* [**type** *TYPE*] [**map** {**idx** *IDX* | **name** *NAME*} *MAP*] [**dev** *NAME*] [**pinmaps** *MAP_DIR*] [**autoattach**]
+>   |	**bpftool** **prog attach** *PROG* *ATTACH_TYPE* [*MAP*]
+>   |	**bpftool** **prog detach** *PROG* *ATTACH_TYPE* [*MAP*]
+>   |	**bpftool** **prog tracelog**
+> @@ -131,7 +131,7 @@ DESCRIPTION
+>   		  contain a dot character ('.'), which is reserved for future
+>   		  extensions of *bpffs*.
+>   
+> -	**bpftool prog { load | loadall }** *OBJ* *PATH* [**type** *TYPE*] [**map** {**idx** *IDX* | **name** *NAME*} *MAP*] [**dev** *NAME*] [**pinmaps** *MAP_DIR*]
+> +	**bpftool prog { load | loadall }** *OBJ* *PATH* [**type** *TYPE*] [**map** {**idx** *IDX* | **name** *NAME*} *MAP*] [**dev** *NAME*] [**pinmaps** *MAP_DIR*] [**autoattach**]
+>   		  Load bpf program(s) from binary *OBJ* and pin as *PATH*.
+>   		  **bpftool prog load** pins only the first program from the
+>   		  *OBJ* as *PATH*. **bpftool prog loadall** pins all programs
+> @@ -150,6 +150,15 @@ DESCRIPTION
+>   		  Optional **pinmaps** argument can be provided to pin all
+>   		  maps under *MAP_DIR* directory.
+>   
+> +		  If **autoattach** is specified program will be attached
+> +		  before pin. In that case, only the link (representing the
+> +		  program attached to its hook) is pinned, not the program as
+> +		  such, so the path won't show in "**bpftool prog show -f**",
+> +		  only show in "**bpftool link show -f**". Also, this only works
+> +		  when bpftool (libbpf) is able to infer all necessary information
+> +		  from the objectfile, in particular, it's not supported for all
+> +		  program types.
+
+Related to Quentin's comment, the documentation should also describe clear semantics
+on what happens in failure case. I presume the use case you have in mind is to use
+this facility for scripts e.g. to run/load some tests objs? Thus would be good to describe
+to users what they need to do/clean up when things only partially succeed etc..
+
+>   		  Note: *PATH* must be located in *bpffs* mount. It must not
+>   		  contain a dot character ('.'), which is reserved for future
+>   		  extensions of *bpffs*.
 > 
-> Did you get around to putting your patches somewhere?
-> 
-> > If you have write access to /sys/fs/bpf/foo, it does not mean that
-> > you
-> > will have write access to the map, when you call OBJ_GET(). I don't
-> > know if you could add more modes after getting a fd.
-> 
-> Well, that's kind of how it works at the moment. Write on the file
-> gives write on the FD, and BPF_F_RDONLY, etc. can be passed to
-> OBJ_GET to change that. You're proposing to change that?
-
-Could it be that file permissions and fd permissions from OBJ_GET() are
-independent?
-
-You could decide to ask for any permission with bpf_obj_get_opts(). By
-default, it is read/write.
-
-> > > Ok, you're saying that a user can prevent the escalation via
-> > > SELinux?
-> > 
-> > Not only with SELinux, but with an eBPF program too (BPF LSM). What
-> > I
-> > wanted to do is to deny write access to anyone except the eBPF
-> > program
-> > that declares the map.
-> 
-> There is no "ownership" of a map as far as I can tell. How would you
-> figure out which program declared the map?
-
-At least in SELinux, the label of the map is the label of the process
-creating it:
-
-static int selinux_bpf_map_alloc(struct bpf_map *map)
-{
-[...]
-	bpfsec->sid = current_sid();
-
-Accessing a map requires a rule allowing a subject to access maps with
-that label.
-
-> Maybe it's best not to focus on SELinux / LSM too much: this stuff
-> should work correctly out of the box, without needing workarounds
-> from the user.
-
-Uhm, if I get what you mean, you would like to add DAC controls to the
-pinned map to decide if you can get a fd and with which modes.
-
-The problem I see is that a map exists regardless of the pinned path
-(just by ID). DAC information should be rather added to the map object
-itself.
-
-> > I wrote an example here:
-> > 
-> > https://lore.kernel.org/bpf/8d7a713e500b5e3fce93e4c5c7b8841eb6dd28e4.camel@huaweicloud.com/
-> 
-> That was very helpful. Yes, map iterators semantics are also broken,
-> just like program fds and link fds. I started with maps since that
-> seemed easier to tackle than everything all at once.
-
-Great!
-
-Roberto
 
