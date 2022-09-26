@@ -2,79 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BB7E5EB2ED
-	for <lists+bpf@lfdr.de>; Mon, 26 Sep 2022 23:16:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F9A55EB2F8
+	for <lists+bpf@lfdr.de>; Mon, 26 Sep 2022 23:18:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231339AbiIZVQP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Sep 2022 17:16:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56784 "EHLO
+        id S231390AbiIZVSn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 26 Sep 2022 17:18:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231365AbiIZVQO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 26 Sep 2022 17:16:14 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E4A073305;
-        Mon, 26 Sep 2022 14:16:13 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id s26so7665239pgv.7;
-        Mon, 26 Sep 2022 14:16:13 -0700 (PDT)
+        with ESMTP id S231388AbiIZVSm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 26 Sep 2022 17:18:42 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA59C9258D
+        for <bpf@vger.kernel.org>; Mon, 26 Sep 2022 14:18:41 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id c11so12085228wrp.11
+        for <bpf@vger.kernel.org>; Mon, 26 Sep 2022 14:18:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date;
-        bh=rRT+OkAAhjLoiWNBuCG4sTsHyASMrgBByhNlqKZBCHs=;
-        b=iR2byfWUuFQLG6wpAcciFeGGBozQu5PX/spgbxYqphz6VyYYc+LI3It+2LLSVFnKPy
-         Qk2etlB8Rgaw7VDhUsvIgXDnNRlWLeEIcrMV5pAy8zEVKWRqsEB455PhZUtzh6BEXD7y
-         4m1D9Hn2MEIHBhx6hqZRBmqJq+aipSt1jfsR0vg0jC5KsRRnbcVbveY7gL0gDoaFMXIo
-         7xV0O+PdE7tOlI43B7e6/NDqyTUCWdCfhEo3Xp6Tc9uN1WalRkxrG+TZUaz+IlVab+Yv
-         pIAJEgW9Kv9NeKhAfXmDn/9swYM8+CWltIYeOzzueDxZwJorgMU44hU2JCcM7Lot+XPF
-         6usQ==
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date;
+        bh=9WNHl/J7CDcN3AJJwxysC1X1MJGVamy/d3xDM62RZCM=;
+        b=iTfWWXsyoyyFkYlrrS7DICAuYfRfeOlVw8+wXgtFjgus7YmmaIvPk5+2Om+rsthySy
+         jPgIA8nlnEoA2CX+LB72k1qEtvUHFqPnajLEWpikagbcDB6RJq63MQjHJpl7/D6W7oMj
+         byu+1gqXOuC84bqGg6msDILqouBcywWNVXqAilxBVv6HXpyFDliqYg4GfO7tMe7Oa+nc
+         FBiCF2CzM6jHb3zzy0GskAy8L2JZpxirBUNuaettizqYM4dTr8OLj2ODl1phIEiuvivI
+         REFOHHGvXjGsvaMBAsHwLNifhFpOnjOWGaFEQcvRf4V2QU/BpUC1zoByiTriys2BMyIv
+         PtSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date;
-        bh=rRT+OkAAhjLoiWNBuCG4sTsHyASMrgBByhNlqKZBCHs=;
-        b=64ZUGxa0mHeh3JUW3h7fJ0iGgeC6HGdGlnutJhjia3i7w6bmPpWu+QbGr7h7pWJeaT
-         +FZCRnrRhF0+JoI893P+/fESvzTYfyOyTyfqpP/E32GNZ57/dxBUgs20TyyHXQxgltAi
-         kw/00Aac5OWTk/CVJcDX/ndIoPBtKYaiLVw0uF3BVrbV386vQaIFl+iqBRhsaNpBotUY
-         CDjysqj7l7e9KO6bQL0+I8N2uCDrC0gON92AyQmDvc0bw5QuEcn2VCr6eIEf7fP8GUsc
-         2phGVyepqWlbhAE6Nn4aiqsIpThqDfgAuGNyGJgia7GM7BNhl19mK9omhniaankcqKPH
-         ez0w==
-X-Gm-Message-State: ACrzQf3vzNdUcq4OE69Nnkzfb5LroxaiGWszhGIKQEkP2VPCV/P/HKyh
-        NVWaxgDKiQARnNwewJT02D4=
-X-Google-Smtp-Source: AMsMyM5IDprnUed2O2q7famJYKUWw3FYbKQLOxERaC9MG2P7W+CeNTxGaB5Bef9n4Ak5IIDkDtJXDw==
-X-Received: by 2002:a63:1215:0:b0:43a:827d:dd with SMTP id h21-20020a631215000000b0043a827d00ddmr22154155pgl.98.1664226972630;
-        Mon, 26 Sep 2022 14:16:12 -0700 (PDT)
-Received: from localhost ([98.97.32.109])
-        by smtp.gmail.com with ESMTPSA id q12-20020a170902dacc00b0016c50179b1esm11798925plx.152.2022.09.26.14.16.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Sep 2022 14:16:11 -0700 (PDT)
-Date:   Mon, 26 Sep 2022 14:16:10 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     "liujian (CE)" <liujian56@huawei.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>
-Cc:     John Fastabend <john.fastabend@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Eric Dumazet <edumazet@google.com>,
-        davem <davem@davemloft.net>,
-        "yoshfuji@linux-ipv6.org" <yoshfuji@linux-ipv6.org>,
-        "dsahern@kernel.org" <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        netdev <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Message-ID: <6332169a699f8_4dfb7208e4@john.notmuch>
-In-Reply-To: <fb254c963d3549a19c066b6bd2acf9c7@huawei.com>
-References: <061d068ccd6f4db899d095cd61f52114@huawei.com>
- <YzCdHXtgKPciEusR@pop-os.localdomain>
- <fb254c963d3549a19c066b6bd2acf9c7@huawei.com>
-Subject: RE: [bug report] one possible out-of-order issue in sockmap
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date;
+        bh=9WNHl/J7CDcN3AJJwxysC1X1MJGVamy/d3xDM62RZCM=;
+        b=KaqixUhwPx8t+GX1WyDbkz1lVedGZWBi6IaI0GkOUrDx9BU66RpfNnilHyMiCmQ9xG
+         7LkI45b+TXs3M+bLucjG03JZ0DsewT8+sgF4/u8fHD5SNkNva+7Y2M82SDEjbC98dfkU
+         UIeAqDlEZ6IPAoeAv8ftWWd3/cwe9R4OuCacecX0Urmj2+vexJoMXPUMUrKkNljSuSe2
+         kECtNHxzr8vIejhCNc+GQT7Q6GkHlLWx1qoTjVmtkEBH28C2iMarlKLKKA9nOtWE+09b
+         hO95BvkEvIneIZ2hKtziQooZ06+zzcyYit2dvREKzvmTGwlCLLQL+tpTH5sYgMgThM8s
+         Ao2A==
+X-Gm-Message-State: ACrzQf2m552J/C8w45/kTV28Yg5JeHuP2aoAmKjJgs5AagmtnTjqILps
+        xP2oBGjNKKSg8iyAJBAjkeqiW7qh2XpAgqKjONKxwA==
+X-Google-Smtp-Source: AMsMyM7ys6VghKlHdebcfATYHg8zk6mLZSBwge5OwAV4zZVj917EVOTd7EZ+yHh3MlixALlmhNs59ALc31r/PsJiqsA=
+X-Received: by 2002:a5d:5611:0:b0:228:e1d2:81d with SMTP id
+ l17-20020a5d5611000000b00228e1d2081dmr15061344wrv.210.1664227120149; Mon, 26
+ Sep 2022 14:18:40 -0700 (PDT)
+MIME-Version: 1.0
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Mon, 26 Sep 2022 14:18:04 -0700
+Message-ID: <CAJD7tkZkY9nfaVDmjzhDG4zzezNn7bXnGrK+kpn0zQFwPhdorw@mail.gmail.com>
+Subject: Question about ktime_get_mono_fast_ns() non-monotonic behavior
+To:     John Stultz <jstultz@google.com>, tglx@linutronix.de,
+        sboyd@kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>, Hao Luo <haoluo@google.com>,
+        Stanislav Fomichev <sdf@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,62 +66,25 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-liujian (CE) wrote:
-> 
-> 
-> > -----Original Message-----
-> > From: Cong Wang [mailto:xiyou.wangcong@gmail.com]
-> > Sent: Monday, September 26, 2022 2:26 AM
-> > To: liujian (CE) <liujian56@huawei.com>
-> > Cc: John Fastabend <john.fastabend@gmail.com>; Jakub Sitnicki
-> > <jakub@cloudflare.com>; Eric Dumazet <edumazet@google.com>; davem
-> > <davem@davemloft.net>; yoshfuji@linux-ipv6.org; dsahern@kernel.org;
-> > Jakub Kicinski <kuba@kernel.org>; Paolo Abeni <pabeni@redhat.com>;
-> > netdev <netdev@vger.kernel.org>; bpf@vger.kernel.org
-> > Subject: Re: [bug report] one possible out-of-order issue in sockmap
-> > 
-> > On Sat, Sep 24, 2022 at 07:59:15AM +0000, liujian (CE) wrote:
-> > > Hello,
-> > >
-> > > I had a scp failure problem here. I analyze the code, and the reasons may
-> > be as follows:
-> > >
-> > > From commit e7a5f1f1cd00 ("bpf/sockmap: Read psock ingress_msg
-> > before
-> > > sk_receive_queue", if we use sockops
-> > > (BPF_SOCK_OPS_ACTIVE_ESTABLISHED_CB
-> > > and BPF_SOCK_OPS_PASSIVE_ESTABLISHED_CB) to enable socket's
-> > sockmap
-> > > function, and don't enable strparse and verdict function, the
-> > > out-of-order problem may occur in the following process.
-> > >
-> > > client SK                                   server SK
-> > > ----------------------------------------------------------------------
-> > > ----
-> > > tcp_rcv_synsent_state_process
-> > >   tcp_finish_connect
-> > >     tcp_init_transfer
-> > >       tcp_set_state(sk, TCP_ESTABLISHED);
-> > >       // insert SK to sockmap
-> > >     wake up waitter
-> > >     tcp_send_ack
-> > >
-> > > tcp_bpf_sendmsg(msgA)
-> > > // msgA will go tcp stack
-> > >                                             tcp_rcv_state_process
-> > >                                               tcp_init_transfer
-> > >                                                 //insert SK to sockmap
-> > >                                               tcp_set_state(sk,
-> > >                                                      TCP_ESTABLISHED)
-> > >                                               wake up waitter
-> > 
-> > Here after the socket is inserted to a sockmap, its ->sk_data_ready() is
-> > already replaced with sk_psock_verdict_data_ready(), so msgA should go to
-> > sockmap, not TCP stack?
-> > 
-> It is TCP stack.  Here I only enable BPF_SK_MSG_VERDICT type.
-> bpftool prog load bpf_redir.o /sys/fs/bpf/bpf_redir map name sock_ops_map pinned /sys/fs/bpf/sock_ops_map
-> bpftool prog attach pinned /sys/fs/bpf/bpf_redir msg_verdict pinned /sys/fs/bpf/sock_ops_map
+Hey everyone,
 
-Is the sender using FAST_OPEN by any chance? We know this bug exists
-in this case. Fix tbd.
+I have a question about ktime_get_mono_fast_ns(), which is used by the
+BPF helper bpf_ktime_get_ns() among other use cases. The comment above
+this function specifies that there are cases where the observed clock
+would not be monotonic.
+
+I had 2 beginner questions:
+
+1) Is there a (rough) bound as to how much the clock can go backwards?
+My understanding is that it is bounded by (slope update * delta), but
+I don't know what's the bound of either of those (if any).
+
+2) The comment specifies that for a single cpu, the only way for this
+behavior to happen is when observing the time in the context of an NMI
+that happens during an update.
+For observations across different cpus, are the scenarios where the
+non-monotonic behavior happens also tied to observing time within NMI
+contexts? or is it something that can happen outside of NMI contexts
+as well?
+
+Thanks in advance! (and please excuse any dumb/obvious questions :) )
