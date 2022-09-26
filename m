@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4EFD5EB569
-	for <lists+bpf@lfdr.de>; Tue, 27 Sep 2022 01:19:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 790805EB56B
+	for <lists+bpf@lfdr.de>; Tue, 27 Sep 2022 01:19:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230404AbiIZXTI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Sep 2022 19:19:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36814 "EHLO
+        id S231142AbiIZXTJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 26 Sep 2022 19:19:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231142AbiIZXSr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 26 Sep 2022 19:18:47 -0400
+        with ESMTP id S231156AbiIZXSt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 26 Sep 2022 19:18:49 -0400
 Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B06DA8CFB
-        for <bpf@vger.kernel.org>; Mon, 26 Sep 2022 16:18:35 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-34d2a92912dso74920837b3.14
-        for <bpf@vger.kernel.org>; Mon, 26 Sep 2022 16:18:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B459AB2853
+        for <bpf@vger.kernel.org>; Mon, 26 Sep 2022 16:18:37 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-3451e7b0234so75341287b3.23
+        for <bpf@vger.kernel.org>; Mon, 26 Sep 2022 16:18:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date;
-        bh=+3nCXVZAYG4mqX6ZDGtT6coN8KDHIN70JcHyKcO3Xz4=;
-        b=AojhQSI5G47LbYs2kHQdKu7TIAGVTlql5llog6A1Ll6zJBY843G9XX45AQCXPojVS9
-         DL08jJDrXz1NW4967Y1SlTiEpxWi62ncWgvjXBa2Yqg1UDIvg2CZqvk0rpsSoGa7Do99
-         3xAgLgsxRNU5z1hSZb+rUIqzSABH2SkBtYc72/W+73uVe8x9V3YAKUUg4AYF0OrGR/E9
-         KGKp0VERStrni/QkAf1MpZX1CEDnr1XXWUt8/y0EFQTg4qCwQ5DQbQKPST6+VF65CmaR
-         ykx7rkbHl7Q7oyCfeFsMjBHYX5u3ZuOs3WYWUWaHDrQKIpjhxsE6DasV64C30MfvSfZ8
-         ZcAA==
+        bh=oVFvJR4OdSBz8jEGY2bk02KLDgmIc1+T4MHAuS02Jcs=;
+        b=I6GbLsFxJgTygTcZfHIxUxiMFf9w+Xtu3hA0y982MmIQMnv+eN66XSQwnU3fA3HfXL
+         Z1VcX5VFM5T83x1xCwxv9QK1rGcXmLi/9dPpWlSbzwK8Uo+1kRRfCQ+MtUzrL7rOFToK
+         KFGk0FSEp3UimYXlhQril1LsxLtWyU9HlmiSy4WexK3UK5s5AL52sqT5l7h93dSDSJ7X
+         9EH6UwdJfj+H0kT5vgMEQj53HvqUgRNZASKKyqWoXylr2ZEBGQ6CoVR6V/WaBcJ9INtx
+         WCkGmrGVYA0sI7fFhgAKyaHDWpl7Iby+rvLN/AstcQ+9GTXxI8p83bR2Mz2IV/y0Y955
+         TfEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date;
-        bh=+3nCXVZAYG4mqX6ZDGtT6coN8KDHIN70JcHyKcO3Xz4=;
-        b=1cBCm2cou+wFKSDhPIt9JaB3O+fTFtaO5VqHsIi/fHr8w8qKUI0uPVGpas9HnTP9pM
-         FPmXVi7B62IH01fL7ZgKVsC32WJhkAOXWxkrzyaOl+KxrKfUKLyic2g70APQH0gnnQMr
-         Ya+KnXPMtyLnwoNRM644qvlMItid49sLzOccmTdiaU1YedRjWqOUS9/AwNszjcyTBdqX
-         XXXpy45Ug1tOWuelgNJjGJqlPGN+a9yt9yD0aESvdrVA2tRMuTxF9xFjRX6AliC6JpKT
-         925tg77/z7XfETfRhpyL1dsQYwYWyYD+Xi69XTDcM4R4aKJtJnA0gtMclCCU9HbpGy1+
-         Gz5w==
-X-Gm-Message-State: ACrzQf1jSeWuAVaTNJNqHrmDJN5HlSWM2PLKz4fG4b41JCIRslGC0URE
-        5bL0mhCsxMOPiyBD6lhwNqGTuHjpPvQ=
-X-Google-Smtp-Source: AMsMyM4b7LNOFEYk7rEYc+A6dJ5mvMwNFOwDG4T9GAwqLqP0bGAF6w7dQoaFM7Bkdh167Xx+2q7mQ8bZWUk=
+        bh=oVFvJR4OdSBz8jEGY2bk02KLDgmIc1+T4MHAuS02Jcs=;
+        b=Xz+Vnce4pIa3xN+zT0WHmgxBmg3xh0bW+iF6PDoxgyeuCPdzRzi6WRITyHf8YZ0NQ1
+         7ujnX6MRC6mBWnUEkog+0ySTxLqhLIMsSiAh18sRW11UvmhBOmcP7+5Xaoq+cOdR3PDp
+         P3OckxeJQTLSJ1WBAvi9GsWNMmMNPb0JXIYspnZ8oAtpNePDG+7AwQUJzPUjo9Ax0pvF
+         4ghP76ABMuTGWh+HXdF48GELR3DY3I/xzCsxT26g/Iuf82Ar/+3J+xlcwXv25ALRLOHP
+         cc6c5m4vSoOSk+PfHJaAwWJ3bCsh210a/3z0Hvz0HXCB0MJjZzIUyIwwhPXLqZ01IhdW
+         F/hg==
+X-Gm-Message-State: ACrzQf3iT1626HHf0ZkHfDUs2O/gvsy5HDck8m4ANxrZGGh6A5Dke/Zd
+        jLRNgsjPX3ezE76y42tmXCTHHfKHHY4=
+X-Google-Smtp-Source: AMsMyM5L3Kbi+AtpufhWkHrInTI1CTOrQSz0EP+DieLqmDEcI3OtasU7xDE9zeLviDjP5CNu0NxoTxsS+vY=
 X-Received: from drosen.mtv.corp.google.com ([2620:15c:211:200:4643:a68e:2b7:f873])
- (user=drosen job=sendgmr) by 2002:a25:928a:0:b0:6b8:2459:879f with SMTP id
- y10-20020a25928a000000b006b82459879fmr15948386ybl.96.1664234314297; Mon, 26
- Sep 2022 16:18:34 -0700 (PDT)
-Date:   Mon, 26 Sep 2022 16:17:58 -0700
+ (user=drosen job=sendgmr) by 2002:a5b:94e:0:b0:6bb:ee52:1a66 with SMTP id
+ x14-20020a5b094e000000b006bbee521a66mr3598602ybq.506.1664234317049; Mon, 26
+ Sep 2022 16:18:37 -0700 (PDT)
+Date:   Mon, 26 Sep 2022 16:17:59 -0700
 In-Reply-To: <20220926231822.994383-1-drosen@google.com>
 Mime-Version: 1.0
 References: <20220926231822.994383-1-drosen@google.com>
 X-Mailer: git-send-email 2.37.3.998.g577e59143f-goog
-Message-ID: <20220926231822.994383-3-drosen@google.com>
-Subject: [PATCH 02/26] bpf: verifier: Allow single packet invalidation
+Message-ID: <20220926231822.994383-4-drosen@google.com>
+Subject: [PATCH 03/26] fuse-bpf: Update uapi for fuse-bpf
 From:   Daniel Rosenberg <drosen@google.com>
 To:     Miklos Szeredi <miklos@szeredi.hu>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -73,7 +73,7 @@ Cc:     Andrii Nakryiko <andrii@kernel.org>,
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,259 +81,171 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Previously there could only be one packet. Helper functions that may
-modify the packet could simply invalidate all packets. Now that we
-support multiple packets, we should allow helpers to invalidate specific
-packets.
-
-This is leaving the default global invalidation in place in case that's
-still useful. All existing packets use the default id of '0', and could
-be transitioned to the specific packet code with no change in behavior.
-
-This also adds ARG_PTR_TO_PACKET, to allow packets to be passed to
-helper functions at all. This is required to inform the verifier which
-packets should be invalidated. Currenly only one packet is allowed per
-helper.
+This adds the bpf prog type for fuse-bpf, and the associated structures.
 
 Signed-off-by: Daniel Rosenberg <drosen@google.com>
 Signed-off-by: Paul Lawrence <paullawrence@google.com>
 ---
- include/linux/bpf.h      |  1 +
- include/linux/bpf_fuse.h | 11 ++++++
- kernel/bpf/core.c        |  5 +++
- kernel/bpf/verifier.c    | 83 +++++++++++++++++++++++++++++++++++++++-
- 4 files changed, 98 insertions(+), 2 deletions(-)
- create mode 100644 include/linux/bpf_fuse.h
+ include/linux/bpf_fuse.h  | 50 +++++++++++++++++++++++++++++++++++++++
+ include/linux/bpf_types.h |  4 ++++
+ include/uapi/linux/bpf.h  | 31 ++++++++++++++++++++++++
+ include/uapi/linux/fuse.h | 13 +++++++++-
+ 4 files changed, 97 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 07086e375487..4e6bfcfd8fea 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -456,6 +456,7 @@ enum bpf_arg_type {
- 	ARG_PTR_TO_TIMER,	/* pointer to bpf_timer */
- 	ARG_PTR_TO_KPTR,	/* pointer to referenced kptr */
- 	ARG_PTR_TO_DYNPTR,      /* pointer to bpf_dynptr. See bpf_type_flag for dynptr type */
-+	ARG_PTR_TO_PACKET,	/* pointer to packet */
- 	__BPF_ARG_TYPE_MAX,
- 
- 	/* Extended arg_types. */
 diff --git a/include/linux/bpf_fuse.h b/include/linux/bpf_fuse.h
-new file mode 100644
-index 000000000000..18e2ec5bf453
---- /dev/null
+index 18e2ec5bf453..9d22205c9ae0 100644
+--- a/include/linux/bpf_fuse.h
 +++ b/include/linux/bpf_fuse.h
-@@ -0,0 +1,11 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
+@@ -6,6 +6,56 @@
+ #ifndef _BPF_FUSE_H
+ #define _BPF_FUSE_H
+ 
 +/*
-+ * Copyright 2022 Google LLC.
++ * Fuse BPF Args
++ *
++ * Used to communicate with bpf programs to allow checking or altering certain values.
++ * The end_offset allows the bpf verifier to check boundaries statically. This reflects
++ * the ends of the buffer. size shows the length that was actually used.
++ *
++ * In order to write to the output args, you must use the pointer returned by
++ * bpf_fuse_get_writeable.
++ *
 + */
 +
-+#ifndef _BPF_FUSE_H
-+#define _BPF_FUSE_H
++#define FUSE_MAX_ARGS_IN 3
++#define FUSE_MAX_ARGS_OUT 2
 +
-+bool bpf_helper_changes_one_pkt_data(void *func);
++struct bpf_fuse_arg {
++	void *value;		// Start of the buffer
++	void *end_offset;	// End of the buffer
++	uint32_t size;		// Used size of the buffer
++	uint32_t max_size;	// Max permitted size, if buffer is resizable. Otherwise 0
++	uint32_t flags;		// Flags indicating buffer status
++};
 +
-+#endif /* _BPF_FUSE_H */
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 3d9eb3ae334c..2ac3597ec932 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -2685,6 +2685,11 @@ bool __weak bpf_helper_changes_pkt_data(void *func)
- 	return false;
- }
- 
-+bool __weak bpf_helper_changes_one_pkt_data(void *func)
-+{
-+	return false;
-+}
++#define FUSE_BPF_FORCE (1 << 0)
++#define FUSE_BPF_OUT_ARGVAR (1 << 6)
 +
- /* Return TRUE if the JIT backend wants verifier to enable sub-register usage
-  * analysis code and wants explicit zero extension inserted by verifier.
-  * Otherwise, return FALSE.
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index d28cb22d5ee5..2884650904fe 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -23,6 +23,7 @@
- #include <linux/error-injection.h>
- #include <linux/bpf_lsm.h>
- #include <linux/btf_ids.h>
-+#include <linux/bpf_fuse.h>
++struct bpf_fuse_args {
++	uint64_t nodeid;
++	uint32_t opcode;
++	uint32_t error_in;
++	uint32_t in_numargs;
++	uint32_t out_numargs;
++	uint32_t flags;
++	struct bpf_fuse_arg in_args[FUSE_MAX_ARGS_IN];
++	struct bpf_fuse_arg out_args[FUSE_MAX_ARGS_OUT];
++};
++
++/* These flags are used internally to track information about the fuse buffers.
++ * Fuse sets some of the flags in init. The helper functions sets others, depending on what
++ * was requested by the bpf program.
++ */
++// Flags set by FUSE
++#define BPF_FUSE_IMMUTABLE	(1 << 0) // Buffer may not be written to
++#define BPF_FUSE_VARIABLE_SIZE	(1 << 1) // Buffer length may be changed (growth requires alloc)
++#define BPF_FUSE_MUST_ALLOCATE	(1 << 2) // Buffer must be re allocated before allowing writes
++
++// Flags set by helper function
++#define BPF_FUSE_MODIFIED	(1 << 3) // The helper function allowed writes to the buffer
++#define BPF_FUSE_ALLOCATED	(1 << 4) // The helper function allocated the buffer
++
+ bool bpf_helper_changes_one_pkt_data(void *func);
  
- #include "disasm.h"
+ #endif /* _BPF_FUSE_H */
+diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.h
+index 2b9112b80171..80c7f7d69794 100644
+--- a/include/linux/bpf_types.h
++++ b/include/linux/bpf_types.h
+@@ -79,6 +79,10 @@ BPF_PROG_TYPE(BPF_PROG_TYPE_LSM, lsm,
+ #endif
+ BPF_PROG_TYPE(BPF_PROG_TYPE_SYSCALL, bpf_syscall,
+ 	      void *, void *)
++#ifdef CONFIG_FUSE_BPF
++BPF_PROG_TYPE(BPF_PROG_TYPE_FUSE, fuse,
++	      struct __bpf_fuse_args, struct bpf_fuse_args)
++#endif
  
-@@ -263,6 +264,7 @@ struct bpf_call_arg_meta {
- 	u32 subprogno;
- 	struct bpf_map_value_off_desc *kptr_off_desc;
- 	u8 uninit_dynptr_regno;
-+	u32 data_id;
+ BPF_MAP_TYPE(BPF_MAP_TYPE_ARRAY, array_map_ops)
+ BPF_MAP_TYPE(BPF_MAP_TYPE_PERCPU_ARRAY, percpu_array_map_ops)
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 59a217ca2dfd..ac81763f002b 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -952,6 +952,7 @@ enum bpf_prog_type {
+ 	BPF_PROG_TYPE_LSM,
+ 	BPF_PROG_TYPE_SK_LOOKUP,
+ 	BPF_PROG_TYPE_SYSCALL, /* a program that can execute syscalls */
++	BPF_PROG_TYPE_FUSE,
  };
  
- struct btf *btf_vmlinux;
-@@ -1396,6 +1398,12 @@ static bool reg_is_pkt_pointer_any(const struct bpf_reg_state *reg)
- 	       reg->type == PTR_TO_PACKET_END;
- }
- 
-+static bool reg_is_specific_pkt_pointer_any(const struct bpf_reg_state *reg, u32 id)
-+{
-+	return (reg_is_pkt_pointer(reg) ||
-+	       reg->type == PTR_TO_PACKET_END) && reg->data_id == id;
-+}
-+
- /* Unmodified PTR_TO_PACKET[_META,_END] register from ctx access. */
- static bool reg_is_init_pkt_pointer(const struct bpf_reg_state *reg,
- 				    enum bpf_reg_type which)
-@@ -5664,6 +5672,7 @@ static const struct bpf_reg_types stack_ptr_types = { .types = { PTR_TO_STACK }
- static const struct bpf_reg_types const_str_ptr_types = { .types = { PTR_TO_MAP_VALUE } };
- static const struct bpf_reg_types timer_types = { .types = { PTR_TO_MAP_VALUE } };
- static const struct bpf_reg_types kptr_types = { .types = { PTR_TO_MAP_VALUE } };
-+static const struct bpf_reg_types packet_ptr_types = { .types = { PTR_TO_PACKET } };
- 
- static const struct bpf_reg_types *compatible_reg_types[__BPF_ARG_TYPE_MAX] = {
- 	[ARG_PTR_TO_MAP_KEY]		= &map_key_value_types,
-@@ -5691,6 +5700,7 @@ static const struct bpf_reg_types *compatible_reg_types[__BPF_ARG_TYPE_MAX] = {
- 	[ARG_PTR_TO_TIMER]		= &timer_types,
- 	[ARG_PTR_TO_KPTR]		= &kptr_types,
- 	[ARG_PTR_TO_DYNPTR]		= &stack_ptr_types,
-+	[ARG_PTR_TO_PACKET]		= &packet_ptr_types,
+ enum bpf_attach_type {
+@@ -6848,4 +6849,34 @@ struct bpf_core_relo {
+ 	enum bpf_core_relo_kind kind;
  };
  
- static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
-@@ -5800,7 +5810,8 @@ int check_func_arg_reg_off(struct bpf_verifier_env *env,
- 		/* Some of the argument types nevertheless require a
- 		 * zero register offset.
- 		 */
--		if (base_type(arg_type) != ARG_PTR_TO_ALLOC_MEM)
-+		if (base_type(arg_type) != ARG_PTR_TO_ALLOC_MEM &&
-+			base_type(arg_type) != ARG_PTR_TO_PACKET)
- 			return 0;
- 		break;
- 	/* All the rest must be rejected, except PTR_TO_BTF_ID which allows
-@@ -6135,6 +6146,9 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
- 		if (process_kptr_func(env, regno, meta))
- 			return -EACCES;
- 		break;
-+	case ARG_PTR_TO_PACKET:
-+		meta->data_id = reg->data_id;
-+		break;
- 	}
- 
- 	return err;
-@@ -6509,13 +6523,36 @@ static bool check_btf_id_ok(const struct bpf_func_proto *fn)
- 	return true;
- }
- 
-+static bool check_packet_ok(const struct bpf_func_proto *fn)
-+{
-+	int count = 0;
++struct __bpf_fuse_arg {
++	__u64 value;
++	__u64 end_offset;
++	__u32 size;
++	__u32 max_size;
++};
 +
-+	if (fn->arg1_type == ARG_PTR_TO_PACKET)
-+		count++;
-+	if (fn->arg2_type == ARG_PTR_TO_PACKET)
-+		count++;
-+	if (fn->arg3_type == ARG_PTR_TO_PACKET)
-+		count++;
-+	if (fn->arg4_type == ARG_PTR_TO_PACKET)
-+		count++;
-+	if (fn->arg5_type == ARG_PTR_TO_PACKET)
-+		count++;
++struct __bpf_fuse_args {
++	__u64 nodeid;
++	__u32 opcode;
++	__u32 error_in;
++	__u32 in_numargs;
++	__u32 out_numargs;
++	__u32 flags;
++	struct __bpf_fuse_arg in_args[3];
++	struct __bpf_fuse_arg out_args[2];
++};
 +
-+	/* We only support one arg being a packet at the moment,
-+	 * which is sufficient for the helper functions we have right now.
-+	 */
-+	return count <= 1;
-+}
++/* Return Codes for Fuse BPF programs */
++#define BPF_FUSE_CONTINUE		0
++#define BPF_FUSE_USER			1
++#define BPF_FUSE_USER_PREFILTER		2
++#define BPF_FUSE_POSTFILTER		3
++#define BPF_FUSE_USER_POSTFILTER	4
 +
++/* Op Code Filter values for BPF Programs */
++#define FUSE_OPCODE_FILTER	0x0ffff
++#define FUSE_PREFILTER		0x10000
++#define FUSE_POSTFILTER		0x20000
 +
- static int check_func_proto(const struct bpf_func_proto *fn, int func_id,
- 			    struct bpf_call_arg_meta *meta)
- {
- 	return check_raw_mode_ok(fn) &&
- 	       check_arg_pair_ok(fn) &&
- 	       check_btf_id_ok(fn) &&
--	       check_refcount_ok(fn, func_id) ? 0 : -EINVAL;
-+	       check_refcount_ok(fn, func_id) &&
-+	       check_packet_ok(fn) ? 0 : -EINVAL;
- }
+ #endif /* _UAPI__LINUX_BPF_H__ */
+diff --git a/include/uapi/linux/fuse.h b/include/uapi/linux/fuse.h
+index d6ccee961891..8c80c146e69b 100644
+--- a/include/uapi/linux/fuse.h
++++ b/include/uapi/linux/fuse.h
+@@ -572,6 +572,17 @@ struct fuse_entry_out {
+ 	struct fuse_attr attr;
+ };
  
- /* Packet data might have moved, any old PTR_TO_PACKET[_META,_END]
-@@ -6539,6 +6576,25 @@ static void __clear_all_pkt_pointers(struct bpf_verifier_env *env,
- 	}
- }
- 
-+static void __clear_specific_pkt_pointers(struct bpf_verifier_env *env,
-+				     struct bpf_func_state *state,
-+				     u32 data_id)
-+{
-+	struct bpf_reg_state *regs = state->regs, *reg;
-+	int i;
++#define FUSE_ACTION_KEEP	0
++#define FUSE_ACTION_REMOVE	1
++#define FUSE_ACTION_REPLACE	2
 +
-+	for (i = 0; i < MAX_BPF_REG; i++)
-+		if (reg_is_specific_pkt_pointer_any(&regs[i], data_id))
-+			mark_reg_unknown(env, regs, i);
++struct fuse_entry_bpf_out {
++	uint64_t	backing_action;
++	uint64_t	backing_fd;
++	uint64_t	bpf_action;
++	uint64_t	bpf_fd;
++};
 +
-+	bpf_for_each_spilled_reg(i, state, reg) {
-+		if (!reg)
-+			continue;
-+		if (reg_is_specific_pkt_pointer_any(reg, data_id))
-+			__mark_reg_unknown(env, reg);
-+	}
-+}
-+
- static void clear_all_pkt_pointers(struct bpf_verifier_env *env)
- {
- 	struct bpf_verifier_state *vstate = env->cur_state;
-@@ -6548,6 +6604,15 @@ static void clear_all_pkt_pointers(struct bpf_verifier_env *env)
- 		__clear_all_pkt_pointers(env, vstate->frame[i]);
- }
+ struct fuse_forget_in {
+ 	uint64_t	nlookup;
+ };
+@@ -870,7 +881,7 @@ struct fuse_in_header {
+ 	uint32_t	uid;
+ 	uint32_t	gid;
+ 	uint32_t	pid;
+-	uint32_t	padding;
++	uint32_t	error_in;
+ };
  
-+static void clear_specific_pkt_pointers(struct bpf_verifier_env *env, u32 data_id)
-+{
-+	struct bpf_verifier_state *vstate = env->cur_state;
-+	int i;
-+
-+	for (i = 0; i <= vstate->curframe; i++)
-+		__clear_specific_pkt_pointers(env, vstate->frame[i], data_id);
-+}
-+
- enum {
- 	AT_PKT_END = -1,
- 	BEYOND_PKT_END = -2,
-@@ -7187,6 +7252,7 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
- 	struct bpf_call_arg_meta meta;
- 	int insn_idx = *insn_idx_p;
- 	bool changes_data;
-+	bool changes_specific_data;
- 	int i, err, func_id;
- 
- 	/* find function prototype */
-@@ -7224,6 +7290,17 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
- 		return -EINVAL;
- 	}
- 
-+	changes_specific_data = bpf_helper_changes_one_pkt_data(fn->func);
-+	if (changes_data && fn->arg1_type != ARG_PTR_TO_PACKET &&
-+			    fn->arg2_type != ARG_PTR_TO_PACKET &&
-+			    fn->arg3_type != ARG_PTR_TO_PACKET &&
-+			    fn->arg4_type != ARG_PTR_TO_PACKET &&
-+			    fn->arg5_type != ARG_PTR_TO_PACKET) {
-+		verbose(env, "kernel subsystem misconfigured func %s#%d: no packet arg\n",
-+			func_id_name(func_id), func_id);
-+		return -EINVAL;
-+	}
-+
- 	memset(&meta, 0, sizeof(meta));
- 	meta.pkt_access = fn->pkt_access;
- 
-@@ -7534,6 +7611,8 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
- 
- 	if (changes_data)
- 		clear_all_pkt_pointers(env);
-+	if (changes_specific_data)
-+		clear_specific_pkt_pointers(env, meta.data_id);
- 	return 0;
- }
- 
+ struct fuse_out_header {
 -- 
 2.37.3.998.g577e59143f-goog
 
