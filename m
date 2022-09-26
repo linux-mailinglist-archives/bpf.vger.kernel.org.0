@@ -2,25 +2,25 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E1D55E9888
+	by mail.lfdr.de (Postfix) with ESMTP id 021E85E9887
 	for <lists+bpf@lfdr.de>; Mon, 26 Sep 2022 06:51:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233141AbiIZEvt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Sep 2022 00:51:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233151AbiIZEvs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        id S233001AbiIZEvs (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Mon, 26 Sep 2022 00:51:48 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E48052654B
-        for <bpf@vger.kernel.org>; Sun, 25 Sep 2022 21:51:46 -0700 (PDT)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4MbVc32sJCz1P6vX;
-        Mon, 26 Sep 2022 12:47:31 +0800 (CST)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233141AbiIZEvr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 26 Sep 2022 00:51:47 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3327B2655A
+        for <bpf@vger.kernel.org>; Sun, 25 Sep 2022 21:51:47 -0700 (PDT)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4MbVc406TnzlWZy;
+        Mon, 26 Sep 2022 12:47:32 +0800 (CST)
 Received: from localhost.localdomain (10.175.112.70) by
  canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Mon, 26 Sep 2022 12:51:43 +0800
+ 15.1.2375.31; Mon, 26 Sep 2022 12:51:44 +0800
 From:   Wang Yufen <wangyufen@huawei.com>
 To:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
         <martin.lau@linux.dev>, <song@kernel.org>, <yhs@fb.com>,
@@ -30,9 +30,9 @@ To:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
         <jakub@cloudflare.com>, <kuba@kernel.org>, <kuifeng@fb.com>,
         <deso@posteo.net>, <zhuyifei@google.com>, <hengqi.chen@gmail.com>
 CC:     <bpf@vger.kernel.org>
-Subject: [bpf-next 04/11] bpf/selftests: convert sockopt_inherit test to ASSERT_* macros
-Date:   Mon, 26 Sep 2022 13:12:04 +0800
-Message-ID: <1664169131-32405-5-git-send-email-wangyufen@huawei.com>
+Subject: [bpf-next 05/11] bpf/selftests: convert sockopt_multi test to ASSERT_* macros
+Date:   Mon, 26 Sep 2022 13:12:05 +0800
+Message-ID: <1664169131-32405-6-git-send-email-wangyufen@huawei.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1664169131-32405-1-git-send-email-wangyufen@huawei.com>
 References: <1664169131-32405-1-git-send-email-wangyufen@huawei.com>
@@ -55,94 +55,42 @@ deprecated CHECK().
 
 Signed-off-by: Wang Yufen <wangyufen@huawei.com>
 ---
- .../selftests/bpf/prog_tests/sockopt_inherit.c     | 30 ++++++++++------------
- 1 file changed, 13 insertions(+), 17 deletions(-)
+ tools/testing/selftests/bpf/prog_tests/sockopt_multi.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockopt_inherit.c b/tools/testing/selftests/bpf/prog_tests/sockopt_inherit.c
-index c5cb6e8..2e853da8 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockopt_inherit.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockopt_inherit.c
-@@ -76,20 +76,16 @@ static void *server_thread(void *arg)
- 	pthread_cond_signal(&server_started);
- 	pthread_mutex_unlock(&server_started_mtx);
+diff --git a/tools/testing/selftests/bpf/prog_tests/sockopt_multi.c b/tools/testing/selftests/bpf/prog_tests/sockopt_multi.c
+index 28d592dc..7f56593 100644
+--- a/tools/testing/selftests/bpf/prog_tests/sockopt_multi.c
++++ b/tools/testing/selftests/bpf/prog_tests/sockopt_multi.c
+@@ -303,11 +303,11 @@ void test_sockopt_multi(void)
+ 	int err = -1;
  
--	if (CHECK_FAIL(err < 0)) {
--		perror("Failed to listed on socket");
-+	if (!ASSERT_GE(err, 0, "listed on socket"))
- 		return NULL;
--	}
+ 	cg_parent = test__join_cgroup("/parent");
+-	if (CHECK_FAIL(cg_parent < 0))
++	if (!ASSERT_GE(cg_parent, 0, "join_cgroup /parent"))
+ 		goto out;
  
- 	err += verify_sockopt(fd, CUSTOM_INHERIT1, "listen", 1);
- 	err += verify_sockopt(fd, CUSTOM_INHERIT2, "listen", 1);
- 	err += verify_sockopt(fd, CUSTOM_LISTENER, "listen", 1);
+ 	cg_child = test__join_cgroup("/parent/child");
+-	if (CHECK_FAIL(cg_child < 0))
++	if (!ASSERT_GE(cg_child, 0, "join_cgroup /parent/child"))
+ 		goto out;
  
- 	client_fd = accept(fd, (struct sockaddr *)&addr, &len);
--	if (CHECK_FAIL(client_fd < 0)) {
--		perror("Failed to accept client");
-+	if (!ASSERT_GE(client_fd, 0, "accept client"))
- 		return NULL;
--	}
+ 	obj = bpf_object__open_file("sockopt_multi.bpf.o", NULL);
+@@ -319,11 +319,11 @@ void test_sockopt_multi(void)
+ 		goto out;
  
- 	err += verify_sockopt(client_fd, CUSTOM_INHERIT1, "accept", 1);
- 	err += verify_sockopt(client_fd, CUSTOM_INHERIT2, "accept", 1);
-@@ -183,20 +179,20 @@ static void run_test(int cgroup_fd)
- 		goto close_bpf_object;
+ 	sock_fd = socket(AF_INET, SOCK_STREAM, 0);
+-	if (CHECK_FAIL(sock_fd < 0))
++	if (!ASSERT_GE(sock_fd, 0, "socket"))
+ 		goto out;
  
- 	err = prog_attach(obj, cgroup_fd, "cgroup/getsockopt", "_getsockopt");
--	if (CHECK_FAIL(err))
-+	if (!ASSERT_OK(err, "prog_attach _getsockopt"))
- 		goto close_bpf_object;
+-	CHECK_FAIL(run_getsockopt_test(obj, cg_parent, cg_child, sock_fd));
+-	CHECK_FAIL(run_setsockopt_test(obj, cg_parent, cg_child, sock_fd));
++	ASSERT_OK(run_getsockopt_test(obj, cg_parent, cg_child, sock_fd), "getsockopt_test");
++	ASSERT_OK(run_setsockopt_test(obj, cg_parent, cg_child, sock_fd), "setsockopt_test");
  
- 	err = prog_attach(obj, cgroup_fd, "cgroup/setsockopt", "_setsockopt");
--	if (CHECK_FAIL(err))
-+	if (!ASSERT_OK(err, "prog_attach _setsockopt"))
- 		goto close_bpf_object;
- 
- 	server_fd = start_server();
--	if (CHECK_FAIL(server_fd < 0))
-+	if (!ASSERT_GE(server_fd, 0, "start_server"))
- 		goto close_bpf_object;
- 
- 	pthread_mutex_lock(&server_started_mtx);
--	if (CHECK_FAIL(pthread_create(&tid, NULL, server_thread,
--				      (void *)&server_fd))) {
-+	if (!ASSERT_OK(pthread_create(&tid, NULL, server_thread,
-+				      (void *)&server_fd), "pthread_create")) {
- 		pthread_mutex_unlock(&server_started_mtx);
- 		goto close_server_fd;
- 	}
-@@ -204,17 +200,17 @@ static void run_test(int cgroup_fd)
- 	pthread_mutex_unlock(&server_started_mtx);
- 
- 	client_fd = connect_to_server(server_fd);
--	if (CHECK_FAIL(client_fd < 0))
-+	if (!ASSERT_GE(client_fd, 0, "connect_to_server"))
- 		goto close_server_fd;
- 
--	CHECK_FAIL(verify_sockopt(client_fd, CUSTOM_INHERIT1, "connect", 0));
--	CHECK_FAIL(verify_sockopt(client_fd, CUSTOM_INHERIT2, "connect", 0));
--	CHECK_FAIL(verify_sockopt(client_fd, CUSTOM_LISTENER, "connect", 0));
-+	ASSERT_OK(verify_sockopt(client_fd, CUSTOM_INHERIT1, "connect", 0), "verify_sockopt1");
-+	ASSERT_OK(verify_sockopt(client_fd, CUSTOM_INHERIT2, "connect", 0), "verify_sockopt2");
-+	ASSERT_OK(verify_sockopt(client_fd, CUSTOM_LISTENER, "connect", 0), "verify_sockopt ener");
- 
- 	pthread_join(tid, &server_err);
- 
- 	err = (int)(long)server_err;
--	CHECK_FAIL(err);
-+	ASSERT_OK(err, "pthread_join retval");
- 
- 	close(client_fd);
- 
-@@ -229,7 +225,7 @@ void test_sockopt_inherit(void)
- 	int cgroup_fd;
- 
- 	cgroup_fd = test__join_cgroup("/sockopt_inherit");
--	if (CHECK_FAIL(cgroup_fd < 0))
-+	if (!ASSERT_GE(cgroup_fd, 0, "join_cgroup"))
- 		return;
- 
- 	run_test(cgroup_fd);
+ out:
+ 	close(sock_fd);
 -- 
 1.8.3.1
 
