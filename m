@@ -2,113 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0143F5EADBA
-	for <lists+bpf@lfdr.de>; Mon, 26 Sep 2022 19:12:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 597D85EAF01
+	for <lists+bpf@lfdr.de>; Mon, 26 Sep 2022 20:03:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230253AbiIZRME (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Sep 2022 13:12:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40436 "EHLO
+        id S229522AbiIZSDy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 26 Sep 2022 14:03:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230257AbiIZRLi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 26 Sep 2022 13:11:38 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FE5063F03;
-        Mon, 26 Sep 2022 09:20:55 -0700 (PDT)
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ocqqT-0003m5-43; Mon, 26 Sep 2022 18:20:37 +0200
-Received: from [85.1.206.226] (helo=linux-4.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ocqqS-0002Aw-J8; Mon, 26 Sep 2022 18:20:36 +0200
-Subject: Re: [bpf-next v6 2/3] bpftool: Update doc (add autoattach to prog
- load)
-To:     Wang Yufen <wangyufen@huawei.com>, quentin@isovalent.com,
-        ast@kernel.org, andrii@kernel.org, martin.lau@linux.dev,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        hawk@kernel.org, nathan@kernel.org, ndesaulniers@google.com,
-        trix@redhat.com
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, llvm@lists.linux.dev
-References: <1664014430-5286-1-git-send-email-wangyufen@huawei.com>
- <1664014430-5286-2-git-send-email-wangyufen@huawei.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <2b001fcb-4340-e1ba-4b84-a69c670cf09a@iogearbox.net>
-Date:   Mon, 26 Sep 2022 18:20:35 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S229868AbiIZSDI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 26 Sep 2022 14:03:08 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3133CDF7A;
+        Mon, 26 Sep 2022 10:44:02 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4F7921CE2;
+        Mon, 26 Sep 2022 10:44:08 -0700 (PDT)
+Received: from FVFF77S0Q05N (unknown [10.57.81.104])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9DA163F73B;
+        Mon, 26 Sep 2022 10:43:57 -0700 (PDT)
+Date:   Mon, 26 Sep 2022 18:43:51 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Xu Kuohai <xukuohai@huaweicloud.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, Florent Revest <revest@chromium.org>,
+        Will Deacon <will@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Marc Zyngier <maz@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: Re: [PATCH bpf-next v2 0/4] Add ftrace direct call for arm64
+Message-ID: <YzHk1zRf1Dp8YTEe@FVFF77S0Q05N>
+References: <20220913162732.163631-1-xukuohai@huaweicloud.com>
+ <f1e14934-dc54-9bf7-501a-89affdb7371e@iogearbox.net>
+ <YzG51Jyd5zhvygtK@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <1664014430-5286-2-git-send-email-wangyufen@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.6/26670/Mon Sep 26 10:00:52 2022)
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YzG51Jyd5zhvygtK@arm.com>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 9/24/22 12:13 PM, Wang Yufen wrote:
-> Add autoattach optional to prog load|loadall for supporting
-> one-step load-attach-pin_link.
+On Mon, Sep 26, 2022 at 03:40:20PM +0100, Catalin Marinas wrote:
+> On Thu, Sep 22, 2022 at 08:01:16PM +0200, Daniel Borkmann wrote:
+> > On 9/13/22 6:27 PM, Xu Kuohai wrote:
+> > > This series adds ftrace direct call for arm64, which is required to attach
+> > > bpf trampoline to fentry.
+> > > 
+> > > Although there is no agreement on how to support ftrace direct call on arm64,
+> > > no patch has been posted except the one I posted in [1], so this series
+> > > continues the work of [1] with the addition of long jump support. Now ftrace
+> > > direct call works regardless of the distance between the callsite and custom
+> > > trampoline.
+> > > 
+> > > [1] https://lore.kernel.org/bpf/20220518131638.3401509-2-xukuohai@huawei.com/
+> > > 
+> > > v2:
+> > > - Fix compile and runtime errors caused by ftrace_rec_arch_init
+> > > 
+> > > v1: https://lore.kernel.org/bpf/20220913063146.74750-1-xukuohai@huaweicloud.com/
+> > > 
+> > > Xu Kuohai (4):
+> > >    ftrace: Allow users to disable ftrace direct call
+> > >    arm64: ftrace: Support long jump for ftrace direct call
+> > >    arm64: ftrace: Add ftrace direct call support
+> > >    ftrace: Fix dead loop caused by direct call in ftrace selftest
+> > 
+> > Given there's just a tiny fraction touching BPF JIT and most are around core arm64,
+> > it probably makes sense that this series goes via Catalin/Will through arm64 tree
+> > instead of bpf-next if it looks good to them. Catalin/Will, thoughts (Ack + bpf-next
+> > could work too, but I'd presume this just results in merge conflicts)?
 > 
-> Signed-off-by: Wang Yufen <wangyufen@huawei.com>
-> ---
->   tools/bpf/bpftool/Documentation/bpftool-prog.rst | 13 +++++++++++--
->   1 file changed, 11 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/bpf/bpftool/Documentation/bpftool-prog.rst b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-> index eb1b2a254eb1..2d9f27a0120f 100644
-> --- a/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-> +++ b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-> @@ -31,7 +31,7 @@ PROG COMMANDS
->   |	**bpftool** **prog dump xlated** *PROG* [{**file** *FILE* | **opcodes** | **visual** | **linum**}]
->   |	**bpftool** **prog dump jited**  *PROG* [{**file** *FILE* | **opcodes** | **linum**}]
->   |	**bpftool** **prog pin** *PROG* *FILE*
-> -|	**bpftool** **prog** { **load** | **loadall** } *OBJ* *PATH* [**type** *TYPE*] [**map** {**idx** *IDX* | **name** *NAME*} *MAP*] [**dev** *NAME*] [**pinmaps** *MAP_DIR*]
-> +|	**bpftool** **prog** { **load** | **loadall** } *OBJ* *PATH* [**type** *TYPE*] [**map** {**idx** *IDX* | **name** *NAME*} *MAP*] [**dev** *NAME*] [**pinmaps** *MAP_DIR*] [**autoattach**]
->   |	**bpftool** **prog attach** *PROG* *ATTACH_TYPE* [*MAP*]
->   |	**bpftool** **prog detach** *PROG* *ATTACH_TYPE* [*MAP*]
->   |	**bpftool** **prog tracelog**
-> @@ -131,7 +131,7 @@ DESCRIPTION
->   		  contain a dot character ('.'), which is reserved for future
->   		  extensions of *bpffs*.
->   
-> -	**bpftool prog { load | loadall }** *OBJ* *PATH* [**type** *TYPE*] [**map** {**idx** *IDX* | **name** *NAME*} *MAP*] [**dev** *NAME*] [**pinmaps** *MAP_DIR*]
-> +	**bpftool prog { load | loadall }** *OBJ* *PATH* [**type** *TYPE*] [**map** {**idx** *IDX* | **name** *NAME*} *MAP*] [**dev** *NAME*] [**pinmaps** *MAP_DIR*] [**autoattach**]
->   		  Load bpf program(s) from binary *OBJ* and pin as *PATH*.
->   		  **bpftool prog load** pins only the first program from the
->   		  *OBJ* as *PATH*. **bpftool prog loadall** pins all programs
-> @@ -150,6 +150,15 @@ DESCRIPTION
->   		  Optional **pinmaps** argument can be provided to pin all
->   		  maps under *MAP_DIR* directory.
->   
-> +		  If **autoattach** is specified program will be attached
-> +		  before pin. In that case, only the link (representing the
-> +		  program attached to its hook) is pinned, not the program as
-> +		  such, so the path won't show in "**bpftool prog show -f**",
-> +		  only show in "**bpftool link show -f**". Also, this only works
-> +		  when bpftool (libbpf) is able to infer all necessary information
-> +		  from the objectfile, in particular, it's not supported for all
-> +		  program types.
+> I think it makes sense for the series to go via the arm64 tree but I'd
+> like Mark to have a look at the ftrace changes first.
 
-Related to Quentin's comment, the documentation should also describe clear semantics
-on what happens in failure case. I presume the use case you have in mind is to use
-this facility for scripts e.g. to run/load some tests objs? Thus would be good to describe
-to users what they need to do/clean up when things only partially succeed etc..
+From a quick scan, I still don't think this is quite right, and as it stands I
+believe this will break backtracing (as the instructions before the function
+entry point will not be symbolized correctly, getting in the way of
+RELIABLE_STACKTRACE). I think I was insufficiently clear with my earlier
+feedback there, as I have a mechanism in mind that wa a little simpler.
 
->   		  Note: *PATH* must be located in *bpffs* mount. It must not
->   		  contain a dot character ('.'), which is reserved for future
->   		  extensions of *bpffs*.
-> 
+I'll try to reply with some more detail tomorrow, but I don't think this is the
+right approach, and as mentioned previously (and e.g. at LPC) I'd strongly
+prefer to *not* implement direct calls, so that we can have more consistent
+entry/exit handling.
 
+Thanks,
+Mark.
