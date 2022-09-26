@@ -2,121 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F3CD5EAD11
-	for <lists+bpf@lfdr.de>; Mon, 26 Sep 2022 18:49:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF1CA5EAD2D
+	for <lists+bpf@lfdr.de>; Mon, 26 Sep 2022 18:51:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229765AbiIZQs6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Sep 2022 12:48:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33392 "EHLO
+        id S229906AbiIZQv4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 26 Sep 2022 12:51:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbiIZQsJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 26 Sep 2022 12:48:09 -0400
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B4A714D27
-        for <bpf@vger.kernel.org>; Mon, 26 Sep 2022 08:41:42 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id 001565C006D;
-        Mon, 26 Sep 2022 11:41:41 -0400 (EDT)
-Received: from imap49 ([10.202.2.99])
-  by compute5.internal (MEProxy); Mon, 26 Sep 2022 11:41:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lmb.io; h=cc:cc
-        :content-type:date:date:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to; s=fm1; t=1664206901; x=1664293301; bh=Y9qqIHbjlH
-        jfDnCVIwWfTlZ+Qvk1ZAEnjT1eL4WIGOM=; b=DimqWWmBhHnnzFYgdVEUEaRPfA
-        AaOgYSTGjhTa3UVN6SMhHHfbcGhetERaaGYi3M8OWnOM4qQgyV7UEZrNxACsxeiu
-        6SciC59qADytNfkm/EvLoE9fDgix/cJj13dxhLtUo94asVTk0qgrFC9jBIIPJOsS
-        vGJ61wLkzlFvx6kjveyviBgcFlXl0DyeDKQTIYvZ5BSYKYmSpnNFw0+lavz/Ufgs
-        5LBuSgpjQbLXU9DS0v82/W2kzg+L4DrABg5oFFgtY8SwH+N+tIeijaj4hStLxCJg
-        pzly+IlJKwMMHTn9UwlAp6mwlt7MHY72mmY3mH5NnpS3bDlT/hUKq+qOWWhw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; t=1664206901; x=1664293301; bh=Y9qqIHbjlHjfDnCVIwWfTlZ+Qvk1
-        ZAEnjT1eL4WIGOM=; b=oMxdPr1tUGhBul6UM29eMZ+IEmaWcNg6WSfInX1eUrOk
-        +rlcc0+LeoTtKAMTgRYWu9uRGdJsY5EW1VFjjDWCEk/VgheTu5XD9NXekyL5R+Ht
-        scYuqgP1dJswRbxRawxoNSZLlig7o85JRGgXd3u/546Gd3LvVZW8gOPV68kEPk2k
-        7D41JcCXAIAMMikxmnwjJFITrj6+Rfut7fq95zUDcw3MPbTqMyn7UbXUJ1fxWJmo
-        mqPxQnrXIHSGIecUChLX/HBtm14fVzrdt2O1Jt874ZfO69YeqR+g9VZLvodmqcrl
-        2WI74M+9dBIyukTI+5gGMVr4xTc4e6mDJNm3ovj9nA==
-X-ME-Sender: <xms:NcgxYycHmZzJMJBASRSikG8ZbvB2pEE0SymY2V9a_QehfkscHlyTkQ>
-    <xme:NcgxY8Mxf9to8JF8rDzeE42UHL6BNODRDANSd46Dq2OmI1VVY0n2bQZ7Yaw-fee0J
-    bklkf6liKyEwT3GDQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrfeegvddgleduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedfnfho
-    rhgvnhiiuceurghuvghrfdcuoehoshhssehlmhgsrdhioheqnecuggftrfgrthhtvghrnh
-    epffetgeffgfffffeuudeihfffueffgfelheegtdelleeggfffgfevfeekfedtffelnecu
-    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepohhssheslh
-    hmsgdrihho
-X-ME-Proxy: <xmx:NcgxYzi6Aa0PE7NWf6ivZmK9_vsGRk4-QBpuGIV_vUIjohbkN9sdnw>
-    <xmx:NcgxY_8FjrePNLqQm3DUdZ05iQ7SOEZC2MUSpbZ_fX7xtmABPHaozw>
-    <xmx:NcgxY-trM6bZ9Zq4oJkD3rX_EUjNHjEOK-7rQSpxvy9rLbDN6i4nAw>
-    <xmx:NcgxYwXHbZgcsbzqUpT0o-aL7ZurQsI1RuQ87q-cWK2m-_S9dcZdSg>
-Feedback-ID: icd3146c6:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id BCE8715A008B; Mon, 26 Sep 2022 11:41:41 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.7.0-alpha0-935-ge4ccd4c47b-fm-20220914.001-ge4ccd4c4
-Mime-Version: 1.0
-Message-Id: <e63e027d-c0a0-445c-94b7-c83d1d5dced5@www.fastmail.com>
-In-Reply-To: <CA+khW7ittjLYfdHLpcVDGtpnXv1q-WPwRz-CqUTvFOSeywhBQA@mail.gmail.com>
-References: <a6c0bb85-6eeb-407e-a515-06f67e70db57@www.fastmail.com>
- <4e66ca38-e99d-4fe5-b224-e36fb946878f@www.fastmail.com>
- <CA+khW7ittjLYfdHLpcVDGtpnXv1q-WPwRz-CqUTvFOSeywhBQA@mail.gmail.com>
-Date:   Mon, 26 Sep 2022 16:41:21 +0100
-From:   "Lorenz Bauer" <oss@lmb.io>
-To:     "Hao Luo" <haoluo@google.com>
-Cc:     "Alexei Starovoitov" <ast@kernel.org>,
-        "Daniel Borkmann" <daniel@iogearbox.net>,
-        "Andrii Nakryiko" <andrii@kernel.org>,
-        "Martin KaFai Lau" <martin.lau@linux.dev>,
-        "KP Singh" <kpsingh@kernel.org>,
-        "Stanislav Fomichev" <sdf@google.com>, bpf@vger.kernel.org
-Subject: Re: Closing the BPF map permission loophole
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229788AbiIZQvf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 26 Sep 2022 12:51:35 -0400
+Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 540DE4D15E;
+        Mon, 26 Sep 2022 08:45:07 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.229])
+        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4Mbn405qctz9xs6S;
+        Mon, 26 Sep 2022 23:39:12 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.204.63.22])
+        by APP2 (Coremail) with SMTP id GxC2BwB3pF7lyDFjZ4d6AA--.42219S2;
+        Mon, 26 Sep 2022 16:44:47 +0100 (CET)
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
+        shuah@kernel.org, oss@lmb.io
+Cc:     bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, fengc@google.com, davem@davemloft.net
+Subject: [RFC][PATCH 0/3] bpf: Enforce map fd modes in verifier
+Date:   Mon, 26 Sep 2022 17:44:27 +0200
+Message-Id: <20220926154430.1552800-1-roberto.sassu@huaweicloud.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: GxC2BwB3pF7lyDFjZ4d6AA--.42219S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Zw1fCrWxGF17WFW7GF1kGrg_yoW8CF4kpa
+        s5KF45tr1fK34xCas7Aa1IvryY9r4xAr45KFn3Jw15Zr98Jr9YqrW8K3W3Wr98KFWrGryr
+        Zr4a9F98C3yDArJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvSb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8C
+        rVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4
+        IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kIc2xKxwCY1x02
+        62kKe7AKxVW8ZVWrXwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s
+        026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_
+        GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20x
+        vEc7CjxVAFwI0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVW3JVWrJr1lIxAIcVC2z280
+        aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43
+        ZEXa7IU0bAw3UUUUU==
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAHBF1jj4N4EAABsZ
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 23 Sep 2022, at 00:21, Hao Luo wrote:
-> For this problem, I'm thinking of a fix purely in the verifier:
-> passing along the file permission up to the site where the map is
-> used.
->
-> For maps that are not passed from outside, this permission is rw by default.
->
-> For maps that are obtained from fdget(), we can do the following:
->
-> - associate the env->used_maps with an array of permissions.
-> - then extend bpf_reg_state and bpf_call_arg_meta to include the
-> permission information.
-> - then in record_func_map(), we can reject the program if the
-> permission doesn't allow the map operation.
->
-> Not the simplest solution, but this is the first solution that comes
-> up in my head.
+From: Roberto Sassu <roberto.sassu@huawei.com>
 
-That's roughly what I have as well!
+===
+All credits of this patch set go to Lorenz Bauer <oss@lmb.io>, as he
+identified this issue and proposed a number of solutions.
+===
 
-> For an idea mentioned in the summary,
->
->> In OBJ_GET, refuse a read-write fd if the fd passed to OBJ_PIN wasn't read-write.
->
-> This sounds reasonable to me. Can we extend the object type referenced
-> by inode to include the permission?
+Lorenz presented at the Linux Plumbers EU 2022 a talk with title 'Closing
+the BPF map permission loophole', where he reported that read-only fds can
+be used for map update operations, if they were provided to eBPF programs.
 
-You're saying, add a layer of indirection? Instead of inode => bpf_map we have something like inode => bpf_perm => bpf_map.
+This work initially started as PoC to reproduce the reported bug, and
+became the test for validating an idea on how to fix the bug.
 
-I think this is less user friendly than refusing !rw pin, since we decouple what you can do with a pinned file from the state that is observable via ls. Put another way, there should be a way to introspect bpf_perm if we end up going this way.
+Patch 1 adds a dependency necessary for the tests.
 
-I also think that this tries to plug the hole in the wrong place: it's not the caller of OBJ_GET that is escalating privs, is OBJ_PIN.
+The actual fix, in patch 2, is relatively simple. It is based on an already
+existing enforcement mechanism in the eBPF verifier for map flags. As
+Lorenz mentioned, a problem would be backporting this fix to stable kernels
+which don't have that enforcement mechanism. However, backporting just the
+enforcement mechanism itself (without introducing the new map flags and
+allowing user space to use them) could meet the stable kernel criteria.
+
+Alternatively, a completely different fix can be developed for older stable
+kernels, like what Lorenz suggested, to refuse fds which are not
+read/write.
+
+Finally, patch 3 introduces the tests.
+
+Roberto Sassu (3):
+  libbpf: Define bpf_get_fd_opts and introduce
+    bpf_map_get_fd_by_id_opts()
+  bpf: Enforce granted permissions in a map fd at verifier level
+  selftests/bpf: Test enforcement of map fd permissions at verifier
+    level
+
+ include/linux/bpf.h                           |  13 +
+ include/linux/bpf_verifier.h                  |   1 +
+ kernel/bpf/verifier.c                         |  26 +-
+ tools/lib/bpf/bpf.c                           |  12 +-
+ tools/lib/bpf/bpf.h                           |  10 +
+ tools/lib/bpf/libbpf.map                      |   3 +-
+ .../selftests/bpf/prog_tests/map_fd_perm.c    | 227 ++++++++++++++++++
+ 7 files changed, 288 insertions(+), 4 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/map_fd_perm.c
+
+-- 
+2.25.1
+
