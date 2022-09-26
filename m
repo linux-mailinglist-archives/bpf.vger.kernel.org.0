@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8051E5EB56E
-	for <lists+bpf@lfdr.de>; Tue, 27 Sep 2022 01:19:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 004B25EB571
+	for <lists+bpf@lfdr.de>; Tue, 27 Sep 2022 01:19:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230368AbiIZXTM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Sep 2022 19:19:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36684 "EHLO
+        id S229731AbiIZXTS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 26 Sep 2022 19:19:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230433AbiIZXSv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S230443AbiIZXSv (ORCPT <rfc822;bpf@vger.kernel.org>);
         Mon, 26 Sep 2022 19:18:51 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FC19B0B1C
-        for <bpf@vger.kernel.org>; Mon, 26 Sep 2022 16:18:43 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-34558a60c39so75138787b3.16
-        for <bpf@vger.kernel.org>; Mon, 26 Sep 2022 16:18:43 -0700 (PDT)
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB63EB3B33
+        for <bpf@vger.kernel.org>; Mon, 26 Sep 2022 16:18:45 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id v17-20020a259d91000000b006b4c31c0640so7059691ybp.18
+        for <bpf@vger.kernel.org>; Mon, 26 Sep 2022 16:18:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date;
-        bh=TF2Lb28qNReadK/OQ4BAXWajo89COftQw/9tSIfn/eU=;
-        b=INqRGjxluJCEHpR4cpkLlv7qXEZrde/PnoBtUl6J3263rtZp+b99vij0eD9O++AfZe
-         yaeuNtSzj9tiYEm7BGlQjTTUA35Y8y+pSnFiQ/EeoSmePdm7wHCllG/GQXsvyxzCfyvH
-         5w7W7DuEZQikbZE0JYV3lKzms6pAuIXd+xbQNQMxQ/GCWqzfdiYMl06klE0JDGtD1Lnb
-         cFJtGXlypHrzIg4rTWTpS1xiC7fqCq/sUj5SUGWOVxxsHmkz3CORbjifSTFYDqqRAT2b
-         kHr9pqDU8LDjky4ysJnFqZYi6SGYV4gyN8gB0spq6ig+4XACwK4SzgfvAuTvmc8wkWFJ
-         rbXQ==
+        bh=qYUtbvLwl6swUO4hiS1oZSstWOFuOepYRxZkpZ1kfLs=;
+        b=QAl5gMZ5lQEKrESQ6jWH98yw4KTtq0tGTjXXQeVj0ewtzidIWSgsl7rU4HLZd2LKSD
+         0bHBIwLrqNvpXMJeccATvuLpBYxAfEHQqiywa9TxD1jVin+Oc+IZjGlz1oDXFe3wASbV
+         3bugHwwyoW+CZmxia551z3VE1h+37eUAb+1mSkU5ENP26OohnCGnsaIhmgnDBkIi7osy
+         NkEhfmcfel4lnh2SCrDApyUHNf7L3qumisQaEy8Z+VoC19x4IHl4ADnh7KHOGMp2iq3o
+         +H6/pSVsQ4aMcuYQ1KC7YvLpCR0wrmnUz5F0TqZPqECiC5T6gf+Tqx+OapL6GecynrcA
+         Tp6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date;
-        bh=TF2Lb28qNReadK/OQ4BAXWajo89COftQw/9tSIfn/eU=;
-        b=xD1ZhWqjpmKL3FihwirN5NEKZVhJixFxQ0U5NRcOVumJj2pKVjQnyoejzaGKg/Ifnp
-         RqI/8RsKYBM/DQg4P7r5x5s2vIujA6jRetEN4JtxU6++OZ3Nihih6tncQSeSpqGu/7DK
-         ONFXj4qlwzptaRMGspesMA/dZ06LE5tnEDjFTS2FfETWKUHNYOsUIziavhf/K/zCw1FH
-         l0AJ7ojnaow8AkoXUdGCYXbvMiplNcYoXalkJL4DGqcA9IEcREXWmnHefE5aqr3BhwIJ
-         k9YBIUY3opxN51PQCX/14+pjghqVKP3nX9DhbyxnfzWS61wNCHH/3HnSvYKQIVTNSvbm
-         az4g==
-X-Gm-Message-State: ACrzQf0q0NZ0oZFIF53TuE0reohKIzD1RGI0ucw9fwngdOIcdDBV9b/i
-        a73dm1OHMdCCI0Y6PN7Xc81S+BeWL5U=
-X-Google-Smtp-Source: AMsMyM46i9O/h1LHmEtMQzG9TJDg2bvjwGOZaIR6AZsNPBZITSBa59AG5BGA+VJSjWXBXO+ydGDerQBIRmk=
+        bh=qYUtbvLwl6swUO4hiS1oZSstWOFuOepYRxZkpZ1kfLs=;
+        b=bdM8qRzw4BSOX+1KBuRJaUTIZnImpewv9q9HUGUGHyH55vwUEf+qmjCNNYcQ5A1NNx
+         a/nvjIG8P6P8Kf7jsJkiFhLYGCSLI84PJDbKUEy+Jq979UZxmRyVo/S20FqXI5EWpYGC
+         ZSifx1wGj9KH1e53pD4LpWBnKDWON1siIXKaXKwjUiTSyyaXNXc597zPhVnQB6UVpIQm
+         BYeyt1sE2Fkmucp6Ip9s/mL+VxPnmnUnFo5MDph9kY8XNOes0oQwsDLydDbM0oekf3TQ
+         uZteTdEmtv4lJjMU0z1p9uL4gW5tu6sKuB9z7+7zp4Dft2NaB6wVRwou0VlIefxel6O5
+         qS5A==
+X-Gm-Message-State: ACrzQf2FfuGy2XyGRin15ZjYUzSNRfF3go2AtL4KkE5PXtFPrhb4m+i6
+        nqEY88DavHZ6gDLgsDY6cnOJjgnubO0=
+X-Google-Smtp-Source: AMsMyM5K/9sGBw/frw91uQfR+I9ZQ4Q/SrmJEv/FiSInEBM+D5awUrUn9RU7H0V04IGCygyZf5E9jfZ/sI4=
 X-Received: from drosen.mtv.corp.google.com ([2620:15c:211:200:4643:a68e:2b7:f873])
- (user=drosen job=sendgmr) by 2002:a5b:548:0:b0:6af:20d4:d2c1 with SMTP id
- r8-20020a5b0548000000b006af20d4d2c1mr22156635ybp.63.1664234322499; Mon, 26
- Sep 2022 16:18:42 -0700 (PDT)
-Date:   Mon, 26 Sep 2022 16:18:01 -0700
+ (user=drosen job=sendgmr) by 2002:a81:758a:0:b0:345:450b:6668 with SMTP id
+ q132-20020a81758a000000b00345450b6668mr22170393ywc.316.1664234325229; Mon, 26
+ Sep 2022 16:18:45 -0700 (PDT)
+Date:   Mon, 26 Sep 2022 16:18:02 -0700
 In-Reply-To: <20220926231822.994383-1-drosen@google.com>
 Mime-Version: 1.0
 References: <20220926231822.994383-1-drosen@google.com>
 X-Mailer: git-send-email 2.37.3.998.g577e59143f-goog
-Message-ID: <20220926231822.994383-6-drosen@google.com>
-Subject: [PATCH 05/26] fs: Generic function to convert iocb to rw flags
+Message-ID: <20220926231822.994383-7-drosen@google.com>
+Subject: [PATCH 06/26] bpf: Export bpf_prog_fops
 From:   Daniel Rosenberg <drosen@google.com>
 To:     Miklos Szeredi <miklos@szeredi.hu>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -69,11 +69,11 @@ Cc:     Andrii Nakryiko <andrii@kernel.org>,
         David Anderson <dvander@google.com>,
         Sandeep Patil <sspatil@google.com>,
         linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-team@android.com, Alessio Balsini <balsini@android.com>
+        kernel-team@android.com
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,94 +81,27 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Alessio Balsini <balsini@google.com>
+Fuse-bpf requires access tp bpf_prog_f_ops to confirm the fd it was
+given is in fact a bpf program.
 
-OverlayFS implements its own function to translate iocb flags into rw
-flags, so that they can be passed into another vfs call.
-With commit ce71bfea207b4 ("fs: align IOCB_* flags with RWF_* flags")
-Jens created a 1:1 matching between the iocb flags and rw flags,
-simplifying the conversion.
-
-Reduce the OverlayFS code by making the flag conversion function generic
-and reusable.
-
-Signed-off-by: Alessio Balsini <balsini@android.com>
+Signed-off-by: Daniel Rosenberg <drosen@google.com>
+Signed-off-by: Paul Lawrence <paullawrence@google.com>
 ---
- fs/overlayfs/file.c | 23 +++++------------------
- include/linux/fs.h  |  5 +++++
- 2 files changed, 10 insertions(+), 18 deletions(-)
+ kernel/bpf/syscall.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/overlayfs/file.c b/fs/overlayfs/file.c
-index daff601b5c41..c9df01577052 100644
---- a/fs/overlayfs/file.c
-+++ b/fs/overlayfs/file.c
-@@ -15,6 +15,8 @@
- #include <linux/fs.h>
- #include "overlayfs.h"
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 27760627370d..2000b6029e6a 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -2160,6 +2160,7 @@ const struct file_operations bpf_prog_fops = {
+ 	.read		= bpf_dummy_read,
+ 	.write		= bpf_dummy_write,
+ };
++EXPORT_SYMBOL_GPL(bpf_prog_fops);
  
-+#define OVL_IOCB_MASK (IOCB_DSYNC | IOCB_HIPRI | IOCB_NOWAIT | IOCB_SYNC)
-+
- struct ovl_aio_req {
- 	struct kiocb iocb;
- 	refcount_t ref;
-@@ -240,22 +242,6 @@ static void ovl_file_accessed(struct file *file)
- 	touch_atime(&file->f_path);
- }
- 
--static rwf_t ovl_iocb_to_rwf(int ifl)
--{
--	rwf_t flags = 0;
--
--	if (ifl & IOCB_NOWAIT)
--		flags |= RWF_NOWAIT;
--	if (ifl & IOCB_HIPRI)
--		flags |= RWF_HIPRI;
--	if (ifl & IOCB_DSYNC)
--		flags |= RWF_DSYNC;
--	if (ifl & IOCB_SYNC)
--		flags |= RWF_SYNC;
--
--	return flags;
--}
--
- static inline void ovl_aio_put(struct ovl_aio_req *aio_req)
+ int bpf_prog_new_fd(struct bpf_prog *prog)
  {
- 	if (refcount_dec_and_test(&aio_req->ref)) {
-@@ -315,7 +301,8 @@ static ssize_t ovl_read_iter(struct kiocb *iocb, struct iov_iter *iter)
- 	old_cred = ovl_override_creds(file_inode(file)->i_sb);
- 	if (is_sync_kiocb(iocb)) {
- 		ret = vfs_iter_read(real.file, iter, &iocb->ki_pos,
--				    ovl_iocb_to_rwf(iocb->ki_flags));
-+				    iocb_to_rw_flags(iocb->ki_flags,
-+						     OVL_IOCB_MASK));
- 	} else {
- 		struct ovl_aio_req *aio_req;
- 
-@@ -379,7 +366,7 @@ static ssize_t ovl_write_iter(struct kiocb *iocb, struct iov_iter *iter)
- 	if (is_sync_kiocb(iocb)) {
- 		file_start_write(real.file);
- 		ret = vfs_iter_write(real.file, iter, &iocb->ki_pos,
--				     ovl_iocb_to_rwf(ifl));
-+				     iocb_to_rw_flags(ifl, OVL_IOCB_MASK));
- 		file_end_write(real.file);
- 		/* Update size */
- 		ovl_copyattr(inode);
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 9eced4cc286e..c1d49675092e 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -3420,6 +3420,11 @@ static inline int kiocb_set_rw_flags(struct kiocb *ki, rwf_t flags)
- 	return 0;
- }
- 
-+static inline rwf_t iocb_to_rw_flags(int ifl, int iocb_mask)
-+{
-+	return ifl & iocb_mask;
-+}
-+
- static inline ino_t parent_ino(struct dentry *dentry)
- {
- 	ino_t res;
 -- 
 2.37.3.998.g577e59143f-goog
 
