@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 667A65EACE8
-	for <lists+bpf@lfdr.de>; Mon, 26 Sep 2022 18:46:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2AE75EACE9
+	for <lists+bpf@lfdr.de>; Mon, 26 Sep 2022 18:46:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229675AbiIZQqd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Sep 2022 12:46:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34410 "EHLO
+        id S229724AbiIZQqf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 26 Sep 2022 12:46:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229680AbiIZQqJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 26 Sep 2022 12:46:09 -0400
+        with ESMTP id S229749AbiIZQqM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 26 Sep 2022 12:46:12 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E0881F2DF
-        for <bpf@vger.kernel.org>; Mon, 26 Sep 2022 08:34:41 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23E6C205FC
+        for <bpf@vger.kernel.org>; Mon, 26 Sep 2022 08:34:51 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id AE664B80AF5
-        for <bpf@vger.kernel.org>; Mon, 26 Sep 2022 15:34:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3833DC433C1;
-        Mon, 26 Sep 2022 15:34:35 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id D405AB80AC0
+        for <bpf@vger.kernel.org>; Mon, 26 Sep 2022 15:34:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 937A7C433C1;
+        Mon, 26 Sep 2022 15:34:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1664206478;
-        bh=7G+8dFvjvjib6JQhFMnH/NRvderrmruxsAlg+NuQSfY=;
+        s=k20201202; t=1664206488;
+        bh=pj6zG821X+BIQOuNupyfbjCS/cuYFt5uN8uzRkMS+KE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iyehJWNtnt/YsKYz+hWbzugClkwUKM9frWTcCyubPb2bgannzXn02Nb5TaWgIZ03L
-         vyip39N+NgTlMsRtcfLoHf30/eAKtCbDSxUjnJYzszFwn3WLLTWw1jjToV5TmECrEU
-         FtLwTBWi7V7tdm9dWjeOqRDwyifwxjUCn+L3WKCnoFETeGBk0rNlWKS9HdJdWemHiA
-         blMNV6Jc0SIfqK+9WVYcyaojODrC+yFkbXVs3vQ1h5bNW6kA0/MfqAOHmoNMwIEGGk
-         95+Dt4DUJUbRyczW3Oi48irUUa2xaFoB77HhQyusuuHD37tjdM8nnZIvexMtuDPOjs
-         RbmQAYib1P3LA==
+        b=VhjTDDj4pGprOdRKgquC7jJrSpLBlmnAPO4BTReJMnyZRenwQLMhXV0aH6ivM395N
+         U19x4HTGZut26M1BTG7beK818K1OfvxfEjG1ARhmOytsn/CISndfUS+lrp7/ULExAF
+         REjSiLEZTNHlZDDw1fATaHiaQwfsK+V8y18B3GaktPgjkMpAFQiARF4CVK0D82eXD/
+         P9p3Cs5i0rle239jJbi/+GJhXGwPIejYIt0eP97Ugc5996sEAHsqJ7vl/rbl6npOY/
+         dygY50b00jA8SwEESKtjHoAPs/bmD+N2pAni5ETLrEB/1tJofYGbyP55ZCEH6tol3u
+         NOpPMcXJ6u7/g==
 From:   Jiri Olsa <jolsa@kernel.org>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>
-Cc:     Martynas Pumputis <m@lambda.lt>, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
+Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@chromium.org>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>,
         "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCHv5 bpf-next 5/6] bpf: Return value in kprobe get_func_ip only for entry address
-Date:   Mon, 26 Sep 2022 17:33:39 +0200
-Message-Id: <20220926153340.1621984-6-jolsa@kernel.org>
+        Peter Zijlstra <peterz@infradead.org>,
+        Martynas Pumputis <m@lambda.lt>
+Subject: [PATCHv5 bpf-next 6/6] selftests/bpf: Fix get_func_ip offset test for CONFIG_X86_KERNEL_IBT
+Date:   Mon, 26 Sep 2022 17:33:40 +0200
+Message-Id: <20220926153340.1621984-7-jolsa@kernel.org>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <20220926153340.1621984-1-jolsa@kernel.org>
 References: <20220926153340.1621984-1-jolsa@kernel.org>
@@ -61,89 +61,161 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Changing return value of kprobe's version of bpf_get_func_ip
-to return zero if the attach address is not on the function's
-entry point.
+With CONFIG_X86_KERNEL_IBT enabled the test for kprobe with offset
+won't work because of the extra endbr instruction.
 
-For kprobes attached in the middle of the function we can't easily
-get to the function address especially now with the CONFIG_X86_KERNEL_IBT
-support.
+As suggested by Andrii adding CONFIG_X86_KERNEL_IBT detection
+and using appropriate offset value based on that.
 
-If user cares about current IP for kprobes attached within the
-function body, they can get it with PT_REGS_IP(ctx).
+Also removing test7 program, because it does the same as test6.
 
 Suggested-by: Andrii Nakryiko <andrii@kernel.org>
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
-Acked-by: Martynas Pumputis <m@lambda.lt>
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- include/uapi/linux/bpf.h                             | 1 +
- kernel/trace/bpf_trace.c                             | 5 ++++-
- tools/include/uapi/linux/bpf.h                       | 1 +
- tools/testing/selftests/bpf/progs/get_func_ip_test.c | 4 ++--
- 4 files changed, 8 insertions(+), 3 deletions(-)
+ .../bpf/prog_tests/get_func_ip_test.c         | 59 +++++++++++++++----
+ .../selftests/bpf/progs/get_func_ip_test.c    | 23 ++++----
+ 2 files changed, 60 insertions(+), 22 deletions(-)
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index ead35f39f185..d6bd10759eaf 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -4951,6 +4951,7 @@ union bpf_attr {
-  * 		Get address of the traced function (for tracing and kprobe programs).
-  * 	Return
-  * 		Address of the traced function.
-+ * 		0 for kprobes placed within the function (not at the entry).
-  *
-  * u64 bpf_get_attach_cookie(void *ctx)
-  * 	Description
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index ebd1b348beb3..688552df95ca 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -1048,7 +1048,10 @@ BPF_CALL_1(bpf_get_func_ip_kprobe, struct pt_regs *, regs)
+diff --git a/tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c b/tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c
+index 938dbd4d7c2f..fede8ef58b5b 100644
+--- a/tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c
++++ b/tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c
+@@ -2,7 +2,7 @@
+ #include <test_progs.h>
+ #include "get_func_ip_test.skel.h"
+ 
+-void test_get_func_ip_test(void)
++static void test_function_entry(void)
  {
- 	struct kprobe *kp = kprobe_running();
+ 	struct get_func_ip_test *skel = NULL;
+ 	int err, prog_fd;
+@@ -12,14 +12,6 @@ void test_get_func_ip_test(void)
+ 	if (!ASSERT_OK_PTR(skel, "get_func_ip_test__open"))
+ 		return;
  
--	return kp ? (uintptr_t)kp->addr : 0;
-+	if (!kp || !(kp->flags & KPROBE_FLAG_ON_FUNC_ENTRY))
-+		return 0;
+-	/* test6 is x86_64 specifc because of the instruction
+-	 * offset, disabling it for all other archs
+-	 */
+-#ifndef __x86_64__
+-	bpf_program__set_autoload(skel->progs.test6, false);
+-	bpf_program__set_autoload(skel->progs.test7, false);
+-#endif
+-
+ 	err = get_func_ip_test__load(skel);
+ 	if (!ASSERT_OK(err, "get_func_ip_test__load"))
+ 		goto cleanup;
+@@ -43,11 +35,56 @@ void test_get_func_ip_test(void)
+ 	ASSERT_EQ(skel->bss->test3_result, 1, "test3_result");
+ 	ASSERT_EQ(skel->bss->test4_result, 1, "test4_result");
+ 	ASSERT_EQ(skel->bss->test5_result, 1, "test5_result");
 +
-+	return get_entry_ip((uintptr_t)kp->addr);
- }
++cleanup:
++	get_func_ip_test__destroy(skel);
++}
++
++/* test6 is x86_64 specific because of the instruction
++ * offset, disabling it for all other archs
++ */
+ #ifdef __x86_64__
++static void test_function_body(void)
++{
++	struct get_func_ip_test *skel = NULL;
++	LIBBPF_OPTS(bpf_test_run_opts, topts);
++	LIBBPF_OPTS(bpf_kprobe_opts, kopts);
++	struct bpf_link *link6 = NULL;
++	int err, prog_fd;
++
++	skel = get_func_ip_test__open();
++	if (!ASSERT_OK_PTR(skel, "get_func_ip_test__open"))
++		return;
++
++	bpf_program__set_autoload(skel->progs.test6, true);
++
++	err = get_func_ip_test__load(skel);
++	if (!ASSERT_OK(err, "get_func_ip_test__load"))
++		goto cleanup;
++
++	kopts.offset = skel->kconfig->CONFIG_X86_KERNEL_IBT ? 9 : 5;
++
++	link6 = bpf_program__attach_kprobe_opts(skel->progs.test6, "bpf_fentry_test6", &kopts);
++	if (!ASSERT_OK_PTR(link6, "link6"))
++		goto cleanup;
++
++	prog_fd = bpf_program__fd(skel->progs.test1);
++	err = bpf_prog_test_run_opts(prog_fd, &topts);
++	ASSERT_OK(err, "test_run");
++	ASSERT_EQ(topts.retval, 0, "test_run");
++
+ 	ASSERT_EQ(skel->bss->test6_result, 1, "test6_result");
+-	ASSERT_EQ(skel->bss->test7_result, 1, "test7_result");
+-#endif
  
- static const struct bpf_func_proto bpf_get_func_ip_proto_kprobe = {
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index ead35f39f185..d6bd10759eaf 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -4951,6 +4951,7 @@ union bpf_attr {
-  * 		Get address of the traced function (for tracing and kprobe programs).
-  * 	Return
-  * 		Address of the traced function.
-+ * 		0 for kprobes placed within the function (not at the entry).
-  *
-  * u64 bpf_get_attach_cookie(void *ctx)
-  * 	Description
+ cleanup:
++	bpf_link__destroy(link6);
+ 	get_func_ip_test__destroy(skel);
+ }
++#else
++#define test_function_body()
++#endif
++
++void test_get_func_ip_test(void)
++{
++	test_function_entry();
++	test_function_body();
++}
 diff --git a/tools/testing/selftests/bpf/progs/get_func_ip_test.c b/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-index a587aeca5ae0..6db70757bc8b 100644
+index 6db70757bc8b..8559e698b40d 100644
 --- a/tools/testing/selftests/bpf/progs/get_func_ip_test.c
 +++ b/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-@@ -69,7 +69,7 @@ int test6(struct pt_regs *ctx)
- {
- 	__u64 addr = bpf_get_func_ip(ctx);
+@@ -2,6 +2,7 @@
+ #include <linux/bpf.h>
+ #include <bpf/bpf_helpers.h>
+ #include <bpf/bpf_tracing.h>
++#include <stdbool.h>
  
--	test6_result = (const void *) addr == &bpf_fentry_test6 + 5;
-+	test6_result = (const void *) addr == 0;
- 	return 0;
+ char _license[] SEC("license") = "GPL";
+ 
+@@ -13,6 +14,16 @@ extern const void bpf_modify_return_test __ksym;
+ extern const void bpf_fentry_test6 __ksym;
+ extern const void bpf_fentry_test7 __ksym;
+ 
++extern bool CONFIG_X86_KERNEL_IBT __kconfig __weak;
++
++/* This function is here to have CONFIG_X86_KERNEL_IBT
++ * used and added to object BTF.
++ */
++int unused(void)
++{
++	return CONFIG_X86_KERNEL_IBT ? 0 : 1;
++}
++
+ __u64 test1_result = 0;
+ SEC("fentry/bpf_fentry_test1")
+ int BPF_PROG(test1, int a)
+@@ -64,7 +75,7 @@ int BPF_PROG(test5, int a, int *b, int ret)
  }
  
-@@ -79,6 +79,6 @@ int test7(struct pt_regs *ctx)
+ __u64 test6_result = 0;
+-SEC("kprobe/bpf_fentry_test6+0x5")
++SEC("?kprobe")
+ int test6(struct pt_regs *ctx)
  {
  	__u64 addr = bpf_get_func_ip(ctx);
- 
--	test7_result = (const void *) addr == &bpf_fentry_test7 + 5;
-+	test7_result = (const void *) addr == 0;
+@@ -72,13 +83,3 @@ int test6(struct pt_regs *ctx)
+ 	test6_result = (const void *) addr == 0;
  	return 0;
  }
+-
+-__u64 test7_result = 0;
+-SEC("kprobe/bpf_fentry_test7+5")
+-int test7(struct pt_regs *ctx)
+-{
+-	__u64 addr = bpf_get_func_ip(ctx);
+-
+-	test7_result = (const void *) addr == 0;
+-	return 0;
+-}
 -- 
 2.37.3
 
