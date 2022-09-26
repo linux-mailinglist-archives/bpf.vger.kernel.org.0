@@ -2,55 +2,43 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2D875EA352
-	for <lists+bpf@lfdr.de>; Mon, 26 Sep 2022 13:24:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4388B5EA02F
+	for <lists+bpf@lfdr.de>; Mon, 26 Sep 2022 12:35:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234616AbiIZLYY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Sep 2022 07:24:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52116 "EHLO
+        id S235743AbiIZKfE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 26 Sep 2022 06:35:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237869AbiIZLXb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 26 Sep 2022 07:23:31 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D7011BEA0;
-        Mon, 26 Sep 2022 03:39:53 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A36BF60C05;
-        Mon, 26 Sep 2022 10:39:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65286C433C1;
-        Mon, 26 Sep 2022 10:39:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1664188741;
-        bh=ZdPKxg5UW1HEw759TXM5ScOiD9P0Pfppjo6F7MnLu3Q=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ldzMh9ZYLoMxTCXnlxbxvQgSQkZDkrVbn6MOvMNy/X/l0Y2SPpvvExZueiffC0AIr
-         oFoG/nmdcpOrMiBC58qfbc4oOl5RzeooAis+2Fbu3v4bxGOKja7McE4/hB3xaIT7n3
-         abFSyS58GGqrpETS8Jwl0nRghGugb7kbAklhjBo8=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>, bpf@vger.kernel.org,
-        Ian Rogers <irogers@google.com>,
-        Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Song Liu <songliubraving@fb.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 106/148] perf stat: Fix BPF program section name
-Date:   Mon, 26 Sep 2022 12:12:20 +0200
-Message-Id: <20220926100800.089875531@linuxfoundation.org>
-X-Mailer: git-send-email 2.37.3
-In-Reply-To: <20220926100756.074519146@linuxfoundation.org>
-References: <20220926100756.074519146@linuxfoundation.org>
-User-Agent: quilt/0.67
+        with ESMTP id S235977AbiIZKdp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 26 Sep 2022 06:33:45 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6741250181;
+        Mon, 26 Sep 2022 03:20:51 -0700 (PDT)
+Received: from dggpeml500026.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4MbdvY2sgWzlXW0;
+        Mon, 26 Sep 2022 18:16:25 +0800 (CST)
+Received: from huawei.com (10.175.101.6) by dggpeml500026.china.huawei.com
+ (7.185.36.106) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Mon, 26 Sep
+ 2022 18:20:38 +0800
+From:   Zhengchao Shao <shaozhengchao@huawei.com>
+To:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <jhs@mojatatu.com>, <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <martin.lau@linux.dev>, <daniel@iogearbox.net>
+CC:     <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>,
+        <shaozhengchao@huawei.com>
+Subject: [PATCH net-next] net: sched: act_bpf: simplify code logic in tcf_bpf_init()
+Date:   Mon, 26 Sep 2022 18:21:58 +0800
+Message-ID: <20220926102158.78658-1-shaozhengchao@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+Content-Type: text/plain
+X-Originating-IP: [10.175.101.6]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500026.china.huawei.com (7.185.36.106)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,56 +46,28 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Namhyung Kim <namhyung@kernel.org>
+Both is_bpf and is_ebpf are boolean types, so
+(!is_bpf && !is_ebpf) || (is_bpf && is_ebpf) can be reduced to
+is_bpf == is_ebpf in tcf_bpf_init().
 
-[ Upstream commit 0d77326c3369e255715ed2440a78894ccc98dd69 ]
-
-It seems the recent libbpf got more strict about the section name.
-I'm seeing a failure like this:
-
-  $ sudo ./perf stat -a --bpf-counters --for-each-cgroup ^. sleep 1
-  libbpf: prog 'on_cgrp_switch': missing BPF prog type, check ELF section name 'perf_events'
-  libbpf: prog 'on_cgrp_switch': failed to load: -22
-  libbpf: failed to load object 'bperf_cgroup_bpf'
-  libbpf: failed to load BPF skeleton 'bperf_cgroup_bpf': -22
-  Failed to load cgroup skeleton
-
-The section name should be 'perf_event' (without the trailing 's').
-Although it's related to the libbpf change, it'd be better fix the
-section name in the first place.
-
-Fixes: 944138f048f7d759 ("perf stat: Enable BPF counter with --for-each-cgroup")
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: bpf@vger.kernel.org
-Cc: Ian Rogers <irogers@google.com>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Song Liu <songliubraving@fb.com>
-Link: https://lore.kernel.org/r/20220916184132.1161506-2-namhyung@kernel.org
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Zhengchao Shao <shaozhengchao@huawei.com>
 ---
- tools/perf/util/bpf_skel/bperf_cgroup.bpf.c | 2 +-
+ net/sched/act_bpf.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c b/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
-index 292c430768b5..c72f8ad96f75 100644
---- a/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
-+++ b/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
-@@ -176,7 +176,7 @@ static int bperf_cgroup_count(void)
- }
+diff --git a/net/sched/act_bpf.c b/net/sched/act_bpf.c
+index c5dbb68e6b78..b79eee44e24e 100644
+--- a/net/sched/act_bpf.c
++++ b/net/sched/act_bpf.c
+@@ -333,7 +333,7 @@ static int tcf_bpf_init(struct net *net, struct nlattr *nla,
+ 	is_bpf = tb[TCA_ACT_BPF_OPS_LEN] && tb[TCA_ACT_BPF_OPS];
+ 	is_ebpf = tb[TCA_ACT_BPF_FD];
  
- // This will be attached to cgroup-switches event for each cpu
--SEC("perf_events")
-+SEC("perf_event")
- int BPF_PROG(on_cgrp_switch)
- {
- 	return bperf_cgroup_count();
+-	if ((!is_bpf && !is_ebpf) || (is_bpf && is_ebpf)) {
++	if (is_bpf == is_ebpf) {
+ 		ret = -EINVAL;
+ 		goto put_chain;
+ 	}
 -- 
-2.35.1
-
-
+2.17.1
 
