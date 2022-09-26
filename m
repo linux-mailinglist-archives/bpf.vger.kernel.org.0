@@ -2,90 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C324D5E9BF0
-	for <lists+bpf@lfdr.de>; Mon, 26 Sep 2022 10:25:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1CEF5E9D86
+	for <lists+bpf@lfdr.de>; Mon, 26 Sep 2022 11:25:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233429AbiIZIZq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Sep 2022 04:25:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56786 "EHLO
+        id S234552AbiIZJZc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 26 Sep 2022 05:25:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233924AbiIZIZp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 26 Sep 2022 04:25:45 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32B56275D2;
-        Mon, 26 Sep 2022 01:25:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=J3tAO2GNJfTSgPUz6jLVcZhE4ZFSDnZgvEP1SbbHM5U=; b=lczrBNMZKticzvhKLcK5KSJSVG
-        ZUPEc8xvEABLdjL1A82AG/orBsHEmNuNvpBTjFNJ72+9JxLUo60kvw3urmn1R+cDFpz781NBLFFAn
-        JnOo9NfQudVIORQVFgh1NGBSwZIrXQ3rMamsS8CqayJh2cKGV7glk5EIznvVyaigTb4QhOARH9gBP
-        2C6Ha1kHm9t1t59QwD6JqHoRslqUUm64V7P6GMe8+4TuWCT5iuVLsQp04n/wVyInt5NvdWV6aKUcG
-        imbyk6n0sNY9BKfkTkAUn0GFGbZdHOL4j90T4TAL3EtyFmYapWfZhFvule/L2Jvc4RB4e8uK5aSs7
-        L/0H2JQw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1ocjPu-00FzCf-4R; Mon, 26 Sep 2022 08:24:42 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 55F8430007E;
-        Mon, 26 Sep 2022 10:24:41 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3DA2D20E5FD5C; Mon, 26 Sep 2022 10:24:41 +0200 (CEST)
-Date:   Mon, 26 Sep 2022 10:24:41 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        tech-board@lists.linuxfoundation.org,
-        Song Liu <songliubraving@fb.com>,
-        Kernel Team <Kernel-team@fb.com>,
-        Borislav Petkov <bp@alien8.de>, brijesh.singh@amd.com,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, jane.chu@oracle.com,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, seanjc@google.com,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        X86 ML <x86@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <bpf@vger.kernel.org>
-Subject: Re: [syzbot] WARNING in __change_page_attr_set_clr
-Message-ID: <YzFhyd3LDdDFtP6l@hirez.programming.kicks-ass.net>
-References: <00000000000076f3a305e97e9229@google.com>
- <a68d118d-ee03-399c-df02-82848e2197a2@intel.com>
- <CAADnVQ+SpNuUSRFte2Lm13QZiTXcWfn2eZw5Q+MP0SKwuJEXFg@mail.gmail.com>
- <a2673df8-cf8a-b94a-68cd-1e2777fb5cf4@intel.com>
+        with ESMTP id S235114AbiIZJYX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 26 Sep 2022 05:24:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B62AA43E53
+        for <bpf@vger.kernel.org>; Mon, 26 Sep 2022 02:23:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1664184210;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=s2lHTvZs+V7Gx9PPCaD6yMDf7ghWzItrMiu0Sn+royw=;
+        b=LoYE2jvQkccjU7rrAbgudpwysv5esnMtnKmDBypN9JFsik+q0caQCUn4ENMkJie1STMQTB
+        09VB81krksIDh9rhyRfDuTO61Q8NTcv1rcWuhz+p1mf0CX1jCbIgaVfyWDX21EzmUetmSf
+        rXxuZ/xHDMoutVV7pa4zTJMrUpCZ0cU=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-58-fIDBChgdNhahNk1stzT04Q-1; Mon, 26 Sep 2022 05:23:23 -0400
+X-MC-Unique: fIDBChgdNhahNk1stzT04Q-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4C9A085A59D;
+        Mon, 26 Sep 2022 09:23:23 +0000 (UTC)
+Received: from astarta.redhat.com (unknown [10.39.193.47])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4EA94492CA4;
+        Mon, 26 Sep 2022 09:23:22 +0000 (UTC)
+From:   Yauheni Kaliuta <ykaliuta@redhat.com>
+To:     bpf@vger.kernel.org
+Cc:     andrii@kernel.org, liuhangbin@gmail.com,
+        Yauheni Kaliuta <ykaliuta@redhat.com>
+Subject: [PATCH bpf-next] selftests: bpf: test_kmod.sh: fix passing arguments via function
+Date:   Mon, 26 Sep 2022 12:23:20 +0300
+Message-Id: <20220926092320.564631-1-ykaliuta@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a2673df8-cf8a-b94a-68cd-1e2777fb5cf4@intel.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Sep 25, 2022 at 05:10:19PM -0700, Dave Hansen wrote:
+Since the tests are run in a function $@ there actually contains
+function arguments, not the script ones.
 
-> Peter, I remember an earlier version of your patch having some various
-> enforcement modes.  Since the strict enforcement has actually broken a
-> few things, should we resurrect the nicer soft detection mode?  Or,
-> maybe make the soft one the only mode for now?
+Pass "$@" to the function as well.
 
-Well, I think we'll have to disable the whole thing for i386, but I'm
-sincerely hoping this is the only one we'll hit on x86_64 -- I did spend
-some effort fixing W^X issues a while back.
+Fixes: 272d1f4cfa3c ("selftests: bpf: test_kmod.sh: Pass parameters to the module")
+Signed-off-by: Yauheni Kaliuta <ykaliuta@redhat.com>
+---
+
+I have to admit that I messed up with testing of the last test_kmod.sh
+patch and it paid immediatly. Feeling really ashamed.
+
+---
+ tools/testing/selftests/bpf/test_kmod.sh | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/test_kmod.sh b/tools/testing/selftests/bpf/test_kmod.sh
+index d4a4279c0181..50dca53ac536 100755
+--- a/tools/testing/selftests/bpf/test_kmod.sh
++++ b/tools/testing/selftests/bpf/test_kmod.sh
+@@ -29,6 +29,7 @@ test_run()
+ 	sysctl -w net.core.bpf_jit_harden=$2 2>&1 > /dev/null
+ 
+ 	echo "[ JIT enabled:$1 hardened:$2 ]"
++	shift 2
+ 	dmesg -C
+ 	if [ -f ${OUTPUT}/lib/test_bpf.ko ]; then
+ 		insmod ${OUTPUT}/lib/test_bpf.ko "$@" 2> /dev/null
+@@ -64,9 +65,9 @@ test_restore()
+ 
+ rc=0
+ test_save
+-test_run 0 0
+-test_run 1 0
+-test_run 1 1
+-test_run 1 2
++test_run 0 0 "$@"
++test_run 1 0 "$@"
++test_run 1 1 "$@"
++test_run 1 2 "$@"
+ test_restore
+ exit $rc
+-- 
+2.37.3
 
