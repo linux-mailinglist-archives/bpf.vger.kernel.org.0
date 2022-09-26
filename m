@@ -2,171 +2,185 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4ABB5EA8E9
-	for <lists+bpf@lfdr.de>; Mon, 26 Sep 2022 16:48:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62BFD5EA915
+	for <lists+bpf@lfdr.de>; Mon, 26 Sep 2022 16:53:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235247AbiIZOsI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Sep 2022 10:48:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58786 "EHLO
+        id S234610AbiIZOwl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 26 Sep 2022 10:52:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234550AbiIZOrp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 26 Sep 2022 10:47:45 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDEB512D31;
-        Mon, 26 Sep 2022 06:12:04 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 6E5EBB80977;
-        Mon, 26 Sep 2022 13:12:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3400C433D6;
-        Mon, 26 Sep 2022 13:12:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1664197922;
-        bh=Jsje8LjAcUn+Fmbb7fCNpBAb/YI9LGJswkzqxoQMl4A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VGyu5g8xH5ILFC+gRf2+/fNl3+m0ImwvdmIfbWuS+62nn0tUNiUXE2d0NasMR+4VX
-         usHFI/uhJBSRHx5uTpbd3ZdFBo9AIf39fWd8mLu+OjGvk0gKxQf9cR3EKouI8Wy/vJ
-         f+Y54rcFMG1v7fVZ20Pf9RMrpKFTY2uDRphE41jQ+yYJYxxmFy2k8p45Q/+XRyUQAh
-         myL1NGXaHH6nn1GG1lh2bHft1uRO0HF83/pZq+IFk7mJCdAxTV0gimZyxWCF8LbA5Q
-         +sdaQeBJpIoG2HrFoUFwbfjwK3blSdmbHGISpENdAPEFVzkphtVqVhhsVxCP0AKDVK
-         ZJk3xdDsMtMDw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id B9389403B0; Mon, 26 Sep 2022 14:11:59 +0100 (IST)
-Date:   Mon, 26 Sep 2022 14:11:59 +0100
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-perf-users@vger.kernel.org, Song Liu <songliubraving@fb.com>,
-        Hao Luo <haoluo@google.com>, bpf@vger.kernel.org
-Subject: Re: [PATCH v4] perf tools: Get a perf cgroup more portably in BPF
-Message-ID: <YzGlH51Idwet/NE9@kernel.org>
-References: <20220923063205.772936-1-namhyung@kernel.org>
- <CAP-5=fWwNwtocMR3s1Su2k2vZAwL4yhX19UGZ4i0dMXFDFFBJA@mail.gmail.com>
+        with ESMTP id S235105AbiIZOvy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 26 Sep 2022 10:51:54 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 620671BE9D
+        for <bpf@vger.kernel.org>; Mon, 26 Sep 2022 06:18:52 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Mbjw14vXPzl8QX
+        for <bpf@vger.kernel.org>; Mon, 26 Sep 2022 21:17:05 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+        by APP3 (Coremail) with SMTP id _Ch0CgAnnEO2pjFjWYIsBQ--.22305S2;
+        Mon, 26 Sep 2022 21:18:50 +0800 (CST)
+Subject: Re: [PATCH bpf-next v2 00/13] Add support for qp-trie with dynptr key
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, houtao1@huawei.com
+References: <20220924133620.4147153-1-houtao@huaweicloud.com>
+ <20220926012535.badx76iwtftyhq6m@MacBook-Pro-4.local>
+From:   Hou Tao <houtao@huaweicloud.com>
+Message-ID: <ca0c97ae-6fd5-290b-6a00-fe3fe2e87aeb@huaweicloud.com>
+Date:   Mon, 26 Sep 2022 21:18:46 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAP-5=fWwNwtocMR3s1Su2k2vZAwL4yhX19UGZ4i0dMXFDFFBJA@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20220926012535.badx76iwtftyhq6m@MacBook-Pro-4.local>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID: _Ch0CgAnnEO2pjFjWYIsBQ--.22305S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Ww1fKw4rGr47urW8Zry7KFg_yoWxAF45pF
+        WxGr18JrWDJr1rJrn7tr17JFy5Jw4rXw4UGw1rJF1DAr15Zr1I9r1Igr4jgFn8Ar4Iyw1j
+        qr4Yqw4UuF1UAwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
+        6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+        9x07UZ18PUUUUU=
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Fri, Sep 23, 2022 at 09:45:19AM -0700, Ian Rogers escreveu:
-> On Thu, Sep 22, 2022 at 11:32 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> >
-> > The perf_event_cgrp_id can be different on other configurations.
-> > To be more portable as CO-RE, it needs to get the cgroup subsys id
-> > using the bpf_core_enum_value() helper.
-> >
-> > Suggested-by: Ian Rogers <irogers@google.com>
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> 
-> Reviewed-by: Ian Rogers <irogers@google.com>
-> 
-> Would be good to get this into perf/urgent, does it need Fixes tags for that?
+Hi,
 
-I got it into the perf/urgent branch.
+On 9/26/2022 9:25 AM, Alexei Starovoitov wrote:
+> On Sat, Sep 24, 2022 at 09:36:07PM +0800, Hou Tao wrote:
+>> From: Hou Tao <houtao1@huawei.com>
+SNIP
+>> For atomic ops and kmalloc overhead, I think I can reuse the idea from
+>> patchset "bpf: BPF specific memory allocator". I have given bpf_mem_alloc
+>> a simple try and encounter some problems. One problem is that
+>> immediate reuse of freed object in bpf memory allocator. Because qp-trie
+>> uses bpf memory allocator to allocate and free qp_trie_branch, if
+>> qp_trie_branch is reused immediately, the lookup procedure may oops due
+>> to the incorrect content in qp_trie_branch. And another problem is the
+>> size limitation in bpf_mem_alloc() is 4096. It may be a little small for
+>> the total size of key size and value size, but maybe I can use two
+>> separated bpf_mem_alloc for key and value.
+> 4096 limit for key+value size would be an acceptable trade-off.
+> With kptrs the user will be able to extend value to much bigger sizes
+> while doing <= 4096 allocation at a time. Larger allocations are failing
+> in production more often than not. Any algorithm relying on successful
+>  >= 4096 allocation is likely to fail. kvmalloc is a fallback that
+> the kernel is using, but we're not there yet in bpf land.
+> The benefits of bpf_mem_alloc in qp-trie would be huge though.
+> qp-trie would work in all contexts including sleepable progs.
+> As presented the use cases for qp-trie are quite limited.
+> If I understand correctly the concern for not using bpf_mem_alloc
+> is that qp_trie_branch can be reused. Can you provide an exact scenario
+> that will casue issuses?
+The usage of branch node during lookup is as follows:
+(1) check the index field of branch node which records the position of nibble in
+which the keys of child nodes are different
+(2) calculate the index of child node by using the nibble value of lookup key in
+index position
+(3) get the pointer of child node by dereferencing the variable-length pointer
+array in branch node
 
-- Arnaldo
- 
-> Thanks,
-> Ian
-> 
-> > ---
-> > v4 changes)
-> >  * add a missing check in the off_cpu
-> >
-> > v3 changes)
-> >  * check compiler features for enum value
-> >
-> > v2 changes)
-> >  * fix off_cpu.bpf.c too
-> >  * get perf_subsys_id only once
-> >
-> >  tools/perf/util/bpf_skel/bperf_cgroup.bpf.c | 11 ++++++++++-
-> >  tools/perf/util/bpf_skel/off_cpu.bpf.c      | 18 ++++++++++++++----
-> >  2 files changed, 24 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c b/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
-> > index 292c430768b5..8e7520e273db 100644
-> > --- a/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
-> > +++ b/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
-> > @@ -48,6 +48,7 @@ const volatile __u32 num_cpus = 1;
-> >
-> >  int enabled = 0;
-> >  int use_cgroup_v2 = 0;
-> > +int perf_subsys_id = -1;
-> >
-> >  static inline int get_cgroup_v1_idx(__u32 *cgrps, int size)
-> >  {
-> > @@ -58,7 +59,15 @@ static inline int get_cgroup_v1_idx(__u32 *cgrps, int size)
-> >         int level;
-> >         int cnt;
-> >
-> > -       cgrp = BPF_CORE_READ(p, cgroups, subsys[perf_event_cgrp_id], cgroup);
-> > +       if (perf_subsys_id == -1) {
-> > +#if __has_builtin(__builtin_preserve_enum_value)
-> > +               perf_subsys_id = bpf_core_enum_value(enum cgroup_subsys_id,
-> > +                                                    perf_event_cgrp_id);
-> > +#else
-> > +               perf_subsys_id = perf_event_cgrp_id;
-> > +#endif
-> > +       }
-> > +       cgrp = BPF_CORE_READ(p, cgroups, subsys[perf_subsys_id], cgroup);
-> >         level = BPF_CORE_READ(cgrp, level);
-> >
-> >         for (cnt = 0; i < MAX_LEVELS; i++) {
-> > diff --git a/tools/perf/util/bpf_skel/off_cpu.bpf.c b/tools/perf/util/bpf_skel/off_cpu.bpf.c
-> > index c4ba2bcf179f..38e3b287dbb2 100644
-> > --- a/tools/perf/util/bpf_skel/off_cpu.bpf.c
-> > +++ b/tools/perf/util/bpf_skel/off_cpu.bpf.c
-> > @@ -94,6 +94,8 @@ const volatile bool has_prev_state = false;
-> >  const volatile bool needs_cgroup = false;
-> >  const volatile bool uses_cgroup_v1 = false;
-> >
-> > +int perf_subsys_id = -1;
-> > +
-> >  /*
-> >   * Old kernel used to call it task_struct->state and now it's '__state'.
-> >   * Use BPF CO-RE "ignored suffix rule" to deal with it like below:
-> > @@ -119,11 +121,19 @@ static inline __u64 get_cgroup_id(struct task_struct *t)
-> >  {
-> >         struct cgroup *cgrp;
-> >
-> > -       if (uses_cgroup_v1)
-> > -               cgrp = BPF_CORE_READ(t, cgroups, subsys[perf_event_cgrp_id], cgroup);
-> > -       else
-> > -               cgrp = BPF_CORE_READ(t, cgroups, dfl_cgrp);
-> > +       if (!uses_cgroup_v1)
-> > +               return BPF_CORE_READ(t, cgroups, dfl_cgrp, kn, id);
-> > +
-> > +       if (perf_subsys_id == -1) {
-> > +#if __has_builtin(__builtin_preserve_enum_value)
-> > +               perf_subsys_id = bpf_core_enum_value(enum cgroup_subsys_id,
-> > +                                                    perf_event_cgrp_id);
-> > +#else
-> > +               perf_subsys_id = perf_event_cgrp_id;
-> > +#endif
-> > +       }
-> >
-> > +       cgrp = BPF_CORE_READ(t, cgroups, subsys[perf_subsys_id], cgroup);
-> >         return BPF_CORE_READ(cgrp, kn, id);
-> >  }
-> >
-> > --
-> > 2.37.3.998.g577e59143f-goog
-> >
+Because both branch node and leaf node have variable length, I used one
+bpf_mem_alloc for these two node types, so if a leaf node is reused as a branch
+node, the pointer got in step 3 may be invalid.
 
--- 
+If using separated bpf_mem_alloc for branch node and leaf node, it may still be
+problematic because the updates to a reused branch node are not atomic and
+branch nodes with different child node will reuse the same object due to size
+alignment in allocator, so the lookup procedure below may get an uninitialized
+pointer in the pointer array:
 
-- Arnaldo
+lookup procedure                                update procedure
+
+
+// three child nodes, 48-bytes
+branch node x
+                                                              //  four child
+nodes, 56-bytes
+                                                              reuse branch node x
+                                                              x->bitmap = 0xf
+// got an uninitialized pointer
+x->nodes[3]
+                                                              Initialize
+x->nodes[0~3]
+
+The problem may can be solved by zeroing the unused or whole part of allocated
+object. Maybe adding a paired smp_wmb() and smp_rmb() to ensure the update of
+node array happens before the update of bitmap is also OK and the cost will be
+much cheaper in x86 host.
+
+Beside lookup procedure, get_next_key() from syscall also lookups trie
+locklessly. If the branch node is reused, the order of returned keys may be
+broken. There is also a parent pointer in branch node and it is used for reverse
+lookup during get_next_key, the reuse may lead to unexpected skip in iteration.
+> Instead of call_rcu in qp_trie_branch_free (which will work only for
+> regular progs and have high overhead as demonstrated by mem_alloc patches)
+> the qp-trie freeing logic can scrub that element, so it's ready to be
+> reused as another struct qp_trie_branch.
+> I guess I'm missing how rcu protects this internal data structures of qp-trie.
+> The rcu_read_lock of regular bpf prog helps to stay lock-less during lookup?
+> Is that it?
+Yes. The update is made atomic by copying the parent branch node to a new branch
+node and replacing the pointer to the parent branch node by the new branch node,
+so the lookup procedure either find the old branch node or the new branch node.
+> So to make qp-trie work in sleepable progs the algo would need to
+> be changed to do both call_rcu and call_rcu_task_trace everywhere
+> to protect these inner structs?
+> call_rcu_task_trace can take long time. So qp_trie_branch-s may linger
+> around. So quick update/delete (in sleepable with call_rcu_task_trace)
+> may very well exhaust memory. With bpf_mem_alloc we don't have this issue
+> since rcu_task_trace gp is observed only when freeing into global mem pool.
+> Say qp-trie just uses bpf_mem_alloc for qp_trie_branch.
+> What is the worst that can happen? qp_trie_lookup_elem will go into wrong
+> path, but won't crash, right? Can we do hlist_nulls trick to address that?
+> In other words bpf_mem_alloc reuse behavior is pretty much SLAB_TYPESAFE_BY_RCU.
+> Many kernel data structures know how to deal with such object reuse.
+> We can have a private bpf_mem_alloc here for qp_trie_branch-s only and
+> construct a logic in a way that obj reuse is not problematic.
+As said above, qp_trie_lookup_elem may be OK with SLAB_TYPESAFE_BY_RCU. But I
+don't know how to do it for get_next_key because the iteration result needs to
+be ordered and can not skip existed elements before the iterations begins.
+If removing immediate reuse from bpf_mem_alloc, beside the may-decreased
+performance, is there any reason we can not do that ?
+>
+> Another alternative would be to add explicit rcu_read_lock in qp_trie_lookup_elem
+> to protect qp_trie_branch during lookup while using bpf_mem_alloc
+> for both qp_trie_branch and leaf nodes, but that's not a great solution either.
+> It will allow qp-trie to be usable in sleepable, but use of call_rcu
+> in update/delete will prevent qp-trie to be usable in tracing progs.
+>
+> Let's try to brainstorm how to make qp_trie_branch work like SLAB_TYPESAFE_BY_RCU.
+>
+> Other than this issue the patches look great. This new map would be awesome addition.
+Thanks for that.
+
