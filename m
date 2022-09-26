@@ -2,82 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4778F5E9A53
-	for <lists+bpf@lfdr.de>; Mon, 26 Sep 2022 09:18:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD6D15E9BE1
+	for <lists+bpf@lfdr.de>; Mon, 26 Sep 2022 10:21:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232705AbiIZHSp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Sep 2022 03:18:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46326 "EHLO
+        id S233443AbiIZIVu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 26 Sep 2022 04:21:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234069AbiIZHSd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 26 Sep 2022 03:18:33 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7F6631378
-        for <bpf@vger.kernel.org>; Mon, 26 Sep 2022 00:18:32 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id nb11so12091307ejc.5
-        for <bpf@vger.kernel.org>; Mon, 26 Sep 2022 00:18:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :mime-version:from:to:cc:subject:date;
-        bh=/VTORAyU6Sh8vmL2hwHItqSKWneVT05Nas1xc/s2AZQ=;
-        b=lPdtT4oh7EtPX83gReNjydRQOqSAvvHB6knUzzF+HzRLnuDSdwmDux5aULAD8Gk/St
-         hmIc/4jv3uzNmQ3CX+ug1+BHy7dAXZyV1/uTpWfSSMGoHanA3KqQ8thGOj+dN4tDzkly
-         OWdxid+hm0GkxZlSWKBISb6JIeZ09mgbLmw9ENS9fvWnjEXmrAs/0oWg0lGgnENlRaom
-         J+ydJ1kWoqGCc5EGiLMwOZgSGqssRXEDwE21EPsY1QFIe/cgBB3ld8UUWxsvz/pLAaMV
-         qYl2Ruw4/M0OTjYYyMurdIAFAcvmETzCnV5ypT8T5u1eaIjxPIYVqw4z3G0ZVHD7YGnM
-         EGGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=/VTORAyU6Sh8vmL2hwHItqSKWneVT05Nas1xc/s2AZQ=;
-        b=1szeSFMWL6tOSqp39axrcPAXNvwjf5GgvcZYOxiWKdm3r78zuKrap+vv0ebW1sygaN
-         j5PUGzytEnSrogpE/z8GByhOa+qyrV0AC7DRE/UOFqTAzkaqQ2Bi++dxmlRefoiouIvq
-         UaOYUURZ0MY1c00M7n8aJ9JNELWUojROYAFiTrIRTlVaQyoGIRL1MTYP14rOXk3goDX2
-         TYyqsXG+LV5P/IKeBRlfCvKovbRgjbl6umqbecVixFGGdQatzkRkTun7sxmNX9Hj42Z8
-         nlVj+UNfWSgEey7Apgqqi6t8eaZiplI7J9wRQfDS06OgnWHszghpECR7C3YWuccwPk1N
-         QLag==
-X-Gm-Message-State: ACrzQf24kUPtCIc+j125SgHeTs9OonbciEGvrnSZx6R7dj1yajAsFmPD
-        pwLIFcwMlViyj+87CerTsrgcPn3UaM8TOPJPDtQGhX4e3IE=
-X-Google-Smtp-Source: AMsMyM7zxlkekbckXrGbT2KSLC0Ulw3nLzxiE87861YY4iyglV22dkXALmP0btw+oAl64ROf9SCQAHBReBjgRV7ukig=
-X-Received: by 2002:a17:906:d550:b0:780:cec2:aae1 with SMTP id
- cr16-20020a170906d55000b00780cec2aae1mr17359185ejc.477.1664176711171; Mon, 26
- Sep 2022 00:18:31 -0700 (PDT)
+        with ESMTP id S234021AbiIZIVk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 26 Sep 2022 04:21:40 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D31641BE9E;
+        Mon, 26 Sep 2022 01:21:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=HP+NBtK01Xvhurj9YwQq7BAK/FHuyCvTkrH6hj5jx/E=; b=JWLVW8/61gZmddQzT9cn8bfyY7
+        grCdQMS7/7KjdCvd28dtoU2eUymCvC2ldg+62KJ4HMXqf2CngSKPr5nttbTcAyEqi8kD4odTziWRd
+        k+77IdPoTTBXRtpajfsq+xdG2H9P9amQaqVHGBFAbVTd9IoMci33tlGQCxVH1vEfvcXRyNQ5XnjCr
+        CYR89HjdSyva8keWdlDYgJlpCmqVRipO5KZVs9HSMzOH9AfJC67HauG+x2/PF/kd1CO8h9hXMDOSk
+        h2CEw9A0cKcqztQyxNdcl1mtqU5+0bnfyZBrrNWpL5kCeo82LPqiOCo/QiSNC+rGECTWJTQ3ZOE7i
+        8Xe4w/2g==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1ocjMI-00AGfg-DE; Mon, 26 Sep 2022 08:20:58 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 09DB3300023;
+        Mon, 26 Sep 2022 10:20:52 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D7BE820E5FD5C; Mon, 26 Sep 2022 10:20:52 +0200 (CEST)
+Date:   Mon, 26 Sep 2022 10:20:52 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        tech-board@lists.linuxfoundation.org,
+        Song Liu <songliubraving@fb.com>,
+        Kernel Team <Kernel-team@fb.com>,
+        Borislav Petkov <bp@alien8.de>, brijesh.singh@amd.com,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, jane.chu@oracle.com,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, seanjc@google.com,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        X86 ML <x86@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <bpf@vger.kernel.org>
+Subject: Re: [syzbot] WARNING in __change_page_attr_set_clr
+Message-ID: <YzFg5EGV35NxhHOo@hirez.programming.kicks-ass.net>
+References: <00000000000076f3a305e97e9229@google.com>
+ <a68d118d-ee03-399c-df02-82848e2197a2@intel.com>
+ <CAADnVQ+SpNuUSRFte2Lm13QZiTXcWfn2eZw5Q+MP0SKwuJEXFg@mail.gmail.com>
 MIME-Version: 1.0
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Mon, 26 Sep 2022 09:18:19 +0200
-Message-ID: <CAJ+HfNgnvWaQcZKC37ayZgrWdLa1Ni9Zvena8NxyEYPTeAoMsw@mail.gmail.com>
-Subject: The future of bpf_dispatcher
-To:     bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQ+SpNuUSRFte2Lm13QZiTXcWfn2eZw5Q+MP0SKwuJEXFg@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In the recent weeks there have been various issues [1] [2] (warnings, ftrac=
-e
-breakage) related to the bpf_dispatcher. The dispatcher was introduced
-to reduce the cost of indirect calls for the XDP realm, and during the
-whole retpoline timeline it was doing its job pretty good.
+On Sun, Sep 25, 2022 at 02:55:46PM -0700, Alexei Starovoitov wrote:
 
-However, it's a somewhat odd animal in the kernel, and very x86
-specific.
+> Steven Rostedt noticed that comment around the middle of August
+> and told you and Peter about it.
 
-Is the bpf_dispatcher still relevant? If yes, can it be replaced by a
-more generic functionality (e.g. static_calls)?
+He did indeed; and I was thinking he'd told you about it too so you
+could fix, what is a very juicy security issue, ASAP.
 
+> Then Peter added a WARN_ONCE in commit
+> https://lore.kernel.org/all/YwySW3ROc21hN7g9@hirez.programming.kicks-ass.net/
+> to explicitly trigger that known issue.
 
-Thoughts?
-Bj=C3=B6rn
+Well, I had sincerely hoped you'd fixed it by now. You just don't let
+things like that slide. Note how I didn't post that mostly trivial patch
+in mid August. Giving you ample time to fix up.
 
+> Now we're trying to urgently address it with:
+> https://lore.kernel.org/bpf/20220923211837.3044723-1-song@kernel.org/
 
-[1] https://lore.kernel.org/bpf/20220923211837.3044723-1-song@kernel.org/
-[2] https://lore.kernel.org/bpf/20220903131154.420467-1-jolsa@kernel.org/
+Glad to see it being fixed. Thanks!
