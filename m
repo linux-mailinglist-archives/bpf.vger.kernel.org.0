@@ -2,63 +2,46 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 671985EC0DB
-	for <lists+bpf@lfdr.de>; Tue, 27 Sep 2022 13:16:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 920AD5EC042
+	for <lists+bpf@lfdr.de>; Tue, 27 Sep 2022 13:01:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231833AbiI0LQw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Sep 2022 07:16:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35310 "EHLO
+        id S231825AbiI0LBA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 27 Sep 2022 07:01:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231871AbiI0LQc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Sep 2022 07:16:32 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73C336D553
-        for <bpf@vger.kernel.org>; Tue, 27 Sep 2022 04:15:58 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id c81so11488937oif.3
-        for <bpf@vger.kernel.org>; Tue, 27 Sep 2022 04:15:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20210112.gappssmtp.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=R6DEIK2Zq+FTX+wZyA6Mcr+7aOgLXcB6/3yVSe028aA=;
-        b=RysijwsUAJ4+AIMPMC72NnJNhU1LRFV/xN+4XEjPHCtNvNhAooO3QNXxGIrHD3zvZj
-         qFWMnbTbREVx92DLjafJmkzXtbVClWEB9KvKD62HrSIEEDCdZItaQRTrp31bxXLGlVJ4
-         K/EOtnC0RNgEQGyBZqMf/UXWUj+WYsrm8Iv2KJ0Pg+cwVMwfoFk7uBsGWfpwX3XcmHLh
-         V+lLHddpoD9SXn4OAUPgVPBo33FrI/SsGfCuE/XHojDfvoc5ganpSwavjgzxv5laz3No
-         quq2QtFZv+S1jnGgwpvsMoWYaCzb3wF5uQt/CLtqYXP5zEnrU3vRkSrjJgmZo9Tn8kZC
-         RQlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=R6DEIK2Zq+FTX+wZyA6Mcr+7aOgLXcB6/3yVSe028aA=;
-        b=sTMj6UA2NW8OE21xGLxMEUtE0g9UNg4NFca14jpt5LI+3hY0RnAwofADKDFKj6ceiT
-         lXh2uCaWLFYuFd9IhMqgPXtrPMvZvx8goXPD9A9QZBegq/xjAUdRTdJTD0BjXmNpajKt
-         W9cwxLY199dqDEfjTjxZVGr5zYAHvGN0hT5D3rEF9zzUQktaswpNldQTeyyXlkFVIefJ
-         Hov5YT3wG/C4i3gW5aUfeJ71b+U9ivrhE+GRgCrPyxKbLp6jltJvE6NavQd6k32V0j6U
-         uYd9PhWD5QKF04Tay+IvuDpQxRzBi4QxcS+EAjeZPZbVBvChGuVnrjCCHth/jKQUbLrT
-         9zqw==
-X-Gm-Message-State: ACrzQf265KgsB7FLoS3C7mfLKkv6UVeatDzl6bCiJ3NcWX9NgX4KL1lJ
-        QrkZ25oL65h5dsdiNva925gS62z7ubjFK+uHI/8oEQ==
-X-Google-Smtp-Source: AMsMyM6ZFNdptDkcaJzdd4BuwwP5UqO4ID3fTeODCcJ8PdTnxhwQseJ8nJrPrng+q6GITOhMhHDgXb0m3aGt0rQYaxI=
-X-Received: by 2002:a05:6808:148d:b0:350:7858:63ce with SMTP id
- e13-20020a056808148d00b00350785863cemr1518431oiw.106.1664277357708; Tue, 27
- Sep 2022 04:15:57 -0700 (PDT)
+        with ESMTP id S231723AbiI0LAr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 27 Sep 2022 07:00:47 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B74602AC58;
+        Tue, 27 Sep 2022 04:00:43 -0700 (PDT)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4McGlG2FykzlXH3;
+        Tue, 27 Sep 2022 18:56:26 +0800 (CST)
+Received: from localhost.localdomain (10.175.112.70) by
+ canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Tue, 27 Sep 2022 19:00:40 +0800
+From:   Wang Yufen <wangyufen@huawei.com>
+To:     <quentin@isovalent.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <andrii@kernel.org>, <martin.lau@linux.dev>, <song@kernel.org>,
+        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <sdf@google.com>, <haoluo@google.com>, <jolsa@kernel.org>,
+        <davem@davemloft.net>, <kuba@kernel.org>, <hawk@kernel.org>,
+        <nathan@kernel.org>, <ndesaulniers@google.com>, <trix@redhat.com>
+CC:     <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <llvm@lists.linux.dev>
+Subject: [bpf-next v7 1/3] bpftool: Add auto_attach for bpf prog load|loadall
+Date:   Tue, 27 Sep 2022 19:21:14 +0800
+Message-ID: <1664277676-2228-1-git-send-email-wangyufen@huawei.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-References: <88410cddd31197ea26840d7dd71612bece8c6acf.1663871981.git.christophe.jaillet@wanadoo.fr>
-In-Reply-To: <88410cddd31197ea26840d7dd71612bece8c6acf.1663871981.git.christophe.jaillet@wanadoo.fr>
-From:   Jamal Hadi Salim <jhs@mojatatu.com>
-Date:   Tue, 27 Sep 2022 07:15:46 -0400
-Message-ID: <CAM0EoM=EsyAYfQreLvUhyr1csuR2SQx1hLFzVX86OhHhLdU5WA@mail.gmail.com>
-Subject: Re: [PATCH v2] headers: Remove some left-over license text
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     yhs@fb.com, Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: text/plain
+X-Originating-IP: [10.175.112.70]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ canpemm500010.china.huawei.com (7.192.105.118)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,HEXHASH_WORD,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,141 +49,174 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Acked-by: Jamal Hadi Salim <jhs@mojatatu.com>
+Add auto_attach optional to support one-step load-attach-pin_link.
 
-cheers,
-jamal
+For example,
+   $ bpftool prog loadall test.o /sys/fs/bpf/test autoattach
 
-On Thu, Sep 22, 2022 at 2:41 PM Christophe JAILLET
-<christophe.jaillet@wanadoo.fr> wrote:
->
-> Remove some left-over from commit e2be04c7f995 ("License cleanup: add SPDX
-> license identifier to uapi header files with a license")
->
-> When the SPDX-License-Identifier tag has been added, the corresponding
-> license text has not been removed.
->
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
-> Changes since v1:
->   - add tools/include/uapi/linux/tc_act/tc_bpf.h   [Yonghong Song <yhs@fb.com>]
->
-> v1: https://lore.kernel.org/all/2a15aba72497e78ff08c8b8a8bfe3cf5a3e6ee18.1662897019.git.christophe.jaillet@wanadoo.fr/
-> ---
->  include/uapi/linux/tc_act/tc_bpf.h        |  5 -----
->  include/uapi/linux/tc_act/tc_skbedit.h    | 13 -------------
->  include/uapi/linux/tc_act/tc_skbmod.h     |  7 +------
->  include/uapi/linux/tc_act/tc_tunnel_key.h |  5 -----
->  include/uapi/linux/tc_act/tc_vlan.h       |  5 -----
->  tools/include/uapi/linux/tc_act/tc_bpf.h  |  5 -----
->  6 files changed, 1 insertion(+), 39 deletions(-)
->
-> diff --git a/include/uapi/linux/tc_act/tc_bpf.h b/include/uapi/linux/tc_act/tc_bpf.h
-> index 653c4f94f76e..fe6c8f8f3e8c 100644
-> --- a/include/uapi/linux/tc_act/tc_bpf.h
-> +++ b/include/uapi/linux/tc_act/tc_bpf.h
-> @@ -1,11 +1,6 @@
->  /* SPDX-License-Identifier: GPL-2.0+ WITH Linux-syscall-note */
->  /*
->   * Copyright (c) 2015 Jiri Pirko <jiri@resnulli.us>
-> - *
-> - * This program is free software; you can redistribute it and/or modify
-> - * it under the terms of the GNU General Public License as published by
-> - * the Free Software Foundation; either version 2 of the License, or
-> - * (at your option) any later version.
->   */
->
->  #ifndef __LINUX_TC_BPF_H
-> diff --git a/include/uapi/linux/tc_act/tc_skbedit.h b/include/uapi/linux/tc_act/tc_skbedit.h
-> index 6cb6101208d0..64032513cc4c 100644
-> --- a/include/uapi/linux/tc_act/tc_skbedit.h
-> +++ b/include/uapi/linux/tc_act/tc_skbedit.h
-> @@ -2,19 +2,6 @@
->  /*
->   * Copyright (c) 2008, Intel Corporation.
->   *
-> - * This program is free software; you can redistribute it and/or modify it
-> - * under the terms and conditions of the GNU General Public License,
-> - * version 2, as published by the Free Software Foundation.
-> - *
-> - * This program is distributed in the hope it will be useful, but WITHOUT
-> - * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-> - * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-> - * more details.
-> - *
-> - * You should have received a copy of the GNU General Public License along with
-> - * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
-> - * Place - Suite 330, Boston, MA 02111-1307 USA.
-> - *
->   * Author: Alexander Duyck <alexander.h.duyck@intel.com>
->   */
->
-> diff --git a/include/uapi/linux/tc_act/tc_skbmod.h b/include/uapi/linux/tc_act/tc_skbmod.h
-> index af6ef2cfbf3d..ac62c9a993ea 100644
-> --- a/include/uapi/linux/tc_act/tc_skbmod.h
-> +++ b/include/uapi/linux/tc_act/tc_skbmod.h
-> @@ -1,12 +1,7 @@
->  /* SPDX-License-Identifier: GPL-2.0+ WITH Linux-syscall-note */
->  /*
->   * Copyright (c) 2016, Jamal Hadi Salim
-> - *
-> - * This program is free software; you can redistribute it and/or modify
-> - * it under the terms of the GNU General Public License as published by
-> - * the Free Software Foundation; either version 2 of the License, or
-> - * (at your option) any later version.
-> -*/
-> + */
->
->  #ifndef __LINUX_TC_SKBMOD_H
->  #define __LINUX_TC_SKBMOD_H
-> diff --git a/include/uapi/linux/tc_act/tc_tunnel_key.h b/include/uapi/linux/tc_act/tc_tunnel_key.h
-> index 3f10dc4e7a4b..49ad4033951b 100644
-> --- a/include/uapi/linux/tc_act/tc_tunnel_key.h
-> +++ b/include/uapi/linux/tc_act/tc_tunnel_key.h
-> @@ -2,11 +2,6 @@
->  /*
->   * Copyright (c) 2016, Amir Vadai <amir@vadai.me>
->   * Copyright (c) 2016, Mellanox Technologies. All rights reserved.
-> - *
-> - * This program is free software; you can redistribute it and/or modify
-> - * it under the terms of the GNU General Public License as published by
-> - * the Free Software Foundation; either version 2 of the License, or
-> - * (at your option) any later version.
->   */
->
->  #ifndef __LINUX_TC_TUNNEL_KEY_H
-> diff --git a/include/uapi/linux/tc_act/tc_vlan.h b/include/uapi/linux/tc_act/tc_vlan.h
-> index 5b306fe815cc..3e1f8e57cdd2 100644
-> --- a/include/uapi/linux/tc_act/tc_vlan.h
-> +++ b/include/uapi/linux/tc_act/tc_vlan.h
-> @@ -1,11 +1,6 @@
->  /* SPDX-License-Identifier: GPL-2.0+ WITH Linux-syscall-note */
->  /*
->   * Copyright (c) 2014 Jiri Pirko <jiri@resnulli.us>
-> - *
-> - * This program is free software; you can redistribute it and/or modify
-> - * it under the terms of the GNU General Public License as published by
-> - * the Free Software Foundation; either version 2 of the License, or
-> - * (at your option) any later version.
->   */
->
->  #ifndef __LINUX_TC_VLAN_H
-> diff --git a/tools/include/uapi/linux/tc_act/tc_bpf.h b/tools/include/uapi/linux/tc_act/tc_bpf.h
-> index 653c4f94f76e..fe6c8f8f3e8c 100644
-> --- a/tools/include/uapi/linux/tc_act/tc_bpf.h
-> +++ b/tools/include/uapi/linux/tc_act/tc_bpf.h
-> @@ -1,11 +1,6 @@
->  /* SPDX-License-Identifier: GPL-2.0+ WITH Linux-syscall-note */
->  /*
->   * Copyright (c) 2015 Jiri Pirko <jiri@resnulli.us>
-> - *
-> - * This program is free software; you can redistribute it and/or modify
-> - * it under the terms of the GNU General Public License as published by
-> - * the Free Software Foundation; either version 2 of the License, or
-> - * (at your option) any later version.
->   */
->
->  #ifndef __LINUX_TC_BPF_H
-> --
-> 2.34.1
->
+   $ bpftool link
+   26: tracing  name test1  tag f0da7d0058c00236  gpl
+   	loaded_at 2022-09-09T21:39:49+0800  uid 0
+   	xlated 88B  jited 55B  memlock 4096B  map_ids 3
+   	btf_id 55
+   28: kprobe  name test3  tag 002ef1bef0723833  gpl
+   	loaded_at 2022-09-09T21:39:49+0800  uid 0
+   	xlated 88B  jited 56B  memlock 4096B  map_ids 3
+   	btf_id 55
+   57: tracepoint  name oncpu  tag 7aa55dfbdcb78941  gpl
+   	loaded_at 2022-09-09T21:41:32+0800  uid 0
+   	xlated 456B  jited 265B  memlock 4096B  map_ids 17,13,14,15
+   	btf_id 82
+
+   $ bpftool link
+   1: tracing  prog 26
+   	prog_type tracing  attach_type trace_fentry
+   3: perf_event  prog 28
+   10: perf_event  prog 57
+
+The autoattach optional can support tracepoints, k(ret)probes,
+u(ret)probes.
+
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Signed-off-by: Wang Yufen <wangyufen@huawei.com>
+---
+v6 -> v7: add info msg print and update doc for the skip program
+v5 -> v6: skip the programs not supporting auto-attach,
+	  and change optional name from "auto_attach" to "autoattach"
+v4 -> v5: some formatting nits of doc
+v3 -> v4: rename functions, update doc, bash and do_help()
+v2 -> v3: switch to extend prog load command instead of extend perf
+v2: https://patchwork.kernel.org/project/netdevbpf/patch/20220824033837.458197-1-weiyongjun1@huawei.com/
+v1: https://patchwork.kernel.org/project/netdevbpf/patch/20220816151725.153343-1-weiyongjun1@huawei.com/
+ tools/bpf/bpftool/prog.c | 81 ++++++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 79 insertions(+), 2 deletions(-)
+
+diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+index c81362a..84eced8 100644
+--- a/tools/bpf/bpftool/prog.c
++++ b/tools/bpf/bpftool/prog.c
+@@ -1453,6 +1453,72 @@ static int do_run(int argc, char **argv)
+ 	return ret;
+ }
+ 
++static int
++auto_attach_program(struct bpf_program *prog, const char *path)
++{
++	struct bpf_link *link;
++	int err;
++
++	link = bpf_program__attach(prog);
++	if (!link)
++		return -1;
++
++	err = bpf_link__pin(link, path);
++	if (err) {
++		bpf_link__destroy(link);
++		return err;
++	}
++	return 0;
++}
++
++static int pathname_concat(const char *path, const char *name, char *buf)
++{
++	int len;
++
++	len = snprintf(buf, PATH_MAX, "%s/%s", path, name);
++	if (len < 0)
++		return -EINVAL;
++	if (len >= PATH_MAX)
++		return -ENAMETOOLONG;
++
++	return 0;
++}
++
++static int
++auto_attach_programs(struct bpf_object *obj, const char *path)
++{
++	struct bpf_program *prog;
++	char buf[PATH_MAX];
++	int err;
++
++	bpf_object__for_each_program(prog, obj) {
++		err = pathname_concat(path, bpf_program__name(prog), buf);
++		if (err)
++			goto err_unpin_programs;
++
++		err = auto_attach_program(prog, buf);
++		if (!err)
++			continue;
++		if (errno == EOPNOTSUPP)
++			p_info("Program %s does not support autoattach",
++			       bpf_program__name(prog));
++		else
++			goto err_unpin_programs;
++	}
++
++	return 0;
++
++err_unpin_programs:
++	while ((prog = bpf_object__prev_program(obj, prog))) {
++		if (pathname_concat(path, bpf_program__name(prog), buf))
++			continue;
++
++		bpf_program__unpin(prog, buf);
++	}
++
++	return err;
++}
++
+ static int load_with_options(int argc, char **argv, bool first_prog_only)
+ {
+ 	enum bpf_prog_type common_prog_type = BPF_PROG_TYPE_UNSPEC;
+@@ -1464,6 +1530,7 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
+ 	struct bpf_program *prog = NULL, *pos;
+ 	unsigned int old_map_fds = 0;
+ 	const char *pinmaps = NULL;
++	bool auto_attach = false;
+ 	struct bpf_object *obj;
+ 	struct bpf_map *map;
+ 	const char *pinfile;
+@@ -1583,6 +1650,9 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
+ 				goto err_free_reuse_maps;
+ 
+ 			pinmaps = GET_ARG();
++		} else if (is_prefix(*argv, "autoattach")) {
++			auto_attach = true;
++			NEXT_ARG();
+ 		} else {
+ 			p_err("expected no more arguments, 'type', 'map' or 'dev', got: '%s'?",
+ 			      *argv);
+@@ -1692,14 +1762,20 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
+ 			goto err_close_obj;
+ 		}
+ 
+-		err = bpf_obj_pin(bpf_program__fd(prog), pinfile);
++		if (auto_attach)
++			err = auto_attach_program(prog, pinfile);
++		else
++			err = bpf_obj_pin(bpf_program__fd(prog), pinfile);
+ 		if (err) {
+ 			p_err("failed to pin program %s",
+ 			      bpf_program__section_name(prog));
+ 			goto err_close_obj;
+ 		}
+ 	} else {
+-		err = bpf_object__pin_programs(obj, pinfile);
++		if (auto_attach)
++			err = auto_attach_programs(obj, pinfile);
++		else
++			err = bpf_object__pin_programs(obj, pinfile);
+ 		if (err) {
+ 			p_err("failed to pin all programs");
+ 			goto err_close_obj;
+@@ -2338,6 +2414,7 @@ static int do_help(int argc, char **argv)
+ 		"                         [type TYPE] [dev NAME] \\\n"
+ 		"                         [map { idx IDX | name NAME } MAP]\\\n"
+ 		"                         [pinmaps MAP_DIR]\n"
++		"                         [autoattach]\n"
+ 		"       %1$s %2$s attach PROG ATTACH_TYPE [MAP]\n"
+ 		"       %1$s %2$s detach PROG ATTACH_TYPE [MAP]\n"
+ 		"       %1$s %2$s run PROG \\\n"
+-- 
+1.8.3.1
+
