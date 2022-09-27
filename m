@@ -2,58 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E8DC5ECC1A
-	for <lists+bpf@lfdr.de>; Tue, 27 Sep 2022 20:24:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E74335ECC1B
+	for <lists+bpf@lfdr.de>; Tue, 27 Sep 2022 20:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231174AbiI0SYN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Sep 2022 14:24:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42946 "EHLO
+        id S231627AbiI0SYQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 27 Sep 2022 14:24:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230494AbiI0SYL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Sep 2022 14:24:11 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45B22103FFD
-        for <bpf@vger.kernel.org>; Tue, 27 Sep 2022 11:24:11 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-3529d05e592so11346517b3.0
-        for <bpf@vger.kernel.org>; Tue, 27 Sep 2022 11:24:11 -0700 (PDT)
+        with ESMTP id S231293AbiI0SYP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 27 Sep 2022 14:24:15 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40B91106511
+        for <bpf@vger.kernel.org>; Tue, 27 Sep 2022 11:24:14 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-349e6acbac9so98828717b3.2
+        for <bpf@vger.kernel.org>; Tue, 27 Sep 2022 11:24:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date;
-        bh=XTqH961Fvd1rUnG/PDpnY8xibT6zV/TBgIKOhPTL8fs=;
-        b=Wkv0KU0fDcEiJX8zZPhXvO6LkTsbl31ppGg9s4nD9j5gF9QZBMr9rstFzcPjRCQ43M
-         /FRZ9B8j03WROOrBy4/3N355QBZIbjYXYAIT9jWu66PscNgU/WrOGiF5ftkf1cKhb25j
-         qmqn0eQrmIhMi2SAqDzY6709PEdAd+tckHaKsFVwCtodZllpecmYgtjc3zIYhxzL3t77
-         Y7YS5zktSkRMpF4sOLfJr2aqpHH0zxrb2vDyDOytH2XrRV8jyDLjdjIa3kJQzewdPTqn
-         nPQVBZzZteNGiaVctsuisKl82pQ8LJyf+q+9zods37U/whyI59GiPbCP0+cXqZhXNS06
-         HXMQ==
+        bh=hW2QxEBEOmjvzo0GbBfxTe7MyGxNoyV/eslZfaDgl3o=;
+        b=hprAO3fh8xc5XlaK33kmXB/B/OMejzJo8PONZhLhfjfJhOZZaU4B+ZiO9awH2Kv7ZP
+         6fjJwDefPN/PAdMCAVL+Ha95OSC9hDtkfdPlrwk7q68zwUZ6rHF3025nOienDD2ejBKd
+         FbJ2cgY9SHwvOKdmTypdeH0CafgU3IMXYDjTeYV/wR6WZKAiGrc09JwL40PHNuPXfucF
+         mWEIXlcgt7nm8TtHWNlv0Oyb4MPdG7eSgB6FfSPjWaUhubRAyAFXH1QuXsf2iRvbnt+p
+         ArkWjGwP9h2jNnZGXKu7wJYJw6NRSDoLc6fm+UC7Q5V1t77h2uTmLstxmdpwUBXltR3R
+         H0Uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date;
-        bh=XTqH961Fvd1rUnG/PDpnY8xibT6zV/TBgIKOhPTL8fs=;
-        b=Amq3/QR5rVBWwqhJqjj253YjGXr6FOE4aJTKxau/yI4IvuYFgTpfutxD3NcC0j/Y4V
-         6DEAq9k5UjWEw1a97qVQfjJSMIbK+MIPbGuiIVww710sRF33Dfbt1XmG3z9kxoYLBDGy
-         6L190pcdxfI/EkrvF+UkBOx6tuSCrJx/htmIRq6MnWW6STrCXIzXR+wQXEN2Wrz/krax
-         v+gvNk+/4ijD2VzFjPEjEudhSKLPNx7whAfUDRm/llhshEvQ/t1RtghOoT7GaqW9vEHl
-         bXtJjtvSkmv3/FC7ugmlu11spbvIVTcxoJOWlay6NxU+fO66EjzBAuP+5kINMUYrOGOt
-         0INg==
-X-Gm-Message-State: ACrzQf0CegO4xrWxe7XU61Mi3Nc9P3l29mL1EPvJL+KeTvAheIRuCk38
-        sgodVn1HnihA3oDdPoIGsi6rFKigeAXiWBDPeRu+cmK0u+mecfsbXDncf6UFyRsKEembmFV4jfb
-        a4IdWJmRMvhLEUcj7F8zwBXavx9Fzy+Xv0ElwATU9c51XizWXaGN6rRws0oCiRIegMGZN
-X-Google-Smtp-Source: AMsMyM7xLUlGZtH2mJzz2XGVTL3j9ZVBx2zlHfTMYf7+EBOzsewDGo3hZaFwLo9QXuzB2nFKgm9vQrFMyibMzwco
+        bh=hW2QxEBEOmjvzo0GbBfxTe7MyGxNoyV/eslZfaDgl3o=;
+        b=f+xOLI3KNwpWCVZIhLOnpI6Nqb3tAX94AVWvvhBsvuc1J00hU2vrC3xsPBpjWhK5Qq
+         tzl88ZN+AnIKJuIeR12zCH2e6LPb+S/G98IRGS8VDZBj6TRUKbBGbttcKnkMPyOCoL5/
+         RjknFylWLyA3mUqGTltlAkrynbBDNOhOQH/DYUSQscu/2Ajmv/EcFgvhfQ7hxypi9HCJ
+         fPWCFfOREEMw3LedS4AuC9PvR0d1ndoJROSdltxj708vqq9HhPss3zZt0HfN3gDbbevc
+         MRYxhSvY6c5k6raZB83G7Og8RHlOhUmBFLe4g2b3fgQi8cKxSK+Ob03yp0EQTz/Kg7um
+         YLPw==
+X-Gm-Message-State: ACrzQf20FUY8mBfhRHX7dikfzTJXDMbbIacRNMrlgEkyiyjBnag9rWFT
+        /x4KEcbtHTLcIuc1B9YvZRzFw6RxhoVbCkeFCmeRqgQd4De/3FCQRXjax0oOZfhGvPVT4Nbb310
+        0nIOVzrvnZAni0+0Kz3bch3BovboX5nUG0cpRUgi2ig3XwdNrm7vxaINYaeKi2AcsQT+s
+X-Google-Smtp-Source: AMsMyM7CxE4k6fF6Iyjsg/gBG8uRIP4vauuozKOp9wI8x56Q+n5YEPkOo/tJsTs1T+gotJy4ZztnqupLik51UHaX
 X-Received: from pnaduthota.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:4e5])
- (user=pnaduthota job=sendgmr) by 2002:a0d:e692:0:b0:349:729f:c74a with SMTP
- id p140-20020a0de692000000b00349729fc74amr26143109ywe.310.1664303050513; Tue,
- 27 Sep 2022 11:24:10 -0700 (PDT)
-Date:   Tue, 27 Sep 2022 18:23:44 +0000
+ (user=pnaduthota job=sendgmr) by 2002:a05:6902:1088:b0:6b0:2054:7dfd with
+ SMTP id v8-20020a056902108800b006b020547dfdmr27134915ybu.163.1664303053450;
+ Tue, 27 Sep 2022 11:24:13 -0700 (PDT)
+Date:   Tue, 27 Sep 2022 18:23:45 +0000
 In-Reply-To: <20220927182345.149171-1-pnaduthota@google.com>
 Mime-Version: 1.0
 References: <20220927182345.149171-1-pnaduthota@google.com>
 X-Mailer: git-send-email 2.37.3.998.g577e59143f-goog
-Message-ID: <20220927182345.149171-2-pnaduthota@google.com>
-Subject: [PATCH bpf 1/2] Ignore RDONLY_PROG for devmaps in libbpf to allow
- re-loading of pinned devmaps
+Message-ID: <20220927182345.149171-3-pnaduthota@google.com>
+Subject: [PATCH bpf 2/2] Add selftests for devmap pinning
 From:   Pramukh Naduthota <pnaduthota@google.com>
 To:     bpf@vger.kernel.org
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
@@ -72,48 +71,66 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Ignore BPF_F_RDONLY_PROG when checking for compatibility for devmaps. The
-kernel adds the flag to all devmap creates, and this breaks pinning
-behavior, as libbpf will then check the actual vs user supplied flags and
-see this difference. Work around this by adding RDONLY_PROG to the
-users's flags when testing against the pinned map
+Add a test for devmap pinning.
 
-Fixes: 57a00f41644f ("libbpf: Add auto-pinning of maps when loading BPF objects")
 Signed-off-by: Pramukh Naduthota <pnaduthota@google.com>
 ---
- tools/lib/bpf/libbpf.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ .../testing/selftests/bpf/prog_tests/devmap.c | 21 +++++++++++++++++++
+ .../selftests/bpf/progs/test_pinned_devmap.c  | 17 +++++++++++++++
+ 2 files changed, 38 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/devmap.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_pinned_devmap.c
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 50d41815f4..a3dae26d82 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -4818,6 +4818,7 @@ static bool map_is_reuse_compat(const struct bpf_map *map, int map_fd)
- 	char msg[STRERR_BUFSIZE];
- 	__u32 map_info_len;
- 	int err;
-+	unsigned int effective_flags = map->def.map_flags;
- 
- 	map_info_len = sizeof(map_info);
- 
-@@ -4830,11 +4831,16 @@ static bool map_is_reuse_compat(const struct bpf_map *map, int map_fd)
- 		return false;
- 	}
- 
-+	/* The kernel adds RDONLY_PROG to devmaps */
-+	if (map->def.type == BPF_MAP_TYPE_DEVMAP ||
-+	    map->def.type == BPF_MAP_TYPE_DEVMAP_HASH)
-+		effective_flags |= BPF_F_RDONLY_PROG;
+diff --git a/tools/testing/selftests/bpf/prog_tests/devmap.c b/tools/testing/selftests/bpf/prog_tests/devmap.c
+new file mode 100644
+index 000000000000..735333d3ac07
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/devmap.c
+@@ -0,0 +1,21 @@
++// SPDX-License-Identifier: GPL-2.0
++// Copyright (c) 2022 Google
++#include "testing_helpers.h"
++#include "test_progs.h"
++#include "test_pinned_devmap.skel.h"
++#include "test_pinned_devmap_rdonly_prog.skel.h"
 +
- 	return (map_info.type == map->def.type &&
- 		map_info.key_size == map->def.key_size &&
- 		map_info.value_size == map->def.value_size &&
- 		map_info.max_entries == map->def.max_entries &&
--		map_info.map_flags == map->def.map_flags &&
-+		map_info.map_flags == effective_flags &&
- 		map_info.map_extra == map->map_extra);
- }
- 
++void test_devmap_pinning(void)
++{
++	struct test_pinned_devmap *ptr;
++
++	ASSERT_OK_PTR(ptr = test_pinned_devmap__open_and_load(), "first load");
++	test_pinned_devmap__destroy(ptr);
++	ASSERT_OK_PTR(test_pinned_devmap__open_and_load(), "re-load");
++}
++
++void test_devmap(void)
++{
++	if (test__start_subtest("pinned_devmap"))
++		test_devmap_pinning();
++}
+diff --git a/tools/testing/selftests/bpf/progs/test_pinned_devmap.c b/tools/testing/selftests/bpf/progs/test_pinned_devmap.c
+new file mode 100644
+index 000000000000..63879de18ad3
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_pinned_devmap.c
+@@ -0,0 +1,17 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2022 Google */
++#include <stddef.h>
++#include <linux/bpf.h>
++#include <linux/types.h>
++#include <bpf/bpf_helpers.h>
++
++struct {
++	__uint(type, BPF_MAP_TYPE_DEVMAP_HASH);
++	__uint(max_entries, 32);
++	__type(key, int);
++	__type(value, int);
++	__uint(pinning, LIBBPF_PIN_BY_NAME);
++} dev_map SEC(".maps");
++
++
++char _license[] SEC("license") = "GPL";
 -- 
 2.30.2
 
