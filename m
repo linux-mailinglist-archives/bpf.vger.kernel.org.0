@@ -2,89 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AED735EBB53
-	for <lists+bpf@lfdr.de>; Tue, 27 Sep 2022 09:15:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCA3B5EBCB5
+	for <lists+bpf@lfdr.de>; Tue, 27 Sep 2022 10:06:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230075AbiI0HPM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Sep 2022 03:15:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47982 "EHLO
+        id S230383AbiI0IGj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 27 Sep 2022 04:06:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbiI0HPI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Sep 2022 03:15:08 -0400
-Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90F766C11E;
-        Tue, 27 Sep 2022 00:15:05 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.228])
-        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4Mc9hz4sjmz9xqd9;
-        Tue, 27 Sep 2022 15:09:07 +0800 (CST)
-Received: from roberto-ThinkStation-P620 (unknown [10.204.63.22])
-        by APP1 (Coremail) with SMTP id LxC2BwBXT5PdojJjCNt7AA--.18934S2;
-        Tue, 27 Sep 2022 08:14:45 +0100 (CET)
-Message-ID: <75986095d7ada2b24784ef356abc6ce17307575d.camel@huaweicloud.com>
-Subject: Re: [PATCH 3/3] tools/build: Display logical OR of a feature flavors
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     acme@kernel.org
-Cc:     peterz@infradead.org, mingo@redhat.com,
-        Jiri Olsa <olsajiri@gmail.com>, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, namhyung@kernel.org,
-        quentin@isovalent.com, linux-perf-users@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Date:   Tue, 27 Sep 2022 09:14:34 +0200
-In-Reply-To: <64352c51c5dcbab389201a16733f3157a1ea591e.camel@huaweicloud.com>
-References: <20220818120957.319995-1-roberto.sassu@huaweicloud.com>
-         <20220818120957.319995-3-roberto.sassu@huaweicloud.com>
-         <YwNhabqHEq3PfNM8@krava>
-         <64352c51c5dcbab389201a16733f3157a1ea591e.camel@huaweicloud.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        with ESMTP id S231604AbiI0IGX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 27 Sep 2022 04:06:23 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54BDBD12DB
+        for <bpf@vger.kernel.org>; Tue, 27 Sep 2022 01:00:55 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id t4so5980198wmj.5
+        for <bpf@vger.kernel.org>; Tue, 27 Sep 2022 01:00:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20210112.gappssmtp.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date;
+        bh=8KXeAi8bLl/4xDSQHTAZUIT2rxZgkHrTv7EF2KN/kpc=;
+        b=xsUc6nbu4ykT7peSuwlcvmxlW8gH9JNmHu+I0twf4HwF1J5XzKYqpFWkj2dh8q5Ul6
+         YIyTsCwVLcVCaqmZK0bRl0knR4E+gs1g3VmYqFhJ5ISP30EzzuG67bXySPNLETE/znCh
+         1kOaxyvtrtAyp6HP8dbla4TRNZFN+GwiDeBxS7EIpqL7nzY9tGQWADkj6VBwOzLQyaFh
+         pCCi4FN8EpWc+6PH6d58eIKwaMfHegUjGc14ZwZQ0iNB6osoFANcFYIfmlYevX66Nh0Q
+         3cO3YAgQUZdtH3V7oCiZJtN3UhQPnMyOVOXCnj/NAIxf0w0TZI2pQe44Lv3U3z04foBx
+         m6Ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
+        bh=8KXeAi8bLl/4xDSQHTAZUIT2rxZgkHrTv7EF2KN/kpc=;
+        b=QZjCh4Dt36PuhEe9swVtlnCuLlJkYKAKNM7zhftAgkOfLbIQ/qCybJ5GdwfflN8nQ8
+         4YAFsZGV4TRMTAtLEyRvgDL9jsj/8NXBw9qfvof/fl33xGjXh17gWvj50Luowsbb/fUW
+         x6x8Ig7OJCoiNwFM4XQqiOuLJiOgZEOAlcY9zB+hNwgJhSZ/tyZ4HISIn7ln9xus4y3M
+         yQ4ZoICDaYBjzn3F2AJNVhkvVB4tve1fUb2M330r4RgYveVVpqHoMpbCMyoGBnvlcFQ4
+         Hy5mfRaxSJWnMoi7WjoYruM0GfLflmV+JcoJ9oK909z8MPnRjLPYfHRzYsHqHuZIsE5N
+         7j6g==
+X-Gm-Message-State: ACrzQf2+MTk7PEstV000WOpEuFFhQ2TTC2QQ3TxsSG8tm2bONH4TWKhO
+        +cGKGcoM4b79Jlk3pk6OPQ9IvA==
+X-Google-Smtp-Source: AMsMyM5/TzO253ei5AMvrs8QpkYUOj/Z1fLYncdDCYmb2TsApdukWwTv9OqA0R3Kzq6LByqDgxAN9A==
+X-Received: by 2002:a05:600c:3d93:b0:3b4:c28f:6a2b with SMTP id bi19-20020a05600c3d9300b003b4c28f6a2bmr1627703wmb.121.1664265597319;
+        Tue, 27 Sep 2022 00:59:57 -0700 (PDT)
+Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
+        by smtp.gmail.com with ESMTPSA id g6-20020a5d5546000000b00228aea99efcsm1099354wrw.14.2022.09.27.00.59.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Sep 2022 00:59:56 -0700 (PDT)
+Date:   Tue, 27 Sep 2022 09:59:55 +0200
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     yhs@fb.com, Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH v2] headers: Remove some left-over license text
+Message-ID: <YzKte9AESCrcDcWh@nanopsycho>
+References: <88410cddd31197ea26840d7dd71612bece8c6acf.1663871981.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LxC2BwBXT5PdojJjCNt7AA--.18934S2
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYU7kC6x804xWl14x267AKxVW8JVW5JwAF
-        c2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII
-        0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xv
-        wVC0I7IYx2IY6xkF7I0E14v26r4j6F4UM28EF7xvwVC2z280aVAFwI0_Jr0_Gr1l84ACjc
-        xK6I8E87Iv6xkF7I0E14v26r4j6r4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40E
-        FcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr
-        0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY
-        04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
-        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y
-        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
-        W8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8
-        JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUrR6zUU
-        UUU
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAIBF1jj398ggAAs+
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <88410cddd31197ea26840d7dd71612bece8c6acf.1663871981.git.christophe.jaillet@wanadoo.fr>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 2022-08-22 at 13:24 +0200, Roberto Sassu wrote:
-> On Mon, 2022-08-22 at 12:58 +0200, Jiri Olsa wrote:
-> > On Thu, Aug 18, 2022 at 02:09:57PM +0200, 
-> 
-> [...]
-> 
-> > > In verbose mode, of if no group is defined for a feature, show
-> > > the
-> > > feature
-> > > detection result as before.
-> 
-> Thanks Jiri.
-> 
-> 'or' instead of 'of', if the patch can be edited.
+Thu, Sep 22, 2022 at 08:41:40PM CEST, christophe.jaillet@wanadoo.fr wrote:
+>Remove some left-over from commit e2be04c7f995 ("License cleanup: add SPDX
+>license identifier to uapi header files with a license")
+>
+>When the SPDX-License-Identifier tag has been added, the corresponding
+>license text has not been removed.
+>
+>Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-Hi Arnaldo
-
-will you take these patches?
-
-Thanks
-
-Roberto
-
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
