@@ -2,110 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C8F95ECC0E
-	for <lists+bpf@lfdr.de>; Tue, 27 Sep 2022 20:19:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 885BF5ECC19
+	for <lists+bpf@lfdr.de>; Tue, 27 Sep 2022 20:24:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231290AbiI0STj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Sep 2022 14:19:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33496 "EHLO
+        id S230283AbiI0SYJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 27 Sep 2022 14:24:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229616AbiI0STi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Sep 2022 14:19:38 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EFCA5FC0
-        for <bpf@vger.kernel.org>; Tue, 27 Sep 2022 11:19:32 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id bj12so22399311ejb.13
-        for <bpf@vger.kernel.org>; Tue, 27 Sep 2022 11:19:32 -0700 (PDT)
+        with ESMTP id S230494AbiI0SYI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 27 Sep 2022 14:24:08 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD6B3106508
+        for <bpf@vger.kernel.org>; Tue, 27 Sep 2022 11:24:07 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id p12-20020a259e8c000000b006958480b858so9273524ybq.12
+        for <bpf@vger.kernel.org>; Tue, 27 Sep 2022 11:24:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=0zODCicjuWF3s0/MqrrHjtnvQlTEwnoBjfRItL1Ism8=;
-        b=Hj7fb01bn1EOG+zml3cKESlIg6aOTJdYrP88UcShVWtR62PEoWXUSnibpv5PeVpqgj
-         esW/K1zjLlS35HZlGOb8k0eybcvep2lTOGegvE8hnq6NWBbiRuTVT+yB+IF1bjquNB8w
-         sthFrhMCM+xX8ZjpjRkz9pLWkys/KdQ20KlrA=
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date;
+        bh=QrabUh2cIma6U6mpc3DXsTwsgnSJN0WGmMkCXL9FPIA=;
+        b=Mkv9SA6D74Cp7a5F/s7LLqsl/w7KGkpPuikNFaCJm6qR5Tnsjs9lRdO1+b9AYzvdmd
+         GjRrev3baiuAyuZEH/DH0Oyh5swlbuSTKQfmRdBp6KCKuidWEmEbhVgWP3DAT4KPabrj
+         UNMy6/1MNl82RG8LYqBLRG4q9wGbnh5K0/Xtcl2LSutv3AS3LsdNWKB8PvfBR27/gbKr
+         6huP+cRYHXmccF2wy+/JVO/wfUEK6itZOcF2xf32ykk4E1MqTgzsZmttbRLRwhlQpbQZ
+         lHqeArZA/XXYdMgZ1JA/DDXKWFodBdln0ATnBuv5t6vqhKjTC/sxlxsJvWoo235/z/8k
+         8wNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=0zODCicjuWF3s0/MqrrHjtnvQlTEwnoBjfRItL1Ism8=;
-        b=ksVorn4B2Fuo7ON4XaNukFdMnGj1t7S6xyj0aT0vVTYLnMmkRAu/1pyoVFtqXoc10i
-         6QBmFBJqthwyUsS4yk85xHwt++6SXrm1C21ld9xCGdmKGQPie/HB+pdnTER9nG9N3CRB
-         T24tBPUXWu3/ORwXRay8ENWkNI6pHKLS8Olh5wvybDhQgjhtZLD419VsBQM4iPAueCW2
-         7xfojuN+3d6avMsKyLCZK3uU4nP7/E7gRLxasFzRmh+Uj51yFPrd2pJYHYlSP4LC8Wve
-         8jhBjie3trn7+Go/OOw5hXl4VVd63ecpdMqCR16Ht2eNAA9DeWukK2PGfn1RecohvrAc
-         jJVg==
-X-Gm-Message-State: ACrzQf3NcWh6gGJn09ZEdpWKZd4NHAqK5NhfJGK4AiVaRatG4phy/Wk9
-        o7mKa536NVI0onIalebQMyeW9mK1GOtt3KjGq36/jw==
-X-Google-Smtp-Source: AMsMyM5vNghVhEE/FP6mOqV+8atrlFIDqLpV76QcI9hRS0RrRr8zQ+77iQvwFmv1xxrokvn1SFgT+MH5b76sipcSDA8=
-X-Received: by 2002:a17:906:4fd1:b0:787:434f:d755 with SMTP id
- i17-20020a1709064fd100b00787434fd755mr2485254ejw.356.1664302770861; Tue, 27
- Sep 2022 11:19:30 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220926231822.994383-1-drosen@google.com> <20220926231822.994383-4-drosen@google.com>
-In-Reply-To: <20220926231822.994383-4-drosen@google.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Tue, 27 Sep 2022 20:19:19 +0200
-Message-ID: <CAJfpegsC6=HhYALdU_4vSEmxPCxNNPS4NkcDyU6E1y7N_rqhJw@mail.gmail.com>
-Subject: Re: [PATCH 03/26] fuse-bpf: Update uapi for fuse-bpf
-To:     Daniel Rosenberg <drosen@google.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Paul Lawrence <paullawrence@google.com>,
-        Alessio Balsini <balsini@google.com>,
-        David Anderson <dvander@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-team@android.com, Jann Horn <jannh@google.com>,
-        Amir Goldstein <amir73il@gmail.com>
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date;
+        bh=QrabUh2cIma6U6mpc3DXsTwsgnSJN0WGmMkCXL9FPIA=;
+        b=4HyoaEpxwGe3VItgUZkZ/NQBRZqyqdeDoqiUyK7nGO5WEwb4scD+c8tL96bGsmmfBh
+         Vypamqr+qTzatd9XBbqHC1vO9WO9WPErRKHZh9kYrkNWyqvMIEbaHEeadUtPsYT1fBLS
+         81PrHVBvnCxdr/7yuoX2t0/e7FVIVz7oS6KXy0pFpB8z8Wh8GEpBry9FKRMPkmGaw9ep
+         Nz2LobAsYYHNqKgd+6yG9uusBX1wCyxPVWInrQJ6MCvOkVAVclMnwEQj+jloWp1vwTBw
+         DaHWxZVOixJXla3nIl6l4AVRGMcpVQHDKqqsIQdEBycIyK9Tv4OnHTX49CaZemHIImdE
+         /4Kw==
+X-Gm-Message-State: ACrzQf36FUROc7/0tc09rLiOd1fCjqf/T7ltPPAeP15fg6MqDsLtbbJt
+        rBPDDLoP7gD106HkvFWD67NVkxilywbRXwrjuMQWc5V9GbDmwVGQ7sxPLby6k5XmMeo0tgbEauz
+        IF7XyzmT9+Ph/vfxqJTmOgkp+iP61d7CXi1Y9o8obe0NXa6W4BpjOm4IOT7zeh8jAs65Q
+X-Google-Smtp-Source: AMsMyM4Peznn4XVkHc5ksgB3DiFraQnHUTycaR5buPdsp4mz1JmQhMr/9asKJW3j1n7kBESFIo3baqpWNumGYxIN
+X-Received: from pnaduthota.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:4e5])
+ (user=pnaduthota job=sendgmr) by 2002:a81:6941:0:b0:345:4409:5842 with SMTP
+ id e62-20020a816941000000b0034544095842mr27404580ywc.298.1664303047036; Tue,
+ 27 Sep 2022 11:24:07 -0700 (PDT)
+Date:   Tue, 27 Sep 2022 18:23:43 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.37.3.998.g577e59143f-goog
+Message-ID: <20220927182345.149171-1-pnaduthota@google.com>
+Subject: [PATCH bpf 0/2] Fix pinning devmaps
+From:   Pramukh Naduthota <pnaduthota@google.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org,
+        Pramukh Naduthota <pnaduthota@google.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 27 Sept 2022 at 01:18, Daniel Rosenberg <drosen@google.com> wrote:
+Fix devmap pinning and reloading. The kernel adds BPF_F_RDONLY_PROG to all
+devmaps when created, but libbpf checks that user flags match pinned map
+flags when using LIBBPF_PIN_BY_NAME, so reusing pinned devmaps doesn't
+work, failing with an error like:
 
-> diff --git a/include/uapi/linux/fuse.h b/include/uapi/linux/fuse.h
-> index d6ccee961891..8c80c146e69b 100644
-> --- a/include/uapi/linux/fuse.h
-> +++ b/include/uapi/linux/fuse.h
-> @@ -572,6 +572,17 @@ struct fuse_entry_out {
->         struct fuse_attr attr;
->  };
->
-> +#define FUSE_ACTION_KEEP       0
-> +#define FUSE_ACTION_REMOVE     1
-> +#define FUSE_ACTION_REPLACE    2
-> +
-> +struct fuse_entry_bpf_out {
-> +       uint64_t        backing_action;
-> +       uint64_t        backing_fd;
+    libbpf: couldn't reuse pinned map at '/sys/fs/bpf/dev_map': parameter mismatch
 
-This is a security issue.   See this post from Jann:
+Work around this by ignoring RDONLY_PROG in the compat check in libbpf.
 
-https://lore.kernel.org/all/CAG48ez17uXtjCTa7xpa=JWz3iBbNDQTKO2hvn6PAZtfW3kXgcA@mail.gmail.com/
+Pramukh Naduthota (2):
+  Ignore RDONLY_PROG for devmaps in libbpf to allow re-loading of pinned
+    devmaps
+  Add selftests for devmap pinning
 
-The fuse-passthrough series solved this by pre-registering the
-passthrogh fd with an ioctl. Since this requires an expicit syscall on
-the server side the attack is thwarted.
+ tools/lib/bpf/libbpf.c                        |  8 +++++++-
+ .../testing/selftests/bpf/prog_tests/devmap.c | 21 +++++++++++++++++++
+ .../selftests/bpf/progs/test_pinned_devmap.c  | 17 ++++++++++++++++
+ 3 files changed, 45 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/devmap.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_pinned_devmap.c
 
-It would be nice if this mechanism was agreed between these projects.
+-- 
+2.30.2
 
-BTW, does fuse-bpf provide a superset of fuse-passthrough?  I mean
-could fuse-bpf work with a NULL bpf program as a simple passthrough?
-
-Thanks,
-Miklos
