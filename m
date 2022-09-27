@@ -2,140 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA9305EBDC2
-	for <lists+bpf@lfdr.de>; Tue, 27 Sep 2022 10:49:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB3D75EBE07
+	for <lists+bpf@lfdr.de>; Tue, 27 Sep 2022 11:10:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231571AbiI0Itp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Sep 2022 04:49:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51484 "EHLO
+        id S231245AbiI0JKQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 27 Sep 2022 05:10:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231321AbiI0Itl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Sep 2022 04:49:41 -0400
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 161DD1F611
-        for <bpf@vger.kernel.org>; Tue, 27 Sep 2022 01:49:39 -0700 (PDT)
-Received: by mail-il1-f199.google.com with SMTP id f4-20020a056e020b4400b002f6681cca5bso7087880ilu.14
-        for <bpf@vger.kernel.org>; Tue, 27 Sep 2022 01:49:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date;
-        bh=VcrBPx8xfJ9lVz+FClYVuo7si9Glw5I9QGikXlKH2Ug=;
-        b=jt9RZE0RY0ebIyftQmTM0YJCYXC3d6E1wg/EW9PcTObhAF/Xbek1ylKVcFCkfyhFo0
-         a31axrFFnN8s7XEBkwBrAfocm3OWQ3P2ykHNpGArAo+/5hASvIjs0ae5+BP5U6GGq4ci
-         OOrjPn+cNYDzN09tXX+lXgNesa7NWWcHv5IN470KPToLk13Vc8ILZVunRoNa7NXa47Hh
-         zIR0w1WdgtdzSR1t11z5pHZk4y65Wk4/jIuVmSRGTKbd+dZRnQ2RlKx8OMNN3tBHfjnJ
-         g9Lwj5ppfaPlP9pAYXOIdwMMiPFzuQTNHubiTXjV4XT6Y2NcRR3x+WrYqbLK2sVy7oKs
-         /CKQ==
-X-Gm-Message-State: ACrzQf2RjwyuyQdR0PPk36WUQxTDa+OlALei7X4LA++MdItTFyHUeVRD
-        BcLwgh1R+YdWu0JHcTiRKXqNYlxJycdIXVG4tS9ovR5htgv1
-X-Google-Smtp-Source: AMsMyM70AyRb0r7TXdF58Jm1rV5VBRv2D9KicVc0GeCv407F6+C7NHIjnxuPK8o4LraWCWiSU02rF4XmeVZN2JIw3U1gEMly8IGz
+        with ESMTP id S230402AbiI0JKP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 27 Sep 2022 05:10:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E796E6D9DB;
+        Tue, 27 Sep 2022 02:10:14 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 842FB61765;
+        Tue, 27 Sep 2022 09:10:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id DE02EC433D7;
+        Tue, 27 Sep 2022 09:10:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1664269813;
+        bh=HrqAsjtCCTfOpqKuvarQVRgA4LgzPa5pLIthBQL0w4k=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=eqz95eD0M413YvOzO6hwpWmdEDNsg9EQJFGafeFrB8Ie+qphV/94yic/FDdawLRbA
+         Nc+STwFUYilAeiw19IavixMKuDB7dOLxqr8M5RaadJDge/Q7S0ZWVYScDG2L8gJH2n
+         3Pxx35Vqk9u7MbUuMPVvVklRsV89iN+IL7L6dsjqCGlbpR6dBMAkhTXlLYoV8bZCWX
+         V+Kiq9+Wyh7DHrO4DS3nmU9d0kiZOjgmUweTMEoforSRZ9J+H7kkxkuVCqhIgcY19P
+         mzlkmEZ+91HSi8ZLLohe/bfFj1FOL7da4FPKig8zMqmTzsuI2p3eamxrWCW8UH2iyl
+         +lM4Ly4WU7/NQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C2925C04E59;
+        Tue, 27 Sep 2022 09:10:13 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:b45:b0:2f8:ab79:fc70 with SMTP id
- f5-20020a056e020b4500b002f8ab79fc70mr2146818ilu.214.1664268578426; Tue, 27
- Sep 2022 01:49:38 -0700 (PDT)
-Date:   Tue, 27 Sep 2022 01:49:38 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006d989105e9a4b916@google.com>
-Subject: [syzbot] general protection fault in kernel_accept (5)
-From:   syzbot <syzbot+c5ce866a8d30f4be0651@syzkaller.appspotmail.com>
-To:     bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, pabeni@redhat.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [net-next v2] selftests: Fix the if conditions of in
+ test_extra_filter()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166426981379.9788.6307412483003792088.git-patchwork-notify@kernel.org>
+Date:   Tue, 27 Sep 2022 09:10:13 +0000
+References: <1663916557-10730-1-git-send-email-wangyufen@huawei.com>
+In-Reply-To: <1663916557-10730-1-git-send-email-wangyufen@huawei.com>
+To:     Wang Yufen <wangyufen@huawei.com>
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, shuah@kernel.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+Hello:
 
-syzbot found the following issue on:
+This patch was applied to netdev/net.git (master)
+by Paolo Abeni <pabeni@redhat.com>:
 
-HEAD commit:    bf682942cd26 Merge tag 'scsi-fixes' of git://git.kernel.or..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=117fc3ac880000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7db7ad17eb14cb7
-dashboard link: https://syzkaller.appspot.com/bug?extid=c5ce866a8d30f4be0651
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+On Fri, 23 Sep 2022 15:02:37 +0800 you wrote:
+> The socket 2 bind the addr in use, bind should fail with EADDRINUSE. So
+> if bind success or errno != EADDRINUSE, testcase should be failed.
+> 
+> Fixes: 3ca8e4029969 ("soreuseport: BPF selection functional test")
+> Signed-off-by: Wang Yufen <wangyufen@huawei.com>
+> ---
+> v1 -> v2: add a Fixes tag
+>  tools/testing/selftests/net/reuseport_bpf.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Here is the summary with links:
+  - [net-next,v2] selftests: Fix the if conditions of in test_extra_filter()
+    https://git.kernel.org/netdev/net/c/bc7a31984489
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c5ce866a8d30f4be0651@syzkaller.appspotmail.com
-
-general protection fault, probably for non-canonical address 0xdffffc0000000001: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
-CPU: 3 PID: 12841 Comm: kworker/u16:2 Not tainted 6.0.0-rc6-syzkaller-00210-gbf682942cd26 #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
-Workqueue: tipc_rcv tipc_topsrv_accept
-RIP: 0010:kernel_accept+0x22d/0x350 net/socket.c:3487
-Code: 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 e3 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 8b 5b 20 48 8d 7b 08 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 ee 00 00 00 48 8b 7b 08 e8 a0 36 1c fa e8 8b ff
-RSP: 0018:ffffc9000494fc28 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000001 RSI: ffffffff874c37b2 RDI: 0000000000000008
-RBP: 0000000000000000 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000449 R12: 0000000000000000
-R13: ffff888027a7b980 R14: ffff888028bc08e0 R15: 1ffff92000929f90
-FS:  0000000000000000(0000) GS:ffff88802cb00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fa6e1a8c920 CR3: 000000004bba0000 CR4: 0000000000150ee0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- tipc_topsrv_accept+0x197/0x280 net/tipc/topsrv.c:460
- process_one_work+0x991/0x1610 kernel/workqueue.c:2289
- worker_thread+0x665/0x1080 kernel/workqueue.c:2436
- kthread+0x2e4/0x3a0 kernel/kthread.c:376
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:306
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:kernel_accept+0x22d/0x350 net/socket.c:3487
-Code: 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 e3 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 8b 5b 20 48 8d 7b 08 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 ee 00 00 00 48 8b 7b 08 e8 a0 36 1c fa e8 8b ff
-RSP: 0018:ffffc9000494fc28 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000001 RSI: ffffffff874c37b2 RDI: 0000000000000008
-RBP: 0000000000000000 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000449 R12: 0000000000000000
-R13: ffff888027a7b980 R14: ffff888028bc08e0 R15: 1ffff92000929f90
-FS:  0000000000000000(0000) GS:ffff88802ca00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000c0154d8000 CR3: 000000006fb4b000 CR4: 0000000000150ee0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	48 89 fa             	mov    %rdi,%rdx
-   3:	48 c1 ea 03          	shr    $0x3,%rdx
-   7:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
-   b:	0f 85 e3 00 00 00    	jne    0xf4
-  11:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
-  18:	fc ff df
-  1b:	48 8b 5b 20          	mov    0x20(%rbx),%rbx
-  1f:	48 8d 7b 08          	lea    0x8(%rbx),%rdi
-  23:	48 89 fa             	mov    %rdi,%rdx
-  26:	48 c1 ea 03          	shr    $0x3,%rdx
-* 2a:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
-  2e:	0f 85 ee 00 00 00    	jne    0x122
-  34:	48 8b 7b 08          	mov    0x8(%rbx),%rdi
-  38:	e8 a0 36 1c fa       	callq  0xfa1c36dd
-  3d:	e8                   	.byte 0xe8
-  3e:	8b ff                	mov    %edi,%edi
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
