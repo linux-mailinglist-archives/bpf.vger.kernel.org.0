@@ -2,136 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EBFE5EC9C8
-	for <lists+bpf@lfdr.de>; Tue, 27 Sep 2022 18:42:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C8F95ECC0E
+	for <lists+bpf@lfdr.de>; Tue, 27 Sep 2022 20:19:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233175AbiI0QmL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Sep 2022 12:42:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60934 "EHLO
+        id S231290AbiI0STj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 27 Sep 2022 14:19:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233070AbiI0Qlf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Sep 2022 12:41:35 -0400
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E162E189385;
-        Tue, 27 Sep 2022 09:41:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1664296886; x=1695832886;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=zImS/+kQEFFKtoylnkK9hx7b+ZnRst+iBc45qyPH9e0=;
-  b=TpSX0jWnmYfqFbuQr3dx1i9t2OPOAigmJFPdJKZ8vbH5ri+0xylrj8KI
-   wZ9Ea82UgOnuKy3n2/Qwf/LhqrmkkWcJNz6nDIxtF9BUOMxvDpY1LAOZF
-   Dr1YPLOhvoCZvDko0ZG0Law+GwJBKDDt/gCwsM9+K3JAbCkB5Ufhnz/B2
-   Aj8SlWxgrBXeJNpGXsQhG0WBKy7JMEfrj/hBHRl4Sv9vT3UoK2l7ansmA
-   tN7ErgiCyQRb4sgyatR5owIjzaJC1iW3FIlXGCQIn3gTDDZCNwW3cYH3q
-   TteHlYm5irzvbkHI4jRxPUGX7/Z+hYQRBIA9ykxP8+A78fSDpqVCZ8eiU
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10483"; a="281085144"
-X-IronPort-AV: E=Sophos;i="5.93,349,1654585200"; 
-   d="scan'208";a="281085144"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2022 09:41:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10483"; a="616893064"
-X-IronPort-AV: E=Sophos;i="5.93,349,1654585200"; 
-   d="scan'208";a="616893064"
-Received: from anguy11-desk2.jf.intel.com ([10.166.244.147])
-  by orsmga007.jf.intel.com with ESMTP; 27 Sep 2022 09:41:17 -0700
-From:   Tony Nguyen <anthony.l.nguyen@intel.com>
-To:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        edumazet@google.com
-Cc:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        netdev@vger.kernel.org, anthony.l.nguyen@intel.com,
-        magnus.karlsson@intel.com, ast@kernel.org, daniel@iogearbox.net,
-        hawk@kernel.org, john.fastabend@gmail.com, bpf@vger.kernel.org,
-        Alasdair McWilliam <alasdair.mcwilliam@outlook.com>,
-        George Kuruvinakunnel <george.kuruvinakunnel@intel.com>
-Subject: [PATCH net 2/2] ice: xsk: drop power of 2 ring size restriction for AF_XDP
-Date:   Tue, 27 Sep 2022 09:41:12 -0700
-Message-Id: <20220927164112.4011983-3-anthony.l.nguyen@intel.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220927164112.4011983-1-anthony.l.nguyen@intel.com>
-References: <20220927164112.4011983-1-anthony.l.nguyen@intel.com>
+        with ESMTP id S229616AbiI0STi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 27 Sep 2022 14:19:38 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EFCA5FC0
+        for <bpf@vger.kernel.org>; Tue, 27 Sep 2022 11:19:32 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id bj12so22399311ejb.13
+        for <bpf@vger.kernel.org>; Tue, 27 Sep 2022 11:19:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=0zODCicjuWF3s0/MqrrHjtnvQlTEwnoBjfRItL1Ism8=;
+        b=Hj7fb01bn1EOG+zml3cKESlIg6aOTJdYrP88UcShVWtR62PEoWXUSnibpv5PeVpqgj
+         esW/K1zjLlS35HZlGOb8k0eybcvep2lTOGegvE8hnq6NWBbiRuTVT+yB+IF1bjquNB8w
+         sthFrhMCM+xX8ZjpjRkz9pLWkys/KdQ20KlrA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=0zODCicjuWF3s0/MqrrHjtnvQlTEwnoBjfRItL1Ism8=;
+        b=ksVorn4B2Fuo7ON4XaNukFdMnGj1t7S6xyj0aT0vVTYLnMmkRAu/1pyoVFtqXoc10i
+         6QBmFBJqthwyUsS4yk85xHwt++6SXrm1C21ld9xCGdmKGQPie/HB+pdnTER9nG9N3CRB
+         T24tBPUXWu3/ORwXRay8ENWkNI6pHKLS8Olh5wvybDhQgjhtZLD419VsBQM4iPAueCW2
+         7xfojuN+3d6avMsKyLCZK3uU4nP7/E7gRLxasFzRmh+Uj51yFPrd2pJYHYlSP4LC8Wve
+         8jhBjie3trn7+Go/OOw5hXl4VVd63ecpdMqCR16Ht2eNAA9DeWukK2PGfn1RecohvrAc
+         jJVg==
+X-Gm-Message-State: ACrzQf3NcWh6gGJn09ZEdpWKZd4NHAqK5NhfJGK4AiVaRatG4phy/Wk9
+        o7mKa536NVI0onIalebQMyeW9mK1GOtt3KjGq36/jw==
+X-Google-Smtp-Source: AMsMyM5vNghVhEE/FP6mOqV+8atrlFIDqLpV76QcI9hRS0RrRr8zQ+77iQvwFmv1xxrokvn1SFgT+MH5b76sipcSDA8=
+X-Received: by 2002:a17:906:4fd1:b0:787:434f:d755 with SMTP id
+ i17-20020a1709064fd100b00787434fd755mr2485254ejw.356.1664302770861; Tue, 27
+ Sep 2022 11:19:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20220926231822.994383-1-drosen@google.com> <20220926231822.994383-4-drosen@google.com>
+In-Reply-To: <20220926231822.994383-4-drosen@google.com>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Tue, 27 Sep 2022 20:19:19 +0200
+Message-ID: <CAJfpegsC6=HhYALdU_4vSEmxPCxNNPS4NkcDyU6E1y7N_rqhJw@mail.gmail.com>
+Subject: Re: [PATCH 03/26] fuse-bpf: Update uapi for fuse-bpf
+To:     Daniel Rosenberg <drosen@google.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Paul Lawrence <paullawrence@google.com>,
+        Alessio Balsini <balsini@google.com>,
+        David Anderson <dvander@google.com>,
+        Sandeep Patil <sspatil@google.com>,
+        linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@android.com, Jann Horn <jannh@google.com>,
+        Amir Goldstein <amir73il@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+On Tue, 27 Sept 2022 at 01:18, Daniel Rosenberg <drosen@google.com> wrote:
 
-We had multiple customers in the past months that reported commit
-296f13ff3854 ("ice: xsk: Force rings to be sized to power of 2")
-makes them unable to use ring size of 8160 in conjunction with AF_XDP.
-Remove this restriction.
+> diff --git a/include/uapi/linux/fuse.h b/include/uapi/linux/fuse.h
+> index d6ccee961891..8c80c146e69b 100644
+> --- a/include/uapi/linux/fuse.h
+> +++ b/include/uapi/linux/fuse.h
+> @@ -572,6 +572,17 @@ struct fuse_entry_out {
+>         struct fuse_attr attr;
+>  };
+>
+> +#define FUSE_ACTION_KEEP       0
+> +#define FUSE_ACTION_REMOVE     1
+> +#define FUSE_ACTION_REPLACE    2
+> +
+> +struct fuse_entry_bpf_out {
+> +       uint64_t        backing_action;
+> +       uint64_t        backing_fd;
 
-Fixes: 296f13ff3854 ("ice: xsk: Force rings to be sized to power of 2")
-CC: Alasdair McWilliam <alasdair.mcwilliam@outlook.com>
-Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Tested-by: George Kuruvinakunnel <george.kuruvinakunnel@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
----
- drivers/net/ethernet/intel/ice/ice_xsk.c | 20 +++++++-------------
- 1 file changed, 7 insertions(+), 13 deletions(-)
+This is a security issue.   See this post from Jann:
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
-index 8833b66b4e54..056c904b83cc 100644
---- a/drivers/net/ethernet/intel/ice/ice_xsk.c
-+++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
-@@ -392,13 +392,6 @@ int ice_xsk_pool_setup(struct ice_vsi *vsi, struct xsk_buff_pool *pool, u16 qid)
- 		goto failure;
- 	}
- 
--	if (!is_power_of_2(vsi->rx_rings[qid]->count) ||
--	    !is_power_of_2(vsi->tx_rings[qid]->count)) {
--		netdev_err(vsi->netdev, "Please align ring sizes to power of 2\n");
--		pool_failure = -EINVAL;
--		goto failure;
--	}
--
- 	if_running = netif_running(vsi->netdev) && ice_is_xdp_ena_vsi(vsi);
- 
- 	if (if_running) {
-@@ -534,11 +527,10 @@ static bool __ice_alloc_rx_bufs_zc(struct ice_rx_ring *rx_ring, u16 count)
- bool ice_alloc_rx_bufs_zc(struct ice_rx_ring *rx_ring, u16 count)
- {
- 	u16 rx_thresh = ICE_RING_QUARTER(rx_ring);
--	u16 batched, leftover, i, tail_bumps;
-+	u16 leftover, i, tail_bumps;
- 
--	batched = ALIGN_DOWN(count, rx_thresh);
--	tail_bumps = batched / rx_thresh;
--	leftover = count & (rx_thresh - 1);
-+	tail_bumps = count / rx_thresh;
-+	leftover = count - (tail_bumps * rx_thresh);
- 
- 	for (i = 0; i < tail_bumps; i++)
- 		if (!__ice_alloc_rx_bufs_zc(rx_ring, rx_thresh))
-@@ -1037,14 +1029,16 @@ bool ice_xsk_any_rx_ring_ena(struct ice_vsi *vsi)
-  */
- void ice_xsk_clean_rx_ring(struct ice_rx_ring *rx_ring)
- {
--	u16 count_mask = rx_ring->count - 1;
- 	u16 ntc = rx_ring->next_to_clean;
- 	u16 ntu = rx_ring->next_to_use;
- 
--	for ( ; ntc != ntu; ntc = (ntc + 1) & count_mask) {
-+	while (ntc != ntu) {
- 		struct xdp_buff *xdp = *ice_xdp_buf(rx_ring, ntc);
- 
- 		xsk_buff_free(xdp);
-+		ntc++;
-+		if (ntc >= rx_ring->count)
-+			ntc = 0;
- 	}
- }
- 
--- 
-2.35.1
+https://lore.kernel.org/all/CAG48ez17uXtjCTa7xpa=JWz3iBbNDQTKO2hvn6PAZtfW3kXgcA@mail.gmail.com/
 
+The fuse-passthrough series solved this by pre-registering the
+passthrogh fd with an ioctl. Since this requires an expicit syscall on
+the server side the attack is thwarted.
+
+It would be nice if this mechanism was agreed between these projects.
+
+BTW, does fuse-bpf provide a superset of fuse-passthrough?  I mean
+could fuse-bpf work with a NULL bpf program as a simple passthrough?
+
+Thanks,
+Miklos
