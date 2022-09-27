@@ -2,246 +2,194 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5AEC5EB6BF
-	for <lists+bpf@lfdr.de>; Tue, 27 Sep 2022 03:19:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A1BE5EB76A
+	for <lists+bpf@lfdr.de>; Tue, 27 Sep 2022 04:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229447AbiI0BT6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Sep 2022 21:19:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45976 "EHLO
+        id S229935AbiI0CPk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 26 Sep 2022 22:15:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229791AbiI0BT4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 26 Sep 2022 21:19:56 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B48B350185
-        for <bpf@vger.kernel.org>; Mon, 26 Sep 2022 18:19:54 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id p1-20020a17090a2d8100b0020040a3f75eso8611544pjd.4
-        for <bpf@vger.kernel.org>; Mon, 26 Sep 2022 18:19:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date;
-        bh=jQE5+PmUOftkOSJ9XRtLFySBSJBzPTR18hpFMxVHlZE=;
-        b=TC9tc+cOQd2pKK90T84eCxFEC1pnSoY+rEDmNmqt+rb7fXCv86cy9BwChd+iIz+L0B
-         sPNX9rmPDSmD1Nt39nfQbN6uA6XpATSP2lJ/zAhw3fRSCRn0Puxg/MnSPZD3358DSuU/
-         OeQGShoqnn+qesjjxL40pwXExClmeb9GAz3gGzci4taD/Kh4bMtnwvMRRowFPR30b0Xr
-         dqoscE0iGxSY9XGMI4rp25JgAMld6z6OdHqV7JT3WL2766sIOL/1oECNfSd87Ma/IkPm
-         TKAOeXw4mmzOQFRBefS7321e0AGV+rJ6cHW4tK8pMOCfz7hECc/u5bTrOy/2VKc1PKIu
-         blMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date;
-        bh=jQE5+PmUOftkOSJ9XRtLFySBSJBzPTR18hpFMxVHlZE=;
-        b=rMH10oh/bHSw2MHplH0JrhebVWRKqJ25vsKJUKpyugpjnMWBnPVFGzqZT4OeSzUbL5
-         P6g/kmaoneFWHIbWIjQk+vAHZSDEXGbGvtm/NVhcegINMtHRi/fBNl6JIOlet2DUxtLu
-         u7U47/PoQqYFPGWyGXtp8w/sXfZvoUX9IaNYG99H0D7Jk+ZS90VgwEp0hWeqtyxLIQ/p
-         eGg70RMIfidU1//Q1y+4MRzRDE3mDYsnZRS5LDj7jrcNjgcnyjvO0mz2XyjtmM8tMIWR
-         dVAh9ZnzNB5Cr+KiM6lM2yMP8cO7uiFJK87S5+TNRlAL5kM/VhOvdt/inhCLDpsjl6xy
-         VaHQ==
-X-Gm-Message-State: ACrzQf27UQvcdC89JaoUYNuJLQ+aVFRP/2aO+4NmL3Ov+kwLQSh+Sgwi
-        NzT+BBUJTvK1ju8jPevVjIDQ5zOb9ts=
-X-Google-Smtp-Source: AMsMyM4R6HTak8wwfm7eGjX2RonPDBWIu5/cQ7g6sU5EzgJp4+m0T/m0/MdqV7yfQOCi2lIcU6RElA==
-X-Received: by 2002:a17:902:bf46:b0:179:eba5:90ba with SMTP id u6-20020a170902bf4600b00179eba590bamr731211pls.16.1664241594010;
-        Mon, 26 Sep 2022 18:19:54 -0700 (PDT)
-Received: from macbook-pro-4.dhcp.thefacebook.com ([2620:10d:c090:400::5:2d3c])
-        by smtp.gmail.com with ESMTPSA id f14-20020a170902684e00b0016c57657977sm103842pln.41.2022.09.26.18.19.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Sep 2022 18:19:53 -0700 (PDT)
-Date:   Mon, 26 Sep 2022 18:19:49 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Hou Tao <houtao@huaweicloud.com>
-Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, houtao1@huawei.com
-Subject: Re: [PATCH bpf-next v2 00/13] Add support for qp-trie with dynptr key
-Message-ID: <20220927011949.sxxkyhjiig7wg7kv@macbook-pro-4.dhcp.thefacebook.com>
-References: <20220924133620.4147153-1-houtao@huaweicloud.com>
- <20220926012535.badx76iwtftyhq6m@MacBook-Pro-4.local>
- <ca0c97ae-6fd5-290b-6a00-fe3fe2e87aeb@huaweicloud.com>
+        with ESMTP id S229700AbiI0CPh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 26 Sep 2022 22:15:37 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9814561B1E;
+        Mon, 26 Sep 2022 19:15:35 -0700 (PDT)
+Received: from canpemm100010.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Mc34k6LqFzHtkK;
+        Tue, 27 Sep 2022 10:10:46 +0800 (CST)
+Received: from canpemm500010.china.huawei.com (7.192.105.118) by
+ canpemm100010.china.huawei.com (7.192.104.38) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Tue, 27 Sep 2022 10:15:33 +0800
+Received: from canpemm500010.china.huawei.com ([7.192.105.118]) by
+ canpemm500010.china.huawei.com ([7.192.105.118]) with mapi id 15.01.2375.031;
+ Tue, 27 Sep 2022 10:15:33 +0800
+From:   "liujian (CE)" <liujian56@huawei.com>
+To:     John Fastabend <john.fastabend@gmail.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>
+CC:     Jakub Sitnicki <jakub@cloudflare.com>,
+        Eric Dumazet <edumazet@google.com>,
+        davem <davem@davemloft.net>,
+        "yoshfuji@linux-ipv6.org" <yoshfuji@linux-ipv6.org>,
+        "dsahern@kernel.org" <dsahern@kernel.org>,
+        "Jakub Kicinski" <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        netdev <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: RE: [bug report] one possible out-of-order issue in sockmap
+Thread-Topic: [bug report] one possible out-of-order issue in sockmap
+Thread-Index: AdjPzwrK0RHLCS69QbyGLr5ej4bpUwA+hnmAAB7NriAAGXJbAAAayViQ
+Date:   Tue, 27 Sep 2022 02:15:33 +0000
+Message-ID: <0dc1f0f9a8064ec3abd12bdcb069aaaf@huawei.com>
+References: <061d068ccd6f4db899d095cd61f52114@huawei.com>
+ <YzCdHXtgKPciEusR@pop-os.localdomain>
+ <fb254c963d3549a19c066b6bd2acf9c7@huawei.com>
+ <6332169a699f8_4dfb7208e4@john.notmuch>
+In-Reply-To: <6332169a699f8_4dfb7208e4@john.notmuch>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.176.93]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ca0c97ae-6fd5-290b-6a00-fe3fe2e87aeb@huaweicloud.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Sep 26, 2022 at 09:18:46PM +0800, Hou Tao wrote:
-> Hi,
-> 
-> On 9/26/2022 9:25 AM, Alexei Starovoitov wrote:
-> > On Sat, Sep 24, 2022 at 09:36:07PM +0800, Hou Tao wrote:
-> >> From: Hou Tao <houtao1@huawei.com>
-> SNIP
-> >> For atomic ops and kmalloc overhead, I think I can reuse the idea from
-> >> patchset "bpf: BPF specific memory allocator". I have given bpf_mem_alloc
-> >> a simple try and encounter some problems. One problem is that
-> >> immediate reuse of freed object in bpf memory allocator. Because qp-trie
-> >> uses bpf memory allocator to allocate and free qp_trie_branch, if
-> >> qp_trie_branch is reused immediately, the lookup procedure may oops due
-> >> to the incorrect content in qp_trie_branch. And another problem is the
-> >> size limitation in bpf_mem_alloc() is 4096. It may be a little small for
-> >> the total size of key size and value size, but maybe I can use two
-> >> separated bpf_mem_alloc for key and value.
-> > 4096 limit for key+value size would be an acceptable trade-off.
-> > With kptrs the user will be able to extend value to much bigger sizes
-> > while doing <= 4096 allocation at a time. Larger allocations are failing
-> > in production more often than not. Any algorithm relying on successful
-> >  >= 4096 allocation is likely to fail. kvmalloc is a fallback that
-> > the kernel is using, but we're not there yet in bpf land.
-> > The benefits of bpf_mem_alloc in qp-trie would be huge though.
-> > qp-trie would work in all contexts including sleepable progs.
-> > As presented the use cases for qp-trie are quite limited.
-> > If I understand correctly the concern for not using bpf_mem_alloc
-> > is that qp_trie_branch can be reused. Can you provide an exact scenario
-> > that will casue issuses?
-> The usage of branch node during lookup is as follows:
-> (1) check the index field of branch node which records the position of nibble in
-> which the keys of child nodes are different
-> (2) calculate the index of child node by using the nibble value of lookup key in
-> index position
-> (3) get the pointer of child node by dereferencing the variable-length pointer
-> array in branch node
-> 
-> Because both branch node and leaf node have variable length, I used one
-> bpf_mem_alloc for these two node types, so if a leaf node is reused as a branch
-> node, the pointer got in step 3 may be invalid.
-> 
-> If using separated bpf_mem_alloc for branch node and leaf node, it may still be
-> problematic because the updates to a reused branch node are not atomic and
-> branch nodes with different child node will reuse the same object due to size
-> alignment in allocator, so the lookup procedure below may get an uninitialized
-> pointer in the pointer array:
-> 
-> lookup procedure                                update procedure
-> 
-> 
-> // three child nodes, 48-bytes
-> branch node x
->                                                               //  four child
-> nodes, 56-bytes
->                                                               reuse branch node x
->                                                               x->bitmap = 0xf
-> // got an uninitialized pointer
-> x->nodes[3]
->                                                               Initialize
-> x->nodes[0~3]
-
-Looking at lookup:
-+	while (is_branch_node(node)) {
-+		struct qp_trie_branch *br = node;
-+		unsigned int bitmap;
-+		unsigned int iip;
-+
-+		/* When byte index equals with key len, the target key
-+		 * may be in twigs->nodes[0].
-+		 */
-+		if (index_to_byte_index(br->index) > data_len)
-+			goto done;
-+
-+		bitmap = calc_br_bitmap(br->index, data, data_len);
-+		if (!(bitmap & br->bitmap))
-+			goto done;
-+
-+		iip = calc_twig_index(br->bitmap, bitmap);
-+		node = rcu_dereference_check(br->nodes[iip], rcu_read_lock_bh_held());
-+	}
-
-To be safe the br->index needs to be initialized after br->nodex and br->bitmap.
-While deleting the br->index can be set to special value which would mean
-restart the lookup from the beginning.
-As you're suggesting with smp_rmb/wmb pairs the lookup will only see valid br.
-Also the race is extremely tight, right?
-After brb->nodes[iip] + is_branch_node that memory needs to deleted on other cpu
-after spin_lock and reused in update after another spin_lock.
-Without artifical big delay it's hard to imagine how nodes[iip] pointer
-would be initialized to some other qp_trie_branch or leaf during delete,
-then memory reused and nodes[iip] is initialized again with the same address.
-Theoretically possible, but unlikely, right?
-And with correct ordering of scrubbing and updates to
-br->nodes, br->bitmap, br->index it can be made safe.
-
-We can add a sequence number to qp_trie_branch as well and read it before and after.
-Every reuse would inc the seq.
-If seq number differs, re-read the node pointer form parent.
-
-> The problem may can be solved by zeroing the unused or whole part of allocated
-> object. Maybe adding a paired smp_wmb() and smp_rmb() to ensure the update of
-> node array happens before the update of bitmap is also OK and the cost will be
-> much cheaper in x86 host.
-
-Something like this, right.
-We can also consider doing lookup under spin_lock. For a large branchy trie
-the cost of spin_lock maybe negligible.
-
-> Beside lookup procedure, get_next_key() from syscall also lookups trie
-> locklessly. If the branch node is reused, the order of returned keys may be
-> broken. There is also a parent pointer in branch node and it is used for reverse
-> lookup during get_next_key, the reuse may lead to unexpected skip in iteration.
-
-qp_trie_lookup_next_node can be done under spin_lock.
-Iterating all map elements is a slow operation anyway.
-
-> > Instead of call_rcu in qp_trie_branch_free (which will work only for
-> > regular progs and have high overhead as demonstrated by mem_alloc patches)
-> > the qp-trie freeing logic can scrub that element, so it's ready to be
-> > reused as another struct qp_trie_branch.
-> > I guess I'm missing how rcu protects this internal data structures of qp-trie.
-> > The rcu_read_lock of regular bpf prog helps to stay lock-less during lookup?
-> > Is that it?
-> Yes. The update is made atomic by copying the parent branch node to a new branch
-> node and replacing the pointer to the parent branch node by the new branch node,
-> so the lookup procedure either find the old branch node or the new branch node.
-> > So to make qp-trie work in sleepable progs the algo would need to
-> > be changed to do both call_rcu and call_rcu_task_trace everywhere
-> > to protect these inner structs?
-> > call_rcu_task_trace can take long time. So qp_trie_branch-s may linger
-> > around. So quick update/delete (in sleepable with call_rcu_task_trace)
-> > may very well exhaust memory. With bpf_mem_alloc we don't have this issue
-> > since rcu_task_trace gp is observed only when freeing into global mem pool.
-> > Say qp-trie just uses bpf_mem_alloc for qp_trie_branch.
-> > What is the worst that can happen? qp_trie_lookup_elem will go into wrong
-> > path, but won't crash, right? Can we do hlist_nulls trick to address that?
-> > In other words bpf_mem_alloc reuse behavior is pretty much SLAB_TYPESAFE_BY_RCU.
-> > Many kernel data structures know how to deal with such object reuse.
-> > We can have a private bpf_mem_alloc here for qp_trie_branch-s only and
-> > construct a logic in a way that obj reuse is not problematic.
-> As said above, qp_trie_lookup_elem may be OK with SLAB_TYPESAFE_BY_RCU. But I
-> don't know how to do it for get_next_key because the iteration result needs to
-> be ordered and can not skip existed elements before the iterations begins.
-
-imo it's fine to spin_lock in get_next_key.
-We should measure the lock overhead in lookup. It might be acceptable too.
-
-> If removing immediate reuse from bpf_mem_alloc, beside the may-decreased
-> performance, is there any reason we can not do that ?
-
-What do you mean?
-Always do call_rcu + call_rcu_tasks_trace for every bpf_mem_free ?
-As I said above:
-" call_rcu_task_trace can take long time. So qp_trie_branch-s may linger
-  around. So quick update/delete (in sleepable with call_rcu_task_trace)
-  may very well exhaust memory.
-"
-As an exercise try samples/bpf/map_perf_test on non-prealloc hashmap
-before mem_alloc conversion. Just regular call_rcu consumes 100% of all cpus.
-With call_rcu_tasks_trace it's worse. It cannot sustain such flood.
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogSm9obiBGYXN0YWJlbmQg
+W21haWx0bzpqb2huLmZhc3RhYmVuZEBnbWFpbC5jb21dDQo+IFNlbnQ6IFR1ZXNkYXksIFNlcHRl
+bWJlciAyNywgMjAyMiA1OjE2IEFNDQo+IFRvOiBsaXVqaWFuIChDRSkgPGxpdWppYW41NkBodWF3
+ZWkuY29tPjsgQ29uZyBXYW5nDQo+IDx4aXlvdS53YW5nY29uZ0BnbWFpbC5jb20+DQo+IENjOiBK
+b2huIEZhc3RhYmVuZCA8am9obi5mYXN0YWJlbmRAZ21haWwuY29tPjsgSmFrdWIgU2l0bmlja2kN
+Cj4gPGpha3ViQGNsb3VkZmxhcmUuY29tPjsgRXJpYyBEdW1hemV0IDxlZHVtYXpldEBnb29nbGUu
+Y29tPjsgZGF2ZW0NCj4gPGRhdmVtQGRhdmVtbG9mdC5uZXQ+OyB5b3NoZnVqaUBsaW51eC1pcHY2
+Lm9yZzsgZHNhaGVybkBrZXJuZWwub3JnOw0KPiBKYWt1YiBLaWNpbnNraSA8a3ViYUBrZXJuZWwu
+b3JnPjsgUGFvbG8gQWJlbmkgPHBhYmVuaUByZWRoYXQuY29tPjsNCj4gbmV0ZGV2IDxuZXRkZXZA
+dmdlci5rZXJuZWwub3JnPjsgYnBmQHZnZXIua2VybmVsLm9yZw0KPiBTdWJqZWN0OiBSRTogW2J1
+ZyByZXBvcnRdIG9uZSBwb3NzaWJsZSBvdXQtb2Ytb3JkZXIgaXNzdWUgaW4gc29ja21hcA0KPiAN
+Cj4gbGl1amlhbiAoQ0UpIHdyb3RlOg0KPiA+DQo+ID4NCj4gPiA+IC0tLS0tT3JpZ2luYWwgTWVz
+c2FnZS0tLS0tDQo+ID4gPiBGcm9tOiBDb25nIFdhbmcgW21haWx0bzp4aXlvdS53YW5nY29uZ0Bn
+bWFpbC5jb21dDQo+ID4gPiBTZW50OiBNb25kYXksIFNlcHRlbWJlciAyNiwgMjAyMiAyOjI2IEFN
+DQo+ID4gPiBUbzogbGl1amlhbiAoQ0UpIDxsaXVqaWFuNTZAaHVhd2VpLmNvbT4NCj4gPiA+IENj
+OiBKb2huIEZhc3RhYmVuZCA8am9obi5mYXN0YWJlbmRAZ21haWwuY29tPjsgSmFrdWIgU2l0bmlj
+a2kNCj4gPiA+IDxqYWt1YkBjbG91ZGZsYXJlLmNvbT47IEVyaWMgRHVtYXpldCA8ZWR1bWF6ZXRA
+Z29vZ2xlLmNvbT47DQo+IGRhdmVtDQo+ID4gPiA8ZGF2ZW1AZGF2ZW1sb2Z0Lm5ldD47IHlvc2hm
+dWppQGxpbnV4LWlwdjYub3JnOyBkc2FoZXJuQGtlcm5lbC5vcmc7DQo+ID4gPiBKYWt1YiBLaWNp
+bnNraSA8a3ViYUBrZXJuZWwub3JnPjsgUGFvbG8gQWJlbmkgPHBhYmVuaUByZWRoYXQuY29tPjsN
+Cj4gPiA+IG5ldGRldiA8bmV0ZGV2QHZnZXIua2VybmVsLm9yZz47IGJwZkB2Z2VyLmtlcm5lbC5v
+cmcNCj4gPiA+IFN1YmplY3Q6IFJlOiBbYnVnIHJlcG9ydF0gb25lIHBvc3NpYmxlIG91dC1vZi1v
+cmRlciBpc3N1ZSBpbiBzb2NrbWFwDQo+ID4gPg0KPiA+ID4gT24gU2F0LCBTZXAgMjQsIDIwMjIg
+YXQgMDc6NTk6MTVBTSArMDAwMCwgbGl1amlhbiAoQ0UpIHdyb3RlOg0KPiA+ID4gPiBIZWxsbywN
+Cj4gPiA+ID4NCj4gPiA+ID4gSSBoYWQgYSBzY3AgZmFpbHVyZSBwcm9ibGVtIGhlcmUuIEkgYW5h
+bHl6ZSB0aGUgY29kZSwgYW5kIHRoZQ0KPiA+ID4gPiByZWFzb25zIG1heQ0KPiA+ID4gYmUgYXMg
+Zm9sbG93czoNCj4gPiA+ID4NCj4gPiA+ID4gRnJvbSBjb21taXQgZTdhNWYxZjFjZDAwICgiYnBm
+L3NvY2ttYXA6IFJlYWQgcHNvY2sgaW5ncmVzc19tc2cNCj4gPiA+IGJlZm9yZQ0KPiA+ID4gPiBz
+a19yZWNlaXZlX3F1ZXVlIiwgaWYgd2UgdXNlIHNvY2tvcHMNCj4gPiA+ID4gKEJQRl9TT0NLX09Q
+U19BQ1RJVkVfRVNUQUJMSVNIRURfQ0INCj4gPiA+ID4gYW5kIEJQRl9TT0NLX09QU19QQVNTSVZF
+X0VTVEFCTElTSEVEX0NCKSB0byBlbmFibGUgc29ja2V0J3MNCj4gPiA+IHNvY2ttYXANCj4gPiA+
+ID4gZnVuY3Rpb24sIGFuZCBkb24ndCBlbmFibGUgc3RycGFyc2UgYW5kIHZlcmRpY3QgZnVuY3Rp
+b24sIHRoZQ0KPiA+ID4gPiBvdXQtb2Ytb3JkZXIgcHJvYmxlbSBtYXkgb2NjdXIgaW4gdGhlIGZv
+bGxvd2luZyBwcm9jZXNzLg0KPiA+ID4gPg0KPiA+ID4gPiBjbGllbnQgU0sgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIHNlcnZlciBTSw0KPiA+ID4gPiAtLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCj4gPiA+
+ID4gLS0tLQ0KPiA+ID4gPiAtLS0tDQo+ID4gPiA+IHRjcF9yY3Zfc3luc2VudF9zdGF0ZV9wcm9j
+ZXNzDQo+ID4gPiA+ICAgdGNwX2ZpbmlzaF9jb25uZWN0DQo+ID4gPiA+ICAgICB0Y3BfaW5pdF90
+cmFuc2Zlcg0KPiA+ID4gPiAgICAgICB0Y3Bfc2V0X3N0YXRlKHNrLCBUQ1BfRVNUQUJMSVNIRUQp
+Ow0KPiA+ID4gPiAgICAgICAvLyBpbnNlcnQgU0sgdG8gc29ja21hcA0KPiA+ID4gPiAgICAgd2Fr
+ZSB1cCB3YWl0dGVyDQo+ID4gPiA+ICAgICB0Y3Bfc2VuZF9hY2sNCj4gPiA+ID4NCj4gPiA+ID4g
+dGNwX2JwZl9zZW5kbXNnKG1zZ0EpDQo+ID4gPiA+IC8vIG1zZ0Egd2lsbCBnbyB0Y3Agc3RhY2sN
+Cj4gPiA+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB0Y3Bf
+cmN2X3N0YXRlX3Byb2Nlc3MNCj4gPiA+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIHRjcF9pbml0X3RyYW5zZmVyDQo+ID4gPiA+ICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8vaW5zZXJ0IFNLIHRvIHNvY2ttYXAN
+Cj4gPiA+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHRj
+cF9zZXRfc3RhdGUoc2ssDQo+ID4gPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgVENQX0VTVEFCTElTSEVEKQ0KPiA+ID4gPiAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgd2FrZSB1cCB3YWl0dGVyDQo+ID4g
+Pg0KPiA+ID4gSGVyZSBhZnRlciB0aGUgc29ja2V0IGlzIGluc2VydGVkIHRvIGEgc29ja21hcCwg
+aXRzDQo+ID4gPiAtPnNrX2RhdGFfcmVhZHkoKSBpcyBhbHJlYWR5IHJlcGxhY2VkIHdpdGgNCj4g
+PiA+IHNrX3Bzb2NrX3ZlcmRpY3RfZGF0YV9yZWFkeSgpLCBzbyBtc2dBIHNob3VsZCBnbyB0byBz
+b2NrbWFwLCBub3QgVENQDQo+IHN0YWNrPw0KPiA+ID4NCj4gPiBJdCBpcyBUQ1Agc3RhY2suICBI
+ZXJlIEkgb25seSBlbmFibGUgQlBGX1NLX01TR19WRVJESUNUIHR5cGUuDQo+ID4gYnBmdG9vbCBw
+cm9nIGxvYWQgYnBmX3JlZGlyLm8gL3N5cy9mcy9icGYvYnBmX3JlZGlyIG1hcCBuYW1lDQo+ID4g
+c29ja19vcHNfbWFwIHBpbm5lZCAvc3lzL2ZzL2JwZi9zb2NrX29wc19tYXAgYnBmdG9vbCBwcm9n
+IGF0dGFjaA0KPiA+IHBpbm5lZCAvc3lzL2ZzL2JwZi9icGZfcmVkaXIgbXNnX3ZlcmRpY3QgcGlu
+bmVkDQo+ID4gL3N5cy9mcy9icGYvc29ja19vcHNfbWFwDQo+IA0KPiBJcyB0aGUgc2VuZGVyIHVz
+aW5nIEZBU1RfT1BFTiBieSBhbnkgY2hhbmNlPyBXZSBrbm93IHRoaXMgYnVnIGV4aXN0cyBpbg0K
+PiB0aGlzIGNhc2UuIEZpeCB0YmQuDQoNCkZBU1RfT1BFTiBpcyBub3QgdXNlZC4NClRoZSBmb2xs
+b3dpbmcgdGVzdCBjYXNlcyBjYW4gYmUgdXNlZCB0byByZXByb2R1Y2UgdGhlIE9PTyBwcm9ibGVt
+LiANCkJ1dCB0aGUgd29yc3QtY2FzZSBzY2VuYXJpbyBkZXNjcmliZWQgaW4gdGhlIHByb2JsZW0g
+KHRoZSBhcnJpdmFsIG9mIG1zZ0EgaXMgbGF0ZXIgdGhhbiB0aGUgYXJyaXZhbCBvZiBtc2dCKSwg
+SSBoYXZlIG5vdCBiZWVuIGFibGUgdG8gY29uc3RydWN0IGFuIGluZXZpdGFibGUgY2FzZS4NCg0K
+dGNwX3NlcnZlci5jDQoNCmludCBzZXJ2ZXJfcG9ydCA9IDUwMDY7DQppbnQgbWFpbihpbnQgYXJn
+YywgY2hhciAqYXJndltdKQ0Kew0KCWludCBzZXJ2ZXJTb2NrZXQ7DQoJc3RydWN0IHNvY2thZGRy
+X2luIHNlcnZlcl9hZGRyOw0KCXN0cnVjdCBzb2NrYWRkcl9pbiBjbGllbnRBZGRyOw0KCWludCBh
+ZGRyX2xlbiA9IHNpemVvZihjbGllbnRBZGRyKTsNCglpbnQgY2xpZW50Ow0KCWNoYXIgYnVmZmVy
+WzIwMF07DQoJaW50IGlEYXRhTnVtOw0KCWludCBvcHRidWYsIHJldDsNCg0KCWlmIChhcmdjICE9
+IDIpIHsNCgkJcmV0dXJuIC0xOw0KCX0NCg0KCXNlcnZlcl9wb3J0ID0gIGF0b2koYXJndlsxXSk7
+DQoJaWYoIHNlcnZlcl9wb3J0PDEwMjUgfHwgc2VydmVyX3BvcnQ+NjU1MzUgKQ0KCXsNCgkJcmV0
+dXJuIC0xOw0KCX0NCg0KCWlmKChzZXJ2ZXJTb2NrZXQgPSBzb2NrZXQoQUZfSU5FVCwgU09DS19T
+VFJFQU0sIDApKSA8IDApDQoJew0KCQlwZXJyb3IoInNvY2tldCIpOw0KCQlyZXR1cm4gMTsNCgl9
+DQoJb3B0YnVmID0gMTsNCglyZXQgPSBzZXRzb2Nrb3B0KHNlcnZlclNvY2tldCwgU09MX1NPQ0tF
+VCwgU09fUkVVU0VBRERSLCAmb3B0YnVmLCBzaXplb2YoaW50KSk7DQoJaWYgKHJldCAhPSAwKQ0K
+CQlwZXJyb3IoInJldXNlYWRkciBmYWlsZWQiKTsNCgliemVybygmc2VydmVyX2FkZHIsIHNpemVv
+ZihzZXJ2ZXJfYWRkcikpOw0KCXNlcnZlcl9hZGRyLnNpbl9mYW1pbHkgPSBBRl9JTkVUOw0KCXNl
+cnZlcl9hZGRyLnNpbl9wb3J0ID0gaHRvbnMoc2VydmVyX3BvcnQpOw0KCXNlcnZlcl9hZGRyLnNp
+bl9hZGRyLnNfYWRkciA9IGh0b25sKElOQUREUl9BTlkpOw0KCWlmKGJpbmQoc2VydmVyU29ja2V0
+LCAoc3RydWN0IHNvY2thZGRyICopJnNlcnZlcl9hZGRyLCBzaXplb2Yoc2VydmVyX2FkZHIpKSA8
+IDApDQoJew0KCQlwZXJyb3IoImNvbm5lY3QiKTsNCgkJcmV0dXJuIDE7DQoJfQ0KCWlmKGxpc3Rl
+bihzZXJ2ZXJTb2NrZXQsIDUpIDwgMCkNCgl7DQoJCXBlcnJvcigibGlzdGVuIik7DQoJCXJldHVy
+biAxOw0KCX0NCgl3aGlsZSgxKQ0KCXsNCgkJY2xpZW50ID0gYWNjZXB0KHNlcnZlclNvY2tldCwg
+KHN0cnVjdCBzb2NrYWRkciopJmNsaWVudEFkZHIsIChzb2NrbGVuX3QqKSZhZGRyX2xlbik7DQoJ
+CWlmKGNsaWVudCA8IDApDQoJCXsNCgkJCXBlcnJvcigiYWNjZXB0Iik7DQoJCQljb250aW51ZTsN
+CgkJfQ0KCQlwcmludGYoIndhaXQgdW50aWwgdGhlIHR3byBtc2dzIG9mIGNsaWVudCBhcmUgc2Vu
+dC4uLlxuIik7DQoJCXNsZWVwKDUpOw0KCQl3aGlsZSgxKQ0KCQl7DQoJCQlwcmludGYoInJlY3Zt
+c2c6Iik7DQoJCQlidWZmZXJbMF0gPSAnXDAnOw0KCQkJaURhdGFOdW0gPSByZWN2KGNsaWVudCwg
+YnVmZmVyLCAxMDI0LCAwKTsNCgkJCWlmKGlEYXRhTnVtIDwgMCkNCgkJCXsNCgkJCQlwZXJyb3Io
+InJlY3YgbnVsbCIpOw0KCQkJCWNvbnRpbnVlOw0KCQkJfQ0KCQkJYnVmZmVyW2lEYXRhTnVtXSA9
+ICdcMCc7DQoJCQlwcmludGYoIiVzXG4iLCBidWZmZXIpOw0KCQkJc2xlZXAoMik7DQoJCX0NCgl9
+DQoJY2xvc2Uoc2VydmVyU29ja2V0KTsNCglyZXR1cm4gMDsNCn0NCg0KDQoNCnRjcF9jbGllbnQu
+Yw0KDQppbnQgc2VydmVyX3BvcnQgPSA1MDA2Ow0KaW50IG1haW4oaW50IGFyZ2MsIGNoYXIgKmFy
+Z3ZbXSkNCnsNCglpbnQgY2xpZW50U29ja2V0Ow0KCXN0cnVjdCBzb2NrYWRkcl9pbiBzZXJ2ZXJB
+ZGRyOw0KCXN0cnVjdCBzb2NrYWRkcl9pbiBjbGllbnRBZGRyOw0KCWNoYXIgc2VuZGJ1Zls0MDk2
+XTsNCgljaGFyIHJlY3ZidWZbNDA5Nl07DQoJaW50IGlEYXRhTnVtOw0KCWludCByZXQ7DQoJaW50
+IGNsaWVudF9wb3J0Ow0KDQoJaWYgKGFyZ2MgIT0gMykgew0KCQlwcmludGYoImNsaWVudCBbc3Bv
+cnRdIFtkcG9ydF1cbiIpOw0KCQlyZXR1cm4gLTE7DQoJfQ0KDQoJY2xpZW50X3BvcnQgPSAgYXRv
+aShhcmd2WzFdKTsNCglpZihjbGllbnRfcG9ydDwxMDI1IHx8IGNsaWVudF9wb3J0PjY1NTM1ICkN
+Cgl7DQoJCXJldHVybiAtMTsNCgl9DQoNCglzZXJ2ZXJfcG9ydCA9ICBhdG9pKGFyZ3ZbMl0pOw0K
+CWlmKCBzZXJ2ZXJfcG9ydDwxMDI1IHx8IHNlcnZlcl9wb3J0PjY1NTM1ICkNCgl7DQoJCXJldHVy
+biAtMTsNCgl9DQoNCglpZigoY2xpZW50U29ja2V0ID0gc29ja2V0KEFGX0lORVQsIFNPQ0tfU1RS
+RUFNLCAwKSkgPCAwKQ0KCXsNCgkJcGVycm9yKCJzb2NrZXQiKTsNCgkJcmV0dXJuIDE7DQoJfQ0K
+CWJ6ZXJvKCZjbGllbnRBZGRyLCBzaXplb2YoY2xpZW50QWRkcikpOw0KCWNsaWVudEFkZHIuc2lu
+X2ZhbWlseSA9IEFGX0lORVQ7DQoJY2xpZW50QWRkci5zaW5fcG9ydCA9IGh0b25zKGNsaWVudF9w
+b3J0KTsNCgljbGllbnRBZGRyLnNpbl9hZGRyLnNfYWRkciA9IGh0b25sKElOQUREUl9BTlkpOw0K
+CWlmKGJpbmQoY2xpZW50U29ja2V0LCAoc3RydWN0IHNvY2thZGRyICopJmNsaWVudEFkZHIsIHNp
+emVvZihjbGllbnRBZGRyKSkgPCAwKQ0KCXsNCgkJcGVycm9yKCJiaW5kIik7DQoJCXJldHVybiAx
+Ow0KCX0NCgliemVybygmc2VydmVyQWRkciwgc2l6ZW9mKHNlcnZlckFkZHIpKTsNCglzZXJ2ZXJB
+ZGRyLnNpbl9mYW1pbHkgPSBBRl9JTkVUOw0KCXNlcnZlckFkZHIuc2luX3BvcnQgPSBodG9ucyhz
+ZXJ2ZXJfcG9ydCk7DQoJc2VydmVyQWRkci5zaW5fYWRkci5zX2FkZHIgPSBpbmV0X2FkZHIoIjEy
+Ny4wLjAuMSIpOw0KCXN5c3RlbSgiaXB0YWJsZXMgLUEgSU5QVVQgLXAgdGNwIC1tIHRjcCAtLWRw
+b3J0IDUwMDYgLS10Y3AtZmxhZ3MgU1lOLFJTVCxBQ0ssRklOIEFDSyAtaiBEUk9QIik7DQoJaWYo
+Y29ubmVjdChjbGllbnRTb2NrZXQsIChzdHJ1Y3Qgc29ja2FkZHIgKikmc2VydmVyQWRkciwgc2l6
+ZW9mKHNlcnZlckFkZHIpKSA8IDApDQoJew0KCQlwZXJyb3IoImNvbm5lY3QiKTsNCgkJcmV0dXJu
+IDE7DQoJfQ0KDQoJbWVtc2V0KHNlbmRidWYsIDAsIHNpemVvZihzZW5kYnVmKSk7DQoJbWVtY3B5
+KHNlbmRidWYsICJBQUFBQUFBQUFBQSIsIDEwKTsgDQoJcmV0ID0gc2VuZChjbGllbnRTb2NrZXQs
+IHNlbmRidWYsIHN0cmxlbihzZW5kYnVmKSwgMCk7DQoJaWYgKHJldCA8PSAwKSB7DQoJCXBlcnJv
+cigic2VuZCBmYWlsXG4iKTsNCgkJcmV0dXJuIC0xOw0KCX0NCglwcmludGYoImZpbmlzaCBzZW5k
+IEFcbiIpOw0KCXN5c3RlbSgiaXB0YWJsZXMgLUQgSU5QVVQgLXAgdGNwIC1tIHRjcCAtLWRwb3J0
+IDUwMDYgLS10Y3AtZmxhZ3MgU1lOLFJTVCxBQ0ssRklOIEFDSyAtaiBEUk9QIik7DQoJc2xlZXAo
+Mik7IC8vIHdhaXQgc2VydmVyc2sgaW5zZXJ0IHRvIHNvY2ttYXANCglwcmludGYoInN0YXJ0IHNl
+bmQgYlxuIik7DQoJbWVtY3B5KHNlbmRidWYsICJiYmJiYmJiYmJiYmJiIiwgMTApOyANCglyZXQg
+PSBzZW5kKGNsaWVudFNvY2tldCwgc2VuZGJ1Ziwgc3RybGVuKHNlbmRidWYpLCAwKTsNCglpZiAo
+cmV0IDw9IDApIHsNCgkJcGVycm9yKCJzZW5kIGZhaWxcbiIpOw0KCQlyZXR1cm4gLTE7DQoJfQ0K
+DQoJc2xlZXAoMTApOw0KCWNsb3NlKGNsaWVudFNvY2tldCk7DQoJcmV0dXJuIDA7DQp9DQoNClty
+b290QGxvY2FsaG9zdCBzb2NrbWFwX3Rlc3RdIyAuL3NlcnZlciA1MDA2DQp3YWl0IHVudGlsIHRo
+ZSB0d28gbXNncyBvZiBjbGllbnQgYXJlIHNlbnQuLi4NCnJlY3Ztc2c6YmJiYmJiYmJiYg0KcmVj
+dm1zZzpBQUFBQUFBQUFBDQpeQw0K
