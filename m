@@ -2,286 +2,184 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4A515EB895
-	for <lists+bpf@lfdr.de>; Tue, 27 Sep 2022 05:21:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A8935EB8C6
+	for <lists+bpf@lfdr.de>; Tue, 27 Sep 2022 05:28:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231196AbiI0DVX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Sep 2022 23:21:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46214 "EHLO
+        id S229559AbiI0D2l (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 26 Sep 2022 23:28:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231258AbiI0DUq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 26 Sep 2022 23:20:46 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8CBF83BC0
-        for <bpf@vger.kernel.org>; Mon, 26 Sep 2022 20:18:20 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id r18so17939003eja.11
-        for <bpf@vger.kernel.org>; Mon, 26 Sep 2022 20:18:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=CWlSkEAKOt3CjBH1gb42Gn/ILQzE4rDyMFp8HMJEEAw=;
-        b=loYZj2zvDp4NCOvbSGj+kFjut/qPA/x/LZQwUlo+Rkob/6xtmQcEChda7veKNd+kOi
-         wgnq7/5bv4w4A+f/0eegRUF1Ex3Rsbe44ov2+HL5tf1xTMHsjgPAk+EljUHV5cAnlpRt
-         w1I3g19YnJQx6CTPCaOo7CfWLQXcR520ll69/mUaUczZbK43ppcsVifb2++Mt/0Gr/yz
-         dqUbPW839jeVo+rLf50Psi+9PFObepR/v9PgtLmT2voSQpRUsdH6EZcv3KI0qqm0ORZX
-         BDQ8Vz0Dlm2ZXNOj4D6JLqkDmV8G4wdqSLJscvICgSoS6FSyaIGO+paFkN42LAc2qknB
-         QBug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=CWlSkEAKOt3CjBH1gb42Gn/ILQzE4rDyMFp8HMJEEAw=;
-        b=4VUaR02zCj/NaoCR/0aJNkRjifiuAXs5TPKFFkTx8+lAP2kiDWLGpx/bc6QikrJoj0
-         isJI3+CYQCuaLalCtP2f5U4MBItRPlG4emnA1v6REaIloiRJgdpgRSBHoQNIWu3X3BO5
-         SadhB54GIPmec1rm51yIoVdDie/2bY86WDJiF1tLPCQHd9QZl4BlMi+RwRaXqTV0K+IN
-         CCr2UheFF0Ic4OUtbY1wtCGwbYhONA/OCGC93dSgSJwPq0jXCJwzpvu2UWJ3th5Fcu97
-         R8AM12s4VRFVU2oVDTVImV+N0mCv301MeVilSyReB2ZjpNM1/nxuauBlBcry0gpzV2T8
-         NYqQ==
-X-Gm-Message-State: ACrzQf0ay63G61J3cS9Q0qh0hzOGHxVQfM0J+eBiF/C8Tp8C0UWMdhVD
-        +8if7mD3p57m6RDOKmhqGCrxBhD0sPs7se1ls6o=
-X-Google-Smtp-Source: AMsMyM5pSM5TQq+M+vhBtgzK0uc5Ml3XDeFGY7jTkWbCtIT8TYD+f5k1ggDLPPrkUn/VlCs4hCVPtGUtASr6jC1Dhdw=
-X-Received: by 2002:a17:906:3a15:b0:73d:80bf:542c with SMTP id
- z21-20020a1709063a1500b0073d80bf542cmr21392425eje.633.1664248698542; Mon, 26
- Sep 2022 20:18:18 -0700 (PDT)
+        with ESMTP id S231246AbiI0D1q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 26 Sep 2022 23:27:46 -0400
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04E0E1003B8;
+        Mon, 26 Sep 2022 20:25:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1664249148; x=1695785148;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=ImMUiFYyNtLv2p2/uiMCkoCNgSD/1SLDJVh/3XSJI0I=;
+  b=J6s/FIqWJWFh7wv7lyx8NFJsC/odmdwjNB8hD8++dTauHSCBHEERCUlb
+   610CVXjLCQ7kcxuhcqP0kS9pgNwa928DbuzfK6WTTnFIjEO5xLWRxV9A2
+   m9FYyCrM5rAKqmcDq51KrYHn1JdR1ffPbLIgGG04Xwb6yE/j+RJY0f0ET
+   Lnc+k9jVrvZWtNEuoSjLMkXVaDGL8kxYpErzQi06zH2XmzumhkP65FEjf
+   ZAyXtNFyY9bInB67B9eWItUdsD08n0y/Eu4KmSj5hpwXefEe2Q3zWnqEU
+   2DwqoDePktb6knGNRgxNaxty4zVTR24SzM0xkbaa4MeI1yOSglSz4/zVK
+   Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10482"; a="298803356"
+X-IronPort-AV: E=Sophos;i="5.93,348,1654585200"; 
+   d="scan'208";a="298803356"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2022 20:25:47 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10482"; a="725334089"
+X-IronPort-AV: E=Sophos;i="5.93,348,1654585200"; 
+   d="scan'208";a="725334089"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by fmsmga002.fm.intel.com with ESMTP; 26 Sep 2022 20:25:47 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Mon, 26 Sep 2022 20:25:46 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31 via Frontend Transport; Mon, 26 Sep 2022 20:25:46 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.171)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2375.31; Mon, 26 Sep 2022 20:25:46 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SqMYsBjBHciq/j8CFvEL7HrwguU7xcNg9lRX6SzTvxsEtlZ+mvuFB48kNxug+77zobP4ehFvhAX0mi201znxDaMYk/bzJEcDvf1KcmxjKENbtE+qlUa+H7QJBB4VunRbr2eWB1nySKKC+q7Tsv6yRf0dx8zNFAc0qtvGI1TGO1HSM56rEI2mmD6UC5cPbx3XEwwvM3uSgdlV2kUIRlTcoNNUCD4l2bjYvfKfCjKDo0yL41Kac68/YbDHnJad/VWI2JeRBXN8Dc3BviK+avoGlh4/qriIzRoJCfv6ltDoCbMJitsfMu9UhmNIoR+sQUYi3tOqKdKpXiQKbY0fLf8+VQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Y+CRwpJ+KoHDCwl0yadAT0T9XFsIgrCOFYTvqaj7Jek=;
+ b=HIdYhkp36QsNRLHiLNCR9Fp2EXLiZaUAFjsmWVdcN+gAdw1lEVWplHBoLIkag5J4oeJUHmeIy/s8f1VeMxQcVJHuPumTD34D18An9vYYX5/Sjp9PngKL8nXFMqPAH674J0zRpapTowkNMMQYet3EKcIuNCsrHgZ4vtP1bpYDBKBceu/6SV2mYEqJ6NADeg4RCB/w7oEo58q5mPEY+TNtGt8zbLfccXR/Fzkf21VDScPTw1enJiEqEhR/zIhAN1kuG5ruAs4bZmTO6E7dPu3zRQmTCQrnF2YdenJmBnssdDPe84q7aCLaODAUboYuhzQiLtebinhoR9zvnVF8bM/icQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from PH0PR11MB5144.namprd11.prod.outlook.com (2603:10b6:510:3e::20)
+ by IA1PR11MB7319.namprd11.prod.outlook.com (2603:10b6:208:425::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5654.24; Tue, 27 Sep
+ 2022 03:25:44 +0000
+Received: from PH0PR11MB5144.namprd11.prod.outlook.com
+ ([fe80::d1ff:f036:e0a7:9af6]) by PH0PR11MB5144.namprd11.prod.outlook.com
+ ([fe80::d1ff:f036:e0a7:9af6%3]) with mapi id 15.20.5654.025; Tue, 27 Sep 2022
+ 03:25:44 +0000
+From:   "Kuruvinakunnel, George" <george.kuruvinakunnel@intel.com>
+To:     "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
+        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>
+CC:     "alasdair.mcwilliam@outlook.com" <alasdair.mcwilliam@outlook.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>
+Subject: RE: [Intel-wired-lan] [PATCH v3 intel-net 2/2] ice: xsk: drop power
+ of 2 ring size restriction for AF_XDP
+Thread-Topic: [Intel-wired-lan] [PATCH v3 intel-net 2/2] ice: xsk: drop power
+ of 2 ring size restriction for AF_XDP
+Thread-Index: AQHYve9d5G4vYkbPgUOMSrWmglaRIK3yxXRg
+Date:   Tue, 27 Sep 2022 03:25:44 +0000
+Message-ID: <PH0PR11MB5144E9C60B933B77DA50F7CEE2559@PH0PR11MB5144.namprd11.prod.outlook.com>
+References: <20220901104040.15723-1-maciej.fijalkowski@intel.com>
+ <20220901104040.15723-3-maciej.fijalkowski@intel.com>
+In-Reply-To: <20220901104040.15723-3-maciej.fijalkowski@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.6.500.17
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR11MB5144:EE_|IA1PR11MB7319:EE_
+x-ms-office365-filtering-correlation-id: 5a557ae8-dc98-4005-2199-08daa037f665
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: kJTzGkyYJ3VHMonDMwQYfhFr4fbQtYFwifqc5/e4BtTbVqIv/w9mmMtLxng4Rr4R+nFjq1aRsnvS8eoHKWxRTpYGEi8Sv+5QEPoSPr8YTvpcp2V+wl+exgl4NnFrJaSdUuomxAjFyqhNfcMOFXJ6x0cw/wjEgNcd3uwfQDduoj8WaSropUsBSjyGgSA5fyI0VCRNIW4+wX0Q5qjjT7n5wQggFVvhSLGEaMFSK4T6XWdoqlx5dcp/yLbfWkWW7VBa6kqBQtnAVt0n5YsmE8Un7Hb1BYS9OOU1NkFsdNl7PR5CQq2ULDgnbrbdtO60tUwzyjnbpGhDQHW/dcEutOgAuFYpXjUVT8I6vnsATwzt5tVxQXUoNlDdxg1Qa3ufswhby5eXvaApkZuMP1QrhQaQyr1Dzh5ptPL4l/JL81hH2qhN62DSq8RLocwBd79q1OeFUdZLBS0vC7+mqoGrVuWi55e5ayzPnojMhYI+9xpZKBaHa+kmCk08isQg3+sJtve7k9mZUTJudxSMapLYj3W1tK0zVRuU1MALRmeak0bOGXPasB9Bi+MkqtXAHDrmfTyi5s1FEvaynRuoQgtWYienN2kAeBIRg7owDLcLpsVDnGRPd2BPj5Ip5zt1E/n/S7k7G2jqsGLEBTGWB6sed+D5LSbxM08h6UVH18xoGZZ61MvvKxBpe1lf1uGLb2lKDpJyNJC/k2YVnBylPu2TvhQPTg6knIT0R2fvzN5WpC/itVaHA1/yZ2DCLiayR6wep9noB961qwcJPx1q2Ui2nIxC1w==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5144.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(39860400002)(396003)(346002)(136003)(366004)(376002)(451199015)(41300700001)(71200400001)(478600001)(107886003)(33656002)(45080400002)(186003)(122000001)(8676002)(38100700002)(2906002)(110136005)(54906003)(83380400001)(86362001)(55016003)(6506007)(55236004)(7696005)(26005)(9686003)(53546011)(5660300002)(8936002)(66476007)(4744005)(52536014)(38070700005)(316002)(66446008)(66556008)(66946007)(76116006)(4326008)(64756008)(82960400001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?sFI9RCV1keqVHTB4UKMnHg3sOhO6HUHtdleVJaH4NGIEuj3q6TvhhrdFNpJ/?=
+ =?us-ascii?Q?h676TZuwYi1A6q3UHBUB+YQHKdQXwgyVffX1EJO8vx2xrrlOyKVNWG6JiNjY?=
+ =?us-ascii?Q?ar9m7gSvCoIP5RtusZM35+l9r+hr6O4VK4Jgy8waQiJBhoyMNuLDy7N+DRTm?=
+ =?us-ascii?Q?MFjrTuA8WQ617814Jr2yYS4HEYSV+H9qbVnpdtKG9x8b5eFHN0dKp2m0roxM?=
+ =?us-ascii?Q?hF8zNX4LeBn9/9cVL8egM8tiwZsp7igOyHmrHv1gOcBJJBFs8W2kSLoL2aFs?=
+ =?us-ascii?Q?izu/tfh1pZsMFTW+nS+jrgXHfRCxaoNxxgSbvmT219APw2JdCV/OPrGujLcs?=
+ =?us-ascii?Q?p/Esn7Z1/Mz3ithni22skWkk1QkEiRyQBqPuz8DQ35sAF1Jgh8hogE3l869j?=
+ =?us-ascii?Q?XM65PUdUE/tFN/jVchoBdX3UJO1hKNs7IjxywH3AGBxVpr9monfTB6Uv74uf?=
+ =?us-ascii?Q?yCLukzsWCGxctjBHE2AhWlZ+yNgWPyFqQ99eqMtwdTY6rGM7nfkKupUYtt7z?=
+ =?us-ascii?Q?9Zt1Ubt1UXa6GPKmy2ThlGNVJUcRHo4Qt2MdWTJuZUhBOSVy6SzUcbi1smCN?=
+ =?us-ascii?Q?sarqLL80Mjs/f0lDAZqVND/os1CsQtofMdoPjnskAQZhwXmOi21Ckv9v/g6E?=
+ =?us-ascii?Q?rISivHw1BVRUoXsySWvN7Hm38NSgKsnlG4pYM3bCheroMrZWbr/d/gG9fIAh?=
+ =?us-ascii?Q?kHe14HYJBOprdhp7cV+e3EADx7TLtc6v8Lc19ouSQGp1ZBEFZ7A/MX1pU5pf?=
+ =?us-ascii?Q?viNLwIDphtr/8ZppbCkroKVApqkcG6/96oMknmLQFt2hh4ihtbVbGmILnA8I?=
+ =?us-ascii?Q?PJ1S0LupFs67wvuJYzhgkH/IKAOqKRGNrXlWPmlEl39q/i7ViH4SeWy2jyoT?=
+ =?us-ascii?Q?xWxrrcc99D1aOW+jeTedCFb7oUYHcZmfMvIr0WCaBFNfsYGkvmOkP/lZUuqM?=
+ =?us-ascii?Q?sRNfQpRc1Xm63NnvosgXrvmuIxSmv8w1aUAcftjzjVRE13K7HOxIR7EEhvHc?=
+ =?us-ascii?Q?WVA4GFghLhH9egIBKp4NQ7oKiJldhxIM+V0BHF/RjX80lpNKVs1HJskzmlCW?=
+ =?us-ascii?Q?fU0YNZ0cDgmaXTN7ZZqEoTRHDppnwmaDv7LhWSQbqc2Yl5YJ+1N1/LTkqDpU?=
+ =?us-ascii?Q?ho50V6gfvX/Y6O0L2i5j6umclixcogZlAV0Mbl0MEMh31iJxjnFZD45MRuIC?=
+ =?us-ascii?Q?/ODDr0viOxFC/diZxVRJDbH5PZjA9g4KCln01uB08JShJm5tErA8c8puVOr4?=
+ =?us-ascii?Q?s5+UoRISZqWG50Wa6oz10JLn3DnTBhqM2KR64IPydZtOuzOwT7k0J493pEVs?=
+ =?us-ascii?Q?8D7SzBwiq3uCtPDKfLHnIi9BEOUu+CuMEGADitgpdXi5erCj+rzXfO+cpV9B?=
+ =?us-ascii?Q?Wzakc65Zg9FDXkZzhIyUMPrJjRnTsnyacSVM9xS12QI7ZU8d01/XIerC9+Y8?=
+ =?us-ascii?Q?X4RNh5uIZ/3u9AgfgD7ejDpnBRSYv78uGFsuY+USAbih51qQIcehQmX6zAQW?=
+ =?us-ascii?Q?hygVTVgWQ0DKy4BuIK7OGHEgJPFB+EBoJuQqE1Wo16pvwtmVaTJwmvkHX3Kd?=
+ =?us-ascii?Q?/ePhQMbiG7Sbh9MDtraOah/yDETlN1X1AbmgkHh4F5AyqTijLc47YUZaeG2R?=
+ =?us-ascii?Q?xA=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20220924133620.4147153-1-houtao@huaweicloud.com>
- <20220926012535.badx76iwtftyhq6m@MacBook-Pro-4.local> <ca0c97ae-6fd5-290b-6a00-fe3fe2e87aeb@huaweicloud.com>
- <20220927011949.sxxkyhjiig7wg7kv@macbook-pro-4.dhcp.thefacebook.com> <3c7cf1a8-16f2-5876-ff92-add6fd795caf@huaweicloud.com>
-In-Reply-To: <3c7cf1a8-16f2-5876-ff92-add6fd795caf@huaweicloud.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 26 Sep 2022 20:18:07 -0700
-Message-ID: <CAADnVQL_fMx3P24wzw2LMON-SqYgRKYziUHg6+mYH0i6kpvJcA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 00/13] Add support for qp-trie with dynptr key
-To:     Hou Tao <houtao@huaweicloud.com>
-Cc:     bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Hou Tao <houtao1@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5144.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5a557ae8-dc98-4005-2199-08daa037f665
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Sep 2022 03:25:44.3189
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 9NiGGMGv5LnbL3BF6Cf3tXOnGd4cPr0S8APv3KzRKgAAfxsz8kPhEx81XySm4Y1S0/qEp4Me/1a71csAsRpheyC6ahom3yPksDzDEC3r6S4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB7319
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Sep 26, 2022 at 8:08 PM Hou Tao <houtao@huaweicloud.com> wrote:
->
-> Hi,
->
-> On 9/27/2022 9:19 AM, Alexei Starovoitov wrote:
-> > On Mon, Sep 26, 2022 at 09:18:46PM +0800, Hou Tao wrote:
-> >> Hi,
-> >>
-> >> On 9/26/2022 9:25 AM, Alexei Starovoitov wrote:
-> >>> On Sat, Sep 24, 2022 at 09:36:07PM +0800, Hou Tao wrote:
-> >>>> From: Hou Tao <houtao1@huawei.com>
-> >> SNIP
-> >>>> For atomic ops and kmalloc overhead, I think I can reuse the idea from
-> >>>> patchset "bpf: BPF specific memory allocator". I have given bpf_mem_alloc
-> >>>> a simple try and encounter some problems. One problem is that
-> >>>> immediate reuse of freed object in bpf memory allocator. Because qp-trie
-> >>>> uses bpf memory allocator to allocate and free qp_trie_branch, if
-> >>>> qp_trie_branch is reused immediately, the lookup procedure may oops due
-> >>>> to the incorrect content in qp_trie_branch. And another problem is the
-> >>>> size limitation in bpf_mem_alloc() is 4096. It may be a little small for
-> >>>> the total size of key size and value size, but maybe I can use two
-> >>>> separated bpf_mem_alloc for key and value.
-> >>> 4096 limit for key+value size would be an acceptable trade-off.
-> >>> With kptrs the user will be able to extend value to much bigger sizes
-> >>> while doing <= 4096 allocation at a time. Larger allocations are failing
-> >>> in production more often than not. Any algorithm relying on successful
-> >>>  >= 4096 allocation is likely to fail. kvmalloc is a fallback that
-> >>> the kernel is using, but we're not there yet in bpf land.
-> >>> The benefits of bpf_mem_alloc in qp-trie would be huge though.
-> >>> qp-trie would work in all contexts including sleepable progs.
-> >>> As presented the use cases for qp-trie are quite limited.
-> >>> If I understand correctly the concern for not using bpf_mem_alloc
-> >>> is that qp_trie_branch can be reused. Can you provide an exact scenario
-> >>> that will casue issuses?
-> >> The usage of branch node during lookup is as follows:
-> >> (1) check the index field of branch node which records the position of nibble in
-> >> which the keys of child nodes are different
-> >> (2) calculate the index of child node by using the nibble value of lookup key in
-> >> index position
-> >> (3) get the pointer of child node by dereferencing the variable-length pointer
-> >> array in branch node
-> >>
-> >> Because both branch node and leaf node have variable length, I used one
-> >> bpf_mem_alloc for these two node types, so if a leaf node is reused as a branch
-> >> node, the pointer got in step 3 may be invalid.
-> >>
-> >> If using separated bpf_mem_alloc for branch node and leaf node, it may still be
-> >> problematic because the updates to a reused branch node are not atomic and
-> >> branch nodes with different child node will reuse the same object due to size
-> >> alignment in allocator, so the lookup procedure below may get an uninitialized
-> >> pointer in the pointer array:
-> >>
-> >> lookup procedure                                update procedure
-> >>
-> >>
-> >> // three child nodes, 48-bytes
-> >> branch node x
-> >>                                                               //  four child
-> >> nodes, 56-bytes
-> >>                                                               reuse branch node x
-> >>                                                               x->bitmap = 0xf
-> >> // got an uninitialized pointer
-> >> x->nodes[3]
-> >>                                                               Initialize
-> >> x->nodes[0~3]
-> > Looking at lookup:
-> > +     while (is_branch_node(node)) {
-> > +             struct qp_trie_branch *br = node;
-> > +             unsigned int bitmap;
-> > +             unsigned int iip;
-> > +
-> > +             /* When byte index equals with key len, the target key
-> > +              * may be in twigs->nodes[0].
-> > +              */
-> > +             if (index_to_byte_index(br->index) > data_len)
-> > +                     goto done;
-> > +
-> > +             bitmap = calc_br_bitmap(br->index, data, data_len);
-> > +             if (!(bitmap & br->bitmap))
-> > +                     goto done;
-> > +
-> > +             iip = calc_twig_index(br->bitmap, bitmap);
-> > +             node = rcu_dereference_check(br->nodes[iip], rcu_read_lock_bh_held());
-> > +     }
-> >
-> > To be safe the br->index needs to be initialized after br->nodex and br->bitmap.
-> > While deleting the br->index can be set to special value which would mean
-> > restart the lookup from the beginning.
-> > As you're suggesting with smp_rmb/wmb pairs the lookup will only see valid br.
-> > Also the race is extremely tight, right?
-> > After brb->nodes[iip] + is_branch_node that memory needs to deleted on other cpu
-> > after spin_lock and reused in update after another spin_lock.
-> > Without artifical big delay it's hard to imagine how nodes[iip] pointer
-> > would be initialized to some other qp_trie_branch or leaf during delete,
-> > then memory reused and nodes[iip] is initialized again with the same address.
-> > Theoretically possible, but unlikely, right?
-> > And with correct ordering of scrubbing and updates to
-> > br->nodes, br->bitmap, br->index it can be made safe.
-> The reuse of node not only introduces the safety problem (e.g. access an invalid
-> pointer), but also incur the false negative problem (e.g. can not find an
-> existent element) as show below:
->
-> lookup A in X on CPU1            update X on CPU 2
->
->      [ branch X v1 ]
->  leaf A | leaf B | leaf C
->                                                  [ branch X v2 ]
->                                                leaf A | leaf B | leaf C | leaf D
->
->                                                   // free and reuse branch X v1
->                                                   [ branch X v1 ]
->                                                 leaf O | leaf P | leaf Q
-> // leaf A can not be found
+> -----Original Message-----
+> From: Intel-wired-lan <intel-wired-lan-bounces@osuosl.org> On Behalf Of M=
+aciej
+> Fijalkowski
+> Sent: Thursday, September 1, 2022 4:11 PM
+> To: intel-wired-lan@lists.osuosl.org
+> Cc: alasdair.mcwilliam@outlook.com; netdev@vger.kernel.org;
+> bpf@vger.kernel.org; Karlsson, Magnus <magnus.karlsson@intel.com>
+> Subject: [Intel-wired-lan] [PATCH v3 intel-net 2/2] ice: xsk: drop power =
+of 2 ring
+> size restriction for AF_XDP
+>=20
+> We had multiple customers in the past months that reported commit
+> 296f13ff3854 ("ice: xsk: Force rings to be sized to power of 2") makes th=
+em
+> unable to use ring size of 8160 in conjunction with AF_XDP.
+> Remove this restriction.
+>=20
+> Fixes: 296f13ff3854 ("ice: xsk: Force rings to be sized to power of 2")
+> CC: Alasdair McWilliam <alasdair.mcwilliam@outlook.com>
+> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+> ---
+>  drivers/net/ethernet/intel/ice/ice_xsk.c | 20 +++++++-------------
+>  1 file changed, 7 insertions(+), 13 deletions(-)
+>=20
 
-Right. That's why I suggested to consider hlist_nulls-like approach
-that htab is using.
+Tested-by: George Kuruvinakunnel <george.kuruvinakunnel@intel.com>
 
-> > We can add a sequence number to qp_trie_branch as well and read it before and after.
-> > Every reuse would inc the seq.
-> > If seq number differs, re-read the node pointer form parent.
-> A seq number on qp_trie_branch is a good idea. Will try it. But we also need to
-> consider the starvation of lookup by update/deletion. Maybe need fallback to the
-> subtree spinlock after some reread.
-
-I think the fallback is an overkill. The race is extremely unlikely.
-
-> >> The problem may can be solved by zeroing the unused or whole part of allocated
-> >> object. Maybe adding a paired smp_wmb() and smp_rmb() to ensure the update of
-> >> node array happens before the update of bitmap is also OK and the cost will be
-> >> much cheaper in x86 host.
-> > Something like this, right.
-> > We can also consider doing lookup under spin_lock. For a large branchy trie
-> > the cost of spin_lock maybe negligible.
-> Do you meaning adding an extra spinlock to qp_trie_branch to protect again reuse
-> or taking the subtree spinlock during lookup ? IMO the latter will make the
-> lookup performance suffer, but I will check it as well.
-
-subtree lock. lookup perf will suffer a bit.
-The numbers will tell the true story.
-
-> >
-> >> Beside lookup procedure, get_next_key() from syscall also lookups trie
-> >> locklessly. If the branch node is reused, the order of returned keys may be
-> >> broken. There is also a parent pointer in branch node and it is used for reverse
-> >> lookup during get_next_key, the reuse may lead to unexpected skip in iteration.
-> > qp_trie_lookup_next_node can be done under spin_lock.
-> > Iterating all map elements is a slow operation anyway.
-> OK. Taking subtree spinlock is simpler but the scalability will be bad. Not sure
-> whether or not the solution for lockless lookup will work for get_next_key. Will
-> check.
-
-What kind of scalability are you concerned about?
-get_next is done by user space only. Plenty of overhead already.
-
-> >
-> >>> Instead of call_rcu in qp_trie_branch_free (which will work only for
-> >>> regular progs and have high overhead as demonstrated by mem_alloc patches)
-> >>> the qp-trie freeing logic can scrub that element, so it's ready to be
-> >>> reused as another struct qp_trie_branch.
-> >>> I guess I'm missing how rcu protects this internal data structures of qp-trie.
-> >>> The rcu_read_lock of regular bpf prog helps to stay lock-less during lookup?
-> >>> Is that it?
-> >> Yes. The update is made atomic by copying the parent branch node to a new branch
-> >> node and replacing the pointer to the parent branch node by the new branch node,
-> >> so the lookup procedure either find the old branch node or the new branch node.
-> >>> So to make qp-trie work in sleepable progs the algo would need to
-> >>> be changed to do both call_rcu and call_rcu_task_trace everywhere
-> >>> to protect these inner structs?
-> >>> call_rcu_task_trace can take long time. So qp_trie_branch-s may linger
-> >>> around. So quick update/delete (in sleepable with call_rcu_task_trace)
-> >>> may very well exhaust memory. With bpf_mem_alloc we don't have this issue
-> >>> since rcu_task_trace gp is observed only when freeing into global mem pool.
-> >>> Say qp-trie just uses bpf_mem_alloc for qp_trie_branch.
-> >>> What is the worst that can happen? qp_trie_lookup_elem will go into wrong
-> >>> path, but won't crash, right? Can we do hlist_nulls trick to address that?
-> >>> In other words bpf_mem_alloc reuse behavior is pretty much SLAB_TYPESAFE_BY_RCU.
-> >>> Many kernel data structures know how to deal with such object reuse.
-> >>> We can have a private bpf_mem_alloc here for qp_trie_branch-s only and
-> >>> construct a logic in a way that obj reuse is not problematic.
-> >> As said above, qp_trie_lookup_elem may be OK with SLAB_TYPESAFE_BY_RCU. But I
-> >> don't know how to do it for get_next_key because the iteration result needs to
-> >> be ordered and can not skip existed elements before the iterations begins.
-> > imo it's fine to spin_lock in get_next_key.
-> > We should measure the lock overhead in lookup. It might be acceptable too.
-> Will check that.
-> >
-> >> If removing immediate reuse from bpf_mem_alloc, beside the may-decreased
-> >> performance, is there any reason we can not do that ?
-> > What do you mean?
-> > Always do call_rcu + call_rcu_tasks_trace for every bpf_mem_free ?
-> Yes. Does doing call_rcu() + call_rcu_task_trace in batch help just like
-> free_bulk does ?
-> > As I said above:
-> > " call_rcu_task_trace can take long time. So qp_trie_branch-s may linger
-> >   around. So quick update/delete (in sleepable with call_rcu_task_trace)
-> >   may very well exhaust memory.
-> > "
-> > As an exercise try samples/bpf/map_perf_test on non-prealloc hashmap
-> > before mem_alloc conversion. Just regular call_rcu consumes 100% of all cpus.
-> > With call_rcu_tasks_trace it's worse. It cannot sustain such flood.
-> > .
-> Will check the result of map_perf_test. But it seems bpf_mem_alloc may still
-> exhaust memory if __free_rcu_tasks_trace() can not called timely, Will take a
-> close lookup on that.
-
-In theory. yes. The batching makes a big difference.
