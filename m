@@ -2,157 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DDDD5EBEE1
-	for <lists+bpf@lfdr.de>; Tue, 27 Sep 2022 11:45:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3D275EBF9B
+	for <lists+bpf@lfdr.de>; Tue, 27 Sep 2022 12:21:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230324AbiI0Jpq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Sep 2022 05:45:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50974 "EHLO
+        id S230461AbiI0KV1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 27 Sep 2022 06:21:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229670AbiI0Jpp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Sep 2022 05:45:45 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A888911171
-        for <bpf@vger.kernel.org>; Tue, 27 Sep 2022 02:45:36 -0700 (PDT)
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1od79i-0001bA-5M; Tue, 27 Sep 2022 11:45:34 +0200
-Received: from [85.1.206.226] (helo=linux-4.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1od79h-000D8e-W1; Tue, 27 Sep 2022 11:45:34 +0200
-Subject: Re: [PATCH bpf-next v2 1/2] bpf,x64: use shrx/sarx/shlx when
- available
-To:     Jie Meng <jmeng@fb.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org
-References: <a6d54d1e-f525-0351-18bd-647ea3d4814f@iogearbox.net>
- <20220924003211.775483-1-jmeng@fb.com> <20220924003211.775483-2-jmeng@fb.com>
- <427a1876-ac4c-ae4d-6320-5055d0a8ab51@iogearbox.net>
- <YzJGBx/7BED9Bwwm@fb.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <7437e1cb-325c-fc86-37f6-3422c085007d@iogearbox.net>
-Date:   Tue, 27 Sep 2022 11:45:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S230180AbiI0KVZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 27 Sep 2022 06:21:25 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 576B2D4A96
+        for <bpf@vger.kernel.org>; Tue, 27 Sep 2022 03:21:24 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id o20-20020a05600c4fd400b003b4a516c479so5167437wmq.1
+        for <bpf@vger.kernel.org>; Tue, 27 Sep 2022 03:21:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date;
+        bh=vgh002MbzGIvX+WNWBnASqpqcHfioqqk7UDCUr0BcD0=;
+        b=c8x5vdCdVwrSPGUJ1zvOAX9uZUIiOuP+7WTSPGV0j+E5BC2CTlKzoCNqDCQK0dcCRJ
+         RUvuyPK/+wwRCIZb1QH3UTRCnfH3yV8f8O64CKllJKBV8wUzPtHXJZeeHaJ0ARHobGmV
+         pyK64xm5laaM1/dinPPzsezrdg22/KQc8PfkluC6Z1bg06nMaKYjsgKQBHJcQA6jBk+k
+         1gUWEj5rPDlnsM6dKUFiOq+IzDP73Xo41tfX3G3BBlRZkaROLNOS0/wPk/ZaNsy6QfLn
+         UmoyajtfWyLolR2Q4ZKet6eJQfNScXlzkaZ7rcj6Mj3ZioSuSC9cP7bnwo4XjnPmpztJ
+         QTXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date;
+        bh=vgh002MbzGIvX+WNWBnASqpqcHfioqqk7UDCUr0BcD0=;
+        b=NX7PsDqu4MsFd8M2nuVUfq4JI//aQ6JozKCOi97bgE3SfUzzWIl0kbT1Lb5Xt5SF3t
+         Q9AVVX+OqWlkj7IB7YNZlqbMIONjelpfgfGN7ZfbksfdVmkx1pzFn5OPKBQJHTd9sfe9
+         dD10QPugaiLekIGvW4DGtOkC+Blgm3xZko9tmA/vnZ8332gCVYyHBKkdxlnR+srOPQfT
+         r8JxSDaFFNGxh60uzO5sAwskINyMPp3VQ++2EfqyG+b/uoTOnjkLlz1VyPAWissipqj+
+         MQBkY84KcHzj/txZYelIQe68QSGXnGako8dZwo9bUFJ2NcsN20QGX8rwrqLPRvQv4Biu
+         DZwQ==
+X-Gm-Message-State: ACrzQf1MfQPRbSV0cYDvPt+DC0iyAp7xUqdN5Ho2dNungr1V4amZQXXs
+        68sdxFmApKwWrZ/dknsvDZIYug==
+X-Google-Smtp-Source: AMsMyM5KigCTNRehqfnJPf5L8G60+lZ4zECOx1Of9PDTtLY1fplC++hd5EXvPKgw9T2j3xArGysK3A==
+X-Received: by 2002:a05:600c:524b:b0:3b4:8c0c:f3b6 with SMTP id fc11-20020a05600c524b00b003b48c0cf3b6mr2137807wmb.50.1664274082579;
+        Tue, 27 Sep 2022 03:21:22 -0700 (PDT)
+Received: from [192.168.178.32] ([51.155.200.13])
+        by smtp.gmail.com with ESMTPSA id l9-20020a5d4809000000b00228b3ff1f5dsm1503944wrq.117.2022.09.27.03.21.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Sep 2022 03:21:21 -0700 (PDT)
+Message-ID: <c5c5cedb-4b32-2569-1d55-fc95cad1b260@isovalent.com>
+Date:   Tue, 27 Sep 2022 11:21:20 +0100
 MIME-Version: 1.0
-In-Reply-To: <YzJGBx/7BED9Bwwm@fb.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.6/26671/Tue Sep 27 09:56:57 2022)
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.0
+Subject: Re: [PATCH 1/2] libbpf: add fPIC option for static library
+Content-Language: en-GB
+To:     Xin Liu <liuxin350@huawei.com>, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yanan@huawei.com, wuchangye@huawei.com, xiesongyang@huawei.com,
+        zhudi2@huawei.com, kongweibin2@huawei.com
+References: <20220924101209.50653-1-liuxin350@huawei.com>
+ <20220924101209.50653-2-liuxin350@huawei.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <20220924101209.50653-2-liuxin350@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 9/27/22 2:38 AM, Jie Meng wrote:
-> On Mon, Sep 26, 2022 at 09:16:41PM +0200, Daniel Borkmann wrote:
->> On 9/24/22 2:32 AM, Jie Meng wrote:
->>> Instead of shr/sar/shl that implicitly use %cl, emit their more flexible
->>> alternatives provided in BMI2
->>>
->>> Signed-off-by: Jie Meng <jmeng@fb.com>
->>> ---
->>>    arch/x86/net/bpf_jit_comp.c | 53 +++++++++++++++++++++++++++++++++++++
->>>    1 file changed, 53 insertions(+)
->>>
->>> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
->>> index ae89f4143eb4..2227d81a5e44 100644
->>> --- a/arch/x86/net/bpf_jit_comp.c
->>> +++ b/arch/x86/net/bpf_jit_comp.c
->>> @@ -889,6 +889,35 @@ static void emit_nops(u8 **pprog, int len)
->>>    	*pprog = prog;
->>>    }
->>> +static void emit_3vex(u8 **pprog, bool r, bool x, bool b, u8 m,
->>> +		      bool w, u8 src_reg2, bool l, u8 p)
->>> +{
->>> +	u8 *prog = *pprog;
->>> +	u8 b0 = 0xc4, b1, b2;
->>> +	u8 src2 = reg2hex[src_reg2];
->>> +
->>> +	if (is_ereg(src_reg2))
->>> +		src2 |= 1 << 3;
->>> +
->>> +	/*
->>> +	 *    7                           0
->>> +	 *  +---+---+---+---+---+---+---+---+
->>> +	 *  |~R |~X |~B |         m         |
->>> +	 *  +---+---+---+---+---+---+---+---+
->>> +	 */
->>> +	b1 = (!r << 7) | (!x << 6) | (!b << 5) | (m & 0x1f);
->>> +	/*
->>> +	 *    7                           0
->>> +	 *  +---+---+---+---+---+---+---+---+
->>> +	 *  | W |     ~vvvv     | L |   pp  |
->>> +	 *  +---+---+---+---+---+---+---+---+
->>> +	 */
->>> +	b2 = (w << 7) | ((~src2 & 0xf) << 3) | (l << 2) | (p & 3);
->>> +
->>> +	EMIT3(b0, b1, b2);
->>> +	*pprog = prog;
->>> +}
->>> +
->>>    #define INSN_SZ_DIFF (((addrs[i] - addrs[i - 1]) - (prog - temp)))
->>>    static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image, u8 *rw_image,
->>> @@ -1135,7 +1164,31 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image, u8 *rw_image
->>>    		case BPF_ALU64 | BPF_LSH | BPF_X:
->>>    		case BPF_ALU64 | BPF_RSH | BPF_X:
->>>    		case BPF_ALU64 | BPF_ARSH | BPF_X:
->>> +			if (boot_cpu_has(X86_FEATURE_BMI2) && src_reg != BPF_REG_4) {
->>> +				/* shrx/sarx/shlx dst_reg, dst_reg, src_reg */
->>> +				bool r = is_ereg(dst_reg);
->>> +				u8 m = 2; /* escape code 0f38 */
->>> +				bool w = (BPF_CLASS(insn->code) == BPF_ALU64);
->>
->> Looks like you just pass all the above vars into emit_3vex(), so why not hide them
->> there directly? The only thing really needed is p (and should probably be called op?),
->> so you just pass emit_3vex(&prog, op, dst_reg, src_reg)..
-> 
-> emit_3vex() is to encode the 3 bytes VEX prefix and exposes all the
-> information that can be encoded. The wish is to make it reusable for future
-> instructions that may use VEX so I deliberately avoided hardcoding anything that is specific to a particular instruction.
+Sat Sep 24 2022 11:12:08 GMT+0100 ~ Xin Liu <liuxin350@huawei.com>
+> Some programs depned on libbpf.a(eg:bpftool). If libbpf.a miss -fPIC,
 
-This bit of context was missing from your description, but I also think it's okay
-to do the refactor when the time comes where this gets reused. (You could also just
-hide these in an emit_shift which calls emit_3vex or such.. and explain your rationale
-in the commit message.)
+Typo "depned"
 
->> please also improve the
->> commit message a bit, e.g. before/after disasm + opcode hexdump example (e.g. extract
->> from bpftool dump) would be nice and also add a sentence about the BPF_REG_4 limitation
->> case.
+> this will cause a similar error at compile time:
 > 
-> Sure I can do that but would like to know your opinion about emit_3vex()
-> first.
->   
->>> +				u8 p;
->>> +
->>> +				switch (BPF_OP(insn->code)) {
->>> +				case BPF_LSH:
->>> +					p = 1; /* prefix 0x66 */
->>> +					break;
->>> +				case BPF_RSH:
->>> +					p = 3; /* prefix 0xf2 */
->>> +					break;
->>> +				case BPF_ARSH:
->>> +					p = 2; /* prefix 0xf3 */
->>> +					break;
->>> +				}
->>> +
->>> +				emit_3vex(&prog, r, false, r, m,
->>> +					  w, src_reg, false, p);
->>> +				EMIT2(0xf7, add_2reg(0xC0, dst_reg, dst_reg));
->>> +				break;
->>> +			}
->>>    			/* Check for bad case when dst_reg == rcx */
->>>    			if (dst_reg == BPF_REG_4) {
->>>    				/* mov r11, dst_reg */
->>>
+> /usr/bin/ld: .../libbpf.a(libbpf-in.o): relocation
+> R_AARCH64_ADR_PREL_PG_HI21 against symbol `stderr@@GLIBC_2.17' which
+> may bind externally can not be used when making a sharedobject;
+> recompile with -fPIC
+> 
+> Use -fPIC for static library compilation to solve this problem.
+> 
+> Signed-off-by: Xin Liu <liuxin350@huawei.com>
+> ---
+>  tools/lib/bpf/Makefile | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
+> index 4c904ef0b47e..427e971f4fcd 100644
+> --- a/tools/lib/bpf/Makefile
+> +++ b/tools/lib/bpf/Makefile
+> @@ -91,9 +91,10 @@ override CFLAGS += $(INCLUDES)
+>  override CFLAGS += -fvisibility=hidden
+>  override CFLAGS += -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
+>  override CFLAGS += $(CLANG_CROSS_FLAGS)
+> +override CFLAGS += -fPIC
+>  
+>  # flags specific for shared library
+> -SHLIB_FLAGS := -DSHARED -fPIC
+> +SHLIB_FLAGS := -DSHARED
+>  
+>  ifeq ($(VERBOSE),1)
+>    Q =
+
+Hi, the two patches look OK to me, but it would be nice to have a bit
+more context on what the flags do other than “fixing this particular
+issue” and how they improve bpftool security. It would also be
+interesting to have a note on what it does on various architectures, my
+understanding is that only some archs are supported (I read AArch64,
+m68k, PowerPC and SPARC), I guess the flags are silently ignored on x86
+for example?
+
+Thanks,
+Quentin
