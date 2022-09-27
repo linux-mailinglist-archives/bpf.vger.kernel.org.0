@@ -2,81 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCA3B5EBCB5
-	for <lists+bpf@lfdr.de>; Tue, 27 Sep 2022 10:06:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA9305EBDC2
+	for <lists+bpf@lfdr.de>; Tue, 27 Sep 2022 10:49:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230383AbiI0IGj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Sep 2022 04:06:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35440 "EHLO
+        id S231571AbiI0Itp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 27 Sep 2022 04:49:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231604AbiI0IGX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Sep 2022 04:06:23 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54BDBD12DB
-        for <bpf@vger.kernel.org>; Tue, 27 Sep 2022 01:00:55 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id t4so5980198wmj.5
-        for <bpf@vger.kernel.org>; Tue, 27 Sep 2022 01:00:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20210112.gappssmtp.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date;
-        bh=8KXeAi8bLl/4xDSQHTAZUIT2rxZgkHrTv7EF2KN/kpc=;
-        b=xsUc6nbu4ykT7peSuwlcvmxlW8gH9JNmHu+I0twf4HwF1J5XzKYqpFWkj2dh8q5Ul6
-         YIyTsCwVLcVCaqmZK0bRl0knR4E+gs1g3VmYqFhJ5ISP30EzzuG67bXySPNLETE/znCh
-         1kOaxyvtrtAyp6HP8dbla4TRNZFN+GwiDeBxS7EIpqL7nzY9tGQWADkj6VBwOzLQyaFh
-         pCCi4FN8EpWc+6PH6d58eIKwaMfHegUjGc14ZwZQ0iNB6osoFANcFYIfmlYevX66Nh0Q
-         3cO3YAgQUZdtH3V7oCiZJtN3UhQPnMyOVOXCnj/NAIxf0w0TZI2pQe44Lv3U3z04foBx
-         m6Ng==
+        with ESMTP id S231321AbiI0Itl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 27 Sep 2022 04:49:41 -0400
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 161DD1F611
+        for <bpf@vger.kernel.org>; Tue, 27 Sep 2022 01:49:39 -0700 (PDT)
+Received: by mail-il1-f199.google.com with SMTP id f4-20020a056e020b4400b002f6681cca5bso7087880ilu.14
+        for <bpf@vger.kernel.org>; Tue, 27 Sep 2022 01:49:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
-        bh=8KXeAi8bLl/4xDSQHTAZUIT2rxZgkHrTv7EF2KN/kpc=;
-        b=QZjCh4Dt36PuhEe9swVtlnCuLlJkYKAKNM7zhftAgkOfLbIQ/qCybJ5GdwfflN8nQ8
-         4YAFsZGV4TRMTAtLEyRvgDL9jsj/8NXBw9qfvof/fl33xGjXh17gWvj50Luowsbb/fUW
-         x6x8Ig7OJCoiNwFM4XQqiOuLJiOgZEOAlcY9zB+hNwgJhSZ/tyZ4HISIn7ln9xus4y3M
-         yQ4ZoICDaYBjzn3F2AJNVhkvVB4tve1fUb2M330r4RgYveVVpqHoMpbCMyoGBnvlcFQ4
-         Hy5mfRaxSJWnMoi7WjoYruM0GfLflmV+JcoJ9oK909z8MPnRjLPYfHRzYsHqHuZIsE5N
-         7j6g==
-X-Gm-Message-State: ACrzQf2+MTk7PEstV000WOpEuFFhQ2TTC2QQ3TxsSG8tm2bONH4TWKhO
-        +cGKGcoM4b79Jlk3pk6OPQ9IvA==
-X-Google-Smtp-Source: AMsMyM5/TzO253ei5AMvrs8QpkYUOj/Z1fLYncdDCYmb2TsApdukWwTv9OqA0R3Kzq6LByqDgxAN9A==
-X-Received: by 2002:a05:600c:3d93:b0:3b4:c28f:6a2b with SMTP id bi19-20020a05600c3d9300b003b4c28f6a2bmr1627703wmb.121.1664265597319;
-        Tue, 27 Sep 2022 00:59:57 -0700 (PDT)
-Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
-        by smtp.gmail.com with ESMTPSA id g6-20020a5d5546000000b00228aea99efcsm1099354wrw.14.2022.09.27.00.59.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Sep 2022 00:59:56 -0700 (PDT)
-Date:   Tue, 27 Sep 2022 09:59:55 +0200
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     yhs@fb.com, Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v2] headers: Remove some left-over license text
-Message-ID: <YzKte9AESCrcDcWh@nanopsycho>
-References: <88410cddd31197ea26840d7dd71612bece8c6acf.1663871981.git.christophe.jaillet@wanadoo.fr>
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date;
+        bh=VcrBPx8xfJ9lVz+FClYVuo7si9Glw5I9QGikXlKH2Ug=;
+        b=jt9RZE0RY0ebIyftQmTM0YJCYXC3d6E1wg/EW9PcTObhAF/Xbek1ylKVcFCkfyhFo0
+         a31axrFFnN8s7XEBkwBrAfocm3OWQ3P2ykHNpGArAo+/5hASvIjs0ae5+BP5U6GGq4ci
+         OOrjPn+cNYDzN09tXX+lXgNesa7NWWcHv5IN470KPToLk13Vc8ILZVunRoNa7NXa47Hh
+         zIR0w1WdgtdzSR1t11z5pHZk4y65Wk4/jIuVmSRGTKbd+dZRnQ2RlKx8OMNN3tBHfjnJ
+         g9Lwj5ppfaPlP9pAYXOIdwMMiPFzuQTNHubiTXjV4XT6Y2NcRR3x+WrYqbLK2sVy7oKs
+         /CKQ==
+X-Gm-Message-State: ACrzQf2RjwyuyQdR0PPk36WUQxTDa+OlALei7X4LA++MdItTFyHUeVRD
+        BcLwgh1R+YdWu0JHcTiRKXqNYlxJycdIXVG4tS9ovR5htgv1
+X-Google-Smtp-Source: AMsMyM70AyRb0r7TXdF58Jm1rV5VBRv2D9KicVc0GeCv407F6+C7NHIjnxuPK8o4LraWCWiSU02rF4XmeVZN2JIw3U1gEMly8IGz
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <88410cddd31197ea26840d7dd71612bece8c6acf.1663871981.git.christophe.jaillet@wanadoo.fr>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6e02:b45:b0:2f8:ab79:fc70 with SMTP id
+ f5-20020a056e020b4500b002f8ab79fc70mr2146818ilu.214.1664268578426; Tue, 27
+ Sep 2022 01:49:38 -0700 (PDT)
+Date:   Tue, 27 Sep 2022 01:49:38 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006d989105e9a4b916@google.com>
+Subject: [syzbot] general protection fault in kernel_accept (5)
+From:   syzbot <syzbot+c5ce866a8d30f4be0651@syzkaller.appspotmail.com>
+To:     bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, pabeni@redhat.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Thu, Sep 22, 2022 at 08:41:40PM CEST, christophe.jaillet@wanadoo.fr wrote:
->Remove some left-over from commit e2be04c7f995 ("License cleanup: add SPDX
->license identifier to uapi header files with a license")
->
->When the SPDX-License-Identifier tag has been added, the corresponding
->license text has not been removed.
->
->Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Hello,
 
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+syzbot found the following issue on:
+
+HEAD commit:    bf682942cd26 Merge tag 'scsi-fixes' of git://git.kernel.or..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=117fc3ac880000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7db7ad17eb14cb7
+dashboard link: https://syzkaller.appspot.com/bug?extid=c5ce866a8d30f4be0651
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+c5ce866a8d30f4be0651@syzkaller.appspotmail.com
+
+general protection fault, probably for non-canonical address 0xdffffc0000000001: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
+CPU: 3 PID: 12841 Comm: kworker/u16:2 Not tainted 6.0.0-rc6-syzkaller-00210-gbf682942cd26 #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
+Workqueue: tipc_rcv tipc_topsrv_accept
+RIP: 0010:kernel_accept+0x22d/0x350 net/socket.c:3487
+Code: 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 e3 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 8b 5b 20 48 8d 7b 08 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 ee 00 00 00 48 8b 7b 08 e8 a0 36 1c fa e8 8b ff
+RSP: 0018:ffffc9000494fc28 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000001 RSI: ffffffff874c37b2 RDI: 0000000000000008
+RBP: 0000000000000000 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000449 R12: 0000000000000000
+R13: ffff888027a7b980 R14: ffff888028bc08e0 R15: 1ffff92000929f90
+FS:  0000000000000000(0000) GS:ffff88802cb00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fa6e1a8c920 CR3: 000000004bba0000 CR4: 0000000000150ee0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ tipc_topsrv_accept+0x197/0x280 net/tipc/topsrv.c:460
+ process_one_work+0x991/0x1610 kernel/workqueue.c:2289
+ worker_thread+0x665/0x1080 kernel/workqueue.c:2436
+ kthread+0x2e4/0x3a0 kernel/kthread.c:376
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:306
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:kernel_accept+0x22d/0x350 net/socket.c:3487
+Code: 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 e3 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 8b 5b 20 48 8d 7b 08 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 ee 00 00 00 48 8b 7b 08 e8 a0 36 1c fa e8 8b ff
+RSP: 0018:ffffc9000494fc28 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000001 RSI: ffffffff874c37b2 RDI: 0000000000000008
+RBP: 0000000000000000 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000449 R12: 0000000000000000
+R13: ffff888027a7b980 R14: ffff888028bc08e0 R15: 1ffff92000929f90
+FS:  0000000000000000(0000) GS:ffff88802ca00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000c0154d8000 CR3: 000000006fb4b000 CR4: 0000000000150ee0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	48 89 fa             	mov    %rdi,%rdx
+   3:	48 c1 ea 03          	shr    $0x3,%rdx
+   7:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
+   b:	0f 85 e3 00 00 00    	jne    0xf4
+  11:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  18:	fc ff df
+  1b:	48 8b 5b 20          	mov    0x20(%rbx),%rbx
+  1f:	48 8d 7b 08          	lea    0x8(%rbx),%rdi
+  23:	48 89 fa             	mov    %rdi,%rdx
+  26:	48 c1 ea 03          	shr    $0x3,%rdx
+* 2a:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
+  2e:	0f 85 ee 00 00 00    	jne    0x122
+  34:	48 8b 7b 08          	mov    0x8(%rbx),%rdi
+  38:	e8 a0 36 1c fa       	callq  0xfa1c36dd
+  3d:	e8                   	.byte 0xe8
+  3e:	8b ff                	mov    %edi,%edi
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
