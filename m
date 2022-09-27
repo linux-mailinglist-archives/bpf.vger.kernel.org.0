@@ -2,342 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 856F85EC583
-	for <lists+bpf@lfdr.de>; Tue, 27 Sep 2022 16:08:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89C4E5EC5AF
+	for <lists+bpf@lfdr.de>; Tue, 27 Sep 2022 16:14:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231361AbiI0OIR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Sep 2022 10:08:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54266 "EHLO
+        id S231240AbiI0OOz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 27 Sep 2022 10:14:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232990AbiI0OIH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Sep 2022 10:08:07 -0400
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C1D31B2D3D
-        for <bpf@vger.kernel.org>; Tue, 27 Sep 2022 07:08:01 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4McLxv6lk9z6S35t
-        for <bpf@vger.kernel.org>; Tue, 27 Sep 2022 22:05:55 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-        by APP2 (Coremail) with SMTP id Syh0CgB3yXK7AzNj63bsBQ--.5932S2;
-        Tue, 27 Sep 2022 22:07:59 +0800 (CST)
-Subject: Re: [PATCH bpf-next v2 00/13] Add support for qp-trie with dynptr key
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Hou Tao <houtao1@huawei.com>
-References: <20220924133620.4147153-1-houtao@huaweicloud.com>
- <20220926012535.badx76iwtftyhq6m@MacBook-Pro-4.local>
- <ca0c97ae-6fd5-290b-6a00-fe3fe2e87aeb@huaweicloud.com>
- <20220927011949.sxxkyhjiig7wg7kv@macbook-pro-4.dhcp.thefacebook.com>
- <3c7cf1a8-16f2-5876-ff92-add6fd795caf@huaweicloud.com>
- <CAADnVQL_fMx3P24wzw2LMON-SqYgRKYziUHg6+mYH0i6kpvJcA@mail.gmail.com>
-From:   Hou Tao <houtao@huaweicloud.com>
-Message-ID: <2d9c2c06-af12-6ad1-93ef-454049727e78@huaweicloud.com>
-Date:   Tue, 27 Sep 2022 22:07:55 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        with ESMTP id S231765AbiI0OOx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 27 Sep 2022 10:14:53 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 479AEB4AD;
+        Tue, 27 Sep 2022 07:14:52 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A1F0E619E6;
+        Tue, 27 Sep 2022 14:14:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96EAAC433D6;
+        Tue, 27 Sep 2022 14:14:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1664288091;
+        bh=cjZHWhdMe4g+PO/gpp0bEk1SERLnVzaZZj+lu7fpmws=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=RhiPHSmPRS3GaIaY8dB/ya8kUjrcrA+UcHbzpED4UqCWudYqZp69ILYsms5tvmzCi
+         frcmnXhZWQmCfb14CQX0F7Bbo6N23u5asCvAxZ/9DvBL/vG4kg9To6iaX7I6Gmp5/8
+         o4j9YuU3/vCkrtt2FUcjf7j/DV+H2UkLIyausB7R4x0rOtVfAvIWE8IrxrXJph3r0B
+         ue/a6kZeXXe3mPeuSy7OY1mHiXiLw/BAQo9VhRPfSseyMbKU0yzkVJV4qiLiMw6SDo
+         +yYTdAEcqdxVaoUl6+xAhsCtuwvLazMOtTii70lsZ+76+boPXMmrKd01ljhXfoQF7c
+         DYJ+W/mLl0eWw==
+Date:   Tue, 27 Sep 2022 07:14:49 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     syzbot <syzbot+c5ce866a8d30f4be0651@syzkaller.appspotmail.com>
+Cc:     bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        pabeni@redhat.com, syzkaller-bugs@googlegroups.com,
+        Jon Maloy <jmaloy@redhat.com>,
+        Ying Xue <ying.xue@windriver.com>,
+        tipc-discussion@lists.sourceforge.net
+Subject: Re: [syzbot] general protection fault in kernel_accept (5)
+Message-ID: <20220927071449.67a2b0a0@kernel.org>
+In-Reply-To: <0000000000006d989105e9a4b916@google.com>
+References: <0000000000006d989105e9a4b916@google.com>
 MIME-Version: 1.0
-In-Reply-To: <CAADnVQL_fMx3P24wzw2LMON-SqYgRKYziUHg6+mYH0i6kpvJcA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID: Syh0CgB3yXK7AzNj63bsBQ--.5932S2
-X-Coremail-Antispam: 1UD129KBjvAXoWfJr43ZrWkZr4xury5tw4UXFb_yoW8Xr13Zo
-        WfGr47tr4rtr1UuF1DCw1UJw13A34DWrykJryYqr17XF45tr4Uu3yUGry3AayDZF18Wr17
-        J34UJryrAFWUtF1rn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
-        AaLaJ3UjIYCTnIWjp_UUUYx7kC6x804xWl14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK
-        8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4
-        AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF
-        7I0E14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
-        6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-        9x07UZ18PUUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+Adding TIPC
 
-On 9/27/2022 11:18 AM, Alexei Starovoitov wrote:
-> On Mon, Sep 26, 2022 at 8:08 PM Hou Tao <houtao@huaweicloud.com> wrote:
-SNIP
->>>>>> For atomic ops and kmalloc overhead, I think I can reuse the idea from
->>>>>> patchset "bpf: BPF specific memory allocator". I have given bpf_mem_alloc
->>>>>> a simple try and encounter some problems. One problem is that
->>>>>> immediate reuse of freed object in bpf memory allocator. Because qp-trie
->>>>>> uses bpf memory allocator to allocate and free qp_trie_branch, if
->>>>>> qp_trie_branch is reused immediately, the lookup procedure may oops due
->>>>>> to the incorrect content in qp_trie_branch. And another problem is the
->>>>>> size limitation in bpf_mem_alloc() is 4096. It may be a little small for
->>>>>> the total size of key size and value size, but maybe I can use two
->>>>>> separated bpf_mem_alloc for key and value.
->>>>> 4096 limit for key+value size would be an acceptable trade-off.
->>>>> With kptrs the user will be able to extend value to much bigger sizes
->>>>> while doing <= 4096 allocation at a time. Larger allocations are failing
->>>>> in production more often than not. Any algorithm relying on successful
->>>>>  >= 4096 allocation is likely to fail. kvmalloc is a fallback that
->>>>> the kernel is using, but we're not there yet in bpf land.
->>>>> The benefits of bpf_mem_alloc in qp-trie would be huge though.
->>>>> qp-trie would work in all contexts including sleepable progs.
->>>>> As presented the use cases for qp-trie are quite limited.
->>>>> If I understand correctly the concern for not using bpf_mem_alloc
->>>>> is that qp_trie_branch can be reused. Can you provide an exact scenario
->>>>> that will casue issuses?
-SNIP
->>>> Looking at lookup:
->>>> +     while (is_branch_node(node)) {
->>>> +             struct qp_trie_branch *br = node;
->>>> +             unsigned int bitmap;
->>>> +             unsigned int iip;
->>>> +
->>>> +             /* When byte index equals with key len, the target key
->>>> +              * may be in twigs->nodes[0].
->>>> +              */
->>>> +             if (index_to_byte_index(br->index) > data_len)
->>>> +                     goto done;
->>>> +
->>>> +             bitmap = calc_br_bitmap(br->index, data, data_len);
->>>> +             if (!(bitmap & br->bitmap))
->>>> +                     goto done;
->>>> +
->>>> +             iip = calc_twig_index(br->bitmap, bitmap);
->>>> +             node = rcu_dereference_check(br->nodes[iip], rcu_read_lock_bh_held());
->>>> +     }
->>>>
->>>> To be safe the br->index needs to be initialized after br->nodex and br->bitmap.
->>>> While deleting the br->index can be set to special value which would mean
->>>> restart the lookup from the beginning.
->>>> As you're suggesting with smp_rmb/wmb pairs the lookup will only see valid br.
->>>> Also the race is extremely tight, right?
->>>> After brb->nodes[iip] + is_branch_node that memory needs to deleted on other cpu
->>>> after spin_lock and reused in update after another spin_lock.
->>>> Without artifical big delay it's hard to imagine how nodes[iip] pointer
->>>> would be initialized to some other qp_trie_branch or leaf during delete,
->>>> then memory reused and nodes[iip] is initialized again with the same address.
->>>> Theoretically possible, but unlikely, right?
->>>> And with correct ordering of scrubbing and updates to
->>>> br->nodes, br->bitmap, br->index it can be made safe.
->> The reuse of node not only introduces the safety problem (e.g. access an invalid
->> pointer), but also incur the false negative problem (e.g. can not find an
->> existent element) as show below:
->>
->> lookup A in X on CPU1            update X on CPU 2
->>
->>      [ branch X v1 ]
->>  leaf A | leaf B | leaf C
->>                                                  [ branch X v2 ]
->>                                                leaf A | leaf B | leaf C | leaf D
->>
->>                                                   // free and reuse branch X v1
->>                                                   [ branch X v1 ]
->>                                                 leaf O | leaf P | leaf Q
->> // leaf A can not be found
-> Right. That's why I suggested to consider hlist_nulls-like approach
-> that htab is using.
->
->>> We can add a sequence number to qp_trie_branch as well and read it before and after.
->>> Every reuse would inc the seq.
->>> If seq number differs, re-read the node pointer form parent.
->> A seq number on qp_trie_branch is a good idea. Will try it. But we also need to
->> consider the starvation of lookup by update/deletion. Maybe need fallback to the
->> subtree spinlock after some reread.
-> I think the fallback is an overkill. The race is extremely unlikely.
-OK. Will add a test on tiny qp-trie to ensure it is OK.
->>>> The problem may can be solved by zeroing the unused or whole part of allocated
->>>> object. Maybe adding a paired smp_wmb() and smp_rmb() to ensure the update of
->>>> node array happens before the update of bitmap is also OK and the cost will be
->>>> much cheaper in x86 host.
->>> Something like this, right.
->>> We can also consider doing lookup under spin_lock. For a large branchy trie
->>> the cost of spin_lock maybe negligible.
->> Do you meaning adding an extra spinlock to qp_trie_branch to protect again reuse
->> or taking the subtree spinlock during lookup ? IMO the latter will make the
->> lookup performance suffer, but I will check it as well.
-> subtree lock. lookup perf will suffer a bit.
-> The numbers will tell the true story.
-A quick benchmark show the performance is bad when using subtree lock for lookup:
-
-Randomly-generated binary data (key size=255, max entries=16K, key length
-range:[1, 255])
-* no lock
-qp-trie lookup   (1  thread)   10.250 ± 0.009M/s (drops 0.006 ± 0.000M/s mem
-0.000 MiB)
-qp-trie lookup   (2  thread)   20.466 ± 0.009M/s (drops 0.010 ± 0.000M/s mem
-0.000 MiB)
-qp-trie lookup   (4  thread)   41.211 ± 0.010M/s (drops 0.018 ± 0.000M/s mem
-0.000 MiB)
-qp-trie lookup   (8  thread)   82.933 ± 0.409M/s (drops 0.031 ± 0.000M/s mem
-0.000 MiB)
-qp-trie lookup   (16 thread)  162.615 ± 0.842M/s (drops 0.070 ± 0.000M/s mem
-0.000 MiB)
-
-* subtree lock
-qp-trie lookup   (1  thread)    8.990 ± 0.506M/s (drops 0.006 ± 0.000M/s mem
-0.000 MiB)
-qp-trie lookup   (2  thread)   15.908 ± 0.141M/s (drops 0.004 ± 0.000M/s mem
-0.000 MiB)
-qp-trie lookup   (4  thread)   27.551 ± 0.025M/s (drops 0.019 ± 0.000M/s mem
-0.000 MiB)
-qp-trie lookup   (8  thread)   42.040 ± 0.241M/s (drops 0.018 ± 0.000M/s mem
-0.000 MiB)
-qp-trie lookup   (16 thread)   50.884 ± 0.171M/s (drops 0.012 ± 0.000M/s mem
-0.000 MiB)
-
-
-Strings in /proc/kallsyms (key size=83, max entries=170958)
-* no lock
-qp-trie lookup   (1  thread)    4.096 ± 0.234M/s (drops 0.249 ± 0.014M/s mem
-0.000 MiB)
-qp-trie lookup   (2  thread)    8.226 ± 0.009M/s (drops 0.500 ± 0.002M/s mem
-0.000 MiB)
-qp-trie lookup   (4  thread)   15.356 ± 0.034M/s (drops 0.933 ± 0.006M/s mem
-0.000 MiB)
-qp-trie lookup   (8  thread)   30.037 ± 0.584M/s (drops 1.827 ± 0.037M/s mem
-0.000 MiB)
-qp-trie lookup   (16 thread)   62.600 ± 0.307M/s (drops 3.808 ± 0.029M/s mem
-0.000 MiB)
-
-* subtree lock
-qp-trie lookup   (1  thread)    4.454 ± 0.108M/s (drops 0.271 ± 0.007M/s mem
-0.000 MiB)
-qp-trie lookup   (2  thread)    4.883 ± 0.500M/s (drops 0.297 ± 0.031M/s mem
-0.000 MiB)
-qp-trie lookup   (4  thread)    5.771 ± 0.137M/s (drops 0.351 ± 0.008M/s mem
-0.000 MiB)
-qp-trie lookup   (8  thread)    5.926 ± 0.104M/s (drops 0.359 ± 0.011M/s mem
-0.000 MiB)
-qp-trie lookup   (16 thread)    5.947 ± 0.171M/s (drops 0.362 ± 0.023M/s mem
-0.000 MiB)
->>>> Beside lookup procedure, get_next_key() from syscall also lookups trie
->>>> locklessly. If the branch node is reused, the order of returned keys may be
->>>> broken. There is also a parent pointer in branch node and it is used for reverse
->>>> lookup during get_next_key, the reuse may lead to unexpected skip in iteration.
->>> qp_trie_lookup_next_node can be done under spin_lock.
->>> Iterating all map elements is a slow operation anyway.
->> OK. Taking subtree spinlock is simpler but the scalability will be bad. Not sure
->> whether or not the solution for lockless lookup will work for get_next_key. Will
->> check.
-> What kind of scalability are you concerned about?
-> get_next is done by user space only. Plenty of overhead already.
-As an ordered map, maybe the next and prev iteration operations are needed in
-bpf program in the future. For now, i think it is OK.
->>>>> Instead of call_rcu in qp_trie_branch_free (which will work only for
->>>>> regular progs and have high overhead as demonstrated by mem_alloc patches)
->>>>> the qp-trie freeing logic can scrub that element, so it's ready to be
->>>>> reused as another struct qp_trie_branch.
->>>>> I guess I'm missing how rcu protects this internal data structures of qp-trie.
->>>>> The rcu_read_lock of regular bpf prog helps to stay lock-less during lookup?
->>>>> Is that it?
->>>> Yes. The update is made atomic by copying the parent branch node to a new branch
->>>> node and replacing the pointer to the parent branch node by the new branch node,
->>>> so the lookup procedure either find the old branch node or the new branch node.
->>>>> So to make qp-trie work in sleepable progs the algo would need to
->>>>> be changed to do both call_rcu and call_rcu_task_trace everywhere
->>>>> to protect these inner structs?
->>>>> call_rcu_task_trace can take long time. So qp_trie_branch-s may linger
->>>>> around. So quick update/delete (in sleepable with call_rcu_task_trace)
->>>>> may very well exhaust memory. With bpf_mem_alloc we don't have this issue
->>>>> since rcu_task_trace gp is observed only when freeing into global mem pool.
->>>>> Say qp-trie just uses bpf_mem_alloc for qp_trie_branch.
->>>>> What is the worst that can happen? qp_trie_lookup_elem will go into wrong
->>>>> path, but won't crash, right? Can we do hlist_nulls trick to address that?
->>>>> In other words bpf_mem_alloc reuse behavior is pretty much SLAB_TYPESAFE_BY_RCU.
->>>>> Many kernel data structures know how to deal with such object reuse.
->>>>> We can have a private bpf_mem_alloc here for qp_trie_branch-s only and
->>>>> construct a logic in a way that obj reuse is not problematic.
->>>> As said above, qp_trie_lookup_elem may be OK with SLAB_TYPESAFE_BY_RCU. But I
->>>> don't know how to do it for get_next_key because the iteration result needs to
->>>> be ordered and can not skip existed elements before the iterations begins.
->>> imo it's fine to spin_lock in get_next_key.
->>> We should measure the lock overhead in lookup. It might be acceptable too.
->> Will check that.
->>>> If removing immediate reuse from bpf_mem_alloc, beside the may-decreased
->>>> performance, is there any reason we can not do that ?
->>> What do you mean?
->>> Always do call_rcu + call_rcu_tasks_trace for every bpf_mem_free ?
->> Yes. Does doing call_rcu() + call_rcu_task_trace in batch help just like
->> free_bulk does ?
->>> As I said above:
->>> " call_rcu_task_trace can take long time. So qp_trie_branch-s may linger
->>>   around. So quick update/delete (in sleepable with call_rcu_task_trace)
->>>   may very well exhaust memory.
->>> "
->>> As an exercise try samples/bpf/map_perf_test on non-prealloc hashmap
->>> before mem_alloc conversion. Just regular call_rcu consumes 100% of all cpus.
->>> With call_rcu_tasks_trace it's worse. It cannot sustain such flood.
->>> .
-I can not reproduce the phenomenon that call_rcu consumes 100% of all cpus in my
-local environment, could you share the setup for it ?
-
-The following is the output of perf report (--no-children) for "./map_perf_test
-4 72 10240 100000" on a x86-64 host with 72-cpus:
-
-    26.63%  map_perf_test    [kernel.vmlinux]                             [k]
-alloc_htab_elem
-    21.57%  map_perf_test    [kernel.vmlinux]                             [k]
-htab_map_update_elem
-    18.08%  map_perf_test    [kernel.vmlinux]                             [k]
-htab_map_delete_elem
-    12.30%  map_perf_test    [kernel.vmlinux]                             [k]
-free_htab_elem
-    10.55%  map_perf_test    [kernel.vmlinux]                             [k]
-__htab_map_lookup_elem
-     1.58%  map_perf_test    [kernel.vmlinux]                             [k]
-bpf_map_kmalloc_node
-     1.39%  map_perf_test    [kernel.vmlinux]                             [k]
-_raw_spin_lock_irqsave
-     1.37%  map_perf_test    [kernel.vmlinux]                             [k]
-__copy_map_value.constprop.0
-     0.45%  map_perf_test    [kernel.vmlinux]                             [k]
-check_and_free_fields
-     0.33%  map_perf_test    [kernel.vmlinux]                             [k]
-rcu_segcblist_enqueue
-
-The overhead of call_rcu is tiny compared with hash map operations. Instead
-alloc_htab_elem() and free_htab_eleme() are the bottlenecks. The following is
-the output of perf record after apply bpf_mem_alloc:
-
-    25.35%  map_perf_test    [kernel.vmlinux]                             [k]
-htab_map_delete_elem
-    23.69%  map_perf_test    [kernel.vmlinux]                             [k]
-htab_map_update_elem
-     8.42%  map_perf_test    [kernel.vmlinux]                             [k]
-__htab_map_lookup_elem
-     7.60%  map_perf_test    [kernel.vmlinux]                             [k]
-alloc_htab_elem
-     4.35%  map_perf_test    [kernel.vmlinux]                             [k]
-free_htab_elem
-     2.28%  map_perf_test    [kernel.vmlinux]                             [k]
-memcpy_erms
-     2.24%  map_perf_test    [kernel.vmlinux]                             [k] jhash
-     2.02%  map_perf_test    [kernel.vmlinux]                             [k]
-_raw_spin_lock_irqsave
-
->> Will check the result of map_perf_test. But it seems bpf_mem_alloc may still
->> exhaust memory if __free_rcu_tasks_trace() can not called timely, Will take a
->> close lookup on that.
-> In theory. yes. The batching makes a big difference.
+On Tue, 27 Sep 2022 01:49:38 -0700 syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    bf682942cd26 Merge tag 'scsi-fixes' of git://git.kernel.or..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=117fc3ac880000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=7db7ad17eb14cb7
+> dashboard link: https://syzkaller.appspot.com/bug?extid=c5ce866a8d30f4be0651
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> 
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+c5ce866a8d30f4be0651@syzkaller.appspotmail.com
+> 
+> general protection fault, probably for non-canonical address 0xdffffc0000000001: 0000 [#1] PREEMPT SMP KASAN
+> KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
+> CPU: 3 PID: 12841 Comm: kworker/u16:2 Not tainted 6.0.0-rc6-syzkaller-00210-gbf682942cd26 #0
+> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
+> Workqueue: tipc_rcv tipc_topsrv_accept
+> RIP: 0010:kernel_accept+0x22d/0x350 net/socket.c:3487
+> Code: 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 e3 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 8b 5b 20 48 8d 7b 08 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 ee 00 00 00 48 8b 7b 08 e8 a0 36 1c fa e8 8b ff
+> RSP: 0018:ffffc9000494fc28 EFLAGS: 00010202
+> RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+> RDX: 0000000000000001 RSI: ffffffff874c37b2 RDI: 0000000000000008
+> RBP: 0000000000000000 R08: 0000000000000005 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000449 R12: 0000000000000000
+> R13: ffff888027a7b980 R14: ffff888028bc08e0 R15: 1ffff92000929f90
+> FS:  0000000000000000(0000) GS:ffff88802cb00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007fa6e1a8c920 CR3: 000000004bba0000 CR4: 0000000000150ee0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  <TASK>
+>  tipc_topsrv_accept+0x197/0x280 net/tipc/topsrv.c:460
+>  process_one_work+0x991/0x1610 kernel/workqueue.c:2289
+>  worker_thread+0x665/0x1080 kernel/workqueue.c:2436
+>  kthread+0x2e4/0x3a0 kernel/kthread.c:376
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:306
+>  </TASK>
+> Modules linked in:
+> ---[ end trace 0000000000000000 ]---
+> RIP: 0010:kernel_accept+0x22d/0x350 net/socket.c:3487
+> Code: 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 e3 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 8b 5b 20 48 8d 7b 08 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 ee 00 00 00 48 8b 7b 08 e8 a0 36 1c fa e8 8b ff
+> RSP: 0018:ffffc9000494fc28 EFLAGS: 00010202
+> RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+> RDX: 0000000000000001 RSI: ffffffff874c37b2 RDI: 0000000000000008
+> RBP: 0000000000000000 R08: 0000000000000005 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000449 R12: 0000000000000000
+> R13: ffff888027a7b980 R14: ffff888028bc08e0 R15: 1ffff92000929f90
+> FS:  0000000000000000(0000) GS:ffff88802ca00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 000000c0154d8000 CR3: 000000006fb4b000 CR4: 0000000000150ee0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> ----------------
+> Code disassembly (best guess):
+>    0:	48 89 fa             	mov    %rdi,%rdx
+>    3:	48 c1 ea 03          	shr    $0x3,%rdx
+>    7:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
+>    b:	0f 85 e3 00 00 00    	jne    0xf4
+>   11:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+>   18:	fc ff df
+>   1b:	48 8b 5b 20          	mov    0x20(%rbx),%rbx
+>   1f:	48 8d 7b 08          	lea    0x8(%rbx),%rdi
+>   23:	48 89 fa             	mov    %rdi,%rdx
+>   26:	48 c1 ea 03          	shr    $0x3,%rdx
+> * 2a:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
+>   2e:	0f 85 ee 00 00 00    	jne    0x122
+>   34:	48 8b 7b 08          	mov    0x8(%rbx),%rdi
+>   38:	e8 a0 36 1c fa       	callq  0xfa1c36dd
+>   3d:	e8                   	.byte 0xe8
+>   3e:	8b ff                	mov    %edi,%edi
+> 
+> 
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
