@@ -2,113 +2,157 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A40365EC863
-	for <lists+bpf@lfdr.de>; Tue, 27 Sep 2022 17:45:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C7955EC892
+	for <lists+bpf@lfdr.de>; Tue, 27 Sep 2022 17:51:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232762AbiI0Ppr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Sep 2022 11:45:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46200 "EHLO
+        id S232576AbiI0Pvv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 27 Sep 2022 11:51:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232237AbiI0PpN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Sep 2022 11:45:13 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9748B1B85F6;
-        Tue, 27 Sep 2022 08:41:31 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 96B9E1756;
-        Tue, 27 Sep 2022 08:41:37 -0700 (PDT)
-Received: from e121896.Emea.Arm.com (e121896.Emea.Arm.com [10.32.36.24])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 6403F3F73B;
-        Tue, 27 Sep 2022 08:41:28 -0700 (PDT)
-From:   James Clark <james.clark@arm.com>
-To:     acme@kernel.org, namhyung@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        will@kernel.org, James Clark <james.clark@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org
-Subject: [RFC PATCH 4/4] perf test arm64: Add attr tests for new VG register
-Date:   Tue, 27 Sep 2022 16:41:04 +0100
-Message-Id: <20220927154104.869029-5-james.clark@arm.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20220927154104.869029-1-james.clark@arm.com>
-References: <20220927154104.869029-1-james.clark@arm.com>
+        with ESMTP id S232603AbiI0Pvc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 27 Sep 2022 11:51:32 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 340AE543DE
+        for <bpf@vger.kernel.org>; Tue, 27 Sep 2022 08:49:52 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id nb11so21603239ejc.5
+        for <bpf@vger.kernel.org>; Tue, 27 Sep 2022 08:49:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date;
+        bh=eLALLLuXdZ6osFhpEvKHD+mFwNZ1pYBWmzjVEdrEzO4=;
+        b=iQ++IGNKUoKz3AAkudafAL7uov8TpSUYPa/9snuh8x6l9RcEB35PLn90GyOzbAimVf
+         OZNYqQsTP/Mdpm5KWNB8w/mXuKK47AKAwBFV1WQ95aPuCbuzKIQ+kEzaEjFEW3KcP3KK
+         VoyDzmhOexEg+V7sm1qdSv+fTCC1wqSVgAZ5MsQIK6jco0X5xVH7qo/N4n4kpAnLnFux
+         dhkK3/QSdX760QR/SLFbvB+ByFNAyc6hVDZCBGUq8y5zUMte60hih+KMHvAkFyQL+vl6
+         SvKoSyyChb7Riohe89fu4of1MrRYuKN3vZ7UpkDl3E5bEPHmo3V2RXa6OfcB+V3Pj8ED
+         D/GQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date;
+        bh=eLALLLuXdZ6osFhpEvKHD+mFwNZ1pYBWmzjVEdrEzO4=;
+        b=rd6fGPUX5SpQgBtqsJpp0HmPvbrF5MIGH7m2H/+OfhBZmpWImf8HKqFPUyApYcPLrL
+         so9orPVsvwYqjpghijP3fWU1zzWRR1UYyhlczTzsQDq1IDJtdTnk7TzOW8AnKYbrV8E3
+         nNLe1ts7KOBw2kaB5QiCC5Plf7eI0LfuWtWWCkAkj3Bz9ixz+pRslsFa/5B7ifFgSNLc
+         LldJycLK8GxMIikUOxSMSq4FQ3mfLtsS7aRs0RQ2PmVPpQ85cMfkoAaOe9hLRJuOwKKP
+         4rVpLOHyU6vODf8NmkrJSXtBgAVwixHo2XOyM8/KoQZpmmCg1uMig/D3MJp59Y2ETCsn
+         VYqA==
+X-Gm-Message-State: ACrzQf0EIq0vg4aHW29ggEpE+LgYuV0MQKHm9sbiL2eZF+mVgeZd3wEL
+        5RQvyI80c8V2qmwpgVTiMBYp/0WnVhQ=
+X-Google-Smtp-Source: AMsMyM5k3ciCI6eLmQsCBw8KQm43C8je6rPMg0LSpVqyKATl8QsKzqfXb2Vfo1fGZaaY3Zo5oQeRmg==
+X-Received: by 2002:a17:907:2d0b:b0:782:76dc:e557 with SMTP id gs11-20020a1709072d0b00b0078276dce557mr19840096ejc.690.1664293790813;
+        Tue, 27 Sep 2022 08:49:50 -0700 (PDT)
+Received: from krava ([83.240.61.46])
+        by smtp.gmail.com with ESMTPSA id kx17-20020a170907775100b007262a5e2204sm978542ejc.153.2022.09.27.08.49.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Sep 2022 08:49:50 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Tue, 27 Sep 2022 17:49:48 +0200
+To:     Vincent Li <vincent.mc.li@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Jiri Olsa <olsajiri@gmail.com>
+Subject: Re: Multi kprobe ftrace_lookup_symbols question
+Message-ID: <YzMbnJLL1yYmT9L4@krava>
+References: <CAK3+h2z-y0VdTteSF2Bna3dF-n4XKU5x6wZOzu8q+_BCUg3G6A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK3+h2z-y0VdTteSF2Bna3dF-n4XKU5x6wZOzu8q+_BCUg3G6A@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Ensure that the availability of the VG register behaves as expected
-depending on the kernel version and SVE support.
+On Tue, Sep 27, 2022 at 07:58:23AM -0700, Vincent Li wrote:
+> Hi,
+> 
+> I have sample code like below to give duplicate "vprintk" symbols to
+> multi kprobe attachment, it results in ESRCH return from
+> ftrace_lookup_symbols, I assume it should be user space code
+> responsibility not to feed kernel with duplicate symbols, correct? the
+> sort_r() in  bpf_kprobe_multi_link_attach() seems not to remove
+> duplicate symbols.
 
-Signed-off-by: James Clark <james.clark@arm.com>
----
- .../attr/test-record-user-regs-no-sve-aarch64      |  9 +++++++++
- .../attr/test-record-user-regs-old-sve-aarch64     | 10 ++++++++++
- .../tests/attr/test-record-user-regs-sve-aarch64   | 14 ++++++++++++++
- 3 files changed, 33 insertions(+)
- create mode 100644 tools/perf/tests/attr/test-record-user-regs-no-sve-aarch64
- create mode 100644 tools/perf/tests/attr/test-record-user-regs-old-sve-aarch64
- create mode 100644 tools/perf/tests/attr/test-record-user-regs-sve-aarch64
+hi,
+correct, symbols must be unique, ftrace_lookup_symbols (kernel/trace/ftrace.c)
+will fail if there are duplicate symbols on input
 
-diff --git a/tools/perf/tests/attr/test-record-user-regs-no-sve-aarch64 b/tools/perf/tests/attr/test-record-user-regs-no-sve-aarch64
-new file mode 100644
-index 000000000000..fbb065842880
---- /dev/null
-+++ b/tools/perf/tests/attr/test-record-user-regs-no-sve-aarch64
-@@ -0,0 +1,9 @@
-+# Test that asking for VG fails if the system doesn't support SVE. This
-+# applies both before and after the feature was added in 6.1
-+[config]
-+command = record
-+args    = --no-bpf-event --user-regs=vg kill >/dev/null 2>&1
-+ret     = 129
-+test_ret = true
-+arch    = aarch64
-+auxv    = auxv["AT_HWCAP"] & 0x200000 == 0
-diff --git a/tools/perf/tests/attr/test-record-user-regs-old-sve-aarch64 b/tools/perf/tests/attr/test-record-user-regs-old-sve-aarch64
-new file mode 100644
-index 000000000000..15ebfc3418e3
---- /dev/null
-+++ b/tools/perf/tests/attr/test-record-user-regs-old-sve-aarch64
-@@ -0,0 +1,10 @@
-+# Test that asking for VG always fails on old kernels because it was
-+# added in 6.1. This applies to systems that either support or don't
-+# support SVE.
-+[config]
-+command = record
-+args    = --no-bpf-event --user-regs=vg kill >/dev/null 2>&1
-+ret     = 129
-+test_ret = true
-+arch    = aarch64
-+kernel_until = 6.1
-diff --git a/tools/perf/tests/attr/test-record-user-regs-sve-aarch64 b/tools/perf/tests/attr/test-record-user-regs-sve-aarch64
-new file mode 100644
-index 000000000000..c598c803221d
---- /dev/null
-+++ b/tools/perf/tests/attr/test-record-user-regs-sve-aarch64
-@@ -0,0 +1,14 @@
-+# Test that asking for VG works if the system has SVE and after the
-+# feature was added in 6.1
-+[config]
-+command = record
-+args    = --no-bpf-event --user-regs=vg kill >/dev/null 2>&1
-+ret     = 1
-+test_ret = true
-+arch    = aarch64
-+auxv    = auxv["AT_HWCAP"] & 0x200000 == 0x200000
-+kernel_since = 6.1
-+
-+[event:base-record]
-+sample_type=4359
-+sample_regs_user=70368744177664
--- 
-2.28.0
+> 
+> import (
+> 
+>         "fmt"
+> 
+> 
+>         "github.com/cilium/ebpf"
+> 
+>         "github.com/cilium/ebpf/asm"
+> 
+>         "github.com/cilium/ebpf/link"
+> 
+> )
+> 
+> 
+> func detectKprobeMulti() bool {
+> 
+>         prog, err := ebpf.NewProgram(&ebpf.ProgramSpec{
+> 
+>                 Name: "probe_bpf_kprobe_multi_link",
+> 
+>                 Type: ebpf.Kprobe,
+> 
+>                 Instructions: asm.Instructions{
+> 
+>                         asm.Mov.Imm(asm.R0, 0),
+> 
+>                         asm.Return(),
+> 
+>                 },
+> 
+>                 AttachType: ebpf.AttachTraceKprobeMulti,
+> 
+>                 License:    "MIT",
+> 
+>         })
+> 
+>         if err != nil {
+> 
+>                 return false
+> 
+>         }
+> 
+>         defer prog.Close()
+> 
+> 
+>         syms := []string{"vprintk", "vprintk"}
+> 
+>         opts := link.KprobeMultiOptions{Symbols: syms}
 
+you can resolve all 'vprintk' functions yourself and attach it through
+KprobeMultiOptions::Addresses array
+
+jirka
+
+> 
+> 
+>         _, err = link.KprobeMulti(prog, opts)
+> 
+>         return err == nil
+> 
+> }
+> 
+> 
+> func main() {
+> 
+>         if detectKprobeMulti() {
+> 
+>                 fmt.Println(" it works\n")
+> 
+>         }
+> 
+> }
