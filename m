@@ -2,88 +2,363 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F36C45EC322
-	for <lists+bpf@lfdr.de>; Tue, 27 Sep 2022 14:43:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5D095EC339
+	for <lists+bpf@lfdr.de>; Tue, 27 Sep 2022 14:48:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231519AbiI0Mnl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Sep 2022 08:43:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49624 "EHLO
+        id S231664AbiI0MsA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 27 Sep 2022 08:48:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231197AbiI0Mnj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Sep 2022 08:43:39 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E15615E4D9
-        for <bpf@vger.kernel.org>; Tue, 27 Sep 2022 05:43:38 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id C135DB81B97
-        for <bpf@vger.kernel.org>; Tue, 27 Sep 2022 12:43:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B7FEC433C1;
-        Tue, 27 Sep 2022 12:43:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1664282615;
-        bh=vIDbrl3yjZKn/Jc6mYdhqBJ5ndukoL7NPn7wIE7k/Mo=;
-        h=From:To:Subject:In-Reply-To:References:Date:From;
-        b=O0cE6A1v7m80gNKlSKCGFRnoaEnb2eHAFvwVN+3ZKG+vFTQRRN6wGglZM+KT+n9Kx
-         nFK+drgzgSg05o8O9tGhreZ1LJKta0skoZJJKtAOcovK8iaPG26T4l5Kam5o7IURqj
-         NUKFfNu2o6jY2XRuK80ZPnhua+d1CnN+X8NTeV5sguaYuRZWsZm/dDToAOgnyofwVy
-         Gil1kLGtjAASHgAwuzAU6PkcHZPGYUrXkR+i9JAif7nN8lIuEqh89/ABX7JKGqYGJx
-         wZnAEsGMs5M+/qc2geM5P0PVamelTt5a+iiNWWAc0hmmMFNXcQExxNjYK1ukKwHTcY
-         priypUHq//OVA==
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id C9E9161CFFD; Tue, 27 Sep 2022 14:43:32 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
-To:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        bpf <bpf@vger.kernel.org>
-Subject: Re: The future of bpf_dispatcher
-In-Reply-To: <CAJ+HfNgnvWaQcZKC37ayZgrWdLa1Ni9Zvena8NxyEYPTeAoMsw@mail.gmail.com>
-References: <CAJ+HfNgnvWaQcZKC37ayZgrWdLa1Ni9Zvena8NxyEYPTeAoMsw@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 27 Sep 2022 14:43:32 +0200
-Message-ID: <87tu4trnrf.fsf@toke.dk>
+        with ESMTP id S231815AbiI0Mr4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 27 Sep 2022 08:47:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7ABF167061
+        for <bpf@vger.kernel.org>; Tue, 27 Sep 2022 05:47:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1664282869;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RKYdTgxfiI7eUQWmaftKyjIz9jtORAAmbtWWAfEZHco=;
+        b=dWsfsVOOmCdIwrwIc1+imW4naJggvWZ5+syrjPA8oVXHHeGDf4ODiOqmTzUV/mGTM5EtM8
+        PISrmDLbJQAKrGT3d4zrF7AvCGD7rCDpgRwZSAhTUsQ5dK0Q7yX4++wnr6J5GYyzf968lS
+        2c9VZFyHib+cbD07YFSw/sYJBZ1dHbc=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-511-OyU5-J1fMCy56a2vJfB2Tw-1; Tue, 27 Sep 2022 08:47:41 -0400
+X-MC-Unique: OyU5-J1fMCy56a2vJfB2Tw-1
+Received: by mail-wm1-f70.google.com with SMTP id 84-20020a1c0257000000b003b4be28d7e3so8585492wmc.0
+        for <bpf@vger.kernel.org>; Tue, 27 Sep 2022 05:47:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date;
+        bh=RKYdTgxfiI7eUQWmaftKyjIz9jtORAAmbtWWAfEZHco=;
+        b=JLOP4qbSznfZ4MUmVr54rtG8lZq4F4yYfFhsqFCZMGurv0KRw8kP/AQjCvbZ1MSQfK
+         KdvlXVd+9RwlK7QALRwmPf7VlUTo8m6bzTUxGRv9wDHkBAYGUkMoguKaKILHHC4/Nmzv
+         ayF4hkYrqVfo9awaJs7jzUjxRABLjN4MTO/jgb8AQW4h0Ciqplv2rdzG8rWI5hlO1yfQ
+         FZ2Qc98KubuIiuXQ27gCgiTCRl5s3QkM0QJ/so0IwsyFk+lqDImYl7sLZqXZks9lCeLY
+         Dt3i5e65GJErQv0tiwSZdeJ4DmAiEmUaRWrLlhCFyJeOkwXe0oqSc7H8LSRF+7hnp/WK
+         dIqA==
+X-Gm-Message-State: ACrzQf2cKrkmid/HgRB+VGSh8DKuVSNZ6irgQromKK3gnNRSrKb2SlYr
+        0Vxs8BECy1wZE7Pt4W7WuMzw4be50ZFKtv8MnePjMIdREeAO8GGhTLKckuCWlsy+sU1pjknZd8q
+        eOcYXBiA28Vjv
+X-Received: by 2002:a05:600c:1c8e:b0:3b4:9247:7ecc with SMTP id k14-20020a05600c1c8e00b003b492477eccmr2605546wms.40.1664282859885;
+        Tue, 27 Sep 2022 05:47:39 -0700 (PDT)
+X-Google-Smtp-Source: AMsMyM4Myca2MVKkV2KIt1XKsStTkT5Gg0d+r20JLISzms+daySu0V3MrOItm8S8N740Ssa8OX/cUA==
+X-Received: by 2002:a05:600c:1c8e:b0:3b4:9247:7ecc with SMTP id k14-20020a05600c1c8e00b003b492477eccmr2605503wms.40.1664282859434;
+        Tue, 27 Sep 2022 05:47:39 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-104-40.dyn.eolo.it. [146.241.104.40])
+        by smtp.gmail.com with ESMTPSA id z2-20020a05600c0a0200b003b51a4c61aasm9330179wmp.40.2022.09.27.05.47.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Sep 2022 05:47:39 -0700 (PDT)
+Message-ID: <83c9e18e27084a3458f1e4c928eb6fe603e37e0e.camel@redhat.com>
+Subject: Re: [PATCH net-next v2 03/12] net: dpaa2-eth: add support for
+ multiple buffer pools per DPNI
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Ioana Ciornei <ioana.ciornei@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
+        Robert-Ionut Alexa <robert-ionut.alexa@nxp.com>
+Date:   Tue, 27 Sep 2022 14:47:37 +0200
+In-Reply-To: <20220923154556.721511-4-ioana.ciornei@nxp.com>
+References: <20220923154556.721511-1-ioana.ciornei@nxp.com>
+         <20220923154556.721511-4-ioana.ciornei@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.4 (3.42.4-2.fc35) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> writes:
+On Fri, 2022-09-23 at 18:45 +0300, Ioana Ciornei wrote:
+> From: Robert-Ionut Alexa <robert-ionut.alexa@nxp.com>
+> 
+> This patch allows the configuration of multiple buffer pools associated
+> with a single DPNI object, each distinct DPBP object not necessarily
+> shared among all queues.
+> The user can interogate both the number of buffer pools and the buffer
+> count in each buffer pool by using the .get_ethtool_stats() callback.
+> 
+> Signed-off-by: Robert-Ionut Alexa <robert-ionut.alexa@nxp.com>
+> Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
+> ---
+> Changes in v2:
+>  - Export dpaa2_eth_allocate_dpbp/dpaa2_eth_free_dpbp in this patch to
+>    avoid a build warning. The functions will be used in next patches.
+> 
+>  .../net/ethernet/freescale/dpaa2/dpaa2-eth.c  | 188 ++++++++++++------
+>  .../net/ethernet/freescale/dpaa2/dpaa2-eth.h  |  26 ++-
+>  .../ethernet/freescale/dpaa2/dpaa2-ethtool.c  |  15 +-
+>  3 files changed, 162 insertions(+), 67 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
+> index 75d51572693d..aa93ed339b63 100644
+> --- a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
+> +++ b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
+> @@ -1,6 +1,6 @@
+>  // SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)
+>  /* Copyright 2014-2016 Freescale Semiconductor Inc.
+> - * Copyright 2016-2020 NXP
+> + * Copyright 2016-2022 NXP
+>   */
+>  #include <linux/init.h>
+>  #include <linux/module.h>
+> @@ -304,7 +304,7 @@ static void dpaa2_eth_recycle_buf(struct dpaa2_eth_priv *priv,
+>  	if (ch->recycled_bufs_cnt < DPAA2_ETH_BUFS_PER_CMD)
+>  		return;
+>  
+> -	while ((err = dpaa2_io_service_release(ch->dpio, priv->bpid,
+> +	while ((err = dpaa2_io_service_release(ch->dpio, ch->bp->bpid,
+>  					       ch->recycled_bufs,
+>  					       ch->recycled_bufs_cnt)) == -EBUSY) {
+>  		if (retries++ >= DPAA2_ETH_SWP_BUSY_RETRIES)
+> @@ -1631,7 +1631,7 @@ static int dpaa2_eth_set_tx_csum(struct dpaa2_eth_priv *priv, bool enable)
+>   * to the specified buffer pool
+>   */
+>  static int dpaa2_eth_add_bufs(struct dpaa2_eth_priv *priv,
+> -			      struct dpaa2_eth_channel *ch, u16 bpid)
+> +			      struct dpaa2_eth_channel *ch)
+>  {
+>  	struct device *dev = priv->net_dev->dev.parent;
+>  	u64 buf_array[DPAA2_ETH_BUFS_PER_CMD];
+> @@ -1663,12 +1663,12 @@ static int dpaa2_eth_add_bufs(struct dpaa2_eth_priv *priv,
+>  		trace_dpaa2_eth_buf_seed(priv->net_dev, page_address(page),
+>  					 DPAA2_ETH_RX_BUF_RAW_SIZE,
+>  					 addr, priv->rx_buf_size,
+> -					 bpid);
+> +					 ch->bp->bpid);
+>  	}
+>  
+>  release_bufs:
+>  	/* In case the portal is busy, retry until successful */
+> -	while ((err = dpaa2_io_service_release(ch->dpio, bpid,
+> +	while ((err = dpaa2_io_service_release(ch->dpio, ch->bp->bpid,
+>  					       buf_array, i)) == -EBUSY) {
+>  		if (retries++ >= DPAA2_ETH_SWP_BUSY_RETRIES)
+>  			break;
+> @@ -1697,39 +1697,59 @@ static int dpaa2_eth_add_bufs(struct dpaa2_eth_priv *priv,
+>  	return 0;
+>  }
+>  
+> -static int dpaa2_eth_seed_pool(struct dpaa2_eth_priv *priv, u16 bpid)
+> +static int dpaa2_eth_seed_pool(struct dpaa2_eth_priv *priv,
+> +			       struct dpaa2_eth_channel *ch)
+>  {
+> -	int i, j;
+> +	int i;
+>  	int new_count;
+>  
+> -	for (j = 0; j < priv->num_channels; j++) {
+> -		for (i = 0; i < DPAA2_ETH_NUM_BUFS;
+> -		     i += DPAA2_ETH_BUFS_PER_CMD) {
+> -			new_count = dpaa2_eth_add_bufs(priv, priv->channel[j], bpid);
+> -			priv->channel[j]->buf_count += new_count;
+> +	for (i = 0; i < DPAA2_ETH_NUM_BUFS; i += DPAA2_ETH_BUFS_PER_CMD) {
+> +		new_count = dpaa2_eth_add_bufs(priv, ch);
+> +		ch->buf_count += new_count;
+>  
+> -			if (new_count < DPAA2_ETH_BUFS_PER_CMD) {
+> -				return -ENOMEM;
+> -			}
+> -		}
+> +		if (new_count < DPAA2_ETH_BUFS_PER_CMD)
+> +			return -ENOMEM;
+>  	}
+>  
+>  	return 0;
+>  }
+>  
+> +static void dpaa2_eth_seed_pools(struct dpaa2_eth_priv *priv)
+> +{
+> +	struct net_device *net_dev = priv->net_dev;
+> +	struct dpaa2_eth_channel *channel;
+> +	int i, err = 0;
+> +
+> +	for (i = 0; i < priv->num_channels; i++) {
+> +		channel = priv->channel[i];
+> +
+> +		err = dpaa2_eth_seed_pool(priv, channel);
+> +
+> +		/* Not much to do; the buffer pool, though not filled up,
+> +		 * may still contain some buffers which would enable us
+> +		 * to limp on.
+> +		 */
+> +		if (err)
+> +			netdev_err(net_dev, "Buffer seeding failed for DPBP %d (bpid=%d)\n",
+> +				   channel->bp->dev->obj_desc.id,
+> +				   channel->bp->bpid);
+> +	}
+> +}
+> +
+>  /*
+> - * Drain the specified number of buffers from the DPNI's private buffer pool.
+> + * Drain the specified number of buffers from one of the DPNI's private buffer
+> + * pools.
+>   * @count must not exceeed DPAA2_ETH_BUFS_PER_CMD
+>   */
+> -static void dpaa2_eth_drain_bufs(struct dpaa2_eth_priv *priv, int count)
+> +static void dpaa2_eth_drain_bufs(struct dpaa2_eth_priv *priv, int bpid,
+> +				 int count)
+>  {
+>  	u64 buf_array[DPAA2_ETH_BUFS_PER_CMD];
+>  	int retries = 0;
+>  	int ret;
+>  
+>  	do {
+> -		ret = dpaa2_io_service_acquire(NULL, priv->bpid,
+> -					       buf_array, count);
+> +		ret = dpaa2_io_service_acquire(NULL, bpid, buf_array, count);
+>  		if (ret < 0) {
+>  			if (ret == -EBUSY &&
+>  			    retries++ < DPAA2_ETH_SWP_BUSY_RETRIES)
+> @@ -1742,23 +1762,35 @@ static void dpaa2_eth_drain_bufs(struct dpaa2_eth_priv *priv, int count)
+>  	} while (ret);
+>  }
+>  
+> -static void dpaa2_eth_drain_pool(struct dpaa2_eth_priv *priv)
+> +static void dpaa2_eth_drain_pool(struct dpaa2_eth_priv *priv, int bpid)
+>  {
+>  	int i;
+>  
+> -	dpaa2_eth_drain_bufs(priv, DPAA2_ETH_BUFS_PER_CMD);
+> -	dpaa2_eth_drain_bufs(priv, 1);
+> +	/* Drain the buffer pool */
+> +	dpaa2_eth_drain_bufs(priv, bpid, DPAA2_ETH_BUFS_PER_CMD);
+> +	dpaa2_eth_drain_bufs(priv, bpid, 1);
+>  
+> +	/* Setup to zero the buffer count of all channels which were
+> +	 * using this buffer pool.
+> +	 */
+>  	for (i = 0; i < priv->num_channels; i++)
+> -		priv->channel[i]->buf_count = 0;
+> +		if (priv->channel[i]->bp->bpid == bpid)
+> +			priv->channel[i]->buf_count = 0;
+> +}
+> +
+> +static void dpaa2_eth_drain_pools(struct dpaa2_eth_priv *priv)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < priv->num_bps; i++)
+> +		dpaa2_eth_drain_pool(priv, priv->bp[i]->bpid);
+>  }
+>  
+>  /* Function is called from softirq context only, so we don't need to guard
+>   * the access to percpu count
+>   */
+>  static int dpaa2_eth_refill_pool(struct dpaa2_eth_priv *priv,
+> -				 struct dpaa2_eth_channel *ch,
+> -				 u16 bpid)
+> +				 struct dpaa2_eth_channel *ch)
+>  {
+>  	int new_count;
+>  
+> @@ -1766,7 +1798,7 @@ static int dpaa2_eth_refill_pool(struct dpaa2_eth_priv *priv,
+>  		return 0;
+>  
+>  	do {
+> -		new_count = dpaa2_eth_add_bufs(priv, ch, bpid);
+> +		new_count = dpaa2_eth_add_bufs(priv, ch);
+>  		if (unlikely(!new_count)) {
+>  			/* Out of memory; abort for now, we'll try later on */
+>  			break;
+> @@ -1848,7 +1880,7 @@ static int dpaa2_eth_poll(struct napi_struct *napi, int budget)
+>  			break;
+>  
+>  		/* Refill pool if appropriate */
+> -		dpaa2_eth_refill_pool(priv, ch, priv->bpid);
+> +		dpaa2_eth_refill_pool(priv, ch);
+>  
+>  		store_cleaned = dpaa2_eth_consume_frames(ch, &fq);
+>  		if (store_cleaned <= 0)
+> @@ -2047,15 +2079,7 @@ static int dpaa2_eth_open(struct net_device *net_dev)
+>  	struct dpaa2_eth_priv *priv = netdev_priv(net_dev);
+>  	int err;
+>  
+> -	err = dpaa2_eth_seed_pool(priv, priv->bpid);
+> -	if (err) {
+> -		/* Not much to do; the buffer pool, though not filled up,
+> -		 * may still contain some buffers which would enable us
+> -		 * to limp on.
+> -		 */
+> -		netdev_err(net_dev, "Buffer seeding failed for DPBP %d (bpid=%d)\n",
+> -			   priv->dpbp_dev->obj_desc.id, priv->bpid);
+> -	}
+> +	dpaa2_eth_seed_pools(priv);
+>  
+>  	if (!dpaa2_eth_is_type_phy(priv)) {
+>  		/* We'll only start the txqs when the link is actually ready;
+> @@ -2088,7 +2112,7 @@ static int dpaa2_eth_open(struct net_device *net_dev)
+>  
+>  enable_err:
+>  	dpaa2_eth_disable_ch_napi(priv);
+> -	dpaa2_eth_drain_pool(priv);
+> +	dpaa2_eth_drain_pools(priv);
+>  	return err;
+>  }
+>  
+> @@ -2193,7 +2217,7 @@ static int dpaa2_eth_stop(struct net_device *net_dev)
+>  	dpaa2_eth_disable_ch_napi(priv);
+>  
+>  	/* Empty the buffer pool */
+> -	dpaa2_eth_drain_pool(priv);
+> +	dpaa2_eth_drain_pools(priv);
+>  
+>  	/* Empty the Scatter-Gather Buffer cache */
+>  	dpaa2_eth_sgt_cache_drain(priv);
+> @@ -3204,13 +3228,14 @@ static void dpaa2_eth_setup_fqs(struct dpaa2_eth_priv *priv)
+>  	dpaa2_eth_set_fq_affinity(priv);
+>  }
+>  
+> -/* Allocate and configure one buffer pool for each interface */
+> -static int dpaa2_eth_setup_dpbp(struct dpaa2_eth_priv *priv)
+> +/* Allocate and configure a buffer pool */
+> +struct dpaa2_eth_bp *dpaa2_eth_allocate_dpbp(struct dpaa2_eth_priv *priv)
+>  {
+> -	int err;
+> -	struct fsl_mc_device *dpbp_dev;
+>  	struct device *dev = priv->net_dev->dev.parent;
+> +	struct fsl_mc_device *dpbp_dev;
+>  	struct dpbp_attr dpbp_attrs;
+> +	struct dpaa2_eth_bp *bp;
+> +	int err;
+>  
+>  	err = fsl_mc_object_allocate(to_fsl_mc_device(dev), FSL_MC_POOL_DPBP,
+>  				     &dpbp_dev);
+> @@ -3219,12 +3244,16 @@ static int dpaa2_eth_setup_dpbp(struct dpaa2_eth_priv *priv)
+>  			err = -EPROBE_DEFER;
+>  		else
+>  			dev_err(dev, "DPBP device allocation failed\n");
+> -		return err;
+> +		return ERR_PTR(err);
+>  	}
+>  
+> -	priv->dpbp_dev = dpbp_dev;
+> +	bp = kzalloc(sizeof(*bp), GFP_KERNEL);
+> +	if (!bp) {
+> +		err = -ENOMEM;
+> +		goto err_alloc;
+> +	}
 
-> In the recent weeks there have been various issues [1] [2] (warnings, ftr=
-ace
-> breakage) related to the bpf_dispatcher. The dispatcher was introduced
-> to reduce the cost of indirect calls for the XDP realm, and during the
-> whole retpoline timeline it was doing its job pretty good.
->
-> However, it's a somewhat odd animal in the kernel, and very x86
-> specific.
->
-> Is the bpf_dispatcher still relevant? If yes, can it be replaced by a
-> more generic functionality (e.g. static_calls)?
+It looks like 'bp' is leaked on later error paths.
 
-During Daniel's talk at LPC (about TC attachment) he mentioned that he
-was planning to support multiple programs by iterating through an array
-and doing an indirect call into each. I asked if we could avoid the
-indirect calls by generating a bpf_dispatcher-style trampoline instead
-(and further down the line extend this to XDP as well, like what libxdp
-is doing).
+Cheers,
 
-No one seemed to complain loudly about this idea in the session; so I'm
-hoping that the future of bpf_dispatcher is that we can generalise it so
-it can be used for both TC and XDP, and also support chaining of
-multiple programs on a single hook.
+Paolo
 
-I don't have any opinion on how the low-level plumbing for this should
-work, though; if changing it to re-use other kernel functionality like
-static_calls makes sense, that's fine with me...
-
-WDYT, sounds feasible? :)
-
--Toke
