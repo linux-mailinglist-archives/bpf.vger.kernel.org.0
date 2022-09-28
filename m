@@ -2,78 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BC5F5EE467
-	for <lists+bpf@lfdr.de>; Wed, 28 Sep 2022 20:31:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A948E5EE51C
+	for <lists+bpf@lfdr.de>; Wed, 28 Sep 2022 21:18:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233804AbiI1Sbl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Sep 2022 14:31:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54074 "EHLO
+        id S233235AbiI1TS0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Sep 2022 15:18:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234263AbiI1Sbb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Sep 2022 14:31:31 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9638467CA6;
-        Wed, 28 Sep 2022 11:31:26 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id f23so12445412plr.6;
-        Wed, 28 Sep 2022 11:31:26 -0700 (PDT)
+        with ESMTP id S232180AbiI1TSH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Sep 2022 15:18:07 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C76F1F595C
+        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 12:17:51 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id e18so18581620edj.3
+        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 12:17:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date;
-        bh=hibxCFAnwiOUhoHkrGWBM30/+8JsGDGYmW86M7LT5HA=;
-        b=V+Ma5fc+2z5h1oOWwGJjR6Oc7eYNDzTjfATQtX64XkhAEXIQB8myg+nOQwZ8pC4O4m
-         0NUfGSjY1xHG6RLgrGiT9bAQM+9QmBGMXgH/LOEpny6TMXOVLFWxVumlwbf8lbR5fIN8
-         0C4Y2Uu5zvuYCDzuLczH6/ZYR2Wt4sCvbPvZKEKVCL1B+d51NVw6VzR80sIn1tvyPQob
-         6qQUA+egi7WIanFYVSQ+otG1SMNhIuG00AFpzqnj1g4BlHLovhl58srTtgkqSTwQBZhX
-         YDgW0UBek66yz1cczgdWcpIbWyec5UDlxkTRiI8DZ7BMOxVlLR0Wqr9l3BJk8ONnVBKO
-         cXpQ==
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date;
+        bh=Jp2+0zPKkE6nX/YkemnITgSbfTJKkrwqY/v0lBmVBwA=;
+        b=VVZ2yU7dO03yvaucqbH1YykOsPDj++Sf9tkDTmkaSzikJv6HsdpCs4wUZ3gMlnH+Dg
+         LHK84EntzxvpHATUr1gmdqhmUqEgqGXR/1dBINya7Fqrk80OzSij53avCLqjAob5Uj1t
+         KIAuDWolQ7zdDWYn2A2CVdBy7aZl07ghlHGkzGiJCbss5J9UtpeSL9Dr++1GF94otLgK
+         wbPk+8m2y1oH7g5BBzXO46eqtUaW/7njnJHwMDoqzP5aJJ44yLiF8vqbi94YJTC8MA6l
+         FlUSHNOccUyVoWRU7g/w9ka67oIgkcom6V6//HerCH5RKH6ySUi9ltd1jFBejUxU/dFX
+         BFIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date;
-        bh=hibxCFAnwiOUhoHkrGWBM30/+8JsGDGYmW86M7LT5HA=;
-        b=1tUybvdiaIsU5DyNlCh+zSUqH4GdhnSiph50w2zFe1dqFzIAJLdA3xWSgRXOuC09nh
-         dvcYznPVLHbIaoB3YDSUWCQP9pGbRHm9MxWMDfLJzUg4pK8M3sMQpuJPHg56dShejd8m
-         bDnvqEdSFPNEqsuDUAXh2wVRve4Wac5BfVR1OhsegrpIn/HJME3utbTF6/JXYAkvTK06
-         nNrjDqCn98Nmkw90BZUDjxcn509ATKqqw6v77m+1ikcKGz0dYOeo0xkmWPEgJn4CRUck
-         3pkzYr0g5OWw3GGnBXU7UJcJZdXWsOi+vcpMnzAWPXH4D9ODdA6O9Je8t0hGg1m6Kg16
-         nzUw==
-X-Gm-Message-State: ACrzQf3b/04AptvwVoEgkQtb7tiMw+vFgSU1b3NhqdiHA/FyWMQ7DM11
-        opdeipSyKh1J6a17lHbSKGo=
-X-Google-Smtp-Source: AMsMyM7CrVg5EFS+mqIpiFOP63JNLSBHb0QTZN/R3kvym6xTN1nENidgHlp8kZKCpN2zqytEiWQ/uQ==
-X-Received: by 2002:a17:903:32c2:b0:178:2ca7:fade with SMTP id i2-20020a17090332c200b001782ca7fademr1082026plr.71.1664389886097;
-        Wed, 28 Sep 2022 11:31:26 -0700 (PDT)
-Received: from localhost ([98.97.42.14])
-        by smtp.gmail.com with ESMTPSA id k185-20020a6284c2000000b00541196bd2d9sm4407507pfd.68.2022.09.28.11.31.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Sep 2022 11:31:25 -0700 (PDT)
-Date:   Wed, 28 Sep 2022 11:31:23 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     "liujian (CE)" <liujian56@huawei.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>
-Cc:     Jakub Sitnicki <jakub@cloudflare.com>,
-        Eric Dumazet <edumazet@google.com>,
-        davem <davem@davemloft.net>,
-        "yoshfuji@linux-ipv6.org" <yoshfuji@linux-ipv6.org>,
-        "dsahern@kernel.org" <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        netdev <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Message-ID: <633492fb8ddc2_2944220881@john.notmuch>
-In-Reply-To: <0dc1f0f9a8064ec3abd12bdcb069aaaf@huawei.com>
-References: <061d068ccd6f4db899d095cd61f52114@huawei.com>
- <YzCdHXtgKPciEusR@pop-os.localdomain>
- <fb254c963d3549a19c066b6bd2acf9c7@huawei.com>
- <6332169a699f8_4dfb7208e4@john.notmuch>
- <0dc1f0f9a8064ec3abd12bdcb069aaaf@huawei.com>
-Subject: RE: [bug report] one possible out-of-order issue in sockmap
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date;
+        bh=Jp2+0zPKkE6nX/YkemnITgSbfTJKkrwqY/v0lBmVBwA=;
+        b=dD+kkt4lNoUN+a7MQ10Qmz59WsSvuqHRHjFWIgj/+E6DDA2wqh25BOwWj98/FIr9ph
+         cpmVRUT2I8tMNZxO5ea+Lrj/tKD6yzMqsUeGwPhHEHVLLBTPgUCDItDFcyz4IbOPgEvj
+         aK90H8FZ+LrMcP/LVeG/oC7IF4WlpR9JCd97MPNjjC1wa0CDyrScuKTmT46u/mZNNdrW
+         /CAgRmpLfXGRUOvXdXISm8wjgwvBUgdiGOKSTkeJ+Vp9kK4b2B4YbwFDi1+a4U8YtCkB
+         /TQ3fcH5KCFz0vTIXEluChB4U8RRq3kih70lXDqYYFsEvAGs/KJ0VYBfl5aYQPEH5cVL
+         p4ng==
+X-Gm-Message-State: ACrzQf1zrIA2Ubx3WctoZMQB6C+uoOJROVeBThQf8d6bxmDpxJuChc3z
+        Ig/BMYQx27BDDQ0OeXowVGX88lpG7FDylB6/dLNDzAiSOZkUysio
+X-Google-Smtp-Source: AMsMyM5pq7kIWAl0OO8NZ9PCC0X6Qw2EkqYPSi6riIqgWrYddAzT8iiYownGNcuCvRK9+BuqNkKFyPLGF3dNFqnods0=
+X-Received: by 2002:a05:6402:1247:b0:456:eb22:1978 with SMTP id
+ l7-20020a056402124700b00456eb221978mr25758925edw.374.1664392669274; Wed, 28
+ Sep 2022 12:17:49 -0700 (PDT)
+MIME-Version: 1.0
+From:   Johnny young <johnny96.young@gmail.com>
+Date:   Wed, 28 Sep 2022 12:17:38 -0700
+Message-ID: <CACbfJv8tn5dZmz=6+SMC4HZV05s-vnV2Nq19pC0D=eTLUu91Pg@mail.gmail.com>
+Subject: Is BTF info sufficient enough for BPFTrace and other debug tools to
+ run ?
+To:     bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -84,87 +62,28 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-liujian (CE) wrote:
-> 
-> 
-> > -----Original Message-----
-> > From: John Fastabend [mailto:john.fastabend@gmail.com]
-> > Sent: Tuesday, September 27, 2022 5:16 AM
-> > To: liujian (CE) <liujian56@huawei.com>; Cong Wang
-> > <xiyou.wangcong@gmail.com>
-> > Cc: John Fastabend <john.fastabend@gmail.com>; Jakub Sitnicki
-> > <jakub@cloudflare.com>; Eric Dumazet <edumazet@google.com>; davem
-> > <davem@davemloft.net>; yoshfuji@linux-ipv6.org; dsahern@kernel.org;
-> > Jakub Kicinski <kuba@kernel.org>; Paolo Abeni <pabeni@redhat.com>;
-> > netdev <netdev@vger.kernel.org>; bpf@vger.kernel.org
-> > Subject: RE: [bug report] one possible out-of-order issue in sockmap
-> > 
-> > liujian (CE) wrote:
-> > >
-> > >
-> > > > -----Original Message-----
-> > > > From: Cong Wang [mailto:xiyou.wangcong@gmail.com]
-> > > > Sent: Monday, September 26, 2022 2:26 AM
-> > > > To: liujian (CE) <liujian56@huawei.com>
-> > > > Cc: John Fastabend <john.fastabend@gmail.com>; Jakub Sitnicki
-> > > > <jakub@cloudflare.com>; Eric Dumazet <edumazet@google.com>;
-> > davem
-> > > > <davem@davemloft.net>; yoshfuji@linux-ipv6.org; dsahern@kernel.org;
-> > > > Jakub Kicinski <kuba@kernel.org>; Paolo Abeni <pabeni@redhat.com>;
-> > > > netdev <netdev@vger.kernel.org>; bpf@vger.kernel.org
-> > > > Subject: Re: [bug report] one possible out-of-order issue in sockmap
-> > > >
-> > > > On Sat, Sep 24, 2022 at 07:59:15AM +0000, liujian (CE) wrote:
-> > > > > Hello,
-> > > > >
-> > > > > I had a scp failure problem here. I analyze the code, and the
-> > > > > reasons may
-> > > > be as follows:
-> > > > >
-> > > > > From commit e7a5f1f1cd00 ("bpf/sockmap: Read psock ingress_msg
-> > > > before
-> > > > > sk_receive_queue", if we use sockops
-> > > > > (BPF_SOCK_OPS_ACTIVE_ESTABLISHED_CB
-> > > > > and BPF_SOCK_OPS_PASSIVE_ESTABLISHED_CB) to enable socket's
-> > > > sockmap
-> > > > > function, and don't enable strparse and verdict function, the
-> > > > > out-of-order problem may occur in the following process.
-> > > > >
-> > > > > client SK                                   server SK
-> > > > > ------------------------------------------------------------------
-> > > > > ----
-> > > > > ----
-> > > > > tcp_rcv_synsent_state_process
-> > > > >   tcp_finish_connect
-> > > > >     tcp_init_transfer
-> > > > >       tcp_set_state(sk, TCP_ESTABLISHED);
-> > > > >       // insert SK to sockmap
-> > > > >     wake up waitter
-> > > > >     tcp_send_ack
-> > > > >
-> > > > > tcp_bpf_sendmsg(msgA)
-> > > > > // msgA will go tcp stack
-> > > > >                                             tcp_rcv_state_process
-> > > > >                                               tcp_init_transfer
-> > > > >                                                 //insert SK to sockmap
-> > > > >                                               tcp_set_state(sk,
-> > > > >                                                      TCP_ESTABLISHED)
-> > > > >                                               wake up waitter
-> > > >
-> > > > Here after the socket is inserted to a sockmap, its
-> > > > ->sk_data_ready() is already replaced with
-> > > > sk_psock_verdict_data_ready(), so msgA should go to sockmap, not TCP
-> > stack?
-> > > >
-> > > It is TCP stack.  Here I only enable BPF_SK_MSG_VERDICT type.
-> > > bpftool prog load bpf_redir.o /sys/fs/bpf/bpf_redir map name
-> > > sock_ops_map pinned /sys/fs/bpf/sock_ops_map bpftool prog attach
-> > > pinned /sys/fs/bpf/bpf_redir msg_verdict pinned
-> > > /sys/fs/bpf/sock_ops_map
-> > 
-> > Is the sender using FAST_OPEN by any chance? We know this bug exists in
-> > this case. Fix tbd.
-> 
-> FAST_OPEN is not used.
+Hello BPF
 
-OK thanks for the reproducer I'll take a look this afternoon.
+I understand that CONFIG_DEBUG_INFO_BTF=y will generate .BTF and
+.BTF_xx  sections in the kernel image which are much smaller than
+those DWARF sections.  But I also try to understand how BTF can impact
+bpftrace and the existing debug tools:
+
+1) If the kernel is built with CONFIG_DEBUG_INFO_BTF=y, can
+bpftrace relies on BTF only without kernel_devel ?
+
+2) Can the existing kernel debugging tools like crash(1) or
+kgdb(1) take advantage of BTF ?
+
+3) If the kernel is built with CONFIG_DEBUG_INFO_BTF=y, are the
+symbolic info and types info in the debug-info section replaced with
+BTF formatted info?
+
+4) Given the current upstream development effort for BTF, can we run
+bpftrace without LLVM now ? and can we run bpftrace without the help
+of kernel header files (kernel-devel) ?
+
+5) Has bpf CO-RE become reality now?
+
+Thank you!
+Johnny
