@@ -2,436 +2,221 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13F215EDE6B
-	for <lists+bpf@lfdr.de>; Wed, 28 Sep 2022 16:06:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93A7A5EE1CB
+	for <lists+bpf@lfdr.de>; Wed, 28 Sep 2022 18:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233357AbiI1OGz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Sep 2022 10:06:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56830 "EHLO
+        id S234608AbiI1QYJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Sep 2022 12:24:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234143AbiI1OGx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Sep 2022 10:06:53 -0400
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C36EA52E7F
-        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 07:06:51 -0700 (PDT)
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 28SE5WPS032167;
-        Wed, 28 Sep 2022 14:06:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2022-7-12;
- bh=m8b9aFxhhvgbMI1GcpAKeYOTV/PWoce1HT4fNW7KSq4=;
- b=h87StKCXADRlBd+eHpY090cB1+uuDxZNZTOQBQkBgwBH9tZBr8rLKhG9I0ho0yEF2Xzj
- 7hf5tEp+rkfy6hExsfbPsU5TV7PMi5PkqKr9qMjN5cS2ZKDJvqC0eNMyXG0DkuMiXDN5
- MSoigAu0CWWNDNsCHHKaUuUi9IOa6HT21TBkXgMtDNkxaofvH+/wibRaB36/A+h4MbCJ
- WlqxjdeNNrXokkh4w0UN/jKaboywwnWd15NSxVLxp6C/Nrdpp2oPN9KQ86hn37meJaXt
- M+Q1Jn7NUXRifRHSrFHikYMr/MIDeUwjuFvK7Z17FVIpKM5uZpjCnrrog3A4NIKwZ43G og== 
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3jst0ksrb6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 28 Sep 2022 14:06:18 +0000
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 28SDbD5e036921;
-        Wed, 28 Sep 2022 14:06:17 GMT
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2170.outbound.protection.outlook.com [104.47.59.170])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3jtpvfbqa4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 28 Sep 2022 14:06:16 +0000
+        with ESMTP id S234653AbiI1QXb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Sep 2022 12:23:31 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA419E368D
+        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 09:23:29 -0700 (PDT)
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 28SA8bwS000825
+        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 09:23:29 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=2JC5hL6oVaYq7VLSJQR0zX7ur8ztNcFPO87e4dpO5Ag=;
+ b=jftC3XBYXBU9BxuKstuahlVqK0mNZsiR2ngWHi945xBSKDU+lXX5Iot8LqtvA5uqbaSD
+ XkiFBORDx9387eV0OoyTpG4AQLysEdx7kqvXIfPLuYSRYUE1dc+Viune2exijF5RXjlp
+ TLvuSvePafoHMsNxmnekSdzwEMwfBm0TpgQ= 
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2047.outbound.protection.outlook.com [104.47.66.47])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3jvg973m4y-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 09:23:29 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VpYGrFk7AqxkVoLfc9hVbBp+aIH/izs5lLB9l2BSJcvtXie6ENh95bHUVaSSoKIUHfEwKj/g0boJ4ctutLfWmTTueIiW82mlQaDa9oBr8J2yGVmj2kQjNSoN0A37AsRlwKTBPq3hfiE1BETGf4ZMmqhidgWpS5ZAkrKKuYvHAbGqLby7zw++6S3oatBvzdBV7goWGp9G80+Dlo+NBolwi8w7dRyK6uXUtdrDSVkbutX/HLoZHT2p0ZzMu9dG/Ps6vwqerTn54LEhpiAstKm8hxdjb80OlfmaPV7Hkz/P+fum5hDKxK8+Px6oXln5sVrwg93zUmgRoH4Fd3Cn1Hi9GA==
+ b=dixWMUmX38lNGwyDMBqkjSLTxbdNjkdo8Hl2FKQlGuu0si8nYBI87q5IDb2wQp8VPbHYavmermf5KZuBL+E+G/iz3Sg+qSFPcXmfws5zn7NSm+Ph6WFbY4MLQo9Zltd0dI3Ko95XBkIdajq1fgc1O2IVFxTtFg1M75d3Ig7qVq2z+8L7a7uSe9hJd6VdEvhRpeNw+1QuzaTq6lgCJYyvWX4F2ZjiDFpvQQmKJGtUkjmAguQs9nEwThmFuANJ/ij1NvSdMHPlphbhAM9gR1wJLtWAB5IyCasz5/n8FpdrB2Uq+BiagiSiNln3xgd6rBSNGUIqtCzLcljHk/gvebJbWg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=m8b9aFxhhvgbMI1GcpAKeYOTV/PWoce1HT4fNW7KSq4=;
- b=hPCBU2kTgXSq5FtwxP1M6CefRZZuAi8iOlswBsBt5RciNQD92Rsy7kYuIKDwImhjD2jI6xMonIemWUvXwk3vGiiqrcV1MlyFMrlsGYA6v6MwltVUis3YDMAPajM/7Uha8NJR3cwFMLxRYl8spPnqkV/Qh/TVlAPpew7cZLrxcHtvV8KL94C6n/zaIeNnwUZaXjv4W1xgHxU1V4xf5Y5a/lsuTFyE5D+OQJcSphmYQ41+/5E/PctyEOYPJHenHWbK+9QC03VJMQ/hDgDenkDyAJDFvewV+PcAcVPsZWk7xRmPnvfzVxNOJodX6NAM3K1gxBXKYVmOPHg4dF9n19M3mQ==
+ bh=TQqBOyRBeS2kjPUahMwlBP8JfEeE4gJ+72BBD3x7T3A=;
+ b=emF3vipcFJECBJx54eTkQ7HcutRmdKbgnAjmsyarfIDHiSMC7nwd/qlfoV3XQKjpXMLW2vZChjYxQltZsXA6cc3qx+VmJj1vZxw02q+ScgIO0iGX7A9nintjmOuXtnOzcDCBwIZrRgM4BSdZs4MMkbbga0arH7nxbtuK60viEIsRF7W9qI3a7ElqdiZIkYbl4PxBvunV927oF6unachIPqXNl5ngM7DkYGs9ivtfntPX1TEwVUykgbdFTGzRU8GFTOBjZPpGtZsDOHSlMA23XMzfQmNUyGaM4WKeVDmRMYYQWywcKK7RJhF+kEuOi7Itolc15XHrXec5fcZ/bqXrqA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=m8b9aFxhhvgbMI1GcpAKeYOTV/PWoce1HT4fNW7KSq4=;
- b=ThXu9jfYbYNMsSx0rXMSTz9+LunBRxBFetqrJmmBiyFJq95zV78LKsv6jsnlMFysNH2LCVxfo347bJRwXR4dah2MVyuGy8Ll5eX/GbrrCHvZ4/SSPIPVsAJt/dENjqmokzdLCM29c92VW4SGV3nlex2lfGrYHidiIUNuD3UCx4E=
-Received: from BLAPR10MB5267.namprd10.prod.outlook.com (2603:10b6:208:30e::22)
- by BN0PR10MB5157.namprd10.prod.outlook.com (2603:10b6:408:121::20) with
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
+ by MWHPR15MB1776.namprd15.prod.outlook.com (2603:10b6:301:51::7) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5676.17; Wed, 28 Sep
- 2022 14:06:14 +0000
-Received: from BLAPR10MB5267.namprd10.prod.outlook.com
- ([fe80::9578:125a:8d2c:7b9c]) by BLAPR10MB5267.namprd10.prod.outlook.com
- ([fe80::9578:125a:8d2c:7b9c%9]) with mapi id 15.20.5654.028; Wed, 28 Sep 2022
- 14:06:14 +0000
-Subject: Re: [PATCH bpf] libbpf: fix BTF deduplication for self-referential
- structs
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org
-References: <1664292894-21490-1-git-send-email-alan.maguire@oracle.com>
- <CAEf4BzYfU0ajPAHrvJQW+ggFaQ4Ut3eVs6rLjbnjcPwDtEQv6A@mail.gmail.com>
-From:   Alan Maguire <alan.maguire@oracle.com>
-Message-ID: <02af4666-22a9-2d26-8ec9-9bdb1a4d141f@oracle.com>
-Date:   Wed, 28 Sep 2022 15:06:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
-In-Reply-To: <CAEf4BzYfU0ajPAHrvJQW+ggFaQ4Ut3eVs6rLjbnjcPwDtEQv6A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5676.15; Wed, 28 Sep
+ 2022 16:23:26 +0000
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::d70d:8cce:bb1:e537]) by SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::d70d:8cce:bb1:e537%7]) with mapi id 15.20.5654.025; Wed, 28 Sep 2022
+ 16:23:26 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
+CC:     Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Kernel Team <Kernel-team@fb.com>, Hao Luo <haoluo@google.com>,
+        "jlayton@kernel.org" <jlayton@kernel.org>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+        Toke Hoiland Jorgensen <toke@redhat.com>,
+        Clark Williams <clark@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linux-MM <linux-mm@kvack.org>
+Subject: Re: [PATCH v2 bpf-next 0/2] enforce W^X for trampoline and dispatcher
+Thread-Topic: [PATCH v2 bpf-next 0/2] enforce W^X for trampoline and
+ dispatcher
+Thread-Index: AQHY0diAGSQVkrKIrkirjj5uJg0O8a30mZyAgABv94A=
+Date:   Wed, 28 Sep 2022 16:23:26 +0000
+Message-ID: <22456B80-AE66-47EC-9C17-4002884ACA1F@fb.com>
+References: <20220926184739.3512547-1-song@kernel.org>
+ <91bbd6dd-04d4-51a0-8a7d-cf124cefca29@redhat.com>
+In-Reply-To: <91bbd6dd-04d4-51a0-8a7d-cf124cefca29@redhat.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DUZPR01CA0043.eurprd01.prod.exchangelabs.com
- (2603:10a6:10:468::6) To BLAPR10MB5267.namprd10.prod.outlook.com
- (2603:10b6:208:30e::22)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BLAPR10MB5267:EE_|BN0PR10MB5157:EE_
-X-MS-Office365-Filtering-Correlation-Id: ad77c93b-fd49-4712-1434-08daa15a9ae3
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0jiWZuz1/bzKhuaUlhcnyVrKUJgWm0QfK6Pv9LfndTx8JoAKq179ap5iYpKzVbfHIfgjoW8fS83HsaAVapTuYULenKLYP8Um61l1/5N7eCgrrS44SiD7ufTUbFCJ5IVuwDksVAW2RDOan66dl/EEiQHC1A6HZNzMdPF6V9bQnwGtDGKsjXMqY36PTQEBpr9KrMNz9xxU0JzVMDjNYSAucNizuQjFCjpPal8ylGkjfvvlisnf9D48U2/1rx2jUH+vtRQPEce1yLKvKhJ2BxdvEXLbesp/ur8stn/09Or1Wwjo+7OyEMgC/LFKoiclz1Yo7uxA3Mkv8BPgfSOSouOI39uz4xB5M1K+n+HTu9S9leu+NIQgAr+Swvc1xDp3iIvO83A5vidFEnwYBurkYL4UKmscKMg0y8BCUPkbqb95AFxb8S4Gq0VP8hIu/sS74sK4eN7jQ1PGc4BrW0fLbzC1jWKMmvkinwtxCpO4Z5VJARFyap5vKpeN52WtiMYQWnniz4Hj+Jt352Eb0QCKN+dGS1PHf3a49OIad9xW7UvRu++2dypFW/H0ex3lfD5Hc07xGDFInchyEpOeezCtGFlFAybdRQ3TiL1jpRl67eh1k9hkaCRYgquHd2+LKXz0Mlg3tjS2Fs4CWHEKuKR9TNKJ0WpTtCaRJw3GOAyEdRO1xotYbXdwNDJSHC8XusVPZ4n/TZN3BM3JviS0KamyYpPmtxW6Zjhdu5FwxPtGU0B/+1mZiUK/PjnMVU3yzgXLlM1/OtZidwmjxrRRK8eAThit9Lz5bYnRZDAl6ADnJE2mKFf2HzXIdw4G4k12IgYk9iwL
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5267.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(366004)(396003)(39860400002)(136003)(346002)(376002)(451199015)(86362001)(31696002)(36756003)(2616005)(38100700002)(8676002)(66556008)(66476007)(6916009)(66946007)(316002)(4326008)(44832011)(186003)(8936002)(7416002)(5660300002)(41300700001)(2906002)(83380400001)(966005)(6666004)(478600001)(6486002)(6506007)(6512007)(53546011)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Zk5nZ2RXWGJQUXI1di9LMDdhYmxQOEtrTmI5ZDAwZUt2cW10Zm9ERWNFZjRj?=
- =?utf-8?B?WW8yVHl4L3ZwcHFQSXVLak03b2tKVkI4amYwYWRaOWxCZVg4ckxtWWxlOUxv?=
- =?utf-8?B?d2NwUFhCekZRc3VxbkI1SnF6c2JXS3NHVnVucHBUcVFPeVlyY0lGNjZYOU92?=
- =?utf-8?B?Y0l4anFEdXdGSFhzUHE1VFg4NnRxQ3dPeE5SVjdqSXhpb3dROER2Si9DeWJR?=
- =?utf-8?B?WVVZZmtqSnV0WFdxaHc3UGRBMkY0RTVnazFnUXJFcjdtTmJqMDRNdTVpQ2ov?=
- =?utf-8?B?ZklZZWtOcXpHQ1ROQXBDNzhNZnZXcDNkV2tGOXlaQ3VWODN5UDJoNHFuVTA3?=
- =?utf-8?B?VmpPSGIybVNTOG5sMnoyZTIza0FWZjhzSWRDbkV0MWRPT0FFTHFGU2NOVG9K?=
- =?utf-8?B?Yk5zTCtrVVVSU1pWTWJwcmJ0dGlUa0dGQ2l2d1Bnakg1ZitLZ09Pa3laZ1px?=
- =?utf-8?B?V0cxdE1kcWFwb0ZqWTFHN2JEZitwMS9tbWNFSzZmRUFQRmpBS2UzR2U1ZTFl?=
- =?utf-8?B?OFNnQlc4aG9xaDloOUZUM1Q0dHEyRXRoSHZ0bEh2ZnUreUZUaDBEak9ZNUc3?=
- =?utf-8?B?ZnZwZXBOQVI5MU1lVE1QandZcUltb3NhOFRodUQ5OC9nWW1uTWh5UWxTcEdC?=
- =?utf-8?B?dldVRUkyQ0g4NFhOODRIcmNNQ0s4eWtVcVF0WTU3cHNRSFZXSVhYMXFWV1Zv?=
- =?utf-8?B?RG9FSnRaOXpWb2ZFTGJjZDgyU1hNTGVQb0xad2JTVWhoaTBRV0Rzcm83Z1la?=
- =?utf-8?B?YUNndWxGNzJxNXhZc08veWd3ZGN6OTA4V0E3M1BlZGF1U3VKSUpUNysrenFJ?=
- =?utf-8?B?NzVTZVJMSVVqaE1MaHpqSG9uUlR5d0pJNk84akdSdnkzS3lPeFpIaW5VUEpY?=
- =?utf-8?B?VUIwa2dZY29FSlEwd2lYN0dnaklvZ1AzRE5lRW5CemlSMDNBaW5wWEtiUFJN?=
- =?utf-8?B?NmdZL3lUeHZuRlVSYW8yKzhDZDZhU0lSU0JmY2ppSU40cFhSMjJPcGpEaTNW?=
- =?utf-8?B?M3VUWDhScy9UMXhuUno1NG0yaU1VZjl2VjY2ZWJRVTVMWDkwcW9rSVFpSUJi?=
- =?utf-8?B?T0ptbURXYXRXVEEwSCtXRUJRd21JZUhhT3doa2ZlNEYvaDN4VUx0Mm9JU3RM?=
- =?utf-8?B?Slk1bUVKQ3Y2TjdGSjdpeGZ5QS9udjZPQUNjenhvNTBMaWs0Z1U3OE1EdWxI?=
- =?utf-8?B?V2UycHcwSGloN3c4UGovc2RiYnR3K2tOZjVqY3RVK0F1R09ZYWliRm9GeDlz?=
- =?utf-8?B?SnQ3TjJ6TmlTTXN5MkUzNDJvU2EycmR3QWlnT05sMjVrL3hJaDFXeHhxd3RT?=
- =?utf-8?B?MWQ0aEFycTlnR3NUekVrSHZOMER2UkV0amlmbzNWbmxqcDlRU1Z0ZHZlVktV?=
- =?utf-8?B?SmpVSTBuSG1LLzFnT0ozT1QrOEFDc2xxYUtoRVdFb1JHMUFPNDB3WGF3a2hK?=
- =?utf-8?B?YklKdmhpb21WalVQYVI3VzdDdE9Pa0I4R3U3dXJrR3Y3UHBIWFBjWTQrN1ZT?=
- =?utf-8?B?ZGNVMUFqMnorK1R2cGcyNkZqK3VQRjRIRTRXV0YrQlJHZlNTR000aVhNU1Vl?=
- =?utf-8?B?d1I1WGgyaEFvSlJXN21JQ05uZWV3UmJ2dFBhbGlMY2c5S3RHazNLTlBqd054?=
- =?utf-8?B?VVRkOTZEaU14QUVCUGtzSUVqRng0M0N2RmhtYlNNQ00vK1FldDlZWnluME1I?=
- =?utf-8?B?NUduaHphV2F4L0laMjhEcGxnRDZraUpPVTBWdkkyUURsV2R4SnlMRTdxRzJ5?=
- =?utf-8?B?cEcxbDd0MnNlL2FZd1dxc1UxblpZU0FGRkxoOXd6b1ZaZmhTaGRNRmc5RkJQ?=
- =?utf-8?B?dWNOMWM3NjJSdXlsbWpjbllRVWpiS3h0K2c2ZkZqYTVtMXVOVlFSUFgvVk1G?=
- =?utf-8?B?VXlhbXdBb0JPQmtKTnJFTEg3N2dYeFBOWHZGdUV5Tk1EK2JRcVpuUUNUNmc2?=
- =?utf-8?B?bmZ2WER5QmRhYVB3bnNkTmZNWS8wQ0tpUE1rUVNCZmdKdzNmalFEOWNVOU52?=
- =?utf-8?B?bUgvQWxOYTRpWDdRbW5ZNGdMSk5iOU9Kei9ZMVM2UDhlSTBMQk9JNlN3SFRv?=
- =?utf-8?B?OFp3NkNLeWo3SWZPZFQ1cGZocndtakE3V1BLOU5ocG9jMzJQN1NGOWVEdzRv?=
- =?utf-8?B?RFpHaU5jdm9XcnVFRlFPV2daQlJnWGNpUWdlalNPSDVtdzNVQmxJSjNxTS9j?=
- =?utf-8?B?Y016VnYyZU5EemRJRm5ySU9WcmVkc1g2ZW5FM0ZjMUV2cTE1N2swNGFTcTN3?=
- =?utf-8?B?ZnRzR1lRdTNYUnQvNVRBSmxOMjV3PT0=?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ad77c93b-fd49-4712-1434-08daa15a9ae3
-X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5267.namprd10.prod.outlook.com
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3696.120.41.1.1)
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SA1PR15MB5109:EE_|MWHPR15MB1776:EE_
+x-ms-office365-filtering-correlation-id: d320974c-62f9-48e9-a16b-08daa16dc5ad
+x-fb-source: Internal
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: cw8z6YKLCGr8Y9t8DDCZ2d9kjRFKH2qRGWFQIDSUST+DCON2Z+Y8AN335ryWkV1zEABcOzpXlHpl5NppNTTCF1PWNydMil+9xBDmvn4i5CfFDJco44xhmEMzknQ8Vf8ypPML9qc12YTMXsGvB5wML3NWeLwqGCjDw+RGHqRQlrUmegj44KBwNGg+UZfrKC1MFCfcntus3D2vPP/RIXyGwN92XVKeCEnJR8eDHz9GtarV3TsTUPCV+/yqKwg7/U1wH84H4mHPevHKe1KIOCMBZhzEw963/iupeSF8zhaFnMERN6BsivCwFdNsIHbdwk+QiVyUWmkdkTnlJ1NR6V60uHhr04MyyICXvQ+B+5VbjwbzLNtRILGXDXjfO19z0c8ao1nmXS0vMBnID1ko8X3XmU+4iX9iro0F8NGLJQBHappkL5HdQce0HnzlNG4MJO8wcENvyytEv/ymjRBaWIYudMoNbBPp8FkWZSSly5Le0V5A9oo/bfUPAVC14fjqKgg/GQWujxRElNRRifr9yeKeWGaPwSToBhpRRevNiu8uRjChXCfMiv9XdjHnbsdUoDJXvRL5WPJUN+LOYjcF5Jny7PM7f2Zq7K3ftgZR0psp/mDu21cmILNrrsLRLpbJ0KH5IIXZrard5W4lVgr33Sdep8VtbiVetSEaYN7bo0kOOmVNfeyiFD7Zgupiodtwi3QSJuWZwULwuC6lMcopJeurv79vteW1/dxyE/TmQyqATNW7NQlJoisxZvTD3U9LqRzC9RylOxFCQCzFzzHJ7wPxgZRmzqUkxyqIlEADhyQkZGJxvBAfzcmC/VNAnSCaSsfW5TYLlF7/vrnqF2JAmrVZpzeJrhqe+fekjNDAYRDLjl4EWjymW5+FOyDyS077sADVVkyDFjbCf9pPrDCgGD47nA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(136003)(396003)(376002)(346002)(39860400002)(366004)(451199015)(186003)(83380400001)(54906003)(38070700005)(316002)(8936002)(86362001)(66476007)(66446008)(66556008)(64756008)(8676002)(91956017)(4326008)(6512007)(478600001)(122000001)(2616005)(36756003)(41300700001)(2906002)(966005)(6486002)(71200400001)(6506007)(38100700002)(6916009)(66946007)(33656002)(76116006)(7416002)(53546011)(5660300002)(81973001)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?rfiEB/JE6y7dM5kBwVt+7r4OcZv8fa3kyYS2hsIGnq5AKqGygFa2CoaIrX?=
+ =?iso-8859-1?Q?cxyOmLQvSfljU9QHjGEu2DYh5y15Fk+xCzq85GHiNdClZvKV+jhA3TXPnJ?=
+ =?iso-8859-1?Q?Us5Kj9ytHIWpNsqcwBXxm9PdLvDlwRWWUiD95JdnPw+rObuqri3PozpiDe?=
+ =?iso-8859-1?Q?ORyLoXicUZHJgoy3XdErdt9xPLDkdhAyfnxsSEs/UXl1UTC1V+qzMv1qfE?=
+ =?iso-8859-1?Q?iqlpue727cLfWGWnJ+zssPXHY0SCiX6vIe2Q449xxeasW8fFzuMSzNoyEA?=
+ =?iso-8859-1?Q?xjNhbEfXW/a/3Kr30jogAVUlrRiFu7Jugu9bJPVNsEiNSy6P4SVYYXGFOV?=
+ =?iso-8859-1?Q?yAZ+u1rAH8g0/1acmDfiobmhTMVXPTVjn3NlIPG8r3RwQCBRVmUeeN+eUj?=
+ =?iso-8859-1?Q?J9Ox+EHWH1mrkyezlnywuWOfG0aWHGXAwmO0JPzuMAl0xxReInnPMgA7Sz?=
+ =?iso-8859-1?Q?H0dmye9sV1jTODGqXtV4z4/zv7RYHjmg2upcT5BTx8xAudPj1d95qf+6Fa?=
+ =?iso-8859-1?Q?9RNcDUJIEeAtn5AMeeJkcIIDKupD52ijSp9R1XVYnZvHYUBhVg8VphQkly?=
+ =?iso-8859-1?Q?5Z+yQ/heEEsUZqhEjoUG+Mbmqpuhif1+sUYoLJQzmnCyu9SSVLCwtweHFv?=
+ =?iso-8859-1?Q?G/Gxcra4/UCFnzVu/WW9OC3uMc9xzb9x8zJQ9U+4YSMw4jQSO6o39tc/HP?=
+ =?iso-8859-1?Q?UV6/QSGN4VoWtLPFMC1bcsYNpSoQbxKe1PNdjORsgYrVvKNKOSqrm3PC+i?=
+ =?iso-8859-1?Q?CylVPxrDNoqUeT7APgGSxEON5dcnw9XzsOGwsuj5t9QymXQY0ah2lH7kiM?=
+ =?iso-8859-1?Q?THWYFeMWkZK2GW/TpRbM4fszYAXVlMgw5FE+lyC1Y0h/tAS2dh1baNNyOb?=
+ =?iso-8859-1?Q?r2O6b0ExOwbtBkkJxDXwdwtFq+poZ2tL22sI3MpcceZLgLRwHsBOQXe2SP?=
+ =?iso-8859-1?Q?ASX9iB1wo2BgoHe67hf9j61A42QCl5kLeZSwOS8V7/Fmmd1/1xG1QoZUKo?=
+ =?iso-8859-1?Q?tut6vXbbh0o7sxBRWrgvDoO2M58jnjG2MFQ0FqPlujuokcICAX2C5/wt1K?=
+ =?iso-8859-1?Q?+rv7FsYjXQXZi0Hgur3jRaYDK11euAv2Pf0nPzDZy6CzhNlhbEEJ+mzwPQ?=
+ =?iso-8859-1?Q?sFE1H4u/36rHOH+gwC1IjdSZzvV5jrG5mD/NuvpC5hyOxuZ1KSYkwrc5g4?=
+ =?iso-8859-1?Q?rZ5SEqdJGE5thimcRYrmaNnKNCdWNe359+43pqxQsdhJGd/KLpzXyXaeJD?=
+ =?iso-8859-1?Q?6WJQz9XpRjaKIXDl5UMC3nW9jiFflf4Q69d8iEWwYiu51OyRNqNp3seuoi?=
+ =?iso-8859-1?Q?UGZo9Z0R2hB8+61g9LrJk7X105IrfTYwoz5rY4uzx9+xDIVJmeyOkg+kXR?=
+ =?iso-8859-1?Q?RY1fMUpinU3BM+4hKIhf9R8MzPm89AGKcWziT6fVGvbWRaoq6KE+Nk1nwQ?=
+ =?iso-8859-1?Q?gPw1GRCevN5dNGHU/zfwm6gR06mo4fOsKsbj94nWU5nuBFzFTllMhiGkxx?=
+ =?iso-8859-1?Q?DHd73Cdq64pPk+Oc3BQsq3aaRGfiV6UT+tlpdBJLsSyAPZz/tm0RjVje75?=
+ =?iso-8859-1?Q?lIY1JNW9ouRycB9L9vEh5bOBCmEBSPY3lGQiGBEhQ35zw0db59x3P/CWBx?=
+ =?iso-8859-1?Q?B2+FN7CeUlJ235lleiCsRLUQ+Jt7k6+b95Soi6ollKmcmZl/6eIegKf486?=
+ =?iso-8859-1?Q?sVh4vvf/yMONCh66x8w=3D?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-ID: <0D39BA864933AA439134A372E999CC61@namprd15.prod.outlook.com>
+X-OriginatorOrg: fb.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2022 14:06:14.5454
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d320974c-62f9-48e9-a16b-08daa16dc5ad
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Sep 2022 16:23:26.6031
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: u2iIfwVhb0j3Ncj30owmyRlqQLBDkGbrGpSiC+FiLQclBwtdrT1jRDLdL7dF5Chzf9EHzLMPgSBKFw50GjrzDw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR10MB5157
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: wwy1fId8m3JcAw4q/yxpN4KTeOBMBJtDt+ExdqESsOK3/6Tttp2oBPPxOASmdGGH+0tVLiX7cjAadBxqNEYJbg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1776
+X-Proofpoint-GUID: Y8UU69fXuhQBsk869IvihLJWfJkaiXri
+X-Proofpoint-ORIG-GUID: Y8UU69fXuhQBsk869IvihLJWfJkaiXri
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.528,FMLib:17.11.122.1
- definitions=2022-09-28_06,2022-09-28_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
- suspectscore=0 adultscore=0 mlxscore=0 spamscore=0 bulkscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2209130000 definitions=main-2209280085
-X-Proofpoint-GUID: R0ddbwE_VOtNxhsz_EGRa4VYfuoTGb5V
-X-Proofpoint-ORIG-GUID: R0ddbwE_VOtNxhsz_EGRa4VYfuoTGb5V
-X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+ definitions=2022-09-28_07,2022-09-28_01,2022-06-22_01
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 27/09/2022 22:06, Andrii Nakryiko wrote:
-> On Tue, Sep 27, 2022 at 8:35 AM Alan Maguire <alan.maguire@oracle.com> wrote:
->>
->> BTF deduplication is not deduplicating some structures, leading to
->> redundant definitions in module BTF that already have identical
->> definitions in vmlinux BTF.
->>
->> When examining module BTF, we can see that "struct sk_buff" is redefined
->> in module BTF. For example in module nf_reject_ipv4 we see:
->>
->> [114280] STRUCT 'sk_buff' size=232 vlen=28
->>         '(anon)' type_id=114463 bits_offset=0
->>         '(anon)' type_id=114464 bits_offset=192
->>         ...
->>
->> The rest of the fields point back at base vmlinux type ids.
->>
->> The first anon field in an sk_buff is:
->>
->>         union {
->>                 struct {
->>                         struct sk_buff * next;           /*     0     8 */
->>                         struct sk_buff * prev;           /*     8     8 */
->>                         union {
->>                                 struct net_device * dev; /*    16     8 */
->>                                 long unsigned int dev_scratch; /*    16     8 */
->>                         };                               /*    16     8 */
->>                 };
->>
->> ..and examining its BTF representation, we see
->>
->> [114463] UNION '(anon)' size=24 vlen=4
->>         '(anon)' type_id=114462 bits_offset=0
->>         'rbnode' type_id=517 bits_offset=0
->>         'list' type_id=83 bits_offset=0
->>         'll_node' type_id=443 bits_offset=0
->>
->> ...which leads us to
->>
->> [114462] STRUCT '(anon)' size=24 vlen=3
->>         'next' type_id=114279 bits_offset=0
->>         'prev' type_id=114279 bits_offset=64
->>         '(anon)' type_id=114461 bits_offset=128
->>
->> ...finally getting back to the sk_buff:
->>
->> [114279] PTR '(anon)' type_id=114280
->>
->> So perhaps self-referential structures are a problem for
->> deduplication?
->>
->> The second union with a non-base BTF id:
->>
->>         union {
->>                 struct sock *      sk;                   /*    24     8 */
->>                 int                ip_defrag_offset;     /*    24     4 */
->>         };
->>
->> ...points at
->>
->> [114464] UNION '(anon)' size=8 vlen=2
->>         'sk' type_id=113826 bits_offset=0
->>         ...
->>
->> [113826] PTR '(anon)' type_id=113827
->>
->> [113827] STRUCT 'sock' size=776 vlen=93
->>         ...
->>         'sk_error_queue' type_id=114458 bits_offset=1536
->>         'sk_receive_queue' type_id=114458 bits_offset=1728
->>         ...
->>         'sk_write_queue' type_id=114458 bits_offset=2880
->>         ...
->>         'sk_socket' type_id=114295 bits_offset=4992
->>         ...
->>         'sk_memcg' type_id=113787 bits_offset=5312
->>         'sk_state_change' type_id=114758 bits_offset=5376
->>         'sk_data_ready' type_id=114758 bits_offset=5440
->>         'sk_write_space' type_id=114758 bits_offset=5504
->>         'sk_error_report' type_id=114758 bits_offset=5568
->>         'sk_backlog_rcv' type_id=114292 bits_offset=5632
->>         'sk_validate_xmit_skb' type_id=114760 bits_offset=5696
->>         'sk_destruct' type_id=114758 bits_offset=5760
->>
->> Again, sk_error_queue refers to a 'struct sk_buff_head':
->>
->> [114458] STRUCT 'sk_buff_head' size=24 vlen=3
->>         '(anon)' type_id=114457 bits_offset=0
->>         'qlen' type_id=23 bits_offset=128
->>         'lock' type_id=514 bits_offset=160
->>
->> ...which, because it contains a struct sk_buff * reference
->> uses the not-deduped sk_buff above.
->>
->> [114455] STRUCT '(anon)' size=16 vlen=2
->>         'next' type_id=114279 bits_offset=0
->>         'prev' type_id=114279 bits_offset=64
->>
->> Ditto for sk_receive_queue, sk_write_queue, etc.
->>
->> sk_memcg refers to a non-deduped struct mem_cgroup where
->> only one field is not in base BTF:
->>
->> [113786] STRUCT 'mem_cgroup' size=4288 vlen=46
->> ...
->>         'move_lock_task' type_id=113694 bits_offset=31296
->> ...
->>
->> and this is a pointer to task_struct:
->>
->> [113694] PTR '(anon)' type_id=113695
->>
->> [113695] STRUCT 'task_struct' size=9792 vlen=253
->> ...
->>                 'last_wakee' type_id=113694 bits_offset=704
->> ...
->>
->> ...so we see that the self-referential members cause problems here
->> too.
->>
->> Looking at the code, btf_dedup_is_equiv() will check equivalence
->> for all member types for BTF_KIND_[STRUCT|UNION]. How will such
->> an equivalence check function for a pointer back to the same
->> structure?
->>
->> With a struct, btf_dedup_struct_type() is called, and for each
->> candidate (hashed by name offset, member details but not type
->> ids), we clear the hypot_map (mapping hyothetical type
->> equivalences) and add a hypot_map entry mapping from the
->> canon_id -> cand_id in btf_dedup_is_equiv() once it looks
->> like a rough match.
->>
->> when we delve into its members we recurse into reference types
->> so should ultimately use that mapping to notice self-referential
->> struct equivalence.
->>
->> However looking closely, btf_dedup_is_equiv() is being called from
->> btf_dedup_struct_type() with arguments in the wrong order:
->>
->>         eq = btf_dedup_is_equiv(d, type_id, cand_id);
->>
->> The candidate id should I think precede the type_id, as we see in
->> function signature:
->>
->> static int btf_dedup_is_equiv(struct btf_dedup *d, __u32 cand_id,
->>                               __u32 canon_id)
->>
->> ...and with this change the duplication disappears in the modules.
->>
->> Fixes: d5caef5b56555bfa2ac0 ("btf: add BTF types deduplication algorithm")
->> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
->> ---
->>  tools/lib/bpf/btf.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
->> index b4d9a96..a4ee15c 100644
->> --- a/tools/lib/bpf/btf.c
->> +++ b/tools/lib/bpf/btf.c
->> @@ -4329,7 +4329,7 @@ static int btf_dedup_struct_type(struct btf_dedup *d, __u32 type_id)
->>                         continue;
->>
->>                 btf_dedup_clear_hypot_map(d);
->> -               eq = btf_dedup_is_equiv(d, type_id, cand_id);
->> +               eq = btf_dedup_is_equiv(d, cand_id, type_id);
-> 
-> Unfortunately this is not the right fix (and CI points this out, e.g.,
-> at [0]; so yay tests). You got confused by candidate terminology. In
-> btf_dedup_struct_type we iterate over candidate types that could be
-> canonical types. So what is cand_id is meant to be canonical for type
-> identified by type_id. And type_id is pointing to a candidate type as
-> far as an equivalence check goes (that is btf_dedup_is_equiv()). It's
 
-Ok, I _think_ I understand. So the cand_id arg to btf_dedup_is_equiv() is
-the one we hope will - through deduplication with canon_id - get eliminated. 
-So here's my point of confusion then - when we do the hypothetical map lookup,
-why don't we do it using cand_id?
 
-I'd assumed the idea was the hypot_map could be used to map candidate
-types to the suspected canonical type, i.e. "we think this candidate
-type will dedup to this canonical one". The code semes to use the 
-opposite mapping, getting a hyptothetical type id from the canonical type,
-for comparison with the candidate. I can't figure out how this helps
-deduplication yet though, would you mind explaining this?
+> On Sep 28, 2022, at 2:42 AM, Jesper Dangaard Brouer <jbrouer@redhat.com> =
+wrote:
+>=20
+>=20
+> On 26/09/2022 20.47, Song Liu wrote:
+>> Changes v1 =3D> v2:
+>> 1. Update arch_prepare_bpf_dispatcher to use a RO image and a RW buffer.
+>>    (Alexei) Note: I haven't found an existing test to cover this part, so
+>>    this part was tested manually (comparing the generated dispatcher is
+>>    the same).
+>> Jeff Layton reported CPA W^X warning linux-next [1]. It turns out to be
+>> W^X issue with bpf trampoline and bpf dispatcher. Fix these by:
+>> 1. Use bpf_prog_pack for bpf_dispatcher;
+>> 2. Set memory permission properly with bpf trampoline.
+>=20
+> Indirectly related to your patchset[0].
+> - TL;DR calling set_memory_x() have side-effects
+>=20
+> We are getting reports that loading BPF-progs (jit stage) cause issues fo=
+r RT in the form of triggering work on isolated CPUs.  It looks like BTF JI=
+T stage cause a TLB flush on all CPUs, including isolated CPUs.
+>=20
+> The triggering function is set_memory_x() (see call-stack[2]).
+>=20
+> We have noticed (and appreciate) you have previously improved the situati=
+on in this patchset[3]:
+> [3] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/co=
+mmit/?id=3D80123f0ac4a6
+>=20
+> Is this patchset also part of improving the situation, or does it introdu=
+ce more calls to set_memory_x() ?
 
-This possibly explains why my "fix" worked better with self-referential 
-structs; with the arguments swapped, we actually used a mapping from
-candidate -> canonical. At the top level of the struct traversal,
-this mapping was established, so when we later reached a reference
-type which pointed back at the struct itself, the hypot_map
-considered a self-referential pointer in the candidate equivalent
-to one in the canonical type (since the hypot_map pointed the
-candidate type at the canonical type).
- 
-> somewhat confusing, but really type_id is a candidate we are trying to
-> dedup and cand_id is a *potential* canonical type (there could be
-> multiple potential canonical types due to hash collisions).
-> 
+This set doesn't change numbers of set_memory_x() calls for trampolines.=20
+We plan to move trampolines to use bpf_prog_pack (or the new vmalloc_exec,=
+=20
+if I am lucky) in 6.2. We will see fewer set_memory_x() calls after that.
 
-Yeah there's definitely something going on here, but I'm still
-struggling to understand the dedup algorithm so I jumped on the first
-thing that looked like it might explain it. With respect to the
-test failure, is it possible that we're getting a better dedup?
+Thanks,
+Song
 
-Specifically, the test that fails is
+>=20
+>=20
+>> [1] https://lore.kernel.org/lkml/c84cc27c1a5031a003039748c3c099732a718ae=
+c.camel@kernel.org/
+>=20
+>=20
+> [2] Call stack triggering issue:
+>=20
+>        smp_call_function_many_cond+0x1
+>        smp_call_function+0x39
+>        on_each_cpu+0x2a
+>        cpa_flush+0x11a
+>        change_page_attr_set_clr+0x129
+>        set_memory_x+0x37
+>        bpf_int_jit_compile+0x36f
+>        bpf_prog_select_runtime+0xc6
+>        bpf_prepare_filter+0x523
+>        sk_attach_filter+0x13
+>        sock_setsockopt+0x920
+>        __sys_setsockopt+0x16a
+>        __x64_sys_setsockopt+0x20
+>        do_syscall_64+0x87
+>        entry_SYSCALL_64_after_hwframe+0x65
+>=20
+>=20
+> [0] https://lore.kernel.org/all/20220926184739.3512547-1-song@kernel.org/=
+#r
+>=20
+> --Jesper
+>=20
 
-VALIDATE_RAW_BTF(
-                btf2,
-                "[1] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED",
-                "[2] PTR '(anon)' type_id=5",
-                "[3] FWD 's2' fwd_kind=struct",
-                "[4] PTR '(anon)' type_id=3",
-                "[5] STRUCT 's1' size=16 vlen=2\n"
-                "\t'f1' type_id=2 bits_offset=0\n"
-                "\t'f2' type_id=4 bits_offset=64",
-                "[6] PTR '(anon)' type_id=8",
-                "[7] PTR '(anon)' type_id=9",
-                "[8] STRUCT 's1' size=16 vlen=2\n"
-                "\t'f1' type_id=6 bits_offset=0\n"
-                "\t'f2' type_id=7 bits_offset=64",
-                "[9] STRUCT 's2' size=40 vlen=4\n"
-                "\t'f1' type_id=6 bits_offset=0\n"
-                "\t'f2' type_id=7 bits_offset=64\n"
-                "\t'f3' type_id=1 bits_offset=128\n"
-                "\t'f4' type_id=8 bits_offset=192",
-                "[10] STRUCT 's3' size=8 vlen=1\n"
-                "\t'f1' type_id=7 bits_offset=0");
-
-Reconstructing from test failure output, the actual BTF generated is
-
-                "[1] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED",
-                "[2] PTR '(anon)' type_id=5"
-                "[3] FWD 's2' fwd_kind=struct"
-                "[4] PTR '(anon)' type_id=3"
-                "[5] STRUCT 's1' size=16 vlen=2"
-                "'f1' type_id=2 bits_offset=0"
-                "'f2' type_id=4 bits_offset=64",
-                "[6] PTR '(anon)' type_id=7",
-		"[7] STRUCT 's2' size=40 vlen=4"
-	  	"'f1' type_id=2 bits_offset=0"
-  		"'f2' type_id=6 bits_offset=64"
-	  	"'f3' type_id=1 bits_offset=128"
-		"'f4' type_id=5 bits_offset=192"
-                "[8] STRUCT 's3' size=8 vlen=1"
-  		"'f1' type_id=6 bits_offset=0'"
-
-So the difference here is that the two struct s1s were 
-deduplicated, whereas they were not expected to be.
-
-Is that a valid dedup? I'm not sure, but the s1s shallow
-match on size/vlen/names, and certainly the first
-member is ok, since in both cases it's a ptr reference back
-to the struct itself. The second member is a pointer to
-a fwd definition of struct s2 (type id 3) in the case
-of the first s1 struct, and in the second it's a pointer
-to struct s2 itself, which I _think_ are supposed to be
-equivalent?
-
-> So there might be a bug with dedup, but it's somewhere else.
->
-
-Is it possible the hypot_map usage could be the real issue?
-
-Thanks!
-
-Alan
- 
->   [0] https://github.com/kernel-patches/bpf/actions/runs/3137048529/jobs/5095008504
-> 
->>                 if (eq < 0)
->>                         return eq;
->>                 if (!eq)
->> --
->> 1.8.3.1
->>
