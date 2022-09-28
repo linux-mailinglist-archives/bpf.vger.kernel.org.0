@@ -2,27 +2,27 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D55225ED37A
-	for <lists+bpf@lfdr.de>; Wed, 28 Sep 2022 05:27:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 015975ED3D0
+	for <lists+bpf@lfdr.de>; Wed, 28 Sep 2022 06:14:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232291AbiI1D1j (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Sep 2022 23:27:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34682 "EHLO
+        id S231759AbiI1EO4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Sep 2022 00:14:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232626AbiI1D12 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Sep 2022 23:27:28 -0400
+        with ESMTP id S230185AbiI1EOy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Sep 2022 00:14:54 -0400
 Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF25E106A34
-        for <bpf@vger.kernel.org>; Tue, 27 Sep 2022 20:27:25 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3DBE8FD6B
+        for <bpf@vger.kernel.org>; Tue, 27 Sep 2022 21:14:51 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Mchhd31DJzl8bV
-        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 11:25:37 +0800 (CST)
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4McjlM4dl3zl3K4
+        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 12:13:03 +0800 (CST)
 Received: from [10.174.176.117] (unknown [10.174.176.117])
-        by APP2 (Coremail) with SMTP id Syh0CgDngmwXvzNjWXEJBg--.13S2;
-        Wed, 28 Sep 2022 11:27:23 +0800 (CST)
-Subject: Re: [PATCH bpf-next v2 00/13] Add support for qp-trie with dynptr key
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        by APP3 (Coremail) with SMTP id _Ch0CgCXEEg1yjNjlYR4BQ--.60395S2;
+        Wed, 28 Sep 2022 12:14:49 +0800 (CST)
+Subject: Re: [PATCH bpf-next v2 08/13] bpftool: Add support for qp-trie map
+To:     Quentin Monnet <quentin@isovalent.com>, bpf@vger.kernel.org
+Cc:     Martin KaFai Lau <kafai@fb.com>,
         Andrii Nakryiko <andrii@kernel.org>,
         Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
         Yonghong Song <yhs@fb.com>,
@@ -34,31 +34,25 @@ Cc:     bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
         Stanislav Fomichev <sdf@google.com>,
         Jiri Olsa <jolsa@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Hou Tao <houtao1@huawei.com>
+        "Paul E . McKenney" <paulmck@kernel.org>, houtao1@huawei.com
 References: <20220924133620.4147153-1-houtao@huaweicloud.com>
- <20220926012535.badx76iwtftyhq6m@MacBook-Pro-4.local>
- <ca0c97ae-6fd5-290b-6a00-fe3fe2e87aeb@huaweicloud.com>
- <20220927011949.sxxkyhjiig7wg7kv@macbook-pro-4.dhcp.thefacebook.com>
- <3c7cf1a8-16f2-5876-ff92-add6fd795caf@huaweicloud.com>
- <CAADnVQL_fMx3P24wzw2LMON-SqYgRKYziUHg6+mYH0i6kpvJcA@mail.gmail.com>
- <2d9c2c06-af12-6ad1-93ef-454049727e78@huaweicloud.com>
- <CAADnVQLWQcjYypR2+6UxhKrLOnpRQtB3PZ0=xOtjGpkEhWbH3g@mail.gmail.com>
+ <20220924133620.4147153-9-houtao@huaweicloud.com>
+ <896ae326-125b-5d23-2870-aeaa95341c64@isovalent.com>
 From:   Hou Tao <houtao@huaweicloud.com>
-Message-ID: <81cae2d7-189d-0db2-f306-e015b48165a0@huaweicloud.com>
-Date:   Wed, 28 Sep 2022 11:27:19 +0800
+Message-ID: <f46cefeb-2572-ec8a-f5ee-82dc1988137e@huaweicloud.com>
+Date:   Wed, 28 Sep 2022 12:14:45 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <CAADnVQLWQcjYypR2+6UxhKrLOnpRQtB3PZ0=xOtjGpkEhWbH3g@mail.gmail.com>
+In-Reply-To: <896ae326-125b-5d23-2870-aeaa95341c64@isovalent.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-X-CM-TRANSID: Syh0CgDngmwXvzNjWXEJBg--.13S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxWFykuw45tw1kXFW7AF45Awb_yoWrWrW5pr
-        WUuF1DGr1kJrn7uwn5t34xJFy3X3WFvFyUWa45tr45C340gwnagay8tay5ua4UA34xJwsF
-        qryDJ3s3Cw4vyaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+X-CM-TRANSID: _Ch0CgCXEEg1yjNjlYR4BQ--.60395S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7uFy5JryfKw1UAFWkZryDtrb_yoW5Jr1kpa
+        yUKa40vF4kJr47Krs3tF48CFWYkr4kGw17GF95K34rAw4qq3s3WF10gFWruF9Yqwn3Ww1Y
+        yw1YgFZ7J3Wjv3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
         6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
         vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
         xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
@@ -68,9 +62,9 @@ X-Coremail-Antispam: 1UD129KBjvJXoWxWFykuw45tw1kXFW7AF45Awb_yoWrWrW5pr
         e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
         Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
         6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-        9x07UZ18PUUUUU=
+        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
+        67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
+        uYvjxUFDGOUUUUU
 X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
@@ -84,91 +78,79 @@ X-Mailing-List: bpf@vger.kernel.org
 
 Hi,
 
-On 9/28/2022 9:08 AM, Alexei Starovoitov wrote:
-> On Tue, Sep 27, 2022 at 7:08 AM Hou Tao <houtao@huaweicloud.com> wrote:
->> A quick benchmark show the performance is bad when using subtree lock for lookup:
+On 9/27/2022 7:24 PM, Quentin Monnet wrote:
+> Sat Sep 24 2022 14:36:15 GMT+0100 (British Summer Time) ~ Hou Tao
+> <houtao@huaweicloud.com>
+>> From: Hou Tao <houtao1@huawei.com>
 >>
->> Randomly-generated binary data (key size=255, max entries=16K, key length
->> range:[1, 255])
->> * no lock
->> qp-trie lookup   (1  thread)   10.250 ± 0.009M/s (drops 0.006 ± 0.000M/s mem
->> 0.000 MiB)
->> qp-trie lookup   (2  thread)   20.466 ± 0.009M/s (drops 0.010 ± 0.000M/s mem
->> 0.000 MiB)
->> qp-trie lookup   (4  thread)   41.211 ± 0.010M/s (drops 0.018 ± 0.000M/s mem
->> 0.000 MiB)
->> qp-trie lookup   (8  thread)   82.933 ± 0.409M/s (drops 0.031 ± 0.000M/s mem
->> 0.000 MiB)
->> qp-trie lookup   (16 thread)  162.615 ± 0.842M/s (drops 0.070 ± 0.000M/s mem
->> 0.000 MiB)
+>> Support lookup/update/delete/iterate/dump operations for qp-trie in
+>> bpftool. Mainly add two functions: one function to parse dynptr key and
+>> another one to dump dynptr key. The input format of dynptr key is:
+>> "key [hex] size BYTES" and the output format of dynptr key is:
+>> "size BYTES".
 >>
->> * subtree lock
->> qp-trie lookup   (1  thread)    8.990 ± 0.506M/s (drops 0.006 ± 0.000M/s mem
->> 0.000 MiB)
->> qp-trie lookup   (2  thread)   15.908 ± 0.141M/s (drops 0.004 ± 0.000M/s mem
->> 0.000 MiB)
->> qp-trie lookup   (4  thread)   27.551 ± 0.025M/s (drops 0.019 ± 0.000M/s mem
->> 0.000 MiB)
->> qp-trie lookup   (8  thread)   42.040 ± 0.241M/s (drops 0.018 ± 0.000M/s mem
->> 0.000 MiB)
->> qp-trie lookup   (16 thread)   50.884 ± 0.171M/s (drops 0.012 ± 0.000M/s mem
->> 0.000 MiB)
-> That's indeed significant.
-> But I interpret it differently.
-> Since single thread perf is close enough while 16 thread
-> suffers 3x it means the lock mechanism is inefficient.
-> It means update/delete performance equally doesn't scale.
+>> The following is the output when using bpftool to manipulate
+>> qp-trie:
+>>
+>>   $ bpftool map pin id 724953 /sys/fs/bpf/qp
+>>   $ bpftool map show pinned /sys/fs/bpf/qp
+>>   724953: qp_trie  name qp_trie  flags 0x1
+>>           key 16B  value 4B  max_entries 2  memlock 65536B  map_extra 8
+>>           btf_id 779
+>>           pids test_qp_trie.bi(109167)
+>>   $ bpftool map dump pinned /sys/fs/bpf/qp
+>>   [{
+>>           "key": {
+>>               "size": 4,
+>>               "data": ["0x0","0x0","0x0","0x0"
+>>               ]
+>>           },
+>>           "value": 0
+>>       },{
+>>           "key": {
+>>               "size": 4,
+>>               "data": ["0x0","0x0","0x0","0x1"
+>>               ]
+>>           },
+>>           "value": 2
+>>       }
+>>   ]
+>>   $ bpftool map lookup pinned /sys/fs/bpf/qp key 4 0 0 0 1
+>>   {
+>>       "key": {
+>>           "size": 4,
+>>           "data": ["0x0","0x0","0x0","0x1"
+>>           ]
+>>       },
+>>       "value": 2
+>>   }
+> The bpftool patch looks good, thanks! I have one comment on the syntax
+> for the keys, I don't find it intuitive to have the size as the first
+> BYTE. It makes it awkward to understand what the command does if we read
+> it in the wild without knowing the map type. I can see two alternatives,
+> either adding a keyword (e.g., "key_size 4 key 0 0 0 1"), or changing
+> parse_bytes() to make it able to parse as much as it can then count the
+> bytes, when we don't know in advance how many we get.
+The suggestion is reasonable, but there is also reason for the current choice (
+I should written it down in commit message). For dynptr-typed key, these two
+proposed suggestions will work. But for key with embedded dynptrs as show below,
+both explict key_size keyword and implicit key_size in BYTEs can not express the
+key correctly.
+
+struct map_key {
+unsigned int cookie;
+struct bpf_dynptr name;
+struct bpf_dynptr addr;
+unsigned int flags;
+};
+
+I also had thought about adding another key word "dynptr_key" (or "dyn_key") to
+support dynptr-typed key or key with embedded dynptr, and the format will still
+be: "dynptr_key size [BYTES]". But at least we can tell it is different with
+"key" which is fixed size. What do you think ?
 >
->> Strings in /proc/kallsyms (key size=83, max entries=170958)
->> * no lock
->> qp-trie lookup   (1  thread)    4.096 ± 0.234M/s (drops 0.249 ± 0.014M/s mem
->> 0.000 MiB)
->>
->> * subtree lock
->> qp-trie lookup   (1  thread)    4.454 ± 0.108M/s (drops 0.271 ± 0.007M/s mem
->> 0.000 MiB)
-> Here a single thread with spin_lock is _faster_ than without.
-It is a little strange because there is not any overhead for lockless lookup for
-now. I thought it may be due to CPU boost or something similar. Will check it again.
-> So it's not about the cost of spin_lock, but its contention.
-> So all the complexity to do lockless lookup
-> needs to be considered in this context.
-> Looks like update/delete don't scale anyway.
-Yes.
-> So lock-less lookup complexity is justified only
-> for the case with a lot of concurrent lookups and
-> little update/delete.
-> When bpf hash map was added the majority of tracing use cases
-> had # of lookups == # of updates == # of deletes.
-> For qp-trie we obviously cannot predict,
-> but should not pivot strongly into lock-less lookup without data.
-> The lock-less lookup should have reasonable complexity.
-> Otherwise let's do spin_lock and work on a different locking scheme
-> for all operations (lookup/update/delete).
-For lpm-trie, does the use case in cillium [0] has many lockless lookups and few
-updates/deletions ? So I think the use case is applicable for qp-trie as well.
-Before steering towards spin_lock, let's implement a demo for lock-less lookup
-to see its complexity. For spin-lock way, I had implemented a hand-over-hand
-lock but the lookup was still lockless, but it doesn't scale well as well.
+> Thanks,
+> Quentin
 >
->> I can not reproduce the phenomenon that call_rcu consumes 100% of all cpus in my
->> local environment, could you share the setup for it ?
->>
->> The following is the output of perf report (--no-children) for "./map_perf_test
->> 4 72 10240 100000" on a x86-64 host with 72-cpus:
->>
->>     26.63%  map_perf_test    [kernel.vmlinux]                             [k]
->> alloc_htab_elem
->>     21.57%  map_perf_test    [kernel.vmlinux]                             [k]
->> htab_map_update_elem
-> Looks like the perf is lost on atomic_inc/dec.
-> Try a partial revert of mem_alloc.
-> In particular to make sure
-> commit 0fd7c5d43339 ("bpf: Optimize call_rcu in non-preallocated hash map.")
-> is reverted and call_rcu is in place,
-> but percpu counter optimization is still there.
-> Also please use 'map_perf_test 4'.
-> I doubt 1000 vs 10240 will make a difference, but still.
-Will do. The suggestion is reasonable. But when max_entries=1000,
-use_percpu_counter will be false.
+> .
 
