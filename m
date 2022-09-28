@@ -2,171 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0EFB5EDBB5
-	for <lists+bpf@lfdr.de>; Wed, 28 Sep 2022 13:25:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C6115EDBB3
+	for <lists+bpf@lfdr.de>; Wed, 28 Sep 2022 13:24:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231167AbiI1LZJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Sep 2022 07:25:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36702 "EHLO
+        id S233853AbiI1LYb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Sep 2022 07:24:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232974AbiI1LZI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Sep 2022 07:25:08 -0400
-Received: from AUS01-ME3-obe.outbound.protection.outlook.com (mail-me3aus01olkn2165.outbound.protection.outlook.com [40.92.63.165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 774449FD2
-        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 04:25:03 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hni1HXf5ZFe2uMt/1qasSftgr/pdyOy7JSN+7iWK0Yco6YijgKq6Q9WahSlPH5ol9Io4mu3bXoaWG4DMLncdqbzm2JcaChPXIl7eiWg+biCMUHwXwX7oAjp4MHPOYNKDSewz5Hi3w9yfviGGfiKMnYM6ZKqpL0PU7QwfYzofXMRl8xCl1961QNn0twtTjQ1MnQ8Wi1SxDCL23377vDTgnytCtmsvtrMogH8dcNItYy8g4NDJObS1UbgRXsXc+Xr3MDivdRDYOWH4rInWr7cHqNLhCYIe1qsNc65VFb+p98F5q/3sHQMS8EWLseLcYk5aZjwdHpQ8Zyjsea6FHrrYuw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JBvUa3vJUg90UiEsb00K0mxVkiXUq9AIMeKqVDiPVIk=;
- b=S+hr0Jqp0aPP0AL2+qk6KfohvONmjZMQKVc3LM8n3fFa9nxM4lZA+39rXICwKU2PmQ0XbQZhA4ZMsgiKB7qm7uuXi6EdmLaolE181tggjcqxrp9s6F1FXGwaV6imCSOa3/HqOo5/4ZbfPQmpTR2MiOJwZ4VeJsd9bITN1c//36CyKGPbBjISaAQEYnbS00ZFcSdEFq9JfyASI7D+gAMMUB3ljdSrqenayrr8qCW3GRyBjTOWOzzRLPYjUYzD6k0KUVoH4f4rV8SZolW5oKQYO5yp0X1MPwh6qZJ77z9Z9zrSR29Ej5+75FuRJEC/CyqtMZ1UbfQa+MvQTNkNmqAFAA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JBvUa3vJUg90UiEsb00K0mxVkiXUq9AIMeKqVDiPVIk=;
- b=DburJDcAYhc9YKTCoRpTeJPKxOwHl86L1FstaEMi3f2RNpc0on9Xt+bvqDxJRXa70szQ20vznf6gYrga8ACdek7K8lwUrSwhG6jVjsoYCBEOhl07Fe7vtwrwBNbA9AGIQyNeh23wW1kY2a5zytLfOzG2Il73i1zpGps013E7Ru5WLHpcsRDk8xDLNEsIRInq7mFFDweAVEbBcKadG09T5UYAyxoq1In195XXAkMnp4CKwAJ2z/3WaeMizwOsmlW/akWIxOKLekCnFbXBgy3ikoJxlsNGxyc3h+W9tewVP7/xRVLJWEOfb+QXpnNoUTg87MitMHW/MZixV7AJPtIkZw==
-Received: from SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM (2603:10c6:10:ac::13) by
- ME3P282MB1571.AUSP282.PROD.OUTLOOK.COM (2603:10c6:220:a4::11) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.5676.17; Wed, 28 Sep 2022 11:24:59 +0000
-Received: from SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM
- ([fe80::549a:65d7:eae8:3983]) by SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM
- ([fe80::549a:65d7:eae8:3983%7]) with mapi id 15.20.5654.026; Wed, 28 Sep 2022
- 11:24:59 +0000
-From:   Tianyi Liu <i.pear@outlook.com>
-To:     andrii.nakryiko@gmail.com
-Cc:     andrii@kernel.org, bpf@vger.kernel.org, i.pear@outlook.com,
-        trivial@kernel.org
-Subject: Re: [PATCH] libbpf: Add friendly error prompt for missing .BTF section
-Date:   Wed, 28 Sep 2022 19:23:12 +0800
-Message-ID: <SY4P282MB10844F5E962746CC0C628DE39D549@SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM>
-X-Mailer: git-send-email 2.37.3
-In-Reply-To: <CAEf4BzYbmi-NQ8qQuMmCWCG=0V2z4SuKogb4y-WrUKkL1iw7-w@mail.gmail.com>
-References: <CAEf4BzYbmi-NQ8qQuMmCWCG=0V2z4SuKogb4y-WrUKkL1iw7-w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-TMN:  [QpxMtf1YX01DJu5ZRWzCewLaR7dAdno027Cj6k5JuYri/s3oALR5kQ==]
-X-ClientProxiedBy: PS2PR04CA0020.apcprd04.prod.outlook.com
- (2603:1096:300:55::32) To SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM
- (2603:10c6:10:ac::13)
-X-Microsoft-Original-Message-ID: <20220928112312.1682345-1-i.pear@outlook.com>
+        with ESMTP id S233919AbiI1LYS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Sep 2022 07:24:18 -0400
+Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C8F8E99AE;
+        Wed, 28 Sep 2022 04:24:10 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.229])
+        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4Mcv9x07Zgz9xHf0;
+        Wed, 28 Sep 2022 19:18:13 +0800 (CST)
+Received: from roberto-ThinkStation-P620 (unknown [10.204.63.22])
+        by APP1 (Coremail) with SMTP id LxC2BwBHP5PDLjRjJ5yAAA--.16292S2;
+        Wed, 28 Sep 2022 12:23:54 +0100 (CET)
+Message-ID: <fe9fe2443b8401a076330a3019bd46f6c815a023.camel@huaweicloud.com>
+Subject: Re: Closing the BPF map permission loophole
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     Toke =?ISO-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@kernel.org>,
+        Lorenz Bauer <oss@lmb.io>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>
+Cc:     bpf@vger.kernel.org, linux-security-module@vger.kernel.org
+Date:   Wed, 28 Sep 2022 13:23:45 +0200
+In-Reply-To: <87mtajss8j.fsf@toke.dk>
+References: <a6c0bb85-6eeb-407e-a515-06f67e70db57@www.fastmail.com>
+         <8e243ad132ecf2885fc65c33c7793f0703937890.camel@huaweicloud.com>
+         <7f7c3337-74f1-424e-a14d-578c4c7ee2fe@www.fastmail.com>
+         <65546f56be138ab326544b7b2e59bb3175ec884a.camel@huaweicloud.com>
+         <b0c00f80-c11e-4f5d-ba63-2e9fb7cad561@www.fastmail.com>
+         <9aba20351924aa0d82d258205030ad4f2c404de2.camel@huaweicloud.com>
+         <98a26e5c-d44f-4e65-8186-c4e94918daa1@www.fastmail.com>
+         <06a47f11778ca9d074c815e57dc1c75d073b3a85.camel@huaweicloud.com>
+         <439dd1e5-71b8-49ed-8268-02b3428a55a4@www.fastmail.com>
+         <6e142c3526df693abfab6e1293a27828267cc45e.camel@huaweicloud.com>
+         <87mtajss8j.fsf@toke.dk>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SY4P282MB1084:EE_|ME3P282MB1571:EE_
-X-MS-Office365-Filtering-Correlation-Id: 61a12f6d-675e-445b-0efb-08daa1441439
-X-MS-Exchange-SLBlob-MailProps: ZILSnhm0P3kh+Zs0i80maiFQsQns05WCW4edbzpsq1//dnGcMgAHlvR3ALtn5tfTadFlMWOq5b+DfNoG80sJePqC/V3L+DYrCJhLRK7xVCmefDstSvMCqpuSEq5QXJUVsL7inNegqsDVsphiQ0F4RqoKRF2720K4w2BpwXkH1RCabtK6aT685XWRDt8O+bgzoKPamOVbh+chVbourDW9vwprbCAQSD1WxI8a9E0H8ykDREu0ivKWXZ7svulAXPlSfw9oVtOxr5dj+U+5f02qoUBuO7jZ0eXEYxpeoGp83HYy4U0XbxNS/UDREVXGbDu3weDSmDBRtKqF8SDj6hjxAxQA070cA30j0E3IGUyahD/V8Ve9rOpoj0N8HJ5aCglxcAWAKmei2yclVcn+OwA//r7RFUcSB42HKCsC86XQPY0w3T+DzVIhGihHO11n0UqTy9Bkc/oFxxOi4hzsJE9rSQop3GODJahDC5rDNDRQUs8Zm7rEiV3etvId3axiBKgC0OVGcfmMZBqlqghXsY+B05gV8YLJtahGgBq4wO+m9mE92vWaZ7ocRPtOhvr736XmL5oQ9dE8xcBO+g0sDNG5WPlUQEhSqq40ztqWC0UyLj/WjZ/y4YLKOHsoONBIgilIrPsBnBVDUSlBWKPTaT3/LqcxdNV6ktfQWEXAVfTYBa0VAasOo5i54bCZthtFcN4izCZWM7Fj2RX0f1UpM4335wWSaWZOuAbK6vrnQGyDu7o5zbDXp+wDdpjgmLNl91WSCjj2FiSM0TuU4bODn+e+Ty5VgMpD6V8M
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: naolGFKma0bPKUc+U8uGyfbcG6TaFm/IYKEyRnJml1+5UQwrDSPPIbvkB7tiIEgpsL0IwLN2T9afVeGQkxHxiHrAOFfwbdTbVaBwUQ0Tqpt0c2Oy9wV1p9DaJyAXm4dFaHFxLQXMOUqfDxPuWcmdHBqjfXDBi5tzT9S1niOsWPLpaFURqS5Y0Sou4hts/rzmXpdROLn+Z4285vQVWuaIJ75LB9nNAAjvfwGJJf6xs09uO4WVSaWXAxhhSGYB7mpeeSdV4zHvIEwhrWA+D+4Cix0Pkm4t40PV9xNXh3G/mb2+2Vb4PMScg3qryaPsP5930Ckj0csMqXRjQT+nrqC0kBZ2cqAc4Yh8io/lswMhOm+jKGeczpwSjOzeQ4KmQ42d9s1oWgdrIQRTgsM4h4AD6tUuVY2JwXFutL4CIRfBvm66/i/B4CJN/YsxEzHN4RMLGSx/qenceWvX3aqGjhkb+PjwcrKt/32QVjHD6m7OKYkj4viIWXfMmT3BuhgDe382h3AA6hfdWoc/tu4Nf+flzYw8dflxaMLb3DJGSfeMn3wSArX1UWm5iXH3adKCHWCXEnroM2N4tIySF8nYhKzt6KfHxiKkku7l9Rxjxx4Eo+XRM8sPzwXgBJq0pVnM9IaiNBhCnegTXWVIPzRI9KxIeIsn54EcevIHMleUXOezFzrXnhhsnUt3RGrtQqsvkwn4
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?R3JsaTUrY3liZjFlT3RFanR2UFdqZmE0N2ZDT3Rib004TWcxbzZuS1dVV2hX?=
- =?utf-8?B?WStPUHVGaXdZWFdKcUF2bXZSamNkMWJGQURSeFZNOS9wV0NBM1pRS08yQ2JW?=
- =?utf-8?B?dU5KZzZsVFpVNmNlREdSVXhIbEdpUnlHUlowcWl2aE55cUpGNEl3VmVSMFZL?=
- =?utf-8?B?ZUF1VW1xNmwxU2VETXRxakF2dWllWFFuZXdjQmFrZ21uQ3ZIdnR0L21saFVv?=
- =?utf-8?B?ckVxZVUxNGtENGdRQkFOUjB3d1p1YW5jRy9PUkR6eHlXLzJGaFZJRFVvWnkv?=
- =?utf-8?B?a1NHcisveExBTkthKzEzRlYvb0gzNjhyWVZaOC9EdGhxdFdQR0lqa1NJMFQx?=
- =?utf-8?B?MUZQa0pkeHppSDRROE1iU0JmcnhRbTI3L3VseFVOd1NmU2pNem0wMWhmRHQz?=
- =?utf-8?B?QjhEdG9DZ25zNy9Oc29DaHJrdHRSSUc4ektnZzduWWZqZHNrYzhiNmlKbVVW?=
- =?utf-8?B?eDVsUXFXMmhGNnlYbldJcnArWVZTNUsyOTJNMXdSeVBJamNBbysvTmkwYmNR?=
- =?utf-8?B?cHA3ZnVEK2tNdU1XTWVkNkJRQ3RtRXByYzZwZWVwQkxWcnBtclYzNWN4RDZE?=
- =?utf-8?B?VzQzY0ZGaGQ5TXNYR3dDeGowTkNkODBWUzJoa3R0RjdJNFM3SUZjQWV2aFF0?=
- =?utf-8?B?aXlHbHFVUnpoNm1UTVFRVmdVVW00NEludXpuTUdxLzVqdlVvQmVIK29ZNU1G?=
- =?utf-8?B?a1RmNjhRbHY1ck5KSlRuaXl2bjc5a0xIeG1BOVpHRmZBaEUvM3F0eDBZbFN1?=
- =?utf-8?B?cXcyOTBWVUViRVR4a2RvWlU0UVc2UXp3NU43b3dxTGJtcGRuN2YwVnVJWUdt?=
- =?utf-8?B?citQUVFoejdMaHBaK241dVpDdmhuMUlZMEdkSnNZVEE1VUt2RFVqUzdJajRP?=
- =?utf-8?B?NjBJYXpCTzJHSFhmSDlJK3VqTlAxSzJaczU3QTRLU1huSDlTMVdZcG0yVG8x?=
- =?utf-8?B?cXdDZmV6WER0Vm5tRy9lYVhRdCs3V01tbW9IaVl0OUpycWUwWnBicTQrYlhy?=
- =?utf-8?B?QjdXQVRHMExzVWFvY2lMRHFiUGtkTldnV2VaaHlMN0RjZHhvUkl1L2RSNjhs?=
- =?utf-8?B?YW9oNjhtTVUrK1VUUjFKWmJMdVR5UGJYVzFRQzd3YXd6akV2Q2NPUWlWR3Jm?=
- =?utf-8?B?WlRXUWZycHZzNFp0eDlabFJxK0tVaDFOZnIrMUtETkJIeDZLSXFtTzE2Tkc1?=
- =?utf-8?B?WXFOVWZ1My9NOFViVElUTGxkVkpaaFpaMnBTVmZlWmwxdmc4aGkwR1ozU3Zr?=
- =?utf-8?B?SEE0L0g3c0FuNGwyZUlXOHYzekxQRGRlYStaMU0zQjc5bG1OdmpMYWF1UEtv?=
- =?utf-8?B?QjdSV1dzdXFxZXNkMW9hbVgwMHhlN25QOUgyQ0o0UldjNTkydWN0dGlTcXJi?=
- =?utf-8?B?WmVSZSt2L3hLNlBaUEF5VTcxY3F4SEZBNERSYTlaRUNoa0RITCs4THRhRGpB?=
- =?utf-8?B?cW9lZm1tTGZFRk8ybmMrMXZUUzgyT1BIa0pIOW51TjFyRG15aUNWZXB6TXRT?=
- =?utf-8?B?MGlLa053Zk1OTTdPQ0ZNMEZoczhqdVFONXVTS3lscmhNMkpwOWdXTFNSdGhp?=
- =?utf-8?B?T1JRajJJK2t5Ylo1Y2VHdmoxV3JlakMyVkQ2eFpMTEFOZ3FLKzltaU5ESno0?=
- =?utf-8?B?eEkrU21aYUNsaVNiUUYwSGdoUm91aFFqOHY1bmZrV1Bmb0F6dGgwSXVmdzRz?=
- =?utf-8?B?R09BdmllSGtCcW00WiswSmN6R2tDcEpKT3JGd3U0alE0c1pMRGhFR2p3MnF1?=
- =?utf-8?Q?0N+YIsd/vvqJd0j68U=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 61a12f6d-675e-445b-0efb-08daa1441439
-X-MS-Exchange-CrossTenant-AuthSource: SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2022 11:24:59.7664
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: ME3P282MB1571
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LxC2BwBHP5PDLjRjJ5yAAA--.16292S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7uFy5tr47Kw1rWF4fCFWxZwb_yoW8Kr43pF
+        W8t3Z0kF4DJr1Fka9a9w1fJFy0v3yrGFnrWr13AryrZFyDZw1rtr40kF45uF92vr1Ikw1j
+        vr4Fka43Za4kZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAJBF1jj4OJHwABsp
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> -----Original Messages-----
-> From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> Date: Tuesday, September 27, 2022 at 12:37
-> To: Tianyi Liu <i.pear@outlook.com>
-> Cc: andrii@kernel.org <andrii@kernel.org>, bpf@vger.kernel.org <bpf@vger.kernel.org>, trivial@kernel.org <trivial@kernel.org>
-> Subject: Re: [PATCH] libbpf: Add friendly error prompt for missing .BTF section
-> On Sun, Sep 25, 2022 at 10:54 PM Tianyi Liu <i.pear@outlook.com> wrote:
-> >
-> > Fresh users usually forget to turn on BTF generating flags compiling
-> > kernels, and will receive a confusing error "No such file or directory"
-> > (from return value ENOENT) with command "bpftool btf dump file vmlinux".
-> >
-> > Hope this can help them find the mistake.
-> >
-> > Signed-off-by: Tianyi Liu <i.pear@outlook.com>
-> > ---
-> >  tools/lib/bpf/btf.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-> > index 2d14f1a52..9fbae1f3d 100644
-> > --- a/tools/lib/bpf/btf.c
-> > +++ b/tools/lib/bpf/btf.c
-> > @@ -990,6 +990,8 @@ static struct btf *btf_parse_elf(const char *path, struct btf *base_btf,
-> >         err = 0;
-> >
-> >         if (!btf_data) {
-> > +               pr_warn("Failed to get section %s from ELF %s, check CONFIG_DEBUG_INFO_BTF if compiling kernel\n",
-> > +                       BTF_ELF_SEC, path);
+On Wed, 2022-09-28 at 12:33 +0200, Toke Høiland-Jørgensen wrote:
+> Roberto Sassu <roberto.sassu@huaweicloud.com> writes:
 > 
-> This is going to be very confusing for any user trying to load BTF
-> from some other ELF file. If we want to add such helpful suggestion
-> (and even then it's a bit of a hit and miss, as not every passed in
-> file is supposed to be vmlinux kernel image), it should be done in
-> bpftool proper.
+> > On Wed, 2022-09-28 at 09:52 +0100, Lorenz Bauer wrote:
+> > > On Mon, 26 Sep 2022, at 17:18, Roberto Sassu wrote:
+> > > > Uhm, if I get what you mean, you would like to add DAC controls
+> > > > to
+> > > > the
+> > > > pinned map to decide if you can get a fd and with which modes.
+> > > > 
+> > > > The problem I see is that a map exists regardless of the pinned
+> > > > path
+> > > > (just by ID).
+> > > 
+> > > Can you spell this out for me? I imagine you're talking about
+> > > MAP_GET_FD_BY_ID, but that is CAP_SYS_ADMIN only, right? Not
+> > > great
+> > > maybe, but no gaping hole IMO.
+> > 
+> > +linux-security-module ML (they could be interested in this topic
+> > as
+> > well)
+> > 
+> > Good to know! I didn't realize it before.
+> > 
+> > I figured out better what you mean by escalating privileges.
+> > 
+> > Pin a read-only fd, get a read-write fd from the pinned path.
+> > 
+> > What you want to do is, if I pin a read-only fd, I should get read-
+> > only 
+> > fds too, right?
+> > 
+> > I think here there could be different views. From my perspective,
+> > pinning is just creating a new link to an existing object.
+> > Accessing
+> > the link does not imply being able to access the object itself (the
+> > same happens for files).
+> > 
+> > I understand what you want to achieve. If I have to choose a
+> > solution,
+> > that would be doing something similar to files, i.e. add owner and
+> > mode
+> > information to the bpf_map structure (m_uid, m_gid, m_mode). We
+> > could
+> > add the MAP_CHMOD and MAP_CHOWN operations to the bpf() system call
+> > to
+> > modify the new fields.
+> > 
+> > When you pin the map, the inode will get the owner and mode from
+> > bpf_map. bpf_obj_get() will then do DAC-style verification similar
+> > to
+> > MAC-style verification (with security_bpf_map()).
 > 
-> >                 err = -ENOENT;
-> >                 goto done;
-> >         }
-> > --
-> > 2.37.3
-> >
+> As someone pointed out during the discussing at LPC, this will
+> effectively allow a user to create files owned by someone else, which
+> is
+> probably not a good idea either from a security PoV. (I.e., user A
+> pins
+> map owned by user B, so A creates a file owned by B).
 
-Hi Andrii :
-I agree with you, I will try to implement it in bpftool.
+Uhm, I see what you mean. Right, it is not a good idea, the owner of
+the file should the one that pinned the map.
 
-But there’s another problem here, in btf_parse_elf() from tools/lib/bpf/btf.c:
-If the path does not exist, open() assigns ENOENT to errno, and btf_parse_elf()
-returns -ENOENT. Besides, if .BTF section can not be found in the ELF file,
-btf_parse_elf() also returns -ENOENT, the same as above. So we can't determine
-which kind of error it is from the outside.
+Other than that, DAC verification on the map would be still correct, as
+it would be independent from the DAC verification of the file.
 
-Could we change the err code in the second case to make it clearer, Such as
-changing ENOENT to EPROTO / adding a new error code? Or we can just warn
-that .BTF section does not exist.
-
-Thanks.
+Roberto
 
