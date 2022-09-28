@@ -2,320 +2,228 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 586A25EE692
-	for <lists+bpf@lfdr.de>; Wed, 28 Sep 2022 22:21:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69E295EE937
+	for <lists+bpf@lfdr.de>; Thu, 29 Sep 2022 00:15:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233141AbiI1UVx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Sep 2022 16:21:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38016 "EHLO
+        id S232439AbiI1WPM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Sep 2022 18:15:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232900AbiI1UVv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Sep 2022 16:21:51 -0400
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A41DAE9C9;
-        Wed, 28 Sep 2022 13:21:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1664396508; x=1695932508;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=V7e1v6OQrYhGDtPCxkpKGMS4koO4kObfwVRoZ4DLWu8=;
-  b=aAo9oQNms3CLfyu84c1EttI6eFzxlLzjw48DGIhlIaVEfMe4P8/wcVa3
-   07Uvb4ZfaNsX4jTpD8I0OdeyOOfAh+NcZQySEP4rHywV48MwQh6gRfEQK
-   /jcn4STVajWTud6sAdwk/tMcrgB62OEsgnjJ0ANwoA1JjAMM5R9b4oFMK
-   a0SnxgQWWjJfwsbx+/j8yaHZICQPSD0yo2wxgDQcUySDSMlwEidwmqMKQ
-   yZ1K3HP7ZiIdspwcDNGGtXWDG6sB9nfTS0eQzDP5yF0dvxlwmpYLEbdgb
-   AdOmAEzr0UOYFFUpe+cNQ2xVQY/anSr1oMhkpVsmFKEKvVep7bNZJQyxh
-   g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10484"; a="299306431"
-X-IronPort-AV: E=Sophos;i="5.93,352,1654585200"; 
-   d="scan'208";a="299306431"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2022 13:21:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10484"; a="655265501"
-X-IronPort-AV: E=Sophos;i="5.93,352,1654585200"; 
-   d="scan'208";a="655265501"
-Received: from anguy11-desk2.jf.intel.com ([10.166.244.147])
-  by orsmga001.jf.intel.com with ESMTP; 28 Sep 2022 13:21:43 -0700
-From:   Tony Nguyen <anthony.l.nguyen@intel.com>
-To:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        edumazet@google.com
-Cc:     Jan Sokolowski <jan.sokolowski@intel.com>, netdev@vger.kernel.org,
-        anthony.l.nguyen@intel.com, bjorn@kernel.org,
-        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
-        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-        john.fastabend@gmail.com, bpf@vger.kernel.org,
-        Chandan <chandanx.rout@intel.com>
-Subject: [PATCH net v2 2/2] i40e: Fix DMA mappings leak
-Date:   Wed, 28 Sep 2022 13:21:38 -0700
-Message-Id: <20220928202138.409759-3-anthony.l.nguyen@intel.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220928202138.409759-1-anthony.l.nguyen@intel.com>
-References: <20220928202138.409759-1-anthony.l.nguyen@intel.com>
+        with ESMTP id S234109AbiI1WPJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Sep 2022 18:15:09 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19B9A43312
+        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 15:15:07 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id rk17so16725442ejb.1
+        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 15:15:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=CEFvzVTW3SGsbd4tkZyOnWkESbOKYVOKgck5UTZ5Uf0=;
+        b=ljW01gXoDpKaExqu/9sx1gnl+RMcSa9mZkrQ7IjTSo8Urqe9hPdQCRPt37R9QI4O+n
+         y5jWeJgIo9AiUJNCJkMW5G2TSVGOue6Y5Bo/khCqL/ZpBqQxFCK4+UoSYEN/iOcraAaC
+         D9kAEOTr6XOK3ci0CZ9VG5mmydHt76uaTs0gWY6H5NzfkY3qPRTXAl4doq39bzM8Vm3B
+         yylLmV0zBMTvRc8I+Gl2N9AjNug6IbZ++qaINuD0P+omqReyG/+CrMTIY8Idd53+JqwE
+         NcZuq1/fkPIyih/GC3DmFR223Ovkk+We9lrlBe6ksCq7suYNp/aqozYq1NddhiGSbDnI
+         mwsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=CEFvzVTW3SGsbd4tkZyOnWkESbOKYVOKgck5UTZ5Uf0=;
+        b=k5ISslfVhFV8CpcsaY6UF9xNrICqgIdi207d9behII3RFQ+kl8vqps1CcnpFSmy+vC
+         OT2vvTJaXsIewntEwfnvoZ29EB//XPxl9kRyKvwCTi3UgJTQxWQzmD8/pprwR3rDpi8B
+         P9a5EY8rsxOIhhOXtZLy65weVj8iT8nUQDzsir7W5JHPa6I/3mmZP4bUbPbaIS19cnW3
+         Q5qlehQoaFn7MpW5HvsmipbGIBDRI82G25Fsx1n1tQfJvve44B1ATDwbYuWbGOs4JCDb
+         sT4WAzjwOVaYV8dGH8PAoS5v3XPlg5iuteSu1ruNS9ZZX5ckQBNyvVd8lbdJOMHE436y
+         PCyw==
+X-Gm-Message-State: ACrzQf0Xb15QTkHy4t8nNfrp4q+glFi2glEbDHPA+TW7Knnj9cVZFhKg
+        vR7jAHx3jra3uUEjs0jBLTZdB4WTWUjDRrgCmG6JXQ5brLk=
+X-Google-Smtp-Source: AMsMyM6iC9sxDTCbF4K0P99W18PA3h5kZDAl/iDDYFveRorAnzbGnACq0De2C6hoMSa0BU0a7ECu32lFMFzLJBikKIw=
+X-Received: by 2002:a17:907:72c1:b0:783:34ce:87b9 with SMTP id
+ du1-20020a17090772c100b0078334ce87b9mr66730ejc.115.1664403305375; Wed, 28 Sep
+ 2022 15:15:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20220908000254.3079129-1-joannelkoong@gmail.com> <20220908000254.3079129-3-joannelkoong@gmail.com>
+In-Reply-To: <20220908000254.3079129-3-joannelkoong@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 28 Sep 2022 15:14:53 -0700
+Message-ID: <CAEf4BzYqG8paawR5+nkVGpHCVN_Too0Uh=MUGcFOTuKA5eWcSg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 2/8] bpf: Add bpf_dynptr_trim and bpf_dynptr_advance
+To:     Joanne Koong <joannelkoong@gmail.com>
+Cc:     bpf@vger.kernel.org, daniel@iogearbox.net, martin.lau@kernel.org,
+        andrii@kernel.org, ast@kernel.org, Kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Jan Sokolowski <jan.sokolowski@intel.com>
+On Wed, Sep 7, 2022 at 5:10 PM Joanne Koong <joannelkoong@gmail.com> wrote:
+>
+> Add two new helper functions: bpf_dynptr_trim and bpf_dynptr_advance.
+>
+> bpf_dynptr_trim decreases the size of a dynptr by the specified
+> number of bytes (offset remains the same). bpf_dynptr_advance advances
+> the offset of the dynptr by the specified number of bytes (size
+> decreases correspondingly).
+>
+> One example where trimming / advancing the dynptr may useful is for
+> hashing. If the dynptr points to a larger struct, it is possible to hash
+> an individual field within the struct through dynptrs by using
+> bpf_dynptr_advance+trim.
+>
+> Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
+> ---
+>  include/uapi/linux/bpf.h       | 16 +++++++++
+>  kernel/bpf/helpers.c           | 63 ++++++++++++++++++++++++++++++++++
+>  tools/include/uapi/linux/bpf.h | 16 +++++++++
+>  3 files changed, 95 insertions(+)
+>
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index cce3356765fc..3b054553be30 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -5453,6 +5453,20 @@ union bpf_attr {
+>   *             dynptr is invalid or if the offset and length is out of bounds
+>   *             or in a paged buffer for skb-type dynptrs or across fragments
+>   *             for xdp-type dynptrs.
+> + *
+> + * long bpf_dynptr_advance(struct bpf_dynptr *ptr, u32 len)
+> + *     Description
+> + *             Advance a dynptr by *len*.
 
-During reallocation of RX buffers, new DMA mappings are created for
-those buffers. New buffers with different RX ring count should
-substitute older ones, but those buffers were freed in
-i40e_configure_rx_ring and reallocated again with i40e_alloc_rx_bi,
-thus kfree on rx_bi caused leak of already mapped DMA.
+This might be a bit to succinct a description. "Advance dynptr's
+internal offset by *len* bytes."?
 
-In case of non XDP ring, do not free rx_bi and reuse already existing
-buffer, move kfree to XDP rings only, remove unused i40e_alloc_rx_bi
-function.
+> + *     Return
+> + *             0 on success, -EINVAL if the dynptr is invalid, -ERANGE if *len*
+> + *             exceeds the bounds of the dynptr.
+> + *
+> + * long bpf_dynptr_trim(struct bpf_dynptr *ptr, u32 len)
+> + *     Description
+> + *             Trim a dynptr by *len*.
 
-steps for reproduction:
-while :
-do
-for ((i=0; i<=8160; i=i+32))
-do
-ethtool -G enp130s0f0 rx $i tx $i
-sleep 0.5
-ethtool -g enp130s0f0
-done
-done
+Similar as above, something like "Reduce the size of memory pointed to
+by dynptr by *len* without changing offset"?
 
-Fixes: be1222b585fd ("i40e: Separate kernel allocated rx_bi rings from AF_XDP rings")
-Signed-off-by: Jan Sokolowski <jan.sokolowski@intel.com>
-Tested-by: Chandan <chandanx.rout@intel.com> (A Contingent Worker at Intel)
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
----
- .../net/ethernet/intel/i40e/i40e_ethtool.c    |  3 -
- drivers/net/ethernet/intel/i40e/i40e_main.c   | 13 ++--
- drivers/net/ethernet/intel/i40e/i40e_txrx.c   | 13 ++--
- drivers/net/ethernet/intel/i40e/i40e_txrx.h   |  1 -
- drivers/net/ethernet/intel/i40e/i40e_xsk.c    | 67 ++++++++++++++++---
- drivers/net/ethernet/intel/i40e/i40e_xsk.h    |  2 +-
- 6 files changed, 71 insertions(+), 28 deletions(-)
+> + *     Return
+> + *             0 on success, -EINVAL if the dynptr is invalid, -ERANGE if
+> + *             trying to trim more bytes than the size of the dynptr.
+>   */
+>  #define __BPF_FUNC_MAPPER(FN)          \
+>         FN(unspec),                     \
+> @@ -5667,6 +5681,8 @@ union bpf_attr {
+>         FN(dynptr_from_skb),            \
+>         FN(dynptr_from_xdp),            \
+>         FN(dynptr_data_rdonly),         \
+> +       FN(dynptr_advance),             \
+> +       FN(dynptr_trim),                \
+>         /* */
+>
+>  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index 30a59c9e5df3..9f356105ab49 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -1423,6 +1423,13 @@ static u32 bpf_dynptr_get_size(struct bpf_dynptr_kern *ptr)
+>         return ptr->size & DYNPTR_SIZE_MASK;
+>  }
+>
+> +static void bpf_dynptr_set_size(struct bpf_dynptr_kern *ptr, u32 new_size)
+> +{
+> +       u32 metadata = ptr->size & ~DYNPTR_SIZE_MASK;
+> +
+> +       ptr->size = new_size | metadata;
+> +}
+> +
+>  int bpf_dynptr_check_size(u32 size)
+>  {
+>         return size > DYNPTR_MAX_SIZE ? -E2BIG : 0;
+> @@ -1646,6 +1653,58 @@ static const struct bpf_func_proto bpf_dynptr_data_proto = {
+>         .arg3_type      = ARG_CONST_ALLOC_SIZE_OR_ZERO,
+>  };
+>
+> +BPF_CALL_2(bpf_dynptr_advance, struct bpf_dynptr_kern *, ptr, u32, len)
+> +{
+> +       u32 size;
+> +
+> +       if (!ptr->data)
+> +               return -EINVAL;
+> +
+> +       size = bpf_dynptr_get_size(ptr);
+> +
+> +       if (len > size)
+> +               return -ERANGE;
+> +
+> +       ptr->offset += len;
+> +
+> +       bpf_dynptr_set_size(ptr, size - len);
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
-index e518aaa2c0ca..0f2042f1597c 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
-@@ -2181,9 +2181,6 @@ static int i40e_set_ringparam(struct net_device *netdev,
- 			 */
- 			rx_rings[i].tail = hw->hw_addr + I40E_PRTGEN_STATUS;
- 			err = i40e_setup_rx_descriptors(&rx_rings[i]);
--			if (err)
--				goto rx_unwind;
--			err = i40e_alloc_rx_bi(&rx_rings[i]);
- 			if (err)
- 				goto rx_unwind;
- 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-index e3d9804aeb25..ad15749a2dd3 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -3565,12 +3565,8 @@ static int i40e_configure_rx_ring(struct i40e_ring *ring)
- 	if (ring->vsi->type == I40E_VSI_MAIN)
- 		xdp_rxq_info_unreg_mem_model(&ring->xdp_rxq);
- 
--	kfree(ring->rx_bi);
- 	ring->xsk_pool = i40e_xsk_pool(ring);
- 	if (ring->xsk_pool) {
--		ret = i40e_alloc_rx_bi_zc(ring);
--		if (ret)
--			return ret;
- 		ring->rx_buf_len =
- 		  xsk_pool_get_rx_frame_size(ring->xsk_pool);
- 		/* For AF_XDP ZC, we disallow packets to span on
-@@ -3588,9 +3584,6 @@ static int i40e_configure_rx_ring(struct i40e_ring *ring)
- 			 ring->queue_index);
- 
- 	} else {
--		ret = i40e_alloc_rx_bi(ring);
--		if (ret)
--			return ret;
- 		ring->rx_buf_len = vsi->rx_buf_len;
- 		if (ring->vsi->type == I40E_VSI_MAIN) {
- 			ret = xdp_rxq_info_reg_mem_model(&ring->xdp_rxq,
-@@ -13304,6 +13297,11 @@ static int i40e_xdp_setup(struct i40e_vsi *vsi, struct bpf_prog *prog,
- 		i40e_reset_and_rebuild(pf, true, true);
- 	}
- 
-+	if (!i40e_enabled_xdp_vsi(vsi) && prog)
-+		i40e_realloc_rx_bi_zc(vsi, true);
-+	else if (i40e_enabled_xdp_vsi(vsi) && !prog)
-+		i40e_realloc_rx_bi_zc(vsi, false);
-+
- 	for (i = 0; i < vsi->num_queue_pairs; i++)
- 		WRITE_ONCE(vsi->rx_rings[i]->xdp_prog, vsi->xdp_prog);
- 
-@@ -13536,6 +13534,7 @@ int i40e_queue_pair_disable(struct i40e_vsi *vsi, int queue_pair)
- 
- 	i40e_queue_pair_disable_irq(vsi, queue_pair);
- 	err = i40e_queue_pair_toggle_rings(vsi, queue_pair, false /* off */);
-+	i40e_clean_rx_ring(vsi->rx_rings[queue_pair]);
- 	i40e_queue_pair_toggle_napi(vsi, queue_pair, false /* off */);
- 	i40e_queue_pair_clean_rings(vsi, queue_pair);
- 	i40e_queue_pair_reset_stats(vsi, queue_pair);
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_txrx.c b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-index 69e67eb6aea7..b97c95f89fa0 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-@@ -1457,14 +1457,6 @@ int i40e_setup_tx_descriptors(struct i40e_ring *tx_ring)
- 	return -ENOMEM;
- }
- 
--int i40e_alloc_rx_bi(struct i40e_ring *rx_ring)
--{
--	unsigned long sz = sizeof(*rx_ring->rx_bi) * rx_ring->count;
--
--	rx_ring->rx_bi = kzalloc(sz, GFP_KERNEL);
--	return rx_ring->rx_bi ? 0 : -ENOMEM;
--}
--
- static void i40e_clear_rx_bi(struct i40e_ring *rx_ring)
- {
- 	memset(rx_ring->rx_bi, 0, sizeof(*rx_ring->rx_bi) * rx_ring->count);
-@@ -1593,6 +1585,11 @@ int i40e_setup_rx_descriptors(struct i40e_ring *rx_ring)
- 
- 	rx_ring->xdp_prog = rx_ring->vsi->xdp_prog;
- 
-+	rx_ring->rx_bi =
-+		kcalloc(rx_ring->count, sizeof(*rx_ring->rx_bi), GFP_KERNEL);
-+	if (!rx_ring->rx_bi)
-+		return -ENOMEM;
-+
- 	return 0;
- }
- 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_txrx.h b/drivers/net/ethernet/intel/i40e/i40e_txrx.h
-index 41f86e9535a0..768290dc6f48 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_txrx.h
-+++ b/drivers/net/ethernet/intel/i40e/i40e_txrx.h
-@@ -469,7 +469,6 @@ int __i40e_maybe_stop_tx(struct i40e_ring *tx_ring, int size);
- bool __i40e_chk_linearize(struct sk_buff *skb);
- int i40e_xdp_xmit(struct net_device *dev, int n, struct xdp_frame **frames,
- 		  u32 flags);
--int i40e_alloc_rx_bi(struct i40e_ring *rx_ring);
- 
- /**
-  * i40e_get_head - Retrieve head from head writeback
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_xsk.c b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-index 6d4009e0cbd6..790aaeff1b47 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-@@ -10,14 +10,6 @@
- #include "i40e_txrx_common.h"
- #include "i40e_xsk.h"
- 
--int i40e_alloc_rx_bi_zc(struct i40e_ring *rx_ring)
--{
--	unsigned long sz = sizeof(*rx_ring->rx_bi_zc) * rx_ring->count;
--
--	rx_ring->rx_bi_zc = kzalloc(sz, GFP_KERNEL);
--	return rx_ring->rx_bi_zc ? 0 : -ENOMEM;
--}
--
- void i40e_clear_rx_bi_zc(struct i40e_ring *rx_ring)
- {
- 	memset(rx_ring->rx_bi_zc, 0,
-@@ -29,6 +21,58 @@ static struct xdp_buff **i40e_rx_bi(struct i40e_ring *rx_ring, u32 idx)
- 	return &rx_ring->rx_bi_zc[idx];
- }
- 
-+/**
-+ * i40e_realloc_rx_xdp_bi - reallocate for either XSK or normal buffer
-+ * @rx_ring: Current rx ring
-+ * @pool_present: is pool for XSK present
-+ *
-+ * Try allocating memory and return ENOMEM, if failed to allocate.
-+ * If allocation was successful, substitute buffer with allocated one.
-+ * Returns 0 on success, negative on failure
-+ */
-+static int i40e_realloc_rx_xdp_bi(struct i40e_ring *rx_ring, bool pool_present)
-+{
-+	size_t elem_size = pool_present ? sizeof(*rx_ring->rx_bi_zc) :
-+					  sizeof(*rx_ring->rx_bi);
-+	void *sw_ring = kcalloc(rx_ring->count, elem_size, GFP_KERNEL);
-+
-+	if (!sw_ring)
-+		return -ENOMEM;
-+
-+	if (pool_present) {
-+		kfree(rx_ring->rx_bi);
-+		rx_ring->rx_bi = NULL;
-+		rx_ring->rx_bi_zc = sw_ring;
-+	} else {
-+		kfree(rx_ring->rx_bi_zc);
-+		rx_ring->rx_bi_zc = NULL;
-+		rx_ring->rx_bi = sw_ring;
-+	}
-+	return 0;
-+}
-+
-+/**
-+ * i40e_realloc_rx_bi_zc - reallocate xdp queue pairs
-+ * @vsi: Current VSI
-+ * @zc: is zero copy set
-+ *
-+ * Reallocate buffer for rx_rings that might be used by XSK.
-+ * XDP requires more memory, than rx_buf provides.
-+ * Returns 0 on success, negative on failure
-+ */
-+int i40e_realloc_rx_bi_zc(struct i40e_vsi *vsi, bool zc)
-+{
-+	struct i40e_ring *rx_ring;
-+	unsigned long q;
-+
-+	for_each_set_bit(q, vsi->af_xdp_zc_qps, vsi->alloc_queue_pairs) {
-+		rx_ring = vsi->rx_rings[q];
-+		if (i40e_realloc_rx_xdp_bi(rx_ring, zc))
-+			return -ENOMEM;
-+	}
-+	return 0;
-+}
-+
- /**
-  * i40e_xsk_pool_enable - Enable/associate an AF_XDP buffer pool to a
-  * certain ring/qid
-@@ -69,6 +113,10 @@ static int i40e_xsk_pool_enable(struct i40e_vsi *vsi,
- 		if (err)
- 			return err;
- 
-+		err = i40e_realloc_rx_xdp_bi(vsi->rx_rings[qid], true);
-+		if (err)
-+			return err;
-+
- 		err = i40e_queue_pair_enable(vsi, qid);
- 		if (err)
- 			return err;
-@@ -113,6 +161,9 @@ static int i40e_xsk_pool_disable(struct i40e_vsi *vsi, u16 qid)
- 	xsk_pool_dma_unmap(pool, I40E_RX_DMA_ATTR);
- 
- 	if (if_running) {
-+		err = i40e_realloc_rx_xdp_bi(vsi->rx_rings[qid], false);
-+		if (err)
-+			return err;
- 		err = i40e_queue_pair_enable(vsi, qid);
- 		if (err)
- 			return err;
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_xsk.h b/drivers/net/ethernet/intel/i40e/i40e_xsk.h
-index bb962987f300..821df248f8be 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_xsk.h
-+++ b/drivers/net/ethernet/intel/i40e/i40e_xsk.h
-@@ -32,7 +32,7 @@ int i40e_clean_rx_irq_zc(struct i40e_ring *rx_ring, int budget);
- 
- bool i40e_clean_xdp_tx_irq(struct i40e_vsi *vsi, struct i40e_ring *tx_ring);
- int i40e_xsk_wakeup(struct net_device *dev, u32 queue_id, u32 flags);
--int i40e_alloc_rx_bi_zc(struct i40e_ring *rx_ring);
-+int i40e_realloc_rx_bi_zc(struct i40e_vsi *vsi, bool zc);
- void i40e_clear_rx_bi_zc(struct i40e_ring *rx_ring);
- 
- #endif /* _I40E_XSK_H_ */
--- 
-2.35.1
+Kind of weird that offset is adjusted directly through field, but size
+is set through helper.
 
+One idea is to have (internal) helper that *increments* offset and
+*decrements* size as one step. You can move all the error checking
+inside it, instead of duplicating. E.g., something like this signature
+
+static int bpf_dynptr_adjust(struct btf_dynptr_kern *ptr, u32 off_inc,
+u32 sz_dec);
+
+This increment/decrement is a bit surprising, but we don't allow size
+to grow and offset to decrement, so this makes sense from that point
+of view.
+
+With that, we'll just do
+
+return bpf_dynptr_adjust(ptr, len, len);
+
+> +
+> +       return 0;
+> +}
+> +
+> +static const struct bpf_func_proto bpf_dynptr_advance_proto = {
+> +       .func           = bpf_dynptr_advance,
+> +       .gpl_only       = false,
+> +       .ret_type       = RET_INTEGER,
+> +       .arg1_type      = ARG_PTR_TO_DYNPTR,
+> +       .arg2_type      = ARG_ANYTHING,
+> +};
+> +
+> +BPF_CALL_2(bpf_dynptr_trim, struct bpf_dynptr_kern *, ptr, u32, len)
+> +{
+> +       u32 size;
+> +
+> +       if (!ptr->data)
+> +               return -EINVAL;
+> +
+> +       size = bpf_dynptr_get_size(ptr);
+> +
+> +       if (len > size)
+> +               return -ERANGE;
+> +
+> +       bpf_dynptr_set_size(ptr, size - len);
+
+and here we can just do
+
+return bpf_dynptr_adjust(ptr, 0, len);
+
+> +
+> +       return 0;
+> +}
+> +
+> +static const struct bpf_func_proto bpf_dynptr_trim_proto = {
+> +       .func           = bpf_dynptr_trim,
+> +       .gpl_only       = false,
+> +       .ret_type       = RET_INTEGER,
+> +       .arg1_type      = ARG_PTR_TO_DYNPTR,
+> +       .arg2_type      = ARG_ANYTHING,
+> +};
+
+[...]
