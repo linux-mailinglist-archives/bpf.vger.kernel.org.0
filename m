@@ -2,58 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15D9B5EE989
-	for <lists+bpf@lfdr.de>; Thu, 29 Sep 2022 00:41:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 158245EE993
+	for <lists+bpf@lfdr.de>; Thu, 29 Sep 2022 00:48:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232298AbiI1Wlj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Sep 2022 18:41:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51694 "EHLO
+        id S233713AbiI1Wr7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Sep 2022 18:47:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229901AbiI1Wli (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Sep 2022 18:41:38 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 913C710B23E
-        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 15:41:37 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id sb3so29967701ejb.9
-        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 15:41:37 -0700 (PDT)
+        with ESMTP id S229901AbiI1Wr6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Sep 2022 18:47:58 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89B9310F728
+        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 15:47:56 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id rk17so16837543ejb.1
+        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 15:47:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date;
-        bh=iylOFVM+J7jnywGfVlajsF6ZhsJAMC40+DdHbRyzZQM=;
-        b=ISyoA7N5qztrn36qby/wv1txh9iAYyAKAMBkSqGmC8rM8fyYsoO5/Xc4FvHQp1zyZD
-         QQJSXeiurOKVGSre5Z3sJjN84nTy1AE3/3J5j3QYydYcdFhnIyq5qfiPnXAURwFIzM0R
-         6rACeXxtfImFn9+GnJfS7qz8b+hXmjgGerJz9/His3FRM6YTu0txTL1db8uKLPNsTb9w
-         7oK34pt/1dlkruncRI/l97lfvfl1GyUCgfYUMWjHhbWa36js7FUgID5PFOMOU/sJofuN
-         G37St1Ff4QfpUkUcD7FMcJviZR19JUix5crLEoE44fYHZlQ4QqG5632pCqYoAPKSo2Dv
-         m3/Q==
+        bh=s3re6Nu7iVgiv3BqNvhilQcHLb3DI4siVjYK3jSY8vU=;
+        b=WLzMGUvr8lQIwvIGjE8DNFFiSRJgckNhHmLLjvdsoexuNdS+EzH7OGRNcvY1jMSGte
+         tLK0vKePBjgcDG4Fmnm5i7CrGKtvnD6P+kr+4o041uCILKrPdbFG2ZDCUNd8zp8tlJei
+         mN1b3xk17bkhNi7ZMc8RsegKjSIUP8WDfP8J5k/TcOWHS+xZ+UFHvpXWxI4gZH1wrmzV
+         lRZmngfr2pTypItBPYJ6ibeYwWbTrlw2Qp3rnEEtT6MwWI6RIGiq32PJ8o4dvwHsDpqS
+         cPK5JkLDtNUHrJOnA3Kc5Nrp3y0+nUdGsL9HMm//b+pKDcd82DoaxAKw4KDxqai3GTjw
+         YakQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=iylOFVM+J7jnywGfVlajsF6ZhsJAMC40+DdHbRyzZQM=;
-        b=4CX+WCBCRXMlhezlpzpZtk+uu+C82ZdoKXt9zhO9Lt9IL9dCY3rGks+mEQh/cMrKkQ
-         mzuG9v5FFfdYcU/ILZ6L/mZpy6oB9nBhNm6+zZuqv2PmKZ/rJq68rxXRrMnqEgZSler9
-         Ef8/JUFflMf9Vv9i4hxElv535Zm9mb69RjcD+myWUuGiD3b5NfrMCsyLFQcF8Oo9XkeH
-         ZM0Uw18gmwGJbv6eUyMZzA2OHNRTt4/M35F2KHkc3t8xoP0B/+HwOaML/iVuWouzP85i
-         YUvnOWr123BV1Qdbv/iOp3NjcsLM9bdyCYqBtXPPNZdSRIceyc+WpjGz6bkeTGnL6sp5
-         eafQ==
-X-Gm-Message-State: ACrzQf37CqzILGsFfKW/1X8rQzHTUCYgpUTAa0vYAukmtiEtGnaGTz2D
-        wO40wLPfYBVwFy4MvD/vy7s+h9f5txN3U1eHaC0=
-X-Google-Smtp-Source: AMsMyM5sQLX9fV6XlG652UR3mGDyNEGfgd5HHedAYUDif3/xWBgcVwu+4DK0Q1Vofzpj1bXglnNcqNOStuozp4lp9Vk=
-X-Received: by 2002:a17:907:3fa9:b0:782:ed33:df8d with SMTP id
- hr41-20020a1709073fa900b00782ed33df8dmr116800ejc.745.1664404896129; Wed, 28
- Sep 2022 15:41:36 -0700 (PDT)
+        bh=s3re6Nu7iVgiv3BqNvhilQcHLb3DI4siVjYK3jSY8vU=;
+        b=xOea0AklH7z55LP0ky2FzwHcHUDvtZP6qC4VQ4pGSsJjUkIWZzOmLadkaLsorwntwQ
+         qduyN8Ccv7rqWld69qC0ORcPbic8FuOt6BAcRF2QRibkMNbjm5/aAHKQMsP4gR8KWZuS
+         SSf/JIF69AhJKVERmLIk/GPVcVtQGnHrrB5DHdF7sYOV7o4lzs/2jv1UuJ92YiAcdpZC
+         IntMg530Z0RD/uEZzB67MZol4WCwvvS7OfPN1NBpAdf3DCR8GOhwYvawG2p8hIlOZ0TW
+         ZrI+Z39niPMFtLAaigRwFJ0z5+pAsg10cV+wIEvVvPZBzahwbG6trbboZfUzl1AK+H4i
+         QkRg==
+X-Gm-Message-State: ACrzQf0Kdv/1wabN1TeK9qkrdBEu9hRjlZlqDPCa3i/T8V95JuKR95Zi
+        50ENvg5vbuUJnXxxVkX6gmdtJlzl/MRTd+gZjA8=
+X-Google-Smtp-Source: AMsMyM5puvoRtAAEBI4PIbHrcw9GOFD2I1MhRDx/6XrcG2kRupVsMhmSKAjXqZeFj2wnYm7lxUcKd8rke+mtFkasxew=
+X-Received: by 2002:a17:907:72c1:b0:783:34ce:87b9 with SMTP id
+ du1-20020a17090772c100b0078334ce87b9mr152936ejc.115.1664405275042; Wed, 28
+ Sep 2022 15:47:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220908000254.3079129-1-joannelkoong@gmail.com> <20220908000254.3079129-8-joannelkoong@gmail.com>
-In-Reply-To: <20220908000254.3079129-8-joannelkoong@gmail.com>
+References: <20220908000254.3079129-1-joannelkoong@gmail.com>
+ <20220908000254.3079129-8-joannelkoong@gmail.com> <CAP01T76YjXcxYsYue5Sxyp+Ppa3XR3nQq2nz8gV9VnWcD6Tdgg@mail.gmail.com>
+In-Reply-To: <CAP01T76YjXcxYsYue5Sxyp+Ppa3XR3nQq2nz8gV9VnWcD6Tdgg@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 28 Sep 2022 15:41:23 -0700
-Message-ID: <CAEf4Bza2B+LFPm0dtdtfj+_ai5rTzjybHbM2XH_9UnBUF02izg@mail.gmail.com>
+Date:   Wed, 28 Sep 2022 15:47:43 -0700
+Message-ID: <CAEf4BzawD+_buWqp_U3cu71QZH_OVTseuSUyEcva9qCd1=GQ-A@mail.gmail.com>
 Subject: Re: [PATCH bpf-next v1 7/8] bpf: Add bpf_dynptr_iterator
-To:     Joanne Koong <joannelkoong@gmail.com>
-Cc:     bpf@vger.kernel.org, daniel@iogearbox.net, martin.lau@kernel.org,
-        andrii@kernel.org, ast@kernel.org, Kernel-team@fb.com
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     Joanne Koong <joannelkoong@gmail.com>, bpf@vger.kernel.org,
+        daniel@iogearbox.net, martin.lau@kernel.org, andrii@kernel.org,
+        ast@kernel.org, Kernel-team@fb.com
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -65,138 +67,111 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 7, 2022 at 5:07 PM Joanne Koong <joannelkoong@gmail.com> wrote:
+On Sun, Sep 18, 2022 at 5:08 PM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
 >
-> Add a new helper function, bpf_dynptr_iterator:
+> On Thu, 8 Sept 2022 at 02:16, Joanne Koong <joannelkoong@gmail.com> wrote:
+> >
+> > Add a new helper function, bpf_dynptr_iterator:
+> >
+> >   long bpf_dynptr_iterator(struct bpf_dynptr *ptr, void *callback_fn,
+> >                            void *callback_ctx, u64 flags)
+> >
+> > where callback_fn is defined as:
+> >
+> >   long (*callback_fn)(struct bpf_dynptr *ptr, void *ctx)
+> >
+> > and callback_fn returns the number of bytes to advance the
+> > dynptr by (or an error code in the case of error). The iteration
+> > will stop if the callback_fn returns 0 or an error or tries to
+> > advance by more bytes than available.
+> >
+> > Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
+> > ---
 >
->   long bpf_dynptr_iterator(struct bpf_dynptr *ptr, void *callback_fn,
->                            void *callback_ctx, u64 flags)
+> This is buggy as is.
 >
-> where callback_fn is defined as:
+> A user can just reinitialize the dynptr from inside the callback, and
+> then you will never stop advancing it inside your helper, therefore an
+> infinite loop can be constructed. The stack frame of the caller is
+> accessible using callback_ctx.
 >
->   long (*callback_fn)(struct bpf_dynptr *ptr, void *ctx)
+> For example (modifying your selftest)
 >
-> and callback_fn returns the number of bytes to advance the
-> dynptr by (or an error code in the case of error). The iteration
-> will stop if the callback_fn returns 0 or an error or tries to
-> advance by more bytes than available.
+> diff --git a/tools/testing/selftests/bpf/progs/dynptr_success.c
+> b/tools/testing/selftests/bpf/progs/dynptr_success.c
+> index 22164ad6df9d..a9e78316c508 100644
+> --- a/tools/testing/selftests/bpf/progs/dynptr_success.c
+> +++ b/tools/testing/selftests/bpf/progs/dynptr_success.c
+> @@ -540,6 +540,19 @@ struct iter_ctx {
 >
-> Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
-> ---
->  include/uapi/linux/bpf.h       | 20 ++++++++++++++
->  kernel/bpf/helpers.c           | 48 +++++++++++++++++++++++++++++++---
->  kernel/bpf/verifier.c          | 27 +++++++++++++++++++
->  tools/include/uapi/linux/bpf.h | 20 ++++++++++++++
->  4 files changed, 111 insertions(+), 4 deletions(-)
->
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 16973fa4d073..ff78a94c262a 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -5531,6 +5531,25 @@ union bpf_attr {
->   *             losing access to the original view of the dynptr.
->   *     Return
->   *             0 on success, -EINVAL if the dynptr to clone is invalid.
-> + *
-> + * long bpf_dynptr_iterator(struct bpf_dynptr *ptr, void *callback_fn, void *callback_ctx, u64 flags)
-> + *     Description
-> + *             Iterate through the dynptr data, calling **callback_fn** on each
-> + *             iteration with **callback_ctx** as the context parameter.
-> + *             The **callback_fn** should be a static function and
-> + *             the **callback_ctx** should be a pointer to the stack.
-> + *             Currently **flags** is unused and must be 0.
-> + *
-> + *             long (\*callback_fn)(struct bpf_dynptr \*ptr, void \*ctx);
-> + *
-> + *             where **callback_fn** returns the number of bytes to advance
-> + *             the dynptr by or an error. The iteration will stop if **callback_fn**
-> + *             returns 0 or an error or tries to advance by more bytes than the
-> + *             size of the dynptr.
-> + *     Return
-> + *             0 on success, -EINVAL if the dynptr is invalid or **flags** is not 0,
-> + *             -ERANGE if attempting to iterate more bytes than available, or other
-> + *             negative error if **callback_fn** returns an error.
->   */
->  #define __BPF_FUNC_MAPPER(FN)          \
->         FN(unspec),                     \
-> @@ -5752,6 +5771,7 @@ union bpf_attr {
->         FN(dynptr_get_size),            \
->         FN(dynptr_get_offset),          \
->         FN(dynptr_clone),               \
-> +       FN(dynptr_iterator),            \
->         /* */
->
->  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index 667f1e213a61..519b3da06d49 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -1653,13 +1653,11 @@ static const struct bpf_func_proto bpf_dynptr_data_proto = {
->         .arg3_type      = ARG_CONST_ALLOC_SIZE_OR_ZERO,
->  };
->
-> -BPF_CALL_2(bpf_dynptr_advance, struct bpf_dynptr_kern *, ptr, u32, len)
-> +/* *ptr* should always be a valid dynptr */
-> +static int __bpf_dynptr_advance(struct bpf_dynptr_kern *ptr, u32 len)
+>  static int iter_callback(struct bpf_dynptr *ptr, struct iter_ctx *ctx)
 >  {
->         u32 size;
->
-> -       if (!ptr->data)
-> -               return -EINVAL;
-> -
->         size = __bpf_dynptr_get_size(ptr);
->
->         if (len > size)
-> @@ -1672,6 +1670,14 @@ BPF_CALL_2(bpf_dynptr_advance, struct bpf_dynptr_kern *, ptr, u32, len)
->         return 0;
->  }
->
-> +BPF_CALL_2(bpf_dynptr_advance, struct bpf_dynptr_kern *, ptr, u32, len)
-> +{
-> +       if (!ptr->data)
-> +               return -EINVAL;
+> +       struct map_value *map_val;
+> +       int key = 0;
 > +
-> +       return __bpf_dynptr_advance(ptr, len);
-> +}
-> +
->  static const struct bpf_func_proto bpf_dynptr_advance_proto = {
->         .func           = bpf_dynptr_advance,
->         .gpl_only       = false,
-> @@ -1783,6 +1789,38 @@ static const struct bpf_func_proto bpf_dynptr_clone_proto = {
->         .arg2_type      = ARG_PTR_TO_DYNPTR | MEM_UNINIT,
->  };
->
-> +BPF_CALL_4(bpf_dynptr_iterator, struct bpf_dynptr_kern *, ptr, void *, callback_fn,
-> +          void *, callback_ctx, u64, flags)
-> +{
-> +       bpf_callback_t callback = (bpf_callback_t)callback_fn;
-> +       int nr_bytes, err;
-> +
-> +       if (!ptr->data || flags)
-> +               return -EINVAL;
-> +
-> +       while (ptr->size > 0) {
-> +               nr_bytes = callback((u64)(long)ptr, (u64)(long)callback_ctx, 0, 0, 0);
-> +               if (nr_bytes <= 0)
-> +                       return nr_bytes;
-
-callback is defined as returning long but here you are silently
-truncating it to int. Let's either stick to longs or to ints.
-
-> +
-> +               err = __bpf_dynptr_advance(ptr, nr_bytes);
-
-as Kumar pointed out, you can't modify ptr in place, you have to
-create a local copy and bpf_dynptr_clone() it (so that for MALLOC
-you'll bump refcnt). Then advance and pass it to callback. David has
-such local dynptr use case in bpf_user_ringbuf_drain() helper.
-
-> +               if (err)
-> +                       return err;
+> +       map_val = bpf_map_lookup_elem(&array_map2, &key);
+> +       if (!map_val) {
+> +               return 0;
 > +       }
 > +
-> +       return 0;
-> +}
+> +       *(void **)ptr = 0;
+> +       *((void **)ptr + 1) = 0;
+> +       bpf_dynptr_from_mem(map_val, 2, 0, ptr);
+> +       return 1;
 > +
+>         if (ctx->trigger_err_erange)
+>                 return bpf_dynptr_get_size(ptr) + 1;
+>
+> ... leads to a lockup.
+>
+> It doesn't have to be ringbuf_reserver_dynptr, it can just be
+> dynptr_from_mem, which also gets around reference state restrictions
+> inside callbacks.
+>
+> You cannot prevent overwriting dynptr stack slots in general. Some of
+> them don't have to be released. It would be prohibitive for stack
+> reuse.
+>
+> So it seems like you need to temporarily mark both the slots as
+> immutable for the caller stack state during exploration of the
+> callback.
+> Setting some flag in r1 for callback is not enough (as it can reload
+> PTR_TO_STACK of caller stack frame pointing at dynptr from
+> callback_ctx). It needs to be set in spilled_ptr.
+
+This sounds overcomplicated. We need a local copy of dynptr for the
+duration of iteration and work with it. Basically internal
+bpf_dynptr_clone(). See my other reply in this thread.
+
+>
+> Then certain operations modifying the view of the dynptr do not accept
+> dynptr with that type flag set (e.g. trim, advance, init functions).
+> While for others which only operate on the underlying view, you fold
+> the flag (e.g. read/write/dynptr_data).
+>
+> It is the difference between struct bpf_dynptr *, vs const struct
+> bpf_dynptr *, we need to give the callback access to the latter.
+> I.e. it should still allow accessing the dynptr's view, but not modifying it.
+>
+> And at the risk of sounding like a broken record (and same suggestion
+> as Martin in skb/xdp v6 set), the view's mutability should ideally
+> also be part of the verifier's state. That doesn't preclude runtime
+> tracking later, but there seems to be no strong motivation for that
+> right now.
+
+The unexpected NULL for bpf_dynptr_data() vs bpf_dynptr_data_rdonly()
+argument from Martin is pretty convincing, I agree. So I guess I don't
+mind tracking it statically at this point.
+
+>
+> >  include/uapi/linux/bpf.h       | 20 ++++++++++++++
+> >  kernel/bpf/helpers.c           | 48 +++++++++++++++++++++++++++++++---
+> >  kernel/bpf/verifier.c          | 27 +++++++++++++++++++
+> >  tools/include/uapi/linux/bpf.h | 20 ++++++++++++++
+> >  4 files changed, 111 insertions(+), 4 deletions(-)
+> >
+
+please trim irrelevant parts
 
 [...]
