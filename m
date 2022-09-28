@@ -2,56 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 280785ED531
-	for <lists+bpf@lfdr.de>; Wed, 28 Sep 2022 08:43:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22D785ED76B
+	for <lists+bpf@lfdr.de>; Wed, 28 Sep 2022 10:15:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233369AbiI1GnB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Sep 2022 02:43:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50316 "EHLO
+        id S232024AbiI1IPr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Sep 2022 04:15:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233120AbiI1GmE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Sep 2022 02:42:04 -0400
-Received: from out2.migadu.com (out2.migadu.com [188.165.223.204])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3E631D05CC;
-        Tue, 27 Sep 2022 23:41:59 -0700 (PDT)
-Message-ID: <1fc38ba0-2bbe-a496-604d-7deeb4e72787@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1664347316;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PxmEJE2QQKtRPfcnLQGidM83NFh8jGdqF00NGS5ELXo=;
-        b=Zb7QgKiZQwRACniiBv/HyHNiLS7Wz+gPShfDdJWIElyoCr+kfFep6DmPoCIBzw/qeaRrjh
-        kCOQb1vYQ/ZT+OkSKkocuTXKmt1ycCmVwLx3QmmeznDFTfnqe7orUc9evlQZxfE2mlkzer
-        /8ICr3kceBxT7Ij/bY8A41xLc4KTDLo=
-Date:   Tue, 27 Sep 2022 23:41:50 -0700
+        with ESMTP id S234037AbiI1IOk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Sep 2022 04:14:40 -0400
+Received: from AUS01-SY4-obe.outbound.protection.outlook.com (mail-sy4aus01olkn2179.outbound.protection.outlook.com [40.92.62.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2A7926F0
+        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 01:14:36 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jXLl0B9DMH408/yqfLRqLv2167FuxnukRcEYq9Ht/fgrQZ5XF4mGERg8NGoBD3Y9rbovMTv6UPnwj8hcEBp2AN7pK03SZc0uhIy8P1EFHgVs67dl5dODyYI69oKaDXnjr7dJuvmzP6zZUMsGahxF7E7r/zORmuq831H6btNyW0HI6c+poILmaRKJE649CT1metRfZtgrK9g4KvcYY5HjUjL59N2vXyytT/038PUw5HVmNG6FJ1xL+PRUnb7W2lV9Oywvtr7nNJCl1g7sUFFAamGJJ2m+nPleDRCjRk+Hi3M2OInR309qFQOr3IjSPkzpEUKfaWx+zhjVhmRvvNc09A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+wePPD4qJcSp+mxjHTndjA1aGiCNU2q5+oYdrxsDivA=;
+ b=df21JUHQ66NkBK0Z/xDvpNk2UhEXnOjGCDWDhBlJeYXH5Hm0VFpiHBpM/TrztqINyL6ecitB1SYqKN1euqvxQTlPLqZ+6skCjL5kVn+mKr+rLTMsaYc9WnT8oKDfwAx2wgfHfsx0ti5GuQQo5DIoly/wWyFWA72u2SlbAVRFmJ8U8Lvf84J5pgobGHB8ODOJvlL23HcXo909X5Q4DM65P+DYFOg0P8wfYTj/tOotVROWNn39gAyMMQnPl1oX8+vXegZoMRbPiZD23Cww2ZfqHRymMVbTCfbm4Y8GZ4gzKg2BOkpo/pBkn0dnz8OBKeU6F+JP5aL449ZsmdRSRxGbhQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+wePPD4qJcSp+mxjHTndjA1aGiCNU2q5+oYdrxsDivA=;
+ b=lkZbDRWboUKM3RinEFh4f4SABLMwp96GJUNyWhhrqCfm6hN2h0LllmfhG5dFbUJigEoL/+ULq59zA1zE9eyqVV3aPNxsbks5HsxUg73jm41/kFIxGhHUrElQeWtV7dGhkB3fkOLHg6BiAsT0JR/QwsfQgdkzfldTTQiM0jtUolY36oKDyQV/TgK4INZPmXtDC2Fp9Gf81diguKqhFbRApvngfQlKrnMwGdwpNKJsKl4+RUCNGyjpavX8R2+UihWQhKmd/q2paT9Dnu4TCsithplqPeDvZ3XZmDBYA+NorFryixOZ6qNCX8SNsgLogR0ILZJCi57gQS1rQ9+0IbdUnA==
+Received: from SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM (2603:10c6:10:ac::13) by
+ SY6P282MB3943.AUSP282.PROD.OUTLOOK.COM (2603:10c6:10:1d7::7) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.5676.17; Wed, 28 Sep 2022 08:14:32 +0000
+Received: from SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM
+ ([fe80::549a:65d7:eae8:3983]) by SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM
+ ([fe80::549a:65d7:eae8:3983%7]) with mapi id 15.20.5654.026; Wed, 28 Sep 2022
+ 08:14:32 +0000
+From:   Tianyi Liu <i.pear@outlook.com>
+To:     quentin@isovalent.com
+Cc:     bpf@vger.kernel.org, Tianyi Liu <i.pear@outlook.com>
+Subject: [PATCH v2] bpftool: Fix error message of strerror
+Date:   Wed, 28 Sep 2022 16:09:32 +0800
+Message-ID: <SY4P282MB1084AD9CD84A920F08DF83E29D549@SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM>
+X-Mailer: git-send-email 2.37.3
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN:  [bK8hZrl4+twDVatS9ESbTejAKC88PYyx0BIl6r4xI/lnCbLwWZOqjQ==]
+X-ClientProxiedBy: SI2PR04CA0011.apcprd04.prod.outlook.com
+ (2603:1096:4:197::10) To SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM
+ (2603:10c6:10:ac::13)
+X-Microsoft-Original-Message-ID: <20220928080932.1456867-1-i.pear@outlook.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 00/26] FUSE BPF: A Stacked Filesystem Extension for FUSE
-Content-Language: en-US
-To:     Daniel Rosenberg <drosen@google.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
-        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Paul Lawrence <paullawrence@google.com>,
-        Alessio Balsini <balsini@google.com>,
-        David Anderson <dvander@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-team@android.com, Miklos Szeredi <miklos@szeredi.hu>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>
-References: <20220926231822.994383-1-drosen@google.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20220926231822.994383-1-drosen@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SY4P282MB1084:EE_|SY6P282MB3943:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9bbaefd4-dc04-4ca7-6631-08daa1297940
+X-MS-Exchange-SLBlob-MailProps: ZLYX9kf+sFYZRJuE9Nv631LMiEgNb1ZKKj4PYAvPtcynu0Hra/Ljnj2q6P0szow9mY7eQspRYQtc2Z2Df/OVInaRRcIV+xBNx3FE6r6+EDheqnVmpXJ7iVB54zyfzcUVlPKF+9vUaPEogFzAByccGdvBJfUyz55EOE08EFtUsWnEPTW9K15y+jZNuO34YPOlafZo2EvOGNv7RtiIncysJoRmPYO+lGgjht/QPLomHyAIcncpsFHweGqW8R2Lcp61xijA7b6s6AKmeSKBqQqyAlbmJ6hiPsK7Zlm00TP5/UNEVlV5YnIaj7KzwTwplz+ny2fuiffJTwhOUgZZR+OmM+KMOf2ubj4/9ro4S5YM1raQv5UfFFcYDYIPYNso+V6U1oziiTebhNZvSGD/1GXCIwb00A75Z5ejBJp0sYS40VrsIMO6TZJ1mSHi+9Nll2+IqhUXu8JJcI5j11Ppt34zESJG8/gDG08DnGEIsBwbqQ4+6FoMuScuk/R4v6K27s3BOlSTu/jZlPgMcTbVEBfhQsyORLBnyjucat76apSmlVRCbUvAzfDJXSTJIQQDMQqlhofdOFtLnh88Z6yWqnSfTB6lkXNGSllwLEf5H/VryqDmobpkzsUAW5cyctq1ylL/PkoPbEgpP2C4wFbBG2Jf6DU75U+6kQZNmsmFAG6r9UMzzaAQeMdnPrr1g1QF3t27SYU+/6SO86lUh5wcV+tFpgUuwNzhYRsThjvpz3oPGr4MptVXhOLj774f5Lnw7HoKWDz2VJZO7Thw7mlGDXc9vJtqjV2t2LHECpHK3dwCIZkGquPLwVV2mg==
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: MZq+j2N83KvH8k7n86fzGqgW0NcsjVoa27HfcN4oxaFYIr2LlpiXnkVhq6CZAigAbCsb1i4TeSBPcvy0FW4U6CMQXmGvoq6MfXQh8z5HNtVeg0sW5sow6DolMgkRtUmJV8JA5Psym6rTBNugRqE7uJfZB+aijG7HxuysWiKFZtG0Th1TBuwo5KukboKf/bkEXwOHyFHhBng7n6LzDoAj9RPRrEtOpWBG3ltrng5tzeweFHCO2ehlCpPchxO/EYqvFgTEN9TK2q8jhWWgwhuJUadLAXVK2Qzq1OojJTG+Rfab7w5PaxPZuKjytaG9NrnhDvlyxcH3AKioEO9nzp57POuwSpnheBqd5l6y5AAvPwEiRdWOS9AmE0llpoPMmx0pd7BPivMDhC418hEP4gQGnExpDvi4ZkNHHBXa7bTt3+EX/L2Dm34Pu92vAucaotTQUsnN5NIsQ6uUROZuezYPLq6k8rm4jz63A3Zn/CCKf+x3XNUd8xRq13+ELEUiC5XNveeIdMFZIMy0Pumd2qhAsH2+y+rvPZT8aZzOlw1GI1ooXSCClIqSOu0mHdUWbtMYI/4o9TH1IZGFqpGKzgvKRTFh5WTqBZJFN45xvQpPs4DRzn9u0y+1Y9Orsr5hjnqJ
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?uH8oRpkM803Q2DRZxc/BgZs5GHMCp4wQLQ5LEwhsp2HV4p24QJ/EH8T5Uyle?=
+ =?us-ascii?Q?Z6LGoX10yEpTBjoJqHv3T82GyqE3BB+W/WT6fRXSPGQmxOmfWe530+YSc7Dd?=
+ =?us-ascii?Q?gDxkkuAxCPy1CGGfZPxwFunlSgR+PWQNwMZJtIWfno1s0EX1XJvzNNMaboFx?=
+ =?us-ascii?Q?jZpAUCcg2z5XmQDJpgDHlm27xHpmUADek8/qP0+ItOboWj8MVh/q4Ja6qjB8?=
+ =?us-ascii?Q?SSyEyQOOHRlaTmA9fWnX3Yofa4btaSqF1G420lrG9OKnni7yiukSzrXS/xC0?=
+ =?us-ascii?Q?TBtppJcjRC67+e9i7+e1R01Pi0ZXbYInXBxdeiiyM1bYnhNMRNpw/DPY2RrG?=
+ =?us-ascii?Q?WnC240jQ4MiYPsrtNph87YIraUW5/L5uDOqPkNOWIy761Vm+4B0lZ1vNmz0q?=
+ =?us-ascii?Q?H0DmtcDtw6dOMkYzRKnlhqSrFUBWX1GvnX5P7SRkwsbdA+BP5oDWPwzqBSr3?=
+ =?us-ascii?Q?fn776nrOks8KWitiAlJirqhDppgqCL/zPvRghXymF9qyMfX8mj2CLFY2FIVt?=
+ =?us-ascii?Q?12YNJt4HS+pCHToooX0xXPxOfPgbYvXABkFzSL7JdNOJDBYqtNvkHd2QY7gJ?=
+ =?us-ascii?Q?DPAPdtHf1bVZ8IYbcMi7x3ll8K9A6/58DzFM/t2DzJvschxknc9XW8cr4NhF?=
+ =?us-ascii?Q?C6bOLVMTE+PU1Wf+AthfoU4x4SCcbIhtJ4SyRSue8gd7iPVA0hPCmUc333cb?=
+ =?us-ascii?Q?GMoAwq3s07sB33qvzubcJzELbv3FUomWRTQunyc6ITrUYwLLF2oplURR0qyG?=
+ =?us-ascii?Q?gBUm8LHrCitRdQ8FW/G+/di/gfOao0VQELzms63L7zF7UhmlaqaV2G/h34kt?=
+ =?us-ascii?Q?VyeC/xuoF0JspsVYmTGKFiQAA1jc6gRSwTkmxEom+7tMUmydXSQz2W7dewf2?=
+ =?us-ascii?Q?7Dy+G6WbzrPAG7Uo4wjIaL63lg/5jkoFqTiJ+MbWT5GmxBqhVDSK3CVjqcHD?=
+ =?us-ascii?Q?AKCf940wwhuwuXCWwh7JHsG1xCv9A7FA5u/yGLBB4R0BJm6Ps0qxr5ssEbx6?=
+ =?us-ascii?Q?/I+VNSLQeozWPxwyDxm9JSPiMkd6huU7YxRrYnokmm+VkUy8s7rcDu/DhjQn?=
+ =?us-ascii?Q?TDtz/qj86C7QRiQBYoVsrPDglHQqqrmXgHXphQ2lLDSzkUCpMqk0iFGq8XqN?=
+ =?us-ascii?Q?//Jdm4AzERnRUibe9B+k7UbSvROe87+wjFme2tX26KtV29zb43nryQEvwYes?=
+ =?us-ascii?Q?C6V7mbHo8IRlg9xmiC81EkERpn4cJql/m0FErvBOuFkxSdC8ErrD1bjvC87s?=
+ =?us-ascii?Q?xaz6omswtLTxzZkGhUdj29CVFtgxhpGMl8VN5MKbw2KjUtscoeZk+jN0ME9i?=
+ =?us-ascii?Q?JX8=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9bbaefd4-dc04-4ca7-6631-08daa1297940
+X-MS-Exchange-CrossTenant-AuthSource: SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2022 08:14:32.8684
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SY6P282MB3943
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,87 +102,110 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 9/26/22 4:17 PM, Daniel Rosenberg wrote:
-> These patches extend FUSE to be able to act as a stacked filesystem. This
-> allows pure passthrough, where the fuse file system simply reflects the lower
-> filesystem, and also allows optional pre and post filtering in BPF and/or the
-> userspace daemon as needed. This can dramatically reduce or even eliminate
-> transitions to and from userspace.
-> 
-> Currently, we either set the backing file/bpf at mount time at the root level,
-> or at lookup time, via an optional block added at the end of the lookup return
-> call. The added lookup block contains an fd for the backing file/folder and bpf
-> if necessary, or a signal to clear or inherit the parent values. We're looking
-> into two options for extending this to mkdir/mknod/etc, as we currently only
-> support setting the backing to a pre-existing file, although naturally you can
-> create new ones. When we're doing a lookup for create, we could pass an
-> fd for the parent dir and the name of the backing file we're creating. This has
-> the benefit of avoiding an additional call to userspace, but requires hanging
-> on to some data in a negative dentry where there is no elegant place to store it.
-> Another option is adding the same block we added to lookup to the create type
-> op codes. This keeps that code more uniform, but means userspace must implement
-> that logic in more areas.
-> 
-> As is, the patches definitely need some work before they're ready. We still
-> need to go through and ensure we respect changed filter values/disallow changes
-> that don't make sense. We aren't currently calling mnt_want_write for the lower
-> calls where appropriate, and we don't have an override_creds layer either. We
-> also plan to add to our read/write iter filters to allow for more interesting
-> use cases. There are also probably some node id inconsistencies. For nodes that
-> will be completely passthrough, we give an id of 0.
-> 
-> For the BPF verification side, we have currently set things set up in the old
-> style, with a new bpf program type and helper functions. From LPC, my
-> understanding is that newer bpf additions are done in a new style, so I imagine
-> much of that will need to be redone as well, but hopefully these patches get
-> across what our needs there are.
-> 
-> For testing, we've provided the selftest code we have been using. We also have
-> a mode to run with no userspace daemon in a pure passthrough mode that I have
-> been running xfstests over to get some coverage on the backing operation code.
-> I had to modify mounts/unmounts to get that running, along with some other
-> small touch ups. The most notable failure I currently see there is in
-> generic/126, which I suspect is likely related to override_creds.
-> 
+strerror() expects a positive errno, however variable err will never be
+positive when an error occurs. This causes bpftool to output too many
+"unknown error", even a simple "file not exist" error can not get an
+accurate message.
 
-Interesting idea.
+This patch fixed all "strerror(err)" patterns in bpftool.
+Specially in btf.c#L823, hashmap__append() is an internal function of
+libbpf and will not change errno, so there's a little difference.
+Some libbpf_get_error() calls are kept for return values.
 
-Some comments on review logistics:
-- The set is too long and some of the individual patches are way too long for 
-one single patch to review.  Keep in mind that not all of us here are experts in 
-both fuse and bpf.  Making it easier to review first will help at the beginning. 
-  Some ideas:
+Changes since v1: https://lore.kernel.org/bpf/SY4P282MB1084B61CD8671DFA395AA8579D539@SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM/
+Check directly for NULL values instead of calling libbpf_get_error().
 
-   - Only implement a few ops in the initial revision. From quickly browsing the 
-set, it is implementing the 'struct file_operations fuse_file_operations'? 
-Maybe the first few revisions can start with a few of the ops first.
+Signed-off-by: Tianyi Liu <i.pear@outlook.com>
+---
+ tools/bpf/bpftool/btf.c           | 11 +++++------
+ tools/bpf/bpftool/gen.c           |  4 ++--
+ tools/bpf/bpftool/map_perf_ring.c |  7 +++----
+ 3 files changed, 10 insertions(+), 12 deletions(-)
 
-   - Please make the patches that can be applied to the bpf-next tree cleanly. 
-For example, in patch 3, where is 18e2ec5bf453 coming from? I cannot find it in 
-bpf-next and linux-next tree.
-   - Without applying it to an upstream tree cleanly, in a big set like this, I 
-have no idea when bpf_prog_run() is called in patch 24 because the diff context 
-is in fuse_bpf_cleanup and apparently it is not where the bpf prog is run.
+diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
+index 0744bd115..933177bdd 100644
+--- a/tools/bpf/bpftool/btf.c
++++ b/tools/bpf/bpftool/btf.c
+@@ -640,10 +640,9 @@ static int do_dump(int argc, char **argv)
+ 
+ 		btf = btf__parse_split(*argv, base ?: base_btf);
+ 		err = libbpf_get_error(btf);
+-		if (err) {
+-			btf = NULL;
++		if (!btf) {
+ 			p_err("failed to load BTF from %s: %s",
+-			      *argv, strerror(err));
++			      *argv, strerror(errno));
+ 			goto done;
+ 		}
+ 		NEXT_ARG();
+@@ -688,8 +687,8 @@ static int do_dump(int argc, char **argv)
+ 
+ 		btf = btf__load_from_kernel_by_id_split(btf_id, base_btf);
+ 		err = libbpf_get_error(btf);
+-		if (err) {
+-			p_err("get btf by id (%u): %s", btf_id, strerror(err));
++		if (!btf) {
++			p_err("get btf by id (%u): %s", btf_id, strerror(errno));
+ 			goto done;
+ 		}
+ 	}
+@@ -825,7 +824,7 @@ build_btf_type_table(struct hashmap *tab, enum bpf_obj_type type,
+ 				      u32_as_hash_field(id));
+ 		if (err) {
+ 			p_err("failed to append entry to hashmap for BTF ID %u, object ID %u: %s",
+-			      btf_id, id, strerror(errno));
++			      btf_id, id, strerror(-err));
+ 			goto err_free;
+ 		}
+ 	}
+diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+index 7070dcffa..cf8b4e525 100644
+--- a/tools/bpf/bpftool/gen.c
++++ b/tools/bpf/bpftool/gen.c
+@@ -1594,14 +1594,14 @@ static int do_object(int argc, char **argv)
+ 
+ 		err = bpf_linker__add_file(linker, file, NULL);
+ 		if (err) {
+-			p_err("failed to link '%s': %s (%d)", file, strerror(err), err);
++			p_err("failed to link '%s': %s (%d)", file, strerror(errno), errno);
+ 			goto out;
+ 		}
+ 	}
+ 
+ 	err = bpf_linker__finalize(linker);
+ 	if (err) {
+-		p_err("failed to finalize ELF file: %s (%d)", strerror(err), err);
++		p_err("failed to finalize ELF file: %s (%d)", strerror(errno), errno);
+ 		goto out;
+ 	}
+ 
+diff --git a/tools/bpf/bpftool/map_perf_ring.c b/tools/bpf/bpftool/map_perf_ring.c
+index 6b0c41015..309d5a1e6 100644
+--- a/tools/bpf/bpftool/map_perf_ring.c
++++ b/tools/bpf/bpftool/map_perf_ring.c
+@@ -195,10 +195,9 @@ int do_event_pipe(int argc, char **argv)
+ 	opts.map_keys = &ctx.idx;
+ 	pb = perf_buffer__new_raw(map_fd, MMAP_PAGE_CNT, &perf_attr,
+ 				  print_bpf_output, &ctx, &opts);
+-	err = libbpf_get_error(pb);
+-	if (err) {
++	if (!pb) {
+ 		p_err("failed to create perf buffer: %s (%d)",
+-		      strerror(err), err);
++		      strerror(errno), errno);
+ 		goto err_close_map;
+ 	}
+ 
+@@ -213,7 +212,7 @@ int do_event_pipe(int argc, char **argv)
+ 		err = perf_buffer__poll(pb, 200);
+ 		if (err < 0 && err != -EINTR) {
+ 			p_err("perf buffer polling failed: %s (%d)",
+-			      strerror(err), err);
++			      strerror(errno), errno);
+ 			goto err_close_pb;
+ 		}
+ 	}
+-- 
+2.37.3
 
-Some high level comments on the set:
-- Instead of adding bpf helpers, you should consider kfunc instead. You can take 
-a look at the recent HID patchset v10 or the recent nf conntrack bpf set.
-
-- Instead of expressing as packet data, using the recent dynptr is a better way 
-to go for handling a mem blob.
-
-- iiuc, the idea is to allow bpf prog to optionally handle the 'struct 
-file_operations' without going back to the user daemon? Have you looked at 
-struct_ops which seems to be a better fit here?  If the bpf prog does not know 
-how to handle an operation (or file?), it can call fuse_file_llseek (for 
-example) as a kfunc to handle the request.
-
-- The test SEC("test_trace") seems mostly a synthetic test for checking 
-correctness.  Does it have a test that shows a more real life use case? or I 
-have missed things in patch 26?
-
-- Please use the skel to load the program.  It is pretty hard to read the loader 
-in patch 26.
-
-- I assume the main objective is for performance by not going back to the user 
-daemon?  Do you have performance number?
