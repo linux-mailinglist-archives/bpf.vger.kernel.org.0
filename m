@@ -2,63 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8343B5EE9CA
-	for <lists+bpf@lfdr.de>; Thu, 29 Sep 2022 01:00:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3AE15EEA25
+	for <lists+bpf@lfdr.de>; Thu, 29 Sep 2022 01:36:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229725AbiI1XAL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Sep 2022 19:00:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32876 "EHLO
+        id S231419AbiI1XgT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Sep 2022 19:36:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbiI1XAH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Sep 2022 19:00:07 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF81A7FFA4;
-        Wed, 28 Sep 2022 16:00:04 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id sb3so30026446ejb.9;
-        Wed, 28 Sep 2022 16:00:04 -0700 (PDT)
+        with ESMTP id S232511AbiI1XgS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Sep 2022 19:36:18 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AEC8EFF48
+        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 16:36:17 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id a41so19241617edf.4
+        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 16:36:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date;
-        bh=qUQYN10e4QRgkYQrbGoxNXOkqQlHKW3Ltpu72/uBXD0=;
-        b=oX717eqTwi1rhghvz8SxfnxS2kiue9cKy0SJ4k5wy5OrtexJIsdsllJ6G/5fvMfcpC
-         /GW4FsmAPyzrc3CGMXpXCu0kZqabRUWE/eZ24ZUS0ZTEtkJ2btK6QVaDbfZrT+rsV2Ro
-         kJHdQS2pD+c32+JRwmxEfwYwSpBJOzefiFnHsBVsWOFQGeITetHIT5op1OGDeR7W9tv9
-         UKhyjQzTA2t7D2q0rMEf0APBUw3+dr07GoL4Ci40wypPKYdzZfwwa7YvfUfVF1G+sPVU
-         56XA21qrfFiyyeguEfjtaLOIKSGv1LzSCXr4M8uUnrlQfIzq02/3pqWBAX18qdgDF6pO
-         9xpA==
+        bh=Al6xx6pGUoieBqlfuOOZMrsmXaCae2lTePEYq3eZepU=;
+        b=TyFL8Ra0DM1iHft2/OXQgGrndKg4Qyw0hy/ot/GUu9UAOhyV1qnbwuyM3kPQLqQg5z
+         FVKtyiXWpWD0VURgxnnmLlWW4+3yeBf2S2vz433hMXe1VBQg1284jw1rMPUjYWEq82CT
+         V395cYunFYNjRhSKcIJk8Bp78d8LRNvHLndvwSHZp1ap9VdFLvKPNhlnHtMUET+zF+SP
+         pbT0dtYA1k90zZY31cAxIaQMesu/gX6o3VqlDRFLZLJrUBm0Ab52np3/w5c0yJW3y/+E
+         pwdQ0pgzjaybIIL/J81FmEOMVYzkV+kI57c/hv8Z4djWH77x2TFTH1neNb30vHiCk5uB
+         UCdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=qUQYN10e4QRgkYQrbGoxNXOkqQlHKW3Ltpu72/uBXD0=;
-        b=vWuatzO1HSuQJRZBcR+7IYBNtOICwUO7jEEyF+1q/RkoQXjhWZsU0a0MKIpxculmwy
-         8FWedWEwrztx/O6sgP0ugwuqWAK9ssXKdKtw6Oa3iUFmhdw1hHtB5Wu90KuP5a3+cXqP
-         C7vo+fIDk3GdFqaXzYD4i+ac0TFo0JdBA64ZdAik8VT/2QhiTcADiCDj1swDJ2d4r3ZX
-         uDun05Vq12lhoL2tiStUZ2q3c9YqP8HF+7gRFQVPumSlNYN8itfAhm3WsBTDnpFqaJU+
-         vL+KqTxcjEoL8KV27MDRJ9o26caQjx69e1sfTboJu20kikvSzL8mXDD+I8HC9/oIK4hT
-         AFlw==
-X-Gm-Message-State: ACrzQf0L5tnVbhAw4DZ/iACAnM0wBQzHVagwYt2CYZ9GJ7sXbACO3WiM
-        T3QT2bJcDlGC2Ui33vvr3bBJf9RcOlAnkLF80ww=
-X-Google-Smtp-Source: AMsMyM4fz4rtZaf8UYDQRFWIe7TK9YImEZLgNG8j1ECSDniF0kd6Mr5nJWvbLj3sKoaQW1q1p+gXthNnvDWGWZayAjk=
-X-Received: by 2002:a17:907:72c1:b0:783:34ce:87b9 with SMTP id
- du1-20020a17090772c100b0078334ce87b9mr182779ejc.115.1664406003394; Wed, 28
- Sep 2022 16:00:03 -0700 (PDT)
+        bh=Al6xx6pGUoieBqlfuOOZMrsmXaCae2lTePEYq3eZepU=;
+        b=sgBXnbl6ScgN0QtdwEBeokD9p6gjEm5GEwRo9FLarUeb1WMlTg860+iScfal1DTz98
+         Em7/NM7Ify2NSrTXdP2TCq/6Mu3pZnOuXOu43HCliySb5aOoYKenqErNbtULJ1iLdByj
+         FU9i0axVahCT8h9nzdcm+Y7zNMBOdnqK1iutv5gxiPIoihAtVXgcs7did+ySK1yzJBpc
+         yt2VLr+pLWGQefsUDGetVdnwLc7OjpIfG6GYBtTYrR9IBYFyHbbiddU0aPmL1uVLOwzP
+         zw7O7QTH7FEDNMhMN1JOxueLuyclyBzVm181qbz95Hc7AqRshiQV/ZXJdTwKVMdap5w1
+         Wf7Q==
+X-Gm-Message-State: ACrzQf1lmkVhAxKVEvYVPqV0dgOBI6YKSfth6TjMVazWvcNKkbpeo+co
+        g1slIH/49FpwgVq3b1q8g+ryoAJ1DnSsER7FcgE=
+X-Google-Smtp-Source: AMsMyM5ygMPT5NT7ZtQEhuaQOJ0+DUwFY8JrBH3qFFqKG/K1CCTn090EtfKz+UZJVsMYkQELFBU7JFGWG19pB5/F0+A=
+X-Received: by 2002:aa7:c549:0:b0:457:421d:449c with SMTP id
+ s9-20020aa7c549000000b00457421d449cmr477920edr.260.1664408175384; Wed, 28 Sep
+ 2022 16:36:15 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220924101209.50653-1-liuxin350@huawei.com> <20220924101209.50653-2-liuxin350@huawei.com>
-In-Reply-To: <20220924101209.50653-2-liuxin350@huawei.com>
+References: <20220926184957.208194-1-kuifeng@fb.com> <20220926184957.208194-2-kuifeng@fb.com>
+In-Reply-To: <20220926184957.208194-2-kuifeng@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 28 Sep 2022 15:59:50 -0700
-Message-ID: <CAEf4BzZp1oGtOy56noPtx+MimQq5ua7X25mB4Sf05CHLx=1m0g@mail.gmail.com>
-Subject: Re: [PATCH 1/2] libbpf: add fPIC option for static library
-To:     Xin Liu <liuxin350@huawei.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yanan@huawei.com,
-        wuchangye@huawei.com, xiesongyang@huawei.com, zhudi2@huawei.com,
-        kongweibin2@huawei.com
+Date:   Wed, 28 Sep 2022 16:36:02 -0700
+Message-ID: <CAEf4BzZ=DvdRkVALjBKUC9OagJa-n2SFza9G6WTwmBtzxBPL=w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v11 1/5] bpf: Parameterize task iterators.
+To:     Kui-Feng Lee <kuifeng@fb.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kernel-team@fb.com, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -70,58 +65,72 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Sep 24, 2022 at 3:13 AM Xin Liu <liuxin350@huawei.com> wrote:
+On Mon, Sep 26, 2022 at 11:50 AM Kui-Feng Lee <kuifeng@fb.com> wrote:
 >
-> Some programs depned on libbpf.a(eg:bpftool). If libbpf.a miss -fPIC,
-> this will cause a similar error at compile time:
+> Allow creating an iterator that loops through resources of one
+> thread/process.
 >
-> /usr/bin/ld: .../libbpf.a(libbpf-in.o): relocation
-> R_AARCH64_ADR_PREL_PG_HI21 against symbol `stderr@@GLIBC_2.17' which
-> may bind externally can not be used when making a sharedobject;
-> recompile with -fPIC
+> People could only create iterators to loop through all resources of
+> files, vma, and tasks in the system, even though they were interested
+> in only the resources of a specific task or process.  Passing the
+> additional parameters, people can now create an iterator to go
+> through all resources or only the resources of a task.
 >
-> Use -fPIC for static library compilation to solve this problem.
->
-> Signed-off-by: Xin Liu <liuxin350@huawei.com>
+> Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
+> Acked-by: Yonghong Song <yhs@fb.com>
 > ---
->  tools/lib/bpf/Makefile | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
-> index 4c904ef0b47e..427e971f4fcd 100644
-> --- a/tools/lib/bpf/Makefile
-> +++ b/tools/lib/bpf/Makefile
-> @@ -91,9 +91,10 @@ override CFLAGS += $(INCLUDES)
->  override CFLAGS += -fvisibility=hidden
->  override CFLAGS += -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
->  override CFLAGS += $(CLANG_CROSS_FLAGS)
-> +override CFLAGS += -fPIC
+>  include/linux/bpf.h            |  25 +++++
+>  include/uapi/linux/bpf.h       |   6 ++
+>  kernel/bpf/task_iter.c         | 192 +++++++++++++++++++++++++++++----
+>  tools/include/uapi/linux/bpf.h |   6 ++
+>  4 files changed, 207 insertions(+), 22 deletions(-)
 >
 
-It seems wrong to force -fPIC for static library just because in some
-situations users might want to statically link their *shared* library
-with *static* libbpf. It's a bit unconventional, even though I see
-situations in which this might be useful.
+[...]
 
-But I don't think this can be a default. I see three possible solutions:
+> +static int bpf_iter_attach_task(struct bpf_prog *prog,
+> +                               union bpf_iter_link_info *linfo,
+> +                               struct bpf_iter_aux_info *aux)
+> +{
+> +       unsigned int flags;
+> +       struct pid_namespace *ns;
+> +       struct pid *pid;
+> +       pid_t tgid;
+> +
+> +       if ((!!linfo->task.tid + !!linfo->task.pid + !!linfo->task.pid_fd) > 1)
+> +               return -EINVAL;
+> +
+> +       aux->task.type = BPF_TASK_ITER_ALL;
+> +       if (linfo->task.tid != 0) {
+> +               aux->task.type = BPF_TASK_ITER_TID;
+> +               aux->task.pid = linfo->task.tid;
+> +       }
+> +       if (linfo->task.pid != 0) {
+> +               aux->task.type = BPF_TASK_ITER_TGID;
+> +               aux->task.pid = linfo->task.pid;
+> +       }
+> +       if (linfo->task.pid_fd != 0) {
+> +               aux->task.type = BPF_TASK_ITER_TGID;
+> +               ns = task_active_pid_ns(current);
+> +               if (IS_ERR(ns))
+> +                       return PTR_ERR(ns);
 
-1. Do nothing. Let users specify EXTRA_CFLAGS=-fPIC if they need
-position-independent static lib
-2. Let packagers decide this (again, through EXTRA_CFLAGS or by
-patching Makefile, whichever is best). Or maybe build both PIC and
-non-PIC static libraries and package both?
-3. Produce PIC and non-PIC libbpf.a libraries from libbpf's Makefile.
+doesn't seem like task_active_pid_ns() can fail (other places in
+kernel never handle NULL or IS_ERR for this), so I dropped this IS_ERR
+check
 
-I'm not sure which one is the best answer, would be nice to hear
-opinions of people who do the packaging and distribution of libbpf in
-distros.
+> +
+> +               pid = pidfd_get_pid(linfo->task.pid_fd, &flags);
+> +               if (IS_ERR(pid))
+> +                       return PTR_ERR(pid);
+> +
+> +               tgid = pid_nr_ns(pid, ns);
+> +               aux->task.pid = tgid;
+> +               put_pid(pid);
+> +       }
+> +
+> +       return 0;
+> +}
+> +
 
->  # flags specific for shared library
-> -SHLIB_FLAGS := -DSHARED -fPIC
-> +SHLIB_FLAGS := -DSHARED
->
->  ifeq ($(VERBOSE),1)
->    Q =
-> --
-> 2.33.0
->
+[...]
