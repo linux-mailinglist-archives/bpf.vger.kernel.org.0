@@ -2,146 +2,171 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB73C5EDAB2
-	for <lists+bpf@lfdr.de>; Wed, 28 Sep 2022 12:57:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0EFB5EDBB5
+	for <lists+bpf@lfdr.de>; Wed, 28 Sep 2022 13:25:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233851AbiI1K5M (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Sep 2022 06:57:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49054 "EHLO
+        id S231167AbiI1LZJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Sep 2022 07:25:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233848AbiI1K4j (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Sep 2022 06:56:39 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A99518C018
-        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 03:55:25 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Mctcm3x6Gzl8l9
-        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 18:52:56 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-        by APP1 (Coremail) with SMTP id cCh0CgA3BSnvJzRjaYPOBQ--.725S2;
-        Wed, 28 Sep 2022 18:54:42 +0800 (CST)
-Subject: Re: [PATCH bpf-next v2 08/13] bpftool: Add support for qp-trie map
-To:     Quentin Monnet <quentin@isovalent.com>, bpf@vger.kernel.org
-Cc:     Martin KaFai Lau <kafai@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, houtao1@huawei.com
-References: <20220924133620.4147153-1-houtao@huaweicloud.com>
- <20220924133620.4147153-9-houtao@huaweicloud.com>
- <896ae326-125b-5d23-2870-aeaa95341c64@isovalent.com>
- <f46cefeb-2572-ec8a-f5ee-82dc1988137e@huaweicloud.com>
- <0fa70b47-5d06-d99a-c3cf-635a33f3f38d@isovalent.com>
- <a68a07b9-063d-e83f-b6cf-5cdc86d77d97@huaweicloud.com>
- <e6aadeaf-b73b-c277-5801-0fdaf57e51b6@isovalent.com>
-From:   Hou Tao <houtao@huaweicloud.com>
-Message-ID: <3df24978-7d53-68cd-0bee-7db886af8471@huaweicloud.com>
-Date:   Wed, 28 Sep 2022 18:54:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <e6aadeaf-b73b-c277-5801-0fdaf57e51b6@isovalent.com>
-Content-Type: text/plain; charset=utf-8
+        with ESMTP id S232974AbiI1LZI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Sep 2022 07:25:08 -0400
+Received: from AUS01-ME3-obe.outbound.protection.outlook.com (mail-me3aus01olkn2165.outbound.protection.outlook.com [40.92.63.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 774449FD2
+        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 04:25:03 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hni1HXf5ZFe2uMt/1qasSftgr/pdyOy7JSN+7iWK0Yco6YijgKq6Q9WahSlPH5ol9Io4mu3bXoaWG4DMLncdqbzm2JcaChPXIl7eiWg+biCMUHwXwX7oAjp4MHPOYNKDSewz5Hi3w9yfviGGfiKMnYM6ZKqpL0PU7QwfYzofXMRl8xCl1961QNn0twtTjQ1MnQ8Wi1SxDCL23377vDTgnytCtmsvtrMogH8dcNItYy8g4NDJObS1UbgRXsXc+Xr3MDivdRDYOWH4rInWr7cHqNLhCYIe1qsNc65VFb+p98F5q/3sHQMS8EWLseLcYk5aZjwdHpQ8Zyjsea6FHrrYuw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=JBvUa3vJUg90UiEsb00K0mxVkiXUq9AIMeKqVDiPVIk=;
+ b=S+hr0Jqp0aPP0AL2+qk6KfohvONmjZMQKVc3LM8n3fFa9nxM4lZA+39rXICwKU2PmQ0XbQZhA4ZMsgiKB7qm7uuXi6EdmLaolE181tggjcqxrp9s6F1FXGwaV6imCSOa3/HqOo5/4ZbfPQmpTR2MiOJwZ4VeJsd9bITN1c//36CyKGPbBjISaAQEYnbS00ZFcSdEFq9JfyASI7D+gAMMUB3ljdSrqenayrr8qCW3GRyBjTOWOzzRLPYjUYzD6k0KUVoH4f4rV8SZolW5oKQYO5yp0X1MPwh6qZJ77z9Z9zrSR29Ej5+75FuRJEC/CyqtMZ1UbfQa+MvQTNkNmqAFAA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JBvUa3vJUg90UiEsb00K0mxVkiXUq9AIMeKqVDiPVIk=;
+ b=DburJDcAYhc9YKTCoRpTeJPKxOwHl86L1FstaEMi3f2RNpc0on9Xt+bvqDxJRXa70szQ20vznf6gYrga8ACdek7K8lwUrSwhG6jVjsoYCBEOhl07Fe7vtwrwBNbA9AGIQyNeh23wW1kY2a5zytLfOzG2Il73i1zpGps013E7Ru5WLHpcsRDk8xDLNEsIRInq7mFFDweAVEbBcKadG09T5UYAyxoq1In195XXAkMnp4CKwAJ2z/3WaeMizwOsmlW/akWIxOKLekCnFbXBgy3ikoJxlsNGxyc3h+W9tewVP7/xRVLJWEOfb+QXpnNoUTg87MitMHW/MZixV7AJPtIkZw==
+Received: from SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM (2603:10c6:10:ac::13) by
+ ME3P282MB1571.AUSP282.PROD.OUTLOOK.COM (2603:10c6:220:a4::11) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.5676.17; Wed, 28 Sep 2022 11:24:59 +0000
+Received: from SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM
+ ([fe80::549a:65d7:eae8:3983]) by SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM
+ ([fe80::549a:65d7:eae8:3983%7]) with mapi id 15.20.5654.026; Wed, 28 Sep 2022
+ 11:24:59 +0000
+From:   Tianyi Liu <i.pear@outlook.com>
+To:     andrii.nakryiko@gmail.com
+Cc:     andrii@kernel.org, bpf@vger.kernel.org, i.pear@outlook.com,
+        trivial@kernel.org
+Subject: Re: [PATCH] libbpf: Add friendly error prompt for missing .BTF section
+Date:   Wed, 28 Sep 2022 19:23:12 +0800
+Message-ID: <SY4P282MB10844F5E962746CC0C628DE39D549@SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM>
+X-Mailer: git-send-email 2.37.3
+In-Reply-To: <CAEf4BzYbmi-NQ8qQuMmCWCG=0V2z4SuKogb4y-WrUKkL1iw7-w@mail.gmail.com>
+References: <CAEf4BzYbmi-NQ8qQuMmCWCG=0V2z4SuKogb4y-WrUKkL1iw7-w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID: cCh0CgA3BSnvJzRjaYPOBQ--.725S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxCr1xZw1fWr4kWF4DJrWrKrg_yoW5Aw43pa
-        yrGay0kan7JFy2yw42qF48XrWSvr48Gw1UWryUJrW5Ja4qvFn3WF48KFy5uFyqgrn3J345
-        tr40qFy3u3WDA3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
-        6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-        9x07UZ18PUUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-TMN:  [QpxMtf1YX01DJu5ZRWzCewLaR7dAdno027Cj6k5JuYri/s3oALR5kQ==]
+X-ClientProxiedBy: PS2PR04CA0020.apcprd04.prod.outlook.com
+ (2603:1096:300:55::32) To SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM
+ (2603:10c6:10:ac::13)
+X-Microsoft-Original-Message-ID: <20220928112312.1682345-1-i.pear@outlook.com>
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SY4P282MB1084:EE_|ME3P282MB1571:EE_
+X-MS-Office365-Filtering-Correlation-Id: 61a12f6d-675e-445b-0efb-08daa1441439
+X-MS-Exchange-SLBlob-MailProps: ZILSnhm0P3kh+Zs0i80maiFQsQns05WCW4edbzpsq1//dnGcMgAHlvR3ALtn5tfTadFlMWOq5b+DfNoG80sJePqC/V3L+DYrCJhLRK7xVCmefDstSvMCqpuSEq5QXJUVsL7inNegqsDVsphiQ0F4RqoKRF2720K4w2BpwXkH1RCabtK6aT685XWRDt8O+bgzoKPamOVbh+chVbourDW9vwprbCAQSD1WxI8a9E0H8ykDREu0ivKWXZ7svulAXPlSfw9oVtOxr5dj+U+5f02qoUBuO7jZ0eXEYxpeoGp83HYy4U0XbxNS/UDREVXGbDu3weDSmDBRtKqF8SDj6hjxAxQA070cA30j0E3IGUyahD/V8Ve9rOpoj0N8HJ5aCglxcAWAKmei2yclVcn+OwA//r7RFUcSB42HKCsC86XQPY0w3T+DzVIhGihHO11n0UqTy9Bkc/oFxxOi4hzsJE9rSQop3GODJahDC5rDNDRQUs8Zm7rEiV3etvId3axiBKgC0OVGcfmMZBqlqghXsY+B05gV8YLJtahGgBq4wO+m9mE92vWaZ7ocRPtOhvr736XmL5oQ9dE8xcBO+g0sDNG5WPlUQEhSqq40ztqWC0UyLj/WjZ/y4YLKOHsoONBIgilIrPsBnBVDUSlBWKPTaT3/LqcxdNV6ktfQWEXAVfTYBa0VAasOo5i54bCZthtFcN4izCZWM7Fj2RX0f1UpM4335wWSaWZOuAbK6vrnQGyDu7o5zbDXp+wDdpjgmLNl91WSCjj2FiSM0TuU4bODn+e+Ty5VgMpD6V8M
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: naolGFKma0bPKUc+U8uGyfbcG6TaFm/IYKEyRnJml1+5UQwrDSPPIbvkB7tiIEgpsL0IwLN2T9afVeGQkxHxiHrAOFfwbdTbVaBwUQ0Tqpt0c2Oy9wV1p9DaJyAXm4dFaHFxLQXMOUqfDxPuWcmdHBqjfXDBi5tzT9S1niOsWPLpaFURqS5Y0Sou4hts/rzmXpdROLn+Z4285vQVWuaIJ75LB9nNAAjvfwGJJf6xs09uO4WVSaWXAxhhSGYB7mpeeSdV4zHvIEwhrWA+D+4Cix0Pkm4t40PV9xNXh3G/mb2+2Vb4PMScg3qryaPsP5930Ckj0csMqXRjQT+nrqC0kBZ2cqAc4Yh8io/lswMhOm+jKGeczpwSjOzeQ4KmQ42d9s1oWgdrIQRTgsM4h4AD6tUuVY2JwXFutL4CIRfBvm66/i/B4CJN/YsxEzHN4RMLGSx/qenceWvX3aqGjhkb+PjwcrKt/32QVjHD6m7OKYkj4viIWXfMmT3BuhgDe382h3AA6hfdWoc/tu4Nf+flzYw8dflxaMLb3DJGSfeMn3wSArX1UWm5iXH3adKCHWCXEnroM2N4tIySF8nYhKzt6KfHxiKkku7l9Rxjxx4Eo+XRM8sPzwXgBJq0pVnM9IaiNBhCnegTXWVIPzRI9KxIeIsn54EcevIHMleUXOezFzrXnhhsnUt3RGrtQqsvkwn4
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?R3JsaTUrY3liZjFlT3RFanR2UFdqZmE0N2ZDT3Rib004TWcxbzZuS1dVV2hX?=
+ =?utf-8?B?WStPUHVGaXdZWFdKcUF2bXZSamNkMWJGQURSeFZNOS9wV0NBM1pRS08yQ2JW?=
+ =?utf-8?B?dU5KZzZsVFpVNmNlREdSVXhIbEdpUnlHUlowcWl2aE55cUpGNEl3VmVSMFZL?=
+ =?utf-8?B?ZUF1VW1xNmwxU2VETXRxakF2dWllWFFuZXdjQmFrZ21uQ3ZIdnR0L21saFVv?=
+ =?utf-8?B?ckVxZVUxNGtENGdRQkFOUjB3d1p1YW5jRy9PUkR6eHlXLzJGaFZJRFVvWnkv?=
+ =?utf-8?B?a1NHcisveExBTkthKzEzRlYvb0gzNjhyWVZaOC9EdGhxdFdQR0lqa1NJMFQx?=
+ =?utf-8?B?MUZQa0pkeHppSDRROE1iU0JmcnhRbTI3L3VseFVOd1NmU2pNem0wMWhmRHQz?=
+ =?utf-8?B?QjhEdG9DZ25zNy9Oc29DaHJrdHRSSUc4ektnZzduWWZqZHNrYzhiNmlKbVVW?=
+ =?utf-8?B?eDVsUXFXMmhGNnlYbldJcnArWVZTNUsyOTJNMXdSeVBJamNBbysvTmkwYmNR?=
+ =?utf-8?B?cHA3ZnVEK2tNdU1XTWVkNkJRQ3RtRXByYzZwZWVwQkxWcnBtclYzNWN4RDZE?=
+ =?utf-8?B?VzQzY0ZGaGQ5TXNYR3dDeGowTkNkODBWUzJoa3R0RjdJNFM3SUZjQWV2aFF0?=
+ =?utf-8?B?aXlHbHFVUnpoNm1UTVFRVmdVVW00NEludXpuTUdxLzVqdlVvQmVIK29ZNU1G?=
+ =?utf-8?B?a1RmNjhRbHY1ck5KSlRuaXl2bjc5a0xIeG1BOVpHRmZBaEUvM3F0eDBZbFN1?=
+ =?utf-8?B?cXcyOTBWVUViRVR4a2RvWlU0UVc2UXp3NU43b3dxTGJtcGRuN2YwVnVJWUdt?=
+ =?utf-8?B?citQUVFoejdMaHBaK241dVpDdmhuMUlZMEdkSnNZVEE1VUt2RFVqUzdJajRP?=
+ =?utf-8?B?NjBJYXpCTzJHSFhmSDlJK3VqTlAxSzJaczU3QTRLU1huSDlTMVdZcG0yVG8x?=
+ =?utf-8?B?cXdDZmV6WER0Vm5tRy9lYVhRdCs3V01tbW9IaVl0OUpycWUwWnBicTQrYlhy?=
+ =?utf-8?B?QjdXQVRHMExzVWFvY2lMRHFiUGtkTldnV2VaaHlMN0RjZHhvUkl1L2RSNjhs?=
+ =?utf-8?B?YW9oNjhtTVUrK1VUUjFKWmJMdVR5UGJYVzFRQzd3YXd6akV2Q2NPUWlWR3Jm?=
+ =?utf-8?B?WlRXUWZycHZzNFp0eDlabFJxK0tVaDFOZnIrMUtETkJIeDZLSXFtTzE2Tkc1?=
+ =?utf-8?B?WXFOVWZ1My9NOFViVElUTGxkVkpaaFpaMnBTVmZlWmwxdmc4aGkwR1ozU3Zr?=
+ =?utf-8?B?SEE0L0g3c0FuNGwyZUlXOHYzekxQRGRlYStaMU0zQjc5bG1OdmpMYWF1UEtv?=
+ =?utf-8?B?QjdSV1dzdXFxZXNkMW9hbVgwMHhlN25QOUgyQ0o0UldjNTkydWN0dGlTcXJi?=
+ =?utf-8?B?WmVSZSt2L3hLNlBaUEF5VTcxY3F4SEZBNERSYTlaRUNoa0RITCs4THRhRGpB?=
+ =?utf-8?B?cW9lZm1tTGZFRk8ybmMrMXZUUzgyT1BIa0pIOW51TjFyRG15aUNWZXB6TXRT?=
+ =?utf-8?B?MGlLa053Zk1OTTdPQ0ZNMEZoczhqdVFONXVTS3lscmhNMkpwOWdXTFNSdGhp?=
+ =?utf-8?B?T1JRajJJK2t5Ylo1Y2VHdmoxV3JlakMyVkQ2eFpMTEFOZ3FLKzltaU5ESno0?=
+ =?utf-8?B?eEkrU21aYUNsaVNiUUYwSGdoUm91aFFqOHY1bmZrV1Bmb0F6dGgwSXVmdzRz?=
+ =?utf-8?B?R09BdmllSGtCcW00WiswSmN6R2tDcEpKT3JGd3U0alE0c1pMRGhFR2p3MnF1?=
+ =?utf-8?Q?0N+YIsd/vvqJd0j68U=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 61a12f6d-675e-445b-0efb-08daa1441439
+X-MS-Exchange-CrossTenant-AuthSource: SY4P282MB1084.AUSP282.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2022 11:24:59.7664
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: ME3P282MB1571
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+> -----Original Messages-----
+> From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> Date: Tuesday, September 27, 2022 at 12:37
+> To: Tianyi Liu <i.pear@outlook.com>
+> Cc: andrii@kernel.org <andrii@kernel.org>, bpf@vger.kernel.org <bpf@vger.kernel.org>, trivial@kernel.org <trivial@kernel.org>
+> Subject: Re: [PATCH] libbpf: Add friendly error prompt for missing .BTF section
+> On Sun, Sep 25, 2022 at 10:54 PM Tianyi Liu <i.pear@outlook.com> wrote:
+> >
+> > Fresh users usually forget to turn on BTF generating flags compiling
+> > kernels, and will receive a confusing error "No such file or directory"
+> > (from return value ENOENT) with command "bpftool btf dump file vmlinux".
+> >
+> > Hope this can help them find the mistake.
+> >
+> > Signed-off-by: Tianyi Liu <i.pear@outlook.com>
+> > ---
+> >  tools/lib/bpf/btf.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+> > index 2d14f1a52..9fbae1f3d 100644
+> > --- a/tools/lib/bpf/btf.c
+> > +++ b/tools/lib/bpf/btf.c
+> > @@ -990,6 +990,8 @@ static struct btf *btf_parse_elf(const char *path, struct btf *base_btf,
+> >         err = 0;
+> >
+> >         if (!btf_data) {
+> > +               pr_warn("Failed to get section %s from ELF %s, check CONFIG_DEBUG_INFO_BTF if compiling kernel\n",
+> > +                       BTF_ELF_SEC, path);
+> 
+> This is going to be very confusing for any user trying to load BTF
+> from some other ELF file. If we want to add such helpful suggestion
+> (and even then it's a bit of a hit and miss, as not every passed in
+> file is supposed to be vmlinux kernel image), it should be done in
+> bpftool proper.
+> 
+> >                 err = -ENOENT;
+> >                 goto done;
+> >         }
+> > --
+> > 2.37.3
+> >
 
-On 9/28/2022 5:23 PM, Quentin Monnet wrote:
-> Wed Sep 28 2022 10:05:55 GMT+0100 (British Summer Time) ~ Hou Tao
-> <houtao@huaweicloud.com>
->> Hi,
->>
->> On 9/28/2022 4:40 PM, Quentin Monnet wrote:
->>> Wed Sep 28 2022 05:14:45 GMT+0100 (British Summer Time) ~ Hou Tao
->>> <houtao@huaweicloud.com>
->>>> Hi,
->>>>
->>>> On 9/27/2022 7:24 PM, Quentin Monnet wrote:
->>>>> Sat Sep 24 2022 14:36:15 GMT+0100 (British Summer Time) ~ Hou Tao
->>>>> <houtao@huaweicloud.com>
->>>>>> From: Hou Tao <houtao1@huawei.com>
->>>>>>
->>>>>> Support lookup/update/delete/iterate/dump operations for qp-trie in
->>>>>> bpftool. Mainly add two functions: one function to parse dynptr key and
->>>>>> another one to dump dynptr key. The input format of dynptr key is:
->>>>>> "key [hex] size BYTES" and the output format of dynptr key is:
->>>>>> "size BYTES".
->> SNIP
->>>>> The bpftool patch looks good, thanks! I have one comment on the syntax
->>>>> for the keys, I don't find it intuitive to have the size as the first
->>>>> BYTE. It makes it awkward to understand what the command does if we read
->>>>> it in the wild without knowing the map type. I can see two alternatives,
->>>>> either adding a keyword (e.g., "key_size 4 key 0 0 0 1"), or changing
->>>>> parse_bytes() to make it able to parse as much as it can then count the
->>>>> bytes, when we don't know in advance how many we get.
->>>> The suggestion is reasonable, but there is also reason for the current choice (
->>>> I should written it down in commit message). For dynptr-typed key, these two
->>>> proposed suggestions will work. But for key with embedded dynptrs as show below,
->>>> both explict key_size keyword and implicit key_size in BYTEs can not express the
->>>> key correctly.
->>>>
->>>> struct map_key {
->>>> unsigned int cookie;
->>>> struct bpf_dynptr name;
->>>> struct bpf_dynptr addr;
->>>> unsigned int flags;
->>>> };
->>> I'm not sure I follow. I don't understand the difference for dealing
->>> internally with the key between "key_size N key BYTES" and "key N BYTES"
->>> (or for parsing then counting). Please could you give an example telling
->>> how you would you express the key from the structure above, with the
->>> syntax you proposed?
->> In my understand, if using "key_size N key BYTES" to represent map_key, it can
->> not tell the exact size of "name" and "addr" and it only can tell the total size
->> of name and addr. If using "key BYTES" to do that, it has the similar problem.
->> But if using "key size BYTES" format, map_key can be expressed as follows:
->>
->> key c c c c [name_size] n n n [addr_size] a a  f f f f
-> OK thanks I get it now, you can have multiple sizes within the key, one
-> for each field. Yes, let's use a new keyword in that case please. Can
-> you also provide more details in the man page, and ideally add a new
-> example to the list?
-Forget to mention that the map key with embedded dynptr is not supported yet and
-now only support using dynptr as the map key. So will add a new keyword "dynkey"
-in v3 to support operations on qp-trie.
->
-> Thanks,
-> Quentin
->
-> .
+Hi Andrii :
+I agree with you, I will try to implement it in bpftool.
+
+But there’s another problem here, in btf_parse_elf() from tools/lib/bpf/btf.c:
+If the path does not exist, open() assigns ENOENT to errno, and btf_parse_elf()
+returns -ENOENT. Besides, if .BTF section can not be found in the ELF file,
+btf_parse_elf() also returns -ENOENT, the same as above. So we can't determine
+which kind of error it is from the outside.
+
+Could we change the err code in the second case to make it clearer, Such as
+changing ENOENT to EPROTO / adding a new error code? Or we can just warn
+that .BTF section does not exist.
+
+Thanks.
 
