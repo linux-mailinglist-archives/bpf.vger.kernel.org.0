@@ -2,62 +2,27 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C31285ED814
-	for <lists+bpf@lfdr.de>; Wed, 28 Sep 2022 10:45:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F6305ED82E
+	for <lists+bpf@lfdr.de>; Wed, 28 Sep 2022 10:48:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233360AbiI1IpG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Sep 2022 04:45:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59270 "EHLO
+        id S233496AbiI1IsG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Sep 2022 04:48:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233407AbiI1Ioq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Sep 2022 04:44:46 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B25BBAE855
-        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 01:41:03 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id r7so18663079wrm.2
-        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 01:41:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date;
-        bh=LflrRGYViklv/EX2lQ4/UJsQkhBFRZZ990ea9ua8cXE=;
-        b=lMNkMY1AQJSHNimifD1X+0E77pm6arhjFeqlHLWwvaVlGIL9vkNFZWPnt2YG+5Bnqg
-         bA3coxPO4g5chy9f5H1wq3yn97uOZ+tHepKa3I3qTfHXz1X2t1vF665rmNtES1zVXyp2
-         RgR3O1i8x2Ig+48RQIT1ru3R2mEkNC8I2v6lajHNIWc4uZjGI/136RmWj055UNObNvxQ
-         kY5XTZViKh6oGJf5EB052An/EEPVAcqGxyvZl5AluxVrtat4LyXoioATfSFDicQ0kfcf
-         prV1W44mrXYKeudS4nSBSWjKLESiXGaLHRdNQsroXYCtlVEK9HQFXTolR908sJ33bXB0
-         W51Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date;
-        bh=LflrRGYViklv/EX2lQ4/UJsQkhBFRZZ990ea9ua8cXE=;
-        b=iVEgbhSV58Md9M+A36c/qavwEfE5pqV1qb1frvBmvh2Pg6tDXlFtsl6qvhxMpvlrCt
-         45UIB2KLT38mQoXmOJ0ffmP9qBQK0hL5iucUUvKoh5ByFJLOIlnB/vPZECPtJ8w+YKjJ
-         xFv/TRpD/NfDECETB5Q0z5oXVpfqZARlZPjW2AB9bOG+moti71uPiCo5/CBpTt/D6KPH
-         IzMkrjn0fYQeca9a4OvcTw2n/etpQzRb72zEEgxn5SQY3e8bc4XDkdnON5VDkz/ts4u4
-         vkrnBDkrQdfyfKkyalsPH7CmPLqCHdFyNKwV1QRLP7bX+DcFM3yBnOaqqnk7HmLPRTUF
-         dl/Q==
-X-Gm-Message-State: ACrzQf2xz4R5YaZHXRjty4EMVrXLg56a4nv6Yx65RchPrXFDoM6J0ftQ
-        vCjO8FkM7Ylzo6ftYSJNMvPhew==
-X-Google-Smtp-Source: AMsMyM52wdCaowbl0i2WV1DXQ3+o6PrN+aTMUIHauZqzDcj4SmOrbGIUn5oaV9arfBGGifD2M8JB4A==
-X-Received: by 2002:a5d:6da1:0:b0:22b:773:a99b with SMTP id u1-20020a5d6da1000000b0022b0773a99bmr19257860wrs.600.1664354459950;
-        Wed, 28 Sep 2022 01:40:59 -0700 (PDT)
-Received: from [192.168.178.32] ([51.155.200.13])
-        by smtp.gmail.com with ESMTPSA id u7-20020adfdd47000000b00228655a5c8fsm3784030wrm.28.2022.09.28.01.40.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Sep 2022 01:40:59 -0700 (PDT)
-Message-ID: <0fa70b47-5d06-d99a-c3cf-635a33f3f38d@isovalent.com>
-Date:   Wed, 28 Sep 2022 09:40:58 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.0
-Subject: Re: [PATCH bpf-next v2 08/13] bpftool: Add support for qp-trie map
-Content-Language: en-GB
-To:     Hou Tao <houtao@huaweicloud.com>, bpf@vger.kernel.org
-Cc:     Martin KaFai Lau <kafai@fb.com>,
+        with ESMTP id S231976AbiI1Iri (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Sep 2022 04:47:38 -0400
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5EDE543EE
+        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 01:46:05 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Mcqlz17JSz6S5GJ
+        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 16:43:59 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+        by APP2 (Coremail) with SMTP id Syh0CgB3FG7HCTRjItgUBg--.50379S2;
+        Wed, 28 Sep 2022 16:46:03 +0800 (CST)
+Subject: Re: [PATCH bpf-next v2 00/13] Add support for qp-trie with dynptr key
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
         Andrii Nakryiko <andrii@kernel.org>,
         Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
         Yonghong Song <yhs@fb.com>,
@@ -69,103 +34,180 @@ Cc:     Martin KaFai Lau <kafai@fb.com>,
         Stanislav Fomichev <sdf@google.com>,
         Jiri Olsa <jolsa@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, houtao1@huawei.com
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Hou Tao <houtao1@huawei.com>
 References: <20220924133620.4147153-1-houtao@huaweicloud.com>
- <20220924133620.4147153-9-houtao@huaweicloud.com>
- <896ae326-125b-5d23-2870-aeaa95341c64@isovalent.com>
- <f46cefeb-2572-ec8a-f5ee-82dc1988137e@huaweicloud.com>
-From:   Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <f46cefeb-2572-ec8a-f5ee-82dc1988137e@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+ <20220926012535.badx76iwtftyhq6m@MacBook-Pro-4.local>
+ <ca0c97ae-6fd5-290b-6a00-fe3fe2e87aeb@huaweicloud.com>
+ <20220927011949.sxxkyhjiig7wg7kv@macbook-pro-4.dhcp.thefacebook.com>
+ <3c7cf1a8-16f2-5876-ff92-add6fd795caf@huaweicloud.com>
+ <CAADnVQL_fMx3P24wzw2LMON-SqYgRKYziUHg6+mYH0i6kpvJcA@mail.gmail.com>
+ <2d9c2c06-af12-6ad1-93ef-454049727e78@huaweicloud.com>
+ <CAADnVQLWQcjYypR2+6UxhKrLOnpRQtB3PZ0=xOtjGpkEhWbH3g@mail.gmail.com>
+From:   Hou Tao <houtao@huaweicloud.com>
+Message-ID: <2dda66a7-40f5-e595-48cf-b8588c70197a@huaweicloud.com>
+Date:   Wed, 28 Sep 2022 16:45:59 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <CAADnVQLWQcjYypR2+6UxhKrLOnpRQtB3PZ0=xOtjGpkEhWbH3g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID: Syh0CgB3FG7HCTRjItgUBg--.50379S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxtF1DJr47XF4fZr47uw17Jrb_yoW3uFy3pr
+        1fJr1UJryUJr18Aw1UKr1UJry7Jr1UXw4UXr15JF1UAr1UJr1jqr1UXr1jgr1UJr4rJF1U
+        Jr1UJr1jv347JrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
+        07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_
+        WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+        CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
+        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+        7IU13rcDUUUUU==
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Wed Sep 28 2022 05:14:45 GMT+0100 (British Summer Time) ~ Hou Tao
-<houtao@huaweicloud.com>
-> Hi,
-> 
-> On 9/27/2022 7:24 PM, Quentin Monnet wrote:
->> Sat Sep 24 2022 14:36:15 GMT+0100 (British Summer Time) ~ Hou Tao
->> <houtao@huaweicloud.com>
->>> From: Hou Tao <houtao1@huawei.com>
->>>
->>> Support lookup/update/delete/iterate/dump operations for qp-trie in
->>> bpftool. Mainly add two functions: one function to parse dynptr key and
->>> another one to dump dynptr key. The input format of dynptr key is:
->>> "key [hex] size BYTES" and the output format of dynptr key is:
->>> "size BYTES".
->>>
->>> The following is the output when using bpftool to manipulate
->>> qp-trie:
->>>
->>>   $ bpftool map pin id 724953 /sys/fs/bpf/qp
->>>   $ bpftool map show pinned /sys/fs/bpf/qp
->>>   724953: qp_trie  name qp_trie  flags 0x1
->>>           key 16B  value 4B  max_entries 2  memlock 65536B  map_extra 8
->>>           btf_id 779
->>>           pids test_qp_trie.bi(109167)
->>>   $ bpftool map dump pinned /sys/fs/bpf/qp
->>>   [{
->>>           "key": {
->>>               "size": 4,
->>>               "data": ["0x0","0x0","0x0","0x0"
->>>               ]
->>>           },
->>>           "value": 0
->>>       },{
->>>           "key": {
->>>               "size": 4,
->>>               "data": ["0x0","0x0","0x0","0x1"
->>>               ]
->>>           },
->>>           "value": 2
->>>       }
->>>   ]
->>>   $ bpftool map lookup pinned /sys/fs/bpf/qp key 4 0 0 0 1
->>>   {
->>>       "key": {
->>>           "size": 4,
->>>           "data": ["0x0","0x0","0x0","0x1"
->>>           ]
->>>       },
->>>       "value": 2
->>>   }
->> The bpftool patch looks good, thanks! I have one comment on the syntax
->> for the keys, I don't find it intuitive to have the size as the first
->> BYTE. It makes it awkward to understand what the command does if we read
->> it in the wild without knowing the map type. I can see two alternatives,
->> either adding a keyword (e.g., "key_size 4 key 0 0 0 1"), or changing
->> parse_bytes() to make it able to parse as much as it can then count the
->> bytes, when we don't know in advance how many we get.
-> The suggestion is reasonable, but there is also reason for the current choice (
-> I should written it down in commit message). For dynptr-typed key, these two
-> proposed suggestions will work. But for key with embedded dynptrs as show below,
-> both explict key_size keyword and implicit key_size in BYTEs can not express the
-> key correctly.
-> 
-> struct map_key {
-> unsigned int cookie;
-> struct bpf_dynptr name;
-> struct bpf_dynptr addr;
-> unsigned int flags;
-> };
+Hi,
 
-I'm not sure I follow. I don't understand the difference for dealing
-internally with the key between "key_size N key BYTES" and "key N BYTES"
-(or for parsing then counting). Please could you give an example telling
-how you would you express the key from the structure above, with the
-syntax you proposed?
+On 9/28/2022 9:08 AM, Alexei Starovoitov wrote:
+> On Tue, Sep 27, 2022 at 7:08 AM Hou Tao <houtao@huaweicloud.com> wrote:
+>
+SNIP
+>> I can not reproduce the phenomenon that call_rcu consumes 100% of all cpus in my
+>> local environment, could you share the setup for it ?
+>>
+>> The following is the output of perf report (--no-children) for "./map_perf_test
+>> 4 72 10240 100000" on a x86-64 host with 72-cpus:
+>>
+>>     26.63%  map_perf_test    [kernel.vmlinux]                             [k]
+>> alloc_htab_elem
+>>     21.57%  map_perf_test    [kernel.vmlinux]                             [k]
+>> htab_map_update_elem
+> Looks like the perf is lost on atomic_inc/dec.
+> Try a partial revert of mem_alloc.
+> In particular to make sure
+> commit 0fd7c5d43339 ("bpf: Optimize call_rcu in non-preallocated hash map.")
+> is reverted and call_rcu is in place,
+> but percpu counter optimization is still there.
+> Also please use 'map_perf_test 4'.
+> I doubt 1000 vs 10240 will make a difference, but still.
+>
+I have tried the following two setups:
+(1) Don't use bpf_mem_alloc in hash-map and use per-cpu counter in hash-map
+# Samples: 1M of event 'cycles:ppp'
+# Event count (approx.): 1041345723234
+#
+# Overhead  Command          Shared Object                                Symbol
+# ........  ...............  ........................................... 
+...............................................
+#
+    10.36%  map_perf_test    [kernel.vmlinux]                             [k]
+bpf_map_get_memcg.isra.0
+     9.82%  map_perf_test    [kernel.vmlinux]                             [k]
+bpf_map_kmalloc_node
+     4.24%  map_perf_test    [kernel.vmlinux]                             [k]
+check_preemption_disabled
+     2.86%  map_perf_test    [kernel.vmlinux]                             [k]
+htab_map_update_elem
+     2.80%  map_perf_test    [kernel.vmlinux]                             [k]
+__kmalloc_node
+     2.72%  map_perf_test    [kernel.vmlinux]                             [k]
+htab_map_delete_elem
+     2.30%  map_perf_test    [kernel.vmlinux]                             [k]
+memcg_slab_post_alloc_hook
+     2.21%  map_perf_test    [kernel.vmlinux]                             [k]
+entry_SYSCALL_64
+     2.17%  map_perf_test    [kernel.vmlinux]                             [k]
+syscall_exit_to_user_mode
+     2.12%  map_perf_test    [kernel.vmlinux]                             [k] jhash
+     2.11%  map_perf_test    [kernel.vmlinux]                             [k]
+syscall_return_via_sysret
+     2.05%  map_perf_test    [kernel.vmlinux]                             [k]
+alloc_htab_elem
+     1.94%  map_perf_test    [kernel.vmlinux]                             [k]
+_raw_spin_lock_irqsave
+     1.92%  map_perf_test    [kernel.vmlinux]                             [k]
+preempt_count_add
+     1.92%  map_perf_test    [kernel.vmlinux]                             [k]
+preempt_count_sub
+     1.87%  map_perf_test    [kernel.vmlinux]                             [k]
+call_rcu
 
-> I also had thought about adding another key word "dynptr_key" (or "dyn_key") to
-> support dynptr-typed key or key with embedded dynptr, and the format will still
-> be: "dynptr_key size [BYTES]". But at least we can tell it is different with
-> "key" which is fixed size. What do you think ?
-If the other suggestions do not work, then yes, using a dedicated
-keyword (Just "dynkey"? We can detail in the docs) sounds better to me.
+
+(2) Use bpf_mem_alloc & per-cpu counter in hash-map, but no batch call_rcu
+optimization
+By revert the following commits:
+
+9f2c6e96c65e bpf: Optimize rcu_barrier usage between hash map and bpf_mem_alloc.
+bfc03c15bebf bpf: Remove usage of kmem_cache from bpf_mem_cache.
+02cc5aa29e8c bpf: Remove prealloc-only restriction for sleepable bpf programs.
+dccb4a9013a6 bpf: Prepare bpf_mem_alloc to be used by sleepable bpf programs.
+96da3f7d489d bpf: Remove tracing program restriction on map types
+ee4ed53c5eb6 bpf: Convert percpu hash map to per-cpu bpf_mem_alloc.
+4ab67149f3c6 bpf: Add percpu allocation support to bpf_mem_alloc.
+8d5a8011b35d bpf: Batch call_rcu callbacks instead of SLAB_TYPESAFE_BY_RCU.
+7c266178aa51 bpf: Adjust low/high watermarks in bpf_mem_cache
+0fd7c5d43339 bpf: Optimize call_rcu in non-preallocated hash map.
+
+     5.17%  map_perf_test    [kernel.vmlinux]                             [k]
+check_preemption_disabled
+     4.53%  map_perf_test    [kernel.vmlinux]                             [k]
+__get_obj_cgroup_from_memcg
+     2.97%  map_perf_test    [kernel.vmlinux]                             [k]
+htab_map_update_elem
+     2.74%  map_perf_test    [kernel.vmlinux]                             [k]
+htab_map_delete_elem
+     2.62%  map_perf_test    [kernel.vmlinux]                             [k]
+kmem_cache_alloc_node
+     2.57%  map_perf_test    [kernel.vmlinux]                             [k]
+memcg_slab_post_alloc_hook
+     2.34%  map_perf_test    [kernel.vmlinux]                             [k] jhash
+     2.30%  map_perf_test    [kernel.vmlinux]                             [k]
+entry_SYSCALL_64
+     2.25%  map_perf_test    [kernel.vmlinux]                             [k]
+obj_cgroup_charge
+     2.23%  map_perf_test    [kernel.vmlinux]                             [k]
+alloc_htab_elem
+     2.17%  map_perf_test    [kernel.vmlinux]                             [k]
+memcpy_erms
+     2.17%  map_perf_test    [kernel.vmlinux]                             [k]
+syscall_exit_to_user_mode
+     2.16%  map_perf_test    [kernel.vmlinux]                             [k]
+syscall_return_via_sysret
+     2.14%  map_perf_test    [kernel.vmlinux]                             [k]
+_raw_spin_lock_irqsave
+     2.13%  map_perf_test    [kernel.vmlinux]                             [k]
+preempt_count_add
+     2.12%  map_perf_test    [kernel.vmlinux]                             [k]
+preempt_count_sub
+     2.00%  map_perf_test    [kernel.vmlinux]                             [k]
+percpu_counter_add_batch
+     1.99%  map_perf_test    [kernel.vmlinux]                             [k]
+alloc_bulk
+     1.97%  map_perf_test    [kernel.vmlinux]                             [k]
+call_rcu
+     1.52%  map_perf_test    [kernel.vmlinux]                             [k]
+mod_objcg_state
+     1.36%  map_perf_test    [kernel.vmlinux]                             [k]
+allocate_slab
+
+In both of these two setups, the overhead of call_rcu is about 2% and it is not
+the biggest overhead.
+
+Maybe add a not-immediate-reuse flag support to bpf_mem_alloc is reason. What do
+you think ?
+
