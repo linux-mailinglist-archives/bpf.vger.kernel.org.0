@@ -2,90 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04F6A5EEA3E
-	for <lists+bpf@lfdr.de>; Thu, 29 Sep 2022 01:40:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB1E85EEA74
+	for <lists+bpf@lfdr.de>; Thu, 29 Sep 2022 02:16:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232599AbiI1Xkh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Sep 2022 19:40:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39996 "EHLO
+        id S231419AbiI2AQs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Sep 2022 20:16:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231652AbiI1XkV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Sep 2022 19:40:21 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E591210F7
-        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 16:40:19 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id A23D5B82260
-        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 23:40:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 584DEC433C1;
-        Wed, 28 Sep 2022 23:40:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1664408417;
-        bh=dFMKTvZ1Jlosy1dCug2Me6vlqKmyuW/f3/tD4lX4dwI=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=QFoeMV5YrFx2XH7x5pnlkTcL48Gi7NU4kTzXPb5YfH+umByktw5qTC1EXhrnp+Trc
-         A+buEiFVgkDgw5uFhs6pkIXFwG7sg3xnsjsq2UvOD348gOVRTMysKXLzukQg+KPBx5
-         TNzk10ShGbdM/PGd4cRmg1Hg6L5PPeJGIj5kwHErehPDe04LY0wysqopzIZdaU1Pfs
-         6cHp03rDjt/qKcdhhocuCeR88+/1yl2y9fQnm76V6/K9MRNDxjjXBZ5OgvJtlgqcmD
-         Nrok5/wdF2e5SI5zneROgfWERsNQJqEL2TB0+/PeMsFN+q586FOlsVnJUhZVits971
-         aY/yapmczo5bA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3E425E21EC6;
-        Wed, 28 Sep 2022 23:40:17 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229496AbiI2AQr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Sep 2022 20:16:47 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB4AB118DDA
+        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 17:16:46 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id e18so19360439edj.3
+        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 17:16:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=wEMSsW/9nKtYc1Z8eKtfCCVBe+RKz19fuXdfkKpG0B0=;
+        b=n+Eo4xT66XiYSVH/zruWp9EPeOEnJvR84VcKaoSPhDzgnyiPkv82QNL7VnguEUyN4+
+         iBeNWD2C9GDHyISfo1mLYlHVbVMB7Vqtcj8o19Wh4/57RgDRgfqjRvF98ko1RynjBrW0
+         /k8qOl/WR+Ce7JQzjou0rfHb3JTQN16Ag4wdxOck9APIQAquItya4DZhRTdD6PdXHJ3L
+         AWB1rYJip+F+wVkBC6H1rDn9NT9pmGLx68K/S25HhrtJiE9tatQ2TCXpgDWOCdZ4MoDh
+         jtra/IG+ghJxaFQf1uiA2hu2SoK6dObf+1tl1zByLiUMDQSdRdJnyq1NoBRZ+km9mgCe
+         T69g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=wEMSsW/9nKtYc1Z8eKtfCCVBe+RKz19fuXdfkKpG0B0=;
+        b=XCxAzEWJvhfcaPOL+Vqw8ff7jJdMvfYfkzAT+D14dKpnGMKn3drmlI1vWXvdXDa3pP
+         wSjrZXsWvAycZjrc0fxvas3pfqUvrdjSwXN+zpk34FIGQSVwTFiXCH79y3F9I7J5ect4
+         RM0LZQ8RwZHvM398lK5tJ2wdJsRdGZibi7gSseYumeX5+79ZSmcw+DQHWt2rsNhkT0Eb
+         Ds2jzuONPCDVyMOwmcX3mX1BR6Jewzwy8ey4dNlWwhx8EF7xS4NZmaGqyXd/avW7rkVU
+         yn+kf6w/Ibaj6VG/sOfcJ4xTp+e8CYcS7UzweZ+LxJKEjb2eyKHMhGcakJNuyQHc6I0e
+         FD0g==
+X-Gm-Message-State: ACrzQf3KEqCdOsONg1KMgzVdDwAozWdaLyxm2IwK7gJVOEBtIVjPotXW
+        QK81PNwl/Hi5WiwRtSmtmDTx1ZbmTYtslCDXbmw=
+X-Google-Smtp-Source: AMsMyM7YOdUerQeL2Gq242mWnIiNna1rErs4yJIoyd4xRl6hHaRu8RBk8Dm/x54/O4GEcabHuVFe6nHLrozlNeshGfk=
+X-Received: by 2002:a05:6402:518e:b0:452:49bc:179f with SMTP id
+ q14-20020a056402518e00b0045249bc179fmr626220edd.224.1664410605406; Wed, 28
+ Sep 2022 17:16:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v11 0/5] Parameterize task iterators.
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <166440841724.5658.15753092600635265807.git-patchwork-notify@kernel.org>
-Date:   Wed, 28 Sep 2022 23:40:17 +0000
-References: <20220926184957.208194-1-kuifeng@fb.com>
-In-Reply-To: <20220926184957.208194-1-kuifeng@fb.com>
-To:     Kui-Feng Lee <kuifeng@fb.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kernel-team@fb.com, yhs@fb.com
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20220924133620.4147153-1-houtao@huaweicloud.com> <20220924133620.4147153-4-houtao@huaweicloud.com>
+In-Reply-To: <20220924133620.4147153-4-houtao@huaweicloud.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 28 Sep 2022 17:16:32 -0700
+Message-ID: <CAEf4Bza79XbtYF_04MhdcN0o4Akot0VpWaR+mOoGwXsz7yT=xg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 03/13] bpf: Support bpf_dynptr-typed map key
+ in bpf syscall
+To:     Hou Tao <houtao@huaweicloud.com>
+Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, houtao1@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Sat, Sep 24, 2022 at 6:18 AM Hou Tao <houtao@huaweicloud.com> wrote:
+>
+> From: Hou Tao <houtao1@huawei.com>
+>
+> Userspace application uses bpf syscall to lookup or update bpf map. It
+> passes a pointer of fixed-size buffer to kernel to represent the map
+> key. To support map with variable-length key, introduce bpf_dynptr_user
+> to allow userspace to pass a pointer of bpf_dynptr_user to specify the
+> address and the length of key buffer. And in order to represent dynptr
+> from userspace, adding a new dynptr type: BPF_DYNPTR_TYPE_USER. Because
+> BPF_DYNPTR_TYPE_USER-typed dynptr is not available from bpf program, so
+> no verifier update is needed.
+>
+> Add dynptr_key_off in bpf_map to distinguish map with fixed-size key
+> from map with variable-length. dynptr_key_off is less than zero for
+> fixed-size key and can only be zero for dynptr key.
+>
+> For dynptr-key map, key btf type is bpf_dynptr and key size is 16, so
+> use the lower 32-bits of map_extra to specify the maximum size of dynptr
+> key.
+>
+> Signed-off-by: Hou Tao <houtao1@huawei.com>
+> ---
 
-This series was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+This is a great feature and you've put lots of high-quality work into
+this! Looking forward to have qp-trie BPF map available. Apart from
+your discussion with Alexie about locking and memory
+allocation/reused, I have questions about this dynptr from user-space
+interface. Let's discuss it in this patch to not interfere.
 
-On Mon, 26 Sep 2022 11:49:52 -0700 you wrote:
-> Allow creating an iterator that loops through resources of one task/thread.
-> 
-> People could only create iterators to loop through all resources of
-> files, vma, and tasks in the system, even though they were interested in only the
-> resources of a specific task or process.  Passing the additional
-> parameters, people can now create an iterator to go through all
-> resources or only the resources of a task.
-> 
-> [...]
+I'm trying to understand why there should be so many new concepts and
+interfaces just to allow variable-sized keys. Can you elaborate on
+that? Like why do we even need BPF_DYNPTR_TYPE_USER? Why user can't
+just pass a void * (casted to u64) pointer and size of the memory
+pointed to it, and kernel will just copy necessary amount of data into
+kvmalloc'ed temporary region?
 
-Here is the summary with links:
-  - [bpf-next,v11,1/5] bpf: Parameterize task iterators.
-    https://git.kernel.org/bpf/bpf-next/c/f0d74c4da1f0
-  - [bpf-next,v11,2/5] bpf: Handle bpf_link_info for the parameterized task BPF iterators.
-    https://git.kernel.org/bpf/bpf-next/c/21fb6f2aa389
-  - [bpf-next,v11,3/5] bpf: Handle show_fdinfo for the parameterized task BPF iterators
-    https://git.kernel.org/bpf/bpf-next/c/2c4fe44fb020
-  - [bpf-next,v11,4/5] selftests/bpf: Test parameterized task BPF iterators.
-    https://git.kernel.org/bpf/bpf-next/c/b3e1331eb925
-  - [bpf-next,v11,5/5] bpftool: Show parameters of BPF task iterators.
-    https://git.kernel.org/bpf/bpf-next/c/6bdb6d6be019
+It also seems like you want to allow key (and maybe value as well, not
+sure) to be a custom user-defined type where some of the fields are
+struct bpf_dynptr. I think it's a big overcomplication, tbh. I'd say
+it's enough to just say that entire key has to be described by a
+single bpf_dynptr. Then we can have bpf_map_lookup_elem_dynptr(map,
+key_dynptr, flags) new helper to provide variable-sized key for
+lookup.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+I think it would keep it much simpler. But if I'm missing something,
+it would be good to understand that. Thanks!
 
 
+>  include/linux/bpf.h            |   8 +++
+>  include/uapi/linux/bpf.h       |   6 ++
+>  kernel/bpf/map_in_map.c        |   3 +
+>  kernel/bpf/syscall.c           | 121 +++++++++++++++++++++++++++------
+>  tools/include/uapi/linux/bpf.h |   6 ++
+>  5 files changed, 125 insertions(+), 19 deletions(-)
+>
+
+[...]
