@@ -2,59 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B554E5EEAF6
-	for <lists+bpf@lfdr.de>; Thu, 29 Sep 2022 03:33:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A4275EEB6A
+	for <lists+bpf@lfdr.de>; Thu, 29 Sep 2022 04:05:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234348AbiI2Bdk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Sep 2022 21:33:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57460 "EHLO
+        id S234530AbiI2CFH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Sep 2022 22:05:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234197AbiI2Bdg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Sep 2022 21:33:36 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 832F9118DEC
-        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 18:33:35 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id a80so134851pfa.4
-        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 18:33:35 -0700 (PDT)
+        with ESMTP id S234599AbiI2CFF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Sep 2022 22:05:05 -0400
+Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3F7BF8F8E
+        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 19:05:03 -0700 (PDT)
+Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-324ec5a9e97so973837b3.7
+        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 19:05:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date;
-        bh=RNSCSdpbesTqWDIKcMZZHXFSWWdfRvHLxmZ5WhWGkD4=;
-        b=IjqZnJmtmWIi2vS9pke/MZwlL0c/FnpxfOCqBO02+j4RGgW849VM/U3gp8ef5gIu8t
-         ou/zt8X2dCdOb9yLoMbS/c45IlEyRJImUalEDDMtgwKLlxeOSav5qg5whmUkYDp4kjz+
-         sveY3dugt+8au5sPkZioKF8WWET0hzaAykx6HMmH9ZM+FvDy2NqwOK4QXP/+YusCXsL6
-         q7pEL9JYsXtoJHkJuLla3hCjOVEqiQ0I1S6rKlW8tBD8xuoP+d0XqD9jMHzTF9xRhaU0
-         Bjj8Wvi8av085iGAfogsdFClZhu9aH/6dU0z0/m493BxvmjYwS8uSK08xWUNb9qGfF2H
-         koIg==
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=f1mRMNstfp0oU+nmSji3PZ99E2Ko9CadyHhA/0b7ZVY=;
+        b=g+vc0etTbJBBLXzFAS8yKeHrBZt851C8B+4az5HoXVLTlk4sxKKM3q6pLNn2ijo8Bq
+         gyMxtxcxrpk3AdmGx/O+7qSzAnax03XBstdOlK3kUjIGajONI0cGE/0Nc6jJKzb3T0Pm
+         Y6NuoShfgjwLHApLiuv6PwM7d449HUqjV+m1OdsHbeHg6NaV1VF9wdyVXz6+dj1SNPCf
+         kkuQPQtTuGawlMZK19wKjZ3u1DQu0r6j4CPWoTDg730Nd13/vfZBpjfinvw6Tt1ZpTSZ
+         fkyf60Vfe5urQfOJIhpupuI03mQ3OOpFAqkNSCtLD+wmq9IcweLMdRbhZmwetuKi9EkP
+         NtPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date;
-        bh=RNSCSdpbesTqWDIKcMZZHXFSWWdfRvHLxmZ5WhWGkD4=;
-        b=w1tlEwgn/9SFIXOWYxjfMI9ymgLLUWfJHgsWDQy+89l8aUHgi5/9D58h181SzZYyVA
-         r/ZXHM2udp7Qyb69obC/gf7kgBS/AMyhe4OaFjKKhXcG4pzFKfH+fUmJTZGEUaZE7Q7E
-         7QmoHgwmYW4T9IodYJF5Tk8nLm5D6wanXTqgYe+CzeURTJZ8EGcUTZrgIcy4zErqmDP+
-         T9PIdDNWsrOnpZIC0G3E5m+TmMwfZajxgsa9sxmhzkuQnTbaXKzl3PNUkILzh8A6ynj5
-         PABOnXKibqfg0stlRlj5Cp7Iv24Yv6QtNVjmmy3sgmEP/pAJBc4c4VGCqx8iYDvj6Z6e
-         eBOQ==
-X-Gm-Message-State: ACrzQf18TbErMFMaSzdviWI4YxqsKbayG/J96uoPcsymohSrqDsC7qFa
-        LbPMjCw+I4JLUjRuzi1r3ApkFDkC+TCNVI5mQSrgpvGvvEZcxQ==
-X-Google-Smtp-Source: AMsMyM4fENQPrwSrV3GpFMlWAJ9IsshgrZwCus5ObEkVeJpNYCpdlW95QT/Zf0k1Y1cttI7Bhl1EIiioVHlL/6W/Yp0=
-X-Received: by 2002:a63:f806:0:b0:439:d86e:1f6e with SMTP id
- n6-20020a63f806000000b00439d86e1f6emr672656pgh.46.1664415214532; Wed, 28 Sep
- 2022 18:33:34 -0700 (PDT)
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=f1mRMNstfp0oU+nmSji3PZ99E2Ko9CadyHhA/0b7ZVY=;
+        b=gyJKYYEtF7nrtU+p48bnbHR3/FVlGOu3mntoknsW2hINWPLHYuygUpuE5oJqnivpLA
+         Hakat7N0ohOI4FrsOxZffgvZS52AwKp+Nd28/cnG/8nHS4Kp/il4QFU4j5WqkG+8ikzx
+         4WtB45HLIJ3oBa5FIRJBRSa5d/e1TEgBAy34kMAH4S2MvHrNlBnZKb8IUzUECP3B0lHX
+         R794IioJAzJTSwZvQ8Zp72N0yJUqQ7s1ckyZ56mUmji/ulgfmA4EYv11tgL+hAsHidXs
+         YeugLmO0/1uCfCqGr4AjIGu7HfxH7eZc4c2rklKRKwHYjRO6ZQqDQD2TitdSIRWF2MJP
+         wu1w==
+X-Gm-Message-State: ACrzQf01Gd9Jo/OpjpLkdJw518+28dPThgoCK6TzYXLCPeFpgWnFiK/d
+        H2R9IzCCOa3xfCMfrLS9SXEWZJp/CZHLmtFV6Wetdz3DQkw=
+X-Google-Smtp-Source: AMsMyM7bNzFXGKCHRm7+OuTV+ImkGZi1Zf77Am7XvZsxwJ59F4KFrxldd6nnui+D+2CK+UpwE759F9Tb31L9h9jkMiM=
+X-Received: by 2002:a81:4e0d:0:b0:351:99d8:1862 with SMTP id
+ c13-20020a814e0d000000b0035199d81862mr930905ywb.278.1664417102609; Wed, 28
+ Sep 2022 19:05:02 -0700 (PDT)
 MIME-Version: 1.0
-From:   Henrique Fingler <henrique.fingler@gmail.com>
-Date:   Wed, 28 Sep 2022 20:33:24 -0500
-Message-ID: <CACG+mBUEHj5zFeGLtP+bvm0wERru3AGntNtWCyiZ-zPg_JS6tg@mail.gmail.com>
-Subject: Replicating kfunc_call_test kernel test on standalone bpf program
- (calling kernel function is not allowed)
-To:     bpf@vger.kernel.org
+References: <20220923224453.2351753-1-kafai@fb.com> <20220923224518.2353383-1-kafai@fb.com>
+In-Reply-To: <20220923224518.2353383-1-kafai@fb.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Wed, 28 Sep 2022 19:04:51 -0700
+Message-ID: <CANn89iLf+=AmMntTqy0HyOfbv6PASLsT+E4PhXMAX+xU1Zh2Yg@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 4/5] bpf: tcp: Stop bpf_setsockopt(TCP_CONGESTION)
+ in init ops to recur itself
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        kernel-team <kernel-team@fb.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Martin KaFai Lau <martin.lau@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,135 +74,106 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi all,
+On Fri, Sep 23, 2022 at 3:48 PM Martin KaFai Lau <kafai@fb.com> wrote:
+>
+> From: Martin KaFai Lau <martin.lau@kernel.org>
+>
+> When a bad bpf prog '.init' calls
+> bpf_setsockopt(TCP_CONGESTION, "itself"), it will trigger this loop:
+>
+> .init => bpf_setsockopt(tcp_cc) => .init => bpf_setsockopt(tcp_cc) ...
+> ... => .init => bpf_setsockopt(tcp_cc).
+>
+> It was prevented by the prog->active counter before but the prog->active
+> detection cannot be used in struct_ops as explained in the earlier
+> patch of the set.
+>
+> In this patch, the second bpf_setsockopt(tcp_cc) is not allowed
+> in order to break the loop.  This is done by using a bit of
+> an existing 1 byte hole in tcp_sock to check if there is
+> on-going bpf_setsockopt(TCP_CONGESTION) in this tcp_sock.
+>
+> Note that this essentially limits only the first '.init' can
+> call bpf_setsockopt(TCP_CONGESTION) to pick a fallback cc (eg. peer
+> does not support ECN) and the second '.init' cannot fallback to
+> another cc.  This applies even the second
+> bpf_setsockopt(TCP_CONGESTION) will not cause a loop.
+>
+> Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
+> ---
+>  include/linux/tcp.h |  6 ++++++
+>  net/core/filter.c   | 28 +++++++++++++++++++++++++++-
+>  2 files changed, 33 insertions(+), 1 deletion(-)
+>
+> diff --git a/include/linux/tcp.h b/include/linux/tcp.h
+> index a9fbe22732c3..3bdf687e2fb3 100644
+> --- a/include/linux/tcp.h
+> +++ b/include/linux/tcp.h
+> @@ -388,6 +388,12 @@ struct tcp_sock {
+>         u8      bpf_sock_ops_cb_flags;  /* Control calling BPF programs
+>                                          * values defined in uapi/linux/tcp.h
+>                                          */
+> +       u8      bpf_chg_cc_inprogress:1; /* In the middle of
+> +                                         * bpf_setsockopt(TCP_CONGESTION),
+> +                                         * it is to avoid the bpf_tcp_cc->init()
+> +                                         * to recur itself by calling
+> +                                         * bpf_setsockopt(TCP_CONGESTION, "itself").
+> +                                         */
+>  #define BPF_SOCK_OPS_TEST_FLAG(TP, ARG) (TP->bpf_sock_ops_cb_flags & ARG)
+>  #else
+>  #define BPF_SOCK_OPS_TEST_FLAG(TP, ARG) 0
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 96f2f7a65e65..ac4c45c02da5 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -5105,6 +5105,9 @@ static int bpf_sol_tcp_setsockopt(struct sock *sk, int optname,
+>  static int sol_tcp_sockopt_congestion(struct sock *sk, char *optval,
+>                                       int *optlen, bool getopt)
+>  {
+> +       struct tcp_sock *tp;
+> +       int ret;
+> +
+>         if (*optlen < 2)
+>                 return -EINVAL;
+>
+> @@ -5125,8 +5128,31 @@ static int sol_tcp_sockopt_congestion(struct sock *sk, char *optval,
+>         if (*optlen >= sizeof("cdg") - 1 && !strncmp("cdg", optval, *optlen))
+>                 return -ENOTSUPP;
+>
+> -       return do_tcp_setsockopt(sk, SOL_TCP, TCP_CONGESTION,
+> +       /* It stops this looping
+> +        *
+> +        * .init => bpf_setsockopt(tcp_cc) => .init =>
+> +        * bpf_setsockopt(tcp_cc)" => .init => ....
+> +        *
+> +        * The second bpf_setsockopt(tcp_cc) is not allowed
+> +        * in order to break the loop when both .init
+> +        * are the same bpf prog.
+> +        *
+> +        * This applies even the second bpf_setsockopt(tcp_cc)
+> +        * does not cause a loop.  This limits only the first
+> +        * '.init' can call bpf_setsockopt(TCP_CONGESTION) to
+> +        * pick a fallback cc (eg. peer does not support ECN)
+> +        * and the second '.init' cannot fallback to
+> +        * another.
+> +        */
+> +       tp = tcp_sk(sk);
+> +       if (tp->bpf_chg_cc_inprogress)
+> +               return -EBUSY;
+> +
 
-I'm trying to replicate a bpf test in the kernel that calls a function
-defined in the kernel itself.
-Source code is here:
-https://github.com/torvalds/linux/blob/v5.15/tools/testing/selftests/bpf/progs/kfunc_call_test.c
-
-I think I have all dependencies:
- Running within a qemu VM (Ubuntu 18.04)
- Kernel v 5.15 compiled from scratch with configs from
-tools/bpf/bpftool/feature.c
- pahole v1.22 (1.24 has a reported bug that doesn't allow me to use it)
- libbpf v1.0
- Installed bpf tool from 5.15 kernel directory at `tools/bpf`
- clang and llvm 15
-
-The goal is to call `bpf_kfunc_call_test1`, which is defined in
-net/bpf/test_run.c.
-I have two BPF programs and neither works. The first one is as is from
-the kernel:
-
-#include "vmlinux.h"
-#include <bpf/bpf_helpers.h>
-
-extern __u64 bpf_kfunc_call_test1(struct sock *sk, __u32 a, __u64 b,
-                  __u32 c, __u64 d) __ksym;
-
-SEC("classifier")
-int kfunc_call_test1(struct __sk_buff *skb)
-{
-    struct sock *sk = 0;
-    __u64 a;
-    a = bpf_kfunc_call_test1(sk, 1, 2, 3, 4);
-    bpf_printk("bpf_kfunc_call_test1:  %d.\n", a);
-    return a;
-}
-
-
-It is compiled with these commands:
-
-bpftool btf dump file /sys/kernel/btf/vmlinux format c > vmlinux.h
-clang -g -O2 -target bpf -D__TARGET_ARCH_x86 -I. -idirafter
-/usr/lib/llvm-15/lib/clang/15.0.2/include -idirafter
-/usr/local/include -idirafter /usr/include/x86_64-linux-gnu -idirafter
-/usr/include -c hello.bpf.c -o hello.bpf.o
-llvm-strip -g hello.bpf.o
-bpftool gen skeleton hello.bpf.o > hello.skel.h
-cc -g -Wall hello.skel.h hello.c /usr/lib64/libbpf.a   -lelf -lz -o hello
-
-
-The output is quite large, here is a gist:
-https://gist.github.com/hfingler/dc96af45d87004d0dc412e35be31709c.
-Mainly:
-
-libbpf: extern (func ksym) 'bpf_kfunc_call_test1': resolved to kernel [104983]
-libbpf: prog 'kfunc_call_test1': BPF program load failed: Invalid argument
-...
-kernel function bpf_kfunc_call_test1 args#0 expected pointer to STRUCT
-sock but R1 is not a pointer to btf_id
-processed 6 insns (limit 1000000) max_states_per_insn 0 total_states 0
-peak_states 0 mark_read 0
--- END PROG LOAD LOG --
-libbpf: prog 'kfunc_call_test1': failed to load: -22
-libbpf: failed to load object 'hello_bpf'
-libbpf: failed to load BPF skeleton 'hello_bpf': -22
-Failed to load and verify BPF skeleton
-
-
-The other program is based off of minimal.c from libbpf-bootstrap.
-
-#include "vmlinux.h"
-#include <bpf/bpf_helpers.h>
-
-extern __u64 bpf_kfunc_call_test1(struct sock *sk, __u32 a, __u64 b,
-                  __u32 c, __u64 d) __ksym;
-
-SEC("tp/raw_syscalls/sys_enter")
-int handle_tp(void *ctx)
-{
-    __u64 a;
-    a = bpf_kfunc_call_test1(0, 1, 2, 3, 4);
-    bpf_printk("bpf_kfunc_call_test1:  %d.\n", a);
-    return 0;
-}
-
-
-The output is a little different, gist:
-https://gist.github.com/hfingler/ac69e286f9e527dfd678ef2d768e757c
-mainly:
-
-libbpf: extern (func ksym) 'bpf_kfunc_call_test1': resolved to kernel [104983]
-...
-calling kernel function bpf_kfunc_call_test1 is not allowed
-libbpf: prog 'handle_tp': failed to load: -13
-libbpf: failed to load object 'hello_bpf'
-libbpf: failed to load BPF skeleton 'hello_bpf': -13
-Failed to load and verify BPF skeleton
+Is the socket locked (and owned by current thread) at this point ?
+If not, changing bpf_chg_cc_inprogress would be racy.
 
 
-What could be the problem here? I'm mostly interested in the second
-program, so that I can use it on my own tracepoints and other places.
-
-I'm aware of filtering in net/core/filter.c, but I can't find any
-reference to `bpf_kfunc` functions. In fact, I added this to filter.c,
-where both functions just return true (I'm not concerned about
-security, this is just research):
-
-const struct bpf_verifier_ops my_verifier_ops = {
-    .check_kfunc_call   = export_the_world,
-    .is_valid_access    = accept_the_world,
-};
-
-
-I'm assuming something is not allowing this program to call it, maybe
-it's the section it's put in. The kernel test's SEC is `classifier`,
-which is
-defined at tools/lib/bpf/libbpf.c as  `BPF_PROG_SEC("classifier",
-BPF_PROG_TYPE_SCHED_CLS),`, while `tp/` is BPF_PROG_TYPE_TRACEPOINT.
-Is there a filter somewhere that allows one but not the other? For
-example, in kernel/bpf/syscall.c I see:
-
-static bool is_net_admin_prog_type(enum bpf_prog_type prog_type)
-{
-    switch (prog_type) {
-    case BPF_PROG_TYPE_SCHED_CLS:
-        .. others
-
-but BPF_PROG_TYPE_TRACEPOINT is not here.
-
-There are so many references to these things that I'm totally lost,
-I'd appreciate some help.
-Thanks!
+> +       tp->bpf_chg_cc_inprogress = 1;
+> +       ret = do_tcp_setsockopt(sk, SOL_TCP, TCP_CONGESTION,
+>                                 KERNEL_SOCKPTR(optval), *optlen);
+> +       tp->bpf_chg_cc_inprogress = 0;
+> +       return ret;
+>  }
+>
+>  static int sol_tcp_sockopt(struct sock *sk, int optname,
+> --
+> 2.30.2
+>
