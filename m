@@ -2,221 +2,210 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 446095EFF55
-	for <lists+bpf@lfdr.de>; Thu, 29 Sep 2022 23:35:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D76CF5F005F
+	for <lists+bpf@lfdr.de>; Fri, 30 Sep 2022 00:33:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229602AbiI2Vfw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Sep 2022 17:35:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40596 "EHLO
+        id S229437AbiI2Wdi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Sep 2022 18:33:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229494AbiI2Vfu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 29 Sep 2022 17:35:50 -0400
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8276A7A8B
-        for <bpf@vger.kernel.org>; Thu, 29 Sep 2022 14:35:49 -0700 (PDT)
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 28TKTUJ0012026;
-        Thu, 29 Sep 2022 21:35:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
- in-reply-to : references : date : message-id : content-type :
- mime-version; s=corp-2022-7-12;
- bh=h8eW2W5wXUHDOCq2AfjbhH+evFziA4W33cqeDOLqkSg=;
- b=jBhRZHYKwDDn+uEUVXAFDXmTSge+4wbiT7qxI1r4EA+j+m/0JnzMOJCb5ugVPcTpUyK8
- Thkxem/el25ZroYtEom1ulHqS70lGyI9Um8Y/gYKFZF+OJfpzONDoZA6ncw/NR1X9dIY
- DVw9a5xyJAlJQ97hi58qL3CytHVOSD2pIZZIHFTQgVgrEtXkITlztp5dlfbkhymvmDU3
- k/d0ywjoEJ6HzDAxitOKvliPpNrxB407VSZ1FJE9ywtKiFkA9keaIERkgyd1d+Opl3Zx
- Ww3tmXAAMNto+099tMva17RYrb6vL06ZDGNi9wLqu5bSTLFkYxjQ249qbXSZKmkfWsAa FA== 
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3jssubp88s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Sep 2022 21:35:47 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 28TJXv6W033639;
-        Thu, 29 Sep 2022 21:35:46 GMT
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2173.outbound.protection.outlook.com [104.47.56.173])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3jtpv38c5j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Sep 2022 21:35:46 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AwVm/DdobtP60dsx4EjERJWwZ4WyFnntnmtbywwLJs9MinD1wc5dRHbUmdM3TcZmvmDxKl1E07YJJJV9cHD9ZD0IPI2xzS2n6laT3GhRz2o/zuqyLTPhVB1g5KAfzDSqEeGUgLCkZZ4ckh9VmP6BC8fjx3r0eOzaz2cFuBlcXQRmUnJEdyNysZkzXCE7BVB207CxrXRdtYAjdFYArAVzuupT8dOjNJOj9pZmDfv/jeXnJ9ktGGlMwhEvIkWXH0q+mJoHItot5DAvvtCoK5MYcb106BkPVnQYKcS3Rpy0MX46B78tl9fNkduw0TYpxgelr/9f1NR9zx+zS1KaKFSFbQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=h8eW2W5wXUHDOCq2AfjbhH+evFziA4W33cqeDOLqkSg=;
- b=kxspcqiG23Pu9RQEnran/qahF5xdU3rskX+U57FPOevTIKDoKazLOiDn9bI4bOSIh/NcDj8df1Qs6k2OHnH/Jt1oJDVB5ZD5tcu8Orp5otcUinmincszpsYVrQT67xk1OK5b2TMN04xgrjb2DlXJ5qqm3/a1hqfXLTzu9zp/AoOHU076ZJn4DIOSrWUDOF/fyL2boCG5cE2OEVXDsuWwS6Le3gJrq+e8rRFuRO6u6GQENy8vOml/fLA+FARhQpD9l8OmNJA6tvNp7WdYMNjAaYnXeBeNSH+btkQNp1mZ7chpPUL16svVLIs/8k3907i5axwS9cSBar41S6iQEoQfPw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        with ESMTP id S230111AbiI2Wcj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Sep 2022 18:32:39 -0400
+Received: from mail-oa1-x2c.google.com (mail-oa1-x2c.google.com [IPv6:2001:4860:4864:20::2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D56D0A2216
+        for <bpf@vger.kernel.org>; Thu, 29 Sep 2022 15:30:56 -0700 (PDT)
+Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-1280590722dso3516124fac.1
+        for <bpf@vger.kernel.org>; Thu, 29 Sep 2022 15:30:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=h8eW2W5wXUHDOCq2AfjbhH+evFziA4W33cqeDOLqkSg=;
- b=qe0pq2X4bSOU1LkNX1aymy4ux0jJtWdZyg2oVtND3y9zH3AU1cMCgM287BRIg1SYIoKQ1gr9jYGjnp/04rLT36EYS57WWeEvzyUQbvB7kg087/JLtLI32WYwm4wwIWB4nG0s7eYDGN5I3ckuwhVsvLDdEX4/Qk6YsfR1pBejSV0=
-Received: from CH2PR10MB4166.namprd10.prod.outlook.com (2603:10b6:610:78::20)
- by BN0PR10MB5157.namprd10.prod.outlook.com (2603:10b6:408:121::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5676.20; Thu, 29 Sep
- 2022 21:35:44 +0000
-Received: from CH2PR10MB4166.namprd10.prod.outlook.com
- ([fe80::90bb:12d:954a:c129]) by CH2PR10MB4166.namprd10.prod.outlook.com
- ([fe80::90bb:12d:954a:c129%9]) with mapi id 15.20.5676.018; Thu, 29 Sep 2022
- 21:35:44 +0000
-From:   Stephen Brennan <stephen.s.brennan@oracle.com>
-To:     Johnny young <johnny96.young@gmail.com>, bpf@vger.kernel.org
-Subject: Re: Is BTF info sufficient enough for BPFTrace and other debug
- tools to run ?
-In-Reply-To: <CACbfJv8tn5dZmz=6+SMC4HZV05s-vnV2Nq19pC0D=eTLUu91Pg@mail.gmail.com>
-References: <CACbfJv8tn5dZmz=6+SMC4HZV05s-vnV2Nq19pC0D=eTLUu91Pg@mail.gmail.com>
-Date:   Thu, 29 Sep 2022 14:35:42 -0700
-Message-ID: <877d1loocx.fsf@oracle.com>
-Content-Type: text/plain
-X-ClientProxiedBy: SA0PR11CA0196.namprd11.prod.outlook.com
- (2603:10b6:806:1bc::21) To CH2PR10MB4166.namprd10.prod.outlook.com
- (2603:10b6:610:78::20)
+        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=tgQfEA4Iu0kSJxT5pMBFZLIcD7ZpTlADi2N73CRf2gw=;
+        b=KUxkW5RSz1VuzlyqokJ33tD2rkbRPSbvkfPSQNCI8CObz3Z6F9bGdq1g6oNRFLA4+r
+         aOKLEFcnSLXpU/ccj6w7eVfmhaKZqKGaJHzaXn8U6iRR1xYC+fwx7Z66LWz+LcBmsyjQ
+         Do7iwQKwAictrk+rOR+Tyf32/7AstqoYlmF8WUhGYX1qa9wUniesmimcGemebVTIpp29
+         4klA/ADhVHJWHKStfmW1JfqrFspNFlbHISKwB7kgl2djJy7FQD4iKoqBFLpyMGgBBH+w
+         2DzPtajccfaAzn9xUYQ6060CdlnTHdpObC6V/A4EA9ZlLuEj0MLyoYLF84OdOTJ94NDX
+         u1Pw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=tgQfEA4Iu0kSJxT5pMBFZLIcD7ZpTlADi2N73CRf2gw=;
+        b=ptMOzvUCbVId4/KjJufvLEUrlle+PRd6469F3QRseijKv7qCSVSJLohnGOuiAI6jOX
+         Vk0YqotPxuelSX+0lAxVG6Qko+fU9Yho6CQ0GzY4SED085GjGO6/1MSP/mIP3Ayarr1F
+         YTK7ZrsG37FqAkwIS8R1DloT2tDUaZrHZMTCk9RbNYWjRTROkvHEn9j1OUM3LZbgn2Q+
+         akS6PJmd+KICggaaTYFFsQPJCvFVqKx1umUMUPiG+8jjhggKuV8eYC3YzLYyXarS8OJf
+         F67C/djWiiIWgOLhAEezDY6umMwWrfJTNHmVtRSkbpg5O20hCA8tOdH8uKFv9q3yKt4f
+         /pQw==
+X-Gm-Message-State: ACrzQf2/E8E8GcEFOl+ZL5K12AfHzuW/aGrHAWn4BHZ4l7buiO+CDJw9
+        YQhJX0fXtMdNqSYfF76rYFjkVBsB99DXLTHFDn9hh+qErw==
+X-Google-Smtp-Source: AMsMyM7p2rLc6XIDbhZW2c/58B+z9Tkw7UC4dFbMt8ZxNuVuO1D6KINe+yWjD0ebpztfS9m5FLprH2OyZfJsW+9OS7U=
+X-Received: by 2002:a05:6870:41cb:b0:131:9656:cc30 with SMTP id
+ z11-20020a05687041cb00b001319656cc30mr7985099oac.51.1664490654817; Thu, 29
+ Sep 2022 15:30:54 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH2PR10MB4166:EE_|BN0PR10MB5157:EE_
-X-MS-Office365-Filtering-Correlation-Id: a11a550a-9998-43e1-66b7-08daa2629059
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: J8tXJwQDMGfzk0UEOgkYyKC6O0zqO5/lKh4xef4KDPZaPMbSChaF7tPwaunF7s6hfyQzpPaE7SO2UEyeEK/4CGN9Qe5NUW+7kSIamsO/n/IJiSSshhjlNURRGNzJoEEmI39/K3bXHjSYNAArNA18eRfd7nVak9VubLDjzVOKlCyu+OJDghGJ09d2M4HaxcrCP0q3OC3ynXstBlSNnVg+m0IumktRfoRSnlORy7GUjHkCZXxT7F7BkdTmVgZ2mlYUPhe8hPLnn6fhLMJB3fz+Srbxft567B+W2fD4RX5IJZpCGUt4a/AtLPUdaUmCUHNTZD0iFwcuR2P6RV9oV1hTFbpGOjIJKZ2bJCnOpXvtl3OhooGgQBeXmne/zXUQMCjVzaMLhhpSFpTWaU0koU5PVag2G9cRnS2c5wDrpdfmOvhN6OtZPaRiRY8S6MpjJhiAnJ82/sBd5L3NUfUfO0n9B9R4u/1f+lMjy2B/PkycQwANxNr4RDB0wjI/fdf70VF0IE2Hg4czljqBYnRwO8hP710EqEPmnHsCdP3FmwLrnNAxyXc9uoGrHHnDDDcuh0Irgw5ANZ/Nyvzl/osD9ZFrjSoYyegXVAMNu9cy1bApLMfpx8GqMErxRXmO/zFqq/bhj3svWJEFan2jvMHktj/pAkXadQPpDzTlttpaEn/2P1nIPV/ntQa2bTHF6IXEzn+GjOebK3oiHKPimE10HJPmrOt3JN3GsbjaWPIEoqQHUa9VRggViTm4xBSNzJcoKrsBIoffzSpdWkzSdoMgz2k+zA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR10MB4166.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(346002)(376002)(39860400002)(136003)(396003)(366004)(451199015)(966005)(26005)(41300700001)(83380400001)(6512007)(8676002)(478600001)(316002)(5660300002)(86362001)(66476007)(66556008)(8936002)(66946007)(6486002)(6506007)(2616005)(38100700002)(2906002)(36756003)(186003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?hNXEv2L2b1PcJZiLDqG3ohgs+50D0Gd2fXs9KrMUGmC8kuSNeE/zXCDk89V4?=
- =?us-ascii?Q?ptTRoLvT9+E96Gzm18XSVmuSkYa1fT5GnRRbG5IRynp2KppWwjnPIIY4yduB?=
- =?us-ascii?Q?jZdYD4UzUjn425nQZ9d5niLEBB+/vD/6QlwI+1wteBz3qhQodcDTJZWovfrm?=
- =?us-ascii?Q?LaK7ZfB3UyhHYYctyE1OX60Tg5p512Rx1L5SZf7z0QY5l7h1Vdqhd/6z9C8e?=
- =?us-ascii?Q?vPxNpUhOwczmO3HUKWk5RFzV7NN2CYkT1+16lPX79dmpDAWZbAo3mFqjzgnU?=
- =?us-ascii?Q?4DaFMRLqYP3RcHqlZ/dDzBcF9yvSbUa8P+yVt3PhCzDf7GlewDs4o/rKC9WO?=
- =?us-ascii?Q?oSFQnrLakZV3jqeHaAx07xioU9zXK2+USWkUGaYD2eAwK3TzVJae5uH1RoI4?=
- =?us-ascii?Q?Io9qiyI5TCJsqH68ruEbA8+klytGuGnCwisDY7xNG/8NzYTJ91NL7FHN5yK+?=
- =?us-ascii?Q?KjhrJRHM07RziCIJuMTvv+KSZJwoKUPpdyKC25eDlH9Y8wyGrOvog7QzAtPk?=
- =?us-ascii?Q?1ukJdXMYzq0iLhvv7K/NCsNYYEEXIg6xsfISC+mpmVzcRKuOPRL6VMAOp3Wt?=
- =?us-ascii?Q?cukxnbYO1CmHBq0l0DSSLwQp63kn7n8EAI5r0L21W6QZzZ3D98OF2nfqZp2y?=
- =?us-ascii?Q?iVlIw5jILgPA0UpWLmLhL5lsoCR8PQm/qBPH6aEhrG0HU4D2nTzAQuOA0iAw?=
- =?us-ascii?Q?XkfVwAP7EdQTuEa7MeaOpgr47QcvAirOcWvLiaGWQD1Aqw8QPWJZJqtBnUeS?=
- =?us-ascii?Q?We+QF+9obFFhG1kquhYnqCQlZct4sZmvwKwdZSU9DxmqjHAnQSMS4arIg9mC?=
- =?us-ascii?Q?0w8TifaHHkN3OtxMNs0NmLhNkRtHPURStDoejI6u1CzSmNDaA+tCIBD763hN?=
- =?us-ascii?Q?76vLY+QsiogAvF7FHUAJhUoU5D47ucNDFPyYvGsryK8l3tZT5eyXMZeK/tNH?=
- =?us-ascii?Q?aS8MNrb5q1Mvn91yiYb0OuwTCwPZZ+R72IaJjT6C/9GsdoyHTK/zKUmjQzne?=
- =?us-ascii?Q?8sZHrS6V6eUhmRXH7J+aXwjOrJLtiHzWjKKJmJOT0jrvLCyAzYVgrxS8jrK1?=
- =?us-ascii?Q?vvnooCsXcsBTI4wGJa++ToWFhtj+Qz84XS8LQPburY44EO8DYlM+T8/9PiH1?=
- =?us-ascii?Q?qhqgmrsQJlFkVd708hDwPQe3h7ha8X7mGqteWm2grn+AyMj89lboBfjzWkZl?=
- =?us-ascii?Q?XmeuPtP+a4AripgSrdeckldkMDUm7bTn8SqGek42PJhydgYRK/o8Bvn9nWFB?=
- =?us-ascii?Q?rz0Qubuj6tzGYOE1a6HM3iMiOCPDycPUfvA+U+MMqQPtHevjUXNSIprN4jKd?=
- =?us-ascii?Q?e0r6/wDjIjubl5QAA7NFiNdc9kteil9RcMKpIjB5ruhPUSjdXjUvAjYWuke1?=
- =?us-ascii?Q?hh6u0OHv9AWnAdIDtgROJ10nZnbuAe0G84SJPaj8pgO12OXOyiF/NiQOWN8+?=
- =?us-ascii?Q?rzAtnKG22mas0y6mI8PiJVlv1f76jIY6jLxKx3g3xmhVTjLRr51jl9ozmT1i?=
- =?us-ascii?Q?vJb+FIkrMvrL2/M8cKHNxWOL1lL97SoWbTpxd8+tfOaJphDlt0tO4rPLMHpR?=
- =?us-ascii?Q?Oi2RicoL9mkJ9Rmqse+cAK/gNRBvX5aI1mlnFu2SPr0TWjODmWWusn4Lkmst?=
- =?us-ascii?Q?3Q=3D=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a11a550a-9998-43e1-66b7-08daa2629059
-X-MS-Exchange-CrossTenant-AuthSource: CH2PR10MB4166.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2022 21:35:44.4880
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 86IkKr8Q3gJH6UY5ZalIUwm9Xm64RuE1j0ru/OgHgrBKt7gmohTd8XgCvEdlOp+tmD7+FxLypG65ZYz2E30jCzKXIGwh4zOJCp3DO5UqwGk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR10MB5157
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.528,FMLib:17.11.122.1
- definitions=2022-09-29_13,2022-09-29_03,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 phishscore=0
- mlxscore=0 mlxlogscore=999 adultscore=0 spamscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2209130000
- definitions=main-2209290135
-X-Proofpoint-GUID: c59n7hY2-wIClfw3iiP9w2-dwJ5tm5ET
-X-Proofpoint-ORIG-GUID: c59n7hY2-wIClfw3iiP9w2-dwJ5tm5ET
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <a6c0bb85-6eeb-407e-a515-06f67e70db57@www.fastmail.com>
+ <8e243ad132ecf2885fc65c33c7793f0703937890.camel@huaweicloud.com>
+ <7f7c3337-74f1-424e-a14d-578c4c7ee2fe@www.fastmail.com> <65546f56be138ab326544b7b2e59bb3175ec884a.camel@huaweicloud.com>
+ <b0c00f80-c11e-4f5d-ba63-2e9fb7cad561@www.fastmail.com> <9aba20351924aa0d82d258205030ad4f2c404de2.camel@huaweicloud.com>
+ <98a26e5c-d44f-4e65-8186-c4e94918daa1@www.fastmail.com> <06a47f11778ca9d074c815e57dc1c75d073b3a85.camel@huaweicloud.com>
+ <439dd1e5-71b8-49ed-8268-02b3428a55a4@www.fastmail.com> <6e142c3526df693abfab6e1293a27828267cc45e.camel@huaweicloud.com>
+ <87mtajss8j.fsf@toke.dk> <fe9fe2443b8401a076330a3019bd46f6c815a023.camel@huaweicloud.com>
+ <CAHC9VhRKq=BMtAat2_+0VvYk91hnryUHg+wbZRhu2BDB9ehC2A@mail.gmail.com> <3a9efcd6c8f7fa3908230ef5be0e0ad224a730ff.camel@huaweicloud.com>
+In-Reply-To: <3a9efcd6c8f7fa3908230ef5be0e0ad224a730ff.camel@huaweicloud.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Thu, 29 Sep 2022 18:30:43 -0400
+Message-ID: <CAHC9VhTWsP99PxJLebbm04HdSAfF4QyhU0kwZZQnduET3jfKjw@mail.gmail.com>
+Subject: Re: Closing the BPF map permission loophole
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
+Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>,
+        Lorenz Bauer <oss@lmb.io>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>, bpf@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Johnny young <johnny96.young@gmail.com> writes:
-> Hello BPF
+On Thu, Sep 29, 2022 at 3:55 AM Roberto Sassu
+<roberto.sassu@huaweicloud.com> wrote:
+> On Wed, 2022-09-28 at 20:24 -0400, Paul Moore wrote:
+> > I only became aware of this when the LSM list was CC'd so I'm a
+> > little
+> > behind on what is going on here ... looking quickly through the
+> > mailing list archive it looks like there is an issue with BPF map
+> > permissions not matching well with their associated fd permissions,
+> > yes?  From a LSM perspective, there are a couple of hooks that
+> > currently use the fd's permissions (read/write) to determine the
+> > appropriate access control check.
 >
-> I understand that CONFIG_DEBUG_INFO_BTF=y will generate .BTF and
-> .BTF_xx  sections in the kernel image which are much smaller than
-> those DWARF sections.  But I also try to understand how BTF can impact
-> bpftrace and the existing debug tools:
+> From what I understood, access control on maps is done in two steps.
+> First, whenever someone attempts to get a fd to a map
+> security_bpf_map() is called. LSM implementations could check access if
+> the current process has the right to access the map (whose label can be
+> assigned at map creation time with security_bpf_map_alloc()).
+
+[NOTE: SELinux is currently the only LSM which provides BPF access
+controls, so they are going to be my example here and in the rest of
+this email.]
+
+In the case of SELinux, security_bpf_map() does check the access
+between the current task and the BPF map itself (which inherits its
+security label from its creator), with the actual permission requested
+being determined by the fmode_t parameter passed to the LSM hook.
+Looking at the current BPF code, the callers seem to take that from
+various different places (bpf_attr:{file_flags,map_flags,open_flags}).
+This could be due solely to the different operations being done by the
+callers, which would make me believe everything is correct, but given
+this thread it seems reasonable for someone with a better
+understanding of BPF than me to double check this.  Can you help
+verify that everything is okay here?
+
+> Second, whenever the holder of the obtained fd wants to do an operation
+> on the map (lookup, update, delete, ...), eBPF checks if the fd modes
+> are compatible with the operation to perform (e.g. lookup requires
+> FMODE_CAN_READ).
+
+To be clear, from what I can see, it looks like the LSM is not
+checking the fd modes, but rather the modes stored in the bpf_attr,
+which I get the impression do not always match the fd modes.  Yes?
+No?
+
+There is also LSM/SELinux code which checks the permissions when a BPF
+map is passed between tasks via a fd.  Currently the SELinux check
+only looks at the file:f_mode to get the permissions to check, but if
+the f_mode bits are not the authoritative record of what is allowed in
+the BPF map, perhaps we need to change that to use one of the bpf_attr
+mode bits (my gut feeling is bpf_attr:open_flags)?
+
+> One problem is that the second part is missing for some operations
+> dealing with the map fd:
 >
-> 1) If the kernel is built with CONFIG_DEBUG_INFO_BTF=y, can
-> bpftrace relies on BTF only without kernel_devel ?
+> Map iterators:
+> https://lore.kernel.org/bpf/20220906170301.256206-1-roberto.sassu@huaweicloud.com/
+
+You'll need to treat me like an idiot when it comes to BPF maps ;)
+
+I did a very quick read on them right now and it looks like a BPF map
+iterator would just be a combination of BPF read and execute ("bpf {
+map_read prog_run }" in SELinux policy terms).  Would it make more
+sense to just use the existing security_bpf_map() and
+security_bpf_prog() hooks here?
+
+> Map fd directly used by eBPF programs without system call:
+> https://lore.kernel.org/bpf/20220926154430.1552800-1-roberto.sassu@huaweicloud.com/
+
+Another instance of "can you please explain this use case?" ;)
+
+I'm not going to hazard too much of a guess here, but if the map is
+being passed between tasks and a fd is generated from that map, we may
+be able to cover this with logic similar
+security/selinux/hooks.c:bpf_fd_pass() ... but I'm really stretching
+my weak understanding of BPF here.
+
+> Another problem is that there is no DAC, only MAC (work in progress). I
+> don't know exactly the status of enabling unprivileged eBPF.
+
+It is my opinion that we need to ensure both DAC and MAC are present
+in the code.  This thread makes me worry that some eBPF DAC controls
+are being ignored because one can currently say "we're okay because
+you need privilege!".  That may be true today, but I can imagine a
+time in the not too distant future where unpriv eBPF is allowed and we
+suddenly have to bolt on a lot of capable() checks ... which is a
+great recipe for privilege escalation bugs.
+
+> Apart from this, now the discussion is focusing on the following
+> problem. A map (kernel object) can be referenced in two ways: by ID or
+> by path. By ID requires CAP_ADMIN, so we can consider by path for now.
 >
-> 2) Can the existing kernel debugging tools like crash(1) or
-> kgdb(1) take advantage of BTF ?
-
-Hi Johnny,
-
-I can't answer all your questions but I can chime in regarding
-debuggers. BTF could provide information to both of these debuggers, but
-currently neither of them know how to use it. There's a few reasons and
-challenges.
-
-1. Kernel and module BTF today only includes the type information
-   necessary to describe all functions, and percpu variables. Most
-   debuggers would also like to know the types of global variables. I've
-   got a patch series [1] which allows pahole (which generates the
-   kernel & module BTF) to output information for global variable
-   declarations as well.
-
-2. Assuming you had the BTF, you'd also need a symbol table.  The kernel
-   has kallsyms, which is an internal symbol table, and most debuggers
-   today don't know how to read that - instead, they rely on the symbol
-   table from the ELF debuginfo file. I frequently work with a debugger
-   library called drgn [2], and I've got a branch out for review [3]
-   which enables drgn to read the kallsyms. In order to do that,
-   debuggers need to be able to *find* the kallsyms table, so I added
-   information to the vmcoreinfo note in the commits 5fd8fea935a1
-   ("vmcoreinfo: include kallsyms symbols") and f09bddbd8661
-   ("vmcoreinfo: add kallsyms_num_syms symbol").
-
-3. Assuming you have symbol table access and the BTF is complete enough
-   for you to use it for real debugging, then your debugger still needs
-   to have logic to *find* the BTF and parse it (probably with libbpf).
-   I've got a branch for drgn [4] which implements BTF parsing on top of
-   the kallsyms parsing logic. With those things together, you get a
-   debugger which relies on nothing except data it finds inside the
-   kernel, and it works well enough.
-
-So the short answer is - no, currently there is no debugger (that I know
-of) which can leverage BTF. But it's in the works for drgn, and once we
-get there with drgn, I'd hope to see that developers for other debuggers
-might see the power of it and consider implementing it.
-
-[1]: https://lore.kernel.org/bpf/20220826184911.168442-1-stephen.s.brennan@oracle.com/
-[2]: https://drgn.readthedocs.io/
-[3]: https://github.com/osandov/drgn/pull/177
-[4]: https://github.com/brenns10/drgn/tree/kallsyms_plus_btf
-
+> Given a map fd, the holder of that fd can create a new reference
+> (pinning) to the map in the bpf filesystem (a new file whose private
+> data contains the address of the kernel object).
 >
-> 3) If the kernel is built with CONFIG_DEBUG_INFO_BTF=y, are the
-> symbolic info and types info in the debug-info section replaced with
-> BTF formatted info?
+> Pinning a map does not have a corresponding permission. Any fd mode is
+> sufficient to do the operation. Furthermore, subsequent requests to
+> obtain a map fd by path could result in receiving a read-write fd,
+> while at the time of pinning the fd was read-only.
 
-No, BTF is generated _in addition to_ the existing type information. BTF
-doesn't store "symbolic info" i.e. symbol table data, so it couldn't
-replace that data. It only stores type information, so hypothetically it
-could be used instead of DWARF .debug_types data, but in practice that
-doesn't happen.
+Since the maps carry their own label I think we are mostly okay, even
+if the map is passed between tasks by some non-fd related mechanism.
+However, I am now slightly worried that if a fd is obtained with perms
+that don't match the underlying map and that fd is then passed to
+another task the access control check on the fd passing would not be
+correct.  Operations on the map from a SELinux perspective should
+still be okay (the map has its own label), but still.
 
-Stephen
+I'm wondering if we do want to move the SELinux BPF fd passing code to
+check the bpf_attr:open_flags perms.  Thoughts?
 
+> While this does not seem to me a concern from MAC perspective, as
+> attempts to get a map fd still have to pass through security_bpf_map(),
+> in general this should be fixed without relying on LSMs.
+
+Agreed.  The access controls need to work both for DAC and DAC+LSM.
+
+> > Is the plan to ensure that the map and fd permissions are correct at
+> > the core BPF level, or do we need to do some additional checks in the
+> > LSMs (currently only SELinux)?
 >
-> 4) Given the current upstream development effort for BTF, can we run
-> bpftrace without LLVM now ? and can we run bpftrace without the help
-> of kernel header files (kernel-devel) ?
->
-> 5) Has bpf CO-RE become reality now?
->
-> Thank you!
-> Johnny
+> Should we add a new map_pin permission in SELinux?
+
+Maybe?  Maybe not?  I don't know, can you help me understand map
+pinning a bit more first?
+
+> Should we have DAC to restrict pinnning without LSMs?
+
+Similar to above.
+
+-- 
+paul-moore.com
