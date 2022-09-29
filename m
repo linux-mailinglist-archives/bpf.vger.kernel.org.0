@@ -2,178 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A4275EEB6A
-	for <lists+bpf@lfdr.de>; Thu, 29 Sep 2022 04:05:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CD0D5EEB73
+	for <lists+bpf@lfdr.de>; Thu, 29 Sep 2022 04:11:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234530AbiI2CFH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Sep 2022 22:05:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38082 "EHLO
+        id S234105AbiI2CLX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Sep 2022 22:11:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234599AbiI2CFF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Sep 2022 22:05:05 -0400
-Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3F7BF8F8E
-        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 19:05:03 -0700 (PDT)
-Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-324ec5a9e97so973837b3.7
-        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 19:05:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=f1mRMNstfp0oU+nmSji3PZ99E2Ko9CadyHhA/0b7ZVY=;
-        b=g+vc0etTbJBBLXzFAS8yKeHrBZt851C8B+4az5HoXVLTlk4sxKKM3q6pLNn2ijo8Bq
-         gyMxtxcxrpk3AdmGx/O+7qSzAnax03XBstdOlK3kUjIGajONI0cGE/0Nc6jJKzb3T0Pm
-         Y6NuoShfgjwLHApLiuv6PwM7d449HUqjV+m1OdsHbeHg6NaV1VF9wdyVXz6+dj1SNPCf
-         kkuQPQtTuGawlMZK19wKjZ3u1DQu0r6j4CPWoTDg730Nd13/vfZBpjfinvw6Tt1ZpTSZ
-         fkyf60Vfe5urQfOJIhpupuI03mQ3OOpFAqkNSCtLD+wmq9IcweLMdRbhZmwetuKi9EkP
-         NtPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=f1mRMNstfp0oU+nmSji3PZ99E2Ko9CadyHhA/0b7ZVY=;
-        b=gyJKYYEtF7nrtU+p48bnbHR3/FVlGOu3mntoknsW2hINWPLHYuygUpuE5oJqnivpLA
-         Hakat7N0ohOI4FrsOxZffgvZS52AwKp+Nd28/cnG/8nHS4Kp/il4QFU4j5WqkG+8ikzx
-         4WtB45HLIJ3oBa5FIRJBRSa5d/e1TEgBAy34kMAH4S2MvHrNlBnZKb8IUzUECP3B0lHX
-         R794IioJAzJTSwZvQ8Zp72N0yJUqQ7s1ckyZ56mUmji/ulgfmA4EYv11tgL+hAsHidXs
-         YeugLmO0/1uCfCqGr4AjIGu7HfxH7eZc4c2rklKRKwHYjRO6ZQqDQD2TitdSIRWF2MJP
-         wu1w==
-X-Gm-Message-State: ACrzQf01Gd9Jo/OpjpLkdJw518+28dPThgoCK6TzYXLCPeFpgWnFiK/d
-        H2R9IzCCOa3xfCMfrLS9SXEWZJp/CZHLmtFV6Wetdz3DQkw=
-X-Google-Smtp-Source: AMsMyM7bNzFXGKCHRm7+OuTV+ImkGZi1Zf77Am7XvZsxwJ59F4KFrxldd6nnui+D+2CK+UpwE759F9Tb31L9h9jkMiM=
-X-Received: by 2002:a81:4e0d:0:b0:351:99d8:1862 with SMTP id
- c13-20020a814e0d000000b0035199d81862mr930905ywb.278.1664417102609; Wed, 28
- Sep 2022 19:05:02 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220923224453.2351753-1-kafai@fb.com> <20220923224518.2353383-1-kafai@fb.com>
-In-Reply-To: <20220923224518.2353383-1-kafai@fb.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Wed, 28 Sep 2022 19:04:51 -0700
-Message-ID: <CANn89iLf+=AmMntTqy0HyOfbv6PASLsT+E4PhXMAX+xU1Zh2Yg@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 4/5] bpf: tcp: Stop bpf_setsockopt(TCP_CONGESTION)
- in init ops to recur itself
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S233375AbiI2CLW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Sep 2022 22:11:22 -0400
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C595172B44
+        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 19:11:19 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4MdGy06zp7z6PlPc
+        for <bpf@vger.kernel.org>; Thu, 29 Sep 2022 10:09:12 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+        by APP2 (Coremail) with SMTP id Syh0CgB3EWvB_jRjMDw6Bg--.826S2;
+        Thu, 29 Sep 2022 10:11:17 +0800 (CST)
+Subject: Re: [PATCH bpf-next v2 03/13] bpf: Support bpf_dynptr-typed map key
+ in bpf syscall
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
         Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        kernel-team <kernel-team@fb.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Martin KaFai Lau <martin.lau@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, houtao1@huawei.com,
+        Joanne Koong <joannelkoong@gmail.com>
+References: <20220924133620.4147153-1-houtao@huaweicloud.com>
+ <20220924133620.4147153-4-houtao@huaweicloud.com>
+ <CAEf4Bza79XbtYF_04MhdcN0o4Akot0VpWaR+mOoGwXsz7yT=xg@mail.gmail.com>
+From:   Hou Tao <houtao@huaweicloud.com>
+Message-ID: <e099e816-d271-ec75-b6aa-3671cfc5b8f9@huaweicloud.com>
+Date:   Thu, 29 Sep 2022 10:11:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <CAEf4Bza79XbtYF_04MhdcN0o4Akot0VpWaR+mOoGwXsz7yT=xg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID: Syh0CgB3EWvB_jRjMDw6Bg--.826S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxGF15uF1rGr1rZF4DXrykuFg_yoWrGrW3pa
+        yrGa4Sgw4kJry7Ar1xXa1xXrWFvw48Ww1UGr93t3yUCFyDuF93ur18KayYkFnakryxJ3yj
+        qr4UAryrG34rZ3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
+        6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+        9x07UZ18PUUUUU=
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 23, 2022 at 3:48 PM Martin KaFai Lau <kafai@fb.com> wrote:
->
-> From: Martin KaFai Lau <martin.lau@kernel.org>
->
-> When a bad bpf prog '.init' calls
-> bpf_setsockopt(TCP_CONGESTION, "itself"), it will trigger this loop:
->
-> .init => bpf_setsockopt(tcp_cc) => .init => bpf_setsockopt(tcp_cc) ...
-> ... => .init => bpf_setsockopt(tcp_cc).
->
-> It was prevented by the prog->active counter before but the prog->active
-> detection cannot be used in struct_ops as explained in the earlier
-> patch of the set.
->
-> In this patch, the second bpf_setsockopt(tcp_cc) is not allowed
-> in order to break the loop.  This is done by using a bit of
-> an existing 1 byte hole in tcp_sock to check if there is
-> on-going bpf_setsockopt(TCP_CONGESTION) in this tcp_sock.
->
-> Note that this essentially limits only the first '.init' can
-> call bpf_setsockopt(TCP_CONGESTION) to pick a fallback cc (eg. peer
-> does not support ECN) and the second '.init' cannot fallback to
-> another cc.  This applies even the second
-> bpf_setsockopt(TCP_CONGESTION) will not cause a loop.
->
-> Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
-> ---
->  include/linux/tcp.h |  6 ++++++
->  net/core/filter.c   | 28 +++++++++++++++++++++++++++-
->  2 files changed, 33 insertions(+), 1 deletion(-)
->
-> diff --git a/include/linux/tcp.h b/include/linux/tcp.h
-> index a9fbe22732c3..3bdf687e2fb3 100644
-> --- a/include/linux/tcp.h
-> +++ b/include/linux/tcp.h
-> @@ -388,6 +388,12 @@ struct tcp_sock {
->         u8      bpf_sock_ops_cb_flags;  /* Control calling BPF programs
->                                          * values defined in uapi/linux/tcp.h
->                                          */
-> +       u8      bpf_chg_cc_inprogress:1; /* In the middle of
-> +                                         * bpf_setsockopt(TCP_CONGESTION),
-> +                                         * it is to avoid the bpf_tcp_cc->init()
-> +                                         * to recur itself by calling
-> +                                         * bpf_setsockopt(TCP_CONGESTION, "itself").
-> +                                         */
->  #define BPF_SOCK_OPS_TEST_FLAG(TP, ARG) (TP->bpf_sock_ops_cb_flags & ARG)
->  #else
->  #define BPF_SOCK_OPS_TEST_FLAG(TP, ARG) 0
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 96f2f7a65e65..ac4c45c02da5 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -5105,6 +5105,9 @@ static int bpf_sol_tcp_setsockopt(struct sock *sk, int optname,
->  static int sol_tcp_sockopt_congestion(struct sock *sk, char *optval,
->                                       int *optlen, bool getopt)
->  {
-> +       struct tcp_sock *tp;
-> +       int ret;
-> +
->         if (*optlen < 2)
->                 return -EINVAL;
->
-> @@ -5125,8 +5128,31 @@ static int sol_tcp_sockopt_congestion(struct sock *sk, char *optval,
->         if (*optlen >= sizeof("cdg") - 1 && !strncmp("cdg", optval, *optlen))
->                 return -ENOTSUPP;
->
-> -       return do_tcp_setsockopt(sk, SOL_TCP, TCP_CONGESTION,
-> +       /* It stops this looping
-> +        *
-> +        * .init => bpf_setsockopt(tcp_cc) => .init =>
-> +        * bpf_setsockopt(tcp_cc)" => .init => ....
-> +        *
-> +        * The second bpf_setsockopt(tcp_cc) is not allowed
-> +        * in order to break the loop when both .init
-> +        * are the same bpf prog.
-> +        *
-> +        * This applies even the second bpf_setsockopt(tcp_cc)
-> +        * does not cause a loop.  This limits only the first
-> +        * '.init' can call bpf_setsockopt(TCP_CONGESTION) to
-> +        * pick a fallback cc (eg. peer does not support ECN)
-> +        * and the second '.init' cannot fallback to
-> +        * another.
-> +        */
-> +       tp = tcp_sk(sk);
-> +       if (tp->bpf_chg_cc_inprogress)
-> +               return -EBUSY;
-> +
+Hi,
 
-Is the socket locked (and owned by current thread) at this point ?
-If not, changing bpf_chg_cc_inprogress would be racy.
-
-
-> +       tp->bpf_chg_cc_inprogress = 1;
-> +       ret = do_tcp_setsockopt(sk, SOL_TCP, TCP_CONGESTION,
->                                 KERNEL_SOCKPTR(optval), *optlen);
-> +       tp->bpf_chg_cc_inprogress = 0;
-> +       return ret;
->  }
+On 9/29/2022 8:16 AM, Andrii Nakryiko wrote:
+> On Sat, Sep 24, 2022 at 6:18 AM Hou Tao <houtao@huaweicloud.com> wrote:
+>> From: Hou Tao <houtao1@huawei.com>
+>>
+>> Userspace application uses bpf syscall to lookup or update bpf map. It
+>> passes a pointer of fixed-size buffer to kernel to represent the map
+>> key. To support map with variable-length key, introduce bpf_dynptr_user
+>> to allow userspace to pass a pointer of bpf_dynptr_user to specify the
+>> address and the length of key buffer. And in order to represent dynptr
+>> from userspace, adding a new dynptr type: BPF_DYNPTR_TYPE_USER. Because
+>> BPF_DYNPTR_TYPE_USER-typed dynptr is not available from bpf program, so
+>> no verifier update is needed.
+>>
+>> Add dynptr_key_off in bpf_map to distinguish map with fixed-size key
+>> from map with variable-length. dynptr_key_off is less than zero for
+>> fixed-size key and can only be zero for dynptr key.
+>>
+>> For dynptr-key map, key btf type is bpf_dynptr and key size is 16, so
+>> use the lower 32-bits of map_extra to specify the maximum size of dynptr
+>> key.
+>>
+>> Signed-off-by: Hou Tao <houtao1@huawei.com>
+>> ---
+> This is a great feature and you've put lots of high-quality work into
+> this! Looking forward to have qp-trie BPF map available. Apart from
+> your discussion with Alexie about locking and memory
+> allocation/reused, I have questions about this dynptr from user-space
+> interface. Let's discuss it in this patch to not interfere.
 >
->  static int sol_tcp_sockopt(struct sock *sk, int optname,
-> --
-> 2.30.2
+> I'm trying to understand why there should be so many new concepts and
+> interfaces just to allow variable-sized keys. Can you elaborate on
+> that? Like why do we even need BPF_DYNPTR_TYPE_USER? Why user can't
+> just pass a void * (casted to u64) pointer and size of the memory
+> pointed to it, and kernel will just copy necessary amount of data into
+> kvmalloc'ed temporary region?
+The main reason is that map operations from syscall and bpf program use the same
+ops in bpf_map_ops (e.g. map_update_elem). If only use dynptr_kern for bpf
+program, then
+have to define three new operations for bpf program. Even more, after defining
+two different map ops for the same operation from syscall and bpf program, the
+internal  implementation of qp-trie still need to convert these two different
+representations of variable-length key into bpf_qp_trie_key. It introduces
+unnecessary conversion, so I think it may be a good idea to pass dynptr_kern to
+qp-trie even for bpf syscall.
+
+And now in bpf_attr, for BPF_MAP_*_ELEM command, there is no space to pass an
+extra key size. It seems bpf_attr can be extend, but even it is extented, it
+also means in libbpf we need to provide a new API group to support operationg on
+dynptr key map, because the userspace needs to pass the key size as a new argument.
 >
+> It also seems like you want to allow key (and maybe value as well, not
+> sure) to be a custom user-defined type where some of the fields are
+> struct bpf_dynptr. I think it's a big overcomplication, tbh. I'd say
+> it's enough to just say that entire key has to be described by a
+> single bpf_dynptr. Then we can have bpf_map_lookup_elem_dynptr(map,
+> key_dynptr, flags) new helper to provide variable-sized key for
+> lookup.
+For qp-trie, it will only support a single dynptr as the map key. In the future
+maybe other map will support map key with embedded dynptrs. Maybe Joanne can
+share some vision about such use case.
+>
+> I think it would keep it much simpler. But if I'm missing something,
+> it would be good to understand that. Thanks!
+>
+>
+>>  include/linux/bpf.h            |   8 +++
+>>  include/uapi/linux/bpf.h       |   6 ++
+>>  kernel/bpf/map_in_map.c        |   3 +
+>>  kernel/bpf/syscall.c           | 121 +++++++++++++++++++++++++++------
+>>  tools/include/uapi/linux/bpf.h |   6 ++
+>>  5 files changed, 125 insertions(+), 19 deletions(-)
+>>
+> [...]
+> .
+
