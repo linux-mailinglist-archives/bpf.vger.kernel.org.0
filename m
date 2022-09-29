@@ -2,55 +2,47 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CCD85EEA9A
-	for <lists+bpf@lfdr.de>; Thu, 29 Sep 2022 02:37:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53AA55EEA9E
+	for <lists+bpf@lfdr.de>; Thu, 29 Sep 2022 02:40:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231303AbiI2Ahy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Sep 2022 20:37:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39538 "EHLO
+        id S232180AbiI2AkY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Sep 2022 20:40:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229940AbiI2Ahx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Sep 2022 20:37:53 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81C4CE1097
-        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 17:37:51 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id sb3so30342970ejb.9
-        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 17:37:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=h0t/8Q7psN1oQYy4wNa+NnRls5mtTmx6bafFLrJKyks=;
-        b=JSsl6SUhaQIytCOscb82FEeOjOjhVFebX0k7/9FAir0RwO04RwplNhPZ3sOEpsWugq
-         D5zUSTrhp6SKylBAfa0UO9XHdL66Xne9Jf7PA1R6GxHg0c7XADO8DCT8b04DNyJ2ybdL
-         esrCz70PSJa8Ffd7wznWIJOBKcsEuE3edhBszSBWLjpg+WLdoG0aBfYUR64L61heYNwX
-         MS80n684vwHIJtsNtufigcR0iwjWMQ2pVCfYvVQ49jiYaeaamIAh6XMcABERPP9MdeTz
-         0M/ulmXZSU+cso7K3zfSBo0uA7tluEZ2JddtrNIibIm58Pj4cL7sHo6NNlMoJf0mmloF
-         yGFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=h0t/8Q7psN1oQYy4wNa+NnRls5mtTmx6bafFLrJKyks=;
-        b=hAJw88xxgNknaNF/BRFBDvW4UkD5yVr4Q1negwmQdGMB/g5ba4h+TSxsjE77YEk1/C
-         +SuRxuk5OilpElKxBj/HLHO4BAlKR/s7oH8hFEr5uP6Vehk9dCrfoiYu226GTypiStcq
-         GA1lmKIiV6qmtkt4UnIQ4ajH8LmrLxXxOMna7UW87v97tgN2r8PAt3tlSou9DiXhuUsU
-         rILPAEgVBLJN5AytNMCnyEE/J6SfdC1odJHplsHZBSTjBRfb9W/kyZFhfo8qL0gch4sz
-         hgCQNjB2eX0PyPrbvv/IBjHZocADYRPWbPGwi34lvL2fPAwLJ4agKXQVQIMzKTdO03n0
-         56Zg==
-X-Gm-Message-State: ACrzQf1Q1gC8AQa3SOnaZ+RtgHL7kmIWi/RpcjxlZ+Arc72YcwAh3jAp
-        juBB6+zfh1OdHrbO1LWMdSomCJpm0MSP83tWdRk=
-X-Google-Smtp-Source: AMsMyM7aL3bf1+kb1Q1rNW55TB4XLrt7CjkdoSxjnsq14NdwfX8xLDHr6CIojcP7k/jS+IbodWYjM+mpyJ5U5s++Kxg=
-X-Received: by 2002:a17:907:3d86:b0:782:1175:153f with SMTP id
- he6-20020a1709073d8600b007821175153fmr461424ejc.226.1664411869945; Wed, 28
- Sep 2022 17:37:49 -0700 (PDT)
+        with ESMTP id S229940AbiI2AkW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Sep 2022 20:40:22 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ADB158520
+        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 17:40:21 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id D2A51B8229A
+        for <bpf@vger.kernel.org>; Thu, 29 Sep 2022 00:40:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 8CCEFC433B5;
+        Thu, 29 Sep 2022 00:40:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1664412018;
+        bh=C1uHsR2/hhpemDbrj+CtlmmqLOcp7NTkvuXs3S2w4sg=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=WqFCBe8X464diWBYJkqWuatN1tO3Zen4pnVqRijoTKgwJRV3aeZjZkBUNOP+MO4i5
+         5YjO1ij0SnaGPJw3A3GkXbieLJzZLTLUYQfu9NglXLh+iYlDHhJZzYUAhsxMu8BTvN
+         S3XHYGxFsVtADFhqES6/FzIy/0RxcE+0jG6VFz4zEq+K0nlHEUf+vbyaznjhmUvBOD
+         zGGqOljE254TkWBikVUlM2pM76mDB3IJh1IMW5AWTkfKO4zHql0Xwoik7huZY6Lodr
+         lIFcoa4R5av4n1ImtIbRIWCWQTQ43H/a561Qj3Eg6OW7ZqN2cTthIvzzRVc3JPR3mq
+         eR3EcRY05GtFw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 6D3DCC395DA;
+        Thu, 29 Sep 2022 00:40:18 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [bpf-next 00/11] bpf/selftests: convert some tests to ASSERT_* macros
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166441201844.996.858674831191068436.git-patchwork-notify@kernel.org>
+Date:   Thu, 29 Sep 2022 00:40:18 +0000
 References: <1664169131-32405-1-git-send-email-wangyufen@huawei.com>
 In-Reply-To: <1664169131-32405-1-git-send-email-wangyufen@huawei.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 28 Sep 2022 17:37:37 -0700
-Message-ID: <CAEf4BzY4GARZ7C+rYDuCHAbMRrC=Fx7eVSBZ60txme97it2FLg@mail.gmail.com>
-Subject: Re: [bpf-next 00/11] bpf/selftests: convert some tests to ASSERT_* macros
 To:     Wang Yufen <wangyufen@huawei.com>
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
@@ -60,22 +52,24 @@ Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         jakub@cloudflare.com, kuba@kernel.org, kuifeng@fb.com,
         deso@posteo.net, zhuyifei@google.com, hengqi.chen@gmail.com,
         bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Sep 25, 2022 at 9:51 PM Wang Yufen <wangyufen@huawei.com> wrote:
->
+Hello:
+
+This series was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
+
+On Mon, 26 Sep 2022 13:12:00 +0800 you wrote:
 > Convert some tests to use the preferred ASSERT_* macros instead of the
 > deprecated CHECK().
->
+> 
 > Wang Yufen (11):
 >   bpf/selftests: convert sockmap_basic test to ASSERT_* macros
 >   bpf/selftests: convert sockmap_ktls test to ASSERT_* macros
@@ -88,37 +82,36 @@ On Sun, Sep 25, 2022 at 9:51 PM Wang Yufen <wangyufen@huawei.com> wrote:
 >   bpf/selftests: convert tcp_rtt test to ASSERT_* macros
 >   bpf/selftests: convert tcpbpf_user test to ASSERT_* macros
 >   bpf/selftests: convert udp_limit test to ASSERT_* macros
->
->  .../selftests/bpf/prog_tests/sockmap_basic.c       | 87 ++++++++--------------
->  .../selftests/bpf/prog_tests/sockmap_ktls.c        | 39 +++-------
->  tools/testing/selftests/bpf/prog_tests/sockopt.c   |  4 +-
->  .../selftests/bpf/prog_tests/sockopt_inherit.c     | 30 ++++----
->  .../selftests/bpf/prog_tests/sockopt_multi.c       | 10 +--
->  .../testing/selftests/bpf/prog_tests/sockopt_sk.c  |  2 +-
->  .../testing/selftests/bpf/prog_tests/tcp_estats.c  |  4 +-
->  .../selftests/bpf/prog_tests/tcp_hdr_options.c     | 80 +++++++-------------
->  tools/testing/selftests/bpf/prog_tests/tcp_rtt.c   | 13 ++--
->  .../testing/selftests/bpf/prog_tests/tcpbpf_user.c | 32 +++-----
->  tools/testing/selftests/bpf/prog_tests/udp_limit.c | 18 ++---
->  11 files changed, 117 insertions(+), 202 deletions(-)
->
-> --
-> 1.8.3.1
->
+> 
+> [...]
 
-Thanks for the clean up! I've changed one ASSERT_OK(err && errno !=
-ENOENT) to ASSERT_EQ(errno, ENOENT) in patch #1, that expresses the
-intent more directly. Please also keep in mind that patch prefix
-should (conventionally) be "selftests/bpf: ". I've fixed that for all
-patches while applying.
+Here is the summary with links:
+  - [bpf-next,01/11] bpf/selftests: convert sockmap_basic test to ASSERT_* macros
+    https://git.kernel.org/bpf/bpf-next/c/38e35e1d0cee
+  - [bpf-next,02/11] bpf/selftests: convert sockmap_ktls test to ASSERT_* macros
+    https://git.kernel.org/bpf/bpf-next/c/d155fcb3fff1
+  - [bpf-next,03/11] bpf/selftests: convert sockopt test to ASSERT_* macros
+    https://git.kernel.org/bpf/bpf-next/c/099763e7da0b
+  - [bpf-next,04/11] bpf/selftests: convert sockopt_inherit test to ASSERT_* macros
+    https://git.kernel.org/bpf/bpf-next/c/675bc8abe16d
+  - [bpf-next,05/11] bpf/selftests: convert sockopt_multi test to ASSERT_* macros
+    https://git.kernel.org/bpf/bpf-next/c/a605a6bbccce
+  - [bpf-next,06/11] bpf/selftests: convert sockopt_sk test to ASSERT_* macros
+    https://git.kernel.org/bpf/bpf-next/c/f19708dfa0bf
+  - [bpf-next,07/11] bpf/selftests: convert tcp_estats test to ASSERT_* macros
+    https://git.kernel.org/bpf/bpf-next/c/a0a17296713a
+  - [bpf-next,08/11] bpf/selftests: convert tcp_hdr_options test to ASSERT_* macros
+    https://git.kernel.org/bpf/bpf-next/c/3082f8cd4ba3
+  - [bpf-next,09/11] bpf/selftests: convert tcp_rtt test to ASSERT_* macros
+    https://git.kernel.org/bpf/bpf-next/c/8dda32ac58b6
+  - [bpf-next,10/11] bpf/selftests: convert tcpbpf_user test to ASSERT_* macros
+    https://git.kernel.org/bpf/bpf-next/c/9d0b05bdfbea
+  - [bpf-next,11/11] bpf/selftests: convert udp_limit test to ASSERT_* macros
+    https://git.kernel.org/bpf/bpf-next/c/1fddca3d36d1
 
-We are down to:
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-$ rg -w CHECK | wc -l
-1186
-09/28 17:36:39.381
-andriin@devbig019:~/linux/tools/testing/selftests/bpf (master)
-$ rg -w CHECK_FAIL | wc -l
-463
 
-Some ways to go still, but slowly decreasing. Thank you for your contribution!
