@@ -2,75 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 997A05EEA84
-	for <lists+bpf@lfdr.de>; Thu, 29 Sep 2022 02:24:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D4855EEA95
+	for <lists+bpf@lfdr.de>; Thu, 29 Sep 2022 02:32:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232827AbiI2AYQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Sep 2022 20:24:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45390 "EHLO
+        id S231652AbiI2Acj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Sep 2022 20:32:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233186AbiI2AYP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Sep 2022 20:24:15 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1561211ADD9
-        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 17:24:14 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id r13-20020a056830418d00b0065601df69c0so13520otu.7
-        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 17:24:14 -0700 (PDT)
+        with ESMTP id S233713AbiI2Ach (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Sep 2022 20:32:37 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F33F41162DD
+        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 17:32:35 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id d1so49897qvs.0
+        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 17:32:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date;
-        bh=3Lez/NsvCK8yP66AvATp6MFmmTKGfEE01cROmUj07MY=;
-        b=sEn3e8c6dlJiMsqTPGJW1YsYY/2ZdftpMboN8TMxZ4PXawZi/25x51UfCVk3buLSuk
-         VxgxFnPyGxK6vP+Ntt6DVb8Y4jmpJXzbxbt7wk8RxhppHIHICtFH3XAPjJItlc8PbRzP
-         /50HPChdXTLx4GCzYpuCKswzrAceYMjTKNAEIuQVIngUBrF3Awf/Bc2VJCDsqxOXvluf
-         zkssJWmTrFYEcn5rufrvFS7LKDOxIYFO4CV8RUPtit5VOFsR5QGPc7jNfUy2Q7VfvfBa
-         p7SzQ3q3T2XAv5SrRzDuRqoXnn4shRZ3+WktKfzesrEDQTo7bJ5TTQ5MLgGG69+UZkmp
-         geKw==
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=z+mGljvEk4YNd4hkoAaqnLPUbyCn+3rnvYfc5nH3bZ4=;
+        b=XagqI07Yo2gxS7yl+zHTW2RtkFEZ8EqyGhCJ5YFnbdA+3iIV2ab1fUnXroxsFa719O
+         vq+8qR0Qe1bwib2hFwwK8x7yU0qhnGYcj8otY/B89f4vBvcrrNRoKfQ5BXg8I3nT6AkF
+         xwRt1pVA3denjlvGC0K3UHehqTcxNEtn1CNWohHnp+ErM0/MhdJUtGFTFbkgUOZykRvU
+         fJKD0Y5+KI810i4v1c70JnIo6LetHMGSFiOJwZcbeKWl4gC2WsdnBGzcE5awrZeLQmGq
+         WqkRZNFrHJi89bZqnnbmYWYOkpOkRp7+kanhu/Lr9eLntwdcUOqoN/F4fF1yBGYpNq5+
+         5KlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date;
-        bh=3Lez/NsvCK8yP66AvATp6MFmmTKGfEE01cROmUj07MY=;
-        b=FQh+KgsYgyNqG/CkMbzuheARts4RqZ3kFHmLIOHGEoe3+vIpsiGA9ncjgXioC+y9Lb
-         RqPE/4EnGxFo/JLEKUvlYAc6jFRzDqWHKuN6OXfhKIE3SW6KAYaNZCkhyhqosCW9A3so
-         lDKKi8nd6OJphw71WTQ3Iauq7Fpk0fdFT2tbvYwFpaiHcc3bWSdME0ByGJVA937zR7Z6
-         SbNRYlzqt93O6OOYJLcLjtn4wnsHXtrcT1nBiof+4CFaVgfDvUSSOKJkwuclaIc9aJfX
-         gpwDqjdiwW8DRn5nhjVvCFhPADj+oI1+TBYylyk9zzUTEgcNAr6fHZnNQEENjLpNL4r6
-         s/8A==
-X-Gm-Message-State: ACrzQf31/VGdfHW6OiQu8jE3pquzRyRa+qNZzDWhl0Y9p04rsds2/c0P
-        E2iDGQb/ISF1wGHCQD9NlFi6dDJbgTnweqMbr3Wy
-X-Google-Smtp-Source: AMsMyM4JKBexbSSoQs6U8oMvBE8K/9vL6a/ssbZ5EPDMmhgaH8kIzFgEsUP/FsiS+0dKwz0pfMKzuBkeh+ZYTms/faw=
-X-Received: by 2002:a9d:1b70:0:b0:658:cfeb:d221 with SMTP id
- l103-20020a9d1b70000000b00658cfebd221mr234380otl.34.1664411053278; Wed, 28
- Sep 2022 17:24:13 -0700 (PDT)
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=z+mGljvEk4YNd4hkoAaqnLPUbyCn+3rnvYfc5nH3bZ4=;
+        b=F17WgCLjjEid/M3IDNEpwyGibgGddL5VZzfl4aUYrqU1Jlklx8ngXmJFNtC8jaWoZJ
+         mVXMdwVmtHtYB22aY1OqVUEswJpBxHZ3D5rTpc7R4rLiOT/HODGwdBol6hIVim+HsYTH
+         9iSUV0gyWisIzIh9GxBYRXOkPUUeXE7PRofoov+0Bi6+24eCZIXj8c1JFI85WdUnDHxQ
+         l97gveRe8clofXwOWmgAFdsKJSabgAam8HP7zCRqAIvJWaxM2ZV1H33D2YjOuBRhno94
+         v6AHHcCuUTkFhCW9TQunyCiDlzaFVWCQAm3jmcaGNlRawW98TlNZdRhX7UYW3NjRBzoa
+         1LXw==
+X-Gm-Message-State: ACrzQf3g923cgI9ahdoSiT6j012h+YmFA/R+JtLz6Sc7bV7vjV5Vd8QO
+        fRRm3R9R4OX9RTie9edsATgfNX91V7qx0J7ZqBI=
+X-Google-Smtp-Source: AMsMyM5DuPmHKj4i8qrxcCl/KrVFVL/DvJfTEoAAkrlcKfUg2DgCzuEA9aRXtE9rs0cP6fwjuJPIASPbne2nAZpjDsE=
+X-Received: by 2002:a05:6214:c2d:b0:4ac:9892:2a73 with SMTP id
+ a13-20020a0562140c2d00b004ac98922a73mr632324qvd.30.1664411554935; Wed, 28 Sep
+ 2022 17:32:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <a6c0bb85-6eeb-407e-a515-06f67e70db57@www.fastmail.com>
- <8e243ad132ecf2885fc65c33c7793f0703937890.camel@huaweicloud.com>
- <7f7c3337-74f1-424e-a14d-578c4c7ee2fe@www.fastmail.com> <65546f56be138ab326544b7b2e59bb3175ec884a.camel@huaweicloud.com>
- <b0c00f80-c11e-4f5d-ba63-2e9fb7cad561@www.fastmail.com> <9aba20351924aa0d82d258205030ad4f2c404de2.camel@huaweicloud.com>
- <98a26e5c-d44f-4e65-8186-c4e94918daa1@www.fastmail.com> <06a47f11778ca9d074c815e57dc1c75d073b3a85.camel@huaweicloud.com>
- <439dd1e5-71b8-49ed-8268-02b3428a55a4@www.fastmail.com> <6e142c3526df693abfab6e1293a27828267cc45e.camel@huaweicloud.com>
- <87mtajss8j.fsf@toke.dk> <fe9fe2443b8401a076330a3019bd46f6c815a023.camel@huaweicloud.com>
-In-Reply-To: <fe9fe2443b8401a076330a3019bd46f6c815a023.camel@huaweicloud.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Wed, 28 Sep 2022 20:24:02 -0400
-Message-ID: <CAHC9VhRKq=BMtAat2_+0VvYk91hnryUHg+wbZRhu2BDB9ehC2A@mail.gmail.com>
-Subject: Re: Closing the BPF map permission loophole
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
-Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>,
-        Lorenz Bauer <oss@lmb.io>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>, bpf@vger.kernel.org,
-        linux-security-module@vger.kernel.org
+References: <20220908000254.3079129-1-joannelkoong@gmail.com>
+ <20220908000254.3079129-8-joannelkoong@gmail.com> <CAEf4Bza2B+LFPm0dtdtfj+_ai5rTzjybHbM2XH_9UnBUF02izg@mail.gmail.com>
+In-Reply-To: <CAEf4Bza2B+LFPm0dtdtfj+_ai5rTzjybHbM2XH_9UnBUF02izg@mail.gmail.com>
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date:   Thu, 29 Sep 2022 02:31:57 +0200
+Message-ID: <CAP01T76bR6zFCCVM=8gQCCqHH12A3Hz2UQ6wg97KhPcO+BeenA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 7/8] bpf: Add bpf_dynptr_iterator
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Joanne Koong <joannelkoong@gmail.com>, bpf@vger.kernel.org,
+        daniel@iogearbox.net, martin.lau@kernel.org, andrii@kernel.org,
+        ast@kernel.org, Kernel-team@fb.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,87 +67,163 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 28, 2022 at 7:24 AM Roberto Sassu
-<roberto.sassu@huaweicloud.com> wrote
-> On Wed, 2022-09-28 at 12:33 +0200, Toke H=C3=B8iland-J=C3=B8rgensen wrote=
-:
-> > Roberto Sassu <roberto.sassu@huaweicloud.com> writes:
-> >
-> > > On Wed, 2022-09-28 at 09:52 +0100, Lorenz Bauer wrote:
-> > > > On Mon, 26 Sep 2022, at 17:18, Roberto Sassu wrote:
-> > > > > Uhm, if I get what you mean, you would like to add DAC controls
-> > > > > to
-> > > > > the
-> > > > > pinned map to decide if you can get a fd and with which modes.
-> > > > >
-> > > > > The problem I see is that a map exists regardless of the pinned
-> > > > > path
-> > > > > (just by ID).
-> > > >
-> > > > Can you spell this out for me? I imagine you're talking about
-> > > > MAP_GET_FD_BY_ID, but that is CAP_SYS_ADMIN only, right? Not
-> > > > great
-> > > > maybe, but no gaping hole IMO.
-> > >
-> > > +linux-security-module ML (they could be interested in this topic
-> > > as
-> > > well)
-> > >
-> > > Good to know! I didn't realize it before.
-> > >
-> > > I figured out better what you mean by escalating privileges.
-> > >
-> > > Pin a read-only fd, get a read-write fd from the pinned path.
-> > >
-> > > What you want to do is, if I pin a read-only fd, I should get read-
-> > > only
-> > > fds too, right?
-> > >
-> > > I think here there could be different views. From my perspective,
-> > > pinning is just creating a new link to an existing object.
-> > > Accessing
-> > > the link does not imply being able to access the object itself (the
-> > > same happens for files).
-> > >
-> > > I understand what you want to achieve. If I have to choose a
-> > > solution,
-> > > that would be doing something similar to files, i.e. add owner and
-> > > mode
-> > > information to the bpf_map structure (m_uid, m_gid, m_mode). We
-> > > could
-> > > add the MAP_CHMOD and MAP_CHOWN operations to the bpf() system call
-> > > to
-> > > modify the new fields.
-> > >
-> > > When you pin the map, the inode will get the owner and mode from
-> > > bpf_map. bpf_obj_get() will then do DAC-style verification similar
-> > > to
-> > > MAC-style verification (with security_bpf_map()).
-> >
-> > As someone pointed out during the discussing at LPC, this will
-> > effectively allow a user to create files owned by someone else, which
-> > is
-> > probably not a good idea either from a security PoV. (I.e., user A
-> > pins
-> > map owned by user B, so A creates a file owned by B).
+On Thu, 29 Sept 2022 at 01:04, Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> Uhm, I see what you mean. Right, it is not a good idea, the owner of
-> the file should the one that pinned the map.
+> On Wed, Sep 7, 2022 at 5:07 PM Joanne Koong <joannelkoong@gmail.com> wrote:
+> >
+> > Add a new helper function, bpf_dynptr_iterator:
+> >
+> >   long bpf_dynptr_iterator(struct bpf_dynptr *ptr, void *callback_fn,
+> >                            void *callback_ctx, u64 flags)
+> >
+> > where callback_fn is defined as:
+> >
+> >   long (*callback_fn)(struct bpf_dynptr *ptr, void *ctx)
+> >
+> > and callback_fn returns the number of bytes to advance the
+> > dynptr by (or an error code in the case of error). The iteration
+> > will stop if the callback_fn returns 0 or an error or tries to
+> > advance by more bytes than available.
+> >
+> > Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
+> > ---
+> >  include/uapi/linux/bpf.h       | 20 ++++++++++++++
+> >  kernel/bpf/helpers.c           | 48 +++++++++++++++++++++++++++++++---
+> >  kernel/bpf/verifier.c          | 27 +++++++++++++++++++
+> >  tools/include/uapi/linux/bpf.h | 20 ++++++++++++++
+> >  4 files changed, 111 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index 16973fa4d073..ff78a94c262a 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -5531,6 +5531,25 @@ union bpf_attr {
+> >   *             losing access to the original view of the dynptr.
+> >   *     Return
+> >   *             0 on success, -EINVAL if the dynptr to clone is invalid.
+> > + *
+> > + * long bpf_dynptr_iterator(struct bpf_dynptr *ptr, void *callback_fn, void *callback_ctx, u64 flags)
+> > + *     Description
+> > + *             Iterate through the dynptr data, calling **callback_fn** on each
+> > + *             iteration with **callback_ctx** as the context parameter.
+> > + *             The **callback_fn** should be a static function and
+> > + *             the **callback_ctx** should be a pointer to the stack.
+> > + *             Currently **flags** is unused and must be 0.
+> > + *
+> > + *             long (\*callback_fn)(struct bpf_dynptr \*ptr, void \*ctx);
+> > + *
+> > + *             where **callback_fn** returns the number of bytes to advance
+> > + *             the dynptr by or an error. The iteration will stop if **callback_fn**
+> > + *             returns 0 or an error or tries to advance by more bytes than the
+> > + *             size of the dynptr.
+> > + *     Return
+> > + *             0 on success, -EINVAL if the dynptr is invalid or **flags** is not 0,
+> > + *             -ERANGE if attempting to iterate more bytes than available, or other
+> > + *             negative error if **callback_fn** returns an error.
+> >   */
+> >  #define __BPF_FUNC_MAPPER(FN)          \
+> >         FN(unspec),                     \
+> > @@ -5752,6 +5771,7 @@ union bpf_attr {
+> >         FN(dynptr_get_size),            \
+> >         FN(dynptr_get_offset),          \
+> >         FN(dynptr_clone),               \
+> > +       FN(dynptr_iterator),            \
+> >         /* */
+> >
+> >  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> > index 667f1e213a61..519b3da06d49 100644
+> > --- a/kernel/bpf/helpers.c
+> > +++ b/kernel/bpf/helpers.c
+> > @@ -1653,13 +1653,11 @@ static const struct bpf_func_proto bpf_dynptr_data_proto = {
+> >         .arg3_type      = ARG_CONST_ALLOC_SIZE_OR_ZERO,
+> >  };
+> >
+> > -BPF_CALL_2(bpf_dynptr_advance, struct bpf_dynptr_kern *, ptr, u32, len)
+> > +/* *ptr* should always be a valid dynptr */
+> > +static int __bpf_dynptr_advance(struct bpf_dynptr_kern *ptr, u32 len)
+> >  {
+> >         u32 size;
+> >
+> > -       if (!ptr->data)
+> > -               return -EINVAL;
+> > -
+> >         size = __bpf_dynptr_get_size(ptr);
+> >
+> >         if (len > size)
+> > @@ -1672,6 +1670,14 @@ BPF_CALL_2(bpf_dynptr_advance, struct bpf_dynptr_kern *, ptr, u32, len)
+> >         return 0;
+> >  }
+> >
+> > +BPF_CALL_2(bpf_dynptr_advance, struct bpf_dynptr_kern *, ptr, u32, len)
+> > +{
+> > +       if (!ptr->data)
+> > +               return -EINVAL;
+> > +
+> > +       return __bpf_dynptr_advance(ptr, len);
+> > +}
+> > +
+> >  static const struct bpf_func_proto bpf_dynptr_advance_proto = {
+> >         .func           = bpf_dynptr_advance,
+> >         .gpl_only       = false,
+> > @@ -1783,6 +1789,38 @@ static const struct bpf_func_proto bpf_dynptr_clone_proto = {
+> >         .arg2_type      = ARG_PTR_TO_DYNPTR | MEM_UNINIT,
+> >  };
+> >
+> > +BPF_CALL_4(bpf_dynptr_iterator, struct bpf_dynptr_kern *, ptr, void *, callback_fn,
+> > +          void *, callback_ctx, u64, flags)
+> > +{
+> > +       bpf_callback_t callback = (bpf_callback_t)callback_fn;
+> > +       int nr_bytes, err;
+> > +
+> > +       if (!ptr->data || flags)
+> > +               return -EINVAL;
+> > +
+> > +       while (ptr->size > 0) {
+> > +               nr_bytes = callback((u64)(long)ptr, (u64)(long)callback_ctx, 0, 0, 0);
+> > +               if (nr_bytes <= 0)
+> > +                       return nr_bytes;
 >
-> Other than that, DAC verification on the map would be still correct, as
-> it would be independent from the DAC verification of the file.
+> callback is defined as returning long but here you are silently
+> truncating it to int. Let's either stick to longs or to ints.
+>
+> > +
+> > +               err = __bpf_dynptr_advance(ptr, nr_bytes);
+>
+> as Kumar pointed out, you can't modify ptr in place, you have to
+> create a local copy and bpf_dynptr_clone() it (so that for MALLOC
+> you'll bump refcnt). Then advance and pass it to callback. David has
+> such local dynptr use case in bpf_user_ringbuf_drain() helper.
+>
 
-I only became aware of this when the LSM list was CC'd so I'm a little
-behind on what is going on here ... looking quickly through the
-mailing list archive it looks like there is an issue with BPF map
-permissions not matching well with their associated fd permissions,
-yes?  From a LSM perspective, there are a couple of hooks that
-currently use the fd's permissions (read/write) to determine the
-appropriate access control check.
+My solution was a bit overcomplicated because just creating a local
+copy doesn't fix this completely, there's still the hole of writing
+through arg#0 (which now does not reflect runtime state, as writes at
+runtime go to clone while verifier thinks you touched stack slots),
+and still allows constructing the infinite loop (because well, you can
+overwrite dynptr through it). The 'side channel' of writing to dynptr
+slots through callback_ctx is still there as well.
 
-Is the plan to ensure that the map and fd permissions are correct at
-the core BPF level, or do we need to do some additional checks in the
-LSMs (currently only SELinux)?
+Maybe the infinite loop _can_ be avoided if you clone inside each
+iteration, that part isn't very clear.
 
---=20
-paul-moore.com
+My reasoning was that when you iterate, the container is always
+immutable (to prevent iterator invalidation) while mutability of
+elements remains unaffected from that. Setting it in spilled_ptr
+covers all bases (PTR_TO_STACK arg#0, access to it through
+callback_ctx, etc.).
+
+But I totally agree with you that we should be working on a local copy
+inside the helper and leave the original dynptr untouched.
+I think then the first arg should not be PTR_TO_STACK but some other
+pointer type. Maybe it should be its own register type, and
+spilled_ptr should reflect the same register, which allows the dynptr
+state that we track to be copied into the callback arg#0 easily.
+
+For the case of writes to the original dynptr that is already broken
+right now, we can't track the state of the stack across iterations
+correctly anyway so I think that has to be left as is until your N
+callbacks rework happens.
+
+wdyt?
