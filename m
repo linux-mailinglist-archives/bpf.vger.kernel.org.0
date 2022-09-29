@@ -1,225 +1,359 @@
 Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from out1.vger.email (unknown [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FC4A5EEFBE
-	for <lists+bpf@lfdr.de>; Thu, 29 Sep 2022 09:55:32 +0200 (CEST)
+Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
+	by mail.lfdr.de (Postfix) with ESMTP id 770315EF0B1
+	for <lists+bpf@lfdr.de>; Thu, 29 Sep 2022 10:38:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234306AbiI2HzT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Sep 2022 03:55:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33912 "EHLO
+        id S235375AbiI2IiM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Sep 2022 04:38:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232166AbiI2HzS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 29 Sep 2022 03:55:18 -0400
-Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4713F1877;
-        Thu, 29 Sep 2022 00:55:15 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.228])
-        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4MdQVN3bx0z9v7HH;
-        Thu, 29 Sep 2022 15:49:16 +0800 (CST)
-Received: from roberto-ThinkStation-P620 (unknown [10.204.63.22])
-        by APP1 (Coremail) with SMTP id LxC2BwAXD5NFTzVj3l+EAA--.16688S2;
-        Thu, 29 Sep 2022 08:54:54 +0100 (CET)
-Message-ID: <3a9efcd6c8f7fa3908230ef5be0e0ad224a730ff.camel@huaweicloud.com>
-Subject: Re: Closing the BPF map permission loophole
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Toke =?ISO-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@kernel.org>,
-        Lorenz Bauer <oss@lmb.io>, Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S235566AbiI2IiL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Sep 2022 04:38:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B3CA132FC2
+        for <bpf@vger.kernel.org>; Thu, 29 Sep 2022 01:38:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1664440688;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XCejEhOZeEz4lRq8eB7eRjuOrzlC81ktVxPeHJ8t7qA=;
+        b=OMlKwrm20fXyyrXcJAZqUfPsrV/vhE2O4/8M4C07yS7HLS1j9gyOX+4OSz7aLvMDwJP9iT
+        4XZCIAE8DaVWXPNIDxcg5oiNkp8L6hHW2dR5egaorA/KoSfZ88CDlG8OA5M0Rc/1+kuJwD
+        thqyFYVkvxoxXQ4qsq8fiLsb40KiD3E=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-317-FVeo_q9aMBGDLEnrIsnSIw-1; Thu, 29 Sep 2022 04:38:07 -0400
+X-MC-Unique: FVeo_q9aMBGDLEnrIsnSIw-1
+Received: by mail-wr1-f71.google.com with SMTP id g27-20020adfa49b000000b0022cd5476cc7so241269wrb.17
+        for <bpf@vger.kernel.org>; Thu, 29 Sep 2022 01:38:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=XCejEhOZeEz4lRq8eB7eRjuOrzlC81ktVxPeHJ8t7qA=;
+        b=jCzlUMPN66TYYFr+SQ+UJ3QUOygmGyCTlU9rz8mQLIagTqI6MTwDLlQs7GQYES+Cuh
+         5DTqZEE8W6al8ISl82K8uDuBFOBcnM1Aj7DoQbjW853ZMz50V2DuPXQczqi2b4+e0erm
+         yo9nD0NZ59jheGBgFw4ggZX2zgDqloxMI+fc1Kbuz01vzYLYaih2n+w6DGNJYS8gaPwl
+         StfTh37hMEvuLn0hpfgblnRRHYKSFUutSYANc4PdZ7fQA3qGG7ea6efv9PXz3uUf1frB
+         3YpEaxg4DH3Zq1CybMrh3tnbjAF1kv55eV8iQeZIi7WKDnWRb4WxUeYNZib3PJpPzXAz
+         ZF6g==
+X-Gm-Message-State: ACrzQf0bOIC0SI5a2RdPpLy1O/ioixQCgR2WBBJsVOK40gcG4t52c5JP
+        J9xtok2tL3TEpoYFxz1AGzQnhegKvxZNgTdF6m4jG5fJrejt+EqS7tNzSvsJBaITUFuJQd04e8U
+        7l/UB8n2l4NzusofWII0h1zfiyRf/
+X-Received: by 2002:a05:6000:184e:b0:228:bc3a:8e35 with SMTP id c14-20020a056000184e00b00228bc3a8e35mr1310725wri.443.1664440685987;
+        Thu, 29 Sep 2022 01:38:05 -0700 (PDT)
+X-Google-Smtp-Source: AMsMyM4m8/ZPNZDCLAnP6JQdsaOW9OGZVvqHY8iEty+ntfHNZtB3G4XLZkfhAggzN/lIGjtSbNJoPsCBmBM26YqhzYQ=
+X-Received: by 2002:a05:6000:184e:b0:228:bc3a:8e35 with SMTP id
+ c14-20020a056000184e00b00228bc3a8e35mr1310700wri.443.1664440685683; Thu, 29
+ Sep 2022 01:38:05 -0700 (PDT)
+MIME-Version: 1.0
+References: <ddd17d808fe25917893eb035b20146479810124c.1664111646.git.lorenzo@kernel.org>
+In-Reply-To: <ddd17d808fe25917893eb035b20146479810124c.1664111646.git.lorenzo@kernel.org>
+From:   Yauheni Kaliuta <ykaliuta@redhat.com>
+Date:   Thu, 29 Sep 2022 11:37:49 +0300
+Message-ID: <CANoWswkJwZ0mLVmA5npm6Zty=CXJ1dupKvOjAU5G+Y19xM9T0A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] net: netfilter: move bpf_ct_set_nat_info kfunc
+ in nf_nat_bpf.c
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>, netdev@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>, bpf@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Date:   Thu, 29 Sep 2022 09:54:43 +0200
-In-Reply-To: <CAHC9VhRKq=BMtAat2_+0VvYk91hnryUHg+wbZRhu2BDB9ehC2A@mail.gmail.com>
-References: <a6c0bb85-6eeb-407e-a515-06f67e70db57@www.fastmail.com>
-         <8e243ad132ecf2885fc65c33c7793f0703937890.camel@huaweicloud.com>
-         <7f7c3337-74f1-424e-a14d-578c4c7ee2fe@www.fastmail.com>
-         <65546f56be138ab326544b7b2e59bb3175ec884a.camel@huaweicloud.com>
-         <b0c00f80-c11e-4f5d-ba63-2e9fb7cad561@www.fastmail.com>
-         <9aba20351924aa0d82d258205030ad4f2c404de2.camel@huaweicloud.com>
-         <98a26e5c-d44f-4e65-8186-c4e94918daa1@www.fastmail.com>
-         <06a47f11778ca9d074c815e57dc1c75d073b3a85.camel@huaweicloud.com>
-         <439dd1e5-71b8-49ed-8268-02b3428a55a4@www.fastmail.com>
-         <6e142c3526df693abfab6e1293a27828267cc45e.camel@huaweicloud.com>
-         <87mtajss8j.fsf@toke.dk>
-         <fe9fe2443b8401a076330a3019bd46f6c815a023.camel@huaweicloud.com>
-         <CAHC9VhRKq=BMtAat2_+0VvYk91hnryUHg+wbZRhu2BDB9ehC2A@mail.gmail.com>
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>, pablo@netfilter.org,
+        Florian Westphal <fw@strlen.de>,
+        netfilter-devel@vger.kernel.org,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        Jesper Brouer <brouer@redhat.com>,
+        Toke Hoiland Jorgensen <toke@redhat.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LxC2BwAXD5NFTzVj3l+EAA--.16688S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxtrW3GrW7Zw1kXF15Cry7GFg_yoW7Ww1fpF
-        W8t3W5KF4DJryrAw4vqw1rJF1Fy395GrZrXr90yryrZ3Wq9w1rKr4IkF45uFyvvr1xGw10
-        vrWSyr9xZas8ZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWUJVW8JwA2z4x0Y4vEx4A2jsIEc7CjxV
-        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAKBF1jj4OQkAAAs9
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 2022-09-28 at 20:24 -0400, Paul Moore wrote:
-> On Wed, Sep 28, 2022 at 7:24 AM Roberto Sassu
-> <roberto.sassu@huaweicloud.com> wrote
-> > On Wed, 2022-09-28 at 12:33 +0200, Toke Høiland-Jørgensen wrote:
-> > > Roberto Sassu <roberto.sassu@huaweicloud.com> writes:
-> > > 
-> > > > On Wed, 2022-09-28 at 09:52 +0100, Lorenz Bauer wrote:
-> > > > > On Mon, 26 Sep 2022, at 17:18, Roberto Sassu wrote:
-> > > > > > Uhm, if I get what you mean, you would like to add DAC
-> > > > > > controls
-> > > > > > to
-> > > > > > the
-> > > > > > pinned map to decide if you can get a fd and with which
-> > > > > > modes.
-> > > > > > 
-> > > > > > The problem I see is that a map exists regardless of the
-> > > > > > pinned
-> > > > > > path
-> > > > > > (just by ID).
-> > > > > 
-> > > > > Can you spell this out for me? I imagine you're talking about
-> > > > > MAP_GET_FD_BY_ID, but that is CAP_SYS_ADMIN only, right? Not
-> > > > > great
-> > > > > maybe, but no gaping hole IMO.
-> > > > 
-> > > > +linux-security-module ML (they could be interested in this
-> > > > topic
-> > > > as
-> > > > well)
-> > > > 
-> > > > Good to know! I didn't realize it before.
-> > > > 
-> > > > I figured out better what you mean by escalating privileges.
-> > > > 
-> > > > Pin a read-only fd, get a read-write fd from the pinned path.
-> > > > 
-> > > > What you want to do is, if I pin a read-only fd, I should get
-> > > > read-
-> > > > only
-> > > > fds too, right?
-> > > > 
-> > > > I think here there could be different views. From my
-> > > > perspective,
-> > > > pinning is just creating a new link to an existing object.
-> > > > Accessing
-> > > > the link does not imply being able to access the object itself
-> > > > (the
-> > > > same happens for files).
-> > > > 
-> > > > I understand what you want to achieve. If I have to choose a
-> > > > solution,
-> > > > that would be doing something similar to files, i.e. add owner
-> > > > and
-> > > > mode
-> > > > information to the bpf_map structure (m_uid, m_gid, m_mode). We
-> > > > could
-> > > > add the MAP_CHMOD and MAP_CHOWN operations to the bpf() system
-> > > > call
-> > > > to
-> > > > modify the new fields.
-> > > > 
-> > > > When you pin the map, the inode will get the owner and mode
-> > > > from
-> > > > bpf_map. bpf_obj_get() will then do DAC-style verification
-> > > > similar
-> > > > to
-> > > > MAC-style verification (with security_bpf_map()).
-> > > 
-> > > As someone pointed out during the discussing at LPC, this will
-> > > effectively allow a user to create files owned by someone else,
-> > > which
-> > > is
-> > > probably not a good idea either from a security PoV. (I.e., user
-> > > A
-> > > pins
-> > > map owned by user B, so A creates a file owned by B).
-> > 
-> > Uhm, I see what you mean. Right, it is not a good idea, the owner
-> > of
-> > the file should the one that pinned the map.
-> > 
-> > Other than that, DAC verification on the map would be still
-> > correct, as
-> > it would be independent from the DAC verification of the file.
-> 
-> I only became aware of this when the LSM list was CC'd so I'm a
-> little
-> behind on what is going on here ... looking quickly through the
-> mailing list archive it looks like there is an issue with BPF map
-> permissions not matching well with their associated fd permissions,
-> yes?  From a LSM perspective, there are a couple of hooks that
-> currently use the fd's permissions (read/write) to determine the
-> appropriate access control check.
+Hi!
 
-From what I understood, access control on maps is done in two steps.
-First, whenever someone attempts to get a fd to a map
-security_bpf_map() is called. LSM implementations could check access if
-the current process has the right to access the map (whose label can be
-assigned at map creation time with security_bpf_map_alloc()).
+The patch leads to
 
-Second, whenever the holder of the obtained fd wants to do an operation
-on the map (lookup, update, delete, ...), eBPF checks if the fd modes
-are compatible with the operation to perform (e.g. lookup requires
-FMODE_CAN_READ).
+depmod: ERROR: Cycle detected: nf_conntrack -> nf_nat -> nf_conntrack
 
-One problem is that the second part is missing for some operations
-dealing with the map fd:
+when it is built as modules (due to nf_nat_setup_info() dependency)
 
-Map iterators:
-https://lore.kernel.org/bpf/20220906170301.256206-1-roberto.sassu@huaweicloud.com/
+On Sun, Sep 25, 2022 at 4:26 PM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
+>
+> Remove circular dependency between nf_nat module and nf_conntrack one
+> moving bpf_ct_set_nat_info kfunc in nf_nat_bpf.c
+>
+> Fixes: 0fabd2aa199f ("net: netfilter: add bpf_ct_set_nat_info kfunc helper")
+> Suggested-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> Tested-by: Nathan Chancellor <nathan@kernel.org>
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> ---
+>  include/net/netfilter/nf_conntrack_bpf.h |  5 ++
+>  include/net/netfilter/nf_nat.h           | 14 +++++
+>  net/netfilter/Makefile                   |  6 ++
+>  net/netfilter/nf_conntrack_bpf.c         | 49 ---------------
+>  net/netfilter/nf_nat_bpf.c               | 79 ++++++++++++++++++++++++
+>  net/netfilter/nf_nat_core.c              |  2 +-
+>  6 files changed, 105 insertions(+), 50 deletions(-)
+>  create mode 100644 net/netfilter/nf_nat_bpf.c
+>
+> diff --git a/include/net/netfilter/nf_conntrack_bpf.h b/include/net/netfilter/nf_conntrack_bpf.h
+> index c8b80add1142..1ce46e406062 100644
+> --- a/include/net/netfilter/nf_conntrack_bpf.h
+> +++ b/include/net/netfilter/nf_conntrack_bpf.h
+> @@ -4,6 +4,11 @@
+>  #define _NF_CONNTRACK_BPF_H
+>
+>  #include <linux/kconfig.h>
+> +#include <net/netfilter/nf_conntrack.h>
+> +
+> +struct nf_conn___init {
+> +       struct nf_conn ct;
+> +};
+>
+>  #if (IS_BUILTIN(CONFIG_NF_CONNTRACK) && IS_ENABLED(CONFIG_DEBUG_INFO_BTF)) || \
+>      (IS_MODULE(CONFIG_NF_CONNTRACK) && IS_ENABLED(CONFIG_DEBUG_INFO_BTF_MODULES))
+> diff --git a/include/net/netfilter/nf_nat.h b/include/net/netfilter/nf_nat.h
+> index e9eb01e99d2f..cd084059a953 100644
+> --- a/include/net/netfilter/nf_nat.h
+> +++ b/include/net/netfilter/nf_nat.h
+> @@ -68,6 +68,20 @@ static inline bool nf_nat_oif_changed(unsigned int hooknum,
+>  #endif
+>  }
+>
+> +#if (IS_BUILTIN(CONFIG_NF_NAT) && IS_ENABLED(CONFIG_DEBUG_INFO_BTF)) || \
+> +    (IS_MODULE(CONFIG_NF_NAT) && IS_ENABLED(CONFIG_DEBUG_INFO_BTF_MODULES))
+> +
+> +extern int register_nf_nat_bpf(void);
+> +
+> +#else
+> +
+> +static inline int register_nf_nat_bpf(void)
+> +{
+> +       return 0;
+> +}
+> +
+> +#endif
+> +
+>  int nf_nat_register_fn(struct net *net, u8 pf, const struct nf_hook_ops *ops,
+>                        const struct nf_hook_ops *nat_ops, unsigned int ops_count);
+>  void nf_nat_unregister_fn(struct net *net, u8 pf, const struct nf_hook_ops *ops,
+> diff --git a/net/netfilter/Makefile b/net/netfilter/Makefile
+> index 06df49ea6329..0f060d100880 100644
+> --- a/net/netfilter/Makefile
+> +++ b/net/netfilter/Makefile
+> @@ -60,6 +60,12 @@ obj-$(CONFIG_NF_NAT) += nf_nat.o
+>  nf_nat-$(CONFIG_NF_NAT_REDIRECT) += nf_nat_redirect.o
+>  nf_nat-$(CONFIG_NF_NAT_MASQUERADE) += nf_nat_masquerade.o
+>
+> +ifeq ($(CONFIG_NF_NAT),m)
+> +nf_nat-$(CONFIG_DEBUG_INFO_BTF_MODULES) += nf_nat_bpf.o
+> +else ifeq ($(CONFIG_NF_NAT),y)
+> +nf_nat-$(CONFIG_DEBUG_INFO_BTF) += nf_nat_bpf.o
+> +endif
+> +
+>  # NAT helpers
+>  obj-$(CONFIG_NF_NAT_AMANDA) += nf_nat_amanda.o
+>  obj-$(CONFIG_NF_NAT_FTP) += nf_nat_ftp.o
+> diff --git a/net/netfilter/nf_conntrack_bpf.c b/net/netfilter/nf_conntrack_bpf.c
+> index 756ea818574e..f4ba4ff3a63b 100644
+> --- a/net/netfilter/nf_conntrack_bpf.c
+> +++ b/net/netfilter/nf_conntrack_bpf.c
+> @@ -14,7 +14,6 @@
+>  #include <linux/types.h>
+>  #include <linux/btf_ids.h>
+>  #include <linux/net_namespace.h>
+> -#include <net/netfilter/nf_conntrack.h>
+>  #include <net/netfilter/nf_conntrack_bpf.h>
+>  #include <net/netfilter/nf_conntrack_core.h>
+>  #include <net/netfilter/nf_nat.h>
+> @@ -239,10 +238,6 @@ __diag_push();
+>  __diag_ignore_all("-Wmissing-prototypes",
+>                   "Global functions as their definitions will be in nf_conntrack BTF");
+>
+> -struct nf_conn___init {
+> -       struct nf_conn ct;
+> -};
+> -
+>  /* bpf_xdp_ct_alloc - Allocate a new CT entry
+>   *
+>   * Parameters:
+> @@ -476,49 +471,6 @@ int bpf_ct_change_status(struct nf_conn *nfct, u32 status)
+>         return nf_ct_change_status_common(nfct, status);
+>  }
+>
+> -/* bpf_ct_set_nat_info - Set source or destination nat address
+> - *
+> - * Set source or destination nat address of the newly allocated
+> - * nf_conn before insertion. This must be invoked for referenced
+> - * PTR_TO_BTF_ID to nf_conn___init.
+> - *
+> - * Parameters:
+> - * @nfct       - Pointer to referenced nf_conn object, obtained using
+> - *               bpf_xdp_ct_alloc or bpf_skb_ct_alloc.
+> - * @addr       - Nat source/destination address
+> - * @port       - Nat source/destination port. Non-positive values are
+> - *               interpreted as select a random port.
+> - * @manip      - NF_NAT_MANIP_SRC or NF_NAT_MANIP_DST
+> - */
+> -int bpf_ct_set_nat_info(struct nf_conn___init *nfct,
+> -                       union nf_inet_addr *addr, int port,
+> -                       enum nf_nat_manip_type manip)
+> -{
+> -#if ((IS_MODULE(CONFIG_NF_NAT) && IS_MODULE(CONFIG_NF_CONNTRACK)) || \
+> -     IS_BUILTIN(CONFIG_NF_NAT))
+> -       struct nf_conn *ct = (struct nf_conn *)nfct;
+> -       u16 proto = nf_ct_l3num(ct);
+> -       struct nf_nat_range2 range;
+> -
+> -       if (proto != NFPROTO_IPV4 && proto != NFPROTO_IPV6)
+> -               return -EINVAL;
+> -
+> -       memset(&range, 0, sizeof(struct nf_nat_range2));
+> -       range.flags = NF_NAT_RANGE_MAP_IPS;
+> -       range.min_addr = *addr;
+> -       range.max_addr = range.min_addr;
+> -       if (port > 0) {
+> -               range.flags |= NF_NAT_RANGE_PROTO_SPECIFIED;
+> -               range.min_proto.all = cpu_to_be16(port);
+> -               range.max_proto.all = range.min_proto.all;
+> -       }
+> -
+> -       return nf_nat_setup_info(ct, &range, manip) == NF_DROP ? -ENOMEM : 0;
+> -#else
+> -       return -EOPNOTSUPP;
+> -#endif
+> -}
+> -
+>  __diag_pop()
+>
+>  BTF_SET8_START(nf_ct_kfunc_set)
+> @@ -532,7 +484,6 @@ BTF_ID_FLAGS(func, bpf_ct_set_timeout, KF_TRUSTED_ARGS)
+>  BTF_ID_FLAGS(func, bpf_ct_change_timeout, KF_TRUSTED_ARGS)
+>  BTF_ID_FLAGS(func, bpf_ct_set_status, KF_TRUSTED_ARGS)
+>  BTF_ID_FLAGS(func, bpf_ct_change_status, KF_TRUSTED_ARGS)
+> -BTF_ID_FLAGS(func, bpf_ct_set_nat_info, KF_TRUSTED_ARGS)
+>  BTF_SET8_END(nf_ct_kfunc_set)
+>
+>  static const struct btf_kfunc_id_set nf_conntrack_kfunc_set = {
+> diff --git a/net/netfilter/nf_nat_bpf.c b/net/netfilter/nf_nat_bpf.c
+> new file mode 100644
+> index 000000000000..0fa5a0bbb0ff
+> --- /dev/null
+> +++ b/net/netfilter/nf_nat_bpf.c
+> @@ -0,0 +1,79 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/* Unstable NAT Helpers for XDP and TC-BPF hook
+> + *
+> + * These are called from the XDP and SCHED_CLS BPF programs. Note that it is
+> + * allowed to break compatibility for these functions since the interface they
+> + * are exposed through to BPF programs is explicitly unstable.
+> + */
+> +
+> +#include <linux/bpf.h>
+> +#include <linux/btf_ids.h>
+> +#include <net/netfilter/nf_conntrack_bpf.h>
+> +#include <net/netfilter/nf_conntrack_core.h>
+> +#include <net/netfilter/nf_nat.h>
+> +
+> +__diag_push();
+> +__diag_ignore_all("-Wmissing-prototypes",
+> +                 "Global functions as their definitions will be in nf_nat BTF");
+> +
+> +/* bpf_ct_set_nat_info - Set source or destination nat address
+> + *
+> + * Set source or destination nat address of the newly allocated
+> + * nf_conn before insertion. This must be invoked for referenced
+> + * PTR_TO_BTF_ID to nf_conn___init.
+> + *
+> + * Parameters:
+> + * @nfct       - Pointer to referenced nf_conn object, obtained using
+> + *               bpf_xdp_ct_alloc or bpf_skb_ct_alloc.
+> + * @addr       - Nat source/destination address
+> + * @port       - Nat source/destination port. Non-positive values are
+> + *               interpreted as select a random port.
+> + * @manip      - NF_NAT_MANIP_SRC or NF_NAT_MANIP_DST
+> + */
+> +int bpf_ct_set_nat_info(struct nf_conn___init *nfct,
+> +                       union nf_inet_addr *addr, int port,
+> +                       enum nf_nat_manip_type manip)
+> +{
+> +       struct nf_conn *ct = (struct nf_conn *)nfct;
+> +       u16 proto = nf_ct_l3num(ct);
+> +       struct nf_nat_range2 range;
+> +
+> +       if (proto != NFPROTO_IPV4 && proto != NFPROTO_IPV6)
+> +               return -EINVAL;
+> +
+> +       memset(&range, 0, sizeof(struct nf_nat_range2));
+> +       range.flags = NF_NAT_RANGE_MAP_IPS;
+> +       range.min_addr = *addr;
+> +       range.max_addr = range.min_addr;
+> +       if (port > 0) {
+> +               range.flags |= NF_NAT_RANGE_PROTO_SPECIFIED;
+> +               range.min_proto.all = cpu_to_be16(port);
+> +               range.max_proto.all = range.min_proto.all;
+> +       }
+> +
+> +       return nf_nat_setup_info(ct, &range, manip) == NF_DROP ? -ENOMEM : 0;
+> +}
+> +
+> +__diag_pop()
+> +
+> +BTF_SET8_START(nf_nat_kfunc_set)
+> +BTF_ID_FLAGS(func, bpf_ct_set_nat_info, KF_TRUSTED_ARGS)
+> +BTF_SET8_END(nf_nat_kfunc_set)
+> +
+> +static const struct btf_kfunc_id_set nf_bpf_nat_kfunc_set = {
+> +       .owner = THIS_MODULE,
+> +       .set   = &nf_nat_kfunc_set,
+> +};
+> +
+> +int register_nf_nat_bpf(void)
+> +{
+> +       int ret;
+> +
+> +       ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_XDP,
+> +                                       &nf_bpf_nat_kfunc_set);
+> +       if (ret)
+> +               return ret;
+> +
+> +       return register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS,
+> +                                        &nf_bpf_nat_kfunc_set);
+> +}
+> diff --git a/net/netfilter/nf_nat_core.c b/net/netfilter/nf_nat_core.c
+> index 7981be526f26..1ed09c9af5e5 100644
+> --- a/net/netfilter/nf_nat_core.c
+> +++ b/net/netfilter/nf_nat_core.c
+> @@ -1152,7 +1152,7 @@ static int __init nf_nat_init(void)
+>         WARN_ON(nf_nat_hook != NULL);
+>         RCU_INIT_POINTER(nf_nat_hook, &nat_hook);
+>
+> -       return 0;
+> +       return register_nf_nat_bpf();
+>  }
+>
+>  static void __exit nf_nat_cleanup(void)
+> --
+> 2.37.3
+>
 
-Map fd directly used by eBPF programs without system call:
-https://lore.kernel.org/bpf/20220926154430.1552800-1-roberto.sassu@huaweicloud.com/
 
-Another problem is that there is no DAC, only MAC (work in progress). I
-don't know exactly the status of enabling unprivileged eBPF.
-
-Apart from this, now the discussion is focusing on the following
-problem. A map (kernel object) can be referenced in two ways: by ID or
-by path. By ID requires CAP_ADMIN, so we can consider by path for now.
-
-Given a map fd, the holder of that fd can create a new reference
-(pinning) to the map in the bpf filesystem (a new file whose private
-data contains the address of the kernel object).
-
-Pinning a map does not have a corresponding permission. Any fd mode is
-sufficient to do the operation. Furthermore, subsequent requests to
-obtain a map fd by path could result in receiving a read-write fd,
-while at the time of pinning the fd was read-only.
-
-While this does not seem to me a concern from MAC perspective, as
-attempts to get a map fd still have to pass through security_bpf_map(),
-in general this should be fixed without relying on LSMs.
-
-> Is the plan to ensure that the map and fd permissions are correct at
-> the core BPF level, or do we need to do some additional checks in the
-> LSMs (currently only SELinux)?
-
-Should we add a new map_pin permission in SELinux?
-
-Should we have DAC to restrict pinnning without LSMs?
-
-Thanks
-
-Roberto
+-- 
+WBR, Yauheni
 
