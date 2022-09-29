@@ -2,111 +2,168 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E2665EEC7D
-	for <lists+bpf@lfdr.de>; Thu, 29 Sep 2022 05:38:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 710785EED3F
+	for <lists+bpf@lfdr.de>; Thu, 29 Sep 2022 07:31:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233899AbiI2Dhw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Sep 2022 23:37:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58876 "EHLO
+        id S234352AbiI2FbP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Sep 2022 01:31:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232494AbiI2Dhp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Sep 2022 23:37:45 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30EAB123D8A
-        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 20:37:42 -0700 (PDT)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4MdJq75SjZzlX6y;
-        Thu, 29 Sep 2022 11:33:23 +0800 (CST)
-Received: from [10.174.179.191] (10.174.179.191) by
- canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 29 Sep 2022 11:37:40 +0800
-Message-ID: <17cd848b-d8c8-aadc-c1d8-9620b1a4440d@huawei.com>
-Date:   Thu, 29 Sep 2022 11:37:39 +0800
+        with ESMTP id S232298AbiI2FbN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Sep 2022 01:31:13 -0400
+Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A1BCD589A;
+        Wed, 28 Sep 2022 22:31:11 -0700 (PDT)
+Message-ID: <e529a40f-4c77-834e-3ac8-b58763b58993@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1664429469;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sEvqVlo0Zzjep4fx+xvVD56xNa3RFMj1Hz5Uj5KHcZQ=;
+        b=jUr/e6rW3jlTd6rTkV6g855vqjGTCip91CTMu/MvSNMeafol8wDy//ZPMv6Hax8Qr9cquD
+        XgCnwSx/+QYTeW4l5N62am77yMU9Q++S2JgThJHJyEFmJkm5vcWJWGQSmkvBweKB3t3L4q
+        RL019u/jHcC5ebCiSdxBefdUHlaIOMk=
+Date:   Wed, 28 Sep 2022 22:31:04 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.0
-Subject: Re: [bpf-next 00/11] bpf/selftests: convert some tests to ASSERT_*
- macros
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-        <martin.lau@linux.dev>, <song@kernel.org>, <yhs@fb.com>,
-        <john.fastabend@gmail.com>, <kpsingh@kernel.org>, <sdf@google.com>,
-        <haoluo@google.com>, <jolsa@kernel.org>, <mykolal@fb.com>,
-        <shuah@kernel.org>, <delyank@fb.com>, <zhudi2@huawei.com>,
-        <jakub@cloudflare.com>, <kuba@kernel.org>, <kuifeng@fb.com>,
-        <deso@posteo.net>, <zhuyifei@google.com>, <hengqi.chen@gmail.com>,
-        <bpf@vger.kernel.org>
-References: <1664169131-32405-1-git-send-email-wangyufen@huawei.com>
- <CAEf4BzY4GARZ7C+rYDuCHAbMRrC=Fx7eVSBZ60txme97it2FLg@mail.gmail.com>
-From:   wangyufen <wangyufen@huawei.com>
-In-Reply-To: <CAEf4BzY4GARZ7C+rYDuCHAbMRrC=Fx7eVSBZ60txme97it2FLg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.191]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- canpemm500010.china.huawei.com (7.192.105.118)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-6.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v2 bpf-next 4/5] bpf: tcp: Stop
+ bpf_setsockopt(TCP_CONGESTION) in init ops to recur itself
+Content-Language: en-US
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     bpf <bpf@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        kernel-team <kernel-team@fb.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Martin KaFai Lau <martin.lau@kernel.org>
+References: <20220923224453.2351753-1-kafai@fb.com>
+ <20220923224518.2353383-1-kafai@fb.com>
+ <CANn89iLf+=AmMntTqy0HyOfbv6PASLsT+E4PhXMAX+xU1Zh2Yg@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <CANn89iLf+=AmMntTqy0HyOfbv6PASLsT+E4PhXMAX+xU1Zh2Yg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On 9/28/22 7:04 PM, Eric Dumazet wrote:
+> On Fri, Sep 23, 2022 at 3:48 PM Martin KaFai Lau <kafai@fb.com> wrote:
+>>
+>> From: Martin KaFai Lau <martin.lau@kernel.org>
+>>
+>> When a bad bpf prog '.init' calls
+>> bpf_setsockopt(TCP_CONGESTION, "itself"), it will trigger this loop:
+>>
+>> .init => bpf_setsockopt(tcp_cc) => .init => bpf_setsockopt(tcp_cc) ...
+>> ... => .init => bpf_setsockopt(tcp_cc).
+>>
+>> It was prevented by the prog->active counter before but the prog->active
+>> detection cannot be used in struct_ops as explained in the earlier
+>> patch of the set.
+>>
+>> In this patch, the second bpf_setsockopt(tcp_cc) is not allowed
+>> in order to break the loop.  This is done by using a bit of
+>> an existing 1 byte hole in tcp_sock to check if there is
+>> on-going bpf_setsockopt(TCP_CONGESTION) in this tcp_sock.
+>>
+>> Note that this essentially limits only the first '.init' can
+>> call bpf_setsockopt(TCP_CONGESTION) to pick a fallback cc (eg. peer
+>> does not support ECN) and the second '.init' cannot fallback to
+>> another cc.  This applies even the second
+>> bpf_setsockopt(TCP_CONGESTION) will not cause a loop.
+>>
+>> Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
+>> ---
+>>   include/linux/tcp.h |  6 ++++++
+>>   net/core/filter.c   | 28 +++++++++++++++++++++++++++-
+>>   2 files changed, 33 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/include/linux/tcp.h b/include/linux/tcp.h
+>> index a9fbe22732c3..3bdf687e2fb3 100644
+>> --- a/include/linux/tcp.h
+>> +++ b/include/linux/tcp.h
+>> @@ -388,6 +388,12 @@ struct tcp_sock {
+>>          u8      bpf_sock_ops_cb_flags;  /* Control calling BPF programs
+>>                                           * values defined in uapi/linux/tcp.h
+>>                                           */
+>> +       u8      bpf_chg_cc_inprogress:1; /* In the middle of
+>> +                                         * bpf_setsockopt(TCP_CONGESTION),
+>> +                                         * it is to avoid the bpf_tcp_cc->init()
+>> +                                         * to recur itself by calling
+>> +                                         * bpf_setsockopt(TCP_CONGESTION, "itself").
+>> +                                         */
+>>   #define BPF_SOCK_OPS_TEST_FLAG(TP, ARG) (TP->bpf_sock_ops_cb_flags & ARG)
+>>   #else
+>>   #define BPF_SOCK_OPS_TEST_FLAG(TP, ARG) 0
+>> diff --git a/net/core/filter.c b/net/core/filter.c
+>> index 96f2f7a65e65..ac4c45c02da5 100644
+>> --- a/net/core/filter.c
+>> +++ b/net/core/filter.c
+>> @@ -5105,6 +5105,9 @@ static int bpf_sol_tcp_setsockopt(struct sock *sk, int optname,
+>>   static int sol_tcp_sockopt_congestion(struct sock *sk, char *optval,
+>>                                        int *optlen, bool getopt)
+>>   {
+>> +       struct tcp_sock *tp;
+>> +       int ret;
+>> +
+>>          if (*optlen < 2)
+>>                  return -EINVAL;
+>>
+>> @@ -5125,8 +5128,31 @@ static int sol_tcp_sockopt_congestion(struct sock *sk, char *optval,
+>>          if (*optlen >= sizeof("cdg") - 1 && !strncmp("cdg", optval, *optlen))
+>>                  return -ENOTSUPP;
+>>
+>> -       return do_tcp_setsockopt(sk, SOL_TCP, TCP_CONGESTION,
+>> +       /* It stops this looping
+>> +        *
+>> +        * .init => bpf_setsockopt(tcp_cc) => .init =>
+>> +        * bpf_setsockopt(tcp_cc)" => .init => ....
+>> +        *
+>> +        * The second bpf_setsockopt(tcp_cc) is not allowed
+>> +        * in order to break the loop when both .init
+>> +        * are the same bpf prog.
+>> +        *
+>> +        * This applies even the second bpf_setsockopt(tcp_cc)
+>> +        * does not cause a loop.  This limits only the first
+>> +        * '.init' can call bpf_setsockopt(TCP_CONGESTION) to
+>> +        * pick a fallback cc (eg. peer does not support ECN)
+>> +        * and the second '.init' cannot fallback to
+>> +        * another.
+>> +        */
+>> +       tp = tcp_sk(sk);
+>> +       if (tp->bpf_chg_cc_inprogress)
+>> +               return -EBUSY;
+>> +
+> 
+> Is the socket locked (and owned by current thread) at this point ?
+> If not, changing bpf_chg_cc_inprogress would be racy.
 
-在 2022/9/29 8:37, Andrii Nakryiko 写道:
-> On Sun, Sep 25, 2022 at 9:51 PM Wang Yufen <wangyufen@huawei.com> wrote:
->> Convert some tests to use the preferred ASSERT_* macros instead of the
->> deprecated CHECK().
+Yes, the socket is locked and owned.  There is a sock_owned_by_me check earlier 
+in _bpf_setsockopt().
+
+> 
+> 
+>> +       tp->bpf_chg_cc_inprogress = 1;
+>> +       ret = do_tcp_setsockopt(sk, SOL_TCP, TCP_CONGESTION,
+>>                                  KERNEL_SOCKPTR(optval), *optlen);
+>> +       tp->bpf_chg_cc_inprogress = 0;
+>> +       return ret;
+>>   }
 >>
->> Wang Yufen (11):
->>    bpf/selftests: convert sockmap_basic test to ASSERT_* macros
->>    bpf/selftests: convert sockmap_ktls test to ASSERT_* macros
->>    bpf/selftests: convert sockopt test to ASSERT_* macros
->>    bpf/selftests: convert sockopt_inherit test to ASSERT_* macros
->>    bpf/selftests: convert sockopt_multi test to ASSERT_* macros
->>    bpf/selftests: convert sockopt_sk test to ASSERT_* macros
->>    bpf/selftests: convert tcp_estats test to ASSERT_* macros
->>    bpf/selftests: convert tcp_hdr_options test to ASSERT_* macros
->>    bpf/selftests: convert tcp_rtt test to ASSERT_* macros
->>    bpf/selftests: convert tcpbpf_user test to ASSERT_* macros
->>    bpf/selftests: convert udp_limit test to ASSERT_* macros
->>
->>   .../selftests/bpf/prog_tests/sockmap_basic.c       | 87 ++++++++--------------
->>   .../selftests/bpf/prog_tests/sockmap_ktls.c        | 39 +++-------
->>   tools/testing/selftests/bpf/prog_tests/sockopt.c   |  4 +-
->>   .../selftests/bpf/prog_tests/sockopt_inherit.c     | 30 ++++----
->>   .../selftests/bpf/prog_tests/sockopt_multi.c       | 10 +--
->>   .../testing/selftests/bpf/prog_tests/sockopt_sk.c  |  2 +-
->>   .../testing/selftests/bpf/prog_tests/tcp_estats.c  |  4 +-
->>   .../selftests/bpf/prog_tests/tcp_hdr_options.c     | 80 +++++++-------------
->>   tools/testing/selftests/bpf/prog_tests/tcp_rtt.c   | 13 ++--
->>   .../testing/selftests/bpf/prog_tests/tcpbpf_user.c | 32 +++-----
->>   tools/testing/selftests/bpf/prog_tests/udp_limit.c | 18 ++---
->>   11 files changed, 117 insertions(+), 202 deletions(-)
->>
+>>   static int sol_tcp_sockopt(struct sock *sk, int optname,
 >> --
->> 1.8.3.1
+>> 2.30.2
 >>
-> Thanks for the clean up! I've changed one ASSERT_OK(err && errno !=
-> ENOENT) to ASSERT_EQ(errno, ENOENT) in patch #1, that expresses the
-> intent more directly. Please also keep in mind that patch prefix
-> should (conventionally) be "selftests/bpf: ". I've fixed that for all
-> patches while applying.
 
-I got it.Thanks for the fixes.
-
->
-> We are down to:
->
-> $ rg -w CHECK | wc -l
-> 1186
-> 09/28 17:36:39.381
-> andriin@devbig019:~/linux/tools/testing/selftests/bpf (master)
-> $ rg -w CHECK_FAIL | wc -l
-> 463
->
-> Some ways to go still, but slowly decreasing. Thank you for your contribution!
