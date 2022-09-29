@@ -2,35 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 710785EED3F
-	for <lists+bpf@lfdr.de>; Thu, 29 Sep 2022 07:31:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63A155EED4B
+	for <lists+bpf@lfdr.de>; Thu, 29 Sep 2022 07:38:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234352AbiI2FbP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Sep 2022 01:31:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43098 "EHLO
+        id S234284AbiI2FiD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Sep 2022 01:38:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232298AbiI2FbN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 29 Sep 2022 01:31:13 -0400
-Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A1BCD589A;
-        Wed, 28 Sep 2022 22:31:11 -0700 (PDT)
-Message-ID: <e529a40f-4c77-834e-3ac8-b58763b58993@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1664429469;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sEvqVlo0Zzjep4fx+xvVD56xNa3RFMj1Hz5Uj5KHcZQ=;
-        b=jUr/e6rW3jlTd6rTkV6g855vqjGTCip91CTMu/MvSNMeafol8wDy//ZPMv6Hax8Qr9cquD
-        XgCnwSx/+QYTeW4l5N62am77yMU9Q++S2JgThJHJyEFmJkm5vcWJWGQSmkvBweKB3t3L4q
-        RL019u/jHcC5ebCiSdxBefdUHlaIOMk=
-Date:   Wed, 28 Sep 2022 22:31:04 -0700
+        with ESMTP id S233899AbiI2FiC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Sep 2022 01:38:02 -0400
+Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36CE012B48B
+        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 22:38:01 -0700 (PDT)
+Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-3539c6f39d7so3911707b3.12
+        for <bpf@vger.kernel.org>; Wed, 28 Sep 2022 22:38:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=vz0fRDjbJOjYUQ/nlWZ1qBnLntPF4vStJr0Z5e5Tnq8=;
+        b=h94bEFgNvlJwIfmXpBOWEDdZoe1CpIvw4ojjnjZMeDnk5xYQl5RafvRKLupXItRsHW
+         ymWTLCS8WG11OdHv42Szl8hxYxzs9ddimiZSUbMMx7OyRZXMZrJofn/kmZ/Juc5zF3v8
+         DdY5oT8PrA4yWVWMgVaicDo7dciGnEGSN4JCcHRONtkNzy0knrFGbML3Au0YiwCFXzig
+         3S/3CFmNoy4WdgFg0p4h0gq5TL9iODevq3bkGJlaU0IJqUK/CJHFrqyeGtaRNewTHZec
+         x5RIPhCH0e8CgIzseJD5VM31Iw+TOazgrcZZ3b+Ed1bj+86TecWawOEWFJ+A5yVcnxCb
+         NtSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=vz0fRDjbJOjYUQ/nlWZ1qBnLntPF4vStJr0Z5e5Tnq8=;
+        b=1WyNyvISxbRYEtcSTfNwEdoT6sGX09xnNQTFtw/Jip2pVpccbVCNaGXEHISc3Sfbm4
+         GJ61SHcgGxEiili+FBH14q9FANdWEbKSI1pV49Kn+nlEFL2WVYDx3bki6jVxAq2ws1yn
+         e1tUjn2hhWkZe9CVi59naow9oIVaDnqx5Lm+2fASFSqAidZTp1irmsql5smeInoy0L2j
+         lOUo6gESWsqIVvfac4lPFPmL3hFi4sUVtbJ60/aCeiecQnHboxL4avfyYOOorCUQpFVO
+         D2lswyCqltE9fixkk0eskcKwMc5emNBOM+h3t+1cpa7H1EM1llnck3LO502kI5ga0pQW
+         1rQQ==
+X-Gm-Message-State: ACrzQf0rpS8ifOJei/lVtCZLJ5fE800DI2w6RhOSqoJZMWBSS4jzKfvS
+        SVb+PlMLats/0qaNa40IiF/todmmHXUpSh2l4gFYNW1o8AmXGQ==
+X-Google-Smtp-Source: AMsMyM5Bho2c+hRKT+OulkCUqFdDNTJiJRVsTyA6NryhEowp5N4Er5EgNzU2U4Mif9DS1KuMsOJnGhCYGqRTTNiJxOw=
+X-Received: by 2002:a0d:e244:0:b0:351:ce09:1b13 with SMTP id
+ l65-20020a0de244000000b00351ce091b13mr1414430ywe.332.1664429880178; Wed, 28
+ Sep 2022 22:38:00 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 bpf-next 4/5] bpf: tcp: Stop
- bpf_setsockopt(TCP_CONGESTION) in init ops to recur itself
-Content-Language: en-US
-To:     Eric Dumazet <edumazet@google.com>
+References: <20220923224453.2351753-1-kafai@fb.com> <20220923224518.2353383-1-kafai@fb.com>
+ <CANn89iLf+=AmMntTqy0HyOfbv6PASLsT+E4PhXMAX+xU1Zh2Yg@mail.gmail.com> <e529a40f-4c77-834e-3ac8-b58763b58993@linux.dev>
+In-Reply-To: <e529a40f-4c77-834e-3ac8-b58763b58993@linux.dev>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Wed, 28 Sep 2022 22:37:49 -0700
+Message-ID: <CANn89i+7G7kkN5mG=tEOd4xHAV7LyLQ7yj2a4hjsGb1_gFQ82A@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 4/5] bpf: tcp: Stop bpf_setsockopt(TCP_CONGESTION)
+ in init ops to recur itself
+To:     Martin KaFai Lau <martin.lau@linux.dev>
 Cc:     bpf <bpf@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -40,130 +63,116 @@ Cc:     bpf <bpf@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
         kernel-team <kernel-team@fb.com>,
         Paolo Abeni <pabeni@redhat.com>,
         Martin KaFai Lau <martin.lau@kernel.org>
-References: <20220923224453.2351753-1-kafai@fb.com>
- <20220923224518.2353383-1-kafai@fb.com>
- <CANn89iLf+=AmMntTqy0HyOfbv6PASLsT+E4PhXMAX+xU1Zh2Yg@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <CANn89iLf+=AmMntTqy0HyOfbv6PASLsT+E4PhXMAX+xU1Zh2Yg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 9/28/22 7:04 PM, Eric Dumazet wrote:
-> On Fri, Sep 23, 2022 at 3:48 PM Martin KaFai Lau <kafai@fb.com> wrote:
->>
->> From: Martin KaFai Lau <martin.lau@kernel.org>
->>
->> When a bad bpf prog '.init' calls
->> bpf_setsockopt(TCP_CONGESTION, "itself"), it will trigger this loop:
->>
->> .init => bpf_setsockopt(tcp_cc) => .init => bpf_setsockopt(tcp_cc) ...
->> ... => .init => bpf_setsockopt(tcp_cc).
->>
->> It was prevented by the prog->active counter before but the prog->active
->> detection cannot be used in struct_ops as explained in the earlier
->> patch of the set.
->>
->> In this patch, the second bpf_setsockopt(tcp_cc) is not allowed
->> in order to break the loop.  This is done by using a bit of
->> an existing 1 byte hole in tcp_sock to check if there is
->> on-going bpf_setsockopt(TCP_CONGESTION) in this tcp_sock.
->>
->> Note that this essentially limits only the first '.init' can
->> call bpf_setsockopt(TCP_CONGESTION) to pick a fallback cc (eg. peer
->> does not support ECN) and the second '.init' cannot fallback to
->> another cc.  This applies even the second
->> bpf_setsockopt(TCP_CONGESTION) will not cause a loop.
->>
->> Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
->> ---
->>   include/linux/tcp.h |  6 ++++++
->>   net/core/filter.c   | 28 +++++++++++++++++++++++++++-
->>   2 files changed, 33 insertions(+), 1 deletion(-)
->>
->> diff --git a/include/linux/tcp.h b/include/linux/tcp.h
->> index a9fbe22732c3..3bdf687e2fb3 100644
->> --- a/include/linux/tcp.h
->> +++ b/include/linux/tcp.h
->> @@ -388,6 +388,12 @@ struct tcp_sock {
->>          u8      bpf_sock_ops_cb_flags;  /* Control calling BPF programs
->>                                           * values defined in uapi/linux/tcp.h
->>                                           */
->> +       u8      bpf_chg_cc_inprogress:1; /* In the middle of
->> +                                         * bpf_setsockopt(TCP_CONGESTION),
->> +                                         * it is to avoid the bpf_tcp_cc->init()
->> +                                         * to recur itself by calling
->> +                                         * bpf_setsockopt(TCP_CONGESTION, "itself").
->> +                                         */
->>   #define BPF_SOCK_OPS_TEST_FLAG(TP, ARG) (TP->bpf_sock_ops_cb_flags & ARG)
->>   #else
->>   #define BPF_SOCK_OPS_TEST_FLAG(TP, ARG) 0
->> diff --git a/net/core/filter.c b/net/core/filter.c
->> index 96f2f7a65e65..ac4c45c02da5 100644
->> --- a/net/core/filter.c
->> +++ b/net/core/filter.c
->> @@ -5105,6 +5105,9 @@ static int bpf_sol_tcp_setsockopt(struct sock *sk, int optname,
->>   static int sol_tcp_sockopt_congestion(struct sock *sk, char *optval,
->>                                        int *optlen, bool getopt)
->>   {
->> +       struct tcp_sock *tp;
->> +       int ret;
->> +
->>          if (*optlen < 2)
->>                  return -EINVAL;
->>
->> @@ -5125,8 +5128,31 @@ static int sol_tcp_sockopt_congestion(struct sock *sk, char *optval,
->>          if (*optlen >= sizeof("cdg") - 1 && !strncmp("cdg", optval, *optlen))
->>                  return -ENOTSUPP;
->>
->> -       return do_tcp_setsockopt(sk, SOL_TCP, TCP_CONGESTION,
->> +       /* It stops this looping
->> +        *
->> +        * .init => bpf_setsockopt(tcp_cc) => .init =>
->> +        * bpf_setsockopt(tcp_cc)" => .init => ....
->> +        *
->> +        * The second bpf_setsockopt(tcp_cc) is not allowed
->> +        * in order to break the loop when both .init
->> +        * are the same bpf prog.
->> +        *
->> +        * This applies even the second bpf_setsockopt(tcp_cc)
->> +        * does not cause a loop.  This limits only the first
->> +        * '.init' can call bpf_setsockopt(TCP_CONGESTION) to
->> +        * pick a fallback cc (eg. peer does not support ECN)
->> +        * and the second '.init' cannot fallback to
->> +        * another.
->> +        */
->> +       tp = tcp_sk(sk);
->> +       if (tp->bpf_chg_cc_inprogress)
->> +               return -EBUSY;
->> +
-> 
-> Is the socket locked (and owned by current thread) at this point ?
-> If not, changing bpf_chg_cc_inprogress would be racy.
+On Wed, Sep 28, 2022 at 10:31 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
+>
+> On 9/28/22 7:04 PM, Eric Dumazet wrote:
+> > On Fri, Sep 23, 2022 at 3:48 PM Martin KaFai Lau <kafai@fb.com> wrote:
+> >>
+> >> From: Martin KaFai Lau <martin.lau@kernel.org>
+> >>
+> >> When a bad bpf prog '.init' calls
+> >> bpf_setsockopt(TCP_CONGESTION, "itself"), it will trigger this loop:
+> >>
+> >> .init => bpf_setsockopt(tcp_cc) => .init => bpf_setsockopt(tcp_cc) ...
+> >> ... => .init => bpf_setsockopt(tcp_cc).
+> >>
+> >> It was prevented by the prog->active counter before but the prog->active
+> >> detection cannot be used in struct_ops as explained in the earlier
+> >> patch of the set.
+> >>
+> >> In this patch, the second bpf_setsockopt(tcp_cc) is not allowed
+> >> in order to break the loop.  This is done by using a bit of
+> >> an existing 1 byte hole in tcp_sock to check if there is
+> >> on-going bpf_setsockopt(TCP_CONGESTION) in this tcp_sock.
+> >>
+> >> Note that this essentially limits only the first '.init' can
+> >> call bpf_setsockopt(TCP_CONGESTION) to pick a fallback cc (eg. peer
+> >> does not support ECN) and the second '.init' cannot fallback to
+> >> another cc.  This applies even the second
+> >> bpf_setsockopt(TCP_CONGESTION) will not cause a loop.
+> >>
+> >> Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
+> >> ---
+> >>   include/linux/tcp.h |  6 ++++++
+> >>   net/core/filter.c   | 28 +++++++++++++++++++++++++++-
+> >>   2 files changed, 33 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/include/linux/tcp.h b/include/linux/tcp.h
+> >> index a9fbe22732c3..3bdf687e2fb3 100644
+> >> --- a/include/linux/tcp.h
+> >> +++ b/include/linux/tcp.h
+> >> @@ -388,6 +388,12 @@ struct tcp_sock {
+> >>          u8      bpf_sock_ops_cb_flags;  /* Control calling BPF programs
+> >>                                           * values defined in uapi/linux/tcp.h
+> >>                                           */
+> >> +       u8      bpf_chg_cc_inprogress:1; /* In the middle of
+> >> +                                         * bpf_setsockopt(TCP_CONGESTION),
+> >> +                                         * it is to avoid the bpf_tcp_cc->init()
+> >> +                                         * to recur itself by calling
+> >> +                                         * bpf_setsockopt(TCP_CONGESTION, "itself").
+> >> +                                         */
+> >>   #define BPF_SOCK_OPS_TEST_FLAG(TP, ARG) (TP->bpf_sock_ops_cb_flags & ARG)
+> >>   #else
+> >>   #define BPF_SOCK_OPS_TEST_FLAG(TP, ARG) 0
+> >> diff --git a/net/core/filter.c b/net/core/filter.c
+> >> index 96f2f7a65e65..ac4c45c02da5 100644
+> >> --- a/net/core/filter.c
+> >> +++ b/net/core/filter.c
+> >> @@ -5105,6 +5105,9 @@ static int bpf_sol_tcp_setsockopt(struct sock *sk, int optname,
+> >>   static int sol_tcp_sockopt_congestion(struct sock *sk, char *optval,
+> >>                                        int *optlen, bool getopt)
+> >>   {
+> >> +       struct tcp_sock *tp;
+> >> +       int ret;
+> >> +
+> >>          if (*optlen < 2)
+> >>                  return -EINVAL;
+> >>
+> >> @@ -5125,8 +5128,31 @@ static int sol_tcp_sockopt_congestion(struct sock *sk, char *optval,
+> >>          if (*optlen >= sizeof("cdg") - 1 && !strncmp("cdg", optval, *optlen))
+> >>                  return -ENOTSUPP;
+> >>
+> >> -       return do_tcp_setsockopt(sk, SOL_TCP, TCP_CONGESTION,
+> >> +       /* It stops this looping
+> >> +        *
+> >> +        * .init => bpf_setsockopt(tcp_cc) => .init =>
+> >> +        * bpf_setsockopt(tcp_cc)" => .init => ....
+> >> +        *
+> >> +        * The second bpf_setsockopt(tcp_cc) is not allowed
+> >> +        * in order to break the loop when both .init
+> >> +        * are the same bpf prog.
+> >> +        *
+> >> +        * This applies even the second bpf_setsockopt(tcp_cc)
+> >> +        * does not cause a loop.  This limits only the first
+> >> +        * '.init' can call bpf_setsockopt(TCP_CONGESTION) to
+> >> +        * pick a fallback cc (eg. peer does not support ECN)
+> >> +        * and the second '.init' cannot fallback to
+> >> +        * another.
+> >> +        */
+> >> +       tp = tcp_sk(sk);
+> >> +       if (tp->bpf_chg_cc_inprogress)
+> >> +               return -EBUSY;
+> >> +
+> >
+> > Is the socket locked (and owned by current thread) at this point ?
+> > If not, changing bpf_chg_cc_inprogress would be racy.
+>
+> Yes, the socket is locked and owned.  There is a sock_owned_by_me check earlier
+> in _bpf_setsockopt().
 
-Yes, the socket is locked and owned.  There is a sock_owned_by_me check earlier 
-in _bpf_setsockopt().
+Good to know. Note a listener can be cloned without socket lock being held.
 
-> 
-> 
->> +       tp->bpf_chg_cc_inprogress = 1;
->> +       ret = do_tcp_setsockopt(sk, SOL_TCP, TCP_CONGESTION,
->>                                  KERNEL_SOCKPTR(optval), *optlen);
->> +       tp->bpf_chg_cc_inprogress = 0;
->> +       return ret;
->>   }
->>
->>   static int sol_tcp_sockopt(struct sock *sk, int optname,
->> --
->> 2.30.2
->>
-
+In order to avoid surprises, I would clear bpf_chg_cc_inprogress in
+tcp_create_openreq_child()
