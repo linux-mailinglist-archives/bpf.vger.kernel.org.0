@@ -2,62 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E89C15F1614
-	for <lists+bpf@lfdr.de>; Sat,  1 Oct 2022 00:26:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79DF05F1637
+	for <lists+bpf@lfdr.de>; Sat,  1 Oct 2022 00:34:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232340AbiI3WZ6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Sep 2022 18:25:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51126 "EHLO
+        id S230236AbiI3We0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Sep 2022 18:34:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232762AbiI3WZo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Sep 2022 18:25:44 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 947DFC6962;
-        Fri, 30 Sep 2022 15:25:43 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id e18so7713173edj.3;
-        Fri, 30 Sep 2022 15:25:43 -0700 (PDT)
+        with ESMTP id S229594AbiI3We0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Sep 2022 18:34:26 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D92117420E;
+        Fri, 30 Sep 2022 15:34:24 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id dv25so11771768ejb.12;
+        Fri, 30 Sep 2022 15:34:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=XSB2fgyM7mwVlglUIENBxNasqUhFjmrYfDkQjbr4j8w=;
-        b=IE2kpqaFyz3n9bL5USI7d0A8Dk+IbQxHxoiXT/PgY+dDDJQnrTaL1/MnCWMPi2aYku
-         koYDeuXfM9X1zNqh3dUjLCCNSmd3JyxxsosVAjsB6RTH2tMOy0i+hGGWouH6WWpsBhZw
-         o4FCsVhYZiZRiljwPULzV4gmWTLD/3Skv4io1nmB0/iJ2ndqk9bzy5+rptMnQX/gh/hr
-         a6IFW96Tuzpqghm36zhwCk/EC1kzigQ2WG2SFq0j1FAPSKC625MDowRcStb+LOxc/WAI
-         GK3uJ4vagpku+Or2qxl2SF0ePkDfXzyAfGHj9rm9/be8cSV8P9iEn0ulRHRzu+MYs7/8
-         A3VA==
+        bh=7eVHcRj7bOTZCSoAUca2KGtBBs0g8lofOLyuo3DNi08=;
+        b=OWwpfDo6nJkLj4c8oYWeKltUAPO4XgrAWv5U21zYbvxXgNBnsly/xqgtAcH6HhHyJN
+         vqBPJy/094FFPg7DCLf+lmx2L3O8IHvFpy7X4hKfGJlgCFTdhSOwXv5v/1A+a2GxqbNd
+         qdeLPj9oLCE2DHblUdargmzdWwfH+FyQN8U3ncL+KvcyWP9sp2DT4i9gfNCh0Gb1pzdg
+         STOT/gBd3INNdDH6ml/3n0OpMEK4yClvJzTrft4YqX/Mmux+lH7AII5rAP8hK8S4hosM
+         bH5DC06p9s4vNSKvmp+mvtQ+FSb96Pakn21GBFqGpneG+BpIHRqVOy0rxLl02wVB+bWE
+         n9fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=XSB2fgyM7mwVlglUIENBxNasqUhFjmrYfDkQjbr4j8w=;
-        b=vPevTsv4M2O1gFtI/fMQZ87VwZuR+h+OqMNdmiNbOVKBrK2nP4xy3Ct8IKXX2CrTDc
-         7o6B18nv2fMq3hU5OE7w+22HSajZM40PAmFeDYlbKabGe0+N6MgpidsnCz4ABTCT+/0j
-         W24FgZw2WgNuiCsK9ji1x/hI+kOZzcb0Tjo85IWpH1qtNFvYxaivLxvZeAEQe3uOjiDI
-         066hpJj2x9BhlJ9RZyb8/JcCIP+0HwJef6ds2CnCL4MVTO1m4Xj8A6Hipssy4V3V3X6i
-         3bF/jDfTAIkXrdaGLv8GmIPIUG+SAYxI+OJWI6fexPb2QXrQSgCeGtZ5xM8GoMC0DUlZ
-         ATVQ==
-X-Gm-Message-State: ACrzQf1MI7JhqTeMlkUie/1Gs31VuzJ0pbVSg5GJy4Hq7qYbCCrnQxaN
-        TpiyKtnRapS0in2pC0rdNRAnCcSKRv+KkWgBDgkEcanr
-X-Google-Smtp-Source: AMsMyM4QZDO+CkV5kLgWMbGQrIZIdEFKYCdjz/MPBAkK3wH/j8CkVxIIxNappnmw2xyqoRBwZBFgMzeMEBUidaMdSDs=
-X-Received: by 2002:a05:6402:3603:b0:451:fdda:dddd with SMTP id
- el3-20020a056402360300b00451fddaddddmr9177305edb.81.1664576741982; Fri, 30
- Sep 2022 15:25:41 -0700 (PDT)
+        bh=7eVHcRj7bOTZCSoAUca2KGtBBs0g8lofOLyuo3DNi08=;
+        b=27pPZqOhMeZBthOu0SJ426jhOs1/AjTha/0GsyUxrKM+7h1p7Osqdm6kSWaryosmBu
+         toos7zIT3HhMFve13SpjiOfDSLcPpZ6RkFr9T5brXjs7YnY9Nd5V4VGfEtwKDhrSHe2q
+         Iwxow0d0DANDgPOV+mQLmIdK75PAluimG42H6VWdP+6J6MrH2R18w/VHou8OmMn4ud6m
+         RYrIcpTIdxQcfVVnn9Js/gaPtGCMaBl7T2WmSDN69H1pFzp7hv7i8GcfavtvbRRkjWqg
+         URG7WWp59MrBHW2llXj0Q7ZhVUNnxFdZ1EIM5W4WCXvl35ZUZPnsF3tYgTyGc8Uhn4au
+         RIhA==
+X-Gm-Message-State: ACrzQf1cinqYb5PYHfWsUuPFtAvCMvgA4AmWSPhTh+BCfGrgESndoOB+
+        sbkR9FNqfi/VMM9zYvRFO3GsFMk36c72BeGHQLU=
+X-Google-Smtp-Source: AMsMyM5oLkCTD4Mgre7YQ5XEM/Vy8tcOUer5mjeC7MxutJyVNVlaxAGdlZ1ZTKYuy0vKQfNQitRS91hfcc157zmBbOg=
+X-Received: by 2002:a17:907:984:b0:77f:4d95:9e2f with SMTP id
+ bf4-20020a170907098400b0077f4d959e2fmr8032846ejc.176.1664577262903; Fri, 30
+ Sep 2022 15:34:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220922115257.99815-1-donald.hunter@gmail.com>
- <20220922115257.99815-2-donald.hunter@gmail.com> <87tu4zsfse.fsf@meer.lwn.net>
- <m2h70y87eh.fsf@gmail.com> <m2wn9l6v7e.fsf@gmail.com>
-In-Reply-To: <m2wn9l6v7e.fsf@gmail.com>
+References: <20220930003844.1210987-1-cmllamas@google.com>
+In-Reply-To: <20220930003844.1210987-1-cmllamas@google.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 30 Sep 2022 15:25:30 -0700
-Message-ID: <CAEf4Bzb8f+Oy5okz38yq+Vm0Pse5gMbWwWrj+6d8-BDaCtHJKg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 1/2] Add subdir support to Documentation makefile
-To:     Donald Hunter <donald.hunter@gmail.com>,
-        grantseltzer <grantseltzer@gmail.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>, bpf@vger.kernel.org,
-        linux-doc@vger.kernel.org
+Date:   Fri, 30 Sep 2022 15:34:10 -0700
+Message-ID: <CAEf4BzZC=NAT9-SCWzBkAGhYusZHokhKBQrMNSDuTWfZnr_B6A@mail.gmail.com>
+Subject: Re: [PATCH] mm/mmap: undo ->mmap() when arch_validate_flags() fails
+To:     Carlos Llamas <cmllamas@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Christian Brauner <brauner@kernel.org>, linux-mm@kvack.org,
+        bpf@vger.kernel.org, kernel-team@android.com,
+        Liam Howlett <liam.howlett@oracle.com>,
+        Suren Baghdasaryan <surenb@google.com>, stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -69,67 +71,114 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 30, 2022 at 2:58 AM Donald Hunter <donald.hunter@gmail.com> wrote:
+On Thu, Sep 29, 2022 at 5:51 PM Carlos Llamas <cmllamas@google.com> wrote:
 >
-> Donald Hunter <donald.hunter@gmail.com> writes:
+> Commit c462ac288f2c ("mm: Introduce arch_validate_flags()") added a late
+> check in mmap_region() to let architectures validate vm_flags. The check
+> needs to happen after calling ->mmap() as the flags can potentially be
+> modified during this callback.
 >
-> > Jonathan Corbet <corbet@lwn.net> writes:
-> >
-> >> Beyond that, I would *really* like to see more use of Sphinx extensions
-> >> for this kind of special-case build rather than hacking in more
-> >> special-purpose scripts.  Is there a reason why it couldn't be done that
-> >> way?
-> >
-> > I looked at writing the BPF program types as a Sphinx extension but
-> > found that approach problematic for the following reasons:
-> >
-> > - This needs to run both in the kernel tree and the libbpf Github
-> >   project. The tree layouts are different so the relative paths to
-> >   source files are different. I don't see an elegant way to handle this
-> >   inline in a .rst file. This can easily be handled in Makefiles
-> >   that are specific to each project.
-> >
-> > - It makes use of csv-table which does all the heavy lifting to produce
-> >   the desired output.
-> >
-> > - I have zero experience of extending Sphinx.
-> >
-> > I thought about submitting this directly to the libbpf Github project
-> > and then just linking from the kernel docs to the page about program
-> > types in the libbpf project docs. But I think it is preferable to master
-> > the gen-bpf-progtypes.sh script in the kernel tree where it can be
-> > maintained in the same repo as the libbpf.c source file it parses.
+> If arch_validate_flags() check fails we unmap and free the vma. However,
+> the error path fails to undo the ->mmap() call that previously succeeded
+> and depending on the specific ->mmap() implementation this translates to
+> reference increments, memory allocations and other operations what will
+> not be cleaned up.
 >
-> Given the pushback on Makefile changes and the need for this patch to be
-> compatible with both the kernel tree and the libbpf repo, can I suggest
-> a pragmatic way forward.
+> There are several places (mainly device drivers) where this is an issue.
+> However, one specific example is bpf_map_mmap() which keeps count of the
+> mappings in map->writecnt. The count is incremented on ->mmap() and then
+> decremented on vm_ops->close(). When arch_validate_flags() fails this
+> count is off since bpf_map_mmap_close() is never called.
 >
-> I suggest that I drop the gen-bpf-progtypes.sh script and Makefile
+> One can reproduce this issue in arm64 devices with MTE support. Here the
+> vm_flags are checked to only allow VM_MTE if VM_MTE_ALLOWED has been set
+> previously. From userspace then is enough to pass the PROT_MTE flag to
+> mmap() syscall to trigger the arch_validate_flags() failure.
+>
+> The following program reproduces this issue:
+> ---
+>   #include <stdio.h>
+>   #include <unistd.h>
+>   #include <linux/unistd.h>
+>   #include <linux/bpf.h>
+>   #include <sys/mman.h>
+>
+>   int main(void)
+>   {
+>         union bpf_attr attr = {
+>                 .map_type = BPF_MAP_TYPE_ARRAY,
+>                 .key_size = sizeof(int),
+>                 .value_size = sizeof(long long),
+>                 .max_entries = 256,
+>                 .map_flags = BPF_F_MMAPABLE,
+>         };
+>         int fd;
+>
+>         fd = syscall(__NR_bpf, BPF_MAP_CREATE, &attr, sizeof(attr));
+>         mmap(NULL, 4096, PROT_WRITE | PROT_MTE, MAP_SHARED, fd, 0);
+>
+>         return 0;
+>   }
+> ---
+>
+> By manually adding some log statements to the vm_ops callbacks we can
+> confirm that when passing PROT_MTE to mmap() the map->writecnt is off
+> upon ->release():
+>
+> With PROT_MTE flag:
+>   root@debian:~# ./bpf-test
+>   [  111.263874] bpf_map_write_active_inc: map=9 writecnt=1
+>   [  111.288763] bpf_map_release: map=9 writecnt=1
+>
+> Without PROT_MTE flag:
+>   root@debian:~# ./bpf-test
+>   [  157.816912] bpf_map_write_active_inc: map=10 writecnt=1
+>   [  157.830442] bpf_map_write_active_dec: map=10 writecnt=0
+>   [  157.832396] bpf_map_release: map=10 writecnt=0
+>
+> This patch fixes the above issue by calling vm_ops->close() when the
+> arch_validate_flags() check fails, after this we can proceed to unmap
+> and free the vma on the error path.
+>
+> Fixes: c462ac288f2c ("mm: Introduce arch_validate_flags()")
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Liam Howlett <liam.howlett@oracle.com>
+> Cc: Suren Baghdasaryan <surenb@google.com>
+> Cc: <stable@vger.kernel.org> # v5.10+
+> Signed-off-by: Carlos Llamas <cmllamas@google.com>
+> ---
 
-It's way too easy to forget to update this table when adding new
-program type support in libbpf. So if possible I think script is the
-way to go.
+Makes sense to me, open/close callbacks should be symmetrical. From
+BPF-side of things:
 
-Jonathan, given the script is really minimal and allows to keep
-documentation in sync with libbpf source code, do you have a strong
-objection? Writing a custom plugin seems like a too high bar for
-something pretty straightforward like this?
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-Also, should this be routed through your tree or you'd like us to take
-it through bpf-next tree?
-
-
-Donald, if Jonathan is feeling really strongly, then I guess manually
-generated table is ok approach as well, but let's hear from Jonathan
-first.
-
-Also cc Grant about logistics of kernel vs libbpf docs.
-
-
-> changes from the patchset and just submit static documentation contents
-> for the table of BPF program types. This would avoid any downstream
-> breakage when syncing from the kernel tree to the libbpf github
-> repo. The table of BPF program types can be maintained manually which
-> should not be a burden going forward. Another benefit would be that the
-> resulting documentation can be curated more easily than if it were
-> auto-generated.
+>  mm/mmap.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/mm/mmap.c b/mm/mmap.c
+> index 9d780f415be3..36c08e2c78da 100644
+> --- a/mm/mmap.c
+> +++ b/mm/mmap.c
+> @@ -1797,7 +1797,7 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
+>         if (!arch_validate_flags(vma->vm_flags)) {
+>                 error = -EINVAL;
+>                 if (file)
+> -                       goto unmap_and_free_vma;
+> +                       goto close_and_free_vma;
+>                 else
+>                         goto free_vma;
+>         }
+> @@ -1844,6 +1844,9 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
+>
+>         return addr;
+>
+> +close_and_free_vma:
+> +       if (vma->vm_ops && vma->vm_ops->close)
+> +               vma->vm_ops->close(vma);
+>  unmap_and_free_vma:
+>         fput(vma->vm_file);
+>         vma->vm_file = NULL;
+> --
+> 2.38.0.rc1.362.ged0d419d3c-goog
+>
