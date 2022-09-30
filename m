@@ -2,65 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94E7B5F142B
-	for <lists+bpf@lfdr.de>; Fri, 30 Sep 2022 22:51:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A1785F142F
+	for <lists+bpf@lfdr.de>; Fri, 30 Sep 2022 22:52:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231204AbiI3Uv1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Sep 2022 16:51:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47354 "EHLO
+        id S231950AbiI3UwR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Sep 2022 16:52:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231895AbiI3UvG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Sep 2022 16:51:06 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CB513FEF8;
-        Fri, 30 Sep 2022 13:51:03 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 29so7468735edv.7;
-        Fri, 30 Sep 2022 13:51:03 -0700 (PDT)
+        with ESMTP id S231983AbiI3UwP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Sep 2022 16:52:15 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 566A218F42E
+        for <bpf@vger.kernel.org>; Fri, 30 Sep 2022 13:52:14 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id e68so5249679pfe.1
+        for <bpf@vger.kernel.org>; Fri, 30 Sep 2022 13:52:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=2uOxQ/gH+BgVfHcCDAltFHRafqSJpRPHbM8VX4eQrmE=;
-        b=fs3yfrRRvR85fOrAE8GAeQyZ90fUrcsb8udC0e71buYHjY7T74pIwS4w8H6f0fvC1s
-         eK1vQrVnAe11HDk8LzNmz0xfvfvSzsCz1ixvXx8fJu7+L1bNRcc0dHRJHZmDvPkRIlWm
-         I1fJ72Y6Mrqo2iI86ZwRQ8DuriJW+M4cPlEtm26wRMz2IJEZTmfwc/4aA0/e/5X01Iz/
-         kM32AzxGKVsgPsUg3kpMi15piKRvsb5ucsexXD2H8sMNDHTFJYcKuVXXfbc224KV7pyB
-         0w75MjDrHvddHHvwM0/gmQp92smLeagbdaWPIfvWpJR/wMCK/vTnDO01/eXyipt43CPA
-         iycA==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date;
+        bh=8LxRjPlvu1HwTLy+4U9MapcBr7p5TVR/COu2OGUsSG8=;
+        b=ePx2xZNV1nWDyi9i/fzJzPlI3W2ji11kTBatuCRjNCrXwQ/AigyTK89Wt6adrR8EQy
+         FyJT/r42y7tg2tzfxV5jFyEKoRo2q8rFQA8DHf9BBpAEB/tOa8RmtRc+xZ7OgAdaC07H
+         948nw/rZmxrt1k7HJ5lYsifHMJyomn1w3xEEye1IKWP1nVqysqBZCeehFEjuIFuVugxh
+         KsHx3fYOGZ9oatonDWJmuReWu9To0JgbbLhwUcRAz7+MdluKNsGTW3H8Jh0d8vL6LAei
+         YZL9LVpEaITaw0m6rLf4eriSl2mLMmqZ/hxnmxd80vcqgyzMNEQVe0lX+AumrLAkMV1u
+         bTsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2uOxQ/gH+BgVfHcCDAltFHRafqSJpRPHbM8VX4eQrmE=;
-        b=hyHxQf9SE4zGuN+O8awkt86kalDjwrp8usfneYxuAQlHYC2kA/Jiv7aHr5WY/6K1Gt
-         Jphz9j4KPxuTK7r143ZEXIzBY9S7j72bq8f2ixqbu5xADtg49iL8WwaFZMZH7Pa0Qils
-         Ev3RoYpssRiJmLo56sUzNvyRytt8BBrvwpKrkivioLfJ85rR9EDFBq4AdtnSV/+uIL1Z
-         R7qDG6YdVRI4nt6JJNKJ4gZrobc78DeZ76VPsB0RQWR1Ya0NFbtmJMmDV0srny51jdRs
-         3Q5l6/EFbKsybLsL3J1jnTcGFS2oqKk4ajRXZAb1w4qTC9IdtEy4/D/1huoL3h2R9+mX
-         Jolg==
-X-Gm-Message-State: ACrzQf3Jte6G//qU9+xVE+67ZxPDi1uO5h+6+wtPmW1buOgfS424vcfI
-        FEHW4uMHIiXE77fR+J2WQZinLc6nxeisPFjltWignHnD
-X-Google-Smtp-Source: AMsMyM6EKTV3OYVPy0FeoJ4Q0c8PKaZ0YHnV+7MLNI7ACfUNUTYGxH23fggkidH07Wm5gwKzJTddxXJ7IeZ1U3oJHxc=
-X-Received: by 2002:a50:eb05:0:b0:457:c6f5:5f65 with SMTP id
- y5-20020a50eb05000000b00457c6f55f65mr9072849edp.311.1664571061776; Fri, 30
- Sep 2022 13:51:01 -0700 (PDT)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
+        bh=8LxRjPlvu1HwTLy+4U9MapcBr7p5TVR/COu2OGUsSG8=;
+        b=nUHUO+JUEtWHS2qOaKf2RBVOweN66K89kh16bkRWuxuXBTqludopw0oWqSzANnFJoh
+         a9V1JeBaqeg0/XSe2eDAT5pxodAfDbrC9yIZvuB6y4gtwrYq5GCvPVgoz/1D08a9cEx9
+         x1AIhB7b+oXmtnP8jX0LMTsq2fkE7xi4QGni9xEUaE2artTfVkXRgKBeaOXyRgg0JQi/
+         9HF0lqXl21QMA6fUcRR9K9BgVI/ECoVT2G5+OGAK41O1R+CDYRhOXBqQEMKMVJ7bAbiJ
+         0NDcC3nn0+Rc21CnT5f/Pb11adkCehujA35yMkQGh72MrNJAACy9RAtTXOwmBFYBwgBj
+         N19w==
+X-Gm-Message-State: ACrzQf2lPPfdVGlsfJtiLpuNN4H76cQcc0mgsn/TDkGWvSboi0RGc8ut
+        yj/xhPklznPWd1YabswbwoY=
+X-Google-Smtp-Source: AMsMyM6PcmmsDSJE2rtwLrHo4Fw5lXxxhcHgTNZVa99+DONtoGxwSwCrqVSlRKMISRJIWBo5gjja9w==
+X-Received: by 2002:a63:68e:0:b0:438:e83a:c35c with SMTP id 136-20020a63068e000000b00438e83ac35cmr9266864pgg.312.1664571133829;
+        Fri, 30 Sep 2022 13:52:13 -0700 (PDT)
+Received: from macbook-pro-4.dhcp.thefacebook.com ([2620:10d:c090:400::5:5e53])
+        by smtp.gmail.com with ESMTPSA id q13-20020a170902dacd00b0017825ab5320sm2343784plx.251.2022.09.30.13.52.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Sep 2022 13:52:13 -0700 (PDT)
+Date:   Fri, 30 Sep 2022 13:52:11 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     dthaler1968@googlemail.com
+Cc:     bpf@vger.kernel.org, Dave Thaler <dthaler@microsoft.com>
+Subject: Re: [PATCH 07/15] ebpf-docs: Fix modulo zero, division by zero,
+ overflow, and underflow
+Message-ID: <20220930205211.tb26v4rzhqrgog2h@macbook-pro-4.dhcp.thefacebook.com>
+References: <20220927185958.14995-1-dthaler1968@googlemail.com>
+ <20220927185958.14995-7-dthaler1968@googlemail.com>
 MIME-Version: 1.0
-References: <20220926154430.1552800-1-roberto.sassu@huaweicloud.com> <20220926154430.1552800-2-roberto.sassu@huaweicloud.com>
-In-Reply-To: <20220926154430.1552800-2-roberto.sassu@huaweicloud.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 30 Sep 2022 13:50:49 -0700
-Message-ID: <CAEf4BzZT3aSWYzaNrOW6Qw95mfj1S+AduGi+A0H+h4maTU2umQ@mail.gmail.com>
-Subject: Re: [RFC][PATCH 1/3] libbpf: Define bpf_get_fd_opts and introduce bpf_map_get_fd_by_id_opts()
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
-        shuah@kernel.org, oss@lmb.io, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        fengc@google.com, davem@davemloft.net
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220927185958.14995-7-dthaler1968@googlemail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -71,113 +70,68 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Sep 26, 2022 at 8:45 AM Roberto Sassu
-<roberto.sassu@huaweicloud.com> wrote:
->
-> From: Roberto Sassu <roberto.sassu@huawei.com>
->
-> Define a new data structure called bpf_get_fd_opts, with the member
-> open_flags, to be used by callers of the _opts variants of
-> bpf_*_get_fd_by_id() to specify the permissions needed for the file
-> descriptor to be obtained.
->
-> Also, introduce bpf_map_get_fd_by_id_opts(), to let the caller pass a
-> bpf_get_fd_opts structure.
->
-> Finally, keep the existing bpf_map_get_fd_by_id(), and call
-> bpf_map_get_fd_by_id_opts() with NULL as opts argument, to request
-> read-write permissions (current behavior).
->
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+On Tue, Sep 27, 2022 at 06:59:50PM +0000, dthaler1968@googlemail.com wrote:
+> From: Dave Thaler <dthaler@microsoft.com>
+> 
+> Signed-off-by: Dave Thaler <dthaler@microsoft.com>
 > ---
-
-looks good overall, but please see two nits below
-
->  tools/lib/bpf/bpf.c      | 12 +++++++++++-
->  tools/lib/bpf/bpf.h      | 10 ++++++++++
->  tools/lib/bpf/libbpf.map |  3 ++-
->  3 files changed, 23 insertions(+), 2 deletions(-)
->
-> diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-> index 1d49a0352836..4b03063edf1d 100644
-> --- a/tools/lib/bpf/bpf.c
-> +++ b/tools/lib/bpf/bpf.c
-> @@ -948,19 +948,29 @@ int bpf_prog_get_fd_by_id(__u32 id)
->         return libbpf_err_errno(fd);
->  }
->
-> -int bpf_map_get_fd_by_id(__u32 id)
-> +int bpf_map_get_fd_by_id_opts(__u32 id,
-> +                             const struct bpf_get_fd_opts *opts)
->  {
->         const size_t attr_sz = offsetofend(union bpf_attr, open_flags);
->         union bpf_attr attr;
->         int fd;
->
-> +       if (!OPTS_VALID(opts, bpf_get_fd_opts))
-> +               return libbpf_err(-EINVAL);
+>  Documentation/bpf/instruction-set.rst | 19 +++++++++++++++++--
+>  1 file changed, 17 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/bpf/instruction-set.rst b/Documentation/bpf/instruction-set.rst
+> index a24bc5d53..3c5a63612 100644
+> --- a/Documentation/bpf/instruction-set.rst
+> +++ b/Documentation/bpf/instruction-set.rst
+> @@ -103,19 +103,26 @@ code      value  description
+>  BPF_ADD   0x00   dst += src
+>  BPF_SUB   0x10   dst -= src
+>  BPF_MUL   0x20   dst \*= src
+> -BPF_DIV   0x30   dst /= src
+> +BPF_DIV   0x30   dst = (src != 0) ? (dst / src) : 0
+>  BPF_OR    0x40   dst \|= src
+>  BPF_AND   0x50   dst &= src
+>  BPF_LSH   0x60   dst <<= src
+>  BPF_RSH   0x70   dst >>= src
+>  BPF_NEG   0x80   dst = ~src
+> -BPF_MOD   0x90   dst %= src
+> +BPF_MOD   0x90   dst = (src != 0) ? (dst % src) : dst
+>  BPF_XOR   0xa0   dst ^= src
+>  BPF_MOV   0xb0   dst = src
+>  BPF_ARSH  0xc0   sign extending shift right
+>  BPF_END   0xd0   byte swap operations (see `Byte swap instructions`_ below)
+>  ========  =====  ==========================================================
+>  
+> +Underflow and overflow are allowed during arithmetic operations,
+> +meaning the 64-bit or 32-bit value will wrap.  If
+> +eBPF program execution would result in division by zero,
+> +the destination register is instead set to zero.
+> +If execution would result in modulo by zero,
+> +the destination register is instead left unchanged.
 > +
->         memset(&attr, 0, attr_sz);
->         attr.map_id = id;
-> +       attr.open_flags = OPTS_GET(opts, open_flags, 0);
->
->         fd = sys_bpf_fd(BPF_MAP_GET_FD_BY_ID, &attr, attr_sz);
->         return libbpf_err_errno(fd);
->  }
->
-> +int bpf_map_get_fd_by_id(__u32 id)
-> +{
-> +       return bpf_map_get_fd_by_id_opts(id, NULL);
-> +}
+>  ``BPF_ADD | BPF_X | BPF_ALU`` means::
+>  
+>    dst_reg = (uint32_t) dst_reg + (uint32_t) src_reg;
+> @@ -135,6 +142,14 @@ where '(uint32_t)' indicates truncation to 32 bits.
+>    src_reg = src_reg ^ imm32
+>  
+>  
+> +Also note that the modulo operation often varies by language
+> +when the dividend or divisor are negative, where Python, Ruby, etc.
+> +differ from C, Go, Java, etc. This specification requires that
+> +modulo use truncated division (where -13 % 3 == -1) as implemented
+> +in C, Go, etc.:
 > +
->  int bpf_btf_get_fd_by_id(__u32 id)
->  {
->         const size_t attr_sz = offsetofend(union bpf_attr, open_flags);
-> diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-> index 9c50beabdd14..38a1b7eccfc8 100644
-> --- a/tools/lib/bpf/bpf.h
-> +++ b/tools/lib/bpf/bpf.h
-> @@ -365,7 +365,17 @@ LIBBPF_API int bpf_prog_get_next_id(__u32 start_id, __u32 *next_id);
->  LIBBPF_API int bpf_map_get_next_id(__u32 start_id, __u32 *next_id);
->  LIBBPF_API int bpf_btf_get_next_id(__u32 start_id, __u32 *next_id);
->  LIBBPF_API int bpf_link_get_next_id(__u32 start_id, __u32 *next_id);
+> +   a % n = a - n * trunc(a / n)
 > +
-> +struct bpf_get_fd_opts {
-> +       size_t sz; /* size of this struct for forward/backward compatibility */
-> +       __u32 open_flags; /* permissions requested for the operation on fd */
-> +       __u32 :0;
 
-this should be size_t: 0
+Interesting bit of info, but I'm not sure how it relates to the ISA doc.
 
-> +};
-> +#define bpf_get_fd_opts__last_field open_flags
-> +
->  LIBBPF_API int bpf_prog_get_fd_by_id(__u32 id);
-> +LIBBPF_API int bpf_map_get_fd_by_id_opts(__u32 id,
-> +                                        const struct bpf_get_fd_opts *opts);
->  LIBBPF_API int bpf_map_get_fd_by_id(__u32 id);
->  LIBBPF_API int bpf_btf_get_fd_by_id(__u32 id);
->  LIBBPF_API int bpf_link_get_fd_by_id(__u32 id);
-> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> index c1d6aa7c82b6..2e665b21d84f 100644
-> --- a/tools/lib/bpf/libbpf.map
-> +++ b/tools/lib/bpf/libbpf.map
-> @@ -367,10 +367,11 @@ LIBBPF_1.0.0 {
->                 libbpf_bpf_map_type_str;
->                 libbpf_bpf_prog_type_str;
->                 perf_buffer__buffer;
-> -};
-> +} LIBBPF_0.8.0;
->
+I think it's more important to say that BPF ISA only supports unsigned div/mod.
+There are no instructions for signed div/mod.
 
-good catch, please send this as a separate fix, thanks!
-
->  LIBBPF_1.1.0 {
->         global:
-> +               bpf_map_get_fd_by_id_opts;
->                 user_ring_buffer__discard;
->                 user_ring_buffer__free;
->                 user_ring_buffer__new;
-> --
-> 2.25.1
->
+>  Byte swap instructions
+>  ~~~~~~~~~~~~~~~~~~~~~~
+>  
+> -- 
+> 2.33.4
+> 
