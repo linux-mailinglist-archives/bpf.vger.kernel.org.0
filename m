@@ -2,75 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA2FE5F14F9
-	for <lists+bpf@lfdr.de>; Fri, 30 Sep 2022 23:35:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24AEB5F1520
+	for <lists+bpf@lfdr.de>; Fri, 30 Sep 2022 23:44:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231540AbiI3Vfu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Sep 2022 17:35:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34818 "EHLO
+        id S232406AbiI3VoC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Sep 2022 17:44:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231759AbiI3Vfs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Sep 2022 17:35:48 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B832EDE87
-        for <bpf@vger.kernel.org>; Fri, 30 Sep 2022 14:35:46 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a26so11611101ejc.4
-        for <bpf@vger.kernel.org>; Fri, 30 Sep 2022 14:35:46 -0700 (PDT)
+        with ESMTP id S231867AbiI3VoB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Sep 2022 17:44:01 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB50F1830D8;
+        Fri, 30 Sep 2022 14:44:00 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id r18so11621129eja.11;
+        Fri, 30 Sep 2022 14:44:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=t5Sqv6EdI/vgyCRiuxK0EfM8HHlkLDfH+XVet6vcUcY=;
-        b=FbxnFDm/sWLpTfwrj+voG+soaWNQFyiSw2r2680ilwP4Y27Wlz8Wl7TqxgQ+whF0bS
-         HcQQF7GIz5Kuu/ARz9ognF70obzp0lZLGkEfKBoN6dKnNvfgKeqt4pLyW8B8HKwHj6k8
-         S1JsRR/aCycyXBwVAFTxrsCUKf70SC3PT3WsF59GeUo4ISJWUQaloAQz7UPUlxZwn9PM
-         bYyXEHV7PT/zXLlxItdd85CVZP7NGQMi283yMxMwwz7NyK/H+VaUjEOa9qucB1pJCJzs
-         ML/X171r+WUjLdKfSGPlS8nWJuwKqQpVxJihdauL+RNWKEfEBy/Sw46632kFsLY0RLM8
-         b48g==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date;
+        bh=BISgwAbrcAgb3hm0YlO6jJskCwgb0LlGymf7dpfCQwI=;
+        b=CgPPqJg6tP9fD1ILsP21XG624Y6UpdrqixMRZwpsVdP9j5Mefsr3n8YLqG/mt/sZ/1
+         s5JQUDd7rBUc09KLSn0XpxwMfLGSkUI+40ThNVUQoVVGv9lN7v/68i/+uDEe7cBthFOs
+         4FT3d1qH1H8RBEBhHKTQrY3MCLaI+Vk3wwr372epQH7LI0hyX0HYIzHKo3r+CJVrCxls
+         6asx6Zmqwv5NFXDD2oA1Z/ivVvavcEeuHuhJEdrdy8pD6OypBRZ5VXcKB2Iu+Lecz8OV
+         bR3Vq2/VGsjNboQBB6J5XkCw8zhRSQl2zpXzxFiRpQusFWj5uR+vOc3KAxyMnkG8xV7o
+         TJ5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=t5Sqv6EdI/vgyCRiuxK0EfM8HHlkLDfH+XVet6vcUcY=;
-        b=DF2ziK7OpPZktOWkl9fkeolsxyJ9sGxpV/o54cNVJhwOpNSKHRj0bfDKL43tinQmrX
-         9pGAVaAnshcz+NsKNmMIRTezJkf/McLBndbri9a/nkLY8wFQvzb8hwo4i3NzXtOILnYv
-         1NtlPcx0ir9LVUE1gIP2HKWyikRYPPuyh4er9YBNS3VXenwiiO/UwW3gTc209qpAIpt1
-         GUTWG6RKKPGO6/s6JHxzJcs2En7Dv9mFeBLqyiapK/otlag+XV0ZAHkdzGE0+QXwrhTP
-         XAEIy7FuWd6kK002lVKHci1pOaMN1bFl/RguVbZvoCS1B5pNw7WOSqj5RRlRXOwfIH6f
-         mUuQ==
-X-Gm-Message-State: ACrzQf1yV+lToD1DXq5thCpkRsvKnwYl8ABiwutrf8y74Elg6s2hwV0S
-        i9MwPz6zMachUbxqx8v5yOSIqr6uKiM6y0Z3hDEwSwmxZuo=
-X-Google-Smtp-Source: AMsMyM5chPxIy6NyUQyWs/Exkwbw6f822mWgw+zYIBupmhYR/LE71uF18+yhYVtbDTpbG1a7tlBe9JXGj4pUz2+WjBo=
-X-Received: by 2002:a17:906:8454:b0:772:7b02:70b5 with SMTP id
- e20-20020a170906845400b007727b0270b5mr7749761ejy.114.1664573744861; Fri, 30
- Sep 2022 14:35:44 -0700 (PDT)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date;
+        bh=BISgwAbrcAgb3hm0YlO6jJskCwgb0LlGymf7dpfCQwI=;
+        b=fHP1W57ep5RNhc8xbfFIkDu9RiF9Ig00DIzZCEyNHIyK9XiYK6fSizABB9UjCgwl/8
+         BPM+8IIr8wjN/GXx2bF96ZSXy0c+5snmrxoDCA7iLk1pwPqbxVBlCTfuCtRu3e3jeRwO
+         BLdTB9BcBdUYk+0GF9m5qy2DhC36wU9YHqpiiRhhXbZXD+siQiiqJAqskYTIh1dpjZHj
+         LJEwMrbld4cqGObkK4U7xbFmXFbryIkFSlk3PsEUYkf2K8qDsI5v5n0GYKzJtGlyim5+
+         9w/gHBZBZjCf7l0uDSS28ZUQMVAvZtp2RioUDiZhKTsqJ4RzNOyyljapjh34tW/BgrSD
+         YZdA==
+X-Gm-Message-State: ACrzQf0VuWvFTQkAW6idpNskaHtQWb+37MGTHMR0K69RJCTePBPKQmrO
+        NP4UBR73jeZPSUTD889OR2A=
+X-Google-Smtp-Source: AMsMyM72/cT5oWVhE5DIqip/agmkZTQyj/RNTQtvG/GH4e9HZtEAAWfR7E03hpvu8e2oPP7o66ja8g==
+X-Received: by 2002:a17:907:6ea1:b0:783:cc69:342 with SMTP id sh33-20020a1709076ea100b00783cc690342mr7473213ejc.97.1664574239168;
+        Fri, 30 Sep 2022 14:43:59 -0700 (PDT)
+Received: from krava ([83.240.62.159])
+        by smtp.gmail.com with ESMTPSA id x11-20020a170906298b00b0073de0506745sm1685717eje.197.2022.09.30.14.43.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Sep 2022 14:43:58 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Fri, 30 Sep 2022 23:43:57 +0200
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org, Song Liu <songliubraving@fb.com>,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH] perf stat: Support old kernels for bperf cgroup counting
+Message-ID: <YzdjHenrJpooKMjv@krava>
+References: <CAM9d7cjQ20a01YoZi=o-_7HT6TzR0TZgtpscKNvRrMq2yqV1Og@mail.gmail.com>
+ <20220922041435.709119-1-namhyung@kernel.org>
 MIME-Version: 1.0
-References: <20220924133620.4147153-1-houtao@huaweicloud.com>
- <20220924133620.4147153-4-houtao@huaweicloud.com> <CAEf4Bza79XbtYF_04MhdcN0o4Akot0VpWaR+mOoGwXsz7yT=xg@mail.gmail.com>
- <e099e816-d271-ec75-b6aa-3671cfc5b8f9@huaweicloud.com>
-In-Reply-To: <e099e816-d271-ec75-b6aa-3671cfc5b8f9@huaweicloud.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 30 Sep 2022 14:35:33 -0700
-Message-ID: <CAEf4BzZyfUOfGkQP67urmG9=7pqUF-5E9LjZf-Y0sL9nbcHFww@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 03/13] bpf: Support bpf_dynptr-typed map key
- in bpf syscall
-To:     Hou Tao <houtao@huaweicloud.com>
-Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, houtao1@huawei.com,
-        Joanne Koong <joannelkoong@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220922041435.709119-1-namhyung@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -81,103 +75,82 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 28, 2022 at 7:11 PM Hou Tao <houtao@huaweicloud.com> wrote:
->
-> Hi,
->
-> On 9/29/2022 8:16 AM, Andrii Nakryiko wrote:
-> > On Sat, Sep 24, 2022 at 6:18 AM Hou Tao <houtao@huaweicloud.com> wrote:
-> >> From: Hou Tao <houtao1@huawei.com>
-> >>
-> >> Userspace application uses bpf syscall to lookup or update bpf map. It
-> >> passes a pointer of fixed-size buffer to kernel to represent the map
-> >> key. To support map with variable-length key, introduce bpf_dynptr_user
-> >> to allow userspace to pass a pointer of bpf_dynptr_user to specify the
-> >> address and the length of key buffer. And in order to represent dynptr
-> >> from userspace, adding a new dynptr type: BPF_DYNPTR_TYPE_USER. Because
-> >> BPF_DYNPTR_TYPE_USER-typed dynptr is not available from bpf program, so
-> >> no verifier update is needed.
-> >>
-> >> Add dynptr_key_off in bpf_map to distinguish map with fixed-size key
-> >> from map with variable-length. dynptr_key_off is less than zero for
-> >> fixed-size key and can only be zero for dynptr key.
-> >>
-> >> For dynptr-key map, key btf type is bpf_dynptr and key size is 16, so
-> >> use the lower 32-bits of map_extra to specify the maximum size of dynptr
-> >> key.
-> >>
-> >> Signed-off-by: Hou Tao <houtao1@huawei.com>
-> >> ---
-> > This is a great feature and you've put lots of high-quality work into
-> > this! Looking forward to have qp-trie BPF map available. Apart from
-> > your discussion with Alexie about locking and memory
-> > allocation/reused, I have questions about this dynptr from user-space
-> > interface. Let's discuss it in this patch to not interfere.
-> >
-> > I'm trying to understand why there should be so many new concepts and
-> > interfaces just to allow variable-sized keys. Can you elaborate on
-> > that? Like why do we even need BPF_DYNPTR_TYPE_USER? Why user can't
-> > just pass a void * (casted to u64) pointer and size of the memory
-> > pointed to it, and kernel will just copy necessary amount of data into
-> > kvmalloc'ed temporary region?
-> The main reason is that map operations from syscall and bpf program use the same
-> ops in bpf_map_ops (e.g. map_update_elem). If only use dynptr_kern for bpf
-> program, then
-> have to define three new operations for bpf program. Even more, after defining
-> two different map ops for the same operation from syscall and bpf program, the
-> internal  implementation of qp-trie still need to convert these two different
-> representations of variable-length key into bpf_qp_trie_key. It introduces
-> unnecessary conversion, so I think it may be a good idea to pass dynptr_kern to
-> qp-trie even for bpf syscall.
->
-> And now in bpf_attr, for BPF_MAP_*_ELEM command, there is no space to pass an
-> extra key size. It seems bpf_attr can be extend, but even it is extented, it
-> also means in libbpf we need to provide a new API group to support operationg on
-> dynptr key map, because the userspace needs to pass the key size as a new argument.
+On Wed, Sep 21, 2022 at 09:14:35PM -0700, Namhyung Kim wrote:
+> The recent change in the cgroup will break the backward compatiblity in
+> the BPF program.  It should support both old and new kernels using BPF
+> CO-RE technique.
+> 
+> Like the task_struct->__state handling in the offcpu analysis, we can
+> check the field name in the cgroup struct.
+> 
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+> Arnaldo, I think this should go through the cgroup tree since it depends
+> on the earlier change there.  I don't think it'd conflict with other
+> perf changes but please let me know if you see any trouble, thanks!
 
+could you please paste the cgroup tree link?
 
-You are right that the current assumption of implicit key/value size
-doesn't work for these variable-key/value-length maps. But I think the
-right answer is actually to make sure that we have a map_update_elem
-callback variant that accepts key/value size explicitly. I still think
-that the syscall interface shouldn't introduce a concept of dynptr.
-From user-space's point of view dynptr is just a memory pointer +
-associated memory size. Let's keep it simple. And yes, it will be a
-new libbpf API for bpf_map_lookup_elem/bpf_map_update_elem. That's
-fine.
+thanks,
+jirka
 
-
-> >
-> > It also seems like you want to allow key (and maybe value as well, not
-> > sure) to be a custom user-defined type where some of the fields are
-> > struct bpf_dynptr. I think it's a big overcomplication, tbh. I'd say
-> > it's enough to just say that entire key has to be described by a
-> > single bpf_dynptr. Then we can have bpf_map_lookup_elem_dynptr(map,
-> > key_dynptr, flags) new helper to provide variable-sized key for
-> > lookup.
-> For qp-trie, it will only support a single dynptr as the map key. In the future
-> maybe other map will support map key with embedded dynptrs. Maybe Joanne can
-> share some vision about such use case.
-
-My point was that instead of saying that key is some fixed-size struct
-in which one of the fields is dynptr (and then when comparing you have
-to compare part of struct, then dynptr contents, then the other part
-of struct?), just say that entire key is represented by dynptr,
-implicitly (it's just a blob of bytes). That seems more
-straightforward.
-
-> >
-> > I think it would keep it much simpler. But if I'm missing something,
-> > it would be good to understand that. Thanks!
-> >
-> >
-> >>  include/linux/bpf.h            |   8 +++
-> >>  include/uapi/linux/bpf.h       |   6 ++
-> >>  kernel/bpf/map_in_map.c        |   3 +
-> >>  kernel/bpf/syscall.c           | 121 +++++++++++++++++++++++++++------
-> >>  tools/include/uapi/linux/bpf.h |   6 ++
-> >>  5 files changed, 125 insertions(+), 19 deletions(-)
-> >>
-> > [...]
-> > .
->
+> 
+>  tools/perf/util/bpf_skel/bperf_cgroup.bpf.c | 29 ++++++++++++++++++++-
+>  1 file changed, 28 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c b/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
+> index 488bd398f01d..4fe61043de04 100644
+> --- a/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
+> +++ b/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
+> @@ -43,12 +43,39 @@ struct {
+>  	__uint(value_size, sizeof(struct bpf_perf_event_value));
+>  } cgrp_readings SEC(".maps");
+>  
+> +/* new kernel cgroup definition */
+> +struct cgroup___new {
+> +	int level;
+> +	struct cgroup *ancestors[];
+> +} __attribute__((preserve_access_index));
+> +
+> +/* old kernel cgroup definition */
+> +struct cgroup___old {
+> +	int level;
+> +	u64 ancestor_ids[];
+> +} __attribute__((preserve_access_index));
+> +
+>  const volatile __u32 num_events = 1;
+>  const volatile __u32 num_cpus = 1;
+>  
+>  int enabled = 0;
+>  int use_cgroup_v2 = 0;
+>  
+> +static inline __u64 get_cgroup_v1_ancestor_id(struct cgroup *cgrp, int level)
+> +{
+> +	/* recast pointer to capture new type for compiler */
+> +	struct cgroup___new *cgrp_new = (void *)cgrp;
+> +
+> +	if (bpf_core_field_exists(cgrp_new->ancestors)) {
+> +		return BPF_CORE_READ(cgrp_new, ancestors[level], kn, id);
+> +	} else {
+> +		/* recast pointer to capture old type for compiler */
+> +		struct cgroup___old *cgrp_old = (void *)cgrp;
+> +
+> +		return BPF_CORE_READ(cgrp_old, ancestor_ids[level]);
+> +	}
+> +}
+> +
+>  static inline int get_cgroup_v1_idx(__u32 *cgrps, int size)
+>  {
+>  	struct task_struct *p = (void *)bpf_get_current_task();
+> @@ -70,7 +97,7 @@ static inline int get_cgroup_v1_idx(__u32 *cgrps, int size)
+>  			break;
+>  
+>  		// convert cgroup-id to a map index
+> -		cgrp_id = BPF_CORE_READ(cgrp, ancestors[i], kn, id);
+> +		cgrp_id = get_cgroup_v1_ancestor_id(cgrp, i);
+>  		elem = bpf_map_lookup_elem(&cgrp_idx, &cgrp_id);
+>  		if (!elem)
+>  			continue;
+> -- 
+> 2.37.3.968.ga6b4b080e4-goog
+> 
