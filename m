@@ -2,57 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B48565F166F
-	for <lists+bpf@lfdr.de>; Sat,  1 Oct 2022 01:01:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ADD95F1675
+	for <lists+bpf@lfdr.de>; Sat,  1 Oct 2022 01:04:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232034AbiI3XB5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Sep 2022 19:01:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59194 "EHLO
+        id S229547AbiI3XEO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Sep 2022 19:04:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231492AbiI3XBz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Sep 2022 19:01:55 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA07718C00C
-        for <bpf@vger.kernel.org>; Fri, 30 Sep 2022 16:01:54 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id dv25so11856642ejb.12
-        for <bpf@vger.kernel.org>; Fri, 30 Sep 2022 16:01:54 -0700 (PDT)
+        with ESMTP id S229531AbiI3XEN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Sep 2022 19:04:13 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7305618F903
+        for <bpf@vger.kernel.org>; Fri, 30 Sep 2022 16:04:12 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id lc7so11948398ejb.0
+        for <bpf@vger.kernel.org>; Fri, 30 Sep 2022 16:04:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ahmyuz7wFVwUJK37lhj+mZ8YUqncTXioR1vjbQ5vXr0=;
-        b=Jyke8Z5FjpHAL0Cdzy7GoOTUe0uPAn5lXwFyxh5ILaW9RrIWOBl4XUsjdFdvsTbpsv
-         ho0VIKiGVNm4BwJxDnAx+Qs1HY5IiAA4UorvxTTBAoyQ2nvUC/0mDqQDv6eXu4EK+xL4
-         tQAA+VgkTbDfmfJ+fX2XaP/HZ9uXZsXq/iTkKITTYWoFrByUUmFtXISjPXJQotoisJJe
-         E1MNf7OeIr1YiOlEEfU0HRRCb+WdU42czd9Y4bh8bsBrZsjtdCBSMf4VgrS3gQkDzQcA
-         dkNa4nBs5KYn7biDoRytG8wDfs+nVeYtqldjX7S4zP0adPIvPM9x7M5GQ9EmQaOSbUsL
-         mnDw==
+        bh=I94V6y70CS7ZknUGMMDHDBN3y6MtPtr35AYAJcFsNHo=;
+        b=oxvOwPpeaViTeoVjkTaDLr2szteUmPpCLS/aojGJzMzVDZuIsrch72+XVXA5NE9M2G
+         KUcEz/C9hPR8JSVJxeR88RAxbkUuJ5g9tTp/tr6FODUoi9aLJ0s0w8R8ZkLqMiro8UAp
+         kX9gj9qopKVYLWBRBvkrUndDQ7fGIVkj4ahpf66eD7wZPtAJfrh9dtphfIgxNsA40D89
+         djyqFLPz5WkomxnEWsnESGHdkRBOmHle5flcIj0WaSMSkGgO+N+8wmUv3p3Ytq9oLoBc
+         X0XoIEqOLP56CP526tN6Z14Q0RAnGqpiYLJEnCwZKwh+EXbOVy9tGeweynVfDynOv2rP
+         Vsbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=ahmyuz7wFVwUJK37lhj+mZ8YUqncTXioR1vjbQ5vXr0=;
-        b=19Ppy1VCet7k/XfrqB2uADqrHUNVSprCdqVShBnySCv3AvT/lvCgGhM1374RBK1ULD
-         V3/87g0Mi2G/ONLdDWCQ9AOrVcLSlIxZKVdG4fdoF5AJXjidxivsadzB2LR1H3KpXwpm
-         QsDuhge+iXAuf4Z2pVDO22Gty1H7ucQeEXmDBoJgU9JJjbk342uSHtfpvItFS8rb+Lsd
-         K07pDMQYodXu8kvZ+MLQwvDGvYv/R09wEhDBP9cQb2Rf33Dp+mBoETJO5B7UZyMYsyUV
-         pvOwHqvHBi2hUIYpIIx4f1HRsWEnMLxYHJTIMgWzqbKzLSTZFmZQZxMgsIYyrVbBMro7
-         OxBQ==
-X-Gm-Message-State: ACrzQf17KI3RE9eN1TV15Q44LPXuaPo4jG9xtmFMSIQxKn/aBT2uzwDQ
-        fVB8PtgELG25Nsk8tVZr+FsV3ruHOeUaslFIRJg=
-X-Google-Smtp-Source: AMsMyM6Hv0O6hvwnbEuDP9bb7PLEUjxiMvFGYgXr4dWQjL/uyFF2zNCQG4LC/9kTApguEqUmrKYuGpXXoUYcPzQPRhs=
-X-Received: by 2002:a17:906:8454:b0:772:7b02:70b5 with SMTP id
- e20-20020a170906845400b007727b0270b5mr7911722ejy.114.1664578913341; Fri, 30
- Sep 2022 16:01:53 -0700 (PDT)
+        bh=I94V6y70CS7ZknUGMMDHDBN3y6MtPtr35AYAJcFsNHo=;
+        b=oFvdQCVATNxvWGj6igjsNo06SUj3Ghggee7Otelc9ka0m8tD3nDRujujtlLEio4/yw
+         ujzLh0yZlMgmoIGCv7nlAkQE+ijtzftp/DMM4P/cYj1QxqEqTlWBNiKRFuU8bD7NeWZl
+         Go8j55sd/zLk+xzRFEYIcNTxP4w+v3KOyjiYAp6wCocrDEkmWqIK6FElgPm27gP5JCHS
+         FFgGZ1rZfl1mn8Xk63aJEYHi1xFAaH/bUfQuMGIL/ZudoT3zkWOF+ntpECkvu2n8DcH5
+         NQysQYT2wCpKFARfe1zHxE/6f9DMIO5rt1X4O2Ooi++kAGn3mqykyub2hlYAbbuJF1zp
+         eHPA==
+X-Gm-Message-State: ACrzQf0K3WcjOVb/NDZOLFOLBY8Nt+fR//dWJxqZo15WTaPp9RG6xLoQ
+        tpD6HPvyvXU75M/EYchuI0GhMgm7wsIkYpoG3t0+5ACRqvk=
+X-Google-Smtp-Source: AMsMyM4mAEvIYOs6/d1rA0uZQ/EKRM6tlhV/Wx4/W3+QHfuv2ZeL4SlsbqEgVeBJ9qp+DP1LJfXyKBsHtlyPHYwj5Uo=
+X-Received: by 2002:a17:907:3d86:b0:782:1175:153f with SMTP id
+ he6-20020a1709073d8600b007821175153fmr7980570ejc.226.1664579050955; Fri, 30
+ Sep 2022 16:04:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220930164918.342310-1-eddyz87@gmail.com> <20220930164918.342310-2-eddyz87@gmail.com>
-In-Reply-To: <20220930164918.342310-2-eddyz87@gmail.com>
+References: <20220930164918.342310-1-eddyz87@gmail.com> <20220930164918.342310-3-eddyz87@gmail.com>
+In-Reply-To: <20220930164918.342310-3-eddyz87@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 30 Sep 2022 16:01:41 -0700
-Message-ID: <CAEf4BzZ8x_nQzxZ79tejeA-aUGEeWghx_xcgYmARCnh1U_Mx=Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpftool: fix newline for struct with padding
- only fields
+Date:   Fri, 30 Sep 2022 16:03:58 -0700
+Message-ID: <CAEf4BzZ+HNb98cF=kTJaRUM1r9f1JmEurwQXnE=pgOFsEw53YQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: verify newline for struct
+ with padding only fields
 To:     Eduard Zingerman <eddyz87@gmail.com>
 Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
         daniel@iogearbox.net, kernel-team@fb.com
@@ -69,96 +69,51 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Fri, Sep 30, 2022 at 9:50 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
 >
-> An update for `bpftool btf dump file ... format c`.
-> Add a missing newline print for structures that consist of
-> anonymous-only padding fields. E.g. here is struct bpf_timer from
-> vmlinux.h before this patch:
->
->  struct bpf_timer {
->         long: 64;
->         long: 64;};
->
-> And after this patch:
->
->  struct bpf_dynptr {
->         long: 64;
->         long: 64;
->  };
-
-Without looking at source code it wasn't clear what the original issue
-was. It would be good to explain that libbpf's btf_dumper attempts to
-emit empty structs with {} on the same line. But this breaks for
-non-zero-sized structs due to padding.
-
+> Verify that `bpftool btf dump file ... format c` correctly prints
+> newlines for structures that consist of anonymous-only padding fields.
 >
 > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 > ---
->  tools/lib/bpf/btf_dump.c | 15 +++++++++------
->  1 file changed, 9 insertions(+), 6 deletions(-)
+>  .../bpf/progs/btf_dump_test_case_padding.c       | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
 >
-> diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
-> index 4221f73a74d0..ebbba19ac122 100644
-> --- a/tools/lib/bpf/btf_dump.c
-> +++ b/tools/lib/bpf/btf_dump.c
-> @@ -852,7 +852,7 @@ static int chip_away_bits(int total, int at_most)
->         return total % at_most ? : at_most;
->  }
+> diff --git a/tools/testing/selftests/bpf/progs/btf_dump_test_case_padding.c b/tools/testing/selftests/bpf/progs/btf_dump_test_case_padding.c
+> index f2661c8d2d90..08e43ee38188 100644
+> --- a/tools/testing/selftests/bpf/progs/btf_dump_test_case_padding.c
+> +++ b/tools/testing/selftests/bpf/progs/btf_dump_test_case_padding.c
+> @@ -102,12 +102,28 @@ struct zone {
+>         struct zone_padding __pad__;
+>  };
 >
-> -static void btf_dump_emit_bit_padding(const struct btf_dump *d,
-> +static bool btf_dump_emit_bit_padding(const struct btf_dump *d,
->                                       int cur_off, int m_off, int m_bit_sz,
->                                       int align, int lvl)
->  {
-> @@ -861,10 +861,10 @@ static void btf_dump_emit_bit_padding(const struct btf_dump *d,
->
->         if (off_diff <= 0)
->                 /* no gap */
-> -               return;
-> +               return false;
->         if (m_bit_sz == 0 && off_diff < align * 8)
->                 /* natural padding will take care of a gap */
-> -               return;
-> +               return false;
->
->         while (off_diff > 0) {
->                 const char *pad_type;
-> @@ -886,6 +886,8 @@ static void btf_dump_emit_bit_padding(const struct btf_dump *d,
->                 btf_dump_printf(d, "\n%s%s: %d;", pfx(lvl), pad_type, pad_bits);
->                 off_diff -= pad_bits;
->         }
+> +/* ----- START-EXPECTED-OUTPUT ----- */
+> +/*
+> + *struct padding_wo_named_members {
+> + *     long: 64;
+> + *     long: 64;
+> + *};
+> + *
+> + */
+> +/* ------ END-EXPECTED-OUTPUT ------ */
 > +
-> +       return true;
->  }
->
->  static void btf_dump_emit_struct_fwd(struct btf_dump *d, __u32 id,
-> @@ -906,6 +908,7 @@ static void btf_dump_emit_struct_def(struct btf_dump *d,
->         bool is_struct = btf_is_struct(t);
->         int align, i, packed, off = 0;
->         __u16 vlen = btf_vlen(t);
-> +       bool padding_added = false;
->
->         packed = is_struct ? btf_is_struct_packed(d->btf, id, t) : 0;
->
-> @@ -940,11 +943,11 @@ static void btf_dump_emit_struct_def(struct btf_dump *d,
->         /* pad at the end, if necessary */
->         if (is_struct) {
->                 align = packed ? 1 : btf__align_of(d->btf, id);
-> -               btf_dump_emit_bit_padding(d, off, t->size * 8, 0, align,
-> -                                         lvl + 1);
-> +               padding_added = btf_dump_emit_bit_padding(d, off, t->size * 8, 0, align,
-> +                                                         lvl + 1);
->         }
->
-> -       if (vlen)
-> +       if (vlen || padding_added)
+> +struct padding_wo_named_members {
+> +       long: 64;
+> +       long: 64;
+> +} __attribute__((aligned(8)));
 
-What if instead of returning the padding_added flag we just check that
-struct is non-zero-sized? Clearly vlen isn't an appropriate check
-here.
+you don't really need aligned(8) attribute, if you drop it you can
+have a single copy of the struct (just like padded_implicitly above)
 
->                 btf_dump_printf(d, "\n");
->         btf_dump_printf(d, "%s}", pfx(lvl));
->         if (packed)
+> +
+>  int f(struct {
+>         struct padded_implicitly _1;
+>         struct padded_explicitly _2;
+>         struct padded_a_lot _3;
+>         struct padded_cache_line _4;
+>         struct zone _5;
+> +       struct padding_wo_named_members _6;
+>  } *_)
+>  {
+>         return 0;
 > --
 > 2.37.3
 >
