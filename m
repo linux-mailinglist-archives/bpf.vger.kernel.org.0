@@ -2,77 +2,174 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B32785F01CD
-	for <lists+bpf@lfdr.de>; Fri, 30 Sep 2022 02:32:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F6BA5F01DB
+	for <lists+bpf@lfdr.de>; Fri, 30 Sep 2022 02:38:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229536AbiI3Acy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Sep 2022 20:32:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50548 "EHLO
+        id S229892AbiI3Aiu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Sep 2022 20:38:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229617AbiI3Acw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 29 Sep 2022 20:32:52 -0400
-Received: from out0.migadu.com (out0.migadu.com [IPv6:2001:41d0:2:267::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29867201926;
-        Thu, 29 Sep 2022 17:32:51 -0700 (PDT)
-Message-ID: <abd188ce-a097-5626-87bf-607495035a66@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1664497969;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oQQ9UnZcw+7W3tA3dX1+mkDW7xkF2LaunwbyXaFLHbI=;
-        b=rpSirTS+cnKO7SC2v5k0ChqWMOLVyXWrd+CX9YMjI6j206K2XJNcleIZ6sx9NCULWyDYIY
-        KN7Ebl3xHKFu13TW+CJqhRa/cNqXdtr0jsNd2ZVZG0PNy3E0z/PlgA/LbNzKTJ8GYOdTN0
-        AV10GIFGaIuqFGvP7M0USF+G/hnFuNg=
-Date:   Thu, 29 Sep 2022 17:32:43 -0700
-MIME-Version: 1.0
-Subject: Re: [PATCH v2 bpf-next] net: netfilter: move bpf_ct_set_nat_info
- kfunc in nf_nat_bpf.c
-Content-Language: en-US
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        edumazet@google.com, pabeni@redhat.com, pablo@netfilter.org,
-        fw@strlen.de, netfilter-devel@vger.kernel.org,
-        lorenzo.bianconi@redhat.com, brouer@redhat.com, toke@redhat.com,
-        memxor@gmail.com, nathan@kernel.org, ykaliuta@redhat.com,
-        bpf <bpf@vger.kernel.org>
-References: <51a65513d2cda3eeb0754842e8025ab3966068d8.1664490511.git.lorenzo@kernel.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <51a65513d2cda3eeb0754842e8025ab3966068d8.1664490511.git.lorenzo@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229885AbiI3Aiu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Sep 2022 20:38:50 -0400
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECFA7202898
+        for <bpf@vger.kernel.org>; Thu, 29 Sep 2022 17:38:48 -0700 (PDT)
+Received: by mail-pg1-x54a.google.com with SMTP id h19-20020a63e153000000b00434dfee8dbaso1845872pgk.18
+        for <bpf@vger.kernel.org>; Thu, 29 Sep 2022 17:38:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date;
+        bh=/+fx+mwCY8+Lc56RPP8V/faepECB7hZCBsaDQg4I+cc=;
+        b=ZPIfPk960PYGAaC4JKn3VhKL1eWkgdn15xSuOq0AqzXIKYEmxriwqSGt46TymakdtA
+         /88dDki+5epxVvUUdNpksj2JlRcU49C43GAGUYFwoxlMoMMZzcloMxlw0N58WxXjbSF5
+         Se1wmsCkfGkQA6wGwZIJVRBo0ov3kcqv0PJ6Mgs46fJroX+CTf5nL6QxeHAqMmNuDhlZ
+         ZLXf2tQf5TEofLxvvoOQDpbcPGt8E2VYM2m6hfN5/opHRl41WQOHFZTv60EYrlI+6DWW
+         Nsguytj9sRfljVBTavr1oo/pxTS20+TfcaZxA/eALqkcFI2Hr/m+qg9rLTonFipBCh/n
+         UdqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date;
+        bh=/+fx+mwCY8+Lc56RPP8V/faepECB7hZCBsaDQg4I+cc=;
+        b=A7X69/0wuD7b17nuF7MG1vJwOMmqCkoHfwpAclhvk0FGokX9LKGDBTIkvWz/glsFSg
+         rouB9frGttrjPFQRfk2k64CaZvtQ93ogj1dzVzjls/Opuwu8WVH33vxVOFHm1+RdKRpP
+         LO6rN/tTfVcuK3b5J2EbcdFH3RHXqQIkmjvQddiCvwrqDMHn7eyT24dQKHyjGtGmfGF2
+         3DjfitEjzgLWp4NnQOZa2fioI0V+oEFoCAzCJQJJg5z7TjDKlwBlcFoFX6aOS+n8Uh2v
+         E1RNdZBtZb6VNW+n3obWXjqAwQY0dtnxxh3OFbKHd38UqosdpwDUYew8Num+jvyZWEtb
+         RY6w==
+X-Gm-Message-State: ACrzQf34OilN8TOzC/b60FPalHviYvfSb9Ym+p0BBYXplPezMaj424tE
+        UNnftn0QQ08ozNLNAK0QlOnqWPwLji4yfQ==
+X-Google-Smtp-Source: AMsMyM4lxRMX5F6XPH9FcDGPC4sqDa6OaOIE88Xx7FH+Jf5rB7ppzEvhMHium/cWA0tiotWLWDTX/zXq/h0YZw==
+X-Received: from xllamas.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5070])
+ (user=cmllamas job=sendgmr) by 2002:a05:6a00:150e:b0:548:d48:5a3c with SMTP
+ id q14-20020a056a00150e00b005480d485a3cmr5928693pfu.27.1664498328465; Thu, 29
+ Sep 2022 17:38:48 -0700 (PDT)
+Date:   Fri, 30 Sep 2022 00:38:43 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.38.0.rc1.362.ged0d419d3c-goog
+Message-ID: <20220930003844.1210987-1-cmllamas@google.com>
+Subject: [PATCH] mm/mmap: undo ->mmap() when arch_validate_flags() fails
+From:   Carlos Llamas <cmllamas@google.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Christian Brauner <brauner@kernel.org>, linux-mm@kvack.org,
+        bpf@vger.kernel.org, kernel-team@android.com,
+        Carlos Llamas <cmllamas@google.com>,
+        Liam Howlett <liam.howlett@oracle.com>,
+        Suren Baghdasaryan <surenb@google.com>, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 9/29/22 3:38 PM, Lorenzo Bianconi wrote:
-> Remove circular dependency between nf_nat module and nf_conntrack one
-> moving bpf_ct_set_nat_info kfunc in nf_nat_bpf.c
-> 
-> Fixes: 0fabd2aa199f ("net: netfilter: add bpf_ct_set_nat_info kfunc helper")
-> Suggested-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> Tested-by: Nathan Chancellor <nathan@kernel.org>
-> Tested-by: Yauheni Kaliuta <ykaliuta@redhat.com>
-> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> ---
-> Changes since v1:
-> - move register_nf_nat_bpf declaration in nf_conntrack_bpf.h
-> ---
->   include/net/netfilter/nf_conntrack_bpf.h | 19 ++++++
->   net/netfilter/Makefile                   |  6 ++
->   net/netfilter/nf_conntrack_bpf.c         | 50 ---------------
->   net/netfilter/nf_nat_bpf.c               | 79 ++++++++++++++++++++++++
->   net/netfilter/nf_nat_core.c              |  4 +-
+Commit c462ac288f2c ("mm: Introduce arch_validate_flags()") added a late
+check in mmap_region() to let architectures validate vm_flags. The check
+needs to happen after calling ->mmap() as the flags can potentially be
+modified during this callback.
 
-lgtm.  It should have addressed Pablo's comment in v1.  Can the netfilter team 
-give an ack for the patch?
+If arch_validate_flags() check fails we unmap and free the vma. However,
+the error path fails to undo the ->mmap() call that previously succeeded
+and depending on the specific ->mmap() implementation this translates to
+reference increments, memory allocations and other operations what will
+not be cleaned up.
+
+There are several places (mainly device drivers) where this is an issue.
+However, one specific example is bpf_map_mmap() which keeps count of the
+mappings in map->writecnt. The count is incremented on ->mmap() and then
+decremented on vm_ops->close(). When arch_validate_flags() fails this
+count is off since bpf_map_mmap_close() is never called.
+
+One can reproduce this issue in arm64 devices with MTE support. Here the
+vm_flags are checked to only allow VM_MTE if VM_MTE_ALLOWED has been set
+previously. From userspace then is enough to pass the PROT_MTE flag to
+mmap() syscall to trigger the arch_validate_flags() failure.
+
+The following program reproduces this issue:
+---
+  #include <stdio.h>
+  #include <unistd.h>
+  #include <linux/unistd.h>
+  #include <linux/bpf.h>
+  #include <sys/mman.h>
+
+  int main(void)
+  {
+	union bpf_attr attr = {
+		.map_type = BPF_MAP_TYPE_ARRAY,
+		.key_size = sizeof(int),
+		.value_size = sizeof(long long),
+		.max_entries = 256,
+		.map_flags = BPF_F_MMAPABLE,
+	};
+	int fd;
+
+	fd = syscall(__NR_bpf, BPF_MAP_CREATE, &attr, sizeof(attr));
+	mmap(NULL, 4096, PROT_WRITE | PROT_MTE, MAP_SHARED, fd, 0);
+
+	return 0;
+  }
+---
+
+By manually adding some log statements to the vm_ops callbacks we can
+confirm that when passing PROT_MTE to mmap() the map->writecnt is off
+upon ->release():
+
+With PROT_MTE flag:
+  root@debian:~# ./bpf-test
+  [  111.263874] bpf_map_write_active_inc: map=9 writecnt=1
+  [  111.288763] bpf_map_release: map=9 writecnt=1
+
+Without PROT_MTE flag:
+  root@debian:~# ./bpf-test
+  [  157.816912] bpf_map_write_active_inc: map=10 writecnt=1
+  [  157.830442] bpf_map_write_active_dec: map=10 writecnt=0
+  [  157.832396] bpf_map_release: map=10 writecnt=0
+
+This patch fixes the above issue by calling vm_ops->close() when the
+arch_validate_flags() check fails, after this we can proceed to unmap
+and free the vma on the error path.
+
+Fixes: c462ac288f2c ("mm: Introduce arch_validate_flags()")
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Liam Howlett <liam.howlett@oracle.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: <stable@vger.kernel.org> # v5.10+
+Signed-off-by: Carlos Llamas <cmllamas@google.com>
+---
+ mm/mmap.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/mm/mmap.c b/mm/mmap.c
+index 9d780f415be3..36c08e2c78da 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -1797,7 +1797,7 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
+ 	if (!arch_validate_flags(vma->vm_flags)) {
+ 		error = -EINVAL;
+ 		if (file)
+-			goto unmap_and_free_vma;
++			goto close_and_free_vma;
+ 		else
+ 			goto free_vma;
+ 	}
+@@ -1844,6 +1844,9 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
+ 
+ 	return addr;
+ 
++close_and_free_vma:
++	if (vma->vm_ops && vma->vm_ops->close)
++		vma->vm_ops->close(vma);
+ unmap_and_free_vma:
+ 	fput(vma->vm_file);
+ 	vma->vm_file = NULL;
+-- 
+2.38.0.rc1.362.ged0d419d3c-goog
 
