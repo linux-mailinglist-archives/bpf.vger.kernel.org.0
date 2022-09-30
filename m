@@ -2,69 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C02255F02A6
-	for <lists+bpf@lfdr.de>; Fri, 30 Sep 2022 04:16:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D2F95F02C6
+	for <lists+bpf@lfdr.de>; Fri, 30 Sep 2022 04:32:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229621AbiI3CQQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Sep 2022 22:16:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37752 "EHLO
+        id S229621AbiI3CcX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Sep 2022 22:32:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229562AbiI3CQP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 29 Sep 2022 22:16:15 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34792A98DC;
-        Thu, 29 Sep 2022 19:16:14 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id b21so2778551plz.7;
-        Thu, 29 Sep 2022 19:16:14 -0700 (PDT)
+        with ESMTP id S229502AbiI3CcW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Sep 2022 22:32:22 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51BD8121127
+        for <bpf@vger.kernel.org>; Thu, 29 Sep 2022 19:32:22 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id f193so3046865pgc.0
+        for <bpf@vger.kernel.org>; Thu, 29 Sep 2022 19:32:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date;
-        bh=hN8i+ahxYo6RAKbNxNF7K0nemkxzuff1evcs/mHC4xs=;
-        b=Jr0I0Xzoxv3h29iH+VrCcH6NXRCTnN0W9lU1CDX6bDMgIzVjRCHwSDRIoPIlG2vB5b
-         bySQqoFDCZmFEcrhFlJVZS1Ms9N1ZIzg+ZiwUU6CPFoqH5GNQtFO0bdAD1PtO+g89wQ/
-         Vlmgs0l83/WvffuNrTaiUiwfIHa1g8OXYV0t/YHvfLHGlVQ9ge1PZPPyTlDwQahqE97I
-         WPm9Hm4wVSZTQ0GkW9Tst8O7p7jYPvhWiUARWkOpaXYWYXZ5nwo7nvHwR9z5lUFi84Py
-         qFBi98dG7IQzj7tizxrfXHhcxisv0aLuMBGSgRALMSeFC0ap56ts3T0R8lEKC6xrz7ph
-         JyRQ==
+        bh=MYTTq+XsMJYQ1g/WHUUHjaLYhRqVmlNLe944tatCqkc=;
+        b=fxMSOQrzPvVMn2sQ4hJ+x/kI9AXW3NLD48x/XizAjQHV3xMRHwD43iqt5P7IB9lIeW
+         TBSr6EN7oU1YqHBbAznCQkeKelDExzLu3q9CesC0QoFFdWI/r4IhKMlZY8PmxlFOMwmE
+         fOM5KdmEBFC4hzRDX0QzgOtoC/CK0ZIPn0MdqhKPa+z4vgV2DBS3pCqRQHt5kW/E1Tcx
+         hjNJRchXZjygNrsUKfNsFYJqFOADgkyhXJwgVxtlaq5jGKvwlUzxztBKKja5cQEI8t/o
+         SWQ+w54Prv5ZYUBBq12I0JyZvndo0kRqDUtamAzfutwO/1dAewwuxns+wZ8SZF/sHg0D
+         yMKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
          :cc:subject:date;
-        bh=hN8i+ahxYo6RAKbNxNF7K0nemkxzuff1evcs/mHC4xs=;
-        b=vyBqEY2GPznQ2c7cNhE5Em0dy6FVvlUiHNYI9jplMAnD32cc/xODyEQs/elSnbPU14
-         dA9oOarGoD03yKDhSnuDSGqtCQOsypgfIPv6EfEJvJx8cXevZBdQxmuE0bH8MGIcdakD
-         FQX8zI/DPMoTH2I5M5tlobGE9T0Erx659ATxGQLhFUbhZjNV1OWpEdl5W/XdZMbQCy+S
-         lq9PaChTGkbn6FvFyMmzVmvyezJw+eGypAqaJAalSam4B0TIkIpW9nc/OGlSwFx8aGX8
-         No6d7crD33ELH83baIvPKUKHy1GxLUPRTBkWf/xH+VZiYlAvyDQvQE4cEE8bchFBsfMR
-         mK1Q==
-X-Gm-Message-State: ACrzQf2yT/jeeFeEyOYQzm6YGv42j9xVT9gzzAtA2Uuu8vAUB8H7dKue
-        BVUJDeXI/Ujf61XmNUwpd28=
-X-Google-Smtp-Source: AMsMyM7gvIK19y8sjE+7B4VM9FGO8XiohKhsIEYqTXhABGeMVOwyZPrc3qshCBP0fsOKEZP7WzqawA==
-X-Received: by 2002:a17:902:ce84:b0:176:b0fb:96a7 with SMTP id f4-20020a170902ce8400b00176b0fb96a7mr6311052plg.51.1664504173714;
-        Thu, 29 Sep 2022 19:16:13 -0700 (PDT)
+        bh=MYTTq+XsMJYQ1g/WHUUHjaLYhRqVmlNLe944tatCqkc=;
+        b=IbpE4OeyhBcmdHKuqdOC5FndLHgoifhLTWL0L+CsJCcWJMC0AyiVo2Jd4b8zOJ7bvS
+         rO4HOFq1dwenPqrLQ3r9JbqXuZTNIYJv8Ie1Pa8Hwcktxp1IUgmxantrzSClzuSirAJk
+         M5u7YgRKyo1/XqZJ5gbS0SJQ1ZYPzCq9GTthBtn7L55tq4yvmBHkAnoM8li9u7qb5sQ7
+         45YEi+BuJRA6LLN8ehCOcwIWAf3A8KyFI6qTB5ip4izw6Xx7BB2wwJkYgcMBMbMUP337
+         lJ9iFLVlDUrLGs+6qjKHiLExvbmMT2kZ+cVKfiJGQoDfR2VuGZsCqWRIjSqURNqkGcWv
+         8rTQ==
+X-Gm-Message-State: ACrzQf1hJza+AVimmyo/kSk3NSRWMOxXSDNri5hoTF3zE/4fML8PALoX
+        J7T654tWB1mq5DT5duuUDMg=
+X-Google-Smtp-Source: AMsMyM60a/GnKn2C3nZGYZjjEUniKE9wxtebBrkE8tIC06wIEPWLVhepk4QXsL8zpayNYiz5F5wDgw==
+X-Received: by 2002:a62:2983:0:b0:54e:7cd5:adb3 with SMTP id p125-20020a622983000000b0054e7cd5adb3mr6552773pfp.38.1664505141753;
+        Thu, 29 Sep 2022 19:32:21 -0700 (PDT)
 Received: from localhost ([98.97.42.14])
-        by smtp.gmail.com with ESMTPSA id f1-20020a170902ce8100b001782aee4881sm588970plg.153.2022.09.29.19.16.12
+        by smtp.gmail.com with ESMTPSA id 21-20020a630a15000000b0042b291a89bfsm624288pgk.11.2022.09.29.19.32.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Sep 2022 19:16:12 -0700 (PDT)
-Date:   Thu, 29 Sep 2022 19:16:11 -0700
+        Thu, 29 Sep 2022 19:32:20 -0700 (PDT)
+Date:   Thu, 29 Sep 2022 19:32:18 -0700
 From:   John Fastabend <john.fastabend@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Xin Liu <liuxin350@huawei.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yanan@huawei.com,
-        wuchangye@huawei.com, xiesongyang@huawei.com, zhudi2@huawei.com,
-        kongweibin2@huawei.com
-Message-ID: <6336516b63153_233df208c4@john.notmuch>
-In-Reply-To: <CAEf4BzZp1oGtOy56noPtx+MimQq5ua7X25mB4Sf05CHLx=1m0g@mail.gmail.com>
-References: <20220924101209.50653-1-liuxin350@huawei.com>
- <20220924101209.50653-2-liuxin350@huawei.com>
- <CAEf4BzZp1oGtOy56noPtx+MimQq5ua7X25mB4Sf05CHLx=1m0g@mail.gmail.com>
-Subject: Re: [PATCH 1/2] libbpf: add fPIC option for static library
+To:     Anne Macedo <annemacedo@linux.microsoft.com>, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Isabella Basso <isabbasso@riseup.net>,
+        Paul Moore <paul@paul-moore.com>,
+        Anne Macedo <annemacedo@linux.microsoft.com>
+Message-ID: <63365532d416f_233df20899@john.notmuch>
+In-Reply-To: <20220929160558.5034-1-annemacedo@linux.microsoft.com>
+References: <20220929160558.5034-1-annemacedo@linux.microsoft.com>
+Subject: RE: [PATCH] libbpf: add validation to BTF's variable type ID
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
@@ -79,63 +81,51 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko wrote:
-> On Sat, Sep 24, 2022 at 3:13 AM Xin Liu <liuxin350@huawei.com> wrote:
-> >
-> > Some programs depned on libbpf.a(eg:bpftool). If libbpf.a miss -fPIC,
-> > this will cause a similar error at compile time:
-> >
-> > /usr/bin/ld: .../libbpf.a(libbpf-in.o): relocation
-> > R_AARCH64_ADR_PREL_PG_HI21 against symbol `stderr@@GLIBC_2.17' which
-> > may bind externally can not be used when making a sharedobject;
-> > recompile with -fPIC
-> >
-> > Use -fPIC for static library compilation to solve this problem.
-> >
-> > Signed-off-by: Xin Liu <liuxin350@huawei.com>
-> > ---
-> >  tools/lib/bpf/Makefile | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
-> > index 4c904ef0b47e..427e971f4fcd 100644
-> > --- a/tools/lib/bpf/Makefile
-> > +++ b/tools/lib/bpf/Makefile
-> > @@ -91,9 +91,10 @@ override CFLAGS += $(INCLUDES)
-> >  override CFLAGS += -fvisibility=hidden
-> >  override CFLAGS += -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
-> >  override CFLAGS += $(CLANG_CROSS_FLAGS)
-> > +override CFLAGS += -fPIC
-> >
+Anne Macedo wrote:
+> If BTF is corrupted, a SEGV may occur due to a null pointer dereference on
+> bpf_object__init_user_btf_map.
 > 
-> It seems wrong to force -fPIC for static library just because in some
-> situations users might want to statically link their *shared* library
-> with *static* libbpf. It's a bit unconventional, even though I see
-> situations in which this might be useful.
+> This patch adds a validation that checks whether the DATASEC's variable
+> type ID is null. If so, it raises a warning.
 > 
-> But I don't think this can be a default. I see three possible solutions:
+> Reported by oss-fuzz project [1].
 > 
-> 1. Do nothing. Let users specify EXTRA_CFLAGS=-fPIC if they need
-> position-independent static lib
-> 2. Let packagers decide this (again, through EXTRA_CFLAGS or by
-> patching Makefile, whichever is best). Or maybe build both PIC and
-> non-PIC static libraries and package both?
-> 3. Produce PIC and non-PIC libbpf.a libraries from libbpf's Makefile.
+> A similar patch for the same issue exists on [2]. However, the code is
+> unreachable when using oss-fuzz data.
 > 
-> I'm not sure which one is the best answer, would be nice to hear
-> opinions of people who do the packaging and distribution of libbpf in
-> distros.
+> [1] https://github.com/libbpf/libbpf/issues/484
+> [2] https://patchwork.kernel.org/project/netdevbpf/patch/20211103173213.1376990-3-andrii@kernel.org/
+> 
+> Reviewed-by: Isabella Basso <isabbasso@riseup.net>
+> Signed-off-by: Anne Macedo <annemacedo@linux.microsoft.com>
+> ---
+>  tools/lib/bpf/libbpf.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 184ce1684dcd..0c88612ab7c4 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -2464,6 +2464,10 @@ static int bpf_object__init_user_btf_map(struct bpf_object *obj,
+>  
+>  	vi = btf_var_secinfos(sec) + var_idx;
+>  	var = btf__type_by_id(obj->btf, vi->type);
+> +	if (!var || !btf_is_var(var)) {
+> +		pr_warn("map #%d: non-VAR type seen", var_idx);
+> +		return -EINVAL;
+> +	}
+>  	var_extra = btf_var(var);
+>  	map_name = btf__name_by_offset(obj->btf, var->name_off);
+>  
+> -- 
+> 2.30.2
+> 
 
-Not a distro or pkg maintainer but my $.02 is I would just leave it
-for 1 and 2.
 
-> 
-> >  # flags specific for shared library
-> > -SHLIB_FLAGS := -DSHARED -fPIC
-> > +SHLIB_FLAGS := -DSHARED
-> >
-> >  ifeq ($(VERBOSE),1)
-> >    Q =
-> > --
-> > 2.33.0
-> >
+I don't know abouut this. A quick scan looks like this type_by_id is
+used lots of places. And seems corrupted BTF could cause faults
+and confusiuon in other spots as well. I'm not sure its worth making
+libbpf survive corrupted BTF. OTOH this specific patch looks ok.
+
+How did it get corrupted in the first place? Curious to see if
+others want to harden libbpf like this.
