@@ -2,69 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24AEB5F1520
-	for <lists+bpf@lfdr.de>; Fri, 30 Sep 2022 23:44:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00E255F1532
+	for <lists+bpf@lfdr.de>; Fri, 30 Sep 2022 23:48:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232406AbiI3VoC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Sep 2022 17:44:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54458 "EHLO
+        id S232277AbiI3Vsy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Sep 2022 17:48:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231867AbiI3VoB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Sep 2022 17:44:01 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB50F1830D8;
-        Fri, 30 Sep 2022 14:44:00 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id r18so11621129eja.11;
-        Fri, 30 Sep 2022 14:44:00 -0700 (PDT)
+        with ESMTP id S232213AbiI3Vsv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Sep 2022 17:48:51 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41737182744
+        for <bpf@vger.kernel.org>; Fri, 30 Sep 2022 14:48:50 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 29so7610279edv.7
+        for <bpf@vger.kernel.org>; Fri, 30 Sep 2022 14:48:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date;
-        bh=BISgwAbrcAgb3hm0YlO6jJskCwgb0LlGymf7dpfCQwI=;
-        b=CgPPqJg6tP9fD1ILsP21XG624Y6UpdrqixMRZwpsVdP9j5Mefsr3n8YLqG/mt/sZ/1
-         s5JQUDd7rBUc09KLSn0XpxwMfLGSkUI+40ThNVUQoVVGv9lN7v/68i/+uDEe7cBthFOs
-         4FT3d1qH1H8RBEBhHKTQrY3MCLaI+Vk3wwr372epQH7LI0hyX0HYIzHKo3r+CJVrCxls
-         6asx6Zmqwv5NFXDD2oA1Z/ivVvavcEeuHuhJEdrdy8pD6OypBRZ5VXcKB2Iu+Lecz8OV
-         bR3Vq2/VGsjNboQBB6J5XkCw8zhRSQl2zpXzxFiRpQusFWj5uR+vOc3KAxyMnkG8xV7o
-         TJ5g==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=QxVyG4LW97IEnGQ0KgXwhdd9wIQTUWqCRW4u5ieX6lE=;
+        b=F6J8RSRAiSJivvWLIu859NF3H/Kqd8EkQY+SOG4ZtGq64kJntwfeW0k8FqCF8bwcKE
+         h4zpSSNu48w4VJsaz8XaX14ligwj9EDPLaHew23RvlmaPJ1HejfauKoLTua9P44aMZ4m
+         4c0iYEtVciGL6rsoOpEWB+4G7l9z8SUSfhtOc1Qtq0TYJJy/bFuzTIDXZo0d48v98qTi
+         RUVcT+DfvRFOt//JamWMNuMkjtw6G9MNZpv91D7rLFQ4Fr8JkMCekbDebgHIQxkl53h1
+         s9alz+gcPQzHHN8hOJk1wYLP8xLpYE73t1hlvxa2oaYPdstkAWjT3f77r6droke1PDHA
+         D7dA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date;
-        bh=BISgwAbrcAgb3hm0YlO6jJskCwgb0LlGymf7dpfCQwI=;
-        b=fHP1W57ep5RNhc8xbfFIkDu9RiF9Ig00DIzZCEyNHIyK9XiYK6fSizABB9UjCgwl/8
-         BPM+8IIr8wjN/GXx2bF96ZSXy0c+5snmrxoDCA7iLk1pwPqbxVBlCTfuCtRu3e3jeRwO
-         BLdTB9BcBdUYk+0GF9m5qy2DhC36wU9YHqpiiRhhXbZXD+siQiiqJAqskYTIh1dpjZHj
-         LJEwMrbld4cqGObkK4U7xbFmXFbryIkFSlk3PsEUYkf2K8qDsI5v5n0GYKzJtGlyim5+
-         9w/gHBZBZjCf7l0uDSS28ZUQMVAvZtp2RioUDiZhKTsqJ4RzNOyyljapjh34tW/BgrSD
-         YZdA==
-X-Gm-Message-State: ACrzQf0VuWvFTQkAW6idpNskaHtQWb+37MGTHMR0K69RJCTePBPKQmrO
-        NP4UBR73jeZPSUTD889OR2A=
-X-Google-Smtp-Source: AMsMyM72/cT5oWVhE5DIqip/agmkZTQyj/RNTQtvG/GH4e9HZtEAAWfR7E03hpvu8e2oPP7o66ja8g==
-X-Received: by 2002:a17:907:6ea1:b0:783:cc69:342 with SMTP id sh33-20020a1709076ea100b00783cc690342mr7473213ejc.97.1664574239168;
-        Fri, 30 Sep 2022 14:43:59 -0700 (PDT)
-Received: from krava ([83.240.62.159])
-        by smtp.gmail.com with ESMTPSA id x11-20020a170906298b00b0073de0506745sm1685717eje.197.2022.09.30.14.43.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Sep 2022 14:43:58 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Fri, 30 Sep 2022 23:43:57 +0200
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org, Song Liu <songliubraving@fb.com>,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH] perf stat: Support old kernels for bperf cgroup counting
-Message-ID: <YzdjHenrJpooKMjv@krava>
-References: <CAM9d7cjQ20a01YoZi=o-_7HT6TzR0TZgtpscKNvRrMq2yqV1Og@mail.gmail.com>
- <20220922041435.709119-1-namhyung@kernel.org>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=QxVyG4LW97IEnGQ0KgXwhdd9wIQTUWqCRW4u5ieX6lE=;
+        b=XnK6+YGLnW3ckNx8EkpDLdDHapQsZRh3vBMbubUJrrSQyEg8ztC2CNY38Obe/X1XTo
+         yGdwuRrjIki8cOboZz8gDLif532D00FECbZkCawG/eWovE29fOotgrcsfSedX1fcAgi0
+         MJ5lqkZiwsK2ai9+sVPUDvzTWcLlMN8UD8D4QSXmHqGawRZoZIIrRfsfJRMCGPcoP2bu
+         nwhSVMf/A9VlTveuqtnDlsG4CyoYLaWjvpYszELnDPjsZIRMDVjSOtD+tmetrXgbRidU
+         Kg+6OFZdRwEp1fBOsOwcI4PCLshusdQtVS0REn4JG+jEVINZ/bHeohRxGLQ5R+/PR7KO
+         wHcw==
+X-Gm-Message-State: ACrzQf0jUfnoZVu9FN994kJ2830wbS5I+O2tZdK7caUE5uNPA8Q4aG1q
+        5VkGiJQqOEddp5VcoHz+iAxNBX8jK2B+Nj+53/I4RVOcCNA=
+X-Google-Smtp-Source: AMsMyM672sdDuPxkBN9BBlS2sCDK6V0mXJtyNEgPLbtXY0Axwm2uCFIt9Vm/LyDcOmqsnB7oLxlO4qDuZQ6tfUooFgE=
+X-Received: by 2002:a05:6402:529a:b0:458:2a37:88b1 with SMTP id
+ en26-20020a056402529a00b004582a3788b1mr8548168edb.209.1664574528714; Fri, 30
+ Sep 2022 14:48:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220922041435.709119-1-namhyung@kernel.org>
+References: <CACbfJv8tn5dZmz=6+SMC4HZV05s-vnV2Nq19pC0D=eTLUu91Pg@mail.gmail.com>
+ <877d1loocx.fsf@oracle.com>
+In-Reply-To: <877d1loocx.fsf@oracle.com>
+From:   Johnny young <johnny96.young@gmail.com>
+Date:   Fri, 30 Sep 2022 14:48:37 -0700
+Message-ID: <CACbfJv8hxB7Fw0KACjTqm+dWEbwMg4tJ2CSXTVx7yfdcYGECXQ@mail.gmail.com>
+Subject: Re: Is BTF info sufficient enough for BPFTrace and other debug tools
+ to run ?
+To:     Stephen Brennan <stephen.s.brennan@oracle.com>
+Cc:     bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -75,82 +66,94 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 21, 2022 at 09:14:35PM -0700, Namhyung Kim wrote:
-> The recent change in the cgroup will break the backward compatiblity in
-> the BPF program.  It should support both old and new kernels using BPF
-> CO-RE technique.
-> 
-> Like the task_struct->__state handling in the offcpu analysis, we can
-> check the field name in the cgroup struct.
-> 
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> ---
-> Arnaldo, I think this should go through the cgroup tree since it depends
-> on the earlier change there.  I don't think it'd conflict with other
-> perf changes but please let me know if you see any trouble, thanks!
+Hey Stephen,
 
-could you please paste the cgroup tree link?
+Thank you for the detailed explanation. I hope that after your work is
+done for drgn as mentioned and the necessary work is done from the
+debug tool side,  then the debug tools will rely on the kernel
+internal symbol table and BTF only in the future.  That's wonderful.
 
-thanks,
-jirka
+Best,
 
-> 
->  tools/perf/util/bpf_skel/bperf_cgroup.bpf.c | 29 ++++++++++++++++++++-
->  1 file changed, 28 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c b/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
-> index 488bd398f01d..4fe61043de04 100644
-> --- a/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
-> +++ b/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
-> @@ -43,12 +43,39 @@ struct {
->  	__uint(value_size, sizeof(struct bpf_perf_event_value));
->  } cgrp_readings SEC(".maps");
->  
-> +/* new kernel cgroup definition */
-> +struct cgroup___new {
-> +	int level;
-> +	struct cgroup *ancestors[];
-> +} __attribute__((preserve_access_index));
-> +
-> +/* old kernel cgroup definition */
-> +struct cgroup___old {
-> +	int level;
-> +	u64 ancestor_ids[];
-> +} __attribute__((preserve_access_index));
-> +
->  const volatile __u32 num_events = 1;
->  const volatile __u32 num_cpus = 1;
->  
->  int enabled = 0;
->  int use_cgroup_v2 = 0;
->  
-> +static inline __u64 get_cgroup_v1_ancestor_id(struct cgroup *cgrp, int level)
-> +{
-> +	/* recast pointer to capture new type for compiler */
-> +	struct cgroup___new *cgrp_new = (void *)cgrp;
-> +
-> +	if (bpf_core_field_exists(cgrp_new->ancestors)) {
-> +		return BPF_CORE_READ(cgrp_new, ancestors[level], kn, id);
-> +	} else {
-> +		/* recast pointer to capture old type for compiler */
-> +		struct cgroup___old *cgrp_old = (void *)cgrp;
-> +
-> +		return BPF_CORE_READ(cgrp_old, ancestor_ids[level]);
-> +	}
-> +}
-> +
->  static inline int get_cgroup_v1_idx(__u32 *cgrps, int size)
->  {
->  	struct task_struct *p = (void *)bpf_get_current_task();
-> @@ -70,7 +97,7 @@ static inline int get_cgroup_v1_idx(__u32 *cgrps, int size)
->  			break;
->  
->  		// convert cgroup-id to a map index
-> -		cgrp_id = BPF_CORE_READ(cgrp, ancestors[i], kn, id);
-> +		cgrp_id = get_cgroup_v1_ancestor_id(cgrp, i);
->  		elem = bpf_map_lookup_elem(&cgrp_idx, &cgrp_id);
->  		if (!elem)
->  			continue;
-> -- 
-> 2.37.3.968.ga6b4b080e4-goog
-> 
+On Thu, Sep 29, 2022 at 2:35 PM Stephen Brennan
+<stephen.s.brennan@oracle.com> wrote:
+>
+> Johnny young <johnny96.young@gmail.com> writes:
+> > Hello BPF
+> >
+> > I understand that CONFIG_DEBUG_INFO_BTF=y will generate .BTF and
+> > .BTF_xx  sections in the kernel image which are much smaller than
+> > those DWARF sections.  But I also try to understand how BTF can impact
+> > bpftrace and the existing debug tools:
+> >
+> > 1) If the kernel is built with CONFIG_DEBUG_INFO_BTF=y, can
+> > bpftrace relies on BTF only without kernel_devel ?
+> >
+> > 2) Can the existing kernel debugging tools like crash(1) or
+> > kgdb(1) take advantage of BTF ?
+>
+> Hi Johnny,
+>
+> I can't answer all your questions but I can chime in regarding
+> debuggers. BTF could provide information to both of these debuggers, but
+> currently neither of them know how to use it. There's a few reasons and
+> challenges.
+>
+> 1. Kernel and module BTF today only includes the type information
+>    necessary to describe all functions, and percpu variables. Most
+>    debuggers would also like to know the types of global variables. I've
+>    got a patch series [1] which allows pahole (which generates the
+>    kernel & module BTF) to output information for global variable
+>    declarations as well.
+>
+> 2. Assuming you had the BTF, you'd also need a symbol table.  The kernel
+>    has kallsyms, which is an internal symbol table, and most debuggers
+>    today don't know how to read that - instead, they rely on the symbol
+>    table from the ELF debuginfo file. I frequently work with a debugger
+>    library called drgn [2], and I've got a branch out for review [3]
+>    which enables drgn to read the kallsyms. In order to do that,
+>    debuggers need to be able to *find* the kallsyms table, so I added
+>    information to the vmcoreinfo note in the commits 5fd8fea935a1
+>    ("vmcoreinfo: include kallsyms symbols") and f09bddbd8661
+>    ("vmcoreinfo: add kallsyms_num_syms symbol").
+>
+> 3. Assuming you have symbol table access and the BTF is complete enough
+>    for you to use it for real debugging, then your debugger still needs
+>    to have logic to *find* the BTF and parse it (probably with libbpf).
+>    I've got a branch for drgn [4] which implements BTF parsing on top of
+>    the kallsyms parsing logic. With those things together, you get a
+>    debugger which relies on nothing except data it finds inside the
+>    kernel, and it works well enough.
+>
+> So the short answer is - no, currently there is no debugger (that I know
+> of) which can leverage BTF. But it's in the works for drgn, and once we
+> get there with drgn, I'd hope to see that developers for other debuggers
+> might see the power of it and consider implementing it.
+>
+> [1]: https://lore.kernel.org/bpf/20220826184911.168442-1-stephen.s.brennan@oracle.com/
+> [2]: https://drgn.readthedocs.io/
+> [3]: https://github.com/osandov/drgn/pull/177
+> [4]: https://github.com/brenns10/drgn/tree/kallsyms_plus_btf
+>
+> >
+> > 3) If the kernel is built with CONFIG_DEBUG_INFO_BTF=y, are the
+> > symbolic info and types info in the debug-info section replaced with
+> > BTF formatted info?
+>
+> No, BTF is generated _in addition to_ the existing type information. BTF
+> doesn't store "symbolic info" i.e. symbol table data, so it couldn't
+> replace that data. It only stores type information, so hypothetically it
+> could be used instead of DWARF .debug_types data, but in practice that
+> doesn't happen.
+>
+> Stephen
+>
+> >
+> > 4) Given the current upstream development effort for BTF, can we run
+> > bpftrace without LLVM now ? and can we run bpftrace without the help
+> > of kernel header files (kernel-devel) ?
+> >
+> > 5) Has bpf CO-RE become reality now?
+> >
+> > Thank you!
+> > Johnny
