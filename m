@@ -2,83 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74B7E5F15D4
-	for <lists+bpf@lfdr.de>; Sat,  1 Oct 2022 00:10:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6577E5F15D9
+	for <lists+bpf@lfdr.de>; Sat,  1 Oct 2022 00:11:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232435AbiI3WK0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Sep 2022 18:10:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35708 "EHLO
+        id S232556AbiI3WLX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Sep 2022 18:11:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232554AbiI3WKW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Sep 2022 18:10:22 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A88416612C;
-        Fri, 30 Sep 2022 15:10:18 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 63EECB82A4E;
-        Fri, 30 Sep 2022 22:10:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 1B4FBC433D6;
-        Fri, 30 Sep 2022 22:10:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1664575816;
-        bh=boq1adV3v7czYDdvsiNNB+DcHejVYZg49b8utNbjG7U=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=ac4/sGRk0ooX/FZ6e5s74h3+JG4E9dRVF1p1LuBwUGsi/mSkm6EXUkaHGuJT4w82O
-         HQvF+hYsowmadEy6s1cCDMWzo+2DaL4SknhXPgR0cfg1BLNyqpX7PAqw1CnPS+t2hh
-         rGIJgUZcRmoZW6VeTqu+cOoog+EBGp2TLQcEHFprtUEsd9TMga/Lg/DmYWkqripDem
-         VNenx6FiL/UjKdCDTDwQBxXDIiY1KEPL+vHpx0y9DFVD2p/sXSTvW8k+UYEHqdGdx+
-         /nmkkG5H3WtuNPqcstImVmD09SSYoHVH6I5mbMuR2r4TOROGUjYyv/tyrHVsm+GoZm
-         ilONQwqGV54oQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 03751E50D64;
-        Fri, 30 Sep 2022 22:10:16 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S232631AbiI3WLQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Sep 2022 18:11:16 -0400
+Received: from mail-oa1-f51.google.com (mail-oa1-f51.google.com [209.85.160.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8694712084B;
+        Fri, 30 Sep 2022 15:11:14 -0700 (PDT)
+Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-127dca21a7dso6941971fac.12;
+        Fri, 30 Sep 2022 15:11:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=XScEm+DuYC8Hlch7wHtQ1OIZ+cTh7jVexKgDloeMcLg=;
+        b=yuNno+LYadq20Pk5744APf6fbk2XZ9RAlmPHZyUE0Qc+5mYcRO8VM514K9zlA8aG88
+         QhMqRE04F+7JLF4fPbUUvedtZ6cgYDIcV8l+RoE4qZB6gG4zLvMfMUQJtmAEUE2dvOLM
+         7bGSVYr8mETMgRfU1g9c7OHWE1xMikcEDHfE+ahkGNCpOgDW0GuH9oieY1zczPO985tN
+         suGNZgv9IZf/r3dylZMG4fll8MhQ0suDgY4OiNBwhUkFNbsLOLpNjRbDijHg2LyJUP1F
+         W5laPP4ymjkdVEbpY1zRPaSdLXbbq8Lo4pjFQ84DwvV3A/8/DjlHkFVpEGwChSaTl/fs
+         dEdA==
+X-Gm-Message-State: ACrzQf1F/FJ1/Kv9CaOf68WwhKuqaMrvrKWEDIdinB19gIn49WY9csrf
+        WWdJLMfAIKFvwbzxVQ25Dsl3MuxbQ4qx5ibrX7dOtb4UpyA=
+X-Google-Smtp-Source: AMsMyM4m1myiTvDwOzrvck//Wg05/NC3MMi+a1KNaAU13c6BxicLH27qNXmeVrDg4jVPM5wJUVs3p+ubk/boXSl7Kdk=
+X-Received: by 2002:a05:6870:a70f:b0:127:666a:658 with SMTP id
+ g15-20020a056870a70f00b00127666a0658mr156984oam.218.1664575873758; Fri, 30
+ Sep 2022 15:11:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] selftests/bpf: Fix spelling mistake "unpriviledged" ->
- "unprivileged"
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <166457581601.30660.11490951795183636093.git-patchwork-notify@kernel.org>
-Date:   Fri, 30 Sep 2022 22:10:16 +0000
-References: <20220928221555.67873-1-colin.i.king@gmail.com>
-In-Reply-To: <20220928221555.67873-1-colin.i.king@gmail.com>
-To:     Colin Ian King <colin.i.king@gmail.com>
-Cc:     ast@kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <CAM9d7cjQ20a01YoZi=o-_7HT6TzR0TZgtpscKNvRrMq2yqV1Og@mail.gmail.com>
+ <20220922041435.709119-1-namhyung@kernel.org> <YzdjHenrJpooKMjv@krava>
+ <CAM9d7cjKaZvWQUwGwoTLNzAgHS7ndL_V_5+O+WqMUvuHJ7cWNg@mail.gmail.com> <88915C51-33CD-49A4-A9E0-F5F5ECDEA0C7@gmail.com>
+In-Reply-To: <88915C51-33CD-49A4-A9E0-F5F5ECDEA0C7@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Fri, 30 Sep 2022 15:11:02 -0700
+Message-ID: <CAM9d7ci4mvc1rsMyRbwH-i2=8XVsEAvkk5JXLMHmbV4nkbBYhQ@mail.gmail.com>
+Subject: Re: [PATCH] perf stat: Support old kernels for bperf cgroup counting
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     Jiri Olsa <olsajiri@gmail.com>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        cgroups <cgroups@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Fri, Sep 30, 2022 at 3:00 PM Arnaldo Carvalho de Melo
+<arnaldo.melo@gmail.com> wrote:
+>
+>
+>
+> On September 30, 2022 6:56:40 PM GMT-03:00, Namhyung Kim <namhyung@kernel.org> wrote:
+> >Hi Jiri,
+> >
+> >On Fri, Sep 30, 2022 at 2:44 PM Jiri Olsa <olsajiri@gmail.com> wrote:
+> >>
+> >> On Wed, Sep 21, 2022 at 09:14:35PM -0700, Namhyung Kim wrote:
+> >> > The recent change in the cgroup will break the backward compatiblity in
+> >> > the BPF program.  It should support both old and new kernels using BPF
+> >> > CO-RE technique.
+> >> >
+> >> > Like the task_struct->__state handling in the offcpu analysis, we can
+> >> > check the field name in the cgroup struct.
+> >> >
+> >> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> >> > ---
+> >> > Arnaldo, I think this should go through the cgroup tree since it depends
+> >> > on the earlier change there.  I don't think it'd conflict with other
+> >> > perf changes but please let me know if you see any trouble, thanks!
+> >>
+> >> could you please paste the cgroup tree link?
+> >
+> >Do you mean this?
+> >
+> >  https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git
+> >
+>
+>
+> Which branch and cset in that tree does you perf skel depends on?
 
-This patch was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+I believe it's for-6.1 and the cset is in
 
-On Wed, 28 Sep 2022 23:15:55 +0100 you wrote:
-> There a couple of spelling mistakes, one in a literal string and one
-> in a comment. Fix them.
-> 
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-> ---
->  tools/testing/selftests/bpf/verifier/calls.c   | 2 +-
->  tools/testing/selftests/bpf/verifier/var_off.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
+  https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/commit/?h=for-6.1&id=7f203bc89eb66d6afde7eae91347fc0352090cc3
 
-Here is the summary with links:
-  - selftests/bpf: Fix spelling mistake "unpriviledged" -> "unprivileged"
-    https://git.kernel.org/bpf/bpf-next/c/2efcf695bfc0
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Thanks,
+Namhyung
