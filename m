@@ -2,115 +2,201 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DB225F0D95
-	for <lists+bpf@lfdr.de>; Fri, 30 Sep 2022 16:31:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A69E55F0FE5
+	for <lists+bpf@lfdr.de>; Fri, 30 Sep 2022 18:27:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231332AbiI3Obw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Sep 2022 10:31:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48218 "EHLO
+        id S232128AbiI3Q1H (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Sep 2022 12:27:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231376AbiI3Obu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Sep 2022 10:31:50 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3328C16510C;
-        Fri, 30 Sep 2022 07:31:49 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d10so4392737pfh.6;
-        Fri, 30 Sep 2022 07:31:49 -0700 (PDT)
+        with ESMTP id S231657AbiI3Q1F (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Sep 2022 12:27:05 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87916150769
+        for <bpf@vger.kernel.org>; Fri, 30 Sep 2022 09:27:03 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id f11so4970957wrm.6
+        for <bpf@vger.kernel.org>; Fri, 30 Sep 2022 09:27:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=P/mfulPnToD5m3VhopO0JJf5HkHXOGbekrrPNUqUIfs=;
-        b=P2LrHizLC0JOdFxy4s4hGsTWgwWSku430QDkH9BRLpvfb+BSOgHyMgcFyFHJokLl3K
-         gsXHroqLUivcxo+sIq1rqC701MQq1PJm47zquRyhgXjOV4paTbE4MD3aPY939KD2gFjS
-         CB2W/iZCk80PmaXNlAZC9zxc7OqOn4zqoRl0XQFVwFxQ1MwV57LiXvF1xG/cKFfOZEa1
-         7pLneBOC+kneZTRLdnaN6Z3AnON1EU3PBeeIJ9EcgkC6HcHgFuCuaT/jtHyS+8m/OU9o
-         KAus4GKm4K2OX1uKayD3W0l9h2D0C6MB54VfZXkrnL+/hyG6Z1uzrkdz3MR8SRoEsDFq
-         lPxA==
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date;
+        bh=6G1w7rleyZqUvL2CNwMdqEOX+vKWh0uG8GbS6llGVCg=;
+        b=bQEqCIzF1tPLK+ONdPDtTEQGoUqBYenM2qd7Kp+iHWeXN9ECqy+1tl4llEWmubzhNO
+         tOJkMHGvUZEfh66+jJvQIaukdumR+IxnIeXGB8qL2j36iVnIv7JV17HZxxF5w462hTgz
+         y6F6itSGxcUHEHxrk8CknVPXInKcAPyp9qJwCwf+/ea8KXGqTWYsqLNIfJov+OdKaV1w
+         PtQRkE/B8TFYmaqnjOSnj0TSdy+kqEH03bjahcDGwMvYaCGHRzLwc+aa9kEnmjVUPEfo
+         ijet0UafijqcXo8tpC8+1JUlgMQ+OrIV/ki/koVdLmh+zpnvey0FjtWSdmPkDc2Of7zw
+         Bklg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=P/mfulPnToD5m3VhopO0JJf5HkHXOGbekrrPNUqUIfs=;
-        b=XVtMYPqixR0mkOmPA6IkWeDS7hkv1L4ZU9Mx62LfTtZgtKBYrSVu4s5QdDPzpzHhZo
-         qDlZ01a/vB1ptwf98tI79E9Noryc/mVt87bjO3pHlGNfvoqtf9I/VUXOYE0g2Nlu2N+r
-         ctqxyV+q/GrWpGAqy6J+5P2yAgb4ymj532tWqoMvGu2kn3Nt71vY2PiWF9ApWkKlJwV8
-         CHRmbLsHqJhAKsE3E84TTgqzgJcaLL7wGKlKWCZfSaYhHQPXZgN+ERL3vnf/TyMM/zFt
-         5UDmwHZ+La2JhLilaKlMA07gUc0CocQrnbvFt70RhpOGLC9MJFyAi8W6RNDIjejs/Xd3
-         YmTg==
-X-Gm-Message-State: ACrzQf3CKnVhH4MZu8JO/PAdQ+ecHOf+qHIIMoQprT9dK/8lm4qxTiAy
-        UCeAnhBR2GAJyFgKYYkwzaTuHHL/eL7oelzfCc8=
-X-Google-Smtp-Source: AMsMyM4L/fl0gfg7Gw+77bK4QC9t/VXKvqOmQDdygqstfx4d3VC458VJ2g+1gtQPzn08bc3bN2UXcZPSUuv6HaVdsiE=
-X-Received: by 2002:a63:8ac2:0:b0:441:358c:f68c with SMTP id
- y185-20020a638ac2000000b00441358cf68cmr3504828pgd.69.1664548308645; Fri, 30
- Sep 2022 07:31:48 -0700 (PDT)
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date;
+        bh=6G1w7rleyZqUvL2CNwMdqEOX+vKWh0uG8GbS6llGVCg=;
+        b=KDtxYMNqK7yE6aFyswzO55VRPf50KAxAzb2Z3yDycFFvRSElNqHTn1fXx70IDW0YAs
+         P/45f4wvjOW5sxg2jW4o2Bz9KfSufdkJ6H0YaagV6JVlcyOSjwIgDUbiXTh3ZBPqObn9
+         BgXhkWN5BkhcjlE6Sf4z2p08VVera2QMKjHC7fk4Cy8nmEei1kqr6gY+6YI4rZdrk7DQ
+         C2AHtHU+dm5bVW+tvvyU4FW4PIeiI4fH/Fo75KZ3y0cmpFVbglcPEec3xwNgSeWIuLU6
+         HzebIhnUNIWNKVesbDlHLkJi2yMQOoxSJj1IPOJu73xUnkdT9XPzlMXAvXEjntRl9+Yo
+         FBCQ==
+X-Gm-Message-State: ACrzQf1UEfh8RilNSOGv5Zpdc6Pwidl7whHtrLjXTbzzcvlQEe0lXgcG
+        I87XlrwM0sACoirsp/Dzrc2tSQ==
+X-Google-Smtp-Source: AMsMyM6ayqcfd0Q//6v/OwWOkLbzIAl3QtqboHlsDLG6xcMHCS0KuWtutlxTEtXeKef4jt11I9RX5w==
+X-Received: by 2002:adf:9cd0:0:b0:22a:7cea:d3c3 with SMTP id h16-20020adf9cd0000000b0022a7cead3c3mr6771605wre.196.1664555221581;
+        Fri, 30 Sep 2022 09:27:01 -0700 (PDT)
+Received: from [192.168.178.32] ([51.155.200.13])
+        by smtp.gmail.com with ESMTPSA id bd16-20020a05600c1f1000b003a4efb794d7sm2519778wmb.36.2022.09.30.09.26.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 Sep 2022 09:26:59 -0700 (PDT)
+Message-ID: <83307f48-bef0-bff8-e3b5-f8df7a592678@isovalent.com>
+Date:   Fri, 30 Sep 2022 17:26:58 +0100
 MIME-Version: 1.0
-References: <20220929090133.7869-1-magnus.karlsson@gmail.com>
- <YzV28OlK+pwlm/B/@boxer> <9d828483-21d0-18da-0870-babcb50d5c03@linux.dev> <CAJ8uoz2Z1amorsKx3Fm7Hy+mfK9+e-KYffT-N9CauYxkapQ29Q@mail.gmail.com>
-In-Reply-To: <CAJ8uoz2Z1amorsKx3Fm7Hy+mfK9+e-KYffT-N9CauYxkapQ29Q@mail.gmail.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Fri, 30 Sep 2022 16:31:37 +0200
-Message-ID: <CAJ8uoz3ncobw=kWGoqdw0f++jgWzVAz_qTCy65OSMH+2ZqeBYQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/xsk: fix double free
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, netdev@vger.kernel.org,
-        jonathan.lemon@gmail.com, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.0
+Subject: Re: [bpf-next v7 1/3] bpftool: Add auto_attach for bpf prog
+ load|loadall
+Content-Language: en-GB
+To:     Wang Yufen <wangyufen@huawei.com>, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        hawk@kernel.org, nathan@kernel.org, ndesaulniers@google.com,
+        trix@redhat.com
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, llvm@lists.linux.dev
+References: <1664277676-2228-1-git-send-email-wangyufen@huawei.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <1664277676-2228-1-git-send-email-wangyufen@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 30, 2022 at 9:52 AM Magnus Karlsson
-<magnus.karlsson@gmail.com> wrote:
->
-> On Fri, Sep 30, 2022 at 2:52 AM Martin KaFai Lau <martin.lau@linux.dev> wrote:
-> >
-> > On 9/29/22 3:44 AM, Maciej Fijalkowski wrote:
-> > > On Thu, Sep 29, 2022 at 11:01:33AM +0200, Magnus Karlsson wrote:
-> > >> From: Magnus Karlsson <magnus.karlsson@intel.com>
-> > >>
-> > >> Fix a double free at exit of the test suite.
-> > >>
-> > >> Fixes: a693ff3ed561 ("selftests/xsk: Add support for executing tests on physical device")
-> > >> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> > >> ---
-> > >>   tools/testing/selftests/bpf/xskxceiver.c | 3 ---
-> > >>   1 file changed, 3 deletions(-)
-> > >>
-> > >> diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/selftests/bpf/xskxceiver.c
-> > >> index ef33309bbe49..d1a5f3218c34 100644
-> > >> --- a/tools/testing/selftests/bpf/xskxceiver.c
-> > >> +++ b/tools/testing/selftests/bpf/xskxceiver.c
-> > >> @@ -1953,9 +1953,6 @@ int main(int argc, char **argv)
-> > >>
-> > >>      pkt_stream_delete(tx_pkt_stream_default);
-> > >>      pkt_stream_delete(rx_pkt_stream_default);
-> > >> -    free(ifobj_rx->umem);
-> > >> -    if (!ifobj_tx->shared_umem)
-> > shared_umem means ifobj_rx->umem and ifobj_tx->umem are the same?  No special
-> > handling is needed and ifobject_delete() will handle it?
->
-> You are correct, we will still have a double free in that case. Thanks
-> for spotting. Will send a v2.
+Tue Sep 27 2022 12:21:14 GMT+0100 ~ Wang Yufen <wangyufen@huawei.com>
+> Add auto_attach optional to support one-step load-attach-pin_link.
 
-Sorry, but I have to take my statement back. The v1 is actually
-correct. The umem structure is unconditionally allocated in
-ifobject_create(). Later when setting up the shared_umem, the
-information from one of them is copied over to the other, except for
-some information that is changed for the second umem structure. So the
-v1 still stands.
+Nit: Now "autoattach" instead of "auto_attach". Same in commit title.
 
-> > >> -            free(ifobj_tx->umem);
-> > >>      ifobject_delete(ifobj_tx);
-> > >>      ifobject_delete(ifobj_rx);
-> > >
-> > > So basically we free this inside ifobject_delete().
-> >
+> 
+> For example,
+>    $ bpftool prog loadall test.o /sys/fs/bpf/test autoattach
+> 
+>    $ bpftool link
+>    26: tracing  name test1  tag f0da7d0058c00236  gpl
+>    	loaded_at 2022-09-09T21:39:49+0800  uid 0
+>    	xlated 88B  jited 55B  memlock 4096B  map_ids 3
+>    	btf_id 55
+>    28: kprobe  name test3  tag 002ef1bef0723833  gpl
+>    	loaded_at 2022-09-09T21:39:49+0800  uid 0
+>    	xlated 88B  jited 56B  memlock 4096B  map_ids 3
+>    	btf_id 55
+>    57: tracepoint  name oncpu  tag 7aa55dfbdcb78941  gpl
+>    	loaded_at 2022-09-09T21:41:32+0800  uid 0
+>    	xlated 456B  jited 265B  memlock 4096B  map_ids 17,13,14,15
+>    	btf_id 82
+> 
+>    $ bpftool link
+>    1: tracing  prog 26
+>    	prog_type tracing  attach_type trace_fentry
+>    3: perf_event  prog 28
+>    10: perf_event  prog 57
+> 
+> The autoattach optional can support tracepoints, k(ret)probes,
+> u(ret)probes.
+> 
+> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+> Signed-off-by: Wang Yufen <wangyufen@huawei.com>
+> ---
+> v6 -> v7: add info msg print and update doc for the skip program
+> v5 -> v6: skip the programs not supporting auto-attach,
+> 	  and change optional name from "auto_attach" to "autoattach"
+> v4 -> v5: some formatting nits of doc
+> v3 -> v4: rename functions, update doc, bash and do_help()
+> v2 -> v3: switch to extend prog load command instead of extend perf
+> v2: https://patchwork.kernel.org/project/netdevbpf/patch/20220824033837.458197-1-weiyongjun1@huawei.com/
+> v1: https://patchwork.kernel.org/project/netdevbpf/patch/20220816151725.153343-1-weiyongjun1@huawei.com/
+>  tools/bpf/bpftool/prog.c | 81 ++++++++++++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 79 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+> index c81362a..84eced8 100644
+> --- a/tools/bpf/bpftool/prog.c
+> +++ b/tools/bpf/bpftool/prog.c
+> @@ -1453,6 +1453,72 @@ static int do_run(int argc, char **argv)
+>  	return ret;
+>  }
+>  
+> +static int
+> +auto_attach_program(struct bpf_program *prog, const char *path)
+> +{
+> +	struct bpf_link *link;
+> +	int err;
+> +
+> +	link = bpf_program__attach(prog);
+> +	if (!link)
+> +		return -1;
+> +
+> +	err = bpf_link__pin(link, path);
+> +	if (err) {
+> +		bpf_link__destroy(link);
+> +		return err;
+> +	}
+> +	return 0;
+> +}
+> +
+> +static int pathname_concat(const char *path, const char *name, char *buf)
+> +{
+> +	int len;
+> +
+> +	len = snprintf(buf, PATH_MAX, "%s/%s", path, name);
+> +	if (len < 0)
+> +		return -EINVAL;
+> +	if (len >= PATH_MAX)
+> +		return -ENAMETOOLONG;
+> +
+> +	return 0;
+> +}
+> +
+> +static int
+> +auto_attach_programs(struct bpf_object *obj, const char *path)
+> +{
+> +	struct bpf_program *prog;
+> +	char buf[PATH_MAX];
+> +	int err;
+> +
+> +	bpf_object__for_each_program(prog, obj) {
+> +		err = pathname_concat(path, bpf_program__name(prog), buf);
+> +		if (err)
+> +			goto err_unpin_programs;
+> +
+> +		err = auto_attach_program(prog, buf);
+> +		if (!err)
+> +			continue;
+> +		if (errno == EOPNOTSUPP)
+> +			p_info("Program %s does not support autoattach",
+> +			       bpf_program__name(prog));
+> +		else
+> +			goto err_unpin_programs
+With this code, if auto-attach fails, then we skip this program and move
+on to the next. That's an improvement, but in that case the program
+won't remain loaded in the kernel after bpftool exits. My suggestion in
+my previous message (sorry if it was not clear) was to fall back to
+regular pinning in that case (bpf_obj_pin()), along with the p_info()
+message, so we can have the program pinned but not attached and let the
+user know. If regular pinning fails as well, then we should unpin all
+and error out, for consistency with bpf_object__pin_programs().
+
+And in that case, the (errno == EOPNOTSUPP) with fallback to regular
+pinning could maybe be moved into auto_attach_program(), so that
+auto-attaching single programs can use the fallback too?
+
+Thanks,
+Quentin
