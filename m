@@ -2,104 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C69B5F15F6
-	for <lists+bpf@lfdr.de>; Sat,  1 Oct 2022 00:17:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B3715F15FC
+	for <lists+bpf@lfdr.de>; Sat,  1 Oct 2022 00:20:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232631AbiI3WRx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Sep 2022 18:17:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59670 "EHLO
+        id S232698AbiI3WUU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Sep 2022 18:20:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232473AbiI3WRw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Sep 2022 18:17:52 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 155991710DC
-        for <bpf@vger.kernel.org>; Fri, 30 Sep 2022 15:17:50 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id o59-20020a17090a0a4100b0020a6d5803dfso631143pjo.4
-        for <bpf@vger.kernel.org>; Fri, 30 Sep 2022 15:17:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date;
-        bh=XH8juv9tTkl7oARxhoMI0PQqVhiNXka1fbBa32XDPkE=;
-        b=HH8wI+ThhpwGaoaJD+425bNyh7WdqtEVuJkFChhDGNdxfheZZMpFtDtWMDd1JyjC6s
-         3KNyCD/knKtbtSQa8R+aWtRGUD38dwhWXfprVbSATbV7vpt8pvNAxsuY1eHuvn6llrr+
-         CR6qLB9Xg/mXVffJVULf09rMwPkTcn2OkIi8pjxBLyJXUlxethBmVcoa2YmpNWHvHRqj
-         0wiDzFVnxu8I3Dhcagfg6sZ6OKjx9BGX6Q6TAy1Zr6hB7aOE5kJMimWbFkF2Uk5K1D2g
-         LOuLSh8hHJGoW8C0jnAIWWg9RqZ4TKpwnoLMScas/ghas8bUieAoKxsRl/W155le1jCt
-         BILA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
-        bh=XH8juv9tTkl7oARxhoMI0PQqVhiNXka1fbBa32XDPkE=;
-        b=N3ZpdO9sjKbx0PWJ+VVlze47azD3SAC1HEs/9rLE1KVw4C3OdddcKJOC9JBqxE1MmJ
-         Fth6rImfcGN7RGVZNvrOEyANjRdjdlNTXxnuum60bO75qQeLhb/floA90raJ46YALOWj
-         TRs7TyVOQvy4HXzKlPRWvn7ZcEpJSKnoer5eWY7Fnh3avD85JbM4lCYjt3cvA+6NqvXM
-         Pl5HlnZqW0spBj6Ks+fppmUiZO4kLpJy6f2YZ6+9LUai7pmQ9LRdpvPqyBZDXGfgUwPR
-         UNB2YURtftvEtwoW6bPyhnRUcVp8T6+KM042EVmL5DoNI2MxAG7erlQ3LtHhnfe7IueE
-         VOWw==
-X-Gm-Message-State: ACrzQf10JR6KWunRE9YV+TXOOl2BrXZufnIszL/lyIbAkyoRB1gM2LNE
-        oQHjjaw/PkoQsUHh0EKoPAtcDApkg6o=
-X-Google-Smtp-Source: AMsMyM6G8X9KEylVhB3QjUE/wslxTis4BoTsy/6gwJbFHOjKVYcpR1QFKZqPv3Cwa8Qqq4Bft3yHZg==
-X-Received: by 2002:a17:902:ccc2:b0:178:29f9:5c5e with SMTP id z2-20020a170902ccc200b0017829f95c5emr10405547ple.21.1664576270390;
-        Fri, 30 Sep 2022 15:17:50 -0700 (PDT)
-Received: from macbook-pro-4.dhcp.thefacebook.com ([2620:10d:c090:400::5:5e53])
-        by smtp.gmail.com with ESMTPSA id l188-20020a6225c5000000b005411a68fe74sm2324442pfl.183.2022.09.30.15.17.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Sep 2022 15:17:49 -0700 (PDT)
-Date:   Fri, 30 Sep 2022 15:17:48 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     dthaler1968@googlemail.com
-Cc:     bpf@vger.kernel.org, Dave Thaler <dthaler@microsoft.com>
-Subject: Re: [PATCH 12/15] ebpf-docs: Add Linux note about register calling
- convention
-Message-ID: <20220930221748.eknsxrfnzio2uouf@macbook-pro-4.dhcp.thefacebook.com>
-References: <20220927185958.14995-1-dthaler1968@googlemail.com>
- <20220927185958.14995-12-dthaler1968@googlemail.com>
+        with ESMTP id S232715AbiI3WUQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Sep 2022 18:20:16 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 123D261B25;
+        Fri, 30 Sep 2022 15:20:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 98BAE624E6;
+        Fri, 30 Sep 2022 22:20:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id E863EC433D7;
+        Fri, 30 Sep 2022 22:20:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1664576415;
+        bh=Bt1k2I7Ai9NohzA4Ulehl31JUCHSQnWaFU2Qle7n4DY=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=uVDqBys/2mp29w3Z5talOJ2q2nqdE11pZqsa6fQ26isGG3Xl2nz8RoA2XMRPB29uJ
+         mlKLQpTcUwbMLYbxu0ayxFlunepuj7lf6GzYvtmU6WlAseCY1ySpTzR+XxhdxdANur
+         dWIUUBdZi0nVcr1o4x5GcjxLfA8w52SK18mYPHWtLSpZaHar16hvLnOQw4FFL4Srsa
+         0qJO6v8kboGZcRCglgk3HRlyAMbCGy0MIUGGyH0Lg2OAq9v9l2DBVeydzgLyn+CUUW
+         8PzLz7p2xrnsMD2t29BcwfGUwHkIoZIIVpo2GNM6kBp3btaaExkE/KbxczRTYpRRPs
+         36QNHstWETM6A==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id CC5EEE4D013;
+        Fri, 30 Sep 2022 22:20:14 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220927185958.14995-12-dthaler1968@googlemail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] libbpf:fix overrun in attribute iteration
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166457641483.5145.8427039204984502212.git-patchwork-notify@kernel.org>
+Date:   Fri, 30 Sep 2022 22:20:14 +0000
+References: <20220930090708.62394-1-liuxin350@huawei.com>
+In-Reply-To: <20220930090708.62394-1-liuxin350@huawei.com>
+To:     Xin Liu <liuxin350@huawei.com>
+Cc:     quentin@isovalent.com, andrii@kernel.org, ast@kernel.org,
+        bpf@vger.kernel.org, daniel@iogearbox.net, haoluo@google.com,
+        john.fastabend@gmail.com, jolsa@kernel.org, kongweibin2@huawei.com,
+        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        martin.lau@linux.dev, sdf@google.com, song@kernel.org,
+        wuchangye@huawei.com, xiesongyang@huawei.com, yanan@huawei.com,
+        yhs@fb.com, zhudi2@huawei.com
+X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 27, 2022 at 06:59:55PM +0000, dthaler1968@googlemail.com wrote:
-> From: Dave Thaler <dthaler@microsoft.com>
-> 
-> Signed-off-by: Dave Thaler <dthaler@microsoft.com>
-> ---
->  Documentation/bpf/linux-notes.rst | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/Documentation/bpf/linux-notes.rst b/Documentation/bpf/linux-notes.rst
-> index 522ebe27d..0581ba326 100644
-> --- a/Documentation/bpf/linux-notes.rst
-> +++ b/Documentation/bpf/linux-notes.rst
-> @@ -7,6 +7,12 @@ Linux implementation notes
->  
->  This document provides more details specific to the Linux kernel implementation of the eBPF instruction set.
->  
-> +Registers and calling convention
-> +================================
-> +
-> +All program types only use R1 which contains the "context", which is typically a structure containing all
-> +the inputs needed, and the exit value for eBPF programs is passed as a 32 bit value.
+Hello:
 
-There is a patch pending that makes return values 64-bit.
-Also bpf progs that replace other bpf progs have all 5 input args.
-I think this paragraph is unnecessary.
+This patch was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
 
-> +
->  Arithmetic instructions
->  =======================
->  
-> -- 
-> 2.33.4
+On Fri, 30 Sep 2022 17:07:08 +0800 you wrote:
+> I accidentally found that a change in commit 1045b03e07d8 ("netlink: fix
+> overrun in attribute iteration") was not synchronized to the function
+> `nla_ok` in tools/lib/bpf/nlattr.c, I think it is necessary to modify,
+> this patch will do it.
 > 
+> Signed-off-by: Xin Liu <liuxin350@huawei.com>
+> 
+> [...]
+
+Here is the summary with links:
+  - libbpf:fix overrun in attribute iteration
+    https://git.kernel.org/bpf/bpf-next/c/51e05a8cf8eb
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
