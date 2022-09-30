@@ -2,156 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EEEE5F164D
-	for <lists+bpf@lfdr.de>; Sat,  1 Oct 2022 00:48:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FBE65F1653
+	for <lists+bpf@lfdr.de>; Sat,  1 Oct 2022 00:50:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232741AbiI3Wsy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Sep 2022 18:48:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52664 "EHLO
+        id S232528AbiI3WuU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Sep 2022 18:50:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232421AbiI3Wsw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Sep 2022 18:48:52 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9095208540;
-        Fri, 30 Sep 2022 15:48:50 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id a41so7739111edf.4;
-        Fri, 30 Sep 2022 15:48:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=rLr4Pui1WgAmc20FBE5q6rikXP7BZ6KUet36h8qjGrQ=;
-        b=j/f7sU21OUk8kPvxztuKT5RBnJwNT0hXLpzsQ2xrK8zgdjoKihE425h6cOYq7h8jhD
-         BmxZbSm/gW8kVMpISmmD6SmOhUiguGYs3Byys1w0Zy/P5QefmjDN12gsnBW6Uu9rErAV
-         2DQ9bm7dg3CJ0lrxl4Ve6NJKftG/Xhn9/KRS3DDC67P7MX3DpgTnenITb5tI0RQ5xZyy
-         oR4A5OHpMMIMgU+H/r23k4CLd2+TsRJJSmrgQYH+3ep+SOIkv2qjR8KU+cAA9kahCs3U
-         gZmgCXIfFNHDAMFICPmTEmNcXOPnX4gUI30gKgEFSVPw/z2AA+hk8rPtCHbY8RqZi+cq
-         0w/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rLr4Pui1WgAmc20FBE5q6rikXP7BZ6KUet36h8qjGrQ=;
-        b=vJH3malLD4HZ4s9+ziFpMIS7C45I6kUV60JBR2jzwsC69uJz+bxxIDMKGNeekbYMsB
-         vykOxzCgc/ERhChs5uC0kq/BPQJSXGHm5VPrI6YhZc4BOCAWlY5y+pbsh+SPqWQ5y4d3
-         6IYPqNCeK6Sp40cqKnYa/UAHyWQtrU4QAlgYjqkYD49sAUGjl7bq9V2ARyfV5pPUEZsR
-         DfVrBnMGVJQ7V8Py4qUbztKugcImQAFD5mXALd8lVFuxDHUBpgA2MurDaXXXL1ugpoxH
-         cnnUl3HWXCwrj9RnMVYhK+C7oKmnn2z1nRTwxsKVaCjNc3lv3Fgvq3OxiXFaIQA+f89n
-         uVVw==
-X-Gm-Message-State: ACrzQf2mpOYKIIVyjLLZEVCWe3knOulgjk6sqqqJ16BxjCLErRBi4qIu
-        Czi6pIaO1jQYcqGoSFybjdVgx65ym2oBpnuNF/s=
-X-Google-Smtp-Source: AMsMyM6kTaPp82RsLTBIdE70LtBvlGZA+t4Za7Bc6FSdfkfXXiVShoLTuXXi46uwlWdfAFNxKLU+vhua46T/vwC6Wdg=
-X-Received: by 2002:a05:6402:518e:b0:452:49bc:179f with SMTP id
- q14-20020a056402518e00b0045249bc179fmr9659877edd.224.1664578129257; Fri, 30
- Sep 2022 15:48:49 -0700 (PDT)
+        with ESMTP id S232421AbiI3WuS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Sep 2022 18:50:18 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43818E0073;
+        Fri, 30 Sep 2022 15:50:17 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8CBC0623C1;
+        Fri, 30 Sep 2022 22:50:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id D4EE4C433D7;
+        Fri, 30 Sep 2022 22:50:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1664578215;
+        bh=S1Nfm1SuWz0ZMY9Q/MbRTaTgbwFvqK1pQY8qW4oPp1I=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=LJwKkmtceu4SNZr4V2rdO0VLHIB/S7sPkfYHcul+XL5zFUFL2esMhJK0WtohkuI9f
+         /OriHgVf7N2jK3GZA/8NpTfnKCEv/HsEN+uW6JbdPgHJIf/bntp68pwbnmsFXbT6ck
+         v+XeLUsq2D0FDukHAQRDKV4uFzMkFt4N6aIg0nLxPd22Ok8mImNH/xRdvppWrKoiw1
+         6gmgbPoKsicabgcfmdnaN1MVZEN9x17B4yoTOkNiLIHxGfsGfHfhjcJVQ3UzpXHCFB
+         5iFwIwAmTMzjVlL2IAnQ+LjiDLZass1XGxX2Lxzv+kXQh34S2GF4MNTB9RomXo4thB
+         D024DkvRiMfSw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id BB224E49FA5;
+        Fri, 30 Sep 2022 22:50:15 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <CAM9d7cjQ20a01YoZi=o-_7HT6TzR0TZgtpscKNvRrMq2yqV1Og@mail.gmail.com>
- <20220922041435.709119-1-namhyung@kernel.org>
-In-Reply-To: <20220922041435.709119-1-namhyung@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 30 Sep 2022 15:48:37 -0700
-Message-ID: <CAEf4BzZhHYYOmNhLdrpsXSDE5kaXvgSN00X-8aAySDwAKX0RCw@mail.gmail.com>
-Subject: Re: [PATCH] perf stat: Support old kernels for bperf cgroup counting
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org, Song Liu <songliubraving@fb.com>,
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] selftests/xsk: fix double free
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166457821574.20099.16151789150062540312.git-patchwork-notify@kernel.org>
+Date:   Fri, 30 Sep 2022 22:50:15 +0000
+References: <20220929090133.7869-1-magnus.karlsson@gmail.com>
+In-Reply-To: <20220929090133.7869-1-magnus.karlsson@gmail.com>
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>
+Cc:     magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, netdev@vger.kernel.org,
+        maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com,
         bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 21, 2022 at 9:21 PM Namhyung Kim <namhyung@kernel.org> wrote:
->
-> The recent change in the cgroup will break the backward compatiblity in
-> the BPF program.  It should support both old and new kernels using BPF
-> CO-RE technique.
->
-> Like the task_struct->__state handling in the offcpu analysis, we can
-> check the field name in the cgroup struct.
->
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> ---
-> Arnaldo, I think this should go through the cgroup tree since it depends
-> on the earlier change there.  I don't think it'd conflict with other
-> perf changes but please let me know if you see any trouble, thanks!
->
->  tools/perf/util/bpf_skel/bperf_cgroup.bpf.c | 29 ++++++++++++++++++++-
->  1 file changed, 28 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c b/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
-> index 488bd398f01d..4fe61043de04 100644
-> --- a/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
-> +++ b/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
-> @@ -43,12 +43,39 @@ struct {
->         __uint(value_size, sizeof(struct bpf_perf_event_value));
->  } cgrp_readings SEC(".maps");
->
-> +/* new kernel cgroup definition */
-> +struct cgroup___new {
-> +       int level;
-> +       struct cgroup *ancestors[];
-> +} __attribute__((preserve_access_index));
-> +
-> +/* old kernel cgroup definition */
-> +struct cgroup___old {
-> +       int level;
-> +       u64 ancestor_ids[];
-> +} __attribute__((preserve_access_index));
-> +
->  const volatile __u32 num_events = 1;
->  const volatile __u32 num_cpus = 1;
->
->  int enabled = 0;
->  int use_cgroup_v2 = 0;
->
-> +static inline __u64 get_cgroup_v1_ancestor_id(struct cgroup *cgrp, int level)
-> +{
-> +       /* recast pointer to capture new type for compiler */
-> +       struct cgroup___new *cgrp_new = (void *)cgrp;
-> +
-> +       if (bpf_core_field_exists(cgrp_new->ancestors)) {
-> +               return BPF_CORE_READ(cgrp_new, ancestors[level], kn, id);
+Hello:
 
-have you checked generated BPF code for this ancestors[level] access?
-I'd expect CO-RE relocation for finding ancestors offset and then just
-normal + level * 8 arithmetic, but would be nice to confirm. Apart
-from this, looks good to me:
+This patch was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+On Thu, 29 Sep 2022 11:01:33 +0200 you wrote:
+> From: Magnus Karlsson <magnus.karlsson@intel.com>
+> 
+> Fix a double free at exit of the test suite.
+> 
+> Fixes: a693ff3ed561 ("selftests/xsk: Add support for executing tests on physical device")
+> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next] selftests/xsk: fix double free
+    https://git.kernel.org/bpf/bpf-next/c/5f388bba7acb
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-> +       } else {
-> +               /* recast pointer to capture old type for compiler */
-> +               struct cgroup___old *cgrp_old = (void *)cgrp;
-> +
-> +               return BPF_CORE_READ(cgrp_old, ancestor_ids[level]);
-> +       }
-> +}
-> +
->  static inline int get_cgroup_v1_idx(__u32 *cgrps, int size)
->  {
->         struct task_struct *p = (void *)bpf_get_current_task();
-> @@ -70,7 +97,7 @@ static inline int get_cgroup_v1_idx(__u32 *cgrps, int size)
->                         break;
->
->                 // convert cgroup-id to a map index
-> -               cgrp_id = BPF_CORE_READ(cgrp, ancestors[i], kn, id);
-> +               cgrp_id = get_cgroup_v1_ancestor_id(cgrp, i);
->                 elem = bpf_map_lookup_elem(&cgrp_idx, &cgrp_id);
->                 if (!elem)
->                         continue;
-> --
-> 2.37.3.968.ga6b4b080e4-goog
->
