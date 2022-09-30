@@ -2,78 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 273A45F15A6
-	for <lists+bpf@lfdr.de>; Sat,  1 Oct 2022 00:03:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5937D5F15A7
+	for <lists+bpf@lfdr.de>; Sat,  1 Oct 2022 00:03:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232118AbiI3WDO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Sep 2022 18:03:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42570 "EHLO
+        id S232196AbiI3WDc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Sep 2022 18:03:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232019AbiI3WDN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Sep 2022 18:03:13 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AE011E554B
-        for <bpf@vger.kernel.org>; Fri, 30 Sep 2022 15:03:12 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id a2so8836261lfb.6
-        for <bpf@vger.kernel.org>; Fri, 30 Sep 2022 15:03:12 -0700 (PDT)
+        with ESMTP id S231706AbiI3WDb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Sep 2022 18:03:31 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C738C18F423;
+        Fri, 30 Sep 2022 15:03:29 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id b2so11712632eja.6;
+        Fri, 30 Sep 2022 15:03:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=ZD1e4IouC6xZV6twBLoGyLjDlY5MH17+pLThrTs5hxU=;
-        b=IgGTuht6qmzj639nys69iXH147cFr27l/78a3+1JmDw3c59xTh2lOnKQFy58Q6+f4w
-         CTSMpoa7FQQgRAcG2eaxDNPsPswPKfABDBU+d372PKJNXSLu0Hdlwwh/p3vIKeAHrrIR
-         SXSdubWOS9A4sFtkj/9GuJe2K9kRelc/OoCcpAfUVDhu/JzIj7kYhD9jWTgx9S/OSBuK
-         NwEMfQh/hjF6etaWUmUxxm2iWCp72o4TH7ePVyB7yrRZcfRywkXTUgiNpoi977mkqDh0
-         SLvdubD089wadlLLpPPPDnOszN7SOwdXCJok9EO04kDkfFVErY8JHiyl/Es6rvFIRBYN
-         etqg==
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
+        bh=w1LUNGae1tKCepvb0oOGHF++V1v90y9UBTYHWhUfzAA=;
+        b=LNmiO19Lzs2yuUyodCb6bzUXcpgj17k/JJvoy0TdiXj17vhMD8G2vLFLqfPhMnXstL
+         Qy9sgewfQhwdYihswkIQX+u2cKirqaZwJ89+MDAJo1h6WusEgGkOKdxaQoD1XPiLdkVr
+         lzsphSywwAq7qk40yYdi+6Gn3lkQkckHA+/jLm0mbLdnav90Gij9+A0mwymMuJESrlLb
+         0IQUHZ9Vq/OEWHdH4iL0nTgsFTEab+BUrlna+wNyKkl8hQHWnFCxlRgdgODjwVEGav0H
+         UGI7Cr6harkCrjfCb6ExBg+cQ5e4Su3d91bqSSc5/KTkM1aTrt1TkyeDzjWo4JT9JeKH
+         kFZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=ZD1e4IouC6xZV6twBLoGyLjDlY5MH17+pLThrTs5hxU=;
-        b=s1Qy2mKWrOrm5dAlVvjAxNs9IcpClf2VlPzjpCw9iiqkhjbzQu+LN5buK9qbd5n3dF
-         TJwJ5PWZZZMwXfIpFvMYYdpzSnnReoJaYxL/5KJqLw0qNGPaiSdRkQ3A9YWARy0VUCxE
-         7qmBy3uGWbNNPplvzKTQTwci1+ihnvKJ8LdWFudYBzt/bYo+SoXjNIWXjnhjlDSziYIP
-         2xbzBWxiIBesKPeCOe4uvOgwedVODaYT9EeqCT3C0xEXQGSCtEB/cBeyKlrDffUOpe55
-         id6j6cD3n1dRObXWiG4bwzIx0CZKk6lHNAnpKUnoQ5seksG3t51XzfIUzm/hqyKigy3u
-         icuA==
-X-Gm-Message-State: ACrzQf3aJ4uwuQZxWcZhDqHBPPvmV4zc+bD4DJ7b69EyOZlTHIhRcrMf
-        ggX7mLWgzD9UP1RjnqW3CeOYqDP4V4AUOujBt7jQBQ==
-X-Google-Smtp-Source: AMsMyM4saQttnwidDpD0nNfQCogl8JLm3ehIWmYpjAES4JO+d2uaD7H3nUWC34+cuSfRm6gvsBwMTMoFA9eO3GsbOWE=
-X-Received: by 2002:a05:6512:12c7:b0:49b:755d:fde5 with SMTP id
- p7-20020a05651212c700b0049b755dfde5mr3676412lfg.182.1664575389925; Fri, 30
- Sep 2022 15:03:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220926231822.994383-1-drosen@google.com> <20220926231822.994383-4-drosen@google.com>
- <CAJfpegsC6=HhYALdU_4vSEmxPCxNNPS4NkcDyU6E1y7N_rqhJw@mail.gmail.com>
-In-Reply-To: <CAJfpegsC6=HhYALdU_4vSEmxPCxNNPS4NkcDyU6E1y7N_rqhJw@mail.gmail.com>
-From:   Paul Lawrence <paullawrence@google.com>
-Date:   Fri, 30 Sep 2022 15:02:58 -0700
-Message-ID: <CAL=UVf4iWQvwawYpPWeTn1eWy-1s1wrGQORLxKH9wmw=vCfVVg@mail.gmail.com>
-Subject: Re: [PATCH 03/26] fuse-bpf: Update uapi for fuse-bpf
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Daniel Rosenberg <drosen@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date;
+        bh=w1LUNGae1tKCepvb0oOGHF++V1v90y9UBTYHWhUfzAA=;
+        b=DmugNxw87EGX9stIWDMU7769YRaKHqHpk/2Hn+pERs/zeuLPKcWDN5m1dhuKuXVT5F
+         x9RFkOEhQHdwJ16UQvF1vVeG/s1Ql6EJ4Abkb3YvoX99Xbcut0HXDuQI3N/kIediaUrH
+         SrjiI+EhBRv7J0u9MzyJ88tPCVv0PDLXYA7+tQne2nldrXuc0K66v/Hg18n3ZX1GwGpg
+         3L9hmu2lVmvRO/PcGFDNth1+DQPjUGSCje0mj8l7n3Ck4L28uf1oSLSWSRENMA9Q0fOJ
+         FTu1ip4VKpAfbL2jMPpmAOWFRzwgDh21nyKWKM1AEYfmd0ZuMQ6p2/m/v8i2AjRKebfi
+         nRjQ==
+X-Gm-Message-State: ACrzQf3bAtvXsvoFHgCI5SKQAzMsxHpPxM3woGmhCv8h+XlNRwAtGQxN
+        JBToqtZMKygCd29RWACDUK0=
+X-Google-Smtp-Source: AMsMyM4sdp1MWWaYaJKLOcSXT3SWaRWras92rfoJ6q3CHFksLe+XCS2i9JymJ/lS58ISBcwlLeSJWQ==
+X-Received: by 2002:a17:906:dc8b:b0:787:8f41:d231 with SMTP id cs11-20020a170906dc8b00b007878f41d231mr7950685ejc.547.1664575408188;
+        Fri, 30 Sep 2022 15:03:28 -0700 (PDT)
+Received: from localhost.localdomain (host-79-34-226-61.business.telecomitalia.it. [79.34.226.61])
+        by smtp.gmail.com with ESMTPSA id x11-20020a170906298b00b0073de0506745sm1703399eje.197.2022.09.30.15.03.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Sep 2022 15:03:27 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Anirudh Venkataramanan <anirudh.venkataramanan@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>
+Cc:     Alexander Duyck <alexander.duyck@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Netdev <netdev@vger.kernel.org>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
+        Alexander Duyck <alexanderduyck@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Alessio Balsini <balsini@google.com>,
-        David Anderson <dvander@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-team@android.com, Jann Horn <jannh@google.com>,
-        Amir Goldstein <amir73il@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>
+Subject: Re: [Intel-wired-lan] [PATCH] ixgbe: Use kmap_local_page in ixgbe_check_lbtest_frame()
+Date:   Sat, 01 Oct 2022 00:03:24 +0200
+Message-ID: <832292081.0ifERbkFSE@localhost.localdomain>
+In-Reply-To: <27280395.gRfpFWEtPU@localhost.localdomain>
+References: <20220629085836.18042-1-fmdefrancesco@gmail.com> <22aa8568-7f6e-605e-7219-325795b218b7@intel.com> <27280395.gRfpFWEtPU@localhost.localdomain>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,55 +85,60 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 27, 2022 at 11:19 AM Miklos Szeredi <miklos@szeredi.hu> wrote:
->
-> On Tue, 27 Sept 2022 at 01:18, Daniel Rosenberg <drosen@google.com> wrote:
->
-> > diff --git a/include/uapi/linux/fuse.h b/include/uapi/linux/fuse.h
-> > index d6ccee961891..8c80c146e69b 100644
-> > --- a/include/uapi/linux/fuse.h
-> > +++ b/include/uapi/linux/fuse.h
-> > @@ -572,6 +572,17 @@ struct fuse_entry_out {
-> >         struct fuse_attr attr;
-> >  };
-> >
-> > +#define FUSE_ACTION_KEEP       0
-> > +#define FUSE_ACTION_REMOVE     1
-> > +#define FUSE_ACTION_REPLACE    2
-> > +
-> > +struct fuse_entry_bpf_out {
-> > +       uint64_t        backing_action;
-> > +       uint64_t        backing_fd;
->
-> This is a security issue.   See this post from Jann:
->
-> https://lore.kernel.org/all/CAG48ez17uXtjCTa7xpa=JWz3iBbNDQTKO2hvn6PAZtfW3kXgcA@mail.gmail.com/
->
-> The fuse-passthrough series solved this by pre-registering the
-> passthrogh fd with an ioctl. Since this requires an expicit syscall on
-> the server side the attack is thwarted.
->
-> It would be nice if this mechanism was agreed between these projects.
->
-> BTW, does fuse-bpf provide a superset of fuse-passthrough?  I mean
-> could fuse-bpf work with a NULL bpf program as a simple passthrough?
->
-> Thanks,
-> Miklos
+On Friday, September 23, 2022 5:05:43 PM CEST Fabio M. De Francesco wrote:
+> Hi Anirudh,
+> 
+> On Friday, September 23, 2022 12:38:02 AM CEST Anirudh Venkataramanan wrote:
+> > On 9/22/2022 1:58 PM, Alexander Duyck wrote:
+> > > On Thu, Sep 22, 2022 at 1:07 PM Anirudh Venkataramanan
+> > > <anirudh.venkataramanan@intel.com> wrote:
 
-To deal with the easy part. Yes, fuse-bpf can take a null bpf program, and
-if you install that on files, it should behave exactly like bpf passthrough.
+[snip]
 
-Our intent is that all accesses to the backing files go through the normal
-vfs layer checks, so even once a backing file is installed, it can only be
-accessed if the client already has sufficient rights. However, the same
-statement seems to be true for the fuse passthrough code so I assume
-that is not sufficient. I would be interested in further understanding the
-remaining security issue (or is it defense in depth?) We understand that
-the solution in fuse passthrough was to change the response to a fuse open
-to be an ioctl? This would seem straightforward in fuse-bpf as well if it is
-needed, though of course it would be in the lookup.
+> > Is using page_address() directly beneficial in some way?
+> 
+> A possible call chain on 32 bits kernels is the following:
+> 
+> kmap_local_page() ->
+>  __kmap_local_page_prot() { 
+> 	if (!IS_ENABLED(CONFIG_DEBUG_KMAP_LOCAL_FORCE_MAP) && |
+> PageHighMem(page))
+> 		return page_address(page);
+> 
+> ....
+> }
+> 
+> How many instructions can you save calling page_address() directly?
+> If you don't know, look at the assembly.
 
-Thank you for reminding us of this,
+I just realized that perhaps you were expecting something like either "No, it 
+is not directly beneficial because []" or "Yes, it is directly beneficial 
+because []".
 
-Paul
+Instead, I used a rhetoric question that might not have been so clear as I 
+thought. This kind of construct is so largely used in my native language, that 
+nobody might misunderstand. I'm not so sure if it is the same in English.
+
+I mean, are those dozen "unnecessary" further assembly instructions too many 
+or too few to care about? I _think_ that they are too many.
+
+Therefore, by showing a possible call chain in 32 bits architectures, I 
+indirectly responded "no, I can't see any direct benefit", at least because....
+
+1) Whatever the architecture, if pages can't come from Highmem, code always 
+ends up calling page_address(). In 32 bits archs they waste precious kernel 
+stack space (a scarce resources) only to build two stack frames (one per each 
+called functions).
+
+ 2) Developers adds further work to the CPU and force the kernel to run 
+unnecessary code.
+
+I'll always use page_address() when I can "prove" that the allocation cannot 
+come from ZONE_HIGHMEM.
+
+Thanks,
+
+Fabio
+
+
+
