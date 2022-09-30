@@ -2,71 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D2F95F02C6
-	for <lists+bpf@lfdr.de>; Fri, 30 Sep 2022 04:32:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0871E5F02DF
+	for <lists+bpf@lfdr.de>; Fri, 30 Sep 2022 04:36:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229621AbiI3CcX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Sep 2022 22:32:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48662 "EHLO
+        id S230050AbiI3CgD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Sep 2022 22:36:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229502AbiI3CcW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 29 Sep 2022 22:32:22 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51BD8121127
-        for <bpf@vger.kernel.org>; Thu, 29 Sep 2022 19:32:22 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id f193so3046865pgc.0
-        for <bpf@vger.kernel.org>; Thu, 29 Sep 2022 19:32:22 -0700 (PDT)
+        with ESMTP id S230023AbiI3Cfw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Sep 2022 22:35:52 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CAC812CC9E;
+        Thu, 29 Sep 2022 19:35:37 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id v1so2800506plo.9;
+        Thu, 29 Sep 2022 19:35:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date;
-        bh=MYTTq+XsMJYQ1g/WHUUHjaLYhRqVmlNLe944tatCqkc=;
-        b=fxMSOQrzPvVMn2sQ4hJ+x/kI9AXW3NLD48x/XizAjQHV3xMRHwD43iqt5P7IB9lIeW
-         TBSr6EN7oU1YqHBbAznCQkeKelDExzLu3q9CesC0QoFFdWI/r4IhKMlZY8PmxlFOMwmE
-         fOM5KdmEBFC4hzRDX0QzgOtoC/CK0ZIPn0MdqhKPa+z4vgV2DBS3pCqRQHt5kW/E1Tcx
-         hjNJRchXZjygNrsUKfNsFYJqFOADgkyhXJwgVxtlaq5jGKvwlUzxztBKKja5cQEI8t/o
-         SWQ+w54Prv5ZYUBBq12I0JyZvndo0kRqDUtamAzfutwO/1dAewwuxns+wZ8SZF/sHg0D
-         yMKg==
+        bh=geOV+uiuYHteTOnoGFMTsZksd4tYLBBzKNa6NGFjrOs=;
+        b=EhVyddOpZhT+hunkmBFc6f0IPsN6CKlv6t7A8LHLS42qZK0CW/LVXyGYbatCNbZBM/
+         GtQl8dqZMrDXgDf25ATGKK+vRF5Y39tcSRqbXHi/tWm7RJbOg81Fpa0z+W+TdRmFKNl3
+         I8cl/R+PjLoX5lo2+35+x6zCUyW/TwKno8CixyGdgcdjcXMP2diC+lAdTpqdfLgEbTSM
+         AZv7aK0f3zWX5z9MrXuXArYQs8CVQdnsPA+3m1V75mGtkBn9Nx5XQnUzUY/jYqWsfI7b
+         EWxY4E0qGv9oTSrogoxpVPxyrzFBurx6WVPeguMjnY+hZ9Isrjx05EzXgWdh58sbdjPk
+         n3dQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
          :cc:subject:date;
-        bh=MYTTq+XsMJYQ1g/WHUUHjaLYhRqVmlNLe944tatCqkc=;
-        b=IbpE4OeyhBcmdHKuqdOC5FndLHgoifhLTWL0L+CsJCcWJMC0AyiVo2Jd4b8zOJ7bvS
-         rO4HOFq1dwenPqrLQ3r9JbqXuZTNIYJv8Ie1Pa8Hwcktxp1IUgmxantrzSClzuSirAJk
-         M5u7YgRKyo1/XqZJ5gbS0SJQ1ZYPzCq9GTthBtn7L55tq4yvmBHkAnoM8li9u7qb5sQ7
-         45YEi+BuJRA6LLN8ehCOcwIWAf3A8KyFI6qTB5ip4izw6Xx7BB2wwJkYgcMBMbMUP337
-         lJ9iFLVlDUrLGs+6qjKHiLExvbmMT2kZ+cVKfiJGQoDfR2VuGZsCqWRIjSqURNqkGcWv
-         8rTQ==
-X-Gm-Message-State: ACrzQf1hJza+AVimmyo/kSk3NSRWMOxXSDNri5hoTF3zE/4fML8PALoX
-        J7T654tWB1mq5DT5duuUDMg=
-X-Google-Smtp-Source: AMsMyM60a/GnKn2C3nZGYZjjEUniKE9wxtebBrkE8tIC06wIEPWLVhepk4QXsL8zpayNYiz5F5wDgw==
-X-Received: by 2002:a62:2983:0:b0:54e:7cd5:adb3 with SMTP id p125-20020a622983000000b0054e7cd5adb3mr6552773pfp.38.1664505141753;
-        Thu, 29 Sep 2022 19:32:21 -0700 (PDT)
+        bh=geOV+uiuYHteTOnoGFMTsZksd4tYLBBzKNa6NGFjrOs=;
+        b=gfPlsIim+SOsbnNbnlk3tKKi2srYpmuCNgq/XxKnX275whPQdEYHG/4Qq86whDKywG
+         ATUARvx36yBMvl3CSGWV1FsyS525rL+PX0Lw1lI7RUbCfJelDNsFsO9kNeg7v5lgEFSX
+         raTlEnsE5GrlM6/vey2gTXmmi618xwZtyWfqnkM1kMl5MxAWwT4bZSnvOBubOYCIyBn7
+         zuagvbWH4S4j01ge/VnmFMrzQY17o1D8gUIVg4Nok9dNwW6WfVNI/XxJxS+cZYjoHZJG
+         HXEvOwUHMfJuznlcI0RD8+YdaM7l1lJN+u9L3t2zP1d5budHwt3GtVRbAVrpKSJlXRzo
+         nrJw==
+X-Gm-Message-State: ACrzQf2LB+vGW6JTO58l48i6n2QXIyFmXD784AATbGau+R95eSOXb6t6
+        3YQIn9T1T8cGBkwUyVrYQ24=
+X-Google-Smtp-Source: AMsMyM5G7DJ6Ap0cl4ImexC9M45ZFTjzuKcsPyZZ8K9Sx67PnC0FiIhiMIT619+ZDsNq5j9d13UTtQ==
+X-Received: by 2002:a17:903:230e:b0:178:3356:b82a with SMTP id d14-20020a170903230e00b001783356b82amr6609023plh.138.1664505336975;
+        Thu, 29 Sep 2022 19:35:36 -0700 (PDT)
 Received: from localhost ([98.97.42.14])
-        by smtp.gmail.com with ESMTPSA id 21-20020a630a15000000b0042b291a89bfsm624288pgk.11.2022.09.29.19.32.20
+        by smtp.gmail.com with ESMTPSA id r9-20020a655089000000b0043a09d5c32bsm612197pgp.74.2022.09.29.19.35.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Sep 2022 19:32:20 -0700 (PDT)
-Date:   Thu, 29 Sep 2022 19:32:18 -0700
+        Thu, 29 Sep 2022 19:35:36 -0700 (PDT)
+Date:   Thu, 29 Sep 2022 19:35:34 -0700
 From:   John Fastabend <john.fastabend@gmail.com>
-To:     Anne Macedo <annemacedo@linux.microsoft.com>, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Isabella Basso <isabbasso@riseup.net>,
-        Paul Moore <paul@paul-moore.com>,
-        Anne Macedo <annemacedo@linux.microsoft.com>
-Message-ID: <63365532d416f_233df20899@john.notmuch>
-In-Reply-To: <20220929160558.5034-1-annemacedo@linux.microsoft.com>
-References: <20220929160558.5034-1-annemacedo@linux.microsoft.com>
-Subject: RE: [PATCH] libbpf: add validation to BTF's variable type ID
+To:     Martin KaFai Lau <martin.lau@linux.dev>,
+        Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        edumazet@google.com, pabeni@redhat.com, pablo@netfilter.org,
+        fw@strlen.de, netfilter-devel@vger.kernel.org,
+        lorenzo.bianconi@redhat.com, brouer@redhat.com, toke@redhat.com,
+        memxor@gmail.com, nathan@kernel.org, ykaliuta@redhat.com,
+        bpf <bpf@vger.kernel.org>
+Message-ID: <633655f64ff90_233df20817@john.notmuch>
+In-Reply-To: <abd188ce-a097-5626-87bf-607495035a66@linux.dev>
+References: <51a65513d2cda3eeb0754842e8025ab3966068d8.1664490511.git.lorenzo@kernel.org>
+ <abd188ce-a097-5626-87bf-607495035a66@linux.dev>
+Subject: Re: [PATCH v2 bpf-next] net: netfilter: move bpf_ct_set_nat_info
+ kfunc in nf_nat_bpf.c
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
@@ -81,51 +79,30 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Anne Macedo wrote:
-> If BTF is corrupted, a SEGV may occur due to a null pointer dereference on
-> bpf_object__init_user_btf_map.
+Martin KaFai Lau wrote:
+> On 9/29/22 3:38 PM, Lorenzo Bianconi wrote:
+> > Remove circular dependency between nf_nat module and nf_conntrack one
+> > moving bpf_ct_set_nat_info kfunc in nf_nat_bpf.c
+> > 
+> > Fixes: 0fabd2aa199f ("net: netfilter: add bpf_ct_set_nat_info kfunc helper")
+> > Suggested-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > Tested-by: Nathan Chancellor <nathan@kernel.org>
+> > Tested-by: Yauheni Kaliuta <ykaliuta@redhat.com>
+> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> > ---
+> > Changes since v1:
+> > - move register_nf_nat_bpf declaration in nf_conntrack_bpf.h
+> > ---
+> >   include/net/netfilter/nf_conntrack_bpf.h | 19 ++++++
+> >   net/netfilter/Makefile                   |  6 ++
+> >   net/netfilter/nf_conntrack_bpf.c         | 50 ---------------
+> >   net/netfilter/nf_nat_bpf.c               | 79 ++++++++++++++++++++++++
+> >   net/netfilter/nf_nat_core.c              |  4 +-
 > 
-> This patch adds a validation that checks whether the DATASEC's variable
-> type ID is null. If so, it raises a warning.
-> 
-> Reported by oss-fuzz project [1].
-> 
-> A similar patch for the same issue exists on [2]. However, the code is
-> unreachable when using oss-fuzz data.
-> 
-> [1] https://github.com/libbpf/libbpf/issues/484
-> [2] https://patchwork.kernel.org/project/netdevbpf/patch/20211103173213.1376990-3-andrii@kernel.org/
-> 
-> Reviewed-by: Isabella Basso <isabbasso@riseup.net>
-> Signed-off-by: Anne Macedo <annemacedo@linux.microsoft.com>
-> ---
->  tools/lib/bpf/libbpf.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 184ce1684dcd..0c88612ab7c4 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -2464,6 +2464,10 @@ static int bpf_object__init_user_btf_map(struct bpf_object *obj,
->  
->  	vi = btf_var_secinfos(sec) + var_idx;
->  	var = btf__type_by_id(obj->btf, vi->type);
-> +	if (!var || !btf_is_var(var)) {
-> +		pr_warn("map #%d: non-VAR type seen", var_idx);
-> +		return -EINVAL;
-> +	}
->  	var_extra = btf_var(var);
->  	map_name = btf__name_by_offset(obj->btf, var->name_off);
->  
-> -- 
-> 2.30.2
+> lgtm.  It should have addressed Pablo's comment in v1.  Can the netfilter team 
+> give an ack for the patch?
 > 
 
+Also lgtm
 
-I don't know abouut this. A quick scan looks like this type_by_id is
-used lots of places. And seems corrupted BTF could cause faults
-and confusiuon in other spots as well. I'm not sure its worth making
-libbpf survive corrupted BTF. OTOH this specific patch looks ok.
-
-How did it get corrupted in the first place? Curious to see if
-others want to harden libbpf like this.
+Acked-by: John Fastabend <john.fastabend@gmail.com>
