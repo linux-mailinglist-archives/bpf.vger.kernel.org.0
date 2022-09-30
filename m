@@ -2,65 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79DF05F1637
-	for <lists+bpf@lfdr.de>; Sat,  1 Oct 2022 00:34:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 598B25F163B
+	for <lists+bpf@lfdr.de>; Sat,  1 Oct 2022 00:39:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230236AbiI3We0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Sep 2022 18:34:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41532 "EHLO
+        id S231719AbiI3WjN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Sep 2022 18:39:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229594AbiI3We0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Sep 2022 18:34:26 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D92117420E;
-        Fri, 30 Sep 2022 15:34:24 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id dv25so11771768ejb.12;
-        Fri, 30 Sep 2022 15:34:24 -0700 (PDT)
+        with ESMTP id S229594AbiI3WjL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Sep 2022 18:39:11 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E13F1B9117
+        for <bpf@vger.kernel.org>; Fri, 30 Sep 2022 15:39:10 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id dv25so11786900ejb.12
+        for <bpf@vger.kernel.org>; Fri, 30 Sep 2022 15:39:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=7eVHcRj7bOTZCSoAUca2KGtBBs0g8lofOLyuo3DNi08=;
-        b=OWwpfDo6nJkLj4c8oYWeKltUAPO4XgrAWv5U21zYbvxXgNBnsly/xqgtAcH6HhHyJN
-         vqBPJy/094FFPg7DCLf+lmx2L3O8IHvFpy7X4hKfGJlgCFTdhSOwXv5v/1A+a2GxqbNd
-         qdeLPj9oLCE2DHblUdargmzdWwfH+FyQN8U3ncL+KvcyWP9sp2DT4i9gfNCh0Gb1pzdg
-         STOT/gBd3INNdDH6ml/3n0OpMEK4yClvJzTrft4YqX/Mmux+lH7AII5rAP8hK8S4hosM
-         bH5DC06p9s4vNSKvmp+mvtQ+FSb96Pakn21GBFqGpneG+BpIHRqVOy0rxLl02wVB+bWE
-         n9fw==
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WlqpIXC73pUURYLo0nnXQcdOp3L32+kzHaAMc9mMS44=;
+        b=dmkWXL0NdSmILbyo+l5iJpZIFHjTfPWUntsy//1rFXvs3db/GaHeNMgqwpDVNX1qCT
+         aPh6ltD0hEeSt7bx9lLBA1if5uDIxzgCDK5H6VLNQbkZTpQNbyEaS4ddVOQs/3Ynq3yl
+         ucKxpdIqeVd1QUTGRnx9K43n2XixyXuFNc+REYWUlxBscRDppOAht+CcOf0RDqjBes47
+         epvh/xrocerH2fuYibSdkHgfVuTjOaP8pFshu9zkZpz6kki/R8BuaeaA/9diINMWlB5k
+         jJeS0aU8BysAzD8eubff6idLrr1sYBu89a9qkqKWDTzKue6zpuRO89YjN8UaBwXtdHwI
+         AOkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7eVHcRj7bOTZCSoAUca2KGtBBs0g8lofOLyuo3DNi08=;
-        b=27pPZqOhMeZBthOu0SJ426jhOs1/AjTha/0GsyUxrKM+7h1p7Osqdm6kSWaryosmBu
-         toos7zIT3HhMFve13SpjiOfDSLcPpZ6RkFr9T5brXjs7YnY9Nd5V4VGfEtwKDhrSHe2q
-         Iwxow0d0DANDgPOV+mQLmIdK75PAluimG42H6VWdP+6J6MrH2R18w/VHou8OmMn4ud6m
-         RYrIcpTIdxQcfVVnn9Js/gaPtGCMaBl7T2WmSDN69H1pFzp7hv7i8GcfavtvbRRkjWqg
-         URG7WWp59MrBHW2llXj0Q7ZhVUNnxFdZ1EIM5W4WCXvl35ZUZPnsF3tYgTyGc8Uhn4au
-         RIhA==
-X-Gm-Message-State: ACrzQf1cinqYb5PYHfWsUuPFtAvCMvgA4AmWSPhTh+BCfGrgESndoOB+
-        sbkR9FNqfi/VMM9zYvRFO3GsFMk36c72BeGHQLU=
-X-Google-Smtp-Source: AMsMyM5oLkCTD4Mgre7YQ5XEM/Vy8tcOUer5mjeC7MxutJyVNVlaxAGdlZ1ZTKYuy0vKQfNQitRS91hfcc157zmBbOg=
-X-Received: by 2002:a17:907:984:b0:77f:4d95:9e2f with SMTP id
- bf4-20020a170907098400b0077f4d959e2fmr8032846ejc.176.1664577262903; Fri, 30
- Sep 2022 15:34:22 -0700 (PDT)
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WlqpIXC73pUURYLo0nnXQcdOp3L32+kzHaAMc9mMS44=;
+        b=xMbO1wxYOPvq5TbbqyrcinROxNLqoR14mBe5qYHA9kGyi5KPEWWVNQvaSLbG7MYDmI
+         Z8JHJSxWcb5S/tSjmVZTaKXrGacujBMLZcErVgC3fatDO7JSMiC0MJxDszCICZosuN84
+         4DHKiELdJ1eR1aY4XMtdvP+PWmzYYsloBBhFwUXpfJ1dPoBmNgaOccN/uiyybFE5p2fP
+         qaDpTfmW93MCzslca83BL2X9UmZuIkceNP8Drxl6NVeRXCOU2piTiT+2Kc8pD2uZHmpO
+         WvQtxI4bVeO2svjmGj4ploJDE5r30c4swGi8Dk9exmVDrHfS0GnTh7i3aKy+83FmV6HP
+         onQQ==
+X-Gm-Message-State: ACrzQf0yeb4a0rVtz0TlWCbji289HcCmE41VjCx18uvQbprqn/7Rs9tK
+        Gjp2aUYacOdntr/w4sGaxhdk68JjUsQVP7Swvqk=
+X-Google-Smtp-Source: AMsMyM5aHRO4Vckl4iw/EEnb/5BovgflO38j/VwjmfKLHYJJq2gZauS0vaeJCaFdllMhL0HBby8dksM5Sm6dHNE1S+0=
+X-Received: by 2002:a17:907:3d86:b0:782:1175:153f with SMTP id
+ he6-20020a1709073d8600b007821175153fmr7927571ejc.226.1664577548436; Fri, 30
+ Sep 2022 15:39:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220930003844.1210987-1-cmllamas@google.com>
-In-Reply-To: <20220930003844.1210987-1-cmllamas@google.com>
+References: <20220929160558.5034-1-annemacedo@linux.microsoft.com>
+ <63365532d416f_233df20899@john.notmuch> <92157e05-e383-ed4b-8b01-2981dbf5afd3@linux.microsoft.com>
+In-Reply-To: <92157e05-e383-ed4b-8b01-2981dbf5afd3@linux.microsoft.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 30 Sep 2022 15:34:10 -0700
-Message-ID: <CAEf4BzZC=NAT9-SCWzBkAGhYusZHokhKBQrMNSDuTWfZnr_B6A@mail.gmail.com>
-Subject: Re: [PATCH] mm/mmap: undo ->mmap() when arch_validate_flags() fails
-To:     Carlos Llamas <cmllamas@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Christian Brauner <brauner@kernel.org>, linux-mm@kvack.org,
-        bpf@vger.kernel.org, kernel-team@android.com,
-        Liam Howlett <liam.howlett@oracle.com>,
-        Suren Baghdasaryan <surenb@google.com>, stable@vger.kernel.org
+Date:   Fri, 30 Sep 2022 15:38:56 -0700
+Message-ID: <CAEf4BzZxU+YD5CtHEk7S7bXTDMMSsnV3eFYgRXCMft=fx9reMA@mail.gmail.com>
+Subject: Re: [PATCH] libbpf: add validation to BTF's variable type ID
+To:     Anne Macedo <annemacedo@linux.microsoft.com>
+Cc:     John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Isabella Basso <isabbasso@riseup.net>,
+        Paul Moore <paul@paul-moore.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -71,114 +78,91 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 29, 2022 at 5:51 PM Carlos Llamas <cmllamas@google.com> wrote:
+On Fri, Sep 30, 2022 at 6:00 AM Anne Macedo
+<annemacedo@linux.microsoft.com> wrote:
 >
-> Commit c462ac288f2c ("mm: Introduce arch_validate_flags()") added a late
-> check in mmap_region() to let architectures validate vm_flags. The check
-> needs to happen after calling ->mmap() as the flags can potentially be
-> modified during this callback.
+> On 29/09/22 23:32, John Fastabend wrote:
+> > Anne Macedo wrote:
+> >> If BTF is corrupted, a SEGV may occur due to a null pointer dereferenc=
+e on
+> >> bpf_object__init_user_btf_map.
+> >>
+> >> This patch adds a validation that checks whether the DATASEC's variabl=
+e
+> >> type ID is null. If so, it raises a warning.
+> >>
+> >> Reported by oss-fuzz project [1].
+> >>
+> >> A similar patch for the same issue exists on [2]. However, the code is
+> >> unreachable when using oss-fuzz data.
+> >>
+> >> [1] https://github.com/libbpf/libbpf/issues/484
+> >> [2] https://patchwork.kernel.org/project/netdevbpf/patch/2021110317321=
+3.1376990-3-andrii@kernel.org/
+> >>
+> >> Reviewed-by: Isabella Basso <isabbasso@riseup.net>
+> >> Signed-off-by: Anne Macedo <annemacedo@linux.microsoft.com>
+> >> ---
+> >>   tools/lib/bpf/libbpf.c | 4 ++++
+> >>   1 file changed, 4 insertions(+)
+> >>
+> >> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> >> index 184ce1684dcd..0c88612ab7c4 100644
+> >> --- a/tools/lib/bpf/libbpf.c
+> >> +++ b/tools/lib/bpf/libbpf.c
+> >> @@ -2464,6 +2464,10 @@ static int bpf_object__init_user_btf_map(struct=
+ bpf_object *obj,
+> >>
+> >>      vi =3D btf_var_secinfos(sec) + var_idx;
+> >>      var =3D btf__type_by_id(obj->btf, vi->type);
+> >> +    if (!var || !btf_is_var(var)) {
+> >> +            pr_warn("map #%d: non-VAR type seen", var_idx);
+> >> +            return -EINVAL;
+> >> +    }
+> >>      var_extra =3D btf_var(var);
+> >>      map_name =3D btf__name_by_offset(obj->btf, var->name_off);
+> >>
+> >> --
+> >> 2.30.2
+> >>
+> >
+> >
+> > I don't know abouut this. A quick scan looks like this type_by_id is
+> > used lots of places. And seems corrupted BTF could cause faults
+> > and confusiuon in other spots as well. I'm not sure its worth making
+> > libbpf survive corrupted BTF. OTOH this specific patch looks ok.
+> >
 >
-> If arch_validate_flags() check fails we unmap and free the vma. However,
-> the error path fails to undo the ->mmap() call that previously succeeded
-> and depending on the specific ->mmap() implementation this translates to
-> reference increments, memory allocations and other operations what will
-> not be cleaned up.
->
-> There are several places (mainly device drivers) where this is an issue.
-> However, one specific example is bpf_map_mmap() which keeps count of the
-> mappings in map->writecnt. The count is incremented on ->mmap() and then
-> decremented on vm_ops->close(). When arch_validate_flags() fails this
-> count is off since bpf_map_mmap_close() is never called.
->
-> One can reproduce this issue in arm64 devices with MTE support. Here the
-> vm_flags are checked to only allow VM_MTE if VM_MTE_ALLOWED has been set
-> previously. From userspace then is enough to pass the PROT_MTE flag to
-> mmap() syscall to trigger the arch_validate_flags() failure.
->
-> The following program reproduces this issue:
-> ---
->   #include <stdio.h>
->   #include <unistd.h>
->   #include <linux/unistd.h>
->   #include <linux/bpf.h>
->   #include <sys/mman.h>
->
->   int main(void)
->   {
->         union bpf_attr attr = {
->                 .map_type = BPF_MAP_TYPE_ARRAY,
->                 .key_size = sizeof(int),
->                 .value_size = sizeof(long long),
->                 .max_entries = 256,
->                 .map_flags = BPF_F_MMAPABLE,
->         };
->         int fd;
->
->         fd = syscall(__NR_bpf, BPF_MAP_CREATE, &attr, sizeof(attr));
->         mmap(NULL, 4096, PROT_WRITE | PROT_MTE, MAP_SHARED, fd, 0);
->
->         return 0;
->   }
-> ---
->
-> By manually adding some log statements to the vm_ops callbacks we can
-> confirm that when passing PROT_MTE to mmap() the map->writecnt is off
-> upon ->release():
->
-> With PROT_MTE flag:
->   root@debian:~# ./bpf-test
->   [  111.263874] bpf_map_write_active_inc: map=9 writecnt=1
->   [  111.288763] bpf_map_release: map=9 writecnt=1
->
-> Without PROT_MTE flag:
->   root@debian:~# ./bpf-test
->   [  157.816912] bpf_map_write_active_inc: map=10 writecnt=1
->   [  157.830442] bpf_map_write_active_dec: map=10 writecnt=0
->   [  157.832396] bpf_map_release: map=10 writecnt=0
->
-> This patch fixes the above issue by calling vm_ops->close() when the
-> arch_validate_flags() check fails, after this we can proceed to unmap
-> and free the vma on the error path.
->
-> Fixes: c462ac288f2c ("mm: Introduce arch_validate_flags()")
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Liam Howlett <liam.howlett@oracle.com>
-> Cc: Suren Baghdasaryan <surenb@google.com>
-> Cc: <stable@vger.kernel.org> # v5.10+
-> Signed-off-by: Carlos Llamas <cmllamas@google.com>
-> ---
+> I was planning on creating a function to validate BTF for these kinds of
+> corruptions, but decided to keep this patch simple. This could be a good
+> idea for some future work =E2=80=93 moving all of the validations to
+> bpf_object__init_btf() or to a helper function.
 
-Makes sense to me, open/close callbacks should be symmetrical. From
-BPF-side of things:
+This whack-a-mole game of fixing up BTF checks to avoid one specific
+corruption case is too burdensome. There is plenty of BTF usage before
+the point which you are fixing, so with some other specific corruption
+to BTF you can trigger even sooner corruption.
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+As I mentioned on Github. I'm not too worried about ossfuzz generating
+corrupted BTF because that's not a very realistic scenario. But it
+would be nice to add some reasonable validation logic for BTF in
+general, so let's better concentrate on that instead of adding these
+extra checks.
 
->  mm/mmap.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
 >
-> diff --git a/mm/mmap.c b/mm/mmap.c
-> index 9d780f415be3..36c08e2c78da 100644
-> --- a/mm/mmap.c
-> +++ b/mm/mmap.c
-> @@ -1797,7 +1797,7 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
->         if (!arch_validate_flags(vma->vm_flags)) {
->                 error = -EINVAL;
->                 if (file)
-> -                       goto unmap_and_free_vma;
-> +                       goto close_and_free_vma;
->                 else
->                         goto free_vma;
->         }
-> @@ -1844,6 +1844,9 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
+> > How did it get corrupted in the first place? Curious to see if
+> > others want to harden libbpf like this.
+> >
 >
->         return addr;
+> There's a test case by oss-fuzz [1] that generated this corrupted BTF.
+> There's also some C code for replicating this bug [2] using the oss-fuzz
+> data.
 >
-> +close_and_free_vma:
-> +       if (vma->vm_ops && vma->vm_ops->close)
-> +               vma->vm_ops->close(vma);
->  unmap_and_free_vma:
->         fput(vma->vm_file);
->         vma->vm_file = NULL;
-> --
-> 2.38.0.rc1.362.ged0d419d3c-goog
+> On a side note, fixing this bug would help oss-fuzz find other, more
+> relevant, bugs.
 >
+> Found the original oss-fuzz report at [3].
+>
+> [1] https://oss-fuzz.com/download?testcase_id=3D5041748798210048
+> [2] https://github.com/libbpf/libbpf/issues/484#issuecomment-1250020929
+> [3] https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=3D42345
