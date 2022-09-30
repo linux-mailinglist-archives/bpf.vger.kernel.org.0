@@ -2,79 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5937D5F15A7
-	for <lists+bpf@lfdr.de>; Sat,  1 Oct 2022 00:03:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82CB75F15AC
+	for <lists+bpf@lfdr.de>; Sat,  1 Oct 2022 00:03:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232196AbiI3WDc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Sep 2022 18:03:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43038 "EHLO
+        id S232580AbiI3WDy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Sep 2022 18:03:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231706AbiI3WDb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Sep 2022 18:03:31 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C738C18F423;
-        Fri, 30 Sep 2022 15:03:29 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id b2so11712632eja.6;
-        Fri, 30 Sep 2022 15:03:29 -0700 (PDT)
+        with ESMTP id S232543AbiI3WDv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Sep 2022 18:03:51 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA99F1F8997
+        for <bpf@vger.kernel.org>; Fri, 30 Sep 2022 15:03:42 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id x32-20020a17090a38a300b00209dced49cfso2834585pjb.0
+        for <bpf@vger.kernel.org>; Fri, 30 Sep 2022 15:03:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
-        bh=w1LUNGae1tKCepvb0oOGHF++V1v90y9UBTYHWhUfzAA=;
-        b=LNmiO19Lzs2yuUyodCb6bzUXcpgj17k/JJvoy0TdiXj17vhMD8G2vLFLqfPhMnXstL
-         Qy9sgewfQhwdYihswkIQX+u2cKirqaZwJ89+MDAJo1h6WusEgGkOKdxaQoD1XPiLdkVr
-         lzsphSywwAq7qk40yYdi+6Gn3lkQkckHA+/jLm0mbLdnav90Gij9+A0mwymMuJESrlLb
-         0IQUHZ9Vq/OEWHdH4iL0nTgsFTEab+BUrlna+wNyKkl8hQHWnFCxlRgdgODjwVEGav0H
-         UGI7Cr6harkCrjfCb6ExBg+cQ5e4Su3d91bqSSc5/KTkM1aTrt1TkyeDzjWo4JT9JeKH
-         kFZA==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=Rvqi7LuRdPHm8Uh4a/HemxkbcnMCqYBrqEFOWcQQ37k=;
+        b=RU5iFgFPSlLZaCuaQH4klSwr50Wu6THGYpOOhk+jeM7nVnpCRfOEJZ32Sk5bdqQLyQ
+         1DtbCIAKSZPo8gayV7B3B3rupL25SNuH/uHTb8qBaTvwi9QZEqCGh69JneRDFJGYiGDb
+         yBeDrT6XV1MAY0f3/lCWWhUi7J0ZVKDHnYBk43ifi9v3ctpAtlC5SbHHoqmr8har46Oy
+         otl1xh54PCHKQlwlP5dgYajl++/C9QRw1x93sdppCP2FQshUZpEp9EDK+aeimUnHqQSx
+         5YqdxUsnA/gAvHRddLZW8uuDMriuZuW9EpFYbtaLgndxvYFPz1nEYXMoHgPnF5sJ9JF4
+         EO3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date;
-        bh=w1LUNGae1tKCepvb0oOGHF++V1v90y9UBTYHWhUfzAA=;
-        b=DmugNxw87EGX9stIWDMU7769YRaKHqHpk/2Hn+pERs/zeuLPKcWDN5m1dhuKuXVT5F
-         x9RFkOEhQHdwJ16UQvF1vVeG/s1Ql6EJ4Abkb3YvoX99Xbcut0HXDuQI3N/kIediaUrH
-         SrjiI+EhBRv7J0u9MzyJ88tPCVv0PDLXYA7+tQne2nldrXuc0K66v/Hg18n3ZX1GwGpg
-         3L9hmu2lVmvRO/PcGFDNth1+DQPjUGSCje0mj8l7n3Ck4L28uf1oSLSWSRENMA9Q0fOJ
-         FTu1ip4VKpAfbL2jMPpmAOWFRzwgDh21nyKWKM1AEYfmd0ZuMQ6p2/m/v8i2AjRKebfi
-         nRjQ==
-X-Gm-Message-State: ACrzQf3bAtvXsvoFHgCI5SKQAzMsxHpPxM3woGmhCv8h+XlNRwAtGQxN
-        JBToqtZMKygCd29RWACDUK0=
-X-Google-Smtp-Source: AMsMyM4sdp1MWWaYaJKLOcSXT3SWaRWras92rfoJ6q3CHFksLe+XCS2i9JymJ/lS58ISBcwlLeSJWQ==
-X-Received: by 2002:a17:906:dc8b:b0:787:8f41:d231 with SMTP id cs11-20020a170906dc8b00b007878f41d231mr7950685ejc.547.1664575408188;
-        Fri, 30 Sep 2022 15:03:28 -0700 (PDT)
-Received: from localhost.localdomain (host-79-34-226-61.business.telecomitalia.it. [79.34.226.61])
-        by smtp.gmail.com with ESMTPSA id x11-20020a170906298b00b0073de0506745sm1703399eje.197.2022.09.30.15.03.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Sep 2022 15:03:27 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Anirudh Venkataramanan <anirudh.venkataramanan@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>
-Cc:     Alexander Duyck <alexander.duyck@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Netdev <netdev@vger.kernel.org>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>
-Subject: Re: [Intel-wired-lan] [PATCH] ixgbe: Use kmap_local_page in ixgbe_check_lbtest_frame()
-Date:   Sat, 01 Oct 2022 00:03:24 +0200
-Message-ID: <832292081.0ifERbkFSE@localhost.localdomain>
-In-Reply-To: <27280395.gRfpFWEtPU@localhost.localdomain>
-References: <20220629085836.18042-1-fmdefrancesco@gmail.com> <22aa8568-7f6e-605e-7219-325795b218b7@intel.com> <27280395.gRfpFWEtPU@localhost.localdomain>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=Rvqi7LuRdPHm8Uh4a/HemxkbcnMCqYBrqEFOWcQQ37k=;
+        b=7nyLAv3cRnTMJWZDoaNJ4hAiWpY12EG8OA5z5kez9ePJHrt33hM8b+NgzpICUyU179
+         gUrqgBpDgyIqYUl8EgaDtbWhc6/gRcYKApUVwEBpHN8QSUJd8oGTbWoQXIinCNiTCAFF
+         PYHbZMF8dcYszliQcgH3wf46obR3oIrOaCwkvuojq4a5MYalFRWqvClpxwAWuhs2/hxH
+         TWo+xHF8AHwYXx8S0qyT6Uz9KflWI0tsrLeiQhpZpaDdxsAHFOOMT/jdqqZ7g38Ap0dE
+         YFxNZ3yd2eWpktKN2GYYm6ODnLEtmG+z2OMEA38ymm8+pk96JStQoTxm1+pNfAdRBlsX
+         Mwww==
+X-Gm-Message-State: ACrzQf3RmIsZMiYRpb3Sq9Hj1Ot2q5s0lir1FOhQm8gnv2ZrQC2FnD72
+        o4WEhNb9AealHPuSay5hWt3lSZ1o7NgTXyDBTrPVDFvzh4s=
+X-Google-Smtp-Source: AMsMyM6cvaqa0ZLWa8O05BLkLz4Y6gZ725weJLaQCkEjrMMR8uVcgLu91hsm7M0OKQ2imWrfquSRHKPZdGWeXh0oBhk=
+X-Received: by 2002:a17:90b:4d8c:b0:200:7cd8:333e with SMTP id
+ oj12-20020a17090b4d8c00b002007cd8333emr349246pjb.95.1664575421510; Fri, 30
+ Sep 2022 15:03:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <CACG+mBUEHj5zFeGLtP+bvm0wERru3AGntNtWCyiZ-zPg_JS6tg@mail.gmail.com>
+ <YzbzweamuZyxLuJ1@krava> <CACG+mBV7xboG9Y5LctyJuGoft42b4gHxbSBDtzPxpnzy+CaxDg@mail.gmail.com>
+In-Reply-To: <CACG+mBV7xboG9Y5LctyJuGoft42b4gHxbSBDtzPxpnzy+CaxDg@mail.gmail.com>
+From:   Henrique Fingler <henrique.fingler@gmail.com>
+Date:   Fri, 30 Sep 2022 17:03:30 -0500
+Message-ID: <CACG+mBXc2T28-sn4KMRQPRT0k7ejNg1s8qHFOp3HmM5--e4rBw@mail.gmail.com>
+Subject: Re: Replicating kfunc_call_test kernel test on standalone bpf program
+ (calling kernel function is not allowed)
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -85,60 +66,115 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Friday, September 23, 2022 5:05:43 PM CEST Fabio M. De Francesco wrote:
-> Hi Anirudh,
-> 
-> On Friday, September 23, 2022 12:38:02 AM CEST Anirudh Venkataramanan wrote:
-> > On 9/22/2022 1:58 PM, Alexander Duyck wrote:
-> > > On Thu, Sep 22, 2022 at 1:07 PM Anirudh Venkataramanan
-> > > <anirudh.venkataramanan@intel.com> wrote:
+> > > Hi all,
+> > >
+> > > I'm trying to replicate a bpf test in the kernel that calls a function
+> > > defined in the kernel itself.
+> > > Source code is here:
+> > > https://github.com/torvalds/linux/blob/v5.15/tools/testing/selftests/bpf/progs/kfunc_call_test.c
+> > >
+> > > I think I have all dependencies:
+> > >  Running within a qemu VM (Ubuntu 18.04)
+> > >  Kernel v 5.15 compiled from scratch with configs from
+> > > tools/bpf/bpftool/feature.c
+> > >  pahole v1.22 (1.24 has a reported bug that doesn't allow me to use it)
+> > >  libbpf v1.0
+> > >  Installed bpf tool from 5.15 kernel directory at `tools/bpf`
+> > >  clang and llvm 15
+> > >
+> > > The goal is to call `bpf_kfunc_call_test1`, which is defined in
+> > > net/bpf/test_run.c.
+> > > I have two BPF programs and neither works. The first one is as is from
+> > > the kernel:
+> > >
+> > > #include "vmlinux.h"
+> > > #include <bpf/bpf_helpers.h>
+> > >
+> > > extern __u64 bpf_kfunc_call_test1(struct sock *sk, __u32 a, __u64 b,
+> > >                   __u32 c, __u64 d) __ksym;
+> > >
+> > > SEC("classifier")
+> > > int kfunc_call_test1(struct __sk_buff *skb)
+> > > {
+> > >     struct sock *sk = 0;
+> > >     __u64 a;
+> > >     a = bpf_kfunc_call_test1(sk, 1, 2, 3, 4);
+> >
+> > hi,
+> > IIUC you are passing 'sk' pointer defined on the stack, while
+> > bpf_kfunc_call_test1 expects kernel pointer
+> >
+> > the kernel selftest test takes it from the skb with:
+> >
+> >         struct bpf_sock *sk = skb->sk;
+>
+> I see. So even if the kernel function (bpf_kfunc_call_test1) does not
+> use the argument, bpf is checking if it's a kernel pointer? Is the bpf
+> compiler doing this check?
+> I assumed that passing a constant 0 pointer would work since the other
+> parameters are just constants, even in the kernel test.
+> After changing the first program to the original code, the error
+> changed, so that's progress. Now it says, even when running with root
+> permissions:
+> "libbpf: prog 'kfunc_call_test1': BPF program load failed: Permission denied"
+> Would be interesting to know why, but not necessary since I won't use
+> it this way.
 
-[snip]
+Following up on this, I have moved to kernel 5.19.12 and I'm trying to
+make any kfunc work.
+I changed net/bpf/test_run.c to allow for more prog types, like master
+branch does, since originally it only had the first line for
+BPF_PROG_TYPE_SCHED_CLS.
 
-> > Is using page_address() directly beneficial in some way?
-> 
-> A possible call chain on 32 bits kernels is the following:
-> 
-> kmap_local_page() ->
->  __kmap_local_page_prot() { 
-> 	if (!IS_ENABLED(CONFIG_DEBUG_KMAP_LOCAL_FORCE_MAP) && |
-> PageHighMem(page))
-> 		return page_address(page);
-> 
-> ....
-> }
-> 
-> How many instructions can you save calling page_address() directly?
-> If you don't know, look at the assembly.
+ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS,
+&bpf_prog_test_kfunc_set);
+ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING,
+&bpf_prog_test_kfunc_set);
+ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_KPROBE,
+&bpf_prog_test_kfunc_set);
+ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACEPOINT,
+&bpf_prog_test_kfunc_set);
+return ret ?: register_btf_id_dtor_kfuncs(bpf_prog_test_dtor_kfunc,
+                          ARRAY_SIZE(bpf_prog_test_dtor_kfunc),
+                          THIS_MODULE);
 
-I just realized that perhaps you were expecting something like either "No, it 
-is not directly beneficial because []" or "Yes, it is directly beneficial 
-because []".
+I also added my own function to test it out and added it to the SET
 
-Instead, I used a rhetoric question that might not have been so clear as I 
-thought. This kind of construct is so largely used in my native language, that 
-nobody might misunderstand. I'm not so sure if it is the same in English.
+u64 noinline bpf_kfunc_call_test4(u32 a, u64 b, u32 c, u64 d)
+{
+    return a + b + c + d;
+}
+//this is inside  BTF_SET_START(test_sk_check_kfunc_ids)
+BTF_ID(func, bpf_kfunc_call_test4)
 
-I mean, are those dozen "unnecessary" further assembly instructions too many 
-or too few to care about? I _think_ that they are too many.
+Now I'm spraying every BPF program I can find to call either function:
 
-Therefore, by showing a possible call chain in 32 bits architectures, I 
-indirectly responded "no, I can't see any direct benefit", at least because....
+extern __u64 bpf_kfunc_call_test1(struct sock *sk, __u32 a, __u64 b,
+__u32 c, __u64 d) __ksym;
+extern __u64 bpf_kfunc_call_test4(__u32 a, __u64 b, __u32 c, __u64 d) __ksym;
 
-1) Whatever the architecture, if pages can't come from Highmem, code always 
-ends up calling page_address(). In 32 bits archs they waste precious kernel 
-stack space (a scarce resources) only to build two stack frames (one per each 
-called functions).
+Compiling works, and when I run it I get no errors, *except* Permission denied.
+gist here: https://gist.github.com/hfingler/5c2c0b713299daa6b0ba07fa92ff29de
 
- 2) Developers adds further work to the CPU and force the kernel to run 
-unnecessary code.
+libbpf: prog 'kfunc_call_test1': BPF program load failed: Permission denied
+...
+calling kernel function bpf_kfunc_call_test1 is not allowed
+-- END PROG LOAD LOG --
+libbpf: prog 'kfunc_call_test1': failed to load: -13
+libbpf: failed to load object 'hello_bpf'
+libbpf: failed to load BPF skeleton 'hello_bpf': -13
 
-I'll always use page_address() when I can "prove" that the allocation cannot 
-come from ZONE_HIGHMEM.
+I've tried a few programs and it would be too much to paste here, so
+here's a gist with all of them, which I tried each separately, not all
+at once:
+https://gist.github.com/hfingler/eb544b23cc36d57b8e9723cd36fbf243
+Basically, I've tried SEC("tc"),
+SEC("tracepoint/syscalls/sys_enter_open"),
+SEC("kprobe/__x64_sys_write")
 
-Thanks,
-
-Fabio
-
-
-
+What permission is being denied? I've tried running as root and I get
+the same thing, is there bpf permission checking somewhere else in the
+kernel? Do I have to have some sort of capability? Am I missing some
+kernel config?
+These are the configs I'm enabling in the kernel:
+https://gist.github.com/hfingler/ed780bd52b751625f52bbb08eb853641
