@@ -2,83 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 787415F01F3
-	for <lists+bpf@lfdr.de>; Fri, 30 Sep 2022 02:53:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CC7A5F0232
+	for <lists+bpf@lfdr.de>; Fri, 30 Sep 2022 03:25:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229506AbiI3Axa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Sep 2022 20:53:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57194 "EHLO
+        id S229552AbiI3BZs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Sep 2022 21:25:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbiI3AxL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 29 Sep 2022 20:53:11 -0400
-Received: from out1.migadu.com (out1.migadu.com [91.121.223.63])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4F7D20589D;
-        Thu, 29 Sep 2022 17:52:28 -0700 (PDT)
-Message-ID: <9d828483-21d0-18da-0870-babcb50d5c03@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1664499146;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NHJr4Xpyg9WKtImexYWG0vQTFzDQgaCHa5Ss8yShYZc=;
-        b=BKi0gDIvZ4KSxHZQ+chheYRT/I4Rf1DJsoX2trucN8c/yhu1oEhhUIBOE2kf4StEQQ0U48
-        C7GjnGH5mXrkFkVxBgVQ9kC8adzkJhA5gZEi356riHWljcE1hI05rfYVK7pOfMiVAvYTMR
-        fhLmlThZ7ULDgsRLHn4FHV11y9ggWaQ=
-Date:   Thu, 29 Sep 2022 17:52:22 -0700
+        with ESMTP id S229449AbiI3BZs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Sep 2022 21:25:48 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9719413A949;
+        Thu, 29 Sep 2022 18:25:46 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D9191621FA;
+        Fri, 30 Sep 2022 01:25:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9287C433D6;
+        Fri, 30 Sep 2022 01:25:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1664501145;
+        bh=FVHdWqZOoo23PSZPDFNIeUwiRH5/PCGJfRbuhXU2EZM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ENMVNSKh+670J9mnkbepwmvU1JJirJQR9PJvcpYRUJouOKaM+zZna9YCkTMLaRa/g
+         l8eOCwCYMoMDyOVeJTQKhrvybXqXtiD4rGTN7qDL4JNILEfNMFpSMzLEisv6TPLpLa
+         AJ4a8LdXHRBcJsVTCbv9RwU/nDL3OCSKpyN+wwZEWh0BR+3T+r6cdlMws18eKHxUd7
+         LGQYOFjVXXcuSjseoyzPNjI73xd7o+UDabMywhWGxhNK04K5BtqwEQT1WMDYibQ3ZC
+         B0M3ox86cGPPyRN3/y/VkjhIi8uh3idXz/eouF532sDz309j/S4m1CiJ9CvCwVDY7K
+         3VbOswQIOWESA==
+Date:   Thu, 29 Sep 2022 18:25:43 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Hongbin Wang <wh_bin@126.com>
+Cc:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        edumazet@google.com, pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH] seg6: Delete invalid code
+Message-ID: <20220929182543.5b7a7593@kernel.org>
+In-Reply-To: <20220929095649.2764540-1-wh_bin@126.com>
+References: <20220929095649.2764540-1-wh_bin@126.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next] selftests/xsk: fix double free
-Content-Language: en-US
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc:     magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, netdev@vger.kernel.org,
-        jonathan.lemon@gmail.com, bpf@vger.kernel.org
-References: <20220929090133.7869-1-magnus.karlsson@gmail.com>
- <YzV28OlK+pwlm/B/@boxer>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <YzV28OlK+pwlm/B/@boxer>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 9/29/22 3:44 AM, Maciej Fijalkowski wrote:
-> On Thu, Sep 29, 2022 at 11:01:33AM +0200, Magnus Karlsson wrote:
->> From: Magnus Karlsson <magnus.karlsson@intel.com>
->>
->> Fix a double free at exit of the test suite.
->>
->> Fixes: a693ff3ed561 ("selftests/xsk: Add support for executing tests on physical device")
->> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
->> ---
->>   tools/testing/selftests/bpf/xskxceiver.c | 3 ---
->>   1 file changed, 3 deletions(-)
->>
->> diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/selftests/bpf/xskxceiver.c
->> index ef33309bbe49..d1a5f3218c34 100644
->> --- a/tools/testing/selftests/bpf/xskxceiver.c
->> +++ b/tools/testing/selftests/bpf/xskxceiver.c
->> @@ -1953,9 +1953,6 @@ int main(int argc, char **argv)
->>   
->>   	pkt_stream_delete(tx_pkt_stream_default);
->>   	pkt_stream_delete(rx_pkt_stream_default);
->> -	free(ifobj_rx->umem);
->> -	if (!ifobj_tx->shared_umem)
-shared_umem means ifobj_rx->umem and ifobj_tx->umem are the same?  No special 
-handling is needed and ifobject_delete() will handle it?
+On Thu, 29 Sep 2022 05:56:49 -0400 Hongbin Wang wrote:
+> void function return statements are not generally useful
 
->> -		free(ifobj_tx->umem);
->>   	ifobject_delete(ifobj_tx);
->>   	ifobject_delete(ifobj_rx);
-> 
-> So basically we free this inside ifobject_delete().
-
+I don't think this is worth applying, sorry.
