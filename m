@@ -2,135 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9986F5F09EE
-	for <lists+bpf@lfdr.de>; Fri, 30 Sep 2022 13:21:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68CA25F0C1A
+	for <lists+bpf@lfdr.de>; Fri, 30 Sep 2022 15:00:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230363AbiI3LVM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Sep 2022 07:21:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38332 "EHLO
+        id S229548AbiI3NA1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Sep 2022 09:00:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230272AbiI3LUl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Sep 2022 07:20:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF752DCCFD
-        for <bpf@vger.kernel.org>; Fri, 30 Sep 2022 04:09:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1664536145;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=yuN61Gt5Tj3D35BY+nm+KbCeM9+r4XKh89mhiWiDEcI=;
-        b=GMz0klHcXIYkqYV4IY07ixI2EGxOdfCCAfoy/A2raMfVG1g0U1HqpoOhdhnrsRW8D24ARv
-        mnLVWSXbuFHw18338nOFKvWi3KKpGKEX6zqUw6P5/iQuxHCC0EMulFehDg+4kZGFNH0A+z
-        Rm9S/gouuOO09qOMQpFFQTtwfMbmofc=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-255-QD_MsY6sPgazuGx5UtEceA-1; Fri, 30 Sep 2022 07:09:04 -0400
-X-MC-Unique: QD_MsY6sPgazuGx5UtEceA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9A9EC8041B5;
-        Fri, 30 Sep 2022 11:09:03 +0000 (UTC)
-Received: from samus.usersys.redhat.com (unknown [10.43.17.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5FC6D2024CB7;
-        Fri, 30 Sep 2022 11:09:02 +0000 (UTC)
-From:   Artem Savkov <asavkov@redhat.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S229566AbiI3NAZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Sep 2022 09:00:25 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4B59A32EE9
+        for <bpf@vger.kernel.org>; Fri, 30 Sep 2022 06:00:21 -0700 (PDT)
+Received: from Vivis-MacBook-Air.local (unknown [177.33.235.223])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 85CF220E0BE5;
+        Fri, 30 Sep 2022 06:00:17 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 85CF220E0BE5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1664542820;
+        bh=zhDzvT80xqqr2nN+8B0WPKYRnr+HgzAcX3LVtY0Zx58=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=NhFelTjtml9+xRJ+h4Gr1iPDydbq3DqrMVCHov8VVuaB534e7556stiP/2oTpA0Ok
+         +nrEc0XOI5H9vGxAihZA5Ne3gvzaRgD9UwjyFsMFWng7Q9NGzFyC7IobbNnsO0gsNS
+         8rM2cPHRj3S2APbRwO9ayeiwGpxEwMgSmW6AteLQ=
+Subject: Re: [PATCH] libbpf: add validation to BTF's variable type ID
+To:     John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, jbenc@redhat.com,
-        Artem Savkov <asavkov@redhat.com>
-Subject: [PATCH bpf-next] selftests/bpf: make libbpf_probe_prog_types testcase aware of kernel configuration
-Date:   Fri, 30 Sep 2022 13:09:00 +0200
-Message-Id: <20220930110900.75492-1-asavkov@redhat.com>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Isabella Basso <isabbasso@riseup.net>,
+        Paul Moore <paul@paul-moore.com>
+References: <20220929160558.5034-1-annemacedo@linux.microsoft.com>
+ <63365532d416f_233df20899@john.notmuch>
+From:   Anne Macedo <annemacedo@linux.microsoft.com>
+Message-ID: <92157e05-e383-ed4b-8b01-2981dbf5afd3@linux.microsoft.com>
+Date:   Fri, 30 Sep 2022 10:00:14 -0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.0; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.1
 MIME-Version: 1.0
+In-Reply-To: <63365532d416f_233df20899@john.notmuch>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-20.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-At the moment libbpf_probe_prog_types test iterates over all available
-BPF_PROG_TYPE regardless of kernel configuration which can exclude some
-of those. Unfortunately there is no direct way to tell which types are
-available, but we can look at struct bpf_ctx_onvert to tell which ones
-are available.
+On 29/09/22 23:32, John Fastabend wrote:
+> Anne Macedo wrote:
+>> If BTF is corrupted, a SEGV may occur due to a null pointer dereference on
+>> bpf_object__init_user_btf_map.
+>>
+>> This patch adds a validation that checks whether the DATASEC's variable
+>> type ID is null. If so, it raises a warning.
+>>
+>> Reported by oss-fuzz project [1].
+>>
+>> A similar patch for the same issue exists on [2]. However, the code is
+>> unreachable when using oss-fuzz data.
+>>
+>> [1] https://github.com/libbpf/libbpf/issues/484
+>> [2] https://patchwork.kernel.org/project/netdevbpf/patch/20211103173213.1376990-3-andrii@kernel.org/
+>>
+>> Reviewed-by: Isabella Basso <isabbasso@riseup.net>
+>> Signed-off-by: Anne Macedo <annemacedo@linux.microsoft.com>
+>> ---
+>>   tools/lib/bpf/libbpf.c | 4 ++++
+>>   1 file changed, 4 insertions(+)
+>>
+>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+>> index 184ce1684dcd..0c88612ab7c4 100644
+>> --- a/tools/lib/bpf/libbpf.c
+>> +++ b/tools/lib/bpf/libbpf.c
+>> @@ -2464,6 +2464,10 @@ static int bpf_object__init_user_btf_map(struct bpf_object *obj,
+>>   
+>>   	vi = btf_var_secinfos(sec) + var_idx;
+>>   	var = btf__type_by_id(obj->btf, vi->type);
+>> +	if (!var || !btf_is_var(var)) {
+>> +		pr_warn("map #%d: non-VAR type seen", var_idx);
+>> +		return -EINVAL;
+>> +	}
+>>   	var_extra = btf_var(var);
+>>   	map_name = btf__name_by_offset(obj->btf, var->name_off);
+>>   
+>> -- 
+>> 2.30.2
+>>
+> 
+> 
+> I don't know abouut this. A quick scan looks like this type_by_id is
+> used lots of places. And seems corrupted BTF could cause faults
+> and confusiuon in other spots as well. I'm not sure its worth making
+> libbpf survive corrupted BTF. OTOH this specific patch looks ok.
+> 
 
-Signed-off-by: Artem Savkov <asavkov@redhat.com>
----
- .../selftests/bpf/prog_tests/libbpf_probes.c  | 33 +++++++++++++++++--
- 1 file changed, 31 insertions(+), 2 deletions(-)
+I was planning on creating a function to validate BTF for these kinds of 
+corruptions, but decided to keep this patch simple. This could be a good 
+idea for some future work – moving all of the validations to 
+bpf_object__init_btf() or to a helper function.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/libbpf_probes.c b/tools/testing/selftests/bpf/prog_tests/libbpf_probes.c
-index 9f766ddd946ab..753ddf79cf5e0 100644
---- a/tools/testing/selftests/bpf/prog_tests/libbpf_probes.c
-+++ b/tools/testing/selftests/bpf/prog_tests/libbpf_probes.c
-@@ -4,12 +4,29 @@
- #include <test_progs.h>
- #include <bpf/btf.h>
- 
-+static int find_type_in_ctx_convert(struct btf *btf,
-+				    const char *prog_type_name,
-+				    const struct btf_type *t)
-+{
-+	const struct btf_member *m;
-+	size_t cmplen = strlen(prog_type_name);
-+	int i, n;
-+
-+	for (m = btf_members(t), i = 0, n = btf_vlen(t); i < n; m++, i++) {
-+		const char *member_name = btf__str_by_offset(btf, m->name_off);
-+
-+		if (!strncmp(prog_type_name, member_name, cmplen))
-+			return 1;
-+	}
-+	return 0;
-+}
-+
- void test_libbpf_probe_prog_types(void)
- {
- 	struct btf *btf;
--	const struct btf_type *t;
-+	const struct btf_type *t, *context_convert_t;
- 	const struct btf_enum *e;
--	int i, n, id;
-+	int i, n, id, context_convert_id;
- 
- 	btf = btf__parse("/sys/kernel/btf/vmlinux", NULL);
- 	if (!ASSERT_OK_PTR(btf, "btf_parse"))
-@@ -23,6 +40,14 @@ void test_libbpf_probe_prog_types(void)
- 	if (!ASSERT_OK_PTR(t, "bpf_prog_type_enum"))
- 		goto cleanup;
- 
-+	context_convert_id = btf__find_by_name_kind(btf, "bpf_ctx_convert",
-+						    BTF_KIND_STRUCT);
-+	if (!ASSERT_GT(context_convert_id, 0, "bpf_ctx_convert_id"))
-+		goto cleanup;
-+	context_convert_t = btf__type_by_id(btf, context_convert_id);
-+	if (!ASSERT_OK_PTR(t, "bpf_ctx_convert_type"))
-+		goto cleanup;
-+
- 	for (e = btf_enum(t), i = 0, n = btf_vlen(t); i < n; e++, i++) {
- 		const char *prog_type_name = btf__str_by_offset(btf, e->name_off);
- 		enum bpf_prog_type prog_type = (enum bpf_prog_type)e->val;
-@@ -31,6 +56,10 @@ void test_libbpf_probe_prog_types(void)
- 		if (prog_type == BPF_PROG_TYPE_UNSPEC)
- 			continue;
- 
-+		if (!find_type_in_ctx_convert(btf, prog_type_name,
-+					      context_convert_t))
-+			continue;
-+
- 		if (!test__start_subtest(prog_type_name))
- 			continue;
- 
--- 
-2.37.3
+> How did it get corrupted in the first place? Curious to see if
+> others want to harden libbpf like this.
+> 
 
+There's a test case by oss-fuzz [1] that generated this corrupted BTF. 
+There's also some C code for replicating this bug [2] using the oss-fuzz 
+data.
+
+On a side note, fixing this bug would help oss-fuzz find other, more 
+relevant, bugs.
+
+Found the original oss-fuzz report at [3].
+
+[1] https://oss-fuzz.com/download?testcase_id=5041748798210048
+[2] https://github.com/libbpf/libbpf/issues/484#issuecomment-1250020929
+[3] https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=42345
