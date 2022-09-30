@@ -2,53 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48C025F15D2
-	for <lists+bpf@lfdr.de>; Sat,  1 Oct 2022 00:10:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74B7E5F15D4
+	for <lists+bpf@lfdr.de>; Sat,  1 Oct 2022 00:10:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232550AbiI3WKZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Sep 2022 18:10:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35358 "EHLO
+        id S232435AbiI3WK0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Sep 2022 18:10:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232543AbiI3WKS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Sep 2022 18:10:18 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C53B2F67E;
-        Fri, 30 Sep 2022 15:10:17 -0700 (PDT)
+        with ESMTP id S232554AbiI3WKW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Sep 2022 18:10:22 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A88416612C;
+        Fri, 30 Sep 2022 15:10:18 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C726362541;
-        Fri, 30 Sep 2022 22:10:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 11D08C433D7;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 63EECB82A4E;
+        Fri, 30 Sep 2022 22:10:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 1B4FBC433D6;
         Fri, 30 Sep 2022 22:10:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1664575816;
-        bh=vBYAr+qp6HLWeZ/s3qb8cRpSPT0KXYAUNI1+6MxAIW4=;
+        bh=boq1adV3v7czYDdvsiNNB+DcHejVYZg49b8utNbjG7U=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=sAfLJ+TAeJY+g4F81jBXCNSe6pgwDMNm0kt9y7Tj3Ni784deucGXKYVCzjpvgGJ4z
-         SFtqE0838JX36yt1Ya4nzoksn2mEum/5WuV8N2jIJ8Z0vVui6PqkR/y/9H+fa3rhY2
-         JpNmuwCi8XUr6K556lWbcPsQC/h1bdtOkRjHSSJTRfc5jOozlX0ntalTqEDJT5THCl
-         x+itZNt94zw/qczePX1pSBiEdAzDKMKlvr6BF/rVJJcUl9JIG20x6bkTKtzt7CtK8v
-         UVDITY55cdpvLYFW+HdE2EzQ+VCAI3XesO2Qe3v0kWHqxbyLyRm8dgxCkIdeiBkmr7
-         t9OsR6PtEXgcg==
+        b=ac4/sGRk0ooX/FZ6e5s74h3+JG4E9dRVF1p1LuBwUGsi/mSkm6EXUkaHGuJT4w82O
+         HQvF+hYsowmadEy6s1cCDMWzo+2DaL4SknhXPgR0cfg1BLNyqpX7PAqw1CnPS+t2hh
+         rGIJgUZcRmoZW6VeTqu+cOoog+EBGp2TLQcEHFprtUEsd9TMga/Lg/DmYWkqripDem
+         VNenx6FiL/UjKdCDTDwQBxXDIiY1KEPL+vHpx0y9DFVD2p/sXSTvW8k+UYEHqdGdx+
+         /nmkkG5H3WtuNPqcstImVmD09SSYoHVH6I5mbMuR2r4TOROGUjYyv/tyrHVsm+GoZm
+         ilONQwqGV54oQ==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id EBCDFE49FA7;
-        Fri, 30 Sep 2022 22:10:15 +0000 (UTC)
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 03751E50D64;
+        Fri, 30 Sep 2022 22:10:16 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] samples, bpf: fix the typo of sample
+Subject: Re: [PATCH] selftests/bpf: Fix spelling mistake "unpriviledged" ->
+ "unprivileged"
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <166457581596.30660.4806069107190064986.git-patchwork-notify@kernel.org>
-Date:   Fri, 30 Sep 2022 22:10:15 +0000
-References: <20220927192527.8722-1-wangdeming@inspur.com>
-In-Reply-To: <20220927192527.8722-1-wangdeming@inspur.com>
-To:     Deming Wang <wangdeming@inspur.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+Message-Id: <166457581601.30660.11490951795183636093.git-patchwork-notify@kernel.org>
+Date:   Fri, 30 Sep 2022 22:10:16 +0000
+References: <20220928221555.67873-1-colin.i.king@gmail.com>
+In-Reply-To: <20220928221555.67873-1-colin.i.king@gmail.com>
+To:     Colin Ian King <colin.i.king@gmail.com>
+Cc:     ast@kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, kernel-janitors@vger.kernel.org,
         linux-kernel@vger.kernel.org
 X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
@@ -64,17 +62,19 @@ Hello:
 This patch was applied to bpf/bpf-next.git (master)
 by Andrii Nakryiko <andrii@kernel.org>:
 
-On Tue, 27 Sep 2022 15:25:27 -0400 you wrote:
-> fix the typo of the enty.
+On Wed, 28 Sep 2022 23:15:55 +0100 you wrote:
+> There a couple of spelling mistakes, one in a literal string and one
+> in a comment. Fix them.
 > 
-> Signed-off-by: Deming Wang <wangdeming@inspur.com>
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
 > ---
->  samples/bpf/xdp_router_ipv4_user.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  tools/testing/selftests/bpf/verifier/calls.c   | 2 +-
+>  tools/testing/selftests/bpf/verifier/var_off.c | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
 
 Here is the summary with links:
-  - samples, bpf: fix the typo of sample
-    https://git.kernel.org/bpf/bpf-next/c/b59cc7fcbaeb
+  - selftests/bpf: Fix spelling mistake "unpriviledged" -> "unprivileged"
+    https://git.kernel.org/bpf/bpf-next/c/2efcf695bfc0
 
 You are awesome, thank you!
 -- 
