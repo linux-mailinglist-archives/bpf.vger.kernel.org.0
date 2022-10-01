@@ -2,133 +2,390 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74C875F18A0
-	for <lists+bpf@lfdr.de>; Sat,  1 Oct 2022 04:31:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E8AB5F1A63
+	for <lists+bpf@lfdr.de>; Sat,  1 Oct 2022 08:54:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232333AbiJACbj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Sep 2022 22:31:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60950 "EHLO
+        id S229441AbiJAGyO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 1 Oct 2022 02:54:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232302AbiJACba (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Sep 2022 22:31:30 -0400
-Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21826125D96;
-        Fri, 30 Sep 2022 19:31:29 -0700 (PDT)
-Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-127dca21a7dso7399296fac.12;
-        Fri, 30 Sep 2022 19:31:29 -0700 (PDT)
+        with ESMTP id S229458AbiJAGyN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 1 Oct 2022 02:54:13 -0400
+Received: from mail-vk1-xa2a.google.com (mail-vk1-xa2a.google.com [IPv6:2607:f8b0:4864:20::a2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AE191919A6;
+        Fri, 30 Sep 2022 23:54:12 -0700 (PDT)
+Received: by mail-vk1-xa2a.google.com with SMTP id k14so3301211vkk.0;
+        Fri, 30 Sep 2022 23:54:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=VOOiIsdAj9Fy3/tGDBq6Hw66p9qNw0hMPiKBsradvWs=;
+        b=jEFnR8qV1kkx4c/YXldZqnioh8LeAX1tKj7/Oxv3YkPnZEb/7xrMAQkdUXB4RsR9ai
+         CLd1C18Bq23tAbPr++6dKhFpgdSAn6Be/T4heP7NYt0bdwQlkruOwcEVODLa7cGg5YzG
+         PfNsk1ouiNOlrsBekODRPK6oCzTI5mTD1YY0u/5wx9PThiQuFtVkn191JOdJ1WwRwVOg
+         RpAOk6qImFzpQxmdyrneMCEkwDsynennDNRxup3kaK/fyEBWMUwmjU+R/gAPZH5/5oK8
+         /dGr3emhr0jBvIyCUQaLwr7aH+0zkoep1sVhMJRKPwgt1MSyzwJMv6ufoK+RrcAteYVn
+         X9rg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=TsSNtaxjzzrx0UGRlq15EZuhaugUhUgclS9Wef+tMjA=;
-        b=kaUDziaMuKIsPXEo1NARHh6a8YfZ7PCTfT9/4dAjqpR1bf7i+xcJ+KXsWgHIhBDvkI
-         JyQ+EdlsDdcxuF9aOGcUepMhWYcm9C1g3lnYzHHVa5b7EYKeLATDa0zLEuPUNEU9P3YO
-         Nt8O77O95l+WMszY3azrrXe69g8wnGfeWyLTGRbcrMAQ5JPL/mMHnSsGRd32WHYpbg+c
-         C4GykgbpKh5wT/NxS/elCsl2I4DS8lErGfc2QUF26gOP0OVEA3e76U98pSbE4zzxkzp8
-         S7/oa9rLAl0zV6WcfCd+tEn1sr33bh/6g9m4Kpc44ghgOeHlaiP7hrx2LB3amS4AfAzJ
-         PzCw==
-X-Gm-Message-State: ACrzQf1tvtUwA/re8/D1Axjh/vL0NekT2nqHFRDTVHZ9ZsQvlH2rNIZQ
-        9XUME8csjIwd9HY4eiO4szaPyCJjLpRStqInWT8=
-X-Google-Smtp-Source: AMsMyM7Yi1zPsDiXRfU1bZZHzwmu8SBCTd/6ZNM+dwKzBgmouEYVAxUpY+L4PS/jzdxYlVAY+5ffaUbRPOpty+fg9hQ=
-X-Received: by 2002:a05:6871:14f:b0:131:a644:7c58 with SMTP id
- z15-20020a056871014f00b00131a6447c58mr469446oab.209.1664591488387; Fri, 30
- Sep 2022 19:31:28 -0700 (PDT)
+        bh=VOOiIsdAj9Fy3/tGDBq6Hw66p9qNw0hMPiKBsradvWs=;
+        b=RYBcJQmuZGd/92f9eUzNaANlBjgl/Z/EqOb4q0T6OHi4vy/TSKWMMWcp2TgfmxQL5w
+         px+7lL1ra/BsMivfzaRBxs6bvKkTxVQS5bMRkDIEAD76lfdSa1Yfhos01z6ag10YDLjv
+         Ig0W+eIt1cqLlzbgFPocpF7zP/JtRQCTflAFhtEmJR0th5Y1b1yQwiplwF31m4+LBt9J
+         S2H9/hl4Ae3V9PFibFFDqAHErLQ9La3NH/X66McsTNZhvNHAXZj3mmJvHMR0ICLJG0QB
+         iBmOmewNv/kxvzgq6O36ai7JmBdev328Av2/BEryqgTwA2tBD0yZpnfSey8V6s8vMqcy
+         LHPA==
+X-Gm-Message-State: ACrzQf2Yznib4oaAPLh7NDuRYkZC6gOWFY/0plaGJOfsZuaO45JYD9du
+        JVuiyh4qumfya9D+bfhDgHkqboIozrzPqxaaaxg=
+X-Google-Smtp-Source: AMsMyM63HdCoijFAgy7dvhoNqJCYn/NU160eYlfJTvMQUqKUfWyDej5/3pwntF6xNAm6RPvKdMw8bH7nAyw8tQSFdKM=
+X-Received: by 2002:a1f:b292:0:b0:3a3:e51b:80c6 with SMTP id
+ b140-20020a1fb292000000b003a3e51b80c6mr6167412vkf.11.1664607251341; Fri, 30
+ Sep 2022 23:54:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAM9d7cjQ20a01YoZi=o-_7HT6TzR0TZgtpscKNvRrMq2yqV1Og@mail.gmail.com>
- <20220922041435.709119-1-namhyung@kernel.org> <CAEf4BzZhHYYOmNhLdrpsXSDE5kaXvgSN00X-8aAySDwAKX0RCw@mail.gmail.com>
-In-Reply-To: <CAEf4BzZhHYYOmNhLdrpsXSDE5kaXvgSN00X-8aAySDwAKX0RCw@mail.gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Fri, 30 Sep 2022 19:31:17 -0700
-Message-ID: <CAM9d7ch8RUgf8V1hi=ccgV84XSfujuWtUKKgre8eQdGmtdiFLA@mail.gmail.com>
-Subject: Re: [PATCH] perf stat: Support old kernels for bperf cgroup counting
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        cgroups <cgroups@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>, bpf <bpf@vger.kernel.org>
+References: <20220926231822.994383-1-drosen@google.com> <20220926231822.994383-16-drosen@google.com>
+In-Reply-To: <20220926231822.994383-16-drosen@google.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Sat, 1 Oct 2022 09:53:59 +0300
+Message-ID: <CAOQ4uxjssUfKxoTzzervqGaHNPcz1sK-JAVAXFE7=gEdkcYhvQ@mail.gmail.com>
+Subject: Re: [PATCH 15/26] fuse-bpf: Add support for read/write iter
+To:     Daniel Rosenberg <drosen@google.com>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Paul Lawrence <paullawrence@google.com>,
+        Alessio Balsini <balsini@google.com>,
+        David Anderson <dvander@google.com>,
+        Sandeep Patil <sspatil@google.com>,
+        linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@android.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
-
-On Fri, Sep 30, 2022 at 3:48 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Tue, Sep 27, 2022 at 2:46 AM Daniel Rosenberg <drosen@google.com> wrote:
 >
-> On Wed, Sep 21, 2022 at 9:21 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> >
-> > The recent change in the cgroup will break the backward compatiblity in
-> > the BPF program.  It should support both old and new kernels using BPF
-> > CO-RE technique.
-> >
-> > Like the task_struct->__state handling in the offcpu analysis, we can
-> > check the field name in the cgroup struct.
-> >
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > ---
-> > Arnaldo, I think this should go through the cgroup tree since it depends
-> > on the earlier change there.  I don't think it'd conflict with other
-> > perf changes but please let me know if you see any trouble, thanks!
-> >
-> >  tools/perf/util/bpf_skel/bperf_cgroup.bpf.c | 29 ++++++++++++++++++++-
-> >  1 file changed, 28 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c b/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
-> > index 488bd398f01d..4fe61043de04 100644
-> > --- a/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
-> > +++ b/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
-> > @@ -43,12 +43,39 @@ struct {
-> >         __uint(value_size, sizeof(struct bpf_perf_event_value));
-> >  } cgrp_readings SEC(".maps");
-> >
-> > +/* new kernel cgroup definition */
-> > +struct cgroup___new {
-> > +       int level;
-> > +       struct cgroup *ancestors[];
-> > +} __attribute__((preserve_access_index));
-> > +
-> > +/* old kernel cgroup definition */
-> > +struct cgroup___old {
-> > +       int level;
-> > +       u64 ancestor_ids[];
-> > +} __attribute__((preserve_access_index));
-> > +
-> >  const volatile __u32 num_events = 1;
-> >  const volatile __u32 num_cpus = 1;
-> >
-> >  int enabled = 0;
-> >  int use_cgroup_v2 = 0;
-> >
-> > +static inline __u64 get_cgroup_v1_ancestor_id(struct cgroup *cgrp, int level)
-> > +{
-> > +       /* recast pointer to capture new type for compiler */
-> > +       struct cgroup___new *cgrp_new = (void *)cgrp;
-> > +
-> > +       if (bpf_core_field_exists(cgrp_new->ancestors)) {
-> > +               return BPF_CORE_READ(cgrp_new, ancestors[level], kn, id);
+> Signed-off-by: Daniel Rosenberg <drosen@google.com>
+> Signed-off-by: Paul Lawrence <paullawrence@google.com>
+> ---
+>  fs/fuse/backing.c | 291 ++++++++++++++++++++++++++++++++++++++++++++++
+>  fs/fuse/control.c |   2 +-
+>  fs/fuse/file.c    |  28 +++++
+>  fs/fuse/fuse_i.h  |  42 ++++++-
+>  fs/fuse/inode.c   |  13 +++
+>  5 files changed, 374 insertions(+), 2 deletions(-)
 >
-> have you checked generated BPF code for this ancestors[level] access?
-> I'd expect CO-RE relocation for finding ancestors offset and then just
-> normal + level * 8 arithmetic, but would be nice to confirm. Apart
-> from this, looks good to me:
+> diff --git a/fs/fuse/backing.c b/fs/fuse/backing.c
+> index 1fe61177cdfb..cf4ad9f4fe10 100644
+> --- a/fs/fuse/backing.c
+> +++ b/fs/fuse/backing.c
+> @@ -12,6 +12,47 @@
+>  #include <linux/namei.h>
+>  #include <linux/bpf_fuse.h>
 >
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> +#define FUSE_BPF_IOCB_MASK (IOCB_APPEND | IOCB_DSYNC | IOCB_HIPRI | IOCB_NOWAIT | IOCB_SYNC)
+> +
+> +struct fuse_bpf_aio_req {
+> +       struct kiocb iocb;
+> +       refcount_t ref;
+> +       struct kiocb *iocb_orig;
+> +};
+> +
+> +static struct kmem_cache *fuse_bpf_aio_request_cachep;
+> +
+> +static void fuse_file_accessed(struct file *dst_file, struct file *src_file)
+> +{
+> +       struct inode *dst_inode;
+> +       struct inode *src_inode;
+> +
+> +       if (dst_file->f_flags & O_NOATIME)
+> +               return;
+> +
+> +       dst_inode = file_inode(dst_file);
+> +       src_inode = file_inode(src_file);
+> +
+> +       if ((!timespec64_equal(&dst_inode->i_mtime, &src_inode->i_mtime) ||
+> +            !timespec64_equal(&dst_inode->i_ctime, &src_inode->i_ctime))) {
+> +               dst_inode->i_mtime = src_inode->i_mtime;
+> +               dst_inode->i_ctime = src_inode->i_ctime;
+> +       }
+> +
+> +       touch_atime(&dst_file->f_path);
+> +}
+> +
+> +static void fuse_copyattr(struct file *dst_file, struct file *src_file)
+> +{
+> +       struct inode *dst = file_inode(dst_file);
+> +       struct inode *src = file_inode(src_file);
+> +
+> +       dst->i_atime = src->i_atime;
+> +       dst->i_mtime = src->i_mtime;
+> +       dst->i_ctime = src->i_ctime;
+> +       i_size_write(dst, i_size_read(src));
+> +}
+> +
+>  struct bpf_prog *fuse_get_bpf_prog(struct file *file)
+>  {
+>         struct bpf_prog *bpf_prog = ERR_PTR(-EINVAL);
+> @@ -469,6 +510,241 @@ int fuse_lseek_finalize(struct bpf_fuse_args *fa, loff_t *out,
+>         return 0;
+>  }
+>
+> +static inline void fuse_bpf_aio_put(struct fuse_bpf_aio_req *aio_req)
+> +{
+> +       if (refcount_dec_and_test(&aio_req->ref))
+> +               kmem_cache_free(fuse_bpf_aio_request_cachep, aio_req);
+> +}
+> +
+> +static void fuse_bpf_aio_cleanup_handler(struct fuse_bpf_aio_req *aio_req)
+> +{
+> +       struct kiocb *iocb = &aio_req->iocb;
+> +       struct kiocb *iocb_orig = aio_req->iocb_orig;
+> +
+> +       if (iocb->ki_flags & IOCB_WRITE) {
+> +               __sb_writers_acquired(file_inode(iocb->ki_filp)->i_sb,
+> +                                     SB_FREEZE_WRITE);
+> +               file_end_write(iocb->ki_filp);
+> +               fuse_copyattr(iocb_orig->ki_filp, iocb->ki_filp);
+> +       }
+> +       iocb_orig->ki_pos = iocb->ki_pos;
+> +       fuse_bpf_aio_put(aio_req);
+> +}
+> +
+> +static void fuse_bpf_aio_rw_complete(struct kiocb *iocb, long res)
+> +{
+> +       struct fuse_bpf_aio_req *aio_req =
+> +               container_of(iocb, struct fuse_bpf_aio_req, iocb);
+> +       struct kiocb *iocb_orig = aio_req->iocb_orig;
+> +
+> +       fuse_bpf_aio_cleanup_handler(aio_req);
+> +       iocb_orig->ki_complete(iocb_orig, res);
+> +}
+> +
+> +int fuse_file_read_iter_initialize_in(struct bpf_fuse_args *fa, struct fuse_file_read_iter_io *fri,
+> +                                     struct kiocb *iocb, struct iov_iter *to)
+> +{
+> +       struct file *file = iocb->ki_filp;
+> +       struct fuse_file *ff = file->private_data;
+> +
+> +       fri->fri = (struct fuse_read_in) {
+> +               .fh = ff->fh,
+> +               .offset = iocb->ki_pos,
+> +               .size = to->count,
+> +       };
+> +
+> +       /* TODO we can't assume 'to' is a kvec */
+> +       /* TODO we also can't assume the vector has only one component */
+> +       *fa = (struct bpf_fuse_args) {
+> +               .opcode = FUSE_READ,
+> +               .nodeid = ff->nodeid,
+> +               .in_numargs = 1,
+> +               .in_args[0].size = sizeof(fri->fri),
+> +               .in_args[0].value = &fri->fri,
+> +               /*
+> +                * TODO Design this properly.
+> +                * Possible approach: do not pass buf to bpf
+> +                * If going to userland, do a deep copy
+> +                * For extra credit, do that to/from the vector, rather than
+> +                * making an extra copy in the kernel
+> +                */
+> +       };
+> +
+> +       return 0;
+> +}
+> +
+> +int fuse_file_read_iter_initialize_out(struct bpf_fuse_args *fa, struct fuse_file_read_iter_io *fri,
+> +                                      struct kiocb *iocb, struct iov_iter *to)
+> +{
+> +       fri->frio = (struct fuse_read_iter_out) {
+> +               .ret = fri->fri.size,
+> +       };
+> +
+> +       fa->out_numargs = 1;
+> +       fa->out_args[0].size = sizeof(fri->frio);
+> +       fa->out_args[0].value = &fri->frio;
+> +
+> +       return 0;
+> +}
+> +
+> +int fuse_file_read_iter_backing(struct bpf_fuse_args *fa, ssize_t *out,
+> +                               struct kiocb *iocb, struct iov_iter *to)
+> +{
+> +       struct fuse_read_iter_out *frio = fa->out_args[0].value;
+> +       struct file *file = iocb->ki_filp;
+> +       struct fuse_file *ff = file->private_data;
+> +
+> +       if (!iov_iter_count(to))
+> +               return 0;
+> +
+> +       if ((iocb->ki_flags & IOCB_DIRECT) &&
+> +           (!ff->backing_file->f_mapping->a_ops ||
+> +            !ff->backing_file->f_mapping->a_ops->direct_IO))
+> +               return -EINVAL;
+> +
+> +       /* TODO This just plain ignores any change to fuse_read_in */
+> +       if (is_sync_kiocb(iocb)) {
+> +               *out = vfs_iter_read(ff->backing_file, to, &iocb->ki_pos,
+> +                               iocb_to_rw_flags(iocb->ki_flags, FUSE_BPF_IOCB_MASK));
+> +       } else {
+> +               struct fuse_bpf_aio_req *aio_req;
+> +
+> +               *out = -ENOMEM;
+> +               aio_req = kmem_cache_zalloc(fuse_bpf_aio_request_cachep, GFP_KERNEL);
+> +               if (!aio_req)
+> +                       goto out;
+> +
+> +               aio_req->iocb_orig = iocb;
+> +               kiocb_clone(&aio_req->iocb, iocb, ff->backing_file);
+> +               aio_req->iocb.ki_complete = fuse_bpf_aio_rw_complete;
+> +               refcount_set(&aio_req->ref, 2);
+> +               *out = vfs_iocb_iter_read(ff->backing_file, &aio_req->iocb, to);
+> +               fuse_bpf_aio_put(aio_req);
+> +               if (*out != -EIOCBQUEUED)
+> +                       fuse_bpf_aio_cleanup_handler(aio_req);
+> +       }
+> +
+> +       frio->ret = *out;
+> +
+> +       /* TODO Need to point value at the buffer for post-modification */
+> +
+> +out:
+> +       fuse_file_accessed(file, ff->backing_file);
+> +
+> +       return *out;
+> +}
+> +
+> +int fuse_file_read_iter_finalize(struct bpf_fuse_args *fa, ssize_t *out,
+> +                                struct kiocb *iocb, struct iov_iter *to)
+> +{
+> +       struct fuse_read_iter_out *frio = fa->out_args[0].value;
+> +
+> +       *out = frio->ret;
+> +
+> +       return 0;
+> +}
+> +
+> +int fuse_file_write_iter_initialize_in(struct bpf_fuse_args *fa,
+> +                                      struct fuse_file_write_iter_io *fwio,
+> +                                      struct kiocb *iocb, struct iov_iter *from)
+> +{
+> +       struct file *file = iocb->ki_filp;
+> +       struct fuse_file *ff = file->private_data;
+> +
+> +       *fwio = (struct fuse_file_write_iter_io) {
+> +               .fwi.fh = ff->fh,
+> +               .fwi.offset = iocb->ki_pos,
+> +               .fwi.size = from->count,
+> +       };
+> +
+> +       /* TODO we can't assume 'from' is a kvec */
+> +       *fa = (struct bpf_fuse_args) {
+> +               .opcode = FUSE_WRITE,
+> +               .nodeid = ff->nodeid,
+> +               .in_numargs = 2,
+> +               .in_args[0].size = sizeof(fwio->fwi),
+> +               .in_args[0].value = &fwio->fwi,
+> +               .in_args[1].size = fwio->fwi.size,
+> +               .in_args[1].value = from->kvec->iov_base,
+> +       };
+> +
+> +       return 0;
+> +}
+> +
+> +int fuse_file_write_iter_initialize_out(struct bpf_fuse_args *fa,
+> +                                       struct fuse_file_write_iter_io *fwio,
+> +                                       struct kiocb *iocb, struct iov_iter *from)
+> +{
+> +       /* TODO we can't assume 'from' is a kvec */
+> +       fa->out_numargs = 1;
+> +       fa->out_args[0].size = sizeof(fwio->fwio);
+> +       fa->out_args[0].value = &fwio->fwio;
+> +
+> +       return 0;
+> +}
+> +
+> +int fuse_file_write_iter_backing(struct bpf_fuse_args *fa, ssize_t *out,
+> +                                struct kiocb *iocb, struct iov_iter *from)
+> +{
+> +       struct file *file = iocb->ki_filp;
+> +       struct fuse_file *ff = file->private_data;
+> +       struct fuse_write_iter_out *fwio = fa->out_args[0].value;
+> +
+> +       if (!iov_iter_count(from))
+> +               return 0;
+> +
+> +       /* TODO This just plain ignores any change to fuse_write_in */
+> +       /* TODO uint32_t seems smaller than ssize_t.... right? */
+> +       inode_lock(file_inode(file));
+> +
+> +       fuse_copyattr(file, ff->backing_file);
+> +
+> +       if (is_sync_kiocb(iocb)) {
+> +               file_start_write(ff->backing_file);
+> +               *out = vfs_iter_write(ff->backing_file, from, &iocb->ki_pos,
+> +                                          iocb_to_rw_flags(iocb->ki_flags, FUSE_BPF_IOCB_MASK));
+> +               file_end_write(ff->backing_file);
+> +
+> +               /* Must reflect change in size of backing file to upper file */
+> +               if (*out > 0)
+> +                       fuse_copyattr(file, ff->backing_file);
 
-Thanks for your review!
+Regarding attribute cache, things can get a tad more complicated
+when the inode is not purely passthrough.
 
-How can I check the generated code?  Do you have something works with
-skeletons or do I have to save the BPF object somehow during the build?
+To put things in context, the reason that ovl_copyattr() is correct
+in ovl_write_iter() is because the overlayfs inode is purely passthrough
+to the backing inode, that is, all operations are passthrough.
+The only incident when backing inode changes (copy up) takes
+care of copying inode attributes.
+
+This is not the case with FUSE passthrough.
+Not in Alessio's FUSE_PASSTHROUGH patches and not in
+this proposal.
+
+With FUSE passthrough, every inode is hybrid, some operations
+can be served from the backing inode and some operations served
+from the server.
+
+My FUSE passthrough branch [1] has two fixes on top of Allesio's patches
+to fix two issues regarding attribute caches (size and times).
+
+[1] https://github.com/amir73il/linux/commits/linux-5.10.y-fuse-passthrough
+
+This problem is not unique to FUSE.
+It also exists for attribute caches of NFS clients and the NFS protocol
+has several techniques to deal with this problem, but it is certainly not
+a trivial issue.
+
+As a matter of fact, I found the problems fixed in my branch above
+by running the nfstest_posix [2] tests on the FUSE passthrough code.
+
+[2] https://wiki.linux-nfs.org/wiki/index.php/NFStest#nfstest_posix_-_POSIX_file_system_level_access_tests
+
+The easiest way out is to declare one of the copies (backing or remote)
+the authoritative copy w.r.t. attributes (like noac nfs mount option).
+Declaring the remote attribute copy authoritative (as FUSE usually does)
+has performance implications.
+
+I guess if FUSE-bpf attaches a backing inode to FUSE inode on lookup
+then the option of making the backing inode attributes authoritative
+(like in overlayfs) is valid, but I think this needs to be spelled out.
 
 Thanks,
-Namhyung
+Amir.
