@@ -2,154 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C0525F179C
-	for <lists+bpf@lfdr.de>; Sat,  1 Oct 2022 02:47:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74C875F18A0
+	for <lists+bpf@lfdr.de>; Sat,  1 Oct 2022 04:31:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231358AbiJAArh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Sep 2022 20:47:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42624 "EHLO
+        id S232333AbiJACbj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Sep 2022 22:31:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232321AbiJAArf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Sep 2022 20:47:35 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 715A61A5980
-        for <bpf@vger.kernel.org>; Fri, 30 Sep 2022 17:47:34 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id e205so4522373iof.1
-        for <bpf@vger.kernel.org>; Fri, 30 Sep 2022 17:47:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=zGaqpg2niwnnEvwqmIq3slYbxa8AmaMub7+ROy/hgu8=;
-        b=n6OF9mj0yMYABdvzdK6rA8MJxGje/mxfz7zosLl9tRuxM7trmf8t4PoRYbLP9dArJY
-         EtUZudC0AEwHoZrRNinMawgIT3m61e66Ew03oReEeSHpWYqKi+cJSKHRmiR6qlM8Yf6+
-         5j9/SHLnjJHaPnlU2aH1XyIEs6tf/AfQTdtxixd+OWR+cH6NHhAIahON5dQb6c3t/HPg
-         9bYoNDKkSTyRm0gvNmzUWnnaBkibizg0xkpWX6taNm7F3YpqfH3YuM03SHcbsueXu5KG
-         9RxtJfNHpr/MvOZAqrmKsxtQSFHS6oSfkEOHBPnC3eaPxs36n+D3xjynrmA2rUGWOIfk
-         Cw1g==
+        with ESMTP id S232302AbiJACba (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Sep 2022 22:31:30 -0400
+Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21826125D96;
+        Fri, 30 Sep 2022 19:31:29 -0700 (PDT)
+Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-127dca21a7dso7399296fac.12;
+        Fri, 30 Sep 2022 19:31:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=zGaqpg2niwnnEvwqmIq3slYbxa8AmaMub7+ROy/hgu8=;
-        b=jap4O3MgQKNBSSipcY3dXX+ulemZPKPPXF2Q2h6QBOY2LANHD/qihu+Ga938JIsJjb
-         s7zery1ir+9AmEjb23Qab8QEcsJrZWeaP2yd+9ezVDgOjW/LpC8h8DwjaP6BFwY/QZdD
-         8pNoO6xYzP94XGu88jYkxSWjh6AjbMY6B2heXmWPRO4dq1xDHqMH93ztGgtlye0D+urq
-         bf84Lwn9LBzCHzHIeakkpLWdfx1cbtumry20FUqq7En7Tl2ULWe5vest0y16iZdqb6UE
-         7tBJ9mWBv/yCgGNFGyQ1SOW3HN15mGjM0el2jL7z65WdorXwEuE9+9pPwOjKbqx80cva
-         r/lg==
-X-Gm-Message-State: ACrzQf37M0+dGbUbmRMXhzwO73ILeNb0CwVETpcFwccwOaXlGI+mMQLW
-        kYNJh7r58hSHGjEQws52K81Bn4ZA43V7LiB5WxJ7Pw==
-X-Google-Smtp-Source: AMsMyM55pd0uxJsLBNf6039vP4c9CDdkSitv4YkLN1Bdvy8JgnXFM8O9mXINvidFTR2VL6W31P9Ks7TAZq2eKnElODQ=
-X-Received: by 2002:a02:a493:0:b0:35a:7a4b:3efa with SMTP id
- d19-20020a02a493000000b0035a7a4b3efamr6227411jam.117.1664585253162; Fri, 30
- Sep 2022 17:47:33 -0700 (PDT)
+        bh=TsSNtaxjzzrx0UGRlq15EZuhaugUhUgclS9Wef+tMjA=;
+        b=kaUDziaMuKIsPXEo1NARHh6a8YfZ7PCTfT9/4dAjqpR1bf7i+xcJ+KXsWgHIhBDvkI
+         JyQ+EdlsDdcxuF9aOGcUepMhWYcm9C1g3lnYzHHVa5b7EYKeLATDa0zLEuPUNEU9P3YO
+         Nt8O77O95l+WMszY3azrrXe69g8wnGfeWyLTGRbcrMAQ5JPL/mMHnSsGRd32WHYpbg+c
+         C4GykgbpKh5wT/NxS/elCsl2I4DS8lErGfc2QUF26gOP0OVEA3e76U98pSbE4zzxkzp8
+         S7/oa9rLAl0zV6WcfCd+tEn1sr33bh/6g9m4Kpc44ghgOeHlaiP7hrx2LB3amS4AfAzJ
+         PzCw==
+X-Gm-Message-State: ACrzQf1tvtUwA/re8/D1Axjh/vL0NekT2nqHFRDTVHZ9ZsQvlH2rNIZQ
+        9XUME8csjIwd9HY4eiO4szaPyCJjLpRStqInWT8=
+X-Google-Smtp-Source: AMsMyM7Yi1zPsDiXRfU1bZZHzwmu8SBCTd/6ZNM+dwKzBgmouEYVAxUpY+L4PS/jzdxYlVAY+5ffaUbRPOpty+fg9hQ=
+X-Received: by 2002:a05:6871:14f:b0:131:a644:7c58 with SMTP id
+ z15-20020a056871014f00b00131a6447c58mr469446oab.209.1664591488387; Fri, 30
+ Sep 2022 19:31:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220926231822.994383-1-drosen@google.com> <1fc38ba0-2bbe-a496-604d-7deeb4e72787@linux.dev>
- <YzQ+ke3JIx69Plld@bfoster>
-In-Reply-To: <YzQ+ke3JIx69Plld@bfoster>
-From:   Daniel Rosenberg <drosen@google.com>
-Date:   Fri, 30 Sep 2022 17:47:22 -0700
-Message-ID: <CA+PiJmQC9ghrmNdtbfWBbtnngm6F1g0X2HeRbxJGMLxEwuLxeg@mail.gmail.com>
-Subject: Re: [PATCH 00/26] FUSE BPF: A Stacked Filesystem Extension for FUSE
-To:     Brian Foster <bfoster@redhat.com>
-Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Paul Lawrence <paullawrence@google.com>,
-        Alessio Balsini <balsini@google.com>,
-        David Anderson <dvander@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-team@android.com, Miklos Szeredi <miklos@szeredi.hu>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>
+References: <CAM9d7cjQ20a01YoZi=o-_7HT6TzR0TZgtpscKNvRrMq2yqV1Og@mail.gmail.com>
+ <20220922041435.709119-1-namhyung@kernel.org> <CAEf4BzZhHYYOmNhLdrpsXSDE5kaXvgSN00X-8aAySDwAKX0RCw@mail.gmail.com>
+In-Reply-To: <CAEf4BzZhHYYOmNhLdrpsXSDE5kaXvgSN00X-8aAySDwAKX0RCw@mail.gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Fri, 30 Sep 2022 19:31:17 -0700
+Message-ID: <CAM9d7ch8RUgf8V1hi=ccgV84XSfujuWtUKKgre8eQdGmtdiFLA@mail.gmail.com>
+Subject: Re: [PATCH] perf stat: Support old kernels for bperf cgroup counting
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        cgroups <cgroups@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Sep 28, 2022 at 5:31 AM Brian Foster <bfoster@redhat.com> wrote:
->
-> I had a similar thought when poking through this. A related question I
-> had is how much of a functional dependency does the core passthrough
-> mechanism have on bpf? If bpf is optional for filtering purposes and
-> isn't absolutely necessary to set up a basic form of passthrough, I
-> think review would be made easier by splitting off those core bits from
-> the bpf components so each part is easier to review by people who know
-> them best. For example, introduce all the fuse enhancements, hooks and
-> cleanups to set up a passthrough to start the series, then plumb in the
-> bpf filtering magic on top. Hm?
->
+Hello,
 
-The passthrough code has no dependency on the bpf functionality. I can
-reorder these patches to not have any bpf changes until patch 24. I'll
-probably change the order like I described in my previous email. The
-patches do become a lot more useful once the pre/post filters enter
-the mix though.
-
-> BTW if the bpf bits are optional, how might one mount a fuse/no
-> daemon/passthrough filesystem from userspace? Is that possible with this
-> series as is?
+On Fri, Sep 30, 2022 at 3:48 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-This is provided by patch 23. You can mount with the "no_daemon"
-option. Anywhere FUSE attempts to call the daemon will end up with an
-error, since the daemon is not connected. If you pair this with
-"root_dir=[fd]" and optionally "root_bpf=[fd]", you can run in a
-daemon-less passthrough mode. It's a bit less exciting though, since
-at that point you're kind of doing a bind mount with extra steps.
-Useful for testing though, and in theory you may be able to implement
-most of a daemon in bpf.
-
-> Something more on the fuse side.. it looks like we introduce a pattern
-> where bits of generic request completion processing can end up
-> duplicated between the shortcut (i.e.  _backing()/_finalize()) handlers
-> and the traditional post request code, because the shortcuts basically
-> bypass the entire rest of the codepath. For example, something like
-> create_new_entry() is currently reused for several inode creation
-> operations. With passthrough mode, it looks like some of that code (i.e.
-> vfs dentry fixups) is split off from create_new_entry() into each
-> individual backing mode handler.
+> On Wed, Sep 21, 2022 at 9:21 PM Namhyung Kim <namhyung@kernel.org> wrote:
+> >
+> > The recent change in the cgroup will break the backward compatiblity in
+> > the BPF program.  It should support both old and new kernels using BPF
+> > CO-RE technique.
+> >
+> > Like the task_struct->__state handling in the offcpu analysis, we can
+> > check the field name in the cgroup struct.
+> >
+> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > ---
+> > Arnaldo, I think this should go through the cgroup tree since it depends
+> > on the earlier change there.  I don't think it'd conflict with other
+> > perf changes but please let me know if you see any trouble, thanks!
+> >
+> >  tools/perf/util/bpf_skel/bperf_cgroup.bpf.c | 29 ++++++++++++++++++++-
+> >  1 file changed, 28 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c b/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
+> > index 488bd398f01d..4fe61043de04 100644
+> > --- a/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
+> > +++ b/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
+> > @@ -43,12 +43,39 @@ struct {
+> >         __uint(value_size, sizeof(struct bpf_perf_event_value));
+> >  } cgrp_readings SEC(".maps");
+> >
+> > +/* new kernel cgroup definition */
+> > +struct cgroup___new {
+> > +       int level;
+> > +       struct cgroup *ancestors[];
+> > +} __attribute__((preserve_access_index));
+> > +
+> > +/* old kernel cgroup definition */
+> > +struct cgroup___old {
+> > +       int level;
+> > +       u64 ancestor_ids[];
+> > +} __attribute__((preserve_access_index));
+> > +
+> >  const volatile __u32 num_events = 1;
+> >  const volatile __u32 num_cpus = 1;
+> >
+> >  int enabled = 0;
+> >  int use_cgroup_v2 = 0;
+> >
+> > +static inline __u64 get_cgroup_v1_ancestor_id(struct cgroup *cgrp, int level)
+> > +{
+> > +       /* recast pointer to capture new type for compiler */
+> > +       struct cgroup___new *cgrp_new = (void *)cgrp;
+> > +
+> > +       if (bpf_core_field_exists(cgrp_new->ancestors)) {
+> > +               return BPF_CORE_READ(cgrp_new, ancestors[level], kn, id);
 >
-> It looks like much of the lower level request processing code was
-> refactored into the fuse_iqueue to support things like virtiofs. Have
-> you looked into whether that abstraction can be reused or enhanced to
-> support bpf filtering, direct passthrough calls, etc.? Or perhaps
-> whether more of the higher level code could be refactored in a similar
-> way to encourage more reuse and avoid branching off every fs operation
-> into a special passthrough codepath?
+> have you checked generated BPF code for this ancestors[level] access?
+> I'd expect CO-RE relocation for finding ancestors offset and then just
+> normal + level * 8 arithmetic, but would be nice to confirm. Apart
+> from this, looks good to me:
 >
-> Brian
->
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-The largest opportunity for reducing duplicate code would probably be
-trying to unify the backing calls between overlayfs and our work here.
-In places where you need to do more work than directly calling the
-relevant vfs calls we probably could factor out some common helpers. I
-haven't looked too much into that yet since I want to see where the
-fuse-bpf code ends up before I try to commit to that. I've thought
-about unifying some of the code around node creation in the backing
-implementations, but haven't gotten around to it yet. We definitely
-need to branch off for every operation though, since fuse otherwise
-has no concept of the backing filesystem. We do have some more work to
-do to ensure there is a clean handoff between regular fuse and
-fuse-bpf. The goal is to be able to handle just the parts you need to
-in the daemon, while the rest can be passed through if you're acting
-as a stacked filesystem. There are some oddities around things fuse
-does for efficiency that fuse-bpf doesn't need to do. For instance, if
-you're using passthrough for getattr, you don't really need to do a
-readdir_plus, since you don't have to worry about all the extra daemon
-requests.
+Thanks for your review!
 
--Daniel
+How can I check the generated code?  Do you have something works with
+skeletons or do I have to save the BPF object somehow during the build?
+
+Thanks,
+Namhyung
