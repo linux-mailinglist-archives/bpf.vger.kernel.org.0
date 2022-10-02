@@ -2,112 +2,205 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF0235F2159
-	for <lists+bpf@lfdr.de>; Sun,  2 Oct 2022 07:12:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0C865F23B6
+	for <lists+bpf@lfdr.de>; Sun,  2 Oct 2022 16:58:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229537AbiJBFMP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 2 Oct 2022 01:12:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33564 "EHLO
+        id S229663AbiJBO6A (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 2 Oct 2022 10:58:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229524AbiJBFMO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 2 Oct 2022 01:12:14 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F2305072C
-        for <bpf@vger.kernel.org>; Sat,  1 Oct 2022 22:12:14 -0700 (PDT)
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 291Nnfwu004662
-        for <bpf@vger.kernel.org>; Sat, 1 Oct 2022 22:12:13 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=i01NmLPIFOUlWCPYtyI7PCkDUgAVJGEMBgBQ2uTJNrw=;
- b=D7cdmg4l+8+Ja8ZoOIXWyUsIov6G3SFH3rWP6+A1+2d5qpDGTW3AbzyBbEkHmrFZFas5
- VT3qN0wpTaGPsWlqItyZP+hi9DzbR4RonFjepUoccKf3f0FUiB+qJpdVCxNGnPghYnck
- DnBJOeSmXSpa6CA9+ZEO5AngHoxga8WBgCs= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3jxk303daq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Sat, 01 Oct 2022 22:12:13 -0700
-Received: from twshared15978.04.prn5.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Sat, 1 Oct 2022 22:12:09 -0700
-Received: by devbig150.prn5.facebook.com (Postfix, from userid 187975)
-        id 6140110F44C8D; Sat,  1 Oct 2022 22:11:52 -0700 (PDT)
-From:   Jie Meng <jmeng@fb.com>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <andrii@kernel.org>,
-        <daniel@iogearbox.net>
-CC:     Jie Meng <jmeng@fb.com>
-Subject: [PATCH bpf-next v4 3/3] bpf: add selftests for lsh, rsh, arsh with reg operand
-Date:   Sat, 1 Oct 2022 22:11:43 -0700
-Message-ID: <20221002051143.831029-4-jmeng@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20221002051143.831029-1-jmeng@fb.com>
-References: <20220927185801.1824838-1-jmeng@fb.com>
- <20221002051143.831029-1-jmeng@fb.com>
+        with ESMTP id S229549AbiJBO57 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 2 Oct 2022 10:57:59 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FF432A974
+        for <bpf@vger.kernel.org>; Sun,  2 Oct 2022 07:57:58 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id o20-20020a05600c4fd400b003b4a516c479so4579484wmq.1
+        for <bpf@vger.kernel.org>; Sun, 02 Oct 2022 07:57:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date;
+        bh=m0LzpbKdhTzuBRVIM987C3bllyxW5Gnj0OE82qgDNXk=;
+        b=AD64zJjjriKRFm4ebEW9IhOoQTopctAUK6paqkn9wWe0A98QHbXU2pXUb5Tgz9awIN
+         tjtAbWCm6sHL3thEVf5sdF0KUac5ONqZm537Wc4F7vzUvsg/UXucdINEiZGDc8jnWlqa
+         cSqNbwD5DYqdqw29T3KatYzA1llibl6Fwn8CmiyxqODaJYM8zzCRblvNLwa3d4ATwJeV
+         t9FxYqAC6Z4hehqIEYpjQ2y0rZieCMsiFxfxR9+MdLnEerqF8UORPH38PAPZi4Ww30lN
+         yrbJuhVPGJGg+RmBR2WxsHgHrCUuxqJb2YXuBq+lED15dn00cUGB/eE40kwQ0iYEBVxX
+         Hs0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date;
+        bh=m0LzpbKdhTzuBRVIM987C3bllyxW5Gnj0OE82qgDNXk=;
+        b=H/fkdk1OvVJUv35FDshp04rfhk+23khtbAjkdoGcu/G50itmTpJggx/KXlC1PjX1gb
+         v9JF+T3yt8vZf0xdljtz21/7U9xtg+SRzeg5DPj64gj0lKzVkYXX6v7lWwleVixK8tCy
+         ucyd857LIZw6+HoOr74BnD5yhE8nwA+Ap5Aw/u/emKNhkvqBNVwORuGx2PKgRI0uh2c5
+         GCgzdghKDh2MUIRDfzagsepu9mz5LNxGguF0UkWUulvbSUC1ufTEo1ck5yzdWmgEC60v
+         +ndp6nk+Sw9mHoFlZ65ZPhXkkqttZu4X+w16h/LNtlWhAK9k9KdgedlQnkKEC+L+P6dp
+         ceig==
+X-Gm-Message-State: ACrzQf10V8gl/FB/fV6eLDIJOO+s7zDTQXSghfeK7w8wlzGLNfwuA8ws
+        K3RzoD4tcqGptxWcQW3cFErn8tPoqdE=
+X-Google-Smtp-Source: AMsMyM5RHXI+9/Y6rWUktma13iDbQ46K+re8H4EQ5bZtQ4RCFf/8WUrH81wmRsFGRIFdhR7E9A+LRQ==
+X-Received: by 2002:a7b:c01a:0:b0:3b4:a61c:52d1 with SMTP id c26-20020a7bc01a000000b003b4a61c52d1mr4529769wmb.146.1664722676815;
+        Sun, 02 Oct 2022 07:57:56 -0700 (PDT)
+Received: from krava ([193.85.244.190])
+        by smtp.gmail.com with ESMTPSA id o2-20020a05600c4fc200b003b4924493bfsm17436666wmq.9.2022.10.02.07.57.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 02 Oct 2022 07:57:56 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Sun, 2 Oct 2022 16:57:54 +0200
+To:     Henrique Fingler <henrique.fingler@gmail.com>
+Cc:     Jiri Olsa <olsajiri@gmail.com>, bpf@vger.kernel.org
+Subject: Re: Replicating kfunc_call_test kernel test on standalone bpf
+ program (calling kernel function is not allowed)
+Message-ID: <Yzmm8pukHcFk5tko@krava>
+References: <CACG+mBUEHj5zFeGLtP+bvm0wERru3AGntNtWCyiZ-zPg_JS6tg@mail.gmail.com>
+ <YzbzweamuZyxLuJ1@krava>
+ <CACG+mBV7xboG9Y5LctyJuGoft42b4gHxbSBDtzPxpnzy+CaxDg@mail.gmail.com>
+ <CACG+mBXc2T28-sn4KMRQPRT0k7ejNg1s8qHFOp3HmM5--e4rBw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: ziu9hQ_iA2KifGIjkX1WR8i04wR2Jb5t
-X-Proofpoint-ORIG-GUID: ziu9hQ_iA2KifGIjkX1WR8i04wR2Jb5t
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.528,FMLib:17.11.122.1
- definitions=2022-10-01_15,2022-09-29_03,2022-06-22_01
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACG+mBXc2T28-sn4KMRQPRT0k7ejNg1s8qHFOp3HmM5--e4rBw@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Current tests cover only shifts with an immediate as the source
-operand/shift counts; add a new test case to cover register operand.
+On Fri, Sep 30, 2022 at 05:03:30PM -0500, Henrique Fingler wrote:
+> > > > Hi all,
+> > > >
+> > > > I'm trying to replicate a bpf test in the kernel that calls a function
+> > > > defined in the kernel itself.
+> > > > Source code is here:
+> > > > https://github.com/torvalds/linux/blob/v5.15/tools/testing/selftests/bpf/progs/kfunc_call_test.c
+> > > >
+> > > > I think I have all dependencies:
+> > > >  Running within a qemu VM (Ubuntu 18.04)
+> > > >  Kernel v 5.15 compiled from scratch with configs from
+> > > > tools/bpf/bpftool/feature.c
+> > > >  pahole v1.22 (1.24 has a reported bug that doesn't allow me to use it)
+> > > >  libbpf v1.0
+> > > >  Installed bpf tool from 5.15 kernel directory at `tools/bpf`
+> > > >  clang and llvm 15
+> > > >
+> > > > The goal is to call `bpf_kfunc_call_test1`, which is defined in
+> > > > net/bpf/test_run.c.
+> > > > I have two BPF programs and neither works. The first one is as is from
+> > > > the kernel:
+> > > >
+> > > > #include "vmlinux.h"
+> > > > #include <bpf/bpf_helpers.h>
+> > > >
+> > > > extern __u64 bpf_kfunc_call_test1(struct sock *sk, __u32 a, __u64 b,
+> > > >                   __u32 c, __u64 d) __ksym;
+> > > >
+> > > > SEC("classifier")
+> > > > int kfunc_call_test1(struct __sk_buff *skb)
+> > > > {
+> > > >     struct sock *sk = 0;
+> > > >     __u64 a;
+> > > >     a = bpf_kfunc_call_test1(sk, 1, 2, 3, 4);
+> > >
+> > > hi,
+> > > IIUC you are passing 'sk' pointer defined on the stack, while
+> > > bpf_kfunc_call_test1 expects kernel pointer
+> > >
+> > > the kernel selftest test takes it from the skb with:
+> > >
+> > >         struct bpf_sock *sk = skb->sk;
+> >
+> > I see. So even if the kernel function (bpf_kfunc_call_test1) does not
+> > use the argument, bpf is checking if it's a kernel pointer? Is the bpf
+> > compiler doing this check?
 
-Signed-off-by: Jie Meng <jmeng@fb.com>
----
- tools/testing/selftests/bpf/verifier/jit.c | 24 ++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+it's the verifier check.. that the function is called with proper
+argument types/pointers
 
-diff --git a/tools/testing/selftests/bpf/verifier/jit.c b/tools/testing/s=
-elftests/bpf/verifier/jit.c
-index 79021c30e51e..8bf37e5207f1 100644
---- a/tools/testing/selftests/bpf/verifier/jit.c
-+++ b/tools/testing/selftests/bpf/verifier/jit.c
-@@ -20,6 +20,30 @@
- 	.result =3D ACCEPT,
- 	.retval =3D 2,
- },
-+{
-+	"jit: lsh, rsh, arsh by reg",
-+	.insns =3D {
-+	BPF_MOV64_IMM(BPF_REG_0, 1),
-+	BPF_MOV64_IMM(BPF_REG_4, 1),
-+	BPF_MOV64_IMM(BPF_REG_1, 0xff),
-+	BPF_ALU64_REG(BPF_LSH, BPF_REG_1, BPF_REG_0),
-+	BPF_ALU32_REG(BPF_LSH, BPF_REG_1, BPF_REG_4),
-+	BPF_JMP_IMM(BPF_JEQ, BPF_REG_1, 0x3fc, 1),
-+	BPF_EXIT_INSN(),
-+	BPF_ALU64_REG(BPF_RSH, BPF_REG_1, BPF_REG_4),
-+	BPF_MOV64_REG(BPF_REG_4, BPF_REG_1),
-+	BPF_ALU32_REG(BPF_RSH, BPF_REG_4, BPF_REG_0),
-+	BPF_JMP_IMM(BPF_JEQ, BPF_REG_4, 0xff, 1),
-+	BPF_EXIT_INSN(),
-+	BPF_ALU64_REG(BPF_ARSH, BPF_REG_4, BPF_REG_4),
-+	BPF_JMP_IMM(BPF_JEQ, BPF_REG_4, 0, 1),
-+	BPF_EXIT_INSN(),
-+	BPF_MOV64_IMM(BPF_REG_0, 2),
-+	BPF_EXIT_INSN(),
-+	},
-+	.result =3D ACCEPT,
-+	.retval =3D 2,
-+},
- {
- 	"jit: mov32 for ldimm64, 1",
- 	.insns =3D {
---=20
-2.30.2
+> > I assumed that passing a constant 0 pointer would work since the other
+> > parameters are just constants, even in the kernel test.
+> > After changing the first program to the original code, the error
+> > changed, so that's progress. Now it says, even when running with root
+> > permissions:
+> > "libbpf: prog 'kfunc_call_test1': BPF program load failed: Permission denied"
+> > Would be interesting to know why, but not necessary since I won't use
+> > it this way.
 
+some of the verifier's failure can return -EACCES and has nothing
+to do with root permissions
+
+> 
+> Following up on this, I have moved to kernel 5.19.12 and I'm trying to
+> make any kfunc work.
+> I changed net/bpf/test_run.c to allow for more prog types, like master
+> branch does, since originally it only had the first line for
+> BPF_PROG_TYPE_SCHED_CLS.
+> 
+> ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS,
+> &bpf_prog_test_kfunc_set);
+> ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING,
+> &bpf_prog_test_kfunc_set);
+> ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_KPROBE,
+> &bpf_prog_test_kfunc_set);
+> ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACEPOINT,
+> &bpf_prog_test_kfunc_set);
+> return ret ?: register_btf_id_dtor_kfuncs(bpf_prog_test_dtor_kfunc,
+>                           ARRAY_SIZE(bpf_prog_test_dtor_kfunc),
+>                           THIS_MODULE);
+> 
+> I also added my own function to test it out and added it to the SET
+> 
+> u64 noinline bpf_kfunc_call_test4(u32 a, u64 b, u32 c, u64 d)
+> {
+>     return a + b + c + d;
+> }
+> //this is inside  BTF_SET_START(test_sk_check_kfunc_ids)
+> BTF_ID(func, bpf_kfunc_call_test4)
+> 
+> Now I'm spraying every BPF program I can find to call either function:
+> 
+> extern __u64 bpf_kfunc_call_test1(struct sock *sk, __u32 a, __u64 b,
+> __u32 c, __u64 d) __ksym;
+> extern __u64 bpf_kfunc_call_test4(__u32 a, __u64 b, __u32 c, __u64 d) __ksym;
+> 
+> Compiling works, and when I run it I get no errors, *except* Permission denied.
+> gist here: https://gist.github.com/hfingler/5c2c0b713299daa6b0ba07fa92ff29de
+> 
+> libbpf: prog 'kfunc_call_test1': BPF program load failed: Permission denied
+
+seems like the kfunc is not found on the set for the program type, I guess
+your change above did not go as expected
+
+not sure what is your goal exactly, but perhaps better than starting from
+scratch would be to take prog_tests/kfunc_call.c and progs/kfunc_call_test.c
+and change them accordingly?
+
+jirka
+
+> ...
+> calling kernel function bpf_kfunc_call_test1 is not allowed
+> -- END PROG LOAD LOG --
+> libbpf: prog 'kfunc_call_test1': failed to load: -13
+> libbpf: failed to load object 'hello_bpf'
+> libbpf: failed to load BPF skeleton 'hello_bpf': -13
+> 
+> I've tried a few programs and it would be too much to paste here, so
+> here's a gist with all of them, which I tried each separately, not all
+> at once:
+> https://gist.github.com/hfingler/eb544b23cc36d57b8e9723cd36fbf243
+> Basically, I've tried SEC("tc"),
+> SEC("tracepoint/syscalls/sys_enter_open"),
+> SEC("kprobe/__x64_sys_write")
+> 
+> What permission is being denied? I've tried running as root and I get
+> the same thing, is there bpf permission checking somewhere else in the
+> kernel? Do I have to have some sort of capability? Am I missing some
+> kernel config?
+> These are the configs I'm enabling in the kernel:
+> https://gist.github.com/hfingler/ed780bd52b751625f52bbb08eb853641
