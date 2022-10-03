@@ -2,183 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1842A5F36EB
-	for <lists+bpf@lfdr.de>; Mon,  3 Oct 2022 22:20:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 565595F376C
+	for <lists+bpf@lfdr.de>; Mon,  3 Oct 2022 23:03:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229969AbiJCUUH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Oct 2022 16:20:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56600 "EHLO
+        id S229517AbiJCVDl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Oct 2022 17:03:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229755AbiJCUUC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 Oct 2022 16:20:02 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 228E812D0E;
-        Mon,  3 Oct 2022 13:20:00 -0700 (PDT)
-Received: from 226.206.1.85.dynamic.wline.res.cust.swisscom.ch ([85.1.206.226] helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ofRuw-0002Xm-5C; Mon, 03 Oct 2022 22:19:58 +0200
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     davem@davemloft.net
-Cc:     kuba@kernel.org, pabeni@redhat.com, edumazet@google.com,
-        daniel@iogearbox.net, ast@kernel.org, andrii@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: pull-request: bpf 2022-10-03
-Date:   Mon,  3 Oct 2022 22:19:57 +0200
-Message-Id: <20221003201957.13149-1-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
+        with ESMTP id S229556AbiJCVDk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 Oct 2022 17:03:40 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6279432065;
+        Mon,  3 Oct 2022 14:03:38 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id f14so4009211qvo.3;
+        Mon, 03 Oct 2022 14:03:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=aHOOvMRJqEzmzOMYO28gEQig7JroCWhXsbzKWwTUAGc=;
+        b=RBSDWyenI5LoVcKHMJJQhYYPf9Cg7I472Df9ENivvD3po2I/eqmQoFzbK6C2Gc731w
+         bbS88MmTDb2B3uSAmV20rUANHHA1U/CCTYCYr0lnNfRJQpVbvdL/a1qITQr1/E+FWDMv
+         BXx+Ndf+0uyRWr+GqPeYJRWjBOSZfp2UNS9Er7CNOx2aYJkubPT39uVfQMu+hbF29RRo
+         jzY31KH7t9V2PReNaRJGRkdeRM3sZdHvrTm+9+wK7pvBWVvnxbXdCUmyVMrP5jHIZl/2
+         gsmwUjbLDj5PeK/Ly+cl1O2WIAILfOqJyAmYifVnXhSpi4uLMDQEBM7Ld0FdXcEOt5XV
+         /s4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=aHOOvMRJqEzmzOMYO28gEQig7JroCWhXsbzKWwTUAGc=;
+        b=gDXiAaXeJ4vsxCp32yg/e+ft1tndzfBSIW9943oUONhVe/wX7wpmLiOt7QETchLLgW
+         o1KU+MUexGfp/0TUNZvAWZv3dJ3ap1KcrthB95O0dPULcL9e/o9ywQFSLblZ7ouHdcDQ
+         VEUOSzb3yLPPOjRybAkc+CZB5cZCNQJuAnuJMtlwoqguJNt5XHAKzRpKdJ0TFFAHoJGu
+         cBgLsTxF3PdbblyzxGB+Bk19tW8f1umOwwigp738rr9ibrFAhsbNoNmRCcvh/zXcpxIe
+         2J2f67gbuWL37xR+41VBHVaP8pIqqHzJ4p+ayF+m5FI+H2qPPO827Q2mMFtOGwPtTvqG
+         uVIQ==
+X-Gm-Message-State: ACrzQf3whS/dsEU698LH2hq1I6hc0pI/udH7imZW0J9IWedQGgwooZf/
+        zjU1vHTeYWpBbndSCG8ZkWhjQNiAP66mmVgh0rWnHSD4
+X-Google-Smtp-Source: AMsMyM4balioSf+Rl4+EbrC6gQWHVkeJLP0Maggud2mw8twiq3S0u1u3z9LYI87O/BKh4ZOQyvkL30zEsaSWfvwfUYE=
+X-Received: by 2002:ad4:5e8b:0:b0:4b1:8654:f950 with SMTP id
+ jl11-20020ad45e8b000000b004b18654f950mr7089290qvb.104.1664831017411; Mon, 03
+ Oct 2022 14:03:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.6/26678/Mon Oct  3 09:56:12 2022)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20221001144716.3403120-1-void@manifault.com> <20221001144716.3403120-3-void@manifault.com>
+ <CAP01T74TtMARkfYWsYY0+cnsx2w4axB1LtvF-RFMAihW7v=LUw@mail.gmail.com>
+ <YzsBSoGnPEIJADSH@maniforge.dhcp.thefacebook.com> <CAP01T76OR3J_P8YMq4ZgKHBpuZyA0zgsPy+tq9htbX=j6AVyOg@mail.gmail.com>
+ <fb3e81b7-8360-5132-59ac-0e74483eb25f@linux.dev>
+In-Reply-To: <fb3e81b7-8360-5132-59ac-0e74483eb25f@linux.dev>
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date:   Mon, 3 Oct 2022 23:03:01 +0200
+Message-ID: <CAP01T77tCdKTJo=sByg5GsW1OrQmNXV4fmBDKUVtbnwEaJBpVA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] bpf/selftests: Add selftests for new task kfuncs
+To:     Martin KaFai Lau <martin.lau@linux.dev>
+Cc:     David Vernet <void@manifault.com>, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kernel-team@fb.com,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org, yhs@fb.com,
+        song@kernel.org, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org, tj@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi David, hi Jakub, hi Paolo, hi Eric,
+On Mon, 3 Oct 2022 at 21:53, Martin KaFai Lau <martin.lau@linux.dev> wrote:
+>
+> On 10/3/22 8:56 AM, Kumar Kartikeya Dwivedi wrote:
+> >>> Also, could you include a test to make sure sleepable programs cannot
+> >>> call bpf_task_acquire? It seems to assume RCU read lock is held while
+> >>> that may not be true. If already not possible, maybe a WARN_ON_ONCE
+> >>> inside the helper to ensure future cases don't creep in.
+> >>
+> >> I don't _think_ it's unsafe for a sleepable program to call
+> >> bpf_task_acquire(). My understanding is that the struct task_struct *
+> >> parameter to bpf_task_acquire() is not PTR_UNTRUSTED, so it's safe to
+> >> dereference directly in the kfunc. The implicit assumption here is that
+> >> the task was either passed to the BPF program (which is calling
+> >> bpf_task_acquire()) from the main kernel in something like a trace or
+> >> struct_ops callback, or it was a referenced kptr that was removed from a
+> >> map with bpf_kptr_xchg(), and is now owned by the BPF program. Given
+> >> that the ptr type is not PTR_UNTRUSTED, it seemed correct to assume that
+> >> the task was valid in bpf_task_acquire() regardless of whether we were
+> >> in an RCU read region or not, but please let me know if I'm wrong about
+> >
+> > I don't think it's correct. You can just walk arbitrary structures and
+> > obtain a normal PTR_TO_BTF_ID that looks seemingly ok to the verifier
+> > but has no lifetime guarantees. It's a separate pre-existing problem
+> > unrelated to your series [0]. PTR_UNTRUSTED is not set for those cases
+> > currently.
+> >
+> > So the argument to your bpf_task_acquire may already be freed by then.
+> > This issue would be exacerbated in sleepable BPF programs, where RCU
+> > read lock is not held, so some cases of pointer walking where it may
+> > be safe no longer holds.
+> >
+> > I am planning to clean this up, but I'd still prefer if we don't allow
+> > this helper in sleepable programs, yet. kptr_get is ok to allow.
+> > Once you have explicit BPF RCU read sections, sleepable programs can
+> > take it, do loads, and operate on the RCU pointer safely until they
+> > invalidate it with the outermost bpf_rcu_read_unlock. It's needed for
+> > local kptrs as well, not just this. I plan to post this very soon, so
+> > we should be able to fix it up in the current cycle after landing your
+> > series.
+> >
+> > __rcu tags in the kernel will automatically be understood by the
+> > verifier and for the majority of the correctly annotated cases this
+> > will work fine and not break tracing programs.
+> >
+> > [0]: https://lore.kernel.org/bpf/CAADnVQJxe1QT5bvcsrZQCLeZ6kei6WEESP5bDXf_5qcB2Bb6_Q@mail.gmail.com
+> >
+> >> that.  Other kfuncs I saw such as bpf_xdp_ct_lookup() assumed that the
+> >> parameter passed by the BPF program (which itself was passing on a
+> >> pointer given to it by the main kernel) is valid as well.
+> >
+> > Yeah, but the CT API doesn't assume validity of random PTR_TO_BTF_ID,
+> > it requires KF_TRUSTED_ARGS which forces them to have ref_obj_id != 0.
+>
+> Other than ref_obj_id != 0, could the PTR_TO_BTF_ID obtained through
+> btf_ctx_access be marked as trusted (e.g. the ctx[0] in the selftest here)
+> and bpf_task_acquire() will require KF_TRUSTED_ARGS? would it be safe in general?
+>
 
-The following pull-request contains BPF updates for your *net* tree.
+Recently eed807f62610 ("bpf: Tweak definition of KF_TRUSTED_ARGS")
+relaxed things a bit, now that constraint is only for PTR_TO_BTF_ID
+and it allows other types without ref_obj_id > 0.
 
-Note that into net tree this pulls cleanly, but for later merge of net into
-net-next there will be a small merge conflict in kernel/bpf/helpers.c
-between commit 8addbfc7b308 ("bpf: Gate dynptr API behind CAP_BPF") from
-bpf and commit 5679ff2f138f ("bpf: Move bpf_loop and bpf_for_each_map_elem
-under CAP_BPF") as well as 8a67f2de9b1d ("bpf: expose bpf_strtol and
-bpf_strtoul to all program types") from bpf-next.
-
-Resolve as follows for the first hunk:
-
-        [...]
-        case BPF_FUNC_ringbuf_query:
-                return &bpf_ringbuf_query_proto;
-        case BPF_FUNC_strncmp:
-                return &bpf_strncmp_proto;
-        case BPF_FUNC_strtol:
-                return &bpf_strtol_proto;
-        case BPF_FUNC_strtoul:
-                return &bpf_strtoul_proto;
-        default:
-                break;
-        }
-        [...]
-
-Take both hunks for the one coming after the if (!bpf_capable()):
-
-        [...]
-        case BPF_FUNC_kptr_xchg:
-                return &bpf_kptr_xchg_proto;
-        case BPF_FUNC_for_each_map_elem:
-                return &bpf_for_each_map_elem_proto;
-        case BPF_FUNC_loop:
-                return &bpf_loop_proto;
-        case BPF_FUNC_user_ringbuf_drain:
-                return &bpf_user_ringbuf_drain_proto;
-        case BPF_FUNC_ringbuf_reserve_dynptr:
-                return &bpf_ringbuf_reserve_dynptr_proto;
-        case BPF_FUNC_ringbuf_submit_dynptr:
-                return &bpf_ringbuf_submit_dynptr_proto;
-        case BPF_FUNC_ringbuf_discard_dynptr:
-                return &bpf_ringbuf_discard_dynptr_proto;
-        case BPF_FUNC_dynptr_from_mem:
-                return &bpf_dynptr_from_mem_proto;
-        case BPF_FUNC_dynptr_read:
-                return &bpf_dynptr_read_proto;
-        case BPF_FUNC_dynptr_write:
-                return &bpf_dynptr_write_proto;
-        case BPF_FUNC_dynptr_data:
-                return &bpf_dynptr_data_proto;
-        default:
-                break;
-        [...]
-
-We've added 10 non-merge commits during the last 23 day(s) which contain
-a total of 14 files changed, 130 insertions(+), 69 deletions(-).
-
-The main changes are:
-
-1) Fix dynptr helper API to gate behind CAP_BPF given it was not intended
-   for unprivileged BPF programs, from Kumar Kartikeya Dwivedi.
-
-2) Fix need_wakeup flag inheritance from umem buffer pool for shared xsk
-   sockets, from Jalal Mostafa.
-
-3) Fix truncated last_member_type_id in btf_struct_resolve() which had a
-   wrong storage type, from Lorenz Bauer.
-
-4) Fix xsk back-pressure mechanism on tx when amount of produced descriptors
-   to CQ is lower than what was grabbed from xsk tx ring, from Maciej Fijalkowski.
-
-5) Fix wrong cgroup attach flags being displayed to effective progs, from Pu Lehui.
-
-Please consider pulling these changes from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-
-Thanks a lot!
-
-Also thanks to reporters, reviewers and testers of commits in this pull-request:
-
-Andrii Nakryiko, Magnus Karlsson, Stanislav Fomichev, Yonghong Song
-
-----------------------------------------------------------------
-
-The following changes since commit c0955bf957be4bead01fae1d791476260da7325d:
-
-  ethernet: rocker: fix sleep in atomic context bug in neigh_timer_handler (2022-08-31 14:01:29 +0100)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
-
-for you to fetch changes up to 60240bc26114543fcbfcd8a28466e67e77b20388:
-
-  xsk: Inherit need_wakeup flag for shared sockets (2022-09-22 17:16:22 +0200)
-
-----------------------------------------------------------------
-Jalal Mostafa (1):
-      xsk: Inherit need_wakeup flag for shared sockets
-
-Kumar Kartikeya Dwivedi (1):
-      bpf: Gate dynptr API behind CAP_BPF
-
-Lee Jones (1):
-      bpf: Ensure correct locking around vulnerable function find_vpid()
-
-Lorenz Bauer (1):
-      bpf: btf: fix truncated last_member_type_id in btf_struct_resolve
-
-Maciej Fijalkowski (2):
-      xsk: Fix backpressure mechanism on Tx
-      selftests/xsk: Add missing close() on netns fd
-
-Martin KaFai Lau (1):
-      Merge branch 'Fix wrong cgroup attach flags being assigned to effective progs'
-
-Pu Lehui (3):
-      bpf, cgroup: Reject prog_attach_flags array when effective query
-      bpftool: Fix wrong cgroup attach flags being assigned to effective progs
-      selftests/bpf: Adapt cgroup effective query uapi change
-
-Shung-Hsi Yu (1):
-      MAINTAINERS: Add include/linux/tnum.h to BPF CORE
-
- MAINTAINERS                                        |  1 +
- include/net/xsk_buff_pool.h                        |  2 +-
- include/uapi/linux/bpf.h                           |  7 ++-
- kernel/bpf/btf.c                                   |  2 +-
- kernel/bpf/cgroup.c                                | 28 +++++++----
- kernel/bpf/helpers.c                               | 28 +++++------
- kernel/bpf/syscall.c                               |  2 +
- net/xdp/xsk.c                                      | 26 +++++------
- net/xdp/xsk_buff_pool.c                            |  5 +-
- net/xdp/xsk_queue.h                                | 22 ++++-----
- tools/bpf/bpftool/cgroup.c                         | 54 ++++++++++++++++++++--
- tools/include/uapi/linux/bpf.h                     |  7 ++-
- .../testing/selftests/bpf/prog_tests/cgroup_link.c | 11 ++---
- tools/testing/selftests/bpf/xskxceiver.c           |  4 ++
- 14 files changed, 130 insertions(+), 69 deletions(-)
+But you're right, ctx loads should usually be trusted, this is the
+current plan (also elaborated a bit in that link [0]), usually that is
+true, an exception is free path as you noted in your reply for patch 1
+(and especially fexit path where object may not even be alive
+anymore). There are some details to work out, but eventually I'd want
+to force KF_TRUSTED_ARGS by default for all kfuncs, and we only make
+exceptions in some special cases by having some KF_UNSAFE flag or
+__unsafe tag for arguments. It's becoming harder to think about all
+permutations if we're too permissive by default in terms of acceptable
+arguments.
