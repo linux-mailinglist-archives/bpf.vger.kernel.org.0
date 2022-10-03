@@ -2,101 +2,163 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D8205F377D
-	for <lists+bpf@lfdr.de>; Mon,  3 Oct 2022 23:11:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B232D5F37CE
+	for <lists+bpf@lfdr.de>; Mon,  3 Oct 2022 23:32:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230093AbiJCVLj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Oct 2022 17:11:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55628 "EHLO
+        id S229804AbiJCVcR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Oct 2022 17:32:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229957AbiJCVK1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 Oct 2022 17:10:27 -0400
-Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6748018399;
-        Mon,  3 Oct 2022 14:06:52 -0700 (PDT)
-Received: by mail-qt1-f177.google.com with SMTP id c11so7123648qtw.8;
-        Mon, 03 Oct 2022 14:06:52 -0700 (PDT)
+        with ESMTP id S229922AbiJCVb7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 Oct 2022 17:31:59 -0400
+Received: from mail-oa1-x35.google.com (mail-oa1-x35.google.com [IPv6:2001:4860:4864:20::35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C50A3F003
+        for <bpf@vger.kernel.org>; Mon,  3 Oct 2022 14:26:15 -0700 (PDT)
+Received: by mail-oa1-x35.google.com with SMTP id 586e51a60fabf-1329abb0ec6so1809933fac.8
+        for <bpf@vger.kernel.org>; Mon, 03 Oct 2022 14:26:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date;
+        bh=KKymng1sXMdfPFEPKV+tJxXEzrS/C4WszvsJCpzy5Wc=;
+        b=B2GnYJRi9g7uojYqRbfFBPHNJf/Td6U1XTIGmWUy/ZfLvsYw8bzI8o5H5jEh3s9eqn
+         gEJCkzNhOkjXgQ6MIYCZF1Rh4l0JDVn/AnqicUYdkDGrzrB5vvo3ZtnV5YAJ5XRKJlZg
+         jZF7P8UNN52yUHJUo9iSy73+TFld56DbPipk/w9dkOeYRgwS8Tis1gmY0Hg0FRKhU9HF
+         LwuIMHx0BBAbqUfSdiAgc2VUCcJM9EKLsKxED0YnqCh06hmPmrD0693hX4M/G/GCUIyL
+         yiAYvFxR7tM7wcaUj2YU34IqmBs6RC519yZhs+AL2QFdHPwgWIgA0zR8rkYo1Q+QOs6A
+         htKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date;
-        bh=ZGTTcZ0p1fzzxUfCEqF3LCRMtlu9C10pzfekPEtmBr4=;
-        b=V0EzfOQuDKunHPZKWULEd7KvJ/uLmWGKN5jAd5f6IWeC+ZSEFozJZniRBptr4SeW2h
-         EJUtKsCuWts/zJie8c7mOeEQ2Xpx3S5QSURlubhm21cKClHPvX7/kEnZFTnbz+wHUqKs
-         9l6MSXCnnVJIOHAYvIv1fbrKVSIw4fVwVjB/c8tvZPDpqryc0sqodZF0I++lamxm0/gI
-         wGQmmQ1gA41DG7Vk0B7r0SzZJm7EXMnoLQ1OSB05ssVLzOEIf9nufl7sFruZIoZ/V5aR
-         98OjA6zsYxNUPFNzMAL/ehzkN5ahcJoqRtROkckZ1j5B7+yCGwfBdwbqRvHFil4Z7Usy
-         JR0A==
-X-Gm-Message-State: ACrzQf0xtfbl/ndW8mSKZkH9Wwa9SGL0AeAeVYrM0yesI+zeVb/JpZmp
-        vPu6taE7qF3Q8LedwdNjJ6c=
-X-Google-Smtp-Source: AMsMyM5M8rqeL0NiM6ILOoCc4c0nPBBhT9Gh2GTAgZ0fOIeWVxZioGZ+g1VYRrL6YJ3TBdYMcZndtg==
-X-Received: by 2002:ac8:5816:0:b0:35b:ad30:3297 with SMTP id g22-20020ac85816000000b0035bad303297mr17407493qtg.0.1664831211164;
-        Mon, 03 Oct 2022 14:06:51 -0700 (PDT)
-Received: from maniforge.dhcp.thefacebook.com ([2620:10d:c091:480::59bd])
-        by smtp.gmail.com with ESMTPSA id e5-20020ac84e45000000b0035ccd148026sm10536232qtw.69.2022.10.03.14.06.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Oct 2022 14:06:50 -0700 (PDT)
-Date:   Mon, 3 Oct 2022 16:06:57 -0500
-From:   David Vernet <void@manifault.com>
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kernel-team@fb.com, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yhs@fb.com, song@kernel.org,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, tj@kernel.org,
-        memxor@gmail.com
-Subject: Re: [PATCH v2 1/2] bpf: Add kfuncs for storing struct task_struct *
- as a kptr
-Message-ID: <YztO8Y07s12+iVh1@maniforge.dhcp.thefacebook.com>
-References: <20221001144716.3403120-1-void@manifault.com>
- <20221001144716.3403120-2-void@manifault.com>
- <b27deaa1-7ab2-a969-3475-4fa78db34f86@linux.dev>
+        bh=KKymng1sXMdfPFEPKV+tJxXEzrS/C4WszvsJCpzy5Wc=;
+        b=uSM5bFQuzBavZv0URBJIO48YhHgwlnSH0nzPG3hUk6ktiAwEUVNl0g/DMK+49S9Xul
+         KSBgb98gupoIk/YOWKbwFixHJWwowbqtb37kMMbau2MIUr3aeo1Slnb5Gim7zLGlQbGK
+         IDLRANwMXeM8zNBn+oXo8zIK+KuxTc7amWoBrogomirCmqb/lX3IwcvyWKFiwV1GGoT6
+         EW7w0L+ZIMhSPM5AwNlXhuubM2zR1TwJtXMch0H6Kmd2wMivL3+FLRGHhQLmydZayxq3
+         DnRHIEc1tOVPjzkGTWt8162bBE/ic3ZrS0UgDE0BP0lBa/wlF9niIUSB1wUOptcbgA2Z
+         h7yA==
+X-Gm-Message-State: ACrzQf0VHvVQknohV6DK5ZlRbPnQBr2oOpugchD7iC6Eg628ibDy8iAE
+        bV67Ps+0jKObzmXpvImQH/R57D6qfLyjkaooIDmh
+X-Google-Smtp-Source: AMsMyM4I8FKtzKNt/csjgIeYqhOifpU1yb4bubOzvk50dkFndGp1GhS7SvSLp+gdsuPkYGStOhpNff+Oo4fyvEPvnqE=
+X-Received: by 2002:a05:6870:a916:b0:131:9361:116a with SMTP id
+ eq22-20020a056870a91600b001319361116amr6627728oab.172.1664832374779; Mon, 03
+ Oct 2022 14:26:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b27deaa1-7ab2-a969-3475-4fa78db34f86@linux.dev>
-User-Agent: Mutt/2.2.7 (2022-08-07)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <20220929160558.5034-1-annemacedo@linux.microsoft.com>
+ <63365532d416f_233df20899@john.notmuch> <92157e05-e383-ed4b-8b01-2981dbf5afd3@linux.microsoft.com>
+ <CAEf4BzZxU+YD5CtHEk7S7bXTDMMSsnV3eFYgRXCMft=fx9reMA@mail.gmail.com>
+In-Reply-To: <CAEf4BzZxU+YD5CtHEk7S7bXTDMMSsnV3eFYgRXCMft=fx9reMA@mail.gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Mon, 3 Oct 2022 17:26:03 -0400
+Message-ID: <CAHC9VhSqHFRpfq1b6Ys+Ygaqr-6KFeziUxtOVpsoBb=TE2csoA@mail.gmail.com>
+Subject: Re: [PATCH] libbpf: add validation to BTF's variable type ID
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Anne Macedo <annemacedo@linux.microsoft.com>,
+        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Isabella Basso <isabbasso@riseup.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 03, 2022 at 12:20:57PM -0700, Martin KaFai Lau wrote:
-> On 10/1/22 7:47 AM, David Vernet wrote:
-> > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> > index b069517a3da0..36cbe1b8f8b1 100644
-> > --- a/kernel/bpf/helpers.c
-> > +++ b/kernel/bpf/helpers.c
-> > @@ -1700,20 +1700,93 @@ bpf_base_func_proto(enum bpf_func_id func_id)
-> >   	}
-> >   }
-> > -BTF_SET8_START(tracing_btf_ids)
-> > +__diag_push();
-> > +__diag_ignore_all("-Wmissing-prototypes",
-> > +		  "Global functions as their definitions will be in vmlinux BTF");
-> > +
-> > +/**
-> > + * bpf_task_acquire - Acquire a reference to a task. A task acquired by this
-> > + * kfunc which is not stored in a map as a kptr, must be released by calling
-> > + * bpf_task_release().
-> > + * @p: The task on which a reference is being acquired.
-> > + */
-> > +__used noinline
-> > +struct task_struct *bpf_task_acquire(struct task_struct *p)
-> > +{
-> > +	refcount_inc(&p->rcu_users);
-> 
-> This probably needs to be refcount_inc_not_zero() also for the cases like
-> during the task free tracepoint ?
+On Fri, Sep 30, 2022 at 6:39 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+> On Fri, Sep 30, 2022 at 6:00 AM Anne Macedo
+> <annemacedo@linux.microsoft.com> wrote:
+> >
+> > On 29/09/22 23:32, John Fastabend wrote:
+> > > Anne Macedo wrote:
+> > >> If BTF is corrupted, a SEGV may occur due to a null pointer derefere=
+nce on
+> > >> bpf_object__init_user_btf_map.
+> > >>
+> > >> This patch adds a validation that checks whether the DATASEC's varia=
+ble
+> > >> type ID is null. If so, it raises a warning.
+> > >>
+> > >> Reported by oss-fuzz project [1].
+> > >>
+> > >> A similar patch for the same issue exists on [2]. However, the code =
+is
+> > >> unreachable when using oss-fuzz data.
+> > >>
+> > >> [1] https://github.com/libbpf/libbpf/issues/484
+> > >> [2] https://patchwork.kernel.org/project/netdevbpf/patch/20211103173=
+213.1376990-3-andrii@kernel.org/
+> > >>
+> > >> Reviewed-by: Isabella Basso <isabbasso@riseup.net>
+> > >> Signed-off-by: Anne Macedo <annemacedo@linux.microsoft.com>
+> > >> ---
+> > >>   tools/lib/bpf/libbpf.c | 4 ++++
+> > >>   1 file changed, 4 insertions(+)
+> > >>
+> > >> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > >> index 184ce1684dcd..0c88612ab7c4 100644
+> > >> --- a/tools/lib/bpf/libbpf.c
+> > >> +++ b/tools/lib/bpf/libbpf.c
+> > >> @@ -2464,6 +2464,10 @@ static int bpf_object__init_user_btf_map(stru=
+ct bpf_object *obj,
+> > >>
+> > >>      vi =3D btf_var_secinfos(sec) + var_idx;
+> > >>      var =3D btf__type_by_id(obj->btf, vi->type);
+> > >> +    if (!var || !btf_is_var(var)) {
+> > >> +            pr_warn("map #%d: non-VAR type seen", var_idx);
+> > >> +            return -EINVAL;
+> > >> +    }
+> > >>      var_extra =3D btf_var(var);
+> > >>      map_name =3D btf__name_by_offset(obj->btf, var->name_off);
+> > >>
+> > >> --
+> > >> 2.30.2
+> > >>
+> > >
+> > >
+> > > I don't know abouut this. A quick scan looks like this type_by_id is
+> > > used lots of places. And seems corrupted BTF could cause faults
+> > > and confusiuon in other spots as well. I'm not sure its worth making
+> > > libbpf survive corrupted BTF. OTOH this specific patch looks ok.
+> > >
+> >
+> > I was planning on creating a function to validate BTF for these kinds o=
+f
+> > corruptions, but decided to keep this patch simple. This could be a goo=
+d
+> > idea for some future work =E2=80=93 moving all of the validations to
+> > bpf_object__init_btf() or to a helper function.
+>
+> This whack-a-mole game of fixing up BTF checks to avoid one specific
+> corruption case is too burdensome. There is plenty of BTF usage before
+> the point which you are fixing, so with some other specific corruption
+> to BTF you can trigger even sooner corruption.
+>
+> As I mentioned on Github. I'm not too worried about ossfuzz generating
+> corrupted BTF because that's not a very realistic scenario. But it
+> would be nice to add some reasonable validation logic for BTF in
+> general, so let's better concentrate on that instead of adding these
+> extra checks.
 
-Thanks, you're probably right. As you pointed out offline as well, some
-fentry functions may expect a NULL pointer, so we probably need to
-update this to check for NULL and also return KF_RET_NULL. I'll take
-care of that in v2 once we've aligned on the RCU / sleepable progs
-question we're discussing with Kumar.
+Reading the comments here and on the associated GH issue, it sounds
+like you would be supportive of this check so long as it was placed in
+bpf_object__init_btf(), is that correct?  Or do you feel this
+particular check falls outside the scope of "reasonable validation
+logic"?  I'm trying to understand what the best next step would be for
+this patch ...
+
+--=20
+paul-moore.com
