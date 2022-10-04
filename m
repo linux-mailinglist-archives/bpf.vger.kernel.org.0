@@ -2,74 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22F965F3CD0
-	for <lists+bpf@lfdr.de>; Tue,  4 Oct 2022 08:38:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06B075F3CD6
+	for <lists+bpf@lfdr.de>; Tue,  4 Oct 2022 08:42:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229505AbiJDGi3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Oct 2022 02:38:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40610 "EHLO
+        id S229530AbiJDGmb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Oct 2022 02:42:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbiJDGi2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Oct 2022 02:38:28 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80C942A96D
-        for <bpf@vger.kernel.org>; Mon,  3 Oct 2022 23:38:27 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id iv17so8275149wmb.4
-        for <bpf@vger.kernel.org>; Mon, 03 Oct 2022 23:38:27 -0700 (PDT)
+        with ESMTP id S229547AbiJDGma (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 Oct 2022 02:42:30 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94B572C124;
+        Mon,  3 Oct 2022 23:42:28 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id ay7-20020a05600c1e0700b003b49861bf48so399558wmb.0;
+        Mon, 03 Oct 2022 23:42:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=LGb3mHW7/8+coat4lZzlyNJAEvJrpj5ZeVBtzi56Qo8=;
-        b=A5fQrb3AAiETAO68s6rb8SROBGsPq2ENPpaHzm0GKJVryhxXFKBbl0xM67SdT7WDvl
-         W4zNlEj0RnNGPiLrhyuITo47lnimqo1MGiCMIOJEKJDYpNxGQS3nsc8Jp9PPcQE4rQqX
-         OdCQR95uFOyNs+mDfOYw1R3NFElesbZYh+nKYQINUcECs1Yf2LjOKV41Y/vVBmPsW0d8
-         WQt5kE6VPQjlruAQNVGEdY6ouANCESfuUZsl6SV0RpvmuWIJXwtbv39YPMxtGfPf902F
-         /FF/uQRNRGZ3jFDTZn7lvqhlYQAr5Ot4Sz0xRWCTqDtOD9wkfoAv2dlWgZ0ym02iN1yr
-         W/jg==
+        bh=YzSKhtZJ27hGDlu9ltNiKeiIH9cAwEwtecp1QC+3rtk=;
+        b=A1foJcAShylyiTg/+c4560iLA/MSM7KtQH4bPtkQhoZcrpozvVmdf406dEM0uPtk9B
+         SF2JgWlaCC0+iGkMFhEKuIpxs+inqpSKvYAaG5aF+tKwqnZ67PJ1aSr3G2NhF0t8XP+n
+         8YtIkM1XMOcguWwOlu+rZfGt8wkM+/YUWTvxmz40TT8nn5WHe5ez5yuuR3XWBBa+8ayQ
+         fpR9gdKonOlfsoYLpq45CE1MONcQO0KmVInfl17y6rnXMpA4x7rklSyQjJ9m5LkqO5Pf
+         FzmNkQiVVu7tCXmWGyScwE0NtVxdpVcgsK4Whm1H6wjWWiSQoXz9IK2QQ4yFLQeMAAYI
+         +2oQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=LGb3mHW7/8+coat4lZzlyNJAEvJrpj5ZeVBtzi56Qo8=;
-        b=PL7HLuss2IuXtgTq8Oqmrz4mQbaC1iGLiQdMZC0OQe3NPeao8Tzou/ZRIiwwQ3Hxdn
-         90aokAF5kUjx3wHitpL/RBT4z5zGDN2aLIB7dmfAafnsvs8VwM6wA4g+MQZTR6U/mqyJ
-         /pdZtu6IrctWAR4I2t5reMD59LCBjcBOzd0T8gY93S8RIvsg0OwWcVEZN3lbyV+YZQse
-         LrHGz3+k6Pp6wpQOuPnTczpQa7L9kugd9K5AnZ4/EoY6Ef57yx4qkka50zRDczFtjBSq
-         AldPTrF4lqte9jIiKNMAbQ+9oabp4wW+AVUac+lJ+oZbkKnll4x+WyRUNCa7tGb062Wa
-         SKCw==
-X-Gm-Message-State: ACrzQf1xo0riOXtzoviVfVT071Q6BcTj3b2EhDSsucb8Bf15WDtxwzRF
-        zvEADsR/RQalObx5oqNddqU=
-X-Google-Smtp-Source: AMsMyM7pn6bb1MX7PbY77KmBaryydw29qANU4jm8TYxrIU7hg/z7L+SK8QvSf6NrDT+6zT3R6dYWdA==
-X-Received: by 2002:a05:600c:3543:b0:3b4:ba45:9945 with SMTP id i3-20020a05600c354300b003b4ba459945mr8919213wmq.58.1664865505944;
-        Mon, 03 Oct 2022 23:38:25 -0700 (PDT)
+        bh=YzSKhtZJ27hGDlu9ltNiKeiIH9cAwEwtecp1QC+3rtk=;
+        b=MwDtbGyQ+tEmCeWujI8KrcrN/hH/su5Z+4eLnYyT7+nA41QhMb4oiAdcM8yHHSxRQ+
+         EBPifuC8UvE+Cesdycae2dkKb5Wlp9yYencPXVkgVPVfbjZePl4HTeW32VOWmuXpQ+cR
+         1jS0HmHjVjJX6xwP29AaxYb66guX/PVXjGRpEsr8jruJetQGOhk0uheM47R4Euv83b4L
+         i4qW0Wqek3zv4RIHp3z4WvMeyPxLMxuA9yEt7YGk6ZMF6poUq38X4tJ8PN8LGnmsth/v
+         mbcQY5t7LRiHaEodJLZjMzA/ATfelfAhEQtgOhY8SrcbFCrHMU9thBllEcXaoSUGRmTi
+         j2aA==
+X-Gm-Message-State: ACrzQf3WKVobnoxCJqUXWTeBvNn0/XX1GmoZ4I541yzpuy3bgVi9bHbn
+        zVcC24JA57i76q5u4stBMp+bFqETGZPbMw==
+X-Google-Smtp-Source: AMsMyM5c64QbLcb0z876hdmkxgke9NxpIQtcKqn64nfzCMpvfd60wvT/pemkSLVGQ00mNtM2Bo1lag==
+X-Received: by 2002:a05:600c:29c6:b0:3bd:3fd4:45c0 with SMTP id s6-20020a05600c29c600b003bd3fd445c0mr473852wmd.44.1664865746963;
+        Mon, 03 Oct 2022 23:42:26 -0700 (PDT)
 Received: from krava ([193.85.244.190])
-        by smtp.gmail.com with ESMTPSA id f11-20020a05600c154b00b003a3442f1229sm19722566wmg.29.2022.10.03.23.38.24
+        by smtp.gmail.com with ESMTPSA id t20-20020a05600c199400b003b4fe03c881sm19108940wmq.48.2022.10.03.23.42.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Oct 2022 23:38:25 -0700 (PDT)
+        Mon, 03 Oct 2022 23:42:26 -0700 (PDT)
 From:   Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Tue, 4 Oct 2022 08:38:23 +0200
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     Kui-Feng Lee <kuifeng@fb.com>, bpf@vger.kernel.org,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Add missing
- bpf_iter_vma_offset__destroy call
-Message-ID: <YzvU3/rwCnbWQM8P@krava>
-References: <20221002151141.1074196-1-jolsa@kernel.org>
- <49aa0aec-a009-c0c3-cf47-11a6734aae36@linux.dev>
+Date:   Tue, 4 Oct 2022 08:42:24 +0200
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Daniel Xu <dxu@dxuuu.xyz>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        bpf@vger.kernel.org,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: Re: WARN: multiple IDs found for 'nf_conn': 92168, 117897 - using
+ 92168
+Message-ID: <YzvV0CFSi9KvXVlG@krava>
+References: <20221003190545.6b7c7aba@kernel.org>
+ <20221003214941.6f6ea10d@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <49aa0aec-a009-c0c3-cf47-11a6734aae36@linux.dev>
+In-Reply-To: <20221003214941.6f6ea10d@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -80,58 +75,28 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 03, 2022 at 05:12:44PM -0700, Martin KaFai Lau wrote:
-> On 10/2/22 8:11 AM, Jiri Olsa wrote:
-> > Adding missing bpf_iter_vma_offset__destroy call to
-> > test_task_vma_offset_common function and related goto jumps.
+On Mon, Oct 03, 2022 at 09:49:41PM -0700, Jakub Kicinski wrote:
+> On Mon, 3 Oct 2022 19:05:45 -0700 Jakub Kicinski wrote:
+> > Hi Jiri,
 > > 
-> > Fixes: b3e1331eb925 ("selftests/bpf: Test parameterized task BPF iterators.")
-> > Cc: Kui-Feng Lee <kuifeng@fb.com>
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >   tools/testing/selftests/bpf/prog_tests/bpf_iter.c | 8 +++++---
-> >   1 file changed, 5 insertions(+), 3 deletions(-)
+> > I get the following warning after merging up all the trees:
 > > 
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-> > index 3369c5ec3a17..462fe92e0736 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-> > @@ -1515,11 +1515,11 @@ static void test_task_vma_offset_common(struct bpf_iter_attach_opts *opts, bool
-> >   	link = bpf_program__attach_iter(skel->progs.get_vma_offset, opts);
+> > vmlinux.o: warning: objtool: ___ksymtab+bpf_dispatcher_xdp_func+0x0: data relocation to !ENDBR: bpf_dispatcher_xdp_func+0x0
+> > vmlinux.o: warning: objtool: bpf_dispatcher_xdp+0xa0: data relocation to !ENDBR: bpf_dispatcher_xdp_func+0x0
+> > 
+> > $ gcc --version
+> > gcc (GCC) 8.5.0 20210514 (Red Hat 8.5.0-15)
+> > 
+> > 
+> > Is this known?
 > 
-> Thanks for the fix.
+> Also hit this:
 > 
-> A nit.  Instead of adding a new goto label.  How about doing
-> 
-> 	skel->links.get_vma_offset = bpf_program_attach_iter(...)
-> 
-> and bpf_iter_vma_offset__destroy(skel) will take care of the link destroy.
-> The earlier test_task_vma_common() is doing that also.
+> WARN: multiple IDs found for 'nf_conn': 92168, 117897 - using 92168
+> WARN: multiple IDs found for 'nf_conn': 92168, 121226 - using 92168
 
-right, I forgot destroy would do that.. it'll be simpler change
+hi,
+I did not see that before, could you please share your config?
 
 thanks,
 jirka
-
-> 
-> Kui-Feng, please also take a look.
-> 
-> >   	if (!ASSERT_OK_PTR(link, "attach_iter"))
-> > -		return;
-> > +		goto exit_skel;
-> >   	iter_fd = bpf_iter_create(bpf_link__fd(link));
-> >   	if (!ASSERT_GT(iter_fd, 0, "create_iter"))
-> > -		goto exit;
-> > +		goto exit_link;
-> >   	while ((len = read(iter_fd, buf, sizeof(buf))) > 0)
-> >   		;
-> > @@ -1534,8 +1534,10 @@ static void test_task_vma_offset_common(struct bpf_iter_attach_opts *opts, bool
-> >   	close(iter_fd);
-> > -exit:
-> > +exit_link:
-> >   	bpf_link__destroy(link);
-> > +exit_skel:
-> > +	bpf_iter_vma_offset__destroy(skel);
-> >   }
-> >   static void test_task_vma_offset(void)
-> 
