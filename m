@@ -2,121 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18D615F45DF
-	for <lists+bpf@lfdr.de>; Tue,  4 Oct 2022 16:46:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 247DA5F4636
+	for <lists+bpf@lfdr.de>; Tue,  4 Oct 2022 17:10:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229927AbiJDOqP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Oct 2022 10:46:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56000 "EHLO
+        id S229980AbiJDPKr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Oct 2022 11:10:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229808AbiJDOqM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Oct 2022 10:46:12 -0400
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C78C55F13C;
-        Tue,  4 Oct 2022 07:46:09 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 3BFC65C0156;
-        Tue,  4 Oct 2022 10:46:06 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Tue, 04 Oct 2022 10:46:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-        :cc:content-type:date:date:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to; s=fm1; t=1664894766; x=1664981166; bh=Y1VGbCsu5o
-        5kYEKIpKet6zL2OfYtDvzVRcqdfrxnqAE=; b=iwKLWJO4vqTKd6vNwZzNUz4x5M
-        pSsYDoygZrLWW2YPA51tEw3zRZyzwr7+ixf13W1hw1yXCaXy7mDp4nClSEmXVknn
-        wqHnv9KmxdPIw/U/Rd+MZEXD97KOmAVCVc8fiBivwxJtD4bKzNyy2P6MP8MjCvaZ
-        q7JQoZm/+X+APZkF1LMjyLrD58SKQL6CP52HFRVayPv6xABIQqOTgf7utYl9+MYv
-        uTCcd1cpZzOuJZBS0Elur82rYwjeglSA5McwBImxqiZ9zDJZZLUmcYwt1V3RvOx0
-        I6awsigweDd8hQStS6WcRFB4I9myL+6n2doex4YK5SjzO91oCLuqTduTOx4A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; t=1664894766; x=1664981166; bh=Y1VGbCsu5o5kYEKIpKet6zL2OfYt
-        DvzVRcqdfrxnqAE=; b=v6Aqx7DxvoPBuS1l/9/rpc13i4iWrrrMq8f3sqVDNvOD
-        xiGDRU/3QM5ti+e5dC2wpfVh5FPRsm54LzxJl4rohrobBqsuZgoNGBCWQHYAoC/+
-        l+IAKtrpCfNuvvHqqhMB9sabJt4Tqy/kmMcFyk7p3Amxutx9LQHOk5N+pteSUo+v
-        Q2Lgc85dKtggip6/85fsgGOsBwFDyyUmBHvc95Z1wIts5LYSGunjuFrv95Ys28ds
-        ZmJV9GVv5bvKhA28jP0cgHHtLcN1lEtHbcf2p8a6zVdXmIMOlWVLiYQvuC093e9E
-        jVdDKpU7yIcENw5SAZIi9t8mI7sJzy1Pt63sG3yWcg==
-X-ME-Sender: <xms:Lkc8Y88lVVljlxgzGiEajDnZqlZ_RLRIMPCFZzhVy4ovkbw1Frl8Ug>
-    <xme:Lkc8Y0svAy68AmeJuarh2ewuDWGH7Ds3aW2mku2PzU65RJEuO9ughPtHP_0yYRbNS
-    VlimS_pGWNHLzEX6Q>
-X-ME-Received: <xmr:Lkc8YyDdXA6o__IOp-rKWjhML3bGxPFr_x9SalMZ3ztLvhWd6LaggjOLZGeGEjeCw2Oft7GYl2sOOcojgCDuGRAyqBbUZlsSxdT6N2A>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrfeeiuddgkeduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    gfrhhlucfvnfffucdlfeehmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdertddt
-    tddvnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqne
-    cuggftrfgrthhtvghrnhepheeltedvgffhgfduudelleeguddtueefgfefvdeukeffvdeg
-    uddtvdeuteehteevnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvg
-    hrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdig
-    hiii
-X-ME-Proxy: <xmx:Lkc8Y8dSmGqe8dk8Lq-ccl7MzLQu3wB7ebVanmXUvyQO4JtnUsYzig>
-    <xmx:Lkc8YxPN8VoTgAqFosl7_D_mDO0ls9q-2_rcF4s82Ld89l4qYa0Vkg>
-    <xmx:Lkc8Y2n_nf9JbpgaqVY8bZxYaHQFF_xPuJWuC76gzgZp1gmo1NBj7w>
-    <xmx:Lkc8YyqJ1RsmJ5K-Lyqn1F_4u2UDDU_gvqeAf3kl7CX7cmt9Y1s4bg>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 4 Oct 2022 10:46:05 -0400 (EDT)
-Date:   Tue, 4 Oct 2022 08:46:03 -0600
-From:   Daniel Xu <dxu@dxuuu.xyz>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Martin KaFai Lau <martin.lau@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: WARN: multiple IDs found for 'nf_conn': 92168, 117897 - using
- 92168
-Message-ID: <20221004144603.obymbke3oarhgnnz@kashmir.localdomain>
-References: <20221003190545.6b7c7aba@kernel.org>
- <20221003214941.6f6ea10d@kernel.org>
+        with ESMTP id S229954AbiJDPKq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 Oct 2022 11:10:46 -0400
+Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81BB85C9CB;
+        Tue,  4 Oct 2022 08:10:43 -0700 (PDT)
+Received: by mail-qk1-f180.google.com with SMTP id h28so8532211qka.0;
+        Tue, 04 Oct 2022 08:10:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date;
+        bh=/YXrO25N+KhFCPbrFfILZlZqkK3nd29wf52is5QkoJM=;
+        b=GbrqPmkqbP3UlAJsSYPsdkwpaHw/JPZ4z1frexjxyjY2o2pYbKAGNJ9lFN4D/D5U9f
+         u3S4z+29fxpjVsvSfnVEXKAPcE+0gztdsiWEmsqbyJWpOj76tT6GB87xiiGxpPrIjWki
+         z8Cd/aiMLXVKok6EzQTc5NYfPs80GvsswWq/+QlRpN+F+wLoik3l2V7angEPG4YhLaxn
+         QBR8Me36RznKFB8hKKlsFCOo/oXkgod+Mj5Ny6Ocgl6LUmENICFpADPmp8hArni0aqHJ
+         q/AQIxjlJ/ON9axlNY7W1qgLX/AkS7VmQGGTrkjzOzpcgFYw5NSEMCUQ+xS7gXdKWhWn
+         i9Zg==
+X-Gm-Message-State: ACrzQf0fVnbu2M3dyW7T2YjcT1xEhzDxmmu/bEF1NljrIsWjRXAo5Gqk
+        g8Bsm+R/d8hGjC06nOFecGw8ZvOlcqKNzw==
+X-Google-Smtp-Source: AMsMyM5ztO0GdMMh/VHvE5iiTrscw2GFsb76B+TbIYFFNTDtdJ/qcF/r9c8fR8PSO2efW4MhE/NvXA==
+X-Received: by 2002:a05:620a:4709:b0:6ce:d97a:fc9a with SMTP id bs9-20020a05620a470900b006ced97afc9amr16922903qkb.340.1664896241736;
+        Tue, 04 Oct 2022 08:10:41 -0700 (PDT)
+Received: from maniforge.lan (c-24-15-214-156.hsd1.il.comcast.net. [24.15.214.156])
+        by smtp.gmail.com with ESMTPSA id j16-20020a05620a289000b006b615cd8c13sm14674835qkp.106.2022.10.04.08.10.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 Oct 2022 08:10:41 -0700 (PDT)
+Date:   Tue, 4 Oct 2022 10:10:48 -0500
+From:   David Vernet <void@manifault.com>
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     Martin KaFai Lau <martin.lau@linux.dev>, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kernel-team@fb.com,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org, yhs@fb.com,
+        song@kernel.org, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org, tj@kernel.org
+Subject: Re: [PATCH v2 2/2] bpf/selftests: Add selftests for new task kfuncs
+Message-ID: <YzxM+HSSqIDCPCUf@maniforge.lan>
+References: <20221001144716.3403120-1-void@manifault.com>
+ <20221001144716.3403120-3-void@manifault.com>
+ <CAP01T74TtMARkfYWsYY0+cnsx2w4axB1LtvF-RFMAihW7v=LUw@mail.gmail.com>
+ <YzsBSoGnPEIJADSH@maniforge.dhcp.thefacebook.com>
+ <CAP01T76OR3J_P8YMq4ZgKHBpuZyA0zgsPy+tq9htbX=j6AVyOg@mail.gmail.com>
+ <fb3e81b7-8360-5132-59ac-0e74483eb25f@linux.dev>
+ <CAP01T77tCdKTJo=sByg5GsW1OrQmNXV4fmBDKUVtbnwEaJBpVA@mail.gmail.com>
+ <YztbOo7TgOoN1bVB@maniforge.dhcp.thefacebook.com>
+ <CAP01T76rCLdExKZ0AdP9L6e_g+sj9D7Ec59rr+ddMJ-KU+h8QQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221003214941.6f6ea10d@kernel.org>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_SUSPICIOUS_NTLD,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,
-        SPF_PASS,T_PDS_OTHER_BAD_TLD autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <CAP01T76rCLdExKZ0AdP9L6e_g+sj9D7Ec59rr+ddMJ-KU+h8QQ@mail.gmail.com>
+User-Agent: Mutt/2.2.7 (2022-08-07)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Jakub,
-
-On Mon, Oct 03, 2022 at 09:49:41PM -0700, Jakub Kicinski wrote:
-> On Mon, 3 Oct 2022 19:05:45 -0700 Jakub Kicinski wrote:
-> > Hi Jiri,
-> > 
-> > I get the following warning after merging up all the trees:
-> > 
-> > vmlinux.o: warning: objtool: ___ksymtab+bpf_dispatcher_xdp_func+0x0: data relocation to !ENDBR: bpf_dispatcher_xdp_func+0x0
-> > vmlinux.o: warning: objtool: bpf_dispatcher_xdp+0xa0: data relocation to !ENDBR: bpf_dispatcher_xdp_func+0x0
-> > 
-> > $ gcc --version
-> > gcc (GCC) 8.5.0 20210514 (Red Hat 8.5.0-15)
-> > 
-> > 
-> > Is this known?
+On Tue, Oct 04, 2022 at 12:22:08AM +0200, Kumar Kartikeya Dwivedi wrote:
+> > Thanks for providing additional context, Kumar. So what do we want to do
+> > for this patch set? IMO it doesn't seem useful to restrict
+> > bpf_kfunc_acquire() to only be callable by non-sleepable programs if our
+> > goal is to avoid crashes for nested task structs. We could easily
+> > accidentally crash if e.g. those pointers are NULL, or someone is doing
+> > something weird like stashing some extra flag bits in unused portions of
+> > the pointer which are masked out when it's actually dereferenced
+> > regardless of whether we're in RCU.  Trusting ctx loads sounds like the
+> > right approach, barring some of the challenges you pointed out such as
+> > dealing with fexit paths after free where the object may not be valid
+> > anymore.
+> >
+> > In general, it seems like we should maybe decide on what our policy
+> > should be for kfuncs until we can wire up whatever we need to properly
+> > trust ctx.
 > 
-> Also hit this:
+> Well, we could add it now and work towards closing the gaps after
+> this, especially if bpf_task_acquire is really only useful in
+> sleepable programs where it works on the tracing args. A lot of other
+> kfuncs need these fixes as well, so it's a general problem and not
+> specific to this set. I am not very familiar with your exact use case.
+> Hopefully when it is fixed this particular case won't really break, if
+> you only use the tracepoint argument.
+
+I'm also interested in using this with struct_ops, not just tracing. I
+think that struct_ops should be totally fine though, and easier to
+reason about than tracing as we just have to make sure that a few
+specific callbacks are always passed a valid, referenced task, rather
+than e.g. worrying about fexit on __put_task_struct().
+
+I'm fine with adding this now and working towards closing the gaps
+later, though I'd like to hear what Martin, Alexei, and the rest of the
+BPF maintainers think. I think Martin asked if there was any preliminary
+work you'd already done that we could try to tie into this patch set,
+and I'm similarly curious.
+
+> It is true that waiting for all the fixes will unnecessarily stall
+> this, it is not clear how each of the issues will be addressed either.
 > 
-> WARN: multiple IDs found for 'nf_conn': 92168, 117897 - using 92168
-> WARN: multiple IDs found for 'nf_conn': 92168, 121226 - using 92168
+> Later its use can be made conditional in sleepable programs for
+> trusted and rcu tagged pointers under appropriate RCU read lock. I
+> will try to prioritize sending it out so that we resolve this soon.
 
-I believe this is now-fixed pahole bug. See:
-https://lore.kernel.org/bpf/20220907023559.22juhtyl3qh2gsym@kashmir.localdomain/
-
-That being said, I didn't manage to find a pahole commit that directly
-addresses the issue, so maybe upgrading pahole perturbed enough things
-for this warning to go away?
-
-If the warning is back on pahole master I can take another look.
-
-Thanks,
-Daniel
+Much appreciated!
