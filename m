@@ -2,102 +2,172 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79CDA5F3AE9
-	for <lists+bpf@lfdr.de>; Tue,  4 Oct 2022 03:05:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75F3F5F3AFC
+	for <lists+bpf@lfdr.de>; Tue,  4 Oct 2022 03:24:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229621AbiJDBE7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Oct 2022 21:04:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49218 "EHLO
+        id S229607AbiJDBYe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Oct 2022 21:24:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229823AbiJDBEk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 Oct 2022 21:04:40 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C7821E5
-        for <bpf@vger.kernel.org>; Mon,  3 Oct 2022 18:04:34 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S229501AbiJDBYd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 Oct 2022 21:24:33 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 035D42125D;
+        Mon,  3 Oct 2022 18:24:31 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 072E261215
-        for <bpf@vger.kernel.org>; Tue,  4 Oct 2022 01:04:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C5D0C433C1
-        for <bpf@vger.kernel.org>; Tue,  4 Oct 2022 01:04:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1664845473;
-        bh=pEVQhCo+b7sjjK3ZV2xH6y94lyJIutK1LbqNRfu+vfE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=q8qtRAJRWr+E8gpm12D1dQegq+aCXEXS/pXGzpp7aCSeCBM9n6YAmlIIUqcCzB2kw
-         JQdifq7DWwtQIxvKJmXZqYFxt0AVdmC5N1AImSo1ZlKd1+eShGdD3CkxIEYlQIoOD0
-         n7T+usXXzcTXVGBpWQVVPA8muqZHDSvys/cMLoVDNvvnhO6sE0nh4HCwm7JMPL+bBA
-         MtjIvDXYodhNTL3lQLcf0P+BIFL9uZn8r15yuEtOdbmpX/uouiEjqhxtVL1t31DkGM
-         fCIlk6uT7fzOjpZIbW6q3TxkKfb4NW8pHKujFxDpISbUxqsyhvvHojLFE8re/rvKDE
-         ZWU0wlINx0miQ==
-Received: by mail-lf1-f45.google.com with SMTP id bp15so5500254lfb.13
-        for <bpf@vger.kernel.org>; Mon, 03 Oct 2022 18:04:33 -0700 (PDT)
-X-Gm-Message-State: ACrzQf1Zg9L7xK/AMvbu/vPz4KMNlh/e4kSuEcx3fYPaId6qizhWe5sV
-        9EWmSGL63X1kyNkO2Ly63onn8kddv2+gISvKz0Y8iA==
-X-Google-Smtp-Source: AMsMyM7pbQVs3Sf9YBuER3XSR8BrL7jIquvse1sVv1bxcPF5E+FnldPa4t2rclt+ZO957LGVvAfq7egD7MSAzqfD0wU=
-X-Received: by 2002:ac2:50da:0:b0:4a2:44dc:b719 with SMTP id
- h26-20020ac250da000000b004a244dcb719mr1857148lfm.652.1664845471456; Mon, 03
- Oct 2022 18:04:31 -0700 (PDT)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4MhKk53JCDz4xGn;
+        Tue,  4 Oct 2022 12:24:29 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1664846670;
+        bh=ZCstmyH2hO9l5kvpoL5Fy+0+Pcsrd9iY4Ml/itl3ps4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=gvuHKVajFNfiZ2yeTiK5qqffUwbz5itqqWmtxq7NyYA3PndWyDGyUlN7KWcQR6p9U
+         hokaNG6/RKIvcfwsPcmt+0giNwSp2TaH+UXtZjR/TZ5pUrg5Jkffhkd7NfQMJH6LpD
+         Gm26Kle2qjtk3fuTSLZknexrvQx4u+ZsHbwybfta8JS12woTVsJnMrqZLmndGv0H3V
+         rX3if+t8wGlBXpROXiWa2U9I531D/RSIzDqsUdZaWbVRBCxW05NwReUItNQBKqhGy8
+         Z79JcbU0YTuayzwqSvIi+/wNw8FB7ALqY5LVyzknXuGV8JRbL3Xvw4ioXxkSkHUlsd
+         3olcCSyMGstrw==
+Date:   Tue, 4 Oct 2022 12:24:28 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        David Vernet <void@manifault.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Stanislav Fomichev <sdf@google.com>
+Subject: linux-next: manual merge of the net-next tree with the bpf tree
+Message-ID: <20221004122428.653bd5cd@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20221003011727.1192900-1-jmeng@fb.com>
-In-Reply-To: <20221003011727.1192900-1-jmeng@fb.com>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Tue, 4 Oct 2022 03:04:20 +0200
-X-Gmail-Original-Message-ID: <CACYkzJ7_ZNKsE5b9ECqf7+U9qs8E2hbx4GXvAhrnG3iVApqLjg@mail.gmail.com>
-Message-ID: <CACYkzJ7_ZNKsE5b9ECqf7+U9qs8E2hbx4GXvAhrnG3iVApqLjg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf,x64: Remove unnecessary check on existence
- of SSE2
-To:     Jie Meng <jmeng@fb.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/IUl9e/+DjimaHHOGYoTvQ.P";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 3, 2022 at 3:17 AM Jie Meng <jmeng@fb.com> wrote:
->
-> SSE2 and hence lfence are architectural in x86-64 and no need to check
-> whether they're supported in CPU.
+--Sig_/IUl9e/+DjimaHHOGYoTvQ.P
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Why do you say this?
+Hi all,
 
-The Instruction set reference does mention that:
+Today's linux-next merge of the net-next tree got a conflict in:
 
-Exceptions:
+  kernel/bpf/helpers.c
 
-#UD If CPUID.01H:EDX.SSE2[bit 26] = 0
+between commit:
 
-(undefined instruction when the CPUID.SSE2 bit is unset)
+  8addbfc7b308 ("bpf: Gate dynptr API behind CAP_BPF")
 
-and also that the CPUID feature flag is SSE2
+from the bpf tree and commits:
 
->
-> Signed-off-by: Jie Meng <jmeng@fb.com>
-> ---
->  arch/x86/net/bpf_jit_comp.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> index d09c54f3d2e0..b2124521305e 100644
-> --- a/arch/x86/net/bpf_jit_comp.c
-> +++ b/arch/x86/net/bpf_jit_comp.c
-> @@ -1289,8 +1289,7 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image, u8 *rw_image
->
->                         /* speculation barrier */
->                 case BPF_ST | BPF_NOSPEC:
-> -                       if (boot_cpu_has(X86_FEATURE_XMM2))
-> -                               EMIT_LFENCE();
-> +                       EMIT_LFENCE();
->                         break;
->
->                         /* ST: *(u8*)(dst_reg + off) = imm */
-> --
-> 2.30.2
->
+  8a67f2de9b1d ("bpf: expose bpf_strtol and bpf_strtoul to all program type=
+s")
+  5679ff2f138f ("bpf: Move bpf_loop and bpf_for_each_map_elem under CAP_BPF=
+")
+  205715673844 ("bpf: Add bpf_user_ringbuf_drain() helper")
+
+from the net-next tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc kernel/bpf/helpers.c
+index 3814b0fd3a2c,b069517a3da0..000000000000
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@@ -1627,12 -1609,26 +1609,12 @@@ bpf_base_func_proto(enum bpf_func_id fu
+  		return &bpf_ringbuf_discard_proto;
+  	case BPF_FUNC_ringbuf_query:
+  		return &bpf_ringbuf_query_proto;
+- 	case BPF_FUNC_for_each_map_elem:
+- 		return &bpf_for_each_map_elem_proto;
+- 	case BPF_FUNC_loop:
+- 		return &bpf_loop_proto;
+ -	case BPF_FUNC_ringbuf_reserve_dynptr:
+ -		return &bpf_ringbuf_reserve_dynptr_proto;
+ -	case BPF_FUNC_ringbuf_submit_dynptr:
+ -		return &bpf_ringbuf_submit_dynptr_proto;
+ -	case BPF_FUNC_ringbuf_discard_dynptr:
+ -		return &bpf_ringbuf_discard_dynptr_proto;
+  	case BPF_FUNC_strncmp:
+  		return &bpf_strncmp_proto;
++ 	case BPF_FUNC_strtol:
++ 		return &bpf_strtol_proto;
++ 	case BPF_FUNC_strtoul:
++ 		return &bpf_strtoul_proto;
+ -	case BPF_FUNC_dynptr_from_mem:
+ -		return &bpf_dynptr_from_mem_proto;
+ -	case BPF_FUNC_dynptr_read:
+ -		return &bpf_dynptr_read_proto;
+ -	case BPF_FUNC_dynptr_write:
+ -		return &bpf_dynptr_write_proto;
+ -	case BPF_FUNC_dynptr_data:
+ -		return &bpf_dynptr_data_proto;
+  	default:
+  		break;
+  	}
+@@@ -1661,20 -1657,12 +1643,26 @@@
+  		return &bpf_timer_cancel_proto;
+  	case BPF_FUNC_kptr_xchg:
+  		return &bpf_kptr_xchg_proto;
+ +	case BPF_FUNC_ringbuf_reserve_dynptr:
+ +		return &bpf_ringbuf_reserve_dynptr_proto;
+ +	case BPF_FUNC_ringbuf_submit_dynptr:
+ +		return &bpf_ringbuf_submit_dynptr_proto;
+ +	case BPF_FUNC_ringbuf_discard_dynptr:
+ +		return &bpf_ringbuf_discard_dynptr_proto;
+ +	case BPF_FUNC_dynptr_from_mem:
+ +		return &bpf_dynptr_from_mem_proto;
+ +	case BPF_FUNC_dynptr_read:
+ +		return &bpf_dynptr_read_proto;
+ +	case BPF_FUNC_dynptr_write:
+ +		return &bpf_dynptr_write_proto;
+ +	case BPF_FUNC_dynptr_data:
+ +		return &bpf_dynptr_data_proto;
++ 	case BPF_FUNC_for_each_map_elem:
++ 		return &bpf_for_each_map_elem_proto;
++ 	case BPF_FUNC_loop:
++ 		return &bpf_loop_proto;
++ 	case BPF_FUNC_user_ringbuf_drain:
++ 		return &bpf_user_ringbuf_drain_proto;
+  	default:
+  		break;
+  	}
+
+--Sig_/IUl9e/+DjimaHHOGYoTvQ.P
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmM7i0wACgkQAVBC80lX
+0Gw8lwf+J/jqy44wKr8M/nNjGWRexIFe7aRCXhS6KaY1kLEGZmpiawLUPG3R1Ocy
+AjHFYKEwUPZu5cfhZpmnSHc2qM3aTBUMMMbMkjcT1eEMfrruG9qRprLnp7k96XGo
+SJfFb3Jq9KF1AvdCxKB0yOaIRx8x/v5uVwam8xojEBoTBXifMrUQuTXrKkg+xr/w
+RACHJcr7iTP7cf7n2Kuzq3qgl+FAbD8Bnbg/s41M7ehDeNfWcEq9GEwIX5GGvtmm
+ne6o4RgWokG49sWhnCOYVIhgiemNkXcU1R5t5nbYOhp5hghCx4JXzZpBegt1B8Kf
+1uiYjw5V6DXKxFhTnSXT+W+Qq7bULA==
+=fZ29
+-----END PGP SIGNATURE-----
+
+--Sig_/IUl9e/+DjimaHHOGYoTvQ.P--
