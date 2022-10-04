@@ -2,135 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C3B45F43D2
-	for <lists+bpf@lfdr.de>; Tue,  4 Oct 2022 15:00:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A992D5F440D
+	for <lists+bpf@lfdr.de>; Tue,  4 Oct 2022 15:18:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229946AbiJDNAx convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 4 Oct 2022 09:00:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39848 "EHLO
+        id S229673AbiJDNSc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Oct 2022 09:18:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbiJDNAD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Oct 2022 09:00:03 -0400
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77AB32A24E
-        for <bpf@vger.kernel.org>; Tue,  4 Oct 2022 05:57:22 -0700 (PDT)
-Received: by mail-io1-f71.google.com with SMTP id 5-20020a5d9c05000000b006a44709a638so8982860ioe.11
-        for <bpf@vger.kernel.org>; Tue, 04 Oct 2022 05:57:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:to:from:subject:message-id:in-reply-to
-         :date:mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=ZaaERZiNeWPg1VEtskzRzem7azoo+jAPc6Nm8v1Mjr0=;
-        b=7MigSwK6kx4lCQvBlMKBB9ytu0ZXZA8nCOMpQOPjVkxZQ7MhOVziDgCCGz4imzOQu7
-         Z8hs0AQzNl3UdduCXoBMu993j5cksNMa+eqCZx0q/K6iPKg8LAnV8Yc+cD0SQqoLXyjZ
-         qUFNoxLml9VNsZDdOmR+uLd8a4h3AhCoIQhni2TzB32IbYnFN38vyoDfF9qHKSDj8wK+
-         1esKOwI88D3GI5CANmmrtPNLMQtMLWrreSYHLxVx8c/PkvRSCwZrXKhTKSqX9lPFF2YF
-         t8GpL9M5rOEr9lUbjnAfvcXNP3qy72pa+UBZVtGkhiNJ1sf3CoADdT2sphYNGyV1VlNy
-         v3hA==
-X-Gm-Message-State: ACrzQf0dqIV36zfhLWy0CGzW5GH3VK4xqhWEOhq7slfqPirNYjPKkEKZ
-        6oicYJGxR2BmD80uSzot4Hn1dFX5MpRVA17H05HYoWjN/Mxg
-X-Google-Smtp-Source: AMsMyM4kteE+NL4GAcjpCLq1LwFAhSOn3ZAssS5MrlayLf6b/No6LrtmBBCgIgSa0qYCffeg++X/hyr53V5k5Q4P1mQiqhP4JPvH
+        with ESMTP id S229549AbiJDNSb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 Oct 2022 09:18:31 -0400
+Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 615BACE1C;
+        Tue,  4 Oct 2022 06:18:28 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.229])
+        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4MhdSF2NpZz9v7Gg;
+        Tue,  4 Oct 2022 21:13:33 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.204.63.22])
+        by APP2 (Coremail) with SMTP id GxC2BwA3ZV+JMjxj8ZGaAA--.6154S2;
+        Tue, 04 Oct 2022 14:18:10 +0100 (CET)
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
+        shuah@kernel.org
+Cc:     bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Subject: [RESEND][PATCH 0/6] Add _opts variant for bpf_*_get_fd_by_id()
+Date:   Tue,  4 Oct 2022 15:17:44 +0200
+Message-Id: <20221004131750.2306251-1-roberto.sassu@huaweicloud.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:168b:b0:6a2:c6d1:d4e4 with SMTP id
- s11-20020a056602168b00b006a2c6d1d4e4mr11282718iow.190.1664888241655; Tue, 04
- Oct 2022 05:57:21 -0700 (PDT)
-Date:   Tue, 04 Oct 2022 05:57:21 -0700
-In-Reply-To: <PH8PR10MB6290511E9C0A3D20E1C222EEC25A9@PH8PR10MB6290.namprd10.prod.outlook.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003c183505ea350059@google.com>
-Subject: Re: [syzbot] upstream boot error: WARNING in netlink_ack
-From:   syzbot <syzbot+3a080099974c271cd7e9@syzkaller.appspotmail.com>
-To:     bpf@vger.kernel.org, davem@davemloft.net, dvyukov@google.com,
-        edumazet@google.com, fw@strlen.de,
-        harshit.m.mogalapalli@oracle.com, keescook@chromium.org,
-        kuba@kernel.org, linux-hardening@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        pabeni@redhat.com, syzkaller-bugs@googlegroups.com,
-        vegard.nossum@oracle.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: GxC2BwA3ZV+JMjxj8ZGaAA--.6154S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7uF4rWFyrtFWrWF4kKFykXwb_yoW8Ar1kp3
+        93G34FkrnYgFyxu3sxJa9Yqw1rKFWxWw1UC3Z7Jr15Z3s5XFWDZry8WF45Wr9xu395Gwsx
+        Zr4Ykr1DGw17AFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkIb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+        AFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28I
+        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
+        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI
+        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42
+        IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E
+        87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7IU13rcDUUUUU==
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAPBF1jj3-RDQABsa
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+From: Roberto Sassu <roberto.sassu@huawei.com>
 
-syzbot tried to test the proposed patch but the build/boot failed:
+NOTE: resending with libbpf_get_fd_opts test added to deny list for s390x.
 
-asset storage also requires dashboard client
+Add the _opts variant for bpf_*_get_fd_by_id() functions, to be able to
+pass to the kernel more options, when requesting a fd of an eBPF object to
+the kernel.
 
-syzkaller build log:
-go env (err=<nil>)
-GO111MODULE="auto"
-GOARCH="amd64"
-GOBIN=""
-GOCACHE="/syzkaller/.cache/go-build"
-GOENV="/syzkaller/.config/go/env"
-GOEXE=""
-GOEXPERIMENT=""
-GOFLAGS=""
-GOHOSTARCH="amd64"
-GOHOSTOS="linux"
-GOINSECURE=""
-GOMODCACHE="/syzkaller/jobs/linux/gopath/pkg/mod"
-GONOPROXY=""
-GONOSUMDB=""
-GOOS="linux"
-GOPATH="/syzkaller/jobs/linux/gopath"
-GOPRIVATE=""
-GOPROXY="https://proxy.golang.org,direct"
-GOROOT="/usr/local/go"
-GOSUMDB="sum.golang.org"
-GOTMPDIR=""
-GOTOOLDIR="/usr/local/go/pkg/tool/linux_amd64"
-GOVCS=""
-GOVERSION="go1.17"
-GCCGO="gccgo"
-AR="ar"
-CC="gcc"
-CXX="g++"
-CGO_ENABLED="1"
-GOMOD="/syzkaller/jobs/linux/gopath/src/github.com/google/syzkaller/go.mod"
-CGO_CFLAGS="-g -O2"
-CGO_CPPFLAGS=""
-CGO_CXXFLAGS="-g -O2"
-CGO_FFLAGS="-g -O2"
-CGO_LDFLAGS="-g -O2"
-PKG_CONFIG="pkg-config"
-GOGCCFLAGS="-fPIC -m64 -pthread -fmessage-length=0 -fdebug-prefix-map=/tmp/go-build46036865=/tmp/go-build -gno-record-gcc-switches"
+Pass the options through a newly introduced structure, bpf_get_fd_opts,
+which currently contains open_flags (the other two members are for
+compatibility and for padding).
 
-git status (err=<nil>)
-HEAD detached at feb563518
-nothing to commit, working tree clean
+open_flags allows the caller to request specific permissions to access a
+map (e.g. read-only). This is useful for example in the situation where a
+map is write-protected.
 
+Besides patches 2-6, which introduce the new variants and the data
+structure, patch 1 fixes the LIBBPF_1.0.0 declaration in libbpf.map.
 
-go list -f '{{.Stale}}' ./sys/syz-sysgen | grep -q false || go install ./sys/syz-sysgen
-make .descriptions
-bin/syz-sysgen
-touch .descriptions
-GOOS=linux GOARCH=amd64 go build "-ldflags=-s -w -X github.com/google/syzkaller/prog.GitRevision=feb5635181eb12a6e3516172a3f5af06a3bc93e1 -X 'github.com/google/syzkaller/prog.gitRevisionDate=20220930-160315'" "-tags=syz_target syz_os_linux syz_arch_amd64 " -o ./bin/linux_amd64/syz-fuzzer github.com/google/syzkaller/syz-fuzzer
-GOOS=linux GOARCH=amd64 go build "-ldflags=-s -w -X github.com/google/syzkaller/prog.GitRevision=feb5635181eb12a6e3516172a3f5af06a3bc93e1 -X 'github.com/google/syzkaller/prog.gitRevisionDate=20220930-160315'" "-tags=syz_target syz_os_linux syz_arch_amd64 " -o ./bin/linux_amd64/syz-execprog github.com/google/syzkaller/tools/syz-execprog
-GOOS=linux GOARCH=amd64 go build "-ldflags=-s -w -X github.com/google/syzkaller/prog.GitRevision=feb5635181eb12a6e3516172a3f5af06a3bc93e1 -X 'github.com/google/syzkaller/prog.gitRevisionDate=20220930-160315'" "-tags=syz_target syz_os_linux syz_arch_amd64 " -o ./bin/linux_amd64/syz-stress github.com/google/syzkaller/tools/syz-stress
-mkdir -p ./bin/linux_amd64
-gcc -o ./bin/linux_amd64/syz-executor executor/executor.cc \
-	-m64 -O2 -pthread -Wall -Werror -Wparentheses -Wunused-const-variable -Wframe-larger-than=16384 -Wno-stringop-overflow -Wno-array-bounds -Wno-format-overflow -static-pie -fpermissive -w -DGOOS_linux=1 -DGOARCH_amd64=1 \
-	-DHOSTGOOS_linux=1 -DGIT_REVISION=\"feb5635181eb12a6e3516172a3f5af06a3bc93e1\"
+Roberto Sassu (6):
+  libbpf: Fix LIBBPF_1.0.0 declaration in libbpf.map
+  libbpf: Define bpf_get_fd_opts and introduce
+    bpf_map_get_fd_by_id_opts()
+  libbpf: Introduce bpf_prog_get_fd_by_id_opts()
+  libbpf: Introduce bpf_btf_get_fd_by_id_opts()
+  libbpf: Introduce bpf_link_get_fd_by_id_opts()
+  selftests/bpf: Add tests for _opts variants of bpf_*_get_fd_by_id()
 
+ tools/lib/bpf/bpf.c                           | 47 +++++++++-
+ tools/lib/bpf/bpf.h                           | 16 ++++
+ tools/lib/bpf/libbpf.map                      |  6 +-
+ tools/testing/selftests/bpf/DENYLIST.s390x    |  1 +
+ .../bpf/prog_tests/libbpf_get_fd_opts.c       | 88 +++++++++++++++++++
+ .../bpf/progs/test_libbpf_get_fd_opts.c       | 36 ++++++++
+ 6 files changed, 189 insertions(+), 5 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/libbpf_get_fd_opts.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_libbpf_get_fd_opts.c
 
-
-Tested on:
-
-commit:         725737e7 Merge tag 'statx-dioalign-for-linus' of git:/..
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-kernel config:  https://syzkaller.appspot.com/x/.config?x=36e3ab6ff9643877
-dashboard link: https://syzkaller.appspot.com/bug?extid=3a080099974c271cd7e9
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=12302bb8880000
+-- 
+2.25.1
 
