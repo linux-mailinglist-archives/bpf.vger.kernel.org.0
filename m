@@ -2,67 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9EE75F4950
-	for <lists+bpf@lfdr.de>; Tue,  4 Oct 2022 20:35:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 983635F495C
+	for <lists+bpf@lfdr.de>; Tue,  4 Oct 2022 20:44:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229660AbiJDSfF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Oct 2022 14:35:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37022 "EHLO
+        id S229680AbiJDSoS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Oct 2022 14:44:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229609AbiJDSfD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Oct 2022 14:35:03 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C532D20F60
-        for <bpf@vger.kernel.org>; Tue,  4 Oct 2022 11:35:02 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id x59so10042671ede.7
-        for <bpf@vger.kernel.org>; Tue, 04 Oct 2022 11:35:02 -0700 (PDT)
+        with ESMTP id S229662AbiJDSoR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 Oct 2022 14:44:17 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE51C659DE
+        for <bpf@vger.kernel.org>; Tue,  4 Oct 2022 11:44:16 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id c24so13417084plo.3
+        for <bpf@vger.kernel.org>; Tue, 04 Oct 2022 11:44:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=PcXNHR0gghwHcV7qe4ZbOwmr/1ijONuZtbjDXAMA4gA=;
-        b=Toi2tRkiBHzkYIdwyyFLLuQqal2vK3puh4i3xqPgbfcNQXL3+MHekmiFTETjYQVIF0
-         9ckoIhWp4F9lmb2u14zgWRSkvyP6L6xTT82yeBuWxQSSFofEWWsczNR7ANZhIw+NWOc3
-         hYd3iN1au6/VGdB+TCjDyXcMidtdmdNxp/9W8mTnboB7BYQsdv9Qw21I1o9mtBqs3J0n
-         yDIE6+G4C0BkGmqYZnhzYpI2GRXlK26h74p0zy3yTxclS4zRox5gJtEkgTwT9ZvkSE5l
-         b/eer8Wq0j7MMriL1mfnDvzoeAEoBduH5hqCLhgkIatINrC95OQcKOajBBRX6urqWMSB
-         WfHg==
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :from:to:cc:subject:date;
+        bh=tbMRAh1W2vC7AY7Uhw5dOfdFqtldEyxqCOnuYZYuxaA=;
+        b=n+okaLo/xXrCYN/5Y11WAmJLVfwAizRk8kdn+5pzar0ZZJstpQkODRWDQz8Mu/a+wM
+         IPwyUNtug0+jHuNn33fIl2id86He55ZhNbnBX4nYU/xySUAZP9+l8pFMdVjzC1Af7rrg
+         rITqsqsgZNPMOTK43lzVlgQjn9i6cBTCo/G4B6NwN5sQA42FUxnxuc3/Ady8QanYWf+D
+         vHxwyEOn7GV2kW9x9rAOxXX46HJNJUaiF9dunzBheqUU1job050DWR1Jni7StjLolzOA
+         czFzU2njMfGq7xLNBktk5UqNAALhljwJDVSEY53yHWKoGO1UD0yoeJgWihhJmAm0JeLU
+         SZeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=PcXNHR0gghwHcV7qe4ZbOwmr/1ijONuZtbjDXAMA4gA=;
-        b=DGWbiSR8Tn9t9WNHK+raIEJuMHvhbvsWCF/0RzGuEQREESU1Ff6oPoxZfS8cy+XgiU
-         d+3Ue5znsQGUVQJB/1vok9Fep+tB0T6faGxLFSxrlZLDYCfFaijbYpEiUtVHwvjT1f8o
-         TKULxaDHJqawEg1+2dbKg+mpStTZMhNwhXDnq+OjC/UpNomJbW0oL6KPXb3io+tQcwz6
-         AXNzUdfMBUPGP4B2OejXQa6hcd9Si0RPEe5hzbkX5MJl948S2Jo1VZ+rlCpzpvURaTmR
-         RRWM5l+9LvAbTi2YWLcRaemtgh02iG7gtkMLsNZG34/4mIjTvD03hirKqy+EPHGwVMmH
-         00cA==
-X-Gm-Message-State: ACrzQf17cTYgFTNGo4k+ONOjfhOWJ5g4rP2JeRhrZa0SEl5V1lvKafzT
-        SSKqMLAU5dYUITv1JgoJaLHV91A6Eo5i0zGuA7s=
-X-Google-Smtp-Source: AMsMyM5f7aIR35LGAp1MHfT5RwQFWVbKfcYTZ9s/i7tVUkXD5Vz/i6De1dgkxHcD31fTyYokiThj/YzUF/7eNtS0Frc=
-X-Received: by 2002:a05:6402:5406:b0:452:1560:f9d4 with SMTP id
- ev6-20020a056402540600b004521560f9d4mr25052457edb.333.1664908501171; Tue, 04
- Oct 2022 11:35:01 -0700 (PDT)
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :x-gm-message-state:from:to:cc:subject:date;
+        bh=tbMRAh1W2vC7AY7Uhw5dOfdFqtldEyxqCOnuYZYuxaA=;
+        b=pFqdQrYFNqcRawjcurTR0bz9cPzX1ydtLfBatmMbFOVVWv/DvDJNOe+AlOgtyy3AyD
+         05x8GP4XHiKu7+GluY1qZgzTHh2iRs30lIPbGECAqMYT1ZHnrnpJ/da3aBA3uzJCM4tL
+         DJTB4tXiMZ++edHBKnbUkuLx1hwZpOHpLROHTkURosjVusY7RUH3JKzqyfMnSKtEU9Sd
+         Nz2JOV7cMfL5mwvmEDl1zO81whvgCGZoqSLBrJGtoUVY8a4QMaJXFkCfiG/JGXLh5hgh
+         g3ps465qXhbrxsKwbkgJf1hxSRjQfCZMlFXswjy3Tf0acejT3En5Rko1MWAirhwBCqdg
+         bGFg==
+X-Gm-Message-State: ACrzQf0d6tb+SsmWUlFi97AE7RL9zQAkrs25dx5T0o11VQUn7R/6AKOZ
+        BZwadBqNUvYR5oep2wAjAAI23galpDSWJOjeRgWkPiaafrc=
+X-Google-Smtp-Source: AMsMyM7PesQX3wIbIi9lHtvSNnIGCnVc7UCleYf+DCtb4SAyX1/85nsMu8G2/czpFoq/HgnOc2cGvsfiFAWfDp45wnw=
+X-Received: by 2002:a17:90b:17c4:b0:20a:7f07:d878 with SMTP id
+ me4-20020a17090b17c400b0020a7f07d878mr1058913pjb.7.1664909055971; Tue, 04 Oct
+ 2022 11:44:15 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220927185958.14995-1-dthaler1968@googlemail.com>
- <20220927185958.14995-7-dthaler1968@googlemail.com> <20220930205211.tb26v4rzhqrgog2h@macbook-pro-4.dhcp.thefacebook.com>
- <DM4PR21MB3440CDB9D8E325CBEA20FFA7A3569@DM4PR21MB3440.namprd21.prod.outlook.com>
- <20220930215914.rzedllnce7klucey@macbook-pro-4.dhcp.thefacebook.com>
- <DM4PR21MB34402522B614257706D2F785A3569@DM4PR21MB3440.namprd21.prod.outlook.com>
- <CAADnVQJto119zhc3oBuNa-OuwoNWW02bDDRb_SGKxZxq=Wid8A@mail.gmail.com>
- <DM4PR21MB34409A021A6658DDAAB3B5AEA35A9@DM4PR21MB3440.namprd21.prod.outlook.com>
- <CAADnVQKYb9fB2-AcPB0sMbE_pT2cQhOiKQw0q5rPxXHZ-6eXTw@mail.gmail.com> <DM4PR21MB3440DC0EE41F65013FE15E45A35A9@DM4PR21MB3440.namprd21.prod.outlook.com>
-In-Reply-To: <DM4PR21MB3440DC0EE41F65013FE15E45A35A9@DM4PR21MB3440.namprd21.prod.outlook.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 4 Oct 2022 11:34:49 -0700
-Message-ID: <CAADnVQJ387tWd7WgxqfoB44xMe17bY0RRp_Sng3xMnKsywFpxg@mail.gmail.com>
-Subject: Re: div_k. Was: [PATCH 07/15] ebpf-docs: Fix modulo zero, division by
- zero, overflow, and underflow
-To:     Dave Thaler <dthaler@microsoft.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>
+References: <CACG+mBWpDSrxUR4RehJPpcF_BdF8-7+HHqmdq+ULpWrpE8BGDA@mail.gmail.com>
+In-Reply-To: <CACG+mBWpDSrxUR4RehJPpcF_BdF8-7+HHqmdq+ULpWrpE8BGDA@mail.gmail.com>
+From:   Henrique Fingler <henrique.fingler@gmail.com>
+Date:   Tue, 4 Oct 2022 13:44:05 -0500
+Message-ID: <CACG+mBX5tiovf3tz-K_BZGAOi5L=BKAVUv564+HzMmR+E9j2bA@mail.gmail.com>
+Subject: Re: Can't reproduce kfunc example in kfuncs documentation, kernel v6.0
+To:     bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -74,55 +63,86 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 4, 2022 at 11:23 AM Dave Thaler <dthaler@microsoft.com> wrote:
+> I'm trying to reproduce the example in `Documentation/bpf/kfuncs.rst`
+> in kernel 6.0
+> My end goal is to be able to call a kfunc from a kprobe, so the
+> documentation seemed like a good start.
+> I've created a file with almost the same content as the documentation
+> (below) and put it in
+> net/bpf and added it to the Makefile, with the added __diag directives
+> that are in
+> net/bpf/test_run.c around the kfuncs.
 >
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-> [...]
-> > > What is the expected value for the following 64-bit BPF_DIV operation:
-> > >     r0 = 0xFFFFFFFFFFFFFFFF
-> > >     r0 /= -10
-> > > Is it 0x1 or 0x10000000a?  i.e., is the -10 sign extended to
-> > > 0xFFFFFFFFFFFFFFF6 or treated as 0xFFFFFFF6 when doing the unsigned
-> > > division?
-> >
-> > x86 and arm64 JITs treat it as imm32 is zero extended.
+>  __diag_push();
+>  __diag_ignore_all("-Wmissing-prototypes",
+>       "Global functions as their definitions will be in vmlinux BTF");
+>   u64 bpf_get_task_pid(void) {
+>     return 1;
+>   }
+>    u64 bpf_put_pid(void) {
+>     return 2;
+>   }
+>   __diag_pop();
 >
-> Alan Jowett just pointed out to me that the question is not limited to DIV.
+>   BTF_SET8_START(bpf_task_set)
+>   BTF_ID_FLAGS(func, bpf_get_task_pid)
+>   BTF_ID_FLAGS(func, bpf_put_pid)
+>   BTF_SET8_END(bpf_task_set)
 >
-> r0 = 1
-> r0 += -1
+>   static const struct btf_kfunc_id_set bpf_task_kfunc_set = {
+>       .owner = THIS_MODULE,
+>       .set   = &bpf_task_set,
+>   };
 >
-> Is the answer 0 or 0x0000000100000000?
-> Assuming the answer is to zero extend imm32, it contains the latter, which
-> would be counter-intuitive enough to make it important to point out explicitly.
+>   static int bpftest_init_subsystem(void)
+>   {
+>     pr_warn(">>>>>>>>>>>>>>> bpftest_init_subsystem registered");
+>     //I want BPF_PROG_TYPE_KPROBE, but I'm testing also with
+> BPF_PROG_TYPE_TRACEPOINT
+>     return register_btf_kfunc_id_set(BPF_PROG_TYPE_KPROBE, &bpf_task_kfunc_set);
+>   }
+>   late_initcall(bpftest_init_subsystem);
+>
+>
+> I can see that this is being registered, but after that I see many
+> (16, all the same) messages like the one below.
+> These messages are gone if I don't compile the file I created above.
+> Is this file breaking something in bpf?
+>
+> [    5.845543] failed to validate module [cryptd] BTF: -22
+> [    5.861117] BPF: [129150] STRUCT
+> [    5.862980] BPF: size=96 vlen=1
+> [    5.864710] BPF:
+> [    5.865941] BPF: Invalid name
+> [    5.867221] BPF:
+>
+>
+> Ignoring these errors, I've tried both KPROBE and TRACEPOINT prog
+> types in `register_btf_kfunc_id_set`.
+> I can't find what a program with "tracing" is, so I changed it to
+> BPF_PROG_TYPE_TRACEPOINT and used
+> an example from the kernel: samples/bpf/syscall_tp_kern.c
+> As for testing with KPROBE, I'm using the kprobe.bpf.c do_unlinkat
+> example in libbpf/libbpf-bootstrap.
+> It seems like the kfunc is not being found in the set, or the set is
+> not registered correctly,
+> since running the bpf program with any of the two types prints out:
+>
+>   libbpf: prog 'trace_enter_open': BPF program load failed: Permission denied
+>   ...
+>   calling kernel function bpf_get_task_pid is not allowed
+>
+> Both the bpf programs are simple, their bodies have:
+>     __u64 a = bpf_get_task_pid();
+> The function is getting resolved since I see
+> libbpf: extern (func ksym) 'bpf_get_task_pid': resolved to kernel
+>
+> How can I correctly register a set and make the kernel allow me to call a kfunc?
+> Thank you.
 
-This is an obvious one. imm32 is _sign_ extended everywhere.
+Turns out KPROBE or TRACEPOINT don't have hooks, so the id is never found.
+After creating one for each in kernel/bpf/btf.c it works.
 
->
-> > But looking at the interpreter:
-> >         ALU64_DIV_K:
-> >                 DST = div64_u64(DST, IMM); it looks like we have a bug there.
-> > But we have a bunch of div_k tests in lib/test_bpf.c including negative
-> > imm32. Hmm.
-
-Actually I misread the JITs.
-/* mov r11, imm32 */
-EMIT3_off32(0x49, 0xC7, 0xC3, imm32);
-
-It is sign extending. There is no bug in the interpreter or JIT.
-
-> Yeah.
->
-> "ALU64_DIV_K: 0xffffffffffffffff / (-1) = 0x0000000000000001",
-> "ALU64_ADD_K: 2147483646 + -2147483647 = -1",
-> "ALU64_ADD_K: 0 + (-1) = 0xffffffffffffffff",
-> "ALU64_MUL_K: 1 * -2147483647 = -2147483647",
-> "ALU64_MUL_K: 1 * (-1) = 0xffffffffffffffff",
-> "ALU64_AND_K: 0x0000ffffffff0000 & -1 = 0x0000ffffffff0000",
-> "ALU64_AND_K: 0xffffffffffffffff & -1 = 0xffffffffffffffff",
-> "ALU64_OR_K: 0x000000000000000 | -1 = 0xffffffffffffffff",
->
-> The above assume sign extension not zero extension is the correct behavior
-> for these operations, if I understand correctly.
->
-> Dave
+I still don't know why the `failed to validate module [cryptd] BTF:
+-22` error is happening,
+but I'll ignore it for now.
