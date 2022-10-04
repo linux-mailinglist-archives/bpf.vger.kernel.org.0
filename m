@@ -2,138 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45A385F3B5D
-	for <lists+bpf@lfdr.de>; Tue,  4 Oct 2022 04:22:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 988285F3BDA
+	for <lists+bpf@lfdr.de>; Tue,  4 Oct 2022 05:51:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229854AbiJDCWd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Oct 2022 22:22:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44398 "EHLO
+        id S229573AbiJDDvF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Oct 2022 23:51:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229939AbiJDCWI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 Oct 2022 22:22:08 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4DCC42AFE
-        for <bpf@vger.kernel.org>; Mon,  3 Oct 2022 19:19:30 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id f21so3559083plb.13
-        for <bpf@vger.kernel.org>; Mon, 03 Oct 2022 19:19:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date;
-        bh=NQVjpE3arV86NIflGggCBNny8dEJ+BQUpvTxw6anHmU=;
-        b=S+/LufCBHTgxxTRsh9bAskNWIEaJRi3Fgb3nvQKmKCZBB3PhzXibWvnlC9t30KpRl4
-         N1Suoa+gfBgM5q4JeJc1mpRJVO5UTtllmWVg/KdhCNEXa0pbGElTQM9o+5SaYCG3b81L
-         FklqmqK3BCafJSUb8VG83UbMG2ZFupr5ETISQYC3IlytYzaTO6wQUcr/LHaCdjLJ06qF
-         ECtbPwlOrWScuFfwiY5a9KTHP8kxNG7mtZPAGSvNpheh2KOP2RvIV9SlZRKLYXuAYb4F
-         Y+Gns6uGp9fuoz4I+yaEHMRzLJAetNYHfwFsxdsCVJc448nQ3cFmofmnCq+ROafe7Lxq
-         K2gQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date;
-        bh=NQVjpE3arV86NIflGggCBNny8dEJ+BQUpvTxw6anHmU=;
-        b=ZK8mNzZLa+augzyn61w/PlOfyxsgmbbDU+fMVa9uFWNMk+vi7mAUm1ee1jWL/DECFc
-         9AXeFyUuMwIH/2+/+uyR0vuueDyxlngIrXLmNY5ErKPPwDUoXZPsTcNFbXZwbXNXJCK9
-         7mTvkyAP7MVWeYs7yVDumeA7cUUqkxh+6c6JmihqjxuYS4fqx8GBguddabJxsvvHjwvo
-         wTjE0dfwEC/BxJkaidf/LnrVwVoxCkOMvVdW3lkq7XwDLqlk1v3mBGMZgSIjF3PG0YHO
-         p4AzB3eJARISskdjGo/damfXUaEFfy8YqIWrdrcgBkw52ge18JkLyTq/dO/it21BmCWg
-         Rxew==
-X-Gm-Message-State: ACrzQf0UE43+dlSsIDAdbSnQs/UFkvzSzf4HXOdLStGuegzdLkOqbmNh
-        qNrARAJpS7PNdPYBvosJlbwbvU8ELN/CPVgH4sQJ3flDwl0=
-X-Google-Smtp-Source: AMsMyM4OJSkokC6Ul9HYWsG6AQjCPrgyc56bf2FQFZQqzeCuTctyi4r4KRJzi5tjGXV4kRmsfH9sVZ4AHUdaQc/9ja8=
-X-Received: by 2002:a17:902:ced2:b0:17f:5eb2:cd72 with SMTP id
- d18-20020a170902ced200b0017f5eb2cd72mr7198232plg.162.1664849926797; Mon, 03
- Oct 2022 19:18:46 -0700 (PDT)
+        with ESMTP id S229662AbiJDDu7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 Oct 2022 23:50:59 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E79BD1FCE6
+        for <bpf@vger.kernel.org>; Mon,  3 Oct 2022 20:50:42 -0700 (PDT)
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29405qMS000632
+        for <bpf@vger.kernel.org>; Mon, 3 Oct 2022 20:50:42 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=YyT1Lf//qrKidR8OAjnsJ9Qj+9eUFrfcTHpNowoHsPI=;
+ b=jGMJGyJuWmYMTOepSIGLkrL7+On/0Q+8ZwVhIXxHcSO3AowlTR4AQW94aUorEO2D5cBR
+ b7yRUj+jmciYVJLmF/Sdy7ZP+ocmWYRMCSomNq51uhUrqUUcpCggmGKIkxOoQNOCt1Jb
+ 5lxu5E7X69f+PYj1Z1bwz3rLR7FBWmFa5eM= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3k094a96fn-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 03 Oct 2022 20:50:42 -0700
+Received: from twshared13579.04.prn5.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Mon, 3 Oct 2022 20:50:40 -0700
+Received: by devbig150.prn5.facebook.com (Postfix, from userid 187975)
+        id 918CA110F8041; Mon,  3 Oct 2022 20:50:36 -0700 (PDT)
+Date:   Mon, 3 Oct 2022 20:50:36 -0700
+From:   Jie Meng <jmeng@fb.com>
+To:     KP Singh <kpsingh@kernel.org>
+CC:     <bpf@vger.kernel.org>, <ast@kernel.org>, <andrii@kernel.org>,
+        <daniel@iogearbox.net>
+Subject: Re: [PATCH bpf-next] bpf,x64: Remove unnecessary check on existence
+ of SSE2
+Message-ID: <YzutjPBbEYOPeEzG@fb.com>
+References: <20221003011727.1192900-1-jmeng@fb.com>
+ <CACYkzJ7_ZNKsE5b9ECqf7+U9qs8E2hbx4GXvAhrnG3iVApqLjg@mail.gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <CACYkzJ7_ZNKsE5b9ECqf7+U9qs8E2hbx4GXvAhrnG3iVApqLjg@mail.gmail.com>
+X-FB-Internal: Safe
+X-Proofpoint-ORIG-GUID: rub-1tvRGnFM9XcIuMaqZr3KBbMYZc3u
+X-Proofpoint-GUID: rub-1tvRGnFM9XcIuMaqZr3KBbMYZc3u
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-From:   Henrique Fingler <henrique.fingler@gmail.com>
-Date:   Mon, 3 Oct 2022 21:18:35 -0500
-Message-ID: <CACG+mBWpDSrxUR4RehJPpcF_BdF8-7+HHqmdq+ULpWrpE8BGDA@mail.gmail.com>
-Subject: Can't reproduce kfunc example in kfuncs documentation, kernel v6.0
-To:     bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.528,FMLib:17.11.122.1
+ definitions=2022-10-04_02,2022-09-29_03,2022-06-22_01
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-I'm trying to reproduce the example in `Documentation/bpf/kfuncs.rst`
-in kernel 6.0
-My end goal is to be able to call a kfunc from a kprobe, so the
-documentation seemed like a good start.
-I've created a file with almost the same content as the documentation
-(below) and put it in
-net/bpf and added it to the Makefile, with the added __diag directives
-that are in
-net/bpf/test_run.c around the kfuncs.
+On Tue, Oct 04, 2022 at 03:04:20AM +0200, KP Singh wrote:
+> On Mon, Oct 3, 2022 at 3:17 AM Jie Meng <jmeng@fb.com> wrote:
+> >
+> > SSE2 and hence lfence are architectural in x86-64 and no need to check
+> > whether they're supported in CPU.
+> 
+> Why do you say this?
+> 
+> The Instruction set reference does mention that:
+> 
+> Exceptions:
+> 
+> #UD If CPUID.01H:EDX.SSE2[bit 26] = 0
+> 
+> (undefined instruction when the CPUID.SSE2 bit is unset)
+> 
+> and also that the CPUID feature flag is SSE2
 
- __diag_push();
- __diag_ignore_all("-Wmissing-prototypes",
-      "Global functions as their definitions will be in vmlinux BTF");
-  u64 bpf_get_task_pid(void) {
-    return 1;
-  }
-   u64 bpf_put_pid(void) {
-    return 2;
-  }
-  __diag_pop();
+Many x86 extensions predate x86-64. When they designed x86-64, AMD
+decided to make some mandatory (and hence architectural) and SSE2 is
+one of them[1]. CMOV, NOPL, PAE, NX etc. are other examples.
 
-  BTF_SET8_START(bpf_task_set)
-  BTF_ID_FLAGS(func, bpf_get_task_pid)
-  BTF_ID_FLAGS(func, bpf_put_pid)
-  BTF_SET8_END(bpf_task_set)
+These extensions' CPUID flags are still set. If code is to be shared
+between x86 and x86-64 one can still check CPUID, but bpf_jit_comp.c
+is compiled under x86-64 only so the check is redundant.
 
-  static const struct btf_kfunc_id_set bpf_task_kfunc_set = {
-      .owner = THIS_MODULE,
-      .set   = &bpf_task_set,
-  };
+There's an example Within kernel code too: arch/x86/lib/copy_user_64.S
+uses SSE (sfence) and SSE2 (movnti) instructions and doesn't check
+CPUID for their presence.
 
-  static int bpftest_init_subsystem(void)
-  {
-    pr_warn(">>>>>>>>>>>>>>> bpftest_init_subsystem registered");
-    //I want BPF_PROG_TYPE_KPROBE, but I'm testing also with
-BPF_PROG_TYPE_TRACEPOINT
-    return register_btf_kfunc_id_set(BPF_PROG_TYPE_KPROBE, &bpf_task_kfunc_set);
-  }
-  late_initcall(bpftest_init_subsystem);
+---
+[1] https://en.wikipedia.org/wiki/X86-64#Microarchitecture_levels
 
-
-I can see that this is being registered, but after that I see many
-(16, all the same) messages like the one below.
-These messages are gone if I don't compile the file I created above.
-Is this file breaking something in bpf?
-
-[    5.845543] failed to validate module [cryptd] BTF: -22
-[    5.861117] BPF: [129150] STRUCT
-[    5.862980] BPF: size=96 vlen=1
-[    5.864710] BPF:
-[    5.865941] BPF: Invalid name
-[    5.867221] BPF:
-
-
-Ignoring these errors, I've tried both KPROBE and TRACEPOINT prog
-types in `register_btf_kfunc_id_set`.
-I can't find what a program with "tracing" is, so I changed it to
-BPF_PROG_TYPE_TRACEPOINT and used
-an example from the kernel: samples/bpf/syscall_tp_kern.c
-As for testing with KPROBE, I'm using the kprobe.bpf.c do_unlinkat
-example in libbpf/libbpf-bootstrap.
-It seems like the kfunc is not being found in the set, or the set is
-not registered correctly,
-since running the bpf program with any of the two types prints out:
-
-  libbpf: prog 'trace_enter_open': BPF program load failed: Permission denied
-  ...
-  calling kernel function bpf_get_task_pid is not allowed
-
-Both the bpf programs are simple, their bodies have:
-    __u64 a = bpf_get_task_pid();
-The function is getting resolved since I see
-libbpf: extern (func ksym) 'bpf_get_task_pid': resolved to kernel
-
-How can I correctly register a set and make the kernel allow me to call a kfunc?
-Thank you.
+> >
+> > Signed-off-by: Jie Meng <jmeng@fb.com>
+> > ---
+> >  arch/x86/net/bpf_jit_comp.c | 3 +--
+> >  1 file changed, 1 insertion(+), 2 deletions(-)
+> >
+> > diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> > index d09c54f3d2e0..b2124521305e 100644
+> > --- a/arch/x86/net/bpf_jit_comp.c
+> > +++ b/arch/x86/net/bpf_jit_comp.c
+> > @@ -1289,8 +1289,7 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image, u8 *rw_image
+> >
+> >                         /* speculation barrier */
+> >                 case BPF_ST | BPF_NOSPEC:
+> > -                       if (boot_cpu_has(X86_FEATURE_XMM2))
+> > -                               EMIT_LFENCE();
+> > +                       EMIT_LFENCE();
+> >                         break;
+> >
+> >                         /* ST: *(u8*)(dst_reg + off) = imm */
+> > --
+> > 2.30.2
+> >
