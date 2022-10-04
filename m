@@ -2,235 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 421C85F3FA4
-	for <lists+bpf@lfdr.de>; Tue,  4 Oct 2022 11:30:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECFBA5F4242
+	for <lists+bpf@lfdr.de>; Tue,  4 Oct 2022 13:49:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230505AbiJDJaD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Oct 2022 05:30:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58610 "EHLO
+        id S229514AbiJDLtW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Oct 2022 07:49:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231317AbiJDJ3d (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Oct 2022 05:29:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13A0DB71
-        for <bpf@vger.kernel.org>; Tue,  4 Oct 2022 02:29:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1664875770;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ykp8QrHtYsQs2S4pDXqZoKDJOJ31ef1hCy5o4M7urP8=;
-        b=STtpa9gGGBoZ/Yd6QhbM2wqvD6VqbzQ/FCxG9RQLiM923Tj6uav+As5mk0UpXkeDhG5XeK
-        Cen+i82fkaz0Jxs/JXkjY1CdcAeSnbPp/7oV9qkdS2//pC6NdO8/VquZ2vvxCu08dNxoFS
-        gBenxEwj195LfLgmWhsQAeBehOjqrvA=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-642-K06KJPPzMQq8xeDMkwOONg-1; Tue, 04 Oct 2022 05:29:21 -0400
-X-MC-Unique: K06KJPPzMQq8xeDMkwOONg-1
-Received: by mail-ed1-f72.google.com with SMTP id e15-20020a056402190f00b0044f41e776a0so10617248edz.0
-        for <bpf@vger.kernel.org>; Tue, 04 Oct 2022 02:29:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :to:subject:cc:user-agent:mime-version:date:message-id:from
-         :x-gm-message-state:from:to:cc:subject:date;
-        bh=Ykp8QrHtYsQs2S4pDXqZoKDJOJ31ef1hCy5o4M7urP8=;
-        b=atzSkWxcsa1gz5J4ggKPzgt0xYcC3uYArpKCmHpn9z9uuDC42odtjaB7m3WrIRIwJw
-         2TJoyUbyJIY7op0mbMxVP9cdmfXpBeVw31a4W1trqCfoiQIS8jVVTUojpAD75XtJxUcD
-         6GpMNFTvjsk2Mn4Z4rvi4Fl7129a7nJdLtZ7Rwha5+OMTuWuDoRVteva+2nI9JRl7de8
-         qX305E3FaJJi+0qc7YrbpxYnZonGOF5U5UZpJ9Rht7/bWNaiEkmvN8tzX75R9lRT0RAw
-         4vSOZiut4YVkQ2IlDmUoSqJyJPxgkdaKsT+OYWlGO67qvZIk9GVEsPY1v/aE3vaMyHvu
-         m/Sg==
-X-Gm-Message-State: ACrzQf3FW+OyRrTFPrXkUQZfZS2okJSo62WP0ykIp/HNFASI1nq/E4pJ
-        ZSi/jdHBEqDIEBTZOMrroaW10qnlb24g2V3yW4/ZVxPAvogS6A2YhgidBn2xkcXbkUNFFGKCoF5
-        4Ws+DQgeneFZc
-X-Received: by 2002:a17:907:94c6:b0:787:9157:a87a with SMTP id dn6-20020a17090794c600b007879157a87amr18836608ejc.5.1664875760562;
-        Tue, 04 Oct 2022 02:29:20 -0700 (PDT)
-X-Google-Smtp-Source: AMsMyM6cThDfxYHG1OMCjFWh4ItxMOvFuQgMEeYE0kVhTCrd7yVLHYXv9BY5w4ToxgN2BkWsaSrLtA==
-X-Received: by 2002:a17:907:94c6:b0:787:9157:a87a with SMTP id dn6-20020a17090794c600b007879157a87amr18836585ejc.5.1664875760199;
-        Tue, 04 Oct 2022 02:29:20 -0700 (PDT)
-Received: from [192.168.41.81] (83-90-141-187-cable.dk.customer.tdc.net. [83.90.141.187])
-        by smtp.gmail.com with ESMTPSA id n16-20020a05640205d000b00454546561cfsm1261361edx.82.2022.10.04.02.29.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 04 Oct 2022 02:29:19 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <35fcfb25-583a-e923-6eee-e8bbcc19db17@redhat.com>
-Date:   Tue, 4 Oct 2022 11:29:17 +0200
+        with ESMTP id S229436AbiJDLtV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 Oct 2022 07:49:21 -0400
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED1A34D818;
+        Tue,  4 Oct 2022 04:49:18 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.227])
+        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4MhbS30z51z9v7H2;
+        Tue,  4 Oct 2022 19:43:15 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.204.63.22])
+        by APP2 (Coremail) with SMTP id GxC2BwDXU16kHTxjYVKaAA--.62750S2;
+        Tue, 04 Oct 2022 12:49:00 +0100 (CET)
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
+        shuah@kernel.org
+Cc:     bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Subject: [PATCH 0/6] Add _opts variant for bpf_*_get_fd_by_id()
+Date:   Tue,  4 Oct 2022 13:48:33 +0200
+Message-Id: <20221004114839.2302206-1-roberto.sassu@huaweicloud.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.0
-Cc:     brouer@redhat.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
-        xdp-hints@xdp-project.net, larysa.zaremba@intel.com,
-        memxor@gmail.com, Lorenzo Bianconi <lorenzo@kernel.org>,
-        mtahhan@redhat.com,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        dave@dtucker.co.uk, Magnus Karlsson <magnus.karlsson@intel.com>,
-        bjorn@kernel.org
-Subject: Re: [PATCH RFCv2 bpf-next 00/18] XDP-hints: XDP gaining access to HW
- offload hints via BTF
-To:     sdf@google.com
-References: <166256538687.1434226.15760041133601409770.stgit@firesoul>
- <Yzt2YhbCBe8fYHWQ@google.com>
-Content-Language: en-US
-In-Reply-To: <Yzt2YhbCBe8fYHWQ@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-CM-TRANSID: GxC2BwDXU16kHTxjYVKaAA--.62750S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7tF45Ar4ktFy5Xr17AF48tFb_yoW8Wr1Up3
+        9xGryFkr1FgFyxu3sxJayFyrn5Ga4xWw1UC3Z7Jr15Zr9YqF4DZry8WF45WF9xu395Ganx
+        Zr4Yyr1DGw1UAFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvGb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x
+        0267AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02
+        F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4I
+        kC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7Cj
+        xVAaw2AFwI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2
+        IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v2
+        6r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2
+        IY6xkF7I0E14v26r4UJVWxJr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvE
+        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa
+        73UjIFyTuYvjxUxo7KDUUUU
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAPBF1jj4POugAAsM
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+From: Roberto Sassu <roberto.sassu@huawei.com>
 
-On 04/10/2022 01.55, sdf@google.com wrote:
-> On 09/07, Jesper Dangaard Brouer wrote:
->> This patchset expose the traditional hardware offload hints to XDP and
->> rely on BTF to expose the layout to users.
-> 
->> Main idea is that the kernel and NIC drivers simply defines the struct
->> layouts they choose to use for XDP-hints. These XDP-hints structs gets
->> naturally and automatically described via BTF and implicitly exported to
->> users. NIC drivers populate and records their own BTF ID as the last
->> member in XDP metadata area (making it easily accessible by AF_XDP
->> userspace at a known negative offset from packet data start).
-> 
->> Naming conventions for the structs (xdp_hints_*) is used such that
->> userspace can find and decode the BTF layout and match against the
->> provided BTF IDs. Thus, no new UAPI interfaces are needed for exporting
->> what XDP-hints a driver supports.
-> 
->> The patch "i40e: Add xdp_hints_union" introduce the idea of creating a
->> union named "xdp_hints_union" in every driver, which contains all
->> xdp_hints_* struct this driver can support. This makes it easier/quicker
->> to find and parse the relevant BTF types.  (Seeking input before fixing
->> up all drivers in patchset).
-> 
-> 
->> The main different from RFC-v1:
->>   - Drop idea of BTF "origin" (vmlinux, module or local)
->>   - Instead to use full 64-bit BTF ID that combine object+type ID
-> 
->> I've taken some of Alexandr/Larysa's libbpf patches and integrated
->> those.
-> 
->> Patchset exceeds netdev usually max 15 patches rule. My excuse is three
->> NIC drivers (i40e, ixgbe and mvneta) gets XDP-hints support and which
->> required some refactoring to remove the SKB dependencies.
-> 
-> Hey Jesper,
-> 
-> I took a quick look at the series. 
-Appreciate that! :-)
+Add the _opts variant for bpf_*_get_fd_by_id() functions, to be able to
+pass to the kernel more options, when requesting a fd of an eBPF object to
+the kernel.
 
-> Do we really need the enum with the flags?
+Pass the options through a newly introduced structure, bpf_get_fd_opts,
+which currently contains open_flags (the other two members are for
+compatibility and for padding).
 
-The primary reason for using enum is that these gets exposed as BTF.
-The proposal is that userspace/BTF need to obtain the flags via BTF,
-such that they don't become UAPI, but something we can change later.
+open_flags allows the caller to request specific permissions to access a
+map (e.g. read-only). This is useful for example in the situation where a
+map is write-protected.
 
-> We might eventually hit that "first 16 bits are reserved" issue?
-> 
-> Instead of exposing enum with the flags, why not solve it as follows:
-> a. We define UAPI struct xdp_rx_hints with _all_ possible hints
+Besides patches 2-6, which introduce the new variants and the data
+structure, patch 1 fixes the LIBBPF_1.0.0 declaration in libbpf.map.
 
-How can we know _all_ possible hints from the beginning(?).
+Roberto Sassu (6):
+  libbpf: Fix LIBBPF_1.0.0 declaration in libbpf.map
+  libbpf: Define bpf_get_fd_opts and introduce
+    bpf_map_get_fd_by_id_opts()
+  libbpf: Introduce bpf_prog_get_fd_by_id_opts()
+  libbpf: Introduce bpf_btf_get_fd_by_id_opts()
+  libbpf: Introduce bpf_link_get_fd_by_id_opts()
+  selftests/bpf: Add tests for _opts variants of bpf_*_get_fd_by_id()
 
-UAPI + central struct dictating all possible hints, will limit innovation.
+ tools/lib/bpf/bpf.c                           | 47 +++++++++-
+ tools/lib/bpf/bpf.h                           | 16 ++++
+ tools/lib/bpf/libbpf.map                      |  6 +-
+ .../bpf/prog_tests/libbpf_get_fd_opts.c       | 88 +++++++++++++++++++
+ .../bpf/progs/test_libbpf_get_fd_opts.c       | 36 ++++++++
+ 5 files changed, 188 insertions(+), 5 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/libbpf_get_fd_opts.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_libbpf_get_fd_opts.c
 
-> b. Each device defines much denser <device>_xdp_rx_hints struct with the
->     metadata that it supports
-
-Thus, the NIC device is limited to what is defined in UAPI struct
-xdp_rx_hints.  Again this limits innovation.
-
-> c. The subset of fields in <device>_xdp_rx_hints should match the ones from
->     xdp_rx_hints (we essentially standardize on the field names/sizes)
-> d. We expose <device>_xdp_rx_hints btf id via netlink for each device
-
-For this proposed design you would still need more than one BTF ID or
-<device>_xdp_rx_hints struct's, because not all packets contains all
-hints. The most common case is HW timestamping, which some HW only
-supports for PTP frames.
-
-Plus, I don't see a need to expose anything via netlink, as we can just
-use the existing BTF information from the module.  Thus, avoiding to
-creating more UAPI.
-
-> e. libbpf will query and do offset relocations for
->     xdp_rx_hints -> <device>_xdp_rx_hints at load time
-> 
-> Would that work? Then it seems like we can replace bitfields with the 
-
-I used to be a fan of bitfields, until I discovered that they are bad
-for performance, because compilers cannot optimize these.
-
-> following:
-> 
->    if (bpf_core_field_exists(struct xdp_rx_hints, vlan_tci)) {
->      /* use that hint */
-
-Fairly often a VLAN will not be set in packets, so we still have to read
-and check a bitfield/flag if the VLAN value is valid. (Guess it is
-implicit in above code).
-
->    }
-> 
-> All we need here is for libbpf to, again, do xdp_rx_hints ->
-> <device>_xdp_rx_hints translation before it evaluates 
-> bpf_core_field_exists()?
-> 
-> Thoughts? Any downsides? Am I missing something?
-> 
-
-Well, the downside is primarily that this design limits innovation.
-
-Each time a NIC driver want to introduce a new hardware hint, they have
-to update the central UAPI xdp_rx_hints struct first.
-
-The design in the patchset is to open for innovation.  Driver can extend
-their own xdp_hints_<driver>_xxx struct(s).  They still have to land
-their patches upstream, but avoid mangling a central UAPI struct. As
-upstream we review driver changes and should focus on sane struct member
-naming(+size) especially if this "sounds" like a hint/feature that more
-driver are likely to support.  With help from BTF relocations, a new
-driver can support same hint/feature if naming(+size) match (without
-necessary the same offset in the struct).
-
-> Also, about the TX side: I feel like the same can be applied there,
-> the program works with xdp_tx_hints and libbpf will rewrite to
-> <device>_xdp_tx_hints. xdp_tx_hints might have fields like "has_tx_vlan:1";
-> those, presumably, can be relocatable by libbpf as well?
-> 
-
-Good to think ahead for TX-side, even-though I think we should focus on
-landing RX-side first.
-
-I notice your naming xdp_rx_hints vs. xdp_tx_hints.  I have named the
-common struct xdp_hints_common, without a RX/TX direction indication.
-Maybe this is wrong of me, but my thinking was that most of the common
-hints can be directly used as TX-side hints.  I'm hoping TX-side
-xdp-hints will need to do little-to-non adjustment, before using the
-hints as TX "instruction".  I'm hoping that XDP-redirect will just work
-and xmit driver can use XDP-hints area.
-
-Please correct me if I'm wrong.
-The checksum fields hopefully translates to similar TX offload "actions".
-The VLAN offload hint should translate directly to TX-side.
-
-I can easily be convinced we should name it xdp_hints_rx_common from the
-start, but then I will propose that xdp_hints_tx_common have the
-checksum and VLAN fields+flags at same locations, such that we don't
-take any performance hint for moving them to "TX-side" hints, making
-XDP-redirect just work.
-
---Jesper
+-- 
+2.25.1
 
