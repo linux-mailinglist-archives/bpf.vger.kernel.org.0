@@ -2,47 +2,46 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 562935F42ED
-	for <lists+bpf@lfdr.de>; Tue,  4 Oct 2022 14:30:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C3B45F43D2
+	for <lists+bpf@lfdr.de>; Tue,  4 Oct 2022 15:00:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229728AbiJDM37 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 4 Oct 2022 08:29:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39788 "EHLO
+        id S229946AbiJDNAx convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 4 Oct 2022 09:00:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbiJDM36 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Oct 2022 08:29:58 -0400
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B12AB10074
-        for <bpf@vger.kernel.org>; Tue,  4 Oct 2022 05:29:54 -0700 (PDT)
-Received: by mail-il1-f198.google.com with SMTP id r12-20020a92cd8c000000b002f9f5baaeeaso3499910ilb.4
-        for <bpf@vger.kernel.org>; Tue, 04 Oct 2022 05:29:54 -0700 (PDT)
+        with ESMTP id S229543AbiJDNAD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 Oct 2022 09:00:03 -0400
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77AB32A24E
+        for <bpf@vger.kernel.org>; Tue,  4 Oct 2022 05:57:22 -0700 (PDT)
+Received: by mail-io1-f71.google.com with SMTP id 5-20020a5d9c05000000b006a44709a638so8982860ioe.11
+        for <bpf@vger.kernel.org>; Tue, 04 Oct 2022 05:57:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:in-reply-to
+        h=content-transfer-encoding:to:from:subject:message-id:in-reply-to
          :date:mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=GuN2yfSCRfAbOuYublK0z0wVOLyWKch1JZkf2YsVEkA=;
-        b=nB5Gai7WBQCREIc1wCSUzc8FQA7gPsTdB/Z1Vx/HrWcknJoG631KN6jU1Ujkk4iP5e
-         89IWHsdSDP/vEh317cFdo68gPMiaivkPalSFSiiNIvvlJ0uchfEc5P+CYQqTFD/xXiOI
-         ZGE/ktGc1I1FyH74sYob0DMCgOt9gDa4YlllGgRVgVXckGCV6qT75xSqGQUZF52yLJYL
-         Y9MuRvvRvk5TYxpto4fq7SlHQXCBEKVO66OEoUxjqxSjDttAhuUh/u8hlKBDmyUGeEcv
-         HCpKRgxSQQ414g80TEQgpM0SoOg9M4lh5F59TLNiSjHUCZxBsxKY4OMVaMTe0fuVoZDG
-         SC9w==
-X-Gm-Message-State: ACrzQf1Q2TGI6kCqSPW/tItuaPdLJQYXflwTXxA6D4+IZFUIGLqIss4T
-        DX6J3t/YMJ8eZkAx0RFzeu7Ay41fP3aDn23qz5mzmtcVBEV1
-X-Google-Smtp-Source: AMsMyM63U9GG967OYkR0QzYQxCkW662G3uLOXg40S9IOF4dKuz6rRelptx7H+WEZDZEwzbjpr3LeDJBxkXE4xUdjGAeqq3sHrUwE
+        bh=ZaaERZiNeWPg1VEtskzRzem7azoo+jAPc6Nm8v1Mjr0=;
+        b=7MigSwK6kx4lCQvBlMKBB9ytu0ZXZA8nCOMpQOPjVkxZQ7MhOVziDgCCGz4imzOQu7
+         Z8hs0AQzNl3UdduCXoBMu993j5cksNMa+eqCZx0q/K6iPKg8LAnV8Yc+cD0SQqoLXyjZ
+         qUFNoxLml9VNsZDdOmR+uLd8a4h3AhCoIQhni2TzB32IbYnFN38vyoDfF9qHKSDj8wK+
+         1esKOwI88D3GI5CANmmrtPNLMQtMLWrreSYHLxVx8c/PkvRSCwZrXKhTKSqX9lPFF2YF
+         t8GpL9M5rOEr9lUbjnAfvcXNP3qy72pa+UBZVtGkhiNJ1sf3CoADdT2sphYNGyV1VlNy
+         v3hA==
+X-Gm-Message-State: ACrzQf0dqIV36zfhLWy0CGzW5GH3VK4xqhWEOhq7slfqPirNYjPKkEKZ
+        6oicYJGxR2BmD80uSzot4Hn1dFX5MpRVA17H05HYoWjN/Mxg
+X-Google-Smtp-Source: AMsMyM4kteE+NL4GAcjpCLq1LwFAhSOn3ZAssS5MrlayLf6b/No6LrtmBBCgIgSa0qYCffeg++X/hyr53V5k5Q4P1mQiqhP4JPvH
 MIME-Version: 1.0
-X-Received: by 2002:a02:6628:0:b0:35a:a076:f194 with SMTP id
- k40-20020a026628000000b0035aa076f194mr12300988jac.293.1664886593575; Tue, 04
- Oct 2022 05:29:53 -0700 (PDT)
-Date:   Tue, 04 Oct 2022 05:29:53 -0700
-In-Reply-To: <PH8PR10MB6290C2CF24E9AF8B675B54F1C25A9@PH8PR10MB6290.namprd10.prod.outlook.com>
+X-Received: by 2002:a05:6602:168b:b0:6a2:c6d1:d4e4 with SMTP id
+ s11-20020a056602168b00b006a2c6d1d4e4mr11282718iow.190.1664888241655; Tue, 04
+ Oct 2022 05:57:21 -0700 (PDT)
+Date:   Tue, 04 Oct 2022 05:57:21 -0700
+In-Reply-To: <PH8PR10MB6290511E9C0A3D20E1C222EEC25A9@PH8PR10MB6290.namprd10.prod.outlook.com>
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000000606f05ea349ef5@google.com>
-Subject: Re: [External] : Re: [syzbot] upstream boot error: WARNING in netlink_ack
+Message-ID: <0000000000003c183505ea350059@google.com>
+Subject: Re: [syzbot] upstream boot error: WARNING in netlink_ack
 From:   syzbot <syzbot+3a080099974c271cd7e9@syzkaller.appspotmail.com>
-To:     Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-Cc:     bpf@vger.kernel.org, davem@davemloft.net, dvyukov@google.com,
+To:     bpf@vger.kernel.org, davem@davemloft.net, dvyukov@google.com,
         edumazet@google.com, fw@strlen.de,
         harshit.m.mogalapalli@oracle.com, keescook@chromium.org,
         kuba@kernel.org, linux-hardening@vger.kernel.org,
@@ -51,99 +50,87 @@ Cc:     bpf@vger.kernel.org, davem@davemloft.net, dvyukov@google.com,
         vegard.nossum@oracle.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> #syz test: git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 725737e7c21d2d25a4312c2aaa82a52bd03e3126
+Hello,
 
-"git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git" does not look like a valid git repo address.
+syzbot tried to test the proposed patch but the build/boot failed:
 
-> ________________________________
-> From: Dmitry Vyukov <dvyukov@google.com>
-> Sent: Tuesday, October 4, 2022 2:03 PM
-> To: syzbot <syzbot+3a080099974c271cd7e9@syzkaller.appspotmail.com>
-> Cc: bpf@vger.kernel.org <bpf@vger.kernel.org>; davem@davemloft.net <davem@davemloft.net>; edumazet@google.com <edumazet@google.com>; fw@strlen.de <fw@strlen.de>; Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>; kuba@kernel.org <kuba@kernel.org>; linux-kernel@vger.kernel.org <linux-kernel@vger.kernel.org>; netdev@vger.kernel.org <netdev@vger.kernel.org>; pabeni@redhat.com <pabeni@redhat.com>; syzkaller-bugs@googlegroups.com <syzkaller-bugs@googlegroups.com>; Kees Cook <keescook@chromium.org>; linux-hardening@vger.kernel.org <linux-hardening@vger.kernel.org>
-> Subject: [External] : Re: [syzbot] upstream boot error: WARNING in netlink_ack
->
-> On Tue, 4 Oct 2022 at 10:27, syzbot
-> <syzbot+3a080099974c271cd7e9@syzkaller.appspotmail.com> wrote:
->>
->> Hello,
->>
->> syzbot found the following issue on:
->>
->> HEAD commit:    725737e7c21d Merge tag 'statx-dioalign-for-linus' of git:/..
->> git tree:       upstream
->> console output: https://urldefense.com/v3/__https://syzkaller.appspot.com/x/log.txt?x=10257034880000__;!!ACWV5N9M2RV99hQ!JLKmju0bGutCqqoyNIQKRQdm9TNClcOMG_8UkomHPsMDz-TMEdXilnMB9IHkb8-T4xl5_2lCJlynosRL1eQwvDK4FA$
->> kernel config:  https://urldefense.com/v3/__https://syzkaller.appspot.com/x/.config?x=486af5e221f55835__;!!ACWV5N9M2RV99hQ!JLKmju0bGutCqqoyNIQKRQdm9TNClcOMG_8UkomHPsMDz-TMEdXilnMB9IHkb8-T4xl5_2lCJlynosRL1eSqYksR8Q$
->> dashboard link: https://urldefense.com/v3/__https://syzkaller.appspot.com/bug?extid=3a080099974c271cd7e9__;!!ACWV5N9M2RV99hQ!JLKmju0bGutCqqoyNIQKRQdm9TNClcOMG_8UkomHPsMDz-TMEdXilnMB9IHkb8-T4xl5_2lCJlynosRL1eTl68Yp4Q$
->> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
->>
->> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->> Reported-by: syzbot+3a080099974c271cd7e9@syzkaller.appspotmail.com
->
-> +linux-hardening
->
->> ------------[ cut here ]------------
->> memcpy: detected field-spanning write (size 28) of single field "&errmsg->msg" at net/netlink/af_netlink.c:2447 (size 16)
->> WARNING: CPU: 3 PID: 3351 at net/netlink/af_netlink.c:2447 netlink_ack+0x8ac/0xb10 net/netlink/af_netlink.c:2447
->> Modules linked in:
->> CPU: 3 PID: 3351 Comm: dhcpcd Not tainted 6.0.0-syzkaller-00593-g725737e7c21d #0
->> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
->> RIP: 0010:netlink_ack+0x8ac/0xb10 net/netlink/af_netlink.c:2447
->> Code: fa ff ff e8 36 c3 e5 f9 b9 10 00 00 00 4c 89 ee 48 c7 c2 20 3f fb 8a 48 c7 c7 80 3f fb 8a c6 05 e8 98 34 06 01 e8 26 77 a6 01 <0f> 0b e9 3a fa ff ff 41 be 00 01 00 00 41 bd 14 00 00 00 e9 ea fd
->> RSP: 0018:ffffc900220e7758 EFLAGS: 00010282
->> RAX: 0000000000000000 RBX: ffff88801a798a80 RCX: 0000000000000000
->> RDX: ffff8880151c0180 RSI: ffffffff81611cb8 RDI: fffff5200441cedd
->> RBP: ffff88801ed850c0 R08: 0000000000000005 R09: 0000000000000000
->> R10: 0000000080000000 R11: 0000000000000000 R12: 0000000000000000
->> R13: 000000000000001c R14: ffff88801ec8e400 R15: ffff88801ec8e414
->> FS:  00007faef0af8740(0000) GS:ffff88802cb00000(0000) knlGS:0000000000000000
->> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> CR2: 00007fff6adbe000 CR3: 0000000027683000 CR4: 0000000000150ee0
->> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->> Call Trace:
->>  <TASK>
->>  netlink_rcv_skb+0x33d/0x420 net/netlink/af_netlink.c:2507
->>  genl_rcv+0x24/0x40 net/netlink/genetlink.c:803
->>  netlink_unicast_kernel net/netlink/af_netlink.c:1319 [inline]
->>  netlink_unicast+0x543/0x7f0 net/netlink/af_netlink.c:1345
->>  netlink_sendmsg+0x917/0xe10 net/netlink/af_netlink.c:1921
->>  sock_sendmsg_nosec net/socket.c:714 [inline]
->>  sock_sendmsg+0xcf/0x120 net/socket.c:734
->>  ____sys_sendmsg+0x712/0x8c0 net/socket.c:2482
->>  ___sys_sendmsg+0x110/0x1b0 net/socket.c:2536
->>  __sys_sendmsg+0xf3/0x1c0 net/socket.c:2565
->>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->>  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->>  entry_SYSCALL_64_after_hwframe+0x63/0xcd
->> RIP: 0033:0x7faef0bf0163
->> Code: 64 89 02 48 c7 c0 ff ff ff ff eb b7 66 2e 0f 1f 84 00 00 00 00 00 90 64 8b 04 25 18 00 00 00 85 c0 75 14 b8 2e 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 55 c3 0f 1f 40 00 48 83 ec 28 89 54 24 1c 48
->> RSP: 002b:00007fff6adbdc48 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
->> RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007faef0bf0163
->> RDX: 0000000000000000 RSI: 00007fff6adbdc90 RDI: 0000000000000010
->> RBP: 00007fff6adc1ed8 R08: 0000000000000000 R09: 0000000000000000
->> R10: 00007faef0c6ffc0 R11: 0000000000000246 R12: 0000000000000010
->> R13: 00007fff6adc1cf0 R14: 0000000000000000 R15: 000055e5ebce0290
->>  </TASK>
->>
->>
->> ---
->> This report is generated by a bot. It may contain errors.
->> See https://urldefense.com/v3/__https://goo.gl/tpsmEJ__;!!ACWV5N9M2RV99hQ!JLKmju0bGutCqqoyNIQKRQdm9TNClcOMG_8UkomHPsMDz-TMEdXilnMB9IHkb8-T4xl5_2lCJlynosRL1eRqES2pIA$   for more information about syzbot.
->> syzbot engineers can be reached at syzkaller@googlegroups.com.
->>
->> syzbot will keep track of this issue. See:
->> https://urldefense.com/v3/__https://goo.gl/tpsmEJ*status__;Iw!!ACWV5N9M2RV99hQ!JLKmju0bGutCqqoyNIQKRQdm9TNClcOMG_8UkomHPsMDz-TMEdXilnMB9IHkb8-T4xl5_2lCJlynosRL1eSY24iMTg$   for how to communicate with syzbot.
->>
->> --
->> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
->> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
->> To view this discussion on the web visit https://urldefense.com/v3/__https://groups.google.com/d/msgid/syzkaller-bugs/000000000000a793cc05ea313b87*40google.com__;JQ!!ACWV5N9M2RV99hQ!JLKmju0bGutCqqoyNIQKRQdm9TNClcOMG_8UkomHPsMDz-TMEdXilnMB9IHkb8-T4xl5_2lCJlynosRL1eTagCl4GQ$  .
+asset storage also requires dashboard client
+
+syzkaller build log:
+go env (err=<nil>)
+GO111MODULE="auto"
+GOARCH="amd64"
+GOBIN=""
+GOCACHE="/syzkaller/.cache/go-build"
+GOENV="/syzkaller/.config/go/env"
+GOEXE=""
+GOEXPERIMENT=""
+GOFLAGS=""
+GOHOSTARCH="amd64"
+GOHOSTOS="linux"
+GOINSECURE=""
+GOMODCACHE="/syzkaller/jobs/linux/gopath/pkg/mod"
+GONOPROXY=""
+GONOSUMDB=""
+GOOS="linux"
+GOPATH="/syzkaller/jobs/linux/gopath"
+GOPRIVATE=""
+GOPROXY="https://proxy.golang.org,direct"
+GOROOT="/usr/local/go"
+GOSUMDB="sum.golang.org"
+GOTMPDIR=""
+GOTOOLDIR="/usr/local/go/pkg/tool/linux_amd64"
+GOVCS=""
+GOVERSION="go1.17"
+GCCGO="gccgo"
+AR="ar"
+CC="gcc"
+CXX="g++"
+CGO_ENABLED="1"
+GOMOD="/syzkaller/jobs/linux/gopath/src/github.com/google/syzkaller/go.mod"
+CGO_CFLAGS="-g -O2"
+CGO_CPPFLAGS=""
+CGO_CXXFLAGS="-g -O2"
+CGO_FFLAGS="-g -O2"
+CGO_LDFLAGS="-g -O2"
+PKG_CONFIG="pkg-config"
+GOGCCFLAGS="-fPIC -m64 -pthread -fmessage-length=0 -fdebug-prefix-map=/tmp/go-build46036865=/tmp/go-build -gno-record-gcc-switches"
+
+git status (err=<nil>)
+HEAD detached at feb563518
+nothing to commit, working tree clean
+
+
+go list -f '{{.Stale}}' ./sys/syz-sysgen | grep -q false || go install ./sys/syz-sysgen
+make .descriptions
+bin/syz-sysgen
+touch .descriptions
+GOOS=linux GOARCH=amd64 go build "-ldflags=-s -w -X github.com/google/syzkaller/prog.GitRevision=feb5635181eb12a6e3516172a3f5af06a3bc93e1 -X 'github.com/google/syzkaller/prog.gitRevisionDate=20220930-160315'" "-tags=syz_target syz_os_linux syz_arch_amd64 " -o ./bin/linux_amd64/syz-fuzzer github.com/google/syzkaller/syz-fuzzer
+GOOS=linux GOARCH=amd64 go build "-ldflags=-s -w -X github.com/google/syzkaller/prog.GitRevision=feb5635181eb12a6e3516172a3f5af06a3bc93e1 -X 'github.com/google/syzkaller/prog.gitRevisionDate=20220930-160315'" "-tags=syz_target syz_os_linux syz_arch_amd64 " -o ./bin/linux_amd64/syz-execprog github.com/google/syzkaller/tools/syz-execprog
+GOOS=linux GOARCH=amd64 go build "-ldflags=-s -w -X github.com/google/syzkaller/prog.GitRevision=feb5635181eb12a6e3516172a3f5af06a3bc93e1 -X 'github.com/google/syzkaller/prog.gitRevisionDate=20220930-160315'" "-tags=syz_target syz_os_linux syz_arch_amd64 " -o ./bin/linux_amd64/syz-stress github.com/google/syzkaller/tools/syz-stress
+mkdir -p ./bin/linux_amd64
+gcc -o ./bin/linux_amd64/syz-executor executor/executor.cc \
+	-m64 -O2 -pthread -Wall -Werror -Wparentheses -Wunused-const-variable -Wframe-larger-than=16384 -Wno-stringop-overflow -Wno-array-bounds -Wno-format-overflow -static-pie -fpermissive -w -DGOOS_linux=1 -DGOARCH_amd64=1 \
+	-DHOSTGOOS_linux=1 -DGIT_REVISION=\"feb5635181eb12a6e3516172a3f5af06a3bc93e1\"
+
+
+
+Tested on:
+
+commit:         725737e7 Merge tag 'statx-dioalign-for-linus' of git:/..
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+kernel config:  https://syzkaller.appspot.com/x/.config?x=36e3ab6ff9643877
+dashboard link: https://syzkaller.appspot.com/bug?extid=3a080099974c271cd7e9
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=12302bb8880000
+
