@@ -2,884 +2,214 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 583F95F4C85
-	for <lists+bpf@lfdr.de>; Wed,  5 Oct 2022 01:12:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4324A5F4CA8
+	for <lists+bpf@lfdr.de>; Wed,  5 Oct 2022 01:40:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230084AbiJDXMZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Oct 2022 19:12:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40908 "EHLO
+        id S230006AbiJDXkj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Oct 2022 19:40:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230028AbiJDXMP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Oct 2022 19:12:15 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51A3656014;
-        Tue,  4 Oct 2022 16:12:13 -0700 (PDT)
-Received: from 226.206.1.85.dynamic.wline.res.cust.swisscom.ch ([85.1.206.226] helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ofr59-000AKL-Pv; Wed, 05 Oct 2022 01:12:11 +0200
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     bpf@vger.kernel.org
-Cc:     razor@blackwall.org, ast@kernel.org, andrii@kernel.org,
-        martin.lau@linux.dev, john.fastabend@gmail.com,
-        joannelkoong@gmail.com, memxor@gmail.com, toke@redhat.com,
-        joe@cilium.io, netdev@vger.kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH bpf-next 10/10] bpf, selftests: Add various BPF tc link selftests
-Date:   Wed,  5 Oct 2022 01:11:43 +0200
-Message-Id: <20221004231143.19190-11-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20221004231143.19190-1-daniel@iogearbox.net>
-References: <20221004231143.19190-1-daniel@iogearbox.net>
+        with ESMTP id S230141AbiJDXkh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 Oct 2022 19:40:37 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72531222BE
+        for <bpf@vger.kernel.org>; Tue,  4 Oct 2022 16:40:35 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id i6so14465861pfb.2
+        for <bpf@vger.kernel.org>; Tue, 04 Oct 2022 16:40:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date;
+        bh=17uTSVuuH+QTHxsm/5IIJEGw/N/AJ/QfjhcHMhmV5Bw=;
+        b=KCCGkjg/lm1I/zU2VnaKZvjj97yaGn5OBj3n66fMdLxVmMrJJ6Yocazsuba3bdyfQ9
+         L1wO4a/xf44XhTcz367hEFaLh8U8uedvXglZuxKzbA4o9S/6QSlKbHzBKtBFpZLMJgbC
+         693tqs58REMqBOuxhP6VZHOVjEYnO+785/y2k=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
+        bh=17uTSVuuH+QTHxsm/5IIJEGw/N/AJ/QfjhcHMhmV5Bw=;
+        b=439ZlR968LVjlytncJDlvJJZVDUSiMQ0hd7zlbLsfFPYzSkN5Tr8FVly714XJ59QkO
+         MfMdYWgfKUoWUCRXj/FX7RrXDVSreE2xsIUKKPsp1/GT9Ry6L4hm6K0t+uijD3TJvS1L
+         RqFEb30xRgAuhoWkiN4Okz6H5Uv8rV0HCsxYp/mhJ2YabW8a7uTJrNuoIU84jfTB8Hvj
+         YTuuAlAGbtlcaryCChVlNzUm+tbJPtEEOXX/kf0FR4Gkx8hRA7+nvNRrarjSHkPxTLX+
+         5925jCL95K4jASZcnsqaOprDHbn8zOjLExf7BkV5YV3a64ckbVjGfKpG5mDAHfoZkTPp
+         a27g==
+X-Gm-Message-State: ACrzQf3MR7T3N129YQARM2c/HicopXWObQM3S0DX5HaENAW8yLpcndH+
+        gN7/gDLkVNPUPc8df5fuwH7icw==
+X-Google-Smtp-Source: AMsMyM7WAfq/aH0wDvhMGQSNUe7IyTA2uq5JB0ACPuIMSUMupOqWdtqYLvvHAnFap3beGzRu6PbVkg==
+X-Received: by 2002:a63:e04e:0:b0:44b:97e8:101f with SMTP id n14-20020a63e04e000000b0044b97e8101fmr13556229pgj.330.1664926834682;
+        Tue, 04 Oct 2022 16:40:34 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id s82-20020a632c55000000b0043be31d490dsm8809977pgs.67.2022.10.04.16.40.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 Oct 2022 16:40:33 -0700 (PDT)
+Date:   Tue, 4 Oct 2022 16:40:32 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+3a080099974c271cd7e9@syzkaller.appspotmail.com>,
+        bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+        fw@strlen.de, harshit.m.mogalapalli@oracle.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        pabeni@redhat.com, syzkaller-bugs@googlegroups.com,
+        linux-hardening@vger.kernel.org
+Subject: Re: [syzbot] upstream boot error: WARNING in netlink_ack
+Message-ID: <202210041600.7C90DF917@keescook>
+References: <000000000000a793cc05ea313b87@google.com>
+ <CACT4Y+a8b-knajrXWs8OnF1ijCansRxEicU=YJz6PRk-JuSKvg@mail.gmail.com>
+ <F58E0701-8F53-46FE-8324-4DEA7A806C20@chromium.org>
+ <20221004104253.29c1f3c7@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.6/26679/Tue Oct  4 09:56:50 2022)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221004104253.29c1f3c7@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add a big batch of selftest to extend test_progs with various tc link,
-attach ops and old-style tc BPF attachments via libbpf APIs. Also test
-multi-program attachments including mixing the various attach options:
+On Tue, Oct 04, 2022 at 10:42:53AM -0700, Jakub Kicinski wrote:
+> On Tue, 04 Oct 2022 07:36:55 -0700 Kees Cook wrote:
+> > This is fixed in the pending netdev tree coming for the merge window.
+> 
+> This has been weighing on my conscience a little, I don't like how we
+> still depend on putting one length in the skb and then using a
+> different one for the actual memcpy(). How would you feel about this
+> patch on top (untested):
 
-  # ./test_progs -t tc_link
-  #179     tc_link_base:OK
-  #180     tc_link_detach:OK
-  #181     tc_link_mix:OK
-  #182     tc_link_opts:OK
-  #183     tc_link_run_base:OK
-  #184     tc_link_run_chain:OK
-  Summary: 6/0 PASSED, 0 SKIPPED, 0 FAILED
+tl;dr: yes, I like it. Please add a nlmsg_contents member. :)
 
-All new and existing test cases pass.
+Rambling below...
 
-Co-developed-by: Nikolay Aleksandrov <razor@blackwall.org>
-Signed-off-by: Nikolay Aleksandrov <razor@blackwall.org>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
----
- .../selftests/bpf/prog_tests/tc_link.c        | 756 ++++++++++++++++++
- .../selftests/bpf/progs/test_tc_link.c        |  43 +
- 2 files changed, 799 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/tc_link.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_tc_link.c
+> 
+> diff --git a/include/net/netlink.h b/include/net/netlink.h
+> index 4418b1981e31..6ad671441dff 100644
+> --- a/include/net/netlink.h
+> +++ b/include/net/netlink.h
+> @@ -931,6 +931,29 @@ static inline struct nlmsghdr *nlmsg_put(struct sk_buff *skb, u32 portid, u32 se
+>  	return __nlmsg_put(skb, portid, seq, type, payload, flags);
+>  }
+>  
+> +/**
+> + * nlmsg_append - Add more data to a nlmsg in a skb
+> + * @skb: socket buffer to store message in
+> + * @nlh: message header
+> + * @payload: length of message payload
+> + *
+> + * Append data to an existing nlmsg, used when constructing a message
+> + * with multiple fixed-format headers (which is rare).
+> + * Returns NULL if the tailroom of the skb is insufficient to store
+> + * the extra payload.
+> + */
+> +static inline void *nlmsg_append(struct sk_buff *skb, struct nlmsghdr *nlh,
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/tc_link.c b/tools/testing/selftests/bpf/prog_tests/tc_link.c
-new file mode 100644
-index 000000000000..2dfd2874bbdd
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/tc_link.c
-@@ -0,0 +1,756 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2022 Isovalent */
-+
-+#include <uapi/linux/if_link.h>
-+#include <test_progs.h>
-+
-+#include "test_tc_link.skel.h"
-+
-+#define loopback	1
-+#define ping_cmd	"ping -q -c1 -w1 127.0.0.1 > /dev/null"
-+
-+void serial_test_tc_link_base(void)
-+{
-+	struct test_tc_link *skel1 = NULL, *skel2 = NULL;
-+	__u32 prog_fd1, prog_fd2, prog_fd3, prog_fd4;
-+	__u32 id0 = 0, id1, id2, id3, id4, id5, id6, id7;
-+	struct bpf_prog_info prog_info;
-+	struct bpf_link_info link_info;
-+	__u32 link_info_len = sizeof(link_info);
-+	__u32 prog_info_len = sizeof(prog_info);
-+	__u32 prog_cnt, attach_flags = 0;
-+	struct bpf_query_info progs[4];
-+	struct bpf_link *link;
-+	int err;
-+
-+	skel1 = test_tc_link__open_and_load();
-+	if (!ASSERT_OK_PTR(skel1, "skel_load"))
-+		goto cleanup;
-+	prog_fd1 = bpf_program__fd(skel1->progs.tc_handler_in);
-+	prog_fd2 = bpf_program__fd(skel1->progs.tc_handler_eg);
-+
-+	skel2 = test_tc_link__open_and_load();
-+	if (!ASSERT_OK_PTR(skel2, "skel_load"))
-+		goto cleanup;
-+	prog_fd3 = bpf_program__fd(skel2->progs.tc_handler_in);
-+	prog_fd4 = bpf_program__fd(skel2->progs.tc_handler_eg);
-+
-+	memset(&prog_info, 0, sizeof(prog_info));
-+	err = bpf_obj_get_info_by_fd(prog_fd1, &prog_info, &prog_info_len);
-+	if (!ASSERT_OK(err, "fd_info1"))
-+		goto cleanup;
-+	id1 = prog_info.id;
-+
-+	memset(&prog_info, 0, sizeof(prog_info));
-+	err = bpf_obj_get_info_by_fd(prog_fd2, &prog_info, &prog_info_len);
-+	if (!ASSERT_OK(err, "fd_info2"))
-+		goto cleanup;
-+	id2 = prog_info.id;
-+
-+	memset(&prog_info, 0, sizeof(prog_info));
-+	err = bpf_obj_get_info_by_fd(prog_fd3, &prog_info, &prog_info_len);
-+	if (!ASSERT_OK(err, "fd_info3"))
-+		goto cleanup;
-+	id3 = prog_info.id;
-+
-+	memset(&prog_info, 0, sizeof(prog_info));
-+	err = bpf_obj_get_info_by_fd(prog_fd4, &prog_info, &prog_info_len);
-+	if (!ASSERT_OK(err, "fd_info4"))
-+		goto cleanup;
-+	id4 = prog_info.id;
-+
-+	/* Sanity check that we have distinct programs. */
-+	ASSERT_NEQ(id1, id3, "prog_ids_1_3");
-+	ASSERT_NEQ(id2, id4, "prog_ids_2_4");
-+	ASSERT_NEQ(id1, id4, "prog_ids_1_4");
-+
-+	link = bpf_program__attach_tc(skel1->progs.tc_handler_in, loopback, 1);
-+	if (!ASSERT_OK_PTR(link, "link_attach"))
-+		goto cleanup;
-+	skel1->links.tc_handler_in = link;
-+
-+	memset(&link_info, 0, sizeof(link_info));
-+	err = bpf_obj_get_info_by_fd(bpf_link__fd(link), &link_info, &link_info_len);
-+	if (!ASSERT_OK(err, "link_info"))
-+		goto cleanup;
-+
-+	/* Sanity check that attached ingress BPF link looks as expected. */
-+	ASSERT_EQ(link_info.type, BPF_LINK_TYPE_TC, "link_type");
-+	ASSERT_EQ(link_info.prog_id, id1, "link_prog_id");
-+	ASSERT_EQ(link_info.tc.ifindex, loopback, "link_ifindex");
-+	ASSERT_EQ(link_info.tc.attach_type, BPF_NET_INGRESS, "link_attach_type");
-+	ASSERT_EQ(link_info.tc.priority, 1, "link_priority");
-+	ASSERT_NEQ(link_info.id, id0, "link_id");
-+	id5 = link_info.id;
-+
-+	/* Updating program under active ingress BPF link works as expected. */
-+	err = bpf_link__update_program(link, skel2->progs.tc_handler_in);
-+	if (!ASSERT_OK(err, "link_upd_invalid"))
-+		goto cleanup;
-+
-+	memset(&link_info, 0, sizeof(link_info));
-+	err = bpf_obj_get_info_by_fd(bpf_link__fd(link), &link_info, &link_info_len);
-+	if (!ASSERT_OK(err, "link_info"))
-+		goto cleanup;
-+
-+	ASSERT_EQ(link_info.id, id5, "link_id");
-+	ASSERT_EQ(link_info.prog_id, id3, "link_prog_id");
-+
-+	link = bpf_program__attach_tc(skel1->progs.tc_handler_eg, loopback, 1);
-+	if (!ASSERT_OK_PTR(link, "link_attach"))
-+		goto cleanup;
-+	skel1->links.tc_handler_eg = link;
-+
-+	memset(&link_info, 0, sizeof(link_info));
-+	err = bpf_obj_get_info_by_fd(bpf_link__fd(link), &link_info, &link_info_len);
-+	if (!ASSERT_OK(err, "link_info"))
-+		goto cleanup;
-+
-+	/* Sanity check that attached egress BPF link looks as expected. */
-+	ASSERT_EQ(link_info.type, BPF_LINK_TYPE_TC, "link_type");
-+	ASSERT_EQ(link_info.prog_id, id2, "link_prog_id");
-+	ASSERT_EQ(link_info.tc.ifindex, loopback, "link_ifindex");
-+	ASSERT_EQ(link_info.tc.attach_type, BPF_NET_EGRESS, "link_attach_type");
-+	ASSERT_EQ(link_info.tc.priority, 1, "link_priority");
-+	ASSERT_NEQ(link_info.id, id0, "link_id");
-+	ASSERT_NEQ(link_info.id, id5, "link_id");
-+	id6 = link_info.id;
-+
-+	/* Updating program under active egress BPF link works as expected. */
-+	err = bpf_link__update_program(link, skel2->progs.tc_handler_eg);
-+	if (!ASSERT_OK(err, "link_upd_invalid"))
-+		goto cleanup;
-+
-+	memset(&link_info, 0, sizeof(link_info));
-+	err = bpf_obj_get_info_by_fd(bpf_link__fd(link), &link_info, &link_info_len);
-+	if (!ASSERT_OK(err, "link_info"))
-+		goto cleanup;
-+
-+	ASSERT_EQ(link_info.id, id6, "link_id");
-+	ASSERT_EQ(link_info.prog_id, id4, "link_prog_id");
-+
-+	/* BPF link is not allowed to replace another BPF link. */
-+	link = bpf_program__attach_tc(skel2->progs.tc_handler_eg, loopback, 1);
-+	if (!ASSERT_ERR_PTR(link, "link_attach_should_fail")) {
-+		bpf_link__destroy(link);
-+		goto cleanup;
-+	}
-+
-+	/* BPF link can be attached with different prio to available slot however. */
-+	link = bpf_program__attach_tc(skel2->progs.tc_handler_eg, loopback, 2);
-+	if (!ASSERT_OK_PTR(link, "link_attach"))
-+		goto cleanup;
-+
-+	memset(&link_info, 0, sizeof(link_info));
-+	err = bpf_obj_get_info_by_fd(bpf_link__fd(link), &link_info, &link_info_len);
-+	if (!ASSERT_OK(err, "link_info")) {
-+		bpf_link__destroy(link);
-+		goto cleanup;
-+	}
-+
-+	/* Sanity check that 2nd attached egress BPF link looks as expected. */
-+	ASSERT_EQ(link_info.type, BPF_LINK_TYPE_TC, "link_type");
-+	ASSERT_EQ(link_info.prog_id, id4, "link_prog_id");
-+	ASSERT_EQ(link_info.tc.ifindex, loopback, "link_ifindex");
-+	ASSERT_EQ(link_info.tc.attach_type, BPF_NET_EGRESS, "link_attach_type");
-+	ASSERT_EQ(link_info.tc.priority, 2, "link_priority");
-+	ASSERT_NEQ(link_info.id, id6, "link_id");
-+
-+	/* We destroy link, and reattach with auto-allocated prio. */
-+	bpf_link__destroy(link);
-+
-+	link = bpf_program__attach_tc(skel2->progs.tc_handler_eg, loopback, 0);
-+	if (!ASSERT_OK_PTR(link, "link_attach"))
-+		goto cleanup;
-+
-+	memset(&link_info, 0, sizeof(link_info));
-+	err = bpf_obj_get_info_by_fd(bpf_link__fd(link), &link_info, &link_info_len);
-+	if (!ASSERT_OK(err, "link_info"))
-+		goto cleanup_link;
-+
-+	/* Sanity check that egress BPF link looks as expected and got prio 2. */
-+	ASSERT_EQ(link_info.type, BPF_LINK_TYPE_TC, "link_type");
-+	ASSERT_EQ(link_info.prog_id, id4, "link_prog_id");
-+	ASSERT_EQ(link_info.tc.ifindex, loopback, "link_ifindex");
-+	ASSERT_EQ(link_info.tc.attach_type, BPF_NET_EGRESS, "link_attach_type");
-+	ASSERT_EQ(link_info.tc.priority, 2, "link_priority");
-+	ASSERT_NEQ(link_info.id, id6, "link_id");
-+	id7 = link_info.id;
-+
-+	/* Sanity check query API on what progs we have attached. */
-+	prog_cnt = 0;
-+	err = bpf_prog_query(loopback, BPF_NET_EGRESS, 0, &attach_flags,
-+			     NULL, &prog_cnt);
-+	if (!ASSERT_OK(err, "prog_query"))
-+		goto cleanup_link;
-+
-+	ASSERT_EQ(prog_cnt, 2, "prog_cnt");
-+
-+	memset(progs, 0, sizeof(progs));
-+	prog_cnt = ARRAY_SIZE(progs);
-+	err = bpf_prog_query(loopback, BPF_NET_EGRESS, 0, &attach_flags,
-+			     progs, &prog_cnt);
-+	if (!ASSERT_OK(err, "prog_query"))
-+		goto cleanup_link;
-+
-+	ASSERT_EQ(prog_cnt, 2, "prog_cnt");
-+	ASSERT_EQ(progs[0].prog_id, id4, "prog[0]_id");
-+	ASSERT_EQ(progs[0].link_id, id6, "prog[0]_link");
-+	ASSERT_EQ(progs[0].prio, 1, "prog[0]_prio");
-+	ASSERT_EQ(progs[1].prog_id, id4, "prog[1]_id");
-+	ASSERT_EQ(progs[1].link_id, id7, "prog[1]_link");
-+	ASSERT_EQ(progs[1].prio, 2, "prog[1]_prio");
-+	ASSERT_EQ(progs[2].prog_id, 0, "prog[2]_id");
-+	ASSERT_EQ(progs[2].link_id, 0, "prog[2]_link");
-+	ASSERT_EQ(progs[2].prio, 0, "prog[2]_prio");
-+
-+	memset(progs, 0, sizeof(progs));
-+	prog_cnt = ARRAY_SIZE(progs);
-+	err = bpf_prog_query(loopback, BPF_NET_INGRESS, 0, &attach_flags,
-+			     progs, &prog_cnt);
-+	if (!ASSERT_OK(err, "prog_query"))
-+		goto cleanup_link;
-+
-+	ASSERT_EQ(prog_cnt, 1, "prog_cnt");
-+	ASSERT_EQ(progs[0].prog_id, id3, "prog[0]_id");
-+	ASSERT_EQ(progs[0].link_id, id5, "prog[0]_link");
-+	ASSERT_EQ(progs[0].prio, 1, "prog[0]_prio");
-+	ASSERT_EQ(progs[1].prog_id, 0, "prog[1]_id");
-+	ASSERT_EQ(progs[1].link_id, 0, "prog[1]_link");
-+	ASSERT_EQ(progs[1].prio, 0, "prog[1]_prio");
-+
-+cleanup_link:
-+	bpf_link__destroy(link);
-+cleanup:
-+	test_tc_link__destroy(skel1);
-+	test_tc_link__destroy(skel2);
-+}
-+
-+void serial_test_tc_link_detach(void)
-+{
-+	struct bpf_prog_info prog_info;
-+	struct bpf_link_info link_info;
-+	struct test_tc_link *skel;
-+	__u32 prog_info_len = sizeof(prog_info);
-+	__u32 link_info_len = sizeof(link_info);
-+	__u32 prog_cnt, attach_flags = 0;
-+	__u32 prog_fd, id, id2;
-+	struct bpf_link *link;
-+	int err;
-+
-+	skel = test_tc_link__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_load"))
-+		goto cleanup;
-+	prog_fd = bpf_program__fd(skel->progs.tc_handler_in);
-+
-+	memset(&prog_info, 0, sizeof(prog_info));
-+	err = bpf_obj_get_info_by_fd(prog_fd, &prog_info, &prog_info_len);
-+	if (!ASSERT_OK(err, "fd_info"))
-+		goto cleanup;
-+	id = prog_info.id;
-+
-+	link = bpf_program__attach_tc(skel->progs.tc_handler_in, loopback, 0);
-+	if (!ASSERT_OK_PTR(link, "link_attach"))
-+		goto cleanup;
-+	skel->links.tc_handler_in = link;
-+
-+	memset(&link_info, 0, sizeof(link_info));
-+	err = bpf_obj_get_info_by_fd(bpf_link__fd(link), &link_info, &link_info_len);
-+	if (!ASSERT_OK(err, "link_info"))
-+		goto cleanup;
-+
-+	/* Sanity check that attached ingress BPF link looks as expected. */
-+	ASSERT_EQ(link_info.type, BPF_LINK_TYPE_TC, "link_type");
-+	ASSERT_EQ(link_info.prog_id, id, "link_prog_id");
-+	ASSERT_EQ(link_info.tc.ifindex, loopback, "link_ifindex");
-+	ASSERT_EQ(link_info.tc.attach_type, BPF_NET_INGRESS, "link_attach_type");
-+	ASSERT_EQ(link_info.tc.priority, 1, "link_priority");
-+	id2 = link_info.id;
-+
-+	/* Sanity check query API that one prog is attached. */
-+	prog_cnt = 0;
-+	err = bpf_prog_query(loopback, BPF_NET_INGRESS, 0, &attach_flags,
-+			     NULL, &prog_cnt);
-+	if (!ASSERT_OK(err, "prog_query"))
-+		goto cleanup;
-+
-+	ASSERT_EQ(prog_cnt, 1, "prog_cnt");
-+
-+	err = bpf_link__detach(link);
-+	if (!ASSERT_OK(err, "link_detach"))
-+		goto cleanup;
-+
-+	memset(&link_info, 0, sizeof(link_info));
-+	err = bpf_obj_get_info_by_fd(bpf_link__fd(link), &link_info, &link_info_len);
-+	if (!ASSERT_OK(err, "link_info"))
-+		goto cleanup;
-+
-+	/* Sanity check that defunct detached link looks as expected. */
-+	ASSERT_EQ(link_info.type, BPF_LINK_TYPE_TC, "link_type");
-+	ASSERT_EQ(link_info.prog_id, id, "link_prog_id");
-+	ASSERT_EQ(link_info.tc.ifindex, 0, "link_ifindex");
-+	ASSERT_EQ(link_info.tc.attach_type, BPF_NET_INGRESS, "link_attach_type");
-+	ASSERT_EQ(link_info.tc.priority, 1, "link_priority");
-+	ASSERT_EQ(link_info.id, id2, "link_id");
-+
-+	/* Sanity check query API that no prog is attached. */
-+	prog_cnt = 0;
-+	err = bpf_prog_query(loopback, BPF_NET_INGRESS, 0, &attach_flags,
-+			     NULL, &prog_cnt);
-+	ASSERT_EQ(err, -ENOENT, "prog_cnt");
-+cleanup:
-+	test_tc_link__destroy(skel);
-+}
-+
-+void serial_test_tc_link_opts(void)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_prog_attach_opts, opta);
-+	DECLARE_LIBBPF_OPTS(bpf_prog_detach_opts, optd);
-+	__u32 prog_fd1, prog_fd2, id1, id2;
-+	struct bpf_prog_info prog_info;
-+	struct test_tc_link *skel;
-+	__u32 prog_info_len = sizeof(prog_info);
-+	__u32 prog_cnt, attach_flags = 0;
-+	struct bpf_query_info progs[4];
-+	int err, prio;
-+
-+	skel = test_tc_link__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_load"))
-+		goto cleanup;
-+	prog_fd1 = bpf_program__fd(skel->progs.tc_handler_in);
-+	prog_fd2 = bpf_program__fd(skel->progs.tc_handler_eg);
-+
-+	memset(&prog_info, 0, sizeof(prog_info));
-+	err = bpf_obj_get_info_by_fd(prog_fd1, &prog_info, &prog_info_len);
-+	if (!ASSERT_OK(err, "fd_info1"))
-+		goto cleanup;
-+	id1 = prog_info.id;
-+
-+	memset(&prog_info, 0, sizeof(prog_info));
-+	err = bpf_obj_get_info_by_fd(prog_fd2, &prog_info, &prog_info_len);
-+	if (!ASSERT_OK(err, "fd_info2"))
-+		goto cleanup;
-+	id2 = prog_info.id;
-+
-+	ASSERT_NEQ(id1, id2, "prog_ids_1_2");
-+
-+	/* Sanity check query API that nothing is attached. */
-+	prog_cnt = 0;
-+	err = bpf_prog_query(loopback, BPF_NET_INGRESS, 0, &attach_flags,
-+			     NULL, &prog_cnt);
-+	ASSERT_EQ(prog_cnt, 0, "prog_cnt");
-+	ASSERT_EQ(err, -ENOENT, "prog_query");
-+
-+	prog_cnt = 0;
-+	err = bpf_prog_query(loopback, BPF_NET_EGRESS, 0, &attach_flags,
-+			     NULL, &prog_cnt);
-+	ASSERT_EQ(prog_cnt, 0, "prog_cnt");
-+	ASSERT_EQ(err, -ENOENT, "prog_query");
-+
-+	/* Sanity check that attaching with given prio works. */
-+	opta.flags = 0;
-+	opta.attach_priority = prio = 1;
-+	err = bpf_prog_attach_opts(prog_fd1, loopback, BPF_NET_INGRESS, &opta);
-+	if (!ASSERT_EQ(err, opta.attach_priority, "prog_attach"))
-+		goto cleanup;
-+
-+	prog_cnt = 0;
-+	err = bpf_prog_query(loopback, BPF_NET_INGRESS, 0, &attach_flags,
-+			     NULL, &prog_cnt);
-+	if (!ASSERT_OK(err, "prog_query"))
-+		goto cleanup_detach;
-+
-+	ASSERT_EQ(prog_cnt, 1, "prog_cnt");
-+
-+	memset(progs, 0, sizeof(progs));
-+	prog_cnt = ARRAY_SIZE(progs);
-+	err = bpf_prog_query(loopback, BPF_NET_INGRESS, 0, &attach_flags,
-+			     progs, &prog_cnt);
-+	if (!ASSERT_OK(err, "prog_query"))
-+		goto cleanup_detach;
-+
-+	ASSERT_EQ(prog_cnt, 1, "prog_cnt");
-+	ASSERT_EQ(progs[0].prog_id, id1, "prog[0]_id");
-+	ASSERT_EQ(progs[0].link_id, 0, "prog[0]_link");
-+	ASSERT_EQ(progs[0].prio, 1, "prog[0]_prio");
-+	ASSERT_EQ(progs[1].prog_id, 0, "prog[1]_id");
-+	ASSERT_EQ(progs[1].link_id, 0, "prog[1]_link");
-+	ASSERT_EQ(progs[1].prio, 0, "prog[1]_prio");
-+
-+	/* We cannot override unless we add replace flag. */
-+	opta.flags = 0;
-+	opta.attach_priority = 1;
-+	err = bpf_prog_attach_opts(prog_fd2, loopback, BPF_NET_INGRESS, &opta);
-+	if (!ASSERT_ERR(err, "prog_attach_fail"))
-+		goto cleanup_detach;
-+
-+	opta.flags = BPF_F_REPLACE;
-+	opta.attach_priority = 1;
-+	err = bpf_prog_attach_opts(prog_fd2, loopback, BPF_NET_INGRESS, &opta);
-+	if (!ASSERT_EQ(err, opta.attach_priority, "prog_replace"))
-+		goto cleanup_detach;
-+
-+	memset(progs, 0, sizeof(progs));
-+	prog_cnt = ARRAY_SIZE(progs);
-+	err = bpf_prog_query(loopback, BPF_NET_INGRESS, 0, &attach_flags,
-+			     progs, &prog_cnt);
-+	if (!ASSERT_OK(err, "prog_query"))
-+		goto cleanup_detach;
-+
-+	ASSERT_EQ(prog_cnt, 1, "prog_cnt");
-+	ASSERT_EQ(progs[0].prog_id, id2, "prog[0]_id");
-+	ASSERT_EQ(progs[0].link_id, 0, "prog[0]_link");
-+	ASSERT_EQ(progs[0].prio, 1, "prog[0]_prio");
-+	ASSERT_EQ(progs[1].prog_id, 0, "prog[1]_id");
-+	ASSERT_EQ(progs[1].link_id, 0, "prog[1]_link");
-+	ASSERT_EQ(progs[1].prio, 0, "prog[1]_prio");
-+
-+	/* Check auto-assignment for priority. */
-+	opta.flags = 0;
-+	opta.attach_priority = 0;
-+	err = bpf_prog_attach_opts(prog_fd1, loopback, BPF_NET_INGRESS, &opta);
-+	if (!ASSERT_EQ(err, 2, "prog_replace"))
-+		goto cleanup_detach;
-+
-+	memset(progs, 0, sizeof(progs));
-+	prog_cnt = ARRAY_SIZE(progs);
-+	err = bpf_prog_query(loopback, BPF_NET_INGRESS, 0, &attach_flags,
-+			     progs, &prog_cnt);
-+	if (!ASSERT_OK(err, "prog_query"))
-+		goto cleanup_detach2;
-+
-+	ASSERT_EQ(prog_cnt, 2, "prog_cnt");
-+	ASSERT_EQ(progs[0].prog_id, id2, "prog[0]_id");
-+	ASSERT_EQ(progs[0].link_id, 0, "prog[0]_link");
-+	ASSERT_EQ(progs[0].prio, 1, "prog[0]_prio");
-+	ASSERT_EQ(progs[1].prog_id, id1, "prog[1]_id");
-+	ASSERT_EQ(progs[1].link_id, 0, "prog[1]_link");
-+	ASSERT_EQ(progs[1].prio, 2, "prog[1]_prio");
-+	ASSERT_EQ(progs[2].prog_id, 0, "prog[2]_id");
-+	ASSERT_EQ(progs[2].link_id, 0, "prog[2]_link");
-+	ASSERT_EQ(progs[2].prio, 0, "prog[2]_prio");
-+
-+	/* Remove the 1st program, so the 2nd becomes 1st in line. */
-+	prio = 2;
-+	optd.attach_priority = 1;
-+	err = bpf_prog_detach_opts(0, loopback, BPF_NET_INGRESS, &optd);
-+	if (!ASSERT_OK(err, "prog_detach"))
-+		goto cleanup_detach;
-+
-+	memset(progs, 0, sizeof(progs));
-+	prog_cnt = ARRAY_SIZE(progs);
-+	err = bpf_prog_query(loopback, BPF_NET_INGRESS, 0, &attach_flags,
-+			     progs, &prog_cnt);
-+	if (!ASSERT_OK(err, "prog_query"))
-+		goto cleanup_detach;
-+
-+	ASSERT_EQ(prog_cnt, 1, "prog_cnt");
-+	ASSERT_EQ(progs[0].prog_id, id1, "prog[0]_id");
-+	ASSERT_EQ(progs[0].link_id, 0, "prog[0]_link");
-+	ASSERT_EQ(progs[0].prio, 2, "prog[0]_prio");
-+	ASSERT_EQ(progs[1].prog_id, 0, "prog[1]_id");
-+	ASSERT_EQ(progs[1].link_id, 0, "prog[1]_link");
-+	ASSERT_EQ(progs[1].prio, 0, "prog[1]_prio");
-+
-+	/* Add back higher prio program, so 1st becomes 2nd in line.
-+	 * Replace also works if nothing was attached at the given prio.
-+	 */
-+	opta.flags = BPF_F_REPLACE;
-+	opta.attach_priority = 1;
-+	err = bpf_prog_attach_opts(prog_fd2, loopback, BPF_NET_INGRESS, &opta);
-+	if (!ASSERT_EQ(err, opta.attach_priority, "prog_replace"))
-+		goto cleanup_detach;
-+
-+	prio = 1;
-+	memset(progs, 0, sizeof(progs));
-+	prog_cnt = ARRAY_SIZE(progs);
-+	err = bpf_prog_query(loopback, BPF_NET_INGRESS, 0, &attach_flags,
-+			     progs, &prog_cnt);
-+	if (!ASSERT_OK(err, "prog_query"))
-+		goto cleanup_detach2;
-+
-+	ASSERT_EQ(prog_cnt, 2, "prog_cnt");
-+	ASSERT_EQ(progs[0].prog_id, id2, "prog[0]_id");
-+	ASSERT_EQ(progs[0].link_id, 0, "prog[0]_link");
-+	ASSERT_EQ(progs[0].prio, 1, "prog[0]_prio");
-+	ASSERT_EQ(progs[1].prog_id, id1, "prog[1]_id");
-+	ASSERT_EQ(progs[1].link_id, 0, "prog[1]_link");
-+	ASSERT_EQ(progs[1].prio, 2, "prog[1]_prio");
-+	ASSERT_EQ(progs[2].prog_id, 0, "prog[2]_id");
-+	ASSERT_EQ(progs[2].link_id, 0, "prog[2]_link");
-+	ASSERT_EQ(progs[2].prio, 0, "prog[2]_prio");
-+
-+	optd.attach_priority = 2;
-+	err = bpf_prog_detach_opts(0, loopback, BPF_NET_INGRESS, &optd);
-+	ASSERT_OK(err, "prog_detach");
-+
-+	optd.attach_priority = 1;
-+	err = bpf_prog_detach_opts(0, loopback, BPF_NET_INGRESS, &optd);
-+	ASSERT_OK(err, "prog_detach");
-+
-+	/* Expected to be empty again. */
-+	prog_cnt = 0;
-+	err = bpf_prog_query(loopback, BPF_NET_INGRESS, 0, &attach_flags,
-+			     NULL, &prog_cnt);
-+	ASSERT_EQ(prog_cnt, 0, "prog_cnt");
-+	ASSERT_EQ(err, -ENOENT, "prog_query");
-+	goto cleanup;
-+
-+cleanup_detach:
-+	optd.attach_priority = prio;
-+	err = bpf_prog_detach_opts(0, loopback, BPF_NET_INGRESS, &optd);
-+	if (!ASSERT_OK(err, "prog_detach"))
-+		goto cleanup;
-+cleanup:
-+	test_tc_link__destroy(skel);
-+	return;
-+cleanup_detach2:
-+	optd.attach_priority = 2;
-+	err = bpf_prog_detach_opts(0, loopback, BPF_NET_INGRESS, &optd);
-+	ASSERT_OK(err, "prog_detach");
-+	goto cleanup_detach;
-+}
-+
-+void serial_test_tc_link_mix(void)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_prog_attach_opts, opta);
-+	DECLARE_LIBBPF_OPTS(bpf_prog_detach_opts, optd);
-+	__u32 prog_fd1, prog_fd2, id1, id2, id3;
-+	struct test_tc_link *skel;
-+	struct bpf_link *link;
-+	struct bpf_prog_info prog_info;
-+	struct bpf_link_info link_info;
-+	__u32 link_info_len = sizeof(link_info);
-+	__u32 prog_info_len = sizeof(prog_info);
-+	__u32 prog_cnt, attach_flags = 0;
-+	struct bpf_query_info progs[4];
-+	int err;
-+
-+	skel = test_tc_link__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_load"))
-+		goto cleanup;
-+	prog_fd1 = bpf_program__fd(skel->progs.tc_handler_in);
-+	prog_fd2 = bpf_program__fd(skel->progs.tc_handler_eg);
-+
-+	memset(&prog_info, 0, sizeof(prog_info));
-+	err = bpf_obj_get_info_by_fd(prog_fd1, &prog_info, &prog_info_len);
-+	if (!ASSERT_OK(err, "fd_info1"))
-+		goto cleanup;
-+	id1 = prog_info.id;
-+
-+	memset(&prog_info, 0, sizeof(prog_info));
-+	err = bpf_obj_get_info_by_fd(prog_fd2, &prog_info, &prog_info_len);
-+	if (!ASSERT_OK(err, "fd_info2"))
-+		goto cleanup;
-+	id2 = prog_info.id;
-+
-+	ASSERT_NEQ(id1, id2, "prog_ids_1_2");
-+
-+	/* Sanity check that attaching with given prio works. */
-+	opta.flags = 0;
-+	opta.attach_priority = 42;
-+	err = bpf_prog_attach_opts(prog_fd1, loopback, BPF_NET_EGRESS, &opta);
-+	if (!ASSERT_EQ(err, opta.attach_priority, "prog_attach"))
-+		goto cleanup;
-+
-+	prog_cnt = 0;
-+	err = bpf_prog_query(loopback, BPF_NET_EGRESS, 0, &attach_flags,
-+			     NULL, &prog_cnt);
-+	if (!ASSERT_OK(err, "prog_query"))
-+		goto cleanup_detach;
-+
-+	ASSERT_EQ(prog_cnt, 1, "prog_cnt");
-+
-+	memset(progs, 0, sizeof(progs));
-+	prog_cnt = ARRAY_SIZE(progs);
-+	err = bpf_prog_query(loopback, BPF_NET_EGRESS, 0, &attach_flags,
-+			     progs, &prog_cnt);
-+	if (!ASSERT_OK(err, "prog_query"))
-+		goto cleanup_detach;
-+
-+	ASSERT_EQ(prog_cnt, 1, "prog_cnt");
-+	ASSERT_EQ(progs[0].prog_id, id1, "prog[0]_id");
-+	ASSERT_EQ(progs[0].link_id, 0, "prog[0]_link");
-+	ASSERT_EQ(progs[0].prio, 42, "prog[0]_prio");
-+	ASSERT_EQ(progs[1].prog_id, 0, "prog[1]_id");
-+	ASSERT_EQ(progs[1].link_id, 0, "prog[1]_link");
-+	ASSERT_EQ(progs[1].prio, 0, "prog[1]_prio");
-+
-+	/* Sanity check that attaching link with same prio will fail. */
-+	link = bpf_program__attach_tc(skel->progs.tc_handler_eg, loopback, 42);
-+	if (!ASSERT_ERR_PTR(link, "link_attach_should_fail")) {
-+		bpf_link__destroy(link);
-+		goto cleanup;
-+	}
-+
-+	/* Different prio on unused slot works of course. */
-+	link = bpf_program__attach_tc(skel->progs.tc_handler_eg, loopback, 0);
-+	if (!ASSERT_OK_PTR(link, "link_attach"))
-+		goto cleanup;
-+	skel->links.tc_handler_eg = link;
-+
-+	memset(&link_info, 0, sizeof(link_info));
-+	err = bpf_obj_get_info_by_fd(bpf_link__fd(link), &link_info, &link_info_len);
-+	if (!ASSERT_OK(err, "link_info"))
-+		goto cleanup;
-+
-+	ASSERT_EQ(link_info.prog_id, id2, "link_prog_id");
-+	id3 = link_info.id;
-+
-+	memset(progs, 0, sizeof(progs));
-+	prog_cnt = ARRAY_SIZE(progs);
-+	err = bpf_prog_query(loopback, BPF_NET_EGRESS, 0, &attach_flags,
-+			     progs, &prog_cnt);
-+	if (!ASSERT_OK(err, "prog_query"))
-+		goto cleanup_detach;
-+
-+	ASSERT_EQ(prog_cnt, 2, "prog_cnt");
-+	ASSERT_EQ(progs[0].prog_id, id2, "prog[0]_id");
-+	ASSERT_EQ(progs[0].link_id, id3, "prog[0]_link");
-+	ASSERT_EQ(progs[0].prio, 1, "prog[0]_prio");
-+	ASSERT_EQ(progs[1].prog_id, id1, "prog[1]_id");
-+	ASSERT_EQ(progs[1].link_id, 0, "prog[1]_link");
-+	ASSERT_EQ(progs[1].prio, 42, "prog[1]_prio");
-+	ASSERT_EQ(progs[2].prog_id, 0, "prog[2]_id");
-+	ASSERT_EQ(progs[2].link_id, 0, "prog[2]_link");
-+	ASSERT_EQ(progs[2].prio, 0, "prog[2]_prio");
-+
-+	/* Sanity check that attaching non-link with same prio as link will fail. */
-+	opta.flags = BPF_F_REPLACE;
-+	opta.attach_priority = 1;
-+	err = bpf_prog_attach_opts(prog_fd1, loopback, BPF_NET_EGRESS, &opta);
-+	if (!ASSERT_ERR(err, "prog_attach_should_fail"))
-+		goto cleanup_detach;
-+
-+	opta.flags = 0;
-+	opta.attach_priority = 1;
-+	err = bpf_prog_attach_opts(prog_fd1, loopback, BPF_NET_EGRESS, &opta);
-+	if (!ASSERT_ERR(err, "prog_attach_should_fail"))
-+		goto cleanup_detach;
-+
-+cleanup_detach:
-+	optd.attach_priority = 42;
-+	err = bpf_prog_detach_opts(0, loopback, BPF_NET_EGRESS, &optd);
-+	if (!ASSERT_OK(err, "prog_detach"))
-+		goto cleanup;
-+cleanup:
-+	test_tc_link__destroy(skel);
-+}
-+
-+void serial_test_tc_link_run_base(void)
-+{
-+	struct test_tc_link *skel;
-+	struct bpf_link *link;
-+
-+	skel = test_tc_link__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_load"))
-+		goto cleanup;
-+
-+	link = bpf_program__attach_tc(skel->progs.tc_handler_eg, loopback, 0);
-+	if (!ASSERT_OK_PTR(link, "link_attach"))
-+		goto cleanup;
-+	skel->links.tc_handler_eg = link;
-+
-+	link = bpf_program__attach_tc(skel->progs.tc_handler_in, loopback, 0);
-+	if (!ASSERT_OK_PTR(link, "link_attach"))
-+		goto cleanup;
-+
-+	CHECK_FAIL(system(ping_cmd));
-+	ASSERT_EQ(skel->bss->run, 3, "run32_value");
-+
-+	bpf_link__destroy(link);
-+	skel->bss->run = 0;
-+
-+	CHECK_FAIL(system(ping_cmd));
-+	ASSERT_EQ(skel->bss->run, 2, "run32_value");
-+cleanup:
-+	test_tc_link__destroy(skel);
-+}
-+
-+void tc_link_run_chain(int location, bool chain_tc_old)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_tc_opts, tc_opts, .handle = 1, .priority = 1);
-+	DECLARE_LIBBPF_OPTS(bpf_tc_hook, tc_hook, .ifindex = loopback);
-+	DECLARE_LIBBPF_OPTS(bpf_prog_attach_opts, opta);
-+	DECLARE_LIBBPF_OPTS(bpf_prog_detach_opts, optd);
-+	bool hook_created = false, tc_attached = false;
-+	__u32 prog_fd1, prog_fd2, prog_fd3;
-+	struct test_tc_link *skel;
-+	int err;
-+
-+	skel = test_tc_link__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_load"))
-+		goto cleanup;
-+
-+	prog_fd1 = bpf_program__fd(skel->progs.tc_handler_in);
-+	prog_fd2 = bpf_program__fd(skel->progs.tc_handler_eg);
-+	prog_fd3 = bpf_program__fd(skel->progs.tc_handler_old);
-+
-+	if (chain_tc_old) {
-+		tc_hook.attach_point = location == BPF_NET_INGRESS ?
-+				       BPF_TC_INGRESS : BPF_TC_EGRESS;
-+		err = bpf_tc_hook_create(&tc_hook);
-+		if (err == 0)
-+			hook_created = true;
-+		err = err == -EEXIST ? 0 : err;
-+		if (!ASSERT_OK(err, "bpf_tc_hook_create"))
-+			goto cleanup;
-+
-+		tc_opts.prog_fd = prog_fd3;
-+		err = bpf_tc_attach(&tc_hook, &tc_opts);
-+		if (!ASSERT_OK(err, "bpf_tc_attach"))
-+			goto cleanup;
-+		tc_attached = true;
-+	}
-+
-+	opta.flags = 0;
-+	opta.attach_priority = 1;
-+	err = bpf_prog_attach_opts(prog_fd1, loopback, location, &opta);
-+	if (!ASSERT_EQ(err, opta.attach_priority, "prog_attach"))
-+		goto cleanup;
-+
-+	opta.flags = 0;
-+	opta.attach_priority = 2;
-+	err = bpf_prog_attach_opts(prog_fd2, loopback, location, &opta);
-+	if (!ASSERT_EQ(err, opta.attach_priority, "prog_attach"))
-+		goto cleanup_detach;
-+
-+	CHECK_FAIL(system(ping_cmd));
-+	ASSERT_EQ(skel->bss->run, chain_tc_old ? 7 : 3, "run32_value");
-+
-+	skel->bss->run = 0;
-+
-+	optd.attach_priority = 2;
-+	err = bpf_prog_detach_opts(0, loopback, location, &optd);
-+	if (!ASSERT_OK(err, "prog_detach"))
-+		goto cleanup_detach;
-+
-+	CHECK_FAIL(system(ping_cmd));
-+	ASSERT_EQ(skel->bss->run, chain_tc_old ? 5 : 1, "run32_value");
-+
-+cleanup_detach:
-+	optd.attach_priority = 1;
-+	err = bpf_prog_detach_opts(0, loopback, location, &optd);
-+	if (!ASSERT_OK(err, "prog_detach"))
-+		goto cleanup;
-+cleanup:
-+	if (tc_attached) {
-+		tc_opts.flags = tc_opts.prog_fd = tc_opts.prog_id = 0;
-+		err = bpf_tc_detach(&tc_hook, &tc_opts);
-+		ASSERT_OK(err, "bpf_tc_detach");
-+	}
-+	if (hook_created) {
-+		tc_hook.attach_point = BPF_TC_INGRESS | BPF_TC_EGRESS;
-+		bpf_tc_hook_destroy(&tc_hook);
-+	}
-+	test_tc_link__destroy(skel);
-+}
-+
-+void serial_test_tc_link_run_chain(void)
-+{
-+	tc_link_run_chain(BPF_NET_INGRESS, false);
-+	tc_link_run_chain(BPF_NET_EGRESS, false);
-+
-+	tc_link_run_chain(BPF_NET_INGRESS, true);
-+	tc_link_run_chain(BPF_NET_EGRESS, true);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_tc_link.c b/tools/testing/selftests/bpf/progs/test_tc_link.c
-new file mode 100644
-index 000000000000..648e504954eb
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_tc_link.c
-@@ -0,0 +1,43 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2022 Isovalent */
-+#include <linux/bpf.h>
-+#include <linux/pkt_cls.h>
-+
-+#include <bpf/bpf_helpers.h>
-+
-+char LICENSE[] SEC("license") = "GPL";
-+
-+__u32 run;
-+
-+SEC("tc/ingress")
-+int tc_handler_in(struct __sk_buff *skb)
-+{
-+#ifdef ENABLE_ATOMICS_TESTS
-+	__sync_fetch_and_or(&run, 1);
-+#else
-+	run |= 1;
-+#endif
-+	return TC_NEXT;
-+}
-+
-+SEC("tc/egress")
-+int tc_handler_eg(struct __sk_buff *skb)
-+{
-+#ifdef ENABLE_ATOMICS_TESTS
-+	__sync_fetch_and_or(&run, 2);
-+#else
-+	run |= 2;
-+#endif
-+	return TC_NEXT;
-+}
-+
-+SEC("tc/egress")
-+int tc_handler_old(struct __sk_buff *skb)
-+{
-+#ifdef ENABLE_ATOMICS_TESTS
-+	__sync_fetch_and_or(&run, 4);
-+#else
-+	run |= 4;
-+#endif
-+	return TC_NEXT;
-+}
+nlh not needed here?
+
+> +				 u32 size)
+> +{
+> +	if (unlikely(skb_tailroom(skb) < NLMSG_ALIGN(size)))
+> +		return NULL;
+> +
+> +	if (!__builtin_constant_p(size) || NLMSG_ALIGN(size) - size != 0)
+
+why does a fixed size mean no memset?
+
+> +		memset(skb_tail_pointer(skb) + size, 0,
+> +		       NLMSG_ALIGN(size) - size);
+> +	return __skb_put(NLMSG_ALIGN(size));
+> +}
+> +
+>  /**
+>   * nlmsg_put_answer - Add a new callback based netlink message to an skb
+>   * @skb: socket buffer to store message in
+> diff --git a/net/netlink/af_netlink.c b/net/netlink/af_netlink.c
+> index a662e8a5ff84..bb3d855d1f57 100644
+> --- a/net/netlink/af_netlink.c
+> +++ b/net/netlink/af_netlink.c
+> @@ -2488,19 +2488,28 @@ void netlink_ack(struct sk_buff *in_skb, struct nlmsghdr *nlh, int err,
+>  		flags |= NLM_F_ACK_TLVS;
+>  
+>  	skb = nlmsg_new(payload + tlvlen, GFP_KERNEL);
+> -	if (!skb) {
+> -		NETLINK_CB(in_skb).sk->sk_err = ENOBUFS;
+> -		sk_error_report(NETLINK_CB(in_skb).sk);
+> -		return;
+> -	}
+> +	if (!skb)
+> +		goto err_bad_put;
+>  
+>  	rep = nlmsg_put(skb, NETLINK_CB(in_skb).portid, nlh->nlmsg_seq,
+> -			NLMSG_ERROR, payload, flags);
+> +			NLMSG_ERROR, sizeof(*errmsg), flags);
+> +	if (!rep)
+> +		goto err_bad_put;
+>  	errmsg = nlmsg_data(rep);
+>  	errmsg->error = err;
+> -	unsafe_memcpy(&errmsg->msg, nlh, payload > sizeof(*errmsg)
+> -					 ? nlh->nlmsg_len : sizeof(*nlh),
+> -		      /* Bounds checked by the skb layer. */);
+> +	memcpy(&errmsg->msg, nlh, sizeof(*nlh));
+> +
+> +	if (!(flags & NLM_F_CAPPED)) {
+
+Should it test this flag, or test if the sizes show the need for "extra"
+payload length?
+
+I always found the progression of sizes here to be confusing. "payload"
+starts as sizeof(*errmsg), and gets nlmsg_len(nlh) added but only when if
+"(err && !(nlk->flags & NETLINK_F_CAP_ACK)" was true. Why is
+nlmsg_len(nlh) _wrong_ if the rest of its contents are correct? If this
+was "0" in the other state, the logic would just be:
+
+	nlh_bytes = nlmsg_len(nlh);
+	total  = sizeof(*errmsg);
+	total += nlh_bytes;
+	total += tlvlen;
+
+and:
+
+	nlmsg_new(total, ...);
+	... nlmsg_put(..., sizeof(*errmsg), ...);
+	...
+	errmsg->error = err;
+	errmsg->nlh = *nlh;
+	if (nlh_bytes) {
+		data = nlmsg_append(..., nlh_bytes), ...);
+		...
+		memcpy(data, nlh->nlmsg_contents, nlh_bytes);
+	}
+
+> +		size_t data_len = nlh->nlmsg_len - sizeof(*nlh);
+
+I think data_len here is also "payload - sizeof(*errmsg)"? So if it's >0,
+we need to append the nlh contents.
+
+> +		void *data;
+> +
+> +		data = nlmsg_append(skb, rep, data_len);
+> +		if (!data)
+> +			goto err_bad_put;
+> +
+> +		/* the nlh + 1 is probably going to make you unhappy? */
+
+Right, the compiler may think it is an object no larger than sizeof(*nlh).
+My earliest attempt at changes here introduced a flex-array for the
+contents, and split the memcpy:
+https://lore.kernel.org/lkml/d7251d92-150b-5346-6237-52afc154bb00@rasmusvillemoes.dk/
+which is basically the solution you have here, except it wasn't having
+the nlmsg_*-helpers do the bounds checking.
+
+> +		memcpy(data, nlh + 1, data_len);
+
+So with the struct nlmsghdr::nlmsg_contents member, this becomes:
+
+		memcpy(data, nlh->nlmsg_contents, data_len);
+
 -- 
-2.34.1
-
+Kees Cook
