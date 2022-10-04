@@ -2,138 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F34A65F3C5F
-	for <lists+bpf@lfdr.de>; Tue,  4 Oct 2022 07:11:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22F965F3CD0
+	for <lists+bpf@lfdr.de>; Tue,  4 Oct 2022 08:38:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229556AbiJDFLG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Oct 2022 01:11:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58430 "EHLO
+        id S229505AbiJDGi3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Oct 2022 02:38:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229604AbiJDFLF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Oct 2022 01:11:05 -0400
-Received: from out2.migadu.com (out2.migadu.com [188.165.223.204])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51A4414007;
-        Mon,  3 Oct 2022 22:11:00 -0700 (PDT)
-Message-ID: <987e3781-bdd3-94fd-d28a-e678bb9ab63a@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1664860258;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OTuPD65DwaUaf4yAybzJuy8sVcVmClwi8dT4K1kAx0E=;
-        b=KIHLXddMOZVOd2gGkIFqPEYe1THGyQlJvomowDbu+agz9RJ1eTjm2QtS6C7+e2CwbP+vzJ
-        qUtM/G6VYr1ZVOrzC+QWObfsdCKnQYFgKchGqUKBc7Fc4L0FvHaDr5OxCUIxZ9YjiGWJ4d
-        U2GVvrCCS1mK1TL0REUoEAopgavGXeg=
-Date:   Mon, 3 Oct 2022 22:10:52 -0700
+        with ESMTP id S229483AbiJDGi2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 Oct 2022 02:38:28 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80C942A96D
+        for <bpf@vger.kernel.org>; Mon,  3 Oct 2022 23:38:27 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id iv17so8275149wmb.4
+        for <bpf@vger.kernel.org>; Mon, 03 Oct 2022 23:38:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=LGb3mHW7/8+coat4lZzlyNJAEvJrpj5ZeVBtzi56Qo8=;
+        b=A5fQrb3AAiETAO68s6rb8SROBGsPq2ENPpaHzm0GKJVryhxXFKBbl0xM67SdT7WDvl
+         W4zNlEj0RnNGPiLrhyuITo47lnimqo1MGiCMIOJEKJDYpNxGQS3nsc8Jp9PPcQE4rQqX
+         OdCQR95uFOyNs+mDfOYw1R3NFElesbZYh+nKYQINUcECs1Yf2LjOKV41Y/vVBmPsW0d8
+         WQt5kE6VPQjlruAQNVGEdY6ouANCESfuUZsl6SV0RpvmuWIJXwtbv39YPMxtGfPf902F
+         /FF/uQRNRGZ3jFDTZn7lvqhlYQAr5Ot4Sz0xRWCTqDtOD9wkfoAv2dlWgZ0ym02iN1yr
+         W/jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LGb3mHW7/8+coat4lZzlyNJAEvJrpj5ZeVBtzi56Qo8=;
+        b=PL7HLuss2IuXtgTq8Oqmrz4mQbaC1iGLiQdMZC0OQe3NPeao8Tzou/ZRIiwwQ3Hxdn
+         90aokAF5kUjx3wHitpL/RBT4z5zGDN2aLIB7dmfAafnsvs8VwM6wA4g+MQZTR6U/mqyJ
+         /pdZtu6IrctWAR4I2t5reMD59LCBjcBOzd0T8gY93S8RIvsg0OwWcVEZN3lbyV+YZQse
+         LrHGz3+k6Pp6wpQOuPnTczpQa7L9kugd9K5AnZ4/EoY6Ef57yx4qkka50zRDczFtjBSq
+         AldPTrF4lqte9jIiKNMAbQ+9oabp4wW+AVUac+lJ+oZbkKnll4x+WyRUNCa7tGb062Wa
+         SKCw==
+X-Gm-Message-State: ACrzQf1xo0riOXtzoviVfVT071Q6BcTj3b2EhDSsucb8Bf15WDtxwzRF
+        zvEADsR/RQalObx5oqNddqU=
+X-Google-Smtp-Source: AMsMyM7pn6bb1MX7PbY77KmBaryydw29qANU4jm8TYxrIU7hg/z7L+SK8QvSf6NrDT+6zT3R6dYWdA==
+X-Received: by 2002:a05:600c:3543:b0:3b4:ba45:9945 with SMTP id i3-20020a05600c354300b003b4ba459945mr8919213wmq.58.1664865505944;
+        Mon, 03 Oct 2022 23:38:25 -0700 (PDT)
+Received: from krava ([193.85.244.190])
+        by smtp.gmail.com with ESMTPSA id f11-20020a05600c154b00b003a3442f1229sm19722566wmg.29.2022.10.03.23.38.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 Oct 2022 23:38:25 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Tue, 4 Oct 2022 08:38:23 +0200
+To:     Martin KaFai Lau <martin.lau@linux.dev>
+Cc:     Kui-Feng Lee <kuifeng@fb.com>, bpf@vger.kernel.org,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Add missing
+ bpf_iter_vma_offset__destroy call
+Message-ID: <YzvU3/rwCnbWQM8P@krava>
+References: <20221002151141.1074196-1-jolsa@kernel.org>
+ <49aa0aec-a009-c0c3-cf47-11a6734aae36@linux.dev>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 2/2] bpf/selftests: Add selftests for new task kfuncs
-Content-Language: en-US
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     David Vernet <void@manifault.com>, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kernel-team@fb.com,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org, yhs@fb.com,
-        song@kernel.org, john.fastabend@gmail.com, kpsingh@kernel.org,
-        sdf@google.com, haoluo@google.com, jolsa@kernel.org, tj@kernel.org
-References: <20221001144716.3403120-1-void@manifault.com>
- <20221001144716.3403120-3-void@manifault.com>
- <CAP01T74TtMARkfYWsYY0+cnsx2w4axB1LtvF-RFMAihW7v=LUw@mail.gmail.com>
- <YzsBSoGnPEIJADSH@maniforge.dhcp.thefacebook.com>
- <CAP01T76OR3J_P8YMq4ZgKHBpuZyA0zgsPy+tq9htbX=j6AVyOg@mail.gmail.com>
- <fb3e81b7-8360-5132-59ac-0e74483eb25f@linux.dev>
- <CAP01T77tCdKTJo=sByg5GsW1OrQmNXV4fmBDKUVtbnwEaJBpVA@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <CAP01T77tCdKTJo=sByg5GsW1OrQmNXV4fmBDKUVtbnwEaJBpVA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <49aa0aec-a009-c0c3-cf47-11a6734aae36@linux.dev>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/3/22 2:03 PM, Kumar Kartikeya Dwivedi wrote:
-> On Mon, 3 Oct 2022 at 21:53, Martin KaFai Lau <martin.lau@linux.dev> wrote:
->>
->> On 10/3/22 8:56 AM, Kumar Kartikeya Dwivedi wrote:
->>>>> Also, could you include a test to make sure sleepable programs cannot
->>>>> call bpf_task_acquire? It seems to assume RCU read lock is held while
->>>>> that may not be true. If already not possible, maybe a WARN_ON_ONCE
->>>>> inside the helper to ensure future cases don't creep in.
->>>>
->>>> I don't _think_ it's unsafe for a sleepable program to call
->>>> bpf_task_acquire(). My understanding is that the struct task_struct *
->>>> parameter to bpf_task_acquire() is not PTR_UNTRUSTED, so it's safe to
->>>> dereference directly in the kfunc. The implicit assumption here is that
->>>> the task was either passed to the BPF program (which is calling
->>>> bpf_task_acquire()) from the main kernel in something like a trace or
->>>> struct_ops callback, or it was a referenced kptr that was removed from a
->>>> map with bpf_kptr_xchg(), and is now owned by the BPF program. Given
->>>> that the ptr type is not PTR_UNTRUSTED, it seemed correct to assume that
->>>> the task was valid in bpf_task_acquire() regardless of whether we were
->>>> in an RCU read region or not, but please let me know if I'm wrong about
->>>
->>> I don't think it's correct. You can just walk arbitrary structures and
->>> obtain a normal PTR_TO_BTF_ID that looks seemingly ok to the verifier
->>> but has no lifetime guarantees. It's a separate pre-existing problem
->>> unrelated to your series [0]. PTR_UNTRUSTED is not set for those cases
->>> currently.
->>>
->>> So the argument to your bpf_task_acquire may already be freed by then.
->>> This issue would be exacerbated in sleepable BPF programs, where RCU
->>> read lock is not held, so some cases of pointer walking where it may
->>> be safe no longer holds.
->>>
->>> I am planning to clean this up, but I'd still prefer if we don't allow
->>> this helper in sleepable programs, yet. kptr_get is ok to allow.
->>> Once you have explicit BPF RCU read sections, sleepable programs can
->>> take it, do loads, and operate on the RCU pointer safely until they
->>> invalidate it with the outermost bpf_rcu_read_unlock. It's needed for
->>> local kptrs as well, not just this. I plan to post this very soon, so
->>> we should be able to fix it up in the current cycle after landing your
->>> series.
->>>
->>> __rcu tags in the kernel will automatically be understood by the
->>> verifier and for the majority of the correctly annotated cases this
->>> will work fine and not break tracing programs.
->>>
->>> [0]: https://lore.kernel.org/bpf/CAADnVQJxe1QT5bvcsrZQCLeZ6kei6WEESP5bDXf_5qcB2Bb6_Q@mail.gmail.com
->>>
->>>> that.  Other kfuncs I saw such as bpf_xdp_ct_lookup() assumed that the
->>>> parameter passed by the BPF program (which itself was passing on a
->>>> pointer given to it by the main kernel) is valid as well.
->>>
->>> Yeah, but the CT API doesn't assume validity of random PTR_TO_BTF_ID,
->>> it requires KF_TRUSTED_ARGS which forces them to have ref_obj_id != 0.
->>
->> Other than ref_obj_id != 0, could the PTR_TO_BTF_ID obtained through
->> btf_ctx_access be marked as trusted (e.g. the ctx[0] in the selftest here)
->> and bpf_task_acquire() will require KF_TRUSTED_ARGS? would it be safe in general?
->>
+On Mon, Oct 03, 2022 at 05:12:44PM -0700, Martin KaFai Lau wrote:
+> On 10/2/22 8:11 AM, Jiri Olsa wrote:
+> > Adding missing bpf_iter_vma_offset__destroy call to
+> > test_task_vma_offset_common function and related goto jumps.
+> > 
+> > Fixes: b3e1331eb925 ("selftests/bpf: Test parameterized task BPF iterators.")
+> > Cc: Kui-Feng Lee <kuifeng@fb.com>
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >   tools/testing/selftests/bpf/prog_tests/bpf_iter.c | 8 +++++---
+> >   1 file changed, 5 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+> > index 3369c5ec3a17..462fe92e0736 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+> > @@ -1515,11 +1515,11 @@ static void test_task_vma_offset_common(struct bpf_iter_attach_opts *opts, bool
+> >   	link = bpf_program__attach_iter(skel->progs.get_vma_offset, opts);
 > 
-> Recently eed807f62610 ("bpf: Tweak definition of KF_TRUSTED_ARGS")
-> relaxed things a bit, now that constraint is only for PTR_TO_BTF_ID
-> and it allows other types without ref_obj_id > 0.
+> Thanks for the fix.
 > 
-> But you're right, ctx loads should usually be trusted, this is the
-> current plan (also elaborated a bit in that link [0]), usually that is
-> true,
+> A nit.  Instead of adding a new goto label.  How about doing
+> 
+> 	skel->links.get_vma_offset = bpf_program_attach_iter(...)
+> 
+> and bpf_iter_vma_offset__destroy(skel) will take care of the link destroy.
+> The earlier test_task_vma_common() is doing that also.
 
-Ah, it seems you have some of the work already.  Do you have it in somewhere 
-like github?  Is the 'trusting ctx loads' piece small enough that can be landed 
-together with this set first?
+right, I forgot destroy would do that.. it'll be simpler change
 
-> an exception is free path as you noted in your reply for patch 1
-> (and especially fexit path where object may not even be alive
-> anymore). There are some details to work out, but eventually I'd want
-> to force KF_TRUSTED_ARGS by default for all kfuncs, and we only make
-> exceptions in some special cases by having some KF_UNSAFE flag or
-> __unsafe tag for arguments. It's becoming harder to think about all
-> permutations if we're too permissive by default in terms of acceptable
-> arguments.
+thanks,
+jirka
 
+> 
+> Kui-Feng, please also take a look.
+> 
+> >   	if (!ASSERT_OK_PTR(link, "attach_iter"))
+> > -		return;
+> > +		goto exit_skel;
+> >   	iter_fd = bpf_iter_create(bpf_link__fd(link));
+> >   	if (!ASSERT_GT(iter_fd, 0, "create_iter"))
+> > -		goto exit;
+> > +		goto exit_link;
+> >   	while ((len = read(iter_fd, buf, sizeof(buf))) > 0)
+> >   		;
+> > @@ -1534,8 +1534,10 @@ static void test_task_vma_offset_common(struct bpf_iter_attach_opts *opts, bool
+> >   	close(iter_fd);
+> > -exit:
+> > +exit_link:
+> >   	bpf_link__destroy(link);
+> > +exit_skel:
+> > +	bpf_iter_vma_offset__destroy(skel);
+> >   }
+> >   static void test_task_vma_offset(void)
+> 
