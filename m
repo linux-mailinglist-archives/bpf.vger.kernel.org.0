@@ -2,67 +2,50 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB10D5F3E6D
-	for <lists+bpf@lfdr.de>; Tue,  4 Oct 2022 10:33:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 847A55F3F35
+	for <lists+bpf@lfdr.de>; Tue,  4 Oct 2022 11:10:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229798AbiJDIdx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Oct 2022 04:33:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45944 "EHLO
+        id S229735AbiJDJKH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Oct 2022 05:10:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230196AbiJDIds (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Oct 2022 04:33:48 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A90533F327
-        for <bpf@vger.kernel.org>; Tue,  4 Oct 2022 01:33:44 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id b2so9153833lfp.6
-        for <bpf@vger.kernel.org>; Tue, 04 Oct 2022 01:33:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=+8hVM6HR++8q936TONWT6d0jevmukWGXODV759VzDRA=;
-        b=jLctIR4y518R/nQR2YaufShK6n8oyJY46XHnZ7WMrXocoXNnxJpLyZsmxCxx2PHRI5
-         yGxbJIoALZfofky45QkuJX65NNa8IgQpOf3RY5eYgDjiAns1pvtopl9xGa4hmd/kvtpN
-         OikhrcF9PMLUhVCuEGxwBas1b1CaV2axNm1XG8HYYIf3fqDsAKmEe55LxUrC0bxr5jDU
-         Yr2J+1rFCwZIbD2Ec9svp+6iNzxhafan8emjvd2KCZqskK3hmlig0I6uqnEdbIF8FHjg
-         G8b+VHpmQeMfkJ+fxj5agNj89sF5pk651wbfqk2bPhQp4NszypGJmeEJBtWoGAnhCOZl
-         ++ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=+8hVM6HR++8q936TONWT6d0jevmukWGXODV759VzDRA=;
-        b=G86yuxjGAVu9yeqZmxVlVxyo8CwAc+BFUWBelMIYyZY86QRjCQCQ0PdzOvPUs6DwH6
-         QyfW+JGxG9fsZTy9xFcXNYal6gTXmOFu664RjFZwU/eiNbOujbHrdGnawZdE8gGL1BbC
-         vn6BL1YwE7pKikH+czKKo40rFQjykNBvqU6oN9iaGna19vcik1TZxtsg5NbKpIPNnFRO
-         KH/DZ4on6SeUn8J+dIN71yuma83p58oBIlbH7AgkIIT/FmgTVkMckPPPDffEXFlJ4XeB
-         LC2VLJ8smgA15waNS6sbMDf9Oz4rwHEeE3ZLb8JH2X3gZvox+gFEriTd1kMamgHrQEDA
-         4+tg==
-X-Gm-Message-State: ACrzQf2e9rjJ3TWiPT7a5kNimpM1CLHRAxM2FjDZFu/B+957PDC0rEdN
-        0H8EOAnxuiRwM1VJwtxd3dgiQnrdgHuB+08ZN0MBtw==
-X-Google-Smtp-Source: AMsMyM4nJnedZCUC0dWs7ejaV1sHLAZYvqt1NKxmzsE0sN7ddq/eUSSYEli5hLEoMARNaI8TZ+nPZknBqs15WzZAFb0=
-X-Received: by 2002:a19:f70f:0:b0:4a2:391d:71c2 with SMTP id
- z15-20020a19f70f000000b004a2391d71c2mr3706163lfe.376.1664872422413; Tue, 04
- Oct 2022 01:33:42 -0700 (PDT)
+        with ESMTP id S229722AbiJDJKG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 Oct 2022 05:10:06 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBC9513D46;
+        Tue,  4 Oct 2022 02:10:05 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 947EBB81915;
+        Tue,  4 Oct 2022 09:10:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F5E4C433C1;
+        Tue,  4 Oct 2022 09:10:02 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="Z678509s"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1664874600;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=0hs1IsEGUyjMwHR9WwV4memFIy/AoaL6RbQhrgEup2Q=;
+        b=Z678509smGM8bP3SS+4I0Ud/8nidvLu/4oLEwSHnqjBVEGYZ/zPA1KzGywhdogUM7cYDkD
+        VoAOZYof5XkRVkYTnhum700euhCfZMtuT1pWFKA0ug9BT6Hob62sOtr3Z2ULGYQimeTXTK
+        BNl0vMaIgzH0hzWQfp/Th9/ZDJTNYRs=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 0c34866b (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Tue, 4 Oct 2022 09:09:59 +0000 (UTC)
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        bpf@vger.kernel.org, netdev@vger.kernel.org, kuba@kernel.org
+Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Subject: [PATCH] bpf: unify function pointer type of dispatcher
+Date:   Tue,  4 Oct 2022 11:09:41 +0200
+Message-Id: <20221004090941.1360595-1-Jason@zx2c4.com>
 MIME-Version: 1.0
-References: <000000000000a793cc05ea313b87@google.com>
-In-Reply-To: <000000000000a793cc05ea313b87@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Tue, 4 Oct 2022 10:33:30 +0200
-Message-ID: <CACT4Y+a8b-knajrXWs8OnF1ijCansRxEicU=YJz6PRk-JuSKvg@mail.gmail.com>
-Subject: Re: [syzbot] upstream boot error: WARNING in netlink_ack
-To:     syzbot <syzbot+3a080099974c271cd7e9@syzkaller.appspotmail.com>
-Cc:     bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
-        fw@strlen.de, harshit.m.mogalapalli@oracle.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        pabeni@redhat.com, syzkaller-bugs@googlegroups.com,
-        Kees Cook <keescook@chromium.org>,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,79 +53,33 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 4 Oct 2022 at 10:27, syzbot
-<syzbot+3a080099974c271cd7e9@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    725737e7c21d Merge tag 'statx-dioalign-for-linus' of git:/..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=10257034880000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=486af5e221f55835
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3a080099974c271cd7e9
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+3a080099974c271cd7e9@syzkaller.appspotmail.com
+The __bpf_prog_run() function takes a bpf_dispatcher_fn as its last
+argument, which are usually generated by use of the
+DEFINE_BPF_DISPATCHER() macro. The last argument of a bpf_dispatcher_fn
+is an open coded function pointer. The DEFINE_BPF_DISPATCHER() macro, on the
+other hand, has as its last argument a bpf_func_t, rather than an open
+coded function pointer. Unify these two signatures by using bpf_func_t
+in both places, since it's the same as the open coded function pointer.
 
-+linux-hardening
+Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+---
+ include/linux/filter.h | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-> ------------[ cut here ]------------
-> memcpy: detected field-spanning write (size 28) of single field "&errmsg->msg" at net/netlink/af_netlink.c:2447 (size 16)
-> WARNING: CPU: 3 PID: 3351 at net/netlink/af_netlink.c:2447 netlink_ack+0x8ac/0xb10 net/netlink/af_netlink.c:2447
-> Modules linked in:
-> CPU: 3 PID: 3351 Comm: dhcpcd Not tainted 6.0.0-syzkaller-00593-g725737e7c21d #0
-> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
-> RIP: 0010:netlink_ack+0x8ac/0xb10 net/netlink/af_netlink.c:2447
-> Code: fa ff ff e8 36 c3 e5 f9 b9 10 00 00 00 4c 89 ee 48 c7 c2 20 3f fb 8a 48 c7 c7 80 3f fb 8a c6 05 e8 98 34 06 01 e8 26 77 a6 01 <0f> 0b e9 3a fa ff ff 41 be 00 01 00 00 41 bd 14 00 00 00 e9 ea fd
-> RSP: 0018:ffffc900220e7758 EFLAGS: 00010282
-> RAX: 0000000000000000 RBX: ffff88801a798a80 RCX: 0000000000000000
-> RDX: ffff8880151c0180 RSI: ffffffff81611cb8 RDI: fffff5200441cedd
-> RBP: ffff88801ed850c0 R08: 0000000000000005 R09: 0000000000000000
-> R10: 0000000080000000 R11: 0000000000000000 R12: 0000000000000000
-> R13: 000000000000001c R14: ffff88801ec8e400 R15: ffff88801ec8e414
-> FS:  00007faef0af8740(0000) GS:ffff88802cb00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007fff6adbe000 CR3: 0000000027683000 CR4: 0000000000150ee0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  <TASK>
->  netlink_rcv_skb+0x33d/0x420 net/netlink/af_netlink.c:2507
->  genl_rcv+0x24/0x40 net/netlink/genetlink.c:803
->  netlink_unicast_kernel net/netlink/af_netlink.c:1319 [inline]
->  netlink_unicast+0x543/0x7f0 net/netlink/af_netlink.c:1345
->  netlink_sendmsg+0x917/0xe10 net/netlink/af_netlink.c:1921
->  sock_sendmsg_nosec net/socket.c:714 [inline]
->  sock_sendmsg+0xcf/0x120 net/socket.c:734
->  ____sys_sendmsg+0x712/0x8c0 net/socket.c:2482
->  ___sys_sendmsg+0x110/0x1b0 net/socket.c:2536
->  __sys_sendmsg+0xf3/0x1c0 net/socket.c:2565
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> RIP: 0033:0x7faef0bf0163
-> Code: 64 89 02 48 c7 c0 ff ff ff ff eb b7 66 2e 0f 1f 84 00 00 00 00 00 90 64 8b 04 25 18 00 00 00 85 c0 75 14 b8 2e 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 55 c3 0f 1f 40 00 48 83 ec 28 89 54 24 1c 48
-> RSP: 002b:00007fff6adbdc48 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-> RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007faef0bf0163
-> RDX: 0000000000000000 RSI: 00007fff6adbdc90 RDI: 0000000000000010
-> RBP: 00007fff6adc1ed8 R08: 0000000000000000 R09: 0000000000000000
-> R10: 00007faef0c6ffc0 R11: 0000000000000246 R12: 0000000000000010
-> R13: 00007fff6adc1cf0 R14: 0000000000000000 R15: 000055e5ebce0290
->  </TASK>
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->
-> --
-> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/000000000000a793cc05ea313b87%40google.com.
+diff --git a/include/linux/filter.h b/include/linux/filter.h
+index 527ae1d64e27..25e85cfc28b8 100644
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -569,8 +569,7 @@ DECLARE_STATIC_KEY_FALSE(bpf_stats_enabled_key);
+ 
+ typedef unsigned int (*bpf_dispatcher_fn)(const void *ctx,
+ 					  const struct bpf_insn *insnsi,
+-					  unsigned int (*bpf_func)(const void *,
+-								   const struct bpf_insn *));
++					  bpf_func_t bpf_func);
+ 
+ static __always_inline u32 __bpf_prog_run(const struct bpf_prog *prog,
+ 					  const void *ctx,
+-- 
+2.37.3
+
