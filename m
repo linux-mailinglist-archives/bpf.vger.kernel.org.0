@@ -2,72 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AB195F493C
-	for <lists+bpf@lfdr.de>; Tue,  4 Oct 2022 20:26:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9EE75F4950
+	for <lists+bpf@lfdr.de>; Tue,  4 Oct 2022 20:35:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229678AbiJDS0k (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Oct 2022 14:26:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56336 "EHLO
+        id S229660AbiJDSfF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Oct 2022 14:35:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbiJDS0j (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Oct 2022 14:26:39 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6246B48E80
-        for <bpf@vger.kernel.org>; Tue,  4 Oct 2022 11:26:36 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id s16so174332ioa.6
-        for <bpf@vger.kernel.org>; Tue, 04 Oct 2022 11:26:36 -0700 (PDT)
+        with ESMTP id S229609AbiJDSfD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 Oct 2022 14:35:03 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C532D20F60
+        for <bpf@vger.kernel.org>; Tue,  4 Oct 2022 11:35:02 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id x59so10042671ede.7
+        for <bpf@vger.kernel.org>; Tue, 04 Oct 2022 11:35:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date;
-        bh=gRYUajJH2XYeinnw4ZdOwQypb66C3MJhg0f0J+7bVpo=;
-        b=I+6Ozq/inY7X0iZUFQJNd8flF81GL7qcsGzd3mNAmMtjiY+mVcHRIISHWNLe3t+OEB
-         kqx3PTwgHkOQnO/uhJpxj7oFBCP7DexRGtggYYpgPZO40qgE1hsMWzXuX+Bydv0ot62j
-         C1pVsJff8PE67Zg0/siKVYhiIfZ2KSF+L0Zxg6pIfP6WKsECKPPFax3hl2adQhWRJYZ3
-         c3yco6zzhYSa5UvuiNVWRdSxyq7iHVSFKOZ6icTDwabnA0UwqkQglAsBdyitMg3vD/Ls
-         SSlyBQE7Dyu33scGuPIU0kvgjvBGfdI+6idxrz7wDwiGJ12MkcF3049FspkLeFZM7slq
-         /seA==
+        bh=PcXNHR0gghwHcV7qe4ZbOwmr/1ijONuZtbjDXAMA4gA=;
+        b=Toi2tRkiBHzkYIdwyyFLLuQqal2vK3puh4i3xqPgbfcNQXL3+MHekmiFTETjYQVIF0
+         9ckoIhWp4F9lmb2u14zgWRSkvyP6L6xTT82yeBuWxQSSFofEWWsczNR7ANZhIw+NWOc3
+         hYd3iN1au6/VGdB+TCjDyXcMidtdmdNxp/9W8mTnboB7BYQsdv9Qw21I1o9mtBqs3J0n
+         yDIE6+G4C0BkGmqYZnhzYpI2GRXlK26h74p0zy3yTxclS4zRox5gJtEkgTwT9ZvkSE5l
+         b/eer8Wq0j7MMriL1mfnDvzoeAEoBduH5hqCLhgkIatINrC95OQcKOajBBRX6urqWMSB
+         WfHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=gRYUajJH2XYeinnw4ZdOwQypb66C3MJhg0f0J+7bVpo=;
-        b=xGThDgz1PiU1gLRIK7dh39B9ltwGBe4CUcs7MyzkQCccZBuPwpJspyeW6OP96wbM2X
-         9VAnkDC37JSPr2V+qw+P9C0HHfDfk6I/bT5yNSjgvioENfEM0MDqIgjgukXTgmuMGg17
-         aBluiT5zbMKCqes2kQjju/ROaU3L04gJohzorfET0i4MY/kMariDq3oH1m8GLFuV388F
-         y5ciMKzrCnn2ZKqQ3Z6Q856k9ZyRfYS8woc3ZflMNCvjIpcFT/CCMIe58C1+x27pN8bn
-         X6VArPeeqfrpw3TBvxSciNu4cXSFidnYatDjFHcWIt5BfGcf3zx0Nv9RmLnbmtswvzOm
-         ngKA==
-X-Gm-Message-State: ACrzQf1V77UM4LHsKm91qo47D0q948/56F3MMOVgXbxXXM+o2+FwqlK8
-        NuyuZp2puZk0fsg6jWzDZkI5f7gEQDG95Xb5qndXag==
-X-Google-Smtp-Source: AMsMyM66n8pn1uF0KFJJnE/9f0jYA328kb9Lypx761SNt0JKSzmD/uD6FshnqnXboaYSIXJrU06qzjwp6K8qXxmWKKM=
-X-Received: by 2002:a05:6602:2a47:b0:6a2:a5d9:c5f2 with SMTP id
- k7-20020a0566022a4700b006a2a5d9c5f2mr11675249iov.131.1664907995422; Tue, 04
- Oct 2022 11:26:35 -0700 (PDT)
+        bh=PcXNHR0gghwHcV7qe4ZbOwmr/1ijONuZtbjDXAMA4gA=;
+        b=DGWbiSR8Tn9t9WNHK+raIEJuMHvhbvsWCF/0RzGuEQREESU1Ff6oPoxZfS8cy+XgiU
+         d+3Ue5znsQGUVQJB/1vok9Fep+tB0T6faGxLFSxrlZLDYCfFaijbYpEiUtVHwvjT1f8o
+         TKULxaDHJqawEg1+2dbKg+mpStTZMhNwhXDnq+OjC/UpNomJbW0oL6KPXb3io+tQcwz6
+         AXNzUdfMBUPGP4B2OejXQa6hcd9Si0RPEe5hzbkX5MJl948S2Jo1VZ+rlCpzpvURaTmR
+         RRWM5l+9LvAbTi2YWLcRaemtgh02iG7gtkMLsNZG34/4mIjTvD03hirKqy+EPHGwVMmH
+         00cA==
+X-Gm-Message-State: ACrzQf17cTYgFTNGo4k+ONOjfhOWJ5g4rP2JeRhrZa0SEl5V1lvKafzT
+        SSKqMLAU5dYUITv1JgoJaLHV91A6Eo5i0zGuA7s=
+X-Google-Smtp-Source: AMsMyM5f7aIR35LGAp1MHfT5RwQFWVbKfcYTZ9s/i7tVUkXD5Vz/i6De1dgkxHcD31fTyYokiThj/YzUF/7eNtS0Frc=
+X-Received: by 2002:a05:6402:5406:b0:452:1560:f9d4 with SMTP id
+ ev6-20020a056402540600b004521560f9d4mr25052457edb.333.1664908501171; Tue, 04
+ Oct 2022 11:35:01 -0700 (PDT)
 MIME-Version: 1.0
-References: <166256538687.1434226.15760041133601409770.stgit@firesoul>
- <Yzt2YhbCBe8fYHWQ@google.com> <35fcfb25-583a-e923-6eee-e8bbcc19db17@redhat.com>
-In-Reply-To: <35fcfb25-583a-e923-6eee-e8bbcc19db17@redhat.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Tue, 4 Oct 2022 11:26:24 -0700
-Message-ID: <CAKH8qBuYVk7QwVOSYrhMNnaKFKGd7M9bopDyNp6-SnN6hSeTDQ@mail.gmail.com>
-Subject: Re: [PATCH RFCv2 bpf-next 00/18] XDP-hints: XDP gaining access to HW
- offload hints via BTF
-To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
-Cc:     brouer@redhat.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
-        xdp-hints@xdp-project.net, larysa.zaremba@intel.com,
-        memxor@gmail.com, Lorenzo Bianconi <lorenzo@kernel.org>,
-        mtahhan@redhat.com,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        dave@dtucker.co.uk, Magnus Karlsson <magnus.karlsson@intel.com>,
-        bjorn@kernel.org
+References: <20220927185958.14995-1-dthaler1968@googlemail.com>
+ <20220927185958.14995-7-dthaler1968@googlemail.com> <20220930205211.tb26v4rzhqrgog2h@macbook-pro-4.dhcp.thefacebook.com>
+ <DM4PR21MB3440CDB9D8E325CBEA20FFA7A3569@DM4PR21MB3440.namprd21.prod.outlook.com>
+ <20220930215914.rzedllnce7klucey@macbook-pro-4.dhcp.thefacebook.com>
+ <DM4PR21MB34402522B614257706D2F785A3569@DM4PR21MB3440.namprd21.prod.outlook.com>
+ <CAADnVQJto119zhc3oBuNa-OuwoNWW02bDDRb_SGKxZxq=Wid8A@mail.gmail.com>
+ <DM4PR21MB34409A021A6658DDAAB3B5AEA35A9@DM4PR21MB3440.namprd21.prod.outlook.com>
+ <CAADnVQKYb9fB2-AcPB0sMbE_pT2cQhOiKQw0q5rPxXHZ-6eXTw@mail.gmail.com> <DM4PR21MB3440DC0EE41F65013FE15E45A35A9@DM4PR21MB3440.namprd21.prod.outlook.com>
+In-Reply-To: <DM4PR21MB3440DC0EE41F65013FE15E45A35A9@DM4PR21MB3440.namprd21.prod.outlook.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 4 Oct 2022 11:34:49 -0700
+Message-ID: <CAADnVQJ387tWd7WgxqfoB44xMe17bY0RRp_Sng3xMnKsywFpxg@mail.gmail.com>
+Subject: Re: div_k. Was: [PATCH 07/15] ebpf-docs: Fix modulo zero, division by
+ zero, overflow, and underflow
+To:     Dave Thaler <dthaler@microsoft.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,366 +74,55 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 4, 2022 at 2:29 AM Jesper Dangaard Brouer
-<jbrouer@redhat.com> wrote:
+On Tue, Oct 4, 2022 at 11:23 AM Dave Thaler <dthaler@microsoft.com> wrote:
 >
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> [...]
+> > > What is the expected value for the following 64-bit BPF_DIV operation:
+> > >     r0 = 0xFFFFFFFFFFFFFFFF
+> > >     r0 /= -10
+> > > Is it 0x1 or 0x10000000a?  i.e., is the -10 sign extended to
+> > > 0xFFFFFFFFFFFFFFF6 or treated as 0xFFFFFFF6 when doing the unsigned
+> > > division?
+> >
+> > x86 and arm64 JITs treat it as imm32 is zero extended.
 >
-> On 04/10/2022 01.55, sdf@google.com wrote:
-> > On 09/07, Jesper Dangaard Brouer wrote:
-> >> This patchset expose the traditional hardware offload hints to XDP and
-> >> rely on BTF to expose the layout to users.
-> >
-> >> Main idea is that the kernel and NIC drivers simply defines the struct
-> >> layouts they choose to use for XDP-hints. These XDP-hints structs gets
-> >> naturally and automatically described via BTF and implicitly exported to
-> >> users. NIC drivers populate and records their own BTF ID as the last
-> >> member in XDP metadata area (making it easily accessible by AF_XDP
-> >> userspace at a known negative offset from packet data start).
-> >
-> >> Naming conventions for the structs (xdp_hints_*) is used such that
-> >> userspace can find and decode the BTF layout and match against the
-> >> provided BTF IDs. Thus, no new UAPI interfaces are needed for exporting
-> >> what XDP-hints a driver supports.
-> >
-> >> The patch "i40e: Add xdp_hints_union" introduce the idea of creating a
-> >> union named "xdp_hints_union" in every driver, which contains all
-> >> xdp_hints_* struct this driver can support. This makes it easier/quicker
-> >> to find and parse the relevant BTF types.  (Seeking input before fixing
-> >> up all drivers in patchset).
-> >
-> >
-> >> The main different from RFC-v1:
-> >>   - Drop idea of BTF "origin" (vmlinux, module or local)
-> >>   - Instead to use full 64-bit BTF ID that combine object+type ID
-> >
-> >> I've taken some of Alexandr/Larysa's libbpf patches and integrated
-> >> those.
-> >
-> >> Patchset exceeds netdev usually max 15 patches rule. My excuse is three
-> >> NIC drivers (i40e, ixgbe and mvneta) gets XDP-hints support and which
-> >> required some refactoring to remove the SKB dependencies.
-> >
-> > Hey Jesper,
-> >
-> > I took a quick look at the series.
-> Appreciate that! :-)
+> Alan Jowett just pointed out to me that the question is not limited to DIV.
 >
-> > Do we really need the enum with the flags?
+> r0 = 1
+> r0 += -1
 >
-> The primary reason for using enum is that these gets exposed as BTF.
-> The proposal is that userspace/BTF need to obtain the flags via BTF,
-> such that they don't become UAPI, but something we can change later.
->
-> > We might eventually hit that "first 16 bits are reserved" issue?
-> >
-> > Instead of exposing enum with the flags, why not solve it as follows:
-> > a. We define UAPI struct xdp_rx_hints with _all_ possible hints
->
-> How can we know _all_ possible hints from the beginning(?).
->
-> UAPI + central struct dictating all possible hints, will limit innovation.
+> Is the answer 0 or 0x0000000100000000?
+> Assuming the answer is to zero extend imm32, it contains the latter, which
+> would be counter-intuitive enough to make it important to point out explicitly.
 
-We don't need to know them all in advance. The same way we don't know
-them all for flags enum. That UAPI xdp_rx_hints can be extended any
-time some driver needs some new hint offload. The benefit here is that
-we have a "common registry" of all offloads and different drivers have
-an opportunity to share.
+This is an obvious one. imm32 is _sign_ extended everywhere.
 
-Think of it like current __sk_buff vs sk_buff. xdp_rx_hints is a fake
-uapi struct (__sk_buff) and the access to it gets translated into
-<device>_xdp_rx_hints offsets (sk_buff).
+>
+> > But looking at the interpreter:
+> >         ALU64_DIV_K:
+> >                 DST = div64_u64(DST, IMM); it looks like we have a bug there.
+> > But we have a bunch of div_k tests in lib/test_bpf.c including negative
+> > imm32. Hmm.
 
-> > b. Each device defines much denser <device>_xdp_rx_hints struct with the
-> >     metadata that it supports
->
-> Thus, the NIC device is limited to what is defined in UAPI struct
-> xdp_rx_hints.  Again this limits innovation.
+Actually I misread the JITs.
+/* mov r11, imm32 */
+EMIT3_off32(0x49, 0xC7, 0xC3, imm32);
 
-I guess what I'm missing from your series is the bpf/userspace side.
-Do you have an example on the bpf side that will work for, say,
-xdp_hints_ixgbe_timestamp?
+It is sign extending. There is no bug in the interpreter or JIT.
 
-Suppose, you pass this custom hints btf_id via xdp_md as proposed,
-what's the action on the bpf side to consume this?
-
-If (ctx_hints_btf_id == xdp_hints_ixgbe_timestamp_btf_id /* supposedly
-populated at runtime by libbpf? */) {
-  // do something with rx_timestamp
-  // also, handle xdp_hints_ixgbe and then xdp_hints_common ?
-} else if (ctx_hints_btf_id == xdp_hints_ixgbe) {
-  // do something else
-  // plus explicitly handle xdp_hints_common here?
-} else {
-  // handle xdp_hints_common
-}
-
-What I'd like to avoid is an xdp program targeting specific drivers.
-Where possible, we should aim towards something like "if this device
-has rx_timestamp offload -> use it without depending too much on
-specific btf_ids.
-
-> > c. The subset of fields in <device>_xdp_rx_hints should match the ones from
-> >     xdp_rx_hints (we essentially standardize on the field names/sizes)
-> > d. We expose <device>_xdp_rx_hints btf id via netlink for each device
+> Yeah.
 >
-> For this proposed design you would still need more than one BTF ID or
-> <device>_xdp_rx_hints struct's, because not all packets contains all
-> hints. The most common case is HW timestamping, which some HW only
-> supports for PTP frames.
+> "ALU64_DIV_K: 0xffffffffffffffff / (-1) = 0x0000000000000001",
+> "ALU64_ADD_K: 2147483646 + -2147483647 = -1",
+> "ALU64_ADD_K: 0 + (-1) = 0xffffffffffffffff",
+> "ALU64_MUL_K: 1 * -2147483647 = -2147483647",
+> "ALU64_MUL_K: 1 * (-1) = 0xffffffffffffffff",
+> "ALU64_AND_K: 0x0000ffffffff0000 & -1 = 0x0000ffffffff0000",
+> "ALU64_AND_K: 0xffffffffffffffff & -1 = 0xffffffffffffffff",
+> "ALU64_OR_K: 0x000000000000000 | -1 = 0xffffffffffffffff",
 >
-> Plus, I don't see a need to expose anything via netlink, as we can just
-> use the existing BTF information from the module.  Thus, avoiding to
-> creating more UAPI.
-
-See above. I think even with your series, that btf_id info should also
-come via netlink so the programs can query it before loading and do
-the required adjustments. Otherwise, I'm not sure I understand what I
-need to do with a btf_id that comes via xdp_md/xdp_frame. It seems too
-late? I need to know them in advance to at least populate those ids
-into the bpf program itself?
-
-> > e. libbpf will query and do offset relocations for
-> >     xdp_rx_hints -> <device>_xdp_rx_hints at load time
-> >
-> > Would that work? Then it seems like we can replace bitfields with the
+> The above assume sign extension not zero extension is the correct behavior
+> for these operations, if I understand correctly.
 >
-> I used to be a fan of bitfields, until I discovered that they are bad
-> for performance, because compilers cannot optimize these.
-
-Ack, good point, something to keep in mind.
-
-> > following:
-> >
-> >    if (bpf_core_field_exists(struct xdp_rx_hints, vlan_tci)) {
-> >      /* use that hint */
->
-> Fairly often a VLAN will not be set in packets, so we still have to read
-> and check a bitfield/flag if the VLAN value is valid. (Guess it is
-> implicit in above code).
-
-That's a fair point. Then we need two signals?
-
-1. Whether this particular offload is supported for the device at all
-(via that bpf_core_field_exists or something similar)
-2. Whether this particular packet has particular metadata (via your
-proposed flags)
-
-if (device I'm attaching xdp to has vlan offload) { // via
-bpf_core_field_exists?
-  if (particular packet comes with a vlan tag) { // via your proposed
-bitfield flags?
-  }
-}
-
-Or are we assuming that (2) is fast enough and we don't care about
-(1)? Because (1) can 'if (0)' the whole branch and make the verifier
-remove that part.
-
-> >    }
-> >
-> > All we need here is for libbpf to, again, do xdp_rx_hints ->
-> > <device>_xdp_rx_hints translation before it evaluates
-> > bpf_core_field_exists()?
-> >
-> > Thoughts? Any downsides? Am I missing something?
-> >
->
-> Well, the downside is primarily that this design limits innovation.
->
-> Each time a NIC driver want to introduce a new hardware hint, they have
-> to update the central UAPI xdp_rx_hints struct first.
->
-> The design in the patchset is to open for innovation.  Driver can extend
-> their own xdp_hints_<driver>_xxx struct(s).  They still have to land
-> their patches upstream, but avoid mangling a central UAPI struct. As
-> upstream we review driver changes and should focus on sane struct member
-> naming(+size) especially if this "sounds" like a hint/feature that more
-> driver are likely to support.  With help from BTF relocations, a new
-> driver can support same hint/feature if naming(+size) match (without
-> necessary the same offset in the struct).
-
-The opposite side of this approach is that we'll have 'ixgbe_hints'
-with 'rx_timestamp' and 'mvneta_hints' with something like
-'rx_tstamp'.
-
-> > Also, about the TX side: I feel like the same can be applied there,
-> > the program works with xdp_tx_hints and libbpf will rewrite to
-> > <device>_xdp_tx_hints. xdp_tx_hints might have fields like "has_tx_vlan:1";
-> > those, presumably, can be relocatable by libbpf as well?
-> >
->
-> Good to think ahead for TX-side, even-though I think we should focus on
-> landing RX-side first.
->
-> I notice your naming xdp_rx_hints vs. xdp_tx_hints.  I have named the
-> common struct xdp_hints_common, without a RX/TX direction indication.
-> Maybe this is wrong of me, but my thinking was that most of the common
-> hints can be directly used as TX-side hints.  I'm hoping TX-side
-> xdp-hints will need to do little-to-non adjustment, before using the
-> hints as TX "instruction".  I'm hoping that XDP-redirect will just work
-> and xmit driver can use XDP-hints area.
->
-> Please correct me if I'm wrong.
-> The checksum fields hopefully translates to similar TX offload "actions".
-> The VLAN offload hint should translate directly to TX-side.
->
-> I can easily be convinced we should name it xdp_hints_rx_common from the
-> start, but then I will propose that xdp_hints_tx_common have the
-> checksum and VLAN fields+flags at same locations, such that we don't
-> take any performance hint for moving them to "TX-side" hints, making
-> XDP-redirect just work.
-
-Might be good to think about this beforehand. I agree that most of the
-layout should hopefully match. However once case that I'm interested
-in is rx_timestamp vs tx_timestamp. For rx, I'm getting the timestamp
-in the metadata; for tx, I'm merely setting a flag somewhere to
-request it for async delivery later (I hope we plan to support that
-for af_xdp?). So the layout might be completely different :-(
-
-On Tue, Oct 4, 2022 at 2:29 AM Jesper Dangaard Brouer
-<jbrouer@redhat.com> wrote:
->
->
-> On 04/10/2022 01.55, sdf@google.com wrote:
-> > On 09/07, Jesper Dangaard Brouer wrote:
-> >> This patchset expose the traditional hardware offload hints to XDP and
-> >> rely on BTF to expose the layout to users.
-> >
-> >> Main idea is that the kernel and NIC drivers simply defines the struct
-> >> layouts they choose to use for XDP-hints. These XDP-hints structs gets
-> >> naturally and automatically described via BTF and implicitly exported to
-> >> users. NIC drivers populate and records their own BTF ID as the last
-> >> member in XDP metadata area (making it easily accessible by AF_XDP
-> >> userspace at a known negative offset from packet data start).
-> >
-> >> Naming conventions for the structs (xdp_hints_*) is used such that
-> >> userspace can find and decode the BTF layout and match against the
-> >> provided BTF IDs. Thus, no new UAPI interfaces are needed for exporting
-> >> what XDP-hints a driver supports.
-> >
-> >> The patch "i40e: Add xdp_hints_union" introduce the idea of creating a
-> >> union named "xdp_hints_union" in every driver, which contains all
-> >> xdp_hints_* struct this driver can support. This makes it easier/quicker
-> >> to find and parse the relevant BTF types.  (Seeking input before fixing
-> >> up all drivers in patchset).
-> >
-> >
-> >> The main different from RFC-v1:
-> >>   - Drop idea of BTF "origin" (vmlinux, module or local)
-> >>   - Instead to use full 64-bit BTF ID that combine object+type ID
-> >
-> >> I've taken some of Alexandr/Larysa's libbpf patches and integrated
-> >> those.
-> >
-> >> Patchset exceeds netdev usually max 15 patches rule. My excuse is three
-> >> NIC drivers (i40e, ixgbe and mvneta) gets XDP-hints support and which
-> >> required some refactoring to remove the SKB dependencies.
-> >
-> > Hey Jesper,
-> >
-> > I took a quick look at the series.
-> Appreciate that! :-)
->
-> > Do we really need the enum with the flags?
->
-> The primary reason for using enum is that these gets exposed as BTF.
-> The proposal is that userspace/BTF need to obtain the flags via BTF,
-> such that they don't become UAPI, but something we can change later.
->
-> > We might eventually hit that "first 16 bits are reserved" issue?
-> >
-> > Instead of exposing enum with the flags, why not solve it as follows:
-> > a. We define UAPI struct xdp_rx_hints with _all_ possible hints
->
-> How can we know _all_ possible hints from the beginning(?).
->
-> UAPI + central struct dictating all possible hints, will limit innovation.
->
-> > b. Each device defines much denser <device>_xdp_rx_hints struct with the
-> >     metadata that it supports
->
-> Thus, the NIC device is limited to what is defined in UAPI struct
-> xdp_rx_hints.  Again this limits innovation.
->
-> > c. The subset of fields in <device>_xdp_rx_hints should match the ones from
-> >     xdp_rx_hints (we essentially standardize on the field names/sizes)
-> > d. We expose <device>_xdp_rx_hints btf id via netlink for each device
->
-> For this proposed design you would still need more than one BTF ID or
-> <device>_xdp_rx_hints struct's, because not all packets contains all
-> hints. The most common case is HW timestamping, which some HW only
-> supports for PTP frames.
->
-> Plus, I don't see a need to expose anything via netlink, as we can just
-> use the existing BTF information from the module.  Thus, avoiding to
-> creating more UAPI.
->
-> > e. libbpf will query and do offset relocations for
-> >     xdp_rx_hints -> <device>_xdp_rx_hints at load time
-> >
-> > Would that work? Then it seems like we can replace bitfields with the
->
-> I used to be a fan of bitfields, until I discovered that they are bad
-> for performance, because compilers cannot optimize these.
->
-> > following:
-> >
-> >    if (bpf_core_field_exists(struct xdp_rx_hints, vlan_tci)) {
-> >      /* use that hint */
->
-> Fairly often a VLAN will not be set in packets, so we still have to read
-> and check a bitfield/flag if the VLAN value is valid. (Guess it is
-> implicit in above code).
->
-> >    }
-> >
-> > All we need here is for libbpf to, again, do xdp_rx_hints ->
-> > <device>_xdp_rx_hints translation before it evaluates
-> > bpf_core_field_exists()?
-> >
-> > Thoughts? Any downsides? Am I missing something?
-> >
->
-> Well, the downside is primarily that this design limits innovation.
->
-> Each time a NIC driver want to introduce a new hardware hint, they have
-> to update the central UAPI xdp_rx_hints struct first.
->
-> The design in the patchset is to open for innovation.  Driver can extend
-> their own xdp_hints_<driver>_xxx struct(s).  They still have to land
-> their patches upstream, but avoid mangling a central UAPI struct. As
-> upstream we review driver changes and should focus on sane struct member
-> naming(+size) especially if this "sounds" like a hint/feature that more
-> driver are likely to support.  With help from BTF relocations, a new
-> driver can support same hint/feature if naming(+size) match (without
-> necessary the same offset in the struct).
->
-> > Also, about the TX side: I feel like the same can be applied there,
-> > the program works with xdp_tx_hints and libbpf will rewrite to
-> > <device>_xdp_tx_hints. xdp_tx_hints might have fields like "has_tx_vlan:1";
-> > those, presumably, can be relocatable by libbpf as well?
-> >
->
-> Good to think ahead for TX-side, even-though I think we should focus on
-> landing RX-side first.
->
-> I notice your naming xdp_rx_hints vs. xdp_tx_hints.  I have named the
-> common struct xdp_hints_common, without a RX/TX direction indication.
-> Maybe this is wrong of me, but my thinking was that most of the common
-> hints can be directly used as TX-side hints.  I'm hoping TX-side
-> xdp-hints will need to do little-to-non adjustment, before using the
-> hints as TX "instruction".  I'm hoping that XDP-redirect will just work
-> and xmit driver can use XDP-hints area.
->
-> Please correct me if I'm wrong.
-> The checksum fields hopefully translates to similar TX offload "actions".
-> The VLAN offload hint should translate directly to TX-side.
->
-> I can easily be convinced we should name it xdp_hints_rx_common from the
-> start, but then I will propose that xdp_hints_tx_common have the
-> checksum and VLAN fields+flags at same locations, such that we don't
-> take any performance hint for moving them to "TX-side" hints, making
-> XDP-redirect just work.
->
-> --Jesper
->
+> Dave
