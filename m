@@ -2,68 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC7F35F5CC4
-	for <lists+bpf@lfdr.de>; Thu,  6 Oct 2022 00:36:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E01D75F5CD4
+	for <lists+bpf@lfdr.de>; Thu,  6 Oct 2022 00:43:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229562AbiJEWgx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Oct 2022 18:36:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48240 "EHLO
+        id S229724AbiJEWnY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Oct 2022 18:43:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229575AbiJEWgw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Oct 2022 18:36:52 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 800036068D;
-        Wed,  5 Oct 2022 15:36:51 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id z23so686745ejw.12;
-        Wed, 05 Oct 2022 15:36:51 -0700 (PDT)
+        with ESMTP id S229804AbiJEWnN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Oct 2022 18:43:13 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BFAC8558C
+        for <bpf@vger.kernel.org>; Wed,  5 Oct 2022 15:43:06 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id kg6so736503ejc.9
+        for <bpf@vger.kernel.org>; Wed, 05 Oct 2022 15:43:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=5IDa4zO8fjCrFtrwiC0X35h30/CNk4qiLrUvMAkxVAs=;
-        b=bm30/cArbm6oXF4zz1/TtHAWlji0iXVLwmqbQ8S+eX+WoOj3CAuuIz6pZTPsG/T+x8
-         tQuWs0gvBC5SG/yfefFxVY2DB4LqAzzAd3/kN3emfJiPT5otMXw6F8Hnsig2FHnJaswi
-         xyU6sVIQ9t48MFF1pB5zpnyNuo7f/Wo9gQ06BgxfSzrZoPS2PIzQIvz5rH2Hj7CZltvw
-         EE1cHiLJW3Nx55kuMDHjzlm9+iSe749VmzE7X20P54yDycBMuaOEnnipVWFVMwzetjq3
-         AKlp0g8DBThkQM/uQSi27PJN7F3IdQi14TUpoO/hPCY/hN+X3QmV/7eRYIMax/s3LrUe
-         Xb2g==
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QrmPIV/vWXrbZds146l/M5lTC+3i31tyqrY63BcRqEg=;
+        b=da6ArrwOdRU084gxi3wHtNUnnXy+s+R/MmUC+NDzbqXkUw8aMe6RsboZx1eiyjChE9
+         zf3VigmExyl6K+9TOT127fbIs/w3ypXJ72Fag7cllCG3ctdkTGTHl0bVs+ynnPR0ePIX
+         xykX/l8kON5VQszn/huTNOvYzpfGGTeVsai/VywTrb51XKkb3uTyjL8ywH12vZBKN6bz
+         JfngE46REfld62d0JlO5SM5qMSD4Cr7nIXhK+3PM8dm8Jufu9JPq9YAscA6jpOcTC2q/
+         HUDbKatTfOOviGQnBYbNpXwBhMy+hgF2SAP/49W6lHBxpfOc4Cqw56mI2kK62fYwij+0
+         fUkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5IDa4zO8fjCrFtrwiC0X35h30/CNk4qiLrUvMAkxVAs=;
-        b=qzuCWCR6ngV6dgCpqns9lefekJxeUGQIBdT9Gi/VYBo99BU26YgGP2yw4y0tSF28H/
-         qpEJpZTv2SibFDKOl2UuJkT6W0ZUd90EcfSIUWjq46tHRglxqxW0fUwtAtolQSZRaiTk
-         zS0MFDpHFcZSvAv8wMPz5voM5q/cA0nFe4Aox2IxiMuqozlhClX01b4tCaGUNxl6yQgD
-         Z7e0gYXFmE58NUkqJ+j4XG+kZtIg47i3wu9+U1BGL2I1d8qCBwZyf8FxVByjThQXBOBn
-         DqmCusMBI1i71HVZK2+PNoNhxK12rtN+g8yaAT2RLuJdEdzIgUE+Rq1cDh95CcR1mdcP
-         sQvg==
-X-Gm-Message-State: ACrzQf1cvl+XHXcTCRxZkkEOhI3oqo8yuWg5mqPOxnh20YK/cGvQGajU
-        n+FZahYFaCa3+Ju89UpEmdcec49QPY7ud9l0HDg=
-X-Google-Smtp-Source: AMsMyM6/ch5wARIR0pg7YHIz3pTGEEc2KZkCtkscs8/h76CNWrKne/Is4+U0XiChE9jAPq+RWQvCYZ3IQuYcLKFMbJI=
-X-Received: by 2002:a17:906:5a4c:b0:78c:c893:74e6 with SMTP id
- my12-20020a1709065a4c00b0078cc89374e6mr1475975ejc.545.1665009409931; Wed, 05
- Oct 2022 15:36:49 -0700 (PDT)
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QrmPIV/vWXrbZds146l/M5lTC+3i31tyqrY63BcRqEg=;
+        b=g0C7QvLh5qFRyN59p4FYvadZp6LGrA/HG9P4YtkErx6ELkgdu0YGaPDOjzzaa0Uaq3
+         wtgEKmkAVElsJBsk54Ax/gPvWUt8BFcREa1Aei4T43lek3mWH4mD7PAw+ukRH6dL0Qix
+         MTcNLJCqxuayBjSYcj+RCphEKEcs2nAeLtZbm54dVhycGwXpuA9fs97YHWj6pG4WnW07
+         n8DrlInVzc+9F7GYgD52mDItyJyRgQktvU+Z/ZJFQcq1lhROLVQrRTZ+vkH4ivI2T8T2
+         wal7iacx3PLsoBSXtYdbHxpyfDF7+7W8AD3TVdKBQlRpOuKjF1bq9NHP6rIn/5V6gs6m
+         W7KQ==
+X-Gm-Message-State: ACrzQf2faBEt8t7JIZyloDjCe1g91VYGdG4dCuNOx8OTPiBtykAcYU2k
+        qgV1cjHIIByi65OODYvwl48AtrfQiEfhQ7ER29s=
+X-Google-Smtp-Source: AMsMyM56qbeflxSupBt4B+7Nv2g1rZvlCu0XyokLPGtBDgQNtZyLnDy4wnxAByuwk7+d4ff3CkVz69AubacQnEppw60=
+X-Received: by 2002:a17:907:984:b0:77f:4d95:9e2f with SMTP id
+ bf4-20020a170907098400b0077f4d959e2fmr1560874ejc.176.1665009784990; Wed, 05
+ Oct 2022 15:43:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAM9d7cjQ20a01YoZi=o-_7HT6TzR0TZgtpscKNvRrMq2yqV1Og@mail.gmail.com>
- <20220922041435.709119-1-namhyung@kernel.org> <CAEf4BzZhHYYOmNhLdrpsXSDE5kaXvgSN00X-8aAySDwAKX0RCw@mail.gmail.com>
- <CAM9d7ch8RUgf8V1hi=ccgV84XSfujuWtUKKgre8eQdGmtdiFLA@mail.gmail.com>
-In-Reply-To: <CAM9d7ch8RUgf8V1hi=ccgV84XSfujuWtUKKgre8eQdGmtdiFLA@mail.gmail.com>
+References: <20220929160558.5034-1-annemacedo@linux.microsoft.com>
+ <63365532d416f_233df20899@john.notmuch> <92157e05-e383-ed4b-8b01-2981dbf5afd3@linux.microsoft.com>
+ <CAEf4BzZxU+YD5CtHEk7S7bXTDMMSsnV3eFYgRXCMft=fx9reMA@mail.gmail.com> <CAHC9VhSqHFRpfq1b6Ys+Ygaqr-6KFeziUxtOVpsoBb=TE2csoA@mail.gmail.com>
+In-Reply-To: <CAHC9VhSqHFRpfq1b6Ys+Ygaqr-6KFeziUxtOVpsoBb=TE2csoA@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 5 Oct 2022 15:36:37 -0700
-Message-ID: <CAEf4Bza0dt6v8YLNvQbANH+O9E5naZZj1cc4H6j=KK9WQcym8w@mail.gmail.com>
-Subject: Re: [PATCH] perf stat: Support old kernels for bperf cgroup counting
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        cgroups <cgroups@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>, bpf <bpf@vger.kernel.org>
+Date:   Wed, 5 Oct 2022 15:42:53 -0700
+Message-ID: <CAEf4BzZnLFgzaPWeaH2h3dqxS4thEHQUv6FtZbpffxs6iGcWKw@mail.gmail.com>
+Subject: Re: [PATCH] libbpf: add validation to BTF's variable type ID
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Anne Macedo <annemacedo@linux.microsoft.com>,
+        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Isabella Basso <isabbasso@riseup.net>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -74,90 +79,104 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 30, 2022 at 7:31 PM Namhyung Kim <namhyung@kernel.org> wrote:
+On Mon, Oct 3, 2022 at 2:26 PM Paul Moore <paul@paul-moore.com> wrote:
 >
-> Hello,
->
-> On Fri, Sep 30, 2022 at 3:48 PM Andrii Nakryiko
+> On Fri, Sep 30, 2022 at 6:39 PM Andrii Nakryiko
 > <andrii.nakryiko@gmail.com> wrote:
+> > On Fri, Sep 30, 2022 at 6:00 AM Anne Macedo
+> > <annemacedo@linux.microsoft.com> wrote:
+> > >
+> > > On 29/09/22 23:32, John Fastabend wrote:
+> > > > Anne Macedo wrote:
+> > > >> If BTF is corrupted, a SEGV may occur due to a null pointer derefe=
+rence on
+> > > >> bpf_object__init_user_btf_map.
+> > > >>
+> > > >> This patch adds a validation that checks whether the DATASEC's var=
+iable
+> > > >> type ID is null. If so, it raises a warning.
+> > > >>
+> > > >> Reported by oss-fuzz project [1].
+> > > >>
+> > > >> A similar patch for the same issue exists on [2]. However, the cod=
+e is
+> > > >> unreachable when using oss-fuzz data.
+> > > >>
+> > > >> [1] https://github.com/libbpf/libbpf/issues/484
+> > > >> [2] https://patchwork.kernel.org/project/netdevbpf/patch/202111031=
+73213.1376990-3-andrii@kernel.org/
+> > > >>
+> > > >> Reviewed-by: Isabella Basso <isabbasso@riseup.net>
+> > > >> Signed-off-by: Anne Macedo <annemacedo@linux.microsoft.com>
+> > > >> ---
+> > > >>   tools/lib/bpf/libbpf.c | 4 ++++
+> > > >>   1 file changed, 4 insertions(+)
+> > > >>
+> > > >> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > > >> index 184ce1684dcd..0c88612ab7c4 100644
+> > > >> --- a/tools/lib/bpf/libbpf.c
+> > > >> +++ b/tools/lib/bpf/libbpf.c
+> > > >> @@ -2464,6 +2464,10 @@ static int bpf_object__init_user_btf_map(st=
+ruct bpf_object *obj,
+> > > >>
+> > > >>      vi =3D btf_var_secinfos(sec) + var_idx;
+> > > >>      var =3D btf__type_by_id(obj->btf, vi->type);
+> > > >> +    if (!var || !btf_is_var(var)) {
+> > > >> +            pr_warn("map #%d: non-VAR type seen", var_idx);
+> > > >> +            return -EINVAL;
+> > > >> +    }
+> > > >>      var_extra =3D btf_var(var);
+> > > >>      map_name =3D btf__name_by_offset(obj->btf, var->name_off);
+> > > >>
+> > > >> --
+> > > >> 2.30.2
+> > > >>
+> > > >
+> > > >
+> > > > I don't know abouut this. A quick scan looks like this type_by_id i=
+s
+> > > > used lots of places. And seems corrupted BTF could cause faults
+> > > > and confusiuon in other spots as well. I'm not sure its worth makin=
+g
+> > > > libbpf survive corrupted BTF. OTOH this specific patch looks ok.
+> > > >
+> > >
+> > > I was planning on creating a function to validate BTF for these kinds=
+ of
+> > > corruptions, but decided to keep this patch simple. This could be a g=
+ood
+> > > idea for some future work =E2=80=93 moving all of the validations to
+> > > bpf_object__init_btf() or to a helper function.
 > >
-> > On Wed, Sep 21, 2022 at 9:21 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> > >
-> > > The recent change in the cgroup will break the backward compatiblity in
-> > > the BPF program.  It should support both old and new kernels using BPF
-> > > CO-RE technique.
-> > >
-> > > Like the task_struct->__state handling in the offcpu analysis, we can
-> > > check the field name in the cgroup struct.
-> > >
-> > > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > > ---
-> > > Arnaldo, I think this should go through the cgroup tree since it depends
-> > > on the earlier change there.  I don't think it'd conflict with other
-> > > perf changes but please let me know if you see any trouble, thanks!
-> > >
-> > >  tools/perf/util/bpf_skel/bperf_cgroup.bpf.c | 29 ++++++++++++++++++++-
-> > >  1 file changed, 28 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c b/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
-> > > index 488bd398f01d..4fe61043de04 100644
-> > > --- a/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
-> > > +++ b/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
-> > > @@ -43,12 +43,39 @@ struct {
-> > >         __uint(value_size, sizeof(struct bpf_perf_event_value));
-> > >  } cgrp_readings SEC(".maps");
-> > >
-> > > +/* new kernel cgroup definition */
-> > > +struct cgroup___new {
-> > > +       int level;
-> > > +       struct cgroup *ancestors[];
-> > > +} __attribute__((preserve_access_index));
-> > > +
-> > > +/* old kernel cgroup definition */
-> > > +struct cgroup___old {
-> > > +       int level;
-> > > +       u64 ancestor_ids[];
-> > > +} __attribute__((preserve_access_index));
-> > > +
-> > >  const volatile __u32 num_events = 1;
-> > >  const volatile __u32 num_cpus = 1;
-> > >
-> > >  int enabled = 0;
-> > >  int use_cgroup_v2 = 0;
-> > >
-> > > +static inline __u64 get_cgroup_v1_ancestor_id(struct cgroup *cgrp, int level)
-> > > +{
-> > > +       /* recast pointer to capture new type for compiler */
-> > > +       struct cgroup___new *cgrp_new = (void *)cgrp;
-> > > +
-> > > +       if (bpf_core_field_exists(cgrp_new->ancestors)) {
-> > > +               return BPF_CORE_READ(cgrp_new, ancestors[level], kn, id);
+> > This whack-a-mole game of fixing up BTF checks to avoid one specific
+> > corruption case is too burdensome. There is plenty of BTF usage before
+> > the point which you are fixing, so with some other specific corruption
+> > to BTF you can trigger even sooner corruption.
 > >
-> > have you checked generated BPF code for this ancestors[level] access?
-> > I'd expect CO-RE relocation for finding ancestors offset and then just
-> > normal + level * 8 arithmetic, but would be nice to confirm. Apart
-> > from this, looks good to me:
-> >
-> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> > As I mentioned on Github. I'm not too worried about ossfuzz generating
+> > corrupted BTF because that's not a very realistic scenario. But it
+> > would be nice to add some reasonable validation logic for BTF in
+> > general, so let's better concentrate on that instead of adding these
+> > extra checks.
 >
-> Thanks for your review!
+> Reading the comments here and on the associated GH issue, it sounds
+> like you would be supportive of this check so long as it was placed in
+> bpf_object__init_btf(), is that correct?  Or do you feel this
+> particular check falls outside the scope of "reasonable validation
+> logic"?  I'm trying to understand what the best next step would be for
+> this patch ...
+
+I think we should bite the bullet and do BTF validation in libbpf. It
+doesn't have to be as thorough as what kernel does, but validating
+general "structural integrity" of BTF as a first step would make all
+these one-off checks throughout entire libbpf source code unnecessary.
+I.e., we'll need to check things like: no out of range type IDs, no
+out-of-range string offsets, FUNC -> FUNC_PROTO references, DATASEC ->
+VAR | FUNC references, etc, etc. Probably make sure we don't have a
+loop of struct referencing to itself not through pointer, etc. It's a
+bit more upfront work, but it's will make the rest of the code simpler
+and will eliminate a bunch of those fuzzer crashes as well.
+
 >
-> How can I check the generated code?  Do you have something works with
-> skeletons or do I have to save the BPF object somehow during the build?
->
-
-skeleton is generated from ELF BPF object file. You can do
-llvm-objdump -d <obj.bpf.o> to see instructions. Unfortunately you
-can't see BPF CO-RE relocations this way, you'd have to use something
-like my custom tool ([0]).
-
-But anyways, I checked locally similar code pattern and I think it's
-all good from BPF CO-RE perspective. I see appropriate relocations in
-all the necessary places. So this should work.
-
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
-  [0] https://github.com/anakryiko/btfdump
-
-> Thanks,
-> Namhyung
+> --
+> paul-moore.com
