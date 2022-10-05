@@ -2,118 +2,223 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5A605F4D9E
-	for <lists+bpf@lfdr.de>; Wed,  5 Oct 2022 04:15:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5863C5F5058
+	for <lists+bpf@lfdr.de>; Wed,  5 Oct 2022 09:32:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229813AbiJECPl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Oct 2022 22:15:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58148 "EHLO
+        id S229727AbiJEHc3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Oct 2022 03:32:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229810AbiJECPk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Oct 2022 22:15:40 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6A7F43307
-        for <bpf@vger.kernel.org>; Tue,  4 Oct 2022 19:15:35 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id h18so7729968ilh.3
-        for <bpf@vger.kernel.org>; Tue, 04 Oct 2022 19:15:35 -0700 (PDT)
+        with ESMTP id S229462AbiJEHc2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Oct 2022 03:32:28 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA6F36B8E5;
+        Wed,  5 Oct 2022 00:32:27 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id 78so14611579pgb.13;
+        Wed, 05 Oct 2022 00:32:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=bF3rfNlwAuWQX7FF97PUYgRoxYjQCp+FQ9YtbL3rEM8=;
-        b=f2Sydn540oSzJJmHHZb4OXECOqRdiYpOcytDuEJI99EvyNB/U4JiHK1EREcNiLDI4K
-         ALqouMshmN6HqclSyyXUqDwwEvaYQKz1K/5FVU+rlWhk8F01j9nHyO99IQRSfwEqo0gl
-         RlnDxh4l4iedse7nJKLVkoXD3qhY8kp6ueil/iio1d54ckUjsV2plqwr4bw0rdrN5e+X
-         r0RkvHsuCS1RCcF+wRju/9ghvzd9HqYPJ5fqzJlCOLAZRKLuWQn6hlKJ5llvmcxA/EmT
-         jb2c2hTou9LXZSdJQLZb59FkfpzA9P96d4H8WhmhUwC7Baw1D/s3FmDigKver6k3HDri
-         88UQ==
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9JnszcKdOga13/q2jZFkeyfMgifTRmBiKtc/gRSpJzQ=;
+        b=RS1Uqa6bV6uv+yDBnRGj+8JTbDPFupcc1acfK6VcMQzMTmcaA1oNbDMgCAG1FGg3gk
+         XX7lh1+TRlIL50EJZ2qVRrBLOYwBw3x+/oPrGkOCVCfYLUYijCUlzVDDLrq9YqIOHa8F
+         4nlWb2VTNTY8vCZsR87vSlbjJC257iZ3mYf4rulXc9vEuzBMac+RiAhXAAO1zh5Ckplc
+         GjHopdLcEsENsSqParPqEyUkvbwfxOv421QFCPldoTlelxkcA+774+kcMz7urono9z7g
+         hfFWvwh+aXbT/qlATEcOZH0I81hzhYqC4RJT2Gsc/exP4FibP8hWNVRVvWZg4VYNltwK
+         zUBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=bF3rfNlwAuWQX7FF97PUYgRoxYjQCp+FQ9YtbL3rEM8=;
-        b=R7IGwOdrULETUgzb1dqxdD2fNpVLqAT5p+vVLrB1dhcsn1lzoND/X1SM9NkwYjAzzd
-         YyH3+A+U+pEwnrNutfM3gHTS+iqcpEQxpKBbWiTomH6fh7iI/Bapu7CbTAm997JTFeG0
-         vNr2E0ZVeCHkfblKIKTctIrg5kKRguBZOeuGlHTgL1icnkeEGo10e1hfdDDspnWydNaV
-         /MvoSmvZRm3C7aVwW01GqsP5HmXwYZS97kBfowf9erV0Ooi3nf5AljBdHgS56bv+cE5y
-         AfgPdX1nWU+IZX0DoT6GQs8gYc/bwCbNHc78qdSETWqrPyZoJrmIvZ35F01YAqlIbkKN
-         bNDA==
-X-Gm-Message-State: ACrzQf3Y3aswmuNOkgg3T7maO2H02Jm/HhG9C2VZ95MHStVuavRfIMot
-        1NEjBX1BJy1eisaGldBT4w40ql7n2GNTKezUeauLtg==
-X-Google-Smtp-Source: AMsMyM58qwYn1L3swp5KOVyV1TYqz3USmDJ53no2y3Fo2AXus4qnffPbPjgbAJeyRQxcgM6T6ud2uPcXjosICMHQp+A=
-X-Received: by 2002:a92:ca0c:0:b0:2f9:204:7a0d with SMTP id
- j12-20020a92ca0c000000b002f902047a0dmr13639413ils.194.1664936135004; Tue, 04
- Oct 2022 19:15:35 -0700 (PDT)
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9JnszcKdOga13/q2jZFkeyfMgifTRmBiKtc/gRSpJzQ=;
+        b=Xz6xnD9lgV4JqFO2bLmweK50PjUiLk8dm+BOnTCai+SyI4C3k+AjRU08C+Uhch3HjV
+         lpI6htTfMalghphkoKPmKB/+RUAqm7B39OACLvbMuE572RdRQQDh5kdHDtymzGU9NiSG
+         X2HZR2WcKzSrGIDTJcwYuT8XkIG2s65dWQ/rMjxxQZzcmM0tjBbx+IiS6eCi78ia6alt
+         n1+a0/JTI2CQqBdPmxqU/zSh3EAw3VKUjpozJOTHMFFsfoZRJaSgqi7DTiyxRmowvJak
+         z12A9fKgskP79xATrmJqRTUG2+41Hp98lt/h5LxOAh3iaSi1sElm8uXt2xKzteqC5u90
+         sRXQ==
+X-Gm-Message-State: ACrzQf3n6kmhM250akCVcabJzAvW/5wXX/aDBukWIGfpBB+mVEIpyJdR
+        Wlzxg1WBIyNHBvHvh58LSZQGzAcd2zkQGw==
+X-Google-Smtp-Source: AMsMyM4TcaslKsU4xMMOHEM0yzqI6lu/CwdmXOAQl9hKQ/Q+ga+9u8kZnbHNVses7WhL39UrujU48A==
+X-Received: by 2002:a65:498b:0:b0:412:8e4:2842 with SMTP id r11-20020a65498b000000b0041208e42842mr26507368pgs.71.1664955147294;
+        Wed, 05 Oct 2022 00:32:27 -0700 (PDT)
+Received: from [192.168.43.80] (subs03-180-214-233-30.three.co.id. [180.214.233.30])
+        by smtp.gmail.com with ESMTPSA id 200-20020a6214d1000000b0055abc22a1absm7761769pfu.209.2022.10.05.00.32.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 05 Oct 2022 00:32:26 -0700 (PDT)
+Message-ID: <acc73050-f0a4-099d-37c1-5fca6b20136c@gmail.com>
+Date:   Wed, 5 Oct 2022 14:32:24 +0700
 MIME-Version: 1.0
-References: <166256538687.1434226.15760041133601409770.stgit@firesoul>
- <Yzt2YhbCBe8fYHWQ@google.com> <35fcfb25-583a-e923-6eee-e8bbcc19db17@redhat.com>
- <CAKH8qBuYVk7QwVOSYrhMNnaKFKGd7M9bopDyNp6-SnN6hSeTDQ@mail.gmail.com>
- <5ccff6fa-0d50-c436-b891-ab797fe7e3c4@linux.dev> <20221004175952.6e4aade7@kernel.org>
- <CAKH8qBtdAeHqbWa33yO-MMgC2+h2qehFn8Y_C6ZC1=YsjQS-Bw@mail.gmail.com> <20221004182451.6804b8ca@kernel.org>
-In-Reply-To: <20221004182451.6804b8ca@kernel.org>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Tue, 4 Oct 2022 19:15:24 -0700
-Message-ID: <CAKH8qBtTPNULZDLd2n1r2o7XZwvs_q5OkNqhdq0A+b5zkHRNMw@mail.gmail.com>
-Subject: Re: [PATCH RFCv2 bpf-next 00/18] XDP-hints: XDP gaining access to HW
- offload hints via BTF
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
-        Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        brouer@redhat.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
-        xdp-hints@xdp-project.net, larysa.zaremba@intel.com,
-        memxor@gmail.com, Lorenzo Bianconi <lorenzo@kernel.org>,
-        mtahhan@redhat.com,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        dave@dtucker.co.uk, Magnus Karlsson <magnus.karlsson@intel.com>,
-        bjorn@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.1
+Subject: Re: [PATCH bpf-next v5 1/1] bpf, docs: document BPF_MAP_TYPE_ARRAY
+Content-Language: en-US
+To:     Donald Hunter <donald.hunter@gmail.com>, bpf@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Cc:     dave@dtucker.co.uk
+References: <20221004161929.52609-1-donald.hunter@gmail.com>
+ <20221004161929.52609-2-donald.hunter@gmail.com>
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+In-Reply-To: <20221004161929.52609-2-donald.hunter@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 4, 2022 at 6:24 PM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> On Tue, 4 Oct 2022 18:02:56 -0700 Stanislav Fomichev wrote:
-> > +1, sounds like a good alternative (got your reply while typing)
-> > I'm not too versed in the rx_desc/rx_queue area, but seems like worst
-> > case that bpf_xdp_get_hwtstamp can probably receive a xdp_md ctx and
-> > parse it out from the pre-populated metadata?
->
-> I'd think so, worst case the driver can put xdp_md into a struct
-> and container_of() to get to its own stack with whatever fields
-> it needs.
+On 10/4/22 23:19, Donald Hunter wrote:
+> +Examples
+> +========
+> +
+> +Please see the ``tools/testing/selftests/bpf`` directory for functional
+> +examples. The sample code below demonstrates API usage.
+> +
 
-Ack, seems like something worth exploring then.
+Since you have many code snippets, better say "The code samples below".
 
-The only issue I see with that is that we'd probably have to extend
-the loading api to pass target xdp device so we can pre-generate
-per-device bytecode for those kfuncs? And this potentially will block
-attaching the same program to different drivers/devices?
-Or, Martin, did you maybe have something better in mind?
+> +Kernel
+> +------
+> +
+> +This snippet shows how to declare an array in a BPF program.
+> +
+> +.. code-block:: c
+> +
+> +    struct {
+> +            __uint(type, BPF_MAP_TYPE_ARRAY);
+> +            __type(key, u32);
+> +            __type(value, long);
+> +            __uint(max_entries, 256);
+> +    } my_map SEC(".maps");
+> +
+> +
+> +This example shows how to access an array element.
+> +
+> +.. code-block:: c
+> +
+> +    int bpf_prog(struct __sk_buff *skb)
+> +    {
+> +            int index = load_byte(skb,
+> +                                  ETH_HLEN + offsetof(struct iphdr, protocol));
+> +            long *value;
+> +
+> +            if (skb->pkt_type != PACKET_OUTGOING)
+> +                    return 0;
+> +
+> +            value = bpf_map_lookup_elem(&my_map, &index);
+> +            if (value)
+> +                    __sync_fetch_and_add(value, skb->len);
+> +
+> +            return 0;
+> +    }
+> +
+> +Userspace
+> +---------
+> +
+> +BPF_MAP_TYPE_ARRAY
+> +~~~~~~~~~~~~~~~~~~
+> +
+> +This example shows array creation, initialisation and lookup from userspace.
+> +
 
-> > Btw, do we also need to think about the redirect case? What happens
-> > when I redirect one frame from a device A with one metadata format to
-> > a device B with another?
->
-> If there is a program on Tx then it'd be trivial - just do the
-> info <-> descriptor translation in the opposite direction than Rx.
-> TBH I'm not sure how it'd be done in the current approach, either.
+"Initialize the array, set elements, and perform lookup".
 
-Yeah, I don't think it magically works in any case. I'm just trying to
-understand whether it's something we care to support out of the box or
-can punt to the bpf programs themselves and say "if you care about
-forwarding metadata, somehow agree on the format yourself".
+> +.. code-block:: c
+> +
+> +    #include <assert.h>
+> +    #include <bpf/libbpf.h>
+> +    #include <bpf/bpf.h>
+> +
+> +    int main(int argc, char **argv)
+> +    {
+> +	    int fd;
+> +	    int ret = 0;
+> +	    long value;
+> +	    __u32 index = 42;
+> +	    __u32 i;
+> +
+> +	    fd = bpf_map_create(BPF_MAP_TYPE_ARRAY, "example_array",
+> +				sizeof(__u32), sizeof(long),
+> +				256, 0);
+> +	    if (fd < 0)
+> +		    return fd;
+> +
+> +	    /* fill the map with values from 0-255 */
+> +	    for (i = 0; i < 256 ; i++) {
+> +		    value = i;
+> +		    ret = bpf_map_update_elem(fd, &i, &value, BPF_ANY);
+> +		    if (ret < 0)
+> +			    return ret;
+> +	    }
+> +
+> +	    ret = bpf_map_lookup_elem(fd, &index, &value);
+> +	    if (ret < 0)
+> +		    return ret;
+> +
+> +	    assert(value == 42);
+> +
+> +	    return ret;
+> +    }
+> +
+> +BPF_MAP_TYPE_PERCPU_ARRAY
+> +~~~~~~~~~~~~~~~~~~~~~~~~~
+> +
+> +This example shows per CPU array usage.
+> +
+> +.. code-block:: c
+> +
+> +    #include <assert.h>
+> +    #include <bpf/libbpf.h>
+> +    #include <bpf/bpf.h>
+> +
+> +    int main(int argc, char **argv)
+> +    {
+> +	    int ncpus = libbpf_num_possible_cpus();
+> +	    if (ncpus < 0)
+> +		    return ncpus;
+> +
+> +	    int fd;
+> +	    int ret = 0;
+> +	    __u32 i, j;
+> +	    __u32 index = 42;
+> +	    long v[ncpus], value[ncpus];
+> +
+> +	    fd = bpf_map_create(BPF_MAP_TYPE_PERCPU_ARRAY, "example_percpu",
+> +				sizeof(__u32), sizeof(long), 256, 0);
+> +	    if (fd < 0)
+> +		    return -1;
+> +
+> +	    /* fill the map with values from 0-255 for each cpu */
+> +	    for (i = 0; i < 256 ; i++) {
+> +		    for (j = 0; j < ncpus; j++)
+> +			    v[j] = i;
+> +		    ret = bpf_map_update_elem(fd, &i, &v, BPF_ANY);
+> +		    if (ret < 0)
+> +			    return ret;
+> +	    }
+> +
+> +	    ret = bpf_map_lookup_elem(fd, &index, &value);
+> +	    if (ret < 0)
+> +		    return ret;
+> +
+> +	    for (j = 0; j < ncpus; j++)
+> +		    assert(value[j] == 42);
+> +
+> +	    return ret;
+> +    }
+> +
 
-> Now I questioned the BTF way and mentioned the Tx-side program in
-> a single thread, I better stop talking...
+What is the purpose of above snippet? Give more detailed explanation.
 
-Forget about btf, hail to the new king - kfunc :-D
+Thanks.
+
+-- 
+An old man doll... just what I always wanted! - Clara
