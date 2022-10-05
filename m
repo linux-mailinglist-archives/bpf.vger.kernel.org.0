@@ -2,156 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A19D5F4D70
-	for <lists+bpf@lfdr.de>; Wed,  5 Oct 2022 03:39:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACE805F4D89
+	for <lists+bpf@lfdr.de>; Wed,  5 Oct 2022 03:49:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229698AbiJEBjx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Oct 2022 21:39:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42932 "EHLO
+        id S229576AbiJEBtU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Oct 2022 21:49:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229729AbiJEBjv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Oct 2022 21:39:51 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29DB82BE5
-        for <bpf@vger.kernel.org>; Tue,  4 Oct 2022 18:39:47 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id l22so19657487edj.5
-        for <bpf@vger.kernel.org>; Tue, 04 Oct 2022 18:39:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=IamKvobUld+SgUUUefkz4nRzVxmjol43Hcv1igaaVG4=;
-        b=etxWcQRX3fY3rBRxrP4+FLpbL2iB4YJm7tz30YsuR/FNVlsG0WVA3KkB6SaknlqOB7
-         4VDi/WDrolvtLyOIbRzTfn74lob079SImqsZHdF9RTA4TjONPJxMhQ7877ftyUKiA6Tn
-         Gl1+LpxqKgq07XNOBQJyPz2+MkU0X75xMpe4/ZrR4oIeSqXzn3SDZlkyDGGZNsq1/HY7
-         htAbHvIak3E0kOSfSrYmeFyQpH3mjIjcX/YZl6PXrtJVXQ1VyuxvzxmVBWbg/kqfpQ2Y
-         9E2J0B5NWXx5jD7z1In/XPZ5XzzGOI4EI+dVqcq04iJI3MidKp6VKhVagM1ObQ7xQ10f
-         hmjw==
+        with ESMTP id S229715AbiJEBtT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 Oct 2022 21:49:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEB4A26121
+        for <bpf@vger.kernel.org>; Tue,  4 Oct 2022 18:49:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1664934557;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dLTJ61r8dkXDaTvWzIXpLlZQKa1MajTFnqO/8VKqnHg=;
+        b=ANgBOv1GhZM0zu0Z8emwMNPc2REubidgkn2CcGMNoLHlilqOVUu3sd//3mNNkNm1yC8Qw+
+        PHAoDxaxJBVa/4N3qMiyU4yDHxoRS8QrNzeJDoyIWsxudlXfaDVk2HK7J2lsEV+0IjqInC
+        0NEJcsxisDAKjc2PIAsCtw4cag4iLdk=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-339-DlWoKwK9NcagWNnzaiWYtA-1; Tue, 04 Oct 2022 21:49:16 -0400
+X-MC-Unique: DlWoKwK9NcagWNnzaiWYtA-1
+Received: by mail-wm1-f72.google.com with SMTP id k38-20020a05600c1ca600b003b49a809168so268494wms.5
+        for <bpf@vger.kernel.org>; Tue, 04 Oct 2022 18:49:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=IamKvobUld+SgUUUefkz4nRzVxmjol43Hcv1igaaVG4=;
-        b=5ezluz/2W8iX09CRMwmX9GMU5VjhXU6Fu+YIIHo9PTU5HpsqWiqGwZWr0JLNcirfoJ
-         2tE/TsAstRzHGbfBBC71chTr8x8hQ8TOBLYDpjnyaKSuY91DldgATKbIjMXdi4AAnnzM
-         Cro2I8N8ujl07QjvkIZAlkQ9Az4hf6VO8iEbVZj6daFHRq0dOckbWqYERDN248emd8yJ
-         KLQM679wke8GIhAQLr1mRIQPQCPYRt4zCFbWWGQsJg8+QQLGpScO9ZbtVxgb3q8cPYZZ
-         ptk+UNQ4mVRZt4Y+n8P9sPem8p/3KhwTeRfzd5iP2C+OvM0y7KAXX3pKyW7Ssy8Tyz0q
-         KDlg==
-X-Gm-Message-State: ACrzQf0A187CXkkzLjiStpu6HyXqrJ0jFMErcZJ+E9EmSv8Wl3gzU618
-        fTcHx1U2QHPXQYaMfNhIbMtxrwfu8WImT4NyupU=
-X-Google-Smtp-Source: AMsMyM7GDcKuZ4IOm74Ixr+i93V33sJqpJin9GO01H62JXmlCihESYZLJy4Sn4AaArxNciUNbu590GC31eU48CnOwRk=
-X-Received: by 2002:a05:6402:1205:b0:458:c1b2:e428 with SMTP id
- c5-20020a056402120500b00458c1b2e428mr15898139edw.94.1664933985876; Tue, 04
- Oct 2022 18:39:45 -0700 (PDT)
+        bh=dLTJ61r8dkXDaTvWzIXpLlZQKa1MajTFnqO/8VKqnHg=;
+        b=JC7wQ9z2HxHGcWAMUv/GzFxx21Kid73/SeKutnhaxDTpWzlAXSU2FuwfCmXxFqowLr
+         R/jdutGEzGrmM+2h+QIdBjbT6X/faVaZCoLz9CAaXUxK1mbUVsRSgYiclPXTJLoINRbs
+         36LdtD1pUfWhvFjEPaFLvnNrKgceQGZ0T4cf5JbM/9G8JfOIDGoyobXqYhPgffFxIg2u
+         YsNGUi7HJJOMNyey+efMM8ZOn/kcXgNVvXyJ7SadajXgDXBMUMuUGU1leenV2faWkBvp
+         Oiu7h+Wf3v45Udrm8BQJrfI7DfyG1+og37qFy9vEMEz8Qx1KCD/0lj0/Bv4R5TUQEQHt
+         8D6A==
+X-Gm-Message-State: ACrzQf2Z4mjWOGo12dgeXCL9A/n8vKmHz8igEPu0GpDZ1yU8I36LS1/r
+        oQD2BRP8UIha1TJB2SE9q9w75LxQjdc6fnalx5vRmQlNTEuu5J4YyWVtdmYN8GzFlCVeL8rQcEk
+        aWVKIXWk3E2KeVJrAoqf5rV00LePW
+X-Received: by 2002:a5d:4ec5:0:b0:22c:dca3:e84d with SMTP id s5-20020a5d4ec5000000b0022cdca3e84dmr15834679wrv.14.1664934554198;
+        Tue, 04 Oct 2022 18:49:14 -0700 (PDT)
+X-Google-Smtp-Source: AMsMyM7JK1zsVfoyuyMRUvvxHLhWflIAu9gCaRBOuvZ9x90b9f30rXDBL32LJ24bXRf5pVn5+FsGD4k/6KDutA1+WdE=
+X-Received: by 2002:a5d:4ec5:0:b0:22c:dca3:e84d with SMTP id
+ s5-20020a5d4ec5000000b0022cdca3e84dmr15834664wrv.14.1664934553971; Tue, 04
+ Oct 2022 18:49:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20221004222725.2813510-1-sdf@google.com> <YzzQ2mI/srLNazNO@google.com>
-In-Reply-To: <YzzQ2mI/srLNazNO@google.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 4 Oct 2022 18:39:34 -0700
-Message-ID: <CAADnVQKyqJRGYn4ty5PaL2vAUnTo0ohY1CF3k_kpc=whEbhdPA@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: make DEBUG_INFO_BTF_MODULES selectable independently
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>
+References: <5e89b653-3fc6-25c5-324b-1b15909c0183@I-love.SAKURA.ne.jp>
+ <166480021535.14393.17575492399292423045.git-patchwork-notify@kernel.org>
+ <4aae5e2b-f4d5-c260-5bf8-435c525f6c97@I-love.SAKURA.ne.jp>
+ <CAK-6q+g7JQZkRJhp6qv_H9xGfD4DWnaChmQ7OaWJs3CAjfMnpA@mail.gmail.com> <1c374e71-f56e-540e-35d0-e6e82a4dc0e3@datenfreihafen.org>
+In-Reply-To: <1c374e71-f56e-540e-35d0-e6e82a4dc0e3@datenfreihafen.org>
+From:   Alexander Aring <aahringo@redhat.com>
+Date:   Tue, 4 Oct 2022 21:49:02 -0400
+Message-ID: <CAK-6q+iqPFxrM7qdmi4xcF8e+2mgqXT9otEwRA+Vh-JfRQ18Wg@mail.gmail.com>
+Subject: Re: [PATCH] net/ieee802154: reject zero-sized raw_sendmsg()
+To:     Stefan Schmidt <stefan@datenfreihafen.org>
+Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        patchwork-bot+netdevbpf@kernel.org,
+        "David S. Miller" <davem@davemloft.net>, alex.aring@gmail.com,
+        shaozhengchao@huawei.com, ast@kernel.org, sdf@google.com,
+        linux-wpan@vger.kernel.org,
+        syzbot+5ea725c25d06fb9114c4@syzkaller.appspotmail.com,
+        syzkaller-bugs@googlegroups.com, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 4, 2022 at 5:33 PM <sdf@google.com> wrote:
->
-> On 10/04, Stanislav Fomichev wrote:
-> > We're having an issue where we have a recent clang that seems
-> > to generate kind_flag for enums (aka, adding signed/unsigned).
-> > Trying to install a module on a kernel that doesn't have commit
-> > 6089fb325cf7 ("bpf: Add btf enum64 support") returns the following:
->
-> > [    3.176954] BPF:Invalid btf_info kind_flag
->
-> > The enum that it complains about doesn't seem to have anything special
-> > except having a sign:
->
-> > [1721] ENUM 'perf_event_state' encoding=SIGNED size=4 vlen=6
-> >          'PERF_EVENT_STATE_DEAD' val=-4
-> >          'PERF_EVENT_STATE_EXIT' val=-3
-> >          'PERF_EVENT_STATE_ERROR' val=-2
-> >          'PERF_EVENT_STATE_OFF' val=-1
-> >          'PERF_EVENT_STATE_INACTIVE' val=0
-> >          'PERF_EVENT_STATE_ACTIVE' val=1
->
-> > We are not currently using CONFIG_DEBUG_INFO_BTF_MODULES and
-> > don't plan to use module BTF, so it's preferable to be able
-> > to explicits disable it in the kernel config. Unfortunately,
-> > because that kconfig option doesn't have a name, it's not
-> > possible to flip it independently from CONFIG_DEBUG_INFO_BTF.
-> > Let's add a name to make sure module BTF is user-controllable.
->
-> [..]
->
-> > (Not sure, but maybe the right fix is to also have a stable patch
-> >   to relax that "Invalid btf_info kind_flag" check?)
->
-> Answering to myself, looks like we do need the following for
-> non-enum64-compatible older/stable kernels:
->
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index 3cfba41a0829..928f4955090a 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -3301,11 +3301,6 @@ static s32 btf_enum_check_meta(struct
-> btf_verifier_env *env,
->                 return -EINVAL;
->         }
->
-> -       if (btf_type_kflag(t)) {
-> -               btf_verifier_log_type(env, t, "Invalid btf_info kind_flag");
-> -               return -EINVAL;
-> -       }
-> -
->         if (t->size > 8 || !is_power_of_2(t->size)) {
->                 btf_verifier_log_type(env, t, "Unexpected size");
->                 return -EINVAL;
->
-> Anything I'm missing? Feels like any pre-6089fb325cf7 ("bpf: Add btf
-> enum64 support") kernel will have an issue with a recent clang
-> that puts sign into kflag?
->
->
-> > Fixes: 5f9ae91f7c0d ("kbuild: Build kernel module BTFs if BTF is enabled
-> > and pahole supports it")
-> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > ---
-> >   lib/Kconfig.debug | 1 +
-> >   1 file changed, 1 insertion(+)
->
-> > diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> > index c77fe36bb3d8..6336a697c9f5 100644
-> > --- a/lib/Kconfig.debug
-> > +++ b/lib/Kconfig.debug
-> > @@ -326,6 +326,7 @@ config PAHOLE_HAS_SPLIT_BTF
-> >       def_bool $(success, test `$(PAHOLE) --version | sed
-> > -E 's/v([0-9]+)\.([0-9]+)/\1\2/'` -ge "119")
->
-> >   config DEBUG_INFO_BTF_MODULES
-> > +     bool "Generate BTF module typeinfo"
-> >       def_bool y
-> >       depends on DEBUG_INFO_BTF && MODULES && PAHOLE_HAS_SPLIT_BTF
-> >       help
+Hi,
 
-Not quite following.
-Are you saying instead of backporting enum64 support
-to older kernels you'd prefer to add this patch to upstream
-and backport this smaller patch?
+On Tue, Oct 4, 2022 at 1:59 PM Stefan Schmidt <stefan@datenfreihafen.org> wrote:
+>
+> Hello.
+>
+> On 04.10.22 00:29, Alexander Aring wrote:
+> > Hi,
+> >
+> > On Mon, Oct 3, 2022 at 8:35 AM Tetsuo Handa
+> > <penguin-kernel@i-love.sakura.ne.jp> wrote:
+> >>
+> >> On 2022/10/03 21:30, patchwork-bot+netdevbpf@kernel.org wrote:
+> >>> Hello:
+> >>>
+> >>> This patch was applied to netdev/net.git (master)
+> >>> by David S. Miller <davem@davemloft.net>:
+> >>>
+> >>> On Sun, 2 Oct 2022 01:43:44 +0900 you wrote:
+> >>>> syzbot is hitting skb_assert_len() warning at raw_sendmsg() for ieee802154
+> >>>> socket. What commit dc633700f00f726e ("net/af_packet: check len when
+> >>>> min_header_len equals to 0") does also applies to ieee802154 socket.
+> >>>>
+> >>>> Link: https://syzkaller.appspot.com/bug?extid=5ea725c25d06fb9114c4
+> >>>> Reported-by: syzbot <syzbot+5ea725c25d06fb9114c4@syzkaller.appspotmail.com>
+> >>>> Fixes: fd1894224407c484 ("bpf: Don't redirect packets with invalid pkt_len")
+> >>>> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+> >>>>
+> >>>> [...]
+> >>>
+> >>> Here is the summary with links:
+> >>>    - net/ieee802154: reject zero-sized raw_sendmsg()
+> >>>      https://git.kernel.org/netdev/net/c/3a4d061c699b
+> >>
+> >>
+> >> Are you sure that returning -EINVAL is OK?
+> >>
+> >> In v2 patch, I changed to return 0, for PF_IEEE802154 socket's zero-sized
+> >> raw_sendmsg() request was able to return 0.
+> >
+> > I currently try to get access to kernel.org wpan repositories and try
+> > to rebase/apply your v2 on it.
+>
+> This will only work once I merged net into wpan. Which I normally do
+> only after a pull request to avoid merge requests being created.
+>
+
+ok.
+
+> We have two options here a) reverting this patch and applying v2 of it
+> b) Tetsu sending an incremental patch on top of the applied one to come
+> to the same state as after v2.
+>
+>
+> Then it should be fixed in the next
+
+ok.
+
+> > pull request to net. For netdev maintainers, please don't apply wpan
+> > patches. Stefan and I will care about it.
+>
+> Keep in mind that Dave and Jakub do this to help us out because we are
+> sometimes slow on applying patches and getting them to net. Normally
+> this is all fine for clear fixes.
+>
+
+If we move getting patches for wpan to net then we should move it
+completely to that behaviour and not having a mixed setup which does
+not work, or it works and hope we don't have conflicts and if we have
+conflicts we need to fix them when doing the pull-request that the
+next instance has no conflicts because they touched maybe the same
+code area.
+
+> For -next material I agree this should only go through the wpan-next
+> tree for us to coordinate, but for the occasional fix its often faster
+> if it hits net directly. Normally I don't mind that. In this case v2 was
+> overlooked. But this is easily rectified with either of the two options
+> mentioned above.
+>
+
+I think a) would be the fastest way here and I just sent something.
+
+- Alex
+
