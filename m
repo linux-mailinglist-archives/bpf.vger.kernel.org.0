@@ -2,126 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78E865F4D0B
-	for <lists+bpf@lfdr.de>; Wed,  5 Oct 2022 02:30:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D05735F4D0E
+	for <lists+bpf@lfdr.de>; Wed,  5 Oct 2022 02:33:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229513AbiJEAaf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Oct 2022 20:30:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51486 "EHLO
+        id S229583AbiJEAde (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Oct 2022 20:33:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbiJEAad (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Oct 2022 20:30:33 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 308BC564F0
-        for <bpf@vger.kernel.org>; Tue,  4 Oct 2022 17:30:31 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id DB207B81BEF
-        for <bpf@vger.kernel.org>; Wed,  5 Oct 2022 00:30:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75F2BC433D6
-        for <bpf@vger.kernel.org>; Wed,  5 Oct 2022 00:30:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1664929828;
-        bh=loJfn5Cj6PRf82BtsQXIYthDpRs2NFNHyNMLP3wCI6g=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ukZAhuHV8x7UNBOlxfKFrTRNdGVqKgugOu/Oui/EF9xv1UWms9N+iTlaQgyyUiWH0
-         y44j11rKqkX6A+bhQZpy1wo4NCfZQ+VAWt2xaGISDBI1BQ98Iq3uhs3tGI66R7xQ29
-         Vzpso/yvM+smcNP48asaveTftfIvIDnELxgBqcfvEgJS/6ex+elO+QRe1zV6IWHicG
-         ymhierpNH1Pql31pC4ZAADHmaLqPn3RhuGTRFyIqF26oVpp4nbYRI/OQ5ugqy1OeVr
-         gLC4sW9Cqwa+Fn6lE8QF93YcbWTnviWz2jo3Q3EWAdXuafbIDnAsWZoSjmjyepT6JO
-         Z9jTGCI8VEj4Q==
-Received: by mail-lf1-f51.google.com with SMTP id bp15so9944224lfb.13
-        for <bpf@vger.kernel.org>; Tue, 04 Oct 2022 17:30:28 -0700 (PDT)
-X-Gm-Message-State: ACrzQf37kmieX30Gdf0glHJMAdFFHR+UO7yyZJDN40d7mHEOVp4MwWWV
-        UNej4zsbmW7jfn9eDPxWbRJhqJ5jZmGfgLOFoPwqGQ==
-X-Google-Smtp-Source: AMsMyM5PUY18Rjl4wTLpLL35a95MNyEAlPKRsZM653LGLvzxAsM6MZ5uV4m31mSQH3xDzjBOYX5rdXqYdamR6Si7pGM=
-X-Received: by 2002:ac2:5e63:0:b0:4a2:3f2a:818b with SMTP id
- a3-20020ac25e63000000b004a23f2a818bmr4276672lfr.398.1664929826355; Tue, 04
- Oct 2022 17:30:26 -0700 (PDT)
-MIME-Version: 1.0
-References: <20221003011727.1192900-1-jmeng@fb.com> <CACYkzJ7_ZNKsE5b9ECqf7+U9qs8E2hbx4GXvAhrnG3iVApqLjg@mail.gmail.com>
- <YzutjPBbEYOPeEzG@fb.com>
-In-Reply-To: <YzutjPBbEYOPeEzG@fb.com>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Wed, 5 Oct 2022 02:30:15 +0200
-X-Gmail-Original-Message-ID: <CACYkzJ5X-ShtGKHshSt74=5faZW5jWUBWyq7bzfs6x1f4jb65Q@mail.gmail.com>
-Message-ID: <CACYkzJ5X-ShtGKHshSt74=5faZW5jWUBWyq7bzfs6x1f4jb65Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf,x64: Remove unnecessary check on existence
- of SSE2
-To:     Jie Meng <jmeng@fb.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229509AbiJEAdd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 Oct 2022 20:33:33 -0400
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A39D056B82
+        for <bpf@vger.kernel.org>; Tue,  4 Oct 2022 17:33:32 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id o14-20020a056a00214e00b0056238ef46ebso157052pfk.2
+        for <bpf@vger.kernel.org>; Tue, 04 Oct 2022 17:33:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date;
+        bh=QrovsWiOqGDOFHfK48mk4XLnJdCYRM/PUycOApAvGGU=;
+        b=c+JeLFdeiGfcHgd3hB6esA7G0gU4xpy0Jy9zKJOrPImZ2AhaA7s7qhAceKuKDxH7if
+         qFVIK/wfuBCPDiUmR7eUi0Df6LkES78V4rsjGzMl0cX7Dllam4acVuIPBQIRBv8IxNXE
+         21NDvHsJCWy8EgFCqaNVMSKmFRsgxf6/furxwb4XBQGfLKbyAnydCON4c4s4AljXn1Kq
+         88oVoV5/iAc6/05LsVYVSkHD37xF542BLFGQq0vZ50Jg66C9ux61ddrbZ+mx7CE9Hq2O
+         TpKInHChWjZo02R4RziKHPPXZSN8aPQyiGF6Pjt1F9zn5bVOIQ1aKtKVhq5xvcLXz1c1
+         ovMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date;
+        bh=QrovsWiOqGDOFHfK48mk4XLnJdCYRM/PUycOApAvGGU=;
+        b=IXfW4SMakFji0TBWjFddjpTm30l9GVxbPofoC1hDyWSv1myFlCdnO9MgKZFZZIgqE1
+         QGs/x6IxZCyzMuapm7ghR9mkcBXdRy18RORBGeesbJrJN2wXOnk8QzU2hNjrXHDQNg6P
+         GpVBFxMix8oMHsQOjBRCy0JkSPyvrYQTbFWR28zKt277vu2X9h2Vzizj+HS7l17xNq6m
+         sVHuXrjv7iOEVXWx9oW+h8U/runxJ0CoYEZZgCF3roXEZ8mvfRwHv/ZcYeur9TZKv32n
+         ksi5DE1CyKSFL+RTDPVw1WViEkRyDoVNpWZ9vHsHzYzfpQGuPE1p9gRUU1V1gzUA9k4/
+         xg2A==
+X-Gm-Message-State: ACrzQf1iScYgc/iXhrYSp7aSilJJy2NnxQjzW6tVgAaBLpAqeg+rR03P
+        jxle/tmZAOIn7LQlt/EVvzj93PPgKyE/Mlj5UFQI2blVkTPNCyIpjbFwTZGsIEVbeH9+Q6Pv7vg
+        n8WCLD/RvGuf5OnD6+A6xfoESj9CXycACalKCeOMusfLFljJpjA==
+X-Google-Smtp-Source: AMsMyM5Pj9siN4JvYhnsZYXE829+KDSGC5LGr7fuqkQVrNbb1xoNfx6ZTevSKHpPsnb3xsW68BKK7Po=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a62:b501:0:b0:557:d887:20ee with SMTP id
+ y1-20020a62b501000000b00557d88720eemr30177140pfe.8.1664930012049; Tue, 04 Oct
+ 2022 17:33:32 -0700 (PDT)
+Date:   Tue, 4 Oct 2022 17:33:30 -0700
+In-Reply-To: <20221004222725.2813510-1-sdf@google.com>
+Mime-Version: 1.0
+References: <20221004222725.2813510-1-sdf@google.com>
+Message-ID: <YzzQ2mI/srLNazNO@google.com>
+Subject: Re: [PATCH bpf] bpf: make DEBUG_INFO_BTF_MODULES selectable independently
+From:   sdf@google.com
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
+        jolsa@kernel.org
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 4, 2022 at 5:50 AM Jie Meng <jmeng@fb.com> wrote:
->
-> On Tue, Oct 04, 2022 at 03:04:20AM +0200, KP Singh wrote:
-> > On Mon, Oct 3, 2022 at 3:17 AM Jie Meng <jmeng@fb.com> wrote:
-> > >
-> > > SSE2 and hence lfence are architectural in x86-64 and no need to check
-> > > whether they're supported in CPU.
-> >
-> > Why do you say this?
-> >
-> > The Instruction set reference does mention that:
-> >
-> > Exceptions:
-> >
-> > #UD If CPUID.01H:EDX.SSE2[bit 26] = 0
-> >
-> > (undefined instruction when the CPUID.SSE2 bit is unset)
-> >
-> > and also that the CPUID feature flag is SSE2
->
-> Many x86 extensions predate x86-64. When they designed x86-64, AMD
-> decided to make some mandatory (and hence architectural) and SSE2 is
-> one of them[1]. CMOV, NOPL, PAE, NX etc. are other examples.
->
-> These extensions' CPUID flags are still set. If code is to be shared
-> between x86 and x86-64 one can still check CPUID, but bpf_jit_comp.c
-> is compiled under x86-64 only so the check is redundant.
->
-> There's an example Within kernel code too: arch/x86/lib/copy_user_64.S
-> uses SSE (sfence) and SSE2 (movnti) instructions and doesn't check
-> CPUID for their presence.
->
+On 10/04, Stanislav Fomichev wrote:
+> We're having an issue where we have a recent clang that seems
+> to generate kind_flag for enums (aka, adding signed/unsigned).
+> Trying to install a module on a kernel that doesn't have commit
+> 6089fb325cf7 ("bpf: Add btf enum64 support") returns the following:
 
-Thanks, it makes sense.
+> [    3.176954] BPF:Invalid btf_info kind_flag
 
-Can you please add the explanation to the commit description?
+> The enum that it complains about doesn't seem to have anything special
+> except having a sign:
 
+> [1721] ENUM 'perf_event_state' encoding=SIGNED size=4 vlen=6
+>          'PERF_EVENT_STATE_DEAD' val=-4
+>          'PERF_EVENT_STATE_EXIT' val=-3
+>          'PERF_EVENT_STATE_ERROR' val=-2
+>          'PERF_EVENT_STATE_OFF' val=-1
+>          'PERF_EVENT_STATE_INACTIVE' val=0
+>          'PERF_EVENT_STATE_ACTIVE' val=1
+
+> We are not currently using CONFIG_DEBUG_INFO_BTF_MODULES and
+> don't plan to use module BTF, so it's preferable to be able
+> to explicits disable it in the kernel config. Unfortunately,
+> because that kconfig option doesn't have a name, it's not
+> possible to flip it independently from CONFIG_DEBUG_INFO_BTF.
+> Let's add a name to make sure module BTF is user-controllable.
+
+[..]
+
+> (Not sure, but maybe the right fix is to also have a stable patch
+>   to relax that "Invalid btf_info kind_flag" check?)
+
+Answering to myself, looks like we do need the following for
+non-enum64-compatible older/stable kernels:
+
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 3cfba41a0829..928f4955090a 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -3301,11 +3301,6 @@ static s32 btf_enum_check_meta(struct  
+btf_verifier_env *env,
+  		return -EINVAL;
+  	}
+
+-	if (btf_type_kflag(t)) {
+-		btf_verifier_log_type(env, t, "Invalid btf_info kind_flag");
+-		return -EINVAL;
+-	}
+-
+  	if (t->size > 8 || !is_power_of_2(t->size)) {
+  		btf_verifier_log_type(env, t, "Unexpected size");
+  		return -EINVAL;
+
+Anything I'm missing? Feels like any pre-6089fb325cf7 ("bpf: Add btf
+enum64 support") kernel will have an issue with a recent clang
+that puts sign into kflag?
+
+
+> Fixes: 5f9ae91f7c0d ("kbuild: Build kernel module BTFs if BTF is enabled  
+> and pahole supports it")
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
 > ---
-> [1] https://en.wikipedia.org/wiki/X86-64#Microarchitecture_levels
->
-> > >
-> > > Signed-off-by: Jie Meng <jmeng@fb.com>
-> > > ---
-> > >  arch/x86/net/bpf_jit_comp.c | 3 +--
-> > >  1 file changed, 1 insertion(+), 2 deletions(-)
-> > >
-> > > diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> > > index d09c54f3d2e0..b2124521305e 100644
-> > > --- a/arch/x86/net/bpf_jit_comp.c
-> > > +++ b/arch/x86/net/bpf_jit_comp.c
-> > > @@ -1289,8 +1289,7 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image, u8 *rw_image
-> > >
-> > >                         /* speculation barrier */
-> > >                 case BPF_ST | BPF_NOSPEC:
-> > > -                       if (boot_cpu_has(X86_FEATURE_XMM2))
-> > > -                               EMIT_LFENCE();
-> > > +                       EMIT_LFENCE();
-> > >                         break;
-> > >
-> > >                         /* ST: *(u8*)(dst_reg + off) = imm */
-> > > --
-> > > 2.30.2
-> > >
+>   lib/Kconfig.debug | 1 +
+>   1 file changed, 1 insertion(+)
+
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index c77fe36bb3d8..6336a697c9f5 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -326,6 +326,7 @@ config PAHOLE_HAS_SPLIT_BTF
+>   	def_bool $(success, test `$(PAHOLE) --version | sed  
+> -E 's/v([0-9]+)\.([0-9]+)/\1\2/'` -ge "119")
+
+>   config DEBUG_INFO_BTF_MODULES
+> +	bool "Generate BTF module typeinfo"
+>   	def_bool y
+>   	depends on DEBUG_INFO_BTF && MODULES && PAHOLE_HAS_SPLIT_BTF
+>   	help
+> --
+> 2.38.0.rc1.362.ged0d419d3c-goog
+
