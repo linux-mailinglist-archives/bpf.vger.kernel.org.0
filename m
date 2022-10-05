@@ -2,131 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFEE85F52A8
-	for <lists+bpf@lfdr.de>; Wed,  5 Oct 2022 12:33:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A10765F52D0
+	for <lists+bpf@lfdr.de>; Wed,  5 Oct 2022 12:46:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229538AbiJEKdk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Oct 2022 06:33:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39220 "EHLO
+        id S229507AbiJEKqm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Oct 2022 06:46:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbiJEKdi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Oct 2022 06:33:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37299754BF
-        for <bpf@vger.kernel.org>; Wed,  5 Oct 2022 03:33:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1664966017;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=aSocIwrgEkDka1DlTJPwPXJMuDv+aU5NB9kPIpmlG0I=;
-        b=BhBftDmyyYKjikUCm8RWAT5pV2OaKkwSNSeUXQkSJt92oS48XzvtMSpAMgqFKDbOdkPhBj
-        ZTzk0MYMaJuvr3L+vPx+srTRYQt6P1ytFSZWG8g42rpW3f18apjIMRpLbwwJTBGy4mmpYT
-        gayCLgcXwVaaMmsPD/ad/Gh5nGN0VhM=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-594-rch2o2qdNHaeEm01MxGWXQ-1; Wed, 05 Oct 2022 06:33:36 -0400
-X-MC-Unique: rch2o2qdNHaeEm01MxGWXQ-1
-Received: by mail-ed1-f69.google.com with SMTP id z16-20020a05640235d000b0045485e4a5e0so13192640edc.1
-        for <bpf@vger.kernel.org>; Wed, 05 Oct 2022 03:33:36 -0700 (PDT)
+        with ESMTP id S229479AbiJEKql (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Oct 2022 06:46:41 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 161E223392;
+        Wed,  5 Oct 2022 03:46:40 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id u10so25225950wrq.2;
+        Wed, 05 Oct 2022 03:46:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=MpRxnTo+J9HRDwstfFFVv8LiNgrWMYl/Xh706svFrps=;
+        b=ogeXfendzYiUhDE4pMZ0+1FgHmMRvx5tZOu7G84hS2izLreCBNixYbrxY9hVZmcN9q
+         oIeQoaJfy0wnAAb3X80OXVpkw6XE5ijLRcgilXtpE+rpGe7yGVdi6097j6U+MCdZ90Zq
+         sWcyI24S/QNUVZDpOIY1E6j2/p+HbV1ySO01RwT73Pg4dvifElsxIZw7jmT0u7qskXFD
+         KmIU/wbo4pG2njKvN4pAWt5ly64GY2bwt02D3bcitandREXMbVrhGHAfTL3my9/uuvO3
+         k/tIYWeW9Qz90UDXlIMrCs5yAL6VskZyM7W07nrnIQlw2rT1c0WedyUNrHK+VD/DGKXr
+         gGxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date;
-        bh=aSocIwrgEkDka1DlTJPwPXJMuDv+aU5NB9kPIpmlG0I=;
-        b=Gu6RlFIq7sQ6f5kKqTJpdylBsLYad18gHv9Z7FmpyI0fgSqg88fbxRw7sOXuglCmMC
-         E8neNU/KDQ7gJ6I9NKPwVen0ZiwxSC5GKE0DoF0EasGl2CRwlvscZolCrmUT8u02KSbY
-         Es7RoUoH5c8s4u9GTTkSM6W7+u+MeyM7XNuWkG+3isDvSmlQworJ9u0+LzWGYIdneats
-         I62ZAlXmLJ/57f1mmDstJbEsF5huzSqkmWCjuqapic4/MZWAx2gZ/ATuN8sAsiPOjOH6
-         5NX8nwUvuP/fbvO3QUpDEOAnuPYV5Ia0MRHajS74gNl55BazaO8AIZXUkVRvDeH0E9SW
-         kluA==
-X-Gm-Message-State: ACrzQf0zkztM9unGHse6hNZ2b5TWwCfvzZJJpOlqWqVZV/gmQAZBvn/p
-        gGUyc50KOuvLAMU/2/nsg4tuzhQgqeNitbnTxS7s6lEfaSazdDAHjrtBVrZ5RviMqGh4K0/5kbw
-        byXaA4c4qadUx
-X-Received: by 2002:a05:6402:3547:b0:451:3be6:d55b with SMTP id f7-20020a056402354700b004513be6d55bmr27300777edd.57.1664966013550;
-        Wed, 05 Oct 2022 03:33:33 -0700 (PDT)
-X-Google-Smtp-Source: AMsMyM64Kd8eN0YvoYqGN6dYRN8+ecYh1gUUThzoOVgNb56Y2SDI4BsTp0JLge+DROJ9OwiXcqW6zQ==
-X-Received: by 2002:a05:6402:3547:b0:451:3be6:d55b with SMTP id f7-20020a056402354700b004513be6d55bmr27300629edd.57.1664966011102;
-        Wed, 05 Oct 2022 03:33:31 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id j14-20020a170906094e00b007417041fb2bsm8397875ejd.116.2022.10.05.03.33.30
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MpRxnTo+J9HRDwstfFFVv8LiNgrWMYl/Xh706svFrps=;
+        b=2jb/x7r7thi/PaQHI1EhQe4aJ7ioTCWf7SftSM51QqAh74BrINpgx/WLUtxlAMlgz2
+         mX+FlrlsqgvQRfUg3Su6Yhy+y0/2OQuoploOC1DpVF0jspaHC6OEJ1EHkAbXdOT83VvQ
+         YcCZuPH07336FaYCV9jfQKjcvVknedD6VCYSRKt26MdBfpFvdBAOAVt3+PJR0oX/9DGr
+         omrpDRT5BN/R/5qW9KMRLUcF92QjaIy00kxT/mlT9Cp1e8brLy61TUZ3rOcbrqmrRIU/
+         95zIOEXYTxBd8lgaCH0akuhyIgyuBCWzeqvD3ozAFjK6YFHdAHtnOE3WJM0Y8YTLTh00
+         dcAQ==
+X-Gm-Message-State: ACrzQf3pQ+8qMj+o0UU/LqNcXAiTrfxq6/piykAruqEcLZs2ob9gCQYJ
+        zUvhgh+CDyvSULATiRrKcVpepuSwxKbAzQ==
+X-Google-Smtp-Source: AMsMyM55C/pv3EKPMlpHhPDkU1D6o0YR7IPhMseMsctVANEuYZuMWsi9/+It90uovX0nl9uz3SWl5w==
+X-Received: by 2002:adf:fb88:0:b0:22a:f742:af59 with SMTP id a8-20020adffb88000000b0022af742af59mr19206624wrr.230.1664966798188;
+        Wed, 05 Oct 2022 03:46:38 -0700 (PDT)
+Received: from imac.fritz.box ([2a02:8010:60a0:0:b4e1:6c12:775b:a638])
+        by smtp.gmail.com with ESMTPSA id w10-20020a05600c474a00b003a5f54e3bbbsm1580959wmo.38.2022.10.05.03.46.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Oct 2022 03:33:30 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id AB7DF64EB7E; Wed,  5 Oct 2022 12:33:29 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org
-Cc:     razor@blackwall.org, ast@kernel.org, andrii@kernel.org,
-        martin.lau@linux.dev, john.fastabend@gmail.com,
-        joannelkoong@gmail.com, memxor@gmail.com, joe@cilium.io,
-        netdev@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>
-Subject: Re: [PATCH bpf-next 01/10] bpf: Add initial fd-based API to attach
- tc BPF programs
-In-Reply-To: <20221004231143.19190-2-daniel@iogearbox.net>
-References: <20221004231143.19190-1-daniel@iogearbox.net>
- <20221004231143.19190-2-daniel@iogearbox.net>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 05 Oct 2022 12:33:29 +0200
-Message-ID: <87bkqqimpy.fsf@toke.dk>
+        Wed, 05 Oct 2022 03:46:37 -0700 (PDT)
+From:   Donald Hunter <donald.hunter@gmail.com>
+To:     bpf@vger.kernel.org, linux-doc@vger.kernel.org
+Cc:     dave@dtucker.co.uk, Donald Hunter <donald.hunter@gmail.com>
+Subject: [PATCH bpf-next v6 0/1] Document BPF_MAP_TYPE_ARRAY
+Date:   Wed,  5 Oct 2022 11:46:33 +0100
+Message-Id: <20221005104634.66406-1-donald.hunter@gmail.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Daniel Borkmann <daniel@iogearbox.net> writes:
+Add documentation for BPF_MAP_TYPE_ARRAY and BPF_MAP_TYPE_PERCPU_ARRAY
+variant, including kernel version introduced, usage and examples.
 
-> As part of the feedback from LPC, there was a suggestion to provide a
-> name for this infrastructure to more easily differ between the classic
-> cls_bpf attachment and the fd-based API. As for most, the XDP vs tc
-> layer is already the default mental model for the pkt processing
-> pipeline. We refactored this with an xtc internal prefix aka 'express
-> traffic control' in order to avoid to deviate too far (and 'express'
-> given its more lightweight/faster entry point).
+v5->v6:
+- Rework sample code into individual snippets
+- Grammar mods suggested by Bagas Sanjaja
 
-Woohoo, bikeshed time! :)
+v4->v5:
+- Use formatting consistent with *_TYPE_HASH docs
+- Dropped cgroup doc patch from this set
+- Fix grammar and typos reported by Bagas Sanjaya
+- Fix typo and version reported by Donald Hunter
+- Update examples to be libbpf v1 compatible
 
-I am OK with having a separate name for this, but can we please pick one
-that doesn't sound like 'XDP' when you say it out loud? You really don't
-have to mumble much for 'XDP' and 'XTC' to sound exactly alike; this is
-bound to lead to confusion!
+v3->v4:
+- fix doctest failure due to missing newline
 
-Alternatives, in the same vein:
-- ltc (lightweight)
-- etc (extended/express/ebpf/et cetera ;))
-- tcx (keep the cool X, but put it at the end)
+v2->v3:
+- wrap text to 80 chars and add newline at end of file
 
-[...]
+v1->v2:
+- point to selftests for functional examples
+- update examples to follow kernel style
+- add docs for BPF_F_MMAPABLE
 
-> +/* (Simplified) user return codes for tc prog type.
-> + * A valid tc program must return one of these defined values. All other
-> + * return codes are reserved for future use. Must remain compatible with
-> + * their TC_ACT_* counter-parts. For compatibility in behavior, unknown
-> + * return codes are mapped to TC_NEXT.
-> + */
-> +enum tc_action_base {
-> +	TC_NEXT		= -1,
-> +	TC_PASS		= 0,
-> +	TC_DROP		= 2,
-> +	TC_REDIRECT	= 7,
-> +};
 
-Looking at things like this, though, I wonder if having a separate name
-(at least if it's too prominent) is not just going to be more confusing
-than not? I.e., we go out of our way to make it compatible with existing
-TC-BPF programs (which is a good thing!), so do we really need a
-separate name? Couldn't it just be an implementation detail that "it's
-faster now"?
+Dave Tucker (1):
+  bpf, docs: document BPF_MAP_TYPE_ARRAY
 
-Oh, and speaking of compatibility should 'tc' (the iproute2 binary) be
-taught how to display these new bpf_link attachments so that users can
-see that they're there?
+ Documentation/bpf/map_array.rst | 231 ++++++++++++++++++++++++++++++++
+ 1 file changed, 231 insertions(+)
+ create mode 100644 Documentation/bpf/map_array.rst
 
--Toke
+-- 
+2.35.1
 
