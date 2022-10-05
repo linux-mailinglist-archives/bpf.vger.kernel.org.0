@@ -2,70 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C4275F596E
-	for <lists+bpf@lfdr.de>; Wed,  5 Oct 2022 19:56:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B0565F598F
+	for <lists+bpf@lfdr.de>; Wed,  5 Oct 2022 20:10:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229910AbiJER4t (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Oct 2022 13:56:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56972 "EHLO
+        id S230206AbiJESKl convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 5 Oct 2022 14:10:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230234AbiJER4r (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Oct 2022 13:56:47 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 339AB7E018
-        for <bpf@vger.kernel.org>; Wed,  5 Oct 2022 10:56:46 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-355bdeba45bso160626727b3.0
-        for <bpf@vger.kernel.org>; Wed, 05 Oct 2022 10:56:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2X3fG6D6cXnzhkFiPRU1setr5jl+OiAwzFhoXUs00mU=;
-        b=m+OezHN53kMhx7UOKpMSs4pVaBy43abQV5loa4CLbl6/kkKfja5Wt0AJPEriujA0+s
-         Y/RaP2EDBjihHPVTsq9vr0RezvG8Ma8hz4/2azA6BbztCsgDhtZwy7B5J3jcnJCefv8Q
-         hOGLGuD0TAKlJA1FreZVZc2xsIRgX1H9YtAfNn/RCgNJ2yU742C9KH2IoCgmBdBlwaB2
-         LTScf95/F84W6+knMeailfgfzME5bm+3KzKUAAOIEcClubg/M0NXO0Di4Rg6KzzEhMB+
-         GQ4ffdhV+FwqiW+cA3gJmYcjOxhYmhM/bW/vcPNFUkMjgVRQiYREN5v8Xxbm9h4W/sNY
-         KFPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=2X3fG6D6cXnzhkFiPRU1setr5jl+OiAwzFhoXUs00mU=;
-        b=AhNJYm4Vik3YtXfJKhkDxtSbJrzAyzqGrDunSFFdcgfEiZsC6nk+GTf2EFcQXZO+Y1
-         DgC4/Oxpfwv09RydIKcpfS1OEjznLuwv9SSIFeT9IcomCvPreYyKl+e9SNgesv+wED/s
-         pZ+XueabbR48AeanDYIHSlX5FqDn5xl/1zuOeID7yq2X0aeiMR5TcWFhYrx7VK+GbbUX
-         0P6+8//wV3u/U5K53kBySjJAZZgc3yPqkcbsnuw43+m7eEreZgC5CAUnT2KtYj7Uz3DJ
-         PsNzQY4l/64Qs/tLsdH3blN8qgy+j9pDADVVcIIurZiMmyebiHRIQNCf7wm2jyvwH7af
-         gr9g==
-X-Gm-Message-State: ACrzQf1o0RicP2I1NLgv7H+CXDtJI2uXL4yRfVo2CqKgeLkspm7MqmTQ
-        gc2cCwFtvpNbd9IQBBvF7jyt/Gw=
-X-Google-Smtp-Source: AMsMyM7FqogwXeno1iHyGSOgnPG6dmRkhitixk24e+XdCmUylzqlFQ/XXLz2qHX+V77s3lhgXjJhe80=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a25:e649:0:b0:6be:2d89:c84c with SMTP id
- d70-20020a25e649000000b006be2d89c84cmr1021921ybh.508.1664992604583; Wed, 05
- Oct 2022 10:56:44 -0700 (PDT)
-Date:   Wed, 5 Oct 2022 10:56:43 -0700
-In-Reply-To: <dd7b7afd-755b-e980-02b1-cfde0dad1236@iogearbox.net>
-Mime-Version: 1.0
-References: <20221004231143.19190-1-daniel@iogearbox.net> <20221004231143.19190-2-daniel@iogearbox.net>
- <YzzWDqAmN5DRTupQ@google.com> <dd7b7afd-755b-e980-02b1-cfde0dad1236@iogearbox.net>
-Message-ID: <Yz3FW/H06XS5toBo@google.com>
-Subject: Re: [PATCH bpf-next 01/10] bpf: Add initial fd-based API to attach tc
- BPF programs
-From:   sdf@google.com
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     bpf@vger.kernel.org, razor@blackwall.org, ast@kernel.org,
-        andrii@kernel.org, martin.lau@linux.dev, john.fastabend@gmail.com,
-        joannelkoong@gmail.com, memxor@gmail.com, toke@redhat.com,
-        joe@cilium.io, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        with ESMTP id S230082AbiJESKk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Oct 2022 14:10:40 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E1E15BC09
+        for <bpf@vger.kernel.org>; Wed,  5 Oct 2022 11:10:38 -0700 (PDT)
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 295IAQx5014934
+        for <bpf@vger.kernel.org>; Wed, 5 Oct 2022 11:10:38 -0700
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3k17f6kc4t-12
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 05 Oct 2022 11:10:36 -0700
+Received: from twshared13579.04.prn5.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Wed, 5 Oct 2022 11:09:44 -0700
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+        id 077FB1FBFF66B; Wed,  5 Oct 2022 11:09:37 -0700 (PDT)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Andrea Terzolo <andrea.terzolo@polito.it>
+Subject: [PATCH bpf-next] bpf: explicitly define BPF_FUNC_xxx integer values
+Date:   Wed, 5 Oct 2022 11:09:32 -0700
+Message-ID: <20221005180932.2278505-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: O_nMoon8rx_xk7mQ_9r8mQxy5iUW-cfs
+X-Proofpoint-ORIG-GUID: O_nMoon8rx_xk7mQ_9r8mQxy5iUW-cfs
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.528,FMLib:17.11.122.1
+ definitions=2022-10-05_05,2022-10-05_01,2022-06-22_01
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,88 +55,1051 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-T24gMTAvMDUsIERhbmllbCBCb3JrbWFubiB3cm90ZToNCj4gT24gMTAvNS8yMiAyOjU1IEFNLCBz
-ZGZAZ29vZ2xlLmNvbSB3cm90ZToNCj4gPiBPbiAxMC8wNSwgRGFuaWVsIEJvcmttYW5uIHdyb3Rl
-Og0KPiBbLi4uXQ0KPiA+DQo+ID4gVGhlIHNlcmllcyBsb29rcyBleGNpdGluZywgaGF2ZW4ndCBo
-YWQgYSBjaGFuY2UgdG8gbG9vayBkZWVwbHksIHdpbGwgdHJ5DQo+ID4gdG8gZmluZCBzb21lIHRp
-bWUgdGhpcyB3ZWVrLg0KDQo+IEdyZWF0LCB0aGFua3MhDQoNCj4gPiBXZSd2ZSBjaGF0dGVkIGJy
-aWVmbHkgYWJvdXQgcHJpb3JpdHkgZHVyaW5nIHRoZSB0YWxrLCBsZXQncyBtYXliZSAgDQo+IGRp
-c2N1c3MNCj4gPiBpdCBoZXJlIG1vcmU/DQo+ID4NCj4gPiBJLCBhcyBhIHVzZXIsIHN0aWxsIHJl
-YWxseSBoYXZlIG5vIGNsdWUgYWJvdXQgd2hhdCBwcmlvcml0eSB0byB1c2UuDQo+ID4gV2UgaGF2
-ZSB0aGlzIHByb2JsZW0gYXQgdGMsIGFuZCB3ZSdsbCBzZWVtaW5nbHkgaGF2ZSB0aGUgc2FtZSBw
-cm9ibGVtDQo+ID4gaGVyZT8gSSBndWVzcyBpdCdzIGV2ZW4gbW9yZSByZWxldmFudCBpbiBrOHMg
-YmVjYXVzZSBpbnRlcm5hbGx5IGF0IEcgd2UNCj4gPiBjYW4gY29udHJvbCB0aGUgdXNlcnMuDQo+
-ID4NCj4gPiBJcyBpdCB3b3J0aCBhdCBsZWFzdCB0cnlpbmcgdG8gcHJvdmlkZSBzb21lIGRlZmF1
-bHQgYmFuZHMgLyBndWlkYW5jZT8NCj4gPg0KPiA+IEZvciBleGFtcGxlLCBoYXZpbmcgU0VDKCd0
-Yy9pbmdyZXNzJykgcmVjZWl2ZSBhdHRhY2hfcHJpb3JpdHk9MTI0IGJ5DQo+ID4gZGVmYXVsdD8g
-TWF5YmUgd2UgY2FuIGV2ZW4gaGF2ZSBzb21ldGhpbmcgbGlrZSAndGMvaW5ncmVzc19maXJzdCcg
-Z2V0DQo+ID4gYXR0YWNoX3ByaW9yaXR5PTEgYW5kICd0Yy9pbmdyZXNzX2xhc3QnIHdpdGggYXR0
-YWNoX3ByaW9yaXR5PTI1ND8NCj4gPiAodGhlIG5hbWVzIGFyZSBhcmJpdHJhcnksIHdlIGNhbiBk
-byBzb21ldGhpbmcgYmV0dGVyKQ0KPiA+DQo+ID4gaW5ncmVzc19maXJzdC9pbmdyZXNzX2xhc3Qg
-Y2FuIGJlIHVzZWQgYnkgc29tZSBtb25pdG9yaW5nIGpvYnMuIFRoZSByZXN0DQo+ID4gY2FuIHVz
-ZSBkZWZhdWx0IDEyNC4gSWYgc29tZWJvZHkgcmVhbGx5IG5lZWRzIGEgY3VzdG9tIHByaW9yaXR5
-LCB0aGVuICANCj4gdGhleQ0KPiA+IGNhbiBtYW51YWxseSB1c2Ugc29tZXRoaW5nIGFyb3VuZCAx
-MjQvMiBpZiB0aGV5IG5lZWQgdG8gdHJpZ2dlciBiZWZvcmUgIA0KPiB0aGUNCj4gPiAnZGVmYXVs
-dCcgcHJpb3JpdHkgb3IgMTI0KzEyNC8yIGlmIHRoZXkgd2FudCB0byB0cmlnZ2VyIGFmdGVyPw0K
-PiA+DQo+ID4gVGhvdWdodHM/IElzIGl0IHdvcnRoIGl0PyBEbyB3ZSBjYXJlPw0KDQo+IEkgdGhp
-bmsgZ3VpZGFuY2UgaXMgbmVlZGVkLCB5ZXMsIEkgY2FuIGFkZCBhIGZldyBwYXJhZ3JhcGhzIHRv
-IHRoZSBsaWJicGYNCj4gaGVhZGVyIGZpbGUgd2hlcmUgd2UgYWxzbyBoYXZlIHRoZSB0YyBCUEYg
-bGluayBBUEkuIEkgaGFkIGEgYnJpZWYgIA0KPiBkaXNjdXNzaW9uDQo+IGFyb3VuZCB0aGlzIGFs
-c28gd2l0aCBkZXZlbG9wZXJzIGZyb20gZGF0YWRvZyBhcyB0aGV5IGFsc28gdXNlIHRoZSBpbmZy
-YQ0KPiB2aWEgdGMgQlBGLiBPdmVyYWxsLCBpdHMgYSBoYXJkIHByb2JsZW0sIGFuZCBJIGRvbid0
-IHRoaW5rIHRoZXJlJ3MgYSBnb29kDQo+IGdlbmVyaWMgc29sdXRpb24uIFRoZSAnKl9sYXN0JyBp
-cyBpbXBsaWVkIGJ5IHByaW89MCwgc28gdGhhdCBrZXJuZWwgYXV0by0NCj4gYWxsb2NhdGVzIGl0
-LCBhbmQgZm9yIGxpYmJwZiB3ZSBjb3VsZCBhZGQgYW4gQVBJIGZvciBpdCB3aGVyZSB0aGUgdXNl
-cg0KPiBkb2VzIG5vdCBuZWVkIHRvIHNwZWNpZnkgcHJpbyBzcGVjaWZpY2FsbHkuIFRoZSAnYXBw
-ZW5kaW5nJyBpcyByZWFzb25hYmxlDQo+IHRvIG1lIGdpdmVuIGlmIGFuIGFwcGxpY2F0aW9uIGV4
-cGxpY2l0bHkgcmVxdWVzdHMgdG8gYmUgYWRkZWQgYXMgZmlyc3QNCj4gKGFuZCBlLmcuIGVuZm9y
-Y2VzIHBvbGljeSB0aHJvdWdoIHRjIEJQRiksIGJ1dCBzb21lIG90aGVyIDNyZCBwYXJ0eSAgDQo+
-IGFwcGxpY2F0aW9uDQo+IHByZXBlbmRzIGl0c2VsZiBhcyBmaXJzdCwgaXQgY2FuIGJ5cGFzcyB0
-aGUgZm9ybWVyLCB3aGljaCB3b3VsZCBiZSB0b28gIA0KPiBlYXN5DQo+IHRvIHNob290IHlvdXJz
-ZWxmIGluIHRoZSBmb290LiBPdmVyYWxsIHRoZSBpc3N1ZSBpbiB0YyBsYW5kIGlzIHRoYXQgIA0K
-PiBvcmRlcmluZw0KPiBtYXR0ZXJzLCBza2IgcGFja2V0IGRhdGEgY291bGQgYmUgbWFuZ2xlZCAo
-ZS5nLiBJUHMgTkFUZWQpLCBza2IgZmllbGRzIGNhbg0KPiBiZSBtYW5nbGVkLCBhbmQgd2UgY2Fu
-IGhhdmUgcmVkaXJlY3QgYWN0aW9ucyAoZGV2IEEgdnMuIEIpOyB0aGUgb25seSB3YXkgIA0KPiBJ
-J2QNCj4gc2VlIHdlcmUgdGhpcyBpcyBwb3NzaWJsZSBpZiBzb21ld2hhdCB2ZXJpZmllciBjYW4g
-YW5ub3RhdGUgdGhlIHByb2cgd2hlbg0KPiBpdCBkaWRuJ3Qgb2JzZXJ2ZSBhbnkgd3JpdGVzIHRv
-IHNrYiwgYW5kIG5vIHJlZGlyZWN0IHdhcyBpbiBwbGF5LiBUaGVuICANCj4geW91J3ZlDQo+IGtp
-bmQgb2YgcmVwbGljYXRlZCB0aGUgY29uc3RyYWludHMgc2ltaWxhciB0byB0cmFjaW5nIHdoZXJl
-IHRoZSBhdHRhY2htZW50DQo+IGNhbiBzYXkgdGhhdCBvcmRlcmluZyBkb2Vzbid0IG1hdHRlciBp
-ZiBhbGwgdGhlIHByb2dzIGFyZSBpbiBzYW1lIHN0eWxlLg0KPiBPdGhlcndpc2UsIGV4cGxpY2l0
-IGNvcnBvcmF0aW9uIGlzIG5lZWRlZCBhcyBpcyB0b2RheSB3aXRoIHJlc3Qgb2YgdGMgKG9yDQo+
-IGFzIFRva2UgZGlkIGluIGxpYnhkcCkgd2l0aCBtdWx0aS1hdHRhY2guIEluIHRoZSBzcGVjaWZp
-YyBjYXNlIEkgbWVudGlvbmVkDQo+IGF0IExQQywgaXQgY2FuIGJlIG1hZGUgdG8gd29yayBnaXZl
-biBvbmUgb2YgdGhlIHR3byBpcyBvbmx5IG9ic2VydmluZyAgDQo+IHRyYWZmaWMNCj4gYXQgdGhl
-IGxheWVyLCBlLmcuIGl0IGNvdWxkIGdldCBwcmVwZW5kZWQgaWYgdGhlcmUgaXMgZ3VhcmFudGVl
-IHRoYXQgYWxsDQo+IHJldHVybiBjb2RlcyBhcmUgdGNfYWN0X3Vuc3BlYyBzbyB0aGF0IHRoZXJl
-IGlzIG5vIGJ5cGFzcyBhbmQgdGhlbiB5b3UnbGwNCj4gc2VlIGFsbCB0cmFmZmljIG9yIGFwcGVu
-ZGVkIHRvIHNlZSBvbmx5IHRyYWZmaWMgd2hpY2ggbWFkZSBpdCBwYXN0IHRoZQ0KPiBwb2xpY3ku
-IFNvIGl0IGFsbCBkZXBlbmRzIG9uIHRoZSBhcHBsaWNhdGlvbnMgaW5zdGFsbGluZyBwcm9ncmFt
-cywgYnV0IHRvDQo+IHNvbHZlIGl0IGdlbmVyaWNhbGx5IGlzIG5vdCBwb3NzaWJsZSBnaXZlbiBv
-cmRlcmluZyBhbmQgY29uZmxpY3RpbmcgIA0KPiBhY3Rpb25zLg0KPiBTbywgaW1obywgYW4gX2Fw
-cGVuZCgpIEFQSSBmb3IgbGliYnBmIGNhbiBiZSBhZGRlZCBhbG9uZyB3aXRoIGd1aWRhbmNlIGZv
-cg0KPiBkZXZlbG9wZXJzIHdoZW4gdG8gdXNlIF9hcHBlbmQoKSB2cyBleHBsaWNpdCBwcmlvLg0K
-DQpBZ3JlZWQsIGl0J3MgYSBoYXJkIHByb2JsZW0gdG8gc29sdmUsIGVzcGVjaWFsbHkgZnJvbSB0
-aGUga2VybmVsIHNpZGUuDQpJZGVhbGx5LCBhcyBUb2tlIG1lbnRpb25zIG9uIHRoZSBzaWRlIHRo
-cmVhZCwgdGhlcmUgc2hvdWxkIGJlIHNvbWUga2luZA0Kb2Ygc3lzdGVtIGRhZW1vbiBvciBzb21l
-IG90aGVyIHBsYWNlIHdoZXJlIHRoZSBvcmRlcmluZyBpcyBkZXNjcmliZWQuDQpCdXQgbGV0J3Mg
-c3RhcnQgd2l0aCBhdCBsZWFzdCBzb21lIGd1aWRhbmNlIG9uIHRoZSBjdXJyZW50IHByaW8uDQoN
-Ck1pZ2h0IGJlIGFsc28gYSBnb29kIGlkZWEgdG8gbmFycm93IGRvd24gdGhlIHByaW8gcmFuZ2Ug
-dG8gMC02NWsgZm9yDQpub3c/IE1heWJlIGluIHRoZSBmdXR1cmUgd2UnbGwgaGF2ZSBzb21lIHNw
-ZWNpYWwgUFJJT19NT05JVE9SSU5HX0JFRk9SRV9BTEwNCmFuZCBQUklPX01PTklUT1JJTkdfQUZU
-RVJfQUxMIHRoYXQgdHJpZ2dlciByZWdhcmRsZXNzIG9mIFRDX0FDVF9VTlNQRUM/DQpJIGFncmVl
-IHdpdGggVG9rZSB0aGF0IGl0J3MgYW5vdGhlciBwcm9ibGVtIHdpdGggdGhlIGN1cnJlbnQgYWN0
-aW9uIGJhc2VkDQpjaGFpbnMgdGhhdCdzIHdvcnRoIHNvbHZpbmcgc29tZWhvdyAoY29tcGFyZWQg
-dG8sIHNheSwgY2dyb3VwIHByb2dyYW1zKS4NCg0KPiBUaGFua3MsDQo+IERhbmllbA0KDQo+ID4g
-PiDvv73vv73vv73vv73vv70gfTsNCj4gPg0KPiA+ID4g77+977+977+977+977+9IHN0cnVjdCB7
-IC8qIGFub255bW91cyBzdHJ1Y3QgdXNlZCBieSBCUEZfUFJPR19URVNUX1JVTiBjb21tYW5kICAN
-Cj4gKi8NCj4gPiA+IEBAIC0xNDUyLDcgKzE0NjAsMTAgQEAgdW5pb24gYnBmX2F0dHIgew0KPiA+
-ID4g77+977+977+977+977+9IH0gaW5mbzsNCj4gPg0KPiA+ID4g77+977+977+977+977+9IHN0
-cnVjdCB7IC8qIGFub255bW91cyBzdHJ1Y3QgdXNlZCBieSBCUEZfUFJPR19RVUVSWSBjb21tYW5k
-ICovDQo+ID4gPiAt77+977+977+977+977+977+977+9IF9fdTMy77+977+977+977+977+977+9
-77+9IHRhcmdldF9mZDvvv73vv73vv70gLyogY29udGFpbmVyIG9iamVjdCB0byBxdWVyeSAqLw0K
-PiA+ID4gK++/ve+/ve+/ve+/ve+/ve+/ve+/vSB1bmlvbiB7DQo+ID4gPiAr77+977+977+977+9
-77+977+977+977+977+977+977+9IF9fdTMy77+977+977+9IHRhcmdldF9mZDvvv73vv73vv70g
-LyogY29udGFpbmVyIG9iamVjdCB0byBxdWVyeSAqLw0KPiA+ID4gK++/ve+/ve+/ve+/ve+/ve+/
-ve+/ve+/ve+/ve+/ve+/vSBfX3UzMu+/ve+/ve+/vSB0YXJnZXRfaWZpbmRleDsgLyogdGFyZ2V0
-IGlmaW5kZXggKi8NCg==
+Historically enum bpf_func_id's BPF_FUNC_xxx enumerators relied on
+implicit sequential values being assigned by compiler. This is
+convenient, as new BPF helpers are always added at the very end, but it
+also has its downsides, some of them being:
+
+  - with over 200 helpers now it's very hard to know what's each helper's ID,
+    which is often important to know when working with BPF assembly (e.g.,
+    by dumping raw bpf assembly instructions with llvm-objdump -d
+    command). it's possible to work around this by looking into vmlinux.h,
+    dumping /sys/btf/kernel/vmlinux, looking at libbpf-provided
+    bpf_helper_defs.h, etc. But it always feels like an unnecessary step
+    and one should be able to quickly figure this out from UAPI header.
+
+  - when backporting and cherry-picking only some BPF helpers onto older
+    kernels it's important to be able to skip some enum values for helpers
+    that weren't backported, but preserve absolute integer IDs to keep BPF
+    helper IDs stable so that BPF programs stay portable across upstream
+    and backported kernels.
+
+While neither problem is insurmountable, they come up frequently enough
+and are annoying enough to warrant improving the situation. And for the
+backporting the problem can easily go unnoticed for a while, especially
+if backport is done with people not very familiar with BPF subsystem overall.
+
+Anyways, it's easy to fix this by making sure that __BPF_FUNC_MAPPER
+macro provides explicit helper IDs. Unfortunately that would potentially
+break existing users that use UAPI-exposed __BPF_FUNC_MAPPER and are
+expected to pass macro that accepts only symbolic helper identifier
+(e.g., map_lookup_elem for bpf_map_lookup_elem() helper).
+
+As such, we need to introduce a new macro (___BPF_FUNC_MAPPER) which
+would specify both identifier and integer ID, but in such a way as to
+allow existing __BPF_FUNC_MAPPER be expressed in terms of new
+___BPF_FUNC_MAPPER macro. And that's what this patch is doing. To avoid
+duplication and allow __BPF_FUNC_MAPPER stay *exactly* the same,
+___BPF_FUNC_MAPPER accepts arbitrary "context" arguments, which can be
+used to pass any extra macros, arguments, and whatnot. In our case we
+use this to pass original user-provided macro that expects single
+argument and __BPF_FUNC_MAPPER is using it's own three-argument
+__BPF_FUNC_MAPPER_APPLY intermediate macro to impedance-match new and
+old "callback" macros.
+
+Once we resolve this, we use new ___BPF_FUNC_MAPPER to define enum
+bpf_func_id with explicit values. The other users of __BPF_FUNC_MAPPER
+in kernel (namely in kernel/bpf/disasm.c) are kept exactly the same both
+as demonstration that backwards compat works, but also to avoid
+unnecessary code churn.
+
+Note that new ___BPF_FUNC_MAPPER() doesn't forcefully insert comma
+between values, as that might not be appropriate in all possible cases
+where ___BPF_FUNC_MAPPER might be used by users. This doesn't reduce
+usability, as it's trivial to insert that comma inside "callback" macro.
+
+To validate all the manually specified IDs are exactly right, we used
+BTF to compare before and after values:
+
+  $ bpftool btf dump file ~/linux-build/default/vmlinux | rg bpf_func_id -A 211 > after.txt
+  $ git stash # stach UAPI changes
+  $ make -j90
+  ... re-building kernel without UAPI changes ...
+  $ bpftool btf dump file ~/linux-build/default/vmlinux | rg bpf_func_id -A 211 > before.txt
+  $ diff -u before.txt after.txt
+  --- before.txt  2022-10-05 10:48:18.119195916 -0700
+  +++ after.txt   2022-10-05 10:46:49.446615025 -0700
+  @@ -1,4 +1,4 @@
+  -[14576] ENUM 'bpf_func_id' encoding=UNSIGNED size=4 vlen=211
+  +[9560] ENUM 'bpf_func_id' encoding=UNSIGNED size=4 vlen=211
+          'BPF_FUNC_unspec' val=0
+          'BPF_FUNC_map_lookup_elem' val=1
+          'BPF_FUNC_map_update_elem' val=2
+
+As can be seen from diff above, the only thing that changed was resulting BTF
+type ID of ENUM bpf_func_id, not any of the enumerators, their names or integer
+values.
+
+The only other place that needed fixing was scripts/bpf_doc.py used to generate
+man pages and bpf_helper_defs.h header for libbpf and selftests. That script is
+tightly-coupled to exact shape of ___BPF_FUNC_MAPPER macro definition, so had
+to be trivially adapted.
+
+Cc: Quentin Monnet <quentin@isovalent.com>
+Reported-by: Andrea Terzolo <andrea.terzolo@polito.it>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ include/uapi/linux/bpf.h       | 432 +++++++++++++++++----------------
+ scripts/bpf_doc.py             |  19 +-
+ tools/include/uapi/linux/bpf.h | 432 +++++++++++++++++----------------
+ 3 files changed, 447 insertions(+), 436 deletions(-)
+
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 3075018a4ef8..119667a300d9 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -5433,225 +5433,231 @@ union bpf_attr {
+  *		larger than the size of the ring buffer, or which cannot fit
+  *		within a struct bpf_dynptr.
+  */
+-#define __BPF_FUNC_MAPPER(FN)		\
+-	FN(unspec),			\
+-	FN(map_lookup_elem),		\
+-	FN(map_update_elem),		\
+-	FN(map_delete_elem),		\
+-	FN(probe_read),			\
+-	FN(ktime_get_ns),		\
+-	FN(trace_printk),		\
+-	FN(get_prandom_u32),		\
+-	FN(get_smp_processor_id),	\
+-	FN(skb_store_bytes),		\
+-	FN(l3_csum_replace),		\
+-	FN(l4_csum_replace),		\
+-	FN(tail_call),			\
+-	FN(clone_redirect),		\
+-	FN(get_current_pid_tgid),	\
+-	FN(get_current_uid_gid),	\
+-	FN(get_current_comm),		\
+-	FN(get_cgroup_classid),		\
+-	FN(skb_vlan_push),		\
+-	FN(skb_vlan_pop),		\
+-	FN(skb_get_tunnel_key),		\
+-	FN(skb_set_tunnel_key),		\
+-	FN(perf_event_read),		\
+-	FN(redirect),			\
+-	FN(get_route_realm),		\
+-	FN(perf_event_output),		\
+-	FN(skb_load_bytes),		\
+-	FN(get_stackid),		\
+-	FN(csum_diff),			\
+-	FN(skb_get_tunnel_opt),		\
+-	FN(skb_set_tunnel_opt),		\
+-	FN(skb_change_proto),		\
+-	FN(skb_change_type),		\
+-	FN(skb_under_cgroup),		\
+-	FN(get_hash_recalc),		\
+-	FN(get_current_task),		\
+-	FN(probe_write_user),		\
+-	FN(current_task_under_cgroup),	\
+-	FN(skb_change_tail),		\
+-	FN(skb_pull_data),		\
+-	FN(csum_update),		\
+-	FN(set_hash_invalid),		\
+-	FN(get_numa_node_id),		\
+-	FN(skb_change_head),		\
+-	FN(xdp_adjust_head),		\
+-	FN(probe_read_str),		\
+-	FN(get_socket_cookie),		\
+-	FN(get_socket_uid),		\
+-	FN(set_hash),			\
+-	FN(setsockopt),			\
+-	FN(skb_adjust_room),		\
+-	FN(redirect_map),		\
+-	FN(sk_redirect_map),		\
+-	FN(sock_map_update),		\
+-	FN(xdp_adjust_meta),		\
+-	FN(perf_event_read_value),	\
+-	FN(perf_prog_read_value),	\
+-	FN(getsockopt),			\
+-	FN(override_return),		\
+-	FN(sock_ops_cb_flags_set),	\
+-	FN(msg_redirect_map),		\
+-	FN(msg_apply_bytes),		\
+-	FN(msg_cork_bytes),		\
+-	FN(msg_pull_data),		\
+-	FN(bind),			\
+-	FN(xdp_adjust_tail),		\
+-	FN(skb_get_xfrm_state),		\
+-	FN(get_stack),			\
+-	FN(skb_load_bytes_relative),	\
+-	FN(fib_lookup),			\
+-	FN(sock_hash_update),		\
+-	FN(msg_redirect_hash),		\
+-	FN(sk_redirect_hash),		\
+-	FN(lwt_push_encap),		\
+-	FN(lwt_seg6_store_bytes),	\
+-	FN(lwt_seg6_adjust_srh),	\
+-	FN(lwt_seg6_action),		\
+-	FN(rc_repeat),			\
+-	FN(rc_keydown),			\
+-	FN(skb_cgroup_id),		\
+-	FN(get_current_cgroup_id),	\
+-	FN(get_local_storage),		\
+-	FN(sk_select_reuseport),	\
+-	FN(skb_ancestor_cgroup_id),	\
+-	FN(sk_lookup_tcp),		\
+-	FN(sk_lookup_udp),		\
+-	FN(sk_release),			\
+-	FN(map_push_elem),		\
+-	FN(map_pop_elem),		\
+-	FN(map_peek_elem),		\
+-	FN(msg_push_data),		\
+-	FN(msg_pop_data),		\
+-	FN(rc_pointer_rel),		\
+-	FN(spin_lock),			\
+-	FN(spin_unlock),		\
+-	FN(sk_fullsock),		\
+-	FN(tcp_sock),			\
+-	FN(skb_ecn_set_ce),		\
+-	FN(get_listener_sock),		\
+-	FN(skc_lookup_tcp),		\
+-	FN(tcp_check_syncookie),	\
+-	FN(sysctl_get_name),		\
+-	FN(sysctl_get_current_value),	\
+-	FN(sysctl_get_new_value),	\
+-	FN(sysctl_set_new_value),	\
+-	FN(strtol),			\
+-	FN(strtoul),			\
+-	FN(sk_storage_get),		\
+-	FN(sk_storage_delete),		\
+-	FN(send_signal),		\
+-	FN(tcp_gen_syncookie),		\
+-	FN(skb_output),			\
+-	FN(probe_read_user),		\
+-	FN(probe_read_kernel),		\
+-	FN(probe_read_user_str),	\
+-	FN(probe_read_kernel_str),	\
+-	FN(tcp_send_ack),		\
+-	FN(send_signal_thread),		\
+-	FN(jiffies64),			\
+-	FN(read_branch_records),	\
+-	FN(get_ns_current_pid_tgid),	\
+-	FN(xdp_output),			\
+-	FN(get_netns_cookie),		\
+-	FN(get_current_ancestor_cgroup_id),	\
+-	FN(sk_assign),			\
+-	FN(ktime_get_boot_ns),		\
+-	FN(seq_printf),			\
+-	FN(seq_write),			\
+-	FN(sk_cgroup_id),		\
+-	FN(sk_ancestor_cgroup_id),	\
+-	FN(ringbuf_output),		\
+-	FN(ringbuf_reserve),		\
+-	FN(ringbuf_submit),		\
+-	FN(ringbuf_discard),		\
+-	FN(ringbuf_query),		\
+-	FN(csum_level),			\
+-	FN(skc_to_tcp6_sock),		\
+-	FN(skc_to_tcp_sock),		\
+-	FN(skc_to_tcp_timewait_sock),	\
+-	FN(skc_to_tcp_request_sock),	\
+-	FN(skc_to_udp6_sock),		\
+-	FN(get_task_stack),		\
+-	FN(load_hdr_opt),		\
+-	FN(store_hdr_opt),		\
+-	FN(reserve_hdr_opt),		\
+-	FN(inode_storage_get),		\
+-	FN(inode_storage_delete),	\
+-	FN(d_path),			\
+-	FN(copy_from_user),		\
+-	FN(snprintf_btf),		\
+-	FN(seq_printf_btf),		\
+-	FN(skb_cgroup_classid),		\
+-	FN(redirect_neigh),		\
+-	FN(per_cpu_ptr),		\
+-	FN(this_cpu_ptr),		\
+-	FN(redirect_peer),		\
+-	FN(task_storage_get),		\
+-	FN(task_storage_delete),	\
+-	FN(get_current_task_btf),	\
+-	FN(bprm_opts_set),		\
+-	FN(ktime_get_coarse_ns),	\
+-	FN(ima_inode_hash),		\
+-	FN(sock_from_file),		\
+-	FN(check_mtu),			\
+-	FN(for_each_map_elem),		\
+-	FN(snprintf),			\
+-	FN(sys_bpf),			\
+-	FN(btf_find_by_name_kind),	\
+-	FN(sys_close),			\
+-	FN(timer_init),			\
+-	FN(timer_set_callback),		\
+-	FN(timer_start),		\
+-	FN(timer_cancel),		\
+-	FN(get_func_ip),		\
+-	FN(get_attach_cookie),		\
+-	FN(task_pt_regs),		\
+-	FN(get_branch_snapshot),	\
+-	FN(trace_vprintk),		\
+-	FN(skc_to_unix_sock),		\
+-	FN(kallsyms_lookup_name),	\
+-	FN(find_vma),			\
+-	FN(loop),			\
+-	FN(strncmp),			\
+-	FN(get_func_arg),		\
+-	FN(get_func_ret),		\
+-	FN(get_func_arg_cnt),		\
+-	FN(get_retval),			\
+-	FN(set_retval),			\
+-	FN(xdp_get_buff_len),		\
+-	FN(xdp_load_bytes),		\
+-	FN(xdp_store_bytes),		\
+-	FN(copy_from_user_task),	\
+-	FN(skb_set_tstamp),		\
+-	FN(ima_file_hash),		\
+-	FN(kptr_xchg),			\
+-	FN(map_lookup_percpu_elem),     \
+-	FN(skc_to_mptcp_sock),		\
+-	FN(dynptr_from_mem),		\
+-	FN(ringbuf_reserve_dynptr),	\
+-	FN(ringbuf_submit_dynptr),	\
+-	FN(ringbuf_discard_dynptr),	\
+-	FN(dynptr_read),		\
+-	FN(dynptr_write),		\
+-	FN(dynptr_data),		\
+-	FN(tcp_raw_gen_syncookie_ipv4),	\
+-	FN(tcp_raw_gen_syncookie_ipv6),	\
+-	FN(tcp_raw_check_syncookie_ipv4),	\
+-	FN(tcp_raw_check_syncookie_ipv6),	\
+-	FN(ktime_get_tai_ns),		\
+-	FN(user_ringbuf_drain),		\
++#define ___BPF_FUNC_MAPPER(FN, ctx...)			\
++	FN(unspec, 0, ##ctx)				\
++	FN(map_lookup_elem, 1, ##ctx)			\
++	FN(map_update_elem, 2, ##ctx)			\
++	FN(map_delete_elem, 3, ##ctx)			\
++	FN(probe_read, 4, ##ctx)			\
++	FN(ktime_get_ns, 5, ##ctx)			\
++	FN(trace_printk, 6, ##ctx)			\
++	FN(get_prandom_u32, 7, ##ctx)			\
++	FN(get_smp_processor_id, 8, ##ctx)		\
++	FN(skb_store_bytes, 9, ##ctx)			\
++	FN(l3_csum_replace, 10, ##ctx)			\
++	FN(l4_csum_replace, 11, ##ctx)			\
++	FN(tail_call, 12, ##ctx)			\
++	FN(clone_redirect, 13, ##ctx)			\
++	FN(get_current_pid_tgid, 14, ##ctx)		\
++	FN(get_current_uid_gid, 15, ##ctx)		\
++	FN(get_current_comm, 16, ##ctx)			\
++	FN(get_cgroup_classid, 17, ##ctx)		\
++	FN(skb_vlan_push, 18, ##ctx)			\
++	FN(skb_vlan_pop, 19, ##ctx)			\
++	FN(skb_get_tunnel_key, 20, ##ctx)		\
++	FN(skb_set_tunnel_key, 21, ##ctx)		\
++	FN(perf_event_read, 22, ##ctx)			\
++	FN(redirect, 23, ##ctx)				\
++	FN(get_route_realm, 24, ##ctx)			\
++	FN(perf_event_output, 25, ##ctx)		\
++	FN(skb_load_bytes, 26, ##ctx)			\
++	FN(get_stackid, 27, ##ctx)			\
++	FN(csum_diff, 28, ##ctx)			\
++	FN(skb_get_tunnel_opt, 29, ##ctx)		\
++	FN(skb_set_tunnel_opt, 30, ##ctx)		\
++	FN(skb_change_proto, 31, ##ctx)			\
++	FN(skb_change_type, 32, ##ctx)			\
++	FN(skb_under_cgroup, 33, ##ctx)			\
++	FN(get_hash_recalc, 34, ##ctx)			\
++	FN(get_current_task, 35, ##ctx)			\
++	FN(probe_write_user, 36, ##ctx)			\
++	FN(current_task_under_cgroup, 37, ##ctx)	\
++	FN(skb_change_tail, 38, ##ctx)			\
++	FN(skb_pull_data, 39, ##ctx)			\
++	FN(csum_update, 40, ##ctx)			\
++	FN(set_hash_invalid, 41, ##ctx)			\
++	FN(get_numa_node_id, 42, ##ctx)			\
++	FN(skb_change_head, 43, ##ctx)			\
++	FN(xdp_adjust_head, 44, ##ctx)			\
++	FN(probe_read_str, 45, ##ctx)			\
++	FN(get_socket_cookie, 46, ##ctx)		\
++	FN(get_socket_uid, 47, ##ctx)			\
++	FN(set_hash, 48, ##ctx)				\
++	FN(setsockopt, 49, ##ctx)			\
++	FN(skb_adjust_room, 50, ##ctx)			\
++	FN(redirect_map, 51, ##ctx)			\
++	FN(sk_redirect_map, 52, ##ctx)			\
++	FN(sock_map_update, 53, ##ctx)			\
++	FN(xdp_adjust_meta, 54, ##ctx)			\
++	FN(perf_event_read_value, 55, ##ctx)		\
++	FN(perf_prog_read_value, 56, ##ctx)		\
++	FN(getsockopt, 57, ##ctx)			\
++	FN(override_return, 58, ##ctx)			\
++	FN(sock_ops_cb_flags_set, 59, ##ctx)		\
++	FN(msg_redirect_map, 60, ##ctx)			\
++	FN(msg_apply_bytes, 61, ##ctx)			\
++	FN(msg_cork_bytes, 62, ##ctx)			\
++	FN(msg_pull_data, 63, ##ctx)			\
++	FN(bind, 64, ##ctx)				\
++	FN(xdp_adjust_tail, 65, ##ctx)			\
++	FN(skb_get_xfrm_state, 66, ##ctx)		\
++	FN(get_stack, 67, ##ctx)			\
++	FN(skb_load_bytes_relative, 68, ##ctx)		\
++	FN(fib_lookup, 69, ##ctx)			\
++	FN(sock_hash_update, 70, ##ctx)			\
++	FN(msg_redirect_hash, 71, ##ctx)		\
++	FN(sk_redirect_hash, 72, ##ctx)			\
++	FN(lwt_push_encap, 73, ##ctx)			\
++	FN(lwt_seg6_store_bytes, 74, ##ctx)		\
++	FN(lwt_seg6_adjust_srh, 75, ##ctx)		\
++	FN(lwt_seg6_action, 76, ##ctx)			\
++	FN(rc_repeat, 77, ##ctx)			\
++	FN(rc_keydown, 78, ##ctx)			\
++	FN(skb_cgroup_id, 79, ##ctx)			\
++	FN(get_current_cgroup_id, 80, ##ctx)		\
++	FN(get_local_storage, 81, ##ctx)		\
++	FN(sk_select_reuseport, 82, ##ctx)		\
++	FN(skb_ancestor_cgroup_id, 83, ##ctx)		\
++	FN(sk_lookup_tcp, 84, ##ctx)			\
++	FN(sk_lookup_udp, 85, ##ctx)			\
++	FN(sk_release, 86, ##ctx)			\
++	FN(map_push_elem, 87, ##ctx)			\
++	FN(map_pop_elem, 88, ##ctx)			\
++	FN(map_peek_elem, 89, ##ctx)			\
++	FN(msg_push_data, 90, ##ctx)			\
++	FN(msg_pop_data, 91, ##ctx)			\
++	FN(rc_pointer_rel, 92, ##ctx)			\
++	FN(spin_lock, 93, ##ctx)			\
++	FN(spin_unlock, 94, ##ctx)			\
++	FN(sk_fullsock, 95, ##ctx)			\
++	FN(tcp_sock, 96, ##ctx)				\
++	FN(skb_ecn_set_ce, 97, ##ctx)			\
++	FN(get_listener_sock, 98, ##ctx)		\
++	FN(skc_lookup_tcp, 99, ##ctx)			\
++	FN(tcp_check_syncookie, 100, ##ctx)		\
++	FN(sysctl_get_name, 101, ##ctx)			\
++	FN(sysctl_get_current_value, 102, ##ctx)	\
++	FN(sysctl_get_new_value, 103, ##ctx)		\
++	FN(sysctl_set_new_value, 104, ##ctx)		\
++	FN(strtol, 105, ##ctx)				\
++	FN(strtoul, 106, ##ctx)				\
++	FN(sk_storage_get, 107, ##ctx)			\
++	FN(sk_storage_delete, 108, ##ctx)		\
++	FN(send_signal, 109, ##ctx)			\
++	FN(tcp_gen_syncookie, 110, ##ctx)		\
++	FN(skb_output, 111, ##ctx)			\
++	FN(probe_read_user, 112, ##ctx)			\
++	FN(probe_read_kernel, 113, ##ctx)		\
++	FN(probe_read_user_str, 114, ##ctx)		\
++	FN(probe_read_kernel_str, 115, ##ctx)		\
++	FN(tcp_send_ack, 116, ##ctx)			\
++	FN(send_signal_thread, 117, ##ctx)		\
++	FN(jiffies64, 118, ##ctx)			\
++	FN(read_branch_records, 119, ##ctx)		\
++	FN(get_ns_current_pid_tgid, 120, ##ctx)		\
++	FN(xdp_output, 121, ##ctx)			\
++	FN(get_netns_cookie, 122, ##ctx)		\
++	FN(get_current_ancestor_cgroup_id, 123, ##ctx)	\
++	FN(sk_assign, 124, ##ctx)			\
++	FN(ktime_get_boot_ns, 125, ##ctx)		\
++	FN(seq_printf, 126, ##ctx)			\
++	FN(seq_write, 127, ##ctx)			\
++	FN(sk_cgroup_id, 128, ##ctx)			\
++	FN(sk_ancestor_cgroup_id, 129, ##ctx)		\
++	FN(ringbuf_output, 130, ##ctx)			\
++	FN(ringbuf_reserve, 131, ##ctx)			\
++	FN(ringbuf_submit, 132, ##ctx)			\
++	FN(ringbuf_discard, 133, ##ctx)			\
++	FN(ringbuf_query, 134, ##ctx)			\
++	FN(csum_level, 135, ##ctx)			\
++	FN(skc_to_tcp6_sock, 136, ##ctx)		\
++	FN(skc_to_tcp_sock, 137, ##ctx)			\
++	FN(skc_to_tcp_timewait_sock, 138, ##ctx)	\
++	FN(skc_to_tcp_request_sock, 139, ##ctx)		\
++	FN(skc_to_udp6_sock, 140, ##ctx)		\
++	FN(get_task_stack, 141, ##ctx)			\
++	FN(load_hdr_opt, 142, ##ctx)			\
++	FN(store_hdr_opt, 143, ##ctx)			\
++	FN(reserve_hdr_opt, 144, ##ctx)			\
++	FN(inode_storage_get, 145, ##ctx)		\
++	FN(inode_storage_delete, 146, ##ctx)		\
++	FN(d_path, 147, ##ctx)				\
++	FN(copy_from_user, 148, ##ctx)			\
++	FN(snprintf_btf, 149, ##ctx)			\
++	FN(seq_printf_btf, 150, ##ctx)			\
++	FN(skb_cgroup_classid, 151, ##ctx)		\
++	FN(redirect_neigh, 152, ##ctx)			\
++	FN(per_cpu_ptr, 153, ##ctx)			\
++	FN(this_cpu_ptr, 154, ##ctx)			\
++	FN(redirect_peer, 155, ##ctx)			\
++	FN(task_storage_get, 156, ##ctx)		\
++	FN(task_storage_delete, 157, ##ctx)		\
++	FN(get_current_task_btf, 158, ##ctx)		\
++	FN(bprm_opts_set, 159, ##ctx)			\
++	FN(ktime_get_coarse_ns, 160, ##ctx)		\
++	FN(ima_inode_hash, 161, ##ctx)			\
++	FN(sock_from_file, 162, ##ctx)			\
++	FN(check_mtu, 163, ##ctx)			\
++	FN(for_each_map_elem, 164, ##ctx)		\
++	FN(snprintf, 165, ##ctx)			\
++	FN(sys_bpf, 166, ##ctx)				\
++	FN(btf_find_by_name_kind, 167, ##ctx)		\
++	FN(sys_close, 168, ##ctx)			\
++	FN(timer_init, 169, ##ctx)			\
++	FN(timer_set_callback, 170, ##ctx)		\
++	FN(timer_start, 171, ##ctx)			\
++	FN(timer_cancel, 172, ##ctx)			\
++	FN(get_func_ip, 173, ##ctx)			\
++	FN(get_attach_cookie, 174, ##ctx)		\
++	FN(task_pt_regs, 175, ##ctx)			\
++	FN(get_branch_snapshot, 176, ##ctx)		\
++	FN(trace_vprintk, 177, ##ctx)			\
++	FN(skc_to_unix_sock, 178, ##ctx)		\
++	FN(kallsyms_lookup_name, 179, ##ctx)		\
++	FN(find_vma, 180, ##ctx)			\
++	FN(loop, 181, ##ctx)				\
++	FN(strncmp, 182, ##ctx)				\
++	FN(get_func_arg, 183, ##ctx)			\
++	FN(get_func_ret, 184, ##ctx)			\
++	FN(get_func_arg_cnt, 185, ##ctx)		\
++	FN(get_retval, 186, ##ctx)			\
++	FN(set_retval, 187, ##ctx)			\
++	FN(xdp_get_buff_len, 188, ##ctx)		\
++	FN(xdp_load_bytes, 189, ##ctx)			\
++	FN(xdp_store_bytes, 190, ##ctx)			\
++	FN(copy_from_user_task, 191, ##ctx)		\
++	FN(skb_set_tstamp, 192, ##ctx)			\
++	FN(ima_file_hash, 193, ##ctx)			\
++	FN(kptr_xchg, 194, ##ctx)			\
++	FN(map_lookup_percpu_elem, 195, ##ctx)		\
++	FN(skc_to_mptcp_sock, 196, ##ctx)		\
++	FN(dynptr_from_mem, 197, ##ctx)			\
++	FN(ringbuf_reserve_dynptr, 198, ##ctx)		\
++	FN(ringbuf_submit_dynptr, 199, ##ctx)		\
++	FN(ringbuf_discard_dynptr, 200, ##ctx)		\
++	FN(dynptr_read, 201, ##ctx)			\
++	FN(dynptr_write, 202, ##ctx)			\
++	FN(dynptr_data, 203, ##ctx)			\
++	FN(tcp_raw_gen_syncookie_ipv4, 204, ##ctx)	\
++	FN(tcp_raw_gen_syncookie_ipv6, 205, ##ctx)	\
++	FN(tcp_raw_check_syncookie_ipv4, 206, ##ctx)	\
++	FN(tcp_raw_check_syncookie_ipv6, 207, ##ctx)	\
++	FN(ktime_get_tai_ns, 208, ##ctx)		\
++	FN(user_ringbuf_drain, 209, ##ctx)		\
+ 	/* */
+ 
++/* backwards-compatibility macros for users of __BPF_FUNC_MAPPER that don't
++ * know or care about integer value that is now passed as second argument
++ */
++#define __BPF_FUNC_MAPPER_APPLY(name, value, FN) FN(name),
++#define __BPF_FUNC_MAPPER(FN) ___BPF_FUNC_MAPPER(__BPF_FUNC_MAPPER_APPLY, FN)
++
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+  * function eBPF program intends to call
+  */
+-#define __BPF_ENUM_FN(x) BPF_FUNC_ ## x
++#define __BPF_ENUM_FN(x, y) BPF_FUNC_ ## x = y,
+ enum bpf_func_id {
+-	__BPF_FUNC_MAPPER(__BPF_ENUM_FN)
++	___BPF_FUNC_MAPPER(__BPF_ENUM_FN)
+ 	__BPF_FUNC_MAX_ID,
+ };
+ #undef __BPF_ENUM_FN
+diff --git a/scripts/bpf_doc.py b/scripts/bpf_doc.py
+index d5c389df6045..2fe07c9e3fe0 100755
+--- a/scripts/bpf_doc.py
++++ b/scripts/bpf_doc.py
+@@ -253,28 +253,27 @@ class HeaderParser(object):
+                 break
+ 
+     def parse_define_helpers(self):
+-        # Parse FN(...) in #define __BPF_FUNC_MAPPER to compare later with the
++        # Parse FN(...) in #define ___BPF_FUNC_MAPPER to compare later with the
+         # number of unique function names present in description and use the
+         # correct enumeration value.
+         # Note: seek_to(..) discards the first line below the target search text,
+-        # resulting in FN(unspec) being skipped and not added to self.define_unique_helpers.
+-        self.seek_to('#define __BPF_FUNC_MAPPER(FN)',
++        # resulting in FN(unspec, 0, ##ctx) being skipped and not added to
++        # self.define_unique_helpers.
++        self.seek_to('#define ___BPF_FUNC_MAPPER(FN, ctx...)',
+                      'Could not find start of eBPF helper definition list')
+         # Searches for one FN(\w+) define or a backslash for newline
+-        p = re.compile('\s*FN\((\w+)\)|\\\\')
++        p = re.compile('\s*FN\((\w+), (\d+), ##ctx\)|\\\\')
+         fn_defines_str = ''
+-        i = 1  # 'unspec' is skipped as mentioned above
+         while True:
+             capture = p.match(self.line)
+             if capture:
+                 fn_defines_str += self.line
+-                self.helper_enum_vals[capture.expand(r'bpf_\1')] = i
+-                i += 1
++                self.helper_enum_vals[capture.expand(r'bpf_\1')] = int(capture[2])
+             else:
+                 break
+             self.line = self.reader.readline()
+         # Find the number of occurences of FN(\w+)
+-        self.define_unique_helpers = re.findall('FN\(\w+\)', fn_defines_str)
++        self.define_unique_helpers = re.findall('FN\(\w+, \d+, ##ctx\)', fn_defines_str)
+ 
+     def assign_helper_values(self):
+         seen_helpers = set()
+@@ -423,7 +422,7 @@ class PrinterHelpersRST(PrinterRST):
+     """
+     def __init__(self, parser):
+         self.elements = parser.helpers
+-        self.elem_number_check(parser.desc_unique_helpers, parser.define_unique_helpers, 'helper', '__BPF_FUNC_MAPPER')
++        self.elem_number_check(parser.desc_unique_helpers, parser.define_unique_helpers, 'helper', '___BPF_FUNC_MAPPER')
+ 
+     def print_header(self):
+         header = '''\
+@@ -636,7 +635,7 @@ class PrinterHelpers(Printer):
+     """
+     def __init__(self, parser):
+         self.elements = parser.helpers
+-        self.elem_number_check(parser.desc_unique_helpers, parser.define_unique_helpers, 'helper', '__BPF_FUNC_MAPPER')
++        self.elem_number_check(parser.desc_unique_helpers, parser.define_unique_helpers, 'helper', '___BPF_FUNC_MAPPER')
+ 
+     type_fwds = [
+             'struct bpf_fib_lookup',
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 3075018a4ef8..119667a300d9 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -5433,225 +5433,231 @@ union bpf_attr {
+  *		larger than the size of the ring buffer, or which cannot fit
+  *		within a struct bpf_dynptr.
+  */
+-#define __BPF_FUNC_MAPPER(FN)		\
+-	FN(unspec),			\
+-	FN(map_lookup_elem),		\
+-	FN(map_update_elem),		\
+-	FN(map_delete_elem),		\
+-	FN(probe_read),			\
+-	FN(ktime_get_ns),		\
+-	FN(trace_printk),		\
+-	FN(get_prandom_u32),		\
+-	FN(get_smp_processor_id),	\
+-	FN(skb_store_bytes),		\
+-	FN(l3_csum_replace),		\
+-	FN(l4_csum_replace),		\
+-	FN(tail_call),			\
+-	FN(clone_redirect),		\
+-	FN(get_current_pid_tgid),	\
+-	FN(get_current_uid_gid),	\
+-	FN(get_current_comm),		\
+-	FN(get_cgroup_classid),		\
+-	FN(skb_vlan_push),		\
+-	FN(skb_vlan_pop),		\
+-	FN(skb_get_tunnel_key),		\
+-	FN(skb_set_tunnel_key),		\
+-	FN(perf_event_read),		\
+-	FN(redirect),			\
+-	FN(get_route_realm),		\
+-	FN(perf_event_output),		\
+-	FN(skb_load_bytes),		\
+-	FN(get_stackid),		\
+-	FN(csum_diff),			\
+-	FN(skb_get_tunnel_opt),		\
+-	FN(skb_set_tunnel_opt),		\
+-	FN(skb_change_proto),		\
+-	FN(skb_change_type),		\
+-	FN(skb_under_cgroup),		\
+-	FN(get_hash_recalc),		\
+-	FN(get_current_task),		\
+-	FN(probe_write_user),		\
+-	FN(current_task_under_cgroup),	\
+-	FN(skb_change_tail),		\
+-	FN(skb_pull_data),		\
+-	FN(csum_update),		\
+-	FN(set_hash_invalid),		\
+-	FN(get_numa_node_id),		\
+-	FN(skb_change_head),		\
+-	FN(xdp_adjust_head),		\
+-	FN(probe_read_str),		\
+-	FN(get_socket_cookie),		\
+-	FN(get_socket_uid),		\
+-	FN(set_hash),			\
+-	FN(setsockopt),			\
+-	FN(skb_adjust_room),		\
+-	FN(redirect_map),		\
+-	FN(sk_redirect_map),		\
+-	FN(sock_map_update),		\
+-	FN(xdp_adjust_meta),		\
+-	FN(perf_event_read_value),	\
+-	FN(perf_prog_read_value),	\
+-	FN(getsockopt),			\
+-	FN(override_return),		\
+-	FN(sock_ops_cb_flags_set),	\
+-	FN(msg_redirect_map),		\
+-	FN(msg_apply_bytes),		\
+-	FN(msg_cork_bytes),		\
+-	FN(msg_pull_data),		\
+-	FN(bind),			\
+-	FN(xdp_adjust_tail),		\
+-	FN(skb_get_xfrm_state),		\
+-	FN(get_stack),			\
+-	FN(skb_load_bytes_relative),	\
+-	FN(fib_lookup),			\
+-	FN(sock_hash_update),		\
+-	FN(msg_redirect_hash),		\
+-	FN(sk_redirect_hash),		\
+-	FN(lwt_push_encap),		\
+-	FN(lwt_seg6_store_bytes),	\
+-	FN(lwt_seg6_adjust_srh),	\
+-	FN(lwt_seg6_action),		\
+-	FN(rc_repeat),			\
+-	FN(rc_keydown),			\
+-	FN(skb_cgroup_id),		\
+-	FN(get_current_cgroup_id),	\
+-	FN(get_local_storage),		\
+-	FN(sk_select_reuseport),	\
+-	FN(skb_ancestor_cgroup_id),	\
+-	FN(sk_lookup_tcp),		\
+-	FN(sk_lookup_udp),		\
+-	FN(sk_release),			\
+-	FN(map_push_elem),		\
+-	FN(map_pop_elem),		\
+-	FN(map_peek_elem),		\
+-	FN(msg_push_data),		\
+-	FN(msg_pop_data),		\
+-	FN(rc_pointer_rel),		\
+-	FN(spin_lock),			\
+-	FN(spin_unlock),		\
+-	FN(sk_fullsock),		\
+-	FN(tcp_sock),			\
+-	FN(skb_ecn_set_ce),		\
+-	FN(get_listener_sock),		\
+-	FN(skc_lookup_tcp),		\
+-	FN(tcp_check_syncookie),	\
+-	FN(sysctl_get_name),		\
+-	FN(sysctl_get_current_value),	\
+-	FN(sysctl_get_new_value),	\
+-	FN(sysctl_set_new_value),	\
+-	FN(strtol),			\
+-	FN(strtoul),			\
+-	FN(sk_storage_get),		\
+-	FN(sk_storage_delete),		\
+-	FN(send_signal),		\
+-	FN(tcp_gen_syncookie),		\
+-	FN(skb_output),			\
+-	FN(probe_read_user),		\
+-	FN(probe_read_kernel),		\
+-	FN(probe_read_user_str),	\
+-	FN(probe_read_kernel_str),	\
+-	FN(tcp_send_ack),		\
+-	FN(send_signal_thread),		\
+-	FN(jiffies64),			\
+-	FN(read_branch_records),	\
+-	FN(get_ns_current_pid_tgid),	\
+-	FN(xdp_output),			\
+-	FN(get_netns_cookie),		\
+-	FN(get_current_ancestor_cgroup_id),	\
+-	FN(sk_assign),			\
+-	FN(ktime_get_boot_ns),		\
+-	FN(seq_printf),			\
+-	FN(seq_write),			\
+-	FN(sk_cgroup_id),		\
+-	FN(sk_ancestor_cgroup_id),	\
+-	FN(ringbuf_output),		\
+-	FN(ringbuf_reserve),		\
+-	FN(ringbuf_submit),		\
+-	FN(ringbuf_discard),		\
+-	FN(ringbuf_query),		\
+-	FN(csum_level),			\
+-	FN(skc_to_tcp6_sock),		\
+-	FN(skc_to_tcp_sock),		\
+-	FN(skc_to_tcp_timewait_sock),	\
+-	FN(skc_to_tcp_request_sock),	\
+-	FN(skc_to_udp6_sock),		\
+-	FN(get_task_stack),		\
+-	FN(load_hdr_opt),		\
+-	FN(store_hdr_opt),		\
+-	FN(reserve_hdr_opt),		\
+-	FN(inode_storage_get),		\
+-	FN(inode_storage_delete),	\
+-	FN(d_path),			\
+-	FN(copy_from_user),		\
+-	FN(snprintf_btf),		\
+-	FN(seq_printf_btf),		\
+-	FN(skb_cgroup_classid),		\
+-	FN(redirect_neigh),		\
+-	FN(per_cpu_ptr),		\
+-	FN(this_cpu_ptr),		\
+-	FN(redirect_peer),		\
+-	FN(task_storage_get),		\
+-	FN(task_storage_delete),	\
+-	FN(get_current_task_btf),	\
+-	FN(bprm_opts_set),		\
+-	FN(ktime_get_coarse_ns),	\
+-	FN(ima_inode_hash),		\
+-	FN(sock_from_file),		\
+-	FN(check_mtu),			\
+-	FN(for_each_map_elem),		\
+-	FN(snprintf),			\
+-	FN(sys_bpf),			\
+-	FN(btf_find_by_name_kind),	\
+-	FN(sys_close),			\
+-	FN(timer_init),			\
+-	FN(timer_set_callback),		\
+-	FN(timer_start),		\
+-	FN(timer_cancel),		\
+-	FN(get_func_ip),		\
+-	FN(get_attach_cookie),		\
+-	FN(task_pt_regs),		\
+-	FN(get_branch_snapshot),	\
+-	FN(trace_vprintk),		\
+-	FN(skc_to_unix_sock),		\
+-	FN(kallsyms_lookup_name),	\
+-	FN(find_vma),			\
+-	FN(loop),			\
+-	FN(strncmp),			\
+-	FN(get_func_arg),		\
+-	FN(get_func_ret),		\
+-	FN(get_func_arg_cnt),		\
+-	FN(get_retval),			\
+-	FN(set_retval),			\
+-	FN(xdp_get_buff_len),		\
+-	FN(xdp_load_bytes),		\
+-	FN(xdp_store_bytes),		\
+-	FN(copy_from_user_task),	\
+-	FN(skb_set_tstamp),		\
+-	FN(ima_file_hash),		\
+-	FN(kptr_xchg),			\
+-	FN(map_lookup_percpu_elem),     \
+-	FN(skc_to_mptcp_sock),		\
+-	FN(dynptr_from_mem),		\
+-	FN(ringbuf_reserve_dynptr),	\
+-	FN(ringbuf_submit_dynptr),	\
+-	FN(ringbuf_discard_dynptr),	\
+-	FN(dynptr_read),		\
+-	FN(dynptr_write),		\
+-	FN(dynptr_data),		\
+-	FN(tcp_raw_gen_syncookie_ipv4),	\
+-	FN(tcp_raw_gen_syncookie_ipv6),	\
+-	FN(tcp_raw_check_syncookie_ipv4),	\
+-	FN(tcp_raw_check_syncookie_ipv6),	\
+-	FN(ktime_get_tai_ns),		\
+-	FN(user_ringbuf_drain),		\
++#define ___BPF_FUNC_MAPPER(FN, ctx...)			\
++	FN(unspec, 0, ##ctx)				\
++	FN(map_lookup_elem, 1, ##ctx)			\
++	FN(map_update_elem, 2, ##ctx)			\
++	FN(map_delete_elem, 3, ##ctx)			\
++	FN(probe_read, 4, ##ctx)			\
++	FN(ktime_get_ns, 5, ##ctx)			\
++	FN(trace_printk, 6, ##ctx)			\
++	FN(get_prandom_u32, 7, ##ctx)			\
++	FN(get_smp_processor_id, 8, ##ctx)		\
++	FN(skb_store_bytes, 9, ##ctx)			\
++	FN(l3_csum_replace, 10, ##ctx)			\
++	FN(l4_csum_replace, 11, ##ctx)			\
++	FN(tail_call, 12, ##ctx)			\
++	FN(clone_redirect, 13, ##ctx)			\
++	FN(get_current_pid_tgid, 14, ##ctx)		\
++	FN(get_current_uid_gid, 15, ##ctx)		\
++	FN(get_current_comm, 16, ##ctx)			\
++	FN(get_cgroup_classid, 17, ##ctx)		\
++	FN(skb_vlan_push, 18, ##ctx)			\
++	FN(skb_vlan_pop, 19, ##ctx)			\
++	FN(skb_get_tunnel_key, 20, ##ctx)		\
++	FN(skb_set_tunnel_key, 21, ##ctx)		\
++	FN(perf_event_read, 22, ##ctx)			\
++	FN(redirect, 23, ##ctx)				\
++	FN(get_route_realm, 24, ##ctx)			\
++	FN(perf_event_output, 25, ##ctx)		\
++	FN(skb_load_bytes, 26, ##ctx)			\
++	FN(get_stackid, 27, ##ctx)			\
++	FN(csum_diff, 28, ##ctx)			\
++	FN(skb_get_tunnel_opt, 29, ##ctx)		\
++	FN(skb_set_tunnel_opt, 30, ##ctx)		\
++	FN(skb_change_proto, 31, ##ctx)			\
++	FN(skb_change_type, 32, ##ctx)			\
++	FN(skb_under_cgroup, 33, ##ctx)			\
++	FN(get_hash_recalc, 34, ##ctx)			\
++	FN(get_current_task, 35, ##ctx)			\
++	FN(probe_write_user, 36, ##ctx)			\
++	FN(current_task_under_cgroup, 37, ##ctx)	\
++	FN(skb_change_tail, 38, ##ctx)			\
++	FN(skb_pull_data, 39, ##ctx)			\
++	FN(csum_update, 40, ##ctx)			\
++	FN(set_hash_invalid, 41, ##ctx)			\
++	FN(get_numa_node_id, 42, ##ctx)			\
++	FN(skb_change_head, 43, ##ctx)			\
++	FN(xdp_adjust_head, 44, ##ctx)			\
++	FN(probe_read_str, 45, ##ctx)			\
++	FN(get_socket_cookie, 46, ##ctx)		\
++	FN(get_socket_uid, 47, ##ctx)			\
++	FN(set_hash, 48, ##ctx)				\
++	FN(setsockopt, 49, ##ctx)			\
++	FN(skb_adjust_room, 50, ##ctx)			\
++	FN(redirect_map, 51, ##ctx)			\
++	FN(sk_redirect_map, 52, ##ctx)			\
++	FN(sock_map_update, 53, ##ctx)			\
++	FN(xdp_adjust_meta, 54, ##ctx)			\
++	FN(perf_event_read_value, 55, ##ctx)		\
++	FN(perf_prog_read_value, 56, ##ctx)		\
++	FN(getsockopt, 57, ##ctx)			\
++	FN(override_return, 58, ##ctx)			\
++	FN(sock_ops_cb_flags_set, 59, ##ctx)		\
++	FN(msg_redirect_map, 60, ##ctx)			\
++	FN(msg_apply_bytes, 61, ##ctx)			\
++	FN(msg_cork_bytes, 62, ##ctx)			\
++	FN(msg_pull_data, 63, ##ctx)			\
++	FN(bind, 64, ##ctx)				\
++	FN(xdp_adjust_tail, 65, ##ctx)			\
++	FN(skb_get_xfrm_state, 66, ##ctx)		\
++	FN(get_stack, 67, ##ctx)			\
++	FN(skb_load_bytes_relative, 68, ##ctx)		\
++	FN(fib_lookup, 69, ##ctx)			\
++	FN(sock_hash_update, 70, ##ctx)			\
++	FN(msg_redirect_hash, 71, ##ctx)		\
++	FN(sk_redirect_hash, 72, ##ctx)			\
++	FN(lwt_push_encap, 73, ##ctx)			\
++	FN(lwt_seg6_store_bytes, 74, ##ctx)		\
++	FN(lwt_seg6_adjust_srh, 75, ##ctx)		\
++	FN(lwt_seg6_action, 76, ##ctx)			\
++	FN(rc_repeat, 77, ##ctx)			\
++	FN(rc_keydown, 78, ##ctx)			\
++	FN(skb_cgroup_id, 79, ##ctx)			\
++	FN(get_current_cgroup_id, 80, ##ctx)		\
++	FN(get_local_storage, 81, ##ctx)		\
++	FN(sk_select_reuseport, 82, ##ctx)		\
++	FN(skb_ancestor_cgroup_id, 83, ##ctx)		\
++	FN(sk_lookup_tcp, 84, ##ctx)			\
++	FN(sk_lookup_udp, 85, ##ctx)			\
++	FN(sk_release, 86, ##ctx)			\
++	FN(map_push_elem, 87, ##ctx)			\
++	FN(map_pop_elem, 88, ##ctx)			\
++	FN(map_peek_elem, 89, ##ctx)			\
++	FN(msg_push_data, 90, ##ctx)			\
++	FN(msg_pop_data, 91, ##ctx)			\
++	FN(rc_pointer_rel, 92, ##ctx)			\
++	FN(spin_lock, 93, ##ctx)			\
++	FN(spin_unlock, 94, ##ctx)			\
++	FN(sk_fullsock, 95, ##ctx)			\
++	FN(tcp_sock, 96, ##ctx)				\
++	FN(skb_ecn_set_ce, 97, ##ctx)			\
++	FN(get_listener_sock, 98, ##ctx)		\
++	FN(skc_lookup_tcp, 99, ##ctx)			\
++	FN(tcp_check_syncookie, 100, ##ctx)		\
++	FN(sysctl_get_name, 101, ##ctx)			\
++	FN(sysctl_get_current_value, 102, ##ctx)	\
++	FN(sysctl_get_new_value, 103, ##ctx)		\
++	FN(sysctl_set_new_value, 104, ##ctx)		\
++	FN(strtol, 105, ##ctx)				\
++	FN(strtoul, 106, ##ctx)				\
++	FN(sk_storage_get, 107, ##ctx)			\
++	FN(sk_storage_delete, 108, ##ctx)		\
++	FN(send_signal, 109, ##ctx)			\
++	FN(tcp_gen_syncookie, 110, ##ctx)		\
++	FN(skb_output, 111, ##ctx)			\
++	FN(probe_read_user, 112, ##ctx)			\
++	FN(probe_read_kernel, 113, ##ctx)		\
++	FN(probe_read_user_str, 114, ##ctx)		\
++	FN(probe_read_kernel_str, 115, ##ctx)		\
++	FN(tcp_send_ack, 116, ##ctx)			\
++	FN(send_signal_thread, 117, ##ctx)		\
++	FN(jiffies64, 118, ##ctx)			\
++	FN(read_branch_records, 119, ##ctx)		\
++	FN(get_ns_current_pid_tgid, 120, ##ctx)		\
++	FN(xdp_output, 121, ##ctx)			\
++	FN(get_netns_cookie, 122, ##ctx)		\
++	FN(get_current_ancestor_cgroup_id, 123, ##ctx)	\
++	FN(sk_assign, 124, ##ctx)			\
++	FN(ktime_get_boot_ns, 125, ##ctx)		\
++	FN(seq_printf, 126, ##ctx)			\
++	FN(seq_write, 127, ##ctx)			\
++	FN(sk_cgroup_id, 128, ##ctx)			\
++	FN(sk_ancestor_cgroup_id, 129, ##ctx)		\
++	FN(ringbuf_output, 130, ##ctx)			\
++	FN(ringbuf_reserve, 131, ##ctx)			\
++	FN(ringbuf_submit, 132, ##ctx)			\
++	FN(ringbuf_discard, 133, ##ctx)			\
++	FN(ringbuf_query, 134, ##ctx)			\
++	FN(csum_level, 135, ##ctx)			\
++	FN(skc_to_tcp6_sock, 136, ##ctx)		\
++	FN(skc_to_tcp_sock, 137, ##ctx)			\
++	FN(skc_to_tcp_timewait_sock, 138, ##ctx)	\
++	FN(skc_to_tcp_request_sock, 139, ##ctx)		\
++	FN(skc_to_udp6_sock, 140, ##ctx)		\
++	FN(get_task_stack, 141, ##ctx)			\
++	FN(load_hdr_opt, 142, ##ctx)			\
++	FN(store_hdr_opt, 143, ##ctx)			\
++	FN(reserve_hdr_opt, 144, ##ctx)			\
++	FN(inode_storage_get, 145, ##ctx)		\
++	FN(inode_storage_delete, 146, ##ctx)		\
++	FN(d_path, 147, ##ctx)				\
++	FN(copy_from_user, 148, ##ctx)			\
++	FN(snprintf_btf, 149, ##ctx)			\
++	FN(seq_printf_btf, 150, ##ctx)			\
++	FN(skb_cgroup_classid, 151, ##ctx)		\
++	FN(redirect_neigh, 152, ##ctx)			\
++	FN(per_cpu_ptr, 153, ##ctx)			\
++	FN(this_cpu_ptr, 154, ##ctx)			\
++	FN(redirect_peer, 155, ##ctx)			\
++	FN(task_storage_get, 156, ##ctx)		\
++	FN(task_storage_delete, 157, ##ctx)		\
++	FN(get_current_task_btf, 158, ##ctx)		\
++	FN(bprm_opts_set, 159, ##ctx)			\
++	FN(ktime_get_coarse_ns, 160, ##ctx)		\
++	FN(ima_inode_hash, 161, ##ctx)			\
++	FN(sock_from_file, 162, ##ctx)			\
++	FN(check_mtu, 163, ##ctx)			\
++	FN(for_each_map_elem, 164, ##ctx)		\
++	FN(snprintf, 165, ##ctx)			\
++	FN(sys_bpf, 166, ##ctx)				\
++	FN(btf_find_by_name_kind, 167, ##ctx)		\
++	FN(sys_close, 168, ##ctx)			\
++	FN(timer_init, 169, ##ctx)			\
++	FN(timer_set_callback, 170, ##ctx)		\
++	FN(timer_start, 171, ##ctx)			\
++	FN(timer_cancel, 172, ##ctx)			\
++	FN(get_func_ip, 173, ##ctx)			\
++	FN(get_attach_cookie, 174, ##ctx)		\
++	FN(task_pt_regs, 175, ##ctx)			\
++	FN(get_branch_snapshot, 176, ##ctx)		\
++	FN(trace_vprintk, 177, ##ctx)			\
++	FN(skc_to_unix_sock, 178, ##ctx)		\
++	FN(kallsyms_lookup_name, 179, ##ctx)		\
++	FN(find_vma, 180, ##ctx)			\
++	FN(loop, 181, ##ctx)				\
++	FN(strncmp, 182, ##ctx)				\
++	FN(get_func_arg, 183, ##ctx)			\
++	FN(get_func_ret, 184, ##ctx)			\
++	FN(get_func_arg_cnt, 185, ##ctx)		\
++	FN(get_retval, 186, ##ctx)			\
++	FN(set_retval, 187, ##ctx)			\
++	FN(xdp_get_buff_len, 188, ##ctx)		\
++	FN(xdp_load_bytes, 189, ##ctx)			\
++	FN(xdp_store_bytes, 190, ##ctx)			\
++	FN(copy_from_user_task, 191, ##ctx)		\
++	FN(skb_set_tstamp, 192, ##ctx)			\
++	FN(ima_file_hash, 193, ##ctx)			\
++	FN(kptr_xchg, 194, ##ctx)			\
++	FN(map_lookup_percpu_elem, 195, ##ctx)		\
++	FN(skc_to_mptcp_sock, 196, ##ctx)		\
++	FN(dynptr_from_mem, 197, ##ctx)			\
++	FN(ringbuf_reserve_dynptr, 198, ##ctx)		\
++	FN(ringbuf_submit_dynptr, 199, ##ctx)		\
++	FN(ringbuf_discard_dynptr, 200, ##ctx)		\
++	FN(dynptr_read, 201, ##ctx)			\
++	FN(dynptr_write, 202, ##ctx)			\
++	FN(dynptr_data, 203, ##ctx)			\
++	FN(tcp_raw_gen_syncookie_ipv4, 204, ##ctx)	\
++	FN(tcp_raw_gen_syncookie_ipv6, 205, ##ctx)	\
++	FN(tcp_raw_check_syncookie_ipv4, 206, ##ctx)	\
++	FN(tcp_raw_check_syncookie_ipv6, 207, ##ctx)	\
++	FN(ktime_get_tai_ns, 208, ##ctx)		\
++	FN(user_ringbuf_drain, 209, ##ctx)		\
+ 	/* */
+ 
++/* backwards-compatibility macros for users of __BPF_FUNC_MAPPER that don't
++ * know or care about integer value that is now passed as second argument
++ */
++#define __BPF_FUNC_MAPPER_APPLY(name, value, FN) FN(name),
++#define __BPF_FUNC_MAPPER(FN) ___BPF_FUNC_MAPPER(__BPF_FUNC_MAPPER_APPLY, FN)
++
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+  * function eBPF program intends to call
+  */
+-#define __BPF_ENUM_FN(x) BPF_FUNC_ ## x
++#define __BPF_ENUM_FN(x, y) BPF_FUNC_ ## x = y,
+ enum bpf_func_id {
+-	__BPF_FUNC_MAPPER(__BPF_ENUM_FN)
++	___BPF_FUNC_MAPPER(__BPF_ENUM_FN)
+ 	__BPF_FUNC_MAX_ID,
+ };
+ #undef __BPF_ENUM_FN
+-- 
+2.30.2
+
