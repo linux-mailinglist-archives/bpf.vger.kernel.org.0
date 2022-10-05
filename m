@@ -2,27 +2,27 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 030635F562F
-	for <lists+bpf@lfdr.de>; Wed,  5 Oct 2022 16:13:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 761195F5630
+	for <lists+bpf@lfdr.de>; Wed,  5 Oct 2022 16:13:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230089AbiJEONg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Oct 2022 10:13:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41402 "EHLO
+        id S229716AbiJEONj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Oct 2022 10:13:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230223AbiJEONf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Oct 2022 10:13:35 -0400
+        with ESMTP id S229864AbiJEONj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Oct 2022 10:13:39 -0400
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAA037C316
-        for <bpf@vger.kernel.org>; Wed,  5 Oct 2022 07:13:33 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D4567AC20
+        for <bpf@vger.kernel.org>; Wed,  5 Oct 2022 07:13:38 -0700 (PDT)
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
         (envelope-from <fw@breakpoint.cc>)
-        id 1og59Q-0001eo-H1; Wed, 05 Oct 2022 16:13:32 +0200
+        id 1og59U-0001ex-Km; Wed, 05 Oct 2022 16:13:36 +0200
 From:   Florian Westphal <fw@strlen.de>
 To:     bpf@vger.kernel.org
 Cc:     Florian Westphal <fw@strlen.de>
-Subject: [RFC v2 2/9] netfilter: nat: split nat hook iteration into a helper
-Date:   Wed,  5 Oct 2022 16:13:02 +0200
-Message-Id: <20221005141309.31758-3-fw@strlen.de>
+Subject: [RFC v2 3/9] netfilter: remove hook index from nf_hook_slow arguments
+Date:   Wed,  5 Oct 2022 16:13:03 +0200
+Message-Id: <20221005141309.31758-4-fw@strlen.de>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221005141309.31758-1-fw@strlen.de>
 References: <20221005141309.31758-1-fw@strlen.de>
@@ -37,85 +37,108 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Makes conversion in followup patch simpler.
+Previous patch added hook_entry member to nf_hook_state struct, so
+use that for passing the index.
 
 Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- net/netfilter/nf_nat_core.c | 46 +++++++++++++++++++++++--------------
- 1 file changed, 29 insertions(+), 17 deletions(-)
+ include/linux/netfilter.h        | 5 +++--
+ include/linux/netfilter_netdev.h | 4 ++--
+ net/bridge/br_netfilter_hooks.c  | 3 ++-
+ net/netfilter/core.c             | 6 +++---
+ 4 files changed, 10 insertions(+), 8 deletions(-)
 
-diff --git a/net/netfilter/nf_nat_core.c b/net/netfilter/nf_nat_core.c
-index 7981be526f26..bd5ac4ff03f9 100644
---- a/net/netfilter/nf_nat_core.c
-+++ b/net/netfilter/nf_nat_core.c
-@@ -709,6 +709,32 @@ static bool in_vrf_postrouting(const struct nf_hook_state *state)
- 	return false;
- }
+diff --git a/include/linux/netfilter.h b/include/linux/netfilter.h
+index 7a1a2c4787f0..ec416d79352e 100644
+--- a/include/linux/netfilter.h
++++ b/include/linux/netfilter.h
+@@ -154,6 +154,7 @@ static inline void nf_hook_state_init(struct nf_hook_state *p,
+ {
+ 	p->hook = hook;
+ 	p->pf = pf;
++	p->hook_index = 0;
+ 	p->in = indev;
+ 	p->out = outdev;
+ 	p->sk = sk;
+@@ -198,7 +199,7 @@ extern struct static_key nf_hooks_needed[NFPROTO_NUMPROTO][NF_MAX_HOOKS];
+ #endif
  
-+static unsigned int nf_nat_inet_run_hooks(const struct nf_hook_state *state,
-+					  struct sk_buff *skb,
-+					  struct nf_conn *ct,
-+					  struct nf_nat_lookup_hook_priv *lpriv)
-+{
-+	enum nf_nat_manip_type maniptype = HOOK2MANIP(state->hook);
-+	struct nf_hook_entries *e = rcu_dereference(lpriv->entries);
-+	unsigned int ret;
-+	int i;
-+
-+	if (!e)
-+		goto null_bind;
-+
-+	for (i = 0; i < e->num_hook_entries; i++) {
-+		ret = e->hooks[i].hook(e->hooks[i].priv, skb, state);
-+		if (ret != NF_ACCEPT)
-+			return ret;
-+
-+		if (nf_nat_initialized(ct, maniptype))
-+			return NF_ACCEPT;
-+	}
-+
-+null_bind:
-+	return nf_nat_alloc_null_binding(ct, state->hook);
-+}
-+
- unsigned int
- nf_nat_inet_fn(void *priv, struct sk_buff *skb,
- 	       const struct nf_hook_state *state)
-@@ -740,23 +766,9 @@ nf_nat_inet_fn(void *priv, struct sk_buff *skb,
- 		 */
- 		if (!nf_nat_initialized(ct, maniptype)) {
- 			struct nf_nat_lookup_hook_priv *lpriv = priv;
--			struct nf_hook_entries *e = rcu_dereference(lpriv->entries);
- 			unsigned int ret;
--			int i;
--
--			if (!e)
--				goto null_bind;
--
--			for (i = 0; i < e->num_hook_entries; i++) {
--				ret = e->hooks[i].hook(e->hooks[i].priv, skb,
--						       state);
--				if (ret != NF_ACCEPT)
--					return ret;
--				if (nf_nat_initialized(ct, maniptype))
--					goto do_nat;
--			}
--null_bind:
--			ret = nf_nat_alloc_null_binding(ct, state->hook);
-+
-+			ret = nf_nat_inet_run_hooks(state, skb, ct, lpriv);
- 			if (ret != NF_ACCEPT)
- 				return ret;
- 		} else {
-@@ -775,7 +787,7 @@ nf_nat_inet_fn(void *priv, struct sk_buff *skb,
- 		if (nf_nat_oif_changed(state->hook, ctinfo, nat, state->out))
- 			goto oif_changed;
+ int nf_hook_slow(struct sk_buff *skb, struct nf_hook_state *state,
+-		 const struct nf_hook_entries *e, unsigned int i);
++		 const struct nf_hook_entries *e);
+ 
+ void nf_hook_slow_list(struct list_head *head, struct nf_hook_state *state,
+ 		       const struct nf_hook_entries *e);
+@@ -255,7 +256,7 @@ static inline int nf_hook(u_int8_t pf, unsigned int hook, struct net *net,
+ 		nf_hook_state_init(&state, hook, pf, indev, outdev,
+ 				   sk, net, okfn);
+ 
+-		ret = nf_hook_slow(skb, &state, hook_head, 0);
++		ret = nf_hook_slow(skb, &state, hook_head);
  	}
--do_nat:
-+
- 	return nf_nat_packet(ct, ctinfo, state->hook, skb);
+ 	rcu_read_unlock();
  
- oif_changed:
+diff --git a/include/linux/netfilter_netdev.h b/include/linux/netfilter_netdev.h
+index 8676316547cc..92996b1ac90f 100644
+--- a/include/linux/netfilter_netdev.h
++++ b/include/linux/netfilter_netdev.h
+@@ -31,7 +31,7 @@ static inline int nf_hook_ingress(struct sk_buff *skb)
+ 	nf_hook_state_init(&state, NF_NETDEV_INGRESS,
+ 			   NFPROTO_NETDEV, skb->dev, NULL, NULL,
+ 			   dev_net(skb->dev), NULL);
+-	ret = nf_hook_slow(skb, &state, e, 0);
++	ret = nf_hook_slow(skb, &state, e);
+ 	if (ret == 0)
+ 		return -1;
+ 
+@@ -104,7 +104,7 @@ static inline struct sk_buff *nf_hook_egress(struct sk_buff *skb, int *rc,
+ 
+ 	/* nf assumes rcu_read_lock, not just read_lock_bh */
+ 	rcu_read_lock();
+-	ret = nf_hook_slow(skb, &state, e, 0);
++	ret = nf_hook_slow(skb, &state, e);
+ 	rcu_read_unlock();
+ 
+ 	if (ret == 1) {
+diff --git a/net/bridge/br_netfilter_hooks.c b/net/bridge/br_netfilter_hooks.c
+index f20f4373ff40..cc4b5a19ca31 100644
+--- a/net/bridge/br_netfilter_hooks.c
++++ b/net/bridge/br_netfilter_hooks.c
+@@ -1036,7 +1036,8 @@ int br_nf_hook_thresh(unsigned int hook, struct net *net,
+ 	nf_hook_state_init(&state, hook, NFPROTO_BRIDGE, indev, outdev,
+ 			   sk, net, okfn);
+ 
+-	ret = nf_hook_slow(skb, &state, e, i);
++	state.hook_index = i;
++	ret = nf_hook_slow(skb, &state, e);
+ 	if (ret == 1)
+ 		ret = okfn(net, sk, skb);
+ 
+diff --git a/net/netfilter/core.c b/net/netfilter/core.c
+index c094742e3ec3..a8176351f120 100644
+--- a/net/netfilter/core.c
++++ b/net/netfilter/core.c
+@@ -605,9 +605,9 @@ EXPORT_SYMBOL(nf_unregister_net_hooks);
+ /* Returns 1 if okfn() needs to be executed by the caller,
+  * -EPERM for NF_DROP, 0 otherwise.  Caller must hold rcu_read_lock. */
+ int nf_hook_slow(struct sk_buff *skb, struct nf_hook_state *state,
+-		 const struct nf_hook_entries *e, unsigned int s)
++		 const struct nf_hook_entries *e)
+ {
+-	unsigned int verdict;
++	unsigned int verdict, s = state->hook_index;
+ 	int ret;
+ 
+ 	for (; s < e->num_hook_entries; s++) {
+@@ -651,7 +651,7 @@ void nf_hook_slow_list(struct list_head *head, struct nf_hook_state *state,
+ 
+ 	list_for_each_entry_safe(skb, next, head, list) {
+ 		skb_list_del_init(skb);
+-		ret = nf_hook_slow(skb, state, e, 0);
++		ret = nf_hook_slow(skb, state, e);
+ 		if (ret == 1)
+ 			list_add_tail(&skb->list, &sublist);
+ 	}
 -- 
 2.35.1
 
