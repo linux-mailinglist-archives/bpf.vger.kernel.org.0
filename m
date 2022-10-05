@@ -2,28 +2,30 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54E315F562D
+	by mail.lfdr.de (Postfix) with ESMTP id A23515F562E
 	for <lists+bpf@lfdr.de>; Wed,  5 Oct 2022 16:13:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229944AbiJEONf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Oct 2022 10:13:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41288 "EHLO
+        id S230145AbiJEONg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Oct 2022 10:13:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229623AbiJEON1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Oct 2022 10:13:27 -0400
+        with ESMTP id S230229AbiJEONb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Oct 2022 10:13:31 -0400
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61D187AC20
-        for <bpf@vger.kernel.org>; Wed,  5 Oct 2022 07:13:26 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17062786CA
+        for <bpf@vger.kernel.org>; Wed,  5 Oct 2022 07:13:30 -0700 (PDT)
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
         (envelope-from <fw@breakpoint.cc>)
-        id 1og59H-0001eQ-Po; Wed, 05 Oct 2022 16:13:23 +0200
+        id 1og59L-0001ee-Sc; Wed, 05 Oct 2022 16:13:28 +0200
 From:   Florian Westphal <fw@strlen.de>
 To:     bpf@vger.kernel.org
 Cc:     Florian Westphal <fw@strlen.de>
-Subject: [RFC 0/9 v2] netfilter: bpf base hook program generator
-Date:   Wed,  5 Oct 2022 16:13:00 +0200
-Message-Id: <20221005141309.31758-1-fw@strlen.de>
+Subject: [RFC v2 1/9] netfilter: nf_queue: carry index in hook state
+Date:   Wed,  5 Oct 2022 16:13:01 +0200
+Message-Id: <20221005141309.31758-2-fw@strlen.de>
 X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20221005141309.31758-1-fw@strlen.de>
+References: <20221005141309.31758-1-fw@strlen.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
@@ -35,165 +37,145 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Sending as another RFC even though patches are unchanged vs. last iteration
-to provide background/context ahead of bpf office hours on Oct 6th, thus
-deliberately omitting netdev@ and nf-devel@.
+Rather than passing the index (hook function to call next)
+as function argument, store it in the hook state.
 
-This series adds a bpf program generator for netfilter base hooks.
-'netfilter base hooks' are c-functions that get called from the NF_HOOK()
-stubs that can be found in a myriad of locations in the network stack.
+This is a prerequesite to allow passing all nf hook arguments in a single
+structure.
 
-Examples from ipv4 (ip_input.c):
-254         return NF_HOOK(NFPROTO_IPV4, NF_INET_LOCAL_IN,
-255                        net, NULL, skb, skb->dev, NULL,
-256                        ip_local_deliver_finish);
-[..]
-564         return NF_HOOK(NFPROTO_IPV4, NF_INET_PRE_ROUTING,
-565                        net, NULL, skb, dev, NULL,
-566                        ip_rcv_finish);
+Signed-off-by: Florian Westphal <fw@strlen.de>
+---
+ include/linux/netfilter.h        |  1 +
+ include/net/netfilter/nf_queue.h |  3 +--
+ net/bridge/br_input.c            |  3 ++-
+ net/netfilter/core.c             |  6 +++++-
+ net/netfilter/nf_queue.c         | 12 ++++++------
+ 5 files changed, 15 insertions(+), 10 deletions(-)
 
-Well-known users of this facility are iptables, nftables,
-but also connection tracking selinux.  Conntrack is also a greedy module,
-with 5 hooks total (prerouting, input, output, postrouting) and another two
-via nf_defrag(_ipv4) module dependency.
-
-Eliding the static-key handling, NF_HOOK() expands to:
-
------
-struct nf_hook_entries *hooks = rcu_dereference(net->nf.hooks_ipv4[hook]);
-/* where '[hook] is any one of prerouting, input, and so on */
-ret = nf_hook_slow(skb, &state, hooks, 0);
-
-if (ret == 1) /* packet is allowed to pass */
-   okfn(net, sk, skb);
-------
-
-'hooks' is an array of function-address/void * arg pairs that is
-iterated in nf_hook_slow():
-
-for i in hooks[]; do
-  verdict = hooks[i]->addr(hooks->[i].arg, skb, state);
-  switch (verdict) { ....
-
-Each hook can chose to toss the packet (NF_DROP), move to next hook
-(NF_ACCEPT), or assume skb ownership (NF_STOLEN) and so on.
-
-All hooks have access to the skb, to the private void *arg (used by
-nf_tables and ip_tables -- the start of the user-defined ruleset to
-evaluate) and a context structure that wraps extra data: incoming and
-outgoing network interfaces, the net namespace the hook is registered in,
-the protocol family, hook location (input, prerouting, forward, ...) ...
-
-Even for simple iptables-filter + nat this results in multiple indirect
-calls per packet.
-
-The proposed autogenerator unrolls nf_hook_slow() and builds a bpf program
-that performs those function calls sequentially, i.e.:
-
-state->priv = hooks->[0].hook_arg;
-v = firstfunction(state);
-if (v != ACCEPT) goto out;
-state->priv = hooks->[1].hook_arg;
-v = secondfunction(state); ...
-if (v != ACCEPT) goto out;
-
-... and so on.  As the function arguments are still taken from struct net at runtime,
-rather than added as constants, those programs can be shared across net namespaces if
-they share the exact same registered hooks. (Example: 10 netns with iptables-filter table and
-active conntrack will all share the same 5 programs (one for prerouting, input,
-output and postrouting each), rather than 50 bpf programs.
-
-Invocation of the autogenerated programs is done via bpf dispatcher from
-nf_hook(); instead of
-
-ret = nf_hook_slow( ... )
-
-this is now:
-------------------
-struct bpf_prog *prog = READ_ONCE(e->hook_prog);
-
-state.priv = (void *)e;
-state.skb = skb;
-
-migrate_disable();
-ret = __bpf_prog_run(prog, state, BPF_DISPATCHER_FUNC(nf_hook_base));
-migrate_enable();
-------------------
-
-As long as NF_QUEUE is not used -- which should be rare -- data path will not call
-nf_hook_slow "interpreter" anymore.
-
-No changes in BPF core or UAPI additions, although I suppose it would make sense to add a
-'enable/disable' sysctl for this.
-
-I think that it makes little sense to consider any form of nf_tables (or iptables) JIT
-without indirect-call avoidance first, unless such 'jit' would be for the XDP hook.
-
-I would propose 'xdptables' tool for that though (or 'xdp' family for nftables),
-without kernel changes.
-
-Comments welcome.
-
-Florian Westphal (9):
-  netfilter: nf_queue: carry index in hook state
-  netfilter: nat: split nat hook iteration into a helper
-  netfilter: remove hook index from nf_hook_slow arguments
-  netfilter: make hook functions accept only one argument
-  netfilter: reduce allowed hook count to 32
-  netfilter: add bpf base hook program generator
-  netfilter: core: do not rebuild bpf program on dying netns
-  netfilter: netdev: switch to invocation via bpf
-  netfilter: hook_jit: add prog cache
-
- drivers/net/ipvlan/ipvlan_l3s.c            |   4 +-
- include/linux/netfilter.h                  |  82 ++-
- include/linux/netfilter_arp/arp_tables.h   |   3 +-
- include/linux/netfilter_bridge/ebtables.h  |   3 +-
- include/linux/netfilter_ipv4/ip_tables.h   |   4 +-
- include/linux/netfilter_ipv6/ip6_tables.h  |   3 +-
- include/linux/netfilter_netdev.h           |  33 +-
- include/net/netfilter/br_netfilter.h       |   7 +-
- include/net/netfilter/nf_flow_table.h      |   6 +-
- include/net/netfilter/nf_hook_bpf.h        |  21 +
- include/net/netfilter/nf_queue.h           |   3 +-
- include/net/netfilter/nf_synproxy.h        |   6 +-
- net/bridge/br_input.c                      |   3 +-
- net/bridge/br_netfilter_hooks.c            |  30 +-
- net/bridge/br_netfilter_ipv6.c             |   5 +-
- net/bridge/netfilter/ebtable_broute.c      |   9 +-
- net/bridge/netfilter/ebtables.c            |   6 +-
- net/bridge/netfilter/nf_conntrack_bridge.c |   8 +-
- net/ipv4/netfilter/arp_tables.c            |   7 +-
- net/ipv4/netfilter/ip_tables.c             |   7 +-
- net/ipv4/netfilter/ipt_CLUSTERIP.c         |   6 +-
- net/ipv4/netfilter/iptable_mangle.c        |  15 +-
- net/ipv4/netfilter/nf_defrag_ipv4.c        |   5 +-
- net/ipv6/ila/ila_xlat.c                    |   6 +-
- net/ipv6/netfilter/ip6_tables.c            |   6 +-
- net/ipv6/netfilter/ip6table_mangle.c       |  13 +-
- net/ipv6/netfilter/nf_defrag_ipv6_hooks.c  |   5 +-
- net/netfilter/Kconfig                      |  10 +
- net/netfilter/Makefile                     |   1 +
- net/netfilter/core.c                       | 121 ++++-
- net/netfilter/ipvs/ip_vs_core.c            |  13 +-
- net/netfilter/nf_conntrack_proto.c         |  34 +-
- net/netfilter/nf_flow_table_inet.c         |   8 +-
- net/netfilter/nf_flow_table_ip.c           |  12 +-
- net/netfilter/nf_hook_bpf.c                | 574 +++++++++++++++++++++
- net/netfilter/nf_nat_core.c                |  50 +-
- net/netfilter/nf_nat_proto.c               |  56 +-
- net/netfilter/nf_queue.c                   |  12 +-
- net/netfilter/nf_synproxy_core.c           |   8 +-
- net/netfilter/nft_chain_filter.c           |  48 +-
- net/netfilter/nft_chain_nat.c              |   7 +-
- net/netfilter/nft_chain_route.c            |  22 +-
- security/apparmor/lsm.c                    |   5 +-
- security/selinux/hooks.c                   |  22 +-
- security/smack/smack_netfilter.c           |   8 +-
- 45 files changed, 1044 insertions(+), 273 deletions(-)
- create mode 100644 include/net/netfilter/nf_hook_bpf.h
- create mode 100644 net/netfilter/nf_hook_bpf.c
-
+diff --git a/include/linux/netfilter.h b/include/linux/netfilter.h
+index d8817d381c14..7a1a2c4787f0 100644
+--- a/include/linux/netfilter.h
++++ b/include/linux/netfilter.h
+@@ -67,6 +67,7 @@ struct sock;
+ struct nf_hook_state {
+ 	u8 hook;
+ 	u8 pf;
++	u16 hook_index; /* index in hook_entries->hook[] */
+ 	struct net_device *in;
+ 	struct net_device *out;
+ 	struct sock *sk;
+diff --git a/include/net/netfilter/nf_queue.h b/include/net/netfilter/nf_queue.h
+index 980daa6e1e3a..bdcdece2bbff 100644
+--- a/include/net/netfilter/nf_queue.h
++++ b/include/net/netfilter/nf_queue.h
+@@ -13,7 +13,6 @@ struct nf_queue_entry {
+ 	struct list_head	list;
+ 	struct sk_buff		*skb;
+ 	unsigned int		id;
+-	unsigned int		hook_index;	/* index in hook_entries->hook[] */
+ #if IS_ENABLED(CONFIG_BRIDGE_NETFILTER)
+ 	struct net_device	*physin;
+ 	struct net_device	*physout;
+@@ -125,6 +124,6 @@ nfqueue_hash(const struct sk_buff *skb, u16 queue, u16 queues_total, u8 family,
+ }
+ 
+ int nf_queue(struct sk_buff *skb, struct nf_hook_state *state,
+-	     unsigned int index, unsigned int verdict);
++	     unsigned int verdict);
+ 
+ #endif /* _NF_QUEUE_H */
+diff --git a/net/bridge/br_input.c b/net/bridge/br_input.c
+index 68b3e850bcb9..5be7e4573528 100644
+--- a/net/bridge/br_input.c
++++ b/net/bridge/br_input.c
+@@ -264,7 +264,8 @@ static int nf_hook_bridge_pre(struct sk_buff *skb, struct sk_buff **pskb)
+ 			kfree_skb(skb);
+ 			return RX_HANDLER_CONSUMED;
+ 		case NF_QUEUE:
+-			ret = nf_queue(skb, &state, i, verdict);
++			state.hook_index = i;
++			ret = nf_queue(skb, &state, verdict);
+ 			if (ret == 1)
+ 				continue;
+ 			return RX_HANDLER_CONSUMED;
+diff --git a/net/netfilter/core.c b/net/netfilter/core.c
+index 5a6705a0e4ec..c094742e3ec3 100644
+--- a/net/netfilter/core.c
++++ b/net/netfilter/core.c
+@@ -623,7 +623,8 @@ int nf_hook_slow(struct sk_buff *skb, struct nf_hook_state *state,
+ 				ret = -EPERM;
+ 			return ret;
+ 		case NF_QUEUE:
+-			ret = nf_queue(skb, state, s, verdict);
++			state->hook_index = s;
++			ret = nf_queue(skb, state, verdict);
+ 			if (ret == 1)
+ 				continue;
+ 			return ret;
+@@ -772,6 +773,9 @@ int __init netfilter_init(void)
+ {
+ 	int ret;
+ 
++	/* state->index */
++	BUILD_BUG_ON(MAX_HOOK_COUNT > USHRT_MAX);
++
+ 	ret = register_pernet_subsys(&netfilter_net_ops);
+ 	if (ret < 0)
+ 		goto err;
+diff --git a/net/netfilter/nf_queue.c b/net/netfilter/nf_queue.c
+index 63d1516816b1..9f9dfde3e054 100644
+--- a/net/netfilter/nf_queue.c
++++ b/net/netfilter/nf_queue.c
+@@ -156,7 +156,7 @@ static void nf_ip6_saveroute(const struct sk_buff *skb,
+ }
+ 
+ static int __nf_queue(struct sk_buff *skb, const struct nf_hook_state *state,
+-		      unsigned int index, unsigned int queuenum)
++		      unsigned int queuenum)
+ {
+ 	struct nf_queue_entry *entry = NULL;
+ 	const struct nf_queue_handler *qh;
+@@ -204,7 +204,6 @@ static int __nf_queue(struct sk_buff *skb, const struct nf_hook_state *state,
+ 	*entry = (struct nf_queue_entry) {
+ 		.skb	= skb,
+ 		.state	= *state,
+-		.hook_index = index,
+ 		.size	= sizeof(*entry) + route_key_size,
+ 	};
+ 
+@@ -235,11 +234,11 @@ static int __nf_queue(struct sk_buff *skb, const struct nf_hook_state *state,
+ 
+ /* Packets leaving via this function must come back through nf_reinject(). */
+ int nf_queue(struct sk_buff *skb, struct nf_hook_state *state,
+-	     unsigned int index, unsigned int verdict)
++	     unsigned int verdict)
+ {
+ 	int ret;
+ 
+-	ret = __nf_queue(skb, state, index, verdict >> NF_VERDICT_QBITS);
++	ret = __nf_queue(skb, state, verdict >> NF_VERDICT_QBITS);
+ 	if (ret < 0) {
+ 		if (ret == -ESRCH &&
+ 		    (verdict & NF_VERDICT_FLAG_QUEUE_BYPASS))
+@@ -311,7 +310,7 @@ void nf_reinject(struct nf_queue_entry *entry, unsigned int verdict)
+ 
+ 	hooks = nf_hook_entries_head(net, pf, entry->state.hook);
+ 
+-	i = entry->hook_index;
++	i = entry->state.hook_index;
+ 	if (WARN_ON_ONCE(!hooks || i >= hooks->num_hook_entries)) {
+ 		kfree_skb(skb);
+ 		nf_queue_entry_free(entry);
+@@ -343,7 +342,8 @@ void nf_reinject(struct nf_queue_entry *entry, unsigned int verdict)
+ 		local_bh_enable();
+ 		break;
+ 	case NF_QUEUE:
+-		err = nf_queue(skb, &entry->state, i, verdict);
++		entry->state.hook_index = i;
++		err = nf_queue(skb, &entry->state, verdict);
+ 		if (err == 1)
+ 			goto next_hook;
+ 		break;
 -- 
 2.35.1
 
