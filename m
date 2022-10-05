@@ -2,166 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3FCC5F5673
-	for <lists+bpf@lfdr.de>; Wed,  5 Oct 2022 16:32:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 808C55F56AF
+	for <lists+bpf@lfdr.de>; Wed,  5 Oct 2022 16:48:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229840AbiJEOca (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Oct 2022 10:32:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38756 "EHLO
+        id S230081AbiJEOs6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Oct 2022 10:48:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229723AbiJEOc3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Oct 2022 10:32:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DCC172870
-        for <bpf@vger.kernel.org>; Wed,  5 Oct 2022 07:32:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1664980347;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tObMQCdQ5lmhGEfWf1G2BnwejS8NcVQfKMZ4dQuOMzs=;
-        b=Vxw4P2IuHE5f2hkwhPxYjdtVosMxHq3OeUWlpxhRb55uc1DCMMfVU8VCXDMBjeyGI+wtKk
-        V10UBAKmuz8k9GjzWIBUd5IGQ8iNUlZ48BbizRPdEuDwdmJah+9503SBg9pKHD7Ip+xGi3
-        axlPYTT/Lclovj31JWQ87WbUeXf82sA=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-170-WVvcl_U-NxmOuC0PL_bT4w-1; Wed, 05 Oct 2022 10:32:26 -0400
-X-MC-Unique: WVvcl_U-NxmOuC0PL_bT4w-1
-Received: by mail-ed1-f69.google.com with SMTP id y9-20020a056402270900b00451dfbbc9b2so13598721edd.12
-        for <bpf@vger.kernel.org>; Wed, 05 Oct 2022 07:32:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date;
-        bh=tObMQCdQ5lmhGEfWf1G2BnwejS8NcVQfKMZ4dQuOMzs=;
-        b=3BoYrL6mfR3iMVtOahdoEBicpAo52ZxRxVBYyVZxnGX8QICtUhVI6LVRHodPz415SD
-         og6olIfz6W8hcJ+8uBObaiZuVCwd4dAtesrEKkbhlYkZ7UyQ9cMyXWVHNbFaVnepRhWx
-         g7ycUmB2LpYyhcpz6eMfel7b8EIVJWu7cnLSA7UyhmChRtZI301jthcpJkfYwCrvdb0R
-         PG4atKslqp1mTwxcElFgg3vVgcv7JKniWIsOYFddfTXjCl7GRQIgdKUWKiR/7Jok+OgP
-         XzefG5ERXdH58iw3G+z1h+hamN4C1ZkofIkIoNTMDMnERKWlK9mfwmp+sdCQT6NPoJnK
-         Xcrw==
-X-Gm-Message-State: ACrzQf01GfWyj5dX/HPvlLgSBE0Akd0uf9Xs9MGMl6nBr1lRwrBy8VFM
-        3P+qdJ3bandUAUT2DnJ0lxIB6mZO2pc4vjTTcbsCUcvhyrqR7sFSM0JDeoX202KASr+GWZajE9w
-        KSzquk38wAk7V
-X-Received: by 2002:aa7:cfc4:0:b0:459:7fa7:ee29 with SMTP id r4-20020aa7cfc4000000b004597fa7ee29mr43163edy.414.1664980344949;
-        Wed, 05 Oct 2022 07:32:24 -0700 (PDT)
-X-Google-Smtp-Source: AMsMyM42hwJh/HghS6gIi4751Sbigc/2qbv0QE2vCVQMGtKvzUxOB4o2QM8m4GamdJlVRWdwnPFMng==
-X-Received: by 2002:aa7:cfc4:0:b0:459:7fa7:ee29 with SMTP id r4-20020aa7cfc4000000b004597fa7ee29mr43132edy.414.1664980344506;
-        Wed, 05 Oct 2022 07:32:24 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id k11-20020a17090632cb00b007030c97ae62sm8767269ejk.191.2022.10.05.07.32.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Oct 2022 07:32:23 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id E996264EBBE; Wed,  5 Oct 2022 16:32:22 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org
-Cc:     razor@blackwall.org, ast@kernel.org, andrii@kernel.org,
-        martin.lau@linux.dev, john.fastabend@gmail.com,
+        with ESMTP id S229826AbiJEOs5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Oct 2022 10:48:57 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DC507822A;
+        Wed,  5 Oct 2022 07:48:56 -0700 (PDT)
+Received: from sslproxy04.your-server.de ([78.46.152.42])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1og5hc-0004Wi-Sp; Wed, 05 Oct 2022 16:48:52 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy04.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1og5hc-000CZE-HC; Wed, 05 Oct 2022 16:48:52 +0200
+Subject: Re: [PATCH bpf-next 01/10] bpf: Add initial fd-based API to attach tc
+ BPF programs
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        sdf@google.com
+Cc:     bpf@vger.kernel.org, razor@blackwall.org, ast@kernel.org,
+        andrii@kernel.org, martin.lau@linux.dev, john.fastabend@gmail.com,
         joannelkoong@gmail.com, memxor@gmail.com, joe@cilium.io,
         netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next 01/10] bpf: Add initial fd-based API to attach
- tc BPF programs
-In-Reply-To: <3cc8a0c3-7767-12cf-f753-82e2df8ef293@iogearbox.net>
 References: <20221004231143.19190-1-daniel@iogearbox.net>
- <20221004231143.19190-2-daniel@iogearbox.net> <87bkqqimpy.fsf@toke.dk>
- <3cc8a0c3-7767-12cf-f753-82e2df8ef293@iogearbox.net>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 05 Oct 2022 16:32:22 +0200
-Message-ID: <87wn9egx3d.fsf@toke.dk>
+ <20221004231143.19190-2-daniel@iogearbox.net> <YzzWDqAmN5DRTupQ@google.com>
+ <878rluily2.fsf@toke.dk>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <f920e8c7-b328-e74a-8f48-04744a572b55@iogearbox.net>
+Date:   Wed, 5 Oct 2022 16:48:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <878rluily2.fsf@toke.dk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.6/26680/Wed Oct  5 09:55:19 2022)
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Daniel Borkmann <daniel@iogearbox.net> writes:
+On 10/5/22 12:50 PM, Toke Høiland-Jørgensen wrote:
+> sdf@google.com writes:
+[...]
+>>
+>> The series looks exciting, haven't had a chance to look deeply, will try
+>> to find some time this week.
+>>
+>> We've chatted briefly about priority during the talk, let's maybe discuss
+>> it here more?
+>>
+>> I, as a user, still really have no clue about what priority to use.
+>> We have this problem at tc, and we'll seemingly have the same problem
+>> here? I guess it's even more relevant in k8s because internally at G we
+>> can control the users.
+>>
+>> Is it worth at least trying to provide some default bands / guidance?
+>>
+>> For example, having SEC('tc/ingress') receive attach_priority=124 by
+>> default? Maybe we can even have something like 'tc/ingress_first' get
+>> attach_priority=1 and 'tc/ingress_last' with attach_priority=254?
+>> (the names are arbitrary, we can do something better)
+>>
+>> ingress_first/ingress_last can be used by some monitoring jobs. The rest
+>> can use default 124. If somebody really needs a custom priority, then they
+>> can manually use something around 124/2 if they need to trigger before the
+>> 'default' priority or 124+124/2 if they want to trigger after?
+>>
+>> Thoughts? Is it worth it? Do we care?
+> 
+> I think we should care :)
+> 
+> Having "better" defaults are probably a good idea (so not everything
+> just ends up at priority 1 by default). However, I think ultimately the
+> only robust solution is to make the priority override-able. Users are
+> going to want to combine BPF programs in ways that their authors didn't
+> anticipate, so the actual priority the programs run at should not be the
+> sole choice of the program author.
+> 
+> To use the example that Daniel presented at LPC: Running datadog and
+> cilium at the same time broke cilium because datadog took over the
+> prio-1 hook point. With the bpf_link API what would change is that (a)
+> it would be obvious that something breaks (that is good), and (b) it
+> would be datadog that breaks instead of cilium (because it can no longer
+> just take over the hook, it'll get an error instead). However, (b) means
+> that the user still hasn't gotten what they wanted: the ability to run
+> datadog and cilium at the same time. To do this, they will need to be
+> able to change the priorities of one or both applications.
 
-> On 10/5/22 12:33 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->> Daniel Borkmann <daniel@iogearbox.net> writes:
->>=20
->>> As part of the feedback from LPC, there was a suggestion to provide a
->>> name for this infrastructure to more easily differ between the classic
->>> cls_bpf attachment and the fd-based API. As for most, the XDP vs tc
->>> layer is already the default mental model for the pkt processing
->>> pipeline. We refactored this with an xtc internal prefix aka 'express
->>> traffic control' in order to avoid to deviate too far (and 'express'
->>> given its more lightweight/faster entry point).
->>=20
->> Woohoo, bikeshed time! :)
->>=20
->> I am OK with having a separate name for this, but can we please pick one
->> that doesn't sound like 'XDP' when you say it out loud? You really don't
->> have to mumble much for 'XDP' and 'XTC' to sound exactly alike; this is
->> bound to lead to confusion!
->>=20
->> Alternatives, in the same vein:
->> - ltc (lightweight)
->> - etc (extended/express/ebpf/et cetera ;))
->> - tcx (keep the cool X, but put it at the end)
->
-> Hehe, yeah agree, I don't have a strong opinion, but tcx (or just sticking
-> with tc) is fully okay to me.
+(Just for the record :) it was an oversight on datadog agent part and it
+got fixed, somehow there was a corner-case race with device creation and
+bpf attachment which lead to this, but 100% it would make it obvious that
+something breaks which is already a good step forward - I just took this
+solely as a real-world example that these things /can/ happen and are
+/tricky/ to debug on top given the 'undefined' behavior resulting from
+this; this can happen to anyone in general ofc. Both sides (cilium, dd)
+are configurable to interoperate cleanly now through daemon config.)
 
-Either is fine with me; I don't have any strong opinions either, other
-than "not XTC" ;)
+> I know cilium at least has a configuration option to change this
+> somewhere, but I don't think relying on every BPF-using application to
+> expose this (each in their own way) is a good solution. I think of
+> priorities more like daemon startup at boot: this is system policy,
+> decided by the equivalent of the init system (and in this analogy we are
+> currently at the 'rc.d' stage of init system design, with the hook
+> priorities).
+> 
+> One way to resolve this is to have a central daemon that implements the
+> policy and does all the program loading on behalf of the users. I think
+> multiple such daemons exist already in more or less public and/or
+> complete states. However, getting everyone to agree on one is also hard,
+> so maybe the kernel needs to expose a mechanism for doing the actual
+> overriding, and then whatever daemon people run can hook into that?
 
->> [...]
->>=20
->>> +/* (Simplified) user return codes for tc prog type.
->>> + * A valid tc program must return one of these defined values. All oth=
-er
->>> + * return codes are reserved for future use. Must remain compatible wi=
-th
->>> + * their TC_ACT_* counter-parts. For compatibility in behavior, unknown
->>> + * return codes are mapped to TC_NEXT.
->>> + */
->>> +enum tc_action_base {
->>> +	TC_NEXT		=3D -1,
->>> +	TC_PASS		=3D 0,
->>> +	TC_DROP		=3D 2,
->>> +	TC_REDIRECT	=3D 7,
->>> +};
->>=20
->> Looking at things like this, though, I wonder if having a separate name
->> (at least if it's too prominent) is not just going to be more confusing
->> than not? I.e., we go out of our way to make it compatible with existing
->> TC-BPF programs (which is a good thing!), so do we really need a
->> separate name? Couldn't it just be an implementation detail that "it's
->> faster now"?
->
-> Yep, faster is an implementation detail; and developers can stick to exis=
-ting
-> opcodes. I added this here given Andrii suggested to add the action codes=
- as
-> enum so they land in vmlinux BTF. My thinking was that if we go this rout=
-e,
-> we could also make them more user friendly. This part is 100% optional,
-> but for new developers it might lower the barrier a bit I was hoping given
-> it makes it clear which subset of actions BPF supports explicitly and with
-> less cryptic name.
+I think system policy but also user policy, kind of a mixed bag in the end.
+Just take the policy bpf app vs introspection bpf app as an example: a user
+might want to see either all traffic (thus before policy app), or just
+traffic that policy let through (thus after policy app).
 
-Oh, I didn't mean that we shouldn't define these helpers; that's totally
-fine, and probably useful. Just that when everything is named 'TC'
-anyway, having a different name (like TCX) is maybe not that important
-anyway?
+> Not sure what that mechanism would be? A(nother) BPF hook for overriding
+> priority on load? An LSM hook that rewrites the system call? (can it
+> already do that?) Something else?
 
->> Oh, and speaking of compatibility should 'tc' (the iproute2 binary) be
->> taught how to display these new bpf_link attachments so that users can
->> see that they're there?
->
-> Sounds reasonable, I can follow-up with the iproute2 support as well.
+Yeah, it could be a means to achieve that, some kind of policy agent which
+has awareness of the installed programs and their inter-dependencies resp.
+user intent where it then rewrites the prios dynamically.
 
-Cool!
+> Oh, and also, in the case of TC there's also the additional issue that
+> execution only chains to the next program if the current one returns
+> TC_ACT_UNSPEC; this should probably also be overridable somehow, for the
+> same reasons...
 
--Toke
+Same category as above, yes.
 
+Thanks,
+Daniel
