@@ -1,70 +1,66 @@
 Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from out1.vger.email (unknown [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16ADF5F5CF5
-	for <lists+bpf@lfdr.de>; Thu,  6 Oct 2022 00:59:05 +0200 (CEST)
+Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
+	by mail.lfdr.de (Postfix) with ESMTP id 27A1B5F5D01
+	for <lists+bpf@lfdr.de>; Thu,  6 Oct 2022 01:02:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229445AbiJEW7D (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Oct 2022 18:59:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47784 "EHLO
+        id S229658AbiJEXCk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Oct 2022 19:02:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbiJEW7C (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Oct 2022 18:59:02 -0400
-Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D66E8558B
-        for <bpf@vger.kernel.org>; Wed,  5 Oct 2022 15:59:01 -0700 (PDT)
-Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-345528ceb87so2440027b3.11
-        for <bpf@vger.kernel.org>; Wed, 05 Oct 2022 15:59:01 -0700 (PDT)
+        with ESMTP id S229508AbiJEXCj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Oct 2022 19:02:39 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E51D085599;
+        Wed,  5 Oct 2022 16:02:36 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id 63so342057ybq.4;
+        Wed, 05 Oct 2022 16:02:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=px8M0E3ljR/RFob5R0IdDzx3OPIg8z5A2S6oaKI3GMc=;
-        b=WCZyNVJhYkFZxj8R6STb6FWopw6XJGgvv2WX+tqQkV93N1EpQSoaw2sHtg9aDJAvQN
-         rqRW/X1imWs6kWMn3sbPZbaztnd8dvimsI0DF6v2lnblCUbaLOFO2ICQGD2mlj+o/HQf
-         PR4MkdRi8md2nwdbVih6q+AvS90UQjCUVtjVcZfOtwR6v7FVaGEDR9cDSz7jZsIdoIpY
-         ClQCLnGORCJjKD2c30HlEdCwpZfCrmkTqIP6ra1w7bcJdpQj8tVvm7siMPSnGER3PnuD
-         9r34Xli3AuWdk4ffW+QXTCfTqVPLsVlug5liJoOe44Y4KF1atTVpeC58NblcaTv8K80e
-         tI8g==
+        bh=L7ufU5NJZ1m5iRvOEgBPFkIANRERx7whw7EOLnWZahg=;
+        b=k8uPcu7u+JSMjPJ10LB7tmG2Wunjo9xJkXKMm2Err/usFhtZr+sEaiQ/3LNWCwo9M3
+         HV/Gu/eODY/YWme6iPaHG7GjSCHSx7FpyBWNxbDJTXCNHANHK2qNuSw80SCmtbOdB7Al
+         e3vlpX/lK+GEaOLx8/pyHhcdAxVmnEM0J4fU05J6nk+xrR9tGx9xZxlLBGKzNm61+pdS
+         c7RwBrI1J5NisiK+mIIjCAiuKDTNiSjt13x4EGtgibV6U9in0e2kJCnIBBmkofd2QsTi
+         Wadppnhar/U2fyRSNpF5qYJbhkAmRQHHigwz82pEMXMWtOYNb/9VOvOeq9K7KaeI3kgF
+         midw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=px8M0E3ljR/RFob5R0IdDzx3OPIg8z5A2S6oaKI3GMc=;
-        b=2XLKbkDMJA9iHIsiOufmsfaulvPvyb43B2rl9uwL9RGGPWB1kqiF+iQ/7d/jejWFfx
-         vcMWAuNSy7LIZv9KOtpXRawEMyrwOodklDSTKXNDpyWmBRsskqS27+r2JTSpwQhMKM6q
-         v/vA3pUXdDnQTfia5PI5iXJhzQCTQzO0Q/dGfqCZCBcP1uRjvtWTBt2heVUrMnyaEfYF
-         Aktt2YkCnoxSrJ9X8heuoDypnLdlS0LTJBbNw34dcy0UHLjbU9AUwUrzLFM3NrWwyB0p
-         VijIOmUHvHh7NvLJMpgaC7OAx40U8BtN7cib0S22EwXMPSMAtEvAlRJWwWBlW3w8/tSm
-         4xfQ==
-X-Gm-Message-State: ACrzQf0cm/kUgbqaBVc5Ns3dVo8Us+ySlq3gK8EwPi2m1XaRoIrni5Br
-        ytAbwRea0AaJ59CzWyszI/Go/8S/RxOAFPwvIiA=
-X-Google-Smtp-Source: AMsMyM71idh0gs8v+y1sAPW2AnMbqwQOqEbq7SggHWCGU1Lr+h0edfdIoCHXyIJ2YZSTnxh6Y1miWxPXVh6v0ndhhw4=
-X-Received: by 2002:a81:7b88:0:b0:349:37fa:130e with SMTP id
- w130-20020a817b88000000b0034937fa130emr2077492ywc.155.1665010740362; Wed, 05
- Oct 2022 15:59:00 -0700 (PDT)
+        bh=L7ufU5NJZ1m5iRvOEgBPFkIANRERx7whw7EOLnWZahg=;
+        b=NxUc5XqIuw6mNNXJ73SJUdywa4YzP14pY5SQt93SJMU2oBbUNZjQZdqYQLVxfriodu
+         Mr/gV39lrgFMI6sh88de2zMgw3IGsOGUAZZL4XAfp3vB+zyhnmbO6iq2VwDaOt1jVVkS
+         2lhc7e4SAp3c9lFXuYet+fAQw9Lt1k2+6yqZ90L7v1ovusDDgI3NDgy8XksY72x0fnDT
+         LB+YeYyklNu40ADKyzt5aci/YTim4XKh00iS09sR27b8IShroWwsz5CIhouxizw1cj6F
+         qVDjqKfgfU1AQPbLxN0mZM2xkiUjmZzRnQWfk8iP9qBnBL/IIQIbclsvpM3ZccThXYIt
+         PzHQ==
+X-Gm-Message-State: ACrzQf0PiITVc1TvU9s0w0QZ2xCNZ0TafGiFe/2JCPe8E+O+o4N0rDOe
+        d40bfv5J+i31wljjLFFp1s6qGoUfRlnF8rFAtaE=
+X-Google-Smtp-Source: AMsMyM6TEfE8Y2LkWYa6/+BHsh/IW88Rt1oi0UVBNQpoo2Nkmg+SgLGCHDnE1by2VXt60s37ZBKH3wEwB874AnG6wYM=
+X-Received: by 2002:a25:1042:0:b0:6bb:f807:aa04 with SMTP id
+ 63-20020a251042000000b006bbf807aa04mr2202432ybq.639.1665010956061; Wed, 05
+ Oct 2022 16:02:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <20221002151141.1074196-1-jolsa@kernel.org> <49aa0aec-a009-c0c3-cf47-11a6734aae36@linux.dev>
- <YzvU3/rwCnbWQM8P@krava> <YzwjQJurtyF6f0W1@krava>
-In-Reply-To: <YzwjQJurtyF6f0W1@krava>
+References: <20221004131750.2306251-1-roberto.sassu@huaweicloud.com> <20221004131750.2306251-2-roberto.sassu@huaweicloud.com>
+In-Reply-To: <20221004131750.2306251-2-roberto.sassu@huaweicloud.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 5 Oct 2022 15:58:45 -0700
-Message-ID: <CAEf4BzZay5mLX04C7Hk0xawpTvMMX+JXoRvh4_Z19DBoOnmFaw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Add missing bpf_iter_vma_offset__destroy
- call
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
-        Kui-Feng Lee <kuifeng@fb.com>, bpf@vger.kernel.org,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
+Date:   Wed, 5 Oct 2022 16:02:23 -0700
+Message-ID: <CAEf4BzaeOknT5d_ziidov3UXMZD40WCVHFamqC2_eH9nAUNUYQ@mail.gmail.com>
+Subject: Re: [RESEND][PATCH 1/6] libbpf: Fix LIBBPF_1.0.0 declaration in libbpf.map
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
+        shuah@kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Roberto Sassu <roberto.sassu@huawei.com>,
+        stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -76,73 +72,46 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 4, 2022 at 5:16 AM Jiri Olsa <olsajiri@gmail.com> wrote:
+On Tue, Oct 4, 2022 at 6:18 AM Roberto Sassu
+<roberto.sassu@huaweicloud.com> wrote:
 >
-> On Tue, Oct 04, 2022 at 08:38:23AM +0200, Jiri Olsa wrote:
-> > On Mon, Oct 03, 2022 at 05:12:44PM -0700, Martin KaFai Lau wrote:
-> > > On 10/2/22 8:11 AM, Jiri Olsa wrote:
-> > > > Adding missing bpf_iter_vma_offset__destroy call to
-> > > > test_task_vma_offset_common function and related goto jumps.
-> > > >
-> > > > Fixes: b3e1331eb925 ("selftests/bpf: Test parameterized task BPF iterators.")
-> > > > Cc: Kui-Feng Lee <kuifeng@fb.com>
-> > > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > > ---
-> > > >   tools/testing/selftests/bpf/prog_tests/bpf_iter.c | 8 +++++---
-> > > >   1 file changed, 5 insertions(+), 3 deletions(-)
-> > > >
-> > > > diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-> > > > index 3369c5ec3a17..462fe92e0736 100644
-> > > > --- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-> > > > +++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-> > > > @@ -1515,11 +1515,11 @@ static void test_task_vma_offset_common(struct bpf_iter_attach_opts *opts, bool
-> > > >           link = bpf_program__attach_iter(skel->progs.get_vma_offset, opts);
-> > >
-> > > Thanks for the fix.
-> > >
-> > > A nit.  Instead of adding a new goto label.  How about doing
-> > >
-> > >     skel->links.get_vma_offset = bpf_program_attach_iter(...)
-> > >
-> > > and bpf_iter_vma_offset__destroy(skel) will take care of the link destroy.
-> > > The earlier test_task_vma_common() is doing that also.
-> >
-> > right, I forgot destroy would do that.. it'll be simpler change
+> From: Roberto Sassu <roberto.sassu@huawei.com>
 >
-> ugh actually no ;-) it's outside (of skeleton) link,
-> so it won't get closed in bpf_iter_vma_offset__destroy
+> Add the missing LIBBPF_0.8.0 at the end of the LIBBPF_1.0.0 declaration,
+> similarly to other version declarations.
+>
+> Cc: stable@vger.kernel.org # 5.19.x
 
-Martin's point was that if you assign it to skel->links.get_vma_offset
-it will be closed by skeleton's destroy method. So let's do that?
+there is no need to backport this, libbpf has its own release cycle
+and it is released from github mirror. And also this doesn't have any
+effect, this inheritance between versions in .map file is mostly for
+humans, according [0] (and I checked in practice that it doesn't
+change anything for libbpf).
 
+So it's good to fix, but no need to bother maintainers to backport it
+to stable branches.
+
+  [0] https://www.akkadia.org/drepper/dsohowto.pdf
+
+> Fixes: e2371b1632b1c ("libbpf: start 1.0 development cycle")
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> ---
+>  tools/lib/bpf/libbpf.map | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> the earlier test_task_vma_common does not create such link
+> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> index c1d6aa7c82b6..04fab9f1fdd7 100644
+> --- a/tools/lib/bpf/libbpf.map
+> +++ b/tools/lib/bpf/libbpf.map
+> @@ -367,7 +367,7 @@ LIBBPF_1.0.0 {
+>                 libbpf_bpf_map_type_str;
+>                 libbpf_bpf_prog_type_str;
+>                 perf_buffer__buffer;
+> -};
+> +} LIBBPF_0.8.0;
 >
-> jirka
+>  LIBBPF_1.1.0 {
+>         global:
+> --
+> 2.25.1
 >
-> >
-> > thanks,
-> > jirka
-> >
-> > >
-> > > Kui-Feng, please also take a look.
-> > >
-> > > >           if (!ASSERT_OK_PTR(link, "attach_iter"))
-> > > > -         return;
-> > > > +         goto exit_skel;
-> > > >           iter_fd = bpf_iter_create(bpf_link__fd(link));
-> > > >           if (!ASSERT_GT(iter_fd, 0, "create_iter"))
-> > > > -         goto exit;
-> > > > +         goto exit_link;
-> > > >           while ((len = read(iter_fd, buf, sizeof(buf))) > 0)
-> > > >                   ;
-> > > > @@ -1534,8 +1534,10 @@ static void test_task_vma_offset_common(struct bpf_iter_attach_opts *opts, bool
-> > > >           close(iter_fd);
-> > > > -exit:
-> > > > +exit_link:
-> > > >           bpf_link__destroy(link);
-> > > > +exit_skel:
-> > > > + bpf_iter_vma_offset__destroy(skel);
-> > > >   }
-> > > >   static void test_task_vma_offset(void)
-> > >
