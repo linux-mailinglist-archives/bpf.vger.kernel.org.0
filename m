@@ -1,74 +1,71 @@
 Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E01D75F5CD4
-	for <lists+bpf@lfdr.de>; Thu,  6 Oct 2022 00:43:25 +0200 (CEST)
+Received: from out1.vger.email (unknown [IPv6:2620:137:e000::1:20])
+	by mail.lfdr.de (Postfix) with ESMTP id 16ADF5F5CF5
+	for <lists+bpf@lfdr.de>; Thu,  6 Oct 2022 00:59:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229724AbiJEWnY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Oct 2022 18:43:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55596 "EHLO
+        id S229445AbiJEW7D (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Oct 2022 18:59:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229804AbiJEWnN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Oct 2022 18:43:13 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BFAC8558C
-        for <bpf@vger.kernel.org>; Wed,  5 Oct 2022 15:43:06 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id kg6so736503ejc.9
-        for <bpf@vger.kernel.org>; Wed, 05 Oct 2022 15:43:06 -0700 (PDT)
+        with ESMTP id S229472AbiJEW7C (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Oct 2022 18:59:02 -0400
+Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D66E8558B
+        for <bpf@vger.kernel.org>; Wed,  5 Oct 2022 15:59:01 -0700 (PDT)
+Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-345528ceb87so2440027b3.11
+        for <bpf@vger.kernel.org>; Wed, 05 Oct 2022 15:59:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QrmPIV/vWXrbZds146l/M5lTC+3i31tyqrY63BcRqEg=;
-        b=da6ArrwOdRU084gxi3wHtNUnnXy+s+R/MmUC+NDzbqXkUw8aMe6RsboZx1eiyjChE9
-         zf3VigmExyl6K+9TOT127fbIs/w3ypXJ72Fag7cllCG3ctdkTGTHl0bVs+ynnPR0ePIX
-         xykX/l8kON5VQszn/huTNOvYzpfGGTeVsai/VywTrb51XKkb3uTyjL8ywH12vZBKN6bz
-         JfngE46REfld62d0JlO5SM5qMSD4Cr7nIXhK+3PM8dm8Jufu9JPq9YAscA6jpOcTC2q/
-         HUDbKatTfOOviGQnBYbNpXwBhMy+hgF2SAP/49W6lHBxpfOc4Cqw56mI2kK62fYwij+0
-         fUkw==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=px8M0E3ljR/RFob5R0IdDzx3OPIg8z5A2S6oaKI3GMc=;
+        b=WCZyNVJhYkFZxj8R6STb6FWopw6XJGgvv2WX+tqQkV93N1EpQSoaw2sHtg9aDJAvQN
+         rqRW/X1imWs6kWMn3sbPZbaztnd8dvimsI0DF6v2lnblCUbaLOFO2ICQGD2mlj+o/HQf
+         PR4MkdRi8md2nwdbVih6q+AvS90UQjCUVtjVcZfOtwR6v7FVaGEDR9cDSz7jZsIdoIpY
+         ClQCLnGORCJjKD2c30HlEdCwpZfCrmkTqIP6ra1w7bcJdpQj8tVvm7siMPSnGER3PnuD
+         9r34Xli3AuWdk4ffW+QXTCfTqVPLsVlug5liJoOe44Y4KF1atTVpeC58NblcaTv8K80e
+         tI8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QrmPIV/vWXrbZds146l/M5lTC+3i31tyqrY63BcRqEg=;
-        b=g0C7QvLh5qFRyN59p4FYvadZp6LGrA/HG9P4YtkErx6ELkgdu0YGaPDOjzzaa0Uaq3
-         wtgEKmkAVElsJBsk54Ax/gPvWUt8BFcREa1Aei4T43lek3mWH4mD7PAw+ukRH6dL0Qix
-         MTcNLJCqxuayBjSYcj+RCphEKEcs2nAeLtZbm54dVhycGwXpuA9fs97YHWj6pG4WnW07
-         n8DrlInVzc+9F7GYgD52mDItyJyRgQktvU+Z/ZJFQcq1lhROLVQrRTZ+vkH4ivI2T8T2
-         wal7iacx3PLsoBSXtYdbHxpyfDF7+7W8AD3TVdKBQlRpOuKjF1bq9NHP6rIn/5V6gs6m
-         W7KQ==
-X-Gm-Message-State: ACrzQf2faBEt8t7JIZyloDjCe1g91VYGdG4dCuNOx8OTPiBtykAcYU2k
-        qgV1cjHIIByi65OODYvwl48AtrfQiEfhQ7ER29s=
-X-Google-Smtp-Source: AMsMyM56qbeflxSupBt4B+7Nv2g1rZvlCu0XyokLPGtBDgQNtZyLnDy4wnxAByuwk7+d4ff3CkVz69AubacQnEppw60=
-X-Received: by 2002:a17:907:984:b0:77f:4d95:9e2f with SMTP id
- bf4-20020a170907098400b0077f4d959e2fmr1560874ejc.176.1665009784990; Wed, 05
- Oct 2022 15:43:04 -0700 (PDT)
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=px8M0E3ljR/RFob5R0IdDzx3OPIg8z5A2S6oaKI3GMc=;
+        b=2XLKbkDMJA9iHIsiOufmsfaulvPvyb43B2rl9uwL9RGGPWB1kqiF+iQ/7d/jejWFfx
+         vcMWAuNSy7LIZv9KOtpXRawEMyrwOodklDSTKXNDpyWmBRsskqS27+r2JTSpwQhMKM6q
+         v/vA3pUXdDnQTfia5PI5iXJhzQCTQzO0Q/dGfqCZCBcP1uRjvtWTBt2heVUrMnyaEfYF
+         Aktt2YkCnoxSrJ9X8heuoDypnLdlS0LTJBbNw34dcy0UHLjbU9AUwUrzLFM3NrWwyB0p
+         VijIOmUHvHh7NvLJMpgaC7OAx40U8BtN7cib0S22EwXMPSMAtEvAlRJWwWBlW3w8/tSm
+         4xfQ==
+X-Gm-Message-State: ACrzQf0cm/kUgbqaBVc5Ns3dVo8Us+ySlq3gK8EwPi2m1XaRoIrni5Br
+        ytAbwRea0AaJ59CzWyszI/Go/8S/RxOAFPwvIiA=
+X-Google-Smtp-Source: AMsMyM71idh0gs8v+y1sAPW2AnMbqwQOqEbq7SggHWCGU1Lr+h0edfdIoCHXyIJ2YZSTnxh6Y1miWxPXVh6v0ndhhw4=
+X-Received: by 2002:a81:7b88:0:b0:349:37fa:130e with SMTP id
+ w130-20020a817b88000000b0034937fa130emr2077492ywc.155.1665010740362; Wed, 05
+ Oct 2022 15:59:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220929160558.5034-1-annemacedo@linux.microsoft.com>
- <63365532d416f_233df20899@john.notmuch> <92157e05-e383-ed4b-8b01-2981dbf5afd3@linux.microsoft.com>
- <CAEf4BzZxU+YD5CtHEk7S7bXTDMMSsnV3eFYgRXCMft=fx9reMA@mail.gmail.com> <CAHC9VhSqHFRpfq1b6Ys+Ygaqr-6KFeziUxtOVpsoBb=TE2csoA@mail.gmail.com>
-In-Reply-To: <CAHC9VhSqHFRpfq1b6Ys+Ygaqr-6KFeziUxtOVpsoBb=TE2csoA@mail.gmail.com>
+References: <20221002151141.1074196-1-jolsa@kernel.org> <49aa0aec-a009-c0c3-cf47-11a6734aae36@linux.dev>
+ <YzvU3/rwCnbWQM8P@krava> <YzwjQJurtyF6f0W1@krava>
+In-Reply-To: <YzwjQJurtyF6f0W1@krava>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 5 Oct 2022 15:42:53 -0700
-Message-ID: <CAEf4BzZnLFgzaPWeaH2h3dqxS4thEHQUv6FtZbpffxs6iGcWKw@mail.gmail.com>
-Subject: Re: [PATCH] libbpf: add validation to BTF's variable type ID
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Anne Macedo <annemacedo@linux.microsoft.com>,
-        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
+Date:   Wed, 5 Oct 2022 15:58:45 -0700
+Message-ID: <CAEf4BzZay5mLX04C7Hk0xawpTvMMX+JXoRvh4_Z19DBoOnmFaw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Add missing bpf_iter_vma_offset__destroy
+ call
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
+        Kui-Feng Lee <kuifeng@fb.com>, bpf@vger.kernel.org,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Isabella Basso <isabbasso@riseup.net>
+        Andrii Nakryiko <andrii@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -79,104 +76,73 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 3, 2022 at 2:26 PM Paul Moore <paul@paul-moore.com> wrote:
+On Tue, Oct 4, 2022 at 5:16 AM Jiri Olsa <olsajiri@gmail.com> wrote:
 >
-> On Fri, Sep 30, 2022 at 6:39 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> > On Fri, Sep 30, 2022 at 6:00 AM Anne Macedo
-> > <annemacedo@linux.microsoft.com> wrote:
+> On Tue, Oct 04, 2022 at 08:38:23AM +0200, Jiri Olsa wrote:
+> > On Mon, Oct 03, 2022 at 05:12:44PM -0700, Martin KaFai Lau wrote:
+> > > On 10/2/22 8:11 AM, Jiri Olsa wrote:
+> > > > Adding missing bpf_iter_vma_offset__destroy call to
+> > > > test_task_vma_offset_common function and related goto jumps.
+> > > >
+> > > > Fixes: b3e1331eb925 ("selftests/bpf: Test parameterized task BPF iterators.")
+> > > > Cc: Kui-Feng Lee <kuifeng@fb.com>
+> > > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > > ---
+> > > >   tools/testing/selftests/bpf/prog_tests/bpf_iter.c | 8 +++++---
+> > > >   1 file changed, 5 insertions(+), 3 deletions(-)
+> > > >
+> > > > diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+> > > > index 3369c5ec3a17..462fe92e0736 100644
+> > > > --- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+> > > > +++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+> > > > @@ -1515,11 +1515,11 @@ static void test_task_vma_offset_common(struct bpf_iter_attach_opts *opts, bool
+> > > >           link = bpf_program__attach_iter(skel->progs.get_vma_offset, opts);
 > > >
-> > > On 29/09/22 23:32, John Fastabend wrote:
-> > > > Anne Macedo wrote:
-> > > >> If BTF is corrupted, a SEGV may occur due to a null pointer derefe=
-rence on
-> > > >> bpf_object__init_user_btf_map.
-> > > >>
-> > > >> This patch adds a validation that checks whether the DATASEC's var=
-iable
-> > > >> type ID is null. If so, it raises a warning.
-> > > >>
-> > > >> Reported by oss-fuzz project [1].
-> > > >>
-> > > >> A similar patch for the same issue exists on [2]. However, the cod=
-e is
-> > > >> unreachable when using oss-fuzz data.
-> > > >>
-> > > >> [1] https://github.com/libbpf/libbpf/issues/484
-> > > >> [2] https://patchwork.kernel.org/project/netdevbpf/patch/202111031=
-73213.1376990-3-andrii@kernel.org/
-> > > >>
-> > > >> Reviewed-by: Isabella Basso <isabbasso@riseup.net>
-> > > >> Signed-off-by: Anne Macedo <annemacedo@linux.microsoft.com>
-> > > >> ---
-> > > >>   tools/lib/bpf/libbpf.c | 4 ++++
-> > > >>   1 file changed, 4 insertions(+)
-> > > >>
-> > > >> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > > >> index 184ce1684dcd..0c88612ab7c4 100644
-> > > >> --- a/tools/lib/bpf/libbpf.c
-> > > >> +++ b/tools/lib/bpf/libbpf.c
-> > > >> @@ -2464,6 +2464,10 @@ static int bpf_object__init_user_btf_map(st=
-ruct bpf_object *obj,
-> > > >>
-> > > >>      vi =3D btf_var_secinfos(sec) + var_idx;
-> > > >>      var =3D btf__type_by_id(obj->btf, vi->type);
-> > > >> +    if (!var || !btf_is_var(var)) {
-> > > >> +            pr_warn("map #%d: non-VAR type seen", var_idx);
-> > > >> +            return -EINVAL;
-> > > >> +    }
-> > > >>      var_extra =3D btf_var(var);
-> > > >>      map_name =3D btf__name_by_offset(obj->btf, var->name_off);
-> > > >>
-> > > >> --
-> > > >> 2.30.2
-> > > >>
-> > > >
-> > > >
-> > > > I don't know abouut this. A quick scan looks like this type_by_id i=
-s
-> > > > used lots of places. And seems corrupted BTF could cause faults
-> > > > and confusiuon in other spots as well. I'm not sure its worth makin=
-g
-> > > > libbpf survive corrupted BTF. OTOH this specific patch looks ok.
-> > > >
+> > > Thanks for the fix.
 > > >
-> > > I was planning on creating a function to validate BTF for these kinds=
- of
-> > > corruptions, but decided to keep this patch simple. This could be a g=
-ood
-> > > idea for some future work =E2=80=93 moving all of the validations to
-> > > bpf_object__init_btf() or to a helper function.
+> > > A nit.  Instead of adding a new goto label.  How about doing
+> > >
+> > >     skel->links.get_vma_offset = bpf_program_attach_iter(...)
+> > >
+> > > and bpf_iter_vma_offset__destroy(skel) will take care of the link destroy.
+> > > The earlier test_task_vma_common() is doing that also.
 > >
-> > This whack-a-mole game of fixing up BTF checks to avoid one specific
-> > corruption case is too burdensome. There is plenty of BTF usage before
-> > the point which you are fixing, so with some other specific corruption
-> > to BTF you can trigger even sooner corruption.
-> >
-> > As I mentioned on Github. I'm not too worried about ossfuzz generating
-> > corrupted BTF because that's not a very realistic scenario. But it
-> > would be nice to add some reasonable validation logic for BTF in
-> > general, so let's better concentrate on that instead of adding these
-> > extra checks.
+> > right, I forgot destroy would do that.. it'll be simpler change
 >
-> Reading the comments here and on the associated GH issue, it sounds
-> like you would be supportive of this check so long as it was placed in
-> bpf_object__init_btf(), is that correct?  Or do you feel this
-> particular check falls outside the scope of "reasonable validation
-> logic"?  I'm trying to understand what the best next step would be for
-> this patch ...
+> ugh actually no ;-) it's outside (of skeleton) link,
+> so it won't get closed in bpf_iter_vma_offset__destroy
 
-I think we should bite the bullet and do BTF validation in libbpf. It
-doesn't have to be as thorough as what kernel does, but validating
-general "structural integrity" of BTF as a first step would make all
-these one-off checks throughout entire libbpf source code unnecessary.
-I.e., we'll need to check things like: no out of range type IDs, no
-out-of-range string offsets, FUNC -> FUNC_PROTO references, DATASEC ->
-VAR | FUNC references, etc, etc. Probably make sure we don't have a
-loop of struct referencing to itself not through pointer, etc. It's a
-bit more upfront work, but it's will make the rest of the code simpler
-and will eliminate a bunch of those fuzzer crashes as well.
+Martin's point was that if you assign it to skel->links.get_vma_offset
+it will be closed by skeleton's destroy method. So let's do that?
 
 >
-> --
-> paul-moore.com
+> the earlier test_task_vma_common does not create such link
+>
+> jirka
+>
+> >
+> > thanks,
+> > jirka
+> >
+> > >
+> > > Kui-Feng, please also take a look.
+> > >
+> > > >           if (!ASSERT_OK_PTR(link, "attach_iter"))
+> > > > -         return;
+> > > > +         goto exit_skel;
+> > > >           iter_fd = bpf_iter_create(bpf_link__fd(link));
+> > > >           if (!ASSERT_GT(iter_fd, 0, "create_iter"))
+> > > > -         goto exit;
+> > > > +         goto exit_link;
+> > > >           while ((len = read(iter_fd, buf, sizeof(buf))) > 0)
+> > > >                   ;
+> > > > @@ -1534,8 +1534,10 @@ static void test_task_vma_offset_common(struct bpf_iter_attach_opts *opts, bool
+> > > >           close(iter_fd);
+> > > > -exit:
+> > > > +exit_link:
+> > > >           bpf_link__destroy(link);
+> > > > +exit_skel:
+> > > > + bpf_iter_vma_offset__destroy(skel);
+> > > >   }
+> > > >   static void test_task_vma_offset(void)
+> > >
