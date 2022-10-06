@@ -2,123 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 754DB5F6C98
-	for <lists+bpf@lfdr.de>; Thu,  6 Oct 2022 19:13:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25B325F6CB7
+	for <lists+bpf@lfdr.de>; Thu,  6 Oct 2022 19:21:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231826AbiJFRN0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Oct 2022 13:13:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49416 "EHLO
+        id S230493AbiJFRVh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Oct 2022 13:21:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231829AbiJFRNI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Oct 2022 13:13:08 -0400
-Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68908BBE12;
-        Thu,  6 Oct 2022 10:12:50 -0700 (PDT)
-Received: by mail-oo1-f51.google.com with SMTP id q70-20020a4a3349000000b0047f9951ad3aso1314922ooq.7;
-        Thu, 06 Oct 2022 10:12:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HtuVKtBzoKt+jjbMVURehUv1VCPg1XF6D/AE8RGN56s=;
-        b=LqNjXvS8jqmHA1KhM7v3sX2YNUvNNsUWLvJMigBpbVkVKRHWewXWsdk3LSKh+QdCL9
-         fEpvq9DF6paP7FlIwMoyzsVCm4sXEiWRq2PEEbRjQe3Q1LcdzD/y7Zqtk0NbkGWLAv9Y
-         bZxuogNajNnMh7Awq91ab8D0F8PJ+C9kor3JUs3Apx+cHx0LQvO205N7sV7ob6uUkg+1
-         HFIq7i4KcgBFWWFjE9lAocSgSDBGx0lPEtxjZv8PLj15uKD348Dl3cLlLc7/xPnCVtiX
-         dOstUM/4xY56J2hM0/D6JR7l4DpgHbDQgA7+VUdJOQLjZ7fW0PYWF3kxbVsPF+wwHRdS
-         t0ig==
-X-Gm-Message-State: ACrzQf163HOeVONRNG91L+1WLghWezPZbwkP5icZouonBG6AT3BrAouB
-        YrUy71nw2Hth3NIHskdFxEyayHnxS/0elWWKKyA=
-X-Google-Smtp-Source: AMsMyM5wuCJUzTKp9TI/kiM8x8/PMnUws2JzhLIGBD920S8QVuI8y+eWoXERHiNlnjNIOLS2FOM7R6e7vTyAXKLJIRY=
-X-Received: by 2002:a05:6830:621a:b0:660:dd14:c2f4 with SMTP id
- cd26-20020a056830621a00b00660dd14c2f4mr408265otb.190.1665076370095; Thu, 06
- Oct 2022 10:12:50 -0700 (PDT)
+        with ESMTP id S230046AbiJFRVd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Oct 2022 13:21:33 -0400
+Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 855F6ACA26
+        for <bpf@vger.kernel.org>; Thu,  6 Oct 2022 10:21:30 -0700 (PDT)
+Message-ID: <a9e767e6-b8ce-ec1e-47dc-74abfe828713@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1665076888;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yHTXlpPz0SRLPnl4199FQCenZLPnwWcu12lMT+2QCG4=;
+        b=Lm31v2dzKX4xnoIDHbxcZ7XVhcpfUqHiQHFc4Hykfp60kNmSc8IcZ3j70O0JYiSplzSavW
+        Mr+Ru71K7AKNDm4cGA2ilWEG/jkT9U2WRumSrMolw3fFsMi646/l1nncj+RFtphvy4EPL7
+        iO8Z7pxDCDzXfw5A90eJ6SBZiSWvC34=
+Date:   Thu, 6 Oct 2022 10:21:24 -0700
 MIME-Version: 1.0
-References: <166434824149.401.4361243714612738808.tip-bot2@tip-bot2> <20221006160044.3397237-1-sumanthk@linux.ibm.com>
-In-Reply-To: <20221006160044.3397237-1-sumanthk@linux.ibm.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Thu, 6 Oct 2022 10:12:37 -0700
-Message-ID: <CAM9d7ciTeePbQokkn_OAhwpa3cPfun-VacQRP4eOMmRzOkd6=w@mail.gmail.com>
-Subject: Re: [PATCH] Re: [tip: perf/core] perf: Use sample_flags for raw_data
-To:     Sumanth Korikkar <sumanthk@linux.ibm.com>
-Cc:     tip-bot2@linutronix.de, linux-kernel@vger.kernel.org,
-        linux-tip-commits@vger.kernel.org, peterz@infradead.org,
-        x86@kernel.org, iii@linux.ibm.com, gor@linux.ibm.com,
-        hca@linux.ibm.com, svens@linux.ibm.com, tmricht@linux.ibm.com,
-        bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Subject: Re: [PATCHv2 bpf-next] selftests/bpf: Add missing
+ bpf_iter_vma_offset__destroy call
+Content-Language: en-US
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Kui-Feng Lee <kuifeng@fb.com>, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+References: <20221006083106.117987-1-jolsa@kernel.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20221006083106.117987-1-jolsa@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On 10/6/22 1:31 AM, Jiri Olsa wrote:
+> Adding missing bpf_iter_vma_offset__destroy call and using in-skeletin
+> link pointer so we don't need extra bpf_link__destroy call.
+> 
+> Fixes: b3e1331eb925 ("selftests/bpf: Test parameterized task BPF iterators.")
+> Cc: Kui-Feng Lee <kuifeng@fb.com>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>   v2 changes:
+>   - use in-skeletin link pointer and destroy call [Martin]
+> 
+>   tools/testing/selftests/bpf/prog_tests/bpf_iter.c | 13 +++++++------
+>   1 file changed, 7 insertions(+), 6 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+> index 3369c5ec3a17..d4437a2bba28 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+> @@ -1498,7 +1498,6 @@ static noinline int trigger_func(int arg)
+>   static void test_task_vma_offset_common(struct bpf_iter_attach_opts *opts, bool one_proc)
+>   {
+>   	struct bpf_iter_vma_offset *skel;
+> -	struct bpf_link *link;
+>   	char buf[16] = {};
+>   	int iter_fd, len;
+>   	int pgsz, shift;
+> @@ -1513,11 +1512,13 @@ static void test_task_vma_offset_common(struct bpf_iter_attach_opts *opts, bool
+>   		;
+>   	skel->bss->page_shift = shift;
+>   
+> -	link = bpf_program__attach_iter(skel->progs.get_vma_offset, opts);
+> -	if (!ASSERT_OK_PTR(link, "attach_iter"))
+> -		return;
+> +	skel->links.get_vma_offset = bpf_program__attach_iter(skel->progs.get_vma_offset, opts);
+> +	if (!ASSERT_OK_PTR(skel->links.get_vma_offset, "attach_iter")) {
+> +		skel->links.get_vma_offset = NULL;
 
-On Thu, Oct 6, 2022 at 9:01 AM Sumanth Korikkar <sumanthk@linux.ibm.com> wrote:
->
-> Hi,
->
-> This causes segfaults.
->
-> Steps to recreate:
-> *  Run ./samples/bpf/trace_output
-> BUG pid 9 cookie 1001000000004 sized 4
-> BUG pid 9 cookie 1001000000004 sized 4
-> BUG pid 9 cookie 1001000000004 sized 4
-> Segmentation fault (core dumped)
->
-> Problem:
-> * The following commit sets data->raw to NULL, when the raw data is not filled
-> by PMU driver. This leads to stale data.
->
-> * raw data could also be filled by bpf_perf_event_output(), bpf_event_output()
-> ...
->  686         perf_sample_data_init(sd, 0, 0);
->  687         sd->raw = &raw;
->  688
->  689         err = __bpf_perf_event_output(regs, map, flags, sd);
-> ...
->
-> * The below patch eliminates segfaults. However, contradicts with
-> the description mentioned in this commit (Filled by only PMU driver).
+Applied with this NULL assignment removed.  bpf_link__destroy() can handle err 
+ptr.  Thanks.
 
-Thank you for the fix.  Don't worry about the description - it said
-it's usually filled by PMU drivers and it should be fine as long as
-you set the sample flags after filling the raw data.
 
-Acked-by: Namhyung Kim <namhyung@kernel.org>
+> +		goto exit;
+> +	}
+>   
+> -	iter_fd = bpf_iter_create(bpf_link__fd(link));
+> +	iter_fd = bpf_iter_create(bpf_link__fd(skel->links.get_vma_offset));
+>   	if (!ASSERT_GT(iter_fd, 0, "create_iter"))
+>   		goto exit;
+>   
+> @@ -1535,7 +1536,7 @@ static void test_task_vma_offset_common(struct bpf_iter_attach_opts *opts, bool
+>   	close(iter_fd);
+>   
+>   exit:
+> -	bpf_link__destroy(link);
+> +	bpf_iter_vma_offset__destroy(skel);
+>   }
+>   
+>   static void test_task_vma_offset(void)
 
-Thanks,
-Namhyung
-
->
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index 49fb9ec8366d..1ed08967fb97 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -687,6 +687,7 @@ BPF_CALL_5(bpf_perf_event_output, struct pt_regs *, regs, struct bpf_map *, map,
->
->         perf_sample_data_init(sd, 0, 0);
->         sd->raw = &raw;
-> +       sd->sample_flags |= PERF_SAMPLE_RAW;
->
->         err = __bpf_perf_event_output(regs, map, flags, sd);
->
-> @@ -745,6 +746,7 @@ u64 bpf_event_output(struct bpf_map *map, u64 flags, void *meta, u64 meta_size,
->         perf_fetch_caller_regs(regs);
->         perf_sample_data_init(sd, 0, 0);
->         sd->raw = &raw;
-> +       sd->sample_flags |= PERF_SAMPLE_RAW;
->
->         ret = __bpf_perf_event_output(regs, map, flags, sd);
->  out:
->
-> --
-> Thanks,
-> Sumanth
