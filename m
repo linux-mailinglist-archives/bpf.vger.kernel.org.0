@@ -2,67 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F5EB5F63D9
-	for <lists+bpf@lfdr.de>; Thu,  6 Oct 2022 11:54:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F8CC5F6423
+	for <lists+bpf@lfdr.de>; Thu,  6 Oct 2022 12:09:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231501AbiJFJyU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Oct 2022 05:54:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35838 "EHLO
+        id S231129AbiJFKJN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Oct 2022 06:09:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231386AbiJFJyT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Oct 2022 05:54:19 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 338237E81F
-        for <bpf@vger.kernel.org>; Thu,  6 Oct 2022 02:54:16 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id j7so1880734wrr.3
-        for <bpf@vger.kernel.org>; Thu, 06 Oct 2022 02:54:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=32oVKVOfr75dIfCVljHFoksVvRK33khsj78jRFcLjX0=;
-        b=GJFBiRThhIt7c2sogyjEdMDOTq6l2tZfIATOeXZB/Ma8wBZpf5kGtV05luoQkoPYDh
-         iGt2kZ6YzRD6Zoj2bQUnX3Vrett1zJAQnPeMMlNCphul5qPyJYBLP70Y6HukuLTQILsw
-         NvUU7y8Hvx7KCJlmCwOiXFrXXZ1k3OSwI8TI9GSPDeyx4luUqo8rgBWNDOoT9rgq8ZG+
-         SLu1MwK0Req/5D3VJco0llwJfz+QSugszYnor75VcBaU6TEkzMp15dhR2Vc66lAQiup9
-         /oq94b5Yh3hw3FYsthpTWHY6eisycpBqN6u+xhTwri5h0lSRW8/ciOXYAcvNy/IMeMBT
-         fQ7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=32oVKVOfr75dIfCVljHFoksVvRK33khsj78jRFcLjX0=;
-        b=lBFsmuZVrVyFLtt55NvxB29Wj5OSB7oOz2OHrneA/x14365PgLhkxJ6V5kF4ChTyC2
-         e7DDTrvMojmnCX0l1OyjeyiMYLiNv/WjzoVMWTLRLycBoWCzAfJtgiE3uBJA7uwdLdmZ
-         drUM9C1f2Fw5ffw1TgLtcRHkChD2naTR/5R8LDgCpQAejb3AIf+eoju5FP9zkI2bIvRT
-         xv1ZVPhy53ctXNnDeEc1Qg2J9wmBtt8LjQ8tK/O+C0EVzKtfxXISptdgWA9I7+lux/We
-         SEj72tEw4wF5wrWgDUTLIzqWqpD9YfOlmUAaDc24IXAdWRW3+eEHHhOT2Y6P9oDfYRmb
-         EaJw==
-X-Gm-Message-State: ACrzQf0OaLsLSAKgSl47xg0NbvKwIYkDMwLnNN/6g7kmmO9ZFzWZHNJf
-        eRxlMkAJKHCLz1ODYSDOhK8=
-X-Google-Smtp-Source: AMsMyM75UsFbdtchhHXe80atKoXfrowbs0TisfPjsiAeL59S+xClQgNn5MTRfPASYq+iLKFoj8kWEQ==
-X-Received: by 2002:a5d:4241:0:b0:22e:6d62:cca0 with SMTP id s1-20020a5d4241000000b0022e6d62cca0mr1547738wrr.79.1665050054565;
-        Thu, 06 Oct 2022 02:54:14 -0700 (PDT)
-Received: from krava ([193.85.244.190])
-        by smtp.gmail.com with ESMTPSA id h11-20020adfe98b000000b0022c906ffedasm17381954wrm.70.2022.10.06.02.54.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Oct 2022 02:54:14 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Thu, 6 Oct 2022 11:54:13 +0200
-To:     Akihiro HARAI <jharai0815@gmail.com>
-Cc:     bpf@vger.kernel.org
-Subject: Re: Inconsistent BTF entries for `struct pt_regs *regs` parameter
-Message-ID: <Yz6lxZLRxAalQCHd@krava>
-References: <CAFo4XKvHU8gn9PoYwrFA0OyBDGY7=bBvwMDNuWGxR6gkLgudOg@mail.gmail.com>
+        with ESMTP id S230511AbiJFKJM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Oct 2022 06:09:12 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CDD58B2EC;
+        Thu,  6 Oct 2022 03:09:10 -0700 (PDT)
+Received: from kwepemi500013.china.huawei.com (unknown [172.30.72.56])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4MjnCj4NZszJn1h;
+        Thu,  6 Oct 2022 18:06:41 +0800 (CST)
+Received: from [10.67.111.192] (10.67.111.192) by
+ kwepemi500013.china.huawei.com (7.221.188.120) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Thu, 6 Oct 2022 18:09:06 +0800
+Message-ID: <ee451276-1101-0b83-9840-9c506986f91d@huawei.com>
+Date:   Thu, 6 Oct 2022 18:09:05 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFo4XKvHU8gn9PoYwrFA0OyBDGY7=bBvwMDNuWGxR6gkLgudOg@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: [PATCH bpf-next v2 0/4] Add ftrace direct call for arm64
+Content-Language: en-US
+To:     Mark Rutland <mark.rutland@arm.com>
+CC:     Catalin Marinas <catalin.marinas@arm.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        Florent Revest <revest@chromium.org>,
+        Will Deacon <will@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Marc Zyngier <maz@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+References: <20220913162732.163631-1-xukuohai@huaweicloud.com>
+ <f1e14934-dc54-9bf7-501a-89affdb7371e@iogearbox.net>
+ <YzG51Jyd5zhvygtK@arm.com> <YzHk1zRf1Dp8YTEe@FVFF77S0Q05N>
+ <970a25e4-9b79-9e0c-b338-ed1a934f2770@huawei.com>
+ <YzR5WSLux4mmFIXg@FVFF77S0Q05N>
+From:   Xu Kuohai <xukuohai@huawei.com>
+In-Reply-To: <YzR5WSLux4mmFIXg@FVFF77S0Q05N>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.111.192]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemi500013.china.huawei.com (7.221.188.120)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,174 +74,190 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 06, 2022 at 04:34:46PM +0900, Akihiro HARAI wrote:
-> Depending on distribution/kernel/syscall combination, BTF entry for
-> `struct pt_regs *regs` parameter differs.
+On 9/29/2022 12:42 AM, Mark Rutland wrote:
+> On Tue, Sep 27, 2022 at 12:49:58PM +0800, Xu Kuohai wrote:
+>> On 9/27/2022 1:43 AM, Mark Rutland wrote:
+>>> On Mon, Sep 26, 2022 at 03:40:20PM +0100, Catalin Marinas wrote:
+>>>> On Thu, Sep 22, 2022 at 08:01:16PM +0200, Daniel Borkmann wrote:
+>>>>> On 9/13/22 6:27 PM, Xu Kuohai wrote:
+>>>>>> This series adds ftrace direct call for arm64, which is required to attach
+>>>>>> bpf trampoline to fentry.
+>>>>>>
+>>>>>> Although there is no agreement on how to support ftrace direct call on arm64,
+>>>>>> no patch has been posted except the one I posted in [1], so this series
+>>>>>> continues the work of [1] with the addition of long jump support. Now ftrace
+>>>>>> direct call works regardless of the distance between the callsite and custom
+>>>>>> trampoline.
+>>>>>>
+>>>>>> [1] https://lore.kernel.org/bpf/20220518131638.3401509-2-xukuohai@huawei.com/
+>>>>>>
+>>>>>> v2:
+>>>>>> - Fix compile and runtime errors caused by ftrace_rec_arch_init
+>>>>>>
+>>>>>> v1: https://lore.kernel.org/bpf/20220913063146.74750-1-xukuohai@huaweicloud.com/
+>>>>>>
+>>>>>> Xu Kuohai (4):
+>>>>>>      ftrace: Allow users to disable ftrace direct call
+>>>>>>      arm64: ftrace: Support long jump for ftrace direct call
+>>>>>>      arm64: ftrace: Add ftrace direct call support
+>>>>>>      ftrace: Fix dead loop caused by direct call in ftrace selftest
+>>>>>
+>>>>> Given there's just a tiny fraction touching BPF JIT and most are around core arm64,
+>>>>> it probably makes sense that this series goes via Catalin/Will through arm64 tree
+>>>>> instead of bpf-next if it looks good to them. Catalin/Will, thoughts (Ack + bpf-next
+>>>>> could work too, but I'd presume this just results in merge conflicts)?
+>>>>
+>>>> I think it makes sense for the series to go via the arm64 tree but I'd
+>>>> like Mark to have a look at the ftrace changes first.
+>>>
+>>>>  From a quick scan, I still don't think this is quite right, and as it stands I
+>>> believe this will break backtracing (as the instructions before the function
+>>> entry point will not be symbolized correctly, getting in the way of
+>>> RELIABLE_STACKTRACE). I think I was insufficiently clear with my earlier
+>>> feedback there, as I have a mechanism in mind that wa a little simpler.
+>>
+>> Thanks for the review. I have some thoughts about reliable stacktrace.
+>>
+>> If PC is not in the range of literal_call, stacktrace works as before without
+>> changes.
+>>
+>> If PC is in the range of literal_call, for example, interrupted by an
+>> irq, I think there are 2 problems:
+>>
+>> 1. Caller LR is not pushed to the stack yet, so caller's address and name
+>>     will be missing from the backtrace.
+>>
+>> 2. Since PC is not in func's address range, no symbol name will be found, so
+>>     func name is also missing.
+>>
+>> Problem 1 is not introduced by this patchset, but the occurring probability
+>> may be increased by this patchset. I think this problem should be addressed by
+>> a reliable stacktrace scheme, such as ORC on x86.
 > 
-> For example, Amazon Linux 2 with kernel-5.15 package enabled has a FWD
-> entry for `__x64_sys_recvmsg` function:
+> I agree problem 1 is not introduced by this patch set; I have plans fo how to
+> address that for reliable stacktrace based on identifying the ftrace
+> trampoline. This is one of the reasons I do not want direct calls, as
+> identifying all direct call trampolines is going to be very painful and slow,
+> whereas identifying a statically allocated ftrace trampoline is far simpler.
 > 
-> ```
-> $ uname -a
-> Linux ip-10-1-1-66.ap-northeast-1.compute.internal
-> 5.15.43-20.123.amzn2.x86_64 #1 SMP Fri May 27 00:28:44 UTC 2022 x86_64
-> x86_64 x86_64 GNU/Linux
+>> Problem 2 is indeed introduced by this patchset. I think there are at least 3
+>> ways to deal with it:
 > 
-> $ bpftool btf dump file /sys/kernel/btf/vmlinux format raw
-> ...
-> [15439] FWD 'pt_regs' fwd_kind=struct
-> [15440] CONST '(anon)' type_id=15439
-> [15441] PTR '(anon)' type_id=15440
-> [15442] FUNC_PROTO '(anon)' ret_type_id=34 vlen=1
->         '__unused' type_id=15441
-> ...
-> [15694] FUNC '__x64_sys_recvmsg' type_id=15442 linkage=static
-> ...
-> ```
+> What I would like to do here, as mentioned previously in other threads, is to
+> avoid direct calls, and implement "FTRACE_WITH_OPS", where we can associate
+> each patch-site with a specific set of ops, and invoke that directly from the
+> regular ftrace trampoline.
 > 
-> while Ubuntu 20.04 LTS with newer kernel has a STRUCT entry for the
-> same function:
+> With that, the patch site would look like:
 > 
-> ```
-> $ uname -a
-> Linux xxx-XPS-13-9300 5.13.0-51-generic #58~20.04.1-Ubuntu SMP Tue Jun
-> 14 11:29:12 UTC 2022 x86_64 x86_64 x86_64 GNU/Linux
+> 	pre_func_literal:
+> 		NOP		// Patched to a pointer to
+> 		NOP		// ftrace_ops
+> 	func:
+> 		< optional BTI here >
+> 		NOP		// Patched to MOV X9, LR
+> 		NOP		// Patched to a BL to the ftrace trampoline
 > 
-> $ bpftool btf dump file /sys/kernel/btf/vmlinux format raw
-> [1] INT 'long unsigned int' size=8 bits_offset=0 nr_bits=64 encoding=(none)
-> ...
-> [226] STRUCT 'pt_regs' size=168 vlen=21
->         'r15' type_id=1 bits_offset=0
->         'r14' type_id=1 bits_offset=64
->         'r13' type_id=1 bits_offset=128
->         'r12' type_id=1 bits_offset=192
->         'bp' type_id=1 bits_offset=256
->         'bx' type_id=1 bits_offset=320
->         'r11' type_id=1 bits_offset=384
->         'r10' type_id=1 bits_offset=448
->         'r9' type_id=1 bits_offset=512
->         'r8' type_id=1 bits_offset=576
->         'ax' type_id=1 bits_offset=640
->         'cx' type_id=1 bits_offset=704
->         'dx' type_id=1 bits_offset=768
->         'si' type_id=1 bits_offset=832
->         'di' type_id=1 bits_offset=896
->         'orig_ax' type_id=1 bits_offset=960
->         'ip' type_id=1 bits_offset=1024
->         'cs' type_id=1 bits_offset=1088
->         'flags' type_id=1 bits_offset=1152
->         'sp' type_id=1 bits_offset=1216
->         'ss' type_id=1 bits_offset=1280
-> ...
-> [5183] CONST '(anon)' type_id=226
-> ...
-> [5189] PTR '(anon)' type_id=5183
-> ...
-> [5321] FUNC_PROTO '(anon)' ret_type_id=42 vlen=1
->         '__unused' type_id=5189
-> ...
-> [17648] FUNC '__x64_sys_recvmsg' type_id=5321 linkage=static
-> ...
-> ```
+> ... then in the ftrace trampoline we can recover the ops pointer at a negative
+> offset from the LR based on the LR, and invoke the ops from there (passing a
+> struct ftrace_regs with the saved regs).
 > 
-> Yet another distribution/kernel/syscall combination has multiple `FUNC
-> '__x64_sys_[SYSCALL]'` entries, one for FWD and the other for STRUCT:
+> That way the patch-site is less significantly affected, and there's no impact
+> to backtracing. That gets most of the benefit of the direct calls avoiding the
+> ftrace ops list traversal, without having to do anything special at all. That
+> should be much easier to maintain, too.
 > 
-> ```
-> $ uname -a
-> Linux ip-10-5-0-115.ap-northeast-1.compute.internal
-> 5.10.112-108.499.amzn2.x86_64 #1 SMP Wed Apr 27 23:39:40 UTC 2022
-> x86_64 x86_64 x86_64 GNU/Linux
+> I started implementing that before LPC (and you can find some branches on my
+> kernel.org repo), but I haven't yet had the time to rebase those and sort out
+> the remaining issues:
 > 
-> ```
-> $ bpftool btf dump file /sys/kernel/btf/vmlinux format raw | grep
-> __x64_sys_mprotect
-> ...
-> [175] STRUCT 'pt_regs' size=168 vlen=21
->         'r15' type_id=2 bits_offset=0
->         'r14' type_id=2 bits_offset=64
->         'r13' type_id=2 bits_offset=128
->         'r12' type_id=2 bits_offset=192
->         'bp' type_id=2 bits_offset=256
-> ...
-> [4215] CONST '(anon)' type_id=175
-> ...
-> [4220] PTR '(anon)' type_id=4215
-> ...
-> [6062] FUNC_PROTO '(anon)' ret_type_id=36 vlen=1
->         'regs' type_id=4220
-> ...
-> [11461] FWD 'pt_regs' fwd_kind=struct
-> [11462] CONST '(anon)' type_id=11461
-> [11463] PTR '(anon)' type_id=11462
-> [11464] FUNC_PROTO '(anon)' ret_type_id=36 vlen=1
->         '__unused' type_id=11463
-> ...
-> [11698] FUNC '__x64_sys_mprotect' type_id=11464 linkage=static
-> ...
-> [23528] FUNC '__x64_sys_mprotect' type_id=6062 linkage=static
-> ...
-> ```
+>    https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/log/?h=arm64/ftrace/per-callsite-ops
 > 
-> Trying to read `regs` parameter with FWD entry results in "invalid
-> bpf_context access" error:
+> Note that as a prerequisite for that I also want to reduce the set of registers
+> we save/restore down to the set required by our calling convention, as the
+> existing pt_regs is both large and generally unsound (since we can not and do
+> not fill in many of the fields we only acquire at an exception boundary).
+> That'll further reduce the ftrace overhead generally, and remove the needs for
+> the two trampolines we currently have. I have a WIP at:
 > 
-> ```
-> SEC("fentry/__x64_sys_recvfrom")
-> int BPF_PROG(fentry_syscall, struct pt_regs *regs) {
->   struct event t;
+>    https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/log/?h=arm64/ftrace/minimal-regs
 > 
->   bpf_get_current_comm(t.comm, TASK_COMM_LEN);
+> I intend to get back to both of those shortly (along with some related bits for
+> kretprobes and stacktracing); I just haven't had much time recently due to
+> other work and illness.
 > 
->   u64 id = bpf_get_current_pid_tgid();
->   t.pid = id >> 32;
+>> 1. Add a symbol name for literal_call.
 > 
->   // This causes an error on some environments.
->   t.fd = PT_REGS_PARM1_CORE(regs);
+> That'll require a number of invasive changes to make RELIABLE_STACKTRACE work,
+> so I don't think we want to do that.
 > 
->   bpf_printk("comm: %s, pid: %d, fd: %d", t.comm, t.pid, t.fd);
+>> 2. Hack the backtrace routine, if no symbol name found for a PC during backtrace,
+>>     we can check if the PC is in literal_call, then adjust PC and try again.
 > 
->   return 0;
-> ```
+> The problem is that the existing symbolization code doesn't know the length of
+> the prior symbol, so it will find *some* symbol associated with the previous
+> function rather than finding no symbol.
 > 
-> ```
-> $ sudo ./output
-> 2022/07/01 03:33:01 loading objects: field FentrySyscall: program
-> fentry_syscall: load program: permission denied:
->         arg#0 type is not a struct
->         Unrecognized arg#0 type PTR
->         ; int BPF_PROG(fentry_syscall, struct pt_regs *regs) {
->         0: (79) r6 = *(u64 *)(r1 +0)
->         func '__x64_sys_recvfrom' arg0 type FWD is not a struct
->         invalid bpf_context access off=0 size=8
->         processed 1 insns (limit 1000000) max_states_per_insn 0
-> total_states 0 peak_states 0 mark_read 0
-> ```
+> To bodge around this we'dd need to special-case each patchable-function-entry
+> site in symbolization, which is going to be painful and slow down unwinding
+> unless we try to fix this up at boot-time or compile time.
 > 
-> Is this a bug related to toolchain?
+>> 3. Move literal_call to the func's address range, for example:
+>>
+>>          a. Compile with -fpatchable-function-entry=7
+>>          func:
+>>                  BTI C
+>>                  NOP
+>>                  NOP
+>>                  NOP
+>>                  NOP
+>>                  NOP
+>>                  NOP
+>>                  NOP
+> 
+> This is a non-starter. We are not going to add 7 NOPs at the start of every
+> function.
+> 
 
-nice, I think it's specific to each object that defines syscall
+Looks like we could just add 3 NOPs to function entry, like this:
 
-if such object has 'struct pt_regs' header with definition included
-it will have full struct pt_regs, if not it will be just fwd ref
+1. At startup or when nothing attached, patch callsite to:
 
-not sure this would break anything else, but change below
-fixes it for me
+         literal:
+                 .quad dummy_tramp
+         func:
+                 BTI C
+                 MOV X9, LR
+                 NOP
+                 NOP
+                 ...
 
-jirka
+2. When target is in range, patch callsite to
+
+         literal:
+                 .quad dummy_tramp
+         func:
+                 BTI C
+                 MOV X9, LR
+                 NOP
+                 BL custom_trampoline
+                 ...
 
 
----
-diff --git a/arch/x86/include/asm/syscall_wrapper.h b/arch/x86/include/asm/syscall_wrapper.h
-index 59358d1bf880..fd2669b1cb2d 100644
---- a/arch/x86/include/asm/syscall_wrapper.h
-+++ b/arch/x86/include/asm/syscall_wrapper.h
-@@ -6,7 +6,7 @@
- #ifndef _ASM_X86_SYSCALL_WRAPPER_H
- #define _ASM_X86_SYSCALL_WRAPPER_H
- 
--struct pt_regs;
-+#include <asm/ptrace.h>
- 
- extern long __x64_sys_ni_syscall(const struct pt_regs *regs);
- extern long __ia32_sys_ni_syscall(const struct pt_regs *regs);
+3. Whe target is out of range, patch callsite to
+
+         literal:
+                 .quad custom_trampoline
+         func:
+                 BTI C
+                 MOV X9, LR
+                 LDR X16, literal
+                 BLR X16
+                 ...
+
+
+> Thanks,
+> Mark.
+> 
+> .
+
