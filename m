@@ -2,348 +2,187 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BE165F6224
-	for <lists+bpf@lfdr.de>; Thu,  6 Oct 2022 09:55:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2C5D5F6274
+	for <lists+bpf@lfdr.de>; Thu,  6 Oct 2022 10:19:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230204AbiJFHzV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Oct 2022 03:55:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38380 "EHLO
+        id S230507AbiJFITt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Oct 2022 04:19:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbiJFHzU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Oct 2022 03:55:20 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7746927154;
-        Thu,  6 Oct 2022 00:55:18 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id c3-20020a1c3503000000b003bd21e3dd7aso2301465wma.1;
-        Thu, 06 Oct 2022 00:55:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=t0gHcHj95iQot3u9dJoUqW0N9thU/AXtlSvNItR2GnU=;
-        b=Xg5EbkkoECjKyMhve2o8QWXRInBF/7eHGahoOil5v2VGd+U3ER/Fg1rafVO4QYY6Ok
-         0/FmT8reVmLkwrs8oNBUfJ8ZP96i5FcqfuJxeTmOvTAquWVKG8iwScJ4V8aEmbz/rOJG
-         i/dPpYO40FEmNV16LT4AzPN4EJlpB02k5it1WWTLGxE4kVllqXu2x6BfSPBiQ5qwjUkc
-         /GPmGeBIxHeMzNx/A8aEtFjQmTw+blvwly5o+9+tN0KTg6fwMgfhF7Y2GjEgcD03hn28
-         MBMupp6wO+TbmhcOriP2kMpH0XfTtrPA5SfkUYE19cSVgVIgAAOEheYdIMx0teDxc3q1
-         9ggA==
+        with ESMTP id S231128AbiJFITo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Oct 2022 04:19:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67E3D20C
+        for <bpf@vger.kernel.org>; Thu,  6 Oct 2022 01:19:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1665044381;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TwCjUrTl5eAHnjiz9iHXpu9SUcGA4ZwcUrBhyn+zXBI=;
+        b=YOG5m5YHdvZWfNydQapZ0FC2Ui0B51l7D8IdX6mZ8in+eDA98u1znieUBCS/ddkLMVq3s4
+        rtdBiFt5vHwy2CVal6ZY2JspPKtQkzuUIb5Q8KsIoy8ZcYmHRmwkSXiiHG/TXd853JDs11
+        yQuwMJItvD4/S3W2IhF5M8LVPFqDFJk=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-488-77DEp3zQMWudhfNnqaZz8Q-1; Thu, 06 Oct 2022 04:19:40 -0400
+X-MC-Unique: 77DEp3zQMWudhfNnqaZz8Q-1
+Received: by mail-wm1-f72.google.com with SMTP id v125-20020a1cac83000000b003bd44dc5242so2214791wme.7
+        for <bpf@vger.kernel.org>; Thu, 06 Oct 2022 01:19:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=t0gHcHj95iQot3u9dJoUqW0N9thU/AXtlSvNItR2GnU=;
-        b=uBZ1NnCFdWNezo6RMMeXAJj+OvPujWeHYFWrnVRTuGI+FK1176m6ncHM5lZLqGc1j4
-         pdmb15uoh9Zn6rx5ATmynxnhv0QoynwuDQDoALtz1UhAXFJ75OOEcejL6KoX1g+z7JS9
-         dSFmz12YAicC1yDXup6Ta0BlrgWRl0voR7m72HW12UJ3rAOR8NyoeTf4hmUIHuH6gdHF
-         TNgM2pCw5wqpInHPZcyxvMXzpyoNiCAGPJ8Om0K5NeWFJ+DXR0mInK6xpckCEF+8zyip
-         zLy+8S66X0Zp6ys/hV81T4d6+z3hhLZnCSIrxiPMNUQDJl1nWhMevBneEl3feivRaeIB
-         XKjQ==
-X-Gm-Message-State: ACrzQf2otsMByGvI/Wi3+aCiqx96mVvFm60dVIAyuHfriKSGxKXpRNgy
-        LIeew8oPFYHD7ylN6drnIy4=
-X-Google-Smtp-Source: AMsMyM4yZuATsxI76joOkdOGKIW2YefUnFNV6FRsb/lH7FBatZ7Cl0qGBSX/NLEem/el3jbtQ2ZSUQ==
-X-Received: by 2002:a05:600c:4f55:b0:3b4:b687:a7b7 with SMTP id m21-20020a05600c4f5500b003b4b687a7b7mr5783994wmq.185.1665042916799;
-        Thu, 06 Oct 2022 00:55:16 -0700 (PDT)
-Received: from krava ([193.85.244.190])
-        by smtp.gmail.com with ESMTPSA id x16-20020adfec10000000b0022a2dbc80fdsm17139125wrn.10.2022.10.06.00.55.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Oct 2022 00:55:16 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Thu, 6 Oct 2022 09:55:13 +0200
-To:     kernel test robot <lkp@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        loongarch@lists.linux.dev, linux-wireless@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-ext4@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvm@vger.kernel.org, iommu@lists.linux.dev,
-        dri-devel@lists.freedesktop.org, bpf@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: Re: [linux-next:master] BUILD REGRESSION
- 67ae4f7434cee86ee318d46fb10b8a9840ad2e81
-Message-ID: <Yz6J4eMvHOnK+CXb@krava>
-References: <633deff4.q8bW3fyM79Uz0A/F%lkp@intel.com>
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TwCjUrTl5eAHnjiz9iHXpu9SUcGA4ZwcUrBhyn+zXBI=;
+        b=lXAk4LDu5gVM4yp9EprcyDsiBi1w3x+x2UNtJjeVWrN8+4irpbchw8257Hqqjdp8M2
+         1i7c331FiI8GsE4gxUpfJIt8qtqPlr4kZ5hJ1Rnveyvo2Yl0gIV7/qcX/tgFuzDPTnPw
+         fALc9WtJAJSxjty9/B3e6xcf7skExXKQzqOZ7lypTT39Kq58JYMZAXiErFsoIzXXQTjq
+         pjled5zuzW/wYPKgJiJDpJjGRI7MN7+LduWPpQ0BTPhnwvZ6qnpGfZZecUKedyh4RcK8
+         L1LPkXmyd7KmuCvGpXvFKwDS6t8NdrCTEbebkeXg/QMVYJN/Sd2OgZEYKjyHHyzbzZmR
+         yevg==
+X-Gm-Message-State: ACrzQf0WnDK1Fc9HTivbpc4woFr+E2YSmcmAvnckK7rNn4RO+4gQpSCu
+        8IJ8ecjJk37tES0CgNlBIdQp8DcIJsheSymfjywbzY+biz5uZrS07rVJw5dwwvhdnjdGEjbVQUp
+        Wf6RG+hEE9ooo
+X-Received: by 2002:a05:6000:104:b0:22e:74bb:3a49 with SMTP id o4-20020a056000010400b0022e74bb3a49mr519341wrx.349.1665044378793;
+        Thu, 06 Oct 2022 01:19:38 -0700 (PDT)
+X-Google-Smtp-Source: AMsMyM5oDrwJG8M/Mmqdr1AF7j1dusO/ZuyNmiWwrEOo0jYffmCBM+zotrhVhNpMQa0B9nmDuEJ4lw==
+X-Received: by 2002:a05:6000:104:b0:22e:74bb:3a49 with SMTP id o4-20020a056000010400b0022e74bb3a49mr519319wrx.349.1665044378533;
+        Thu, 06 Oct 2022 01:19:38 -0700 (PDT)
+Received: from [192.168.0.4] ([78.17.186.98])
+        by smtp.gmail.com with ESMTPSA id g3-20020a7bc4c3000000b003bd83d8c0f2sm4329089wmk.16.2022.10.06.01.19.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 06 Oct 2022 01:19:37 -0700 (PDT)
+Message-ID: <be3f16a2-8422-4a34-3eb9-3943753d453e@redhat.com>
+Date:   Thu, 6 Oct 2022 09:19:36 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <633deff4.q8bW3fyM79Uz0A/F%lkp@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.2.1
+Subject: Re: [xdp-hints] Re: [PATCH RFCv2 bpf-next 00/18] XDP-hints: XDP
+ gaining access to HW offload hints via BTF
+Content-Language: en-US
+To:     sdf@google.com,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Jesper Dangaard Brouer <jbrouer@redhat.com>,
+        brouer@redhat.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
+        xdp-hints@xdp-project.net, larysa.zaremba@intel.com,
+        memxor@gmail.com, Lorenzo Bianconi <lorenzo@kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        dave@dtucker.co.uk, Magnus Karlsson <magnus.karlsson@intel.com>,
+        bjorn@kernel.org
+References: <166256538687.1434226.15760041133601409770.stgit@firesoul>
+ <Yzt2YhbCBe8fYHWQ@google.com>
+ <35fcfb25-583a-e923-6eee-e8bbcc19db17@redhat.com>
+ <CAKH8qBuYVk7QwVOSYrhMNnaKFKGd7M9bopDyNp6-SnN6hSeTDQ@mail.gmail.com>
+ <5ccff6fa-0d50-c436-b891-ab797fe7e3c4@linux.dev>
+ <20221004175952.6e4aade7@kernel.org>
+ <CAKH8qBtdAeHqbWa33yO-MMgC2+h2qehFn8Y_C6ZC1=YsjQS-Bw@mail.gmail.com>
+ <87h70iinzc.fsf@toke.dk> <Yz3RQbh2TocpnuX0@google.com>
+From:   Maryam Tahhan <mtahhan@redhat.com>
+In-Reply-To: <Yz3RQbh2TocpnuX0@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 06, 2022 at 04:58:28AM +0800, kernel test robot wrote:
-> tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-> branch HEAD: 67ae4f7434cee86ee318d46fb10b8a9840ad2e81  Add linux-next specific files for 20221005
+On 05/10/2022 19:47, sdf@google.com wrote:
+> On 10/05, Toke H�iland-J�rgensen wrote:
+>> Stanislav Fomichev <sdf@google.com> writes:
 > 
-> Error/Warning reports:
+>> > On Tue, Oct 4, 2022 at 5:59 PM Jakub Kicinski <kuba@kernel.org> wrote:
+>> >>
+>> >> On Tue, 4 Oct 2022 17:25:51 -0700 Martin KaFai Lau wrote:
+>> >> > A intentionally wild question, what does it take for the driver 
+>> to return the
+>> >> > hints.  Is the rx_desc and rx_queue enough?  When the xdp prog is 
+>> calling a
+>> >> > kfunc/bpf-helper, like 'hwtstamp = bpf_xdp_get_hwtstamp()', can 
+>> the driver
+>> >> > replace it with some inline bpf code (like how the inline code is 
+>> generated for
+>> >> > the map_lookup helper).  The xdp prog can then store the hwstamp 
+>> in the meta
+>> >> > area in any layout it wants.
+>> >>
+>> >> Since you mentioned it... FWIW that was always my preference rather 
+>> than
+>> >> the BTF magic :)  The jited image would have to be per-driver like we
+>> >> do for BPF offload but that's easy to do from the technical
+>> >> perspective (I doubt many deployments bind the same prog to multiple
+>> >> HW devices)..
+>> >
+>> > +1, sounds like a good alternative (got your reply while typing)
+>> > I'm not too versed in the rx_desc/rx_queue area, but seems like worst
+>> > case that bpf_xdp_get_hwtstamp can probably receive a xdp_md ctx and
+>> > parse it out from the pre-populated metadata?
+>> >
+>> > Btw, do we also need to think about the redirect case? What happens
+>> > when I redirect one frame from a device A with one metadata format to
+>> > a device B with another?
 > 
-> https://lore.kernel.org/linux-mm/202209060229.dVuyxjBv-lkp@intel.com
-> https://lore.kernel.org/llvm/202209220019.Yr2VuXhg-lkp@intel.com
-> https://lore.kernel.org/llvm/202210041553.k9dc1Joc-lkp@intel.com
-> https://lore.kernel.org/llvm/202210060148.UXBijOcS-lkp@intel.com
+>> Yes, we absolutely do! In fact, to me this (redirects) is the main
+>> reason why we need the ID in the packet in the first place: when running
+>> on (say) a veth, an XDP program needs to be able to deal with packets
+>> from multiple physical NICs.
 > 
-> Error/Warning: (recently discovered and may have been fixed)
+>> As far as API is concerned, my hope was that we could solve this with a
+>> CO-RE like approach where the program author just writes something like:
 > 
-> ERROR: modpost: "devm_ioremap_resource" [drivers/dma/fsl-edma.ko] undefined!
-> ERROR: modpost: "devm_ioremap_resource" [drivers/dma/idma64.ko] undefined!
-> ERROR: modpost: "devm_ioremap_resource" [drivers/dma/qcom/hdma.ko] undefined!
-> ERROR: modpost: "devm_memremap" [drivers/misc/open-dice.ko] undefined!
-> ERROR: modpost: "devm_memunmap" [drivers/misc/open-dice.ko] undefined!
-> ERROR: modpost: "devm_platform_ioremap_resource" [drivers/char/xillybus/xillybus_of.ko] undefined!
-> ERROR: modpost: "ioremap" [drivers/net/ethernet/8390/pcnet_cs.ko] undefined!
-> ERROR: modpost: "ioremap" [drivers/tty/ipwireless/ipwireless.ko] undefined!
-> ERROR: modpost: "iounmap" [drivers/net/ethernet/8390/pcnet_cs.ko] undefined!
-> ERROR: modpost: "iounmap" [drivers/tty/ipwireless/ipwireless.ko] undefined!
-> arch/arm64/kernel/alternative.c:199:6: warning: no previous prototype for 'apply_alternatives_vdso' [-Wmissing-prototypes]
-> arch/arm64/kernel/alternative.c:295:14: warning: no previous prototype for 'alt_cb_patch_nops' [-Wmissing-prototypes]
-> arch/loongarch/kernel/traps.c:250 die() warn: variable dereferenced before check 'regs' (see line 244)
-> arch/loongarch/mm/init.c:166:24: warning: variable 'new' set but not used [-Wunused-but-set-variable]
-> drivers/gpu/drm/amd/amdgpu/../display/dc/virtual/virtual_link_hwss.c:40:6: warning: no previous prototype for 'virtual_disable_link_output' [-Wmissing-prototypes]
-> drivers/gpu/drm/bridge/ite-it6505.c:2712 it6505_extcon_work() warn: pm_runtime_get_sync() also returns 1 on success
-> drivers/platform/loongarch/loongson-laptop.c:377 loongson_laptop_get_brightness() warn: impossible condition '(level < 0) => (0-255 < 0)'
-> drivers/vfio/pci/vfio_pci_core.c:775 vfio_pci_ioctl_get_region_info() warn: potential spectre issue 'pdev->resource' [w]
-> drivers/vfio/pci/vfio_pci_core.c:855 vfio_pci_ioctl_get_region_info() warn: potential spectre issue 'vdev->region' [r]
-> fs/ext4/super.c:1744:19: warning: 'deprecated_msg' defined but not used [-Wunused-const-variable=]
-> include/linux/compiler_types.h:357:45: error: call to '__compiletime_assert_417' declared with attribute error: FIELD_GET: mask is not constant
-> kernel/bpf/memalloc.c:500 bpf_mem_alloc_destroy() error: potentially dereferencing uninitialized 'c'.
+>> hw_tstamp = bpf_get_xdp_hint("hw_tstamp", u64);
+> 
+>> and bpf_get_xdp_hint() is really a macro (or a special kind of
+>> relocation?) and libbpf would do the following on load:
+> 
+>> - query the kernel BTF for all possible xdp_hint structs
+>> - figure out which of them have an 'u64 hw_tstamp' member
+>> - generate the necessary conditionals / jump table to disambiguate on
+>>    the BTF_ID in the packet
+> 
+> 
+>> Now, if this is better done by a kfunc I'm not terribly opposed to that
+>> either, but I'm not sure it's actually better/easier to do in the kernel
+>> than in libbpf at load time?
+> 
+> Replied in the other thread, but to reiterate here: then btf_id in the
+> metadata has to stay and we either pre-generate those bpf_get_xdp_hint()
+> at libbpf or at kfunc load time level as you mention.
+> 
+> But the program essentially has to handle all possible hints' btf ids 
+> thrown
+> at it by the system. Not sure about the performance in this case :-/
+> Maybe that's something that can be hidden behind "I might receive forwarded
+> packets and I know how to handle all metadata format" flag? By default,
+> we'll pre-generate parsing only for that specific device?
 
-looks like false warning in here, c should always have value,
-not sure how to disable it in here
+I did a simple POC of Jespers xdp-hints with AF-XDP and CNDP (Cloud 
+Native Data Plane). In the cases where my app had access to the HW I 
+didn't need to handle all possible hints... I knew what Drivers were on 
+the system and they were the hints I needed to deal with.
 
-jirka
+So at program init time I registered the relevant BTF_IDs (and some 
+callback functions to handle them) from the NICs that were available to 
+me in a simple tailq (tbh there were so few I could've probably used a 
+static array).
 
-> net/mac80211/iface.c:251 ieee80211_can_powered_addr_change() warn: inconsistent returns '&local->mtx'.
-> 
-> Unverified Error/Warning (likely false positive, please contact us if interested):
-> 
-> ERROR: modpost: "__tsan_memcpy" [arch/s390/crypto/ghash_s390.ko] undefined!
-> ERROR: modpost: "__tsan_memcpy" [arch/s390/crypto/sha512_s390.ko] undefined!
-> ERROR: modpost: "__tsan_memcpy" [fs/binfmt_misc.ko] undefined!
-> ERROR: modpost: "__tsan_memcpy" [fs/pstore/ramoops.ko] undefined!
-> ERROR: modpost: "__tsan_memset" [arch/s390/crypto/ghash_s390.ko] undefined!
-> ERROR: modpost: "__tsan_memset" [arch/s390/crypto/sha512_s390.ko] undefined!
-> ERROR: modpost: "__tsan_memset" [fs/autofs/autofs4.ko] undefined!
-> ERROR: modpost: "__tsan_memset" [fs/binfmt_misc.ko] undefined!
-> ERROR: modpost: "__tsan_memset" [fs/cramfs/cramfs.ko] undefined!
-> ERROR: modpost: "__tsan_memset" [fs/pstore/ramoops.ko] undefined!
-> s390x-linux-ld: self.c:(.text+0xf6): undefined reference to `__tsan_memcpy'
-> thread_self.c:(.text+0xe4): undefined reference to `__tsan_memcpy'
-> 
-> Error/Warning ids grouped by kconfigs:
-> 
-> gcc_recent_errors
-> |-- alpha-allyesconfig
-> |   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-virtual-virtual_link_hwss.c:warning:no-previous-prototype-for-virtual_disable_link_output
-> |-- alpha-randconfig-s042-20221002
-> |   |-- drivers-thermal-broadcom-ns-thermal.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-data-got-void-noderef-__iomem-assigned-pvtmon
-> |   |-- drivers-thermal-broadcom-ns-thermal.c:sparse:sparse:incorrect-type-in-initializer-(different-address-spaces)-expected-void-noderef-__iomem-pvtmon-got-void
-> |   |-- drivers-thermal-broadcom-ns-thermal.c:sparse:sparse:incorrect-type-in-initializer-(different-address-spaces)-expected-void-noderef-__iomem-pvtmon-got-void-devdata
-> |   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-int-priv1-got-restricted-__le16-addressable-usertype-fc_len
-> |   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-int-tag-got-restricted-__le16-addressable-usertype-fc_tag
-> |   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-short-usertype-tag-got-restricted-__le16-addressable-usertype-fc_tag
-> |   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-__le16-usertype-fc_len-got-unsigned-short-usertype
-> |   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-__le16-usertype-fc_tag-got-unsigned-short-usertype
-> |   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-initializer-(different-base-types)-expected-int-tag-got-restricted-__le16-usertype-fc_tag
-> |   `-- fs-ext4-fast_commit.c:sparse:sparse:restricted-__le16-degrades-to-integer
-> |-- arc-randconfig-s051-20221002
-> |   |-- drivers-gpu-drm-tiny-simpledrm.c:sparse:sparse:incorrect-type-in-initializer-(different-address-spaces)-expected-void-vaddr-got-void-noderef-__iomem-screen_base
-> |   |-- drivers-gpu-drm-vkms-vkms_formats.c:sparse:sparse:cast-to-restricted-__le16
-> |   |-- drivers-gpu-drm-vkms-vkms_formats.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-unsigned-short-usertype-got-restricted-__le16-usertype
-> |   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-int-priv1-got-restricted-__le16-addressable-usertype-fc_len
-> |   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-int-tag-got-restricted-__le16-addressable-usertype-fc_tag
-> |   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-short-usertype-tag-got-restricted-__le16-addressable-usertype-fc_tag
-> |   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-__le16-usertype-fc_len-got-unsigned-short-usertype
-> |   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-__le16-usertype-fc_tag-got-unsigned-short-usertype
-> |   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-initializer-(different-base-types)-expected-int-tag-got-restricted-__le16-usertype-fc_tag
-> |   |-- fs-ext4-fast_commit.c:sparse:sparse:restricted-__le16-degrades-to-integer
-> |   |-- kernel-bpf-hashtab.c:sparse:sparse:cast-removes-address-space-__percpu-of-expression
-> |   |-- kernel-bpf-hashtab.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-void-noderef-__percpu-assigned-pptr-got-void
-> |   |-- kernel-bpf-hashtab.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-void-ptr_to_pptr-got-void-noderef-__percpu-assigned-pptr
-> |   |-- kernel-bpf-memalloc.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-noderef-__percpu-__pdata-got-void
-> |   |-- kernel-bpf-memalloc.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-noderef-__percpu-__pdata-got-void-pptr
-> |   `-- kernel-bpf-memalloc.c:sparse:sparse:incorrect-type-in-initializer-(different-address-spaces)-expected-void-pptr-got-void-noderef-__percpu
-> |-- arc-randconfig-s053-20221002
-> |   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-int-priv1-got-restricted-__le16-addressable-usertype-fc_len
-> |   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-int-tag-got-restricted-__le16-addressable-usertype-fc_tag
-> |   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-short-usertype-tag-got-restricted-__le16-addressable-usertype-fc_tag
-> |   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-__le16-usertype-fc_len-got-unsigned-short-usertype
-> |   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-__le16-usertype-fc_tag-got-unsigned-short-usertype
-> |   |-- fs-ext4-fast_commit.c:sparse:sparse:incorrect-type-in-initializer-(different-base-types)-expected-int-tag-got-restricted-__le16-usertype-fc_tag
-> |   |-- fs-ext4-fast_commit.c:sparse:sparse:restricted-__le16-degrades-to-integer
-> |   |-- kernel-bpf-hashtab.c:sparse:sparse:cast-removes-address-space-__percpu-of-expression
-> |   |-- kernel-bpf-hashtab.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-void-noderef-__percpu-assigned-pptr-got-void
-> |   |-- kernel-bpf-hashtab.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-void-ptr_to_pptr-got-void-noderef-__percpu-assigned-pptr
-> |   |-- kernel-bpf-memalloc.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-noderef-__percpu-__pdata-got-void
-> |   |-- kernel-bpf-memalloc.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-void-noderef-__percpu-__pdata-got-void-pptr
-> |   `-- kernel-bpf-memalloc.c:sparse:sparse:incorrect-type-in-initializer-(different-address-spaces)-expected-void-pptr-got-void-noderef-__percpu
-> |-- arm64-allyesconfig
-> |   |-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-alt_cb_patch_nops
-> |   `-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-apply_alternatives_vdso
-> |-- arm64-randconfig-c023-20221005
-> |   |-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-alt_cb_patch_nops
-> |   `-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-apply_alternatives_vdso
-> clang_recent_errors
-> |-- arm-randconfig-r016-20221003
-> |   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-virtual-virtual_link_hwss.c:warning:no-previous-prototype-for-function-virtual_disable_link_output
-> |   |-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
-> |   `-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8183.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
-> |-- arm-randconfig-r033-20221002
-> |   |-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
-> |   |-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8183.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
-> |   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-> |-- arm64-buildonly-randconfig-r002-20221003
-> |   |-- arch-arm64-kernel-alternative.c:warning:no-previous-prototype-for-function-apply_alternatives_vdso
-> |   `-- ld.lld:error:assignment-to-symbol-__efistub_kernel_size-does-not-converge
-> |-- hexagon-randconfig-r013-20221002
-> |   |-- ld.lld:error:vmlinux.a(arch-hexagon-kernel-head.o):(.init.text):relocation-R_HEX_B22_PCREL-out-of-range:is-not-in-references-__vmnewmap
-> |   |-- ld.lld:error:vmlinux.a(arch-hexagon-kernel-head.o):(.init.text):relocation-R_HEX_B22_PCREL-out-of-range:is-not-in-references-__vmsetvec
-> |   `-- ld.lld:error:vmlinux.a(arch-hexagon-kernel-head.o):(.init.text):relocation-R_HEX_B22_PCREL-out-of-range:is-not-in-references-memset
-> |-- hexagon-randconfig-r025-20221003
-> |   |-- drivers-phy-mediatek-phy-mtk-tphy.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(unsigned-c
-> |   |-- ld.lld:error:vmlinux.a(arch-hexagon-kernel-head.o):(.init.text):relocation-R_HEX_B22_PCREL-out-of-range:is-not-in-references-__vmnewmap
-> |   |-- ld.lld:error:vmlinux.a(arch-hexagon-kernel-head.o):(.init.text):relocation-R_HEX_B22_PCREL-out-of-range:is-not-in-references-__vmsetvec
-> |   `-- ld.lld:error:vmlinux.a(arch-hexagon-kernel-head.o):(.init.text):relocation-R_HEX_B22_PCREL-out-of-range:is-not-in-references-memset
-> |-- hexagon-randconfig-r031-20221002
-> |   |-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
-> |   |-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8183.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
-> |   `-- drivers-phy-mediatek-phy-mtk-tphy.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(unsigned-c
-> |-- hexagon-randconfig-r041-20221003
-> |   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-> |-- hexagon-randconfig-r045-20221002
-> |   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-> |-- i386-randconfig-a002-20221003
-> |   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-> |-- i386-randconfig-a005-20221003
-> |   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-> |-- i386-randconfig-a006-20221003
-> |   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-> |-- i386-randconfig-r001-20221003
-> |   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-> |-- mips-loongson1c_defconfig
-> |   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-> |-- mips-randconfig-r006-20221002
-> |   |-- drivers-phy-mediatek-phy-mtk-hdmi-mt2701.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(uns
-> |   |-- drivers-phy-mediatek-phy-mtk-hdmi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(uns
-> |   |-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
-> |   |-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8183.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
-> |   `-- fs-ext4-super.c:warning:unused-variable-deprecated_msg
-> |-- powerpc-allyesconfig
-> |   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-virtual-virtual_link_hwss.c:warning:no-previous-prototype-for-function-virtual_disable_link_output
-> |   |-- drivers-phy-mediatek-phy-mtk-hdmi-mt2701.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(uns
-> |   |-- drivers-phy-mediatek-phy-mtk-hdmi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:(uns
-> |   |-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8173.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
-> |   |-- drivers-phy-mediatek-phy-mtk-mipi-dsi-mt8183.c:warning:result-of-comparison-of-constant-with-expression-of-type-typeof-(_Generic((mask_)-char:(unsigned-char)-unsigned-char:(unsigned-char)-signed-char:
-> 
-> elapsed time: 729m
-> 
-> configs tested: 94
-> configs skipped: 3
-> 
-> gcc tested configs:
-> i386                                defconfig
-> arc                                 defconfig
-> x86_64                          rhel-8.3-func
-> s390                             allmodconfig
-> x86_64                    rhel-8.3-kselftests
-> um                             i386_defconfig
-> um                           x86_64_defconfig
-> alpha                               defconfig
-> s390                                defconfig
-> powerpc                           allnoconfig
-> powerpc                          allmodconfig
-> x86_64                           rhel-8.3-syz
-> mips                             allyesconfig
-> s390                             allyesconfig
-> x86_64                         rhel-8.3-kunit
-> x86_64                              defconfig
-> x86_64                           rhel-8.3-kvm
-> arm                            pleb_defconfig
-> alpha                             allnoconfig
-> powerpc                      chrp32_defconfig
-> i386                             allyesconfig
-> arc                          axs101_defconfig
-> x86_64                               rhel-8.3
-> riscv                             allnoconfig
-> arc                    vdk_hs38_smp_defconfig
-> arm                                 defconfig
-> powerpc                 linkstation_defconfig
-> i386                 randconfig-a014-20221003
-> sh                             espt_defconfig
-> sh                               allmodconfig
-> csky                              allnoconfig
-> x86_64                           allyesconfig
-> i386                 randconfig-a011-20221003
-> arc                               allnoconfig
-> arm                           h3600_defconfig
-> x86_64               randconfig-a011-20221003
-> i386                 randconfig-a012-20221003
-> arm64                            allyesconfig
-> s390                       zfcpdump_defconfig
-> sparc64                             defconfig
-> x86_64               randconfig-a015-20221003
-> i386                 randconfig-a013-20221003
-> sh                   sh7770_generic_defconfig
-> m68k                             allmodconfig
-> x86_64               randconfig-a014-20221003
-> arm                              allyesconfig
-> powerpc                       maple_defconfig
-> arc                              allyesconfig
-> sh                             shx3_defconfig
-> ia64                             allmodconfig
-> m68k                            q40_defconfig
-> i386                 randconfig-a015-20221003
-> x86_64               randconfig-a012-20221003
-> arm                       imx_v6_v7_defconfig
-> i386                 randconfig-a016-20221003
-> mips                            ar7_defconfig
-> alpha                            allyesconfig
-> x86_64               randconfig-a013-20221003
-> arm                          gemini_defconfig
-> m68k                                defconfig
-> x86_64               randconfig-a016-20221003
-> m68k                             allyesconfig
-> i386                          randconfig-c001
-> mips                          rb532_defconfig
-> riscv                randconfig-r042-20221003
-> arc                  randconfig-r043-20221003
-> arc                  randconfig-r043-20221002
-> s390                 randconfig-r044-20221003
-> riscv                            allyesconfig
-> 
-> clang tested configs:
-> x86_64               randconfig-a003-20221003
-> x86_64               randconfig-a002-20221003
-> x86_64               randconfig-a001-20221003
-> x86_64               randconfig-a004-20221003
-> x86_64               randconfig-a006-20221003
-> arm                        neponset_defconfig
-> x86_64               randconfig-a005-20221003
-> i386                 randconfig-a003-20221003
-> i386                 randconfig-a002-20221003
-> i386                 randconfig-a001-20221003
-> i386                 randconfig-a004-20221003
-> riscv                          rv32_defconfig
-> i386                 randconfig-a005-20221003
-> hexagon              randconfig-r041-20221003
-> x86_64                        randconfig-k001
-> riscv                randconfig-r042-20221002
-> i386                 randconfig-a006-20221003
-> hexagon              randconfig-r041-20221002
-> s390                 randconfig-r044-20221002
-> mips                     loongson1c_defconfig
-> hexagon              randconfig-r045-20221002
-> powerpc                 mpc8272_ads_defconfig
-> hexagon              randconfig-r045-20221003
-> powerpc                          allyesconfig
-> x86_64                          rhel-8.3-rust
-> 
-> -- 
-> 0-DAY CI Kernel Test Service
-> https://01.org/lkp
+When processing the hints then I only needed to invoke the appropriate 
+callback function based on the received BTF_ID. I didn't have a massive 
+chains of if...else if... else statements.
+
+In the case where we have redirection to a virtual NIC and we don't 
+necessarily know the underlying hints that are exposed to the app, could 
+we not still use the xdp_hints (as proposed by Jesper) themselves to 
+indicate the relevant drivers to the application? or even indicate them 
+via a map or something?
+
