@@ -2,191 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 264645F6A99
-	for <lists+bpf@lfdr.de>; Thu,  6 Oct 2022 17:29:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04F0D5F6A9D
+	for <lists+bpf@lfdr.de>; Thu,  6 Oct 2022 17:30:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231770AbiJFP3o (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Oct 2022 11:29:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42908 "EHLO
+        id S231858AbiJFPaV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Oct 2022 11:30:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231756AbiJFP3n (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Oct 2022 11:29:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CACE96579
-        for <bpf@vger.kernel.org>; Thu,  6 Oct 2022 08:29:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1665070177;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jeDE3VY4eN1XGo20Hxq7qlQi31z/52Vmo9cUweF80Dw=;
-        b=a3xLVEUA7tLD129414iEJjqsdELjos4owip1CwQBYw/8TY1Euq+HZPz48ksw7y7xPrLldP
-        RWXYxL35tg91gd/+iVd4K1wZUeQ85mjeL0jXmTMvbfuc0BLHJQM7XSdb79TthUKr+/nOtC
-        Oi79s7xjo0jjf5RvbvaJA+rS8Vy3Ep8=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-551-bPmuS0XnOLiij1jHteuvyA-1; Thu, 06 Oct 2022 11:29:36 -0400
-X-MC-Unique: bPmuS0XnOLiij1jHteuvyA-1
-Received: by mail-ej1-f72.google.com with SMTP id nc4-20020a1709071c0400b0078a5ceb571bso1368831ejc.4
-        for <bpf@vger.kernel.org>; Thu, 06 Oct 2022 08:29:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:references:to
-         :content-language:subject:cc:user-agent:mime-version:date:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jeDE3VY4eN1XGo20Hxq7qlQi31z/52Vmo9cUweF80Dw=;
-        b=ptNIYjMCgWNKX+FGvsz8vqkCddos1FfceN+Ud/+o5Pj5x5Tjxzm4e72NqNh2rzX1L4
-         twxOc/CTn7DVTmBXuVjFcBaeZIhwe31TCEahqlaZamPQPkRHLeJBrZemv9FD7i3CuZ50
-         XfxPYMCYDSFc09IQZjaJ4J7EGucc4R3DveUBGNtFVpBr1UuHgTdsWhwhdnWVxRT90wBn
-         8yoS5qpoNrmejH63IrOaGwjb5uijPGlgcoQGgv9VGGcaJhWmwW2jLQL+cUzmswkO7M26
-         acg2YfNAr8wykFz6M1VFgqXQbtHUBQOcbIYBzOTPkusEpyVJeIw8CaTHdYGh67nfO8My
-         ao6w==
-X-Gm-Message-State: ACrzQf1dqBj27KhFRITOHRUKgG0NA3hmQSItRk3Pytrn6zKlW6FN6KLI
-        DQM5cZK8hYvLBKusGZsz2A4wQP8a7V+V3VhDl2RJ+9UhDHZBD0hRgPoZ8mQLsGtJgLMEya4LPPC
-        qn4LGLDFSyhym
-X-Received: by 2002:a17:906:db03:b0:741:337e:3600 with SMTP id xj3-20020a170906db0300b00741337e3600mr315685ejb.343.1665070175520;
-        Thu, 06 Oct 2022 08:29:35 -0700 (PDT)
-X-Google-Smtp-Source: AMsMyM44qyySMQJpSLMtUDZV9hpeYypVUS1+NP/mwP5fayPtfoYAAVQF9qsDFAlZeoX/4u4d99z5gA==
-X-Received: by 2002:a17:906:db03:b0:741:337e:3600 with SMTP id xj3-20020a170906db0300b00741337e3600mr315654ejb.343.1665070175263;
-        Thu, 06 Oct 2022 08:29:35 -0700 (PDT)
-Received: from [192.168.41.81] (83-90-141-187-cable.dk.customer.tdc.net. [83.90.141.187])
-        by smtp.gmail.com with ESMTPSA id w15-20020a1709062f8f00b007415f8ffcbbsm10619559eji.98.2022.10.06.08.29.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 Oct 2022 08:29:34 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <cc7e4a27-93ab-e9de-55e0-10029948d738@redhat.com>
-Date:   Thu, 6 Oct 2022 17:29:32 +0200
+        with ESMTP id S231845AbiJFPaU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Oct 2022 11:30:20 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBDF854C87
+        for <bpf@vger.kernel.org>; Thu,  6 Oct 2022 08:30:19 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 40F23CE16E0
+        for <bpf@vger.kernel.org>; Thu,  6 Oct 2022 15:30:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 76B7BC433C1;
+        Thu,  6 Oct 2022 15:30:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1665070216;
+        bh=jfqHkjSVmxpScxHkJHb+O/C3Dqz4XkamydzHooFMT8Y=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=eYZG52AhMgIcXBVay3NIBOO0fhbMsP+hJuKWT0AsyqPqBHTYhBfCFcZoo0e627LYZ
+         U87MMhJt4d8dyfkEOysvX07wWN9pcpHVyk+/Io4amaHlhH+j0cYc9kFW4pR7fUerz/
+         a4VsAGps3JmNb6XGWIzKBHMDdG2Ga65dXWh6ASGRz1UXY/Tq060DDWL4yBBI1DzZXJ
+         Efbl4zwFiUcH5wFG40FCtnvN24TL+M+gRKPhzRm1DNpx9LBmjUFu1aJA5rj0Emd0P3
+         839wFJpI+ZausEqNrA5jS4D2uqsPVnVKMsLtBUF9Psou36xki1u98FNlJPqhTLgPgJ
+         X0vLs52vJyCjA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 543E6E2A05F;
+        Thu,  6 Oct 2022 15:30:16 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.0
-Cc:     brouer@redhat.com, Stanislav Fomichev <sdf@google.com>,
-        Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        bpf@vger.kernel.org, netdev@vger.kernel.org,
-        xdp-hints@xdp-project.net, larysa.zaremba@intel.com,
-        memxor@gmail.com, Lorenzo Bianconi <lorenzo@kernel.org>,
-        mtahhan@redhat.com,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        dave@dtucker.co.uk, Magnus Karlsson <magnus.karlsson@intel.com>,
-        bjorn@kernel.org, Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH RFCv2 bpf-next 00/18] XDP-hints: XDP gaining access to HW
- offload hints via BTF
-Content-Language: en-US
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>
-References: <166256538687.1434226.15760041133601409770.stgit@firesoul>
- <Yzt2YhbCBe8fYHWQ@google.com>
- <35fcfb25-583a-e923-6eee-e8bbcc19db17@redhat.com>
- <CAKH8qBuYVk7QwVOSYrhMNnaKFKGd7M9bopDyNp6-SnN6hSeTDQ@mail.gmail.com>
- <5ccff6fa-0d50-c436-b891-ab797fe7e3c4@linux.dev>
- <20221004175952.6e4aade7@kernel.org>
- <CAKH8qBtdAeHqbWa33yO-MMgC2+h2qehFn8Y_C6ZC1=YsjQS-Bw@mail.gmail.com>
- <20221004182451.6804b8ca@kernel.org>
- <CAKH8qBtTPNULZDLd2n1r2o7XZwvs_q5OkNqhdq0A+b5zkHRNMw@mail.gmail.com>
- <e29082a8-bbd5-6ee3-34bf-c16d0f6ed45a@linux.dev>
- <CAJ8uoz2ng=wv=dWQqxomQX4h11QsYq=scU++MSJ3Q0PMQWuzWQ@mail.gmail.com>
-In-Reply-To: <CAJ8uoz2ng=wv=dWQqxomQX4h11QsYq=scU++MSJ3Q0PMQWuzWQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] selftests/bpf: Add selftest deny_namespace to s390x
+ deny list
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166507021634.23640.373748112138514966.git-patchwork-notify@kernel.org>
+Date:   Thu, 06 Oct 2022 15:30:16 +0000
+References: <20221006053429.3549165-1-yhs@fb.com>
+In-Reply-To: <20221006053429.3549165-1-yhs@fb.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kernel-team@fb.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Hello:
 
-On 06/10/2022 11.14, Magnus Karlsson wrote:
-> On Wed, Oct 5, 2022 at 9:27 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
->>
->> On 10/4/22 7:15 PM, Stanislav Fomichev wrote:
->>> On Tue, Oct 4, 2022 at 6:24 PM Jakub Kicinski <kuba@kernel.org> wrote:
->>>>
->>>> On Tue, 4 Oct 2022 18:02:56 -0700 Stanislav Fomichev wrote:
->>>>> +1, sounds like a good alternative (got your reply while typing)
->>>>> I'm not too versed in the rx_desc/rx_queue area, but seems like worst
->>>>> case that bpf_xdp_get_hwtstamp can probably receive a xdp_md ctx and
->>>>> parse it out from the pre-populated metadata?
->>>>
->>>> I'd think so, worst case the driver can put xdp_md into a struct
->>>> and container_of() to get to its own stack with whatever fields
->>>> it needs.
->>>
->>> Ack, seems like something worth exploring then.
->>>
->>> The only issue I see with that is that we'd probably have to extend
->>> the loading api to pass target xdp device so we can pre-generate
->>> per-device bytecode for those kfuncs?
->>
->> There is an existing attr->prog_ifindex for dev offload purpose.  May be we can
->> re-purpose/re-use some of the offload API.  How this kfunc can be presented also
->> needs some thoughts, could be a new ndo_xxx.... not sure.
->>> And this potentially will block attaching the same program
->>   > to different drivers/devices?
->>> Or, Martin, did you maybe have something better in mind?
->>
->> If the kfunc/helper is inline, then it will have to be per device.  Unless the
->> bpf prog chooses not to inline which could be an option but I am also not sure
->> how often the user wants to 'attach' a loaded xdp prog to a different device.
->> To some extend, the CO-RE hints-loading-code will have to be per device also, no?
->>
->> Why I asked the kfunc/helper approach is because, from the set, it seems the
->> hints has already been available at the driver.  The specific knowledge that the
->> xdp prog missing is how to get the hints from the rx_desc/rx_queue.  The
->> straight forward way to me is to make them (rx_desc/rx_queue) available to xdp
->> prog and have kfunc/helper to extract the hints from them only if the xdp prog
->> needs it.  The xdp prog can selectively get what hints it needs and then
->> optionally store them into the meta area in any layout.
+This patch was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
+
+On Wed, 5 Oct 2022 22:34:29 -0700 you wrote:
+> BPF CI reported that selftest deny_namespace failed with s390x.
 > 
-> This sounds like a really good idea to me, well worth exploring. To
-> only have to pay, performance wise, for the metadata you actually use
-> is very important. I did some experiments [1] on the previous patch
-> set of Jesper's and there is substantial overhead added for each
-> metadata enabled (and fetched from the NIC). This is especially
-> important for AF_XDP in zero-copy mode where most packets are directed
-> to user-space (if not, you should be using the regular driver that is
-> optimized for passing packets to the stack or redirecting to other
-> devices). In this case, the user knows exactly what metadata it wants
-> and where in the metadata area it should be located in order to offer
-> the best performance for the application in question. But as you say,
-> your suggestion could potentially offer a good performance upside to
-> the regular XDP path too.
+>   test_unpriv_userns_create_no_bpf:PASS:no-bpf unpriv new user ns 0 nsec
+>   test_deny_namespace:PASS:skel load 0 nsec
+>   libbpf: prog 'test_userns_create': failed to attach: ERROR: strerror_r(-524)=22
+>   libbpf: prog 'test_userns_create': failed to auto-attach: -524
+>   test_deny_namespace:FAIL:attach unexpected error: -524 (errno 524)
+>   #57/1    deny_namespace/unpriv_userns_create_no_bpf:FAIL
+>   #57      deny_namespace:FAIL
+> 
+> [...]
 
-Okay, lets revisit this again.  And let me explain why I believe this
-isn't going to fly.
+Here is the summary with links:
+  - [bpf-next] selftests/bpf: Add selftest deny_namespace to s390x deny list
+    https://git.kernel.org/bpf/bpf-next/c/8206e4e95230
 
-I was also my initial though, lets just give XDP BPF-prog direct access
-to the NIC rx_descriptor, or another BPF-prog populate XDP-hints prior
-to calling XDP-prog.  Going down this path (previously) I learned three
-things:
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-(1) Understanding/decoding rx_descriptor requires access to the
-programmers datasheet, because it is very compacted and the mean of the
-bits depend on other bits and plus current configuration status of the HW.
-
-(2) HW have bugs and for certain chip revisions driver will skip some
-offload hints.  Thus, chip revisions need to be exported to BPF-progs
-and handled appropriately.
-
-(3) Sometimes the info is actually not available in the rx_descriptor.
-Often for HW timestamps, the timestamp need to be read from a HW
-register.  How do we expose this to the BPF-prog?
-
-> [1] https://lore.kernel.org/bpf/CAJ8uoz1XVqVCpkKo18qbkh6jq_Lejk24OwEWCB9cWhokYLEBDQ@mail.gmail.com/
-
-
-Notice that this patchset doesn't block this idea, as it is orthogonal.
-After we have established a way to express xdp_hints layouts via BTF,
-then we can still add a pre-XDP BPF-prog that populates the XDP-hints,
-and squeeze out more performance by skipping some of the offloads that
-your-specific-XDP-prog are not interested in.
-
---Jesper
 
