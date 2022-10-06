@@ -2,74 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32DD85F5E1F
-	for <lists+bpf@lfdr.de>; Thu,  6 Oct 2022 02:59:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AC6A5F5E83
+	for <lists+bpf@lfdr.de>; Thu,  6 Oct 2022 03:58:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229513AbiJFA7L (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Oct 2022 20:59:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43824 "EHLO
+        id S229468AbiJFB6Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Oct 2022 21:58:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbiJFA7K (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Oct 2022 20:59:10 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 519032DB
-        for <bpf@vger.kernel.org>; Wed,  5 Oct 2022 17:59:10 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 19B0DB81FC5
-        for <bpf@vger.kernel.org>; Thu,  6 Oct 2022 00:59:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E7B4C433D6
-        for <bpf@vger.kernel.org>; Thu,  6 Oct 2022 00:59:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665017947;
-        bh=ZvSIYXlSnKWnl5O8WfMm0k3qXjZYTovjDBWxDqD2MTc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=QH7c/iUd4mEBZCo4y4Yc6NKc6zPlw8iiI9yIIedH4houkyYhVcTxMiaNxqrsaRjcW
-         OWjOJh/jKkRUZ0g4yUhP9VsQVDx8K8buJeNUbdXeXKr0TxQvO+5fca29TBNbOZkfXa
-         Zsb4E772sLwAobp71ZT1rmYTeH4L3r3zOu7z2hmBrgpW5c8OMFPtxj7VZo1LNW2yt7
-         /H7PdIRX3X5iFUp5X/NX2nlx5fqCxPKqGvOF8AwHa5Uf1AgNl0kvWHbocCSnsgpjkQ
-         rwGTYjjlJZHSjaQg/8ytGraoykN8QXRiz5HeYJQ8d9YbEBWYT9CI5Q5aa6yMEkA6J4
-         0OwbI+E1ji4Ow==
-Received: by mail-lf1-f44.google.com with SMTP id bu25so507562lfb.3
-        for <bpf@vger.kernel.org>; Wed, 05 Oct 2022 17:59:07 -0700 (PDT)
-X-Gm-Message-State: ACrzQf24LsCf/DOAxUUBFZL7SdsIJhiu+R7Y0WvNGY708jxQSgKWa65Y
-        Yzn057olEazWgW3ZV8sd2eDgf3bUBoX0pnTAXJebsQ==
-X-Google-Smtp-Source: AMsMyM70SjD+l3Gt1PY51LHgR0PUvkq/zc9I963udBnVbZmA8v94RBShn9i5/Ji8+L5AiuvUF30I3hsNsR2m0aeIakU=
-X-Received: by 2002:ac2:50da:0:b0:4a2:44dc:b719 with SMTP id
- h26-20020ac250da000000b004a244dcb719mr799671lfm.652.1665017945601; Wed, 05
- Oct 2022 17:59:05 -0700 (PDT)
+        with ESMTP id S229750AbiJFB6X (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Oct 2022 21:58:23 -0400
+Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DF7E1D0F6;
+        Wed,  5 Oct 2022 18:58:20 -0700 (PDT)
+Message-ID: <25968b7b-7662-303e-c280-931e6330927e@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1665021497;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LY2hnP1nNE0HYnTSxbNKf79QUruu2XPr8HxWVKrvw2k=;
+        b=g6u09OrDC3nXdKT9uCiHyrW3IZn1ueVxtC/U83wwYQRWorBZB9NR4nR6Z72k9QMYW4PWsk
+        oEayfraYxeWemOHVz2G7DRfPxmsE4R3lImrWfZZjRIeGFpQA5O9wtCxVDEgORjzzhCrmPy
+        R9iEZ6+Pcq0vDqJxVyxYO/Wfmewmbxc=
+Date:   Wed, 5 Oct 2022 18:58:03 -0700
 MIME-Version: 1.0
-References: <CACYkzJ5X-ShtGKHshSt74=5faZW5jWUBWyq7bzfs6x1f4jb65Q@mail.gmail.com>
- <20221005170039.3936894-1-jmeng@fb.com>
-In-Reply-To: <20221005170039.3936894-1-jmeng@fb.com>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Wed, 5 Oct 2022 17:58:53 -0700
-X-Gmail-Original-Message-ID: <CACYkzJ4si6YcfKOVWMTHW2kVFcG5HuNS2CJ+LSaDhv4nT_sJFg@mail.gmail.com>
-Message-ID: <CACYkzJ4si6YcfKOVWMTHW2kVFcG5HuNS2CJ+LSaDhv4nT_sJFg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] bpf,x64: Remove unnecessary check on
- existence of SSE2
-To:     Jie Meng <jmeng@fb.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH 00/26] FUSE BPF: A Stacked Filesystem Extension for FUSE
+Content-Language: en-US
+To:     Daniel Rosenberg <drosen@google.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
+        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Paul Lawrence <paullawrence@google.com>,
+        Alessio Balsini <balsini@google.com>,
+        David Anderson <dvander@google.com>,
+        Sandeep Patil <sspatil@google.com>,
+        linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@android.com, Miklos Szeredi <miklos@szeredi.hu>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>
+References: <20220926231822.994383-1-drosen@google.com>
+ <1fc38ba0-2bbe-a496-604d-7deeb4e72787@linux.dev>
+ <CA+PiJmQM_Fi-W7ZaPQHiM6w6eqo0TSpTh3rUz+CnmXRbp_PUBA@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <CA+PiJmQM_Fi-W7ZaPQHiM6w6eqo0TSpTh3rUz+CnmXRbp_PUBA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 5, 2022 at 10:01 AM Jie Meng <jmeng@fb.com> wrote:
->
-> SSE2 and hence lfence are architectural in x86-64 and no need to check
-> whether they're supported in CPU. SSE2's CPUID flag is still set to
-> maintain backward compatibility with older code or code shared with x86,
-> but bpf_jit_comp.c is compiled under x86-64 exclusively so the check is
-> redundant.
->
-> Signed-off-by: Jie Meng <jmeng@fb.com>
+On 9/30/22 5:05 PM, Daniel Rosenberg wrote:
+> On Tue, Sep 27, 2022 at 11:41 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
+>>
+>> Interesting idea.
+>>
+>> Some comments on review logistics:
+>> - The set is too long and some of the individual patches are way too long for
+>> one single patch to review.  Keep in mind that not all of us here are experts in
+>> both fuse and bpf.  Making it easier to review first will help at the beginning.
+>>    Some ideas:
+>>
+>>     - Only implement a few ops in the initial revision. From quickly browsing the
+>> set, it is implementing the 'struct file_operations fuse_file_operations'?
+>> Maybe the first few revisions can start with a few of the ops first.
+>>
+> 
+> I've split it up a fair bit already, do you mean just sending a subset
+> of them at a time? I think the current splitting roughly allows for
+> that. Patch 1-4 and 5 deal with bpf/verifier code which isn't used
+> until patch 24. I can reorder/split up the opcodes arbitrarily.
 
-Acked-by: KP Singh <kpsingh@kernel.org>
+
+> Putting the op codes that implement file passthrough first makes
+> sense. The code is much easier to test when all/most are present,
+> since then I can just use patch 23 to mount without a daemon and run
+> xfs tests on them. At least initially I felt the whole stack was
+> useful to give the full picture.
+
+I don't mind to have all op codes in each re-spin as long as it can apply 
+cleanly to bpf-next where the bpf implementation part will eventually land. 
+Patch 26 has to split up though.  It is a few thousand lines in one patch.
+
+I was just thinking to only do a few op codes, eg. the few android use cases you 
+have mentioned.  My feeling is other op codes should not be very different in 
+term of the bpf side implementation (or it is not true?).  When the patch set 
+getting enough traction, then start adding more op codes in the later revisions. 
+  That will likely help to re-spin faster and save you time also.
+
+
+>> - iiuc, the idea is to allow bpf prog to optionally handle the 'struct
+>> file_operations' without going back to the user daemon? Have you looked at
+>> struct_ops which seems to be a better fit here?  If the bpf prog does not know
+>> how to handle an operation (or file?), it can call fuse_file_llseek (for
+>> example) as a kfunc to handle the request.
+>>
+> 
+> I wasn't aware of struct_ops. It looks like that may work for us
+> instead of making a new prog type. I'll definitely look into that.
+> I'll likely sign up for the bpf office hours next week.
+
+You can take a look at the tools/testing/selftests/bpf/progs/bpf_cubic.c.
+It implements the whole tcp congestion in bpf. In particular, the bpf prog is 
+implementing the kernel 'struct tcp_congestion_ops'.  That selftest example is 
+pretty much a direct copy from the kernel net/ipv4/tcp_cubic.c.  Also, in 
+BPF_STRUCT_OPS(bpf_cubic_undo_cwnd, ...), it is directly calling the kfunc's 
+tcp_reno_undo_cwnd() when the bpf prog does not need to do anything different 
+from the kernel's tcp_reno_undo_cwnd().  Look at how it is marked as __ksym in 
+bpf_cubic.c
+
+However, echoing Alexei's earlier reply, struct_ops is good when it needs to 
+implement a well defined 'struct xyz_operations' that has all function pointer 
+in it.  Taking another skim at the set, it seems like it is mostly trying to 
+intercept the fuse_simple_request() call?
+
