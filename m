@@ -2,68 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65CBF5F5D37
-	for <lists+bpf@lfdr.de>; Thu,  6 Oct 2022 01:29:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C34D5F5D81
+	for <lists+bpf@lfdr.de>; Thu,  6 Oct 2022 02:05:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229482AbiJEX3F (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Oct 2022 19:29:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58890 "EHLO
+        id S229876AbiJFAF3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Oct 2022 20:05:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbiJEX3E (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Oct 2022 19:29:04 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A88A285A9F
-        for <bpf@vger.kernel.org>; Wed,  5 Oct 2022 16:29:03 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id l22so557536edj.5
-        for <bpf@vger.kernel.org>; Wed, 05 Oct 2022 16:29:03 -0700 (PDT)
+        with ESMTP id S229930AbiJFAE7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Oct 2022 20:04:59 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B08D587F8F
+        for <bpf@vger.kernel.org>; Wed,  5 Oct 2022 17:03:53 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id a13so688086edj.0
+        for <bpf@vger.kernel.org>; Wed, 05 Oct 2022 17:03:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=w0yT2Mnv2tj0pUclF9eWQkVJxIBkoOII71s3ozr1a4E=;
-        b=dJNxlUfD5FHVsjZG3wYLrBjwHaw14/73eyL78jpRFzcQvaywQ2RAeCrmx/4BrzkTZ2
-         C+c+n/Cw4o8PJY6kgUfkGpUvDMbxbWEZiM6JtukwZLNAgnVJ20shHSfAK3kupBx/44yO
-         DfoaFWSM6fD9sno+8WRPvgoIKUay472oaGAE0WU+tbWLyROKA3Nj5ZxNlWetj/7ERTK/
-         wSLXta3m5YfWKsU0r74QbmwRVoUQyH/h5+yjpQ2f1Nvl7g5a1IPCuEknfsFIJEGnqc6m
-         BODzPmCj+AS4Ktj7JCNAopyfUsvZDt+3J39jrSUSPJiqkX8GZEGolMeUggHEDkGXx3Tu
-         vnxQ==
+         :mime-version:from:to:cc:subject:date;
+        bh=UueMNShpjalnt1MJMoHUvCEN8UobeKxOHze1vmkIPjQ=;
+        b=Q6BzsauLGSE/5NhXdVHU6y1O4JRtl9NfwEoXcbyO6k8+oDpmzR8UHRrayYbQk8SMIU
+         +Ll95wXTEM6lHKTKz/48ALBcmh2Soe5dmkRoMcxQFhkJtlN1hBsVc+SieSwRXGkVRWp1
+         D7FECpyIaqmnGQRiJf+HUsX84LWYdPHWnvaC71s3vJypRjK2L56YVNK8GLUo8q7Wc/PX
+         Cz7s47tTfqnS5h+A1nilpJuDw0sE9dEpMIanri5mL8plh+ibaXq8c01dbGMPHK0FfOPf
+         0ytTQOpUcKRDwT1NsXk0LZ+ojJU6CpJh11J78UAjvHzaKLh/8YXy9cw+hKT+au3Wgoc6
+         C9aQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=w0yT2Mnv2tj0pUclF9eWQkVJxIBkoOII71s3ozr1a4E=;
-        b=fL32UyaHeWQWFViXO8/E1EsqmUVcc6rQB56WV/m7jiehM+qCFzw+yBhOZBKTm5CKRL
-         1gI94MMvY775bT5CDV+rzx3qYDyP6o9WMU2581YNtIKAG2wf/vPka/rOt1atemdEHBGw
-         mxa2G8PSTqju8SoT+nOGFeLnr4nLdJODdhaB/O2JPXPw00Sx8foFL+mfbmTvZmQIF85V
-         U3ldhBf+Zv0/jobWLZYidHk/dNCA4qijbpWuzosa6xgo23sD25ih5obfTa5fQpb2Vs1j
-         8CB/9cLclYHZWj+Kw4JXA6rlD1dCL20ZoVCLRGD1Kjdc1EeU86J7E5+HKl6sv1I6cUgn
-         A93Q==
-X-Gm-Message-State: ACrzQf1/tG7BWj1vHcCzy0Lu6D5aGzNb8GyacvF/h5RCtxN8NFzZv3J0
-        KW0Tk+8OwC9UCRlaWuwHMmz0GWAyTPFUCVUAhneyDJRGiL8=
-X-Google-Smtp-Source: AMsMyM4Y7Ju8YJ+yt4+wIAg24+p5Zw0q/Ke+qZcn8zLc+gZhhQ9Rsw5ad49GH8NHqF/tYffSwCJTlD2gcRiuJ3vO9ME=
-X-Received: by 2002:aa7:de9a:0:b0:44d:8191:44c5 with SMTP id
- j26-20020aa7de9a000000b0044d819144c5mr1955309edv.232.1665012542051; Wed, 05
- Oct 2022 16:29:02 -0700 (PDT)
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=UueMNShpjalnt1MJMoHUvCEN8UobeKxOHze1vmkIPjQ=;
+        b=jSzcRU2jtzMBxf00Uu71vDuvhzQUvm4vccRlFzDS7or5zjTTv7p2V5wR5iJR2Hc7LY
+         PljrOEQtQLwTYSgnx4qxIXri0UXi0M3L2vCQ0nJ+EPrZFJ7H9/RRJQPhzM4z5pQBzReQ
+         UfNXJwKytjHSYjcOdY/V9ZvwPPQdVJv1m69tb1r5empdJXW1sKCgy/td7OQ4ebKjW5M7
+         IufxL56BDi9TS98cWuGCYkYflUb3vViz3qEvEXi6JtpjafEEPVKSii1VfIvg+PeQ7NRt
+         jAEGESOWYQ7mTPdW+GcbUOJXIQ4IfSPq/9jNJcCcOIG4uIqZuM1IzAPbgQOFHhEcgJ4L
+         sqaA==
+X-Gm-Message-State: ACrzQf28UA6RNvaoWnDZGNzDUPrWxGO1FX3WVicsQABYc0HDVjX2ACpW
+        GGaKd0X5QAPrQVKfRZXMNOH8rpv8uDiEEU4FGj0=
+X-Google-Smtp-Source: AMsMyM50huRuncpgj3PhhU4d5Oh1s7lTxWezuDh/ZQkeOzaMw2ScrgieSmOgXdackq7ESO2tUj+VQ230UBBIQQvAqi0=
+X-Received: by 2002:a05:6402:5406:b0:452:1560:f9d4 with SMTP id
+ ev6-20020a056402540600b004521560f9d4mr2046489edb.333.1665014629877; Wed, 05
+ Oct 2022 17:03:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20221004222725.2813510-1-sdf@google.com> <YzzQ2mI/srLNazNO@google.com>
- <CAADnVQKyqJRGYn4ty5PaL2vAUnTo0ohY1CF3k_kpc=whEbhdPA@mail.gmail.com> <CAKH8qBstTdOGK8GXpy_-5D_4ebuhwWSYe-tRnhdz17oDb3EcAA@mail.gmail.com>
-In-Reply-To: <CAKH8qBstTdOGK8GXpy_-5D_4ebuhwWSYe-tRnhdz17oDb3EcAA@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 5 Oct 2022 16:28:49 -0700
-Message-ID: <CAEf4BzYnxD5mrYjcCHfCObQDkdMAC+3aZ1EeAoVOoyqENpk53Q@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: make DEBUG_INFO_BTF_MODULES selectable independently
-To:     Stanislav Fomichev <sdf@google.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+References: <20221005161450.1064469-1-andrii@kernel.org> <20221005161450.1064469-3-andrii@kernel.org>
+In-Reply-To: <20221005161450.1064469-3-andrii@kernel.org>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 5 Oct 2022 17:03:38 -0700
+Message-ID: <CAADnVQLm_8otwwcTEv=8-fE_220i_o0AhokNwxkSnUg7z8a1rA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/3] selftests/bpf: add BPF object fixup step to veristat
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -75,116 +66,55 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 4, 2022 at 7:04 PM Stanislav Fomichev <sdf@google.com> wrote:
+On Wed, Oct 5, 2022 at 9:15 AM Andrii Nakryiko <andrii@kernel.org> wrote:
 >
-> On Tue, Oct 4, 2022 at 6:39 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Tue, Oct 4, 2022 at 5:33 PM <sdf@google.com> wrote:
-> > >
-> > > On 10/04, Stanislav Fomichev wrote:
-> > > > We're having an issue where we have a recent clang that seems
-> > > > to generate kind_flag for enums (aka, adding signed/unsigned).
-> > > > Trying to install a module on a kernel that doesn't have commit
-> > > > 6089fb325cf7 ("bpf: Add btf enum64 support") returns the following:
-> > >
-> > > > [    3.176954] BPF:Invalid btf_info kind_flag
-> > >
-> > > > The enum that it complains about doesn't seem to have anything special
-> > > > except having a sign:
-> > >
-> > > > [1721] ENUM 'perf_event_state' encoding=SIGNED size=4 vlen=6
-> > > >          'PERF_EVENT_STATE_DEAD' val=-4
-> > > >          'PERF_EVENT_STATE_EXIT' val=-3
-> > > >          'PERF_EVENT_STATE_ERROR' val=-2
-> > > >          'PERF_EVENT_STATE_OFF' val=-1
-> > > >          'PERF_EVENT_STATE_INACTIVE' val=0
-> > > >          'PERF_EVENT_STATE_ACTIVE' val=1
-> > >
-> > > > We are not currently using CONFIG_DEBUG_INFO_BTF_MODULES and
-> > > > don't plan to use module BTF, so it's preferable to be able
-> > > > to explicits disable it in the kernel config. Unfortunately,
-> > > > because that kconfig option doesn't have a name, it's not
-> > > > possible to flip it independently from CONFIG_DEBUG_INFO_BTF.
-> > > > Let's add a name to make sure module BTF is user-controllable.
-> > >
-> > > [..]
-> > >
-> > > > (Not sure, but maybe the right fix is to also have a stable patch
-> > > >   to relax that "Invalid btf_info kind_flag" check?)
-> > >
-> > > Answering to myself, looks like we do need the following for
-> > > non-enum64-compatible older/stable kernels:
-> > >
-> > > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> > > index 3cfba41a0829..928f4955090a 100644
-> > > --- a/kernel/bpf/btf.c
-> > > +++ b/kernel/bpf/btf.c
-> > > @@ -3301,11 +3301,6 @@ static s32 btf_enum_check_meta(struct
-> > > btf_verifier_env *env,
-> > >                 return -EINVAL;
-> > >         }
-> > >
-> > > -       if (btf_type_kflag(t)) {
-> > > -               btf_verifier_log_type(env, t, "Invalid btf_info kind_flag");
-> > > -               return -EINVAL;
-> > > -       }
-> > > -
-> > >         if (t->size > 8 || !is_power_of_2(t->size)) {
-> > >                 btf_verifier_log_type(env, t, "Unexpected size");
-> > >                 return -EINVAL;
-> > >
-> > > Anything I'm missing? Feels like any pre-6089fb325cf7 ("bpf: Add btf
-> > > enum64 support") kernel will have an issue with a recent clang
-> > > that puts sign into kflag?
-> > >
-> > >
-> > > > Fixes: 5f9ae91f7c0d ("kbuild: Build kernel module BTFs if BTF is enabled
-> > > > and pahole supports it")
-> > > > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > > > ---
-> > > >   lib/Kconfig.debug | 1 +
-> > > >   1 file changed, 1 insertion(+)
-> > >
-> > > > diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> > > > index c77fe36bb3d8..6336a697c9f5 100644
-> > > > --- a/lib/Kconfig.debug
-> > > > +++ b/lib/Kconfig.debug
-> > > > @@ -326,6 +326,7 @@ config PAHOLE_HAS_SPLIT_BTF
-> > > >       def_bool $(success, test `$(PAHOLE) --version | sed
-> > > > -E 's/v([0-9]+)\.([0-9]+)/\1\2/'` -ge "119")
-> > >
-> > > >   config DEBUG_INFO_BTF_MODULES
-> > > > +     bool "Generate BTF module typeinfo"
-> > > >       def_bool y
-> > > >       depends on DEBUG_INFO_BTF && MODULES && PAHOLE_HAS_SPLIT_BTF
-> > > >       help
-> >
-> > Not quite following.
-> > Are you saying instead of backporting enum64 support
-> > to older kernels you'd prefer to add this patch to upstream
-> > and backport this smaller patch?
+> Add a step to attempt to "fix up" BPF object file to make it possible to
+> successfully load it. E.g., set non-zero size for BPF maps that expect
+> max_entries set, but BPF object file itself doesn't have declarative
+> max_entries values specified.
 >
-> Yeah, sorry, it took me a while to build the context, I might still be
-> missing something.
+> Another issue was with automatic map pinning. Pinning has no effect on
+> BPF verification process itself but can interfere when validating
+> multiple related programs and object files, so veristat disabled all the
+> pinning explicitly.
 >
-> So far it seems that disabling DEBUG_INFO_BTF_MODULES is not enough.
-> It looks like as long as the older kernels still have that
-> btf_type_kflag enum check, compiling them with a fairly recent clang
-> won't work?
-> Or do we expect those users to use pahole's --skip_encoding_btf_enum64
-> which seems to fallback to the old way?
-
-Clang doesn't generate kernel or kernel module's BTF, so it has
-nothing to do with this. It's pahole that needs to be told to not
-generate kflag bit for enum on older kernels.
---skip_encoding_btf_enum64 is not exactly that, seems like we need
-another flag to disable the sign bit for enum?
-
-cc'ed Arnaldo as well.
-
+> In the future more such fix up heuristics could be added to accommodate
+> common patterns encountered in practice.
 >
-> I guess I'm still trying to understand whether we care about
-> old/stable kernels + recent llvm combination.
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
+>  tools/testing/selftests/bpf/veristat.c | 25 +++++++++++++++++++++++++
+>  1 file changed, 25 insertions(+)
+>
+> diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/selftests/bpf/veristat.c
+> index 38f678122a7d..973cbf6af323 100644
+> --- a/tools/testing/selftests/bpf/veristat.c
+> +++ b/tools/testing/selftests/bpf/veristat.c
+> @@ -509,6 +509,28 @@ static int parse_verif_log(char * const buf, size_t buf_sz, struct verif_stats *
+>         return 0;
+>  }
+>
+> +static void fixup_obj(struct bpf_object *obj)
+> +{
+> +       struct bpf_map *map;
+> +
+> +       bpf_object__for_each_map(map, obj) {
+> +               /* disable pinning */
+> +               bpf_map__set_pin_path(map, NULL);
+> +
+> +               /* fix up map size, if necessary */
+> +               switch (bpf_map__type(map)) {
+> +               case BPF_MAP_TYPE_SK_STORAGE:
+> +               case BPF_MAP_TYPE_TASK_STORAGE:
+> +               case BPF_MAP_TYPE_INODE_STORAGE:
+> +               case BPF_MAP_TYPE_CGROUP_STORAGE:
+> +                       break;
+> +               default:
+> +                       if (bpf_map__max_entries(map) == 0)
+> +                               bpf_map__set_max_entries(map, 1);
 
-I think it's similar to --skip_encoding_btf_enum64, so I'd say yes?
+Should we drop if (==0) check and set max_entries=1 unconditionally
+to save memory and reduce map creation time ?
+since max_entries doesn't affect verifiability.
+
+Applied the set for now.
