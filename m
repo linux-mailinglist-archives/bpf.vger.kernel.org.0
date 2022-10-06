@@ -2,77 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D586D5F6425
-	for <lists+bpf@lfdr.de>; Thu,  6 Oct 2022 12:09:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 597755F647A
+	for <lists+bpf@lfdr.de>; Thu,  6 Oct 2022 12:45:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230511AbiJFKJw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Oct 2022 06:09:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34384 "EHLO
+        id S230446AbiJFKp1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Oct 2022 06:45:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231179AbiJFKJv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Oct 2022 06:09:51 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85031BC0E;
-        Thu,  6 Oct 2022 03:09:48 -0700 (PDT)
-Received: from kwepemi500013.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4MjnB64ZwCzlXKL;
-        Thu,  6 Oct 2022 18:05:18 +0800 (CST)
-Received: from [10.67.111.192] (10.67.111.192) by
- kwepemi500013.china.huawei.com (7.221.188.120) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 6 Oct 2022 18:09:44 +0800
-Message-ID: <fb3973b6-c65e-fb98-7cdf-46c8a4cf0c4d@huawei.com>
-Date:   Thu, 6 Oct 2022 18:09:44 +0800
+        with ESMTP id S230383AbiJFKp0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Oct 2022 06:45:26 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 312E1925BE
+        for <bpf@vger.kernel.org>; Thu,  6 Oct 2022 03:45:25 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id n35-20020a05600c502300b003b4924c6868so2924239wmr.1
+        for <bpf@vger.kernel.org>; Thu, 06 Oct 2022 03:45:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=qaAk5/eAqawkJIXoQ25ZN94lDPq5K5ylTqnVPSlNbJE=;
+        b=A8vB05TuB9052eeW5LQx9ZKQjhO0Q85P/8OsKh6KyjFP7v+AilsKKeGfayiuKvilBB
+         d1ifRGFhFbrmiXixjheJA6PueHVTJUZw76tTCevfBt8al3Vz5OATlnUZAV1tw2rApSIq
+         fixjDJd46cfYQ6h4fr+27J4Yo5f+gaI7EXMTyZubNzkWOfXPcj/L2ZT31SLgt75J5PMX
+         fXGwL0pv/MAso6VxSTPSkhu6pvZaPH6EJZKXBGTV+vFmbxg4QMc/a5U/hGlol8NdWkwb
+         nxAAqQ8nkQuqha4uT/R3F5vvxcsLeag+CNCgdOuB7xsP0t4Kk8Cxe6X15HfF9nYn8/bE
+         /pRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qaAk5/eAqawkJIXoQ25ZN94lDPq5K5ylTqnVPSlNbJE=;
+        b=C1rsmULHKXjmFLNWaVXw+XAr0LhUizTxIZiXtfeqEBQ5nDmJHOinq9yPkgF1uOZMJ+
+         I8L4g4kDbHAolS7/FvG1i0Ff4czX7lTNMJBsQiMsrVJ/eQ+EWk61ZeL8hMgTqaU6RRWU
+         L4cVKKhYy0B7uuSbggSkQ3wXmKW+9inFUqBQ7UwfzBM1RIMzI37de43IjppWKUvuIW2l
+         TtdWSRJr88O4S3Ze2LhB6w5TNmNLKbcG6CEdyS/yq4nqzM4mOJZE1ENbXu1gpSs/pkVP
+         fGd49Dc3pUDEiwZpEBVVgBTESeodsPrVocWdojJjfl+jm01kqRTveQHZqBqo0yvBnIkN
+         5AAg==
+X-Gm-Message-State: ACrzQf0Z4E2djutUN4ymjqDGzVNdmuwUxzWoYxcuAyYunvyb8wntarS7
+        iFNy1PI580OjiCu+2ZJEul0=
+X-Google-Smtp-Source: AMsMyM6sUOEunXI6RvLLaxAaEonP/W85hQ2c6Nqu8CmQuynE/p8ZmmO5qDW0Lhk8R81NlpyeNJsArg==
+X-Received: by 2002:a05:600c:34d2:b0:3b4:a617:f3b9 with SMTP id d18-20020a05600c34d200b003b4a617f3b9mr2644847wmq.204.1665053123687;
+        Thu, 06 Oct 2022 03:45:23 -0700 (PDT)
+Received: from krava ([193.85.244.190])
+        by smtp.gmail.com with ESMTPSA id i16-20020adff310000000b0022e344a63c7sm12940309wro.92.2022.10.06.03.45.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Oct 2022 03:45:23 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Thu, 6 Oct 2022 12:45:21 +0200
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        kernel-team@fb.com, Quentin Monnet <quentin@isovalent.com>,
+        Andrea Terzolo <andrea.terzolo@polito.it>
+Subject: Re: [PATCH v2 bpf-next 1/2] bpf: explicitly define BPF_FUNC_xxx
+ integer values
+Message-ID: <Yz6xwcrxsMn5OE69@krava>
+References: <20221006042452.2089843-1-andrii@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH bpf-next v2 0/4] Add ftrace direct call for arm64
-Content-Language: en-US
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Florent Revest <revest@chromium.org>
-CC:     Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Marc Zyngier <maz@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-References: <20220913162732.163631-1-xukuohai@huaweicloud.com>
- <f1e14934-dc54-9bf7-501a-89affdb7371e@iogearbox.net>
- <YzG51Jyd5zhvygtK@arm.com> <YzHk1zRf1Dp8YTEe@FVFF77S0Q05N>
- <970a25e4-9b79-9e0c-b338-ed1a934f2770@huawei.com>
- <YzR5WSLux4mmFIXg@FVFF77S0Q05N>
- <2cb606b4-aa8b-e259-cdfd-1bfc61fd7c44@huawei.com>
- <CABRcYmKPchvtkkgWhOJ6o3pHVqTWeenGawHfZ2ug8Akdh6NfnQ@mail.gmail.com>
- <7f34d333-3b2a-aea5-f411-d53be2c46eee@huawei.com>
- <20221005110707.55bd9354@gandalf.local.home>
- <CABRcYmJGY6fp0CtUBYN8BjEDN=r42BPLSBcrxqu491bTRmfm7g@mail.gmail.com>
- <20221005113019.18aeda76@gandalf.local.home>
-From:   Xu Kuohai <xukuohai@huawei.com>
-In-Reply-To: <20221005113019.18aeda76@gandalf.local.home>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.111.192]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemi500013.china.huawei.com (7.221.188.120)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221006042452.2089843-1-andrii@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,100 +73,91 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/5/2022 11:30 PM, Steven Rostedt wrote:
-> On Wed, 5 Oct 2022 17:10:33 +0200
-> Florent Revest <revest@chromium.org> wrote:
+On Wed, Oct 05, 2022 at 09:24:51PM -0700, Andrii Nakryiko wrote:
+> Historically enum bpf_func_id's BPF_FUNC_xxx enumerators relied on
+> implicit sequential values being assigned by compiler. This is
+> convenient, as new BPF helpers are always added at the very end, but it
+> also has its downsides, some of them being:
 > 
->> On Wed, Oct 5, 2022 at 5:07 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->>>
->>> On Wed, 5 Oct 2022 22:54:15 +0800
->>> Xu Kuohai <xukuohai@huawei.com> wrote:
->>>   
->>>> 1.3 attach bpf prog with with direct call, bpftrace -e 'kfunc:vfs_write {}'
->>>>
->>>> # dd if=/dev/zero of=/dev/null count=1000000
->>>> 1000000+0 records in
->>>> 1000000+0 records out
->>>> 512000000 bytes (512 MB, 488 MiB) copied, 1.72973 s, 296 MB/s
->>>>
->>>>
->>>> 1.4 attach bpf prog with with indirect call, bpftrace -e 'kfunc:vfs_write {}'
->>>>
->>>> # dd if=/dev/zero of=/dev/null count=1000000
->>>> 1000000+0 records in
->>>> 1000000+0 records out
->>>> 512000000 bytes (512 MB, 488 MiB) copied, 1.99179 s, 257 MB/s
->>
->> Thanks for the measurements Xu!
->>
->>> Can you show the implementation of the indirect call you used?
->>
->> Xu used my development branch here
->> https://github.com/FlorentRevest/linux/commits/fprobe-min-args
+>   - with over 200 helpers now it's very hard to know what's each helper's ID,
+>     which is often important to know when working with BPF assembly (e.g.,
+>     by dumping raw bpf assembly instructions with llvm-objdump -d
+>     command). it's possible to work around this by looking into vmlinux.h,
+>     dumping /sys/btf/kernel/vmlinux, looking at libbpf-provided
+>     bpf_helper_defs.h, etc. But it always feels like an unnecessary step
+>     and one should be able to quickly figure this out from UAPI header.
 > 
-> That looks like it could be optimized quite a bit too.
+>   - when backporting and cherry-picking only some BPF helpers onto older
+>     kernels it's important to be able to skip some enum values for helpers
+>     that weren't backported, but preserve absolute integer IDs to keep BPF
+>     helper IDs stable so that BPF programs stay portable across upstream
+>     and backported kernels.
 > 
-> Specifically this part:
+> While neither problem is insurmountable, they come up frequently enough
+> and are annoying enough to warrant improving the situation. And for the
+> backporting the problem can easily go unnoticed for a while, especially
+> if backport is done with people not very familiar with BPF subsystem overall.
 > 
-> static bool bpf_fprobe_entry(struct fprobe *fp, unsigned long ip, struct ftrace_regs *regs, void *private)
-> {
-> 	struct bpf_fprobe_call_context *call_ctx = private;
-> 	struct bpf_fprobe_context *fprobe_ctx = fp->ops.private;
-> 	struct bpf_tramp_links *links = fprobe_ctx->links;
-> 	struct bpf_tramp_links *fentry = &links[BPF_TRAMP_FENTRY];
-> 	struct bpf_tramp_links *fmod_ret = &links[BPF_TRAMP_MODIFY_RETURN];
-> 	struct bpf_tramp_links *fexit = &links[BPF_TRAMP_FEXIT];
-> 	int i, ret;
+> Anyways, it's easy to fix this by making sure that __BPF_FUNC_MAPPER
+> macro provides explicit helper IDs. Unfortunately that would potentially
+> break existing users that use UAPI-exposed __BPF_FUNC_MAPPER and are
+> expected to pass macro that accepts only symbolic helper identifier
+> (e.g., map_lookup_elem for bpf_map_lookup_elem() helper).
 > 
-> 	memset(&call_ctx->ctx, 0, sizeof(call_ctx->ctx));
-> 	call_ctx->ip = ip;
-> 	for (i = 0; i < fprobe_ctx->nr_args; i++)
-> 		call_ctx->args[i] = ftrace_regs_get_argument(regs, i);
+> As such, we need to introduce a new macro (___BPF_FUNC_MAPPER) which
+> would specify both identifier and integer ID, but in such a way as to
+> allow existing __BPF_FUNC_MAPPER be expressed in terms of new
+> ___BPF_FUNC_MAPPER macro. And that's what this patch is doing. To avoid
+> duplication and allow __BPF_FUNC_MAPPER stay *exactly* the same,
+> ___BPF_FUNC_MAPPER accepts arbitrary "context" arguments, which can be
+> used to pass any extra macros, arguments, and whatnot. In our case we
+> use this to pass original user-provided macro that expects single
+> argument and __BPF_FUNC_MAPPER is using it's own three-argument
+> __BPF_FUNC_MAPPER_APPLY intermediate macro to impedance-match new and
+> old "callback" macros.
 > 
-> 	for (i = 0; i < fentry->nr_links; i++)
-> 		call_bpf_prog(fentry->links[i], &call_ctx->ctx, call_ctx->args);
+> Once we resolve this, we use new ___BPF_FUNC_MAPPER to define enum
+> bpf_func_id with explicit values. The other users of __BPF_FUNC_MAPPER
+> in kernel (namely in kernel/bpf/disasm.c) are kept exactly the same both
+> as demonstration that backwards compat works, but also to avoid
+> unnecessary code churn.
 > 
-> 	call_ctx->args[fprobe_ctx->nr_args] = 0;
-> 	for (i = 0; i < fmod_ret->nr_links; i++) {
-> 		ret = call_bpf_prog(fmod_ret->links[i], &call_ctx->ctx,
-> 				      call_ctx->args);
+> Note that new ___BPF_FUNC_MAPPER() doesn't forcefully insert comma
+> between values, as that might not be appropriate in all possible cases
+> where ___BPF_FUNC_MAPPER might be used by users. This doesn't reduce
+> usability, as it's trivial to insert that comma inside "callback" macro.
 > 
-> 		if (ret) {
-> 			ftrace_regs_set_return_value(regs, ret);
-> 			ftrace_override_function_with_return(regs);
+> To validate all the manually specified IDs are exactly right, we used
+> BTF to compare before and after values:
 > 
-> 			bpf_fprobe_exit(fp, ip, regs, private);
-> 			return false;
-> 		}
-> 	}
+>   $ bpftool btf dump file ~/linux-build/default/vmlinux | rg bpf_func_id -A 211 > after.txt
+>   $ git stash # stach UAPI changes
+>   $ make -j90
+>   ... re-building kernel without UAPI changes ...
+>   $ bpftool btf dump file ~/linux-build/default/vmlinux | rg bpf_func_id -A 211 > before.txt
+>   $ diff -u before.txt after.txt
+>   --- before.txt  2022-10-05 10:48:18.119195916 -0700
+>   +++ after.txt   2022-10-05 10:46:49.446615025 -0700
+>   @@ -1,4 +1,4 @@
+>   -[14576] ENUM 'bpf_func_id' encoding=UNSIGNED size=4 vlen=211
+>   +[9560] ENUM 'bpf_func_id' encoding=UNSIGNED size=4 vlen=211
+>           'BPF_FUNC_unspec' val=0
+>           'BPF_FUNC_map_lookup_elem' val=1
+>           'BPF_FUNC_map_update_elem' val=2
 > 
-> 	return fexit->nr_links;
-> }
+> As can be seen from diff above, the only thing that changed was resulting BTF
+> type ID of ENUM bpf_func_id, not any of the enumerators, their names or integer
+> values.
 > 
-> There's a lot of low hanging fruit to speed up there. I wouldn't be too
-> fast to throw out this solution if it hasn't had the care that direct calls
-> have had to speed that up.
+> The only other place that needed fixing was scripts/bpf_doc.py used to generate
+> man pages and bpf_helper_defs.h header for libbpf and selftests. That script is
+> tightly-coupled to exact shape of ___BPF_FUNC_MAPPER macro definition, so had
+> to be trivially adapted.
 > 
-> For example, trampolines currently only allow to attach to functions with 6
-> parameters or less (3 on x86_32). You could make 7 specific callbacks, with
-> zero to 6 parameters, and unroll the argument loop.
-> 
-> Would also be interesting to run perf to see where the overhead is. There
-> may be other locations to work on to make it almost as fast as direct
-> callers without the other baggage.
-> 
+> Cc: Quentin Monnet <quentin@isovalent.com>
+> Reported-by: Andrea Terzolo <andrea.terzolo@polito.it>
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 
-There is something wrong with my pi4 perf, I'll send the perf report after
-I fix it.
+Acked-by: Jiri Olsa <jolsa@kernel.org>
 
-> -- Steve
-> 
->>
->> As it stands, the performance impact of the fprobe based
->> implementation would be too high for us. I wonder how much Mark's idea
->> here https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/log/?h=arm64/ftrace/per-callsite-ops
->> would help but it doesn't work right now.
-> 
-> 
-> .
-
+jirka
