@@ -2,212 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BAED5F6892
-	for <lists+bpf@lfdr.de>; Thu,  6 Oct 2022 15:51:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67A795F69D6
+	for <lists+bpf@lfdr.de>; Thu,  6 Oct 2022 16:41:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230046AbiJFNvt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Oct 2022 09:51:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53480 "EHLO
+        id S231648AbiJFOlN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Oct 2022 10:41:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231828AbiJFNvd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Oct 2022 09:51:33 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7522531EE7
-        for <bpf@vger.kernel.org>; Thu,  6 Oct 2022 06:51:26 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1ogRHY-0008Ic-Ib; Thu, 06 Oct 2022 15:51:24 +0200
-Date:   Thu, 6 Oct 2022 15:51:24 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Florian Westphal <fw@strlen.de>, bpf@vger.kernel.org
-Subject: Re: [RFC v2 6/9] netfilter: add bpf base hook program generator
-Message-ID: <20221006135124.GB3034@breakpoint.cc>
-References: <20221005141309.31758-1-fw@strlen.de>
- <20221005141309.31758-7-fw@strlen.de>
- <20221006025209.rx4xnwdduqypja4b@macbook-pro-4.dhcp.thefacebook.com>
+        with ESMTP id S231415AbiJFOlM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Oct 2022 10:41:12 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38575AA37D
+        for <bpf@vger.kernel.org>; Thu,  6 Oct 2022 07:41:11 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id b4so3065225wrs.1
+        for <bpf@vger.kernel.org>; Thu, 06 Oct 2022 07:41:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mojatatu-com.20210112.gappssmtp.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date;
+        bh=cIvD4SIeJoCk360pl02Pzwin/1fMLrYpDwvLvoLUIhc=;
+        b=8G1iPQiThztiVXysP820f5cmCxYqykewjF8pk4aHTcWbgGcIWU4Tquq5u/2QVXbG/J
+         WdONjK6bc2lFytl0XLDcBEP5obf2L4H0s8lUrjLRDYsqAddpozwrC7tpUgMkhmZNrJZl
+         EUdbTLIIFAgSRzmA9HleVA+ZVpwuVg7oNE2wXmndSlcBMpaRAaV7ZZZfpcpbJ6RbKa5Z
+         uyoiS9FggKRl1MqmzeNVG6qo7pdCJPXV3LhEFd0kYncExcc8b49sr2QR9Xu1kmrsxYoE
+         JaspjbjIutZ+ALzQI5v1zbORR+xXPoBpoDqdM758EYcjgdkp6f2nE5qrZ8lSZbBB5ZrK
+         csmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date;
+        bh=cIvD4SIeJoCk360pl02Pzwin/1fMLrYpDwvLvoLUIhc=;
+        b=vhwOke2pc7SzoCK/FEprFS0M2AWCoi9jMz6KCbaMNsAKfQAhan+8PnpCcUX1L6aXvV
+         +F8113yueIQcRVRfTR6tFGLfC7pgoTUD5VkzC5KcAsoZ6/GlN0GiyG6pBVSPcGgj1Puz
+         sb2wXFr4QEqAXa+1S0Y3SmPHkOKfTprHkA0W9Y/mPmaA+lcDLAxEjkfjIwP5WmIX+6+W
+         O2Imp6FX/fhBWLwGuOnD/zM2muvxkJqXybvDs2pdICJHtkMbjOWPhI8OcfW4F/FkyGY3
+         8JeIX1E98w4gflK13dgiZJerSU0fnMg46zj3bOLClR+Zx99ObhtUBhvJv/aJni0x2Z6M
+         /Iqw==
+X-Gm-Message-State: ACrzQf1V0EZhCe6eo3KfxNtVrfgRgz1axGwr01AhkjOTumFvV/xQ5NIn
+        qszUfy06t1cKWpa+JzKZ/VUoSFZpakDi5bYznNplrQ==
+X-Google-Smtp-Source: AMsMyM7eq2vsFrtfQHah5Exz9HgPq1ucEj0BUaR89bJQXEjyjbpk3I+xwRH7c6D1f4YTGh7MJr5dWPR9xlQI8B8kpVY=
+X-Received: by 2002:a5d:584d:0:b0:22b:229:7582 with SMTP id
+ i13-20020a5d584d000000b0022b02297582mr185193wrf.211.1665067269753; Thu, 06
+ Oct 2022 07:41:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221006025209.rx4xnwdduqypja4b@macbook-pro-4.dhcp.thefacebook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20221004231143.19190-1-daniel@iogearbox.net> <20221004231143.19190-2-daniel@iogearbox.net>
+ <20221006050053.pbwo72xtzoza6gfl@macbook-pro-4.dhcp.thefacebook.com>
+In-Reply-To: <20221006050053.pbwo72xtzoza6gfl@macbook-pro-4.dhcp.thefacebook.com>
+From:   Jamal Hadi Salim <jhs@mojatatu.com>
+Date:   Thu, 6 Oct 2022 10:40:52 -0400
+Message-ID: <CAM0EoMnJzP6kbr94utjDT1X=e9G21-uu=Cbqhx2XLfqXE+HDwA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 01/10] bpf: Add initial fd-based API to attach tc
+ BPF programs
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
+        razor@blackwall.org, ast@kernel.org, andrii@kernel.org,
+        martin.lau@linux.dev, john.fastabend@gmail.com,
+        joannelkoong@gmail.com, memxor@gmail.com, toke@redhat.com,
+        joe@cilium.io, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-> > +#if IS_ENABLED(CONFIG_NF_HOOK_BPF)
-> > +		const struct bpf_prog *p = READ_ONCE(hook_head->hook_prog);
-> > +
-> > +		nf_hook_state_init(&state, hook, pf, indev, outdev,
-> > +				   sk, net, okfn);
-> > +
-> > +		state.priv = (void *)hook_head;
-> > +		state.skb = skb;
-> >  
-> > +		migrate_disable();
-> > +		ret = bpf_prog_run_nf(p, &state);
-> > +		migrate_enable();
-> 
-> Since generated prog doesn't do any per-cpu work and not using any maps
-> there is no need for migrate_disable.
-> There is cant_migrate() in __bpf_prog_run(), but it's probably better
-> to silence that instead of adding migrate_disable/enable overhead.
+On Thu, Oct 6, 2022 at 1:01 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Wed, Oct 05, 2022 at 01:11:34AM +0200, Daniel Borkmann wrote:
 
-Ah, thanks -- noted.
+>
+> I cannot help but feel that prio logic copy-paste from old tc, netfilter and friends
+> is done because "that's how things were done in the past".
+> imo it was a well intentioned mistake and all networking things (tc, netfilter, etc)
+> copy-pasted that cumbersome and hard to use concept.
+> Let's throw away that baggage?
+> In good set of cases the bpf prog inserter cares whether the prog is first or not.
+> Since the first prog returning anything but TC_NEXT will be final.
+> I think prog insertion flags: 'I want to run first' vs 'I don't care about order'
+> is good enough in practice. Any complex scheme should probably be programmable
+> as any policy should. For example in Meta we have 'xdp chainer' logic that is similar
+> to libxdp chaining, but we added a feature that allows a prog to jump over another
+> prog and continue the chain. Priority concept cannot express that.
+> Since we'd have to add some "policy program" anyway for use cases like this
+> let's keep things as simple as possible?
+> Then maybe we can adopt this "as-simple-as-possible" to XDP hooks ?
+> And allow bpf progs chaining in the kernel with "run_me_first" vs "run_me_anywhere"
+> in both tcx and xdp ?
 
-> > +static bool emit_mov_ptr_reg(struct nf_hook_prog *p, u8 dreg, u8 sreg)
-> > +{
-> > +	if (sizeof(void *) == sizeof(u64))
-> > +		return emit(p, BPF_MOV64_REG(dreg, sreg));
-> > +	if (sizeof(void *) == sizeof(u32))
-> > +		return emit(p, BPF_MOV32_REG(dreg, sreg));
-> 
-> I bet that was never tested :) because... see below.
+You just described the features already offered by tc opcodes + priority.
 
-Right, never tested, only on amd64 arch.
+This problem is solvable by some user space resource arbitration scheme.
+Reading through the thread - a daemon of some sort will do. A daemon
+which issues tokens that can be validated in the kernel (kerberos type
+of approach) would be the best i.e fds alone dont resolve this.
 
-I suspect that real 32bit support won't reduce readability too much,
-else I can either remove it or add it in a different patch.
-
-> > +static void patch_hook_jumps(struct nf_hook_prog *p)
-> > +{
-> > +	unsigned int i;
-> > +
-> > +	if (!p->insns)
-> > +		return;
-> > +
-> > +	for (i = 0; i < p->pos; i++) {
-> > +		if (BPF_CLASS(p->insns[i].code) != BPF_JMP)
-> > +			continue;
-> > +
-> > +		if (p->insns[i].code == (BPF_EXIT | BPF_JMP))
-> > +			continue;
-> > +		if (p->insns[i].code == (BPF_CALL | BPF_JMP))
-> > +			continue;
-> > +
-> > +		if (p->insns[i].off != JMP_INVALID)
-> > +			continue;
-> > +		p->insns[i].off = p->pos - i - 1;
-> 
-> Pls add a check that it fits in 16-bits.
-
-Makes sense.
-
-> > +	if (!emit(p, BPF_EMIT_CALL(nf_queue)))
-> > +		return false;
-> 
-> here and other CALL work by accident on x84-64.
-> You need to wrap them with BPF_CALL_ and point BPF_EMIT_CALL to that wrapper.
-> On x86-64 it will be a nop.
-> On x86-32 it will do quite a bit of work.
-
-I see. thanks.
-
-> > +	prog->len = len;
-> > +	prog->type = BPF_PROG_TYPE_SOCKET_FILTER;
-> 
-> lol. Just say BPF_PROG_TYPE_UNSPEC ?
-
-Right, will do that.
-
-> > +	memcpy(prog->insnsi, insns, prog->len * sizeof(struct bpf_insn));
-> > +
-> > +	prog = bpf_prog_select_runtime(prog, &err);
-> > +	if (err) {
-> > +		bpf_prog_free(prog);
-> > +		return NULL;
-> > +	}
-> 
-> Would be good to do bpf_prog_alloc_id() so it can be seen in
-> bpftool prog show.
-
-Agree.
-
-> and bpf_prog_kallsyms_add() to make 'perf report' and
-> stack traces readable.
-
-Good to know, will check that this works.
-
-> Overall I don't hate it, but don't like it either.
-> Please provide performance numbers.
-
-Oh, right, I should have included those in the cover letter.
-Tests were done on 5.19-rc3 on a 56core intel machine using pktgen,
-(based off pktgen_bench_xmit_mode_netif_receive.sh), i.e.
-64byte udp packets that get forwarded to a dummy device.
-
-Ruleset had single 'ct state new accept' rule in forward chain.
-
-Baseline, with 56-rx queues: 682006 pps, 348 Mb/s
-with this patchset:          696743 pps, 356 MB/s
-
-Averaged over 10 runs each, also reboot after each run.
-irqbalance was off, scaling_governor set to 'performance'.
-
-I would redo those tests for future patch submission.
-If there is a particular test i should do please let me know.
-
-I also did a test via iperf3 forwarding
-(netns -> veth1 -> netns -> veth -> netns), but 'improvement'
-was in noise range, too much overhead for the indirection avoidance
-to be noticeable.
-
-> It's a lot of tricky code and not clear what the benefits are.
-> Who will maintain this body of code long term?
-> How are we going to deal with refactoring that will touch generic bpf bits
-> and this generated prog?
-
-Good questions.  The only 'good' answer is that it could always be
-marked BROKEN and then reverted if needed as it doesn't add new
-functionality per se.
-
-Furthermore (I have NOT looked at this at all) this opens the door for
-more complexity/trickery.  For example the bpf prog could check (during
-code generation) if $indirect_hook is the ipv4 or ipv6 defrag hook and
-then insert extra code that avoids the function call for the common
-case.  There are probably more hack^W tricks that could be done.
-
-So yes, maintainablity is a good question, plus what other users in the
-tree might want something similar (selinux hook invocation for
-example...).
-
-I guess it depends on wheter the perf numbers are decent enough.
-If they are, then I'd suggest to just do a live experiment and give
-it a try -- if it turns out to be a big pain point
-(maintenance, frequent crashes, hard-to-debug correctness bugs, e.g.
- 'generator failed to re-jit and now it skips my iptables filter
- table',...) or whatever, mark it as BROKEN in Kconfig and, if
-everything fails just rip it out again.
-
-Does that sound ok?
-
-> > Purpose of this is to eventually add a 'netfilter prog type' to bpf and
-> > permit attachment of (userspace generated) bpf programs to the netfilter
-> > machinery, e.g.  'attach bpf prog id 1234 to ipv6 PREROUTING at prio -300'.
-> > 
-> > This will require to expose the context structure (program argument,
-> > '__nf_hook_state', with rewriting accesses to match nf_hook_state layout.
-> 
-> This part is orthogonal, right? I don't see how this work is connected
-> to above idea.
-
-Yes, orthogonal from technical pov.
-
-> I'm still convinced that xt_bpf was a bad choice for many reasons.
-
-Hmmm, ok -- there is nothing I can say, it looks reasonably
-innocent/harmless to me wrt. backwards kludge risk etc.
-
-> "Add a 'netfilter prog type' to bpf" would repeat the same mistakes.
-
-Hmm, to me it would be more like the 'xtc/tcx' stuff rather than
-cls/act_bpf/xt_bpf etc. pp.  but perhaps I'm missing something.
-
-> Let's evaluate this set independently.
-
-Ok, sure.
+cheers,
+jamal
