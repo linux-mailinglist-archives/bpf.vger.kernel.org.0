@@ -2,182 +2,334 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75C975F6531
-	for <lists+bpf@lfdr.de>; Thu,  6 Oct 2022 13:27:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88C8E5F6546
+	for <lists+bpf@lfdr.de>; Thu,  6 Oct 2022 13:36:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230397AbiJFL1R (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Oct 2022 07:27:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40848 "EHLO
+        id S229888AbiJFLgP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Oct 2022 07:36:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229729AbiJFL1Q (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Oct 2022 07:27:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83357792DD
-        for <bpf@vger.kernel.org>; Thu,  6 Oct 2022 04:27:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1665055633;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gMCO/uEMuqJXUZN55pTZQ9w9DrFg+P+luT3dWud/OsA=;
-        b=Bf3CPCN7d8f7pTZ1cpm4tXhTP8URAPcZIoglpFSLAgUass2pgQjKwkP3x0sjsk9qkF42ve
-        /Y3C16GA146wlbqoPXAFcVcCmBeaXXA7mFGwzXJ1u9fbzGBBBSkQ/HsZucpuhFFySY7wzg
-        3MEGjbmp999zrRW4XbZCwWnvvtS4Wg4=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-495-PcRR_claN0yYdcdWcjsiWQ-1; Thu, 06 Oct 2022 07:27:12 -0400
-X-MC-Unique: PcRR_claN0yYdcdWcjsiWQ-1
-Received: by mail-ed1-f69.google.com with SMTP id s17-20020a056402521100b004511c8d59e3so1348100edd.11
-        for <bpf@vger.kernel.org>; Thu, 06 Oct 2022 04:27:12 -0700 (PDT)
+        with ESMTP id S229726AbiJFLgN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Oct 2022 07:36:13 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 507045282D;
+        Thu,  6 Oct 2022 04:36:12 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id n16-20020a05600c4f9000b003c17bf8ddecso711004wmq.0;
+        Thu, 06 Oct 2022 04:36:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=mwciIo6Ry2Cya/l03AQ6o1jw0A+99nJemZuXprUYpuo=;
+        b=euZS0y2Aw01ogwNqhOhcOe1dkUcmIj6T71sLwWIByMU26QJ0iswEQUEnr4yCIC7mck
+         GpQjEVId1bkihVg4MGs+37fgSDzT7Awv9vl34GB3zZWh3Og2mayCN4RefGzwV18MUXXx
+         pvxGh0fNiP6rV5CdLNxJ4S9CTrl8+ZYCVtML19Y/U7WRU+0LmRryEnwDja5uT6sF8rEJ
+         BJkeSWcoB/3Pfnsj72UDVgIb8WcgJiiwOEE6aso+lkeWbiEgbvSDDwn0BYN7lXVV3A6O
+         hzs0Kc+EWdWMA0nNLoWKUwRV4YHYDqIy0fx6ZuI041t5laMXMYTzzS84fN+4uDeXSaBY
+         KGjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gMCO/uEMuqJXUZN55pTZQ9w9DrFg+P+luT3dWud/OsA=;
-        b=5wmBLbRkQfzzhEY4nw+ZEHlEhyd6uHbXqYhxazBkTTHbkv8gzXprUfkqZ/BazPJSNG
-         DBJzV8/tYkrk9lvhp3rf5NzV88HbfbTA/XkBm534H0Miuanii/QDwdw8hLPLftN6dUTn
-         zDH8ls+S//YtQ/H9K5T/gE+kfSi69sWmfSQ+qALvSqik0TpUII8bhS6brsmrPdfyidzi
-         65Hwsy/MrT7ajqChJFrXmdJt0eREouuHKbz7DW+1fTVL+UOoR8mxySZvCtN0MHK9JaD+
-         y1RXtTpJau3FaMEZABFipJxq8VmN6gGSm8DthWgRds7lIhvfRdTkS7W9EOKg/HVmpdbR
-         j8Jw==
-X-Gm-Message-State: ACrzQf0Itplebu/qVOCQv8u3F3mLyEKagSATD1YmpvCJlSdKP34FOJVR
-        0prT4aPPeHk3Ia31f4qnndgsw+vCV+lY1IvuvGJG60WUnwH5DBgdWFfYseb+aRhkm+671HVOiNe
-        LaKwIgQYLL6Dg
-X-Received: by 2002:a17:907:a407:b0:783:5465:902 with SMTP id sg7-20020a170907a40700b0078354650902mr3560126ejc.35.1665055628230;
-        Thu, 06 Oct 2022 04:27:08 -0700 (PDT)
-X-Google-Smtp-Source: AMsMyM5QMwa1Dsn1Cmf2fD3m1f+JpVvyEYs3GUyxYIJQxwiKDXlj2eOqZBCHAHTnsLKkMv3NhQrhng==
-X-Received: by 2002:a17:907:a407:b0:783:5465:902 with SMTP id sg7-20020a170907a40700b0078354650902mr3560025ejc.35.1665055626063;
-        Thu, 06 Oct 2022 04:27:06 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id vv3-20020a170907a68300b0077ab3ca93efsm9985858ejc.223.2022.10.06.04.27.05
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mwciIo6Ry2Cya/l03AQ6o1jw0A+99nJemZuXprUYpuo=;
+        b=0z0jYXP0pz4em8Fs/Cre+JjAR3VAe9jA/cLSsMwlIftgXUMlda+5WgjJlFqkP15p2X
+         k7e81gcttt+S1tPFchj1YVkTy0fp1Ie6rE9EXVQphNlQ4mq2L3OdaPJ2+7Gh4IFvNMMP
+         zjwvjEaUxUkDE+HsGVSEzvzwEGhmxP03aOKjVrL7lzKMxHbMJj36sTdT4ZQM+f/tBjQA
+         Z/bVQJKjvqzi7xV7GNpnywsRva/UARfSSsb4Ndu2fis9A8KdshwVH9JKewqp32BWb6yu
+         FkVjbJ0tcvz7ULZEMfijU4MBUj6JBvuIAww96Dtuiqd8hodrOP/7nZTVbsQC9RamTK85
+         l9xw==
+X-Gm-Message-State: ACrzQf05PRxG6k8oH+IX6KMX4lusYDzP1HgGR35vEvqeQ15zR6kC+ZRX
+        hN63JqZaihJenoCPSGDjmG0=
+X-Google-Smtp-Source: AMsMyM62KUU9z2YZQUgaOaKSj/JAf52c3Y/BgZh4aAslt558hwpuVZKDlr+paQWteiVLKDnml9Rzxw==
+X-Received: by 2002:a05:600c:34d6:b0:3b4:91fd:cfc with SMTP id d22-20020a05600c34d600b003b491fd0cfcmr6542645wmq.1.1665056170723;
+        Thu, 06 Oct 2022 04:36:10 -0700 (PDT)
+Received: from krava ([193.85.244.190])
+        by smtp.gmail.com with ESMTPSA id k9-20020a7bc309000000b003b47a99d928sm4569044wmj.18.2022.10.06.04.36.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Oct 2022 04:27:05 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id A0DD964ECA0; Thu,  6 Oct 2022 13:27:04 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net
-Cc:     andrii@kernel.org, kernel-team@fb.com,
-        Quentin Monnet <quentin@isovalent.com>,
-        Andrea Terzolo <andrea.terzolo@polito.it>
-Subject: Re: [PATCH v2 bpf-next 1/2] bpf: explicitly define BPF_FUNC_xxx
- integer values
-In-Reply-To: <20221006042452.2089843-1-andrii@kernel.org>
-References: <20221006042452.2089843-1-andrii@kernel.org>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 06 Oct 2022 13:27:04 +0200
-Message-ID: <87bkqpfb07.fsf@toke.dk>
+        Thu, 06 Oct 2022 04:36:10 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Thu, 6 Oct 2022 13:36:09 +0200
+To:     Donald Hunter <donald.hunter@gmail.com>
+Cc:     bpf@vger.kernel.org, linux-doc@vger.kernel.org, dave@dtucker.co.uk,
+        Alexei Starovoitov <ast@kernel.org>
+Subject: Re: [PATCH bpf-next v6 1/1] bpf, docs: document BPF_MAP_TYPE_ARRAY
+Message-ID: <Yz69qfI7ZkJPrUt7@krava>
+References: <20221005104634.66406-1-donald.hunter@gmail.com>
+ <20221005104634.66406-2-donald.hunter@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221005104634.66406-2-donald.hunter@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii@kernel.org> writes:
+On Wed, Oct 05, 2022 at 11:46:34AM +0100, Donald Hunter wrote:
+> From: Dave Tucker <dave@dtucker.co.uk>
+> 
+> Add documentation for the BPF_MAP_TYPE_ARRAY including kernel version
+> introduced, usage and examples. Also document BPF_MAP_TYPE_PERCPU_ARRAY
+> which is similar.
+> 
+> Signed-off-by: Dave Tucker <dave@dtucker.co.uk>
+> Signed-off-by: Donald Hunter <donald.hunter@gmail.com>
+> ---
+>  Documentation/bpf/map_array.rst | 231 ++++++++++++++++++++++++++++++++
+>  1 file changed, 231 insertions(+)
+>  create mode 100644 Documentation/bpf/map_array.rst
+> 
+> diff --git a/Documentation/bpf/map_array.rst b/Documentation/bpf/map_array.rst
+> new file mode 100644
+> index 000000000000..9d2da884c41e
+> --- /dev/null
+> +++ b/Documentation/bpf/map_array.rst
+> @@ -0,0 +1,231 @@
+> +.. SPDX-License-Identifier: GPL-2.0-only
+> +.. Copyright (C) 2022 Red Hat, Inc.
+> +
+> +================================================
+> +BPF_MAP_TYPE_ARRAY and BPF_MAP_TYPE_PERCPU_ARRAY
+> +================================================
+> +
+> +.. note::
+> +   - ``BPF_MAP_TYPE_ARRAY`` was introduced in kernel version 3.19
+> +   - ``BPF_MAP_TYPE_PERCPU_ARRAY`` was introduced in version 4.6
+> +
+> +``BPF_MAP_TYPE_ARRAY`` and ``BPF_MAP_TYPE_PERCPU_ARRAY`` provide generic array
+> +storage. The key type is an unsigned 32-bit integer (4 bytes) and the map is of
+> +constant size. All array elements are pre-allocated and zero initialized when
+> +created. ``BPF_MAP_TYPE_PERCPU_ARRAY`` uses a different memory region for each
+> +CPU whereas ``BPF_MAP_TYPE_ARRAY`` uses the same memory region. The maximum
+> +size of an array, defined in max_entries, is limited to 2^32. The value stored
+> +can be of any size, however, small values will be rounded up to 8 bytes.
 
-> Historically enum bpf_func_id's BPF_FUNC_xxx enumerators relied on
-> implicit sequential values being assigned by compiler. This is
-> convenient, as new BPF helpers are always added at the very end, but it
-> also has its downsides, some of them being:
->
->   - with over 200 helpers now it's very hard to know what's each helper's=
- ID,
->     which is often important to know when working with BPF assembly (e.g.,
->     by dumping raw bpf assembly instructions with llvm-objdump -d
->     command). it's possible to work around this by looking into vmlinux.h,
->     dumping /sys/btf/kernel/vmlinux, looking at libbpf-provided
->     bpf_helper_defs.h, etc. But it always feels like an unnecessary step
->     and one should be able to quickly figure this out from UAPI header.
->
->   - when backporting and cherry-picking only some BPF helpers onto older
->     kernels it's important to be able to skip some enum values for helpers
->     that weren't backported, but preserve absolute integer IDs to keep BPF
->     helper IDs stable so that BPF programs stay portable across upstream
->     and backported kernels.
->
-> While neither problem is insurmountable, they come up frequently enough
-> and are annoying enough to warrant improving the situation. And for the
-> backporting the problem can easily go unnoticed for a while, especially
-> if backport is done with people not very familiar with BPF subsystem over=
-all.
->
-> Anyways, it's easy to fix this by making sure that __BPF_FUNC_MAPPER
-> macro provides explicit helper IDs. Unfortunately that would potentially
-> break existing users that use UAPI-exposed __BPF_FUNC_MAPPER and are
-> expected to pass macro that accepts only symbolic helper identifier
-> (e.g., map_lookup_elem for bpf_map_lookup_elem() helper).
->
-> As such, we need to introduce a new macro (___BPF_FUNC_MAPPER) which
-> would specify both identifier and integer ID, but in such a way as to
-> allow existing __BPF_FUNC_MAPPER be expressed in terms of new
-> ___BPF_FUNC_MAPPER macro. And that's what this patch is doing. To avoid
-> duplication and allow __BPF_FUNC_MAPPER stay *exactly* the same,
-> ___BPF_FUNC_MAPPER accepts arbitrary "context" arguments, which can be
-> used to pass any extra macros, arguments, and whatnot. In our case we
-> use this to pass original user-provided macro that expects single
-> argument and __BPF_FUNC_MAPPER is using it's own three-argument
-> __BPF_FUNC_MAPPER_APPLY intermediate macro to impedance-match new and
-> old "callback" macros.
->
-> Once we resolve this, we use new ___BPF_FUNC_MAPPER to define enum
-> bpf_func_id with explicit values. The other users of __BPF_FUNC_MAPPER
-> in kernel (namely in kernel/bpf/disasm.c) are kept exactly the same both
-> as demonstration that backwards compat works, but also to avoid
-> unnecessary code churn.
->
-> Note that new ___BPF_FUNC_MAPPER() doesn't forcefully insert comma
-> between values, as that might not be appropriate in all possible cases
-> where ___BPF_FUNC_MAPPER might be used by users. This doesn't reduce
-> usability, as it's trivial to insert that comma inside "callback" macro.
->
-> To validate all the manually specified IDs are exactly right, we used
-> BTF to compare before and after values:
->
->   $ bpftool btf dump file ~/linux-build/default/vmlinux | rg bpf_func_id =
--A 211 > after.txt
->   $ git stash # stach UAPI changes
->   $ make -j90
->   ... re-building kernel without UAPI changes ...
->   $ bpftool btf dump file ~/linux-build/default/vmlinux | rg bpf_func_id =
--A 211 > before.txt
->   $ diff -u before.txt after.txt
->   --- before.txt  2022-10-05 10:48:18.119195916 -0700
->   +++ after.txt   2022-10-05 10:46:49.446615025 -0700
->   @@ -1,4 +1,4 @@
->   -[14576] ENUM 'bpf_func_id' encoding=3DUNSIGNED size=3D4 vlen=3D211
->   +[9560] ENUM 'bpf_func_id' encoding=3DUNSIGNED size=3D4 vlen=3D211
->           'BPF_FUNC_unspec' val=3D0
->           'BPF_FUNC_map_lookup_elem' val=3D1
->           'BPF_FUNC_map_update_elem' val=3D2
->
-> As can be seen from diff above, the only thing that changed was resulting=
- BTF
-> type ID of ENUM bpf_func_id, not any of the enumerators, their names or i=
-nteger
-> values.
->
-> The only other place that needed fixing was scripts/bpf_doc.py used to ge=
-nerate
-> man pages and bpf_helper_defs.h header for libbpf and selftests. That scr=
-ipt is
-> tightly-coupled to exact shape of ___BPF_FUNC_MAPPER macro definition, so=
- had
-> to be trivially adapted.
->
-> Cc: Quentin Monnet <quentin@isovalent.com>
-> Reported-by: Andrea Terzolo <andrea.terzolo@polito.it>
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+I recently hit 32k size limit for per-cpu map value.. it seems to be
+size limit for generic per cpu allocation, but would be great to have
+it confirmed by somebody who knows mm better ;-)
 
-Nice! Thanks for fixing this!
+jirka
 
-Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-
+> +
+> +Since kernel 5.5, memory mapping may be enabled for ``BPF_MAP_TYPE_ARRAY`` by
+> +setting the flag ``BPF_F_MMAPABLE``. The map definition is page-aligned and
+> +starts on the first page. Sufficient page-sized and page-aligned blocks of
+> +memory are allocated to store all array values, starting on the second page,
+> +which in some cases will result in over-allocation of memory. The benefit of
+> +using this is increased performance and ease of use since userspace programs
+> +would not be required to use helper functions to access and mutate data.
+> +
+> +Usage
+> +=====
+> +
+> +.. c:function::
+> +   void *bpf_map_lookup_elem(struct bpf_map *map, const void *key)
+> +
+> +Array elements can be retrieved using the ``bpf_map_lookup_elem()`` helper.
+> +This helper returns a pointer into the array element, so to avoid data races
+> +with userspace reading the value, the user must use primitives like
+> +``__sync_fetch_and_add()`` when updating the value in-place. Access from
+> +userspace uses the libbpf API of the same name.
+> +
+> +.. c:function::
+> +   long bpf_map_update_elem(struct bpf_map *map, const void *key, const void *value, u64 flags)
+> +
+> +Array elements can also be added using the ``bpf_map_update_elem()`` helper or
+> +libbpf API.
+> +
+> +``bpf_map_update_elem()`` returns 0 on success, or negative error in case of
+> +failure.
+> +
+> +Since the array is of constant size, ``bpf_map_delete_elem()`` is not supported.
+> +To clear an array element, you may use ``bpf_map_update_elem()`` to insert a
+> +zero value to that index.
+> +
+> +Per CPU Array
+> +-------------
+> +
+> +Values stored in ``BPF_MAP_TYPE_ARRAY`` can be accessed by multiple programs
+> +across different CPUs. To restrict storage to a single CPU, you may use a
+> +``BPF_MAP_TYPE_PERCPU_ARRAY``.
+> +
+> +When using a ``BPF_MAP_TYPE_PERCPU_ARRAY`` the ``bpf_map_update_elem()`` and
+> +``bpf_map_lookup_elem()`` helpers automatically access the hash slot for the
+> +current CPU.
+> +
+> +.. c:function::
+> +   void *bpf_map_lookup_percpu_elem(struct bpf_map *map, const void *key, u32 cpu)
+> +
+> +The ``bpf_map_lookup_percpu_elem()`` helper can be used to lookup the array
+> +value for a specific CPU. Returns value on success , or ``NULL`` if no entry was
+> +found or ``cpu`` is invalid.
+> +
+> +Concurrency
+> +-----------
+> +
+> +Since kernel version 5.1, the BPF infrastructure provides ``struct bpf_spin_lock``
+> +to synchronize access.
+> +
+> +Examples
+> +========
+> +
+> +Please see the ``tools/testing/selftests/bpf`` directory for functional
+> +examples. The code samples below demonstrate API usage.
+> +
+> +Kernel BPF
+> +----------
+> +
+> +This snippet shows how to declare an array in a BPF program.
+> +
+> +.. code-block:: c
+> +
+> +    struct {
+> +            __uint(type, BPF_MAP_TYPE_ARRAY);
+> +            __type(key, u32);
+> +            __type(value, long);
+> +            __uint(max_entries, 256);
+> +    } my_map SEC(".maps");
+> +
+> +
+> +This example BPF program shows how to access an array element.
+> +
+> +.. code-block:: c
+> +
+> +    int bpf_prog(struct __sk_buff *skb)
+> +    {
+> +            int index = load_byte(skb,
+> +                                  ETH_HLEN + offsetof(struct iphdr, protocol));
+> +            long *value;
+> +
+> +            if (skb->pkt_type != PACKET_OUTGOING)
+> +                    return 0;
+> +
+> +            value = bpf_map_lookup_elem(&my_map, &index);
+> +            if (value)
+> +                    __sync_fetch_and_add(value, skb->len);
+> +
+> +            return 0;
+> +    }
+> +
+> +Userspace
+> +---------
+> +
+> +BPF_MAP_TYPE_ARRAY
+> +~~~~~~~~~~~~~~~~~~
+> +
+> +This snippet shows how to create an array, using ``bpf_map_create_opts`` to
+> +set flags.
+> +
+> +.. code-block:: c
+> +
+> +    #include <bpf/libbpf.h>
+> +    #include <bpf/bpf.h>
+> +
+> +    int create_array() {
+> +            int fd;
+> +            LIBBPF_OPTS(bpf_map_create_opts, opts, .map_flags = BPF_F_MMAPABLE);
+> +            fd = bpf_map_create(BPF_MAP_TYPE_ARRAY,
+> +                                "example_array",       /* name */
+> +                                sizeof(__u32),         /* key size */
+> +                                sizeof(long),          /* value size */
+> +                                256,                   /* max entries */
+> +                                &opts);                /* create opts */
+> +            return fd;
+> +    }
+> +
+> +This snippet shows how to initialize the elements of an array.
+> +
+> +.. code-block:: c
+> +
+> +    int initialize_array(int fd) {
+> +            __u32 i;
+> +            long value;
+> +            int ret;
+> +
+> +            for (i = 0; i < 256; i++) {
+> +                    value = i;
+> +                    ret = bpf_map_update_elem(fd, &i, &value, BPF_ANY);
+> +                    if (ret < 0)
+> +                            return ret;
+> +            }
+> +
+> +            return ret;
+> +    }
+> +
+> +This snippet shows how to retrieve an element value from an array.
+> +
+> +.. code-block:: c
+> +
+> +    int lookup(int fd) {
+> +            __u32 index = 42;
+> +            long value;
+> +            int ret = bpf_map_lookup_elem(fd, &index, &value);
+> +            if (ret < 0)
+> +                    return ret;
+> +
+> +            /* use value here */
+> +            assert(value == 42);
+> +
+> +            return ret;
+> +    }
+> +
+> +BPF_MAP_TYPE_PERCPU_ARRAY
+> +~~~~~~~~~~~~~~~~~~~~~~~~~
+> +
+> +This snippet shows how to initialize the elements of a per CPU array.
+> +
+> +.. code-block:: c
+> +
+> +    int initialize_array(int fd) {
+> +            int ncpus = libbpf_num_possible_cpus();
+> +            long values[ncpus];
+> +            __u32 i, j;
+> +            int ret;
+> +
+> +            for (i = 0; i < 256 ; i++) {
+> +                    for (j = 0; j < ncpus; j++)
+> +                            values[j] = i;
+> +                    ret = bpf_map_update_elem(fd, &i, &values, BPF_ANY);
+> +                    if (ret < 0)
+> +                            return ret;
+> +            }
+> +
+> +            return ret;
+> +    }
+> +
+> +This snippet shows how to access the per CPU elements of an array value.
+> +
+> +.. code-block:: c
+> +
+> +    int lookup(int fd) {
+> +            int ncpus = libbpf_num_possible_cpus();
+> +            __u32 index = 42, j;
+> +            long values[ncpus];
+> +            int ret = bpf_map_lookup_elem(fd, &index, &values);
+> +            if (ret < 0)
+> +                    return ret;
+> +
+> +            for (j = 0; j < ncpus; j++) {
+> +                    /* Use per CPU value here */
+> +                    assert(values[j] == 42);
+> +            }
+> +
+> +            return ret;
+> +    }
+> +
+> +Semantics
+> +=========
+> +
+> +As shown in the example above, when accessing a ``BPF_MAP_TYPE_PERCPU_ARRAY``
+> +in userspace, each value is an array with ``ncpus`` elements.
+> +
+> +When calling ``bpf_map_update_elem()`` the flag ``BPF_NOEXIST`` can not be used
+> +for these maps.
+> -- 
+> 2.35.1
+> 
