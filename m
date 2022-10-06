@@ -2,125 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6E795F619D
-	for <lists+bpf@lfdr.de>; Thu,  6 Oct 2022 09:27:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EE205F619F
+	for <lists+bpf@lfdr.de>; Thu,  6 Oct 2022 09:28:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230241AbiJFH1P (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Oct 2022 03:27:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46562 "EHLO
+        id S230138AbiJFH2F (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Oct 2022 03:28:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230167AbiJFH1O (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Oct 2022 03:27:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD6A98E0C1
-        for <bpf@vger.kernel.org>; Thu,  6 Oct 2022 00:27:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1665041230;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=rBenCr/sddYb9hESJpfA+ABk7j5KAPKQpHD+BrNJZy8=;
-        b=DNWfDNRgIrybCjQezunkmFaco6YH1vSaxA6+VvALc61TsiVSOX/8mfjkUiakGjog5W6iTi
-        WGhQNHmnmv/l4thxYLUBKY5ZT/2WbcELtrWQF2qkO7Aq+4vS1wOS/FW7RI1bdQzKj3b+2B
-        501bTJf4sjHVfMv53qodjY0+H6jD2lk=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-269-wYbxRUKcMDGrqZYky-yHUw-1; Thu, 06 Oct 2022 03:27:05 -0400
-X-MC-Unique: wYbxRUKcMDGrqZYky-yHUw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E9AC7862FDC;
-        Thu,  6 Oct 2022 07:27:04 +0000 (UTC)
-Received: from samus.usersys.redhat.com (unknown [10.43.17.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A936239DB3;
-        Thu,  6 Oct 2022 07:27:03 +0000 (UTC)
-Date:   Thu, 6 Oct 2022 09:27:01 +0200
-From:   Artem Savkov <asavkov@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jbenc@redhat.com
-Subject: Re: [PATCH bpf-next] selftests/bpf: make libbpf_probe_prog_types
- testcase aware of kernel configuration
-Message-ID: <Yz6DRTvnblwUR7dV@samus.usersys.redhat.com>
-Mail-Followup-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jbenc@redhat.com
-References: <20220930110900.75492-1-asavkov@redhat.com>
- <CAEf4BzZpkgXi9Y6x-_-6mDDW12GvTj0Y_e7cpQMqF3dtiBBhpA@mail.gmail.com>
- <YzqHmHRjxAc4Nndc@samus.usersys.redhat.com>
- <CAEf4BzZaGvXM7Vquc=SEM3-cD=s_gfX1jadm4TsGxHnsLG4daw@mail.gmail.com>
+        with ESMTP id S230165AbiJFH2D (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Oct 2022 03:28:03 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91D7E8993C
+        for <bpf@vger.kernel.org>; Thu,  6 Oct 2022 00:28:02 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id r13so1246846wrj.11
+        for <bpf@vger.kernel.org>; Thu, 06 Oct 2022 00:28:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ozPeQ8u8yr3gPijCfZ9Xvrl3du7s6/eIXizcwtEXkgU=;
+        b=UI3/eoAcRaSxR2j+/FJ73RrTZc4040hHJMig7TDUTJ5qaJ29tl6CEb+J3si3dEFJU5
+         lHRJ7XmRlwV+fd3Hy5Kd1ezN5vruqswKArilWkrTEw93EAWX/Z5v9tjjMqaD5Ek6Ibhn
+         mN8OnkbWfj5eI/aeIibPPseGnUxt19AHUyst87SK40d5fjFvNQOnoGVs7dEl2l6NOuvt
+         WOv57yMIQLs59ORghGfd5S8H1s3UMe7oeODPs+2kQkarO6rgA1xQCEHiCeY/4lcJ/oev
+         Nb6QNaA52PlWvELWShU0K9xYwK+4toiUGdQaOwprkyH9lqR5Lb8JXcIypCxks8eKouOn
+         QHcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ozPeQ8u8yr3gPijCfZ9Xvrl3du7s6/eIXizcwtEXkgU=;
+        b=Oj9wXUJnXOmQcKUFjxy5N8lIXe2mrFt8nyJ3k4D8xBUfZtbu8Fd6jEF9Zjh9DoWvKP
+         n14Z2002P+EKg7br2aP35AuYBKC3NyJsr9MkHD+oAQ3b9CnKeYZkG2Qw7MamiKi03EyJ
+         kljkNhFiRB1O6GvTw87D6L1O8Jzebi0NQKzAuSrfud/n8T9KSm6iXE0ksJ1T8cmjmz91
+         an/NKmYO52WVxa626EhkhioqKEwp4T4bOyTcAaYwNm5p01WmdfxYDIG6/hJpSfB9CepE
+         YnOzzOpYO1cv8UdzX4oGh0FvBbYG26ByCxQbbI1bfZBXbo47jqQO9HNEJYYsSXS7S9x8
+         c+CQ==
+X-Gm-Message-State: ACrzQf2TLamr1EfdtI2hkHleW0FwSgpj5Oh3C5S3IDkWmCzZYa69FeOu
+        IRswhF1azaPVMN+6eIYztE+ZwN9UpTyahw==
+X-Google-Smtp-Source: AMsMyM5zvq10+M2skH464j1V5myXFWuSkFbqi1GhP2VqHnUQKLLzhi7h+BWsu06qLlxV0iMUsnLIvQ==
+X-Received: by 2002:a5d:64e9:0:b0:22e:7631:bcab with SMTP id g9-20020a5d64e9000000b0022e7631bcabmr6170wri.36.1665041280991;
+        Thu, 06 Oct 2022 00:28:00 -0700 (PDT)
+Received: from krava ([193.85.244.190])
+        by smtp.gmail.com with ESMTPSA id p3-20020a5d4e03000000b002238ea5750csm20044614wrt.72.2022.10.06.00.28.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Oct 2022 00:28:00 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Thu, 6 Oct 2022 09:27:58 +0200
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com
+Subject: Re: [PATCH bpf-next] selftests/bpf: Add selftest deny_namespace to
+ s390x deny list
+Message-ID: <Yz6Dfi2uo0lxyvzO@krava>
+References: <20221006053429.3549165-1-yhs@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzZaGvXM7Vquc=SEM3-cD=s_gfX1jadm4TsGxHnsLG4daw@mail.gmail.com>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20221006053429.3549165-1-yhs@fb.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 03, 2022 at 05:03:18PM -0700, Andrii Nakryiko wrote:
-> On Sun, Oct 2, 2022 at 11:56 PM Artem Savkov <asavkov@redhat.com> wrote:
-> >
-> > On Fri, Sep 30, 2022 at 04:06:41PM -0700, Andrii Nakryiko wrote:
-> > > On Fri, Sep 30, 2022 at 4:09 AM Artem Savkov <asavkov@redhat.com> wrote:
-> > > >
-> > > > At the moment libbpf_probe_prog_types test iterates over all available
-> > > > BPF_PROG_TYPE regardless of kernel configuration which can exclude some
-> > > > of those. Unfortunately there is no direct way to tell which types are
-> > > > available, but we can look at struct bpf_ctx_onvert to tell which ones
-> > > > are available.
-> > > >
-> > > > Signed-off-by: Artem Savkov <asavkov@redhat.com>
-> > > > ---
-> > >
-> > > Many selftests assume correct kernel configuration which is encoded in
-> > > config and config.<arch> files. So it seems fair to assume that all
-> > > defined program types are available on kernel-under-test.
-> >
-> > Ok. Wasn't sure if this is the assumption being made.
-> >
-> > > If someone is running selftests under custom more minimal kernel they
-> > > can use denylist to ignore specific prog type subtests?
-> >
-> > Thanks for the suggestion. Denylist is a bit too broad in this case as
-> > it means we'll be disabling the whole libbpf_probe_prog_types test while
-> > only a single type is a problem. Looks like we'll have to live with a
-> > downstream-only patch in this case.
+On Wed, Oct 05, 2022 at 10:34:29PM -0700, Yonghong Song wrote:
+> BPF CI reported that selftest deny_namespace failed with s390x.
 > 
-> Allow/deny lists allow to specify subtests as well, so you can have
-> very granular control. E.g.,
+>   test_unpriv_userns_create_no_bpf:PASS:no-bpf unpriv new user ns 0 nsec
+>   test_deny_namespace:PASS:skel load 0 nsec
+>   libbpf: prog 'test_userns_create': failed to attach: ERROR: strerror_r(-524)=22
+>   libbpf: prog 'test_userns_create': failed to auto-attach: -524
+>   test_deny_namespace:FAIL:attach unexpected error: -524 (errno 524)
+>   #57/1    deny_namespace/unpriv_userns_create_no_bpf:FAIL
+>   #57      deny_namespace:FAIL
 > 
-> [vmuser@archvm bpf]$ sudo ./test_progs -a 'libbpf_probe_prog_types/*SK*'
-> Failed to load bpf_testmod.ko into the kernel: -22
-> WARNING! Selftests relying on bpf_testmod.ko will be skipped.
-> #96/8    libbpf_probe_prog_types/BPF_PROG_TYPE_CGROUP_SKB:OK
-> #96/14   libbpf_probe_prog_types/BPF_PROG_TYPE_SK_SKB:OK
-> #96/16   libbpf_probe_prog_types/BPF_PROG_TYPE_SK_MSG:OK
-> #96/21   libbpf_probe_prog_types/BPF_PROG_TYPE_SK_REUSEPORT:OK
-> #96/30   libbpf_probe_prog_types/BPF_PROG_TYPE_SK_LOOKUP:OK
-> #96      libbpf_probe_prog_types:OK
-> Summary: 1/5 PASSED, 0 SKIPPED, 0 FAILED
+> BPF program test_userns_create is a BPF LSM type program which is
+> based on trampoline and s390x does not support s390x. Let add the
+> test to x390x deny list to avoid this failure in BPF CI.
 > 
-> 
-> As you can see each program type is a subtest, so you can pick and
-> choose which ones to run.
+> Signed-off-by: Yonghong Song <yhs@fb.com>
 
-Right, didn't know it can do that. Thanks for the pointer.
+lgtm
 
--- 
- Artem
+Acked-by: Jiri Olsa <jolsa@kernel.org>
 
+jirka
+
+> ---
+>  tools/testing/selftests/bpf/DENYLIST.s390x | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/tools/testing/selftests/bpf/DENYLIST.s390x b/tools/testing/selftests/bpf/DENYLIST.s390x
+> index 17e074eb42b8..0fb03b8047d5 100644
+> --- a/tools/testing/selftests/bpf/DENYLIST.s390x
+> +++ b/tools/testing/selftests/bpf/DENYLIST.s390x
+> @@ -75,3 +75,4 @@ user_ringbuf                             # failed to find kernel BTF type ID of
+>  lookup_key                               # JIT does not support calling kernel function                                (kfunc)
+>  verify_pkcs7_sig                         # JIT does not support calling kernel function                                (kfunc)
+>  kfunc_dynptr_param                       # JIT does not support calling kernel function                                (kfunc)
+> +deny_namespace                           # failed to attach: ERROR: strerror_r(-524)=22                                (trampoline)
+> -- 
+> 2.30.2
+> 
