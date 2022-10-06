@@ -2,136 +2,206 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CB6A5F5FC2
-	for <lists+bpf@lfdr.de>; Thu,  6 Oct 2022 05:48:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B71B5F5FEF
+	for <lists+bpf@lfdr.de>; Thu,  6 Oct 2022 06:11:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229797AbiJFDss (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Oct 2022 23:48:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58554 "EHLO
+        id S229540AbiJFELU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Oct 2022 00:11:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229875AbiJFDsr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Oct 2022 23:48:47 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBAAF564CA
-        for <bpf@vger.kernel.org>; Wed,  5 Oct 2022 20:48:46 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id ot12so1843788ejb.1
-        for <bpf@vger.kernel.org>; Wed, 05 Oct 2022 20:48:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=5i9/X8GS55/V0X58/oyllgzvar5d3xiEDGRIlRr1DLM=;
-        b=kFBu0O2DAk+Kqx2rqNGal01mbwC0NjJD8+ruEfSCAL9ZnypNFylDBSrW4JioP1WL6e
-         wzqYFgeQFdjVQMAkXUVdaAdko1sPOK2EDXvHrIz5k9zbPP7UM5s9bM+wCQ5pkfwnP6X4
-         iiCAGqhY6NC2R1TceMZ/c14maBlm3Z2ay16WP6L1Wn59aCXyJX8GNVKRUlErcFnlIJoZ
-         OgJK0JvcAS0p9ItNC3oy6PElzPWDyU/nhkQShJLNzvPsI22xpSlDzn94Tedg8r+C4QL+
-         gxrxoJuq4CMXXck6rk1i4AJcZHhQhmV786vcDJdU5TnjqLFaf0K3VUQl81S0Jy29DDnh
-         MvDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5i9/X8GS55/V0X58/oyllgzvar5d3xiEDGRIlRr1DLM=;
-        b=IbOFcCenGZKRuY2T9wAxQtMlDmOIZ/FszBIYG16X+N1bBuJAzIKgul9O1YhW6MnfwC
-         5Pp8CYqcugT/VEXHhRmTYLs5DUUHXVaRvfufuys7TTY46ZrHu57OdhURi8CcmGzeyYdk
-         MAvbGm0UM+4b5CrWdhyj7DEDXcKHValpJRtz1UvOTq/45jiY+hXqS5PSWkM2+QWww/tB
-         71y1TrsxtRpC1DeLtaG6U+tC9J601q7TlwNqLwtJIf7QSDoy1MNyiFFv/e3LJsJUVqYL
-         jzWGTg0By8hNlHjJZEQLn794/qhA7kyKvBGwrBQZYzzcDGZ0ricZWOj5xvTgMea0SJut
-         mJcg==
-X-Gm-Message-State: ACrzQf2QNbbEXpskpKfnxHv7KND4DMkJJ+7LAKUVsqPfNSMsO7vYEyX9
-        gNsW765s0oRqv7JcfcBOxwsL2AXedT/wntVLVOc=
-X-Google-Smtp-Source: AMsMyM4mzS5Uj9kh94zYWKX/GuuTslQ7RwVtRzTTktzFytk1yaRgIDsklulkciMKREIWdxxCb9NeDfOYXB0+yMHvciU=
-X-Received: by 2002:a17:907:3fa9:b0:782:ed33:df8d with SMTP id
- hr41-20020a1709073fa900b00782ed33df8dmr2251442ejc.745.1665028125323; Wed, 05
- Oct 2022 20:48:45 -0700 (PDT)
+        with ESMTP id S229597AbiJFELT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Oct 2022 00:11:19 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C10BB5A2CE
+        for <bpf@vger.kernel.org>; Wed,  5 Oct 2022 21:11:17 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 6D733B81A76
+        for <bpf@vger.kernel.org>; Thu,  6 Oct 2022 04:11:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35A08C433D6
+        for <bpf@vger.kernel.org>; Thu,  6 Oct 2022 04:11:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1665029475;
+        bh=RMIwIydU7raBUw+RLOrya2+imb3iweGMLPgUPYywS3o=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=NUfJ+QHGdzNbm17NzBBbKGFFXWaZYvsWLDjrEUobNuMAEHlIjf5+zKopnvCtjo3/q
+         3W/P/ROMtfaVVo1nHArQAO+BOHjPf6tHhluGelgK9QdaZCBQKqKqL4mTATKl5BjEvI
+         dYCvgrCLvy9Hw85wQSKCLHWUwULCJGVW/iSqAdgnfIKKxbbYhiKW5fhsTkbdImHWXh
+         CGBwlytMPbOpxS1pWEeoNbOCfI1/YSznpvK83QrvQJkkhAPfvfeVc6cwaHPHcgZCCG
+         380YHoAoNN/9ejSzLrMOyYThGpGySbuWrZ+88QsAjIDvu6M1g1rUGdtbozAUS7jPjA
+         hVKkBN74Hm3aw==
+Received: by mail-lf1-f53.google.com with SMTP id bu25so936969lfb.3
+        for <bpf@vger.kernel.org>; Wed, 05 Oct 2022 21:11:15 -0700 (PDT)
+X-Gm-Message-State: ACrzQf3r4RPcmLcpdnH0RKo+plXcHNj+K4hCECbUrnaZ/3Z/sZgeqcgA
+        1+YK5yByAM4VTWie67OMlUd/r6U3wX2AfGz/6t99LA==
+X-Google-Smtp-Source: AMsMyM6jlvEdqv6V9ZDjK9eYJ8Vf0UShxa/3/fB1WwDRyiwMp9FmtooyN1yDLNcAm3Gcps4ldHtolaCCSUrOSHIEw0o=
+X-Received: by 2002:a05:6512:1596:b0:4a2:5de8:410a with SMTP id
+ bp22-20020a056512159600b004a25de8410amr985727lfb.627.1665029473198; Wed, 05
+ Oct 2022 21:11:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20221005161450.1064469-1-andrii@kernel.org> <20221005161450.1064469-3-andrii@kernel.org>
- <CAADnVQLm_8otwwcTEv=8-fE_220i_o0AhokNwxkSnUg7z8a1rA@mail.gmail.com>
-In-Reply-To: <CAADnVQLm_8otwwcTEv=8-fE_220i_o0AhokNwxkSnUg7z8a1rA@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 5 Oct 2022 20:48:33 -0700
-Message-ID: <CAEf4BzZcxQyL0DjJin0hh8iiV6nu3+ckRfb70FGq9V37p=1DaA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/3] selftests/bpf: add BPF object fixup step to veristat
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
+References: <20220927185801.1824838-1-jmeng@fb.com> <20221002051143.831029-1-jmeng@fb.com>
+ <20221002051143.831029-3-jmeng@fb.com>
+In-Reply-To: <20221002051143.831029-3-jmeng@fb.com>
+From:   KP Singh <kpsingh@kernel.org>
+Date:   Wed, 5 Oct 2022 21:11:01 -0700
+X-Gmail-Original-Message-ID: <CACYkzJ4RvEZVp5-sybdn2tOuV-h6KyGJRjvEMZWBoqTBVrK1aQ@mail.gmail.com>
+Message-ID: <CACYkzJ4RvEZVp5-sybdn2tOuV-h6KyGJRjvEMZWBoqTBVrK1aQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 2/3] bpf,x64: use shrx/sarx/shlx when available
+To:     Jie Meng <jmeng@fb.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 5, 2022 at 5:03 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Sat, Oct 1, 2022 at 10:12 PM Jie Meng <jmeng@fb.com> wrote:
 >
-> On Wed, Oct 5, 2022 at 9:15 AM Andrii Nakryiko <andrii@kernel.org> wrote:
-> >
-> > Add a step to attempt to "fix up" BPF object file to make it possible to
-> > successfully load it. E.g., set non-zero size for BPF maps that expect
-> > max_entries set, but BPF object file itself doesn't have declarative
-> > max_entries values specified.
-> >
-> > Another issue was with automatic map pinning. Pinning has no effect on
-> > BPF verification process itself but can interfere when validating
-> > multiple related programs and object files, so veristat disabled all the
-> > pinning explicitly.
-> >
-> > In the future more such fix up heuristics could be added to accommodate
-> > common patterns encountered in practice.
-> >
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > ---
-> >  tools/testing/selftests/bpf/veristat.c | 25 +++++++++++++++++++++++++
-> >  1 file changed, 25 insertions(+)
-> >
-> > diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/selftests/bpf/veristat.c
-> > index 38f678122a7d..973cbf6af323 100644
-> > --- a/tools/testing/selftests/bpf/veristat.c
-> > +++ b/tools/testing/selftests/bpf/veristat.c
-> > @@ -509,6 +509,28 @@ static int parse_verif_log(char * const buf, size_t buf_sz, struct verif_stats *
-> >         return 0;
-> >  }
-> >
-> > +static void fixup_obj(struct bpf_object *obj)
-> > +{
-> > +       struct bpf_map *map;
-> > +
-> > +       bpf_object__for_each_map(map, obj) {
-> > +               /* disable pinning */
-> > +               bpf_map__set_pin_path(map, NULL);
-> > +
-> > +               /* fix up map size, if necessary */
-> > +               switch (bpf_map__type(map)) {
-> > +               case BPF_MAP_TYPE_SK_STORAGE:
-> > +               case BPF_MAP_TYPE_TASK_STORAGE:
-> > +               case BPF_MAP_TYPE_INODE_STORAGE:
-> > +               case BPF_MAP_TYPE_CGROUP_STORAGE:
-> > +                       break;
-> > +               default:
-> > +                       if (bpf_map__max_entries(map) == 0)
-> > +                               bpf_map__set_max_entries(map, 1);
->
-> Should we drop if (==0) check and set max_entries=1 unconditionally
-> to save memory and reduce map creation time ?
-> since max_entries doesn't affect verifiability.
+> Instead of shr/sar/shl that implicitly use %cl, emit their more flexible
+> alternatives provided in BMI2 when advantageous; keep using the non BMI2
+> instructions when shift count is already in BPF_REG_4/rcx as non BMI2
+> instructions are shorter.
 
-This might break the map-in-map case, I think? I see
-xsk_map_meta_equal() takes into account max_entries, and
-array_map_meta_equal() also check max_entries equality unless
-BPF_F_INNER_MAP is specified. So in some cases valid apps won't load
-correctly.
+This is confusing, you mention %CL in the first sentence and then RCX in the
+second sentence. Can you clarify this more here?
 
-Given veristat loads one object at a time, hopefully memory usage
-won't be a big issue in practice. It seems safer and simpler to keep
-it as is.
+Also, It would be good to have some explanations about the
+performance benefits here as well.
+
+i.e. a load + store + non vector instruction v/s a single vector instruction
+omitting the load. How many cycles do we expect in each case, I do expect the
+latter to be lesser, but mentioning it in the commit removes any ambiguity.
 
 >
-> Applied the set for now.
+> To summarize, when BMI2 is available:
+> -------------------------------------------------
+>             |   arbitrary dst
+> =================================================
+> src == ecx  |   shl dst, cl
+> -------------------------------------------------
+> src != ecx  |   shlx dst, dst, src
+> -------------------------------------------------
+>
+> A concrete example between non BMI2 and BMI2 codegen.  To shift %rsi by
+> %rdi:
+>
+> Without BMI2:
+>
+>  ef3:   push   %rcx
+>         51
+>  ef4:   mov    %rdi,%rcx
+>         48 89 f9
+>  ef7:   shl    %cl,%rsi
+>         48 d3 e6
+>  efa:   pop    %rcx
+>         59
+>
+> With BMI2:
+>
+>  f0b:   shlx   %rdi,%rsi,%rsi
+>         c4 e2 c1 f7 f6
+>
+> Signed-off-by: Jie Meng <jmeng@fb.com>
+> ---
+>  arch/x86/net/bpf_jit_comp.c | 64 +++++++++++++++++++++++++++++++++++++
+>  1 file changed, 64 insertions(+)
+>
+> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> index d9ba997c5891..d09c54f3d2e0 100644
+> --- a/arch/x86/net/bpf_jit_comp.c
+> +++ b/arch/x86/net/bpf_jit_comp.c
+> @@ -889,6 +889,48 @@ static void emit_nops(u8 **pprog, int len)
+>         *pprog = prog;
+>  }
+>
+> +/* emit the 3-byte VEX prefix */
+> +static void emit_3vex(u8 **pprog, bool r, bool x, bool b, u8 m,
+> +                     bool w, u8 src_reg2, bool l, u8 p)
+
+Can you please use somewhat more descriptive variable names here?
+
+or add more information about what x, b, m, w, l and p mean?
+
+> +{
+> +       u8 *prog = *pprog;
+> +       u8 b0 = 0xc4, b1, b2;
+> +       u8 src2 = reg2hex[src_reg2];
+> +
+> +       if (is_ereg(src_reg2))
+> +               src2 |= 1 << 3;
+> +
+> +       /*
+> +        *    7                           0
+> +        *  +---+---+---+---+---+---+---+---+
+> +        *  |~R |~X |~B |         m         |
+> +        *  +---+---+---+---+---+---+---+---+
+> +        */
+> +       b1 = (!r << 7) | (!x << 6) | (!b << 5) | (m & 0x1f);
+
+Some explanation here would help, not everyone is aware of x86 vex encoding :)
+
+> +       /*
+> +        *    7                           0
+> +        *  +---+---+---+---+---+---+---+---+
+> +        *  | W |     ~vvvv     | L |   pp  |
+> +        *  +---+---+---+---+---+---+---+---+
+> +        */
+> +       b2 = (w << 7) | ((~src2 & 0xf) << 3) | (l << 2) | (p & 3);
+> +
+> +       EMIT3(b0, b1, b2);
+> +       *pprog = prog;
+> +}
+> +
+> +/* emit BMI2 shift instruction */
+> +static void emit_shiftx(u8 **pprog, u32 dst_reg, u8 src_reg, bool is64, u8 op)
+> +{
+> +       u8 *prog = *pprog;
+> +       bool r = is_ereg(dst_reg);
+> +       u8 m = 2; /* escape code 0f38 */
+> +
+> +       emit_3vex(&prog, r, false, r, m, is64, src_reg, false, op);
+> +       EMIT2(0xf7, add_2reg(0xC0, dst_reg, dst_reg));
+> +       *pprog = prog;
+> +}
+> +
+>  #define INSN_SZ_DIFF (((addrs[i] - addrs[i - 1]) - (prog - temp)))
+>
+>  static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image, u8 *rw_image,
+> @@ -1135,6 +1177,28 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image, u8 *rw_image
+>                 case BPF_ALU64 | BPF_LSH | BPF_X:
+>                 case BPF_ALU64 | BPF_RSH | BPF_X:
+>                 case BPF_ALU64 | BPF_ARSH | BPF_X:
+> +                       /* BMI2 shifts aren't better when shift count is already in rcx */
+> +                       if (boot_cpu_has(X86_FEATURE_BMI2) && src_reg != BPF_REG_4) {
+> +                               /* shrx/sarx/shlx dst_reg, dst_reg, src_reg */
+> +                               bool w = (BPF_CLASS(insn->code) == BPF_ALU64);
+> +                               u8 op;
+> +
+> +                               switch (BPF_OP(insn->code)) {
+> +                               case BPF_LSH:
+> +                                       op = 1; /* prefix 0x66 */
+> +                                       break;
+> +                               case BPF_RSH:
+> +                                       op = 3; /* prefix 0xf2 */
+> +                                       break;
+> +                               case BPF_ARSH:
+> +                                       op = 2; /* prefix 0xf3 */
+> +                                       break;
+> +                               }
+> +
+> +                               emit_shiftx(&prog, dst_reg, src_reg, w, op);
+> +
+> +                               break;
+> +                       }
+>
+>                         if (src_reg != BPF_REG_4) { /* common case */
+>                                 /* Check for bad case when dst_reg == rcx */
+> --
+> 2.30.2
+>
