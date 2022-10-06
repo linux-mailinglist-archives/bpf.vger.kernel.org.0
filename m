@@ -2,83 +2,210 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FA835F618A
-	for <lists+bpf@lfdr.de>; Thu,  6 Oct 2022 09:15:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A7AF5F6198
+	for <lists+bpf@lfdr.de>; Thu,  6 Oct 2022 09:21:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230319AbiJFHP4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Oct 2022 03:15:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58828 "EHLO
+        id S229794AbiJFHVu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Oct 2022 03:21:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230247AbiJFHPm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Oct 2022 03:15:42 -0400
-Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A1A64B986;
-        Thu,  6 Oct 2022 00:15:32 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.229])
-        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4MjjHD5grrz9yFGb;
-        Thu,  6 Oct 2022 15:09:28 +0800 (CST)
-Received: from roberto-ThinkStation-P620 (unknown [10.204.63.22])
-        by APP2 (Coremail) with SMTP id GxC2BwD3c153gD5jT52hAA--.1959S2;
-        Thu, 06 Oct 2022 08:15:12 +0100 (CET)
-Message-ID: <d3274b577152654246895501513c12a33b3485c0.camel@huaweicloud.com>
-Subject: Re: Closing the BPF map permission loophole
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     Lorenz Bauer <oss@lmb.io>, Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S229574AbiJFHVt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Oct 2022 03:21:49 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 442F6543CF
+        for <bpf@vger.kernel.org>; Thu,  6 Oct 2022 00:21:48 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id bu30so1238065wrb.8
+        for <bpf@vger.kernel.org>; Thu, 06 Oct 2022 00:21:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=OoEjEw/R1mtrfdhOSFjNCEyqH6r1bV20ETpjyEKlQu4=;
+        b=bF8ewHJEwDpwlumyf+sPAtY4u1bE+IioOa8/fKyeu5dXg8oDIiRnqcJU3KZbFjRE95
+         K0yLI/bN7lhyCPyfhxbsEl9tXcmH1KmrGAVdeXtpiW5i7UwZnXQcruxwd3mdeQ1Yf9JG
+         Hf/M3EYhKY76/kInh5DvoZ0gPlc6QhEFul7B/H35jCDxdYZS4rM7lzHeQDVNHh303115
+         0PhVTxzospCYMb3BrYe+exS/uOjMYx04DCtsz6/2MEFO1CrYp8YV0LA/IrAn8hCzDgGA
+         GYuoRF9Nlzt8GhKsNfjhURt5+ErRgWdCSK0iZjkZMvUgo2P5tvXx+TwOjcOg4PeJLyTa
+         CGIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OoEjEw/R1mtrfdhOSFjNCEyqH6r1bV20ETpjyEKlQu4=;
+        b=TKIEE5McJZR3St6Xx8NI2CUToZyDSjyOMiW1wpQV73BAZQVrBF7GWgMaB1gs/Ulg2u
+         dYE/nJttgYSpUlnZ+9192RwhZD1+VKOcVY5DwwXZrafyHKWEqOyI5Ba1cfLhnb5e0NzS
+         A1zt/xmlhofmXMQjBtGWSQ5bpa//AZE9njU5hdJUtadOltfAZ1cPClTJVKXvjsMUtuhm
+         x8GyX3Ybhx/326kiKJRAYOeDYTIRHV8H+5jLg/C8Dt6bmylEWnpxhqREM90hX0egh38V
+         kFSqgAMbcbBII9PSg/aA/skPNQMm0dFi2rXOLjJdcwG+530K5itvTdzcZtxUl5dHfZu/
+         5q3w==
+X-Gm-Message-State: ACrzQf2ulPEtJZm491XUAwdKu5UGOWJGHBqSEniq6ud4xcQYRM7yobEg
+        Iqlm8aLTTKbcDNVutYNKmoA=
+X-Google-Smtp-Source: AMsMyM49tKNLmLkayIGcHpok1b7qX8iT1wj7uH2pT8ad1sp/YXn1AXwPWbDRBU5KZxbsrGeP8N0wrg==
+X-Received: by 2002:a05:6000:15ce:b0:226:f2ab:516d with SMTP id y14-20020a05600015ce00b00226f2ab516dmr2077032wry.264.1665040906657;
+        Thu, 06 Oct 2022 00:21:46 -0700 (PDT)
+Received: from krava ([193.85.244.190])
+        by smtp.gmail.com with ESMTPSA id f11-20020a05600c154b00b003a3442f1229sm4749603wmg.29.2022.10.06.00.21.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Oct 2022 00:21:46 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Thu, 6 Oct 2022 09:21:43 +0200
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Stanislav Fomichev <sdf@google.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>
-Cc:     bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
-        Paul Moore <paul@paul-moore.com>,
-        Casey Schaufler <casey@schaufler-ca.com>
-Date:   Thu, 06 Oct 2022 09:15:01 +0200
-In-Reply-To: <21be7356-8710-408a-94e3-1a0d3f5f842e@www.fastmail.com>
-References: <a6c0bb85-6eeb-407e-a515-06f67e70db57@www.fastmail.com>
-         <21be7356-8710-408a-94e3-1a0d3f5f842e@www.fastmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>
+Subject: Re: [PATCH bpf] bpf: make DEBUG_INFO_BTF_MODULES selectable
+ independently
+Message-ID: <Yz6CB5uQISg3j9dq@krava>
+References: <20221004222725.2813510-1-sdf@google.com>
+ <YzzQ2mI/srLNazNO@google.com>
+ <CAADnVQKyqJRGYn4ty5PaL2vAUnTo0ohY1CF3k_kpc=whEbhdPA@mail.gmail.com>
+ <CAKH8qBstTdOGK8GXpy_-5D_4ebuhwWSYe-tRnhdz17oDb3EcAA@mail.gmail.com>
+ <CAEf4BzYnxD5mrYjcCHfCObQDkdMAC+3aZ1EeAoVOoyqENpk53Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: GxC2BwD3c153gD5jT52hAA--.1959S2
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYU7kC6x804xWl14x267AKxVW8JVW5JwAF
-        c2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII
-        0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xv
-        wVC0I7IYx2IY6xkF7I0E14v26r4j6F4UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjc
-        xK6I8E87Iv6xkF7I0E14v26r4j6r4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40E
-        FcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr
-        0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY
-        04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
-        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y
-        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
-        W8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8
-        JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUrR6zUU
-        UUU
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQARBF1jj4Ph4gABsk
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzYnxD5mrYjcCHfCObQDkdMAC+3aZ1EeAoVOoyqENpk53Q@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 2022-09-28 at 09:54 +0100, Lorenz Bauer wrote:
-> On Thu, 15 Sep 2022, at 11:30, Lorenz Bauer wrote:
-> > Hi list,
-> > 
-> > Here is a summary of the talk I gave at LPC '22 titled "Closing the
-> > BPF 
-> > map permission loophole", with slides at [0].
+On Wed, Oct 05, 2022 at 04:28:49PM -0700, Andrii Nakryiko wrote:
+> On Tue, Oct 4, 2022 at 7:04 PM Stanislav Fomichev <sdf@google.com> wrote:
+> >
+> > On Tue, Oct 4, 2022 at 6:39 PM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Tue, Oct 4, 2022 at 5:33 PM <sdf@google.com> wrote:
+> > > >
+> > > > On 10/04, Stanislav Fomichev wrote:
+> > > > > We're having an issue where we have a recent clang that seems
+> > > > > to generate kind_flag for enums (aka, adding signed/unsigned).
+> > > > > Trying to install a module on a kernel that doesn't have commit
+> > > > > 6089fb325cf7 ("bpf: Add btf enum64 support") returns the following:
+> > > >
+> > > > > [    3.176954] BPF:Invalid btf_info kind_flag
+> > > >
+> > > > > The enum that it complains about doesn't seem to have anything special
+> > > > > except having a sign:
+> > > >
+> > > > > [1721] ENUM 'perf_event_state' encoding=SIGNED size=4 vlen=6
+> > > > >          'PERF_EVENT_STATE_DEAD' val=-4
+> > > > >          'PERF_EVENT_STATE_EXIT' val=-3
+> > > > >          'PERF_EVENT_STATE_ERROR' val=-2
+> > > > >          'PERF_EVENT_STATE_OFF' val=-1
+> > > > >          'PERF_EVENT_STATE_INACTIVE' val=0
+> > > > >          'PERF_EVENT_STATE_ACTIVE' val=1
+> > > >
+> > > > > We are not currently using CONFIG_DEBUG_INFO_BTF_MODULES and
+> > > > > don't plan to use module BTF, so it's preferable to be able
+> > > > > to explicits disable it in the kernel config. Unfortunately,
+> > > > > because that kconfig option doesn't have a name, it's not
+> > > > > possible to flip it independently from CONFIG_DEBUG_INFO_BTF.
+> > > > > Let's add a name to make sure module BTF is user-controllable.
+> > > >
+> > > > [..]
+> > > >
+> > > > > (Not sure, but maybe the right fix is to also have a stable patch
+> > > > >   to relax that "Invalid btf_info kind_flag" check?)
+> > > >
+> > > > Answering to myself, looks like we do need the following for
+> > > > non-enum64-compatible older/stable kernels:
+> > > >
+> > > > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> > > > index 3cfba41a0829..928f4955090a 100644
+> > > > --- a/kernel/bpf/btf.c
+> > > > +++ b/kernel/bpf/btf.c
+> > > > @@ -3301,11 +3301,6 @@ static s32 btf_enum_check_meta(struct
+> > > > btf_verifier_env *env,
+> > > >                 return -EINVAL;
+> > > >         }
+> > > >
+> > > > -       if (btf_type_kflag(t)) {
+> > > > -               btf_verifier_log_type(env, t, "Invalid btf_info kind_flag");
+> > > > -               return -EINVAL;
+> > > > -       }
+> > > > -
+> > > >         if (t->size > 8 || !is_power_of_2(t->size)) {
+> > > >                 btf_verifier_log_type(env, t, "Unexpected size");
+> > > >                 return -EINVAL;
+> > > >
+> > > > Anything I'm missing? Feels like any pre-6089fb325cf7 ("bpf: Add btf
+> > > > enum64 support") kernel will have an issue with a recent clang
+> > > > that puts sign into kflag?
+> > > >
+> > > >
+> > > > > Fixes: 5f9ae91f7c0d ("kbuild: Build kernel module BTFs if BTF is enabled
+> > > > > and pahole supports it")
+> > > > > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> > > > > ---
+> > > > >   lib/Kconfig.debug | 1 +
+> > > > >   1 file changed, 1 insertion(+)
+> > > >
+> > > > > diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> > > > > index c77fe36bb3d8..6336a697c9f5 100644
+> > > > > --- a/lib/Kconfig.debug
+> > > > > +++ b/lib/Kconfig.debug
+> > > > > @@ -326,6 +326,7 @@ config PAHOLE_HAS_SPLIT_BTF
+> > > > >       def_bool $(success, test `$(PAHOLE) --version | sed
+> > > > > -E 's/v([0-9]+)\.([0-9]+)/\1\2/'` -ge "119")
+> > > >
+> > > > >   config DEBUG_INFO_BTF_MODULES
+> > > > > +     bool "Generate BTF module typeinfo"
+> > > > >       def_bool y
+> > > > >       depends on DEBUG_INFO_BTF && MODULES && PAHOLE_HAS_SPLIT_BTF
+> > > > >       help
+> > >
+> > > Not quite following.
+> > > Are you saying instead of backporting enum64 support
+> > > to older kernels you'd prefer to add this patch to upstream
+> > > and backport this smaller patch?
+> >
+> > Yeah, sorry, it took me a while to build the context, I might still be
+> > missing something.
+> >
+> > So far it seems that disabling DEBUG_INFO_BTF_MODULES is not enough.
+> > It looks like as long as the older kernels still have that
+> > btf_type_kflag enum check, compiling them with a fairly recent clang
+> > won't work?
+> > Or do we expect those users to use pahole's --skip_encoding_btf_enum64
+> > which seems to fallback to the old way?
 > 
-> I've put this topic on the agenda of the 2022-10-06 BPF office hours
-> to get some maintainer attention. Details are here: 
-> https://docs.google.com/spreadsheets/d/1LfrDXZ9-fdhvPEp_LHkxAMYyxxpwBXjywWa0AejEveU/edit
+> Clang doesn't generate kernel or kernel module's BTF, so it has
+> nothing to do with this. It's pahole that needs to be told to not
+> generate kflag bit for enum on older kernels.
+> --skip_encoding_btf_enum64 is not exactly that, seems like we need
+> another flag to disable the sign bit for enum?
+> 
+> cc'ed Arnaldo as well.
+> 
+> >
+> > I guess I'm still trying to understand whether we care about
+> > old/stable kernels + recent llvm combination.
+> 
+> I think it's similar to --skip_encoding_btf_enum64, so I'd say yes?
 
-Thanks for setting this up. I would include security people, they might
-be interested as well to join.
+hi,
+this seems like the issue we fixed recently where BTF with enum64 won't
+pass stable kernel verifier.. we did fix for stable 5.19 and 5.15:
+  https://lore.kernel.org/bpf/20220904131901.13025-1-jolsa@kernel.org/
+  https://lore.kernel.org/bpf/20220916171234.841556-1-yakoyoku@gmail.com/
 
-Roberto
+I did not do 5.10 fix as explained in here:
+  https://lore.kernel.org/bpf/YyeYUEHyR%2FnHM8NT@krava/
 
+jirka
