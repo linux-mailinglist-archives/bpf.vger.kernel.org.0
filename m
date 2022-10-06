@@ -2,130 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E9555F6157
-	for <lists+bpf@lfdr.de>; Thu,  6 Oct 2022 09:04:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FA835F618A
+	for <lists+bpf@lfdr.de>; Thu,  6 Oct 2022 09:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229786AbiJFHED (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Oct 2022 03:04:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38426 "EHLO
+        id S230319AbiJFHP4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Oct 2022 03:15:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229897AbiJFHEC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Oct 2022 03:04:02 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A6998C478
-        for <bpf@vger.kernel.org>; Thu,  6 Oct 2022 00:04:01 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id bg9-20020a05600c3c8900b003bf249616b0so400668wmb.3
-        for <bpf@vger.kernel.org>; Thu, 06 Oct 2022 00:04:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=NaaTbn1CR2YEnP+89f+c8EBKUBi7C4IyXLH7hSx1Ybk=;
-        b=RGNELKueNHofJYO+aXloecLn08i6ZkA0kxZ8VzTIJA9hKvZ/DMHFE+zau5nqWBMPU3
-         CbtI91qa6VHCrJLWwY7rYUwo3kbWCrHRX6HRmrB1lsI/bI+hDfeTHnvnRdfDNsNyPjco
-         LxbEfZph5ZEJaHsLu1M49LxEG7YKORb6uFBO8gPoRevXTJNlkMY6cpAeU/9LUeNJIGYv
-         hKU0tsDuT7506b4P6d4ZjuqQbEhP1+bFDu/bsU8zN51cNsT8FENj4eUIptJf3CFTqbnE
-         XPeUFGnoKnFajpTp8mSk00q7xXyem2dqyisYj4/TdINC2yBuZLbIrz1NytXo+/pqzVzd
-         ErVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NaaTbn1CR2YEnP+89f+c8EBKUBi7C4IyXLH7hSx1Ybk=;
-        b=5Y2mDpRI1gFvVMBogmCV00pi34LGyUsA8rhiDn3d95zKoeSK+rcWYplZm0CAHSS7Xn
-         AXJfFFAoLu1fdYvWqY22cnMmBLKrq9bECFsptprQvgbFeOQtO0LddGwIfBxdpypLfCh8
-         RJ2KnA1K9C0wFWQW2xH8fLuaWAGV9POcEVH4KQnISIq7k4SHgOA9zNFwZeDnuViF/siA
-         7F2pLbQ5zv0eerX0XOSG2oOAKICu12uaNDsTSNt8Y8aHXZMImbuJOTL7pMNPZoS8e60I
-         OaUYAggYhV6h/OIjFkJFebe7kePo0bvGDZ0jsxVCqfZk/5y+Cahb6ac6OavO3ztYzPhW
-         DTcw==
-X-Gm-Message-State: ACrzQf1hurCDzmF/Pw1peXbYDwSUfahwVpZeDvpIIZZrGSBZT3NQ6S3Q
-        665HpTpeKzoW2/MAOYxoKPc=
-X-Google-Smtp-Source: AMsMyM67ywMGOy/uDb3k4/XGxiU9QM/Nioa/MpkPnoWPFnHOy3HigGvOyixCNc58f6bBT9x9jTpJRw==
-X-Received: by 2002:a05:600c:548b:b0:3b5:95b:57d3 with SMTP id iv11-20020a05600c548b00b003b5095b57d3mr5839779wmb.153.1665039839844;
-        Thu, 06 Oct 2022 00:03:59 -0700 (PDT)
-Received: from krava ([193.85.244.190])
-        by smtp.gmail.com with ESMTPSA id k16-20020a5d5250000000b0022ca921dc67sm17169741wrc.88.2022.10.06.00.03.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Oct 2022 00:03:59 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Thu, 6 Oct 2022 09:03:56 +0200
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Jiri Olsa <olsajiri@gmail.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Kui-Feng Lee <kuifeng@fb.com>, bpf@vger.kernel.org,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S230247AbiJFHPm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Oct 2022 03:15:42 -0400
+Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A1A64B986;
+        Thu,  6 Oct 2022 00:15:32 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.229])
+        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4MjjHD5grrz9yFGb;
+        Thu,  6 Oct 2022 15:09:28 +0800 (CST)
+Received: from roberto-ThinkStation-P620 (unknown [10.204.63.22])
+        by APP2 (Coremail) with SMTP id GxC2BwD3c153gD5jT52hAA--.1959S2;
+        Thu, 06 Oct 2022 08:15:12 +0100 (CET)
+Message-ID: <d3274b577152654246895501513c12a33b3485c0.camel@huaweicloud.com>
+Subject: Re: Closing the BPF map permission loophole
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     Lorenz Bauer <oss@lmb.io>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Add missing
- bpf_iter_vma_offset__destroy call
-Message-ID: <Yz593OOQ+M91ERo5@krava>
-References: <20221002151141.1074196-1-jolsa@kernel.org>
- <49aa0aec-a009-c0c3-cf47-11a6734aae36@linux.dev>
- <YzvU3/rwCnbWQM8P@krava>
- <YzwjQJurtyF6f0W1@krava>
- <CAEf4BzZay5mLX04C7Hk0xawpTvMMX+JXoRvh4_Z19DBoOnmFaw@mail.gmail.com>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>
+Cc:     bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
+        Paul Moore <paul@paul-moore.com>,
+        Casey Schaufler <casey@schaufler-ca.com>
+Date:   Thu, 06 Oct 2022 09:15:01 +0200
+In-Reply-To: <21be7356-8710-408a-94e3-1a0d3f5f842e@www.fastmail.com>
+References: <a6c0bb85-6eeb-407e-a515-06f67e70db57@www.fastmail.com>
+         <21be7356-8710-408a-94e3-1a0d3f5f842e@www.fastmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzZay5mLX04C7Hk0xawpTvMMX+JXoRvh4_Z19DBoOnmFaw@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: GxC2BwD3c153gD5jT52hAA--.1959S2
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYU7kC6x804xWl14x267AKxVW8JVW5JwAF
+        c2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII
+        0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xv
+        wVC0I7IYx2IY6xkF7I0E14v26r4j6F4UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjc
+        xK6I8E87Iv6xkF7I0E14v26r4j6r4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40E
+        FcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr
+        0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY
+        04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
+        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y
+        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
+        W8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8
+        JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUrR6zUU
+        UUU
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQARBF1jj4Ph4gABsk
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 05, 2022 at 03:58:45PM -0700, Andrii Nakryiko wrote:
-> On Tue, Oct 4, 2022 at 5:16 AM Jiri Olsa <olsajiri@gmail.com> wrote:
-> >
-> > On Tue, Oct 04, 2022 at 08:38:23AM +0200, Jiri Olsa wrote:
-> > > On Mon, Oct 03, 2022 at 05:12:44PM -0700, Martin KaFai Lau wrote:
-> > > > On 10/2/22 8:11 AM, Jiri Olsa wrote:
-> > > > > Adding missing bpf_iter_vma_offset__destroy call to
-> > > > > test_task_vma_offset_common function and related goto jumps.
-> > > > >
-> > > > > Fixes: b3e1331eb925 ("selftests/bpf: Test parameterized task BPF iterators.")
-> > > > > Cc: Kui-Feng Lee <kuifeng@fb.com>
-> > > > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > > > ---
-> > > > >   tools/testing/selftests/bpf/prog_tests/bpf_iter.c | 8 +++++---
-> > > > >   1 file changed, 5 insertions(+), 3 deletions(-)
-> > > > >
-> > > > > diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-> > > > > index 3369c5ec3a17..462fe92e0736 100644
-> > > > > --- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-> > > > > +++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-> > > > > @@ -1515,11 +1515,11 @@ static void test_task_vma_offset_common(struct bpf_iter_attach_opts *opts, bool
-> > > > >           link = bpf_program__attach_iter(skel->progs.get_vma_offset, opts);
-> > > >
-> > > > Thanks for the fix.
-> > > >
-> > > > A nit.  Instead of adding a new goto label.  How about doing
-> > > >
-> > > >     skel->links.get_vma_offset = bpf_program_attach_iter(...)
-> > > >
-> > > > and bpf_iter_vma_offset__destroy(skel) will take care of the link destroy.
-> > > > The earlier test_task_vma_common() is doing that also.
-> > >
-> > > right, I forgot destroy would do that.. it'll be simpler change
-> >
-> > ugh actually no ;-) it's outside (of skeleton) link,
-> > so it won't get closed in bpf_iter_vma_offset__destroy
+On Wed, 2022-09-28 at 09:54 +0100, Lorenz Bauer wrote:
+> On Thu, 15 Sep 2022, at 11:30, Lorenz Bauer wrote:
+> > Hi list,
+> > 
+> > Here is a summary of the talk I gave at LPC '22 titled "Closing the
+> > BPF 
+> > map permission loophole", with slides at [0].
 > 
-> Martin's point was that if you assign it to skel->links.get_vma_offset
-> it will be closed by skeleton's destroy method. So let's do that?
+> I've put this topic on the agenda of the 2022-10-06 BPF office hours
+> to get some maintainer attention. Details are here: 
+> https://docs.google.com/spreadsheets/d/1LfrDXZ9-fdhvPEp_LHkxAMYyxxpwBXjywWa0AejEveU/edit
 
-ah ok, will send new version
+Thanks for setting this up. I would include security people, they might
+be interested as well to join.
 
-thanks,
-jirka
+Roberto
+
