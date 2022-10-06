@@ -2,214 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 710885F6C7E
-	for <lists+bpf@lfdr.de>; Thu,  6 Oct 2022 19:07:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 754DB5F6C98
+	for <lists+bpf@lfdr.de>; Thu,  6 Oct 2022 19:13:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229606AbiJFRHo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Oct 2022 13:07:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42332 "EHLO
+        id S231826AbiJFRN0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Oct 2022 13:13:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbiJFRHn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Oct 2022 13:07:43 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC2929E2ED
-        for <bpf@vger.kernel.org>; Thu,  6 Oct 2022 10:07:39 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id e18so3751724edj.3
-        for <bpf@vger.kernel.org>; Thu, 06 Oct 2022 10:07:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lOgpjyGqM3AQcL6BeKVrlFuyECi8EOSbds45quTyn7g=;
-        b=bqhMvCoNdKNKHyy7HpyykOtopGlRKHId0h3QfYpCfGAlY+DqKIUTSyqITeJaNlMZ3A
-         /c+aS1P4MMiPjDHhq2Bp6pIJOA9gIjqb4FaIlnUYquIII3rl8meGH339RLg1HtxgzS2j
-         ncgZexvW8XnZlyNfSAw7Tav746Oq6gZVkaITZqmNN9UAyU+ftCKIKHmuNhQKez0D2Oju
-         4qs9PcS7XZZs4K44GNrFKUm1XRk6UkF1OXEQm80wCydlJnStty25CXCxTu83nRKt71Ae
-         7cuRToRAspx3rap7BWbyMNNQbtCWZwmIuLJ7UdnvvmD9p2LBNhzsjGBL/ZWGEqRbQi4O
-         pXng==
+        with ESMTP id S231829AbiJFRNI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Oct 2022 13:13:08 -0400
+Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68908BBE12;
+        Thu,  6 Oct 2022 10:12:50 -0700 (PDT)
+Received: by mail-oo1-f51.google.com with SMTP id q70-20020a4a3349000000b0047f9951ad3aso1314922ooq.7;
+        Thu, 06 Oct 2022 10:12:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lOgpjyGqM3AQcL6BeKVrlFuyECi8EOSbds45quTyn7g=;
-        b=nZIBLNYoYlbe+Y90BU1fgi5wXuqN08Z95gczoAT0Pm96Ee6WpZyk/v+5Mu4wXR/Jae
-         NKe9+SpO6Pkxv2jg/mqxxhBEkTa/6g8wpXXp9qdvE2w8cBfOtQTFnwcmrYZ8pWRSiYby
-         M5d0ZULQ7YxPZMxeuXFPcqDuYOf0mht7a63tw6EyZhGLUtINsMZePYOTMbNIF5wTClol
-         se6Jh4Tp3It4Z4FCRdto0+LzussvzAtl6WOisxrSZYRgGP0RzF6hMiZNdNfodZO18iLM
-         Zg84ZHUn6Hrsfzscq30bu/Hmpn9HAkhgYRfLicVp1e+D4oMjJnilqitFuh8XY7W8CGOp
-         g8/w==
-X-Gm-Message-State: ACrzQf2Ck+ik0a2lQNSkb3CRAMPV6pbKKLvL/qqhTh5n/RWdsDRoKemm
-        fc4HQysuxPg3lklsMf5qIKVgkn7KqJxx4aMjT+8=
-X-Google-Smtp-Source: AMsMyM5+ykuAUM+GVe3J/bDY+oVFkcHOHLwu8RpI9rgDDUZLqEqmzFS73MZtwRnMIzI0QAYSvUHz2ofTfrEIgUmnD9o=
-X-Received: by 2002:a05:6402:3603:b0:451:fdda:dddd with SMTP id
- el3-20020a056402360300b00451fddaddddmr724948edb.81.1665076058322; Thu, 06 Oct
- 2022 10:07:38 -0700 (PDT)
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HtuVKtBzoKt+jjbMVURehUv1VCPg1XF6D/AE8RGN56s=;
+        b=LqNjXvS8jqmHA1KhM7v3sX2YNUvNNsUWLvJMigBpbVkVKRHWewXWsdk3LSKh+QdCL9
+         fEpvq9DF6paP7FlIwMoyzsVCm4sXEiWRq2PEEbRjQe3Q1LcdzD/y7Zqtk0NbkGWLAv9Y
+         bZxuogNajNnMh7Awq91ab8D0F8PJ+C9kor3JUs3Apx+cHx0LQvO205N7sV7ob6uUkg+1
+         HFIq7i4KcgBFWWFjE9lAocSgSDBGx0lPEtxjZv8PLj15uKD348Dl3cLlLc7/xPnCVtiX
+         dOstUM/4xY56J2hM0/D6JR7l4DpgHbDQgA7+VUdJOQLjZ7fW0PYWF3kxbVsPF+wwHRdS
+         t0ig==
+X-Gm-Message-State: ACrzQf163HOeVONRNG91L+1WLghWezPZbwkP5icZouonBG6AT3BrAouB
+        YrUy71nw2Hth3NIHskdFxEyayHnxS/0elWWKKyA=
+X-Google-Smtp-Source: AMsMyM5wuCJUzTKp9TI/kiM8x8/PMnUws2JzhLIGBD920S8QVuI8y+eWoXERHiNlnjNIOLS2FOM7R6e7vTyAXKLJIRY=
+X-Received: by 2002:a05:6830:621a:b0:660:dd14:c2f4 with SMTP id
+ cd26-20020a056830621a00b00660dd14c2f4mr408265otb.190.1665076370095; Thu, 06
+ Oct 2022 10:12:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220929160558.5034-1-annemacedo@linux.microsoft.com>
- <63365532d416f_233df20899@john.notmuch> <92157e05-e383-ed4b-8b01-2981dbf5afd3@linux.microsoft.com>
- <CAEf4BzZxU+YD5CtHEk7S7bXTDMMSsnV3eFYgRXCMft=fx9reMA@mail.gmail.com>
- <CAHC9VhSqHFRpfq1b6Ys+Ygaqr-6KFeziUxtOVpsoBb=TE2csoA@mail.gmail.com>
- <CAEf4BzZnLFgzaPWeaH2h3dqxS4thEHQUv6FtZbpffxs6iGcWKw@mail.gmail.com> <658ad9b2-9ee6-39ac-782d-23a1d7be8aba@linux.microsoft.com>
-In-Reply-To: <658ad9b2-9ee6-39ac-782d-23a1d7be8aba@linux.microsoft.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 6 Oct 2022 10:07:26 -0700
-Message-ID: <CAEf4BzYJpCKDvzF3Oy0dW4NJpf6UVOc_W2Mw+_ERA_hJSPxk6A@mail.gmail.com>
-Subject: Re: [PATCH] libbpf: add validation to BTF's variable type ID
-To:     Anne Macedo <annemacedo@linux.microsoft.com>
-Cc:     Paul Moore <paul@paul-moore.com>,
-        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Isabella Basso <isabbasso@riseup.net>
+References: <166434824149.401.4361243714612738808.tip-bot2@tip-bot2> <20221006160044.3397237-1-sumanthk@linux.ibm.com>
+In-Reply-To: <20221006160044.3397237-1-sumanthk@linux.ibm.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Thu, 6 Oct 2022 10:12:37 -0700
+Message-ID: <CAM9d7ciTeePbQokkn_OAhwpa3cPfun-VacQRP4eOMmRzOkd6=w@mail.gmail.com>
+Subject: Re: [PATCH] Re: [tip: perf/core] perf: Use sample_flags for raw_data
+To:     Sumanth Korikkar <sumanthk@linux.ibm.com>
+Cc:     tip-bot2@linutronix.de, linux-kernel@vger.kernel.org,
+        linux-tip-commits@vger.kernel.org, peterz@infradead.org,
+        x86@kernel.org, iii@linux.ibm.com, gor@linux.ibm.com,
+        hca@linux.ibm.com, svens@linux.ibm.com, tmricht@linux.ibm.com,
+        bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 6, 2022 at 10:02 AM Anne Macedo
-<annemacedo@linux.microsoft.com> wrote:
->
->
->
-> On 05/10/22 19:42, Andrii Nakryiko wrote:
-> > On Mon, Oct 3, 2022 at 2:26 PM Paul Moore <paul@paul-moore.com> wrote:
-> >>
-> >> On Fri, Sep 30, 2022 at 6:39 PM Andrii Nakryiko
-> >> <andrii.nakryiko@gmail.com> wrote:
-> >>> On Fri, Sep 30, 2022 at 6:00 AM Anne Macedo
-> >>> <annemacedo@linux.microsoft.com> wrote:
-> >>>>
-> >>>> On 29/09/22 23:32, John Fastabend wrote:
-> >>>>> Anne Macedo wrote:
-> >>>>>> If BTF is corrupted, a SEGV may occur due to a null pointer derefe=
-rence on
-> >>>>>> bpf_object__init_user_btf_map.
-> >>>>>>
-> >>>>>> This patch adds a validation that checks whether the DATASEC's var=
-iable
-> >>>>>> type ID is null. If so, it raises a warning.
-> >>>>>>
-> >>>>>> Reported by oss-fuzz project [1].
-> >>>>>>
-> >>>>>> A similar patch for the same issue exists on [2]. However, the cod=
-e is
-> >>>>>> unreachable when using oss-fuzz data.
-> >>>>>>
-> >>>>>> [1] https://github.com/libbpf/libbpf/issues/484
-> >>>>>> [2] https://patchwork.kernel.org/project/netdevbpf/patch/202111031=
-73213.1376990-3-andrii@kernel.org/
-> >>>>>>
-> >>>>>> Reviewed-by: Isabella Basso <isabbasso@riseup.net>
-> >>>>>> Signed-off-by: Anne Macedo <annemacedo@linux.microsoft.com>
-> >>>>>> ---
-> >>>>>>    tools/lib/bpf/libbpf.c | 4 ++++
-> >>>>>>    1 file changed, 4 insertions(+)
-> >>>>>>
-> >>>>>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> >>>>>> index 184ce1684dcd..0c88612ab7c4 100644
-> >>>>>> --- a/tools/lib/bpf/libbpf.c
-> >>>>>> +++ b/tools/lib/bpf/libbpf.c
-> >>>>>> @@ -2464,6 +2464,10 @@ static int bpf_object__init_user_btf_map(st=
-ruct bpf_object *obj,
-> >>>>>>
-> >>>>>>       vi =3D btf_var_secinfos(sec) + var_idx;
-> >>>>>>       var =3D btf__type_by_id(obj->btf, vi->type);
-> >>>>>> +    if (!var || !btf_is_var(var)) {
-> >>>>>> +            pr_warn("map #%d: non-VAR type seen", var_idx);
-> >>>>>> +            return -EINVAL;
-> >>>>>> +    }
-> >>>>>>       var_extra =3D btf_var(var);
-> >>>>>>       map_name =3D btf__name_by_offset(obj->btf, var->name_off);
-> >>>>>>
-> >>>>>> --
-> >>>>>> 2.30.2
-> >>>>>>
-> >>>>>
-> >>>>>
-> >>>>> I don't know abouut this. A quick scan looks like this type_by_id i=
-s
-> >>>>> used lots of places. And seems corrupted BTF could cause faults
-> >>>>> and confusiuon in other spots as well. I'm not sure its worth makin=
-g
-> >>>>> libbpf survive corrupted BTF. OTOH this specific patch looks ok.
-> >>>>>
-> >>>>
-> >>>> I was planning on creating a function to validate BTF for these kind=
-s of
-> >>>> corruptions, but decided to keep this patch simple. This could be a =
-good
-> >>>> idea for some future work =E2=80=93 moving all of the validations to
-> >>>> bpf_object__init_btf() or to a helper function.
-> >>>
-> >>> This whack-a-mole game of fixing up BTF checks to avoid one specific
-> >>> corruption case is too burdensome. There is plenty of BTF usage befor=
-e
-> >>> the point which you are fixing, so with some other specific corruptio=
-n
-> >>> to BTF you can trigger even sooner corruption.
-> >>>
-> >>> As I mentioned on Github. I'm not too worried about ossfuzz generatin=
-g
-> >>> corrupted BTF because that's not a very realistic scenario. But it
-> >>> would be nice to add some reasonable validation logic for BTF in
-> >>> general, so let's better concentrate on that instead of adding these
-> >>> extra checks.
-> >>
-> >> Reading the comments here and on the associated GH issue, it sounds
-> >> like you would be supportive of this check so long as it was placed in
-> >> bpf_object__init_btf(), is that correct?  Or do you feel this
-> >> particular check falls outside the scope of "reasonable validation
-> >> logic"?  I'm trying to understand what the best next step would be for
-> >> this patch ...
-> >
-> > I think we should bite the bullet and do BTF validation in libbpf. It
-> > doesn't have to be as thorough as what kernel does, but validating
-> > general "structural integrity" of BTF as a first step would make all
-> > these one-off checks throughout entire libbpf source code unnecessary.
-> > I.e., we'll need to check things like: no out of range type IDs, no
-> > out-of-range string offsets, FUNC -> FUNC_PROTO references, DATASEC ->
-> > VAR | FUNC references, etc, etc. Probably make sure we don't have a
-> > loop of struct referencing to itself not through pointer, etc. It's a
-> > bit more upfront work, but it's will make the rest of the code simpler
-> > and will eliminate a bunch of those fuzzer crashes as well.
-> >
->
-> Thanks for the feedback, I think that sounds like a good plan. I will
-> work on another patch and I wanted to summarize what I should do.
->
-> So basically, I should place the BTF validation on
-> bpf_object__init_btf(), that should contain validations for:
->
-> - out of range type IDs;
-> - out of range string offsets;
-> - FUNC -> FUNC_PROTO references;
-> - DATASEC -> VAR | FUNC references;
-> - structs referencing themselves;
->
+Hello,
 
-This is just specific things that I could recall immediately. Please
-look at what kernel is validating in kernel/bpf/btf.c. I don't think
-libbpf should be as strict as kernel (e.g., I would reject BTF because
-it has unexpected kflag and stuff like that), we should validate stuff
-that libbpf relies on, but not be overzealous overall (e.g., rejecting
-BTF because kflag is unexpectedly set might be an overkill for libbpf,
-while it makes sense for kernel to be stricter).
+On Thu, Oct 6, 2022 at 9:01 AM Sumanth Korikkar <sumanthk@linux.ibm.com> wrote:
+>
+> Hi,
+>
+> This causes segfaults.
+>
+> Steps to recreate:
+> *  Run ./samples/bpf/trace_output
+> BUG pid 9 cookie 1001000000004 sized 4
+> BUG pid 9 cookie 1001000000004 sized 4
+> BUG pid 9 cookie 1001000000004 sized 4
+> Segmentation fault (core dumped)
+>
+> Problem:
+> * The following commit sets data->raw to NULL, when the raw data is not filled
+> by PMU driver. This leads to stale data.
+>
+> * raw data could also be filled by bpf_perf_event_output(), bpf_event_output()
+> ...
+>  686         perf_sample_data_init(sd, 0, 0);
+>  687         sd->raw = &raw;
+>  688
+>  689         err = __bpf_perf_event_output(regs, map, flags, sd);
+> ...
+>
+> * The below patch eliminates segfaults. However, contradicts with
+> the description mentioned in this commit (Filled by only PMU driver).
 
-> >>
-> >> --
-> >> paul-moore.com
+Thank you for the fix.  Don't worry about the description - it said
+it's usually filled by PMU drivers and it should be fine as long as
+you set the sample flags after filling the raw data.
+
+Acked-by: Namhyung Kim <namhyung@kernel.org>
+
+Thanks,
+Namhyung
+
+>
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 49fb9ec8366d..1ed08967fb97 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -687,6 +687,7 @@ BPF_CALL_5(bpf_perf_event_output, struct pt_regs *, regs, struct bpf_map *, map,
+>
+>         perf_sample_data_init(sd, 0, 0);
+>         sd->raw = &raw;
+> +       sd->sample_flags |= PERF_SAMPLE_RAW;
+>
+>         err = __bpf_perf_event_output(regs, map, flags, sd);
+>
+> @@ -745,6 +746,7 @@ u64 bpf_event_output(struct bpf_map *map, u64 flags, void *meta, u64 meta_size,
+>         perf_fetch_caller_regs(regs);
+>         perf_sample_data_init(sd, 0, 0);
+>         sd->raw = &raw;
+> +       sd->sample_flags |= PERF_SAMPLE_RAW;
+>
+>         ret = __bpf_perf_event_output(regs, map, flags, sd);
+>  out:
+>
+> --
+> Thanks,
+> Sumanth
