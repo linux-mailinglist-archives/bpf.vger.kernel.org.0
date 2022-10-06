@@ -2,103 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67A795F69D6
-	for <lists+bpf@lfdr.de>; Thu,  6 Oct 2022 16:41:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E89105F6A25
+	for <lists+bpf@lfdr.de>; Thu,  6 Oct 2022 16:59:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231648AbiJFOlN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Oct 2022 10:41:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41914 "EHLO
+        id S231784AbiJFO7d (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Oct 2022 10:59:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231415AbiJFOlM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Oct 2022 10:41:12 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38575AA37D
-        for <bpf@vger.kernel.org>; Thu,  6 Oct 2022 07:41:11 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id b4so3065225wrs.1
-        for <bpf@vger.kernel.org>; Thu, 06 Oct 2022 07:41:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20210112.gappssmtp.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date;
-        bh=cIvD4SIeJoCk360pl02Pzwin/1fMLrYpDwvLvoLUIhc=;
-        b=8G1iPQiThztiVXysP820f5cmCxYqykewjF8pk4aHTcWbgGcIWU4Tquq5u/2QVXbG/J
-         WdONjK6bc2lFytl0XLDcBEP5obf2L4H0s8lUrjLRDYsqAddpozwrC7tpUgMkhmZNrJZl
-         EUdbTLIIFAgSRzmA9HleVA+ZVpwuVg7oNE2wXmndSlcBMpaRAaV7ZZZfpcpbJ6RbKa5Z
-         uyoiS9FggKRl1MqmzeNVG6qo7pdCJPXV3LhEFd0kYncExcc8b49sr2QR9Xu1kmrsxYoE
-         JaspjbjIutZ+ALzQI5v1zbORR+xXPoBpoDqdM758EYcjgdkp6f2nE5qrZ8lSZbBB5ZrK
-         csmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date;
-        bh=cIvD4SIeJoCk360pl02Pzwin/1fMLrYpDwvLvoLUIhc=;
-        b=vhwOke2pc7SzoCK/FEprFS0M2AWCoi9jMz6KCbaMNsAKfQAhan+8PnpCcUX1L6aXvV
-         +F8113yueIQcRVRfTR6tFGLfC7pgoTUD5VkzC5KcAsoZ6/GlN0GiyG6pBVSPcGgj1Puz
-         sb2wXFr4QEqAXa+1S0Y3SmPHkOKfTprHkA0W9Y/mPmaA+lcDLAxEjkfjIwP5WmIX+6+W
-         O2Imp6FX/fhBWLwGuOnD/zM2muvxkJqXybvDs2pdICJHtkMbjOWPhI8OcfW4F/FkyGY3
-         8JeIX1E98w4gflK13dgiZJerSU0fnMg46zj3bOLClR+Zx99ObhtUBhvJv/aJni0x2Z6M
-         /Iqw==
-X-Gm-Message-State: ACrzQf1V0EZhCe6eo3KfxNtVrfgRgz1axGwr01AhkjOTumFvV/xQ5NIn
-        qszUfy06t1cKWpa+JzKZ/VUoSFZpakDi5bYznNplrQ==
-X-Google-Smtp-Source: AMsMyM7eq2vsFrtfQHah5Exz9HgPq1ucEj0BUaR89bJQXEjyjbpk3I+xwRH7c6D1f4YTGh7MJr5dWPR9xlQI8B8kpVY=
-X-Received: by 2002:a5d:584d:0:b0:22b:229:7582 with SMTP id
- i13-20020a5d584d000000b0022b02297582mr185193wrf.211.1665067269753; Thu, 06
- Oct 2022 07:41:09 -0700 (PDT)
+        with ESMTP id S231740AbiJFO7a (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Oct 2022 10:59:30 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4080AE85D;
+        Thu,  6 Oct 2022 07:59:29 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4F7EE619C8;
+        Thu,  6 Oct 2022 14:59:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24E10C433C1;
+        Thu,  6 Oct 2022 14:59:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1665068368;
+        bh=DhoQTcRWD4rsk7jnT5ieI/JievE8tJN6SfZhhFrVZ94=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=WTAnQ9CF5/E+L27yUFXDdfOXN4gUCmJ3JVgaCdDK5d3XXk8KV1zQOVxpQMal7SZfs
+         IgJNUcrxhaHYtIInLLJwWFlh7Xrbs3fvw2qxsz7le+fjxt/FjslCZ6Iiw3Yfcg/Gwl
+         byAqyeuSXECpq2Nd2o4Ex5SJxcKVbOVq3iZVtXHiFxO/ZawWyBJjHT67caKsy8JrDP
+         x7R28HgrCRsNEdoE+6alxLpcSV6YCvbMrbKNbwnKKco3toeTaSUlZ6gQrUiZFopIIT
+         0XR9IBBpj5Tz75pF9Tj0eVJkE+wspN+WOVWf5ls6nI46SeTlYR0T6KHoUJuw/OvnoF
+         LBu6zI4EmhRZA==
+Date:   Thu, 6 Oct 2022 07:59:27 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
+Cc:     Stanislav Fomichev <sdf@google.com>, brouer@redhat.com,
+        Martin KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, xdp-hints@xdp-project.net,
+        larysa.zaremba@intel.com, memxor@gmail.com,
+        Lorenzo Bianconi <lorenzo@kernel.org>, mtahhan@redhat.com,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        dave@dtucker.co.uk, Magnus Karlsson <magnus.karlsson@intel.com>,
+        bjorn@kernel.org
+Subject: Re: [PATCH RFCv2 bpf-next 00/18] XDP-hints: XDP gaining access to
+ HW offload hints via BTF
+Message-ID: <20221006075927.39e43e6b@kernel.org>
+In-Reply-To: <55542209-03d7-590f-9ab1-bbbf924d033c@redhat.com>
+References: <166256538687.1434226.15760041133601409770.stgit@firesoul>
+        <Yzt2YhbCBe8fYHWQ@google.com>
+        <35fcfb25-583a-e923-6eee-e8bbcc19db17@redhat.com>
+        <CAKH8qBuYVk7QwVOSYrhMNnaKFKGd7M9bopDyNp6-SnN6hSeTDQ@mail.gmail.com>
+        <5ccff6fa-0d50-c436-b891-ab797fe7e3c4@linux.dev>
+        <20221004175952.6e4aade7@kernel.org>
+        <CAKH8qBtdAeHqbWa33yO-MMgC2+h2qehFn8Y_C6ZC1=YsjQS-Bw@mail.gmail.com>
+        <55542209-03d7-590f-9ab1-bbbf924d033c@redhat.com>
 MIME-Version: 1.0
-References: <20221004231143.19190-1-daniel@iogearbox.net> <20221004231143.19190-2-daniel@iogearbox.net>
- <20221006050053.pbwo72xtzoza6gfl@macbook-pro-4.dhcp.thefacebook.com>
-In-Reply-To: <20221006050053.pbwo72xtzoza6gfl@macbook-pro-4.dhcp.thefacebook.com>
-From:   Jamal Hadi Salim <jhs@mojatatu.com>
-Date:   Thu, 6 Oct 2022 10:40:52 -0400
-Message-ID: <CAM0EoMnJzP6kbr94utjDT1X=e9G21-uu=Cbqhx2XLfqXE+HDwA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 01/10] bpf: Add initial fd-based API to attach tc
- BPF programs
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
-        razor@blackwall.org, ast@kernel.org, andrii@kernel.org,
-        martin.lau@linux.dev, john.fastabend@gmail.com,
-        joannelkoong@gmail.com, memxor@gmail.com, toke@redhat.com,
-        joe@cilium.io, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 6, 2022 at 1:01 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Wed, Oct 05, 2022 at 01:11:34AM +0200, Daniel Borkmann wrote:
+On Wed, 5 Oct 2022 16:19:30 +0200 Jesper Dangaard Brouer wrote:
+> >> Since you mentioned it... FWIW that was always my preference rather than
+> >> the BTF magic :)  The jited image would have to be per-driver like we
+> >> do for BPF offload but that's easy to do from the technical
+> >> perspective (I doubt many deployments bind the same prog to multiple
+> >> HW devices)..  
+> 
+> On the technical side we do have the ifindex that can be passed along
+> which is currently used for getting XDP hardware offloading to work.
+> But last time I tried this, I failed due to BPF tail call maps.
 
->
-> I cannot help but feel that prio logic copy-paste from old tc, netfilter and friends
-> is done because "that's how things were done in the past".
-> imo it was a well intentioned mistake and all networking things (tc, netfilter, etc)
-> copy-pasted that cumbersome and hard to use concept.
-> Let's throw away that baggage?
-> In good set of cases the bpf prog inserter cares whether the prog is first or not.
-> Since the first prog returning anything but TC_NEXT will be final.
-> I think prog insertion flags: 'I want to run first' vs 'I don't care about order'
-> is good enough in practice. Any complex scheme should probably be programmable
-> as any policy should. For example in Meta we have 'xdp chainer' logic that is similar
-> to libxdp chaining, but we added a feature that allows a prog to jump over another
-> prog and continue the chain. Priority concept cannot express that.
-> Since we'd have to add some "policy program" anyway for use cases like this
-> let's keep things as simple as possible?
-> Then maybe we can adopt this "as-simple-as-possible" to XDP hooks ?
-> And allow bpf progs chaining in the kernel with "run_me_first" vs "run_me_anywhere"
-> in both tcx and xdp ?
+FWIW the tail call map should be solvable by enforcing that the map 
+is also pinned and so are all the programs in it. Perhaps I find that
+less ugly than others.. since that's what the offload path did :)
 
-You just described the features already offered by tc opcodes + priority.
-
-This problem is solvable by some user space resource arbitration scheme.
-Reading through the thread - a daemon of some sort will do. A daemon
-which issues tokens that can be validated in the kernel (kerberos type
-of approach) would be the best i.e fds alone dont resolve this.
-
-cheers,
-jamal
+> (It's not going to fly for other reasons, see redirect below).
