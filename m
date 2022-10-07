@@ -2,245 +2,266 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B6F85F7D2A
-	for <lists+bpf@lfdr.de>; Fri,  7 Oct 2022 20:11:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8893D5F7D2C
+	for <lists+bpf@lfdr.de>; Fri,  7 Oct 2022 20:12:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229686AbiJGSLn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 Oct 2022 14:11:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54652 "EHLO
+        id S229591AbiJGSL7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 Oct 2022 14:11:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229648AbiJGSLm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 Oct 2022 14:11:42 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99D62B84F
-        for <bpf@vger.kernel.org>; Fri,  7 Oct 2022 11:11:40 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id t8-20020a258388000000b006bfb0865043so812021ybk.13
-        for <bpf@vger.kernel.org>; Fri, 07 Oct 2022 11:11:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MlqnxrgfmzENWBGsSpIBZPiSPhQ1F6m8PVnj5ZjL7rk=;
-        b=W3LF/ceYNqO7vRLo3A6Lte/+kOhQ7AgvUkGszdhaXH+ySmVgN9z55m4zMKaSh6upFu
-         ZuJKLU5mF02LdHK2qLXxfYMp3o45FU3hUKEUVey18vrYKMk6L2nXf3ghmYJgftByCGid
-         Iw0ZMeUxfjOsqGVCWKNTmQaTuojYC24luK3SV1Wi2J5G82wr7T3wKrxjZhX0vi74NWqn
-         4d42ujFdpQNu1IJwRYl+HSxR9jeK57NvLZnYxzoRg5e2breZe6dArE5OgvHWWQV0dgl1
-         9uqk+UI4VkuQ2eAfUERmKXHMEvd/GwOMw1NGrMqq9JV0ZD/8YHEtedNEsiApMlEhoQML
-         EjcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=MlqnxrgfmzENWBGsSpIBZPiSPhQ1F6m8PVnj5ZjL7rk=;
-        b=Vk9saRryJH4zfV/BXn0uzy1WytzqgWPF5vCpe5RQreecICYQesBl293ZuAI7axZ1OA
-         BZybjyFPD6Ee12f00BI8K4v01bxlN4kFhThsJDN1JS37KFqd/6nJ0b83545DYu3Wugj6
-         pBvVN/genyq6tqnPR1Oz/2diqS8Tc5DprIG4E/GKX524Ok60FNwUTjeG/JdnjYrFHTq5
-         Hcfsp9tbdoVrkVtGmXb6vP3dmFF1xIAHQxgMUu1wbtKT0TnNPr5ID9McyFEBaZXduuPm
-         +HtGG2oIrVpk5kkA6MwLYGF2Nv7EqWHDOfmkoCledRMUlhswkpGyWg3fRGS5mQP4T/gq
-         CQkg==
-X-Gm-Message-State: ACrzQf0XbxXQ1mBC+AT6OkquS0KAJxXUSkm09nfpl9UCvlgkPMiYjnYa
-        nBqBaMjDaHQXbuiQ8ny2tm1rhT8=
-X-Google-Smtp-Source: AMsMyM7IhEq3uG/wyQOGoRbEaWNxgls8cu3DVW1G6KOUXW1dUaGzi6zWVm+uKc14SVczRTzks7UllbI=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a5b:286:0:b0:6bd:22f8:43d1 with SMTP id
- x6-20020a5b0286000000b006bd22f843d1mr6190672ybl.356.1665166299932; Fri, 07
- Oct 2022 11:11:39 -0700 (PDT)
-Date:   Fri, 7 Oct 2022 11:11:38 -0700
-In-Reply-To: <87tu4fczyv.fsf@toke.dk>
-Mime-Version: 1.0
-References: <20221004231143.19190-1-daniel@iogearbox.net> <20221004231143.19190-2-daniel@iogearbox.net>
- <20221006050053.pbwo72xtzoza6gfl@macbook-pro-4.dhcp.thefacebook.com>
- <f355eeba-1b46-749f-c102-65074e7eac27@iogearbox.net> <CAADnVQ+gEY3FjCR=+DmjDR4gp5bOYZUFJQXj4agKFHT9CQPZBw@mail.gmail.com>
- <14f368eb-9158-68bc-956c-c8371cfcb531@iogearbox.net> <875ygvemau.fsf@toke.dk>
- <Y0BaBUWeTj18V5Xp@google.com> <87tu4fczyv.fsf@toke.dk>
-Message-ID: <Y0Br2vVgj1aZEEvJ@google.com>
-Subject: Re: [PATCH bpf-next 01/10] bpf: Add initial fd-based API to attach tc
- BPF programs
-From:   sdf@google.com
-To:     "Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?=" <toke@redhat.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        Nikolay Aleksandrov <razor@blackwall.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Joe Stringer <joe@cilium.io>,
-        Network Development <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S229578AbiJGSL6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 Oct 2022 14:11:58 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA3FA18B3D
+        for <bpf@vger.kernel.org>; Fri,  7 Oct 2022 11:11:55 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 5E988B823E3
+        for <bpf@vger.kernel.org>; Fri,  7 Oct 2022 18:11:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5264C4314C
+        for <bpf@vger.kernel.org>; Fri,  7 Oct 2022 18:11:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1665166312;
+        bh=cLf2kaLK1i+t4rabwj2WwrIFYs6D2n3cy7J/DpSqiCw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=HZsGLBkPiUaASGiP4ziaqzfamF/RqNx5ovtwsIdzKVIgIzUFkNDNiX3b6yGGpFv2S
+         of4DTCqcJ7LSIbrPfgi2PiQqG3WAIJvA3QZI1ZIZbNNWXsfLjBXSFuDi3zXnJRwCBW
+         TEkmF/t5pMSeOToSXqhFH7GlssaHuLB1oTfhS1jG0RSPaZJxkZuD6dIgD3XcJJqDx8
+         kCgyq9LkyrKwHy2KXFSDY4XUrKVlmS+tCLkAxD4nTGDTamUoyDN3lh/v8jEZu1iiIg
+         TtP26ALu1+nV5tzKKbHOlMhcShXIimIbsKBlKuyRhwYaHaS7rKFj0rGvPV74yu0jzZ
+         RwXYgUVEhDyfg==
+Received: by mail-lf1-f52.google.com with SMTP id d6so8362292lfs.10
+        for <bpf@vger.kernel.org>; Fri, 07 Oct 2022 11:11:52 -0700 (PDT)
+X-Gm-Message-State: ACrzQf3pU3n07djuBgkaCFi296Zc23ok0Qir9vLcftzlnz43ExIDI2KZ
+        6PR8d91xfar5E50lAFEdf635JyNeji6uUSLijkH1BA==
+X-Google-Smtp-Source: AMsMyM67XC4YAyz6lAQzRLKOMV0vI+ZXKqvKUQAwhDnfTPwggrHrYektpXPKD+U7eJsWV49fzwEQzpLqM51JxeSDQHY=
+X-Received: by 2002:a05:6512:10c2:b0:4a2:ed6:4f4e with SMTP id
+ k2-20020a05651210c200b004a20ed64f4emr2426883lfg.136.1665166310422; Fri, 07
+ Oct 2022 11:11:50 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220927185801.1824838-1-jmeng@fb.com> <20221002051143.831029-1-jmeng@fb.com>
+ <20221002051143.831029-3-jmeng@fb.com> <CACYkzJ4RvEZVp5-sybdn2tOuV-h6KyGJRjvEMZWBoqTBVrK1aQ@mail.gmail.com>
+ <Yz+Zm6qar+nWrLZs@fb.com>
+In-Reply-To: <Yz+Zm6qar+nWrLZs@fb.com>
+From:   KP Singh <kpsingh@kernel.org>
+Date:   Fri, 7 Oct 2022 11:11:39 -0700
+X-Gmail-Original-Message-ID: <CACYkzJ7gz8Y0JXgfs2vKG5nF98iS+UdqpM9Vk0OOnSfYvMdK4g@mail.gmail.com>
+Message-ID: <CACYkzJ7gz8Y0JXgfs2vKG5nF98iS+UdqpM9Vk0OOnSfYvMdK4g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 2/3] bpf,x64: use shrx/sarx/shlx when available
+To:     Jie Meng <jmeng@fb.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-T24gMTAvMDcsIFRva2UgSMO4aWxhbmQtSsO4cmdlbnNlbiB3cm90ZToNCj4gc2RmQGdvb2dsZS5j
-b20gd3JpdGVzOg0KDQo+ID4gT24gMTAvMDcsIFRva2UgSO+/vWlsYW5kLUrvv71yZ2Vuc2VuIHdy
-b3RlOg0KPiA+PiBEYW5pZWwgQm9ya21hbm4gPGRhbmllbEBpb2dlYXJib3gubmV0PiB3cml0ZXM6
-DQo+ID4NCj4gPj4gPiBPbiAxMC83LzIyIDE6MjggQU0sIEFsZXhlaSBTdGFyb3ZvaXRvdiB3cm90
-ZToNCj4gPj4gPj4gT24gVGh1LCBPY3QgNiwgMjAyMiBhdCAyOjI5IFBNIERhbmllbCBCb3JrbWFu
-biAgDQo+IDxkYW5pZWxAaW9nZWFyYm94Lm5ldD4NCj4gPj4gd3JvdGU6DQo+ID4+ID4+PiBPbiAx
-MC82LzIyIDc6MDAgQU0sIEFsZXhlaSBTdGFyb3ZvaXRvdiB3cm90ZToNCj4gPj4gPj4+PiBPbiBX
-ZWQsIE9jdCAwNSwgMjAyMiBhdCAwMToxMTozNEFNICswMjAwLCBEYW5pZWwgQm9ya21hbm4gd3Jv
-dGU6DQo+ID4+ID4+PiBbLi4uXQ0KPiA+PiA+Pj4+DQo+ID4+ID4+Pj4gSSBjYW5ub3QgaGVscCBi
-dXQgZmVlbCB0aGF0IHByaW8gbG9naWMgY29weS1wYXN0ZSBmcm9tIG9sZCB0YywNCj4gPj4gbmV0
-ZmlsdGVyIGFuZCBmcmllbmRzDQo+ID4+ID4+Pj4gaXMgZG9uZSBiZWNhdXNlICJ0aGF0J3MgaG93
-IHRoaW5ncyB3ZXJlIGRvbmUgaW4gdGhlIHBhc3QiLg0KPiA+PiA+Pj4+IGltbyBpdCB3YXMgYSB3
-ZWxsIGludGVudGlvbmVkIG1pc3Rha2UgYW5kIGFsbCBuZXR3b3JraW5nIHRoaW5ncyAgDQo+ICh0
-YywNCj4gPj4gbmV0ZmlsdGVyLCBldGMpDQo+ID4+ID4+Pj4gY29weS1wYXN0ZWQgdGhhdCBjdW1i
-ZXJzb21lIGFuZCBoYXJkIHRvIHVzZSBjb25jZXB0Lg0KPiA+PiA+Pj4+IExldCdzIHRocm93IGF3
-YXkgdGhhdCBiYWdnYWdlPw0KPiA+PiA+Pj4+IEluIGdvb2Qgc2V0IG9mIGNhc2VzIHRoZSBicGYg
-cHJvZyBpbnNlcnRlciBjYXJlcyB3aGV0aGVyIHRoZSBwcm9nICANCj4gaXMNCj4gPj4gZmlyc3Qg
-b3Igbm90Lg0KPiA+PiA+Pj4+IFNpbmNlIHRoZSBmaXJzdCBwcm9nIHJldHVybmluZyBhbnl0aGlu
-ZyBidXQgVENfTkVYVCB3aWxsIGJlIGZpbmFsLg0KPiA+PiA+Pj4+IEkgdGhpbmsgcHJvZyBpbnNl
-cnRpb24gZmxhZ3M6ICdJIHdhbnQgdG8gcnVuIGZpcnN0JyB2cyAnSSBkb24ndCAgDQo+IGNhcmUN
-Cj4gPj4gYWJvdXQgb3JkZXInDQo+ID4+ID4+Pj4gaXMgZ29vZCBlbm91Z2ggaW4gcHJhY3RpY2Uu
-IEFueSBjb21wbGV4IHNjaGVtZSBzaG91bGQgcHJvYmFibHkgYmUNCj4gPj4gcHJvZ3JhbW1hYmxl
-DQo+ID4+ID4+Pj4gYXMgYW55IHBvbGljeSBzaG91bGQuIEZvciBleGFtcGxlIGluIE1ldGEgd2Ug
-aGF2ZSAneGRwIGNoYWluZXInDQo+ID4+IGxvZ2ljIHRoYXQgaXMgc2ltaWxhcg0KPiA+PiA+Pj4+
-IHRvIGxpYnhkcCBjaGFpbmluZywgYnV0IHdlIGFkZGVkIGEgZmVhdHVyZSB0aGF0IGFsbG93cyBh
-IHByb2cgdG8NCj4gPj4ganVtcCBvdmVyIGFub3RoZXINCj4gPj4gPj4+PiBwcm9nIGFuZCBjb250
-aW51ZSB0aGUgY2hhaW4uIFByaW9yaXR5IGNvbmNlcHQgY2Fubm90IGV4cHJlc3MgdGhhdC4NCj4g
-Pj4gPj4+PiBTaW5jZSB3ZSdkIGhhdmUgdG8gYWRkIHNvbWUgInBvbGljeSBwcm9ncmFtIiBhbnl3
-YXkgZm9yIHVzZSBjYXNlcw0KPiA+PiBsaWtlIHRoaXMNCj4gPj4gPj4+PiBsZXQncyBrZWVwIHRo
-aW5ncyBhcyBzaW1wbGUgYXMgcG9zc2libGU/DQo+ID4+ID4+Pj4gVGhlbiBtYXliZSB3ZSBjYW4g
-YWRvcHQgdGhpcyAiYXMtc2ltcGxlLWFzLXBvc3NpYmxlIiB0byBYRFAgIA0KPiBob29rcyA/DQo+
-ID4+ID4+Pj4gQW5kIGFsbG93IGJwZiBwcm9ncyBjaGFpbmluZyBpbiB0aGUga2VybmVsIHdpdGgg
-InJ1bl9tZV9maXJzdCINCj4gPj4gdnMgInJ1bl9tZV9hbnl3aGVyZSINCj4gPj4gPj4+PiBpbiBi
-b3RoIHRjeCBhbmQgeGRwID8NCj4gPj4gPj4+PiBOYXR1cmFsbHkgInJ1bl9tZV9maXJzdCIgcHJv
-ZyB3aWxsIGJlIHRoZSBvbmx5IG9uZS4gTm8gbmVlZCBmb3INCj4gPj4gRl9SRVBMQUNFIGZsYWdz
-LCBldGMuDQo+ID4+ID4+Pj4gVGhlIG93bmVyIG9mICJydW5fbWVfZmlyc3QiIHdpbGwgdXBkYXRl
-IGl0cyBwcm9nIHRocm91Z2gNCj4gPj4gYnBmX2xpbmtfdXBkYXRlLg0KPiA+PiA+Pj4+ICJydW5f
-bWVfYW55d2hlcmUiIHdpbGwgYWRkIHRvIHRoZSBlbmQgb2YgdGhlIGNoYWluLg0KPiA+PiA+Pj4+
-IEluIFhEUCBmb3IgY29tcGF0aWJpbGl0eSByZWFzb25zICJydW5fbWVfZmlyc3QiIHdpbGwgYmUg
-dGhlICANCj4gZGVmYXVsdC4NCj4gPj4gPj4+PiBTaW5jZSBvbmx5IG9uZSBwcm9nIGNhbiBiZSBl
-bnF1ZXVlZCB3aXRoIHN1Y2ggZmxhZyBpdCB3aWxsIG1hdGNoDQo+ID4+IGV4aXN0aW5nIHNpbmds
-ZSBwcm9nIGJlaGF2aW9yLg0KPiA+PiA+Pj4+IFdlbGwgYmVoYXZpbmcgcHJvZ3Mgd2lsbCB1c2Ug
-KGxpa2UgeGRwLXRjcGR1bXAgb3IgbW9uaXRvcmluZyAgDQo+IHByb2dzKQ0KPiA+PiB3aWxsIHVz
-ZSAicnVuX21lX2FueXdoZXJlIi4NCj4gPj4gPj4+PiBJIGtub3cgaXQncyBmYXIgZnJvbSBjb3Zl
-cmluZyBwbGVudHkgb2YgY2FzZXMgdGhhdCB3ZSd2ZSBkaXNjdXNzZWQNCj4gPj4gZm9yIGxvbmcg
-dGltZSwNCj4gPj4gPj4+PiBidXQgcHJpbyBjb25jZXB0IGlzbid0IHJlYWxseSBjb3ZlcmluZyB0
-aGVtIGVpdGhlci4NCj4gPj4gPj4+PiBXZSd2ZSBzdHJ1Z2dsZWQgZW5vdWdoIHdpdGggc2luZ2xl
-IHhkcCBwcm9nLCBzbyBjZXJ0YWlubHkgbm90DQo+ID4+IGFkdm9jYXRpbmcgZm9yIHRoYXQuDQo+
-ID4+ID4+Pj4gQW5vdGhlciBhbHRlcm5hdGl2ZSBpcyB0byBkbzogInF1ZXVlX2F0X2hlYWQiIHZz
-ICJxdWV1ZV9hdF90YWlsIi4NCj4gPj4gSnVzdCBhcyBzaW1wbGUuDQo+ID4+ID4+Pj4gQm90aCBz
-aW1wbGUgdmVyc2lvbnMgaGF2ZSB0aGVpciBwcm9zIGFuZCBjb25zIGFuZCBkb24ndCBjb3Zlcg0K
-PiA+PiBldmVyeXRoaW5nLA0KPiA+PiA+Pj4+IGJ1dCBpbW8gYm90aCBhcmUgYmV0dGVyIHRoYW4g
-cHJpby4NCj4gPj4gPj4+DQo+ID4+ID4+PiBZZWFoLCBpdCdzIGtpbmQgb2YgdHJpY2t5LCBpbWhv
-LiBUaGUgJ3J1bl9tZV9maXJzdCcNCj4gPj4gdnMgJ3J1bl9tZV9hbnl3aGVyZScgYXJlIHR3bw0K
-PiA+PiA+Pj4gdXNlIGNhc2VzIHRoYXQgc2hvdWxkIGJlIGNvdmVyZWQgKGFuZCBhY3R1YWxseSB3
-ZSBraW5kIG9mIGRvIHRoaXMgIA0KPiBpbg0KPiA+PiB0aGlzIHNldCwgdG9vLA0KPiA+PiA+Pj4g
-d2l0aCB0aGUgcHJpb3MgdmlhIHByaW89eCB2cyBwcmlvPTApLiBHaXZlbiB1c2VycyB3aWxsIG9u
-bHkgYmUNCj4gPj4gY29uc3VtaW5nIHRoZSBBUElzDQo+ID4+ID4+PiB2aWEgbGlicyBsaWtlIGxp
-YmJwZiwgdGhpcyBjYW4gYWxzbyBiZSBhYnN0cmFjdGVkIHRoaXMgd2F5IHcvbyAgDQo+IHVzZXJz
-DQo+ID4+IGhhdmluZyB0byBiZQ0KPiA+PiA+Pj4gYXdhcmUgb2YgcHJpb3MuDQo+ID4+ID4+DQo+
-ID4+ID4+IGJ1dCB0aGUgcGF0Y2hzZXQgdGVsbHMgZGlmZmVyZW50IHN0b3J5Lg0KPiA+PiA+PiBQ
-cmlvIGdldHMgZXhwb3NlZCBldmVyeXdoZXJlIGluIHVhcGkgYWxsIHRoZSB3YXkgdG8gYnBmdG9v
-bA0KPiA+PiA+PiB3aGVuIGl0J3MgcmlnaHQgdGhlcmUgZm9yIHVzZXJzIHRvIHVuZGVyc3RhbmQu
-DQo+ID4+ID4+IEFuZCB0aGF0J3MgdGhlIG1haW4gcHJvYmxlbSB3aXRoIGl0Lg0KPiA+PiA+PiBU
-aGUgdXNlciBkb24ndCB3YW50IHRvIGFuZCBkb24ndCBuZWVkIHRvIGJlIGF3YXJlIG9mIGl0LA0K
-PiA+PiA+PiBidXQgdWFwaSBmb3JjZXMgdGhlbSB0byBwaWNrIHRoZSBwcmlvcml0eS4NCj4gPj4g
-Pj4NCj4gPj4gPj4+IEFueXdheSwgd2hlcmUgaXQgZ2V0cyB0cmlja3kgd291bGQgYmUgd2hlbiB0
-aGluZ3MgZGVwZW5kIG9uICANCj4gb3JkZXJpbmcsDQo+ID4+ID4+PiBlLmcuIHlvdSBoYXZlIEJQ
-RiBwcm9ncyBkb2luZzogcG9saWN5LCBtb25pdG9yaW5nLCBsYiwgbW9uaXRvcmluZywNCj4gPj4g
-ZW5jcnlwdGlvbiwgd2hpY2gNCj4gPj4gPj4+IHdvdWxkIGJlIHN0aCB5b3UgY2FuIGJ1aWxkIHRv
-ZGF5IHZpYSB0YyBCUEY6IHNvIHBvbGljeSBvbmUgYWN0cyBhcyAgDQo+IGENCj4gPj4gcHJlZmls
-dGVyIGZvcg0KPiA+PiA+Pj4gdmFyaW91cyBjaWRyIHJhbmdlcyB0aGF0IHNob3VsZCBiZSBibG9j
-a2VkIG5vIG1hdHRlciB3aGF0LCB0aGVuDQo+ID4+IG1vbml0b3JpbmcgdG8gc2FtcGxlDQo+ID4+
-ID4+PiB3aGF0IGdvZXMgaW50byB0aGUgbGIsIHRoZW4gbGIgaXRzZWxmIHdoaWNoIGRvZXMgc25h
-dC9kbmF0LCB0aGVuDQo+ID4+IG1vbml0b3JpbmcgdG8gc2VlIHdoYXQNCj4gPj4gPj4+IHRoZSBj
-b3JyZXNwb25kaW5nIHBrdCBsb29rcyB0aGF0IGdvZXMgdG8gYmFja2VuZCwgYW5kIG1heWJlDQo+
-ID4+IGVuY3J5cHRpb24gdG8gZS5nLiBzZW5kDQo+ID4+ID4+PiB0aGUgcmVzdWx0IHRvIHdpcmVn
-dWFyZCBkZXYsIHNvIGl0J3MgZW5jcnlwdGVkIGZyb20gbGIgbm9kZSB0bw0KPiA+PiBiYWNrZW5k
-Lg0KPiA+PiA+Pg0KPiA+PiA+PiBUaGF0J3MgYWxsIHRoZW9yeS4gWW91ciBjb3ZlciBsZXR0ZXIg
-ZXhhbXBsZSBwcm92ZXMgdGhhdCBpbg0KPiA+PiA+PiByZWFsIGxpZmUgZGlmZmVyZW50IHNlcnZp
-Y2UgcGljayB0aGUgc2FtZSBwcmlvcml0eS4NCj4gPj4gPj4gVGhleSBzaW1wbHkgZG9uJ3Qga25v
-dyBhbnkgYmV0dGVyLg0KPiA+PiA+PiBwcmlvIGlzIGFuIHVubmVjZXNzYXJ5IG1hZ2ljIHRoYXQg
-YXBwcyBfaGF2ZV8gdG8gcGljaywNCj4gPj4gPj4gc28gdGhleSBqdXN0IGNvcHktcGFzdGUgYW5k
-IGV2ZXJ5b25lIGVuZHMgdXAgdXNpbmcgdGhlIHNhbWUuDQo+ID4+ID4+DQo+ID4+ID4+PiBGb3Ig
-c3VjaA0KPiA+PiA+Pj4gZXhhbXBsZSwgeW91J2QgbmVlZCBwcmlvcyBhcyB0aGUgJ3J1bl9tZV9h
-bnl3aGVyZScgZG9lc24ndCAgDQo+IGd1YXJhbnRlZQ0KPiA+PiBvcmRlciwgc28gdGhlcmUncw0K
-PiA+PiA+Pj4gYSBjYXNlIGZvciBib3RoIHNjZW5hcmlvcyAoY29uY3JldGUgbGF5b3V0IHZzIGxv
-b3NlIG9uZSksIGFuZCBmb3INCj4gPj4gbGF0dGVyIHdlIGNvdWxkDQo+ID4+ID4+PiBzdGFydCBv
-ZmYgd2l0aCBhbmQgaW50ZXJuYWwgcHJpbyBhcm91bmQgeCAoZS5nLiAxNmspLCBzbyB0aGVyZSdz
-ICANCj4gcm9vbQ0KPiA+PiB0byBhdHRhY2ggaW4NCj4gPj4gPj4+IGZyb250IHZpYSBmaXhlZCBw
-cmlvLCBidXQgYWxzbyBhcHBlbmQgdG8gZW5kIGZvciAnZG9uJ3QgY2FyZScsIGFuZA0KPiA+PiB0
-aGF0IGNvdWxkIGJlDQo+ID4+ID4+PiBmcm9tIGxpYiBwb3YgdGhlIGRlZmF1bHQvbWFpbiBBUEkg
-d2hlcmVhcyBwcmlvIHdvdWxkIGJlIHNvbWUga2luZCAgDQo+IG9mDQo+ID4+IGV4dGVuZGVkIG9u
-ZS4NCj4gPj4gPj4+IFRob3VnaHRzPw0KPiA+PiA+Pg0KPiA+PiA+PiBJZiBwcmlvIHdhcyBub3Qg
-cGFydCBvZiB1YXBpLCBsaWtlIGtlcm5lbCBpbnRlcm5hbCBzb21laG93LA0KPiA+PiA+PiBhbmQg
-dGhlcmUgd2FzIGEgdXNlciBzcGFjZSBkYWVtb24sIHN5c3RlbWQsIG9yIGFub3RoZXIgYnBmIHBy
-b2csDQo+ID4+ID4+IG1vZHVsZSwgd2hhdGV2ZXIgdGhhdCB1c2VycyB3b3VsZCBpbnRlcmZhY2Ug
-dG8gdGhlbg0KPiA+PiA+PiB0aGUgcHJvcG9zZWQgaW1wbGVtZW50YXRpb24gb2YgcHJpbyB3b3Vs
-ZCB0b3RhbGx5IG1ha2Ugc2Vuc2UuDQo+ID4+ID4+IHByaW8gYXMgdWFwaSBpcyBub3QgdGhhdC4N
-Cj4gPj4gPg0KPiA+PiA+IEEgZ29vZCBhbmFsb2d5IHRvIHRoaXMgaXNzdWUgbWlnaHQgYmUgc3lz
-dGVtZCdzIHVuaXQgZmlsZXMuLiB5b3UNCj4gPj4gc3BlY2lmeSBkZXBlbmRlbmNpZXMNCj4gPj4g
-PiBmb3IgeW91ciBvd24gPHVuaXQ+IGZpbGUgdmlhICdXYW50cz08dW5pdEE+JywgYW5kIG9yZGVy
-aW5nDQo+ID4+IHZpYSAnQmVmb3JlPTx1bml0Qj4nIGFuZA0KPiA+PiA+ICdBZnRlcj08dW5pdEM+
-JyBhbmQgdGhleSByZWZlciB0byBvdGhlciB1bml0IGZpbGVzLiBJIHRoaW5rIHRoYXQgaXMNCj4g
-Pj4gZ2VuZXJhbGx5IG9rYXksDQo+ID4+ID4geW91IGRvbid0IGRlYWwgd2l0aCBwcmlvIG51bWJl
-cnMsIGJ1dCByYXRoZXIgc29tZSBraW5kIHRleHR1YWwNCj4gPj4gcmVwcmVzZW50YXRpb24uIEhv
-d2V2ZXINCj4gPj4gPiB1c2VyL29wZXJhdG9yIHdpbGwgaGF2ZSB0byBkZWFsIHdpdGggZGVwZW5k
-ZW5jaWVzL29yZGVyaW5nIG9uZSB3YXkgb3INCj4gPj4gYW5vdGhlciwgdGhlDQo+ID4+ID4gcHJv
-YmxlbSBoZXJlIGlzIHRoYXQgd2UgZGVhbCB3aXRoIGtlcm5lbCBhbmQgbG9hZGVyIHRhbGtzIHRv
-IGtlcm5lbA0KPiA+PiBkaXJlY3RseSBzbyBpdA0KPiA+PiA+IGhhcyBubyBhd2FyZW5lc3Mgb2Yg
-d2hhdCBlbHNlIGlzIHJ1bm5pbmcgb3IgY291bGQgYmUgcnVubmluZywgc28gYXBwcw0KPiA+PiBu
-ZWVkcyB0byBkZWFsDQo+ID4+ID4gd2l0aCBpdCBzb21laG93IChhbmQgaXQgY2Fubm90IHdpdGhv
-dXQgZXh0ZXJuYWwgaGVscCkuDQo+ID4NCj4gPj4gSSB3YXMgdGhpbmtpbmcgYSBsaXR0bGUgYWJv
-dXQgaG93IHRoaXMgbWlnaHQgd29yazsgaS5lLiwgaG93IGNhbiB0aGUNCj4gPj4ga2VybmVsIGV4
-cG9zZSB0aGUgcmVxdWlyZWQga25vYnMgdG8gYWxsb3cgYSBzeXN0ZW0gcG9saWN5IHRvIGJlDQo+
-ID4+IGltcGxlbWVudGVkIHdpdGhvdXQgcHJvZ3JhbSBsb2FkaW5nIGhhdmluZyB0byB0YWxrIHRv
-IGFueXRoaW5nIG90aGVyDQo+ID4+IHRoYW4gdGhlIHN5c2NhbGwgQVBJPw0KPiA+DQo+ID4+IEhv
-dyBhYm91dCB3ZSBvbmx5IGV4cG9zZSBwcmVwZW5kL2FwcGVuZCBpbiB0aGUgcHJvZyBhdHRhY2gg
-VUFQSSwgYW5kDQo+ID4+IHRoZW4gaGF2ZSBhIGtlcm5lbCBmdW5jdGlvbiB0aGF0IGRvZXMgdGhl
-IHNvcnRpbmcgbGlrZToNCj4gPg0KPiA+PiBpbnQgYnBmX2FkZF9uZXdfdGN4X3Byb2coc3RydWN0
-IGJwZl9wcm9nICpwcm9ncywgc2l6ZV90IG51bV9wcm9ncywgIA0KPiBzdHJ1Y3QNCj4gPj4gYnBm
-X3Byb2cgKm5ld19wcm9nLCBib29sIGFwcGVuZCkNCj4gPg0KPiA+PiB3aGVyZSB0aGUgZGVmYXVs
-dCBpbXBsZW1lbnRhdGlvbiBqdXN0IGFwcGVuZHMvcHJlcGVuZHMgdG8gdGhlIGFycmF5IGluDQo+
-ID4+IHByb2dzIGRlcGVuZGluZyBvbiB0aGUgdmFsdWUgb2YgJ2FwcGVuJy4NCj4gPg0KPiA+PiBB
-bmQgdGhlbiB1c2UgdGhlIF9fd2VhayBsaW5raW5nIHRyaWNrIChvciBtYXliZSBzdHJ1Y3Rfb3Bz
-IHdpdGggYSAgDQo+IG1lbWJlcg0KPiA+PiBmb3IgVFhDLCBhbm90aGVyIGZvciBYRFAsIGV0Yz8p
-IHRvIGFsbG93IEJQRiB0byBvdmVycmlkZSB0aGUgZnVuY3Rpb24NCj4gPj4gd2hvbGVzYWxlIGFu
-ZCBpbXBsZW1lbnQgd2hhdGV2ZXIgb3JkZXJpbmcgaXQgd2FudHM/IEkuZS4sIGFsbG93IGl0IGNh
-bg0KPiA+PiB0byBqdXN0IHNoaWZ0IGFyb3VuZCB0aGUgb3JkZXIgb2YgcHJvZ3MgaW4gdGhlICdw
-cm9ncycgYXJyYXkgd2hlbmV2ZXIgYQ0KPiA+PiBwcm9ncmFtIGlzIGxvYWRlZC91bmxvYWRlZD8N
-Cj4gPg0KPiA+PiBUaGlzIHdheSwgYSB1c2Vyc3BhY2UgZGFlbW9uIGNhbiBpbXBsZW1lbnQgYW55
-IHBvbGljeSBpdCB3YW50cyBieSBqdXN0DQo+ID4+IGF0dGFjaGluZyB0byB0aGF0IGhvb2ssIGFu
-ZCBrZWVwaW5nIHRoaW5ncyBsaWtlIGhvdyB0byBleHByZXNzDQo+ID4+IGRlcGVuZGVuY2llcyBh
-cyBhIHVzZXJzcGFjZSBjb25jZXJuPw0KPiA+DQo+ID4gV2hhdCBpZiB3ZSBkbyB0aGUgYWJvdmUs
-IGJ1dCBpbnN0ZWFkIG9mIHNpbXBsZSBnbG9iYWwgJ2F0dGFjaCAgDQo+IGZpcnN0L2xhc3QnLA0K
-PiA+IHRoZSBkZWZhdWx0IGFwaSB3b3VsZCBiZToNCj4gPg0KPiA+IC0gYXR0YWNoIGJlZm9yZSA8
-dGFyZ2V0X2ZkPg0KPiA+IC0gYXR0YWNoIGFmdGVyIDx0YXJnZXRfZmQ+DQo+ID4gLSBhdHRhY2gg
-YmVmb3JlIHRhcmdldF9mZD0tMSA9PSBmaXJzdA0KPiA+IC0gYXR0YWNoIGFmdGVyIHRhcmdldF9m
-ZD0tMSA9PSBsYXN0DQo+ID4NCj4gPiA/DQoNCj4gSG1tLCB0aGUgcHJvYmxlbSB3aXRoIHRoYXQg
-aXMgdGhhdCBhcHBsaWNhdGlvbnMgZG9uJ3QgZ2VuZXJhbGx5IGhhdmUgYW4NCj4gZmQgdG8gYW5v
-dGhlciBhcHBsaWNhdGlvbidzIEJQRiBwcm9ncmFtczsgYW5kIG9idGFpbmluZyB0aGVtIGZyb20g
-YW4gSUQNCj4gaXMgYSBwcml2aWxlZ2VkIG9wZXJhdGlvbiAoQ0FQX1NZU19BRE1JTikuIFdlIGNv
-dWxkIGhhdmUgaXQgYmUgImF0dGFjaA0KPiBiZWZvcmUgdGFyZ2V0ICpJRCoiIGluc3RlYWQsIHdo
-aWNoIGNvdWxkIHdvcmsgSSBndWVzcz8gQnV0IHRoZW4gdGhlDQo+IHByb2JsZW0gYmVjb21lcyB0
-aGF0IGl0J3MgcmFjeTogdGhlIElEIHlvdSdyZSB0YXJnZXRpbmcgY291bGQgZ2V0DQo+IGRldGFj
-aGVkIGJlZm9yZSB5b3UgYXR0YWNoLCBzbyB5b3UnbGwgbmVlZCB0byBiZSBwcmVwYXJlZCB0byBj
-aGVjayB0aGF0DQo+IGFuZCByZXRyeTsgYW5kIEknbSBhbG1vc3QgY2VydGFpbiB0aGF0IGFwcGxp
-Y2F0aW9ucyB3b24ndCB0ZXN0IGZvciB0aGlzLA0KPiBzbyBpdCdsbCBqdXN0IGxlYWQgdG8gaGFy
-ZC10by1kZWJ1ZyBoZWlzZW5idWdzLiBPciBhbSBJIGJlaW5nIHRvbw0KPiBwZXNzaW1pc3RpYyBo
-ZXJlPw0KDQpZZWFoLCBhZ3JlZWQsIGlkIHdvdWxkIHdvcmsgYmV0dGVyLiBJIGd1ZXNzIEknbSBt
-b3N0bHkgY29taW5nIGhlcmUNCmZyb20gdGhlIGJwZnRvb2wvb2JzZXJ2YWJpbGl0eSBwZXJzcGVj
-dGl2ZSB3aGVyZSBpdCBzZWVtcyBoYW5keSB0bw0KYmVpbmcgYWJsZSB0byBzdGljayBpbnRvIGFu
-eSBwbGFjZSBpbiB0aGUgY2hhaW4gZm9yIGRlYnVnZ2luZz8NCg0KTm90IHN1cmUgaWYgd2UgbmVl
-ZCB0byBjYXJlIGFib3V0IHJhY2luZXNzIGhlcmUuIFRoZSBzYW1lIHRoaW5nIGFwcGxpZXMNCmZv
-ciB0aGluZ3MgbGlrZSAnbGlzdCBhbGwgcHJvZ3JhbXMgYW5kIGR1bXAgdGhlaXIgaW5mbycgYW5k
-IGFsbCBvdGhlcg0Kc2ltaWxhciBybXcgb3BlcmF0aW9ucz8NCg0KQnV0LCBJIGd1ZXNzLCBtb3N0
-IHVzZXJzIHdpbGwgc3RpbGwgZG8gJ2F0dGFjaCB0YXJnZXQgaWQgPSAtMScgYWthDQonYXR0YWNo
-IGxhc3QnIHdoaWNoIHByb2JhYmx5IG1ha2VzIHRoaXMgZmxleGliaWxpdHkgdW5uZWNlc3Nhcnk/
-DQpPVE9ILCB0aGUgdXNlcnMgdGhhdCBzdGlsbCB3YW50IGl0IChicGZ0b29sL29ic2VydmFiaWxp
-dHkpIG1pZ2h0IHVzZSBpdC4NCg==
+On Thu, Oct 6, 2022 at 8:14 PM Jie Meng <jmeng@fb.com> wrote:
+>
+> On Wed, Oct 05, 2022 at 09:11:01PM -0700, KP Singh wrote:
+> > On Sat, Oct 1, 2022 at 10:12 PM Jie Meng <jmeng@fb.com> wrote:
+> > >
+> > > Instead of shr/sar/shl that implicitly use %cl, emit their more flexible
+> > > alternatives provided in BMI2 when advantageous; keep using the non BMI2
+> > > instructions when shift count is already in BPF_REG_4/rcx as non BMI2
+> > > instructions are shorter.
+> >
+> > This is confusing, you mention %CL in the first sentence and then RCX in the
+> > second sentence. Can you clarify this more here?
+>
+> %cl is the lowest 8 bit of %rcx. In assembly, non BMI2 shifts with shift
+> count in register is written as
+>
+>  SHR eax, cl
+>
+> Although the use of CL is mandatory and if the shift count is in another
+> register it has to be moved into RCX first, unless of course when the
+> shift count is already in BPF_REG_4, which is mapped to RCX in x86-64.
+>
+> It is indeed awkward but exactly what one would see in assembly: a MOV
+> to RCX and a shift that uses CL as the source register.
+>
+> >
+> > Also, It would be good to have some explanations about the
+> > performance benefits here as well.
+> >
+> > i.e. a load + store + non vector instruction v/s a single vector instruction
+> > omitting the load. How many cycles do we expect in each case, I do expect the
+> > latter to be lesser, but mentioning it in the commit removes any ambiguity.
+>
+> Although it uses similar encoding as AVX instructions BMI2 actually
+> operates on general purpose registers and no vector register is ever
+> involved [1]. Inside a CPU all shifts instructions (both baseline and BMI2
+> flavors) are almost always handled by the same units and have the same
+> latency and throughput [2].
+>
+> [1] https://en.wikipedia.org/wiki/X86_Bit_manipulation_instruction_set
+> [2] https://www.agner.org/optimize/instruction_tables.pdf
+
+Cool, please add this to the commit description.
+
+> >
+> > >
+> > > To summarize, when BMI2 is available:
+> > > -------------------------------------------------
+> > >             |   arbitrary dst
+> > > =================================================
+> > > src == ecx  |   shl dst, cl
+> > > -------------------------------------------------
+> > > src != ecx  |   shlx dst, dst, src
+> > > -------------------------------------------------
+> > >
+> > > A concrete example between non BMI2 and BMI2 codegen.  To shift %rsi by
+> > > %rdi:
+> > >
+> > > Without BMI2:
+> > >
+> > >  ef3:   push   %rcx
+> > >         51
+> > >  ef4:   mov    %rdi,%rcx
+> > >         48 89 f9
+> > >  ef7:   shl    %cl,%rsi
+> > >         48 d3 e6
+> > >  efa:   pop    %rcx
+> > >         59
+> > >
+> > > With BMI2:
+> > >
+> > >  f0b:   shlx   %rdi,%rsi,%rsi
+> > >         c4 e2 c1 f7 f6
+> > >
+> > > Signed-off-by: Jie Meng <jmeng@fb.com>
+> > > ---
+> > >  arch/x86/net/bpf_jit_comp.c | 64 +++++++++++++++++++++++++++++++++++++
+> > >  1 file changed, 64 insertions(+)
+> > >
+> > > diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> > > index d9ba997c5891..d09c54f3d2e0 100644
+> > > --- a/arch/x86/net/bpf_jit_comp.c
+> > > +++ b/arch/x86/net/bpf_jit_comp.c
+> > > @@ -889,6 +889,48 @@ static void emit_nops(u8 **pprog, int len)
+> > >         *pprog = prog;
+> > >  }
+> > >
+> > > +/* emit the 3-byte VEX prefix */
+> > > +static void emit_3vex(u8 **pprog, bool r, bool x, bool b, u8 m,
+> > > +                     bool w, u8 src_reg2, bool l, u8 p)
+> >
+> > Can you please use somewhat more descriptive variable names here?
+> >
+> > or add more information about what x, b, m, w, l and p mean?
+>
+> Apart from src_reg2, the rest is the same as what Intel has chosen to
+> name the various fields in the VEX prefix. Would rather keep them
+> consistent so that people won't get confused when comparing with other
+> documents across the Internet.
+
+Sure, but it would be nice to have a comment about what they mean.
+
+These bits allow indexing various kinds of registers. e.g.
+
+"VEX.~R allows is an extra bit for indexing the ModRM register" or something
+similar, if it's preferred not to change the variable names.
+
+
+> >
+> > > +{
+> > > +       u8 *prog = *pprog;
+> > > +       u8 b0 = 0xc4, b1, b2;
+> > > +       u8 src2 = reg2hex[src_reg2];
+> > > +
+> > > +       if (is_ereg(src_reg2))
+> > > +               src2 |= 1 << 3;
+> > > +
+> > > +       /*
+> > > +        *    7                           0
+> > > +        *  +---+---+---+---+---+---+---+---+
+> > > +        *  |~R |~X |~B |         m         |
+> > > +        *  +---+---+---+---+---+---+---+---+
+> > > +        */
+> > > +       b1 = (!r << 7) | (!x << 6) | (!b << 5) | (m & 0x1f);
+> >
+> > Some explanation here would help, not everyone is aware of x86 vex encoding :)
+>
+> The comment is the exact rule how different pieces of information is
+> encoded into the 3-byte VEX prefix i.e. their position and length, and
+> whether a field needs to be bit inverted. Combined with code the comment
+> should give one clear idea what the intent is here.
+
+I am not sure this gives a clear picture, It assumes that the reader knows
+about VEX encoding, which not everyone does. Now they can pull up a
+manual and start reading but that doesn't help so the comments need to
+explain what's going on here.
+
+
+> >
+> > > +       /*
+> > > +        *    7                           0
+> > > +        *  +---+---+---+---+---+---+---+---+
+> > > +        *  | W |     ~vvvv     | L |   pp  |
+> > > +        *  +---+---+---+---+---+---+---+---+
+> > > +        */
+> > > +       b2 = (w << 7) | ((~src2 & 0xf) << 3) | (l << 2) | (p & 3);
+
+By reading the code one should be able to understand what
+b0, b1 and b2 are.
+
+
+> > > +
+> > > +       EMIT3(b0, b1, b2);
+> > > +       *pprog = prog;
+> > > +}
+> > > +
+> > > +/* emit BMI2 shift instruction */
+> > > +static void emit_shiftx(u8 **pprog, u32 dst_reg, u8 src_reg, bool is64, u8 op)
+> > > +{
+> > > +       u8 *prog = *pprog;
+> > > +       bool r = is_ereg(dst_reg);
+> > > +       u8 m = 2; /* escape code 0f38 */
+> > > +
+> > > +       emit_3vex(&prog, r, false, r, m, is64, src_reg, false, op);
+> > > +       EMIT2(0xf7, add_2reg(0xC0, dst_reg, dst_reg));
+> > > +       *pprog = prog;
+> > > +}
+> > > +
+> > >  #define INSN_SZ_DIFF (((addrs[i] - addrs[i - 1]) - (prog - temp)))
+> > >
+> > >  static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image, u8 *rw_image,
+> > > @@ -1135,6 +1177,28 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image, u8 *rw_image
+> > >                 case BPF_ALU64 | BPF_LSH | BPF_X:
+> > >                 case BPF_ALU64 | BPF_RSH | BPF_X:
+> > >                 case BPF_ALU64 | BPF_ARSH | BPF_X:
+> > > +                       /* BMI2 shifts aren't better when shift count is already in rcx */
+> > > +                       if (boot_cpu_has(X86_FEATURE_BMI2) && src_reg != BPF_REG_4) {
+> > > +                               /* shrx/sarx/shlx dst_reg, dst_reg, src_reg */
+> > > +                               bool w = (BPF_CLASS(insn->code) == BPF_ALU64);
+> > > +                               u8 op;
+> > > +
+> > > +                               switch (BPF_OP(insn->code)) {
+> > > +                               case BPF_LSH:
+> > > +                                       op = 1; /* prefix 0x66 */
+> > > +                                       break;
+> > > +                               case BPF_RSH:
+> > > +                                       op = 3; /* prefix 0xf2 */
+> > > +                                       break;
+> > > +                               case BPF_ARSH:
+> > > +                                       op = 2; /* prefix 0xf3 */
+> > > +                                       break;
+> > > +                               }
+> > > +
+> > > +                               emit_shiftx(&prog, dst_reg, src_reg, w, op);
+> > > +
+> > > +                               break;
+> > > +                       }
+> > >
+> > >                         if (src_reg != BPF_REG_4) { /* common case */
+> > >                                 /* Check for bad case when dst_reg == rcx */
+> > > --
+> > > 2.30.2
+> > >
