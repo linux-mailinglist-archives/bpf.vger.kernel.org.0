@@ -2,266 +2,307 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8893D5F7D2C
-	for <lists+bpf@lfdr.de>; Fri,  7 Oct 2022 20:12:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D09FB5F7D95
+	for <lists+bpf@lfdr.de>; Fri,  7 Oct 2022 21:00:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229591AbiJGSL7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 Oct 2022 14:11:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54900 "EHLO
+        id S229494AbiJGTAT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 Oct 2022 15:00:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229578AbiJGSL6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 Oct 2022 14:11:58 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA3FA18B3D
-        for <bpf@vger.kernel.org>; Fri,  7 Oct 2022 11:11:55 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 5E988B823E3
-        for <bpf@vger.kernel.org>; Fri,  7 Oct 2022 18:11:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5264C4314C
-        for <bpf@vger.kernel.org>; Fri,  7 Oct 2022 18:11:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665166312;
-        bh=cLf2kaLK1i+t4rabwj2WwrIFYs6D2n3cy7J/DpSqiCw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=HZsGLBkPiUaASGiP4ziaqzfamF/RqNx5ovtwsIdzKVIgIzUFkNDNiX3b6yGGpFv2S
-         of4DTCqcJ7LSIbrPfgi2PiQqG3WAIJvA3QZI1ZIZbNNWXsfLjBXSFuDi3zXnJRwCBW
-         TEkmF/t5pMSeOToSXqhFH7GlssaHuLB1oTfhS1jG0RSPaZJxkZuD6dIgD3XcJJqDx8
-         kCgyq9LkyrKwHy2KXFSDY4XUrKVlmS+tCLkAxD4nTGDTamUoyDN3lh/v8jEZu1iiIg
-         TtP26ALu1+nV5tzKKbHOlMhcShXIimIbsKBlKuyRhwYaHaS7rKFj0rGvPV74yu0jzZ
-         RwXYgUVEhDyfg==
-Received: by mail-lf1-f52.google.com with SMTP id d6so8362292lfs.10
-        for <bpf@vger.kernel.org>; Fri, 07 Oct 2022 11:11:52 -0700 (PDT)
-X-Gm-Message-State: ACrzQf3pU3n07djuBgkaCFi296Zc23ok0Qir9vLcftzlnz43ExIDI2KZ
-        6PR8d91xfar5E50lAFEdf635JyNeji6uUSLijkH1BA==
-X-Google-Smtp-Source: AMsMyM67XC4YAyz6lAQzRLKOMV0vI+ZXKqvKUQAwhDnfTPwggrHrYektpXPKD+U7eJsWV49fzwEQzpLqM51JxeSDQHY=
-X-Received: by 2002:a05:6512:10c2:b0:4a2:ed6:4f4e with SMTP id
- k2-20020a05651210c200b004a20ed64f4emr2426883lfg.136.1665166310422; Fri, 07
- Oct 2022 11:11:50 -0700 (PDT)
+        with ESMTP id S229688AbiJGTAM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 Oct 2022 15:00:12 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7995D45994;
+        Fri,  7 Oct 2022 12:00:09 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id s2so8305411edd.2;
+        Fri, 07 Oct 2022 12:00:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zttRBgfr1n1gjSk5ZE8JViy+xaR2g3AlGmkJx/xKwlE=;
+        b=IGoe2KBFOTMk+2As/7ocIGTewrmSuRa2gWRq7i2QL1u6q/q2yaM3N/XMOKhMRBSeoO
+         S/DfF/GxfpUF/o/bodKOYo4JzF8IO6BWkN8jnih6FADn/L+oJYGQzYN3rd5hfEEYK6cU
+         4xVqdgncUf7DtVfwOLbsdKTRwGeUyoGvR19YGd8cbfwNcyZOfWqJX4YNNSLYrK7U8+8t
+         pW/jDFUL5ZVrVd+5atXMfYRpmc6LvAsLITm5RSNxOnL7RlCUkWJTNye/vbnP1i8IHDVl
+         uuCC6voc5RnnuH61N/0jGrOnT02vN5vZC/2k8e0CxCTE2Mig5GJq1PVLXLqgt5C8VBr+
+         jkHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zttRBgfr1n1gjSk5ZE8JViy+xaR2g3AlGmkJx/xKwlE=;
+        b=F0mFMKISTU/rCcUOKow6DjnLInEkLYkxBfUwU5nTwwUclzfXjieE7KCcXujLSFaeFO
+         nUac1qVMCsDIQ1UXljiQgk4tmYmUoen4uJKXsEw1Rqfmfnuz6pSTO9KJeTfFj0K91Yad
+         JfdLfA9pEz45OID2OPBtOQ+UUseuhvytCqiTido4auzslUnFxYWob1QmDOCQGWKKSVa3
+         rj5b3Tvv+9syTHbfsV7YIU3QHw0DM2QPe+WXDxt8YNQtVl+8dJ8W3asLG1JSiFRBXK+5
+         //APxHZWdxZWhUV6G9ntZsvsJQ1gbRbdzSF69yLqrgYXtSfVH4ED/b2lxAo6EUIxd3GV
+         30KQ==
+X-Gm-Message-State: ACrzQf3+Jb5FFxF3tNY1A2Mh3mJwEola5HA5op8Oe4eQrpjK8bNwCMco
+        Dm8vuFWSmkaFlD0aGyBH4jvLRKQTNv4Kho6dbFw=
+X-Google-Smtp-Source: AMsMyM4u+UXBm+WdVPDvTkTujFHi5bkXCRwmHF4FXwgUAqzRiTFLjfKrfePD7+BQ8lRncRul9lDQ7tV8u+O+8pJmedY=
+X-Received: by 2002:a05:6402:3709:b0:459:279e:fdc6 with SMTP id
+ ek9-20020a056402370900b00459279efdc6mr5974218edb.338.1665169207722; Fri, 07
+ Oct 2022 12:00:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220927185801.1824838-1-jmeng@fb.com> <20221002051143.831029-1-jmeng@fb.com>
- <20221002051143.831029-3-jmeng@fb.com> <CACYkzJ4RvEZVp5-sybdn2tOuV-h6KyGJRjvEMZWBoqTBVrK1aQ@mail.gmail.com>
- <Yz+Zm6qar+nWrLZs@fb.com>
-In-Reply-To: <Yz+Zm6qar+nWrLZs@fb.com>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Fri, 7 Oct 2022 11:11:39 -0700
-X-Gmail-Original-Message-ID: <CACYkzJ7gz8Y0JXgfs2vKG5nF98iS+UdqpM9Vk0OOnSfYvMdK4g@mail.gmail.com>
-Message-ID: <CACYkzJ7gz8Y0JXgfs2vKG5nF98iS+UdqpM9Vk0OOnSfYvMdK4g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 2/3] bpf,x64: use shrx/sarx/shlx when available
-To:     Jie Meng <jmeng@fb.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net
+References: <20221004231143.19190-1-daniel@iogearbox.net> <20221004231143.19190-2-daniel@iogearbox.net>
+ <20221006050053.pbwo72xtzoza6gfl@macbook-pro-4.dhcp.thefacebook.com>
+ <f355eeba-1b46-749f-c102-65074e7eac27@iogearbox.net> <CAADnVQ+gEY3FjCR=+DmjDR4gp5bOYZUFJQXj4agKFHT9CQPZBw@mail.gmail.com>
+ <14f368eb-9158-68bc-956c-c8371cfcb531@iogearbox.net> <875ygvemau.fsf@toke.dk>
+ <Y0BaBUWeTj18V5Xp@google.com> <87tu4fczyv.fsf@toke.dk>
+In-Reply-To: <87tu4fczyv.fsf@toke.dk>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 7 Oct 2022 11:59:55 -0700
+Message-ID: <CAADnVQLH9R94iszCmhYeLKnDPy_uiGeyXnEwoADm8_miihwTmQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 01/10] bpf: Add initial fd-based API to attach tc
+ BPF programs
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Stanislav Fomichev <sdf@google.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>,
+        Nikolay Aleksandrov <razor@blackwall.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Joanne Koong <joannelkoong@gmail.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Joe Stringer <joe@cilium.io>,
+        Network Development <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 6, 2022 at 8:14 PM Jie Meng <jmeng@fb.com> wrote:
+On Fri, Oct 7, 2022 at 10:20 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
 >
-> On Wed, Oct 05, 2022 at 09:11:01PM -0700, KP Singh wrote:
-> > On Sat, Oct 1, 2022 at 10:12 PM Jie Meng <jmeng@fb.com> wrote:
-> > >
-> > > Instead of shr/sar/shl that implicitly use %cl, emit their more flexible
-> > > alternatives provided in BMI2 when advantageous; keep using the non BMI2
-> > > instructions when shift count is already in BPF_REG_4/rcx as non BMI2
-> > > instructions are shorter.
+> sdf@google.com writes:
+>
+> > On 10/07, Toke H=EF=BF=BDiland-J=EF=BF=BDrgensen wrote:
+> >> Daniel Borkmann <daniel@iogearbox.net> writes:
 > >
-> > This is confusing, you mention %CL in the first sentence and then RCX in the
-> > second sentence. Can you clarify this more here?
->
-> %cl is the lowest 8 bit of %rcx. In assembly, non BMI2 shifts with shift
-> count in register is written as
->
->  SHR eax, cl
->
-> Although the use of CL is mandatory and if the shift count is in another
-> register it has to be moved into RCX first, unless of course when the
-> shift count is already in BPF_REG_4, which is mapped to RCX in x86-64.
->
-> It is indeed awkward but exactly what one would see in assembly: a MOV
-> to RCX and a shift that uses CL as the source register.
->
+> >> > On 10/7/22 1:28 AM, Alexei Starovoitov wrote:
+> >> >> On Thu, Oct 6, 2022 at 2:29 PM Daniel Borkmann <daniel@iogearbox.ne=
+t>
+> >> wrote:
+> >> >>> On 10/6/22 7:00 AM, Alexei Starovoitov wrote:
+> >> >>>> On Wed, Oct 05, 2022 at 01:11:34AM +0200, Daniel Borkmann wrote:
+> >> >>> [...]
+> >> >>>>
+> >> >>>> I cannot help but feel that prio logic copy-paste from old tc,
+> >> netfilter and friends
+> >> >>>> is done because "that's how things were done in the past".
+> >> >>>> imo it was a well intentioned mistake and all networking things (=
+tc,
+> >> netfilter, etc)
+> >> >>>> copy-pasted that cumbersome and hard to use concept.
+> >> >>>> Let's throw away that baggage?
+> >> >>>> In good set of cases the bpf prog inserter cares whether the prog=
+ is
+> >> first or not.
+> >> >>>> Since the first prog returning anything but TC_NEXT will be final=
+.
+> >> >>>> I think prog insertion flags: 'I want to run first' vs 'I don't c=
+are
+> >> about order'
+> >> >>>> is good enough in practice. Any complex scheme should probably be
+> >> programmable
+> >> >>>> as any policy should. For example in Meta we have 'xdp chainer'
+> >> logic that is similar
+> >> >>>> to libxdp chaining, but we added a feature that allows a prog to
+> >> jump over another
+> >> >>>> prog and continue the chain. Priority concept cannot express that=
+.
+> >> >>>> Since we'd have to add some "policy program" anyway for use cases
+> >> like this
+> >> >>>> let's keep things as simple as possible?
+> >> >>>> Then maybe we can adopt this "as-simple-as-possible" to XDP hooks=
+ ?
+> >> >>>> And allow bpf progs chaining in the kernel with "run_me_first"
+> >> vs "run_me_anywhere"
+> >> >>>> in both tcx and xdp ?
+> >> >>>> Naturally "run_me_first" prog will be the only one. No need for
+> >> F_REPLACE flags, etc.
+> >> >>>> The owner of "run_me_first" will update its prog through
+> >> bpf_link_update.
+> >> >>>> "run_me_anywhere" will add to the end of the chain.
+> >> >>>> In XDP for compatibility reasons "run_me_first" will be the defau=
+lt.
+> >> >>>> Since only one prog can be enqueued with such flag it will match
+> >> existing single prog behavior.
+> >> >>>> Well behaving progs will use (like xdp-tcpdump or monitoring prog=
+s)
+> >> will use "run_me_anywhere".
+> >> >>>> I know it's far from covering plenty of cases that we've discusse=
+d
+> >> for long time,
+> >> >>>> but prio concept isn't really covering them either.
+> >> >>>> We've struggled enough with single xdp prog, so certainly not
+> >> advocating for that.
+> >> >>>> Another alternative is to do: "queue_at_head" vs "queue_at_tail".
+> >> Just as simple.
+> >> >>>> Both simple versions have their pros and cons and don't cover
+> >> everything,
+> >> >>>> but imo both are better than prio.
+> >> >>>
+> >> >>> Yeah, it's kind of tricky, imho. The 'run_me_first'
+> >> vs 'run_me_anywhere' are two
+> >> >>> use cases that should be covered (and actually we kind of do this =
+in
+> >> this set, too,
+> >> >>> with the prios via prio=3Dx vs prio=3D0). Given users will only be
+> >> consuming the APIs
+> >> >>> via libs like libbpf, this can also be abstracted this way w/o use=
+rs
+> >> having to be
+> >> >>> aware of prios.
+> >> >>
+> >> >> but the patchset tells different story.
+> >> >> Prio gets exposed everywhere in uapi all the way to bpftool
+> >> >> when it's right there for users to understand.
+> >> >> And that's the main problem with it.
+> >> >> The user don't want to and don't need to be aware of it,
+> >> >> but uapi forces them to pick the priority.
+> >> >>
+> >> >>> Anyway, where it gets tricky would be when things depend on orderi=
+ng,
+> >> >>> e.g. you have BPF progs doing: policy, monitoring, lb, monitoring,
+> >> encryption, which
+> >> >>> would be sth you can build today via tc BPF: so policy one acts as=
+ a
+> >> prefilter for
+> >> >>> various cidr ranges that should be blocked no matter what, then
+> >> monitoring to sample
+> >> >>> what goes into the lb, then lb itself which does snat/dnat, then
+> >> monitoring to see what
+> >> >>> the corresponding pkt looks that goes to backend, and maybe
+> >> encryption to e.g. send
+> >> >>> the result to wireguard dev, so it's encrypted from lb node to
+> >> backend.
+> >> >>
+> >> >> That's all theory. Your cover letter example proves that in
+> >> >> real life different service pick the same priority.
+> >> >> They simply don't know any better.
+> >> >> prio is an unnecessary magic that apps _have_ to pick,
+> >> >> so they just copy-paste and everyone ends up using the same.
+> >> >>
+> >> >>> For such
+> >> >>> example, you'd need prios as the 'run_me_anywhere' doesn't guarant=
+ee
+> >> order, so there's
+> >> >>> a case for both scenarios (concrete layout vs loose one), and for
+> >> latter we could
+> >> >>> start off with and internal prio around x (e.g. 16k), so there's r=
+oom
+> >> to attach in
+> >> >>> front via fixed prio, but also append to end for 'don't care', and
+> >> that could be
+> >> >>> from lib pov the default/main API whereas prio would be some kind =
+of
+> >> extended one.
+> >> >>> Thoughts?
+> >> >>
+> >> >> If prio was not part of uapi, like kernel internal somehow,
+> >> >> and there was a user space daemon, systemd, or another bpf prog,
+> >> >> module, whatever that users would interface to then
+> >> >> the proposed implementation of prio would totally make sense.
+> >> >> prio as uapi is not that.
+> >> >
+> >> > A good analogy to this issue might be systemd's unit files.. you
+> >> specify dependencies
+> >> > for your own <unit> file via 'Wants=3D<unitA>', and ordering
+> >> via 'Before=3D<unitB>' and
+> >> > 'After=3D<unitC>' and they refer to other unit files. I think that i=
+s
+> >> generally okay,
+> >> > you don't deal with prio numbers, but rather some kind textual
+> >> representation. However
+> >> > user/operator will have to deal with dependencies/ordering one way o=
+r
+> >> another, the
+> >> > problem here is that we deal with kernel and loader talks to kernel
+> >> directly so it
+> >> > has no awareness of what else is running or could be running, so app=
+s
+> >> needs to deal
+> >> > with it somehow (and it cannot without external help).
 > >
-> > Also, It would be good to have some explanations about the
-> > performance benefits here as well.
+> >> I was thinking a little about how this might work; i.e., how can the
+> >> kernel expose the required knobs to allow a system policy to be
+> >> implemented without program loading having to talk to anything other
+> >> than the syscall API?
 > >
-> > i.e. a load + store + non vector instruction v/s a single vector instruction
-> > omitting the load. How many cycles do we expect in each case, I do expect the
-> > latter to be lesser, but mentioning it in the commit removes any ambiguity.
+> >> How about we only expose prepend/append in the prog attach UAPI, and
+> >> then have a kernel function that does the sorting like:
+> >
+> >> int bpf_add_new_tcx_prog(struct bpf_prog *progs, size_t num_progs, str=
+uct
+> >> bpf_prog *new_prog, bool append)
+> >
+> >> where the default implementation just appends/prepends to the array in
+> >> progs depending on the value of 'appen'.
+> >
+> >> And then use the __weak linking trick (or maybe struct_ops with a memb=
+er
+> >> for TXC, another for XDP, etc?) to allow BPF to override the function
+> >> wholesale and implement whatever ordering it wants? I.e., allow it can
+> >> to just shift around the order of progs in the 'progs' array whenever =
+a
+> >> program is loaded/unloaded?
+> >
+> >> This way, a userspace daemon can implement any policy it wants by just
+> >> attaching to that hook, and keeping things like how to express
+> >> dependencies as a userspace concern?
+> >
+> > What if we do the above, but instead of simple global 'attach first/las=
+t',
+> > the default api would be:
+> >
+> > - attach before <target_fd>
+> > - attach after <target_fd>
+> > - attach before target_fd=3D-1 =3D=3D first
+> > - attach after target_fd=3D-1 =3D=3D last
+> >
+> > ?
 >
-> Although it uses similar encoding as AVX instructions BMI2 actually
-> operates on general purpose registers and no vector register is ever
-> involved [1]. Inside a CPU all shifts instructions (both baseline and BMI2
-> flavors) are almost always handled by the same units and have the same
-> latency and throughput [2].
->
-> [1] https://en.wikipedia.org/wiki/X86_Bit_manipulation_instruction_set
-> [2] https://www.agner.org/optimize/instruction_tables.pdf
+> Hmm, the problem with that is that applications don't generally have an
+> fd to another application's BPF programs; and obtaining them from an ID
+> is a privileged operation (CAP_SYS_ADMIN). We could have it be "attach
+> before target *ID*" instead, which could work I guess? But then the
+> problem becomes that it's racy: the ID you're targeting could get
+> detached before you attach, so you'll need to be prepared to check that
+> and retry; and I'm almost certain that applications won't test for this,
+> so it'll just lead to hard-to-debug heisenbugs. Or am I being too
+> pessimistic here?
 
-Cool, please add this to the commit description.
+I like Stan's proposal and don't see any issue with FD.
+It's good to gate specific sequencing with cap_sys_admin.
+Also for consistency the FD is better than ID.
 
-> >
-> > >
-> > > To summarize, when BMI2 is available:
-> > > -------------------------------------------------
-> > >             |   arbitrary dst
-> > > =================================================
-> > > src == ecx  |   shl dst, cl
-> > > -------------------------------------------------
-> > > src != ecx  |   shlx dst, dst, src
-> > > -------------------------------------------------
-> > >
-> > > A concrete example between non BMI2 and BMI2 codegen.  To shift %rsi by
-> > > %rdi:
-> > >
-> > > Without BMI2:
-> > >
-> > >  ef3:   push   %rcx
-> > >         51
-> > >  ef4:   mov    %rdi,%rcx
-> > >         48 89 f9
-> > >  ef7:   shl    %cl,%rsi
-> > >         48 d3 e6
-> > >  efa:   pop    %rcx
-> > >         59
-> > >
-> > > With BMI2:
-> > >
-> > >  f0b:   shlx   %rdi,%rsi,%rsi
-> > >         c4 e2 c1 f7 f6
-> > >
-> > > Signed-off-by: Jie Meng <jmeng@fb.com>
-> > > ---
-> > >  arch/x86/net/bpf_jit_comp.c | 64 +++++++++++++++++++++++++++++++++++++
-> > >  1 file changed, 64 insertions(+)
-> > >
-> > > diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> > > index d9ba997c5891..d09c54f3d2e0 100644
-> > > --- a/arch/x86/net/bpf_jit_comp.c
-> > > +++ b/arch/x86/net/bpf_jit_comp.c
-> > > @@ -889,6 +889,48 @@ static void emit_nops(u8 **pprog, int len)
-> > >         *pprog = prog;
-> > >  }
-> > >
-> > > +/* emit the 3-byte VEX prefix */
-> > > +static void emit_3vex(u8 **pprog, bool r, bool x, bool b, u8 m,
-> > > +                     bool w, u8 src_reg2, bool l, u8 p)
-> >
-> > Can you please use somewhat more descriptive variable names here?
-> >
-> > or add more information about what x, b, m, w, l and p mean?
->
-> Apart from src_reg2, the rest is the same as what Intel has chosen to
-> name the various fields in the VEX prefix. Would rather keep them
-> consistent so that people won't get confused when comparing with other
-> documents across the Internet.
+I also like systemd analogy with Before=3D, After=3D.
+systemd has a ton more ways to specify deps between Units,
+but none of them have absolute numbers (which is what priority is).
+The only bit I'd tweak in Stan's proposal is:
+- attach before <target_fd>
+- attach after <target_fd>
+- attach before target_fd=3D0 =3D=3D first
+- attach after target_fd=3D0 =3D=3D last
 
-Sure, but it would be nice to have a comment about what they mean.
+The attach operation needs to be CAP_NET_ADMIN.
+Just like we do for BPF_PROG_TYPE_CGROUP_SKB.
 
-These bits allow indexing various kinds of registers. e.g.
-
-"VEX.~R allows is an extra bit for indexing the ModRM register" or something
-similar, if it's preferred not to change the variable names.
-
-
-> >
-> > > +{
-> > > +       u8 *prog = *pprog;
-> > > +       u8 b0 = 0xc4, b1, b2;
-> > > +       u8 src2 = reg2hex[src_reg2];
-> > > +
-> > > +       if (is_ereg(src_reg2))
-> > > +               src2 |= 1 << 3;
-> > > +
-> > > +       /*
-> > > +        *    7                           0
-> > > +        *  +---+---+---+---+---+---+---+---+
-> > > +        *  |~R |~X |~B |         m         |
-> > > +        *  +---+---+---+---+---+---+---+---+
-> > > +        */
-> > > +       b1 = (!r << 7) | (!x << 6) | (!b << 5) | (m & 0x1f);
-> >
-> > Some explanation here would help, not everyone is aware of x86 vex encoding :)
->
-> The comment is the exact rule how different pieces of information is
-> encoded into the 3-byte VEX prefix i.e. their position and length, and
-> whether a field needs to be bit inverted. Combined with code the comment
-> should give one clear idea what the intent is here.
-
-I am not sure this gives a clear picture, It assumes that the reader knows
-about VEX encoding, which not everyone does. Now they can pull up a
-manual and start reading but that doesn't help so the comments need to
-explain what's going on here.
-
-
-> >
-> > > +       /*
-> > > +        *    7                           0
-> > > +        *  +---+---+---+---+---+---+---+---+
-> > > +        *  | W |     ~vvvv     | L |   pp  |
-> > > +        *  +---+---+---+---+---+---+---+---+
-> > > +        */
-> > > +       b2 = (w << 7) | ((~src2 & 0xf) << 3) | (l << 2) | (p & 3);
-
-By reading the code one should be able to understand what
-b0, b1 and b2 are.
-
-
-> > > +
-> > > +       EMIT3(b0, b1, b2);
-> > > +       *pprog = prog;
-> > > +}
-> > > +
-> > > +/* emit BMI2 shift instruction */
-> > > +static void emit_shiftx(u8 **pprog, u32 dst_reg, u8 src_reg, bool is64, u8 op)
-> > > +{
-> > > +       u8 *prog = *pprog;
-> > > +       bool r = is_ereg(dst_reg);
-> > > +       u8 m = 2; /* escape code 0f38 */
-> > > +
-> > > +       emit_3vex(&prog, r, false, r, m, is64, src_reg, false, op);
-> > > +       EMIT2(0xf7, add_2reg(0xC0, dst_reg, dst_reg));
-> > > +       *pprog = prog;
-> > > +}
-> > > +
-> > >  #define INSN_SZ_DIFF (((addrs[i] - addrs[i - 1]) - (prog - temp)))
-> > >
-> > >  static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image, u8 *rw_image,
-> > > @@ -1135,6 +1177,28 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image, u8 *rw_image
-> > >                 case BPF_ALU64 | BPF_LSH | BPF_X:
-> > >                 case BPF_ALU64 | BPF_RSH | BPF_X:
-> > >                 case BPF_ALU64 | BPF_ARSH | BPF_X:
-> > > +                       /* BMI2 shifts aren't better when shift count is already in rcx */
-> > > +                       if (boot_cpu_has(X86_FEATURE_BMI2) && src_reg != BPF_REG_4) {
-> > > +                               /* shrx/sarx/shlx dst_reg, dst_reg, src_reg */
-> > > +                               bool w = (BPF_CLASS(insn->code) == BPF_ALU64);
-> > > +                               u8 op;
-> > > +
-> > > +                               switch (BPF_OP(insn->code)) {
-> > > +                               case BPF_LSH:
-> > > +                                       op = 1; /* prefix 0x66 */
-> > > +                                       break;
-> > > +                               case BPF_RSH:
-> > > +                                       op = 3; /* prefix 0xf2 */
-> > > +                                       break;
-> > > +                               case BPF_ARSH:
-> > > +                                       op = 2; /* prefix 0xf3 */
-> > > +                                       break;
-> > > +                               }
-> > > +
-> > > +                               emit_shiftx(&prog, dst_reg, src_reg, w, op);
-> > > +
-> > > +                               break;
-> > > +                       }
-> > >
-> > >                         if (src_reg != BPF_REG_4) { /* common case */
-> > >                                 /* Check for bad case when dst_reg == rcx */
-> > > --
-> > > 2.30.2
-> > >
+And we can do the same logic for XDP attaching.
+Eventually we can add __weak "orchestrator prog",
+but it would need to not only order progs, but should
+interpret enum tc_action_base return codes at run-time
+between progs too.
