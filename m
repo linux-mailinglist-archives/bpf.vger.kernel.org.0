@@ -2,117 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87B8C5F7A38
-	for <lists+bpf@lfdr.de>; Fri,  7 Oct 2022 17:05:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD0BE5F7A68
+	for <lists+bpf@lfdr.de>; Fri,  7 Oct 2022 17:19:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229892AbiJGPFX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 Oct 2022 11:05:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52028 "EHLO
+        id S229450AbiJGPS6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 Oct 2022 11:18:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229655AbiJGPFW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 Oct 2022 11:05:22 -0400
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B177731EF3;
-        Fri,  7 Oct 2022 08:05:17 -0700 (PDT)
-Received: by mail-il1-x129.google.com with SMTP id h18so2654914ilh.3;
-        Fri, 07 Oct 2022 08:05:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=N3UB2+S6iNV+PuAZHciHp5nePjKHIWTaoahZDj7m4Io=;
-        b=FICWIEjxLZ+/dltKbSCq5lsDAk6uDv5/muVS5LntEWF0P7ZyROuPk/xfhT3MKCnjBs
-         SRruhIFi+D9y9Aw4OkkIzE6LJzWaqMeSCQ9E3YLfCLOvPm4dUwOyFOoA+C+elkdzEMHr
-         bDVbkMMbyt5XgVXqCfwrEBmNLt4O0J30KQdepgtatw7zt77szOewrRGiN25R/+2rdu8n
-         2SLTQ2vGvCRigk2OzfrE64TuUMGsRHq99Vh82OcDZUmDi5C3UjYHxDTlUdJOSqoEq7b5
-         /B2OsSsUpE3F+vempvhkWc16H75Bo56VjmLsBCt98xuF0bO71lnAN+0iqd/Itqkx5Qxa
-         c3ZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=N3UB2+S6iNV+PuAZHciHp5nePjKHIWTaoahZDj7m4Io=;
-        b=Kv2y4XR+71k1X87hbXdkm12VsoycnV6xkm+NXQVmLIZ+cXxrGjsKw0z2/HiV8hwuIZ
-         kDZ+Hm/GjARDTNtp+2zVX5QFRrnAbMNS6bsPQZi+zjqVZFCxLCE0dyX83qb+qNsiwAan
-         7jJ+4gXTyCpD65iZfFC+A0pp3VhS7e1DtEazqnYSUVeIWsnHac6umSPjjIk5J70IaaRc
-         u6ijm0lfTz6Zgwfs8yrJbwqBWcWyd8HJTAT9tA2jy/P9HjKyZa8J389C6erR/sKLtWSk
-         sl2CPI9hgaOeNNl4Py4+V2Ibpvhz2lKmK7bc10Ym9mzT00J7j3fri+hgxxNa/6C5fQ6O
-         jBvQ==
-X-Gm-Message-State: ACrzQf3EfkMP04o5hmD+ixQ490b9/n7Vt/6qDN87HL5R0oi/Vk4/k9ro
-        WeV9JaU+ZoPeZAy7L+vLRYI+1ztrpls=
-X-Google-Smtp-Source: AMsMyM5UJUkkQ7+PXwUoPy1vlfcGid2bJy4kg4orcRdxrsSax1VFbzXbB67rP5TuW2buceZI2SmQLg==
-X-Received: by 2002:a92:cda7:0:b0:2fa:74e:9ca1 with SMTP id g7-20020a92cda7000000b002fa074e9ca1mr2431962ild.323.1665155117033;
-        Fri, 07 Oct 2022 08:05:17 -0700 (PDT)
-Received: from ?IPV6:2601:282:800:dc80:38e6:13c8:49a3:2476? ([2601:282:800:dc80:38e6:13c8:49a3:2476])
-        by smtp.googlemail.com with ESMTPSA id c1-20020a92cf01000000b002eb1137a774sm976579ilo.59.2022.10.07.08.05.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 07 Oct 2022 08:05:16 -0700 (PDT)
-Message-ID: <7518b0ec-ef27-6cc7-65c2-6d4b956b301a@gmail.com>
-Date:   Fri, 7 Oct 2022 09:05:14 -0600
+        with ESMTP id S229452AbiJGPS4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 Oct 2022 11:18:56 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7986C102505;
+        Fri,  7 Oct 2022 08:18:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=UgVcldoi+wivatOko2lwfadSrfRsdo0FEX94U3R3f2Y=; b=aFxU2Gb8pIwZ/bliGhAjwBzqwR
+        9oEcJISsa4wSoTUM/xVzGTdyGHZQIvhPKM3EZ025GQ/0ZjTLCnJkRCAuxdJij/m3v/jNry08fdp5l
+        Sy484QqUXzXAyomlfAlOjn+sv3R4oz5whZ78CKOX7b/jcteaT3fyUseFOQi1M5LccEkkFvC67tC5M
+        169iFIpGUY+eliue0dFknrsFYGFd7Uz7iGTQT9ZBJetJzLdckBhyzR9gWOEDUydW7KfgBTQdMyQwm
+        Oz6VneeYFg5NMj3EgdBlfP1VYyGx4ISDwnzi52Lrw5pgOtFaUwYoE/4w1hBpEAgDwYc/n5l469hWy
+        3DVW5ICA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1ogp7k-001xxe-PV; Fri, 07 Oct 2022 15:18:52 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 91083300205;
+        Fri,  7 Oct 2022 17:18:48 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7179C2C09A803; Fri,  7 Oct 2022 17:18:48 +0200 (CEST)
+Date:   Fri, 7 Oct 2022 17:18:48 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     Sumanth Korikkar <sumanthk@linux.ibm.com>, bpf@vger.kernel.org,
+        gor@linux.ibm.com, hca@linux.ibm.com, iii@linux.ibm.com,
+        linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        namhyung@kernel.org, svens@linux.ibm.com, tip-bot2@linutronix.de,
+        tmricht@linux.ibm.com, x86@kernel.org
+Subject: Re: [PATCH] bpf: fix sample_flags for bpf_perf_event_output
+Message-ID: <Y0BDWK7cl83Fkwqz@hirez.programming.kicks-ass.net>
+References: <Yz8lbkx3HYQpnvIB@krava>
+ <20221007081327.1047552-1-sumanthk@linux.ibm.com>
+ <Yz/1QNGfO39Y7dOJ@krava>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.13.1
-Subject: Re: [xdp-hints] Re: [PATCH RFCv2 bpf-next 00/18] XDP-hints: XDP
- gaining access to HW offload hints via BTF
-Content-Language: en-US
-To:     Jesper Dangaard Brouer <jbrouer@redhat.com>, sdf@google.com
-Cc:     brouer@redhat.com, bpf@vger.kernel.org, netdev@vger.kernel.org,
-        xdp-hints@xdp-project.net, larysa.zaremba@intel.com,
-        memxor@gmail.com, Lorenzo Bianconi <lorenzo@kernel.org>,
-        mtahhan@redhat.com,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        dave@dtucker.co.uk, Magnus Karlsson <magnus.karlsson@intel.com>,
-        bjorn@kernel.org
-References: <166256538687.1434226.15760041133601409770.stgit@firesoul>
- <Yzt2YhbCBe8fYHWQ@google.com>
- <35fcfb25-583a-e923-6eee-e8bbcc19db17@redhat.com>
- <CAKH8qBuYVk7QwVOSYrhMNnaKFKGd7M9bopDyNp6-SnN6hSeTDQ@mail.gmail.com>
- <982b9125-f849-5e1c-0082-7239b8c8eebf@redhat.com>
- <Yz3QNM7061WmXDHS@google.com>
- <ebbb99a1-c3c8-6d97-4bb3-03f28a0a74b1@redhat.com>
-From:   David Ahern <dsahern@gmail.com>
-In-Reply-To: <ebbb99a1-c3c8-6d97-4bb3-03f28a0a74b1@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Yz/1QNGfO39Y7dOJ@krava>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/6/22 11:47 AM, Jesper Dangaard Brouer wrote:
+On Fri, Oct 07, 2022 at 11:45:36AM +0200, Jiri Olsa wrote:
+> On Fri, Oct 07, 2022 at 10:13:27AM +0200, Sumanth Korikkar wrote:
+> > * Raw data is also filled by bpf_perf_event_output.
+> > * Add sample_flags to indicate raw data.
+> > * This eliminates the segfaults as shown below:
+> >   Run ./samples/bpf/trace_output
+> >   BUG pid 9 cookie 1001000000004 sized 4
+> >   BUG pid 9 cookie 1001000000004 sized 4
+> >   BUG pid 9 cookie 1001000000004 sized 4
+> >   Segmentation fault (core dumped)
+> > 
+> > Fixes: 838d9bb62d13 ("perf: Use sample_flags for raw_data")
+> > Acked-by: Namhyung Kim <namhyung@kernel.org>
+> > Signed-off-by: Sumanth Korikkar <sumanthk@linux.ibm.com>
 > 
+> Acked-by: Jiri Olsa <jolsa@kernel.org>
 > 
->> I also feel like xdp_hints_common is
->> a bit distracting. It makes the common case easy and it hides the
->> discussion/complexity about per-device hints. Maybe we can drop this
->> common case at all? Why can't every driver has a custom hints struct?
->> If we agree that naming/size will be the same across them (and review
->> catches/guaranteed that), why do we even care about having common
->> xdp_hints_common struct?
-> 
-> The xdp_hints_common struct is a stepping stone to making this easily
-> consumable from C-code that need to generate SKBs and info for
-> virtio_net 'hdr' desc.
-> 
-> David Ahern have been begging me for years to just add this statically
-> to xdp_frame.  I have been reluctant, because I think we can come up
-> with a more flexible (less UAPI fixed) way, that both allows kerne-code
-> and BPF-prog to access these fields.  I think of this approach as a
-> compromise between these two users.
-> 
+> Peter,
+> I think this should go through your tree again?
+> bpf-next/master does not have sample_flags merged yet
 
-Simple implementation for common - standard - networking features; jump
-through hoops to use vendor unique features. Isn't that point of
-standardization?
-
-There are multiple use cases where vlans and checksumming requests need
-to traverse devices on an XDP redirect.
+Yep can do. I'll line it up in perf/urgent (Ingo just send out
+perf/core).
