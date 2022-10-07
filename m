@@ -2,136 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 487975F7E1C
-	for <lists+bpf@lfdr.de>; Fri,  7 Oct 2022 21:37:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA3B95F7EA9
+	for <lists+bpf@lfdr.de>; Fri,  7 Oct 2022 22:24:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229837AbiJGTh1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 Oct 2022 15:37:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60800 "EHLO
+        id S230112AbiJGUY2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 Oct 2022 16:24:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229865AbiJGThY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 Oct 2022 15:37:24 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D835103D87;
-        Fri,  7 Oct 2022 12:37:16 -0700 (PDT)
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ogt9l-0003Kd-1A; Fri, 07 Oct 2022 21:37:13 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ogt9k-000Gob-Jv; Fri, 07 Oct 2022 21:37:12 +0200
-Subject: Re: [PATCH bpf-next 01/10] bpf: Add initial fd-based API to attach tc
- BPF programs
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>
-Cc:     Stanislav Fomichev <sdf@google.com>, bpf <bpf@vger.kernel.org>,
-        Nikolay Aleksandrov <razor@blackwall.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Joe Stringer <joe@cilium.io>,
-        Network Development <netdev@vger.kernel.org>
-References: <20221004231143.19190-1-daniel@iogearbox.net>
- <20221004231143.19190-2-daniel@iogearbox.net>
- <20221006050053.pbwo72xtzoza6gfl@macbook-pro-4.dhcp.thefacebook.com>
- <f355eeba-1b46-749f-c102-65074e7eac27@iogearbox.net>
- <CAADnVQ+gEY3FjCR=+DmjDR4gp5bOYZUFJQXj4agKFHT9CQPZBw@mail.gmail.com>
- <14f368eb-9158-68bc-956c-c8371cfcb531@iogearbox.net> <875ygvemau.fsf@toke.dk>
- <Y0BaBUWeTj18V5Xp@google.com> <87tu4fczyv.fsf@toke.dk>
- <CAADnVQLH9R94iszCmhYeLKnDPy_uiGeyXnEwoADm8_miihwTmQ@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <8cc9811e-6efe-3aa5-b201-abbd4b10ceb4@iogearbox.net>
-Date:   Fri, 7 Oct 2022 21:37:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S230141AbiJGUYY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 Oct 2022 16:24:24 -0400
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D52F6125873
+        for <bpf@vger.kernel.org>; Fri,  7 Oct 2022 13:24:19 -0700 (PDT)
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 297I56fA032285
+        for <bpf@vger.kernel.org>; Fri, 7 Oct 2022 13:24:18 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=facebook;
+ bh=adXRTikNeiTb6m0/k6WMynwD8DFq9+o1eqLBIQKU/S4=;
+ b=dCwUnSQI2VbUGSiueWXIKFKeiYWSMboBozYfnWwMFhENYlDTtfV2/LfvgAMnBZBIIdSD
+ ysUoY/lZy2jqXqF/IoX4USK5dpdRyROCw6UqPE3F6NxnIy3d10d43nGje6iOhpGYsUhE
+ cF6OIKQ6bn7ZUmNyZQnR+a2lLpgYdiDUHTM= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3k1tp758s7-5
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 07 Oct 2022 13:24:18 -0700
+Received: from twshared20183.05.prn5.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Fri, 7 Oct 2022 13:24:16 -0700
+Received: by devbig150.prn5.facebook.com (Postfix, from userid 187975)
+        id 726C91142F71E; Fri,  7 Oct 2022 13:24:13 -0700 (PDT)
+From:   Jie Meng <jmeng@fb.com>
+To:     <kpsingh@kernel.org>, <bpf@vger.kernel.org>, <ast@kernel.org>,
+        <andrii@kernel.org>, <daniel@iogearbox.net>
+CC:     Jie Meng <jmeng@fb.com>
+Subject: [PATCH bpf-next v5 0/3] bpf,x64: Use BMI2 for shifts
+Date:   Fri, 7 Oct 2022 13:23:46 -0700
+Message-ID: <20221007202348.1118830-1-jmeng@fb.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <CACYkzJ7gz8Y0JXgfs2vKG5nF98iS+UdqpM9Vk0OOnSfYvMdK4g@mail.gmail.com>
+References: <CACYkzJ7gz8Y0JXgfs2vKG5nF98iS+UdqpM9Vk0OOnSfYvMdK4g@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAADnVQLH9R94iszCmhYeLKnDPy_uiGeyXnEwoADm8_miihwTmQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.6/26682/Fri Oct  7 09:58:07 2022)
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: 5cQ20rdbCZ0emF1_Y9iv56sbKHav83kp
+X-Proofpoint-ORIG-GUID: 5cQ20rdbCZ0emF1_Y9iv56sbKHav83kp
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.528,FMLib:17.11.122.1
+ definitions=2022-10-07_04,2022-10-07_01,2022-06-22_01
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/7/22 8:59 PM, Alexei Starovoitov wrote:
-> On Fri, Oct 7, 2022 at 10:20 AM Toke Høiland-Jørgensen <toke@redhat.com> wrote:
-[...]
->>>> I was thinking a little about how this might work; i.e., how can the
->>>> kernel expose the required knobs to allow a system policy to be
->>>> implemented without program loading having to talk to anything other
->>>> than the syscall API?
->>>
->>>> How about we only expose prepend/append in the prog attach UAPI, and
->>>> then have a kernel function that does the sorting like:
->>>
->>>> int bpf_add_new_tcx_prog(struct bpf_prog *progs, size_t num_progs, struct
->>>> bpf_prog *new_prog, bool append)
->>>
->>>> where the default implementation just appends/prepends to the array in
->>>> progs depending on the value of 'appen'.
->>>
->>>> And then use the __weak linking trick (or maybe struct_ops with a member
->>>> for TXC, another for XDP, etc?) to allow BPF to override the function
->>>> wholesale and implement whatever ordering it wants? I.e., allow it can
->>>> to just shift around the order of progs in the 'progs' array whenever a
->>>> program is loaded/unloaded?
->>>
->>>> This way, a userspace daemon can implement any policy it wants by just
->>>> attaching to that hook, and keeping things like how to express
->>>> dependencies as a userspace concern?
->>>
->>> What if we do the above, but instead of simple global 'attach first/last',
->>> the default api would be:
->>>
->>> - attach before <target_fd>
->>> - attach after <target_fd>
->>> - attach before target_fd=-1 == first
->>> - attach after target_fd=-1 == last
->>>
->>> ?
->>
->> Hmm, the problem with that is that applications don't generally have an
->> fd to another application's BPF programs; and obtaining them from an ID
->> is a privileged operation (CAP_SYS_ADMIN). We could have it be "attach
->> before target *ID*" instead, which could work I guess? But then the
->> problem becomes that it's racy: the ID you're targeting could get
->> detached before you attach, so you'll need to be prepared to check that
->> and retry; and I'm almost certain that applications won't test for this,
->> so it'll just lead to hard-to-debug heisenbugs. Or am I being too
->> pessimistic here?
-> 
-> I like Stan's proposal and don't see any issue with FD.
-> It's good to gate specific sequencing with cap_sys_admin.
-> Also for consistency the FD is better than ID.
-> 
-> I also like systemd analogy with Before=, After=.
-> systemd has a ton more ways to specify deps between Units,
-> but none of them have absolute numbers (which is what priority is).
-> The only bit I'd tweak in Stan's proposal is:
-> - attach before <target_fd>
-> - attach after <target_fd>
-> - attach before target_fd=0 == first
-> - attach after target_fd=0 == last
+With baseline x64 instruction set, shift count can only be an immediate
+or in %cl. The implicit dependency on %cl makes it necessary to shuffle
+registers around and/or add push/pop operations.
 
-I think the before(), after() could work, but the target_fd I have my doubts
-that it will be practical. Maybe lets walk through a concrete real example. app_a
-and app_b shipped via container_a resp container_b. Both want to install tc BPF
-and we (operator/user) want to say that prog from app_b should only be inserted
-after the one from app_a, never run before; if no prog_a is installed, we ofc just
-run prog_b, but if prog_a is inserted, it must be before prog_b given the latter
-can only run after the former. How would we get to one anothers target fd? One
-could use the 0, but not if more programs sit before/after.
+BMI2 provides shift instructions that can use any general register as
+the shift count, saving us instructions and a few bytes in most cases.
+
+Suboptimal codegen when %ecx is source and/or destination is also
+addressed and unnecessary instructions are removed.
+
+test_progs: Summary: 267/1340 PASSED, 25 SKIPPED, 0 FAILED
+test_progs-no_alu32: Summary: 267/1333 PASSED, 26 SKIPPED, 0 FAILED
+test_verifier: Summary: 1367 PASSED, 636 SKIPPED, 0 FAILED (same result
+ with or without BMI2)
+test_maps: OK, 0 SKIPPED
+lib/test_bpf:
+  test_bpf: Summary: 1026 PASSED, 0 FAILED, [1014/1014 JIT'ed]
+  test_bpf: test_tail_calls: Summary: 10 PASSED, 0 FAILED, [10/10 JIT'ed]
+  test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
+
+---
+v4 -> v5:
+- More comments regarding instruction encoding
+v3 -> v4:
+- Fixed a regression when BMI2 isn't available
+
+Jie Meng (3):
+  bpf,x64: avoid unnecessary instructions when shift dest is ecx
+  bpf,x64: use shrx/sarx/shlx when available
+  bpf: add selftests for lsh, rsh, arsh with reg operand
+
+ arch/x86/net/bpf_jit_comp.c                | 106 ++++++++++++++++++---
+ tools/testing/selftests/bpf/verifier/jit.c |  24 +++++
+ 2 files changed, 118 insertions(+), 12 deletions(-)
+
+--=20
+2.30.2
+
