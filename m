@@ -2,65 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F39475F7AA2
-	for <lists+bpf@lfdr.de>; Fri,  7 Oct 2022 17:36:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB0495F7AC0
+	for <lists+bpf@lfdr.de>; Fri,  7 Oct 2022 17:43:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230051AbiJGPgs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 Oct 2022 11:36:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52726 "EHLO
+        id S229791AbiJGPnS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 Oct 2022 11:43:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229538AbiJGPgr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 Oct 2022 11:36:47 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33325C0993
-        for <bpf@vger.kernel.org>; Fri,  7 Oct 2022 08:36:46 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id m81so5929243oia.1
-        for <bpf@vger.kernel.org>; Fri, 07 Oct 2022 08:36:46 -0700 (PDT)
+        with ESMTP id S229602AbiJGPnR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 Oct 2022 11:43:17 -0400
+Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 183CDD73E8
+        for <bpf@vger.kernel.org>; Fri,  7 Oct 2022 08:43:14 -0700 (PDT)
+Received: by mail-oo1-xc2a.google.com with SMTP id s1-20020a4a81c1000000b0047d5e28cdc0so3730477oog.12
+        for <bpf@vger.kernel.org>; Fri, 07 Oct 2022 08:43:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=mojatatu-com.20210112.gappssmtp.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=F3MVRdCe71nXE3jWp7eZq9fozG/36xJqzS75oTzvWkA=;
-        b=vu8Hjsg92IcCBOMC646zQt7RWHHieFggIyNc2WrKo9hKxZS9txFAZ7UskNuwHHvs0t
-         3+lGugPCczWv01GIva0zcyJHV4GICZPOUs1UAMfoIkt+w9uPVuSKiqQXosF2z603jfTu
-         h+tDYzb/Q6eQV9jfbiLKuawhO5Gb2QnkQtqDYEvfkCZ36E0bSTKt7/bSEbik6GfQ+Tyg
-         oGAuE1yNP+GlZFpWv6ucTuFXpeKQqIPpjYtYJ0YYH1lhKejkUkmAsvQ7b7HxHsl0Z5jR
-         0d8tKLAB9YEk37uYhjNmvBm+Zo+DaqdVhVFzsjJgfz3OAwZyWAPvmnU3cYvqB275HJZA
-         5Mnw==
+        bh=Mozf1uPcQjIidCs+o1oK9uZZ1pk0n9LGediWQVUrKKk=;
+        b=yfonxeDoQSoLXljq7Q6Kh/DpndNLETkhGeSo22PVD1d4Il2TjCdxonzqlVOcodhncW
+         Ur/WEpqD5gav9l8hdcLH3pCNADh5rRK4lgm7BO/a0v6X1Qsgt2bI3yQVUG5ASY08iVnF
+         SBvCxtN7HoIwzBi2u1CR6YcfpWDw6UrfC7h/vZ25QhNb5LSXgQVy3TtZX4yT8ov/9PZz
+         cOTtXsr8ZPl5gDQzpe6N9fcizAtfVeB5d5ATvA8ND8DTo/qgiK6vASecSDaDXJ55EnPF
+         ba3EhSvEC4A4Bcznj4rA9br0Vi4LVjeJeQCtAcbqFZbE6iRN38GLRDI9T0yCAs0A4iCn
+         SgWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=F3MVRdCe71nXE3jWp7eZq9fozG/36xJqzS75oTzvWkA=;
-        b=sFGq/8n3d27jjlXHThHI7FVrGo7IPOvZEdbk/AhJ3c5AIgWTg3Q94sqyvru//z9GEe
-         Slpk8oviUnRBSmbo24wMJd6ddjUNzGQ3jpGvo2URBMjdTWwDYQ0iWT+RUXUThI6bTwQX
-         NxpmL4VbZl4j03knZPJXlUSkdDABmtLWpnLye4Fd6JfyJTbGCOByxIY6cTSvUjWu8L9m
-         0rqrEYnv61EAV8BNA85kkersySxygRmgLsbNKTYdpqKEp64JIu96di71j2OlUS2FNBfE
-         IXddCFGXZGh4td74SeCD0k033K7mxXQLzQ+B69Re8Qp1Oy6JOj2xjGQ/s+OufAxNM/O3
-         hgdQ==
-X-Gm-Message-State: ACrzQf0lKqB7ngebmKvDDPwnKACnJXoXYbT0Uo/YC2BgKdXSyIQP41k3
-        fDVpm2ao7V9ag28UR6BeKgW2rt+EdYKa9ZSdKtWRlQ==
-X-Google-Smtp-Source: AMsMyM4Km5GLY3FfrPCzSZTgEZmF4LR9fPO+lJQY8rHBEjRQNJRYYXfl4OzGSVmmnFBhkYnv2KzpXU+ya1KcyMbwOd0=
-X-Received: by 2002:a05:6808:1997:b0:34f:d372:b790 with SMTP id
- bj23-20020a056808199700b0034fd372b790mr2708228oib.2.1665157005437; Fri, 07
- Oct 2022 08:36:45 -0700 (PDT)
+        bh=Mozf1uPcQjIidCs+o1oK9uZZ1pk0n9LGediWQVUrKKk=;
+        b=upeX4UQ9oLa3xh3RgDXy1BKHT1bYf1hwYP1X2BupGW+Y8JnLuxcKZ9UBjT1sfXTAqY
+         ZiL9c/+MC5dVayT3QXHBtZQdp+XONcylbMbnfvtN+L9sE2q0Ol/tbQuXaRYdvGD4rH+8
+         3KwYegYlo7e1D2Jx4fCqnv/nSp3R4+MiGBBoPGH2F9GOsL2yEYotYAdjbw6DOXBBFUWp
+         EF8138EapOTNRJtLv0MaHQ9CI06DeYRiUJH6WSCRhvGHa6ZBs8VKPLQhjRZdWke69nPU
+         9NQ+4w1oFbNwtJBBw+YIkOt34R1Ba2E1+NDL+Xj6J0Hlxhc3N4dVyddqboyYXKlC6Fmm
+         dOZQ==
+X-Gm-Message-State: ACrzQf0kCMQlxznP12ulCsGumxyJT75BpThyQI6cGdshoUO042d5FB45
+        cbUY3gdwSAWayJ8SXUAfMyqhdsK8+eyXwKsZ/c3gpg==
+X-Google-Smtp-Source: AMsMyM7pAYg0CFNhxWoGp+UiHPlxhNQb0zVdYYoXZebQKrrI8iTf46NQA90kLkfVKpN5AnP/TgRvaJjz+QyutI24hIY=
+X-Received: by 2002:a4a:5e47:0:b0:476:2f9e:b30e with SMTP id
+ h68-20020a4a5e47000000b004762f9eb30emr2119887oob.46.1665157393773; Fri, 07
+ Oct 2022 08:43:13 -0700 (PDT)
 MIME-Version: 1.0
 References: <20221004231143.19190-1-daniel@iogearbox.net> <20221004231143.19190-2-daniel@iogearbox.net>
- <CAM0EoM=i_zFMQ5YEtaaWyu-fSE7=wq2LmNTXnwDJoXcBJ9de6g@mail.gmail.com> <aa8034e8-a64e-3587-1e1f-1d07c69edd98@iogearbox.net>
-In-Reply-To: <aa8034e8-a64e-3587-1e1f-1d07c69edd98@iogearbox.net>
+ <20221006050053.pbwo72xtzoza6gfl@macbook-pro-4.dhcp.thefacebook.com>
+ <CAM0EoMnJzP6kbr94utjDT1X=e9G21-uu=Cbqhx2XLfqXE+HDwA@mail.gmail.com> <CAADnVQK2tWmZW0=y89mv-r9kO4U2H=azWmbr7g1yqLhU1aX3SQ@mail.gmail.com>
+In-Reply-To: <CAADnVQK2tWmZW0=y89mv-r9kO4U2H=azWmbr7g1yqLhU1aX3SQ@mail.gmail.com>
 From:   Jamal Hadi Salim <jhs@mojatatu.com>
-Date:   Fri, 7 Oct 2022 11:36:33 -0400
-Message-ID: <CAM0EoMmWM5ZBtRjPSjd8AU2SkzYxHGgdEixBxGpoWvkh0dbCWg@mail.gmail.com>
+Date:   Fri, 7 Oct 2022 11:43:02 -0400
+Message-ID: <CAM0EoMnfnp5ULiHU-E769yg8Gj534WADZAthuY7T=mW8WrKp4g@mail.gmail.com>
 Subject: Re: [PATCH bpf-next 01/10] bpf: Add initial fd-based API to attach tc
  BPF programs
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     bpf@vger.kernel.org, razor@blackwall.org, ast@kernel.org,
-        andrii@kernel.org, martin.lau@linux.dev, john.fastabend@gmail.com,
-        joannelkoong@gmail.com, memxor@gmail.com, toke@redhat.com,
-        joe@cilium.io, netdev@vger.kernel.org,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
+        Nikolay Aleksandrov <razor@blackwall.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Joanne Koong <joannelkoong@gmail.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Joe Stringer <joe@cilium.io>,
+        Network Development <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
@@ -71,123 +77,20 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 6, 2022 at 4:49 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+On Thu, Oct 6, 2022 at 7:29 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> Hi Jamal,
+> On Thu, Oct 6, 2022 at 7:41 AM Jamal Hadi Salim <jhs@mojatatu.com> wrote:
+
+[..]
+> > You just described the features already offered by tc opcodes + priority.
 >
-> On 10/5/22 9:04 PM, Jamal Hadi Salim wrote:
-> [...]
+> Ohh, right. All possible mechanisms were available in TC 20 years ago.
+> Moving on.
 
->
-> Yes and no ;) In the specific example I gave there was an application bug that
-> led to this race of one evicting the other, so it was not intentional and also
-> not triggered on all the nodes in the cluster, but aside from the example, the
-> issue is generic one for tc BPF users. Not fd ownership, but ownership of BPF
-> link solves this as it does similarly for other existing BPF infra which is one
-> of the motivations as outlined in patch 2 to align this for tc BPF, too.
-
-Makes sense. I can see how noone would evict you with this; but it is still
-a race for whoever gets installed first, no? i.e you still need an
-arbitration scheme.
-And if you have a good arbitration scheme you may not need the changes.
-
-> > IIUC,  this is an issue of resource contention. Both users who have
-> > root access think they should be prio 1. Kubernetes has no controls for this?
-> > For debugging, wouldnt listening to netlink events have caught this?
-> > I may be misunderstanding - but if both users took advantage of this
-> > feature seems the root cause is still unresolved i.e  whoever gets there first
-> > becomes the owner of the highest prio?
->
-> This is independent of K8s core; system applications for observability, runtime
-> enforcement, networking, etc can be deployed as Pods via kube-system namespace into
-> the cluster and live in the host netns. These are typically developed independently
-> by different groups of people. So it all depends on the use cases these applications
-> solve, e.g. if you try to deploy two /main/ CNI plugins which both want to provide
-> cluster networking, it won't fly and this is also generally understood by cluster
-> operators, but there can be other applications also attaching to tc BPF for more
-> specialized functions (f.e. observing traffic flows, setting EDT tstamp for subsequent
-> fq, etc) and interoperability can be provided to a certain degree with prio settings &
-> unspec combo to continue the pipeline. Netlink events would at best only allow to
-> observe the rig being pulled from underneath us, but not prevent it compared to tc
-> BPF links, and given the rise of BPF projects we see in K8s space, it's becoming
-> more crucial to avoid accidental outage just from deploying a new Pod into a
-> running cluster given tc BPF layer becomes more occupied.
-
-I got it i think: seems like the granularity of resource control is
-much higher then.
-Most certainly you want protection against wild-west approach where everyone
-wants to have the highest priority.
-
-
-> > Other comments on just this patch (I will pay attention in detail later):
-> > My two qualms:
-> > 1) Was bastardizing all things TC_ACT_XXX necessary?
-> > Maybe you could create #define somewhere visible which refers
-> > to the TC_ACT_XXX?
->
-> Optional as mentioned in the other thread. It was suggested having enums which
-> become visible via vmlinux BTF as opposed to defines, so my thought was to lower
-> barrier for new developers by making the naming and supported subset more obvious
-> similar/closer to XDP case. I didn't want to pull in new header, but I can move it
-> to pkt_cls.h.
->
-
-I dont think those values will ever change - but putting them in the
-same location
-will make it easier to find.
-
-> > 2) Why is xtc_run before tc_run()?
->
-> It needs to be first in the list because its the only hook point that has an
-> 'ownership' model in tc BPF layer. If its first we can unequivocally know its
-> owner and ensure its never skipped/bypassed/removed by another BPF program either
-> intentionally or due to users bugs/errors. If we put it after other hooks like cls_bpf
-> we loose the statement because those hooks might 'steal', remove, alter the skb before
-> the BPF link ones are executed.
-
-I understand - its a generic problem in shared systems which from your
-description
-it seems kubernetes takes to another level.
-
-> Other option is to make this completely flexible, to
-> the point that Stan made, that is, tcf_classify() is just callback from the array at
-> a fixed position and it's completely up to the user where to add from this layer,
-> but we went with former approach.
-
-I am going to read the the thread again. If you make it user definable where
-tcf_classify() as opposed to some privilege that you are first in the code path
-because you already planted your flag already, then we're all happy.
-Let 1000 flowers bloom.
-
-It's a contentious issue Daniel. You are fixing it only for ebpf - to
-be precise only
-for new users of ebpf who migrate to new interface and not for users
-who are still
-using the existing hooks. I havent looked closely, would it not have
-worked to pass
-the link info via some TLV to current tc code? That feels like it would be more
-compatible with older code assuming the infra code in user space can
-hide things,
-so if someone doesnt specify their prio through something like bpftool
-or tc then a
-default of prio 0 gets sent and the kernel provides whatever that
-reserved space it
-uses today. And if they get clever they can specify a prio and it is a
-race of who gets
-there first.
-I think this idea of having some object for ownership is great and i am hoping
-it can be extended in general for tc; but we are going to need more granularity
-for access control other than just delete (or create); example would it make
-sense that permissions to add or delete table/filter/map entries could
-be controled
-this way? I'd be willing to commit resources if this was going to be done for tc
-in general.
-
-That aside:
-We dont have this problem when it comes to hardware offloading because such
-systems have very strict admin of control: there's typically a daemon in charge;
-which by itself is naive in the sense someone with root could go underneath you
-and do things - hence my interest in not just ownership but also access control.
+Alexei, it is the open source world - you can reinvent bell bottom
+pants, the wheel, etc
+just please dont mutilate or kill small animals along the way.
 
 cheers,
 jamal
