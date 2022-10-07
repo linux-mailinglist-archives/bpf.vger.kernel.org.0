@@ -2,63 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AA225F7BD4
-	for <lists+bpf@lfdr.de>; Fri,  7 Oct 2022 18:55:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCDD35F7C28
+	for <lists+bpf@lfdr.de>; Fri,  7 Oct 2022 19:20:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229652AbiJGQzh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 Oct 2022 12:55:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54412 "EHLO
+        id S229495AbiJGRUt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 Oct 2022 13:20:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229782AbiJGQzg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 Oct 2022 12:55:36 -0400
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 494B042D63
-        for <bpf@vger.kernel.org>; Fri,  7 Oct 2022 09:55:35 -0700 (PDT)
-Received: by mail-pf1-x44a.google.com with SMTP id t7-20020a62ea07000000b005619a832f68so3148146pfh.11
-        for <bpf@vger.kernel.org>; Fri, 07 Oct 2022 09:55:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0SwSXBOZLNXgxybJupLrSAsWslZ/euPFEl5fUnw53Zs=;
-        b=dr5cmxQjMhtamyqkzHY31S2yA6gYJhetFNkbXGglmX6sj8n1HDmaLWSjRi9RhslxPq
-         PoHn+L2Yq0kiG8wQ8Hj3iiLgUxVckLTj24RHl2vm6yE3t0li4rx9ZIAat3hRw8vS3DOP
-         y5hK8LTEGu3kabNJEEug+41fxLNwrcRPgpVTWgJLXwvF/6DRknLaVyIF8wmUGEuIPYam
-         cz7Y/R282xzVov6AvVBgu+IZ/S5vSm28ve3nyL0aSey9o90+NDQeiE7FxBSSycKSHscw
-         0Q7JiD1/z+VOBz9daz6gL28ZcpvvlSKrsfjawH2KAymZBJvYBwJIhjaOyFU6ACKx8MAL
-         ojWQ==
+        with ESMTP id S229509AbiJGRUt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 Oct 2022 13:20:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10F90C8208
+        for <bpf@vger.kernel.org>; Fri,  7 Oct 2022 10:20:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1665163247;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=e8/cc3rA0x7qRcg5j7SUr5NIuevAztPGZBNjEBn3naY=;
+        b=FIV/z48NsPmmNQa7NXbcUTf5or/DkdLgVAKSnv5HYcMFdWotCXEiZWkIn9kkcfK0JlzZ67
+        f4R4YpLwciNcRmbJqatjkuJsBndHWLHucM6e88Fk9VijbkmuGexY8rS4FQ/p0IK12V6u6p
+        6sd84QnfbWWtwk8kZFvCyQxL2/3ccXc=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-411-zF3PqA-hNTCXHxzhf5o12Q-1; Fri, 07 Oct 2022 13:20:45 -0400
+X-MC-Unique: zF3PqA-hNTCXHxzhf5o12Q-1
+Received: by mail-ej1-f72.google.com with SMTP id qw31-20020a1709066a1f00b00783d9fd7df2so3143836ejc.17
+        for <bpf@vger.kernel.org>; Fri, 07 Oct 2022 10:20:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=0SwSXBOZLNXgxybJupLrSAsWslZ/euPFEl5fUnw53Zs=;
-        b=ifoUVUwzwAHZKCjqwIv5/OzJxEz3CAbWRQAr3EQZpjCzlMQ00Q4uUEqwGUOhpdbfmP
-         oII/XzrLFTv00fHkopKh0ns3vclmq3Z5/YeX5TFkBxmoJ7c3ivE5nMnBKEKp5wtI8PB0
-         C+xadxF+dZ406jrbzg9pG1Mu24Ll60N2u3VAI5U9wmkq3PH3z9RlkBmjDBqqi0dmwxQI
-         ny+HGvxc+tAs0VDVLa3WQ/xsW05LGJ72mYJt9g/AAXKbhEcNKodiGHgiH4dzvOuNl81s
-         5wC6JjeVUdModevuNhvhLd6m40152mWm1o/jL26Fr31kJHXiT4u8fd4h2cSWFcs1LkHf
-         ZBbg==
-X-Gm-Message-State: ACrzQf3Jopn5gVM6G8GhC7dMRzjaPHPTebGgBkSru/0Aj2ayRgEyzVGw
-        rOXioVmGhQ8ocDUZPJWcqqvTKV0=
-X-Google-Smtp-Source: AMsMyM55+vVoL+vE7TLRlODg0+T5ANr/WVyoKucHuqsD8f9WjOwR141i7Cxgdo+mFMAHQulPhJBDyb0=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a17:90b:1b06:b0:20a:6d32:b05e with SMTP id
- nu6-20020a17090b1b0600b0020a6d32b05emr17176396pjb.103.1665161734811; Fri, 07
- Oct 2022 09:55:34 -0700 (PDT)
-Date:   Fri, 7 Oct 2022 09:55:33 -0700
-In-Reply-To: <875ygvemau.fsf@toke.dk>
-Mime-Version: 1.0
-References: <20221004231143.19190-1-daniel@iogearbox.net> <20221004231143.19190-2-daniel@iogearbox.net>
- <20221006050053.pbwo72xtzoza6gfl@macbook-pro-4.dhcp.thefacebook.com>
- <f355eeba-1b46-749f-c102-65074e7eac27@iogearbox.net> <CAADnVQ+gEY3FjCR=+DmjDR4gp5bOYZUFJQXj4agKFHT9CQPZBw@mail.gmail.com>
- <14f368eb-9158-68bc-956c-c8371cfcb531@iogearbox.net> <875ygvemau.fsf@toke.dk>
-Message-ID: <Y0BaBUWeTj18V5Xp@google.com>
-Subject: Re: [PATCH bpf-next 01/10] bpf: Add initial fd-based API to attach tc
- BPF programs
-From:   sdf@google.com
-To:     "Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?=" <toke@redhat.com>
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=e8/cc3rA0x7qRcg5j7SUr5NIuevAztPGZBNjEBn3naY=;
+        b=OEJOP48Ngwr9U3gLkf6kTkr6xbotmWmUdJs9AV+wadRRzbuImiMgxjOp/WrJrKSqEO
+         chNP2TfHs+f539/cI9Vo9FzQUIa1ntD4v/aD1cHtJkTajlY28d2QwQfqvOTqXJQKuH4G
+         sMNLBe2SKhtrPkfHdHcSzKrKAX/k5Tz6DqZK8vTHPb+fZRQy7BR6pjU3vtY3aJrAZ251
+         RYtC11lHlQDpktqIOvNfz5D90KM6hbV2PeKdvuYXczPe2drBq+lbBAth8LwlQyy+oyKY
+         uussu3eqybwF9E0dWRBu/1V6xyxabZhSxg6+v3vWQaPSk5+IcNHH6aQQf9kmRAMHm5c5
+         XmOA==
+X-Gm-Message-State: ACrzQf2RX4c81dYB56h2KCxk6XA+K9vcqjaz3S0F6sPfEklb6xcBWvm6
+        IWst3VLAerEfJ9cik700oVNKJXGDkNtQPUZ4OF6/T1+n+IqsJo+vxYlIMjYpaV2FXr0ecn/n7Jf
+        QHufsLRg1Z/Jh
+X-Received: by 2002:aa7:c956:0:b0:43b:206d:c283 with SMTP id h22-20020aa7c956000000b0043b206dc283mr5478816edt.381.1665163244098;
+        Fri, 07 Oct 2022 10:20:44 -0700 (PDT)
+X-Google-Smtp-Source: AMsMyM4DHf7zqccBgUo5jcwC5NhJfg0rUqOGAnV5SmPRzvLCg8EvG4sRaprT7t6k+hX/RytvDliRlQ==
+X-Received: by 2002:aa7:c956:0:b0:43b:206d:c283 with SMTP id h22-20020aa7c956000000b0043b206dc283mr5478645edt.381.1665163241576;
+        Fri, 07 Oct 2022 10:20:41 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id v29-20020a50d09d000000b004580296bb0bsm1831561edd.83.2022.10.07.10.20.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 Oct 2022 10:20:40 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 29FE064EF1A; Fri,  7 Oct 2022 19:20:40 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     sdf@google.com
 Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         bpf <bpf@vger.kernel.org>,
@@ -71,149 +71,234 @@ Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         Kumar Kartikeya Dwivedi <memxor@gmail.com>,
         Joe Stringer <joe@cilium.io>,
         Network Development <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Subject: Re: [PATCH bpf-next 01/10] bpf: Add initial fd-based API to attach
+ tc BPF programs
+In-Reply-To: <Y0BaBUWeTj18V5Xp@google.com>
+References: <20221004231143.19190-1-daniel@iogearbox.net>
+ <20221004231143.19190-2-daniel@iogearbox.net>
+ <20221006050053.pbwo72xtzoza6gfl@macbook-pro-4.dhcp.thefacebook.com>
+ <f355eeba-1b46-749f-c102-65074e7eac27@iogearbox.net>
+ <CAADnVQ+gEY3FjCR=+DmjDR4gp5bOYZUFJQXj4agKFHT9CQPZBw@mail.gmail.com>
+ <14f368eb-9158-68bc-956c-c8371cfcb531@iogearbox.net>
+ <875ygvemau.fsf@toke.dk> <Y0BaBUWeTj18V5Xp@google.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Fri, 07 Oct 2022 19:20:40 +0200
+Message-ID: <87tu4fczyv.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-T24gMTAvMDcsIFRva2UgSO+/vWlsYW5kLUrvv71yZ2Vuc2VuIHdyb3RlOg0KPiBEYW5pZWwgQm9y
-a21hbm4gPGRhbmllbEBpb2dlYXJib3gubmV0PiB3cml0ZXM6DQoNCj4gPiBPbiAxMC83LzIyIDE6
-MjggQU0sIEFsZXhlaSBTdGFyb3ZvaXRvdiB3cm90ZToNCj4gPj4gT24gVGh1LCBPY3QgNiwgMjAy
-MiBhdCAyOjI5IFBNIERhbmllbCBCb3JrbWFubiA8ZGFuaWVsQGlvZ2VhcmJveC5uZXQ+ICANCj4g
-d3JvdGU6DQo+ID4+PiBPbiAxMC82LzIyIDc6MDAgQU0sIEFsZXhlaSBTdGFyb3ZvaXRvdiB3cm90
-ZToNCj4gPj4+PiBPbiBXZWQsIE9jdCAwNSwgMjAyMiBhdCAwMToxMTozNEFNICswMjAwLCBEYW5p
-ZWwgQm9ya21hbm4gd3JvdGU6DQo+ID4+PiBbLi4uXQ0KPiA+Pj4+DQo+ID4+Pj4gSSBjYW5ub3Qg
-aGVscCBidXQgZmVlbCB0aGF0IHByaW8gbG9naWMgY29weS1wYXN0ZSBmcm9tIG9sZCB0YywgIA0K
-PiBuZXRmaWx0ZXIgYW5kIGZyaWVuZHMNCj4gPj4+PiBpcyBkb25lIGJlY2F1c2UgInRoYXQncyBo
-b3cgdGhpbmdzIHdlcmUgZG9uZSBpbiB0aGUgcGFzdCIuDQo+ID4+Pj4gaW1vIGl0IHdhcyBhIHdl
-bGwgaW50ZW50aW9uZWQgbWlzdGFrZSBhbmQgYWxsIG5ldHdvcmtpbmcgdGhpbmdzICh0YywgIA0K
-PiBuZXRmaWx0ZXIsIGV0YykNCj4gPj4+PiBjb3B5LXBhc3RlZCB0aGF0IGN1bWJlcnNvbWUgYW5k
-IGhhcmQgdG8gdXNlIGNvbmNlcHQuDQo+ID4+Pj4gTGV0J3MgdGhyb3cgYXdheSB0aGF0IGJhZ2dh
-Z2U/DQo+ID4+Pj4gSW4gZ29vZCBzZXQgb2YgY2FzZXMgdGhlIGJwZiBwcm9nIGluc2VydGVyIGNh
-cmVzIHdoZXRoZXIgdGhlIHByb2cgaXMgIA0KPiBmaXJzdCBvciBub3QuDQo+ID4+Pj4gU2luY2Ug
-dGhlIGZpcnN0IHByb2cgcmV0dXJuaW5nIGFueXRoaW5nIGJ1dCBUQ19ORVhUIHdpbGwgYmUgZmlu
-YWwuDQo+ID4+Pj4gSSB0aGluayBwcm9nIGluc2VydGlvbiBmbGFnczogJ0kgd2FudCB0byBydW4g
-Zmlyc3QnIHZzICdJIGRvbid0IGNhcmUgIA0KPiBhYm91dCBvcmRlcicNCj4gPj4+PiBpcyBnb29k
-IGVub3VnaCBpbiBwcmFjdGljZS4gQW55IGNvbXBsZXggc2NoZW1lIHNob3VsZCBwcm9iYWJseSBi
-ZSAgDQo+IHByb2dyYW1tYWJsZQ0KPiA+Pj4+IGFzIGFueSBwb2xpY3kgc2hvdWxkLiBGb3IgZXhh
-bXBsZSBpbiBNZXRhIHdlIGhhdmUgJ3hkcCBjaGFpbmVyJyAgDQo+IGxvZ2ljIHRoYXQgaXMgc2lt
-aWxhcg0KPiA+Pj4+IHRvIGxpYnhkcCBjaGFpbmluZywgYnV0IHdlIGFkZGVkIGEgZmVhdHVyZSB0
-aGF0IGFsbG93cyBhIHByb2cgdG8gIA0KPiBqdW1wIG92ZXIgYW5vdGhlcg0KPiA+Pj4+IHByb2cg
-YW5kIGNvbnRpbnVlIHRoZSBjaGFpbi4gUHJpb3JpdHkgY29uY2VwdCBjYW5ub3QgZXhwcmVzcyB0
-aGF0Lg0KPiA+Pj4+IFNpbmNlIHdlJ2QgaGF2ZSB0byBhZGQgc29tZSAicG9saWN5IHByb2dyYW0i
-IGFueXdheSBmb3IgdXNlIGNhc2VzICANCj4gbGlrZSB0aGlzDQo+ID4+Pj4gbGV0J3Mga2VlcCB0
-aGluZ3MgYXMgc2ltcGxlIGFzIHBvc3NpYmxlPw0KPiA+Pj4+IFRoZW4gbWF5YmUgd2UgY2FuIGFk
-b3B0IHRoaXMgImFzLXNpbXBsZS1hcy1wb3NzaWJsZSIgdG8gWERQIGhvb2tzID8NCj4gPj4+PiBB
-bmQgYWxsb3cgYnBmIHByb2dzIGNoYWluaW5nIGluIHRoZSBrZXJuZWwgd2l0aCAicnVuX21lX2Zp
-cnN0IiAgDQo+IHZzICJydW5fbWVfYW55d2hlcmUiDQo+ID4+Pj4gaW4gYm90aCB0Y3ggYW5kIHhk
-cCA/DQo+ID4+Pj4gTmF0dXJhbGx5ICJydW5fbWVfZmlyc3QiIHByb2cgd2lsbCBiZSB0aGUgb25s
-eSBvbmUuIE5vIG5lZWQgZm9yICANCj4gRl9SRVBMQUNFIGZsYWdzLCBldGMuDQo+ID4+Pj4gVGhl
-IG93bmVyIG9mICJydW5fbWVfZmlyc3QiIHdpbGwgdXBkYXRlIGl0cyBwcm9nIHRocm91Z2ggIA0K
-PiBicGZfbGlua191cGRhdGUuDQo+ID4+Pj4gInJ1bl9tZV9hbnl3aGVyZSIgd2lsbCBhZGQgdG8g
-dGhlIGVuZCBvZiB0aGUgY2hhaW4uDQo+ID4+Pj4gSW4gWERQIGZvciBjb21wYXRpYmlsaXR5IHJl
-YXNvbnMgInJ1bl9tZV9maXJzdCIgd2lsbCBiZSB0aGUgZGVmYXVsdC4NCj4gPj4+PiBTaW5jZSBv
-bmx5IG9uZSBwcm9nIGNhbiBiZSBlbnF1ZXVlZCB3aXRoIHN1Y2ggZmxhZyBpdCB3aWxsIG1hdGNo
-ICANCj4gZXhpc3Rpbmcgc2luZ2xlIHByb2cgYmVoYXZpb3IuDQo+ID4+Pj4gV2VsbCBiZWhhdmlu
-ZyBwcm9ncyB3aWxsIHVzZSAobGlrZSB4ZHAtdGNwZHVtcCBvciBtb25pdG9yaW5nIHByb2dzKSAg
-DQo+IHdpbGwgdXNlICJydW5fbWVfYW55d2hlcmUiLg0KPiA+Pj4+IEkga25vdyBpdCdzIGZhciBm
-cm9tIGNvdmVyaW5nIHBsZW50eSBvZiBjYXNlcyB0aGF0IHdlJ3ZlIGRpc2N1c3NlZCAgDQo+IGZv
-ciBsb25nIHRpbWUsDQo+ID4+Pj4gYnV0IHByaW8gY29uY2VwdCBpc24ndCByZWFsbHkgY292ZXJp
-bmcgdGhlbSBlaXRoZXIuDQo+ID4+Pj4gV2UndmUgc3RydWdnbGVkIGVub3VnaCB3aXRoIHNpbmds
-ZSB4ZHAgcHJvZywgc28gY2VydGFpbmx5IG5vdCAgDQo+IGFkdm9jYXRpbmcgZm9yIHRoYXQuDQo+
-ID4+Pj4gQW5vdGhlciBhbHRlcm5hdGl2ZSBpcyB0byBkbzogInF1ZXVlX2F0X2hlYWQiIHZzICJx
-dWV1ZV9hdF90YWlsIi4gIA0KPiBKdXN0IGFzIHNpbXBsZS4NCj4gPj4+PiBCb3RoIHNpbXBsZSB2
-ZXJzaW9ucyBoYXZlIHRoZWlyIHByb3MgYW5kIGNvbnMgYW5kIGRvbid0IGNvdmVyICANCj4gZXZl
-cnl0aGluZywNCj4gPj4+PiBidXQgaW1vIGJvdGggYXJlIGJldHRlciB0aGFuIHByaW8uDQo+ID4+
-Pg0KPiA+Pj4gWWVhaCwgaXQncyBraW5kIG9mIHRyaWNreSwgaW1oby4gVGhlICdydW5fbWVfZmly
-c3QnICANCj4gdnMgJ3J1bl9tZV9hbnl3aGVyZScgYXJlIHR3bw0KPiA+Pj4gdXNlIGNhc2VzIHRo
-YXQgc2hvdWxkIGJlIGNvdmVyZWQgKGFuZCBhY3R1YWxseSB3ZSBraW5kIG9mIGRvIHRoaXMgaW4g
-IA0KPiB0aGlzIHNldCwgdG9vLA0KPiA+Pj4gd2l0aCB0aGUgcHJpb3MgdmlhIHByaW89eCB2cyBw
-cmlvPTApLiBHaXZlbiB1c2VycyB3aWxsIG9ubHkgYmUgIA0KPiBjb25zdW1pbmcgdGhlIEFQSXMN
-Cj4gPj4+IHZpYSBsaWJzIGxpa2UgbGliYnBmLCB0aGlzIGNhbiBhbHNvIGJlIGFic3RyYWN0ZWQg
-dGhpcyB3YXkgdy9vIHVzZXJzICANCj4gaGF2aW5nIHRvIGJlDQo+ID4+PiBhd2FyZSBvZiBwcmlv
-cy4NCj4gPj4NCj4gPj4gYnV0IHRoZSBwYXRjaHNldCB0ZWxscyBkaWZmZXJlbnQgc3RvcnkuDQo+
-ID4+IFByaW8gZ2V0cyBleHBvc2VkIGV2ZXJ5d2hlcmUgaW4gdWFwaSBhbGwgdGhlIHdheSB0byBi
-cGZ0b29sDQo+ID4+IHdoZW4gaXQncyByaWdodCB0aGVyZSBmb3IgdXNlcnMgdG8gdW5kZXJzdGFu
-ZC4NCj4gPj4gQW5kIHRoYXQncyB0aGUgbWFpbiBwcm9ibGVtIHdpdGggaXQuDQo+ID4+IFRoZSB1
-c2VyIGRvbid0IHdhbnQgdG8gYW5kIGRvbid0IG5lZWQgdG8gYmUgYXdhcmUgb2YgaXQsDQo+ID4+
-IGJ1dCB1YXBpIGZvcmNlcyB0aGVtIHRvIHBpY2sgdGhlIHByaW9yaXR5Lg0KPiA+Pg0KPiA+Pj4g
-QW55d2F5LCB3aGVyZSBpdCBnZXRzIHRyaWNreSB3b3VsZCBiZSB3aGVuIHRoaW5ncyBkZXBlbmQg
-b24gb3JkZXJpbmcsDQo+ID4+PiBlLmcuIHlvdSBoYXZlIEJQRiBwcm9ncyBkb2luZzogcG9saWN5
-LCBtb25pdG9yaW5nLCBsYiwgbW9uaXRvcmluZywgIA0KPiBlbmNyeXB0aW9uLCB3aGljaA0KPiA+
-Pj4gd291bGQgYmUgc3RoIHlvdSBjYW4gYnVpbGQgdG9kYXkgdmlhIHRjIEJQRjogc28gcG9saWN5
-IG9uZSBhY3RzIGFzIGEgIA0KPiBwcmVmaWx0ZXIgZm9yDQo+ID4+PiB2YXJpb3VzIGNpZHIgcmFu
-Z2VzIHRoYXQgc2hvdWxkIGJlIGJsb2NrZWQgbm8gbWF0dGVyIHdoYXQsIHRoZW4gIA0KPiBtb25p
-dG9yaW5nIHRvIHNhbXBsZQ0KPiA+Pj4gd2hhdCBnb2VzIGludG8gdGhlIGxiLCB0aGVuIGxiIGl0
-c2VsZiB3aGljaCBkb2VzIHNuYXQvZG5hdCwgdGhlbiAgDQo+IG1vbml0b3JpbmcgdG8gc2VlIHdo
-YXQNCj4gPj4+IHRoZSBjb3JyZXNwb25kaW5nIHBrdCBsb29rcyB0aGF0IGdvZXMgdG8gYmFja2Vu
-ZCwgYW5kIG1heWJlICANCj4gZW5jcnlwdGlvbiB0byBlLmcuIHNlbmQNCj4gPj4+IHRoZSByZXN1
-bHQgdG8gd2lyZWd1YXJkIGRldiwgc28gaXQncyBlbmNyeXB0ZWQgZnJvbSBsYiBub2RlIHRvICAN
-Cj4gYmFja2VuZC4NCj4gPj4NCj4gPj4gVGhhdCdzIGFsbCB0aGVvcnkuIFlvdXIgY292ZXIgbGV0
-dGVyIGV4YW1wbGUgcHJvdmVzIHRoYXQgaW4NCj4gPj4gcmVhbCBsaWZlIGRpZmZlcmVudCBzZXJ2
-aWNlIHBpY2sgdGhlIHNhbWUgcHJpb3JpdHkuDQo+ID4+IFRoZXkgc2ltcGx5IGRvbid0IGtub3cg
-YW55IGJldHRlci4NCj4gPj4gcHJpbyBpcyBhbiB1bm5lY2Vzc2FyeSBtYWdpYyB0aGF0IGFwcHMg
-X2hhdmVfIHRvIHBpY2ssDQo+ID4+IHNvIHRoZXkganVzdCBjb3B5LXBhc3RlIGFuZCBldmVyeW9u
-ZSBlbmRzIHVwIHVzaW5nIHRoZSBzYW1lLg0KPiA+Pg0KPiA+Pj4gRm9yIHN1Y2gNCj4gPj4+IGV4
-YW1wbGUsIHlvdSdkIG5lZWQgcHJpb3MgYXMgdGhlICdydW5fbWVfYW55d2hlcmUnIGRvZXNuJ3Qg
-Z3VhcmFudGVlICANCj4gb3JkZXIsIHNvIHRoZXJlJ3MNCj4gPj4+IGEgY2FzZSBmb3IgYm90aCBz
-Y2VuYXJpb3MgKGNvbmNyZXRlIGxheW91dCB2cyBsb29zZSBvbmUpLCBhbmQgZm9yICANCj4gbGF0
-dGVyIHdlIGNvdWxkDQo+ID4+PiBzdGFydCBvZmYgd2l0aCBhbmQgaW50ZXJuYWwgcHJpbyBhcm91
-bmQgeCAoZS5nLiAxNmspLCBzbyB0aGVyZSdzIHJvb20gIA0KPiB0byBhdHRhY2ggaW4NCj4gPj4+
-IGZyb250IHZpYSBmaXhlZCBwcmlvLCBidXQgYWxzbyBhcHBlbmQgdG8gZW5kIGZvciAnZG9uJ3Qg
-Y2FyZScsIGFuZCAgDQo+IHRoYXQgY291bGQgYmUNCj4gPj4+IGZyb20gbGliIHBvdiB0aGUgZGVm
-YXVsdC9tYWluIEFQSSB3aGVyZWFzIHByaW8gd291bGQgYmUgc29tZSBraW5kIG9mICANCj4gZXh0
-ZW5kZWQgb25lLg0KPiA+Pj4gVGhvdWdodHM/DQo+ID4+DQo+ID4+IElmIHByaW8gd2FzIG5vdCBw
-YXJ0IG9mIHVhcGksIGxpa2Uga2VybmVsIGludGVybmFsIHNvbWVob3csDQo+ID4+IGFuZCB0aGVy
-ZSB3YXMgYSB1c2VyIHNwYWNlIGRhZW1vbiwgc3lzdGVtZCwgb3IgYW5vdGhlciBicGYgcHJvZywN
-Cj4gPj4gbW9kdWxlLCB3aGF0ZXZlciB0aGF0IHVzZXJzIHdvdWxkIGludGVyZmFjZSB0byB0aGVu
-DQo+ID4+IHRoZSBwcm9wb3NlZCBpbXBsZW1lbnRhdGlvbiBvZiBwcmlvIHdvdWxkIHRvdGFsbHkg
-bWFrZSBzZW5zZS4NCj4gPj4gcHJpbyBhcyB1YXBpIGlzIG5vdCB0aGF0Lg0KPiA+DQo+ID4gQSBn
-b29kIGFuYWxvZ3kgdG8gdGhpcyBpc3N1ZSBtaWdodCBiZSBzeXN0ZW1kJ3MgdW5pdCBmaWxlcy4u
-IHlvdSAgDQo+IHNwZWNpZnkgZGVwZW5kZW5jaWVzDQo+ID4gZm9yIHlvdXIgb3duIDx1bml0PiBm
-aWxlIHZpYSAnV2FudHM9PHVuaXRBPicsIGFuZCBvcmRlcmluZyAgDQo+IHZpYSAnQmVmb3JlPTx1
-bml0Qj4nIGFuZA0KPiA+ICdBZnRlcj08dW5pdEM+JyBhbmQgdGhleSByZWZlciB0byBvdGhlciB1
-bml0IGZpbGVzLiBJIHRoaW5rIHRoYXQgaXMgIA0KPiBnZW5lcmFsbHkgb2theSwNCj4gPiB5b3Ug
-ZG9uJ3QgZGVhbCB3aXRoIHByaW8gbnVtYmVycywgYnV0IHJhdGhlciBzb21lIGtpbmQgdGV4dHVh
-bCAgDQo+IHJlcHJlc2VudGF0aW9uLiBIb3dldmVyDQo+ID4gdXNlci9vcGVyYXRvciB3aWxsIGhh
-dmUgdG8gZGVhbCB3aXRoIGRlcGVuZGVuY2llcy9vcmRlcmluZyBvbmUgd2F5IG9yICANCj4gYW5v
-dGhlciwgdGhlDQo+ID4gcHJvYmxlbSBoZXJlIGlzIHRoYXQgd2UgZGVhbCB3aXRoIGtlcm5lbCBh
-bmQgbG9hZGVyIHRhbGtzIHRvIGtlcm5lbCAgDQo+IGRpcmVjdGx5IHNvIGl0DQo+ID4gaGFzIG5v
-IGF3YXJlbmVzcyBvZiB3aGF0IGVsc2UgaXMgcnVubmluZyBvciBjb3VsZCBiZSBydW5uaW5nLCBz
-byBhcHBzICANCj4gbmVlZHMgdG8gZGVhbA0KPiA+IHdpdGggaXQgc29tZWhvdyAoYW5kIGl0IGNh
-bm5vdCB3aXRob3V0IGV4dGVybmFsIGhlbHApLg0KDQo+IEkgd2FzIHRoaW5raW5nIGEgbGl0dGxl
-IGFib3V0IGhvdyB0aGlzIG1pZ2h0IHdvcms7IGkuZS4sIGhvdyBjYW4gdGhlDQo+IGtlcm5lbCBl
-eHBvc2UgdGhlIHJlcXVpcmVkIGtub2JzIHRvIGFsbG93IGEgc3lzdGVtIHBvbGljeSB0byBiZQ0K
-PiBpbXBsZW1lbnRlZCB3aXRob3V0IHByb2dyYW0gbG9hZGluZyBoYXZpbmcgdG8gdGFsayB0byBh
-bnl0aGluZyBvdGhlcg0KPiB0aGFuIHRoZSBzeXNjYWxsIEFQST8NCg0KPiBIb3cgYWJvdXQgd2Ug
-b25seSBleHBvc2UgcHJlcGVuZC9hcHBlbmQgaW4gdGhlIHByb2cgYXR0YWNoIFVBUEksIGFuZA0K
-PiB0aGVuIGhhdmUgYSBrZXJuZWwgZnVuY3Rpb24gdGhhdCBkb2VzIHRoZSBzb3J0aW5nIGxpa2U6
-DQoNCj4gaW50IGJwZl9hZGRfbmV3X3RjeF9wcm9nKHN0cnVjdCBicGZfcHJvZyAqcHJvZ3MsIHNp
-emVfdCBudW1fcHJvZ3MsIHN0cnVjdCAgDQo+IGJwZl9wcm9nICpuZXdfcHJvZywgYm9vbCBhcHBl
-bmQpDQoNCj4gd2hlcmUgdGhlIGRlZmF1bHQgaW1wbGVtZW50YXRpb24ganVzdCBhcHBlbmRzL3By
-ZXBlbmRzIHRvIHRoZSBhcnJheSBpbg0KPiBwcm9ncyBkZXBlbmRpbmcgb24gdGhlIHZhbHVlIG9m
-ICdhcHBlbicuDQoNCj4gQW5kIHRoZW4gdXNlIHRoZSBfX3dlYWsgbGlua2luZyB0cmljayAob3Ig
-bWF5YmUgc3RydWN0X29wcyB3aXRoIGEgbWVtYmVyDQo+IGZvciBUWEMsIGFub3RoZXIgZm9yIFhE
-UCwgZXRjPykgdG8gYWxsb3cgQlBGIHRvIG92ZXJyaWRlIHRoZSBmdW5jdGlvbg0KPiB3aG9sZXNh
-bGUgYW5kIGltcGxlbWVudCB3aGF0ZXZlciBvcmRlcmluZyBpdCB3YW50cz8gSS5lLiwgYWxsb3cg
-aXQgY2FuDQo+IHRvIGp1c3Qgc2hpZnQgYXJvdW5kIHRoZSBvcmRlciBvZiBwcm9ncyBpbiB0aGUg
-J3Byb2dzJyBhcnJheSB3aGVuZXZlciBhDQo+IHByb2dyYW0gaXMgbG9hZGVkL3VubG9hZGVkPw0K
-DQo+IFRoaXMgd2F5LCBhIHVzZXJzcGFjZSBkYWVtb24gY2FuIGltcGxlbWVudCBhbnkgcG9saWN5
-IGl0IHdhbnRzIGJ5IGp1c3QNCj4gYXR0YWNoaW5nIHRvIHRoYXQgaG9vaywgYW5kIGtlZXBpbmcg
-dGhpbmdzIGxpa2UgaG93IHRvIGV4cHJlc3MNCj4gZGVwZW5kZW5jaWVzIGFzIGEgdXNlcnNwYWNl
-IGNvbmNlcm4/DQoNCldoYXQgaWYgd2UgZG8gdGhlIGFib3ZlLCBidXQgaW5zdGVhZCBvZiBzaW1w
-bGUgZ2xvYmFsICdhdHRhY2ggZmlyc3QvbGFzdCcsDQp0aGUgZGVmYXVsdCBhcGkgd291bGQgYmU6
-DQoNCi0gYXR0YWNoIGJlZm9yZSA8dGFyZ2V0X2ZkPg0KLSBhdHRhY2ggYWZ0ZXIgPHRhcmdldF9m
-ZD4NCi0gYXR0YWNoIGJlZm9yZSB0YXJnZXRfZmQ9LTEgPT0gZmlyc3QNCi0gYXR0YWNoIGFmdGVy
-IHRhcmdldF9mZD0tMSA9PSBsYXN0DQoNCj8NCg0KVGhhdCBtaWdodCBiZSBmbGV4aWJsZSBlbm91
-Z2ggYnkgZGVmYXVsdCB0byBhbGxvdyB1c2VycyB0bw0KYXBwZW5kL3ByZXBlbmQgdG8gYW55IGV4
-aXN0aW5nIHByb2dyYW0gaW4gdGhlIGNoYWluIChzYXksIGZvcg0KbW9uaXRvcmluZykuIEZsZXhp
-YmxlIGVub3VnaCBmb3Igc29tZSBjZW50cmFsIGRhZW1vbnMgdG8gZG8NCnN5c3RlbWQtc3R5bGUg
-cG9saWN5LiBBbmQsIHdpdGggYnBmX2FkZF9uZXdfdGN4X3Byb2csIGZsZXhpYmxlDQplbm91Z2gg
-dG8gaW1wbGVtZW50IGFueSBwb2xpY3k/DQo=
+sdf@google.com writes:
+
+> On 10/07, Toke H=EF=BF=BDiland-J=EF=BF=BDrgensen wrote:
+>> Daniel Borkmann <daniel@iogearbox.net> writes:
+>
+>> > On 10/7/22 1:28 AM, Alexei Starovoitov wrote:
+>> >> On Thu, Oct 6, 2022 at 2:29 PM Daniel Borkmann <daniel@iogearbox.net>=
+=20=20
+>> wrote:
+>> >>> On 10/6/22 7:00 AM, Alexei Starovoitov wrote:
+>> >>>> On Wed, Oct 05, 2022 at 01:11:34AM +0200, Daniel Borkmann wrote:
+>> >>> [...]
+>> >>>>
+>> >>>> I cannot help but feel that prio logic copy-paste from old tc,=20=20
+>> netfilter and friends
+>> >>>> is done because "that's how things were done in the past".
+>> >>>> imo it was a well intentioned mistake and all networking things (tc=
+,=20=20
+>> netfilter, etc)
+>> >>>> copy-pasted that cumbersome and hard to use concept.
+>> >>>> Let's throw away that baggage?
+>> >>>> In good set of cases the bpf prog inserter cares whether the prog i=
+s=20=20
+>> first or not.
+>> >>>> Since the first prog returning anything but TC_NEXT will be final.
+>> >>>> I think prog insertion flags: 'I want to run first' vs 'I don't car=
+e=20=20
+>> about order'
+>> >>>> is good enough in practice. Any complex scheme should probably be=
+=20=20
+>> programmable
+>> >>>> as any policy should. For example in Meta we have 'xdp chainer'=20=
+=20
+>> logic that is similar
+>> >>>> to libxdp chaining, but we added a feature that allows a prog to=20=
+=20
+>> jump over another
+>> >>>> prog and continue the chain. Priority concept cannot express that.
+>> >>>> Since we'd have to add some "policy program" anyway for use cases=
+=20=20
+>> like this
+>> >>>> let's keep things as simple as possible?
+>> >>>> Then maybe we can adopt this "as-simple-as-possible" to XDP hooks ?
+>> >>>> And allow bpf progs chaining in the kernel with "run_me_first"=20=20
+>> vs "run_me_anywhere"
+>> >>>> in both tcx and xdp ?
+>> >>>> Naturally "run_me_first" prog will be the only one. No need for=20=
+=20
+>> F_REPLACE flags, etc.
+>> >>>> The owner of "run_me_first" will update its prog through=20=20
+>> bpf_link_update.
+>> >>>> "run_me_anywhere" will add to the end of the chain.
+>> >>>> In XDP for compatibility reasons "run_me_first" will be the default.
+>> >>>> Since only one prog can be enqueued with such flag it will match=20=
+=20
+>> existing single prog behavior.
+>> >>>> Well behaving progs will use (like xdp-tcpdump or monitoring progs)=
+=20=20
+>> will use "run_me_anywhere".
+>> >>>> I know it's far from covering plenty of cases that we've discussed=
+=20=20
+>> for long time,
+>> >>>> but prio concept isn't really covering them either.
+>> >>>> We've struggled enough with single xdp prog, so certainly not=20=20
+>> advocating for that.
+>> >>>> Another alternative is to do: "queue_at_head" vs "queue_at_tail".=
+=20=20
+>> Just as simple.
+>> >>>> Both simple versions have their pros and cons and don't cover=20=20
+>> everything,
+>> >>>> but imo both are better than prio.
+>> >>>
+>> >>> Yeah, it's kind of tricky, imho. The 'run_me_first'=20=20
+>> vs 'run_me_anywhere' are two
+>> >>> use cases that should be covered (and actually we kind of do this in=
+=20=20
+>> this set, too,
+>> >>> with the prios via prio=3Dx vs prio=3D0). Given users will only be=
+=20=20
+>> consuming the APIs
+>> >>> via libs like libbpf, this can also be abstracted this way w/o users=
+=20=20
+>> having to be
+>> >>> aware of prios.
+>> >>
+>> >> but the patchset tells different story.
+>> >> Prio gets exposed everywhere in uapi all the way to bpftool
+>> >> when it's right there for users to understand.
+>> >> And that's the main problem with it.
+>> >> The user don't want to and don't need to be aware of it,
+>> >> but uapi forces them to pick the priority.
+>> >>
+>> >>> Anyway, where it gets tricky would be when things depend on ordering,
+>> >>> e.g. you have BPF progs doing: policy, monitoring, lb, monitoring,=
+=20=20
+>> encryption, which
+>> >>> would be sth you can build today via tc BPF: so policy one acts as a=
+=20=20
+>> prefilter for
+>> >>> various cidr ranges that should be blocked no matter what, then=20=20
+>> monitoring to sample
+>> >>> what goes into the lb, then lb itself which does snat/dnat, then=20=
+=20
+>> monitoring to see what
+>> >>> the corresponding pkt looks that goes to backend, and maybe=20=20
+>> encryption to e.g. send
+>> >>> the result to wireguard dev, so it's encrypted from lb node to=20=20
+>> backend.
+>> >>
+>> >> That's all theory. Your cover letter example proves that in
+>> >> real life different service pick the same priority.
+>> >> They simply don't know any better.
+>> >> prio is an unnecessary magic that apps _have_ to pick,
+>> >> so they just copy-paste and everyone ends up using the same.
+>> >>
+>> >>> For such
+>> >>> example, you'd need prios as the 'run_me_anywhere' doesn't guarantee=
+=20=20
+>> order, so there's
+>> >>> a case for both scenarios (concrete layout vs loose one), and for=20=
+=20
+>> latter we could
+>> >>> start off with and internal prio around x (e.g. 16k), so there's roo=
+m=20=20
+>> to attach in
+>> >>> front via fixed prio, but also append to end for 'don't care', and=
+=20=20
+>> that could be
+>> >>> from lib pov the default/main API whereas prio would be some kind of=
+=20=20
+>> extended one.
+>> >>> Thoughts?
+>> >>
+>> >> If prio was not part of uapi, like kernel internal somehow,
+>> >> and there was a user space daemon, systemd, or another bpf prog,
+>> >> module, whatever that users would interface to then
+>> >> the proposed implementation of prio would totally make sense.
+>> >> prio as uapi is not that.
+>> >
+>> > A good analogy to this issue might be systemd's unit files.. you=20=20
+>> specify dependencies
+>> > for your own <unit> file via 'Wants=3D<unitA>', and ordering=20=20
+>> via 'Before=3D<unitB>' and
+>> > 'After=3D<unitC>' and they refer to other unit files. I think that is=
+=20=20
+>> generally okay,
+>> > you don't deal with prio numbers, but rather some kind textual=20=20
+>> representation. However
+>> > user/operator will have to deal with dependencies/ordering one way or=
+=20=20
+>> another, the
+>> > problem here is that we deal with kernel and loader talks to kernel=20=
+=20
+>> directly so it
+>> > has no awareness of what else is running or could be running, so apps=
+=20=20
+>> needs to deal
+>> > with it somehow (and it cannot without external help).
+>
+>> I was thinking a little about how this might work; i.e., how can the
+>> kernel expose the required knobs to allow a system policy to be
+>> implemented without program loading having to talk to anything other
+>> than the syscall API?
+>
+>> How about we only expose prepend/append in the prog attach UAPI, and
+>> then have a kernel function that does the sorting like:
+>
+>> int bpf_add_new_tcx_prog(struct bpf_prog *progs, size_t num_progs, struc=
+t=20=20
+>> bpf_prog *new_prog, bool append)
+>
+>> where the default implementation just appends/prepends to the array in
+>> progs depending on the value of 'appen'.
+>
+>> And then use the __weak linking trick (or maybe struct_ops with a member
+>> for TXC, another for XDP, etc?) to allow BPF to override the function
+>> wholesale and implement whatever ordering it wants? I.e., allow it can
+>> to just shift around the order of progs in the 'progs' array whenever a
+>> program is loaded/unloaded?
+>
+>> This way, a userspace daemon can implement any policy it wants by just
+>> attaching to that hook, and keeping things like how to express
+>> dependencies as a userspace concern?
+>
+> What if we do the above, but instead of simple global 'attach first/last',
+> the default api would be:
+>
+> - attach before <target_fd>
+> - attach after <target_fd>
+> - attach before target_fd=3D-1 =3D=3D first
+> - attach after target_fd=3D-1 =3D=3D last
+>
+> ?
+
+Hmm, the problem with that is that applications don't generally have an
+fd to another application's BPF programs; and obtaining them from an ID
+is a privileged operation (CAP_SYS_ADMIN). We could have it be "attach
+before target *ID*" instead, which could work I guess? But then the
+problem becomes that it's racy: the ID you're targeting could get
+detached before you attach, so you'll need to be prepared to check that
+and retry; and I'm almost certain that applications won't test for this,
+so it'll just lead to hard-to-debug heisenbugs. Or am I being too
+pessimistic here?
+
+-Toke
+
