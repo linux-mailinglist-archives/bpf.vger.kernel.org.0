@@ -2,67 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 623025F7B6E
-	for <lists+bpf@lfdr.de>; Fri,  7 Oct 2022 18:28:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AA225F7BD4
+	for <lists+bpf@lfdr.de>; Fri,  7 Oct 2022 18:55:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229459AbiJGQ2b (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 Oct 2022 12:28:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58288 "EHLO
+        id S229652AbiJGQzh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 Oct 2022 12:55:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229551AbiJGQ23 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 Oct 2022 12:28:29 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2A12DD8B0;
-        Fri,  7 Oct 2022 09:28:28 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id b4so8082050wrs.1;
-        Fri, 07 Oct 2022 09:28:28 -0700 (PDT)
+        with ESMTP id S229782AbiJGQzg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 Oct 2022 12:55:36 -0400
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 494B042D63
+        for <bpf@vger.kernel.org>; Fri,  7 Oct 2022 09:55:35 -0700 (PDT)
+Received: by mail-pf1-x44a.google.com with SMTP id t7-20020a62ea07000000b005619a832f68so3148146pfh.11
+        for <bpf@vger.kernel.org>; Fri, 07 Oct 2022 09:55:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xkJ10vxvu4gt3zKPaLqKuK3VdidJ6kjfdiu5zrWv4es=;
-        b=MmAOrneJ5PKQZEhbWonlqXrOjarkZqs8XBPBW7uxGCecO69PgQ18EHALOpNP8327wx
-         OLdCM8concCOm6CJIJllMSIMtIAUb0RVxBuR+XDHvdGsu4x9SE1X+5EbIpFuxYcmU6cZ
-         +DPK/Dj64syY2+kcFaHIEqqDgilnMuteP2Jp3xsuEqtOzbweYmKg2s3W0ZOa0A2CzPQ9
-         sDi7Pglz9iXVrKNTOlR/otL+NO6DRGKL3pt1jjiNZ7cgAb2qlJjWTRPG9nG5O7Rr/76Y
-         aXEKCCrN/u4HZgS5hhL6IU1wew3XEA1yRoXYpdjtpIRtgB5Lo8wOUQjqKRxXMoF/Db5r
-         gpxg==
+        d=google.com; s=20210112;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0SwSXBOZLNXgxybJupLrSAsWslZ/euPFEl5fUnw53Zs=;
+        b=dr5cmxQjMhtamyqkzHY31S2yA6gYJhetFNkbXGglmX6sj8n1HDmaLWSjRi9RhslxPq
+         PoHn+L2Yq0kiG8wQ8Hj3iiLgUxVckLTj24RHl2vm6yE3t0li4rx9ZIAat3hRw8vS3DOP
+         y5hK8LTEGu3kabNJEEug+41fxLNwrcRPgpVTWgJLXwvF/6DRknLaVyIF8wmUGEuIPYam
+         cz7Y/R282xzVov6AvVBgu+IZ/S5vSm28ve3nyL0aSey9o90+NDQeiE7FxBSSycKSHscw
+         0Q7JiD1/z+VOBz9daz6gL28ZcpvvlSKrsfjawH2KAymZBJvYBwJIhjaOyFU6ACKx8MAL
+         ojWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xkJ10vxvu4gt3zKPaLqKuK3VdidJ6kjfdiu5zrWv4es=;
-        b=cxDMSioLVPCkmlZdzABQ7SCQqsNYL9e9SIb+5bFCuuyHXKH0BhF0riQcX1VmyCyJCg
-         G+8ckianzTlw8lX1z3Ri+R02prwe8OSant2zWysIRYC7Ugol+qPIqksSYH8Svfu5nVBs
-         i3QwOUyOAFZv0q+mKXUPQJW+FdJUQ/NJr/AY5Jn6vuldyd7/qj+mNIz81OmVNWSPhp/k
-         p5S6A/3aIv+Fk97PdAZC/90R+fYZJBk1JlzFuPIP7lSigB0kuo9A3q4OvNMCD71RdE7w
-         XKZzOl1psVSRV8lX+w1p/iInuFnPWAn/oVir0iX6kzn13AfkBIwlc3PPLL7Dbq9FtM1N
-         Tcpg==
-X-Gm-Message-State: ACrzQf1mJPFCmtAerg0F4P+nzxVQsJkj+C/zOyQCEi6aY/AzMPXh1Xpo
-        yGx8OSXlzZH+UgqZozI8uxaRYhTgfNeayQ==
-X-Google-Smtp-Source: AMsMyM5ZklHeMyBWI3yWOTblKLOS4pXK0IBkJMdaMVM+nDTVDu0IbRZTuNPmLx4LvcF0+t1m3oeZew==
-X-Received: by 2002:a5d:52d0:0:b0:21e:4923:fa09 with SMTP id r16-20020a5d52d0000000b0021e4923fa09mr3910348wrv.244.1665160106664;
-        Fri, 07 Oct 2022 09:28:26 -0700 (PDT)
-Received: from imac.redhat.com ([88.97.103.74])
-        by smtp.gmail.com with ESMTPSA id i9-20020a5d5229000000b0022cd59331b2sm2487855wra.95.2022.10.07.09.28.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Oct 2022 09:28:25 -0700 (PDT)
-From:   Donald Hunter <donald.hunter@gmail.com>
-To:     bpf@vger.kernel.org, linux-doc@vger.kernel.org
-Cc:     dave@dtucker.co.uk, Donald Hunter <donald.hunter@gmail.com>
-Subject: [PATCH bpf-next v7 1/1] bpf, docs: document BPF_MAP_TYPE_ARRAY
-Date:   Fri,  7 Oct 2022 17:27:55 +0100
-Message-Id: <20221007162755.36677-2-donald.hunter@gmail.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20221007162755.36677-1-donald.hunter@gmail.com>
-References: <20221007162755.36677-1-donald.hunter@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=0SwSXBOZLNXgxybJupLrSAsWslZ/euPFEl5fUnw53Zs=;
+        b=ifoUVUwzwAHZKCjqwIv5/OzJxEz3CAbWRQAr3EQZpjCzlMQ00Q4uUEqwGUOhpdbfmP
+         oII/XzrLFTv00fHkopKh0ns3vclmq3Z5/YeX5TFkBxmoJ7c3ivE5nMnBKEKp5wtI8PB0
+         C+xadxF+dZ406jrbzg9pG1Mu24Ll60N2u3VAI5U9wmkq3PH3z9RlkBmjDBqqi0dmwxQI
+         ny+HGvxc+tAs0VDVLa3WQ/xsW05LGJ72mYJt9g/AAXKbhEcNKodiGHgiH4dzvOuNl81s
+         5wC6JjeVUdModevuNhvhLd6m40152mWm1o/jL26Fr31kJHXiT4u8fd4h2cSWFcs1LkHf
+         ZBbg==
+X-Gm-Message-State: ACrzQf3Jopn5gVM6G8GhC7dMRzjaPHPTebGgBkSru/0Aj2ayRgEyzVGw
+        rOXioVmGhQ8ocDUZPJWcqqvTKV0=
+X-Google-Smtp-Source: AMsMyM55+vVoL+vE7TLRlODg0+T5ANr/WVyoKucHuqsD8f9WjOwR141i7Cxgdo+mFMAHQulPhJBDyb0=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a17:90b:1b06:b0:20a:6d32:b05e with SMTP id
+ nu6-20020a17090b1b0600b0020a6d32b05emr17176396pjb.103.1665161734811; Fri, 07
+ Oct 2022 09:55:34 -0700 (PDT)
+Date:   Fri, 7 Oct 2022 09:55:33 -0700
+In-Reply-To: <875ygvemau.fsf@toke.dk>
+Mime-Version: 1.0
+References: <20221004231143.19190-1-daniel@iogearbox.net> <20221004231143.19190-2-daniel@iogearbox.net>
+ <20221006050053.pbwo72xtzoza6gfl@macbook-pro-4.dhcp.thefacebook.com>
+ <f355eeba-1b46-749f-c102-65074e7eac27@iogearbox.net> <CAADnVQ+gEY3FjCR=+DmjDR4gp5bOYZUFJQXj4agKFHT9CQPZBw@mail.gmail.com>
+ <14f368eb-9158-68bc-956c-c8371cfcb531@iogearbox.net> <875ygvemau.fsf@toke.dk>
+Message-ID: <Y0BaBUWeTj18V5Xp@google.com>
+Subject: Re: [PATCH bpf-next 01/10] bpf: Add initial fd-based API to attach tc
+ BPF programs
+From:   sdf@google.com
+To:     "Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?=" <toke@redhat.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf <bpf@vger.kernel.org>,
+        Nikolay Aleksandrov <razor@blackwall.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Joanne Koong <joannelkoong@gmail.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Joe Stringer <joe@cilium.io>,
+        Network Development <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,257 +83,137 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Dave Tucker <dave@dtucker.co.uk>
-
-Add documentation for the BPF_MAP_TYPE_ARRAY including kernel version
-introduced, usage and examples. Also document BPF_MAP_TYPE_PERCPU_ARRAY
-which is similar.
-
-Signed-off-by: Dave Tucker <dave@dtucker.co.uk>
-Signed-off-by: Donald Hunter <donald.hunter@gmail.com>
----
- Documentation/bpf/map_array.rst | 232 ++++++++++++++++++++++++++++++++
- 1 file changed, 232 insertions(+)
- create mode 100644 Documentation/bpf/map_array.rst
-
-diff --git a/Documentation/bpf/map_array.rst b/Documentation/bpf/map_array.rst
-new file mode 100644
-index 000000000000..c3c56ffe5334
---- /dev/null
-+++ b/Documentation/bpf/map_array.rst
-@@ -0,0 +1,232 @@
-+.. SPDX-License-Identifier: GPL-2.0-only
-+.. Copyright (C) 2022 Red Hat, Inc.
-+
-+================================================
-+BPF_MAP_TYPE_ARRAY and BPF_MAP_TYPE_PERCPU_ARRAY
-+================================================
-+
-+.. note::
-+   - ``BPF_MAP_TYPE_ARRAY`` was introduced in kernel version 3.19
-+   - ``BPF_MAP_TYPE_PERCPU_ARRAY`` was introduced in version 4.6
-+
-+``BPF_MAP_TYPE_ARRAY`` and ``BPF_MAP_TYPE_PERCPU_ARRAY`` provide generic array
-+storage. The key type is an unsigned 32-bit integer (4 bytes) and the map is
-+of constant size. The size of the array is defined in ``max_entries`` at
-+creation time. All array elements are pre-allocated and zero initialized when
-+created. ``BPF_MAP_TYPE_PERCPU_ARRAY`` uses a different memory region for each
-+CPU whereas ``BPF_MAP_TYPE_ARRAY`` uses the same memory region. The value
-+stored can be of any size, however, small values will be rounded up to 8
-+bytes.
-+
-+Since kernel 5.5, memory mapping may be enabled for ``BPF_MAP_TYPE_ARRAY`` by
-+setting the flag ``BPF_F_MMAPABLE``. The map definition is page-aligned and
-+starts on the first page. Sufficient page-sized and page-aligned blocks of
-+memory are allocated to store all array values, starting on the second page,
-+which in some cases will result in over-allocation of memory. The benefit of
-+using this is increased performance and ease of use since userspace programs
-+would not be required to use helper functions to access and mutate data.
-+
-+Usage
-+=====
-+
-+.. c:function::
-+   void *bpf_map_lookup_elem(struct bpf_map *map, const void *key)
-+
-+Array elements can be retrieved using the ``bpf_map_lookup_elem()`` helper.
-+This helper returns a pointer into the array element, so to avoid data races
-+with userspace reading the value, the user must use primitives like
-+``__sync_fetch_and_add()`` when updating the value in-place. Access from
-+userspace uses the libbpf API of the same name.
-+
-+.. c:function::
-+   long bpf_map_update_elem(struct bpf_map *map, const void *key, const void *value, u64 flags)
-+
-+Array elements can also be added using the ``bpf_map_update_elem()`` helper or
-+libbpf API.
-+
-+``bpf_map_update_elem()`` returns 0 on success, or negative error in case of
-+failure.
-+
-+Since the array is of constant size, ``bpf_map_delete_elem()`` is not supported.
-+To clear an array element, you may use ``bpf_map_update_elem()`` to insert a
-+zero value to that index.
-+
-+Per CPU Array
-+-------------
-+
-+Values stored in ``BPF_MAP_TYPE_ARRAY`` can be accessed by multiple programs
-+across different CPUs. To restrict storage to a single CPU, you may use a
-+``BPF_MAP_TYPE_PERCPU_ARRAY``.
-+
-+When using a ``BPF_MAP_TYPE_PERCPU_ARRAY`` the ``bpf_map_update_elem()`` and
-+``bpf_map_lookup_elem()`` helpers automatically access the hash slot for the
-+current CPU.
-+
-+.. c:function::
-+   void *bpf_map_lookup_percpu_elem(struct bpf_map *map, const void *key, u32 cpu)
-+
-+The ``bpf_map_lookup_percpu_elem()`` helper can be used to lookup the array
-+value for a specific CPU. Returns value on success , or ``NULL`` if no entry was
-+found or ``cpu`` is invalid.
-+
-+Concurrency
-+-----------
-+
-+Since kernel version 5.1, the BPF infrastructure provides ``struct bpf_spin_lock``
-+to synchronize access.
-+
-+Examples
-+========
-+
-+Please see the ``tools/testing/selftests/bpf`` directory for functional
-+examples. The code samples below demonstrate API usage.
-+
-+Kernel BPF
-+----------
-+
-+This snippet shows how to declare an array in a BPF program.
-+
-+.. code-block:: c
-+
-+    struct {
-+            __uint(type, BPF_MAP_TYPE_ARRAY);
-+            __type(key, u32);
-+            __type(value, long);
-+            __uint(max_entries, 256);
-+    } my_map SEC(".maps");
-+
-+
-+This example BPF program shows how to access an array element.
-+
-+.. code-block:: c
-+
-+    int bpf_prog(struct __sk_buff *skb)
-+    {
-+            int index = load_byte(skb,
-+                                  ETH_HLEN + offsetof(struct iphdr, protocol));
-+            long *value;
-+
-+            if (skb->pkt_type != PACKET_OUTGOING)
-+                    return 0;
-+
-+            value = bpf_map_lookup_elem(&my_map, &index);
-+            if (value)
-+                    __sync_fetch_and_add(value, skb->len);
-+
-+            return 0;
-+    }
-+
-+Userspace
-+---------
-+
-+BPF_MAP_TYPE_ARRAY
-+~~~~~~~~~~~~~~~~~~
-+
-+This snippet shows how to create an array, using ``bpf_map_create_opts`` to
-+set flags.
-+
-+.. code-block:: c
-+
-+    #include <bpf/libbpf.h>
-+    #include <bpf/bpf.h>
-+
-+    int create_array() {
-+            int fd;
-+            LIBBPF_OPTS(bpf_map_create_opts, opts, .map_flags = BPF_F_MMAPABLE);
-+            fd = bpf_map_create(BPF_MAP_TYPE_ARRAY,
-+                                "example_array",       /* name */
-+                                sizeof(__u32),         /* key size */
-+                                sizeof(long),          /* value size */
-+                                256,                   /* max entries */
-+                                &opts);                /* create opts */
-+            return fd;
-+    }
-+
-+This snippet shows how to initialize the elements of an array.
-+
-+.. code-block:: c
-+
-+    int initialize_array(int fd) {
-+            __u32 i;
-+            long value;
-+            int ret;
-+
-+            for (i = 0; i < 256; i++) {
-+                    value = i;
-+                    ret = bpf_map_update_elem(fd, &i, &value, BPF_ANY);
-+                    if (ret < 0)
-+                            return ret;
-+            }
-+
-+            return ret;
-+    }
-+
-+This snippet shows how to retrieve an element value from an array.
-+
-+.. code-block:: c
-+
-+    int lookup(int fd) {
-+            __u32 index = 42;
-+            long value;
-+            int ret = bpf_map_lookup_elem(fd, &index, &value);
-+            if (ret < 0)
-+                    return ret;
-+
-+            /* use value here */
-+            assert(value == 42);
-+
-+            return ret;
-+    }
-+
-+BPF_MAP_TYPE_PERCPU_ARRAY
-+~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+This snippet shows how to initialize the elements of a per CPU array.
-+
-+.. code-block:: c
-+
-+    int initialize_array(int fd) {
-+            int ncpus = libbpf_num_possible_cpus();
-+            long values[ncpus];
-+            __u32 i, j;
-+            int ret;
-+
-+            for (i = 0; i < 256 ; i++) {
-+                    for (j = 0; j < ncpus; j++)
-+                            values[j] = i;
-+                    ret = bpf_map_update_elem(fd, &i, &values, BPF_ANY);
-+                    if (ret < 0)
-+                            return ret;
-+            }
-+
-+            return ret;
-+    }
-+
-+This snippet shows how to access the per CPU elements of an array value.
-+
-+.. code-block:: c
-+
-+    int lookup(int fd) {
-+            int ncpus = libbpf_num_possible_cpus();
-+            __u32 index = 42, j;
-+            long values[ncpus];
-+            int ret = bpf_map_lookup_elem(fd, &index, &values);
-+            if (ret < 0)
-+                    return ret;
-+
-+            for (j = 0; j < ncpus; j++) {
-+                    /* Use per CPU value here */
-+                    assert(values[j] == 42);
-+            }
-+
-+            return ret;
-+    }
-+
-+Semantics
-+=========
-+
-+As shown in the example above, when accessing a ``BPF_MAP_TYPE_PERCPU_ARRAY``
-+in userspace, each value is an array with ``ncpus`` elements.
-+
-+When calling ``bpf_map_update_elem()`` the flag ``BPF_NOEXIST`` can not be used
-+for these maps.
--- 
-2.35.1
-
+T24gMTAvMDcsIFRva2UgSO+/vWlsYW5kLUrvv71yZ2Vuc2VuIHdyb3RlOg0KPiBEYW5pZWwgQm9y
+a21hbm4gPGRhbmllbEBpb2dlYXJib3gubmV0PiB3cml0ZXM6DQoNCj4gPiBPbiAxMC83LzIyIDE6
+MjggQU0sIEFsZXhlaSBTdGFyb3ZvaXRvdiB3cm90ZToNCj4gPj4gT24gVGh1LCBPY3QgNiwgMjAy
+MiBhdCAyOjI5IFBNIERhbmllbCBCb3JrbWFubiA8ZGFuaWVsQGlvZ2VhcmJveC5uZXQ+ICANCj4g
+d3JvdGU6DQo+ID4+PiBPbiAxMC82LzIyIDc6MDAgQU0sIEFsZXhlaSBTdGFyb3ZvaXRvdiB3cm90
+ZToNCj4gPj4+PiBPbiBXZWQsIE9jdCAwNSwgMjAyMiBhdCAwMToxMTozNEFNICswMjAwLCBEYW5p
+ZWwgQm9ya21hbm4gd3JvdGU6DQo+ID4+PiBbLi4uXQ0KPiA+Pj4+DQo+ID4+Pj4gSSBjYW5ub3Qg
+aGVscCBidXQgZmVlbCB0aGF0IHByaW8gbG9naWMgY29weS1wYXN0ZSBmcm9tIG9sZCB0YywgIA0K
+PiBuZXRmaWx0ZXIgYW5kIGZyaWVuZHMNCj4gPj4+PiBpcyBkb25lIGJlY2F1c2UgInRoYXQncyBo
+b3cgdGhpbmdzIHdlcmUgZG9uZSBpbiB0aGUgcGFzdCIuDQo+ID4+Pj4gaW1vIGl0IHdhcyBhIHdl
+bGwgaW50ZW50aW9uZWQgbWlzdGFrZSBhbmQgYWxsIG5ldHdvcmtpbmcgdGhpbmdzICh0YywgIA0K
+PiBuZXRmaWx0ZXIsIGV0YykNCj4gPj4+PiBjb3B5LXBhc3RlZCB0aGF0IGN1bWJlcnNvbWUgYW5k
+IGhhcmQgdG8gdXNlIGNvbmNlcHQuDQo+ID4+Pj4gTGV0J3MgdGhyb3cgYXdheSB0aGF0IGJhZ2dh
+Z2U/DQo+ID4+Pj4gSW4gZ29vZCBzZXQgb2YgY2FzZXMgdGhlIGJwZiBwcm9nIGluc2VydGVyIGNh
+cmVzIHdoZXRoZXIgdGhlIHByb2cgaXMgIA0KPiBmaXJzdCBvciBub3QuDQo+ID4+Pj4gU2luY2Ug
+dGhlIGZpcnN0IHByb2cgcmV0dXJuaW5nIGFueXRoaW5nIGJ1dCBUQ19ORVhUIHdpbGwgYmUgZmlu
+YWwuDQo+ID4+Pj4gSSB0aGluayBwcm9nIGluc2VydGlvbiBmbGFnczogJ0kgd2FudCB0byBydW4g
+Zmlyc3QnIHZzICdJIGRvbid0IGNhcmUgIA0KPiBhYm91dCBvcmRlcicNCj4gPj4+PiBpcyBnb29k
+IGVub3VnaCBpbiBwcmFjdGljZS4gQW55IGNvbXBsZXggc2NoZW1lIHNob3VsZCBwcm9iYWJseSBi
+ZSAgDQo+IHByb2dyYW1tYWJsZQ0KPiA+Pj4+IGFzIGFueSBwb2xpY3kgc2hvdWxkLiBGb3IgZXhh
+bXBsZSBpbiBNZXRhIHdlIGhhdmUgJ3hkcCBjaGFpbmVyJyAgDQo+IGxvZ2ljIHRoYXQgaXMgc2lt
+aWxhcg0KPiA+Pj4+IHRvIGxpYnhkcCBjaGFpbmluZywgYnV0IHdlIGFkZGVkIGEgZmVhdHVyZSB0
+aGF0IGFsbG93cyBhIHByb2cgdG8gIA0KPiBqdW1wIG92ZXIgYW5vdGhlcg0KPiA+Pj4+IHByb2cg
+YW5kIGNvbnRpbnVlIHRoZSBjaGFpbi4gUHJpb3JpdHkgY29uY2VwdCBjYW5ub3QgZXhwcmVzcyB0
+aGF0Lg0KPiA+Pj4+IFNpbmNlIHdlJ2QgaGF2ZSB0byBhZGQgc29tZSAicG9saWN5IHByb2dyYW0i
+IGFueXdheSBmb3IgdXNlIGNhc2VzICANCj4gbGlrZSB0aGlzDQo+ID4+Pj4gbGV0J3Mga2VlcCB0
+aGluZ3MgYXMgc2ltcGxlIGFzIHBvc3NpYmxlPw0KPiA+Pj4+IFRoZW4gbWF5YmUgd2UgY2FuIGFk
+b3B0IHRoaXMgImFzLXNpbXBsZS1hcy1wb3NzaWJsZSIgdG8gWERQIGhvb2tzID8NCj4gPj4+PiBB
+bmQgYWxsb3cgYnBmIHByb2dzIGNoYWluaW5nIGluIHRoZSBrZXJuZWwgd2l0aCAicnVuX21lX2Zp
+cnN0IiAgDQo+IHZzICJydW5fbWVfYW55d2hlcmUiDQo+ID4+Pj4gaW4gYm90aCB0Y3ggYW5kIHhk
+cCA/DQo+ID4+Pj4gTmF0dXJhbGx5ICJydW5fbWVfZmlyc3QiIHByb2cgd2lsbCBiZSB0aGUgb25s
+eSBvbmUuIE5vIG5lZWQgZm9yICANCj4gRl9SRVBMQUNFIGZsYWdzLCBldGMuDQo+ID4+Pj4gVGhl
+IG93bmVyIG9mICJydW5fbWVfZmlyc3QiIHdpbGwgdXBkYXRlIGl0cyBwcm9nIHRocm91Z2ggIA0K
+PiBicGZfbGlua191cGRhdGUuDQo+ID4+Pj4gInJ1bl9tZV9hbnl3aGVyZSIgd2lsbCBhZGQgdG8g
+dGhlIGVuZCBvZiB0aGUgY2hhaW4uDQo+ID4+Pj4gSW4gWERQIGZvciBjb21wYXRpYmlsaXR5IHJl
+YXNvbnMgInJ1bl9tZV9maXJzdCIgd2lsbCBiZSB0aGUgZGVmYXVsdC4NCj4gPj4+PiBTaW5jZSBv
+bmx5IG9uZSBwcm9nIGNhbiBiZSBlbnF1ZXVlZCB3aXRoIHN1Y2ggZmxhZyBpdCB3aWxsIG1hdGNo
+ICANCj4gZXhpc3Rpbmcgc2luZ2xlIHByb2cgYmVoYXZpb3IuDQo+ID4+Pj4gV2VsbCBiZWhhdmlu
+ZyBwcm9ncyB3aWxsIHVzZSAobGlrZSB4ZHAtdGNwZHVtcCBvciBtb25pdG9yaW5nIHByb2dzKSAg
+DQo+IHdpbGwgdXNlICJydW5fbWVfYW55d2hlcmUiLg0KPiA+Pj4+IEkga25vdyBpdCdzIGZhciBm
+cm9tIGNvdmVyaW5nIHBsZW50eSBvZiBjYXNlcyB0aGF0IHdlJ3ZlIGRpc2N1c3NlZCAgDQo+IGZv
+ciBsb25nIHRpbWUsDQo+ID4+Pj4gYnV0IHByaW8gY29uY2VwdCBpc24ndCByZWFsbHkgY292ZXJp
+bmcgdGhlbSBlaXRoZXIuDQo+ID4+Pj4gV2UndmUgc3RydWdnbGVkIGVub3VnaCB3aXRoIHNpbmds
+ZSB4ZHAgcHJvZywgc28gY2VydGFpbmx5IG5vdCAgDQo+IGFkdm9jYXRpbmcgZm9yIHRoYXQuDQo+
+ID4+Pj4gQW5vdGhlciBhbHRlcm5hdGl2ZSBpcyB0byBkbzogInF1ZXVlX2F0X2hlYWQiIHZzICJx
+dWV1ZV9hdF90YWlsIi4gIA0KPiBKdXN0IGFzIHNpbXBsZS4NCj4gPj4+PiBCb3RoIHNpbXBsZSB2
+ZXJzaW9ucyBoYXZlIHRoZWlyIHByb3MgYW5kIGNvbnMgYW5kIGRvbid0IGNvdmVyICANCj4gZXZl
+cnl0aGluZywNCj4gPj4+PiBidXQgaW1vIGJvdGggYXJlIGJldHRlciB0aGFuIHByaW8uDQo+ID4+
+Pg0KPiA+Pj4gWWVhaCwgaXQncyBraW5kIG9mIHRyaWNreSwgaW1oby4gVGhlICdydW5fbWVfZmly
+c3QnICANCj4gdnMgJ3J1bl9tZV9hbnl3aGVyZScgYXJlIHR3bw0KPiA+Pj4gdXNlIGNhc2VzIHRo
+YXQgc2hvdWxkIGJlIGNvdmVyZWQgKGFuZCBhY3R1YWxseSB3ZSBraW5kIG9mIGRvIHRoaXMgaW4g
+IA0KPiB0aGlzIHNldCwgdG9vLA0KPiA+Pj4gd2l0aCB0aGUgcHJpb3MgdmlhIHByaW89eCB2cyBw
+cmlvPTApLiBHaXZlbiB1c2VycyB3aWxsIG9ubHkgYmUgIA0KPiBjb25zdW1pbmcgdGhlIEFQSXMN
+Cj4gPj4+IHZpYSBsaWJzIGxpa2UgbGliYnBmLCB0aGlzIGNhbiBhbHNvIGJlIGFic3RyYWN0ZWQg
+dGhpcyB3YXkgdy9vIHVzZXJzICANCj4gaGF2aW5nIHRvIGJlDQo+ID4+PiBhd2FyZSBvZiBwcmlv
+cy4NCj4gPj4NCj4gPj4gYnV0IHRoZSBwYXRjaHNldCB0ZWxscyBkaWZmZXJlbnQgc3RvcnkuDQo+
+ID4+IFByaW8gZ2V0cyBleHBvc2VkIGV2ZXJ5d2hlcmUgaW4gdWFwaSBhbGwgdGhlIHdheSB0byBi
+cGZ0b29sDQo+ID4+IHdoZW4gaXQncyByaWdodCB0aGVyZSBmb3IgdXNlcnMgdG8gdW5kZXJzdGFu
+ZC4NCj4gPj4gQW5kIHRoYXQncyB0aGUgbWFpbiBwcm9ibGVtIHdpdGggaXQuDQo+ID4+IFRoZSB1
+c2VyIGRvbid0IHdhbnQgdG8gYW5kIGRvbid0IG5lZWQgdG8gYmUgYXdhcmUgb2YgaXQsDQo+ID4+
+IGJ1dCB1YXBpIGZvcmNlcyB0aGVtIHRvIHBpY2sgdGhlIHByaW9yaXR5Lg0KPiA+Pg0KPiA+Pj4g
+QW55d2F5LCB3aGVyZSBpdCBnZXRzIHRyaWNreSB3b3VsZCBiZSB3aGVuIHRoaW5ncyBkZXBlbmQg
+b24gb3JkZXJpbmcsDQo+ID4+PiBlLmcuIHlvdSBoYXZlIEJQRiBwcm9ncyBkb2luZzogcG9saWN5
+LCBtb25pdG9yaW5nLCBsYiwgbW9uaXRvcmluZywgIA0KPiBlbmNyeXB0aW9uLCB3aGljaA0KPiA+
+Pj4gd291bGQgYmUgc3RoIHlvdSBjYW4gYnVpbGQgdG9kYXkgdmlhIHRjIEJQRjogc28gcG9saWN5
+IG9uZSBhY3RzIGFzIGEgIA0KPiBwcmVmaWx0ZXIgZm9yDQo+ID4+PiB2YXJpb3VzIGNpZHIgcmFu
+Z2VzIHRoYXQgc2hvdWxkIGJlIGJsb2NrZWQgbm8gbWF0dGVyIHdoYXQsIHRoZW4gIA0KPiBtb25p
+dG9yaW5nIHRvIHNhbXBsZQ0KPiA+Pj4gd2hhdCBnb2VzIGludG8gdGhlIGxiLCB0aGVuIGxiIGl0
+c2VsZiB3aGljaCBkb2VzIHNuYXQvZG5hdCwgdGhlbiAgDQo+IG1vbml0b3JpbmcgdG8gc2VlIHdo
+YXQNCj4gPj4+IHRoZSBjb3JyZXNwb25kaW5nIHBrdCBsb29rcyB0aGF0IGdvZXMgdG8gYmFja2Vu
+ZCwgYW5kIG1heWJlICANCj4gZW5jcnlwdGlvbiB0byBlLmcuIHNlbmQNCj4gPj4+IHRoZSByZXN1
+bHQgdG8gd2lyZWd1YXJkIGRldiwgc28gaXQncyBlbmNyeXB0ZWQgZnJvbSBsYiBub2RlIHRvICAN
+Cj4gYmFja2VuZC4NCj4gPj4NCj4gPj4gVGhhdCdzIGFsbCB0aGVvcnkuIFlvdXIgY292ZXIgbGV0
+dGVyIGV4YW1wbGUgcHJvdmVzIHRoYXQgaW4NCj4gPj4gcmVhbCBsaWZlIGRpZmZlcmVudCBzZXJ2
+aWNlIHBpY2sgdGhlIHNhbWUgcHJpb3JpdHkuDQo+ID4+IFRoZXkgc2ltcGx5IGRvbid0IGtub3cg
+YW55IGJldHRlci4NCj4gPj4gcHJpbyBpcyBhbiB1bm5lY2Vzc2FyeSBtYWdpYyB0aGF0IGFwcHMg
+X2hhdmVfIHRvIHBpY2ssDQo+ID4+IHNvIHRoZXkganVzdCBjb3B5LXBhc3RlIGFuZCBldmVyeW9u
+ZSBlbmRzIHVwIHVzaW5nIHRoZSBzYW1lLg0KPiA+Pg0KPiA+Pj4gRm9yIHN1Y2gNCj4gPj4+IGV4
+YW1wbGUsIHlvdSdkIG5lZWQgcHJpb3MgYXMgdGhlICdydW5fbWVfYW55d2hlcmUnIGRvZXNuJ3Qg
+Z3VhcmFudGVlICANCj4gb3JkZXIsIHNvIHRoZXJlJ3MNCj4gPj4+IGEgY2FzZSBmb3IgYm90aCBz
+Y2VuYXJpb3MgKGNvbmNyZXRlIGxheW91dCB2cyBsb29zZSBvbmUpLCBhbmQgZm9yICANCj4gbGF0
+dGVyIHdlIGNvdWxkDQo+ID4+PiBzdGFydCBvZmYgd2l0aCBhbmQgaW50ZXJuYWwgcHJpbyBhcm91
+bmQgeCAoZS5nLiAxNmspLCBzbyB0aGVyZSdzIHJvb20gIA0KPiB0byBhdHRhY2ggaW4NCj4gPj4+
+IGZyb250IHZpYSBmaXhlZCBwcmlvLCBidXQgYWxzbyBhcHBlbmQgdG8gZW5kIGZvciAnZG9uJ3Qg
+Y2FyZScsIGFuZCAgDQo+IHRoYXQgY291bGQgYmUNCj4gPj4+IGZyb20gbGliIHBvdiB0aGUgZGVm
+YXVsdC9tYWluIEFQSSB3aGVyZWFzIHByaW8gd291bGQgYmUgc29tZSBraW5kIG9mICANCj4gZXh0
+ZW5kZWQgb25lLg0KPiA+Pj4gVGhvdWdodHM/DQo+ID4+DQo+ID4+IElmIHByaW8gd2FzIG5vdCBw
+YXJ0IG9mIHVhcGksIGxpa2Uga2VybmVsIGludGVybmFsIHNvbWVob3csDQo+ID4+IGFuZCB0aGVy
+ZSB3YXMgYSB1c2VyIHNwYWNlIGRhZW1vbiwgc3lzdGVtZCwgb3IgYW5vdGhlciBicGYgcHJvZywN
+Cj4gPj4gbW9kdWxlLCB3aGF0ZXZlciB0aGF0IHVzZXJzIHdvdWxkIGludGVyZmFjZSB0byB0aGVu
+DQo+ID4+IHRoZSBwcm9wb3NlZCBpbXBsZW1lbnRhdGlvbiBvZiBwcmlvIHdvdWxkIHRvdGFsbHkg
+bWFrZSBzZW5zZS4NCj4gPj4gcHJpbyBhcyB1YXBpIGlzIG5vdCB0aGF0Lg0KPiA+DQo+ID4gQSBn
+b29kIGFuYWxvZ3kgdG8gdGhpcyBpc3N1ZSBtaWdodCBiZSBzeXN0ZW1kJ3MgdW5pdCBmaWxlcy4u
+IHlvdSAgDQo+IHNwZWNpZnkgZGVwZW5kZW5jaWVzDQo+ID4gZm9yIHlvdXIgb3duIDx1bml0PiBm
+aWxlIHZpYSAnV2FudHM9PHVuaXRBPicsIGFuZCBvcmRlcmluZyAgDQo+IHZpYSAnQmVmb3JlPTx1
+bml0Qj4nIGFuZA0KPiA+ICdBZnRlcj08dW5pdEM+JyBhbmQgdGhleSByZWZlciB0byBvdGhlciB1
+bml0IGZpbGVzLiBJIHRoaW5rIHRoYXQgaXMgIA0KPiBnZW5lcmFsbHkgb2theSwNCj4gPiB5b3Ug
+ZG9uJ3QgZGVhbCB3aXRoIHByaW8gbnVtYmVycywgYnV0IHJhdGhlciBzb21lIGtpbmQgdGV4dHVh
+bCAgDQo+IHJlcHJlc2VudGF0aW9uLiBIb3dldmVyDQo+ID4gdXNlci9vcGVyYXRvciB3aWxsIGhh
+dmUgdG8gZGVhbCB3aXRoIGRlcGVuZGVuY2llcy9vcmRlcmluZyBvbmUgd2F5IG9yICANCj4gYW5v
+dGhlciwgdGhlDQo+ID4gcHJvYmxlbSBoZXJlIGlzIHRoYXQgd2UgZGVhbCB3aXRoIGtlcm5lbCBh
+bmQgbG9hZGVyIHRhbGtzIHRvIGtlcm5lbCAgDQo+IGRpcmVjdGx5IHNvIGl0DQo+ID4gaGFzIG5v
+IGF3YXJlbmVzcyBvZiB3aGF0IGVsc2UgaXMgcnVubmluZyBvciBjb3VsZCBiZSBydW5uaW5nLCBz
+byBhcHBzICANCj4gbmVlZHMgdG8gZGVhbA0KPiA+IHdpdGggaXQgc29tZWhvdyAoYW5kIGl0IGNh
+bm5vdCB3aXRob3V0IGV4dGVybmFsIGhlbHApLg0KDQo+IEkgd2FzIHRoaW5raW5nIGEgbGl0dGxl
+IGFib3V0IGhvdyB0aGlzIG1pZ2h0IHdvcms7IGkuZS4sIGhvdyBjYW4gdGhlDQo+IGtlcm5lbCBl
+eHBvc2UgdGhlIHJlcXVpcmVkIGtub2JzIHRvIGFsbG93IGEgc3lzdGVtIHBvbGljeSB0byBiZQ0K
+PiBpbXBsZW1lbnRlZCB3aXRob3V0IHByb2dyYW0gbG9hZGluZyBoYXZpbmcgdG8gdGFsayB0byBh
+bnl0aGluZyBvdGhlcg0KPiB0aGFuIHRoZSBzeXNjYWxsIEFQST8NCg0KPiBIb3cgYWJvdXQgd2Ug
+b25seSBleHBvc2UgcHJlcGVuZC9hcHBlbmQgaW4gdGhlIHByb2cgYXR0YWNoIFVBUEksIGFuZA0K
+PiB0aGVuIGhhdmUgYSBrZXJuZWwgZnVuY3Rpb24gdGhhdCBkb2VzIHRoZSBzb3J0aW5nIGxpa2U6
+DQoNCj4gaW50IGJwZl9hZGRfbmV3X3RjeF9wcm9nKHN0cnVjdCBicGZfcHJvZyAqcHJvZ3MsIHNp
+emVfdCBudW1fcHJvZ3MsIHN0cnVjdCAgDQo+IGJwZl9wcm9nICpuZXdfcHJvZywgYm9vbCBhcHBl
+bmQpDQoNCj4gd2hlcmUgdGhlIGRlZmF1bHQgaW1wbGVtZW50YXRpb24ganVzdCBhcHBlbmRzL3By
+ZXBlbmRzIHRvIHRoZSBhcnJheSBpbg0KPiBwcm9ncyBkZXBlbmRpbmcgb24gdGhlIHZhbHVlIG9m
+ICdhcHBlbicuDQoNCj4gQW5kIHRoZW4gdXNlIHRoZSBfX3dlYWsgbGlua2luZyB0cmljayAob3Ig
+bWF5YmUgc3RydWN0X29wcyB3aXRoIGEgbWVtYmVyDQo+IGZvciBUWEMsIGFub3RoZXIgZm9yIFhE
+UCwgZXRjPykgdG8gYWxsb3cgQlBGIHRvIG92ZXJyaWRlIHRoZSBmdW5jdGlvbg0KPiB3aG9sZXNh
+bGUgYW5kIGltcGxlbWVudCB3aGF0ZXZlciBvcmRlcmluZyBpdCB3YW50cz8gSS5lLiwgYWxsb3cg
+aXQgY2FuDQo+IHRvIGp1c3Qgc2hpZnQgYXJvdW5kIHRoZSBvcmRlciBvZiBwcm9ncyBpbiB0aGUg
+J3Byb2dzJyBhcnJheSB3aGVuZXZlciBhDQo+IHByb2dyYW0gaXMgbG9hZGVkL3VubG9hZGVkPw0K
+DQo+IFRoaXMgd2F5LCBhIHVzZXJzcGFjZSBkYWVtb24gY2FuIGltcGxlbWVudCBhbnkgcG9saWN5
+IGl0IHdhbnRzIGJ5IGp1c3QNCj4gYXR0YWNoaW5nIHRvIHRoYXQgaG9vaywgYW5kIGtlZXBpbmcg
+dGhpbmdzIGxpa2UgaG93IHRvIGV4cHJlc3MNCj4gZGVwZW5kZW5jaWVzIGFzIGEgdXNlcnNwYWNl
+IGNvbmNlcm4/DQoNCldoYXQgaWYgd2UgZG8gdGhlIGFib3ZlLCBidXQgaW5zdGVhZCBvZiBzaW1w
+bGUgZ2xvYmFsICdhdHRhY2ggZmlyc3QvbGFzdCcsDQp0aGUgZGVmYXVsdCBhcGkgd291bGQgYmU6
+DQoNCi0gYXR0YWNoIGJlZm9yZSA8dGFyZ2V0X2ZkPg0KLSBhdHRhY2ggYWZ0ZXIgPHRhcmdldF9m
+ZD4NCi0gYXR0YWNoIGJlZm9yZSB0YXJnZXRfZmQ9LTEgPT0gZmlyc3QNCi0gYXR0YWNoIGFmdGVy
+IHRhcmdldF9mZD0tMSA9PSBsYXN0DQoNCj8NCg0KVGhhdCBtaWdodCBiZSBmbGV4aWJsZSBlbm91
+Z2ggYnkgZGVmYXVsdCB0byBhbGxvdyB1c2VycyB0bw0KYXBwZW5kL3ByZXBlbmQgdG8gYW55IGV4
+aXN0aW5nIHByb2dyYW0gaW4gdGhlIGNoYWluIChzYXksIGZvcg0KbW9uaXRvcmluZykuIEZsZXhp
+YmxlIGVub3VnaCBmb3Igc29tZSBjZW50cmFsIGRhZW1vbnMgdG8gZG8NCnN5c3RlbWQtc3R5bGUg
+cG9saWN5LiBBbmQsIHdpdGggYnBmX2FkZF9uZXdfdGN4X3Byb2csIGZsZXhpYmxlDQplbm91Z2gg
+dG8gaW1wbGVtZW50IGFueSBwb2xpY3k/DQo=
