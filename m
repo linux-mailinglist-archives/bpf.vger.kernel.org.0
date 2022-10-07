@@ -2,205 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E7855F79B4
-	for <lists+bpf@lfdr.de>; Fri,  7 Oct 2022 16:33:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38C485F7A02
+	for <lists+bpf@lfdr.de>; Fri,  7 Oct 2022 16:54:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229482AbiJGOdF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 Oct 2022 10:33:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44524 "EHLO
+        id S229864AbiJGOyd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 Oct 2022 10:54:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbiJGOdE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 Oct 2022 10:33:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 854C91204F2
-        for <bpf@vger.kernel.org>; Fri,  7 Oct 2022 07:33:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1665153182;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dpyGKzQ4djygt/FjTKUqOv/R5LP+sgmTctNH9D/8PMw=;
-        b=CLFwx48JPaI5CT96BmbpnXgcthTJStvznyxaEZrZqjp9hqPdrK/RHfxJsWBnQpf6Y66Sti
-        uK5zOFiEvpNolzUewno3F/XA0wX6J9yNAFDOzJKpxanDq/yk24zngvamSl3RJFaHt116vI
-        DSAC4ymwNxWPLs+IZTxXUsq/SidPYEo=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-532-MudCYKb8NP6LqpvlUVkGFg-1; Fri, 07 Oct 2022 10:33:01 -0400
-X-MC-Unique: MudCYKb8NP6LqpvlUVkGFg-1
-Received: by mail-ed1-f71.google.com with SMTP id dz21-20020a0564021d5500b004599f697666so3990534edb.18
-        for <bpf@vger.kernel.org>; Fri, 07 Oct 2022 07:33:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dpyGKzQ4djygt/FjTKUqOv/R5LP+sgmTctNH9D/8PMw=;
-        b=3Y8/xoR/al8g80+gmrBVS5WFNAGCDJuZNe5vEBLnDOIaG6ixA9wRo34qdvunopGG7t
-         rfffox/OS9SY8m/K6yGwarliucot1KtogEGUoYNqBpADGU0M3s551G8Skx82jY4uEoap
-         b/AIG9CE/0rOoanXOMSm5Eki5LSeBLRQ8xP9OHWkq1bCycewGe07pqqu99hoOuOqQWdz
-         0cGVPzOI/Z9ebu4uOQUQCvHWtkMqM6GHfhakiMgxlFpCT+KrQEGRWFRKUYho8L1VvAUM
-         HEOKSsDk68096e7WFKLcZ39jtlDJ2GWA8+MQqsgaKXyOnRxNhwstHxQ9uZLO3Tj6bMm8
-         24jg==
-X-Gm-Message-State: ACrzQf3GvawtP3R+wDiLvsunK8ysHPWBRoF2FUgUoo6yz0HfbOOThydh
-        /3aKeTYEz0PC/n+I8v8cnOmkW0HfIENSUyOYE/vGqlGtGdDclhY8V/M6t47nnR14m5mgXHW8J7j
-        +J0Rbb7LBG71L
-X-Received: by 2002:a17:907:7248:b0:78d:1cb2:41ac with SMTP id ds8-20020a170907724800b0078d1cb241acmr4402143ejc.283.1665153179980;
-        Fri, 07 Oct 2022 07:32:59 -0700 (PDT)
-X-Google-Smtp-Source: AMsMyM5sYqCI1WEbWgvHHis0dtP8PDmohalHqLdU03dvkS/1uKY2UTYZRGAkj1JoJCietc85Z/nQ6g==
-X-Received: by 2002:a17:907:7248:b0:78d:1cb2:41ac with SMTP id ds8-20020a170907724800b0078d1cb241acmr4402119ejc.283.1665153179561;
-        Fri, 07 Oct 2022 07:32:59 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id g25-20020a170906539900b0078d3be14d4bsm1368990ejo.11.2022.10.07.07.32.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Oct 2022 07:32:58 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 067FF64EEEE; Fri,  7 Oct 2022 16:32:57 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Nikolay Aleksandrov <razor@blackwall.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Joe Stringer <joe@cilium.io>,
-        Network Development <netdev@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 01/10] bpf: Add initial fd-based API to attach
- tc BPF programs
-In-Reply-To: <14f368eb-9158-68bc-956c-c8371cfcb531@iogearbox.net>
-References: <20221004231143.19190-1-daniel@iogearbox.net>
- <20221004231143.19190-2-daniel@iogearbox.net>
- <20221006050053.pbwo72xtzoza6gfl@macbook-pro-4.dhcp.thefacebook.com>
- <f355eeba-1b46-749f-c102-65074e7eac27@iogearbox.net>
- <CAADnVQ+gEY3FjCR=+DmjDR4gp5bOYZUFJQXj4agKFHT9CQPZBw@mail.gmail.com>
- <14f368eb-9158-68bc-956c-c8371cfcb531@iogearbox.net>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 07 Oct 2022 16:32:57 +0200
-Message-ID: <875ygvemau.fsf@toke.dk>
+        with ESMTP id S229623AbiJGOyc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 Oct 2022 10:54:32 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8959F66847;
+        Fri,  7 Oct 2022 07:54:31 -0700 (PDT)
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1ogok9-0004Ls-Vb; Fri, 07 Oct 2022 16:54:30 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1ogok9-000BJh-PC; Fri, 07 Oct 2022 16:54:29 +0200
+Subject: Re: [PATCH bpf-next v6 1/1] bpf, docs: document BPF_MAP_TYPE_ARRAY
+To:     Jiri Olsa <olsajiri@gmail.com>,
+        Donald Hunter <donald.hunter@gmail.com>
+Cc:     bpf@vger.kernel.org, linux-doc@vger.kernel.org, dave@dtucker.co.uk,
+        Alexei Starovoitov <ast@kernel.org>
+References: <20221005104634.66406-1-donald.hunter@gmail.com>
+ <20221005104634.66406-2-donald.hunter@gmail.com> <Yz69qfI7ZkJPrUt7@krava>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <4b2cc38f-7ea8-56ad-30b3-af91553028ec@iogearbox.net>
+Date:   Fri, 7 Oct 2022 16:54:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <Yz69qfI7ZkJPrUt7@krava>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.6/26682/Fri Oct  7 09:58:07 2022)
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Daniel Borkmann <daniel@iogearbox.net> writes:
+On 10/6/22 1:36 PM, Jiri Olsa wrote:
+> On Wed, Oct 05, 2022 at 11:46:34AM +0100, Donald Hunter wrote:
+>> From: Dave Tucker <dave@dtucker.co.uk>
+>>
+>> Add documentation for the BPF_MAP_TYPE_ARRAY including kernel version
+>> introduced, usage and examples. Also document BPF_MAP_TYPE_PERCPU_ARRAY
+>> which is similar.
+>>
+>> Signed-off-by: Dave Tucker <dave@dtucker.co.uk>
+>> Signed-off-by: Donald Hunter <donald.hunter@gmail.com>
+>> ---
+>>   Documentation/bpf/map_array.rst | 231 ++++++++++++++++++++++++++++++++
+>>   1 file changed, 231 insertions(+)
+>>   create mode 100644 Documentation/bpf/map_array.rst
+>>
+>> diff --git a/Documentation/bpf/map_array.rst b/Documentation/bpf/map_array.rst
+>> new file mode 100644
+>> index 000000000000..9d2da884c41e
+>> --- /dev/null
+>> +++ b/Documentation/bpf/map_array.rst
+>> @@ -0,0 +1,231 @@
+>> +.. SPDX-License-Identifier: GPL-2.0-only
+>> +.. Copyright (C) 2022 Red Hat, Inc.
+>> +
+>> +================================================
+>> +BPF_MAP_TYPE_ARRAY and BPF_MAP_TYPE_PERCPU_ARRAY
+>> +================================================
+>> +
+>> +.. note::
+>> +   - ``BPF_MAP_TYPE_ARRAY`` was introduced in kernel version 3.19
+>> +   - ``BPF_MAP_TYPE_PERCPU_ARRAY`` was introduced in version 4.6
+>> +
+>> +``BPF_MAP_TYPE_ARRAY`` and ``BPF_MAP_TYPE_PERCPU_ARRAY`` provide generic array
+>> +storage. The key type is an unsigned 32-bit integer (4 bytes) and the map is of
+>> +constant size. All array elements are pre-allocated and zero initialized when
+>> +created. ``BPF_MAP_TYPE_PERCPU_ARRAY`` uses a different memory region for each
+>> +CPU whereas ``BPF_MAP_TYPE_ARRAY`` uses the same memory region. The maximum
+>> +size of an array, defined in max_entries, is limited to 2^32. The value stored
+>> +can be of any size, however, small values will be rounded up to 8 bytes.
+> 
+> I recently hit 32k size limit for per-cpu map value.. it seems to be
+> size limit for generic per cpu allocation, but would be great to have
+> it confirmed by somebody who knows mm better ;-)
 
-> On 10/7/22 1:28 AM, Alexei Starovoitov wrote:
->> On Thu, Oct 6, 2022 at 2:29 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->>> On 10/6/22 7:00 AM, Alexei Starovoitov wrote:
->>>> On Wed, Oct 05, 2022 at 01:11:34AM +0200, Daniel Borkmann wrote:
->>> [...]
->>>>
->>>> I cannot help but feel that prio logic copy-paste from old tc, netfilter and friends
->>>> is done because "that's how things were done in the past".
->>>> imo it was a well intentioned mistake and all networking things (tc, netfilter, etc)
->>>> copy-pasted that cumbersome and hard to use concept.
->>>> Let's throw away that baggage?
->>>> In good set of cases the bpf prog inserter cares whether the prog is first or not.
->>>> Since the first prog returning anything but TC_NEXT will be final.
->>>> I think prog insertion flags: 'I want to run first' vs 'I don't care about order'
->>>> is good enough in practice. Any complex scheme should probably be programmable
->>>> as any policy should. For example in Meta we have 'xdp chainer' logic that is similar
->>>> to libxdp chaining, but we added a feature that allows a prog to jump over another
->>>> prog and continue the chain. Priority concept cannot express that.
->>>> Since we'd have to add some "policy program" anyway for use cases like this
->>>> let's keep things as simple as possible?
->>>> Then maybe we can adopt this "as-simple-as-possible" to XDP hooks ?
->>>> And allow bpf progs chaining in the kernel with "run_me_first" vs "run_me_anywhere"
->>>> in both tcx and xdp ?
->>>> Naturally "run_me_first" prog will be the only one. No need for F_REPLACE flags, etc.
->>>> The owner of "run_me_first" will update its prog through bpf_link_update.
->>>> "run_me_anywhere" will add to the end of the chain.
->>>> In XDP for compatibility reasons "run_me_first" will be the default.
->>>> Since only one prog can be enqueued with such flag it will match existing single prog behavior.
->>>> Well behaving progs will use (like xdp-tcpdump or monitoring progs) will use "run_me_anywhere".
->>>> I know it's far from covering plenty of cases that we've discussed for long time,
->>>> but prio concept isn't really covering them either.
->>>> We've struggled enough with single xdp prog, so certainly not advocating for that.
->>>> Another alternative is to do: "queue_at_head" vs "queue_at_tail". Just as simple.
->>>> Both simple versions have their pros and cons and don't cover everything,
->>>> but imo both are better than prio.
->>>
->>> Yeah, it's kind of tricky, imho. The 'run_me_first' vs 'run_me_anywhere' are two
->>> use cases that should be covered (and actually we kind of do this in this set, too,
->>> with the prios via prio=x vs prio=0). Given users will only be consuming the APIs
->>> via libs like libbpf, this can also be abstracted this way w/o users having to be
->>> aware of prios.
->> 
->> but the patchset tells different story.
->> Prio gets exposed everywhere in uapi all the way to bpftool
->> when it's right there for users to understand.
->> And that's the main problem with it.
->> The user don't want to and don't need to be aware of it,
->> but uapi forces them to pick the priority.
->> 
->>> Anyway, where it gets tricky would be when things depend on ordering,
->>> e.g. you have BPF progs doing: policy, monitoring, lb, monitoring, encryption, which
->>> would be sth you can build today via tc BPF: so policy one acts as a prefilter for
->>> various cidr ranges that should be blocked no matter what, then monitoring to sample
->>> what goes into the lb, then lb itself which does snat/dnat, then monitoring to see what
->>> the corresponding pkt looks that goes to backend, and maybe encryption to e.g. send
->>> the result to wireguard dev, so it's encrypted from lb node to backend.
->> 
->> That's all theory. Your cover letter example proves that in
->> real life different service pick the same priority.
->> They simply don't know any better.
->> prio is an unnecessary magic that apps _have_ to pick,
->> so they just copy-paste and everyone ends up using the same.
->> 
->>> For such
->>> example, you'd need prios as the 'run_me_anywhere' doesn't guarantee order, so there's
->>> a case for both scenarios (concrete layout vs loose one), and for latter we could
->>> start off with and internal prio around x (e.g. 16k), so there's room to attach in
->>> front via fixed prio, but also append to end for 'don't care', and that could be
->>> from lib pov the default/main API whereas prio would be some kind of extended one.
->>> Thoughts?
->> 
->> If prio was not part of uapi, like kernel internal somehow,
->> and there was a user space daemon, systemd, or another bpf prog,
->> module, whatever that users would interface to then
->> the proposed implementation of prio would totally make sense.
->> prio as uapi is not that.
->
-> A good analogy to this issue might be systemd's unit files.. you specify dependencies
-> for your own <unit> file via 'Wants=<unitA>', and ordering via 'Before=<unitB>' and
-> 'After=<unitC>' and they refer to other unit files. I think that is generally okay,
-> you don't deal with prio numbers, but rather some kind textual representation. However
-> user/operator will have to deal with dependencies/ordering one way or another, the
-> problem here is that we deal with kernel and loader talks to kernel directly so it
-> has no awareness of what else is running or could be running, so apps needs to deal
-> with it somehow (and it cannot without external help).
-
-I was thinking a little about how this might work; i.e., how can the
-kernel expose the required knobs to allow a system policy to be
-implemented without program loading having to talk to anything other
-than the syscall API?
-
-How about we only expose prepend/append in the prog attach UAPI, and
-then have a kernel function that does the sorting like:
-
-int bpf_add_new_tcx_prog(struct bpf_prog *progs, size_t num_progs, struct bpf_prog *new_prog, bool append)
-
-where the default implementation just appends/prepends to the array in
-progs depending on the value of 'appen'.
-
-And then use the __weak linking trick (or maybe struct_ops with a member
-for TXC, another for XDP, etc?) to allow BPF to override the function
-wholesale and implement whatever ordering it wants? I.e., allow it can
-to just shift around the order of progs in the 'progs' array whenever a
-program is loaded/unloaded?
-
-This way, a userspace daemon can implement any policy it wants by just
-attaching to that hook, and keeping things like how to express
-dependencies as a userspace concern?
-
--Toke
-
+Yes, for percpu the max is PCPU_MIN_UNIT_SIZE which is 32k, see mm/percpu.c +1756.
+In many cases it's implementation specific, so it probably does not make too much
+sense to state limits like 2^32, or at least it should say that its theoretical/uapi
+limit and actual limits may be implementation/config specific.
