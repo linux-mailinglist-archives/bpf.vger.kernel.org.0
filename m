@@ -2,74 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB0495F7AC0
-	for <lists+bpf@lfdr.de>; Fri,  7 Oct 2022 17:43:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 752185F7B2E
+	for <lists+bpf@lfdr.de>; Fri,  7 Oct 2022 18:08:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229791AbiJGPnS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 Oct 2022 11:43:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34240 "EHLO
+        id S229751AbiJGQIv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 Oct 2022 12:08:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229602AbiJGPnR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 Oct 2022 11:43:17 -0400
-Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 183CDD73E8
-        for <bpf@vger.kernel.org>; Fri,  7 Oct 2022 08:43:14 -0700 (PDT)
-Received: by mail-oo1-xc2a.google.com with SMTP id s1-20020a4a81c1000000b0047d5e28cdc0so3730477oog.12
-        for <bpf@vger.kernel.org>; Fri, 07 Oct 2022 08:43:14 -0700 (PDT)
+        with ESMTP id S229704AbiJGQIu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 Oct 2022 12:08:50 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82904114DC9;
+        Fri,  7 Oct 2022 09:08:49 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id j16so7978323wrh.5;
+        Fri, 07 Oct 2022 09:08:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20210112.gappssmtp.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Mozf1uPcQjIidCs+o1oK9uZZ1pk0n9LGediWQVUrKKk=;
-        b=yfonxeDoQSoLXljq7Q6Kh/DpndNLETkhGeSo22PVD1d4Il2TjCdxonzqlVOcodhncW
-         Ur/WEpqD5gav9l8hdcLH3pCNADh5rRK4lgm7BO/a0v6X1Qsgt2bI3yQVUG5ASY08iVnF
-         SBvCxtN7HoIwzBi2u1CR6YcfpWDw6UrfC7h/vZ25QhNb5LSXgQVy3TtZX4yT8ov/9PZz
-         cOTtXsr8ZPl5gDQzpe6N9fcizAtfVeB5d5ATvA8ND8DTo/qgiK6vASecSDaDXJ55EnPF
-         ba3EhSvEC4A4Bcznj4rA9br0Vi4LVjeJeQCtAcbqFZbE6iRN38GLRDI9T0yCAs0A4iCn
-         SgWA==
+        d=gmail.com; s=20210112;
+        h=mime-version:user-agent:references:message-id:date:in-reply-to
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=HDSNhZ4Sfk5K4RF7zJw4ZOJbQhRl9dsVaLFuDO2S9ZI=;
+        b=bxGpn72DZjAT1zrodZHvxysfLGbJVnYR1DwthBl/sqnKJVBCsQ36bEqkGwZYqEIDkR
+         CMf+vlF5Iw3zRC2b04ZkpKhq5kH3mmbgAI/x1Jr/6PoRlFMAaJ7hc9gkj3Nk8FnVEhjJ
+         F0GzK1pqfArUlA6NvGKIdjimBOA/vZGA4wIWBel5jgisjf+zXhYr72OM9SMF1sxN6Np0
+         30FkAvtDwRe1Nov52z3fnU6FaQjV8exL+7EyEpaoH9PiBw3o/bz16bgli3xuFrx44V1N
+         jnaHumfCTImyEmjCfZPQtrU1Q5IFred2c08l6U9Ghgx6YY2fJVjryduz3++oHknU3FU0
+         cTAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Mozf1uPcQjIidCs+o1oK9uZZ1pk0n9LGediWQVUrKKk=;
-        b=upeX4UQ9oLa3xh3RgDXy1BKHT1bYf1hwYP1X2BupGW+Y8JnLuxcKZ9UBjT1sfXTAqY
-         ZiL9c/+MC5dVayT3QXHBtZQdp+XONcylbMbnfvtN+L9sE2q0Ol/tbQuXaRYdvGD4rH+8
-         3KwYegYlo7e1D2Jx4fCqnv/nSp3R4+MiGBBoPGH2F9GOsL2yEYotYAdjbw6DOXBBFUWp
-         EF8138EapOTNRJtLv0MaHQ9CI06DeYRiUJH6WSCRhvGHa6ZBs8VKPLQhjRZdWke69nPU
-         9NQ+4w1oFbNwtJBBw+YIkOt34R1Ba2E1+NDL+Xj6J0Hlxhc3N4dVyddqboyYXKlC6Fmm
-         dOZQ==
-X-Gm-Message-State: ACrzQf0kCMQlxznP12ulCsGumxyJT75BpThyQI6cGdshoUO042d5FB45
-        cbUY3gdwSAWayJ8SXUAfMyqhdsK8+eyXwKsZ/c3gpg==
-X-Google-Smtp-Source: AMsMyM7pAYg0CFNhxWoGp+UiHPlxhNQb0zVdYYoXZebQKrrI8iTf46NQA90kLkfVKpN5AnP/TgRvaJjz+QyutI24hIY=
-X-Received: by 2002:a4a:5e47:0:b0:476:2f9e:b30e with SMTP id
- h68-20020a4a5e47000000b004762f9eb30emr2119887oob.46.1665157393773; Fri, 07
- Oct 2022 08:43:13 -0700 (PDT)
+        h=mime-version:user-agent:references:message-id:date:in-reply-to
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HDSNhZ4Sfk5K4RF7zJw4ZOJbQhRl9dsVaLFuDO2S9ZI=;
+        b=RCHN8AkWu5QPX93XffxStM+88RmvfLrztvSKjgirzUpUlJzTLd1fZ9VYrIiI2NvHSB
+         Zr/syCKhG5ZfGrwRNnmg3bGxXX1WLAosj/IkQy4D/S0MinJohv11Xh1BbSgCNEb6bHB+
+         z2TWa8GAg2Eh5Sh0uTYZZQMURshTumWTelVJomoe+HG4ftW3+0tPzBNkBN56PLl445GX
+         luVxRjbwDKmgWmYDKvuO+yntkjQL0JEJjKTESu8jU1T5F22T+vQcfZuUwRaUJs/FC+kI
+         QvD9gTiymy2BwypZ/jNQQ1zT2upSv8F8VOA3H41pNignGd4y0DOPqKJO7NlwQ3HY90xy
+         oGiw==
+X-Gm-Message-State: ACrzQf3/0QvyMi9FOuPO9UR26a2Urw0EkkFlu/+Hbr9h6XlGHp5ePtZ6
+        pA6GL1PlhisElf9pdsjgDcc=
+X-Google-Smtp-Source: AMsMyM6axC1ZKtHZq9J068r/wXG3/9hqe5RUm+1KFmFgbusyaMgPb5sFsSGHWsvutbOPVzGJ4rRfNA==
+X-Received: by 2002:adf:e310:0:b0:22c:c50f:46c8 with SMTP id b16-20020adfe310000000b0022cc50f46c8mr3748524wrj.231.1665158927953;
+        Fri, 07 Oct 2022 09:08:47 -0700 (PDT)
+Received: from imac ([88.97.103.74])
+        by smtp.gmail.com with ESMTPSA id i9-20020a5d5229000000b0022cd59331b2sm2449297wra.95.2022.10.07.09.08.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 Oct 2022 09:08:47 -0700 (PDT)
+From:   Donald Hunter <donald.hunter@gmail.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Jiri Olsa <olsajiri@gmail.com>, bpf@vger.kernel.org,
+        linux-doc@vger.kernel.org, dave@dtucker.co.uk,
+        Alexei Starovoitov <ast@kernel.org>
+Subject: Re: [PATCH bpf-next v6 1/1] bpf, docs: document BPF_MAP_TYPE_ARRAY
+In-Reply-To: <4b2cc38f-7ea8-56ad-30b3-af91553028ec@iogearbox.net> (Daniel
+        Borkmann's message of "Fri, 7 Oct 2022 16:54:29 +0200")
+Date:   Fri, 07 Oct 2022 17:07:53 +0100
+Message-ID: <m2fsfzborq.fsf@gmail.com>
+References: <20221005104634.66406-1-donald.hunter@gmail.com>
+        <20221005104634.66406-2-donald.hunter@gmail.com>
+        <Yz69qfI7ZkJPrUt7@krava>
+        <4b2cc38f-7ea8-56ad-30b3-af91553028ec@iogearbox.net>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (darwin)
 MIME-Version: 1.0
-References: <20221004231143.19190-1-daniel@iogearbox.net> <20221004231143.19190-2-daniel@iogearbox.net>
- <20221006050053.pbwo72xtzoza6gfl@macbook-pro-4.dhcp.thefacebook.com>
- <CAM0EoMnJzP6kbr94utjDT1X=e9G21-uu=Cbqhx2XLfqXE+HDwA@mail.gmail.com> <CAADnVQK2tWmZW0=y89mv-r9kO4U2H=azWmbr7g1yqLhU1aX3SQ@mail.gmail.com>
-In-Reply-To: <CAADnVQK2tWmZW0=y89mv-r9kO4U2H=azWmbr7g1yqLhU1aX3SQ@mail.gmail.com>
-From:   Jamal Hadi Salim <jhs@mojatatu.com>
-Date:   Fri, 7 Oct 2022 11:43:02 -0400
-Message-ID: <CAM0EoMnfnp5ULiHU-E769yg8Gj534WADZAthuY7T=mW8WrKp4g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 01/10] bpf: Add initial fd-based API to attach tc
- BPF programs
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
-        Nikolay Aleksandrov <razor@blackwall.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Joe Stringer <joe@cilium.io>,
-        Network Development <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,20 +75,19 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 6, 2022 at 7:29 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+Daniel Borkmann <daniel@iogearbox.net> writes:
+
+> On 10/6/22 1:36 PM, Jiri Olsa wrote:
+>> I recently hit 32k size limit for per-cpu map value.. it seems to be
+>> size limit for generic per cpu allocation, but would be great to have
+>> it confirmed by somebody who knows mm better ;-)
 >
-> On Thu, Oct 6, 2022 at 7:41 AM Jamal Hadi Salim <jhs@mojatatu.com> wrote:
+> Yes, for percpu the max is PCPU_MIN_UNIT_SIZE which is 32k, see mm/percpu.c +1756.
+> In many cases it's implementation specific, so it probably does not make too much
+> sense to state limits like 2^32, or at least it should say that its theoretical/uapi
+> limit and actual limits may be implementation/config specific.
 
-[..]
-> > You just described the features already offered by tc opcodes + priority.
->
-> Ohh, right. All possible mechanisms were available in TC 20 years ago.
-> Moving on.
+Yes, good point. I will just drop the 2^32 bit. Same issue was
+raised by Stanislav Fomichev for BPF_MAP_TYPE_HASH here:
 
-Alexei, it is the open source world - you can reinvent bell bottom
-pants, the wheel, etc
-just please dont mutilate or kill small animals along the way.
-
-cheers,
-jamal
+https://patchwork.kernel.org/project/netdevbpf/patch/20220713211612.84782-1-donald.hunter@gmail.com/#24936386
