@@ -2,64 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4D7E5F7D9C
-	for <lists+bpf@lfdr.de>; Fri,  7 Oct 2022 21:06:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BA445F7D9F
+	for <lists+bpf@lfdr.de>; Fri,  7 Oct 2022 21:08:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229675AbiJGTGQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 Oct 2022 15:06:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53186 "EHLO
+        id S229469AbiJGTIy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 Oct 2022 15:08:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229642AbiJGTGP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 Oct 2022 15:06:15 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7164D2590;
-        Fri,  7 Oct 2022 12:06:13 -0700 (PDT)
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ogsfh-000Gdf-Rd; Fri, 07 Oct 2022 21:06:09 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ogsfh-0007zY-Es; Fri, 07 Oct 2022 21:06:09 +0200
-Subject: Re: [PATCH bpf-next 01/10] bpf: Add initial fd-based API to attach tc
- BPF programs
-To:     sdf@google.com,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        Nikolay Aleksandrov <razor@blackwall.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Joe Stringer <joe@cilium.io>,
-        Network Development <netdev@vger.kernel.org>
-References: <20221004231143.19190-1-daniel@iogearbox.net>
- <20221004231143.19190-2-daniel@iogearbox.net>
- <20221006050053.pbwo72xtzoza6gfl@macbook-pro-4.dhcp.thefacebook.com>
- <f355eeba-1b46-749f-c102-65074e7eac27@iogearbox.net>
- <CAADnVQ+gEY3FjCR=+DmjDR4gp5bOYZUFJQXj4agKFHT9CQPZBw@mail.gmail.com>
- <14f368eb-9158-68bc-956c-c8371cfcb531@iogearbox.net> <875ygvemau.fsf@toke.dk>
- <Y0BaBUWeTj18V5Xp@google.com> <87tu4fczyv.fsf@toke.dk>
- <Y0Br2vVgj1aZEEvJ@google.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <b2985e15-336c-4aca-c0c7-b6609adf5397@iogearbox.net>
-Date:   Fri, 7 Oct 2022 21:06:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S229507AbiJGTIx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 Oct 2022 15:08:53 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37AFAD258E
+        for <bpf@vger.kernel.org>; Fri,  7 Oct 2022 12:08:49 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id kg6so13238881ejc.9
+        for <bpf@vger.kernel.org>; Fri, 07 Oct 2022 12:08:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=RVR14eyhmAVGnf/LRVsDBvXrJRetZuM7P1gFzeochfs=;
+        b=nVWYbDv9DeS4jI1g2MnavTpnpNFAArJKjmZ/W/4HA5PRTddW2GSUm9ROCRRxv1Id9e
+         ElEPOLiMYB2X4AavvnoJSoAygCJxhHhDlpacx1K4+EaiaVG11Q3eTh0+lQZ/Lc7u5SNQ
+         kJ5odyjoQks+/uUDiHrkZi6ii+dGF2E4vPu7TAcSwqHTh0YxyUT4SCqwBeOSlupn+HrE
+         MfFr4XM41qqET8Y6t3YoIT5UoPStcYv2Z8yllf8PEYW9jilU6TP/7xquU6nBlctqtAmj
+         Rh5eM17Bi9b6yNzDbjOqCrdmn3SPRZ63L+gPIwvRUMz5qqR9HneKqeMPuDJcVudl8wmj
+         4/NQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RVR14eyhmAVGnf/LRVsDBvXrJRetZuM7P1gFzeochfs=;
+        b=yky5qUTIKBqh9It/3Sde0XwR6xb7k6xgKJQcJLSlbP+JKcrFLMttj3/tK+Lp5ok+Fe
+         9hKu/E2QmMNekoa6rPR0uPmlXTf1ek4rHTuRaUzPtaDhsOoo0pI2PWJgIopyMPOglM1q
+         uNj0IPiwMwfRjIYMYG9B69rZVpVeBEqky445Pxk+CX4m9Vt01YXnsmX82ma8nsVq0EzI
+         P+fHUQXicIJf8Zq+mY/5jLR0ofWGW36J1ukwUDAXbTuER68S+RNcviiXEAIgi12ZngAB
+         oouCY4cD57pYDBKaQPdBGJG+KPHO0eOuaHZjmjX16PGfqMLyDY3PUAF2ChCXgkx5c2D2
+         AP0g==
+X-Gm-Message-State: ACrzQf2zsZha9MMr1ce2HdDJCAllm+I7vBHJIMUnSMolqxSilN6I/ina
+        j2kmrOFhmFGYwTQu37+/vntAxE7PPVvzvWLe2lM=
+X-Google-Smtp-Source: AMsMyM4bc+AwwCLdXmP+tmXMeOMY9JLAC6MuSF0mcKeoDbZcwPoymd/COyrw8S+M4qURlx65f5snCQVoNRjprihNC4I=
+X-Received: by 2002:a17:907:72c4:b0:78a:ea03:a9d8 with SMTP id
+ du4-20020a17090772c400b0078aea03a9d8mr5231784ejc.327.1665169727394; Fri, 07
+ Oct 2022 12:08:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <Y0Br2vVgj1aZEEvJ@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.6/26682/Fri Oct  7 09:58:07 2022)
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+References: <20221005141309.31758-1-fw@strlen.de> <20221005141309.31758-7-fw@strlen.de>
+ <20221006025209.rx4xnwdduqypja4b@macbook-pro-4.dhcp.thefacebook.com> <20221007114543.GA4296@breakpoint.cc>
+In-Reply-To: <20221007114543.GA4296@breakpoint.cc>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 7 Oct 2022 12:08:36 -0700
+Message-ID: <CAADnVQLSwX4gCK62KT_qEuPwagn4B9SMOBrLBcLh+2PFxypxqw@mail.gmail.com>
+Subject: Re: [RFC v2 6/9] netfilter: add bpf base hook program generator
+To:     Florian Westphal <fw@strlen.de>
+Cc:     bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -68,81 +66,99 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/7/22 8:11 PM, sdf@google.com wrote:
-> On 10/07, Toke Høiland-Jørgensen wrote:
->> sdf@google.com writes:
-[...]
->> >> I was thinking a little about how this might work; i.e., how can the
->> >> kernel expose the required knobs to allow a system policy to be
->> >> implemented without program loading having to talk to anything other
->> >> than the syscall API?
->> >
->> >> How about we only expose prepend/append in the prog attach UAPI, and
->> >> then have a kernel function that does the sorting like:
->> >
->> >> int bpf_add_new_tcx_prog(struct bpf_prog *progs, size_t num_progs, struct
->> >> bpf_prog *new_prog, bool append)
->> >
->> >> where the default implementation just appends/prepends to the array in
->> >> progs depending on the value of 'appen'.
->> >
->> >> And then use the __weak linking trick (or maybe struct_ops with a member
->> >> for TXC, another for XDP, etc?) to allow BPF to override the function
->> >> wholesale and implement whatever ordering it wants? I.e., allow it can
->> >> to just shift around the order of progs in the 'progs' array whenever a
->> >> program is loaded/unloaded?
->> >
->> >> This way, a userspace daemon can implement any policy it wants by just
->> >> attaching to that hook, and keeping things like how to express
->> >> dependencies as a userspace concern?
->> >
->> > What if we do the above, but instead of simple global 'attach first/last',
->> > the default api would be:
->> >
->> > - attach before <target_fd>
->> > - attach after <target_fd>
->> > - attach before target_fd=-1 == first
->> > - attach after target_fd=-1 == last
->> >
->> > ?
-> 
->> Hmm, the problem with that is that applications don't generally have an
->> fd to another application's BPF programs; and obtaining them from an ID
->> is a privileged operation (CAP_SYS_ADMIN). We could have it be "attach
->> before target *ID*" instead, which could work I guess? But then the
->> problem becomes that it's racy: the ID you're targeting could get
->> detached before you attach, so you'll need to be prepared to check that
->> and retry; and I'm almost certain that applications won't test for this,
->> so it'll just lead to hard-to-debug heisenbugs. Or am I being too
->> pessimistic here?
-> 
-> Yeah, agreed, id would work better. I guess I'm mostly coming here
-> from the bpftool/observability perspective where it seems handy to
-> being able to stick into any place in the chain for debugging?
-> 
-> Not sure if we need to care about raciness here. The same thing applies
-> for things like 'list all programs and dump their info' and all other
-> similar rmw operations?
+On Fri, Oct 7, 2022 at 4:45 AM Florian Westphal <fw@strlen.de> wrote:
+>
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> > > +   if (!emit(p, BPF_STX_MEM(BPF_H, BPF_REG_6, BPF_REG_8,
+> > > +                            offsetof(struct nf_hook_state, hook_index))))
+> > > +           return false;
+> > > +   /* arg2: struct nf_hook_state * */
+> > > +   if (!emit(p, BPF_MOV64_REG(BPF_REG_2, BPF_REG_6)))
+> > > +           return false;
+> > > +   /* arg3: original hook return value: (NUM << NF_VERDICT_QBITS | NF_QUEUE) */
+> > > +   if (!emit(p, BPF_MOV32_REG(BPF_REG_3, BPF_REG_0)))
+> > > +           return false;
+> > > +   if (!emit(p, BPF_EMIT_CALL(nf_queue)))
+> > > +           return false;
+> >
+> > here and other CALL work by accident on x84-64.
+> > You need to wrap them with BPF_CALL_ and point BPF_EMIT_CALL to that wrapper.
+>
+> Do you mean this? :
+>
+> BPF_CALL_3(nf_queue_bpf, struct sk_buff *, skb, struct nf_hook_state *,
+>            state, unsigned int, verdict)
+> {
+>      return nf_queue(skb, state, verdict);
+> }
 
-For such case you have the issue that kernel has source of truth and
-some kind of agent would have its own view when it wants to do dependency
-injection, so it needs to keep syncing with kernel view somehow (given
-there can be multiple entities changing it), and then question is also
-understanding context 'what is target fd/id xyz'. The latter you have as
-well when you, say, tell a system daemon that it needs to install a struct_ops
-program to manage these things (see remark wrt containers only host netns
-being shared) - now you moved that 'prio 1 conflict' situation to a meta
-level where the orchestration progs fight over each other wrt who's first.
+yep.
 
-> But, I guess, most users will still do 'attach target id = -1' aka
-> 'attach last' which probably makes this flexibility unnecessary?
-> OTOH, the users that still want it (bpftool/observability) might use it.
+>
+> -       if (!emit(p, BPF_EMIT_CALL(nf_hook_slow)))
+> +       if (!emit(p, BPF_EMIT_CALL(nf_hook_slow_bpf)))
+>
+> ?
+>
+> If yes, I don't see how this will work for the case where I only have an
+> address, i.e.:
+>
+> if (!emit(p, BPF_EMIT_CALL(h->hook))) ....
+>
+> (Also, the address might be in a kernel module)
+>
+> > On x86-64 it will be a nop.
+> > On x86-32 it will do quite a bit of work.
+>
+> If this only a problem for 32bit arches, I could also make this
+> 'depends on CONFIG_64BIT'.
 
-To me it sounds reasonable to have the append mode as default mode/API,
-and an advanced option to say 'I want to run as 2nd prog, but if something
-is already attached as 2nd prog, shift all the others +1 in the array' which
-would relate to your above point, Stan, of being able to stick into any
-place in the chain.
+If that's acceptable, sure.
 
-Thanks,
-Daniel
+> But perhaps I am on the wrong track, I see existing code doing:
+>         *insn++ = BPF_EMIT_CALL(__htab_map_lookup_elem);
+
+Yes, because we do:
+                /* BPF_EMIT_CALL() assumptions in some of the map_gen_lookup
+                 * and other inlining handlers are currently limited to 64 bit
+                 * only.
+                 */
+                if (prog->jit_requested && BITS_PER_LONG == 64 &&
+
+
+I think you already gate this feature with jit_requested?
+Otherwise it's going to be slow in the interpreter.
+
+> (kernel/bpf/hashtab.c).
+>
+> > > +   prog = bpf_prog_select_runtime(prog, &err);
+> > > +   if (err) {
+> > > +           bpf_prog_free(prog);
+> > > +           return NULL;
+> > > +   }
+> >
+> > Would be good to do bpf_prog_alloc_id() so it can be seen in
+> > bpftool prog show.
+>
+> Thanks a lot for the hint:
+>
+> 39: unspec  tag 0000000000000000
+> xlated 416B  jited 221B  memlock 4096B
+
+Probably should do bpf_prog_calc_tag() too.
+And please give it some meaningful name.
+
+> bpftool prog  dump xlated id 39
+>    0: (bf) r6 = r1
+>    1: (79) r7 = *(u64 *)(r1 +8)
+>    2: (b4) w8 = 0
+>    3: (85) call ipv6_defrag#526144928
+>    4: (55) if r0 != 0x1 goto pc+24
+>    5: (bf) r1 = r6
+>    6: (04) w8 += 1
+>    7: (85) call ipv6_conntrack_in#526206096
+>    [..]
+
+Nice.
+bpftool prog profile
+should work too.
