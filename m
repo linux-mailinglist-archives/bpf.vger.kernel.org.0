@@ -2,153 +2,220 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3B7D5F827C
-	for <lists+bpf@lfdr.de>; Sat,  8 Oct 2022 04:40:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 391DD5F8315
+	for <lists+bpf@lfdr.de>; Sat,  8 Oct 2022 07:16:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229539AbiJHCk4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 Oct 2022 22:40:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54566 "EHLO
+        id S229506AbiJHFQs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 8 Oct 2022 01:16:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbiJHCkz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 Oct 2022 22:40:55 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2460F9082D
-        for <bpf@vger.kernel.org>; Fri,  7 Oct 2022 19:40:52 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4MkqB90C4Lzl9Ds
-        for <bpf@vger.kernel.org>; Sat,  8 Oct 2022 10:38:57 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-        by APP4 (Coremail) with SMTP id gCh0CgD3uIgu40Bj44nJBw--.11376S2;
-        Sat, 08 Oct 2022 10:40:50 +0800 (CST)
-Subject: Re: [PATCH bpf-next v2 03/13] bpf: Support bpf_dynptr-typed map key
- in bpf syscall
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Joanne Koong <joannelkoong@gmail.com>
-Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, houtao1@huawei.com
-References: <20220924133620.4147153-1-houtao@huaweicloud.com>
- <20220924133620.4147153-4-houtao@huaweicloud.com>
- <CAEf4Bza79XbtYF_04MhdcN0o4Akot0VpWaR+mOoGwXsz7yT=xg@mail.gmail.com>
- <e099e816-d271-ec75-b6aa-3671cfc5b8f9@huaweicloud.com>
- <CAEf4BzZyfUOfGkQP67urmG9=7pqUF-5E9LjZf-Y0sL9nbcHFww@mail.gmail.com>
-From:   Hou Tao <houtao@huaweicloud.com>
-Message-ID: <670cee24-8667-31c9-fe91-368b683d586e@huaweicloud.com>
-Date:   Sat, 8 Oct 2022 10:40:46 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        with ESMTP id S229469AbiJHFQr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 8 Oct 2022 01:16:47 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B96DA58081;
+        Fri,  7 Oct 2022 22:16:45 -0700 (PDT)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Mktcd171TzpVmS;
+        Sat,  8 Oct 2022 13:13:37 +0800 (CST)
+Received: from [10.174.179.191] (10.174.179.191) by
+ canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Sat, 8 Oct 2022 13:16:42 +0800
+Message-ID: <0242ccfe-53e5-5b9d-9fd9-73fa8bd0d7a4@huawei.com>
+Date:   Sat, 8 Oct 2022 13:16:42 +0800
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzZyfUOfGkQP67urmG9=7pqUF-5E9LjZf-Y0sL9nbcHFww@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID: gCh0CgD3uIgu40Bj44nJBw--.11376S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxAry8Gw1xWryfuF48urWDtwb_yoWrWw4kpa
-        yrKa4fK3WkJ34xuw1kZw4xXFWS9w18Jw1UG3s5t3y8CryDWryS9r1YqayYkF1Skr1xt3yj
-        qw4qyryfX345ZFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
-        6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
-        67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
-        uYvjxUFDGOUUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.0
+Subject: Re: [bpf-next v7 1/3] bpftool: Add auto_attach for bpf prog
+ load|loadall
+To:     Quentin Monnet <quentin@isovalent.com>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <martin.lau@linux.dev>, <song@kernel.org>, <yhs@fb.com>,
+        <john.fastabend@gmail.com>, <kpsingh@kernel.org>, <sdf@google.com>,
+        <haoluo@google.com>, <jolsa@kernel.org>, <davem@davemloft.net>,
+        <kuba@kernel.org>, <hawk@kernel.org>, <nathan@kernel.org>,
+        <ndesaulniers@google.com>, <trix@redhat.com>
+CC:     <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <llvm@lists.linux.dev>
+References: <1664277676-2228-1-git-send-email-wangyufen@huawei.com>
+ <83307f48-bef0-bff8-e3b5-f8df7a592678@isovalent.com>
+From:   wangyufen <wangyufen@huawei.com>
+In-Reply-To: <83307f48-bef0-bff8-e3b5-f8df7a592678@isovalent.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.191]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ canpemm500010.china.huawei.com (7.192.105.118)
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
 
-On 10/1/2022 5:35 AM, Andrii Nakryiko wrote:
-> On Wed, Sep 28, 2022 at 7:11 PM Hou Tao <houtao@huaweicloud.com> wrote:
-SNP
->>> I'm trying to understand why there should be so many new concepts and
->>> interfaces just to allow variable-sized keys. Can you elaborate on
->>> that? Like why do we even need BPF_DYNPTR_TYPE_USER? Why user can't
->>> just pass a void * (casted to u64) pointer and size of the memory
->>> pointed to it, and kernel will just copy necessary amount of data into
->>> kvmalloc'ed temporary region?
->> The main reason is that map operations from syscall and bpf program use the same
->> ops in bpf_map_ops (e.g. map_update_elem). If only use dynptr_kern for bpf
->> program, then
->> have to define three new operations for bpf program. Even more, after defining
->> two different map ops for the same operation from syscall and bpf program, the
->> internal  implementation of qp-trie still need to convert these two different
->> representations of variable-length key into bpf_qp_trie_key. It introduces
->> unnecessary conversion, so I think it may be a good idea to pass dynptr_kern to
->> qp-trie even for bpf syscall.
+在 2022/10/1 0:26, Quentin Monnet 写道:
+> Tue Sep 27 2022 12:21:14 GMT+0100 ~ Wang Yufen <wangyufen@huawei.com>
+>> Add auto_attach optional to support one-step load-attach-pin_link.
+> Nit: Now "autoattach" instead of "auto_attach". Same in commit title.
+will change in v8, thanks.
+>
+>> For example,
+>>     $ bpftool prog loadall test.o /sys/fs/bpf/test autoattach
 >>
->> And now in bpf_attr, for BPF_MAP_*_ELEM command, there is no space to pass an
->> extra key size. It seems bpf_attr can be extend, but even it is extented, it
->> also means in libbpf we need to provide a new API group to support operationg on
->> dynptr key map, because the userspace needs to pass the key size as a new argument.
-> You are right that the current assumption of implicit key/value size
-> doesn't work for these variable-key/value-length maps. But I think the
-> right answer is actually to make sure that we have a map_update_elem
-> callback variant that accepts key/value size explicitly. I still think
-> that the syscall interface shouldn't introduce a concept of dynptr.
-> >From user-space's point of view dynptr is just a memory pointer +
-> associated memory size. Let's keep it simple. And yes, it will be a
-> new libbpf API for bpf_map_lookup_elem/bpf_map_update_elem. That's
-> fine.
-Is your point that dynptr is too complicated for user-space and may lead to
-confusion between dynptr in kernel space ? How about a different name or a
-simple definition just like bpf_lpm_trie_key ? It will make both the
-implementation and the usage much simpler, because the implementation and the
-user can still use the same APIs just like fixed sized map.
-
-Not just lookup/update/delete, we also need to define a new op for
-get_next_key/lookup_and_delete_elem. And also need to define corresponding new
-bpf helpers for bpf program. And you said "explict key/value size", do you mean
-something below ?
-
-int (*map_update_elem)(struct bpf_map *map, void *key, u32 key_size, void
-*value, u32 value_size, u64 flags);
-
+>>     $ bpftool link
+>>     26: tracing  name test1  tag f0da7d0058c00236  gpl
+>>     	loaded_at 2022-09-09T21:39:49+0800  uid 0
+>>     	xlated 88B  jited 55B  memlock 4096B  map_ids 3
+>>     	btf_id 55
+>>     28: kprobe  name test3  tag 002ef1bef0723833  gpl
+>>     	loaded_at 2022-09-09T21:39:49+0800  uid 0
+>>     	xlated 88B  jited 56B  memlock 4096B  map_ids 3
+>>     	btf_id 55
+>>     57: tracepoint  name oncpu  tag 7aa55dfbdcb78941  gpl
+>>     	loaded_at 2022-09-09T21:41:32+0800  uid 0
+>>     	xlated 456B  jited 265B  memlock 4096B  map_ids 17,13,14,15
+>>     	btf_id 82
+>>
+>>     $ bpftool link
+>>     1: tracing  prog 26
+>>     	prog_type tracing  attach_type trace_fentry
+>>     3: perf_event  prog 28
+>>     10: perf_event  prog 57
+>>
+>> The autoattach optional can support tracepoints, k(ret)probes,
+>> u(ret)probes.
+>>
+>> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+>> Signed-off-by: Wang Yufen <wangyufen@huawei.com>
+>> ---
+>> v6 -> v7: add info msg print and update doc for the skip program
+>> v5 -> v6: skip the programs not supporting auto-attach,
+>> 	  and change optional name from "auto_attach" to "autoattach"
+>> v4 -> v5: some formatting nits of doc
+>> v3 -> v4: rename functions, update doc, bash and do_help()
+>> v2 -> v3: switch to extend prog load command instead of extend perf
+>> v2: https://patchwork.kernel.org/project/netdevbpf/patch/20220824033837.458197-1-weiyongjun1@huawei.com/
+>> v1: https://patchwork.kernel.org/project/netdevbpf/patch/20220816151725.153343-1-weiyongjun1@huawei.com/
+>>   tools/bpf/bpftool/prog.c | 81 ++++++++++++++++++++++++++++++++++++++++++++++--
+>>   1 file changed, 79 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+>> index c81362a..84eced8 100644
+>> --- a/tools/bpf/bpftool/prog.c
+>> +++ b/tools/bpf/bpftool/prog.c
+>> @@ -1453,6 +1453,72 @@ static int do_run(int argc, char **argv)
+>>   	return ret;
+>>   }
+>>   
+>> +static int
+>> +auto_attach_program(struct bpf_program *prog, const char *path)
+>> +{
+>> +	struct bpf_link *link;
+>> +	int err;
+>> +
+>> +	link = bpf_program__attach(prog);
+>> +	if (!link)
+>> +		return -1;
+>> +
+>> +	err = bpf_link__pin(link, path);
+>> +	if (err) {
+>> +		bpf_link__destroy(link);
+>> +		return err;
+>> +	}
+>> +	return 0;
+>> +}
+>> +
+>> +static int pathname_concat(const char *path, const char *name, char *buf)
+>> +{
+>> +	int len;
+>> +
+>> +	len = snprintf(buf, PATH_MAX, "%s/%s", path, name);
+>> +	if (len < 0)
+>> +		return -EINVAL;
+>> +	if (len >= PATH_MAX)
+>> +		return -ENAMETOOLONG;
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int
+>> +auto_attach_programs(struct bpf_object *obj, const char *path)
+>> +{
+>> +	struct bpf_program *prog;
+>> +	char buf[PATH_MAX];
+>> +	int err;
+>> +
+>> +	bpf_object__for_each_program(prog, obj) {
+>> +		err = pathname_concat(path, bpf_program__name(prog), buf);
+>> +		if (err)
+>> +			goto err_unpin_programs;
+>> +
+>> +		err = auto_attach_program(prog, buf);
+>> +		if (!err)
+>> +			continue;
+>> +		if (errno == EOPNOTSUPP)
+>> +			p_info("Program %s does not support autoattach",
+>> +			       bpf_program__name(prog));
+>> +		else
+>> +			goto err_unpin_programs
+> With this code, if auto-attach fails, then we skip this program and move
+> on to the next. That's an improvement, but in that case the program
+> won't remain loaded in the kernel after bpftool exits. My suggestion in
+> my previous message (sorry if it was not clear) was to fall back to
+> regular pinning in that case (bpf_obj_pin()), along with the p_info()
+> message, so we can have the program pinned but not attached and let the
+> user know. If regular pinning fails as well, then we should unpin all
+> and error out, for consistency with bpf_object__pin_programs().
 >
+> And in that case, the (errno == EOPNOTSUPP) with fallback to regular
+> pinning could maybe be moved into auto_attach_program(), so that
+> auto-attaching single programs can use the fallback too?
 >
->>> It also seems like you want to allow key (and maybe value as well, not
->>> sure) to be a custom user-defined type where some of the fields are
->>> struct bpf_dynptr. I think it's a big overcomplication, tbh. I'd say
->>> it's enough to just say that entire key has to be described by a
->>> single bpf_dynptr. Then we can have bpf_map_lookup_elem_dynptr(map,
->>> key_dynptr, flags) new helper to provide variable-sized key for
->>> lookup.
->> For qp-trie, it will only support a single dynptr as the map key. In the future
->> maybe other map will support map key with embedded dynptrs. Maybe Joanne can
->> share some vision about such use case.
-> My point was that instead of saying that key is some fixed-size struct
-> in which one of the fields is dynptr (and then when comparing you have
-> to compare part of struct, then dynptr contents, then the other part
-> of struct?), just say that entire key is represented by dynptr,
-> implicitly (it's just a blob of bytes). That seems more
-> straightforward.
-I see. But I still think there is possible user case for struct with embedded
-dynptr. For bpf map in kernel, byte blob is OK. But If it is also a blob of
-bytes for the bpf program or userspace application, the application may need to
-marshaling and un-marshaling between the bytes blob and a meaningful struct type
-each time before using it.
-> .
+> Thanks,
+> Quentin
+
+If I understand correctly, can we just check link?  as following:
+
+--- a/tools/bpf/bpftool/prog.c
++++ b/tools/bpf/bpftool/prog.c
+@@ -1460,9 +1460,10 @@ static int do_run(int argc, char **argv)
+         int err;
+  
+         link = bpf_program__attach(prog);
+-       if (!link)
+-               return -1;
+-
++       if (!link) {
++               p_info("Program %s attach failed", bpf_program__name(prog));
++               return bpf_obj_pin(bpf_program__fd(prog), path);
++       }
+         err = bpf_link__pin(link, path);
+         if (err) {
+                 bpf_link__destroy(link);
+@@ -1499,9 +1500,6 @@ static int pathname_concat(const char *path, const char *name, char *buf)
+                 err = auto_attach_program(prog, buf);
+                 if (!err)
+                         continue;
+-               if (errno == EOPNOTSUPP)
+-                       p_info("Program %s does not support autoattach",
+-                              bpf_program__name(prog));
+                 else
+                         goto err_unpin_programs;
+         }
+
+
+and the doc is modified as follows:
+
+If the program does not support autoattach, will do regular pin along with an
+info message such as "Program %s attach failed". If the *OBJ* contains multiple
+programs and **loadall** is used, if the program A in these programs does not
+support autoattach, the program A will do regular pin along with an info message,
+and continue to autoattach the next program.
+
+Thanks,
+Wang
 
