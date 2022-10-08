@@ -2,112 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 385975F831A
-	for <lists+bpf@lfdr.de>; Sat,  8 Oct 2022 07:22:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 106AB5F843E
+	for <lists+bpf@lfdr.de>; Sat,  8 Oct 2022 10:21:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229495AbiJHFWk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 8 Oct 2022 01:22:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51308 "EHLO
+        id S229586AbiJHIVk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 8 Oct 2022 04:21:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbiJHFWk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 8 Oct 2022 01:22:40 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C86180F43;
-        Fri,  7 Oct 2022 22:22:38 -0700 (PDT)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Mktjq2zsZzlXdR;
-        Sat,  8 Oct 2022 13:18:07 +0800 (CST)
-Received: from [10.174.179.191] (10.174.179.191) by
- canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Sat, 8 Oct 2022 13:22:35 +0800
-Message-ID: <e2f2b01a-1f0e-a862-c3df-96f61dbdbaf6@huawei.com>
-Date:   Sat, 8 Oct 2022 13:22:35 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.0
-Subject: Re: [bpf-next v7 1/3] bpftool: Add auto_attach for bpf prog
- load|loadall
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     <quentin@isovalent.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <andrii@kernel.org>, <martin.lau@linux.dev>, <song@kernel.org>,
-        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-        <sdf@google.com>, <haoluo@google.com>, <jolsa@kernel.org>,
-        <davem@davemloft.net>, <kuba@kernel.org>, <hawk@kernel.org>,
-        <nathan@kernel.org>, <ndesaulniers@google.com>, <trix@redhat.com>,
-        <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <llvm@lists.linux.dev>
-References: <1664277676-2228-1-git-send-email-wangyufen@huawei.com>
- <CAEf4BzaBPpZvxD6sDMWWRXVqKYTgwaxsggye0CRbv7q5_4jrPA@mail.gmail.com>
-From:   wangyufen <wangyufen@huawei.com>
-In-Reply-To: <CAEf4BzaBPpZvxD6sDMWWRXVqKYTgwaxsggye0CRbv7q5_4jrPA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.191]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- canpemm500010.china.huawei.com (7.192.105.118)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S229511AbiJHIVj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 8 Oct 2022 04:21:39 -0400
+Received: from mail.nfschina.com (unknown [124.16.136.209])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 28828564CF;
+        Sat,  8 Oct 2022 01:21:37 -0700 (PDT)
+Received: from localhost (unknown [127.0.0.1])
+        by mail.nfschina.com (Postfix) with ESMTP id 623C51E80D9F;
+        Sat,  8 Oct 2022 16:15:33 +0800 (CST)
+X-Virus-Scanned: amavisd-new at test.com
+Received: from mail.nfschina.com ([127.0.0.1])
+        by localhost (mail.nfschina.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id MHHnS3oqJkSU; Sat,  8 Oct 2022 16:15:30 +0800 (CST)
+Received: from localhost.localdomain (unknown [219.141.250.2])
+        (Authenticated sender: kunyu@nfschina.com)
+        by mail.nfschina.com (Postfix) with ESMTPA id 5AB221E80D9D;
+        Sat,  8 Oct 2022 16:15:29 +0800 (CST)
+From:   Li kunyu <kunyu@nfschina.com>
+To:     andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Li kunyu <kunyu@nfschina.com>
+Subject: [PATCH] lib: bpf: Optimized variable usage in the btf_parse_elf function
+Date:   Sat,  8 Oct 2022 16:21:00 +0800
+Message-Id: <20221008082100.4323-1-kunyu@nfschina.com>
+X-Mailer: git-send-email 2.18.2
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
+        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+The following changes were made in the btf_parse_elf function:
+1. The initialization assignments of err, fd, scn and elf variables are
+removed, and they do not affect function security after analysis.
+2. Remove unnecessary assignments to err variable (-error).
 
-在 2022/10/1 4:55, Andrii Nakryiko 写道:
-> On Tue, Sep 27, 2022 at 4:00 AM Wang Yufen <wangyufen@huawei.com> wrote:
->> Add auto_attach optional to support one-step load-attach-pin_link.
->>
->> For example,
->>     $ bpftool prog loadall test.o /sys/fs/bpf/test autoattach
->>
->>     $ bpftool link
->>     26: tracing  name test1  tag f0da7d0058c00236  gpl
->>          loaded_at 2022-09-09T21:39:49+0800  uid 0
->>          xlated 88B  jited 55B  memlock 4096B  map_ids 3
->>          btf_id 55
->>     28: kprobe  name test3  tag 002ef1bef0723833  gpl
->>          loaded_at 2022-09-09T21:39:49+0800  uid 0
->>          xlated 88B  jited 56B  memlock 4096B  map_ids 3
->>          btf_id 55
->>     57: tracepoint  name oncpu  tag 7aa55dfbdcb78941  gpl
->>          loaded_at 2022-09-09T21:41:32+0800  uid 0
->>          xlated 456B  jited 265B  memlock 4096B  map_ids 17,13,14,15
->>          btf_id 82
->>
->>     $ bpftool link
->>     1: tracing  prog 26
->>          prog_type tracing  attach_type trace_fentry
->>     3: perf_event  prog 28
->>     10: perf_event  prog 57
->>
->> The autoattach optional can support tracepoints, k(ret)probes,
->> u(ret)probes.
->>
->> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
->> Signed-off-by: Wang Yufen <wangyufen@huawei.com>
->> ---
-> For next revision, please also attach cover letter describing the
-> overall goal of the patch set (and that's where the version log
-> between revisions is put as well).
+Signed-off-by: Li kunyu <kunyu@nfschina.com>
+---
+ tools/lib/bpf/btf.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
-Thanks, will add a cover letter in v8.
+diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+index 2d14f1a52d7a..fa9d5fa03da4 100644
+--- a/tools/lib/bpf/btf.c
++++ b/tools/lib/bpf/btf.c
+@@ -910,10 +910,10 @@ static struct btf *btf_parse_elf(const char *path, struct btf *base_btf,
+ 				 struct btf_ext **btf_ext)
+ {
+ 	Elf_Data *btf_data = NULL, *btf_ext_data = NULL;
+-	int err = 0, fd = -1, idx = 0;
++	int err, fd, idx = 0;
+ 	struct btf *btf = NULL;
+-	Elf_Scn *scn = NULL;
+-	Elf *elf = NULL;
++	Elf_Scn *scn;
++	Elf *elf;
+ 	GElf_Ehdr ehdr;
+ 	size_t shstrndx;
+ 
+@@ -924,9 +924,8 @@ static struct btf *btf_parse_elf(const char *path, struct btf *base_btf,
+ 
+ 	fd = open(path, O_RDONLY | O_CLOEXEC);
+ 	if (fd < 0) {
+-		err = -errno;
+ 		pr_warn("failed to open %s: %s\n", path, strerror(errno));
+-		return ERR_PTR(err);
++		return ERR_PTR(-errno);
+ 	}
+ 
+ 	err = -LIBBPF_ERRNO__FORMAT;
+@@ -987,8 +986,6 @@ static struct btf *btf_parse_elf(const char *path, struct btf *base_btf,
+ 		}
+ 	}
+ 
+-	err = 0;
+-
+ 	if (!btf_data) {
+ 		err = -ENOENT;
+ 		goto done;
+-- 
+2.18.2
 
->
->
->> v6 -> v7: add info msg print and update doc for the skip program
->> v5 -> v6: skip the programs not supporting auto-attach,
->>            and change optional name from "auto_attach" to "autoattach"
->> v4 -> v5: some formatting nits of doc
->> v3 -> v4: rename functions, update doc, bash and do_help()
->> v2 -> v3: switch to extend prog load command instead of extend perf
->> v2: https://patchwork.kernel.org/project/netdevbpf/patch/20220824033837.458197-1-weiyongjun1@huawei.com/
->> v1: https://patchwork.kernel.org/project/netdevbpf/patch/20220816151725.153343-1-weiyongjun1@huawei.com/
->>   tools/bpf/bpftool/prog.c | 81 ++++++++++++++++++++++++++++++++++++++++++++++--
->>   1 file changed, 79 insertions(+), 2 deletions(-)
->>
-> [...]
->
