@@ -2,48 +2,44 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 326C35F928D
-	for <lists+bpf@lfdr.de>; Mon, 10 Oct 2022 00:50:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2FEB5F9292
+	for <lists+bpf@lfdr.de>; Mon, 10 Oct 2022 00:50:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232887AbiJIWt7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 9 Oct 2022 18:49:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40940 "EHLO
+        id S233582AbiJIWuA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 9 Oct 2022 18:50:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232924AbiJIWrt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 9 Oct 2022 18:47:49 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D67432067;
-        Sun,  9 Oct 2022 15:24:14 -0700 (PDT)
+        with ESMTP id S233213AbiJIWsL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 9 Oct 2022 18:48:11 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E424A21B5;
+        Sun,  9 Oct 2022 15:24:38 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4E7AC60CF1;
-        Sun,  9 Oct 2022 22:22:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6EA7BC433C1;
-        Sun,  9 Oct 2022 22:22:54 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 672AF60CF5;
+        Sun,  9 Oct 2022 22:22:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB095C43470;
+        Sun,  9 Oct 2022 22:22:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665354175;
-        bh=9F/WwTjHJoxdBWqRa6iOQ5UCJYl2sd5H82WhROoztuA=;
+        s=k20201202; t=1665354178;
+        bh=2Sj7O+erMHJGAMzPNnqV1KY//aM847UrlErlhJZbn0A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qni3ixPT8QHkA6lQySC2AeUz7Uabh0vC8e4xS0fPBTZ+4lfEyzoNofj234te5ZmtJ
-         3kVFpKIDK6geFhfJydHcRUqpOpLfifYSVMbCDeIoBVT+JJx5Oz9D5bJfy35hmVbTOa
-         bAABmoHcU9E2vch5nV9NT9o9O3mhf3I2DFjJ9t2xeVN91m9G1B85aVlBXFctvB6P1r
-         hzKm4mr/hshiXtguBGYSXavMB7GTzYQ0Ed8CrI1l1+dy1PWnpBBL36ZeG8b7/nNHH2
-         UX7F2aDJGWvK46CF409rT4t06eCqu08csdW8jqLtfuKxa0EriWeV2QWJxIQvomT+KD
-         mgdAttf82HxqA==
+        b=IRl3SprXVddMbSHbvvBZEcQlgDd0hmmv3kWfj3enqPnSP8dfJ+t3bpdVZwnDQ2TmG
+         azgyuOhoLqJUAc37dEYVtvQdqZSpDndKyeeRkxioVo0zMc2crX6Tq/Ma/wNI04Ljtv
+         2C01q+JAx1RJ8rhKM1yk7m6BfXH8UQNdhaME0Kh8uDzGBfR//mXzkAgp8w47MBB2N9
+         NXtuXcxMF3Wy6cwMZ8/xP9YMogvYrPYPs5/8ir0jrD5DsB89NuEJQH/UDxEr4SRbWa
+         FxSFvrT5suqvlP5PFKsHS26Awq102oNH12edrYX/EsRU8SUWC2CMyVDGUujwOGJT6J
+         5vgPBE0iBghnA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Liu Jian <liujian56@huawei.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Sasha Levin <sashal@kernel.org>, davem@davemloft.net,
-        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 31/34] net: If sock is dead don't access sock's sk_wq in sk_stream_wait_memory
-Date:   Sun,  9 Oct 2022 18:21:25 -0400
-Message-Id: <20221009222129.1218277-31-sashal@kernel.org>
+Cc:     Xin Liu <liuxin350@huawei.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, ast@kernel.org,
+        daniel@iogearbox.net, bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 33/34] libbpf: Fix overrun in netlink attribute iteration
+Date:   Sun,  9 Oct 2022 18:21:27 -0400
+Message-Id: <20221009222129.1218277-33-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221009222129.1218277-1-sashal@kernel.org>
 References: <20221009222129.1218277-1-sashal@kernel.org>
@@ -60,104 +56,36 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Liu Jian <liujian56@huawei.com>
+From: Xin Liu <liuxin350@huawei.com>
 
-[ Upstream commit 3f8ef65af927db247418d4e1db49164d7a158fc5 ]
+[ Upstream commit 51e05a8cf8eb34da7473823b7f236a77adfef0b4 ]
 
-Fixes the below NULL pointer dereference:
+I accidentally found that a change in commit 1045b03e07d8 ("netlink: fix
+overrun in attribute iteration") was not synchronized to the function
+`nla_ok` in tools/lib/bpf/nlattr.c, I think it is necessary to modify,
+this patch will do it.
 
-  [...]
-  [   14.471200] Call Trace:
-  [   14.471562]  <TASK>
-  [   14.471882]  lock_acquire+0x245/0x2e0
-  [   14.472416]  ? remove_wait_queue+0x12/0x50
-  [   14.473014]  ? _raw_spin_lock_irqsave+0x17/0x50
-  [   14.473681]  _raw_spin_lock_irqsave+0x3d/0x50
-  [   14.474318]  ? remove_wait_queue+0x12/0x50
-  [   14.474907]  remove_wait_queue+0x12/0x50
-  [   14.475480]  sk_stream_wait_memory+0x20d/0x340
-  [   14.476127]  ? do_wait_intr_irq+0x80/0x80
-  [   14.476704]  do_tcp_sendpages+0x287/0x600
-  [   14.477283]  tcp_bpf_push+0xab/0x260
-  [   14.477817]  tcp_bpf_sendmsg_redir+0x297/0x500
-  [   14.478461]  ? __local_bh_enable_ip+0x77/0xe0
-  [   14.479096]  tcp_bpf_send_verdict+0x105/0x470
-  [   14.479729]  tcp_bpf_sendmsg+0x318/0x4f0
-  [   14.480311]  sock_sendmsg+0x2d/0x40
-  [   14.480822]  ____sys_sendmsg+0x1b4/0x1c0
-  [   14.481390]  ? copy_msghdr_from_user+0x62/0x80
-  [   14.482048]  ___sys_sendmsg+0x78/0xb0
-  [   14.482580]  ? vmf_insert_pfn_prot+0x91/0x150
-  [   14.483215]  ? __do_fault+0x2a/0x1a0
-  [   14.483738]  ? do_fault+0x15e/0x5d0
-  [   14.484246]  ? __handle_mm_fault+0x56b/0x1040
-  [   14.484874]  ? lock_is_held_type+0xdf/0x130
-  [   14.485474]  ? find_held_lock+0x2d/0x90
-  [   14.486046]  ? __sys_sendmsg+0x41/0x70
-  [   14.486587]  __sys_sendmsg+0x41/0x70
-  [   14.487105]  ? intel_pmu_drain_pebs_core+0x350/0x350
-  [   14.487822]  do_syscall_64+0x34/0x80
-  [   14.488345]  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-  [...]
-
-The test scenario has the following flow:
-
-thread1                               thread2
------------                           ---------------
- tcp_bpf_sendmsg
-  tcp_bpf_send_verdict
-   tcp_bpf_sendmsg_redir              sock_close
-    tcp_bpf_push_locked                 __sock_release
-     tcp_bpf_push                         //inet_release
-      do_tcp_sendpages                    sock->ops->release
-       sk_stream_wait_memory          	   // tcp_close
-          sk_wait_event                      sk->sk_prot->close
-           release_sock(__sk);
-            ***
-                                                lock_sock(sk);
-                                                  __tcp_close
-                                                    sock_orphan(sk)
-                                                      sk->sk_wq  = NULL
-                                                release_sock
-            ****
-           lock_sock(__sk);
-          remove_wait_queue(sk_sleep(sk), &wait);
-             sk_sleep(sk)
-             //NULL pointer dereference
-             &rcu_dereference_raw(sk->sk_wq)->wait
-
-While waiting for memory in thread1, the socket is released with its wait
-queue because thread2 has closed it. This caused by tcp_bpf_send_verdict
-didn't increase the f_count of psock->sk_redir->sk_socket->file in thread1.
-
-We should check if SOCK_DEAD flag is set on wakeup in sk_stream_wait_memory
-before accessing the wait queue.
-
-Suggested-by: Jakub Sitnicki <jakub@cloudflare.com>
-Signed-off-by: Liu Jian <liujian56@huawei.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: John Fastabend <john.fastabend@gmail.com>
-Cc: Eric Dumazet <edumazet@google.com>
-Link: https://lore.kernel.org/bpf/20220823133755.314697-2-liujian56@huawei.com
+Signed-off-by: Xin Liu <liuxin350@huawei.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/20220930090708.62394-1-liuxin350@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/stream.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ tools/lib/bpf/nlattr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/core/stream.c b/net/core/stream.c
-index a166a32b411f..a61130504827 100644
---- a/net/core/stream.c
-+++ b/net/core/stream.c
-@@ -159,7 +159,8 @@ int sk_stream_wait_memory(struct sock *sk, long *timeo_p)
- 		*timeo_p = current_timeo;
- 	}
- out:
--	remove_wait_queue(sk_sleep(sk), &wait);
-+	if (!sock_flag(sk, SOCK_DEAD))
-+		remove_wait_queue(sk_sleep(sk), &wait);
- 	return err;
+diff --git a/tools/lib/bpf/nlattr.c b/tools/lib/bpf/nlattr.c
+index b607fa9852b1..8f00a2ee5762 100644
+--- a/tools/lib/bpf/nlattr.c
++++ b/tools/lib/bpf/nlattr.c
+@@ -32,7 +32,7 @@ static struct nlattr *nla_next(const struct nlattr *nla, int *remaining)
  
- do_error:
+ static int nla_ok(const struct nlattr *nla, int remaining)
+ {
+-	return remaining >= sizeof(*nla) &&
++	return remaining >= (int)sizeof(*nla) &&
+ 	       nla->nla_len >= sizeof(*nla) &&
+ 	       nla->nla_len <= remaining;
+ }
 -- 
 2.35.1
 
