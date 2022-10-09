@@ -2,45 +2,48 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76EE65F913A
-	for <lists+bpf@lfdr.de>; Mon, 10 Oct 2022 00:31:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64CCB5F9084
+	for <lists+bpf@lfdr.de>; Mon, 10 Oct 2022 00:25:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232461AbiJIWa6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 9 Oct 2022 18:30:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41276 "EHLO
+        id S231851AbiJIWZx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 9 Oct 2022 18:25:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232033AbiJIW0r (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 9 Oct 2022 18:26:47 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88C493E74E;
-        Sun,  9 Oct 2022 15:18:37 -0700 (PDT)
+        with ESMTP id S231848AbiJIWXu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 9 Oct 2022 18:23:50 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84DF52F016;
+        Sun,  9 Oct 2022 15:18:07 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 74CD9B80DE5;
-        Sun,  9 Oct 2022 22:12:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 140B3C433D6;
-        Sun,  9 Oct 2022 22:12:50 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 70A77B80D36;
+        Sun,  9 Oct 2022 22:13:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0AABC433D6;
+        Sun,  9 Oct 2022 22:13:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665353572;
-        bh=sExncP2vEI4lKfEjoGTg9PlosArh89bqCxfpK8p7bwI=;
+        s=k20201202; t=1665353603;
+        bh=M3JkTWTLC3RdhvEFrlNL9DYet52opleSNkWm+4Lv/LA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=euG/T1SHw94FydHc/EbXWD5QGfhaWtjrBPPlZ74qwc5UGXsr/uJEqST/5pHyQaTTD
-         3zC2LY2Tv+Yp9eqqivzoxsjLboMWxgQ9IE3TVltX6qYZlbeEmmH4PYvf76bEaiXoC3
-         DUkm/4pjAfQwO/kBwYBAnydwauTyVGla4hMH9+fNI4ZchmLfTK8cYX8XpkReHgMShA
-         0PRBF3/0LYScW0Te9g+BYB1ALE77tj/H/Lawkx+Gfb0huKChIUU8bFc2nhnlyfiMvM
-         1Zvys+9dxtygSYMN3sw594M2dTICOc29G4uAm//uNfkAcX0C2IRbZqm8Lmbve02JHA
-         cZkIZDL9k7aHw==
+        b=fzGgSJnIlHt2+j9P2dNLJdQ6urQRQCYkbXTizUSiDht3ZLxIKumLSZAMREvBc09es
+         2UyxdgzNY1mxnwIOIXaWuNuCiCeBvIM97ZAdaetSN4LdBjmqprujwKvRGFIwas4K7Z
+         UrC1iLg6+59xzCRlS8GXzywtql7ss0CBmjy1czmvlP2aP266dHogRAqfbQu3eu6KkA
+         TlAIQY3nKJ+msdy6kT6+E/lWyvGUUDYcah61YC6kaRztbJ54tDepHWynLbkXncOBQJ
+         k1GZztLoDGFuF1Szsy60b59jbaJ7cH9jXopCeVrzYklVy08C3TuaHpEHMX/ONmzT7K
+         l1GzLpfbrkzdA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Hou Tao <houtao1@huawei.com>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, shuah@kernel.org,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.0 60/77] selftests/bpf: Free the allocated resources after test case succeeds
-Date:   Sun,  9 Oct 2022 18:07:37 -0400
-Message-Id: <20221009220754.1214186-60-sashal@kernel.org>
+Cc:     Liu Jian <liujian56@huawei.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Sasha Levin <sashal@kernel.org>, davem@davemloft.net,
+        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.0 68/77] net: If sock is dead don't access sock's sk_wq in sk_stream_wait_memory
+Date:   Sun,  9 Oct 2022 18:07:45 -0400
+Message-Id: <20221009220754.1214186-68-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221009220754.1214186-1-sashal@kernel.org>
 References: <20221009220754.1214186-1-sashal@kernel.org>
@@ -57,194 +60,104 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Hou Tao <houtao1@huawei.com>
+From: Liu Jian <liujian56@huawei.com>
 
-[ Upstream commit 103d002fb7d548fb1187e350f2b73788558128b9 ]
+[ Upstream commit 3f8ef65af927db247418d4e1db49164d7a158fc5 ]
 
-Free the created fd or allocated bpf_object after test case succeeds,
-else there will be resource leaks.
+Fixes the below NULL pointer dereference:
 
-Spotted by using address sanitizer and checking the content of
-/proc/$pid/fd directory.
+  [...]
+  [   14.471200] Call Trace:
+  [   14.471562]  <TASK>
+  [   14.471882]  lock_acquire+0x245/0x2e0
+  [   14.472416]  ? remove_wait_queue+0x12/0x50
+  [   14.473014]  ? _raw_spin_lock_irqsave+0x17/0x50
+  [   14.473681]  _raw_spin_lock_irqsave+0x3d/0x50
+  [   14.474318]  ? remove_wait_queue+0x12/0x50
+  [   14.474907]  remove_wait_queue+0x12/0x50
+  [   14.475480]  sk_stream_wait_memory+0x20d/0x340
+  [   14.476127]  ? do_wait_intr_irq+0x80/0x80
+  [   14.476704]  do_tcp_sendpages+0x287/0x600
+  [   14.477283]  tcp_bpf_push+0xab/0x260
+  [   14.477817]  tcp_bpf_sendmsg_redir+0x297/0x500
+  [   14.478461]  ? __local_bh_enable_ip+0x77/0xe0
+  [   14.479096]  tcp_bpf_send_verdict+0x105/0x470
+  [   14.479729]  tcp_bpf_sendmsg+0x318/0x4f0
+  [   14.480311]  sock_sendmsg+0x2d/0x40
+  [   14.480822]  ____sys_sendmsg+0x1b4/0x1c0
+  [   14.481390]  ? copy_msghdr_from_user+0x62/0x80
+  [   14.482048]  ___sys_sendmsg+0x78/0xb0
+  [   14.482580]  ? vmf_insert_pfn_prot+0x91/0x150
+  [   14.483215]  ? __do_fault+0x2a/0x1a0
+  [   14.483738]  ? do_fault+0x15e/0x5d0
+  [   14.484246]  ? __handle_mm_fault+0x56b/0x1040
+  [   14.484874]  ? lock_is_held_type+0xdf/0x130
+  [   14.485474]  ? find_held_lock+0x2d/0x90
+  [   14.486046]  ? __sys_sendmsg+0x41/0x70
+  [   14.486587]  __sys_sendmsg+0x41/0x70
+  [   14.487105]  ? intel_pmu_drain_pebs_core+0x350/0x350
+  [   14.487822]  do_syscall_64+0x34/0x80
+  [   14.488345]  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+  [...]
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
-Link: https://lore.kernel.org/r/20220921070035.2016413-3-houtao@huaweicloud.com
-Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
+The test scenario has the following flow:
+
+thread1                               thread2
+-----------                           ---------------
+ tcp_bpf_sendmsg
+  tcp_bpf_send_verdict
+   tcp_bpf_sendmsg_redir              sock_close
+    tcp_bpf_push_locked                 __sock_release
+     tcp_bpf_push                         //inet_release
+      do_tcp_sendpages                    sock->ops->release
+       sk_stream_wait_memory          	   // tcp_close
+          sk_wait_event                      sk->sk_prot->close
+           release_sock(__sk);
+            ***
+                                                lock_sock(sk);
+                                                  __tcp_close
+                                                    sock_orphan(sk)
+                                                      sk->sk_wq  = NULL
+                                                release_sock
+            ****
+           lock_sock(__sk);
+          remove_wait_queue(sk_sleep(sk), &wait);
+             sk_sleep(sk)
+             //NULL pointer dereference
+             &rcu_dereference_raw(sk->sk_wq)->wait
+
+While waiting for memory in thread1, the socket is released with its wait
+queue because thread2 has closed it. This caused by tcp_bpf_send_verdict
+didn't increase the f_count of psock->sk_redir->sk_socket->file in thread1.
+
+We should check if SOCK_DEAD flag is set on wakeup in sk_stream_wait_memory
+before accessing the wait queue.
+
+Suggested-by: Jakub Sitnicki <jakub@cloudflare.com>
+Signed-off-by: Liu Jian <liujian56@huawei.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: John Fastabend <john.fastabend@gmail.com>
+Cc: Eric Dumazet <edumazet@google.com>
+Link: https://lore.kernel.org/bpf/20220823133755.314697-2-liujian56@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../bpf/map_tests/array_map_batch_ops.c       |  2 ++
- .../bpf/map_tests/htab_map_batch_ops.c        |  2 ++
- .../bpf/map_tests/lpm_trie_map_batch_ops.c    |  2 ++
- tools/testing/selftests/bpf/test_maps.c       | 24 ++++++++++++-------
- 4 files changed, 21 insertions(+), 9 deletions(-)
+ net/core/stream.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/bpf/map_tests/array_map_batch_ops.c b/tools/testing/selftests/bpf/map_tests/array_map_batch_ops.c
-index 78c76496b14a..b595556315bc 100644
---- a/tools/testing/selftests/bpf/map_tests/array_map_batch_ops.c
-+++ b/tools/testing/selftests/bpf/map_tests/array_map_batch_ops.c
-@@ -3,6 +3,7 @@
- #include <stdio.h>
- #include <errno.h>
- #include <string.h>
-+#include <unistd.h>
- 
- #include <bpf/bpf.h>
- #include <bpf/libbpf.h>
-@@ -137,6 +138,7 @@ static void __test_map_lookup_and_update_batch(bool is_pcpu)
- 	free(keys);
- 	free(values);
- 	free(visited);
-+	close(map_fd);
- }
- 
- static void array_map_batch_ops(void)
-diff --git a/tools/testing/selftests/bpf/map_tests/htab_map_batch_ops.c b/tools/testing/selftests/bpf/map_tests/htab_map_batch_ops.c
-index f807d53fd8dd..1230ccf90128 100644
---- a/tools/testing/selftests/bpf/map_tests/htab_map_batch_ops.c
-+++ b/tools/testing/selftests/bpf/map_tests/htab_map_batch_ops.c
-@@ -3,6 +3,7 @@
- #include <stdio.h>
- #include <errno.h>
- #include <string.h>
-+#include <unistd.h>
- 
- #include <bpf/bpf.h>
- #include <bpf/libbpf.h>
-@@ -255,6 +256,7 @@ void __test_map_lookup_and_delete_batch(bool is_pcpu)
- 	free(visited);
- 	if (!is_pcpu)
- 		free(values);
-+	close(map_fd);
- }
- 
- void htab_map_batch_ops(void)
-diff --git a/tools/testing/selftests/bpf/map_tests/lpm_trie_map_batch_ops.c b/tools/testing/selftests/bpf/map_tests/lpm_trie_map_batch_ops.c
-index 87d07b596e17..b66d56ddb7ef 100644
---- a/tools/testing/selftests/bpf/map_tests/lpm_trie_map_batch_ops.c
-+++ b/tools/testing/selftests/bpf/map_tests/lpm_trie_map_batch_ops.c
-@@ -7,6 +7,7 @@
- #include <errno.h>
- #include <string.h>
- #include <stdlib.h>
-+#include <unistd.h>
- 
- #include <bpf/bpf.h>
- #include <bpf/libbpf.h>
-@@ -150,4 +151,5 @@ void test_lpm_trie_map_batch_ops(void)
- 	free(keys);
- 	free(values);
- 	free(visited);
-+	close(map_fd);
- }
-diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
-index cbebfaa7c1e8..4d42ffea0038 100644
---- a/tools/testing/selftests/bpf/test_maps.c
-+++ b/tools/testing/selftests/bpf/test_maps.c
-@@ -658,13 +658,13 @@ static void test_sockmap(unsigned int tasks, void *data)
- {
- 	struct bpf_map *bpf_map_rx, *bpf_map_tx, *bpf_map_msg, *bpf_map_break;
- 	int map_fd_msg = 0, map_fd_rx = 0, map_fd_tx = 0, map_fd_break;
-+	struct bpf_object *parse_obj, *verdict_obj, *msg_obj;
- 	int ports[] = {50200, 50201, 50202, 50204};
- 	int err, i, fd, udp, sfd[6] = {0xdeadbeef};
- 	u8 buf[20] = {0x0, 0x5, 0x3, 0x2, 0x1, 0x0};
- 	int parse_prog, verdict_prog, msg_prog;
- 	struct sockaddr_in addr;
- 	int one = 1, s, sc, rc;
--	struct bpf_object *obj;
- 	struct timeval to;
- 	__u32 key, value;
- 	pid_t pid[tasks];
-@@ -760,6 +760,7 @@ static void test_sockmap(unsigned int tasks, void *data)
- 		       i, udp);
- 		goto out_sockmap;
+diff --git a/net/core/stream.c b/net/core/stream.c
+index ccc083cdef23..1105057ce00a 100644
+--- a/net/core/stream.c
++++ b/net/core/stream.c
+@@ -159,7 +159,8 @@ int sk_stream_wait_memory(struct sock *sk, long *timeo_p)
+ 		*timeo_p = current_timeo;
  	}
-+	close(udp);
- 
- 	/* Test update without programs */
- 	for (i = 0; i < 6; i++) {
-@@ -822,27 +823,27 @@ static void test_sockmap(unsigned int tasks, void *data)
- 
- 	/* Load SK_SKB program and Attach */
- 	err = bpf_prog_test_load(SOCKMAP_PARSE_PROG,
--			    BPF_PROG_TYPE_SK_SKB, &obj, &parse_prog);
-+			    BPF_PROG_TYPE_SK_SKB, &parse_obj, &parse_prog);
- 	if (err) {
- 		printf("Failed to load SK_SKB parse prog\n");
- 		goto out_sockmap;
- 	}
- 
- 	err = bpf_prog_test_load(SOCKMAP_TCP_MSG_PROG,
--			    BPF_PROG_TYPE_SK_MSG, &obj, &msg_prog);
-+			    BPF_PROG_TYPE_SK_MSG, &msg_obj, &msg_prog);
- 	if (err) {
- 		printf("Failed to load SK_SKB msg prog\n");
- 		goto out_sockmap;
- 	}
- 
- 	err = bpf_prog_test_load(SOCKMAP_VERDICT_PROG,
--			    BPF_PROG_TYPE_SK_SKB, &obj, &verdict_prog);
-+			    BPF_PROG_TYPE_SK_SKB, &verdict_obj, &verdict_prog);
- 	if (err) {
- 		printf("Failed to load SK_SKB verdict prog\n");
- 		goto out_sockmap;
- 	}
- 
--	bpf_map_rx = bpf_object__find_map_by_name(obj, "sock_map_rx");
-+	bpf_map_rx = bpf_object__find_map_by_name(verdict_obj, "sock_map_rx");
- 	if (!bpf_map_rx) {
- 		printf("Failed to load map rx from verdict prog\n");
- 		goto out_sockmap;
-@@ -854,7 +855,7 @@ static void test_sockmap(unsigned int tasks, void *data)
- 		goto out_sockmap;
- 	}
- 
--	bpf_map_tx = bpf_object__find_map_by_name(obj, "sock_map_tx");
-+	bpf_map_tx = bpf_object__find_map_by_name(verdict_obj, "sock_map_tx");
- 	if (!bpf_map_tx) {
- 		printf("Failed to load map tx from verdict prog\n");
- 		goto out_sockmap;
-@@ -866,7 +867,7 @@ static void test_sockmap(unsigned int tasks, void *data)
- 		goto out_sockmap;
- 	}
- 
--	bpf_map_msg = bpf_object__find_map_by_name(obj, "sock_map_msg");
-+	bpf_map_msg = bpf_object__find_map_by_name(verdict_obj, "sock_map_msg");
- 	if (!bpf_map_msg) {
- 		printf("Failed to load map msg from msg_verdict prog\n");
- 		goto out_sockmap;
-@@ -878,7 +879,7 @@ static void test_sockmap(unsigned int tasks, void *data)
- 		goto out_sockmap;
- 	}
- 
--	bpf_map_break = bpf_object__find_map_by_name(obj, "sock_map_break");
-+	bpf_map_break = bpf_object__find_map_by_name(verdict_obj, "sock_map_break");
- 	if (!bpf_map_break) {
- 		printf("Failed to load map tx from verdict prog\n");
- 		goto out_sockmap;
-@@ -1124,7 +1125,9 @@ static void test_sockmap(unsigned int tasks, void *data)
- 	}
- 	close(fd);
- 	close(map_fd_rx);
--	bpf_object__close(obj);
-+	bpf_object__close(parse_obj);
-+	bpf_object__close(msg_obj);
-+	bpf_object__close(verdict_obj);
- 	return;
  out:
- 	for (i = 0; i < 6; i++)
-@@ -1282,8 +1285,11 @@ static void test_map_in_map(void)
- 			printf("Inner map mim.inner was not destroyed\n");
- 			goto out_map_in_map;
- 		}
-+
-+		close(fd);
- 	}
+-	remove_wait_queue(sk_sleep(sk), &wait);
++	if (!sock_flag(sk, SOCK_DEAD))
++		remove_wait_queue(sk_sleep(sk), &wait);
+ 	return err;
  
-+	bpf_object__close(obj);
- 	return;
- 
- out_map_in_map:
+ do_error:
 -- 
 2.35.1
 
