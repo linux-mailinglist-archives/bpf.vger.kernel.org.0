@@ -2,44 +2,48 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A9E75F92AC
-	for <lists+bpf@lfdr.de>; Mon, 10 Oct 2022 00:50:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F28E5F9385
+	for <lists+bpf@lfdr.de>; Mon, 10 Oct 2022 01:23:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233484AbiJIWuW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 9 Oct 2022 18:50:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58258 "EHLO
+        id S231132AbiJIXXP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 9 Oct 2022 19:23:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233493AbiJIWtN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 9 Oct 2022 18:49:13 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5FAB40E0E;
-        Sun,  9 Oct 2022 15:25:39 -0700 (PDT)
+        with ESMTP id S233299AbiJIXWs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 9 Oct 2022 19:22:48 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C21711475;
+        Sun,  9 Oct 2022 15:49:54 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 93D65B80DE2;
-        Sun,  9 Oct 2022 22:23:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 965C0C4347C;
-        Sun,  9 Oct 2022 22:23:12 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C50DC60C27;
+        Sun,  9 Oct 2022 22:24:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA18CC433C1;
+        Sun,  9 Oct 2022 22:24:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665354193;
-        bh=ZrB31+NJNwQic7KGl2gvkCCBKpq/6mExqiYHUP8iVO4=;
+        s=k20201202; t=1665354258;
+        bh=9F/WwTjHJoxdBWqRa6iOQ5UCJYl2sd5H82WhROoztuA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bOj66cVkjcr55G5TanPEetacZ/u5OUfCclteenjBq4UhqY1oCeKcKYFd0jIhEZtEL
-         Pv+NHFejPOQWcMenJXQPMGruRqw5DOAhXe8SO41+0TVuanWyW/RSdjcTyvLX50dVWI
-         oQUThPQxdbD7jexLxgIuiZttySepp1bX21Zd29tJl/7c92wGfpq5slA4DoCvSr5Gsm
-         vNgKB4sjb9TZTLvCSVu7DDTXWusnX1e2XCLnuHiBoaZWsfeRWYjbR2y9zAiyOxvgbT
-         mn6H9io1iHof2VOf0qPngjdiAa2LjP4w+uF+R6vYFfORtgBJWEtI1Rg/vJfy3SvqtZ
-         BPjZKFYtz+Vqw==
+        b=Ipw5pjN4ZMGojwFzS0GL1JrTYekoUttlPS7AW3TowuZv5fGAWlDsm1bHptsjWfW6K
+         W6/TUZ+k3TnGrJdJc75aguOUqhPq9du1XVYserKsKw3X+TZg4awEXhZxlYWObcin7c
+         Vkw3OB5B7U7YEsw596AvCltNAX13V4HaS0fjlrR94NRfvGviAQig3h4P/GE2t04308
+         20NsKuPKySFXMX0aU9iIgvnv5z0ZqVsNRmwa74p6ccHNogHVDDpr9ctcczxU6cLjgI
+         mgNdY28PLUaIJjVZh9pYKrj2DMQMgzToyJCE9fkrmo+lRVuO7zt3I6RjoV2LKIjEbe
+         iJH/t41ij3RVw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Quentin Monnet <quentin@isovalent.com>,
+Cc:     Liu Jian <liujian56@huawei.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Sasha Levin <sashal@kernel.org>, ast@kernel.org,
-        andrii@kernel.org, bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 03/29] bpftool: Clear errno after libcap's checks
-Date:   Sun,  9 Oct 2022 18:22:38 -0400
-Message-Id: <20221009222304.1218873-3-sashal@kernel.org>
+        John Fastabend <john.fastabend@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Sasha Levin <sashal@kernel.org>, davem@davemloft.net,
+        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 26/29] net: If sock is dead don't access sock's sk_wq in sk_stream_wait_memory
+Date:   Sun,  9 Oct 2022 18:23:01 -0400
+Message-Id: <20221009222304.1218873-26-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221009222304.1218873-1-sashal@kernel.org>
 References: <20221009222304.1218873-1-sashal@kernel.org>
@@ -56,68 +60,104 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Quentin Monnet <quentin@isovalent.com>
+From: Liu Jian <liujian56@huawei.com>
 
-[ Upstream commit cea558855c39b7f1f02ff50dcf701ca6596bc964 ]
+[ Upstream commit 3f8ef65af927db247418d4e1db49164d7a158fc5 ]
 
-When bpftool is linked against libcap, the library runs a "constructor"
-function to compute the number of capabilities of the running kernel
-[0], at the beginning of the execution of the program. As part of this,
-it performs multiple calls to prctl(). Some of these may fail, and set
-errno to a non-zero value:
+Fixes the below NULL pointer dereference:
 
-    # strace -e prctl ./bpftool version
-    prctl(PR_CAPBSET_READ, CAP_MAC_OVERRIDE) = 1
-    prctl(PR_CAPBSET_READ, 0x30 /* CAP_??? */) = -1 EINVAL (Invalid argument)
-    prctl(PR_CAPBSET_READ, CAP_CHECKPOINT_RESTORE) = 1
-    prctl(PR_CAPBSET_READ, 0x2c /* CAP_??? */) = -1 EINVAL (Invalid argument)
-    prctl(PR_CAPBSET_READ, 0x2a /* CAP_??? */) = -1 EINVAL (Invalid argument)
-    prctl(PR_CAPBSET_READ, 0x29 /* CAP_??? */) = -1 EINVAL (Invalid argument)
-    ** fprintf added at the top of main(): we have errno == 1
-    ./bpftool v7.0.0
-    using libbpf v1.0
-    features: libbfd, libbpf_strict, skeletons
-    +++ exited with 0 +++
+  [...]
+  [   14.471200] Call Trace:
+  [   14.471562]  <TASK>
+  [   14.471882]  lock_acquire+0x245/0x2e0
+  [   14.472416]  ? remove_wait_queue+0x12/0x50
+  [   14.473014]  ? _raw_spin_lock_irqsave+0x17/0x50
+  [   14.473681]  _raw_spin_lock_irqsave+0x3d/0x50
+  [   14.474318]  ? remove_wait_queue+0x12/0x50
+  [   14.474907]  remove_wait_queue+0x12/0x50
+  [   14.475480]  sk_stream_wait_memory+0x20d/0x340
+  [   14.476127]  ? do_wait_intr_irq+0x80/0x80
+  [   14.476704]  do_tcp_sendpages+0x287/0x600
+  [   14.477283]  tcp_bpf_push+0xab/0x260
+  [   14.477817]  tcp_bpf_sendmsg_redir+0x297/0x500
+  [   14.478461]  ? __local_bh_enable_ip+0x77/0xe0
+  [   14.479096]  tcp_bpf_send_verdict+0x105/0x470
+  [   14.479729]  tcp_bpf_sendmsg+0x318/0x4f0
+  [   14.480311]  sock_sendmsg+0x2d/0x40
+  [   14.480822]  ____sys_sendmsg+0x1b4/0x1c0
+  [   14.481390]  ? copy_msghdr_from_user+0x62/0x80
+  [   14.482048]  ___sys_sendmsg+0x78/0xb0
+  [   14.482580]  ? vmf_insert_pfn_prot+0x91/0x150
+  [   14.483215]  ? __do_fault+0x2a/0x1a0
+  [   14.483738]  ? do_fault+0x15e/0x5d0
+  [   14.484246]  ? __handle_mm_fault+0x56b/0x1040
+  [   14.484874]  ? lock_is_held_type+0xdf/0x130
+  [   14.485474]  ? find_held_lock+0x2d/0x90
+  [   14.486046]  ? __sys_sendmsg+0x41/0x70
+  [   14.486587]  __sys_sendmsg+0x41/0x70
+  [   14.487105]  ? intel_pmu_drain_pebs_core+0x350/0x350
+  [   14.487822]  do_syscall_64+0x34/0x80
+  [   14.488345]  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+  [...]
 
-This has been addressed in libcap 2.63 [1], but until this version is
-available everywhere, we can fix it on bpftool side.
+The test scenario has the following flow:
 
-Let's clean errno at the beginning of the main() function, to make sure
-that these checks do not interfere with the batch mode, where we error
-out if errno is set after a bpftool command.
+thread1                               thread2
+-----------                           ---------------
+ tcp_bpf_sendmsg
+  tcp_bpf_send_verdict
+   tcp_bpf_sendmsg_redir              sock_close
+    tcp_bpf_push_locked                 __sock_release
+     tcp_bpf_push                         //inet_release
+      do_tcp_sendpages                    sock->ops->release
+       sk_stream_wait_memory          	   // tcp_close
+          sk_wait_event                      sk->sk_prot->close
+           release_sock(__sk);
+            ***
+                                                lock_sock(sk);
+                                                  __tcp_close
+                                                    sock_orphan(sk)
+                                                      sk->sk_wq  = NULL
+                                                release_sock
+            ****
+           lock_sock(__sk);
+          remove_wait_queue(sk_sleep(sk), &wait);
+             sk_sleep(sk)
+             //NULL pointer dereference
+             &rcu_dereference_raw(sk->sk_wq)->wait
 
-  [0] https://git.kernel.org/pub/scm/libs/libcap/libcap.git/tree/libcap/cap_alloc.c?h=libcap-2.65#n20
-  [1] https://git.kernel.org/pub/scm/libs/libcap/libcap.git/commit/?id=f25a1b7e69f7b33e6afb58b3e38f3450b7d2d9a0
+While waiting for memory in thread1, the socket is released with its wait
+queue because thread2 has closed it. This caused by tcp_bpf_send_verdict
+didn't increase the f_count of psock->sk_redir->sk_socket->file in thread1.
 
-Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+We should check if SOCK_DEAD flag is set on wakeup in sk_stream_wait_memory
+before accessing the wait queue.
+
+Suggested-by: Jakub Sitnicki <jakub@cloudflare.com>
+Signed-off-by: Liu Jian <liujian56@huawei.com>
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Link: https://lore.kernel.org/bpf/20220815162205.45043-1-quentin@isovalent.com
+Acked-by: John Fastabend <john.fastabend@gmail.com>
+Cc: Eric Dumazet <edumazet@google.com>
+Link: https://lore.kernel.org/bpf/20220823133755.314697-2-liujian56@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/bpf/bpftool/main.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ net/core/stream.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
-index 4b03983acbef..35984bd354cb 100644
---- a/tools/bpf/bpftool/main.c
-+++ b/tools/bpf/bpftool/main.c
-@@ -364,6 +364,16 @@ int main(int argc, char **argv)
+diff --git a/net/core/stream.c b/net/core/stream.c
+index a166a32b411f..a61130504827 100644
+--- a/net/core/stream.c
++++ b/net/core/stream.c
+@@ -159,7 +159,8 @@ int sk_stream_wait_memory(struct sock *sk, long *timeo_p)
+ 		*timeo_p = current_timeo;
+ 	}
+ out:
+-	remove_wait_queue(sk_sleep(sk), &wait);
++	if (!sock_flag(sk, SOCK_DEAD))
++		remove_wait_queue(sk_sleep(sk), &wait);
+ 	return err;
  
- 	setlinebuf(stdout);
- 
-+#ifdef USE_LIBCAP
-+	/* Libcap < 2.63 hooks before main() to compute the number of
-+	 * capabilities of the running kernel, and doing so it calls prctl()
-+	 * which may fail and set errno to non-zero.
-+	 * Let's reset errno to make sure this does not interfere with the
-+	 * batch mode.
-+	 */
-+	errno = 0;
-+#endif
-+
- 	last_do_help = do_help;
- 	pretty_output = false;
- 	json_output = false;
+ do_error:
 -- 
 2.35.1
 
