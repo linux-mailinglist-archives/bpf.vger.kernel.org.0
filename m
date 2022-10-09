@@ -2,232 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA9545F875D
-	for <lists+bpf@lfdr.de>; Sat,  8 Oct 2022 22:41:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D40D5F88AE
+	for <lists+bpf@lfdr.de>; Sun,  9 Oct 2022 03:10:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229481AbiJHUij (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 8 Oct 2022 16:38:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37172 "EHLO
+        id S229723AbiJIBJ7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 8 Oct 2022 21:09:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbiJHUii (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 8 Oct 2022 16:38:38 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9994356F2;
-        Sat,  8 Oct 2022 13:38:36 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id a5-20020a17090aa50500b002008eeb040eso9092300pjq.1;
-        Sat, 08 Oct 2022 13:38:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=wdVaHTsa7M/Kcp1N5UxpTvJ1YqQbhZn7xcagJKSyPqs=;
-        b=atfHxAdcXcEIN95nphc65XJT+eDTvYs2C6M3dd7eswgwgb4Kh0V6H0fn1RTjbiKdmn
-         +wbOh8n9lVz01XPgzBqgQ3R3ddLQzR4eOw0fijMmp5aeQTW3T3G2u2MeyhIzOEM4xGsQ
-         HTM6rhs3JGgwneqlUgOyDjbXt26ni1sJgB/g4VvGZ/xxliqi2QkNSvR3a7bcG9f8IoBE
-         b0M2V5jfQgAEhZq4S6J5+CABe3olGENy5SFkd10DF7Y+8DYGV0D65iYrUXW6keqWiBwT
-         UsngjBSw5QOMwzolITqodHzVQeDGr+ZS/cLPa7ciTQdI2i/Amklu1exxsaQ+r0pZU+nK
-         /HMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wdVaHTsa7M/Kcp1N5UxpTvJ1YqQbhZn7xcagJKSyPqs=;
-        b=tp7yKFRP4C2lgflJV9kUxItbOd9Uj1NVPILz/TqS8WrIgYrLy3nji/VKp2wSLnTgq0
-         xD7cW2w23+IcGKYfWzEcsC0AnwR7tjuc2kUiLBbQsKu68ASpiM2HRWaopu3onK0eoVaL
-         2GyXQs9hOo+/jTvxaFeiAI+Lsbf+WRzu8doGdr9djTIYp0Tnj9qpReYT0zcN/3NvsycI
-         2oxC49nlsVl8wJ2sr/c/WLBCwSTNMA1NBBzso10Qun5iywqSyjDcqO1WYSE8nMltwKYL
-         kWsTsRAj4+jWkFa+Qse9nBDQ32To3yhOQSgbxayC5imsR3WcZQihRZofWvFJkGQFaEnV
-         7c+g==
-X-Gm-Message-State: ACrzQf3txAFpG4qQ10Ahql4ysfq6fvLOziFTrnPfIA1uDeGjg9sbJvOR
-        /R1PHiX5W4pkmVLSQaiH69E=
-X-Google-Smtp-Source: AMsMyM4xYsHWQnHLKlbUj3el+9HeBIkKlbywkMZJfaX0b57QCEb+xz48BnNeq2Q1jjPeph4bqUsicw==
-X-Received: by 2002:a17:90a:b013:b0:20a:e33d:dfa0 with SMTP id x19-20020a17090ab01300b0020ae33ddfa0mr12546789pjq.82.1665261516252;
-        Sat, 08 Oct 2022 13:38:36 -0700 (PDT)
-Received: from macbook-pro-4.dhcp.thefacebook.com ([2620:10d:c090:400::5:f4af])
-        by smtp.gmail.com with ESMTPSA id a127-20020a621a85000000b0054cd16c9f6bsm3816232pfa.200.2022.10.08.13.38.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 08 Oct 2022 13:38:35 -0700 (PDT)
-Date:   Sat, 8 Oct 2022 13:38:32 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Stanislav Fomichev <sdf@google.com>, bpf <bpf@vger.kernel.org>,
-        Nikolay Aleksandrov <razor@blackwall.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S229796AbiJIBJ4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 8 Oct 2022 21:09:56 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15E3423BFA
+        for <bpf@vger.kernel.org>; Sat,  8 Oct 2022 18:09:52 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4MlP6h2yQ7zl6wL
+        for <bpf@vger.kernel.org>; Sun,  9 Oct 2022 09:07:56 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+        by APP4 (Coremail) with SMTP id gCh0CgD3bY1YH0Jj9xb3Bw--.8357S2;
+        Sun, 09 Oct 2022 09:09:48 +0800 (CST)
+Subject: Re: [PATCH bpf-next v2 00/13] Add support for qp-trie with dynptr key
+To:     paulmck@kernel.org,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Joe Stringer <joe@cilium.io>,
-        Network Development <netdev@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 01/10] bpf: Add initial fd-based API to attach
- tc BPF programs
-Message-ID: <20221008203832.7syl3rbt6lblzqxk@macbook-pro-4.dhcp.thefacebook.com>
-References: <f355eeba-1b46-749f-c102-65074e7eac27@iogearbox.net>
- <CAADnVQ+gEY3FjCR=+DmjDR4gp5bOYZUFJQXj4agKFHT9CQPZBw@mail.gmail.com>
- <14f368eb-9158-68bc-956c-c8371cfcb531@iogearbox.net>
- <875ygvemau.fsf@toke.dk>
- <Y0BaBUWeTj18V5Xp@google.com>
- <87tu4fczyv.fsf@toke.dk>
- <CAADnVQLH9R94iszCmhYeLKnDPy_uiGeyXnEwoADm8_miihwTmQ@mail.gmail.com>
- <8cc9811e-6efe-3aa5-b201-abbd4b10ceb4@iogearbox.net>
- <CAADnVQLpcLWrL-URhRgqCQa6XRZzib4BorZ2QKpPC+Uw_JNW=Q@mail.gmail.com>
- <87sfjysfxt.fsf@toke.dk>
+        Hou Tao <houtao1@huawei.com>
+References: <3c7cf1a8-16f2-5876-ff92-add6fd795caf@huaweicloud.com>
+ <CAADnVQL_fMx3P24wzw2LMON-SqYgRKYziUHg6+mYH0i6kpvJcA@mail.gmail.com>
+ <2d9c2c06-af12-6ad1-93ef-454049727e78@huaweicloud.com>
+ <CAADnVQLWQcjYypR2+6UxhKrLOnpRQtB3PZ0=xOtjGpkEhWbH3g@mail.gmail.com>
+ <2dda66a7-40f5-e595-48cf-b8588c70197a@huaweicloud.com>
+ <CAADnVQKpNn47=2VCNK0BWVR23iwA_S3o3gW4WGuNRgLNzFLXog@mail.gmail.com>
+ <73d338d2-7030-e21a-409d-41e92d907a4f@huaweicloud.com>
+ <CAADnVQKZQ+uBOjWkZ2k-cqHWujFsUKoP_ZHNnuo+vb8XpUoYjA@mail.gmail.com>
+ <20221008132244.GL4196@paulmck-ThinkPad-P17-Gen-1>
+ <CAADnVQLuo+aJ0ke5M3Oz6+B=VtFfD2Qr_9c6KDjfEwHUMsx58w@mail.gmail.com>
+ <20221008201142.GN4196@paulmck-ThinkPad-P17-Gen-1>
+From:   Hou Tao <houtao@huaweicloud.com>
+Message-ID: <1186f2f8-5d2a-fe3f-2f11-27d269143e2b@huaweicloud.com>
+Date:   Sun, 9 Oct 2022 09:09:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87sfjysfxt.fsf@toke.dk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20221008201142.GN4196@paulmck-ThinkPad-P17-Gen-1>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-CM-TRANSID: gCh0CgD3bY1YH0Jj9xb3Bw--.8357S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxZFy3WF1fuF47Zr1Dtry7Wrg_yoW5CFyrpF
+        WSgFW2kr4Dtr9FqrnFvw4UuaySkws3GFW3Gry5J3yUZrn8urn2vry5ta1rCFy5CFWfCw12
+        qrWYy39xZayDA3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
+        07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_
+        WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+        CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
+        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+        7IU13rcDUUUUU==
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS,URI_DOTEDU autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Oct 08, 2022 at 01:38:54PM +0200, Toke Høiland-Jørgensen wrote:
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
-> 
-> > On Fri, Oct 7, 2022 at 12:37 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
-> >>
-> >> On 10/7/22 8:59 PM, Alexei Starovoitov wrote:
-> >> > On Fri, Oct 7, 2022 at 10:20 AM Toke Høiland-Jørgensen <toke@redhat.com> wrote:
-> >> [...]
-> >> >>>> I was thinking a little about how this might work; i.e., how can the
-> >> >>>> kernel expose the required knobs to allow a system policy to be
-> >> >>>> implemented without program loading having to talk to anything other
-> >> >>>> than the syscall API?
-> >> >>>
-> >> >>>> How about we only expose prepend/append in the prog attach UAPI, and
-> >> >>>> then have a kernel function that does the sorting like:
-> >> >>>
-> >> >>>> int bpf_add_new_tcx_prog(struct bpf_prog *progs, size_t num_progs, struct
-> >> >>>> bpf_prog *new_prog, bool append)
-> >> >>>
-> >> >>>> where the default implementation just appends/prepends to the array in
-> >> >>>> progs depending on the value of 'appen'.
-> >> >>>
-> >> >>>> And then use the __weak linking trick (or maybe struct_ops with a member
-> >> >>>> for TXC, another for XDP, etc?) to allow BPF to override the function
-> >> >>>> wholesale and implement whatever ordering it wants? I.e., allow it can
-> >> >>>> to just shift around the order of progs in the 'progs' array whenever a
-> >> >>>> program is loaded/unloaded?
-> >> >>>
-> >> >>>> This way, a userspace daemon can implement any policy it wants by just
-> >> >>>> attaching to that hook, and keeping things like how to express
-> >> >>>> dependencies as a userspace concern?
-> >> >>>
-> >> >>> What if we do the above, but instead of simple global 'attach first/last',
-> >> >>> the default api would be:
-> >> >>>
-> >> >>> - attach before <target_fd>
-> >> >>> - attach after <target_fd>
-> >> >>> - attach before target_fd=-1 == first
-> >> >>> - attach after target_fd=-1 == last
-> >> >>>
-> >> >>> ?
-> >> >>
-> >> >> Hmm, the problem with that is that applications don't generally have an
-> >> >> fd to another application's BPF programs; and obtaining them from an ID
-> >> >> is a privileged operation (CAP_SYS_ADMIN). We could have it be "attach
-> >> >> before target *ID*" instead, which could work I guess? But then the
-> >> >> problem becomes that it's racy: the ID you're targeting could get
-> >> >> detached before you attach, so you'll need to be prepared to check that
-> >> >> and retry; and I'm almost certain that applications won't test for this,
-> >> >> so it'll just lead to hard-to-debug heisenbugs. Or am I being too
-> >> >> pessimistic here?
-> >> >
-> >> > I like Stan's proposal and don't see any issue with FD.
-> >> > It's good to gate specific sequencing with cap_sys_admin.
-> >> > Also for consistency the FD is better than ID.
-> >> >
-> >> > I also like systemd analogy with Before=, After=.
-> >> > systemd has a ton more ways to specify deps between Units,
-> >> > but none of them have absolute numbers (which is what priority is).
-> >> > The only bit I'd tweak in Stan's proposal is:
-> >> > - attach before <target_fd>
-> >> > - attach after <target_fd>
-> >> > - attach before target_fd=0 == first
-> >> > - attach after target_fd=0 == last
-> >>
-> >> I think the before(), after() could work, but the target_fd I have my doubts
-> >> that it will be practical. Maybe lets walk through a concrete real example. app_a
-> >> and app_b shipped via container_a resp container_b. Both want to install tc BPF
-> >> and we (operator/user) want to say that prog from app_b should only be inserted
-> >> after the one from app_a, never run before; if no prog_a is installed, we ofc just
-> >> run prog_b, but if prog_a is inserted, it must be before prog_b given the latter
-> >> can only run after the former. How would we get to one anothers target fd? One
-> >> could use the 0, but not if more programs sit before/after.
-> >
-> > I read your desired use case several times and probably still didn't get it.
-> > Sounds like prog_b can just do after(fd=0) to become last.
-> > And prog_a can do before(fd=0).
-> > Whichever the order of attaching (a or b) these two will always
-> > be in a->b order.
-> 
-> I agree that it's probably not feasible to have programs themselves
-> coordinate between themselves except for "install me last/first" type
-> semantics.
-> 
-> I.e., the "before/after target_fd" is useful for a single application
-> that wants to install two programs in a certain order. Or for bpftool
-> for manual/debugging work.
+Hi Paul,
 
-yep
+On 10/9/2022 4:11 AM, Paul E. McKenney wrote:
+> On Sat, Oct 08, 2022 at 09:40:04AM -0700, Alexei Starovoitov wrote:
+>> On Sat, Oct 8, 2022 at 6:22 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+>>> On Fri, Oct 07, 2022 at 06:59:08PM -0700, Alexei Starovoitov wrote:
+SNIP
+>>>>> Understand. I was just trying to understand the exact performance overhead of
+>>>>> call_rcu(). If the overhead of map operations are much greater than the overhead
+>>>>> of call_rcu(), I think calling call_rcu() one millions a second will be not a
+>>>>> problem and  it also makes the implementation of qp-trie being much simpler. The
+>>>>> OOM problem is indeed a problem, although it is also possible for the current
+>>>>> implementation, so I will try to implement the lookup procedure which handles
+>>>>> the reuse problem.
+>>>> call_rcu is not just that particular function.
+>>>> It's all the work rcu subsystem needs to do to observe gp
+>>>> and execute that callback. Just see how many kthreads it will
+>>>> start when overloaded like this.
+>>> The kthreads to watch include rcu_preempt, rcu_sched, ksoftirqd*, rcuc*,
+>>> and rcuo*.  There is also the back-of-interrupt softirq context, which
+>>> requires some care to measure accurately.
+>>>
+>>> The possibility of SLAB_TYPESAFE_BY_RCU has been discussed.  I take it
+>>> that the per-element locking overhead for exact iterations was a problem?
+>>> If so, what exactly are the consistency rules for iteration?  Presumably
+>>> stronger than "if the element existed throughout, it is included in the
+>>> iteration; if it did not exist throughout, it is not included; otherwise
+>>> it might or might not be included" given that you get that for free.
+>>>
+>>> Either way, could you please tell me the exact iteration rules?
+>> The rules are the way we make them to be.
+>> iteration will be under lock.
+>> lookup needs to be correct. It can retry if necessary (like htab is doing).
+>> Randomly returning 'noexist' is, of course, not acceptable.
+> OK, so then it is important that updates to this data structure be
+> carried out in such a way as to avoid discombobulating lockless readers.
+> Do the updates have that property?
+Yes. The update procedure will copy the old pointer array to a new array first,
+then update the new array and replace the pointer of old array by the pointer of
+new array.
+>
+> The usual way to get that property is to leave the old search structure
+> around, replacing it with the new one, and RCU-freeing the old one.
+> In case it helps, Kung and Lehman describe how to do that for search trees:
+>
+> http://www.eecs.harvard.edu/~htk/publication/1980-tods-kung-lehman.pdf
+Thanks for the paper. Just skimming through it, it seems that it uses
+reference-counting and garbage collection to solve the safe memory reclamation
+problem. It may be too heavy for qp-trie and we plan to use seqcount-like way to
+check whether or not the branch and the leaf node is reused during lookup, and
+retry the lookup if it happened. Now just checking the feasibility of the
+solution and it seems a little complicated than expected.
 
-> System-wide policy (which includes "two containers both using BPF") is
-> going to need some kind of policy agent/daemon anyway. And the in-kernel
-> function override is the only feasible way to do that.
+>
+> 							Thanx, Paul
+> .
 
-yep
-
-> > Since the first and any prog returning !TC_NEXT will abort
-> > the chain we'd need __weak nop orchestrator prog to interpret
-> > retval for anything to be useful.
-> 
-> If we also want the orchestrator to interpret return codes, that
-> probably implies generating a BPF program that does the dispatching,
-> right? (since the attachment is per-interface we can't reuse the same
-> one). So maybe we do need to go the route of the (overridable) usermode
-> helper that gets all the program FDs and generates a BPF dispatcher
-> program? Or can we do this with a __weak function that emits bytecode
-> inside the kernel without being unsafe?
-
-hid-bpf, cgroup-rstat, netfilter-bpf are facing similar issue.
-The __weak override with one prog is certainly limiting.
-And every case needs different demux.
-I think we need to generalize xdp dispatcher to address this.
-For example, for the case:
-__weak noinline void bpf_rstat_flush(struct cgroup *cgrp,
-                                     struct cgroup *parent, int cpu)
-{
-}
-
-we can say that 1st argument to nop function will be used as
-'demuxing entity'.
-Sort of like if we had added a 'prog' pointer to 'struct cgroup',
-but instead of burning 8 byte in every struct cgroup we can generate
-'dispatcher asm' only for specific pointers.
-In case of fuse-bpf that pointer will be a pointer to hid device and
-demux will be done based on device. It can be an integer too.
-The subsystem that defines __weak func can pick whatever int or pointer
-as a first argument and dispatcher routine will generate code:
-if (arg1 == constA) progA(arg1, arg2, ...);
-else if (arg1 == constB) progB(arg1, arg2, ...);
-...
-else nop();
-
-This way the 'nop' property of __weak is preserved until user space
-passes (constA, progA) tuple to the kernel to generate dispatcher
-for that __weak hook.
-
-> Anyway, I'm OK with deferring the orchestrator mechanism and going with
-> Stanislav's proposal as an initial API.
-
-Great. Looks like we're converging :) Hope Daniel is ok with this direction.
