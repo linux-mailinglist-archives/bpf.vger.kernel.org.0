@@ -2,45 +2,47 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D80A5F8FEF
-	for <lists+bpf@lfdr.de>; Mon, 10 Oct 2022 00:19:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B4A35F908A
+	for <lists+bpf@lfdr.de>; Mon, 10 Oct 2022 00:26:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230498AbiJIWTs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 9 Oct 2022 18:19:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36328 "EHLO
+        id S231880AbiJIWZ7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 9 Oct 2022 18:25:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231705AbiJIWS6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 9 Oct 2022 18:18:58 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 094B83BC63;
-        Sun,  9 Oct 2022 15:16:01 -0700 (PDT)
+        with ESMTP id S231881AbiJIWX5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 9 Oct 2022 18:23:57 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC58B3C166;
+        Sun,  9 Oct 2022 15:18:10 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 53E5F60CA0;
-        Sun,  9 Oct 2022 22:14:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD596C433D6;
-        Sun,  9 Oct 2022 22:14:55 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 9F307B80DF4;
+        Sun,  9 Oct 2022 22:15:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83D5AC433D7;
+        Sun,  9 Oct 2022 22:15:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665353696;
-        bh=csB+pO8pL0qHwlqK0R5dM8S9SaeLsh5olOWztVLv/ec=;
-        h=From:To:Cc:Subject:Date:From;
-        b=R13aVpDr2fNJGqX+1ykGseyzdihQVkUQUgj7Ge4FGCDmOSjmTXlzEJU7kisZXnW61
-         8SBxGtUh/oZHOTNBC8Znkjoyz8qZkvsomqD3MeWRmBsrqS1lYTwcDgD8XuIaBD15Tt
-         qScZgP0GBZXglmVtj3RF5zopX/7RUZgndDhRYaH0HBy4OiVG7Nyq4cEzu59SBOYv2E
-         H3IEtPChYaFD17S9KUkbtAFffTSxlZzSR1OqDjozgaPGONMBnzxd/+oN2Yfdvm7kfm
-         +NNBFudULzaUN9jc2cd7q+kHxYZgeBJKb/pAE+obrB65z3EJIXR+h0aNHDU6mm50o5
-         zCyQv7KJqox1A==
+        s=k20201202; t=1665353726;
+        bh=xHizhrsgBaS+HGjRTXe73ubCJjvU4dsr7/rdK0W9Avo=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=FP7KdZS3OjunJA9E8Xlj2pFS3r1bulYWIrdtAfNkHejx1bO3rHdT8w/BOea5XRD5O
+         4ulGA9TBS5oBh7Bt526nIbc0aDJCgCvlhfkhLDPtfG+B8rp4F3Gxbu+gzEYJ3mSYfx
+         npjtZcJZYbQWhnW5gPp3yqpAyf9XEfrlMBYsqwol5Tuv9zSdT8JXh++yGejNbkwSp7
+         RUkOxiSqOWd5w1GkumfV80l/9JJ5AaVezEmdR2joGkJxoUHKhNh3i2WG0e251uZsWZ
+         RM9yvKuyHrOw5CnLBUR2bMjICDmf/CK2acMUtzL7RJlllNBLbHGUeL/NwaJBdyjsSm
+         a7tQQGHqgEVZA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Hengqi Chen <hengqi.chen@gmail.com>, Goro Fuji <goro@fastly.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
+Cc:     Quentin Monnet <quentin@isovalent.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Sasha Levin <sashal@kernel.org>, ast@kernel.org,
-        daniel@iogearbox.net, bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.19 01/73] libbpf: Do not require executable permission for shared libraries
-Date:   Sun,  9 Oct 2022 18:13:39 -0400
-Message-Id: <20221009221453.1216158-1-sashal@kernel.org>
+        andrii@kernel.org, bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.19 05/73] bpftool: Clear errno after libcap's checks
+Date:   Sun,  9 Oct 2022 18:13:43 -0400
+Message-Id: <20221009221453.1216158-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20221009221453.1216158-1-sashal@kernel.org>
+References: <20221009221453.1216158-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -54,59 +56,68 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Hengqi Chen <hengqi.chen@gmail.com>
+From: Quentin Monnet <quentin@isovalent.com>
 
-[ Upstream commit 9e32084ef1c33a87a736d6ce3fcb95b60dac9aa1 ]
+[ Upstream commit cea558855c39b7f1f02ff50dcf701ca6596bc964 ]
 
-Currently, resolve_full_path() requires executable permission for both
-programs and shared libraries. This causes failures on distos like Debian
-since the shared libraries are not installed executable and Linux is not
-requiring shared libraries to have executable permissions. Let's remove
-executable permission check for shared libraries.
+When bpftool is linked against libcap, the library runs a "constructor"
+function to compute the number of capabilities of the running kernel
+[0], at the beginning of the execution of the program. As part of this,
+it performs multiple calls to prctl(). Some of these may fail, and set
+errno to a non-zero value:
 
-Reported-by: Goro Fuji <goro@fastly.com>
-Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/bpf/20220806102021.3867130-1-hengqi.chen@gmail.com
+    # strace -e prctl ./bpftool version
+    prctl(PR_CAPBSET_READ, CAP_MAC_OVERRIDE) = 1
+    prctl(PR_CAPBSET_READ, 0x30 /* CAP_??? */) = -1 EINVAL (Invalid argument)
+    prctl(PR_CAPBSET_READ, CAP_CHECKPOINT_RESTORE) = 1
+    prctl(PR_CAPBSET_READ, 0x2c /* CAP_??? */) = -1 EINVAL (Invalid argument)
+    prctl(PR_CAPBSET_READ, 0x2a /* CAP_??? */) = -1 EINVAL (Invalid argument)
+    prctl(PR_CAPBSET_READ, 0x29 /* CAP_??? */) = -1 EINVAL (Invalid argument)
+    ** fprintf added at the top of main(): we have errno == 1
+    ./bpftool v7.0.0
+    using libbpf v1.0
+    features: libbfd, libbpf_strict, skeletons
+    +++ exited with 0 +++
+
+This has been addressed in libcap 2.63 [1], but until this version is
+available everywhere, we can fix it on bpftool side.
+
+Let's clean errno at the beginning of the main() function, to make sure
+that these checks do not interfere with the batch mode, where we error
+out if errno is set after a bpftool command.
+
+  [0] https://git.kernel.org/pub/scm/libs/libcap/libcap.git/tree/libcap/cap_alloc.c?h=libcap-2.65#n20
+  [1] https://git.kernel.org/pub/scm/libs/libcap/libcap.git/commit/?id=f25a1b7e69f7b33e6afb58b3e38f3450b7d2d9a0
+
+Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Link: https://lore.kernel.org/bpf/20220815162205.45043-1-quentin@isovalent.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/bpf/libbpf.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ tools/bpf/bpftool/main.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 266357b1dca1..91bfe42e5cf4 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -11206,15 +11206,17 @@ static const char *arch_specific_lib_paths(void)
- static int resolve_full_path(const char *file, char *result, size_t result_sz)
- {
- 	const char *search_paths[3] = {};
--	int i;
-+	int i, perm;
+diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
+index 9062ef2b8767..0881437587ba 100644
+--- a/tools/bpf/bpftool/main.c
++++ b/tools/bpf/bpftool/main.c
+@@ -435,6 +435,16 @@ int main(int argc, char **argv)
  
- 	if (str_has_sfx(file, ".so") || strstr(file, ".so.")) {
- 		search_paths[0] = getenv("LD_LIBRARY_PATH");
- 		search_paths[1] = "/usr/lib64:/usr/lib";
- 		search_paths[2] = arch_specific_lib_paths();
-+		perm = R_OK;
- 	} else {
- 		search_paths[0] = getenv("PATH");
- 		search_paths[1] = "/usr/bin:/usr/sbin";
-+		perm = R_OK | X_OK;
- 	}
+ 	setlinebuf(stdout);
  
- 	for (i = 0; i < ARRAY_SIZE(search_paths); i++) {
-@@ -11233,8 +11235,8 @@ static int resolve_full_path(const char *file, char *result, size_t result_sz)
- 			if (!seg_len)
- 				continue;
- 			snprintf(result, result_sz, "%.*s/%s", seg_len, s, file);
--			/* ensure it is an executable file/link */
--			if (access(result, R_OK | X_OK) < 0)
-+			/* ensure it has required permissions */
-+			if (access(result, perm) < 0)
- 				continue;
- 			pr_debug("resolved '%s' to '%s'\n", file, result);
- 			return 0;
++#ifdef USE_LIBCAP
++	/* Libcap < 2.63 hooks before main() to compute the number of
++	 * capabilities of the running kernel, and doing so it calls prctl()
++	 * which may fail and set errno to non-zero.
++	 * Let's reset errno to make sure this does not interfere with the
++	 * batch mode.
++	 */
++	errno = 0;
++#endif
++
+ 	last_do_help = do_help;
+ 	pretty_output = false;
+ 	json_output = false;
 -- 
 2.35.1
 
