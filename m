@@ -2,122 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0567E5F8B78
-	for <lists+bpf@lfdr.de>; Sun,  9 Oct 2022 15:01:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A9EB5F8D46
+	for <lists+bpf@lfdr.de>; Sun,  9 Oct 2022 20:43:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230196AbiJINBE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 9 Oct 2022 09:01:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60084 "EHLO
+        id S230319AbiJISnS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 9 Oct 2022 14:43:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230181AbiJINBA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 9 Oct 2022 09:01:00 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E26A29812;
-        Sun,  9 Oct 2022 06:00:58 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Mlhtn4HtWzKFTc;
-        Sun,  9 Oct 2022 20:58:41 +0800 (CST)
-Received: from k01.huawei.com (unknown [10.67.174.197])
-        by APP2 (Coremail) with SMTP id Syh0CgDHX9T6xUJjwRQEAA--.16593S7;
-        Sun, 09 Oct 2022 21:00:55 +0800 (CST)
-From:   Xu Kuohai <xukuohai@huaweicloud.com>
-To:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Hou Tao <houtao1@huawei.com>,
-        Dmitrii Dolgov <9erthalion6@gmail.com>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Kui-Feng Lee <kuifeng@fb.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Subject: [PATCH bpf-next 5/5] selftest/bpf: Fix error usage of ASSERT_OK in xdp_adjust_tail.c
-Date:   Sun,  9 Oct 2022 09:18:30 -0400
-Message-Id: <20221009131830.395569-6-xukuohai@huaweicloud.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20221009131830.395569-1-xukuohai@huaweicloud.com>
-References: <20221009131830.395569-1-xukuohai@huaweicloud.com>
+        with ESMTP id S230201AbiJISnR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 9 Oct 2022 14:43:17 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA3A124BCA
+        for <bpf@vger.kernel.org>; Sun,  9 Oct 2022 11:43:16 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id r8-20020a1c4408000000b003c47d5fd475so2114238wma.3
+        for <bpf@vger.kernel.org>; Sun, 09 Oct 2022 11:43:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=YTptt1W09idFMS+rLbJl5PLPMmSHCElX2/TSniLH/8g=;
+        b=thbsNcRGKjqPIwsobQXfLXoUIDBQSBB504od90dhebRdyWSHFpcFj+aMQSge9MFSHL
+         vRmwyCD767NUh/Cd79Vs7TMv2zv+t2iXDAeoWLky5d9iJnKHBks9hRSmKvZZ1dt14pB3
+         LNFmZxfP6P2uEi7Sl2C/HJqmMFrpgnVNSNU441vR9S0tTWYI74lGG+A+oPuQgud3lJtM
+         38UlxH9zOoT7dt12l4g3gGZPLEGaGtoX1ME3Oj1xz4uYatuKai3DJvaZyD5kHV8zW99U
+         ngdvLikMpsXc3XaPI4q57DyoAGdySRLbE8UwP2Yeq9dgJNxr28yuBj7ozrZM+m0P/JIn
+         yYbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YTptt1W09idFMS+rLbJl5PLPMmSHCElX2/TSniLH/8g=;
+        b=IBmq5/H8kROZp7pIePik1AjxLD+ZN6U4OHH+v1uhk+6RPVInVjDKCNrbtoslbubQxe
+         n+3GQWqKaMgzcYRc3ZYJFlL4pxzHXZvbPn0ZG+pctyrYr2LMNPVUJInfdS1PyYc90WCR
+         czfVRqi0R9pmR91alzFq8seUHRPaKiq2xv8EH2v74MxlvCqgMYQ6d4++VkYbDiUG6l6g
+         cqxgw/N3P9IkGbqWO4XVpkpwWTWn5LXh60Txkh9HOYwAe+vkNZHOob2WP87bqDAfnExC
+         qMmuy1VlpavHxn3RHXWucHZ++9nAi1FI+eEQdtRrSYd4n/wOiAfetZZYhI2uNEHNsH3H
+         t/Ew==
+X-Gm-Message-State: ACrzQf3tfkv/Dz4eRgb53Giq6vvMtKsnZZzeU5DbRkXo3r1UJUw0kFog
+        orX0ZqPcyUZMxv8lkrpMzpUUL38DaqZWrTbRkuk3sQ==
+X-Google-Smtp-Source: AMsMyM7yuyOUnHNHbwjRAR2T4wV32eCL4nIRnjXcCI2J78gBD2N+klea2pOETLZBRdsTrgffHLQPgjzpfcd1+2H5v/I=
+X-Received: by 2002:a7b:cb92:0:b0:3c4:cf60:7a7 with SMTP id
+ m18-20020a7bcb92000000b003c4cf6007a7mr5213828wmi.24.1665340995066; Sun, 09
+ Oct 2022 11:43:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgDHX9T6xUJjwRQEAA--.16593S7
-X-Coremail-Antispam: 1UD129KBjvJXoW7uFyfur4UArW5ZFWDCFy8Xwb_yoW8WF43pa
-        4UJw1qya4Fvr1UXF1UJFy29ry8K3WxWw1fCa9F9r45Ar47XF97JF1xKayaq3ZYgFWrXw1r
-        Z345Krn5Zw45J3JanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBSb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
-        Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
-        rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267
-        AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E
-        14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7
-        xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Y
-        z7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2
-        Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
-        6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0x
-        vE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1lIxAI
-        cVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2js
-        IEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjxUFgAwUUUUU
-X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-        MAY_BE_FORGED,SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no
-        version=3.4.6
+References: <000000000000385cbf05ea3f1862@google.com> <00000000000028a44005ea40352b@google.com>
+ <Y0CbtVwW6+QIYJdQ@slm.duckdns.org> <Y0HBlJ4AoZba93Uf@cae.in-ulm.de>
+ <20221009084039.cw6meqbvy4362lsa@wittgenstein> <Y0LITEA/22Z7YVSa@cae.in-ulm.de>
+In-Reply-To: <Y0LITEA/22Z7YVSa@cae.in-ulm.de>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Sun, 9 Oct 2022 11:42:38 -0700
+Message-ID: <CAJD7tkaQSMSmrb3Nt17-NPAPkvEoUp5tJBg8e4UYn0eU6x-Gqw@mail.gmail.com>
+Subject: Re: [PATCH] cgroup: Fix crash with CLONE_INTO_CGROUP and v1 cgroups
+To:     "Christian A. Ehrhardt" <lk@c--e.de>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>
+Cc:     Christian Brauner <brauner@kernel.org>, Tejun Heo <tj@kernel.org>,
+        syzbot <syzbot+534ee3d24c37c411f37f@syzkaller.appspotmail.com>,
+        gregkh@linuxfoundation.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Xu Kuohai <xukuohai@huawei.com>
+On Sun, Oct 9, 2022 at 6:10 AM Christian A. Ehrhardt <lk@c--e.de> wrote:
+>
+>
+> Since commit f3a2aebdd6, Version 1 cgroups no longer cause an
+> error when used with CLONE_INTO_CGROUP. However, the permission
+> checks performed during clone assume a Version 2 cgroup.
+>
+> Restore the error check for V1 cgroups in the clone() path.
+>
+> Reported-by: syzbot+534ee3d24c37c411f37f@syzkaller.appspotmail.com
+> Link: https://lore.kernel.org/lkml/000000000000385cbf05ea3f1862@google.com/
+> Fixes: f3a2aebdd6 ("cgroup: enable cgroup_get_from_file() on cgroup1")
 
-xdp_adjust_tail.c calls ASSERT_OK() to check the return value of
-bpf_prog_test_load(), but the condition is not correct. Fix it.
+Thanks for fixing this, and sorry if this caused a mess.
 
-Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
----
- tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+cgroup_get_from_file() independently seemed like it can support
+cgroup1, I didn't realize that some of the callers depend on the fact
+that it only supports cgroup2.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c b/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c
-index 9b9cf8458adf..29f0194e6170 100644
---- a/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c
-@@ -18,7 +18,7 @@ static void test_xdp_adjust_tail_shrink(void)
- 	);
- 
- 	err = bpf_prog_test_load(file, BPF_PROG_TYPE_XDP, &obj, &prog_fd);
--	if (ASSERT_OK(err, "test_xdp_adjust_tail_shrink"))
-+	if (!ASSERT_OK(err, "test_xdp_adjust_tail_shrink"))
- 		return;
- 
- 	err = bpf_prog_test_run_opts(prog_fd, &topts);
-@@ -53,7 +53,7 @@ static void test_xdp_adjust_tail_grow(void)
- 	);
- 
- 	err = bpf_prog_test_load(file, BPF_PROG_TYPE_XDP, &obj, &prog_fd);
--	if (ASSERT_OK(err, "test_xdp_adjust_tail_grow"))
-+	if (!ASSERT_OK(err, "test_xdp_adjust_tail_grow"))
- 		return;
- 
- 	err = bpf_prog_test_run_opts(prog_fd, &topts);
-@@ -89,7 +89,7 @@ static void test_xdp_adjust_tail_grow2(void)
- 	);
- 
- 	err = bpf_prog_test_load(file, BPF_PROG_TYPE_XDP, &obj, &prog_fd);
--	if (ASSERT_OK(err, "test_xdp_adjust_tail_grow"))
-+	if (!ASSERT_OK(err, "test_xdp_adjust_tail_grow"))
- 		return;
- 
- 	/* Test case-64 */
--- 
-2.25.1
++Andrii Nakryiko +Alexei Starovoitov +Martin KaFai Lau +bpf
+I wonder if BPF users have this dependency. Does cgroup_bpf_attach()
+also depend on cgroup_get_from_fd() (which calls
+cgroup_get_from_file()) eliminating v1 cgroups?
 
+It seems like cgroup storages (and some other places) use cgroup ids.
+Collisions can happen in cgroup1 ids so I am assuming we want to add a
+check there as well. Perhaps in cgroup_bpf_attach() ?
+
+I can send a patch for this if that's the case.
+
+> Signed-off-by: Christian A. Ehrhardt <lk@c--e.de>
+> ---
+>  kernel/cgroup/cgroup.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+> index b6e3110b3ea7..f7fc3afa88c1 100644
+> --- a/kernel/cgroup/cgroup.c
+> +++ b/kernel/cgroup/cgroup.c
+> @@ -6244,6 +6244,11 @@ static int cgroup_css_set_fork(struct kernel_clone_args *kargs)
+>                 goto err;
+>         }
+>
+> +       if (!cgroup_on_dfl(dst_cgrp)) {
+> +               ret = -EBADF;
+> +               goto err;
+> +       }
+> +
+>         if (cgroup_is_dead(dst_cgrp)) {
+>                 ret = -ENODEV;
+>                 goto err;
+> --
+> 2.34.1
+>
