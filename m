@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81F765FA8BF
-	for <lists+bpf@lfdr.de>; Tue, 11 Oct 2022 01:58:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 498575FA8C7
+	for <lists+bpf@lfdr.de>; Tue, 11 Oct 2022 01:58:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230086AbiJJX6P (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 10 Oct 2022 19:58:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58812 "EHLO
+        id S229840AbiJJX6z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 10 Oct 2022 19:58:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229925AbiJJX6O (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 10 Oct 2022 19:58:14 -0400
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9148A7FE75
-        for <bpf@vger.kernel.org>; Mon, 10 Oct 2022 16:58:13 -0700 (PDT)
-Received: by mail-pj1-x1049.google.com with SMTP id nn14-20020a17090b38ce00b0020acfa1403bso107793pjb.1
-        for <bpf@vger.kernel.org>; Mon, 10 Oct 2022 16:58:13 -0700 (PDT)
+        with ESMTP id S230072AbiJJX6x (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 10 Oct 2022 19:58:53 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E003F7FE7F
+        for <bpf@vger.kernel.org>; Mon, 10 Oct 2022 16:58:52 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id p5-20020a25bd45000000b006beafa0d110so11954734ybm.1
+        for <bpf@vger.kernel.org>; Mon, 10 Oct 2022 16:58:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
          :date:message-id:reply-to;
         bh=32G3k93Ulqw+bBT8wloqCvMkNp9uoyXmylHiGN2Ypxc=;
-        b=LcWt5IjwCcy3rAad+wx5DSEJeu4bbnR1UwRvydSMhWPJLCVVIhiV3sdwaiTUIjBUbt
-         AwITg2e81qFFFEtOCWDrKdow2ER0lA/l4S/JNM2JP+v0ZWrdG39lvd8rPH1dfn6TZQQu
-         76My+esp98qhz7FQrF8bxlLcyRAHtUNelF+oJHIqMQ7/1JlULihRngFRjGq+CsdrC7JL
-         pyc2BCkq7cxAxQCd3YlkgYqYXYOKvydwutn/bGtBWCJYKOCmNo8ywgrQenJoHqDDJrLW
-         ciqwgnPm2h+kpnsB/B33ihE6QHIppIccsEQAkr1f8JnZ/6aJ28iETmFw9Ei0RjxuUfiF
-         e5pQ==
+        b=oBamiBMlwevwaWtK9/MK/DT9KKivXxO2BxJN593yqX6pYjoGISML+X3eegUtf6A2M5
+         4iA2KIkdw4Sa2t3eOKZT3OrwBQCo8yzMbPa7sEEiMxRHAUJzqmE8fikOru5PvKc3xLKp
+         7pBhjHTEQuE239jf1M8tJM2axFb+arNmTjtVlvz9nWLtrXVa2bgjE1lgBqheC+oaMxPV
+         buJwf/w9KTYkdmjq4x2mUZ67/K32gzGzfrn+c8T3b3ekZOISsbXD9cufr41n2pvvZnd4
+         2U5PTZALuINUVBwjM1H5EV2MwG9mT5ARQpFgxKTCSTKgM98LAeeMrpsjT5iMKRDZqt+F
+         TL8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
         bh=32G3k93Ulqw+bBT8wloqCvMkNp9uoyXmylHiGN2Ypxc=;
-        b=HlXEuUJRzOrQMWVuWVUc+gSUWn9Ji1p6uCd7rvY2F0sVnLLub7PGNgTLbV7epJ4NkL
-         NMIGSngUfPzdwavNAhCVlipwkTuDkizuabd7DCDnMgCzN3mo/1JAQpGOVWEwXctVPw7W
-         Ud1GrZWI7129nVWbKDjZMZtnJ7CpM7aWEMy1CZqUOSp5ah0e9231H6nov7a6x1hk95gT
-         WkqNk5dq9QHQGxpf0lHX3NhMku3+C7lDwY4QMTGf1Dk5PyUqxSsfgIE70Uu2ij2PPFp8
-         pNJs3ttH2VoahLDZL3+i/XUYnEdAT35SDgs3V1N62nHVFTfpIKsIvNBb+SnIH2sOAVtS
-         UR7A==
-X-Gm-Message-State: ACrzQf2S50NRSjIZ4PQtFKo+M9haUMyU97x+tW/ARgucdkFC4j7WuWj1
-        ugb8ucmgRqa4WdHtSIm3DlF4GYpsLDET5BGi
-X-Google-Smtp-Source: AMsMyM6Jw40l0u70IlwQVdch68V4JzwL6jSidvy3rtHMdUOo0co1MMkUBYniXw4/pl9AI7Fy/6+g0Wd38ANIIk53
+        b=6QLizKIZNvFMBXMfZOAmp4fyBkuyONkQu02mJgcpeY0mheCWNKMBXulYty8u38IIoB
+         A5yuKlrvSnd+mgoUDI75XdK9RV7rZltMMiyBUhlpfd0SmF/fzcBnTNh1tGV/wfDFX3gh
+         II1NEAUihUFx5WAW8vWThegxRU4IAzEj4zJUESqgadTQ2xlpDqNh72PSrQLPguEYGfmi
+         Dytdo+LNhFlUnv43yGszsqlWMzv8cMZwPStM6ZtdeXGPriwok+zoUJADrKUBSzkqLsOx
+         d/exSFCXVjyAYiVPfqEoqz7pbmlTUXdFzRlOBrNX8Xofx5yuaUMKoNnXnf4MQdsYUBsC
+         WUAg==
+X-Gm-Message-State: ACrzQf2FlEpgiQXs5wJuO5h4ebiJjFD2ZksVtoHTTvcUfSt4ra041vky
+        pDFoQq4JaDKbqbtK+E5MHoQBH0IGdIkj9YrV
+X-Google-Smtp-Source: AMsMyM5DVXg5sRb4xhrP+EF/t+N8fSesDoGkVZhdZwcIM0i//2doFKVpIAnhQz1pvBQYkekxL/PBBffZP3lfkxTd
 X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
- (user=yosryahmed job=sendgmr) by 2002:a17:90a:cd06:b0:203:ae0e:6a21 with SMTP
- id d6-20020a17090acd0600b00203ae0e6a21mr1888481pju.0.1665446292568; Mon, 10
- Oct 2022 16:58:12 -0700 (PDT)
-Date:   Mon, 10 Oct 2022 23:58:02 +0000
+ (user=yosryahmed job=sendgmr) by 2002:a0d:ce05:0:b0:345:5ea7:22fa with SMTP
+ id q5-20020a0dce05000000b003455ea722famr19246450ywd.279.1665446332163; Mon,
+ 10 Oct 2022 16:58:52 -0700 (PDT)
+Date:   Mon, 10 Oct 2022 23:58:42 +0000
 Mime-Version: 1.0
 X-Mailer: git-send-email 2.38.0.rc1.362.ged0d419d3c-goog
-Message-ID: <20221010235802.3378436-1-yosryahmed@google.com>
+Message-ID: <20221010235845.3379019-1-yosryahmed@google.com>
 Subject: [PATCH v1 0/3] Fix cgroup1 support in get from fd/file interfaces
 From:   Yosry Ahmed <yosryahmed@google.com>
 To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
@@ -68,7 +68,7 @@ Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
