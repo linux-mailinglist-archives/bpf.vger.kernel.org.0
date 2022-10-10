@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4562D5FA8CB
-	for <lists+bpf@lfdr.de>; Tue, 11 Oct 2022 01:59:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B844E5FA8D0
+	for <lists+bpf@lfdr.de>; Tue, 11 Oct 2022 01:59:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229616AbiJJX66 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 10 Oct 2022 19:58:58 -0400
+        id S230164AbiJJX7G (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 10 Oct 2022 19:59:06 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230120AbiJJX65 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 10 Oct 2022 19:58:57 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DCCA7FF83
-        for <bpf@vger.kernel.org>; Mon, 10 Oct 2022 16:58:56 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id q3-20020a17090311c300b0017898180dddso8723762plh.0
-        for <bpf@vger.kernel.org>; Mon, 10 Oct 2022 16:58:56 -0700 (PDT)
+        with ESMTP id S230136AbiJJX67 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 10 Oct 2022 19:58:59 -0400
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD5AD7FF91
+        for <bpf@vger.kernel.org>; Mon, 10 Oct 2022 16:58:57 -0700 (PDT)
+Received: by mail-pj1-x104a.google.com with SMTP id z9-20020a17090a468900b00202fdb32ba1so4566878pjf.1
+        for <bpf@vger.kernel.org>; Mon, 10 Oct 2022 16:58:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=PtNrUd9EMj0I502bSB6YBXD5TgTiX1+1yTi9Pa6f94M=;
-        b=OOeBo8F1N0lTKOQnJQ6gjRzmWKqHpT7+Pw3vXDR73IrU1E4xpR1RXW0AyAeAg98DF2
-         0VRGJGzEExjWy4Eg3AmeCRoU3WPGIEEXBA0X7oh2O/sJbrOpwxwlzWb5LuTekNFwBvIG
-         agxHCGqzT5FvWIUf5V5ApkseZkzZBxDzx9jXXKTyJYIqwOdRA4tN8+jfet9kWaF4NfCX
-         FLMYscR4F9y/dAqOnhNfzFJWY/dHzkzWWoWcvxMjpnLX7GuAKSt3YHkJcQumbIWwOiY7
-         eBd79d0IbBy9hPp0PiaMdgnTCOUqu7e/v+fyukJ3ulE+P7KGO7pFFXtwydwkWvfJ+gZQ
-         +baQ==
+        bh=UTUrIJaSpVElDApPbK9Ogfa6jeq4HshVrEJbru1RJcM=;
+        b=p+6H8bBZwkvXjYGvxdxhky+agm9qBDmK8LpqI+MkL1oZLYiZQD/o23pMHVwj4xGRhx
+         bf9ODEqigYJc6RVWntTsxsj0pOopw1I4WXYAqnonPx4QdbV7S0LHfp0tSEcFoxWUhHn7
+         30AMO8eq8jME46yURzfELTkWz8aJr1Iodvfc+7axAwaUAU9UZlkhgR/UF3T9F/wmVjMP
+         D8ZLPnEocCn5U6yJ/FyDHNXxbO5lRS9rakU22g2FgjaFEDTsUJ6JSO4Ec9gKycc5Li4A
+         1IXJT6f4tjJcpYLEoTuzvQ6FWwPINyF/jj3Ix9q80CwMjA2kZiLMx/JhHsIe2U1VkyLP
+         Jchw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PtNrUd9EMj0I502bSB6YBXD5TgTiX1+1yTi9Pa6f94M=;
-        b=76CHQ8lIsFR3fW83t8uDsYKqz0XBoyu1KHm5injfLGgMv7c2H1B8S2djmGpx6YW4aA
-         GTJ1WK7MIJZ1138amrz74EF3GKYTwMpTaN6ojzboXgLTVKmy2daB5AQE0wrp0lEGoR+j
-         KTYvvs8ZwG4F50Al1O9CAVK78hZGrlKy+HBXVhqlUSBDek7GPTvnyThclWNRxEA0ryT4
-         l1lPb1xVJTyjkymQQq759kAG3+eNh/NITX9CvTl/r4lSAr1yHlH3zheuoaClIzwLOGuu
-         dJcLEIjbHey0p7t0LiovhJyOE1OFS8heE+ZwbkkGd3fRlr0FcAMtKi7WEZ2KtEvkPLF4
-         MXmw==
-X-Gm-Message-State: ACrzQf0JejdUsnE7tH3DpGxZiqDW1Kci3MFGWU8O8oRjtaWpf91U/hE4
-        RHi7npfvkjtmH/qAv0t0/YQ8l1TpQXxhtr3y
-X-Google-Smtp-Source: AMsMyM4gQxpJ/Q5TSIfcUWEs+Y/lGTQRc+zkjm6wS56Km93ixi79nS80a1vD78Y+PM0wkfH/W6VVBszkE8R+JvG4
+        bh=UTUrIJaSpVElDApPbK9Ogfa6jeq4HshVrEJbru1RJcM=;
+        b=H4HgCFMKydlJAd1Q1fIFvcB/NQN7ZGMSm1X9ulEDCYtvq1hLCrAd/rlmn+LR8VfL5L
+         DqkJ2mhr0+aF0+gZxx6Xuu3kXgyMWtXqVyEjX8VSZ1G9ADY/nfWZnrzZkXyyCsP4Yn2r
+         dsxj7Dl0kKjcAbXl0mkLr50+8TwA0M0AzPlxysAlZd8Od4CUtrWgWGjXhusLRlYSVlrX
+         4l526lgAvIV1u7AQSLN/5CBhPIjDiQDWGnk4YbzbtYW7aq5kK1SAefrDHLGWkoKgxgyI
+         YNi4W63R2iZbCl9w2u/kpf4bpguMaoLGNbuHDix5/1ox5d5MRZ3reXXq0lhQxXksZyRU
+         JOFQ==
+X-Gm-Message-State: ACrzQf2hCEBZ0S6tEfsyGZfTzvHO2U9P371/M5VcFvN6VyKa396NmhBg
+        fXVDUCLKVbnEusg0M5jgu/MQ+eSz7xqz5YB+
+X-Google-Smtp-Source: AMsMyM7Lto5Xlv8xKu7VE669vgBYORrets5oSwZzF6NLsybuXw+F8Qy++IDKLe70lX6fUeg2cGtIEv+gwQzD/swm
 X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
- (user=yosryahmed job=sendgmr) by 2002:a17:90b:3d8b:b0:20d:3e7f:32d3 with SMTP
- id pq11-20020a17090b3d8b00b0020d3e7f32d3mr8765393pjb.22.1665446335496; Mon,
- 10 Oct 2022 16:58:55 -0700 (PDT)
-Date:   Mon, 10 Oct 2022 23:58:44 +0000
+ (user=yosryahmed job=sendgmr) by 2002:a05:6a00:248e:b0:563:7910:29b9 with
+ SMTP id c14-20020a056a00248e00b00563791029b9mr5599812pfv.43.1665446337253;
+ Mon, 10 Oct 2022 16:58:57 -0700 (PDT)
+Date:   Mon, 10 Oct 2022 23:58:45 +0000
 In-Reply-To: <20221010235845.3379019-1-yosryahmed@google.com>
 Mime-Version: 1.0
 References: <20221010235845.3379019-1-yosryahmed@google.com>
 X-Mailer: git-send-email 2.38.0.rc1.362.ged0d419d3c-goog
-Message-ID: <20221010235845.3379019-3-yosryahmed@google.com>
-Subject: [PATCH v1 2/3] cgroup: add cgroup_all_get_from_[fd/file]()
+Message-ID: <20221010235845.3379019-4-yosryahmed@google.com>
+Subject: [PATCH v1 3/3] bpf: cgroup_iter: support cgroup1 using cgroup fd
 From:   Yosry Ahmed <yosryahmed@google.com>
 To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
@@ -78,118 +78,26 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add cgroup_all_get_from_fd() and cgroup_all_get_from_file() that
-support both cgroup1 and cgroup2.
+Use cgroup_all_get_from_fd() to support attaching to cgroup1 using fds.
 
 Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
 ---
- include/linux/cgroup.h |  1 +
- kernel/cgroup/cgroup.c | 50 +++++++++++++++++++++++++++++++++++++-----
- 2 files changed, 45 insertions(+), 6 deletions(-)
+ kernel/bpf/cgroup_iter.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
-index 398f0bce7c21..cd847f4f47ed 100644
---- a/include/linux/cgroup.h
-+++ b/include/linux/cgroup.h
-@@ -106,6 +106,7 @@ struct cgroup_subsys_state *css_tryget_online_from_dir(struct dentry *dentry,
+diff --git a/kernel/bpf/cgroup_iter.c b/kernel/bpf/cgroup_iter.c
+index 0d200a993489..8bb307139748 100644
+--- a/kernel/bpf/cgroup_iter.c
++++ b/kernel/bpf/cgroup_iter.c
+@@ -196,7 +196,7 @@ static int bpf_iter_attach_cgroup(struct bpf_prog *prog,
+ 		return -EINVAL;
  
- struct cgroup *cgroup_get_from_path(const char *path);
- struct cgroup *cgroup_get_from_fd(int fd);
-+struct cgroup *cgroup_all_get_from_fd(int fd);
- 
- int cgroup_attach_task_all(struct task_struct *from, struct task_struct *);
- int cgroup_transfer_tasks(struct cgroup *to, struct cgroup *from);
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 72e97422e9d9..c3bd6f17246a 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -6208,16 +6208,36 @@ void cgroup_fork(struct task_struct *child)
- 	INIT_LIST_HEAD(&child->cg_list);
- }
- 
--static struct cgroup *cgroup_get_from_file(struct file *f)
-+/**
-+ * cgroup_all_get_from_file - get a cgroup pointer from a file pointer
-+ * @f: file corresponding to cgroup_dir
-+ *
-+ * Find the cgroup from a file pointer associated with a cgroup directory.
-+ * Returns a pointer to the cgroup on success. ERR_PTR is returned if the
-+ * cgroup cannot be found.
-+ */
-+static struct cgroup *cgroup_all_get_from_file(struct file *f)
- {
- 	struct cgroup_subsys_state *css;
--	struct cgroup *cgrp;
- 
- 	css = css_tryget_online_from_dir(f->f_path.dentry, NULL);
- 	if (IS_ERR(css))
- 		return ERR_CAST(css);
- 
--	cgrp = css->cgroup;
-+	return css->cgroup;
-+}
-+
-+/**
-+ * cgroup_get_from_file - same as cgroup_all_get_from_file, but only supports
-+ * cgroup2.
-+ */
-+static struct cgroup *cgroup_get_from_file(struct file *f)
-+{
-+	struct cgroup *cgrp = cgroup_all_get_from_file(f);
-+
-+	if (IS_ERR(cgrp))
-+		return ERR_CAST(cgrp);
-+
- 	if (!cgroup_on_dfl(cgrp)) {
- 		cgroup_put(cgrp);
- 		return ERR_PTR(-EBADF);
-@@ -6720,14 +6740,14 @@ EXPORT_SYMBOL_GPL(cgroup_get_from_path);
- 
- /**
-  * cgroup_get_from_fd - get a cgroup pointer from a fd
-- * @fd: fd obtained by open(cgroup2_dir)
-+ * @fd: fd obtained by open(cgroup_dir)
-  *
-  * Find the cgroup from a fd which should be obtained
-  * by opening a cgroup directory.  Returns a pointer to the
-  * cgroup on success. ERR_PTR is returned if the cgroup
-  * cannot be found.
-  */
--struct cgroup *cgroup_get_from_fd(int fd)
-+struct cgroup *cgroup_all_get_from_fd(int fd)
- {
- 	struct cgroup *cgrp;
- 	struct file *f;
-@@ -6736,10 +6756,28 @@ struct cgroup *cgroup_get_from_fd(int fd)
- 	if (!f)
- 		return ERR_PTR(-EBADF);
- 
--	cgrp = cgroup_get_from_file(f);
-+	cgrp = cgroup_all_get_from_file(f);
- 	fput(f);
- 	return cgrp;
- }
-+
-+/**
-+ * cgroup_get_from_fd - same as cgroup_all_get_from_fd, but only supports
-+ * cgroup2.
-+ */
-+struct cgroup *cgroup_get_from_fd(int fd)
-+{
-+	struct cgroup *cgrp = cgroup_all_get_from_fd(fd);
-+
-+	if (IS_ERR(cgrp))
-+		return ERR_CAST(cgrp);
-+
-+	if (!cgroup_on_dfl(cgrp)) {
-+		cgroup_put(cgrp);
-+		return ERR_PTR(-EBADF);
-+	}
-+	return cgrp;
-+}
- EXPORT_SYMBOL_GPL(cgroup_get_from_fd);
- 
- static u64 power_of_ten(int power)
+ 	if (fd)
+-		cgrp = cgroup_get_from_fd(fd);
++		cgrp = cgroup_all_get_from_fd(fd);
+ 	else if (id)
+ 		cgrp = cgroup_get_from_id(id);
+ 	else /* walk the entire hierarchy by default. */
 -- 
 2.38.0.rc1.362.ged0d419d3c-goog
 
