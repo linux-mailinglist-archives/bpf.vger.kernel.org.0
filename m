@@ -2,149 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8B8C5F9B91
-	for <lists+bpf@lfdr.de>; Mon, 10 Oct 2022 11:01:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BF0C5F9BA6
+	for <lists+bpf@lfdr.de>; Mon, 10 Oct 2022 11:10:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231470AbiJJJBa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 10 Oct 2022 05:01:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34778 "EHLO
+        id S230432AbiJJJKf convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Mon, 10 Oct 2022 05:10:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231189AbiJJJB3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 10 Oct 2022 05:01:29 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EB981127;
-        Mon, 10 Oct 2022 02:01:28 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id bv10so12437486wrb.4;
-        Mon, 10 Oct 2022 02:01:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+y7bAJPsrwUBLd8lS99Vl4DRojpEn+2LcBi7aYBpm8I=;
-        b=ZNeBW7oC/NBRtw9xcqoobO8Sf2Hpd3hHAQSXcdNrdgDyfNtSZixn5MzoA9CaeAeA1G
-         0lex4dOAf61JCebm3hSj3AwBUnfh7IIT4hQmDO0VWq/hS4ekXjr8pLq30R7GHEifUTcb
-         R2mjGyqRkppt9s5U8xI4pPgW0WCutKuE5EHGuJvGZTguE+4khI7EI/KlvMzhC6JUPMi+
-         MzYS3Zc6j788ok9c+PCuDGLhOETVttIbLCtNr9bDYe45TE/z7/vFb8SVsIJ1CByyIQCN
-         +0+ZKhHUrOVk1+yem7sO2SN9JeGcuYM3Vw8tN0BRHfnwep7+ZnYjJUMnvGlN0w97AujX
-         xdVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+y7bAJPsrwUBLd8lS99Vl4DRojpEn+2LcBi7aYBpm8I=;
-        b=32ahkabU0/5UXRTJhHllQUxlifrkOu+0j4y9JZq1qGnB9xMxyFir6SkL70qm7Xzupy
-         Bs+8Q7MGsO5xdtQiF3C+YXNK1st0QhbJM8izswYXNHhfZ7yaMWCb0ysmvfe5o7Kt+uWx
-         lK9lqKCTKfbvz8r1ccIbSbOqqM+IA1xbVVFFJVHPIwYRgNmjxZbSsJxvvBDH5OLC+NWP
-         7h3IVJraYFuzT/uF5C6A2hCDdW/svAtsXbiQCsvB2lvRyHap/srv23zjiz1XYCuxDUMp
-         rZ89Nrf68/o8VYHhAm9b0keqTlbvC5BFNpFnnrEHLS7CvOZMgl6PGxEjVSJ8zMDuGBCH
-         3UTA==
-X-Gm-Message-State: ACrzQf0GeWBqMFBaGi14pSve8ammK556D28dbS762Rh6TQlmI6vD1ewl
-        uSg56kW+qSuFEllzjr3qIRs=
-X-Google-Smtp-Source: AMsMyM6l0DoGdglXgDjk2sFu/ZsftUW4ab9ENWWlsIARyWTAJVPu3e6srwvRZ+OuxbUS34qvawzhtw==
-X-Received: by 2002:adf:f98e:0:b0:22e:393:8def with SMTP id f14-20020adff98e000000b0022e03938defmr11307683wrr.570.1665392486906;
-        Mon, 10 Oct 2022 02:01:26 -0700 (PDT)
-Received: from krava ([193.85.244.190])
-        by smtp.gmail.com with ESMTPSA id n11-20020a05600c3b8b00b003a540fef440sm17165455wms.1.2022.10.10.02.01.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Oct 2022 02:01:26 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Mon, 10 Oct 2022 11:01:23 +0200
-To:     Xu Kuohai <xukuohai@huaweicloud.com>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        with ESMTP id S230510AbiJJJKe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 10 Oct 2022 05:10:34 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E3F2F10
+        for <bpf@vger.kernel.org>; Mon, 10 Oct 2022 02:10:32 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-139-HFZjivJtMTyYiofjBLboqw-1; Mon, 10 Oct 2022 10:10:29 +0100
+X-MC-Unique: HFZjivJtMTyYiofjBLboqw-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.38; Mon, 10 Oct
+ 2022 10:10:26 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.040; Mon, 10 Oct 2022 10:10:26 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Rui Li' <me@lirui.org>, Alexei Starovoitov <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
+        "Martin KaFai Lau" <martin.lau@linux.dev>,
         Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Mykola Lysenko <mykolal@fb.com>,
-        Shuah Khan <shuah@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Hou Tao <houtao1@huawei.com>,
-        Dmitrii Dolgov <9erthalion6@gmail.com>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Kui-Feng Lee <kuifeng@fb.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Subject: Re: [PATCH bpf-next 4/5] selftest/bpf: Fix memory leak in
- kprobe_multi_test
-Message-ID: <Y0PfY9irDM0KEqq7@krava>
-References: <20221009131830.395569-1-xukuohai@huaweicloud.com>
- <20221009131830.395569-5-xukuohai@huaweicloud.com>
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] bpf: Replace strlcpy with strscpy in preload module
+Thread-Topic: [PATCH] bpf: Replace strlcpy with strscpy in preload module
+Thread-Index: AQHY2+D0KU3oaE9S1EmQcSEIwnHGPq4HV1Bw
+Date:   Mon, 10 Oct 2022 09:10:26 +0000
+Message-ID: <7d98ed76798d4c52afcd462d694ebb6b@AcuMS.aculab.com>
+References: <166532064978.9.18239510123131509626.67790627@lirui.org>
+In-Reply-To: <166532064978.9.18239510123131509626.67790627@lirui.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221009131830.395569-5-xukuohai@huaweicloud.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Oct 09, 2022 at 09:18:29AM -0400, Xu Kuohai wrote:
-> From: Xu Kuohai <xukuohai@huawei.com>
+From: Rui Li
+> Sent: 09 October 2022 14:03
 > 
-> The get_syms() function in kprobe_multi_test.c does not free the string
-> memory allocated by sscanf correctly. Fix it.
+> Use strscpy instead of strlcpy as the former one checks the size
+> of source. Especially for this case, source strings are less than
+> dst size.
+
+Not relevant.
+The only problem with strlcpy() is the return value when the
+the copy has to be truncated.
+As well as wasting computrons it can fault if the source string
+isn't actually terminated (which might be true for arbitrary pointers).
+In this case the source strings are well formed and short.
+
+While strscpy() might be a preferred function the reason above
+is bogus.
+
+	David
+
 > 
-> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
+> Signed-off-by: Rui Li <me@lirui.org>
 > ---
->  .../bpf/prog_tests/kprobe_multi_test.c          | 17 ++++++++---------
->  1 file changed, 8 insertions(+), 9 deletions(-)
+>  kernel/bpf/preload/bpf_preload_kern.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-> index d457a55ff408..07dd2c5b7f98 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-> @@ -360,15 +360,14 @@ static int get_syms(char ***symsp, size_t *cntp)
->  		 * to them. Filter out the current culprits - arch_cpu_idle
->  		 * and rcu_* functions.
->  		 */
-> -		if (!strcmp(name, "arch_cpu_idle"))
-> -			continue;
-> -		if (!strncmp(name, "rcu_", 4))
-> -			continue;
-> -		if (!strcmp(name, "bpf_dispatcher_xdp_func"))
-> -			continue;
-> -		if (!strncmp(name, "__ftrace_invalid_address__",
-> -			     sizeof("__ftrace_invalid_address__") - 1))
-> +		if (!strcmp(name, "arch_cpu_idle") ||
-> +			!strncmp(name, "rcu_", 4) ||
-> +			!strcmp(name, "bpf_dispatcher_xdp_func") ||
-> +			!strncmp(name, "__ftrace_invalid_address__",
-> +				 sizeof("__ftrace_invalid_address__") - 1)) {
-> +			free(name);
->  			continue;
-> +		}
->  		err = hashmap__add(map, name, NULL);
->  		if (err) {
->  			free(name);
-> @@ -394,7 +393,7 @@ static int get_syms(char ***symsp, size_t *cntp)
->  	hashmap__free(map);
->  	if (err) {
->  		for (i = 0; i < cnt; i++)
-> -			free(syms[cnt]);
-> +			free(syms[i]);
-
-mama mia.. nice catch! thanks
-
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-
-jirka
-
->  		free(syms);
->  	}
->  	return err;
-> -- 
-> 2.25.1
+> diff --git a/kernel/bpf/preload/bpf_preload_kern.c b/kernel/bpf/preload/bpf_preload_kern.c
+> index 5106b5372f0c..af8dd3a7c928 100644
+> --- a/kernel/bpf/preload/bpf_preload_kern.c
+> +++ b/kernel/bpf/preload/bpf_preload_kern.c
+> @@ -19,9 +19,9 @@ static void free_links_and_skel(void)
 > 
+>  static int preload(struct bpf_preload_info *obj)
+>  {
+> -	strlcpy(obj[0].link_name, "maps.debug", sizeof(obj[0].link_name));
+> +	strscpy(obj[0].link_name, "maps.debug", sizeof(obj[0].link_name));
+>  	obj[0].link = maps_link;
+> -	strlcpy(obj[1].link_name, "progs.debug", sizeof(obj[1].link_name));
+> +	strscpy(obj[1].link_name, "progs.debug", sizeof(obj[1].link_name));
+>  	obj[1].link = progs_link;
+>  	return 0;
+>  }
+> --
+> 2.30.2
+> 
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
