@@ -2,132 +2,195 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AD345FA059
-	for <lists+bpf@lfdr.de>; Mon, 10 Oct 2022 16:43:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 550CC5FA139
+	for <lists+bpf@lfdr.de>; Mon, 10 Oct 2022 17:38:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229458AbiJJOnl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 10 Oct 2022 10:43:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38808 "EHLO
+        id S229475AbiJJPii (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 10 Oct 2022 11:38:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229550AbiJJOnk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 10 Oct 2022 10:43:40 -0400
-X-Greylist: delayed 308 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 10 Oct 2022 07:43:37 PDT
-Received: from mail-200165.simplelogin.co (mail-200165.simplelogin.co [176.119.200.165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 991026B8E9
-        for <bpf@vger.kernel.org>; Mon, 10 Oct 2022 07:43:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lirui.org; s=dkim;
-        t=1665412708;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=X6F4ocx+qrtRke2RwY23Bo84cVUEo/S+1zJTOfDrqP8=;
-        b=xYF8d8BVp2Co+mTSQjMyqZjdMHCY5GIXEy1NgKayTrdoNOiAcwjPY3KFjGJkGobNS/PMiC
-        UtFVDyf7zOYifaGJcoTmHuAFDby5u/j1hbXw/eFtzwS8RttlA8HVTQ5Yexm88FBwHCWKFF
-        PMzdhkn/dVnKGaBJ9NMeROXsR3puYxI=
-Subject: [PATCH] bpf: fix checkpatch POINTER_LOCATION, SPACING,
- ASSIGN_IN_IF error
-Date:   Mon, 10 Oct 2022 22:37:32 +0800
+        with ESMTP id S229458AbiJJPii (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 10 Oct 2022 11:38:38 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E40471BF9;
+        Mon, 10 Oct 2022 08:38:33 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id k2so25726179ejr.2;
+        Mon, 10 Oct 2022 08:38:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=JsuMjhs+MgihkzMBVcqrltQP1hvZ675h8QTvnBZuxEE=;
+        b=kDMwTT+Rj5hxx1lZbEUEtlfS6ukzhNrwf6nUd79f4T9FSu5l6X0LjA2fZWQFUQrAY+
+         2qH3H+ZJatgwWwrRorX/xqPy8ygn07Z1B7tNbCopToadNG5fRbtLtLVvh7QT5D1zuYOA
+         QNVuovmubRzuQh65LU2im/RzMjVvXCKHO7d/nTSiIx+KrxFnvQTXAlGgOrlm/fyfMFVp
+         YmcEJPON90u2GYj4spnikpRyd6DXEwP4wres4UjZ+ksKl22yoHsqBYoV6U1qOZSTsQ2x
+         Hzkhn0wOKU7XXMXwj5vBYXAaZMhcKJPvR8E2hpXBkHltOH1Oec12QSjaNTD33rTnf/CO
+         /gYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JsuMjhs+MgihkzMBVcqrltQP1hvZ675h8QTvnBZuxEE=;
+        b=bKD1nE/tVK8kHX/gon3TETLglPuiOGDuVNzw1wrPr/1wngnwTN4gkWbORfislTae9t
+         S+9luU/kybimLT/c2U6Uzr57e1GA0QUfg7AitcNOwHO5nvZlG2M7qsVMfLda+TOh8/lz
+         HoptaxVh16JgbXQBqATkhVpXHJDZEW2JxYJK/OONduIWv1SYDAUf8CFt+BLds2kTSxHv
+         CFXoZcwKsE4fzm6nfl1U5122qz3bzclGWMyFKBXDwrU/f88GgjfvIjGBKsnhHYDPGqGR
+         b8Fv+RIOrP8Dprwp5NfvzM4G1XtxNDp588knBQnrN0M/J/zW7RjCkZ8AQlM8crOLIqpr
+         w8Jw==
+X-Gm-Message-State: ACrzQf3kZLusftlaDuvirQaPQLnxtSAPuyqeMQUKG3K35Q6D3elgoSPF
+        MpE6llM21Jbdeh22fG/7tme3v68v76d1hObEdTzmBkvR2w+ShA==
+X-Google-Smtp-Source: AMsMyM58pkBmUY7F4411V5D2meYesnsY6fT61KQY/XKUqSt592qflVaY7wNVxFaW+w33GGuxsbZRoefkpdOKPHXxvwo=
+X-Received: by 2002:a17:907:2c75:b0:78d:c201:e9aa with SMTP id
+ ib21-20020a1709072c7500b0078dc201e9aamr2789950ejc.235.1665416311890; Mon, 10
+ Oct 2022 08:38:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-From:   Rui Li <me@lirui.org>
-To:     Martin KaFai Lau <martin.lau@linux.dev>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-ID: <166541270808.7.8609812300412049909.67986182@lirui.org>
-X-SimpleLogin-Type: Reply
-X-SimpleLogin-EmailLog-ID: 67986182
-X-SimpleLogin-Want-Signing: yes
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_FMBLA_NEWDOM28,
-        SPF_HELO_PASS,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+From:   Wei Chen <harperchen1110@gmail.com>
+Date:   Mon, 10 Oct 2022 23:37:55 +0800
+Message-ID: <CAO4mrfctv+6_iBjhALswxUTpbFGzj+NGnVnj-5ezwnPRHYCWFA@mail.gmail.com>
+Subject: INFO: rcu detected stall in net_rx_action
+To:     davem@davemloft.net, Eric Dumazet <edumazet@google.com>,
+        kuba@kernel.org, pabeni@redhat.com, ast@kernel.org,
+        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        kpsingh@kernel.org, bigeasy@linutronix.de, imagedong@tencent.com,
+        petrm@nvidia.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This commit cleans up checkpatch errors as follows:
-ERROR:POINTER_LOCATION: "foo* bar" should be "foo *bar"
-ERROR:ASSIGN_IN_IF: do not use assignment in if condition
-ERROR:SPACING: space required after that ',' (ctx:VxV)
+Dear Linux Developer,
 
-There still are some false positive errors like spaces required.
+Recently when using our tool to fuzz kernel, the following crash was triggered:
 
-Signed-off-by: Rui Li <me@lirui.org>
----
- kernel/bpf/arraymap.c | 10 ++++++----
- kernel/bpf/btf.c      |  2 +-
- kernel/bpf/core.c     |  8 +++++---
- 3 files changed, 12 insertions(+), 8 deletions(-)
+HEAD commit: 64570fbc14f8 Linux 5.15-rc5
+git tree: upstream
+compiler: clang 12.0.0
+console output:
+https://drive.google.com/file/d/1BOhVEmi3RPIxx-F0LMLsgflaj0r0MyKv/view?usp=sharing
+kernel config: https://drive.google.com/file/d/1lNwvovjLNrcuyFGrg05IoSmgO5jaKBBJ/view?usp=sharing
 
-diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-index 832b2659e96e..271af4b934d4 100644
---- a/kernel/bpf/arraymap.c
-+++ b/kernel/bpf/arraymap.c
-@@ -154,7 +154,7 @@ static struct bpf_map *array_map_alloc(union bpf_attr *attr)
- 	return &array->map;
- }
- 
--static void *array_map_elem_ptr(struct bpf_array* array, u32 index)
-+static void *array_map_elem_ptr(struct bpf_array *array, u32 index)
- {
- 	return array->value + (u64)array->elem_size * index;
- }
-@@ -814,9 +814,11 @@ int bpf_fd_array_map_lookup_elem(struct bpf_map *map, void *key, u32 *value)
- 
- 	rcu_read_lock();
- 	elem = array_map_lookup_elem(map, key);
--	if (elem && (ptr = READ_ONCE(*elem)))
--		*value = map->ops->map_fd_sys_lookup_elem(ptr);
--	else
-+	if (elem) {
-+		ptr = READ_ONCE(*elem);
-+		if (ptr)
-+			*value = map->ops->map_fd_sys_lookup_elem(ptr);
-+	} else
- 		ret = -ENOENT;
- 	rcu_read_unlock();
- 
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index eba603cec2c5..a31e31951d60 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -5482,7 +5482,7 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
- 
- 		if (ctx_arg_info->offset == off) {
- 			if (!ctx_arg_info->btf_id) {
--				bpf_log(log,"invalid btf_id for context argument offset %u\n", off);
-+				bpf_log(log, "invalid btf_id for context argument offset %u\n", off);
- 				return false;
- 			}
- 
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 711fd293b6de..3a63787598c5 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -467,9 +467,11 @@ struct bpf_prog *bpf_patch_insn_single(struct bpf_prog *prog, u32 off,
- 	 * We need to probe here before we do any reallocation where
- 	 * we afterwards may not fail anymore.
- 	 */
--	if (insn_adj_cnt > cnt_max &&
--	    (err = bpf_adj_branches(prog, off, off + 1, off + len, true)))
--		return ERR_PTR(err);
-+	if (insn_adj_cnt > cnt_max) {
-+		err = bpf_adj_branches(prog, off, off + 1, off + len, true);
-+		if (err)
-+			return ERR_PTR(err);
-+	}
- 
- 	/* Several new instructions need to be inserted. Make room
- 	 * for them. Likely, there's no need for a new allocation as
--- 
-2.30.2
+Unfortunately, I don't have any reproducer for this crash yet.
 
+rcu: INFO: rcu_preempt self-detected stall on CPU
+rcu: 0-...!: (88 ticks this GP) idle=4c5/1/0x4000000000000000
+softirq=42739/42739 fqs=1
+(t=15633 jiffies g=62957 q=125)
+rcu: rcu_preempt kthread starved for 15193 jiffies! g62957 f0x0
+RCU_GP_WAIT_FQS(5) ->state=0x0 ->cpu=0
+rcu: Unless rcu_preempt kthread gets sufficient CPU time, OOM is now
+expected behavior.
+rcu: RCU grace-period kthread stack dump:
+task:rcu_preempt     state:R  running task     stack:27696 pid:   14
+ppid:     2 flags:0x00004000
+Call Trace:
+ __schedule+0xc1a/0x11e0
+ schedule+0x14b/0x210
+ schedule_timeout+0x1b4/0x310
+ rcu_gp_fqs_loop+0x1fd/0x770
+ rcu_gp_kthread+0xa5/0x340
+ kthread+0x419/0x510
+ ret_from_fork+0x1f/0x30
+rcu: Stack dump where RCU GP kthread last ran:
+NMI backtrace for cpu 0
+CPU: 0 PID: 13 Comm: ksoftirqd/0 Not tainted 5.15.0-rc5+ #14
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+1.13.0-1ubuntu1.1 04/01/2014
+Call Trace:
+ <IRQ>
+ dump_stack_lvl+0x1d8/0x2c4
+ nmi_cpu_backtrace+0x452/0x480
+ nmi_trigger_cpumask_backtrace+0x1a3/0x330
+ rcu_check_gp_kthread_starvation+0x1f9/0x270
+ rcu_sched_clock_irq+0x1de4/0x2bc0
+ update_process_times+0x1ab/0x220
+ tick_sched_timer+0x2a0/0x440
+ __hrtimer_run_queues+0x51a/0xae0
+ hrtimer_interrupt+0x3c9/0x1130
+ __sysvec_apic_timer_interrupt+0xf9/0x280
+ sysvec_apic_timer_interrupt+0x8c/0xb0
+ </IRQ>
+ asm_sysvec_apic_timer_interrupt+0x12/0x20
+RIP: 0010:e1000_clean+0x15ad/0x40b0
+Code: c5 c8 04 00 00 4c 89 eb 48 c1 eb 03 42 80 3c 23 00 74 08 4c 89
+ef e8 a2 2c 65 fc 49 8b 45 00 b9 9d 00 00 00 89 88 d0 00 00 00 <42> 80
+3c 23 00 74 08 4c 89 ef e8 84 2c 65 fc 49 8b 45 00 8b 40 08
+RSP: 0018:ffffc90000707840 EFLAGS: 00000246
+RAX: ffffc900065c0000 RBX: 1ffff1100371f229 RCX: 000000000000009d
+RDX: 0000000000000100 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffffc90000707ac8 R08: ffffffff856f35c6 R09: ffffed100371f2a7
+R10: ffffed100371f2a7 R11: 0000000000000000 R12: dffffc0000000000
+R13: ffff88801b8f9148 R14: 0000000000004e20 R15: 1ffff920000e0f2c
+ __napi_poll+0xbd/0x550
+ net_rx_action+0x67b/0xfc0
+ __do_softirq+0x372/0x783
+ run_ksoftirqd+0xa2/0x100
+ smpboot_thread_fn+0x570/0xa20
+ kthread+0x419/0x510
+ ret_from_fork+0x1f/0x30
+NMI backtrace for cpu 0
+CPU: 0 PID: 13 Comm: ksoftirqd/0 Not tainted 5.15.0-rc5+ #14
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+1.13.0-1ubuntu1.1 04/01/2014
+Call Trace:
+ <IRQ>
+ dump_stack_lvl+0x1d8/0x2c4
+ nmi_cpu_backtrace+0x452/0x480
+ nmi_trigger_cpumask_backtrace+0x1a3/0x330
+ rcu_dump_cpu_stacks+0x22d/0x390
+ rcu_sched_clock_irq+0x1de9/0x2bc0
+ update_process_times+0x1ab/0x220
+ tick_sched_timer+0x2a0/0x440
+ __hrtimer_run_queues+0x51a/0xae0
+ hrtimer_interrupt+0x3c9/0x1130
+ __sysvec_apic_timer_interrupt+0xf9/0x280
+ sysvec_apic_timer_interrupt+0x8c/0xb0
+ </IRQ>
+ asm_sysvec_apic_timer_interrupt+0x12/0x20
+RIP: 0010:e1000_clean+0x15ad/0x40b0
+Code: c5 c8 04 00 00 4c 89 eb 48 c1 eb 03 42 80 3c 23 00 74 08 4c 89
+ef e8 a2 2c 65 fc 49 8b 45 00 b9 9d 00 00 00 89 88 d0 00 00 00 <42> 80
+3c 23 00 74 08 4c 89 ef e8 84 2c 65 fc 49 8b 45 00 8b 40 08
+RSP: 0018:ffffc90000707840 EFLAGS: 00000246
+RAX: ffffc900065c0000 RBX: 1ffff1100371f229 RCX: 000000000000009d
+RDX: 0000000000000100 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffffc90000707ac8 R08: ffffffff856f35c6 R09: ffffed100371f2a7
+R10: ffffed100371f2a7 R11: 0000000000000000 R12: dffffc0000000000
+R13: ffff88801b8f9148 R14: 0000000000004e20 R15: 1ffff920000e0f2c
+ __napi_poll+0xbd/0x550
+ net_rx_action+0x67b/0xfc0
+ __do_softirq+0x372/0x783
+ run_ksoftirqd+0xa2/0x100
+ smpboot_thread_fn+0x570/0xa20
+ kthread+0x419/0x510
+ ret_from_fork+0x1f/0x30
+----------------
+Code disassembly (best guess), 1 bytes skipped:
+   0: c8 04 00 00          enterq $0x4,$0x0
+   4: 4c 89 eb              mov    %r13,%rbx
+   7: 48 c1 eb 03          shr    $0x3,%rbx
+   b: 42 80 3c 23 00        cmpb   $0x0,(%rbx,%r12,1)
+  10: 74 08                je     0x1a
+  12: 4c 89 ef              mov    %r13,%rdi
+  15: e8 a2 2c 65 fc        callq  0xfc652cbc
+  1a: 49 8b 45 00          mov    0x0(%r13),%rax
+  1e: b9 9d 00 00 00        mov    $0x9d,%ecx
+  23: 89 88 d0 00 00 00    mov    %ecx,0xd0(%rax)
+* 29: 42 80 3c 23 00        cmpb   $0x0,(%rbx,%r12,1) <-- trapping instruction
+  2e: 74 08                je     0x38
+  30: 4c 89 ef              mov    %r13,%rdi
+  33: e8 84 2c 65 fc        callq  0xfc652cbc
+  38: 49 8b 45 00          mov    0x0(%r13),%rax
+  3c: 8b 40 08              mov    0x8(%rax),%eax
 
+Best,
+Wei
