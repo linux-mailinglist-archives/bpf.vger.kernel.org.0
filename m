@@ -2,163 +2,218 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 735485FB751
-	for <lists+bpf@lfdr.de>; Tue, 11 Oct 2022 17:32:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCF145FB7E8
+	for <lists+bpf@lfdr.de>; Tue, 11 Oct 2022 18:06:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229811AbiJKPcr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Oct 2022 11:32:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35054 "EHLO
+        id S229639AbiJKQGU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Oct 2022 12:06:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbiJKPcX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 Oct 2022 11:32:23 -0400
-Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6FD01AF1A;
-        Tue, 11 Oct 2022 08:22:06 -0700 (PDT)
-Received: by mail-qv1-f54.google.com with SMTP id g9so9119812qvo.12;
-        Tue, 11 Oct 2022 08:22:06 -0700 (PDT)
+        with ESMTP id S229839AbiJKQGT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 Oct 2022 12:06:19 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0FCE4F189
+        for <bpf@vger.kernel.org>; Tue, 11 Oct 2022 09:06:17 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id w10so20833216edd.4
+        for <bpf@vger.kernel.org>; Tue, 11 Oct 2022 09:06:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=6R3E6JgqPSve9Z4s/NP4Z3YuqDABv+/glUzu7Y5Cy7M=;
+        b=nGm2VjDhzUSrNULobMIPpQthCoxQNNBSoh6u899xAixT083MMOUAY+XLb6g1EzhgUv
+         8fW3WAvkM6tvQe6Seih2Uc42i/FWnxLKho+rJSlk+2FPyoobiqrWLZCdKciYDsItVwAq
+         dONuClT687M/sKKyXSFfTpKHZ/Ah7LbSYHhwKY21uTBJL0kQqKW8492F3DvGRPLt30Rs
+         Ps8uk40CiHV9nPbhmBGfoy+PJ9hU3gJCy2MfNgDUCSsZZ0nU5toTwW7guXt2aoiDhH+7
+         zoz2IoGNaKgWDBKGQ+jynY9hdjYVwRMLyln8n32kT91rwnwPs9XEK0/OpSngOQ3s6uhc
+         nPhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eI8/iw+T1k5N6jTBGY7530xalCx4rWDXOfzjPqNDZzg=;
-        b=Nr9QxCkoICr7BtlS0Gt/g+A7oLmJ8tr7qXzbpgzsR+GWCDIWTjXNGbVUStTqnKSdMK
-         c76ZVkqAybMG144Wgda4hBgdA0wtOwgNvbswR0Gwts/klfV/N43dd/yuDv6MohYXFGcu
-         SrNfMbyQkyHxyDHV/+ZhA4t7r8vqFXRxlZPVflqX7lTkLIWktf4qAUYDY8wSKfy8GT3B
-         WZDG4MmFxKRwvMn/9WIyH3nEFMUedU7V8HjAiUXRktK7URJsEFIfOC38DnnsdLqniTDv
-         YVmpf8E7cX1+Gj1qCchL9XbRL5/IWU8W9HqCDZuGjEdVwPcwu0xGXWr+xWkA2lzEBZGj
-         C2EQ==
-X-Gm-Message-State: ACrzQf2kybYEaszmYbrUKaXQSLqqJ8IAbxdmo+PdbW/ZtlQayez/bUnq
-        7glLsHmWPEI5jSYgdR2wvHI=
-X-Google-Smtp-Source: AMsMyM4cPPBmEDDnA7fXR4IV3z0CAsMC55le7Y0+H6N3EiDni7okWR3i4nvBAH9zIe8uIFJesZd9/g==
-X-Received: by 2002:a05:6214:3006:b0:499:1f87:dac9 with SMTP id ke6-20020a056214300600b004991f87dac9mr19719270qvb.0.1665501679626;
-        Tue, 11 Oct 2022 08:21:19 -0700 (PDT)
-Received: from maniforge.dhcp.thefacebook.com ([2620:10d:c091:480::3552])
-        by smtp.gmail.com with ESMTPSA id j15-20020ac8550f000000b0039a17374294sm4859147qtq.78.2022.10.11.08.21.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Oct 2022 08:21:19 -0700 (PDT)
-Date:   Tue, 11 Oct 2022 10:21:16 -0500
-From:   David Vernet <void@manifault.com>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, kernel-team@fb.com, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yhs@fb.com, song@kernel.org,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, tj@kernel.org
-Subject: Re: [PATCH v2] selftests/bpf: Update map_kptr examples to reflect
- real use-cases
-Message-ID: <Y0WJ7FNlYIsWbTjP@maniforge.dhcp.thefacebook.com>
-References: <20221002171012.3529521-1-void@manifault.com>
- <CAP01T76SFT7TM02RaR9CMtBww34swXZotS2FkGKVBE6+o5XqBw@mail.gmail.com>
- <YzrpI4PWxDaejZ6d@maniforge.dhcp.thefacebook.com>
- <CAP01T74bA2-qf3-yTkqd01k-Ft-7LJBGnuc9yOWkZK_ZmydqLw@mail.gmail.com>
- <YzxRa6dBz6z/85ZV@maniforge.lan>
- <CAP01T77QYNc6BJP+OtVV3YQGgS06ZeWTUBdq3sp2FhKmeoo6-A@mail.gmail.com>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6R3E6JgqPSve9Z4s/NP4Z3YuqDABv+/glUzu7Y5Cy7M=;
+        b=MdRxUXYNMpkndTXxqqbIZURtUvcD53Vot/ZG5p59gbW3QT7pJSZ7lwsR2Ogov0rcnl
+         rT2rgMuoxPlrZ6C8BCJYmudM0un5eG+8kqIew+DNJUqCRlQvbCpoRKZKO4y/nob/5FTs
+         2xKNTBE9ap9ZEMJjfyRpApXkOHoh95gXHM2juIY9hS/ZX8ktJPVhYoclfJYUPLx9erau
+         nrk6wRQoFhx7jGiSbvpwPkMylVgRvt7bCTCXBMK9I6Ufu7MVCvlMMklFMNOW8i2pVA2+
+         K72Z83fpiQgZotU0vArdbUzea7FqvXgR1NMXDME4VkFskv95OkhqO+Svsp+rNk/p77Zi
+         x31Q==
+X-Gm-Message-State: ACrzQf2FA8Cg0MMJR0UCB6GtBapbTuAK9nDnp2vrlpVKQnQ24N8c3xo4
+        0426LVrGf6J1SQgDmoCQdrlPf9LDKZj0wO4c6Ms=
+X-Google-Smtp-Source: AMsMyM67GiUpjeCTlaY2i6/okqtjQxALCZxbZmkjZaYQQn+b2exveJyXBJSiVsxBXgV+SFrNELQll/WLT5V4zsQDDCg=
+X-Received: by 2002:aa7:de9a:0:b0:44d:8191:44c5 with SMTP id
+ j26-20020aa7de9a000000b0044d819144c5mr23554492edv.232.1665504375581; Tue, 11
+ Oct 2022 09:06:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAP01T77QYNc6BJP+OtVV3YQGgS06ZeWTUBdq3sp2FhKmeoo6-A@mail.gmail.com>
-User-Agent: Mutt/2.2.7 (2022-08-07)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20221007174816.17536-1-shung-hsi.yu@suse.com> <20221007174816.17536-2-shung-hsi.yu@suse.com>
+ <CAEf4Bzb08aKQQCGozqcxe8c4Qj3Bna6v1AETat_vMm7L=ixcaA@mail.gmail.com>
+ <Y0TpKaIGL18UltHF@syu-laptop> <Y0WDcdQyxkYuQVXq@syu-laptop>
+In-Reply-To: <Y0WDcdQyxkYuQVXq@syu-laptop>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 11 Oct 2022 09:06:03 -0700
+Message-ID: <CAEf4BzZe_U96h31RzOcQbos4nD3kFsBLjNn9O8NvgnV9J3v2JA@mail.gmail.com>
+Subject: Re: [PATCH bpf 1/3] libbpf: use elf_getshdrnum() instead of e_shnum
+To:     Shung-Hsi Yu <shung-hsi.yu@suse.com>
+Cc:     bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 11, 2022 at 08:10:26AM +0530, Kumar Kartikeya Dwivedi wrote:
-
-[...]
-
-> > > > > Also, even if you made it work, wouldn't you have the warning once you
-> > > > > run more selftests using prog_test_run, if you just set the  destroyed
-> > > > > bit on each test run?
+On Tue, Oct 11, 2022 at 7:53 AM Shung-Hsi Yu <shung-hsi.yu@suse.com> wrote:
+>
+> On Tue, Oct 11, 2022 at 11:55:21AM +0800, Shung-Hsi Yu wrote:
+> > On Mon, Oct 10, 2022 at 05:44:20PM -0700, Andrii Nakryiko wrote:
+> > > On Fri, Oct 7, 2022 at 10:48 AM Shung-Hsi Yu <shung-hsi.yu@suse.com> wrote:
 > > > >
-> > > > If we want to update the test to have the refcount drop to 0, we would
-> > > > probably have to instead use dynamically allocated objects. At that
-> > > > point, we'd probably just crash instead of seeing a warning if we
-> > > > accidentally let a caller invoke acquire or release after the object had
-> > > > been destroyed. Maybe the better thing to do here is to just warn
-> > > > unconditionally in the destructor rather than setting a flag? What we
-> > > > really want to ensure is that the final refcount that's "owned" by the
-> > > > main kernel is never dropped.
+> > > > This commit replace e_shnum with the elf_getshdrnum() helper to fix two
+> > > > oss-fuzz-reported heap-buffer overflow in __bpf_object__open. Both
+> > > > reports are incorrectly marked as fixed and while still being
+> > > > reproducible in the latest libbpf.
+> > > >
+> > > >   # clusterfuzz-testcase-minimized-bpf-object-fuzzer-5747922482888704
+> > > >   libbpf: loading object 'fuzz-object' from buffer
+> > > >   libbpf: sec_cnt is 0
+> > > >   libbpf: elf: section(1) .data, size 0, link 538976288, flags 2020202020202020, type=2
+> > > >   libbpf: elf: section(2) .data, size 32, link 538976288, flags 202020202020ff20, type=1
+> > > >   =================================================================
+> > > >   ==13==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x6020000000c0 at pc 0x0000005a7b46 bp 0x7ffd12214af0 sp 0x7ffd12214ae8
+> > > >   WRITE of size 4 at 0x6020000000c0 thread T0
+> > > >   SCARINESS: 46 (4-byte-write-heap-buffer-overflow-far-from-bounds)
+> > > >       #0 0x5a7b45 in bpf_object__elf_collect /src/libbpf/src/libbpf.c:3414:24
+> > > >       #1 0x5733c0 in bpf_object_open /src/libbpf/src/libbpf.c:7223:16
+> > > >       #2 0x5739fd in bpf_object__open_mem /src/libbpf/src/libbpf.c:7263:20
+> > > >       ...
+> > > >
+> > > > The issue lie in libbpf's direct use of e_shnum field in ELF header as
+> > > > the section header count. Where as libelf, on the other hand,
+> > > > implemented an extra logic that, when e_shnum is zero and e_shoff is not
+> > > > zero, will use sh_size member of the initial section header as the real
+> > > > section header count (part of ELF spec to accommodate situation where
+> > > > section header counter is larger than SHN_LORESERVE).
+> > > >
+> > > > The above inconsistency lead to libbpf writing into a zero-entry calloc
+> > > > area. So intead of using e_shnum directly, use the elf_getshdrnum()
+> > > > helper provided by libelf to retrieve the section header counter into
+> > > > sec_cnt.
+> > > >
+> > > > Link: https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=40868
+> > > > Link: https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=40957
+> > > > Fixes: 0d6988e16a12 ("libbpf: Fix section counting logic")
+> > > > Fixes: 25bbbd7a444b ("libbpf: Remove assumptions about uniqueness of .rodata/.data/.bss maps")
+> > > > Signed-off-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+> > > > ---
+> > > >
+> > > > To be honest I'm not sure if any of the BPF toolchain will produce such
+> > > > ELF binary. Tools like readelf simply refuse to dump section header
+> > > > table when e_shnum==0 && e_shoff !=0 case is encountered.
+> > > >
+> > > > While we can use same approach as readelf, opting for a coherent view
+> > > > with libelf for now since that should be less confusing.
+> > > >
+> > > > ---
+> > > >  tools/lib/bpf/libbpf.c | 10 ++++++++--
+> > > >  1 file changed, 8 insertions(+), 2 deletions(-)
+> > > >
+> > > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > > > index 184ce1684dcd..a64e13c654f3 100644
+> > > > --- a/tools/lib/bpf/libbpf.c
+> > > > +++ b/tools/lib/bpf/libbpf.c
+> > > > @@ -597,7 +597,7 @@ struct elf_state {
+> > > >         size_t shstrndx; /* section index for section name strings */
+> > > >         size_t strtabidx;
+> > > >         struct elf_sec_desc *secs;
+> > > > -       int sec_cnt;
+> > > > +       size_t sec_cnt;
+> > > >         int btf_maps_shndx;
+> > > >         __u32 btf_maps_sec_btf_id;
+> > > >         int text_shndx;
+> > > > @@ -1369,6 +1369,13 @@ static int bpf_object__elf_init(struct bpf_object *obj)
+> > > >                 goto errout;
+> > > >         }
+> > > >
+> > > > +       if (elf_getshdrnum(obj->efile.elf, &obj->efile.sec_cnt)) {
 > > >
-> > > I think the refcount_t API already warns if underflow happens.
+> > > It bothers me that sec_cnt is initialized in bpf_object__elf_init, but
+> > > secs are allocated a bit later in bpf_object__elf_collect(). What if
+> > > we move elf_getshdrnum() call and sec_cnt initialization into
+> > > bpf_object__elf_collect()?
 > >
-> > Right, a warning would probably show up if we did a release that caused
-> > an underflow, but it would not for an acquire after the refcount dropped
-> > to 0.
+> > Ack.
 > >
-> 
-> It should, see REFCOUNT_ADD_UAF in include/linux/refcount.h.
-
-Ahh, right you are, fair enough and thanks for hand holding and pointing
-me directly at the relevant code. I now agree that the warns on the
-destroyed field are just redundant.
-
-> > > To be clear, I don't mind if you want to improve this, it's certainly
-> > > a mess right now. Tests can't even run in parallel easily because it's
-> > > global. Testing like an actually allocated object might be a good way
-> > > to simulate a real scenario. And I totally agree that having a real
-> > > example is useful to people who want to add support for more kptrs.
+> > My rational for placing it there was that it's closer to other elf_*()
+> > helper calls, but having it close to the allocation where it's used seems
+> > like a better option.
 > >
-> > Ok, let me update the tests to do two things then:
+> > Will change accordingly and send a v2 based on top of bpf-next.
 > >
-> > 1. Add a new test kfunc called bpf_kfunc_call_test_alloc() which returns
-> >    a dynamically allocated instance of a prog_test_ref_kfunc *. This is
-> >    similar in intention to bpf_xdp_ct_alloc().
-> > 2. Update bpf_kfunc_call_test_acquire() and
-> >    bpf_kfunc_call_test_release() to take a trusted pointer to that
-> >    allocated prog_test_ref_kfunc *.
-> 
-> This should work, but you would have to go through a lot of tests,
-> sadly I assumed it is global in a lot of places to make testing easier
-> (e.g. observing count after releasing by doing p->next, which gave me
-> a PTR_TO_BTF_ID that is preserved after release).
-> Some other way would have to be found to do the same thing.
+> > > > +               pr_warn("elf: failed to get the number of sections for %s: %s\n",
+> > > > +                       obj->path, elf_errmsg(-1));
+> > > > +               err = -LIBBPF_ERRNO__FORMAT;
+> > > > +               goto errout;
+> > > > +       }
+> > > > +
+> > > >         /* Elf is corrupted/truncated, avoid calling elf_strptr. */
+> > > >         if (!elf_rawdata(elf_getscn(elf, obj->efile.shstrndx), NULL)) {
+> > > >                 pr_warn("elf: failed to get section names strings from %s: %s\n",
+> > > > @@ -3315,7 +3322,6 @@ static int bpf_object__elf_collect(struct bpf_object *obj)
+> > > >          * section. e_shnum does include sec #0, so e_shnum is the necessary
+> > > >          * size of an array to keep all the sections.
+> > > >          */
+> > > > -       obj->efile.sec_cnt = obj->efile.ehdr->e_shnum;
+> > > >         obj->efile.secs = calloc(obj->efile.sec_cnt, sizeof(*obj->efile.secs));
+>
+> Looking again I realized we're still allocation one more section than
+> necessary, even after 0d6988e16a12 ("libbpf: Fix section counting logic").
 
-Hmmm, ok, let me spend a bit of time trying to make all of this dynamic.
-If it becomes clear that it's too much of a PITA, I might just drop the
-patch; especially considering that your __rcu kptr work will address
-what I was really initially trying to fix (which is that the kptr_get
-pattern used in the test would likely be racy for a real kfunc). Or if
-we want to, we could keep what it has now, but I could just update
-delayed_destroy_test_ref_struct() to do nothing other than
-WARN_ON_ONCE() and remove the extra warns for
-prog_test_struct.destroyed. We can make a final call when I send out v3.
+Yes, that's by design so to preserve ELF's 1-based indexing and not
+have to constantly adjust section index by -1 to do a lookup. Please
+keep it as is.
 
-> > 3. Keep the other changes which e.g. use RCU in
-> >    bpf_kfunc_call_test_kptr_get() to synchronize on getting the kptr.
-> >    Once the __rcu kptr variant is landed we can get rid of
-> >    bpf_kfunc_call_test_kptr_get() and make bpf_kfunc_call_test_acquire()
-> >    require an __rcu pointer.
-> >
-> 
-> In the case of RCU I don't plan on passing the rcu pointer to acquire
-> functions, but rather kptr_get stops taking pointer to pointer. I.e.
-> in your point 3, kptr_get does what you want _acquire to do. It takes
-> an rcu protected pointer to an object and safely increments its count.
-
-Oh, ok. So the idea is that the acquire function takes a normal trusted
-pointer, and kptr_get takes an RCU protected kptr (so it would still
-have to do refcount_inc_not_zero()). Makes sense.
-
-> > Continuing on point (3) above, we should _probably_ also have an example
-> > for an object that isn't RCU-protected? I imagine that we don't want to
-> > get rid of KF_KPTR_GET entirely once we have __rcu pointers because some
-> > kptr_get() implementations may synchronize in other ways, such as with
-> > spinlocks or whatever. Let's leave this until after __rcu lands though.
-> >
-> 
-> I think it's unlikely kptr_get can work without it, spinlocks may be
-> required internally (e.g. to inspect the object key/generation in
-> SLAB_TYPESAFE_BY_RCU case without races) but that goes on top of RCU
-> protection. But yes, it depends, maybe it will work for some special
-> cases. Though I don't think it's worth adding an example for the
-> uncommon case.
-
-Yeah, let's leave it off for now until we have a concrete use case in
-the kernel that we want to mirror in a testcase.
+>
+> elf_nextscn() skips sec #0, so (sec_cnt - 1) * sizeof(secs) should suffice.
+>
+>   /* In elfutils/libelf/elf_nextscn.c */
+>   Elf_Scn *elf_nextscn (Elf *elf, Elf_Scn *scn)
+>   {
+>     ...
+>
+>     if (scn == NULL)
+>       {
+>         /* If no section handle is given return the first (not 0th) section.
+>          Set scn to the 0th section and perform nextscn.  */
+>         if (elf->class == ELFCLASS32
+>            || (offsetof (Elf, state.elf32.scns)
+>                == offsetof (Elf, state.elf64.scns)))
+>         list = &elf->state.elf32.scns;
+>         else
+>         list = &elf->state.elf64.scns;
+>
+>         scn = &list->data[0];
+>       }
+>     ...
+>   }
+>
+> What do you think? If it make sense then I'll place the sec_cnt - 1 change
+> before the current patch unless otherwise suggested.
+>
+> > > >         if (!obj->efile.secs)
+> > > >                 return -ENOMEM;
+> > > > --
+> > > > 2.37.3
+> > > >
