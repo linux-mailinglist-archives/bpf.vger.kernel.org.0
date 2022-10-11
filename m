@@ -2,180 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B87C75FAEA1
-	for <lists+bpf@lfdr.de>; Tue, 11 Oct 2022 10:44:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11E825FAF13
+	for <lists+bpf@lfdr.de>; Tue, 11 Oct 2022 11:07:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229943AbiJKIoq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Oct 2022 04:44:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40132 "EHLO
+        id S230010AbiJKJHz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Oct 2022 05:07:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229890AbiJKIoo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 Oct 2022 04:44:44 -0400
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC1F5E6A
-        for <bpf@vger.kernel.org>; Tue, 11 Oct 2022 01:44:37 -0700 (PDT)
-Received: by mail-il1-f197.google.com with SMTP id n14-20020a056e02100e00b002f9e283e850so10486356ilj.9
-        for <bpf@vger.kernel.org>; Tue, 11 Oct 2022 01:44:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8rAyLwcqhyqbw6qTRq87Ygr7lL5zRM4lvjhTuwKCYi8=;
-        b=NmA5193TlOfSrHZJrk2tf3h//Qj2sv1ANT+ecv872t2V26siMH6zyPYuugjjKah2LD
-         y0GlvySbhfzA+DnNmFaMl1l2K0inTUpKuoAvDx5Xp1RMlH/LQzpfRj6fLM/g1HouNuwb
-         HLPMWodUBDkTSsDHf1P83gzBj+gPuhAT9lcVtvTOhEBfPVqRVl0lVWWi5FIG4p/Vm8kq
-         hyHIYpZeC4P5/lfbCr/jY2hCMaLsNnt+UdyFlFyBcVL4EN2sxzKFxX79w5j/i1DH0OxQ
-         VuWzTcy+FdSWVEE6blWOKAe+9SroLk3O1Eq0F3kEtMFZDZ7VACGqhmQTX2RFtaGI38Fh
-         o9Eg==
-X-Gm-Message-State: ACrzQf3A/pWC8xyHY13KJ1pqr4KQEZtQWokIZbkvx8x1PMx0jaOGijbO
-        EvcB06cBeE/72Qkgf50CkyPvwVPbI3PGyqFg+WGnnIpO4pL+
-X-Google-Smtp-Source: AMsMyM54O9dsqiI/JJaOBF3ZjqzA/TDDc3/FQ8DTweNouW7yamqmvv7hjigIiq88S996gzHIs8mqxVi9JO1GqP8Ipb7r9iBDqLlL
+        with ESMTP id S230047AbiJKJHu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 Oct 2022 05:07:50 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF80487F96;
+        Tue, 11 Oct 2022 02:07:47 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id EFF96B81263;
+        Tue, 11 Oct 2022 09:07:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87F92C433D7;
+        Tue, 11 Oct 2022 09:07:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1665479264;
+        bh=BNSsknk44ZAqLbT4HFUMJezP4rdmd2IhcfoYoM79mBk=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=tq+bYeUJYqPSinlI/0I72zOf45kW1DtMIEFwE1pq3VoYTEueiNZfWfNQX+w1VFSIi
+         r5dbcRZll8OGqpMVAG/d3rqegCossvc1fIldC3zaxzP6bwKR15cD7B4HxOi7gsNv2C
+         10rgrdEYOf9jgrewzXJ1DaY7yPB2zhnNsHBXkS5jUThC7QewPy5C5h6qyw5AzdWEjy
+         Hqe3PrlAsCoLsD6wIhH796xPHKRovO5QJ53pwJBoFB/XHnJKOL4eCPQkpdGjWWYK5S
+         O67tCYubzPtS/BkHrwKjL3vwUpexBNYL70KS+W+fN9z7WGhCqQWvbFJ+A/AwDgknfE
+         PxoReukCD30UA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 1165E5C1959; Tue, 11 Oct 2022 02:07:42 -0700 (PDT)
+Date:   Tue, 11 Oct 2022 02:07:42 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Hou Tao <houtao@huaweicloud.com>
+Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Delyan Kratunov <delyank@fb.com>, rcu@vger.kernel.org,
+        houtao1@huawei.com
+Subject: Re: [PATCH bpf-next 1/3] bpf: Free elements after one
+ RCU-tasks-trace grace period
+Message-ID: <20221011090742.GG4221@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20221011071128.3470622-1-houtao@huaweicloud.com>
+ <20221011071128.3470622-2-houtao@huaweicloud.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1baa:b0:2f9:9fcd:1f63 with SMTP id
- n10-20020a056e021baa00b002f99fcd1f63mr10926621ili.295.1665477877146; Tue, 11
- Oct 2022 01:44:37 -0700 (PDT)
-Date:   Tue, 11 Oct 2022 01:44:37 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003fac9905eabe4964@google.com>
-Subject: [syzbot] upstream boot error: WARNING in cpumask_next_wrap
-From:   syzbot <syzbot+51a652e2d24d53e75734@syzkaller.appspotmail.com>
-To:     ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
-        davem@davemloft.net, edumazet@google.com, hawk@kernel.org,
-        jasowang@redhat.com, john.fastabend@gmail.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, mst@redhat.com,
-        netdev@vger.kernel.org, pabeni@redhat.com,
-        syzkaller-bugs@googlegroups.com,
-        virtualization@lists.linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221011071128.3470622-2-houtao@huaweicloud.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On Tue, Oct 11, 2022 at 03:11:26PM +0800, Hou Tao wrote:
+> From: Hou Tao <houtao1@huawei.com>
+> 
+> According to the implementation of RCU Tasks Trace, it inovkes
+> ->postscan_func() to wait for one RCU-tasks-trace grace period and
+> rcu_tasks_trace_postscan() inovkes synchronize_rcu() to wait for one
+> normal RCU grace period in turn, so one RCU-tasks-trace grace period
+> will imply one RCU grace period.
+> 
+> So there is no need to do call_rcu() again in the callback of
+> call_rcu_tasks_trace() and it can just free these elements directly.
 
-syzbot found the following issue on:
+This is true, but this is an implementation detail that is not guaranteed
+in future versions of the kernel.  But if this additional call_rcu()
+is causing trouble, I could add some API member that returned true in
+kernels where it does happen to be the case that call_rcu_tasks_trace()
+implies a call_rcu()-style grace period.
 
-HEAD commit:    e2302539dd4f Merge tag 'xtensa-20221010' of https://github..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=105b851a880000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1370a7ded58197a2
-dashboard link: https://syzkaller.appspot.com/bug?extid=51a652e2d24d53e75734
-compiler:       Debian clang version 13.0.1-++20220126092033+75e33f71c2da-1~exp1~20220126212112.63, GNU ld (GNU Binutils for Debian) 2.35.2
+The BPF memory allocator could then complain or adapt, as appropriate.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/f6eb85afda26/disk-e2302539.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/6091bfed3009/vmlinux-e2302539.xz
+Thoughts?
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+51a652e2d24d53e75734@syzkaller.appspotmail.com
+							Thanx, Paul
 
-ACPI: button: Sleep Button [SLPF]
-ACPI: \_SB_.LNKC: Enabled at IRQ 11
-virtio-pci 0000:00:03.0: virtio_pci: leaving for legacy driver
-ACPI: \_SB_.LNKD: Enabled at IRQ 10
-virtio-pci 0000:00:04.0: virtio_pci: leaving for legacy driver
-ACPI: \_SB_.LNKB: Enabled at IRQ 10
-virtio-pci 0000:00:06.0: virtio_pci: leaving for legacy driver
-virtio-pci 0000:00:07.0: virtio_pci: leaving for legacy driver
-N_HDLC line discipline registered with maxframe=4096
-Serial: 8250/16550 driver, 4 ports, IRQ sharing enabled
-00:03: ttyS0 at I/O 0x3f8 (irq = 4, base_baud = 115200) is a 16550A
-00:04: ttyS1 at I/O 0x2f8 (irq = 3, base_baud = 115200) is a 16550A
-00:05: ttyS2 at I/O 0x3e8 (irq = 6, base_baud = 115200) is a 16550A
-00:06: ttyS3 at I/O 0x2e8 (irq = 7, base_baud = 115200) is a 16550A
-Non-volatile memory driver v1.3
-Linux agpgart interface v0.103
-ACPI: bus type drm_connector registered
-[drm] Initialized vgem 1.0.0 20120112 for vgem on minor 0
-[drm] Initialized vkms 1.0.0 20180514 for vkms on minor 1
-Console: switching to colour frame buffer device 128x48
-platform vkms: [drm] fb0: vkmsdrmfb frame buffer device
-usbcore: registered new interface driver udl
-brd: module loaded
-loop: module loaded
-zram: Added device: zram0
-null_blk: disk nullb0 created
-null_blk: module loaded
-Guest personality initialized and is inactive
-VMCI host device registered (name=vmci, major=10, minor=120)
-Initialized host personality
-usbcore: registered new interface driver rtsx_usb
-usbcore: registered new interface driver viperboard
-usbcore: registered new interface driver dln2
-usbcore: registered new interface driver pn533_usb
-nfcsim 0.2 initialized
-usbcore: registered new interface driver port100
-usbcore: registered new interface driver nfcmrvl
-Loading iSCSI transport class v2.0-870.
-scsi host0: Virtio SCSI HBA
-st: Version 20160209, fixed bufsize 32768, s/g segs 256
-Rounding down aligned max_sectors from 4294967295 to 4294967288
-db_root: cannot open: /etc/target
-slram: not enough parameters.
-ftl_cs: FTL header not found.
-wireguard: WireGuard 1.0.0 loaded. See www.wireguard.com for information.
-wireguard: Copyright (C) 2015-2019 Jason A. Donenfeld <Jason@zx2c4.com>. All Rights Reserved.
-eql: Equalizer2002: Simon Janes (simon@ncm.com) and David S. Miller (davem@redhat.com)
-MACsec IEEE 802.1AE
-tun: Universal TUN/TAP device driver, 1.6
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 1 at include/linux/cpumask.h:110 cpumask_check include/linux/cpumask.h:117 [inline]
-WARNING: CPU: 0 PID: 1 at include/linux/cpumask.h:110 cpumask_next include/linux/cpumask.h:178 [inline]
-WARNING: CPU: 0 PID: 1 at include/linux/cpumask.h:110 cpumask_next_wrap+0x11c/0x1c0 lib/cpumask.c:27
-Modules linked in:
-CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.0.0-syzkaller-10145-ge2302539dd4f #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/22/2022
-RIP: 0010:cpu_max_bits_warn include/linux/cpumask.h:110 [inline]
-RIP: 0010:cpumask_check include/linux/cpumask.h:117 [inline]
-RIP: 0010:cpumask_next include/linux/cpumask.h:178 [inline]
-RIP: 0010:cpumask_next_wrap+0x11c/0x1c0 lib/cpumask.c:27
-Code: a6 00 00 00 e8 b5 34 62 f7 48 8b 04 24 41 bd ff ff ff ff 45 31 e4 48 b9 00 00 00 00 00 fc ff df e9 39 ff ff ff e8 94 34 62 f7 <0f> 0b e9 59 ff ff ff 48 c7 c1 b8 f2 0c 8e 80 e1 07 80 c1 03 38 c1
-RSP: 0000:ffffc90000067218 EFLAGS: 00010293
-RAX: ffffffff8a255bdc RBX: 0000000000000002 RCX: ffff888012278000
-RDX: 0000000000000000 RSI: 0000000000000002 RDI: 0000000000000002
-RBP: 0000000000000002 R08: ffffffff8a255b2f R09: fffff5200000ce5d
-R10: fffff5200000ce5d R11: 1ffff9200000ce5c R12: 0000000000000001
-R13: 0000000000000001 R14: 1ffffffff1c19e57 R15: 0000000000000002
-FS:  0000000000000000(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffff88823ffff000 CR3: 000000000c88e000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- virtnet_set_affinity+0x2be/0x6f0 drivers/net/virtio_net.c:2303
- init_vqs+0x107c/0x11d0 drivers/net/virtio_net.c:3581
- virtnet_probe+0x198d/0x3120 drivers/net/virtio_net.c:3884
- virtio_dev_probe+0x8ca/0xb60 drivers/virtio/virtio.c:305
- call_driver_probe+0x96/0x250
- really_probe+0x24c/0x9f0 drivers/base/dd.c:639
- __driver_probe_device+0x1f4/0x3f0 drivers/base/dd.c:778
- driver_probe_device+0x50/0x240 drivers/base/dd.c:808
- __driver_attach+0x364/0x5b0 drivers/base/dd.c:1190
- bus_for_each_dev+0x168/0x1d0 drivers/base/bus.c:301
- bus_add_driver+0x32f/0x600 drivers/base/bus.c:618
- driver_register+0x2e9/0x3e0 drivers/base/driver.c:246
- virtio_net_driver_init+0x8e/0xcb drivers/net/virtio_net.c:4090
- do_one_initcall+0x1c9/0x400 init/main.c:1295
- do_initcall_level+0x168/0x218 init/main.c:1368
- do_initcalls+0x4b/0x8c init/main.c:1384
- kernel_init_freeable+0x3f1/0x57b init/main.c:1622
- kernel_init+0x19/0x2b0 init/main.c:1511
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:306
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> Signed-off-by: Hou Tao <houtao1@huawei.com>
+> ---
+>  kernel/bpf/memalloc.c | 17 ++++++-----------
+>  1 file changed, 6 insertions(+), 11 deletions(-)
+> 
+> diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
+> index 5f83be1d2018..6f32dddc804f 100644
+> --- a/kernel/bpf/memalloc.c
+> +++ b/kernel/bpf/memalloc.c
+> @@ -209,6 +209,9 @@ static void free_one(struct bpf_mem_cache *c, void *obj)
+>  	kfree(obj);
+>  }
+>  
+> +/* Now RCU Tasks grace period implies RCU grace period, so no need to do
+> + * an extra call_rcu().
+> + */
+>  static void __free_rcu(struct rcu_head *head)
+>  {
+>  	struct bpf_mem_cache *c = container_of(head, struct bpf_mem_cache, rcu);
+> @@ -220,13 +223,6 @@ static void __free_rcu(struct rcu_head *head)
+>  	atomic_set(&c->call_rcu_in_progress, 0);
+>  }
+>  
+> -static void __free_rcu_tasks_trace(struct rcu_head *head)
+> -{
+> -	struct bpf_mem_cache *c = container_of(head, struct bpf_mem_cache, rcu);
+> -
+> -	call_rcu(&c->rcu, __free_rcu);
+> -}
+> -
+>  static void enque_to_free(struct bpf_mem_cache *c, void *obj)
+>  {
+>  	struct llist_node *llnode = obj;
+> @@ -252,11 +248,10 @@ static void do_call_rcu(struct bpf_mem_cache *c)
+>  		 * from __free_rcu() and from drain_mem_cache().
+>  		 */
+>  		__llist_add(llnode, &c->waiting_for_gp);
+> -	/* Use call_rcu_tasks_trace() to wait for sleepable progs to finish.
+> -	 * Then use call_rcu() to wait for normal progs to finish
+> -	 * and finally do free_one() on each element.
+> +	/* Use call_rcu_tasks_trace() to wait for both sleepable and normal
+> +	 * progs to finish and finally do free_one() on each element.
+>  	 */
+> -	call_rcu_tasks_trace(&c->rcu, __free_rcu_tasks_trace);
+> +	call_rcu_tasks_trace(&c->rcu, __free_rcu);
+>  }
+>  
+>  static void free_bulk(struct bpf_mem_cache *c)
+> -- 
+> 2.29.2
+> 
