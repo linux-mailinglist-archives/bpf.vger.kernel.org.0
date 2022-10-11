@@ -2,66 +2,41 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06B235FAF18
-	for <lists+bpf@lfdr.de>; Tue, 11 Oct 2022 11:09:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 607E15FAF73
+	for <lists+bpf@lfdr.de>; Tue, 11 Oct 2022 11:37:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229854AbiJKJJu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Oct 2022 05:09:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34444 "EHLO
+        id S229839AbiJKJhI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Oct 2022 05:37:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229747AbiJKJJr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 Oct 2022 05:09:47 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7DC212AF6;
-        Tue, 11 Oct 2022 02:09:46 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 782AEB8077D;
-        Tue, 11 Oct 2022 09:09:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09370C433D6;
-        Tue, 11 Oct 2022 09:09:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665479384;
-        bh=e/JcTTsFExZNIu2rmBxBfqtrwgiK/DKYtwEa/H3b/ng=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=hnndYwFMHpi4kR7q16r87yuReLUbAnhNXK2PNks+YXRBrQrMhMePbZ/Anz4g3O1NN
-         NiEbm3Q+ORLUXvJJYLGIFpnJxUinJ8781Lc/kZiB8x6ssPYgHO4rX0he2qRSx2bsJ6
-         xAT5ZaY9+KuWhLeOFluc4/tftUZNnEhuAA8Hi/dokQZ9zy48rwFuQRg2pmx7Wfd5/J
-         d0jjAo3fWJdbwTBghHxIQ7DEH+uRL2bDdzGVnHJOLLs8z9LMnkbvDygVD9GZJWRNV8
-         QQNQ3G6LfpBvYCkdx3h4Viib54arAzqf7Z0YW/PI+/SkNj9XtqTRAmVQx8hwfLEOTv
-         tSQQ9Ghhzod8w==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 5D5F85C1959; Tue, 11 Oct 2022 02:09:41 -0700 (PDT)
-Date:   Tue, 11 Oct 2022 02:09:41 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Hou Tao <houtao@huaweicloud.com>
-Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Delyan Kratunov <delyank@fb.com>, rcu@vger.kernel.org,
-        houtao1@huawei.com
-Subject: Re: [PATCH bpf-next 3/3] bpf: Free trace program array after one
- RCU-tasks-trace grace period
-Message-ID: <20221011090941.GI4221@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20221011071128.3470622-1-houtao@huaweicloud.com>
- <20221011071128.3470622-4-houtao@huaweicloud.com>
+        with ESMTP id S229606AbiJKJgy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 Oct 2022 05:36:54 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5F0582854;
+        Tue, 11 Oct 2022 02:36:52 -0700 (PDT)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.56])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4MmrG36gHvz1CDyr;
+        Tue, 11 Oct 2022 17:34:19 +0800 (CST)
+Received: from localhost.localdomain (10.175.112.70) by
+ canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Tue, 11 Oct 2022 17:36:50 +0800
+From:   Wang Yufen <wangyufen@huawei.com>
+To:     <netdev@vger.kernel.org>
+CC:     <bpf@vger.kernel.org>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <lina.wang@mediatek.com>, <deso@posteo.net>
+Subject: [net 0/2] some fixes for selftest/net
+Date:   Tue, 11 Oct 2022 17:57:45 +0800
+Message-ID: <1665482267-30706-1-git-send-email-wangyufen@huawei.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221011071128.3470622-4-houtao@huaweicloud.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+Content-Type: text/plain
+X-Originating-IP: [10.175.112.70]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ canpemm500010.china.huawei.com (7.192.105.118)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,46 +44,24 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 11, 2022 at 03:11:28PM +0800, Hou Tao wrote:
-> From: Hou Tao <houtao1@huawei.com>
-> 
-> To support sleepable uprobe bpf program, the freeing of trace program
-> array chains a RCU-tasks-trace grace period with a normal RCU grace
-> period. But considering in the current implementation of RCU-tasks-trace
-> that one RCU-tasks-trace grace period implies one normal RCU grace
-> period, so it is not need for such chaining and it is safe to free the
-> array in the callback of call_rcu_tasks_trace().
+Wang Yufen (2):
+  selftests/net: fix opening object file failed
+  selftests/net: fix missing xdp_dummy
 
-And the same here.  ;-)
+ tools/testing/selftests/bpf/progs/nat6to4.c   | 285 ++++++++++++++++++++++++++
+ tools/testing/selftests/net/Makefile          |   2 -
+ tools/testing/selftests/net/bpf/Makefile      |  14 --
+ tools/testing/selftests/net/bpf/nat6to4.c     | 285 --------------------------
+ tools/testing/selftests/net/udpgro.sh         |   4 +-
+ tools/testing/selftests/net/udpgro_bench.sh   |   4 +-
+ tools/testing/selftests/net/udpgro_frglist.sh |  12 +-
+ tools/testing/selftests/net/udpgro_fwd.sh     |   2 +-
+ tools/testing/selftests/net/veth.sh           |   8 +-
+ 9 files changed, 300 insertions(+), 316 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/nat6to4.c
+ delete mode 100644 tools/testing/selftests/net/bpf/Makefile
+ delete mode 100644 tools/testing/selftests/net/bpf/nat6to4.c
 
-							Thanx, Paul
+-- 
+1.8.3.1
 
-> Signed-off-by: Hou Tao <houtao1@huawei.com>
-> ---
->  kernel/bpf/core.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index 711fd293b6de..f943620b55b0 100644
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -2247,12 +2247,15 @@ void bpf_prog_array_free(struct bpf_prog_array *progs)
->  	kfree_rcu(progs, rcu);
->  }
->  
-> +/* Now RCU Tasks grace period implies RCU grace period, so no need to call
-> + * kfree_rcu(), just call kfree() directly.
-> + */
->  static void __bpf_prog_array_free_sleepable_cb(struct rcu_head *rcu)
->  {
->  	struct bpf_prog_array *progs;
->  
->  	progs = container_of(rcu, struct bpf_prog_array, rcu);
-> -	kfree_rcu(progs, rcu);
-> +	kfree(progs);
->  }
->  
->  void bpf_prog_array_free_sleepable(struct bpf_prog_array *progs)
-> -- 
-> 2.29.2
-> 
