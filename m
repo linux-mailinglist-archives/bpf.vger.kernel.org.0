@@ -2,168 +2,167 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC5005FB034
-	for <lists+bpf@lfdr.de>; Tue, 11 Oct 2022 12:10:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B75425FB17D
+	for <lists+bpf@lfdr.de>; Tue, 11 Oct 2022 13:31:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229683AbiJKKKr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Oct 2022 06:10:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37592 "EHLO
+        id S229487AbiJKLbj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Oct 2022 07:31:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229887AbiJKKKO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 Oct 2022 06:10:14 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B91B233A6
-        for <bpf@vger.kernel.org>; Tue, 11 Oct 2022 03:09:57 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id n16-20020a05600c4f9000b003c17bf8ddecso725667wmq.0
-        for <bpf@vger.kernel.org>; Tue, 11 Oct 2022 03:09:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=m5R3vcrMfEIbZG5TaeZgZK3CV3LasEin3DYclgkZ6Jk=;
-        b=TaTugqE/u2Q+XxVJ62/ra2IDlD1Yh1Y3MaqZ2hqkjw0GzADvZyh+qZOeQ4L0kOkZ0u
-         wRZB7vEIAq4qv/JiOxjDs5P4/YWCWRdxmxLYqWqUBG0uu4msa/RhapK5jWj7yQf2tb7f
-         1xb3Kkp1yGV9PYg5z5R8xUEkXchQkRHpaRnieFXl4VPuAXi6FDwLEkcvnqzTqrbVrbvz
-         SPtkMAyBaewkwt7giK5p/zN7MwxcvPYLaiuBtJKBOMQhkMaDVDYzlWr4LZIXdxohA+1r
-         f/u7PsGYs76Cw+Bs51gnV5+yLAtAetwiNY7Ug7U00X5aNAEx/eD8QfSXNHtjkXcEPB+q
-         Y0ZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=m5R3vcrMfEIbZG5TaeZgZK3CV3LasEin3DYclgkZ6Jk=;
-        b=tuJ0rrqjub+30E0zZe5Y+r3tbwC4QFjC7ijZCaPmD5nPB/P+wyVOLX+F861LDOhpgx
-         lDUkqt3yHiLjuzBqrgMd1BJGvMpkE+R/cMQLJkfpBngP9ah4sMi7foZ7RLWllcry36fo
-         AuWy5QfmqA4b+hlJL8Gums5cxqDNzjrBEpp+ijK/BWQ1kZoveLUul3jTpA4DLvMNumvV
-         YXP1d4QgVPyKwjlVZ8lPSQAsmESKPH/8pj+ZU+40OOZ6DC45Kk/uMJSEY2h1lpEWrf4o
-         STMJxgeIKPT9sYlXmReeyZhV+q5I3PtIcEqSyHGmr/7JGVINiUo2ERY6cmV4OGIHdRGH
-         d3GQ==
-X-Gm-Message-State: ACrzQf3gXLgD+h+Iy/Dhj1V8FsxyuufZcTFlNhtZ/v6hXvo8qX+MS3Ey
-        A3EUqc5IXWF1rYLo1iAXYQI=
-X-Google-Smtp-Source: AMsMyM59WI/cd+alLq1PLxY/F3os9HZiBizT5hYfYgWvydcpWBJFNnYsYSh7tfBt1ogI0thyWRUxZQ==
-X-Received: by 2002:a05:600c:88a:b0:3c5:c9e3:15cc with SMTP id l10-20020a05600c088a00b003c5c9e315ccmr8508632wmp.67.1665482995487;
-        Tue, 11 Oct 2022 03:09:55 -0700 (PDT)
-Received: from krava ([193.85.244.190])
-        by smtp.gmail.com with ESMTPSA id k24-20020a05600c1c9800b003c6c182bef9sm3044175wms.36.2022.10.11.03.09.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Oct 2022 03:09:55 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Tue, 11 Oct 2022 12:09:53 +0200
-To:     Song Liu <song@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S229663AbiJKLbi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 Oct 2022 07:31:38 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B58AE6AA3E;
+        Tue, 11 Oct 2022 04:31:34 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Mmtph6qdnzKGBG;
+        Tue, 11 Oct 2022 19:29:16 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+        by APP3 (Coremail) with SMTP id _Ch0CgDH2lwRVEVjOM9hAA--.58130S2;
+        Tue, 11 Oct 2022 19:31:32 +0800 (CST)
+Subject: Re: [PATCH bpf-next 1/3] bpf: Free elements after one RCU-tasks-trace
+ grace period
+To:     paulmck@kernel.org, Alexei Starovoitov <ast@kernel.org>
+Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Christoph Hellwig <hch@lst.de>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Martynas Pumputis <m@lambda.lt>
-Subject: Re: [PATCH bpf-next 7/8] selftests/bpf: Add kprobe_multi kmod link
- api tests
-Message-ID: <Y0VA8epnsoQFJTod@krava>
-References: <20221009215926.970164-1-jolsa@kernel.org>
- <20221009215926.970164-8-jolsa@kernel.org>
- <CAPhsuW6r+=nzTozfzQzk+2qKr_3rmiY55TPDfnUgOZriWWWaYg@mail.gmail.com>
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Delyan Kratunov <delyank@fb.com>, rcu@vger.kernel.org,
+        houtao1@huawei.com
+References: <20221011071128.3470622-1-houtao@huaweicloud.com>
+ <20221011071128.3470622-2-houtao@huaweicloud.com>
+ <20221011090742.GG4221@paulmck-ThinkPad-P17-Gen-1>
+From:   Hou Tao <houtao@huaweicloud.com>
+Message-ID: <d91a9536-8ed2-fc00-733d-733de34af510@huaweicloud.com>
+Date:   Tue, 11 Oct 2022 19:31:28 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPhsuW6r+=nzTozfzQzk+2qKr_3rmiY55TPDfnUgOZriWWWaYg@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20221011090742.GG4221@paulmck-ThinkPad-P17-Gen-1>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-CM-TRANSID: _Ch0CgDH2lwRVEVjOM9hAA--.58130S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxJw4ruw43ZFW5uF13WF15Arb_yoWrJFWfpF
+        yxJFyDGrs8ZFs09wn3Zr17CFZ8A39ag3W7ta4Fy3sYkrn8uryDuF4UCa45uFyFkr4fGa1a
+        vF1qkrnrG3WUAFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
+        6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyT
+        uYvjxUFDGOUUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 11, 2022 at 12:27:12AM -0700, Song Liu wrote:
-> On Sun, Oct 9, 2022 at 3:01 PM Jiri Olsa <jolsa@kernel.org> wrote:
-> >
-> > Adding kprobe_multi kmod link api tests that attach bpf_testmod
-> > functions via kprobe_multi link API.
-> >
-> > Running it as serial test, because we don't want other tests to
-> > reload bpf_testmod while it's running.
-> >
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  .../prog_tests/kprobe_multi_testmod_test.c    | 94 +++++++++++++++++++
-> >  .../selftests/bpf/progs/kprobe_multi.c        | 51 ++++++++++
-> >  2 files changed, 145 insertions(+)
-> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/kprobe_multi_testmod_test.c
-> >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_testmod_test.c b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_testmod_test.c
-> > new file mode 100644
-> > index 000000000000..5fe02572650a
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_testmod_test.c
-> > @@ -0,0 +1,94 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +#include <test_progs.h>
-> > +#include "kprobe_multi.skel.h"
-> > +#include "trace_helpers.h"
-> > +#include "bpf/libbpf_internal.h"
-> > +
-> > +static void kprobe_multi_testmod_check(struct kprobe_multi *skel)
-> > +{
-> > +       ASSERT_EQ(skel->bss->kprobe_testmod_test1_result, 1, "kprobe_test1_result");
-> > +       ASSERT_EQ(skel->bss->kprobe_testmod_test2_result, 1, "kprobe_test2_result");
-> > +       ASSERT_EQ(skel->bss->kprobe_testmod_test3_result, 1, "kprobe_test3_result");
-> > +
-> > +       ASSERT_EQ(skel->bss->kretprobe_testmod_test1_result, 1, "kretprobe_test1_result");
-> > +       ASSERT_EQ(skel->bss->kretprobe_testmod_test2_result, 1, "kretprobe_test2_result");
-> > +       ASSERT_EQ(skel->bss->kretprobe_testmod_test3_result, 1, "kretprobe_test3_result");
-> > +}
-> > +
-> > +static void test_testmod_link_api(struct bpf_link_create_opts *opts)
-> > +{
-> > +       int prog_fd, link1_fd = -1, link2_fd = -1;
-> > +       struct kprobe_multi *skel = NULL;
-> > +
-> > +       skel = kprobe_multi__open_and_load();
-> > +       if (!ASSERT_OK_PTR(skel, "fentry_raw_skel_load"))
-> > +               goto cleanup;
-> 
-> nit: we can just return here.
+Hi,
 
-right, will change
+On 10/11/2022 5:07 PM, Paul E. McKenney wrote:
+> On Tue, Oct 11, 2022 at 03:11:26PM +0800, Hou Tao wrote:
+>> From: Hou Tao <houtao1@huawei.com>
+>>
+>> According to the implementation of RCU Tasks Trace, it inovkes
+>> ->postscan_func() to wait for one RCU-tasks-trace grace period and
+>> rcu_tasks_trace_postscan() inovkes synchronize_rcu() to wait for one
+>> normal RCU grace period in turn, so one RCU-tasks-trace grace period
+>> will imply one RCU grace period.
+>>
+>> So there is no need to do call_rcu() again in the callback of
+>> call_rcu_tasks_trace() and it can just free these elements directly.
+> This is true, but this is an implementation detail that is not guaranteed
+> in future versions of the kernel.  But if this additional call_rcu()
+> is causing trouble, I could add some API member that returned true in
+> kernels where it does happen to be the case that call_rcu_tasks_trace()
+> implies a call_rcu()-style grace period.
+>
+> The BPF memory allocator could then complain or adapt, as appropriate.
+>
+> Thoughts?
+It is indeed an implementation details. But In an idle KVM guest, for memory
+reclamation in bpf memory allocator a RCU tasks trace grace period is about 30ms
+and RCU grace period is about 20 ms. Under stress condition, the grace period
+will be much longer. If the extra RCU grace period can be removed, these memory
+can be reclaimed more quickly and it will be beneficial for memory pressure.
 
-thanks,
-jirka
+Now it seems we can use RCU poll APIs (e.g. get_state_synchronize_rcu() and
+poll_state_synchronize_rcu() ) to check whether or not a RCU grace period has
+passed. But It needs to add at least one unsigned long into the freeing object.
+The extra memory overhead may be OK for bpf memory allocator, but it is not for
+small object. So could you please show example on how these new APIs work ? Does
+it need to modify the to-be-free object ?
+>
+> 							Thanx, Paul
+>
+>> Signed-off-by: Hou Tao <houtao1@huawei.com>
+>> ---
+>>  kernel/bpf/memalloc.c | 17 ++++++-----------
+>>  1 file changed, 6 insertions(+), 11 deletions(-)
+>>
+>> diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
+>> index 5f83be1d2018..6f32dddc804f 100644
+>> --- a/kernel/bpf/memalloc.c
+>> +++ b/kernel/bpf/memalloc.c
+>> @@ -209,6 +209,9 @@ static void free_one(struct bpf_mem_cache *c, void *obj)
+>>  	kfree(obj);
+>>  }
+>>  
+>> +/* Now RCU Tasks grace period implies RCU grace period, so no need to do
+>> + * an extra call_rcu().
+>> + */
+>>  static void __free_rcu(struct rcu_head *head)
+>>  {
+>>  	struct bpf_mem_cache *c = container_of(head, struct bpf_mem_cache, rcu);
+>> @@ -220,13 +223,6 @@ static void __free_rcu(struct rcu_head *head)
+>>  	atomic_set(&c->call_rcu_in_progress, 0);
+>>  }
+>>  
+>> -static void __free_rcu_tasks_trace(struct rcu_head *head)
+>> -{
+>> -	struct bpf_mem_cache *c = container_of(head, struct bpf_mem_cache, rcu);
+>> -
+>> -	call_rcu(&c->rcu, __free_rcu);
+>> -}
+>> -
+>>  static void enque_to_free(struct bpf_mem_cache *c, void *obj)
+>>  {
+>>  	struct llist_node *llnode = obj;
+>> @@ -252,11 +248,10 @@ static void do_call_rcu(struct bpf_mem_cache *c)
+>>  		 * from __free_rcu() and from drain_mem_cache().
+>>  		 */
+>>  		__llist_add(llnode, &c->waiting_for_gp);
+>> -	/* Use call_rcu_tasks_trace() to wait for sleepable progs to finish.
+>> -	 * Then use call_rcu() to wait for normal progs to finish
+>> -	 * and finally do free_one() on each element.
+>> +	/* Use call_rcu_tasks_trace() to wait for both sleepable and normal
+>> +	 * progs to finish and finally do free_one() on each element.
+>>  	 */
+>> -	call_rcu_tasks_trace(&c->rcu, __free_rcu_tasks_trace);
+>> +	call_rcu_tasks_trace(&c->rcu, __free_rcu);
+>>  }
+>>  
+>>  static void free_bulk(struct bpf_mem_cache *c)
+>> -- 
+>> 2.29.2
+>>
 
-> 
-> Other than this:
-> 
-> Acked-by: Song Liu <song@kernel.org>
-> 
-> > +
-> > +       skel->bss->pid = getpid();
-> > +       prog_fd = bpf_program__fd(skel->progs.test_kprobe_testmod);
-> > +       link1_fd = bpf_link_create(prog_fd, 0, BPF_TRACE_KPROBE_MULTI, opts);
-> > +       if (!ASSERT_GE(link1_fd, 0, "link_fd1"))
-> > +               goto cleanup;
-> > +
-> > +       opts->kprobe_multi.flags = BPF_F_KPROBE_MULTI_RETURN;
-> > +       prog_fd = bpf_program__fd(skel->progs.test_kretprobe_testmod);
-> > +       link2_fd = bpf_link_create(prog_fd, 0, BPF_TRACE_KPROBE_MULTI, opts);
-> > +       if (!ASSERT_GE(link2_fd, 0, "link_fd2"))
-> > +               goto cleanup;
-> > +
-> > +       ASSERT_OK(trigger_module_test_read(1), "trigger_read");
-> > +       kprobe_multi_testmod_check(skel);
-> > +
-> > +cleanup:
-> > +       if (link1_fd != -1)
-> > +               close(link1_fd);
-> > +       if (link2_fd != -1)
-> > +               close(link2_fd);
-> > +       kprobe_multi__destroy(skel);
-> > +}
-> >
