@@ -2,181 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE3D35FAF75
-	for <lists+bpf@lfdr.de>; Tue, 11 Oct 2022 11:37:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDA345FB022
+	for <lists+bpf@lfdr.de>; Tue, 11 Oct 2022 12:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229606AbiJKJhJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Oct 2022 05:37:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55928 "EHLO
+        id S229606AbiJKKHe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Oct 2022 06:07:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229717AbiJKJgz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 Oct 2022 05:36:55 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9D3B8B2C0;
-        Tue, 11 Oct 2022 02:36:53 -0700 (PDT)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4MmrCk4FDlz1M8x1;
-        Tue, 11 Oct 2022 17:32:18 +0800 (CST)
-Received: from localhost.localdomain (10.175.112.70) by
- canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Tue, 11 Oct 2022 17:36:51 +0800
-From:   Wang Yufen <wangyufen@huawei.com>
-To:     <netdev@vger.kernel.org>
-CC:     <bpf@vger.kernel.org>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <lina.wang@mediatek.com>, <deso@posteo.net>
-Subject: [net 2/2] selftests/net: fix missing xdp_dummy
-Date:   Tue, 11 Oct 2022 17:57:47 +0800
-Message-ID: <1665482267-30706-3-git-send-email-wangyufen@huawei.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1665482267-30706-1-git-send-email-wangyufen@huawei.com>
-References: <1665482267-30706-1-git-send-email-wangyufen@huawei.com>
+        with ESMTP id S229456AbiJKKHd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 Oct 2022 06:07:33 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB7596745F
+        for <bpf@vger.kernel.org>; Tue, 11 Oct 2022 03:07:32 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id j16so20805900wrh.5
+        for <bpf@vger.kernel.org>; Tue, 11 Oct 2022 03:07:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=xghDtnJJO4tys306nkfqSyJR3ujKWegxQ25bZXewEeI=;
+        b=iu5Gv79bQ9QKdSorZpYOnaOs19I4HMtcZBwisP+TvNNAlfuNghT2F0IrKYBckQQMmT
+         x+nEhzA7xlCifbQvJbS50/SSiD2NG8l3XyCrZ9CmM7prqwY/1+dOIMF2vrRS2efAonJv
+         SkBiphdIjkPBcSYlwVZST7jC2uw3tksUwgnB9Q5RWiE+1RbobhxhO+Pb13Z5eEDoia12
+         DQhuUojuYzHxbPQxBgUX887VXvDbRFhXWZ33TZ9YdKoAepXNK+Wm47k87WoF+iXdxFhH
+         kwKUvVGCaWS3EOcQUmKTBTo3M8N2uDnVqhOOUu+e4YRkme/nWC62rC+ciVKMqbF5hdH+
+         M2Wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xghDtnJJO4tys306nkfqSyJR3ujKWegxQ25bZXewEeI=;
+        b=WVmkyp86A+8rXelnUo4EAVLM2ljTCUVxJo5rAOeyZHIKEFfGPe2sxDKv02+Ps+KtUh
+         dvEkYgmDDhY6sO9ndo6hgbksCEyYQMvuZQzRnuTEisB0xe88rMsKymUtR7isrvETGtQG
+         KMjKSFSYTXIU0ImYv6Uv/BhRfbmw5HacAGnNVY7sKcpDw+CIFQozQamcriTJcfMxxg6x
+         TJMyUOjCACkxRWWfp13fz+wsWdMhY6HjGln8uR03JFZef8ZPzOwfJi8TFgmE75fvAj+D
+         W/bnrc8QfSpiF1ikcs6iRy7owGgbenZX/7OlE7EpDbfp39JWmQvMzIT+yfbFxJMFgcHC
+         r93g==
+X-Gm-Message-State: ACrzQf2+O3LE2YQudZLPepelFiaOpDEcNRlCzppxakJNgITBpm0zaqCs
+        1vb0X80gXlVPg7CvDF1IYH4=
+X-Google-Smtp-Source: AMsMyM4UXxJvCpBNZh8fTytGseeKVuPT3Uprd6C58WA4T2y6zxw8YS4I/5W8A2/oy2FDDIkkTO1lVw==
+X-Received: by 2002:adf:d842:0:b0:22e:33e2:f379 with SMTP id k2-20020adfd842000000b0022e33e2f379mr14284658wrl.23.1665482851074;
+        Tue, 11 Oct 2022 03:07:31 -0700 (PDT)
+Received: from krava ([193.85.244.190])
+        by smtp.gmail.com with ESMTPSA id h4-20020a05600c350400b003c1a7ea3736sm14257452wmq.11.2022.10.11.03.07.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Oct 2022 03:07:30 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Tue, 11 Oct 2022 12:07:28 +0200
+To:     Song Liu <song@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martynas Pumputis <m@lambda.lt>, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Christoph Hellwig <hch@lst.de>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: Re: [PATCH bpf-next 2/8] ftrace: Add support to resolve module
+ symbols in ftrace_lookup_symbols
+Message-ID: <Y0VAYM57Bi1vqPkr@krava>
+References: <20221009215926.970164-1-jolsa@kernel.org>
+ <20221009215926.970164-3-jolsa@kernel.org>
+ <CAPhsuW5nBf2gL_ohyfkEbX3aWH2ETEGuamq2D6JaHvaCznw_2w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.112.70]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- canpemm500010.china.huawei.com (7.192.105.118)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPhsuW5nBf2gL_ohyfkEbX3aWH2ETEGuamq2D6JaHvaCznw_2w@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-After commit afef88e65554 ("selftests/bpf: Store BPF object files with
-.bpf.o extension"), we should use xdp_dummy.bpf.o instade of xdp_dummy.o.
+On Tue, Oct 11, 2022 at 12:05:47AM -0700, Song Liu wrote:
+> On Sun, Oct 9, 2022 at 3:00 PM Jiri Olsa <jolsa@kernel.org> wrote:
+> >
+> > Currently ftrace_lookup_symbols iterates only over core symbols,
+> > adding module_kallsyms_on_each_symbol call to check on modules
+> > symbols as well.
+> >
+> > Also removing 'args.found == args.cnt' condition, because it's
+> > already checked in kallsyms_callback function.
+> >
+> > Also removing 'err < 0' check, because both *kallsyms_on_each_symbol
+> > functions do not return error.
+> >
+> > Reported-by: Martynas Pumputis <m@lambda.lt>
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> 
+> Acked-by: Song Liu <song@kernel.org>
+> 
+> > ---
+> >  kernel/trace/ftrace.c | 11 ++++++-----
+> >  1 file changed, 6 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+> > index 447d2e2a8549..6efdba4666f4 100644
+> > --- a/kernel/trace/ftrace.c
+> > +++ b/kernel/trace/ftrace.c
+> > @@ -8292,17 +8292,18 @@ static int kallsyms_callback(void *data, const char *name,
+> >  int ftrace_lookup_symbols(const char **sorted_syms, size_t cnt, unsigned long *addrs)
+> >  {
+> >         struct kallsyms_data args;
+> > -       int err;
+> > +       int found_all;
+> >
+> >         memset(addrs, 0, sizeof(*addrs) * cnt);
+> >         args.addrs = addrs;
+> >         args.syms = sorted_syms;
+> >         args.cnt = cnt;
+> >         args.found = 0;
+> > -       err = kallsyms_on_each_symbol(kallsyms_callback, &args);
+> > -       if (err < 0)
+> > -               return err;
+> > -       return args.found == args.cnt ? 0 : -ESRCH;
+> > +       found_all = kallsyms_on_each_symbol(kallsyms_callback, &args);
+> > +       if (found_all)
+> > +               return 0;
+> > +       found_all = module_kallsyms_on_each_symbol(kallsyms_callback, &args);
+> > +       return found_all ? 0 : -ESRCH;
+> 
+> We probably need some comments about kallsym_callback and
+> ftrace_lookup_symbols. It took me a while to confirm the logic for
+> found_all.
 
-Fixes: afef88e65554 ("selftests/bpf: Store BPF object files with .bpf.o extension")
-Signed-off-by: Wang Yufen <wangyufen@huawei.com>
----
- tools/testing/selftests/net/udpgro.sh         | 4 ++--
- tools/testing/selftests/net/udpgro_bench.sh   | 4 ++--
- tools/testing/selftests/net/udpgro_frglist.sh | 4 ++--
- tools/testing/selftests/net/udpgro_fwd.sh     | 2 +-
- tools/testing/selftests/net/veth.sh           | 8 ++++----
- 5 files changed, 11 insertions(+), 11 deletions(-)
+ok, I wrote some info in the changelog, but I'll put it
+as comment in the code as well
 
-diff --git a/tools/testing/selftests/net/udpgro.sh b/tools/testing/selftests/net/udpgro.sh
-index ebbd0b2..e339e62 100755
---- a/tools/testing/selftests/net/udpgro.sh
-+++ b/tools/testing/selftests/net/udpgro.sh
-@@ -34,7 +34,7 @@ cfg_veth() {
- 	ip -netns "${PEER_NS}" addr add dev veth1 192.168.1.1/24
- 	ip -netns "${PEER_NS}" addr add dev veth1 2001:db8::1/64 nodad
- 	ip -netns "${PEER_NS}" link set dev veth1 up
--	ip -n "${PEER_NS}" link set veth1 xdp object ../bpf/xdp_dummy.o section xdp
-+	ip -n "${PEER_NS}" link set veth1 xdp object ../bpf/xdp_dummy.bpf.o section xdp
- }
- 
- run_one() {
-@@ -195,7 +195,7 @@ run_all() {
- 	return $ret
- }
- 
--if [ ! -f ../bpf/xdp_dummy.o ]; then
-+if [ ! -f ../bpf/xdp_dummy.bpf.o ]; then
- 	echo "Missing xdp_dummy helper. Build bpf selftest first"
- 	exit -1
- fi
-diff --git a/tools/testing/selftests/net/udpgro_bench.sh b/tools/testing/selftests/net/udpgro_bench.sh
-index fad2d1a..94372ea 100755
---- a/tools/testing/selftests/net/udpgro_bench.sh
-+++ b/tools/testing/selftests/net/udpgro_bench.sh
-@@ -34,7 +34,7 @@ run_one() {
- 	ip -netns "${PEER_NS}" addr add dev veth1 2001:db8::1/64 nodad
- 	ip -netns "${PEER_NS}" link set dev veth1 up
- 
--	ip -n "${PEER_NS}" link set veth1 xdp object ../bpf/xdp_dummy.o section xdp
-+	ip -n "${PEER_NS}" link set veth1 xdp object ../bpf/xdp_dummy.bpf.o section xdp
- 	ip netns exec "${PEER_NS}" ./udpgso_bench_rx ${rx_args} -r &
- 	ip netns exec "${PEER_NS}" ./udpgso_bench_rx -t ${rx_args} -r &
- 
-@@ -80,7 +80,7 @@ run_all() {
- 	run_udp "${ipv6_args}"
- }
- 
--if [ ! -f ../bpf/xdp_dummy.o ]; then
-+if [ ! -f ../bpf/xdp_dummy.bpf.o ]; then
- 	echo "Missing xdp_dummy helper. Build bpf selftest first"
- 	exit -1
- fi
-diff --git a/tools/testing/selftests/net/udpgro_frglist.sh b/tools/testing/selftests/net/udpgro_frglist.sh
-index be71583..6d51156 100755
---- a/tools/testing/selftests/net/udpgro_frglist.sh
-+++ b/tools/testing/selftests/net/udpgro_frglist.sh
-@@ -36,7 +36,7 @@ run_one() {
- 	ip netns exec "${PEER_NS}" ethtool -K veth1 rx-gro-list on
- 
- 
--	ip -n "${PEER_NS}" link set veth1 xdp object ../bpf/xdp_dummy.o section xdp
-+	ip -n "${PEER_NS}" link set veth1 xdp object ../bpf/xdp_dummy.bpf.o section xdp
- 	tc -n "${PEER_NS}" qdisc add dev veth1 clsact
- 	tc -n "${PEER_NS}" filter add dev veth1 ingress prio 4 protocol ipv6 bpf object-file ../bpf/nat6to4.bpf.o section schedcls/ingress6/nat_6  direct-action
- 	tc -n "${PEER_NS}" filter add dev veth1 egress prio 4 protocol ip bpf object-file ../bpf/nat6to4.bpf.o section schedcls/egress4/snat4 direct-action
-@@ -81,7 +81,7 @@ run_all() {
- 	run_udp "${ipv6_args}"
- }
- 
--if [ ! -f ../bpf/xdp_dummy.o ]; then
-+if [ ! -f ../bpf/xdp_dummy.bpf.o ]; then
- 	echo "Missing xdp_dummy helper. Build bpf selftest first"
- 	exit -1
- fi
-diff --git a/tools/testing/selftests/net/udpgro_fwd.sh b/tools/testing/selftests/net/udpgro_fwd.sh
-index 1bcd82e..0c32ee4 100755
---- a/tools/testing/selftests/net/udpgro_fwd.sh
-+++ b/tools/testing/selftests/net/udpgro_fwd.sh
-@@ -46,7 +46,7 @@ create_ns() {
- 		ip -n $BASE$ns addr add dev veth$ns $BM_NET_V4$ns/24
- 		ip -n $BASE$ns addr add dev veth$ns $BM_NET_V6$ns/64 nodad
- 	done
--	ip -n $NS_DST link set veth$DST xdp object ../bpf/xdp_dummy.o section xdp 2>/dev/null
-+	ip -n $NS_DST link set veth$DST xdp object ../bpf/xdp_dummy.bpf.o section xdp 2>/dev/null
- }
- 
- create_vxlan_endpoint() {
-diff --git a/tools/testing/selftests/net/veth.sh b/tools/testing/selftests/net/veth.sh
-index 430895d..704cba3 100755
---- a/tools/testing/selftests/net/veth.sh
-+++ b/tools/testing/selftests/net/veth.sh
-@@ -216,7 +216,7 @@ while getopts "hs:" option; do
- 	esac
- done
- 
--if [ ! -f ../bpf/xdp_dummy.o ]; then
-+if [ ! -f ../bpf/xdp_dummy.bpf.o ]; then
- 	echo "Missing xdp_dummy helper. Build bpf selftest first"
- 	exit 1
- fi
-@@ -288,14 +288,14 @@ if [ $CPUS -gt 1 ]; then
- 	ip netns exec $NS_DST ethtool -L veth$DST rx 1 tx 2 2>/dev/null
- 	ip netns exec $NS_SRC ethtool -L veth$SRC rx 1 tx 2 2>/dev/null
- 	printf "%-60s" "bad setting: XDP with RX nr less than TX"
--	ip -n $NS_DST link set dev veth$DST xdp object ../bpf/xdp_dummy.o \
-+	ip -n $NS_DST link set dev veth$DST xdp object ../bpf/xdp_dummy.bpf.o \
- 		section xdp 2>/dev/null &&\
- 		echo "fail - set operation successful ?!?" || echo " ok "
- 
- 	# the following tests will run with multiple channels active
- 	ip netns exec $NS_SRC ethtool -L veth$SRC rx 2
- 	ip netns exec $NS_DST ethtool -L veth$DST rx 2
--	ip -n $NS_DST link set dev veth$DST xdp object ../bpf/xdp_dummy.o \
-+	ip -n $NS_DST link set dev veth$DST xdp object ../bpf/xdp_dummy.bpf.o \
- 		section xdp 2>/dev/null
- 	printf "%-60s" "bad setting: reducing RX nr below peer TX with XDP set"
- 	ip netns exec $NS_DST ethtool -L veth$DST rx 1 2>/dev/null &&\
-@@ -311,7 +311,7 @@ if [ $CPUS -gt 2 ]; then
- 	chk_channels "setting invalid channels nr" $DST 2 2
- fi
- 
--ip -n $NS_DST link set dev veth$DST xdp object ../bpf/xdp_dummy.o section xdp 2>/dev/null
-+ip -n $NS_DST link set dev veth$DST xdp object ../bpf/xdp_dummy.bpf.o section xdp 2>/dev/null
- chk_gro_flag "with xdp attached - gro flag" $DST on
- chk_gro_flag "        - peer gro flag" $SRC off
- chk_tso_flag "        - tso flag" $SRC off
--- 
-1.8.3.1
+jirka
 
+> 
+> >  }
+> >
+> >  #ifdef CONFIG_SYSCTL
+> > --
+> > 2.37.3
+> >
