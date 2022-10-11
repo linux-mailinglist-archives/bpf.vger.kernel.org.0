@@ -2,51 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C3915FAD68
-	for <lists+bpf@lfdr.de>; Tue, 11 Oct 2022 09:25:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1763C5FAD73
+	for <lists+bpf@lfdr.de>; Tue, 11 Oct 2022 09:27:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229846AbiJKHZN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Oct 2022 03:25:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56850 "EHLO
+        id S229868AbiJKH13 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Oct 2022 03:27:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229901AbiJKHZN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 Oct 2022 03:25:13 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE0E6422C3
-        for <bpf@vger.kernel.org>; Tue, 11 Oct 2022 00:25:10 -0700 (PDT)
+        with ESMTP id S229569AbiJKH12 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 Oct 2022 03:27:28 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7767F6527B
+        for <bpf@vger.kernel.org>; Tue, 11 Oct 2022 00:27:27 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 73C93B811FE
-        for <bpf@vger.kernel.org>; Tue, 11 Oct 2022 07:25:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 375FFC43470
-        for <bpf@vger.kernel.org>; Tue, 11 Oct 2022 07:25:08 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B6303610F4
+        for <bpf@vger.kernel.org>; Tue, 11 Oct 2022 07:27:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23C99C43144
+        for <bpf@vger.kernel.org>; Tue, 11 Oct 2022 07:27:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665473108;
-        bh=Et+zx25hklA4YAakpfYSSJclXoU9BN7VanXSv1e/khM=;
+        s=k20201202; t=1665473246;
+        bh=uXQUjQxkEBLJOa4xa9TH7b3q+w2qaBuQeGFMrLtsx9c=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Z7tVHoMfLQdmmgySayAqMLBCkyVzadHcxbmZvUaCVBGuFiEjBryersKG2e2x7mR+n
-         V+aTDFzP5TJmHXIrexeZ99RmRmSk149Rcdk1GMRN5RFBfLbV5X/X7Qpfczz5ocvpsg
-         6QTsXm6bNX+8SF2B/AbHlRll8bXFifm3p8QT5PxIwOEbj/aJktYnzui6FyhYo3nWu8
-         PkCr+hgUO7zwKMl9OEktwns6xj6Q+p3YD+ybH0JNhwaIpkkXHQaRNKfD9y7L6T+4Qt
-         if/XNq9EV1sDU8tW5f49N2pM/itwPoZcJ2nN9go9Ku/EsaCgjnV4HDHf2XfpKwqnj2
-         A6LbX2lrxzaiw==
-Received: by mail-ed1-f50.google.com with SMTP id v12so573204edc.6
-        for <bpf@vger.kernel.org>; Tue, 11 Oct 2022 00:25:08 -0700 (PDT)
-X-Gm-Message-State: ACrzQf3WVaNvllliO4UHNwtPnzhPvFIA2zZwabwVh/sA14rtJy6KLuP5
-        we4sx83U24YlUZT50GZXH0D6D5C8cjqvuf1nhdI=
-X-Google-Smtp-Source: AMsMyM50ZJLycF34EVr5bcbWOT0sxEpQx8572wM4lhV4LaMqqH3wZwSl5DB2Vu2MtxYmGCyKJsHP3T+B3QDPCyM4sQA=
-X-Received: by 2002:a05:6402:4491:b0:45b:d55b:1207 with SMTP id
- er17-20020a056402449100b0045bd55b1207mr14332212edb.53.1665473106389; Tue, 11
- Oct 2022 00:25:06 -0700 (PDT)
+        b=EH7gtQBP9R2hj0L9YaeY0Y0wPdQrrG+Yh8mNCAH2euDy7NGoRcQYIKMPVXrIETY5g
+         W5pq680mKXYLBcBEG54AZ3rF1CK4V6vXp6N8eHokTqeB8JBKoDl1fFb0jo4zgtaUcI
+         vYp4hRt+/K554c9Kg2bgow/JORyJo2KdSkx8xiRDJTIwcB9M/T1QefsUegYi9uORKk
+         hUmudQtiWCMgwJZLZR0LcD5S8S4evcJfooLrnlncjC4ajuADmG+ZuNADEliKIGSlfU
+         KnEH03wGE7AJgLtiYsZV+Q4Oo3IoolvDjtk6WoDMCpzVtoUs7ThKHTc7ryYYg42sFO
+         65oCoOkmdnf+w==
+Received: by mail-ej1-f43.google.com with SMTP id k2so29485644ejr.2
+        for <bpf@vger.kernel.org>; Tue, 11 Oct 2022 00:27:26 -0700 (PDT)
+X-Gm-Message-State: ACrzQf1zeyUQsN0cOJACyQShkVy9kBiEKFzD7pbEm987eG10oo69pYXP
+        BcaqjVYm7d6gOCn8Nvu40tmiSPMZs70eIrkvarY=
+X-Google-Smtp-Source: AMsMyM70/1axX88/jBRVG116cymlUXJki9g/ZSlmNe/nxxQwRlwWi1jvmx3BStpgpPjzOl41bECnAgPrUAhY1t6DTWI=
+X-Received: by 2002:a17:907:970b:b0:78d:8d70:e4e8 with SMTP id
+ jg11-20020a170907970b00b0078d8d70e4e8mr13747793ejc.614.1665473244298; Tue, 11
+ Oct 2022 00:27:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <20221009215926.970164-1-jolsa@kernel.org> <20221009215926.970164-7-jolsa@kernel.org>
-In-Reply-To: <20221009215926.970164-7-jolsa@kernel.org>
+References: <20221009215926.970164-1-jolsa@kernel.org> <20221009215926.970164-8-jolsa@kernel.org>
+In-Reply-To: <20221009215926.970164-8-jolsa@kernel.org>
 From:   Song Liu <song@kernel.org>
-Date:   Tue, 11 Oct 2022 00:24:53 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW4EJ9HxD9gAeAGaBBS8FVvCQ++XGyCjVPqByBBr5Pt-HA@mail.gmail.com>
-Message-ID: <CAPhsuW4EJ9HxD9gAeAGaBBS8FVvCQ++XGyCjVPqByBBr5Pt-HA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 6/8] selftests/bpf: Add bpf_testmod_fentry_* functions
+Date:   Tue, 11 Oct 2022 00:27:12 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW6r+=nzTozfzQzk+2qKr_3rmiY55TPDfnUgOZriWWWaYg@mail.gmail.com>
+Message-ID: <CAPhsuW6r+=nzTozfzQzk+2qKr_3rmiY55TPDfnUgOZriWWWaYg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 7/8] selftests/bpf: Add kprobe_multi kmod link
+ api tests
 To:     Jiri Olsa <jolsa@kernel.org>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -69,65 +70,80 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Oct 9, 2022 at 3:00 PM Jiri Olsa <jolsa@kernel.org> wrote:
+On Sun, Oct 9, 2022 at 3:01 PM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> Adding 3 bpf_testmod_fentry_* functions to have a way to test
-> kprobe multi link on kernel module. They follow bpf_fentry_test*
-> functions prototypes/code.
+> Adding kprobe_multi kmod link api tests that attach bpf_testmod
+> functions via kprobe_multi link API.
 >
-> Adding equivalent functions to all bpf_fentry_test* does not
-> seems necessary at the moment, could be added later.
+> Running it as serial test, because we don't want other tests to
+> reload bpf_testmod while it's running.
 >
 > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  .../prog_tests/kprobe_multi_testmod_test.c    | 94 +++++++++++++++++++
+>  .../selftests/bpf/progs/kprobe_multi.c        | 51 ++++++++++
+>  2 files changed, 145 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/kprobe_multi_testmod_test.c
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_testmod_test.c b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_testmod_test.c
+> new file mode 100644
+> index 000000000000..5fe02572650a
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_testmod_test.c
+> @@ -0,0 +1,94 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <test_progs.h>
+> +#include "kprobe_multi.skel.h"
+> +#include "trace_helpers.h"
+> +#include "bpf/libbpf_internal.h"
+> +
+> +static void kprobe_multi_testmod_check(struct kprobe_multi *skel)
+> +{
+> +       ASSERT_EQ(skel->bss->kprobe_testmod_test1_result, 1, "kprobe_test1_result");
+> +       ASSERT_EQ(skel->bss->kprobe_testmod_test2_result, 1, "kprobe_test2_result");
+> +       ASSERT_EQ(skel->bss->kprobe_testmod_test3_result, 1, "kprobe_test3_result");
+> +
+> +       ASSERT_EQ(skel->bss->kretprobe_testmod_test1_result, 1, "kretprobe_test1_result");
+> +       ASSERT_EQ(skel->bss->kretprobe_testmod_test2_result, 1, "kretprobe_test2_result");
+> +       ASSERT_EQ(skel->bss->kretprobe_testmod_test3_result, 1, "kretprobe_test3_result");
+> +}
+> +
+> +static void test_testmod_link_api(struct bpf_link_create_opts *opts)
+> +{
+> +       int prog_fd, link1_fd = -1, link2_fd = -1;
+> +       struct kprobe_multi *skel = NULL;
+> +
+> +       skel = kprobe_multi__open_and_load();
+> +       if (!ASSERT_OK_PTR(skel, "fentry_raw_skel_load"))
+> +               goto cleanup;
+
+nit: we can just return here.
+
+Other than this:
 
 Acked-by: Song Liu <song@kernel.org>
 
-> ---
->  .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 24 +++++++++++++++++++
->  1 file changed, 24 insertions(+)
->
-> diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> index a6021d6117b5..5085fea3cac5 100644
-> --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> @@ -128,6 +128,23 @@ __weak noinline struct file *bpf_testmod_return_ptr(int arg)
->         }
->  }
->
-> +noinline int bpf_testmod_fentry_test1(int a)
-> +{
-> +       return a + 1;
+> +
+> +       skel->bss->pid = getpid();
+> +       prog_fd = bpf_program__fd(skel->progs.test_kprobe_testmod);
+> +       link1_fd = bpf_link_create(prog_fd, 0, BPF_TRACE_KPROBE_MULTI, opts);
+> +       if (!ASSERT_GE(link1_fd, 0, "link_fd1"))
+> +               goto cleanup;
+> +
+> +       opts->kprobe_multi.flags = BPF_F_KPROBE_MULTI_RETURN;
+> +       prog_fd = bpf_program__fd(skel->progs.test_kretprobe_testmod);
+> +       link2_fd = bpf_link_create(prog_fd, 0, BPF_TRACE_KPROBE_MULTI, opts);
+> +       if (!ASSERT_GE(link2_fd, 0, "link_fd2"))
+> +               goto cleanup;
+> +
+> +       ASSERT_OK(trigger_module_test_read(1), "trigger_read");
+> +       kprobe_multi_testmod_check(skel);
+> +
+> +cleanup:
+> +       if (link1_fd != -1)
+> +               close(link1_fd);
+> +       if (link2_fd != -1)
+> +               close(link2_fd);
+> +       kprobe_multi__destroy(skel);
 > +}
-> +
-> +noinline int bpf_testmod_fentry_test2(int a, u64 b)
-> +{
-> +       return a + b;
-> +}
-> +
-> +noinline int bpf_testmod_fentry_test3(char a, int b, u64 c)
-> +{
-> +       return a + b + c;
-> +}
-> +
-> +int bpf_testmod_fentry_ok;
-> +
->  noinline ssize_t
->  bpf_testmod_test_read(struct file *file, struct kobject *kobj,
->                       struct bin_attribute *bin_attr,
-> @@ -167,6 +184,13 @@ bpf_testmod_test_read(struct file *file, struct kobject *kobj,
->                         return snprintf(buf, len, "%d\n", writable.val);
->         }
->
-> +       if (bpf_testmod_fentry_test1(1) != 2 ||
-> +           bpf_testmod_fentry_test2(2, 3) != 5 ||
-> +           bpf_testmod_fentry_test3(4, 5, 6) != 15)
-> +               goto out;
-> +
-> +       bpf_testmod_fentry_ok = 1;
-> +out:
->         return -EIO; /* always fail */
->  }
->  EXPORT_SYMBOL(bpf_testmod_test_read);
-> --
-> 2.37.3
 >
