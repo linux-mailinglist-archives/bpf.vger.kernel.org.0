@@ -2,123 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AB395FA934
-	for <lists+bpf@lfdr.de>; Tue, 11 Oct 2022 02:18:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 267805FA936
+	for <lists+bpf@lfdr.de>; Tue, 11 Oct 2022 02:19:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229795AbiJKASn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 10 Oct 2022 20:18:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45890 "EHLO
+        id S230063AbiJKAS5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 10 Oct 2022 20:18:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229716AbiJKAS3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 10 Oct 2022 20:18:29 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 301DB5C9E3;
-        Mon, 10 Oct 2022 17:18:28 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id 204so12054289pfx.10;
-        Mon, 10 Oct 2022 17:18:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xm8Uch19R6NmYEbBkjcqkxQLt/DtdpQviAbU+5kyHeg=;
-        b=HBXnfJdLfLouo9iEPM66BHhv/PtDj/o/wxFo1cOhKl/R5e1EWC6xOAGDiaw0T1frh+
-         QuCSxWZLMbBAtcHs2EZ+10XspyM7Vsi6Z2OnpUhJ2Y7m8RSSikhiqgQJ4lDMYZ425Yei
-         bhO7e/Focu7uTT1h+Nx1QpZs4+BZ1Ze/bDoqcyY5Hav29eBAW8/8a9eNjtplJArxP8/x
-         N/qDDfqGIiGI+SwaNDbzujkHfMOvd8T25luGAFsbVcgKx9FkDQqFSPhzZjHysqGag6Bu
-         NWfJxrXndFcrX22F6bvnLh6q9rqZhP1FnjtBuhe7M46mjW95TnA0Bya8gFdyvjGQypH5
-         I5oQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xm8Uch19R6NmYEbBkjcqkxQLt/DtdpQviAbU+5kyHeg=;
-        b=jfb2waQdL03g6cjQw4BcU/poBoNa0yz2q4IWrScDJcwsxXLT5AZCIQX6qpOGhB8MgW
-         LuMfln4vaX//YUHRc0HT4GYTUt3GKuO/dxQQN7DKmwjnlNBFL0UlEpL4oqQlqJE6AN34
-         Nrppuz16cb+ygiyDHn2FVc14gbpufcrLbyJvA0kBCuTRGIenf+DB9UJXVFOKk8zdrx5m
-         MYvbRjHpqVA2WAf3mLLnSG6yg9D5z/4s/BDE4Vb8/91Y2fvoHAgPunlaSVUDGthCgGS2
-         juRfJmr3P90AqWR8wh2YxHhfYCo3j6vHWY5g4hf5Q/f1puLsnlQLbjp5zDKnqULd0nE+
-         KLUA==
-X-Gm-Message-State: ACrzQf2bQvfwdv0k6W38Z/pXNOvziByGud/mvBC1mu2iqe7JALbNuuin
-        cHPZeIkd+84OhtUw98B+hOM=
-X-Google-Smtp-Source: AMsMyM6bdfpr/R75A28nYjhdauGVB7hAOtJRLtv7DZ3d5D7k2S9Ypzqr8t3MG5ylFEVSyxAuiXUJDw==
-X-Received: by 2002:a63:942:0:b0:43c:428d:16a9 with SMTP id 63-20020a630942000000b0043c428d16a9mr18164718pgj.423.1665447507505;
-        Mon, 10 Oct 2022 17:18:27 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id g20-20020a63dd54000000b0043c9da02729sm6852023pgj.6.2022.10.10.17.18.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Oct 2022 17:18:27 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 10 Oct 2022 14:18:25 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH v1 2/3] cgroup: add cgroup_all_get_from_[fd/file]()
-Message-ID: <Y0S2UeE4reIRUdBH@slm.duckdns.org>
-References: <20221010235845.3379019-1-yosryahmed@google.com>
- <20221010235845.3379019-3-yosryahmed@google.com>
- <Y0S0nFSyivpU4H0n@slm.duckdns.org>
- <CAJD7tkbDNqxE+bYQvo5YAbK01qz7UVd-s6bOf==Ao44bmNsk=Q@mail.gmail.com>
+        with ESMTP id S229925AbiJKASy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 10 Oct 2022 20:18:54 -0400
+Received: from out0.migadu.com (out0.migadu.com [94.23.1.103])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5549E5F9B4;
+        Mon, 10 Oct 2022 17:18:53 -0700 (PDT)
+Message-ID: <c63b7b3e-803b-7e6f-a96c-e75f738f6448@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1665447531;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WQLEPAmV5cNBPcCs5f0QOw5e3ZgyzzZvangEjwzUuWI=;
+        b=lcm0A331dxflDnCuebMo/e6Yop5lqvzwOoDoPQGVBJf/dNzXX/fwoEAM9f1/iIjP2ulDYA
+        i6MGPJP7kfCPe8L36ZrLFNVmAcSk3SBNdlvClGmPIo7NMlB+6O6bGuBv/GspwmsB87+VxC
+        XGlcQVgwuqrmpCPWSN7v2PPTENiWheI=
+Date:   Mon, 10 Oct 2022 17:18:46 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJD7tkbDNqxE+bYQvo5YAbK01qz7UVd-s6bOf==Ao44bmNsk=Q@mail.gmail.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Subject: Re: [PATCH] bpf: Add SO_REUSEPORT to bpf_{g,s}etsockopt documentation
+Content-Language: en-US
+To:     Rongfeng Ji <SikoJobs@outlook.com>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+        joannelkoong@gmail.com, kuifeng@fb.com, maximmi@nvidia.com,
+        quentin@isovalent.com
+References: <DU0P192MB15474ECC548CE7103DCE65FBD65F9@DU0P192MB1547.EURP192.PROD.OUTLOOK.COM>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <DU0P192MB15474ECC548CE7103DCE65FBD65F9@DU0P192MB1547.EURP192.PROD.OUTLOOK.COM>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 10, 2022 at 05:14:24PM -0700, Yosry Ahmed wrote:
-> On Mon, Oct 10, 2022 at 5:11 PM Tejun Heo <tj@kernel.org> wrote:
-> >
-> > On Mon, Oct 10, 2022 at 11:58:44PM +0000, Yosry Ahmed wrote:
-> > > Add cgroup_all_get_from_fd() and cgroup_all_get_from_file() that
-> > > support both cgroup1 and cgroup2.
-> >
-> > Looks generally good. How about cgroup_v1v2_ as the prefix?
+On 10/7/22 10:55 AM, Rongfeng Ji wrote:
+> SO_REUSEPORT has been supported by bpf_{g,s}etsockopt for a long time.
+> It is added at the beginning of the optname list under level
+> SOL_SOCKET because it is supported by both helper functions.
 > 
-> Thanks for taking a look.
+> Signed-off-by: Rongfeng Ji <SikoJobs@outlook.com>
+> ---
+>   include/uapi/linux/bpf.h       | 7 ++++---
+>   tools/include/uapi/linux/bpf.h | 7 ++++---
+>   2 files changed, 8 insertions(+), 6 deletions(-)
 > 
-> I don't have a strong opinion here. I picked cgroup_all_* vs
-> cgroup12_* or cgroup_v1v2_* because it's easier on the eyes.
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 51b9aa640ad2..ccae9cb833b8 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -2574,9 +2574,9 @@ union bpf_attr {
+>    * 		It supports the following *level*\ s:
+>    *
+>    * 		* **SOL_SOCKET**, which supports the following *optname*\ s:
+> - * 		  **SO_RCVBUF**, **SO_SNDBUF**, **SO_MAX_PACING_RATE**,
+> - * 		  **SO_PRIORITY**, **SO_RCVLOWAT**, **SO_MARK**,
+> - * 		  **SO_BINDTODEVICE**, **SO_KEEPALIVE**.
+> + * 		  **SO_REUSEPORT**, **SO_RCVBUF**, **SO_SNDBUF**,
+> + * 		  **SO_MAX_PACING_RATE**, **SO_PRIORITY**, **SO_RCVLOWAT**,
+> + * 		  **SO_MARK**, **SO_BINDTODEVICE**, **SO_KEEPALIVE**.
 
-I'd rather have something which is really distinctive because the difference
-is rather subtle.
+More options has recently been added to SOL_SOCKET, IPPROTO_TCP, and 
+IPPROTO_IPV6.  Could you take this chance to also add them together?
 
-> My preference would have been to rename the old versions to
-> cgroup_dfl_* instead, but like you said this might confuse existing
-> users.
+Also, it seems the optnames here is not in any particular order.  Please append 
+the new ones to the end to avoid shifting code churn like the above.
 
-Yeah, it's confusing to have parallel file / id lookup functions with
-different behaviors and we've asssumed that all these from-userspace lookups
-are cgroup2 only for a while now.
+>    * 		* **IPPROTO_TCP**, which supports the following *optname*\ s:
+>    * 		  **TCP_CONGESTION**, **TCP_BPF_IW**,
+>    * 		  **TCP_BPF_SNDCWND_CLAMP**, **TCP_SAVE_SYN**,
+> @@ -2802,6 +2802,7 @@ union bpf_attr {
+>    * 		This helper actually implements a subset of **getsockopt()**.
+>    * 		It supports the following *level*\ s:
+>    *
+> + * 		* **SOL_SOCKET**, which supports *optname* **SO_REUSEPORT**.
 
-> Anyway, I am fine with whatever you choose. Let me know if you need me
-> to send a v2 for changing the prefix.
+For bpf_getsockopt(), it supports all optnames in bpf_setsockopt() with a few 
+exceptions.  The exceptions should be the TCP_BPF_* which is Set only.  The 
+TCP_SAVED_SYNC is Get only.  Please check.
 
-Please send an updated version. I don't mind whether it's cgroup12_ or
-cgroup_v1v2_.
+The doc for bpf_getsockopt() could be simplified to "... the same set of 
+bpf_setsockopt's optnames is supported.  The exceptions are... TCP_BPF_* which 
+is bpf_setsockopt() only.... TCP_SAVED_SYNC is bpf_getsockopt() only..."
 
-Thanks.
+Please tag it as bpf-next and also v2 in the next revision:
+Documentation/bpf/bpf_devel_QA.rst  (Q: How do I indicate which tree....)
 
--- 
-tejun
+
