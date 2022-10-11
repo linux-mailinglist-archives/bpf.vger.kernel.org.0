@@ -2,52 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1763C5FAD73
-	for <lists+bpf@lfdr.de>; Tue, 11 Oct 2022 09:27:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 527235FAD74
+	for <lists+bpf@lfdr.de>; Tue, 11 Oct 2022 09:28:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229868AbiJKH13 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Oct 2022 03:27:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60534 "EHLO
+        id S229569AbiJKH2B (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Oct 2022 03:28:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229569AbiJKH12 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 Oct 2022 03:27:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7767F6527B
-        for <bpf@vger.kernel.org>; Tue, 11 Oct 2022 00:27:27 -0700 (PDT)
+        with ESMTP id S229624AbiJKH2A (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 Oct 2022 03:28:00 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A280631C9
+        for <bpf@vger.kernel.org>; Tue, 11 Oct 2022 00:27:59 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B6303610F4
-        for <bpf@vger.kernel.org>; Tue, 11 Oct 2022 07:27:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23C99C43144
-        for <bpf@vger.kernel.org>; Tue, 11 Oct 2022 07:27:26 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id D97B1B810B2
+        for <bpf@vger.kernel.org>; Tue, 11 Oct 2022 07:27:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CD29C433D6
+        for <bpf@vger.kernel.org>; Tue, 11 Oct 2022 07:27:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665473246;
-        bh=uXQUjQxkEBLJOa4xa9TH7b3q+w2qaBuQeGFMrLtsx9c=;
+        s=k20201202; t=1665473276;
+        bh=fH+Va1J4tOuAfJNkokoYNYuPO5f38dQ3kijlR8xSdQg=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=EH7gtQBP9R2hj0L9YaeY0Y0wPdQrrG+Yh8mNCAH2euDy7NGoRcQYIKMPVXrIETY5g
-         W5pq680mKXYLBcBEG54AZ3rF1CK4V6vXp6N8eHokTqeB8JBKoDl1fFb0jo4zgtaUcI
-         vYp4hRt+/K554c9Kg2bgow/JORyJo2KdSkx8xiRDJTIwcB9M/T1QefsUegYi9uORKk
-         hUmudQtiWCMgwJZLZR0LcD5S8S4evcJfooLrnlncjC4ajuADmG+ZuNADEliKIGSlfU
-         KnEH03wGE7AJgLtiYsZV+Q4Oo3IoolvDjtk6WoDMCpzVtoUs7ThKHTc7ryYYg42sFO
-         65oCoOkmdnf+w==
-Received: by mail-ej1-f43.google.com with SMTP id k2so29485644ejr.2
-        for <bpf@vger.kernel.org>; Tue, 11 Oct 2022 00:27:26 -0700 (PDT)
-X-Gm-Message-State: ACrzQf1zeyUQsN0cOJACyQShkVy9kBiEKFzD7pbEm987eG10oo69pYXP
-        BcaqjVYm7d6gOCn8Nvu40tmiSPMZs70eIrkvarY=
-X-Google-Smtp-Source: AMsMyM70/1axX88/jBRVG116cymlUXJki9g/ZSlmNe/nxxQwRlwWi1jvmx3BStpgpPjzOl41bECnAgPrUAhY1t6DTWI=
-X-Received: by 2002:a17:907:970b:b0:78d:8d70:e4e8 with SMTP id
- jg11-20020a170907970b00b0078d8d70e4e8mr13747793ejc.614.1665473244298; Tue, 11
- Oct 2022 00:27:24 -0700 (PDT)
+        b=DPqiOaW/a34bBKGUMFj2QB9T87NLj5zxTtE2hZn/HTKdPVGcyOvBcM989QgI2bjS0
+         uYdeRR6DzclH7DvS15VubhK2jXJCSyj2UkKoDRkdt9Psrt5YsalyaPxWpEOiZefVoF
+         QYW0XwPbtMRu86FRvvQ+9xuPSwjNB7pEZN12UsX+FwD0LwbDq1x5Sp24rxRaKVgLJo
+         ZrvqlBc8NsS0YND/lEdv6KdYObYcKoalFQEWnTRYTCgryKWHNaQN5dwN9jeeQq2jCD
+         RfOOR+TKAFz3HquwC54aDvu+1uRs5KHrEwScC53MUehwKKV1/Vv8os4uj1I6yA42uz
+         z0QZ5Et/eDF7g==
+Received: by mail-ej1-f42.google.com with SMTP id b2so29473083eja.6
+        for <bpf@vger.kernel.org>; Tue, 11 Oct 2022 00:27:56 -0700 (PDT)
+X-Gm-Message-State: ACrzQf23CaTivsuLKM4xKavmIsruuMToPapRz+DTZGQQMA+Tm/BQMYvN
+        sJySohuoFXW/HgPzVrfRl6JYBEWzNyNrYqCcQfg=
+X-Google-Smtp-Source: AMsMyM4as1lXLGlEv8FpjPNyv40sFcUN0CLGGIvwCSWc/+mTHq5nbHUBmiPpEADf3TCmNozpoeQFnMZeiW0kRfKQMV0=
+X-Received: by 2002:a17:907:8a0a:b0:78d:b87d:e68a with SMTP id
+ sc10-20020a1709078a0a00b0078db87de68amr6490709ejc.301.1665473274760; Tue, 11
+ Oct 2022 00:27:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <20221009215926.970164-1-jolsa@kernel.org> <20221009215926.970164-8-jolsa@kernel.org>
-In-Reply-To: <20221009215926.970164-8-jolsa@kernel.org>
+References: <20221009215926.970164-1-jolsa@kernel.org> <20221009215926.970164-9-jolsa@kernel.org>
+In-Reply-To: <20221009215926.970164-9-jolsa@kernel.org>
 From:   Song Liu <song@kernel.org>
-Date:   Tue, 11 Oct 2022 00:27:12 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW6r+=nzTozfzQzk+2qKr_3rmiY55TPDfnUgOZriWWWaYg@mail.gmail.com>
-Message-ID: <CAPhsuW6r+=nzTozfzQzk+2qKr_3rmiY55TPDfnUgOZriWWWaYg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 7/8] selftests/bpf: Add kprobe_multi kmod link
- api tests
+Date:   Tue, 11 Oct 2022 00:27:42 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW63gieC_RqyE3LWSCLZ_HKKKJY7P1Jd2CDQq_BV-Jh_Lg@mail.gmail.com>
+Message-ID: <CAPhsuW63gieC_RqyE3LWSCLZ_HKKKJY7P1Jd2CDQq_BV-Jh_Lg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 8/8] selftests/bpf: Add kprobe_multi check to
+ module attach test
 To:     Jiri Olsa <jolsa@kernel.org>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -72,78 +72,51 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Sun, Oct 9, 2022 at 3:01 PM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> Adding kprobe_multi kmod link api tests that attach bpf_testmod
-> functions via kprobe_multi link API.
->
-> Running it as serial test, because we don't want other tests to
-> reload bpf_testmod while it's running.
+> Adding test that makes sure the kernel module won't be removed
+> if there's kprobe multi link defined on top of it.
 >
 > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  .../prog_tests/kprobe_multi_testmod_test.c    | 94 +++++++++++++++++++
->  .../selftests/bpf/progs/kprobe_multi.c        | 51 ++++++++++
->  2 files changed, 145 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/kprobe_multi_testmod_test.c
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_testmod_test.c b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_testmod_test.c
-> new file mode 100644
-> index 000000000000..5fe02572650a
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_testmod_test.c
-> @@ -0,0 +1,94 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <test_progs.h>
-> +#include "kprobe_multi.skel.h"
-> +#include "trace_helpers.h"
-> +#include "bpf/libbpf_internal.h"
-> +
-> +static void kprobe_multi_testmod_check(struct kprobe_multi *skel)
-> +{
-> +       ASSERT_EQ(skel->bss->kprobe_testmod_test1_result, 1, "kprobe_test1_result");
-> +       ASSERT_EQ(skel->bss->kprobe_testmod_test2_result, 1, "kprobe_test2_result");
-> +       ASSERT_EQ(skel->bss->kprobe_testmod_test3_result, 1, "kprobe_test3_result");
-> +
-> +       ASSERT_EQ(skel->bss->kretprobe_testmod_test1_result, 1, "kretprobe_test1_result");
-> +       ASSERT_EQ(skel->bss->kretprobe_testmod_test2_result, 1, "kretprobe_test2_result");
-> +       ASSERT_EQ(skel->bss->kretprobe_testmod_test3_result, 1, "kretprobe_test3_result");
-> +}
-> +
-> +static void test_testmod_link_api(struct bpf_link_create_opts *opts)
-> +{
-> +       int prog_fd, link1_fd = -1, link2_fd = -1;
-> +       struct kprobe_multi *skel = NULL;
-> +
-> +       skel = kprobe_multi__open_and_load();
-> +       if (!ASSERT_OK_PTR(skel, "fentry_raw_skel_load"))
-> +               goto cleanup;
-
-nit: we can just return here.
-
-Other than this:
 
 Acked-by: Song Liu <song@kernel.org>
 
-> +
-> +       skel->bss->pid = getpid();
-> +       prog_fd = bpf_program__fd(skel->progs.test_kprobe_testmod);
-> +       link1_fd = bpf_link_create(prog_fd, 0, BPF_TRACE_KPROBE_MULTI, opts);
-> +       if (!ASSERT_GE(link1_fd, 0, "link_fd1"))
+> ---
+>  tools/testing/selftests/bpf/prog_tests/module_attach.c | 7 +++++++
+>  tools/testing/selftests/bpf/progs/test_module_attach.c | 6 ++++++
+>  2 files changed, 13 insertions(+)
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/module_attach.c b/tools/testing/selftests/bpf/prog_tests/module_attach.c
+> index 6d0e50dcf47c..7fc01ff490db 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/module_attach.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/module_attach.c
+> @@ -103,6 +103,13 @@ void test_module_attach(void)
+>         ASSERT_ERR(delete_module("bpf_testmod", 0), "delete_module");
+>         bpf_link__destroy(link);
+>
+> +       link = bpf_program__attach(skel->progs.kprobe_multi);
+> +       if (!ASSERT_OK_PTR(link, "attach_kprobe_multi"))
 > +               goto cleanup;
 > +
-> +       opts->kprobe_multi.flags = BPF_F_KPROBE_MULTI_RETURN;
-> +       prog_fd = bpf_program__fd(skel->progs.test_kretprobe_testmod);
-> +       link2_fd = bpf_link_create(prog_fd, 0, BPF_TRACE_KPROBE_MULTI, opts);
-> +       if (!ASSERT_GE(link2_fd, 0, "link_fd2"))
-> +               goto cleanup;
+> +       ASSERT_ERR(delete_module("bpf_testmod", 0), "delete_module");
+> +       bpf_link__destroy(link);
 > +
-> +       ASSERT_OK(trigger_module_test_read(1), "trigger_read");
-> +       kprobe_multi_testmod_check(skel);
-> +
-> +cleanup:
-> +       if (link1_fd != -1)
-> +               close(link1_fd);
-> +       if (link2_fd != -1)
-> +               close(link2_fd);
-> +       kprobe_multi__destroy(skel);
+>  cleanup:
+>         test_module_attach__destroy(skel);
+>  }
+> diff --git a/tools/testing/selftests/bpf/progs/test_module_attach.c b/tools/testing/selftests/bpf/progs/test_module_attach.c
+> index 08628afedb77..8a1b50f3a002 100644
+> --- a/tools/testing/selftests/bpf/progs/test_module_attach.c
+> +++ b/tools/testing/selftests/bpf/progs/test_module_attach.c
+> @@ -110,4 +110,10 @@ int BPF_PROG(handle_fmod_ret,
+>         return 0; /* don't override the exit code */
+>  }
+>
+> +SEC("kprobe.multi/bpf_testmod_test_read")
+> +int BPF_PROG(kprobe_multi)
+> +{
+> +       return 0;
 > +}
+> +
+>  char _license[] SEC("license") = "GPL";
+> --
+> 2.37.3
 >
