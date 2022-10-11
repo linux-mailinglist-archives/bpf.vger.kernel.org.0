@@ -2,67 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B9D05FAA9C
-	for <lists+bpf@lfdr.de>; Tue, 11 Oct 2022 04:30:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C8205FAAAC
+	for <lists+bpf@lfdr.de>; Tue, 11 Oct 2022 04:41:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229526AbiJKCaI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 10 Oct 2022 22:30:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35510 "EHLO
+        id S229768AbiJKClJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 10 Oct 2022 22:41:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbiJKCaH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 10 Oct 2022 22:30:07 -0400
+        with ESMTP id S229786AbiJKClF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 10 Oct 2022 22:41:05 -0400
 Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8483A48E9F;
-        Mon, 10 Oct 2022 19:30:06 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id a17so2709361qtw.10;
-        Mon, 10 Oct 2022 19:30:06 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EA617DF51;
+        Mon, 10 Oct 2022 19:41:04 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id s21so7548224qtx.6;
+        Mon, 10 Oct 2022 19:41:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=H5bopQBfqDPZFFnIWboUojrulpfKzdRY6HL8GaG6Yds=;
-        b=P1o8xs/F0bTQnTJiyo+2uNIHcOqB+t4v/qJ+Y1p+dBW39cEG1g5McVLF+NOREsv/Ct
-         jRvBz0MzWRzzCUwXmix0XllVvB8ndPlQFuHghAosTVsAZFRECpd13CZrCIrW66ttbE8O
-         82RB8uEA9BGagBLCfk6yY0jBtjwjItN8VMGsjh7UauA50nJGTCfYTHzkGxrV/qAuDByt
-         APoMj1r9wyomy3ulEPft0hLyloGSL/zelHeKXyD+AO/iif66OLO2asFsQmxI8rNIwQBT
-         udphK30lrvc1NLLlWBaH5j4HcSnvFp3YDnuYtJF6O3yNKs2hWvSNhjMDeIdIy7McxVi4
-         r8cw==
+        bh=YdwJJqMqMav7983gG2xEJt2EcmsplMVNQmbGSg4wVJM=;
+        b=H9RF6oZj5V84NbjMUUnzP/2x4LktZ54Dli06SdmuwX3kln3W0glxpHbJ0GV9FnTU8J
+         I0uvgBtuSHXUhGp6vdiFQ43uS+nAVQS4TBP2pM3p96qwvsN9zcDNIn1GVFXguuh0/Wbf
+         Teg0BUTdive3LizRW1QigKIUiSFel852GUn1DlE8ARB4fjRP9YoxGi6ERIFE7uWwRSqp
+         z9PDvA5zy05KaRJeWJ8r3tIDDk029Ji91okrrbDUKkLPSqIxizRNm3Mw/8qWIROhwTKL
+         peeVDe/+3fA+vO5KUA2OcDTH6XWyEEnuHdXYmh7DRb/3QZ4KBfG1SQolVJOBfDS7GUUG
+         L92Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=H5bopQBfqDPZFFnIWboUojrulpfKzdRY6HL8GaG6Yds=;
-        b=GFOifh9NMtjTKX+Op34ER1maBqmu+eMILp4EJdy0wO872v6xyeQ77ylZDiJq4jJyNd
-         tGmg2TlO5v9bBcDvveyUoeDewTFPYr0eR+A2AE9AajC7kJGx7NI8sB8+7cABwphWfKm6
-         DAh85mcNamX1EfUvnNOVo52vPDWWxy1Oj8tOYe9M8U+K8VoLheZXprlQEVdq/utE4ejW
-         134XsTx1Z8TClxlJzeuM5+0PcuHdaIXAPpjk8uBn0+EC4FQLWD3SB9pVyaZrOBkBVpbO
-         YJ2+5UBJHQBWAASKJgklzvRe8/lUjLPpTqam3ubkFshUxBXviRdkhUC2dFi2X0JxI5E6
-         s2lw==
-X-Gm-Message-State: ACrzQf2HT405mSdEIcB4SBpz31JSffqIuUmbjLfy67LGz48i7d0m2uGf
-        IUcHsk93IORhssH8SJjkyTseIutfSwhU6Mju1w4=
-X-Google-Smtp-Source: AMsMyM7/cg61IUFDL3Nwh/YHT2gfRHWGh1r1pA2BKHs0R6pK7t2wgEuG2FGcB8bpyS6mmPuyxyyIj9HzBb0cvvhVRUg=
+        bh=YdwJJqMqMav7983gG2xEJt2EcmsplMVNQmbGSg4wVJM=;
+        b=lkPhak5MyLk0PgHuVN3ZZpZHaGkQyr0FGio8ViCdrhnPqpthse9I6AJGhGPdInaTYQ
+         HhYWX+o0OLwR6U9qfXPA4UnFKgoiaCPIR5c1IKrQVWxrGARRM8/TFkk339gBNO376XCq
+         g3oX52KWVx50ApkRi8fYnvFhmzYV+ExJ0UGCM9CoXXw2GxbhKKJiDQMD3tOsWvhUo0cn
+         vsIla9G4t4MlFUVUlbwMYyq9/dHYitVuw7gGPl2CJcce+/1ioBADJWRjxsXDrThjtbWO
+         qDKL1bJe1yCx+rpAUqu6I7PxOlOX3DY5JNy8oUVgiat6WXcsoXN1p9rNU44UYmHbeURD
+         bMaw==
+X-Gm-Message-State: ACrzQf3R/fFmrZ9oUZp0X94FApH9E5AvJbMmEQ/TwMYOlcBFCKxBon0g
+        iFWka2WJv3HbwyUKvRNp/bnWx4x3BsTN/pWgXcA=
+X-Google-Smtp-Source: AMsMyM4CbArNbrzGSvgyHdixrA5EcFHOib5pQC/ZGoruVzmkzHDx5PQpsV7yKJ+M7qPrbWAXjFygKc9PupUCGFukEkM=
 X-Received: by 2002:a05:622a:551:b0:35d:5237:1781 with SMTP id
- m17-20020a05622a055100b0035d52371781mr17502311qtx.566.1665455405572; Mon, 10
- Oct 2022 19:30:05 -0700 (PDT)
+ m17-20020a05622a055100b0035d52371781mr17522078qtx.566.1665456063129; Mon, 10
+ Oct 2022 19:41:03 -0700 (PDT)
 MIME-Version: 1.0
-References: <20221001144716.3403120-1-void@manifault.com> <20221001144716.3403120-3-void@manifault.com>
- <CAP01T74TtMARkfYWsYY0+cnsx2w4axB1LtvF-RFMAihW7v=LUw@mail.gmail.com>
- <YzsBSoGnPEIJADSH@maniforge.dhcp.thefacebook.com> <CAP01T76OR3J_P8YMq4ZgKHBpuZyA0zgsPy+tq9htbX=j6AVyOg@mail.gmail.com>
- <fb3e81b7-8360-5132-59ac-0e74483eb25f@linux.dev> <CAP01T77tCdKTJo=sByg5GsW1OrQmNXV4fmBDKUVtbnwEaJBpVA@mail.gmail.com>
- <YztbOo7TgOoN1bVB@maniforge.dhcp.thefacebook.com> <CAP01T76rCLdExKZ0AdP9L6e_g+sj9D7Ec59rr+ddMJ-KU+h8QQ@mail.gmail.com>
- <YzxM+HSSqIDCPCUf@maniforge.lan>
-In-Reply-To: <YzxM+HSSqIDCPCUf@maniforge.lan>
+References: <20221002171012.3529521-1-void@manifault.com> <CAP01T76SFT7TM02RaR9CMtBww34swXZotS2FkGKVBE6+o5XqBw@mail.gmail.com>
+ <YzrpI4PWxDaejZ6d@maniforge.dhcp.thefacebook.com> <CAP01T74bA2-qf3-yTkqd01k-Ft-7LJBGnuc9yOWkZK_ZmydqLw@mail.gmail.com>
+ <YzxRa6dBz6z/85ZV@maniforge.lan>
+In-Reply-To: <YzxRa6dBz6z/85ZV@maniforge.lan>
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date:   Tue, 11 Oct 2022 07:59:29 +0530
-Message-ID: <CAP01T76zg0kABh36ekC4FTxDsdiYBaP7agErO=YadfFmaJ1LKQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] bpf/selftests: Add selftests for new task kfuncs
+Date:   Tue, 11 Oct 2022 08:10:26 +0530
+Message-ID: <CAP01T77QYNc6BJP+OtVV3YQGgS06ZeWTUBdq3sp2FhKmeoo6-A@mail.gmail.com>
+Subject: Re: [PATCH v2] selftests/bpf: Update map_kptr examples to reflect
+ real use-cases
 To:     David Vernet <void@manifault.com>
-Cc:     Martin KaFai Lau <martin.lau@linux.dev>, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kernel-team@fb.com,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org, yhs@fb.com,
-        song@kernel.org, john.fastabend@gmail.com, kpsingh@kernel.org,
-        sdf@google.com, haoluo@google.com, jolsa@kernel.org, tj@kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, kernel-team@fb.com, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yhs@fb.com, song@kernel.org,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, tj@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -74,69 +72,123 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 4 Oct 2022 at 20:40, David Vernet <void@manifault.com> wrote:
+On Tue, 4 Oct 2022 at 20:59, David Vernet <void@manifault.com> wrote:
 >
-> On Tue, Oct 04, 2022 at 12:22:08AM +0200, Kumar Kartikeya Dwivedi wrote:
-> > > Thanks for providing additional context, Kumar. So what do we want to do
-> > > for this patch set? IMO it doesn't seem useful to restrict
-> > > bpf_kfunc_acquire() to only be callable by non-sleepable programs if our
-> > > goal is to avoid crashes for nested task structs. We could easily
-> > > accidentally crash if e.g. those pointers are NULL, or someone is doing
-> > > something weird like stashing some extra flag bits in unused portions of
-> > > the pointer which are masked out when it's actually dereferenced
-> > > regardless of whether we're in RCU.  Trusting ctx loads sounds like the
-> > > right approach, barring some of the challenges you pointed out such as
-> > > dealing with fexit paths after free where the object may not be valid
-> > > anymore.
+> On Mon, Oct 03, 2022 at 06:22:55PM +0200, Kumar Kartikeya Dwivedi wrote:
+>
+> [...]
+>
+> > > > >  noinline void bpf_kfunc_call_test_release(struct prog_test_ref_kfunc *p)
+> > > > >  {
+> > > > >         if (!p)
+> > > > >                 return;
+> > > > >
+> > > > > -       refcount_dec(&p->cnt);
+> > > > > +       WARN_ON_ONCE(atomic_read(&p->destroyed));
+> > > > > +       if (refcount_dec_and_test(&p->cnt))
+> > > > > +               call_rcu(&p->rcu, delayed_destroy_test_ref_struct);
+> > > >
+> > > > I wonder whether this is ever called, I haven't really given this
+> > > > patch a shot, but I don't see how the refcount can ever drop back to
+> > > > zero. It's initialized as 1, and then only acquired after that, so
+> > > > pairing all releases should still preserve refcount as 1.
 > > >
-> > > In general, it seems like we should maybe decide on what our policy
-> > > should be for kfuncs until we can wire up whatever we need to properly
-> > > trust ctx.
+> > > Yeah, the call_rcu() path is never hit. If we wanted to update the test
+> > > so that this codepath was actually exercised, I think we'd need to add
+> > > another kfunc that returned a reference to a dynamically allocated
+> > > object rather than using the global, static one. I'm happy to do that if
+> > > we think it's useful. The downside to adding more of these test kfuncs
+> > > is that they actually do add a small bit of runtime overhead to the
+> > > kernel because they're unconditionally registered in the __init function
+> > > for test_run.c.
+> > >
 > >
-> > Well, we could add it now and work towards closing the gaps after
-> > this, especially if bpf_task_acquire is really only useful in
-> > sleepable programs where it works on the tracing args. A lot of other
-> > kfuncs need these fixes as well, so it's a general problem and not
-> > specific to this set. I am not very familiar with your exact use case.
-> > Hopefully when it is fixed this particular case won't really break, if
-> > you only use the tracepoint argument.
+> > But that only happens once, right? It still happens, so I don't see
+> > what changes.
 >
-> I'm also interested in using this with struct_ops, not just tracing. I
-> think that struct_ops should be totally fine though, and easier to
-> reason about than tracing as we just have to make sure that a few
-> specific callbacks are always passed a valid, referenced task, rather
-> than e.g. worrying about fexit on __put_task_struct().
+> The idea here would be to return a dynamically allocated object with an
+> initial refcount of 1 that's owned by the _BPF program_, rather than
+> what we have today where the global struct has an initial refcount
+> that's owned by the main kernel and is never expected to go to 0. For
+> all success (i.e. non-fail) testcases that are able to dynamically
+> allocate this object, the refcount should go to 0 for each of them and
+> the object will be destroyed after the current RCU grace period. Please
+> let me know if I've misunderstood your point.
 >
-> I'm fine with adding this now and working towards closing the gaps
-> later, though I'd like to hear what Martin, Alexei, and the rest of the
-> BPF maintainers think. I think Martin asked if there was any preliminary
-> work you'd already done that we could try to tie into this patch set,
-> and I'm similarly curious.
+> > > > Also, even if you made it work, wouldn't you have the warning once you
+> > > > run more selftests using prog_test_run, if you just set the  destroyed
+> > > > bit on each test run?
+> > >
+> > > If we want to update the test to have the refcount drop to 0, we would
+> > > probably have to instead use dynamically allocated objects. At that
+> > > point, we'd probably just crash instead of seeing a warning if we
+> > > accidentally let a caller invoke acquire or release after the object had
+> > > been destroyed. Maybe the better thing to do here is to just warn
+> > > unconditionally in the destructor rather than setting a flag? What we
+> > > really want to ensure is that the final refcount that's "owned" by the
+> > > main kernel is never dropped.
+> >
+> > I think the refcount_t API already warns if underflow happens.
+>
+> Right, a warning would probably show up if we did a release that caused
+> an underflow, but it would not for an acquire after the refcount dropped
+> to 0.
 >
 
-It's mostly a few experimental patches in my local tree, so nowhere
-close to completion. Ofcourse doing it properly will be a lot of work,
-but I will be happy to help with reviews if you want to focus on
-pointers loaded from ctx for now and make that part of this set, while
-not permitting any other cases. It should not be very difficult to add
-just that.
+It should, see REFCOUNT_ADD_UAF in include/linux/refcount.h.
 
-So you can set KF_TRUSTED_ARGS for your kfunc, then make it work for
-PTR_TO_BTF_ID where it either has PTR_TRUSTED, ref_obj_id > 0, or
-both. Just that PTR_TRUSTED is lost for the destination reg as soon as
-btf_struct_access is used to walk pointers (unlike PTR_UNTRUSTED which
-is inherited). Note that you don't _set_ PTR_UNTRUSTED here for the
-dst_reg.
+> > To be clear, I don't mind if you want to improve this, it's certainly
+> > a mess right now. Tests can't even run in parallel easily because it's
+> > global. Testing like an actually allocated object might be a good way
+> > to simulate a real scenario. And I totally agree that having a real
+> > example is useful to people who want to add support for more kptrs.
+>
+> Ok, let me update the tests to do two things then:
+>
+> 1. Add a new test kfunc called bpf_kfunc_call_test_alloc() which returns
+>    a dynamically allocated instance of a prog_test_ref_kfunc *. This is
+>    similar in intention to bpf_xdp_ct_alloc().
+> 2. Update bpf_kfunc_call_test_acquire() and
+>    bpf_kfunc_call_test_release() to take a trusted pointer to that
+>    allocated prog_test_ref_kfunc *.
 
-This should enable your immediate use case, while also being useful
-for future work that builds on it. It should also preserve backwards
-compatibility with existing stable helpers. You set PTR_TRUSTED when
-you access ctx of tracing or struct_ops etc. All this will be handled
-in is_valid_access callback/btf_ctx_access and setting the flag in
-bpf_insn_access_aux. Unless I missed some detail/corner case it won't
-be a lot of code.
+This should work, but you would have to go through a lot of tests,
+sadly I assumed it is global in a lot of places to make testing easier
+(e.g. observing count after releasing by doing p->next, which gave me
+a PTR_TO_BTF_ID that is preserved after release).
+Some other way would have to be found to do the same thing.
 
-If that turns out to be too restrictive/coarse for your use case, we
-can just go with this as is for now.
+> 3. Keep the other changes which e.g. use RCU in
+>    bpf_kfunc_call_test_kptr_get() to synchronize on getting the kptr.
+>    Once the __rcu kptr variant is landed we can get rid of
+>    bpf_kfunc_call_test_kptr_get() and make bpf_kfunc_call_test_acquire()
+>    require an __rcu pointer.
+>
 
-Does that sound good? Any other comments/opinions?
+In the case of RCU I don't plan on passing the rcu pointer to acquire
+functions, but rather kptr_get stops taking pointer to pointer. I.e.
+in your point 3, kptr_get does what you want _acquire to do. It takes
+an rcu protected pointer to an object and safely increments its count.
+
+> Continuing on point (3) above, we should _probably_ also have an example
+> for an object that isn't RCU-protected? I imagine that we don't want to
+> get rid of KF_KPTR_GET entirely once we have __rcu pointers because some
+> kptr_get() implementations may synchronize in other ways, such as with
+> spinlocks or whatever. Let's leave this until after __rcu lands though.
+>
+
+I think it's unlikely kptr_get can work without it, spinlocks may be
+required internally (e.g. to inspect the object key/generation in
+SLAB_TYPESAFE_BY_RCU case without races) but that goes on top of RCU
+protection. But yes, it depends, maybe it will work for some special
+cases. Though I don't think it's worth adding an example for the
+uncommon case.
+
+So you will still need kptr_get helpers, some of them simply do
+refcount_inc_not_zero, others may do a little more.
+Anyway, let's discuss more when the set is posted.
+
+> Does this all sound good?
+>
+
+Yes.
