@@ -2,60 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 171235FCCC7
-	for <lists+bpf@lfdr.de>; Wed, 12 Oct 2022 23:08:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3C8B5FCE20
+	for <lists+bpf@lfdr.de>; Thu, 13 Oct 2022 00:08:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229899AbiJLVIU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Oct 2022 17:08:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41548 "EHLO
+        id S230007AbiJLWIW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Oct 2022 18:08:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229953AbiJLVIQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Oct 2022 17:08:16 -0400
+        with ESMTP id S230025AbiJLWHv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Oct 2022 18:07:51 -0400
 Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FC281142C6
-        for <bpf@vger.kernel.org>; Wed, 12 Oct 2022 14:08:13 -0700 (PDT)
-Received: by mail-pj1-x1049.google.com with SMTP id pc10-20020a17090b3b8a00b00202be8d81d2so2062459pjb.1
-        for <bpf@vger.kernel.org>; Wed, 12 Oct 2022 14:08:13 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD208142CBB
+        for <bpf@vger.kernel.org>; Wed, 12 Oct 2022 15:06:04 -0700 (PDT)
+Received: by mail-pj1-x1049.google.com with SMTP id mq15-20020a17090b380f00b0020ad26fa5edso2112841pjb.7
+        for <bpf@vger.kernel.org>; Wed, 12 Oct 2022 15:06:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=YQ92MyYkDi0rXzsY9g25bbZtz0xg0smQTszHXunhR9Y=;
-        b=DtHz3MGJYhQHIWK/6XAPNc4RldgwZDxwAY5kuC5r2GeW+K3pKhqB4dLF61O+pJE2oP
-         O4G6w/XVhTgXQqwYDfS96rg1BQ5d00XyN6gEmyiWaxgwxm6/APko+OHTAApYNgp+8+6J
-         2RcEjXmKb3D6zoDtxhTtegz+HfjHC3FUwOaQxldZme+OaA+e7CwXNW0wxiGayhBn1k/j
-         Hf223dBQyoilinuEX1AujNqtWp4Y+UZlLag75mUeaR1yUC1PsDYjB70cnzFiTjoR0j+A
-         Tvuas6lcQB1/nNWJeQpDgKhAbWzCujcm84lWagneOU/EupRq83T1yvgwZtv65i3nr5f4
-         zr2g==
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=PDe3yIdUsYj5isZjgp8M49Gc5ejUGlNAJHSilJvRTXY=;
+        b=RjydvwJOw80w7ff/ve4wDSEZkH+pB5DcKq8VGWeRPgUMCqsR75juxv9p4XUwkOjoqo
+         tiSxAMg1gH2JztJRnW8PPnfBR99Y+FjmVds2wyQIY32Ecynb3NHm7eCVa3GbpY1IU6OH
+         bjlL8/px1LcZvEKqRDVTmtNj0o96ZBwE1anS+GhRyX8qyovudIJEylxoYvkK05DaoG3b
+         1tQ8I7fj5/hmfV3WkxItsQ3i+PI7PORDpsDbcVc8r01hkCFygYjnYnYNSaG5cqE4RWDG
+         /E294r192ZVX7cz0HDInKLVaKW4HWJ5iFe67GVhku2rymvVQnEKtq/vf2uARtRk7FIC4
+         geMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=YQ92MyYkDi0rXzsY9g25bbZtz0xg0smQTszHXunhR9Y=;
-        b=DxMkQwn6c87UbNlLHzjTk8DRHyvTdzK23dnzWut5ZsRevlP/rdygDw16l+KS8e2BBx
-         5zu2WRqy5iz7tr7gk3n3EMIVKNjjOmZlWLW5ahvMxr7Q1Qi6QpK+WErU10QxQb0rXlr1
-         zbKU26fy/lmf9686iQfSjwpKOsCz03wWofsluhKTCKlsAXD6lrt1uDIcj1F1AhhQMJ0d
-         fiMXfxgwYWa3LwrqwpfDsJpH8IEKnFdt4Y3EOn1raZU09OtCL2nDrxQ1zTcdnEIcXqr3
-         e5o+tl6pXPiSfw24xs04tODWMhoOWWcn4P9D+kUkFAJc1AhL862jCqsT2u1+V2kHfygE
-         z1XA==
-X-Gm-Message-State: ACrzQf0Pypco5lICPj9/inCtxXmueMz2algXTqS912oHdQmvaJLQm4sT
-        rBAKzAGWzeSXXx9BvmiS9ckTm8M=
-X-Google-Smtp-Source: AMsMyM4O5iGbs4pYw4R/DIzFJMeeNajau+8QKMTNsG7BvklrN7LhYjyAUu5S2peKUCqUiqhMhEv1mnU=
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PDe3yIdUsYj5isZjgp8M49Gc5ejUGlNAJHSilJvRTXY=;
+        b=c+FYjYOMDUTrIF5YzhAe3DEpxJe9gtrG1kcAk7NJWU2oIbboFqTUrYAkEQE17tStDo
+         FjvLzUSp5eKFygU+0czUi8sO25frdLTyCmlgI6Z8Gkf5xrMCmzaAl57MyPVGXyJIipdO
+         uCNcPG+EKv0SUN1IcCTqJJ0kGmxaVZn8ShtC3UGSQDC1b/mosTZSlCbQ0Eprf3tqAJCu
+         wBeQMjcOkzsUB7FTw9qNXnZsG77wKOM9sbKvAWW57G8cywD3BUWwuFRz/hKLv8tb+jKg
+         zmZZTUG2dwIS97fz9h7+QKnv+/maEgxaiA9NKmFhdNJoFB82USC2R2J5X3p2M/OY9i0A
+         tj2Q==
+X-Gm-Message-State: ACrzQf1Z2ZeqXlNkSsRPyxb5L9lhUhVp7hXb2xEuJJ3NwPVbI/UHEWz1
+        LS0niKt25Jcvod5fxRNLDWzqrpELowqnt+MBWUvcF7rLhyDAPWOmGneiGbCbeX8pqjTl4++1QfI
+        BlYPf9k25v6aL5mdndKNim9DFLwm3zxDdYSUWrjIkLEmMUbQ64w==
+X-Google-Smtp-Source: AMsMyM7V9nZnG+YSSN+17GdxVTNKehy3i4yxrIYF+t0Pjn/ZEsKfd6BUQqMktdmjCJbuxq6XjxWjprU=
 X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a17:903:258e:b0:17b:a251:c80a with SMTP id
- jb14-20020a170903258e00b0017ba251c80amr32194690plb.110.1665608892519; Wed, 12
- Oct 2022 14:08:12 -0700 (PDT)
-Date:   Wed, 12 Oct 2022 14:08:11 -0700
+ (user=sdf job=sendgmr) by 2002:aa7:800a:0:b0:565:af23:f5a4 with SMTP id
+ j10-20020aa7800a000000b00565af23f5a4mr4589035pfi.42.1665612276253; Wed, 12
+ Oct 2022 15:04:36 -0700 (PDT)
+Date:   Wed, 12 Oct 2022 15:04:34 -0700
 Mime-Version: 1.0
-Message-ID: <Y0csu2SwegJ8Tab+@google.com>
-Subject: Lockdep warning after c0feea594e058223973db94c1c32a830c9807c86
-From:   sdf@google.com
-To:     john.fastabend@gmail.com, jakub@cloudflare.com
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+X-Mailer: git-send-email 2.38.0.rc1.362.ged0d419d3c-goog
+Message-ID: <20221012220434.3236596-1-sdf@google.com>
+Subject: [PATCH bpf-next] bpf: remove WARN_ON_ONCE from btf_type_id_size
+From:   Stanislav Fomichev <sdf@google.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org,
+        syzbot+d8bd751aef7c6b39a344@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,142 +71,92 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi John & Jakub,
+Syzkaller was able to hit it with the following reproducer:
 
-Upstream commit c0feea594e05 ("workqueue: don't skip lockdep work
-dependency in cancel_work_sync()") seems to trigger the following
-lockdep warning during test_prog's sockmap_listen:
+bpf$BPF_BTF_LOAD(0x12, &(0x7f0000000140)=3D{&(0x7f0000001680)=3D{{0xeb9f, 0=
+x1, 0x0, 0x18, 0x0, 0x34, 0x34, 0xc, [@fwd=3D{0xa}, @var=3D{0x3, 0x0, 0x0, =
+0x11, 0x4, 0xffffffff}, @func_proto=3D{0x0, 0x0, 0x0, 0xd, 0x2}, @struct]},=
+ {0x0, [0x0, 0x0, 0x5f, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x6c]}}, &(0x7f000000=
+04c0)=3D""/4096, 0x58, 0x1000, 0x1}, 0x20)
 
-[  +0.003631] WARNING: possible circular locking dependency detected
-[  +0.003647] 6.0.0-dbx-DEV #10 Not tainted
-[  +0.002402] ------------------------------------------------------
-[  +0.003685] kworker/1:0/23 is trying to acquire lock:
-[  +0.003012] ffff888100b1e3f0 (sk_lock-AF_INET){+.+.}-{0:0}, at:  
-tcp_sendpage+0x28/0x80
-[  +0.004655]
-               but task is already holding lock:
-[  +0.003434] ffff88810642c360 (&psock->work_mutex){+.+.}-{3:3}, at:  
-sk_psock_backlog+0x2e/0x370
-[  +0.005043]
-               which lock already depends on the new lock.
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 3609 at kernel/bpf/btf.c:1946
+btf_type_id_size+0x2d5/0x9d0 kernel/bpf/btf.c:1946
+Modules linked in:
+CPU: 0 PID: 3609 Comm: syz-executor361 Not tainted
+6.0.0-syzkaller-02734-g0326074ff465 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS
+Google 09/22/2022
+RIP: 0010:btf_type_id_size+0x2d5/0x9d0 kernel/bpf/btf.c:1946
+Code: ef e8 7f 8e e4 ff 41 83 ff 0b 77 28 f6 44 24 10 18 75 3f e8 6d 91
+e4 ff 44 89 fe bf 0e 00 00 00 e8 20 8e e4 ff e8 5b 91 e4 ff <0f> 0b 45
+31 f6 e9 98 02 00 00 41 83 ff 12 74 18 e8 46 91 e4 ff 44
+RSP: 0018:ffffc90003cefb40 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000002 RCX: 0000000000000000
+RDX: ffff8880259c0000 RSI: ffffffff81968415 RDI: 0000000000000005
+RBP: ffff88801270ca00 R08: 0000000000000005 R09: 000000000000000e
+R10: 0000000000000011 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000011 R14: ffff888026ee6424 R15: 0000000000000011
+FS:  000055555641b300(0000) GS:ffff8880b9a00000(0000)
+knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000f2e258 CR3: 000000007110e000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ btf_func_proto_check kernel/bpf/btf.c:4447 [inline]
+ btf_check_all_types kernel/bpf/btf.c:4723 [inline]
+ btf_parse_type_sec kernel/bpf/btf.c:4752 [inline]
+ btf_parse kernel/bpf/btf.c:5026 [inline]
+ btf_new_fd+0x1926/0x1e70 kernel/bpf/btf.c:6892
+ bpf_btf_load kernel/bpf/syscall.c:4324 [inline]
+ __sys_bpf+0xb7d/0x4cf0 kernel/bpf/syscall.c:5010
+ __do_sys_bpf kernel/bpf/syscall.c:5069 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5067 [inline]
+ __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:5067
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f0fbae41c69
+Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89
+f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01
+f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffc8aeb6228 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f0fbae41c69
+RDX: 0000000000000020 RSI: 0000000020000140 RDI: 0000000000000012
+RBP: 00007f0fbae05e10 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000246 R12: 00007f0fbae05ea0
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
 
-[  +0.004792]
-               the existing dependency chain (in reverse order) is:
-[  +0.004397]
-               -> #2 (&psock->work_mutex){+.+.}-{3:3}:
-[  +0.003732]        __mutex_lock_common+0xdf/0xe70
-[  +0.002958]        mutex_lock_nested+0x20/0x30
-[  +0.002685]        sk_psock_backlog+0x2e/0x370
-[  +0.002689]        process_one_work+0x22c/0x3b0
-[  +0.002815]        worker_thread+0x21b/0x400
-[  +0.002652]        kthread+0xf7/0x110
-[  +0.002406]        ret_from_fork+0x1f/0x30
-[  +0.002512]
-               -> #1 ((work_completion)(&psock->work)){+.+.}-{0:0}:
-[  +0.004457]        __flush_work+0x6b/0xd0
-[  +0.002638]        __cancel_work_timer+0x11a/0x1a0
-[  +0.002973]        cancel_work_sync+0x10/0x20
-[  +0.002724]        sk_psock_stop+0x298/0x2b0
-[  +0.002969]        sock_map_close+0xd8/0x140
-[  +0.002739]        inet_release+0x57/0x80
-[  +0.002475]        sock_close+0x4b/0xe0
-[  +0.002380]        __fput+0x101/0x230
-[  +0.002347]        ____fput+0xe/0x10
-[  +0.002259]        task_work_run+0x5d/0xb0
-[  +0.002535]        exit_to_user_mode_loop+0xd6/0xf0
-[  +0.003019]        exit_to_user_mode_prepare+0xa6/0x100
-[  +0.003201]        syscall_exit_to_user_mode+0x5b/0x160
-[  +0.003145]        do_syscall_64+0x49/0x80
-[  +0.002549]        entry_SYSCALL_64_after_hwframe+0x63/0xcd
-[  +0.003410]
-               -> #0 (sk_lock-AF_INET){+.+.}-{0:0}:
-[  +0.003906]        __lock_acquire+0x16f4/0x30c0
-[  +0.002837]        lock_acquire+0xc5/0x1c0
-[  +0.002599]        lock_sock_nested+0x32/0x80
-[  +0.002690]        tcp_sendpage+0x28/0x80
-[  +0.002435]        inet_sendpage+0x7b/0xe0
-[  +0.002534]        kernel_sendpage+0x5d/0xa0
-[  +0.002709]        skb_send_sock+0x24b/0x2d0
-[  +0.002662]        sk_psock_backlog+0x106/0x370
-[  +0.002908]        process_one_work+0x22c/0x3b0
-[  +0.002736]        worker_thread+0x21b/0x400
-[  +0.002552]        kthread+0xf7/0x110
-[  +0.002252]        ret_from_fork+0x1f/0x30
-[  +0.002480]
-               other info that might help us debug this:
+Any reason we need that WARN_ON_ONCE in this place?
+All callers except btf_array_check_member check the return value,
+so it should be safe. Assuming btf_array_check_member should also be fine
+because it hits 'btf_type_is_array()' condition.
 
-[  +0.004778] Chain exists of:
-                 sk_lock-AF_INET --> (work_completion)(&psock->work) -->  
-&psock->work_mutex
+Reported-by: syzbot+d8bd751aef7c6b39a344@syzkaller.appspotmail.com
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+---
+ kernel/bpf/btf.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-[  +0.007265]  Possible unsafe locking scenario:
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index eba603cec2c5..999f62c697a7 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -1943,8 +1943,8 @@ const struct btf_type *btf_type_id_size(const struct =
+btf *btf,
+ 	} else if (btf_type_is_ptr(size_type)) {
+ 		size =3D sizeof(void *);
+ 	} else {
+-		if (WARN_ON_ONCE(!btf_type_is_modifier(size_type) &&
+-				 !btf_type_is_var(size_type)))
++		if (!btf_type_is_modifier(size_type) &&
++		    !btf_type_is_var(size_type))
+ 			return NULL;
+=20
+ 		size_type_id =3D btf_resolved_type_id(btf, size_type_id);
+--=20
+2.38.0.rc1.362.ged0d419d3c-goog
 
-[  +0.003496]        CPU0                    CPU1
-[  +0.002717]        ----                    ----
-[  +0.002809]   lock(&psock->work_mutex);
-[  +0.002335]                                 
-lock((work_completion)(&psock->work));
-[  +0.004496]                                lock(&psock->work_mutex);
-[  +0.003766]   lock(sk_lock-AF_INET);
-[  +0.002185]
-                *** DEADLOCK ***
-
-[  +0.003600] 3 locks held by kworker/1:0/23:
-[  +0.002698]  #0: ffff888100055138 ((wq_completion)events){+.+.}-{0:0},  
-at: process_one_work+0x1d6/0x3b0
-[  +0.005552]  #1: ffffc900001e7e58  
-((work_completion)(&psock->work)){+.+.}-{0:0}, at:  
-process_one_work+0x1fc/0x3b0
-[  +0.006085]  #2: ffff88810642c360 (&psock->work_mutex){+.+.}-{3:3}, at:  
-sk_psock_backlog+0x2e/0x370
-[  +0.005424]
-               stack backtrace:
-[  +0.002689] CPU: 1 PID: 23 Comm: kworker/1:0 Not tainted 6.0.0-dbx-DEV #10
-[  +0.004086] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS  
-rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
-[  +0.006806] Workqueue: events sk_psock_backlog
-[  +0.002699] Call Trace:
-[  +0.001577]  <TASK>
-[  +0.001350]  dump_stack_lvl+0x69/0xaa
-[  +0.002225]  dump_stack+0x10/0x12
-[  +0.002051]  print_circular_bug+0x289/0x290
-[  +0.002531]  check_noncircular+0x12c/0x140
-[  +0.002578]  __lock_acquire+0x16f4/0x30c0
-[  +0.002483]  ? ret_from_fork+0x1f/0x30
-[  +0.002297]  ? __this_cpu_preempt_check+0x13/0x20
-[  +0.002869]  ? lock_is_held_type+0xf8/0x160
-[  +0.002511]  lock_acquire+0xc5/0x1c0
-[  +0.002165]  ? tcp_sendpage+0x28/0x80
-[  +0.002367]  lock_sock_nested+0x32/0x80
-[  +0.002401]  ? tcp_sendpage+0x28/0x80
-[  +0.002262]  tcp_sendpage+0x28/0x80
-[  +0.002148]  inet_sendpage+0x7b/0x[   12.231432] sysrq: Power Off
-e0
-[  +0.002202[   12.234545] kvm: exiting hardware virtualization
-]  kernel_sendpage+0x5d/0xa0
-[  +0.002277]  skb_send_sock+0x24b/0x2d0
-[  +0.002278]  ? _raw_spin_unlock_irqrestore+0x35/0x60
-[  +0.003030]  ? __this_cpu_preempt_check+0x13/0x20
-[  +0.002861]  ? lockdep_hardirqs_on+0x97/0x140
-[  +0.002685]  ? trace_hardirqs_on+0x47/0x50
-[  +0.002576]  ? _raw_spin_unlock_irqrestore+0x40/0x60
-[  +0.003207]  sk_psock_backlog+0x106/0x370
-[  +0.002476]  process_one_work+0x22c/0x3b0
-[  +0.002473]  worker_thread+0x21b/0x400
-[  +0.002335]  kthread+0xf7/0x110
-[  +0.001954]  ? rcu_lock_release+0x20/0x20
-[  +0.002444]  ? kthread_blkcg+0x30/0x30
-[  +0.002325]  ret_from_fork+0x1f/0x30
-[  +0.002221]  </TASK>
-
-This is on bpf-next:
-
-commit d31ada3b511141f4b78cae5a05cc2dad887c40b7 (HEAD -> bpf-next,
-bpf-next/master)
-Author: David Vernet <void@manifault.com>
-Date:   Tue Oct 11 11:52:55 2022 -0500
-
-     selftests/bpf: Alphabetize DENYLISTs
-
-Are you ware? Any idea what's wrong?
-Is there some stable fix I'm missing in bpf-next?
