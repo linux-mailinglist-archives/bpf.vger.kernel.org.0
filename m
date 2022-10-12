@@ -2,41 +2,41 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9A545FCED7
-	for <lists+bpf@lfdr.de>; Thu, 13 Oct 2022 01:20:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F7C95FCED9
+	for <lists+bpf@lfdr.de>; Thu, 13 Oct 2022 01:20:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229468AbiJLXU2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Oct 2022 19:20:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57454 "EHLO
+        id S229587AbiJLXUb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Oct 2022 19:20:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbiJLXU1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Oct 2022 19:20:27 -0400
+        with ESMTP id S229537AbiJLXUa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Oct 2022 19:20:30 -0400
 Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97E5911874D;
-        Wed, 12 Oct 2022 16:20:26 -0700 (PDT)
-Received: by mail-qt1-f177.google.com with SMTP id jr1so93511qtb.0;
-        Wed, 12 Oct 2022 16:20:26 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 772A8B8C0E;
+        Wed, 12 Oct 2022 16:20:29 -0700 (PDT)
+Received: by mail-qt1-f177.google.com with SMTP id z8so67985qtv.5;
+        Wed, 12 Oct 2022 16:20:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=umsGjcBN6QksXSLCVDPXpbAiW/8nZ3+jo6ikYymXFQ0=;
-        b=flv1N2uCk3bB9Id9Bj+ec9Eu4QmlQSp+BFD0FechfDt/xL+mPXF6VpLaFCAtbXq3kW
-         mzI+9LvNVL3xTlfgKmWSHlLsgToDEuZXqtJ+B0i81qMEn05T0znEHXsZXgUpJ2chuCQo
-         MfuJJcG0IPChWWWoeAUH4Iw51hO6H+EPaD1BfG7Ck2kzBoxsE75TZ/9bhJYrGPzMht3N
-         9DrxDbsun7fDOmzm0tKPEo9VmkB/Sgzpx3zcRCdZtOETIrCTRo2VqHP2qp2yJj/4cfyT
-         xH6MT0HRGXQa7zxApSZO1Kc+luovcI1f7g4+tRPJ40GTh2YFgZNXJkFpp0itdXJ7wwqf
-         gKHA==
-X-Gm-Message-State: ACrzQf1lHzvaPOS7dvqQ4zpHCaT5gQG1nxSFnfyPY+z21sro+Rs1Nc83
-        4fmrVkppIfddXR+IITfhryNnVLURxBRczw==
-X-Google-Smtp-Source: AMsMyM50/R9kYCDg+oGdSYSJ1BWx/mQCNvph0L0wN0j2S/CTOjEn0MNJi4KLpCn5WmkHRoZpwMkqpQ==
-X-Received: by 2002:a05:622a:40f:b0:394:57eb:ced0 with SMTP id n15-20020a05622a040f00b0039457ebced0mr25467529qtx.225.1665616825518;
-        Wed, 12 Oct 2022 16:20:25 -0700 (PDT)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=S9b28V7P/p+ltszS+L5057qYj43+A9hBHY9xbUGqv+o=;
+        b=yv1OaDzw5DkrGqsmOQApbeWlNd73zvUkSDGuOt2cWE9bAoEWMgijgQuobmQYte+A2C
+         1BYKFLC/F7+rf+ztRU+LNLKc6G3TCxEbrh03/++FKUJj4+b5KGuPlylfgSRY7knTQL+4
+         lOLxoy+6fvF1HdQFg28chV3f2JfeDC59H3pusEkAH2JV/thTp8jUulAsnUMOPn+hW7Ba
+         PSCd+nTpIYH8vaKKLkafOzmLZvdmx6EqmQmmgv2OtcHDNqKtQPu8FRN3rB51DBMqpcTO
+         qkigFuDdUPGVXHWjmeEGaWr9V+YQusb1wf015bsLWteIh85uWBxToC3Pxolf5eeEp0OT
+         Fa4A==
+X-Gm-Message-State: ACrzQf1+efxgCn1XmYoAZswLNhIEZ+TEFT2iSb198RS9FCmx/dfQN/SJ
+        jbWqAvnGhUJAAA6Wlu6kk5/FCN9VWzPiFQ==
+X-Google-Smtp-Source: AMsMyM7FEK8MYS+xJIppJ6NGURsKtXSO8Fz1EqGg29JqrkiB7B73plRSv1iXRxm6XT9/Iy7Miggmcw==
+X-Received: by 2002:a05:622a:1047:b0:35c:c042:194c with SMTP id f7-20020a05622a104700b0035cc042194cmr25971495qte.484.1665616828428;
+        Wed, 12 Oct 2022 16:20:28 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:480::1a0b])
-        by smtp.gmail.com with ESMTPSA id br14-20020a05620a460e00b006bbb07ebd83sm6347520qkb.108.2022.10.12.16.20.24
+        by smtp.gmail.com with ESMTPSA id l13-20020ac84ccd000000b00399edda03dfsm7856014qtv.67.2022.10.12.16.20.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Oct 2022 16:20:25 -0700 (PDT)
+        Wed, 12 Oct 2022 16:20:28 -0700 (PDT)
 From:   David Vernet <void@manifault.com>
 To:     bpf@vger.kernel.org
 Cc:     andrii@kernel.org, ast@kernel.org, martin.lau@linux.dev,
@@ -44,10 +44,12 @@ Cc:     andrii@kernel.org, ast@kernel.org, martin.lau@linux.dev,
         john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
         haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
         kernel-team@fb.com
-Subject: [PATCH 0/2] Allow bpf_user_ringbuf_drain() callbacks to return 1
-Date:   Wed, 12 Oct 2022 18:20:13 -0500
-Message-Id: <20221012232015.1510043-1-void@manifault.com>
+Subject: [PATCH 1/2] bpf: Allow bpf_user_ringbuf_drain() callbacks to return 1
+Date:   Wed, 12 Oct 2022 18:20:14 -0500
+Message-Id: <20221012232015.1510043-2-void@manifault.com>
 X-Mailer: git-send-email 2.38.0
+In-Reply-To: <20221012232015.1510043-1-void@manifault.com>
+References: <20221012232015.1510043-1-void@manifault.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
@@ -67,24 +69,31 @@ callback to return 0 if it wants to continue draining samples, and 1 if
 it's done draining. Unfortunately, bpf_user_ringbuf_drain() landed shortly
 after commit 1bfe26fb0827 ("bpf: Add verifier support for custom
 callback return range"), which changed the default behavior of callbacks
-to only support returning 0, and the corresponding necessary change to
-bpf_user_ringbuf_drain() callbacks was missed.
+to only support returning 0.
 
-This patch set fixes this oversight, and updates the user_ringbuf
-selftests to return 1 in a callback to catch future instances of
-regression.
+This patch corrects that oversight by allowing bpf_user_ringbuf_drain()
+callbacks to return 0 or 1. A follow-on patch will update the
+user_ringbuf selftests to also return 1 from a bpf_user_ringbuf_drain()
+callback to prevent this from regressing in the future.
 
-This patch set should be merged to the bpf tree.
+Fixes: 205715673844 ("bpf: Add bpf_user_ringbuf_drain() helper")
+Signed-off-by: David Vernet <void@manifault.com>
+---
+ kernel/bpf/verifier.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-David Vernet (2):
-  bpf: Allow bpf_user_ringbuf_drain() callbacks to return 1
-  selftests/bpf: Make bpf_user_ringbuf_drain() selftest callback return
-    1
-
- kernel/bpf/verifier.c                                    | 1 +
- tools/testing/selftests/bpf/progs/user_ringbuf_success.c | 4 ++--
- 2 files changed, 3 insertions(+), 2 deletions(-)
-
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 6f6d2d511c06..9ab7188d8f68 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -6946,6 +6946,7 @@ static int set_user_ringbuf_callback_state(struct bpf_verifier_env *env,
+ 	__mark_reg_not_init(env, &callee->regs[BPF_REG_5]);
+ 
+ 	callee->in_callback_fn = true;
++	callee->callback_ret_range = tnum_range(0, 1);
+ 	return 0;
+ }
+ 
 -- 
 2.38.0
 
