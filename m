@@ -2,45 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF0D65FCE4D
-	for <lists+bpf@lfdr.de>; Thu, 13 Oct 2022 00:20:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A6AD5FCECE
+	for <lists+bpf@lfdr.de>; Thu, 13 Oct 2022 01:18:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229607AbiJLWUL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Oct 2022 18:20:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60516 "EHLO
+        id S229527AbiJLXSB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Oct 2022 19:18:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbiJLWUJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Oct 2022 18:20:09 -0400
-Received: from out0.migadu.com (out0.migadu.com [IPv6:2001:41d0:2:267::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 757395B041;
-        Wed, 12 Oct 2022 15:20:07 -0700 (PDT)
-Message-ID: <16bcda3b-989e-eadf-b6c3-803470b0afd6@linux.dev>
+        with ESMTP id S229490AbiJLXSA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Oct 2022 19:18:00 -0400
+Received: from out0.migadu.com (out0.migadu.com [94.23.1.103])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70BEE12C896;
+        Wed, 12 Oct 2022 16:17:58 -0700 (PDT)
+Message-ID: <611e9bed-df6a-0da9-fbf9-4046f4211a7d@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1665613205;
+        t=1665616676;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=XPnFWAerAeXy7NqqbkBgHG7dHkoWQXwMsB4p5t6ekQw=;
-        b=oZ3pOq5xCw/PRsR1W+ITyjKzMuegcr37NX/899mYpwjVeZkZBE23mDs3AYoGpt7egnvRw/
-        Jm7GRr3URKKvoL6oDmbS1aiq2gzLqqlBtBfnvhTCEDsCKgRj9tQW9SyS7Cn+BHPhZqE2/g
-        QF65ECQ+qgrEYR5xm1M7n7cdCAWj/CU=
-Date:   Wed, 12 Oct 2022 15:20:01 -0700
+        bh=XOuJ7J4AXKe3c2xjfQLYvSiF4wv25bV1J+/a3durzkE=;
+        b=ss3SZKmv5qqRSFdRJIkW6XkbNiHsncJBhMMqUUPKhF/GsqJ4FxMhfCZt4iC/U1y5AiIoVD
+        PqslwXqf9d7tcBZ1fJgav1ZAh+KlPm/LP3w2pm6O803ahiVBUyqbm+OAKmNeKLn4hUx//l
+        0D2MBZ4NtN/Zr6ZlnnhluC0qO1uJlDk=
+Date:   Wed, 12 Oct 2022 16:17:51 -0700
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v4 2/3] selftests/bpf: Add connmark read test
+Subject: Re: [PATCH bpf-next v4 5/6] selftests/bpf: Fix error failure of case
+ test_xdp_adjust_tail_grow
 Content-Language: en-US
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     pablo@netfilter.org, fw@strlen.de, netfilter-devel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        andrii@kernel.org, daniel@iogearbox.net, ast@kernel.org,
-        bpf@vger.kernel.org, memxor@gmail.com
-References: <cover.1660254747.git.dxu@dxuuu.xyz>
- <d3bc620a491e4c626c20d80631063922cbe13e2b.1660254747.git.dxu@dxuuu.xyz>
- <43bf4a5f-dac9-4fe9-1eba-9ab9beb650aa@linux.dev>
- <20221012220953.i2xevhu36kxyxscl@k2>
+To:     Xu Kuohai <xukuohai@huaweicloud.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Delyan Kratunov <delyank@fb.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        netdev@vger.kernel.org
+References: <20221011120108.782373-1-xukuohai@huaweicloud.com>
+ <20221011120108.782373-6-xukuohai@huaweicloud.com>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20221012220953.i2xevhu36kxyxscl@k2>
+In-Reply-To: <20221011120108.782373-6-xukuohai@huaweicloud.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
@@ -53,80 +66,37 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/12/22 3:09 PM, Daniel Xu wrote:
-> Hi Martin,
+On 10/11/22 5:01 AM, Xu Kuohai wrote:
+> From: Xu Kuohai <xukuohai@huawei.com>
 > 
-> On Tue, Oct 11, 2022 at 10:49:32PM -0700, Martin KaFai Lau wrote:
->> On 8/11/22 2:55 PM, Daniel Xu wrote:
->>> Test that the prog can read from the connection mark. This test is nice
->>> because it ensures progs can interact with netfilter subsystem
->>> correctly.
->>>
->>> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
->>> Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
->>> ---
->>>    tools/testing/selftests/bpf/prog_tests/bpf_nf.c | 3 ++-
->>>    tools/testing/selftests/bpf/progs/test_bpf_nf.c | 3 +++
->>>    2 files changed, 5 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_nf.c b/tools/testing/selftests/bpf/prog_tests/bpf_nf.c
->>> index 88a2c0bdefec..544bf90ac2a7 100644
->>> --- a/tools/testing/selftests/bpf/prog_tests/bpf_nf.c
->>> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_nf.c
->>> @@ -44,7 +44,7 @@ static int connect_to_server(int srv_fd)
->>>    static void test_bpf_nf_ct(int mode)
->>>    {
->>> -	const char *iptables = "iptables -t raw %s PREROUTING -j CT";
->>> +	const char *iptables = "iptables -t raw %s PREROUTING -j CONNMARK --set-mark 42/0";
->> Hi Daniel Xu, this test starts failing recently in CI [0]:
->>
->> Warning: Extension CONNMARK revision 0 not supported, missing kernel module?
->>    iptables v1.8.8 (nf_tables): Could not fetch rule set generation id:
->> Invalid argument
->>
->>    Warning: Extension CONNMARK revision 0 not supported, missing kernel module?
->>    iptables v1.8.8 (nf_tables): Could not fetch rule set generation id:
->> Invalid argument
->>
->>    Warning: Extension CONNMARK revision 0 not supported, missing kernel module?
->>    iptables v1.8.8 (nf_tables): Could not fetch rule set generation id:
->> Invalid argument
->>
->>    Warning: Extension CONNMARK revision 0 not supported, missing kernel module?
->>    iptables v1.8.8 (nf_tables): Could not fetch rule set generation id:
->> Invalid argument
->>
->>    test_bpf_nf_ct:PASS:test_bpf_nf__open_and_load 0 nsec
->>    test_bpf_nf_ct:FAIL:iptables unexpected error: 1024 (errno 0)
->>
->> Could you help to take a look? Thanks.
->>
->> [0]: https://github.com/kernel-patches/bpf/actions/runs/3231598391/jobs/5291529292
+> test_xdp_adjust_tail_grow failed with ipv6:
+>    test_xdp_adjust_tail_grow:FAIL:ipv6 unexpected error: -28 (errno 28)
 > 
-> [...]
+> The reason is that this test case tests ipv4 before ipv6, and when ipv4
+> test finished, topts.data_size_out was set to 54, which is smaller than the
+> ipv6 output data size 114, so ipv6 test fails with NOSPC error.
 > 
-> Thanks for letting me know. I took a quick look and it seems that
-> synproxy selftest is also failing:
+> Fix it by reset topts.data_size_out to sizeof(buf) before testing ipv6.
 > 
->      2022-10-12T03:14:20.2007627Z test_synproxy:FAIL:iptables -t raw -I PREROUTING      -i tmp1 -p tcp -m tcp --syn --dport 8080 -j CT --notrack unexpected error: 1024 (errno 2)
+> Fixes: 04fcb5f9a104 ("selftests/bpf: Migrate from bpf_prog_test_run")
+> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
+> ---
+>   tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c | 1 +
+>   1 file changed, 1 insertion(+)
 > 
-> Googling the "Could not fetch rule set generation id" yields a lot of
-> hits. Most of the links are from downstream projects recommending user
-> downgrade iptables (nftables) to iptables-legacy.
+> diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c b/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c
+> index 9b9cf8458adf..009ee37607df 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c
+> @@ -63,6 +63,7 @@ static void test_xdp_adjust_tail_grow(void)
+>   	expect_sz = sizeof(pkt_v6) + 40; /* Test grow with 40 bytes */
+>   	topts.data_in = &pkt_v6;
+>   	topts.data_size_in = sizeof(pkt_v6);
+> +	topts.data_size_out = sizeof(buf);
 
-Thanks for looking into it!  We have been debugging a bit today also.  I also 
-think iptables-legacy is the one to use.  I posted a patch [0].  Let see how the 
-CI goes.
+lgtm but how was it working before... weird.
 
-The rules that the selftest used is not a lot.  I wonder what it takes to remove 
-the iptables command usage from the selftest?
-
-[0]: https://lore.kernel.org/bpf/20221012221235.3529719-1-martin.lau@linux.dev/
-
-> 
-> So perhaps iptables/nftables suffered a regression somewhere. I'll take
-> a closer look tonight / tomorrow morning.
-> 
-> Thanks,
-> Daniel
+>   	err = bpf_prog_test_run_opts(prog_fd, &topts);
+>   	ASSERT_OK(err, "ipv6");
+>   	ASSERT_EQ(topts.retval, XDP_TX, "ipv6 retval");
 
