@@ -2,132 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7AD85FC02E
-	for <lists+bpf@lfdr.de>; Wed, 12 Oct 2022 07:49:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B7455FC062
+	for <lists+bpf@lfdr.de>; Wed, 12 Oct 2022 08:00:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229475AbiJLFtl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Oct 2022 01:49:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52686 "EHLO
+        id S229436AbiJLGAy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Oct 2022 02:00:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbiJLFtl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Oct 2022 01:49:41 -0400
-Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7205EF47;
-        Tue, 11 Oct 2022 22:49:37 -0700 (PDT)
-Message-ID: <43bf4a5f-dac9-4fe9-1eba-9ab9beb650aa@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1665553775;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=40pZpkslxkeKFTGJuJ6oWOyvEYbIxCXMcmV6B+QVCKE=;
-        b=FPHUHxXPavilQJi/8GZV/2hlYEaBDl6tPElHTjQ7fQtQb8R43hdTwRPYoNrrr3wNB2ys+w
-        hwkxfTzI0qsGl2WNKzsbQMBhIrWF3fAfxQZbhUo1jk6z+ySK3eSa7kM4/VJPygXZIBsFAg
-        3eya216VizU5VPDOjGXNmmk04iyHxeQ=
-Date:   Tue, 11 Oct 2022 22:49:32 -0700
+        with ESMTP id S229677AbiJLGAv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Oct 2022 02:00:51 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCB12178AE;
+        Tue, 11 Oct 2022 23:00:47 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 091E6B81977;
+        Wed, 12 Oct 2022 06:00:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id B5DD1C433D6;
+        Wed, 12 Oct 2022 06:00:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1665554415;
+        bh=2v9Ep06R0/4dxQ/Rx5DCQswoxl0HeMVWry6onwhLxpc=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=TPCBlwOUHUynEvsmnM8Y+QVSMlKcDyP1L0u6bvLD6BGZ+yEkyKXAcTv5tkFX8hwBm
+         BIjywUXmdmzhGrv/hGGqq1SIAQa2PsKXxCLkTZhn9L8Iu8RCTHGBaBn7Puw8xnw7r4
+         4jCtFmchQDHr6g/aobK7zR5TNPoxxZsod6T1tilDoWYywfSbgprxUxQ7zt+PTMtzgR
+         zQzLAvmLn6o0Oq5GSxZLC4Meve/NPKq1sHJJhO2LiAzf8Fzy7amrESL28tjaT6B7bg
+         v/sv2KwN+BQdOAClAtI0ILnBRKMyl8Ex6pD8Lp8ef1N/Ti1cXNi0AxVqqKe2dEBWl1
+         DyDXWXrItBavg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 961B8E50D94;
+        Wed, 12 Oct 2022 06:00:15 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v4 2/3] selftests/bpf: Add connmark read test
-Content-Language: en-US
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     pablo@netfilter.org, fw@strlen.de, netfilter-devel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        andrii@kernel.org, daniel@iogearbox.net, ast@kernel.org,
-        bpf@vger.kernel.org, memxor@gmail.com
-References: <cover.1660254747.git.dxu@dxuuu.xyz>
- <d3bc620a491e4c626c20d80631063922cbe13e2b.1660254747.git.dxu@dxuuu.xyz>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <d3bc620a491e4c626c20d80631063922cbe13e2b.1660254747.git.dxu@dxuuu.xyz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] selftests/bpf: Alphabetize DENYLISTs
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166555441561.26034.2414138003607989249.git-patchwork-notify@kernel.org>
+Date:   Wed, 12 Oct 2022 06:00:15 +0000
+References: <20221011165255.774014-1-void@manifault.com>
+In-Reply-To: <20221011165255.774014-1-void@manifault.com>
+To:     David Vernet <void@manifault.com>
+Cc:     bpf@vger.kernel.org, andrii@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, martin.lau@linux.dev, haoluo@google.com,
+        john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
+        sdf@google.com, song@kernel.org, yhs@fb.com, kernel-team@fb.com,
+        linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 8/11/22 2:55 PM, Daniel Xu wrote:
-> Test that the prog can read from the connection mark. This test is nice
-> because it ensures progs can interact with netfilter subsystem
-> correctly.
+Hello:
+
+This patch was applied to bpf/bpf-next.git (master)
+by Martin KaFai Lau <martin.lau@kernel.org>:
+
+On Tue, 11 Oct 2022 11:52:55 -0500 you wrote:
+> The DENYLIST and DENYLIST.s390x files are used to specify testcases
+> which should not be run on CI. Currently, testcases are appended to the
+> end of these files as needed. This can make it a pain to resolve merge
+> conflicts. This patch alphabetizes the DENYLIST files to ease this
+> burden.
 > 
-> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> ---
->   tools/testing/selftests/bpf/prog_tests/bpf_nf.c | 3 ++-
->   tools/testing/selftests/bpf/progs/test_bpf_nf.c | 3 +++
->   2 files changed, 5 insertions(+), 1 deletion(-)
+> Signed-off-by: David Vernet <void@manifault.com>
 > 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_nf.c b/tools/testing/selftests/bpf/prog_tests/bpf_nf.c
-> index 88a2c0bdefec..544bf90ac2a7 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/bpf_nf.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_nf.c
-> @@ -44,7 +44,7 @@ static int connect_to_server(int srv_fd)
->   
->   static void test_bpf_nf_ct(int mode)
->   {
-> -	const char *iptables = "iptables -t raw %s PREROUTING -j CT";
-> +	const char *iptables = "iptables -t raw %s PREROUTING -j CONNMARK --set-mark 42/0";
-Hi Daniel Xu, this test starts failing recently in CI [0]:
+> [...]
 
-Warning: Extension CONNMARK revision 0 not supported, missing kernel module?
-   iptables v1.8.8 (nf_tables): Could not fetch rule set generation id: Invalid 
-argument
+Here is the summary with links:
+  - selftests/bpf: Alphabetize DENYLISTs
+    https://git.kernel.org/bpf/bpf-next/c/d31ada3b5111
 
-   Warning: Extension CONNMARK revision 0 not supported, missing kernel module?
-   iptables v1.8.8 (nf_tables): Could not fetch rule set generation id: Invalid 
-argument
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-   Warning: Extension CONNMARK revision 0 not supported, missing kernel module?
-   iptables v1.8.8 (nf_tables): Could not fetch rule set generation id: Invalid 
-argument
-
-   Warning: Extension CONNMARK revision 0 not supported, missing kernel module?
-   iptables v1.8.8 (nf_tables): Could not fetch rule set generation id: Invalid 
-argument
-
-   test_bpf_nf_ct:PASS:test_bpf_nf__open_and_load 0 nsec
-   test_bpf_nf_ct:FAIL:iptables unexpected error: 1024 (errno 0)
-
-Could you help to take a look? Thanks.
-
-[0]: https://github.com/kernel-patches/bpf/actions/runs/3231598391/jobs/5291529292
-
->   	int srv_fd = -1, client_fd = -1, srv_client_fd = -1;
->   	struct sockaddr_in peer_addr = {};
->   	struct test_bpf_nf *skel;
-> @@ -114,6 +114,7 @@ static void test_bpf_nf_ct(int mode)
->   	/* expected status is IPS_SEEN_REPLY */
->   	ASSERT_EQ(skel->bss->test_status, 2, "Test for ct status update ");
->   	ASSERT_EQ(skel->data->test_exist_lookup, 0, "Test existing connection lookup");
-> +	ASSERT_EQ(skel->bss->test_exist_lookup_mark, 43, "Test existing connection lookup ctmark");
->   end:
->   	if (srv_client_fd != -1)
->   		close(srv_client_fd);
-> diff --git a/tools/testing/selftests/bpf/progs/test_bpf_nf.c b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
-> index 84e0fd479794..2722441850cc 100644
-> --- a/tools/testing/selftests/bpf/progs/test_bpf_nf.c
-> +++ b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
-> @@ -28,6 +28,7 @@ __be16 sport = 0;
->   __be32 daddr = 0;
->   __be16 dport = 0;
->   int test_exist_lookup = -ENOENT;
-> +u32 test_exist_lookup_mark = 0;
->   
->   struct nf_conn;
->   
-> @@ -174,6 +175,8 @@ nf_ct_test(struct nf_conn *(*lookup_fn)(void *, struct bpf_sock_tuple *, u32,
->   		       sizeof(opts_def));
->   	if (ct) {
->   		test_exist_lookup = 0;
-> +		if (ct->mark == 42)
-> +			test_exist_lookup_mark = 43;
->   		bpf_ct_release(ct);
->   	} else {
->   		test_exist_lookup = opts_def.error;
 
