@@ -2,346 +2,277 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 857875FBCEA
-	for <lists+bpf@lfdr.de>; Tue, 11 Oct 2022 23:27:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CC9C5FBEF7
+	for <lists+bpf@lfdr.de>; Wed, 12 Oct 2022 03:50:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229774AbiJKV12 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 11 Oct 2022 17:27:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45848 "EHLO
+        id S229507AbiJLBur (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Oct 2022 21:50:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229736AbiJKV1Y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 Oct 2022 17:27:24 -0400
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDBFE2BB26
-        for <bpf@vger.kernel.org>; Tue, 11 Oct 2022 14:27:21 -0700 (PDT)
-Received: by mail-il1-f198.google.com with SMTP id f15-20020a056e020b4f00b002fa34db70f0so11829845ilu.2
-        for <bpf@vger.kernel.org>; Tue, 11 Oct 2022 14:27:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:to:from:subject:message-id:in-reply-to
-         :date:mime-version:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/oo4r2AbtWeVS75Zv0ff0EvstUdUTXfoQtBAE25lHxY=;
-        b=XWBag52zaNwMLVHaG/h5mu4BNmwGLDrsTU637TnPWuMlXt4GiwR7d9Wmz3/+sFUUVU
-         YlCo77yxeBpTvsqMJevq67IJxB6C9NlrqOVLcVlGe5iNJ0PlY50ZDiCcEuh6syJk7SBU
-         K11cGt9lNC7R9vcYllETozRqFHipdM1mKeOASAiyuVAMFgMkXy8eoP6V6W9+PRQqobZe
-         VPX2QSwyCB5e94gEUkJl9CF1M8dgQ95LuB5I2nxyxc+q2fUbjSxEQWa0dPlMe9zGnwxV
-         6R/7oucK8d0vh05FWQXBv/qLKbKNHgWTfcNh9cUusVflpytBGYRY4vWQun/wy7ZFo2mQ
-         j8rA==
-X-Gm-Message-State: ACrzQf0wS5yEPi7iJ/3q7j786Q1L2srziFBHKaL+chnIjLASxFZzbEhX
-        J8F1uzPSmIX9ZwtFiCO5LR7k3uutYhwSJBYzCHpAJUVCvdCw
-X-Google-Smtp-Source: AMsMyM6bvB1GXpiVtuSe0CrGU7tic/p8jWS8UbpyiBYzCZssERgW70JuP4vCyKTb6d3bm7ELMeJiP5IOPW92MVSCqCnkGya2JZnU
+        with ESMTP id S229454AbiJLBuq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 Oct 2022 21:50:46 -0400
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-eopbgr80052.outbound.protection.outlook.com [40.107.8.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD780A3445
+        for <bpf@vger.kernel.org>; Tue, 11 Oct 2022 18:50:44 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SC/33qSX0KH/ROgu8uDDRrqQYKTLp6eI40hv7mDRDkfSIxhTjBg2rPqMSouBLwPKcsA/2/Kqn83dBBq7b4HXFIwrr3+e1MVn/pvk0V69xvzLnpjFbrcA5KRxu+vi75yBDv6tcaDNOuTO7E0RKx2U/wRglzD5C7yJ02lpNSwf6D3/jjhkgLJunhCQtrOUxhC7c9cQlEoeD2FEvBBMfY2Dt6baFiH3aI8QBM5vucFprugx8vM0us8LF/p1xaVhj+VhvnuvUXlYL+YQiGDDJ7MXij1mviGV1pc6oF7Ig98kUN6DvAfCYbT6acoroEHZ3gvCmFYDoW581clnlqWU2VTCDw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=RsajeCp5nS0FOm2UKT5vXcOInGyU+yDnCIcJaOYcEuw=;
+ b=bQquada+AtW3o/zHIuefAUdoxfm/GZm2AhABneCQtF3J1cgLPw+gAz7kyzh7n9ymjoVkquv8PzeT3HzWUhOyosW2XWapCEzk6+v/yeBsPSq9/RSe53/JGerXB60ZERuTLvHrfxYZyT/uklgqinGRAyS0cdgHRBvQ/wZiSzyMcaao6jymMjz82kblBj+GG4S1sw0GJ1dIdTSj98X8POw5m3KbX/FVB8PS4kvwxpjA7zpbL/lzUYjpzNqIvdW8+S4Wao87f28w/0bLZzoD9RPWRyCipTzknB7MBytYPmPu23VbwsHJUHwrhtrExNTkKPm6u4dHZQfAimOPYH2BG27yHg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RsajeCp5nS0FOm2UKT5vXcOInGyU+yDnCIcJaOYcEuw=;
+ b=dQODXAmQJch3kuh5xtzHf0t2+JZLfxpNLDlloTr7ATqtcluZQ7cgecV91FbC6l308w4S60RRmzwJrbXaRNTTHApA0lUChJ7P6DHDmVj4yqzNXQ6AGYxy1yryKjp5bXkgleJdzXMsbinCNEbNKdS1vHitE8w99VnQABZXwp/kQvED3joy0xKNzdoH2VGHDgxfV/ncdTPicL993tzTAPni4748hfZSTWCVCWmIU9AhKg7RhkL7umNSrZC+EvkGa26O9HXbUXB1Cw2Pi66z0rckN/1hvIjAXKLa5iSbU0j+pya+x0J04VJJI/zvcvv/253MYjLCOmbbiH2tfyxbh+d/7g==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from DB9PR04MB8107.eurprd04.prod.outlook.com (2603:10a6:10:243::20)
+ by AM9PR04MB7556.eurprd04.prod.outlook.com (2603:10a6:20b:2df::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5709.15; Wed, 12 Oct
+ 2022 01:50:42 +0000
+Received: from DB9PR04MB8107.eurprd04.prod.outlook.com
+ ([fe80::37bc:916c:55e:c0a2]) by DB9PR04MB8107.eurprd04.prod.outlook.com
+ ([fe80::37bc:916c:55e:c0a2%5]) with mapi id 15.20.5709.021; Wed, 12 Oct 2022
+ 01:50:41 +0000
+Date:   Wed, 12 Oct 2022 09:50:33 +0800
+From:   Shung-Hsi Yu <shung-hsi.yu@suse.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
+Subject: Re: [PATCH bpf 1/3] libbpf: use elf_getshdrnum() instead of e_shnum
+Message-ID: <Y0YdaXapMzC90ftj@syu-laptop>
+References: <20221007174816.17536-1-shung-hsi.yu@suse.com>
+ <20221007174816.17536-2-shung-hsi.yu@suse.com>
+ <CAEf4Bzb08aKQQCGozqcxe8c4Qj3Bna6v1AETat_vMm7L=ixcaA@mail.gmail.com>
+ <Y0TpKaIGL18UltHF@syu-laptop>
+ <Y0WDcdQyxkYuQVXq@syu-laptop>
+ <CAEf4BzZe_U96h31RzOcQbos4nD3kFsBLjNn9O8NvgnV9J3v2JA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzZe_U96h31RzOcQbos4nD3kFsBLjNn9O8NvgnV9J3v2JA@mail.gmail.com>
+X-ClientProxiedBy: FR3P281CA0148.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:95::7) To DB9PR04MB8107.eurprd04.prod.outlook.com
+ (2603:10a6:10:243::20)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:156a:b0:2fc:4266:f56 with SMTP id
- k10-20020a056e02156a00b002fc42660f56mr6329135ilu.140.1665523641047; Tue, 11
- Oct 2022 14:27:21 -0700 (PDT)
-Date:   Tue, 11 Oct 2022 14:27:21 -0700
-In-Reply-To: <20221011170435-mutt-send-email-mst@kernel.org>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000fd62ef05eac8f004@google.com>
-Subject: Re: [syzbot] upstream boot error: WARNING in cpumask_next_wrap
-From:   syzbot <syzbot+51a652e2d24d53e75734@syzkaller.appspotmail.com>
-To:     ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
-        davem@davemloft.net, edumazet@google.com, hawk@kernel.org,
-        jasowang@redhat.com, john.fastabend@gmail.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, mst@redhat.com,
-        netdev@vger.kernel.org, pabeni@redhat.com,
-        syzkaller-bugs@googlegroups.com,
-        virtualization@lists.linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DB9PR04MB8107:EE_|AM9PR04MB7556:EE_
+X-MS-Office365-Filtering-Correlation-Id: cd215a6f-359b-415b-fab0-08daabf42b3b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: eiswa7xnCxeMxcNk5v+tn5C7tlW6bJKNNN88HBVYlT4hxlmGGyBgRxHkFOqUlv5bdMBhXDYs+bwrR/zvVOBOBxbeJ+HUGsvbX5TYrSZMs95sQowpK/ucumJrQNHrZnIbpqw58hSZy3uCDd7GtUoatANczDIBW7nJU0yG13TgEaGAaHTA9XLEzrvXb7KeY4DpDeoJeHwSxKehNgV0Gf9SGHCtbfXLOXAGT3GpzB/AGlgRmPxOMqln6bCwwQtBwedSWpJ4XdLJGHhA/Kskn2kQJDxKkycR7w8oQUTpKk3+L7z5DK+aD14lWQOMkBFhTR8I1F4/OR4RPn2qOJubs64rYNn7/QXzVS1Xe3B+Xhj7y229j6NbAIthJDanRiJ2cSRh+8GAQqEUNXjjMeQ909qfCjrJ3uacwisHF11DebKLVlJGK3fhd2lcjUM28QJy4k5IMDqyPwjTSBulpI3TrKq78NcuAK+sTyO/jYywGe8/HjcZXkyn/ezO5rT8xpCyV1DhMncsoEFaNzqI2LJUMCLjW8cR8YUqVvon4KB31CGSSWXxo4polCh62APJ1qKF0Lvzq/zNcCS53MoNK0yAkdlj3GPLxbEPAo5s1/ixBKCTpS0QkQnNMvxykFq1PoOcYNo6gyTagmCr7U/6mWz1jzTq8d1CDHJ1KcI3jEmCJw0aQ62kdHku5zb9qsDZmKun2cJT5urp6vhiJZrriXVq0f8XzXeYUB/y0jItQTnBUDU/hopiJ6f/d8XavqnSUaMwvDZd9KTbB8CacqGMIV9Aeoh3Ig==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR04MB8107.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(7916004)(136003)(376002)(346002)(396003)(39860400002)(366004)(451199015)(66556008)(2906002)(4326008)(6512007)(86362001)(41300700001)(66476007)(8676002)(66946007)(186003)(7416002)(8936002)(83380400001)(5660300002)(6506007)(53546011)(6486002)(966005)(478600001)(38100700002)(9686003)(316002)(54906003)(33716001)(26005)(6666004)(6916009);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Sy9hZVZlOW9CVnpONmR5UDY2Yk1UV2tFMm95c1dZV3AxYXRyMklPRFJJeENY?=
+ =?utf-8?B?Q0owQ1RIbFpHWktGaVF1ODNYYXZkc3hOL2tYYVZQZnd2S2tveTA2Q2IvUjN4?=
+ =?utf-8?B?RU1UMmhDV0xJeUZVMm5rT1B0SnlCQTBIS29KYk1pb2FoMUllMVArUjhmajlD?=
+ =?utf-8?B?LzdkQXQvOUJzSVM3ZWR6SytJSXJBZG5TR0VFNm5aTERYTk1YMHFveFRsQUtF?=
+ =?utf-8?B?MlJZQzYwR21LandzMlVZNmp0b0lNZGdsWldTVlVxdU1vWlZaR0ZiRU9XR3Fs?=
+ =?utf-8?B?YVRKM1haMXR0UmxwOTREYzVGMlVVSXozcUpGbHBETzVSWS80cGU2SS9DUkp4?=
+ =?utf-8?B?dXh3NHY1VE1PajZadkU0S2VTL3liRjNURkppM01jTTJIN3UxK0NhNkpweHFH?=
+ =?utf-8?B?NktwSXZYQWdpeCt2SDZmZysxQVR3ZmVOSytjY2xrRWJyNUdzV0FlcVpnWmJT?=
+ =?utf-8?B?a1BrMS96QjBGVjVNQk82Vk9Sb3F5RUZCUGw1S3dEOTNTRXhVajhEb3VVVmt1?=
+ =?utf-8?B?ZTNST05rcTZub3dPM3FaeWhIMENRSzJYSk9NTXZiVGpjMG5KTHNZdzRSRUR5?=
+ =?utf-8?B?Rk5OYzNlMGsxb2NRek5QNmJDaWtqQ2NsOWUrU2ZaeGdRWldtV2d2SFNsM05z?=
+ =?utf-8?B?R1V2YWRCTkRPODgyb2xYWkVmZ3hGNXAyb2VPM1hZaGd5L0kwRjhtNFFXbmFn?=
+ =?utf-8?B?Y2NrYzVBaDFuNHBLQnZRWFlBSE50bGhtQWhQVm9Nay9LYXpRRml3MHJhc1FB?=
+ =?utf-8?B?Zmp4dmQyeGxWUHRML3JrYTNDT0tnM2M2WG8zYVB4RHZQbVhISnJmYWNxci9D?=
+ =?utf-8?B?RzBSUnNkMVpiZkkySkRKeXNINHZnaFNuRWxsM1pYa2orbHZ2ZlZCRG5HZ3lj?=
+ =?utf-8?B?VUt4d3pucThCbVEyeDgvMEQvdmtqVVVsT2FpUk5KTFNaUkxtVkVKQmQxRmcr?=
+ =?utf-8?B?WGZVc0FWck5jazZXdDFjL0dlOGJIKy9OVmlRMDV2RGhtdlppTE94WVVDakJE?=
+ =?utf-8?B?cm1lK2hRaHIyOHRWZ05wQUIxMDgvenlCZE9HdTlnd25DUldCbnBOK08wRW16?=
+ =?utf-8?B?VXA1UkI2WVBjWG03NVlKYkFUZDlGMmQrZlZwNU9jQnYrdm9DTE4zTnF4ZSty?=
+ =?utf-8?B?M0tLLzRwYitqdHpGeEVnT1VrblNDL1BONUtJaWNPdnhTdkR2RUJvbkJyVjVG?=
+ =?utf-8?B?STNRWFcyOGpnNFkzbmFydmZEc3h2MDVuSk56NHpQaVZodDJRR1dzODBPSzdU?=
+ =?utf-8?B?WE9BR3ZTUzZPWEdsc0l5TUxzcElObzlGWHozOWlkUTBpQk5oREJlWXErSk5D?=
+ =?utf-8?B?V255L0F2SzNmbENUR0ZiaXZYMkpoMXhWd2s3bXQrbG91WWpTWTc2U1VmL05l?=
+ =?utf-8?B?cC9IZTlMR1M3RjMvYXVHY2VBc0ROc0tTd0FYclBNKzB4M1lDNDc2WW8zdGpV?=
+ =?utf-8?B?RmkvVG5jai92VDE2VmpSbDFLUWhiMnprbzBJdmlMdXJ6YkYwNnNJSnkwL3Br?=
+ =?utf-8?B?NlhIbTFVWkQ0b0gyckVhTzMrOHl3RjNuWG5ZMFUzOThmc0ZLTGxWTnJJdWQx?=
+ =?utf-8?B?dkNCb3IxdnFHZVlPTWlBT05FVXFYZXo4K2R4Wk5PQkpYSXJkYkFHZ1ZveXdT?=
+ =?utf-8?B?LzdxMytTcTFIci9Yb2hWRGNxdldqMWVkUnh4SVY4WXU4dE5tRXhTZ0YzVHhP?=
+ =?utf-8?B?UUNXZUloWlFwaXpjTFdLUVdMbjR6TjU5eHltNGNIUHJuSzdTTVpPWXBDOWZy?=
+ =?utf-8?B?Slo2N1JXa21ndk1VYndkNnBLMy9qcHRKRTQ2em9JRE0vdEZFaFZ2OXg0QnNE?=
+ =?utf-8?B?OGxNTDBSMktvNjROUUZxMHFFREJVU3M0VjUvRS9LS1djcDhjOWlid2NBOVJC?=
+ =?utf-8?B?WFlGdjdsRHpzTGdXY0wvM3JsWXplV01VVnovc2tOTW9TQTVUOUJROGJLL3Nh?=
+ =?utf-8?B?YU0vMWZhS0ErdkZWOXdnaHJkVmZheFA4akV2R1IrSXZQZCtseVFpMDBMWjkz?=
+ =?utf-8?B?aWRVN3FvYXNCS3o5RVd2OENaZ21uQUEzY3VhRFU0S21PYkFSZjVjZi9zWXly?=
+ =?utf-8?B?Nm1Wc3VhaE40L1c1V0R4a1hibEE3Q2VXTFIyV3ZEYkRKNnNhQTNYd0pIQ0xq?=
+ =?utf-8?Q?SuAY6iDYeY8neso7V7xar89r3?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cd215a6f-359b-415b-fab0-08daabf42b3b
+X-MS-Exchange-CrossTenant-AuthSource: DB9PR04MB8107.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Oct 2022 01:50:41.8160
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3xqkzIFr+ZvgFNJbgt+kL1ReekHXgvjewY5UAKkUcILZixdZnMXqn7Ih2w5mkJDeqNakgQruVDGHEUGgTRDfjg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB7556
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On Tue, Oct 11, 2022 at 09:06:03AM -0700, Andrii Nakryiko wrote:
+> On Tue, Oct 11, 2022 at 7:53 AM Shung-Hsi Yu <shung-hsi.yu@suse.com> wrote:
+> >
+> > On Tue, Oct 11, 2022 at 11:55:21AM +0800, Shung-Hsi Yu wrote:
+> > > On Mon, Oct 10, 2022 at 05:44:20PM -0700, Andrii Nakryiko wrote:
+> > > > On Fri, Oct 7, 2022 at 10:48 AM Shung-Hsi Yu <shung-hsi.yu@suse.com> wrote:
+> > > > >
+> > > > > This commit replace e_shnum with the elf_getshdrnum() helper to fix two
+> > > > > oss-fuzz-reported heap-buffer overflow in __bpf_object__open. Both
+> > > > > reports are incorrectly marked as fixed and while still being
+> > > > > reproducible in the latest libbpf.
+> > > > >
+> > > > >   # clusterfuzz-testcase-minimized-bpf-object-fuzzer-5747922482888704
+> > > > >   libbpf: loading object 'fuzz-object' from buffer
+> > > > >   libbpf: sec_cnt is 0
+> > > > >   libbpf: elf: section(1) .data, size 0, link 538976288, flags 2020202020202020, type=2
+> > > > >   libbpf: elf: section(2) .data, size 32, link 538976288, flags 202020202020ff20, type=1
+> > > > >   =================================================================
+> > > > >   ==13==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x6020000000c0 at pc 0x0000005a7b46 bp 0x7ffd12214af0 sp 0x7ffd12214ae8
+> > > > >   WRITE of size 4 at 0x6020000000c0 thread T0
+> > > > >   SCARINESS: 46 (4-byte-write-heap-buffer-overflow-far-from-bounds)
+> > > > >       #0 0x5a7b45 in bpf_object__elf_collect /src/libbpf/src/libbpf.c:3414:24
+> > > > >       #1 0x5733c0 in bpf_object_open /src/libbpf/src/libbpf.c:7223:16
+> > > > >       #2 0x5739fd in bpf_object__open_mem /src/libbpf/src/libbpf.c:7263:20
+> > > > >       ...
+> > > > >
+> > > > > The issue lie in libbpf's direct use of e_shnum field in ELF header as
+> > > > > the section header count. Where as libelf, on the other hand,
+> > > > > implemented an extra logic that, when e_shnum is zero and e_shoff is not
+> > > > > zero, will use sh_size member of the initial section header as the real
+> > > > > section header count (part of ELF spec to accommodate situation where
+> > > > > section header counter is larger than SHN_LORESERVE).
+> > > > >
+> > > > > The above inconsistency lead to libbpf writing into a zero-entry calloc
+> > > > > area. So intead of using e_shnum directly, use the elf_getshdrnum()
+> > > > > helper provided by libelf to retrieve the section header counter into
+> > > > > sec_cnt.
+> > > > >
+> > > > > Link: https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=40868
+> > > > > Link: https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=40957
+> > > > > Fixes: 0d6988e16a12 ("libbpf: Fix section counting logic")
+> > > > > Fixes: 25bbbd7a444b ("libbpf: Remove assumptions about uniqueness of .rodata/.data/.bss maps")
+> > > > > Signed-off-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+> > > > > ---
+> > > > >
+> > > > > To be honest I'm not sure if any of the BPF toolchain will produce such
+> > > > > ELF binary. Tools like readelf simply refuse to dump section header
+> > > > > table when e_shnum==0 && e_shoff !=0 case is encountered.
+> > > > >
+> > > > > While we can use same approach as readelf, opting for a coherent view
+> > > > > with libelf for now since that should be less confusing.
+> > > > >
+> > > > > ---
+> > > > >  tools/lib/bpf/libbpf.c | 10 ++++++++--
+> > > > >  1 file changed, 8 insertions(+), 2 deletions(-)
+> > > > >
+> > > > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > > > > index 184ce1684dcd..a64e13c654f3 100644
+> > > > > --- a/tools/lib/bpf/libbpf.c
+> > > > > +++ b/tools/lib/bpf/libbpf.c
+> > > > > @@ -597,7 +597,7 @@ struct elf_state {
+> > > > >         size_t shstrndx; /* section index for section name strings */
+> > > > >         size_t strtabidx;
+> > > > >         struct elf_sec_desc *secs;
+> > > > > -       int sec_cnt;
+> > > > > +       size_t sec_cnt;
+> > > > >         int btf_maps_shndx;
+> > > > >         __u32 btf_maps_sec_btf_id;
+> > > > >         int text_shndx;
+> > > > > @@ -1369,6 +1369,13 @@ static int bpf_object__elf_init(struct bpf_object *obj)
+> > > > >                 goto errout;
+> > > > >         }
+> > > > >
+> > > > > +       if (elf_getshdrnum(obj->efile.elf, &obj->efile.sec_cnt)) {
+> > > >
+> > > > It bothers me that sec_cnt is initialized in bpf_object__elf_init, but
+> > > > secs are allocated a bit later in bpf_object__elf_collect(). What if
+> > > > we move elf_getshdrnum() call and sec_cnt initialization into
+> > > > bpf_object__elf_collect()?
+> > >
+> > > Ack.
+> > >
+> > > My rational for placing it there was that it's closer to other elf_*()
+> > > helper calls, but having it close to the allocation where it's used seems
+> > > like a better option.
+> > >
+> > > Will change accordingly and send a v2 based on top of bpf-next.
+> > >
+> > > > > +               pr_warn("elf: failed to get the number of sections for %s: %s\n",
+> > > > > +                       obj->path, elf_errmsg(-1));
+> > > > > +               err = -LIBBPF_ERRNO__FORMAT;
+> > > > > +               goto errout;
+> > > > > +       }
+> > > > > +
+> > > > >         /* Elf is corrupted/truncated, avoid calling elf_strptr. */
+> > > > >         if (!elf_rawdata(elf_getscn(elf, obj->efile.shstrndx), NULL)) {
+> > > > >                 pr_warn("elf: failed to get section names strings from %s: %s\n",
+> > > > > @@ -3315,7 +3322,6 @@ static int bpf_object__elf_collect(struct bpf_object *obj)
+> > > > >          * section. e_shnum does include sec #0, so e_shnum is the necessary
+> > > > >          * size of an array to keep all the sections.
+> > > > >          */
+> > > > > -       obj->efile.sec_cnt = obj->efile.ehdr->e_shnum;
+> > > > >         obj->efile.secs = calloc(obj->efile.sec_cnt, sizeof(*obj->efile.secs));
+> >
+> > Looking again I realized we're still allocation one more section than
+> > necessary, even after 0d6988e16a12 ("libbpf: Fix section counting logic").
+> 
+> Yes, that's by design so to preserve ELF's 1-based indexing and not
+> have to constantly adjust section index by -1 to do a lookup. Please
+> keep it as is.
 
-syzbot tried to test the proposed patch but the build/boot failed:
+Understood, I'll leave it as is. Thanks!
 
-resolver registered
-[    5.556576][    T1] Key type id_legacy registered
-[    5.557522][    T1] nfs4filelayout_init: NFSv4 File Layout Driver Registering...
-[    5.558640][    T1] nfs4flexfilelayout_init: NFSv4 Flexfile Layout Driver Registering...
-[    5.567089][    T1] Key type cifs.spnego registered
-[    5.567892][    T1] Key type cifs.idmap registered
-[    5.569053][    T1] ntfs: driver 2.1.32 [Flags: R/W].
-[    5.570912][    T1] ntfs3: Max link count 4000
-[    5.571535][    T1] ntfs3: Enabled Linux POSIX ACLs support
-[    5.572513][    T1] ntfs3: Read-only LZX/Xpress compression included
-[    5.574261][    T1] efs: 1.0a - http://aeschi.ch.eu.org/efs/
-[    5.575274][    T1] jffs2: version 2.2. (NAND) (SUMMARY)  © 2001-2006 Red Hat, Inc.
-[    5.579930][    T1] romfs: ROMFS MTD (C) 2007 Red Hat, Inc.
-[    5.581216][    T1] QNX4 filesystem 0.2.3 registered.
-[    5.582195][    T1] qnx6: QNX6 filesystem 1.0.0 registered.
-[    5.583827][    T1] fuse: init (API version 7.37)
-[    5.588259][    T1] orangefs_debugfs_init: called with debug mask: :none: :0:
-[    5.589705][    T1] orangefs_init: module version upstream loaded
-[    5.591366][    T1] JFS: nTxBlock = 8192, nTxLock = 65536
-[    5.604957][    T1] SGI XFS with ACLs, security attributes, realtime, quota, fatal assert, debug enabled
-[    5.617336][    T1] 9p: Installing v9fs 9p2000 file system support
-[    5.619447][    T1] NILFS version 2 loaded
-[    5.620043][    T1] befs: version: 0.9.3
-[    5.621928][    T1] ocfs2: Registered cluster interface o2cb
-[    5.623133][    T1] ocfs2: Registered cluster interface user
-[    5.624559][    T1] OCFS2 User DLM kernel interface loaded
-[    5.635096][    T1] gfs2: GFS2 installed
-[    5.645789][    T1] ceph: loaded (mds proto 32)
-[    5.657347][    T1] NET: Registered PF_ALG protocol family
-[    5.658194][    T1] xor: automatically using best checksumming function   avx       
-[    5.659255][    T1] async_tx: api initialized (async)
-[    5.660129][    T1] Key type asymmetric registered
-[    5.660836][    T1] Asymmetric key parser 'x509' registered
-[    5.661639][    T1] Asymmetric key parser 'pkcs8' registered
-[    5.662447][    T1] Key type pkcs7_test registered
-[    5.665996][    T1] alg: self-tests for CTR-KDF (hmac(sha256)) passed
-[    5.667302][    T1] Block layer SCSI generic (bsg) driver version 0.4 loaded (major 240)
-[    5.668986][    T1] io scheduler mq-deadline registered
-[    5.669749][    T1] io scheduler kyber registered
-[    5.671033][    T1] io scheduler bfq registered
-[    5.677855][    T1] input: Power Button as /devices/LNXSYSTM:00/LNXPWRBN:00/input/input0
-[    5.682131][    T1] ACPI: button: Power Button [PWRF]
-[    5.684301][    T1] input: Sleep Button as /devices/LNXSYSTM:00/LNXSLPBN:00/input/input1
-[    5.685918][  T160] kworker/u4:1 (160) used greatest stack depth: 26672 bytes left
-[    5.687126][    T1] ACPI: button: Sleep Button [SLPF]
-[    5.710387][    T1] ACPI: \_SB_.LNKC: Enabled at IRQ 11
-[    5.711260][    T1] virtio-pci 0000:00:03.0: virtio_pci: leaving for legacy driver
-[    5.725631][    T1] ACPI: \_SB_.LNKD: Enabled at IRQ 10
-[    5.726543][    T1] virtio-pci 0000:00:04.0: virtio_pci: leaving for legacy driver
-[    5.740211][    T1] ACPI: \_SB_.LNKB: Enabled at IRQ 10
-[    5.741109][    T1] virtio-pci 0000:00:06.0: virtio_pci: leaving for legacy driver
-[    5.751058][  T194] kworker/u4:1 (194) used greatest stack depth: 26624 bytes left
-[    6.053979][    T1] N_HDLC line discipline registered with maxframe=4096
-[    6.055096][    T1] Serial: 8250/16550 driver, 4 ports, IRQ sharing enabled
-[    6.058386][    T1] 00:03: ttyS0 at I/O 0x3f8 (irq = 4, base_baud = 115200) is a 16550A
-[    6.063373][    T1] 00:04: ttyS1 at I/O 0x2f8 (irq = 3, base_baud = 115200) is a 16550A
-[    6.068699][    T1] 00:05: ttyS2 at I/O 0x3e8 (irq = 6, base_baud = 115200) is a 16550A
-[    6.073444][    T1] 00:06: ttyS3 at I/O 0x2e8 (irq = 7, base_baud = 115200) is a 16550A
-[    6.081659][    T1] Non-volatile memory driver v1.3
-[    6.098395][    T1] Linux agpgart interface v0.103
-[    6.100599][    T1] ACPI: bus type drm_connector registered
-[    6.104060][    T1] [drm] Initialized vgem 1.0.0 20120112 for vgem on minor 0
-[    6.109975][    T1] [drm] Initialized vkms 1.0.0 20180514 for vkms on minor 1
-[    6.166404][    T1] Console: switching to colour frame buffer device 128x48
-[    6.184282][    T1] platform vkms: [drm] fb0: vkmsdrmfb frame buffer device
-[    6.185456][    T1] usbcore: registered new interface driver udl
-[    6.234876][    T1] brd: module loaded
-[    6.287542][    T1] loop: module loaded
-[    6.360301][    T1] zram: Added device: zram0
-[    6.366643][    T1] null_blk: disk nullb0 created
-[    6.367407][    T1] null_blk: module loaded
-[    6.368437][    T1] Guest personality initialized and is inactive
-[    6.370337][    T1] VMCI host device registered (name=vmci, major=10, minor=119)
-[    6.371699][    T1] Initialized host personality
-[    6.372849][    T1] usbcore: registered new interface driver rtsx_usb
-[    6.374672][    T1] usbcore: registered new interface driver viperboard
-[    6.376021][    T1] usbcore: registered new interface driver dln2
-[    6.378029][    T1] usbcore: registered new interface driver pn533_usb
-[    6.382237][    T1] nfcsim 0.2 initialized
-[    6.383289][    T1] usbcore: registered new interface driver port100
-[    6.384344][    T1] usbcore: registered new interface driver nfcmrvl
-[    6.388305][    T1] Loading iSCSI transport class v2.0-870.
-[    6.413355][    T1] scsi host0: Virtio SCSI HBA
-[    6.449912][    T1] st: Version 20160209, fixed bufsize 32768, s/g segs 256
-[    6.452351][    T9] scsi 0:0:1:0: Direct-Access     Google   PersistentDisk   1    PQ: 0 ANSI: 6
-[    6.476962][    T1] Rounding down aligned max_sectors from 4294967295 to 4294967288
-[    6.479627][    T1] db_root: cannot open: /etc/target
-[    6.481551][    T1] slram: not enough parameters.
-[    6.488103][    T1] ftl_cs: FTL header not found.
-[    6.534919][    T1] wireguard: WireGuard 1.0.0 loaded. See www.wireguard.com for information.
-[    6.539139][    T1] wireguard: Copyright (C) 2015-2019 Jason A. Donenfeld <Jason@zx2c4.com>. All Rights Reserved.
-[    6.540930][    T1] eql: Equalizer2002: Simon Janes (simon@ncm.com) and David S. Miller (davem@redhat.com)
-[    6.550498][    T1] MACsec IEEE 802.1AE
-[    6.572661][    T1] tun: Universal TUN/TAP device driver, 1.6
-[    6.609300][    T1] ------------[ cut here ]------------
-[    6.610845][    T1] WARNING: CPU: 0 PID: 1 at include/linux/cpumask.h:110 __netif_set_xps_queue+0x88e/0x1f30
-[    6.612642][    T1] Modules linked in:
-[    6.613259][    T1] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.0.0-syzkaller-11153-gd5c59b2d8ff4 #0
-[    6.614532][    T1] Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/22/2022
-[    6.615891][    T1] RIP: 0010:__netif_set_xps_queue+0x88e/0x1f30
-[    6.616957][    T1] Code: fa 48 c7 c2 e0 98 f4 8a be 2e 0a 00 00 48 c7 c7 80 97 f4 8a c6 05 ae d1 74 06 01 e8 f5 d9 f1 01 e9 ef fd ff ff e8 22 32 25 fa <0f> 0b e9 8e fa ff ff 8b 6c 24 38 e8 12 32 25 fa 49 8d 7c 24 04 48
-[    6.619667][    T1] RSP: 0018:ffffc900000678a0 EFLAGS: 00010293
-[    6.620512][    T1] RAX: 0000000000000000 RBX: 0000000000000002 RCX: 0000000000000000
-[    6.621622][    T1] RDX: ffff888140170000 RSI: ffffffff875733be RDI: 0000000000000004
-[    6.622718][    T1] RBP: 0000000000000002 R08: 0000000000000004 R09: 0000000000000002
-[    6.623845][    T1] R10: 0000000000000002 R11: 000000000008c07e R12: ffff88801c770100
-[    6.624960][    T1] R13: 0000000000000003 R14: ffff88801c770118 R15: 0000000000000002
-[    6.626041][    T1] FS:  0000000000000000(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
-[    6.630570][    T1] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    6.631671][    T1] CR2: ffff88823ffff000 CR3: 000000000bc8e000 CR4: 0000000000350ef0
-[    6.632794][    T1] Call Trace:
-[    6.633365][    T1]  <TASK>
-[    6.633824][    T1]  ? vp_bus_name+0xc0/0xc0
-[    6.634553][    T1]  virtnet_set_affinity+0x5c2/0x840
-[    6.635296][    T1]  ? trace_xdp_exception+0x320/0x320
-[    6.636102][    T1]  virtnet_probe+0x12ae/0x31e0
-[    6.636943][    T1]  ? virtnet_find_vqs+0xc30/0xc30
-[    6.637869][    T1]  virtio_dev_probe+0x577/0x870
-[    6.638646][    T1]  ? virtio_features_ok+0x1e0/0x1e0
-[    6.639418][    T1]  really_probe+0x249/0xb90
-[    6.640084][    T1]  __driver_probe_device+0x1df/0x4d0
-[    6.640946][    T1]  driver_probe_device+0x4c/0x1a0
-[    6.641736][    T1]  __driver_attach+0x1d0/0x550
-[    6.642452][    T1]  ? __device_attach_driver+0x2e0/0x2e0
-[    6.643232][    T1]  bus_for_each_dev+0x147/0x1d0
-[    6.643950][    T1]  ? subsys_dev_iter_exit+0x20/0x20
-[    6.644738][    T1]  bus_add_driver+0x4c9/0x640
-[    6.645463][    T1]  driver_register+0x220/0x3a0
-[    6.646280][    T1]  ? veth_init+0x11/0x11
-[    6.646945][    T1]  virtio_net_driver_init+0x93/0xd2
-[    6.647717][    T1]  do_one_initcall+0x13d/0x780
-[    6.648438][    T1]  ? trace_event_raw_event_initcall_level+0x1f0/0x1f0
-[    6.649399][    T1]  ? parameq+0x100/0x170
-[    6.650056][    T1]  kernel_init_freeable+0x6ff/0x788
-[    6.650837][    T1]  ? rest_init+0x270/0x270
-[    6.651501][    T1]  kernel_init+0x1a/0x1d0
-[    6.652116][    T1]  ? rest_init+0x270/0x270
-[    6.652801][    T1]  ret_from_fork+0x1f/0x30
-[    6.653527][    T1]  </TASK>
-[    6.654267][    T1] Kernel panic - not syncing: panic_on_warn set ...
-[    6.655330][    T1] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.0.0-syzkaller-11153-gd5c59b2d8ff4 #0
-[    6.656008][    T9] scsi 0:0:1:0: Attached scsi generic sg0 type 0
-[    6.657424][    T1] Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/22/2022
-[    6.657424][    T1] Call Trace:
-[    6.659366][    T9] sd 0:0:1:0: [sda] 4194304 512-byte logical blocks: (2.15 GB/2.00 GiB)
-[    6.659401][    T9] sd 0:0:1:0: [sda] 4096-byte physical blocks
-[    6.659557][    T9] sd 0:0:1:0: [sda] Write Protect is off
-[    6.659582][    T9] sd 0:0:1:0: [sda] Mode Sense: 1f 00 00 08
-[    6.659777][    T9] sd 0:0:1:0: [sda] Write cache: enabled, read cache: enabled, doesn't support DPO or FUA
-[    6.657424][    T1]  <TASK>
-[    6.657424][    T1]  dump_stack_lvl+0xcd/0x134
-[    6.657424][    T1]  panic+0x2c8/0x622
-[    6.657424][    T1]  ? panic_print_sys_info.part.0+0x110/0x110
-[    6.657424][    T1]  ? __warn.cold+0x24b/0x350
-[    6.657424][    T1]  ? __netif_set_xps_queue+0x88e/0x1f30
-[    6.657424][    T1]  __warn.cold+0x25c/0x350
-[    6.657424][    T1]  ? __netif_set_xps_queue+0x88e/0x1f30
-[    6.670084][    T9]  sda: sda1
-[    6.671363][    T9] sd 0:0:1:0: [sda] Attached SCSI disk
-[    6.672268][    T1]  report_bug+0x1bc/0x210
-[    6.672621][    T1]  handle_bug+0x3c/0x70
-[    6.672621][    T1]  exc_invalid_op+0x14/0x40
-[    6.672621][    T1]  asm_exc_invalid_op+0x16/0x20
-[    6.672621][    T1] RIP: 0010:__netif_set_xps_queue+0x88e/0x1f30
-[    6.672621][    T1] Code: fa 48 c7 c2 e0 98 f4 8a be 2e 0a 00 00 48 c7 c7 80 97 f4 8a c6 05 ae d1 74 06 01 e8 f5 d9 f1 01 e9 ef fd ff ff e8 22 32 25 fa <0f> 0b e9 8e fa ff ff 8b 6c 24 38 e8 12 32 25 fa 49 8d 7c 24 04 48
-[    6.672621][    T1] RSP: 0018:ffffc900000678a0 EFLAGS: 00010293
-[    6.672621][    T1] RAX: 0000000000000000 RBX: 0000000000000002 RCX: 0000000000000000
-[    6.672621][    T1] RDX: ffff888140170000 RSI: ffffffff875733be RDI: 0000000000000004
-[    6.672621][    T1] RBP: 0000000000000002 R08: 0000000000000004 R09: 0000000000000002
-[    6.672621][    T1] R10: 0000000000000002 R11: 000000000008c07e R12: ffff88801c770100
-[    6.672621][    T1] R13: 0000000000000003 R14: ffff88801c770118 R15: 0000000000000002
-[    6.672621][    T1]  ? __netif_set_xps_queue+0x88e/0x1f30
-[    6.672621][    T1]  ? vp_bus_name+0xc0/0xc0
-[    6.672621][    T1]  virtnet_set_affinity+0x5c2/0x840
-[    6.672621][    T1]  ? trace_xdp_exception+0x320/0x320
-[    6.672621][    T1]  virtnet_probe+0x12ae/0x31e0
-[    6.672621][    T1]  ? virtnet_find_vqs+0xc30/0xc30
-[    6.672621][    T1]  virtio_dev_probe+0x577/0x870
-[    6.672621][    T1]  ? virtio_features_ok+0x1e0/0x1e0
-[    6.672621][    T1]  really_probe+0x249/0xb90
-[    6.672621][    T1]  __driver_probe_device+0x1df/0x4d0
-[    6.672621][    T1]  driver_probe_device+0x4c/0x1a0
-[    6.672621][    T1]  __driver_attach+0x1d0/0x550
-[    6.672621][    T1]  ? __device_attach_driver+0x2e0/0x2e0
-[    6.672621][    T1]  bus_for_each_dev+0x147/0x1d0
-[    6.672621][    T1]  ? subsys_dev_iter_exit+0x20/0x20
-[    6.672621][    T1]  bus_add_driver+0x4c9/0x640
-[    6.696608][    T1]  driver_register+0x220/0x3a0
-[    6.698110][    T1]  ? veth_init+0x11/0x11
-[    6.698520][    T1]  virtio_net_driver_init+0x93/0xd2
-[    6.698520][    T1]  do_one_initcall+0x13d/0x780
-[    6.698520][    T1]  ? trace_event_raw_event_initcall_level+0x1f0/0x1f0
-[    6.698520][    T1]  ? parameq+0x100/0x170
-[    6.698520][    T1]  kernel_init_freeable+0x6ff/0x788
-[    6.698520][    T1]  ? rest_init+0x270/0x270
-[    6.698520][    T1]  kernel_init+0x1a/0x1d0
-[    6.698520][    T1]  ? rest_init+0x270/0x270
-[    6.698520][    T1]  ret_from_fork+0x1f/0x30
-[    6.698520][    T1]  </TASK>
-[    6.698520][    T1] Kernel Offset: disabled
-[    6.698520][    T1] Rebooting in 86400 seconds..
-
-
-syzkaller build log:
-go env (err=<nil>)
-GO111MODULE="auto"
-GOARCH="amd64"
-GOBIN=""
-GOCACHE="/syzkaller/.cache/go-build"
-GOENV="/syzkaller/.config/go/env"
-GOEXE=""
-GOEXPERIMENT=""
-GOFLAGS=""
-GOHOSTARCH="amd64"
-GOHOSTOS="linux"
-GOINSECURE=""
-GOMODCACHE="/syzkaller/jobs/linux/gopath/pkg/mod"
-GONOPROXY=""
-GONOSUMDB=""
-GOOS="linux"
-GOPATH="/syzkaller/jobs/linux/gopath"
-GOPRIVATE=""
-GOPROXY="https://proxy.golang.org,direct"
-GOROOT="/usr/local/go"
-GOSUMDB="sum.golang.org"
-GOTMPDIR=""
-GOTOOLDIR="/usr/local/go/pkg/tool/linux_amd64"
-GOVCS=""
-GOVERSION="go1.17"
-GCCGO="gccgo"
-AR="ar"
-CC="gcc"
-CXX="g++"
-CGO_ENABLED="1"
-GOMOD="/syzkaller/jobs/linux/gopath/src/github.com/google/syzkaller/go.mod"
-CGO_CFLAGS="-g -O2"
-CGO_CPPFLAGS=""
-CGO_CXXFLAGS="-g -O2"
-CGO_FFLAGS="-g -O2"
-CGO_LDFLAGS="-g -O2"
-PKG_CONFIG="pkg-config"
-GOGCCFLAGS="-fPIC -m64 -pthread -fmessage-length=0 -fdebug-prefix-map=/tmp/go-build1794615944=/tmp/go-build -gno-record-gcc-switches"
-
-git status (err=<nil>)
-HEAD detached at 1353c374a
-nothing to commit, working tree clean
-
-
-tput: No value for $TERM and no -T specified
-tput: No value for $TERM and no -T specified
-Makefile:32: run command via tools/syz-env for best compatibility, see:
-Makefile:33: https://github.com/google/syzkaller/blob/master/docs/contributing.md#using-syz-env
-go list -f '{{.Stale}}' ./sys/syz-sysgen | grep -q false || go install ./sys/syz-sysgen
-make .descriptions
-tput: No value for $TERM and no -T specified
-tput: No value for $TERM and no -T specified
-bin/syz-sysgen
-touch .descriptions
-GOOS=linux GOARCH=amd64 go build "-ldflags=-s -w -X github.com/google/syzkaller/prog.GitRevision=1353c374a28b0c3b20e5acf59753aceb934c7fd0 -X 'github.com/google/syzkaller/prog.gitRevisionDate=20221011-154314'" "-tags=syz_target syz_os_linux syz_arch_amd64 " -o ./bin/linux_amd64/syz-fuzzer github.com/google/syzkaller/syz-fuzzer
-GOOS=linux GOARCH=amd64 go build "-ldflags=-s -w -X github.com/google/syzkaller/prog.GitRevision=1353c374a28b0c3b20e5acf59753aceb934c7fd0 -X 'github.com/google/syzkaller/prog.gitRevisionDate=20221011-154314'" "-tags=syz_target syz_os_linux syz_arch_amd64 " -o ./bin/linux_amd64/syz-execprog github.com/google/syzkaller/tools/syz-execprog
-GOOS=linux GOARCH=amd64 go build "-ldflags=-s -w -X github.com/google/syzkaller/prog.GitRevision=1353c374a28b0c3b20e5acf59753aceb934c7fd0 -X 'github.com/google/syzkaller/prog.gitRevisionDate=20221011-154314'" "-tags=syz_target syz_os_linux syz_arch_amd64 " -o ./bin/linux_amd64/syz-stress github.com/google/syzkaller/tools/syz-stress
-mkdir -p ./bin/linux_amd64
-gcc -o ./bin/linux_amd64/syz-executor executor/executor.cc \
-	-m64 -O2 -pthread -Wall -Werror -Wparentheses -Wunused-const-variable -Wframe-larger-than=16384 -Wno-stringop-overflow -Wno-array-bounds -Wno-format-overflow -static-pie -fpermissive -w -DGOOS_linux=1 -DGOARCH_amd64=1 \
-	-DHOSTGOOS_linux=1 -DGIT_REVISION=\"1353c374a28b0c3b20e5acf59753aceb934c7fd0\"
-
-
-Error text is too large and was truncated, full error text is at:
-https://syzkaller.appspot.com/x/error.txt?x=10140a3a880000
-
-
-Tested on:
-
-commit:         d5c59b2d lib/cpumask: drop 'new' suffix for cpumask_ne..
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f17bafa7c5d14ecb
-dashboard link: https://syzkaller.appspot.com/bug?extid=51a652e2d24d53e75734
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-
-Note: no patches were applied.
+> > elf_nextscn() skips sec #0, so (sec_cnt - 1) * sizeof(secs) should suffice.
+> >
+> >   /* In elfutils/libelf/elf_nextscn.c */
+> >   Elf_Scn *elf_nextscn (Elf *elf, Elf_Scn *scn)
+> >   {
+> >     ...
+> >
+> >     if (scn == NULL)
+> >       {
+> >         /* If no section handle is given return the first (not 0th) section.
+> >          Set scn to the 0th section and perform nextscn.  */
+> >         if (elf->class == ELFCLASS32
+> >            || (offsetof (Elf, state.elf32.scns)
+> >                == offsetof (Elf, state.elf64.scns)))
+> >         list = &elf->state.elf32.scns;
+> >         else
+> >         list = &elf->state.elf64.scns;
+> >
+> >         scn = &list->data[0];
+> >       }
+> >     ...
+> >   }
+> >
+> > What do you think? If it make sense then I'll place the sec_cnt - 1 change
+> > before the current patch unless otherwise suggested.
+> >
+> > > > >         if (!obj->efile.secs)
+> > > > >                 return -ENOMEM;
+> > > > > --
+> > > > > 2.37.3
+> > > > >
