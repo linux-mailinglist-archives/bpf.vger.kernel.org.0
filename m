@@ -2,178 +2,203 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 587505FC6F1
-	for <lists+bpf@lfdr.de>; Wed, 12 Oct 2022 16:03:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD0A45FC867
+	for <lists+bpf@lfdr.de>; Wed, 12 Oct 2022 17:27:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229803AbiJLODp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Oct 2022 10:03:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41556 "EHLO
+        id S229924AbiJLP12 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Oct 2022 11:27:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230004AbiJLODn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Oct 2022 10:03:43 -0400
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1990DCBFED
-        for <bpf@vger.kernel.org>; Wed, 12 Oct 2022 07:03:41 -0700 (PDT)
-Received: by mail-il1-f198.google.com with SMTP id h8-20020a056e021b8800b002f9c2e31750so13400913ili.1
-        for <bpf@vger.kernel.org>; Wed, 12 Oct 2022 07:03:40 -0700 (PDT)
+        with ESMTP id S229939AbiJLP1Y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Oct 2022 11:27:24 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 528D7CA8AC;
+        Wed, 12 Oct 2022 08:27:22 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id r8-20020a1c4408000000b003c47d5fd475so1414310wma.3;
+        Wed, 12 Oct 2022 08:27:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=eXbdwxuXO2jas/BkmyyUbohhX5QuO9Xol9GSEbTSBOs=;
+        b=nZlVpl/i3yi/M4/sqFWz8ub+mET6pDR/EJjmkdGb35YrrqhJ0lzoU1vY5DX3FvkD1Q
+         W0dd/RC+Hnpqd4bxuzf/zOeHgTI8gX+A0H4rbGROWIpC1XqDjVkKiW9SFk3+G1B8G+dO
+         5Cc9/9B2yk6iB+WQQfLxqruyIzEUIISWqg+CrNLtdOVAjX4NYdtJ/Pagvm+vpVUj8m6N
+         VJuqfcmU/rBbRN3coXPYcW23bV1EbD8sqpmny9e3EPbhzum/HR1kjPe/f5VD3gxOKY5G
+         F/zDpEmxjY2gmr9kcjGJIrFTo4TG5m/ias7szFeeT7B2w8/wQs4AB9g6TiuBq3SJd1nq
+         GTBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=LWdHKT9leiqvoEOdN/2hOOqnqF5BTDepurZraEYGZ/E=;
-        b=HTxvYLNs9e832Cix5JRzyDoJkGbnoC5Pq9+3rEFp3961mN/I4G8o7D7JuzKnWsk/9S
-         YtaB65fh2b1YCQcgHGYmskJQqp7In2+L60UVfeEJeZj1P07/zfrhCrhU22bWyA2unoj2
-         Jb9xzXwbk8bF0M4RCHHdTSFIM/M3DoRMypb3kQBeHaJxI4/QNomTYo82t821aZtNvIlN
-         5Q9ILiRzEVTuaA/0QaQv4MMCME37ox/D3pQnxU674HmpK1vXPI7nUoCt+I5rF8xV7CvJ
-         jgGiqOJxpdQI3Xv9hu26qyGqmjmER49fITOkwmvzmkhYlg55hmvJoqmKVC1RBpIxupAs
-         jiOw==
-X-Gm-Message-State: ACrzQf27EfqhA6HluF7mjkm1Xm+8iggVYNgn9cEKGBnsMSRhq6QTz/gb
-        sTTtK7JaHM3LKIlhK8/0i4KgN0ZjGfiIACRMitrHXBW9WA6f
-X-Google-Smtp-Source: AMsMyM6+mci7CiMGFOSoPKpcBGvBPlA2ZzygnkM7KvsXzaUCMSOUy7LNa9tykfS4y7djtZgVf/wYxy4Hi+PVSdXEoWlGqnXdOpQW
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eXbdwxuXO2jas/BkmyyUbohhX5QuO9Xol9GSEbTSBOs=;
+        b=TNBqk6UUBQdVD3x4XMwF33zSGKcSLlYslgCYbHXNpmD658xrcCKKVZFyA34sxPGQWn
+         NQ1Mwuynd7iW1JLDrE1DwL4+UV3OJCRwX+p5hd+rYQq8w9euRJh4wJ6HPVMhudRtUjJ0
+         1DztHDmIr3j1kufvW6LZSHj2pUcE1JzdRrXml9SaZe5r3yv/qavXx9q+TZM8z5l4BRqd
+         EMjop5gp4XkzWM4IprZ74u1p5PScbQvixVPK3EUHxSun63jpKxhK07PMhjf2zqwbo8AL
+         6+0D2ORpKBZ6plLNOp9it05k+Ra0RQsjITyPl4htbMB7lpZQqUzK3B07wFhyqiHtxhPW
+         lO+w==
+X-Gm-Message-State: ACrzQf3nv3T8iPDKM0cxd7+Vz2qe/j5vsRKc/5jHqQR4UBtu/NZYUKBY
+        UIY3DZRA2ybi/ke4u9xjxxot1RpOPp8vlw==
+X-Google-Smtp-Source: AMsMyM6J0jE9TIFoTejOfZe/r09GluQPq+ChFm+mD6Y61Bhbyi7OiaeYm7BP+xUmXGqHT1bvHH35JA==
+X-Received: by 2002:a7b:c4c1:0:b0:3bf:e351:4ba with SMTP id g1-20020a7bc4c1000000b003bfe35104bamr3220978wmk.152.1665588440109;
+        Wed, 12 Oct 2022 08:27:20 -0700 (PDT)
+Received: from imac.redhat.com ([88.97.103.74])
+        by smtp.gmail.com with ESMTPSA id b1-20020a05600c4e0100b003a3170a7af9sm2160882wmq.4.2022.10.12.08.27.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Oct 2022 08:27:19 -0700 (PDT)
+From:   Donald Hunter <donald.hunter@gmail.com>
+To:     bpf@vger.kernel.org, linux-doc@vger.kernel.org
+Cc:     Donald Hunter <donald.hunter@gmail.com>
+Subject: [PATCH bpf-next v1] bpf, docs: Reformat BPF maps page to be more readable
+Date:   Wed, 12 Oct 2022 16:27:15 +0100
+Message-Id: <20221012152715.25073-1-donald.hunter@gmail.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-X-Received: by 2002:a02:94ab:0:b0:35a:d1b9:c71c with SMTP id
- x40-20020a0294ab000000b0035ad1b9c71cmr15224587jah.310.1665583419955; Wed, 12
- Oct 2022 07:03:39 -0700 (PDT)
-Date:   Wed, 12 Oct 2022 07:03:39 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000017227f05ead6dc15@google.com>
-Subject: [syzbot] possible deadlock in tcp_sock_set_cork
-From:   syzbot <syzbot+c4b21407c3b1dc66ee65@syzkaller.appspotmail.com>
-To:     bpf@vger.kernel.org, davem@davemloft.net, dsahern@kernel.org,
-        edumazet@google.com, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, nathan@kernel.org, ndesaulniers@google.com,
-        netdev@vger.kernel.org, pabeni@redhat.com,
-        syzkaller-bugs@googlegroups.com, trix@redhat.com,
-        yoshfuji@linux-ipv6.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+Add a more complete introduction, with links to man pages.
+Move toctree of map types above usage notes.
+Format usage notes to improve readability.
 
-syzbot found the following issue on:
-
-HEAD commit:    a5088ee7251e Merge tag 'thermal-6.1-rc1' of git://git.kern..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17c929b8880000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=201ae572239e648
-dashboard link: https://syzkaller.appspot.com/bug?extid=c4b21407c3b1dc66ee65
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/26341f70ccb8/disk-a5088ee7.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/ca8a6f6b0303/vmlinux-a5088ee7.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c4b21407c3b1dc66ee65@syzkaller.appspotmail.com
-
-======================================================
-WARNING: possible circular locking dependency detected
-6.0.0-syzkaller-00372-ga5088ee7251e #0 Not tainted
-------------------------------------------------------
-kworker/u4:27/14295 is trying to acquire lock:
-ffff888022948fb0 (k-sk_lock-AF_INET6){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1712 [inline]
-ffff888022948fb0 (k-sk_lock-AF_INET6){+.+.}-{0:0}, at: tcp_sock_set_cork+0x16/0x90 net/ipv4/tcp.c:3337
-
-but task is already holding lock:
-ffffc90004a4fda8 ((work_completion)(&(&cp->cp_send_w)->work)){+.+.}-{0:0}, at: process_one_work+0x8ae/0x1610 kernel/workqueue.c:2264
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #1 ((work_completion)(&(&cp->cp_send_w)->work)){+.+.}-{0:0}:
-       __flush_work+0x105/0xae0 kernel/workqueue.c:3069
-       __cancel_work_timer+0x3f9/0x570 kernel/workqueue.c:3160
-       rds_tcp_reset_callbacks+0x1cb/0x4d0 net/rds/tcp.c:171
-       rds_tcp_accept_one+0x9d5/0xd10 net/rds/tcp_listen.c:203
-       rds_tcp_accept_worker+0x55/0x80 net/rds/tcp.c:529
-       process_one_work+0x991/0x1610 kernel/workqueue.c:2289
-       worker_thread+0x665/0x1080 kernel/workqueue.c:2436
-       kthread+0x2e4/0x3a0 kernel/kthread.c:376
-       ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:306
-
--> #0 (k-sk_lock-AF_INET6){+.+.}-{0:0}:
-       check_prev_add kernel/locking/lockdep.c:3095 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3214 [inline]
-       validate_chain kernel/locking/lockdep.c:3829 [inline]
-       __lock_acquire+0x2a43/0x56d0 kernel/locking/lockdep.c:5053
-       lock_acquire kernel/locking/lockdep.c:5666 [inline]
-       lock_acquire+0x1ab/0x570 kernel/locking/lockdep.c:5631
-       lock_sock_nested+0x36/0xf0 net/core/sock.c:3393
-       lock_sock include/net/sock.h:1712 [inline]
-       tcp_sock_set_cork+0x16/0x90 net/ipv4/tcp.c:3337
-       rds_send_xmit+0x386/0x2540 net/rds/send.c:194
-       rds_send_worker+0x92/0x2e0 net/rds/threads.c:200
-       process_one_work+0x991/0x1610 kernel/workqueue.c:2289
-       worker_thread+0x665/0x1080 kernel/workqueue.c:2436
-       kthread+0x2e4/0x3a0 kernel/kthread.c:376
-       ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:306
-
-other info that might help us debug this:
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock((work_completion)(&(&cp->cp_send_w)->work));
-                               lock(k-sk_lock-AF_INET6);
-                               lock((work_completion)(&(&cp->cp_send_w)->work));
-  lock(k-sk_lock-AF_INET6);
-
- *** DEADLOCK ***
-
-2 locks held by kworker/u4:27/14295:
- #0: ffff888027f19938 ((wq_completion)krdsd){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff888027f19938 ((wq_completion)krdsd){+.+.}-{0:0}, at: arch_atomic_long_set include/linux/atomic/atomic-long.h:41 [inline]
- #0: ffff888027f19938 ((wq_completion)krdsd){+.+.}-{0:0}, at: atomic_long_set include/linux/atomic/atomic-instrumented.h:1280 [inline]
- #0: ffff888027f19938 ((wq_completion)krdsd){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:636 [inline]
- #0: ffff888027f19938 ((wq_completion)krdsd){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:663 [inline]
- #0: ffff888027f19938 ((wq_completion)krdsd){+.+.}-{0:0}, at: process_one_work+0x87a/0x1610 kernel/workqueue.c:2260
- #1: ffffc90004a4fda8 ((work_completion)(&(&cp->cp_send_w)->work)){+.+.}-{0:0}, at: process_one_work+0x8ae/0x1610 kernel/workqueue.c:2264
-
-stack backtrace:
-CPU: 0 PID: 14295 Comm: kworker/u4:27 Not tainted 6.0.0-syzkaller-00372-ga5088ee7251e #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/22/2022
-Workqueue: krdsd rds_send_worker
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2175
- check_prev_add kernel/locking/lockdep.c:3095 [inline]
- check_prevs_add kernel/locking/lockdep.c:3214 [inline]
- validate_chain kernel/locking/lockdep.c:3829 [inline]
- __lock_acquire+0x2a43/0x56d0 kernel/locking/lockdep.c:5053
- lock_acquire kernel/locking/lockdep.c:5666 [inline]
- lock_acquire+0x1ab/0x570 kernel/locking/lockdep.c:5631
- lock_sock_nested+0x36/0xf0 net/core/sock.c:3393
- lock_sock include/net/sock.h:1712 [inline]
- tcp_sock_set_cork+0x16/0x90 net/ipv4/tcp.c:3337
- rds_send_xmit+0x386/0x2540 net/rds/send.c:194
- rds_send_worker+0x92/0x2e0 net/rds/threads.c:200
- process_one_work+0x991/0x1610 kernel/workqueue.c:2289
- worker_thread+0x665/0x1080 kernel/workqueue.c:2436
- kthread+0x2e4/0x3a0 kernel/kthread.c:376
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:306
- </TASK>
-
-
+Signed-off-by: Donald Hunter <donald.hunter@gmail.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ Documentation/bpf/maps.rst | 101 ++++++++++++++++++++++++-------------
+ 1 file changed, 65 insertions(+), 36 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/Documentation/bpf/maps.rst b/Documentation/bpf/maps.rst
+index f41619e312ac..4906ff0f8382 100644
+--- a/Documentation/bpf/maps.rst
++++ b/Documentation/bpf/maps.rst
+@@ -1,52 +1,81 @@
+ 
+-=========
+-eBPF maps
++========
++BPF maps
++========
++
++BPF 'maps' provide generic storage of different types for sharing data between
++kernel and user space. There are several storage types available, including
++hash, array, bloom filter and radix-tree. Several of the map types exist to
++support specific BPF helpers that perform actions based on the map contents. The
++maps are accessed from BPF programs via BPF helpers which are documented in the
++`man-pages`_ for `bpf-helpers(7)`_.
++
++BPF maps are accessed from user space via the ``bpf`` syscall, which provides
++commands to create maps, lookup elements, update elements and delete
++elements. More details of the BPF syscall are available in
++:doc:`/userspace-api/ebpf/syscall` and in the `man-pages`_ for `bpf(2)`_.
++
++Map Types
+ =========
+ 
+-'maps' is a generic storage of different types for sharing data between kernel
+-and userspace.
++.. toctree::
++   :maxdepth: 1
++   :glob:
+ 
+-The maps are accessed from user space via BPF syscall, which has commands:
++   map_*
+ 
+-- create a map with given type and attributes
+-  ``map_fd = bpf(BPF_MAP_CREATE, union bpf_attr *attr, u32 size)``
+-  using attr->map_type, attr->key_size, attr->value_size, attr->max_entries
+-  returns process-local file descriptor or negative error
++Usage Notes
++===========
+ 
+-- lookup key in a given map
+-  ``err = bpf(BPF_MAP_LOOKUP_ELEM, union bpf_attr *attr, u32 size)``
+-  using attr->map_fd, attr->key, attr->value
+-  returns zero and stores found elem into value or negative error
++.. c:function::
++   int bpf(int command, union bpf_attr *attr, u32 size)
+ 
+-- create or update key/value pair in a given map
+-  ``err = bpf(BPF_MAP_UPDATE_ELEM, union bpf_attr *attr, u32 size)``
+-  using attr->map_fd, attr->key, attr->value
+-  returns zero or negative error
++Use the ``bpf()`` system call to perform the operation specified by
++``command``. The operation takes parameters provided in ``attr``. The ``size``
++argument is the size of the ``union bpf_attr`` in ``attr``.
+ 
+-- find and delete element by key in a given map
+-  ``err = bpf(BPF_MAP_DELETE_ELEM, union bpf_attr *attr, u32 size)``
+-  using attr->map_fd, attr->key
++**BPF_MAP_CREATE**
+ 
+-- to delete map: close(fd)
+-  Exiting process will delete maps automatically
++Create a map with the desired type and attributes in ``attr``:
+ 
+-userspace programs use this syscall to create/access maps that eBPF programs
+-are concurrently updating.
++.. code-block:: c
+ 
+-maps can have different types: hash, array, bloom filter, radix-tree, etc.
++    int fd;
++    union bpf_attr attr = {
++            .map_type = BPF_MAP_TYPE_ARRAY;  /* mandatory */
++            .key_size = sizeof(__u32);       /* mandatory */
++            .value_size = sizeof(__u32);     /* mandatory */
++            .max_entries = 256;              /* mandatory */
++            .map_flags = BPF_F_MMAPABLE;
++            .map_name = "example_array";
++    };
+ 
+-The map is defined by:
++    fd = bpf(BPF_MAP_CREATE, &attr, sizeof(attr));
+ 
+-  - type
+-  - max number of elements
+-  - key size in bytes
+-  - value size in bytes
++Returns a process-local file descriptor on success, or negative error in case of
++failure. The map can be deleted by calling ``close(fd)``. Maps held by open
++file descriptors will be deleted automatically when a process exits.
+ 
+-Map Types
+-=========
++.. note:: Valid characters for ``map_name`` are ``A-Z``, ``a-z``, ``0-9``,
++   ``'_'`` and ``'.'``.
+ 
+-.. toctree::
+-   :maxdepth: 1
+-   :glob:
++**BPF_MAP_LOOKUP_ELEM**
++
++Lookup key in a given map using ``attr->map_fd``, ``attr->key``,
++``attr->value``. Returns zero and stores found elem into ``attr->value`` on
++success, or negative error on failure.
++
++**BPF_MAP_UPDATE_ELEM**
++
++Create or update key/value pair in a given map using ``attr->map_fd``, ``attr->key``,
++``attr->value``. Returns zero on success or negative error on failure.
++
++**BPF_MAP_DELETE_ELEM**
++
++Find and delete element by key in a given map using ``attr->map_fd``,
++``attr->key``. Returns zero on success or negative error on failure.
+ 
+-   map_*
+\ No newline at end of file
++.. Links:
++.. _man-pages: https://www.kernel.org/doc/man-pages/
++.. _bpf(2): https://man7.org/linux/man-pages/man2/bpf.2.html
++.. _bpf-helpers(7): https://man7.org/linux/man-pages/man7/bpf-helpers.7.html
+-- 
+2.35.1
+
