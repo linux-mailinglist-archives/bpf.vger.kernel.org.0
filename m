@@ -2,60 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95B275FCB2F
-	for <lists+bpf@lfdr.de>; Wed, 12 Oct 2022 20:57:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 171235FCCC7
+	for <lists+bpf@lfdr.de>; Wed, 12 Oct 2022 23:08:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229451AbiJLS5t (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Oct 2022 14:57:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45256 "EHLO
+        id S229899AbiJLVIU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Oct 2022 17:08:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbiJLS5s (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Oct 2022 14:57:48 -0400
-X-Greylist: delayed 219 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 12 Oct 2022 11:57:46 PDT
-Received: from pb-smtp1.pobox.com (pb-smtp1.pobox.com [64.147.108.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05C773AD;
-        Wed, 12 Oct 2022 11:57:45 -0700 (PDT)
-Received: from pb-smtp1.pobox.com (unknown [127.0.0.1])
-        by pb-smtp1.pobox.com (Postfix) with ESMTP id 6AD551551EE;
-        Wed, 12 Oct 2022 14:54:05 -0400 (EDT)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=pobox.com; h=date:from
-        :to:cc:subject:in-reply-to:message-id:references:mime-version
-        :content-type; s=sasl; bh=ocnc+2r0vxqNuyxVHePXxoUh1gWAZCMQYekr3k
-        sGhDo=; b=DibnxC3UKNnsAlNgebz3YPB2R6yF2VAhQsDyP67brysCvirgGEdpG6
-        N2+uEvnO11hoaqA5yHpd2mv5Hz8seaJ9I2P2IJz1X0mbhnR9/RurZI/oLt/DWcNt
-        KtvkyCWxK4FFktsEtLnUkI84RVXcnnkls950GnFdLViShtKGMxOBY=
-Received: from pb-smtp1.nyi.icgroup.com (unknown [127.0.0.1])
-        by pb-smtp1.pobox.com (Postfix) with ESMTP id 603FF1551ED;
-        Wed, 12 Oct 2022 14:54:05 -0400 (EDT)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=fluxnic.net;
- h=date:from:to:cc:subject:in-reply-to:message-id:references:mime-version:content-type; s=2016-12.pbsmtp; bh=81lGIyVyMpAU5HDAaXAdVFPBsmczXQLcnAYTitfm3/U=; b=Gl7MxQiaAyFnzvFaaJiexzUcJdrSC+LQMlOBFbw4eSrc/DeuczqmhDPiL4Ls9nLDZweTc3X60O09SsAsVO7K9LABGEKqellAyhfLsX8vTvOm59xf5mLIq0I8EZ10UieB/jdy17gFnwfHxzcGOgrAXalfGttXjOf9r1s4s+9v1b0=
-Received: from yoda.home (unknown [96.21.170.108])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by pb-smtp1.pobox.com (Postfix) with ESMTPSA id BF4D31551EC;
-        Wed, 12 Oct 2022 14:54:04 -0400 (EDT)
-        (envelope-from nico@fluxnic.net)
-Received: from xanadu.home (xanadu [192.168.2.2])
-        by yoda.home (Postfix) with ESMTPSA id 6D50E47DF06;
-        Wed, 12 Oct 2022 14:54:03 -0400 (EDT)
-Date:   Wed, 12 Oct 2022 14:54:03 -0400 (EDT)
-From:   Nicolas Pitre <nico@fluxnic.net>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-cc:     Christian Brauner <brauner@kernel.org>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        "Venkataramanan, Anirudh" <anirudh.venkataramanan@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>
-Subject: Re: [PATCH] fs/cramfs: Convert kmap() to kmap_local_data()
-In-Reply-To: <20221012091356.16632-1-fmdefrancesco@gmail.com>
-Message-ID: <87672pr-o821-qns6-11rp-902sp1s34r3@syhkavp.arg>
-References: <20221012091356.16632-1-fmdefrancesco@gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323328-1044884447-1665600843=:1258"
-X-Pobox-Relay-ID: 3E6DE3A0-4A5F-11ED-8611-2AEEC5D8090B-78420484!pb-smtp1.pobox.com
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        with ESMTP id S229953AbiJLVIQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Oct 2022 17:08:16 -0400
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FC281142C6
+        for <bpf@vger.kernel.org>; Wed, 12 Oct 2022 14:08:13 -0700 (PDT)
+Received: by mail-pj1-x1049.google.com with SMTP id pc10-20020a17090b3b8a00b00202be8d81d2so2062459pjb.1
+        for <bpf@vger.kernel.org>; Wed, 12 Oct 2022 14:08:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=YQ92MyYkDi0rXzsY9g25bbZtz0xg0smQTszHXunhR9Y=;
+        b=DtHz3MGJYhQHIWK/6XAPNc4RldgwZDxwAY5kuC5r2GeW+K3pKhqB4dLF61O+pJE2oP
+         O4G6w/XVhTgXQqwYDfS96rg1BQ5d00XyN6gEmyiWaxgwxm6/APko+OHTAApYNgp+8+6J
+         2RcEjXmKb3D6zoDtxhTtegz+HfjHC3FUwOaQxldZme+OaA+e7CwXNW0wxiGayhBn1k/j
+         Hf223dBQyoilinuEX1AujNqtWp4Y+UZlLag75mUeaR1yUC1PsDYjB70cnzFiTjoR0j+A
+         Tvuas6lcQB1/nNWJeQpDgKhAbWzCujcm84lWagneOU/EupRq83T1yvgwZtv65i3nr5f4
+         zr2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YQ92MyYkDi0rXzsY9g25bbZtz0xg0smQTszHXunhR9Y=;
+        b=DxMkQwn6c87UbNlLHzjTk8DRHyvTdzK23dnzWut5ZsRevlP/rdygDw16l+KS8e2BBx
+         5zu2WRqy5iz7tr7gk3n3EMIVKNjjOmZlWLW5ahvMxr7Q1Qi6QpK+WErU10QxQb0rXlr1
+         zbKU26fy/lmf9686iQfSjwpKOsCz03wWofsluhKTCKlsAXD6lrt1uDIcj1F1AhhQMJ0d
+         fiMXfxgwYWa3LwrqwpfDsJpH8IEKnFdt4Y3EOn1raZU09OtCL2nDrxQ1zTcdnEIcXqr3
+         e5o+tl6pXPiSfw24xs04tODWMhoOWWcn4P9D+kUkFAJc1AhL862jCqsT2u1+V2kHfygE
+         z1XA==
+X-Gm-Message-State: ACrzQf0Pypco5lICPj9/inCtxXmueMz2algXTqS912oHdQmvaJLQm4sT
+        rBAKzAGWzeSXXx9BvmiS9ckTm8M=
+X-Google-Smtp-Source: AMsMyM4O5iGbs4pYw4R/DIzFJMeeNajau+8QKMTNsG7BvklrN7LhYjyAUu5S2peKUCqUiqhMhEv1mnU=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a17:903:258e:b0:17b:a251:c80a with SMTP id
+ jb14-20020a170903258e00b0017ba251c80amr32194690plb.110.1665608892519; Wed, 12
+ Oct 2022 14:08:12 -0700 (PDT)
+Date:   Wed, 12 Oct 2022 14:08:11 -0700
+Mime-Version: 1.0
+Message-ID: <Y0csu2SwegJ8Tab+@google.com>
+Subject: Lockdep warning after c0feea594e058223973db94c1c32a830c9807c86
+From:   sdf@google.com
+To:     john.fastabend@gmail.com, jakub@cloudflare.com
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,92 +63,142 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Hi John & Jakub,
 
---8323328-1044884447-1665600843=:1258
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Upstream commit c0feea594e05 ("workqueue: don't skip lockdep work
+dependency in cancel_work_sync()") seems to trigger the following
+lockdep warning during test_prog's sockmap_listen:
 
-On Wed, 12 Oct 2022, Fabio M. De Francesco wrote:
+[  +0.003631] WARNING: possible circular locking dependency detected
+[  +0.003647] 6.0.0-dbx-DEV #10 Not tainted
+[  +0.002402] ------------------------------------------------------
+[  +0.003685] kworker/1:0/23 is trying to acquire lock:
+[  +0.003012] ffff888100b1e3f0 (sk_lock-AF_INET){+.+.}-{0:0}, at:  
+tcp_sendpage+0x28/0x80
+[  +0.004655]
+               but task is already holding lock:
+[  +0.003434] ffff88810642c360 (&psock->work_mutex){+.+.}-{3:3}, at:  
+sk_psock_backlog+0x2e/0x370
+[  +0.005043]
+               which lock already depends on the new lock.
 
-> The use of kmap() is being deprecated in favor of kmap_local_page().
->=20
-> There are two main problems with kmap(): (1) It comes with an overhead =
-as
-> the mapping space is restricted and protected by a global lock for
-> synchronization and (2) it also requires global TLB invalidation when t=
-he
-> kmap=E2=80=99s pool wraps and it might block when the mapping space is =
-fully
-> utilized until a slot becomes available.
->=20
-> With kmap_local_page() the mappings are per thread, CPU local, can take
-> page faults, and can be called from any context (including interrupts).
-> It is faster than kmap() in kernels with HIGHMEM enabled. Furthermore,
-> the tasks can be preempted and, when they are scheduled to run again, t=
-he
-> kernel virtual addresses are restored and still valid.
->=20
-> Since its use in fs/cramfs is safe everywhere, it should be preferred.
->=20
-> Therefore, replace kmap() with kmap_local_page() in fs/cramfs. Instead
-> of open-coding kmap_local_page() + memcpy(), use memcpy_from_page().
->=20
-> Cc: "Venkataramanan, Anirudh" <anirudh.venkataramanan@intel.com>
-> Suggested-by: Ira Weiny <ira.weiny@intel.com>
-> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+[  +0.004792]
+               the existing dependency chain (in reverse order) is:
+[  +0.004397]
+               -> #2 (&psock->work_mutex){+.+.}-{3:3}:
+[  +0.003732]        __mutex_lock_common+0xdf/0xe70
+[  +0.002958]        mutex_lock_nested+0x20/0x30
+[  +0.002685]        sk_psock_backlog+0x2e/0x370
+[  +0.002689]        process_one_work+0x22c/0x3b0
+[  +0.002815]        worker_thread+0x21b/0x400
+[  +0.002652]        kthread+0xf7/0x110
+[  +0.002406]        ret_from_fork+0x1f/0x30
+[  +0.002512]
+               -> #1 ((work_completion)(&psock->work)){+.+.}-{0:0}:
+[  +0.004457]        __flush_work+0x6b/0xd0
+[  +0.002638]        __cancel_work_timer+0x11a/0x1a0
+[  +0.002973]        cancel_work_sync+0x10/0x20
+[  +0.002724]        sk_psock_stop+0x298/0x2b0
+[  +0.002969]        sock_map_close+0xd8/0x140
+[  +0.002739]        inet_release+0x57/0x80
+[  +0.002475]        sock_close+0x4b/0xe0
+[  +0.002380]        __fput+0x101/0x230
+[  +0.002347]        ____fput+0xe/0x10
+[  +0.002259]        task_work_run+0x5d/0xb0
+[  +0.002535]        exit_to_user_mode_loop+0xd6/0xf0
+[  +0.003019]        exit_to_user_mode_prepare+0xa6/0x100
+[  +0.003201]        syscall_exit_to_user_mode+0x5b/0x160
+[  +0.003145]        do_syscall_64+0x49/0x80
+[  +0.002549]        entry_SYSCALL_64_after_hwframe+0x63/0xcd
+[  +0.003410]
+               -> #0 (sk_lock-AF_INET){+.+.}-{0:0}:
+[  +0.003906]        __lock_acquire+0x16f4/0x30c0
+[  +0.002837]        lock_acquire+0xc5/0x1c0
+[  +0.002599]        lock_sock_nested+0x32/0x80
+[  +0.002690]        tcp_sendpage+0x28/0x80
+[  +0.002435]        inet_sendpage+0x7b/0xe0
+[  +0.002534]        kernel_sendpage+0x5d/0xa0
+[  +0.002709]        skb_send_sock+0x24b/0x2d0
+[  +0.002662]        sk_psock_backlog+0x106/0x370
+[  +0.002908]        process_one_work+0x22c/0x3b0
+[  +0.002736]        worker_thread+0x21b/0x400
+[  +0.002552]        kthread+0xf7/0x110
+[  +0.002252]        ret_from_fork+0x1f/0x30
+[  +0.002480]
+               other info that might help us debug this:
 
-Reviewed-by: Nicolas Pitre <nico@fluxnic.net>
+[  +0.004778] Chain exists of:
+                 sk_lock-AF_INET --> (work_completion)(&psock->work) -->  
+&psock->work_mutex
 
-> ---
->  fs/cramfs/inode.c | 9 ++++-----
->  1 file changed, 4 insertions(+), 5 deletions(-)
->=20
-> diff --git a/fs/cramfs/inode.c b/fs/cramfs/inode.c
-> index 61ccf7722fc3..c17cbba5d45e 100644
-> --- a/fs/cramfs/inode.c
-> +++ b/fs/cramfs/inode.c
-> @@ -238,8 +238,7 @@ static void *cramfs_blkdev_read(struct super_block =
-*sb, unsigned int offset,
->  		struct page *page =3D pages[i];
-> =20
->  		if (page) {
-> -			memcpy(data, kmap(page), PAGE_SIZE);
-> -			kunmap(page);
-> +			memcpy_from_page(data, page, 0, PAGE_SIZE);
->  			put_page(page);
->  		} else
->  			memset(data, 0, PAGE_SIZE);
-> @@ -815,7 +814,7 @@ static int cramfs_read_folio(struct file *file, str=
-uct folio *folio)
-> =20
->  	maxblock =3D (inode->i_size + PAGE_SIZE - 1) >> PAGE_SHIFT;
->  	bytes_filled =3D 0;
-> -	pgdata =3D kmap(page);
-> +	pgdata =3D kmap_local_page(page);
-> =20
->  	if (page->index < maxblock) {
->  		struct super_block *sb =3D inode->i_sb;
-> @@ -903,13 +902,13 @@ static int cramfs_read_folio(struct file *file, s=
-truct folio *folio)
-> =20
->  	memset(pgdata + bytes_filled, 0, PAGE_SIZE - bytes_filled);
->  	flush_dcache_page(page);
-> -	kunmap(page);
-> +	kunmap_local(pgdata);
->  	SetPageUptodate(page);
->  	unlock_page(page);
->  	return 0;
-> =20
->  err:
-> -	kunmap(page);
-> +	kunmap_local(pgdata);
->  	ClearPageUptodate(page);
->  	SetPageError(page);
->  	unlock_page(page);
-> --=20
-> 2.37.3
->=20
->=20
---8323328-1044884447-1665600843=:1258--
+[  +0.007265]  Possible unsafe locking scenario:
+
+[  +0.003496]        CPU0                    CPU1
+[  +0.002717]        ----                    ----
+[  +0.002809]   lock(&psock->work_mutex);
+[  +0.002335]                                 
+lock((work_completion)(&psock->work));
+[  +0.004496]                                lock(&psock->work_mutex);
+[  +0.003766]   lock(sk_lock-AF_INET);
+[  +0.002185]
+                *** DEADLOCK ***
+
+[  +0.003600] 3 locks held by kworker/1:0/23:
+[  +0.002698]  #0: ffff888100055138 ((wq_completion)events){+.+.}-{0:0},  
+at: process_one_work+0x1d6/0x3b0
+[  +0.005552]  #1: ffffc900001e7e58  
+((work_completion)(&psock->work)){+.+.}-{0:0}, at:  
+process_one_work+0x1fc/0x3b0
+[  +0.006085]  #2: ffff88810642c360 (&psock->work_mutex){+.+.}-{3:3}, at:  
+sk_psock_backlog+0x2e/0x370
+[  +0.005424]
+               stack backtrace:
+[  +0.002689] CPU: 1 PID: 23 Comm: kworker/1:0 Not tainted 6.0.0-dbx-DEV #10
+[  +0.004086] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS  
+rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
+[  +0.006806] Workqueue: events sk_psock_backlog
+[  +0.002699] Call Trace:
+[  +0.001577]  <TASK>
+[  +0.001350]  dump_stack_lvl+0x69/0xaa
+[  +0.002225]  dump_stack+0x10/0x12
+[  +0.002051]  print_circular_bug+0x289/0x290
+[  +0.002531]  check_noncircular+0x12c/0x140
+[  +0.002578]  __lock_acquire+0x16f4/0x30c0
+[  +0.002483]  ? ret_from_fork+0x1f/0x30
+[  +0.002297]  ? __this_cpu_preempt_check+0x13/0x20
+[  +0.002869]  ? lock_is_held_type+0xf8/0x160
+[  +0.002511]  lock_acquire+0xc5/0x1c0
+[  +0.002165]  ? tcp_sendpage+0x28/0x80
+[  +0.002367]  lock_sock_nested+0x32/0x80
+[  +0.002401]  ? tcp_sendpage+0x28/0x80
+[  +0.002262]  tcp_sendpage+0x28/0x80
+[  +0.002148]  inet_sendpage+0x7b/0x[   12.231432] sysrq: Power Off
+e0
+[  +0.002202[   12.234545] kvm: exiting hardware virtualization
+]  kernel_sendpage+0x5d/0xa0
+[  +0.002277]  skb_send_sock+0x24b/0x2d0
+[  +0.002278]  ? _raw_spin_unlock_irqrestore+0x35/0x60
+[  +0.003030]  ? __this_cpu_preempt_check+0x13/0x20
+[  +0.002861]  ? lockdep_hardirqs_on+0x97/0x140
+[  +0.002685]  ? trace_hardirqs_on+0x47/0x50
+[  +0.002576]  ? _raw_spin_unlock_irqrestore+0x40/0x60
+[  +0.003207]  sk_psock_backlog+0x106/0x370
+[  +0.002476]  process_one_work+0x22c/0x3b0
+[  +0.002473]  worker_thread+0x21b/0x400
+[  +0.002335]  kthread+0xf7/0x110
+[  +0.001954]  ? rcu_lock_release+0x20/0x20
+[  +0.002444]  ? kthread_blkcg+0x30/0x30
+[  +0.002325]  ret_from_fork+0x1f/0x30
+[  +0.002221]  </TASK>
+
+This is on bpf-next:
+
+commit d31ada3b511141f4b78cae5a05cc2dad887c40b7 (HEAD -> bpf-next,
+bpf-next/master)
+Author: David Vernet <void@manifault.com>
+Date:   Tue Oct 11 11:52:55 2022 -0500
+
+     selftests/bpf: Alphabetize DENYLISTs
+
+Are you ware? Any idea what's wrong?
+Is there some stable fix I'm missing in bpf-next?
