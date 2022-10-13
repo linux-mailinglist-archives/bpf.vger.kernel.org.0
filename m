@@ -2,181 +2,286 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A8C85FE101
-	for <lists+bpf@lfdr.de>; Thu, 13 Oct 2022 20:22:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94D2F5FE158
+	for <lists+bpf@lfdr.de>; Thu, 13 Oct 2022 20:35:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229913AbiJMSWV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Oct 2022 14:22:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58806 "EHLO
+        id S231443AbiJMSfh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Oct 2022 14:35:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231419AbiJMSWH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Oct 2022 14:22:07 -0400
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD2DD162538
-        for <bpf@vger.kernel.org>; Thu, 13 Oct 2022 11:17:21 -0700 (PDT)
-Received: by mail-wr1-f51.google.com with SMTP id bp11so4073682wrb.9
-        for <bpf@vger.kernel.org>; Thu, 13 Oct 2022 11:17:21 -0700 (PDT)
+        with ESMTP id S231545AbiJMSfS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Oct 2022 14:35:18 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB98218F90B;
+        Thu, 13 Oct 2022 11:31:49 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id d26so5745292ejc.8;
+        Thu, 13 Oct 2022 11:31:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=hPEDY8hxCa7q+oLK7imeAg6G9deWfHugRnTg4jKW+Ns=;
-        b=lxM9oAsALz6APU9qDQcD/j62A/cdUQCXoSYMeAfnCUgBSiyt5h2Yarrbi9CFaA1ue7
-         S6mNXxWfq++h9P7hsvGKYJC5jkiGPxnXMmwN8HStJIjCwSK/bOzciaIUWhX0GT1Jheuc
-         4Ht8xU/fJoPeOutRfZSonxjQRCNbSYoDf9+XYWEISV/aHvTqg+wvPMlzB6iLcbriccND
-         KQqhAxTcmwyaBQmT8sXi+JSUMOMFlVYD66EzSLNwJENEY78MX/y329CSUpf9KUo1UPaA
-         UTlvLp5wVkC/C9rg/KPvKMOPqy+LNkN/rCQEr6offw8aZT0owkbYfnrpPgKG8f+/iThw
-         EQSw==
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jyFY2++ZqqhiMZVZj707ssQ7LehJE6VnNQ8oQyuUN+I=;
+        b=pNXMqgNGE1kyet/qCg/fOz0o9refZNSLArkO6qdFg7YPxQxJvwJjgwpbNU+IIcw6Z2
+         R7fXzvlycq8DxEOhlJ5yxsXkTjW3YqZk4632LUTC6eJQTCq9WRzH2Gomj//8RLKT0QtK
+         p8K4IBt9YveK4KPhsnvrm3Ie/X8SSUdJezNEuF0Ijbqw93MRO6RTFvW0+qkgoHA1bZup
+         Fybkw3xMXBBpBW/2E8LFSFzG7iqiUM0J8TCTxBt7ckTadlw0UuGxwliJIt9NW/BJdlwP
+         OTdSi5IJ23wlNBc2AeIAd23BtS1/XqKqVmjwnF3XJaw7V0oZ3DV93LB2gh81klo6Dnuu
+         sS9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hPEDY8hxCa7q+oLK7imeAg6G9deWfHugRnTg4jKW+Ns=;
-        b=zqpE415WDGTARVRCD1yKY0CJYTlumUofA7r6NfMAiWsepnyK6eJ0rRuLPLOqJSB+Ta
-         /FESV/FI6YRT8l0kVXmPwRPCeEoz9JXNvLzauP3IYdwtg7+WCr3pBHhv2tvKygQROxib
-         3/msar/q0KM17PDvvWM37ST0pPzK6x2gRmIvYyTRk9Gr6HqQML1AAu3N9lsbVtTMrtq6
-         8KYKz9XZMAo9jTrWddUc+TZ6EYLCbuT8xvWIHOOm1skXxce6iDfxLiq16BPPT+8BsMQk
-         xkAQGjVb0vbU1QFBEtSf9y41BI6xgebH60J16DWp6zDoabFXLv9irocIoKXO4yGwY5Dh
-         Ac1g==
-X-Gm-Message-State: ACrzQf337POWiJxtjO0semtEXAckoyzM0VT9AQQqHVKgLDImDco2Drmf
-        TmL5r3Anc5pM847+/Yt96lVqRrMoH1ieOm6ojH3Nbq70
-X-Google-Smtp-Source: AMsMyM4ok6KQARDdddNuv1X4DlR8Bm3UVFw4trM7mZoSF+E8PmhfM07Z6ZwSoYxh7hu8A3K7EkKu8nRUL2MfBfxqbx0=
-X-Received: by 2002:a17:907:2cca:b0:78d:ec48:ac29 with SMTP id
- hg10-20020a1709072cca00b0078dec48ac29mr733717ejc.114.1665684310112; Thu, 13
- Oct 2022 11:05:10 -0700 (PDT)
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jyFY2++ZqqhiMZVZj707ssQ7LehJE6VnNQ8oQyuUN+I=;
+        b=ds3fN1tg2kMaqJUIimHUvt1dj4EeSReWA7HWJNBkrI/ydXnU1w8eSTx1eJyG9rQkB5
+         pBUpNZh6JpMpMzYbuG8HbHo1lbevZM3XBNcFUm544+56Xu0tJRae9uzfBClHCPLDkF1d
+         +W4EHrEiOJ+GB7YmtNUhXuOcbP+W4c0VmDoE6n/EQkb2/Z6rV3Q/9BIReH+ExtekFo/H
+         9k1U6TIR5pBG7kHHqTv/0VS31TvQsV48jBKXkC/T99KoqUoTyUJ0cheXFzOy371jDeiL
+         Teb1bMeAlZFJ/b6668kDyGZHTaLpK3GofAF0Rui1MsvchEMQYyE3LrwKYnlFb2/fxg/x
+         obVA==
+X-Gm-Message-State: ACrzQf02C/8A9JTDw1ayiB5K+ul2j+UwWcTpOjkQ79Sd7wUSREK4u8rh
+        oCW7BtO6jqHd1QfzfXHVu9byKjdpGLIN0vDVBd/BAezL
+X-Google-Smtp-Source: AMsMyM5WgXy5TIPXXjvDut292kl+DLHyOUThmi9qDOSZT/m3ZNUTFpFqqv6WWvjf5Jx+/+gfV6haPUEeNToMDmGrBrQ=
+X-Received: by 2002:a17:907:984:b0:77f:4d95:9e2f with SMTP id
+ bf4-20020a170907098400b0077f4d959e2fmr835587ejc.176.1665685845770; Thu, 13
+ Oct 2022 11:30:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220924133620.4147153-1-houtao@huaweicloud.com>
- <20220924133620.4147153-4-houtao@huaweicloud.com> <CAEf4Bza79XbtYF_04MhdcN0o4Akot0VpWaR+mOoGwXsz7yT=xg@mail.gmail.com>
- <e099e816-d271-ec75-b6aa-3671cfc5b8f9@huaweicloud.com> <CAEf4BzZyfUOfGkQP67urmG9=7pqUF-5E9LjZf-Y0sL9nbcHFww@mail.gmail.com>
- <670cee24-8667-31c9-fe91-368b683d586e@huaweicloud.com>
-In-Reply-To: <670cee24-8667-31c9-fe91-368b683d586e@huaweicloud.com>
+References: <f355eeba-1b46-749f-c102-65074e7eac27@iogearbox.net>
+ <CAADnVQ+gEY3FjCR=+DmjDR4gp5bOYZUFJQXj4agKFHT9CQPZBw@mail.gmail.com>
+ <14f368eb-9158-68bc-956c-c8371cfcb531@iogearbox.net> <875ygvemau.fsf@toke.dk>
+ <Y0BaBUWeTj18V5Xp@google.com> <87tu4fczyv.fsf@toke.dk> <CAADnVQLH9R94iszCmhYeLKnDPy_uiGeyXnEwoADm8_miihwTmQ@mail.gmail.com>
+ <8cc9811e-6efe-3aa5-b201-abbd4b10ceb4@iogearbox.net> <CAADnVQLpcLWrL-URhRgqCQa6XRZzib4BorZ2QKpPC+Uw_JNW=Q@mail.gmail.com>
+ <87sfjysfxt.fsf@toke.dk> <20221008203832.7syl3rbt6lblzqxk@macbook-pro-4.dhcp.thefacebook.com>
+In-Reply-To: <20221008203832.7syl3rbt6lblzqxk@macbook-pro-4.dhcp.thefacebook.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 13 Oct 2022 11:04:58 -0700
-Message-ID: <CAEf4BzZY5=nGF6HfcKeaZ39bK6dYxJm03zqAzBzzs28MRszVdw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 03/13] bpf: Support bpf_dynptr-typed map key
- in bpf syscall
-To:     Hou Tao <houtao@huaweicloud.com>
-Cc:     Joanne Koong <joannelkoong@gmail.com>, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+Date:   Thu, 13 Oct 2022 11:30:33 -0700
+Message-ID: <CAEf4BzbFawYvHBWZEh2RN+YMv6r2kEiVNXFVZqXRH1eWK+u_UA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 01/10] bpf: Add initial fd-based API to attach tc
+ BPF programs
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>, bpf <bpf@vger.kernel.org>,
+        Nikolay Aleksandrov <razor@blackwall.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
         John Fastabend <john.fastabend@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, houtao1@huawei.com
+        Joanne Koong <joannelkoong@gmail.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Joe Stringer <joe@cilium.io>,
+        Network Development <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 7, 2022 at 7:40 PM Hou Tao <houtao@huaweicloud.com> wrote:
+On Sat, Oct 8, 2022 at 1:38 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> Hi,
->
-> On 10/1/2022 5:35 AM, Andrii Nakryiko wrote:
-> > On Wed, Sep 28, 2022 at 7:11 PM Hou Tao <houtao@huaweicloud.com> wrote:
-> SNP
-> >>> I'm trying to understand why there should be so many new concepts and
-> >>> interfaces just to allow variable-sized keys. Can you elaborate on
-> >>> that? Like why do we even need BPF_DYNPTR_TYPE_USER? Why user can't
-> >>> just pass a void * (casted to u64) pointer and size of the memory
-> >>> pointed to it, and kernel will just copy necessary amount of data into
-> >>> kvmalloc'ed temporary region?
-> >> The main reason is that map operations from syscall and bpf program use the same
-> >> ops in bpf_map_ops (e.g. map_update_elem). If only use dynptr_kern for bpf
-> >> program, then
-> >> have to define three new operations for bpf program. Even more, after defining
-> >> two different map ops for the same operation from syscall and bpf program, the
-> >> internal  implementation of qp-trie still need to convert these two different
-> >> representations of variable-length key into bpf_qp_trie_key. It introduces
-> >> unnecessary conversion, so I think it may be a good idea to pass dynptr_kern to
-> >> qp-trie even for bpf syscall.
-> >>
-> >> And now in bpf_attr, for BPF_MAP_*_ELEM command, there is no space to pass an
-> >> extra key size. It seems bpf_attr can be extend, but even it is extented, it
-> >> also means in libbpf we need to provide a new API group to support operationg on
-> >> dynptr key map, because the userspace needs to pass the key size as a new argument.
-> > You are right that the current assumption of implicit key/value size
-> > doesn't work for these variable-key/value-length maps. But I think the
-> > right answer is actually to make sure that we have a map_update_elem
-> > callback variant that accepts key/value size explicitly. I still think
-> > that the syscall interface shouldn't introduce a concept of dynptr.
-> > >From user-space's point of view dynptr is just a memory pointer +
-> > associated memory size. Let's keep it simple. And yes, it will be a
-> > new libbpf API for bpf_map_lookup_elem/bpf_map_update_elem. That's
-> > fine.
-> Is your point that dynptr is too complicated for user-space and may lead to
-> confusion between dynptr in kernel space ? How about a different name or a
-
-No, dynptr is just an unnecessary concept for user-space, because
-fundamentally it's just a memory region, which in UAPI is represented
-by a pointer + size. So why inventing new concepts when existing ones
-are covering it?
-
-> simple definition just like bpf_lpm_trie_key ? It will make both the
-> implementation and the usage much simpler, because the implementation and the
-> user can still use the same APIs just like fixed sized map.
->
-> Not just lookup/update/delete, we also need to define a new op for
-> get_next_key/lookup_and_delete_elem. And also need to define corresponding new
-> bpf helpers for bpf program. And you said "explict key/value size", do you mean
-> something below ?
->
-> int (*map_update_elem)(struct bpf_map *map, void *key, u32 key_size, void
-> *value, u32 value_size, u64 flags);
-
-Yes, something like that. The problem is that up until now we assume
-that key_size is fixed and can be derived from map definition. We are
-trying to change that, so there needs to be a change in internal APIs.
-
->
+> On Sat, Oct 08, 2022 at 01:38:54PM +0200, Toke H=C3=B8iland-J=C3=B8rgense=
+n wrote:
+> > Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 > >
+> > > On Fri, Oct 7, 2022 at 12:37 PM Daniel Borkmann <daniel@iogearbox.net=
+> wrote:
+> > >>
+> > >> On 10/7/22 8:59 PM, Alexei Starovoitov wrote:
+> > >> > On Fri, Oct 7, 2022 at 10:20 AM Toke H=C3=B8iland-J=C3=B8rgensen <=
+toke@redhat.com> wrote:
+> > >> [...]
+> > >> >>>> I was thinking a little about how this might work; i.e., how ca=
+n the
+> > >> >>>> kernel expose the required knobs to allow a system policy to be
+> > >> >>>> implemented without program loading having to talk to anything =
+other
+> > >> >>>> than the syscall API?
+> > >> >>>
+> > >> >>>> How about we only expose prepend/append in the prog attach UAPI=
+, and
+> > >> >>>> then have a kernel function that does the sorting like:
+> > >> >>>
+> > >> >>>> int bpf_add_new_tcx_prog(struct bpf_prog *progs, size_t num_pro=
+gs, struct
+> > >> >>>> bpf_prog *new_prog, bool append)
+> > >> >>>
+> > >> >>>> where the default implementation just appends/prepends to the a=
+rray in
+> > >> >>>> progs depending on the value of 'appen'.
+> > >> >>>
+> > >> >>>> And then use the __weak linking trick (or maybe struct_ops with=
+ a member
+> > >> >>>> for TXC, another for XDP, etc?) to allow BPF to override the fu=
+nction
+> > >> >>>> wholesale and implement whatever ordering it wants? I.e., allow=
+ it can
+> > >> >>>> to just shift around the order of progs in the 'progs' array wh=
+enever a
+> > >> >>>> program is loaded/unloaded?
+> > >> >>>
+> > >> >>>> This way, a userspace daemon can implement any policy it wants =
+by just
+> > >> >>>> attaching to that hook, and keeping things like how to express
+> > >> >>>> dependencies as a userspace concern?
+> > >> >>>
+> > >> >>> What if we do the above, but instead of simple global 'attach fi=
+rst/last',
+> > >> >>> the default api would be:
+> > >> >>>
+> > >> >>> - attach before <target_fd>
+> > >> >>> - attach after <target_fd>
+> > >> >>> - attach before target_fd=3D-1 =3D=3D first
+> > >> >>> - attach after target_fd=3D-1 =3D=3D last
+> > >> >>>
+> > >> >>> ?
+> > >> >>
+> > >> >> Hmm, the problem with that is that applications don't generally h=
+ave an
+> > >> >> fd to another application's BPF programs; and obtaining them from=
+ an ID
+> > >> >> is a privileged operation (CAP_SYS_ADMIN). We could have it be "a=
+ttach
+> > >> >> before target *ID*" instead, which could work I guess? But then t=
+he
+> > >> >> problem becomes that it's racy: the ID you're targeting could get
+> > >> >> detached before you attach, so you'll need to be prepared to chec=
+k that
+> > >> >> and retry; and I'm almost certain that applications won't test fo=
+r this,
+> > >> >> so it'll just lead to hard-to-debug heisenbugs. Or am I being too
+> > >> >> pessimistic here?
+> > >> >
+> > >> > I like Stan's proposal and don't see any issue with FD.
+> > >> > It's good to gate specific sequencing with cap_sys_admin.
+> > >> > Also for consistency the FD is better than ID.
+> > >> >
+> > >> > I also like systemd analogy with Before=3D, After=3D.
+> > >> > systemd has a ton more ways to specify deps between Units,
+> > >> > but none of them have absolute numbers (which is what priority is)=
+.
+> > >> > The only bit I'd tweak in Stan's proposal is:
+> > >> > - attach before <target_fd>
+> > >> > - attach after <target_fd>
+> > >> > - attach before target_fd=3D0 =3D=3D first
+> > >> > - attach after target_fd=3D0 =3D=3D last
+> > >>
+> > >> I think the before(), after() could work, but the target_fd I have m=
+y doubts
+> > >> that it will be practical. Maybe lets walk through a concrete real e=
+xample. app_a
+> > >> and app_b shipped via container_a resp container_b. Both want to ins=
+tall tc BPF
+> > >> and we (operator/user) want to say that prog from app_b should only =
+be inserted
+> > >> after the one from app_a, never run before; if no prog_a is installe=
+d, we ofc just
+> > >> run prog_b, but if prog_a is inserted, it must be before prog_b give=
+n the latter
+> > >> can only run after the former. How would we get to one anothers targ=
+et fd? One
+> > >> could use the 0, but not if more programs sit before/after.
+> > >
+> > > I read your desired use case several times and probably still didn't =
+get it.
+> > > Sounds like prog_b can just do after(fd=3D0) to become last.
+> > > And prog_a can do before(fd=3D0).
+> > > Whichever the order of attaching (a or b) these two will always
+> > > be in a->b order.
 > >
-> >>> It also seems like you want to allow key (and maybe value as well, not
-> >>> sure) to be a custom user-defined type where some of the fields are
-> >>> struct bpf_dynptr. I think it's a big overcomplication, tbh. I'd say
-> >>> it's enough to just say that entire key has to be described by a
-> >>> single bpf_dynptr. Then we can have bpf_map_lookup_elem_dynptr(map,
-> >>> key_dynptr, flags) new helper to provide variable-sized key for
-> >>> lookup.
-> >> For qp-trie, it will only support a single dynptr as the map key. In the future
-> >> maybe other map will support map key with embedded dynptrs. Maybe Joanne can
-> >> share some vision about such use case.
-> > My point was that instead of saying that key is some fixed-size struct
-> > in which one of the fields is dynptr (and then when comparing you have
-> > to compare part of struct, then dynptr contents, then the other part
-> > of struct?), just say that entire key is represented by dynptr,
-> > implicitly (it's just a blob of bytes). That seems more
-> > straightforward.
-> I see. But I still think there is possible user case for struct with embedded
-> dynptr. For bpf map in kernel, byte blob is OK. But If it is also a blob of
-> bytes for the bpf program or userspace application, the application may need to
-> marshaling and un-marshaling between the bytes blob and a meaningful struct type
-> each time before using it.
-> > .
+> > I agree that it's probably not feasible to have programs themselves
+> > coordinate between themselves except for "install me last/first" type
+> > semantics.
+> >
+> > I.e., the "before/after target_fd" is useful for a single application
+> > that wants to install two programs in a certain order. Or for bpftool
+> > for manual/debugging work.
 >
+> yep
+>
+> > System-wide policy (which includes "two containers both using BPF") is
+> > going to need some kind of policy agent/daemon anyway. And the in-kerne=
+l
+> > function override is the only feasible way to do that.
+>
+> yep
+>
+> > > Since the first and any prog returning !TC_NEXT will abort
+> > > the chain we'd need __weak nop orchestrator prog to interpret
+> > > retval for anything to be useful.
+> >
+> > If we also want the orchestrator to interpret return codes, that
+> > probably implies generating a BPF program that does the dispatching,
+> > right? (since the attachment is per-interface we can't reuse the same
+> > one). So maybe we do need to go the route of the (overridable) usermode
+> > helper that gets all the program FDs and generates a BPF dispatcher
+> > program? Or can we do this with a __weak function that emits bytecode
+> > inside the kernel without being unsafe?
+>
+> hid-bpf, cgroup-rstat, netfilter-bpf are facing similar issue.
+> The __weak override with one prog is certainly limiting.
+> And every case needs different demux.
+> I think we need to generalize xdp dispatcher to address this.
+> For example, for the case:
+> __weak noinline void bpf_rstat_flush(struct cgroup *cgrp,
+>                                      struct cgroup *parent, int cpu)
+> {
+> }
+>
+> we can say that 1st argument to nop function will be used as
+> 'demuxing entity'.
+> Sort of like if we had added a 'prog' pointer to 'struct cgroup',
+> but instead of burning 8 byte in every struct cgroup we can generate
+> 'dispatcher asm' only for specific pointers.
+> In case of fuse-bpf that pointer will be a pointer to hid device and
+> demux will be done based on device. It can be an integer too.
+> The subsystem that defines __weak func can pick whatever int or pointer
+> as a first argument and dispatcher routine will generate code:
+> if (arg1 =3D=3D constA) progA(arg1, arg2, ...);
+> else if (arg1 =3D=3D constB) progB(arg1, arg2, ...);
+> ...
+> else nop();
+>
+> This way the 'nop' property of __weak is preserved until user space
+> passes (constA, progA) tuple to the kernel to generate dispatcher
+> for that __weak hook.
+>
+> > Anyway, I'm OK with deferring the orchestrator mechanism and going with
+> > Stanislav's proposal as an initial API.
+>
+> Great. Looks like we're converging :) Hope Daniel is ok with this directi=
+on.
 
-I'm not sure what you mean by "blob of bytes for userspace
-application"? You mean a pointer pointing to some process' memory (not
-a kernel memory)? How is that going to work if BPF program can run and
-access such blob in any context, not just in the context of original
-user-space app that set this value?
+No one proposed a slight variation on what Daniel was proposing with
+prios that might work just as well. So for completeness, what if
+instead of specifying 0 or explicit prio, we allow specifying either:
+  - explicit prio, and if that prio is taken -- fail
+  - min_prio, and kernel will find smallest untaken prio >=3D min_prio;
+we can also define that min_prio=3D-1 means append as the very last one.
 
-If you mean that blob needs to be interpreted as some sort of struct,
-then yes, it's easy, we have bpf_dynptr_data() and `void *` -> `struct
-my_custom_struct` casting in C.
+So if someone needs to be the very first -- explicitly request prio=3D1.
+If wants to be last: prio=3D0, min_prio=3D-1. If we want to observe, we
+can do something like min_prio=3D50 to leave a bunch of slots free for
+some other programs for which exact order matters.
 
-Or did I miss your point?
+This whole before/after FD interface seems a bit hypothetical as well,
+tbh. If it's multiple programs of the same application, then just
+taking a few slots (either explicitly with prio or just best-effort
+min_prio) is just fine, no need to deal with FDs. If there is no
+coordination betweens apps, I'm not sure how you'd know that you want
+to be before or after some other program's FD? How do you identify
+what program it is, by it's name?
+
+It seems more pragmatic that Cilium takes the very first slot (or a
+bunch of slots) at startup to control exact location. And if that
+fails, then fail startup or (given enough permissions) force-detach
+existing link and install your own.
+
+Just an idea for completeness, don't have much of a horse in this race.
