@@ -2,75 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21D4C5FD757
-	for <lists+bpf@lfdr.de>; Thu, 13 Oct 2022 11:50:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA9595FD7E7
+	for <lists+bpf@lfdr.de>; Thu, 13 Oct 2022 12:44:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229541AbiJMJum (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Oct 2022 05:50:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38760 "EHLO
+        id S229526AbiJMKo4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Oct 2022 06:44:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbiJMJuk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Oct 2022 05:50:40 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 693661142D8
-        for <bpf@vger.kernel.org>; Thu, 13 Oct 2022 02:50:39 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id w3so646137qtv.9
-        for <bpf@vger.kernel.org>; Thu, 13 Oct 2022 02:50:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PIqnGOnuCdILHCjBRH2XyEMbuxERKZxFFNMV5qYWuuE=;
-        b=CjqRujYX7BwgIYOjri8AvMrG1rlyTfH4UrrnoC4rld9pgZ8UTeSMog4T6oM1oRVuxh
-         pQwRu8Ts8TGOmRxYCci16RUaYxY8glC7dMBZa1mZpeLmI+/SAwpUoDvUOMWP9Ur53uyD
-         1DkY0nRipNDeFbMTRTkcXJIOoVd3qlGZXUwiiyVe8i7FSexpZO7fewT3PnG4PssnIhdw
-         6gi6asnOxKcg+f+YqT/zBDG2XH3ctFdWFhHcoAPtbQtYoi8TV4FP4TK8fwfA9HBdb3yJ
-         VjUn6NdAq1qkheoIhn2hwC9WVaVpezR6q3q4avh5wIHfqcz2fr+JribBQe9fqcHk8/nA
-         Ra2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PIqnGOnuCdILHCjBRH2XyEMbuxERKZxFFNMV5qYWuuE=;
-        b=ZnKbS34Ara68ZDQeduJlTDN/AG5G6EYJQOd58/RyDAyMkPg3X4V0ndtgVc53ifrW7s
-         V3KFhsaq/92oLvVCC08L/Fo0TDLlajWpZbR1Rj5nC+99O5mDLhpf6AY6+NGEOBucxllC
-         mBa94HVc2vNukFLh/z7dDsoJGRyDMi6gvUmR0nbVq6VrcuPrqvRVmqpLu2yqnsoPuRpB
-         ejWoyPvaNaaUcX9eeRBndJ+ydJdnatNwBBu0+7wanxea/1qzGSgSw/Xp1lo1WzrxB5/l
-         BxcGLF99qY+DxI9O18+BX0tpayda8bEA1kP9v+QORj8qmDdlEuJDUYBsCBpyUcnI555a
-         hC+Q==
-X-Gm-Message-State: ACrzQf26UBO4CzZ3wqDkdZ0LmKCfMTS5yD+x8V4jAXELEh1Q5lcpIa2V
-        YWRshwtDejX1J+sXS6KlOmeDSJ0X4vimmjR36MQ=
-X-Google-Smtp-Source: AMsMyM6a9+cAmMoBAkmsrXsgYkz2jeBbf9LwmtRXQOl3AYfZIt+077ZrkQQ43gz1uzRM9HcP/KK+LHadk3Qtl6/8jSY=
-X-Received: by 2002:a05:622a:3cf:b0:394:fc49:b4a8 with SMTP id
- k15-20020a05622a03cf00b00394fc49b4a8mr27196148qtx.249.1665654638539; Thu, 13
- Oct 2022 02:50:38 -0700 (PDT)
+        with ESMTP id S229548AbiJMKoz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Oct 2022 06:44:55 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 681D715A2C;
+        Thu, 13 Oct 2022 03:44:52 -0700 (PDT)
+Received: from dggpeml500026.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Mp5dB54WKzmVC2;
+        Thu, 13 Oct 2022 18:40:14 +0800 (CST)
+Received: from [10.174.178.66] (10.174.178.66) by
+ dggpeml500026.china.huawei.com (7.185.36.106) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Thu, 13 Oct 2022 18:44:50 +0800
+Message-ID: <cf6a99a1-e77f-113d-101a-5b5a52111df5@huawei.com>
+Date:   Thu, 13 Oct 2022 18:44:49 +0800
 MIME-Version: 1.0
-Received: by 2002:a05:620a:4011:0:0:0:0 with HTTP; Thu, 13 Oct 2022 02:50:38
- -0700 (PDT)
-Reply-To: financialdepartment024@gmail.com
-From:   "Financial Department U.S" <jacklandon02q@gmail.com>
-Date:   Thu, 13 Oct 2022 10:50:38 +0100
-Message-ID: <CAJbZS9yy-_ndFaa8v4U6L=TtOv4EVVwbQ+fiqV=ZBSTtj=gn3Q@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=4.9 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ****
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.0.2
+Subject: Re: [PATCH v4,bpf-next] bpf: Don't redirect packets with invalid
+ pkt_len
+To:     Lorenz Bauer <oss@lmb.io>, Stanislav Fomichev <sdf@google.com>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <bpf@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yuehaibing@huawei.com>
+References: <20220715115559.139691-1-shaozhengchao@huawei.com>
+ <20220914111936.19881-1-oss@lmb.io>
+ <CAKH8qBujKnFh8_g+npxHpo7RGFshus3N0iysmVBohTtG1X2yow@mail.gmail.com>
+ <5a3c5ea9-d557-6070-d778-1092f3c51257@huawei.com>
+ <aec8ef40-260c-4ded-b806-d381a3075ff0@www.fastmail.com>
+ <c416473b-af8b-3bf6-7ede-e1198b3496f5@huawei.com>
+ <bc69e8a3-d474-451f-853e-1c936f776ef9@app.fastmail.com>
+From:   shaozhengchao <shaozhengchao@huawei.com>
+In-Reply-To: <bc69e8a3-d474-451f-853e-1c936f776ef9@app.fastmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.66]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500026.china.huawei.com (7.185.36.106)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
--- 
-Dear Friend,
 
-I have an important message just get back for more details.
 
-Sincerely,
-Mr Robert Liam
-Deputy department of the treasury
-United State.
+On 2022/10/13 17:36, Lorenz Bauer wrote:
+> Did you get around to submitting another fix for this?
+
+Hi Bauer:
+	Sorry, I haven't fully understood your intentions yet.
+Can you explain it more detail?
+
+Zhengchao Shao
