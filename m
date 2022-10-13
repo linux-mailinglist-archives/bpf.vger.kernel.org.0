@@ -2,110 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 344885FD2E5
-	for <lists+bpf@lfdr.de>; Thu, 13 Oct 2022 03:45:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8836A5FD304
+	for <lists+bpf@lfdr.de>; Thu, 13 Oct 2022 03:52:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229688AbiJMBpN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Oct 2022 21:45:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57348 "EHLO
+        id S229594AbiJMBwD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Oct 2022 21:52:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbiJMBpK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Oct 2022 21:45:10 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B02B93F1C6;
-        Wed, 12 Oct 2022 18:45:06 -0700 (PDT)
-Received: from kwepemi500013.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4MnsfP1Wxhz1P79c;
-        Thu, 13 Oct 2022 09:40:29 +0800 (CST)
-Received: from [10.67.111.192] (10.67.111.192) by
- kwepemi500013.china.huawei.com (7.221.188.120) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 13 Oct 2022 09:45:03 +0800
-Message-ID: <1d7b081c-9ae1-b5bd-e97e-518147e06099@huawei.com>
-Date:   Thu, 13 Oct 2022 09:45:02 +0800
+        with ESMTP id S229671AbiJMBwB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Oct 2022 21:52:01 -0400
+Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A26BB1146;
+        Wed, 12 Oct 2022 18:52:00 -0700 (PDT)
+Message-ID: <469d28c0-8156-37ad-d0d9-c11608ca7e07@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1665625918;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hdgnqq1ARkg6g154LJ5+p1ignceb1z/i3AWqnB/XZ+g=;
+        b=P+oVc9Cu0CtgdYsrUtq9NLcCVK9oxxLF+GNIcSA64k6NuIGitdlqAtI+o/Uk0qqK4G0e8G
+        Aog2QcqylGq6+eLNFEmLNLIL7LIx7xuJvmCa1+yoYayXnQNKuuhrXew6CLi7lQUdTsNSPC
+        RAGvQKEBjODEKFJWlwQ1dbTV7z4eh2c=
+Date:   Wed, 12 Oct 2022 18:51:55 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH bpf-next v4 5/6] selftests/bpf: Fix error failure of case
- test_xdp_adjust_tail_grow
-Content-Language: en-US
-To:     Martin KaFai Lau <martin.lau@linux.dev>,
-        Xu Kuohai <xukuohai@huaweicloud.com>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Delyan Kratunov <delyank@fb.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>, <bpf@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <netdev@vger.kernel.org>
-References: <20221011120108.782373-1-xukuohai@huaweicloud.com>
- <20221011120108.782373-6-xukuohai@huaweicloud.com>
- <611e9bed-df6a-0da9-fbf9-4046f4211a7d@linux.dev>
-From:   Xu Kuohai <xukuohai@huawei.com>
-In-Reply-To: <611e9bed-df6a-0da9-fbf9-4046f4211a7d@linux.dev>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.111.192]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemi500013.china.huawei.com (7.221.188.120)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Subject: Re: [net 1/2] selftests/net: fix opening object file failed
+To:     Wang Yufen <wangyufen@huawei.com>,
+        Lina Wang <lina.wang@mediatek.com>
+Cc:     bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, lina.wang@mediatek.com,
+        deso@posteo.net, netdev@vger.kernel.org
+References: <1665482267-30706-1-git-send-email-wangyufen@huawei.com>
+ <1665482267-30706-2-git-send-email-wangyufen@huawei.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <1665482267-30706-2-git-send-email-wangyufen@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/13/2022 7:17 AM, Martin KaFai Lau wrote:
-> On 10/11/22 5:01 AM, Xu Kuohai wrote:
->> From: Xu Kuohai <xukuohai@huawei.com>
->>
->> test_xdp_adjust_tail_grow failed with ipv6:
->>    test_xdp_adjust_tail_grow:FAIL:ipv6 unexpected error: -28 (errno 28)
->>
->> The reason is that this test case tests ipv4 before ipv6, and when ipv4
->> test finished, topts.data_size_out was set to 54, which is smaller than the
->> ipv6 output data size 114, so ipv6 test fails with NOSPC error.
->>
->> Fix it by reset topts.data_size_out to sizeof(buf) before testing ipv6.
->>
->> Fixes: 04fcb5f9a104 ("selftests/bpf: Migrate from bpf_prog_test_run")
->> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
->> ---
->>   tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c b/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c
->> index 9b9cf8458adf..009ee37607df 100644
->> --- a/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c
->> +++ b/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c
->> @@ -63,6 +63,7 @@ static void test_xdp_adjust_tail_grow(void)
->>       expect_sz = sizeof(pkt_v6) + 40; /* Test grow with 40 bytes */
->>       topts.data_in = &pkt_v6;
->>       topts.data_size_in = sizeof(pkt_v6);
->> +    topts.data_size_out = sizeof(buf);
-> 
-> lgtm but how was it working before... weird.
-> 
+On 10/11/22 2:57 AM, Wang Yufen wrote:
+> The program file used in the udpgro_frglist testcase is "../bpf/nat6to4.o",
+> but the actual nat6to4.o file is in "bpf/" not "../bpf".
+> The following error occurs:
+>    Error opening object ../bpf/nat6to4.o: No such file or directory
 
-the test case returns before this line is executed, see patch 6
+hmm... so it sounds like the test never works...
 
->>       err = bpf_prog_test_run_opts(prog_fd, &topts);
->>       ASSERT_OK(err, "ipv6");
->>       ASSERT_EQ(topts.retval, XDP_TX, "ipv6 retval");
-> 
-> .
+The test seems like mostly exercising the tc-bpf?  It makes sense to move it to 
+the selftests/bpf. or staying in net is also fine for now and only need to fix 
+up the path here.
+
+However, if moving to selftests/bpf, I don't think it is a good idea to only 
+move the bpf prog but not moving the actual test program (the script here) such 
+that the bpf CI can continuously testing it.  Otherwise, it will just drift and 
+rot slowly like patch 2.
+
+Also, if you prefer to move it to selftests/bpf, the bpf prog cannot be moved in 
+the current form.  eg. There is some convention on the SEC name in the 
+selftests/bpf/progs.  Also, the testing script needs to be adapted to the 
+selftests/bpf/test_progs infra.
 
