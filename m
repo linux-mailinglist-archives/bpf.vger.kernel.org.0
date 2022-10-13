@@ -2,75 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 699445FDD3A
-	for <lists+bpf@lfdr.de>; Thu, 13 Oct 2022 17:32:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64DB45FDD52
+	for <lists+bpf@lfdr.de>; Thu, 13 Oct 2022 17:42:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229556AbiJMPcY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Oct 2022 11:32:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56454 "EHLO
+        id S230009AbiJMPmW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Oct 2022 11:42:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbiJMPcY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Oct 2022 11:32:24 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AEBF89CED;
-        Thu, 13 Oct 2022 08:32:23 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id m16so3167864edc.4;
-        Thu, 13 Oct 2022 08:32:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Zxl10p8+VaJSG7LabxLfsUFo8al/diQxcVDs5XO+2gI=;
-        b=CknogysIi9tHv/VGyj0iB9aDNnEzq85wjeUGeVBvvKUpDs0Fp7/mc45yxmn5CgwelH
-         wnyxu+R0KQ72oiVWlXEP7tzcgTUpvJKBRyhzYc3MHwJkU263gJc0hY9J+657I1RDszGk
-         juCVHaYDXAMJlHt3KILhhDNs1ZJzAYAkmvm2KlURgUqwCdESlzFs4iVD34FjZZuApKeW
-         13PXrQwRlmD+nQzsihupc6Os3IP3l5PxHNGvmnOOaOzg8hqX8oa5PnAWcwLMfrWAOjlO
-         gFVipKMOFCcmm1t37ffESa2IUei8NDxYglViuAE5pJrKDDb7G0WsDL4QaVgW7a2RAdeU
-         iTSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Zxl10p8+VaJSG7LabxLfsUFo8al/diQxcVDs5XO+2gI=;
-        b=VYBvzvIUx7ZlzeQY2jX+ooNGNElaVt7UuVZ3KfZX2S5/4n9HUWtRN6cctLgc9naOWk
-         QIjVtTv6o+o4sdR6xIuUllAjEctcjzzJbe4KikmpusU1MIfXNLKXg7JiE+x13uqG95FD
-         /Yx8mnsbzFXt3GA75pTxHZrbkaUuz2QqPTr5E+q4t80P0bfkBgUmwTjMAyasJrKqNsDM
-         4fChMp9cxXDn+1yJ2KapqdWUkWurPRCD8ne7A9cA1W1iCJJaUS3WNWD7tZUQ8Hge1wy4
-         A4QFtFUW/D7O1enF8MJVw0pFzc6kmQ5iBj8QeIrI96yn4wYsUXZt8XwZ2KlB3kCTQZkH
-         gy+A==
-X-Gm-Message-State: ACrzQf0HskSSYyxp9/yUJM7M/3gYL7lihayrrTEC2gUkkVXF3+dAbHkW
-        /oTNR8EuUMhVGErLfMwZNvDfpT1VD67Nk5DbzxQ=
-X-Google-Smtp-Source: AMsMyM5vphIX4iiWMzoRbVmI4TE9TkfpkKNI3FIJjTjlZIAQzqS70vKDNCzTe/FFWp7F2a9uMKvS/FgKPjt4HoCfFwo=
-X-Received: by 2002:a05:6402:3641:b0:45c:4231:ddcc with SMTP id
- em1-20020a056402364100b0045c4231ddccmr324330edb.224.1665675141497; Thu, 13
- Oct 2022 08:32:21 -0700 (PDT)
+        with ESMTP id S229886AbiJMPlb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Oct 2022 11:41:31 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 273AA122743;
+        Thu, 13 Oct 2022 08:40:28 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id A5D00B81ED7;
+        Thu, 13 Oct 2022 15:40:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 4BF72C43470;
+        Thu, 13 Oct 2022 15:40:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1665675616;
+        bh=J/lwPJ5WiIjf30qtkle/UiARXMiDCL/Vgen5+KfB8RY=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=YBwixWrzs29BZ3t0lHmymJ9Myibanwt+BNSKxIfWAXODfxzbVodPWVxR8QBImvcPq
+         E+/Sa9STOHbY5SBa+0Lk5sA5q00flLyU66uaSo1mk30pnR/ohw9M++chA+PlL+QvZo
+         O8i3CdEcbdsUVKqeR+eJB6N9YvgIRB9uoTTskr7u8dHwrIchEOK+W0C0jW+T+JhXCB
+         TvUAYoAzitBK5ZJVYbZo8EUVrU91Fy/ZEqVj+mjZoyzwjKZnCJ3V27ED4VbOwwSFCL
+         U9zK/fAvc2ZNbBjo5up94Xkt7EQSc1p+36Y+f+8gtIfA5tQ+o8hwj7pq01P0vKgD9h
+         HZU9kKNaHpjyQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 176DEE4D00C;
+        Thu, 13 Oct 2022 15:40:16 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH 0/2] Allow bpf_user_ringbuf_drain() callbacks to return 1
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166567561608.22924.7276455354921254094.git-patchwork-notify@kernel.org>
+Date:   Thu, 13 Oct 2022 15:40:16 +0000
 References: <20221012232015.1510043-1-void@manifault.com>
 In-Reply-To: <20221012232015.1510043-1-void@manifault.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 13 Oct 2022 08:32:09 -0700
-Message-ID: <CAEf4BzYzZ_84-AdwGbzhrqyGJ=1gT=9AtRAuA59k4BwT8R-SbQ@mail.gmail.com>
-Subject: Re: [PATCH 0/2] Allow bpf_user_ringbuf_drain() callbacks to return 1
 To:     David Vernet <void@manifault.com>
 Cc:     bpf@vger.kernel.org, andrii@kernel.org, ast@kernel.org,
         martin.lau@linux.dev, daniel@iogearbox.net, song@kernel.org,
         yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
         sdf@google.com, haoluo@google.com, jolsa@kernel.org,
         linux-kernel@vger.kernel.org, kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 12, 2022 at 4:20 PM David Vernet <void@manifault.com> wrote:
->
+Hello:
+
+This series was applied to bpf/bpf.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
+
+On Wed, 12 Oct 2022 18:20:13 -0500 you wrote:
 > The bpf_user_ringbuf_drain() helper function allows a BPF program to
 > specify a callback that is invoked when draining entries from a
 > BPF_MAP_TYPE_USER_RINGBUF ring buffer map. The API is meant to allow the
@@ -80,28 +73,18 @@ On Wed, Oct 12, 2022 at 4:20 PM David Vernet <void@manifault.com> wrote:
 > callback return range"), which changed the default behavior of callbacks
 > to only support returning 0, and the corresponding necessary change to
 > bpf_user_ringbuf_drain() callbacks was missed.
->
-> This patch set fixes this oversight, and updates the user_ringbuf
-> selftests to return 1 in a callback to catch future instances of
-> regression.
->
-> This patch set should be merged to the bpf tree.
+> 
+> [...]
 
-Please tag patch as [PATCH bpf x/N] next time. This will make it clear
-that it's targeted against the bpf tree and will let our CI know that
-it should be applied and tested in bpf (it chooses bpf-next by
-default).
+Here is the summary with links:
+  - [1/2] bpf: Allow bpf_user_ringbuf_drain() callbacks to return 1
+    https://git.kernel.org/bpf/bpf/c/c92a7a522438
+  - [2/2] selftests/bpf: Make bpf_user_ringbuf_drain() selftest callback return 1
+    https://git.kernel.org/bpf/bpf/c/6e44b9f375a3
 
->
-> David Vernet (2):
->   bpf: Allow bpf_user_ringbuf_drain() callbacks to return 1
->   selftests/bpf: Make bpf_user_ringbuf_drain() selftest callback return
->     1
->
->  kernel/bpf/verifier.c                                    | 1 +
->  tools/testing/selftests/bpf/progs/user_ringbuf_success.c | 4 ++--
->  2 files changed, 3 insertions(+), 2 deletions(-)
->
-> --
-> 2.38.0
->
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
