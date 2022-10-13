@@ -2,90 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 669A85FE3A8
-	for <lists+bpf@lfdr.de>; Thu, 13 Oct 2022 23:01:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C5965FE382
+	for <lists+bpf@lfdr.de>; Thu, 13 Oct 2022 22:52:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229986AbiJMVBe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Oct 2022 17:01:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53122 "EHLO
+        id S229679AbiJMUwR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Oct 2022 16:52:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229976AbiJMVBc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Oct 2022 17:01:32 -0400
-X-Greylist: delayed 3104 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 13 Oct 2022 14:01:30 PDT
-Received: from mx05lb.world4you.com (mx05lb.world4you.com [81.19.149.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78C8E1793A2;
-        Thu, 13 Oct 2022 14:01:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=engleder-embedded.com; s=dkim11; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=ev9JakADx7qAtKKTcOpWroMdgabdypUWFXx+WaEhjLY=; b=jemgowjT34NhSYPsto4A7+PiOa
-        hiCpmJgylUDr9Wwphni+var0FQS38aF0EBSmBBQpPk2EQItk+65Jl+UwOL2+56Ur4rv9Zc/qLzB/9
-        Oe7vmIyirA9A0SVmdTTZhmB9iUfUA8u0tmhDTJ7VLHRslNC/717dGsOAHEAqPxA2XtXs=;
-Received: from [88.117.56.108] (helo=hornet.engleder.at)
-        by mx05lb.world4you.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <gerhard@engleder-embedded.com>)
-        id 1oj4WH-0003m5-LE; Thu, 13 Oct 2022 22:09:29 +0200
-From:   Gerhard Engleder <gerhard@engleder-embedded.com>
-To:     ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Gerhard Engleder <gerhard@engleder-embedded.com>
-Subject: [PATCH net-next] samples/bpf: Fix map interation in xdp1_user
-Date:   Thu, 13 Oct 2022 22:09:22 +0200
-Message-Id: <20221013200922.17167-1-gerhard@engleder-embedded.com>
-X-Mailer: git-send-email 2.30.2
+        with ESMTP id S229620AbiJMUwJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Oct 2022 16:52:09 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 926AD30569
+        for <bpf@vger.kernel.org>; Thu, 13 Oct 2022 13:52:07 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id d26so6450148eje.10
+        for <bpf@vger.kernel.org>; Thu, 13 Oct 2022 13:52:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ua2pyR2RXrZSoFLziseD0y4VLxWwGSmbAF9fIZqn7t0=;
+        b=t40RR9oDpBYTG23J6NgBk2i4Egsa19IbkYa3W0cox3NokLbJ0Ih4dirumyjunRD7zS
+         ZYuXFKve9SJYdwkrx+K+86ffsk0ngbeohzGKhElq7nWfUL1aouUgRbLWFI/65qbGupI/
+         zKOQeBmVDYQuPvuh9qsheu7BbXYrg6WxxRbjM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ua2pyR2RXrZSoFLziseD0y4VLxWwGSmbAF9fIZqn7t0=;
+        b=dS839cQM2zPq0hIDIzzipDQGUeiBmpxIwb+PeKYRJE0dJi5KeZpmxoBzof8nv8KuFH
+         7LB6FZoKaI5kFDrn/gjL5wtaqOIeTMEn5qoOk692KTIm6G0fSLIRIqomXvGhQJrbLVCr
+         em9ZJqNp56TPBGHAJl8zWXXE9Z90hsmjufwLoIUm7R4zkCsCD12B6+JWg0IHJlvoMQKx
+         Sz62nvuwc0Zyvmo/wDGS8RYwwfWTg8W01Su22K4PiHe+zs28+/7PZMWVUVcD0BU+TFUr
+         zx0qDZsCZwwhPn7heQSge/TM2JVxmsTiR2ncSQrAfAjG5fIaoMHOuh3A+6QQQXOFAwuI
+         kckg==
+X-Gm-Message-State: ACrzQf2nKxJEEqQhNBGkIyNRO6q37Y+/Dygu4PHAezJrHWqb57BiBrbA
+        7/8l5WAF2EmI/vVQUbgi2Q+IVA==
+X-Google-Smtp-Source: AMsMyM60S5hCOmlxJOf1765NN6g7CVJ/ljJ87Ia5lGawADbbKflnYFXWX2wfm65nwacHKCspJ0qyFQ==
+X-Received: by 2002:a17:907:94c7:b0:78e:1c4f:51f9 with SMTP id dn7-20020a17090794c700b0078e1c4f51f9mr1244290ejc.200.1665694326062;
+        Thu, 13 Oct 2022 13:52:06 -0700 (PDT)
+Received: from cloudflare.com (79.191.60.152.ipv4.supernova.orange.pl. [79.191.60.152])
+        by smtp.gmail.com with ESMTPSA id p6-20020a05640243c600b0045b4b67156fsm456398edc.45.2022.10.13.13.52.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Oct 2022 13:52:05 -0700 (PDT)
+References: <Y0csu2SwegJ8Tab+@google.com>
+User-agent: mu4e 1.6.10; emacs 27.2
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     sdf@google.com
+Cc:     john.fastabend@gmail.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>
+Subject: Re: Lockdep warning after c0feea594e058223973db94c1c32a830c9807c86
+Date:   Thu, 13 Oct 2022 22:39:08 +0200
+In-reply-to: <Y0csu2SwegJ8Tab+@google.com>
+Message-ID: <87bkqfigzv.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-AV-Do-Run: Yes
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-BPF map iteration in xdp1_user results in endless loop without any
-output, because the return value of bpf_map_get_next_key() is checked
-against the wrong value.
+Hi Stan,
 
-Other call locations of bpf_map_get_next_key() check for equal 0 for
-continuing the iteration. xdp1_user checks against unequal -1. This is
-wrong for a function which can return arbitrary negative errno values,
-because a return value of e.g. -2 results in an endless loop.
+On Wed, Oct 12, 2022 at 02:08 PM -07, sdf@google.com wrote:
+> Hi John & Jakub,
+>
+> Upstream commit c0feea594e05 ("workqueue: don't skip lockdep work
+> dependency in cancel_work_sync()") seems to trigger the following
+> lockdep warning during test_prog's sockmap_listen:
+>
+> [  +0.003631] WARNING: possible circular locking dependency detected
 
-With this fix xdp1_user is printing statistics again:
-proto 0:          1 pkt/s
-proto 0:          1 pkt/s
-proto 17:     107383 pkt/s
-proto 17:     881655 pkt/s
-proto 17:     882083 pkt/s
-proto 17:     881758 pkt/s
+[...]
 
-Signed-off-by: Gerhard Engleder <gerhard@engleder-embedded.com>
----
- samples/bpf/xdp1_user.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> Are you ware? Any idea what's wrong?
+> Is there some stable fix I'm missing in bpf-next?
 
-diff --git a/samples/bpf/xdp1_user.c b/samples/bpf/xdp1_user.c
-index ac370e638fa3..281dc964de8d 100644
---- a/samples/bpf/xdp1_user.c
-+++ b/samples/bpf/xdp1_user.c
-@@ -51,7 +51,7 @@ static void poll_stats(int map_fd, int interval)
- 
- 		sleep(interval);
- 
--		while (bpf_map_get_next_key(map_fd, &key, &key) != -1) {
-+		while (bpf_map_get_next_key(map_fd, &key, &key) == 0) {
- 			__u64 sum = 0;
- 
- 			assert(bpf_map_lookup_elem(map_fd, &key, values) == 0);
--- 
-2.30.2
+Thanks for bringing it up. I didn't know.
 
+The mentioned commit doesn't look that fresh
+
+commit c0feea594e058223973db94c1c32a830c9807c86
+Author: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Date:   Fri Jul 29 13:30:23 2022 +0900
+
+    workqueue: don't skip lockdep work dependency in cancel_work_sync()
+
+... but then it just landed not so long ago, which explains things:
+
+$ git describe --contains c0feea594e058223973db94c1c32a830c9807c86 --match 'v*'
+v6.0-rc7~10^2
+
+I've untangled the call chains leading to the potential dead-lock a
+bit. There does seem to be a window of opportunity there.
+
+psock->work.func = sk_psock_backlog()
+  ACQUIRE psock->work_mutex
+    sk_psock_handle_skb()
+      skb_send_sock()
+        __skb_send_sock()
+          sendpage_unlocked()
+            kernel_sendpage()
+              sock->ops->sendpage = inet_sendpage()
+                sk->sk_prot->sendpage = tcp_sendpage()
+                  ACQUIRE sk->sk_lock
+                    tcp_sendpage_locked()
+                  RELEASE sk->sk_lock
+  RELEASE psock->work_mutex
+
+sock_map_close()
+  ACQUIRE sk->sk_lock
+  sk_psock_stop()
+    sk_psock_clear_state(psock, SK_PSOCK_TX_ENABLED)
+    cancel_work_sync()
+      __cancel_work_timer()
+        __flush_work()
+          // wait for psock->work to finish
+  RELEASE sk->sk_lock
+
+There is no fix I know of. Need to think. Ideas welcome.
+
+CC Cong, just FYI, because we did rearrange the locking scheme in [1].
+
+However it looks to me like the dead-lock was already there before that.
+
+[1] https://lore.kernel.org/bpf/20210331023237.41094-5-xiyou.wangcong@gmail.com/
