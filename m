@@ -2,118 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34F325FD2AB
-	for <lists+bpf@lfdr.de>; Thu, 13 Oct 2022 03:37:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD2405FD2C7
+	for <lists+bpf@lfdr.de>; Thu, 13 Oct 2022 03:41:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229802AbiJMBg6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Oct 2022 21:36:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36220 "EHLO
+        id S229587AbiJMBly (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Oct 2022 21:41:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229646AbiJMBg5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Oct 2022 21:36:57 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 728741285C6;
-        Wed, 12 Oct 2022 18:36:56 -0700 (PDT)
-Received: from kwepemi500013.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4MnsSy47YjzlVlT;
-        Thu, 13 Oct 2022 09:32:18 +0800 (CST)
-Received: from [10.67.111.192] (10.67.111.192) by
- kwepemi500013.china.huawei.com (7.221.188.120) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 13 Oct 2022 09:36:53 +0800
-Message-ID: <cda0bc3d-9587-6b5e-e676-4e3bd11e95da@huawei.com>
-Date:   Thu, 13 Oct 2022 09:36:52 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH bpf-next v4 6/6] selftest/bpf: Fix error usage of
- ASSERT_OK in xdp_adjust_tail.c
-Content-Language: en-US
-To:     Martin KaFai Lau <martin.lau@linux.dev>,
-        Xu Kuohai <xukuohai@huaweicloud.com>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        with ESMTP id S229550AbiJMBlx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Oct 2022 21:41:53 -0400
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35D7E26CD;
+        Wed, 12 Oct 2022 18:41:52 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4MnsdL2Xc5z6R514;
+        Thu, 13 Oct 2022 09:39:34 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+        by APP2 (Coremail) with SMTP id Syh0CgAXsNTabEdjoVi9AA--.16256S2;
+        Thu, 13 Oct 2022 09:41:50 +0800 (CST)
+Subject: Re: [PATCH bpf-next 1/3] bpf: Free elements after one RCU-tasks-trace
+ grace period
+To:     paulmck@kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
+        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
         "David S . Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Delyan Kratunov <delyank@fb.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>, <bpf@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <netdev@vger.kernel.org>
-References: <20221011120108.782373-1-xukuohai@huaweicloud.com>
- <20221011120108.782373-7-xukuohai@huaweicloud.com>
- <33d17f23-03cb-9bff-2e50-06ab0f597640@linux.dev>
-From:   Xu Kuohai <xukuohai@huawei.com>
-In-Reply-To: <33d17f23-03cb-9bff-2e50-06ab0f597640@linux.dev>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.111.192]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemi500013.china.huawei.com (7.221.188.120)
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Delyan Kratunov <delyank@fb.com>, rcu@vger.kernel.org,
+        houtao1@huawei.com
+References: <20221011071128.3470622-1-houtao@huaweicloud.com>
+ <20221011071128.3470622-2-houtao@huaweicloud.com>
+ <20221011090742.GG4221@paulmck-ThinkPad-P17-Gen-1>
+ <d91a9536-8ed2-fc00-733d-733de34af510@huaweicloud.com>
+ <20221012063607.GM4221@paulmck-ThinkPad-P17-Gen-1>
+ <b0ece7d9-ec48-0ecb-45d9-fb5cf973000b@huaweicloud.com>
+ <20221012161103.GU4221@paulmck-ThinkPad-P17-Gen-1>
+From:   Hou Tao <houtao@huaweicloud.com>
+Message-ID: <1e253bfb-1413-ffb4-a11c-c6c1fa43bce0@huaweicloud.com>
+Date:   Thu, 13 Oct 2022 09:41:46 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <20221012161103.GU4221@paulmck-ThinkPad-P17-Gen-1>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-CM-TRANSID: Syh0CgAXsNTabEdjoVi9AA--.16256S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxZr1xtr1ruF4DCF4UCw4kZwb_yoW5urW3pF
+        W7GF1UCr4DZF4jy392qr17CFZ3t395t3W2qa48J3s5Crn0yryDCF4UAF15uFyFkrWxGw42
+        yr1qkr9xGayUArDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
+        6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
+        67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
+        uYvjxUFDGOUUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/13/2022 7:26 AM, Martin KaFai Lau wrote:
-> On 10/11/22 5:01 AM, Xu Kuohai wrote:
->> From: Xu Kuohai <xukuohai@huawei.com>
->>
->> xdp_adjust_tail.c calls ASSERT_OK() to check the return value of
->> bpf_prog_test_load(), but the condition is not correct. Fix it.
->>
->> Fixes: 791cad025051 ("bpf: selftests: Get rid of CHECK macro in xdp_adjust_tail.c")
->> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
->> ---
->>   tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c | 6 +++---
->>   1 file changed, 3 insertions(+), 3 deletions(-)
->>
->> diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c b/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c
->> index 009ee37607df..39973ea1ce43 100644
->> --- a/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c
->> +++ b/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c
->> @@ -18,7 +18,7 @@ static void test_xdp_adjust_tail_shrink(void)
->>       );
->>       err = bpf_prog_test_load(file, BPF_PROG_TYPE_XDP, &obj, &prog_fd);
->> -    if (ASSERT_OK(err, "test_xdp_adjust_tail_shrink"))
->> +    if (!ASSERT_OK(err, "test_xdp_adjust_tail_shrink"))
->>           return;
->>       err = bpf_prog_test_run_opts(prog_fd, &topts);
->> @@ -53,7 +53,7 @@ static void test_xdp_adjust_tail_grow(void)
->>       );
->>       err = bpf_prog_test_load(file, BPF_PROG_TYPE_XDP, &obj, &prog_fd);
->> -    if (ASSERT_OK(err, "test_xdp_adjust_tail_grow"))
->> +    if (!ASSERT_OK(err, "test_xdp_adjust_tail_grow"))
-> 
-> Ouch... ic.  It is why this test has been passing.
-> 
+Hi,
 
-Well, it's because the value of err is zero, so ASSERT_OK passed.
+On 10/13/2022 12:11 AM, Paul E. McKenney wrote:
+> On Wed, Oct 12, 2022 at 05:26:26PM +0800, Hou Tao wrote:
+>> Hi,
+>>
+>> On 10/12/2022 2:36 PM, Paul E. McKenney wrote:
+SNIP
+>> As said above, for bpf memory allocator it may be OK because it frees elements
+>> in batch, but for bpf local storage and its element these memories are freed
+>> individually. So I think if the implication of RCU tasks trace grace period will
+>> not be changed in the foreseeable future, adding rcu_trace_implies_rcu_gp() and
+>> using it in bpf is a good idea. What do you think ?
+> Maybe the BPF memory allocator does it one way and BPF local storage
+> does it another way.
+Another question. Just find out that there are new APIs for RCU polling (e.g.
+get_state_synchronize_rcu_full()). According to comments, the advantage of new
+API is that it will never miss a passed grace period. So for this case is
+get_state_synchronize_rcu() enough ? Or should I switch to use
+get_state_synchronize_rcu_full() instead ?
 
-> 
->>           return;
->>       err = bpf_prog_test_run_opts(prog_fd, &topts);
->> @@ -90,7 +90,7 @@ static void test_xdp_adjust_tail_grow2(void)
->>       );
->>       err = bpf_prog_test_load(file, BPF_PROG_TYPE_XDP, &obj, &prog_fd);
->> -    if (ASSERT_OK(err, "test_xdp_adjust_tail_grow"))
->> +    if (!ASSERT_OK(err, "test_xdp_adjust_tail_grow"))
->>           return;
->>       /* Test case-64 */
-> 
-> .
+Regards
+> How about if I produce a patch for rcu_trace_implies_rcu_gp() and let
+> you carry it with your series?  That way I don't have an unused function
+> in -rcu and you don't have to wait for me to send it upstream?
+>
+> 							Thanx, Paul
+>
+>>>>>> Signed-off-by: Hou Tao <houtao1@huawei.com>
+>>>>>> ---
+>>>>>>  kernel/bpf/memalloc.c | 17 ++++++-----------
+>>>>>>  1 file changed, 6 insertions(+), 11 deletions(-)
+>>>>>>
+>>>>>> diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
+>>>>>> index 5f83be1d2018..6f32dddc804f 100644
+>>>>>> --- a/kernel/bpf/memalloc.c
+>>>>>> +++ b/kernel/bpf/memalloc.c
+>>>>>> @@ -209,6 +209,9 @@ static void free_one(struct bpf_mem_cache *c, void *obj)
+>>>>>>  	kfree(obj);
+>>>>>>  }
+>>>>>>  
+>>>>>> +/* Now RCU Tasks grace period implies RCU grace period, so no need to do
+>>>>>> + * an extra call_rcu().
+>>>>>> + */
+>>>>>>  static void __free_rcu(struct rcu_head *head)
+>>>>>>  {
+>>>>>>  	struct bpf_mem_cache *c = container_of(head, struct bpf_mem_cache, rcu);
+>>>>>> @@ -220,13 +223,6 @@ static void __free_rcu(struct rcu_head *head)
+>>>>>>  	atomic_set(&c->call_rcu_in_progress, 0);
+>>>>>>  }
+>>>>>>  
+>>>>>> -static void __free_rcu_tasks_trace(struct rcu_head *head)
+>>>>>> -{
+>>>>>> -	struct bpf_mem_cache *c = container_of(head, struct bpf_mem_cache, rcu);
+>>>>>> -
+>>>>>> -	call_rcu(&c->rcu, __free_rcu);
+>>>>>> -}
+>>>>>> -
+>>>>>>  static void enque_to_free(struct bpf_mem_cache *c, void *obj)
+>>>>>>  {
+>>>>>>  	struct llist_node *llnode = obj;
+>>>>>> @@ -252,11 +248,10 @@ static void do_call_rcu(struct bpf_mem_cache *c)
+>>>>>>  		 * from __free_rcu() and from drain_mem_cache().
+>>>>>>  		 */
+>>>>>>  		__llist_add(llnode, &c->waiting_for_gp);
+>>>>>> -	/* Use call_rcu_tasks_trace() to wait for sleepable progs to finish.
+>>>>>> -	 * Then use call_rcu() to wait for normal progs to finish
+>>>>>> -	 * and finally do free_one() on each element.
+>>>>>> +	/* Use call_rcu_tasks_trace() to wait for both sleepable and normal
+>>>>>> +	 * progs to finish and finally do free_one() on each element.
+>>>>>>  	 */
+>>>>>> -	call_rcu_tasks_trace(&c->rcu, __free_rcu_tasks_trace);
+>>>>>> +	call_rcu_tasks_trace(&c->rcu, __free_rcu);
+>>>>>>  }
+>>>>>>  
+>>>>>>  static void free_bulk(struct bpf_mem_cache *c)
+>>>>>> -- 
+>>>>>> 2.29.2
+>>>>>>
 
