@@ -1,68 +1,99 @@
 Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA9595FD7E7
-	for <lists+bpf@lfdr.de>; Thu, 13 Oct 2022 12:44:58 +0200 (CEST)
+Received: from out1.vger.email (unknown [IPv6:2620:137:e000::1:20])
+	by mail.lfdr.de (Postfix) with ESMTP id 6C5E05FD7AA
+	for <lists+bpf@lfdr.de>; Thu, 13 Oct 2022 12:16:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229526AbiJMKo4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Oct 2022 06:44:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57764 "EHLO
+        id S229582AbiJMKQE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Oct 2022 06:16:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbiJMKoz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Oct 2022 06:44:55 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 681D715A2C;
-        Thu, 13 Oct 2022 03:44:52 -0700 (PDT)
-Received: from dggpeml500026.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Mp5dB54WKzmVC2;
-        Thu, 13 Oct 2022 18:40:14 +0800 (CST)
-Received: from [10.174.178.66] (10.174.178.66) by
- dggpeml500026.china.huawei.com (7.185.36.106) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 13 Oct 2022 18:44:50 +0800
-Message-ID: <cf6a99a1-e77f-113d-101a-5b5a52111df5@huawei.com>
-Date:   Thu, 13 Oct 2022 18:44:49 +0800
+        with ESMTP id S229469AbiJMKQD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Oct 2022 06:16:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21F18EA6AE
+        for <bpf@vger.kernel.org>; Thu, 13 Oct 2022 03:16:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1665656161;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=h1cObQ2s1xR5ZeaqLWVHbxy0BrP3z3LZ2+yRklnqRvk=;
+        b=ch6j2+Hsm4XPbFKdhPjJZ7fhPD/XfxGGgOO3wMFegStVlw2Y83QdF1E1YVEZfJ1KtkB8RT
+        HOAef4yqaWpXRl7ojsJL5bcvMgQLV1B3zixxfVlTzIxWMOniqqiW/BUcz5/OiYHwQR+WbK
+        WIlBCGu544tn63HsC3qtXI/eTrMYWQI=
+Received: from mail-oa1-f72.google.com (mail-oa1-f72.google.com
+ [209.85.160.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-584-zVmJuU41Onyxi4Su50ZPkg-1; Thu, 13 Oct 2022 06:16:00 -0400
+X-MC-Unique: zVmJuU41Onyxi4Su50ZPkg-1
+Received: by mail-oa1-f72.google.com with SMTP id 586e51a60fabf-13234741239so885237fac.7
+        for <bpf@vger.kernel.org>; Thu, 13 Oct 2022 03:16:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=h1cObQ2s1xR5ZeaqLWVHbxy0BrP3z3LZ2+yRklnqRvk=;
+        b=C4BI9MolYxMo2CjdkxBl6W/zyZC5VQVdQ2SfrTkzQLBKjdGYY3q5RoensEyeGhIDMx
+         NRbwK7DTwVkFSXIG2rWLzRyUDwvSVdcUZ2gwQYywb1dpA+UpWeNR4+Cz4EWC5H2k4Jox
+         R7J+DcW0FxDhq3Rp2a9OFiedEvoe4LUNXEn8vJyuDqvUsP6cMWbCpjjkip+y+YBPDTnc
+         z7m3gKxdTKiygBXtBsFooYLjUwxw0pIWPcMJ9O4q9d4lu7eSDRaUHKJO6QXrQX6y1rhC
+         XCRWRhZcbz+xoXeMTOH/G0Wso9xXuqO0XKQgXwuv78/ODUarhOcrdtiO1WKwNc07SKVg
+         GRlA==
+X-Gm-Message-State: ACrzQf0BKlmIcF8hulPhr7qvq0JgiL3UmbPaX49+GxS6MJ7KmAxtURaJ
+        4N7ZcHNqY54IWAuK78PhQ6dCkzPrA7xjAYRGf6OYX2BJrTsFBunPSidtu3G4rBzuKyWCS4qtdvO
+        KsBu9MGi19fkeHla8jcSQE3p57jw02yTNv6wBJRVUZHyl0ImCT5E3WEm7NeEGylM=
+X-Received: by 2002:a05:6808:1513:b0:354:f6d6:2015 with SMTP id u19-20020a056808151300b00354f6d62015mr2173384oiw.18.1665656159378;
+        Thu, 13 Oct 2022 03:15:59 -0700 (PDT)
+X-Google-Smtp-Source: AMsMyM5Wlx3426Um6Yto4xX93+FqYjwG4/Vl5PILgVndKDc7GhdaqOhvp5FTBE7avNS0UTRrE2wFGw==
+X-Received: by 2002:a05:6808:1513:b0:354:f6d6:2015 with SMTP id u19-20020a056808151300b00354f6d62015mr2173373oiw.18.1665656158992;
+        Thu, 13 Oct 2022 03:15:58 -0700 (PDT)
+Received: from nfvsdn-06.testing.baremetal.edge-sites.net (nat-pool-232-132.redhat.com. [66.187.232.132])
+        by smtp.gmail.com with ESMTPSA id f187-20020aca38c4000000b00354732338desm5034605oia.17.2022.10.13.03.15.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Oct 2022 03:15:58 -0700 (PDT)
+From:   mtahhan@redhat.com
+To:     bpf@vger.kernel.org, linux-doc@vger.kernel.org
+Cc:     Maryam Tahhan <mtahhan@redhat.com>
+Subject: [PATCH bpf-next v2 0/1] doc: DEVMAPs and XDP_REDIRECT
+Date:   Thu, 13 Oct 2022 07:11:28 -0400
+Message-Id: <20221013111129.401325-1-mtahhan@redhat.com>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.0.2
-Subject: Re: [PATCH v4,bpf-next] bpf: Don't redirect packets with invalid
- pkt_len
-To:     Lorenz Bauer <oss@lmb.io>, Stanislav Fomichev <sdf@google.com>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <bpf@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yuehaibing@huawei.com>
-References: <20220715115559.139691-1-shaozhengchao@huawei.com>
- <20220914111936.19881-1-oss@lmb.io>
- <CAKH8qBujKnFh8_g+npxHpo7RGFshus3N0iysmVBohTtG1X2yow@mail.gmail.com>
- <5a3c5ea9-d557-6070-d778-1092f3c51257@huawei.com>
- <aec8ef40-260c-4ded-b806-d381a3075ff0@www.fastmail.com>
- <c416473b-af8b-3bf6-7ede-e1198b3496f5@huawei.com>
- <bc69e8a3-d474-451f-853e-1c936f776ef9@app.fastmail.com>
-From:   shaozhengchao <shaozhengchao@huawei.com>
-In-Reply-To: <bc69e8a3-d474-451f-853e-1c936f776ef9@app.fastmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.66]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500026.china.huawei.com (7.185.36.106)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+From: Maryam Tahhan <mtahhan@redhat.com>
 
+Add documentation for BPF_MAP_TYPE_DEVMAP and
+BPF_MAP_TYPE_DEVMAP_HASH including kernel version
+introduced, usage and examples.
 
-On 2022/10/13 17:36, Lorenz Bauer wrote:
-> Did you get around to submitting another fix for this?
+Add documentation that describes XDP_REDIRECT. 
 
-Hi Bauer:
-	Sorry, I haven't fully understood your intentions yet.
-Can you explain it more detail?
+v1->v2:
+- Separate xdp_redirect documentation to its own file.
+- Clean up and simplify examples and usage function descriptions.
 
-Zhengchao Shao
+Maryam Tahhan (1):
+  doc: DEVMAPs and XDP_REDIRECT
+
+ Documentation/bpf/index.rst      |   1 +
+ Documentation/bpf/map_devmap.rst | 192 +++++++++++++++++++++++++++++++
+ Documentation/bpf/redirect.rst   |  46 ++++++++
+ 3 files changed, 239 insertions(+)
+ create mode 100644 Documentation/bpf/map_devmap.rst
+ create mode 100644 Documentation/bpf/redirect.rst
+
+-- 
+2.35.3
+
