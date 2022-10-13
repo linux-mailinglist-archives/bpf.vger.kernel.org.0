@@ -2,168 +2,270 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 224425FE25D
-	for <lists+bpf@lfdr.de>; Thu, 13 Oct 2022 21:05:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A294D5FE265
+	for <lists+bpf@lfdr.de>; Thu, 13 Oct 2022 21:06:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229534AbiJMTFJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Oct 2022 15:05:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42732 "EHLO
+        id S229749AbiJMTG3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Oct 2022 15:06:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbiJMTFJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Oct 2022 15:05:09 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D58553E762;
-        Thu, 13 Oct 2022 12:05:06 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 2E954B8206C;
-        Thu, 13 Oct 2022 19:05:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84D82C433C1;
-        Thu, 13 Oct 2022 19:05:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665687903;
-        bh=Vfg0pHyFhzSGiZooHQpx8VPimTooAQ6v8ioBWe/XJuI=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=UAPrL+Ou1YRUs/2ZYbI/Gg+o1Hu2JhseHFIPThXL5Nv+BN0TwIN97xdLir83hUbtk
-         QWoFh0pYd9rVE+9jhMv73Ei4LYT58IXHNbDL7anSyI1BaHdoxlmgcpJIMJoAOTfUbC
-         sPnEFZ+fSZYOhr4k4M3CZZoQF0TPfEQ7nEXNlpK4sdxvfpIy3r0qwImgU2VPTj2z4M
-         L/7Y3yBYKdzBTsp82fGYUOn6K42+FzsRLWT4QBBWP0WLxbYPfPinqPg1TLQvBp5W/X
-         VZ44TN8R03etw8Efi/KTxSDgzAP0rQpRC4sadTgwCTyPsMeZleUO8YJmgdV8l5getX
-         MQOW85wUr2L/Q==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id BC5C35C32BF; Thu, 13 Oct 2022 12:04:57 -0700 (PDT)
-Date:   Thu, 13 Oct 2022 12:04:57 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Hou Tao <houtao@huaweicloud.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Delyan Kratunov <delyank@fb.com>, rcu@vger.kernel.org,
-        houtao1@huawei.com
-Subject: Re: [PATCH bpf-next 1/3] bpf: Free elements after one
- RCU-tasks-trace grace period
-Message-ID: <20221013190457.GA4221@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20221011071128.3470622-1-houtao@huaweicloud.com>
- <20221011071128.3470622-2-houtao@huaweicloud.com>
- <20221011090742.GG4221@paulmck-ThinkPad-P17-Gen-1>
- <d91a9536-8ed2-fc00-733d-733de34af510@huaweicloud.com>
- <20221012063607.GM4221@paulmck-ThinkPad-P17-Gen-1>
- <b0ece7d9-ec48-0ecb-45d9-fb5cf973000b@huaweicloud.com>
- <20221012161103.GU4221@paulmck-ThinkPad-P17-Gen-1>
- <1e253bfb-1413-ffb4-a11c-c6c1fa43bce0@huaweicloud.com>
+        with ESMTP id S229886AbiJMTGX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Oct 2022 15:06:23 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BA8C1578A5
+        for <bpf@vger.kernel.org>; Thu, 13 Oct 2022 12:06:20 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id m15so3899951edb.13
+        for <bpf@vger.kernel.org>; Thu, 13 Oct 2022 12:06:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=X4o2xIwq8lIpPFxY4llLg+4tg6OUYfotnj0mgIMo2Qg=;
+        b=eJ5a1eFI3uOi3LooUVZfEDTCiyk0NMd3VdHJXJGauWuP+2cPo0jYxCb/NkeaAE1RAT
+         AicYHkrBcNT+oQVkXWD4AEhqW9QUaW4ASCXY/OTgYN4jvopAecTwSUFM2DJq0SYUvX6w
+         QRU/B/G1wSYRySg2yGGX9QVr12cUIz7DVyr4z7qKwaru1s3eluzNtjK5NKlFNFyigwRi
+         n0egMKYX9KHRYhx/y8JCWmyj6roVOfSQ0IU2OMYfOjknwAxTKisrjdvdMABVZHfODYRg
+         cY3FG6Zc99Y5VZJub+zc06Jd9g6s/NOjzVQ11cjfUoYFwF7pQ1KMiWv9P9ZYwlu+ty3w
+         WTRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=X4o2xIwq8lIpPFxY4llLg+4tg6OUYfotnj0mgIMo2Qg=;
+        b=pZcAEHca3+7//4w+3m9q/Ei0z2twk2n5rYsImkysD6anGmS2gJh5w/FAjviC7KQ5Yz
+         kz8YDc/b9IrzHeezjmKZ6TDqPLBwxPvC+VpXQPWPys5H6O9h1S3eqGLFOarmD6h/WbCs
+         ArpM4KrnYIJ+mGTE4cMy3r5g11cDUvoguhpAPYX9ElIMVTL6MbFXKo0VJcMao5bzLODk
+         sVzo6w7UwvUsrhyuWbKZDz+Y6PcTv0GQYMyuuQov5bkTNpgQp6wOETY48mV6RhGA3xgN
+         TT5NKW/2Au8iboAXieMRBLzqHjSFtqFob9jzpTi7wlkhQDk4w0wY1bs/1MtkXORfv3P1
+         hMsQ==
+X-Gm-Message-State: ACrzQf2aO37wCd045AP4cjx+YUZx9yN7rGDOGoofn/n1JdpG4Tgq7EY/
+        XG9AbfwaUGayWw6aUSM7orH/TZyCn+I74VSqYio=
+X-Google-Smtp-Source: AMsMyM5aemqzzkBDUIUCoxaVMeNT452xj2c+CSwAStp01dJyH5AVyBxScED2VnNHiNYkcQ9Xa8pvO4zlaEAFiHCW/nQ=
+X-Received: by 2002:a05:6402:22ed:b0:458:bcd1:69cf with SMTP id
+ dn13-20020a05640222ed00b00458bcd169cfmr1104646edb.260.1665687978046; Thu, 13
+ Oct 2022 12:06:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1e253bfb-1413-ffb4-a11c-c6c1fa43bce0@huaweicloud.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20221009215926.970164-1-jolsa@kernel.org> <20221009215926.970164-8-jolsa@kernel.org>
+In-Reply-To: <20221009215926.970164-8-jolsa@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 13 Oct 2022 12:06:06 -0700
+Message-ID: <CAEf4BzbX5G3LXNJAdRA0kkO=7V1pheN6fUHAHUcPjdpbFQSEuA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 7/8] selftests/bpf: Add kprobe_multi kmod link
+ api tests
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Christoph Hellwig <hch@lst.de>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Martynas Pumputis <m@lambda.lt>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 13, 2022 at 09:41:46AM +0800, Hou Tao wrote:
-> Hi,
-> 
-> On 10/13/2022 12:11 AM, Paul E. McKenney wrote:
-> > On Wed, Oct 12, 2022 at 05:26:26PM +0800, Hou Tao wrote:
-> >> Hi,
-> >>
-> >> On 10/12/2022 2:36 PM, Paul E. McKenney wrote:
-> SNIP
-> >> As said above, for bpf memory allocator it may be OK because it frees elements
-> >> in batch, but for bpf local storage and its element these memories are freed
-> >> individually. So I think if the implication of RCU tasks trace grace period will
-> >> not be changed in the foreseeable future, adding rcu_trace_implies_rcu_gp() and
-> >> using it in bpf is a good idea. What do you think ?
-> > Maybe the BPF memory allocator does it one way and BPF local storage
-> > does it another way.
-> 
-> Another question. Just find out that there are new APIs for RCU polling (e.g.
-> get_state_synchronize_rcu_full()). According to comments, the advantage of new
-> API is that it will never miss a passed grace period. So for this case is
-> get_state_synchronize_rcu() enough ? Or should I switch to use
-> get_state_synchronize_rcu_full() instead ?
+On Sun, Oct 9, 2022 at 3:00 PM Jiri Olsa <jolsa@kernel.org> wrote:
+>
+> Adding kprobe_multi kmod link api tests that attach bpf_testmod
+> functions via kprobe_multi link API.
+>
+> Running it as serial test, because we don't want other tests to
+> reload bpf_testmod while it's running.
+>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  .../prog_tests/kprobe_multi_testmod_test.c    | 94 +++++++++++++++++++
+>  .../selftests/bpf/progs/kprobe_multi.c        | 51 ++++++++++
+>  2 files changed, 145 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/kprobe_multi_testmod_test.c
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_testmod_test.c b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_testmod_test.c
+> new file mode 100644
+> index 000000000000..5fe02572650a
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_testmod_test.c
+> @@ -0,0 +1,94 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <test_progs.h>
+> +#include "kprobe_multi.skel.h"
+> +#include "trace_helpers.h"
+> +#include "bpf/libbpf_internal.h"
+> +
+> +static void kprobe_multi_testmod_check(struct kprobe_multi *skel)
+> +{
+> +       ASSERT_EQ(skel->bss->kprobe_testmod_test1_result, 1, "kprobe_test1_result");
+> +       ASSERT_EQ(skel->bss->kprobe_testmod_test2_result, 1, "kprobe_test2_result");
+> +       ASSERT_EQ(skel->bss->kprobe_testmod_test3_result, 1, "kprobe_test3_result");
+> +
+> +       ASSERT_EQ(skel->bss->kretprobe_testmod_test1_result, 1, "kretprobe_test1_result");
+> +       ASSERT_EQ(skel->bss->kretprobe_testmod_test2_result, 1, "kretprobe_test2_result");
+> +       ASSERT_EQ(skel->bss->kretprobe_testmod_test3_result, 1, "kretprobe_test3_result");
+> +}
+> +
+> +static void test_testmod_link_api(struct bpf_link_create_opts *opts)
+> +{
+> +       int prog_fd, link1_fd = -1, link2_fd = -1;
+> +       struct kprobe_multi *skel = NULL;
+> +
+> +       skel = kprobe_multi__open_and_load();
+> +       if (!ASSERT_OK_PTR(skel, "fentry_raw_skel_load"))
+> +               goto cleanup;
+> +
+> +       skel->bss->pid = getpid();
+> +       prog_fd = bpf_program__fd(skel->progs.test_kprobe_testmod);
+> +       link1_fd = bpf_link_create(prog_fd, 0, BPF_TRACE_KPROBE_MULTI, opts);
+> +       if (!ASSERT_GE(link1_fd, 0, "link_fd1"))
+> +               goto cleanup;
+> +
+> +       opts->kprobe_multi.flags = BPF_F_KPROBE_MULTI_RETURN;
+> +       prog_fd = bpf_program__fd(skel->progs.test_kretprobe_testmod);
+> +       link2_fd = bpf_link_create(prog_fd, 0, BPF_TRACE_KPROBE_MULTI, opts);
+> +       if (!ASSERT_GE(link2_fd, 0, "link_fd2"))
+> +               goto cleanup;
+> +
 
-I suggest starting with get_state_synchronize_rcu(), and moving to the
-_full() variants only if experience shows that it is necessary.
+any reason to not use bpf_program__attach_kprobe_multi_ops() and
+instead use low-level bpf_link_create?
 
-Please note that these functions work with normal RCU, that is,
-call_rcu(), but not call_rcu_tasks(), call_rcu_tasks_trace(), or
-call_rcu_rude().  Please note also that SRCU has its own set of polling
-APIs, for example, get_state_synchronize_srcu().
+> +       ASSERT_OK(trigger_module_test_read(1), "trigger_read");
+> +       kprobe_multi_testmod_check(skel);
+> +
+> +cleanup:
+> +       if (link1_fd != -1)
+> +               close(link1_fd);
+> +       if (link2_fd != -1)
+> +               close(link2_fd);
 
-								Thanx, Paul
+you don't need to even do this if you stick to high-level attach APIs
 
-> Regards
-> > How about if I produce a patch for rcu_trace_implies_rcu_gp() and let
-> > you carry it with your series?  That way I don't have an unused function
-> > in -rcu and you don't have to wait for me to send it upstream?
-> >
-> > 							Thanx, Paul
-> >
-> >>>>>> Signed-off-by: Hou Tao <houtao1@huawei.com>
-> >>>>>> ---
-> >>>>>>  kernel/bpf/memalloc.c | 17 ++++++-----------
-> >>>>>>  1 file changed, 6 insertions(+), 11 deletions(-)
-> >>>>>>
-> >>>>>> diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
-> >>>>>> index 5f83be1d2018..6f32dddc804f 100644
-> >>>>>> --- a/kernel/bpf/memalloc.c
-> >>>>>> +++ b/kernel/bpf/memalloc.c
-> >>>>>> @@ -209,6 +209,9 @@ static void free_one(struct bpf_mem_cache *c, void *obj)
-> >>>>>>  	kfree(obj);
-> >>>>>>  }
-> >>>>>>  
-> >>>>>> +/* Now RCU Tasks grace period implies RCU grace period, so no need to do
-> >>>>>> + * an extra call_rcu().
-> >>>>>> + */
-> >>>>>>  static void __free_rcu(struct rcu_head *head)
-> >>>>>>  {
-> >>>>>>  	struct bpf_mem_cache *c = container_of(head, struct bpf_mem_cache, rcu);
-> >>>>>> @@ -220,13 +223,6 @@ static void __free_rcu(struct rcu_head *head)
-> >>>>>>  	atomic_set(&c->call_rcu_in_progress, 0);
-> >>>>>>  }
-> >>>>>>  
-> >>>>>> -static void __free_rcu_tasks_trace(struct rcu_head *head)
-> >>>>>> -{
-> >>>>>> -	struct bpf_mem_cache *c = container_of(head, struct bpf_mem_cache, rcu);
-> >>>>>> -
-> >>>>>> -	call_rcu(&c->rcu, __free_rcu);
-> >>>>>> -}
-> >>>>>> -
-> >>>>>>  static void enque_to_free(struct bpf_mem_cache *c, void *obj)
-> >>>>>>  {
-> >>>>>>  	struct llist_node *llnode = obj;
-> >>>>>> @@ -252,11 +248,10 @@ static void do_call_rcu(struct bpf_mem_cache *c)
-> >>>>>>  		 * from __free_rcu() and from drain_mem_cache().
-> >>>>>>  		 */
-> >>>>>>  		__llist_add(llnode, &c->waiting_for_gp);
-> >>>>>> -	/* Use call_rcu_tasks_trace() to wait for sleepable progs to finish.
-> >>>>>> -	 * Then use call_rcu() to wait for normal progs to finish
-> >>>>>> -	 * and finally do free_one() on each element.
-> >>>>>> +	/* Use call_rcu_tasks_trace() to wait for both sleepable and normal
-> >>>>>> +	 * progs to finish and finally do free_one() on each element.
-> >>>>>>  	 */
-> >>>>>> -	call_rcu_tasks_trace(&c->rcu, __free_rcu_tasks_trace);
-> >>>>>> +	call_rcu_tasks_trace(&c->rcu, __free_rcu);
-> >>>>>>  }
-> >>>>>>  
-> >>>>>>  static void free_bulk(struct bpf_mem_cache *c)
-> >>>>>> -- 
-> >>>>>> 2.29.2
-> >>>>>>
-> 
+> +       kprobe_multi__destroy(skel);
+> +}
+> +
+> +#define GET_ADDR(__sym, __addr) ({                                     \
+> +       __addr = ksym_get_addr(__sym);                                  \
+> +       if (!ASSERT_NEQ(__addr, 0, "kallsyms load failed for " #__sym)) \
+> +               return;                                                 \
+> +})
+
+macro for this? why? just make understanding the code and debugging
+it, if necessary, harder. You don't even need that return, just lookup
+and ASSERT_NEQ(). Go to symbol #2 and do the same. If something goes
+wrong you'll have three failed ASSERT_NEQs, which is totally fine.
+
+> +
+> +static void test_testmod_link_api_addrs(void)
+> +{
+> +       LIBBPF_OPTS(bpf_link_create_opts, opts);
+> +       unsigned long long addrs[3];
+> +
+> +       GET_ADDR("bpf_testmod_fentry_test1", addrs[0]);
+> +       GET_ADDR("bpf_testmod_fentry_test2", addrs[1]);
+> +       GET_ADDR("bpf_testmod_fentry_test3", addrs[2]);
+> +
+> +       opts.kprobe_multi.addrs = (const unsigned long *) addrs;
+> +       opts.kprobe_multi.cnt = ARRAY_SIZE(addrs);
+> +
+> +       test_testmod_link_api(&opts);
+> +}
+> +
+> +static void test_testmod_link_api_syms(void)
+> +{
+> +       LIBBPF_OPTS(bpf_link_create_opts, opts);
+> +       const char *syms[3] = {
+> +               "bpf_testmod_fentry_test1",
+> +               "bpf_testmod_fentry_test2",
+> +               "bpf_testmod_fentry_test3",
+> +       };
+> +
+> +       opts.kprobe_multi.syms = syms;
+> +       opts.kprobe_multi.cnt = ARRAY_SIZE(syms);
+> +       test_testmod_link_api(&opts);
+> +}
+> +
+> +void serial_test_kprobe_multi_testmod_test(void)
+> +{
+> +       if (!ASSERT_OK(load_kallsyms_refresh(), "load_kallsyms_refresh"))
+> +               return;
+> +
+> +       if (test__start_subtest("testmod_link_api_syms"))
+> +               test_testmod_link_api_syms();
+> +       if (test__start_subtest("testmod_link_api_addrs"))
+> +               test_testmod_link_api_addrs();
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/kprobe_multi.c b/tools/testing/selftests/bpf/progs/kprobe_multi.c
+> index 98c3399e15c0..b3c54ec13a45 100644
+> --- a/tools/testing/selftests/bpf/progs/kprobe_multi.c
+> +++ b/tools/testing/selftests/bpf/progs/kprobe_multi.c
+> @@ -110,3 +110,54 @@ int test_kretprobe_manual(struct pt_regs *ctx)
+>         kprobe_multi_check(ctx, true);
+>         return 0;
+>  }
+> +
+> +extern const void bpf_testmod_fentry_test1 __ksym;
+> +extern const void bpf_testmod_fentry_test2 __ksym;
+> +extern const void bpf_testmod_fentry_test3 __ksym;
+> +
+> +__u64 kprobe_testmod_test1_result = 0;
+> +__u64 kprobe_testmod_test2_result = 0;
+> +__u64 kprobe_testmod_test3_result = 0;
+> +
+> +__u64 kretprobe_testmod_test1_result = 0;
+> +__u64 kretprobe_testmod_test2_result = 0;
+> +__u64 kretprobe_testmod_test3_result = 0;
+> +
+> +static void kprobe_multi_testmod_check(void *ctx, bool is_return)
+> +{
+> +       if (bpf_get_current_pid_tgid() >> 32 != pid)
+> +               return;
+> +
+> +       __u64 addr = bpf_get_func_ip(ctx);
+> +
+> +#define SET(__var, __addr) ({                          \
+> +       if ((const void *) addr == __addr)              \
+> +               __var = 1;                              \
+> +})
+> +
+
+same feedback, why macro for this? There is nothing repetitive done in it at all
+
+> +       if (is_return) {
+> +               SET(kretprobe_testmod_test1_result, &bpf_testmod_fentry_test1);
+> +               SET(kretprobe_testmod_test2_result, &bpf_testmod_fentry_test2);
+> +               SET(kretprobe_testmod_test3_result, &bpf_testmod_fentry_test3);
+> +       } else {
+> +               SET(kprobe_testmod_test1_result, &bpf_testmod_fentry_test1);
+> +               SET(kprobe_testmod_test2_result, &bpf_testmod_fentry_test2);
+> +               SET(kprobe_testmod_test3_result, &bpf_testmod_fentry_test3);
+> +       }
+> +
+> +#undef SET
+> +}
+> +
+> +SEC("kprobe.multi")
+> +int test_kprobe_testmod(struct pt_regs *ctx)
+> +{
+> +       kprobe_multi_testmod_check(ctx, false);
+> +       return 0;
+> +}
+> +
+> +SEC("kretprobe.multi")
+> +int test_kretprobe_testmod(struct pt_regs *ctx)
+> +{
+> +       kprobe_multi_testmod_check(ctx, true);
+> +       return 0;
+> +}
+> --
+> 2.37.3
+>
