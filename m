@@ -2,64 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CE5B5FE497
-	for <lists+bpf@lfdr.de>; Thu, 13 Oct 2022 23:55:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA3B25FE506
+	for <lists+bpf@lfdr.de>; Fri, 14 Oct 2022 00:12:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229683AbiJMVzx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Oct 2022 17:55:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58614 "EHLO
+        id S229598AbiJMWMp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Oct 2022 18:12:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229884AbiJMVzw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Oct 2022 17:55:52 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5B7E13E34;
-        Thu, 13 Oct 2022 14:55:47 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a26so6786022ejc.4;
-        Thu, 13 Oct 2022 14:55:46 -0700 (PDT)
+        with ESMTP id S229462AbiJMWMo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Oct 2022 18:12:44 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D5FD186D5D;
+        Thu, 13 Oct 2022 15:12:43 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id r17so6824175eja.7;
+        Thu, 13 Oct 2022 15:12:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=w5fI//fDZje8za4XR0ATUNlP/wVMZ34h4K3JeGc7aGc=;
-        b=i/76oYOHTriR7gowE6F3quEHmZNf2YoS2cMHar3JNp3a/EHSIleMNSpfikxeqOuE5c
-         /fRaHTmZjBZbB+6I8gxBqvGRKLclivm9akcCZZBfoO/Xr8XSZ+1lds5TtxCoAp3vXoh6
-         CHLKYM722YSnZj/YFglmJInQv6Gca1aeRqiTkHGxHw21E/mLpjRV+S/S5GcCV3dje1gp
-         iPpAmlMbRhMCb3qSLHNXeioAQI0vLpWSB0Ikdg7A8SfgshjiCmAoZVwZXghUuASpF3WX
-         I/ErhGFNdRzei+ElL81vlaiTsEU11j22t+HeSXBmdqJLh9VzlW8iR6ZJxWh540dMEF3v
-         MfTw==
+        bh=Kgrhco0kQldzs3Uu2M1bGzftZG3g/cAytonD3Skhmc0=;
+        b=oQrsL5dyfANt9QV19N7V3vSTDuaD9UWffacLCE2SxgjyogLMVzOpmVp8e3I6NKw1LI
+         Rd0K4RCA7ryGa5WwP2S0DWd5vB2BZ9Hd3RiRIbjdXhPEyDVETGTSEcBIMPj0yn13sBCO
+         jbIDQEdb/G0whvmiz5O2waMe+x+w3kE2nb8WHGUDi+AaSUILbn+ZIxnYn8lZma9FED01
+         XHe/ms/2U7LVQOBkUyMS7NtXiSd3wmZ6rJe0TyRGOx1+xLGUJzJ0BeC7ASAFI29cjg21
+         5t9Au/TofuiA3Pc868f3qRDrD5pdcco22Yqs2y0NrtjHxgGVxcEEMJEVRcki1GDbaPSi
+         4Vtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=w5fI//fDZje8za4XR0ATUNlP/wVMZ34h4K3JeGc7aGc=;
-        b=N2UTFOqexQe3h7hjm7CDrfzmYsC6M4lQOrLAvcevK6imh7OJF+B90wZrRIAAn95eod
-         xkTh/camgDQ+8m2sdUStae1f2P0ZVT5bRzGlIPKH/cKRlR+QGKm/H8zYrQhpXUcE0nNr
-         i30Soa8v5EeFmX9ng27nyW+6YMKxiD72fEtY9a1HQXtysFkTG02rUKlfw0aEc3Oz1jqB
-         XjNkw5WdtlCIrTFOmrLnDDLKw7oLO+lcSBDu4RQrGhzHbHhZxo4EX1SfrNMDDLri2mKQ
-         ZVtfIuDP9vZ5pgIZZgzr7GOqojvYgXaTQRgXRx6P8aRJGmtaLjQrVL8o+xZPCmKOvsIC
-         1chA==
-X-Gm-Message-State: ACrzQf2fJhtU1dAMohoZun7/TXcQbzgVun1DgFCjAtf148KIp931ApH6
-        MzMKcWEiXo8Wh6CBQhiyetU+vk/UCTo=
-X-Google-Smtp-Source: AMsMyM4EB6z4zehdub8H+vhm8tDvILcNV2NHaCvw3AC0mA5o5llY7qnxY82eWus6f5HtPnEHA5urJA==
-X-Received: by 2002:a17:906:6791:b0:78d:4051:fcf0 with SMTP id q17-20020a170906679100b0078d4051fcf0mr1261064ejp.591.1665698144795;
-        Thu, 13 Oct 2022 14:55:44 -0700 (PDT)
+        bh=Kgrhco0kQldzs3Uu2M1bGzftZG3g/cAytonD3Skhmc0=;
+        b=XK/9ON9VEUZN30tgsDoYfOPS3T0bEiNJNP3Lcx9dNs9IwxgAKzhmFX7XAmdvAo9iwL
+         cLP77PbaFX/i95KwVoto5CBMIVIYoRQIeueNMdo5fHv/7giHMV5WgsKwIKgkz7eJAcZz
+         bVoquATfuYbUX0/FeiNEK+d8aQWlJZvbQz1lKGnAmcAQVVVwhTKqpy8/NJ6ZPEtCN+K/
+         jUUkBBGpbiMicLknMgjtK7zP9mmz6VgXdyrOlHzllOB4Gsjj239LiJrfbX4mBk3fh2wx
+         BReLO36jt4aT3HO+d/NatdUYzndhvmqJEID6VfVvq04u40/UB5I6Nv4EO0TK85k8SEqV
+         2nxg==
+X-Gm-Message-State: ACrzQf1pSBMWhYwbfdIHzaT1vpJyomHQ4wtlPj9mKkhsn6+03F5Jk/Uk
+        ufVB4HSc0q/1MR/QCNjYAJL7sKLhIyE=
+X-Google-Smtp-Source: AMsMyM7tM8//v9KlxC8cuFvrreRDtSi7ZX3LEQO1/CyW1m5oFOLfPaFhx3LU08/NczIkf5lBu8MJfg==
+X-Received: by 2002:a17:906:db03:b0:741:337e:3600 with SMTP id xj3-20020a170906db0300b00741337e3600mr1360298ejb.343.1665699161810;
+        Thu, 13 Oct 2022 15:12:41 -0700 (PDT)
 Received: from krava ([83.240.62.156])
-        by smtp.gmail.com with ESMTPSA id l10-20020a1709060cca00b0078d21574986sm421816ejh.203.2022.10.13.14.55.43
+        by smtp.gmail.com with ESMTPSA id f6-20020a170906c08600b007813968e154sm489186ejz.86.2022.10.13.15.12.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Oct 2022 14:55:43 -0700 (PDT)
+        Thu, 13 Oct 2022 15:12:41 -0700 (PDT)
 From:   Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Thu, 13 Oct 2022 23:55:41 +0200
+Date:   Fri, 14 Oct 2022 00:12:39 +0200
 To:     Jakub Kicinski <kuba@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     Jiri Olsa <olsajiri@gmail.com>,
         Martin KaFai Lau <martin.lau@kernel.org>,
         bpf@vger.kernel.org,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>
 Subject: Re: WARN: multiple IDs found for 'nf_conn': 92168, 117897 - using
  92168
-Message-ID: <Y0iJXajhKPlqjOIO@krava>
+Message-ID: <Y0iNVwxTJmrddRuv@krava>
 References: <20221003190545.6b7c7aba@kernel.org>
  <20221003214941.6f6ea10d@kernel.org>
  <YzvV0CFSi9KvXVlG@krava>
@@ -93,69 +93,93 @@ On Thu, Oct 13, 2022 at 08:05:17AM -0700, Jakub Kicinski wrote:
 > 
 > Any luck?
 
-yea, sorry for delay, I reproduced that.. first objtool warnings ;-)
+now BTFIDS warnings..
 
+I can see following on centos8 with gcc 8.5:
 
-[jolsa@centos8 linux-next]$ make
-  UPD     include/generated/compile.h
-  CALL    scripts/checksyscalls.sh
-  DESCEND objtool
-  DESCEND bpf/resolve_btfids
-  CC      init/version.o
-  AR      init/built-in.a
-  AR      built-in.a
-  AR      vmlinux.a
-  LD      vmlinux.o
-vmlinux.o: warning: objtool: relocate_restore_code+0x3c: relocation to !ENDBR: next_arg+0x8
-vmlinux.o: warning: objtool: ___ksymtab+bpf_dispatcher_xdp_func+0x0: data relocation to !ENDBR: bpf_dispatcher_xdp_func+0x0
-vmlinux.o: warning: objtool: bpf_dispatcher_xdp+0x20: data relocation to !ENDBR: bpf_dispatcher_xdp_func+0x0
-  ...
+	  BTFIDS  vmlinux
+	WARN: multiple IDs found for 'task_struct': 300, 56614 - using 300
+	WARN: multiple IDs found for 'file': 540, 56649 - using 540
+	WARN: multiple IDs found for 'vm_area_struct': 549, 56652 - using 549
+	WARN: multiple IDs found for 'seq_file': 953, 56690 - using 953
+	WARN: multiple IDs found for 'inode': 1132, 56966 - using 1132
+	WARN: multiple IDs found for 'path': 1164, 56995 - using 1164
+	WARN: multiple IDs found for 'task_struct': 300, 61905 - using 300
+	WARN: multiple IDs found for 'file': 540, 61943 - using 540
+	WARN: multiple IDs found for 'vm_area_struct': 549, 61946 - using 549
+	WARN: multiple IDs found for 'inode': 1132, 62029 - using 1132
+	WARN: multiple IDs found for 'path': 1164, 62058 - using 1164
+	WARN: multiple IDs found for 'cgroup': 1190, 62067 - using 1190
+	WARN: multiple IDs found for 'seq_file': 953, 62253 - using 953
+	WARN: multiple IDs found for 'sock': 7960, 62374 - using 7960
+	WARN: multiple IDs found for 'sk_buff': 1876, 62485 - using 1876
+	WARN: multiple IDs found for 'bpf_prog': 6094, 62542 - using 6094
+	WARN: multiple IDs found for 'socket': 7993, 62545 - using 7993
+	WARN: multiple IDs found for 'xdp_buff': 6191, 62836 - using 6191
+	WARN: multiple IDs found for 'sock_common': 8164, 63152 - using 8164
+	WARN: multiple IDs found for 'request_sock': 17296, 63204 - using 17296
+	WARN: multiple IDs found for 'inet_request_sock': 36292, 63222 - using 36292
+	WARN: multiple IDs found for 'inet_sock': 32700, 63225 - using 32700
+	WARN: multiple IDs found for 'inet_connection_sock': 33944, 63240 - using 33944
+	WARN: multiple IDs found for 'tcp_request_sock': 36299, 63260 - using 36299
+	WARN: multiple IDs found for 'tcp_sock': 33969, 63264 - using 33969
+	WARN: multiple IDs found for 'bpf_map': 6623, 63343 - using 6623
 
+I'll need to check on that..
 
+and I just actually saw the 'nf_conn' warning on linux-next/master with
+latest fedora/gcc-12:
 
-Peter,
-as for objtool warnings, looks like with gcc we'll get
-endbr64 instruction generated after nops
+	  BTF [M] net/netfilter/nf_nat.ko
+	WARN: multiple IDs found for 'nf_conn': 106518, 120156 - using 106518
+	WARN: multiple IDs found for 'nf_conn': 106518, 121853 - using 106518
+	WARN: multiple IDs found for 'nf_conn': 106518, 123126 - using 106518
+	WARN: multiple IDs found for 'nf_conn': 106518, 124537 - using 106518
+	WARN: multiple IDs found for 'nf_conn': 106518, 126442 - using 106518
+	WARN: multiple IDs found for 'nf_conn': 106518, 128256 - using 106518
+	  LD [M]  net/netfilter/nf_nat_tftp.ko
 
-with centos gcc 8.5:
+looks like maybe dedup missed this struct for some reason
 
-	ffffffff818d2e20 <bpf_dispatcher_xdp_func>:
-	ffffffff818d2e20:       90                      nop
-	ffffffff818d2e21:       90                      nop
-	ffffffff818d2e22:       90                      nop
-	ffffffff818d2e23:       90                      nop
-	ffffffff818d2e24:       90                      nop
-	ffffffff818d2e25:       f3 0f 1e fa             endbr64
-	ffffffff818d2e29:       e9 92 eb 52 00          jmpq   ffffffff81e019c0 <__x86_indirect_thunk_rdx>
-	ffffffff818d2e2e:       66 90                   xchg   %ax,%ax
+nf_conn dump from module:
 
-while latest gcc 12 will put it after:
+	[120155] PTR '(anon)' type_id=120156
+	[120156] STRUCT 'nf_conn' size=320 vlen=14
+		'ct_general' type_id=105882 bits_offset=0
+		'lock' type_id=180 bits_offset=64
+		'timeout' type_id=113 bits_offset=640
+		'zone' type_id=106520 bits_offset=672
+		'tuplehash' type_id=106533 bits_offset=704
+		'status' type_id=1 bits_offset=1600
+		'ct_net' type_id=3215 bits_offset=1664
+		'nat_bysource' type_id=139 bits_offset=1728
+		'__nfct_init_offset' type_id=949 bits_offset=1856
+		'master' type_id=120155 bits_offset=1856
+		'mark' type_id=106351 bits_offset=1920
+		'secmark' type_id=106351 bits_offset=1952
+		'ext' type_id=106536 bits_offset=1984
+		'proto' type_id=106532 bits_offset=2048
 
-	ffffffff82736900 <bpf_dispatcher_xdp_func>:     
-	ffffffff82736900:       f3 0f 1e fa             endbr64 
-	ffffffff82736904:       90                      nop    
-	ffffffff82736905:       90                      nop    
-	ffffffff82736906:       90                      nop
-	ffffffff82736907:       90                      nop
-	ffffffff82736908:       90                      nop    
-	ffffffff82736909:       41 54                   push   %r12
-	ffffffff8273690b:       49 89 f4                mov    %rsi,%r12
-	ffffffff8273690e:       55                      push   %rbp
-	ffffffff8273690f:       48 89 fd                mov    %rdi,%rbp
-	ffffffff82736912:       53                      push   %rbx
-	ffffffff82736913:       48 89 d3                mov    %rdx,%rbx
-	ffffffff82736916:       e8 65 f6 cf fe          call   ffffffff81435f80 <__sanitizer_cov_trace_pc>
-	ffffffff8273691b:       4c 89 e6                mov    %r12,%rsi
-	ffffffff8273691e:       48 89 ef                mov    %rbp,%rdi
-	ffffffff82736921:       48 89 d8                mov    %rbx,%rax
-	ffffffff82736924:       5b                      pop    %rbx
-	ffffffff82736925:       5d                      pop    %rbp
-	ffffffff82736926:       41 5c                   pop    %r12
-	ffffffff82736928:       e9 b3 b6 8c 00          jmp    ffffffff83001fe0 <__x86_indirect_thunk_array>
+nf_conn dump from vmlinux:
 
-any idea where's the problem? bad backport? ;-)
+	[106517] PTR '(anon)' type_id=106518
+	[106518] STRUCT 'nf_conn' size=320 vlen=14
+		'ct_general' type_id=105882 bits_offset=0
+		'lock' type_id=180 bits_offset=64
+		'timeout' type_id=113 bits_offset=640
+		'zone' type_id=106520 bits_offset=672
+		'tuplehash' type_id=106533 bits_offset=704
+		'status' type_id=1 bits_offset=1600
+		'ct_net' type_id=3215 bits_offset=1664
+		'nat_bysource' type_id=139 bits_offset=1728
+		'__nfct_init_offset' type_id=949 bits_offset=1856
+		'master' type_id=106517 bits_offset=1856
+		'mark' type_id=106351 bits_offset=1920
+		'secmark' type_id=106351 bits_offset=1952
+		'ext' type_id=106536 bits_offset=1984
+		'proto' type_id=106532 bits_offset=2048
 
-in any case (unrelated), I'll check the bpf dispatcher code,
-I'm not sure the nop update code is aware of the endbr64 instruction
+look identical.. Andrii, any idea?
 
+thanks,
 jirka
