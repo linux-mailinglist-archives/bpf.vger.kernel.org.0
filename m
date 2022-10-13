@@ -2,169 +2,181 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F0575FDF14
-	for <lists+bpf@lfdr.de>; Thu, 13 Oct 2022 19:34:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A8C85FE101
+	for <lists+bpf@lfdr.de>; Thu, 13 Oct 2022 20:22:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229694AbiJMRez (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Oct 2022 13:34:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34122 "EHLO
+        id S229913AbiJMSWV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Oct 2022 14:22:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229651AbiJMRex (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Oct 2022 13:34:53 -0400
-Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 941AC14D3D;
-        Thu, 13 Oct 2022 10:34:49 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id C73EA3200926;
-        Thu, 13 Oct 2022 13:34:47 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Thu, 13 Oct 2022 13:34:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-        :cc:content-type:date:date:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to; s=fm2; t=1665682487; x=1665768887; bh=DsLRBe3Kqg
-        11qxqyD8iEafKn/j01pfzBRrrJqScyfLo=; b=f7SZBH7WjhSQGZCuMHebwkT2sd
-        +viFn0CR3SIjXI2JL5ZQkUqV72KbP8lssa0nGl9NnHFp3u8dM930zmbj+k1EKXGT
-        dmyWSUG4ThZuPjlJzsmMhWssQ/vk336zYPL3SGF8Bp7sntMNHw3Ra/VplQWA/ya8
-        OKnug9TsNQ7E2PIb6gsn+kN/4HXcnz4b51MJcU3dkshI5SZPtiJEGDmZZlcVi/t6
-        eAf0w6otCS9bbAl3cs6kSBJqxwMVNMW8utR3tWMkT8cyla2zeMjuYBTHhA9LEvmy
-        lsUzNHN3yTXwi7wocJ7n5OeJgSLf2fkm5/wu49LM3w6BF5QZ49mFbE7EtW/w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; t=1665682487; x=1665768887; bh=DsLRBe3Kqg11qxqyD8iEafKn/j01
-        pfzBRrrJqScyfLo=; b=L76Ve5FJL9Iz4Zy1s4a7laS8w+dlLAmgusGwE5w5DYvV
-        2XGZQabRX9k2/MsXSvu/J2Jp0UZcTvJcVcD2pFibsv8AfptxG+CzLmYPouydKWtm
-        Sw3rXl/TJAIAnTgEE9Hz7UYJ7MdKnIGC0/sHeWMyu/Ut8L8RPE4TMd91QnIxQn4l
-        cJ6G9095f3wEOWX1U9xYDB+HAOnSmMUCX72fd73OEVbAYXqCDKy51IphGcyvOjpa
-        JqOEdx9+lGEs1RZZHxO8+DlvnHjDLh6b0KXwNh9TT0DaaHvnTn3MQaoFNMtSJswY
-        sPsAUN5uEoEWtsM4hs3TjaXDtiOTwcqIdU6d+AkBFA==
-X-ME-Sender: <xms:NkxIYz1JAXnchSoQ40X737hlRnuXoNfxof9Q4CtPc8BjK0pf1PcEpQ>
-    <xme:NkxIYyEZi1_PbHefB_3ZLGDU7N94iA7oP-3F2ygeHHcnIVL12Qf-i0-DEBbRo6iJK
-    mjvq__qyxPMeAgMwA>
-X-ME-Received: <xmr:NkxIYz6xmWbheEiUBU1cQbfkZD6HSj4KAtfwr5vnikiWEeWBGRoLmN9Nesunp2js4s9fOEMkMyDXjIa5>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrfeektddguddujecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enfghrlhcuvffnffculdefhedmnecujfgurhepfffhvfevuffkfhggtggujgesthdtredt
-    tddtvdenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihusegugihuuhhurdighiiiqe
-    enucggtffrrghtthgvrhhnpeffffdvfefhudfhfeejjedvieduiefgvdfghfejkeehueeu
-    hfdvieeftdeugfffhfenucffohhmrghinhepghhithhhuhgsrdgtohhmnecuvehluhhsth
-    gvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdr
-    giihii
-X-ME-Proxy: <xmx:NkxIY42XuTKWSZPHKVCQDb6xQaYhp_x6WhDTrjBTHll6i_UoFT-qAw>
-    <xmx:NkxIY2H5bY_aJ91LAFSvfx0au0buKEIf3AXPLGAD312EnB2WbBUZ1g>
-    <xmx:NkxIY5_wMmQnIQh6eLuK0z_ECfmqVZjhi8bgaHlQfRSVdjbs4UhXog>
-    <xmx:N0xIY5C1R_0VE1OGECV3gCtROmkpxajr9K8vkdh2Fn_H255jVCFhSw>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 13 Oct 2022 13:34:46 -0400 (EDT)
-Date:   Thu, 13 Oct 2022 11:34:48 -0600
-From:   Daniel Xu <dxu@dxuuu.xyz>
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     pablo@netfilter.org, fw@strlen.de, netfilter-devel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        andrii@kernel.org, daniel@iogearbox.net, ast@kernel.org,
-        bpf@vger.kernel.org, memxor@gmail.com
-Subject: Re: [PATCH bpf-next v4 2/3] selftests/bpf: Add connmark read test
-Message-ID: <20221013173448.aprptjs5qq777342@k2>
-References: <cover.1660254747.git.dxu@dxuuu.xyz>
- <d3bc620a491e4c626c20d80631063922cbe13e2b.1660254747.git.dxu@dxuuu.xyz>
- <43bf4a5f-dac9-4fe9-1eba-9ab9beb650aa@linux.dev>
- <20221012220953.i2xevhu36kxyxscl@k2>
- <16bcda3b-989e-eadf-b6c3-803470b0afd6@linux.dev>
+        with ESMTP id S231419AbiJMSWH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Oct 2022 14:22:07 -0400
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD2DD162538
+        for <bpf@vger.kernel.org>; Thu, 13 Oct 2022 11:17:21 -0700 (PDT)
+Received: by mail-wr1-f51.google.com with SMTP id bp11so4073682wrb.9
+        for <bpf@vger.kernel.org>; Thu, 13 Oct 2022 11:17:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=hPEDY8hxCa7q+oLK7imeAg6G9deWfHugRnTg4jKW+Ns=;
+        b=lxM9oAsALz6APU9qDQcD/j62A/cdUQCXoSYMeAfnCUgBSiyt5h2Yarrbi9CFaA1ue7
+         S6mNXxWfq++h9P7hsvGKYJC5jkiGPxnXMmwN8HStJIjCwSK/bOzciaIUWhX0GT1Jheuc
+         4Ht8xU/fJoPeOutRfZSonxjQRCNbSYoDf9+XYWEISV/aHvTqg+wvPMlzB6iLcbriccND
+         KQqhAxTcmwyaBQmT8sXi+JSUMOMFlVYD66EzSLNwJENEY78MX/y329CSUpf9KUo1UPaA
+         UTlvLp5wVkC/C9rg/KPvKMOPqy+LNkN/rCQEr6offw8aZT0owkbYfnrpPgKG8f+/iThw
+         EQSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hPEDY8hxCa7q+oLK7imeAg6G9deWfHugRnTg4jKW+Ns=;
+        b=zqpE415WDGTARVRCD1yKY0CJYTlumUofA7r6NfMAiWsepnyK6eJ0rRuLPLOqJSB+Ta
+         /FESV/FI6YRT8l0kVXmPwRPCeEoz9JXNvLzauP3IYdwtg7+WCr3pBHhv2tvKygQROxib
+         3/msar/q0KM17PDvvWM37ST0pPzK6x2gRmIvYyTRk9Gr6HqQML1AAu3N9lsbVtTMrtq6
+         8KYKz9XZMAo9jTrWddUc+TZ6EYLCbuT8xvWIHOOm1skXxce6iDfxLiq16BPPT+8BsMQk
+         xkAQGjVb0vbU1QFBEtSf9y41BI6xgebH60J16DWp6zDoabFXLv9irocIoKXO4yGwY5Dh
+         Ac1g==
+X-Gm-Message-State: ACrzQf337POWiJxtjO0semtEXAckoyzM0VT9AQQqHVKgLDImDco2Drmf
+        TmL5r3Anc5pM847+/Yt96lVqRrMoH1ieOm6ojH3Nbq70
+X-Google-Smtp-Source: AMsMyM4ok6KQARDdddNuv1X4DlR8Bm3UVFw4trM7mZoSF+E8PmhfM07Z6ZwSoYxh7hu8A3K7EkKu8nRUL2MfBfxqbx0=
+X-Received: by 2002:a17:907:2cca:b0:78d:ec48:ac29 with SMTP id
+ hg10-20020a1709072cca00b0078dec48ac29mr733717ejc.114.1665684310112; Thu, 13
+ Oct 2022 11:05:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <16bcda3b-989e-eadf-b6c3-803470b0afd6@linux.dev>
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_SUSPICIOUS_NTLD,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_PDS_OTHER_BAD_TLD autolearn=ham autolearn_force=no version=3.4.6
+References: <20220924133620.4147153-1-houtao@huaweicloud.com>
+ <20220924133620.4147153-4-houtao@huaweicloud.com> <CAEf4Bza79XbtYF_04MhdcN0o4Akot0VpWaR+mOoGwXsz7yT=xg@mail.gmail.com>
+ <e099e816-d271-ec75-b6aa-3671cfc5b8f9@huaweicloud.com> <CAEf4BzZyfUOfGkQP67urmG9=7pqUF-5E9LjZf-Y0sL9nbcHFww@mail.gmail.com>
+ <670cee24-8667-31c9-fe91-368b683d586e@huaweicloud.com>
+In-Reply-To: <670cee24-8667-31c9-fe91-368b683d586e@huaweicloud.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 13 Oct 2022 11:04:58 -0700
+Message-ID: <CAEf4BzZY5=nGF6HfcKeaZ39bK6dYxJm03zqAzBzzs28MRszVdw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 03/13] bpf: Support bpf_dynptr-typed map key
+ in bpf syscall
+To:     Hou Tao <houtao@huaweicloud.com>
+Cc:     Joanne Koong <joannelkoong@gmail.com>, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, houtao1@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 12, 2022 at 03:20:01PM -0700, Martin KaFai Lau wrote:
-> On 10/12/22 3:09 PM, Daniel Xu wrote:
-> > Hi Martin,
-> > 
-> > On Tue, Oct 11, 2022 at 10:49:32PM -0700, Martin KaFai Lau wrote:
-> > > On 8/11/22 2:55 PM, Daniel Xu wrote:
-> > > > Test that the prog can read from the connection mark. This test is nice
-> > > > because it ensures progs can interact with netfilter subsystem
-> > > > correctly.
-> > > > 
-> > > > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> > > > Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > > > ---
-> > > >    tools/testing/selftests/bpf/prog_tests/bpf_nf.c | 3 ++-
-> > > >    tools/testing/selftests/bpf/progs/test_bpf_nf.c | 3 +++
-> > > >    2 files changed, 5 insertions(+), 1 deletion(-)
-> > > > 
-> > > > diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_nf.c b/tools/testing/selftests/bpf/prog_tests/bpf_nf.c
-> > > > index 88a2c0bdefec..544bf90ac2a7 100644
-> > > > --- a/tools/testing/selftests/bpf/prog_tests/bpf_nf.c
-> > > > +++ b/tools/testing/selftests/bpf/prog_tests/bpf_nf.c
-> > > > @@ -44,7 +44,7 @@ static int connect_to_server(int srv_fd)
-> > > >    static void test_bpf_nf_ct(int mode)
-> > > >    {
-> > > > -	const char *iptables = "iptables -t raw %s PREROUTING -j CT";
-> > > > +	const char *iptables = "iptables -t raw %s PREROUTING -j CONNMARK --set-mark 42/0";
-> > > Hi Daniel Xu, this test starts failing recently in CI [0]:
-> > > 
-> > > Warning: Extension CONNMARK revision 0 not supported, missing kernel module?
-> > >    iptables v1.8.8 (nf_tables): Could not fetch rule set generation id:
-> > > Invalid argument
-> > > 
-> > >    Warning: Extension CONNMARK revision 0 not supported, missing kernel module?
-> > >    iptables v1.8.8 (nf_tables): Could not fetch rule set generation id:
-> > > Invalid argument
-> > > 
-> > >    Warning: Extension CONNMARK revision 0 not supported, missing kernel module?
-> > >    iptables v1.8.8 (nf_tables): Could not fetch rule set generation id:
-> > > Invalid argument
-> > > 
-> > >    Warning: Extension CONNMARK revision 0 not supported, missing kernel module?
-> > >    iptables v1.8.8 (nf_tables): Could not fetch rule set generation id:
-> > > Invalid argument
-> > > 
-> > >    test_bpf_nf_ct:PASS:test_bpf_nf__open_and_load 0 nsec
-> > >    test_bpf_nf_ct:FAIL:iptables unexpected error: 1024 (errno 0)
-> > > 
-> > > Could you help to take a look? Thanks.
-> > > 
-> > > [0]: https://github.com/kernel-patches/bpf/actions/runs/3231598391/jobs/5291529292
-> > 
-> > [...]
-> > 
-> > Thanks for letting me know. I took a quick look and it seems that
-> > synproxy selftest is also failing:
-> > 
-> >      2022-10-12T03:14:20.2007627Z test_synproxy:FAIL:iptables -t raw -I PREROUTING      -i tmp1 -p tcp -m tcp --syn --dport 8080 -j CT --notrack unexpected error: 1024 (errno 2)
-> > 
-> > Googling the "Could not fetch rule set generation id" yields a lot of
-> > hits. Most of the links are from downstream projects recommending user
-> > downgrade iptables (nftables) to iptables-legacy.
-> 
-> Thanks for looking into it!  We have been debugging a bit today also.  I
-> also think iptables-legacy is the one to use.  I posted a patch [0].  Let
-> see how the CI goes.
-> 
-> The rules that the selftest used is not a lot.  I wonder what it takes to
-> remove the iptables command usage from the selftest?
+On Fri, Oct 7, 2022 at 7:40 PM Hou Tao <houtao@huaweicloud.com> wrote:
+>
+> Hi,
+>
+> On 10/1/2022 5:35 AM, Andrii Nakryiko wrote:
+> > On Wed, Sep 28, 2022 at 7:11 PM Hou Tao <houtao@huaweicloud.com> wrote:
+> SNP
+> >>> I'm trying to understand why there should be so many new concepts and
+> >>> interfaces just to allow variable-sized keys. Can you elaborate on
+> >>> that? Like why do we even need BPF_DYNPTR_TYPE_USER? Why user can't
+> >>> just pass a void * (casted to u64) pointer and size of the memory
+> >>> pointed to it, and kernel will just copy necessary amount of data into
+> >>> kvmalloc'ed temporary region?
+> >> The main reason is that map operations from syscall and bpf program use the same
+> >> ops in bpf_map_ops (e.g. map_update_elem). If only use dynptr_kern for bpf
+> >> program, then
+> >> have to define three new operations for bpf program. Even more, after defining
+> >> two different map ops for the same operation from syscall and bpf program, the
+> >> internal  implementation of qp-trie still need to convert these two different
+> >> representations of variable-length key into bpf_qp_trie_key. It introduces
+> >> unnecessary conversion, so I think it may be a good idea to pass dynptr_kern to
+> >> qp-trie even for bpf syscall.
+> >>
+> >> And now in bpf_attr, for BPF_MAP_*_ELEM command, there is no space to pass an
+> >> extra key size. It seems bpf_attr can be extend, but even it is extented, it
+> >> also means in libbpf we need to provide a new API group to support operationg on
+> >> dynptr key map, because the userspace needs to pass the key size as a new argument.
+> > You are right that the current assumption of implicit key/value size
+> > doesn't work for these variable-key/value-length maps. But I think the
+> > right answer is actually to make sure that we have a map_update_elem
+> > callback variant that accepts key/value size explicitly. I still think
+> > that the syscall interface shouldn't introduce a concept of dynptr.
+> > >From user-space's point of view dynptr is just a memory pointer +
+> > associated memory size. Let's keep it simple. And yes, it will be a
+> > new libbpf API for bpf_map_lookup_elem/bpf_map_update_elem. That's
+> > fine.
+> Is your point that dynptr is too complicated for user-space and may lead to
+> confusion between dynptr in kernel space ? How about a different name or a
 
-At least the conntrack mark stuff, it would've been easier to write the
-selftests _without_ iptables. But I thought it was both good and
-necessary to test interop between BPF and netfilter. B/c that is
-what the user is doing (at least for me).
+No, dynptr is just an unnecessary concept for user-space, because
+fundamentally it's just a memory region, which in UAPI is represented
+by a pointer + size. So why inventing new concepts when existing ones
+are covering it?
 
-However if it's causing maintenance trouble, I'll leave that call to
-you.
+> simple definition just like bpf_lpm_trie_key ? It will make both the
+> implementation and the usage much simpler, because the implementation and the
+> user can still use the same APIs just like fixed sized map.
+>
+> Not just lookup/update/delete, we also need to define a new op for
+> get_next_key/lookup_and_delete_elem. And also need to define corresponding new
+> bpf helpers for bpf program. And you said "explict key/value size", do you mean
+> something below ?
+>
+> int (*map_update_elem)(struct bpf_map *map, void *key, u32 key_size, void
+> *value, u32 value_size, u64 flags);
 
-Thanks,
-Daniel
+Yes, something like that. The problem is that up until now we assume
+that key_size is fixed and can be derived from map definition. We are
+trying to change that, so there needs to be a change in internal APIs.
+
+>
+> >
+> >
+> >>> It also seems like you want to allow key (and maybe value as well, not
+> >>> sure) to be a custom user-defined type where some of the fields are
+> >>> struct bpf_dynptr. I think it's a big overcomplication, tbh. I'd say
+> >>> it's enough to just say that entire key has to be described by a
+> >>> single bpf_dynptr. Then we can have bpf_map_lookup_elem_dynptr(map,
+> >>> key_dynptr, flags) new helper to provide variable-sized key for
+> >>> lookup.
+> >> For qp-trie, it will only support a single dynptr as the map key. In the future
+> >> maybe other map will support map key with embedded dynptrs. Maybe Joanne can
+> >> share some vision about such use case.
+> > My point was that instead of saying that key is some fixed-size struct
+> > in which one of the fields is dynptr (and then when comparing you have
+> > to compare part of struct, then dynptr contents, then the other part
+> > of struct?), just say that entire key is represented by dynptr,
+> > implicitly (it's just a blob of bytes). That seems more
+> > straightforward.
+> I see. But I still think there is possible user case for struct with embedded
+> dynptr. For bpf map in kernel, byte blob is OK. But If it is also a blob of
+> bytes for the bpf program or userspace application, the application may need to
+> marshaling and un-marshaling between the bytes blob and a meaningful struct type
+> each time before using it.
+> > .
+>
+
+I'm not sure what you mean by "blob of bytes for userspace
+application"? You mean a pointer pointing to some process' memory (not
+a kernel memory)? How is that going to work if BPF program can run and
+access such blob in any context, not just in the context of original
+user-space app that set this value?
+
+If you mean that blob needs to be interpreted as some sort of struct,
+then yes, it's easy, we have bpf_dynptr_data() and `void *` -> `struct
+my_custom_struct` casting in C.
+
+Or did I miss your point?
