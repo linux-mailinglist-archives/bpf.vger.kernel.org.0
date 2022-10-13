@@ -2,123 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 588D45FD33A
-	for <lists+bpf@lfdr.de>; Thu, 13 Oct 2022 04:27:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DBF25FD368
+	for <lists+bpf@lfdr.de>; Thu, 13 Oct 2022 05:02:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229475AbiJMC1k (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Oct 2022 22:27:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58714 "EHLO
+        id S229548AbiJMDCY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Oct 2022 23:02:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbiJMC1j (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Oct 2022 22:27:39 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DAC9115400
-        for <bpf@vger.kernel.org>; Wed, 12 Oct 2022 19:27:38 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id y191so722706pfb.2
-        for <bpf@vger.kernel.org>; Wed, 12 Oct 2022 19:27:38 -0700 (PDT)
+        with ESMTP id S229544AbiJMDCX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Oct 2022 23:02:23 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0A611326B6
+        for <bpf@vger.kernel.org>; Wed, 12 Oct 2022 20:02:21 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id m19so520366lfq.9
+        for <bpf@vger.kernel.org>; Wed, 12 Oct 2022 20:02:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0gKYRZDDM90Di93CvJKt2gp7x873nH3xFGWEnv5tNnk=;
-        b=idd+IDgFuT97y5XHKYyQdT2D1mbNkr0iIBw5OjhnEaH4fcxjb6PJcHbvWq8dFxvfYM
-         E6PYnyZDRzvMarYaY9mAm0X2Wks+9IX+tEYpvnhPFPDMsmR7tkj6m4e5f/7aDJy5VKMo
-         cdnk9Brj4dPk5aJ5NJ+R55CnjQPTk7lmSo/6KIcWpTTYGOux3U3htRJclqX73rtk12rf
-         VXmpz6oL5IAk/s68rG0Ed8BSIX2+1FoDitVE3fNbQqauqXxE9KQlIQZmIBaXJ5xgr2LI
-         +n01UInQHME/GVow9d+pqzyjoAbGkEOQvjRaB673uJfbpa/ksDH1FOfH3/t8RZCeVp/M
-         NjYA==
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=OzWBQgSdxcEtl1H2Nkqa4ju8p59AJdEo00LZPrM6Tb4=;
+        b=XdJwOXAJC3sMMgyMnIuR8MXZzYjvaSU1+3Eddpyj7i4ad0O6n5haGDL6oFpzGKOiGT
+         5ZcZo/IVjZHodOmbXrnfruiEbnWcXoeu8saTKi952/AsZUlw3G9WTEyVoKVEiQgm3Lho
+         gVi85FE8AgBOEv91SanHwxQCKc+vcuYXlviNNYrMlsPjpMzLHSIHE0+qkASBtO/ncjAX
+         b6xe+x2YwJvGjAYl4dqG3dFVxbOlpO7MzVyO3yWvrXCZJ1Sx+E8WRXtEZIE2+o6Ka+cM
+         aPY4ja3yFliCxQC1CcRhZv1m1IP9s+zNuyx+pvYKezlayvALRW9GaXCe2UK9ZQo6tRWb
+         sp0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0gKYRZDDM90Di93CvJKt2gp7x873nH3xFGWEnv5tNnk=;
-        b=H/Gsk5kxbGNdFM7hEtgesEPMZK4EHVLngAltWzZvhOrSP4CfgMl+Mur/fcGRuDBfi7
-         KRi8cNtKcEmaOqHcyiyrVGPsww3ZJNFsf59DjC9rG2qOr32EuKtl4c2jqwkCj3LfoCKi
-         7qQtu3vpkdgE0fMvL/1e8fdqVxl3Rd2rBhDvegRTcxGu5x3EfXKCRQrTfNMIKpO+pS3O
-         DkHtREN3L+OI3MvlCCaKzarBO4UCRsh2f5vY3ThBZIgyMnA8L0U7eFpvD1rGEkb8oCdb
-         0Oqi/E5bmLBWbJbqJ1uq3gryS0099wUT3kfjpdFZNaOoNpHhwAC/nHtgOCDPbj98Q3If
-         XiWw==
-X-Gm-Message-State: ACrzQf1vsN63Y/PwT7L0gWyIRqNC/Y0wTTGwdH/f5rN/TxshIlsGxsyd
-        0uKA+beinKAuiUSGu/dmtONs1w==
-X-Google-Smtp-Source: AMsMyM7KPCJeeqJDtF19rxNp6rJSIbjdUQUoSJbXW7zXW/LF9FLidVM+yKS+2bmlJn3pw1+GTVJ/vQ==
-X-Received: by 2002:a63:20f:0:b0:43c:1ef6:ebd6 with SMTP id 15-20020a63020f000000b0043c1ef6ebd6mr28190029pgc.217.1665628057933;
-        Wed, 12 Oct 2022 19:27:37 -0700 (PDT)
-Received: from [10.4.165.47] ([139.177.225.254])
-        by smtp.gmail.com with ESMTPSA id z12-20020a17090a170c00b00206023cbcc7sm2046281pjd.15.2022.10.12.19.27.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 Oct 2022 19:27:37 -0700 (PDT)
-Message-ID: <ae81b620-e9c8-563a-8c54-2235164624dc@bytedance.com>
-Date:   Thu, 13 Oct 2022 10:27:29 +0800
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OzWBQgSdxcEtl1H2Nkqa4ju8p59AJdEo00LZPrM6Tb4=;
+        b=cww3X61mSoFbBDdQkj5QJXZg/uztaq1+hr63DUWYUSY6EbYdVaIdVz+8hv9MJp6w40
+         27ntPVgOx7ARpuyA7pQq9C349f0M8yn6g4JescERYunHfZ2Xqg0MLmexL7DeijETEbkb
+         4GcZll8VfKYHGHibfJjJNFxt5cR6ZzTJ9DMZTnn5hU0S0+IzNSOC79vuWXD+v3vVd//U
+         TRY1ZHEBQeHh7GpsrNwUbqK7ZFn7kcJD5SKNAloHnDhDUQZgEQo4DZ3ZzWE/5dnSAnCX
+         YYi/8TRulxTz7Pjp8N0fGgEEKh/5anw9jwPqGuHD+jqifjIopIl+K/AdK+dUN/N0l93T
+         jn0A==
+X-Gm-Message-State: ACrzQf38BcQ+pU2EtjzB2zEYZ2xb279Qj/WYt7+98i4cdSjqY7DwlHFo
+        GA/HlpQrMMzD3d7fIPsHVEyaaaHYp4j+CnoIyyGm
+X-Google-Smtp-Source: AMsMyM5NLnWv7HM9iRTINCcxaiashvksrjXoFrcUuGgJf8Szpzb/WL4lqmqoRdpzf7rS6YNE0cNAFMWHIsC26WFP8EM=
+X-Received: by 2002:a05:6512:110f:b0:4a2:697f:c39a with SMTP id
+ l15-20020a056512110f00b004a2697fc39amr10687652lfg.685.1665630140035; Wed, 12
+ Oct 2022 20:02:20 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.3.2
-Subject: Re: [PATCH] bpf/btf: Fix is_int_ptr()
-Content-Language: en-US
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        sdf@google.com, haoluo@google.com, jolsa@kernel.org
-References: <20221012125815.76120-1-zhouchengming@bytedance.com>
- <1e01ab5a-c171-0b7a-751a-9ba7da4cd5dd@linux.dev>
-From:   Chengming Zhou <zhouchengming@bytedance.com>
-In-Reply-To: <1e01ab5a-c171-0b7a-751a-9ba7da4cd5dd@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <CAJD7tkZkY9nfaVDmjzhDG4zzezNn7bXnGrK+kpn0zQFwPhdorw@mail.gmail.com>
+In-Reply-To: <CAJD7tkZkY9nfaVDmjzhDG4zzezNn7bXnGrK+kpn0zQFwPhdorw@mail.gmail.com>
+From:   John Stultz <jstultz@google.com>
+Date:   Wed, 12 Oct 2022 20:02:07 -0700
+Message-ID: <CANDhNCrrM58vmWCos5kd7_V=+NimW-5sU7UFtjxX0C+=mqW2KQ@mail.gmail.com>
+Subject: Re: Question about ktime_get_mono_fast_ns() non-monotonic behavior
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     tglx@linutronix.de, sboyd@kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Hao Luo <haoluo@google.com>,
+        Stanislav Fomichev <sdf@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2022/10/13 08:50, Martin KaFai Lau wrote:
-> On 10/12/22 5:58 AM, Chengming Zhou wrote:
->> When tracing a kernel function with arg type is u32*, btf_ctx_access()
->> would report error: arg2 type INT is not a struct.
->>
->> The commit bb6728d75611 ("bpf: Allow access to int pointer arguments
->> in tracing programs") added support for int pointer, but don't skip
->> modifiers before checking it's type. This patch fixes it.
-> 
-> A selftest is needed.  You can refer to the selftest added in the patch set [0] of the commit bb6728d75611.
-> 
-> This belongs to bpf-next.  Please tag it as bpf-next and also v2 in the next revision:
-> Documentation/bpf/bpf_devel_QA.rst  (Q: How do I indicate which tree....)
-> 
-> [0]: https://lore.kernel.org/bpf/20211208193245.172141-2-jolsa@kernel.org/
+On Mon, Sep 26, 2022 at 2:18 PM Yosry Ahmed <yosryahmed@google.com> wrote:
+>
+> Hey everyone,
+>
+> I have a question about ktime_get_mono_fast_ns(), which is used by the
+> BPF helper bpf_ktime_get_ns() among other use cases. The comment above
+> this function specifies that there are cases where the observed clock
+> would not be monotonic.
 
-Thanks for these helpful references, will do.
+Sorry for the slow response.
 
-> 
->>
->> Fixes: bb6728d75611 ("bpf: Allow access to int pointer arguments in tracing programs")
->> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
->> ---
->>   kernel/bpf/btf.c | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
->> index eba603cec2c5..2b343c42ed10 100644
->> --- a/kernel/bpf/btf.c
->> +++ b/kernel/bpf/btf.c
->> @@ -5316,8 +5316,8 @@ static bool is_int_ptr(struct btf *btf, const struct btf_type *t)
->>       /* t comes in already as a pointer */
->>       t = btf_type_by_id(btf, t->type);
->>   -    /* allow const */
->> -    if (BTF_INFO_KIND(t->info) == BTF_KIND_CONST)
->> +    /* skip modifiers */
->> +    while (btf_type_is_modifier(t))
-> 
-> There is btf_type_skip_modifiers() that should be useful here.
+> I had 2 beginner questions:
+>
+> 1) Is there a (rough) bound as to how much the clock can go backwards?
+> My understanding is that it is bounded by (slope update * delta), but
+> I don't know what's the bound of either of those (if any).
 
-Ok, will change to use this.
+So, it's been awhile since I was deep in this code, and I'd not call
+these beginner questions :)
+But from my memory your understanding is right.
 
-> 
->>           t = btf_type_by_id(btf, t->type);
->>         return btf_type_is_int(t);
-> 
+If I recall, the standard adjustment limit from NTP is usually +/-
+512ppm but additional adjustments (~10% via the tick adjustment) can
+be made.  There isn't a hard limit in the code, as there's clocksource
+mult granularity, and other considerations, but the kernel warns when
+it's over 11%.
+
+For the discontinuity issue, we accumulate time with cycle_interval
+granularity which is basically HZ, and so when we adjust the frequency
+we only have to compensate the base xtime_nsec to offset for the freq
+change against the unaccumulated cycles (which are less then
+cycle_interval - see the logic in timekeeping_apply_adjustment()).
+
+Then it's just the issue of how far after the update that you end up
+reading the clocksource (how long of a delay you hit). I think the
+assumption is you can't be delayed by more than a tick (as you the
+stale base could become the active one again), but its been awhile
+since I've stewed on this bit.
+
+So I think it reasonable to say its bounded by approximately  2 *
+NSEC_PER_SEC/HZ +/- 11%.
+
+
+
+> 2) The comment specifies that for a single cpu, the only way for this
+> behavior to happen is when observing the time in the context of an NMI
+> that happens during an update.
+> For observations across different cpus, are the scenarios where the
+> non-monotonic behavior happens also tied to observing time within NMI
+> contexts? or is it something that can happen outside of NMI contexts
+> as well?
+
+Yes, I believe it can happen outside of NMI contexts as well.  The
+read is effectively lock-free so if you are preempted or interrupted
+in the middle of the read (before fast_tk_get_delta_ns), you may end
+up using the old tk_fast base with a later clocksource cycle value,
+which can cause the same issue.
+
+thanks
+-john
