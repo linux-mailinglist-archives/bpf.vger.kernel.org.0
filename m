@@ -2,89 +2,154 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64DB45FDD52
-	for <lists+bpf@lfdr.de>; Thu, 13 Oct 2022 17:42:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 656C35FDD7E
+	for <lists+bpf@lfdr.de>; Thu, 13 Oct 2022 17:48:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230009AbiJMPmW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Oct 2022 11:42:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50186 "EHLO
+        id S229679AbiJMPsK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Oct 2022 11:48:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229886AbiJMPlb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Oct 2022 11:41:31 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 273AA122743;
-        Thu, 13 Oct 2022 08:40:28 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id A5D00B81ED7;
-        Thu, 13 Oct 2022 15:40:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 4BF72C43470;
-        Thu, 13 Oct 2022 15:40:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665675616;
-        bh=J/lwPJ5WiIjf30qtkle/UiARXMiDCL/Vgen5+KfB8RY=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=YBwixWrzs29BZ3t0lHmymJ9Myibanwt+BNSKxIfWAXODfxzbVodPWVxR8QBImvcPq
-         E+/Sa9STOHbY5SBa+0Lk5sA5q00flLyU66uaSo1mk30pnR/ohw9M++chA+PlL+QvZo
-         O8i3CdEcbdsUVKqeR+eJB6N9YvgIRB9uoTTskr7u8dHwrIchEOK+W0C0jW+T+JhXCB
-         TvUAYoAzitBK5ZJVYbZo8EUVrU91Fy/ZEqVj+mjZoyzwjKZnCJ3V27ED4VbOwwSFCL
-         U9zK/fAvc2ZNbBjo5up94Xkt7EQSc1p+36Y+f+8gtIfA5tQ+o8hwj7pq01P0vKgD9h
-         HZU9kKNaHpjyQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 176DEE4D00C;
-        Thu, 13 Oct 2022 15:40:16 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229537AbiJMPsJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Oct 2022 11:48:09 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9E56DD891;
+        Thu, 13 Oct 2022 08:48:08 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id g27so3189277edf.11;
+        Thu, 13 Oct 2022 08:48:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=xq3Ft5Gy3bihgDg2eQnRZLaoZCm4mqPLSgf5VDy0lNI=;
+        b=mWZ/ksuUPM4lAAfUgZN9Ei9Qn5R6eTz98BlE0YRWEKbT8KjDvV+GttlngcBAXOlw1a
+         dWBIbzCSALWQ3kLNVFtfXjaeXpCUK8H3J84bXuigFqOwCPKWJ9ojfayGPsGC1h/ylqvZ
+         hPjDiezMO+Rv32d1PyxrJg5+Ik4eDnPKBNCc6NCCZs8urNc8pNC/JC+BpApOdh4nO2JE
+         fgrkOFW04lTpt09mKwLQomX+NOiguziVPgmyplYyqFCziWNDrwL4J2TJ2lBHKtlF7ckh
+         4uej2hGj5TBvGE4Keu7svY7Y5YT8fOoTwkl4hk1KZvGmviMYGN7bnk6Tlj3HWUlk0qGG
+         ySwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xq3Ft5Gy3bihgDg2eQnRZLaoZCm4mqPLSgf5VDy0lNI=;
+        b=63Flw57J3TGjcDhA2EbB9q4k/bU09QGShN6kFm6UneWuoTsjr36uWbs4OYw1/VQsXH
+         FmN++ou6534sDZ5vMcfVMIfCWExVejvwSfsCaYS04Vjzm83ZZWcHr/OdFy2EBCp0f1eq
+         vBUg30IuARkanRhiYsglmSGR7Us736cltc54/ts6fRyw4HeKDKtgP18BWykOT2Fs7U5Y
+         ZXPcPQkguUwwnT3WYWFo5pQ4s94TEIOcFjxlWl1tfPWV1+8IpMhzA/JqcPiJoHko1vuE
+         q1zrOWCjTRSeZED8YUODB+q8NkV1Jgrc0dhIC5uSqOylC+Rmoxev0UVqoDBO7GuGibH3
+         dTdw==
+X-Gm-Message-State: ACrzQf1PvH+Qq/xZEJt8L/9QpgSO5JkxWsDUQUczb6r5ZaO2XMP/Il7b
+        6iv/EO9ySsIM9Wp6jX2b6WufDKx1Mf8V8aAJmVk=
+X-Google-Smtp-Source: AMsMyM5vOqLU9l0cOuSy0hzikA++us8/4quTmIviD9PS0gOoS/7XEE+/biGikZTxaSTkgR9eF47jawNrEvm9Fkm2Ni4=
+X-Received: by 2002:a05:6402:22ed:b0:458:bcd1:69cf with SMTP id
+ dn13-20020a05640222ed00b00458bcd169cfmr381307edb.260.1665676087173; Thu, 13
+ Oct 2022 08:48:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH 0/2] Allow bpf_user_ringbuf_drain() callbacks to return 1
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <166567561608.22924.7276455354921254094.git-patchwork-notify@kernel.org>
-Date:   Thu, 13 Oct 2022 15:40:16 +0000
-References: <20221012232015.1510043-1-void@manifault.com>
-In-Reply-To: <20221012232015.1510043-1-void@manifault.com>
-To:     David Vernet <void@manifault.com>
-Cc:     bpf@vger.kernel.org, andrii@kernel.org, ast@kernel.org,
-        martin.lau@linux.dev, daniel@iogearbox.net, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20221011120108.782373-1-xukuohai@huaweicloud.com> <20221011120108.782373-3-xukuohai@huaweicloud.com>
+In-Reply-To: <20221011120108.782373-3-xukuohai@huaweicloud.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 13 Oct 2022 08:47:55 -0700
+Message-ID: <CAEf4BzZVYO42kDcmNqorLfwJcMcN7fyTLdp2GWbGfV5akP12GQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 2/6] libbpf: Fix memory leak in parse_usdt_arg()
+To:     Xu Kuohai <xukuohai@huaweicloud.com>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Delyan Kratunov <delyank@fb.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Tue, Oct 11, 2022 at 4:43 AM Xu Kuohai <xukuohai@huaweicloud.com> wrote:
+>
+> From: Xu Kuohai <xukuohai@huawei.com>
+>
+> In the arm64 version of parse_usdt_arg(), when sscanf returns 2, reg_name
+> is allocated but not freed. Fix it.
+>
+> Fixes: 0f8619929c57 ("libbpf: Usdt aarch64 arg parsing support")
+> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
+> ---
+>  tools/lib/bpf/usdt.c | 11 ++++-------
+>  1 file changed, 4 insertions(+), 7 deletions(-)
+>
+> diff --git a/tools/lib/bpf/usdt.c b/tools/lib/bpf/usdt.c
+> index e83b497c2245..49f3c3b7f609 100644
+> --- a/tools/lib/bpf/usdt.c
+> +++ b/tools/lib/bpf/usdt.c
+> @@ -1348,25 +1348,23 @@ static int calc_pt_regs_off(const char *reg_name)
+>
+>  static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec *arg)
+>  {
+> -       char *reg_name = NULL;
+> +       char reg_name[16];
+>         int arg_sz, len, reg_off;
+>         long off;
+>
+> -       if (sscanf(arg_str, " %d @ \[ %m[a-z0-9], %ld ] %n", &arg_sz, &reg_name, &off, &len) == 3) {
+> +       if (sscanf(arg_str, " %d @ \[ %15[a-z0-9], %ld ] %n", &arg_sz, reg_name, &off, &len) == 3) {
 
-This series was applied to bpf/bpf.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
-
-On Wed, 12 Oct 2022 18:20:13 -0500 you wrote:
-> The bpf_user_ringbuf_drain() helper function allows a BPF program to
-> specify a callback that is invoked when draining entries from a
-> BPF_MAP_TYPE_USER_RINGBUF ring buffer map. The API is meant to allow the
-> callback to return 0 if it wants to continue draining samples, and 1 if
-> it's done draining. Unfortunately, bpf_user_ringbuf_drain() landed shortly
-> after commit 1bfe26fb0827 ("bpf: Add verifier support for custom
-> callback return range"), which changed the default behavior of callbacks
-> to only support returning 0, and the corresponding necessary change to
-> bpf_user_ringbuf_drain() callbacks was missed.
-> 
-> [...]
-
-Here is the summary with links:
-  - [1/2] bpf: Allow bpf_user_ringbuf_drain() callbacks to return 1
-    https://git.kernel.org/bpf/bpf/c/c92a7a522438
-  - [2/2] selftests/bpf: Make bpf_user_ringbuf_drain() selftest callback return 1
-    https://git.kernel.org/bpf/bpf/c/6e44b9f375a3
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+It would be nice to do the same change for other architectures where
+it makes sense and avoid having to deal with unnecessary memory
+allocations. Please send follow up patches with similar changes for
+other implementations of parse_usdt_arg. Thanks.
 
 
+>                 /* Memory dereference case, e.g., -4@[sp, 96] */
+>                 arg->arg_type = USDT_ARG_REG_DEREF;
+>                 arg->val_off = off;
+>                 reg_off = calc_pt_regs_off(reg_name);
+> -               free(reg_name);
+>                 if (reg_off < 0)
+>                         return reg_off;
+>                 arg->reg_off = reg_off;
+> -       } else if (sscanf(arg_str, " %d @ \[ %m[a-z0-9] ] %n", &arg_sz, &reg_name, &len) == 2) {
+> +       } else if (sscanf(arg_str, " %d @ \[ %15[a-z0-9] ] %n", &arg_sz, reg_name, &len) == 2) {
+>                 /* Memory dereference case, e.g., -4@[sp] */
+>                 arg->arg_type = USDT_ARG_REG_DEREF;
+>                 arg->val_off = 0;
+>                 reg_off = calc_pt_regs_off(reg_name);
+> -               free(reg_name);
+>                 if (reg_off < 0)
+>                         return reg_off;
+>                 arg->reg_off = reg_off;
+> @@ -1375,12 +1373,11 @@ static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec
+>                 arg->arg_type = USDT_ARG_CONST;
+>                 arg->val_off = off;
+>                 arg->reg_off = 0;
+> -       } else if (sscanf(arg_str, " %d @ %m[a-z0-9] %n", &arg_sz, &reg_name, &len) == 2) {
+> +       } else if (sscanf(arg_str, " %d @ %15[a-z0-9] %n", &arg_sz, reg_name, &len) == 2) {
+>                 /* Register read case, e.g., -8@x4 */
+>                 arg->arg_type = USDT_ARG_REG;
+>                 arg->val_off = 0;
+>                 reg_off = calc_pt_regs_off(reg_name);
+> -               free(reg_name);
+>                 if (reg_off < 0)
+>                         return reg_off;
+>                 arg->reg_off = reg_off;
+> --
+> 2.30.2
+>
