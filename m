@@ -2,58 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DBF25FD368
-	for <lists+bpf@lfdr.de>; Thu, 13 Oct 2022 05:02:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD11A5FD36E
+	for <lists+bpf@lfdr.de>; Thu, 13 Oct 2022 05:07:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229548AbiJMDCY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Oct 2022 23:02:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34482 "EHLO
+        id S229502AbiJMDHj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Oct 2022 23:07:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbiJMDCX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Oct 2022 23:02:23 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0A611326B6
-        for <bpf@vger.kernel.org>; Wed, 12 Oct 2022 20:02:21 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id m19so520366lfq.9
-        for <bpf@vger.kernel.org>; Wed, 12 Oct 2022 20:02:21 -0700 (PDT)
+        with ESMTP id S229542AbiJMDHi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Oct 2022 23:07:38 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA1E0120068
+        for <bpf@vger.kernel.org>; Wed, 12 Oct 2022 20:07:36 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id q7so790179ljp.3
+        for <bpf@vger.kernel.org>; Wed, 12 Oct 2022 20:07:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=OzWBQgSdxcEtl1H2Nkqa4ju8p59AJdEo00LZPrM6Tb4=;
-        b=XdJwOXAJC3sMMgyMnIuR8MXZzYjvaSU1+3Eddpyj7i4ad0O6n5haGDL6oFpzGKOiGT
-         5ZcZo/IVjZHodOmbXrnfruiEbnWcXoeu8saTKi952/AsZUlw3G9WTEyVoKVEiQgm3Lho
-         gVi85FE8AgBOEv91SanHwxQCKc+vcuYXlviNNYrMlsPjpMzLHSIHE0+qkASBtO/ncjAX
-         b6xe+x2YwJvGjAYl4dqG3dFVxbOlpO7MzVyO3yWvrXCZJ1Sx+E8WRXtEZIE2+o6Ka+cM
-         aPY4ja3yFliCxQC1CcRhZv1m1IP9s+zNuyx+pvYKezlayvALRW9GaXCe2UK9ZQo6tRWb
-         sp0w==
+        bh=teT7jLlxzN4i1te1sVTA7XA7K2s0Bo1np+U79OkEZds=;
+        b=a3jtqMpOOhZuTY4QC3PGfEN5pY3L8lvp+y4QJXVoPWwdAg8nWFqubN5gCcMHFj+U7u
+         /U4/C7JlWhypXP/uFWVDxoGFkLis1AlnRMQNo5p+C+O4QKiHfuFsVyXl53WoeMk3CGhF
+         uCpfIFnlJVrOOjBQR0ivHRe/u0a7GAzHhoKjGgNytEaApQ/A8hY5onwOQzz/UtRpbFXz
+         0FmMLTIfxjXfvrXRb8h5L3UGqyFrcybPMzsZh89h1xW+/21xBctI88STKhaxCXvRMsiK
+         x9N6lWATu3oWk7M3YRoTlw+BQ7bpOx8gzprxBSCVuno6agoDAoyG5IiyXH5Ag4tXUVX9
+         /CMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=OzWBQgSdxcEtl1H2Nkqa4ju8p59AJdEo00LZPrM6Tb4=;
-        b=cww3X61mSoFbBDdQkj5QJXZg/uztaq1+hr63DUWYUSY6EbYdVaIdVz+8hv9MJp6w40
-         27ntPVgOx7ARpuyA7pQq9C349f0M8yn6g4JescERYunHfZ2Xqg0MLmexL7DeijETEbkb
-         4GcZll8VfKYHGHibfJjJNFxt5cR6ZzTJ9DMZTnn5hU0S0+IzNSOC79vuWXD+v3vVd//U
-         TRY1ZHEBQeHh7GpsrNwUbqK7ZFn7kcJD5SKNAloHnDhDUQZgEQo4DZ3ZzWE/5dnSAnCX
-         YYi/8TRulxTz7Pjp8N0fGgEEKh/5anw9jwPqGuHD+jqifjIopIl+K/AdK+dUN/N0l93T
-         jn0A==
-X-Gm-Message-State: ACrzQf38BcQ+pU2EtjzB2zEYZ2xb279Qj/WYt7+98i4cdSjqY7DwlHFo
-        GA/HlpQrMMzD3d7fIPsHVEyaaaHYp4j+CnoIyyGm
-X-Google-Smtp-Source: AMsMyM5NLnWv7HM9iRTINCcxaiashvksrjXoFrcUuGgJf8Szpzb/WL4lqmqoRdpzf7rS6YNE0cNAFMWHIsC26WFP8EM=
-X-Received: by 2002:a05:6512:110f:b0:4a2:697f:c39a with SMTP id
- l15-20020a056512110f00b004a2697fc39amr10687652lfg.685.1665630140035; Wed, 12
- Oct 2022 20:02:20 -0700 (PDT)
+        bh=teT7jLlxzN4i1te1sVTA7XA7K2s0Bo1np+U79OkEZds=;
+        b=sZT6EiIXkDATDgsLI1ZSzXHXwWWh4jkbpEx+/ehUw8Yn4zMUTLCEOy26kEZVeG7BYx
+         RbixsYyeiolXH/ZtcpBJ6oT3YlORpnv8VS98xqOSfqzOehXqBmC0af7rLz/pvhhiaxyT
+         cGDRt0eUXHIGCCRZnh8tf93DeQLhzBvIBgoKXzH1EraZx4ay8K1OS+j5DrZ0s+PrHB8v
+         khIMbMynp89ASM4OFvH8x+9m697XNcqggeymOUI+nKmCD58xRIrt47RTAG0/CxwPnDWm
+         q0TNgHEZNw8mKd5G1jTdU+0qXMiUfPEuVgMs2+fJwW1mp2PC0HWn4GElmTY3oobGQnZI
+         xA+w==
+X-Gm-Message-State: ACrzQf28e7VKglJC2+erEt+q+zP7ZD9XYm4mev0/mW6L2Em+fk3w9ifk
+        OpYaC1PeiDdia7Gy+W0CLr6IXtcFfLJtcMfhqmbS
+X-Google-Smtp-Source: AMsMyM7s0RTDvuj/pVbsqF6Qfr5bg4a5tCwlZtc9rgBRuqFwjYDX/FMk9gCwQg3cQJyt4Yzkaw/Mfm9BdH75puFTuQY=
+X-Received: by 2002:a2e:9e50:0:b0:261:e3fd:cdc5 with SMTP id
+ g16-20020a2e9e50000000b00261e3fdcdc5mr11728293ljk.56.1665630455163; Wed, 12
+ Oct 2022 20:07:35 -0700 (PDT)
 MIME-Version: 1.0
 References: <CAJD7tkZkY9nfaVDmjzhDG4zzezNn7bXnGrK+kpn0zQFwPhdorw@mail.gmail.com>
-In-Reply-To: <CAJD7tkZkY9nfaVDmjzhDG4zzezNn7bXnGrK+kpn0zQFwPhdorw@mail.gmail.com>
+ <CANDhNCrrM58vmWCos5kd7_V=+NimW-5sU7UFtjxX0C+=mqW2KQ@mail.gmail.com>
+In-Reply-To: <CANDhNCrrM58vmWCos5kd7_V=+NimW-5sU7UFtjxX0C+=mqW2KQ@mail.gmail.com>
 From:   John Stultz <jstultz@google.com>
-Date:   Wed, 12 Oct 2022 20:02:07 -0700
-Message-ID: <CANDhNCrrM58vmWCos5kd7_V=+NimW-5sU7UFtjxX0C+=mqW2KQ@mail.gmail.com>
+Date:   Wed, 12 Oct 2022 20:07:23 -0700
+Message-ID: <CANDhNCojzuCW2Udx_CssLvnY9DunEqVBSxnC5D6Rz0oX-r2-7g@mail.gmail.com>
 Subject: Re: Question about ktime_get_mono_fast_ns() non-monotonic behavior
 To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     tglx@linutronix.de, sboyd@kernel.org,
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         bpf <bpf@vger.kernel.org>, Hao Luo <haoluo@google.com>,
         Stanislav Fomichev <sdf@google.com>
@@ -69,63 +71,12 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Sep 26, 2022 at 2:18 PM Yosry Ahmed <yosryahmed@google.com> wrote:
->
-> Hey everyone,
->
-> I have a question about ktime_get_mono_fast_ns(), which is used by the
-> BPF helper bpf_ktime_get_ns() among other use cases. The comment above
-> this function specifies that there are cases where the observed clock
-> would not be monotonic.
+On Wed, Oct 12, 2022 at 8:02 PM John Stultz <jstultz@google.com> wrote:
+> On Mon, Sep 26, 2022 at 2:18 PM Yosry Ahmed <yosryahmed@google.com> wrote:
+> So I think it reasonable to say its bounded by approximately  2 *
+> NSEC_PER_SEC/HZ +/- 11%.
 
-Sorry for the slow response.
-
-> I had 2 beginner questions:
->
-> 1) Is there a (rough) bound as to how much the clock can go backwards?
-> My understanding is that it is bounded by (slope update * delta), but
-> I don't know what's the bound of either of those (if any).
-
-So, it's been awhile since I was deep in this code, and I'd not call
-these beginner questions :)
-But from my memory your understanding is right.
-
-If I recall, the standard adjustment limit from NTP is usually +/-
-512ppm but additional adjustments (~10% via the tick adjustment) can
-be made.  There isn't a hard limit in the code, as there's clocksource
-mult granularity, and other considerations, but the kernel warns when
-it's over 11%.
-
-For the discontinuity issue, we accumulate time with cycle_interval
-granularity which is basically HZ, and so when we adjust the frequency
-we only have to compensate the base xtime_nsec to offset for the freq
-change against the unaccumulated cycles (which are less then
-cycle_interval - see the logic in timekeeping_apply_adjustment()).
-
-Then it's just the issue of how far after the update that you end up
-reading the clocksource (how long of a delay you hit). I think the
-assumption is you can't be delayed by more than a tick (as you the
-stale base could become the active one again), but its been awhile
-since I've stewed on this bit.
-
-So I think it reasonable to say its bounded by approximately  2 *
-NSEC_PER_SEC/HZ +/- 11%.
-
-
-
-> 2) The comment specifies that for a single cpu, the only way for this
-> behavior to happen is when observing the time in the context of an NMI
-> that happens during an update.
-> For observations across different cpus, are the scenarios where the
-> non-monotonic behavior happens also tied to observing time within NMI
-> contexts? or is it something that can happen outside of NMI contexts
-> as well?
-
-Yes, I believe it can happen outside of NMI contexts as well.  The
-read is effectively lock-free so if you are preempted or interrupted
-in the middle of the read (before fast_tk_get_delta_ns), you may end
-up using the old tk_fast base with a later clocksource cycle value,
-which can cause the same issue.
+Sorry, this should be 2*NSEC_PER_SEC/HZ * 0.11
 
 thanks
 -john
