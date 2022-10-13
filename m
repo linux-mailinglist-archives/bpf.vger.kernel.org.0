@@ -2,78 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94D2F5FE158
-	for <lists+bpf@lfdr.de>; Thu, 13 Oct 2022 20:35:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D684E5FE21F
+	for <lists+bpf@lfdr.de>; Thu, 13 Oct 2022 20:54:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231443AbiJMSfh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Oct 2022 14:35:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35202 "EHLO
+        id S229815AbiJMSyJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Oct 2022 14:54:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231545AbiJMSfS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Oct 2022 14:35:18 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB98218F90B;
-        Thu, 13 Oct 2022 11:31:49 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id d26so5745292ejc.8;
-        Thu, 13 Oct 2022 11:31:49 -0700 (PDT)
+        with ESMTP id S232283AbiJMSxb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Oct 2022 14:53:31 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB6F1192B92
+        for <bpf@vger.kernel.org>; Thu, 13 Oct 2022 11:51:27 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id a13so3943245edj.0
+        for <bpf@vger.kernel.org>; Thu, 13 Oct 2022 11:51:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jyFY2++ZqqhiMZVZj707ssQ7LehJE6VnNQ8oQyuUN+I=;
-        b=pNXMqgNGE1kyet/qCg/fOz0o9refZNSLArkO6qdFg7YPxQxJvwJjgwpbNU+IIcw6Z2
-         R7fXzvlycq8DxEOhlJ5yxsXkTjW3YqZk4632LUTC6eJQTCq9WRzH2Gomj//8RLKT0QtK
-         p8K4IBt9YveK4KPhsnvrm3Ie/X8SSUdJezNEuF0Ijbqw93MRO6RTFvW0+qkgoHA1bZup
-         Fybkw3xMXBBpBW/2E8LFSFzG7iqiUM0J8TCTxBt7ckTadlw0UuGxwliJIt9NW/BJdlwP
-         OTdSi5IJ23wlNBc2AeIAd23BtS1/XqKqVmjwnF3XJaw7V0oZ3DV93LB2gh81klo6Dnuu
-         sS9Q==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=e6XB8/Ynx2Q57wwCyJDlDfjWI4dKBheD89elBLO+YWI=;
+        b=bIdldpwq/2KIw59sIRIj5auTW2pHyLF1Fpm6o5dPjlvkkTwjejY8cRCpFdoIpM9zRW
+         f6WjnZ7577zfiD3jwfXs69Zckx8Dj4d/J2MGcAcRlnCEpJ/xkH3bitbW9LwTNbDVoovV
+         T2nqtd1ZV/wgjPpcx1HSlWTgomRhbF9VlX+VqkWavImzld0KTmSsc5qG9+tMnQvx8cSr
+         OriY/LIY8g6NZGETrFna2EdQw6YmtXB6M1RD9u53Mzd4aaR/aKVNXpgyGTMGc2ViGOwN
+         D56KIdWwGVHhKnOA3q/M1ijo7pSSHzBGsAzD3LH4hRhlomuacFcIz0Ev6zuX6lFjy74d
+         0U0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jyFY2++ZqqhiMZVZj707ssQ7LehJE6VnNQ8oQyuUN+I=;
-        b=ds3fN1tg2kMaqJUIimHUvt1dj4EeSReWA7HWJNBkrI/ydXnU1w8eSTx1eJyG9rQkB5
-         pBUpNZh6JpMpMzYbuG8HbHo1lbevZM3XBNcFUm544+56Xu0tJRae9uzfBClHCPLDkF1d
-         +W4EHrEiOJ+GB7YmtNUhXuOcbP+W4c0VmDoE6n/EQkb2/Z6rV3Q/9BIReH+ExtekFo/H
-         9k1U6TIR5pBG7kHHqTv/0VS31TvQsV48jBKXkC/T99KoqUoTyUJ0cheXFzOy371jDeiL
-         Teb1bMeAlZFJ/b6668kDyGZHTaLpK3GofAF0Rui1MsvchEMQYyE3LrwKYnlFb2/fxg/x
-         obVA==
-X-Gm-Message-State: ACrzQf02C/8A9JTDw1ayiB5K+ul2j+UwWcTpOjkQ79Sd7wUSREK4u8rh
-        oCW7BtO6jqHd1QfzfXHVu9byKjdpGLIN0vDVBd/BAezL
-X-Google-Smtp-Source: AMsMyM5WgXy5TIPXXjvDut292kl+DLHyOUThmi9qDOSZT/m3ZNUTFpFqqv6WWvjf5Jx+/+gfV6haPUEeNToMDmGrBrQ=
-X-Received: by 2002:a17:907:984:b0:77f:4d95:9e2f with SMTP id
- bf4-20020a170907098400b0077f4d959e2fmr835587ejc.176.1665685845770; Thu, 13
- Oct 2022 11:30:45 -0700 (PDT)
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=e6XB8/Ynx2Q57wwCyJDlDfjWI4dKBheD89elBLO+YWI=;
+        b=eSrj8xEVGwIdbrNREErk0iQMQ+XVVT80MXb28dci55KDXSUcrAvk15SiAf0i+LTOHb
+         8QJzQhc+/kuuP5Lc2kIDkRCWN/lnTlgBajpKupBhI1gWwee0QJVN0Z7gPwjOEwxSBJ64
+         zTok0NoqnE/StK+i9m/0tmWVPkPRLYLHyg8oVXHbTRfZ4Vqd1qAhT+Ov3cqns1bIvF2Y
+         212HUxMTmGtIrSbbXfgjDiFs4dn3FQMTm/oRfhJhaUTdFP2AeMovkyAqFILvyn8EIhEV
+         xJWoDEldvEYMmz7V27uIprMuMe5bhMYbcCwnIaKQRJPX8k3qWw4ovNjaCR26N2pMJEe7
+         BHYQ==
+X-Gm-Message-State: ACrzQf1nrE3St8EoHaCK8OZt3AO1GwpGhk+A3ADLXRHW8cyrunD924h+
+        4lAjX+29d7edfjavF4nmqR7sPxz2pE0IjoNlBs4=
+X-Google-Smtp-Source: AMsMyM4Ip37b3alvVqKTGZTP9yuSYdrjpSgVLe9jtHo/9KyieaeKNp53s/kLoI8bDZ61mGPdF0j1yaOJX/m5rPn7Q9w=
+X-Received: by 2002:a05:6402:22ed:b0:458:bcd1:69cf with SMTP id
+ dn13-20020a05640222ed00b00458bcd169cfmr1051721edb.260.1665687066620; Thu, 13
+ Oct 2022 11:51:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <f355eeba-1b46-749f-c102-65074e7eac27@iogearbox.net>
- <CAADnVQ+gEY3FjCR=+DmjDR4gp5bOYZUFJQXj4agKFHT9CQPZBw@mail.gmail.com>
- <14f368eb-9158-68bc-956c-c8371cfcb531@iogearbox.net> <875ygvemau.fsf@toke.dk>
- <Y0BaBUWeTj18V5Xp@google.com> <87tu4fczyv.fsf@toke.dk> <CAADnVQLH9R94iszCmhYeLKnDPy_uiGeyXnEwoADm8_miihwTmQ@mail.gmail.com>
- <8cc9811e-6efe-3aa5-b201-abbd4b10ceb4@iogearbox.net> <CAADnVQLpcLWrL-URhRgqCQa6XRZzib4BorZ2QKpPC+Uw_JNW=Q@mail.gmail.com>
- <87sfjysfxt.fsf@toke.dk> <20221008203832.7syl3rbt6lblzqxk@macbook-pro-4.dhcp.thefacebook.com>
-In-Reply-To: <20221008203832.7syl3rbt6lblzqxk@macbook-pro-4.dhcp.thefacebook.com>
+References: <20221009215926.970164-1-jolsa@kernel.org> <20221009215926.970164-5-jolsa@kernel.org>
+In-Reply-To: <20221009215926.970164-5-jolsa@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 13 Oct 2022 11:30:33 -0700
-Message-ID: <CAEf4BzbFawYvHBWZEh2RN+YMv6r2kEiVNXFVZqXRH1eWK+u_UA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 01/10] bpf: Add initial fd-based API to attach tc
- BPF programs
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+Date:   Thu, 13 Oct 2022 11:50:54 -0700
+Message-ID: <CAEf4BzZ_obDJY32tnGSSkNOk_PdCsf9UWQX4qqCEbSYD8sR4JQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 4/8] bpf: Take module reference on kprobe_multi link
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Stanislav Fomichev <sdf@google.com>, bpf <bpf@vger.kernel.org>,
-        Nikolay Aleksandrov <razor@blackwall.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Joe Stringer <joe@cilium.io>,
-        Network Development <netdev@vger.kernel.org>
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Christoph Hellwig <hch@lst.de>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Martynas Pumputis <m@lambda.lt>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -84,204 +75,157 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Oct 8, 2022 at 1:38 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Sun, Oct 9, 2022 at 3:00 PM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> On Sat, Oct 08, 2022 at 01:38:54PM +0200, Toke H=C3=B8iland-J=C3=B8rgense=
-n wrote:
-> > Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
-> >
-> > > On Fri, Oct 7, 2022 at 12:37 PM Daniel Borkmann <daniel@iogearbox.net=
-> wrote:
-> > >>
-> > >> On 10/7/22 8:59 PM, Alexei Starovoitov wrote:
-> > >> > On Fri, Oct 7, 2022 at 10:20 AM Toke H=C3=B8iland-J=C3=B8rgensen <=
-toke@redhat.com> wrote:
-> > >> [...]
-> > >> >>>> I was thinking a little about how this might work; i.e., how ca=
-n the
-> > >> >>>> kernel expose the required knobs to allow a system policy to be
-> > >> >>>> implemented without program loading having to talk to anything =
-other
-> > >> >>>> than the syscall API?
-> > >> >>>
-> > >> >>>> How about we only expose prepend/append in the prog attach UAPI=
-, and
-> > >> >>>> then have a kernel function that does the sorting like:
-> > >> >>>
-> > >> >>>> int bpf_add_new_tcx_prog(struct bpf_prog *progs, size_t num_pro=
-gs, struct
-> > >> >>>> bpf_prog *new_prog, bool append)
-> > >> >>>
-> > >> >>>> where the default implementation just appends/prepends to the a=
-rray in
-> > >> >>>> progs depending on the value of 'appen'.
-> > >> >>>
-> > >> >>>> And then use the __weak linking trick (or maybe struct_ops with=
- a member
-> > >> >>>> for TXC, another for XDP, etc?) to allow BPF to override the fu=
-nction
-> > >> >>>> wholesale and implement whatever ordering it wants? I.e., allow=
- it can
-> > >> >>>> to just shift around the order of progs in the 'progs' array wh=
-enever a
-> > >> >>>> program is loaded/unloaded?
-> > >> >>>
-> > >> >>>> This way, a userspace daemon can implement any policy it wants =
-by just
-> > >> >>>> attaching to that hook, and keeping things like how to express
-> > >> >>>> dependencies as a userspace concern?
-> > >> >>>
-> > >> >>> What if we do the above, but instead of simple global 'attach fi=
-rst/last',
-> > >> >>> the default api would be:
-> > >> >>>
-> > >> >>> - attach before <target_fd>
-> > >> >>> - attach after <target_fd>
-> > >> >>> - attach before target_fd=3D-1 =3D=3D first
-> > >> >>> - attach after target_fd=3D-1 =3D=3D last
-> > >> >>>
-> > >> >>> ?
-> > >> >>
-> > >> >> Hmm, the problem with that is that applications don't generally h=
-ave an
-> > >> >> fd to another application's BPF programs; and obtaining them from=
- an ID
-> > >> >> is a privileged operation (CAP_SYS_ADMIN). We could have it be "a=
-ttach
-> > >> >> before target *ID*" instead, which could work I guess? But then t=
-he
-> > >> >> problem becomes that it's racy: the ID you're targeting could get
-> > >> >> detached before you attach, so you'll need to be prepared to chec=
-k that
-> > >> >> and retry; and I'm almost certain that applications won't test fo=
-r this,
-> > >> >> so it'll just lead to hard-to-debug heisenbugs. Or am I being too
-> > >> >> pessimistic here?
-> > >> >
-> > >> > I like Stan's proposal and don't see any issue with FD.
-> > >> > It's good to gate specific sequencing with cap_sys_admin.
-> > >> > Also for consistency the FD is better than ID.
-> > >> >
-> > >> > I also like systemd analogy with Before=3D, After=3D.
-> > >> > systemd has a ton more ways to specify deps between Units,
-> > >> > but none of them have absolute numbers (which is what priority is)=
-.
-> > >> > The only bit I'd tweak in Stan's proposal is:
-> > >> > - attach before <target_fd>
-> > >> > - attach after <target_fd>
-> > >> > - attach before target_fd=3D0 =3D=3D first
-> > >> > - attach after target_fd=3D0 =3D=3D last
-> > >>
-> > >> I think the before(), after() could work, but the target_fd I have m=
-y doubts
-> > >> that it will be practical. Maybe lets walk through a concrete real e=
-xample. app_a
-> > >> and app_b shipped via container_a resp container_b. Both want to ins=
-tall tc BPF
-> > >> and we (operator/user) want to say that prog from app_b should only =
-be inserted
-> > >> after the one from app_a, never run before; if no prog_a is installe=
-d, we ofc just
-> > >> run prog_b, but if prog_a is inserted, it must be before prog_b give=
-n the latter
-> > >> can only run after the former. How would we get to one anothers targ=
-et fd? One
-> > >> could use the 0, but not if more programs sit before/after.
-> > >
-> > > I read your desired use case several times and probably still didn't =
-get it.
-> > > Sounds like prog_b can just do after(fd=3D0) to become last.
-> > > And prog_a can do before(fd=3D0).
-> > > Whichever the order of attaching (a or b) these two will always
-> > > be in a->b order.
-> >
-> > I agree that it's probably not feasible to have programs themselves
-> > coordinate between themselves except for "install me last/first" type
-> > semantics.
-> >
-> > I.e., the "before/after target_fd" is useful for a single application
-> > that wants to install two programs in a certain order. Or for bpftool
-> > for manual/debugging work.
+> Currently we allow to create kprobe multi link on function from kernel
+> module, but we don't take the module reference to ensure it's not
+> unloaded while we are tracing it.
 >
-> yep
+> The multi kprobe link is based on fprobe/ftrace layer which takes
+> different approach and releases ftrace hooks when module is unloaded
+> even if there's tracer registered on top of it.
 >
-> > System-wide policy (which includes "two containers both using BPF") is
-> > going to need some kind of policy agent/daemon anyway. And the in-kerne=
-l
-> > function override is the only feasible way to do that.
+> Adding code that gathers all the related modules for the link and takes
+> their references before it's attached. All kernel module references are
+> released after link is unregistered.
 >
-> yep
+> Note that we do it the same way already for trampoline probes
+> (but for single address).
 >
-> > > Since the first and any prog returning !TC_NEXT will abort
-> > > the chain we'd need __weak nop orchestrator prog to interpret
-> > > retval for anything to be useful.
-> >
-> > If we also want the orchestrator to interpret return codes, that
-> > probably implies generating a BPF program that does the dispatching,
-> > right? (since the attachment is per-interface we can't reuse the same
-> > one). So maybe we do need to go the route of the (overridable) usermode
-> > helper that gets all the program FDs and generates a BPF dispatcher
-> > program? Or can we do this with a __weak function that emits bytecode
-> > inside the kernel without being unsafe?
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  kernel/trace/bpf_trace.c | 100 +++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 100 insertions(+)
 >
-> hid-bpf, cgroup-rstat, netfilter-bpf are facing similar issue.
-> The __weak override with one prog is certainly limiting.
-> And every case needs different demux.
-> I think we need to generalize xdp dispatcher to address this.
-> For example, for the case:
-> __weak noinline void bpf_rstat_flush(struct cgroup *cgrp,
->                                      struct cgroup *parent, int cpu)
-> {
-> }
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 9be1a2b6b53b..f3d7565fee79 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -2447,6 +2447,8 @@ struct bpf_kprobe_multi_link {
+>         unsigned long *addrs;
+>         u64 *cookies;
+>         u32 cnt;
+> +       struct module **mods;
+> +       u32 mods_cnt;
+>  };
 >
-> we can say that 1st argument to nop function will be used as
-> 'demuxing entity'.
-> Sort of like if we had added a 'prog' pointer to 'struct cgroup',
-> but instead of burning 8 byte in every struct cgroup we can generate
-> 'dispatcher asm' only for specific pointers.
-> In case of fuse-bpf that pointer will be a pointer to hid device and
-> demux will be done based on device. It can be an integer too.
-> The subsystem that defines __weak func can pick whatever int or pointer
-> as a first argument and dispatcher routine will generate code:
-> if (arg1 =3D=3D constA) progA(arg1, arg2, ...);
-> else if (arg1 =3D=3D constB) progB(arg1, arg2, ...);
-> ...
-> else nop();
+>  struct bpf_kprobe_multi_run_ctx {
+> @@ -2502,6 +2504,14 @@ static int copy_user_syms(struct user_syms *us, unsigned long __user *usyms, u32
+>         return err;
+>  }
 >
-> This way the 'nop' property of __weak is preserved until user space
-> passes (constA, progA) tuple to the kernel to generate dispatcher
-> for that __weak hook.
+> +static void kprobe_multi_put_modules(struct module **mods, u32 cnt)
+> +{
+> +       u32 i;
+> +
+> +       for (i = 0; i < cnt; i++)
+> +               module_put(mods[i]);
+> +}
+> +
+>  static void free_user_syms(struct user_syms *us)
+>  {
+>         kvfree(us->syms);
+> @@ -2514,6 +2524,7 @@ static void bpf_kprobe_multi_link_release(struct bpf_link *link)
 >
-> > Anyway, I'm OK with deferring the orchestrator mechanism and going with
-> > Stanislav's proposal as an initial API.
+>         kmulti_link = container_of(link, struct bpf_kprobe_multi_link, link);
+>         unregister_fprobe(&kmulti_link->fp);
+> +       kprobe_multi_put_modules(kmulti_link->mods, kmulti_link->mods_cnt);
+>  }
 >
-> Great. Looks like we're converging :) Hope Daniel is ok with this directi=
-on.
+>  static void bpf_kprobe_multi_link_dealloc(struct bpf_link *link)
+> @@ -2523,6 +2534,7 @@ static void bpf_kprobe_multi_link_dealloc(struct bpf_link *link)
+>         kmulti_link = container_of(link, struct bpf_kprobe_multi_link, link);
+>         kvfree(kmulti_link->addrs);
+>         kvfree(kmulti_link->cookies);
+> +       kfree(kmulti_link->mods);
+>         kfree(kmulti_link);
+>  }
+>
+> @@ -2658,6 +2670,80 @@ static void symbols_swap_r(void *a, void *b, int size, const void *priv)
+>         }
+>  }
+>
+> +struct module_addr_args {
+> +       unsigned long *addrs;
+> +       u32 addrs_cnt;
+> +       struct module **mods;
+> +       int mods_cnt;
+> +       int mods_alloc;
+> +};
+> +
+> +static int module_callback(void *data, const char *name,
+> +                          struct module *mod, unsigned long addr)
+> +{
+> +       struct module_addr_args *args = data;
+> +       bool realloc = !args->mods;
+> +       struct module **mods;
+> +
+> +       /* We iterate all modules symbols and for each we:
+> +        * - search for it in provided addresses array
+> +        * - if found we check if we already have the module pointer stored
+> +        *   (we iterate modules sequentially, so we can check just the last
+> +        *   module pointer)
+> +        * - take module reference and store it
+> +        */
+> +       if (!bsearch(&addr, args->addrs, args->addrs_cnt, sizeof(unsigned long),
 
-No one proposed a slight variation on what Daniel was proposing with
-prios that might work just as well. So for completeness, what if
-instead of specifying 0 or explicit prio, we allow specifying either:
-  - explicit prio, and if that prio is taken -- fail
-  - min_prio, and kernel will find smallest untaken prio >=3D min_prio;
-we can also define that min_prio=3D-1 means append as the very last one.
+nit: sizeof(addr) is shorter and will stay in sync with addr variable?
 
-So if someone needs to be the very first -- explicitly request prio=3D1.
-If wants to be last: prio=3D0, min_prio=3D-1. If we want to observe, we
-can do something like min_prio=3D50 to leave a bunch of slots free for
-some other programs for which exact order matters.
+> +                      bpf_kprobe_multi_addrs_cmp))
+> +               return 0;
+> +
+> +       if (args->mods) {
+> +               struct module *prev = NULL;
+> +
+> +               if (args->mods_cnt > 1)
+> +                       prev = args->mods[args->mods_cnt - 1];
 
-This whole before/after FD interface seems a bit hypothetical as well,
-tbh. If it's multiple programs of the same application, then just
-taking a few slots (either explicitly with prio or just best-effort
-min_prio) is just fine, no need to deal with FDs. If there is no
-coordination betweens apps, I'm not sure how you'd know that you want
-to be before or after some other program's FD? How do you identify
-what program it is, by it's name?
+doesn't args->mods != NULL imply that args->mods_cnt > 1?
 
-It seems more pragmatic that Cilium takes the very first slot (or a
-bunch of slots) at startup to control exact location. And if that
-fails, then fail startup or (given enough permissions) force-detach
-existing link and install your own.
+> +               if (prev == mod)
+> +                       return 0;
+> +               if (args->mods_cnt == args->mods_alloc)
 
-Just an idea for completeness, don't have much of a horse in this race.
+nit: in libbpf we consistently use the cnt and cap (capacity)
+terminology for this, "mods_alloc" reads like a bool flag or something
+
+> +                       realloc = true;
+> +       }
+> +
+> +       if (realloc) {
+> +               args->mods_alloc += 100;
+
+agree with Song, this looks pretty arbitrary and quite large. Again,
+from libbpf experience, we do something like:
+
+mods_alloc = max(16, mods_alloc * 3 / 2);
+
+so grow by 50%, but start of with reasonable 16-element array. We can
+use similar approach here.
+
+> +               mods = krealloc_array(args->mods, args->mods_alloc, sizeof(*mods), GFP_KERNEL);
+> +               if (!mods)
+> +                       return -ENOMEM;
+> +               args->mods = mods;
+> +       }
+
+Previous two blocks read pretty convoluted. Isn't it equivalent to simpler:
+
+if (args->mods && args->mods[args->mods_cnt - 1] == mod)
+    return 0;
+
+if (args->mods_cnt == args->mods_alloc /* but I'd use mods_cap */) {
+    /* realloc here */
+}
+
+> +
+> +       if (!try_module_get(mod))
+> +               return -EINVAL;
+> +
+> +       args->mods[args->mods_cnt] = mod;
+> +       args->mods_cnt++;
+> +       return 0;
+> +}
+> +
+
+[...]
