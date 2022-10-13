@@ -2,134 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C5965FE382
-	for <lists+bpf@lfdr.de>; Thu, 13 Oct 2022 22:52:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C28425FE3B8
+	for <lists+bpf@lfdr.de>; Thu, 13 Oct 2022 23:07:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229679AbiJMUwR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Oct 2022 16:52:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59498 "EHLO
+        id S229735AbiJMVHQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Oct 2022 17:07:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229620AbiJMUwJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Oct 2022 16:52:09 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 926AD30569
-        for <bpf@vger.kernel.org>; Thu, 13 Oct 2022 13:52:07 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id d26so6450148eje.10
-        for <bpf@vger.kernel.org>; Thu, 13 Oct 2022 13:52:07 -0700 (PDT)
+        with ESMTP id S229550AbiJMVHQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Oct 2022 17:07:16 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25F33183DB8;
+        Thu, 13 Oct 2022 14:07:15 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id fy4so6565008ejc.5;
+        Thu, 13 Oct 2022 14:07:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ua2pyR2RXrZSoFLziseD0y4VLxWwGSmbAF9fIZqn7t0=;
-        b=t40RR9oDpBYTG23J6NgBk2i4Egsa19IbkYa3W0cox3NokLbJ0Ih4dirumyjunRD7zS
-         ZYuXFKve9SJYdwkrx+K+86ffsk0ngbeohzGKhElq7nWfUL1aouUgRbLWFI/65qbGupI/
-         zKOQeBmVDYQuPvuh9qsheu7BbXYrg6WxxRbjM=
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=IZ5njUsMjpaWj9YOz1Vm++un7O5+eC1XTxzvAZerpow=;
+        b=faWAR8yx9y/ximCfiagbNCy/0PAKrBsY8wEvnxUxd7VFrwze8WrW/LXuOEsD1B1MgC
+         bmzapz1zdHF1jE76T+mA54DNMXKki/cswG3sXkx6RAEOiC9LYHXvBWUkBqkVC/OutC6w
+         TBoPedYKZEP4+ld5ZJzts0nQv+3AjeM1WBzF9oIZsaGYMjz2koC525mlMh4cImsSStp6
+         XSWzJkXeoFofq4dZ0tkjtoHD4Jl4nliDAg9B+Vd6RKf38AjPS//hn7h+QcZjjgk0xM+g
+         X3Q+S3ElOX8GsPkSJbBAoFNFKK+vjKbNMwCVHL9RQlOConV4BRjaHXXF9yIEoDbdhF1L
+         19Fg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ua2pyR2RXrZSoFLziseD0y4VLxWwGSmbAF9fIZqn7t0=;
-        b=dS839cQM2zPq0hIDIzzipDQGUeiBmpxIwb+PeKYRJE0dJi5KeZpmxoBzof8nv8KuFH
-         7LB6FZoKaI5kFDrn/gjL5wtaqOIeTMEn5qoOk692KTIm6G0fSLIRIqomXvGhQJrbLVCr
-         em9ZJqNp56TPBGHAJl8zWXXE9Z90hsmjufwLoIUm7R4zkCsCD12B6+JWg0IHJlvoMQKx
-         Sz62nvuwc0Zyvmo/wDGS8RYwwfWTg8W01Su22K4PiHe+zs28+/7PZMWVUVcD0BU+TFUr
-         zx0qDZsCZwwhPn7heQSge/TM2JVxmsTiR2ncSQrAfAjG5fIaoMHOuh3A+6QQQXOFAwuI
-         kckg==
-X-Gm-Message-State: ACrzQf2nKxJEEqQhNBGkIyNRO6q37Y+/Dygu4PHAezJrHWqb57BiBrbA
-        7/8l5WAF2EmI/vVQUbgi2Q+IVA==
-X-Google-Smtp-Source: AMsMyM60S5hCOmlxJOf1765NN6g7CVJ/ljJ87Ia5lGawADbbKflnYFXWX2wfm65nwacHKCspJ0qyFQ==
-X-Received: by 2002:a17:907:94c7:b0:78e:1c4f:51f9 with SMTP id dn7-20020a17090794c700b0078e1c4f51f9mr1244290ejc.200.1665694326062;
-        Thu, 13 Oct 2022 13:52:06 -0700 (PDT)
-Received: from cloudflare.com (79.191.60.152.ipv4.supernova.orange.pl. [79.191.60.152])
-        by smtp.gmail.com with ESMTPSA id p6-20020a05640243c600b0045b4b67156fsm456398edc.45.2022.10.13.13.52.05
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IZ5njUsMjpaWj9YOz1Vm++un7O5+eC1XTxzvAZerpow=;
+        b=JrAgMraWu9PHel5PSEmuAjHc+NRsWwuD5UjI2njwqbWzvA1+e+qRablmULnEt+5Ehp
+         HVGYkMUYyOW1hDjuHGuAQjSQJkPbF1QiLhlrogPEL8xKnrQExHCQiDRtO1DN+OBi2BXt
+         qDsbCCFE5ZNBxqFZq54bz9kna9uqR42Z2fmurVJXB620vharTvZtAS2FVXUGPHIuhcfm
+         93hDFB+BoMfZ6G8MwfkRUbHSm6zc1hpn2gKKiorhmkqWzbtepSYpQ1vBzMYgM821anga
+         empHjWbIPb67nKnpc6DatZaZybQsGlwQQpQ8vgBhA+9JXm+rsnFdGFSpoSY+TZf9pCIk
+         ZXqw==
+X-Gm-Message-State: ACrzQf0sAnlrVlRbJntAcXjAF0s/AnFkWJQzhhqYZVhgJuFDmXtQnrL6
+        INeu+/dGUimt90HmsPEbeoA=
+X-Google-Smtp-Source: AMsMyM4cU3vLsTSiWCSsbEcY7UV+UJBrC5a07f1dY57EL9s1EUxZ5n3i98uvEdXbgJXpbA6zfUHWAw==
+X-Received: by 2002:a17:907:980e:b0:78d:b6d5:661e with SMTP id ji14-20020a170907980e00b0078db6d5661emr1253849ejc.46.1665695233566;
+        Thu, 13 Oct 2022 14:07:13 -0700 (PDT)
+Received: from localhost.localdomain (host-95-250-231-122.retail.telecomitalia.it. [95.250.231.122])
+        by smtp.gmail.com with ESMTPSA id v25-20020a17090651d900b0078da24ea9c7sm443973ejk.17.2022.10.13.14.07.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Oct 2022 13:52:05 -0700 (PDT)
-References: <Y0csu2SwegJ8Tab+@google.com>
-User-agent: mu4e 1.6.10; emacs 27.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     sdf@google.com
-Cc:     john.fastabend@gmail.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>
-Subject: Re: Lockdep warning after c0feea594e058223973db94c1c32a830c9807c86
-Date:   Thu, 13 Oct 2022 22:39:08 +0200
-In-reply-to: <Y0csu2SwegJ8Tab+@google.com>
-Message-ID: <87bkqfigzv.fsf@cloudflare.com>
+        Thu, 13 Oct 2022 14:07:12 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Christian Brauner <brauner@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Kees Cook <keescook@chromium.org>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+        linux-hwmon@vger.kernel.org, linux-hardening@vger.kernel.org
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        "Venkataramanan, Anirudh" <anirudh.venkataramanan@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>
+Subject: [PATCH] drm/radeon: Replace kmap() with kmap_local_page()
+Date:   Thu, 13 Oct 2022 23:07:14 +0200
+Message-Id: <20221013210714.16320-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Stan,
+The use of kmap() is being deprecated in favor of kmap_local_page().
 
-On Wed, Oct 12, 2022 at 02:08 PM -07, sdf@google.com wrote:
-> Hi John & Jakub,
->
-> Upstream commit c0feea594e05 ("workqueue: don't skip lockdep work
-> dependency in cancel_work_sync()") seems to trigger the following
-> lockdep warning during test_prog's sockmap_listen:
->
-> [  +0.003631] WARNING: possible circular locking dependency detected
+There are two main problems with kmap(): (1) It comes with an overhead as
+the mapping space is restricted and protected by a global lock for
+synchronization and (2) it also requires global TLB invalidation when the
+kmap’s pool wraps and it might block when the mapping space is fully
+utilized until a slot becomes available.
 
-[...]
+With kmap_local_page() the mappings are per thread, CPU local, can take
+page faults, and can be called from any context (including interrupts).
+It is faster than kmap() in kernels with HIGHMEM enabled. Furthermore,
+the tasks can be preempted and, when they are scheduled to run again, the
+kernel virtual addresses are restored and still valid.
 
-> Are you ware? Any idea what's wrong?
-> Is there some stable fix I'm missing in bpf-next?
+Therefore, replace kmap() with kmap_local_page() in radeon_ttm_gtt_read().
 
-Thanks for bringing it up. I didn't know.
+Cc: "Venkataramanan, Anirudh" <anirudh.venkataramanan@intel.com>
+Suggested-by: Ira Weiny <ira.weiny@intel.com>
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+---
+ drivers/gpu/drm/radeon/radeon_ttm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-The mentioned commit doesn't look that fresh
+diff --git a/drivers/gpu/drm/radeon/radeon_ttm.c b/drivers/gpu/drm/radeon/radeon_ttm.c
+index d33fec488713..bdb4c0e0736b 100644
+--- a/drivers/gpu/drm/radeon/radeon_ttm.c
++++ b/drivers/gpu/drm/radeon/radeon_ttm.c
+@@ -869,11 +869,11 @@ static ssize_t radeon_ttm_gtt_read(struct file *f, char __user *buf,
+ 
+ 		page = rdev->gart.pages[p];
+ 		if (page) {
+-			ptr = kmap(page);
++			ptr = kmap_local_page(page);
+ 			ptr += off;
+ 
+ 			r = copy_to_user(buf, ptr, cur_size);
+-			kunmap(rdev->gart.pages[p]);
++			kunmap_local(ptr);
+ 		} else
+ 			r = clear_user(buf, cur_size);
+ 
+-- 
+2.37.3
 
-commit c0feea594e058223973db94c1c32a830c9807c86
-Author: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Date:   Fri Jul 29 13:30:23 2022 +0900
-
-    workqueue: don't skip lockdep work dependency in cancel_work_sync()
-
-... but then it just landed not so long ago, which explains things:
-
-$ git describe --contains c0feea594e058223973db94c1c32a830c9807c86 --match 'v*'
-v6.0-rc7~10^2
-
-I've untangled the call chains leading to the potential dead-lock a
-bit. There does seem to be a window of opportunity there.
-
-psock->work.func = sk_psock_backlog()
-  ACQUIRE psock->work_mutex
-    sk_psock_handle_skb()
-      skb_send_sock()
-        __skb_send_sock()
-          sendpage_unlocked()
-            kernel_sendpage()
-              sock->ops->sendpage = inet_sendpage()
-                sk->sk_prot->sendpage = tcp_sendpage()
-                  ACQUIRE sk->sk_lock
-                    tcp_sendpage_locked()
-                  RELEASE sk->sk_lock
-  RELEASE psock->work_mutex
-
-sock_map_close()
-  ACQUIRE sk->sk_lock
-  sk_psock_stop()
-    sk_psock_clear_state(psock, SK_PSOCK_TX_ENABLED)
-    cancel_work_sync()
-      __cancel_work_timer()
-        __flush_work()
-          // wait for psock->work to finish
-  RELEASE sk->sk_lock
-
-There is no fix I know of. Need to think. Ideas welcome.
-
-CC Cong, just FYI, because we did rearrange the locking scheme in [1].
-
-However it looks to me like the dead-lock was already there before that.
-
-[1] https://lore.kernel.org/bpf/20210331023237.41094-5-xiyou.wangcong@gmail.com/
