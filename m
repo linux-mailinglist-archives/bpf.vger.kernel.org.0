@@ -2,212 +2,241 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A207D5FEBE1
-	for <lists+bpf@lfdr.de>; Fri, 14 Oct 2022 11:41:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B58E5FEC6E
+	for <lists+bpf@lfdr.de>; Fri, 14 Oct 2022 12:18:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230157AbiJNJli (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Oct 2022 05:41:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60140 "EHLO
+        id S229577AbiJNKSA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Oct 2022 06:18:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230126AbiJNJlg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Oct 2022 05:41:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAF361C69D7
-        for <bpf@vger.kernel.org>; Fri, 14 Oct 2022 02:41:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1665740491;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wKlR+CcE/XKB9cJEzU9OvSSq3ilgCUyh56aB2R9hIbY=;
-        b=UEpgAIdOyUeVbLxvNzbTujVbhlJ7jxZTTjjOhApFJzOB6jImx/xwdcqpfEAtPm+RwWTEEf
-        UhIDtqloc7OHcNag8mmU/VT1RX0uJW+GeHq4mvZF51F6K+AarKkGYbs0dzQ07XDKxIbxPt
-        GDZwALfX+fyF7cZi1u3dhBKt5ZvFLpU=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-631-IZ6dyP59OuKbGKOYLSFscQ-1; Fri, 14 Oct 2022 05:41:30 -0400
-X-MC-Unique: IZ6dyP59OuKbGKOYLSFscQ-1
-Received: by mail-wm1-f69.google.com with SMTP id q14-20020a7bce8e000000b003c6b7debf22so1928712wmj.0
-        for <bpf@vger.kernel.org>; Fri, 14 Oct 2022 02:41:30 -0700 (PDT)
+        with ESMTP id S229533AbiJNKR6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Oct 2022 06:17:58 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98D5911A97B
+        for <bpf@vger.kernel.org>; Fri, 14 Oct 2022 03:17:56 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id b4so6889966wrs.1
+        for <bpf@vger.kernel.org>; Fri, 14 Oct 2022 03:17:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zk32MWOZ/ecdRb0BfsLbRS2RZmejlycAosvIeKzwxPE=;
+        b=fJW674alegQNdjPXG8k7xCqtycFiigr7Xd+ZPY1fXs12zVemEBL54fhatwFna9AldW
+         pdVsTI14D3LBSv9vsmJF/lNr3D5eZEIgDugv5+Jo6ThJ+LH9wr04485ke0og4I53SAq3
+         Nn02TcHPwRSjZbu4UAQWqbx8y2JQFmE1grt2WvTu6nFxbUEvigcts5dERyOQhtBst5ik
+         8uL9p5dV6bNMXDxmQ664W8xhYkUjwKBaeRrxUxTUkg7rrORy29jlCC1KXykzloJ0fLmz
+         YNz0VF7YZCtnnjAFG4RLc+l4asxklcYEMOcx87hxV+ESrZa7LiOSh0+Df/SXsUs60aOu
+         z2pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=wKlR+CcE/XKB9cJEzU9OvSSq3ilgCUyh56aB2R9hIbY=;
-        b=tK0zMkhOxA0RxYTFUV3gsvSrBOimUUoXwZ1wbJJ/eyriHFj28jUpVuqUt3oyDgSYlm
-         ubv9aFFEGzYqtf/52LafQKucx0GjjckCTp3wpHFY2gNXZdWq/MAoXuAJ8HtrbEvQqIL5
-         Y7VqWYJrgeiKyyGuUGYzMx+C8P1hkuCN6baSEbLwx3SfyrWazDbqm8mWPwsD7Rd+xQpP
-         kAtTdfG5GtcuuLQcz4Aa19t/6v7Iw4K9KwHu9kxMGucugQ0Zvg8U6sHMmWZjilNF4lhG
-         SEcsc6Qll7KufK3wFSUWexeO7fWdmBTUAX8U6/yljW9M5kZQ0kgrt2EQ9RaKTW1MP6Gy
-         GcJA==
-X-Gm-Message-State: ACrzQf1A98hVOgQgpFhI/G2OQFs3jrpM7gycJjLNJIdnGYzdCSnRjT+o
-        +CHSJyWbf07kknMtoGbLK0TntXXuQZt4+fiiYn+yL3dj1uLvMNduKKUkGz6MCS7eMd7hYy0QkjJ
-        2wFgpbMRwbY0J
-X-Received: by 2002:a05:600c:358f:b0:3c6:da94:66f9 with SMTP id p15-20020a05600c358f00b003c6da9466f9mr2762408wmq.142.1665740488804;
-        Fri, 14 Oct 2022 02:41:28 -0700 (PDT)
-X-Google-Smtp-Source: AMsMyM6w3cEiR6rQvgkTTtlNrYW5Q7DNktZGWlaya7vja/FrE/eQqGE4HHUEag6zb93Od1CS7LyiTg==
-X-Received: by 2002:a05:600c:358f:b0:3c6:da94:66f9 with SMTP id p15-20020a05600c358f00b003c6da9466f9mr2762380wmq.142.1665740488423;
-        Fri, 14 Oct 2022 02:41:28 -0700 (PDT)
-Received: from redhat.com ([2.54.162.123])
-        by smtp.gmail.com with ESMTPSA id d5-20020adfe845000000b0022b1d74dc56sm1510165wrn.79.2022.10.14.02.41.25
+        bh=zk32MWOZ/ecdRb0BfsLbRS2RZmejlycAosvIeKzwxPE=;
+        b=4a/0Fdmn/3F59P/EzuSDHPs4FnujoJeWs0g+pr7mEPU9DfiWKYj4k26fzRsBB1Pobq
+         Xj77YDEbCBvwbd/aXpq2OOj6SdAoAidGNPEwJRQBwFGVnGd7m2N1rQBk9UROAhVC4mK4
+         Qglg9eJrnl/f5HfJbSUvmRcNNPmLlUX2njaMV5AXy603lzmhB0HB+MIeImJoSiZbhziz
+         PKTHxWh/49MXz9u69fSuoZs27gIKK8qp7pkdy059+yNpQjK8oqACYy6bY/3Wu189DCtT
+         tMZ6Wxg5jEBi6m1AtB8NTmuLWI9yHBDgzVuz2rA0J/3R0E4WOCyq5xPx460bwEE5G+dq
+         oJfQ==
+X-Gm-Message-State: ACrzQf12cTd1OXA102sxpowhxa5aryxyGpVsGJgEerQ+eqf/PVrdZPpM
+        4G1ud9gQ+YozfgbSEsPDX/I=
+X-Google-Smtp-Source: AMsMyM73eUesi98gD3VRit2bmsm5ZA2jt8c3/Cx3bN2+GKSFcx3iQid3TOIEz5zRBO49bR3D3A0iRw==
+X-Received: by 2002:a05:6000:1ac7:b0:232:8c6c:6c4a with SMTP id i7-20020a0560001ac700b002328c6c6c4amr2835639wry.455.1665742674397;
+        Fri, 14 Oct 2022 03:17:54 -0700 (PDT)
+Received: from krava ([193.85.244.190])
+        by smtp.gmail.com with ESMTPSA id v2-20020a5d4b02000000b0022ed6ff3a96sm1596641wrq.39.2022.10.14.03.17.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Oct 2022 02:41:27 -0700 (PDT)
-Date:   Fri, 14 Oct 2022 05:41:23 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     syzbot <syzbot+28ec239d5c21a2d91f3d@syzkaller.appspotmail.com>
-Cc:     ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
-        davem@davemloft.net, edumazet@google.com, hawk@kernel.org,
-        jasowang@redhat.com, john.fastabend@gmail.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        netdev@vger.kernel.org, pabeni@redhat.com,
-        syzkaller-bugs@googlegroups.com,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [syzbot] usb-testing boot error: WARNING in cpumask_next_wrap
-Message-ID: <20221014054043-mutt-send-email-mst@kernel.org>
-References: <0000000000001207f205ead6dc09@google.com>
+        Fri, 14 Oct 2022 03:17:53 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Fri, 14 Oct 2022 12:17:51 +0200
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Christoph Hellwig <hch@lst.de>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Martynas Pumputis <m@lambda.lt>
+Subject: Re: [PATCH bpf-next 4/8] bpf: Take module reference on kprobe_multi
+ link
+Message-ID: <Y0k3T+1SVkvvq4Ge@krava>
+References: <20221009215926.970164-1-jolsa@kernel.org>
+ <20221009215926.970164-5-jolsa@kernel.org>
+ <CAEf4BzZ_obDJY32tnGSSkNOk_PdCsf9UWQX4qqCEbSYD8sR4JQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0000000000001207f205ead6dc09@google.com>
-X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no
-        version=3.4.6
+In-Reply-To: <CAEf4BzZ_obDJY32tnGSSkNOk_PdCsf9UWQX4qqCEbSYD8sR4JQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 12, 2022 at 07:03:39AM -0700, syzbot wrote:
-> Hello,
+On Thu, Oct 13, 2022 at 11:50:54AM -0700, Andrii Nakryiko wrote:
+> On Sun, Oct 9, 2022 at 3:00 PM Jiri Olsa <jolsa@kernel.org> wrote:
+> >
+> > Currently we allow to create kprobe multi link on function from kernel
+> > module, but we don't take the module reference to ensure it's not
+> > unloaded while we are tracing it.
+> >
+> > The multi kprobe link is based on fprobe/ftrace layer which takes
+> > different approach and releases ftrace hooks when module is unloaded
+> > even if there's tracer registered on top of it.
+> >
+> > Adding code that gathers all the related modules for the link and takes
+> > their references before it's attached. All kernel module references are
+> > released after link is unregistered.
+> >
+> > Note that we do it the same way already for trampoline probes
+> > (but for single address).
+> >
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  kernel/trace/bpf_trace.c | 100 +++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 100 insertions(+)
+> >
+> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> > index 9be1a2b6b53b..f3d7565fee79 100644
+> > --- a/kernel/trace/bpf_trace.c
+> > +++ b/kernel/trace/bpf_trace.c
+> > @@ -2447,6 +2447,8 @@ struct bpf_kprobe_multi_link {
+> >         unsigned long *addrs;
+> >         u64 *cookies;
+> >         u32 cnt;
+> > +       struct module **mods;
+> > +       u32 mods_cnt;
+> >  };
+> >
+> >  struct bpf_kprobe_multi_run_ctx {
+> > @@ -2502,6 +2504,14 @@ static int copy_user_syms(struct user_syms *us, unsigned long __user *usyms, u32
+> >         return err;
+> >  }
+> >
+> > +static void kprobe_multi_put_modules(struct module **mods, u32 cnt)
+> > +{
+> > +       u32 i;
+> > +
+> > +       for (i = 0; i < cnt; i++)
+> > +               module_put(mods[i]);
+> > +}
+> > +
+> >  static void free_user_syms(struct user_syms *us)
+> >  {
+> >         kvfree(us->syms);
+> > @@ -2514,6 +2524,7 @@ static void bpf_kprobe_multi_link_release(struct bpf_link *link)
+> >
+> >         kmulti_link = container_of(link, struct bpf_kprobe_multi_link, link);
+> >         unregister_fprobe(&kmulti_link->fp);
+> > +       kprobe_multi_put_modules(kmulti_link->mods, kmulti_link->mods_cnt);
+> >  }
+> >
+> >  static void bpf_kprobe_multi_link_dealloc(struct bpf_link *link)
+> > @@ -2523,6 +2534,7 @@ static void bpf_kprobe_multi_link_dealloc(struct bpf_link *link)
+> >         kmulti_link = container_of(link, struct bpf_kprobe_multi_link, link);
+> >         kvfree(kmulti_link->addrs);
+> >         kvfree(kmulti_link->cookies);
+> > +       kfree(kmulti_link->mods);
+> >         kfree(kmulti_link);
+> >  }
+> >
+> > @@ -2658,6 +2670,80 @@ static void symbols_swap_r(void *a, void *b, int size, const void *priv)
+> >         }
+> >  }
+> >
+> > +struct module_addr_args {
+> > +       unsigned long *addrs;
+> > +       u32 addrs_cnt;
+> > +       struct module **mods;
+> > +       int mods_cnt;
+> > +       int mods_alloc;
+> > +};
+> > +
+> > +static int module_callback(void *data, const char *name,
+> > +                          struct module *mod, unsigned long addr)
+> > +{
+> > +       struct module_addr_args *args = data;
+> > +       bool realloc = !args->mods;
+> > +       struct module **mods;
+> > +
+> > +       /* We iterate all modules symbols and for each we:
+> > +        * - search for it in provided addresses array
+> > +        * - if found we check if we already have the module pointer stored
+> > +        *   (we iterate modules sequentially, so we can check just the last
+> > +        *   module pointer)
+> > +        * - take module reference and store it
+> > +        */
+> > +       if (!bsearch(&addr, args->addrs, args->addrs_cnt, sizeof(unsigned long),
 > 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    49da07006239 Merge tag 'memblock-v6.1-rc1' of git://git.ke..
-> git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1361eb1a880000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=8be1ac10ff2d4692
-> dashboard link: https://syzkaller.appspot.com/bug?extid=28ec239d5c21a2d91f3d
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/d41d7d5418ab/disk-49da0700.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/9ffb9548d913/vmlinux-49da0700.xz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+28ec239d5c21a2d91f3d@syzkaller.appspotmail.com
+> nit: sizeof(addr) is shorter and will stay in sync with addr variable?
 
+ok
 
-#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git b0d0538b9a8c47da2e3fb2ee44cd3dacc75509a6
-
-
-> software IO TLB: mapped [mem 0x00000000bbffd000-0x00000000bfffd000] (64MB)
-> RAPL PMU: API unit is 2^-32 Joules, 0 fixed counters, 10737418240 ms ovfl timer
-> clocksource: tsc: mask: 0xffffffffffffffff max_cycles: 0x1fb6feccdd0, max_idle_ns: 440795259471 ns
-> clocksource: Switched to clocksource tsc
-> Initialise system trusted keyrings
-> workingset: timestamp_bits=40 max_order=21 bucket_order=0
-> NFS: Registering the id_resolver key type
-> Key type id_resolver registered
-> Key type id_legacy registered
-> 9p: Installing v9fs 9p2000 file system support
-> Key type asymmetric registered
-> Asymmetric key parser 'x509' registered
-> Block layer SCSI generic (bsg) driver version 0.4 loaded (major 246)
-> io scheduler mq-deadline registered
-> io scheduler kyber registered
-> usbcore: registered new interface driver udlfb
-> usbcore: registered new interface driver smscufx
-> input: Power Button as /devices/LNXSYSTM:00/LNXPWRBN:00/input/input0
-> ACPI: button: Power Button [PWRF]
-> input: Sleep Button as /devices/LNXSYSTM:00/LNXSLPBN:00/input/input1
-> ACPI: button: Sleep Button [SLPF]
-> ACPI: \_SB_.LNKC: Enabled at IRQ 11
-> virtio-pci 0000:00:03.0: virtio_pci: leaving for legacy driver
-> ACPI: \_SB_.LNKD: Enabled at IRQ 10
-> virtio-pci 0000:00:04.0: virtio_pci: leaving for legacy driver
-> ACPI: \_SB_.LNKB: Enabled at IRQ 10
-> virtio-pci 0000:00:06.0: virtio_pci: leaving for legacy driver
-> virtio-pci 0000:00:07.0: virtio_pci: leaving for legacy driver
-> Serial: 8250/16550 driver, 4 ports, IRQ sharing enabled
-> 00:03: ttyS0 at I/O 0x3f8 (irq = 4, base_baud = 115200) is a 16550A
-> 00:04: ttyS1 at I/O 0x2f8 (irq = 3, base_baud = 115200) is a 16550A
-> 00:05: ttyS2 at I/O 0x3e8 (irq = 6, base_baud = 115200) is a 16550A
-> 00:06: ttyS3 at I/O 0x2e8 (irq = 7, base_baud = 115200) is a 16550A
-> Non-volatile memory driver v1.3
-> Linux agpgart interface v0.103
-> ACPI: bus type drm_connector registered
-> usbcore: registered new interface driver udl
-> loop: module loaded
-> usbcore: registered new interface driver rtsx_usb
-> usbcore: registered new interface driver viperboard
-> usbcore: registered new interface driver dln2
-> usbcore: registered new interface driver pn533_usb
-> usbcore: registered new interface driver port100
-> usbcore: registered new interface driver nfcmrvl
-> scsi host0: Virtio SCSI HBA
-> scsi 0:0:1:0: Direct-Access     Google   PersistentDisk   1    PQ: 0 ANSI: 6
-> sd 0:0:1:0: Attached scsi generic sg0 type 0
-> Rounding down aligned max_sectors from 4294967295 to 4294967288
-> db_root: cannot open: /etc/target
-> ------------[ cut here ]------------
-> WARNING: CPU: 1 PID: 1 at include/linux/cpumask.h:110 cpu_max_bits_warn include/linux/cpumask.h:110 [inline]
-> WARNING: CPU: 1 PID: 1 at include/linux/cpumask.h:110 cpumask_check include/linux/cpumask.h:117 [inline]
-> WARNING: CPU: 1 PID: 1 at include/linux/cpumask.h:110 cpumask_next include/linux/cpumask.h:178 [inline]
-> WARNING: CPU: 1 PID: 1 at include/linux/cpumask.h:110 cpumask_next_wrap+0x139/0x1d0 lib/cpumask.c:27
-> Modules linked in:
-> CPU: 1 PID: 1 Comm: swapper/0 Not tainted 6.0.0-syzkaller-11414-g49da07006239 #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/22/2022
-> RIP: 0010:cpu_max_bits_warn include/linux/cpumask.h:110 [inline]
-> RIP: 0010:cpumask_check include/linux/cpumask.h:117 [inline]
-> RIP: 0010:cpumask_next include/linux/cpumask.h:178 [inline]
-> RIP: 0010:cpumask_next_wrap+0x139/0x1d0 lib/cpumask.c:27
-> Code: df e8 6b 9e 80 fb 39 eb 77 64 e8 12 a2 80 fb 41 8d 6c 24 01 89 de 89 ef e8 54 9e 80 fb 39 dd 0f 82 54 ff ff ff e8 f7 a1 80 fb <0f> 0b e9 48 ff ff ff e8 eb a1 80 fb 48 c7 c2 80 dc e3 88 48 b8 00
-> RSP: 0000:ffffc9000001f920 EFLAGS: 00010293
-> RAX: 0000000000000000 RBX: 0000000000000002 RCX: 0000000000000000
-> RDX: ffff8881002b0000 RSI: ffffffff85c61b89 RDI: 0000000000000004
-> RBP: 0000000000000002 R08: 0000000000000004 R09: 0000000000000002
-> R10: 0000000000000002 R11: 0000000000000000 R12: 0000000000000001
-> R13: 0000000000000000 R14: 0000000000000002 R15: ffffffff88e3da90
-> FS:  0000000000000000(0000) GS:ffff8881f6900000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000000000000000 CR3: 0000000007825000 CR4: 00000000003506e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  <TASK>
->  virtnet_set_affinity+0x35a/0x750 drivers/net/virtio_net.c:2303
->  init_vqs drivers/net/virtio_net.c:3581 [inline]
->  init_vqs drivers/net/virtio_net.c:3567 [inline]
->  virtnet_probe+0x12ae/0x33a0 drivers/net/virtio_net.c:3884
->  virtio_dev_probe+0x577/0x870 drivers/virtio/virtio.c:305
->  call_driver_probe drivers/base/dd.c:560 [inline]
->  really_probe+0x249/0xb90 drivers/base/dd.c:639
->  __driver_probe_device+0x1df/0x4d0 drivers/base/dd.c:778
->  driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:808
->  __driver_attach+0x1d0/0x550 drivers/base/dd.c:1190
->  bus_for_each_dev+0x147/0x1d0 drivers/base/bus.c:301
->  bus_add_driver+0x4c9/0x640 drivers/base/bus.c:618
->  driver_register+0x220/0x3a0 drivers/base/driver.c:246
->  virtio_net_driver_init+0x93/0xd2 drivers/net/virtio_net.c:4090
->  do_one_initcall+0x13d/0x780 init/main.c:1303
->  do_initcall_level init/main.c:1376 [inline]
->  do_initcalls init/main.c:1392 [inline]
->  do_basic_setup init/main.c:1411 [inline]
->  kernel_init_freeable+0x6fa/0x783 init/main.c:1631
->  kernel_init+0x1a/0x1d0 init/main.c:1519
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:306
->  </TASK>
 > 
+> > +                      bpf_kprobe_multi_addrs_cmp))
+> > +               return 0;
+> > +
+> > +       if (args->mods) {
+> > +               struct module *prev = NULL;
+> > +
+> > +               if (args->mods_cnt > 1)
+> > +                       prev = args->mods[args->mods_cnt - 1];
 > 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> doesn't args->mods != NULL imply that args->mods_cnt > 1?
 > 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> > +               if (prev == mod)
+> > +                       return 0;
+> > +               if (args->mods_cnt == args->mods_alloc)
+> 
+> nit: in libbpf we consistently use the cnt and cap (capacity)
+> terminology for this, "mods_alloc" reads like a bool flag or something
 
+ok
+
+> 
+> > +                       realloc = true;
+> > +       }
+> > +
+> > +       if (realloc) {
+> > +               args->mods_alloc += 100;
+> 
+> agree with Song, this looks pretty arbitrary and quite large. Again,
+> from libbpf experience, we do something like:
+> 
+> mods_alloc = max(16, mods_alloc * 3 / 2);
+> 
+> so grow by 50%, but start of with reasonable 16-element array. We can
+> use similar approach here.
+
+ok
+
+> 
+> > +               mods = krealloc_array(args->mods, args->mods_alloc, sizeof(*mods), GFP_KERNEL);
+> > +               if (!mods)
+> > +                       return -ENOMEM;
+> > +               args->mods = mods;
+> > +       }
+> 
+> Previous two blocks read pretty convoluted. Isn't it equivalent to simpler:
+> 
+> if (args->mods && args->mods[args->mods_cnt - 1] == mod)
+>     return 0;
+> 
+> if (args->mods_cnt == args->mods_alloc /* but I'd use mods_cap */) {
+>     /* realloc here */
+> }
+
+sure, I can chage to that
+
+thanks,
+jirka
