@@ -2,100 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D6B95FEEA2
-	for <lists+bpf@lfdr.de>; Fri, 14 Oct 2022 15:31:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 474C75FEFBD
+	for <lists+bpf@lfdr.de>; Fri, 14 Oct 2022 16:06:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229547AbiJNNa7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Oct 2022 09:30:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56310 "EHLO
+        id S229993AbiJNOGl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Oct 2022 10:06:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbiJNNa6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Oct 2022 09:30:58 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C02D429CA9;
-        Fri, 14 Oct 2022 06:30:57 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 77F2FB822E8;
-        Fri, 14 Oct 2022 13:30:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F84BC433C1;
-        Fri, 14 Oct 2022 13:30:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665754255;
-        bh=mINcMLnVsgheBTTRF+mKEseQpUsGdZeG1g0fkhbY1s8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=F5k0CxXma58+OUFwamCyShctCfhZ4boPFlcTKXUDVo4dAsKnwDpkQJDIftCIIEgOw
-         SUYYg38JNhtp85t0DPyanIjStUgYbL9bPCykHcwPItgz04Uj68xFIHpd8omJTGvd6R
-         8dIBeSS9Du1WD4R8RpxsSs7pbRhh4Qw42iZsqRIFGq8CJkhpPpsmeA61h60IGsb4wZ
-         HS6W++YWokOJ6lty9mMD5VbBuaX+IYVtn/VjkLfaQvpYsmNqIcDCgIREgAwiGM68l6
-         YPiwN/0brn4bBo7l2WtuYSNF3tdtoGSv4oJe4yZU3bZCdOgLwRe/qAaMA86wiiaLo/
-         z+VMAbtM9OfQQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id A423C4062C; Fri, 14 Oct 2022 10:30:52 -0300 (-03)
-Date:   Fri, 14 Oct 2022 10:30:52 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Namhyung Kim <namhyung@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-        Jiri Olsa <jolsa@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org, Song Liu <songliubraving@fb.com>,
-        bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH v2] perf stat: Support old kernels for bperf cgroup
- counting
-Message-ID: <Y0lkjJLfZNXQNYxR@kernel.org>
-References: <Y0Sx2KWX4gPlLytq@slm.duckdns.org>
- <20221011052808.282394-1-namhyung@kernel.org>
- <Y0Wfl88objrECjSo@slm.duckdns.org>
- <Y0ljzN920sWalEHR@kernel.org>
+        with ESMTP id S230269AbiJNOGh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Oct 2022 10:06:37 -0400
+Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDF322E683
+        for <bpf@vger.kernel.org>; Fri, 14 Oct 2022 07:06:25 -0700 (PDT)
+Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-358bf076f1fso46970987b3.9
+        for <bpf@vger.kernel.org>; Fri, 14 Oct 2022 07:06:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
+        b=M1L5cORaWt5pw4NwklrjTogp3McFHNpkijqH23a5/Pg7EMwvd5HXSusY+WtRjKQU+1
+         NKjk0FFY2X8z6ztstc0xkgu2zrgPhL715DIzlY+HoeAzuR08KNHey1I1+rttJdNP7HIN
+         btUZV64jOGcGmaQUUsXoP1r8LXYONnvSL7IRvXiPwnup4+XRDQBBCAichnTtSWkk2TVd
+         S24PbpQ9XnIYQzcPKhYfOTEUZ/bSojHQnBJgqQp8ov1pMGHM8qA2p913ii5NX6Vzhwfb
+         Tv8S8T/fV9BQzCPoAl1978VN0N6iGKO8rGHwYMXLlLgsSiqtMka9qDtVaLNTtyfZ8esO
+         obgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:subject:message-id:date:from:reply-to:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
+        b=tltuZL/l47RoinJBoeA8uKWrTQGSu3FFFM2oZEbaUQHZ+5Sob2q3Nsdg2gpCYSYJFg
+         M7jNsKXZQx1WMDROVZApxTIWly+ti+LFRC1ea+uC5PYsgs+B4UJQf07hYqtVLzS0+1zs
+         ob7fLcKNjeyQS6mo5uyiUOYEkWfg2QKAV+aafCwLRIeEWyzzzJrvJ38zSgOq2ml97zc5
+         xu0gm/mupWjadWyrjpG96Ahg9C7VP4hjG1m4dXiw9n1UFSc1avMlLYW4j+ma1UZ2OrC4
+         7XCU0QS5R5fvtE4wStJVCrBu3/KmFMVtHZ+pVflZcCMhTx3nQEUQdcuo6TryA+iAIb8W
+         a9fg==
+X-Gm-Message-State: ACrzQf1/NphMYfo1FCAe727IegPfHaX23b8uO81EghkNae7pvBI9baGR
+        7Z17aM6CRv0hFRjGL+dZkgOobQ9ZJ8BoatKxV64=
+X-Google-Smtp-Source: AMsMyM5IqfJcNd1ifdXfNRsuPj18dFlYKi45GvVyG6f2eqgZawcLCYH5oxTP/ZAj8dR+xuO4/4GohCbHXSiPAGk28GQ=
+X-Received: by 2002:a0d:d409:0:b0:360:913a:81db with SMTP id
+ w9-20020a0dd409000000b00360913a81dbmr4767200ywd.419.1665756303340; Fri, 14
+ Oct 2022 07:05:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y0ljzN920sWalEHR@kernel.org>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:a05:7000:6c05:b0:3c1:5961:57b5 with HTTP; Fri, 14 Oct 2022
+ 07:05:02 -0700 (PDT)
+Reply-To: tatianaarthur72@gmail.com
+From:   "Mrs.Tatiana Arthur" <goowjarwq@gmail.com>
+Date:   Fri, 14 Oct 2022 16:05:02 +0200
+Message-ID: <CAC-x_XEj5Yd2Jqt2qrG=XP_rdEHoR_pajq-3b2r8DyiOeHKJvg@mail.gmail.com>
+Subject: Did you receive the email I sent you?
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=4.9 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_HK_NAME_FM_MR_MRS,UNDISC_FREEM autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Fri, Oct 14, 2022 at 10:27:40AM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Tue, Oct 11, 2022 at 06:53:43AM -1000, Tejun Heo escreveu:
-> > On Mon, Oct 10, 2022 at 10:28:08PM -0700, Namhyung Kim wrote:
-> > > The recent change in the cgroup will break the backward compatiblity in
-> > > the BPF program.  It should support both old and new kernels using BPF
-> > > CO-RE technique.
-> 
-> > > Like the task_struct->__state handling in the offcpu analysis, we can
-> > > check the field name in the cgroup struct.
->  
-> > > Acked-by: Jiri Olsa <jolsa@kernel.org>
-> > > Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> > > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
->  
-> > Applied to cgroup/for-6.1-fixes.
-> 
-> Hey, I noticed that the perf build is broken for the
-> tools/perf/util/bpf_skel/bperf_cgroup.bpf.c skell, so I tried using b4
-> on this Namhyung patch, it ended up getting a newer version, by Tejun,
-> that mixes up kernel code and tooling, which, when I tried to apply
-> upstream didn't work.
-> 
-> Please try not to mix up kernel and tools/ changes in the same patch to
-> avoid these issues.
-> 
-> Also when changing tools/perf, please CC me.
-> 
-> I'm now back trying to apply v2 of this patch to see if it fixes my
-> build.
 
-Yeah, applying just Namhyung's v2 patch gets perf back building, I'll
-keep it there while processing the other patches so that I can test them
-all together.
-
-- Arnaldo
