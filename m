@@ -2,107 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 221245FE710
-	for <lists+bpf@lfdr.de>; Fri, 14 Oct 2022 04:41:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B21455FE782
+	for <lists+bpf@lfdr.de>; Fri, 14 Oct 2022 05:18:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229663AbiJNCln (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Oct 2022 22:41:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44838 "EHLO
+        id S229554AbiJNDSM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Oct 2022 23:18:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbiJNCln (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Oct 2022 22:41:43 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92888196B5C
-        for <bpf@vger.kernel.org>; Thu, 13 Oct 2022 19:41:41 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id z20so3489923plb.10
-        for <bpf@vger.kernel.org>; Thu, 13 Oct 2022 19:41:41 -0700 (PDT)
+        with ESMTP id S229621AbiJNDRn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Oct 2022 23:17:43 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF9381929BC
+        for <bpf@vger.kernel.org>; Thu, 13 Oct 2022 20:17:01 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id t4so2339151wmj.5
+        for <bpf@vger.kernel.org>; Thu, 13 Oct 2022 20:17:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ZJ1ZupV4pNYtfLm2nRk080Y8SXTuWCwx9eOCEUYrnLk=;
-        b=mOTc8KRBadMqtPwLlQpMoDRG7Y/LhVh3ONQQ0+J/2DeJP9z2WBpqzM2zCbruFAwGQ2
-         Cg9NrAsdBApxkVi7G6+/BmIIhGYCILZRVDKJgLmeZAjnkd+DscSYsrIh2d0DhZEicFJ4
-         JC0NBSOAxXyESKVnAJK6Z1UcYpKzjFbwvjdW4=
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=X63dy3MTX5BmUci/YGKv91qnJNpqqJepE017hos/Ffs=;
+        b=nCok2aMXgD/l2I+rAs/Ddbz1kLYqjM3MODDBVedIwAOC1GfDV0lWoiWo1a4kD1qnQB
+         05Zx10bzh+ZTDgpI7hdQ0z4HvepsZV7MUMxCjaOgtgyN2Qt8m3A3hW+LkUnhIswEGSLU
+         2G+zRKXVFwcZyfJuwjK4PvIO5O7rBvsvxYEOxCgIacoZJCxbEhDOroybgZPaDp/WR/k9
+         O9YtmfulftHYBNQwLunzqVjsaEpoil8H7IRpJrTg4j2yrWSXNN7sOUJ6K+g1NKSlwlTR
+         igPbLMLwmJ5sLghDhTMY4cv8ZFNU139jfLUlxnZTOhdppoPB940BZEg4qeQuXBTvLcgM
+         aRPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZJ1ZupV4pNYtfLm2nRk080Y8SXTuWCwx9eOCEUYrnLk=;
-        b=xr88kyild67ZjNNdHSPFU5sb+8gc4dbGmaCKb0gn4CvroucQRgp7eSl673774z+rmS
-         SE9XPyWcote84kxWmfKChEVSwlGRlWj5A2ok2dum/u4HAXV4RwxaPOaIEi/LxKjcLSDy
-         Sq/f30wV0+4Q5oXbODnJmdlU5IEeVV1eZduvAKbNOtnb7ogW2CkQQsPqrnxrKV6WNsqe
-         1jZZ0INzG99hfy+oaciwSAymACxHypH3HAsu+QiqHQOfp/4CGCrXKILGjrLowPWjZxY3
-         G5af5Sh3Q9KoKWWw+tK4G7lF5py9tvS/wqydy7EXUlYiBJ4ZttbPimczMYX8lWoB1nEo
-         qtzg==
-X-Gm-Message-State: ACrzQf1564sLrG1/EwwepPECTOOfydueohEmARPvEn43QQSYFfq7eG6F
-        YWmppUrJcdsVqL94n+lgG1FouA==
-X-Google-Smtp-Source: AMsMyM4+EvyJIPbh8SsjJ5/w//6R6z4mUB4NPnFpN2sJpNlsISjzDqMI4t1DceTMwEIjNQHzGR0rDg==
-X-Received: by 2002:a17:90a:d983:b0:20a:ec04:e028 with SMTP id d3-20020a17090ad98300b0020aec04e028mr14425285pjv.122.1665715301104;
-        Thu, 13 Oct 2022 19:41:41 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id o2-20020a170902d4c200b001708c4ebbaesm467745plg.309.2022.10.13.19.41.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Oct 2022 19:41:40 -0700 (PDT)
-Date:   Thu, 13 Oct 2022 19:41:39 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Christian Brauner <brauner@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
-        linux-hwmon@vger.kernel.org, linux-hardening@vger.kernel.org,
-        "Venkataramanan, Anirudh" <anirudh.venkataramanan@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>
-Subject: Re: [PATCH] drm/radeon: Replace kmap() with kmap_local_page()
-Message-ID: <202210131941.5D2AD4403E@keescook>
-References: <20221013210714.16320-1-fmdefrancesco@gmail.com>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=X63dy3MTX5BmUci/YGKv91qnJNpqqJepE017hos/Ffs=;
+        b=Z6zcGEPNRwqp6j5NMp8FBVfFKEo1BxGjO2MA37fqDTnJRjG5ipBZtNxOQkygUbkRuQ
+         Vjq8nki0ppSD0fxPdEFtvQuYhKjGJbI7obn5zBuz2IVEPyHOBIfpTFn2fJuq2hn1XhLP
+         QxI6qpBSIBzZCeD8YI27aXVhKikyZcrgcz97pIv5fD5KTk4JKBrna6ljpc1Wyn0UouUx
+         0R0nkmcTahgCOCV/y0/tecJp7TpwSthqQ48iinjomjtQOSptSgJdhgxARiC6VoT714fH
+         DaM4g3QNkif2aPYQGQtz4N+kwaY8Y6OKjUhwhWvyrpFiczCfh8+Z09pu3cdN1XsL7r57
+         t7/g==
+X-Gm-Message-State: ACrzQf0ZstOo17zt5tP7LzMFhBkhJmCRaPrkgl0UckBBRGlLkulga5V7
+        rUWLKl78M7Xgzxuz80ng1XMXLjE+f8urCegNroNiug==
+X-Google-Smtp-Source: AMsMyM7iVOp+OllRzIv2aTOuMOcKMaXhCYCa3Rev+lssqMW6io+6j+nhJnPO2lQO77LHckFS2Yee8kUuq5xup8oqSts=
+X-Received: by 2002:a1c:ed11:0:b0:3b4:d3e1:bec with SMTP id
+ l17-20020a1ced11000000b003b4d3e10becmr1813649wmh.196.1665717419528; Thu, 13
+ Oct 2022 20:16:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20221013210714.16320-1-fmdefrancesco@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <CAJD7tkZkY9nfaVDmjzhDG4zzezNn7bXnGrK+kpn0zQFwPhdorw@mail.gmail.com>
+ <CANDhNCrrM58vmWCos5kd7_V=+NimW-5sU7UFtjxX0C+=mqW2KQ@mail.gmail.com>
+ <CANDhNCojzuCW2Udx_CssLvnY9DunEqVBSxnC5D6Rz0oX-r2-7g@mail.gmail.com>
+ <CAJD7tkb=FSoRETXDMBs+ZUO1BhT7X1aG7wziYNtFg8XqmXH-Zw@mail.gmail.com>
+ <CAJD7tkYUoW3YU-R1wNBADdUDHVprq6CP3axD9md3gJzW=yhiFw@mail.gmail.com>
+ <CANDhNCpHGvw2MxexRFwpx4nAmqgwXw3G3DqkD2s0W3RNXZw2Bg@mail.gmail.com> <CANDhNCrhTzmvjy9Q75M_XoTtQaBhTwF5wzPeW2d8yp-m9Erfqw@mail.gmail.com>
+In-Reply-To: <CANDhNCrhTzmvjy9Q75M_XoTtQaBhTwF5wzPeW2d8yp-m9Erfqw@mail.gmail.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Thu, 13 Oct 2022 20:16:23 -0700
+Message-ID: <CAJD7tkZZ9FeXd1=OYe2MJigsYzk-KH_VmTEbd3mo+wN0MqThug@mail.gmail.com>
+Subject: Re: Question about ktime_get_mono_fast_ns() non-monotonic behavior
+To:     John Stultz <jstultz@google.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Hao Luo <haoluo@google.com>,
+        Stanislav Fomichev <sdf@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 13, 2022 at 11:07:14PM +0200, Fabio M. De Francesco wrote:
-> The use of kmap() is being deprecated in favor of kmap_local_page().
-> 
-> There are two main problems with kmap(): (1) It comes with an overhead as
-> the mapping space is restricted and protected by a global lock for
-> synchronization and (2) it also requires global TLB invalidation when the
-> kmap’s pool wraps and it might block when the mapping space is fully
-> utilized until a slot becomes available.
-> 
-> With kmap_local_page() the mappings are per thread, CPU local, can take
-> page faults, and can be called from any context (including interrupts).
-> It is faster than kmap() in kernels with HIGHMEM enabled. Furthermore,
-> the tasks can be preempted and, when they are scheduled to run again, the
-> kernel virtual addresses are restored and still valid.
-> 
-> Therefore, replace kmap() with kmap_local_page() in radeon_ttm_gtt_read().
-> 
-> Cc: "Venkataramanan, Anirudh" <anirudh.venkataramanan@intel.com>
-> Suggested-by: Ira Weiny <ira.weiny@intel.com>
-> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+On Thu, Oct 13, 2022 at 7:23 PM John Stultz <jstultz@google.com> wrote:
+>
+> On Thu, Oct 13, 2022 at 7:15 PM John Stultz <jstultz@google.com> wrote:
+> >
+> > On Thu, Oct 13, 2022 at 6:29 PM Yosry Ahmed <yosryahmed@google.com> wrote:
+> > >
+> > > On Thu, Oct 13, 2022 at 5:03 PM Yosry Ahmed <yosryahmed@google.com> wrote:
+> > > >
+> > > > On Wed, Oct 12, 2022 at 8:07 PM John Stultz <jstultz@google.com> wrote:
+> > > > >
+> > > > > On Wed, Oct 12, 2022 at 8:02 PM John Stultz <jstultz@google.com> wrote:
+> > > > > > On Mon, Sep 26, 2022 at 2:18 PM Yosry Ahmed <yosryahmed@google.com> wrote:
+> > > > > > So I think it reasonable to say its bounded by approximately  2 *
+> > > > > > NSEC_PER_SEC/HZ +/- 11%.
+> > > > >
+> > > > > Sorry, this should be 2*NSEC_PER_SEC/HZ * 0.11
+> > > >
+> > > > Thanks so much for the detailed response :)
+> > > >
+> > > > IIUC this error bound is in ns. So on a 2 GHz cpu the bound is 0.11 ns
+> > > > (essentially 0)? I feel like I miscalculated, this error bound is too
+> > > > good to be true.
+> > >
+> > > Never mind, I thought HZ is the cpu speed for some reason. It's the
+> > > number of jiffies per second, right?
+> >
+> > Correct.
+> >
+> > > So if HZ is 1000, the error bound is actually ~2 ms, which is very
+> > > large considering that the unit is ns.
+> >
+> > Uh, for HZ=1000, I think it's closer to 220us, but yes, for HZ=100 2.2ms.
+>
+> And again, it has been awhile since I've been deep in this code, so
+> I'd not be surprised if I'm missing something and the worst case may
+> be larger (things like SMIs or virtualization stalling the timekeeping
+> update for longer than a tick).  So no promises, but this feels pretty
+> close to the expected bound. If you can't handle time inconsistencies,
+> you need to use the normal locked accessors.
+>
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Thanks a lot for the clarification. The inconsistencies may be too
+large, depending on what we are trying to measure, so it is something
+that we need to keep in mind.
 
--- 
-Kees Cook
+> thanks
+> -john
