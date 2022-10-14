@@ -2,71 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 096BE5FE6EE
-	for <lists+bpf@lfdr.de>; Fri, 14 Oct 2022 04:23:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E27A5FE6F3
+	for <lists+bpf@lfdr.de>; Fri, 14 Oct 2022 04:24:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229671AbiJNCXj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Oct 2022 22:23:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37458 "EHLO
+        id S229494AbiJNCYv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Oct 2022 22:24:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229739AbiJNCXi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Oct 2022 22:23:38 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5120EA692
-        for <bpf@vger.kernel.org>; Thu, 13 Oct 2022 19:23:37 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id g7so347900lfv.5
-        for <bpf@vger.kernel.org>; Thu, 13 Oct 2022 19:23:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=xFfOpSWS847QVBaXLXU4wZtLPG1/YCVXplrcnhMSTZM=;
-        b=bnNJX4WcPoBm+L0V+1wHg8yL78MnnpOG4204Hh6oEtfR2GaVVgMRsxLdKzW1giXBrq
-         96kpI4HTWR+t12LRfhWo99s3YYxxHDf+/KrQ/oE7pFFhHT+ab4+AIvGzo2UnAZr97Fo+
-         /Ru9f01eZnfZoyCqIdqujv+NUGWuHHPuKxxZDkftcGC+ucaQoC3ALMv8A6d5NNRAWkTq
-         q6nPHGdpG+cBEBOutNGu4kqeiEd9LVP8H18Du6OJqAgF2GdLsl+o/SG2ehlUSxzj/qg4
-         DertlZ1TLvemOWbKcN5IOk53e5PrMhHLmjGl6h9l62tJ1W+caj/sZ2B2D3oDxIe0N+BV
-         CBlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xFfOpSWS847QVBaXLXU4wZtLPG1/YCVXplrcnhMSTZM=;
-        b=lYGYo/vgYpNpmwlmFkd9w5XtfimS5Raj8WMCGUhhlQEjDwDFbgcPbA2TkqP+lsUEBE
-         j/YTDHCUhM0PLBcTrSJU6KKRUBGIGCttfXikFuholtz0qoFREN5v6C6Ci11YFJ0s4eUH
-         24XiLoGyJgfnTdbw1jet6xCnzACXWF/QvgrDPvaIjQib3K3l1cMjRXTK5KeQbRGqmTsH
-         N8P9Dj7SuNl9Acv+t3z5Ym0sOdsmG4uDlhKSe2nfUiaI1nthZtBhfgP+z2wpZ+Lx+b/0
-         5qxEKNqumES4wDqTxey/rZ8+d8yez7jIwMKFnRdCOE5pDH4snMCpwTusijytd/jFn7K8
-         TnLw==
-X-Gm-Message-State: ACrzQf3vxyTiLhijseZFvVUTfwnFBAlD5C8ZljfkWpJyO8ZQP3HRZ22J
-        C7shRmx82fFiMskuYDYFFt2KupnKb4xnmccYM+3B
-X-Google-Smtp-Source: AMsMyM5pQ2UcG46b5QoGPiDrmejL8uxLXHOxg+jGUrE9UmvQnWM3dGRJHSoKFmPsf2hHXB1b8mTjdLiFpAvQWAkayps=
-X-Received: by 2002:a19:7704:0:b0:4a4:5d9d:2f66 with SMTP id
- s4-20020a197704000000b004a45d9d2f66mr962453lfc.515.1665714215803; Thu, 13 Oct
- 2022 19:23:35 -0700 (PDT)
+        with ESMTP id S229594AbiJNCYu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Oct 2022 22:24:50 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D48391403C;
+        Thu, 13 Oct 2022 19:24:43 -0700 (PDT)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4MpVTc38zQz1P7Lf;
+        Fri, 14 Oct 2022 10:20:04 +0800 (CST)
+Received: from [10.174.179.191] (10.174.179.191) by
+ canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Fri, 14 Oct 2022 10:24:40 +0800
+Message-ID: <fbb13238-d0e2-7b0f-8b7b-e4fb211bcaaf@huawei.com>
+Date:   Fri, 14 Oct 2022 10:24:39 +0800
 MIME-Version: 1.0
-References: <CAJD7tkZkY9nfaVDmjzhDG4zzezNn7bXnGrK+kpn0zQFwPhdorw@mail.gmail.com>
- <CANDhNCrrM58vmWCos5kd7_V=+NimW-5sU7UFtjxX0C+=mqW2KQ@mail.gmail.com>
- <CANDhNCojzuCW2Udx_CssLvnY9DunEqVBSxnC5D6Rz0oX-r2-7g@mail.gmail.com>
- <CAJD7tkb=FSoRETXDMBs+ZUO1BhT7X1aG7wziYNtFg8XqmXH-Zw@mail.gmail.com>
- <CAJD7tkYUoW3YU-R1wNBADdUDHVprq6CP3axD9md3gJzW=yhiFw@mail.gmail.com> <CANDhNCpHGvw2MxexRFwpx4nAmqgwXw3G3DqkD2s0W3RNXZw2Bg@mail.gmail.com>
-In-Reply-To: <CANDhNCpHGvw2MxexRFwpx4nAmqgwXw3G3DqkD2s0W3RNXZw2Bg@mail.gmail.com>
-From:   John Stultz <jstultz@google.com>
-Date:   Thu, 13 Oct 2022 19:23:24 -0700
-Message-ID: <CANDhNCrhTzmvjy9Q75M_XoTtQaBhTwF5wzPeW2d8yp-m9Erfqw@mail.gmail.com>
-Subject: Re: Question about ktime_get_mono_fast_ns() non-monotonic behavior
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Hao Luo <haoluo@google.com>,
-        Stanislav Fomichev <sdf@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.0
+Subject: Re: [bpf-next v8 1/3] bpftool: Add autoattach for bpf prog
+ load|loadall
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     <quentin@isovalent.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <andrii@kernel.org>, <martin.lau@linux.dev>, <song@kernel.org>,
+        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <sdf@google.com>, <haoluo@google.com>, <jolsa@kernel.org>,
+        <davem@davemloft.net>, <kuba@kernel.org>, <hawk@kernel.org>,
+        <nathan@kernel.org>, <ndesaulniers@google.com>, <trix@redhat.com>,
+        <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <llvm@lists.linux.dev>
+References: <1665399601-29668-1-git-send-email-wangyufen@huawei.com>
+ <1665399601-29668-2-git-send-email-wangyufen@huawei.com>
+ <CAEf4BzYzUKUg=V6Bir7s1AKuZF-=HFsjuWBTjTqO8fganjWVDg@mail.gmail.com>
+From:   wangyufen <wangyufen@huawei.com>
+In-Reply-To: <CAEf4BzYzUKUg=V6Bir7s1AKuZF-=HFsjuWBTjTqO8fganjWVDg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.191]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ canpemm500010.china.huawei.com (7.192.105.118)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,43 +57,182 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 13, 2022 at 7:15 PM John Stultz <jstultz@google.com> wrote:
->
-> On Thu, Oct 13, 2022 at 6:29 PM Yosry Ahmed <yosryahmed@google.com> wrote:
-> >
-> > On Thu, Oct 13, 2022 at 5:03 PM Yosry Ahmed <yosryahmed@google.com> wrote:
-> > >
-> > > On Wed, Oct 12, 2022 at 8:07 PM John Stultz <jstultz@google.com> wrote:
-> > > >
-> > > > On Wed, Oct 12, 2022 at 8:02 PM John Stultz <jstultz@google.com> wrote:
-> > > > > On Mon, Sep 26, 2022 at 2:18 PM Yosry Ahmed <yosryahmed@google.com> wrote:
-> > > > > So I think it reasonable to say its bounded by approximately  2 *
-> > > > > NSEC_PER_SEC/HZ +/- 11%.
-> > > >
-> > > > Sorry, this should be 2*NSEC_PER_SEC/HZ * 0.11
-> > >
-> > > Thanks so much for the detailed response :)
-> > >
-> > > IIUC this error bound is in ns. So on a 2 GHz cpu the bound is 0.11 ns
-> > > (essentially 0)? I feel like I miscalculated, this error bound is too
-> > > good to be true.
-> >
-> > Never mind, I thought HZ is the cpu speed for some reason. It's the
-> > number of jiffies per second, right?
->
-> Correct.
->
-> > So if HZ is 1000, the error bound is actually ~2 ms, which is very
-> > large considering that the unit is ns.
->
-> Uh, for HZ=1000, I think it's closer to 220us, but yes, for HZ=100 2.2ms.
 
-And again, it has been awhile since I've been deep in this code, so
-I'd not be surprised if I'm missing something and the worst case may
-be larger (things like SMIs or virtualization stalling the timekeeping
-update for longer than a tick).  So no promises, but this feels pretty
-close to the expected bound. If you can't handle time inconsistencies,
-you need to use the normal locked accessors.
+在 2022/10/14 3:47, Andrii Nakryiko 写道:
+> On Mon, Oct 10, 2022 at 3:40 AM Wang Yufen <wangyufen@huawei.com> wrote:
+>> Add autoattach optional to support one-step load-attach-pin_link.
+>>
+>> For example,
+>>     $ bpftool prog loadall test.o /sys/fs/bpf/test autoattach
+>>
+>>     $ bpftool link
+>>     26: tracing  name test1  tag f0da7d0058c00236  gpl
+>>          loaded_at 2022-09-09T21:39:49+0800  uid 0
+>>          xlated 88B  jited 55B  memlock 4096B  map_ids 3
+>>          btf_id 55
+>>     28: kprobe  name test3  tag 002ef1bef0723833  gpl
+>>          loaded_at 2022-09-09T21:39:49+0800  uid 0
+>>          xlated 88B  jited 56B  memlock 4096B  map_ids 3
+>>          btf_id 55
+>>     57: tracepoint  name oncpu  tag 7aa55dfbdcb78941  gpl
+>>          loaded_at 2022-09-09T21:41:32+0800  uid 0
+>>          xlated 456B  jited 265B  memlock 4096B  map_ids 17,13,14,15
+>>          btf_id 82
+>>
+>>     $ bpftool link
+>>     1: tracing  prog 26
+>>          prog_type tracing  attach_type trace_fentry
+>>     3: perf_event  prog 28
+>>     10: perf_event  prog 57
+>>
+>> The autoattach optional can support tracepoints, k(ret)probes,
+>> u(ret)probes.
+>>
+>> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+>> Signed-off-by: Wang Yufen <wangyufen@huawei.com>
+>> ---
+>>   tools/bpf/bpftool/prog.c | 78 ++++++++++++++++++++++++++++++++++++++++++++++--
+>>   1 file changed, 76 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+>> index c81362a..8f3afce 100644
+>> --- a/tools/bpf/bpftool/prog.c
+>> +++ b/tools/bpf/bpftool/prog.c
+>> @@ -1453,6 +1453,69 @@ static int do_run(int argc, char **argv)
+>>          return ret;
+>>   }
+>>
+>> +static int
+>> +auto_attach_program(struct bpf_program *prog, const char *path)
+>> +{
+>> +       struct bpf_link *link;
+>> +       int err;
+>> +
+>> +       link = bpf_program__attach(prog);
+>> +       if (!link) {
+>> +               p_info("Program %s does not support autoattach, falling back to pinning",
+>> +                      bpf_program__name(prog));
+>> +               return bpf_obj_pin(bpf_program__fd(prog), path);
+>> +       }
+>> +       err = bpf_link__pin(link, path);
+>> +       if (err) {
+>> +               bpf_link__destroy(link);
+>> +               return err;
+>> +       }
+> leaking link here, destroy it unconditionally. If pinning succeeded,
+> you don't need to hold link's FD open anymore.
 
-thanks
--john
+I got it, will change. Thanks！
+
+>
+>> +       return 0;
+>> +}
+>> +
+>> +static int pathname_concat(const char *path, const char *name, char *buf)
+> why you didn't do the same as in libbpf? Pass buffer size explicitly
+> instead of assuming PATH_MAX
+
+The pathname_concat function is invoked only in one place and is not a
+general function here. So, not modified. Or, can I change the "pathname_concat"
+of libbpf to "LIBBPF_API int libbpf_pathname_concat" and use the
+libbpf_pathname_concat directly?
+
+
+>
+>> +{
+>> +       int len;
+>> +
+>> +       len = snprintf(buf, PATH_MAX, "%s/%s", path, name);
+>> +       if (len < 0)
+>> +               return -EINVAL;
+>> +       if (len >= PATH_MAX)
+>> +               return -ENAMETOOLONG;
+>> +
+>> +       return 0;
+>> +}
+>> +
+>> +static int
+>> +auto_attach_programs(struct bpf_object *obj, const char *path)
+>> +{
+>> +       struct bpf_program *prog;
+>> +       char buf[PATH_MAX];
+>> +       int err;
+>> +
+>> +       bpf_object__for_each_program(prog, obj) {
+>> +               err = pathname_concat(path, bpf_program__name(prog), buf);
+>> +               if (err)
+>> +                       goto err_unpin_programs;
+>> +
+>> +               err = auto_attach_program(prog, buf);
+>> +               if (err)
+>> +                       goto err_unpin_programs;
+>> +       }
+>> +
+>> +       return 0;
+>> +
+>> +err_unpin_programs:
+>> +       while ((prog = bpf_object__prev_program(obj, prog))) {
+>> +               if (pathname_concat(path, bpf_program__name(prog), buf))
+>> +                       continue;
+>> +
+>> +               bpf_program__unpin(prog, buf);
+>> +       }
+>> +
+>> +       return err;
+>> +}
+>> +
+>>   static int load_with_options(int argc, char **argv, bool first_prog_only)
+>>   {
+>>          enum bpf_prog_type common_prog_type = BPF_PROG_TYPE_UNSPEC;
+>> @@ -1464,6 +1527,7 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
+>>          struct bpf_program *prog = NULL, *pos;
+>>          unsigned int old_map_fds = 0;
+>>          const char *pinmaps = NULL;
+>> +       bool auto_attach = false;
+>>          struct bpf_object *obj;
+>>          struct bpf_map *map;
+>>          const char *pinfile;
+>> @@ -1583,6 +1647,9 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
+>>                                  goto err_free_reuse_maps;
+>>
+>>                          pinmaps = GET_ARG();
+>> +               } else if (is_prefix(*argv, "autoattach")) {
+>> +                       auto_attach = true;
+>> +                       NEXT_ARG();
+>>                  } else {
+>>                          p_err("expected no more arguments, 'type', 'map' or 'dev', got: '%s'?",
+>>                                *argv);
+>> @@ -1692,14 +1759,20 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
+>>                          goto err_close_obj;
+>>                  }
+>>
+>> -               err = bpf_obj_pin(bpf_program__fd(prog), pinfile);
+>> +               if (auto_attach)
+>> +                       err = auto_attach_program(prog, pinfile);
+>> +               else
+>> +                       err = bpf_obj_pin(bpf_program__fd(prog), pinfile);
+>>                  if (err) {
+>>                          p_err("failed to pin program %s",
+>>                                bpf_program__section_name(prog));
+>>                          goto err_close_obj;
+>>                  }
+>>          } else {
+>> -               err = bpf_object__pin_programs(obj, pinfile);
+>> +               if (auto_attach)
+>> +                       err = auto_attach_programs(obj, pinfile);
+>> +               else
+>> +                       err = bpf_object__pin_programs(obj, pinfile);
+>>                  if (err) {
+>>                          p_err("failed to pin all programs");
+>>                          goto err_close_obj;
+>> @@ -2338,6 +2411,7 @@ static int do_help(int argc, char **argv)
+>>                  "                         [type TYPE] [dev NAME] \\\n"
+>>                  "                         [map { idx IDX | name NAME } MAP]\\\n"
+>>                  "                         [pinmaps MAP_DIR]\n"
+>> +               "                         [autoattach]\n"
+>>                  "       %1$s %2$s attach PROG ATTACH_TYPE [MAP]\n"
+>>                  "       %1$s %2$s detach PROG ATTACH_TYPE [MAP]\n"
+>>                  "       %1$s %2$s run PROG \\\n"
+>> --
+>> 1.8.3.1
+>>
