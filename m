@@ -2,42 +2,41 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 518C75FF477
-	for <lists+bpf@lfdr.de>; Fri, 14 Oct 2022 22:19:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 696575FF48B
+	for <lists+bpf@lfdr.de>; Fri, 14 Oct 2022 22:29:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231342AbiJNUTs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Oct 2022 16:19:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46060 "EHLO
+        id S231332AbiJNU3Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Oct 2022 16:29:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230179AbiJNUTq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Oct 2022 16:19:46 -0400
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A83CB87E;
-        Fri, 14 Oct 2022 13:19:42 -0700 (PDT)
-Received: by mail-qt1-f173.google.com with SMTP id g11so4419737qts.1;
-        Fri, 14 Oct 2022 13:19:41 -0700 (PDT)
+        with ESMTP id S231350AbiJNU3X (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Oct 2022 16:29:23 -0400
+Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 712765D702;
+        Fri, 14 Oct 2022 13:29:22 -0700 (PDT)
+Received: by mail-qk1-f181.google.com with SMTP id a5so3237016qkl.6;
+        Fri, 14 Oct 2022 13:29:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6pM02CqWA47CT6v/gwwczEldB1iRqNTULNyxzzkOdng=;
-        b=Y6XkSlRQ1jiEy0xc+tB5EtYB74U7B8laojyMGBUTzMJNBV35iQ+H5gmMQXDT3b99m3
-         a5HYMCyYBpYu/fA4kTr2ljIdneKSeIpcXWoGn8TXgCJ1Z9R1QY5Q6WEEFolowTHD/ScB
-         4LiLmGQzHM/b6HsiWTvxQsWqcovj/03PO15coQGVaBD0n12u9C5tJqnIqc6EsFgToWr1
-         HKX8hdPgbpK6DS9+ilht/5X4J2Lm6ReEnDxRMI0J+g+FYPsl1ARBM0sg7Yqab9eRQu1h
-         cjQZZlU6B6dvVdQyAPRMaPuIElZpObiFv//1Cw5KFSzEzoE5lSvp6rcsGUq2n0ugBfZU
-         FvyA==
-X-Gm-Message-State: ACrzQf1TBc0QDhoabG3IkM/3pZaF/aNZkfF8g6s9RUdu2MKWpNxKzlAc
-        9MK9EDhHZyDmuDutPEu33cXZ0hBrKhenXg==
-X-Google-Smtp-Source: AMsMyM79WpvIJ1lNm5YNc6eSlg3vqL5Nlc0ah+YPD/r0+PzYa1vdSNOBksCB8pmgCMceZXbMOGWAXQ==
-X-Received: by 2002:ac8:7f94:0:b0:39c:dd8f:59f3 with SMTP id z20-20020ac87f94000000b0039cdd8f59f3mr1351931qtj.46.1665778780797;
-        Fri, 14 Oct 2022 13:19:40 -0700 (PDT)
-Received: from maniforge.dhcp.thefacebook.com ([2620:10d:c091:480::6918])
-        by smtp.gmail.com with ESMTPSA id t14-20020a05622a148e00b00398313f286dsm2806264qtx.40.2022.10.14.13.19.39
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PW8mHRQgVN29JVQfa80ZbsvQpYu3G3VerTPmn74QPd8=;
+        b=am7tH3CzjQIU8nlbO6zX5a6dn9UsrO1EhiSpqqcMm4k0HO0x19k4cHQcp3fJwhekwh
+         ul5qF5Zp2/8VgHoBt+FfXrMXl1EvYixZZG6a8R+Pd1eceWSYXqhiINlFq3YhF36qAbxA
+         D1kqvbNAzFoZRBBE23h1Lqds1w/k1t5R+vnte6lg9CWayy390jy9Jra54jRu7sGJUJfD
+         rbOGJccRM2kncRaBntvXgLTZ6mA4PZ6EcRmekCyIOZlEiCqB0ji6N1q5W7HcJRkD4MnQ
+         nMSgnpb2YNMv2bO/zfEG0K5NuWX8aAY4Anxgy07iu6mLt0K0LWhIUH8iYKlalSkXubI5
+         LWWg==
+X-Gm-Message-State: ACrzQf0Nuhs6r1E83JcTK/9KDR8Hx8oU1sjUNMn4ARABCwoeKUoW9GOk
+        ycHKPu+dqZ0ZympNo+cvn3yw6cGGuMM6uA==
+X-Google-Smtp-Source: AMsMyM5PqHNYFKAGr6RW0sfqyImz7BJPkZWiSzFD69jAoB/wKI4YmRgcNGMOyoR1YMCQtg69TKSD2w==
+X-Received: by 2002:ae9:c318:0:b0:6ee:245a:a4d8 with SMTP id n24-20020ae9c318000000b006ee245aa4d8mr5180091qkg.346.1665779361325;
+        Fri, 14 Oct 2022 13:29:21 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::6918])
+        by smtp.gmail.com with ESMTPSA id u8-20020a37ab08000000b006cbc6e1478csm3047832qke.57.2022.10.14.13.29.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Oct 2022 13:19:40 -0700 (PDT)
-Date:   Fri, 14 Oct 2022 15:19:39 -0500
+        Fri, 14 Oct 2022 13:29:21 -0700 (PDT)
 From:   David Vernet <void@manifault.com>
 To:     bpf@vger.kernel.org
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
@@ -45,38 +44,84 @@ Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
         haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
         kernel-team@fb.com, tj@kernel.org, memxor@gmail.com
-Subject: Re: [PATCH v3 1/3] bpf: Allow trusted pointers to be passed to
- KF_TRUSTED_ARGS kfuncs
-Message-ID: <Y0nEW14JcWPqRCMO@maniforge.dhcp.thefacebook.com>
-References: <20221014201427.2435461-1-void@manifault.com>
- <20221014201427.2435461-2-void@manifault.com>
+Subject: [PATCH v4 0/3] Support storing struct task_struct objects as kptrs
+Date:   Fri, 14 Oct 2022 15:28:49 -0500
+Message-Id: <20221014202852.2491657-1-void@manifault.com>
+X-Mailer: git-send-email 2.38.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221014201427.2435461-2-void@manifault.com>
-User-Agent: Mutt/2.2.7 (2022-08-07)
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
         FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        TVD_PH_BODY_ACCOUNTS_PRE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 14, 2022 at 03:14:25PM -0500, David Vernet wrote:
+Now that BPF supports adding new kernel functions with kfuncs, and storing
+kernel objects in maps with kptrs, we can add a set of kfuncs which allow
+struct task_struct objects to be stored in maps as referenced kptrs.
 
-[...]
+The possible use cases for doing this are plentiful.  During tracing,
+for example, it would be useful to be able to collect some tasks that
+performed a certain operation, and then periodically summarize who they
+are, which cgroup they're in, how much CPU time they've utilized, etc.
+Doing this now would require storing the task's pids along with some
+relevant data to be exported to user space, and later associating the
+pids to tasks in other event handlers where the data is recorded.
+Another useful by-product of this is that it allows a program to pin a
+task in a BPF program, and by proxy therefore also e.g. pin its task
+local storage.
 
-> @@ -5768,6 +5778,9 @@ static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
->  	if (arg_type & PTR_MAYBE_NULL)
->  		type &= ~PTR_MAYBE_NULL;
->  
-> +	if (!(arg_type & ARG_PTR_TO_BTF_ID))
-> +		type &= ~PTR_NESTED;
-> +
+In order to support this, we'll need to expand KF_TRUSTED_ARGS to
+support receiving trusted, non-refcounted pointers. It currently only
+supports either PTR_TO_CTX pointers, or refcounted pointers . What this
+means in terms of implementation is that btf_check_func_arg_match()
+would have to add another condition to its logic for checking if
+a ptr needs a refcount to also require that the pointer has at least one
+type modifier, such as PTR_UNTRUSTED. PTR_UNTRUSTED does not cover all
+of the possible pointers we need to watch out for, though. For example,
+a pointer obtained from walking a struct is considered "trusted" (or at
+least, not PTR_UNTRUSTED). To account for this and enable us to expand
+KF_TRUSTED_ARGS, this patch set also introduces a new PTR_NESTED type
+flag modifier which records if a pointer was obtained from walking a
+struct.
 
-Argh, I added while debugging something and I meant to remove it before
-sending out the next version.  I'll send out v4 shortly without this,
-apologies for the noise.
+This patch set adds this new PTR_NESTED type flag, expands
+KF_TRUSTED_ARGS accordingly, adds the new set of kfuncs mentioned above,
+and then finally adds a new selftest suite to validate all of this new
+behavior.
+
+David Vernet (3):
+  bpf: Allow trusted pointers to be passed to KF_TRUSTED_ARGS kfuncs
+  Now that BPF supports adding new kernel functions with kfuncs, and
+    storing kernel objects in maps with kptrs, we can add a set of
+    kfuncs which allow struct task_struct objects to be stored in maps
+    as referenced kptrs. The possible use cases for doing this are
+    plentiful. During tracing, for example, it would be useful to be
+    able to collect some tasks that performed a certain operation, and
+    then periodically summarize who they are, which cgroup they're in,
+    how much CPU time they've utilized, etc.
+  bpf/selftests: Add selftests for new task kfuncs
+
+ include/linux/bpf.h                           |   6 +
+ kernel/bpf/btf.c                              |  11 +-
+ kernel/bpf/helpers.c                          |  86 ++++-
+ kernel/bpf/verifier.c                         |  12 +-
+ tools/testing/selftests/bpf/DENYLIST.s390x    |   1 +
+ .../selftests/bpf/prog_tests/task_kfunc.c     | 160 +++++++++
+ .../selftests/bpf/progs/task_kfunc_common.h   |  83 +++++
+ .../selftests/bpf/progs/task_kfunc_failure.c  | 315 ++++++++++++++++++
+ .../selftests/bpf/progs/task_kfunc_success.c  | 132 ++++++++
+ tools/testing/selftests/bpf/verifier/calls.c  |   4 +-
+ 10 files changed, 801 insertions(+), 9 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/task_kfunc.c
+ create mode 100644 tools/testing/selftests/bpf/progs/task_kfunc_common.h
+ create mode 100644 tools/testing/selftests/bpf/progs/task_kfunc_failure.c
+ create mode 100644 tools/testing/selftests/bpf/progs/task_kfunc_success.c
+
+-- 
+2.38.0
+
