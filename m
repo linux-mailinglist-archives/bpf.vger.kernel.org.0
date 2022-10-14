@@ -2,41 +2,41 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07BE45FF464
-	for <lists+bpf@lfdr.de>; Fri, 14 Oct 2022 22:15:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1174D5FF467
+	for <lists+bpf@lfdr.de>; Fri, 14 Oct 2022 22:15:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229919AbiJNUP2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Oct 2022 16:15:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33684 "EHLO
+        id S231259AbiJNUPb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Oct 2022 16:15:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231403AbiJNUPH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Oct 2022 16:15:07 -0400
-Received: from mail-qv1-f43.google.com (mail-qv1-f43.google.com [209.85.219.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D07472F39E;
-        Fri, 14 Oct 2022 13:15:00 -0700 (PDT)
-Received: by mail-qv1-f43.google.com with SMTP id z18so3941619qvn.6;
-        Fri, 14 Oct 2022 13:15:00 -0700 (PDT)
+        with ESMTP id S231298AbiJNUPK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Oct 2022 16:15:10 -0400
+Received: from mail-qk1-f179.google.com (mail-qk1-f179.google.com [209.85.222.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83DEB38A3F;
+        Fri, 14 Oct 2022 13:15:02 -0700 (PDT)
+Received: by mail-qk1-f179.google.com with SMTP id j21so3208926qkk.9;
+        Fri, 14 Oct 2022 13:15:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jPMxAoolUKUZpMFf0g5q1NnQIG6EvSAKe+JJbcK/7Z8=;
-        b=e1XaPGiGlGRUnV5FY547aw7fQNsjiSbqdw7HivThWcaX03L+wA0hEw+2LK/+8xtxnX
-         uQNu3980ji+s4CZpy6tijaspdMH0pSJ/bG/txAA7hnFTwlBtimkNKFZ0g0UDoqEZ+p1C
-         iJmMb2xvTqQ0b4z1Q4zmk8p/PvmqrBjo80kYyD/t8g4w+rE1x3f04PLSlMs7x8a6guvz
-         t09HGLobiQ5bL2hmtD+WirJnWh87zw+UvtcA6HMmIu+rXSy7wKKR+uxNUHSkBzND+hUt
-         7EU4rbbbwHgy4WTcfxd+NzKRalIegBptUhdqoo1j7FjsjRga/ghILtPr7TubmoV7D5mY
-         lhHg==
-X-Gm-Message-State: ACrzQf3KsathmnsaV0pp/L6J3Wsj5bA0sPPSv/PtJHqlh6LiV6e/EFos
-        RTX9FMapkvwVN4Km8dF/nKlFitWlX8fC7w==
-X-Google-Smtp-Source: AMsMyM6Wm/pUbZhtwR4a9PtrwKInPgqki5i7r7d8Qu4wc14QwIm7Q/2Z136MC7GRkkhhJYRV9TuB3w==
-X-Received: by 2002:a05:6214:3017:b0:4b1:bfdc:d4c1 with SMTP id ke23-20020a056214301700b004b1bfdcd4c1mr5429379qvb.42.1665778499589;
-        Fri, 14 Oct 2022 13:14:59 -0700 (PDT)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9B5WCJk+STzLKu34JLdJ6VKkq949MWYzKFWY8poF1r0=;
+        b=2My0ygw6iyZ5trHVHQR65yvzDG1upIaY5RgMBNQDmSIhg+6odYURJBaYUxQhK/o/8F
+         xT4ImJB4QhPyN0+21Hy4I5eS0wKd+42NkQU7mhfrnHUol/8Adwsgcz74AcAy1tsI1D7H
+         we9vSKsRl0mP0IUu2OOmR5O/QGfMwdyPM2tnG2xX8gm3K7oFl1Va6Tii2UOX6wK/Rlww
+         heAQvFEou3loN/sSe6uATY6C9/fMgQcfxU7yOaRkzL2tq1X1Lm5UrICfc2fSLt2rtFC0
+         8oUI6Oi/v8Dd1d7DzQnKwLk9y11WrLED/masPIbdgtIaxZk9ezNamV5pa9K2SEbRSA2q
+         rJbA==
+X-Gm-Message-State: ACrzQf0REk+Gex5RCmyuxFfJudccXUBIs0sp9YZudhHBhkWbmj5i3aei
+        xpmE3xbCjsH1zNvd+nb769bDjqb1ol38gg==
+X-Google-Smtp-Source: AMsMyM5BFC3eT9RO2tF6GwqLWqA+cU9cHCaWZPObI7F0teiesgOJ9+1uGJ+OZQwdkVyqawD2K4m07A==
+X-Received: by 2002:a05:620a:448c:b0:6ce:a013:7fa3 with SMTP id x12-20020a05620a448c00b006cea0137fa3mr5070457qkp.532.1665778500897;
+        Fri, 14 Oct 2022 13:15:00 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:480::6918])
-        by smtp.gmail.com with ESMTPSA id y21-20020a05620a44d500b006b61b2cb1d2sm3297124qkp.46.2022.10.14.13.14.58
+        by smtp.gmail.com with ESMTPSA id bp39-20020a05620a45a700b006ce3f1af120sm3183062qkb.44.2022.10.14.13.15.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Oct 2022 13:14:59 -0700 (PDT)
+        Fri, 14 Oct 2022 13:15:00 -0700 (PDT)
 From:   David Vernet <void@manifault.com>
 To:     bpf@vger.kernel.org
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
@@ -44,77 +44,203 @@ Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
         haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
         kernel-team@fb.com, tj@kernel.org, memxor@gmail.com
-Subject: [PATCH v3 0/3] Support storing struct task_struct objects as kptrs
-Date:   Fri, 14 Oct 2022 15:14:24 -0500
-Message-Id: <20221014201427.2435461-1-void@manifault.com>
+Subject: [PATCH v3 1/3] bpf: Allow trusted pointers to be passed to KF_TRUSTED_ARGS kfuncs
+Date:   Fri, 14 Oct 2022 15:14:25 -0500
+Message-Id: <20221014201427.2435461-2-void@manifault.com>
 X-Mailer: git-send-email 2.38.0
+In-Reply-To: <20221014201427.2435461-1-void@manifault.com>
+References: <20221014201427.2435461-1-void@manifault.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
         FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        TVD_PH_BODY_ACCOUNTS_PRE autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Now that BPF supports adding new kernel functions with kfuncs, and storing
-kernel objects in maps with kptrs, we can add a set of kfuncs which allow
-struct task_struct objects to be stored in maps as referenced kptrs.
+Kfuncs currently support specifying the KF_TRUSTED_ARGS flag to signal
+to the verifier that it should enforce that a BPF program passes it a
+"safe", trusted pointer. Currently, "safe" means that the pointer is
+either PTR_TO_CTX, or is refcounted. There may be cases, however, where
+the kernel passes a BPF program a safe / trusted pointer to an object
+that the BPF program wishes to use as a kptr, but because the object
+does not yet have a ref_obj_id from the perspective of the verifier, the
+program would be unable to pass it to a KF_ACQUIRE | KF_TRUSTED_ARGS
+kfunc.
 
-The possible use cases for doing this are plentiful.  During tracing,
-for example, it would be useful to be able to collect some tasks that
-performed a certain operation, and then periodically summarize who they
-are, which cgroup they're in, how much CPU time they've utilized, etc.
-Doing this now would require storing the task's pids along with some
-relevant data to be exported to user space, and later associating the
-pids to tasks in other event handlers where the data is recorded.
-Another useful by-product of this is that it allows a program to pin a
-task in a BPF program, and by proxy therefore also e.g. pin its task
-local storage.
+The solution is to expand the set of pointers that are considered
+trusted according to KF_TRUSTED_ARGS, so that programs can invoke kfuncs
+with these pointers without getting rejected by the verifier.
 
-In order to support this, we'll need to expand KF_TRUSTED_ARGS to
-support receiving trusted, non-refcounted pointers. It currently only
-supports either PTR_TO_CTX pointers, or refcounted pointers . What this
-means in terms of implementation is that btf_check_func_arg_match()
-would have to add another condition to its logic for checking if
-a ptr needs a refcount to also require that the pointer has at least one
-type modifier, such as PTR_UNTRUSTED. PTR_UNTRUSTED does not cover all
-of the possible pointers we need to watch out for, though. For example,
-a pointer obtained from walking a struct is considered "trusted" (or at
-least, not PTR_UNTRUSTED). To account for this and enable us to expand
-KF_TRUSTED_ARGS, this patch set also introduces a new PTR_NESTED type
-flag modifier which records if a pointer was obtained from walking a
-struct.
+There is already a PTR_UNTRUSTED flag that is set in some scenarios,
+such as when a BPF program reads a kptr directly from a map
+without performing a bpf_kptr_xchg() call. These pointers of course can
+and should be rejected by the verifier. Unfortunately, however,
+PTR_UNTRUSTED does not cover all the cases for safety that need to
+be addressed to adequately protect kfuncs. Specifically, pointers
+obtained by a BPF program "walking" a struct are _not_ considered
+PTR_UNTRUSTED according to BPF. For example, say that we were to add a
+kfunc called bpf_task_acquire(), with KF_ACQUIRE | KF_TRUSTED_ARGS, to
+acquire a struct task_struct *. If we only used PTR_UNTRUSTED to signal
+that a task was unsafe to pass to a kfunc, the verifier would mistakenly
+allow the following unsafe BPF program to be loaded:
 
-This patch set adds this new PTR_NESTED type flag, expands
-KF_TRUSTED_ARGS accordingly, adds the new set of kfuncs mentioned above,
-and then finally adds a new selftest suite to validate all of this new
-behavior.
+SEC("tp_btf/task_newtask")
+int BPF_PROG(unsafe_acquire_task,
+	     struct task_struct *task,
+	     u64 clone_flags)
+{
+	struct task_struct *acquired, *nested;
 
-David Vernet (3):
-  bpf: Allow trusted pointers to be passed to KF_TRUSTED_ARGS kfuncs
-  bpf: Add kfuncs for storing struct task_struct * as a kptr
-  bpf/selftests: Add selftests for new task kfuncs
+	nested = task->last_wakee;
 
- include/linux/bpf.h                           |   6 +
- kernel/bpf/btf.c                              |  11 +-
- kernel/bpf/helpers.c                          |  86 ++++-
- kernel/bpf/verifier.c                         |  15 +-
- tools/testing/selftests/bpf/DENYLIST.s390x    |   1 +
- .../selftests/bpf/prog_tests/task_kfunc.c     | 160 +++++++++
- .../selftests/bpf/progs/task_kfunc_common.h   |  83 +++++
- .../selftests/bpf/progs/task_kfunc_failure.c  | 315 ++++++++++++++++++
- .../selftests/bpf/progs/task_kfunc_success.c  | 132 ++++++++
- tools/testing/selftests/bpf/verifier/calls.c  |   4 +-
- 10 files changed, 804 insertions(+), 9 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/task_kfunc.c
- create mode 100644 tools/testing/selftests/bpf/progs/task_kfunc_common.h
- create mode 100644 tools/testing/selftests/bpf/progs/task_kfunc_failure.c
- create mode 100644 tools/testing/selftests/bpf/progs/task_kfunc_success.c
+	/* Would not be rejected by the verifier. */
+	acquired = bpf_task_acquire(nested);
+	if (!acquired)
+		return 0;
 
+	bpf_task_release(acquired);
+	return 0;
+}
+
+To address this, this patch defines a new type flag called PTR_NESTED
+which tracks whether a PTR_TO_BTF_ID pointer was retrieved from walking
+a struct. A pointer passed directly from the kernel begins with
+(PTR_NESTED & type) == 0, meaning of course that it is not nested. Any
+pointer received from walking that object, however, would inherit that
+flag and become a nested pointer.
+
+With that flag, this patch also updates btf_check_func_arg_match() to
+only flag a PTR_TO_BTF_ID object as requiring a refcount if it has any
+type modifiers (which of course includes both PTR_UNTRUSTED and
+PTR_NESTED). Otherwise, the pointer passes this check and continues
+onto the others in btf_check_func_arg_match().
+
+A subsequent patch will add kfuncs for storing a task kfunc as a kptr,
+and then another patch will validate this feature by ensuring that the
+verifier rejects a kfunc invocation with a nested pointer.
+
+Signed-off-by: David Vernet <void@manifault.com>
+---
+ include/linux/bpf.h                          |  6 ++++++
+ kernel/bpf/btf.c                             | 11 ++++++++++-
+ kernel/bpf/verifier.c                        | 15 ++++++++++++++-
+ tools/testing/selftests/bpf/verifier/calls.c |  4 ++--
+ 4 files changed, 32 insertions(+), 4 deletions(-)
+
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 9e7d46d16032..b624024edb4e 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -457,6 +457,12 @@ enum bpf_type_flag {
+ 	/* Size is known at compile time. */
+ 	MEM_FIXED_SIZE		= BIT(10 + BPF_BASE_TYPE_BITS),
+ 
++	/* PTR was obtained from walking a struct. This is used with
++	 * PTR_TO_BTF_ID to determine whether the pointer is safe to pass to a
++	 * kfunc with KF_TRUSTED_ARGS.
++	 */
++	PTR_NESTED		= BIT(11 + BPF_BASE_TYPE_BITS),
++
+ 	__BPF_TYPE_FLAG_MAX,
+ 	__BPF_TYPE_LAST_FLAG	= __BPF_TYPE_FLAG_MAX - 1,
+ };
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index eba603cec2c5..3d7bad11b10b 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -6333,8 +6333,17 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
+ 		/* Check if argument must be a referenced pointer, args + i has
+ 		 * been verified to be a pointer (after skipping modifiers).
+ 		 * PTR_TO_CTX is ok without having non-zero ref_obj_id.
++		 *
++		 * All object pointers must be refcounted, other than:
++		 * - PTR_TO_CTX
++		 * - Trusted pointers (i.e. pointers with no type modifiers)
+ 		 */
+-		if (is_kfunc && trusted_args && (obj_ptr && reg->type != PTR_TO_CTX) && !reg->ref_obj_id) {
++		if (is_kfunc &&
++		    trusted_args &&
++		    obj_ptr &&
++		    base_type(reg->type) != PTR_TO_CTX &&
++		    type_flag(reg->type) &&
++		    !reg->ref_obj_id) {
+ 			bpf_log(log, "R%d must be referenced\n", regno);
+ 			return -EINVAL;
+ 		}
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 6f6d2d511c06..a625aaddeb34 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -581,6 +581,8 @@ static const char *reg_type_str(struct bpf_verifier_env *env,
+ 		strncpy(prefix, "user_", 32);
+ 	if (type & MEM_PERCPU)
+ 		strncpy(prefix, "percpu_", 32);
++	if (type & PTR_NESTED)
++		strncpy(prefix, "nested_", 32);
+ 	if (type & PTR_UNTRUSTED)
+ 		strncpy(prefix, "untrusted_", 32);
+ 
+@@ -4558,6 +4560,9 @@ static int check_ptr_to_btf_access(struct bpf_verifier_env *env,
+ 	if (type_flag(reg->type) & PTR_UNTRUSTED)
+ 		flag |= PTR_UNTRUSTED;
+ 
++	/* A pointer can only be unwalked when it wasn't accessed by walking a struct. */
++	flag |= PTR_NESTED;
++
+ 	if (atype == BPF_READ && value_regno >= 0)
+ 		mark_btf_ld_reg(env, regs, value_regno, ret, reg->btf, btf_id, flag);
+ 
+@@ -5694,7 +5699,12 @@ static const struct bpf_reg_types scalar_types = { .types = { SCALAR_VALUE } };
+ static const struct bpf_reg_types context_types = { .types = { PTR_TO_CTX } };
+ static const struct bpf_reg_types alloc_mem_types = { .types = { PTR_TO_MEM | MEM_ALLOC } };
+ static const struct bpf_reg_types const_map_ptr_types = { .types = { CONST_PTR_TO_MAP } };
+-static const struct bpf_reg_types btf_ptr_types = { .types = { PTR_TO_BTF_ID } };
++static const struct bpf_reg_types btf_ptr_types = {
++	.types = {
++		PTR_TO_BTF_ID,
++		PTR_TO_BTF_ID | PTR_NESTED
++	},
++};
+ static const struct bpf_reg_types spin_lock_types = { .types = { PTR_TO_MAP_VALUE } };
+ static const struct bpf_reg_types percpu_btf_ptr_types = { .types = { PTR_TO_BTF_ID | MEM_PERCPU } };
+ static const struct bpf_reg_types func_ptr_types = { .types = { PTR_TO_FUNC } };
+@@ -5768,6 +5778,9 @@ static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
+ 	if (arg_type & PTR_MAYBE_NULL)
+ 		type &= ~PTR_MAYBE_NULL;
+ 
++	if (!(arg_type & ARG_PTR_TO_BTF_ID))
++		type &= ~PTR_NESTED;
++
+ 	for (i = 0; i < ARRAY_SIZE(compatible->types); i++) {
+ 		expected = compatible->types[i];
+ 		if (expected == NOT_INIT)
+diff --git a/tools/testing/selftests/bpf/verifier/calls.c b/tools/testing/selftests/bpf/verifier/calls.c
+index e1a937277b54..496c29b1a298 100644
+--- a/tools/testing/selftests/bpf/verifier/calls.c
++++ b/tools/testing/selftests/bpf/verifier/calls.c
+@@ -181,7 +181,7 @@
+ 	},
+ 	.result_unpriv = REJECT,
+ 	.result = REJECT,
+-	.errstr = "negative offset ptr_ ptr R1 off=-4 disallowed",
++	.errstr = "negative offset nested_ptr_ ptr R1 off=-4 disallowed",
+ },
+ {
+ 	"calls: invalid kfunc call: PTR_TO_BTF_ID with variable offset",
+@@ -243,7 +243,7 @@
+ 	},
+ 	.result_unpriv = REJECT,
+ 	.result = REJECT,
+-	.errstr = "R1 must be referenced",
++	.errstr = "arg#0 pointer type STRUCT prog_test_ref_kfunc must point to scalar",
+ },
+ {
+ 	"calls: valid kfunc call: referenced arg needs refcounted PTR_TO_BTF_ID",
 -- 
 2.38.0
 
