@@ -2,69 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 273445FE534
-	for <lists+bpf@lfdr.de>; Fri, 14 Oct 2022 00:25:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8F155FE60A
+	for <lists+bpf@lfdr.de>; Fri, 14 Oct 2022 02:04:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229462AbiJMWZR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Oct 2022 18:25:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34696 "EHLO
+        id S229659AbiJNAD6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Oct 2022 20:03:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229502AbiJMWZQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Oct 2022 18:25:16 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21E9563342;
-        Thu, 13 Oct 2022 15:25:14 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id bj12so6821573ejb.13;
-        Thu, 13 Oct 2022 15:25:14 -0700 (PDT)
+        with ESMTP id S229459AbiJNADy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Oct 2022 20:03:54 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACB671578AF
+        for <bpf@vger.kernel.org>; Thu, 13 Oct 2022 17:03:52 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id b4so5244087wrs.1
+        for <bpf@vger.kernel.org>; Thu, 13 Oct 2022 17:03:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=google.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y/XbGbIL+iBomfsKlPTzECJpeVlb/uQPqD+FWv+ejzU=;
-        b=AAHk7awD17JroxJjaZ0W0W2+Cz7xco0YWyDJG1lojoglBZ/r5fsjZPZniRgXFHnjZ8
-         F+9005plpZb5D4Q5PvdL3y8J3ITs7F/dz7sVsIa2vMReYqZ0fQkGZyaXHn9Nakz8fvTt
-         5qhCsw4yiWp34l/JKDxE0EFKSRcjt+iWEPd/UgYOAUp672YLN8dJjw2BrITDqoki6trx
-         s7SqTKMRQB9jJN02DRWUiyMWT3mrHpUzVS3mFl+u9IfKYVRN9XL4zE8nVof6ctc5mv9R
-         FKu5xt+sWpXhhLxNxYu2DbVNYDfSbHuYNQeSHSt0kJBi6SegIGms4ZEr/NGBTSgzorFn
-         aF2Q==
+        bh=twO0p5/xsK51AFSKG4/+NF4p0nXn+aIHiYgabetyYzM=;
+        b=ogURrAxlnWu3vFqjB7rIY1G5B2xyvvoBnUC0V40Z0wdBZWqC60AnzlmZV9kyfON4XA
+         pmtIzlTMvgjsxalBx5RzqguT6mOGzTecK+c2BBk2QvoqMvRCrKLjPICKYhtXVZp6n4cM
+         JonlftWrVoFZQdkkaLjGmq5FzMO1UevuRmOXr1O74+K7TOivpjOEl6hUIPNfI1JZVtL0
+         o2OQIVjdyNTVAPFgdIQUah+Ce6Mzk9obfMX20xKkpGpmGcIo4XKE72TEQOyflCPdga6V
+         P92/3ejEUtxQH2H5H9158sRuxTEaagdKKxkBxJm0AVIqjumi0g08R271PUCTNYmEGw67
+         eIGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Y/XbGbIL+iBomfsKlPTzECJpeVlb/uQPqD+FWv+ejzU=;
-        b=huIHWVBLHrWWAoHQhxp7Qa+Pmhu1Vh5/r3ZQ/iOgPA8eDMXgELIwG1/yXceJpBYSBC
-         hVkxYzjKtzsykbPCUo3QS99ZjvAbR+huczzLF5mdp1D/cVqLIJo7VLJ3tXPsME/TQyje
-         rWR5gJuMKmiDNvf06aYuDCYgT05vQXuNkyRtBrQvM+mpbOaDvAmGamfugLYjYdwgHAvL
-         2ZjnHKn4pM0sD48LVIlY0x8CLAKrKkOLhdRmGnAqF+n0q87+VRz7a/Nwr+tHPdJD3/l3
-         o8eW+/4K5wv3fOaN3lBs36HTO7xjVovSeo9Cmw21IaHakpyLcRicQWmv/K3oiemM3Zx/
-         3PsQ==
-X-Gm-Message-State: ACrzQf3muEsMXp0kw5AkzYOYYkXBSx3xc/ojX4yskNRNnPw4RljXlj+t
-        g0+yyutxdwLWRZ6Dq4bDtdQUv/FTT000HFqpQH4=
-X-Google-Smtp-Source: AMsMyM4KcSjkJ25IAsnbyj71kzWY+VTucjq4ZLk1i3YEwTiEvqLKYqjJ9Q041Q/pqHkoG8fwHxPeDQLv7QgK+7uXJfY=
-X-Received: by 2002:a17:907:2d91:b0:78d:8747:71b4 with SMTP id
- gt17-20020a1709072d9100b0078d874771b4mr1370683ejc.545.1665699912570; Thu, 13
- Oct 2022 15:25:12 -0700 (PDT)
+        bh=twO0p5/xsK51AFSKG4/+NF4p0nXn+aIHiYgabetyYzM=;
+        b=dZHnZUIKGkFATuoZ+go15jM+E5RiK1Wna2Q0gdAiVA0TIqcW32YSkQcYxM3hjVOxOI
+         xJDDM+IftJeC6tk/+zJ31AwEiFYAPlnHLqCVBCNGap3SCu32oTzCROXtetta4IOobIVv
+         zDIIiQ7cFLI79YO7xFmkeKgiR/IfWVEbG6SZctjpoc6r7GbxadlKMNNz9UEGofTNXSVr
+         gaZFst7/vkR4uaNNpz+18A59q9mFEzTZ9uhuW4bUWky/O2JHZ0n3myjYfxmtqWuPQhuf
+         GogxUXmb/p/jdgrjy3OvzkLHOcQ+QS/nyB4Nc2jYkzyQP53EIyfnjOYwSazJRUZNh8mc
+         VGhg==
+X-Gm-Message-State: ACrzQf08xQ/3XdrHHgyO/HEkFvWhlxy3mhVIVqDgHkzZUey/STh5BNtg
+        R1HfrlUw5Z+2Wj2oYhCgsoxnEJcFTIXuWQQrnTik6g==
+X-Google-Smtp-Source: AMsMyM69o+xkxQCL0URhk14ropUJuWavWYXez2f/c8x1PekuXpo1/tfwcJbetPXOoEDA/xWRmULmY9gV2XQTFDm/GxM=
+X-Received: by 2002:a5d:4909:0:b0:22e:7bbf:c8d with SMTP id
+ x9-20020a5d4909000000b0022e7bbf0c8dmr1450837wrq.80.1665705831072; Thu, 13 Oct
+ 2022 17:03:51 -0700 (PDT)
 MIME-Version: 1.0
-References: <20221003190545.6b7c7aba@kernel.org> <20221003214941.6f6ea10d@kernel.org>
- <YzvV0CFSi9KvXVlG@krava> <20221004072522.319cd826@kernel.org>
- <Yz1SSlzZQhVtl1oS@krava> <20221005084442.48cb27f1@kernel.org>
- <20221005091801.38cc8732@kernel.org> <Yz3kHX4hh8soRjGE@krava>
- <20221013080517.621b8d83@kernel.org> <Y0iNVwxTJmrddRuv@krava>
-In-Reply-To: <Y0iNVwxTJmrddRuv@krava>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 13 Oct 2022 15:24:59 -0700
-Message-ID: <CAEf4Bzbow+8-f4rg2LRRRUD+=1wbv1MjpAh-P4=smUPtrzfZ3Q@mail.gmail.com>
-Subject: Re: WARN: multiple IDs found for 'nf_conn': 92168, 117897 - using 92168
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        bpf@vger.kernel.org,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+References: <CAJD7tkZkY9nfaVDmjzhDG4zzezNn7bXnGrK+kpn0zQFwPhdorw@mail.gmail.com>
+ <CANDhNCrrM58vmWCos5kd7_V=+NimW-5sU7UFtjxX0C+=mqW2KQ@mail.gmail.com> <CANDhNCojzuCW2Udx_CssLvnY9DunEqVBSxnC5D6Rz0oX-r2-7g@mail.gmail.com>
+In-Reply-To: <CANDhNCojzuCW2Udx_CssLvnY9DunEqVBSxnC5D6Rz0oX-r2-7g@mail.gmail.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Thu, 13 Oct 2022 17:03:14 -0700
+Message-ID: <CAJD7tkb=FSoRETXDMBs+ZUO1BhT7X1aG7wziYNtFg8XqmXH-Zw@mail.gmail.com>
+Subject: Re: Question about ktime_get_mono_fast_ns() non-monotonic behavior
+To:     John Stultz <jstultz@google.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Hao Luo <haoluo@google.com>,
+        Stanislav Fomichev <sdf@google.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,118 +71,21 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 13, 2022 at 3:12 PM Jiri Olsa <olsajiri@gmail.com> wrote:
+On Wed, Oct 12, 2022 at 8:07 PM John Stultz <jstultz@google.com> wrote:
 >
-> On Thu, Oct 13, 2022 at 08:05:17AM -0700, Jakub Kicinski wrote:
-> > On Wed, 5 Oct 2022 22:07:57 +0200 Jiri Olsa wrote:
-> > > > Yeah, it's there on linux-next, too.
-> > > >
-> > > > Let me grab a fresh VM and try there. Maybe it's my system. Somehow.
-> > >
-> > > ok, I will look around what's the way to install that centos 8 thing
-> >
-> > Any luck?
+> On Wed, Oct 12, 2022 at 8:02 PM John Stultz <jstultz@google.com> wrote:
+> > On Mon, Sep 26, 2022 at 2:18 PM Yosry Ahmed <yosryahmed@google.com> wrote:
+> > So I think it reasonable to say its bounded by approximately  2 *
+> > NSEC_PER_SEC/HZ +/- 11%.
 >
-> now BTFIDS warnings..
->
-> I can see following on centos8 with gcc 8.5:
->
->           BTFIDS  vmlinux
->         WARN: multiple IDs found for 'task_struct': 300, 56614 - using 300
->         WARN: multiple IDs found for 'file': 540, 56649 - using 540
->         WARN: multiple IDs found for 'vm_area_struct': 549, 56652 - using 549
->         WARN: multiple IDs found for 'seq_file': 953, 56690 - using 953
->         WARN: multiple IDs found for 'inode': 1132, 56966 - using 1132
->         WARN: multiple IDs found for 'path': 1164, 56995 - using 1164
->         WARN: multiple IDs found for 'task_struct': 300, 61905 - using 300
->         WARN: multiple IDs found for 'file': 540, 61943 - using 540
->         WARN: multiple IDs found for 'vm_area_struct': 549, 61946 - using 549
->         WARN: multiple IDs found for 'inode': 1132, 62029 - using 1132
->         WARN: multiple IDs found for 'path': 1164, 62058 - using 1164
->         WARN: multiple IDs found for 'cgroup': 1190, 62067 - using 1190
->         WARN: multiple IDs found for 'seq_file': 953, 62253 - using 953
->         WARN: multiple IDs found for 'sock': 7960, 62374 - using 7960
->         WARN: multiple IDs found for 'sk_buff': 1876, 62485 - using 1876
->         WARN: multiple IDs found for 'bpf_prog': 6094, 62542 - using 6094
->         WARN: multiple IDs found for 'socket': 7993, 62545 - using 7993
->         WARN: multiple IDs found for 'xdp_buff': 6191, 62836 - using 6191
->         WARN: multiple IDs found for 'sock_common': 8164, 63152 - using 8164
->         WARN: multiple IDs found for 'request_sock': 17296, 63204 - using 17296
->         WARN: multiple IDs found for 'inet_request_sock': 36292, 63222 - using 36292
->         WARN: multiple IDs found for 'inet_sock': 32700, 63225 - using 32700
->         WARN: multiple IDs found for 'inet_connection_sock': 33944, 63240 - using 33944
->         WARN: multiple IDs found for 'tcp_request_sock': 36299, 63260 - using 36299
->         WARN: multiple IDs found for 'tcp_sock': 33969, 63264 - using 33969
->         WARN: multiple IDs found for 'bpf_map': 6623, 63343 - using 6623
->
-> I'll need to check on that..
->
-> and I just actually saw the 'nf_conn' warning on linux-next/master with
-> latest fedora/gcc-12:
->
->           BTF [M] net/netfilter/nf_nat.ko
->         WARN: multiple IDs found for 'nf_conn': 106518, 120156 - using 106518
->         WARN: multiple IDs found for 'nf_conn': 106518, 121853 - using 106518
->         WARN: multiple IDs found for 'nf_conn': 106518, 123126 - using 106518
->         WARN: multiple IDs found for 'nf_conn': 106518, 124537 - using 106518
->         WARN: multiple IDs found for 'nf_conn': 106518, 126442 - using 106518
->         WARN: multiple IDs found for 'nf_conn': 106518, 128256 - using 106518
->           LD [M]  net/netfilter/nf_nat_tftp.ko
->
-> looks like maybe dedup missed this struct for some reason
->
-> nf_conn dump from module:
->
->         [120155] PTR '(anon)' type_id=120156
->         [120156] STRUCT 'nf_conn' size=320 vlen=14
->                 'ct_general' type_id=105882 bits_offset=0
->                 'lock' type_id=180 bits_offset=64
->                 'timeout' type_id=113 bits_offset=640
->                 'zone' type_id=106520 bits_offset=672
->                 'tuplehash' type_id=106533 bits_offset=704
->                 'status' type_id=1 bits_offset=1600
->                 'ct_net' type_id=3215 bits_offset=1664
->                 'nat_bysource' type_id=139 bits_offset=1728
->                 '__nfct_init_offset' type_id=949 bits_offset=1856
->                 'master' type_id=120155 bits_offset=1856
->                 'mark' type_id=106351 bits_offset=1920
->                 'secmark' type_id=106351 bits_offset=1952
->                 'ext' type_id=106536 bits_offset=1984
->                 'proto' type_id=106532 bits_offset=2048
->
-> nf_conn dump from vmlinux:
->
->         [106517] PTR '(anon)' type_id=106518
->         [106518] STRUCT 'nf_conn' size=320 vlen=14
->                 'ct_general' type_id=105882 bits_offset=0
->                 'lock' type_id=180 bits_offset=64
->                 'timeout' type_id=113 bits_offset=640
->                 'zone' type_id=106520 bits_offset=672
->                 'tuplehash' type_id=106533 bits_offset=704
->                 'status' type_id=1 bits_offset=1600
->                 'ct_net' type_id=3215 bits_offset=1664
->                 'nat_bysource' type_id=139 bits_offset=1728
->                 '__nfct_init_offset' type_id=949 bits_offset=1856
->                 'master' type_id=106517 bits_offset=1856
->                 'mark' type_id=106351 bits_offset=1920
->                 'secmark' type_id=106351 bits_offset=1952
->                 'ext' type_id=106536 bits_offset=1984
->                 'proto' type_id=106532 bits_offset=2048
->
-> look identical.. Andrii, any idea?
+> Sorry, this should be 2*NSEC_PER_SEC/HZ * 0.11
 
-I'm pretty sure they are not identical. There is somewhere a STRUCT vs
-FWD difference. We had a similar discussion recently with Alan
-Maguire.
+Thanks so much for the detailed response :)
 
->                 'master' type_id=120155 bits_offset=1856
-
-vs
-
->                 'master' type_id=106517 bits_offset=1856
-
-we'd need to unwind all these references to find where they start to differ
+IIUC this error bound is in ns. So on a 2 GHz cpu the bound is 0.11 ns
+(essentially 0)? I feel like I miscalculated, this error bound is too
+good to be true.
 
 >
-> thanks,
-> jirka
+> thanks
+> -john
