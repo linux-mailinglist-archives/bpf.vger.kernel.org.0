@@ -2,58 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3B175FE6DD
-	for <lists+bpf@lfdr.de>; Fri, 14 Oct 2022 04:15:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 096BE5FE6EE
+	for <lists+bpf@lfdr.de>; Fri, 14 Oct 2022 04:23:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229600AbiJNCPt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Oct 2022 22:15:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55470 "EHLO
+        id S229671AbiJNCXj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Oct 2022 22:23:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229745AbiJNCPs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Oct 2022 22:15:48 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79BAD6AE83
-        for <bpf@vger.kernel.org>; Thu, 13 Oct 2022 19:15:45 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id a25so4511481ljk.0
-        for <bpf@vger.kernel.org>; Thu, 13 Oct 2022 19:15:45 -0700 (PDT)
+        with ESMTP id S229739AbiJNCXi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Oct 2022 22:23:38 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5120EA692
+        for <bpf@vger.kernel.org>; Thu, 13 Oct 2022 19:23:37 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id g7so347900lfv.5
+        for <bpf@vger.kernel.org>; Thu, 13 Oct 2022 19:23:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=fuy+ZMA4uPGTf3eZoCGwL2/k+5QRw/FFhfkU0kjMMa0=;
-        b=Dr9qPuJzcDkqiovmS2bY/0BvhRLqTXnLQYia3409eGT0C9mWZoWdFPeleF6vsLxiwE
-         pBOhPr1T/sRYTFbJDtNzoQuztzY7zBf1tseWWkhZrHDSBweUEfdI7Z2wpTbcVG7Bc7pB
-         riGQSR0uEaYwrc7c7hxYTHpRhaYxEkLfPSkEE7tgIfP7QNXjkwhARmR1oKDrygQHiQtW
-         dkSwh43ISWTOSyznK7torBvjXxX5c+LtRW/tPM/+e/lkN4sNxenh6N8XwaFOdVDXp3JR
-         Sfzma1J0tOcX1o9qAdeZbyhl5KByrGfnBTyO4tYE0/aEuf/UztlGa/QJbdXWiaqv0IIC
-         M5FQ==
+        bh=xFfOpSWS847QVBaXLXU4wZtLPG1/YCVXplrcnhMSTZM=;
+        b=bnNJX4WcPoBm+L0V+1wHg8yL78MnnpOG4204Hh6oEtfR2GaVVgMRsxLdKzW1giXBrq
+         96kpI4HTWR+t12LRfhWo99s3YYxxHDf+/KrQ/oE7pFFhHT+ab4+AIvGzo2UnAZr97Fo+
+         /Ru9f01eZnfZoyCqIdqujv+NUGWuHHPuKxxZDkftcGC+ucaQoC3ALMv8A6d5NNRAWkTq
+         q6nPHGdpG+cBEBOutNGu4kqeiEd9LVP8H18Du6OJqAgF2GdLsl+o/SG2ehlUSxzj/qg4
+         DertlZ1TLvemOWbKcN5IOk53e5PrMhHLmjGl6h9l62tJ1W+caj/sZ2B2D3oDxIe0N+BV
+         CBlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=fuy+ZMA4uPGTf3eZoCGwL2/k+5QRw/FFhfkU0kjMMa0=;
-        b=gbu2NeEn36NJenemkaOWpBDAByBKY/KzSMac2npHfgpJqhJFhWIoLLPod7PhqjfpRJ
-         lHgQJOy9rkzAUIWswAlVANRtdiSqmkXFn8N82kUU3Gwe8l6zRwqNM8a67ppIx1QU8QOI
-         F8oHCipDG56+X95zwo2PbFskP9sc05OI5tPe6Wzha7okh7kL8DsPHwwKgW1bFQ+n13UF
-         bScE/1/opGxQbkDYv/Mu9IzaWVLKQ3+2bIKPp/joI+ahVCKncLabP75bpNB+fy8tW4VB
-         AhyAHvFRaWRCFewa4R6EeIBMuXBHEXBSWx9zdbpq2/YTpXwmZW1k1QxCHGK1e7GY++g2
-         OkBg==
-X-Gm-Message-State: ACrzQf0mksHlkKcaVT79adUvKlyvzC+T3IRbsuWyv2pSwpoV2e1B81RZ
-        4HnFYpm+AKiWPTdn9yM/Jzxk9YbIF7MfBMJZ5Q/1
-X-Google-Smtp-Source: AMsMyM49dZLWwOC7meVIiXUbcrIusOKXaoudHLdxZk3FeWJbP199/DbKsjYRGa5Tk1uTUEzuyYnlgtiPlCtaDeTRSpE=
-X-Received: by 2002:a2e:9e50:0:b0:261:e3fd:cdc5 with SMTP id
- g16-20020a2e9e50000000b00261e3fdcdc5mr982059ljk.56.1665713743465; Thu, 13 Oct
- 2022 19:15:43 -0700 (PDT)
+        bh=xFfOpSWS847QVBaXLXU4wZtLPG1/YCVXplrcnhMSTZM=;
+        b=lYGYo/vgYpNpmwlmFkd9w5XtfimS5Raj8WMCGUhhlQEjDwDFbgcPbA2TkqP+lsUEBE
+         j/YTDHCUhM0PLBcTrSJU6KKRUBGIGCttfXikFuholtz0qoFREN5v6C6Ci11YFJ0s4eUH
+         24XiLoGyJgfnTdbw1jet6xCnzACXWF/QvgrDPvaIjQib3K3l1cMjRXTK5KeQbRGqmTsH
+         N8P9Dj7SuNl9Acv+t3z5Ym0sOdsmG4uDlhKSe2nfUiaI1nthZtBhfgP+z2wpZ+Lx+b/0
+         5qxEKNqumES4wDqTxey/rZ8+d8yez7jIwMKFnRdCOE5pDH4snMCpwTusijytd/jFn7K8
+         TnLw==
+X-Gm-Message-State: ACrzQf3vxyTiLhijseZFvVUTfwnFBAlD5C8ZljfkWpJyO8ZQP3HRZ22J
+        C7shRmx82fFiMskuYDYFFt2KupnKb4xnmccYM+3B
+X-Google-Smtp-Source: AMsMyM5pQ2UcG46b5QoGPiDrmejL8uxLXHOxg+jGUrE9UmvQnWM3dGRJHSoKFmPsf2hHXB1b8mTjdLiFpAvQWAkayps=
+X-Received: by 2002:a19:7704:0:b0:4a4:5d9d:2f66 with SMTP id
+ s4-20020a197704000000b004a45d9d2f66mr962453lfc.515.1665714215803; Thu, 13 Oct
+ 2022 19:23:35 -0700 (PDT)
 MIME-Version: 1.0
 References: <CAJD7tkZkY9nfaVDmjzhDG4zzezNn7bXnGrK+kpn0zQFwPhdorw@mail.gmail.com>
  <CANDhNCrrM58vmWCos5kd7_V=+NimW-5sU7UFtjxX0C+=mqW2KQ@mail.gmail.com>
  <CANDhNCojzuCW2Udx_CssLvnY9DunEqVBSxnC5D6Rz0oX-r2-7g@mail.gmail.com>
- <CAJD7tkb=FSoRETXDMBs+ZUO1BhT7X1aG7wziYNtFg8XqmXH-Zw@mail.gmail.com> <CAJD7tkYUoW3YU-R1wNBADdUDHVprq6CP3axD9md3gJzW=yhiFw@mail.gmail.com>
-In-Reply-To: <CAJD7tkYUoW3YU-R1wNBADdUDHVprq6CP3axD9md3gJzW=yhiFw@mail.gmail.com>
+ <CAJD7tkb=FSoRETXDMBs+ZUO1BhT7X1aG7wziYNtFg8XqmXH-Zw@mail.gmail.com>
+ <CAJD7tkYUoW3YU-R1wNBADdUDHVprq6CP3axD9md3gJzW=yhiFw@mail.gmail.com> <CANDhNCpHGvw2MxexRFwpx4nAmqgwXw3G3DqkD2s0W3RNXZw2Bg@mail.gmail.com>
+In-Reply-To: <CANDhNCpHGvw2MxexRFwpx4nAmqgwXw3G3DqkD2s0W3RNXZw2Bg@mail.gmail.com>
 From:   John Stultz <jstultz@google.com>
-Date:   Thu, 13 Oct 2022 19:15:31 -0700
-Message-ID: <CANDhNCpHGvw2MxexRFwpx4nAmqgwXw3G3DqkD2s0W3RNXZw2Bg@mail.gmail.com>
+Date:   Thu, 13 Oct 2022 19:23:24 -0700
+Message-ID: <CANDhNCrhTzmvjy9Q75M_XoTtQaBhTwF5wzPeW2d8yp-m9Erfqw@mail.gmail.com>
 Subject: Re: Question about ktime_get_mono_fast_ns() non-monotonic behavior
 To:     Yosry Ahmed <yosryahmed@google.com>
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
@@ -73,34 +74,43 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 13, 2022 at 6:29 PM Yosry Ahmed <yosryahmed@google.com> wrote:
+On Thu, Oct 13, 2022 at 7:15 PM John Stultz <jstultz@google.com> wrote:
 >
-> On Thu, Oct 13, 2022 at 5:03 PM Yosry Ahmed <yosryahmed@google.com> wrote:
+> On Thu, Oct 13, 2022 at 6:29 PM Yosry Ahmed <yosryahmed@google.com> wrote:
 > >
-> > On Wed, Oct 12, 2022 at 8:07 PM John Stultz <jstultz@google.com> wrote:
+> > On Thu, Oct 13, 2022 at 5:03 PM Yosry Ahmed <yosryahmed@google.com> wrote:
 > > >
-> > > On Wed, Oct 12, 2022 at 8:02 PM John Stultz <jstultz@google.com> wrote:
-> > > > On Mon, Sep 26, 2022 at 2:18 PM Yosry Ahmed <yosryahmed@google.com> wrote:
-> > > > So I think it reasonable to say its bounded by approximately  2 *
-> > > > NSEC_PER_SEC/HZ +/- 11%.
+> > > On Wed, Oct 12, 2022 at 8:07 PM John Stultz <jstultz@google.com> wrote:
+> > > >
+> > > > On Wed, Oct 12, 2022 at 8:02 PM John Stultz <jstultz@google.com> wrote:
+> > > > > On Mon, Sep 26, 2022 at 2:18 PM Yosry Ahmed <yosryahmed@google.com> wrote:
+> > > > > So I think it reasonable to say its bounded by approximately  2 *
+> > > > > NSEC_PER_SEC/HZ +/- 11%.
+> > > >
+> > > > Sorry, this should be 2*NSEC_PER_SEC/HZ * 0.11
 > > >
-> > > Sorry, this should be 2*NSEC_PER_SEC/HZ * 0.11
+> > > Thanks so much for the detailed response :)
+> > >
+> > > IIUC this error bound is in ns. So on a 2 GHz cpu the bound is 0.11 ns
+> > > (essentially 0)? I feel like I miscalculated, this error bound is too
+> > > good to be true.
 > >
-> > Thanks so much for the detailed response :)
-> >
-> > IIUC this error bound is in ns. So on a 2 GHz cpu the bound is 0.11 ns
-> > (essentially 0)? I feel like I miscalculated, this error bound is too
-> > good to be true.
+> > Never mind, I thought HZ is the cpu speed for some reason. It's the
+> > number of jiffies per second, right?
 >
-> Never mind, I thought HZ is the cpu speed for some reason. It's the
-> number of jiffies per second, right?
+> Correct.
+>
+> > So if HZ is 1000, the error bound is actually ~2 ms, which is very
+> > large considering that the unit is ns.
+>
+> Uh, for HZ=1000, I think it's closer to 220us, but yes, for HZ=100 2.2ms.
 
-Correct.
-
-> So if HZ is 1000, the error bound is actually ~2 ms, which is very
-> large considering that the unit is ns.
-
-Uh, for HZ=1000, I think it's closer to 220us, but yes, for HZ=100 2.2ms.
+And again, it has been awhile since I've been deep in this code, so
+I'd not be surprised if I'm missing something and the worst case may
+be larger (things like SMIs or virtualization stalling the timekeeping
+update for longer than a tick).  So no promises, but this feels pretty
+close to the expected bound. If you can't handle time inconsistencies,
+you need to use the normal locked accessors.
 
 thanks
 -john
