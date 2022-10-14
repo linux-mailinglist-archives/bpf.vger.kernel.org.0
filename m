@@ -2,72 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 695715FEDE4
-	for <lists+bpf@lfdr.de>; Fri, 14 Oct 2022 14:15:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5FA15FEE95
+	for <lists+bpf@lfdr.de>; Fri, 14 Oct 2022 15:27:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229841AbiJNMPQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Oct 2022 08:15:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56236 "EHLO
+        id S229786AbiJNN1q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Oct 2022 09:27:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230046AbiJNMPP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Oct 2022 08:15:15 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FCF15FAE2;
-        Fri, 14 Oct 2022 05:15:13 -0700 (PDT)
+        with ESMTP id S229554AbiJNN1p (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Oct 2022 09:27:45 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F4E21B76F6;
+        Fri, 14 Oct 2022 06:27:43 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 1F0C8B8231D;
-        Fri, 14 Oct 2022 12:15:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99533C433D6;
-        Fri, 14 Oct 2022 12:15:10 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9608D61B29;
+        Fri, 14 Oct 2022 13:27:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD380C433C1;
+        Fri, 14 Oct 2022 13:27:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665749710;
-        bh=BO20M/RCaPhcfW9eOV+N4gaOFHcZbTbLZaJfF3tuFFM=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Lln/nLkfQrM93b8Xn1QLI7gphp3BFMx/rStTZHLacZTpxbjDL1txQBsCBkr+UK/8h
-         5RuwQJBr11+tlY71KkAVCXr22LgRnjrsV18tT6zED2jY1V/NCKIObIH2Dn20l9JhEu
-         3y4DV2G0d/BPSkC8y1Ae2pU4VCwBHdn09OJQu4/RbiosuSZJttNLrGATsApoGpIr3H
-         YU4aceCKQEqjDKA4pW9FnAfcE3I9PXLOPUfuEuXghS3/GT0X/CJKiiV0N7p0CwaVEj
-         A0hS7FIEbdiOZ+BNsGAcdGNrcoOmx3N4DL7d4FjYYrO/Pqv5bAaJThAnZl0apepH6B
-         3cyVH02Xbpz0g==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 644A25C32BF; Fri, 14 Oct 2022 05:15:07 -0700 (PDT)
-Date:   Fri, 14 Oct 2022 05:15:07 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Hou Tao <houtao@huaweicloud.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
+        s=k20201202; t=1665754063;
+        bh=Mer19hBhh2VO610s7L+5FvRU6lA4fQAb3tmDtTWR/JQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QSMyBkrDW0HP2yY/TqJk38iFPqW3PhdhSf8o4Ma1vvCup/yA3qpniqx3AoaGRow6f
+         PFBot3CSD3KUgKSSltJrF0UJU9pDn1yZ0icuzKeKSjtXsqoPnRocW36KDXEvuYeZcq
+         F/rcnbjXCNa3TB3QeOoGH8kbKp1tCjIW3ySbEJ/lkDW3OV0xYbB1AOIBY6evPI8Q0k
+         1DKnN5nqTOL1ymnU6f91TW+u80krsokFzeZy7KDxIeWPFK5K7OOOmks9c/apQqcMKu
+         b6DfBCG1ZTcyn4GZKM3SQVQq/paEGjX3hpP3hiWW4vGwvxBbU8ZaAsN6g/V1BWGtYS
+         mTTupBSRKzoGA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 7C07E4062C; Fri, 14 Oct 2022 10:27:40 -0300 (-03)
+Date:   Fri, 14 Oct 2022 10:27:40 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Namhyung Kim <namhyung@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
         Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Delyan Kratunov <delyank@fb.com>, rcu@vger.kernel.org,
-        houtao1@huawei.com
-Subject: Re: [PATCH bpf-next 1/3] bpf: Free elements after one
- RCU-tasks-trace grace period
-Message-ID: <20221014121507.GB4221@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20221011071128.3470622-1-houtao@huaweicloud.com>
- <20221011071128.3470622-2-houtao@huaweicloud.com>
- <20221011090742.GG4221@paulmck-ThinkPad-P17-Gen-1>
- <d91a9536-8ed2-fc00-733d-733de34af510@huaweicloud.com>
- <20221012063607.GM4221@paulmck-ThinkPad-P17-Gen-1>
- <b0ece7d9-ec48-0ecb-45d9-fb5cf973000b@huaweicloud.com>
- <20221012161103.GU4221@paulmck-ThinkPad-P17-Gen-1>
- <ca5f2973-e8b5-0d73-fd23-849f0dfc4347@huaweicloud.com>
- <20221013190041.GZ4221@paulmck-ThinkPad-P17-Gen-1>
- <08d09b15-5a6b-7f76-d53d-242fb20ed394@huaweicloud.com>
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org, Song Liu <songliubraving@fb.com>,
+        bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: [PATCH v2] perf stat: Support old kernels for bperf cgroup
+ counting
+Message-ID: <Y0ljzN920sWalEHR@kernel.org>
+References: <Y0Sx2KWX4gPlLytq@slm.duckdns.org>
+ <20221011052808.282394-1-namhyung@kernel.org>
+ <Y0Wfl88objrECjSo@slm.duckdns.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <08d09b15-5a6b-7f76-d53d-242fb20ed394@huaweicloud.com>
+In-Reply-To: <Y0Wfl88objrECjSo@slm.duckdns.org>
+X-Url:  http://acmel.wordpress.com
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -77,82 +63,35 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 14, 2022 at 12:20:19PM +0800, Hou Tao wrote:
-> Hi,
-> 
-> On 10/14/2022 3:00 AM, Paul E. McKenney wrote:
-> > On Thu, Oct 13, 2022 at 09:25:31AM +0800, Hou Tao wrote:
-> >> Hi,
-> >>
-> >> On 10/13/2022 12:11 AM, Paul E. McKenney wrote:
-> >>> On Wed, Oct 12, 2022 at 05:26:26PM +0800, Hou Tao wrote:
-> SNIP
-> >>> How about if I produce a patch for rcu_trace_implies_rcu_gp() and let
-> >>> you carry it with your series?  That way I don't have an unused function
-> >>> in -rcu and you don't have to wait for me to send it upstream?
-> >> Sound reasonable to me. Also thanks for your suggestions.
-> > Here you go!  Thoughts?
-> 
-> It looks great and thanks for it.
+Em Tue, Oct 11, 2022 at 06:53:43AM -1000, Tejun Heo escreveu:
+> On Mon, Oct 10, 2022 at 10:28:08PM -0700, Namhyung Kim wrote:
+> > The recent change in the cgroup will break the backward compatiblity in
+> > the BPF program.  It should support both old and new kernels using BPF
+> > CO-RE technique.
 
-Very good!  I will carry it in -rcu for some time, so please let me know
-when/if you pull it into a series.
+> > Like the task_struct->__state handling in the offcpu analysis, we can
+> > check the field name in the cgroup struct.
+ 
+> > Acked-by: Jiri Olsa <jolsa@kernel.org>
+> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+ 
+> Applied to cgroup/for-6.1-fixes.
 
-							Thanx, Paul
+Hey, I noticed that the perf build is broken for the
+tools/perf/util/bpf_skel/bperf_cgroup.bpf.c skell, so I tried using b4
+on this Namhyung patch, it ended up getting a newer version, by Tejun,
+that mixes up kernel code and tooling, which, when I tried to apply
+upstream didn't work.
 
-> > ------------------------------------------------------------------------
-> >
-> > commit 2eac2f7a9a6d8921e8084a6acdffa595e99dbd17
-> > Author: Paul E. McKenney <paulmck@kernel.org>
-> > Date:   Thu Oct 13 11:54:13 2022 -0700
-> >
-> >     rcu-tasks: Provide rcu_trace_implies_rcu_gp()
-> >     
-> >     As an accident of implementation, an RCU Tasks Trace grace period also
-> >     acts as an RCU grace period.  However, this could change at any time.
-> >     This commit therefore creates an rcu_trace_implies_rcu_gp() that currently
-> >     returns true to codify this accident.  Code relying on this accident
-> >     must call this function to verify that this accident is still happening.
-> >     
-> >     Reported-by: Hou Tao <houtao@huaweicloud.com>
-> >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> >     Cc: Alexei Starovoitov <ast@kernel.org>
-> >     Cc: Martin KaFai Lau <martin.lau@linux.dev>
-> >
-> > diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> > index 08605ce7379d7..8822f06e4b40c 100644
-> > --- a/include/linux/rcupdate.h
-> > +++ b/include/linux/rcupdate.h
-> > @@ -240,6 +240,18 @@ static inline void exit_tasks_rcu_start(void) { }
-> >  static inline void exit_tasks_rcu_finish(void) { }
-> >  #endif /* #else #ifdef CONFIG_TASKS_RCU_GENERIC */
-> >  
-> > +/**
-> > + * rcu_trace_implies_rcu_gp - does an RCU Tasks Trace grace period imply an RCU grace period?
-> > + *
-> > + * As an accident of implementation, an RCU Tasks Trace grace period also
-> > + * acts as an RCU grace period.  However, this could change at any time.
-> > + * Code relying on this accident must call this function to verify that
-> > + * this accident is still happening.
-> > + *
-> > + * You have been warned!
-> > + */
-> > +static inline bool rcu_trace_implies_rcu_gp(void) { return true; }
-> > +
-> >  /**
-> >   * cond_resched_tasks_rcu_qs - Report potential quiescent states to RCU
-> >   *
-> > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> > index b0b885e071fa8..fe9840d90e960 100644
-> > --- a/kernel/rcu/tasks.h
-> > +++ b/kernel/rcu/tasks.h
-> > @@ -1535,6 +1535,8 @@ static void rcu_tasks_trace_postscan(struct list_head *hop)
-> >  {
-> >  	// Wait for late-stage exiting tasks to finish exiting.
-> >  	// These might have passed the call to exit_tasks_rcu_finish().
-> > +
-> > +	// If you remove the following line, update rcu_trace_implies_rcu_gp()!!!
-> >  	synchronize_rcu();
-> >  	// Any tasks that exit after this point will set
-> >  	// TRC_NEED_QS_CHECKED in ->trc_reader_special.b.need_qs.
-> 
+Please try not to mix up kernel and tools/ changes in the same patch to
+avoid these issues.
+
+Also when changing tools/perf, please CC me.
+
+I'm now back trying to apply v2 of this patch to see if it fixes my
+build.
+
+Thanks,
+
+- Arnaldo
