@@ -2,371 +2,244 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06F9C5FE844
-	for <lists+bpf@lfdr.de>; Fri, 14 Oct 2022 06:56:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80D945FE8FB
+	for <lists+bpf@lfdr.de>; Fri, 14 Oct 2022 08:39:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229525AbiJNE4x (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Oct 2022 00:56:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38314 "EHLO
+        id S229745AbiJNGjA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Oct 2022 02:39:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbiJNE4w (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Oct 2022 00:56:52 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE82316D890
-        for <bpf@vger.kernel.org>; Thu, 13 Oct 2022 21:56:51 -0700 (PDT)
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29DNsJjr029612
-        for <bpf@vger.kernel.org>; Thu, 13 Oct 2022 21:56:51 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=flq5NAyjlZ1j1sMJbJ7msmE5vxSBnNqsgTllpr1Jxt8=;
- b=Hy/vj/mQsQTiAqW1cX115H6ipUy90KTrXeZQ2Kb+KUoMFhXtfRcrxK7mGD1OUE+qSPnL
- TAs8gFMr5lpY/NaOa3/tThzstxi9Yi3qp5AfMeSJw4/5MCLkcxgug4aa+yL2VarmKWzA
- ivRRM0rDILCsH3ALSu3c6mFRg0N/4MIIf2g= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3k6p6wdy0k-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 13 Oct 2022 21:56:51 -0700
-Received: from twshared8247.08.ash8.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
+        with ESMTP id S229504AbiJNGjA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Oct 2022 02:39:00 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50EBA17FD45;
+        Thu, 13 Oct 2022 23:38:57 -0700 (PDT)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Mpc6y0SD2zmVLG;
+        Fri, 14 Oct 2022 14:34:18 +0800 (CST)
+Received: from [10.174.179.191] (10.174.179.191) by
+ canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 13 Oct 2022 21:56:48 -0700
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id 1294310A7A5C3; Thu, 13 Oct 2022 21:56:46 -0700 (PDT)
-From:   Yonghong Song <yhs@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Tejun Heo <tj@kernel.org>
-Subject: [PATCH bpf-next 5/5] selftests/bpf: Add selftests for cgroup local storage
-Date:   Thu, 13 Oct 2022 21:56:46 -0700
-Message-ID: <20221014045646.3313465-1-yhs@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20221014045619.3309899-1-yhs@fb.com>
-References: <20221014045619.3309899-1-yhs@fb.com>
+ 15.1.2375.31; Fri, 14 Oct 2022 14:38:54 +0800
+Message-ID: <5691059a-b25b-deac-e813-95efc4725f92@huawei.com>
+Date:   Fri, 14 Oct 2022 14:38:54 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: TsobFSoxX77BdNhAMepdJeZ2BXdvMpzc
-X-Proofpoint-GUID: TsobFSoxX77BdNhAMepdJeZ2BXdvMpzc
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-10-14_01,2022-10-13_01,2022-06-22_01
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.0
+Subject: Re: [bpf-next v8 1/3] bpftool: Add autoattach for bpf prog
+ load|loadall
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     <quentin@isovalent.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <andrii@kernel.org>, <martin.lau@linux.dev>, <song@kernel.org>,
+        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <sdf@google.com>, <haoluo@google.com>, <jolsa@kernel.org>,
+        <davem@davemloft.net>, <kuba@kernel.org>, <hawk@kernel.org>,
+        <nathan@kernel.org>, <ndesaulniers@google.com>, <trix@redhat.com>,
+        <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <llvm@lists.linux.dev>
+References: <1665399601-29668-1-git-send-email-wangyufen@huawei.com>
+ <1665399601-29668-2-git-send-email-wangyufen@huawei.com>
+ <CAEf4BzYzUKUg=V6Bir7s1AKuZF-=HFsjuWBTjTqO8fganjWVDg@mail.gmail.com>
+ <fbb13238-d0e2-7b0f-8b7b-e4fb211bcaaf@huawei.com>
+ <CAEf4BzaP=H_+1Yf8ou2zzmu=h2FtDQh4wSSMgabBrPr_jK7SjA@mail.gmail.com>
+From:   wangyufen <wangyufen@huawei.com>
+In-Reply-To: <CAEf4BzaP=H_+1Yf8ou2zzmu=h2FtDQh4wSSMgabBrPr_jK7SjA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.191]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ canpemm500010.china.huawei.com (7.192.105.118)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add two tests for cgroup local storage, one to test bpf program helpers
-and user space map APIs, and the other to test recursive fentry
-triggering won't deadlock.
 
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- .../bpf/prog_tests/cgroup_local_storage.c     | 92 +++++++++++++++++++
- .../bpf/progs/cgroup_local_storage.c          | 88 ++++++++++++++++++
- .../selftests/bpf/progs/cgroup_ls_recursion.c | 70 ++++++++++++++
- 3 files changed, 250 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_local_s=
-torage.c
- create mode 100644 tools/testing/selftests/bpf/progs/cgroup_local_storag=
-e.c
- create mode 100644 tools/testing/selftests/bpf/progs/cgroup_ls_recursion=
-.c
+在 2022/10/14 11:43, Andrii Nakryiko 写道:
+> On Thu, Oct 13, 2022 at 7:24 PM wangyufen <wangyufen@huawei.com> wrote:
+>>
+>> 在 2022/10/14 3:47, Andrii Nakryiko 写道:
+>>> On Mon, Oct 10, 2022 at 3:40 AM Wang Yufen <wangyufen@huawei.com> wrote:
+>>>> Add autoattach optional to support one-step load-attach-pin_link.
+>>>>
+>>>> For example,
+>>>>      $ bpftool prog loadall test.o /sys/fs/bpf/test autoattach
+>>>>
+>>>>      $ bpftool link
+>>>>      26: tracing  name test1  tag f0da7d0058c00236  gpl
+>>>>           loaded_at 2022-09-09T21:39:49+0800  uid 0
+>>>>           xlated 88B  jited 55B  memlock 4096B  map_ids 3
+>>>>           btf_id 55
+>>>>      28: kprobe  name test3  tag 002ef1bef0723833  gpl
+>>>>           loaded_at 2022-09-09T21:39:49+0800  uid 0
+>>>>           xlated 88B  jited 56B  memlock 4096B  map_ids 3
+>>>>           btf_id 55
+>>>>      57: tracepoint  name oncpu  tag 7aa55dfbdcb78941  gpl
+>>>>           loaded_at 2022-09-09T21:41:32+0800  uid 0
+>>>>           xlated 456B  jited 265B  memlock 4096B  map_ids 17,13,14,15
+>>>>           btf_id 82
+>>>>
+>>>>      $ bpftool link
+>>>>      1: tracing  prog 26
+>>>>           prog_type tracing  attach_type trace_fentry
+>>>>      3: perf_event  prog 28
+>>>>      10: perf_event  prog 57
+>>>>
+>>>> The autoattach optional can support tracepoints, k(ret)probes,
+>>>> u(ret)probes.
+>>>>
+>>>> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+>>>> Signed-off-by: Wang Yufen <wangyufen@huawei.com>
+>>>> ---
+>>>>    tools/bpf/bpftool/prog.c | 78 ++++++++++++++++++++++++++++++++++++++++++++++--
+>>>>    1 file changed, 76 insertions(+), 2 deletions(-)
+>>>>
+>>>> diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+>>>> index c81362a..8f3afce 100644
+>>>> --- a/tools/bpf/bpftool/prog.c
+>>>> +++ b/tools/bpf/bpftool/prog.c
+>>>> @@ -1453,6 +1453,69 @@ static int do_run(int argc, char **argv)
+>>>>           return ret;
+>>>>    }
+>>>>
+>>>> +static int
+>>>> +auto_attach_program(struct bpf_program *prog, const char *path)
+>>>> +{
+>>>> +       struct bpf_link *link;
+>>>> +       int err;
+>>>> +
+>>>> +       link = bpf_program__attach(prog);
+>>>> +       if (!link) {
+>>>> +               p_info("Program %s does not support autoattach, falling back to pinning",
+>>>> +                      bpf_program__name(prog));
+>>>> +               return bpf_obj_pin(bpf_program__fd(prog), path);
+>>>> +       }
+>>>> +       err = bpf_link__pin(link, path);
+>>>> +       if (err) {
+>>>> +               bpf_link__destroy(link);
+>>>> +               return err;
+>>>> +       }
+>>> leaking link here, destroy it unconditionally. If pinning succeeded,
+>>> you don't need to hold link's FD open anymore.
+>> I got it, will change. Thanks！
+>>
+>>>> +       return 0;
+>>>> +}
+>>>> +
+>>>> +static int pathname_concat(const char *path, const char *name, char *buf)
+>>> why you didn't do the same as in libbpf? Pass buffer size explicitly
+>>> instead of assuming PATH_MAX
+>> The pathname_concat function is invoked only in one place and is not a
+>> general function here. So, not modified. Or, can I change the "pathname_concat"
+>> of libbpf to "LIBBPF_API int libbpf_pathname_concat" and use the
+>> libbpf_pathname_concat directly?
+> no need to reuse libbpf's helper, but I do think it's cleaner to
+> specify not just buffer pointer, but also it's size, just like you do
+> with any other string buffer API (like snprintf)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_local_storage.=
-c b/tools/testing/selftests/bpf/prog_tests/cgroup_local_storage.c
-new file mode 100644
-index 000000000000..4fe8862d275c
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/cgroup_local_storage.c
-@@ -0,0 +1,92 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Facebook */
-+
-+#define _GNU_SOURCE         /* See feature_test_macros(7) */
-+#include <unistd.h>
-+#include <sys/syscall.h>   /* For SYS_xxx definitions */
-+#include <sys/types.h>
-+#include <test_progs.h>
-+#include "cgroup_local_storage.skel.h"
-+#include "cgroup_ls_recursion.skel.h"
-+
-+static void test_sys_enter_exit(int cgroup_fd)
-+{
-+	struct cgroup_local_storage *skel;
-+	long val1 =3D 1, val2 =3D 0;
-+	int err;
-+
-+	skel =3D cgroup_local_storage__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
-+		return;
-+
-+	/* populate a value in cg_storage_2 */
-+	err =3D bpf_map_update_elem(bpf_map__fd(skel->maps.cg_storage_2), &cgro=
-up_fd, &val1, BPF_ANY);
-+	if (!ASSERT_OK(err, "map_update_elem"))
-+		goto out;
-+
-+	/* check value */
-+	err =3D bpf_map_lookup_elem(bpf_map__fd(skel->maps.cg_storage_2), &cgro=
-up_fd, &val2);
-+	if (!ASSERT_OK(err, "map_lookup_elem"))
-+		goto out;
-+	if (!ASSERT_EQ(val2, 1, "map_lookup_elem, invalid val"))
-+		goto out;
-+
-+	/* delete value */
-+	err =3D bpf_map_delete_elem(bpf_map__fd(skel->maps.cg_storage_2), &cgro=
-up_fd);
-+	if (!ASSERT_OK(err, "map_delete_elem"))
-+		goto out;
-+
-+	skel->bss->target_pid =3D syscall(SYS_gettid);
-+
-+	err =3D cgroup_local_storage__attach(skel);
-+	if (!ASSERT_OK(err, "skel_attach"))
-+		goto out;
-+
-+	syscall(SYS_gettid);
-+	syscall(SYS_gettid);
-+
-+	skel->bss->target_pid =3D 0;
-+
-+	/* 3x syscalls: 1x attach and 2x gettid */
-+	ASSERT_EQ(skel->bss->enter_cnt, 3, "enter_cnt");
-+	ASSERT_EQ(skel->bss->exit_cnt, 3, "exit_cnt");
-+	ASSERT_EQ(skel->bss->mismatch_cnt, 0, "mismatch_cnt");
-+out:
-+	cgroup_local_storage__destroy(skel);
-+}
-+
-+static void test_recursion(int cgroup_fd)
-+{
-+	struct cgroup_ls_recursion *skel;
-+	int err;
-+
-+	skel =3D cgroup_ls_recursion__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
-+		return;
-+
-+	err =3D cgroup_ls_recursion__attach(skel);
-+	if (!ASSERT_OK(err, "skel_attach"))
-+		goto out;
-+
-+	/* trigger sys_enter, make sure it does not cause deadlock */
-+	syscall(SYS_gettid);
-+
-+out:
-+	cgroup_ls_recursion__destroy(skel);
-+}
-+
-+void test_cgroup_local_storage(void)
-+{
-+	int cgroup_fd;
-+
-+	cgroup_fd =3D test__join_cgroup("/cgroup_local_storage");
-+	if (!ASSERT_GE(cgroup_fd, 0, "join_cgroup /cgroup_local_storage"))
-+		return;
-+
-+	if (test__start_subtest("sys_enter_exit"))
-+		test_sys_enter_exit(cgroup_fd);
-+	if (test__start_subtest("recursion"))
-+		test_recursion(cgroup_fd);
-+
-+	close(cgroup_fd);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/cgroup_local_storage.c b/t=
-ools/testing/selftests/bpf/progs/cgroup_local_storage.c
-new file mode 100644
-index 000000000000..5098e99705c6
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/cgroup_local_storage.c
-@@ -0,0 +1,88 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") =3D "GPL";
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_CGROUP_LOCAL_STORAGE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+	__type(key, int);
-+	__type(value, long);
-+} cg_storage_1 SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_CGROUP_LOCAL_STORAGE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+	__type(key, int);
-+	__type(value, long);
-+} cg_storage_2 SEC(".maps");
-+
-+#define MAGIC_VALUE 0xabcd1234
-+
-+pid_t target_pid =3D 0;
-+int mismatch_cnt =3D 0;
-+int enter_cnt =3D 0;
-+int exit_cnt =3D 0;
-+
-+SEC("tp_btf/sys_enter")
-+int BPF_PROG(on_enter, struct pt_regs *regs, long id)
-+{
-+	struct task_struct *task;
-+	long *ptr;
-+	int err;
-+
-+	task =3D bpf_get_current_task_btf();
-+	if (task->pid !=3D target_pid)
-+		return 0;
-+
-+	/* populate value 0 */
-+	ptr =3D bpf_cgroup_local_storage_get(&cg_storage_1, task->cgroups->dfl_=
-cgrp, 0,
-+				   BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	if (!ptr)
-+		return 0;
-+
-+	/* delete value 0 */
-+	err =3D bpf_cgroup_local_storage_delete(&cg_storage_1, task->cgroups->d=
-fl_cgrp);
-+	if (err)
-+		return 0;
-+
-+	/* value is not available */
-+	ptr =3D bpf_cgroup_local_storage_get(&cg_storage_1, task->cgroups->dfl_=
-cgrp, 0, 0);
-+	if (ptr)
-+		return 0;
-+
-+	/* re-populate the value */
-+	ptr =3D bpf_cgroup_local_storage_get(&cg_storage_1, task->cgroups->dfl_=
-cgrp, 0,
-+				   BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	if (!ptr)
-+		return 0;
-+	__sync_fetch_and_add(&enter_cnt, 1);
-+	*ptr =3D MAGIC_VALUE + enter_cnt;
-+
-+	return 0;
-+}
-+
-+SEC("tp_btf/sys_exit")
-+int BPF_PROG(on_exit, struct pt_regs *regs, long id)
-+{
-+	struct task_struct *task;
-+	long *ptr;
-+
-+	task =3D bpf_get_current_task_btf();
-+	if (task->pid !=3D target_pid)
-+		return 0;
-+
-+	ptr =3D bpf_cgroup_local_storage_get(&cg_storage_1, task->cgroups->dfl_=
-cgrp, 0,
-+				   BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	if (!ptr)
-+		return 0;
-+
-+	__sync_fetch_and_add(&exit_cnt, 1);
-+	if (*ptr !=3D MAGIC_VALUE + exit_cnt)
-+		__sync_fetch_and_add(&mismatch_cnt, 1);
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/bpf/progs/cgroup_ls_recursion.c b/to=
-ols/testing/selftests/bpf/progs/cgroup_ls_recursion.c
-new file mode 100644
-index 000000000000..862683b4cb1e
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/cgroup_ls_recursion.c
-@@ -0,0 +1,70 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") =3D "GPL";
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_CGROUP_LOCAL_STORAGE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+	__type(key, int);
-+	__type(value, long);
-+} map_a SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_CGROUP_LOCAL_STORAGE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+	__type(key, int);
-+	__type(value, long);
-+} map_b SEC(".maps");
-+
-+SEC("fentry/bpf_local_storage_lookup")
-+int BPF_PROG(on_lookup)
-+{
-+	struct task_struct *task =3D bpf_get_current_task_btf();
-+
-+	bpf_cgroup_local_storage_delete(&map_a, task->cgroups->dfl_cgrp);
-+	bpf_cgroup_local_storage_delete(&map_b, task->cgroups->dfl_cgrp);
-+	return 0;
-+}
-+
-+SEC("fentry/bpf_local_storage_update")
-+int BPF_PROG(on_update)
-+{
-+	struct task_struct *task =3D bpf_get_current_task_btf();
-+	long *ptr;
-+
-+	ptr =3D bpf_cgroup_local_storage_get(&map_a, task->cgroups->dfl_cgrp, 0=
-,
-+				   BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	if (ptr)
-+		*ptr +=3D 1;
-+
-+	ptr =3D bpf_cgroup_local_storage_get(&map_b, task->cgroups->dfl_cgrp, 0=
-,
-+				   BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	if (ptr)
-+		*ptr +=3D 1;
-+
-+	return 0;
-+}
-+
-+SEC("tp_btf/sys_enter")
-+int BPF_PROG(on_enter, struct pt_regs *regs, long id)
-+{
-+	struct task_struct *task;
-+	long *ptr;
-+
-+	task =3D bpf_get_current_task_btf();
-+	ptr =3D bpf_cgroup_local_storage_get(&map_a, task->cgroups->dfl_cgrp, 0=
-,
-+				   BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	if (ptr)
-+		*ptr =3D 200;
-+
-+	ptr =3D bpf_cgroup_local_storage_get(&map_b, task->cgroups->dfl_cgrp, 0=
-,
-+				   BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	if (ptr)
-+		*ptr =3D 100;
-+	return 0;
-+}
---=20
-2.30.2
+OK, will change in v9 too. Thanks！
 
+>
+>>
+>>>> +{
+>>>> +       int len;
+>>>> +
+>>>> +       len = snprintf(buf, PATH_MAX, "%s/%s", path, name);
+>>>> +       if (len < 0)
+>>>> +               return -EINVAL;
+>>>> +       if (len >= PATH_MAX)
+>>>> +               return -ENAMETOOLONG;
+>>>> +
+>>>> +       return 0;
+>>>> +}
+>>>> +
+>>>> +static int
+>>>> +auto_attach_programs(struct bpf_object *obj, const char *path)
+>>>> +{
+>>>> +       struct bpf_program *prog;
+>>>> +       char buf[PATH_MAX];
+>>>> +       int err;
+>>>> +
+>>>> +       bpf_object__for_each_program(prog, obj) {
+>>>> +               err = pathname_concat(path, bpf_program__name(prog), buf);
+>>>> +               if (err)
+>>>> +                       goto err_unpin_programs;
+>>>> +
+>>>> +               err = auto_attach_program(prog, buf);
+>>>> +               if (err)
+>>>> +                       goto err_unpin_programs;
+>>>> +       }
+>>>> +
+>>>> +       return 0;
+>>>> +
+>>>> +err_unpin_programs:
+>>>> +       while ((prog = bpf_object__prev_program(obj, prog))) {
+>>>> +               if (pathname_concat(path, bpf_program__name(prog), buf))
+>>>> +                       continue;
+>>>> +
+>>>> +               bpf_program__unpin(prog, buf);
+>>>> +       }
+>>>> +
+>>>> +       return err;
+>>>> +}
+>>>> +
+>>>>    static int load_with_options(int argc, char **argv, bool first_prog_only)
+>>>>    {
+>>>>           enum bpf_prog_type common_prog_type = BPF_PROG_TYPE_UNSPEC;
+>>>> @@ -1464,6 +1527,7 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
+>>>>           struct bpf_program *prog = NULL, *pos;
+>>>>           unsigned int old_map_fds = 0;
+>>>>           const char *pinmaps = NULL;
+>>>> +       bool auto_attach = false;
+>>>>           struct bpf_object *obj;
+>>>>           struct bpf_map *map;
+>>>>           const char *pinfile;
+>>>> @@ -1583,6 +1647,9 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
+>>>>                                   goto err_free_reuse_maps;
+>>>>
+>>>>                           pinmaps = GET_ARG();
+>>>> +               } else if (is_prefix(*argv, "autoattach")) {
+>>>> +                       auto_attach = true;
+>>>> +                       NEXT_ARG();
+>>>>                   } else {
+>>>>                           p_err("expected no more arguments, 'type', 'map' or 'dev', got: '%s'?",
+>>>>                                 *argv);
+>>>> @@ -1692,14 +1759,20 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
+>>>>                           goto err_close_obj;
+>>>>                   }
+>>>>
+>>>> -               err = bpf_obj_pin(bpf_program__fd(prog), pinfile);
+>>>> +               if (auto_attach)
+>>>> +                       err = auto_attach_program(prog, pinfile);
+>>>> +               else
+>>>> +                       err = bpf_obj_pin(bpf_program__fd(prog), pinfile);
+>>>>                   if (err) {
+>>>>                           p_err("failed to pin program %s",
+>>>>                                 bpf_program__section_name(prog));
+>>>>                           goto err_close_obj;
+>>>>                   }
+>>>>           } else {
+>>>> -               err = bpf_object__pin_programs(obj, pinfile);
+>>>> +               if (auto_attach)
+>>>> +                       err = auto_attach_programs(obj, pinfile);
+>>>> +               else
+>>>> +                       err = bpf_object__pin_programs(obj, pinfile);
+>>>>                   if (err) {
+>>>>                           p_err("failed to pin all programs");
+>>>>                           goto err_close_obj;
+>>>> @@ -2338,6 +2411,7 @@ static int do_help(int argc, char **argv)
+>>>>                   "                         [type TYPE] [dev NAME] \\\n"
+>>>>                   "                         [map { idx IDX | name NAME } MAP]\\\n"
+>>>>                   "                         [pinmaps MAP_DIR]\n"
+>>>> +               "                         [autoattach]\n"
+>>>>                   "       %1$s %2$s attach PROG ATTACH_TYPE [MAP]\n"
+>>>>                   "       %1$s %2$s detach PROG ATTACH_TYPE [MAP]\n"
+>>>>                   "       %1$s %2$s run PROG \\\n"
+>>>> --
+>>>> 1.8.3.1
+>>>>
