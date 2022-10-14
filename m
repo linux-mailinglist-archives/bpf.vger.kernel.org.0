@@ -2,60 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B21455FE782
-	for <lists+bpf@lfdr.de>; Fri, 14 Oct 2022 05:18:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E9D55FE794
+	for <lists+bpf@lfdr.de>; Fri, 14 Oct 2022 05:26:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229554AbiJNDSM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Oct 2022 23:18:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36878 "EHLO
+        id S229678AbiJND0X (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Oct 2022 23:26:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbiJNDRn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Oct 2022 23:17:43 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF9381929BC
-        for <bpf@vger.kernel.org>; Thu, 13 Oct 2022 20:17:01 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id t4so2339151wmj.5
-        for <bpf@vger.kernel.org>; Thu, 13 Oct 2022 20:17:01 -0700 (PDT)
+        with ESMTP id S229820AbiJND0T (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Oct 2022 23:26:19 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3338818F902
+        for <bpf@vger.kernel.org>; Thu, 13 Oct 2022 20:26:18 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id r8-20020a1c4408000000b003c47d5fd475so4554554wma.3
+        for <bpf@vger.kernel.org>; Thu, 13 Oct 2022 20:26:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=X63dy3MTX5BmUci/YGKv91qnJNpqqJepE017hos/Ffs=;
-        b=nCok2aMXgD/l2I+rAs/Ddbz1kLYqjM3MODDBVedIwAOC1GfDV0lWoiWo1a4kD1qnQB
-         05Zx10bzh+ZTDgpI7hdQ0z4HvepsZV7MUMxCjaOgtgyN2Qt8m3A3hW+LkUnhIswEGSLU
-         2G+zRKXVFwcZyfJuwjK4PvIO5O7rBvsvxYEOxCgIacoZJCxbEhDOroybgZPaDp/WR/k9
-         O9YtmfulftHYBNQwLunzqVjsaEpoil8H7IRpJrTg4j2yrWSXNN7sOUJ6K+g1NKSlwlTR
-         igPbLMLwmJ5sLghDhTMY4cv8ZFNU139jfLUlxnZTOhdppoPB940BZEg4qeQuXBTvLcgM
-         aRPw==
+        bh=ezfMH1M8CgZm9uCtaIu6h7oFmHb3YSxbGtnTFpXFyu4=;
+        b=thGSPXyv3XwUcIvqe1vn1S10l+qpM1ML+rE4YuOaSlP1nRa0TIm7FKciGqUzlvc/B9
+         BVde/7FQbl3itAcPpATPaXtRDi9tS3rhjbu0YpeuqcNTfK1iRn8md2Jk7NvbNaT249ur
+         1vkb9mjpuTFcdoKDsw7esb4L05N5SCWbkTD8eqs4Dm1Km4pLuhsUD1ub7iCaib40Oke/
+         7ibv8ErocpFFJB+3pXEp/hcTusFKo+snlPXvt9JbW7Ud5dbBhvGJ9F0lxRMnhuZD+hyr
+         ghwnLpEu3kunTtNwPx1haW8VKX3mQux9miTP4LUx909bhho7OGedQIOcZwqk832Ll0xR
+         BZXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=X63dy3MTX5BmUci/YGKv91qnJNpqqJepE017hos/Ffs=;
-        b=Z6zcGEPNRwqp6j5NMp8FBVfFKEo1BxGjO2MA37fqDTnJRjG5ipBZtNxOQkygUbkRuQ
-         Vjq8nki0ppSD0fxPdEFtvQuYhKjGJbI7obn5zBuz2IVEPyHOBIfpTFn2fJuq2hn1XhLP
-         QxI6qpBSIBzZCeD8YI27aXVhKikyZcrgcz97pIv5fD5KTk4JKBrna6ljpc1Wyn0UouUx
-         0R0nkmcTahgCOCV/y0/tecJp7TpwSthqQ48iinjomjtQOSptSgJdhgxARiC6VoT714fH
-         DaM4g3QNkif2aPYQGQtz4N+kwaY8Y6OKjUhwhWvyrpFiczCfh8+Z09pu3cdN1XsL7r57
-         t7/g==
-X-Gm-Message-State: ACrzQf0ZstOo17zt5tP7LzMFhBkhJmCRaPrkgl0UckBBRGlLkulga5V7
-        rUWLKl78M7Xgzxuz80ng1XMXLjE+f8urCegNroNiug==
-X-Google-Smtp-Source: AMsMyM7iVOp+OllRzIv2aTOuMOcKMaXhCYCa3Rev+lssqMW6io+6j+nhJnPO2lQO77LHckFS2Yee8kUuq5xup8oqSts=
+        bh=ezfMH1M8CgZm9uCtaIu6h7oFmHb3YSxbGtnTFpXFyu4=;
+        b=deNZpyjxIZ9SCUAVaHvkNd9RqXT6jWvmBzf27JJgqkCdxuD6avyK/fS10/7eUcGfhj
+         zasXhiLbPX534o49HZlyhp4m/t2uj/3rY4D+zGxZLiWFs43FLAKdkWJuoviR6MxbbW8I
+         Nz6ooeB4jlOb5zD8csZtQWFLiduSeEi67DCssYeQZbHBnlGGvCQ3z0N5NsvehQhcuNMc
+         nUm5Z3NI5Ourt+IPUDlJk5tdHs8kvMO6WjYZoINpzyCFFCfpmG4xqo9zCmfajwpJstQC
+         DqpYZ6/Sx0YeJ1/JqLRqOwEPnETo94AmLCz6vSKO8B4UEheIDg/Sy6pOLhkLLKTPrmmA
+         AdKw==
+X-Gm-Message-State: ACrzQf1jPN0yy/tQJG5rq9gXJEBOvdnLUwsaNv8eM7eRjTol/i11IOAz
+        M0xpHEXmk9LG65/FolSpDYASzu2dEI8LeLaolgBRHw==
+X-Google-Smtp-Source: AMsMyM4UMdiWhBGftgOzR8/2OwZAPIfOcGhVzGJzBOUhF3W3yYfjUz1PqaN3zdDRIrR8K9OwAxz2BvZlzeRx8Y7TTus=
 X-Received: by 2002:a1c:ed11:0:b0:3b4:d3e1:bec with SMTP id
- l17-20020a1ced11000000b003b4d3e10becmr1813649wmh.196.1665717419528; Thu, 13
- Oct 2022 20:16:59 -0700 (PDT)
+ l17-20020a1ced11000000b003b4d3e10becmr1830314wmh.196.1665717976609; Thu, 13
+ Oct 2022 20:26:16 -0700 (PDT)
 MIME-Version: 1.0
 References: <CAJD7tkZkY9nfaVDmjzhDG4zzezNn7bXnGrK+kpn0zQFwPhdorw@mail.gmail.com>
- <CANDhNCrrM58vmWCos5kd7_V=+NimW-5sU7UFtjxX0C+=mqW2KQ@mail.gmail.com>
- <CANDhNCojzuCW2Udx_CssLvnY9DunEqVBSxnC5D6Rz0oX-r2-7g@mail.gmail.com>
- <CAJD7tkb=FSoRETXDMBs+ZUO1BhT7X1aG7wziYNtFg8XqmXH-Zw@mail.gmail.com>
- <CAJD7tkYUoW3YU-R1wNBADdUDHVprq6CP3axD9md3gJzW=yhiFw@mail.gmail.com>
- <CANDhNCpHGvw2MxexRFwpx4nAmqgwXw3G3DqkD2s0W3RNXZw2Bg@mail.gmail.com> <CANDhNCrhTzmvjy9Q75M_XoTtQaBhTwF5wzPeW2d8yp-m9Erfqw@mail.gmail.com>
-In-Reply-To: <CANDhNCrhTzmvjy9Q75M_XoTtQaBhTwF5wzPeW2d8yp-m9Erfqw@mail.gmail.com>
+ <CANDhNCq-ewTnuuRPoDtq+14TCFEwUpyo-pxn3J8=x1qCZzcgKQ@mail.gmail.com>
+In-Reply-To: <CANDhNCq-ewTnuuRPoDtq+14TCFEwUpyo-pxn3J8=x1qCZzcgKQ@mail.gmail.com>
 From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Thu, 13 Oct 2022 20:16:23 -0700
-Message-ID: <CAJD7tkZZ9FeXd1=OYe2MJigsYzk-KH_VmTEbd3mo+wN0MqThug@mail.gmail.com>
+Date:   Thu, 13 Oct 2022 20:25:40 -0700
+Message-ID: <CAJD7tkayXxKEPpRE7QvBN4CikqeQcUe3_qfrUaH4V+cJrk0y=Q@mail.gmail.com>
 Subject: Re: Question about ktime_get_mono_fast_ns() non-monotonic behavior
 To:     John Stultz <jstultz@google.com>
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
@@ -75,50 +71,45 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 13, 2022 at 7:23 PM John Stultz <jstultz@google.com> wrote:
+On Thu, Oct 13, 2022 at 7:39 PM John Stultz <jstultz@google.com> wrote:
 >
-> On Thu, Oct 13, 2022 at 7:15 PM John Stultz <jstultz@google.com> wrote:
+> On Mon, Sep 26, 2022 at 2:18 PM Yosry Ahmed <yosryahmed@google.com> wrote:
 > >
-> > On Thu, Oct 13, 2022 at 6:29 PM Yosry Ahmed <yosryahmed@google.com> wrote:
-> > >
-> > > On Thu, Oct 13, 2022 at 5:03 PM Yosry Ahmed <yosryahmed@google.com> wrote:
-> > > >
-> > > > On Wed, Oct 12, 2022 at 8:07 PM John Stultz <jstultz@google.com> wrote:
-> > > > >
-> > > > > On Wed, Oct 12, 2022 at 8:02 PM John Stultz <jstultz@google.com> wrote:
-> > > > > > On Mon, Sep 26, 2022 at 2:18 PM Yosry Ahmed <yosryahmed@google.com> wrote:
-> > > > > > So I think it reasonable to say its bounded by approximately  2 *
-> > > > > > NSEC_PER_SEC/HZ +/- 11%.
-> > > > >
-> > > > > Sorry, this should be 2*NSEC_PER_SEC/HZ * 0.11
-> > > >
-> > > > Thanks so much for the detailed response :)
-> > > >
-> > > > IIUC this error bound is in ns. So on a 2 GHz cpu the bound is 0.11 ns
-> > > > (essentially 0)? I feel like I miscalculated, this error bound is too
-> > > > good to be true.
-> > >
-> > > Never mind, I thought HZ is the cpu speed for some reason. It's the
-> > > number of jiffies per second, right?
+> > I have a question about ktime_get_mono_fast_ns(), which is used by the
+> > BPF helper bpf_ktime_get_ns() among other use cases. The comment above
+> > this function specifies that there are cases where the observed clock
+> > would not be monotonic.
 > >
-> > Correct.
-> >
-> > > So if HZ is 1000, the error bound is actually ~2 ms, which is very
-> > > large considering that the unit is ns.
-> >
-> > Uh, for HZ=1000, I think it's closer to 220us, but yes, for HZ=100 2.2ms.
+> > I had 2 beginner questions:
 >
-> And again, it has been awhile since I've been deep in this code, so
-> I'd not be surprised if I'm missing something and the worst case may
-> be larger (things like SMIs or virtualization stalling the timekeeping
-> update for longer than a tick).  So no promises, but this feels pretty
-> close to the expected bound. If you can't handle time inconsistencies,
-> you need to use the normal locked accessors.
+> Thinking about this a bit more, I have my own "beginner question": Why
+> does bpf_ktime_get_ns() need to use the ktime_get_mono_fast_ns()
+> accessor instead of ktime_get_ns()?
 >
+> I don't know enough about the contexts that bpf logic can run, so it's
+> not clear to me and it's not obviously commented either.
 
-Thanks a lot for the clarification. The inconsistencies may be too
-large, depending on what we are trying to measure, so it is something
-that we need to keep in mind.
+I am not the best person to answer this question (the BPF list is
+CC'd, it's full of more knowledgeable people).
 
+My understanding is that because BPF programs can basically be run in
+any context (because they can attach to almost all functions /
+tracepoints in the kernel), the time accessor needs to be safe in all
+contexts.
+
+Now that I know that ktime_get_mono_fast_ns() can drift significantly,
+I am wondering why we don't just read sched_clock(). Can the
+difference between sched_clock() on different cpus be even higher than
+the potential drift from ktime_get_mono_fast_ns()?
+
+>
+> Looking at some of the uses of ktime_get_mono_fast_ns() spread around
+> the kernel, some are clearly necessary (trying to get timestamps in
+> suspend paths after timekeeping might be shutdown, etc). But there's
+> also a few cases where the need isn't clear and I'm worried the
+> reasoning is because it says "fast" in its name.
+>   "Why stop with ktime_get_mono_fast_ns() when you could instead use
+> ktime_get_real_fast()! It's *real fast*!" :)
+>
 > thanks
 > -john
