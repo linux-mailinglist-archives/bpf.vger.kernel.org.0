@@ -2,158 +2,154 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF3EE5FE7F0
-	for <lists+bpf@lfdr.de>; Fri, 14 Oct 2022 06:20:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E85AF5FE803
+	for <lists+bpf@lfdr.de>; Fri, 14 Oct 2022 06:37:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229619AbiJNEUb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Oct 2022 00:20:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40784 "EHLO
+        id S229588AbiJNEhA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Oct 2022 00:37:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229533AbiJNEUa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Oct 2022 00:20:30 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D12864C619;
-        Thu, 13 Oct 2022 21:20:24 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4MpY692w6yzl4bZ;
-        Fri, 14 Oct 2022 12:18:25 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-        by APP2 (Coremail) with SMTP id Syh0CgAX_tKD40hjtML3AA--.63871S2;
-        Fri, 14 Oct 2022 12:20:23 +0800 (CST)
-From:   Hou Tao <houtao@huaweicloud.com>
-Subject: Re: [PATCH bpf-next 1/3] bpf: Free elements after one RCU-tasks-trace
- grace period
-To:     paulmck@kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Delyan Kratunov <delyank@fb.com>, rcu@vger.kernel.org,
-        houtao1@huawei.com
-References: <20221011071128.3470622-1-houtao@huaweicloud.com>
- <20221011071128.3470622-2-houtao@huaweicloud.com>
- <20221011090742.GG4221@paulmck-ThinkPad-P17-Gen-1>
- <d91a9536-8ed2-fc00-733d-733de34af510@huaweicloud.com>
- <20221012063607.GM4221@paulmck-ThinkPad-P17-Gen-1>
- <b0ece7d9-ec48-0ecb-45d9-fb5cf973000b@huaweicloud.com>
- <20221012161103.GU4221@paulmck-ThinkPad-P17-Gen-1>
- <ca5f2973-e8b5-0d73-fd23-849f0dfc4347@huaweicloud.com>
- <20221013190041.GZ4221@paulmck-ThinkPad-P17-Gen-1>
-Message-ID: <08d09b15-5a6b-7f76-d53d-242fb20ed394@huaweicloud.com>
-Date:   Fri, 14 Oct 2022 12:20:19 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        with ESMTP id S229583AbiJNEhA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Oct 2022 00:37:00 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF65618C414
+        for <bpf@vger.kernel.org>; Thu, 13 Oct 2022 21:36:57 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id y72so3951184oia.3
+        for <bpf@vger.kernel.org>; Thu, 13 Oct 2022 21:36:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=OnYLSD2OypS0Uent7BXmwBd+4DlgLNwAMehMf+rH4Xc=;
+        b=tYgN7DxuXOQ4PsGCeAxogoF1GWVfRlNZ9Y7LzymSSSkJLzDEvNRtwBtuYui9OOYqzk
+         5oMLVhOLMH3R+q0m12mGm3EG2h1sFbpEIl1e/B0y6IzwrvG+nPmuHkC9DGM4yw/BwAoB
+         Mi2OTNTi/spUDcWHVeVzkIiWonCLhf8j1xvzaTAEyGsMd20bLUX01KxK2lexfVZ60al+
+         SOmHkxkQCwyAuTalb0B0TZ8zfwS6kasCQHVVDbqYS73iFGgUMC54parNbbJUB4VbDA2i
+         bBMpke53SXfzi4plr1UJdLARkcwu6OhY+hqLq+SwcHhVoOCdm8RfMn0huOkJKllfj5Sv
+         XnMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OnYLSD2OypS0Uent7BXmwBd+4DlgLNwAMehMf+rH4Xc=;
+        b=XbeEmdNxEjoMUkF5aC4RfrNyw7FdwPf+cQIjsEqsvkdCwPzEogyq0SAsKkKCErzL9+
+         824ob0SQxHA03/4bR2633dCOx//vTyq56CIkD6N/Ji2P0M2NeNHCJDbzLTfubu6/Er8d
+         O2deFL4YSB4gestaR+GX6p/IiQjBnZQQoXIUWhcdnqe3/rYbAsIr6DaQogSCbXZ8ovXH
+         EAlGuhGiKy79M1Ji11FZq1BTJmqQBR2qnxKyXHgg2QH67V3WKriMBWtsJky/26/ZgWCP
+         3OOH8P735lkEPOBCB3FCV+fFURy6GIF1nJPpEGg3yqGBoeP6LjyruRC1cf/TQKz0pn2g
+         FWmA==
+X-Gm-Message-State: ACrzQf3eUd6fkCrDqvUKnE1dllr/qTVYlSa3Cw1HeumqXEP+7KxrVf5j
+        P3PWxIxYCMUdl0dv71q7U+viUHz5yz0Xbt9rCzj04w==
+X-Google-Smtp-Source: AMsMyM4leE0KhwTlTAnPFxGFHx8sUzWEJTlnMBYFXN4MOd9EfH5nk8PW2WE8e5eaQsgPlMx/hzO1nXVyZ71aPqAK/NY=
+X-Received: by 2002:aca:3083:0:b0:355:afb:cdb5 with SMTP id
+ w125-20020aca3083000000b003550afbcdb5mr2632053oiw.110.1665722216982; Thu, 13
+ Oct 2022 21:36:56 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20221013190041.GZ4221@paulmck-ThinkPad-P17-Gen-1>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID: Syh0CgAX_tKD40hjtML3AA--.63871S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxArWDWr1DXF4fXFy7Gw4kZwb_yoW5AFW5pF
-        ZayFnrCr1kZry8K3Z3Jw17Cr42v3Z3GFW3Jr98Wr48A3WayrnrJrn2qr4rXrWFq393Ca42
-        vF1YqrW5K3WUZFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
-        6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
-        67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
-        uYvjxUFDGOUUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <CAJD7tkZkY9nfaVDmjzhDG4zzezNn7bXnGrK+kpn0zQFwPhdorw@mail.gmail.com>
+ <CANDhNCq-ewTnuuRPoDtq+14TCFEwUpyo-pxn3J8=x1qCZzcgKQ@mail.gmail.com>
+ <CAJD7tkayXxKEPpRE7QvBN4CikqeQcUe3_qfrUaH4V+cJrk0y=Q@mail.gmail.com>
+ <CANDhNCp6MOfWnHZKkd_pQbkJqJqPmArVK0JQKKzH4=GbyBVeSQ@mail.gmail.com>
+ <CAJD7tkZ6dmbFS4wba8bcYaHWyMJCi+M1PPEc_WbuaHtvMY4HaA@mail.gmail.com> <CANDhNCrkceUi=+S8xzcBzf8=uUpD4namcm5U-MoACTSVEpcMrg@mail.gmail.com>
+In-Reply-To: <CANDhNCrkceUi=+S8xzcBzf8=uUpD4namcm5U-MoACTSVEpcMrg@mail.gmail.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Thu, 13 Oct 2022 21:36:20 -0700
+Message-ID: <CAJD7tkajQz=houWcmYvjtpp+xL_=hyn3g3BASgwO_zJWnraWHA@mail.gmail.com>
+Subject: Re: Question about ktime_get_mono_fast_ns() non-monotonic behavior
+To:     John Stultz <jstultz@google.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Hao Luo <haoluo@google.com>,
+        Stanislav Fomichev <sdf@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+On Thu, Oct 13, 2022 at 9:13 PM John Stultz <jstultz@google.com> wrote:
+>
+> On Thu, Oct 13, 2022 at 8:47 PM Yosry Ahmed <yosryahmed@google.com> wrote:
+> >
+> > On Thu, Oct 13, 2022 at 8:42 PM John Stultz <jstultz@google.com> wrote:
+> > >
+> > > On Thu, Oct 13, 2022 at 8:26 PM Yosry Ahmed <yosryahmed@google.com> wrote:
+> > > > On Thu, Oct 13, 2022 at 7:39 PM John Stultz <jstultz@google.com> wrote:
+> > > > > On Mon, Sep 26, 2022 at 2:18 PM Yosry Ahmed <yosryahmed@google.com> wrote:
+> > > > > >
+> > > > > > I have a question about ktime_get_mono_fast_ns(), which is used by the
+> > > > > > BPF helper bpf_ktime_get_ns() among other use cases. The comment above
+> > > > > > this function specifies that there are cases where the observed clock
+> > > > > > would not be monotonic.
+> > > > > >
+> > > > > > I had 2 beginner questions:
+> > > > >
+> > > > > Thinking about this a bit more, I have my own "beginner question": Why
+> > > > > does bpf_ktime_get_ns() need to use the ktime_get_mono_fast_ns()
+> > > > > accessor instead of ktime_get_ns()?
+> > > > >
+> > > > > I don't know enough about the contexts that bpf logic can run, so it's
+> > > > > not clear to me and it's not obviously commented either.
+> > > >
+> > > > I am not the best person to answer this question (the BPF list is
+> > > > CC'd, it's full of more knowledgeable people).
+> > > >
+> > > > My understanding is that because BPF programs can basically be run in
+> > > > any context (because they can attach to almost all functions /
+> > > > tracepoints in the kernel), the time accessor needs to be safe in all
+> > > > contexts.
+> > >
+> > > Ah. Ok, the tracepoint connection is indeed likely the case. Thanks
+> > > for clarifying.
+> > >
+> > > > Now that I know that ktime_get_mono_fast_ns() can drift significantly,
+> > > > I am wondering why we don't just read sched_clock(). Can the
+> > > > difference between sched_clock() on different cpus be even higher than
+> > > > the potential drift from ktime_get_mono_fast_ns()?
+> > >
+> > > sched_clock is also lock free and so I think it's possible to have
+> > > inconsistencies.
+> >
+> > Right, I am just trying to figure out which is worse,
+> > ktime_get_mono_fast_ns() or sched_clock(). It appears to me that both
+> > can be inconsistent, but at least AFAICT sched_clock() can only be
+> > inconsistent if read across different cpus, right? It should also be
+> > faster (at least in my experimentation).
+> >
+> > I am wondering if there is a bound on the inconsistency we might
+> > observe from sched_clock() if we read it across different cpus, and if
+> > there is, how does it compare to ktime_get_mono_fast_ns() in that
+> > regard.
+>
+> Again, I think ktime_get_raw_fast_ns() (so CLOCK_MONOTONIC_RAW) is
+> likely to be closer to sched_clock() as neither of them are NTP
+> adjusted.
+> (Which also likely makes them unusable for the case where timestamps
+> are compared with userland CLOCK_MONOTONIC timestamps).
+>
+> So folks might need a new bpf interface for that.
+>
+> Also I think folks would want to avoid exporting sched_clock
+> timestamps out to userland as they aren't connected to a well defined
+> clockid, and may have odd behavior around suspend/resume, etc.
 
-On 10/14/2022 3:00 AM, Paul E. McKenney wrote:
-> On Thu, Oct 13, 2022 at 09:25:31AM +0800, Hou Tao wrote:
->> Hi,
->>
->> On 10/13/2022 12:11 AM, Paul E. McKenney wrote:
->>> On Wed, Oct 12, 2022 at 05:26:26PM +0800, Hou Tao wrote:
-SNIP
->>> How about if I produce a patch for rcu_trace_implies_rcu_gp() and let
->>> you carry it with your series?  That way I don't have an unused function
->>> in -rcu and you don't have to wait for me to send it upstream?
->> Sound reasonable to me. Also thanks for your suggestions.
-> Here you go!  Thoughts?
-It looks great and thanks for it.
->
-> 							Thanx, Paul
->
-> ------------------------------------------------------------------------
->
-> commit 2eac2f7a9a6d8921e8084a6acdffa595e99dbd17
-> Author: Paul E. McKenney <paulmck@kernel.org>
-> Date:   Thu Oct 13 11:54:13 2022 -0700
->
->     rcu-tasks: Provide rcu_trace_implies_rcu_gp()
->     
->     As an accident of implementation, an RCU Tasks Trace grace period also
->     acts as an RCU grace period.  However, this could change at any time.
->     This commit therefore creates an rcu_trace_implies_rcu_gp() that currently
->     returns true to codify this accident.  Code relying on this accident
->     must call this function to verify that this accident is still happening.
->     
->     Reported-by: Hou Tao <houtao@huaweicloud.com>
->     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->     Cc: Alexei Starovoitov <ast@kernel.org>
->     Cc: Martin KaFai Lau <martin.lau@linux.dev>
->
-> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> index 08605ce7379d7..8822f06e4b40c 100644
-> --- a/include/linux/rcupdate.h
-> +++ b/include/linux/rcupdate.h
-> @@ -240,6 +240,18 @@ static inline void exit_tasks_rcu_start(void) { }
->  static inline void exit_tasks_rcu_finish(void) { }
->  #endif /* #else #ifdef CONFIG_TASKS_RCU_GENERIC */
->  
-> +/**
-> + * rcu_trace_implies_rcu_gp - does an RCU Tasks Trace grace period imply an RCU grace period?
-> + *
-> + * As an accident of implementation, an RCU Tasks Trace grace period also
-> + * acts as an RCU grace period.  However, this could change at any time.
-> + * Code relying on this accident must call this function to verify that
-> + * this accident is still happening.
-> + *
-> + * You have been warned!
-> + */
-> +static inline bool rcu_trace_implies_rcu_gp(void) { return true; }
-> +
->  /**
->   * cond_resched_tasks_rcu_qs - Report potential quiescent states to RCU
->   *
-> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> index b0b885e071fa8..fe9840d90e960 100644
-> --- a/kernel/rcu/tasks.h
-> +++ b/kernel/rcu/tasks.h
-> @@ -1535,6 +1535,8 @@ static void rcu_tasks_trace_postscan(struct list_head *hop)
->  {
->  	// Wait for late-stage exiting tasks to finish exiting.
->  	// These might have passed the call to exit_tasks_rcu_finish().
-> +
-> +	// If you remove the following line, update rcu_trace_implies_rcu_gp()!!!
->  	synchronize_rcu();
->  	// Any tasks that exit after this point will set
->  	// TRC_NEED_QS_CHECKED in ->trc_reader_special.b.need_qs.
+I think I should have described my use case long ago, sorry :) My use
+case does not involve exporting any timestamps. It involves using BPF
+programs to measure the duration of events, so running one BPF program
+before and one after, then subtracting the acquired timestamps.
 
+What I was looking for is something fast enough for hot paths and also
+consistent enough (in case the two BPF programs end up running on
+different cpus), and also safe from all contexts to satisfy this
+general BPF restriction.
+
+>
+> thanks
+> -john
