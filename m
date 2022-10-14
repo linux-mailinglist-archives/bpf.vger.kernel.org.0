@@ -2,96 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5626D5FF260
-	for <lists+bpf@lfdr.de>; Fri, 14 Oct 2022 18:41:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61E675FF2A7
+	for <lists+bpf@lfdr.de>; Fri, 14 Oct 2022 18:55:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230126AbiJNQlB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Oct 2022 12:41:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51456 "EHLO
+        id S229980AbiJNQzp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Oct 2022 12:55:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230133AbiJNQlA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Oct 2022 12:41:00 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8220164BC4;
-        Fri, 14 Oct 2022 09:40:59 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id z20so5219190plb.10;
-        Fri, 14 Oct 2022 09:40:59 -0700 (PDT)
+        with ESMTP id S230468AbiJNQzn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Oct 2022 12:55:43 -0400
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55A7B43311
+        for <bpf@vger.kernel.org>; Fri, 14 Oct 2022 09:55:42 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id t21-20020a056a0021d500b0056358536cdeso3182019pfj.22
+        for <bpf@vger.kernel.org>; Fri, 14 Oct 2022 09:55:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=bdQA2IQ/Zdiw0tfXrnTykfoypuZKZExhaq/VdDsyQcg=;
-        b=lCZxuDQ0UPruEZ3c6zkM+o+qq6D1nO1fap4bCgiQi6n4b6TbYBoDGep63xEa6p+6rW
-         pGtFf0jMeYoePHiirDy6OlVQFAYU6X/0q4u7KJkWUETFT8OVwV9kiiJQTbBK634iY4+o
-         gcChe/p66whQgzhN44BnnLULT/bBd5I9GdAZ2oFfNP6QTTMqCDG2p/5Rz1divNDUdNk8
-         ivCY6FR9gM7s7d2MOyIHRmcgTAyq5BzepvRQ/9ba6jdLX34SpmaflPJjZNYdYK/1I/E2
-         1tPi3+nEkB8mvEwQJzulQFruvebnBL8Oqt9v+jLs+DcxuHOD8ojUteRDXLXKF0w15HSc
-         5MNQ==
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=lwQ6+sA3W7MWd0vYC/9HRNB0kdytHGubSeaFZENr5nY=;
+        b=GVIG8x8OIpWYulN7VSMqXxVDEKoHPUOUkR+1sTLzVXThxcghyxLdwMVke3uKtdLYbl
+         ZWwN6u60+DEMLfyE081V/ryY7alg8/yQ7heFroiJeCU8Ry4EYZL34K2PiA3jQ4+B/Z/b
+         lttRUGdvS2KgrwID001oZQuIYNAcD9RPud0MtUIRwPCgA0U+jsRnzPpAH3HM/xBXQbvv
+         iz2gucrGsBF9UAVNQOQ6Jrf0vqGL+gW+At4aN47DnXGv8HTBvujw2+C4sMEyapiYzN0T
+         6hbpFJS1BY8Z0dM3zHjXsKkngnOnc2TK2kRWP4FJOIljEaeJFRq09jv3JSZimTmLyTnu
+         jmng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bdQA2IQ/Zdiw0tfXrnTykfoypuZKZExhaq/VdDsyQcg=;
-        b=GyGIHeV0QS4oR8SkFGtJM3tErVvAsbq0H4pqo0PkC11oBpcgKHKBKbgnXE9AceV+F/
-         uGgbfa/0Ns2TPSrEv4qeDlCdxuLO3rZP68hcvLtLQVBaL8aHhkFepLPOvd4I6d7T0CAb
-         653qG6VYBVbqbr0XGxOTCdSWg7AEVCPdk46sF5SERKxjQKQ82Uj+Wh2y3G/3HnmsdhA8
-         /4Z56QsNmh0iIWfMDgQi3H/e5pVz5jJHM/DcA9NOyPOzFgILqX8p0py9kQMNGdzhTSRU
-         DLkgxv9ptRr/E07RD1o3UdARBKOcUAamREh5X6qkmikZEUDmD9bLw9D5fPjWLw4lxNbJ
-         5xGQ==
-X-Gm-Message-State: ACrzQf34xfLd1mgVrnvgYqF5RLd1aK1syKsU7Ed2ytImqvAH0LCjVxFZ
-        ISBA4UCuBumWF2b8OrcYvZ8=
-X-Google-Smtp-Source: AMsMyM5hz9KlxdRbCJVb4RjTHgSMw6cypfg1KV1GzzYbBdOYpMMFZTtaGR/jfmjS2D3jGJFMtbSjxw==
-X-Received: by 2002:a17:90a:b00a:b0:203:87a3:9e70 with SMTP id x10-20020a17090ab00a00b0020387a39e70mr6578164pjq.218.1665765658559;
-        Fri, 14 Oct 2022 09:40:58 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id y187-20020a6264c4000000b0056328e4d466sm2001005pfb.146.2022.10.14.09.40.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Oct 2022 09:40:58 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 14 Oct 2022 06:40:56 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Namhyung Kim <namhyung@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-        Jiri Olsa <jolsa@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org, Song Liu <songliubraving@fb.com>,
-        bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH v2] perf stat: Support old kernels for bperf cgroup
- counting
-Message-ID: <Y0mRGJx4Mc7t7fGB@slm.duckdns.org>
-References: <Y0Sx2KWX4gPlLytq@slm.duckdns.org>
- <20221011052808.282394-1-namhyung@kernel.org>
- <Y0Wfl88objrECjSo@slm.duckdns.org>
- <Y0ljzN920sWalEHR@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y0ljzN920sWalEHR@kernel.org>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lwQ6+sA3W7MWd0vYC/9HRNB0kdytHGubSeaFZENr5nY=;
+        b=EEw2G5Y9wzZzLnt3ZVVl83QZwzVUmm+aDFcrwfRqZ0twHwfOVgpDPBz2HEnIrEICRg
+         IavnoE74x0lcWFS6U60e+DFiWsDVuTmTVD1G4ciNsW5UbC2DcBynf2B/6XqClIJIyqVO
+         CF0nQaIp+Jc+EN5LPG+IM0cC1l3dFH1L69nrSL2GHFQjjrJgrKcWc7hY7+xWA4zLfcCw
+         AKYfppRoa3xwJ05eDAIKsSQYyEziC2SWcmkhS7wkWceo04IJjy3B6Ak1ixDjGJ+zIikl
+         TP3rYOok16AApzNdPY/swxYYsl8f+JTdgeE1ZTKnpXekUqjO+LUjr8J4CxgM7Puh3Hbn
+         +JjA==
+X-Gm-Message-State: ACrzQf0ye/HtoYesgakoabf4O2I+5tDhrjKi55h+Qjnzdx4WnkI9p/oe
+        h7aPJC3girZazl6yU6Y2Bk6UyTk=
+X-Google-Smtp-Source: AMsMyM5U/qSXWm55jZSu6FKaWYtQ898xkpZOYAX7yp++hCg6q20IswAvnpoh6urdHCwwISyhttKtq+4=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:aa7:8607:0:b0:53b:13b5:2b6a with SMTP id
+ p7-20020aa78607000000b0053b13b52b6amr6299861pfn.52.1665766541868; Fri, 14 Oct
+ 2022 09:55:41 -0700 (PDT)
+Date:   Fri, 14 Oct 2022 09:55:40 -0700
+In-Reply-To: <04d2eb4a-7365-495a-ab74-704febac2789@app.fastmail.com>
+Mime-Version: 1.0
+References: <20220715115559.139691-1-shaozhengchao@huawei.com>
+ <20220914111936.19881-1-oss@lmb.io> <CAKH8qBujKnFh8_g+npxHpo7RGFshus3N0iysmVBohTtG1X2yow@mail.gmail.com>
+ <5a3c5ea9-d557-6070-d778-1092f3c51257@huawei.com> <aec8ef40-260c-4ded-b806-d381a3075ff0@www.fastmail.com>
+ <c416473b-af8b-3bf6-7ede-e1198b3496f5@huawei.com> <bc69e8a3-d474-451f-853e-1c936f776ef9@app.fastmail.com>
+ <cf6a99a1-e77f-113d-101a-5b5a52111df5@huawei.com> <04d2eb4a-7365-495a-ab74-704febac2789@app.fastmail.com>
+Message-ID: <Y0mUjLXEpVuheSUc@google.com>
+Subject: Re: [PATCH v4,bpf-next] bpf: Don't redirect packets with invalid pkt_len
+From:   sdf@google.com
+To:     Lorenz Bauer <oss@lmb.io>
+Cc:     shaozhengchao <shaozhengchao@huawei.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yuehaibing@huawei.com
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 14, 2022 at 10:27:40AM -0300, Arnaldo Carvalho de Melo wrote:
-> Hey, I noticed that the perf build is broken for the
-> tools/perf/util/bpf_skel/bperf_cgroup.bpf.c skell, so I tried using b4
-> on this Namhyung patch, it ended up getting a newer version, by Tejun,
-> that mixes up kernel code and tooling, which, when I tried to apply
-> upstream didn't work.
-> 
-> Please try not to mix up kernel and tools/ changes in the same patch to
-> avoid these issues.
+On 10/14, Lorenz Bauer wrote:
+> On Thu, 13 Oct 2022, at 11:44, shaozhengchao wrote:
+> > 	Sorry, I haven't fully understood your intentions yet.
+> > Can you explain it more detail?
 
-I didn't write a newer version of this patch. What are you talking about?
+> I'll try! Roughly, we do the following:
 
--- 
-tejun
+> 1. Create a BPF_PROG_TYPE_SOCKET_FILTER program that just returns 0
+> 2. Load the program into the kernel
+> 3. Call BPF_PROG_RUN with data_size_in == 14
+
+> After your bugfix, it seems like step 3 is rejected due to data_size_in  
+> == 14. We had to increase data_size_in to 15 to
+> avoid this, see [0].
+
+> This breaks user space, so it would be great if you could fix this in a  
+> way that doesn't refuse BPF_PROG_RUN with
+
+[..]
+
+> data_size_in == 14. Since I don't understand the original problem very  
+> well I can't tell you what the best fix is however.
+
+The problem was that we were able to generate skb with len=0 via
+BPF_PROG_RUN. Prohibiting those cases breaks backwards compatibility, so
+we either have to:
+
+a) (preferred?) accept inputs with <14, but maybe internally pad to 14
+bytes to make the core stack happy
+b) revert the patch and instead have length checks at runtime; doesn't seem  
+to
+be worth the penalty in the forwarding path because of some corner cases
+like these ?
+
+
+> 0:  
+> https://github.com/cilium/ebpf/commit/a38fb6b5a46ab3b5639ea4d421232a10013596c0
+
+> Thanks
+> Lorenz
