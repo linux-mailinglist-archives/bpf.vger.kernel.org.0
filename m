@@ -2,44 +2,44 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 439E55FFBBD
-	for <lists+bpf@lfdr.de>; Sat, 15 Oct 2022 21:21:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF8C85FFBC3
+	for <lists+bpf@lfdr.de>; Sat, 15 Oct 2022 21:22:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229619AbiJOTVo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 15 Oct 2022 15:21:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45024 "EHLO
+        id S229594AbiJOTWo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 15 Oct 2022 15:22:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229579AbiJOTVn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 15 Oct 2022 15:21:43 -0400
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1290A4198D
-        for <bpf@vger.kernel.org>; Sat, 15 Oct 2022 12:21:42 -0700 (PDT)
-Received: by mail-il1-f199.google.com with SMTP id r12-20020a92cd8c000000b002f9f5baaeeaso6228188ilb.4
-        for <bpf@vger.kernel.org>; Sat, 15 Oct 2022 12:21:42 -0700 (PDT)
+        with ESMTP id S229624AbiJOTWo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 15 Oct 2022 15:22:44 -0400
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C88E48C81
+        for <bpf@vger.kernel.org>; Sat, 15 Oct 2022 12:22:42 -0700 (PDT)
+Received: by mail-il1-f198.google.com with SMTP id m9-20020a056e021c2900b002fadb905ddcso6193067ilh.18
+        for <bpf@vger.kernel.org>; Sat, 15 Oct 2022 12:22:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=QD0OwdlHzrmBjIfr6nqqYToMlqH/qeE2XQWPLbVKueI=;
-        b=PEsJvaqVOap9m6fHgw09n87kef/BQGQ5kCmLSYquA53M28E3xtkKkXd2MKg36X4wvX
-         mtB5kDdAkN/nartFHc77HIJevVKcySAZG7/4T4fz7IfyRSvJoOUKH+3FjEiu/SMkyf0k
-         qCwd3CBr09neI9Ib8hFJfDgz3aHizsJ4EuvYhZVikBc2aR/1p18EVP3MiI3cDqrbCLyt
-         A6g8lwx+HPZNh9OnSmti5hjYbgFQf7zhtReQOMdogeFn3Ucc0ZObEVFI7X5wHzY1ICtm
-         dqWVQCkDKwcTcW3/MM/iUBNhJMemnf7UcOfO/cWMUcSA/p3S29GsCAwQPqilZYt0hVwx
-         UDkQ==
-X-Gm-Message-State: ACrzQf3eHCh4l/atg8hcpseybnrw3iour8grDxDOgxePDmn1XI3EWOmX
-        8Jn7Ec/PKdDJKOPAlSREgDnS5yRJsU2dHkTKV1mR0hAn4gPS
-X-Google-Smtp-Source: AMsMyM7OY83DABo57q7Kd6bItV/uWhu4OJc8vxNuMUyPVzb2zTLxThdCimwt/fMBeOFpzik3i8aECoeuYYn1mBpROJfyjwjEjSf8
+        bh=Mh43AJ1PRUmqIgIT5dSQbwpbOw/GWUpk4HC12QCTsrI=;
+        b=ncwFkLlDZyoxILTpoCf1VIlKI+iS16pP6YIdTSM+FUh7wGUlJ+MydvxmBBEJA/oeZB
+         zb2efKegbgBGKWC1mJqRFZL13Ee0obPeo37DMwSM7Gtq2pp0kDi2lACGOp4zhvU05GdN
+         U7/ZK1wNj/URRnl51Uf9BGuu6IxQy1Cn6y6uK8FBSp1ZdNn65xx2+9lhxMhMpKdeZQkv
+         6MS4B3vFJCeZia5l/Ziej5ym9G44r/piHQMjutxoxHio4xWHiwC+Xl6wDa+ew6/Hx7PL
+         b7Ez+VmDoLXFxegylbkwfGP6P4Wl5YkXdC0bLBxDMoJeuiSc3jkp/gVHKbNTRc/S4ub2
+         csjQ==
+X-Gm-Message-State: ACrzQf2dYD+9wcte7RR+5Z3PH56EuCG+luyvnlGk2xThOCALrfvdEhW5
+        eIbHidOPMHFjKEgSaOE2rpFd9ChF1lk4q3CK+lRpxNHj10nn
+X-Google-Smtp-Source: AMsMyM673Oxtb4tTp0tit7Auny7JsQYxqIjDLZ86mDPUbfOLzeIIX8eG+gRK5a8gza+Ty9Zv06vBSaZU1oWwZ6hDRxUYFA3YW6Sy
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:ef0:b0:2f9:4403:8d28 with SMTP id
- j16-20020a056e020ef000b002f944038d28mr1623738ilk.193.1665861701379; Sat, 15
- Oct 2022 12:21:41 -0700 (PDT)
-Date:   Sat, 15 Oct 2022 12:21:41 -0700
+X-Received: by 2002:a05:6e02:1be7:b0:2f9:b795:e298 with SMTP id
+ y7-20020a056e021be700b002f9b795e298mr1813458ilv.117.1665861761824; Sat, 15
+ Oct 2022 12:22:41 -0700 (PDT)
+Date:   Sat, 15 Oct 2022 12:22:41 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f4b06105eb17a6c8@google.com>
-Subject: [syzbot] net boot error: WARNING in cpumask_next_wrap
-From:   syzbot <syzbot+4d0c5794bff07852726c@syzkaller.appspotmail.com>
+Message-ID: <0000000000008f02b105eb17aafd@google.com>
+Subject: [syzbot] net-next boot error: WARNING in cpumask_next_wrap
+From:   syzbot <syzbot+d2ee3b0bdd0a95ffef1e@syzkaller.appspotmail.com>
 To:     ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
         davem@davemloft.net, edumazet@google.com, hawk@kernel.org,
         jasowang@redhat.com, john.fastabend@gmail.com, kuba@kernel.org,
@@ -62,19 +62,19 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    a1b6b102df03 Merge branch 'phylink_set_mac_pm'
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=179af0c2880000
+HEAD commit:    66ae04368efb Merge tag 'net-6.1-rc1' of git://git.kernel.o..
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=12821b94880000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=85495c44a2c25446
-dashboard link: https://syzkaller.appspot.com/bug?extid=4d0c5794bff07852726c
+dashboard link: https://syzkaller.appspot.com/bug?extid=d2ee3b0bdd0a95ffef1e
 compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
 Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/d67c9cef7c77/disk-a1b6b102.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/708d1f638584/vmlinux-a1b6b102.xz
+disk image: https://storage.googleapis.com/syzbot-assets/1ae7b7730cc6/disk-66ae0436.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/675ac7249856/vmlinux-66ae0436.xz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+4d0c5794bff07852726c@syzkaller.appspotmail.com
+Reported-by: syzbot+d2ee3b0bdd0a95ffef1e@syzkaller.appspotmail.com
 
 ACPI: button: Sleep Button [SLPF]
 ACPI: \_SB_.LNKC: Enabled at IRQ 11
@@ -131,16 +131,16 @@ WARNING: CPU: 0 PID: 1 at include/linux/cpumask.h:110 cpumask_check include/linu
 WARNING: CPU: 0 PID: 1 at include/linux/cpumask.h:110 cpumask_next include/linux/cpumask.h:178 [inline]
 WARNING: CPU: 0 PID: 1 at include/linux/cpumask.h:110 cpumask_next_wrap+0x139/0x1d0 lib/cpumask.c:27
 Modules linked in:
-CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.0.0-syzkaller-11847-ga1b6b102df03 #0
+CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.0.0-syzkaller-11827-g66ae04368efb #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/22/2022
 RIP: 0010:cpu_max_bits_warn include/linux/cpumask.h:110 [inline]
 RIP: 0010:cpumask_check include/linux/cpumask.h:117 [inline]
 RIP: 0010:cpumask_next include/linux/cpumask.h:178 [inline]
 RIP: 0010:cpumask_next_wrap+0x139/0x1d0 lib/cpumask.c:27
-Code: df e8 8b 4a 3d f8 39 eb 77 64 e8 32 4e 3d f8 41 8d 6c 24 01 89 de 89 ef e8 74 4a 3d f8 39 dd 0f 82 54 ff ff ff e8 17 4e 3d f8 <0f> 0b e9 48 ff ff ff e8 0b 4e 3d f8 48 c7 c2 00 02 e2 8d 48 b8 00
+Code: df e8 8b 5a 3d f8 39 eb 77 64 e8 32 5e 3d f8 41 8d 6c 24 01 89 de 89 ef e8 74 5a 3d f8 39 dd 0f 82 54 ff ff ff e8 17 5e 3d f8 <0f> 0b e9 48 ff ff ff e8 0b 5e 3d f8 48 c7 c2 00 02 e2 8d 48 b8 00
 RSP: 0000:ffffc90000067920 EFLAGS: 00010293
 RAX: 0000000000000000 RBX: 0000000000000002 RCX: 0000000000000000
-RDX: ffff88813fe50000 RSI: ffffffff893f1c59 RDI: 0000000000000004
+RDX: ffff88813fe38000 RSI: ffffffff893f0c59 RDI: 0000000000000004
 RBP: 0000000000000002 R08: 0000000000000004 R09: 0000000000000002
 R10: 0000000000000002 R11: 0000000000000000 R12: 0000000000000001
 R13: 0000000000000000 R14: 0000000000000002 R15: ffffffff8de20010
