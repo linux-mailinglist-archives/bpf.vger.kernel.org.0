@@ -2,173 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 779175FFB69
-	for <lists+bpf@lfdr.de>; Sat, 15 Oct 2022 19:24:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C80D35FFBA1
+	for <lists+bpf@lfdr.de>; Sat, 15 Oct 2022 20:25:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229726AbiJORYo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 15 Oct 2022 13:24:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52462 "EHLO
+        id S229608AbiJOSZw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 15 Oct 2022 14:25:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229693AbiJORYn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 15 Oct 2022 13:24:43 -0400
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A6C71D0E8
-        for <bpf@vger.kernel.org>; Sat, 15 Oct 2022 10:24:39 -0700 (PDT)
-Received: by mail-io1-f70.google.com with SMTP id y4-20020a5e9204000000b006bbffbc3d27so4866713iop.5
-        for <bpf@vger.kernel.org>; Sat, 15 Oct 2022 10:24:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FXDSuoFbN7ibdHQJGHhqaFHsM+PEsrRvhPrQr4NT61Q=;
-        b=TY//xvforWdLD9QC9vLCMlFtRT/79l8wIufHoRjpdYU//gOPD4C0gvS9nEc+f3O53C
-         iHNhv78QYGAT7/9tAsHJlE0Egj4Mvli+D0+OllNGZmVw+0ZRzbigHSHnbmTGPPCbWOt0
-         IZO2XmrjOLT9KXwOEVtXbMx2qNzJWg8H6UAFJZUfRUO+rqh/IXLu845hAjC7wQ40zEyC
-         URD5yKE4ffW6voAkxszm8NX9/nHAiTCXkoKuTJ+8HqFqJQorlhTg4EObyPKpTVn7jOmD
-         IIsdPyLjKheyUeIjUfA93E+Phw+MHSIk9mr0DmhQ9U+9v/2+h0tCjnHIB/ZikWoGy/tZ
-         Xuzw==
-X-Gm-Message-State: ACrzQf3WhA4EGoxI3yK7DZQuIQ10thg7l7VyOt7Dbaa9EnVo1ijiuJ6M
-        W0SpU2FUEz6T4gfzsSjf3WXZ09TQ1CPt0R8doD67A8adikbx
-X-Google-Smtp-Source: AMsMyM7LsjR7kpP4xhca/8DFkSor8LrpGNZj5UjiIW5s6h0+tgtpLA8uyA22mZlK8EKO7jg9DEgb2XIEE8zWDvg9vntFqhtQxRaP
+        with ESMTP id S229554AbiJOSZv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 15 Oct 2022 14:25:51 -0400
+Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 298BB4C62D
+        for <bpf@vger.kernel.org>; Sat, 15 Oct 2022 11:25:50 -0700 (PDT)
+Content-Type: multipart/mixed; boundary="------------w8MS8LTdWd6t8Iy0qkV3zT29"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
+        t=1665858348;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UrOF6TkYKmnyMwDV5LJ69NB2DKHk16dk57GEH4DLoN8=;
+        b=KxhaQUfP6cxRWrHMg1RLikWwS1YxbO/N+G5g4JPFxfXO6LoaQnhq03P5t9Vzi6cz9h4msd
+        vRbW4BwdaPGoDQB/9aOM4mtMsDynITRzkOKKa0An38omDLRMylXEK8kQGuhZKqOliGfX5P
+        rI3wJJqgRlsoJXMLReQK/j5an8M6NPSb5YR1lloQB0J1iRF3zWUzO9W+nwK0YhiBUVCzvO
+        9m2xaI6AbZ6n/C+2yDNU5HtTdBythm8ELgiT1FgZAdMMl7RQDglZJj3NkC3TT8Q6FHjGN8
+        CxGYhPloFWfMtuJ1Vcpm2YaLkLs3p3/wcU2TomXpZWHoALVXhHAgAyIFND5olQ==
+Message-ID: <24e70b1d-fcee-23b4-d012-7ecb6ac906f2@manjaro.org>
+Date:   Sat, 15 Oct 2022 20:25:47 +0200
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:1588:b0:6bc:d49a:61cc with SMTP id
- e8-20020a056602158800b006bcd49a61ccmr1519089iow.154.1665854678860; Sat, 15
- Oct 2022 10:24:38 -0700 (PDT)
-Date:   Sat, 15 Oct 2022 10:24:38 -0700
-In-Reply-To: <0000000000008caae305ab9a5318@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000618a8205eb160404@google.com>
-Subject: Re: [syzbot] general protection fault in security_inode_getattr
-From:   syzbot <syzbot+f07cc9be8d1d226947ed@syzkaller.appspotmail.com>
-To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, dvyukov@google.com, hdanton@sina.com,
-        jmorris@namei.org, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@chromium.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-unionfs@vger.kernel.org, miklos@szeredi.hu,
-        netdev@vger.kernel.org, omosnace@redhat.com, paul@paul-moore.com,
-        serge@hallyn.com, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, tonymarislogistics@yandex.com,
-        yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+Subject: Re: [kernel] 5.10.148 / 5.19.16 - pahole 1.24: BTFIDS vmlinux,FAILED:
+ load BTF from vmlinux: Invalid argument
+Content-Language: en-US
+From:   =?UTF-8?Q?Philip_M=c3=bcller?= <philm@manjaro.org>
+To:     bpf@vger.kernel.org, Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin Rodriguez Reboredo <yakoyoku@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>
+Cc:     Bernhard Landauer <bernhard@manjaro.org>
+References: <3f82d342-1c0f-32c4-996e-cc063f872673@manjaro.org>
+Organization: Manjaro Community
+In-Reply-To: <3f82d342-1c0f-32c4-996e-cc063f872673@manjaro.org>
+Authentication-Results: ORIGINATING;
+        auth=pass smtp.auth=philm@manjaro.org smtp.mailfrom=philm@manjaro.org
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+This is a multi-part message in MIME format.
+--------------w8MS8LTdWd6t8Iy0qkV3zT29
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-HEAD commit:    55be6084c8e0 Merge tag 'timers-core-2022-10-05' of git://g..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=147637c6880000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=df75278aabf0681a
-dashboard link: https://syzkaller.appspot.com/bug?extid=f07cc9be8d1d226947ed
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1585a0c2880000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1480a464880000
+I came now up with this ...
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/6c791937c012/disk-55be6084.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/cb21a2879b4c/vmlinux-55be6084.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/2d56267ed26f/mount_1.gz
+-- 
+Best, Philip
 
-The issue was bisected to:
+--------------w8MS8LTdWd6t8Iy0qkV3zT29
+Content-Type: text/x-patch; charset=UTF-8;
+ name="bpf-add-skip_encoding_btf_enum64-option-to-pahole.patch"
+Content-Disposition: attachment;
+ filename="bpf-add-skip_encoding_btf_enum64-option-to-pahole.patch"
+Content-Transfer-Encoding: base64
 
-commit 35697c12d7ffd31a56d3c9604066a166b75d0169
-Author: Yonghong Song <yhs@fb.com>
-Date:   Thu Jan 16 17:40:04 2020 +0000
+RnJvbTogUGhpbGlwIE3DvGxsZXIgPHBoaWxtQG1hbmphcm8ub3JnPgpEYXRlOiBTYXQsIDE1
+IE9jdCAyMDIxIDIwOjA5OjEzICswMjAwClN1YmplY3Q6IFtQQVRDSF0gYnBmOiBBZGQgc2tp
+cF9lbmNvZGluZ19idGZfZW51bTY0IG9wdGlvbiB0byBwYWhvbGUKCk5ldyBwYWhvbGUgKHZl
+cnNpb24gMS4yNCkgZ2VuZXJhdGVzIGJ5IGRlZmF1bHQgbmV3IEJURl9LSU5EX0VOVU02NCBC
+VEYgdGFnLAp3aGljaCBpcyBub3Qgc3VwcG9ydGVkIGJ5IHN0YWJsZSBrZXJuZWwuCgpBcyBh
+IHJlc3VsdCB0aGUga2VybmVsIHdpdGggQ09ORklHX0RFQlVHX0lORk9fQlRGIG9wdGlvbiB3
+aWxsIGZhaWwgdG8KY29tcGlsZSB3aXRoIGZvbGxvd2luZyBlcnJvcjoKCiAgQlRGSURTICB2
+bWxpbnV4CkZBSUxFRDogbG9hZCBCVEYgZnJvbSB2bWxpbnV4OiBJbnZhbGlkIGFyZ3VtZW50
+CgpOZXcgcGFob2xlIHByb3ZpZGVzIC0tc2tpcF9lbmNvZGluZ19idGZfZW51bTY0IG9wdGlv
+biB0byBza2lwIEJURl9LSU5EX0VOVU02NApnZW5lcmF0aW9uIGFuZCBwcm9kdWNlIEJURiBz
+dXBwb3J0ZWQgYnkgc3RhYmxlIGtlcm5lbC4KCkFkZGluZyB0aGlzIG9wdGlvbiB0byBzY3Jp
+cHRzL2xpbmstdm1saW51eC5zaC4KClRoaXMgY2hhbmdlIGRvZXMgbm90IGhhdmUgZXF1aXZh
+bGVudCBjb21taXQgaW4gbGludXMgdHJlZSwgYmVjYXVzZSBsaW51cyB0cmVlCmhhcyBzdXBw
+b3J0IGZvciBCVEZfS0lORF9FTlVNNjQgdGFnLCBzbyBpdCBkb2VzIG5vdCBuZWVkIHRvIGJl
+IGRpc2FibGVkLgoKU2lnbmVkLW9mZi1ieTogUGhpbGlwIE3DvGxsZXIgPHBoaWxtQG1hbmph
+cm8ub3JnPgotLS0KIHNjcmlwdHMvbGluay12bWxpbnV4LnNoIHwgNyArKysrKystCiAxIGZp
+bGUgY2hhbmdlZCwgNiBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pCgpkaWZmIC0tZ2l0
+IGEvc2NyaXB0cy9saW5rLXZtbGludXguc2ggYi9zY3JpcHRzL2xpbmstdm1saW51eC5zaApp
+bmRleCAzYjI2MWIwZjc0ZjBhNy4uNjY3YWFjYjkyNjFjZjIgMTAwNzU1Ci0tLSBhL3Njcmlw
+dHMvbGluay12bWxpbnV4LnNoCisrKyBiL3NjcmlwdHMvbGluay12bWxpbnV4LnNoCkBAIC0y
+MTMsNiArMjEzLDcgQEAgdm1saW51eF9saW5rKCkKIGdlbl9idGYoKQogewogCWxvY2FsIHBh
+aG9sZV92ZXIKKwlsb2NhbCBleHRyYV9wYWhvbGVvcHQ9CiAKIAlpZiAhIFsgLXggIiQoY29t
+bWFuZCAtdiAke1BBSE9MRX0pIiBdOyB0aGVuCiAJCWVjaG8gPiYyICJCVEY6ICR7MX06IHBh
+aG9sZSAoJHtQQUhPTEV9KSBpcyBub3QgYXZhaWxhYmxlIgpAQCAtMjI3LDggKzIyOCwxMiBA
+QCBnZW5fYnRmKCkKIAogCXZtbGludXhfbGluayAkezF9CiAKKwlpZiBbICIke3BhaG9sZV92
+ZXJ9IiAtZ2UgIjEyNCIgXTsgdGhlbgorCQlleHRyYV9wYWhvbGVvcHQ9IiR7ZXh0cmFfcGFo
+b2xlb3B0fSAtLXNraXBfZW5jb2RpbmdfYnRmX2VudW02NCIKKwlmaQorCiAJaW5mbyAiQlRG
+IiAkezJ9Ci0JTExWTV9PQkpDT1BZPSR7T0JKQ09QWX0gJHtQQUhPTEV9IC1KICR7MX0KKwlM
+TFZNX09CSkNPUFk9JHtPQkpDT1BZfSAke1BBSE9MRX0gLUogJHtleHRyYV9wYWhvbGVvcHR9
+ICR7MX0KIAogCSMgQ3JlYXRlICR7Mn0gd2hpY2ggY29udGFpbnMganVzdCAuQlRGIHNlY3Rp
+b24gYnV0IG5vIHN5bWJvbHMuIEFkZAogCSMgU0hGX0FMTE9DIGJlY2F1c2UgLkJURiB3aWxs
+IGJlIHBhcnQgb2YgdGhlIHZtbGludXggaW1hZ2UuIC0tc3RyaXAtYWxsCg==
 
-    selftests/bpf: Fix test_progs send_signal flakiness with nmi mode
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13032139900000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=10832139900000
-console output: https://syzkaller.appspot.com/x/log.txt?x=17032139900000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+f07cc9be8d1d226947ed@syzkaller.appspotmail.com
-Fixes: 35697c12d7ff ("selftests/bpf: Fix test_progs send_signal flakiness with nmi mode")
-
-general protection fault, probably for non-canonical address 0xdffffc000000000d: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000068-0x000000000000006f]
-CPU: 0 PID: 3761 Comm: syz-executor352 Not tainted 6.0.0-syzkaller-09589-g55be6084c8e0 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/22/2022
-RIP: 0010:d_backing_inode include/linux/dcache.h:542 [inline]
-RIP: 0010:security_inode_getattr+0x46/0x140 security/security.c:1345
-Code: 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 04 01 00 00 48 b8 00 00 00 00 00 fc ff df 49 8b 5d 08 48 8d 7b 68 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 d7 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 8b
-RSP: 0018:ffffc9000400f578 EFLAGS: 00010212
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 000000000000000d RSI: ffffffff83bd72fe RDI: 0000000000000068
-RBP: ffffc9000400f750 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000000000000 R11: 000000000008c07d R12: ffff8880763dca48
-R13: ffffc9000400f750 R14: 00000000000007ff R15: 0000000000000000
-FS:  00007f246f27e700(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f246f27e718 CR3: 00000000717a9000 CR4: 0000000000350ef0
-Call Trace:
- <TASK>
- vfs_getattr+0x22/0x60 fs/stat.c:158
- ovl_copy_up_one+0x12c/0x2870 fs/overlayfs/copy_up.c:965
- ovl_copy_up_flags+0x150/0x1d0 fs/overlayfs/copy_up.c:1047
- ovl_maybe_copy_up+0x140/0x190 fs/overlayfs/copy_up.c:1079
- ovl_open+0xf1/0x2d0 fs/overlayfs/file.c:152
- do_dentry_open+0x6cc/0x13f0 fs/open.c:882
- do_open fs/namei.c:3557 [inline]
- path_openat+0x1c92/0x28f0 fs/namei.c:3691
- do_filp_open+0x1b6/0x400 fs/namei.c:3718
- do_sys_openat2+0x16d/0x4c0 fs/open.c:1310
- do_sys_open fs/open.c:1326 [inline]
- __do_sys_open fs/open.c:1334 [inline]
- __se_sys_open fs/open.c:1330 [inline]
- __x64_sys_open+0x119/0x1c0 fs/open.c:1330
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f246f2f2b49
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f246f27e2f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000002
-RAX: ffffffffffffffda RBX: 00007f246f3774b0 RCX: 00007f246f2f2b49
-RDX: 0000000000000000 RSI: 0000000000000300 RDI: 0000000020000140
-RBP: 00007f246f3442ac R08: 00007f246f27e700 R09: 0000000000000000
-R10: 00007f246f27e700 R11: 0000000000000246 R12: 0031656c69662f2e
-R13: 79706f636174656d R14: 0079616c7265766f R15: 00007f246f3774b8
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:d_backing_inode include/linux/dcache.h:542 [inline]
-RIP: 0010:security_inode_getattr+0x46/0x140 security/security.c:1345
-Code: 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 04 01 00 00 48 b8 00 00 00 00 00 fc ff df 49 8b 5d 08 48 8d 7b 68 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 d7 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 8b
-RSP: 0018:ffffc9000400f578 EFLAGS: 00010212
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 000000000000000d RSI: ffffffff83bd72fe RDI: 0000000000000068
-RBP: ffffc9000400f750 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000000000000 R11: 000000000008c07d R12: ffff8880763dca48
-R13: ffffc9000400f750 R14: 00000000000007ff R15: 0000000000000000
-FS:  00007f246f27e700(0000) GS:ffff8880b9b00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00005643c9471000 CR3: 00000000717a9000 CR4: 0000000000350ee0
-----------------
-Code disassembly (best guess):
-   0:	48 89 fa             	mov    %rdi,%rdx
-   3:	48 c1 ea 03          	shr    $0x3,%rdx
-   7:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
-   b:	0f 85 04 01 00 00    	jne    0x115
-  11:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
-  18:	fc ff df
-  1b:	49 8b 5d 08          	mov    0x8(%r13),%rbx
-  1f:	48 8d 7b 68          	lea    0x68(%rbx),%rdi
-  23:	48 89 fa             	mov    %rdi,%rdx
-  26:	48 c1 ea 03          	shr    $0x3,%rdx
-* 2a:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
-  2e:	0f 85 d7 00 00 00    	jne    0x10b
-  34:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
-  3b:	fc ff df
-  3e:	48                   	rex.W
-  3f:	8b                   	.byte 0x8b
-
+--------------w8MS8LTdWd6t8Iy0qkV3zT29--
