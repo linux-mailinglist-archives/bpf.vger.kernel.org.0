@@ -2,40 +2,40 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05E9E601D84
-	for <lists+bpf@lfdr.de>; Tue, 18 Oct 2022 01:22:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3E51601D87
+	for <lists+bpf@lfdr.de>; Tue, 18 Oct 2022 01:25:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229955AbiJQXWH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Oct 2022 19:22:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49592 "EHLO
+        id S229623AbiJQXZL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Oct 2022 19:25:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229623AbiJQXWG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Oct 2022 19:22:06 -0400
+        with ESMTP id S230059AbiJQXZK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 Oct 2022 19:25:10 -0400
 Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07C616A49C
-        for <bpf@vger.kernel.org>; Mon, 17 Oct 2022 16:22:06 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82E9038A2F
+        for <bpf@vger.kernel.org>; Mon, 17 Oct 2022 16:25:02 -0700 (PDT)
 Received: from submission (posteo.de [185.67.36.169]) 
-        by mout01.posteo.de (Postfix) with ESMTPS id B2BA0240026
-        for <bpf@vger.kernel.org>; Tue, 18 Oct 2022 01:22:04 +0200 (CEST)
+        by mout01.posteo.de (Postfix) with ESMTPS id 34E8C240027
+        for <bpf@vger.kernel.org>; Tue, 18 Oct 2022 01:25:01 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1666048924; bh=Nzfc8ODTGKJJ2cdjHt3x6ZMfBSOKK1aykVOtNIKKOJE=;
+        t=1666049101; bh=SPerXmaJUdXvp5h4hkMdfJRzPkvBpXVuW+HWJhbtFzM=;
         h=From:To:Cc:Subject:Date:From;
-        b=V/fIe/mq0XhVIldWx4IjM1Zq/1PESRYRcUZddW0oer5lqVsjHDQj5vbYLb2cvi9TJ
-         e8aD75EWePHmrfdDRE/fG/G9C0IAyRQAGU59vmmyejDw/TNbd6RjoQYKm8LUzNB6GO
-         Hcs3xth4B4q1AiDhGupKYFl5lvubK6oEURH5/Rt9ifvMs+oKXWrwDtK+RvG7kzB67h
-         7epo38N/UKcgUK0tsxhOyT6Nunn47CXQHrw38mTuvv4FSs0IYYKk9Vc0WYp+nGITQC
-         nG5op7aJvMubCGQiW+dRTvg2HX708pFE13Jv8+C3HcwzsAszNXZNsBKrBWIGaDypl5
-         +5B1z2VmyhpoQ==
+        b=H+7+zYQe1JOyWNwPZJxcMyNWiV8B1htL/yqzdoPMyPn+mHxGBev4cPiHd4AdbvdaA
+         /kqWftMjrifFCpTWTBABDL5zdyH2fzTuts6Dl70bvjGj8gjO6Vp5Ip8Q1phYMqVkSo
+         V2wp5oZpz3WPNZmZY9okHaHNU03Nb6CbVc1t7bBMs5HKH+KnRUvpBNQP3gxH3dO+9E
+         nmjBUFDSpuNzYs1Pqo96jS3yWp8SIiSuDdi1/foZP3P/SiAZWGZa7yz0uq5h24QCuD
+         4s0Lva7OTx2RwBdRdKSPskXJd6U8zTLdk38Cks6FaAeTJxmpYszY0JAkladk7CQknQ
+         V3WSWtznVzyYQ==
 Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4MrtLM6n1zz6tr3;
-        Tue, 18 Oct 2022 01:22:03 +0200 (CEST)
+        by submission (posteo.de) with ESMTPSA id 4MrtPm22B7z6tm4;
+        Tue, 18 Oct 2022 01:25:00 +0200 (CEST)
 From:   =?UTF-8?q?Daniel=20M=C3=BCller?= <deso@posteo.net>
 To:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
         daniel@iogearbox.net, kafai@fb.com, kernel-team@fb.com
 Cc:     deso@posteo.net
-Subject: [PATCH bpf-next] samples/bpf: Fix two typos
-Date:   Mon, 17 Oct 2022 23:22:01 +0000
-Message-Id: <20221017232201.1257089-1-deso@posteo.net>
+Subject: [PATCH bpf-next] bpf/docs: Update README for most recent vmtest.sh
+Date:   Mon, 17 Oct 2022 23:24:58 +0000
+Message-Id: <20221017232458.1272762-1-deso@posteo.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -48,28 +48,45 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This change fixes two typos in the BPF samples README file.
+Since commit 40b09653b197 ("selftests/bpf: Adjust vmtest.sh to use local
+kernel configuration") the vmtest.sh script no longer downloads a kernel
+configuration but uses the local, in-repository one.
+This change updates the README, which still mentions the old behavior.
 
 Signed-off-by: Daniel Müller <deso@posteo.net>
 ---
- samples/bpf/README.rst | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tools/testing/selftests/bpf/README.rst | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/samples/bpf/README.rst b/samples/bpf/README.rst
-index 60c649..f98c26 100644
---- a/samples/bpf/README.rst
-+++ b/samples/bpf/README.rst
-@@ -37,8 +37,8 @@ user, simply call::
+diff --git a/tools/testing/selftests/bpf/README.rst b/tools/testing/selftests/bpf/README.rst
+index d3c6b3d..822548 100644
+--- a/tools/testing/selftests/bpf/README.rst
++++ b/tools/testing/selftests/bpf/README.rst
+@@ -14,10 +14,11 @@ It's now possible to run the selftests using ``tools/testing/selftests/bpf/vmtes
+ The script tries to ensure that the tests are run with the same environment as they
+ would be run post-submit in the CI used by the Maintainers.
  
-  make headers_install
+-This script downloads a suitable Kconfig and VM userspace image from the system used by
+-the CI. It builds the kernel (without overwriting your existing Kconfig), recompiles the
+-bpf selftests, runs them (by default ``tools/testing/selftests/bpf/test_progs``) and
+-saves the resulting output (by default in ``~/.bpf_selftests``).
++This script uses the in-tree kernel configuration and downloads a VM userspace
++image from the system used by the CI. It builds the kernel (without overwriting
++your existing Kconfig), recompiles the bpf selftests, runs them (by default
++``tools/testing/selftests/bpf/test_progs``) and saves the resulting output (by
++default in ``~/.bpf_selftests``).
  
--This will creates a local "usr/include" directory in the git/build top
--level directory, that the make system automatically pickup first.
-+This will create a local "usr/include" directory in the git/build top
-+level directory, that the make system will automatically pickup first.
+ Script dependencies:
+ - clang (preferably built from sources, https://github.com/llvm/llvm-project);
+@@ -26,7 +27,7 @@ Script dependencies:
+ - docutils (for ``rst2man``);
+ - libcap-devel.
  
- Compiling
- =========
+-For more information on about using the script, run:
++For more information about using the script, run:
+ 
+ .. code-block:: console
+ 
 -- 
 2.30.2
 
