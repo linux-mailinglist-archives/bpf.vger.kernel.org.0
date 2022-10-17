@@ -2,178 +2,167 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4488600524
-	for <lists+bpf@lfdr.de>; Mon, 17 Oct 2022 04:16:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6EAD600656
+	for <lists+bpf@lfdr.de>; Mon, 17 Oct 2022 07:33:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229898AbiJQCQN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 16 Oct 2022 22:16:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60440 "EHLO
+        id S229898AbiJQFdh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Oct 2022 01:33:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229920AbiJQCPm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 16 Oct 2022 22:15:42 -0400
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15FFB140FF
-        for <bpf@vger.kernel.org>; Sun, 16 Oct 2022 19:15:41 -0700 (PDT)
-Received: by mail-io1-f70.google.com with SMTP id bx19-20020a056602419300b006bcbf3b91fdso6158093iob.13
-        for <bpf@vger.kernel.org>; Sun, 16 Oct 2022 19:15:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DGa85eDs4HDf0btlqFpHUgSWnf8N3groGUn+7nSJ2UY=;
-        b=8Ax/rzsrQ/T5XxZHCIoW59po+JM3GE33LNYkmR46OEVAiNQf0e7n8o5Stlgno9mDB2
-         hAyiGgf5oWq8fRvjze+A7ib0Sx87PR6KZpTXipYvEliWx+qY3VcCHICH4BT/PSrkB9NS
-         c+ms8eVY6z7HFuT/XQa+V9VbPa9tOW/xWGfAr6kKjIwQ/ZeruEUAIvcFgdSXO5MkFqPV
-         P7tU4a/RInFXpinCe7HU/CxYaoGhRdiEjp5wiS4rLtywJLKACntrYXax4DnkT7YjmNlg
-         VqWgEBoeyMNmIPhpJe17NRK3xlz9MneHWlsLsRfiuANDN5egAqS2N/U0PFi2DoZ+lfww
-         W3og==
-X-Gm-Message-State: ACrzQf2Jic/5rMtxMbJRzwd3oYvy73k6T2VD/XdKggDmhchTUHqIPmhY
-        LMpAfjJ0+J5MO342zHm5RM/+8OeTRy27Urz8XFa/cvzalldy
-X-Google-Smtp-Source: AMsMyM7TF7QkPiCerp1TQlI7M7+sQnISW1eS7yUz86L4kMv9kLD4axumPp3b21eNue1WQLDTw1mZnfxzJlIez3kIDOo1AUSzaVvG
+        with ESMTP id S230033AbiJQFdg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 Oct 2022 01:33:36 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 134F94BA5B
+        for <bpf@vger.kernel.org>; Sun, 16 Oct 2022 22:33:34 -0700 (PDT)
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29GMThhm028066;
+        Sun, 16 Oct 2022 22:33:16 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=s2048-2021-q4;
+ bh=A91YxAxwuo+NIkgIPMf45+QfZnT6UTJkGTl/X9DEu58=;
+ b=c725S3Uad1D6huZJayzGfKNnnL64zS00tf94VImmdfb1JsOtMw4AkCtqv800PJ0FH35I
+ Zg7u76thcCbU3sUIEUqsJlbsVKHt/ZNJ9w0JC+SF71NGQqHdmuoGAUnR8C28o65jgqlI
+ WkwhtgCBYvkXrDwOWk6NYQ1rVWNa+fhrm3WJh4zsEPHJtgLyTitiPw7u0O5+2HZk8gwu
+ qS6H5XdLHFfcJDpaO+YYcDU+HLoDwklhowhzFE1Eh34e6BahhxlinCGtHhwv6CY6Jied
+ 4Cn122/+qnLVEVz8ozXj41Tqpqg+CgABRUP5uUSCxWF3EeG98jEGkYVpGpTXJNGhFAl/ VA== 
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2108.outbound.protection.outlook.com [104.47.55.108])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3k7syt4ruu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 16 Oct 2022 22:33:16 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iarpjtLN279t+D6c7H4uFEewcxMkcoyCKbXYWsZGaQq8JaFc0ZAAJaAaLHu84/oIfmLaj7tEL0CAMbAMJZs9o3/6/KIR7lrXoTDY5QsicWAlnQIWGD7SwZAR+g9g+jj9AFL7hPoentFncQlHVe7tQ6V1B592YkKC/1hiOfgj2xKDaEuAq+of+b/ejMhTlUS+EhLezW1ylVfW9WP2STuI9NY+RR13HyJW6QriGnbeGN5vFDZufBsGWSwTpv8T60vXzLoa9YxRNHnyXk0ozA64yuzCi+il0Slt9BrdQyAKUAVzA4ooGUt/ZVfHat84XxsOz1IZ0enevDLHgsD4wvHSjA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=A91YxAxwuo+NIkgIPMf45+QfZnT6UTJkGTl/X9DEu58=;
+ b=WMt07Y7iQ/V3az8P5A/HmvPZ4kmlTFa089Q/EP+Yt9jfTPABw3hmjxqj9NKkW7nDULJEAcLW3IaThD3BINw/URCqXDGe9q8sLcpenyVl4vHQsterEJUhkHQFiN/narCc7YznSCYVahhlyDCDXV/S0mS5Ry1lIOSb/7QAj1OuuB/r1wm0krZzbCtl7fbuFpyQdPJoGSW7bxznPD5BAHkjljzLbRSDxiSRFF7lvey/ea4wA/J62OQT/UTA/KCaTS5pgdK09F9zCeUUvMIvIEmpuQS89joacxpT7YQWtxzw/JSRtwjodsBu7ay38qUekzOSe5fTFhBmtvxhWFAz2bK+Lw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
+ dkim=pass header.d=meta.com; arc=none
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by SA1PR15MB4467.namprd15.prod.outlook.com (2603:10b6:806:196::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5723.30; Mon, 17 Oct
+ 2022 05:33:14 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::6e08:a405:4130:f36e]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::6e08:a405:4130:f36e%6]) with mapi id 15.20.5723.032; Mon, 17 Oct 2022
+ 05:33:14 +0000
+Message-ID: <262c86ec-8f1c-5e88-d5ff-f4bbb87d588b@meta.com>
+Date:   Sun, 16 Oct 2022 22:33:09 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.3.3
+Subject: Re: [PATCH bpf-next 1/2] selftests/bpf: Add reproducer for decl_tag
+ in func_proto return type
+To:     Stanislav Fomichev <sdf@google.com>, bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
+        jolsa@kernel.org, Martin KaFai Lau <martin.lau@kernel.org>
+References: <20221015002444.2680969-1-sdf@google.com>
+Content-Language: en-US
+From:   Yonghong Song <yhs@meta.com>
+In-Reply-To: <20221015002444.2680969-1-sdf@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MN2PR16CA0021.namprd16.prod.outlook.com
+ (2603:10b6:208:134::34) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:12b1:b0:2fc:cc40:6c2 with SMTP id
- f17-20020a056e0212b100b002fccc4006c2mr3921051ilr.187.1665972940289; Sun, 16
- Oct 2022 19:15:40 -0700 (PDT)
-Date:   Sun, 16 Oct 2022 19:15:40 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004fc10b05eb318d60@google.com>
-Subject: [syzbot] upstream boot error: WARNING in __netif_set_xps_queue
-From:   syzbot <syzbot+9abe5ecc348676215427@syzkaller.appspotmail.com>
-To:     ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
-        davem@davemloft.net, edumazet@google.com, hawk@kernel.org,
-        jasowang@redhat.com, john.fastabend@gmail.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, mst@redhat.com,
-        netdev@vger.kernel.org, pabeni@redhat.com,
-        syzkaller-bugs@googlegroups.com,
-        virtualization@lists.linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_DIGITS,
-        FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2064:EE_|SA1PR15MB4467:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1755ebde-4188-44c7-4f0f-08dab001160f
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: kMgWs/3cy3+CQS+ubEZqJwspTyK53oX/QdRRy9ppnXyYHqiTimBGgjDoNadcTTE+HQUSpQlJ/2X/5WmMTuuqmgfTzwKLbR4NmMyn9RQ/cVJVhAsv35Gqin0ROau+S4a4r2llGJjeyVqq7YXw9keNzsMWAd7mqcUWduIN70ACFumOxA/aR+okV2yn2xFLVZp6UsBscCffwg8OsxRKaDDPMfoDuRyoGJkLYlGU1dpCv5Nia/encZogldTivrq53cnpeJdfsFJqgeNayeDoJEgCfBtIfs3WeJUOlBYtBqDI0T5/S9dJ5S9Z+shsMIq13dKRT5hyZGJk576Ci6KVrvnpwC7TuO6wIWIXeug7FnCCE1IyHhguu1yGKIF8oLktOxgTq/vZ1OxzV3polyqJjTYxFNGv0QalhC56+zoXvdETrggUDnxJWIilFJgEDQJD4VvPETlkysK/CevDFiH801V/h4ravZPgXgoBTo5I6TvJ6bBLsZtUoM9w+yFy7x54573B1RzUL7hmwQEXwB3DFkiZ9Qnqv0qb3FOXZtkrmGbYU1vBpmLxK3oaBoavRqUAqw4/RKDD++EWZKfDKjh36Rsdec7tz9wAUuheYwRw7/fEtU0og6RQL+iOGYC2XAAqqG0eiIYrSKTGePdUnI8CY3eO4pU7krboRhJs8Wn9eSKfszwdZIoeanADPZaTgH4nmR4GAesy0G5+05a0SeFZ+AszBYualTAGDK2BLwDVzOHLI5Jg43e2aH7J/5oEruX1n2+oYxlFJGl635velbCyhfnYzm0XyBXQelMhp1wnzKVQzeI=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(366004)(39860400002)(346002)(396003)(376002)(136003)(451199015)(6506007)(31686004)(4326008)(8676002)(66476007)(66556008)(66946007)(31696002)(6512007)(36756003)(38100700002)(86362001)(478600001)(186003)(53546011)(6666004)(6486002)(316002)(2906002)(2616005)(41300700001)(8936002)(4744005)(7416002)(5660300002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NWo4OHlSTnBSYmpXQWpJbUxZd2Z1cGdPSGNPWS9yajhyYXBwa3lNZmNFS0to?=
+ =?utf-8?B?WUFtdmJHNnhSeTVoMVRwUXlGVExabzJFZndBcE4rcW1yTnRKQTl6ck5COHda?=
+ =?utf-8?B?TWdlaHBtVndiY2VTYlpZY2FuSjkvNy9VcVlNUmh1WmJzblk0SmhBb2pST0NK?=
+ =?utf-8?B?WWNuallqQ1lZd0dEeTd2U2gya1R3RFAwTVd4OG8vVTJGSThFYzl2bldQZnVk?=
+ =?utf-8?B?cWZuVlJXaTMxNFBRYlpiK3hkY1VRTTF3RWp2ODQ2NTRTc2JrTTRHY2xIbW44?=
+ =?utf-8?B?THRmT3FjR0gzMDhZdWlZeVlaaGNFdzdDb0U3a0RLYXQ3VDhxYlkxRVd3UktC?=
+ =?utf-8?B?U1UxaUVOeFo5Snl1emRScTlCYlZuMUpnYzJKd244bWFZZGcvc2VySGlVYU1s?=
+ =?utf-8?B?YW9KdVhubTdHUEVTbTlxRms1TWpJNmYyUDNrUFM5aWFIdWVCYWJYemdEMkpP?=
+ =?utf-8?B?cTBNQWZxV3RTVFJmK1NyTkkxWmxNQ2VqVzAvMEhYeVpaOXR2YURSVmcvV25Q?=
+ =?utf-8?B?T09SNE16aVcyckNFZXBjU3hUUnZtOHF0cUVEQ25zaDBsbEorcHVaVUdCWmlT?=
+ =?utf-8?B?RWVWaUxiL1NOakJRQlU5cTUzU0xsa3FyTUdRNURtM3Vhdmk3RHhnbFdCYkR6?=
+ =?utf-8?B?Q1BzTXpIV0ZiblVwQ3BjM1ZOT1Byd2FTWlEwdWRrcXluZ25pT2hOb0ZaNC9p?=
+ =?utf-8?B?bGJlRVBGTzZWQ3VabWllM2twalJRU3k4STI3WTAxYlg2SXYxSng5c2c4YUxN?=
+ =?utf-8?B?aWpSQzVQaFd6ZHJiUXlYdkY5ZUU5aFl6bmFRMmpDQXNhS1czSXhBc1gyR2ls?=
+ =?utf-8?B?bW9Fa25qQklrQzh1UzlGczZjVUNUWW5HeU5ldkx3d1FOQkVGejJXQUJiN3Nu?=
+ =?utf-8?B?Q2U2M2dMSkRLNW94YmFxMXRpMmN5Mmp3RXhRSTdBYTcxNW5IQ0pvUjVwdjJN?=
+ =?utf-8?B?ZE9hZjZKTnExT2h4RFlXSlgzRFNnNVdnS3NZOWZzMThwWmFhVnZ6K2h5ZnNR?=
+ =?utf-8?B?RGl5VTQvSzFTQ2Z6SWhDQlp5YndHS2pOLzRoLzFXWUpOeGpaazlRSXFvUC9E?=
+ =?utf-8?B?QXZremUyVWJFaUI3Z2xnbHFVVURMNmlRK3NQVXgvRVhhRW0zaVFwY3VVdmtM?=
+ =?utf-8?B?RFhsVkx0SHcrazVpd2wxNXdMMjJZblR6T2U0NUw2ZnBnTU9uMC85bUZyd1dP?=
+ =?utf-8?B?eWlKNFJ4amtlWWlBRkhsVVlEV0d2Q00rSGpqN3RFTnNwbzNSVFJYbnpEWEhY?=
+ =?utf-8?B?clExMjdQNXM1UFBYZzZ4a0F5NnVPblNKMjZJdjJQYkhNR1NwUk5aVFNQcVRq?=
+ =?utf-8?B?OTArWWRHZmhiRkhicTlxZ1FrS0xvZ3dseVFOcCtCdDNtUHJxMlJ1WDJ0bkFx?=
+ =?utf-8?B?NE55aXNCMzRKNkcwTkcvNWZxd0RXMTM1S2R5SktZRUhWWEt2enNHdTNpZnNt?=
+ =?utf-8?B?cTR5dVhzZDZDOWtvdlpISjlmT0ZCNFRma1hjdXppNytRQ1FCRWlud3c0VURz?=
+ =?utf-8?B?eFFHeFFaWml0blB1bmJlOXZwNlVNSFRibmpIcFZHWWNXK0ZiVXk2cUNzNGEw?=
+ =?utf-8?B?K055TDJycjIvV3huZEtaWi9WdFdNOEVKMFcwWTJtdUZMbUpBYVhLeGZNV2sr?=
+ =?utf-8?B?MDJ3UzNYWXBGV244S0l4SS8yVjZudUJGVUx3RENoc0JKTk03elRYa29JaHAw?=
+ =?utf-8?B?N0dUSWwyREJQMjVmck13TTMyTW45VEdtcGkrOGFySzB3RUliRnN2SWVmclNt?=
+ =?utf-8?B?U3ZlWkdBZzRmVWdhOHlpQ3JOZlpsRjFZNDE0NmpFSmZudlc4Mi8zQ1F3dlpi?=
+ =?utf-8?B?cTRYMUhIWjFqZUZZM0NPQ1M0aEQyV0hwUlIxUFJxRGNubExyTVRZV2F1cHFt?=
+ =?utf-8?B?aHhiVjltREpsbktTRkdBUlgyTTdnQVUyWk5ML2k5SUlEVmRpemRKa05tQ21R?=
+ =?utf-8?B?aEFkOTYzakJwQkZIaGczVXdNeml1YjRjRjNwaGpKK2lGUjdwYUI5Mk9ucytT?=
+ =?utf-8?B?dGVkZzdIbmxWNElaTTR2MGswUWhUTzVuSnFmM3RFcjFpWUQxdHFHbnF1RitZ?=
+ =?utf-8?B?dGlDSWNQUXlKK0JWblZ6cmlocHNvanlSSThJUXNRWnN3RDc2Qld4Uzk1SnVr?=
+ =?utf-8?Q?rxnrNAfL77y1eDct9zBOfinZ7?=
+X-OriginatorOrg: meta.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1755ebde-4188-44c7-4f0f-08dab001160f
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Oct 2022 05:33:13.9779
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ujhvJs37q0MRhwTOnQ/L9ALaHF8Ujor8KmAf7h1ACPVJUv3YAvzzGsQaaOtDxBEE
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4467
+X-Proofpoint-GUID: _PqICun5puuJnm9Ojy_AoJ40azKkSJOg
+X-Proofpoint-ORIG-GUID: _PqICun5puuJnm9Ojy_AoJ40azKkSJOg
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
+ definitions=2022-10-17_03,2022-10-17_01,2022-06-22_01
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    9abf2313adc1 Linux 6.1-rc1
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14e70244880000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4789759e8a6d5f57
-dashboard link: https://syzkaller.appspot.com/bug?extid=9abe5ecc348676215427
-compiler:       Debian clang version 13.0.1-++20220126092033+75e33f71c2da-1~exp1~20220126212112.63, GNU ld (GNU Binutils for Debian) 2.35.2
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/1f92e2492e87/disk-9abf2313.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/e1f5038aaa4b/vmlinux-9abf2313.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+9abe5ecc348676215427@syzkaller.appspotmail.com
-
-ACPI: button: Sleep Button [SLPF]
-ACPI: \_SB_.LNKC: Enabled at IRQ 11
-virtio-pci 0000:00:03.0: virtio_pci: leaving for legacy driver
-ACPI: \_SB_.LNKD: Enabled at IRQ 10
-virtio-pci 0000:00:04.0: virtio_pci: leaving for legacy driver
-ACPI: \_SB_.LNKB: Enabled at IRQ 10
-virtio-pci 0000:00:06.0: virtio_pci: leaving for legacy driver
-virtio-pci 0000:00:07.0: virtio_pci: leaving for legacy driver
-N_HDLC line discipline registered with maxframe=4096
-Serial: 8250/16550 driver, 4 ports, IRQ sharing enabled
-00:03: ttyS0 at I/O 0x3f8 (irq = 4, base_baud = 115200) is a 16550A
-00:04: ttyS1 at I/O 0x2f8 (irq = 3, base_baud = 115200) is a 16550A
-00:05: ttyS2 at I/O 0x3e8 (irq = 6, base_baud = 115200) is a 16550A
-00:06: ttyS3 at I/O 0x2e8 (irq = 7, base_baud = 115200) is a 16550A
-Non-volatile memory driver v1.3
-Linux agpgart interface v0.103
-ACPI: bus type drm_connector registered
-[drm] Initialized vgem 1.0.0 20120112 for vgem on minor 0
-[drm] Initialized vkms 1.0.0 20180514 for vkms on minor 1
-Console: switching to colour frame buffer device 128x48
-platform vkms: [drm] fb0: vkmsdrmfb frame buffer device
-usbcore: registered new interface driver udl
-brd: module loaded
-loop: module loaded
-zram: Added device: zram0
-null_blk: disk nullb0 created
-null_blk: module loaded
-Guest personality initialized and is inactive
-VMCI host device registered (name=vmci, major=10, minor=119)
-Initialized host personality
-usbcore: registered new interface driver rtsx_usb
-usbcore: registered new interface driver viperboard
-usbcore: registered new interface driver dln2
-usbcore: registered new interface driver pn533_usb
-nfcsim 0.2 initialized
-usbcore: registered new interface driver port100
-usbcore: registered new interface driver nfcmrvl
-Loading iSCSI transport class v2.0-870.
-scsi host0: Virtio SCSI HBA
-st: Version 20160209, fixed bufsize 32768, s/g segs 256
-Rounding down aligned max_sectors from 4294967295 to 4294967288
-db_root: cannot open: /etc/target
-slram: not enough parameters.
-ftl_cs: FTL header not found.
-wireguard: WireGuard 1.0.0 loaded. See www.wireguard.com for information.
-wireguard: Copyright (C) 2015-2019 Jason A. Donenfeld <Jason@zx2c4.com>. All Rights Reserved.
-eql: Equalizer2002: Simon Janes (simon@ncm.com) and David S. Miller (davem@redhat.com)
-MACsec IEEE 802.1AE
-tun: Universal TUN/TAP device driver, 1.6
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 1 at include/linux/cpumask.h:110 netif_attrmask_next_and include/linux/netdevice.h:3689 [inline]
-WARNING: CPU: 0 PID: 1 at include/linux/cpumask.h:110 __netif_set_xps_queue+0xc00/0x2120 net/core/dev.c:2592
-Modules linked in:
-CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.1.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/22/2022
-RIP: 0010:cpu_max_bits_warn include/linux/cpumask.h:110 [inline]
-RIP: 0010:netif_attrmask_next_and include/linux/netdevice.h:3689 [inline]
-RIP: 0010:__netif_set_xps_queue+0xc00/0x2120 net/core/dev.c:2592
-Code: f9 c6 05 f3 cb d9 05 01 48 c7 c7 30 fe b8 8b be 2e 0a 00 00 48 c7 c2 20 a6 b8 8b e8 0a 1e 30 f9 e9 a2 f9 ff ff e8 30 69 50 f9 <0f> 0b e9 1c f8 ff ff 89 f9 80 e1 07 80 c1 03 38 c1 0f 8c d3 fe ff
-RSP: 0000:ffffc90000067490 EFLAGS: 00010293
-RAX: ffffffff88393690 RBX: 0000000000000000 RCX: ffff888140158000
-RDX: 0000000000000000 RSI: 0000000000000002 RDI: 0000000000000002
-RBP: ffff888020fd4b00 R08: ffffffff88392ea5 R09: 0000000000000000
-R10: fffff5200000ce18 R11: 1ffff9200000ce16 R12: ffff888020fd4b80
-R13: ffff888020fd4a00 R14: 0000000000000002 R15: 0000000000000002
-FS:  0000000000000000(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffff88823ffff000 CR3: 000000000ca8e000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- virtnet_set_affinity+0x56e/0x730 drivers/net/virtio_net.c:2308
- init_vqs+0x107c/0x11d0 drivers/net/virtio_net.c:3581
- virtnet_probe+0x19db/0x32a0 drivers/net/virtio_net.c:3884
- virtio_dev_probe+0x8ca/0xb60 drivers/virtio/virtio.c:305
- call_driver_probe+0x96/0x250
- really_probe+0x24c/0x9f0 drivers/base/dd.c:639
- __driver_probe_device+0x1f4/0x3f0 drivers/base/dd.c:778
- driver_probe_device+0x50/0x240 drivers/base/dd.c:808
- __driver_attach+0x364/0x5b0 drivers/base/dd.c:1190
- bus_for_each_dev+0x188/0x1f0 drivers/base/bus.c:301
- bus_add_driver+0x32f/0x600 drivers/base/bus.c:618
- driver_register+0x2e9/0x3e0 drivers/base/driver.c:246
- virtio_net_driver_init+0x8e/0xcb drivers/net/virtio_net.c:4090
- do_one_initcall+0xbd/0x2b0 init/main.c:1303
- do_initcall_level+0x168/0x218 init/main.c:1376
- do_initcalls+0x4b/0x8c init/main.c:1392
- kernel_init_freeable+0x471/0x61d init/main.c:1631
- kernel_init+0x19/0x2b0 init/main.c:1519
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:306
- </TASK>
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+On 10/14/22 5:24 PM, Stanislav Fomichev wrote:
+> It should trigger a WARN_ON_ONCE in btf_type_id_size.
+> 
+>       btf_func_proto_check kernel/bpf/btf.c:4447 [inline]
+>       btf_check_all_types kernel/bpf/btf.c:4723 [inline]
+>       btf_parse_type_sec kernel/bpf/btf.c:4752 [inline]
+>       btf_parse kernel/bpf/btf.c:5026 [inline]
+>       btf_new_fd+0x1926/0x1e70 kernel/bpf/btf.c:6892
+>       bpf_btf_load kernel/bpf/syscall.c:4324 [inline]
+>       __sys_bpf+0xb7d/0x4cf0 kernel/bpf/syscall.c:5010
+>       __do_sys_bpf kernel/bpf/syscall.c:5069 [inline]
+>       __se_sys_bpf kernel/bpf/syscall.c:5067 [inline]
+>       __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:5067
+>       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>       do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+>       entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> 
+> Cc: Yonghong Song <yhs@fb.com>
+> Cc: Martin KaFai Lau <martin.lau@kernel.org>
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Acked-by: Yonghong Song <yhs@fb.com>
