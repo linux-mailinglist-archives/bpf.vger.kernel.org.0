@@ -2,428 +2,784 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8A836015D0
-	for <lists+bpf@lfdr.de>; Mon, 17 Oct 2022 19:55:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 626626015DD
+	for <lists+bpf@lfdr.de>; Mon, 17 Oct 2022 20:02:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230425AbiJQRzf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Oct 2022 13:55:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54602 "EHLO
+        id S229904AbiJQSCC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Oct 2022 14:02:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230400AbiJQRzd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Oct 2022 13:55:33 -0400
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D31E25071F
-        for <bpf@vger.kernel.org>; Mon, 17 Oct 2022 10:55:29 -0700 (PDT)
-Received: by mail-qv1-xf30.google.com with SMTP id f14so7886584qvo.3
-        for <bpf@vger.kernel.org>; Mon, 17 Oct 2022 10:55:29 -0700 (PDT)
+        with ESMTP id S229955AbiJQSCB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 Oct 2022 14:02:01 -0400
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE0ED63FD7
+        for <bpf@vger.kernel.org>; Mon, 17 Oct 2022 11:01:57 -0700 (PDT)
+Received: by mail-pj1-x104a.google.com with SMTP id z9-20020a17090a468900b00202fdb32ba1so5757199pjf.1
+        for <bpf@vger.kernel.org>; Mon, 17 Oct 2022 11:01:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Q3fm/7a4yLfUklOddcmPkporjRQwAL4fkiKoLfD+veQ=;
-        b=einIZs2L/xpipozxplCD+82a6mBtDIlZE4JEUQEeydD3gD0ePeZJIS5t6dMhQShjj0
-         vcf1hQEWR9Sv+mzu7ICXK/XUmOdWSXI7U16WtAJz9BM8l0F51UdGPOHRu/7sg7y5LB9l
-         C7cIuiKDB55TT/9yOGCFKm0DPhlI337rH1KxE=
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=W6fjBqqY6VkpL9tvGHnvdnj91S6p/rXFEdMQ6HbUixg=;
+        b=DC4W32M78PpHr5sBrTLkNTjtMIQy+C3L6A0MTniVieqfyRHwyRIrkLa6yowVw7sjqE
+         /vYCli6HCbi1zo0IpkXNO6ANLrOi1UCKkPkOr2eBKA5Y+58olx6jXQ/5214tODM3IFHY
+         M1es/0vjwhan7WQPbYeDYbk7i7mUt5An8qOl+x3ihopWSSs4EFOMNRmuNasXjGxP30OH
+         69SxZxOf2z1i/UnmRrwGC/bpmF2Wi2XhGhwlErsZ064JGOmdvmrLU/msomQYfR5b7nGM
+         hTbIiQmdJD85menVWOWdCZVLEy7+N2UuFLeuAhrpdqPOEa7boCs05OqB2P/hHymAtWFD
+         15Dg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Q3fm/7a4yLfUklOddcmPkporjRQwAL4fkiKoLfD+veQ=;
-        b=YlE6vmGDYNI61O2VK8m87IIDgAEigs9Pv95y5X9X+8Xh4S0YVFTwSRB/1VU32l1B+8
-         dCOofjFkDjtvOyhAS8vcICQs3GB8EPqaRXDr0BvncpKt5huMsubv+2JXzZkpe3a3Q7Vh
-         EH0e6kZHTvqlTVrLelhGvVxEdQdTdoGSa/GfOMdsjjQyTBXGcf5mwzo/PZDW26TuSLZs
-         W38qZDb/Zo2m7/5BVW074f7FM4GADlxuyW3pLHKhNT2Nk/zAuGivsP9DLwE2qNR7huU/
-         2RdyeBpZv95o6Rm3UPq4HSmDYuTivI3spJHEigxCvUSHItStYulLnx4quOKDZPCUFCj6
-         KOaw==
-X-Gm-Message-State: ACrzQf05rtiX17jDat8HTqv7ihppOTYnK/99Fhn6bEjGIfEqaXF4myOG
-        doIZbsiuuXCzADrx8l3FtRv6EyNqDTvxq/9AI4yrnTpN+kLbww==
-X-Google-Smtp-Source: AMsMyM6pj2Bi92gGbQ10Cd1lMeK13jVOFYe7Dxedj9RSGQrJb9QbCcEMrMmuGhSEd8Sspf7V9o/MXTnl+pJgJMGnVc4=
-X-Received: by 2002:a17:903:454:b0:184:dc78:563d with SMTP id
- iw20-20020a170903045400b00184dc78563dmr12950608plb.41.1666029317846; Mon, 17
- Oct 2022 10:55:17 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220913162732.163631-1-xukuohai@huaweicloud.com>
- <f1e14934-dc54-9bf7-501a-89affdb7371e@iogearbox.net> <YzG51Jyd5zhvygtK@arm.com>
- <YzHk1zRf1Dp8YTEe@FVFF77S0Q05N> <970a25e4-9b79-9e0c-b338-ed1a934f2770@huawei.com>
- <YzR5WSLux4mmFIXg@FVFF77S0Q05N> <2cb606b4-aa8b-e259-cdfd-1bfc61fd7c44@huawei.com>
- <CABRcYmKPchvtkkgWhOJ6o3pHVqTWeenGawHfZ2ug8Akdh6NfnQ@mail.gmail.com>
- <7f34d333-3b2a-aea5-f411-d53be2c46eee@huawei.com> <20221005110707.55bd9354@gandalf.local.home>
- <CABRcYmJGY6fp0CtUBYN8BjEDN=r42BPLSBcrxqu491bTRmfm7g@mail.gmail.com>
- <20221005113019.18aeda76@gandalf.local.home> <CABRcYmL0bDkgYP3tSwhZYaGUSbsUR3Gq85QCRiUAdXt65czzmg@mail.gmail.com>
- <20221006122922.53802a5c@gandalf.local.home>
-In-Reply-To: <20221006122922.53802a5c@gandalf.local.home>
-From:   Florent Revest <revest@chromium.org>
-Date:   Mon, 17 Oct 2022 19:55:06 +0200
-Message-ID: <CABRcYm+d=xY9nBCJo-6JW_=F41g4X32QM9WOPChaOTfs6d6KCA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 0/4] Add ftrace direct call for arm64
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Xu Kuohai <xukuohai@huawei.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Xu Kuohai <xukuohai@huaweicloud.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=W6fjBqqY6VkpL9tvGHnvdnj91S6p/rXFEdMQ6HbUixg=;
+        b=oEMvN5NREP2JWBxt1cX2ACDF1Yvtu4DaRTA260jLeqoThCSO4idd8xwc53ZIUWdOTH
+         8Cdaf9X8DZ20Q2/BabpGDHQbTTcYqf38yXHBot1gnhCP6JtFNVE6PX4RL32cXBzhRqK9
+         6PX3UhVRAyHLkF0CT5oUT0HG4r7o+QLH5oxiKHxDBpQf2ngcUZDZSK/w8AzmJNHekPrr
+         wE/AwV1KHrVoi4EkmAZaA95VHZQwCsGLxaANG2jZpVl0f0nCa2zuPvmzaZEVGEqadRCV
+         kHNr9FQq8FjJlahMrVPhlDhY70YNXom2qN5goVvvvaoGNCJZvAvYdnyjEbEOKT+AHM7l
+         S24w==
+X-Gm-Message-State: ACrzQf1USNDPvPy2En7p847W7rXaxJBWI+gIhkMbC+obokUIFukkJpmg
+        gFS8folUT8pEFbarhBzBTFRxcGU=
+X-Google-Smtp-Source: AMsMyM4D6qQN2JmA3zVXE2HURTBiBJDloAP5PdfESkybPCHSoseGTqI2LEqgrtg1JmC4W4qDZa9/3IY=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:aa7:84ce:0:b0:563:1aaf:81d5 with SMTP id
+ x14-20020aa784ce000000b005631aaf81d5mr13808498pfn.63.1666029717523; Mon, 17
+ Oct 2022 11:01:57 -0700 (PDT)
+Date:   Mon, 17 Oct 2022 11:01:55 -0700
+In-Reply-To: <20221014045630.3311951-1-yhs@fb.com>
+Mime-Version: 1.0
+References: <20221014045619.3309899-1-yhs@fb.com> <20221014045630.3311951-1-yhs@fb.com>
+Message-ID: <Y02Yk8gUgVDuZR4Q@google.com>
+Subject: Re: [PATCH bpf-next 2/5] bpf: Implement cgroup storage available to
+ non-cgroup-attached bpf progs
+From:   sdf@google.com
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
         KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Marc Zyngier <maz@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Tejun Heo <tj@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 6, 2022 at 6:29 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Thu, 6 Oct 2022 18:19:12 +0200
-> Florent Revest <revest@chromium.org> wrote:
->
-> > Sure, we can give this a try, I'll work on a macro that generates the
-> > 7 callbacks and we can check how much that helps. My belief right now
-> > is that ftrace's iteration over all ops on arm64 is where we lose most
-> > time but now that we have numbers it's pretty easy to check hypothesis
-> > :)
->
-> Ah, I forgot that's what Mark's code is doing. But yes, that needs to be
-> fixed first. I forget that arm64 doesn't have the dedicated trampolines y=
-et.
->
-> So, let's hold off until that is complete.
->
-> -- Steve
+On 10/13, Yonghong Song wrote:
+> Similar to sk/inode/task storage, implement similar cgroup local storage.
 
-Mark finished an implementation of his per-callsite-ops and min-args
-branches (meaning that we can now skip the expensive ftrace's saving
-of all registers and iteration over all ops if only one is attached)
-- https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/log/?h=3Da=
-rm64-ftrace-call-ops-20221017
+> There already exists a local storage implementation for cgroup-attached
+> bpf programs.  See map type BPF_MAP_TYPE_CGROUP_STORAGE and helper
+> bpf_get_local_storage(). But there are use cases such that non-cgroup
+> attached bpf progs wants to access cgroup local storage data. For example,
+> tc egress prog has access to sk and cgroup. It is possible to use
+> sk local storage to emulate cgroup local storage by storing data in  
+> socket.
+> But this is a waste as it could be lots of sockets belonging to a  
+> particular
+> cgroup. Alternatively, a separate map can be created with cgroup id as  
+> the key.
+> But this will introduce additional overhead to manipulate the new map.
+> A cgroup local storage, similar to existing sk/inode/task storage,
+> should help for this use case.
 
-And Masami wrote similar patches to what I had originally done to
-fprobe in my branch:
-- https://github.com/mhiramat/linux/commits/kprobes/fprobe-update
+> The life-cycle of storage is managed with the life-cycle of the
+> cgroup struct.  i.e. the storage is destroyed along with the owning cgroup
+> with a callback to the bpf_cgroup_storage_free when cgroup itself
+> is deleted.
 
-So I could rebase my previous "bpf on fprobe" branch on top of these:
-(as before, it's just good enough for benchmarking and to give a
-general sense of the idea, not for a thorough code review):
-- https://github.com/FlorentRevest/linux/commits/fprobe-min-args-3
-
-And I could run the benchmarks against my rpi4. I have different
-baseline numbers as Xu so I ran everything again and tried to keep the
-format the same. "indirect call" refers to my branch I just linked and
-"direct call" refers to the series this is a reply to (Xu's work)
-
-1. test with dd
-
-1.1 when no bpf prog attached to vfs_write
-
-# dd if=3D/dev/zero of=3D/dev/null count=3D1000000
-1000000+0 records in
-1000000+0 records out
-512000000 bytes (512 MB, 488 MiB) copied, 3.94315 s, 130 MB/s
+> The userspace map operations can be done by using a cgroup fd as a key
+> passed to the lookup, update and delete operations.
 
 
-1.2 attach bpf prog with kprobe, bpftrace -e kprobe:vfs_write {}
+[..]
 
-# dd if=3D/dev/zero of=3D/dev/null count=3D1000000
-1000000+0 records in
-1000000+0 records out
-512000000 bytes (512 MB, 488 MiB) copied, 5.80493 s, 88.2 MB/s
+> Since map name BPF_MAP_TYPE_CGROUP_STORAGE has been used for old cgroup  
+> local
+> storage support, the new map name BPF_MAP_TYPE_CGROUP_LOCAL_STORAGE is  
+> used
+> for cgroup storage available to non-cgroup-attached bpf programs. The two
+> helpers are named as bpf_cgroup_local_storage_get() and
+> bpf_cgroup_local_storage_delete().
 
+Have you considered doing something similar to 7d9c3427894f ("bpf: Make
+cgroup storages shared between programs on the same cgroup") where
+the map changes its behavior depending on the key size (see key_size checks
+in cgroup_storage_map_alloc)? Looks like sizeof(int) for fd still
+can be used so we can, in theory, reuse the name..
 
-1.3 attach bpf prog with with direct call, bpftrace -e kfunc:vfs_write {}
+Pros:
+- no need for a new map name
 
-# dd if=3D/dev/zero of=3D/dev/null count=3D1000000
-1000000+0 records in
-1000000+0 records out
-512000000 bytes (512 MB, 488 MiB) copied, 4.18579 s, 122 MB/s
+Cons:
+- existing BPF_MAP_TYPE_CGROUP_STORAGE is already messy; might be not a
+   good idea to add more stuff to it?
 
+But, for the very least, should we also extend
+Documentation/bpf/map_cgroup_storage.rst to cover the new map? We've
+tried to keep some of the important details in there..
 
-1.4 attach bpf prog with with indirect call, bpftrace -e kfunc:vfs_write {}
+> Signed-off-by: Yonghong Song <yhs@fb.com>
+> ---
+>   include/linux/bpf.h             |   3 +
+>   include/linux/bpf_types.h       |   1 +
+>   include/linux/cgroup-defs.h     |   4 +
+>   include/uapi/linux/bpf.h        |  39 +++++
+>   kernel/bpf/Makefile             |   2 +-
+>   kernel/bpf/bpf_cgroup_storage.c | 280 ++++++++++++++++++++++++++++++++
+>   kernel/bpf/helpers.c            |   6 +
+>   kernel/bpf/syscall.c            |   3 +-
+>   kernel/bpf/verifier.c           |  14 +-
+>   kernel/cgroup/cgroup.c          |   4 +
+>   kernel/trace/bpf_trace.c        |   4 +
+>   scripts/bpf_doc.py              |   2 +
+>   tools/include/uapi/linux/bpf.h  |  39 +++++
+>   13 files changed, 398 insertions(+), 3 deletions(-)
+>   create mode 100644 kernel/bpf/bpf_cgroup_storage.c
 
-# dd if=3D/dev/zero of=3D/dev/null count=3D1000000
-1000000+0 records in
-1000000+0 records out
-512000000 bytes (512 MB, 488 MiB) copied, 4.92616 s, 104 MB/s
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 9e7d46d16032..1395a01c7f18 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -2045,6 +2045,7 @@ struct bpf_link *bpf_link_by_id(u32 id);
 
+>   const struct bpf_func_proto *bpf_base_func_proto(enum bpf_func_id  
+> func_id);
+>   void bpf_task_storage_free(struct task_struct *task);
+> +void bpf_local_cgroup_storage_free(struct cgroup *cgroup);
+>   bool bpf_prog_has_kfunc_call(const struct bpf_prog *prog);
+>   const struct btf_func_model *
+>   bpf_jit_find_kfunc_model(const struct bpf_prog *prog,
+> @@ -2537,6 +2538,8 @@ extern const struct bpf_func_proto  
+> bpf_copy_from_user_task_proto;
+>   extern const struct bpf_func_proto bpf_set_retval_proto;
+>   extern const struct bpf_func_proto bpf_get_retval_proto;
+>   extern const struct bpf_func_proto bpf_user_ringbuf_drain_proto;
+> +extern const struct bpf_func_proto bpf_cgroup_storage_get_proto;
+> +extern const struct bpf_func_proto bpf_cgroup_storage_delete_proto;
 
-2. test with bpf/bench
+>   const struct bpf_func_proto *tracing_prog_func_proto(
+>     enum bpf_func_id func_id, const struct bpf_prog *prog);
+> diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.h
+> index 2c6a4f2562a7..7a0362d7a0aa 100644
+> --- a/include/linux/bpf_types.h
+> +++ b/include/linux/bpf_types.h
+> @@ -90,6 +90,7 @@ BPF_MAP_TYPE(BPF_MAP_TYPE_CGROUP_ARRAY,  
+> cgroup_array_map_ops)
+>   #ifdef CONFIG_CGROUP_BPF
+>   BPF_MAP_TYPE(BPF_MAP_TYPE_CGROUP_STORAGE, cgroup_storage_map_ops)
+>   BPF_MAP_TYPE(BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE, cgroup_storage_map_ops)
+> +BPF_MAP_TYPE(BPF_MAP_TYPE_CGROUP_LOCAL_STORAGE,  
+> cgroup_local_storage_map_ops)
+>   #endif
+>   BPF_MAP_TYPE(BPF_MAP_TYPE_HASH, htab_map_ops)
+>   BPF_MAP_TYPE(BPF_MAP_TYPE_PERCPU_HASH, htab_percpu_map_ops)
+> diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
+> index 4bcf56b3491c..c6f4590dda68 100644
+> --- a/include/linux/cgroup-defs.h
+> +++ b/include/linux/cgroup-defs.h
+> @@ -504,6 +504,10 @@ struct cgroup {
+>   	/* Used to store internal freezer state */
+>   	struct cgroup_freezer_state freezer;
 
-2.1 bench trig-base
-Iter   0 ( 86.518us): hits    0.700M/s (  0.700M/prod), drops
-0.000M/s, total operations    0.700M/s
-Iter   1 (-26.352us): hits    0.701M/s (  0.701M/prod), drops
-0.000M/s, total operations    0.701M/s
-Iter   2 (  1.092us): hits    0.701M/s (  0.701M/prod), drops
-0.000M/s, total operations    0.701M/s
-Iter   3 ( -1.890us): hits    0.701M/s (  0.701M/prod), drops
-0.000M/s, total operations    0.701M/s
-Iter   4 ( -2.315us): hits    0.701M/s (  0.701M/prod), drops
-0.000M/s, total operations    0.701M/s
-Iter   5 (  4.184us): hits    0.701M/s (  0.701M/prod), drops
-0.000M/s, total operations    0.701M/s
-Iter   6 ( -3.241us): hits    0.701M/s (  0.701M/prod), drops
-0.000M/s, total operations    0.701M/s
-Summary: hits    0.701 =C2=B1 0.000M/s (  0.701M/prod), drops    0.000 =C2=
-=B1
-0.000M/s, total operations    0.701 =C2=B1 0.000M/s
+> +#ifdef CONFIG_BPF_SYSCALL
+> +	struct bpf_local_storage __rcu  *bpf_cgroup_storage;
+> +#endif
+> +
+>   	/* ids of the ancestors at each level including self */
+>   	u64 ancestor_ids[];
+>   };
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 17f61338f8f8..d918b4054297 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -935,6 +935,7 @@ enum bpf_map_type {
+>   	BPF_MAP_TYPE_TASK_STORAGE,
+>   	BPF_MAP_TYPE_BLOOM_FILTER,
+>   	BPF_MAP_TYPE_USER_RINGBUF,
+> +	BPF_MAP_TYPE_CGROUP_LOCAL_STORAGE,
+>   };
 
-2.2 bench trig-kprobe
-Iter   0 ( 96.833us): hits    0.290M/s (  0.290M/prod), drops
-0.000M/s, total operations    0.290M/s
-Iter   1 (-20.834us): hits    0.291M/s (  0.291M/prod), drops
-0.000M/s, total operations    0.291M/s
-Iter   2 ( -2.426us): hits    0.291M/s (  0.291M/prod), drops
-0.000M/s, total operations    0.291M/s
-Iter   3 ( 22.332us): hits    0.292M/s (  0.292M/prod), drops
-0.000M/s, total operations    0.292M/s
-Iter   4 (-18.204us): hits    0.292M/s (  0.292M/prod), drops
-0.000M/s, total operations    0.292M/s
-Iter   5 (  5.370us): hits    0.292M/s (  0.292M/prod), drops
-0.000M/s, total operations    0.292M/s
-Iter   6 ( -7.853us): hits    0.290M/s (  0.290M/prod), drops
-0.000M/s, total operations    0.290M/s
-Summary: hits    0.291 =C2=B1 0.001M/s (  0.291M/prod), drops    0.000 =C2=
-=B1
-0.000M/s, total operations    0.291 =C2=B1 0.001M/s
+>   /* Note that tracing related programs such as
+> @@ -5435,6 +5436,42 @@ union bpf_attr {
+>    *		**-E2BIG** if user-space has tried to publish a sample which is
+>    *		larger than the size of the ring buffer, or which cannot fit
+>    *		within a struct bpf_dynptr.
+> + *
+> + * void *bpf_cgroup_local_storage_get(struct bpf_map *map, struct cgroup  
+> *cgroup, void *value, u64 flags)
+> + *	Description
+> + *		Get a bpf_local_storage from the *cgroup*.
+> + *
+> + *		Logically, it could be thought of as getting the value from
+> + *		a *map* with *cgroup* as the **key**.  From this
+> + *		perspective,  the usage is not much different from
+> + *		**bpf_map_lookup_elem**\ (*map*, **&**\ *cgroup*) except this
+> + *		helper enforces the key must be a cgroup struct and the map must also
+> + *		be a **BPF_MAP_TYPE_CGROUP_LOCAL_STORAGE**.
+> + *
+> + *		Underneath, the value is stored locally at *cgroup* instead of
+> + *		the *map*.  The *map* is used as the bpf-local-storage
+> + *		"type". The bpf-local-storage "type" (i.e. the *map*) is
+> + *		searched against all bpf_local_storage residing at *cgroup*.
+> + *
+> + *		An optional *flags* (**BPF_LOCAL_STORAGE_GET_F_CREATE**) can be
+> + *		used such that a new bpf_local_storage will be
+> + *		created if one does not exist.  *value* can be used
+> + *		together with **BPF_LOCAL_STORAGE_GET_F_CREATE** to specify
+> + *		the initial value of a bpf_local_storage.  If *value* is
+> + *		**NULL**, the new bpf_local_storage will be zero initialized.
+> + *	Return
+> + *		A bpf_local_storage pointer is returned on success.
+> + *
+> + *		**NULL** if not found or there was an error in adding
+> + *		a new bpf_local_storage.
+> + *
+> + * long bpf_cgroup_local_storage_delete(struct bpf_map *map, struct  
+> cgroup *cgroup)
+> + *	Description
+> + *		Delete a bpf_local_storage from a *cgroup*.
+> + *	Return
+> + *		0 on success.
+> + *
+> + *		**-ENOENT** if the bpf_local_storage cannot be found.
+>    */
+>   #define ___BPF_FUNC_MAPPER(FN, ctx...)			\
+>   	FN(unspec, 0, ##ctx)				\
+> @@ -5647,6 +5684,8 @@ union bpf_attr {
+>   	FN(tcp_raw_check_syncookie_ipv6, 207, ##ctx)	\
+>   	FN(ktime_get_tai_ns, 208, ##ctx)		\
+>   	FN(user_ringbuf_drain, 209, ##ctx)		\
+> +	FN(cgroup_local_storage_get, 210, ##ctx)	\
+> +	FN(cgroup_local_storage_delete, 211, ##ctx)	\
+>   	/* */
 
-2.3 bench trig-fentry, with direct call
-Iter   0 ( 86.481us): hits    0.530M/s (  0.530M/prod), drops
-0.000M/s, total operations    0.530M/s
-Iter   1 (-12.593us): hits    0.536M/s (  0.536M/prod), drops
-0.000M/s, total operations    0.536M/s
-Iter   2 ( -5.760us): hits    0.532M/s (  0.532M/prod), drops
-0.000M/s, total operations    0.532M/s
-Iter   3 (  1.629us): hits    0.532M/s (  0.532M/prod), drops
-0.000M/s, total operations    0.532M/s
-Iter   4 ( -1.945us): hits    0.533M/s (  0.533M/prod), drops
-0.000M/s, total operations    0.533M/s
-Iter   5 ( -1.297us): hits    0.532M/s (  0.532M/prod), drops
-0.000M/s, total operations    0.532M/s
-Iter   6 (  0.444us): hits    0.535M/s (  0.535M/prod), drops
-0.000M/s, total operations    0.535M/s
-Summary: hits    0.533 =C2=B1 0.002M/s (  0.533M/prod), drops    0.000 =C2=
-=B1
-0.000M/s, total operations    0.533 =C2=B1 0.002M/s
+>   /* backwards-compatibility macros for users of __BPF_FUNC_MAPPER that  
+> don't
+> diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
+> index 341c94f208f4..b02693f51978 100644
+> --- a/kernel/bpf/Makefile
+> +++ b/kernel/bpf/Makefile
+> @@ -25,7 +25,7 @@ ifeq ($(CONFIG_PERF_EVENTS),y)
+>   obj-$(CONFIG_BPF_SYSCALL) += stackmap.o
+>   endif
+>   ifeq ($(CONFIG_CGROUPS),y)
+> -obj-$(CONFIG_BPF_SYSCALL) += cgroup_iter.o
+> +obj-$(CONFIG_BPF_SYSCALL) += cgroup_iter.o bpf_cgroup_storage.o
+>   endif
+>   obj-$(CONFIG_CGROUP_BPF) += cgroup.o
+>   ifeq ($(CONFIG_INET),y)
+> diff --git a/kernel/bpf/bpf_cgroup_storage.c  
+> b/kernel/bpf/bpf_cgroup_storage.c
+> new file mode 100644
+> index 000000000000..9974784822da
+> --- /dev/null
+> +++ b/kernel/bpf/bpf_cgroup_storage.c
+> @@ -0,0 +1,280 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2022 Meta Platforms, Inc. and affiliates.
+> + */
+> +
+> +#include <linux/types.h>
+> +#include <linux/bpf.h>
+> +#include <linux/bpf_local_storage.h>
+> +#include <uapi/linux/btf.h>
+> +#include <linux/btf_ids.h>
+> +
+> +DEFINE_BPF_STORAGE_CACHE(cgroup_cache);
+> +
+> +static DEFINE_PER_CPU(int, bpf_cgroup_storage_busy);
+> +
+> +static void bpf_cgroup_storage_lock(void)
+> +{
+> +	migrate_disable();
+> +	this_cpu_inc(bpf_cgroup_storage_busy);
+> +}
+> +
+> +static void bpf_cgroup_storage_unlock(void)
+> +{
+> +	this_cpu_dec(bpf_cgroup_storage_busy);
+> +	migrate_enable();
+> +}
+> +
+> +static bool bpf_cgroup_storage_trylock(void)
+> +{
+> +	migrate_disable();
+> +	if (unlikely(this_cpu_inc_return(bpf_cgroup_storage_busy) != 1)) {
+> +		this_cpu_dec(bpf_cgroup_storage_busy);
+> +		migrate_enable();
+> +		return false;
+> +	}
+> +	return true;
+> +}
 
-2.3 bench trig-fentry, with indirect call
-Iter   0 ( 84.463us): hits    0.404M/s (  0.404M/prod), drops
-0.000M/s, total operations    0.404M/s
-Iter   1 (-16.260us): hits    0.405M/s (  0.405M/prod), drops
-0.000M/s, total operations    0.405M/s
-Iter   2 ( -1.038us): hits    0.405M/s (  0.405M/prod), drops
-0.000M/s, total operations    0.405M/s
-Iter   3 ( -3.797us): hits    0.405M/s (  0.405M/prod), drops
-0.000M/s, total operations    0.405M/s
-Iter   4 ( -0.537us): hits    0.402M/s (  0.402M/prod), drops
-0.000M/s, total operations    0.402M/s
-Iter   5 (  3.536us): hits    0.403M/s (  0.403M/prod), drops
-0.000M/s, total operations    0.403M/s
-Iter   6 ( 12.203us): hits    0.404M/s (  0.404M/prod), drops
-0.000M/s, total operations    0.404M/s
-Summary: hits    0.404 =C2=B1 0.001M/s (  0.404M/prod), drops    0.000 =C2=
-=B1
-0.000M/s, total operations    0.404 =C2=B1 0.001M/s
+Task storage has lock/unlock/trylock; inode storage doesn't; why does
+cgroup need it as well?
 
+> +static struct bpf_local_storage __rcu **cgroup_storage_ptr(void *owner)
+> +{
+> +	struct cgroup *cg = owner;
+> +
+> +	return &cg->bpf_cgroup_storage;
+> +}
+> +
+> +void bpf_local_cgroup_storage_free(struct cgroup *cgroup)
+> +{
+> +	struct bpf_local_storage *local_storage;
+> +	struct bpf_local_storage_elem *selem;
+> +	bool free_cgroup_storage = false;
+> +	struct hlist_node *n;
+> +	unsigned long flags;
+> +
+> +	rcu_read_lock();
+> +	local_storage = rcu_dereference(cgroup->bpf_cgroup_storage);
+> +	if (!local_storage) {
+> +		rcu_read_unlock();
+> +		return;
+> +	}
+> +
+> +	/* Neither the bpf_prog nor the bpf-map's syscall
+> +	 * could be modifying the local_storage->list now.
+> +	 * Thus, no elem can be added-to or deleted-from the
+> +	 * local_storage->list by the bpf_prog or by the bpf-map's syscall.
+> +	 *
+> +	 * It is racing with bpf_local_storage_map_free() alone
+> +	 * when unlinking elem from the local_storage->list and
+> +	 * the map's bucket->list.
+> +	 */
+> +	bpf_cgroup_storage_lock();
+> +	raw_spin_lock_irqsave(&local_storage->lock, flags);
+> +	hlist_for_each_entry_safe(selem, n, &local_storage->list, snode) {
+> +		bpf_selem_unlink_map(selem);
+> +		free_cgroup_storage =
+> +			bpf_selem_unlink_storage_nolock(local_storage, selem, false, false);
+> +	}
+> +	raw_spin_unlock_irqrestore(&local_storage->lock, flags);
+> +	bpf_cgroup_storage_unlock();
+> +	rcu_read_unlock();
+> +
+> +	/* free_cgroup_storage should always be true as long as
+> +	 * local_storage->list was non-empty.
+> +	 */
+> +	if (free_cgroup_storage)
+> +		kfree_rcu(local_storage, rcu);
+> +}
 
-3. perf report of bench trig-fentry
+> +static struct bpf_local_storage_data *
+> +cgroup_storage_lookup(struct cgroup *cgroup, struct bpf_map *map, bool  
+> cacheit_lockit)
+> +{
+> +	struct bpf_local_storage *cgroup_storage;
+> +	struct bpf_local_storage_map *smap;
+> +
+> +	cgroup_storage = rcu_dereference_check(cgroup->bpf_cgroup_storage,
+> +					       bpf_rcu_lock_held());
+> +	if (!cgroup_storage)
+> +		return NULL;
+> +
+> +	smap = (struct bpf_local_storage_map *)map;
+> +	return bpf_local_storage_lookup(cgroup_storage, smap, cacheit_lockit);
+> +}
+> +
+> +static void *bpf_cgroup_storage_lookup_elem(struct bpf_map *map, void  
+> *key)
+> +{
+> +	struct bpf_local_storage_data *sdata;
+> +	struct cgroup *cgroup;
+> +	int fd;
+> +
+> +	fd = *(int *)key;
+> +	cgroup = cgroup_get_from_fd(fd);
+> +	if (IS_ERR(cgroup))
+> +		return ERR_CAST(cgroup);
+> +
+> +	bpf_cgroup_storage_lock();
+> +	sdata = cgroup_storage_lookup(cgroup, map, true);
+> +	bpf_cgroup_storage_unlock();
+> +	cgroup_put(cgroup);
+> +	return sdata ? sdata->data : NULL;
+> +}
 
-3.1 with direct call
+A lot of the above (free/lookup) seems to be copy-pasted from the task  
+storage;
+any point in trying to generalize the common parts?
 
-    98.67%     0.27%  bench    bench
-        [.] trigger_producer
-            |
-             --98.40%--trigger_producer
-                       |
-                       |--96.63%--syscall
-                       |          |
-                       |           --71.90%--el0t_64_sync
-                       |                     el0t_64_sync_handler
-                       |                     el0_svc
-                       |                     do_el0_svc
-                       |                     |
-                       |                     |--70.94%--el0_svc_common
-                       |                     |          |
-                       |                     |
-|--29.55%--invoke_syscall
-                       |                     |          |          |
-                       |                     |          |
-|--26.23%--__arm64_sys_getpgid
-                       |                     |          |          |
-       |
-                       |                     |          |          |
-       |--18.88%--bpf_trampoline_6442462665_0
-                       |                     |          |          |
-       |          |
-                       |                     |          |          |
-       |          |--6.85%--__bpf_prog_enter
-                       |                     |          |          |
-       |          |          |
-                       |                     |          |          |
-       |          |           --2.68%--migrate_disable
-                       |                     |          |          |
-       |          |
-                       |                     |          |          |
-       |          |--5.28%--__bpf_prog_exit
-                       |                     |          |          |
-       |          |          |
-                       |                     |          |          |
-       |          |           --1.29%--migrate_enable
-                       |                     |          |          |
-       |          |
-                       |                     |          |          |
-       |
-|--3.96%--bpf_prog_21856463590f61f1_bench_trigger_fentry
-                       |                     |          |          |
-       |          |
-                       |                     |          |          |
-       |           --0.61%--__rcu_read_lock
-                       |                     |          |          |
-       |
-                       |                     |          |          |
-        --4.42%--find_task_by_vpid
-                       |                     |          |          |
-                  |
-                       |                     |          |          |
-                  |--2.53%--radix_tree_lookup
-                       |                     |          |          |
-                  |
-                       |                     |          |          |
-                   --0.61%--idr_find
-                       |                     |          |          |
-                       |                     |          |
---0.81%--pid_vnr
-                       |                     |          |
-                       |                     |
---0.53%--__arm64_sys_getpgid
-                       |                     |
-                       |                      --0.95%--invoke_syscall
-                       |
-                        --0.99%--syscall@plt
+> +static int bpf_cgroup_storage_update_elem(struct bpf_map *map, void *key,
+> +					  void *value, u64 map_flags)
+> +{
+> +	struct bpf_local_storage_data *sdata;
+> +	struct cgroup *cgroup;
+> +	int err, fd;
+> +
+> +	fd = *(int *)key;
+> +	cgroup = cgroup_get_from_fd(fd);
+> +	if (IS_ERR(cgroup))
+> +		return PTR_ERR(cgroup);
+> +
+> +	bpf_cgroup_storage_lock();
+> +	sdata = bpf_local_storage_update(cgroup, (struct bpf_local_storage_map  
+> *)map,
+> +					 value, map_flags, GFP_ATOMIC);
+> +	bpf_cgroup_storage_unlock();
+> +	err = PTR_ERR_OR_ZERO(sdata);
+> +	cgroup_put(cgroup);
+> +	return err;
+> +}
+> +
+> +static int cgroup_storage_delete(struct cgroup *cgroup, struct bpf_map  
+> *map)
+> +{
+> +	struct bpf_local_storage_data *sdata;
+> +
+> +	sdata = cgroup_storage_lookup(cgroup, map, false);
+> +	if (!sdata)
+> +		return -ENOENT;
+> +
+> +	bpf_selem_unlink(SELEM(sdata), true);
+> +	return 0;
+> +}
+> +
+> +static int bpf_cgroup_storage_delete_elem(struct bpf_map *map, void *key)
+> +{
+> +	struct cgroup *cgroup;
+> +	int err, fd;
+> +
+> +	fd = *(int *)key;
+> +	cgroup = cgroup_get_from_fd(fd);
+> +	if (IS_ERR(cgroup))
+> +		return PTR_ERR(cgroup);
+> +
+> +	bpf_cgroup_storage_lock();
+> +	err = cgroup_storage_delete(cgroup, map);
+> +	bpf_cgroup_storage_unlock();
+> +	if (err)
+> +		return err;
+> +
+> +	cgroup_put(cgroup);
+> +	return 0;
+> +}
+> +
+> +static int notsupp_get_next_key(struct bpf_map *map, void *key, void  
+> *next_key)
+> +{
+> +	return -ENOTSUPP;
+> +}
+> +
+> +static struct bpf_map *cgroup_storage_map_alloc(union bpf_attr *attr)
+> +{
+> +	struct bpf_local_storage_map *smap;
+> +
+> +	smap = bpf_local_storage_map_alloc(attr);
+> +	if (IS_ERR(smap))
+> +		return ERR_CAST(smap);
+> +
+> +	smap->cache_idx = bpf_local_storage_cache_idx_get(&cgroup_cache);
+> +	return &smap->map;
+> +}
+> +
+> +static void cgroup_storage_map_free(struct bpf_map *map)
+> +{
+> +	struct bpf_local_storage_map *smap;
+> +
+> +	smap = (struct bpf_local_storage_map *)map;
+> +	bpf_local_storage_cache_idx_free(&cgroup_cache, smap->cache_idx);
+> +	bpf_local_storage_map_free(smap, NULL);
+> +}
+> +
+> +/* *gfp_flags* is a hidden argument provided by the verifier */
+> +BPF_CALL_5(bpf_cgroup_storage_get, struct bpf_map *, map, struct cgroup  
+> *, cgroup,
+> +	   void *, value, u64, flags, gfp_t, gfp_flags)
+> +{
+> +	struct bpf_local_storage_data *sdata;
+> +
+> +	WARN_ON_ONCE(!bpf_rcu_lock_held());
+> +	if (flags & ~(BPF_LOCAL_STORAGE_GET_F_CREATE))
+> +		return (unsigned long)NULL;
+> +
+> +	if (!cgroup)
+> +		return (unsigned long)NULL;
+> +
+> +	if (!bpf_cgroup_storage_trylock())
+> +		return (unsigned long)NULL;
+> +
+> +	sdata = cgroup_storage_lookup(cgroup, map, true);
+> +	if (sdata)
+> +		goto unlock;
+> +
+> +	/* only allocate new storage, when the cgroup is refcounted */
+> +	if (!percpu_ref_is_dying(&cgroup->self.refcnt) &&
+> +	    (flags & BPF_LOCAL_STORAGE_GET_F_CREATE))
+> +		sdata = bpf_local_storage_update(cgroup, (struct bpf_local_storage_map  
+> *)map,
+> +						 value, BPF_NOEXIST, gfp_flags);
+> +
+> +unlock:
+> +	bpf_cgroup_storage_unlock();
+> +	return IS_ERR_OR_NULL(sdata) ? (unsigned long)NULL : (unsigned  
+> long)sdata->data;
+> +}
+> +
+> +BPF_CALL_2(bpf_cgroup_storage_delete, struct bpf_map *, map, struct  
+> cgroup *, cgroup)
+> +{
+> +	int ret;
+> +
+> +	WARN_ON_ONCE(!bpf_rcu_lock_held());
+> +	if (!cgroup)
+> +		return -EINVAL;
+> +
+> +	if (!bpf_cgroup_storage_trylock())
+> +		return -EBUSY;
+> +
+> +	ret = cgroup_storage_delete(cgroup, map);
+> +	bpf_cgroup_storage_unlock();
+> +	return ret;
+> +}
+> +
+> +BTF_ID_LIST_SINGLE(cgroup_storage_map_btf_ids, struct,  
+> bpf_local_storage_map)
+> +const struct bpf_map_ops cgroup_local_storage_map_ops = {
+> +	.map_meta_equal = bpf_map_meta_equal,
+> +	.map_alloc_check = bpf_local_storage_map_alloc_check,
+> +	.map_alloc = cgroup_storage_map_alloc,
+> +	.map_free = cgroup_storage_map_free,
+> +	.map_get_next_key = notsupp_get_next_key,
+> +	.map_lookup_elem = bpf_cgroup_storage_lookup_elem,
+> +	.map_update_elem = bpf_cgroup_storage_update_elem,
+> +	.map_delete_elem = bpf_cgroup_storage_delete_elem,
+> +	.map_check_btf = bpf_local_storage_map_check_btf,
+> +	.map_btf_id = &cgroup_storage_map_btf_ids[0],
+> +	.map_owner_storage_ptr = cgroup_storage_ptr,
+> +};
+> +
+> +const struct bpf_func_proto bpf_cgroup_storage_get_proto = {
+> +	.func		= bpf_cgroup_storage_get,
+> +	.gpl_only	= false,
+> +	.ret_type	= RET_PTR_TO_MAP_VALUE_OR_NULL,
+> +	.arg1_type	= ARG_CONST_MAP_PTR,
+> +	.arg2_type	= ARG_PTR_TO_BTF_ID,
+> +	.arg2_btf_id	= &bpf_cgroup_btf_id[0],
+> +	.arg3_type	= ARG_PTR_TO_MAP_VALUE_OR_NULL,
+> +	.arg4_type	= ARG_ANYTHING,
+> +};
+> +
+> +const struct bpf_func_proto bpf_cgroup_storage_delete_proto = {
+> +	.func		= bpf_cgroup_storage_delete,
+> +	.gpl_only	= false,
+> +	.ret_type	= RET_INTEGER,
+> +	.arg1_type	= ARG_CONST_MAP_PTR,
+> +	.arg2_type	= ARG_PTR_TO_BTF_ID,
+> +	.arg2_btf_id	= &bpf_cgroup_btf_id[0],
+> +};
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index a6b04faed282..5c5bb08832ec 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -1663,6 +1663,12 @@ bpf_base_func_proto(enum bpf_func_id func_id)
+>   		return &bpf_dynptr_write_proto;
+>   	case BPF_FUNC_dynptr_data:
+>   		return &bpf_dynptr_data_proto;
+> +#ifdef CONFIG_CGROUPS
+> +	case BPF_FUNC_cgroup_local_storage_get:
+> +		return &bpf_cgroup_storage_get_proto;
+> +	case BPF_FUNC_cgroup_local_storage_delete:
+> +		return &bpf_cgroup_storage_delete_proto;
+> +#endif
+>   	default:
+>   		break;
+>   	}
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 7b373a5e861f..e53c7fae6e22 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -1016,7 +1016,8 @@ static int map_check_btf(struct bpf_map *map, const  
+> struct btf *btf,
+>   		    map->map_type != BPF_MAP_TYPE_CGROUP_STORAGE &&
+>   		    map->map_type != BPF_MAP_TYPE_SK_STORAGE &&
+>   		    map->map_type != BPF_MAP_TYPE_INODE_STORAGE &&
+> -		    map->map_type != BPF_MAP_TYPE_TASK_STORAGE)
+> +		    map->map_type != BPF_MAP_TYPE_TASK_STORAGE &&
+> +		    map->map_type != BPF_MAP_TYPE_CGROUP_LOCAL_STORAGE)
+>   			return -ENOTSUPP;
+>   		if (map->spin_lock_off + sizeof(struct bpf_spin_lock) >
+>   		    map->value_size) {
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 6f6d2d511c06..f36f6a3c0d50 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -6360,6 +6360,11 @@ static int check_map_func_compatibility(struct  
+> bpf_verifier_env *env,
+>   		    func_id != BPF_FUNC_task_storage_delete)
+>   			goto error;
+>   		break;
+> +	case BPF_MAP_TYPE_CGROUP_LOCAL_STORAGE:
+> +		if (func_id != BPF_FUNC_cgroup_local_storage_get &&
+> +		    func_id != BPF_FUNC_cgroup_local_storage_delete)
+> +			goto error;
+> +		break;
+>   	case BPF_MAP_TYPE_BLOOM_FILTER:
+>   		if (func_id != BPF_FUNC_map_peek_elem &&
+>   		    func_id != BPF_FUNC_map_push_elem)
+> @@ -6472,6 +6477,11 @@ static int check_map_func_compatibility(struct  
+> bpf_verifier_env *env,
+>   		if (map->map_type != BPF_MAP_TYPE_TASK_STORAGE)
+>   			goto error;
+>   		break;
+> +	case BPF_FUNC_cgroup_local_storage_get:
+> +	case BPF_FUNC_cgroup_local_storage_delete:
+> +		if (map->map_type != BPF_MAP_TYPE_CGROUP_LOCAL_STORAGE)
+> +			goto error;
+> +		break;
+>   	default:
+>   		break;
+>   	}
+> @@ -12713,6 +12723,7 @@ static int check_map_prog_compatibility(struct  
+> bpf_verifier_env *env,
+>   		case BPF_MAP_TYPE_INODE_STORAGE:
+>   		case BPF_MAP_TYPE_SK_STORAGE:
+>   		case BPF_MAP_TYPE_TASK_STORAGE:
+> +		case BPF_MAP_TYPE_CGROUP_LOCAL_STORAGE:
+>   			break;
+>   		default:
+>   			verbose(env,
+> @@ -14149,7 +14160,8 @@ static int do_misc_fixups(struct bpf_verifier_env  
+> *env)
 
+>   		if (insn->imm == BPF_FUNC_task_storage_get ||
+>   		    insn->imm == BPF_FUNC_sk_storage_get ||
+> -		    insn->imm == BPF_FUNC_inode_storage_get) {
+> +		    insn->imm == BPF_FUNC_inode_storage_get ||
+> +		    insn->imm == BPF_FUNC_cgroup_local_storage_get) {
+>   			if (env->prog->aux->sleepable)
+>   				insn_buf[0] = BPF_MOV64_IMM(BPF_REG_5, (__force __s32)GFP_KERNEL);
+>   			else
+> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+> index 8ad2c267ff47..2fa2c950c7fb 100644
+> --- a/kernel/cgroup/cgroup.c
+> +++ b/kernel/cgroup/cgroup.c
+> @@ -985,6 +985,10 @@ void put_css_set_locked(struct css_set *cset)
+>   		put_css_set_locked(cset->dom_cset);
+>   	}
 
-3.2 with indirect call
+> +#ifdef CONFIG_BPF_SYSCALL
+> +	bpf_local_cgroup_storage_free(cset->dfl_cgrp);
+> +#endif
+> +
+>   	kfree_rcu(cset, rcu_head);
+>   }
 
-    98.68%     0.20%  bench    bench
-        [.] trigger_producer
-            |
-             --98.48%--trigger_producer
-                       |
-                        --97.47%--syscall
-                                  |
-                                   --76.11%--el0t_64_sync
-                                             el0t_64_sync_handler
-                                             el0_svc
-                                             do_el0_svc
-                                             |
-                                             |--75.52%--el0_svc_common
-                                             |          |
-                                             |
-|--46.35%--invoke_syscall
-                                             |          |          |
-                                             |          |
---44.06%--__arm64_sys_getpgid
-                                             |          |
-       |
-                                             |          |
-       |--35.40%--ftrace_caller
-                                             |          |
-       |          |
-                                             |          |
-       |           --34.04%--fprobe_handler
-                                             |          |
-       |                     |
-                                             |          |
-       |                     |--15.61%--bpf_fprobe_entry
-                                             |          |
-       |                     |          |
-                                             |          |
-       |                     |          |--3.79%--__bpf_prog_enter
-                                             |          |
-       |                     |          |          |
-                                             |          |
-       |                     |          |
---0.80%--migrate_disable
-                                             |          |
-       |                     |          |
-                                             |          |
-       |                     |          |--3.74%--__bpf_prog_exit
-                                             |          |
-       |                     |          |          |
-                                             |          |
-       |                     |          |
---0.77%--migrate_enable
-                                             |          |
-       |                     |          |
-                                             |          |
-       |                     |
---2.65%--bpf_prog_21856463590f61f1_bench_trigger_fentry
-                                             |          |
-       |                     |
-                                             |          |
-       |                     |--12.65%--rethook_trampoline_handler
-                                             |          |
-       |                     |
-                                             |          |
-       |                     |--1.70%--rethook_try_get
-                                             |          |
-       |                     |          |
-                                             |          |
-       |                     |           --1.48%--rcu_is_watching
-                                             |          |
-       |                     |
-                                             |          |
-       |                     |--1.46%--freelist_try_get
-                                             |          |
-       |                     |
-                                             |          |
-       |                      --0.65%--rethook_recycle
-                                             |          |
-       |
-                                             |          |
-        --6.36%--find_task_by_vpid
-                                             |          |
-                  |
-                                             |          |
-                  |--3.64%--radix_tree_lookup
-                                             |          |
-                  |
-                                             |          |
-                   --1.74%--idr_find
-                                             |          |
-                                             |           --1.05%--ftrace_ca=
-ller
-                                             |
-                                              --0.59%--invoke_syscall
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 688552df95ca..179adaae4a9f 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -1454,6 +1454,10 @@ bpf_tracing_func_proto(enum bpf_func_id func_id,  
+> const struct bpf_prog *prog)
+>   		return &bpf_get_current_cgroup_id_proto;
+>   	case BPF_FUNC_get_current_ancestor_cgroup_id:
+>   		return &bpf_get_current_ancestor_cgroup_id_proto;
+> +	case BPF_FUNC_cgroup_local_storage_get:
+> +		return &bpf_cgroup_storage_get_proto;
+> +	case BPF_FUNC_cgroup_local_storage_delete:
+> +		return &bpf_cgroup_storage_delete_proto;
+>   #endif
+>   	case BPF_FUNC_send_signal:
+>   		return &bpf_send_signal_proto;
+> diff --git a/scripts/bpf_doc.py b/scripts/bpf_doc.py
+> index c0e6690be82a..fdb0aff8cb5a 100755
+> --- a/scripts/bpf_doc.py
+> +++ b/scripts/bpf_doc.py
+> @@ -685,6 +685,7 @@ class PrinterHelpers(Printer):
+>               'struct udp6_sock',
+>               'struct unix_sock',
+>               'struct task_struct',
+> +            'struct cgroup',
 
-This looks slightly better than before but it is actually still a
-pretty significant performance hit compared to direct calls.
+>               'struct __sk_buff',
+>               'struct sk_msg_md',
+> @@ -742,6 +743,7 @@ class PrinterHelpers(Printer):
+>               'struct udp6_sock',
+>               'struct unix_sock',
+>               'struct task_struct',
+> +            'struct cgroup',
+>               'struct path',
+>               'struct btf_ptr',
+>               'struct inode',
+> diff --git a/tools/include/uapi/linux/bpf.h  
+> b/tools/include/uapi/linux/bpf.h
+> index 17f61338f8f8..d918b4054297 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -935,6 +935,7 @@ enum bpf_map_type {
+>   	BPF_MAP_TYPE_TASK_STORAGE,
+>   	BPF_MAP_TYPE_BLOOM_FILTER,
+>   	BPF_MAP_TYPE_USER_RINGBUF,
+> +	BPF_MAP_TYPE_CGROUP_LOCAL_STORAGE,
+>   };
 
-Note that I can't really make sense of the perf report with indirect
-calls. it always reports it spent 12% of the time in
-rethook_trampoline_handler but I verified with both a WARN in that
-function and a breakpoint with a debugger, this function does *not*
-get called when running this "bench trig-fentry" benchmark. Also it
-wouldn't make sense for fprobe_handler to call it so I'm quite
-confused why perf would report this call and such a long time spent
-there. Anyone know what I could be missing here ?
+>   /* Note that tracing related programs such as
+> @@ -5435,6 +5436,42 @@ union bpf_attr {
+>    *		**-E2BIG** if user-space has tried to publish a sample which is
+>    *		larger than the size of the ring buffer, or which cannot fit
+>    *		within a struct bpf_dynptr.
+> + *
+> + * void *bpf_cgroup_local_storage_get(struct bpf_map *map, struct cgroup  
+> *cgroup, void *value, u64 flags)
+> + *	Description
+> + *		Get a bpf_local_storage from the *cgroup*.
+> + *
+> + *		Logically, it could be thought of as getting the value from
+> + *		a *map* with *cgroup* as the **key**.  From this
+> + *		perspective,  the usage is not much different from
+> + *		**bpf_map_lookup_elem**\ (*map*, **&**\ *cgroup*) except this
+> + *		helper enforces the key must be a cgroup struct and the map must also
+> + *		be a **BPF_MAP_TYPE_CGROUP_LOCAL_STORAGE**.
+> + *
+> + *		Underneath, the value is stored locally at *cgroup* instead of
+> + *		the *map*.  The *map* is used as the bpf-local-storage
+> + *		"type". The bpf-local-storage "type" (i.e. the *map*) is
+> + *		searched against all bpf_local_storage residing at *cgroup*.
+> + *
+> + *		An optional *flags* (**BPF_LOCAL_STORAGE_GET_F_CREATE**) can be
+> + *		used such that a new bpf_local_storage will be
+> + *		created if one does not exist.  *value* can be used
+> + *		together with **BPF_LOCAL_STORAGE_GET_F_CREATE** to specify
+> + *		the initial value of a bpf_local_storage.  If *value* is
+> + *		**NULL**, the new bpf_local_storage will be zero initialized.
+> + *	Return
+> + *		A bpf_local_storage pointer is returned on success.
+> + *
+> + *		**NULL** if not found or there was an error in adding
+> + *		a new bpf_local_storage.
+> + *
+> + * long bpf_cgroup_local_storage_delete(struct bpf_map *map, struct  
+> cgroup *cgroup)
+> + *	Description
+> + *		Delete a bpf_local_storage from a *cgroup*.
+> + *	Return
+> + *		0 on success.
+> + *
+> + *		**-ENOENT** if the bpf_local_storage cannot be found.
+>    */
+>   #define ___BPF_FUNC_MAPPER(FN, ctx...)			\
+>   	FN(unspec, 0, ##ctx)				\
+> @@ -5647,6 +5684,8 @@ union bpf_attr {
+>   	FN(tcp_raw_check_syncookie_ipv6, 207, ##ctx)	\
+>   	FN(ktime_get_tai_ns, 208, ##ctx)		\
+>   	FN(user_ringbuf_drain, 209, ##ctx)		\
+> +	FN(cgroup_local_storage_get, 210, ##ctx)	\
+> +	FN(cgroup_local_storage_delete, 211, ##ctx)	\
+>   	/* */
+
+>   /* backwards-compatibility macros for users of __BPF_FUNC_MAPPER that  
+> don't
+> --
+> 2.30.2
+
