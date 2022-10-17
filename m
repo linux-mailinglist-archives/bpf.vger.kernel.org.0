@@ -2,106 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF68C601366
-	for <lists+bpf@lfdr.de>; Mon, 17 Oct 2022 18:28:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C87860138F
+	for <lists+bpf@lfdr.de>; Mon, 17 Oct 2022 18:36:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229848AbiJQQ2Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Oct 2022 12:28:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38024 "EHLO
+        id S229898AbiJQQgZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Oct 2022 12:36:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229832AbiJQQ2Q (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Oct 2022 12:28:16 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FB166D573;
-        Mon, 17 Oct 2022 09:28:14 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id C9831B80D42;
-        Mon, 17 Oct 2022 16:28:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B485C433D7;
-        Mon, 17 Oct 2022 16:28:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666024091;
-        bh=CbZnE0u9ATeiuOE1DtOlQZTkBT2ZvEbQsEy/sFiaP8I=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=PmbytVwqjS/HoDmVlm4aewXtWI4fMne0PlPHLJ+VUp8oNH3xVAIGceiDstco2ZEvs
-         d86Fg9asui7T9dZ8vyxb/0FVNBF8FGoTzrfCOFaro3yeiA7/X1HfUC3vkzKoxwUsfW
-         sQEDBIoYXNGn89sscsDUqXZmklbigUaJIVXGYW/ue0YZ/6QSfysVQfXsBKRTateBNa
-         bA4jjAJOeZb6rt5UOwW0KGm3Yw9dZybgfv7t4H4DQXU1sjxqeL13ArdPTiBgJDL4O6
-         sRgnP6ga4kvoV9E8DZAi5Uw6Rh8913+hGWtTtHTl6szsSXwELDhzdVXRgeVViZR5XC
-         mApUoQP2rNyTg==
-Received: by mail-ej1-f45.google.com with SMTP id a26so26168154ejc.4;
-        Mon, 17 Oct 2022 09:28:11 -0700 (PDT)
-X-Gm-Message-State: ACrzQf3YJCARaEIdbFqo59Er9b6L5hiuEmdcFFk4wGXFIn9BiQnex1qM
-        JKu/HdlVQ/9lQBTtMRbjGbrf56jLPip3j0Nd054=
-X-Google-Smtp-Source: AMsMyM5KlA0HskMNTRbk6KourpP7WQf88SdTf4672QdT+yCba33em7qn9tSQiVplKnQAr6JggqrK1+eO9GMzcII1taU=
-X-Received: by 2002:a17:906:794b:b0:790:2dc7:3115 with SMTP id
- l11-20020a170906794b00b007902dc73115mr8508855ejo.3.1666024089726; Mon, 17 Oct
- 2022 09:28:09 -0700 (PDT)
+        with ESMTP id S229747AbiJQQgX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 Oct 2022 12:36:23 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0525642EE
+        for <bpf@vger.kernel.org>; Mon, 17 Oct 2022 09:36:22 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id y80so9528530iof.3
+        for <bpf@vger.kernel.org>; Mon, 17 Oct 2022 09:36:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=skCCUzbnEznyI0pon1ebXS2COuj2VDhmeaFFtxQOPXI=;
+        b=ZYHDsQcYL7xWpdQhqzfFBXfOzdomO8KSfDaBVIfpYIi2sSyc8tXZ0AhKfliodNfpMM
+         Y/S08xuMia9RkHYpzlatEIwTF06/ujS5Inwmowh6i1UGjIpAxPV6DCXMpfROaGL4tUIe
+         PTAIwGRff1fJ0hbTM33Sez40B8GJRR/TWoWr/kTgDGItcsOPyGIccvt2UjMhxxFxp1Pb
+         3UuUbsf5WNDxJJ/fApa6HstTUKLgu9wfgYVxav6NMUcu5juUjDH6sXBQ1ddsIseW1S91
+         eezV6TDLQMKBQ7f9rVbN3B1OLLhxjOwg8MYvWU8XC+28ApuWMBv9vSBe09j60BqkhJcf
+         wUFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=skCCUzbnEznyI0pon1ebXS2COuj2VDhmeaFFtxQOPXI=;
+        b=1TQpZj9X6N2ZPrqfNnyGyDYIQcG2Zy6nHhBXHW+KrvtnntxDnWZzzVIWXdCLEIcRa6
+         mkQ8xQqth761s8zUBzoObE0qJo+uubuDYtsCEIB1cZotRue2S7DZ7fX1lRYJxiGIjSJS
+         aIHxpX52lYlLPfkTcH1R19uy9REawm6fE42O7kzXOUrxh4R+nWWTSbgCcAJQpGW+iUbT
+         lG1zoWLf4miWrewL/bF0Dq95o1JTxlIAqEE8gtRSgIxuC+TECyFbjVqiQym2vqnnEAPO
+         mhIoePH+AQGJcct8xCetNIAGcGzvFpmuiqb7FP3UtD7o1Uxw8Mg+OK+NjZgujLFOJqu8
+         ikrg==
+X-Gm-Message-State: ACrzQf2f7QZZurGXSEb0T5ZO9ymZypYRMcpGvsc3/GbZ2ZezYoCAj7fO
+        +zOJfqEHG5bBIcpBQbmumHrtN1GMuCi+SKWRQlmbkA==
+X-Google-Smtp-Source: AMsMyM4D+jbc0eDlqdIYudXSfQY0/PCjxxTyhI1z3cybmkACiSaedb6InC39UHUREXLt5nQIDmGXX0NPpEm2n+XXyFs=
+X-Received: by 2002:a05:6602:2e84:b0:6bc:e289:8469 with SMTP id
+ m4-20020a0566022e8400b006bce2898469mr4769673iow.202.1666024582029; Mon, 17
+ Oct 2022 09:36:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <20221013200922.17167-1-gerhard@engleder-embedded.com>
-In-Reply-To: <20221013200922.17167-1-gerhard@engleder-embedded.com>
-From:   Song Liu <song@kernel.org>
-Date:   Mon, 17 Oct 2022 09:27:57 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW4hYuUMms1Jv9gfz0QV06y6Qvna1xdjL5fFdgTQz_e9iw@mail.gmail.com>
-Message-ID: <CAPhsuW4hYuUMms1Jv9gfz0QV06y6Qvna1xdjL5fFdgTQz_e9iw@mail.gmail.com>
-Subject: Re: [PATCH net-next] samples/bpf: Fix map interation in xdp1_user
-To:     Gerhard Engleder <gerhard@engleder-embedded.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com,
-        bpf@vger.kernel.org, netdev@vger.kernel.org
+References: <20221015092448.117563-1-shaozhengchao@huawei.com>
+In-Reply-To: <20221015092448.117563-1-shaozhengchao@huawei.com>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Mon, 17 Oct 2022 09:36:10 -0700
+Message-ID: <CAKH8qBugSdWHP7mtNxrnLLR+56u_0OCx3xQOkJSV-+RUvDAeNg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: fix issue that packet only contains l2 is dropped
+To:     Zhengchao Shao <shaozhengchao@huawei.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
+        jolsa@kernel.org, oss@lmb.io, weiyongjun1@huawei.com,
+        yuehaibing@huawei.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 13, 2022 at 2:01 PM Gerhard Engleder
-<gerhard@engleder-embedded.com> wrote:
+On Sat, Oct 15, 2022 at 2:16 AM Zhengchao Shao <shaozhengchao@huawei.com> wrote:
 >
-> BPF map iteration in xdp1_user results in endless loop without any
-> output, because the return value of bpf_map_get_next_key() is checked
-> against the wrong value.
+> As [0] see, bpf_prog_test_run_skb() should allow user space to forward
+> 14-bytes packet via BPF_PROG_RUN instead of dropping packet directly.
+> So fix it.
 >
-> Other call locations of bpf_map_get_next_key() check for equal 0 for
-> continuing the iteration. xdp1_user checks against unequal -1. This is
-> wrong for a function which can return arbitrary negative errno values,
-> because a return value of e.g. -2 results in an endless loop.
+> 0: https://github.com/cilium/ebpf/commit/a38fb6b5a46ab3b5639ea4d421232a10013596c0
 >
-> With this fix xdp1_user is printing statistics again:
-> proto 0:          1 pkt/s
-> proto 0:          1 pkt/s
-> proto 17:     107383 pkt/s
-> proto 17:     881655 pkt/s
-> proto 17:     882083 pkt/s
-> proto 17:     881758 pkt/s
->
-> Signed-off-by: Gerhard Engleder <gerhard@engleder-embedded.com>
-
-Acked-by: Song Liu <song@kernel.org>
-
+> Fixes: fd1894224407 ("bpf: Don't redirect packets with invalid pkt_len")
+> Signed-off-by: Zhengchao Shao <shaozhengchao@huawei.com>
 > ---
->  samples/bpf/xdp1_user.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  net/bpf/test_run.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 >
-> diff --git a/samples/bpf/xdp1_user.c b/samples/bpf/xdp1_user.c
-> index ac370e638fa3..281dc964de8d 100644
-> --- a/samples/bpf/xdp1_user.c
-> +++ b/samples/bpf/xdp1_user.c
-> @@ -51,7 +51,7 @@ static void poll_stats(int map_fd, int interval)
+> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+> index 13d578ce2a09..aa1b49f19ca3 100644
+> --- a/net/bpf/test_run.c
+> +++ b/net/bpf/test_run.c
+> @@ -979,9 +979,6 @@ static int convert___skb_to_skb(struct sk_buff *skb, struct __sk_buff *__skb)
+>  {
+>         struct qdisc_skb_cb *cb = (struct qdisc_skb_cb *)skb->cb;
 >
->                 sleep(interval);
+> -       if (!skb->len)
+> -               return -EINVAL;
+> -
+>         if (!__skb)
+>                 return 0;
 >
-> -               while (bpf_map_get_next_key(map_fd, &key, &key) != -1) {
-> +               while (bpf_map_get_next_key(map_fd, &key, &key) == 0) {
->                         __u64 sum = 0;
+> @@ -1102,6 +1099,9 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
+>         if (IS_ERR(data))
+>                 return PTR_ERR(data);
 >
->                         assert(bpf_map_lookup_elem(map_fd, &key, values) == 0);
+> +       if (size == ETH_HLEN)
+> +               is_l2 = true;
+> +
+
+Don't think this will work? That is_l2 is there to expose proper l2/l3
+skb for specific hooks; we can't suddenly start exposing l2 headers to
+the hooks that don't expect it.
+Does it make sense to start with a small reproducer that triggers the
+issue first? We can have a couple of cases for
+len=0/ETH_HLEN-1/ETH_HLEN+1 and trigger them from the bpf program that
+redirects to different devices (to trigger dev_is_mac_header_xmit).
+
+
+
+
+
+>         ctx = bpf_ctx_init(kattr, sizeof(struct __sk_buff));
+>         if (IS_ERR(ctx)) {
+>                 kfree(data);
 > --
-> 2.30.2
+> 2.17.1
 >
