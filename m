@@ -2,68 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 340EC601AFE
-	for <lists+bpf@lfdr.de>; Mon, 17 Oct 2022 23:08:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C73E3601B37
+	for <lists+bpf@lfdr.de>; Mon, 17 Oct 2022 23:23:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229871AbiJQVIW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Oct 2022 17:08:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43940 "EHLO
+        id S229782AbiJQVXw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Oct 2022 17:23:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230212AbiJQVIL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Oct 2022 17:08:11 -0400
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA789786F4
-        for <bpf@vger.kernel.org>; Mon, 17 Oct 2022 14:08:08 -0700 (PDT)
-Received: by mail-pj1-x1049.google.com with SMTP id lx11-20020a17090b4b0b00b0020d7c0b426dso10483060pjb.6
-        for <bpf@vger.kernel.org>; Mon, 17 Oct 2022 14:08:08 -0700 (PDT)
+        with ESMTP id S229793AbiJQVXu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 Oct 2022 17:23:50 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5778B2871B
+        for <bpf@vger.kernel.org>; Mon, 17 Oct 2022 14:23:49 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id b79so10071327iof.5
+        for <bpf@vger.kernel.org>; Mon, 17 Oct 2022 14:23:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=46MPYDcSyFVz6GkTBNDhV/x3uqfsygrrwPwLQqkUp+w=;
-        b=jzPeBXpOTdnBBqSUUx+JsE7CbYRwJhXYYE8ercipoXpii37ZMHhrX9uxh1TCt/bhpA
-         p4diyFb1+ilOBUx9wd3BL4ND5dvCsY3p3L/+MOoQDUZl4cn9EEB0pICqDW/GlAZICXDE
-         c9hP+YebzW3cfrn2Df91htYo6q4dFJ4EBdqTThpL6BQexammj8BVByu2iNL4gVrwc3dO
-         fljjEGCbLk6Nq6Nh89klNTskGCrgbtmBWexrUdnnhoXxsjLzUvFJOCPa5IvxXqW3vK1O
-         j5z9RhpxbFCgR9ho4MsVfOOaFeFBDafphClmUJsPjRlYXPQ0Zx2LCHqF/AANW1mGHmeq
-         /Kdw==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=5fwuPQMgQUhGGx0rmdgHT+W1hXD/l5jonkySw7zoQNk=;
+        b=ogg+jU7dWQB5JOFRw+qLmZYU0F+Q5BbX6L/C4gTlcvyWj2qG5I2KOX5jaiQu6Gxo18
+         DvretwwCw4qHv/MIEzldNMsFAjM1QZZE1qfY/fmGUsI32dKn8ZqUW7aUig2xo9YLACCN
+         Mwb5Mr6PkI+gsOwcPKLK9KZILFyO+HO3sDCc9zl7JvFtDubX1r04iXByY7bEOsz6GqVq
+         RnpaZ4D/1cKNdcbgTQCVHLHU+ThIaVSgKYt3cKt1lS88ve+9sY9xb8fjS45ti9tTajor
+         6YNrr/zngBi0lsQ/wOHCwzmsVAx/SClqIMgjw3eFi4pIHMxI5Cj8j1vmfZSvD1EdOidd
+         nOAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=46MPYDcSyFVz6GkTBNDhV/x3uqfsygrrwPwLQqkUp+w=;
-        b=Qofqvl5Pf25/qNnANNBhunsXkVvPZPPB7o8OzkLBcjdjmW1z1TMj/mkDt/xbB5NGT7
-         nkqhla09tkmo0nv4aB4vJEfMKHe5gdH5PlS/+CApaJNip+3p5PadTVaRBNPUWdPX68aF
-         ghl9C2P7n66MydIxMlg8bF0bNBFYssE8wZHiRPqc+L25cLFH6eAxJssN//0EyZE1D61/
-         zNc4UfZ09oe/ps2dcVosN0ekO6KVnd9YbDX44HQWB+8pachgA2+rbB0Odnluk9OGzbBC
-         /xspUiwov8oC1yQ2+1GZfN4TXoquesp1oBdzQrHdzzJUGaGXaulI4tc9JoZNm6wMZSu5
-         FH6A==
-X-Gm-Message-State: ACrzQf18yLF6QRzNoklgu+GdmkrmVVdRMvHG46csrpPDHxMWwi33J1j5
-        +7ClJ+KoMpxV/LdOy25omhDCwkg=
-X-Google-Smtp-Source: AMsMyM4GSctGNx25wodoPDTxUtrfbkCUz9AV+iG7gC3eeINwAKdiuqLk7vzVQYNhat4w8MEasWHzz5M=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a17:90b:2741:b0:20a:ebc3:6513 with SMTP id
- qi1-20020a17090b274100b0020aebc36513mr16120594pjb.29.1666040887804; Mon, 17
- Oct 2022 14:08:07 -0700 (PDT)
-Date:   Mon, 17 Oct 2022 14:08:06 -0700
-In-Reply-To: <20221017121344.1258c0f1@kernel.org>
-Mime-Version: 1.0
-References: <0000000000004438f605ead95255@google.com> <20221017121344.1258c0f1@kernel.org>
-Message-ID: <Y03ENjT5V5ac6VVn@google.com>
-Subject: Re: [syzbot] KMSAN: uninit-value in erspan_build_header
-From:   sdf@google.com
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     syzbot <syzbot+d551178aab6a783dc249@syzkaller.appspotmail.com>,
-        davem@davemloft.net, dsahern@kernel.org, edumazet@google.com,
-        glider@google.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, pabeni@redhat.com,
-        syzkaller-bugs@googlegroups.com, yoshfuji@linux-ipv6.org,
-        bpf@vger.kernel.org, yuehaibing@huawei.com,
-        Lorenz Bauer <oss@lmb.io>
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5fwuPQMgQUhGGx0rmdgHT+W1hXD/l5jonkySw7zoQNk=;
+        b=HCrtCQ7DzrKmgsgUXGNXuHF44ztP2beUspjXtT4COBBlADX3d1QUhIHFu2zYIJrhys
+         s5YnR3QvM+oudc5n9lRVSqw6jULjjWc/BnXsfwRnHyRcVxm0F4SpBeaAsFvW0VQQkW+z
+         dEhwUU7CmLD5FOUJhsbIaMHCtpSMapQiTEtr8kj2BLOPFUtVBIRRgMxcDOJtvutfmM+n
+         +mCgzvsI6nx01VzNlpWR5bya8P+429p6S1Rh+IHNOJrayWryThc4hkuwpZaHOlocNtqn
+         6TPgrO9mIfU6VF4AnskEb0L3vnTJSgPhFZ52i/6C483Kyrnbi2mEYl5Wq+numPol7sDk
+         NbNA==
+X-Gm-Message-State: ACrzQf3beJydRt8DI9YucXz6KQo4bYDl7wUxGvv2mWZoGPtubWxr8M6L
+        PEml1+W3yCCAJzTAhAo6CBDqVf/ArQbh7X0uuqVWHg==
+X-Google-Smtp-Source: AMsMyM5hifi7yGuPEdo7EFXbukiQTtiaUbMLht8uEBj0EnqbRJtCID3EW57EHJnkx89yGdpS1qCTp/5m53lQ3mVKKIk=
+X-Received: by 2002:a05:6602:1551:b0:6bc:dfba:33f9 with SMTP id
+ h17-20020a056602155100b006bcdfba33f9mr5539433iow.76.1666041828523; Mon, 17
+ Oct 2022 14:23:48 -0700 (PDT)
+MIME-Version: 1.0
+References: <20221014045619.3309899-1-yhs@fb.com> <20221014045630.3311951-1-yhs@fb.com>
+ <Y02Yk8gUgVDuZR4Q@google.com> <CAJD7tkYSXNb=D1OX_iv7PD-eJaK_7-5tcNvDQrWprWbWwJ2=oQ@mail.gmail.com>
+ <CAKH8qBvHJPj6U_dOxH1C4FHJvg9=FE8YZUV3_kc_HJNt1TDuJQ@mail.gmail.com>
+ <CAJD7tkYHQ=7jVqU__v4eNxvP-RBAH-M6BmTO1+ogto=m-xb2gw@mail.gmail.com>
+ <CAKH8qBtdNv0OmL0oH+U2w0ygLmGUug37xNhHWpjc5=0tn1cThQ@mail.gmail.com>
+ <CAJD7tkbPhecz+XPeSMjua77YXr-+Fkrpz9M3bBVKAj+PsXJgyQ@mail.gmail.com> <b539eba1-586a-bf3b-31f9-11ea0774c805@linux.dev>
+In-Reply-To: <b539eba1-586a-bf3b-31f9-11ea0774c805@linux.dev>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Mon, 17 Oct 2022 14:23:12 -0700
+Message-ID: <CAJD7tkZb65=T-Rffa91sVRvkTeEy1N7jdDfQy=f5oF+2u-ijHg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/5] bpf: Implement cgroup storage available to
+ non-cgroup-attached bpf progs
+To:     Martin KaFai Lau <martin.lau@linux.dev>
+Cc:     Yonghong Song <yhs@fb.com>, Stanislav Fomichev <sdf@google.com>,
+        bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
+        KP Singh <kpsingh@kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Tejun Heo <tj@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,135 +78,148 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/17, Jakub Kicinski wrote:
-> CC: bpf, looks like we have a packet with uninitialized payload
-> generated by BPF_PROG_TEST_RUN?
+On Mon, Oct 17, 2022 at 2:07 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
+>
+> On 10/17/22 12:11 PM, Yosry Ahmed wrote:
+> > On Mon, Oct 17, 2022 at 12:07 PM Stanislav Fomichev <sdf@google.com> wrote:
+> >>
+> >> On Mon, Oct 17, 2022 at 11:47 AM Yosry Ahmed <yosryahmed@google.com> wrote:
+> >>>
+> >>> On Mon, Oct 17, 2022 at 11:43 AM Stanislav Fomichev <sdf@google.com> wrote:
+> >>>>
+> >>>> On Mon, Oct 17, 2022 at 11:26 AM Yosry Ahmed <yosryahmed@google.com> wrote:
+> >>>>>
+> >>>>> On Mon, Oct 17, 2022 at 11:02 AM <sdf@google.com> wrote:
+> >>>>>>
+> >>>>>> On 10/13, Yonghong Song wrote:
+> >>>>>>> Similar to sk/inode/task storage, implement similar cgroup local storage.
+> >>>>>>
+> >>>>>>> There already exists a local storage implementation for cgroup-attached
+> >>>>>>> bpf programs.  See map type BPF_MAP_TYPE_CGROUP_STORAGE and helper
+> >>>>>>> bpf_get_local_storage(). But there are use cases such that non-cgroup
+> >>>>>>> attached bpf progs wants to access cgroup local storage data. For example,
+> >>>>>>> tc egress prog has access to sk and cgroup. It is possible to use
+> >>>>>>> sk local storage to emulate cgroup local storage by storing data in
+> >>>>>>> socket.
+> >>>>>>> But this is a waste as it could be lots of sockets belonging to a
+> >>>>>>> particular
+> >>>>>>> cgroup. Alternatively, a separate map can be created with cgroup id as
+> >>>>>>> the key.
+> >>>>>>> But this will introduce additional overhead to manipulate the new map.
+> >>>>>>> A cgroup local storage, similar to existing sk/inode/task storage,
+> >>>>>>> should help for this use case.
+> >>>>>>
+> >>>>>>> The life-cycle of storage is managed with the life-cycle of the
+> >>>>>>> cgroup struct.  i.e. the storage is destroyed along with the owning cgroup
+> >>>>>>> with a callback to the bpf_cgroup_storage_free when cgroup itself
+> >>>>>>> is deleted.
+> >>>>>>
+> >>>>>>> The userspace map operations can be done by using a cgroup fd as a key
+> >>>>>>> passed to the lookup, update and delete operations.
+> >>>>>>
+> >>>>>>
+> >>>>>> [..]
+> >>>>>>
+> >>>>>>> Since map name BPF_MAP_TYPE_CGROUP_STORAGE has been used for old cgroup
+> >>>>>>> local
+> >>>>>>> storage support, the new map name BPF_MAP_TYPE_CGROUP_LOCAL_STORAGE is
+> >>>>>>> used
+> >>>>>>> for cgroup storage available to non-cgroup-attached bpf programs. The two
+> >>>>>>> helpers are named as bpf_cgroup_local_storage_get() and
+> >>>>>>> bpf_cgroup_local_storage_delete().
+> >>>>>>
+> >>>>>> Have you considered doing something similar to 7d9c3427894f ("bpf: Make
+> >>>>>> cgroup storages shared between programs on the same cgroup") where
+> >>>>>> the map changes its behavior depending on the key size (see key_size checks
+> >>>>>> in cgroup_storage_map_alloc)? Looks like sizeof(int) for fd still
+> >>>>>> can be used so we can, in theory, reuse the name..
+> >>>>>>
+> >>>>>> Pros:
+> >>>>>> - no need for a new map name
+> >>>>>>
+> >>>>>> Cons:
+> >>>>>> - existing BPF_MAP_TYPE_CGROUP_STORAGE is already messy; might be not a
+> >>>>>>     good idea to add more stuff to it?
+> >>>>>>
+> >>>>>> But, for the very least, should we also extend
+> >>>>>> Documentation/bpf/map_cgroup_storage.rst to cover the new map? We've
+> >>>>>> tried to keep some of the important details in there..
+> >>>>>
+> >>>>> This might be a long shot, but is it possible to switch completely to
+> >>>>> this new generic cgroup storage, and for programs that attach to
+> >>>>> cgroups we can still do lookups/allocations during attachment like we
+> >>>>> do today? IOW, maintain the current API for cgroup progs but switch it
+> >>>>> to use this new map type instead.
+> >>>>>
+> >>>>> It feels like this map type is more generic and can be a superset of
+> >>>>> the existing cgroup storage, but I feel like I am missing something.
+> >>>>
+> >>>> I feel like the biggest issue is that the existing
+> >>>> bpf_get_local_storage helper is guaranteed to always return non-null
+> >>>> and the verifier doesn't require the programs to do null checks on it;
+> >>>> the new helper might return NULL making all existing programs fail the
+> >>>> verifier.
+> >>>
+> >>> What I meant is, keep the old bpf_get_local_storage helper only for
+> >>> cgroup-attached programs like we have today, and add a new generic
+> >>> bpf_cgroup_local_storage_get() helper.
+> >>>
+> >>> For cgroup-attached programs, make sure a cgroup storage entry is
+> >>> allocated and hooked to the helper on program attach time, to keep
+> >>> today's behavior constant.
+> >>>
+> >>> For other programs, the bpf_cgroup_local_storage_get() will do the
+> >>> normal lookup and allocate if necessary.
+> >>>
+> >>> Does this make any sense to you?
+> >>
+> >> But then you also need to somehow mark these to make sure it's not
+> >> possible to delete them as long as the program is loaded/attached? Not
+> >> saying it's impossible, but it's a bit of a departure from the
+> >> existing common local storage framework used by inode/task; not sure
+> >> whether we want to pull all this complexity in there? But we can
+> >> definitely try if there is a wider agreement..
+> >
+> > I agree that it's not ideal, but it feels like we are comparing two
+> > non-ideal options anyway, I am just throwing ideas around :)
+>
+> I don't think it is a good idea to marry the new
+> BPF_MAP_TYPE_CGROUP_LOCAL_STORAGE and the existing BPF_MAP_TYPE_CGROUP_STORAGE
+> in any way.  The API is very different.  A few have already been mentioned here.
+>   Delete is one.  Storage creation time is another one.  The map key is also
+> different.  Yes, maybe we can reuse the different key size concept in
+> bpf_cgroup_storage_key in some way but still feel too much unnecessary quirks
+> for the existing sk/inode/task storage users to remember.
+>
+> imo, it is better to keep them separate and have a different map-type.  Adding a
+> map flag or using map extra will make it sounds like an extension which it is not.
 
-Sounds similar to [0] and [1].
+I was actually proposing considering the existing cgroup storage as an
+extension to the new cgroup local storage. Basically the new cgroup
+local storage is a generic cgroup-indexed map, and for cgroup-attached
+programs they get some nice extensions, such as preallocation (create
+local storage on attachment) and fast lookups (stash a pointer to the
+attached cgroup storage for direct access). There are, of course, some
+quirks, but it felt to me like something that is easier to reason
+about, and less code to maintain.
 
-0:  
-https://lore.kernel.org/bpf/ce5d58a3-32ed-fa81-d490-ce854cfca927@huawei.com/T/#t
-1:  
-https://lore.kernel.org/bpf/CAKH8qBugSdWHP7mtNxrnLLR+56u_0OCx3xQOkJSV-+RUvDAeNg@mail.gmail.com/T/#t
+For the helpers, we can maintain the existing one and generalize it
+(get the local storage for my cgroup), and add a new one that we pass
+the cgroup into (as in this patch).
 
-> On Wed, 12 Oct 2022 09:59:52 -0700 syzbot wrote:
-> > Hello,
-> >
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    968c2729e576 x86: kmsan: fix comment in kmsan_shadow.c
-> > git tree:       https://github.com/google/kmsan.git master
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=100cd00c880000
-> > kernel config:   
-> https://syzkaller.appspot.com/x/.config?x=131312b26465c190
-> > dashboard link:  
-> https://syzkaller.appspot.com/bug?extid=d551178aab6a783dc249
-> > compiler:       clang version 15.0.0  
-> (https://github.com/llvm/llvm-project.git  
-> 610139d2d9ce6746b3c617fb3e2f7886272d26ff), GNU ld (GNU Binutils for  
-> Debian) 2.35.2
-> > userspace arch: i386
-> >
-> > Unfortunately, I don't have any reproducer for this issue yet.
-> >
-> > Downloadable assets:
-> > disk image:  
-> https://storage.googleapis.com/syzbot-assets/c78ce21b953f/disk-968c2729.raw.xz
-> > vmlinux:  
-> https://storage.googleapis.com/syzbot-assets/22868d826804/vmlinux-968c2729.xz
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the  
-> commit:
-> > Reported-by: syzbot+d551178aab6a783dc249@syzkaller.appspotmail.com
-> >
-> > =====================================================
-> > BUG: KMSAN: uninit-value in erspan_build_header+0x16d/0x330  
-> include/net/erspan.h:197
-> >  erspan_build_header+0x16d/0x330 include/net/erspan.h:197
-> >  erspan_xmit+0x11a2/0x1f00 net/ipv4/ip_gre.c:701
-> >  __netdev_start_xmit include/linux/netdevice.h:4819 [inline]
-> >  netdev_start_xmit include/linux/netdevice.h:4833 [inline]
-> >  xmit_one+0x14e/0x5f0 net/core/dev.c:3590
-> >  dev_hard_start_xmit+0xe5/0x370 net/core/dev.c:3606
-> >  sch_direct_xmit+0x3f1/0xdb0 net/sched/sch_generic.c:342
-> >  __dev_xmit_skb+0xc22/0x1a30 net/core/dev.c:3817
-> >  __dev_queue_xmit+0x12cb/0x31f0 net/core/dev.c:4222
-> >  dev_queue_xmit include/linux/netdevice.h:3008 [inline]
-> >  __bpf_tx_skb net/core/filter.c:2115 [inline]
-> >  __bpf_redirect_common net/core/filter.c:2154 [inline]
-> >  __bpf_redirect+0x1293/0x13b0 net/core/filter.c:2161
-> >  ____bpf_clone_redirect net/core/filter.c:2430 [inline]
-> >  bpf_clone_redirect+0x324/0x470 net/core/filter.c:2402
-> >  ___bpf_prog_run+0x7ed/0xaee0 kernel/bpf/core.c:1813
-> >  __bpf_prog_run512+0xc2/0x110 kernel/bpf/core.c:2038
-> >  bpf_dispatcher_nop_func include/linux/bpf.h:903 [inline]
-> >  __bpf_prog_run include/linux/filter.h:594 [inline]
-> >  bpf_prog_run include/linux/filter.h:601 [inline]
-> >  bpf_test_run+0x592/0xd20 net/bpf/test_run.c:402
-> >  bpf_prog_test_run_skb+0x1625/0x20b0 net/bpf/test_run.c:1141
-> >  bpf_prog_test_run+0x6a0/0x730 kernel/bpf/syscall.c:3620
-> >  __sys_bpf+0x88d/0xe70 kernel/bpf/syscall.c:4971
-> >  __do_sys_bpf kernel/bpf/syscall.c:5057 [inline]
-> >  __se_sys_bpf kernel/bpf/syscall.c:5055 [inline]
-> >  __ia32_sys_bpf+0x9c/0xe0 kernel/bpf/syscall.c:5055
-> >  do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
-> >  __do_fast_syscall_32+0xa2/0x100 arch/x86/entry/common.c:178
-> >  do_fast_syscall_32+0x33/0x70 arch/x86/entry/common.c:203
-> >  do_SYSENTER_32+0x1b/0x20 arch/x86/entry/common.c:246
-> >  entry_SYSENTER_compat_after_hwframe+0x70/0x82
-> >
-> > Uninit was created at:
-> >  slab_post_alloc_hook mm/slab.h:732 [inline]
-> >  slab_alloc_node mm/slub.c:3258 [inline]
-> >  __kmalloc_node_track_caller+0x814/0x1250 mm/slub.c:4970
-> >  kmalloc_reserve net/core/skbuff.c:362 [inline]
-> >  pskb_expand_head+0x24a/0x1a80 net/core/skbuff.c:1729
-> >  __skb_cow include/linux/skbuff.h:3529 [inline]
-> >  skb_cow_head include/linux/skbuff.h:3563 [inline]
-> >  erspan_xmit+0xad2/0x1f00 net/ipv4/ip_gre.c:688
-> >  __netdev_start_xmit include/linux/netdevice.h:4819 [inline]
-> >  netdev_start_xmit include/linux/netdevice.h:4833 [inline]
-> >  xmit_one+0x14e/0x5f0 net/core/dev.c:3590
-> >  dev_hard_start_xmit+0xe5/0x370 net/core/dev.c:3606
-> >  sch_direct_xmit+0x3f1/0xdb0 net/sched/sch_generic.c:342
-> >  __dev_xmit_skb+0xc22/0x1a30 net/core/dev.c:3817
-> >  __dev_queue_xmit+0x12cb/0x31f0 net/core/dev.c:4222
-> >  dev_queue_xmit include/linux/netdevice.h:3008 [inline]
-> >  __bpf_tx_skb net/core/filter.c:2115 [inline]
-> >  __bpf_redirect_common net/core/filter.c:2154 [inline]
-> >  __bpf_redirect+0x1293/0x13b0 net/core/filter.c:2161
-> >  ____bpf_clone_redirect net/core/filter.c:2430 [inline]
-> >  bpf_clone_redirect+0x324/0x470 net/core/filter.c:2402
-> >  ___bpf_prog_run+0x7ed/0xaee0 kernel/bpf/core.c:1813
-> >  __bpf_prog_run512+0xc2/0x110 kernel/bpf/core.c:2038
-> >  bpf_dispatcher_nop_func include/linux/bpf.h:903 [inline]
-> >  __bpf_prog_run include/linux/filter.h:594 [inline]
-> >  bpf_prog_run include/linux/filter.h:601 [inline]
-> >  bpf_test_run+0x592/0xd20 net/bpf/test_run.c:402
-> >  bpf_prog_test_run_skb+0x1625/0x20b0 net/bpf/test_run.c:1141
-> >  bpf_prog_test_run+0x6a0/0x730 kernel/bpf/syscall.c:3620
-> >  __sys_bpf+0x88d/0xe70 kernel/bpf/syscall.c:4971
-> >  __do_sys_bpf kernel/bpf/syscall.c:5057 [inline]
-> >  __se_sys_bpf kernel/bpf/syscall.c:5055 [inline]
-> >  __ia32_sys_bpf+0x9c/0xe0 kernel/bpf/syscall.c:5055
-> >  do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
-> >  __do_fast_syscall_32+0xa2/0x100 arch/x86/entry/common.c:178
-> >  do_fast_syscall_32+0x33/0x70 arch/x86/entry/common.c:203
-> >  do_SYSENTER_32+0x1b/0x20 arch/x86/entry/common.c:246
-> >  entry_SYSENTER_compat_after_hwframe+0x70/0x82
-> >
-> > CPU: 0 PID: 12499 Comm: syz-executor.1 Not tainted  
-> 6.0.0-rc5-syzkaller-48543-g968c2729e576 #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-> Google 09/22/2022
-> > =====================================================
-> >
-> >
-> > ---
-> > This report is generated by a bot. It may contain errors.
-> > See https://goo.gl/tpsmEJ for more information about syzbot.
-> > syzbot engineers can be reached at syzkaller@googlegroups.com.
-> >
-> > syzbot will keep track of this issue. See:
-> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+My idea is not to have a different flag or key size, but just
+basically rework the existing cgroup storage as an extension to the
+new one for cgroup-attached programs.
 
+Anyway, like I said I was just throwing ideas around, you have a lot
+more background here than me :)
+
+>
+> >>
+> >>>> There might be something else I don't remember at this point (besides
+> >>>> that weird per-prog_type that we'd have to emulate as well)..
+> >>>
+> >>> Yeah there are things that will need to be emulated, but I feel like
+> >>> we may end up with less confusing code (and less code in general).
+>
+>
