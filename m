@@ -2,45 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3E51601D87
-	for <lists+bpf@lfdr.de>; Tue, 18 Oct 2022 01:25:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BEB4601DA3
+	for <lists+bpf@lfdr.de>; Tue, 18 Oct 2022 01:36:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229623AbiJQXZL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Oct 2022 19:25:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55280 "EHLO
+        id S230470AbiJQXf7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Oct 2022 19:35:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230059AbiJQXZK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Oct 2022 19:25:10 -0400
-Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82E9038A2F
-        for <bpf@vger.kernel.org>; Mon, 17 Oct 2022 16:25:02 -0700 (PDT)
-Received: from submission (posteo.de [185.67.36.169]) 
-        by mout01.posteo.de (Postfix) with ESMTPS id 34E8C240027
-        for <bpf@vger.kernel.org>; Tue, 18 Oct 2022 01:25:01 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1666049101; bh=SPerXmaJUdXvp5h4hkMdfJRzPkvBpXVuW+HWJhbtFzM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=H+7+zYQe1JOyWNwPZJxcMyNWiV8B1htL/yqzdoPMyPn+mHxGBev4cPiHd4AdbvdaA
-         /kqWftMjrifFCpTWTBABDL5zdyH2fzTuts6Dl70bvjGj8gjO6Vp5Ip8Q1phYMqVkSo
-         V2wp5oZpz3WPNZmZY9okHaHNU03Nb6CbVc1t7bBMs5HKH+KnRUvpBNQP3gxH3dO+9E
-         nmjBUFDSpuNzYs1Pqo96jS3yWp8SIiSuDdi1/foZP3P/SiAZWGZa7yz0uq5h24QCuD
-         4s0Lva7OTx2RwBdRdKSPskXJd6U8zTLdk38Cks6FaAeTJxmpYszY0JAkladk7CQknQ
-         V3WSWtznVzyYQ==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4MrtPm22B7z6tm4;
-        Tue, 18 Oct 2022 01:25:00 +0200 (CEST)
-From:   =?UTF-8?q?Daniel=20M=C3=BCller?= <deso@posteo.net>
-To:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kafai@fb.com, kernel-team@fb.com
-Cc:     deso@posteo.net
-Subject: [PATCH bpf-next] bpf/docs: Update README for most recent vmtest.sh
-Date:   Mon, 17 Oct 2022 23:24:58 +0000
-Message-Id: <20221017232458.1272762-1-deso@posteo.net>
+        with ESMTP id S230108AbiJQXfw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 Oct 2022 19:35:52 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BC5B7E825;
+        Mon, 17 Oct 2022 16:35:50 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 06357B81B81;
+        Mon, 17 Oct 2022 23:35:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A542DC433D6;
+        Mon, 17 Oct 2022 23:35:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1666049747;
+        bh=lip3Ur+ocrRvIW0I+VBZVLQI85o9HCxQxXC3Oent80Y=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=KCuPC8cnBqvtumPy6OqCj1yPCfD6fxnnwy0hYidc/HAPVAmJjoEhDf6RuGLK4S4Kf
+         7W0ccFgTN7YXil4TbTeGtII7YAFIZw7ZQFXw4jwuXbyhkHzHZYRCoXhznfTj/uTM2T
+         qF1yXG4y3k59p+EjoPSWJ1SGAnPDqxFgUuMoE2uxo52XFc1PfoT4bTXjZfsYpxQsrM
+         5zLqK7zGXoaWO2usbm0+vrVY/UFEiIye0y9aE8XcRKgD+ho4lKYKcXwTokcnhQnVuq
+         AF0vpn8XrHzjFiEph7iriI8eJHajTkCTLCdBfEV/HySRlhDhlCemGEYv6NQEMOM4YR
+         17dZUSCC136xA==
+From:   SeongJae Park <sj@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     SeongJae Park <sj@kernel.org>,
+        Sumanth Korikkar <sumanthk@linux.ibm.com>, olsajiri@gmail.com,
+        bpf@vger.kernel.org, gor@linux.ibm.com, hca@linux.ibm.com,
+        iii@linux.ibm.com, linux-kernel@vger.kernel.org,
+        linux-tip-commits@vger.kernel.org, peterz@infradead.org,
+        svens@linux.ibm.com, tip-bot2@linutronix.de, tmricht@linux.ibm.com,
+        x86@kernel.org
+Subject: Re: [PATCH] bpf: fix sample_flags for bpf_perf_event_output
+Date:   Mon, 17 Oct 2022 23:35:44 +0000
+Message-Id: <20221017233544.1408-1-sj@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <CAM9d7cj1cvg6JUp33qxew59qz1_4hEu8noa-E3oO9DXFHabGaw@mail.gmail.com>
+References: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+X-Spam-Status: No, score=-7.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -48,45 +57,42 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Since commit 40b09653b197 ("selftests/bpf: Adjust vmtest.sh to use local
-kernel configuration") the vmtest.sh script no longer downloads a kernel
-configuration but uses the local, in-repository one.
-This change updates the README, which still mentions the old behavior.
+On Mon, 17 Oct 2022 15:52:15 -0700 Namhyung Kim <namhyung@kernel.org> wrote:
 
-Signed-off-by: Daniel Müller <deso@posteo.net>
----
- tools/testing/selftests/bpf/README.rst | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+> Hi SeongJae,
+> 
+> On Mon, Oct 17, 2022 at 12:27 PM SeongJae Park <sj@kernel.org> wrote:
+> >
+> > Hello,
+> >
+> >
+> > The commit that this patch is fixing[1] also causes yet another segfault for
+> > 'perf-script' of tracepoint records.  For example:
+> >
+> >     $ sudo timeout 3 perf record -e exceptions:page_fault_user
+> >     [ perf record: Woken up 1 times to write data ]
+> >     [ perf record: Captured and wrote 0.228 MB perf.data (74 samples) ]
+> >     $ sudo perf script
+> >     Segmentation fault
+> >
+> > Reverting this patch and the original bug commit[1] fixes the issue.  I haven't
+> > deep dive yet because I'm not familiar with this area.  Anybody has any idea
+> > about this?
+> >
+> > [1] 838d9bb62d13 ("perf: Use sample_flags for raw_data")
+> 
+> Sorry for the trouble.
 
-diff --git a/tools/testing/selftests/bpf/README.rst b/tools/testing/selftests/bpf/README.rst
-index d3c6b3d..822548 100644
---- a/tools/testing/selftests/bpf/README.rst
-+++ b/tools/testing/selftests/bpf/README.rst
-@@ -14,10 +14,11 @@ It's now possible to run the selftests using ``tools/testing/selftests/bpf/vmtes
- The script tries to ensure that the tests are run with the same environment as they
- would be run post-submit in the CI used by the Maintainers.
- 
--This script downloads a suitable Kconfig and VM userspace image from the system used by
--the CI. It builds the kernel (without overwriting your existing Kconfig), recompiles the
--bpf selftests, runs them (by default ``tools/testing/selftests/bpf/test_progs``) and
--saves the resulting output (by default in ``~/.bpf_selftests``).
-+This script uses the in-tree kernel configuration and downloads a VM userspace
-+image from the system used by the CI. It builds the kernel (without overwriting
-+your existing Kconfig), recompiles the bpf selftests, runs them (by default
-+``tools/testing/selftests/bpf/test_progs``) and saves the resulting output (by
-+default in ``~/.bpf_selftests``).
- 
- Script dependencies:
- - clang (preferably built from sources, https://github.com/llvm/llvm-project);
-@@ -26,7 +27,7 @@ Script dependencies:
- - docutils (for ``rst2man``);
- - libcap-devel.
- 
--For more information on about using the script, run:
-+For more information about using the script, run:
- 
- .. code-block:: console
- 
--- 
-2.30.2
+No problem.
 
+> I think you also need to apply the below:
+> 
+> https://lore.kernel.org/r/20221012143857.48198-1-james.clark@arm.com
+
+Thank you for this nice answer.  I confirmed that this fixes my issue.
+
+
+Thanks,
+SJ
+
+[...]
