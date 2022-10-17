@@ -2,113 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A0D6601A86
-	for <lists+bpf@lfdr.de>; Mon, 17 Oct 2022 22:44:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4CA5601AE4
+	for <lists+bpf@lfdr.de>; Mon, 17 Oct 2022 23:04:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230158AbiJQUoo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Oct 2022 16:44:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33536 "EHLO
+        id S230181AbiJQVEK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Oct 2022 17:04:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230484AbiJQUoU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Oct 2022 16:44:20 -0400
-Received: from na01-obe.outbound.protection.outlook.com (mail-eastusazon11021016.outbound.protection.outlook.com [52.101.52.16])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07CFF101DE
-        for <bpf@vger.kernel.org>; Mon, 17 Oct 2022 13:43:02 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NOpKzxx4k58YuZtg9Ln3i114Yrm16mcotttQ+XOS8xwp/zDd5U+9/kxWokk0BdChBaNZrFF7nt42aV4ngD+nPUbhnvuArylkR63xnDGfx6KYy5euRqg1jhutF0uqxFXj+PHxrf3G+dTyZ17JuN8jtU95DusppG7xlvc19G1K1l0fPtOlQ/qcI2+/ynKWBYKxBplNwZ0SLH2oWaU7su5tdQbbWxd7fw6f27TrdvumrrRpsdJ1+nmsYCiNe1MXCk2DlhWwU5jenynjTQv+Uql7Xo9LufyE66Z/Y7ujXN4JguKNngID6m4fDxdsPKKaH6An8w+1Foy+NM6P4jhe2OkhmA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kdWDY90XuiwMU1uKR8tQPWDsKjKr5OkbKjOSAiuIjNE=;
- b=O3ABSvZQzHe8AMnwYb7BZgHDiaKSzEXDkJIe8dYfdEdhwYd1bht0G1FdGIibiOx2nSvXF5VK6NFpsOFcLGyksgiwIjY9oRhSNAZ22Bkz3O2Iyl9ZS7Uwnl9q3w0n6EBxDrnu5oyz0oNnMgrfHolLBknA05cZvF8W6tT09aHWWC78fFp4JnW6jsmufLSgDN3kJY45yMPCj0jia1voy8Pqzxd3HL1LkXnJcwXly71B46+mlPUWhMY0kabifSILAQ3ww5fKi2NYl/lts3U0gA13EBon+b9FpG3wOVxFnK9q8HiDvXq9NqVJVDpMfaNH0fhtYrvRzFs1eLc8ZQlOEdPJ3g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kdWDY90XuiwMU1uKR8tQPWDsKjKr5OkbKjOSAiuIjNE=;
- b=XRCEcUkg5dushi+Re6SoGAa6q8c9qDU0kxya2W59bf1riiplrUJaJqj58F2wutOM3bfdxkUPa8qCJmT3UWuaCUSt4liYX70adQ8/Nfsw6LMuyi3HNe3g90ODTw6aunjPQs3AyU31EjHYgyMGmU/LtBfjHacw1GbZvt/5ApVZuvw=
-Received: from DM4PR21MB3440.namprd21.prod.outlook.com (2603:10b6:8:ad::14) by
- SA1PR21MB1301.namprd21.prod.outlook.com (2603:10b6:806:1e4::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5746.15; Mon, 17 Oct
- 2022 20:42:14 +0000
-Received: from DM4PR21MB3440.namprd21.prod.outlook.com
- ([fe80::5a88:f55c:9d88:4ac2]) by DM4PR21MB3440.namprd21.prod.outlook.com
- ([fe80::5a88:f55c:9d88:4ac2%2]) with mapi id 15.20.5746.006; Mon, 17 Oct 2022
- 20:42:14 +0000
-From:   Dave Thaler <dthaler@microsoft.com>
-To:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-CC:     "dthaler1968@googlemail.com" <dthaler1968@googlemail.com>
-Subject: RE: [PATCH 1/9] bpf, docs: Add note about type convention
-Thread-Topic: [PATCH 1/9] bpf, docs: Add note about type convention
-Thread-Index: AQHY2ENV7HAf/RJQsUmx4FEyPcI2aK4TIJkQ
-Date:   Mon, 17 Oct 2022 20:42:13 +0000
-Message-ID: <DM4PR21MB3440B73030D09B1F09082807A3299@DM4PR21MB3440.namprd21.prod.outlook.com>
-References: <20221004224745.1430-1-dthaler1968@googlemail.com>
-In-Reply-To: <20221004224745.1430-1-dthaler1968@googlemail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=9fc3f920-e8a2-4157-878e-d966d98690ad;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2022-10-17T20:39:33Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DM4PR21MB3440:EE_|SA1PR21MB1301:EE_
-x-ms-office365-filtering-correlation-id: 537869d7-6262-42c6-b25b-08dab080128e
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: GBK+jtKeNUFxtMovQKq9fYpRpidRnswWX8JxM0AZ0TOPYyy282E+2e5K4E9j/UW5nYFEQ7e7tkim8JmfuCuqX6RTsm9VCE6teC9NhHLf66kyxZluzoYSWOyMPi0celRg55I3bHy3itKtial0VFTu4uNZ2tnmjw+D+884sDcg2QZSSc86WVilKONjgtTIPyN1jmMLzTf46DuatV+qMGTfrFo+PeTpp8JfImZpUmSazEqnCR7L44UWO3r731U/ucG5N1A8P4OAouWx0DlBohnKhyJ0OPyLub7YnOqHY0EQUfdphj1OEcY/S55gBxTcsgl9IAAs9S0xTJk++iTJtefqVoS+3gYJHFi223FQxIP18eN4ZMnk1KIE3TNWjA7vzjLDtRQrjkcMIGExDc+2F8dvmHWWCV6cUt0NUACLvTvtvl6hkp7tii4L5duhs1BDWYvCe5EXgExsIgAaC64IBpRVc6LyjHnvgwwmIN/aVDSYs3Zxthg8vdyLPuPFCnVJtK696J9oiSwYos8x+MpnyBjAq0CGNbKJTVyRo+t3DzshI8iNZRd2CtSM7ezZHAGFqxyxSmC4YhemyDkyqKWdEo36uzTmka0ao55jkbnY9OicPAMBGNPyCgvr88mHzVl3V3BsuxZanNKQjEWW1ljRAfXw8j6sRXgclZIfqH0fIDL4KjSopq4Ek69z7tHvpzMT8CBItDQGWRSNv2WhkL60VwYbLBSX1hNzaf7/hQ3Y3IV3ivR8F99tBKQlGK/xjTM9Li3Ui2ZsIDzI1yygredxF+RGhGViICvc2/io+Lcjx3bgjEr76CsmmY2t111iOFNmtSnH
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR21MB3440.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(39860400002)(346002)(136003)(396003)(366004)(376002)(451199015)(8990500004)(6506007)(7696005)(2906002)(8936002)(5660300002)(53546011)(86362001)(52536014)(33656002)(186003)(26005)(41300700001)(9686003)(38070700005)(478600001)(4326008)(66946007)(8676002)(10290500003)(64756008)(66446008)(71200400001)(76116006)(83380400001)(55016003)(66476007)(66556008)(82960400001)(38100700002)(82950400001)(6916009)(122000001)(316002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?uAAq0SRgAOz+XnMudXZc9h5o6GOYO2VEVrjkL41TFf8du34twSeCSMVaj4Oj?=
- =?us-ascii?Q?KMWx7Q0HsyrX2e0dl77i5EIUBvCUMqTYf7V89JizLfuelQpkqcDQw6g0et4E?=
- =?us-ascii?Q?PzZVxxkfmGzy0Vna5PIl4AcaDNqL2FRFBZnW3W0VLUSxdEN02iTZzKQbZZYP?=
- =?us-ascii?Q?ch0s1fWm2XT3Z9jwevzEXXkLyl7+0Q64kf14sMBbztxV5OgE7zxr9jz8dHGB?=
- =?us-ascii?Q?oCbBmdiS92QIY3/djZCqBAn2nkyIafWVHCfxPVMEcuRwxASv9JQ79ZNbdfTL?=
- =?us-ascii?Q?XjzqnXyJcqfrgdoo1iBPtF/liK5gIGVp4n7EjraDNHkp6I+F0CuinB0bFehk?=
- =?us-ascii?Q?aD1Ux61hWwSjAzdVv9JKLBpDu+P8xtDi5Zb111kY9y8XCa/X7lN0HknR4cxt?=
- =?us-ascii?Q?ykJ0OMQi9h9k4e26sZRvh64RODMFKVU+TpRFzZmktD7pGcAwxpHr2XovJ4zh?=
- =?us-ascii?Q?ZuEql2ESj6PNh62+o3ZFuT9Kah7pm9wZ+TnCR+INZFbnq/4JvORxQn9q+Qav?=
- =?us-ascii?Q?Z8QwhqwPhBpfhOves8at3gesZEhbMmG1jkgIZDuDf6GvXgeSLKeNnPzs4scT?=
- =?us-ascii?Q?mN69zjl8daNEhW8K58oYxmy5RGuoajQrBj3TDlemlYudMT7E6a6PYwWqd6tY?=
- =?us-ascii?Q?8buYla6iJkjyU5VDAjBww1wYOUGf3LV8xjTdmWnEYfOfsGjWVHEagu+J6Ybi?=
- =?us-ascii?Q?SktuSsxBNYc/uYLnDNvLFu7zaZwb4G/wu8HnycjJx3+Uc8rZwHc0RGBM5IyN?=
- =?us-ascii?Q?igwwNfyRlEzyNzFUJD1GQ/auFhiIbWRn0NwvtEYZQVPywSE3MxfHI+PNl62a?=
- =?us-ascii?Q?PRyiL1D6vU6+PQsbVChe5B3K21qx666hcWAX7wmragLVU8mreaM8vOItaKIF?=
- =?us-ascii?Q?VzSHLrlz0RDFHuXXmQtXeBwmXVzAg55iNHhRypqmUFrNaDcX7xIJorfiXhoV?=
- =?us-ascii?Q?WIqFaJaWEql3o0kF1cuvTCJk1kSjc1NuWlxxHfuE6NtIrhJxKEq+nFAA9YrQ?=
- =?us-ascii?Q?9kUxLutwWfHoL8LiH257UaQ3GQR7m6503VXZEFUA60F+97zuvtDCVUGF1/WZ?=
- =?us-ascii?Q?uxhO3ZYjWLYvuGTLS5HRT1SR3lVXtViXnR3hxGSa61Ugbg85grL62e35pqN7?=
- =?us-ascii?Q?5FJKqOEW/3lyhfg6oQwaLVK6YmlVd/3ZhFDCHa10HGol4MUT16SXOot8hHsK?=
- =?us-ascii?Q?HASBvFWbP98m9WBAseWSrqJOliLdvx8rl6O6HLbB38Zm3XKXYUT0j1w1k+SI?=
- =?us-ascii?Q?hZmmfKM8Qq/IlqeTQ9pZMpM8GQrNhQSxNWCoFayoLdrQ8aTwfhxJy6VxF0ZJ?=
- =?us-ascii?Q?cE8ucqcYVKEIvgvv+4Da2cMmd3KUZc6gFdMf1E+NxeY4M69KY3mCkcG1oQ9i?=
- =?us-ascii?Q?le4OkiRtLmLBGqNJAxyKml62R35KjrknM/3mwmsz6YvWnnCaT3+Mxi+aI5YK?=
- =?us-ascii?Q?NohfmMlbfwqRHbB3Ydm6RetXcQg5+Fj0El6Hd/kxjotPayEmxpF+ajeeVjdv?=
- =?us-ascii?Q?pYCx4Uxa/T5f5h60K1Nalso0eGHGW6iNUdIkwlbRrtbr/JgchRyX3H/kR/aZ?=
- =?us-ascii?Q?tyEEdcZWtjlykDTQdTLYB3LzTsP51wP79S2M9rInQNTVMztXbrnF0vBfTxLj?=
- =?us-ascii?Q?bg=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        with ESMTP id S229784AbiJQVEJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 Oct 2022 17:04:09 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66D471DA73
+        for <bpf@vger.kernel.org>; Mon, 17 Oct 2022 14:04:07 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id r20so6486134ilt.11
+        for <bpf@vger.kernel.org>; Mon, 17 Oct 2022 14:04:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=CI5Pgp398lv17Iy0dWS47BDujEZSy5BwmBrxAcMyxaI=;
+        b=HqBFeEjUnbcpfuU2MIRD3mdLAG6GbqrdG+ztRCVaTraG4F/TgIQ75TwyAKeHpIHceK
+         CX7RZPXSZnM9cuKHnHyWmqe3AXW2dLA4pWQXNtLqVr0SJWRbIgQcHne74le9hxmFC1uY
+         4v44bCT9uJc8P0Qq32HfXGpkjtC9GJ5r8Vffsew+fKr9ZkjxPolqXBzaHvRszl55U7R8
+         TiKyjDzlfAATQLq712NBbxqtB7TQXyMbpRmvdj4E4uHlh5fxWZZw1XsrOpzJklJpmukw
+         hEVoDEpFtxM05vgpu4a9ijmgNIIlSyQ/JGr2pVNNLBOaO08yf14ZP7LV2YGg+s3LFw9r
+         /THQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CI5Pgp398lv17Iy0dWS47BDujEZSy5BwmBrxAcMyxaI=;
+        b=XQBpcuZ8j7XrTGEIX5HFvWyZ3CQrV6jS1xq2CMcFsb26GQganCneUtSYgyf4tArfVi
+         BCiYn7+99IOZunC1d30p+4sizPmTF99sPmoJX2Dzabw06maR7JLxqM32cMhv5+Ahqklu
+         A+51H89gtMcMvjsxL7C42f3izGYDAmRDh5xPw4PHThwOuKxUMPfk965tPfPwRtlD0gXb
+         XRSczjkgtYheWzdtSAiJEPU/CVrUPKpyd5buNEDwZwd8mg4xBq7kznVuBCDn9mU/IG2w
+         aGKp8mVuBaD4uye2u0Xy85F8kuXG7J2kJ7yJ17b9kW9D4Cx5OWeSk5C/WehcHKrNgzP4
+         D2QQ==
+X-Gm-Message-State: ACrzQf359k5zM3suIhg/BWGHqO0qAT1vQ/pOY/Aj9fHAG3wjBe/hpaWr
+        WVn7z/EQAWamuYGOK/Hx2iPV4AS4Lbm7zL7Cj5qQJ76mqlpq0EKw
+X-Google-Smtp-Source: AMsMyM79+rvYgcqzOFbd2c8/itdHkmUNbRS0wnk5OQfP5p60rTSEkjbJYu0ZPyi0RX2GnbcLhFSzHH7TmCDrf+zjFK4=
+X-Received: by 2002:a05:6e02:1bc4:b0:2fc:2d47:9abf with SMTP id
+ x4-20020a056e021bc400b002fc2d479abfmr5735762ilv.246.1666040646384; Mon, 17
+ Oct 2022 14:04:06 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR21MB3440.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 537869d7-6262-42c6-b25b-08dab080128e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Oct 2022 20:42:13.9365
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 4eokU7xSfxeQORUE7WXwQxnb22CmBJRipgJCaTL7ZTGvkt7UQ0XvXM52dNYzjWdz5gMG23XbkQsyage7kPQwWTkHaaDq74gbBrfRw70ZulE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR21MB1301
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_PASS,SPF_NONE autolearn=no
+References: <20221014045619.3309899-1-yhs@fb.com> <20221014045630.3311951-1-yhs@fb.com>
+ <Y02Yk8gUgVDuZR4Q@google.com> <b997fb5e-ce9c-a693-cd6f-8c1405bbc13c@meta.com>
+In-Reply-To: <b997fb5e-ce9c-a693-cd6f-8c1405bbc13c@meta.com>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Mon, 17 Oct 2022 14:03:55 -0700
+Message-ID: <CAKH8qBuXKgZTvFpXPHM=ucpj3hcLrfGnmUCNe0KAn4g2dCWdiw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/5] bpf: Implement cgroup storage available to
+ non-cgroup-attached bpf progs
+To:     Yonghong Song <yhs@meta.com>
+Cc:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
+        KP Singh <kpsingh@kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Tejun Heo <tj@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -116,61 +74,758 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Just checking if there is any more feedback on this patch set,
-as I've seen no comments since this set was posted on October 4th
-which addresses comments received on the previous submission.
+On Mon, Oct 17, 2022 at 12:25 PM Yonghong Song <yhs@meta.com> wrote:
+>
+>
+>
+> On 10/17/22 11:01 AM, sdf@google.com wrote:
+> > On 10/13, Yonghong Song wrote:
+> >> Similar to sk/inode/task storage, implement similar cgroup local storage.
+> >
+> >> There already exists a local storage implementation for cgroup-attached
+> >> bpf programs.  See map type BPF_MAP_TYPE_CGROUP_STORAGE and helper
+> >> bpf_get_local_storage(). But there are use cases such that non-cgroup
+> >> attached bpf progs wants to access cgroup local storage data. For
+> >> example,
+> >> tc egress prog has access to sk and cgroup. It is possible to use
+> >> sk local storage to emulate cgroup local storage by storing data in
+> >> socket.
+> >> But this is a waste as it could be lots of sockets belonging to a
+> >> particular
+> >> cgroup. Alternatively, a separate map can be created with cgroup id as
+> >> the key.
+> >> But this will introduce additional overhead to manipulate the new map.
+> >> A cgroup local storage, similar to existing sk/inode/task storage,
+> >> should help for this use case.
+> >
+> >> The life-cycle of storage is managed with the life-cycle of the
+> >> cgroup struct.  i.e. the storage is destroyed along with the owning
+> >> cgroup
+> >> with a callback to the bpf_cgroup_storage_free when cgroup itself
+> >> is deleted.
+> >
+> >> The userspace map operations can be done by using a cgroup fd as a key
+> >> passed to the lookup, update and delete operations.
+> >
+> >
+> > [..]
+> >
+> >> Since map name BPF_MAP_TYPE_CGROUP_STORAGE has been used for old
+> >> cgroup local
+> >> storage support, the new map name BPF_MAP_TYPE_CGROUP_LOCAL_STORAGE is
+> >> used
+> >> for cgroup storage available to non-cgroup-attached bpf programs. The two
+> >> helpers are named as bpf_cgroup_local_storage_get() and
+> >> bpf_cgroup_local_storage_delete().
+> >
+> > Have you considered doing something similar to 7d9c3427894f ("bpf: Make
+> > cgroup storages shared between programs on the same cgroup") where
+> > the map changes its behavior depending on the key size (see key_size checks
+> > in cgroup_storage_map_alloc)? Looks like sizeof(int) for fd still
+> > can be used so we can, in theory, reuse the name..
+> >
+> > Pros:
+> > - no need for a new map name
+> >
+> > Cons:
+> > - existing BPF_MAP_TYPE_CGROUP_STORAGE is already messy; might be not a
+> >    good idea to add more stuff to it?
+>
+> Thinking differently. I think I would have reuse the same map name
+> (BPF_MAP_TYPE_CGROUP_STORAGE) but with a flag like
+> BPF_F_LOCAL_STORAGE_GENERIC).
+>
+> We could use map_extra as well, but I think an explicit flag might be
+> better.
 
-Let me know if I'm missing some step I should be doing as I'm new
-to this submission process.
+Ack, flag and map_extra might work as well. They are more explicit,
+which is good/bad depending on who you talk to.
+I was assuming that we can just support the following:
 
-Thanks!
-Dave
+struct {
+  __uint(type, BPF_MAP_TYPE_CGROUP_STORAGE);
+  __type(key, int);
+  __type(value, xxx);
+} ...;
 
-> -----Original Message-----
-> From: dthaler1968@googlemail.com <dthaler1968@googlemail.com>
-> Sent: Tuesday, October 4, 2022 3:48 PM
-> To: bpf@vger.kernel.org
-> Cc: Dave Thaler <dthaler@microsoft.com>
-> Subject: [PATCH 1/9] bpf, docs: Add note about type convention
->=20
-> From: Dave Thaler <dthaler@microsoft.com>
->=20
-> Add note about type convention
->=20
-> Signed-off-by: Dave Thaler <dthaler@microsoft.com>
-> ---
->  Documentation/bpf/instruction-set.rst | 7 +++++++
->  1 file changed, 7 insertions(+)
->=20
-> diff --git a/Documentation/bpf/instruction-set.rst
-> b/Documentation/bpf/instruction-set.rst
-> index 4997d2088..6847a4cbf 100644
-> --- a/Documentation/bpf/instruction-set.rst
-> +++ b/Documentation/bpf/instruction-set.rst
-> @@ -7,6 +7,11 @@ eBPF Instruction Set Specification, v1.0
->=20
->  This document specifies version 1.0 of the eBPF instruction set.
->=20
-> +Documentation conventions
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-> +
-> +For brevity, this document uses the type notion "u64", "u32", etc.
-> +to mean an unsigned integer whose width is the specified number of bits.
->=20
->  Registers and calling convention
->  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D
-> @@ -116,6 +121,8 @@ BPF_END   0xd0   byte swap operations (see `Byte swap
-> instructions`_ below)
->=20
->    dst_reg =3D (u32) dst_reg + (u32) src_reg;
->=20
-> +where '(u32)' indicates truncation to 32 bits.
-> +
->  ``BPF_ADD | BPF_X | BPF_ALU64`` means::
->=20
->    dst_reg =3D dst_reg + src_reg
-> --
-> 2.33.4
+and depend on key_size == sizeof(int), but up to you; just trying to
+understand whether it makes sense to share the name or not.
 
+Sharing the helper probably not worth it given the special treatment?
+Or maybe it can be a shortcut to "lookup this map with my cgroup"?
+
+> >
+> > But, for the very least, should we also extend
+> > Documentation/bpf/map_cgroup_storage.rst to cover the new map? We've
+> > tried to keep some of the important details in there..
+> >
+> >> Signed-off-by: Yonghong Song <yhs@fb.com>
+> >> ---
+> >>   include/linux/bpf.h             |   3 +
+> >>   include/linux/bpf_types.h       |   1 +
+> >>   include/linux/cgroup-defs.h     |   4 +
+> >>   include/uapi/linux/bpf.h        |  39 +++++
+> >>   kernel/bpf/Makefile             |   2 +-
+> >>   kernel/bpf/bpf_cgroup_storage.c | 280 ++++++++++++++++++++++++++++++++
+> >>   kernel/bpf/helpers.c            |   6 +
+> >>   kernel/bpf/syscall.c            |   3 +-
+> >>   kernel/bpf/verifier.c           |  14 +-
+> >>   kernel/cgroup/cgroup.c          |   4 +
+> >>   kernel/trace/bpf_trace.c        |   4 +
+> >>   scripts/bpf_doc.py              |   2 +
+> >>   tools/include/uapi/linux/bpf.h  |  39 +++++
+> >>   13 files changed, 398 insertions(+), 3 deletions(-)
+> >>   create mode 100644 kernel/bpf/bpf_cgroup_storage.c
+> >
+> >> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> >> index 9e7d46d16032..1395a01c7f18 100644
+> >> --- a/include/linux/bpf.h
+> >> +++ b/include/linux/bpf.h
+> >> @@ -2045,6 +2045,7 @@ struct bpf_link *bpf_link_by_id(u32 id);
+> >
+> >>   const struct bpf_func_proto *bpf_base_func_proto(enum bpf_func_id
+> >> func_id);
+> >>   void bpf_task_storage_free(struct task_struct *task);
+> >> +void bpf_local_cgroup_storage_free(struct cgroup *cgroup);
+> >>   bool bpf_prog_has_kfunc_call(const struct bpf_prog *prog);
+> >>   const struct btf_func_model *
+> >>   bpf_jit_find_kfunc_model(const struct bpf_prog *prog,
+> >> @@ -2537,6 +2538,8 @@ extern const struct bpf_func_proto
+> >> bpf_copy_from_user_task_proto;
+> >>   extern const struct bpf_func_proto bpf_set_retval_proto;
+> >>   extern const struct bpf_func_proto bpf_get_retval_proto;
+> >>   extern const struct bpf_func_proto bpf_user_ringbuf_drain_proto;
+> >> +extern const struct bpf_func_proto bpf_cgroup_storage_get_proto;
+> >> +extern const struct bpf_func_proto bpf_cgroup_storage_delete_proto;
+> >
+> >>   const struct bpf_func_proto *tracing_prog_func_proto(
+> >>     enum bpf_func_id func_id, const struct bpf_prog *prog);
+> >> diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.h
+> >> index 2c6a4f2562a7..7a0362d7a0aa 100644
+> >> --- a/include/linux/bpf_types.h
+> >> +++ b/include/linux/bpf_types.h
+> >> @@ -90,6 +90,7 @@ BPF_MAP_TYPE(BPF_MAP_TYPE_CGROUP_ARRAY,
+> >> cgroup_array_map_ops)
+> >>   #ifdef CONFIG_CGROUP_BPF
+> >>   BPF_MAP_TYPE(BPF_MAP_TYPE_CGROUP_STORAGE, cgroup_storage_map_ops)
+> >>   BPF_MAP_TYPE(BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE,
+> >> cgroup_storage_map_ops)
+> >> +BPF_MAP_TYPE(BPF_MAP_TYPE_CGROUP_LOCAL_STORAGE,
+> >> cgroup_local_storage_map_ops)
+> >>   #endif
+> >>   BPF_MAP_TYPE(BPF_MAP_TYPE_HASH, htab_map_ops)
+> >>   BPF_MAP_TYPE(BPF_MAP_TYPE_PERCPU_HASH, htab_percpu_map_ops)
+> >> diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
+> >> index 4bcf56b3491c..c6f4590dda68 100644
+> >> --- a/include/linux/cgroup-defs.h
+> >> +++ b/include/linux/cgroup-defs.h
+> >> @@ -504,6 +504,10 @@ struct cgroup {
+> >>       /* Used to store internal freezer state */
+> >>       struct cgroup_freezer_state freezer;
+> >
+> >> +#ifdef CONFIG_BPF_SYSCALL
+> >> +    struct bpf_local_storage __rcu  *bpf_cgroup_storage;
+> >> +#endif
+> >> +
+> >>       /* ids of the ancestors at each level including self */
+> >>       u64 ancestor_ids[];
+> >>   };
+> >> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> >> index 17f61338f8f8..d918b4054297 100644
+> >> --- a/include/uapi/linux/bpf.h
+> >> +++ b/include/uapi/linux/bpf.h
+> >> @@ -935,6 +935,7 @@ enum bpf_map_type {
+> >>       BPF_MAP_TYPE_TASK_STORAGE,
+> >>       BPF_MAP_TYPE_BLOOM_FILTER,
+> >>       BPF_MAP_TYPE_USER_RINGBUF,
+> >> +    BPF_MAP_TYPE_CGROUP_LOCAL_STORAGE,
+> >>   };
+> >
+> >>   /* Note that tracing related programs such as
+> >> @@ -5435,6 +5436,42 @@ union bpf_attr {
+> >>    *        **-E2BIG** if user-space has tried to publish a sample
+> >> which is
+> >>    *        larger than the size of the ring buffer, or which cannot fit
+> >>    *        within a struct bpf_dynptr.
+> >> + *
+> >> + * void *bpf_cgroup_local_storage_get(struct bpf_map *map, struct
+> >> cgroup *cgroup, void *value, u64 flags)
+> >> + *    Description
+> >> + *        Get a bpf_local_storage from the *cgroup*.
+> >> + *
+> >> + *        Logically, it could be thought of as getting the value from
+> >> + *        a *map* with *cgroup* as the **key**.  From this
+> >> + *        perspective,  the usage is not much different from
+> >> + *        **bpf_map_lookup_elem**\ (*map*, **&**\ *cgroup*) except this
+> >> + *        helper enforces the key must be a cgroup struct and the map
+> >> must also
+> >> + *        be a **BPF_MAP_TYPE_CGROUP_LOCAL_STORAGE**.
+> >> + *
+> >> + *        Underneath, the value is stored locally at *cgroup* instead of
+> >> + *        the *map*.  The *map* is used as the bpf-local-storage
+> >> + *        "type". The bpf-local-storage "type" (i.e. the *map*) is
+> >> + *        searched against all bpf_local_storage residing at *cgroup*.
+> >> + *
+> >> + *        An optional *flags* (**BPF_LOCAL_STORAGE_GET_F_CREATE**)
+> >> can be
+> >> + *        used such that a new bpf_local_storage will be
+> >> + *        created if one does not exist.  *value* can be used
+> >> + *        together with **BPF_LOCAL_STORAGE_GET_F_CREATE** to specify
+> >> + *        the initial value of a bpf_local_storage.  If *value* is
+> >> + *        **NULL**, the new bpf_local_storage will be zero initialized.
+> >> + *    Return
+> >> + *        A bpf_local_storage pointer is returned on success.
+> >> + *
+> >> + *        **NULL** if not found or there was an error in adding
+> >> + *        a new bpf_local_storage.
+> >> + *
+> >> + * long bpf_cgroup_local_storage_delete(struct bpf_map *map, struct
+> >> cgroup *cgroup)
+> >> + *    Description
+> >> + *        Delete a bpf_local_storage from a *cgroup*.
+> >> + *    Return
+> >> + *        0 on success.
+> >> + *
+> >> + *        **-ENOENT** if the bpf_local_storage cannot be found.
+> >>    */
+> >>   #define ___BPF_FUNC_MAPPER(FN, ctx...)            \
+> >>       FN(unspec, 0, ##ctx)                \
+> >> @@ -5647,6 +5684,8 @@ union bpf_attr {
+> >>       FN(tcp_raw_check_syncookie_ipv6, 207, ##ctx)    \
+> >>       FN(ktime_get_tai_ns, 208, ##ctx)        \
+> >>       FN(user_ringbuf_drain, 209, ##ctx)        \
+> >> +    FN(cgroup_local_storage_get, 210, ##ctx)    \
+> >> +    FN(cgroup_local_storage_delete, 211, ##ctx)    \
+> >>       /* */
+> >
+> >>   /* backwards-compatibility macros for users of __BPF_FUNC_MAPPER
+> >> that don't
+> >> diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
+> >> index 341c94f208f4..b02693f51978 100644
+> >> --- a/kernel/bpf/Makefile
+> >> +++ b/kernel/bpf/Makefile
+> >> @@ -25,7 +25,7 @@ ifeq ($(CONFIG_PERF_EVENTS),y)
+> >>   obj-$(CONFIG_BPF_SYSCALL) += stackmap.o
+> >>   endif
+> >>   ifeq ($(CONFIG_CGROUPS),y)
+> >> -obj-$(CONFIG_BPF_SYSCALL) += cgroup_iter.o
+> >> +obj-$(CONFIG_BPF_SYSCALL) += cgroup_iter.o bpf_cgroup_storage.o
+> >>   endif
+> >>   obj-$(CONFIG_CGROUP_BPF) += cgroup.o
+> >>   ifeq ($(CONFIG_INET),y)
+> >> diff --git a/kernel/bpf/bpf_cgroup_storage.c
+> >> b/kernel/bpf/bpf_cgroup_storage.c
+> >> new file mode 100644
+> >> index 000000000000..9974784822da
+> >> --- /dev/null
+> >> +++ b/kernel/bpf/bpf_cgroup_storage.c
+> >> @@ -0,0 +1,280 @@
+> >> +// SPDX-License-Identifier: GPL-2.0
+> >> +/*
+> >> + * Copyright (c) 2022 Meta Platforms, Inc. and affiliates.
+> >> + */
+> >> +
+> >> +#include <linux/types.h>
+> >> +#include <linux/bpf.h>
+> >> +#include <linux/bpf_local_storage.h>
+> >> +#include <uapi/linux/btf.h>
+> >> +#include <linux/btf_ids.h>
+> >> +
+> >> +DEFINE_BPF_STORAGE_CACHE(cgroup_cache);
+> >> +
+> >> +static DEFINE_PER_CPU(int, bpf_cgroup_storage_busy);
+> >> +
+> >> +static void bpf_cgroup_storage_lock(void)
+> >> +{
+> >> +    migrate_disable();
+> >> +    this_cpu_inc(bpf_cgroup_storage_busy);
+> >> +}
+> >> +
+> >> +static void bpf_cgroup_storage_unlock(void)
+> >> +{
+> >> +    this_cpu_dec(bpf_cgroup_storage_busy);
+> >> +    migrate_enable();
+> >> +}
+> >> +
+> >> +static bool bpf_cgroup_storage_trylock(void)
+> >> +{
+> >> +    migrate_disable();
+> >> +    if (unlikely(this_cpu_inc_return(bpf_cgroup_storage_busy) != 1)) {
+> >> +        this_cpu_dec(bpf_cgroup_storage_busy);
+> >> +        migrate_enable();
+> >> +        return false;
+> >> +    }
+> >> +    return true;
+> >> +}
+> >
+> > Task storage has lock/unlock/trylock; inode storage doesn't; why does
+> > cgroup need it as well?
+> >
+> >> +static struct bpf_local_storage __rcu **cgroup_storage_ptr(void *owner)
+> >> +{
+> >> +    struct cgroup *cg = owner;
+> >> +
+> >> +    return &cg->bpf_cgroup_storage;
+> >> +}
+> >> +
+> >> +void bpf_local_cgroup_storage_free(struct cgroup *cgroup)
+> >> +{
+> >> +    struct bpf_local_storage *local_storage;
+> >> +    struct bpf_local_storage_elem *selem;
+> >> +    bool free_cgroup_storage = false;
+> >> +    struct hlist_node *n;
+> >> +    unsigned long flags;
+> >> +
+> >> +    rcu_read_lock();
+> >> +    local_storage = rcu_dereference(cgroup->bpf_cgroup_storage);
+> >> +    if (!local_storage) {
+> >> +        rcu_read_unlock();
+> >> +        return;
+> >> +    }
+> >> +
+> >> +    /* Neither the bpf_prog nor the bpf-map's syscall
+> >> +     * could be modifying the local_storage->list now.
+> >> +     * Thus, no elem can be added-to or deleted-from the
+> >> +     * local_storage->list by the bpf_prog or by the bpf-map's syscall.
+> >> +     *
+> >> +     * It is racing with bpf_local_storage_map_free() alone
+> >> +     * when unlinking elem from the local_storage->list and
+> >> +     * the map's bucket->list.
+> >> +     */
+> >> +    bpf_cgroup_storage_lock();
+> >> +    raw_spin_lock_irqsave(&local_storage->lock, flags);
+> >> +    hlist_for_each_entry_safe(selem, n, &local_storage->list, snode) {
+> >> +        bpf_selem_unlink_map(selem);
+> >> +        free_cgroup_storage =
+> >> +            bpf_selem_unlink_storage_nolock(local_storage, selem,
+> >> false, false);
+> >> +    }
+> >> +    raw_spin_unlock_irqrestore(&local_storage->lock, flags);
+> >> +    bpf_cgroup_storage_unlock();
+> >> +    rcu_read_unlock();
+> >> +
+> >> +    /* free_cgroup_storage should always be true as long as
+> >> +     * local_storage->list was non-empty.
+> >> +     */
+> >> +    if (free_cgroup_storage)
+> >> +        kfree_rcu(local_storage, rcu);
+> >> +}
+> >
+> >> +static struct bpf_local_storage_data *
+> >> +cgroup_storage_lookup(struct cgroup *cgroup, struct bpf_map *map,
+> >> bool cacheit_lockit)
+> >> +{
+> >> +    struct bpf_local_storage *cgroup_storage;
+> >> +    struct bpf_local_storage_map *smap;
+> >> +
+> >> +    cgroup_storage = rcu_dereference_check(cgroup->bpf_cgroup_storage,
+> >> +                           bpf_rcu_lock_held());
+> >> +    if (!cgroup_storage)
+> >> +        return NULL;
+> >> +
+> >> +    smap = (struct bpf_local_storage_map *)map;
+> >> +    return bpf_local_storage_lookup(cgroup_storage, smap,
+> >> cacheit_lockit);
+> >> +}
+> >> +
+> >> +static void *bpf_cgroup_storage_lookup_elem(struct bpf_map *map, void
+> >> *key)
+> >> +{
+> >> +    struct bpf_local_storage_data *sdata;
+> >> +    struct cgroup *cgroup;
+> >> +    int fd;
+> >> +
+> >> +    fd = *(int *)key;
+> >> +    cgroup = cgroup_get_from_fd(fd);
+> >> +    if (IS_ERR(cgroup))
+> >> +        return ERR_CAST(cgroup);
+> >> +
+> >> +    bpf_cgroup_storage_lock();
+> >> +    sdata = cgroup_storage_lookup(cgroup, map, true);
+> >> +    bpf_cgroup_storage_unlock();
+> >> +    cgroup_put(cgroup);
+> >> +    return sdata ? sdata->data : NULL;
+> >> +}
+> >
+> > A lot of the above (free/lookup) seems to be copy-pasted from the task
+> > storage;
+> > any point in trying to generalize the common parts?
+> >
+> >> +static int bpf_cgroup_storage_update_elem(struct bpf_map *map, void
+> >> *key,
+> >> +                      void *value, u64 map_flags)
+> >> +{
+> >> +    struct bpf_local_storage_data *sdata;
+> >> +    struct cgroup *cgroup;
+> >> +    int err, fd;
+> >> +
+> >> +    fd = *(int *)key;
+> >> +    cgroup = cgroup_get_from_fd(fd);
+> >> +    if (IS_ERR(cgroup))
+> >> +        return PTR_ERR(cgroup);
+> >> +
+> >> +    bpf_cgroup_storage_lock();
+> >> +    sdata = bpf_local_storage_update(cgroup, (struct
+> >> bpf_local_storage_map *)map,
+> >> +                     value, map_flags, GFP_ATOMIC);
+> >> +    bpf_cgroup_storage_unlock();
+> >> +    err = PTR_ERR_OR_ZERO(sdata);
+> >> +    cgroup_put(cgroup);
+> >> +    return err;
+> >> +}
+> >> +
+> >> +static int cgroup_storage_delete(struct cgroup *cgroup, struct
+> >> bpf_map *map)
+> >> +{
+> >> +    struct bpf_local_storage_data *sdata;
+> >> +
+> >> +    sdata = cgroup_storage_lookup(cgroup, map, false);
+> >> +    if (!sdata)
+> >> +        return -ENOENT;
+> >> +
+> >> +    bpf_selem_unlink(SELEM(sdata), true);
+> >> +    return 0;
+> >> +}
+> >> +
+> >> +static int bpf_cgroup_storage_delete_elem(struct bpf_map *map, void
+> >> *key)
+> >> +{
+> >> +    struct cgroup *cgroup;
+> >> +    int err, fd;
+> >> +
+> >> +    fd = *(int *)key;
+> >> +    cgroup = cgroup_get_from_fd(fd);
+> >> +    if (IS_ERR(cgroup))
+> >> +        return PTR_ERR(cgroup);
+> >> +
+> >> +    bpf_cgroup_storage_lock();
+> >> +    err = cgroup_storage_delete(cgroup, map);
+> >> +    bpf_cgroup_storage_unlock();
+> >> +    if (err)
+> >> +        return err;
+> >> +
+> >> +    cgroup_put(cgroup);
+> >> +    return 0;
+> >> +}
+> >> +
+> >> +static int notsupp_get_next_key(struct bpf_map *map, void *key, void
+> >> *next_key)
+> >> +{
+> >> +    return -ENOTSUPP;
+> >> +}
+> >> +
+> >> +static struct bpf_map *cgroup_storage_map_alloc(union bpf_attr *attr)
+> >> +{
+> >> +    struct bpf_local_storage_map *smap;
+> >> +
+> >> +    smap = bpf_local_storage_map_alloc(attr);
+> >> +    if (IS_ERR(smap))
+> >> +        return ERR_CAST(smap);
+> >> +
+> >> +    smap->cache_idx = bpf_local_storage_cache_idx_get(&cgroup_cache);
+> >> +    return &smap->map;
+> >> +}
+> >> +
+> >> +static void cgroup_storage_map_free(struct bpf_map *map)
+> >> +{
+> >> +    struct bpf_local_storage_map *smap;
+> >> +
+> >> +    smap = (struct bpf_local_storage_map *)map;
+> >> +    bpf_local_storage_cache_idx_free(&cgroup_cache, smap->cache_idx);
+> >> +    bpf_local_storage_map_free(smap, NULL);
+> >> +}
+> >> +
+> >> +/* *gfp_flags* is a hidden argument provided by the verifier */
+> >> +BPF_CALL_5(bpf_cgroup_storage_get, struct bpf_map *, map, struct
+> >> cgroup *, cgroup,
+> >> +       void *, value, u64, flags, gfp_t, gfp_flags)
+> >> +{
+> >> +    struct bpf_local_storage_data *sdata;
+> >> +
+> >> +    WARN_ON_ONCE(!bpf_rcu_lock_held());
+> >> +    if (flags & ~(BPF_LOCAL_STORAGE_GET_F_CREATE))
+> >> +        return (unsigned long)NULL;
+> >> +
+> >> +    if (!cgroup)
+> >> +        return (unsigned long)NULL;
+> >> +
+> >> +    if (!bpf_cgroup_storage_trylock())
+> >> +        return (unsigned long)NULL;
+> >> +
+> >> +    sdata = cgroup_storage_lookup(cgroup, map, true);
+> >> +    if (sdata)
+> >> +        goto unlock;
+> >> +
+> >> +    /* only allocate new storage, when the cgroup is refcounted */
+> >> +    if (!percpu_ref_is_dying(&cgroup->self.refcnt) &&
+> >> +        (flags & BPF_LOCAL_STORAGE_GET_F_CREATE))
+> >> +        sdata = bpf_local_storage_update(cgroup, (struct
+> >> bpf_local_storage_map *)map,
+> >> +                         value, BPF_NOEXIST, gfp_flags);
+> >> +
+> >> +unlock:
+> >> +    bpf_cgroup_storage_unlock();
+> >> +    return IS_ERR_OR_NULL(sdata) ? (unsigned long)NULL : (unsigned
+> >> long)sdata->data;
+> >> +}
+> >> +
+> >> +BPF_CALL_2(bpf_cgroup_storage_delete, struct bpf_map *, map, struct
+> >> cgroup *, cgroup)
+> >> +{
+> >> +    int ret;
+> >> +
+> >> +    WARN_ON_ONCE(!bpf_rcu_lock_held());
+> >> +    if (!cgroup)
+> >> +        return -EINVAL;
+> >> +
+> >> +    if (!bpf_cgroup_storage_trylock())
+> >> +        return -EBUSY;
+> >> +
+> >> +    ret = cgroup_storage_delete(cgroup, map);
+> >> +    bpf_cgroup_storage_unlock();
+> >> +    return ret;
+> >> +}
+> >> +
+> >> +BTF_ID_LIST_SINGLE(cgroup_storage_map_btf_ids, struct,
+> >> bpf_local_storage_map)
+> >> +const struct bpf_map_ops cgroup_local_storage_map_ops = {
+> >> +    .map_meta_equal = bpf_map_meta_equal,
+> >> +    .map_alloc_check = bpf_local_storage_map_alloc_check,
+> >> +    .map_alloc = cgroup_storage_map_alloc,
+> >> +    .map_free = cgroup_storage_map_free,
+> >> +    .map_get_next_key = notsupp_get_next_key,
+> >> +    .map_lookup_elem = bpf_cgroup_storage_lookup_elem,
+> >> +    .map_update_elem = bpf_cgroup_storage_update_elem,
+> >> +    .map_delete_elem = bpf_cgroup_storage_delete_elem,
+> >> +    .map_check_btf = bpf_local_storage_map_check_btf,
+> >> +    .map_btf_id = &cgroup_storage_map_btf_ids[0],
+> >> +    .map_owner_storage_ptr = cgroup_storage_ptr,
+> >> +};
+> >> +
+> >> +const struct bpf_func_proto bpf_cgroup_storage_get_proto = {
+> >> +    .func        = bpf_cgroup_storage_get,
+> >> +    .gpl_only    = false,
+> >> +    .ret_type    = RET_PTR_TO_MAP_VALUE_OR_NULL,
+> >> +    .arg1_type    = ARG_CONST_MAP_PTR,
+> >> +    .arg2_type    = ARG_PTR_TO_BTF_ID,
+> >> +    .arg2_btf_id    = &bpf_cgroup_btf_id[0],
+> >> +    .arg3_type    = ARG_PTR_TO_MAP_VALUE_OR_NULL,
+> >> +    .arg4_type    = ARG_ANYTHING,
+> >> +};
+> >> +
+> >> +const struct bpf_func_proto bpf_cgroup_storage_delete_proto = {
+> >> +    .func        = bpf_cgroup_storage_delete,
+> >> +    .gpl_only    = false,
+> >> +    .ret_type    = RET_INTEGER,
+> >> +    .arg1_type    = ARG_CONST_MAP_PTR,
+> >> +    .arg2_type    = ARG_PTR_TO_BTF_ID,
+> >> +    .arg2_btf_id    = &bpf_cgroup_btf_id[0],
+> >> +};
+> >> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> >> index a6b04faed282..5c5bb08832ec 100644
+> >> --- a/kernel/bpf/helpers.c
+> >> +++ b/kernel/bpf/helpers.c
+> >> @@ -1663,6 +1663,12 @@ bpf_base_func_proto(enum bpf_func_id func_id)
+> >>           return &bpf_dynptr_write_proto;
+> >>       case BPF_FUNC_dynptr_data:
+> >>           return &bpf_dynptr_data_proto;
+> >> +#ifdef CONFIG_CGROUPS
+> >> +    case BPF_FUNC_cgroup_local_storage_get:
+> >> +        return &bpf_cgroup_storage_get_proto;
+> >> +    case BPF_FUNC_cgroup_local_storage_delete:
+> >> +        return &bpf_cgroup_storage_delete_proto;
+> >> +#endif
+> >>       default:
+> >>           break;
+> >>       }
+> >> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> >> index 7b373a5e861f..e53c7fae6e22 100644
+> >> --- a/kernel/bpf/syscall.c
+> >> +++ b/kernel/bpf/syscall.c
+> >> @@ -1016,7 +1016,8 @@ static int map_check_btf(struct bpf_map *map,
+> >> const struct btf *btf,
+> >>               map->map_type != BPF_MAP_TYPE_CGROUP_STORAGE &&
+> >>               map->map_type != BPF_MAP_TYPE_SK_STORAGE &&
+> >>               map->map_type != BPF_MAP_TYPE_INODE_STORAGE &&
+> >> -            map->map_type != BPF_MAP_TYPE_TASK_STORAGE)
+> >> +            map->map_type != BPF_MAP_TYPE_TASK_STORAGE &&
+> >> +            map->map_type != BPF_MAP_TYPE_CGROUP_LOCAL_STORAGE)
+> >>               return -ENOTSUPP;
+> >>           if (map->spin_lock_off + sizeof(struct bpf_spin_lock) >
+> >>               map->value_size) {
+> >> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> >> index 6f6d2d511c06..f36f6a3c0d50 100644
+> >> --- a/kernel/bpf/verifier.c
+> >> +++ b/kernel/bpf/verifier.c
+> >> @@ -6360,6 +6360,11 @@ static int check_map_func_compatibility(struct
+> >> bpf_verifier_env *env,
+> >>               func_id != BPF_FUNC_task_storage_delete)
+> >>               goto error;
+> >>           break;
+> >> +    case BPF_MAP_TYPE_CGROUP_LOCAL_STORAGE:
+> >> +        if (func_id != BPF_FUNC_cgroup_local_storage_get &&
+> >> +            func_id != BPF_FUNC_cgroup_local_storage_delete)
+> >> +            goto error;
+> >> +        break;
+> >>       case BPF_MAP_TYPE_BLOOM_FILTER:
+> >>           if (func_id != BPF_FUNC_map_peek_elem &&
+> >>               func_id != BPF_FUNC_map_push_elem)
+> >> @@ -6472,6 +6477,11 @@ static int check_map_func_compatibility(struct
+> >> bpf_verifier_env *env,
+> >>           if (map->map_type != BPF_MAP_TYPE_TASK_STORAGE)
+> >>               goto error;
+> >>           break;
+> >> +    case BPF_FUNC_cgroup_local_storage_get:
+> >> +    case BPF_FUNC_cgroup_local_storage_delete:
+> >> +        if (map->map_type != BPF_MAP_TYPE_CGROUP_LOCAL_STORAGE)
+> >> +            goto error;
+> >> +        break;
+> >>       default:
+> >>           break;
+> >>       }
+> >> @@ -12713,6 +12723,7 @@ static int check_map_prog_compatibility(struct
+> >> bpf_verifier_env *env,
+> >>           case BPF_MAP_TYPE_INODE_STORAGE:
+> >>           case BPF_MAP_TYPE_SK_STORAGE:
+> >>           case BPF_MAP_TYPE_TASK_STORAGE:
+> >> +        case BPF_MAP_TYPE_CGROUP_LOCAL_STORAGE:
+> >>               break;
+> >>           default:
+> >>               verbose(env,
+> >> @@ -14149,7 +14160,8 @@ static int do_misc_fixups(struct
+> >> bpf_verifier_env *env)
+> >
+> >>           if (insn->imm == BPF_FUNC_task_storage_get ||
+> >>               insn->imm == BPF_FUNC_sk_storage_get ||
+> >> -            insn->imm == BPF_FUNC_inode_storage_get) {
+> >> +            insn->imm == BPF_FUNC_inode_storage_get ||
+> >> +            insn->imm == BPF_FUNC_cgroup_local_storage_get) {
+> >>               if (env->prog->aux->sleepable)
+> >>                   insn_buf[0] = BPF_MOV64_IMM(BPF_REG_5, (__force
+> >> __s32)GFP_KERNEL);
+> >>               else
+> >> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+> >> index 8ad2c267ff47..2fa2c950c7fb 100644
+> >> --- a/kernel/cgroup/cgroup.c
+> >> +++ b/kernel/cgroup/cgroup.c
+> >> @@ -985,6 +985,10 @@ void put_css_set_locked(struct css_set *cset)
+> >>           put_css_set_locked(cset->dom_cset);
+> >>       }
+> >
+> >> +#ifdef CONFIG_BPF_SYSCALL
+> >> +    bpf_local_cgroup_storage_free(cset->dfl_cgrp);
+> >> +#endif
+> >> +
+> >>       kfree_rcu(cset, rcu_head);
+> >>   }
+> >
+> >> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> >> index 688552df95ca..179adaae4a9f 100644
+> >> --- a/kernel/trace/bpf_trace.c
+> >> +++ b/kernel/trace/bpf_trace.c
+> >> @@ -1454,6 +1454,10 @@ bpf_tracing_func_proto(enum bpf_func_id
+> >> func_id, const struct bpf_prog *prog)
+> >>           return &bpf_get_current_cgroup_id_proto;
+> >>       case BPF_FUNC_get_current_ancestor_cgroup_id:
+> >>           return &bpf_get_current_ancestor_cgroup_id_proto;
+> >> +    case BPF_FUNC_cgroup_local_storage_get:
+> >> +        return &bpf_cgroup_storage_get_proto;
+> >> +    case BPF_FUNC_cgroup_local_storage_delete:
+> >> +        return &bpf_cgroup_storage_delete_proto;
+> >>   #endif
+> >>       case BPF_FUNC_send_signal:
+> >>           return &bpf_send_signal_proto;
+> >> diff --git a/scripts/bpf_doc.py b/scripts/bpf_doc.py
+> >> index c0e6690be82a..fdb0aff8cb5a 100755
+> >> --- a/scripts/bpf_doc.py
+> >> +++ b/scripts/bpf_doc.py
+> >> @@ -685,6 +685,7 @@ class PrinterHelpers(Printer):
+> >>               'struct udp6_sock',
+> >>               'struct unix_sock',
+> >>               'struct task_struct',
+> >> +            'struct cgroup',
+> >
+> >>               'struct __sk_buff',
+> >>               'struct sk_msg_md',
+> >> @@ -742,6 +743,7 @@ class PrinterHelpers(Printer):
+> >>               'struct udp6_sock',
+> >>               'struct unix_sock',
+> >>               'struct task_struct',
+> >> +            'struct cgroup',
+> >>               'struct path',
+> >>               'struct btf_ptr',
+> >>               'struct inode',
+> >> diff --git a/tools/include/uapi/linux/bpf.h
+> >> b/tools/include/uapi/linux/bpf.h
+> >> index 17f61338f8f8..d918b4054297 100644
+> >> --- a/tools/include/uapi/linux/bpf.h
+> >> +++ b/tools/include/uapi/linux/bpf.h
+> >> @@ -935,6 +935,7 @@ enum bpf_map_type {
+> >>       BPF_MAP_TYPE_TASK_STORAGE,
+> >>       BPF_MAP_TYPE_BLOOM_FILTER,
+> >>       BPF_MAP_TYPE_USER_RINGBUF,
+> >> +    BPF_MAP_TYPE_CGROUP_LOCAL_STORAGE,
+> >>   };
+> >
+> >>   /* Note that tracing related programs such as
+> >> @@ -5435,6 +5436,42 @@ union bpf_attr {
+> >>    *        **-E2BIG** if user-space has tried to publish a sample
+> >> which is
+> >>    *        larger than the size of the ring buffer, or which cannot fit
+> >>    *        within a struct bpf_dynptr.
+> >> + *
+> >> + * void *bpf_cgroup_local_storage_get(struct bpf_map *map, struct
+> >> cgroup *cgroup, void *value, u64 flags)
+> >> + *    Description
+> >> + *        Get a bpf_local_storage from the *cgroup*.
+> >> + *
+> >> + *        Logically, it could be thought of as getting the value from
+> >> + *        a *map* with *cgroup* as the **key**.  From this
+> >> + *        perspective,  the usage is not much different from
+> >> + *        **bpf_map_lookup_elem**\ (*map*, **&**\ *cgroup*) except this
+> >> + *        helper enforces the key must be a cgroup struct and the map
+> >> must also
+> >> + *        be a **BPF_MAP_TYPE_CGROUP_LOCAL_STORAGE**.
+> >> + *
+> >> + *        Underneath, the value is stored locally at *cgroup* instead of
+> >> + *        the *map*.  The *map* is used as the bpf-local-storage
+> >> + *        "type". The bpf-local-storage "type" (i.e. the *map*) is
+> >> + *        searched against all bpf_local_storage residing at *cgroup*.
+> >> + *
+> >> + *        An optional *flags* (**BPF_LOCAL_STORAGE_GET_F_CREATE**)
+> >> can be
+> >> + *        used such that a new bpf_local_storage will be
+> >> + *        created if one does not exist.  *value* can be used
+> >> + *        together with **BPF_LOCAL_STORAGE_GET_F_CREATE** to specify
+> >> + *        the initial value of a bpf_local_storage.  If *value* is
+> >> + *        **NULL**, the new bpf_local_storage will be zero initialized.
+> >> + *    Return
+> >> + *        A bpf_local_storage pointer is returned on success.
+> >> + *
+> >> + *        **NULL** if not found or there was an error in adding
+> >> + *        a new bpf_local_storage.
+> >> + *
+> >> + * long bpf_cgroup_local_storage_delete(struct bpf_map *map, struct
+> >> cgroup *cgroup)
+> >> + *    Description
+> >> + *        Delete a bpf_local_storage from a *cgroup*.
+> >> + *    Return
+> >> + *        0 on success.
+> >> + *
+> >> + *        **-ENOENT** if the bpf_local_storage cannot be found.
+> >>    */
+> >>   #define ___BPF_FUNC_MAPPER(FN, ctx...)            \
+> >>       FN(unspec, 0, ##ctx)                \
+> >> @@ -5647,6 +5684,8 @@ union bpf_attr {
+> >>       FN(tcp_raw_check_syncookie_ipv6, 207, ##ctx)    \
+> >>       FN(ktime_get_tai_ns, 208, ##ctx)        \
+> >>       FN(user_ringbuf_drain, 209, ##ctx)        \
+> >> +    FN(cgroup_local_storage_get, 210, ##ctx)    \
+> >> +    FN(cgroup_local_storage_delete, 211, ##ctx)    \
+> >>       /* */
+> >
+> >>   /* backwards-compatibility macros for users of __BPF_FUNC_MAPPER
+> >> that don't
+> >> --
+> >> 2.30.2
+> >
