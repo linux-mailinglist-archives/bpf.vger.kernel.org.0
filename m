@@ -2,111 +2,178 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 785486004E4
-	for <lists+bpf@lfdr.de>; Mon, 17 Oct 2022 03:43:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4488600524
+	for <lists+bpf@lfdr.de>; Mon, 17 Oct 2022 04:16:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229749AbiJQBna (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 16 Oct 2022 21:43:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54500 "EHLO
+        id S229898AbiJQCQN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 16 Oct 2022 22:16:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229660AbiJQBn3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 16 Oct 2022 21:43:29 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEB8D3DF3B
-        for <bpf@vger.kernel.org>; Sun, 16 Oct 2022 18:43:28 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id s17so4667410qkj.12
-        for <bpf@vger.kernel.org>; Sun, 16 Oct 2022 18:43:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=wZR5j8tL/5oU/xGVpP8FKeFl23lIlEh4OAjfmdl9LmQ=;
-        b=LCUUaZ+rEAdcyFmlRoH+DxiQj5GHWId2iCVo4YYvyt4lXpr3RedFsnphbEt8DZ+OrT
-         HOPNyAnWP0ApPHlBwptTgFQEEJC152s8SSXhwDt3FV9PmOfHjRi/4rs7/j+JKYzPFual
-         gbumcAgKZy0anzkJRwdKDlhrIwpJ9rmnLOrnI=
+        with ESMTP id S229920AbiJQCPm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 16 Oct 2022 22:15:42 -0400
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15FFB140FF
+        for <bpf@vger.kernel.org>; Sun, 16 Oct 2022 19:15:41 -0700 (PDT)
+Received: by mail-io1-f70.google.com with SMTP id bx19-20020a056602419300b006bcbf3b91fdso6158093iob.13
+        for <bpf@vger.kernel.org>; Sun, 16 Oct 2022 19:15:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wZR5j8tL/5oU/xGVpP8FKeFl23lIlEh4OAjfmdl9LmQ=;
-        b=PWqK8WJzhFRlQV4WzQTbFYclmU1ynGWz6MM7HhDKs7eTHPrtAyGElrbYS6R0B1lk4k
-         MIGAtZ1tf/c86gZu+NygRtBvc9t3UD62qwgdz8Hr7bHnHKmLaofTCtzHd0TM5lXUuSx4
-         yB72Bn657eZgr6rGmUzQPaHUmen5xV+hZehYLHXTOwHW5opaPZW80kVc89F9TRZJsdJ3
-         zi8cpQmb8bQ6SOI/FA+TS5vwzmxxk8D8suRbAe8Y1xdvqxpbEuIToKAGP6qtKtdwM4OR
-         i30TKqKbCg5gk1kqkF6ulj9PwkqsNIrl4Uc+GSbWQJ1gkmn8jHVHJkCZMoW5uB4fBT1u
-         91vA==
-X-Gm-Message-State: ACrzQf1wzrnEluSEoFWJDh9MgToebA7wUEZ9Y+yuHDSG4kk/raZkM1Se
-        251EGkgw0LlGsNdj77d9tQjx2g==
-X-Google-Smtp-Source: AMsMyM4LwJEcNq8FTwK0gfWL1pcdbZc5TXJPV/mHmtv0+HSrux3tZm5YRItfp03F5sE1zgu7hEZU7Q==
-X-Received: by 2002:a37:f50b:0:b0:6cb:be4d:6ce8 with SMTP id l11-20020a37f50b000000b006cbbe4d6ce8mr6139565qkk.135.1665971008085;
-        Sun, 16 Oct 2022 18:43:28 -0700 (PDT)
-Received: from C02YVCJELVCG ([136.56.55.162])
-        by smtp.gmail.com with ESMTPSA id n1-20020a05620a294100b006e8f8ca8287sm8311244qkp.120.2022.10.16.18.43.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 16 Oct 2022 18:43:27 -0700 (PDT)
-From:   Andy Gospodarek <andrew.gospodarek@broadcom.com>
-X-Google-Original-From: Andy Gospodarek <gospo@broadcom.com>
-Date:   Sun, 16 Oct 2022 21:43:18 -0400
-To:     Gerhard Engleder <gerhard@engleder-embedded.com>
-Cc:     andrew.gospodarek@broadcom.com, ast@kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, kuba@kernel.org,
-        hawk@kernel.org, john.fastabend@gmail.com, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH net-next] samples/bpf: Fix MAC address swapping in
- xdp2_kern
-Message-ID: <Y0yzNh9Kih1Z9KsK@C02YVCJELVCG>
-References: <20221015213050.65222-1-gerhard@engleder-embedded.com>
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=DGa85eDs4HDf0btlqFpHUgSWnf8N3groGUn+7nSJ2UY=;
+        b=8Ax/rzsrQ/T5XxZHCIoW59po+JM3GE33LNYkmR46OEVAiNQf0e7n8o5Stlgno9mDB2
+         hAyiGgf5oWq8fRvjze+A7ib0Sx87PR6KZpTXipYvEliWx+qY3VcCHICH4BT/PSrkB9NS
+         c+ms8eVY6z7HFuT/XQa+V9VbPa9tOW/xWGfAr6kKjIwQ/ZeruEUAIvcFgdSXO5MkFqPV
+         P7tU4a/RInFXpinCe7HU/CxYaoGhRdiEjp5wiS4rLtywJLKACntrYXax4DnkT7YjmNlg
+         VqWgEBoeyMNmIPhpJe17NRK3xlz9MneHWlsLsRfiuANDN5egAqS2N/U0PFi2DoZ+lfww
+         W3og==
+X-Gm-Message-State: ACrzQf2Jic/5rMtxMbJRzwd3oYvy73k6T2VD/XdKggDmhchTUHqIPmhY
+        LMpAfjJ0+J5MO342zHm5RM/+8OeTRy27Urz8XFa/cvzalldy
+X-Google-Smtp-Source: AMsMyM7TF7QkPiCerp1TQlI7M7+sQnISW1eS7yUz86L4kMv9kLD4axumPp3b21eNue1WQLDTw1mZnfxzJlIez3kIDOo1AUSzaVvG
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221015213050.65222-1-gerhard@engleder-embedded.com>
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6e02:12b1:b0:2fc:cc40:6c2 with SMTP id
+ f17-20020a056e0212b100b002fccc4006c2mr3921051ilr.187.1665972940289; Sun, 16
+ Oct 2022 19:15:40 -0700 (PDT)
+Date:   Sun, 16 Oct 2022 19:15:40 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004fc10b05eb318d60@google.com>
+Subject: [syzbot] upstream boot error: WARNING in __netif_set_xps_queue
+From:   syzbot <syzbot+9abe5ecc348676215427@syzkaller.appspotmail.com>
+To:     ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
+        davem@davemloft.net, edumazet@google.com, hawk@kernel.org,
+        jasowang@redhat.com, john.fastabend@gmail.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, mst@redhat.com,
+        netdev@vger.kernel.org, pabeni@redhat.com,
+        syzkaller-bugs@googlegroups.com,
+        virtualization@lists.linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_DIGITS,
+        FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Oct 15, 2022 at 11:30:50PM +0200, Gerhard Engleder wrote:
-> xdp2_kern rewrites and forwards packets out on the same interface.
-> Forwarding still works but rewrite got broken when xdp multibuffer
-> support has been added.
-> 
-> With xdp multibuffer a local copy of the packet has been introduced. The
-> MAC address is now swapped in the local copy, but the local copy in not
-> written back.
-> 
-> Fix MAC address swapping be adding write back of modified packet.
-> 
+Hello,
 
-Nice catch!  Thanks for posting this.
+syzbot found the following issue on:
 
-> Fixes: 772251742262 ("samples/bpf: fixup some tools to be able to support xdp multibuffer")
-> Signed-off-by: Gerhard Engleder <gerhard@engleder-embedded.com>
-Reviewed-by: Andy Gospodarek <gospo@broadcom.com>
+HEAD commit:    9abf2313adc1 Linux 6.1-rc1
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=14e70244880000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4789759e8a6d5f57
+dashboard link: https://syzkaller.appspot.com/bug?extid=9abe5ecc348676215427
+compiler:       Debian clang version 13.0.1-++20220126092033+75e33f71c2da-1~exp1~20220126212112.63, GNU ld (GNU Binutils for Debian) 2.35.2
 
-> ---
->  samples/bpf/xdp2_kern.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/samples/bpf/xdp2_kern.c b/samples/bpf/xdp2_kern.c
-> index 3332ba6bb95f..67804ecf7ce3 100644
-> --- a/samples/bpf/xdp2_kern.c
-> +++ b/samples/bpf/xdp2_kern.c
-> @@ -112,6 +112,10 @@ int xdp_prog1(struct xdp_md *ctx)
->  
->  	if (ipproto == IPPROTO_UDP) {
->  		swap_src_dst_mac(data);
-> +
-> +		if (bpf_xdp_store_bytes(ctx, 0, pkt, sizeof(pkt)))
-> +			return rc;
-> +
->  		rc = XDP_TX;
->  	}
->  
-> -- 
-> 2.30.2
-> 
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/1f92e2492e87/disk-9abf2313.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/e1f5038aaa4b/vmlinux-9abf2313.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+9abe5ecc348676215427@syzkaller.appspotmail.com
+
+ACPI: button: Sleep Button [SLPF]
+ACPI: \_SB_.LNKC: Enabled at IRQ 11
+virtio-pci 0000:00:03.0: virtio_pci: leaving for legacy driver
+ACPI: \_SB_.LNKD: Enabled at IRQ 10
+virtio-pci 0000:00:04.0: virtio_pci: leaving for legacy driver
+ACPI: \_SB_.LNKB: Enabled at IRQ 10
+virtio-pci 0000:00:06.0: virtio_pci: leaving for legacy driver
+virtio-pci 0000:00:07.0: virtio_pci: leaving for legacy driver
+N_HDLC line discipline registered with maxframe=4096
+Serial: 8250/16550 driver, 4 ports, IRQ sharing enabled
+00:03: ttyS0 at I/O 0x3f8 (irq = 4, base_baud = 115200) is a 16550A
+00:04: ttyS1 at I/O 0x2f8 (irq = 3, base_baud = 115200) is a 16550A
+00:05: ttyS2 at I/O 0x3e8 (irq = 6, base_baud = 115200) is a 16550A
+00:06: ttyS3 at I/O 0x2e8 (irq = 7, base_baud = 115200) is a 16550A
+Non-volatile memory driver v1.3
+Linux agpgart interface v0.103
+ACPI: bus type drm_connector registered
+[drm] Initialized vgem 1.0.0 20120112 for vgem on minor 0
+[drm] Initialized vkms 1.0.0 20180514 for vkms on minor 1
+Console: switching to colour frame buffer device 128x48
+platform vkms: [drm] fb0: vkmsdrmfb frame buffer device
+usbcore: registered new interface driver udl
+brd: module loaded
+loop: module loaded
+zram: Added device: zram0
+null_blk: disk nullb0 created
+null_blk: module loaded
+Guest personality initialized and is inactive
+VMCI host device registered (name=vmci, major=10, minor=119)
+Initialized host personality
+usbcore: registered new interface driver rtsx_usb
+usbcore: registered new interface driver viperboard
+usbcore: registered new interface driver dln2
+usbcore: registered new interface driver pn533_usb
+nfcsim 0.2 initialized
+usbcore: registered new interface driver port100
+usbcore: registered new interface driver nfcmrvl
+Loading iSCSI transport class v2.0-870.
+scsi host0: Virtio SCSI HBA
+st: Version 20160209, fixed bufsize 32768, s/g segs 256
+Rounding down aligned max_sectors from 4294967295 to 4294967288
+db_root: cannot open: /etc/target
+slram: not enough parameters.
+ftl_cs: FTL header not found.
+wireguard: WireGuard 1.0.0 loaded. See www.wireguard.com for information.
+wireguard: Copyright (C) 2015-2019 Jason A. Donenfeld <Jason@zx2c4.com>. All Rights Reserved.
+eql: Equalizer2002: Simon Janes (simon@ncm.com) and David S. Miller (davem@redhat.com)
+MACsec IEEE 802.1AE
+tun: Universal TUN/TAP device driver, 1.6
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 1 at include/linux/cpumask.h:110 netif_attrmask_next_and include/linux/netdevice.h:3689 [inline]
+WARNING: CPU: 0 PID: 1 at include/linux/cpumask.h:110 __netif_set_xps_queue+0xc00/0x2120 net/core/dev.c:2592
+Modules linked in:
+CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.1.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/22/2022
+RIP: 0010:cpu_max_bits_warn include/linux/cpumask.h:110 [inline]
+RIP: 0010:netif_attrmask_next_and include/linux/netdevice.h:3689 [inline]
+RIP: 0010:__netif_set_xps_queue+0xc00/0x2120 net/core/dev.c:2592
+Code: f9 c6 05 f3 cb d9 05 01 48 c7 c7 30 fe b8 8b be 2e 0a 00 00 48 c7 c2 20 a6 b8 8b e8 0a 1e 30 f9 e9 a2 f9 ff ff e8 30 69 50 f9 <0f> 0b e9 1c f8 ff ff 89 f9 80 e1 07 80 c1 03 38 c1 0f 8c d3 fe ff
+RSP: 0000:ffffc90000067490 EFLAGS: 00010293
+RAX: ffffffff88393690 RBX: 0000000000000000 RCX: ffff888140158000
+RDX: 0000000000000000 RSI: 0000000000000002 RDI: 0000000000000002
+RBP: ffff888020fd4b00 R08: ffffffff88392ea5 R09: 0000000000000000
+R10: fffff5200000ce18 R11: 1ffff9200000ce16 R12: ffff888020fd4b80
+R13: ffff888020fd4a00 R14: 0000000000000002 R15: 0000000000000002
+FS:  0000000000000000(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffff88823ffff000 CR3: 000000000ca8e000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ virtnet_set_affinity+0x56e/0x730 drivers/net/virtio_net.c:2308
+ init_vqs+0x107c/0x11d0 drivers/net/virtio_net.c:3581
+ virtnet_probe+0x19db/0x32a0 drivers/net/virtio_net.c:3884
+ virtio_dev_probe+0x8ca/0xb60 drivers/virtio/virtio.c:305
+ call_driver_probe+0x96/0x250
+ really_probe+0x24c/0x9f0 drivers/base/dd.c:639
+ __driver_probe_device+0x1f4/0x3f0 drivers/base/dd.c:778
+ driver_probe_device+0x50/0x240 drivers/base/dd.c:808
+ __driver_attach+0x364/0x5b0 drivers/base/dd.c:1190
+ bus_for_each_dev+0x188/0x1f0 drivers/base/bus.c:301
+ bus_add_driver+0x32f/0x600 drivers/base/bus.c:618
+ driver_register+0x2e9/0x3e0 drivers/base/driver.c:246
+ virtio_net_driver_init+0x8e/0xcb drivers/net/virtio_net.c:4090
+ do_one_initcall+0xbd/0x2b0 init/main.c:1303
+ do_initcall_level+0x168/0x218 init/main.c:1376
+ do_initcalls+0x4b/0x8c init/main.c:1392
+ kernel_init_freeable+0x471/0x61d init/main.c:1631
+ kernel_init+0x19/0x2b0 init/main.c:1519
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:306
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
