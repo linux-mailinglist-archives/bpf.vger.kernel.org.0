@@ -2,171 +2,181 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE19360071F
-	for <lists+bpf@lfdr.de>; Mon, 17 Oct 2022 08:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 691586007E6
+	for <lists+bpf@lfdr.de>; Mon, 17 Oct 2022 09:42:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230150AbiJQG4q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Oct 2022 02:56:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52022 "EHLO
+        id S230049AbiJQHms (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Oct 2022 03:42:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230090AbiJQG4T (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Oct 2022 02:56:19 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E24710B9;
-        Sun, 16 Oct 2022 23:55:57 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4MrSPf6yRKzKG3v;
-        Mon, 17 Oct 2022 14:53:26 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-        by APP2 (Coremail) with SMTP id Syh0CgB3XdJu_ExjKnadAQ--.53907S2;
-        Mon, 17 Oct 2022 14:55:46 +0800 (CST)
-Subject: Re: [PATCH bpf-next 1/3] bpf: Free elements after one RCU-tasks-trace
- grace period
-To:     paulmck@kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Delyan Kratunov <delyank@fb.com>, rcu@vger.kernel.org,
-        houtao1@huawei.com
-References: <20221011071128.3470622-1-houtao@huaweicloud.com>
- <20221011071128.3470622-2-houtao@huaweicloud.com>
- <20221011090742.GG4221@paulmck-ThinkPad-P17-Gen-1>
- <d91a9536-8ed2-fc00-733d-733de34af510@huaweicloud.com>
- <20221012063607.GM4221@paulmck-ThinkPad-P17-Gen-1>
- <b0ece7d9-ec48-0ecb-45d9-fb5cf973000b@huaweicloud.com>
- <20221012161103.GU4221@paulmck-ThinkPad-P17-Gen-1>
- <ca5f2973-e8b5-0d73-fd23-849f0dfc4347@huaweicloud.com>
- <20221013190041.GZ4221@paulmck-ThinkPad-P17-Gen-1>
- <08d09b15-5a6b-7f76-d53d-242fb20ed394@huaweicloud.com>
- <20221014121507.GB4221@paulmck-ThinkPad-P17-Gen-1>
-From:   Hou Tao <houtao@huaweicloud.com>
-Message-ID: <05a580b3-02ca-a844-f553-400d842385d7@huaweicloud.com>
-Date:   Mon, 17 Oct 2022 14:55:42 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        with ESMTP id S230012AbiJQHmq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 Oct 2022 03:42:46 -0400
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CF075A82E
+        for <bpf@vger.kernel.org>; Mon, 17 Oct 2022 00:42:44 -0700 (PDT)
+Received: by mail-io1-f71.google.com with SMTP id j17-20020a5d93d1000000b006bcdc6b49cbso4036078ioo.22
+        for <bpf@vger.kernel.org>; Mon, 17 Oct 2022 00:42:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=huVHFHzZCRegYjTiP+y/6HGGDXj2cO7o1fBi9AQtHVM=;
+        b=exBpIRCUxTG+bGorCNnF1f3zDPCI6Wuu8lwm7Xqf69EuNOLDtIK32bHqTTS4lBqMjk
+         CpwAplq6PtXIWObD2R6NFyAOPYwxgtyTt7WNApYmSAciN06IM6QnoTB8w5ljmTQBrFPU
+         Ze6X4cnO44ETf9Ub0saFLO7snADIMQjIrG3GgGG/UY2HBEuEx4slwxktvBTNMmD1o6lT
+         YciTZBTZdR4MkvVb6cHtNU3/CeV3QEf611q2W1mv0w+IHqPV7Z1eQvYrZRWPGHPbKwQE
+         JfXaGZTkjAwap9U8YAc+M7uFWrndCiMJ2pfwElUUi4uVa2q2zSsWpPAtY2h31rv3REGw
+         hgkw==
+X-Gm-Message-State: ACrzQf3xRCzYL384PNtTIsvyAail8bCzPpxvGEPX+zA60Xm/ZmQsp9YP
+        TFg1KguZ4LSocXhgZe8cIkqIirpR5qYFNxIeEuusMpeJe6DP
+X-Google-Smtp-Source: AMsMyM6E+4zfWIspeyjs8XHlWSoXPjmb8Z0vkRBP/4/2lyd2FrXZY+5e96ws0C0U0G7Er37n20f3mSG1u/dcgbqYClVF7oR+pZvD
 MIME-Version: 1.0
-In-Reply-To: <20221014121507.GB4221@paulmck-ThinkPad-P17-Gen-1>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID: Syh0CgB3XdJu_ExjKnadAQ--.53907S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxZw18ur1ftw15WFWrKF45Jrb_yoW5Kry3pF
-        Z3KFsFkr4kXr10kw1Iqw17Cr12vasxGF13Xry5Wr18A3Z0vr17Jr1Iqr4F9FyFqrZ3Ca42
-        vr1Yq345K3W5ZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
-        6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-        9x07UZ18PUUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6602:3145:b0:6b3:d28a:2f4d with SMTP id
+ m5-20020a056602314500b006b3d28a2f4dmr3959377ioy.49.1665992563884; Mon, 17 Oct
+ 2022 00:42:43 -0700 (PDT)
+Date:   Mon, 17 Oct 2022 00:42:43 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f80cbd05eb361e8e@google.com>
+Subject: [syzbot] usb-testing boot error: WARNING in __netif_set_xps_queue
+From:   syzbot <syzbot+a30f71cf20b71d5950e7@syzkaller.appspotmail.com>
+To:     ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
+        davem@davemloft.net, edumazet@google.com, hawk@kernel.org,
+        jasowang@redhat.com, john.fastabend@gmail.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        mst@redhat.com, netdev@vger.kernel.org, pabeni@redhat.com,
+        syzkaller-bugs@googlegroups.com,
+        virtualization@lists.linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+Hello,
 
-On 10/14/2022 8:15 PM, Paul E. McKenney wrote:
-> On Fri, Oct 14, 2022 at 12:20:19PM +0800, Hou Tao wrote:
->> Hi,
->>
->> On 10/14/2022 3:00 AM, Paul E. McKenney wrote:
->>> On Thu, Oct 13, 2022 at 09:25:31AM +0800, Hou Tao wrote:
->>>> Hi,
->>>>
->>>> On 10/13/2022 12:11 AM, Paul E. McKenney wrote:
->>>>> On Wed, Oct 12, 2022 at 05:26:26PM +0800, Hou Tao wrote:
->> SNIP
->>>>> How about if I produce a patch for rcu_trace_implies_rcu_gp() and let
->>>>> you carry it with your series?  That way I don't have an unused function
->>>>> in -rcu and you don't have to wait for me to send it upstream?
->>>> Sound reasonable to me. Also thanks for your suggestions.
->>> Here you go!  Thoughts?
->> It looks great and thanks for it.
-> Very good!  I will carry it in -rcu for some time, so please let me know
-> when/if you pull it into a series.
-Have already included the patch in v2 patch-set and send it out [0].
+syzbot found the following issue on:
 
-0: https://lore.kernel.org/bpf/20221014113946.965131-1-houtao@huaweicloud.com/T/#t
+HEAD commit:    9abf2313adc1 Linux 6.1-rc1
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
+console output: https://syzkaller.appspot.com/x/log.txt?x=15c16c3c880000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c62bac73287f46bf
+dashboard link: https://syzkaller.appspot.com/bug?extid=a30f71cf20b71d5950e7
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
->
-> 							Thanx, Paul
->
->>> ------------------------------------------------------------------------
->>>
->>> commit 2eac2f7a9a6d8921e8084a6acdffa595e99dbd17
->>> Author: Paul E. McKenney <paulmck@kernel.org>
->>> Date:   Thu Oct 13 11:54:13 2022 -0700
->>>
->>>     rcu-tasks: Provide rcu_trace_implies_rcu_gp()
->>>     
->>>     As an accident of implementation, an RCU Tasks Trace grace period also
->>>     acts as an RCU grace period.  However, this could change at any time.
->>>     This commit therefore creates an rcu_trace_implies_rcu_gp() that currently
->>>     returns true to codify this accident.  Code relying on this accident
->>>     must call this function to verify that this accident is still happening.
->>>     
->>>     Reported-by: Hou Tao <houtao@huaweicloud.com>
->>>     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->>>     Cc: Alexei Starovoitov <ast@kernel.org>
->>>     Cc: Martin KaFai Lau <martin.lau@linux.dev>
->>>
->>> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
->>> index 08605ce7379d7..8822f06e4b40c 100644
->>> --- a/include/linux/rcupdate.h
->>> +++ b/include/linux/rcupdate.h
->>> @@ -240,6 +240,18 @@ static inline void exit_tasks_rcu_start(void) { }
->>>  static inline void exit_tasks_rcu_finish(void) { }
->>>  #endif /* #else #ifdef CONFIG_TASKS_RCU_GENERIC */
->>>  
->>> +/**
->>> + * rcu_trace_implies_rcu_gp - does an RCU Tasks Trace grace period imply an RCU grace period?
->>> + *
->>> + * As an accident of implementation, an RCU Tasks Trace grace period also
->>> + * acts as an RCU grace period.  However, this could change at any time.
->>> + * Code relying on this accident must call this function to verify that
->>> + * this accident is still happening.
->>> + *
->>> + * You have been warned!
->>> + */
->>> +static inline bool rcu_trace_implies_rcu_gp(void) { return true; }
->>> +
->>>  /**
->>>   * cond_resched_tasks_rcu_qs - Report potential quiescent states to RCU
->>>   *
->>> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
->>> index b0b885e071fa8..fe9840d90e960 100644
->>> --- a/kernel/rcu/tasks.h
->>> +++ b/kernel/rcu/tasks.h
->>> @@ -1535,6 +1535,8 @@ static void rcu_tasks_trace_postscan(struct list_head *hop)
->>>  {
->>>  	// Wait for late-stage exiting tasks to finish exiting.
->>>  	// These might have passed the call to exit_tasks_rcu_finish().
->>> +
->>> +	// If you remove the following line, update rcu_trace_implies_rcu_gp()!!!
->>>  	synchronize_rcu();
->>>  	// Any tasks that exit after this point will set
->>>  	// TRC_NEED_QS_CHECKED in ->trc_reader_special.b.need_qs.
-> .
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/f1e5f3ebfe6d/disk-9abf2313.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/a75cbc21a548/vmlinux-9abf2313.xz
 
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+a30f71cf20b71d5950e7@syzkaller.appspotmail.com
+
+software IO TLB: mapped [mem 0x00000000bbffd000-0x00000000bfffd000] (64MB)
+RAPL PMU: API unit is 2^-32 Joules, 0 fixed counters, 10737418240 ms ovfl timer
+clocksource: tsc: mask: 0xffffffffffffffff max_cycles: 0x1fb702bab20, max_idle_ns: 440795313305 ns
+clocksource: Switched to clocksource tsc
+Initialise system trusted keyrings
+workingset: timestamp_bits=40 max_order=21 bucket_order=0
+NFS: Registering the id_resolver key type
+Key type id_resolver registered
+Key type id_legacy registered
+9p: Installing v9fs 9p2000 file system support
+Key type asymmetric registered
+Asymmetric key parser 'x509' registered
+Block layer SCSI generic (bsg) driver version 0.4 loaded (major 246)
+io scheduler mq-deadline registered
+io scheduler kyber registered
+usbcore: registered new interface driver udlfb
+usbcore: registered new interface driver smscufx
+input: Power Button as /devices/LNXSYSTM:00/LNXPWRBN:00/input/input0
+ACPI: button: Power Button [PWRF]
+input: Sleep Button as /devices/LNXSYSTM:00/LNXSLPBN:00/input/input1
+ACPI: button: Sleep Button [SLPF]
+ACPI: \_SB_.LNKC: Enabled at IRQ 11
+virtio-pci 0000:00:03.0: virtio_pci: leaving for legacy driver
+ACPI: \_SB_.LNKD: Enabled at IRQ 10
+virtio-pci 0000:00:04.0: virtio_pci: leaving for legacy driver
+ACPI: \_SB_.LNKB: Enabled at IRQ 10
+virtio-pci 0000:00:06.0: virtio_pci: leaving for legacy driver
+virtio-pci 0000:00:07.0: virtio_pci: leaving for legacy driver
+Serial: 8250/16550 driver, 4 ports, IRQ sharing enabled
+00:03: ttyS0 at I/O 0x3f8 (irq = 4, base_baud = 115200) is a 16550A
+00:04: ttyS1 at I/O 0x2f8 (irq = 3, base_baud = 115200) is a 16550A
+00:05: ttyS2 at I/O 0x3e8 (irq = 6, base_baud = 115200) is a 16550A
+00:06: ttyS3 at I/O 0x2e8 (irq = 7, base_baud = 115200) is a 16550A
+Non-volatile memory driver v1.3
+Linux agpgart interface v0.103
+ACPI: bus type drm_connector registered
+usbcore: registered new interface driver udl
+loop: module loaded
+usbcore: registered new interface driver rtsx_usb
+usbcore: registered new interface driver viperboard
+usbcore: registered new interface driver dln2
+usbcore: registered new interface driver pn533_usb
+usbcore: registered new interface driver port100
+usbcore: registered new interface driver nfcmrvl
+scsi host0: Virtio SCSI HBA
+scsi 0:0:1:0: Direct-Access     Google   PersistentDisk   1    PQ: 0 ANSI: 6
+sd 0:0:1:0: Attached scsi generic sg0 type 0
+Rounding down aligned max_sectors from 4294967295 to 4294967288
+db_root: cannot open: /etc/target
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 1 at include/linux/cpumask.h:110 cpu_max_bits_warn include/linux/cpumask.h:110 [inline]
+WARNING: CPU: 0 PID: 1 at include/linux/cpumask.h:110 netif_attrmask_next_and include/linux/netdevice.h:3689 [inline]
+WARNING: CPU: 0 PID: 1 at include/linux/cpumask.h:110 __netif_set_xps_queue+0x8a1/0x1f50 net/core/dev.c:2592
+Modules linked in:
+CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.1.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/22/2022
+RIP: 0010:cpu_max_bits_warn include/linux/cpumask.h:110 [inline]
+RIP: 0010:netif_attrmask_next_and include/linux/netdevice.h:3689 [inline]
+RIP: 0010:__netif_set_xps_queue+0x8a1/0x1f50 net/core/dev.c:2592
+Code: fc 48 c7 c2 60 24 f8 86 be 2e 0a 00 00 48 c7 c7 00 23 f8 86 c6 05 d6 8e f0 03 01 e8 14 7c e9 00 e9 ef fd ff ff e8 0f 5f 60 fc <0f> 0b e9 8e fa ff ff 8b 6c 24 38 e8 ff 5e 60 fc 49 8d 7c 24 04 48
+RSP: 0000:ffffc9000001f898 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000002 RCX: 0000000000000000
+RDX: ffff8881002b0000 RSI: ffffffff84e66611 RDI: 0000000000000004
+RBP: 0000000000000002 R08: 0000000000000004 R09: 0000000000000002
+R10: 0000000000000002 R11: 0000000000052041 R12: ffff88810e97bb00
+R13: 0000000000000003 R14: ffff88810e97bb18 R15: 0000000000000002
+FS:  0000000000000000(0000) GS:ffff8881f6800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffff88823ffff000 CR3: 0000000007825000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ virtnet_set_affinity+0x4f0/0x750 drivers/net/virtio_net.c:2308
+ init_vqs drivers/net/virtio_net.c:3581 [inline]
+ init_vqs drivers/net/virtio_net.c:3567 [inline]
+ virtnet_probe+0x12ae/0x33a0 drivers/net/virtio_net.c:3884
+ virtio_dev_probe+0x577/0x870 drivers/virtio/virtio.c:305
+ call_driver_probe drivers/base/dd.c:560 [inline]
+ really_probe+0x249/0xb90 drivers/base/dd.c:639
+ __driver_probe_device+0x1df/0x4d0 drivers/base/dd.c:778
+ driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:808
+ __driver_attach+0x1d0/0x550 drivers/base/dd.c:1190
+ bus_for_each_dev+0x147/0x1d0 drivers/base/bus.c:301
+ bus_add_driver+0x4c9/0x640 drivers/base/bus.c:618
+ driver_register+0x220/0x3a0 drivers/base/driver.c:246
+ virtio_net_driver_init+0x93/0xd2 drivers/net/virtio_net.c:4090
+ do_one_initcall+0x13d/0x780 init/main.c:1303
+ do_initcall_level init/main.c:1376 [inline]
+ do_initcalls init/main.c:1392 [inline]
+ do_basic_setup init/main.c:1411 [inline]
+ kernel_init_freeable+0x6fa/0x783 init/main.c:1631
+ kernel_init+0x1a/0x1d0 init/main.c:1519
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:306
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
