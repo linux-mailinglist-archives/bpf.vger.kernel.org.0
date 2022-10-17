@@ -2,70 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01BB160110C
-	for <lists+bpf@lfdr.de>; Mon, 17 Oct 2022 16:23:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6522E60111E
+	for <lists+bpf@lfdr.de>; Mon, 17 Oct 2022 16:30:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229765AbiJQOXq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Oct 2022 10:23:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41758 "EHLO
+        id S230345AbiJQOaO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Oct 2022 10:30:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230368AbiJQOXZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Oct 2022 10:23:25 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.67.158])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9796765552;
-        Mon, 17 Oct 2022 07:23:21 -0700 (PDT)
-X-QQ-mid: bizesmtp86t1666016591tv8rwp4e
-Received: from localhost.localdomain ( [182.148.15.91])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Mon, 17 Oct 2022 22:23:04 +0800 (CST)
-X-QQ-SSF: 01000000002000C0D000B00A0000000
-X-QQ-FEAT: F7g8sXqc8jLzsKJQOSoefmgIf+AB2IWispWu68gD4oysOX21IN0naGvyiCmM5
-        6776pyBdH/FLzpNlB3RApAuwFXjhv56S+PJMEre8y7AoIsJgW4NMeNPLxYt/7eiq9M8gOKu
-        QojMYI0txjtzNVRytXEy6g5/++MfT1vHmT3cGVY219vapgiK+1pgSjilMFMDNuRPNz4xTzL
-        8KaXJHmY4An8VBPYl0Ox2GZB2T/hY6kJrhFeaag4oAOUo4O3UBCNXzkBhEOseLMEFJ9LCNR
-        vH1rZSh/wu0aMGkEYU/nHvOf2AiZjmvnRWpfK5jGEvjIxxV/nOXseFhEu0EMlzytJQJ5w7B
-        L5nFUKyo225B0vry8FmHEYj057igy/L6u0APc5CCH72p4cly1/dNg0Hitwogw==
-X-QQ-GoodBg: 0
-From:   Shaomin Deng <dengshaomin@cdjrlc.com>
-To:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org
-Cc:     Shaomin Deng <dengshaomin@cdjrlc.com>
-Subject: [PATCH] bpf: Fix double word in comments
-Date:   Mon, 17 Oct 2022 10:23:03 -0400
-Message-Id: <20221017142303.8299-1-dengshaomin@cdjrlc.com>
-X-Mailer: git-send-email 2.35.1
+        with ESMTP id S230306AbiJQOaN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 Oct 2022 10:30:13 -0400
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B82DD4B98D;
+        Mon, 17 Oct 2022 07:30:10 -0700 (PDT)
+Received: from fsav119.sakura.ne.jp (fsav119.sakura.ne.jp [27.133.134.246])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 29HET4N6008933;
+        Mon, 17 Oct 2022 23:29:04 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav119.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav119.sakura.ne.jp);
+ Mon, 17 Oct 2022 23:29:04 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav119.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 29HET4ge008929
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Mon, 17 Oct 2022 23:29:04 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <4a3a6527-4a19-699a-d7a5-21249254522b@I-love.SAKURA.ne.jp>
+Date:   Mon, 17 Oct 2022 23:29:01 +0900
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:cdjrlc.com:qybglogicsvr:qybglogicsvr4
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.3
+Subject: Re: [syzbot] general protection fault in security_inode_getattr
+Content-Language: en-US
+To:     Paul Moore <paul@paul-moore.com>, miklos@szeredi.hu,
+        linux-unionfs@vger.kernel.org
+Cc:     dvyukov@google.com, hdanton@sina.com,
+        linux-fsdevel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        syzbot <syzbot+f07cc9be8d1d226947ed@syzkaller.appspotmail.com>,
+        yhs@fb.com, omosnace@redhat.com
+References: <0000000000008caae305ab9a5318@google.com>
+ <000000000000618a8205eb160404@google.com>
+ <CAHC9VhRt2vpArZ=bOrkBOGiAuoTdEcp2PRP5NtbyEZkuMHvopA@mail.gmail.com>
+From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+In-Reply-To: <CAHC9VhRt2vpArZ=bOrkBOGiAuoTdEcp2PRP5NtbyEZkuMHvopA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Remove the repeated word "by" in comments.
+On 2022/10/16 23:52, Paul Moore wrote:
+> It doesn't look like this is a problem with
+> security_inode_getattr()/d_backing_inode() as it appears that the
+> passed path struct pointer has a bogus/NULL path->dentry pointer and
+> to the best of my knowledge it would appear that vfs_getattr() (the
+> caller) requires a valid path->dentry value.
+> 
+> Looking quickly at the code, I wonder if there is something wonky
+> going on in the overlayfs code, specifically ovl_copy_up_flags() and
+> ovl_copy_up_one() as they have to play a number of tricks to handle
+> the transparent overlays and copy up operations.  I'm not an overlayfs
+> expert, but that seems like a good place to start digging further into
+> this.
 
-Signed-off-by: Shaomin Deng <dengshaomin@cdjrlc.com>
----
- samples/bpf/hbm_edt_kern.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Right. This is a bug in overlayfs code. Probably due to some race condition,
+ovl_copy_up_flags() is calling ovl_copy_up_one() with "next" dentry with
+"struct ovl_entry"->numlower == 0. As a result, ovl_path_lower() from
+ovl_copy_up_one() fills ctx.lowerpath with NULLs, and vfs_getattr() gets
+surprised by ctx.lowerpath.dentry == NULL.
 
-diff --git a/samples/bpf/hbm_edt_kern.c b/samples/bpf/hbm_edt_kern.c
-index a65b677acdb0..6294f1d716c0 100644
---- a/samples/bpf/hbm_edt_kern.c
-+++ b/samples/bpf/hbm_edt_kern.c
-@@ -35,7 +35,7 @@
-  *
-  * If the credit is below the drop threshold, the packet is dropped. If it
-  * is a TCP packet, then it also calls tcp_cwr since packets dropped by
-- * by a cgroup skb BPF program do not automatically trigger a call to
-+ * a cgroup skb BPF program do not automatically trigger a call to
-  * tcp_cwr in the current kernel code.
-  *
-  * This BPF program actually uses 2 drop thresholds, one threshold
--- 
-2.35.1
+If we can't avoid selecting a dentry with "struct ovl_entry"->numlower == 0 using
+some lock, I guess that we would need to use a workaround suggested by Hillf Danton
+at https://groups.google.com/g/syzkaller-bugs/c/xDcxFKSppfE/m/b38Tv7LoAAAJ .
 
