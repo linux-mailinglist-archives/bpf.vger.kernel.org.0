@@ -2,69 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C87860138F
-	for <lists+bpf@lfdr.de>; Mon, 17 Oct 2022 18:36:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A1EF6013F3
+	for <lists+bpf@lfdr.de>; Mon, 17 Oct 2022 18:52:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229898AbiJQQgZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Oct 2022 12:36:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60620 "EHLO
+        id S229707AbiJQQwY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Oct 2022 12:52:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229747AbiJQQgX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Oct 2022 12:36:23 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0525642EE
-        for <bpf@vger.kernel.org>; Mon, 17 Oct 2022 09:36:22 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id y80so9528530iof.3
-        for <bpf@vger.kernel.org>; Mon, 17 Oct 2022 09:36:22 -0700 (PDT)
+        with ESMTP id S229772AbiJQQwX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 Oct 2022 12:52:23 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E86CF031;
+        Mon, 17 Oct 2022 09:52:22 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id n130so12753068oia.6;
+        Mon, 17 Oct 2022 09:52:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=skCCUzbnEznyI0pon1ebXS2COuj2VDhmeaFFtxQOPXI=;
-        b=ZYHDsQcYL7xWpdQhqzfFBXfOzdomO8KSfDaBVIfpYIi2sSyc8tXZ0AhKfliodNfpMM
-         Y/S08xuMia9RkHYpzlatEIwTF06/ujS5Inwmowh6i1UGjIpAxPV6DCXMpfROaGL4tUIe
-         PTAIwGRff1fJ0hbTM33Sez40B8GJRR/TWoWr/kTgDGItcsOPyGIccvt2UjMhxxFxp1Pb
-         3UuUbsf5WNDxJJ/fApa6HstTUKLgu9wfgYVxav6NMUcu5juUjDH6sXBQ1ddsIseW1S91
-         eezV6TDLQMKBQ7f9rVbN3B1OLLhxjOwg8MYvWU8XC+28ApuWMBv9vSBe09j60BqkhJcf
-         wUFA==
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+1LwX5bRFQXNkq6PB+GJkYIHW1maFFhRT+npXlh3EBU=;
+        b=Wli2+vCUPK20VH6qBK0/9u0+D86Cprn715QA3rGfohk6lLxfaKQ/gr2fBPGeUKivfV
+         9scv3keMMR40vWDmdGPV9mBFqcrR3IHAjiKgk9g2HFz+2GzmZeYm2V80n+MJ78WVfpcT
+         yeYzVTE/N/xMeay1FUkdDXp4VjEEugswL6+/mgtjc3koOgAHsXFOFPuqyxYHHSkwavDv
+         C+M6uSoIBnLjtzFoB6Ioq0cJQ0heFLwsSXacVrlHTrT1UMeP6VkCilRtw5NikcgJK2rM
+         52sgzEMrbJk98DoOJk/9P8dvOgrS6rFCixGcl08kKYuIS08WWQTsUWkkSY90XgZi+dpx
+         Y0Pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=skCCUzbnEznyI0pon1ebXS2COuj2VDhmeaFFtxQOPXI=;
-        b=1TQpZj9X6N2ZPrqfNnyGyDYIQcG2Zy6nHhBXHW+KrvtnntxDnWZzzVIWXdCLEIcRa6
-         mkQ8xQqth761s8zUBzoObE0qJo+uubuDYtsCEIB1cZotRue2S7DZ7fX1lRYJxiGIjSJS
-         aIHxpX52lYlLPfkTcH1R19uy9REawm6fE42O7kzXOUrxh4R+nWWTSbgCcAJQpGW+iUbT
-         lG1zoWLf4miWrewL/bF0Dq95o1JTxlIAqEE8gtRSgIxuC+TECyFbjVqiQym2vqnnEAPO
-         mhIoePH+AQGJcct8xCetNIAGcGzvFpmuiqb7FP3UtD7o1Uxw8Mg+OK+NjZgujLFOJqu8
-         ikrg==
-X-Gm-Message-State: ACrzQf2f7QZZurGXSEb0T5ZO9ymZypYRMcpGvsc3/GbZ2ZezYoCAj7fO
-        +zOJfqEHG5bBIcpBQbmumHrtN1GMuCi+SKWRQlmbkA==
-X-Google-Smtp-Source: AMsMyM4D+jbc0eDlqdIYudXSfQY0/PCjxxTyhI1z3cybmkACiSaedb6InC39UHUREXLt5nQIDmGXX0NPpEm2n+XXyFs=
-X-Received: by 2002:a05:6602:2e84:b0:6bc:e289:8469 with SMTP id
- m4-20020a0566022e8400b006bce2898469mr4769673iow.202.1666024582029; Mon, 17
- Oct 2022 09:36:22 -0700 (PDT)
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+1LwX5bRFQXNkq6PB+GJkYIHW1maFFhRT+npXlh3EBU=;
+        b=XSSNn23qw/E0UN8ffxR5ZpQNZdHRIaPHIlYMLIJLCONrfLQIoossvJu098Kea8vvO2
+         G5p0I6/uftBfotA8cjJf1RSS0ZeRM4B9pHLzgW8N+nchKJAXMWS9WnQQFOTveSrmpFz1
+         LJPzUWMqtgLdQtCg0YO8ErZTb441Rw1H8ESpjpJiHgKoE5ECP7HdobC1fwvUMO3TAvjP
+         o/EDCPb3qkytJQsjKDCbXVFoZ+ndFgO9eU7vwm+UTQaFqOF0G9bPxY3cZD5AJ+eFWmzN
+         rQGK5eJtpMmx5zuNYmewxjPQORkDlSBPuPafKz6olaQw88m5DdqcbqJrPPXdMhnbL8Go
+         CDJw==
+X-Gm-Message-State: ACrzQf1nQvzPzYESHAA6ACxGrbAm0A5rvo5pjGpqaWYFcDUskChRdIP0
+        78bH5vQJ4wLob1gR+FTOcHKKCv3ma4n03pcuBIM=
+X-Google-Smtp-Source: AMsMyM7pkfs8YvaEJ3rXNBXJfzbthWWMDK+JMBHXzoIgFykCTCTTewwkS0A48fh2TzykUTENTQtzoKPd6PQhlDPFwow=
+X-Received: by 2002:a05:6808:14d2:b0:354:c733:abd3 with SMTP id
+ f18-20020a05680814d200b00354c733abd3mr5577155oiw.96.1666025541711; Mon, 17
+ Oct 2022 09:52:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <20221015092448.117563-1-shaozhengchao@huawei.com>
-In-Reply-To: <20221015092448.117563-1-shaozhengchao@huawei.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Mon, 17 Oct 2022 09:36:10 -0700
-Message-ID: <CAKH8qBugSdWHP7mtNxrnLLR+56u_0OCx3xQOkJSV-+RUvDAeNg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: fix issue that packet only contains l2 is dropped
-To:     Zhengchao Shao <shaozhengchao@huawei.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
-        jolsa@kernel.org, oss@lmb.io, weiyongjun1@huawei.com,
-        yuehaibing@huawei.com
+References: <20221013210714.16320-1-fmdefrancesco@gmail.com> <fb0b7389-7121-04f8-176d-1ababe0ad8f2@amd.com>
+In-Reply-To: <fb0b7389-7121-04f8-176d-1ababe0ad8f2@amd.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 17 Oct 2022 12:52:10 -0400
+Message-ID: <CADnq5_PP3VCXQ5rbC0-8Qsi5W7Ew87U_bRknz4=qxbrPxVQ+qA@mail.gmail.com>
+Subject: Re: [PATCH] drm/radeon: Replace kmap() with kmap_local_page()
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Christian Brauner <brauner@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Kees Cook <keescook@chromium.org>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+        linux-hwmon@vger.kernel.org, linux-hardening@vger.kernel.org,
+        "Venkataramanan, Anirudh" <anirudh.venkataramanan@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,57 +82,61 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Oct 15, 2022 at 2:16 AM Zhengchao Shao <shaozhengchao@huawei.com> wrote:
->
-> As [0] see, bpf_prog_test_run_skb() should allow user space to forward
-> 14-bytes packet via BPF_PROG_RUN instead of dropping packet directly.
-> So fix it.
->
-> 0: https://github.com/cilium/ebpf/commit/a38fb6b5a46ab3b5639ea4d421232a10013596c0
->
-> Fixes: fd1894224407 ("bpf: Don't redirect packets with invalid pkt_len")
-> Signed-off-by: Zhengchao Shao <shaozhengchao@huawei.com>
-> ---
->  net/bpf/test_run.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-> index 13d578ce2a09..aa1b49f19ca3 100644
-> --- a/net/bpf/test_run.c
-> +++ b/net/bpf/test_run.c
-> @@ -979,9 +979,6 @@ static int convert___skb_to_skb(struct sk_buff *skb, struct __sk_buff *__skb)
->  {
->         struct qdisc_skb_cb *cb = (struct qdisc_skb_cb *)skb->cb;
->
-> -       if (!skb->len)
-> -               return -EINVAL;
-> -
->         if (!__skb)
->                 return 0;
->
-> @@ -1102,6 +1099,9 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
->         if (IS_ERR(data))
->                 return PTR_ERR(data);
->
-> +       if (size == ETH_HLEN)
-> +               is_l2 = true;
-> +
+Applied.  Thanks!
 
-Don't think this will work? That is_l2 is there to expose proper l2/l3
-skb for specific hooks; we can't suddenly start exposing l2 headers to
-the hooks that don't expect it.
-Does it make sense to start with a small reproducer that triggers the
-issue first? We can have a couple of cases for
-len=0/ETH_HLEN-1/ETH_HLEN+1 and trigger them from the bpf program that
-redirects to different devices (to trigger dev_is_mac_header_xmit).
-
-
-
-
-
->         ctx = bpf_ctx_init(kattr, sizeof(struct __sk_buff));
->         if (IS_ERR(ctx)) {
->                 kfree(data);
-> --
-> 2.17.1
+On Fri, Oct 14, 2022 at 3:03 AM Christian K=C3=B6nig
+<christian.koenig@amd.com> wrote:
+>
+> Am 13.10.22 um 23:07 schrieb Fabio M. De Francesco:
+> > The use of kmap() is being deprecated in favor of kmap_local_page().
+> >
+> > There are two main problems with kmap(): (1) It comes with an overhead =
+as
+> > the mapping space is restricted and protected by a global lock for
+> > synchronization and (2) it also requires global TLB invalidation when t=
+he
+> > kmap=E2=80=99s pool wraps and it might block when the mapping space is =
+fully
+> > utilized until a slot becomes available.
+> >
+> > With kmap_local_page() the mappings are per thread, CPU local, can take
+> > page faults, and can be called from any context (including interrupts).
+> > It is faster than kmap() in kernels with HIGHMEM enabled. Furthermore,
+> > the tasks can be preempted and, when they are scheduled to run again, t=
+he
+> > kernel virtual addresses are restored and still valid.
+> >
+> > Therefore, replace kmap() with kmap_local_page() in radeon_ttm_gtt_read=
+().
+> >
+> > Cc: "Venkataramanan, Anirudh" <anirudh.venkataramanan@intel.com>
+> > Suggested-by: Ira Weiny <ira.weiny@intel.com>
+> > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+>
+> Reviewed-by: Christian K=C3=B6nig <christian.koenig@amd.com>
+>
+> > ---
+> >   drivers/gpu/drm/radeon/radeon_ttm.c | 4 ++--
+> >   1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/radeon/radeon_ttm.c b/drivers/gpu/drm/rade=
+on/radeon_ttm.c
+> > index d33fec488713..bdb4c0e0736b 100644
+> > --- a/drivers/gpu/drm/radeon/radeon_ttm.c
+> > +++ b/drivers/gpu/drm/radeon/radeon_ttm.c
+> > @@ -869,11 +869,11 @@ static ssize_t radeon_ttm_gtt_read(struct file *f=
+, char __user *buf,
+> >
+> >               page =3D rdev->gart.pages[p];
+> >               if (page) {
+> > -                     ptr =3D kmap(page);
+> > +                     ptr =3D kmap_local_page(page);
+> >                       ptr +=3D off;
+> >
+> >                       r =3D copy_to_user(buf, ptr, cur_size);
+> > -                     kunmap(rdev->gart.pages[p]);
+> > +                     kunmap_local(ptr);
+> >               } else
+> >                       r =3D clear_user(buf, cur_size);
+> >
 >
