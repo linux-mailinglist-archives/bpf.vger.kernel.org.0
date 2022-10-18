@@ -2,56 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CE626024B5
-	for <lists+bpf@lfdr.de>; Tue, 18 Oct 2022 08:45:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EF876025BE
+	for <lists+bpf@lfdr.de>; Tue, 18 Oct 2022 09:31:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229592AbiJRGpb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Oct 2022 02:45:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34978 "EHLO
+        id S230082AbiJRHb3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Oct 2022 03:31:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbiJRGpa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Oct 2022 02:45:30 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DB088E9AC;
-        Mon, 17 Oct 2022 23:45:29 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A69A661384;
-        Tue, 18 Oct 2022 06:45:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B06AC433D6;
-        Tue, 18 Oct 2022 06:45:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1666075528;
-        bh=8nT890YD6IWXwwfzB3pR5xqwnm2ESd6MMFFhWaC+knQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=J529blxgPzKIlSwaH+MhR4nYJox9YfSxmjg88UJtAM4sbPI+FXJmlglEF0s7pfphQ
-         r9iFhp9nXn9Bg5F2po/JIlRaTPEUMFGY7aujGCRT+x54K9YtWIlEAKAvZsv5JJD++r
-         Ah/xHVIrQEaoIsFP8ot6g4yNwjNuK2rsMeqgmZe0=
-Date:   Tue, 18 Oct 2022 08:45:25 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>, stable@vger.kernel.org,
-        bpf@vger.kernel.org, Arnaldo Carvalho de Melo <acme@kernel.org>,
+        with ESMTP id S230101AbiJRHb2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Oct 2022 03:31:28 -0400
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B067763855;
+        Tue, 18 Oct 2022 00:31:26 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Ms58J5JsRz6PmLW;
+        Tue, 18 Oct 2022 15:29:04 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+        by APP2 (Coremail) with SMTP id Syh0CgA3HdJIVk5jpyHSAQ--.60233S2;
+        Tue, 18 Oct 2022 15:31:23 +0800 (CST)
+Subject: Re: [PATCH bpf-next v2 0/4] Remove unnecessary RCU grace period
+ chaining
+To:     paulmck@kernel.org
+Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Rodriguez Reboredo <yakoyoku@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH stable 5.15 0/2] kbuild: Fix compilation for latest
- pahole release
-Message-ID: <Y05LhQzMnJSpK0UT@kroah.com>
-References: <20220904131901.13025-1-jolsa@kernel.org>
- <YxSxwZWkYMmtcsmA@kroah.com>
- <YxWfaoImsdcvkbce@krava>
- <Yxc3Er1sv17xrei1@kroah.com>
- <YyeYUEHyR/nHM8NT@krava>
- <Y02Yv/ubuCtVhtZk@dev-arch.thelio-3990X>
- <Y03Iq2GiS7XfhOxL@krava>
+        KP Singh <kpsingh@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>, houtao1@huawei.com,
+        Delyan Kratunov <delyank@fb.com>, rcu@vger.kernel.org
+References: <20221014113946.965131-1-houtao@huaweicloud.com>
+ <20221017133941.GF5600@paulmck-ThinkPad-P17-Gen-1>
+From:   Hou Tao <houtao@huaweicloud.com>
+Message-ID: <0b01d904-523e-14de-71fa-23bf23d2743f@huaweicloud.com>
+Date:   Tue, 18 Oct 2022 15:31:20 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Y03Iq2GiS7XfhOxL@krava>
-X-Spam-Status: No, score=-7.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+In-Reply-To: <20221017133941.GF5600@paulmck-ThinkPad-P17-Gen-1>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID: Syh0CgA3HdJIVk5jpyHSAQ--.60233S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxJw45ZF4kAFy7ury5tw1UJrb_yoWrWF47pF
+        W8KFn8CryUZr4Fk3Zayr17C3yUJ395Ww1UXa4xXa48Zrn8AryjvFnFqr1YgF15trZ5A34a
+        yrn0yr1Uu3WUZa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
+        6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+        9x07UZ18PUUUUU=
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,77 +75,104 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 17, 2022 at 11:27:07PM +0200, Jiri Olsa wrote:
-> On Mon, Oct 17, 2022 at 11:02:39AM -0700, Nathan Chancellor wrote:
-> > On Mon, Sep 19, 2022 at 12:14:40AM +0200, Jiri Olsa wrote:
-> > > On Tue, Sep 06, 2022 at 02:03:30PM +0200, Greg KH wrote:
-> > > > On Mon, Sep 05, 2022 at 09:04:10AM +0200, Jiri Olsa wrote:
-> > > > > On Sun, Sep 04, 2022 at 04:10:09PM +0200, Greg KH wrote:
-> > > > > > On Sun, Sep 04, 2022 at 03:18:59PM +0200, Jiri Olsa wrote:
-> > > > > > > hi,
-> > > > > > > new version of pahole (1.24) is causing compilation fail for 5.15
-> > > > > > > stable kernel, discussed in here [1][2]. Sending fix for that plus
-> > > > > > > one dependency patch.
-> > > > > > > 
-> > > > > > > Note for patch 1:
-> > > > > > > there was one extra line change in scripts/pahole-flags.sh file in
-> > > > > > > its linux tree merge commit:
-> > > > > > > 
-> > > > > > >   fc02cb2b37fe Merge tag 'net-next-for-5.16' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next
-> > > > > > > 
-> > > > > > > not sure how/if to track that, I squashed the change in.
-> > > > > > 
-> > > > > > Squashing is fine, thanks.
-> > > > > > 
-> > > > > > And do we also need this for kernels older than 5.15?  Like 5.10 and 5.4?
-> > > > > 
-> > > > > yes, 5.10 needs similar patchset, but this for 5.15 won't apply there,
-> > > > > so I'll send it separately
-> > > > > 
-> > > > > 5.4 passes compilation, but I don't think it will boot properly, still
-> > > > > need to check on that
-> > > > > 
-> > > > > in any case, more patches are coming ;-)
-> > > > 
-> > > > Ok, these two are now queued up, feel free to send the rest when you
-> > > > have them ready.
-> > > 
-> > > hi,
-> > > as for 5.10 changes, I have them ready, pushed in here:
-> > >   git://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git pahole_fix_5_10
-> > > 
-> > > but it looks like CONFIG_DEBUG_INFO_BTF is not being used in 5.10,
-> > > because I had to backport other similar option, that would break
-> > > the build even earlier (--skip_encoding_btf_vars), or people use
-> > > just old pahole ;-)
-> > > 
-> > > I suggest we wait with this change until somebody actually wants
-> > > this fixed, AFAICS there's no report of broken 5.10 build yet
-> > 
-> > Consider this your first report :)
-> 
-> va bene ;-)
-> 
-> > 
-> > My build containers include the latest pahole, as I have noticed more
-> > issues with older pahole in newer kernels than newer pahole in older
-> > kernels, as least until now. I have tripped over this issue on both 5.19
-> > and 5.10, as the stable-only commit b775fbf532dc ("kbuild: Add
-> > skip_encoding_btf_enum64 option to pahole") was only applied to 5.15,
-> > even though it is needed in all kernels prior to 6.0.
-> > 
-> > Please consider explicitly sending the 5.10 series to stable and
-> 
-> sure I'll rebase and post it
-> 
-> > requesting b775fbf532dc to be applied to 5.19.
-> 
-> hm, it was already posted for 5.19:
-> https://lore.kernel.org/bpf/20220916171234.841556-1-yakoyoku@gmail.com/
-> 
-> Greg,
-> is there something missing for it to be taken?
+Hi,
 
-Ick, sorry, this got lost.  Now queued up.
+On 10/17/2022 9:39 PM, Paul E. McKenney wrote:
+> On Fri, Oct 14, 2022 at 07:39:42PM +0800, Hou Tao wrote:
+>> From: Hou Tao <houtao1@huawei.com>
+>>
+>> Hi,
+>>
+>> Now bpf uses RCU grace period chaining to wait for the completion of
+>> access from both sleepable and non-sleepable bpf program: calling
+>> call_rcu_tasks_trace() firstly to wait for a RCU-tasks-trace grace
+>> period, then in its callback calls call_rcu() or kfree_rcu() to wait for
+>> a normal RCU grace period.
+>>
+>> According to the implementation of RCU Tasks Trace, it inovkes
+>> ->postscan_func() to wait for one RCU-tasks-trace grace period and
+>> rcu_tasks_trace_postscan() inovkes synchronize_rcu() to wait for one
+>> normal RCU grace period in turn, so one RCU-tasks-trace grace period
+>> will imply one normal RCU grace period. To codify the implication,
+>> introduces rcu_trace_implies_rcu_gp() in patch #1. And using it in patch
+>> #2~#4 to remove unnecessary call_rcu() or kfree_rcu() in bpf subsystem.
+>> Other two uses of call_rcu_tasks_trace() are unchanged: for
+>> __bpf_prog_put_rcu() there is no gp chain and for
+>> __bpf_tramp_image_put_rcu_tasks() it chains RCU tasks trace GP and RCU
+>> tasks GP.
+>>
+>> An alternative way to remove these unnecessary RCU grace period
+>> chainings is using the RCU polling API to check whether or not a normal
+>> RCU grace period has passed (e.g. get_state_synchronize_rcu()). But it
+>> needs an unsigned long space for each free element or each call, and
+>> it is not affordable for local storage element, so as for now always
+>> rcu_trace_implies_rcu_gp().
+>>
+>> Comments are always welcome.
+> For #2-#4:
+>
+> Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+>
+> (#1 already has my Signed-off-by, in case anyone was wondering.)
+Thanks for the review. But it seems I missed another possible use case for
+rcu_trace_implies_rcu_gp() in bpf memory allocator. The code snippet for
+free_mem_alloc() is as following:
 
-greg k-h
+static void free_mem_alloc(struct bpf_mem_alloc *ma)
+{
+        /* waiting_for_gp lists was drained, but __free_rcu might
+         * still execute. Wait for it now before we freeing percpu caches.
+         */
+        rcu_barrier_tasks_trace();
+        rcu_barrier();
+        free_mem_alloc_no_barrier(ma);
+}
+
+It uses rcu_barrier_tasks_trace() and rcu_barrier() to wait for the completion
+of pending call_rcu_tasks_trace()s and call_rcu()s. I think it is also safe to
+check rcu_trace_implies_rcu_gp() in free_mem_alloc() and if it is true, there is
+no need to call rcu_barrier().
+
+static void free_mem_alloc(struct bpf_mem_alloc *ma)
+{
+        /* waiting_for_gp lists was drained, but __free_rcu_tasks_trace()
+         * or __free_rcu() might still execute. Wait for it now before we
+         * freeing percpu caches.
+         */
+        rcu_barrier_tasks_trace();
+        if (!rcu_trace_implies_rcu_gp())
+                rcu_barrier();
+        free_mem_alloc_no_barrier(ma);
+}
+
+Does the above change look good to you ? If it is, I will post v3 to include the
+above change and add your Reviewed-by tag.
+>
+>> Change Log:
+>>
+>> v2:
+>>  * codify the implication of RCU Tasks Trace grace period instead of
+>>    assuming for it
+>>
+>> v1: https://lore.kernel.org/bpf/20221011071128.3470622-1-houtao@huaweicloud.com
+>>
+>> Hou Tao (3):
+>>   bpf: Use rcu_trace_implies_rcu_gp() in bpf memory allocator
+>>   bpf: Use rcu_trace_implies_rcu_gp() in local storage map
+>>   bpf: Use rcu_trace_implies_rcu_gp() for program array freeing
+>>
+>> Paul E. McKenney (1):
+>>   rcu-tasks: Provide rcu_trace_implies_rcu_gp()
+>>
+>>  include/linux/rcupdate.h       | 12 ++++++++++++
+>>  kernel/bpf/bpf_local_storage.c | 13 +++++++++++--
+>>  kernel/bpf/core.c              |  8 +++++++-
+>>  kernel/bpf/memalloc.c          | 15 ++++++++++-----
+>>  kernel/rcu/tasks.h             |  2 ++
+>>  5 files changed, 42 insertions(+), 8 deletions(-)
+>>
+>> -- 
+>> 2.29.2
+>>
+> .
+
