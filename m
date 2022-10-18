@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DB47602DB1
-	for <lists+bpf@lfdr.de>; Tue, 18 Oct 2022 15:59:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4783602DB3
+	for <lists+bpf@lfdr.de>; Tue, 18 Oct 2022 15:59:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231268AbiJRN7o (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Oct 2022 09:59:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48980 "EHLO
+        id S229935AbiJRN7s (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Oct 2022 09:59:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231298AbiJRN7l (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Oct 2022 09:59:41 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71B742D75E
-        for <bpf@vger.kernel.org>; Tue, 18 Oct 2022 06:59:39 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id z20so13883951plb.10
-        for <bpf@vger.kernel.org>; Tue, 18 Oct 2022 06:59:39 -0700 (PDT)
+        with ESMTP id S231332AbiJRN7q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Oct 2022 09:59:46 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70F2D6314
+        for <bpf@vger.kernel.org>; Tue, 18 Oct 2022 06:59:43 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id f140so14161416pfa.1
+        for <bpf@vger.kernel.org>; Tue, 18 Oct 2022 06:59:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=FHeaOKnzGoZgXbP3flsb1cpZRfmFWpFjAC5Iww6rckA=;
-        b=P1XV9l8XAEp+7/zbKAF6Le9iEnoNimZFdixJfwS7oGJnXqWt3oSPw2N7MF5lrvb6Gr
-         TIKHA2cUriprV/d+fJNx7Q5W8gwOnzqjrzXojneM3qyRRtpMP1uIiCt22Tf635xyZ9hK
-         A3jYa4x0Nj+E3arGGfjHYBrwwipUH9sMK2Zrc+jB9Jo6kJ9/Dy01e+Y2OeJKpof98oW/
-         ET2VU4bmbDZiUQQI77gETKFchCczMY6JIUvpeZxQ4WGFjg21hB1MO0I1tZ9G3nS6Agba
-         8T+QV0XLZqiCr9XDan2eRtshsol6F1Dr8EhN7xMnntAnago9JnleCvi3MXyQA54ft74/
-         SfzA==
+        bh=7P53Tm+dK7GmyEk+HnF9ZWyrUeeMfEERVdJscIZTe1s=;
+        b=oemsODqSOJVGwPXy0JRcH//O5Po5XzavztZbzwVzUdRpJ/xKh8RcPAGxicP2QzR2sA
+         nyarQreyqaq2s5msLrCTJyN6jXhEb2t1iPXgZzXRiSlAFoDMkiu2EploRo78mPfTaQBp
+         FaTGNBC/BDnr+UhzN/HS9L9GJ8UhqGKxeqZmx6bFxugmBPT0BAn5h+jozYKM5g++oydf
+         FB/iR3EHs7VWaIjhMIV40yav4xs3sAf++eJnlTsQlhS0YDuiN7PZz4P83Li9jdkXFRNg
+         KK2LqPtI+/r+OvVFjT3PFFggIrMyugNDEJk0hRcXMiEudznZVJWRORlNtIwgWeVPiAWA
+         wuWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=FHeaOKnzGoZgXbP3flsb1cpZRfmFWpFjAC5Iww6rckA=;
-        b=y/1591Fsljq4Z59r6wljhemSR8f1STWadNSS0L7R4aqfrwVQJeBydmWx+hbIPzOG9i
-         APORKeVmh+DkpuSU+aQDytbkNb11G+tF6cN1HtIsRYuqdyMseSdlsja7Hf8Ms+akYUQf
-         hLBdRJaGzSRFgV8Ds1S9+b+y6UlvQnMHA5MMQS3buLqFWutm7xzy1TkY0JBK329sOwo6
-         5vxcUAJesblmVig3jvmJYusLxVcmmlbZbmzxE2muHAKWJqLa/t7m50BMFn2V9LbUWBp1
-         VYpfaOCTB93ONqREh1k5MpA4TEOqPUOWcpR3mwGIMWhAaaVZZLBlrXP4FwCXe7nxtSx+
-         AtLA==
-X-Gm-Message-State: ACrzQf2HBGAo25ksK2CFDmqclJeTWXHVRVCbE3oeZAa30DcWTtBMXIS4
-        9RzuxrqnNxuWqbraKHcDFTfodSDeB8qDJA==
-X-Google-Smtp-Source: AMsMyM4y2WiI7JJdi1uyUH63clJUi6hIaSNX9ma5LFCSDubqN64p1tkAt/6glPCIJNtS71hXFMM43w==
-X-Received: by 2002:a17:90a:4983:b0:20a:9509:8347 with SMTP id d3-20020a17090a498300b0020a95098347mr39285481pjh.101.1666101578707;
-        Tue, 18 Oct 2022 06:59:38 -0700 (PDT)
+        bh=7P53Tm+dK7GmyEk+HnF9ZWyrUeeMfEERVdJscIZTe1s=;
+        b=Iia1K7N/vLPriAHsJuW3qdOyMKo8mayC3FsduC+pNj5QVrz3ZwNpNu06XCn90gkKfc
+         0KgNfznc/1U54U8ou8jU1E2qZIvcPIdIBvmNDwneLUnWkjRF2cp39vpFMniMOYH5yjkL
+         X//LgPNZs8o6kBvdKIbtE+8KKAhpmvo1dJ2Hm1S14kWzeHJlNBLsThIFy1fZQh+QR0Y+
+         +4FNVehroQplygaFEVbGZN8M4bdGxBVEWKTDKxbr2w27OCyLYxJ9uzOWoKy8kMToP4V9
+         OuM7QH1ttBG1+9Ua7VohDt9FTSiATu9tPPnEypeCerd+K5cpAyIS3qtGmrHwRC2xYPPg
+         c88w==
+X-Gm-Message-State: ACrzQf0pe6yN7Gb/8xRAeQR3iNzeExbDW4Wt2eu03nlvK8k7tjTrLvfV
+        IfjczcUkzp3ypzMhzD8aCOB1IkmjbF3Gww==
+X-Google-Smtp-Source: AMsMyM4YqBYfI0eajUxB+bBIIIxdXTuGJLfMfKEyy5WegfI/gLm6bQEyjEyyvUV4sI9XRyVCEe//Cw==
+X-Received: by 2002:aa7:9614:0:b0:562:b07b:ad62 with SMTP id q20-20020aa79614000000b00562b07bad62mr3377173pfg.79.1666101582192;
+        Tue, 18 Oct 2022 06:59:42 -0700 (PDT)
 Received: from localhost ([103.4.222.252])
-        by smtp.gmail.com with ESMTPSA id v8-20020a654608000000b0044046aec036sm8001750pgq.81.2022.10.18.06.59.38
+        by smtp.gmail.com with ESMTPSA id x32-20020a634a20000000b00456891e1dacsm7938022pga.68.2022.10.18.06.59.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Oct 2022 06:59:38 -0700 (PDT)
+        Tue, 18 Oct 2022 06:59:41 -0700 (PDT)
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To:     bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -57,14 +57,14 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Martin KaFai Lau <martin.lau@kernel.org>,
         Joanne Koong <joannelkoong@gmail.com>,
         David Vernet <void@manifault.com>
-Subject: [PATCH bpf-next v1 03/13] bpf: Rename confusingly named RET_PTR_TO_ALLOC_MEM
-Date:   Tue, 18 Oct 2022 19:29:10 +0530
-Message-Id: <20221018135920.726360-4-memxor@gmail.com>
+Subject: [PATCH bpf-next v1 04/13] bpf: Rework check_func_arg_reg_off
+Date:   Tue, 18 Oct 2022 19:29:11 +0530
+Message-Id: <20221018135920.726360-5-memxor@gmail.com>
 X-Mailer: git-send-email 2.38.0
 In-Reply-To: <20221018135920.726360-1-memxor@gmail.com>
 References: <20221018135920.726360-1-memxor@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2709; i=memxor@gmail.com; h=from:subject; bh=le0Ej6FdJB+3fi73W83TfWykvTTpArlDPioaZJRU8tQ=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBjTrEirKpN5wM8xfd6FPqOxy/B3+aOx+ViiEdORfDh rmYgw5aJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCY06xIgAKCRBM4MiGSL8RyoFVD/ 9UdZe3ZQ04reRW+/HQ0T4Y02EtjrXzipKYwnjJ537Z8rmz04jEHyMlfc6EdkEqwpd967GFvYZNyynu Vj60K67lBdy2AbdWpBMsJPlNzwT5eO2Xyi9Ql88kxQsRPo/GtteTzpNq5Qs1c1p/IzB2SG6qw7yLXH CtKcKtLiXUXjHByBjgemujL27ca4VG1cAcGD1rKtSW8d0NLFfOmB9aOqNyCY6s7vQFo1oaoAxR7GUJ f3gvDp3gXdrHYFifwD2gD6C4ykA1IMrnMwtF0i3HzltSjP+7tEASOdV5MiOa2JII+7n0o+xjI3jade kswz+G3hOAKBS9GZSAE/lUBGjvm378kyOUn1NJd1dxO9YiGypYwUhUCiwF/W81rXn6ifmfCOTub8MO J3EU43NJ9JoZiNhbG3J1WebR478E8fvlDhuJj+VTDlo7BGeKy6/IwI9XZh1G3A7moYGHB2RpPIr63X SAa9vsWLhn1XGz+gNaMMAkHc+ClXWSo7h0f7IpBbfhbxiW66yJ5sWGzS+L+iWWUEwtDfUZwvnSp0NV rIK+ZmqQQDMlrTZCAX9wniPKOmjQRXvQMdcWtdiyM5wIUM0hcv8HGDm5kY8AZbfrW5BamOvMs5il0D 1ZjJakC7kPP5xWy2fbBx23F4smeL8ErCZNDP6WBdsZ60V7R+b0xY17BTmx7g==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5989; i=memxor@gmail.com; h=from:subject; bh=iGBUAdNuqJJP0N6+hvkkSz4lq1kmz+JLsrg6rQs+HAk=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBjTrEiTpGfzukt7E/RSn9qZoBlrAabWRhqTT+EGtU/ yjAA+ZOJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCY06xIgAKCRBM4MiGSL8RypdRD/ 9a7hwUyeZfEZLwF6l3IphOo3asWNPHkU4aaj94ebrsoh2dyzZemW+BCOKSm8T8lFmcutuahC0IC5FX iyah4jvY/rcGZIWVtnbR6RYqcfZsfq30VQVi9HhQ+niCEqI/aE+v47UV5ydCN/H7A9R44DZG1K11Dg q95YOoP9KysLBF1NcT/tRm7N/aAjWMspcJBTnZDVRqaoNF/bjsHvfQz127SgjNELxCGGIQKNpfuvhg f0iCSUlTen2PJmRYpCUXXJzfscQdQvfCidEgdh/wkXg03+16hzYnSnGPmzLfgCOTSBNRFCGxapivct mBSz+bJ6jILlE6AdlK2W2oKODINfrJNEjVHi2CZloXphrNc/LN5nz+oRQ+c7z6aQJvTch6WiTOBFsH xBs0zR4KkM3N544TRUO/GumRT4ql9ZOJhItD5R+W7V85zC+9v0Z61rvkRHyyxoy8OFSvxaut1TcKWc y1T48lKldbYUt+Fcc+yP/BEFxanRHeDKaJp3/Q8HFF/Oh4IQ4Ha3VIBx4lhKQyNx4YuikupalHR2Lh aAwTQa5Ipf9Z0PYebtAMmg+2jpuSZ6uk9jtQYMKdcVF9SDcdvegHOpQm89yrM2YihF2a5+QDaIX+Cx s6HhPyDnCHPJP0BP+eANLbGOJ8ms6esH2Qh7dWVkqXhvHMj4xvRSrNkaaESg==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -77,59 +77,161 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currently, the verifier has two return types, RET_PTR_TO_ALLOC_MEM, and
-RET_PTR_TO_ALLOC_MEM_OR_NULL, however the former is confusingly named to
-imply that it carries MEM_ALLOC, while only the latter does. This causes
-confusion during code review leading to conclusions like that the return
-value of RET_PTR_TO_DYNPTR_MEM_OR_NULL (which is RET_PTR_TO_ALLOC_MEM |
-PTR_MAYBE_NULL) may be consumable by bpf_ringbuf_{submit,commit}.
+While check_func_arg_reg_off is the place which performs generic checks
+needed by various candidates of reg->type, there is some handling for
+special cases, like ARG_PTR_TO_DYNPTR, OBJ_RELEASE, and
+ARG_PTR_TO_ALLOC_MEM.
 
-Rename it to make it clear MEM_ALLOC needs to be tacked on top of
-RET_PTR_TO_MEM.
+This commit aims to streamline these special cases and instead leave
+other things up to argument type specific code to handle.
+
+This is done primarily for two reasons: associating back reg->type to
+its argument leaves room for the list getting out of sync when a new
+reg->type is supported by an arg_type.
+
+The other case is ARG_PTR_TO_ALLOC_MEM. The problem there is something
+we already handle, whenever a release argument is expected, it should
+be passed as the pointer that was received from the acquire function.
+Hence zero fixed and variable offset.
+
+There is nothing special about ARG_PTR_TO_ALLOC_MEM, where technically
+its target register type PTR_TO_MEM | MEM_ALLOC can already be passed
+with non-zero offset to other helper functions, which makes sense.
+
+Hence, lift the arg_type_is_release check for reg->off and cover all
+possible register types, instead of duplicating the same kind of check
+twice for current OBJ_RELEASE arg_types (alloc_mem and ptr_to_btf_id).
+
+Finally, for the release argument, arg_type_is_dynptr is the special
+case, where we go to actual object being freed through the dynptr, so
+the offset of the pointer still needs to allow fixed and variable offset
+and process_dynptr_func will verify them later for the release argument
+case as well.
+
+Finally, since check_func_arg_reg_off is meant to be generic, move
+dynptr specific check into process_dynptr_func.
 
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- include/linux/bpf.h   | 6 +++---
- kernel/bpf/verifier.c | 2 +-
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ kernel/bpf/verifier.c                         | 55 +++++++++++++++----
+ .../testing/selftests/bpf/verifier/ringbuf.c  |  2 +-
+ 2 files changed, 44 insertions(+), 13 deletions(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 13c6ff2de540..834276ba56c9 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -538,7 +538,7 @@ enum bpf_return_type {
- 	RET_PTR_TO_SOCKET,		/* returns a pointer to a socket */
- 	RET_PTR_TO_TCP_SOCK,		/* returns a pointer to a tcp_sock */
- 	RET_PTR_TO_SOCK_COMMON,		/* returns a pointer to a sock_common */
--	RET_PTR_TO_ALLOC_MEM,		/* returns a pointer to dynamically allocated memory */
-+	RET_PTR_TO_MEM,			/* returns a pointer to dynamically allocated memory */
- 	RET_PTR_TO_MEM_OR_BTF_ID,	/* returns a pointer to a valid memory or a btf_id */
- 	RET_PTR_TO_BTF_ID,		/* returns a pointer to a btf_id */
- 	__BPF_RET_TYPE_MAX,
-@@ -548,8 +548,8 @@ enum bpf_return_type {
- 	RET_PTR_TO_SOCKET_OR_NULL	= PTR_MAYBE_NULL | RET_PTR_TO_SOCKET,
- 	RET_PTR_TO_TCP_SOCK_OR_NULL	= PTR_MAYBE_NULL | RET_PTR_TO_TCP_SOCK,
- 	RET_PTR_TO_SOCK_COMMON_OR_NULL	= PTR_MAYBE_NULL | RET_PTR_TO_SOCK_COMMON,
--	RET_PTR_TO_ALLOC_MEM_OR_NULL	= PTR_MAYBE_NULL | MEM_ALLOC | RET_PTR_TO_ALLOC_MEM,
--	RET_PTR_TO_DYNPTR_MEM_OR_NULL	= PTR_MAYBE_NULL | RET_PTR_TO_ALLOC_MEM,
-+	RET_PTR_TO_ALLOC_MEM_OR_NULL	= PTR_MAYBE_NULL | MEM_ALLOC | RET_PTR_TO_MEM,
-+	RET_PTR_TO_DYNPTR_MEM_OR_NULL	= PTR_MAYBE_NULL | RET_PTR_TO_MEM,
- 	RET_PTR_TO_BTF_ID_OR_NULL	= PTR_MAYBE_NULL | RET_PTR_TO_BTF_ID,
- 
- 	/* This must be the last entry. Its purpose is to ensure the enum is
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 87d9cccd1623..a49b95c1af1b 100644
+index a49b95c1af1b..a8c277e51d63 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -7612,7 +7612,7 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
- 		mark_reg_known_zero(env, regs, BPF_REG_0);
- 		regs[BPF_REG_0].type = PTR_TO_TCP_SOCK | ret_flag;
+@@ -5654,6 +5654,14 @@ int process_dynptr_func(struct bpf_verifier_env *env, int regno,
+ 		return -EFAULT;
+ 	}
+ 
++	/* CONST_PTR_TO_DYNPTR has fixed and variable offset as zero, ensured by
++	 * check_func_arg_reg_off, so this is only needed for PTR_TO_STACK.
++	 */
++	if (reg->off % BPF_REG_SIZE) {
++		verbose(env, "cannot pass in dynptr at an offset\n");
++		return -EINVAL;
++	}
++
+ 	/* MEM_UNINIT and MEM_RDONLY are exclusive, when applied to a
+ 	 * ARG_PTR_TO_DYNPTR (or ARG_PTR_TO_DYNPTR | DYNPTR_TYPE_*):
+ 	 *
+@@ -5672,6 +5680,7 @@ int process_dynptr_func(struct bpf_verifier_env *env, int regno,
+ 	 *		 destroyed, including mutation of the memory it points
+ 	 *		 to.
+ 	 */
++
+ 	if (arg_type & MEM_UNINIT) {
+ 		if (!is_dynptr_reg_valid_uninit(env, reg)) {
+ 			verbose(env, "Dynptr has to be an uninitialized dynptr\n");
+@@ -5983,14 +5992,37 @@ int check_func_arg_reg_off(struct bpf_verifier_env *env,
+ 	enum bpf_reg_type type = reg->type;
+ 	bool fixed_off_ok = false;
+ 
+-	switch ((u32)type) {
+-	/* Pointer types where reg offset is explicitly allowed: */
+-	case PTR_TO_STACK:
+-		if (arg_type_is_dynptr(arg_type) && reg->off % BPF_REG_SIZE) {
+-			verbose(env, "cannot pass in dynptr at an offset\n");
++	/* When referenced register is passed to release function, it's fixed
++	 * offset must be 0.
++	 *
++	 * We will check arg_type_is_release reg has ref_obj_id when storing
++	 * meta->release_regno.
++	 */
++	if (arg_type_is_release(arg_type)) {
++		/* ARG_PTR_TO_DYNPTR is a bit special, as it may not directly
++		 * point to the object being released, but to dynptr pointing
++		 * to such object, which might be at some offset on the stack.
++		 *
++		 * In that case, we simply to fallback to the default handling.
++		 */
++		if (arg_type_is_dynptr(arg_type) && type == PTR_TO_STACK)
++			goto check_type;
++		/* Going straight to check will catch this because fixed_off_ok
++		 * is false, but checking here allows us to give the user a
++		 * better error message.
++		 */
++		if (reg->off) {
++			verbose(env, "R%d must have zero offset when passed to release func\n",
++				regno);
+ 			return -EINVAL;
+ 		}
+-		fallthrough;
++		goto check;
++	}
++check_type:
++	switch ((u32)type) {
++	/* Pointer types where both fixed and variable reg offset is explicitly
++	 * allowed: */
++	case PTR_TO_STACK:
+ 	case PTR_TO_PACKET:
+ 	case PTR_TO_PACKET_META:
+ 	case PTR_TO_MAP_KEY:
+@@ -6001,12 +6033,7 @@ int check_func_arg_reg_off(struct bpf_verifier_env *env,
+ 	case PTR_TO_BUF:
+ 	case PTR_TO_BUF | MEM_RDONLY:
+ 	case SCALAR_VALUE:
+-		/* Some of the argument types nevertheless require a
+-		 * zero register offset.
+-		 */
+-		if (base_type(arg_type) != ARG_PTR_TO_ALLOC_MEM)
+-			return 0;
+-		break;
++		return 0;
+ 	/* All the rest must be rejected, except PTR_TO_BTF_ID which allows
+ 	 * fixed offset.
+ 	 */
+@@ -6023,12 +6050,16 @@ int check_func_arg_reg_off(struct bpf_verifier_env *env,
+ 		/* For arg is release pointer, fixed_off_ok must be false, but
+ 		 * we already checked and rejected reg->off != 0 above, so set
+ 		 * to true to allow fixed offset for all other cases.
++		 *
++		 * var_off always must be 0 for PTR_TO_BTF_ID, hence we still
++		 * need to do checks instead of returning.
+ 		 */
+ 		fixed_off_ok = true;
  		break;
--	case RET_PTR_TO_ALLOC_MEM:
-+	case RET_PTR_TO_MEM:
- 		mark_reg_known_zero(env, regs, BPF_REG_0);
- 		regs[BPF_REG_0].type = PTR_TO_MEM | ret_flag;
- 		regs[BPF_REG_0].mem_size = meta.mem_size;
+ 	default:
+ 		break;
+ 	}
++check:
+ 	return __check_ptr_off_reg(env, reg, regno, fixed_off_ok);
+ }
+ 
+diff --git a/tools/testing/selftests/bpf/verifier/ringbuf.c b/tools/testing/selftests/bpf/verifier/ringbuf.c
+index b64d33e4833c..92e3f6a61a79 100644
+--- a/tools/testing/selftests/bpf/verifier/ringbuf.c
++++ b/tools/testing/selftests/bpf/verifier/ringbuf.c
+@@ -28,7 +28,7 @@
+ 	},
+ 	.fixup_map_ringbuf = { 1 },
+ 	.result = REJECT,
+-	.errstr = "dereference of modified alloc_mem ptr R1",
++	.errstr = "R1 must have zero offset when passed to release func",
+ },
+ {
+ 	"ringbuf: invalid reservation offset 2",
 -- 
 2.38.0
 
