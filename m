@@ -2,92 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAC28602F3C
-	for <lists+bpf@lfdr.de>; Tue, 18 Oct 2022 17:11:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6027D6030B7
+	for <lists+bpf@lfdr.de>; Tue, 18 Oct 2022 18:26:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229648AbiJRPLf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Oct 2022 11:11:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59142 "EHLO
+        id S229596AbiJRQ0q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Oct 2022 12:26:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229729AbiJRPLe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Oct 2022 11:11:34 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F141868A5;
-        Tue, 18 Oct 2022 08:11:33 -0700 (PDT)
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29IF6YBu010713;
-        Tue, 18 Oct 2022 15:11:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=IeTbFhUNkNs/q6jQFENQ4qg4Yy9Z8X9Pz3/Uov/ew5U=;
- b=aA9moSjk5AQKlK5PVymAnRaZEw/eTo/2WBTaDn9OrdASkbpgrxKRYYTlU6i010sZmskz
- KBZ9XCFLBSoP52l1y3sBU8UQ9cL4T8fuEe9r1Eb7fKBBOLq7RBid3zOa6FeAzHBVGAAf
- mVDkUqbQmobGZGObNFCkeDwRFtI7AoFYNHnHgCZ48lxmWX1YfsHVH/h5kZzBL3J97E5O
- Ht5G/so4nfcYZb7Z8AaXJtffW6P93ULyfGO0M6VCy1+zOvzCgNP6Sw/QYqPiYQ+W51/d
- q66xEKMB9gKKt04i7kIHv5f3qQzcifQfpJMzhQ5OnWktppypwR4e+T0Y+tc/XDLD2ZPZ 1Q== 
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3k9vta49h6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 18 Oct 2022 15:11:26 +0000
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 29IEpaNG030321;
-        Tue, 18 Oct 2022 15:11:23 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma06fra.de.ibm.com with ESMTP id 3k7m4jc6uv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 18 Oct 2022 15:11:23 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 29IFBrwO53084652
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 18 Oct 2022 15:11:53 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DE090A4057;
-        Tue, 18 Oct 2022 15:11:20 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CA17CA4051;
-        Tue, 18 Oct 2022 15:11:20 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Tue, 18 Oct 2022 15:11:20 +0000 (GMT)
-Received: by tuxmaker.boeblingen.de.ibm.com (Postfix, from userid 25651)
-        id 88EB6E0133; Tue, 18 Oct 2022 17:11:20 +0200 (CEST)
-From:   Christian Borntraeger <borntraeger@linux.ibm.com>
-To:     dxu@dxuuu.xyz
-Cc:     bpf@vger.kernel.org, jolsa@kernel.org, kuba@kernel.org,
-        martin.lau@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: WARN: multiple IDs found for 'nf_conn': 92168, 117897 - using 92168
-Date:   Tue, 18 Oct 2022 17:11:20 +0200
-Message-Id: <20221018151120.1435085-1-borntraeger@linux.ibm.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20221004144603.obymbke3oarhgnnz@kashmir.localdomain>
-References: <20221004144603.obymbke3oarhgnnz@kashmir.localdomain>
+        with ESMTP id S229605AbiJRQ0p (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Oct 2022 12:26:45 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C47BBBF2C;
+        Tue, 18 Oct 2022 09:26:43 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id m16so21317404edc.4;
+        Tue, 18 Oct 2022 09:26:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=l5/aRgDu/9aa+W5o6wMPJvXpFK5DFDWYbPsRzpvsi5o=;
+        b=Mx6ELPTP3MV9c9wZ8V8O6rJfJNGuPML5ZZv+LLVRqcild5Uu2hLt+jrm7uUWWodS/2
+         fCZyGwGwfQHbx0Snz4sReFoa9MgJQ4sywCaN/Wq8auuzy+hYo2QKKFc8BmNcsIu1upwC
+         tZiNHRV+ivSD2YiwefdAUsUz7cdPpQgL+b0k3KrSNNKd/7c+NVTY/tHS9m423yglTahc
+         UoTSr6Kt52JI7vdpX4n2J3ZQudsKoX8RO5goVs6f6nb4JFIefjdTuJymV6KPo3ciQGvg
+         xtVdh84teeRckQCl68dMvzG2bJ/fgyNw7wW/qhr80N452fOwrxT2Sy64IKzDbok/Xjqd
+         NNQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=l5/aRgDu/9aa+W5o6wMPJvXpFK5DFDWYbPsRzpvsi5o=;
+        b=3ANS5oIP0rCYuA7diCneDVEOlqUCUzheVSIe7cqr4gDyhM12kljc/yn0AUJHFJ6v70
+         6Oewv8qysNyZ40PbCDeJ+aW8Hj0P1c6MOlSWtaVRdUZh/wJalbRu1LuQy/Pfy5B/9DG3
+         N41+8w04lG0aEOnMRei3bzIHlSD61ndBPsVl4oebNbvMsC1e8356Zdezd2SEX1L8OmM2
+         +E8KkUBeDdBnqmQr1YzyVUl9qyzgg9HDkz01dYGLWuox9JjwNQZV7Hdo2tiHE4TVrcnF
+         DGtApFBTtsFI1BzgF20ayr/D0dxErhUCIw3LDgBPV2Ur6nS5mvTfdbQNGVgz2ZTdM70h
+         PX4A==
+X-Gm-Message-State: ACrzQf2K/YAC0faqEKb57VIU3F1IlY7r+8Q1NnyjeLhVN1iKxWjOMtP/
+        Gz+dJiUyHP2AUarXwqZjAEJpY1monHNQp7vpGZ8=
+X-Google-Smtp-Source: AMsMyM56iWj+8Qb/DdbeEqSpImVPcI3qeHJ80u5hjAuDbQhGwNCEy35R4fxSwrlmLe3coCAqUpvb9pGjwYmboQHZC3A=
+X-Received: by 2002:a05:6402:524a:b0:45c:e2c6:6ef7 with SMTP id
+ t10-20020a056402524a00b0045ce2c66ef7mr3458176edd.421.1666110401962; Tue, 18
+ Oct 2022 09:26:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: YMmqkhJWn9SFomlgZwi4HGP7esy4hDG8
-X-Proofpoint-GUID: YMmqkhJWn9SFomlgZwi4HGP7esy4hDG8
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-10-18_05,2022-10-18_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
- mlxlogscore=745 impostorscore=0 malwarescore=0 mlxscore=0 phishscore=0
- priorityscore=1501 lowpriorityscore=0 spamscore=0 suspectscore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2209130000 definitions=main-2210180086
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <1665482267-30706-1-git-send-email-wangyufen@huawei.com>
+ <1665482267-30706-2-git-send-email-wangyufen@huawei.com> <469d28c0-8156-37ad-d0d9-c11608ca7e07@linux.dev>
+ <b38c7c5e-bd88-0257-42f4-773d8791330a@huawei.com> <793d2d69-cf52-defc-6964-8b7c95bb45c4@huawei.com>
+In-Reply-To: <793d2d69-cf52-defc-6964-8b7c95bb45c4@huawei.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 18 Oct 2022 09:26:30 -0700
+Message-ID: <CAADnVQJE4A3TY4Jh==6rYUGqW1zwCJbAuVEujYCWmhgDSk=g+w@mail.gmail.com>
+Subject: Re: [net 1/2] selftests/net: fix opening object file failed
+To:     wangyufen <wangyufen@huawei.com>
+Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
+        Lina Wang <lina.wang@mediatek.com>, bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        =?UTF-8?Q?Daniel_M=C3=BCller?= <deso@posteo.net>,
+        Network Development <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-chiming in. I also see that on s390x with 6.1-rc.
+On Tue, Oct 18, 2022 at 2:58 AM wangyufen <wangyufen@huawei.com> wrote:
+>
+>
+> =E5=9C=A8 2022/10/18 10:57, wangyufen =E5=86=99=E9=81=93:
+> >
+> > =E5=9C=A8 2022/10/13 9:51, Martin KaFai Lau =E5=86=99=E9=81=93:
+> >> On 10/11/22 2:57 AM, Wang Yufen wrote:
+> >>> The program file used in the udpgro_frglist testcase is
+> >>> "../bpf/nat6to4.o",
+> >>> but the actual nat6to4.o file is in "bpf/" not "../bpf".
+> >>> The following error occurs:
+> >>>    Error opening object ../bpf/nat6to4.o: No such file or directory
+> >>
+> >> hmm... so it sounds like the test never works...
+> >>
+> >> The test seems like mostly exercising the tc-bpf?  It makes sense to
+> >> move it to the selftests/bpf. or staying in net is also fine for now
+> >> and only need to fix up the path here.
+> >>
+> >> However, if moving to selftests/bpf, I don't think it is a good idea
+> >> to only move the bpf prog but not moving the actual test program (the
+> >> script here) such that the bpf CI can continuously testing it.
+> >> Otherwise, it will just drift and rot slowly like patch 2.
+> >>
+> >> Also, if you prefer to move it to selftests/bpf, the bpf prog cannot
+> >> be moved in the current form.  eg. There is some convention on the
+> >> SEC name in the selftests/bpf/progs.  Also, the testing script needs
+> >> to be adapted to the selftests/bpf/test_progs infra.
+> >
+> > hmm... if moving to selftests/bpf, the actual test programs also needs
+> > to move to selftests/bpf, e.g. udpgso_bench_*, in_netns.sh,
+> > udpgso*.sh, which may not be a good idea.
+> >
+> > So, only fix up the path here.
+> >
+> > Also fix up the bpf/nat6to4.o compile error as following:
+> >
+> >     make -C tools/testing/selftests/net got the following err:
+> >     bpf/nat6to4.c:43:10: fatal error: 'bpf/bpf_helpers.h' file not foun=
+d
+> >              ^~~~~~~~~~~~~~~~~~~
+> >
+> >
+> After revert commit 7b92aa9e61350("selftests net: fix kselftest net
+> fatal error"),
+>
+> make -C tools/testing/selftests got the following err:
+>
+> In file included from bpf/nat6to4.c:43:
+> ../../../lib/bpf/bpf_helpers.h:11:10: fatal error: 'bpf_helper_defs.h'
+> file not found
+> #include "bpf_helper_defs.h"
+>           ^~~~~~~~~~~~~~~~~~~
+>
+> "bpf_helper_defs.h"  is generated by libbpf=EF=BC=9B
+>
+>
+> So, there are two possible approaches:  the first moving nat6to4.c and
+> the actual test programs to selftests/bpf;
+>
+> second add make dependency on libbpf for the nat6to4.c.
+>
+> Which one is better?
 
-latest greates pahole does seem to fix this for me on s390 with gcc, but 
-with clang I still see this.
-
-Christian
+Neither.
+Martin already explained that the whole thing needs to move to selftests/bp=
+f.
