@@ -2,125 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94242602EBA
-	for <lists+bpf@lfdr.de>; Tue, 18 Oct 2022 16:46:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCB5F602EA9
+	for <lists+bpf@lfdr.de>; Tue, 18 Oct 2022 16:38:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230048AbiJROqa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Oct 2022 10:46:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59392 "EHLO
+        id S231154AbiJROiI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Oct 2022 10:38:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230152AbiJROq3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Oct 2022 10:46:29 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BD56D73DD;
-        Tue, 18 Oct 2022 07:46:27 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id r13so23839793wrj.11;
-        Tue, 18 Oct 2022 07:46:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:user-agent:references:message-id:date:in-reply-to
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=zoXCniAMsfloF5Adrb7dptYXmfUJcR1MEzuNGWKn9dY=;
-        b=jdOB1y6VTfbcMviKgQjKLZBefTvuG83CiujSpa2qAVF/X20dUMgQHCiBiD7cXPfqYz
-         148g4FIf6eIgCzpb8ba7Es2JreTSJyfEPJ+2MiYqNV2F/mEvz+opY4eSLX57PtLyuB4L
-         ZI3y6oQ3kdfJfFR1wwlGDyIN7hw3SC0oXOU48ZRrNHC8Rfue/E/2Gt0919rpA7td2FLe
-         f3d7cv3fRC0h7FNhjeZlxuPFlNoYr6u0FrYRcMnCsX9LHLQFuvNoHXYkt4RqeCf1sqeD
-         6NrdKjynSriiJBblqOTs0eM7Pmz0gjDIUGUPS1RS1+yg1zkjf2swPMcPLLru5gODRHd1
-         AcyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=mime-version:user-agent:references:message-id:date:in-reply-to
-         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zoXCniAMsfloF5Adrb7dptYXmfUJcR1MEzuNGWKn9dY=;
-        b=7eEIuBblxPS3DbHda3QW0y7gd7lBtR7Bm/hZZYQ4gJ1jFQtOfDdRoBPCj9tCe8acV1
-         9Q97CKXZV9jZkg0vayB6R/QZbLZ5+gTQ2gFcEylAaFlmJzc0WoCGmF+m4sXyVDrnoyi0
-         PSkHq/D54Nr8Jr+Dw6RsSHE25Fpeb73u9i4TR3iXAc1y/0HWCvhhnErh6W4iqZoMhZWh
-         e20IeJb85TTfYIV1QOsFwbb8vsIo7jjI4/Rw9RcmpHQnl9MxctkUjBZ08K7KfcoSXdO/
-         hEiFZahyIi62oYv0XvbxKrkG8bVMjl4Mr2fqX8WjWT63wuvrRpLCgOxCPLut/ivgrD1q
-         tMCg==
-X-Gm-Message-State: ACrzQf3b9swQ08oi+2tuM+OGmViNoEQvk9Eou8ePRIfQY6h1tVbmoWrI
-        4hLZCDAXM/yKFp+W+76PGdsTLkt7H4c=
-X-Google-Smtp-Source: AMsMyM4Ri2wPP0g8IUZMLsopJBcLquznv0egRyJIec4RMYW/CP/vRXGeOWzNXFvV54hLBI90Ge2Cog==
-X-Received: by 2002:a5d:6d07:0:b0:22f:81f9:9c73 with SMTP id e7-20020a5d6d07000000b0022f81f99c73mr2402211wrq.76.1666104384880;
-        Tue, 18 Oct 2022 07:46:24 -0700 (PDT)
-Received: from imac ([2a02:8010:60a0:0:8008:3928:dd39:56c])
-        by smtp.gmail.com with ESMTPSA id q65-20020a1c4344000000b003a8434530bbsm18840191wma.13.2022.10.18.07.46.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Oct 2022 07:46:23 -0700 (PDT)
-From:   Donald Hunter <donald.hunter@gmail.com>
-To:     Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     bpf@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH bpf-next v1] bpf, docs: Reformat BPF maps page to be
- more readable
-In-Reply-To: <Y0eQcOsbrmBXqdUP@debian.me> (Bagas Sanjaya's message of "Thu, 13
-        Oct 2022 11:13:36 +0700")
-Date:   Tue, 18 Oct 2022 15:45:52 +0100
-Message-ID: <m2sfjlur4v.fsf@gmail.com>
-References: <20221012152715.25073-1-donald.hunter@gmail.com>
-        <Y0eQcOsbrmBXqdUP@debian.me>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (darwin)
+        with ESMTP id S229966AbiJROiE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Oct 2022 10:38:04 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBF36C97CC;
+        Tue, 18 Oct 2022 07:38:01 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4MsGcT5n69zKG7J;
+        Tue, 18 Oct 2022 22:35:37 +0800 (CST)
+Received: from k01.huawei.com (unknown [10.67.174.197])
+        by APP3 (Coremail) with SMTP id _Ch0CgBne11Guk5jh5e9AQ--.19076S2;
+        Tue, 18 Oct 2022 22:37:59 +0800 (CST)
+From:   Xu Kuohai <xukuohai@huaweicloud.com>
+To:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
+Subject: [PATCH] libbpf: Avoid allocating reg_name with sscanf in parse_usdt_arg()
+Date:   Tue, 18 Oct 2022 10:55:38 -0400
+Message-Id: <20221018145538.2046842-1-xukuohai@huaweicloud.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: _Ch0CgBne11Guk5jh5e9AQ--.19076S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxWFW8Xw4fuF1rKF17Kw1rJFb_yoW5Ar43pw
+        4Sgw1qvrn7J3ySga4DXanYq34UCrZrJrZYyr18ta45ZF4fWr95t34fKF4Fywn5GFW7AF4a
+        9F4rCryrGFy5Xr7anT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUk2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
+        c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
+        026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF
+        0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0x
+        vE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
+        87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUOyCJDUUUU
+X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Bagas Sanjaya <bagasdotme@gmail.com> writes:
+From: Xu Kuohai <xukuohai@huawei.com>
 
-> On Wed, Oct 12, 2022 at 04:27:15PM +0100, Donald Hunter wrote:
->> Add a more complete introduction, with links to man pages.
->> Move toctree of map types above usage notes.
->> Format usage notes to improve readability.
->> 
->> Signed-off-by: Donald Hunter <donald.hunter@gmail.com>
->> ---
->>  Documentation/bpf/maps.rst | 101 ++++++++++++++++++++++++-------------
->>  1 file changed, 65 insertions(+), 36 deletions(-)
->> 
->> diff --git a/Documentation/bpf/maps.rst b/Documentation/bpf/maps.rst
->> index f41619e312ac..4906ff0f8382 100644
->> --- a/Documentation/bpf/maps.rst
->> +++ b/Documentation/bpf/maps.rst
->> @@ -1,52 +1,81 @@
->>  
->> -=========
->> -eBPF maps
->> +========
->> +BPF maps
->> +========
->> +
->> +BPF 'maps' provide generic storage of different types for sharing data between
->> +kernel and user space. There are several storage types available, including
->> +hash, array, bloom filter and radix-tree. Several of the map types exist to
->> +support specific BPF helpers that perform actions based on the map contents. The
->> +maps are accessed from BPF programs via BPF helpers which are documented in the
->> +`man-pages`_ for `bpf-helpers(7)`_.
->> +
->> +BPF maps are accessed from user space via the ``bpf`` syscall, which provides
->> +commands to create maps, lookup elements, update elements and delete
->> +elements. More details of the BPF syscall are available in
->> +:doc:`/userspace-api/ebpf/syscall` and in the `man-pages`_ for `bpf(2)`_.
->> <snipped>...
->> +.. Links:
->> +.. _man-pages: https://www.kernel.org/doc/man-pages/
->> +.. _bpf(2): https://man7.org/linux/man-pages/man2/bpf.2.html
->> +.. _bpf-helpers(7): https://man7.org/linux/man-pages/man7/bpf-helpers.7.html
->
-> I think you can just write "see :manpage:`bpf(2)`" without linking to
-> external site.
+The reg_name in parse_usdt_arg() is used to hold register name, which
+is short enough to be held in a 16-byte array, so we could define
+reg_name as char reg_name[16] to avoid dynamically allocating reg_name
+with sscanf.
 
-I tried your suggestion but it just renders italicized text. I think it
-is more helpful to provide a clickable link to the relevant man
-page. Other documentation pages already provide clickable manpage links
-and I followed existing practise from Documentation/bpf/syscall_api.rst
+Suggested-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
+---
+ tools/lib/bpf/usdt.c | 16 ++++++----------
+ 1 file changed, 6 insertions(+), 10 deletions(-)
 
-I would prefer to keep the clickable links.
+diff --git a/tools/lib/bpf/usdt.c b/tools/lib/bpf/usdt.c
+index 49f3c3b7f609..28fa1b2283de 100644
+--- a/tools/lib/bpf/usdt.c
++++ b/tools/lib/bpf/usdt.c
+@@ -1225,26 +1225,24 @@ static int calc_pt_regs_off(const char *reg_name)
+ 
+ static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec *arg)
+ {
+-	char *reg_name = NULL;
++	char reg_name[16];
+ 	int arg_sz, len, reg_off;
+ 	long off;
+ 
+-	if (sscanf(arg_str, " %d @ %ld ( %%%m[^)] ) %n", &arg_sz, &off, &reg_name, &len) == 3) {
++	if (sscanf(arg_str, " %d @ %ld ( %%%15[^)] ) %n", &arg_sz, &off, reg_name, &len) == 3) {
+ 		/* Memory dereference case, e.g., -4@-20(%rbp) */
+ 		arg->arg_type = USDT_ARG_REG_DEREF;
+ 		arg->val_off = off;
+ 		reg_off = calc_pt_regs_off(reg_name);
+-		free(reg_name);
+ 		if (reg_off < 0)
+ 			return reg_off;
+ 		arg->reg_off = reg_off;
+-	} else if (sscanf(arg_str, " %d @ %%%ms %n", &arg_sz, &reg_name, &len) == 2) {
++	} else if (sscanf(arg_str, " %d @ %%%15s %n", &arg_sz, reg_name, &len) == 2) {
+ 		/* Register read case, e.g., -4@%eax */
+ 		arg->arg_type = USDT_ARG_REG;
+ 		arg->val_off = 0;
+ 
+ 		reg_off = calc_pt_regs_off(reg_name);
+-		free(reg_name);
+ 		if (reg_off < 0)
+ 			return reg_off;
+ 		arg->reg_off = reg_off;
+@@ -1456,16 +1454,15 @@ static int calc_pt_regs_off(const char *reg_name)
+ 
+ static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec *arg)
+ {
+-	char *reg_name = NULL;
++	char reg_name[16];
+ 	int arg_sz, len, reg_off;
+ 	long off;
+ 
+-	if (sscanf(arg_str, " %d @ %ld ( %m[a-z0-9] ) %n", &arg_sz, &off, &reg_name, &len) == 3) {
++	if (sscanf(arg_str, " %d @ %ld ( %15[a-z0-9] ) %n", &arg_sz, &off, reg_name, &len) == 3) {
+ 		/* Memory dereference case, e.g., -8@-88(s0) */
+ 		arg->arg_type = USDT_ARG_REG_DEREF;
+ 		arg->val_off = off;
+ 		reg_off = calc_pt_regs_off(reg_name);
+-		free(reg_name);
+ 		if (reg_off < 0)
+ 			return reg_off;
+ 		arg->reg_off = reg_off;
+@@ -1474,12 +1471,11 @@ static int parse_usdt_arg(const char *arg_str, int arg_num, struct usdt_arg_spec
+ 		arg->arg_type = USDT_ARG_CONST;
+ 		arg->val_off = off;
+ 		arg->reg_off = 0;
+-	} else if (sscanf(arg_str, " %d @ %m[a-z0-9] %n", &arg_sz, &reg_name, &len) == 2) {
++	} else if (sscanf(arg_str, " %d @ %15[a-z0-9] %n", &arg_sz, reg_name, &len) == 2) {
+ 		/* Register read case, e.g., -8@a1 */
+ 		arg->arg_type = USDT_ARG_REG;
+ 		arg->val_off = 0;
+ 		reg_off = calc_pt_regs_off(reg_name);
+-		free(reg_name);
+ 		if (reg_off < 0)
+ 			return reg_off;
+ 		arg->reg_off = reg_off;
+-- 
+2.30.2
 
-> Otherwise LGTM.
