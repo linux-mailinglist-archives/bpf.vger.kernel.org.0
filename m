@@ -2,144 +2,176 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00672603267
-	for <lists+bpf@lfdr.de>; Tue, 18 Oct 2022 20:26:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7311960328C
+	for <lists+bpf@lfdr.de>; Tue, 18 Oct 2022 20:32:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229756AbiJRS0n (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Oct 2022 14:26:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53120 "EHLO
+        id S229775AbiJRSct (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Oct 2022 14:32:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbiJRS0m (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Oct 2022 14:26:42 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F84CB7EB;
-        Tue, 18 Oct 2022 11:26:40 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1okrIT-0002Yh-EO; Tue, 18 Oct 2022 20:26:37 +0200
-Date:   Tue, 18 Oct 2022 20:26:37 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     bpf@vger.kernel.org
-Cc:     netfilter-devel <netfilter-devel@vger.kernel.org>
-Subject: netfilter+bpf road ahead
-Message-ID: <20221018182637.GA4631@breakpoint.cc>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229710AbiJRSct (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Oct 2022 14:32:49 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8009267178
+        for <bpf@vger.kernel.org>; Tue, 18 Oct 2022 11:32:48 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id x23-20020a634857000000b0043c700f6441so8560232pgk.21
+        for <bpf@vger.kernel.org>; Tue, 18 Oct 2022 11:32:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=pScL4HsKSlGXXrCDAO9SW0fhqoUdP+2XbMXTHRrK8TE=;
+        b=LM9JAFVF44F8UppjyXfB0lky34OVy+clbEjC7DJB3r88sBTbKEv97oKIiA1IsKFfVD
+         7pe8/v+RGDpnZFWPDoXWtwS3KtF23/iaHNQ/5HEsFosSxPyq6YvVQuXzgif/HsNm9ON2
+         ZNk3piPjd2+l9SG85FgVBGdeHr2hwQ7jvL+gkQa6gvLijEpR5GVnvgT+YZZicCYIgszn
+         jw3nnC1WmO29rKPnbZw25ol4zIMBSx4+FTaq4Qr5acMh/uw/VHz1r6LmlRR2lbU/GN11
+         kX1j+q2x8hkv1/s+Ab1xof00JKN7CSL2nZOF3jZWPwIit1umjBaumNsWm+prQeORLHRW
+         clGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pScL4HsKSlGXXrCDAO9SW0fhqoUdP+2XbMXTHRrK8TE=;
+        b=bBZUFAo4Ihl0eXX5zwv50aYYE2QavOG9idwYOTAqxkoh+9voQ4obMrrjQkLdU6wP+K
+         c0Rmv4fsMKLlQlb/EMfd30ErZkjHED/51PIm+rjlTedOhdXRRQ73610wZ5vqhb1Cge+/
+         hWXSMjqs0IVrbCb1ygv0wz38zAyTePmP004iaJM3cOZDgOJWLj7j/V6mcSIsiEqvgjJ4
+         CjBr6HUkPwlL4aiPISFkbo19AO8ah43WjRntBKNmW9OXXuIwHuVfmOyWks4O/UmcFUTn
+         08qxw/yEmzsbDL9b3vct4a6lYDuy+q0Xo3T+O7UX4cQrx9A3TDTIiAFEVKz2ajK56Ggp
+         kupQ==
+X-Gm-Message-State: ACrzQf3w/YhICC6aLcrKQ2CYwJXLyqSFuajbuRwv0cd7hOnnBKHc1Ohc
+        WKVBLFp+pHo32GPUwdYk1RXgqYQ=
+X-Google-Smtp-Source: AMsMyM712u96NyjOP2AVqntvtVSu2Ssn5/WDnERwMtc9crslzRd9xK7v8pJj47g0ZeOlSkNSpmiViBg=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a17:90a:b794:b0:20a:eab5:cf39 with SMTP id
+ m20-20020a17090ab79400b0020aeab5cf39mr1832310pjr.1.1666117967753; Tue, 18 Oct
+ 2022 11:32:47 -0700 (PDT)
+Date:   Tue, 18 Oct 2022 11:32:46 -0700
+In-Reply-To: <20221018145538.2046842-1-xukuohai@huaweicloud.com>
+Mime-Version: 1.0
+References: <20221018145538.2046842-1-xukuohai@huaweicloud.com>
+Message-ID: <Y07xTsStxyzZzxQZ@google.com>
+Subject: Re: [PATCH] libbpf: Avoid allocating reg_name with sscanf in parse_usdt_arg()
+From:   sdf@google.com
+To:     Xu Kuohai <xukuohai@huaweicloud.com>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On 10/18, Xu Kuohai wrote:
+> From: Xu Kuohai <xukuohai@huawei.com>
 
-This is a summary of what Alexei Starovoitov and myself talked about
-in our meeting in Zurich.  Most of this was written by Alexei, with
-minor edits and additions from me.
+> The reg_name in parse_usdt_arg() is used to hold register name, which
+> is short enough to be held in a 16-byte array, so we could define
+> reg_name as char reg_name[16] to avoid dynamically allocating reg_name
+> with sscanf.
 
-- Alexei and Florian met in Zurich to discuss netfilter and bpf.
-  netfilter (core, ipables, ebtables, nftables ...) all take heavy
-  performance hits on retpoline enabled kernels due to
-  indiscriminate use of indirect calls.
-  Over the years nftables grew a large number of workarounds to keep
-acceptable performance for common case.
-  In few places indirect calls were replaced with large if (tgt ==
-&fn1) fn1(); else if (tgt == &fn2) fn2(); else ...
-  [link1](https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git/tree/net/netfilter/nf_tables_core.c#n256)
-  [link2](https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git/tree/net/netfilter/nf_tables_core.c#n198)
-  In other place a set of giant switch statements were used.
-  [link](https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git/tree/net/netfilter/nft_meta.c#n309)
-  The 3rd bottleneck couldn't be done with either if-s or switch and
-Florian proposed to accelerate it with [generated bpf
-code](https://lore.kernel.org/bpf/20221005141309.31758-1-fw@strlen.de/).
-  The NFT VM wasn't flexible enough either. Despite large engineering
-investment it still lacks some abilities that are needed for feature
-parity with iptables.
-RHEL and Fedora changed the iptables default to iptables-nft, but
-iptables-nft implements feature parity with ipables by calling into the
-x_tables modules.  This needs two indirect calls for each match
-(call to nft_compat expression, then call to the xtables target or
- match function).
-iptables-nft can be changed gradually to replace matches with nft-native
-expressions to avoid this.
-But in some cases the modules/targets have a feature that
-cannot be emulated with the existing nft vm.
+> Suggested-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
 
-One example is ability to only store parts of skb->mark.
-The nft grammar would allow to do:
+Addresses Andrii's suggestion from the following:
 
-ct mark set (ct mark & 0xffffff00) | (meta mark & 0xff)
+https://lore.kernel.org/bpf/86c88c01-22eb-b7f8-9c65-0faf97b4096b@huawei.com/
 
-... which would stash the lower 8bit of skb->mark while keeping
-the upper 24 bits of the connmark intact.
+Acked-by: Stanislav Fomichev <sdf@google.com>
 
-But neither frontend or backend (kernel) can handle it, because it needs
-support for:
+> ---
+>   tools/lib/bpf/usdt.c | 16 ++++++----------
+>   1 file changed, 6 insertions(+), 10 deletions(-)
 
-  regA = regB | regC
+> diff --git a/tools/lib/bpf/usdt.c b/tools/lib/bpf/usdt.c
+> index 49f3c3b7f609..28fa1b2283de 100644
+> --- a/tools/lib/bpf/usdt.c
+> +++ b/tools/lib/bpf/usdt.c
+> @@ -1225,26 +1225,24 @@ static int calc_pt_regs_off(const char *reg_name)
 
-nf_tables only allows
-  regA = regB BINOP VALUE.
+>   static int parse_usdt_arg(const char *arg_str, int arg_num, struct  
+> usdt_arg_spec *arg)
+>   {
+> -	char *reg_name = NULL;
+> +	char reg_name[16];
+>   	int arg_sz, len, reg_off;
+>   	long off;
 
-In the example given above, the problem is the right hand side
-of the OR -- its not a constant value.
+> -	if (sscanf(arg_str, " %d @ %ld ( %%%m[^)] ) %n", &arg_sz, &off,  
+> &reg_name, &len) == 3) {
+> +	if (sscanf(arg_str, " %d @ %ld ( %%%15[^)] ) %n", &arg_sz, &off,  
+> reg_name, &len) == 3) {
+>   		/* Memory dereference case, e.g., -4@-20(%rbp) */
+>   		arg->arg_type = USDT_ARG_REG_DEREF;
+>   		arg->val_off = off;
+>   		reg_off = calc_pt_regs_off(reg_name);
+> -		free(reg_name);
+>   		if (reg_off < 0)
+>   			return reg_off;
+>   		arg->reg_off = reg_off;
+> -	} else if (sscanf(arg_str, " %d @ %%%ms %n", &arg_sz, &reg_name, &len)  
+> == 2) {
+> +	} else if (sscanf(arg_str, " %d @ %%%15s %n", &arg_sz, reg_name, &len)  
+> == 2) {
+>   		/* Register read case, e.g., -4@%eax */
+>   		arg->arg_type = USDT_ARG_REG;
+>   		arg->val_off = 0;
 
-ct mark set (ct mark & 0xffffff00) | 1
+>   		reg_off = calc_pt_regs_off(reg_name);
+> -		free(reg_name);
+>   		if (reg_off < 0)
+>   			return reg_off;
+>   		arg->reg_off = reg_off;
+> @@ -1456,16 +1454,15 @@ static int calc_pt_regs_off(const char *reg_name)
 
-... would work.
+>   static int parse_usdt_arg(const char *arg_str, int arg_num, struct  
+> usdt_arg_spec *arg)
+>   {
+> -	char *reg_name = NULL;
+> +	char reg_name[16];
+>   	int arg_sz, len, reg_off;
+>   	long off;
 
-Patches that allow two source registers are floating around on mailing
-list but have not been applied so far.
+> -	if (sscanf(arg_str, " %d @ %ld ( %m[a-z0-9] ) %n", &arg_sz, &off,  
+> &reg_name, &len) == 3) {
+> +	if (sscanf(arg_str, " %d @ %ld ( %15[a-z0-9] ) %n", &arg_sz, &off,  
+> reg_name, &len) == 3) {
+>   		/* Memory dereference case, e.g., -8@-88(s0) */
+>   		arg->arg_type = USDT_ARG_REG_DEREF;
+>   		arg->val_off = off;
+>   		reg_off = calc_pt_regs_off(reg_name);
+> -		free(reg_name);
+>   		if (reg_off < 0)
+>   			return reg_off;
+>   		arg->reg_off = reg_off;
+> @@ -1474,12 +1471,11 @@ static int parse_usdt_arg(const char *arg_str,  
+> int arg_num, struct usdt_arg_spec
+>   		arg->arg_type = USDT_ARG_CONST;
+>   		arg->val_off = off;
+>   		arg->reg_off = 0;
+> -	} else if (sscanf(arg_str, " %d @ %m[a-z0-9] %n", &arg_sz, &reg_name,  
+> &len) == 2) {
+> +	} else if (sscanf(arg_str, " %d @ %15[a-z0-9] %n", &arg_sz, reg_name,  
+> &len) == 2) {
+>   		/* Register read case, e.g., -8@a1 */
+>   		arg->arg_type = USDT_ARG_REG;
+>   		arg->val_off = 0;
+>   		reg_off = calc_pt_regs_off(reg_name);
+> -		free(reg_name);
+>   		if (reg_off < 0)
+>   			return reg_off;
+>   		arg->reg_off = reg_off;
+> --
+> 2.30.2
 
-Some customers use xt_bpf with either classic_bf or ebpf, so Florian proposed
-nft->ebpf, but Daniel Borkmann and Alexei argued against.
-The key promise of NFT was flexible packet parsing. Turns out that there
-are users that would benefit from programmable parsing, e.g. to extract
-sni from certificates or hostnames from DNS replies.
-
-After many hours of brainstorming we came up with the plan:
- - cleanup and land bpf generator to accelerate one of nf bottlenecks.
- - introduce new stable BPF_PROG_TYPE_NETFILTER. Alexeis preference
-was to avoid new prog types and use unstable hooks,
-but iptables are scoped by network namespaces. We could use
-xdp_dispatcher-like generator to demux bpf prog per netns,
-but netns removal automatically flushes iptable rules, so netns
-would need to know about this bpf dispatcher and unload
-bpf-netfilter prog. At that point the amount of user facing
-"implementation details" becomes so large that calling
-such hooks "unstable" isn't realistic.
-- return values from this prog type will be existing netfilter codes
-except NF_STOLEN.
-- allow BPF_PROG_TYPE_NETFILTER to attach to all netfilter/iptables
-hooks where program context will be uapi 'struct bpf_netfilter'
-At that point the stable part of the interface ends. From input
-context the program will be able to access skb, socket, nents, netdev
-pointers and read them with the help of CO-RE and BTF.
-- attach uapi will be done either with bpf_link and FD or with
-netlink using a tuple (netns, nf_family, nf_hook, bpf_prog)
-- introduce a set of kfuncs to access conntrack, nat, nft sets and maps,
-nf_queue and so on.
-- in addition to existing two iptables rules converters in user
-space (iptables->nft text-to-text and iptables->nft text-to-netlink)
-the latter will be augmented to generate BPF_PROG_TYPE_NETFILTER
-prog as well.  bpf-aware nft frontend would pass both the nft instructions
-(for netfilter monitor and netlink query purposes) and a bpf_prog, but will execute
-bpf program in run-time.
-The bpf prog doesn't have to have 100% feature parity. It can fall
-back to NFT core for not-yet-implemented expressions.
-- nft_set_pipapo.c is an efficient classification map for arbitrary ranges
-represented as 'nft set' from uapi pov.
-bpf side might interface to it directly via kfuncs.
-- lots of details to be figured out, but if netfilter core folks
-agree to this plan it will be one of the most exciting
-projects in the linux networking. iptables will see significant
-performance boost and major feature addition.
-Blending bpf and netfilter worlds would be fantastic.
-
-Florian will rework the last RFC patchset and will re-run
-benchmarks with both RETPOLINE=n|y, results should be available
-mid-november-ish.
