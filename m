@@ -2,259 +2,438 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E47E601FE8
-	for <lists+bpf@lfdr.de>; Tue, 18 Oct 2022 02:53:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A49A602076
+	for <lists+bpf@lfdr.de>; Tue, 18 Oct 2022 03:33:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229896AbiJRAxA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Oct 2022 20:53:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46252 "EHLO
+        id S230094AbiJRBdD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Oct 2022 21:33:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230090AbiJRAw5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Oct 2022 20:52:57 -0400
-Received: from out0.migadu.com (out0.migadu.com [IPv6:2001:41d0:2:267::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 765C182779
-        for <bpf@vger.kernel.org>; Mon, 17 Oct 2022 17:52:54 -0700 (PDT)
-Message-ID: <06e37b29-b384-7432-d966-ad89901de55d@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1666054368;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LQ6pVUiZm9qNe+QrxD0k5LbGQWyaT7NWRuiB/Ax434U=;
-        b=wc2mpKRkrH65wAH1PgRSpz/3AHVcOrRXb4nxPrOIkWmof6EFumR0LJ3BTGJ3yx6K7nbfTa
-        CaOoh+ERj2CRW3nFpKlMSXHM2iZ1R8IYlNJmUegMftp8SveSqYnJ1qGqv0o8RxuOOztFqT
-        g+iyw9FWAwzkpOXZZYZ0Vg7x4p8ncPE=
-Date:   Mon, 17 Oct 2022 17:52:44 -0700
+        with ESMTP id S230298AbiJRBdB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 Oct 2022 21:33:01 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABEC320F51;
+        Mon, 17 Oct 2022 18:32:57 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id w196so14086554oiw.8;
+        Mon, 17 Oct 2022 18:32:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=N82HSstCq73BXijwAIDHsHCwh+TkDJy+E5fdMvtpS4A=;
+        b=Cli2+jZg4wVa/btg3b40b9aapalg0giYxGYm5RD25V7IV+09LS60Bk/aUSDodIlWGI
+         A7R77xb52qJ3GK6NtFhnqdyyYzdyXoZD3Ch4Bw1YDJyLQntJVbjJp6op3BFb2LY9RnuT
+         yVO/m65mTpxa9uECB1g/G4eNuRhWWdTcktXp/G+EeQMPzNQ1inah3sdw8wshENCKDEML
+         DYMrTfbO96tbePrz2fUmz3IYpWRQE2xPJFjmq7op4o1d2XvhKRukWdvKMZxbp2Uw6wFr
+         fRW1CbdOHgUqc6KqQrD15kp73MRXy+FlyLLLYm690Hqms2jYEVduDSRZnQF0B1v2ViT+
+         XtyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=N82HSstCq73BXijwAIDHsHCwh+TkDJy+E5fdMvtpS4A=;
+        b=nhtbHz1lN0DTTFNoAMp/4eFz14EqNp2DI882B6P2i3OmjwMkJWe6lZsZp9lj+y7gRQ
+         lNk7I3WfQaVU8QJxsYUvBdFW+5HM09JvrOyRQfioFOIzofo2niyr9RqxSK8zyGhZczpr
+         iqeOcN001vsBRALfjMawgq/AWltU4MH38vnyp2Mdcbzte+gmFvRKcA7YbdeTJJd/D/EN
+         f6hSXuwBiI3vBZfWt0TFwgN3P/VbzxWSUy8ITLOISpoD8WaASN9EQVx04Nwz2CvOwQB5
+         9Uc0F89Yp1hY0tXOq48J6uiRcsflTCkVGokgIioEBxlmApnr4T6GKCpbbZKkn0sFTxAh
+         IFHA==
+X-Gm-Message-State: ACrzQf3YZAbGrkeI/HEmxXLp9BuRIbYOGfvnLsUT3cuC23pBVm/XxwS4
+        ilbPtHcBrZIwB60n40QCMkbmsRFpXLMn9rdKaVk=
+X-Google-Smtp-Source: AMsMyM65sjAs57dXExZ7VnRjNUYzKDKNNuVIxb5tPaPvkuDDE2q4yskXywCRJfqnEJ/vT+Dnv7EFNB+XQsIUVeNldJ8=
+X-Received: by 2002:a05:6808:f10:b0:355:ba4:257e with SMTP id
+ m16-20020a0568080f1000b003550ba4257emr363313oiw.58.1666056775932; Mon, 17 Oct
+ 2022 18:32:55 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next 2/5] bpf: Implement cgroup storage available to
- non-cgroup-attached bpf progs
-Content-Language: en-US
-To:     sdf@google.com
-Cc:     Yosry Ahmed <yosryahmed@google.com>, Yonghong Song <yhs@fb.com>,
-        bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
-        KP Singh <kpsingh@kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Tejun Heo <tj@kernel.org>
-References: <20221014045619.3309899-1-yhs@fb.com>
- <20221014045630.3311951-1-yhs@fb.com> <Y02Yk8gUgVDuZR4Q@google.com>
- <CAJD7tkYSXNb=D1OX_iv7PD-eJaK_7-5tcNvDQrWprWbWwJ2=oQ@mail.gmail.com>
- <CAKH8qBvHJPj6U_dOxH1C4FHJvg9=FE8YZUV3_kc_HJNt1TDuJQ@mail.gmail.com>
- <CAJD7tkYHQ=7jVqU__v4eNxvP-RBAH-M6BmTO1+ogto=m-xb2gw@mail.gmail.com>
- <CAKH8qBtdNv0OmL0oH+U2w0ygLmGUug37xNhHWpjc5=0tn1cThQ@mail.gmail.com>
- <CAJD7tkbPhecz+XPeSMjua77YXr-+Fkrpz9M3bBVKAj+PsXJgyQ@mail.gmail.com>
- <b539eba1-586a-bf3b-31f9-11ea0774c805@linux.dev>
- <Y03USAeiBL5Ol22E@google.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <Y03USAeiBL5Ol22E@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20221014212133.2520531-1-void@manifault.com> <20221014212133.2520531-2-void@manifault.com>
+In-Reply-To: <20221014212133.2520531-2-void@manifault.com>
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date:   Tue, 18 Oct 2022 07:02:15 +0530
+Message-ID: <CAP01T75FGW7F=Ho+oqoC6WgxK5uUir2=CUgiW_HwqNxmzmthBg@mail.gmail.com>
+Subject: Re: [PATCH v5 1/3] bpf: Allow trusted pointers to be passed to
+ KF_TRUSTED_ARGS kfuncs
+To:     David Vernet <void@manifault.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com, tj@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/17/22 3:16 PM, sdf@google.com wrote:
-> On 10/17, Martin KaFai Lau wrote:
->> On 10/17/22 12:11 PM, Yosry Ahmed wrote:
->> > On Mon, Oct 17, 2022 at 12:07 PM Stanislav Fomichev <sdf@google.com> wrote:
->> > >
->> > > On Mon, Oct 17, 2022 at 11:47 AM Yosry Ahmed <yosryahmed@google.com> wrote:
->> > > >
->> > > > On Mon, Oct 17, 2022 at 11:43 AM Stanislav Fomichev <sdf@google.com> wrote:
->> > > > >
->> > > > > On Mon, Oct 17, 2022 at 11:26 AM Yosry Ahmed <yosryahmed@google.com> 
->> wrote:
->> > > > > >
->> > > > > > On Mon, Oct 17, 2022 at 11:02 AM <sdf@google.com> wrote:
->> > > > > > >
->> > > > > > > On 10/13, Yonghong Song wrote:
->> > > > > > > > Similar to sk/inode/task storage, implement similar cgroup local 
->> storage.
->> > > > > > >
->> > > > > > > > There already exists a local storage implementation for 
->> cgroup-attached
->> > > > > > > > bpf programs.  See map type BPF_MAP_TYPE_CGROUP_STORAGE and helper
->> > > > > > > > bpf_get_local_storage(). But there are use cases such that 
->> non-cgroup
->> > > > > > > > attached bpf progs wants to access cgroup local storage data. 
->> For example,
->> > > > > > > > tc egress prog has access to sk and cgroup. It is possible to use
->> > > > > > > > sk local storage to emulate cgroup local storage by storing data in
->> > > > > > > > socket.
->> > > > > > > > But this is a waste as it could be lots of sockets belonging to a
->> > > > > > > > particular
->> > > > > > > > cgroup. Alternatively, a separate map can be created with cgroup 
->> id as
->> > > > > > > > the key.
->> > > > > > > > But this will introduce additional overhead to manipulate the 
->> new map.
->> > > > > > > > A cgroup local storage, similar to existing sk/inode/task storage,
->> > > > > > > > should help for this use case.
->> > > > > > >
->> > > > > > > > The life-cycle of storage is managed with the life-cycle of the
->> > > > > > > > cgroup struct.  i.e. the storage is destroyed along with the 
->> owning cgroup
->> > > > > > > > with a callback to the bpf_cgroup_storage_free when cgroup itself
->> > > > > > > > is deleted.
->> > > > > > >
->> > > > > > > > The userspace map operations can be done by using a cgroup fd as 
->> a key
->> > > > > > > > passed to the lookup, update and delete operations.
->> > > > > > >
->> > > > > > >
->> > > > > > > [..]
->> > > > > > >
->> > > > > > > > Since map name BPF_MAP_TYPE_CGROUP_STORAGE has been used for old 
->> cgroup
->> > > > > > > > local
->> > > > > > > > storage support, the new map name 
->> BPF_MAP_TYPE_CGROUP_LOCAL_STORAGE is
->> > > > > > > > used
->> > > > > > > > for cgroup storage available to non-cgroup-attached bpf 
->> programs. The two
->> > > > > > > > helpers are named as bpf_cgroup_local_storage_get() and
->> > > > > > > > bpf_cgroup_local_storage_delete().
->> > > > > > >
->> > > > > > > Have you considered doing something similar to 7d9c3427894f ("bpf: 
->> Make
->> > > > > > > cgroup storages shared between programs on the same cgroup") where
->> > > > > > > the map changes its behavior depending on the key size (see 
->> key_size checks
->> > > > > > > in cgroup_storage_map_alloc)? Looks like sizeof(int) for fd still
->> > > > > > > can be used so we can, in theory, reuse the name..
->> > > > > > >
->> > > > > > > Pros:
->> > > > > > > - no need for a new map name
->> > > > > > >
->> > > > > > > Cons:
->> > > > > > > - existing BPF_MAP_TYPE_CGROUP_STORAGE is already messy; might be 
->> not a
->> > > > > > >     good idea to add more stuff to it?
->> > > > > > >
->> > > > > > > But, for the very least, should we also extend
->> > > > > > > Documentation/bpf/map_cgroup_storage.rst to cover the new map? We've
->> > > > > > > tried to keep some of the important details in there..
->> > > > > >
->> > > > > > This might be a long shot, but is it possible to switch completely to
->> > > > > > this new generic cgroup storage, and for programs that attach to
->> > > > > > cgroups we can still do lookups/allocations during attachment like we
->> > > > > > do today? IOW, maintain the current API for cgroup progs but switch it
->> > > > > > to use this new map type instead.
->> > > > > >
->> > > > > > It feels like this map type is more generic and can be a superset of
->> > > > > > the existing cgroup storage, but I feel like I am missing something.
->> > > > >
->> > > > > I feel like the biggest issue is that the existing
->> > > > > bpf_get_local_storage helper is guaranteed to always return non-null
->> > > > > and the verifier doesn't require the programs to do null checks on it;
->> > > > > the new helper might return NULL making all existing programs fail the
->> > > > > verifier.
->> > > >
->> > > > What I meant is, keep the old bpf_get_local_storage helper only for
->> > > > cgroup-attached programs like we have today, and add a new generic
->> > > > bpf_cgroup_local_storage_get() helper.
->> > > >
->> > > > For cgroup-attached programs, make sure a cgroup storage entry is
->> > > > allocated and hooked to the helper on program attach time, to keep
->> > > > today's behavior constant.
->> > > >
->> > > > For other programs, the bpf_cgroup_local_storage_get() will do the
->> > > > normal lookup and allocate if necessary.
->> > > >
->> > > > Does this make any sense to you?
->> > >
->> > > But then you also need to somehow mark these to make sure it's not
->> > > possible to delete them as long as the program is loaded/attached? Not
->> > > saying it's impossible, but it's a bit of a departure from the
->> > > existing common local storage framework used by inode/task; not sure
->> > > whether we want to pull all this complexity in there? But we can
->> > > definitely try if there is a wider agreement..
->> >
->> > I agree that it's not ideal, but it feels like we are comparing two
->> > non-ideal options anyway, I am just throwing ideas around :)
-> 
->> I don't think it is a good idea to marry the new
->> BPF_MAP_TYPE_CGROUP_LOCAL_STORAGE and the existing
->> BPF_MAP_TYPE_CGROUP_STORAGE in any way.  The API is very different.  A few
->> have already been mentioned here.  Delete is one.  Storage creation time is
->> another one.  The map key is also different.  Yes, maybe we can reuse the
->> different key size concept in bpf_cgroup_storage_key in some way but still
->> feel too much unnecessary quirks for the existing sk/inode/task storage
->> users to remember.
-> 
->> imo, it is better to keep them separate and have a different map-type.
->> Adding a map flag or using map extra will make it sounds like an extension
->> which it is not.
-> 
-> This part is the most confusing to me:
-> 
-> BPF_MAP_TYPE_CGROUP_STORAGE       bpf_get_local_storage
-> BPF_MAP_TYPE_CGROUP_LOCAL_STORAGE bpf_cgroup_local_storage_get
-> 
-> The new helpers should probably drop 'local' name to match the task/inode ([0])?
-> And we're left with:
-> 
-> BPF_MAP_TYPE_CGROUP_STORAGE       bpf_get_local_storage
-> BPF_MAP_TYPE_CGROUP_LOCAL_STORAGE bpf_cgroup_storage_get
-> 
-> You read CGROUP_STORAGE via get_local_storage and
-> you read CGROUP_LOCAL_STORAGE via cgroup_storage_get :-/
+On Sat, 15 Oct 2022 at 02:51, David Vernet <void@manifault.com> wrote:
+>
+> Kfuncs currently support specifying the KF_TRUSTED_ARGS flag to signal
+> to the verifier that it should enforce that a BPF program passes it a
+> "safe", trusted pointer. Currently, "safe" means that the pointer is
+> either PTR_TO_CTX, or is refcounted. There may be cases, however, where
+> the kernel passes a BPF program a safe / trusted pointer to an object
+> that the BPF program wishes to use as a kptr, but because the object
+> does not yet have a ref_obj_id from the perspective of the verifier, the
+> program would be unable to pass it to a KF_ACQUIRE | KF_TRUSTED_ARGS
+> kfunc.
+>
+> The solution is to expand the set of pointers that are considered
+> trusted according to KF_TRUSTED_ARGS, so that programs can invoke kfuncs
+> with these pointers without getting rejected by the verifier.
+>
+> There is already a PTR_UNTRUSTED flag that is set in some scenarios,
+> such as when a BPF program reads a kptr directly from a map
+> without performing a bpf_kptr_xchg() call. These pointers of course can
+> and should be rejected by the verifier. Unfortunately, however,
+> PTR_UNTRUSTED does not cover all the cases for safety that need to
+> be addressed to adequately protect kfuncs. Specifically, pointers
+> obtained by a BPF program "walking" a struct are _not_ considered
+> PTR_UNTRUSTED according to BPF. For example, say that we were to add a
+> kfunc called bpf_task_acquire(), with KF_ACQUIRE | KF_TRUSTED_ARGS, to
+> acquire a struct task_struct *. If we only used PTR_UNTRUSTED to signal
+> that a task was unsafe to pass to a kfunc, the verifier would mistakenly
+> allow the following unsafe BPF program to be loaded:
+>
+> SEC("tp_btf/task_newtask")
+> int BPF_PROG(unsafe_acquire_task,
+>              struct task_struct *task,
+>              u64 clone_flags)
+> {
+>         struct task_struct *acquired, *nested;
+>
+>         nested = task->last_wakee;
+>
+>         /* Would not be rejected by the verifier. */
+>         acquired = bpf_task_acquire(nested);
+>         if (!acquired)
+>                 return 0;
+>
+>         bpf_task_release(acquired);
+>         return 0;
+> }
+>
+> To address this, this patch defines a new type flag called PTR_NESTED
+> which tracks whether a PTR_TO_BTF_ID pointer was retrieved from walking
+> a struct. A pointer passed directly from the kernel begins with
+> (PTR_NESTED & type) == 0, meaning of course that it is not nested. Any
+> pointer received from walking that object, however, would inherit that
+> flag and become a nested pointer.
+>
+> With that flag, this patch also updates btf_check_func_arg_match() to
+> only flag a PTR_TO_BTF_ID object as requiring a refcount if it has any
+> type modifiers (which of course includes both PTR_UNTRUSTED and
+> PTR_NESTED). Otherwise, the pointer passes this check and continues
+> onto the others in btf_check_func_arg_match().
+>
+> A subsequent patch will add kfuncs for storing a task kfunc as a kptr,
+> and then another patch will validate this feature by ensuring that the
+> verifier rejects a kfunc invocation with a nested pointer.
+>
+> Signed-off-by: David Vernet <void@manifault.com>
+> ---
 
-Yep, agree that it is not ideal :(
+Please tag the patches with [ PATCH bpf-next ... ] subject prefix.
 
-> 
-> That's why I'm slightly tilting towards reusing the name. At least we can
-> add a big DEPRECATED message for bpf_get_local_storage and that seems to be
-> it? All those extra key sizes can also be deprecated, but I'm honestly
-> not sure if anybody is using them.
+>  include/linux/bpf.h                          |  6 ++++++
+>  kernel/bpf/btf.c                             | 11 ++++++++++-
+>  kernel/bpf/verifier.c                        | 12 +++++++++++-
+>  tools/testing/selftests/bpf/verifier/calls.c |  4 ++--
+>  4 files changed, 29 insertions(+), 4 deletions(-)
+>
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 9e7d46d16032..b624024edb4e 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -457,6 +457,12 @@ enum bpf_type_flag {
+>         /* Size is known at compile time. */
+>         MEM_FIXED_SIZE          = BIT(10 + BPF_BASE_TYPE_BITS),
+>
+> +       /* PTR was obtained from walking a struct. This is used with
+> +        * PTR_TO_BTF_ID to determine whether the pointer is safe to pass to a
+> +        * kfunc with KF_TRUSTED_ARGS.
+> +        */
+> +       PTR_NESTED              = BIT(11 + BPF_BASE_TYPE_BITS),
+> +
+>         __BPF_TYPE_FLAG_MAX,
+>         __BPF_TYPE_LAST_FLAG    = __BPF_TYPE_FLAG_MAX - 1,
+>  };
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index eba603cec2c5..3d7bad11b10b 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -6333,8 +6333,17 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
+>                 /* Check if argument must be a referenced pointer, args + i has
+>                  * been verified to be a pointer (after skipping modifiers).
+>                  * PTR_TO_CTX is ok without having non-zero ref_obj_id.
+> +                *
+> +                * All object pointers must be refcounted, other than:
+> +                * - PTR_TO_CTX
+> +                * - Trusted pointers (i.e. pointers with no type modifiers)
+>                  */
+> -               if (is_kfunc && trusted_args && (obj_ptr && reg->type != PTR_TO_CTX) && !reg->ref_obj_id) {
+> +               if (is_kfunc &&
+> +                   trusted_args &&
+> +                   obj_ptr &&
+> +                   base_type(reg->type) != PTR_TO_CTX &&
+> +                   type_flag(reg->type) &&
+> +                   !reg->ref_obj_id) {
+>                         bpf_log(log, "R%d must be referenced\n", regno);
+>                         return -EINVAL;
+>                 }
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 6f6d2d511c06..d16a08ca507b 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -581,6 +581,8 @@ static const char *reg_type_str(struct bpf_verifier_env *env,
+>                 strncpy(prefix, "user_", 32);
+>         if (type & MEM_PERCPU)
+>                 strncpy(prefix, "percpu_", 32);
+> +       if (type & PTR_NESTED)
+> +               strncpy(prefix, "nested_", 32);
+>         if (type & PTR_UNTRUSTED)
+>                 strncpy(prefix, "untrusted_", 32);
+>
 
-Reusing 'key_size == sizeof(int)' to mean new map type...hmm...  I have been 
-thinking about it after your suggestion in another reply since it can use the 
-BPF_MAP_TYPE_CGROUP_STORAGE name.  I wish the BPF_MAP_TYPE_CGROUP_LOCAL_STORAGE 
-was given to the bpf_get_local_storage() instead because it is a better name to 
-describe what it is doing.
+Since these are no longer exclusive, the code needs to be updated to
+append strings to the prefix buffer.
+Maybe just using snprintf with %s%s%s.. would be better, passing ""
+when !(type & flag).
 
-hmm.... However, this feels working like a map_flags or map_extra but in a more 
-hidden way.  I am worry it will actually be more confusing and also having usage 
-surprises when there are quite many behavior differences that this thread has 
-already mentioned.  That will be hard for the user to reason those API 
-differences just because of using a different key_size.
+> @@ -4558,6 +4560,9 @@ static int check_ptr_to_btf_access(struct bpf_verifier_env *env,
+>         if (type_flag(reg->type) & PTR_UNTRUSTED)
+>                 flag |= PTR_UNTRUSTED;
+>
+> +       /* All pointers obtained by walking a struct are nested. */
+> +       flag |= PTR_NESTED;
+> +
 
-May be going back to revisit the naming a little bit.  How about giving a new 
-and likely more correct 'BPF_MAP_TYPE_CGRP_LOCAL_STORAGE' name for the existing 
-bpf_get_local_storage() use.  Then
+Instead of PTR_NESTED, how about PTR_WALK?
 
-'#define BPF_MAP_TYPE_CGROUP_STORAGE BPF_MAP_TYPE_CGRP_LOCAL_STORAGE /* 
-depreciated by BPF_MAP_TYPE_CGRP_STORAGE */' in the uapi.
+>         if (atype == BPF_READ && value_regno >= 0)
+>                 mark_btf_ld_reg(env, regs, value_regno, ret, reg->btf, btf_id, flag);
+>
+> @@ -5694,7 +5699,12 @@ static const struct bpf_reg_types scalar_types = { .types = { SCALAR_VALUE } };
+>  static const struct bpf_reg_types context_types = { .types = { PTR_TO_CTX } };
+>  static const struct bpf_reg_types alloc_mem_types = { .types = { PTR_TO_MEM | MEM_ALLOC } };
+>  static const struct bpf_reg_types const_map_ptr_types = { .types = { CONST_PTR_TO_MAP } };
+> -static const struct bpf_reg_types btf_ptr_types = { .types = { PTR_TO_BTF_ID } };
+> +static const struct bpf_reg_types btf_ptr_types = {
+> +       .types = {
+> +               PTR_TO_BTF_ID,
+> +               PTR_TO_BTF_ID | PTR_NESTED
+> +       },
+> +};
+>  static const struct bpf_reg_types spin_lock_types = { .types = { PTR_TO_MAP_VALUE } };
+>  static const struct bpf_reg_types percpu_btf_ptr_types = { .types = { PTR_TO_BTF_ID | MEM_PERCPU } };
+>  static const struct bpf_reg_types func_ptr_types = { .types = { PTR_TO_FUNC } };
+> diff --git a/tools/testing/selftests/bpf/verifier/calls.c b/tools/testing/selftests/bpf/verifier/calls.c
+> index e1a937277b54..496c29b1a298 100644
+> --- a/tools/testing/selftests/bpf/verifier/calls.c
+> +++ b/tools/testing/selftests/bpf/verifier/calls.c
+> @@ -181,7 +181,7 @@
+>         },
+>         .result_unpriv = REJECT,
+>         .result = REJECT,
+> -       .errstr = "negative offset ptr_ ptr R1 off=-4 disallowed",
+> +       .errstr = "negative offset nested_ptr_ ptr R1 off=-4 disallowed",
+>  },
+>  {
+>         "calls: invalid kfunc call: PTR_TO_BTF_ID with variable offset",
+> @@ -243,7 +243,7 @@
+>         },
+>         .result_unpriv = REJECT,
+>         .result = REJECT,
+> -       .errstr = "R1 must be referenced",
+> +       .errstr = "arg#0 pointer type STRUCT prog_test_ref_kfunc must point to scalar",
+>  },
+>  {
+>         "calls: valid kfunc call: referenced arg needs refcounted PTR_TO_BTF_ID",
+> --
+> 2.38.0
+>
 
-The new cgroup storage uses a shorter name "cgrp", like 
-BPF_MAP_TYPE_CGRP_STORAGE and bpf_cgrp_storage_get()?
+On Sat, 15 Oct 2022 at 02:51, David Vernet <void@manifault.com> wrote:
+>
+> Kfuncs currently support specifying the KF_TRUSTED_ARGS flag to signal
+> to the verifier that it should enforce that a BPF program passes it a
+> "safe", trusted pointer. Currently, "safe" means that the pointer is
+> either PTR_TO_CTX, or is refcounted. There may be cases, however, where
+> the kernel passes a BPF program a safe / trusted pointer to an object
+> that the BPF program wishes to use as a kptr, but because the object
+> does not yet have a ref_obj_id from the perspective of the verifier, the
+> program would be unable to pass it to a KF_ACQUIRE | KF_TRUSTED_ARGS
+> kfunc.
+>
+> The solution is to expand the set of pointers that are considered
+> trusted according to KF_TRUSTED_ARGS, so that programs can invoke kfuncs
+> with these pointers without getting rejected by the verifier.
+>
+> There is already a PTR_UNTRUSTED flag that is set in some scenarios,
+> such as when a BPF program reads a kptr directly from a map
+> without performing a bpf_kptr_xchg() call. These pointers of course can
+> and should be rejected by the verifier. Unfortunately, however,
+> PTR_UNTRUSTED does not cover all the cases for safety that need to
+> be addressed to adequately protect kfuncs. Specifically, pointers
+> obtained by a BPF program "walking" a struct are _not_ considered
+> PTR_UNTRUSTED according to BPF. For example, say that we were to add a
+> kfunc called bpf_task_acquire(), with KF_ACQUIRE | KF_TRUSTED_ARGS, to
+> acquire a struct task_struct *. If we only used PTR_UNTRUSTED to signal
+> that a task was unsafe to pass to a kfunc, the verifier would mistakenly
+> allow the following unsafe BPF program to be loaded:
+>
+> SEC("tp_btf/task_newtask")
+> int BPF_PROG(unsafe_acquire_task,
+>              struct task_struct *task,
+>              u64 clone_flags)
+> {
+>         struct task_struct *acquired, *nested;
+>
+>         nested = task->last_wakee;
+>
+>         /* Would not be rejected by the verifier. */
+>         acquired = bpf_task_acquire(nested);
+>         if (!acquired)
+>                 return 0;
+>
+>         bpf_task_release(acquired);
+>         return 0;
+> }
+>
+> To address this, this patch defines a new type flag called PTR_NESTED
+> which tracks whether a PTR_TO_BTF_ID pointer was retrieved from walking
+> a struct. A pointer passed directly from the kernel begins with
+> (PTR_NESTED & type) == 0, meaning of course that it is not nested. Any
+> pointer received from walking that object, however, would inherit that
+> flag and become a nested pointer.
+>
+> With that flag, this patch also updates btf_check_func_arg_match() to
+> only flag a PTR_TO_BTF_ID object as requiring a refcount if it has any
+> type modifiers (which of course includes both PTR_UNTRUSTED and
+> PTR_NESTED). Otherwise, the pointer passes this check and continues
+> onto the others in btf_check_func_arg_match().
+>
+> A subsequent patch will add kfuncs for storing a task kfunc as a kptr,
+> and then another patch will validate this feature by ensuring that the
+> verifier rejects a kfunc invocation with a nested pointer.
+>
+> Signed-off-by: David Vernet <void@manifault.com>
+> ---
+>  include/linux/bpf.h                          |  6 ++++++
+>  kernel/bpf/btf.c                             | 11 ++++++++++-
+>  kernel/bpf/verifier.c                        | 12 +++++++++++-
+>  tools/testing/selftests/bpf/verifier/calls.c |  4 ++--
+>  4 files changed, 29 insertions(+), 4 deletions(-)
+>
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 9e7d46d16032..b624024edb4e 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -457,6 +457,12 @@ enum bpf_type_flag {
+>         /* Size is known at compile time. */
+>         MEM_FIXED_SIZE          = BIT(10 + BPF_BASE_TYPE_BITS),
+>
+> +       /* PTR was obtained from walking a struct. This is used with
+> +        * PTR_TO_BTF_ID to determine whether the pointer is safe to pass to a
+> +        * kfunc with KF_TRUSTED_ARGS.
+> +        */
+> +       PTR_NESTED              = BIT(11 + BPF_BASE_TYPE_BITS),
+> +
+>         __BPF_TYPE_FLAG_MAX,
+>         __BPF_TYPE_LAST_FLAG    = __BPF_TYPE_FLAG_MAX - 1,
+>  };
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index eba603cec2c5..3d7bad11b10b 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -6333,8 +6333,17 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
+>                 /* Check if argument must be a referenced pointer, args + i has
+>                  * been verified to be a pointer (after skipping modifiers).
+>                  * PTR_TO_CTX is ok without having non-zero ref_obj_id.
+> +                *
+> +                * All object pointers must be refcounted, other than:
+> +                * - PTR_TO_CTX
+> +                * - Trusted pointers (i.e. pointers with no type modifiers)
+>                  */
+> -               if (is_kfunc && trusted_args && (obj_ptr && reg->type != PTR_TO_CTX) && !reg->ref_obj_id) {
+> +               if (is_kfunc &&
+> +                   trusted_args &&
+> +                   obj_ptr &&
+> +                   base_type(reg->type) != PTR_TO_CTX &&
+> +                   type_flag(reg->type) &&
+> +                   !reg->ref_obj_id) {
+>                         bpf_log(log, "R%d must be referenced\n", regno);
+>                         return -EINVAL;
+>                 }
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 6f6d2d511c06..d16a08ca507b 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -581,6 +581,8 @@ static const char *reg_type_str(struct bpf_verifier_env *env,
+>                 strncpy(prefix, "user_", 32);
+>         if (type & MEM_PERCPU)
+>                 strncpy(prefix, "percpu_", 32);
+> +       if (type & PTR_NESTED)
+> +               strncpy(prefix, "nested_", 32);
+>         if (type & PTR_UNTRUSTED)
+>                 strncpy(prefix, "untrusted_", 32);
+>
+> @@ -4558,6 +4560,9 @@ static int check_ptr_to_btf_access(struct bpf_verifier_env *env,
+>         if (type_flag(reg->type) & PTR_UNTRUSTED)
+>                 flag |= PTR_UNTRUSTED;
+>
+> +       /* All pointers obtained by walking a struct are nested. */
+> +       flag |= PTR_NESTED;
+> +
+>         if (atype == BPF_READ && value_regno >= 0)
+>                 mark_btf_ld_reg(env, regs, value_regno, ret, reg->btf, btf_id, flag);
+>
+> @@ -5694,7 +5699,12 @@ static const struct bpf_reg_types scalar_types = { .types = { SCALAR_VALUE } };
+>  static const struct bpf_reg_types context_types = { .types = { PTR_TO_CTX } };
+>  static const struct bpf_reg_types alloc_mem_types = { .types = { PTR_TO_MEM | MEM_ALLOC } };
+>  static const struct bpf_reg_types const_map_ptr_types = { .types = { CONST_PTR_TO_MAP } };
+> -static const struct bpf_reg_types btf_ptr_types = { .types = { PTR_TO_BTF_ID } };
+> +static const struct bpf_reg_types btf_ptr_types = {
+> +       .types = {
+> +               PTR_TO_BTF_ID,
+> +               PTR_TO_BTF_ID | PTR_NESTED
+> +       },
+> +};
 
-> 
-> But having a separate map also seems fine, as long as we have a patch to
-> update the existing header documentation. (and mention in
-> Documentation/bpf/map_cgroup_storage.rst that there is a replacement?)
-> Current bpf_get_local_storage description is too vague; let's at least
-> mention that it works only with BPF_MAP_TYPE_CGROUP_STORAGE.
-> 
-> 0: 
-> https://lore.kernel.org/bpf/6ce7d490-f015-531f-3dbb-b6f7717f0590@meta.com/T/#mb2107250caa19a8d9ec3549a52f4a9698be99e33
-> 
->> > >
->> > > > > There might be something else I don't remember at this point (besides
->> > > > > that weird per-prog_type that we'd have to emulate as well)..
->> > > >
->> > > > Yeah there are things that will need to be emulated, but I feel like
->> > > > we may end up with less confusing code (and less code in general).
-> 
-> 
+CI fails, two of those failures are from not updating
+check_func_arg_reg_off for PTR_TO_BTF_ID | PTR_WALK, and the other one
+is a crash because you didn't add to the list in convert_ctx_access
+for PROBE_MEM based load fault handling.
 
+The third issue is a bit more interesting:
+
+; if (fib6_nh->fib_nh_gw_family) {
+4375 58: (71) r1 = *(u8 *)(r9 +14)
+4376 same insn cannot be used with different pointers
+
+This is because one branch does:
+fib6_nh = &rt->fib6_nh[0];
+while the other does
+fib6_nh = &nh->nh_info->fib6_nh;
+
+So the load insn 58 in one path uses PTR_TO_BTF_ID and in the other
+PTR_TO_BTF_ID | PTR_NESTED, so reg_type_mismatch bails on seeing src
+!= prev.
+
+I think it's ok to allow this, and we can probably do base_type(src)
+!= base_type(prev) here. If the load was not permitted,
+check_mem_access before this should have caught it. The check is
+mostly to prevent doing stuff like PTR_TO_CTX in one path and
+PTR_TO_BTF_ID in the other, because then the convert_ctx_access
+handling would be totally incorrect for the load instruction.
+
+Hopefully I'm not missing anything.
+
+But please add some comments about this when updating this particular
+check, it's very easy to forget all this later.
+
+> [...]
