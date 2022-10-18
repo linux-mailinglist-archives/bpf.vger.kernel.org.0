@@ -2,55 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF1056032B5
-	for <lists+bpf@lfdr.de>; Tue, 18 Oct 2022 20:47:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 831DE6032D6
+	for <lists+bpf@lfdr.de>; Tue, 18 Oct 2022 20:52:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229732AbiJRSrt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Oct 2022 14:47:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43812 "EHLO
+        id S229526AbiJRSw2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Oct 2022 14:52:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229720AbiJRSrr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Oct 2022 14:47:47 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96EB69F363
-        for <bpf@vger.kernel.org>; Tue, 18 Oct 2022 11:47:46 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id y1-20020a17090322c100b001853a004c1bso9692614plg.19
-        for <bpf@vger.kernel.org>; Tue, 18 Oct 2022 11:47:46 -0700 (PDT)
+        with ESMTP id S229463AbiJRSw1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Oct 2022 14:52:27 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1E961090
+        for <bpf@vger.kernel.org>; Tue, 18 Oct 2022 11:52:26 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id h2-20020a170902f54200b0018553a8b797so3808893plf.9
+        for <bpf@vger.kernel.org>; Tue, 18 Oct 2022 11:52:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=k9ThAbL4FEX2oqVofGCR66I5SU53wjQz+bnaLKDgTW4=;
-        b=tZCR7af6nMXjf7bYkQX98SiQ7zSghQjULCBmEmSDkThSH7V4VyWu0g3rjEr/1NFRcf
-         iQc6yS1PthBtVG1eu4tFhhWDGdoahmTFpmFOJFDSXGFXczxNfamVTRr2EEVZYYDfns8o
-         5bs7yDT8q9/fJsIdoboGgrXqC1hVNai94QZIO6EItVDp1Z0ojrZxNxjjn1x/Nfvcqcri
-         ARRaaAsNtUwcgHVnZuFLDJwkDwij25nzlVhhlmCMqmYjYb7mZkSPnSTPqZVDl3tOduIR
-         tG0q1ncfpW8h5nEN2nqpNlYmWV4r2XQPqofXtVa6UEJayAo6szH17VO8KZX5lgUKFnqO
-         x7Pw==
+        bh=n5EM215kBrb1rN2kMttY1PkLsQ43EWzqRERv1fdoh6I=;
+        b=CkuqRgh/662fGfaIVkRVy7YCT2d70E5tt+1H1yVHP0Pufv3/bUDTclI3CyiTHjQX7P
+         9imJz7pqgcsY3v+E2aeZ25whXVEbPhyATg3PTESyDQVtqgxK3FUeKrdBHt8XoZUGlxxX
+         EiFCcpUgNa0QQZO402r6Fv53OY2PHFZrvKfCU9HTSKvd0VF+yElsU3LKm93tGlZf9QqR
+         rXsJdMIxXUbBaEB46TRmw0NA+KXqdgtLptc7bGUrF6nNqdSrANahLh/EDUajNt8M/2uu
+         Ty147GtI8ymAgXYSgbC1WQJtmiAQp5jmNnsYVIrj9wS1bIqZWqCZ5fj7aV3DV47Xydtl
+         osaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=k9ThAbL4FEX2oqVofGCR66I5SU53wjQz+bnaLKDgTW4=;
-        b=AuQs8WRXdHl25+k33YlukDPEi6uy6SSTWkPH70z1BaNIpYm7WHBRNJHRFiT+PuXA84
-         LRo3a71lQNq+7GxMkEV8X6pYE87DbEbPdUKwKjA6Ky5a28Pf1P4CT7wIn7daBuWP+jDa
-         TV8WwA/qlvX/n5ZzmSQkNRqPl/5Bq5KGBuG7Sma7P4gwRWNQsXB6dpCEH0Kx5xRAHiE9
-         zJx9YjeRySnH+S3F5MKrDRhfj2nBzfNkW9bVMnOpq4k+3Vh+TKOwBtF1QlGFfo+OTTMs
-         PHOzG4GtNGSEdnPFIyTya+Lj39Lh+zz/fVdxJDThO/0i3xRb43weajPFtotCyobUwrPA
-         b1Ww==
-X-Gm-Message-State: ACrzQf2g2oDlb6WelRjv8WY+Y8RKzRAZeKa03SrWFPfDpXedaCGhsvFY
-        IGoY5kR2P7UAig+fZJmPR1fxO0I=
-X-Google-Smtp-Source: AMsMyM48b7Dg/uLjLBzSWqaQBMeqOy8OZnjBlIFBu9+7Jh8rRr2epHdAObe0NbrCuF7Z3BpD+mVRRYg=
+        bh=n5EM215kBrb1rN2kMttY1PkLsQ43EWzqRERv1fdoh6I=;
+        b=zDlXE7sYvSvIjXTClyZlPQD7F7bI3+wh8SA2ZSsrhq351OxvpfTOdBKwS8kXQPxETI
+         ToGCDpYOFuwVaiOUrekIUgH1F6iTUvQDy5ohN5isXz2ACQV2x1QTgjCPCsvTfN1VdaqT
+         l05FvN0h+PzhUpn/BWJ+MWBGEwKk9UX2X0bTsJSXR7ahsX47zWOZtNrdxp/+J2wvFY3W
+         mY/wTVIUwzifIrIq7Ilh6Je59gUeTbYYdkxhU3cFSQtXlTcA4o1SKH44vb3PNth/wdSk
+         s7HCOezS9uD2W6z3x5uMKqZk/OKkgTPcE9Duzk7LWARv1vB0Ls7JxzPx2hZi1OIdzElB
+         Y/tw==
+X-Gm-Message-State: ACrzQf3XZqtQsIvl26n8JRdQh3rsXA0GVnAe8O6xqGm8nsVNp/ja5oXN
+        l4RSHhm8PrNdBL8JN8t5p0/UgsA=
+X-Google-Smtp-Source: AMsMyM47ebAsEzwUAn3OZUYRv/xH9LjApLNEV+4bV+n1QnwW9qMixUy+IK32XKVdt8Kv1KgsuqwwQZ8=
 X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a17:90a:fee:b0:20a:fbef:3e76 with SMTP id
- 101-20020a17090a0fee00b0020afbef3e76mr5213092pjz.11.1666118866223; Tue, 18
- Oct 2022 11:47:46 -0700 (PDT)
-Date:   Tue, 18 Oct 2022 11:47:44 -0700
-In-Reply-To: <20221018035646.1294873-2-andrii@kernel.org>
+ (user=sdf job=sendgmr) by 2002:a05:6a00:23c6:b0:563:a1e9:eab8 with SMTP id
+ g6-20020a056a0023c600b00563a1e9eab8mr4762833pfc.16.1666119146322; Tue, 18 Oct
+ 2022 11:52:26 -0700 (PDT)
+Date:   Tue, 18 Oct 2022 11:52:24 -0700
+In-Reply-To: <20221018035646.1294873-3-andrii@kernel.org>
 Mime-Version: 1.0
-References: <20221018035646.1294873-1-andrii@kernel.org> <20221018035646.1294873-2-andrii@kernel.org>
-Message-ID: <Y0700LilBVP2D39B@google.com>
-Subject: Re: [PATCH bpf-next 1/3] libbpf: clean up and refactor BTF fixup step
+References: <20221018035646.1294873-1-andrii@kernel.org> <20221018035646.1294873-3-andrii@kernel.org>
+Message-ID: <Y0716CgEDxLQFSOJ@google.com>
+Subject: Re: [PATCH bpf-next 2/3] libbpf: only add BPF_F_MMAPABLE flag for
+ data maps with global vars
 From:   sdf@google.com
 To:     Andrii Nakryiko <andrii@kernel.org>
 Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
@@ -67,233 +68,242 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 On 10/17, Andrii Nakryiko wrote:
-> Refactor libbpf's BTF fixup step during BPF object open phase. The only
-> functional change is that we now ignore BTF_VAR_GLOBAL_EXTERN variables
-> during fix up, not just BTF_VAR_STATIC ones, which shouldn't cause any
-> change in behavior as there shouldn't be any extern variable in data
-> sections for valid BPF object anyways.
+> Teach libbpf to not add BPF_F_MMAPABLE flag unnecessarily for ARRAY maps
+> that are backing data sections, if such data sections don't expose any
+> variables to user-space. Exposed variables are those that have
+> STB_GLOBAL or STB_WEAK ELF binding and correspond to BTF VAR's
+> BTF_VAR_GLOBAL_ALLOCATED linkage.
 
-> Otherwise it's just collapsing two functions that have no reason to be
-> separate, and switching find_elf_var_offset() helper to return entire
-> symbol pointer, not just its offset. This will be used by next patch to
-> get ELF symbol visibility.
+> The overall idea is that if some data section doesn't have any variable  
+> that
+> is exposed through BPF skeleton, then there is no reason to make such
+> BPF array mmapable. Making BPF array mmapable is not a free no-op
+> action, because BPF verifier doesn't allow users to put special objects
+> (such as BPF spin locks, RB tree nodes, linked list nodes, kptrs, etc;
+> anything that has a sensitive internal state that should not be modified
+> arbitrarily from user space) into mmapable arrays, as there is no way to
+> prevent user space from corrupting such sensitive state through direct
+> memory access through memory-mapped region.
 
-> While refactoring, also "normalize" debug messages inside
-> btf_fixup_datasec() to follow general libbpf style and print out data
-> section name consistently, where it's available.
+> By making sure that libbpf doesn't add BPF_F_MMAPABLE flag to BPF array
+> maps corresponding to data sections that only have static variables
+> (which are not supposed to be visible to user space according to libbpf
+> and BPF skeleton rules), users now can have spinlocks, kptrs, etc in
+> either default .bss/.data sections or custom .data.* sections (assuming
+> there are no global variables in such sections).
+
+> The only possible hiccup with this approach is the need to use global
+> variables during BPF static linking, even if it's not intended to be
+> shared with user space through BPF skeleton. To allow such scenarios,
+> extend libbpf's STV_HIDDEN ELF visibility attribute handling to
+> variables. Libbpf is already treating global hidden BPF subprograms as
+> static subprograms and adjusts BTF accordingly to make BPF verifier
+> verify such subprograms as static subprograms with preserving entire BPF
+> verifier state between subprog calls. This patch teaches libbpf to treat
+> global hidden variables as static ones and adjust BTF information
+> accordingly as well. This allows to share variables between multiple
+> object files during static linking, but still keep them internal to BPF
+> program and not get them exposed through BPF skeleton.
+
+> Note, that if the user has some advanced scenario where they absolutely
+> need BPF_F_MMAPABLE flag on .data/.bss/.rodata BPF array map despite
+> only having static variables, they still can achieve this by forcing it
+> through explicit bpf_map__set_map_flags() API.
 
 > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 
 Acked-by: Stanislav Fomichev <sdf@google.com>
 
-Left a couple of questions below.
+Left a nit for spelling and the same 'log err vs size' question.
+
 
 > ---
->   tools/lib/bpf/libbpf.c | 95 ++++++++++++++++++------------------------
->   1 file changed, 41 insertions(+), 54 deletions(-)
+>   tools/lib/bpf/libbpf.c | 95 ++++++++++++++++++++++++++++++++++--------
+>   1 file changed, 77 insertions(+), 18 deletions(-)
 
 > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 8c3f236c86e4..a25eb8fe7bf2 100644
+> index a25eb8fe7bf2..c25d7a4f5704 100644
 > --- a/tools/lib/bpf/libbpf.c
 > +++ b/tools/lib/bpf/libbpf.c
-> @@ -1461,15 +1461,12 @@ static int find_elf_sec_sz(const struct  
-> bpf_object *obj, const char *name, __u32
->   	return -ENOENT;
+> @@ -1577,7 +1577,38 @@ static char *internal_map_name(struct bpf_object  
+> *obj, const char *real_name)
 >   }
 
-> -static int find_elf_var_offset(const struct bpf_object *obj, const char  
-> *name, __u32 *off)
-> +static Elf64_Sym *find_elf_var_sym(const struct bpf_object *obj, const  
-> char *name)
->   {
->   	Elf_Data *symbols = obj->efile.symbols;
->   	const char *sname;
->   	size_t si;
+>   static int
+> -bpf_map_find_btf_info(struct bpf_object *obj, struct bpf_map *map);
+> +map_fill_btf_type_info(struct bpf_object *obj, struct bpf_map *map);
+> +
+> +/* Internal BPF map is mmap()'able only if at least one of corresponding
+> + * DATASEC's VARs are to be exposed through BPF skeleton. I.e., it's a  
+> GLOBAL
+> + * variable and it's not marked as __hidden (which turns it into,  
+> effectively,
+> + * a STATIC variable).
+> + */
+> +static bool map_is_mmapable(struct bpf_object *obj, struct bpf_map *map)
+> +{
+> +	const struct btf_type *t, *vt;
+> +	struct btf_var_secinfo *vsi;
+> +	int i, n;
+> +
+> +	if (!map->btf_value_type_id)
+> +		return false;
+> +
+> +	t = btf__type_by_id(obj->btf, map->btf_value_type_id);
+> +	if (!btf_is_datasec(t))
+> +		return false;
+> +
+> +	vsi = btf_var_secinfos(t);
+> +	for (i = 0, n = btf_vlen(t); i < n; i++, vsi++) {
+> +		vt = btf__type_by_id(obj->btf, vsi->type);
+> +		if (!btf_is_var(vt))
+> +			continue;
+> +
+> +		if (btf_var(vt)->linkage != BTF_VAR_STATIC)
+> +			return true;
+> +	}
+> +
+> +	return false;
+> +}
 
-> -	if (!name || !off)
-> -		return -EINVAL;
-> -
->   	for (si = 0; si < symbols->d_size / sizeof(Elf64_Sym); si++) {
->   		Elf64_Sym *sym = elf_sym_by_idx(obj, si);
+>   static int
+>   bpf_object__init_internal_map(struct bpf_object *obj, enum  
+> libbpf_map_type type,
+> @@ -1609,7 +1640,12 @@ bpf_object__init_internal_map(struct bpf_object  
+> *obj, enum libbpf_map_type type,
+>   	def->max_entries = 1;
+>   	def->map_flags = type == LIBBPF_MAP_RODATA || type == LIBBPF_MAP_KCONFIG
+>   			 ? BPF_F_RDONLY_PROG : 0;
+> -	def->map_flags |= BPF_F_MMAPABLE;
+> +
+> +	/* failures are fine because of maps like .rodata.str1.1 */
+> +	(void) map_fill_btf_type_info(obj, map);
+> +
+> +	if (map_is_mmapable(obj, map))
+> +		def->map_flags |= BPF_F_MMAPABLE;
 
-> @@ -1483,15 +1480,13 @@ static int find_elf_var_offset(const struct  
-> bpf_object *obj, const char *name, _
->   		sname = elf_sym_str(obj, sym->st_name);
->   		if (!sname) {
->   			pr_warn("failed to get sym name string for var %s\n", name);
-> -			return -EIO;
-> -		}
-> -		if (strcmp(name, sname) == 0) {
-> -			*off = sym->st_value;
-> -			return 0;
-> +			return ERR_PTR(-EIO);
->   		}
-> +		if (strcmp(name, sname) == 0)
-> +			return sym;
+>   	pr_debug("map '%s' (global data): at sec_idx %d, offset %zu,  
+> flags %x.\n",
+>   		 map->name, map->sec_idx, map->sec_offset, def->map_flags);
+> @@ -1626,9 +1662,6 @@ bpf_object__init_internal_map(struct bpf_object  
+> *obj, enum libbpf_map_type type,
+>   		return err;
 >   	}
 
-> -	return -ENOENT;
-> +	return ERR_PTR(-ENOENT);
->   }
+> -	/* failures are fine because of maps like .rodata.str1.1 */
+> -	(void) bpf_map_find_btf_info(obj, map);
+> -
+>   	if (data)
+>   		memcpy(map->mmaped, data, data_sz);
 
->   static struct bpf_map *bpf_object__add_map(struct bpf_object *obj)
-> @@ -2850,57 +2845,62 @@ static int compare_vsi_off(const void *_a, const  
-> void *_b)
->   static int btf_fixup_datasec(struct bpf_object *obj, struct btf *btf,
->   			     struct btf_type *t)
->   {
-> -	__u32 size = 0, off = 0, i, vars = btf_vlen(t);
-> -	const char *name = btf__name_by_offset(btf, t->name_off);
-> -	const struct btf_type *t_var;
-> +	__u32 size = 0, i, vars = btf_vlen(t);
-> +	const char *sec_name = btf__name_by_offset(btf, t->name_off);
+> @@ -2540,7 +2573,7 @@ static int bpf_object__init_user_btf_map(struct  
+> bpf_object *obj,
+>   		fill_map_from_def(map->inner_map, &inner_def);
+>   	}
+
+> -	err = bpf_map_find_btf_info(obj, map);
+> +	err = map_fill_btf_type_info(obj, map);
+>   	if (err)
+>   		return err;
+
+> @@ -2848,6 +2881,7 @@ static int btf_fixup_datasec(struct bpf_object  
+> *obj, struct btf *btf,
+>   	__u32 size = 0, i, vars = btf_vlen(t);
+>   	const char *sec_name = btf__name_by_offset(btf, t->name_off);
 >   	struct btf_var_secinfo *vsi;
-> -	const struct btf_var *var;
-> -	int ret;
-> +	int err;
+> +	bool fixup_offsets = false;
+>   	int err;
 
-> -	if (!name) {
-> +	if (!sec_name) {
->   		pr_debug("No name found in string section for DATASEC kind.\n");
+>   	if (!sec_name) {
+> @@ -2855,20 +2889,33 @@ static int btf_fixup_datasec(struct bpf_object  
+> *obj, struct btf *btf,
 >   		return -ENOENT;
 >   	}
 
-> -	/* .extern datasec size and var offsets were set correctly during
-> -	 * extern collection step, so just skip straight to sorting variables
-> +	/* extern-backing datasecs (.ksyms, .kconfig) have their size and
-> +	 * variable offsets set at the previous step, so we skip any fixups
-> +	 * for such sections
+> -	/* extern-backing datasecs (.ksyms, .kconfig) have their size and
+> -	 * variable offsets set at the previous step, so we skip any fixups
+> -	 * for such sections
+> +	/* Extern-backing datasecs (.ksyms, .kconfig) have their size and
+> +	 * variable offsets set at the previous step. Further, not every
+> +	 * extern BTF VAR has corresponding ELF symbol preserved, so we skip
+
+[..]
+
+> +	 * all fixups altogether for such sections and go straight to storting
+> +	 * VARs within their DATASEC.
+
+nit: s/storting/sorting/
+
 >   	 */
->   	if (t->size)
+> -	if (t->size)
+> +	if (strcmp(sec_name, KCONFIG_SEC) == 0 || strcmp(sec_name, KSYMS_SEC)  
+> == 0)
 >   		goto sort_vars;
 
-> -	ret = find_elf_sec_sz(obj, name, &size);
-> -	if (ret || !size) {
-> -		pr_debug("Invalid size for section %s: %u bytes\n", name, size);
-> +	err = find_elf_sec_sz(obj, sec_name, &size);
-> +	if (err || !size) {
-> +		pr_debug("sec '%s': invalid size %u bytes\n", sec_name, size);
+> -	err = find_elf_sec_sz(obj, sec_name, &size);
+> -	if (err || !size) {
+> -		pr_debug("sec '%s': invalid size %u bytes\n", sec_name, size);
+> -		return -ENOENT;
+> -	}
+> +	/* Clang leaves DATASEC size and VAR offsets as zeroes, so we need to
+> +	 * fix this up. But BPF static linker already fixes this up and fills
+> +	 * all the sizes and offsets during static linking. So this step has
+> +	 * to be optional. But the STV_HIDDEN handling is non-optional for any
+> +	 * non-extern DATASEC, so the variable fixup loop below handles both
+> +	 * functions at the same time, paying the cost of BTF VAR <-> ELF
+> +	 * symbol matching just once.
+> +	 */
+> +	if (t->size == 0) {
+> +		err = find_elf_sec_sz(obj, sec_name, &size);
+> +		if (err || !size) {
+> +			pr_debug("sec '%s': invalid size %u bytes\n", sec_name, size);
 
-nit: do we want to log err instead here? it seems like the size will be
-zero on error anyway, so probably not worth logging it?
+nit: same suggestion here - let's log err instead?
 
->   		return -ENOENT;
->   	}
+> +			return -ENOENT;
+> +		}
 
->   	t->size = size;
+> -	t->size = size;
+> +		t->size = size;
+> +		fixup_offsets = true;
+> +	}
 
 >   	for (i = 0, vsi = btf_var_secinfos(t); i < vars; i++, vsi++) {
-> +		const struct btf_type *t_var;
-> +		struct btf_var *var;
-> +		const char *var_name;
-> +		Elf64_Sym *sym;
+>   		const struct btf_type *t_var;
+> @@ -2900,7 +2947,19 @@ static int btf_fixup_datasec(struct bpf_object  
+> *obj, struct btf *btf,
+>   			return -ENOENT;
+>   		}
+
+> -		vsi->offset = sym->st_value;
+> +		if (fixup_offsets)
+> +			vsi->offset = sym->st_value;
 > +
->   		t_var = btf__type_by_id(btf, vsi->type);
->   		if (!t_var || !btf_is_var(t_var)) {
-> -			pr_debug("Non-VAR type seen in section %s\n", name);
-> +			pr_debug("sec '%s': unexpected non-VAR type found\n", sec_name);
->   			return -EINVAL;
->   		}
-
->   		var = btf_var(t_var);
-> -		if (var->linkage == BTF_VAR_STATIC)
-> +		if (var->linkage == BTF_VAR_STATIC || var->linkage ==  
-> BTF_VAR_GLOBAL_EXTERN)
->   			continue;
-
-> -		name = btf__name_by_offset(btf, t_var->name_off);
-> -		if (!name) {
-> -			pr_debug("No name found in string section for VAR kind\n");
-> +		var_name = btf__name_by_offset(btf, t_var->name_off);
-> +		if (!var_name) {
-> +			pr_debug("sec '%s': failed to find name of DATASEC's member #%d\n",
-> +				 sec_name, i);
->   			return -ENOENT;
->   		}
-
-> -		ret = find_elf_var_offset(obj, name, &off);
-> -		if (ret) {
-> -			pr_debug("No offset found in symbol table for VAR %s\n",
-> -				 name);
-> +		sym = find_elf_var_sym(obj, var_name);
-> +		if (IS_ERR(sym)) {
-> +			pr_debug("sec '%s': failed to find ELF symbol for VAR '%s'\n",
-> +				 sec_name, var_name);
->   			return -ENOENT;
->   		}
-
-> -		vsi->offset = off;
-> +		vsi->offset = sym->st_value;
+> +		/* if variable is a global/weak symbol, but has restricted
+> +		 * (STV_HIDDEN or STV_INTERNAL) visibility, mark its BTF VAR
+> +		 * as static. This follows similar logic for functions (BPF
+> +		 * subprogs) and influences libbpf's further decisions about
+> +		 * whether to make global data BPF array maps as
+> +		 * BPF_F_MMAPABLE.
+> +		 */
+> +		if (ELF64_ST_VISIBILITY(sym->st_other) == STV_HIDDEN
+> +		    || ELF64_ST_VISIBILITY(sym->st_other) == STV_INTERNAL)
+> +			var->linkage = BTF_VAR_STATIC;
 >   	}
 
 >   sort_vars:
-> @@ -2908,13 +2908,16 @@ static int btf_fixup_datasec(struct bpf_object  
-> *obj, struct btf *btf,
+> @@ -4222,7 +4281,7 @@ bpf_object__collect_prog_relos(struct bpf_object  
+> *obj, Elf64_Shdr *shdr, Elf_Dat
 >   	return 0;
 >   }
 
-> -static int btf_finalize_data(struct bpf_object *obj, struct btf *btf)
-> +static int bpf_object_fixup_btf(struct bpf_object *obj)
+> -static int bpf_map_find_btf_info(struct bpf_object *obj, struct bpf_map  
+> *map)
+> +static int map_fill_btf_type_info(struct bpf_object *obj, struct bpf_map  
+> *map)
 >   {
-> -	int err = 0;
-> -	__u32 i, n = btf__type_cnt(btf);
-> +	int i, n, err = 0;
+>   	int id;
 
-> +	if (!obj->btf)
-> +		return 0;
-> +
-> +	n = btf__type_cnt(obj->btf);
-
-qq: why do s/__u32/int/ here? btf__type_cnt seems to be returning u32?
-
->   	for (i = 1; i < n; i++) {
-> -		struct btf_type *t = btf_type_by_id(btf, i);
-> +		struct btf_type *t = btf_type_by_id(obj->btf, i);
-
->   		/* Loader needs to fix up some of the things compiler
->   		 * couldn't get its hands on while emitting BTF. This
-> @@ -2922,28 +2925,12 @@ static int btf_finalize_data(struct bpf_object  
-> *obj, struct btf *btf)
->   		 * the info from the ELF itself for this purpose.
->   		 */
->   		if (btf_is_datasec(t)) {
-> -			err = btf_fixup_datasec(obj, btf, t);
-> +			err = btf_fixup_datasec(obj, obj->btf, t);
->   			if (err)
-> -				break;
-> +				return err;
->   		}
->   	}
-
-> -	return libbpf_err(err);
-> -}
-> -
-> -static int bpf_object__finalize_btf(struct bpf_object *obj)
-> -{
-> -	int err;
-> -
-> -	if (!obj->btf)
-> -		return 0;
-> -
-> -	err = btf_finalize_data(obj, obj->btf);
-> -	if (err) {
-> -		pr_warn("Error finalizing %s: %d.\n", BTF_ELF_SEC, err);
-> -		return err;
-> -	}
-> -
->   	return 0;
->   }
-
-> @@ -7233,7 +7220,7 @@ static struct bpf_object *bpf_object_open(const  
-> char *path, const void *obj_buf,
->   	err = err ? : bpf_object__check_endianness(obj);
->   	err = err ? : bpf_object__elf_collect(obj);
->   	err = err ? : bpf_object__collect_externs(obj);
-> -	err = err ? : bpf_object__finalize_btf(obj);
-> +	err = err ? : bpf_object_fixup_btf(obj);
->   	err = err ? : bpf_object__init_maps(obj, opts);
->   	err = err ? : bpf_object_init_progs(obj, opts);
->   	err = err ? : bpf_object__collect_relos(obj);
 > --
 > 2.30.2
 
