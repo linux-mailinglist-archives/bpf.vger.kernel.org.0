@@ -2,54 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73D55602646
-	for <lists+bpf@lfdr.de>; Tue, 18 Oct 2022 09:59:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 545D96027D0
+	for <lists+bpf@lfdr.de>; Tue, 18 Oct 2022 11:02:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230235AbiJRH7o (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Oct 2022 03:59:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45558 "EHLO
+        id S230446AbiJRJCg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Oct 2022 05:02:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230167AbiJRH7m (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Oct 2022 03:59:42 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60653178B6
-        for <bpf@vger.kernel.org>; Tue, 18 Oct 2022 00:59:40 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E2632614AC
-        for <bpf@vger.kernel.org>; Tue, 18 Oct 2022 07:59:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E542C433D6;
-        Tue, 18 Oct 2022 07:59:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666079979;
-        bh=RMtlPFAudooIe825XrZ+akfgLyaNyWQmvJOkWj36GcY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=LbYEjMgvbMOY/i3RwGnj9qFbw9Wlx/fpBcDVqP9+ekZmdb3bXVG9voJ15Ir8KaTKf
-         mtyV5NdE+Yx+HFk2LUY/U9a9Bb4WXkOccV5y6OJqxFwKuALltb+2RsEq9iNHBkGv6b
-         OsJtWWNLKM6YO8TgnA9UeVLKE1SphnWb0kJw0opLmkhPF+lWjycrkEJFhaRbl3TZtE
-         yJZPuDI0H8ZDrI+PVHNyXlAQ6r0GzSJUeeycXwY6J7Skeaz7n8uSSHJxij6ubr0fcM
-         hmfZrDfi/9+mW1ENuQF3JVADZPdq8NcIF0Twcc0KUKIlqlc0GYWRKP5ZjrfGDefOGU
-         DfvyzW3SpU6jA==
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S230503AbiJRJCd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Oct 2022 05:02:33 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E1BAA8CE6
+        for <bpf@vger.kernel.org>; Tue, 18 Oct 2022 02:02:21 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id x1-20020a17090ab00100b001fda21bbc90so16711311pjq.3
+        for <bpf@vger.kernel.org>; Tue, 18 Oct 2022 02:02:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=GiF+HvtpV0USerhEY/2y6Nyo31ujO6NW/Gqobixjk20=;
+        b=M898cJ+N8aqZbu8uG2BsQJHR954CJUcWg+vBzQiHzYXOxK8WbG+ffByNekaCFvB624
+         mWx1t7cuv8EFoU1UrQW24Le+nk9Br0disJfftNCjAknvjKe0Zb8OJRbuRsBF0nm/ZaUz
+         upsO5mTFRxvi72EEEeEO3JEO8Q0cX//ZZTSss=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GiF+HvtpV0USerhEY/2y6Nyo31ujO6NW/Gqobixjk20=;
+        b=c7Ew62kK7ggALbd/6xDP6JpyOwH83zs2BUMo826YOQZr4XD7gPL+XERpJpZWIpru1f
+         3CyTczkVEgny4Wv6QIUjsxvgkNOBufwu07EZ+LEnEOvscCS0yH5vjNZ8VTph+cFSRuEt
+         w0PgATS0LV0o2EEp0Qv7t31UmOBKKiQz28x0YyJcmanrCDMB6igYcOxuuV/n6c4UpGOI
+         NeEYXkxqDa3WoVr6Ok8S2rZvEivQtzRRMPzExLa2RKUH93EtziK3DCijYrrD4H/fEjbc
+         7ES5yaPMrp5CoyyFBJTsCXUCEGVVOuuLaahXHQGrYc0YYZH/whf60Kf/3kkAE2VdGIP9
+         Nk9A==
+X-Gm-Message-State: ACrzQf2ORLHJpOU3MA/QUij1TGRoDoRF4JzXwOFl6gSmFF6LFnr4S9+t
+        eIDX8YzKYfhn3bZt9qpfqhp6zA==
+X-Google-Smtp-Source: AMsMyM58liADUU50Ea2Gd+JZXS22BGSdjKX9AcDXIBSVzKkmnwiaund/40rnqLs4OzHfC9QIqN5x4w==
+X-Received: by 2002:a17:902:db0b:b0:185:51cc:8113 with SMTP id m11-20020a170902db0b00b0018551cc8113mr1928957plx.64.1666083739303;
+        Tue, 18 Oct 2022 02:02:19 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id x184-20020a6286c1000000b005622f99579esm8696464pfd.160.2022.10.18.02.02.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Oct 2022 02:02:18 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Alexei Starovoitov <ast@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
+        KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>
-Subject: [PATCH bpf] bpf: Fix dispatcher patchable function entry to 5 bytes nop
-Date:   Tue, 18 Oct 2022 09:59:34 +0200
-Message-Id: <20221018075934.574415-1-jolsa@kernel.org>
-X-Mailer: git-send-email 2.37.3
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: [PATCH] bpf, test_run: Track allocation size of data
+Date:   Tue, 18 Oct 2022 02:02:13 -0700
+Message-Id: <20221018090205.never.090-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=7305; h=from:subject:message-id; bh=DTRHDHBZPBBZwilPaMBacwv+Bvqcp0DeH6UmRbkd/rA=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBjTmuV3TRMBUqW+B5RZpQe+7x8o5DbQTFlvjEuhea6 N/Q66bWJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCY05rlQAKCRCJcvTf3G3AJryAD/ 9VuAxCR5ybPIFdZwqttcTUU2fXGAh/Q2UqKV8K3lpm+kxJzdwfdDDpP5cn1AzZbG2v2XO5lVhpE+3N IaQbMsgYVBLcN1jc/srI2Xds34gJLg9RiaunIAykXIgraGrFjm3hfi4TKd9rh5svNwujf8OeR9Vsmw Utz031nC+3oClgpT8gkXjEAKUnenXbcEBV8SfOop+kHlD1pHwVKi6TvIkmWByP6Mk+azKBxpOOpvEk xzF0Jr/j2Qmyd0GA1KOIVF1v9uzVkRZ8DEBFNorRI0SV2aAcsIk8GizozXCJjKy457QqlayCLRSvai oBZJ2VUuvpY3iCzzXVDP4AgPFe4DjPHVuJAmUEselZFr9I10PPEHWYo/hoPzUysdtZ0LUKqofqjTla WyEG0NRhK2Xq3lTpt2YRp5nxhfuUmzBh8KjUuy2Y76Y9Vz6+qlf49BNdqafVr4RS38NAF+BDWsUB03 AURuD6iS9mUDR8KgKXoJrawEDRE/1JHREuxstdPAP0LgPyvi/LoWsfM70QQM+loqIjkdSeZcoX+ikc klRo27hKGywmQ7Ya4dKWcGKUvcI72rgKtz5G/FXhLa9XO8awqQiU+JX9usUTHGgKQO8QXE4ZY2Med/ vp/U+pm4XHGumrQmuZUahIAkW9lXti/xE5RZ2eiGr0J84evyXdkFmtD6/g6Q==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,125 +80,239 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The patchable_function_entry(5) might output 5 single nop
-instructions (depends on toolchain), which will clash with
-bpf_arch_text_poke check for 5 bytes nop instruction.
+In preparation for requiring that build_skb() have a non-zero size
+argument, track the data allocation size explicitly and pass it into
+build_skb(). To retain the original result of using the ksize()
+side-effect on the skb size, explicitly round up the size during
+allocation.
 
-Adding early init call for dispatcher that checks and change
-the patchable entry into expected 5 nop instruction if needed.
-
-There's no need to take text_mutex, because we are using it
-in early init call which is called at pre-smp time.
-
-Fixes: ceea991a019c ("bpf: Move bpf_dispatcher function out of ftrace locations")
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Song Liu <song@kernel.org>
+Cc: Yonghong Song <yhs@fb.com>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: KP Singh <kpsingh@kernel.org>
+Cc: Stanislav Fomichev <sdf@google.com>
+Cc: Hao Luo <haoluo@google.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Paolo Abeni <pabeni@redhat.com>
+Cc: Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: bpf@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- arch/x86/net/bpf_jit_comp.c | 13 +++++++++++++
- include/linux/bpf.h         | 14 +++++++++++++-
- kernel/bpf/dispatcher.c     |  6 ++++++
- 3 files changed, 32 insertions(+), 1 deletion(-)
+ net/bpf/test_run.c | 84 +++++++++++++++++++++++++---------------------
+ 1 file changed, 46 insertions(+), 38 deletions(-)
 
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 0abd082786e7..51afd6d0c05f 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -11,6 +11,7 @@
- #include <linux/bpf.h>
- #include <linux/memory.h>
- #include <linux/sort.h>
-+#include <linux/init.h>
- #include <asm/extable.h>
- #include <asm/set_memory.h>
- #include <asm/nospec-branch.h>
-@@ -388,6 +389,18 @@ static int __bpf_arch_text_poke(void *ip, enum bpf_text_poke_type t,
+diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+index 13d578ce2a09..299ff102f516 100644
+--- a/net/bpf/test_run.c
++++ b/net/bpf/test_run.c
+@@ -762,28 +762,38 @@ BTF_ID_FLAGS(func, bpf_kfunc_call_test_ref, KF_TRUSTED_ARGS)
+ BTF_ID_FLAGS(func, bpf_kfunc_call_test_destructive, KF_DESTRUCTIVE)
+ BTF_SET8_END(test_sk_check_kfunc_ids)
+ 
+-static void *bpf_test_init(const union bpf_attr *kattr, u32 user_size,
+-			   u32 size, u32 headroom, u32 tailroom)
++struct bpfalloc {
++	size_t len;
++	void  *data;
++};
++
++static int bpf_test_init(struct bpfalloc *alloc,
++			 const union bpf_attr *kattr, u32 user_size,
++			 u32 size, u32 headroom, u32 tailroom)
+ {
+ 	void __user *data_in = u64_to_user_ptr(kattr->test.data_in);
+-	void *data;
+ 
+ 	if (size < ETH_HLEN || size > PAGE_SIZE - headroom - tailroom)
+-		return ERR_PTR(-EINVAL);
++		return -EINVAL;
+ 
+ 	if (user_size > size)
+-		return ERR_PTR(-EMSGSIZE);
++		return -EMSGSIZE;
+ 
+-	data = kzalloc(size + headroom + tailroom, GFP_USER);
+-	if (!data)
+-		return ERR_PTR(-ENOMEM);
++	alloc->len = kmalloc_size_roundup(size + headroom + tailroom);
++	alloc->data = kzalloc(alloc->len, GFP_USER);
++	if (!alloc->data) {
++		alloc->len = 0;
++		return -ENOMEM;
++	}
+ 
+-	if (copy_from_user(data + headroom, data_in, user_size)) {
+-		kfree(data);
+-		return ERR_PTR(-EFAULT);
++	if (copy_from_user(alloc->data + headroom, data_in, user_size)) {
++		kfree(alloc->data);
++		alloc->data = NULL;
++		alloc->len = 0;
++		return -EFAULT;
+ 	}
+ 
+-	return data;
++	return 0;
+ }
+ 
+ int bpf_prog_test_run_tracing(struct bpf_prog *prog,
+@@ -1086,25 +1096,25 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
+ 	u32 size = kattr->test.data_size_in;
+ 	u32 repeat = kattr->test.repeat;
+ 	struct __sk_buff *ctx = NULL;
++	struct bpfalloc alloc = { };
+ 	u32 retval, duration;
+ 	int hh_len = ETH_HLEN;
+ 	struct sk_buff *skb;
+ 	struct sock *sk;
+-	void *data;
+ 	int ret;
+ 
+ 	if (kattr->test.flags || kattr->test.cpu || kattr->test.batch_size)
+ 		return -EINVAL;
+ 
+-	data = bpf_test_init(kattr, kattr->test.data_size_in,
+-			     size, NET_SKB_PAD + NET_IP_ALIGN,
+-			     SKB_DATA_ALIGN(sizeof(struct skb_shared_info)));
+-	if (IS_ERR(data))
+-		return PTR_ERR(data);
++	ret = bpf_test_init(&alloc, kattr, kattr->test.data_size_in,
++			    size, NET_SKB_PAD + NET_IP_ALIGN,
++			    SKB_DATA_ALIGN(sizeof(struct skb_shared_info)));
++	if (ret)
++		return ret;
+ 
+ 	ctx = bpf_ctx_init(kattr, sizeof(struct __sk_buff));
+ 	if (IS_ERR(ctx)) {
+-		kfree(data);
++		kfree(alloc.data);
+ 		return PTR_ERR(ctx);
+ 	}
+ 
+@@ -1124,15 +1134,15 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
+ 
+ 	sk = sk_alloc(net, AF_UNSPEC, GFP_USER, &bpf_dummy_proto, 1);
+ 	if (!sk) {
+-		kfree(data);
++		kfree(alloc.data);
+ 		kfree(ctx);
+ 		return -ENOMEM;
+ 	}
+ 	sock_init_data(NULL, sk);
+ 
+-	skb = build_skb(data, 0);
++	skb = build_skb(alloc.data, alloc.len);
+ 	if (!skb) {
+-		kfree(data);
++		kfree(alloc.data);
+ 		kfree(ctx);
+ 		sk_free(sk);
+ 		return -ENOMEM;
+@@ -1283,10 +1293,10 @@ int bpf_prog_test_run_xdp(struct bpf_prog *prog, const union bpf_attr *kattr,
+ 	u32 repeat = kattr->test.repeat;
+ 	struct netdev_rx_queue *rxqueue;
+ 	struct skb_shared_info *sinfo;
++	struct bpfalloc alloc = {};
+ 	struct xdp_buff xdp = {};
+ 	int i, ret = -EINVAL;
+ 	struct xdp_md *ctx;
+-	void *data;
+ 
+ 	if (prog->expected_attach_type == BPF_XDP_DEVMAP ||
+ 	    prog->expected_attach_type == BPF_XDP_CPUMAP)
+@@ -1329,16 +1339,14 @@ int bpf_prog_test_run_xdp(struct bpf_prog *prog, const union bpf_attr *kattr,
+ 		size = max_data_sz;
+ 	}
+ 
+-	data = bpf_test_init(kattr, size, max_data_sz, headroom, tailroom);
+-	if (IS_ERR(data)) {
+-		ret = PTR_ERR(data);
++	ret = bpf_test_init(&alloc, kattr, size, max_data_sz, headroom, tailroom);
++	if (ret)
+ 		goto free_ctx;
+-	}
+ 
+ 	rxqueue = __netif_get_rx_queue(current->nsproxy->net_ns->loopback_dev, 0);
+ 	rxqueue->xdp_rxq.frag_size = headroom + max_data_sz + tailroom;
+ 	xdp_init_buff(&xdp, rxqueue->xdp_rxq.frag_size, &rxqueue->xdp_rxq);
+-	xdp_prepare_buff(&xdp, data, headroom, size, true);
++	xdp_prepare_buff(&xdp, alloc.data, headroom, size, true);
+ 	sinfo = xdp_get_shared_info_from_buff(&xdp);
+ 
+ 	ret = xdp_convert_md_to_buff(ctx, &xdp);
+@@ -1410,7 +1418,7 @@ int bpf_prog_test_run_xdp(struct bpf_prog *prog, const union bpf_attr *kattr,
+ free_data:
+ 	for (i = 0; i < sinfo->nr_frags; i++)
+ 		__free_page(skb_frag_page(&sinfo->frags[i]));
+-	kfree(data);
++	kfree(alloc.data);
+ free_ctx:
+ 	kfree(ctx);
+ 	return ret;
+@@ -1441,10 +1449,10 @@ int bpf_prog_test_run_flow_dissector(struct bpf_prog *prog,
+ 	u32 repeat = kattr->test.repeat;
+ 	struct bpf_flow_keys *user_ctx;
+ 	struct bpf_flow_keys flow_keys;
++	struct bpfalloc alloc = {};
+ 	const struct ethhdr *eth;
+ 	unsigned int flags = 0;
+ 	u32 retval, duration;
+-	void *data;
+ 	int ret;
+ 
+ 	if (kattr->test.flags || kattr->test.cpu || kattr->test.batch_size)
+@@ -1453,18 +1461,18 @@ int bpf_prog_test_run_flow_dissector(struct bpf_prog *prog,
+ 	if (size < ETH_HLEN)
+ 		return -EINVAL;
+ 
+-	data = bpf_test_init(kattr, kattr->test.data_size_in, size, 0, 0);
+-	if (IS_ERR(data))
+-		return PTR_ERR(data);
++	ret = bpf_test_init(&alloc, kattr, kattr->test.data_size_in, size, 0, 0);
++	if (ret)
++		return ret;
+ 
+-	eth = (struct ethhdr *)data;
++	eth = (struct ethhdr *)alloc.data;
+ 
+ 	if (!repeat)
+ 		repeat = 1;
+ 
+ 	user_ctx = bpf_ctx_init(kattr, sizeof(struct bpf_flow_keys));
+ 	if (IS_ERR(user_ctx)) {
+-		kfree(data);
++		kfree(alloc.data);
+ 		return PTR_ERR(user_ctx);
+ 	}
+ 	if (user_ctx) {
+@@ -1475,8 +1483,8 @@ int bpf_prog_test_run_flow_dissector(struct bpf_prog *prog,
+ 	}
+ 
+ 	ctx.flow_keys = &flow_keys;
+-	ctx.data = data;
+-	ctx.data_end = (__u8 *)data + size;
++	ctx.data = alloc.data;
++	ctx.data_end = (__u8 *)alloc.data + size;
+ 
+ 	bpf_test_timer_enter(&t);
+ 	do {
+@@ -1496,7 +1504,7 @@ int bpf_prog_test_run_flow_dissector(struct bpf_prog *prog,
+ 
+ out:
+ 	kfree(user_ctx);
+-	kfree(data);
++	kfree(alloc.data);
  	return ret;
  }
  
-+int __init bpf_arch_init_dispatcher_early(void *ip)
-+{
-+	const u8 *nop_insn = x86_nops[5];
-+
-+	if (is_endbr(*(u32 *)ip))
-+		ip += ENDBR_INSN_SIZE;
-+
-+	if (memcmp(ip, nop_insn, X86_PATCH_SIZE))
-+		text_poke_early(ip, nop_insn, X86_PATCH_SIZE);
-+	return 0;
-+}
-+
- int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type t,
- 		       void *old_addr, void *new_addr)
- {
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 9e7d46d16032..0566705c1d4e 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -27,6 +27,7 @@
- #include <linux/bpfptr.h>
- #include <linux/btf.h>
- #include <linux/rcupdate_trace.h>
-+#include <linux/init.h>
- 
- struct bpf_verifier_env;
- struct bpf_verifier_log;
-@@ -970,6 +971,8 @@ struct bpf_trampoline *bpf_trampoline_get(u64 key,
- 					  struct bpf_attach_target_info *tgt_info);
- void bpf_trampoline_put(struct bpf_trampoline *tr);
- int arch_prepare_bpf_dispatcher(void *image, void *buf, s64 *funcs, int num_funcs);
-+int __init bpf_arch_init_dispatcher_early(void *ip);
-+
- #define BPF_DISPATCHER_INIT(_name) {				\
- 	.mutex = __MUTEX_INITIALIZER(_name.mutex),		\
- 	.func = &_name##_func,					\
-@@ -983,6 +986,13 @@ int arch_prepare_bpf_dispatcher(void *image, void *buf, s64 *funcs, int num_func
- 	},							\
- }
- 
-+#define BPF_DISPATCHER_INIT_CALL(_name)					\
-+	static int __init _name##_init(void)				\
-+	{								\
-+		return bpf_arch_init_dispatcher_early(_name##_func);	\
-+	}								\
-+	early_initcall(_name##_init)
-+
- #ifdef CONFIG_X86_64
- #define BPF_DISPATCHER_ATTRIBUTES __attribute__((patchable_function_entry(5)))
- #else
-@@ -1000,7 +1010,9 @@ int arch_prepare_bpf_dispatcher(void *image, void *buf, s64 *funcs, int num_func
- 	}								\
- 	EXPORT_SYMBOL(bpf_dispatcher_##name##_func);			\
- 	struct bpf_dispatcher bpf_dispatcher_##name =			\
--		BPF_DISPATCHER_INIT(bpf_dispatcher_##name);
-+		BPF_DISPATCHER_INIT(bpf_dispatcher_##name);		\
-+	BPF_DISPATCHER_INIT_CALL(bpf_dispatcher_##name);
-+
- #define DECLARE_BPF_DISPATCHER(name)					\
- 	unsigned int bpf_dispatcher_##name##_func(			\
- 		const void *ctx,					\
-diff --git a/kernel/bpf/dispatcher.c b/kernel/bpf/dispatcher.c
-index fa64b80b8bca..04f0a045dcaa 100644
---- a/kernel/bpf/dispatcher.c
-+++ b/kernel/bpf/dispatcher.c
-@@ -4,6 +4,7 @@
- #include <linux/hash.h>
- #include <linux/bpf.h>
- #include <linux/filter.h>
-+#include <linux/init.h>
- 
- /* The BPF dispatcher is a multiway branch code generator. The
-  * dispatcher is a mechanism to avoid the performance penalty of an
-@@ -90,6 +91,11 @@ int __weak arch_prepare_bpf_dispatcher(void *image, void *buf, s64 *funcs, int n
- 	return -ENOTSUPP;
- }
- 
-+int __weak __init bpf_arch_init_dispatcher_early(void *ip)
-+{
-+	return -ENOTSUPP;
-+}
-+
- static int bpf_dispatcher_prepare(struct bpf_dispatcher *d, void *image, void *buf)
- {
- 	s64 ips[BPF_DISPATCHER_MAX] = {}, *ipsp = &ips[0];
 -- 
-2.37.3
+2.34.1
 
