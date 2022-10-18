@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F5EC602DBD
-	for <lists+bpf@lfdr.de>; Tue, 18 Oct 2022 16:00:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B05F602DBE
+	for <lists+bpf@lfdr.de>; Tue, 18 Oct 2022 16:00:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231348AbiJROAY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Oct 2022 10:00:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52734 "EHLO
+        id S230185AbiJROA1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Oct 2022 10:00:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231362AbiJROAN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Oct 2022 10:00:13 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F03989917
-        for <bpf@vger.kernel.org>; Tue, 18 Oct 2022 07:00:09 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id o21so11502936ple.5
-        for <bpf@vger.kernel.org>; Tue, 18 Oct 2022 07:00:09 -0700 (PDT)
+        with ESMTP id S230359AbiJROAS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Oct 2022 10:00:18 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B1268A1F0
+        for <bpf@vger.kernel.org>; Tue, 18 Oct 2022 07:00:12 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id t10-20020a17090a4e4a00b0020af4bcae10so14061347pjl.3
+        for <bpf@vger.kernel.org>; Tue, 18 Oct 2022 07:00:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Ag5Q1CLOoCiOe4E6jcNn0D/qd7Ptx/xklL9ZKfmmK+A=;
-        b=qhUjJu+zD1mkiVxwGYIonMV5bFwn5kce1chAoBi4/BD7rWjQExtrcuI1Ab/JFYHFzx
-         8Myj40S1zxPqPMdHbMviwOOCmtcFzkWx9PFfiDGOZh82ZwbEiGaacbnc3EqtAme/BASm
-         YtWYikKTyILD4rE3eScqJjkecvj5t+XBdsGZy/THcoEJBrSv9P2HSE6klvwg1SDFuyqO
-         OxsBtW8JZtV4gFASocwwK5iZmAHQhEZXY8JXU8QDTX17bSTiobiIDHc3TeerWs6s090j
-         Ry9aLxjni+Dpcy8HWGIF9SrGjIxdowjFVEBT9Kt5v5nvqFBb+dDs2uQ8OPXyZFOjC7dj
-         WPag==
+        bh=C5hKkta8jKAlESTBm7K0poJIgy7JPyEhWZPuv6W2TV8=;
+        b=MurWAKhh2HwRuHRHx/Em6wUlGCZszsZIvRkcjSu3Q2RWApzNe5IKedPthMwrf9L8vq
+         l1f8u8FzF37DZCjwbYlehPXABariYTzVDhKqAjNSMCdudNkPQw2CBWvYDeZZfk8YI3L9
+         e7khW4ur1+opT4ER4Tb0RDgN0rsEF+EeZA4FW2A5I7YuG43Mf3ldL7q9ZKkGxmJO9RrO
+         /Jp9rTdIlL3SyM7FoFJDTHdBpJOPHcdCaKKIPqB+J1GwoNNFkSb4QH9I/GTvF9F57WVY
+         2UXKj/rTzhC6Emv644V/tdZpHTFYyyFM7Zd6SqwSs3UGFvGEOWNYrGV3XS60hQpG1Pqu
+         AQKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Ag5Q1CLOoCiOe4E6jcNn0D/qd7Ptx/xklL9ZKfmmK+A=;
-        b=HA7UdhHgdtB+LAQ5D/pOK9s2e6ehVbi+LRUqW+C0qfmV7u4CTLiDRRlAVGJk8wqt88
-         PDZRhxwSScgNb9Sm2kCGILUPWkeMXZju0yt7TFXmE69rDIrEdPvuqqa6wcNCcV6nYVKP
-         k4jPpJMI87sjHTeG1bG7yNjDdDTiZyr1QJKmzyISeQ1t9/mZVHGc+dWeq9w8BUy0gaj8
-         0xExHMcQ56r9CVfuT6lmq8LMsyqEy1qn7cWgCaIF96y21WDusMjwJ6LZWbpfDd4LfycO
-         S5tMIgnvTS/rVcD/UF30zTHeHBtuLIRaR/6x18c8KEccO/V44Xwe7da8CUlP6PZeAjht
-         gzYg==
-X-Gm-Message-State: ACrzQf0Sh/lZ6x8Hu01iHk//ag+E/v6okf2hkpjvUeYx5iKaMEp0d4bl
-        dd3ZEESgkXFpBfAxwhTh0U7NaphBCjbKSQ==
-X-Google-Smtp-Source: AMsMyM701Bvaj0M+7dOsyvshR6cbSw/3T3zyDuY3p4d/4fMvQh4O4Xye/MyXjgNWdsnfaUXBO9RXQw==
-X-Received: by 2002:a17:902:70c4:b0:17c:f9fe:3200 with SMTP id l4-20020a17090270c400b0017cf9fe3200mr3181546plt.1.1666101608156;
-        Tue, 18 Oct 2022 07:00:08 -0700 (PDT)
+        bh=C5hKkta8jKAlESTBm7K0poJIgy7JPyEhWZPuv6W2TV8=;
+        b=KHJuBkSZ3CRlhJtZJZtNFtXKfi+/dr3k6rEMTFCsLK5gpIO+vJ2CR43yzIvoOEU7BI
+         wIF0FLF+OXtnb6grIuJFiVlK6dTtRrAbJDHAgIXldmND5lSSbAz0A5Ff5Vh01Dq5ugyW
+         wqyUFmdFoTs151blN0OgL2m7yBN/MbiLRGJcBY0Fgfbt0B8dFks+PQ7uQ2a7IA/SLVa2
+         TJvusUS/yoE9p6wkPjciaCi3uU1zdRvnuB+oM/05so0pUlCf+Gab3mkufza94BK/o61t
+         xUUomWC982dGhMaF4HyvuMLHGNmhdC28R/vAMrdCjH2yM+dzwAodEBJrd45erF4ci0zX
+         ViBA==
+X-Gm-Message-State: ACrzQf0tUBc42kPZoEKZkGiSIM6Di2lyBgn8o1LgAgUXBO/fgVFujPpj
+        /Bh5aJtrpve39Y/2OAyj6VIYB6iTElM9AA==
+X-Google-Smtp-Source: AMsMyM7tUOdAo5BDodjJRSUVGsalAuAh/zV/enKFCnRQNjR5eRGM4/ulgV1oczr8Titd3MTmLDa9aQ==
+X-Received: by 2002:a17:90b:2d85:b0:20a:d20e:a5fe with SMTP id sj5-20020a17090b2d8500b0020ad20ea5femr3704508pjb.96.1666101611016;
+        Tue, 18 Oct 2022 07:00:11 -0700 (PDT)
 Received: from localhost ([103.4.222.252])
-        by smtp.gmail.com with ESMTPSA id y17-20020a634951000000b0046a1c832e9fsm7984183pgk.34.2022.10.18.07.00.07
+        by smtp.gmail.com with ESMTPSA id l9-20020a170903244900b001754e086eb3sm8818986pls.302.2022.10.18.07.00.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Oct 2022 07:00:07 -0700 (PDT)
+        Tue, 18 Oct 2022 07:00:10 -0700 (PDT)
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To:     bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -57,14 +57,14 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Martin KaFai Lau <martin.lau@kernel.org>,
         Joanne Koong <joannelkoong@gmail.com>,
         David Vernet <void@manifault.com>
-Subject: [PATCH bpf-next v1 12/13] selftests/bpf: Add dynptr partial slot overwrite tests
-Date:   Tue, 18 Oct 2022 19:29:19 +0530
-Message-Id: <20221018135920.726360-13-memxor@gmail.com>
+Subject: [PATCH bpf-next v1 13/13] selftests/bpf: Add dynptr helper tests
+Date:   Tue, 18 Oct 2022 19:29:20 +0530
+Message-Id: <20221018135920.726360-14-memxor@gmail.com>
 X-Mailer: git-send-email 2.38.0
 In-Reply-To: <20221018135920.726360-1-memxor@gmail.com>
 References: <20221018135920.726360-1-memxor@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3165; i=memxor@gmail.com; h=from:subject; bh=n6R+Kc1fES01TnB4BRh9DyPo8cyoSpbfFQ92Z+ogpQs=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBjTrEisz4QmcCQCAZzWRRCitFtyC0TyN/Ktw/4AGj1 M8MjLPCJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCY06xIgAKCRBM4MiGSL8RygqLD/ 9QfwP93D/WXJFoPCG3bJPrZyXwpZ/DgkKrS87ShMMX16qX8rFaKRL6SlKZ/+HNj0sguzTVGFZSX1Qj vKHTJufxj6kKnwIn8TwCQakxRcDqiLR9909TqGxrN2/lBbxrDTO/RcGjwdWmbjkgWwUBQJuKlJVI6s UCqoTnkJ4Aqt0mUmaZ08lOo2ajw9tXRhSMTDa/G2O5OUJZdqYmk4Lhsomawg2kdHMJcNEsquoQY6at Gg+wjcfFQE+in1+n7U2/dz7FXB9LozMPMvrIYe+hpzZpEaFVoxXZHy9Yc7fM1Zze4iTWkvObFGLA5M Z4GTox0VBSQ1a6AXP3eYFrtUXEdR9mXK+of8XpMPa5/7nrQ6K7eAQhX5RLVM+kH6FKJf6H/JCKGsXQ V6QUAkHISdFaIkZLqdMen8lvOjfjR/mfS6j3nZiyRD9nKKmAZ6cN6wlhPlWWMeOd9CfY1Lanx16T47 cvZ7ik0WleotXZHINejIn0YcaNhE2GDG81b8e7mHOfnNsSMHMwjbFP21vg0Tq3TFHxWN8iCBP57rvM eQXBpjK8Ej/h+ZlXRaOAZeP22JTCReQ0YZUFqVhC3Yk1dtiLcy4GVJhNRnOa2p3j9b0ww7ilcn7Ozc CgqMJmJF0QL9pCDFJPvH87rjROSCx2g3jOWJyVImKfcMI+HTnrBuB/kUt9JQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3180; i=memxor@gmail.com; h=from:subject; bh=eMjtMuXO5rdwYTSgrRC3E52QI3/PPyZSAswoySqEGZY=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBjTrEjlt03T3P4YR/mKsk4bZzlJtwLybR0v8Ar5UOw J+/BBcuJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCY06xIwAKCRBM4MiGSL8Ryt93D/ 46OavxunKYHWf+txRq39+musyJGIXzYeehyvZBL4NgIGIIxx4M3/ACmT77OdQinSQtvqh1PRo+vYnc f9WGPJuuAPcXzv2ZuKSrKF4fF46AgnKX2cJgBuN2DIe4ne+4o/oEBvSJG8GVe+K7Ra8JXyTXslpPZZ JGoFnFyDwQTKSxZh306B+69xXRvrVVam2kFjCt8XOGSMwWsZzWka/1nsEJTxfqIHIT7D558TmwX4Lz 9lbLa5Basjzrl1amAcSLWSRG+bOeI9HsMLSjzj+ol5JTvPoEt8zbexH4XS6FjI8exauruKxwMZUKpC MlThyDMD6i7p1FFvw3WZKErin3cU2LGv25J4jRYx2KSpOXikbL39sWqx1ceakXgem0nXWcHsAEGkPA QxbaCo7qALDSJRwgclBENfeTm/oTgqDiLB2uqNr75G6I2/e870J/YK948R+sNLDajq+dPdS0y359sA 9G23isOJYc2ZIuzpG2hxTtuiNSmJXxNp0GGXrn6EVPZR3KOC5mfrfN7KEfdQioJ79ej/hddPdyBS/7 KlLzAp/AuJTMoxg1onkrwoW15Kn9kabGe5j5W1uspiqyxJGyf46Znz2CcFpMLB7soGzSFqiWDetwyv zkhSee4PEDCf9jss1ypCRXp+6t3Jo+8vNF1ALqunRNGvQ72GylB6qd4X9JAw==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -77,83 +77,107 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Try creating a dynptr, then overwriting second slot with first slot of
-another dynptr. Then, the first slot of first dynptr should also be
-invalidated, but without our fix that does not happen. As a consequence,
-the unfixed case allows passing first dynptr (as the kernel check only
-checks for slot_type and then first_slot == true).
+Test that MEM_UNINIT doesn't allow writing dynptr stack slots. Next,
+also add a test triggering the memmove case for dynptr_read and
+dynptr_write.
 
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- tools/testing/selftests/bpf/verifier/dynptr.c | 58 +++++++++++++++++++
- 1 file changed, 58 insertions(+)
+ .../testing/selftests/bpf/prog_tests/dynptr.c |  3 ++
+ .../testing/selftests/bpf/progs/dynptr_fail.c | 35 +++++++++++++++++++
+ .../selftests/bpf/progs/dynptr_success.c      | 20 +++++++++++
+ 3 files changed, 58 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/verifier/dynptr.c b/tools/testing/selftests/bpf/verifier/dynptr.c
-index 1aa7241e8a9e..8c57bc9e409f 100644
---- a/tools/testing/selftests/bpf/verifier/dynptr.c
-+++ b/tools/testing/selftests/bpf/verifier/dynptr.c
-@@ -122,3 +122,61 @@
- 	.result = REJECT,
- 	.errstr = "dynptr has to be at the constant offset",
- },
+diff --git a/tools/testing/selftests/bpf/prog_tests/dynptr.c b/tools/testing/selftests/bpf/prog_tests/dynptr.c
+index 947126d217bd..20910598a0a6 100644
+--- a/tools/testing/selftests/bpf/prog_tests/dynptr.c
++++ b/tools/testing/selftests/bpf/prog_tests/dynptr.c
+@@ -42,11 +42,14 @@ static struct {
+ 	{"release_twice_callback", "arg 1 is an unacquired reference"},
+ 	{"dynptr_from_mem_invalid_api",
+ 		"Unsupported reg type fp for bpf_dynptr_from_mem data"},
++	{"dynptr_read_into_slot", "potential write to dynptr at off=-16"},
++	{"uninit_write_into_slot", "potential write to dynptr at off=-16"},
+ 
+ 	/* success cases */
+ 	{"test_read_write", NULL},
+ 	{"test_data_slice", NULL},
+ 	{"test_ringbuf", NULL},
++	{"test_overlap", NULL},
+ };
+ 
+ static void verify_fail(const char *prog_name, const char *expected_err_msg)
+diff --git a/tools/testing/selftests/bpf/progs/dynptr_fail.c b/tools/testing/selftests/bpf/progs/dynptr_fail.c
+index b0f08ff024fb..43a0ed3736a9 100644
+--- a/tools/testing/selftests/bpf/progs/dynptr_fail.c
++++ b/tools/testing/selftests/bpf/progs/dynptr_fail.c
+@@ -622,3 +622,38 @@ int dynptr_from_mem_invalid_api(void *ctx)
+ 
+ 	return 0;
+ }
++
++/* Reject writes to dynptr slot from bpf_dynptr_read */
++SEC("?raw_tp")
++int dynptr_read_into_slot(void *ctx)
 +{
-+       "dynptr: partial dynptr slot invalidate",
-+	.insns = {
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_LD_MAP_FD(BPF_REG_6, 0),
-+	BPF_LD_MAP_FD(BPF_REG_7, 0),
-+	BPF_MOV64_REG(BPF_REG_1, BPF_REG_7),
-+	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
-+	BPF_ST_MEM(BPF_DW, BPF_REG_2, 0, 0),
-+	BPF_MOV64_REG(BPF_REG_3, BPF_REG_2),
-+	BPF_MOV64_IMM(BPF_REG_4, 0),
-+	BPF_MOV64_REG(BPF_REG_8, BPF_REG_2),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_update_elem),
-+	BPF_MOV64_REG(BPF_REG_1, BPF_REG_7),
-+	BPF_MOV64_REG(BPF_REG_2, BPF_REG_8),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
-+	BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 1),
-+	BPF_EXIT_INSN(),
-+	BPF_MOV64_REG(BPF_REG_7, BPF_REG_0),
-+	BPF_MOV64_REG(BPF_REG_1, BPF_REG_6),
-+	BPF_MOV64_IMM(BPF_REG_2, 8),
-+	BPF_MOV64_IMM(BPF_REG_3, 0),
-+	BPF_MOV64_REG(BPF_REG_4, BPF_REG_10),
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_4, -24),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_ringbuf_reserve_dynptr),
-+	BPF_ST_MEM(BPF_DW, BPF_REG_10, -16, 0),
-+	BPF_MOV64_REG(BPF_REG_1, BPF_REG_7),
-+	BPF_MOV64_IMM(BPF_REG_2, 8),
-+	BPF_MOV64_IMM(BPF_REG_3, 0),
-+	BPF_MOV64_REG(BPF_REG_4, BPF_REG_10),
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_4, -16),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_dynptr_from_mem),
-+	BPF_MOV64_REG(BPF_REG_1, BPF_REG_10),
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, -512),
-+	BPF_MOV64_IMM(BPF_REG_2, 488),
-+	BPF_MOV64_REG(BPF_REG_3, BPF_REG_10),
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_3, -24),
-+	BPF_MOV64_IMM(BPF_REG_4, 0),
-+	BPF_MOV64_IMM(BPF_REG_5, 0),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_dynptr_read),
-+	BPF_MOV64_IMM(BPF_REG_8, 1),
-+	BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 1),
-+	BPF_MOV64_IMM(BPF_REG_8, 0),
-+	BPF_MOV64_REG(BPF_REG_1, BPF_REG_10),
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, -24),
-+	BPF_MOV64_IMM(BPF_REG_2, 0),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_ringbuf_discard_dynptr),
-+	BPF_MOV64_REG(BPF_REG_0, BPF_REG_8),
-+	BPF_EXIT_INSN(),
-+	},
-+	.fixup_map_ringbuf = { 1 },
-+	.fixup_map_hash_8b = { 3 },
-+	.result_unpriv = REJECT,
-+	.errstr_unpriv = "unknown func bpf_ringbuf_reserve_dynptr#198",
-+	.result = REJECT,
-+	.errstr = "Expected an initialized dynptr as arg #3",
-+},
++	union {
++		struct {
++			char _pad[48];
++			struct bpf_dynptr ptr;
++		};
++		char buf[64];
++	} data;
++
++	bpf_ringbuf_reserve_dynptr(&ringbuf, 64, 0, &data.ptr);
++	/* this should fail */
++	bpf_dynptr_read(data.buf, sizeof(data.buf), &data.ptr, 0, 0);
++
++	return 0;
++}
++
++/* Reject writes to dynptr slot for uninit arg */
++SEC("?raw_tp")
++int uninit_write_into_slot(void *ctx)
++{
++	struct {
++		char buf[64];
++		struct bpf_dynptr ptr;
++	} data;
++
++	bpf_ringbuf_reserve_dynptr(&ringbuf, 80, 0, &data.ptr);
++	/* this should fail */
++	bpf_get_current_comm(data.buf, 80);
++
++	return 0;
++}
+diff --git a/tools/testing/selftests/bpf/progs/dynptr_success.c b/tools/testing/selftests/bpf/progs/dynptr_success.c
+index a3a6103c8569..401e924b15a0 100644
+--- a/tools/testing/selftests/bpf/progs/dynptr_success.c
++++ b/tools/testing/selftests/bpf/progs/dynptr_success.c
+@@ -162,3 +162,23 @@ int test_ringbuf(void *ctx)
+ 	bpf_ringbuf_discard_dynptr(&ptr, 0);
+ 	return 0;
+ }
++
++SEC("tp/syscalls/sys_enter_nanosleep")
++int test_overlap(void *ctx)
++{
++	struct bpf_dynptr ptr;
++	void *p;
++
++	if (bpf_get_current_pid_tgid() >> 32 != pid)
++		return 0;
++	bpf_ringbuf_reserve_dynptr(&ringbuf, 16, 0, &ptr);
++	p = bpf_dynptr_data(&ptr, 0, 16);
++	if (!p) {
++		err = 1;
++		goto done;
++	}
++	bpf_dynptr_read(p + 1, 8, &ptr, 0, 0);
++done:
++	bpf_ringbuf_discard_dynptr(&ptr, 0);
++	return 0;
++}
 -- 
 2.38.0
 
