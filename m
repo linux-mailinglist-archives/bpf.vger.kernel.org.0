@@ -2,80 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F36760320D
-	for <lists+bpf@lfdr.de>; Tue, 18 Oct 2022 20:12:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ED8F60321A
+	for <lists+bpf@lfdr.de>; Tue, 18 Oct 2022 20:13:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229453AbiJRSMX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Oct 2022 14:12:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47846 "EHLO
+        id S229506AbiJRSNl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Oct 2022 14:13:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229729AbiJRSMW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Oct 2022 14:12:22 -0400
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 107D3748FC
-        for <bpf@vger.kernel.org>; Tue, 18 Oct 2022 11:12:18 -0700 (PDT)
-Received: by mail-il1-x135.google.com with SMTP id o13so7885196ilc.7
-        for <bpf@vger.kernel.org>; Tue, 18 Oct 2022 11:12:18 -0700 (PDT)
+        with ESMTP id S229843AbiJRSNj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Oct 2022 14:13:39 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBF6475FC5
+        for <bpf@vger.kernel.org>; Tue, 18 Oct 2022 11:13:29 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-3538689fc60so146496347b3.3
+        for <bpf@vger.kernel.org>; Tue, 18 Oct 2022 11:13:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=WPYfFt0+MykG0YpnQx6+DhyeSu/BwJtTNFyJrrlyohk=;
-        b=bap5k5JzNgBpJ2/dZuTcyz+EyCR16d68pFmA42tq3G68IRmlA3yL4g7cK1ZOn50P7c
-         BOGgYrAXJXUnSX/zYEJsxh0X37Uqn5eBtAVVWX6xSAYkA4Z6AkfdK90R0EfHP28Y5mIx
-         TLfn0mEv+fuPCaJqFoNfBR1lTf1xeUEd8zrhZNlK+0ATlf5s/x0FvJ0AzVhJtEXX6VmE
-         H99goAiEdqPtop/tflWAwYzbbAt6M8B/QYReBELRedGgg+y9RZbNdHMlw14a+7n2Xee3
-         aif+WayWI+evQbeEWXuphQb1dmVmC7iLlo3VrmZKsuKeVmu1tdk/tqORPDCsiDLJ/Qx/
-         gxAg==
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=akcmD112bzoQOApwuxJTobxDhUf+pwiEurjJfy/+2sc=;
+        b=O4NyK+L9H7jKRFZVfyvzxjZyWqT57krnNADBs0GQlEiophWQm4cHyv58FB5HpCcqQB
+         ky4/m6GZEI4q5ODD7uZwgLVilyte7hG6ExWVUWEdiJUV6yI5QIHERcZgoUjqWNcdO0MI
+         b/WhxbfBYytv0x9rfnE3FvJ+OIywjqNmlEaVC6UfYb61tbZEPfTci27oHp+v5WZj7ZHf
+         Enj/6rRIeAIFQKWCsFVgRsB6OEbwCK3AN6ij0IPihHbSEybXqs1juCrJ9Wdcvc6CcgsR
+         gHAImxBehhsh9KcLqFee9U+ei5rjYIkRFoxxawOF0Q6wAti3qnv9gJeLfTjoeJr3jYIt
+         ZP4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WPYfFt0+MykG0YpnQx6+DhyeSu/BwJtTNFyJrrlyohk=;
-        b=T4QE24Ksw4SBPh7YFywnFi8KV0LwSQPBcgJ3ai51DVX56wj0qmFkXtFf80Jid69R+C
-         o4QhTC4FsgDjqKER/C3MEBYKzX6wIUMLrrl9UEAqzmyqW/GUUhf0NSZdGKBlYX5jCcdd
-         E4ccju6NOh3hWfDpVRUNlMwyRcChDBizvTrAOLqSMQfCHm4v5jvJmJ6xXWx1OFsiNr6X
-         LbHlOmDs55OpTOUfPL9r3J/o8nox9kH5EJUAKzx/aKkOKEMwdUO0bCT1KdDmZ7a+2Vqu
-         h7U75AYIl7GGLCuowk9FT+lP2WYnlZPR13fI7T4DVSpCVy75g1v/b1xnweAQVC4diSOT
-         muEw==
-X-Gm-Message-State: ACrzQf1NZYT+UQ0oZPRfM+MwIb+EJjEHgL4QxqPRdgDp7OKdOBabuInj
-        TcDJ+C3nqT816u+joMMwJ2zovRwXPcEuuVa4AxSVRrsSXLPRWw==
-X-Google-Smtp-Source: AMsMyM7KRQwJEL+0VOdQGc8fDsN6fbOwZWxQoJElnuZm5UyOyrbnsh35753akBDnz7kX1ifLNy6gES3CN2FatcvPCBc=
-X-Received: by 2002:a05:6e02:bef:b0:2f9:889b:6db6 with SMTP id
- d15-20020a056e020bef00b002f9889b6db6mr2470872ilu.281.1666116737528; Tue, 18
- Oct 2022 11:12:17 -0700 (PDT)
-MIME-Version: 1.0
-References: <Y02Yk8gUgVDuZR4Q@google.com> <CAJD7tkYSXNb=D1OX_iv7PD-eJaK_7-5tcNvDQrWprWbWwJ2=oQ@mail.gmail.com>
- <CAKH8qBvHJPj6U_dOxH1C4FHJvg9=FE8YZUV3_kc_HJNt1TDuJQ@mail.gmail.com>
- <CAJD7tkYHQ=7jVqU__v4eNxvP-RBAH-M6BmTO1+ogto=m-xb2gw@mail.gmail.com>
- <CAKH8qBtdNv0OmL0oH+U2w0ygLmGUug37xNhHWpjc5=0tn1cThQ@mail.gmail.com>
- <CAJD7tkbPhecz+XPeSMjua77YXr-+Fkrpz9M3bBVKAj+PsXJgyQ@mail.gmail.com>
- <b539eba1-586a-bf3b-31f9-11ea0774c805@linux.dev> <Y03USAeiBL5Ol22E@google.com>
- <06e37b29-b384-7432-d966-ad89901de55d@linux.dev> <fdc0484e-c2da-a118-b845-f937f0ef5688@meta.com>
- <Y07dlsqt9u3BYF2U@google.com> <CAADnVQKPMaU5av0soDh+ddnqpLbjDHEVyFpK9hX4g+99cBiJdQ@mail.gmail.com>
- <67048049-dee4-3ff0-035c-65af34555725@linux.dev>
-In-Reply-To: <67048049-dee4-3ff0-035c-65af34555725@linux.dev>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 18 Oct 2022 11:11:41 -0700
-Message-ID: <CAJD7tkY5DZK9uO=rnNWTFoHU3qnbsj74engcC8VYyzQaJm1PFA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/5] bpf: Implement cgroup storage available to
- non-cgroup-attached bpf progs
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Yonghong Song <yhs@meta.com>, Yonghong Song <yhs@fb.com>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Tejun Heo <tj@kernel.org>, Stanislav Fomichev <sdf@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=akcmD112bzoQOApwuxJTobxDhUf+pwiEurjJfy/+2sc=;
+        b=ikpKZYn1BUTbs7Es7/NPPaYgFceMcYqKjxQZOm7gI9qX5qjyP1VpgvGz9dXjtLn91X
+         y4G/EsyKuE9k6tQQOQTOXHsR6eXE3pGmmqx1qPwaNZ/fTqjqS1lh5OSaZPBHkBOVGuKm
+         ilFsJTqWcqMZomwdS+D6n6MLzrkEkh1/16JN1wFt6ywHDr0RtA4lBwcTJfMYjQWYdAcF
+         /n7JsOuCo2rZUNi5RmpfznVTfDshtBR8+chu6tojDerjRpj5BHuHE0/jFpVIJ0ELbfKp
+         6lOe6G6IIn2ImyFaQ19FlI15+/DrKLltT63RdVjOeLLgXJ/Nj0F3BLNUCArpnhehoZOC
+         y1kQ==
+X-Gm-Message-State: ACrzQf0svJWGp/M80aiaz7al1uUO7X+SXesdm1JqBhCHJ6kNtKk4ZetU
+        IdeEI08DidXKvbZ5YEecVEk99yU=
+X-Google-Smtp-Source: AMsMyM65t+a4ncle068BiaEHChLaXyR0WVkZ5M4eotApkoZon4dTb+pBEUeTj+OcgW8ErKa0qCXB3/c=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a5b:f4a:0:b0:6c1:46d2:c7d3 with SMTP id
+ y10-20020a5b0f4a000000b006c146d2c7d3mr3556551ybr.169.1666116808837; Tue, 18
+ Oct 2022 11:13:28 -0700 (PDT)
+Date:   Tue, 18 Oct 2022 11:13:27 -0700
+In-Reply-To: <20221018020258.197333-1-xiyou.wangcong@gmail.com>
+Mime-Version: 1.0
+References: <20221018020258.197333-1-xiyou.wangcong@gmail.com>
+Message-ID: <Y07sxzoS/s6ZBhEx@google.com>
+Subject: Re: [Patch bpf] sock_map: convert cancel_work_sync() to cancel_work()
+From:   sdf@google.com
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Cong Wang <cong.wang@bytedance.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,61 +68,142 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 18, 2022 at 11:08 AM Martin KaFai Lau <martin.lau@linux.dev> wrote:
->
-> On 10/18/22 10:17 AM, Alexei Starovoitov wrote:
-> > On Tue, Oct 18, 2022 at 10:08 AM <sdf@google.com> wrote:
-> >>>>
-> >>>> '#define BPF_MAP_TYPE_CGROUP_STORAGE BPF_MAP_TYPE_CGRP_LOCAL_STORAGE /*
-> >>>> depreciated by BPF_MAP_TYPE_CGRP_STORAGE */' in the uapi.
-> >>>>
-> >>>> The new cgroup storage uses a shorter name "cgrp", like
-> >>>> BPF_MAP_TYPE_CGRP_STORAGE and bpf_cgrp_storage_get()?
-> >>
-> >>> This might work and the naming convention will be similar to
-> >>> existing sk/inode/task storage.
-> >>
-> >> +1, CGRP_STORAGE sounds good!
-> >
-> > +1 from me as well.
-> >
-> > Something like this ?
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index 17f61338f8f8..13dcb2418847 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -922,7 +922,8 @@ enum bpf_map_type {
-> >          BPF_MAP_TYPE_CPUMAP,
-> >          BPF_MAP_TYPE_XSKMAP,
-> >          BPF_MAP_TYPE_SOCKHASH,
-> > -       BPF_MAP_TYPE_CGROUP_STORAGE,
-> > +       BPF_MAP_TYPE_CGROUP_STORAGE_DEPRECATED,
-> > +       BPF_MAP_TYPE_CGROUP_STORAGE = BPF_MAP_TYPE_CGROUP_STORAGE_DEPRECATED,
->
-> +1
->
-> >          BPF_MAP_TYPE_REUSEPORT_SOCKARRAY,
-> >          BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE,
-> >          BPF_MAP_TYPE_QUEUE,
-> > @@ -935,6 +936,7 @@ enum bpf_map_type {
-> >          BPF_MAP_TYPE_TASK_STORAGE,
-> >          BPF_MAP_TYPE_BLOOM_FILTER,
-> >          BPF_MAP_TYPE_USER_RINGBUF,
-> > +       BPF_MAP_TYPE_CGRP_STORAGE,
-> >   };
-> >
-> > What are we going to do with BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE ?
-> > Probably should come up with a replacement as well?
->
-> Yeah, need to come up with a percpu answer for it.  The percpu usage has never
-> come up on the sk storage and also the later task/inode storage.  or the user is
-> just getting by with an array like map's value.
->
-> May be the bpf prog can call bpf_mem_alloc() to alloc the percpu memory in the
-> future and then store it as the kptr in the BPF_MAP_TYPE_CGRP_STORAGE?
+On 10/17, Cong Wang wrote:
+> From: Cong Wang <cong.wang@bytedance.com>
 
-A percpu cgroup storage would be very beneficial for cgroup statistics
-collection, things like the selftest in
-tools/testing/selftests/bpf/progs/cgroup_hierarchical_stats.c
-currently uses a percpu hashmap indexed by cgroup id, so using a
-percpu cgroup storage instead would be a nice upgrade.
+> Technically we don't need lock the sock in the psock work, but we
+> need to prevent this work running in parallel with sock_map_close().
+
+> With this, we no longer need to wait for the psock->work synchronously,
+> because when we reach here, either this work is still pending, or
+> blocking on the lock_sock(), or it is completed. We only need to cancel
+> the first case asynchronously, and we need to bail out the second case
+> quickly by checking SK_PSOCK_TX_ENABLED bit.
+
+> Fixes: 799aa7f98d53 ("skmsg: Avoid lock_sock() in sk_psock_backlog()")
+> Reported-by: Stanislav Fomichev <sdf@google.com>
+> Cc: John Fastabend <john.fastabend@gmail.com>
+> Cc: Jakub Sitnicki <jakub@cloudflare.com>
+> Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+
+This seems to remove the splat for me:
+
+Tested-by: Stanislav Fomichev <sdf@google.com>
+
+The patch looks good, but I'll leave the review to Jakub/John.
+
+> ---
+>   include/linux/skmsg.h |  2 +-
+>   net/core/skmsg.c      | 19 +++++++++++++------
+>   net/core/sock_map.c   |  4 ++--
+>   3 files changed, 16 insertions(+), 9 deletions(-)
+
+> diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
+> index 48f4b645193b..70d6cb94e580 100644
+> --- a/include/linux/skmsg.h
+> +++ b/include/linux/skmsg.h
+> @@ -376,7 +376,7 @@ static inline void sk_psock_report_error(struct  
+> sk_psock *psock, int err)
+>   }
+
+>   struct sk_psock *sk_psock_init(struct sock *sk, int node);
+> -void sk_psock_stop(struct sk_psock *psock, bool wait);
+> +void sk_psock_stop(struct sk_psock *psock);
+
+>   #if IS_ENABLED(CONFIG_BPF_STREAM_PARSER)
+>   int sk_psock_init_strp(struct sock *sk, struct sk_psock *psock);
+> diff --git a/net/core/skmsg.c b/net/core/skmsg.c
+> index ca70525621c7..c329e71ea924 100644
+> --- a/net/core/skmsg.c
+> +++ b/net/core/skmsg.c
+> @@ -647,6 +647,11 @@ static void sk_psock_backlog(struct work_struct  
+> *work)
+>   	int ret;
+
+>   	mutex_lock(&psock->work_mutex);
+> +	lock_sock(psock->sk);
+> +
+> +	if (!sk_psock_test_state(psock, SK_PSOCK_TX_ENABLED))
+> +		goto end;
+> +
+>   	if (unlikely(state->skb)) {
+>   		spin_lock_bh(&psock->ingress_lock);
+>   		skb = state->skb;
+> @@ -672,9 +677,12 @@ static void sk_psock_backlog(struct work_struct  
+> *work)
+>   		skb_bpf_redirect_clear(skb);
+>   		do {
+>   			ret = -EIO;
+> -			if (!sock_flag(psock->sk, SOCK_DEAD))
+> +			if (!sock_flag(psock->sk, SOCK_DEAD)) {
+> +				release_sock(psock->sk);
+>   				ret = sk_psock_handle_skb(psock, skb, off,
+>   							  len, ingress);
+> +				lock_sock(psock->sk);
+> +			}
+>   			if (ret <= 0) {
+>   				if (ret == -EAGAIN) {
+>   					sk_psock_skb_state(psock, state, skb,
+> @@ -695,6 +703,7 @@ static void sk_psock_backlog(struct work_struct *work)
+>   			kfree_skb(skb);
+>   	}
+>   end:
+> +	release_sock(psock->sk);
+>   	mutex_unlock(&psock->work_mutex);
+>   }
+
+> @@ -803,16 +812,14 @@ static void sk_psock_link_destroy(struct sk_psock  
+> *psock)
+>   	}
+>   }
+
+> -void sk_psock_stop(struct sk_psock *psock, bool wait)
+> +void sk_psock_stop(struct sk_psock *psock)
+>   {
+>   	spin_lock_bh(&psock->ingress_lock);
+>   	sk_psock_clear_state(psock, SK_PSOCK_TX_ENABLED);
+>   	sk_psock_cork_free(psock);
+>   	__sk_psock_zap_ingress(psock);
+>   	spin_unlock_bh(&psock->ingress_lock);
+> -
+> -	if (wait)
+> -		cancel_work_sync(&psock->work);
+> +	cancel_work(&psock->work);
+>   }
+
+>   static void sk_psock_done_strp(struct sk_psock *psock);
+> @@ -850,7 +857,7 @@ void sk_psock_drop(struct sock *sk, struct sk_psock  
+> *psock)
+>   		sk_psock_stop_verdict(sk, psock);
+>   	write_unlock_bh(&sk->sk_callback_lock);
+
+> -	sk_psock_stop(psock, false);
+> +	sk_psock_stop(psock);
+
+>   	INIT_RCU_WORK(&psock->rwork, sk_psock_destroy);
+>   	queue_rcu_work(system_wq, &psock->rwork);
+> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+> index a660baedd9e7..d4e11d7f459c 100644
+> --- a/net/core/sock_map.c
+> +++ b/net/core/sock_map.c
+> @@ -1596,7 +1596,7 @@ void sock_map_destroy(struct sock *sk)
+>   	saved_destroy = psock->saved_destroy;
+>   	sock_map_remove_links(sk, psock);
+>   	rcu_read_unlock();
+> -	sk_psock_stop(psock, false);
+> +	sk_psock_stop(psock);
+>   	sk_psock_put(sk, psock);
+>   	saved_destroy(sk);
+>   }
+> @@ -1619,7 +1619,7 @@ void sock_map_close(struct sock *sk, long timeout)
+>   	saved_close = psock->saved_close;
+>   	sock_map_remove_links(sk, psock);
+>   	rcu_read_unlock();
+> -	sk_psock_stop(psock, true);
+> +	sk_psock_stop(psock);
+>   	sk_psock_put(sk, psock);
+>   	release_sock(sk);
+>   	saved_close(sk, timeout);
+> --
+> 2.34.1
+
