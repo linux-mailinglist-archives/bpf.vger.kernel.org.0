@@ -2,56 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AB3760209E
-	for <lists+bpf@lfdr.de>; Tue, 18 Oct 2022 03:54:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 899086020A9
+	for <lists+bpf@lfdr.de>; Tue, 18 Oct 2022 03:56:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230108AbiJRByG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Oct 2022 21:54:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48004 "EHLO
+        id S230339AbiJRB4f (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Oct 2022 21:56:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229784AbiJRByF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Oct 2022 21:54:05 -0400
-Received: from mail-oa1-x41.google.com (mail-oa1-x41.google.com [IPv6:2001:4860:4864:20::41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B19D9726A5;
-        Mon, 17 Oct 2022 18:54:04 -0700 (PDT)
-Received: by mail-oa1-x41.google.com with SMTP id 586e51a60fabf-1364357a691so15321511fac.7;
-        Mon, 17 Oct 2022 18:54:04 -0700 (PDT)
+        with ESMTP id S230161AbiJRB4e (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 Oct 2022 21:56:34 -0400
+Received: from mail-oa1-x43.google.com (mail-oa1-x43.google.com [IPv6:2001:4860:4864:20::43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB3FF76966;
+        Mon, 17 Oct 2022 18:56:28 -0700 (PDT)
+Received: by mail-oa1-x43.google.com with SMTP id 586e51a60fabf-136b5dd6655so15358300fac.3;
+        Mon, 17 Oct 2022 18:56:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=WW27PHINhmqz572mOzgv19LUc9CSwt2ngmBxIUlALDI=;
-        b=B9LbLcI/GWyvGFXVgyafDTUNgzSGSerULnta25D63wM5fGW9nKy99y/ISV9TXdaVDK
-         94kqihaM+fSRq6vAmoqk+cP9RxHFy3XoZK4/3loDDfVMRi0trJlXY7jyZ9oIejQGwmyx
-         fw8ESLKWtH/5rz1GA7gPkUzDxieFvXgiIga4ilrBlZngBlBBPb/ouSkpQD8sViZPmvDx
-         SPj1gyo/T+wpDdwDh7kbgyAEqmlgfQf/SXrEFrFJOWDkapgOvLSIZ2ZE6NI5OUNNzgQA
-         AzpI5ZCUVAuIeDxrnGd8lLhHO6RkuGNRTwXri3hppLCKtk8xbNETVmeUw03cxEbr/Sba
-         S5gw==
+        bh=ZsOWludHMguvR58jxm4YGoRknUTgkRYO+96n1DUatLA=;
+        b=B8Mfiwc613sZw+s2Iw9zQ2Q6/pU0U5qJ82H5uqsAa+JwtocohF3Rose5Ka0Qp4dYrn
+         KVRl5lzJBrke9+mx4af5UP2kI1VWbvHIkQ1t2bd0EwZNIJPjFgWBdTU2ztf1HgN0/9oj
+         VO/1Roc7yveNWOOdg42mxUaMyQMzWyzGv6tZoyd7OczK6TrefYlHVG4gZhUg8DzdfnFv
+         2YlzxhG/zo6RcrHHS3X4Pu3ww66/7DFUmqs1eQReiJwnUA1EHV8mn7ibxI0kB5yXWn6B
+         +nsKnI0gT9XoR5LuRtMYydqqNVyJvpm3kDd6qCNenxHKO7qyaSKTfivIi4PmCfcGzQuq
+         TQkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=WW27PHINhmqz572mOzgv19LUc9CSwt2ngmBxIUlALDI=;
-        b=YTIc5Pnsu0Tl1W+OqqToEXNj2KVz2fe8tLAxcKKtiuxuI5lgmXi4I5Fs7g2jLfSobG
-         ddy4bEqkz7tqeFccPfRpJ1k1TPd9EY+i3zwT69b0ROy/tB9VM9vXE8Pwdz6iJDoYgdeB
-         vG/adPNH55YYffO6TopFqDCOSv0xeQw/7v3ua7kkT7BUYrax48y16Lj3AXpjRfos3C3T
-         wGpeYr+n13d5X787UWDO6oSGEIL0t6zZCVK5ghI8hrgR1M28xb1Sdg99nYsNV2AHTlyq
-         GF1J9sAKFaypqwd6ZN3weE8mJf/rET8rqfnktnE0ZUz2t07nPLaxCFwSrbMevMqLzAb9
-         94HA==
-X-Gm-Message-State: ACrzQf3/VwqT6lXatFO6+Iwszd4PjsFa5xHQmHBXEoz2cS7UY3QoGMCd
-        GIJjicHniIkvBnW5ZdINka8pp0lQtXaQmC+/Sjk=
-X-Google-Smtp-Source: AMsMyM4upC6ziRrHwqkb2Lh/VuXdUG6L+Y8YTZZbW4Nj5zACo57fiTfzwURvRb2GXa6IUtJwKkN6CGKD/IyqgdOnz74=
+        bh=ZsOWludHMguvR58jxm4YGoRknUTgkRYO+96n1DUatLA=;
+        b=3qgRw0OfM/6HXfT1IF87b/7InvoTdf/u62eoHwdC0EGXW5VRgP93DhxtqKj85ngmtt
+         8N1y7k0KVnEw2+WXLAWqIdVn8/3dTCvhP4eJgCRuiv1RgmT0Jv/kZ6Hz/w3SvhYr3G12
+         elMLQkYKOOuVsPU0qThfcNlSTJDwLnVz/tafMEViJxISTkR5H0w8Yq6CAp8Z7Uynah/r
+         AmvkHnX2KnNsIRTXN7sskyA/9zVopvl8nPhymkryiig7Jnfe9IOMhRtfwv5GZYQOhltK
+         KhdWIVDeybT+WXU3T7YZHJmCqtka9fMhNJfPm3yUa7stFsRnNBEOxO4D4WGAUX3eEdrv
+         mFDw==
+X-Gm-Message-State: ACrzQf32HY4+u5z5t1mvjjosp3T0FSaBfOEUFeLEAzG3P9/xVjUNRlCo
+        DRQh89DVyVeiTYH6yIT3xNzGszltUKsswktCtJM=
+X-Google-Smtp-Source: AMsMyM52HxcTfY6GSOSB82yfxz5kFXA0AKse2OKY+s7zy1c7toEkXiR1h/2nWXkh2hdNw9f7rmqKb69nWs/SXhxbXj4=
 X-Received: by 2002:a05:6870:178e:b0:126:7055:fc78 with SMTP id
- r14-20020a056870178e00b001267055fc78mr406594oae.58.1666058043995; Mon, 17 Oct
- 2022 18:54:03 -0700 (PDT)
+ r14-20020a056870178e00b001267055fc78mr410059oae.58.1666058187237; Mon, 17 Oct
+ 2022 18:56:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20221014201427.2435461-1-void@manifault.com> <20221014201427.2435461-4-void@manifault.com>
-In-Reply-To: <20221014201427.2435461-4-void@manifault.com>
+References: <20221014212133.2520531-1-void@manifault.com> <20221014212133.2520531-3-void@manifault.com>
+In-Reply-To: <20221014212133.2520531-3-void@manifault.com>
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date:   Tue, 18 Oct 2022 07:23:23 +0530
-Message-ID: <CAP01T77PTK+bD2mBrxJShKNPhEypT2+nSHcr3=uuJbrghv_wFg@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] bpf/selftests: Add selftests for new task kfuncs
+Date:   Tue, 18 Oct 2022 07:25:46 +0530
+Message-ID: <CAP01T77WVXqeZVBYP=Ur=74oTwvGaLOeryYo=HqeBQ9Db9A93g@mail.gmail.com>
+Subject: Re: [PATCH v5 2/3] bpf: Add kfuncs for storing struct task_struct *
+ as a kptr
 To:     David Vernet <void@manifault.com>
 Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
         andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
@@ -69,67 +70,53 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 15 Oct 2022 at 01:45, David Vernet <void@manifault.com> wrote:
+On Sat, 15 Oct 2022 at 02:51, David Vernet <void@manifault.com> wrote:
 >
-> A previous change added a series of kfuncs for storing struct
-> task_struct objects as referenced kptrs. This patch adds a new
-> task_kfunc test suite for validating their expected behavior.
+> Now that BPF supports adding new kernel functions with kfuncs, and
+> storing kernel objects in maps with kptrs, we can add a set of kfuncs
+> which allow struct task_struct objects to be stored in maps as
+> referenced kptrs. The possible use cases for doing this are plentiful.
+> During tracing, for example, it would be useful to be able to collect
+> some tasks that performed a certain operation, and then periodically
+> summarize who they are, which cgroup they're in, how much CPU time
+> they've utilized, etc.
+>
+> In order to enable this, this patch adds three new kfuncs:
+>
+> struct task_struct *bpf_task_acquire(struct task_struct *p);
+> struct task_struct *bpf_task_kptr_get(struct task_struct **pp);
+> void bpf_task_release(struct task_struct *p);
+>
+> A follow-on patch will add selftests validating these kfuncs.
 >
 > Signed-off-by: David Vernet <void@manifault.com>
 > ---
-> [...]
-> +
-> +SEC("tp_btf/task_newtask")
-> +int BPF_PROG(task_kfunc_acquire_trusted_nested, struct task_struct *task, u64 clone_flags)
+>  [...]
+> +/**
+> + * bpf_task_release - Release the reference acquired on a struct task_struct *.
+> + * If this kfunc is invoked in an RCU read region, the task_struct is
+> + * guaranteed to not be freed until the current grace period has ended, even if
+> + * its refcount drops to 0.
+> + * @p: The task on which a reference is being released.
+> + */
+> +__used noinline void bpf_task_release(struct task_struct *p)
 > +{
-> +       struct task_struct *acquired;
+> +       if (!p)
+> +               return;
 > +
-> +       if (!is_test_kfunc_task())
-> +               return 0;
-> +
-> +       /* Can't invoke bpf_task_acquire() on a trusted pointer at a nonzero offset. */
-> +       acquired = bpf_task_acquire(task->last_wakee);
-
-The comment is incorrect, that would be &task->last_wakee instead,
-this is PTR_TO_BTF_ID | PTR_NESTED.
-
-> +       if (!acquired)
-> +               return 0;
-> +       bpf_task_release(acquired);
-> +
-> +       return 0;
+> +       put_task_struct_rcu_user(p);
 > +}
 > +
-> [...]
+> +__diag_pop();
 > +
-> +static int test_acquire_release(struct task_struct *task)
-> +{
-> +       struct task_struct *acquired;
-> +
-> +       acquired = bpf_task_acquire(task);
+> +BTF_SET8_START(generic_kfunc_btf_ids)
+>  #ifdef CONFIG_KEXEC_CORE
+>  BTF_ID_FLAGS(func, crash_kexec, KF_DESTRUCTIVE)
+>  #endif
+> -BTF_SET8_END(tracing_btf_ids)
+> +BTF_ID_FLAGS(func, bpf_task_acquire, KF_ACQUIRE | KF_RET_NULL | KF_TRUSTED_ARGS)
+> +BTF_ID_FLAGS(func, bpf_task_kptr_get, KF_ACQUIRE | KF_KPTR_GET | KF_RET_NULL)
+> +BTF_ID_FLAGS(func, bpf_task_release, KF_RELEASE | KF_TRUSTED_ARGS)
 
-Unfortunately a side effect of this change is that now since
-PTR_TO_BTF_ID without ref_obj_id is considered trusted, the bpf_ct_*
-functions would begin working with tp_btf args. That probably needs to
-be fixed so that they reject them (ideally with a failing test case to
-make sure it doesn't resurface), probably with a new suffix __ref/or
-__owned as added here [0].
-
-Alexei, since you've suggested avoiding adding that suffix, do you see
-any other way out here?
-It's questionable whether bpf_ct_set_timeout/status should work for CT
-not owned by the BPF program.
-
-  [0]: https://lore.kernel.org/bpf/dfb859a6b76a9234baa194e795ae89cb7ca5694b.1662383493.git.lorenzo@kernel.org
-
-> +       if (!acquired) {
-> +               err = 1;
-> +               return 0;
-> +       }
-> +
-> +       bpf_task_release(acquired);
-> +
-> +       return 0;
-> +}
-> +
-> [...]
+You can remove KF_TRUSTED_ARGS here for bpf_task_release, if this is
+required, it would be a bug.
