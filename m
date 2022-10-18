@@ -2,207 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EC1660349B
-	for <lists+bpf@lfdr.de>; Tue, 18 Oct 2022 23:06:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C458160350C
+	for <lists+bpf@lfdr.de>; Tue, 18 Oct 2022 23:38:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230184AbiJRVGh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Oct 2022 17:06:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56314 "EHLO
+        id S229833AbiJRViY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Oct 2022 17:38:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbiJRVGg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Oct 2022 17:06:36 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F1B29AC31;
-        Tue, 18 Oct 2022 14:06:34 -0700 (PDT)
-Received: from 226.206.1.85.dynamic.wline.res.cust.swisscom.ch ([85.1.206.226] helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1oktnD-000FZO-Qh; Tue, 18 Oct 2022 23:06:31 +0200
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     davem@davemloft.net
-Cc:     kuba@kernel.org, pabeni@redhat.com, edumazet@google.com,
-        daniel@iogearbox.net, ast@kernel.org, andrii@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: pull-request: bpf-next 2022-10-18
-Date:   Tue, 18 Oct 2022 23:06:31 +0200
-Message-Id: <20221018210631.11211-1-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.6/26693/Tue Oct 18 10:02:42 2022)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229597AbiJRViX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Oct 2022 17:38:23 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9A0D638CC
+        for <bpf@vger.kernel.org>; Tue, 18 Oct 2022 14:38:22 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id h2-20020a170902f54200b0018553a8b797so4035266plf.9
+        for <bpf@vger.kernel.org>; Tue, 18 Oct 2022 14:38:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=yrexORFQfiEbjy28h/vJrT6+ELr67H1N+YuBlJ6Y7HI=;
+        b=tDOn7YkjEXdtM6fmCQSGhgp8tzVhCv5Wnj8jSnXysabkTx2GhYB/q7hcfeiEcZPxLA
+         tEE09gCpWMsCLrkvpyxadvUA2x6ycM32Mxv8Z+Gh1Cid5pAu5YsbODWyVeXKsU5A9FMm
+         ai/cSq6lMSKE3fbYqXR0S7bwgdeDcKBJD/rYywdGGccfGU0kby/IUwT5PrLklv8BY2hZ
+         ddXbMMWyJ/iGTp2O+w194WsQnxV6XnH2YfAirN2wtjIfnJ9I9DJZU+JA7KaYiTywllcR
+         M4yXsSB7/XoaCRQH7hONAt2VHSu1xwSSAGxM8WaF+Tz469e5HxHRjH8dcS0et+WrC7/M
+         qVgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yrexORFQfiEbjy28h/vJrT6+ELr67H1N+YuBlJ6Y7HI=;
+        b=vIIve9/+Zqmq4RSnFbQh0zr2am9BDfVplQNMloyEixrkX+eqTaMm0nY7AxzicRg4mw
+         A+pTFY2Suhgb98AouZHMJ9f8hpGtenkkQHwO5QeA2ufqJ6zBE2CqYBHksIgMN9zdX6La
+         /eJpdHWurQ+Edmgz9HsCvmJtmXl14mrWyhQsTCJ2ZaxTiEj4jayFeD0RPpdX1y+CM3cO
+         vWeD0mhU9oFdOQfH5po7t1qmrISjsfM7MRGWj+ITFQB6ugNMRlKeAYmexlRC9Th9MQ+F
+         poBa9haQAMY1caZPFXyaOoK1DRQLNYqD49vst3FmWgHCbQTS+H4qTbS6+qgVwHQ3naAH
+         GYog==
+X-Gm-Message-State: ACrzQf1oZtYRqxy8jTvF8UdThs3+VtWGnQkpPMzksPRzhuZjNsLzaNrN
+        xJP1Kth7au1jCdNP5AN+xY1/n3o=
+X-Google-Smtp-Source: AMsMyM6XgnzCOdc8H97zb8l7Rx2mSHkyMC2UfKu/aFbcffZVbYGVciUUcSLDhrzByNwLlmro0wXYkPs=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a05:6a00:1ace:b0:565:f52a:d998 with SMTP id
+ f14-20020a056a001ace00b00565f52ad998mr5224798pfv.25.1666129102488; Tue, 18
+ Oct 2022 14:38:22 -0700 (PDT)
+Date:   Tue, 18 Oct 2022 14:38:21 -0700
+In-Reply-To: <20221018135920.726360-4-memxor@gmail.com>
+Mime-Version: 1.0
+References: <20221018135920.726360-1-memxor@gmail.com> <20221018135920.726360-4-memxor@gmail.com>
+Message-ID: <Y08czdCQgMig/Wir@google.com>
+Subject: Re: [PATCH bpf-next v1 03/13] bpf: Rename confusingly named RET_PTR_TO_ALLOC_MEM
+From:   sdf@google.com
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Joanne Koong <joannelkoong@gmail.com>,
+        David Vernet <void@manifault.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi David, hi Jakub, hi Paolo, hi Eric,
+On 10/18, Kumar Kartikeya Dwivedi wrote:
+> Currently, the verifier has two return types, RET_PTR_TO_ALLOC_MEM, and
+> RET_PTR_TO_ALLOC_MEM_OR_NULL, however the former is confusingly named to
+> imply that it carries MEM_ALLOC, while only the latter does. This causes
+> confusion during code review leading to conclusions like that the return
+> value of RET_PTR_TO_DYNPTR_MEM_OR_NULL (which is RET_PTR_TO_ALLOC_MEM |
+> PTR_MAYBE_NULL) may be consumable by bpf_ringbuf_{submit,commit}.
 
-The following pull-request contains BPF updates for your *net-next* tree.
+> Rename it to make it clear MEM_ALLOC needs to be tacked on top of
+> RET_PTR_TO_MEM.
 
-We've added 33 non-merge commits during the last 14 day(s) which contain
-a total of 31 files changed, 874 insertions(+), 538 deletions(-).
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
+>   include/linux/bpf.h   | 6 +++---
+>   kernel/bpf/verifier.c | 2 +-
+>   2 files changed, 4 insertions(+), 4 deletions(-)
 
-The main changes are:
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 13c6ff2de540..834276ba56c9 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -538,7 +538,7 @@ enum bpf_return_type {
+>   	RET_PTR_TO_SOCKET,		/* returns a pointer to a socket */
+>   	RET_PTR_TO_TCP_SOCK,		/* returns a pointer to a tcp_sock */
+>   	RET_PTR_TO_SOCK_COMMON,		/* returns a pointer to a sock_common */
+> -	RET_PTR_TO_ALLOC_MEM,		/* returns a pointer to dynamically allocated  
+> memory */
+> +	RET_PTR_TO_MEM,			/* returns a pointer to dynamically allocated memory  
+> */
 
-1) Add RCU grace period chaining to BPF to wait for the completion of access from
-   both sleepable and non-sleepable BPF programs, from Hou Tao & Paul E. McKenney.
+What about the comment? It still says that it's a pointer to a
+dynamically allocated memory :-/ Does it make sense to clarify it as
+well?
 
-2) Improve helper UAPI by explicitly defining BPF_FUNC_xxx integer values. In
-   the wild we have seen OS vendors doing buggy backports where helper call numbers
-   mismatched. This is an attempt to make backports more foolproof, from Andrii Nakryiko.
+>   	RET_PTR_TO_MEM_OR_BTF_ID,	/* returns a pointer to a valid memory or a  
+> btf_id */
+>   	RET_PTR_TO_BTF_ID,		/* returns a pointer to a btf_id */
+>   	__BPF_RET_TYPE_MAX,
+> @@ -548,8 +548,8 @@ enum bpf_return_type {
+>   	RET_PTR_TO_SOCKET_OR_NULL	= PTR_MAYBE_NULL | RET_PTR_TO_SOCKET,
+>   	RET_PTR_TO_TCP_SOCK_OR_NULL	= PTR_MAYBE_NULL | RET_PTR_TO_TCP_SOCK,
+>   	RET_PTR_TO_SOCK_COMMON_OR_NULL	= PTR_MAYBE_NULL |  
+> RET_PTR_TO_SOCK_COMMON,
+> -	RET_PTR_TO_ALLOC_MEM_OR_NULL	= PTR_MAYBE_NULL | MEM_ALLOC |  
+> RET_PTR_TO_ALLOC_MEM,
+> -	RET_PTR_TO_DYNPTR_MEM_OR_NULL	= PTR_MAYBE_NULL | RET_PTR_TO_ALLOC_MEM,
+> +	RET_PTR_TO_ALLOC_MEM_OR_NULL	= PTR_MAYBE_NULL | MEM_ALLOC |  
+> RET_PTR_TO_MEM,
+> +	RET_PTR_TO_DYNPTR_MEM_OR_NULL	= PTR_MAYBE_NULL | RET_PTR_TO_MEM,
+>   	RET_PTR_TO_BTF_ID_OR_NULL	= PTR_MAYBE_NULL | RET_PTR_TO_BTF_ID,
 
-3) Add libbpf *_opts API-variants for bpf_*_get_fd_by_id() functions, from Roberto Sassu.
+>   	/* This must be the last entry. Its purpose is to ensure the enum is
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 87d9cccd1623..a49b95c1af1b 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -7612,7 +7612,7 @@ static int check_helper_call(struct  
+> bpf_verifier_env *env, struct bpf_insn *insn
+>   		mark_reg_known_zero(env, regs, BPF_REG_0);
+>   		regs[BPF_REG_0].type = PTR_TO_TCP_SOCK | ret_flag;
+>   		break;
+> -	case RET_PTR_TO_ALLOC_MEM:
+> +	case RET_PTR_TO_MEM:
+>   		mark_reg_known_zero(env, regs, BPF_REG_0);
+>   		regs[BPF_REG_0].type = PTR_TO_MEM | ret_flag;
+>   		regs[BPF_REG_0].mem_size = meta.mem_size;
+> --
+> 2.38.0
 
-4) Fix libbpf's BTF dumper for structs with padding-only fields, from Eduard Zingerman.
-
-5) Fix various libbpf bugs which have been found from fuzzing with malformed BPF
-   object files, from Shung-Hsi Yu.
-
-6) Clean up an unneeded check on existence of SSE2 in BPF x86-64 JIT, from Jie Meng.
-
-7) Fix various ASAN bugs in both libbpf and selftests when running the BPF selftest
-   suite on arm64, from Xu Kuohai.
-
-8) Fix missing bpf_iter_vma_offset__destroy() call in BPF iter selftest and use
-   in-skeleton link pointer to remove an explicit bpf_link__destroy(), from Jiri Olsa.
-
-9) Fix BPF CI breakage by pointing to iptables-legacy instead of relying on
-   symlinked iptables which got upgraded to iptables-nft, from Martin KaFai Lau.
-
-10) Minor BPF selftest improvements all over the place, from various others.
-
-Please consider pulling these changes from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git tags/for-netdev
-
-Thanks a lot!
-
-Also thanks to reporters, reviewers and testers of commits in this pull-request:
-
-Alexei Starovoitov, Andrea Terzolo, Daniel Müller, David Vernet, Hou 
-Tao, Jiri Olsa, KP Singh, Martin KaFai Lau, Quentin Monnet, Toke 
-Høiland-Jørgensen
-
-----------------------------------------------------------------
-
-The following changes since commit 0326074ff4652329f2a1a9c8685104576bd8d131:
-
-  Merge tag 'net-next-6.1' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next (2022-10-04 13:38:03 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git tags/for-netdev
-
-for you to fetch changes up to 6c4e777fbba6e7dd6a0757c0e7bba66cdbe611cd:
-
-  bpf/docs: Update README for most recent vmtest.sh (2022-10-18 21:54:05 +0200)
-
-----------------------------------------------------------------
-bpf-next-for-netdev
-
-----------------------------------------------------------------
-Alexei Starovoitov (1):
-      Merge branch 'Remove unnecessary RCU grace period chaining'
-
-Andrii Nakryiko (8):
-      selftests/bpf: allow requesting log level 2 in test_verifier
-      selftests/bpf: avoid reporting +100% difference in veristat for actual 0%
-      selftests/bpf: add BPF object fixup step to veristat
-      bpf: explicitly define BPF_FUNC_xxx integer values
-      scripts/bpf_doc.py: update logic to not assume sequential enum values
-      Merge branch 'Add _opts variant for bpf_*_get_fd_by_id()'
-      Merge branch 'Fix bugs found by ASAN when running selftests'
-      Merge branch 'libbpf: fix fuzzer-reported issues'
-
-Daniel Müller (1):
-      bpf/docs: Update README for most recent vmtest.sh
-
-David Vernet (1):
-      selftests/bpf: Alphabetize DENYLISTs
-
-Eduard Zingerman (2):
-      bpftool: Print newline before '}' for struct with padding only fields
-      selftests/bpf: Test btf dump for struct with padding only fields
-
-Hou Tao (4):
-      selftests/bpf: Use sys_pidfd_open() helper when possible
-      bpf: Use rcu_trace_implies_rcu_gp() in bpf memory allocator
-      bpf: Use rcu_trace_implies_rcu_gp() in local storage map
-      bpf: Use rcu_trace_implies_rcu_gp() for program array freeing
-
-Jie Meng (1):
-      bpf, x64: Remove unnecessary check on existence of SSE2
-
-Jiri Olsa (1):
-      selftests/bpf: Add missing bpf_iter_vma_offset__destroy call
-
-Martin KaFai Lau (1):
-      selftests/bpf: S/iptables/iptables-legacy/ in the bpf_nf and xdp_synproxy test
-
-Paul E. McKenney (1):
-      rcu-tasks: Provide rcu_trace_implies_rcu_gp()
-
-Roberto Sassu (6):
-      libbpf: Fix LIBBPF_1.0.0 declaration in libbpf.map
-      libbpf: Introduce bpf_get_fd_by_id_opts and bpf_map_get_fd_by_id_opts()
-      libbpf: Introduce bpf_prog_get_fd_by_id_opts()
-      libbpf: Introduce bpf_btf_get_fd_by_id_opts()
-      libbpf: Introduce bpf_link_get_fd_by_id_opts()
-      selftests/bpf: Add tests for _opts variants of bpf_*_get_fd_by_id()
-
-Shung-Hsi Yu (3):
-      libbpf: Use elf_getshdrnum() instead of e_shnum
-      libbpf: Deal with section with no data gracefully
-      libbpf: Fix null-pointer dereference in find_prog_by_sec_insn()
-
-Xu Kuohai (6):
-      libbpf: Fix use-after-free in btf_dump_name_dups
-      libbpf: Fix memory leak in parse_usdt_arg()
-      selftests/bpf: Fix memory leak caused by not destroying skeleton
-      selftest/bpf: Fix memory leak in kprobe_multi_test
-      selftests/bpf: Fix error failure of case test_xdp_adjust_tail_grow
-      selftest/bpf: Fix error usage of ASSERT_OK in xdp_adjust_tail.c
-
-Yonghong Song (1):
-      selftests/bpf: Add selftest deny_namespace to s390x deny list
-
- arch/x86/net/bpf_jit_comp.c                        |   3 +-
- include/linux/rcupdate.h                           |  12 +
- include/uapi/linux/bpf.h                           | 432 +++++++++++----------
- kernel/bpf/bpf_local_storage.c                     |  13 +-
- kernel/bpf/core.c                                  |   8 +-
- kernel/bpf/memalloc.c                              |  15 +-
- kernel/rcu/tasks.h                                 |   2 +
- scripts/bpf_doc.py                                 |  46 ++-
- tools/include/uapi/linux/bpf.h                     | 432 +++++++++++----------
- tools/lib/bpf/bpf.c                                |  48 ++-
- tools/lib/bpf/bpf.h                                |  16 +
- tools/lib/bpf/btf_dump.c                           |  35 +-
- tools/lib/bpf/libbpf.c                             |  22 +-
- tools/lib/bpf/libbpf.map                           |   6 +-
- tools/lib/bpf/usdt.c                               |  11 +-
- tools/testing/selftests/bpf/DENYLIST               |   3 +-
- tools/testing/selftests/bpf/DENYLIST.s390x         |  39 +-
- tools/testing/selftests/bpf/README.rst             |  11 +-
- tools/testing/selftests/bpf/prog_tests/bpf_iter.c  |  21 +-
- tools/testing/selftests/bpf/prog_tests/bpf_nf.c    |   6 +-
- .../selftests/bpf/prog_tests/kprobe_multi_test.c   |  26 +-
- .../bpf/prog_tests/libbpf_get_fd_by_id_opts.c      |  87 +++++
- tools/testing/selftests/bpf/prog_tests/map_kptr.c  |   3 +-
- .../selftests/bpf/prog_tests/tracing_struct.c      |   3 +-
- .../selftests/bpf/prog_tests/xdp_adjust_tail.c     |   7 +-
- .../selftests/bpf/prog_tests/xdp_synproxy.c        |   6 +-
- .../bpf/progs/btf_dump_test_case_padding.c         |   9 +
- .../bpf/progs/test_libbpf_get_fd_by_id_opts.c      |  36 ++
- .../selftests/bpf/task_local_storage_helpers.h     |   4 +
- tools/testing/selftests/bpf/test_verifier.c        |  13 +-
- tools/testing/selftests/bpf/veristat.c             |  37 +-
- 31 files changed, 874 insertions(+), 538 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/libbpf_get_fd_by_id_opts.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_libbpf_get_fd_by_id_opts.c
