@@ -2,35 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A53BC60490D
-	for <lists+bpf@lfdr.de>; Wed, 19 Oct 2022 16:20:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41BA6604944
+	for <lists+bpf@lfdr.de>; Wed, 19 Oct 2022 16:32:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230185AbiJSOUf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Oct 2022 10:20:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59880 "EHLO
+        id S232142AbiJSOcR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Oct 2022 10:32:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233449AbiJSOUL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Oct 2022 10:20:11 -0400
+        with ESMTP id S232214AbiJSOcB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Oct 2022 10:32:01 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 333B65A2FC
-        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 07:03:42 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E44941D52FE
+        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 07:16:13 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 3D463B8229C
-        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 13:57:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47F23C433D6;
-        Wed, 19 Oct 2022 13:56:59 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id A44F6B81D50
+        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 13:57:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3BFAC433C1;
+        Wed, 19 Oct 2022 13:57:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666187823;
-        bh=BLrWSK2y6Ic1QFL/lOXOKAwcJZalvL2PzPAMR6ELH6o=;
+        s=k20201202; t=1666187834;
+        bh=vTD1qyituPTKYfszJ0Vqe98N2ZX5JMdABrU/Mjq1TD0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dE30VzyS41r3RkQpxgFFZyCYCO7TZqWodkhM709GX2G8+/qN7q76POeYcIG3/vXgb
-         FodhhlUndbX0xIf6R525RdqoBILRfXZyUT9jK1QRdZA4q1sVvzdbSjW2ozw7Yb1I8v
-         /ja/ITQosIUPXJuvGikfKW6xhJVqAFmwuceU8LW9R7y8/ity8N2+pjuZcXuug5exZr
-         CKfiq62jJPPdr8/92oHxzRvDwsVj8T50sBr8H8h0uZ5DCMUPGeM5rYJu9iTRpY+nmW
-         rn07zSjC/SrjNzv9Bzgbd1ivlx8oiRP/xIOWw1DrP9XorizpjnnTshzeG8+/amQKA0
-         WhE4DLIqx1qiw==
+        b=nY81GZdCYumjF/mEakUKCAhs3pNz/DQnJFqXc7TNIYijynmHKVD0HlHnMNXOdhgK+
+         0swhejlM8LSoaHrhnGjcfA6OfP5B6uWTJ9OtIBxfC/kVBy/mkzKrjIPqBCdLqnyZu+
+         YnEfqAYeeQMKoaNo4UypNlcAJi0S8r5QIAba5of62jDVqcFKo5xZWnJbw/3RdGiQVT
+         fJNAdEX5Rqr5amzER2LPBVqRvuwreeKjkisJz37SyiilZO41J8bH5dzsZdPqPVY7y8
+         pGMnwR4W8QNcnCaAEYp5bFHqrNveoXjAZOuWjCIekI63GWRDYDWSi52uVkyvi9/soX
+         Z4m2+f39Lc82Q==
 From:   Jiri Olsa <jolsa@kernel.org>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -44,9 +44,9 @@ Cc:     Song Liu <song@kernel.org>, bpf@vger.kernel.org,
         Hao Luo <haoluo@google.com>, Christoph Hellwig <hch@lst.de>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         Martynas Pumputis <m@lambda.lt>
-Subject: [PATCHv2 bpf-next 3/8] bpf: Rename __bpf_kprobe_multi_cookie_cmp to bpf_kprobe_multi_addrs_cmp
-Date:   Wed, 19 Oct 2022 15:56:16 +0200
-Message-Id: <20221019135621.1480923-4-jolsa@kernel.org>
+Subject: [PATCHv2 bpf-next 4/8] bpf: Take module reference on kprobe_multi link
+Date:   Wed, 19 Oct 2022 15:56:17 +0200
+Message-Id: <20221019135621.1480923-5-jolsa@kernel.org>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <20221019135621.1480923-1-jolsa@kernel.org>
 References: <20221019135621.1480923-1-jolsa@kernel.org>
@@ -61,46 +61,169 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Renaming __bpf_kprobe_multi_cookie_cmp to bpf_kprobe_multi_addrs_cmp,
-because it's more suitable to current and upcoming code.
+Currently we allow to create kprobe multi link on function from kernel
+module, but we don't take the module reference to ensure it's not
+unloaded while we are tracing it.
+
+The multi kprobe link is based on fprobe/ftrace layer which takes
+different approach and releases ftrace hooks when module is unloaded
+even if there's tracer registered on top of it.
+
+Adding code that gathers all the related modules for the link and takes
+their references before it's attached. All kernel module references are
+released after link is unregistered.
+
+Note that we do it the same way already for trampoline probes
+(but for single address).
 
 Acked-by: Song Liu <song@kernel.org>
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- kernel/trace/bpf_trace.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ kernel/trace/bpf_trace.c | 92 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 92 insertions(+)
 
 diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 1ed08967fb97..17ae9e8336db 100644
+index 17ae9e8336db..9a4a2388dff2 100644
 --- a/kernel/trace/bpf_trace.c
 +++ b/kernel/trace/bpf_trace.c
-@@ -2550,7 +2550,7 @@ static void bpf_kprobe_multi_cookie_swap(void *a, void *b, int size, const void
- 	swap(*cookie_a, *cookie_b);
+@@ -2452,6 +2452,8 @@ struct bpf_kprobe_multi_link {
+ 	unsigned long *addrs;
+ 	u64 *cookies;
+ 	u32 cnt;
++	struct module **mods;
++	u32 mods_cnt;
+ };
+ 
+ struct bpf_kprobe_multi_run_ctx {
+@@ -2507,6 +2509,14 @@ static int copy_user_syms(struct user_syms *us, unsigned long __user *usyms, u32
+ 	return err;
  }
  
--static int __bpf_kprobe_multi_cookie_cmp(const void *a, const void *b)
-+static int bpf_kprobe_multi_addrs_cmp(const void *a, const void *b)
++static void kprobe_multi_put_modules(struct module **mods, u32 cnt)
++{
++	u32 i;
++
++	for (i = 0; i < cnt; i++)
++		module_put(mods[i]);
++}
++
+ static void free_user_syms(struct user_syms *us)
  {
- 	const unsigned long *addr_a = a, *addr_b = b;
+ 	kvfree(us->syms);
+@@ -2519,6 +2529,7 @@ static void bpf_kprobe_multi_link_release(struct bpf_link *link)
  
-@@ -2561,7 +2561,7 @@ static int __bpf_kprobe_multi_cookie_cmp(const void *a, const void *b)
- 
- static int bpf_kprobe_multi_cookie_cmp(const void *a, const void *b, const void *priv)
- {
--	return __bpf_kprobe_multi_cookie_cmp(a, b);
-+	return bpf_kprobe_multi_addrs_cmp(a, b);
+ 	kmulti_link = container_of(link, struct bpf_kprobe_multi_link, link);
+ 	unregister_fprobe(&kmulti_link->fp);
++	kprobe_multi_put_modules(kmulti_link->mods, kmulti_link->mods_cnt);
  }
  
- static u64 bpf_kprobe_multi_cookie(struct bpf_run_ctx *ctx)
-@@ -2579,7 +2579,7 @@ static u64 bpf_kprobe_multi_cookie(struct bpf_run_ctx *ctx)
- 		return 0;
- 	entry_ip = run_ctx->entry_ip;
- 	addr = bsearch(&entry_ip, link->addrs, link->cnt, sizeof(entry_ip),
--		       __bpf_kprobe_multi_cookie_cmp);
-+		       bpf_kprobe_multi_addrs_cmp);
- 	if (!addr)
- 		return 0;
- 	cookie = link->cookies + (addr - link->addrs);
+ static void bpf_kprobe_multi_link_dealloc(struct bpf_link *link)
+@@ -2528,6 +2539,7 @@ static void bpf_kprobe_multi_link_dealloc(struct bpf_link *link)
+ 	kmulti_link = container_of(link, struct bpf_kprobe_multi_link, link);
+ 	kvfree(kmulti_link->addrs);
+ 	kvfree(kmulti_link->cookies);
++	kfree(kmulti_link->mods);
+ 	kfree(kmulti_link);
+ }
+ 
+@@ -2663,6 +2675,71 @@ static void symbols_swap_r(void *a, void *b, int size, const void *priv)
+ 	}
+ }
+ 
++struct module_addr_args {
++	unsigned long *addrs;
++	u32 addrs_cnt;
++	struct module **mods;
++	int mods_cnt;
++	int mods_cap;
++};
++
++static int module_callback(void *data, const char *name,
++			   struct module *mod, unsigned long addr)
++{
++	struct module_addr_args *args = data;
++	struct module **mods;
++
++	/* We iterate all modules symbols and for each we:
++	 * - search for it in provided addresses array
++	 * - if found we check if we already have the module pointer stored
++	 *   (we iterate modules sequentially, so we can check just the last
++	 *   module pointer)
++	 * - take module reference and store it
++	 */
++	if (!bsearch(&addr, args->addrs, args->addrs_cnt, sizeof(addr),
++		       bpf_kprobe_multi_addrs_cmp))
++		return 0;
++
++	if (args->mods && args->mods[args->mods_cnt - 1] == mod)
++		return 0;
++
++	if (args->mods_cnt == args->mods_cap) {
++		args->mods_cap = max(16, args->mods_cap * 3 / 2);
++		mods = krealloc_array(args->mods, args->mods_cap, sizeof(*mods), GFP_KERNEL);
++		if (!mods)
++			return -ENOMEM;
++		args->mods = mods;
++	}
++
++	if (!try_module_get(mod))
++		return -EINVAL;
++
++	args->mods[args->mods_cnt] = mod;
++	args->mods_cnt++;
++	return 0;
++}
++
++static int get_modules_for_addrs(struct module ***mods, unsigned long *addrs, u32 addrs_cnt)
++{
++	struct module_addr_args args = {
++		.addrs     = addrs,
++		.addrs_cnt = addrs_cnt,
++	};
++	int err;
++
++	/* We return either err < 0 in case of error, ... */
++	err = module_kallsyms_on_each_symbol(module_callback, &args);
++	if (err) {
++		kprobe_multi_put_modules(args.mods, args.mods_cnt);
++		kfree(args.mods);
++		return err;
++	}
++
++	/* or number of modules found if everything is ok. */
++	*mods = args.mods;
++	return args.mods_cnt;
++}
++
+ int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
+ {
+ 	struct bpf_kprobe_multi_link *link = NULL;
+@@ -2773,10 +2850,25 @@ int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
+ 		       bpf_kprobe_multi_cookie_cmp,
+ 		       bpf_kprobe_multi_cookie_swap,
+ 		       link);
++	} else {
++		/*
++		 * We need to sort addrs array even if there are no cookies
++		 * provided, to allow bsearch in get_modules_for_addrs.
++		 */
++		sort(addrs, cnt, sizeof(*addrs),
++		       bpf_kprobe_multi_addrs_cmp, NULL);
++	}
++
++	err = get_modules_for_addrs(&link->mods, addrs, cnt);
++	if (err < 0) {
++		bpf_link_cleanup(&link_primer);
++		return err;
+ 	}
++	link->mods_cnt = err;
+ 
+ 	err = register_fprobe_ips(&link->fp, addrs, cnt);
+ 	if (err) {
++		kprobe_multi_put_modules(link->mods, link->mods_cnt);
+ 		bpf_link_cleanup(&link_primer);
+ 		return err;
+ 	}
 -- 
 2.37.3
 
