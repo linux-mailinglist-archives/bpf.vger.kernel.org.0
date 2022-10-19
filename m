@@ -2,322 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D02436051A5
-	for <lists+bpf@lfdr.de>; Wed, 19 Oct 2022 22:57:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F5156051B7
+	for <lists+bpf@lfdr.de>; Wed, 19 Oct 2022 23:07:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229918AbiJSU5d (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Oct 2022 16:57:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36730 "EHLO
+        id S230253AbiJSVG5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Oct 2022 17:06:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229824AbiJSU5c (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Oct 2022 16:57:32 -0400
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 638031BFBA9
-        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 13:57:31 -0700 (PDT)
-Received: by mail-pf1-x44a.google.com with SMTP id o14-20020a056a00214e00b0056238ef46ebso9955914pfk.2
-        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 13:57:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=iIDKUnCFZmkW0C8lHK0snuN783wF+SGvVl3OibRT+VI=;
-        b=h8wmMroE0buPrcYmRXim+56sEAdJfP1fhIx54/YEwdEEz0q4KNcRLbDHgB4XGV1fQW
-         G9u4gXarFgVRuFEXTNHZ7Oe6B428w+sbLROgz6y+6CX++MN52FgedTm/aiehdOXhyRD5
-         U0iRH/Q9Rd21ye8br0t3hKqQuktq+MC7HeTP8m7idq0HGbhAbpE6qwgn8SwAegwmoA+f
-         96afgYYK9TzCDWRXee+gn9J1mrDBqHHkiOZPNk6gXWr6kXCLffL9F+ixANTK3SVr9Dun
-         9uHqTIxjAmxt4nV36oI3lq6OFAA1nUZcsWPByfQVX0jaQH0X9jvzmVsdpr4tnxojacp0
-         ToDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=iIDKUnCFZmkW0C8lHK0snuN783wF+SGvVl3OibRT+VI=;
-        b=kC8USD0Le8YvYqjIVuibT3dURMFMg3b8ELDHuI699uIwTvIuVhuagWeM6577sXSPgM
-         S9qcfXTp7RCwYGDJiayB8nxK+M2W8sitefiK3QAi4LTeBoKG/XzmFLb4SYdiqJeyjKQQ
-         9zNt2Np3hiJyF9BFt1tadzbwgWRnDpsotKDE9aNrlvs0dPvkcySZkQVe5C22WqWddyR9
-         VR+fuCNsGFXyS+yIdENSOF23glL9YTgq/gHyIPl6SRW4IlsKs5DV7CkGoNAvO+VpY23A
-         xe7kQLQL6K0Dm+TN7eZrzTIeLOOCLicGM1/3ZMxIYN4/MQGlcBztkfHn+986s3CDSXz/
-         youw==
-X-Gm-Message-State: ACrzQf3EU3MIkirpa90u6fvJ4BBQEzOXCOZJRW25LAMBr6KwTGQBor58
-        czW/y/BvUkQ4F3p/8j+F+GJNn6k=
-X-Google-Smtp-Source: AMsMyM7Q8GXECq43tLL8SweMxfseEPDB77qLBVvjXfAdIQywa2BcWlea6QsYycNkHVLbB+4WOBlVnuI=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a17:903:22c1:b0:185:5276:92e5 with SMTP id
- y1-20020a17090322c100b00185527692e5mr10390270plg.134.1666213050949; Wed, 19
- Oct 2022 13:57:30 -0700 (PDT)
-Date:   Wed, 19 Oct 2022 13:57:29 -0700
-In-Reply-To: <20221019183845.905-3-dthaler1968@googlemail.com>
-Mime-Version: 1.0
-References: <20221019183845.905-1-dthaler1968@googlemail.com> <20221019183845.905-3-dthaler1968@googlemail.com>
-Message-ID: <Y1BkuZKW7nCUrbx/@google.com>
-Subject: Re: [PATCH 3/4] bpf, docs: Use consistent names for the same field
-From:   sdf@google.com
-To:     dthaler1968@googlemail.com
-Cc:     bpf@vger.kernel.org, Dave Thaler <dthaler@microsoft.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S229724AbiJSVGz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Oct 2022 17:06:55 -0400
+Received: from na01-obe.outbound.protection.outlook.com (mail-westcentralusazon11022026.outbound.protection.outlook.com [40.93.200.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CC091C711A
+        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 14:06:55 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=U1JAZI1u751suVsziwnktX/p4ShvXzWKZYWVdNEsjOSs9Ir166zlCZ3XNA0IBEKi/OFjrw+O6pC7jsrhkRV71EH+4yG38gOZXdXrs+pUT6LnQsLM0G5UFylUPlOhXkiHitmKOOfYLA8RPuLuI6rtOeMbo18+9lFNEWvP7PfDzHp5m7VT5pzVQkrsx/m4xsmUXlts4x2ZwEcT3M/kVChREhM8cSAeQ5kkADRZllOk4yt4YHYKLiuyTlgS+nCOQb1YhLN+wHvsf68xT/K4Vxl+BGaMjOboJiGeC02e20n2GrwsWPzgO7WJykg0IvMoCZfyanA2QtMpTBz965d+Bj4zyg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ApyISPRZ6RTSIE+0VnL+uJRV45GmC1l81WrVY/jaJiI=;
+ b=bCHaWyRbi7K80I7/IswTKPmj+Z6nOLr2yGFlE/pEH8RysTrsLf1ClAXmrFfVzACa/5lYQr+lZzqWXhoCnuzB8ZFdAQ0iYlxN6nAQDCpSUVMxC8XwvXwujqpfUmdT86Its5gViPKtrRMqy4oLZSjY4pW6q+Kqx6YXkVgOh92Khibq2MnAYWtVbrf+y/UxtHYsRltJ4QayvZchQUd44F1LGeKzT1pTtj/shXQdaNzMG9+An4AQGlGY8B2yX6Z8NUAUxmJu7O7JDmF/DkRVLT5rzzRNiFIakxjE0CzKKkjtybSTrT/aFjj3bagkiwYysik5cV2J2aNRdmfTaaeV3XyC5g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ApyISPRZ6RTSIE+0VnL+uJRV45GmC1l81WrVY/jaJiI=;
+ b=aZpO7k583nTznM9D0DUoY8wyRUD5sQvMPve0HgQfqMBVzyKFQB0V0WRjVeQGQyK/ljPfDSdW8eAHFHUFi60VuCbDeyKRwqmFPvgj/a7H7Ys5htEv8bJ/PeRGOqiVCiMUQB+1ZnqChbbRoZ0k1M1GSk0L0HejSSEYlXPCd4BXbGo=
+Received: from DM4PR21MB3440.namprd21.prod.outlook.com (2603:10b6:8:ad::14) by
+ SA1PR21MB2018.namprd21.prod.outlook.com (2603:10b6:806:1b5::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5746.8; Wed, 19 Oct
+ 2022 21:06:52 +0000
+Received: from DM4PR21MB3440.namprd21.prod.outlook.com
+ ([fe80::5a88:f55c:9d88:4ac2]) by DM4PR21MB3440.namprd21.prod.outlook.com
+ ([fe80::5a88:f55c:9d88:4ac2%2]) with mapi id 15.20.5746.006; Wed, 19 Oct 2022
+ 21:06:52 +0000
+From:   Dave Thaler <dthaler@microsoft.com>
+To:     "sdf@google.com" <sdf@google.com>,
+        "dthaler1968@googlemail.com" <dthaler1968@googlemail.com>
+CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: RE: [PATCH 3/4] bpf, docs: Use consistent names for the same field
+Thread-Topic: [PATCH 3/4] bpf, docs: Use consistent names for the same field
+Thread-Index: AQHY4+oRxc9QaZzI/0a6dc/gqciqz64WMviAgAABliA=
+Date:   Wed, 19 Oct 2022 21:06:52 +0000
+Message-ID: <DM4PR21MB3440ED1A4A026F13F73358C3A32B9@DM4PR21MB3440.namprd21.prod.outlook.com>
+References: <20221019183845.905-1-dthaler1968@googlemail.com>
+ <20221019183845.905-3-dthaler1968@googlemail.com>
+ <Y1BkuZKW7nCUrbx/@google.com>
+In-Reply-To: <Y1BkuZKW7nCUrbx/@google.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=c579541a-30a4-404e-9b73-1b414377b391;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2022-10-19T21:03:09Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DM4PR21MB3440:EE_|SA1PR21MB2018:EE_
+x-ms-office365-filtering-correlation-id: e4016ea1-3256-4143-eda4-08dab215d8c5
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 34KgGGUK5Yf5wLZcRbPWXBg/JSBiiAhQ6NE0KsR8xizb+4U3ncansqqcwf9aQnDzDk/9SsdklmbjC2OpVWnier70pDWmALrMcGnHIiPmme5VuqaxtE4Nv2b5gIq5s1gwR8Lnq4kzc9pu+0MlcKBWTTdAYY4IlWXSCj+1l1Jet8NJ1+P1ia2nxM/O3PYcXRRa2mabDQcdgwLNSesO4RiRp5U3GXueClLBXsetdNAiL1pxR+azopVVPTClQyM92OWdahhPoAAaZWn5EGEzWOZcT3rPPtXgcdng+Q73+Yzud3ZbQr0zO5Dsc/F6S35UfRVSlk2z4jvIfQvUcix2MkSYtxZuqly3m/61qbG32/3Lorel3bhA6hfogVyHnZaVUi52hGU8J+ggvo10+mqhcAudSNeQ9nDQ/fjSMolvtvHxciDBmOhFkbnGOMhX06FRorPnhomXX5C4bAqGRTB3pF2wmZwKiq6l08ikjNu5UZVCoVehumOFhx+aiBDYaFcW/sKwMUjXGJUVe7eTA9lYCCcXR1L90oRNYZPJ+EDkyzMv2wLemadK7uqGYmqfC8kCczLcaRFI57JetYPLOwZazYtAVxYj2zvmfXsehOzOjHeLKI9de/XxTgyM4RXQnk8hIJD2mr2l4OhGlsLZUvk+tcwmQGFzdiHLc6mWo9BOUXH2i0oDrRoI53UwrTRVaL6kVOlvLm3+omCZN5xWGowcypl3K5qV1OoYh6bsn29XoRlFlpQ4Z/UAtzDrzoQXd+ptihjEBmTnJ8WF/TKL9txDL40cafNjIMqRJDUADL/2S2etCiduDHWiAeAdys6EM6VB47wX
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR21MB3440.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(366004)(396003)(346002)(136003)(376002)(39860400002)(451199015)(4744005)(6506007)(5660300002)(7696005)(66556008)(38070700005)(8936002)(2906002)(52536014)(41300700001)(26005)(186003)(82950400001)(38100700002)(8990500004)(86362001)(33656002)(82960400001)(122000001)(55016003)(110136005)(316002)(4326008)(66946007)(10290500003)(9686003)(76116006)(64756008)(66476007)(66446008)(71200400001)(8676002)(478600001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Tm42WHFxcXJtZVJRTnFBeUlBbzF6SzcrSWRrUGh5MThnMDg5QnlzbFpzZGhw?=
+ =?utf-8?B?M3RvY0paUlVqVmVrVzJNN2xiRDhZNFhQQWJZYjNKSi9FdHFFZVJiN3g2QmRi?=
+ =?utf-8?B?V0VQZ1NSVjljWXhMd0w3ZUtIaWl6V0I2VVRvZjhuaUlIeWgrSVJyTkxuMHds?=
+ =?utf-8?B?TWRFVXhWUERXdGQ4c2ozQmJuK2tnQzlMYWdDSUNGRDRvR3NLUTd2LzVnUEhQ?=
+ =?utf-8?B?M3o5elNSREhCL0IzRHhDQXVQY1Jsa3RWak5iRDVDYjlpa2VqYXpPdUViSGtP?=
+ =?utf-8?B?ZUJHUUxlVnJDak1LZ2xHcytrOTVYWlRubTdnelN3eGtTTWJNc2hBUEljbDhu?=
+ =?utf-8?B?YlcvS0lyZGRtYkR1TnpiS0NsRW9BZjJBdTgwSnpOMHUycXBDb3B4b0hoVFFv?=
+ =?utf-8?B?RkVrWmt1MWpsdm1CWW03eUhRMzN0Um5iWlozWUZPUTBBVHZWbHc3ZFkrV3Jh?=
+ =?utf-8?B?K09yZ2ZQMkdCU1YwekgrZXpuRG1SdElzeVdGR0VFN0FGa2ltd3VsS3JtYkh3?=
+ =?utf-8?B?L3JkajlZK3dYbWkrc0JtQmhxU2RQSjdTR3BhSEl1RGdGU1hnZ2lYT3ZESWZm?=
+ =?utf-8?B?VUIrbm1jWTgzb0tTTTBmdFdNNWlwQUwrVHJadU8wa1p0YTZmZS9obHBRQW1O?=
+ =?utf-8?B?ZTYvZmhNT2UvaWhxK0NEVW5xSmZPaUQyd203N1J0M3lYNWlGdU1aK1RZeGlt?=
+ =?utf-8?B?SGVROHdkVTRiVnBIQ2tlZlYybWQzTldhai9hZDg0aVZtUVQ4ODRlblJOWTVm?=
+ =?utf-8?B?SkxEWXVRS3JNVDJ5Q1ZING5yRFFWVytQRzhsYzJOQysyWnFCK0ZmQ2x0YytQ?=
+ =?utf-8?B?cUNFZFdzUVVBZk5yQkJ1Q2c3ZUVBVXh5Y0NvWE9CdTRMemxMU1RUcklrSSs4?=
+ =?utf-8?B?dlJncm5wa3VlTE9kME9HOFRUM2JoQzRwWTNkN0x3aWxndUlJd0F2ZmIybVJF?=
+ =?utf-8?B?ZmxlV1RBcmZvZjZheW1wbVNVT1VlS1djNkN1dUNEUThzN0lBWmhwOFIzdnVV?=
+ =?utf-8?B?TDNZSjhGUXd3WW56NGtzOWxCMm0vOGJkeks5bVQ3NUw5SndZcE04SDI4cTli?=
+ =?utf-8?B?cW5heENTQVhlRTJMQmpWcnhYM0k1WVRGOG9XQkdmZzQ4YU56VmJka0pCNWJO?=
+ =?utf-8?B?Rzc4bFoyVURMenhXS1lzblNHVXNjMXdVMXRqSjY0SUN0OEk3OG9kbFdZbGI4?=
+ =?utf-8?B?WG4wUTJVTUtJNnM5bk5RTEZRUGw1ajFONDhDdzVlREZTWHcvSGVyRlh5dWhy?=
+ =?utf-8?B?NjdTRDlkT0VWenNOcGp1M0RWanBXeTlBdTF2TkN5QjVkWVFDVjNWblByTktO?=
+ =?utf-8?B?YnAzc1FmN0RLRmhHMWx6QmNaa2VUQjY4ekxWT1c0YmZYSEdaY3AvanBIcGl0?=
+ =?utf-8?B?TldpSWROVjNWWjJZeGJrbTIvb25pOFJtSGxzc0JTWnF4TlNjdlZPenRpZmJE?=
+ =?utf-8?B?U1NEbndmOVJ6bXBLMkVZTy8reWJXbmYxb0pBL0RqcXlyOE1zREw4a0l0eWps?=
+ =?utf-8?B?RzZoenhmd0ZmTGZvTzBhQnZJRVFhTTROWUx3amtNNVIvZlNsWVhta2NmeFRJ?=
+ =?utf-8?B?SE1VR3llZkV3V3dacFJnSGJON2x1ZURRS2FuWEFwbVVuVjIwV0ZxaEdnTVlR?=
+ =?utf-8?B?eWlvS1I1OWNKYW9QNU16emVhQ3F2QkVHUWNYUlN0aUx5N0U1VmxMNjZQQlo0?=
+ =?utf-8?B?VFpEVWdsaXU2RVc4b25PeXVRWTZrSWx2aWRPTFd2NW9NWVI1SjRHLzhxUnpT?=
+ =?utf-8?B?MlNaU1J2QUdZdmV3WC9KdmFsRzQ5STZsY0xUazlPaFNjQlJaY3pxZERSMG9F?=
+ =?utf-8?B?TDJCWEJGRDlta2pINTMwSmd3WmZmeUpuanBZN1hXd3I1K3RGNFhOKzVvSUZU?=
+ =?utf-8?B?SVgzSy9yay9jZm5TaEZNZ1locU1zZElCVHBrM2lyemlxNVdYajNwS0tGdXpt?=
+ =?utf-8?B?eC9UYVNld1Z5TS9NM2lURUpzMWpsWmZRbXpNYUNVb0ZjdEJ6ZHVzRXY3eHU2?=
+ =?utf-8?B?bFlTOUxkMGc0QkpYZHRLM21ha2RxajN2VVdQUXl3SURVTE5kSlMxT3k1ZTd2?=
+ =?utf-8?B?U1N4Tk5kODdid0R4UnRwSVhNenBLdU14N3ozRDgyR0ZMTkZUdjc2LzRvdjgr?=
+ =?utf-8?B?U3B3ak8vOGxYRFp6S1BXSmdZd2RyTmNCVDZpT3ZvZ1ZHUC9qb0UyRnMrNm94?=
+ =?utf-8?B?aEE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR21MB3440.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e4016ea1-3256-4143-eda4-08dab215d8c5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Oct 2022 21:06:52.6629
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 0m6Ge8IGEMomk/21VcAmMp7wGBRsHlg1SCJ3SKboNJlDP31yW9nxjHxKwpq74BxRRerMkTiaY2t6V8fSaATfwlR9YwyooSw7tPFY/bllyiQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR21MB2018
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        SPF_HELO_PASS,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/19, dthaler1968@googlemail.com wrote:
-> From: Dave Thaler <dthaler@microsoft.com>
-
-> Use consistent names for the same field
-
-> Signed-off-by: Dave Thaler <dthaler@microsoft.com>
-> ---
->   Documentation/bpf/instruction-set.rst | 107 ++++++++++++++++++--------
->   1 file changed, 76 insertions(+), 31 deletions(-)
-
-> diff --git a/Documentation/bpf/instruction-set.rst  
-> b/Documentation/bpf/instruction-set.rst
-> index 3a64d4b49..29b599c70 100644
-> --- a/Documentation/bpf/instruction-set.rst
-> +++ b/Documentation/bpf/instruction-set.rst
-> @@ -35,20 +35,59 @@ Instruction encoding
->   eBPF has two instruction encodings:
-
->   * the basic instruction encoding, which uses 64 bits to encode an  
-> instruction
-> -* the wide instruction encoding, which appends a second 64-bit immediate  
-> value
-> -  (imm64) after the basic instruction for a total of 128 bits.
-> +* the wide instruction encoding, which appends a second 64-bit immediate  
-> (i.e.,
-> +  constant) value after the basic instruction for a total of 128 bits.
-
-> -The basic instruction encoding looks as follows:
-> +The basic instruction encoding is as follows, where MSB and LSB mean the  
-> most significant
-> +bits and least significant bits, respectively:
-
->   =============  =======  ===============  ====================   
-> ============
->   32 bits (MSB)  16 bits  4 bits           4 bits                8 bits  
-> (LSB)
->   =============  =======  ===============  ====================   
-> ============
-> -immediate      offset   source register  destination register  opcode
-> +imm            offset   src              dst                   opcode
->   =============  =======  ===============  ====================   
-> ============
-
-> +imm
-> +  signed integer immediate value
-> +
-> +offset
-> +  signed integer offset used with pointer arithmetic
-> +
-> +src
-> +  the source register number (0-10), except where otherwise specified
-> +  (`64-bit immediate instructions`_ reuse this field for other purposes)
-> +
-> +dst
-> +  destination register number (0-10)
-> +
-> +opcode
-> +  operation to perform
-> +
->   Note that most instructions do not use all of the fields.
->   Unused fields shall be cleared to zero.
-
-> +As discussed below in `64-bit immediate instructions`_, a 64-bit  
-> immediate
-> +instruction uses a 64-bit immediate value that is constructed as follows.
-> +The 64 bits following the basic instruction contain a pseudo instruction
-> +using the same format but with opcode, dst, src, and offset all set to  
-> zero,
-> +and imm containing the high 32 bits of the immediate value.
-> +
-> +=================  ==================
-> +64 bits (MSB)      64 bits (LSB)
-> +=================  ==================
-> +basic instruction  pseudo instruction
-> +=================  ==================
-> +
-> +Thus the 64-bit immediate value is constructed as follows:
-> +
-> +  imm64 = imm + (next_imm << 32)
-> +
-> +where 'next_imm' refers to the imm value of the pseudo instruction
-> +following the basic instruction.
-> +
-> +In the remainder of this document 'src' and 'dst' refer to the values of  
-> the source
-> +and destination registers, respectively, rather than the register number.
-> +
->   Instruction classes
->   -------------------
-
-> @@ -76,20 +115,24 @@ For arithmetic and jump instructions (``BPF_ALU``,  
-> ``BPF_ALU64``, ``BPF_JMP`` an
->   ==============  ======  =================
->   4 bits (MSB)    1 bit   3 bits (LSB)
->   ==============  ======  =================
-> -operation code  source  instruction class
-> +code            source  instruction class
->   ==============  ======  =================
-
-> -The 4th bit encodes the source operand:
-> +code
-> +  the operation code, whose meaning varies by instruction class
-
-> -  ======  =====  ========================================
-> -  source  value  description
-> -  ======  =====  ========================================
-> -  BPF_K   0x00   use 32-bit immediate as source operand
-> -  BPF_X   0x08   use 'src_reg' register as source operand
-> -  ======  =====  ========================================
-> +source
-> +  the source operand location, which unless otherwise specified is one  
-> of:
-
-> -The four MSB bits store the operation code.
-> +  ======  =====  ==========================================
-> +  source  value  description
-> +  ======  =====  ==========================================
-> +  BPF_K   0x00   use 32-bit 'imm' value as source operand
-> +  BPF_X   0x08   use 'src' register value as source operand
-> +  ======  =====  ==========================================
-
-> +instruction class
-> +  the instruction class (see `Instruction classes`_)
-
->   Arithmetic instructions
->   -----------------------
-> @@ -117,6 +160,8 @@ BPF_ARSH  0xc0   sign extending shift right
->   BPF_END   0xd0   byte swap operations (see `Byte swap instructions`_  
-> below)
->   ========  =====   
-> ==========================================================
-
-> +where 'src' is the source operand value.
-> +
->   Underflow and overflow are allowed during arithmetic operations,
->   meaning the 64-bit or 32-bit value will wrap.  If
->   eBPF program execution would result in division by zero,
-> @@ -126,21 +171,21 @@ the destination register is instead left unchanged.
-
->   ``BPF_ADD | BPF_X | BPF_ALU`` means::
-
-> -  dst_reg = (u32) dst_reg + (u32) src_reg;
-> +  dst = (u32) (dst + src)
-
-IIUC, by going from (u32) + (u32) to (u32)(), we want to signal that
-the value will just wrap around? But isn't it more confusing now
-because it's unclear what the sign of the dst/src is (s32 vs u32)?
-
-Also, we do keep (u32) ^ (u32) for BPF_XOR below..
-
-
->   where '(u32)' indicates truncation to 32 bits.
-
->   ``BPF_ADD | BPF_X | BPF_ALU64`` means::
-
-> -  dst_reg = dst_reg + src_reg
-> +  dst = dst + src
-
->   ``BPF_XOR | BPF_K | BPF_ALU`` means::
-
-> -  src_reg = (u32) src_reg ^ (u32) imm32
-> +  src = (u32) src ^ (u32) imm
-
->   ``BPF_XOR | BPF_K | BPF_ALU64`` means::
-
-> -  src_reg = src_reg ^ imm32
-> +  src = src ^ imm
-
->   Also note that the division and modulo operations are unsigned,
->   where 'imm' is first sign extended to 64 bits and then converted
-> @@ -173,11 +218,11 @@ Examples:
-
->   ``BPF_ALU | BPF_TO_LE | BPF_END`` with imm = 16 means::
-
-> -  dst_reg = htole16(dst_reg)
-> +  dst = htole16(dst)
-
->   ``BPF_ALU | BPF_TO_BE | BPF_END`` with imm = 64 means::
-
-> -  dst_reg = htobe64(dst_reg)
-> +  dst = htobe64(dst)
-
->   Jump instructions
->   -----------------
-> @@ -252,15 +297,15 @@ instructions that transfer data between a register  
-> and memory.
-
->   ``BPF_MEM | <size> | BPF_STX`` means::
-
-> -  *(size *) (dst_reg + off) = src_reg
-> +  *(size *) (dst + offset) = src_reg
-
->   ``BPF_MEM | <size> | BPF_ST`` means::
-
-> -  *(size *) (dst_reg + off) = imm32
-> +  *(size *) (dst + offset) = imm32
-
->   ``BPF_MEM | <size> | BPF_LDX`` means::
-
-> -  dst_reg = *(size *) (src_reg + off)
-> +  dst = *(size *) (src + offset)
-
->   Where size is one of: ``BPF_B``, ``BPF_H``, ``BPF_W``, or ``BPF_DW``.
-
-> @@ -294,11 +339,11 @@ BPF_XOR   0xa0   atomic xor
-
->   ``BPF_ATOMIC | BPF_W  | BPF_STX`` with 'imm' = BPF_ADD means::
-
-> -  *(u32 *)(dst_reg + off16) += src_reg
-> +  *(u32 *)(dst + offset) += src
-
->   ``BPF_ATOMIC | BPF_DW | BPF_STX`` with 'imm' = BPF ADD means::
-
-> -  *(u64 *)(dst_reg + off16) += src_reg
-> +  *(u64 *)(dst + offset) += src
-
->   In addition to the simple atomic operations, there also is a modifier and
->   two complex atomic operations:
-> @@ -313,16 +358,16 @@ BPF_CMPXCHG  0xf0 | BPF_FETCH  atomic compare and  
-> exchange
-
->   The ``BPF_FETCH`` modifier is optional for simple atomic operations, and
->   always set for the complex atomic operations.  If the ``BPF_FETCH`` flag
-> -is set, then the operation also overwrites ``src_reg`` with the value  
-> that
-> +is set, then the operation also overwrites ``src`` with the value that
->   was in memory before it was modified.
-
-> -The ``BPF_XCHG`` operation atomically exchanges ``src_reg`` with the  
-> value
-> -addressed by ``dst_reg + off``.
-> +The ``BPF_XCHG`` operation atomically exchanges ``src`` with the value
-> +addressed by ``dst + offset``.
-
->   The ``BPF_CMPXCHG`` operation atomically compares the value addressed by
-> -``dst_reg + off`` with ``R0``. If they match, the value addressed by
-> -``dst_reg + off`` is replaced with ``src_reg``. In either case, the
-> -value that was at ``dst_reg + off`` before the operation is zero-extended
-> +``dst + offset`` with ``R0``. If they match, the value addressed by
-> +``dst + offset`` is replaced with ``src``. In either case, the
-> +value that was at ``dst + offset`` before the operation is zero-extended
->   and loaded back to ``R0``.
-
->   64-bit immediate instructions
-> @@ -335,7 +380,7 @@ There is currently only one such instruction.
-
->   ``BPF_LD | BPF_DW | BPF_IMM`` means::
-
-> -  dst_reg = imm64
-> +  dst = imm64
-
-
->   Legacy BPF Packet access instructions
-> --
-> 2.33.4
-
+c2RmQGdvb2dsZS5jb20gd3JvdGU6IA0KPiA+ICAgYGBCUEZfQUREIHwgQlBGX1ggfCBCUEZfQUxV
+YGAgbWVhbnM6Og0KPiANCj4gPiAtICBkc3RfcmVnID0gKHUzMikgZHN0X3JlZyArICh1MzIpIHNy
+Y19yZWc7DQo+ID4gKyAgZHN0ID0gKHUzMikgKGRzdCArIHNyYykNCj4gDQo+IElJVUMsIGJ5IGdv
+aW5nIGZyb20gKHUzMikgKyAodTMyKSB0byAodTMyKSgpLCB3ZSB3YW50IHRvIHNpZ25hbCB0aGF0
+IHRoZSB2YWx1ZQ0KPiB3aWxsIGp1c3Qgd3JhcCBhcm91bmQ/IA0KDQpSaWdodC4gIEluIHBhcnRp
+Y3VsYXIgdGhlIG9sZCBsaW5lIGNvdWxkIGJlIGNvbmZ1c2luZyBpZiBvbmUgbWlzaW50ZXJwcmV0
+ZWQgaXQgYXMNCnNheWluZyB0aGF0IHRoZSBhZGRpdGlvbiBjb3VsZCBvdmVyZmxvdyBpbnRvIGEg
+aGlnaGVyIGJpdC4gIFRoZSBuZXcgbGluZSBpcyBpbnRlbmRlZA0KdG8gYmUgdW5hbWJpZ3VvdXMg
+dGhhdCB0aGUgdXBwZXIgMzIgYml0cyBhcmUgMC4NCg0KPiBCdXQgaXNuJ3QgaXQgbW9yZSBjb25m
+dXNpbmcgbm93IGJlY2F1c2UgaXQncyB1bmNsZWFyDQo+IHdoYXQgdGhlIHNpZ24gb2YgdGhlIGRz
+dC9zcmMgaXMgKHMzMiB2cyB1MzIpPw0KDQpBcyBzdGF0ZWQgdGhlIHVwcGVyIDMyIGJpdHMgaGF2
+ZSB0byBiZSAwLCBqdXN0IGFzIGFueSBvdGhlciB1MzIgYXNzaWdubWVudC4NCg0KPiBBbHNvLCB3
+ZSBkbyBrZWVwICh1MzIpIF4gKHUzMikgZm9yIEJQRl9YT1IgYmVsb3cuLg0KDQpXZWxsIGZvciBY
+T1IgaXQncyBlcXVpdmFsZW50IGVpdGhlciB3YXkgc28gZGlkbid0IG5lZWQgYSBjaGFuZ2UuDQoN
+ClRoYW5rcyBmb3IgcmV2aWV3aW5nLA0KRGF2ZQ0KDQo=
