@@ -2,59 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2036604FC8
-	for <lists+bpf@lfdr.de>; Wed, 19 Oct 2022 20:38:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F57B604FC9
+	for <lists+bpf@lfdr.de>; Wed, 19 Oct 2022 20:38:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230168AbiJSSiw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Oct 2022 14:38:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60868 "EHLO
+        id S229680AbiJSSix (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Oct 2022 14:38:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229680AbiJSSiv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Oct 2022 14:38:51 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAF1517D87F
-        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 11:38:50 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id q1so17011111pgl.11
-        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 11:38:50 -0700 (PDT)
+        with ESMTP id S230154AbiJSSiw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Oct 2022 14:38:52 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1674217D87F
+        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 11:38:52 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id fw14so17662474pjb.3
+        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 11:38:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=googlemail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=s9xNB+9pkjsuEgXzNEYq8ChwptKRSqWxHSgvfEMrQ0s=;
-        b=RZkENNSDBphbae7yFwQJUAEfHL4MQZtPZhxVSeHnCXf8cOa+O8p3sJHobXGG4pmnWK
-         FWzVWx4ZFP+Tl5b7DUYFa76SbU7Lts7TTwuC7Y/NpNiDl1bJURKpU2Vh3I4so1BRH/Vv
-         4Ii2bo6O6mHAbh3SJGFa4t66Pde4dSHB6Tvk9sO0DyAo48Kq1iLHo7fJNyUF2EyYurcY
-         aXuAq9UJR1XHqRzHvqHRWQI4Km97TnI9ulalzibruTbaTI7mdBG5T9vwVQI4mxuDO7sO
-         P/a67ZXGJH1WjmaJ0ag3uBeo9spGKNhlmtPmkYIwwBEhATO42XtKEo+ufdIGt5ebqLr/
-         gu5g==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rCDmQ9xrAmjZGrgEFa9vY4JR2yCT6Jw9ahBiSCvLJ/g=;
+        b=c8+eQ40FIkjNEj8ttqyXmUcelsZu7ov0f0IGlxfmrIxlo3FG0SE+a6jX1kP3dd2U7u
+         8U95OVG+txXYb2ZtBvewi/ukEiyNYbo4yID+wkvSuuGX2nxwu59wCaI/Y2C9sHtQaKS5
+         TwYO8hkGsxVPEX7UlkCPw6TDu+bwl1/ufC6uDq8Zz9HA1fmi2Eo/oQMdzPyI9fp17Gez
+         YtnunUOof5uMvIPgx+IH06G5nlb0E8d9bD2vwZkr5VM4vyJsQyORe0yOmTxD7HvrpBJT
+         r/7xz+WxxXZ4xHVWqWsotOHSQQlMxfuM4HmcwVaq6rz/74bmq3ToLn1oFcCq7iAOwRqJ
+         tcYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=s9xNB+9pkjsuEgXzNEYq8ChwptKRSqWxHSgvfEMrQ0s=;
-        b=zjXWDxDZ/W6ZveYvdyJTISpV7F5eljpWQzhcHylbOKbRnGq9l/oB1Ug9bjtyPjnQ5R
-         MKEAP3lKpuRsUuA0v0FAXqO5fsgMr0I2c40DRsC/ZTTt9SZlR1eNRil0tyQ1Sz72xo8c
-         W1f+t4TnVGT1yHlzaYUQ9u0xvpkEyjf6wy1G0ub+pFifnTyT1WjE6DOfiS7B76v/MFKv
-         DskFqQCsEWz2E9UllYDwmiOfl1RmK2mfAa5WKiZNFuVvBR4RCTIE1fcx4GJzfF73es34
-         bfKER32ZOQCzCi58oa0qsPcY1wDtVdkN2QB5Kw/PIcH5M5bCt+2YsTQNMFmE+iUldpoG
-         KRhA==
-X-Gm-Message-State: ACrzQf2G2JIFjS+k+uo/JSAjl0o2P2MxjJkLpb4cLCYmUcGVxjRvVEjd
-        K+qx3ccFV+U0aPCbKwRyABvK/MWibIF7SQ==
-X-Google-Smtp-Source: AMsMyM4FBUjNwC1kSVow/araIYsSfON5R3NnsXWGO0/P7G3RslCE4EHApcxHHClKlbO/wPaMuSPDtg==
-X-Received: by 2002:a63:1e47:0:b0:43c:261f:f773 with SMTP id p7-20020a631e47000000b0043c261ff773mr8444942pgm.1.1666204729976;
-        Wed, 19 Oct 2022 11:38:49 -0700 (PDT)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rCDmQ9xrAmjZGrgEFa9vY4JR2yCT6Jw9ahBiSCvLJ/g=;
+        b=cfxDAWE+83iltfRS3yE2zyev4fnhKXG/eJoCSl2Q9pQ/kSuiZgvTPWdvTWunl+GKQ6
+         gGqQokR9m63iSHWdJYwHsjkt/sKsOeuWz72hWsyXz3U7jrivWvywQy5Fx5mYnCdGWSCh
+         9vxY5BGJaQSVdwlk3jdHacvMLAYxkUqFG0QoZ89YY3Urtgr+rPVac3lUBFlw1+Gpqi3M
+         NsWVL2oL6PiuRKAZOxq5QPdluL3Be+XLBMehqQ5JdwbWNyGy1SuAJeR91vxh26hLGCP7
+         G0YIdMQ9tN5ySwaHzm4Y4XCrV5rtfMF1Y5utl/0kPE8DtQSgQTJuEExU1XQL5HDCNW9F
+         BuRg==
+X-Gm-Message-State: ACrzQf07oRrGEioVtc5HgO+3ROL0gdvB0WxFcqoggPG7GB9f0zViLT0M
+        h6tWac8mQITe5KblO3Zr2udPGTBHKaIuOQ==
+X-Google-Smtp-Source: AMsMyM6+yFOsW5lsUTCDsJKLSuYkQLB0C4SGONr/bjWBT8Bk7mMw/r794zH3+i0bQtzxbM4OyDSwDQ==
+X-Received: by 2002:a17:902:8c81:b0:178:1701:cd with SMTP id t1-20020a1709028c8100b00178170100cdmr10018742plo.138.1666204731188;
+        Wed, 19 Oct 2022 11:38:51 -0700 (PDT)
 Received: from mariner-vm.. (c-67-185-99-176.hsd1.wa.comcast.net. [67.185.99.176])
-        by smtp.gmail.com with ESMTPSA id x2-20020a170902a38200b00177ff4019d9sm11104510pla.274.2022.10.19.11.38.48
+        by smtp.gmail.com with ESMTPSA id x2-20020a170902a38200b00177ff4019d9sm11104510pla.274.2022.10.19.11.38.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Oct 2022 11:38:49 -0700 (PDT)
+        Wed, 19 Oct 2022 11:38:50 -0700 (PDT)
 From:   dthaler1968@googlemail.com
 To:     bpf@vger.kernel.org
 Cc:     Dave Thaler <dthaler@microsoft.com>
-Subject: [PATCH 1/4] bpf, docs: Add note about type convention
-Date:   Wed, 19 Oct 2022 18:38:42 +0000
-Message-Id: <20221019183845.905-1-dthaler1968@googlemail.com>
+Subject: [PATCH 2/4] bpf, docs: Fix modulo zero, division by zero, overflow, and underflow
+Date:   Wed, 19 Oct 2022 18:38:43 +0000
+Message-Id: <20221019183845.905-2-dthaler1968@googlemail.com>
 X-Mailer: git-send-email 2.33.4
+In-Reply-To: <20221019183845.905-1-dthaler1968@googlemail.com>
+References: <20221019183845.905-1-dthaler1968@googlemail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -69,38 +72,58 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Dave Thaler <dthaler@microsoft.com>
 
-Add note about type convention
+Fix modulo zero, division by zero, overflow, and underflow.
+Also clarify how a negative immediate value is ued in unsigned division
 
 Signed-off-by: Dave Thaler <dthaler@microsoft.com>
 ---
- Documentation/bpf/instruction-set.rst | 7 +++++++
- 1 file changed, 7 insertions(+)
+ Documentation/bpf/instruction-set.rst | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
 diff --git a/Documentation/bpf/instruction-set.rst b/Documentation/bpf/instruction-set.rst
-index 4997d2088..6847a4cbf 100644
+index 6847a4cbf..3a64d4b49 100644
 --- a/Documentation/bpf/instruction-set.rst
 +++ b/Documentation/bpf/instruction-set.rst
-@@ -7,6 +7,11 @@ eBPF Instruction Set Specification, v1.0
+@@ -104,19 +104,26 @@ code      value  description
+ BPF_ADD   0x00   dst += src
+ BPF_SUB   0x10   dst -= src
+ BPF_MUL   0x20   dst \*= src
+-BPF_DIV   0x30   dst /= src
++BPF_DIV   0x30   dst = (src != 0) ? (dst / src) : 0
+ BPF_OR    0x40   dst \|= src
+ BPF_AND   0x50   dst &= src
+ BPF_LSH   0x60   dst <<= src
+ BPF_RSH   0x70   dst >>= src
+ BPF_NEG   0x80   dst = ~src
+-BPF_MOD   0x90   dst %= src
++BPF_MOD   0x90   dst = (src != 0) ? (dst % src) : dst
+ BPF_XOR   0xa0   dst ^= src
+ BPF_MOV   0xb0   dst = src
+ BPF_ARSH  0xc0   sign extending shift right
+ BPF_END   0xd0   byte swap operations (see `Byte swap instructions`_ below)
+ ========  =====  ==========================================================
  
- This document specifies version 1.0 of the eBPF instruction set.
- 
-+Documentation conventions
-+=========================
++Underflow and overflow are allowed during arithmetic operations,
++meaning the 64-bit or 32-bit value will wrap.  If
++eBPF program execution would result in division by zero,
++the destination register is instead set to zero.
++If execution would result in modulo by zero,
++the destination register is instead left unchanged.
 +
-+For brevity, this document uses the type notion "u64", "u32", etc.
-+to mean an unsigned integer whose width is the specified number of bits.
- 
- Registers and calling convention
- ================================
-@@ -116,6 +121,8 @@ BPF_END   0xd0   byte swap operations (see `Byte swap instructions`_ below)
+ ``BPF_ADD | BPF_X | BPF_ALU`` means::
  
    dst_reg = (u32) dst_reg + (u32) src_reg;
+@@ -135,6 +142,10 @@ where '(u32)' indicates truncation to 32 bits.
  
-+where '(u32)' indicates truncation to 32 bits.
-+
- ``BPF_ADD | BPF_X | BPF_ALU64`` means::
+   src_reg = src_reg ^ imm32
  
-   dst_reg = dst_reg + src_reg
++Also note that the division and modulo operations are unsigned,
++where 'imm' is first sign extended to 64 bits and then converted
++to an unsigned 64-bit value.  There are no instructions for
++signed division or modulo.
+ 
+ Byte swap instructions
+ ~~~~~~~~~~~~~~~~~~~~~~
 -- 
 2.33.4
 
