@@ -2,69 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7C25603970
-	for <lists+bpf@lfdr.de>; Wed, 19 Oct 2022 07:58:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57512603981
+	for <lists+bpf@lfdr.de>; Wed, 19 Oct 2022 08:04:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229850AbiJSF6z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Oct 2022 01:58:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60364 "EHLO
+        id S229932AbiJSGE2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Oct 2022 02:04:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229929AbiJSF6u (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Oct 2022 01:58:50 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF4DC558F5
-        for <bpf@vger.kernel.org>; Tue, 18 Oct 2022 22:58:49 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id d24so15958024pls.4
-        for <bpf@vger.kernel.org>; Tue, 18 Oct 2022 22:58:49 -0700 (PDT)
+        with ESMTP id S229957AbiJSGE1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Oct 2022 02:04:27 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A41EC627A
+        for <bpf@vger.kernel.org>; Tue, 18 Oct 2022 23:04:25 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id 128so15349242pga.1
+        for <bpf@vger.kernel.org>; Tue, 18 Oct 2022 23:04:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mtC3FkRHvfZ3xA2WpUxb157ArIdWTntY1lennyxNxdQ=;
-        b=DTYhD6Ri+hb1NWg/6HF5RsEIjmrUFiWGinwPsdgZZO5TLBP9Ur240XxAQOXq9GyfuD
-         G6CNAOCoA9O3TDCRYIIRMSvnIK3RxUUneSkSKO8IAbMhXaXFtLeWAmW8Lxndwy2t330a
-         qpZwZVXvjbVZLiZ9TF26Ry5snw7x6nqYRJbnfljGViF4G1YqVRCqtuGAO/Y6xGl8f0QE
-         kVNZ/iAsyY0R+BsCScJiuXO6peO4KVjdxqCcmYkqdjR9Gj9eE44YGfSf532IsrQExMsl
-         DF58TMQdGluklgihXEbqcQxT39owx9fXDJ4xRkXw1Hpj4CVlMH9yZHbNeybfNuk4DVwc
-         qscw==
+        bh=v9kiCerri0xuX8Y3v8uCducAT1nxtHXCfv4sqTnLw9I=;
+        b=NLRcgEao91t2aXQpy+lhlYcTFu6BQ0gDSBDfvVYaf6SmnFDWLqLySQhwpGZRYBmLDs
+         He5jWPC3cTtmP/S/Iqn9NPOQxW0Zx3Y60ALGVLRAZasHkOik32jRtiC7ZofQxgTB0G1O
+         2e63Ac5RkmGIMw68PIUIvNT5axMjCRXc9VqkyPcAv4p94id73WchMGb8GD23dDDDmK0Q
+         Qsl05+UME859rzOqh3iH1OZoyGzVIBrWjeCZivHwz4URU3rI0Gu3EvchV7MkR6D4Z3cv
+         ZzrpyllEJ2HxM0xiKXdz2m3o/nlYgFOvQGDZ8JHCyin90tBWysZFDiDWs3QHwOUtzS3c
+         oZjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=mtC3FkRHvfZ3xA2WpUxb157ArIdWTntY1lennyxNxdQ=;
-        b=OnSieDDp2am2RW5tp3KgJ+8nzBYoECkqy5Gb5mwjzK1fZq6KeafpKEPH8LfsKlprqn
-         H6hHsBcp8xm75m8JlYdjd4QL2UjuRcHmukuB8oPUgqWGgwDyGmP5GAevMIW2saawfghf
-         ddDIFgVZ8bxXD81Q9ptMe4rzQfbYD1fZ3IjeZhyXUmApajzi/qCgOp2ewTrBmB0RUcSP
-         5qm0fcSkc5ZK5cJ+r2LZzSm3ZhK8mZsuopi5CBLSGI8gt++Iccn8L6InZS9muZ9fxeMO
-         wjV85NOa120/a0wd+jdPtveHDa81dfBnaVEunKHr3YqGfHiCxbNnyw2Wff24L2Rfibs5
-         H48Q==
-X-Gm-Message-State: ACrzQf3wGVh5gm2XK5ComRMXN++2DnKn58W7wmMccq5HsYc6c8TnU4+p
-        jC9a6h3yVKFg9skzCfd3oPw=
-X-Google-Smtp-Source: AMsMyM4vfL4fYJntGngwbjHFdQcByUDluYmc4D/ElVELkMGYP6bXRN/ySuqdGcqQj45J5715jwdlLA==
-X-Received: by 2002:a17:90b:1d0e:b0:20d:a61f:84b1 with SMTP id on14-20020a17090b1d0e00b0020da61f84b1mr35346106pjb.172.1666159129308;
-        Tue, 18 Oct 2022 22:58:49 -0700 (PDT)
+        bh=v9kiCerri0xuX8Y3v8uCducAT1nxtHXCfv4sqTnLw9I=;
+        b=sEcxYmfr6jKYvv2GvTDEWLwwhm2t7Hhy9/tv6j+GwSDAq8EJ3tl80Ts3S7Zbxe4idK
+         Mg3T/juWBocPOQdH7U/DAD72Juvc89xCaF3VKvzuLOM6CFVfNebQMOvAOtKotYVuHGi3
+         jzQQjYUIly8SKKwFetW+ZI7IWQ/vwOukgNVU5cKUO4nZbzNczYYanGkC4zjFdOxRON24
+         3Qg/h2Xg0iG0FFv1LlXR3rftCxSt7P/Oq2diQQt5C37RS/P58203hfdVfw+yCUfCBrfl
+         eA+z0/4DkK8TGVKIVMMrPS96EUuVVKEcxjkiVsX0OAF2UyzC90syUav/0NU2C1z00LD7
+         GDpQ==
+X-Gm-Message-State: ACrzQf2si/lGfF9zZ7pzW5v48zQ5zjBjqBGHuwcGsXc1rT+Hm3YoBYEs
+        QysFdy10z2RhHNMZw34joOQ0NEx4xRLLWg==
+X-Google-Smtp-Source: AMsMyM614yF7AJPy/SS2TO9ZAow7HXBNS0YfnoGUTvqy/auKQSV12cMj7Eq261QSlbndj5UB13dATw==
+X-Received: by 2002:a05:6a00:b95:b0:565:9cbd:a7e5 with SMTP id g21-20020a056a000b9500b005659cbda7e5mr6927382pfj.74.1666159464588;
+        Tue, 18 Oct 2022 23:04:24 -0700 (PDT)
 Received: from localhost ([59.152.80.69])
-        by smtp.gmail.com with ESMTPSA id i6-20020a17090a64c600b001f8c532b93dsm9092218pjm.15.2022.10.18.22.58.47
+        by smtp.gmail.com with ESMTPSA id i13-20020a170902c94d00b001754064ac31sm9753518pla.280.2022.10.18.23.04.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Oct 2022 22:58:48 -0700 (PDT)
-Date:   Wed, 19 Oct 2022 11:28:34 +0530
+        Tue, 18 Oct 2022 23:04:24 -0700 (PDT)
+Date:   Wed, 19 Oct 2022 11:34:12 +0530
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     David Vernet <void@manifault.com>
 Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Dave Marchevsky <davemarchevsky@meta.com>,
-        Delyan Kratunov <delyank@meta.com>
-Subject: Re: [PATCH bpf-next v2 19/25] bpf: Introduce bpf_kptr_new
-Message-ID: <20221019055834.ux5dfoot7hyuf4jk@apollo>
-References: <20221013062303.896469-1-memxor@gmail.com>
- <20221013062303.896469-20-memxor@gmail.com>
- <20221019023124.47zzi3gs2zcdvxca@macbook-pro-4.dhcp.thefacebook.com>
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Joanne Koong <joannelkoong@gmail.com>
+Subject: Re: [PATCH bpf-next v1 01/13] bpf: Refactor ARG_PTR_TO_DYNPTR checks
+ into process_dynptr_func
+Message-ID: <20221019060412.dqvq2e23cuh3jw52@apollo>
+References: <20221018135920.726360-1-memxor@gmail.com>
+ <20221018135920.726360-2-memxor@gmail.com>
+ <Y08CYWzGTvKHQXvy@maniforge.dhcp.thefacebook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221019023124.47zzi3gs2zcdvxca@macbook-pro-4.dhcp.thefacebook.com>
+In-Reply-To: <Y08CYWzGTvKHQXvy@maniforge.dhcp.thefacebook.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -75,68 +76,171 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 19, 2022 at 08:01:24AM IST, Alexei Starovoitov wrote:
-> On Thu, Oct 13, 2022 at 11:52:57AM +0530, Kumar Kartikeya Dwivedi wrote:
-> > +void *bpf_kptr_new_impl(u64 local_type_id__k, u64 flags, void *meta__ign)
+On Wed, Oct 19, 2022 at 01:15:37AM IST, David Vernet wrote:
+> On Tue, Oct 18, 2022 at 07:29:08PM +0530, Kumar Kartikeya Dwivedi wrote:
+>
+> Hey Kumar, thanks for looking at this stuff.
+>
+> > ARG_PTR_TO_DYNPTR is akin to ARG_PTR_TO_TIMER, ARG_PTR_TO_KPTR, where
+> > the underlying register type is subjected to more special checks to
+> > determine the type of object represented by the pointer and its state
+> > consistency.
+> >
+> > Move dynptr checks to their own 'process_dynptr_func' function so that
+> > is consistent and in-line with existing code. This also makes it easier
+> > to reuse this code for kfunc handling.
+>
+> Just out of curiosity, do you have a specific use case for when you'd envision
+> a kfunc taking a dynptr? I'm not saying there are none, just curious if you
+> have any specifically that you've considered.
+>
+
+There is already a kfunc that takes dynptrs, bpf_verify_pkcs7_signature. I am
+sure we'll get more in the future.
+
+> > To this end, remove the dependency on bpf_call_arg_meta parameter by
+> > instead taking the uninit_dynptr_regno by pointer. This is only needed
+> > to be set to a valid pointer when arg_type has MEM_UNINIT.
+> >
+> > Then, reuse this consolidated function in kfunc dynptr handling too.
+> > Note that for kfuncs, the arg_type constraint of DYNPTR_TYPE_LOCAL has
+> > been lifted.
+> >
+> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > ---
+> >  include/linux/bpf_verifier.h                  |   8 +-
+> >  kernel/bpf/btf.c                              |  17 +--
+> >  kernel/bpf/verifier.c                         | 115 ++++++++++--------
+> >  .../bpf/prog_tests/kfunc_dynptr_param.c       |   5 +-
+> >  .../bpf/progs/test_kfunc_dynptr_param.c       |  12 --
+> >  5 files changed, 69 insertions(+), 88 deletions(-)
+> >
+> > diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+> > index 9e1e6965f407..a33683e0618b 100644
+> > --- a/include/linux/bpf_verifier.h
+> > +++ b/include/linux/bpf_verifier.h
+> > @@ -593,11 +593,9 @@ int check_kfunc_mem_size_reg(struct bpf_verifier_env *env, struct bpf_reg_state
+> >  			     u32 regno);
+> >  int check_mem_reg(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
+> >  		   u32 regno, u32 mem_size);
+> > -bool is_dynptr_reg_valid_init(struct bpf_verifier_env *env,
+> > -			      struct bpf_reg_state *reg);
+> > -bool is_dynptr_type_expected(struct bpf_verifier_env *env,
+> > -			     struct bpf_reg_state *reg,
+> > -			     enum bpf_arg_type arg_type);
+> > +int process_dynptr_func(struct bpf_verifier_env *env, int regno,
+> > +			enum bpf_arg_type arg_type, int argno,
+> > +			u8 *uninit_dynptr_regno);
+> >
+> >  /* this lives here instead of in bpf.h because it needs to dereference tgt_prog */
+> >  static inline u64 bpf_trampoline_compute_key(const struct bpf_prog *tgt_prog,
+> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> > index eba603cec2c5..1827d889e08a 100644
+> > --- a/kernel/bpf/btf.c
+> > +++ b/kernel/bpf/btf.c
+> > @@ -6486,23 +6486,8 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
+> >  						return -EINVAL;
+> >  					}
+> >
+> > -					if (!is_dynptr_reg_valid_init(env, reg)) {
+> > -						bpf_log(log,
+> > -							"arg#%d pointer type %s %s must be valid and initialized\n",
+> > -							i, btf_type_str(ref_t),
+> > -							ref_tname);
+> > +					if (process_dynptr_func(env, regno, ARG_PTR_TO_DYNPTR, i, NULL))
+> >  						return -EINVAL;
+> > -					}
+>
+> Could you please clarify why you're removing the DYNPTR_TYPE_LOCAL constraint
+> for kfuncs?
+>
+> You seemed to have removed the following negative selftest:
+>
+> > -SEC("?lsm.s/bpf")
+> > -int BPF_PROG(dynptr_type_not_supp, int cmd, union bpf_attr *attr,
+> > -	     unsigned int size)
+> > -{
+> > -	char write_data[64] = "hello there, world!!";
+> > -	struct bpf_dynptr ptr;
+> > -
+> > -	bpf_ringbuf_reserve_dynptr(&ringbuf, sizeof(write_data), 0, &ptr);
+> > -
+> > -	return bpf_verify_pkcs7_signature(&ptr, &ptr, NULL);
+> > -}
+> > -
+>
+> But it was clearly the intention of the test validate that we can't pass a
+> dynptr to a ringbuf region to this kfunc, so I'm curious what's changed since
+> that test was added.
+>
+
+There was no inherent limitation for just accepting local dynptrs, it's that
+when this was added I suggested sticking to one kind back then, because of the
+code divergence between kfunc argument checking and helper argument checking.
+
+Now that both share the same code, it's easier to handle everything one place
+and make it work everywhere the same way.
+
+Also, next patch adds a very clear distinction between argument type which only
+operates on the dynamically sized memory slice and ones which may also modify
+dynptr, which also makes it easier to support things for kfuncs by setting
+MEM_RDONLY.
+
+> > -
+> > -					if (!is_dynptr_type_expected(env, reg,
+> > -							ARG_PTR_TO_DYNPTR | DYNPTR_TYPE_LOCAL)) {
+> > -						bpf_log(log,
+> > -							"arg#%d pointer type %s %s points to unsupported dynamic pointer type\n",
+> > -							i, btf_type_str(ref_t),
+> > -							ref_tname);
+> > -						return -EINVAL;
+> > -					}
+> > -
+> >  					continue;
+> >  				}
+> >
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 6f6d2d511c06..31c0c999448e 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -782,8 +782,7 @@ static bool is_dynptr_reg_valid_uninit(struct bpf_verifier_env *env, struct bpf_
+> >  	return true;
+> >  }
+> >
+> > -bool is_dynptr_reg_valid_init(struct bpf_verifier_env *env,
+> > -			      struct bpf_reg_state *reg)
+> > +static bool is_dynptr_reg_valid_init(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
+> >  {
+> >  	struct bpf_func_state *state = func(env, reg);
+> >  	int spi = get_spi(reg->off);
+> > @@ -802,9 +801,8 @@ bool is_dynptr_reg_valid_init(struct bpf_verifier_env *env,
+> >  	return true;
+> >  }
+> >
+> > -bool is_dynptr_type_expected(struct bpf_verifier_env *env,
+> > -			     struct bpf_reg_state *reg,
+> > -			     enum bpf_arg_type arg_type)
+> > +static bool is_dynptr_type_expected(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
+> > +				    enum bpf_arg_type arg_type)
+> >  {
+> >  	struct bpf_func_state *state = func(env, reg);
+> >  	enum bpf_dynptr_type dynptr_type;
+> > @@ -5573,6 +5571,65 @@ static int process_kptr_func(struct bpf_verifier_env *env, int regno,
+> >  	return 0;
+> >  }
+> >
+> > +int process_dynptr_func(struct bpf_verifier_env *env, int regno,
+> > +			enum bpf_arg_type arg_type, int argno,
+> > +			u8 *uninit_dynptr_regno)
 > > +{
-> > +	struct btf_struct_meta *meta = meta__ign;
-> > +	u64 size = local_type_id__k;
-> > +	void *p;
-> > +
-> > +	if (unlikely(flags || !bpf_global_ma_set))
-> > +		return NULL;
 >
-> Unused 'flags' looks weird in unstable api. Just drop it?
-> And keep it as:
-> void *bpf_kptr_new(u64 local_type_id__k, struct btf_struct_meta *meta__ign);
->
-> and in bpf_experimental.h:
->
-> extern void *bpf_kptr_new(__u64 local_type_id) __ksym;
->
-> since __ign args are ignored during kfunc type match
-> the bpf progs can use it without #define.
+> IMO 'process' is a bit too generic of a term. If we decide to go with this,
+> what do you think about changing the name to check_func_dynptr_arg(), or just
+> check_dynptr_arg()?
 >
 
-It's ignored during check_kfunc_call, but libbpf doesn't ignore that. The
-prototypes will not be the same. I guess I'll have to teach it do that during
-type match, but IDK how you feel about that.
+While I agree, then it would be different from the existing ones and look a bit
+odd in the list (e.g. process_spin_lock, process_kptr_func, etc.). So I am not
+very sure, but if you still feel it's better I don't mind.
 
-Otherwise unless you want people to manually pass something to the ignored
-argument, we have to hide it behind a macro.
-
-I actually like the macro on top, then I don't even pass the type ID but the
-type. But that's a personal preference, and I don't feel strongly about it.
-
-So in C one does malloc(sizeof(*p)), here we'll just write
-bpf_kptr_new(typeof(*p)). YMMV.
-
-> > +	p = bpf_mem_alloc(&bpf_global_ma, size);
-> > +	if (!p)
-> > +		return NULL;
-> > +	if (meta)
-> > +		bpf_obj_init(meta->off_arr, p);
->
-> I'm starting to dislike all that _arr and _tab suffixes in the verifier code base.
-> It reminds me of programming style where people tried to add types into
-> variable names. imo dropping _arr wouldn't be just fine.
-
-Ack, I'll do it in v3.
-
-Also, I'd like to invite people to please bikeshed a bit over the naming of the
-APIs, e.g. whether it should be bpf_kptr_drop vs bpf_kptr_delete.
-
-In the BPF list API, it's named bpf_list_del but it's actually distinct from how
-list_del in the kernel works. So it does make sense to give them a different
-name (like pop_front/pop_back and push_front/push_back)?
-
-Because even bpf_list_add takes bpf_list_head, in the kernel there's no
-distinction between node and head, so you can do list_add on a node as well, but
-it won't be possible with the kfunc (unless we overload the head argument to
-also work with nodes).
-
-Later we'll probably have to add bpf_list_node_add etc. that add before or after
-a node to make that work.
-
-The main question is whether it should closely resembly the linked list API in
-the kernel, or can it steer away considerably from that?
+> [...]
