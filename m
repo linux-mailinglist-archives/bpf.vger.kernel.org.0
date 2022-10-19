@@ -2,232 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E215660496B
-	for <lists+bpf@lfdr.de>; Wed, 19 Oct 2022 16:38:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A90B2604A47
+	for <lists+bpf@lfdr.de>; Wed, 19 Oct 2022 17:02:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230410AbiJSOie (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Oct 2022 10:38:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37640 "EHLO
+        id S230183AbiJSPCl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Oct 2022 11:02:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231311AbiJSOiT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Oct 2022 10:38:19 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D82401BBEC5
-        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 07:23:01 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 400C4617FE
-        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 13:58:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04439C433D6;
-        Wed, 19 Oct 2022 13:57:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666187879;
-        bh=Kkj9D2EVpJyjXSewGKANkdkqPmgJ5975/VZK1i9EliY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=igQz15+fUv+MLTrJNaDX9CyXDXgrAfLBrVOyPNoZJMno/9hY8m45e8xpgCyTtLEcZ
-         dxcgtKEodpeghWzsQEoqbwhXVslxBvyl9ExArDl4GoATY9eknCw+PgC8GC8tB3vWPC
-         DN5r+uFWqGXxxpHRrgXBuePoEq8Eoa1j0++NGNHeROBznG3x3aZ0kbh4E104UgByzN
-         Iy1qPX4clnxgqxLxuHCeAR9fsKqfAkx3rtZu+KiOb1ynnGtlJWCDE/r++9ku83d7SK
-         D3C9GCmrjwOpwleezbeG2lLvF5VKQ4enU5hcYn5Et6rrEr2r9DbUqKN9YqGgyH6/33
-         XokOQVGE1QcMg==
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S229872AbiJSPCX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Oct 2022 11:02:23 -0400
+Received: from new1-smtp.messagingengine.com (new1-smtp.messagingengine.com [66.111.4.221])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CF473BC7C;
+        Wed, 19 Oct 2022 07:56:56 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id DC54158037C;
+        Wed, 19 Oct 2022 10:55:49 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Wed, 19 Oct 2022 10:55:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
+        :cc:content-type:date:date:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to; s=fm3; t=1666191349; x=1666198549; bh=vLMDs+R0Qm
+        IdgQZ4Vz8PN8O4cAAR90i7fWXyp/iiOtc=; b=eyPQSFmtsV8ZrW+KoU8ZZZuZ3r
+        ODVWj7YuCHZwM3N4oWayR3z/2AN1JLQFIHNaMoBx8toiX0A0FiTUJ3fKvDg887Oo
+        IvZMp21KAJ84vUjsHadH3NwbxwbDUo7fnqrGmFEU92SyOJj33DcKI87e42Hllb1z
+        rHyqGmJAEO+LqDbb15dQmL3ad5+yKGHNOkweoQd8+ExBXHzTmLutlC/zHQqafm/z
+        Cb9G8SiIMuFqGgfZ+lt6MUrj3n18zERq7u7ESZ6s12bXWH0c+CZPFq6FzgX4eGdM
+        jqf295mnXW9LI3zTK3I4Bj/ROpx886y/YHUOaKepc+X+ZnVfoLLpBTSvdosw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
+        :mime-version:references:reply-to:sender:subject:subject:to:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm3; t=1666191349; x=1666198549; bh=vLMDs+R0QmIdgQZ4Vz8PN8O4cAAR
+        90i7fWXyp/iiOtc=; b=PkCKZoZcXQRzr50Ourdgvcz5hJGG2JhYJrLiTGCV06Ql
+        ReinxzTYVo0wO7G3VQTsIUt2djGct10NNn2tKXlImjCe6Iu2ZrBBmOMS/j4Pa0x8
+        zzC1JpNSG4oHQzEQUghJ9X1FA82EVYDGVb2eyNuFevea5yFOJLO3fBKFTdiKWGln
+        Jb6FDg3AHFkAHJODQIDEjjpEWkjN+pZgNy28t/MNtkDynBOSC/TxTcw9LaI0aHmF
+        Bf4Xs73MTikPQwdfzK0gKS4LoVQpbOpcPp+c45MmFl16dbb9Hwq24DNuXNWM1+1Z
+        nM952PQeHD70YfPkqyGjBfZKpytZ4tn//ZYT9/WbXQ==
+X-ME-Sender: <xms:9Q9QY_87-oWhliLkEklgr0elc74zNdq_y5dbEug9VPpbZ6J0HLNivA>
+    <xme:9Q9QY7vBfJb39zKh6-i42buww6wgIrtemr7SlGG5ny9VjtwQ7MPU-VvD80rZAzGSF
+    Y1l4dA7PUII8Q>
+X-ME-Received: <xmr:9Q9QY9DW8OLXIUeOOI2PYxu3YxE02dh3JeHXx6Ngsp-_kx9MYYyOB1ulDcRnf2yaVnErC_Ok6PFLYXZRuWHNVGUs2qMSbhRX>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrfeelgedgkeduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
+    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepgeehue
+    ehgfdtledutdelkeefgeejteegieekheefudeiffdvudeffeelvedttddvnecuffhomhgr
+    ihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
+    epmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
+X-ME-Proxy: <xmx:9Q9QY7fCLa7BEWX1y5Lz0na0bRJ2av_Nxn13_BRHIsXyBZFYo0zF-g>
+    <xmx:9Q9QY0MWZLXDoPWRcpR1RTLsE-nP-D9Tr0TbDXplqBZS2SdkobusDw>
+    <xmx:9Q9QY9lISEjJksidcPuIAHm-TKUaYvXXqszRRktbHPu5TRkuwVdS-g>
+    <xmx:9Q9QYwsoIEQhS4X_HZaocxA6hX0RO1Xetz4aCt2z3Z8sIA39iH-Hrg>
+Feedback-ID: i787e41f1:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 19 Oct 2022 10:55:48 -0400 (EDT)
+Date:   Wed, 19 Oct 2022 16:55:46 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     stable@vger.kernel.org, bpf@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Song Liu <song@kernel.org>, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Christoph Hellwig <hch@lst.de>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Martynas Pumputis <m@lambda.lt>
-Subject: [PATCHv2 bpf-next 8/8] selftests/bpf: Add kprobe_multi kmod attach api tests
-Date:   Wed, 19 Oct 2022 15:56:21 +0200
-Message-Id: <20221019135621.1480923-9-jolsa@kernel.org>
-X-Mailer: git-send-email 2.37.3
-In-Reply-To: <20221019135621.1480923-1-jolsa@kernel.org>
-References: <20221019135621.1480923-1-jolsa@kernel.org>
+        Martin Rodriguez Reboredo <yakoyoku@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Philip =?iso-8859-1?Q?M=FCller?= <philm@manjaro.org>
+Subject: Re: [PATCH stable 5.10 0/5] kbuild: Fix compilation for latest
+ pahole release
+Message-ID: <Y1AP8h6YGiDZAgyp@kroah.com>
+References: <20221019085604.1017583-1-jolsa@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221019085604.1017583-1-jolsa@kernel.org>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Adding kprobe_multi kmod attach api tests that attach bpf_testmod
-functions via bpf_program__attach_kprobe_multi_opts.
+On Wed, Oct 19, 2022 at 10:55:59AM +0200, Jiri Olsa wrote:
+> hi,
+> new version of pahole (1.24) is causing compilation fail for 5.10
+> stable kernel, discussed in here [1][2]. Sending fix for that plus
+> dependency patches.
+> 
+> thanks,
+> jirka
+> 
+> 
+> [1] https://lore.kernel.org/bpf/20220825163538.vajnsv3xcpbhl47v@altlinux.org/
+> [2] https://lore.kernel.org/bpf/YwQRKkmWqsf%2FDu6A@kernel.org/
+> ---
+> Andrii Nakryiko (1):
+>       kbuild: skip per-CPU BTF generation for pahole v1.18-v1.21
+> 
+> Ilya Leoshkevich (1):
+>       bpf: Generate BTF_KIND_FLOAT when linking vmlinux
+> 
+> Javier Martinez Canillas (1):
+>       kbuild: Quote OBJCOPY var to avoid a pahole call break the build
+> 
+> Jiri Olsa (1):
+>       kbuild: Unify options for BTF generation for vmlinux and modules
+> 
+> Martin Rodriguez Reboredo (1):
+>       kbuild: Add skip_encoding_btf_enum64 option to pahole
+> 
+>  Makefile                |  3 +++
+>  scripts/link-vmlinux.sh |  2 +-
+>  scripts/pahole-flags.sh | 21 +++++++++++++++++++++
+>  3 files changed, 25 insertions(+), 1 deletion(-)
+>  create mode 100755 scripts/pahole-flags.sh
 
-Running it as serial test, because we don't want other tests to
-reload bpf_testmod while it's running.
+Ah, all showed up now.  I'll look at these tomorrow, thanks!
 
-Acked-by: Song Liu <song@kernel.org>
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- .../prog_tests/kprobe_multi_testmod_test.c    | 89 +++++++++++++++++++
- .../selftests/bpf/progs/kprobe_multi.c        | 50 +++++++++++
- 2 files changed, 139 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/kprobe_multi_testmod_test.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_testmod_test.c b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_testmod_test.c
-new file mode 100644
-index 000000000000..1fbe7e4ac00a
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_testmod_test.c
-@@ -0,0 +1,89 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+#include "kprobe_multi.skel.h"
-+#include "trace_helpers.h"
-+#include "bpf/libbpf_internal.h"
-+
-+static void kprobe_multi_testmod_check(struct kprobe_multi *skel)
-+{
-+	ASSERT_EQ(skel->bss->kprobe_testmod_test1_result, 1, "kprobe_test1_result");
-+	ASSERT_EQ(skel->bss->kprobe_testmod_test2_result, 1, "kprobe_test2_result");
-+	ASSERT_EQ(skel->bss->kprobe_testmod_test3_result, 1, "kprobe_test3_result");
-+
-+	ASSERT_EQ(skel->bss->kretprobe_testmod_test1_result, 1, "kretprobe_test1_result");
-+	ASSERT_EQ(skel->bss->kretprobe_testmod_test2_result, 1, "kretprobe_test2_result");
-+	ASSERT_EQ(skel->bss->kretprobe_testmod_test3_result, 1, "kretprobe_test3_result");
-+}
-+
-+static void test_testmod_attach_api(struct bpf_kprobe_multi_opts *opts)
-+{
-+	struct kprobe_multi *skel = NULL;
-+
-+	skel = kprobe_multi__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "fentry_raw_skel_load"))
-+		return;
-+
-+	skel->bss->pid = getpid();
-+
-+	skel->links.test_kprobe_testmod = bpf_program__attach_kprobe_multi_opts(
-+						skel->progs.test_kprobe_testmod,
-+						NULL, opts);
-+	if (!skel->links.test_kprobe_testmod)
-+		goto cleanup;
-+
-+	opts->retprobe = true;
-+	skel->links.test_kretprobe_testmod = bpf_program__attach_kprobe_multi_opts(
-+						skel->progs.test_kretprobe_testmod,
-+						NULL, opts);
-+	if (!skel->links.test_kretprobe_testmod)
-+		goto cleanup;
-+
-+	ASSERT_OK(trigger_module_test_read(1), "trigger_read");
-+	kprobe_multi_testmod_check(skel);
-+
-+cleanup:
-+	kprobe_multi__destroy(skel);
-+}
-+
-+static void test_testmod_attach_api_addrs(void)
-+{
-+	LIBBPF_OPTS(bpf_kprobe_multi_opts, opts);
-+	unsigned long long addrs[3];
-+
-+	addrs[0] = ksym_get_addr("bpf_testmod_fentry_test1");
-+	ASSERT_NEQ(addrs[0], 0, "ksym_get_addr");
-+	addrs[1] = ksym_get_addr("bpf_testmod_fentry_test2");
-+	ASSERT_NEQ(addrs[1], 0, "ksym_get_addr");
-+	addrs[2] = ksym_get_addr("bpf_testmod_fentry_test3");
-+	ASSERT_NEQ(addrs[2], 0, "ksym_get_addr");
-+
-+	opts.addrs = (const unsigned long *) addrs;
-+	opts.cnt = ARRAY_SIZE(addrs);
-+
-+	test_testmod_attach_api(&opts);
-+}
-+
-+static void test_testmod_attach_api_syms(void)
-+{
-+	LIBBPF_OPTS(bpf_kprobe_multi_opts, opts);
-+	const char *syms[3] = {
-+		"bpf_testmod_fentry_test1",
-+		"bpf_testmod_fentry_test2",
-+		"bpf_testmod_fentry_test3",
-+	};
-+
-+	opts.syms = syms;
-+	opts.cnt = ARRAY_SIZE(syms);
-+	test_testmod_attach_api(&opts);
-+}
-+
-+void serial_test_kprobe_multi_testmod_test(void)
-+{
-+	if (!ASSERT_OK(load_kallsyms_refresh(), "load_kallsyms_refresh"))
-+		return;
-+
-+	if (test__start_subtest("testmod_attach_api_syms"))
-+		test_testmod_attach_api_syms();
-+	if (test__start_subtest("testmod_attach_api_addrs"))
-+		test_testmod_attach_api_addrs();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/kprobe_multi.c b/tools/testing/selftests/bpf/progs/kprobe_multi.c
-index 98c3399e15c0..9e1ca8e34913 100644
---- a/tools/testing/selftests/bpf/progs/kprobe_multi.c
-+++ b/tools/testing/selftests/bpf/progs/kprobe_multi.c
-@@ -110,3 +110,53 @@ int test_kretprobe_manual(struct pt_regs *ctx)
- 	kprobe_multi_check(ctx, true);
- 	return 0;
- }
-+
-+extern const void bpf_testmod_fentry_test1 __ksym;
-+extern const void bpf_testmod_fentry_test2 __ksym;
-+extern const void bpf_testmod_fentry_test3 __ksym;
-+
-+__u64 kprobe_testmod_test1_result = 0;
-+__u64 kprobe_testmod_test2_result = 0;
-+__u64 kprobe_testmod_test3_result = 0;
-+
-+__u64 kretprobe_testmod_test1_result = 0;
-+__u64 kretprobe_testmod_test2_result = 0;
-+__u64 kretprobe_testmod_test3_result = 0;
-+
-+static void kprobe_multi_testmod_check(void *ctx, bool is_return)
-+{
-+	if (bpf_get_current_pid_tgid() >> 32 != pid)
-+		return;
-+
-+	__u64 addr = bpf_get_func_ip(ctx);
-+
-+	if (is_return) {
-+		if ((const void *) addr == &bpf_testmod_fentry_test1)
-+			kretprobe_testmod_test1_result = 1;
-+		if ((const void *) addr == &bpf_testmod_fentry_test2)
-+			kretprobe_testmod_test2_result = 1;
-+		if ((const void *) addr == &bpf_testmod_fentry_test3)
-+			kretprobe_testmod_test3_result = 1;
-+	} else {
-+		if ((const void *) addr == &bpf_testmod_fentry_test1)
-+			kprobe_testmod_test1_result = 1;
-+		if ((const void *) addr == &bpf_testmod_fentry_test2)
-+			kprobe_testmod_test2_result = 1;
-+		if ((const void *) addr == &bpf_testmod_fentry_test3)
-+			kprobe_testmod_test3_result = 1;
-+	}
-+}
-+
-+SEC("kprobe.multi")
-+int test_kprobe_testmod(struct pt_regs *ctx)
-+{
-+	kprobe_multi_testmod_check(ctx, false);
-+	return 0;
-+}
-+
-+SEC("kretprobe.multi")
-+int test_kretprobe_testmod(struct pt_regs *ctx)
-+{
-+	kprobe_multi_testmod_check(ctx, true);
-+	return 0;
-+}
--- 
-2.37.3
-
+greg k-h
