@@ -2,154 +2,268 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 524B4604CBF
-	for <lists+bpf@lfdr.de>; Wed, 19 Oct 2022 18:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF29D604CBE
+	for <lists+bpf@lfdr.de>; Wed, 19 Oct 2022 18:06:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231361AbiJSQGt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Oct 2022 12:06:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37110 "EHLO
+        id S231421AbiJSQGq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Oct 2022 12:06:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231788AbiJSQGZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Oct 2022 12:06:25 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 534F3BB057
-        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 09:05:07 -0700 (PDT)
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 29JEWuw5010290;
-        Wed, 19 Oct 2022 09:04:53 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=HofSKEqBC/Qv/Guo6pk4rYGGmoPMQxJxXyozIvsZ9VU=;
- b=giUFCpEmvBwaLME5StHY0mw2C43cr9iA/qgVsWA59yIffRhFx9GYYvZgnF+4b+PC4Bj+
- /Q4Waw1XQfAdQAcjgA2uuE9LelgOLeY/TCv+8+cLygbz7jrsW0o0WiLOVjFaI0jdTWTF
- v5y52DllaJMGTD+Yi7CBey0Dt0/cRkr9/bg+Ylk1HqA+1l8M4JJvmoxHfwAQqAR309Uo
- t8BIBXr7gj0+PEnBD45K6ogZX/mbRHMG07kF40/8f7FccFQq/2Be18gMyUHpZ47Axx20
- 4z6md2SKm5CWOdXl0ARWo9AqqiRZKpbLLlYI+xYJxin7friyAN/Y/PYlLXFBMU2NN1tH 9w== 
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2176.outbound.protection.outlook.com [104.47.59.176])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3k9eynn55e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 19 Oct 2022 09:04:53 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WzVOoFg2BpWO8YabKXErRDFHvAcpsXR4m0WIBGvIt2GkjPFwD02IuLSvJ8ncc90IIEnDY3kiNbDNBBSlIVQx/YGWycTTr/DRHdJNKsY03ZwOefSy9YHW19413wZQT/+TSRMC8hBj3YC/9z0SVepCI6BBD8j3sBUO/nuExyNx8mFz9EZQYHp6/F27t80yel6LsBT77l4rn+GizC1M9HlcUA9NFdGKdWnwM1Ps14KGxQZLXd1kRlf/rkxdvs61PEWCfEhogPMljByOA6C2YvbTsWulEJVvn3Z6QUQq9hYB0uhFJGFedh/ShqDYpczZN7kOq1TGimDXRXRH2nLDLJqzrA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HofSKEqBC/Qv/Guo6pk4rYGGmoPMQxJxXyozIvsZ9VU=;
- b=mQcc11zAQonvXKktESq6bGZTaxP7CCZcaFDOi+KWEYA4EoT0ebxfT/Sx9vPN3659+ar9sPW1DLVdwdXaTDb/zsh3Uye4FZbaKxwUQFPK6okRkHaZ5iH4yIsq3a5x6QwlhV/BI1NsPv8SenXnD5NEdrGshtsW49E+vgfExatBlDnZKepknycupwSD4MRVPF5jOstUEml/fRCXcnBwI6zkEAz1+GcWUX1udm652C9tWp8A69WCUf7ogoq+ixc2XKepSQhHuugP+nrtGWPNxfY9oNdpIVvQEjJX8gr8o5AAKNMSfBL6LeYUX6H0aiehQRdj06nTwBqwllBj27I1oO52MA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
- dkim=pass header.d=meta.com; arc=none
-Received: from DM6PR15MB4039.namprd15.prod.outlook.com (2603:10b6:5:2b2::20)
- by BLAPR15MB3923.namprd15.prod.outlook.com (2603:10b6:208:276::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5723.20; Wed, 19 Oct
- 2022 16:04:51 +0000
-Received: from DM6PR15MB4039.namprd15.prod.outlook.com
- ([fe80::ba24:a61c:1552:445a]) by DM6PR15MB4039.namprd15.prod.outlook.com
- ([fe80::ba24:a61c:1552:445a%7]) with mapi id 15.20.5723.034; Wed, 19 Oct 2022
- 16:04:51 +0000
-Message-ID: <5f7db320-60f9-256e-8ac4-eb9a5617c35a@meta.com>
-Date:   Wed, 19 Oct 2022 12:04:49 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.3.3
-Subject: Re: [PATCH bpf-next v2 05/25] bpf: Drop
- reg_type_may_be_refcounted_or_null
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S229867AbiJSQGW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Oct 2022 12:06:22 -0400
+Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0936713FDE7
+        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 09:05:02 -0700 (PDT)
+Received: by mail-qv1-f42.google.com with SMTP id o67so11646977qvo.13
+        for <bpf@vger.kernel.org>; Wed, 19 Oct 2022 09:05:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4+W+//J/FAdmasYlQ6TgAiMPF7T2fVTWT7D4tt3tCo0=;
+        b=Fa6oC5QMRvMW/jVoNrM+LQX44WYRjDEzfURFdaD0uO7QqJDygTgVRrFKmHOrn7YeVS
+         3ZsaT0IcqInS3L2vF6NIlhP6xvjhqeob497CGG6oQqwA6ySMdrJuJIcI3j8Zn29kDnpj
+         jN/JO5LozSKXwK4kbt807KBJwOztic7Mz4ElbX1zH7Jmk0q4Vzvc6wNE9+XEhk5OKlGO
+         +O48sdezTa5v+u2Z9KbxFFoXByAaT9nRAq91D5mhTVX9P55Kb+5TqvMKp6EC+t5fvJjq
+         W3S0jFuf5S6YlHErGz68le4YvG/2Jq8sa4SA35sAwmPg+/aQ7Di4gN6jH8YVnJHnOm3h
+         FQgg==
+X-Gm-Message-State: ACrzQf1X3fhq6Kz3WFCuewz31L1FYhbHGDcZHn4/Pczec/azcbiHvDD3
+        s4+uhF+/VrX0FrnJaBPDnxAjh0zh144=
+X-Google-Smtp-Source: AMsMyM4xKTujwTjDyz5F0tPFtcPBuHkFk768eCYlteqlA4zmpqZxvyyDa7Rkz0Ln9RFCfP3Zy4MoLA==
+X-Received: by 2002:a0c:e1c6:0:b0:4af:aa3c:987c with SMTP id v6-20020a0ce1c6000000b004afaa3c987cmr7510918qvl.60.1666195501178;
+        Wed, 19 Oct 2022 09:05:01 -0700 (PDT)
+Received: from maniforge.dhcp.thefacebook.com ([2620:10d:c091:480::e12b])
+        by smtp.gmail.com with ESMTPSA id x5-20020a05620a258500b006bb366779a4sm4995420qko.6.2022.10.19.09.04.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Oct 2022 09:05:00 -0700 (PDT)
+Date:   Wed, 19 Oct 2022 11:05:02 -0500
+From:   David Vernet <void@manifault.com>
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Delyan Kratunov <delyank@meta.com>
-References: <20221013062303.896469-1-memxor@gmail.com>
- <20221013062303.896469-6-memxor@gmail.com>
-Content-Language: en-US
-From:   Dave Marchevsky <davemarchevsky@meta.com>
-In-Reply-To: <20221013062303.896469-6-memxor@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BL1PR13CA0226.namprd13.prod.outlook.com
- (2603:10b6:208:2bf::21) To DM6PR15MB4039.namprd15.prod.outlook.com
- (2603:10b6:5:2b2::20)
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Joanne Koong <joannelkoong@gmail.com>
+Subject: Re: [PATCH bpf-next v1 02/13] bpf: Rework process_dynptr_func
+Message-ID: <Y1AgLhWygv1yCRQ8@maniforge.dhcp.thefacebook.com>
+References: <20221018135920.726360-1-memxor@gmail.com>
+ <20221018135920.726360-3-memxor@gmail.com>
+ <Y08z6U1iAcv4IwDY@maniforge.DHCP.thefacebook.com>
+ <20221019061821.4cpls2alap74uppu@apollo>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR15MB4039:EE_|BLAPR15MB3923:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3a2ef299-841c-45b4-559e-08dab1eba770
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PqUkk4VJ3IEr0iTYCoKrqXY6ybmpgW/SHVohlYv8ZW6zZc25ugTvFXXtv8cvVUIl3fAp/j35amAi3xFbm/emOujeMQ5NYksutsHIE7hA9w8GBBmIrc2Z/TrvKOf25Z9tVxN0YDIgoGcE9duzZWENAbatXjfASiKLw5vzYJeJ3SGVpPKrUSX3u8jjPD7KdKv/QDXVORL04EMsPJtVv+lXkMdqCAXSMLbE5PukddVXEG5dQNNWa0trxJafC2W5hp32+F2sa6/mBR8nho9r/OIILbao7bkvqyoQ91M2dhjFEWOOuaoWiSwEbUTrgrEoHHmUeAPofLfT07OZJlLyW5agvtuu7lt6kLdP0mAMiWAhBdi5MH31GYfiIw7lb0T8BirHN1U7fUA0h68QHfxuJh5DUjzDZVOc95osjQL4aqIMayPEE7mkc1rfaN1x2ttXST7pI5IX9S36VMH/XpdGcQegzBObYS62xie+dOEBTvZNFl+CTvG89QzOmohsCyepK7kwN7krmfi3TXoc6bociakdThFEjPusiVOjOMpOGu4DBMwJ9o1oRmWYeM3/5NqZMMGHBNXxL0raAOzNjDJmz7LAiyntBhG9/DAI6hpB/NK4YejQtrKwpDXlnjrrwwso+zC1+UINZZNa4kxxyDC9fnSesbTb8txY1XbRYlWbrJBowOkV0gOwRNQ0hkFRDCzYe3AK1rBJPubTpPraxHnF94kPfoxvwjFoMR3quJvUsZmqArVUWEas/0uCAF0bps6FD9uQdZVbJwAxtYo0Z49h5qeOaq4uWJQ9RORR3Digen/MjFk=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR15MB4039.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(396003)(346002)(366004)(136003)(376002)(39860400002)(451199015)(31686004)(4326008)(66946007)(2906002)(2616005)(38100700002)(5660300002)(4744005)(186003)(31696002)(86362001)(66476007)(53546011)(107886003)(6506007)(6486002)(6512007)(54906003)(66556008)(316002)(8676002)(8936002)(36756003)(41300700001)(478600001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NThzRjBYMnJqR0pqWWRiZ3k0ZXN4c3FnSjJCd1J2TGNacExBb213S2RONzRj?=
- =?utf-8?B?WEc5aVJPWlRuTEJWR0toZGtsRjhBNUx1a2k5cE1NNWxMcWdNenhidWpMWmNK?=
- =?utf-8?B?TllBcmhoRW5sRUR6dzdxTENydjQwd2hVL3lab005dHF6UnZ1emZiN0ttd1Vq?=
- =?utf-8?B?UDFDUTZqRC8yemhTZkExakhQVE1nc0g1VU9ySTJBL2IvT0o0OVkzYWpqUnJy?=
- =?utf-8?B?N08wc09aRjN4bWV3ZnFHeTVFa2FhQ1M4Rmcvb3Y5K3lWZzZydlFJQWVEa3VK?=
- =?utf-8?B?ejliMThMeVcvcDdESmJhSDRUYkNsWVZRK0hrNGE1WjUzUHljN2IwbHFNMTlI?=
- =?utf-8?B?cFJ0c1B0dkhPZlludUNTZjFxVXJYK1BDaHNpa2JsY1ByaXd0N2M1cldZY1dJ?=
- =?utf-8?B?eDFWa1E0aTlWY0wwT0dpQkg4RXEvNmxCdGR4QXBSZzU2MHZrYmNhM1B2NmE3?=
- =?utf-8?B?ZlMrZUdsNEl6c0tNUEVTcE81WW5peVBWRm93L0d1QjVvdk9IekUzNFUxTSsx?=
- =?utf-8?B?RmdvRHo3Y1FOdEFFNkRBd3NWUmlkd25OY3RKTFdnNE95ajlDM1kxRHdLeWx5?=
- =?utf-8?B?SWJ0QXVJWEdqRWRVSVhMMCtncE1OVHNONEVSaEI2UC92T3lIR2F1U0NOTDdx?=
- =?utf-8?B?RU1tQlF6SzZoTEN2UjFrdkRsS0ExWDQweElvTnpLdHRHL3NzSjBPSGFTYU50?=
- =?utf-8?B?TUpsSDZHWVRhc3Q5eG83em5mY0Znc3hxYWlQOFNsZWNxMWJjckF1NlcySmxo?=
- =?utf-8?B?UEQzNGdCdkFNVVdkeThlU3hyYXluSVpPbE55YjdUZkF6VW41b1c3L0FvNWNi?=
- =?utf-8?B?YnQvbjRhUmNBU29kdWRub2lsU2JWeVpZbC9YMG8vMUh4RmZheU5Da0FIT21h?=
- =?utf-8?B?NFBOMlBGa0xkcHZpelgrRmFGM3RZSFdOTEZ4MW9Ta1dMZUtaRTgyMEpwNUox?=
- =?utf-8?B?YnR3SmZ6V1o2V1BMY3NWblhIdVFRRk44clk5MmtlN05mN1FBcVluNGREN3hI?=
- =?utf-8?B?NHZpUHU0b1B4ajdvM3I3VGNqM2xlaW1aeEJZYTk0bmpiZWZSQmJHUmxCblk5?=
- =?utf-8?B?ZWVXMXpXQTNTdTdFL3M5ajQ2cHRwYllXU0FucTZHTFlLdFFzdk1BUnRaSGM2?=
- =?utf-8?B?N0JyNlFOMCt4Zncyb0RvNkRLR00vUDliRVU1eGs4VThjd0REa0pNSitjOGgw?=
- =?utf-8?B?S2dhMXNxMDN6RUtZK1NoeWY5SUovbjladlB5V3pBZ291eCtVQjZBcWtTVTNh?=
- =?utf-8?B?R0pkV0tyUDFaRkNmeGVFdnJlS3YvQzZRaXh6dzZPR0kyRjFoMm5YUGxsN2x0?=
- =?utf-8?B?cnhHTWFxNXpjdlRZVXloMmsxRlFpQ2dUZmJ6ZmVvL29VQXQ4QmNsSnJhSE02?=
- =?utf-8?B?Qy85ejZ3SEh3WWV0VUxGQzZLWkJwdHp5QUZETkhBNjB2UXdRcjVqbVFSN1ph?=
- =?utf-8?B?aTlhOUxab0RaTE4wcjRqQndTQ2RsNzBTZXFOU3JDVDg0UjlXL0x2eUZzNFF3?=
- =?utf-8?B?TmtxSjNadjVKcHBGZVpYZzFyaDRYdmlMNTlhVzEzNnNFMVFtSjZTcFR1dHVL?=
- =?utf-8?B?eFpzY3NuNXZSNWNXUWYxWFlJT01wbjF4VHE3NTNvMUk5L3FITU9yL1lvMWc5?=
- =?utf-8?B?UVh3NnZQUndYeHBTWlp6S3NNQnRyRExtcmppUzlFbWg2OFBiL05VL01ReWZF?=
- =?utf-8?B?ZXpoL3R1aHM0elVOMFZFaCtyWGFncUxWaFZrUEoyK05QcUN4OGRveHdsNHRq?=
- =?utf-8?B?ZWNFb3QrVUxBU0dNeEpsRWE1MTErMDIvRTBDdE9TQzFPSUQ1WG9IMFdzTnJi?=
- =?utf-8?B?VUE1ZkhYMDUrM0JjelF5WVo3SFQvbEQ2MXN2ejNuUVZjS0tLUjRvVUlhN1d0?=
- =?utf-8?B?NmZEcFZxQkFhZU5BZElvdGY2dE9DRmxwb0tJL1pIN1o2aVJsb3F6azVIeHBB?=
- =?utf-8?B?ZkJZWmIzYkdBVmJMdm5Tb0ZpeGFMWU5adjZlOXA2SzBGbkZhTXlPSkZrd1Rm?=
- =?utf-8?B?ZlRQWmROWFNyTlN0QWhhaDVsTWRjVU5xVXhES3JFUWxleWRBblY4V05lM3BO?=
- =?utf-8?B?a0VuSnA3Ky9yM1VRb1Z0SS8yZDhQaWpwWW5rdmN2WXBKQ2ZaVTJ4NmZtZC8y?=
- =?utf-8?B?WGxIWkNjZXF1TTF0MXY4UEsrZWZsY0t5aGpZRnRQWlREY1dtMWFrVVJMVmZO?=
- =?utf-8?Q?1jEbLqRndhofq2sUIQPXWto=3D?=
-X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3a2ef299-841c-45b4-559e-08dab1eba770
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR15MB4039.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Oct 2022 16:04:51.2825
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: flqWzrDcILbHcNMDfnBaju6HtPUJPG2f3gzyOBHR4fZgwwTjiICuGjZQvhTU43m02Hfb9SShQVHKoXxr2mGC7w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR15MB3923
-X-Proofpoint-GUID: t3kCz9OOeT-69Et5y143Y3wgSm6IKp6C
-X-Proofpoint-ORIG-GUID: t3kCz9OOeT-69Et5y143Y3wgSm6IKp6C
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.545,FMLib:17.11.122.1
- definitions=2022-10-19_09,2022-10-19_04,2022-06-22_01
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221019061821.4cpls2alap74uppu@apollo>
+User-Agent: Mutt/2.2.7 (2022-08-07)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/13/22 2:22 AM, Kumar Kartikeya Dwivedi wrote:
-> It is not scalable to maintain a list of types that can have non-zero
-> ref_obj_id. It is never set for scalars anyway, so just remove the
-> conditional on register types and print it whenever it is non-zero.
-> 
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> ---
+On Wed, Oct 19, 2022 at 11:48:21AM +0530, Kumar Kartikeya Dwivedi wrote:
 
-Acked-by: Dave Marchevsky <davemarchevsky@fb.com>
+[...]
+
+> > > In all of these cases, PTR_TO_DYNPTR shouldn't be allowed to be passed
+> > > to such helpers, however the current code simply returns 0.
+> > >
+> > > The rejection for helpers that release the dynptr is already handled.
+> > >
+> > > For fixing this, we take a step back and rework existing code in a way
+> > > that will allow fitting in all classes of helpers and have a coherent
+> > > model for dealing with the variety of use cases in which dynptr is used.
+> > >
+> > > First, for ARG_PTR_TO_DYNPTR, it can either be set alone or together
+> > > with a DYNPTR_TYPE_* constant that denotes the only type it accepts.
+> > >
+> > > Next, helpers which initialize a dynptr use MEM_UNINIT to indicate this
+> > > fact. To make the distinction clear, use MEM_RDONLY flag to indicate
+> > > that the helper only operates on the memory pointed to by the dynptr,
+> >
+> > Hmmm, it feels a bit confusing to overload MEM_RDONLY like this. I
+> > understand the intention (which is logical) to imply that the pointer to
+> > the dynptr is read only, but the fact that the memory contained in the
+> > dynptr may not be read only will doubtless confuse people.
+> >
+> > I don't really have a better suggestion. This is the proper use of
+> > MEM_RDONLY, but it really feels super confusing. I guess this is
+> > somewhat mitigated by the fact that the read-only nature of the dynptr
+> > is something that will be validated at runtime?
+> >
+> 
+> Nope, both dynptr's const-ness and const-ness of the memory it points to are
+> supposed to be tracked statically. It's part of the type of the dynptr.
+
+Could you please clarify what you're "noping" here? The dynptr being
+read-only is tracked statically, but based on the discussion in the
+thread at [0] I thought the plan was to enforce this property at
+runtime. Am I wrong about that?
+
+[0]: https://lore.kernel.org/bpf/CAJnrk1Y0r3++RLpT2jvp4st-79x3dUYk3uP-4tfnAeL5_kgM0Q@mail.gmail.com/
+
+My point was just that it might be less difficult to confuse
+CONST_PTR_TO_DYNPTR | MEM_RDONLY with the memory contained in the dynptr
+region if there's a separate field inside the dynptr itself which tracks
+whether that region is R/O. I'm mostly just thinking out loud -- as I
+said in the last email I think using MEM_RDONLY as you are is logical.
+
+> The second case doesn't exist yet, but will soon (with skb dynptrs abstracting
+> over read only __sk_buff ctx).
+> 
+> So what MEM_RDONLY in argument type really means is that I take a pointer to
+> const struct bpf_dynptr, which means I can't modify the struct bpf_dynptr itself
+> (so it's size, offset, ptr, etc.), but that is independent of r/w state of what
+> it points to.
+>
+> const T *p vs T *const p
+
+Right, I understand the intention of the patch (which was why I said it
+was a logical choice) and the distinction between the two variants of
+const. My point was that at first glance, someone who's not a verifier
+expert who's trying to understand all of this to enable their writing of
+a BPF program may be thrown off by seeing "PTR_TO_DYNPTR | RDONLY".
+Hopefully that's something we can address with adequately documenting
+helpers, and in any case, it's certainly not an argument against your
+overall approach.
+
+Also, I think it will end up being more clear if and when we have e.g.
+a helper that takes a CONST_PTR_TO_DYNPTR | MEM_RDONLY dynptr, and
+returns e.g. an R/O PTR_TO_MEM | MEM_RDONLY pointer to its backing
+memory.
+
+Anyways, at the end of the day this is really all implementation details
+of the verifier and BPF internals, so I digress...
+
+> In this case it's the latter. Soon we will also support const T *const p.
+> 
+> Hence, MEM_RDONLY is at the argument type level, translating to reg->type, and
+> the read only status for the dynptr's memory slice will be part of dynptr
+> specific register state (dynptr.type).
+> 
+> But I am open to more suggestions on how to write this stuff, if it makes the
+> code easier to read.
+
+I think what you have makes sense and IMO is the cleanest way to express
+all of this.
+
+The only thing that I'm now wondering after sleeping on this is whether
+it's really necessary to rename the register type to CONST_PTR_TO_DYNPTR.
+We're already restricting that it always be called with MEM_RDONLY. Are
+we _100%_ sure that it will always be fully static whether a dynptr is
+R/O? I know that Joanne said probably yes in [1], but it feels perhaps
+unnecessarily restrictive to codify that by making the register type
+CONST_PTR_TO_DYNPTR. Why not just make it PTR_TO_DYNPTR and keep the
+verifications you added in this patch that it's always specified with
+MEM_RDONLY, and then if we ever change our minds and later decide to add
+helpers that can change the access permissions on the dynptr, it will
+just be a matter of changing our expectations around the presence of
+that MEM_RDONLY modifier?
+
+[1]: https://lore.kernel.org/bpf/CAJnrk1Zmne1uDn8EKdNKJe6O-k_moU9Sryfws_J-TF2BvX2QMg@mail.gmail.com/
+
+[...]
+
+> > >  	/* ARG_PTR_TO_DYNPTR takes any type of dynptr */
+> > >  	if (arg_type == ARG_PTR_TO_DYNPTR)
+> > >  		return true;
+> > >
+> > >  	dynptr_type = arg_to_dynptr_type(arg_type);
+> > > -
+> > > -	return state->stack[spi].spilled_ptr.dynptr.type == dynptr_type;
+> > > +	if (reg->type == CONST_PTR_TO_DYNPTR) {
+> > > +		return reg->dynptr.type == dynptr_type;
+> > > +	} else {
+> > > +		spi = get_spi(reg->off);
+> > > +		return state->stack[spi].spilled_ptr.dynptr.type == dynptr_type;
+> > > +	}
+> > >  }
+> > >
+> > >  /* The reg state of a pointer or a bounded scalar was saved when
+> > > @@ -1317,9 +1346,6 @@ static const int caller_saved[CALLER_SAVED_REGS] = {
+> > >  	BPF_REG_0, BPF_REG_1, BPF_REG_2, BPF_REG_3, BPF_REG_4, BPF_REG_5
+> > >  };
+> > >
+> > > -static void __mark_reg_not_init(const struct bpf_verifier_env *env,
+> > > -				struct bpf_reg_state *reg);
+> > > -
+> > >  /* This helper doesn't clear reg->id */
+> > >  static void ___mark_reg_known(struct bpf_reg_state *reg, u64 imm)
+> > >  {
+> > > @@ -1382,6 +1408,25 @@ static void mark_reg_known_zero(struct bpf_verifier_env *env,
+> > >  	__mark_reg_known_zero(regs + regno);
+> > >  }
+> > >
+> > > +static void __mark_dynptr_regs(struct bpf_reg_state *reg1,
+> > > +			       struct bpf_reg_state *reg2,
+> > > +			       enum bpf_dynptr_type type)
+> > > +{
+> > > +	/* reg->type has no meaning for STACK_DYNPTR, but when we set reg for
+> > > +	 * callback arguments, it does need to be CONST_PTR_TO_DYNPTR.
+> > > +	 */
+> >
+> > Meh, this is mildly confusing. Please correct me if my understanding is wrong,
+> > but the reason this is the case is that we only set the struct bpf_reg_state
+> > from the stack, whereas the actual reg itself of course has PTR_TO_STACK. If
+> > that's the case, can we go into just a bit more detail here in this comment
+> > about what's going on? It's kind of confusing that we have an actual register
+> > of type PTR_TO_STACK, which points to stack register state of (inconsequential)
+> > type CONST_PTR_TO_DYNPTR. It's also kind of weird (but also inconsequential)
+> > that we have dynptr.first_slot for CONST_PTR_TO_DYNPTR.
+> >
+> 
+> There are two cases which this function is called for, one is for the
+> spilled registers for dynptr on the stack. In that case it *is* the dynptr, so
+> reg->type as CONST_PTR_TO_DYNPTR is meaningless/wrong, and not checked. The type
+> is already part of slot_type == STACK_DYNPTR.
+
+Ok, thanks for confirming my understanding.
+
+> We reuse spilled_reg part of stack state to store info about the dynptr. We need
+> two spilled_regs to fully track it.
+> 
+> Later, we will have more owned objects on the stack (bpf_list_head, bpf_rb_root)
+> where you splice it out. Their handling will have to be similar.
+> 
+> PTR_TO_STACK points to the slots whose spilled registers we will call this
+> function for. That is different from the second case, i.e. for callback R1,
+> where it will be CONST_PTR_TO_DYNPTR. For consistency, I marked it as first_slot
+> because we always work using the first dynptr slot.
+> 
+> So to summarize:
+> 
+> PTR_TO_STACK points to bpf_dynptr on stack. So we store this info as 2 spilled
+> registers on the stack. In that case both of them are the first and second slot
+> of the dynptr (8-bytes each). They are the actual dynptr object.
+> 
+> In second case we set dynptr state on the reg itself, which points to actual
+> dynptr object. The reference now records the information we need about the
+> object.
+> 
+> Yes, it is a bit confusing, and again, I'm open to better ideas. The
+> difference/confusion is mainly because of different places where state is
+> tracked. For the stack we track it in stack state precisely, for
+> CONST_PTR_TO_DYNPTR it is recorded in the pointer to dynptr object.
+
+Thanks for clarifying, then my initial understanding was correct. If
+that's the case, what do you think about this suggestion to make the
+code a bit more consistent:
+
+> > Just my two cents as well, but even if the field isn't really used for
+> > anything, I would still add an additional enum bpf_reg_type parameter that sets
+> > this to STACK_DYNPTR, with a comment that says it's currently only used by
+> > CONST_PTR_TO_DYNPTR registers.
+
+I would rather reg->type be _unused_ for the dynptr in the spilled
+registers on the stack, then be both unused and meaningless/wrong (as
+you put it).
+
+[...]
+
+Thanks,
+David
